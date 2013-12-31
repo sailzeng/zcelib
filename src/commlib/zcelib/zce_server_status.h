@@ -1,0 +1,449 @@
+/*!
+* @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
+* @filename   zce_server_status.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version    
+* @date       2006年3月7日
+* @brief      
+*             
+*             
+* @details    服务器的统计类，
+*             这个想法来自rong,sonicmao的C4A的服务器,向rong,sonicmao致敬.
+*             
+*             
+* @note       修改记录，很简单的一个类，但改动很多
+*     1.Date  :2011年10月30日
+*     Author  :根据ZCELIB的代码对现有的代码进行优化
+*     Modification  :
+*     2.Date  :2012年1月15日
+*     Author  :Sailzeng
+*     Modification  :在N次反复，以及吐血的改了2次后，我开始倾向用一个最简单的方式解决问题，
+*     3.Date  :2012年5月10日
+*     Author  :Sailzeng
+*     Modification  :很多啊同事还是吐槽需要设置classify，我想还是改了把。告别sandy和mandy
+*     4.Date  :2013年10月1日
+*     Author  :Sailzeng
+*     Modification  :有一个防止统计ID重复的需求，将原来的ARRAY改造成了一个MAP，
+*             
+*/
+
+#ifndef ZCE_LIB_SERVER_STATUS_H_
+#define ZCE_LIB_SERVER_STATUS_H_
+
+#include "zce_share_mem_posix.h"
+#include "zce_shm_vector.h"
+#include "zce_lock_null_lock.h"
+#include "zce_os_adapt_time.h"
+
+/******************************************************************************************
+状态统计的方式，比如5分钟记录一次的方式，一个小时记录的方式等
+******************************************************************************************/
+
+//为什么放到类里面，增强他的约束
+enum ZCE_STATUS_STATICS_TYPE
+{
+    //标识范围
+    STATICS_INVALID_TYPE       = 0,
+
+    //每5分钟进行一次统计，尽量用5分钟的统计方式
+    STATICS_PER_FIVE_MINTUES   = 1,
+
+    //每小时进行一次统计,:0会清空，这种统计方式主要用于1个小时变化数据，用于对比等，
+    STATICS_PER_HOUR           = 2,
+    //每天进行一次统计，0:0会清空，，这种统计方式主要用于1天变化数据
+    STATICS_PER_DAYS           = 3,
+
+    //绝对值
+    STATICS_ABSOLUTE_VALUE     = 11,
+
+    //原来还有一种每次启动时，数值是否清空的选项，算了，没必要保留了
+
+};
+
+/******************************************************************************************
+struct ZCE_STATUS_ITEM_ID
+******************************************************************************************/
+struct ZCELIB_EXPORT ZCE_STATUS_ITEM_ID
+{
+public:
+
+    //统计ID
+    unsigned int              statics_id_;
+    //分类ID，目前好像主要是业务ID,这个是可以变化的
+    unsigned int              app_id_;
+    //子分类ID，这个也是可以变化的，
+    unsigned int              classify_id_;
+
+public:
+
+    ZCE_STATUS_ITEM_ID(unsigned int statics_id,
+                       unsigned int app_id,
+                       unsigned int classify_id);
+    ZCE_STATUS_ITEM_ID();
+    ~ZCE_STATUS_ITEM_ID();
+
+    bool operator == (const ZCE_STATUS_ITEM_ID &others) const;
+};
+
+///得到HASH因子的函数，
+struct ZCELIB_EXPORT HASH_ZCE_STATUS_ITEM_ID
+{
+public:
+    //就把3个数值相+，这样冲突感觉还小一点，（左移反而感觉不好）
+    //
+    size_t operator()(const ZCE_STATUS_ITEM_ID &stat_item) const
+    {
+        return (size_t (stat_item.statics_id_
+                        + (stat_item.app_id_ << 8)
+                        + stat_item.classify_id_));
+    }
+};
+
+/******************************************************************************************
+struct ZCE_STATUS_ITEM 状态计数器项
+******************************************************************************************/
+class ZCELIB_EXPORT ZCE_STATUS_ITEM
+{
+public:
+
+    //构造函数和析构函数
+    ZCE_STATUS_ITEM();
+    ZCE_STATUS_ITEM(unsigned int statics_id,
+                    ZCE_STATUS_STATICS_TYPE statics_type);
+    ~ZCE_STATUS_ITEM();
+
+public:
+
+    //ID标识
+    ZCE_STATUS_ITEM_ID        item_id_;
+
+    //可以重新计数
+    ZCE_STATUS_STATICS_TYPE   statics_type_;
+
+    //计数器
+    uint64_t                  counter_;
+};
+
+/******************************************************************************************
+class ZCE_STATUS_ITEM_WITHNAME 状态计数器+名字，用于配置，DUMP输出等
+******************************************************************************************/
+class ZCELIB_EXPORT ZCE_STATUS_ITEM_WITHNAME
+{
+public:
+
+    //
+    ZCE_STATUS_ITEM_WITHNAME(unsigned int ,
+                             ZCE_STATUS_STATICS_TYPE ,
+                             const char *);
+    ZCE_STATUS_ITEM_WITHNAME();
+    ~ZCE_STATUS_ITEM_WITHNAME();
+
+public:
+    //统计项目名称的长度
+    static const size_t       MAX_COUNTER_NAME_LEN = 64;
+
+public:
+
+    ZCE_STATUS_ITEM           statics_item_;
+
+    //计数器名称
+    char                      item_name_[MAX_COUNTER_NAME_LEN + 1];
+
+};
+
+
+
+//用于帮助你定义 ZCE_STATUS_ITEM_WITHNAME数组
+#ifndef DEF_ZCE_STATUS_ITEM
+#define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) ZCE_STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
+#endif
+
+/******************************************************************************************
+struct ZCE_STATUS_HEAD 状态文件的头部
+******************************************************************************************/
+
+struct ZCELIB_EXPORT ZCE_STATUS_HEAD
+{
+    //监控开始时间
+    uint32_t monitor_start_time_;
+
+    //监控数据复制的时间戳
+    uint32_t copy_time_;
+
+    //向monitor上报的时间
+    uint32_t report_monitor_time_;
+
+    //激活时间
+    uint32_t active_time_;
+};
+
+/******************************************************************************************
+使用Posix MMAP,记录保存服务器的一些计数器,状态,
+本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
+******************************************************************************************/
+class ZCELIB_EXPORT ZCE_Server_Status : public ZCE_NON_Copyable
+{
+protected:
+
+    //存放统计数据的共享内存数组，
+    typedef ZCE_LIB::shm_vector<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
+    //统计ID到数组的下标的hash map
+    typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
+    //statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
+    typedef unordered_map<unsigned int ,ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+
+public:
+
+    //统计数据的数组，用于dump输出的数据结构
+    typedef std::vector<ZCE_STATUS_ITEM_WITHNAME>     ARRAY_OF_STATUS_WITHNAME;
+
+public:
+
+    //构造函数,也给你单独使用的机会，所以不用protected
+    ZCE_Server_Status();
+    //析构函数
+    virtual ~ZCE_Server_Status();
+
+protected:
+
+    //初始化的方法,通用的底层，
+    //Param1: char* statfilename MMAP影射的状态文件名称
+    //Param2: bool restore_mmap 是否用于恢复MMAP，如果是恢复，文件必须是存在的,
+    int initialize(const char *stat_filename,
+                   bool restore_mmap,
+                   bool multi_thread);
+
+    //在sandy数据区里面，找数据项目
+    int find_insert_idx(unsigned int statics_id,
+                        unsigned int app_id,
+                        unsigned int classify_id,
+                        size_t *sandy_idx);
+
+public:
+
+    //根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
+    //Param1: char* statfilename MMAP影射的状态文件名称
+    int initialize(const char *stat_filename);
+
+    //创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
+    int initialize(const char *stat_filename,
+                   size_t num_stat_item,
+                   const ZCE_STATUS_ITEM_WITHNAME item_ary[],
+                   bool multi_thread);
+
+    //增加一些监控项目
+    void add_status_item(size_t num_stat_item,
+                         const ZCE_STATUS_ITEM_WITHNAME item_ary[]);
+
+    //初始化以后，修改是否需要多线程保护
+    void modify_multi_thread_guard(bool multi_thread);
+
+    //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
+    int increase_by_statid(unsigned int statics_id,
+                           unsigned int app_id,
+                           unsigned int classify_id,
+                           int64_t incre_value);
+
+    //不要处理classify_id的情况的自增特例化
+    inline int increase_by_statid(unsigned int statics_id,
+                                  unsigned int app_id,
+                                  int64_t incre_value);
+
+    //不要处理classify_id和app_id的增加数值情况
+    inline int increase_by_statid(unsigned int statics_id,
+                                  int64_t incre_value);
+
+    //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
+    inline int increase_once(unsigned int statics_id,
+                             unsigned int app_id,
+                             unsigned int classify_id);
+
+    //不要处理classify_id的情况的自增特例化
+    inline int increase_once(unsigned int statics_id,
+                             unsigned int app_id);
+
+    //不要处理classify_id和app_id的增加数值情况
+    inline int increase_once(unsigned int statics_id);
+
+    //绝对值修改监控统计项目
+    int set_by_statid(unsigned int statics_id,
+                      unsigned int app_id,
+                      unsigned int classify_id,
+                      uint64_t set_value);
+
+    //不要处理classify_id的情况的设置特例化
+    inline int set_by_statid(unsigned int statics_id,
+                             unsigned int app_id,
+                             uint64_t set_value);
+
+    //不要处理classify_id和app_id的设置数值情况
+    inline int set_by_statid(unsigned int statics_id,
+                             uint64_t set_value);
+
+    //根据统计ID和分类ID作为key，得到统计数值
+    uint64_t get_counter(unsigned int statics_id,
+                         unsigned int app_id,
+                         unsigned int classify_id);
+
+    //取得计数器的个数
+    size_t num_of_counter();
+
+    //获取copy_time
+    uint32_t get_copy_time();
+
+    //清理过期的数据，在你的定时器触发时调用（当然前面最好应该上报），用于将一些数据清0，
+    //理论上每5分钟调用一次就OK
+    void check_overtime(time_t now_time);
+
+    //备份计数器信息
+    void copy_stat_counter();
+
+    //由于将内部数据全部取出，用于你外部打包之类
+    void dump_all(ARRAY_OF_STATUS_WITHNAME &array_status,
+                  bool dump_copy = false);
+
+    //Dump所有的数据
+    void dump_status_info(std::ostringstream &strstream,
+                          bool dump_copy = false);
+
+    //Dump所有的数据
+    void dump_status_info(ZCE_LOG_PRIORITY log_priority,
+                          bool dump_copy = false);
+
+    //得到文件的头部信息
+    void get_stat_head(ZCE_STATUS_HEAD *stat_head );
+
+    //记录监控的上报时间
+    void report_monitor_time(uint32_t report_time = static_cast<uint32_t>(time(NULL)));
+
+    //单子的函数群，不是我不知道可以用BOOST的模板使用单子，是这样更加直接清爽，容易扩张修改一些
+    //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
+
+private:
+    //需要新增的监控项是否已经存在
+    bool is_stat_id_exist(unsigned int stat_id);
+
+    //新增监控项
+    int add_stat_id(unsigned int stat_id);
+
+public:
+
+    //得到单子实例
+    static ZCE_Server_Status *instance();
+    //单子实例赋值
+    static void instance(ZCE_Server_Status *);
+    //清理单子实例
+    static void clean_instance();
+
+protected:
+
+    //最多的监控项目ID,
+    static const size_t MAX_MONITOR_STAT_ITEM = 64 * 1024;
+
+    //五分钟的描述
+    static const time_t FIVE_MINTUE_SECONDS   = 300;
+    //一小时的秒数
+    static const time_t ONE_HOURS_SECONDS     = 3600;
+    //一天的时间
+    static const time_t ONE_DAY_SECONDS       = 86400;
+
+    //统计项目数值增加1
+    static const uint64_t INCREASE_VALUE_ONCE = 1;
+
+protected:
+
+    //多态的锁,
+    ZCE_Lock_Base            *stat_lock_;
+
+    //上一次清理的时间
+    time_t                    clear_time_;
+
+    //MMAP内存影射的数据文件
+    ZCE_ShareMem_Posix        stat_file_;
+
+    //内存文件头
+    ZCE_STATUS_HEAD          *stat_file_head_;
+
+    //mandy和sandy是原来代码中间为了区分用数组定位，hash定位两个数据区的东东，
+    //后来代码全部改为了用hansh定位，不好意思，两个小MM，怪蜀黍就是步放过你们，
+    //http://t.qq.com/angelbaby22
+
+    // 存放状态计数器的数组
+    ARRYA_OF_SHM_STATUS      *status_stat_sandy_;
+
+    //状态计数器的一份拷贝，数据放在共享内存中，我们可以用考虑用mandy读取数据，所以可以讲每个
+    ARRYA_OF_SHM_STATUS      *status_copy_mandy_;
+
+    //记录配置的的统计数据SET，用于记录配置的统计项目，也用于防止重复插入和dump 输出时有名称信息
+    STATUS_WITHNAME_MAP       conf_stat_map_;
+
+    //STAT_ID to idx索引的MAP
+    STATID_TO_INDEX_MAP       statid_to_index_;
+
+    //是否进行多线程保护
+    bool                      multi_thread_guard_;
+
+    // 是否已经初始化
+    bool                      initialized_;
+
+protected:
+
+    //单子实例
+    static ZCE_Server_Status *instance_;
+};
+
+
+//监控项目数据增加1
+int ZCE_Server_Status::increase_once(unsigned int statics_id,
+                                     unsigned int app_id,
+                                     unsigned int classify_id)
+{
+    return increase_by_statid(statics_id, app_id, classify_id, INCREASE_VALUE_ONCE);
+}
+
+//不要处理classify_id的情况的监控项目数据增加1
+int ZCE_Server_Status::increase_once(unsigned int statics_id,
+                                     unsigned int app_id)
+{
+    return increase_by_statid(statics_id, app_id, 0, INCREASE_VALUE_ONCE);
+}
+
+//不要处理classify_id和app_id的监控项目数据增加1
+int ZCE_Server_Status::increase_once(unsigned int statics_id)
+{
+    return increase_by_statid(statics_id, 0, 0, INCREASE_VALUE_ONCE);
+}
+
+
+//不要处理classify_id的情况的自增特例化
+int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
+                                          unsigned int app_id,
+                                          int64_t incre_value)
+{
+    return increase_by_statid(statics_id, app_id, 0, incre_value);
+}
+
+//不要处理classify_id和app_id的增加数值情况
+int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
+                                          int64_t incre_value)
+{
+    return increase_by_statid(statics_id, 0, 0, incre_value);
+}
+
+//不要处理classify_id的情况的设置特例化
+int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
+                                     unsigned int app_id,
+                                     uint64_t set_value)
+{
+    return set_by_statid(statics_id, app_id, 0, set_value);
+}
+
+//不要处理classify_id和app_id的设置数值情况
+int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
+                                     uint64_t set_value)
+{
+    return set_by_statid(statics_id, 0, 0, set_value);
+}
+
+#endif //_ZCE_LIB_SERVER_STATUS_H_
+
