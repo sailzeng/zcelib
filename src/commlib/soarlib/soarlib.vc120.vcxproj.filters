@@ -1,0 +1,193 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cxx;h;hpp;inc</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="makefile">
+      <Filter>Resource Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="soar_fsm_notify_taskbase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_fsm_trans_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_fsm_trans_mgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_monitor_sta.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_predefine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_service_config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_service_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_service_peer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_stat_monitor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_app_non_ctrl.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_app_notify_trans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_app_trans.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_application.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_time_provider.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_timer_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_mmappipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_error_code.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_fsm_notify_trans_mgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_fsm_notify_transbase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_frame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_sndrcv_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_sndrcv_lolo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_sndrcv_zulu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_frame_malloc.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_ogre_frame.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="soar_fsm_notify_taskbase.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_fsm_trans_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_fsm_trans_mgr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_mmapalloc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_predefine.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_server_ver_define.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_service_config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_service_info.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_service_peer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_stat_define.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_stat_monitor.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_app_main.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_app_non_ctrl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_app_notify_trans.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_app_trans.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_application.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_time_provider.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_timer_handler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_mmappipe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_frame_command.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_enum_define.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_error_code.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_fsm_notify_trans_mgr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_fsm_notify_transbase.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_frame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_sndrcv_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_sndrcv_lolo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_sndrcv_zulu.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_frame_malloc.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_ogre_frame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

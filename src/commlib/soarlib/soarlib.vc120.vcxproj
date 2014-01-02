@@ -1,0 +1,251 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>soarlib</ProjectName>
+    <ProjectGuid>{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}</ProjectGuid>
+    <RootNamespace>templelib</RootNamespace>
+    <Keyword>Win32Proj</Keyword>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <PlatformToolset>v120</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.CPP.UpgradeFromVC71.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>11.0.50727.1</_ProjectFileVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)../lib/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)../lib/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)../lib/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)../lib/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <PreBuildEvent>
+      <Command />
+    </PreBuildEvent>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(OutDir)templelib.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)templelib_d.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <PreBuildEvent>
+      <Command />
+    </PreBuildEvent>
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(OutDir)templelib.pdb</ProgramDataBaseFileName>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+      <ShowIncludes>false</ShowIncludes>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)templelib_d.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)templelib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Midl>
+      <TargetEnvironment>X64</TargetEnvironment>
+    </Midl>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <RuntimeTypeInfo>true</RuntimeTypeInfo>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
+      <WarningLevel>Level4</WarningLevel>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Lib>
+      <OutputFile>$(OutDir)templelib.lib</OutputFile>
+    </Lib>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="soar_error_code.cpp" />
+    <ClCompile Include="soar_ogre_frame.cpp" />
+    <ClCompile Include="soar_zerg_frame.cpp" />
+    <ClCompile Include="soar_fsm_notify_transbase.cpp" />
+    <ClCompile Include="soar_fsm_notify_trans_mgr.cpp" />
+    <ClCompile Include="soar_fsm_notify_taskbase.cpp" />
+    <ClCompile Include="soar_fsm_trans_base.cpp" />
+    <ClCompile Include="soar_fsm_trans_mgr.cpp" />
+    <ClCompile Include="soar_monitor_sta.cpp" />
+    <ClCompile Include="soar_predefine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="soar_service_config.cpp" />
+    <ClCompile Include="soar_service_info.cpp" />
+    <ClCompile Include="soar_service_peer.cpp" />
+    <ClCompile Include="soar_zerg_frame_malloc.cpp" />
+    <ClCompile Include="soar_zerg_sndrcv_base.cpp" />
+    <ClCompile Include="soar_zerg_sndrcv_lolo.cpp" />
+    <ClCompile Include="soar_zerg_sndrcv_zulu.cpp" />
+    <ClCompile Include="soar_stat_monitor.cpp" />
+    <ClCompile Include="soar_svrd_application.cpp" />
+    <ClCompile Include="soar_svrd_app_non_ctrl.cpp" />
+    <ClCompile Include="soar_svrd_app_notify_trans.cpp" />
+    <ClCompile Include="soar_svrd_app_trans.cpp" />
+    <ClCompile Include="soar_svrd_config.cpp" />
+    <ClCompile Include="soar_timer_handler.cpp" />
+    <ClCompile Include="soar_time_provider.cpp" />
+    <ClCompile Include="soar_zerg_mmappipe.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="soar_enum_define.h" />
+    <ClInclude Include="soar_error_code.h" />
+    <ClInclude Include="soar_frame_command.h" />
+    <ClInclude Include="soar_ogre_frame.h" />
+    <ClInclude Include="soar_zerg_frame.h" />
+    <ClInclude Include="soar_fsm_notify_transbase.h" />
+    <ClInclude Include="soar_fsm_notify_trans_mgr.h" />
+    <ClInclude Include="soar_fsm_notify_taskbase.h" />
+    <ClInclude Include="soar_fsm_trans_base.h" />
+    <ClInclude Include="soar_fsm_trans_mgr.h" />
+    <ClInclude Include="soar_mmapalloc.h" />
+    <ClInclude Include="soar_predefine.h" />
+    <ClInclude Include="soar_server_ver_define.h" />
+    <ClInclude Include="soar_service_config.h" />
+    <ClInclude Include="soar_service_info.h" />
+    <ClInclude Include="soar_service_peer.h" />
+    <ClInclude Include="soar_zerg_frame_malloc.h" />
+    <ClInclude Include="soar_zerg_sndrcv_base.h" />
+    <ClInclude Include="soar_zerg_sndrcv_lolo.h" />
+    <ClInclude Include="soar_zerg_sndrcv_zulu.h" />
+    <ClInclude Include="soar_stat_define.h" />
+    <ClInclude Include="soar_stat_monitor.h" />
+    <ClInclude Include="soar_svrd_application.h" />
+    <ClInclude Include="soar_svrd_app_main.h" />
+    <ClInclude Include="soar_svrd_app_non_ctrl.h" />
+    <ClInclude Include="soar_svrd_app_notify_trans.h" />
+    <ClInclude Include="soar_svrd_app_trans.h" />
+    <ClInclude Include="soar_svrd_config.h" />
+    <ClInclude Include="soar_timer_handler.h" />
+    <ClInclude Include="soar_time_provider.h" />
+    <ClInclude Include="soar_zerg_mmappipe.h" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
