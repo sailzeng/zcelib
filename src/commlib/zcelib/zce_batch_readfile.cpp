@@ -69,7 +69,7 @@
 //    else
 //    {
 //        ZLOG_ERROR("[framework] Batch process file read fail[%s].",batch_filename_.c_str());
-//        return TSS_RET::ERR_READ_BATCH_FILE_FAIL;
+//        return SOAR_RET::ERR_READ_BATCH_FILE_FAIL;
 //    }
 //
 //
@@ -101,7 +101,7 @@
 //            line_stream>>comm_id.comm_type_;
 //        }
 //    }
-//    return TSS_RET::TSS_RET_SUCC;
+//    return SOAR_RET::SOAR_RET_SUCC;
 //}
 //
 ////得到处理OK的UIN列表
