@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-d</TargetName>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
@@ -89,7 +89,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)</TargetName>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>

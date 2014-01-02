@@ -789,53 +789,60 @@ struct ZU64_STRUCT
 #  pragma comment(lib, "dbghelp.lib")
 #endif
 
+
+
 #if defined ZCE_WIN32
 // vc71(2003):
 #if defined(_MSC_VER) && (_MSC_VER == 1310)
-#  define ZCE_LIB_TOOLSET "win32-v71"
+#  define ZCE_PLATFORM_TOOLSET "win32-v71"
 // vc80(2005):
 #elif defined(_MSC_VER) && (_MSC_VER == 1400)
-#  define ZCE_LIB_TOOLSET "win32-v80"
+#  define ZCE_PLATFORM_TOOLSET "win32-v80"
 // vc90(VS2008):
 #elif defined(_MSC_VER) && (_MSC_VER == 1500)
-#  define ZCE_LIB_TOOLSET "win32-v90"
+#  define ZCE_PLATFORM_TOOLSET "win32-v90"
 // vc10(VS2010):
 #elif defined(_MSC_VER) && (_MSC_VER == 1600)
-#  define ZCE_LIB_TOOLSET "win32-v100"
+#  define ZCE_PLATFORM_TOOLSET "win32-v100"
 // vc11(VS2012):
 #elif defined(_MSC_VER) && (_MSC_VER == 1700)
-#  define ZCE_LIB_TOOLSET "win32-v110"
+#  define ZCE_PLATFORM_TOOLSET "win32-v110"
 #elif defined(_MSC_VER) && (_MSC_VER == 1800)
-#  define ZCE_LIB_TOOLSET "win32-v120"
+#  define ZCE_PLATFORM_TOOLSET "win32-v120"
 #endif
 #elif defined ZCE_WIN64
 // vc71(2003):
 #if defined(_MSC_VER) && (_MSC_VER == 1310)
-#  define ZCE_LIB_TOOLSET "x64-v71"
+#  define ZCE_PLATFORM_TOOLSET "x64-v71"
 // vc80(2005):
 #elif defined(_MSC_VER) && (_MSC_VER == 1400)
-#  define ZCE_LIB_TOOLSET "x64-v80"
+#  define ZCE_PLATFORM_TOOLSET "x64-v80"
 // vc90(VS2008):
 #elif defined(_MSC_VER) && (_MSC_VER == 1500)
-#  define ZCE_LIB_TOOLSET "x64-v90"
+#  define ZCE_PLATFORM_TOOLSET "x64-v90"
 // vc10(VS2010):
 #elif defined(_MSC_VER) && (_MSC_VER == 1600)
-#  define ZCE_LIB_TOOLSET "x64-v100"
+#  define ZCE_PLATFORM_TOOLSET "x64-v100"
 // vc11(VS2012):
 #elif defined(_MSC_VER) && (_MSC_VER == 1700)
-#  define ZCE_LIB_TOOLSET "x64-v110"
+#  define ZCE_PLATFORM_TOOLSET "x64-v110"
 #elif defined(_MSC_VER) && (_MSC_VER == 1800)
-#  define ZCE_LIB_TOOLSET "x64-v120"
+#  define ZCE_PLATFORM_TOOLSET "x64-v120"
 #endif
+#endif
+
+//工程内部可以统一使用ZCE_PLAT_TOOLSET_CONF这个宏，简化大家的编译工程设置
+#if defined _DEBUG || defined DEBUG
+#  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Debug"
+#else
+#  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Release"
+#endif
+
+#if !defined ZCE_LIB_LIBARY_NAME
+#define ZCE_LIB_LIBARY_NAME   "zcelib-"ZCE_PLAT_TOOLSET_CONF".lib"
 #endif
 
 //自动包含的包含连接，简化你的操作
-#if defined _DEBUG || defined DEBUG
-#  define ZCE_LIB_LIBARY_NAME "zcelib-"ZCE_LIB_TOOLSET "-d.lib"
-#else
-#  define ZCE_LIB_LIBARY_NAME "zcelib-"ZCE_LIB_TOOLSET".lib"
-#endif
-
 #pragma comment(lib, ZCE_LIB_LIBARY_NAME  )
 
 #endif
