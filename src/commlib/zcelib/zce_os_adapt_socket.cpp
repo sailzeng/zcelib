@@ -1407,23 +1407,37 @@ IANA保证这些网络号不会分配给连到Internet上的任何网络，
 如果是全0，也是自己内部ip <==== 这个是那个同学加的，这个在某种程度上是对的，因为0只会出现在本机的判定上
 */
 
+#if !defined ZCE_IS_INTERNAL
+#define ZCE_IS_INTERNAL(ip_addr)   ((ip_addr >= 0x0A000000 && ip_addr <= 0x0AFFFFFF ) ||  \
+(ip_addr >= 0xAC100000 && ip_addr <= 0xAC1FFFFF) ||  \
+(ip_addr >= 0xC0A80000 && ip_addr <= 0xC0A8FFFF) ||  \
+(ip_addr == INADDR_ANY))
+#endif 
+
 //检测一个地址是否是内网地址
 bool ZCE_OS::is_internal(const sockaddr_in *sock_addr_ipv4)
 {
     uint32_t ip_addr = ZCE_OS::get_ip_address(sock_addr_ipv4);
 
     //检查3类地址
-    if ((ip_addr >= 0x0A000000 && ip_addr <= 0x0AFFFFFF ) ||
-        (ip_addr >= 0xAC100000 && ip_addr <= 0xAC1FFFFF ) ||
-        (ip_addr >= 0xC0A80000 && ip_addr <= 0xC0A8FFFF ) ||
-        (ip_addr == INADDR_ANY)
-       )
+    if (ZCE_IS_INTERNAL(ip_addr))
     {
         return true;
     }
-
     return false;
 }
+
+bool ZCE_OS::is_internal(uint32_t ipv4_addr_val)
+{
+    //检查3类地址
+    if (ZCE_IS_INTERNAL(ipv4_addr_val))
+    {
+        return true;
+    }
+    return false;
+}
+
+
 
 //-------------------------------------------------------------------------------------
 //域名解析，转换IP地址的几个函数

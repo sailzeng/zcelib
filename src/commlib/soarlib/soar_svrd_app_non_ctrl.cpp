@@ -1,5 +1,5 @@
 #include "soar_predefine.h"
-#include "soar_frame_zerg.h"
+#include "soar_zerg_frame.h"
 #include "soar_svrd_app_non_ctrl.h"
 #include "soar_zerg_mmappipe.h"
 #include "soar_svrd_config.h"

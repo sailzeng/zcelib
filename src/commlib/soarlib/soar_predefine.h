@@ -92,6 +92,7 @@ Modification History:
 #include <zce_thread_bus_pipe.h>
 #include <zce_lock_file_lock.h>
 #include <zce_bytes_hash.h>
+#include <zce_bytes_encode.h>
 
 
 

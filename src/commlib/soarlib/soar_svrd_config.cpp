@@ -1,19 +1,3 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Fullsail Technology (Shenzhen) Company Limited.
-FileName            : soar_svrd_application.cpp
-Author              : Sailzeng
-Version             :
-Date Of Creation    : 2011年10月22日
-Description         : 将这个类和Sonicmao的
-
-Others              :
-Function List       :
-1.  ......
-Modification History:
-1.Date  :
-Author  :
-Modification  :
-******************************************************************************************/
 #include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_service_info.h"
@@ -107,7 +91,6 @@ int Comm_Svrd_Config::proc_start_arg(int argc, const char *argv[])
                 // 指定运行目录, 以服务运行时，需要指定此参数
                 ZLOG_INFO("app run dir = %s", app_run_dir_.c_str());
                 app_run_dir_ = get_opt.optarg;
-                replace_all(app_run_dir_, "\\", "/");
                 break;
             }
 

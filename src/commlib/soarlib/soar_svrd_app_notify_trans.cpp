@@ -1,6 +1,6 @@
 #include "soar_predefine.h"
 #include "soar_error_code.h"
-#include "soar_frame_malloc.h"
+#include "soar_zerg_frame_malloc.h"
 #include "soar_svrd_config.h"
 #include "soar_fsm_notify_trans_mgr.h"
 #include "soar_fsm_notify_taskbase.h"

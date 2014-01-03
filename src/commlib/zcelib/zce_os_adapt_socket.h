@@ -863,22 +863,51 @@ inline int gethostname(char *name, size_t name_len);
 
 //本来设置函数为什么要返回sockaddr *，方便直接作为参数在大量函数使用，但如果错误呢，，，，
 
-//设置一个IPV4的地址,错误返回-1，正确返回0
+
+/*!
+* @brief      
+* @return     int 错误返回-1，正确返回0
+* @param[out] sock_addr_ipv4 被设置的IPV4地址
+* @param[in]  ipv4_addr_str  地址信息字符串
+* @param[in]  ipv4_port      端口，本地序
+*/
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            const char *ipv4_addr_str = "0.0.0.0",
                            uint16_t ipv4_port = 0);
 
-//设置一个IPV4的地址,错误返回-1，正确返回0
+
+/*!
+* @brief      设置一个IPV4的地址
+* @return     int 错误返回-1，正确返回0
+* @param[out] sock_addr_ipv4 被设置的IPV4地址
+* @param[in]  ipv4_addr_val  表示IPV4的32位整数，本地序
+* @param[in]  ipv4_port      端口号，本地序
+* @note       
+*/
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            uint32_t ipv4_addr_val,
                            uint16_t ipv4_port );
 
-//设置一个IPV6的地址,错误返回-1，正确返回0
+
+/*!
+* @brief      设置一个IPV6的地址,
+* @return     int 错误返回-1， 正确返回0
+* @param[out] sock_addr_ipv6 被设置的IPV6地址
+* @param[in]  ipv6_addr_str  IPV6地址信息字符串
+* @param[in]  ipv6_port      端口号，本地序
+*/
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                             const char *ipv6_addr_str = "0:0:0:0:0:0:0:0",
                             uint16_t ipv6_port = 0 );
 
-//设置一个IPV6的地址,错误返回-1，正确返回0
+
+/*!
+* @brief      设置一个IPV6的地址,和上一个函数的区别主要在参数顺序上，注意
+* @return     int   错误返回-1，正确返回0
+* @param[out] sock_addr_ipv6 被设置的IPV6地址
+* @param[in]  ipv6_port      端口号，本地序
+* @param[in]  ipv6_addr_val  16个字节的地址信息
+*/
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                             uint16_t ipv6_port,
                             const char ipv6_addr_val[16]);
@@ -908,10 +937,19 @@ inline uint32_t get_ip_address(const sockaddr_in *sock_addr_ipv4);
 
 /*!
 * @brief      检查一个地址是否是内网地址,这个还真得扫盲一下，IPV6没有局域网这个概念。
-* @return     bool TRUE是内网地址，FALSE不是，
+* @return     bool true是内网地址，false不是，
 * @param      sock_addr_ipv4 判断的sockaddr_in
 */
 bool is_internal(const sockaddr_in *sock_addr_ipv4);
+
+
+
+/*!
+* @brief      检查一个IPV4地址（整数）是否是内网地址,
+* @return     bool ture是内网地址，false不是，
+* @param[in]  ipv4_addr_val 整数表示IPV4地址，本地序
+*/
+bool is_internal(uint32_t ipv4_addr_val);
 
 //uint32_t inet_lnaof(struct in_addr in); uint32_t inet_netof(struct in_addr in);
 //这两个函数用于得到各类地址的网络ID和主机ID，我觉得基本没人会用这个函数吧。算了。

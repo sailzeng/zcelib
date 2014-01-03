@@ -451,10 +451,10 @@ inline unsigned int Transaction_Base::get_req_ipaddress() const
     return req_ip_address_;
 }
 
-//用于检查请求的IP地址是否是内部IP地址
+//用于检查请求的IP地址是否是内部IP地址,是返回0，不是返回非0
 inline int Transaction_Base::check_request_internal() const
 {
-    return ZCE_O(req_ip_address_);
+    return (ZCE_OS::is_internal(req_ip_address_))?0:-1;
 }
 
 //请求发送消息的Service,

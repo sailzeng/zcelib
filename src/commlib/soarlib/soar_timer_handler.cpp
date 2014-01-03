@@ -12,7 +12,7 @@
 #include "soar_stat_monitor.h"
 #include "soar_time_provider.h"
 #include "soar_svrd_application.h"
-#include "soar_cfgsvr_sdk.h"
+
 
 int Comm_Timer_Handler::handle_timeout(const ZCE_Time_Value &now_time,
                                        const void *act /*= 0*/)
@@ -33,17 +33,7 @@ int Comm_Timer_Handler::handle_timeout(const ZCE_Time_Value &now_time,
 
 void Comm_Timer_Handler::notify_reload()
 {
-    if (CfgSvrSdk::instance()->is_need_update_file())
-    {
-        //有配置更新
-        ZLOG_INFO("Comm_Timer_Handler::handle_timeout, config update");
 
-        //重新加载配置
-        Comm_Svrd_Appliction::instance()->set_reload(true);
-
-        //清除更新标志位
-        CfgSvrSdk::instance()->clear_file_update_flags();
-    }
 }
 
 // 更新时间提供者的时间
@@ -85,7 +75,7 @@ Comm_Timer_Handler::report_status()
     if (svrd_app_ != NULL)
     {
         // 获取服务器状态信息
-        int ret = svrd_app_->watch_dog_status();
+        int ret = svrd_app_->watch_dog_status(false);
 
         if (ret != 0)
         {

@@ -40,8 +40,7 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                   size_t size_recv_pipe,
                                   size_t size_send_pipe,
                                   size_t max_frame_len,
-                                  bool if_restore,
-                                  bool if_check_pthread)
+                                  bool if_restore)
 {
 
     monitor_ = Comm_Stat_Monitor::instance();
@@ -59,62 +58,62 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                           if_restore);
 }
 
-int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const conf_zerg::ZERG_CONFIG &zerg_config)
-{
-    int ret = 0;
-    bus_head_.size_of_pipe_[RECV_PIPE_ID] = zerg_config.soar_cfg.recv_pipe_len;
-    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
+//int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const conf_zerg::ZERG_CONFIG &zerg_config)
+//{
+//    int ret = 0;
+//    bus_head_.size_of_pipe_[RECV_PIPE_ID] = zerg_config.soar_cfg.recv_pipe_len;
+//    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
+//
+//    bus_head_.size_of_pipe_[SEND_PIPE_ID] = zerg_config.soar_cfg.send_pipe_len;
+//    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
+//
+//    //读取自己的配置
+//    unsigned short svrtype = 0;
+//    svrtype = zerg_config.self_cfg.self_svr_info.svr_type;
+//    TESTCONFIG((ret == 0 && svrtype != 0), "SELFCFG|SELFSVRTYPE key error.");
+//
+//    unsigned int svrid = 0;
+//    svrid = zerg_config.self_cfg.self_svr_info.svr_id;
+//    TESTCONFIG((ret == 0 && svrid != 0), "SELFCFG|SELFSVRID key error.");
+//
+//    zerg_svr_info_.set_serviceid(svrtype, svrid);
+//
+//
+//    return SOAR_RET::SOAR_RET_SUCC;
+//}
 
-    bus_head_.size_of_pipe_[SEND_PIPE_ID] = zerg_config.soar_cfg.send_pipe_len;
-    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
-
-    //读取自己的配置
-    unsigned short svrtype = 0;
-    svrtype = zerg_config.self_cfg.self_svr_info.svr_type;
-    TESTCONFIG((ret == 0 && svrtype != 0), "SELFCFG|SELFSVRTYPE key error.");
-
-    unsigned int svrid = 0;
-    svrid = zerg_config.self_cfg.self_svr_info.svr_id;
-    TESTCONFIG((ret == 0 && svrid != 0), "SELFCFG|SELFSVRID key error.");
-
-    zerg_svr_info_.set_serviceid(svrtype, svrid);
-
-
-    return SOAR_RET::SOAR_RET_SUCC;
-}
-
-int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const ZCE_INI_PropertyTree &zerglingcfg)
-{
-
-    int ret = 0;
-
-    uint32_t tmp_value = 0;
-    ret = zerglingcfg.get_uint32_value("COMMCFG", "RECVPIPELEN", tmp_value);
-    bus_head_.size_of_pipe_[RECV_PIPE_ID] = tmp_value;
-    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
-
-    ret = zerglingcfg.get_uint32_value("COMMCFG", "SENDPIPELEN", tmp_value);
-    bus_head_.size_of_pipe_[SEND_PIPE_ID] = tmp_value;
-    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
-
-    uint32_t tmpuint = 0;
-
-    //读取自己的配置
-    unsigned short svrtype = 0;
-
-    ret = zerglingcfg.get_uint32_value("SELFCFG", "SELFSVRTYPE", tmpuint);
-    svrtype = static_cast<unsigned short>(tmpuint);
-    TESTCONFIG((ret == 0 && svrtype != 0), "SELFCFG|SELFSVRTYPE key error.");
-
-    unsigned int svrid = 0;
-    ret = zerglingcfg.get_uint32_value("SELFCFG", "SELFSVRID", tmpuint);
-    svrid = static_cast<unsigned int>(tmpuint);
-    TESTCONFIG((ret == 0 && svrid != 0), "SELFCFG|SELFSVRID key error.");
-
-    zerg_svr_info_.set_serviceid(svrtype, svrid);
-
-    return SOAR_RET::SOAR_RET_SUCC;
-}
+//int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const ZCE_INI_PropertyTree &zerglingcfg)
+//{
+//
+//    int ret = 0;
+//
+//    uint32_t tmp_value = 0;
+//    ret = zerglingcfg.get_uint32_value("COMMCFG", "RECVPIPELEN", tmp_value);
+//    bus_head_.size_of_pipe_[RECV_PIPE_ID] = tmp_value;
+//    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
+//
+//    ret = zerglingcfg.get_uint32_value("COMMCFG", "SENDPIPELEN", tmp_value);
+//    bus_head_.size_of_pipe_[SEND_PIPE_ID] = tmp_value;
+//    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
+//
+//    uint32_t tmpuint = 0;
+//
+//    //读取自己的配置
+//    unsigned short svrtype = 0;
+//
+//    ret = zerglingcfg.get_uint32_value("SELFCFG", "SELFSVRTYPE", tmpuint);
+//    svrtype = static_cast<unsigned short>(tmpuint);
+//    TESTCONFIG((ret == 0 && svrtype != 0), "SELFCFG|SELFSVRTYPE key error.");
+//
+//    unsigned int svrid = 0;
+//    ret = zerglingcfg.get_uint32_value("SELFCFG", "SELFSVRID", tmpuint);
+//    svrid = static_cast<unsigned int>(tmpuint);
+//    TESTCONFIG((ret == 0 && svrid != 0), "SELFCFG|SELFSVRID key error.");
+//
+//    zerg_svr_info_.set_serviceid(svrtype, svrid);
+//
+//    return SOAR_RET::SOAR_RET_SUCC;
+//}
 
 //通讯服务器初始化内存管道
 int Zerg_MMAP_BusPipe::init_after_getcfg(size_t max_frame_len,
@@ -124,8 +123,7 @@ int Zerg_MMAP_BusPipe::init_after_getcfg(size_t max_frame_len,
                       bus_head_.size_of_pipe_[RECV_PIPE_ID],
                       bus_head_.size_of_pipe_[SEND_PIPE_ID],
                       max_frame_len,
-                      if_restore,
-                      if_check_pthrad_);
+                      if_restore);
 }
 
 //根据SVR INFO得到MMAP文件名称

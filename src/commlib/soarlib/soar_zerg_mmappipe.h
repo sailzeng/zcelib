@@ -48,8 +48,7 @@ public:
                    size_t size_recv_pipe,
                    size_t size_send_pipe,
                    size_t max_frame_len,
-                   bool if_restore,
-                   bool if_check_pthread);
+                   bool if_restore);
 
     //读取配置,初始化部分参数,
     //int getpara_from_zergcfg(const ZCE_INI_PropertyTree &zerglingcfg);

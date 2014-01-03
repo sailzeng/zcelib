@@ -22,9 +22,8 @@
 #include "soar_svrd_config.h"
 #include "soar_stat_define.h"
 #include "soar_stat_monitor.h"
-#include "soar_cfgsvr_sdk.h"
 #include "soar_timer_handler.h"
-#include "soar_bill_record.h"
+
 
 Comm_Svrd_Appliction *Comm_Svrd_Appliction::base_instance_ = NULL;
 
@@ -155,18 +154,18 @@ Comm_Svrd_Appliction::init_instance()
     }
 
     // cfgsdk拉取配置
-    CfgSvrSdk *cfgsvr_sdk = CfgSvrSdk::instance();
-    ret = cfgsvr_sdk->init();
+    ///*CfgSvrSdk *cfgsvr_sdk = CfgSvrSdk::instance();
+    //ret = cfgsvr_sdk->init();*/
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("[framework] cfgsvrsdk init fail. ret=%d", ret);
-        return ret;
-    }
+    //if (ret != SOAR_RET::SOAR_RET_SUCC)
+    //{
+    //    ZLOG_ERROR("[framework] cfgsvrsdk init fail. ret=%d", ret);
+    //    return ret;
+    //}
 
-    //启动配置更新线程
-    CfgSvrSdk::instance()->start_task();
-    ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
+    ////启动配置更新线程
+    //CfgSvrSdk::instance()->start_task();
+    //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
 
     // 加载框架配置
     Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
@@ -920,30 +919,18 @@ int
 Comm_Svrd_Appliction::init_log()
 {
     Comm_Svrd_Config *config = Comm_Svrd_Config::instance();
-    int ret = g_bill.init("bill",
-                          config->framework_config_.log_info_.max_bill_file_num_,
-                          (ZCE_LOGFILE_DEVIDE)config->framework_config_.log_info_.bill_div_type_);
-
+    int ret = 0;
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("[framework] init bill fail. ret=%d", ret);
         return ret;
     }
-    g_bill.set_bill_filter(config->framework_config_.log_info_.bill_filter_type_count_,
-        config->framework_config_.log_info_.bill_filter_type_list_);
-
-    ret = g_stat.init("stat",
-                      config->framework_config_.log_info_.max_bill_file_num_,
-                      (ZCE_LOGFILE_DEVIDE)config->framework_config_.log_info_.bill_div_type_);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("[framework] init stat fail. ret=%d", ret);
         return ret;
     }
-
-    g_bill.set_logway(config->framework_config_.log_info_.bill_output_);
-    g_stat.set_logway(config->framework_config_.log_info_.bill_output_);
 
     ZLOG_DEBUG("log instance finalize .");
     //关闭原来的日志输出方法

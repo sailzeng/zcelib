@@ -2,7 +2,7 @@
 #include "soar_zerg_frame.h"
 #include "soar_fsm_trans_base.h"
 #include "soar_service_info.h"
-#include "soar_frame_malloc.h"
+#include "soar_zerg_frame_malloc.h"
 #include "soar_fsm_trans_mgr.h"
 
 /******************************************************************************************
@@ -159,8 +159,8 @@ void Transaction_Manager::initialize(size_t  szregtrans,
     ZCE_ASSERT(timer_queue != NULL);
     ZCE_ASSERT(zerg_mmap_pipe != NULL);
 
-    regtrans_pool_map_.resize(szregtrans + 128);
-    transc_map_.resize(sztransmap + 1024);
+    regtrans_pool_map_.rehash(szregtrans + 128);
+    transc_map_.rehash(sztransmap + 1024);
     max_trans_ = sztransmap;
     self_services_id_ = selfsvr;
     timer_queue_ = timer_queue;

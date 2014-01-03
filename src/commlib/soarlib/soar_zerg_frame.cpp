@@ -328,9 +328,10 @@ void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 {
     //
     char tmpstr[MAX_LEN_OF_APPFRAME*2+1];
-    unsigned int datalen = frame_length_ - LEN_OF_APPFRAME_HEAD;
+    size_t datalen = frame_length_ - LEN_OF_APPFRAME_HEAD;
+    size_t out_len = MAX_LEN_OF_APPFRAME * 2 + 1;
 
-    hex_to_str((unsigned char *)frame_appdata_, datalen, tmpstr, sizeof(tmpstr));
+    ZCE_LIB::base16_encode((unsigned char *)frame_appdata_, datalen, (unsigned char *)tmpstr, &out_len);
     
     strstream <<" data:" <<  tmpstr << std::endl;
     
