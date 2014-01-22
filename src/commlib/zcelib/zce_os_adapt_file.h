@@ -151,32 +151,7 @@ int access(const char *pathname, int mode);
 */
 int read_file_data(const char *filename, char *buff, size_t buf_len, size_t *read_len);
 
-///用于文件处理过程的自动释放
-class FileClose_Assist
-{
-public:
-    ///构造函得到文件句柄
-    FileClose_Assist(const ZCE_HANDLE to_close_file):
-        to_close_file_(to_close_file)
-    {
-    }
 
-    //利用析构函数关闭文件
-    ~FileClose_Assist()
-    {
-        if (to_close_file_ != ZCE_INVALID_HANDLE)
-        {
-            ZCE_OS::close(to_close_file_);
-            to_close_file_ = ZCE_INVALID_HANDLE;
-        }
-    }
-
-protected:
-
-    ///自动处理的文件句柄
-    ZCE_HANDLE    to_close_file_;
-
-};
 
 };
 

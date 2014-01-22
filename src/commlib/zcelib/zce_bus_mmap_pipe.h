@@ -49,7 +49,17 @@ public:
 
 public:
 
-    //初始化，根据参数，
+
+    /*!
+    * @brief      初始化，根据参数，
+    * @return     int
+    * @param      bus_mmap_name
+    * @param      number_of_pipe  管道的数量
+    * @param      size_of_pipe    管道的大小
+    * @param      max_frame_len
+    * @param      if_restore      是否进行恢复
+    * @note       
+    */
     int initialize(const char *bus_mmap_name,
                    size_t number_of_pipe,
                    size_t size_of_pipe[],

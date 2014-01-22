@@ -171,6 +171,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce_batch_readfile.h" />
+    <ClInclude Include="zce_boost_close_assist.h" />
     <ClInclude Include="zce_boost_lord_rings.h" />
     <ClInclude Include="zce_boost_non_copyable.h" />
     <ClInclude Include="zce_boost_random.h" />
@@ -293,6 +294,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_batch_readfile.cpp" />
+    <ClCompile Include="zce_boost_close_assist.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />
     <ClCompile Include="zce_bus_mmap_pipe.cpp" />
     <ClCompile Include="zce_bus_one_way.cpp" />

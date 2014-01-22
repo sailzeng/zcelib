@@ -53,22 +53,7 @@ ZCE_Bus_MMAPPipe::~ZCE_Bus_MMAPPipe()
 
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月23日
-Function        : ZCE_Bus_MMAPPipe::initialize
-Return          : int
-Parameter List  :
-  Param1: const char *bus_mmap_name
-  Param2: size_t number_of_pipe 管道的数量
-  Param3: size_t size_of_pipe   管道的大小
-  Param3: size_t max_frame_len
-  Param5: bool if_restore 是否进行恢复
-Description     : 初始化
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//初始化
 int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
                                  size_t number_of_pipe,
                                  size_t size_of_pipe[],
