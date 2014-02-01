@@ -1,74 +1,36 @@
-# 注意！:
-# 1. 在你写自己项目的Makefile之前，为了更好的理解Makefile框架，你应该先读读'common.mk'
+#SAILLIB_ROOT必现提前定义，
+#所有的工程下面的代码，可以使用相同的编译选项和方法，
+#所有的预定义，编译方法，编译参数在src/make/makefile.define 
+# src/make/makefile.linux src/make/makefile.rule 3个文件中都已经进行了
+#预定义，你可以直接使用。
+#如果你没有特殊需求，你就只用打开关闭下面定义就可以了。
 
-# 0表示是发行版，1表示是调试版
-DEBUG := 1
+#你要定义输出文件,和PRGNAME的名称这两个变量
+#PRGNAME表示你的程序名称，一般就是你的目录名称，当然希望目录名称不要重复，
+#OUTFILE,最总输出的文件名称，为啥要定义这个呢，最后删除的时候可以统一
+PRGNAME = soarlib
 
-# 首先设置PROJECT_DIR, 此路径应该设置成绝对路径，你要做的就是数..的个数。
-# 项目的路径应该是import和src所在的目录。
-PROJECT_DIR := $(shell (cd ../../../; pwd))
+#如果你要编译静态库 staticlib
+compile_object = staticlib
+#如果你要编译动态库
+#compile_object = dynamiclib
+#如果你要编译可执行性程序
+#compile_object = executeprg
 
-###############################################################################
-# -- 注意: common.mk包含有Makefile所需要的功能的定义
-include $(PROJECT_DIR)/src/build/linux/common.mk
-###############################################################################
+#如果你使用预定头文件,请定义PREH_FILE,比如下面这样
+#对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
+#如果你不适用预定头文件，可以屏蔽下面这个定义
+PREH_FILE = ./zce_predefine.h
 
-# !!-- 你应该在下面添加你自己项目的设置 --!!
-# 注意！：
-# 1. 必须使用'+=', 不允许使用'='
-# 2. 如果没有就留空。例子： TDR_META_DIRS +=
+#DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
+#如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
+#DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib  
 
-# 添加源代码所在的目录, 所有在源代码中的c/cpp文件都会被编译
-# 默认当前目录下的代码会被自动添加
-# 注意：
-# 1. 必须使用绝对路径
-# 2. 必须使用'+=', 不允许使用'='
-SRCS_DIRS +=
+#这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
+include $(ZCELIB_ROOT)/src/make/makefile.define
 
-# 设置tdr配置描述文件路径
-# 默认会将和Makefile同一个目录下的xml都认为是tdr配置描述文件
-# 注意：
-# 1. 必须使用绝对路径
-# 2. 必须使用'+=', 不允许使用'='
-TDR_META_DIRS +=
+#如果你想改变Mafile的规则，请在这个地方加入你自己的定义.
 
-# 设置tdr协议描述文件路径
-# 注意：
-# 1. 必须使用绝对路径
-# 2. 必须使用'+=', 不允许使用'='
-#PROTOCOL_DIRS += ${PROTO_DIR}
+#这个定义其他所有的规则,还是你自己看吧
+include $(ZCELIB_ROOT)/src/make/makefile.rule
 
-# 预编译头文件
-PREDEFINE_HEADER = soar_predefine.h
-
-# 设置你的项目所依赖的库
-# 注意：
-# 1. 必须使用'+=', 不允许使用'='
-DEP_LIBS += zenlib
-DEP_LIBS += vas_key
-DEP_LIBS += soar_proto
-DEP_LIBS += tencrypt
-
-# 添加编译所需要的额外编译选项
-# 注意：
-# 1. 必须使用'+=', 不允许使用'='
-CXXFLAGS +=
-
-# 添加链接所需要的额外链接选项
-# 注意：
-# 1. 必须使用'+=', 不允许使用'='
-LDFLAGS +=
-
-# 在build之前运行， 没有就留空
-PREBUILD :=
-
-# 在build之后运行， 没有就留空
-POSTBUILD :=
-
-# 静态库的短名字，最终的二进制的文件名为lib$(LIB_SHORTNAME).a
-LIB_SHORTNAME := framework
-
-# 包含生成静态库的Makefile框架
-include $(PROJECT_DIR)/src/build/linux/static_library.mk
-
-# vim: set ft=make ff=unix noexpandtab:
