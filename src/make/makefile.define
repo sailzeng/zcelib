@@ -49,9 +49,9 @@ LIB_DEV_OUTER          :=  $(LIB_MYSQL)
 
 #===================================================================================================================
 
-#ZENLIB 
-INC_ZENLIB              = -I$(PATH_SRC)/commlib/zenlib
-LIB_ZENLIB              = -L$(PATH_LIB) -lzenlib
+#ZCELIB 
+INC_ZCELIB              = -I$(PATH_SRC)/commlib/zcelib
+LIB_ZCELIB              = -L$(PATH_LIB) -lzcelib
 
 # 内部库的环境
 INC_DEV_INNER          :=  $(INC_ZENLIB) 

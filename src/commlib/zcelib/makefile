@@ -1,19 +1,9 @@
-#============================================================================================================================
-#Author : Sail (ZENGXING) 
-#2009 06 16 纪念1888年的今天《國際歌》誕生。 今天，接近完美的Makefile诞生了.
-#编译COMMLIB库,定义MAKE规则,
-#
-#你无需再修改这个makefile,把.c,.cpp.h文件摔在目录下就可以了.依赖关系我会自己处理,
-#这个Makefile已经对.h文件的依赖做了检查,是一个很酷的Makefile，你可以崇拜我.
-#其实Makefile对于我，一致是一个旁门左道.我每次用改都会很痛苦,但是我希望证明的一点是，别人能做到的，我也可以.
-#也许每一次使用都是一次进步，哈哈.
-#所以鸣谢三篇Makefile文章的作者《GNU Make 指南》《跟我一起写 Makefile》《GNUMake 手册》,也像大叔表示敬意Richard Stallman,Roland McGrath
-#
-#另外，我没有使用GNUMake的默认依赖关系，我实在不喜欢那种方式，虽然ACE也用了这种关系,(或者说我还没有搞懂)
-#
-#Richard Stallman说：软件就像性，免费的比较好.
-#============================================================================================================================
-
+#SAILLIB_ROOT必现提前定义，
+#所有的工程下面的代码，可以使用相同的编译选项和方法，
+#所有的预定义，编译方法，编译参数在src/make/makefile.define 
+# src/make/makefile.linux src/make/makefile.rule 3个文件中都已经进行了
+#预定义，你可以直接使用。
+#如果你没有特殊需求，你就只用打开关闭下面定义就可以了。
 
 #你要定义输出文件,和PRGNAME的名称这两个变量
 #PRGNAME表示你的程序名称，一般就是你的目录名称，当然希望目录名称不要重复，
@@ -34,13 +24,13 @@ PREH_FILE = ./zce_predefine.h
 
 #DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
 #如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
-#DEPENDS_DIR := $(SAILLIB_ROOT)/src/commlib/zcelib  
+#DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib  
 
 #这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
-include $(SAILLIB_ROOT)/src/make/makefile.define
+include $(ZCELIB_ROOT)/src/make/makefile.define
 
 #如果你想改变Mafile的规则，请在这个地方加入你自己的定义.
 
 #这个定义其他所有的规则,还是你自己看吧
-include $(SAILLIB_ROOT)/src/make/makefile.rule
+include $(ZCELIB_ROOT)/src/make/makefile.rule
 
