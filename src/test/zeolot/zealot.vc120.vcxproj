@@ -206,6 +206,9 @@
     <ClInclude Include="zealot_predefine.h" />
     <ClInclude Include="zealot_test_function.h" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="makefile" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
