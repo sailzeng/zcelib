@@ -59,12 +59,16 @@ int ZCE_OS::makecontext(ucontext_t * uctt,
     return 0;
 #elif defined ZCE_OS_LINUX
     //只使用一个参数，不允许使用变参，Windwos不支持
-    const int ONLY_ONE_ARG_COUNT = 1;
+    const int ONLY_TWO_ARG_COUNT = 2;
 
     uctt->uc_stack.ss_sp = new char [slack_size];
     uctt->uc_stack.ss_size = slack_size;
 
-    return ::makecontext(uctt, fun_ptr, ONLY_ONE_ARG_COUNT, left_para, right_para);
+    return ::makecontext(uctt, 
+        (void(*)(void)) fun_ptr,
+        ONLY_TWO_ARG_COUNT,
+        left_para,
+        right_para);
 
 #endif
 }
