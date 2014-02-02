@@ -64,12 +64,12 @@ int ZCE_OS::makecontext(ucontext_t * uctt,
     uctt->uc_stack.ss_sp = new char [slack_size];
     uctt->uc_stack.ss_size = slack_size;
 
-    return ::makecontext(uctt, 
+    ::makecontext(uctt, 
         (void(*)(void)) fun_ptr,
         ONLY_TWO_ARG_COUNT,
         left_para,
         right_para);
-
+    return 0;
 #endif
 }
 
@@ -81,7 +81,7 @@ void ZCE_OS::deletecontext(ucontext_t *uctt)
 #elif defined ZCE_OS_LINUX
 
     //ÊÍ·ÅZCE_OS::makecontextÉêÇëµÄ¿Õ¼ä
-    delete [] uctt.uc_stack.ss_sp ;
+    delete [] uctt->uc_stack.ss_sp ;
     uctt->uc_stack.ss_sp = NULL;
     uctt->uc_stack.ss_size = 0;
 #endif
