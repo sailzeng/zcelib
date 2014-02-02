@@ -194,6 +194,7 @@
 #include <netdb.h>
 #include <pthread.h>
 #include <iconv.h>
+#include <ucontext.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
 #include <sys/sysinfo.h>
