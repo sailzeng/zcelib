@@ -61,8 +61,8 @@ int ZCE_OS::makecontext(ucontext_t * uctt,
     //只使用一个参数，不允许使用变参，Windwos不支持
     const int ONLY_ONE_ARG_COUNT = 1;
 
-    uctt.uc_stack.ss_sp = new char [slack_size];
-    uctt.uc_stack.ss_size = slack_size;
+    uctt->uc_stack.ss_sp = new char [slack_size];
+    uctt->uc_stack.ss_size = slack_size;
 
     return ::makecontext(uctt, fun_ptr, ONLY_ONE_ARG_COUNT, left_para, right_para);
 
@@ -78,8 +78,8 @@ void ZCE_OS::deletecontext(ucontext_t *uctt)
 
     //释放ZCE_OS::makecontext申请的空间
     delete [] uctt.uc_stack.ss_sp ;
-    uctt.uc_stack.ss_sp = NULL;
-    uctt.uc_stack.ss_size = 0;
+    uctt->uc_stack.ss_sp = NULL;
+    uctt->uc_stack.ss_size = 0;
 #endif
 }
 
@@ -113,7 +113,7 @@ int ZCE_OS::getcontext(ucontext_t *uctt)
    
 
 #elif defined ZCE_OS_LINUX
-    return ::getcontext(ucontext_t *uctt);
+    return ::getcontext(uctt);
 #endif 
 }
 
@@ -125,7 +125,7 @@ int ZCE_OS::setcontext(const ucontext_t *uctt)
     ::SwitchToFiber(*uctt);
     return 0;
 #elif defined ZCE_OS_LINUX
-    return ::setcontext(ucontext_t *ucp);
+    return ::setcontext(uctt);
 #endif
 }
 
