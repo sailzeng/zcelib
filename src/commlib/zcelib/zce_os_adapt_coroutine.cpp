@@ -81,7 +81,7 @@ void ZCE_OS::deletecontext(ucontext_t *uctt)
 #elif defined ZCE_OS_LINUX
 
     //ÊÍ·ÅZCE_OS::makecontextÉêÇëµÄ¿Õ¼ä
-    delete [] uctt->uc_stack.ss_sp ;
+    delete [] (char *) uctt->uc_stack.ss_sp ;
     uctt->uc_stack.ss_sp = NULL;
     uctt->uc_stack.ss_size = 0;
 #endif
