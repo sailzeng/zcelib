@@ -40,7 +40,7 @@ ZCE_Mysql_STMT_Command::~ZCE_Mysql_STMT_Command()
     {
         int tmpret = mysql_stmt_free_result(mysql_stmt_);
         tmpret = mysql_stmt_close(mysql_stmt_);
-
+        ZCE_UNUSED_ARG(tmpret);
     }
 }
 
