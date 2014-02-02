@@ -1,4 +1,5 @@
 # Compiled Object files
+obj
 *.slo
 *.lo
 *.o
@@ -33,3 +34,6 @@
 *.tlog
 *.pch
 *.ipch
+
+*.gch
+*~

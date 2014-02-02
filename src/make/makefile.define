@@ -33,12 +33,12 @@ include $(ZCELIB_ROOT)/src/make/makefile.linux
 #===================================================================================================================
 
 #MYSQL 
-INC_MYSQL               = -I/usr/include/mysql/
+INC_MYSQL               = -I/usr/local/mysql/include/
 ifeq ($(OS_BITS),32)
-LIB_MYSQL               = -L/usr/lib/mysql/ -lmysqlclient_r 
+LIB_MYSQL               = -L/usr/local/mysql/lib/ -lmysqlclient_r 
 endif
 ifeq ($(OS_BITS),64)
-LIB_MYSQL               = -L/usr/lib64/mysql/ -lmysqlclient_r 
+LIB_MYSQL               = -L/usr/local/mysql/lib -lmysqlclient_r 
 endif
 
 
