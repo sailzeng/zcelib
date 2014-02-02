@@ -855,7 +855,7 @@ bool ZCE_INI_Cfgfile::write_privateprofile_section(
 
     //8*1024,1行的最大值
     const size_t LINE_BUFFER_LEN = 8192;
-    char choneline[LINE_BUFFER_LEN + 1], line[LINE_BUFFER_LEN + 1];
+    char choneline[LINE_BUFFER_LEN + 1], line[LINE_BUFFER_LEN + 1],*read_ret =NULL;
 
     //新文件保存数据区
     std::vector<std::string> strarytmp;
@@ -874,7 +874,11 @@ bool ZCE_INI_Cfgfile::write_privateprofile_section(
             strarytmp.push_back(line);
         }
 
-        fgets(choneline, LINE_BUFFER_LEN, pfile);
+        read_ret = fgets(choneline, LINE_BUFFER_LEN, pfile);
+        if (NULL == read_ret)
+        {
+            return false;
+        }
         memmove(line, choneline, strlen(choneline) + 1);
         //整理
         ZCE_OS::strtrim(choneline);
@@ -918,7 +922,11 @@ bool ZCE_INI_Cfgfile::write_privateprofile_section(
 
         while (!feof(pfile))
         {
-            fgets(line, 8192, pfile);
+            read_ret = fgets(line, LINE_BUFFER_LEN, pfile);
+            if ( NULL == read_ret )
+            {
+                return false;
+            }
             std::string strtmp(line);
             strarytmp.push_back(line);
         }
