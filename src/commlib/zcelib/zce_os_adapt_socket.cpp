@@ -944,10 +944,10 @@ ssize_t ZCE_OS::recvfrom_timeout2 (ZCE_SOCKET handle,
                                    ZCE_Time_Value &timeout_tv,
                                    int flags)
 {
-    int ret = 0;
+    
     //虽然你做了一样的外层封装，但是由于内部实现不一样，你还是要吐血。
 #if defined (ZCE_OS_WINDOWS)
-
+    int ret = 0;
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
     ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
