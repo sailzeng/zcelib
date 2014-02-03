@@ -351,7 +351,7 @@ int ZCE_Timer_Queue::get_first_timeout(ZCE_Time_Value *first_timeout)
     int time_node_id = INVALID_TIMER_ID;
     ret = get_frist_nodeid(time_node_id);
 
-    if (INVALID_TIMER_ID == time_node_id)
+    if (INVALID_TIMER_ID == time_node_id || -1 == ret )
     {
         return -1;
     }
