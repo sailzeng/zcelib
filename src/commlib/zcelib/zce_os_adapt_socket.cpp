@@ -944,18 +944,23 @@ ssize_t ZCE_OS::recvfrom_timeout2 (ZCE_SOCKET handle,
                                    ZCE_Time_Value &timeout_tv,
                                    int flags)
 {
-    
+    int ret = 0;
     //虽然你做了一样的外层封装，但是由于内部实现不一样，你还是要吐血。
 #if defined (ZCE_OS_WINDOWS)
-    int ret = 0;
+    
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
     ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
 #elif defined (ZCE_OS_LINUX)
     timeval sockopt_tv = timeout_tv;
     ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
-
 #endif
+    
+    //按照socket类似函数的封装，返回-1标识失败。
+    if (0 != ret)
+    {
+        return -1;
+    }
 
     //使用非阻塞端口进行接收
     ssize_t recv_result = ZCE_OS::recvfrom (handle,
