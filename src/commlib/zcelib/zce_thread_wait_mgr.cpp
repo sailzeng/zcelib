@@ -63,7 +63,7 @@ void ZCE_Thread_Wait_Manager::wait_group(int group_id)
             MANAGE_WAIT_THREAD_LIST::iterator del_iter = iter_temp;
             ++iter_temp;
 
-            wait_thread_list_.erase(iter_temp);
+            wait_thread_list_.erase(del_iter);
         }
         else
         {
