@@ -34,8 +34,10 @@ typedef  void * ucontext_t;
 
 #endif 
 
-
-typedef   void(*ZCE_COROUTINE_FUN_PTR) (void *left_para,void *right_para);
+//
+typedef   void(*ZCE_COROUTINE_TWOPARA) (void *left_para,void *right_para);
+//
+typedef   void(*ZCE_COROUTINE_NONPARA) (void);
 
 
 namespace ZCE_OS
@@ -43,25 +45,54 @@ namespace ZCE_OS
 
 
 /*!
-* @brief      非标准函数，和LINUX下的makecontext类似，但第二个参数是堆栈大小，
-*             函数指针标识的函数只允许使用2个参数，不能和LINUX一样使用变参
-*             LINUX原生的makecontext 的ucct 使用前要初始化堆指针和长度，
-*             我的实现内部会自动分配一个堆数据，作为ucct的堆栈，（所以你不用自己分配） 
-*             所以必须调用deletecontext（WINDOWS下这个参数在Fibers有用）
-*             这样做的主要原因是兼容Windows 的Fibers实现。
+* @brief      非标准函数，和LINUX下的makecontext类似，但区别也不少，这样做的主要原
+*             因是兼容Windows 的Fibers实现。区别如下：
+*             1.函数指针标识的函数只允许使用2个参数，不能和LINUX一样使用变参
+*             2.LINUX原生的::makecontext的ucontext_t参数要先用::getcontext，
+*             获取的，  但使用此函数不用，内部集成了，
+*             3.第二个参数是堆栈大小，我会根据你的指定分配堆空间，作为你的COROUTINE
+*             的栈，而LINUX原生的makecontext 的ucontext_t参数使用前要初始化堆指
+*             针和长度，
+*             4.结束后，必须调用deletecontext清理ucontext_t，deletecontext在
+*             WINDOWS下调用DeleteFiber函数，在Linux负责清理ucontext_t里面的栈
+*             指针（从堆上分配的空间）
+*             5.LINUX原生的::makecontext没有返回值，而此封装有，因为Windows下我
+*             们用了CreateFiberEx，Linux下我们内部调用了::getcontext，这些函数
+*             都可能失败
+*             6.LINUX的::makecontext可以使用变参，这个函数没有考虑参数，当然这个变
+*             也是有风险，请看下个函数的说明
+* @return     int  返回0标识成功，注意区别问题，上面有介绍
+* @param      ucct ucontext_t，CONTEXT句柄，
+* @param      slack_size 栈大小
+* @param      nopara_fun 函数指针，函数不接受参数。
+* @note       
+*/
+int makecontext(ucontext_t *ucct,
+    size_t slack_size,
+    ZCE_COROUTINE_NONPARA nopara_fun);
+
+/*!
+* @brief      非标准函数，特点和前面函数一样，请参考他的说明
+*             区别在于函数指针标识的函数只允许使用2个参数，而上个函数的函数指针的函数没
+*             有参数，(Linux的实现支持变参，Windows支持一个指针参数)，
+*             但其实使用参数是有移植风险的，相见下面两个文档的说明，
+*             http://en.wikipedia.org/wiki/Setcontext   
+*             http://pubs.opengroup.org/onlinepubs/009695399/functions/makecontext.html
+*             所以如果考虑兼容性，还是使用前面那个函数比较好
+*             另外，为了包装参数传递，在Windows下，这个函数会new一个结构
 * @return     int 返回0标识成功，
-* @param      ucct         ucontext_t，CONTEXT句柄，
-* @param      slack_size   堆栈大小
-* @param      fun_ptr      函数指针，函数只接受两个void *的指针。
-* @param      left_para    左参数
-* @param      right_para   右参数
+* @param      ucct         ucontext_t，CONTEXT句柄， 
+* @param      stack_size   栈大小
+* @param      fun_ptr      函数指针，接受2个指针参数
+* @param      left_para    左指针参数
+* @param      right_para   右指针参数
 * @note       
 */
 int makecontext(ucontext_t *ucct,
     size_t slack_size, 
-    ZCE_COROUTINE_FUN_PTR fun_ptr,
+    ZCE_COROUTINE_TWOPARA fun_ptr,
     void *left_para,
-    void *right_para = NULL);
+    void *right_para);
 
 
 /*!

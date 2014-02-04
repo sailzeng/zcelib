@@ -4,53 +4,33 @@
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_coroutine.h"
 
-
 #if defined ZCE_OS_WINDOWS
 
 
-//因为CreateFiber，需要的的函数纸质是WINAPI的，就是__stdcall的，所以做一个转换，
-struct _FIBERS_FUN_ADAPT_STRUCT
-{
-    ///函数指针
-    ZCE_COROUTINE_FUN_PTR   fun_ptr_;
-    //函数的第一个参数，左参
-    void                   *left_para_;
-    //函数的第一个参数，右参
-    void                   *right_para_;
-};
-
 //帮助完成函数适配适配
-VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
+VOID  WINAPI _fibers_adapt_nonparafun(VOID *fun_para)
 {
-    _FIBERS_FUN_ADAPT_STRUCT *fun_adapt = (_FIBERS_FUN_ADAPT_STRUCT *)fun_para;
-    fun_adapt->fun_ptr_(fun_adapt->left_para_, fun_adapt->right_para_);
+    ZCE_COROUTINE_NONPARA fun_ptr = (ZCE_COROUTINE_NONPARA) fun_para;
+    fun_ptr();
 }
-
 #endif
 
 
-
-//非标准函数，第一个参数是堆栈大小，内部会自己分配一个堆数据，给这个堆栈，所以必须调用deletecontext
+//兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
 int ZCE_OS::makecontext(ucontext_t * uctt,
-    size_t slack_size, 
-    ZCE_COROUTINE_FUN_PTR fun_ptr,
-    void *left_para, 
-    void *right_para)
+    size_t stack_size,
+    ZCE_COROUTINE_NONPARA nopara_fun)
 {
 #if defined ZCE_OS_WINDOWS
 
-    //使用这个结构完成函数适配
-    struct _FIBERS_FUN_ADAPT_STRUCT fibers_adapt;
-    fibers_adapt.fun_ptr_ = fun_ptr;
-    fibers_adapt.left_para_ = left_para;
-    fibers_adapt.right_para_ = right_para;
-
+    
     //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
-    *uctt = ::CreateFiberEx(slack_size,
-        slack_size,
+    //因为CreateFiber，需要的的函数纸质是WINAPI的，就是__stdcall的，所以做一个转换，
+    *uctt = ::CreateFiberEx(stack_size,
+        stack_size,
         FIBER_FLAG_FLOAT_SWITCH,
-        _fibers_adapt_fun,
-        &fibers_adapt);
+        _fibers_adapt_nonparafun,
+        nopara_fun);
 
     if (NULL == uctt)
     {
@@ -58,11 +38,105 @@ int ZCE_OS::makecontext(ucontext_t * uctt,
     }
     return 0;
 #elif defined ZCE_OS_LINUX
+
+    //
+    int ret = ::getcontext(uctt);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //使用0个参数
+    const int ONLY_NON_ARG_COUNT = 0;
+
+    uctt->uc_stack.ss_sp = new char[stack_size];
+    uctt->uc_stack.ss_size = stack_size;
+
+    ::makecontext(uctt,
+        (void(*)(void)) nopara_fun,
+        ONLY_NON_ARG_COUNT);
+    return 0;
+#endif
+}
+
+
+
+#if defined ZCE_OS_WINDOWS
+
+
+//因为CreateFiber，需要的的函数纸质是WINAPI的，就是__stdcall的，所以做一个转换，
+struct _FIBERS_TWOPARAFUN_ADAPT
+{
+    ///函数指针
+    ZCE_COROUTINE_TWOPARA   fun_ptr_;
+    //函数的第一个参数，左参
+    void                   *left_para_;
+    //函数的第一个参数，右参
+    void                   *right_para_;
+};
+
+//帮助完成函数适配适配
+VOID  WINAPI _fibers_adapt_twoparafun (VOID *fun_para)
+{
+    
+    _FIBERS_TWOPARAFUN_ADAPT *fun_adapt = (_FIBERS_TWOPARAFUN_ADAPT *)fun_para;
+    ZCE_COROUTINE_TWOPARA twopara_fun = fun_adapt->fun_ptr_;
+    void *left_para = fun_adapt->left_para_;
+    void *right_para = fun_adapt->right_para_;
+    
+    //这个函数是堆分配的，要清理掉释放
+    delete fun_adapt;
+
+    twopara_fun(left_para,right_para);
+
+
+}
+
+#endif
+
+
+
+//兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
+int ZCE_OS::makecontext(ucontext_t * uctt,
+    size_t stack_size, 
+    ZCE_COROUTINE_TWOPARA fun_ptr,
+    void *left_para, 
+    void *right_para)
+{
+#if defined ZCE_OS_WINDOWS
+
+    //使用这个结构完成函数适配
+    struct _FIBERS_TWOPARAFUN_ADAPT *fibers_adapt = new _FIBERS_TWOPARAFUN_ADAPT();
+    fibers_adapt->fun_ptr_ = fun_ptr;
+    fibers_adapt->left_para_ = left_para;
+    fibers_adapt->right_para_ = right_para;
+
+    //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
+    *uctt = ::CreateFiberEx(stack_size,
+        stack_size,
+        FIBER_FLAG_FLOAT_SWITCH,
+        _fibers_adapt_twoparafun,
+        fibers_adapt);
+
+    if (NULL == uctt)
+    {
+        return -1;
+    }
+    return 0;
+#elif defined ZCE_OS_LINUX
+    
+    //
+    int ret = ::getcontext(uctt);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
     //只使用一个参数，不允许使用变参，Windwos不支持
     const int ONLY_TWO_ARG_COUNT = 2;
 
-    uctt->uc_stack.ss_sp = new char [slack_size];
-    uctt->uc_stack.ss_size = slack_size;
+    uctt->uc_stack.ss_sp = new char [stack_size];
+    uctt->uc_stack.ss_size = stack_size;
 
     ::makecontext(uctt, 
         (void(*)(void)) fun_ptr,
@@ -92,22 +166,22 @@ int ZCE_OS::getcontext(ucontext_t *uctt)
 {
 #if defined ZCE_OS_WINDOWS
 
-    //如果已经是纤程了，得到当前纤程的标识
-    if (TRUE == ::IsThreadAFiber() )
+    //如果当前还不是纤程，进行转换，同时也到当前的纤程标识
+    if (FALSE == ::IsThreadAFiber() )
     {
-        *uctt = ::GetCurrentFiber();
+        //FIBER_FLAG_FLOAT_SWITCH XP不支持，
+        *uctt = ::ConvertThreadToFiberEx(NULL,
+            FIBER_FLAG_FLOAT_SWITCH);
         if (NULL == uctt)
         {
             return -1;
         }
         return 0;
     }
-    //如果当前还不是纤程，进行转换，同时也到当前的纤程标识
+    //如果已经是纤程了，得到当前纤程的标识
     else
     {
-        //FIBER_FLAG_FLOAT_SWITCH XP不支持，
-        *uctt = ::ConvertThreadToFiberEx(NULL,
-            FIBER_FLAG_FLOAT_SWITCH);
+        *uctt = ::GetCurrentFiber();
         if (NULL == uctt)
         {
             return -1;
