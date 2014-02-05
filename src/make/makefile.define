@@ -24,50 +24,47 @@ PATH_LIB  :=$(PATH_DEV)/lib
 #生成dll，bin文件放置的目录
 PATH_BIN  :=$(PATH_DEV)/bin
 
-
 #===================================================================================================================
-
-#这个是编译平台相关的宏，变量等
-include $(ZCELIB_ROOT)/src/make/makefile.linux
-
-#===================================================================================================================
+#检查操作系统的位数
+OS_BITS := $(shell getconf LONG_BIT)
 
 #MYSQL 
-INC_MYSQL               = -I/usr/local/mysql/include/
+INC_MYSQL               = -I/usr/include/mysql
 ifeq ($(OS_BITS),32)
-LIB_MYSQL               = -L/usr/local/mysql/lib/ -lmysqlclient_r 
+LIB_MYSQL               = -L/usr/lib/x86_32-linux-gnu -lmysqlclient_r 
 endif
 ifeq ($(OS_BITS),64)
-LIB_MYSQL               = -L/usr/local/mysql/lib -lmysqlclient_r 
+LIB_MYSQL               = -L/usr/lib/x86_64-linux-gnu -lmysqlclient_r 
 endif
 
 
 
 # 外部库的环境
-INC_DEV_OUTER          :=  $(INC_MYSQL) 
-LIB_DEV_OUTER          :=  $(LIB_MYSQL) 
+INC_DEV_OUTER :=  $(INC_MYSQL) 
+LIB_DEV_OUTER :=  $(LIB_MYSQL) 
 
 #===================================================================================================================
 
 #ZCELIB 
-INC_ZCELIB              = -I$(PATH_SRC)/commlib/zcelib
-LIB_ZCELIB              = -L$(PATH_LIB) -lzcelib
+INC_ZCELIB =-I$(PATH_SRC)/commlib/zcelib
+LIB_ZCELIB =-L$(PATH_LIB) -lzcelib
 
 # 内部库的环境
-INC_DEV_INNER          :=  $(INC_ZENLIB) 
-LIB_DEV_INNER          :=  $(LIB_ZENLIB) 
+INC_DEV_INNER := $(INC_ZCELIB) 
+LIB_DEV_INNER := $(LIB_ZCELIB) 
 
 
 #===================================================================================================================
 
-INCLDIRS += $(INC_DEV_OUTER)   $(INC_DEV_INNER)
-LIBARYS  += $(LIB_DEV_OUTER)   $(LIB_DEV_INNER)
+INCLDIRS += $(INC_DEV_OUTER) $(INC_DEV_INNER)
+LIBARYS  += $(LIB_DEV_OUTER) $(LIB_DEV_INNER)
 
 
 
 #===================================================================================================================
 
-
+#这个是编译平台相关的宏，变量等
+include $(ZCELIB_ROOT)/src/make/makefile.linux
 
 
 

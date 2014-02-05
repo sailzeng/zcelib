@@ -25,7 +25,7 @@ public:
             abc = g_daomei_foo;
             light_rw.unlock();
         }
-
+        ZCE_UNUSED_ARG(abc);
         return 0;
     }
 
@@ -106,7 +106,7 @@ public:
             abc = g_daomei_foo;
             rw_lock.unlock();
         }
-
+        ZCE_UNUSED_ARG(abc);
         return 0;
     }
 

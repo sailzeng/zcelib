@@ -52,6 +52,7 @@ int test_timer_expire(int /*argc*/, char * /*argv*/ [])
         ZCE_Timer_Queue::instance()->expire();
         ZCE_OS::usleep(100000);
     }
+    ZCE_UNUSED_ARG(timer_id);
     return 0;
 }
 
@@ -80,6 +81,7 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
         ZCE_Timer_Queue::instance()->expire();
         
     }
+    ZCE_UNUSED_ARG(timer_id);
     return 0;
 }
 

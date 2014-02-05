@@ -22,20 +22,20 @@ compile_object = executeprg
 #如果你使用预定头文件,请定义PREH_FILE,比如下面这样
 #对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
 #如果你不适用预定头文件，可以屏蔽下面这个定义
-PREH_FILE = ./zealot_predefine.h
+PREH_FILE = zealot_predefine.h
 
 
 #DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
 #如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
-DEPENDS_DIR := $(SAILLIB_ROOT)/src/commlib/zenlib   
+DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib   
 
-DEPENDS_LIB := $(SAILLIB_ROOT)/lib/libzenlib.a
+DEPENDS_LIB := $(ZCELIB_ROOT)/lib/libzcelib.a
 
 #这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
-include $(SAILLIB_ROOT)/src/make/makefile.define
+include $(ZCELIB_ROOT)/src/make/makefile.define
 
 #如果你想改变Mafile的规则，请在这个地方加入你自己的定义.
 
 #这个定义其他所有的规则,还是你自己看吧
-include $(SAILLIB_ROOT)/src/make/makefile.rule
+include $(ZCELIB_ROOT)/src/make/makefile.rule
 

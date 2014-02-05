@@ -11,6 +11,8 @@ int test_nonr_thread_mutex(int, char * [])
     int last_error = ZCE_OS::last_error();
     abc.lock();
     last_error = ZCE_OS::last_error();
+
+    ZCE_UNUSED_ARG(last_error);
     return 0;
 }
 

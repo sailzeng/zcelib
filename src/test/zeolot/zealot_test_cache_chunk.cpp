@@ -46,6 +46,8 @@ int test_cachechunk(int /*argc*/ , char * /*argv*/ [])
     bret = pmmap->set_node(2048, tmpbuf4, usenode);
     bret = pmmap->set_node(704, tmpbuf4, usenode);
     bret = pmmap->set_node(672, tmpbuf4, usenode);
+
+    ZCE_UNUSED_ARG(bret);
     return 0;
 }
 

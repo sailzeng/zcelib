@@ -84,8 +84,7 @@ ccache ?= 0
 
 #--------------------------------------------------------------------------------------------------------------------
 
-#检查操作系统的位数
-OS_BITS := $(shell getconf LONG_BIT)
+
 
 #目前没有根据操作系统位数，编译版本(debug，release)进行区分，这样的麻烦是多版本编译时会有一些麻烦，也许以后会加入。
 ifeq ($(compile_object),staticlib) 
@@ -208,20 +207,20 @@ DEFFLAGS ?=
 #不支持同时定义这两个东东，
 ifeq ($(debug),1)
 ifeq ($(release),1)
-$(error flag debug=1 and release=1 is error.please check your make file or command.)
+  $(error flag debug=1 and release=1 is error.please check your make file or command.)
 endif
 endif
 
 VERSIONTYPE := neutral
 ifeq ($(debug),1)
-VERSIONTYPE := debug
+  VERSIONTYPE := debug
 endif
 ifeq ($(release),1)
-VERSIONTYPE := release
+  VERSIONTYPE := release
 endif
 
 ifeq ($(debug),1)
-DEFFLAGS  += -DDEBUG
+  DEFFLAGS  += -DDEBUG
 endif
 
 ifeq ($(release),1)
@@ -231,7 +230,7 @@ endif
 
 #线程增加，理论上多线程，也可以使用-pthread，-pthread等同与-D_REENTRANT 连接时等同于-lpthread
 ifeq ($(threads),1)
-DEFFLAGS  += -D_REENTRANT 
+  DEFFLAGS  += -D_REENTRANT 
 endif # threads
 
 # Rely on _GNU_SOURCE to set these defaults defined in /usr/include/features.h
@@ -245,10 +244,10 @@ CPPFLAGS   += $(DEFFLAGS)
 SOFLAGS += $(CPPFLAGS) -shared  
 
 ifeq ($(optimize),1)
-SOFLAGS += -Wl, $(OCCFLAGS)
+  SOFLAGS += -Wl, $(OCCFLAGS)
 endif
 
-LIBARYS = -ldl
+LIBARYS += -ldl
 
 ifeq ($(threads),1)
   LIBARYS += -lpthread -lrt

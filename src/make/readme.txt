@@ -110,4 +110,6 @@ gcc -E hello.c -o hello.i
 
 
 -pthread，-pthread等同与-D_REENTRANT 连接时等同于-lpthread
+注意多线程库有时候需要最后-lrt，但要注意GCC 4.8以后，链接是有顺序的，
+你可以简单认为-lrt,-lpthread 要放到链接顺序的最后面。
 

@@ -13,10 +13,10 @@ int test_zce_snprintf()
     int int_data = 123456;
     bool bool_data = false;
     ZCE_LIB::zce_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? Haha!\n", int_data, bool_data);
-    printf(out_buffer);
+    printf("%s",out_buffer);
 
     ZCE_LIB::zce_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= Haha!\n", int_data, bool_data);
-    printf(out_buffer);
+    printf("%s", out_buffer);
 
     ZCE_LIB::zce_snprintf(out_buffer, 10, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;

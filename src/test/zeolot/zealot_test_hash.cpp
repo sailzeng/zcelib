@@ -171,6 +171,7 @@ int test_lru_hashtable2(int /*argc*/ , char * /*argv*/ [])
     {
         std::cout << "it_tmp value: " << (*it_tmp) << std::endl;
     }
+    ZCE_UNUSED_ARG(num_count);
 
     return 0;
 }
@@ -294,7 +295,7 @@ public:
         {
             return -1;
         }
-
+        ZCE_UNUSED_ARG(ret);
         return 0;
     }
 
@@ -748,6 +749,7 @@ int test_hashtable(int /*argc*/ , char * /*argv*/ [])
     {
         std::cout << "Not Fount." << std::endl;
     }
+    ZCE_UNUSED_ARG(bdel);
 
     return 0;
 }

@@ -73,14 +73,38 @@ PREH_GCH = $(PREH_DIR)/$(PREH_FILE).$(VERSIONTYPE).gch
 PREH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/$(PREH_FILE).d
 endif
 
-all : libbuild $(OUTFILE) 
+all : $(OUTFILE) 
 
 
-#libbuild也是一个假象，用于，
+
+#如果你要编译LIB(.a)静态库，请在你的makefile定义 compile_object= staticlib
+#如果你要编译DLL(.so)动态库，请在你的makefile定义 compile_object= dynamiclib
+#如果你要编译EXECUTE文件，请在你的makefile定义 compile_object= executeprg
+
+#如果有 DEPENDS_DIR 的目录需要编译，会先去编译这写目录下的东东，这个是airfu 大大帮忙想的方法，
+$(OUTFILE): $(DEPENDS_LIB) $(O_FILE)
+ifeq ($(compile_object),staticlib) 
+	@echo $OUTFILE
+	$(AR) $(ARFLAGS) $(OUTFILE) $(O_FILE)
+endif
+ifeq ($(compile_object),dynamiclib) 
+	@echo $OUTFILE
+	$(SOLINK.cc) -o$(OUTFILE) $(O_FILE) $(LIBARYS)
+endif
+ifeq ($(compile_object),executeprg) 
+	@echo $OUTFILE
+	$(LINK.cc) -o$(OUTFILE) $(O_FILE)  $(LIBARYS)  
+endif
+
+#=====================================================================================================================
+
+$(DEPENDS_LIB): depbuild
+
+#depbuild也是一个假象，用于，
 #1.对依赖的目录都make 一下
 #2.检查依赖的库检查依赖的库是更新过了，如果更新过了，删除$(OUTFILE) 
 #注意这段对于如果你使用make -j4会会有问题，因为这儿是一个严格的依赖关系。如果有几个人并行会出现问题
-libbuild:
+depbuild:
 ifneq ($(DEPENDS_DIR), ) 
 	@for dep_dir in $(DEPENDS_DIR); \
 	do \
@@ -94,26 +118,6 @@ ifneq ($(DEPENDS_DIR), )
 	$(RM)  $(OUTFILE) ;  \
 	fi \
 	done
-endif
-
-
-#如果你要编译LIB(.a)静态库，请在你的makefile定义 compile_object= staticlib
-#如果你要编译DLL(.so)动态库，请在你的makefile定义 compile_object= dynamiclib
-#如果你要编译EXECUTE文件，请在你的makefile定义 compile_object= executeprg
-
-#如果有 DEPENDS_DIR 的目录需要编译，会先去编译这写目录下的东东，这个是airfu 大大帮忙想的方法，
-$(OUTFILE): $(O_FILE)
-ifeq ($(compile_object),staticlib) 
-	@echo $OUTFILE
-	$(AR) $(ARFLAGS) $(OUTFILE) $(O_FILE)
-endif
-ifeq ($(compile_object),dynamiclib) 
-	@echo $OUTFILE
-	$(SOLINK.cc) -o$(OUTFILE) $(O_FILE) $(LIBARYS)
-endif
-ifeq ($(compile_object),executeprg) 
-	@echo $OUTFILE
-	$(LINK.cc) -o$(OUTFILE) $(O_FILE)  $(LIBARYS)  
 endif
 
 
@@ -133,11 +137,13 @@ endif
 #一个告警，所以，分开存放了，虽然麻烦一点。
 
 #如果.预编译头文件的.d文件都存在，用.d判断依赖关系，是否需要重新生成，否则，重新生成gch文件。
+ifeq ($(PREH_DEP), $(wildcard $(PREH_DEP)))
 -include $(PREH_DEP)
-
+else
 $(PREH_GCH) : $(PREH_FILE)
 	$(PRECOMPILE.cc) $(INCLDIRS) -MF $(PREH_DEP) $< -o $@ ;
-
+	@echo "	$(PRECOMPILE.cc) $(INCLDIRS) -MF $(PREH_DEP) $< -o $@   " >> $(PREH_DEP)
+endif    
 endif  #ifneq ($(PREH_GCH),) 
 
 #=====================================================================================================================
@@ -163,10 +169,10 @@ endif
 #生成.o和.d文件,@echo让这个命令不显示,;表示前面的命令要执行完成后，后面的命令才执行
 $(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/%.o : ./%.c
 	$(COMPILE.cc) $(INCLDIRS) $< -o $@ ; 
-
+	@echo "	$(COMPILE.cc) $(INCLDIRS) $< -o $@  " >> $(patsubst %.o,%.d,$@)
 $(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/%.o : ./%.cpp
 	$(COMPILE.cc) $(INCLDIRS) $< -o $@ ;	
-
+	@echo "	$(COMPILE.cc) $(INCLDIRS) $< -o $@  " >> $(patsubst %.o,%.d,$@)
 	
 #=====================================================================================================================
 
@@ -179,7 +185,7 @@ clean:
 #清理.gch文件，清理ccache的数据
 veryclean:
 	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PREH_DEP) $(PREH_GCH) ;
-ifneq ($(ccache),1 ) 
+ifeq ($(ccache),1 ) 
 	ccache  --cleanup
 endif    
 

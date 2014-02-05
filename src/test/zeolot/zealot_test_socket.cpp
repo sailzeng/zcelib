@@ -45,6 +45,8 @@ int test_host_name_fun(int, char * [])
 
     ZCE_OS::socket_fini();
 
+    ZCE_UNUSED_ARG(ret);
+
     return 0;
 }
 

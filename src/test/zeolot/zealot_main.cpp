@@ -14,7 +14,7 @@ int main(int argc , char *argv[])
 
     test_server_status(argc, argv);
 
-    system("pause");
+    //system("pause");
 
     //rc_stab();
     //bytes_encrypt_right(argc, argv);
