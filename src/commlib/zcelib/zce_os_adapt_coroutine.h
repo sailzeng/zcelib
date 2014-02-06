@@ -34,10 +34,10 @@ typedef  void * ucontext_t;
 
 #endif 
 
-//
-typedef   void(*ZCE_COROUTINE_TWOPARA) (void *left_para,void *right_para);
-//
-typedef   void(*ZCE_COROUTINE_NONPARA) (void);
+//为什么最后选择3个参数的函数作为支持的类型，大概是因为维基的例子，（我本来一直认为2个参数足够了）
+typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
+    void *para2,
+    void *para3);
 
 
 namespace ZCE_OS
@@ -60,39 +60,28 @@ namespace ZCE_OS
 *             们用了CreateFiberEx，Linux下我们内部调用了::getcontext，这些函数
 *             都可能失败
 *             6.LINUX的::makecontext可以使用变参，这个函数没有考虑参数，当然这个变
-*             也是有风险，请看下个函数的说明
-* @return     int  返回0标识成功，注意区别问题，上面有介绍
-* @param      ucct ucontext_t，CONTEXT句柄，
-* @param      slack_size 栈大小
-* @param      nopara_fun 函数指针，函数不接受参数。
-* @note       
-*/
-int makecontext(ucontext_t *ucct,
-    size_t slack_size,
-    ZCE_COROUTINE_NONPARA nopara_fun);
-
-/*!
-* @brief      非标准函数，特点和前面函数一样，请参考他的说明
-*             区别在于函数指针标识的函数只允许使用2个参数，而上个函数的函数指针的函数没
-*             有参数，(Linux的实现支持变参，Windows支持一个指针参数)，
-*             但其实使用参数是有移植风险的，相见下面两个文档的说明，
+*             也是有风险，但其实使用参数是有移植风险的，相见下面两个文档的说明，
 *             http://en.wikipedia.org/wiki/Setcontext   
 *             http://pubs.opengroup.org/onlinepubs/009695399/functions/makecontext.html
 *             所以如果考虑兼容性，还是使用前面那个函数比较好
 *             另外，为了包装参数传递，在Windows下，这个函数会new一个结构
 * @return     int 返回0标识成功，
-* @param      ucct         ucontext_t，CONTEXT句柄， 
+* @param      uctt         ucontext_t，生成的CONTEXT句柄， 
 * @param      stack_size   栈大小
-* @param      fun_ptr      函数指针，接受2个指针参数
-* @param      left_para    左指针参数
-* @param      right_para   右指针参数
+* @param      back_uc      ucontext_t，函数返回，回到的ucontext_t
+* @param      fun_ptr      函数指针，接受3个指针参数
+* @param      para1        指针参数1
+* @param      para2        指针参数2
+* @param      para3        指针参数3
 * @note       
 */
-int makecontext(ucontext_t *ucct,
-    size_t slack_size, 
-    ZCE_COROUTINE_TWOPARA fun_ptr,
-    void *left_para,
-    void *right_para);
+    int makecontext(ucontext_t *uctt,
+    size_t stack_size,
+    ucontext_t *back_uc,
+    ZCE_COROUTINE_3PARA fun_ptr,
+    void *para1,
+    void *para2,
+    void *para3);
 
 
 /*!
