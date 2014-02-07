@@ -1,5 +1,5 @@
-#ifndef _ZEALOT_TEST_FUNCTION_H_
-#define _ZEALOT_TEST_FUNCTION_H_
+#ifndef ZEALOT_TEST_FUNCTION_H_
+#define ZEALOT_TEST_FUNCTION_H_
 
 
 
@@ -80,6 +80,9 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/[]);
 
 int test_server_status(int /*argc*/, char * /*argv*/[]);
 
+
+int test_coroutine1(int /*argc*/, char * /*argv*/[]);
+int test_coroutine2(int /*argc*/, char * /*argv*/[]);
 
 #endif //
 

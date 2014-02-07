@@ -187,6 +187,7 @@
     </ClCompile>
     <ClCompile Include="zealot_test_bytes.cpp" />
     <ClCompile Include="zealot_test_cache_chunk.cpp" />
+    <ClCompile Include="zealot_test_coroutine_.cpp" />
     <ClCompile Include="zealot_test_fmtstr.cpp" />
     <ClCompile Include="zealot_test_hash.cpp" />
     <ClCompile Include="zealot_test_inotify.cpp" />

@@ -56,6 +56,18 @@ int ZCE_OS::makecontext(ucontext_t *uctt,
 {
 #if defined ZCE_OS_WINDOWS
 
+    if (FALSE == ::IsThreadAFiber())
+    {
+        //FIBER_FLAG_FLOAT_SWITCH XP不支持，
+        ::ConvertThreadToFiberEx(NULL,
+            FIBER_FLAG_FLOAT_SWITCH);
+        if (NULL == uctt)
+        {
+            return -1;
+        }
+    }
+
+
     //使用这个结构完成函数适配
     struct _FIBERS_TWOPARAFUN_ADAPT *fibers_adapt = new _FIBERS_TWOPARAFUN_ADAPT();
     fibers_adapt->back_uctt_ = back_uc;
@@ -174,10 +186,12 @@ int ZCE_OS::swapcontext(ucontext_t *get_uctt, const ucontext_t *set_uctt)
     }
 
     ret = ZCE_OS::getcontext(get_uctt);
+    printf("get %12p set %12p\n", get_uctt, set_uctt);
     if (ret == 0) 
     {
         ret = ZCE_OS::setcontext(set_uctt);
     }
+    printf("get %12p set %12p\n", get_uctt, set_uctt);
     return ret;
 
 #elif defined ZCE_OS_LINUX

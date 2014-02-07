@@ -1,5 +1,5 @@
-#ifndef _ZEALOT_PRE_DEFINE_H_
-#define _ZEALOT_PRE_DEFINE_H_
+#ifndef ZEALOT_PRE_DEFINE_H_
+#define ZEALOT_PRE_DEFINE_H_
 
 
 
@@ -77,6 +77,9 @@
 
 
 #include <zce_server_status.h>
+
+
+#include <zce_os_adapt_coroutine.h>
 
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
