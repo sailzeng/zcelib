@@ -14,6 +14,7 @@ class ZCE_CRTNAsync_Coroutine
 
 public:
 
+    ///协程的状态枚举
     enum STATE_COROUTINE
     {
         STATE_RUNNIG  = 1,
@@ -38,7 +39,10 @@ public:
     ///切换回Main
     void switch_to_main();
 
-    ///
+    ///切换回协程，也就是切换到他自己运行
+    void switch_to_coroutine();
+
+    ///设置协程的状态
     void set_state(ZCE_CRTNAsync_Coroutine::STATE_COROUTINE state);
 
     ///协程启动，做初始化工作
@@ -50,6 +54,8 @@ public:
     ///协程结束，做结束，释放资源的事情
     virtual int coroutine_end();
     
+    ///
+    ZCE_CRTNAsync_Coroutine *clone();
 public:
 
     ///static 函数，用于协程运行函数，调用协程对象的运行函数
@@ -86,32 +92,43 @@ public:
     virtual ~ZCE_CRTNAsync_Main();
 
 
-    ///
-    int initialize(size_t type_num,
-        size_t coroutine_num);
+    ///初始化，
+    int initialize(size_t crtn_type_num = DEFUALT_CRTN_TYPE_NUM,
+        size_t running_number = DEFUALT_RUNNIG_CRTN_SIZE);
 
-    ///
+    ///注册一类协程，其用reg_cmd对应，
     int register_cmd(unsigned int reg_cmd,
         ZCE_CRTNAsync_Coroutine* coroutine_base,
-        size_t init_coroutine_num);
-
+        size_t init_clone_num);
 
     ///
-    void switch_to_coroutine();
+    int active_coroutine(unsigned int cmd);
+
+    ///
+    int switch_to_coroutine(unsigned int id);
+
+protected:
+
+    ///
+    static const size_t DEFUALT_CRTN_TYPE_NUM = 512;
+    ///
+    static const size_t DEFUALT_INIT_POOL_SIZE = 8;
+    ///
+    static const size_t DEFUALT_RUNNIG_CRTN_SIZE = 1024;
+    ///
+    static const size_t DEFUALT_POOL_ADD_CRTN_SIZE = 256;
 
 protected:
     
     //事务ID发生器
     unsigned int           corout_id_builder_;
     
-    //
-    CMD_TO_COROUTINE_MAP   id_to_coroutine_;
 
-    //注册进来的协程
-    ID_TO_REGCOR_POOL_MAP  cmd_clone_corout_;
+    //协程的池子，都是注册进来的
+    ID_TO_REGCOR_POOL_MAP  coroutine_pool_;
 
     ///正在运行的协程
-    ID_TO_REGCOR_POOL_MAP  running_coroutine_;
+    CMD_TO_COROUTINE_MAP   running_coroutine_;
 
 
 };
