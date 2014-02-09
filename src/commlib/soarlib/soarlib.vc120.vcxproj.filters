@@ -25,9 +25,6 @@
     <ClCompile Include="soar_fsm_trans_mgr.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_monitor_sta.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

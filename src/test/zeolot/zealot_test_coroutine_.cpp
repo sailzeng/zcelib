@@ -5,7 +5,7 @@
 
 int test_coroutine1(int /*argc*/, char * /*argv*/[])
 {
-    ucontext_t context;
+    coroutine_t context;
 
     ZCE_OS::getcontext(&context);
     puts("Hello world");
@@ -22,8 +22,8 @@ int test_coroutine1(int /*argc*/, char * /*argv*/[])
 * of the loop is reached, the function exits, and execution switches to the
 * context pointed to by main_context1. */
 void loop(
-    ucontext_t *loop_context,
-    ucontext_t *other_context,
+    coroutine_t *loop_context,
+    coroutine_t *other_context,
     int *i_from_iterator)
 {
     int i;
@@ -52,7 +52,7 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
     *                        flow by switching contexts.
     *    (3) loop_context  : The point in loop to which control from main will
     *                        flow by switching contexts. */
-    ucontext_t main_context1, main_context2, loop_context;
+    coroutine_t main_context1, main_context2, loop_context;
 
     
 
@@ -65,10 +65,10 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
     /* Fill in loop_context so that it makes swapcontext start loop. The
     * (void (*)(void)) typecast is to avoid a compiler warning but it is
     * not relevant to the behaviour of the function. */
-    ZCE_OS::makecontext(&loop_context,
+    ZCE_OS::make_coroutine(&loop_context,
         8192*100,
         &main_context1,
-        (ZCE_COROUTINE_3PARA)loop,
+        (ZCE_COROUTINE_2PARA)loop,
         (void *)&loop_context,
         (void *)&main_context2,
         (void *)&i_from_iterator);

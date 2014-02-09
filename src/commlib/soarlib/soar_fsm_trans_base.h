@@ -54,72 +54,7 @@ protected:
         TOO_TOO_LONG_TIME_OUT               = 480,
     };
 
-    //无效的阶段ID
-    static const int INVALID_PHASE_ID = 0;
-
-    //TIME ID
-    static const int TRANSACTION_TIME_ID[];
-
-    //这儿对封装要求很严格，但是我感觉对外暴露的接口足够了。
-protected:
-
-    //事件管理器
-    Transaction_Manager     *trans_manager_;
-    //事务ID
-    unsigned int            transaction_id_;
-    //是否加事务锁
-    bool                    trans_locker_;
-
-    //请求的事务UIN
-    unsigned int            req_qq_uin_;
-    //这个事务的命令字
-    unsigned int            trans_command_;
-
-    //事务运行状态
-    TRANSACTION_RUN_STATE   trans_run_state_;
-
-    //事务阶段
-    int                     trans_phase_;
-
-    //请求事务的发送者
-    SERVICES_ID             req_snd_service_;
-    //请求事务的代理
-    SERVICES_ID             req_rcv_service_;
-    //请求事务的代理
-    SERVICES_ID             req_proxy_service_;
-
-    //请求的事务ID
-    unsigned int            req_trans_id_;
-    //请求的的会话ID:这里是回填事务id，意思变了,其实没怎么使用
-    unsigned int            req_session_id_;
-    //请求的app_id
-    unsigned int            req_game_app_id_;
-
-    //请求的IP地址是什么.
-    unsigned int            req_ip_address_;
-    //请求的FRAME的的选项
-    unsigned int            req_frame_option_;
-
-    //当前接收的Frame,为临时缓冲,一有数据填充,
-    Zerg_App_Frame         *tmp_recv_frame_;
-
-    //事务超时的定时器ID
-    int                     trans_timeout_id_;
-    //发生active后，是否自动停止time out定时器
-    bool                    active_auto_stop_;
-    //事务的定时器ID
-    int                     trans_touchtimer_id_;
-
-    //需要检查的命令
-    unsigned int            wait_cmd_;
-    //事务的创建时间
-    time_t                  trans_create_time_;
-
-    //日志跟踪的优先级
-    ZCE_LOG_PRIORITY        trace_log_pri_;
-
-    // 事务处理的错误码，当事务处理返回EXIT_PROCESS_FAIL时使用
-    int                     process_errno_;
+    
 
 protected:
 
@@ -379,6 +314,73 @@ protected:
     //DUMP输出事务的所有信息
     void output_trans_info(const char *outstr = "Output Transaction Info") const;
 
+public:
+    //无效的阶段ID
+    static const int INVALID_PHASE_ID = 0;
+
+    //TIME ID
+    static const int TRANSACTION_TIME_ID[];
+
+    //这儿对封装要求很严格，但是我感觉对外暴露的接口足够了。
+protected:
+
+    //事件管理器
+    Transaction_Manager     *trans_manager_;
+    //事务ID
+    unsigned int            transaction_id_;
+    //是否加事务锁
+    bool                    trans_locker_;
+
+    //请求的事务UIN
+    unsigned int            req_qq_uin_;
+    //这个事务的命令字
+    unsigned int            trans_command_;
+
+    //事务运行状态
+    TRANSACTION_RUN_STATE   trans_run_state_;
+
+    //事务阶段
+    int                     trans_phase_;
+
+    //请求事务的发送者
+    SERVICES_ID             req_snd_service_;
+    //请求事务的代理
+    SERVICES_ID             req_rcv_service_;
+    //请求事务的代理
+    SERVICES_ID             req_proxy_service_;
+
+    //请求的事务ID
+    unsigned int            req_trans_id_;
+    //请求的的会话ID:这里是回填事务id，意思变了,其实没怎么使用
+    unsigned int            req_session_id_;
+    //请求的app_id
+    unsigned int            req_game_app_id_;
+
+    //请求的IP地址是什么.
+    unsigned int            req_ip_address_;
+    //请求的FRAME的的选项
+    unsigned int            req_frame_option_;
+
+    //当前接收的Frame,为临时缓冲,一有数据填充,
+    Zerg_App_Frame         *tmp_recv_frame_;
+
+    //事务超时的定时器ID
+    int                     trans_timeout_id_;
+    //发生active后，是否自动停止time out定时器
+    bool                    active_auto_stop_;
+    //事务的定时器ID
+    int                     trans_touchtimer_id_;
+
+    //需要检查的命令
+    unsigned int            wait_cmd_;
+    //事务的创建时间
+    time_t                  trans_create_time_;
+
+    //日志跟踪的优先级
+    ZCE_LOG_PRIORITY        trace_log_pri_;
+
+    // 事务处理的错误码，当事务处理返回EXIT_PROCESS_FAIL时使用
+    int                     process_errno_;
 };
 
 //得到接收到的数据

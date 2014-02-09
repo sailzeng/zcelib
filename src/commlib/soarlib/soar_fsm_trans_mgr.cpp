@@ -96,8 +96,8 @@ Transaction_Manager::~Transaction_Manager()
     }
 
     //将内存池子里面的数据全部清理掉。好高兴，因为我释放了内存，从Inmoreliu那儿得到了一顿饭。
-    HASH_MAP_OF_POLLREGTRANS::iterator pooliter = regtrans_pool_map_.begin();
-    HASH_MAP_OF_POLLREGTRANS::iterator poolenditer = regtrans_pool_map_.end();
+    HASHMAP_OF_POLLREGTRANS::iterator pooliter = regtrans_pool_map_.begin();
+    HASHMAP_OF_POLLREGTRANS::iterator poolenditer = regtrans_pool_map_.end();
 
     for (; pooliter != poolenditer; ++pooliter)
     {
@@ -210,7 +210,7 @@ int Transaction_Manager::register_trans_cmd(unsigned int cmd,
 {
     //检查是否有重复的注册事务命令
 #if defined DEBUG || defined _DEBUG
-    HASH_MAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(cmd);
+    HASHMAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(cmd);
 
     if (mapiter != regtrans_pool_map_.end())
     {
@@ -427,7 +427,7 @@ int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
 {
     int ret = 0;
 
-    HASH_MAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(frame_cmd);
+    HASHMAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(frame_cmd);
 
     if (mapiter == regtrans_pool_map_.end())
     {
@@ -511,7 +511,7 @@ Modify Record   :
 int Transaction_Manager::return_clone_to_pool(unsigned int frame_cmd, Transaction_Base *&rt_txbase)
 {
 #if defined DEBUG || defined _DEBUG
-    HASH_MAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(frame_cmd);
+    HASHMAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(frame_cmd);
 
     if (mapiter == regtrans_pool_map_.end())
     {
@@ -554,8 +554,8 @@ Modify Record   :
 void Transaction_Manager::recycle_clone_from_pool()
 {
     //
-    HASH_MAP_OF_POLLREGTRANS::iterator iter_tmp = regtrans_pool_map_.begin();
-    HASH_MAP_OF_POLLREGTRANS::iterator iter_end = regtrans_pool_map_.end();
+    HASHMAP_OF_POLLREGTRANS::iterator iter_tmp = regtrans_pool_map_.begin();
+    HASHMAP_OF_POLLREGTRANS::iterator iter_end = regtrans_pool_map_.end();
     //因为比较关键，用了RS_INFO
     ZLOG_INFO("[framework] Recycle trans,transaction manager are processing pool number [%d] . ",
               regtrans_pool_map_.size());
@@ -814,8 +814,8 @@ void Transaction_Manager::dump_all_trans_info() const
 void Transaction_Manager::dump_trans_pool_info() const
 {
     //
-    HASH_MAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
-    HASH_MAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
+    HASHMAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
+    HASHMAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
     //因为比较关键，用了RS_INFO
     ZLOG_INFO("[framework] Transaction Manager are processing pool number [%d] . ", regtrans_pool_map_.size());
 
@@ -839,8 +839,8 @@ void Transaction_Manager::dump_trans_pool_info() const
 void Transaction_Manager::dump_statistics_info() const
 {
     //
-    HASH_MAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
-    HASH_MAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
+    HASHMAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
+    HASHMAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
 
     ZLOG_INFO("[framework] [TRANS INFO] All generate transaction counter [%llu] ,previous cycle generate transaction number[%llu].",
               gen_trans_counter_,

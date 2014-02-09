@@ -149,27 +149,10 @@ class SOARING_EXPORT Transaction_Manager
 
 protected:
 
-    //一次最大处理的FRAME个数
-    static const size_t MAX_ONCE_PROCESS_FRAME       = 1024;
-
-    //池子每次扩展的事务个数
-    static const size_t POOL_EXTEND_TRANSACTION_NUM  = 1024;
-
-    //回收的阈值
-    static const size_t RECYCLE_POOL_THRESHOLD_VALUE = 2048;
-
-    static const size_t INIT_FRAME_MALLOC_NUMBER     = 2048;
-
-    //QUEUE FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，
-    //但是长度应该应该是按照APPFRAME的帧头计算的。这个数量级别的长度已经不小了
-    static const size_t INNER_QUEUE_WATER_MARK = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD * 102400;
-
-protected:
-
     //命令字对应池子的代码
-    typedef unordered_map<unsigned int , CREATE_TRANS_RECORD >        HASH_MAP_OF_POLLREGTRANS;
+    typedef std::unordered_map<unsigned int, CREATE_TRANS_RECORD >        HASHMAP_OF_POLLREGTRANS;
     //事务ID对应事务的管理器
-    typedef unordered_map<unsigned int , Transaction_Base * >         HASHMAP_OF_TRANSACTION;
+    typedef std::unordered_map<unsigned int, Transaction_Base * >         HASHMAP_OF_TRANSACTION;
 
     //注意这儿用的不是指针,但其实他用的是指针
     typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, Zerg_App_Frame *> INNER_FRAME_MESSAGE_QUEUE;
@@ -178,58 +161,6 @@ protected:
 
     //内部的锁的数量
     typedef unordered_set<TRANS_LOCK_RECORD, HASH_OF_TRANS_LOCK, EQUAL_OF_TRANS_LOCK>  INNER_TRANS_LOCK_POOL;
-
-protected:
-
-    //注册事件的ID和对应的处理Handler.
-    HASHMAP_OF_TRANSACTION      transc_map_;
-
-    //
-    HASH_MAP_OF_POLLREGTRANS    regtrans_pool_map_;
-
-    //锁的池子
-    INNER_TRANS_LOCK_POOL       trans_lock_pool_;
-
-    //最大的事件个数
-    size_t                      max_trans_;
-
-    //事务ID发生器
-    unsigned int                trans_id_builder_;
-
-    //自己的Services Info
-    SERVICES_ID                 self_services_id_;
-
-    //默认使用的
-    ZCE_Timer_Queue            *timer_queue_;
-
-    //共享内存的管道
-    Zerg_MMAP_BusPipe          *zerg_mmap_pipe_;
-
-    //统计时钟
-    const ZCE_Time_Value       *statistics_clock_;
-
-    //发送的缓冲区
-    Zerg_App_Frame             *trans_send_buffer_;
-    //接受数据缓冲区
-    Zerg_App_Frame             *trans_recv_buffer_;
-
-    // fake数据缓冲区
-    Zerg_App_Frame             *fake_recv_buffer_;
-
-    //内部FRAME分配器
-    INNER_APPFRAME_MALLOCOR    *inner_frame_malloc_;
-    //内部FRAME的队列
-    INNER_FRAME_MESSAGE_QUEUE  *inner_message_queue_;
-
-    //统计分析的一些变量
-    //产生事务的总量记录
-    uint64_t                    gen_trans_counter_;
-    //一个周期内产生的事务总数
-    unsigned int                cycle_gentrans_counter_;
-
-protected:
-    //SingleTon的指针
-    static Transaction_Manager *instance_;
 
 public:
 
@@ -251,7 +182,7 @@ protected:
 
 public:
 
-    //从池子中间回收多于的事务的克隆，如果克隆过多会占用过多的内存，安装限制的事务模型，
+    //从池子中间回收多于的事务的克隆，如果克隆过多会占用过多的内存，一般的事务模型，
     //克隆的事务应该不用太多
     void recycle_clone_from_pool();
 
@@ -427,6 +358,77 @@ public:
     static Transaction_Manager *instance();
     //清除实例
     static void clean_instance();
+
+protected:
+
+    //一次最大处理的FRAME个数
+    static const size_t MAX_ONCE_PROCESS_FRAME = 1024;
+
+    //池子每次扩展的事务个数
+    static const size_t POOL_EXTEND_TRANSACTION_NUM = 1024;
+
+    //回收的阈值
+    static const size_t RECYCLE_POOL_THRESHOLD_VALUE = 2048;
+
+    static const size_t INIT_FRAME_MALLOC_NUMBER = 2048;
+
+    //QUEUE FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，
+    //但是长度应该应该是按照APPFRAME的帧头计算的。这个数量级别的长度已经不小了
+    static const size_t INNER_QUEUE_WATER_MARK = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD * 102400;
+
+
+
+protected:
+
+    //注册事件的ID和对应的处理Handler.
+    HASHMAP_OF_TRANSACTION      transc_map_;
+
+    //
+    HASHMAP_OF_POLLREGTRANS     regtrans_pool_map_;
+
+    //锁的池子
+    INNER_TRANS_LOCK_POOL       trans_lock_pool_;
+
+    //最大的事件个数
+    size_t                      max_trans_;
+
+    //事务ID发生器
+    unsigned int                trans_id_builder_;
+
+    //自己的Services Info
+    SERVICES_ID                 self_services_id_;
+
+    //默认使用的
+    ZCE_Timer_Queue            *timer_queue_;
+
+    //共享内存的管道
+    Zerg_MMAP_BusPipe          *zerg_mmap_pipe_;
+
+    //统计时钟
+    const ZCE_Time_Value       *statistics_clock_;
+
+    //发送的缓冲区
+    Zerg_App_Frame             *trans_send_buffer_;
+    //接受数据缓冲区
+    Zerg_App_Frame             *trans_recv_buffer_;
+
+    // fake数据缓冲区
+    Zerg_App_Frame             *fake_recv_buffer_;
+
+    //内部FRAME分配器
+    INNER_APPFRAME_MALLOCOR    *inner_frame_malloc_;
+    //内部FRAME的队列
+    INNER_FRAME_MESSAGE_QUEUE  *inner_message_queue_;
+
+    //统计分析的一些变量
+    //产生事务的总量记录
+    uint64_t                    gen_trans_counter_;
+    //一个周期内产生的事务总数
+    unsigned int                cycle_gentrans_counter_;
+
+protected:
+    //SingleTon的指针
+    static Transaction_Manager *instance_;
 
 };
 
