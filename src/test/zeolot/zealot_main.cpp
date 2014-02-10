@@ -12,11 +12,11 @@ int main(int argc , char *argv[])
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
 
-    test_coroutine1(argc, argv);
+    test_coroutine2(argc, argv);
 
 
-    //system("pause");
-    std::cin.ignore().get();
+    system("pause");
+    //std::cin.ignore().get();
 
     //rc_stab();
     //bytes_encrypt_right(argc, argv);

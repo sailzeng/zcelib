@@ -60,8 +60,9 @@ struct  coroutine_t
 #endif 
 
 //为什么最后选择3个参数的函数作为支持的类型，大概是因为维基的例子，（我本来一直认为2个参数足够了）
-typedef   void(*ZCE_COROUTINE_2PARA) (void *para1,
-    void *para2);
+typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
+    void *para2,
+    void *para3);
 
 
 namespace ZCE_OS
@@ -96,13 +97,15 @@ namespace ZCE_OS
 * @param      fun_ptr      函数指针，接受3个指针参数
 * @param      para1        指针参数1
 * @param      para2        指针参数2
+* @param      para3        指针参数3
 */
 int make_coroutine(coroutine_t *coroutine_hdl,
     size_t stack_size,
     bool back_main,
-    ZCE_COROUTINE_2PARA fun_ptr,
+    ZCE_COROUTINE_3PARA fun_ptr,
     void *para1,
-    void *para2);
+    void *para2,
+    void *para3);
 
 
 /*!
@@ -115,19 +118,27 @@ void delete_coroutine(coroutine_t *coroutine_hdl);
 
 
 /*!
-* @brief      切换到协程，
+* @brief      从Main切换到协程，
 * @return     int 返回0标识成功
 * @param      coroutine_hdl 
 */
 int switch_to_coroutine(coroutine_t *coroutine_hdl);
 
 /*!
-* @brief      切换到Main
+* @brief      从coroutine切换到Main
 * @return     int 返回0标识成功
 * @param      coroutine_hdl
 */
 int switch_to_main(coroutine_t *coroutine_hdl);
 
+/*!
+* @brief      从一个coroutine切换到另外一个coroutine
+* @return     int 返回0标识成功
+* @param      save_hdl
+* @param      goto_hdl
+*/
+int exchage_coroutine(coroutine_t *save_hdl,
+    coroutine_t *goto_hdl);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_CORROUTINE_H_

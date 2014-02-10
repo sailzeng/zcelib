@@ -3,7 +3,10 @@
 
 #include "zealot_predefine.h"
 
-int test_coroutine1(int /*argc*/, char * /*argv*/[])
+
+/*
+注意，Fiber是无法达到这个效果的
+int test_coroutine1(int argc, char * argv[])
 {
     coroutine_t context;
 
@@ -13,7 +16,10 @@ int test_coroutine1(int /*argc*/, char * /*argv*/[])
     ZCE_OS::setcontext(&context);
     return 0;
 }
+*/
 
+
+const unsigned int COROUTINE_LOOP_NUMBER = 3;
 
 /* This is the iterator function. It is entered on the first call to
 * swapcontext, and loops from 0 to 9. Each value is saved in i_from_iterator,
@@ -23,19 +29,18 @@ int test_coroutine1(int /*argc*/, char * /*argv*/[])
 * context pointed to by main_context1. */
 void loop(
     coroutine_t *loop_context,
-    coroutine_t *other_context,
     int *i_from_iterator)
 {
     int i;
 
-    for (i = 0; i < 3; ++i)
+    for (i = 0; i < COROUTINE_LOOP_NUMBER; ++i)
     {
         /* Write the loop counter into the iterator return location. */
         *i_from_iterator = i;
 
         /* Save the loop context (this point in the code) into ''loop_context'',
         * and switch to other_context. */
-        ZCE_OS::swapcontext(loop_context, other_context);
+        ZCE_OS::switch_to_main(loop_context);
     }
 
     /* The function falls through to the calling context with an implicit
@@ -52,7 +57,7 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
     *                        flow by switching contexts.
     *    (3) loop_context  : The point in loop to which control from main will
     *                        flow by switching contexts. */
-    coroutine_t main_context1, main_context2, loop_context;
+    coroutine_t loop_context;
 
     
 
@@ -60,25 +65,25 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
     volatile int iterator_finished;
 
     /* The iterator return value. */
-    volatile int i_from_iterator;
+    volatile int i_from_iterator =0;
 
     /* Fill in loop_context so that it makes swapcontext start loop. The
     * (void (*)(void)) typecast is to avoid a compiler warning but it is
     * not relevant to the behaviour of the function. */
     ZCE_OS::make_coroutine(&loop_context,
         8192*100,
-        &main_context1,
-        (ZCE_COROUTINE_2PARA)loop,
+        true,
+        (ZCE_COROUTINE_3PARA)loop,
         (void *)&loop_context,
-        (void *)&main_context2,
-        (void *)&i_from_iterator);
+        (void *)&i_from_iterator,
+        NULL);
 
     /* Clear the finished flag. */
     iterator_finished = 0;
 
     /* Save the current context into main_context1. When loop is finished,
     * control flow will return to this point. */
-    ZCE_OS::getcontext(&main_context1);
+    //ZCE_OS::getcontext(&main_context1);
 
     if (!iterator_finished)
     {
@@ -87,13 +92,14 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
         * iterator is not restarted. */
         iterator_finished = 1;
 
-        while (1)
+        while (COROUTINE_LOOP_NUMBER != i_from_iterator)
         {
             /* Save this point into main_context2 and switch into the iterator.
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
-            ZCE_OS::swapcontext(&main_context2, &loop_context);
+            ZCE_OS::switch_to_coroutine(&loop_context);
             printf("%d\n", i_from_iterator);
+
         }
     }
 

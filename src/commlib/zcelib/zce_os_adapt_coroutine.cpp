@@ -16,12 +16,14 @@ struct _FIBERS_2PARAFUN_ADAPT
     ///是否在退出的时候返回主协程，
     bool                  exit_back_main_;
     ///函数指针
-    ZCE_COROUTINE_2PARA   fun_ptr_;
+    ZCE_COROUTINE_3PARA   fun_ptr_;
 
     //函数的第1个参数，
     void                 *para1_;
     //函数的第2个参数
     void                 *para2_;
+    //函数的第3个参数
+    void                 *para3_;
 };
 
 //帮助完成函数适配适配
@@ -35,14 +37,15 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
     coroutine_t *handle = fun_adapt->handle_;
     bool exit_back_main = fun_adapt->exit_back_main_;
 
-    ZCE_COROUTINE_2PARA twopara_fun = fun_adapt->fun_ptr_;
+    ZCE_COROUTINE_3PARA treepara_fun = fun_adapt->fun_ptr_;
     void *para1 = fun_adapt->para1_;
     void *para2 = fun_adapt->para2_;
-    
+    void *para3 = fun_adapt->para3_;
+
     //这个函数是堆分配的，要清理掉释放
     delete fun_adapt;
 
-    twopara_fun(para1,para2);
+    treepara_fun(para1, para2, para3);
 
     if (exit_back_main)
     {
@@ -58,9 +61,10 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     size_t stack_size,
     bool exit_back_main,
-    ZCE_COROUTINE_2PARA fun_ptr,
+    ZCE_COROUTINE_3PARA fun_ptr,
     void *para1,
-    void *para2)
+    void *para2,
+    void *para3)
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -95,7 +99,8 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     fibers_adapt->fun_ptr_ = fun_ptr;
     fibers_adapt->para1_ = para1;
     fibers_adapt->para2_ = para2;
-    
+    fibers_adapt->para3_ = para3;
+
     //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
     coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
         stack_size,
@@ -139,7 +144,8 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
         (void(*)(void)) fun_ptr,
         ONLY_2_ARG_COUNT,
         para1,
-        para2
+        para2,
+        para3
         );
     return 0;
 #endif
@@ -200,6 +206,22 @@ int ZCE_OS::switch_to_main(coroutine_t *coroutine_hdl)
 #elif defined ZCE_OS_LINUX
     return ::swapcontext(&coroutine_hdl->coroutine_,
         &coroutine_hdl->main_);
+#endif 
+}
+
+int ZCE_OS::exchage_coroutine(coroutine_t *save_hdl,
+    coroutine_t *goto_hdl)
+{
+
+#if defined ZCE_OS_WINDOWS
+    //
+    ZCE_UNUSED_ARG(save_hdl);
+    ::SwitchToFiber(goto_hdl->coroutine_);
+    return 0;
+
+#elif defined ZCE_OS_LINUX
+    return ::swapcontext(&save_hdl->coroutine_,
+        &goto_hdl->coroutine_);
 #endif 
 }
 

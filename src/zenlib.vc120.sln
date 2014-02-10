@@ -1,0 +1,68 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zcelib", "commlib\zcelib\zcelib.vc120.vcxproj", "{C2D23FE7-03ED-4516-9603-604BA4617FDB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commlib", "commlib", "{E3E63F9D-ADF2-451D-82DE-E89530D142F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{D3352ACF-CC1E-456E-AEA2-79CAF505FA9B}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zealot", "test\zeolot\zealot.vc120.vcxproj", "{0FA45C38-5F6C-4715-8726-6D32A2069743}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "makefile", "makefile", "{A927BDE9-D270-48DC-8DEA-B8D636877EAC}"
+	ProjectSection(SolutionItems) = preProject
+		make\makefile.define = make\makefile.define
+		make\makefile.linux = make\makefile.linux
+		make\makefile.rule = make\makefile.rule
+		make\readme.txt = make\readme.txt
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soarlib", "commlib\soarlib\soarlib.vc120.vcxproj", "{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|Win32.Build.0 = Debug|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|x64.ActiveCfg = Debug|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Debug|x64.Build.0 = Debug|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|Win32.ActiveCfg = Release|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|Win32.Build.0 = Release|Win32
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|x64.ActiveCfg = Release|x64
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB}.Release|x64.Build.0 = Release|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|Win32.Build.0 = Debug|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|x64.ActiveCfg = Debug|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Debug|x64.Build.0 = Debug|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|Win32.ActiveCfg = Release|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|Win32.Build.0 = Release|Win32
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|x64.ActiveCfg = Release|x64
+		{0FA45C38-5F6C-4715-8726-6D32A2069743}.Release|x64.Build.0 = Release|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|Win32.ActiveCfg = Debug|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|Win32.Build.0 = Debug|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|x64.ActiveCfg = Debug|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Debug|x64.Build.0 = Debug|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|Win32.ActiveCfg = Release|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|Win32.Build.0 = Release|Win32
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|x64.ActiveCfg = Release|x64
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {E3E63F9D-ADF2-451D-82DE-E89530D142F7}
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7} = {E3E63F9D-ADF2-451D-82DE-E89530D142F7}
+		{0FA45C38-5F6C-4715-8726-6D32A2069743} = {D3352ACF-CC1E-456E-AEA2-79CAF505FA9B}
+	EndGlobalSection
+EndGlobal
