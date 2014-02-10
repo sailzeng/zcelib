@@ -92,14 +92,13 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
         * iterator is not restarted. */
         iterator_finished = 1;
 
-        while (COROUTINE_LOOP_NUMBER != i_from_iterator)
+        while (COROUTINE_LOOP_NUMBER -1 > i_from_iterator)
         {
             /* Save this point into main_context2 and switch into the iterator.
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
             ZCE_OS::switch_to_coroutine(&loop_context);
             printf("%d\n", i_from_iterator);
-
         }
     }
 

@@ -64,17 +64,7 @@ Transaction_Manager::Transaction_Manager()
 {
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年3月31日
-Function        : Transaction_Manager::~Transaction_Manager
-Return          : NULL
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//事务管理器的析构函数
 Transaction_Manager::~Transaction_Manager()
 {
     ZLOG_INFO("[framework] Transaction_Manager::~Transaction_Manager start.");
@@ -188,21 +178,8 @@ void Transaction_Manager::initialize(size_t  szregtrans,
     }
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月3日
-Function        : Transaction_Manager::register_trans_cmd
-Return          : int
-Parameter List  :
-  Param1: unsigned int cmd           注册的命令字
-  Param2: Transaction_Base* ptxbase    命令对应的处理Handler，最后会删除
-  Param3: bool if_auto_lock_trans     这个事务是否加锁，事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
-  Param4: unsigned int lock_trans_cmd 加锁的ID,可以是命令ID,也可以多个命令共用一个个ID,
-Description     : 注册事务处理的的命令
-Calls           :
-Called By       : 事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
-Other           : 这个地方违背了谁申请，谁删除的原则，不好，但是……
-Modify Record   :
-******************************************************************************************/
+
+//注册命令以及对应的事务处理的类
 int Transaction_Manager::register_trans_cmd(unsigned int cmd,
                                             Transaction_Base *ptxbase,
                                             bool if_auto_lock_trans,

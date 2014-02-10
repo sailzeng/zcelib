@@ -199,7 +199,17 @@ public:
     void unlock_qquin_trans_cmd(unsigned int qq_uin,
                                 unsigned int trnas_lock_id);
 
-    //事务处理的基类
+    
+    /*!
+    * @brief      注册命令以及对应的事务处理的类
+    * @return     int
+    * @param      cmd 注册的命令字           
+    * @param      ptxbase 命令对应的处理Handler，最后会删除
+    * @param      if_lock_trans 这个事务是否加锁，事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
+    * @param      lock_trans_cmd 加锁的ID,可以是命令ID,也可以多个命令共用一个个ID,
+    * @note       事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
+    *             这个地方违背了谁申请，谁删除的原则，不好，但是……
+    */
     int register_trans_cmd(unsigned int cmd,
                            Transaction_Base *ptxbase,
                            bool if_lock_trans = false,

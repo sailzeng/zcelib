@@ -9,16 +9,21 @@
 
 //------------------------------------------------------------------------------------
 
+
+/*!
+* @brief      协程对象
+*             
+*/
 class ZCE_CRTNAsync_Coroutine
 {
-
+    friend class ZCE_CRTNAsync_Main;
 public:
 
     ///协程的状态枚举
     enum STATE_COROUTINE
     {
         STATE_RUNNIG  = 1,
-        STATE_ENDRUN,
+        STATE_END,
         STATE_TIMEOUT,
         STATE_EXIT,
     };
@@ -56,23 +61,40 @@ public:
     
     ///
     ZCE_CRTNAsync_Coroutine *clone();
+
+    ///
+    inline void set_command(unsigned int cmd);
+    ///
+
 public:
 
     ///static 函数，用于协程运行函数，调用协程对象的运行函数
-    static void coroutine_do(ZCE_CRTNAsync_Coroutine *);
+    static void static_do(ZCE_CRTNAsync_Coroutine *);
 
 protected:
 
     ///
     coroutine_t      handle_;
 
+    ///对应处理的命令
+    unsigned int     command_;
+
+    ///
+    unsigned int     coroutine_id_;
+
     ///
     STATE_COROUTINE  state_;
+    
 
 };
 
 //------------------------------------------------------------------------------------
 
+
+/*!
+* @brief      （协程）主控管理类
+*             
+*/
 class ZCE_CRTNAsync_Main
 {
 
@@ -81,30 +103,38 @@ protected:
     //
     typedef ZCE_LIB::lordrings<ZCE_CRTNAsync_Coroutine *>                REG_COROUTINE_POOL;
     //
-    typedef std::unordered_map<unsigned int, REG_COROUTINE_POOL* >       ID_TO_REGCOR_POOL_MAP;
+    typedef std::unordered_map<unsigned int, REG_COROUTINE_POOL>         ID_TO_REGCOR_POOL_MAP;
 
     //
     typedef std::unordered_map<unsigned int, ZCE_CRTNAsync_Coroutine * > CMD_TO_COROUTINE_MAP;
 
 public:
 
+    //
     ZCE_CRTNAsync_Main();
     virtual ~ZCE_CRTNAsync_Main();
 
 
-    ///初始化，
+    /*!
+    * @brief      初始化，控制各种池子，容器的大小
+    * @return     int
+    * @param      crtn_type_num
+    * @param      running_number
+    * @note       
+    */
     int initialize(size_t crtn_type_num = DEFUALT_CRTN_TYPE_NUM,
         size_t running_number = DEFUALT_RUNNIG_CRTN_SIZE);
 
     ///注册一类协程，其用reg_cmd对应，
-    int register_cmd(unsigned int reg_cmd,
+    int register_coroutine(unsigned int reg_cmd,
         ZCE_CRTNAsync_Coroutine* coroutine_base,
-        size_t init_clone_num);
+        size_t init_clone_num,
+        size_t stack_size);
 
-    ///
-    int active_coroutine(unsigned int cmd);
+    ///激活一个协程
+    int active_coroutine(unsigned int cmd,unsigned int *id);
 
-    ///
+    ///切换到ID对应的那个线程
     int switch_to_coroutine(unsigned int id);
 
 protected:

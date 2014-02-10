@@ -9,7 +9,7 @@
 
 ///Windows的Fiber实现(CreateFiber)函数指针对应的参数只有一个，而且需要的的函数纸质是WINAPI的，
 ///就是__stdcall的，而且Fiber没有返回的context指定,所以做一个转换，
-struct _FIBERS_2PARAFUN_ADAPT
+struct _FIBERS_3PARAFUN_ADAPT
 {
     ///
     coroutine_t          *handle_;
@@ -32,7 +32,7 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
     
     
 
-    _FIBERS_2PARAFUN_ADAPT *fun_adapt = (_FIBERS_2PARAFUN_ADAPT *)fun_para;
+    _FIBERS_3PARAFUN_ADAPT *fun_adapt = (_FIBERS_3PARAFUN_ADAPT *)fun_para;
 
     coroutine_t *handle = fun_adapt->handle_;
     bool exit_back_main = fun_adapt->exit_back_main_;
@@ -94,12 +94,13 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
 
 
     //使用这个结构完成函数适配
-    struct _FIBERS_2PARAFUN_ADAPT *fibers_adapt = new _FIBERS_2PARAFUN_ADAPT();
+    struct _FIBERS_3PARAFUN_ADAPT *fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
     fibers_adapt->exit_back_main_ = exit_back_main;
     fibers_adapt->fun_ptr_ = fun_ptr;
     fibers_adapt->para1_ = para1;
     fibers_adapt->para2_ = para2;
     fibers_adapt->para3_ = para3;
+    
 
     //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
     coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
@@ -112,6 +113,9 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     {
         return -1;
     }
+
+    fibers_adapt->handle_ = coroutine_hdl;
+
     return 0;
 #elif defined ZCE_OS_LINUX
     

@@ -71,25 +71,25 @@
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)../bin/</OutDir>
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-d</TargetName>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <OutDir>$(SolutionDir)../bin/</OutDir>
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-d</TargetName>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../bin/</OutDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)</TargetName>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
     <OutDir>$(SolutionDir)../bin/</OutDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)</TargetName>
+    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
