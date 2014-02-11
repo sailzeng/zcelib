@@ -9,7 +9,7 @@
 #endif
 
 //打开下面宏定义，会增加调试信息，对每次压缩结果进行记录
-#define  ZCE_LZ_DEBUG 1
+#define  ZCE_LZ_DEBUG 0
 
 #define ZCE_LZ_HASH(ptr)       (((*(uint32_t *)(ptr)) *2654435761U)  >> ((4*8)-13))
 
@@ -93,8 +93,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 #endif
 
         //你可以认为ZCELZ算法的多个块组成，一个块中间有一个不能压缩字段（可选），一个可以压缩字段组成（可选），
-        //块的最开始是一个字节的offset_token，TOKEN的高4bit表示非压缩长度，低四位表示压缩长度
-        offset_token = (write_pos++);
+        
         nomatch_achor = read_pos;
 
         nomatch_count = 0;
@@ -170,7 +169,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
                     //同时根据大头和小头平台使用不同的函数，小头用LBE to MBE ,大头用 MBE to LBE,
                     //本来我对这个问题有点异或，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
                     //这儿为了速度，我们取出64bit的数值作为longlong比较的时候，没有考虑字节序
-#if defined ZCE_LINUX64                    
+#if defined ZCE_LINUX64
 
 #if defined ZCE_LITTLE_ENDIAN
                     match_bytes += __builtin_ctzll(diff) >> 3;
@@ -187,9 +186,9 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
                     _BitScanForward64(&index, diff);
 #else
                     _BitScanReverse64(&index, diff);
-#endif 
+#endif
                     match_bytes  += (index >> 3);
- 
+
 #endif //#if defined ZCE_WIN64
 
                     //对于32位的系统进行处理，每次比较32bits，请参考64位LINUX的解释
@@ -264,6 +263,9 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 
 
 zlz_token_process:
+
+        //块的最开始是一个字节的offset_token，TOKEN的高4bit表示非压缩长度，低四位表示压缩长度
+        offset_token = (write_pos++);
 
         //接着保存未压缩数据的长度
         if (nomatch_count <  0xE)
@@ -621,8 +623,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 #endif
 
         //你可以认为ZLZ算法的多个块组成，一个块中间有一个不能压缩字段（可选），一个可以压缩字段组成（可选），
-        //块的最开始是一个字节的offset_token，TOKEN的高4bit表示非压缩长度，低四位表示压缩长度
-        offset_token = (write_pos++);
+
         nomatch_achor = read_pos;
 
         size_t step_len = 1;
@@ -665,8 +666,8 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                 match_achor = read_pos;
                 read_pos += 4;
                 ref_offset += 4;
-                
-                //快速的有多少数据是相同的，
+
+                //快速的找出有多少数据是相同的，
                 for (;;)
                 {
                     if (ZCE_UNLIKELY((read_pos > match_end) ) )
@@ -695,7 +696,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                     //同时根据大头和小头平台使用不同的函数，小头用LBE to MBE ,大头用 MBE to LBE,
                     //本来我对这个问题有点异或，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
                     //这儿为了速度，我们取出64bit的数值作为longlong比较的时候，没有考虑字节序
-#if defined ZCE_LINUX64                    
+#if defined ZCE_LINUX64
 
 #if defined ZCE_LITTLE_ENDIAN
                     match_bytes += __builtin_ctzll(diff) >> 3;
@@ -712,7 +713,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                     _BitScanForward64(&index, diff);
 #else
                     _BitScanReverse64(&index, diff);
-#endif 
+#endif
                     match_bytes  += (index >> 3);
 
 #endif //#if defined ZCE_WIN64
@@ -765,7 +766,9 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
             //如果不匹配
             else
             {
-                //下一轮 step_len 可能还会自增，所以这儿是<,注意是0xFFDF，= 0xFFFF -32
+                //如果到了最后，跳到最后的处理，注意这儿和ZLZ的算法有区别，
+                //ZLZ的算法是跳入Token处理，ZLZ的算法每个Token内无法压缩的数据区长度是有限制的，
+                //LZ4的算法对于每个Token无法压缩的数据区长度没有限制,所以这个地方直接跳入了最后，
                 if ( ZCE_UNLIKELY( read_pos + step_len > match_end )   )
                 {
                     ++read_pos;
@@ -786,6 +789,9 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
         }
 
 lz4_token_process:
+
+        //块的最开始是一个字节的offset_token，TOKEN的高4bit表示非压缩长度，低四位表示压缩长度
+        offset_token = (write_pos++);
 
         //
         if (ZCE_LIKELY(nomatch_count < 0xF))

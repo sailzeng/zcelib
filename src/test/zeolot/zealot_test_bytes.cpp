@@ -769,13 +769,24 @@ int test_compress_fun(unsigned char *source_buf, size_t source_len)
         return ret;
     }
 
-    ret = ZCE_LIB::ZLZ_Compress::compress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = ZCE_LIB::ZLZ_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
         printf("%s\n", "ZLZ decompress fail.\n");
         return ret;
     }
 
+    printf("source len %lu,compressed len %lu.\n", source_len, compressbuf_len);
+    printf("%s\n", source_buf);
+    printf("%s\n", decompress_buf);
+    ret = memcmp(source_buf, decompress_buf, source_len);
+    if (ret != 0)
+    {
+        abort();
+    }
+
+    compressbuf_len = 1024;
+    decompress_len = 1024;
     ret = ZCE_LIB::LZ4_Compress::compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
@@ -783,7 +794,7 @@ int test_compress_fun(unsigned char *source_buf, size_t source_len)
         return ret;
     }
 
-    ret = ZCE_LIB::LZ4_Compress::compress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = ZCE_LIB::LZ4_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
         printf("%s\n", "LZ4 decompress fail.\n");
@@ -833,7 +844,7 @@ int test_compress_filedata(const char *file_name)
         printf("%s\n", "ZCE Lz4 compress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
-        delete []file_buffer;
+        delete[] file_buffer;
         return ret;
     }
 
@@ -876,7 +887,7 @@ int test_compress_filedata(const char *file_name)
         printf("%s\n", "ZCE ZLZ compress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
-        delete []file_buffer;
+        delete[] file_buffer;
         return ret;
     }
 
@@ -886,7 +897,7 @@ int test_compress_filedata(const char *file_name)
         printf("%s\n", "ZCE ZLZ decompress fail.\n");
         delete[] compress_buf;
         delete[] decompress_buf;
-        delete []file_buffer;
+        delete[] file_buffer;
         return ret;
     }
     printf("ZCE ZLZ source len %lu,compressed len %lu.\n", source_len, compressbuf_len);
@@ -916,14 +927,22 @@ int test_compress_filedata(const char *file_name)
     printf("---------------------------------------------------------\n");
     delete[] compress_buf;
     delete[] decompress_buf;
-    delete []file_buffer;
+    delete[] file_buffer;
 
     return 0;
 }
 
 int test_compress(int /*argc*/, char * /*argv*/[])
 {
-    test_compress_filedata("D:\\b.log");
+
+    char test_filename[PATH_MAX+1];
+    for (size_t i = 0; i < 4168; ++i)
+    {
+        snprintf(test_filename, PATH_MAX,"D:\\TestDir\\%06d.dat", i);
+        test_compress_filedata(test_filename);
+    }
+
+    //test_compress_filedata("D:\\b.log");
     //test_compress_filedata("D:\\TestDir\\compress\\5.txt");
 
     /*
@@ -935,6 +954,8 @@ int test_compress(int /*argc*/, char * /*argv*/[])
 
     /*
     unsigned char source_buf[1024];
+    strcpy((char *)source_buf, "123");
+    test_compress_fun(source_buf, strlen((char *)source_buf) + 1);
     strcpy((char *)source_buf,"11122221112211122222211211111111222112");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
     strcpy((char *)source_buf,"1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
