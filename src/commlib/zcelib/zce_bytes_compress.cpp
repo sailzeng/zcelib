@@ -606,6 +606,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 
     size_t match_offset , nomatch_count = 0, match_count = 0;
 
+    //处理每一个要压缩的字节
     for (;;)
     {
 
@@ -628,6 +629,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
         //等于(1 << ZCE_LZ_STEP_LEN_POW)+1
         size_t step_attempts = 65;
 
+        //找到一个Token（包括可以压缩的数据和不可以压缩的数据）
         for (;;)
         {
             //这个地方说明一下，如果table_old_offset == -1(0xFFFFFFFF)，那么也认为是没有匹配
@@ -663,7 +665,8 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                 match_achor = read_pos;
                 read_pos += 4;
                 ref_offset += 4;
-                //0xFFF7是避免溢出
+                
+                //快速的有多少数据是相同的，
                 for (;;)
                 {
                     if (ZCE_UNLIKELY((read_pos > match_end) ) )
@@ -762,8 +765,6 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
             //如果不匹配
             else
             {
-
-                //长度也是最大记录2个字节,
                 //下一轮 step_len 可能还会自增，所以这儿是<,注意是0xFFDF，= 0xFFFF -32
                 if ( ZCE_UNLIKELY( read_pos + step_len > match_end )   )
                 {
