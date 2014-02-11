@@ -139,6 +139,9 @@ public:
 
 protected:
 
+
+protected:
+
     ///
     static const size_t DEFUALT_CRTN_TYPE_NUM = 512;
     ///

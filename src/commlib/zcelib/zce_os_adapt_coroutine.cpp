@@ -132,7 +132,7 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     }
 
     //只使用一个参数，不允许使用变参，Windwos不支持
-    const int ONLY_2_ARG_COUNT = 2;
+    const int ONLY_3_ARG_COUNT = 3;
     if (exit_back_main)
     {
         coroutine_hdl->coroutine_.uc_link = &(coroutine_hdl->main_);
@@ -146,7 +146,7 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
 
     ::makecontext(coroutine_hdl->coroutine_,
         (void(*)(void)) fun_ptr,
-        ONLY_2_ARG_COUNT,
+        ONLY_3_ARG_COUNT,
         para1,
         para2,
         para3

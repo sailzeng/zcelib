@@ -12,7 +12,7 @@ int main(int argc , char *argv[])
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
 
-    test_coroutine2(argc, argv);
+    test_compress(argc, argv);
 
 
     system("pause");

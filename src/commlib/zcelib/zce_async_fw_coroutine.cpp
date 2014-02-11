@@ -182,7 +182,7 @@ int ZCE_CRTNAsync_Main::register_coroutine(unsigned int reg_cmd,
     return 0;
 }
 
-
+/*
 ///激活一个协程
 int ZCE_CRTNAsync_Main::active_coroutine(unsigned int cmd, unsigned int *id)
 {
@@ -190,6 +190,7 @@ int ZCE_CRTNAsync_Main::active_coroutine(unsigned int cmd, unsigned int *id)
 
 }
 
+*/
 
 
 

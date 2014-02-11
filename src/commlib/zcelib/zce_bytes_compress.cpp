@@ -9,7 +9,7 @@
 #endif
 
 //打开下面宏定义，会增加调试信息，对每次压缩结果进行记录
-#define  ZCE_LZ_DEBUG 0
+#define  ZCE_LZ_DEBUG 1
 
 #define ZCE_LZ_HASH(ptr)       (((*(uint32_t *)(ptr)) *2654435761U)  >> ((4*8)-13))
 
@@ -610,7 +610,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
     {
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-        ZLOG_DEBUG("lz4 no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
+        ZLOG_DEBUG("lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
                    nomatch_count ,
                    match_count ,
                    read_pos - original_buf,
@@ -846,8 +846,12 @@ lz4_token_process:
 
 lz4_end_process:
 
+    //把最后几个字节(作为非压缩数据)拷贝到压缩数据里面
+    nomatch_count = read_end - nomatch_achor;
+    match_count = 0;
+
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-    ZLOG_DEBUG("lz4 no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
+    ZLOG_DEBUG("lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
                nomatch_count ,
                match_count ,
                read_pos - original_buf,
@@ -855,9 +859,6 @@ lz4_end_process:
                original_size - (read_pos - original_buf)
               );
 #endif
-
-    //把最后几个字节(作为非压缩数据)拷贝到压缩数据里面
-    nomatch_count =  read_end - nomatch_achor;
 
     offset_token = (write_pos++);
     if (ZCE_LIKELY(nomatch_count < 0xF))

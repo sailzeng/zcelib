@@ -923,7 +923,8 @@ int test_compress_filedata(const char *file_name)
 
 int test_compress(int /*argc*/, char * /*argv*/[])
 {
-    test_compress_filedata("D:\\TestDir\\compress\\5.txt");
+    test_compress_filedata("D:\\b.log");
+    //test_compress_filedata("D:\\TestDir\\compress\\5.txt");
 
     /*
     test_compress_filedata("D:\\TestDir\\compress\\2.jpg");
