@@ -139,6 +139,13 @@ public:
 
 protected:
 
+    ///分配一个协程
+    int allocate_coroutine(unsigned int cmd);
+
+    ///释放一个协程
+    int free_coroutine(unsigned int cmd);
+protected:
+
 
 protected:
 
@@ -155,7 +162,6 @@ protected:
     
     //事务ID发生器
     unsigned int           corout_id_builder_;
-    
 
     //协程的池子，都是注册进来的
     ID_TO_REGCOR_POOL_MAP  coroutine_pool_;
