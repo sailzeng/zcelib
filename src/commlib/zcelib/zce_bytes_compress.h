@@ -271,8 +271,8 @@ public:
                           unsigned char *original_buf,
                           size_t *original_size)
     {
-        ZCE_ASSERT(original_buf && compressed_buf && compressed_size > 3);
-        if (compressed_size <= 3)
+        ZCE_ASSERT(original_buf && compressed_buf && compressed_size >= 3);
+        if (compressed_size < 3)
         {
             return -1;
         }
