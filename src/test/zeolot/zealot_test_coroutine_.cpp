@@ -40,7 +40,7 @@ void loop(
 
         /* Save the loop context (this point in the code) into ''loop_context'',
         * and switch to other_context. */
-        ZCE_OS::switch_to_main(loop_context);
+        ZCE_OS::yeild_main(loop_context);
     }
 
     /* The function falls through to the calling context with an implicit
@@ -97,7 +97,7 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
             /* Save this point into main_context2 and switch into the iterator.
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
-            ZCE_OS::switch_to_coroutine(&loop_context);
+            ZCE_OS::yeild_coroutine(&loop_context);
             printf("%d\n", i_from_iterator);
         }
     }

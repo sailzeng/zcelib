@@ -26,8 +26,8 @@
 *
 *             所以只能实现一个COROUTINE的封装，我的设计希望是这样的
 *             在main里面，在里面用make_coroutine生成协程，
-*             在main里面，switch_to_coroutine切换到协程，
-*             在coroutine里面，使用switch_to_main切换到协程，
+*             在main里面，yeild_coroutine切换到协程，
+*             在coroutine里面，使用yeild_main切换到协程，
 *             
 * @note       关于Fibers函数的说明，清参考如下文档，作者写的非常清楚。
 *             ConvertFiberToThread  
@@ -122,14 +122,14 @@ void delete_coroutine(coroutine_t *coroutine_hdl);
 * @return     int 返回0标识成功
 * @param      coroutine_hdl 
 */
-int switch_to_coroutine(coroutine_t *coroutine_hdl);
+int yeild_coroutine(coroutine_t *coroutine_hdl);
 
 /*!
 * @brief      从coroutine切换到Main
 * @return     int 返回0标识成功
 * @param      coroutine_hdl
 */
-int switch_to_main(coroutine_t *coroutine_hdl);
+int yeild_main(coroutine_t *coroutine_hdl);
 
 /*!
 * @brief      从一个coroutine切换到另外一个coroutine

@@ -42,10 +42,10 @@ public:
     void coroutine_do();
     
     ///切换回Main
-    void switch_to_main();
+    void yeild_main();
 
     ///切换回协程，也就是切换到他自己运行
-    void switch_to_coroutine();
+    void yeild_coroutine();
 
     ///设置协程的状态
     void set_state(ZCE_CRTNAsync_Coroutine::STATE_COROUTINE state);
@@ -100,14 +100,38 @@ class ZCE_CRTNAsync_Main
 
 protected:
     
+    ///
+    typedef ZCE_LIB::lordrings<ZCE_CRTNAsync_Coroutine *>  REG_COROUTINE_POOL;
+
+    ///
+    struct COROUTINE_RECORD
+    {
+
+        REG_COROUTINE_POOL          coroutine_pool_;
+
+        
+        //下面是统计信息
+
+        //创建的事务的数量
+        uint64_t                     start_num_;
+
+        //销毁时在正确状态的事务数量
+        uint64_t                     end_right_num_;
+        //销毁时超时状态的事务
+        uint64_t                     end_timeout_num_;
+        //销毁时状态异常的事务数量
+        uint64_t                     end_exception_num_;
+
+        //总消耗时间
+        uint64_t                     trans_consume_ms_;
+    };
+
     //
-    typedef ZCE_LIB::lordrings<ZCE_CRTNAsync_Coroutine *>                REG_COROUTINE_POOL;
-    //
-    typedef std::unordered_map<unsigned int, REG_COROUTINE_POOL>         ID_TO_REGCOR_POOL_MAP;
+    typedef std::unordered_map<unsigned int, COROUTINE_RECORD>         ID_TO_REGCOR_POOL_MAP;
 
     //
     typedef std::unordered_map<unsigned int, ZCE_CRTNAsync_Coroutine * > CMD_TO_COROUTINE_MAP;
-
+    
 public:
 
     //
@@ -135,10 +159,15 @@ public:
     int active_coroutine(unsigned int cmd,unsigned int *id);
 
     ///切换到ID对应的那个线程
-    int switch_to_coroutine(unsigned int id);
+    int yeild_coroutine(unsigned int id);
 
 protected:
+    
+    ///从池子里面分配一个
+    int allocate_from_pool(unsigned int cmd, ZCE_CRTNAsync_Coroutine *&crt_crtn);
 
+    ///
+    int free_to_pool(ZCE_CRTNAsync_Coroutine *);
 
 protected:
 
@@ -150,6 +179,8 @@ protected:
     static const size_t DEFUALT_RUNNIG_CRTN_SIZE = 1024;
     ///
     static const size_t DEFUALT_POOL_ADD_CRTN_SIZE = 256;
+    ///
+    static const size_t POOL_EXTEND_COROUTINE_NUM = 256;
 
 protected:
     
@@ -158,7 +189,7 @@ protected:
     
 
     //协程的池子，都是注册进来的
-    ID_TO_REGCOR_POOL_MAP  coroutine_pool_;
+    ID_TO_REGCOR_POOL_MAP  reg_coroutine_;
 
     ///正在运行的协程
     CMD_TO_COROUTINE_MAP   running_coroutine_;
