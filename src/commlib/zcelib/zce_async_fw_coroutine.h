@@ -20,12 +20,12 @@ class ZCE_CRTNAsync_Coroutine
 public:
 
     ///协程的状态枚举
-    enum STATE_COROUTINE
+    enum RUNNING_STATE
     {
-        STATE_RUNNIG  = 1,
-        STATE_END,
-        STATE_TIMEOUT,
-        STATE_EXIT,
+        STATE_RUNNIG     = 1,
+        STATE_TIMEOUT    = 2,
+        STATE_EXIT = 3,
+        STATE_FORCE_EXIT = 4,
     };
 
 public:
@@ -47,23 +47,19 @@ public:
     ///切换回协程，也就是切换到他自己运行
     void yeild_coroutine();
 
-    ///设置协程的状态
-    void set_state(ZCE_CRTNAsync_Coroutine::STATE_COROUTINE state);
 
     ///协程启动，做初始化工作
-    virtual int coroutine_start();
+    virtual int coroutine_init();
 
     ///协程运行
     virtual int coroutine_run() = 0;
 
     ///协程结束，做结束，释放资源的事情
-    virtual int coroutine_end();
+    virtual int coroutine_end_cleanup();
     
     ///
     ZCE_CRTNAsync_Coroutine *clone();
 
-    ///
-    inline void set_command(unsigned int cmd);
     ///
 
 public:
@@ -80,10 +76,10 @@ protected:
     unsigned int     command_;
 
     ///
-    unsigned int     coroutine_id_;
+    unsigned int     identity_;
 
     ///
-    STATE_COROUTINE  state_;
+    RUNNING_STATE    running_state_;
     
 
 };
@@ -115,22 +111,26 @@ protected:
         //创建的事务的数量
         uint64_t                     start_num_;
 
-        //销毁时在正确状态的事务数量
-        uint64_t                     end_right_num_;
-        //销毁时超时状态的事务
-        uint64_t                     end_timeout_num_;
-        //销毁时状态异常的事务数量
-        uint64_t                     end_exception_num_;
+        //正常结束的数量
+        uint64_t                     end_num_;
 
-        //总消耗时间
-        uint64_t                     trans_consume_ms_;
+        ///强行结束的数量
+        uint64_t                     force_end_num_;
+
+        //运行过程发生超时的数量
+        uint64_t                     timeout_num_;
+
+        //销毁时状态异常的事务数量
+        uint64_t                     exception_num_;
+
+        //运行总消耗时间
+        uint64_t                     run_consume_ms_;
     };
 
     //
-    typedef std::unordered_map<unsigned int, COROUTINE_RECORD>         ID_TO_REGCOR_POOL_MAP;
-
+    typedef std::unordered_map<unsigned int, COROUTINE_RECORD> ID_TO_REGCOR_POOL_MAP;
     //
-    typedef std::unordered_map<unsigned int, ZCE_CRTNAsync_Coroutine * > CMD_TO_COROUTINE_MAP;
+    typedef std::unordered_map<unsigned int, ZCE_CRTNAsync_Coroutine * > ID_TO_COROUTINE_MAP;
     
 public:
 
@@ -172,27 +172,25 @@ protected:
 protected:
 
     ///
-    static const size_t DEFUALT_CRTN_TYPE_NUM = 512;
+    static const size_t DEFUALT_CRTN_TYPE_NUM = 1024;
     ///
-    static const size_t DEFUALT_INIT_POOL_SIZE = 8;
+    static const size_t DEFUALT_INIT_POOL_SIZE = 2;
     ///
     static const size_t DEFUALT_RUNNIG_CRTN_SIZE = 1024;
     ///
-    static const size_t DEFUALT_POOL_ADD_CRTN_SIZE = 256;
-    ///
-    static const size_t POOL_EXTEND_COROUTINE_NUM = 256;
+    static const size_t POOL_EXTEND_COROUTINE_NUM = 128;
 
 protected:
     
     //事务ID发生器
-    unsigned int           corout_id_builder_;
+    unsigned int           id_builder_;
     
 
     //协程的池子，都是注册进来的
     ID_TO_REGCOR_POOL_MAP  reg_coroutine_;
 
     ///正在运行的协程
-    CMD_TO_COROUTINE_MAP   running_coroutine_;
+    ID_TO_COROUTINE_MAP    running_coroutine_;
 
 
 };
