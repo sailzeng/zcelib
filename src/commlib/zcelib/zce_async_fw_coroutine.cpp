@@ -7,34 +7,35 @@
 
 
 //------------------------------------------------------------------------------------
-ZCE_CRTNAsync_Coroutine::ZCE_CRTNAsync_Coroutine():
+ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_CoroutineMgr *async_mgr) :
+    async_mgr_(async_mgr),
     command_(0),
     identity_(0),
     running_state_(STATE_RUNNIG)
 {
 }
 
-ZCE_CRTNAsync_Coroutine::~ZCE_CRTNAsync_Coroutine()
+ZCE_Async_Coroutine::~ZCE_Async_Coroutine()
 {
 }
 
 
 ///取得协程的句柄
-coroutine_t *ZCE_CRTNAsync_Coroutine::get_handle()
+coroutine_t *ZCE_Async_Coroutine::get_handle()
 {
     return &handle_;
 }
 
 
 //切换回Main
-void ZCE_CRTNAsync_Coroutine::yeild_main()
+void ZCE_Async_Coroutine::yeild_main()
 {
     ZCE_OS::yeild_main(&handle_);
 }
 
 
 ///切换回协程，也就是切换到他自己运行
-void ZCE_CRTNAsync_Coroutine::yeild_coroutine()
+void ZCE_Async_Coroutine::yeild_coroutine()
 {
     ZCE_OS::yeild_coroutine(&handle_);
 }
@@ -42,7 +43,7 @@ void ZCE_CRTNAsync_Coroutine::yeild_coroutine()
 
 
 //协程对象的运行函数
-void ZCE_CRTNAsync_Coroutine::coroutine_do()
+void ZCE_Async_Coroutine::coroutine_do()
 {
     //如果需要协程
     for (;;)
@@ -51,7 +52,7 @@ void ZCE_CRTNAsync_Coroutine::coroutine_do()
         coroutine_run();
         
         //
-        running_state_ = ZCE_CRTNAsync_Coroutine::STATE_EXIT;
+        running_state_ = ZCE_Async_Coroutine::STATE_EXIT;
 
         //
         yeild_main();
@@ -59,7 +60,7 @@ void ZCE_CRTNAsync_Coroutine::coroutine_do()
 }
 
 ///static 函数，用于协程运行函数，调用协程对象的运行函数
-void ZCE_CRTNAsync_Coroutine::static_do(ZCE_CRTNAsync_Coroutine *coroutine)
+void ZCE_Async_Coroutine::static_do(ZCE_Async_Coroutine *coroutine)
 {
     coroutine->coroutine_do();
 }
@@ -67,12 +68,13 @@ void ZCE_CRTNAsync_Coroutine::static_do(ZCE_CRTNAsync_Coroutine *coroutine)
 
 //------------------------------------------------------------------------------------
 
-ZCE_CRTNAsync_Main::ZCE_CRTNAsync_Main():
-    id_builder_(1)
+ZCE_Async_CoroutineMgr::ZCE_Async_CoroutineMgr(ZCE_Timer_Queue *timer_queue) :
+    id_builder_(1),
+    timer_queue_(timer_queue)
 {
 }
 
-ZCE_CRTNAsync_Main::~ZCE_CRTNAsync_Main()
+ZCE_Async_CoroutineMgr::~ZCE_Async_CoroutineMgr()
 {
     
     //将内存池子里面的数据全部清理掉。好高兴，因为我释放了内存，从Inmoreliu那儿得到了一顿饭。
@@ -103,7 +105,7 @@ ZCE_CRTNAsync_Main::~ZCE_CRTNAsync_Main()
 
         for (size_t i = 0; i < pool_reg_trans_len; ++i)
         {
-            ZCE_CRTNAsync_Coroutine *corout_base = NULL;
+            ZCE_Async_Coroutine *corout_base = NULL;
             pool_reg.coroutine_pool_.pop_front(corout_base);
 
             delete corout_base;
@@ -114,7 +116,7 @@ ZCE_CRTNAsync_Main::~ZCE_CRTNAsync_Main()
 
 
 //初始化，
-int ZCE_CRTNAsync_Main::initialize(size_t crtn_type_num,
+int ZCE_Async_CoroutineMgr::initialize(size_t crtn_type_num,
     size_t running_number)
 {
     //对参数做调整
@@ -133,8 +135,8 @@ int ZCE_CRTNAsync_Main::initialize(size_t crtn_type_num,
 }
 
 //注册一类协程，其用reg_cmd对应，
-int ZCE_CRTNAsync_Main::register_coroutine(unsigned int reg_cmd,
-    ZCE_CRTNAsync_Coroutine* coroutine_base,
+int ZCE_Async_CoroutineMgr::register_coroutine(unsigned int reg_cmd,
+    ZCE_Async_Coroutine* coroutine_base,
     size_t init_clone_num,
     size_t stack_size)
 {
@@ -157,12 +159,12 @@ int ZCE_CRTNAsync_Main::register_coroutine(unsigned int reg_cmd,
     ref_rec.coroutine_pool_.push_back(coroutine_base);
     for (size_t i = 0; i < init_clone_num;i++)
     {
-        ZCE_CRTNAsync_Coroutine *crtn = coroutine_base->clone();
+        ZCE_Async_Coroutine *crtn = coroutine_base->clone();
         crtn->command_ = reg_cmd;
         ret = ZCE_OS::make_coroutine(crtn->get_handle(),
             stack_size,
             true,
-            (ZCE_COROUTINE_3PARA)ZCE_CRTNAsync_Coroutine::static_do,
+            (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
             (void *)crtn,
             NULL,
             NULL
@@ -183,7 +185,7 @@ int ZCE_CRTNAsync_Main::register_coroutine(unsigned int reg_cmd,
 
 
 ///从池子里面分配一个
-int ZCE_CRTNAsync_Main::allocate_from_pool(unsigned int cmd, ZCE_CRTNAsync_Coroutine *&crt_crtn)
+int ZCE_Async_CoroutineMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Coroutine *&crt_crtn)
 {
 
     ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(cmd);
@@ -200,7 +202,7 @@ int ZCE_CRTNAsync_Main::allocate_from_pool(unsigned int cmd, ZCE_CRTNAsync_Corou
     {
         ZLOG_INFO("[ZCELIB] Before extend pool.");
         //取一个模型
-        ZCE_CRTNAsync_Coroutine *model_trans = NULL;
+        ZCE_Async_Coroutine *model_trans = NULL;
         reg_crtn.coroutine_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_crtn.coroutine_pool_.capacity();
@@ -215,7 +217,7 @@ int ZCE_CRTNAsync_Main::allocate_from_pool(unsigned int cmd, ZCE_CRTNAsync_Corou
         //用模型克隆N-1个Trans
         for (size_t i = 0; i < POOL_EXTEND_COROUTINE_NUM; ++i)
         {
-            ZCE_CRTNAsync_Coroutine *cloned_base = model_trans->clone();
+            ZCE_Async_Coroutine *cloned_base = model_trans->clone();
             reg_crtn.coroutine_pool_.push_back(cloned_base);
         }
 
@@ -233,7 +235,7 @@ int ZCE_CRTNAsync_Main::allocate_from_pool(unsigned int cmd, ZCE_CRTNAsync_Corou
 }
 
 ///归还给池子里面
-int ZCE_CRTNAsync_Main::free_to_pool(ZCE_CRTNAsync_Coroutine *free_crtn)
+int ZCE_Async_CoroutineMgr::free_to_pool(ZCE_Async_Coroutine *free_crtn)
 {
 
     ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(free_crtn->command_);
@@ -263,10 +265,10 @@ int ZCE_CRTNAsync_Main::free_to_pool(ZCE_CRTNAsync_Coroutine *free_crtn)
 
 
 ///激活一个协程
-int ZCE_CRTNAsync_Main::active_coroutine(unsigned int cmd, unsigned int *id)
+int ZCE_Async_CoroutineMgr::active_coroutine(unsigned int cmd, unsigned int *id)
 {
     int ret = 0;
-    ZCE_CRTNAsync_Coroutine *cloned_base = NULL;
+    ZCE_Async_Coroutine *cloned_base = NULL;
     ret = allocate_from_pool(cmd, cloned_base);
     if (ret != 0)
     {
@@ -282,7 +284,7 @@ int ZCE_CRTNAsync_Main::active_coroutine(unsigned int cmd, unsigned int *id)
     //切换到协程运行协程
     cloned_base->yeild_coroutine();
     //如果已经是退出状态，
-    if (cloned_base->running_state_ == ZCE_CRTNAsync_Coroutine::STATE_EXIT)
+    if (cloned_base->running_state_ == ZCE_Async_Coroutine::STATE_EXIT)
     {
         free_to_pool(cloned_base);
     }
@@ -290,7 +292,7 @@ int ZCE_CRTNAsync_Main::active_coroutine(unsigned int cmd, unsigned int *id)
 }
 
 ///切换到ID对应的那个线程
-int ZCE_CRTNAsync_Main::yeild_coroutine(unsigned int id)
+int ZCE_Async_CoroutineMgr::yeild_coroutine(unsigned int id)
 {
     ID_TO_COROUTINE_MAP::iterator iter_temp = running_coroutine_.find(id);
     if (running_coroutine_.end() == iter_temp)
@@ -298,12 +300,12 @@ int ZCE_CRTNAsync_Main::yeild_coroutine(unsigned int id)
         return -1;
     }
 
-    ZCE_CRTNAsync_Coroutine *crtn = iter_temp->second;
+    ZCE_Async_Coroutine *crtn = iter_temp->second;
 
     //切换到协程运行协程
     crtn->yeild_coroutine();
     //
-    if (crtn->running_state_ == ZCE_CRTNAsync_Coroutine::STATE_EXIT)
+    if (crtn->running_state_ == ZCE_Async_Coroutine::STATE_EXIT)
     {
         free_to_pool(crtn);
     }

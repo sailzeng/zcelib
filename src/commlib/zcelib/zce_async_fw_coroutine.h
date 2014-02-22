@@ -6,6 +6,7 @@
 
 #include "zce_boost_lord_rings.h"
 #include "zce_os_adapt_coroutine.h"
+#include "zce_timer_handler_base.h"
 
 //------------------------------------------------------------------------------------
 
@@ -14,9 +15,9 @@
 * @brief      协程对象
 *             
 */
-class ZCE_CRTNAsync_Coroutine
+class ZCE_Async_Coroutine :public ZCE_Timer_Handler
 {
-    friend class ZCE_CRTNAsync_Main;
+    friend class ZCE_Async_CoroutineMgr;
 public:
 
     ///协程的状态枚举
@@ -29,9 +30,9 @@ public:
     };
 
 public:
-    ZCE_CRTNAsync_Coroutine();
+    ZCE_Async_Coroutine(ZCE_Async_CoroutineMgr *);
 protected:
-    ~ZCE_CRTNAsync_Coroutine();
+    ~ZCE_Async_Coroutine();
 
 public:
 
@@ -58,16 +59,19 @@ public:
     virtual int coroutine_end_cleanup();
     
     ///
-    ZCE_CRTNAsync_Coroutine *clone();
+    ZCE_Async_Coroutine *clone();
 
     ///
 
 public:
 
     ///static 函数，用于协程运行函数，调用协程对象的运行函数
-    static void static_do(ZCE_CRTNAsync_Coroutine *);
+    static void static_do(ZCE_Async_Coroutine *coroutine);
 
 protected:
+
+    ///管理者
+    ZCE_Async_CoroutineMgr * async_mgr_;
 
     ///
     coroutine_t      handle_;
@@ -86,18 +90,19 @@ protected:
 
 //------------------------------------------------------------------------------------
 
+class ZCE_Timer_Queue;
 
 /*!
 * @brief      （协程）主控管理类
 *             
 */
-class ZCE_CRTNAsync_Main
+class ZCE_Async_CoroutineMgr
 {
 
 protected:
     
     ///
-    typedef ZCE_LIB::lordrings<ZCE_CRTNAsync_Coroutine *>  REG_COROUTINE_POOL;
+    typedef ZCE_LIB::lordrings<ZCE_Async_Coroutine *>  REG_COROUTINE_POOL;
 
     ///
     struct COROUTINE_RECORD
@@ -130,13 +135,13 @@ protected:
     //
     typedef std::unordered_map<unsigned int, COROUTINE_RECORD> ID_TO_REGCOR_POOL_MAP;
     //
-    typedef std::unordered_map<unsigned int, ZCE_CRTNAsync_Coroutine * > ID_TO_COROUTINE_MAP;
+    typedef std::unordered_map<unsigned int, ZCE_Async_Coroutine * > ID_TO_COROUTINE_MAP;
     
 public:
 
     //
-    ZCE_CRTNAsync_Main();
-    virtual ~ZCE_CRTNAsync_Main();
+    ZCE_Async_CoroutineMgr(ZCE_Timer_Queue *timer_queue);
+    virtual ~ZCE_Async_CoroutineMgr();
 
 
     /*!
@@ -151,7 +156,7 @@ public:
 
     ///注册一类协程，其用reg_cmd对应，
     int register_coroutine(unsigned int reg_cmd,
-        ZCE_CRTNAsync_Coroutine* coroutine_base,
+        ZCE_Async_Coroutine* coroutine_base,
         size_t init_clone_num,
         size_t stack_size);
 
@@ -164,10 +169,10 @@ public:
 protected:
     
     ///从池子里面分配一个
-    int allocate_from_pool(unsigned int cmd, ZCE_CRTNAsync_Coroutine *&crt_crtn);
+    int allocate_from_pool(unsigned int cmd, ZCE_Async_Coroutine *&crt_crtn);
 
     ///
-    int free_to_pool(ZCE_CRTNAsync_Coroutine *);
+    int free_to_pool(ZCE_Async_Coroutine *);
 
 protected:
 
@@ -184,7 +189,6 @@ protected:
     
     //事务ID发生器
     unsigned int           id_builder_;
-    
 
     //协程的池子，都是注册进来的
     ID_TO_REGCOR_POOL_MAP  reg_coroutine_;
@@ -192,7 +196,8 @@ protected:
     ///正在运行的协程
     ID_TO_COROUTINE_MAP    running_coroutine_;
 
-
+    ///定时器的管理器
+    ZCE_Timer_Queue       *timer_queue_;
 };
 
 
