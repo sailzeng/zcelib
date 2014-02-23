@@ -30,7 +30,7 @@ public:
     };
 
 public:
-    ZCE_Async_Coroutine(ZCE_Async_CoroutineMgr *);
+    ZCE_Async_Coroutine(ZCE_Async_CoroutineMgr *async_mgr);
 protected:
     ~ZCE_Async_Coroutine();
 
@@ -108,28 +108,28 @@ protected:
     struct COROUTINE_RECORD
     {
 
-        REG_COROUTINE_POOL          coroutine_pool_;
+        REG_COROUTINE_POOL coroutine_pool_;
 
         
         //下面是统计信息
 
         //创建的事务的数量
-        uint64_t                     start_num_;
+        uint64_t start_num_;
 
         //正常结束的数量
-        uint64_t                     end_num_;
+        uint64_t end_num_;
 
         ///强行结束的数量
-        uint64_t                     force_end_num_;
+        uint64_t force_end_num_;
 
         //运行过程发生超时的数量
-        uint64_t                     timeout_num_;
+        uint64_t timeout_num_;
 
         //销毁时状态异常的事务数量
-        uint64_t                     exception_num_;
+        uint64_t exception_num_;
 
         //运行总消耗时间
-        uint64_t                     run_consume_ms_;
+        uint64_t run_consume_ms_;
     };
 
     //
