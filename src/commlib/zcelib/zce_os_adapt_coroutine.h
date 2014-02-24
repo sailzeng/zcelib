@@ -122,14 +122,14 @@ void delete_coroutine(coroutine_t *coroutine_hdl);
 * @return     int 返回0标识成功
 * @param      coroutine_hdl 
 */
-int switch_to_coroutine(coroutine_t *coroutine_hdl);
+int yeild_coroutine(coroutine_t *coroutine_hdl);
 
 /*!
 * @brief      从coroutine切换到Main
 * @return     int 返回0标识成功
 * @param      coroutine_hdl
 */
-int switch_to_main(coroutine_t *coroutine_hdl);
+int yeild_main(coroutine_t *coroutine_hdl);
 
 /*!
 * @brief      从一个coroutine切换到另外一个coroutine
