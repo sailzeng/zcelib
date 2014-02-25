@@ -91,10 +91,8 @@ int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
 //注册一类协程，其用reg_cmd对应，
 int ZCE_Async_ObjectMgr::register_coroutine(unsigned int reg_cmd,
     ZCE_Async_Object* coroutine_base,
-    size_t init_clone_num,
-    size_t stack_size)
+    size_t init_clone_num)
 {
-    int ret = 0;
     //对参数做调整
     if (init_clone_num < DEFUALT_INIT_POOL_SIZE)
     {
@@ -115,19 +113,6 @@ int ZCE_Async_ObjectMgr::register_coroutine(unsigned int reg_cmd,
     {
         ZCE_Async_Object *crtn = coroutine_base->clone(this);
         crtn->active_cmd_ = reg_cmd;
-        ret = ZCE_OS::make_coroutine(crtn->get_handle(),
-            stack_size,
-            true,
-            (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
-            (void *)crtn,
-            NULL,
-            NULL
-            );
-        if (ret != 0)
-        {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::make_coroutine return fail.", ret);
-            return ret;
-        }
         ref_rec.coroutine_pool_.push_back(crtn);
     }
 
@@ -139,7 +124,7 @@ int ZCE_Async_ObjectMgr::register_coroutine(unsigned int reg_cmd,
 
 
 ///从池子里面分配一个
-int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Coroutine *&crt_crtn)
+int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&crt_crtn)
 {
 
     ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(cmd);
@@ -149,14 +134,14 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Coroutin
         return -1;
     }
 
-    COROUTINE_RECORD &reg_crtn = reg_coroutine_[cmd];
+    ASYNC_OBJECT_RECORD &reg_crtn = reg_coroutine_[cmd];
 
     //还有最后一个
     if (reg_crtn.coroutine_pool_.size() == 1)
     {
         ZLOG_INFO("[ZCELIB] Before extend pool.");
         //取一个模型
-        ZCE_Async_Coroutine *model_trans = NULL;
+        ZCE_Async_Object *model_trans = NULL;
         reg_crtn.coroutine_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_crtn.coroutine_pool_.capacity();
@@ -171,7 +156,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Coroutin
         //用模型克隆N-1个Trans
         for (size_t i = 0; i < POOL_EXTEND_COROUTINE_NUM; ++i)
         {
-            ZCE_Async_Coroutine *cloned_base = model_trans->clone();
+            ZCE_Async_Object *cloned_base = model_trans->clone(this);
             reg_crtn.coroutine_pool_.push_back(cloned_base);
         }
 
@@ -183,16 +168,16 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Coroutin
     //取得一个事务
     reg_crtn.coroutine_pool_.pop_front(crt_crtn);
     //初始化丫的
-    crt_crtn->coroutine_init();
+    crt_crtn->initialize();
 
     return 0;
 }
 
 ///归还给池子里面
-int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Coroutine *free_crtn)
+int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 {
 
-    ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(free_crtn->command_);
+    ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(free_crtn->active_cmd_);
 
     if (mapiter == reg_coroutine_.end())
     {
@@ -201,14 +186,14 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Coroutine *free_crtn)
 
 
     //
-    COROUTINE_RECORD &reg_record = mapiter->second;
+    ASYNC_OBJECT_RECORD &reg_record = mapiter->second;
     ZLOG_DEBUG("[framework] Return clone frame command %u,Pool size=%u .",
-        free_crtn->command_,
+        free_crtn->active_cmd_,
         reg_record.coroutine_pool_.size());
 
 
     //用于资源的回收
-    free_crtn->coroutine_end_cleanup();
+    free_crtn->finish();
 
     //
     reg_record.coroutine_pool_.push_back(free_crtn);
@@ -216,55 +201,6 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Coroutine *free_crtn)
 }
 
 
-
-
-///激活一个协程
-int ZCE_Async_ObjectMgr::active_coroutine(unsigned int cmd, unsigned int *id)
-{
-    int ret = 0;
-    ZCE_Async_Coroutine *cloned_base = NULL;
-    ret = allocate_from_pool(cmd, cloned_base);
-    if (ret != 0)
-    {
-        return ret;
-    }
-    //新生成一个ID
-    if (0 == id_builder_)
-    {
-        ++id_builder_;
-    }
-    running_coroutine_[id_builder_] = cloned_base;
-    *id = id_builder_;
-    //切换到协程运行协程
-    cloned_base->yeild_coroutine();
-    //如果已经是退出状态，
-    if (cloned_base->running_state_ == ZCE_Async_Coroutine::STATE_EXIT)
-    {
-        free_to_pool(cloned_base);
-    }
-    return 0;
-}
-
-///切换到ID对应的那个线程
-int ZCE_Async_ObjectMgr::yeild_coroutine(unsigned int id)
-{
-    ID_TO_COROUTINE_MAP::iterator iter_temp = running_coroutine_.find(id);
-    if (running_coroutine_.end() == iter_temp)
-    {
-        return -1;
-    }
-
-    ZCE_Async_Coroutine *crtn = iter_temp->second;
-
-    //切换到协程运行协程
-    crtn->yeild_coroutine();
-    //
-    if (crtn->running_state_ == ZCE_Async_Coroutine::STATE_EXIT)
-    {
-        free_to_pool(crtn);
-    }
-    return 0;
-}
 
 
 

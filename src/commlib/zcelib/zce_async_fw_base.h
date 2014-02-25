@@ -35,13 +35,13 @@ public:
     
 
     ///协程启动，做初始化工作
-    virtual int init();
+    virtual int initialize();
 
     ///协程运行
     virtual int run() = 0;
 
     ///协程结束，做结束，释放资源的事情
-    virtual int end_cleanup();
+    virtual int finish();
 
     ///
     virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr) =0;
@@ -132,14 +132,12 @@ public:
     ///注册一类协程，其用reg_cmd对应，
     int register_coroutine(unsigned int reg_cmd,
         ZCE_Async_Object* coroutine_base,
-        size_t init_clone_num,
-        size_t stack_size);
+        size_t init_clone_num);
 
     ///激活一个协程
     int active_coroutine(unsigned int cmd, unsigned int *id);
 
-    ///切换到ID对应的那个线程
-    int yeild_coroutine(unsigned int id);
+
 
 protected:
 
