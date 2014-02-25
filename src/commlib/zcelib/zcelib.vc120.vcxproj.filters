@@ -385,6 +385,12 @@
     <ClInclude Include="zce_async_fw_coroutine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_async_fw_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_async_fw_fsm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -673,6 +679,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_async_fw_coroutine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_async_fw_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_async_fw_fsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

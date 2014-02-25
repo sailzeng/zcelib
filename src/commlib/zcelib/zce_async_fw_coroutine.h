@@ -90,7 +90,7 @@ protected:
 
 //------------------------------------------------------------------------------------
 
-class ZCE_Timer_Queue;
+
 
 /*!
 * @brief      （协程）主控管理类
@@ -188,16 +188,16 @@ protected:
 protected:
     
     //事务ID发生器
-    unsigned int           id_builder_;
+    unsigned int id_builder_;
 
     //协程的池子，都是注册进来的
-    ID_TO_REGCOR_POOL_MAP  reg_coroutine_;
+    ID_TO_REGCOR_POOL_MAP reg_coroutine_;
 
     ///正在运行的协程
-    ID_TO_COROUTINE_MAP    running_coroutine_;
+    ID_TO_COROUTINE_MAP running_coroutine_;
 
     ///定时器的管理器
-    ZCE_Timer_Queue       *timer_queue_;
+    ZCE_Timer_Queue *timer_queue_;
 };
 
 
