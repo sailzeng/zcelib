@@ -71,18 +71,22 @@ protected:
 
 class ZCE_Timer_Queue;
 
+/*!
+* @brief      异步对象的管理器基类
+*
+*/
 class ZCE_Async_ObjectMgr
 {
 
 protected:
 
-    ///
+    ///异步对象池子，
     typedef ZCE_LIB::lordrings<ZCE_Async_Object *>  ASYNC_OBJECT_POOL;
 
     ///
     struct ASYNC_OBJECT_RECORD
     {
-
+        //异步对象池子，
         ASYNC_OBJECT_POOL coroutine_pool_;
 
 
@@ -114,7 +118,7 @@ protected:
 
 public:
 
-    //
+    ///异步对象管理器的构造函数
     ZCE_Async_ObjectMgr(ZCE_Timer_Queue *timer_queue);
     virtual ~ZCE_Async_ObjectMgr();
 
@@ -124,39 +128,50 @@ public:
     * @return     int
     * @param      crtn_type_num
     * @param      running_number
-    * @note
     */
-    int initialize(size_t crtn_type_num = DEFUALT_CRTN_TYPE_NUM,
-        size_t running_number = DEFUALT_RUNNIG_CRTN_SIZE);
+    int initialize(size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
+        size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
 
-    ///注册一类协程，其用reg_cmd对应，
-    int register_coroutine(unsigned int reg_cmd,
-        ZCE_Async_Object* coroutine_base,
+    /*!
+    * @brief      注册一类协程，其用reg_cmd对应，
+    * @return     int 
+    * @param      reg_cmd
+    * @param      async_base
+    * @param      init_clone_num
+    */
+    int register_asyncobj(unsigned int reg_cmd,
+        ZCE_Async_Object* async_base,
         size_t init_clone_num);
 
-    ///激活一个协程
-    int active_coroutine(unsigned int cmd, unsigned int *id);
+    /*!
+    * @brief      激活一个协程
+    * @return     int
+    * @param      cmd
+    * @param      id
+    */
+    int active_asyncobj(unsigned int cmd, unsigned int *id);
+
 
 
 
 protected:
 
     ///从池子里面分配一个
-    int allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&crt_crtn);
+    int allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&alloc_aysnc);
 
-    ///
-    int free_to_pool(ZCE_Async_Object *);
+    ///释放一个异步对象到池子里面
+    int free_to_pool(ZCE_Async_Object *free_async);
 
 protected:
 
-    ///
-    static const size_t DEFUALT_CRTN_TYPE_NUM = 1024;
-    ///
+    ///默认的异步对象类型数量
+    static const size_t DEFUALT_ASYNC_TYPE_NUM = 1024;
+    ///每类异步对象池子的初始化的数量
     static const size_t DEFUALT_INIT_POOL_SIZE = 2;
-    ///
-    static const size_t DEFUALT_RUNNIG_CRTN_SIZE = 1024;
-    ///
-    static const size_t POOL_EXTEND_COROUTINE_NUM = 128;
+    ///默认同时运行的一部分对象的数量
+    static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 1024;
+    ///默认池子扩展的时候，扩展的异步对象的数量
+    static const size_t POOL_EXTEND_ASYNC_NUM = 128;
 
 protected:
 

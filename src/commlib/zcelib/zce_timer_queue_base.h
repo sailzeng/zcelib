@@ -122,7 +122,7 @@ public:
     @brief      设置第一个定时器，接口参考了ACE的设计，这个设计其实算很完整了，你扩展的类，必须实现这个接口
     @return     int           返回定时器ID，>=0标识成功，-1标识失败
     @param      timer_hdl     放入的定时器句柄，触发后回调的对象
-    @param[in]  action        一个指针，在定时器触发会用参数打给你，
+    @param[in]  action        一个指针，在定时器触发会用参数还给你，
     @param[in]  delay_time    第一次触发的时间，为什么要这样设计参数？你自己考虑一下，想想如何在10:00播放第6套广播体操
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
                               如果参数等于ZCE_Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，

@@ -74,13 +74,13 @@ int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
     size_t running_number)
 {
     //对参数做调整
-    if (crtn_type_num < DEFUALT_CRTN_TYPE_NUM)
+    if (crtn_type_num < DEFUALT_ASYNC_TYPE_NUM)
     {
-        crtn_type_num = DEFUALT_CRTN_TYPE_NUM;
+        crtn_type_num = DEFUALT_ASYNC_TYPE_NUM;
     }
-    if (running_number < DEFUALT_RUNNIG_CRTN_SIZE)
+    if (running_number < DEFUALT_RUNNIG_ASYNC_SIZE)
     {
-        running_number = DEFUALT_RUNNIG_CRTN_SIZE;
+        running_number = DEFUALT_RUNNIG_ASYNC_SIZE;
     }
 
     reg_coroutine_.rehash(crtn_type_num);
@@ -89,7 +89,7 @@ int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
 }
 
 //注册一类协程，其用reg_cmd对应，
-int ZCE_Async_ObjectMgr::register_coroutine(unsigned int reg_cmd,
+int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     ZCE_Async_Object* coroutine_base,
     size_t init_clone_num)
 {
@@ -145,16 +145,16 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *
         reg_crtn.coroutine_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_crtn.coroutine_pool_.capacity();
-        reg_crtn.coroutine_pool_.resize(capacity_of_pool + POOL_EXTEND_COROUTINE_NUM);
+        reg_crtn.coroutine_pool_.resize(capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
 
         ZLOG_INFO("[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
             reg_crtn.coroutine_pool_.size(),
             cmd,
             capacity_of_pool,
-            capacity_of_pool + POOL_EXTEND_COROUTINE_NUM);
+            capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
 
         //用模型克隆N-1个Trans
-        for (size_t i = 0; i < POOL_EXTEND_COROUTINE_NUM; ++i)
+        for (size_t i = 0; i < POOL_EXTEND_ASYNC_NUM; ++i)
         {
             ZCE_Async_Object *cloned_base = model_trans->clone(this);
             reg_crtn.coroutine_pool_.push_back(cloned_base);
@@ -173,7 +173,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *
     return 0;
 }
 
-///归还给池子里面
+///归还给池子里面，释放一个异步对象到池子里面
 int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 {
 
