@@ -46,6 +46,35 @@ public:
     ///
     virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr) =0;
 
+protected:
+
+
+    /*!
+    @brief                   设置超时定时器,如果触发，回调函数on_timeout
+    @param  sec              超时的秒
+    @param  usec             超时的微秒数
+    */
+    int set_timeout_timer(int sec, int usec = 0);
+
+    /*!
+    @brief                   设置触发定时器,如果触发，回调函数on_timetouch
+    @param  sec              超时的秒
+    @param  usec             超时的微秒数
+    */
+    int set_timetouch_timer(int sec, int usec = 0);
+
+
+    /*!
+    * @brief      取消超时定时器
+    */
+    void cancel_timeout_timer();
+
+    /*!
+    * @brief      取消触发定时器
+    */
+    void cancel_touch_timer();
+
+
 public:
 
     ///无效的ID
@@ -65,7 +94,11 @@ protected:
     ///运行状态
     RUNNING_STATE  running_state_;
 
+    //超时的定时器ID
+    int timeout_id_;
 
+    //触发的定时器ID
+    int touchtimer_id_;
 };
 
 
@@ -161,6 +194,9 @@ protected:
 
     ///释放一个异步对象到池子里面
     int free_to_pool(ZCE_Async_Object *free_async);
+
+
+
 
 protected:
 
