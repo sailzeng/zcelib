@@ -6,7 +6,7 @@
 
 //------------------------------------------------------------------------------------
 ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr) :
-    identity_(INVALID_IDENTITY),
+    asyncobj_id_(ZCE_Async_ObjectMgr::INVALID_IDENTITY),
     async_mgr_(async_mgr),
     active_cmd_(0),
     running_state_(STATE_RUNNIG)
@@ -32,8 +32,8 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
 {
 
     //将内存池子里面的数据全部清理掉。好高兴，因为我释放了内存，从Inmoreliu那儿得到了一顿饭。
-    ID_TO_REGCOR_POOL_MAP::iterator pooliter = reg_coroutine_.begin();
-    ID_TO_REGCOR_POOL_MAP::iterator poolenditer = reg_coroutine_.end();
+    ID_TO_REGASYNC_POOL_MAP::iterator pooliter = aysncobj_pool_.begin();
+    ID_TO_REGASYNC_POOL_MAP::iterator poolenditer = aysncobj_pool_.end();
 
     for (; pooliter != poolenditer; ++pooliter)
     {
@@ -83,8 +83,8 @@ int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
         running_number = DEFUALT_RUNNIG_ASYNC_SIZE;
     }
 
-    reg_coroutine_.rehash(crtn_type_num);
-    running_coroutine_.rehash(running_number);
+    aysncobj_pool_.rehash(crtn_type_num);
+    running_aysncobj_.rehash(running_number);
     return 0;
 }
 
@@ -99,14 +99,15 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
         init_clone_num = DEFUALT_INIT_POOL_SIZE;
     }
 
-    ID_TO_REGCOR_POOL_MAP::iterator iter_temp = reg_coroutine_.find(reg_cmd);
-    if (iter_temp != reg_coroutine_.end())
+    //一个命令字CMD只能注册一次
+    ID_TO_REGASYNC_POOL_MAP::iterator iter_temp = aysncobj_pool_.find(reg_cmd);
+    if (iter_temp != aysncobj_pool_.end())
     {
         return -1;
     }
     ASYNC_OBJECT_RECORD record;
-    reg_coroutine_[reg_cmd] = record;
-    ASYNC_OBJECT_RECORD &ref_rec = reg_coroutine_[reg_cmd];
+    aysncobj_pool_[reg_cmd] = record;
+    ASYNC_OBJECT_RECORD &ref_rec = aysncobj_pool_[reg_cmd];
 
     ref_rec.coroutine_pool_.push_back(coroutine_base);
     for (size_t i = 0; i < init_clone_num; i++)
@@ -124,31 +125,30 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
 
 
 ///从池子里面分配一个
-int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&crt_crtn)
+int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&crt_async)
 {
 
-    ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(cmd);
-
-    if (mapiter == reg_coroutine_.end())
+    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(cmd);
+    if (mapiter == aysncobj_pool_.end())
     {
         return -1;
     }
 
-    ASYNC_OBJECT_RECORD &reg_crtn = reg_coroutine_[cmd];
+    ASYNC_OBJECT_RECORD &reg_async = aysncobj_pool_[cmd];
 
     //还有最后一个
-    if (reg_crtn.coroutine_pool_.size() == 1)
+    if (reg_async.coroutine_pool_.size() == 1)
     {
         ZLOG_INFO("[ZCELIB] Before extend pool.");
         //取一个模型
         ZCE_Async_Object *model_trans = NULL;
-        reg_crtn.coroutine_pool_.pop_front(model_trans);
+        reg_async.coroutine_pool_.pop_front(model_trans);
 
-        size_t capacity_of_pool = reg_crtn.coroutine_pool_.capacity();
-        reg_crtn.coroutine_pool_.resize(capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
+        size_t capacity_of_pool = reg_async.coroutine_pool_.capacity();
+        reg_async.coroutine_pool_.resize(capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
 
         ZLOG_INFO("[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
-            reg_crtn.coroutine_pool_.size(),
+            reg_async.coroutine_pool_.size(),
             cmd,
             capacity_of_pool,
             capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
@@ -157,18 +157,17 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *
         for (size_t i = 0; i < POOL_EXTEND_ASYNC_NUM; ++i)
         {
             ZCE_Async_Object *cloned_base = model_trans->clone(this);
-            reg_crtn.coroutine_pool_.push_back(cloned_base);
+            reg_async.coroutine_pool_.push_back(cloned_base);
         }
 
         //将模型放到第N个
-        reg_crtn.coroutine_pool_.push_back(model_trans);
+        reg_async.coroutine_pool_.push_back(model_trans);
         ZLOG_INFO("[ZCELIB] After Extend trans.");
     }
 
     //取得一个事务
-    reg_crtn.coroutine_pool_.pop_front(crt_crtn);
-    //初始化丫的
-    crt_crtn->initialize();
+    reg_async.coroutine_pool_.pop_front(crt_async);
+
 
     return 0;
 }
@@ -177,9 +176,9 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *
 int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 {
 
-    ID_TO_REGCOR_POOL_MAP::iterator mapiter = reg_coroutine_.find(free_crtn->active_cmd_);
+    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(free_crtn->active_cmd_);
 
-    if (mapiter == reg_coroutine_.end())
+    if (mapiter == aysncobj_pool_.end())
     {
         return -1;
     }
@@ -191,20 +190,63 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
         free_crtn->active_cmd_,
         reg_record.coroutine_pool_.size());
 
-
-    //用于资源的回收
-    free_crtn->finish();
-
     //
     reg_record.coroutine_pool_.push_back(free_crtn);
     return 0;
 }
 
 
+int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
+{
+    int ret = 0;
+    ZCE_Async_Object *crt_async = NULL;
+    
+    //从池子里面找一个异步对象
+    ret = allocate_from_pool(cmd, crt_async);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ++id_builder_;
+    if (id_builder_ == INVALID_IDENTITY)
+    {
+        ++id_builder_;
+    }
+    *id = id_builder_;
+    crt_async->asyncobj_id_ = id_builder_;
+    
+    //启动丫的
+    crt_async->on_start();
+
+    bool continue_run = false;
+    crt_async->on_run(continue_run);
+    
+    //如果运行一下就退出了,直接结束回收
+    if (continue_run == false)
+    {
+        crt_async->on_finish();
+        free_to_pool(crt_async);
+    }
+    else
+    {
+        auto iter = running_aysncobj_.insert(std::make_pair(id_builder_, crt_async));
+        //如果没有插入成功,理论上没有可能出现这种情况，不可能出现这么多异步对象
+        if (iter.second == false)
+        {
+            ZCE_ASSERT_ALL(false);
+            return -1;
+        }
+    }
+
+    return 0;
+}
 
 
 
-
+int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc)
+{
+    return 0;
+}
 
 
 
