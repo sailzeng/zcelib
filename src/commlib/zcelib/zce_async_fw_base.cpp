@@ -3,13 +3,15 @@
 #include "zce_async_fw_base.h"
 #include "zce_os_adapt_error.h"
 #include "zce_trace_log_debug.h"
+#include "zce_timer_queue_base.h"
 
 //------------------------------------------------------------------------------------
 ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr) :
     asyncobj_id_(ZCE_Async_ObjectMgr::INVALID_IDENTITY),
     async_mgr_(async_mgr),
-    active_cmd_(0),
-    running_state_(STATE_RUNNIG)
+    create_cmd_(ZCE_Async_ObjectMgr::INVALID_COMMAND),
+    timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID),
+    touchtimer_id_(ZCE_Timer_Queue::INVALID_TIMER_ID),
 {
 }
 
@@ -18,6 +20,29 @@ ZCE_Async_Object::~ZCE_Async_Object()
 }
 
 
+int ZCE_Async_Object::set_timeout_timer(int sec, int usec = 0)
+{
+    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
+    timer_queue->schedule_timer()
+}
+
+
+int ZCE_Async_Object::set_timetouch_timer(int sec, int usec = 0)
+{
+}
+
+
+
+void ZCE_Async_Object::cancel_timeout_timer()
+{
+
+}
+
+
+void ZCE_Async_Object::cancel_touch_timer()
+{
+
+}
 
 
 //------------------------------------------------------------------------------------
@@ -99,6 +124,12 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
         init_clone_num = DEFUALT_INIT_POOL_SIZE;
     }
 
+    //
+    if (ZCE_Async_ObjectMgr::INVALID_COMMAND == reg_cmd)
+    {
+        return -1;
+    }
+
     //一个命令字CMD只能注册一次
     ID_TO_REGASYNC_POOL_MAP::iterator iter_temp = aysncobj_pool_.find(reg_cmd);
     if (iter_temp != aysncobj_pool_.end())
@@ -113,16 +144,12 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     for (size_t i = 0; i < init_clone_num; i++)
     {
         ZCE_Async_Object *crtn = coroutine_base->clone(this);
-        crtn->active_cmd_ = reg_cmd;
+        crtn->create_cmd_ = reg_cmd;
         ref_rec.coroutine_pool_.push_back(crtn);
     }
 
     return 0;
 }
-
-
-
-
 
 ///从池子里面分配一个
 int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&crt_async)
@@ -176,7 +203,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *
 int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 {
 
-    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(free_crtn->active_cmd_);
+    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(free_crtn->create_cmd_);
 
     if (mapiter == aysncobj_pool_.end())
     {
@@ -187,7 +214,7 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
     //
     ASYNC_OBJECT_RECORD &reg_record = mapiter->second;
     ZLOG_DEBUG("[framework] Return clone frame command %u,Pool size=%u .",
-        free_crtn->active_cmd_,
+        free_crtn->create_cmd_,
         reg_record.coroutine_pool_.size());
 
     //
@@ -229,6 +256,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     }
     else
     {
+        //第一次用auto，感觉豪爽！！！
         auto iter = running_aysncobj_.insert(std::make_pair(id_builder_, crt_async));
         //如果没有插入成功,理论上没有可能出现这种情况，不可能出现这么多异步对象
         if (iter.second == false)
@@ -242,13 +270,24 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
 }
 
 
-
+//通过ID，寻找一个正在运行的异步对象
 int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc)
 {
+    running_aysnc = NULL;
+    auto iter =  running_aysncobj_.find(id);
+    if (running_aysncobj_.end()== iter)
+    {
+        return -1;
+    }
+    running_aysnc = iter->second;
     return 0;
 }
 
-
+//
+inline ZCE_Timer_Queue * ZCE_Async_ObjectMgr::get_timer_queue()
+{
+    return timer_queue_;
+}
 
 
 

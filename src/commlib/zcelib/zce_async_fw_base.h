@@ -1,3 +1,19 @@
+/*!
+* @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
+* @filename   zce_async_fw_base.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version    
+* @date       Saturday, March 01, 2014
+* @brief      
+*             
+*             
+* @details    
+*             
+*             
+*             
+* @note       
+*             
+*/
 
 
 #ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_
@@ -15,16 +31,6 @@
 class ZCE_Async_Object :public ZCE_Timer_Handler
 {
     friend class ZCE_Async_ObjectMgr;
-public:
-
-    ///协程的状态枚举
-    enum RUNNING_STATE
-    {
-        STATE_RUNNIG = 1,
-        STATE_TIMEOUT = 2,
-        STATE_EXIT = 3,
-        STATE_FORCE_EXIT = 4,
-    };
 
 public:
     ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr);
@@ -34,18 +40,34 @@ protected:
 public:
     
 
-    ///协程初始化的工作，在放入池子前执行一次，
+    /*!
+    * @brief      协程初始化的工作，在放入池子前执行一次，
+    * @return     int 0标识成功
+    */
     virtual int initialize();
-    ///
+    
+    /*!
+    * @brief      克隆自己
+    * @return     ZCE_Async_Object*
+    * @param      async_mgr 
+    */
     virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr) = 0;
 
-    ///异步对象开始
+    /*!
+    * @brief      异步对象开始
+    */
     virtual void on_start();
 
-    ///异步对象运行
+    /*!
+    * @brief      异步对象运行
+    * @param      continue_run
+    */
     virtual void on_run(bool &continue_run) = 0;
 
-    ///异步对象运行结束，做结束，释放资源的事情
+    
+    /*!
+    * @brief      异步对象运行结束，做结束，释放资源的事情
+    */
     virtual void on_finish();
 
 
@@ -53,14 +75,14 @@ protected:
 
 
     /*!
-    @brief                   设置超时定时器,如果触发，回调函数on_timeout
+    @brief                   设置超时定时器,如果触发，回调函数
     @param  sec              超时的秒
     @param  usec             超时的微秒数
     */
     int set_timeout_timer(int sec, int usec = 0);
 
     /*!
-    @brief                   设置触发定时器,如果触发，回调函数on_timetouch
+    @brief                   设置触发定时器,如果触发，回调函数
     @param  sec              超时的秒
     @param  usec             超时的微秒数
     */
@@ -86,10 +108,7 @@ protected:
     ZCE_Async_ObjectMgr *async_mgr_;
 
     ///对应激活的处理的命令
-    unsigned int  active_cmd_;
-
-    ///运行状态
-    RUNNING_STATE  running_state_;
+    unsigned int  create_cmd_;
 
     //超时的定时器ID
     int timeout_id_;
@@ -183,18 +202,18 @@ public:
 
 
     /*!
-    * @brief      激活某个已经运行的异步对象
+    * @brief      激活某个已经运行的异步对象,虚函数，FSM和协程自己实现
     * @return     int
     * @param      id 
     */
-    int active_asyncobj(unsigned int id) = 0;
+    virtual int active_asyncobj(unsigned int id) = 0;
 
 
     /*!
     * @brief      取得定时器管理器，
     * @return     ZCE_Timer_Queue*
     */
-    ZCE_Timer_Queue * get_timer_queue();
+    inline ZCE_Timer_Queue * get_timer_queue();
     
 protected:
 
@@ -216,13 +235,11 @@ protected:
     
     /*!
     * @brief      通过ID，寻找一个正在运行的异步对象
-    * @return     int
-    * @param[in]  id
-    * @param[out] running_aysnc
+    * @return     int  返回0表示成功
+    * @param[in]  id   运行的异步对象的标识ID
+    * @param[out] running_aysnc 查询到的异步对象
     */
     int find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc);
-
-
     
 
 protected:
@@ -239,6 +256,8 @@ protected:
 public:
     ///无效的事务ID
     static const unsigned int INVALID_IDENTITY = 0;
+    ///无效的的命令
+    static const unsigned int INVALID_COMMAND = 0;
 
 protected:
 
