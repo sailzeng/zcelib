@@ -98,7 +98,12 @@ protected:
     * @brief      取消触发定时器
     */
     void cancel_touch_timer();
-    
+
+protected:
+
+    ///TIME ID
+    static const int ASYNCOBJ_TIME_ID[2];
+
 protected:
 
     ///异步对象ID

@@ -6,29 +6,58 @@
 #include "zce_timer_queue_base.h"
 
 //------------------------------------------------------------------------------------
+
+//TIME ID
+const int ZCE_Async_Object::ASYNCOBJ_TIME_ID[] = { 10001, 20001 };
+
+//构造函数
 ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr) :
     asyncobj_id_(ZCE_Async_ObjectMgr::INVALID_IDENTITY),
     async_mgr_(async_mgr),
     create_cmd_(ZCE_Async_ObjectMgr::INVALID_COMMAND),
     timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID),
-    touchtimer_id_(ZCE_Timer_Queue::INVALID_TIMER_ID),
+    touchtimer_id_(ZCE_Timer_Queue::INVALID_TIMER_ID)
 {
 }
 
+//析构函数
 ZCE_Async_Object::~ZCE_Async_Object()
 {
 }
 
 
-int ZCE_Async_Object::set_timeout_timer(int sec, int usec = 0)
+//设置超时定时器
+int ZCE_Async_Object::set_timeout_timer(int sec, int usec)
 {
     ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
-    timer_queue->schedule_timer()
+    ZCE_Time_Value delay_time(sec, usec);
+    //注意使用的TIME ID
+    timeout_id_ = timer_queue->schedule_timer(this,
+        &ASYNCOBJ_TIME_ID[0],
+        delay_time);
+
+    if (ZCE_Timer_Queue::INVALID_TIMER_ID == timeout_id_)
+    {
+        return -1;
+    }
+    return 0;
 }
 
-
-int ZCE_Async_Object::set_timetouch_timer(int sec, int usec = 0)
+//设置触发定时器
+int ZCE_Async_Object::set_timetouch_timer(int sec, int usec)
 {
+    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
+    ZCE_Time_Value delay_time(sec, usec);
+    //注意使用的TIME ID
+    touchtimer_id_ = timer_queue->schedule_timer(this,
+        &ASYNCOBJ_TIME_ID[1],
+        delay_time);
+
+    if (ZCE_Timer_Queue::INVALID_TIMER_ID == touchtimer_id_)
+    {
+        return -1;
+    }
+    return 0;
 }
 
 
