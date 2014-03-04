@@ -197,7 +197,7 @@ public:
     }
 
     ///结束，完成，销毁，求问fini是什么的缩写，
-    void fini()
+    void finish()
     {
         cycdeque_start_ = 0;
         cycdeque_size_ = 0;

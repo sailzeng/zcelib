@@ -159,7 +159,12 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
 void ZCE_OS::delete_coroutine(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
-    return ::DeleteFiber(coroutine_hdl->coroutine_);
+    //
+    if (coroutine_hdl->coroutine_)
+    {
+        ::DeleteFiber(coroutine_hdl->coroutine_);
+    }
+    return ;
 #elif defined ZCE_OS_LINUX
 
     //ÊÍ·ÅZCE_OS::makecontextÉêÇëµÄ¿Õ¼ä

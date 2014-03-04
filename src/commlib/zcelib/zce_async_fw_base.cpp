@@ -25,6 +25,19 @@ ZCE_Async_Object::~ZCE_Async_Object()
 {
 }
 
+//初始化函数，在构造函数后调用，
+int ZCE_Async_Object::initialize(unsigned int reg_cmd)
+{
+    create_cmd_ = reg_cmd;
+    return 0;
+}
+
+//结束销毁函数，在析构前的调用
+int ZCE_Async_Object::finish()
+{
+    return 0;
+}
+
 
 //设置超时定时器
 int ZCE_Async_Object::set_timeout_timer(int sec, int usec)
@@ -61,7 +74,6 @@ int ZCE_Async_Object::set_timetouch_timer(int sec, int usec)
 }
 
 
-
 void ZCE_Async_Object::cancel_timeout_timer()
 {
 
@@ -74,7 +86,14 @@ void ZCE_Async_Object::cancel_touch_timer()
 }
 
 
-//------------------------------------------------------------------------------------
+void ZCE_Async_Object::on_end()
+{
+
+}
+
+
+//=============================================================================================
+//异步对象管理器
 
 ZCE_Async_ObjectMgr::ZCE_Async_ObjectMgr(ZCE_Timer_Queue *timer_queue) :
 id_builder_(1),
@@ -115,7 +134,7 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
         {
             ZCE_Async_Object *corout_base = NULL;
             pool_reg.coroutine_pool_.pop_front(corout_base);
-
+            corout_base->finish();
             delete corout_base;
             corout_base = NULL;
         }
@@ -173,7 +192,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     for (size_t i = 0; i < init_clone_num; i++)
     {
         ZCE_Async_Object *crtn = coroutine_base->clone(this);
-        crtn->create_cmd_ = reg_cmd;
+        crtn->initialize(reg_cmd);
         ref_rec.coroutine_pool_.push_back(crtn);
     }
 
@@ -280,7 +299,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     //如果运行一下就退出了,直接结束回收
     if (continue_run == false)
     {
-        crt_async->on_finish();
+        crt_async->on_end();
         free_to_pool(crt_async);
     }
     else

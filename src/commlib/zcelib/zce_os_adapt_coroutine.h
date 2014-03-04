@@ -45,6 +45,12 @@
 ///coroutine_t 内部保存协程句柄的数据，包括MAIN和COROUTINE的数据
 struct  coroutine_t
 {
+    coroutine_t()
+    {
+        main_ = NULL;
+        coroutine_ = NULL;
+    }
+
     void *         main_;
     void *         coroutine_;
 };

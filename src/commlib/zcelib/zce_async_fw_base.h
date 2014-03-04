@@ -41,10 +41,18 @@ public:
     
 
     /*!
-    * @brief      协程初始化的工作，在放入池子前执行一次，
+    * @brief      初始化函数，在构造函数后调用，在放入池子前执行一次，
     * @return     int 0标识成功
     */
-    virtual int initialize();
+    virtual int initialize(unsigned int reg_cmd);
+
+
+    /*!
+    * @brief      结束销毁函数，在析构前的调用
+    * @return     int
+    * @note       
+    */
+    virtual int finish();
     
     /*!
     * @brief      克隆自己
@@ -68,7 +76,7 @@ public:
     /*!
     * @brief      异步对象运行结束，做结束，释放资源的事情
     */
-    virtual void on_finish();
+    virtual void on_end();
 
 
 protected:
