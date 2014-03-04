@@ -128,14 +128,7 @@ ZCE_Async_CoroutineMgr::~ZCE_Async_CoroutineMgr()
 ///切换到ID对应的那个线程
 int ZCE_Async_CoroutineMgr::active_asyncobj(unsigned int id)
 {
-    int ret = 0;
-    ZCE_Async_Object *async_obj = NULL;
-    ret = find_running_asyncobj(id, async_obj);
-    if (ret != 0)
-    {
-        return ret;
-    }
-    ((ZCE_Async_Coroutine *)async_obj)->on_run();
+
     return 0;
 }
 

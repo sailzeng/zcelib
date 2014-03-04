@@ -157,6 +157,9 @@ protected:
         //创建的事务的数量
         uint64_t start_num_;
 
+        //销毁时状态异常的事务数量
+        uint64_t active_num_;
+
         //正常结束的数量
         uint64_t end_num_;
 
@@ -166,8 +169,6 @@ protected:
         //运行过程发生超时的数量
         uint64_t timeout_num_;
 
-        //销毁时状态异常的事务数量
-        uint64_t exception_num_;
 
         //运行总消耗时间
         uint64_t run_consume_ms_;
@@ -215,11 +216,11 @@ public:
 
 
     /*!
-    * @brief      激活某个已经运行的异步对象,虚函数，FSM和协程自己实现
+    * @brief      激活某个已经运行的异步对象,
     * @return     int
     * @param      id 
     */
-    virtual int active_asyncobj(unsigned int id) = 0;
+    int active_asyncobj(unsigned int id);
 
 
     /*!
@@ -233,10 +234,13 @@ protected:
     /*!
     * @brief      从池子里面分配一个异步对象
     * @return     int
-    * @param      cmd
+    * @param      cmd 
+    * @param      async_rec
     * @param      alloc_aysnc
     */
-    int allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&alloc_aysnc);
+    int allocate_from_pool(unsigned int cmd, 
+        ASYNC_OBJECT_RECORD *&async_rec,
+        ZCE_Async_Object *&alloc_aysnc);
 
     /*!
     * @brief      释放一个异步对象到池子里面

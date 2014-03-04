@@ -5,7 +5,7 @@
 #include "zce_trace_log_debug.h"
 #include "zce_timer_queue_base.h"
 
-//------------------------------------------------------------------------------------
+//=============================================================================================
 
 //TIME ID
 const int ZCE_Async_Object::ASYNCOBJ_TIME_ID[] = { 10001, 20001 };
@@ -200,7 +200,9 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
 }
 
 ///从池子里面分配一个
-int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *&crt_async)
+int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, 
+    ASYNC_OBJECT_RECORD *&async_rec,
+    ZCE_Async_Object *&crt_async)
 {
 
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(cmd);
@@ -242,7 +244,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, ZCE_Async_Object *
 
     //取得一个事务
     reg_async.coroutine_pool_.pop_front(crt_async);
-
+    async_rec = &reg_async;
 
     return 0;
 }
@@ -257,7 +259,6 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
     {
         return -1;
     }
-
 
     //
     ASYNC_OBJECT_RECORD &reg_record = mapiter->second;
@@ -275,9 +276,10 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
 {
     int ret = 0;
     ZCE_Async_Object *crt_async = NULL;
-    
+    ASYNC_OBJECT_RECORD *async_rec = NULL;
+
     //从池子里面找一个异步对象
-    ret = allocate_from_pool(cmd, crt_async);
+    ret = allocate_from_pool(cmd, async_rec, crt_async);
     if (ret != 0)
     {
         return ret;
@@ -292,6 +294,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     
     //启动丫的
     crt_async->on_start();
+    ++async_rec->start_num_;
 
     bool continue_run = false;
     crt_async->on_run(continue_run);
@@ -299,6 +302,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     //如果运行一下就退出了,直接结束回收
     if (continue_run == false)
     {
+        ++async_rec->end_num_;
         crt_async->on_end();
         free_to_pool(crt_async);
     }
@@ -313,6 +317,32 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
             return -1;
         }
     }
+
+    return 0;
+}
+
+//激活某个已经运行的异步对象
+int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
+{
+    int ret = 0;
+    ZCE_Async_Object *async_obj = NULL;
+    ret = find_running_asyncobj(id, async_obj);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    bool continue_run = false;
+    async_obj->on_run(continue_run);
+
+    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(async_obj->create_cmd_);
+    if (mapiter == aysncobj_pool_.end())
+    {
+        return -1;
+    }
+
+    //增加记录统计数据
+    ASYNC_OBJECT_RECORD &async_record = mapiter->second;
+    async_record.active_num_++;
 
     return 0;
 }
