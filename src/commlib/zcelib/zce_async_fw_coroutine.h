@@ -106,10 +106,6 @@ protected:
 */
 class ZCE_Async_CoroutineMgr :public ZCE_Async_ObjectMgr
 {
- 
-    ///每类异步对象池子的初始化的数量
-    static const size_t DEFUALT_INIT_POOL_SIZE = 2;
-
 public:
 
     //
@@ -117,12 +113,6 @@ public:
     virtual ~ZCE_Async_CoroutineMgr();
     
 
-    /*!
-    * @brief      激活某个已经运行的异步对象,虚函数，FSM和协程自己实现
-    * @return     int
-    * @param      id
-    */
-    virtual int active_asyncobj(unsigned int id) = 0;
 };
 
 

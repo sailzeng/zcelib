@@ -73,16 +73,24 @@ int ZCE_Async_Object::set_timetouch_timer(int sec, int usec)
     return 0;
 }
 
-
+//取消超时的定时器
 void ZCE_Async_Object::cancel_timeout_timer()
 {
-
+    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
+    if (ZCE_Timer_Queue::INVALID_TIMER_ID == timeout_id_)
+    {
+        timer_queue->cancel_timer(timeout_id_);
+    }
 }
 
-
+//取消触发的定时器
 void ZCE_Async_Object::cancel_touch_timer()
 {
-
+    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
+    if (ZCE_Timer_Queue::INVALID_TIMER_ID == touchtimer_id_)
+    {
+        timer_queue->cancel_timer(touchtimer_id_);
+    }
 }
 
 
@@ -270,7 +278,7 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
     return 0;
 }
 
-
+//创建异步对象
 int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
 {
     int ret = 0;
