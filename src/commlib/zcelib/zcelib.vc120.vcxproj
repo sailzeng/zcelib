@@ -374,6 +374,7 @@
     <ClCompile Include="zce_share_mem_systemv.cpp" />
     <ClCompile Include="zce_shm_cache_chunk.cpp" />
     <ClCompile Include="zce_shm_lockfree_deque.cpp" />
+    <ClCompile Include="zce_shm_predefine.cpp" />
     <ClCompile Include="zce_socket_acceptor.cpp" />
     <ClCompile Include="zce_socket_addr_base.cpp" />
     <ClCompile Include="zce_socket_addr_in.cpp" />

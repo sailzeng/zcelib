@@ -687,5 +687,8 @@
     <ClCompile Include="zce_async_fw_fsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce_shm_predefine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
