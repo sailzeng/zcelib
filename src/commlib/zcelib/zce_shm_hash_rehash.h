@@ -373,6 +373,11 @@ protected:
         {
             instance->hash_safe_head_->primes_ary_[y] = primes_list[y];
         }
+        //把多余的地方填写成0
+        for (size_t y = row_number; y < MAX_PRIMES_LIST_NUM; ++y)
+        {
+            instance->hash_safe_head_->primes_ary_[y] = 0;
+        }
 
         //如果不进行恢复处理
         if (if_restore == false)
