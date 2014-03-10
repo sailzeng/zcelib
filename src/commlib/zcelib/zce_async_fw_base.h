@@ -50,7 +50,6 @@ public:
     /*!
     * @brief      结束销毁函数，在析构前的调用
     * @return     int
-    * @note       
     */
     virtual int finish();
     

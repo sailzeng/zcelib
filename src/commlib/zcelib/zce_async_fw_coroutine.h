@@ -85,6 +85,9 @@ public:
     static void static_do(ZCE_Async_Coroutine *coroutine);
 
 protected:
+
+    ///最小的堆栈
+    size_t min_stack_size = 16 * 1024;
     
     ///协程对象
     coroutine_t      handle_;
