@@ -28,11 +28,14 @@ uint32_t gcd (uint32_t x, uint32_t y);
 /*!
 * @brief      检查一个数值是否是质数
 */
-//检查一个数值是否是质数
 inline bool is_prime (const size_t n)
 {
-    size_t test_max = static_cast<size_t>(::sqrt( static_cast<double>( n) ));
-
+    //判断是否是质数，
+    if (2 == n || 3 == n)
+    {
+        return true;
+    }
+    size_t test_max = static_cast<size_t>(::sqrt(static_cast<double>(n)));
     for (size_t i = 2; i <= test_max + 1 ; ++i)
     {
         if (n % i == 0)
@@ -43,6 +46,16 @@ inline bool is_prime (const size_t n)
 
     return true;
 }
+
+
+
+/*!
+* @brief      找到输入参数n最近(大于)的一个质数，
+* @return     size_t 返回最近的那个质数
+* @param      n      输入的数值
+*/
+size_t nearest_prime(const size_t n);
+
 
 /*!
 * @brief      检查从LSB（最小位），to MSB（最大位），到一个被设置为1的位置，前面有多少个0

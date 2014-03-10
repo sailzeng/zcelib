@@ -11,7 +11,7 @@
 *             HASH取模的总次数我采用24次,为什么这样呢，因为我做过一些测试，在HASH的次数
 *             在24次左右时，第一次出现冲突的情况的负载率大约是85%以上
 *             http://blog.csdn.net/fullsail/article/details/6328702
-* 
+*
 * @details    这个算法的基本思路来自即通的几个同事,感谢icezhuang，mikewei，spraydong等
 *             同事，本质上他是一个用再HASH的方式解决冲突的算法，
 *             我所做的事情是用模板，对于整个数据管理进行封装,
@@ -25,18 +25,18 @@
 *             1.Date  : 2010年04月12日
 *             Author  : Sailzeng
 *             Modification  : 代码级别完成，开始测试,
-* 
+*
 *             1.Date  : 2010年04月12日
 *             Author  : Sailzeng
 *             Modification  : 性能测试结果对比HASH的开链方式和多次HASH方式,多次HASH的性能
 *             要慢不少，但1s完成上千万次查询还是可以的,
-* 
+*
 *             2.Date  : 2010年04月20日
 *             Author  : Sailzeng
 *             Modification  :本来不打算加入一个淘汰算法的，因为思前想后，除非在处理的几次取模的过程中进行淘汰，否则意义不大,
 *             后来被kliu同学挑战，重新思考了一下，即使队列的数量大约1亿个，全部扫描要淘汰的数据的时间也用不了1s，真的我那么在乎成本吗？
 *             既然被挑战，我就提供一个吧。反正也是手到擒来的事情,另外，为什么我不另起炉灶呢,因为本来就都是数组,
-* 
+*
 *             2.Date  : 2010年04月21日
 *             Author  : Sailzeng
 *             Modification  :思考再三，我还是将_equal都删除了，因为REHASH对于insert_equal支持并不好，为什么呢，他的最大支持相等的对象个数
@@ -182,6 +182,16 @@ public:
     }
 };
 
+//===================================================================================================
+//每行是16,24,32列
+//目前使用24列，列越多，冲突可能会越小
+static const size_t DEF_PRIMES_LIST_NUM = 24;
+
+static const size_t MIN_PRIMES_LIST_NUM = 4;
+
+static const size_t MAX_PRIMES_LIST_NUM = 64;
+
+
 //头部，LRU_HASH的头部结构，放在LRUHASH内存的前面
 class _hashtable_rehash_head
 {
@@ -192,11 +202,11 @@ protected:
         num_of_node_(0),
         sz_freenode_(0),
         sz_usenode_(0),
-        len_of_primes_list_(0),
+        row_primes_ary_(0),
         expire_start_(0)
     {
         //清0
-        memset(primes_list_, 0, sizeof(primes_list_));
+        memset(primes_ary_, 0, sizeof(primes_ary_));
     }
     ~_hashtable_rehash_head()
     {
@@ -214,16 +224,21 @@ public:
     //USE的NODE个数
     size_t           sz_usenode_;
 
-    //质数列表的个数
-    size_t           len_of_primes_list_;
+    //质数列表的列数量
+    size_t           row_primes_ary_;
 
     //
-    size_t           primes_list_[NUM_PRIMES_LIST_ELEMENT];
+    size_t           primes_ary_[MAX_PRIMES_LIST_NUM];
 
     //淘汰其实的位置，为了避免每次淘汰都从一个地方开始
     size_t           expire_start_;
 
 };
+
+
+
+//=============================================================================================
+
 
 template < class _value_type,
          class _key_type,
@@ -283,28 +298,6 @@ public:
 
 protected:
 
-    //返回大于N的一个质数,(最后一个例外),使用质数作为取模的
-    static size_t get_next_prime(const size_t n)
-    {
-        //为什么不直接在模板里面写static数组？好像是那个编译器不支持,已经忘记过程了
-        //最后一个是总和
-        const size_t primes_matrix[NUM_HASH_SAFE_PRIMES_LIST][NUM_PRIMES_LIST_ELEMENT + 1] = __HASH_SAFE_PRIME_LIST_BODY;
-
-        size_t i = 0;
-
-        //
-        for (; i < NUM_HASH_SAFE_PRIMES_LIST ; ++i)
-        {
-            if (primes_matrix[i][NUM_PRIMES_LIST_ELEMENT] >= n)
-            {
-                break;
-            }
-        }
-
-        //如果大于最后一个调整一下,
-        return (i == NUM_HASH_SAFE_PRIMES_LIST) ? primes_matrix[i - 1][NUM_PRIMES_LIST_ELEMENT] : primes_matrix[i][NUM_PRIMES_LIST_ELEMENT];
-    }
-
     //从value中取值
     size_t bkt_num_value(const _value_type &obj, size_t one_primes) const
     {
@@ -332,7 +325,7 @@ protected:
            _hash_fun,
            _extract_key,
            _equal_key > *
-           initialize_i(size_t primes_number,
+           initialize_i(size_t row_number,
                         const size_t primes_list[],
                         size_t num_node,
                         size_t sz_alloc,
@@ -374,11 +367,16 @@ protected:
         instance->invalid_data_ = invalid_data;
 
         //质数表填写进去
-        instance->hash_safe_head_->len_of_primes_list_ = primes_number;
+        instance->hash_safe_head_->row_primes_ary_ = row_number;
 
-        for (size_t y = 0; y < primes_number; ++y)
+        for (size_t y = 0; y < row_number; ++y)
         {
-            instance->hash_safe_head_->primes_list_[y] = primes_list[y];
+            instance->hash_safe_head_->primes_ary_[y] = primes_list[y];
+        }
+        //把多余的地方填写成0
+        for (size_t y = row_number; y < MAX_PRIMES_LIST_NUM; ++y)
+        {
+            instance->hash_safe_head_->primes_ary_[y] = 0;
         }
 
         //如果不进行恢复处理
@@ -393,25 +391,37 @@ protected:
 
 public:
 
-    //内存区的构成为 define区,index区,data区,返回所需要的长度,
 
-    //返回值为需要分配的空间大小
-    //第一个参数表示所需要的节点个数，注意返回的是实际INDEX长度,会增加一些
-    //第二个参数表示是否使用超时处理
-    static size_t getallocsize(size_t &num_node, bool if_expire)
+    /*!
+    * @brief
+    * @return     size_t 返回值为需要分配的空间大小
+    * @param      req_num   表示所需要的节点个数，
+    * @param      real_num  最后实际分配的节点数量，注意返回的是实际INDEX长度,会增加一些
+    * @param      prime_ary 返回的，质数数组，用于多次REHASH处理
+    * @param      if_expire 是否使用超时处理
+    * @param      row_prime_ary 质数数值的列数量,放在最后一个地方，是为了方便默认值
+    * @note       内存区的构成为 define区,index区,data区,返回所需要的长度,
+    */
+    static size_t getallocsize(size_t req_num,
+                               size_t &real_num,
+                               size_t prime_ary[],
+                               bool if_expire,
+                               size_t row_prime_ary = DEF_PRIMES_LIST_NUM)
     {
-        num_node = get_next_prime(num_node);
+        ZCE_ASSERT(row_prime_ary >= MIN_PRIMES_LIST_NUM && row_prime_ary <= MAX_PRIMES_LIST_NUM);
+
+        ZCE_LIB::hash_prime_ary(req_num, real_num, row_prime_ary, prime_ary);
+
         size_t sz_alloc =  0;
         //
         sz_alloc += sizeof(_hashtable_rehash_head);
 
-        sz_alloc += sizeof(size_t) * NUM_PRIMES_LIST_ELEMENT;
         //给出结构的数量
-        sz_alloc += sizeof(_value_type) * (num_node);
+        sz_alloc += sizeof(_value_type) * (real_num);
 
         if (if_expire)
         {
-            sz_alloc += (sizeof(unsigned int) * (num_node));
+            sz_alloc += (sizeof(unsigned int) * (real_num));
         }
 
         return sz_alloc;
@@ -423,20 +433,23 @@ public:
     //第二个参数质数队列，
     //第三个参数是是否超时，
     //第三个参数返回参数,总节点个数,
-    static size_t getallocsize(size_t primes_number, const size_t primes_list[], bool if_expire, size_t &node_count)
+    static size_t getallocsize(size_t row_prime_ary,
+                               const size_t primes_list[],
+                               bool if_expire,
+                               size_t &node_count)
     {
         //列表的最大长度不能大于MAX_PRIMES_LIST_ELEMENT
-        assert(primes_number <= NUM_PRIMES_LIST_ELEMENT);
+        ZCE_ASSERT(row_prime_ary <= DEF_PRIMES_LIST_NUM);
 
         //计算总容量
         node_count = 0;
 
-        for (size_t i = 0; i < primes_number; ++i)
+        for (size_t i = 0; i < row_prime_ary; ++i)
         {
             node_count += primes_list[i];
         }
 
-        assert(node_count > 0);
+        ZCE_ASSERT(node_count > 0);
 
         //
         size_t sz_alloc =  0;
@@ -454,42 +467,38 @@ public:
         return sz_alloc;
     }
 
-    //推荐使用这个函数,你做的事情要少很多
-    //初始化，返回函数对象的指针，以后就通过这个指针操作，为什么不直接用构造函数呢，我很难回答，可能是通过getallocsize一脉相承？
-    //第1个参数，尺寸，你需要放几个元素给你，注意这个参数会返回一个实际我分配多少尺寸给你
-    //第2个参数，传递进来的空间指针，空间的大小通过getallocsize得到.
-    //第3个参数，一个无效的数据数据值，因为我懒得给你开辟一个地方记录某个数据是否使用了.所以我会将所有的数据都初始化无效结构，无效结构，我会记录成这个空间没有使用
-    //第4个参数，是否要使用淘汰功能,如果不适用，空间可以更加小一些
-    //第5个参数，是否是从一个内存中恢复空间，比如共享内存之类的恢复
+
+    /*!
+    * @brief      初始化，返回函数对象的指针，以后就通过这个指针操作，为什么不直接用构造函数呢，我很难回答，可能是通过getallocsize一脉相承？
+    * @return     shm_hash_rehash < _value_type, _key_type, _hash_fun, _extract_key, _equal_key >*
+    * @param      req_num        表示所需要的节点个数，你需要放几个元素给你，
+    * @param      real_num       注意这个参数会返回一个实际我分配多少尺寸给你
+    * @param      pmmap          传递进来的空间指针，空间的大小通过getallocsize得到.
+    * @param      invalid_data   一个无效的数据数据值，因为我懒得给你开辟一个地方记录某个数据是否使用了.所以我会将所有的数据都初始化无效结构，无效结构，我会记录成这个空间没有使用
+    * @param      if_expire      是否要使用淘汰功能,如果不适用，空间可以更加小一些
+    * @param      if_restore     是否是从一个内存中恢复空间，比如共享内存之类的恢复
+    * @note       推荐使用这个函数,你做的事情要少很多
+    */
     static shm_hash_rehash < _value_type,
     _key_type,
     _hash_fun,
     _extract_key,
     _equal_key > *
-    initialize(size_t &num_node, char *pmmap, const _value_type &invalid_data, bool if_expire, bool if_restore = false)
+    initialize(size_t req_num, 
+               size_t &real_num,
+               char *pmmap,
+               const _value_type &invalid_data,
+               bool if_expire,
+               size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
+               bool if_restore = false)
     {
-        assert(pmmap != NULL && num_node > 0 );
+        ZCE_ASSERT(pmmap != NULL && req_num > 0);
 
         //调整,根据你的尺寸，向上找一个合适的空间
-        num_node = get_next_prime(num_node);
-
-        size_t sz_alloc = getallocsize(num_node, if_expire);
+        size_t prime_ary[MAX_PRIMES_LIST_NUM];
+        size_t sz_alloc = getallocsize(req_num, real_num, prime_ary, if_expire, row_prime_ary);
 
         _hashtable_rehash_head *hashhead =  reinterpret_cast< _hashtable_rehash_head * >(pmmap);
-
-        const size_t primes_matrix[NUM_HASH_SAFE_PRIMES_LIST][NUM_PRIMES_LIST_ELEMENT + 1] = __HASH_SAFE_PRIME_LIST_BODY;
-
-        size_t primes_list_no = 0;
-
-        //找到选择的HASH列，直接将这一列的数据放入内存，方便后面处理
-        for (size_t x = 0; x < NUM_HASH_SAFE_PRIMES_LIST; ++x)
-        {
-            //最后一个元素是前面所有质数列表的和，而NODE的个数也应该是质数列表的和
-            if (num_node == primes_matrix[x][NUM_PRIMES_LIST_ELEMENT] )
-            {
-                primes_list_no = x;
-            }
-        }
 
         //如果是恢复,数据都在内存中,对数据进行检查
         if (if_restore == true)
@@ -499,13 +508,13 @@ public:
 
             //检查一下恢复的内存是否正确,
             if ( sz_alloc != hashhead->size_of_mmap_ ||
-                 num_node != hashhead->num_of_node_ )
+                 req_num != hashhead->num_of_node_ )
             {
                 return NULL;
             }
 
             //质数列表的个数应该一致
-            if ( hashhead->len_of_primes_list_ != NUM_PRIMES_LIST_ELEMENT )
+            if (hashhead->row_primes_ary_ != row_prime_ary)
             {
                 return NULL;
             }
@@ -513,9 +522,9 @@ public:
             //HASH列表的个数，应该等于元素的总和，是不是应该将每个数据都拿出来比较一下呢
             size_t num_node_count = 0;
 
-            for (size_t p = 0; p < hashhead->len_of_primes_list_; ++p)
+            for (size_t p = 0; p < hashhead->row_primes_ary_; ++p)
             {
-                num_node_count += hashhead->primes_list_[p];
+                num_node_count += hashhead->primes_ary_[p];
             }
 
             if (num_node_count != hashhead->num_of_node_)
@@ -524,9 +533,9 @@ public:
             }
 
             //检查质数队列是否一致
-            for (size_t y = 0; y < NUM_PRIMES_LIST_ELEMENT; ++y)
+            for (size_t y = 0; y < row_prime_ary; ++y)
             {
-                if (hashhead->primes_list_[y] != primes_matrix[primes_list_no][y])
+                if (hashhead->primes_ary_[y] != prime_ary[y])
                 {
                     return NULL;
                 }
@@ -535,9 +544,9 @@ public:
         }
 
         //打完收工
-        return initialize_i(NUM_PRIMES_LIST_ELEMENT,
-                            primes_matrix[primes_list_no],
-                            num_node,
+        return initialize_i(row_prime_ary,
+                            prime_ary,
+                            req_num,
                             sz_alloc,
                             pmmap,
                             invalid_data,
@@ -596,7 +605,7 @@ public:
             }
 
             //质数列表的个数应该一致
-            if ( hashhead->len_of_primes_list_ != primes_number )
+            if ( hashhead->row_primes_ary_ != primes_number )
             {
                 return NULL;
             }
@@ -604,7 +613,7 @@ public:
             //检查质数队列是否一致
             for (size_t y = 0; y < primes_number; ++y)
             {
-                if (hashhead->primes_list_[y] != primes_list[y])
+                if (hashhead->primes_ary_[y] != primes_list[y])
                 {
                     return NULL;
                 }
@@ -680,9 +689,9 @@ public:
         size_t idx_no_use = _INVALID_POINT;
 
         //循环进行N此取模操作，
-        for (size_t i = 0; i < hash_safe_head_->len_of_primes_list_; ++i )
+        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i )
         {
-            size_t idx = bkt_num_value(val, hash_safe_head_->primes_list_[i]);
+            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
@@ -702,7 +711,7 @@ public:
             }
 
             //准备在下一个质数列里面找
-            idx_count += (hash_safe_head_->primes_list_[i] - idx);
+            idx_count += (hash_safe_head_->primes_ary_[i] - idx);
         }
 
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
@@ -737,9 +746,9 @@ public:
         size_t idx_no_use = _INVALID_POINT;
 
         //循环进行N此取模操作，
-        for (size_t i = 0; i < hash_safe_head_->len_of_primes_list_; ++i )
+        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i )
         {
-            size_t idx = bkt_num_value(val, hash_safe_head_->primes_list_[i]);
+            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
@@ -770,7 +779,7 @@ public:
             }
 
             //准备在下一个质数列里面找
-            idx_count += (hash_safe_head_->primes_list_[i] - idx);
+            idx_count += (hash_safe_head_->primes_ary_[i] - idx);
         }
 
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
@@ -802,10 +811,10 @@ public:
         size_t idx_count = 0;
 
         //循环进行N此取模操作，
-        for (size_t i = 0; i < hash_safe_head_->len_of_primes_list_; ++i )
+        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i )
         {
             //将val取出key，取模
-            size_t idx = bkt_num_key(key, hash_safe_head_->primes_list_[i]);
+            size_t idx = bkt_num_key(key, hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
@@ -815,7 +824,7 @@ public:
             }
 
             //准备在下一个质数列里面找
-            idx_count += (hash_safe_head_->primes_list_[i] - idx);
+            idx_count += (hash_safe_head_->primes_ary_[i] - idx);
         }
 
         return end();

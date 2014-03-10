@@ -250,7 +250,7 @@ public:
         _hash_fun,
         _extract_key,
         _equal_key,
-            _washout_fun >;
+        _washout_fun >;
 
 protected:
     //
@@ -301,46 +301,31 @@ public:
 
 protected:
 
-    //返回大于N的一个质数,(最后一个例外),使用质数作为取模的
-    static size_t get_next_prime(const size_t n)
-    {
-        const size_t num_primes_list = __MMAP_PRIME_LIST_SIZE;
-        //考虑到实际情况,增加了很多100万以下的质数,
-        const size_t primes_list[num_primes_list] = __MMAP_PRIME_LIST_BODY;
-
-        size_t num_primes = num_primes_list;
-        size_t i = 0;
-
-        //找呀找
-        for (; i < num_primes ; ++i)
-        {
-            if (primes_list[i] >= n)
-            {
-                break;
-            }
-        }
-
-        //如果大于最后一个调整一下,
-        return (i == num_primes) ? primes_list[i - 1] : primes_list[i];
-    }
 
 
 public:
 
-    //内存区的构成为 define区,index区,data区,返回所需要的长度,
-    //注意返回的是实际INDEX长度,会取一个质数
-    static size_t getallocsize(size_t &numnode)
+
+    /*!
+    * @brief      内存区的构成为 define区,index区,data区,返回所需要的长度,
+    * @return     size_t   所需的尺寸
+    * @param      req_num  请求的NODE数量
+    * @param      real_num 实际分配的NODE数量
+    * @note       注意返回的是实际INDEX长度,会取一个质数
+    */
+    static size_t getallocsize(size_t req_num,size_t &real_num)
     {
-        numnode = get_next_prime(numnode);
+        //取得一个比这个数字做一定放大的质数，
+        ZCE_LIB::hash_prime(req_num, real_num);
         size_t sz_alloc =  0;
         //
         sz_alloc += sizeof(_hashtable_expire_head);
-        sz_alloc += sizeof(size_t) * numnode;
-        sz_alloc += sizeof(size_t) * numnode;
+        sz_alloc += sizeof(size_t)* real_num;
+        sz_alloc += sizeof(size_t)* real_num;
         //
-        sz_alloc += sizeof(_shm_list_index) * (numnode + LIST_ADD_NODE_NUMBER);
-        sz_alloc += sizeof(unsigned int) * (numnode);
-        sz_alloc += sizeof(_value_type) * (numnode);
+        sz_alloc += sizeof(_shm_list_index)* (real_num + LIST_ADD_NODE_NUMBER);
+        sz_alloc += sizeof(unsigned int)* (real_num);
+        sz_alloc += sizeof(_value_type)* (real_num);
         return sz_alloc;
     }
 
@@ -351,30 +336,44 @@ public:
            _extract_key,
            _equal_key,
            _washout_fun > *
-           initialize(size_t &numnode, char *pmmap, bool if_restore = false)
+           initialize(size_t req_num, size_t &real_num, char *pmmap, bool if_restore = false)
     {
-        assert(pmmap != NULL && numnode > 0 );
+        assert(pmmap != NULL && req_num > 0);
         //调整
-        numnode = get_next_prime(numnode);
-
+        size_t sz_mmap = getallocsize(req_num, real_num);
         _hashtable_expire_head *hashhead =  reinterpret_cast< _hashtable_expire_head * >(pmmap);
 
         //如果是恢复,数据都在内存中,
         if ( true == if_restore )
         {
+
+
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != hashhead->size_of_mmap_ ||
-                numnode != hashhead->num_of_node_ )
+            //在特殊的恢复，比如取质数的方法被改变了，
+            if (sz_mmap != hashhead->size_of_mmap_ ||
+                real_num != hashhead->num_of_node_ )
             {
+
+//一般情况下不一致返回NULL，标识恢复失败，
+#if ALLOW_RESTORE_INCONFORMITY != 1
                 return NULL;
+#else
+                ZCE_LOGMSG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
+                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                    sz_mmap,
+                    real_num,
+                    hashhead->size_of_mmap_,
+                    hashhead->num_of_node_);
+#endif
             }
-
-            //其实还应该检查一次所有的队列
         }
-
-        //初始化尺寸
-        hashhead->size_of_mmap_ = getallocsize(numnode) ;
-        hashhead->num_of_node_ = numnode;
+        else
+        {
+            //记录初始化尺寸
+            hashhead->size_of_mmap_ = sz_mmap;
+            hashhead->num_of_node_ = real_num;
+        }
+        
 
         shm_hashtable_expire< _value_type, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun >* instance
             = new shm_hashtable_expire< _value_type, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun>();
@@ -384,17 +383,17 @@ public:
         instance->lru_hash_head_ = reinterpret_cast<_hashtable_expire_head *>(tmp_base);
         tmp_base = tmp_base + sizeof(_hashtable_expire_head);
         instance->hash_factor_base_ = reinterpret_cast<size_t *>(tmp_base);
-        tmp_base = tmp_base + sizeof(size_t) * numnode;
+        tmp_base = tmp_base + sizeof(size_t) * real_num;
         instance->hash_index_base_ = reinterpret_cast<size_t *>(tmp_base);
 
-        tmp_base = tmp_base + sizeof(size_t) * numnode;
+        tmp_base = tmp_base + sizeof(size_t) * real_num;
         instance->lst_index_base_ = reinterpret_cast<_shm_list_index *>(tmp_base);
-        tmp_base = tmp_base + sizeof(_shm_list_index) * (numnode + LIST_ADD_NODE_NUMBER);
-        instance->lst_use_node_ = instance->lst_index_base_ + numnode;
-        instance->lst_free_node_ = instance->lst_index_base_ + numnode + 1;
+        tmp_base = tmp_base + sizeof(_shm_list_index) * (real_num + LIST_ADD_NODE_NUMBER);
+        instance->lst_use_node_ = instance->lst_index_base_ + real_num;
+        instance->lst_free_node_ = instance->lst_index_base_ + real_num + 1;
 
         instance->priority_base_ = reinterpret_cast<unsigned int *>(tmp_base);
-        tmp_base = tmp_base + sizeof(unsigned int) * (numnode );
+        tmp_base = tmp_base + sizeof(unsigned int) * (real_num );
         instance->value_base_ = reinterpret_cast<_value_type *>(tmp_base);
 
         if ( false == if_restore )
@@ -402,6 +401,7 @@ public:
             //清理初始化所有的内存,所有的节点为FREE
             instance->clear();
         }
+        //其实如果是恢复，还应该检查一次所有的队列
 
         //打完收工
         return instance;

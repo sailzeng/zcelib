@@ -274,48 +274,39 @@ protected:
 
 public:
 
-    //返回大于N的一个质数,(最后一个例外),使用质数作为取模的
-    static size_t get_next_prime(const size_t n)
+
+    /*!
+    * @brief      内存区的构成为 define区,index区,data区,返回所需要的长度,
+    * @return     size_t   所需的尺寸
+    * @param      req_num  请求的NODE数量
+    * @param      real_num 实际分配的NODE数量
+    * @note       注意返回的是实际INDEX长度,会取一个质数
+    */
+    static size_t getallocsize(size_t req_num, size_t &real_num)
     {
-        const size_t num_primes_list = __MMAP_PRIME_LIST_SIZE;
-        //考虑到实际情况,增加了很多100万以下的质数,
-        const size_t primes_list[num_primes_list] = __MMAP_PRIME_LIST_BODY;
-
-        size_t num_primes = num_primes_list;
-        size_t i = 0;
-
-        //找呀找
-        for (; i < num_primes ; ++i)
-        {
-            if (primes_list[i] >= n)
-            {
-                break;
-            }
-        }
-
-        //如果大于最后一个调整一下,
-        return (i == num_primes) ? primes_list[i - 1] : primes_list[i];
-    }
-
-    //内存区的构成为 define区,index_区,data区,返回所需要的长度,
-    //注意返回的是实际INDEX长度,会取一个质数
-    static size_t getallocsize(size_t &numnode)
-    {
-        numnode = get_next_prime(numnode);
+        ZCE_LIB::hash_prime(req_num, real_num);
         return  sizeof(_shm_hash_table_head)  +
-                sizeof(size_t) * (numnode ) +
-                sizeof(_value_type) * numnode +
-                sizeof(size_t) * (numnode )
-                ;
+            sizeof(size_t)* (real_num)+
+            sizeof(_value_type)* real_num +
+            sizeof(size_t)* (real_num);
     }
 
-    //初始化
+    
+    /*!
+    * @brief      初始化
+    * @return     shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key >*
+    * @param      req_num   请求的NODE数量
+    * @param      real_num
+    * @param      pmmap
+    * @param      if_restore
+    * @note       
+    */
     static shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key  >*
-    initialize(size_t &numnode, char *pmmap, bool if_restore = false)
+        initialize(size_t req_num, size_t &real_num,char *pmmap, bool if_restore = false)
     {
-        assert(pmmap != NULL && numnode > 0 );
+        assert(pmmap != NULL && req_num > 0);
         //调整
-        numnode = get_next_prime(numnode);
+        size_t sz_mmap = getallocsize(req_num, real_num);
 
         _shm_hash_table_head *hashhead =  reinterpret_cast< _shm_hash_table_head * >(pmmap);
 
@@ -323,16 +314,29 @@ public:
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
-            if (getallocsize(numnode) != hashhead->size_of_mmap_ ||
-                numnode != hashhead->num_of_node_ )
+            if (sz_mmap != hashhead->size_of_mmap_ ||
+                real_num != hashhead->num_of_node_ )
             {
+                //一般情况下不一致返回NULL，标识恢复失败，
+#if ALLOW_RESTORE_INCONFORMITY != 1
                 return NULL;
+#else
+                ZCE_LOGMSG(RS_ALERT, "Hash Table node initialize number[%lu|%lu] and restore number [%lu|%lu] "
+                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                    sz_mmap,
+                    real_num,
+                    hashhead->size_of_mmap_,
+                    hashhead->num_of_node_);
+#endif
             }
         }
-
-        //初始化尺寸
-        hashhead->size_of_mmap_ = getallocsize(numnode) ;
-        hashhead->num_of_node_ = numnode;
+        else
+        {
+            //初始化尺寸
+            hashhead->size_of_mmap_ = sz_mmap;
+            hashhead->num_of_node_ = real_num;
+        }
+        
 
         shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key  >* instance
             = new shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key  >();
@@ -347,10 +351,10 @@ public:
         tmp_base = tmp_base + sizeof(_shm_hash_table_head);
 
         instance->index_base_ = reinterpret_cast<size_t *>(tmp_base );
-        tmp_base = tmp_base +  sizeof(size_t) * (numnode );
+        tmp_base = tmp_base +  sizeof(size_t) * (real_num );
 
         instance->data_base_ = reinterpret_cast< _value_type *>(tmp_base );
-        tmp_base = tmp_base +  sizeof(_value_type) * (numnode );
+        tmp_base = tmp_base +  sizeof(_value_type) * (real_num );
 
         instance->next_index_ = reinterpret_cast< size_t *>(tmp_base );
 
