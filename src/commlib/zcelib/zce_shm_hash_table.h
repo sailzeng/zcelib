@@ -299,10 +299,8 @@ public:
     * @param      real_num
     * @param      pmmap
     * @param      if_restore
-    * @note       
     */
-    static shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key  >*
-        initialize(size_t req_num, size_t &real_num,char *pmmap, bool if_restore = false)
+    static self* initialize(size_t req_num, size_t &real_num,char *pmmap, bool if_restore = false)
     {
         assert(pmmap != NULL && req_num > 0);
         //µ÷Õû
