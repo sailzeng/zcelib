@@ -1,20 +1,20 @@
-/******************************************************************************************
-Copyright           : 2000-2007, Fullsail Technology (Shenzhen) Company Limited.
-FileName            : zce_mmaprbtree.h
-Author              : scottxu(徐昊)
-Version             :
-Date Of Creation    : 2007年7月24日
-Description         : RBTree主要是完成可以排序的MAP,SET,MultiMap,MultiSet的MMAP类
-                      实现了RBTree以及MAP,SET,MultiMap,MultiSet
+/*!
+* @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
+* @filename   zce_shm_rbtree.h
+* @author     scottxu(徐昊)
+* @version    
+* @date       2007年7月24日
+* @brief      RBTree主要是完成可以排序的MAP,SET,MultiMap,MultiSet的MMAP类
+*             实现了RBTree以及MAP,SET,MultiMap,MultiSet
+*             
+* @details    
+*             
+*             
+*             
+* @note       不保证线程安全，上层自己来保证
+*             
+*/
 
-Others              : 不保证线程安全，上层自己来保证
-Function List       :
-1.  ......
-Modification History:
-1.Date  :
-Author  :
-Modification  :
-******************************************************************************************/
 
 #ifndef ZCE_LIB_SHM_RB_TREE_H_
 #define ZCE_LIB_SHM_RB_TREE_H_
@@ -255,19 +255,17 @@ public:
     }
 };
 
-/******************************************************************************************
-Author          : scottxu 徐昊
-Date Of Creation: 2007年7月24日
-Class           : shm_rb_tree
-Parameter List  : 说明所有的模版参数
-Param1: class _value_type  节点的实际值型别
-Param2: class _key_type    节点的键的型别
-Param3: class _extract_key 从节点中得到键值的方法,或者函数对象
-Param4: class _compare_key 比较键值大小的方法,或者函数对象
-Description     :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+
+/*!
+* @brief      
+*             
+* @tparam     _value_type   节点的实际值型别
+* @tparam     _key_type     节点的键的型别
+* @tparam     _extract_key  从节点中得到键值的方法,或者函数对象
+* @tparam     _compare_key  比较键值大小的方法,或者函数对象
+* @note       
+*/
 template < class _value_type,
          class _key_type,
          class _extract_key = smem_identity<_value_type>,
