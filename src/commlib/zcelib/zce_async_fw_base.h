@@ -28,7 +28,7 @@
 * @brief      异步对象的基类
 *
 */
-class ZCE_Async_Object :public ZCE_Timer_Handler
+class ZCE_Async_Object 
 {
     friend class ZCE_Async_ObjectMgr;
 
@@ -67,13 +67,22 @@ public:
 
     /*!
     * @brief      异步对象运行
-    * @param      continue_run
+    * @param[out] continue_run 异步对象是否继续运行，如果不继续(返回false)，
     */
     virtual void on_run(bool &continue_run) = 0;
 
     
     /*!
+    * @brief      异步对象超时处理
+    * @param[in]  now_time  发生超时的时间，
+    * @param[out] continue_run 异步对象是否继续运行,
+    */
+    virtual void on_timeout(const ZCE_Time_Value & now_time,
+        bool &continue_run) = 0;
+
+    /*!
     * @brief      异步对象运行结束，做结束，释放资源的事情
+    *             目前这个类做的事情主要是清理定时器 
     */
     virtual void on_end();
 
@@ -82,34 +91,22 @@ protected:
 
 
     /*!
-    @brief                   设置超时定时器,如果触发，回调函数
-    @param  sec              超时的秒
-    @param  usec             超时的微秒数
+    * @brief                   设置超时定时器,如果触发，回调函数
+    * @param  time_out         超时的时间，相对时间，
     */
-    int set_timeout_timer(int sec, int usec = 0);
-
-    /*!
-    @brief                   设置触发定时器,如果触发，回调函数
-    @param  sec              超时的秒
-    @param  usec             超时的微秒数
-    */
-    int set_timetouch_timer(int sec, int usec = 0);
+    int set_timeout(const ZCE_Time_Value &time_out);
 
 
     /*!
     * @brief      取消超时定时器
     */
-    void cancel_timeout_timer();
+    void cancel_timeout();
 
-    /*!
-    * @brief      取消触发定时器
-    */
-    void cancel_touch_timer();
 
 protected:
 
     ///TIME ID
-    static const int ASYNCOBJ_TIME_ID[2];
+    static const int ASYNCOBJ_ACTION_ID[2];
 
 protected:
 
@@ -125,10 +122,10 @@ protected:
     //超时的定时器ID
     int timeout_id_;
 
-    //触发的定时器ID
-    int touchtimer_id_;
 };
 
+
+//=======================================================================================
 
 class ZCE_Timer_Queue;
 
@@ -136,7 +133,7 @@ class ZCE_Timer_Queue;
 * @brief      异步对象的管理器基类
 *
 */
-class ZCE_Async_ObjectMgr
+class ZCE_Async_ObjectMgr :public ZCE_Timer_Handler
 {
 
 protected:
@@ -147,6 +144,9 @@ protected:
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {
+        ASYNC_OBJECT_RECORD();
+        ~ASYNC_OBJECT_RECORD();
+
         //异步对象池子，
         ASYNC_OBJECT_POOL coroutine_pool_;
 
@@ -184,7 +184,6 @@ public:
     ZCE_Async_ObjectMgr(ZCE_Timer_Queue *timer_queue);
     virtual ~ZCE_Async_ObjectMgr();
 
-
     /*!
     * @brief      初始化，控制各种池子，容器的大小
     * @return     int
@@ -194,6 +193,14 @@ public:
     int initialize(size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
         size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
 
+
+    /*!
+    * @brief      结束所有的协程处理，回收释放资源，
+    *             打印统计信息，检查是否有泄漏等
+    */
+    void finish();
+
+
     /*!
     * @brief      注册一类协程，其用reg_cmd对应，
     * @return     int 
@@ -202,8 +209,7 @@ public:
     * @param      init_clone_num
     */
     int register_asyncobj(unsigned int reg_cmd,
-        ZCE_Async_Object* async_base,
-        size_t init_clone_num);
+        ZCE_Async_Object* async_base);
 
     /*!
     * @brief      创建一个异步对象
@@ -221,12 +227,6 @@ public:
     */
     int active_asyncobj(unsigned int id);
 
-
-    /*!
-    * @brief      取得定时器管理器，
-    * @return     ZCE_Timer_Queue*
-    */
-    inline ZCE_Timer_Queue * get_timer_queue();
     
 protected:
 
@@ -258,16 +258,24 @@ protected:
     int find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc);
     
 
+
+    /*!
+    * @brief      定时器触发的处理函数
+    * @return     int
+    * @param      now_time
+    * @param      act
+    */
+    int handle_timeout(const ZCE_Time_Value & now_time,
+        const void *act);
+
 protected:
 
     ///默认的异步对象类型数量
-    static const size_t DEFUALT_ASYNC_TYPE_NUM = 1024;
-    ///每类异步对象池子的初始化的数量
-    static const size_t DEFUALT_INIT_POOL_SIZE = 2;
+    static const size_t DEFUALT_ASYNC_TYPE_NUM = 2048;
     ///默认同时运行的一部分对象的数量
-    static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 1024;
-    ///默认池子扩展的时候，扩展的异步对象的数量
-    static const size_t POOL_EXTEND_ASYNC_NUM = 128;
+    static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 2048;
+
+
 
 public:
     ///无效的事务ID
@@ -286,9 +294,11 @@ protected:
     ///正在运行的协程
     RUNNING_ASYNOBJ_MAP running_aysncobj_;
 
-    ///定时器的管理器
-    ZCE_Timer_Queue *timer_queue_;
+    ///异步对象池子的初始化大小，
+    size_t  pool_init_size_;
 
+    ///异步对象池子的每次扩大的数量
+    size_t  pool_extend_size_;
 };
 
 #endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_

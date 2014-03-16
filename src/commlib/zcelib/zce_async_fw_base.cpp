@@ -8,15 +8,14 @@
 //=============================================================================================
 
 //TIME ID
-const int ZCE_Async_Object::ASYNCOBJ_TIME_ID[] = { 10001, 20001 };
+const int ZCE_Async_Object::ASYNCOBJ_ACTION_ID[] = { 10001, 20001 };
 
 //构造函数
 ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr) :
     asyncobj_id_(ZCE_Async_ObjectMgr::INVALID_IDENTITY),
     async_mgr_(async_mgr),
     create_cmd_(ZCE_Async_ObjectMgr::INVALID_COMMAND),
-    timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID),
-    touchtimer_id_(ZCE_Timer_Queue::INVALID_TIMER_ID)
+    timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID)
 {
 }
 
@@ -40,13 +39,13 @@ int ZCE_Async_Object::finish()
 
 
 //设置超时定时器
-int ZCE_Async_Object::set_timeout_timer(int sec, int usec)
+int ZCE_Async_Object::set_timeout(const ZCE_Time_Value &time_out)
 {
-    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
-    ZCE_Time_Value delay_time(sec, usec);
+    ZCE_Timer_Queue* timer_queue = async_mgr_->timer_queue();
+    ZCE_Time_Value delay_time(time_out);
     //注意使用的TIME ID
-    timeout_id_ = timer_queue->schedule_timer(this,
-        &ASYNCOBJ_TIME_ID[0],
+    timeout_id_ = timer_queue->schedule_timer(async_mgr_,
+        this,
         delay_time);
 
     if (ZCE_Timer_Queue::INVALID_TIMER_ID == timeout_id_)
@@ -56,68 +55,88 @@ int ZCE_Async_Object::set_timeout_timer(int sec, int usec)
     return 0;
 }
 
-//设置触发定时器
-int ZCE_Async_Object::set_timetouch_timer(int sec, int usec)
-{
-    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
-    ZCE_Time_Value delay_time(sec, usec);
-    //注意使用的TIME ID
-    touchtimer_id_ = timer_queue->schedule_timer(this,
-        &ASYNCOBJ_TIME_ID[1],
-        delay_time);
-
-    if (ZCE_Timer_Queue::INVALID_TIMER_ID == touchtimer_id_)
-    {
-        return -1;
-    }
-    return 0;
-}
 
 //取消超时的定时器
-void ZCE_Async_Object::cancel_timeout_timer()
+void ZCE_Async_Object::cancel_timeout()
 {
-    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
-    if (ZCE_Timer_Queue::INVALID_TIMER_ID == timeout_id_)
+    if (ZCE_Timer_Queue::INVALID_TIMER_ID != timeout_id_)
     {
+        ZCE_Timer_Queue* timer_queue = async_mgr_->timer_queue();
         timer_queue->cancel_timer(timeout_id_);
-    }
-}
-
-//取消触发的定时器
-void ZCE_Async_Object::cancel_touch_timer()
-{
-    ZCE_Timer_Queue* timer_queue = async_mgr_->get_timer_queue();
-    if (ZCE_Timer_Queue::INVALID_TIMER_ID == touchtimer_id_)
-    {
-        timer_queue->cancel_timer(touchtimer_id_);
+        timeout_id_ = ZCE_Timer_Queue::INVALID_TIMER_ID;
     }
 }
 
 
+
+//目前基类做的结束操作就是清理定时器
 void ZCE_Async_Object::on_end()
 {
-
+    cancel_timeout();
 }
 
 
 //=============================================================================================
 //异步对象管理器
 
+//内部结构
+ZCE_Async_ObjectMgr::ASYNC_OBJECT_RECORD::ASYNC_OBJECT_RECORD():
+    start_num_(0),
+    active_num_(0),
+    end_num_(0),
+    force_end_num_(0),
+    timeout_num_(0),
+    run_consume_ms_(0)
+{
+}
+
+ZCE_Async_ObjectMgr::ASYNC_OBJECT_RECORD::~ASYNC_OBJECT_RECORD()
+{
+}
+
+
 ZCE_Async_ObjectMgr::ZCE_Async_ObjectMgr(ZCE_Timer_Queue *timer_queue) :
-id_builder_(1),
-timer_queue_(timer_queue)
+    ZCE_Timer_Handler(timer_queue),
+    id_builder_(1),
+    pool_init_size_(0),
+    pool_extend_size_(0)
 {
 }
 
 ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
 {
+}
 
+
+//初始化，
+int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
+    size_t running_number)
+{
+    //对参数做调整
+    if (crtn_type_num < DEFUALT_ASYNC_TYPE_NUM)
+    {
+        crtn_type_num = DEFUALT_ASYNC_TYPE_NUM;
+    }
+    if (running_number < DEFUALT_RUNNIG_ASYNC_SIZE)
+    {
+        running_number = DEFUALT_RUNNIG_ASYNC_SIZE;
+    }
+
+    aysncobj_pool_.rehash(crtn_type_num);
+    running_aysncobj_.rehash(running_number);
+    return 0;
+}
+
+
+//
+void ZCE_Async_ObjectMgr::finish()
+{
     RUNNING_ASYNOBJ_MAP::iterator run_iter = running_aysncobj_.begin();
     RUNNING_ASYNOBJ_MAP::iterator run_end = running_aysncobj_.end();
     for (; run_iter != run_end; ++run_iter)
     {
         ZCE_Async_Object *async_obj = run_iter->second;
-        
+
         //统计强制退出的数量
         ID_TO_REGASYNC_POOL_MAP::iterator iter_temp = aysncobj_pool_.find(async_obj->create_cmd_);
         if (iter_temp == aysncobj_pool_.end())
@@ -131,8 +150,6 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
         async_obj->on_end();
         free_to_pool(async_obj);
     }
-    
-
 
     //将内存池子里面的数据全部清理掉。好高兴，因为我释放了内存，从Inmoreliu那儿得到了一顿饭。
     ID_TO_REGASYNC_POOL_MAP::iterator pooliter = aysncobj_pool_.begin();
@@ -169,38 +186,16 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
 
         }
     }
-}
-
-
-//初始化，
-int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
-    size_t running_number)
-{
-    //对参数做调整
-    if (crtn_type_num < DEFUALT_ASYNC_TYPE_NUM)
-    {
-        crtn_type_num = DEFUALT_ASYNC_TYPE_NUM;
-    }
-    if (running_number < DEFUALT_RUNNIG_ASYNC_SIZE)
-    {
-        running_number = DEFUALT_RUNNIG_ASYNC_SIZE;
-    }
-
-    aysncobj_pool_.rehash(crtn_type_num);
-    running_aysncobj_.rehash(running_number);
-    return 0;
+    return;
 }
 
 //注册一类协程，其用reg_cmd对应，
 int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
-    ZCE_Async_Object* coroutine_base,
-    size_t init_clone_num)
+    ZCE_Async_Object* coroutine_base)
 {
-    //对参数做调整
-    if (init_clone_num < DEFUALT_INIT_POOL_SIZE)
-    {
-        init_clone_num = DEFUALT_INIT_POOL_SIZE;
-    }
+
+    //这两个值必须是重新设置过的
+    ZCE_ASSERT(pool_init_size_ > 0 && pool_extend_size_ >0)
 
     //
     if (ZCE_Async_ObjectMgr::INVALID_COMMAND == reg_cmd)
@@ -219,7 +214,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     ASYNC_OBJECT_RECORD &ref_rec = aysncobj_pool_[reg_cmd];
 
     ref_rec.coroutine_pool_.push_back(coroutine_base);
-    for (size_t i = 0; i < init_clone_num; i++)
+    for (size_t i = 0; i < pool_init_size_; i++)
     {
         ZCE_Async_Object *crtn = coroutine_base->clone(this);
         crtn->initialize(reg_cmd);
@@ -229,7 +224,8 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     return 0;
 }
 
-///从池子里面分配一个
+
+//从池子里面分配一个
 int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, 
     ASYNC_OBJECT_RECORD *&async_rec,
     ZCE_Async_Object *&crt_async)
@@ -361,8 +357,6 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
     {
         return ret;
     }
-    bool continue_run = false;
-    async_obj->on_run(continue_run);
 
     //增加记录统计数据
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(async_obj->create_cmd_);
@@ -370,32 +364,70 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
     {
         return -1;
     }
+    ASYNC_OBJECT_RECORD &async_rec = mapiter->second;
+
+    //激活同时取消定时器
+    async_obj->cancel_timeout();
+
+    bool continue_run = false;
+    async_obj->on_run(continue_run);
+    ++async_rec.active_num_;
+
+    //如果不继续运行了，
+    if (continue_run == false)
+    {
+        ++async_rec.end_num_;
+        async_obj->on_end();
+        free_to_pool(async_obj);
+    }
     
-    ASYNC_OBJECT_RECORD &async_record = mapiter->second;
-    ++async_record.active_num_;
 
     return 0;
 }
 
+//超时处理
+int ZCE_Async_ObjectMgr::handle_timeout(const ZCE_Time_Value & now_time,
+    const void *act)
+{
+    ZCE_Async_Object *async_obj = (ZCE_Async_Object *)(act);
+    //增加记录统计数据
+    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(async_obj->create_cmd_);
+    if (mapiter == aysncobj_pool_.end())
+    {
+        return -1;
+    }
+    ASYNC_OBJECT_RECORD &async_rec = mapiter->second;
+
+    //处理前取消定时器
+    async_obj->cancel_timeout();
+
+    bool continue_run = false;
+    async_obj->on_timeout(now_time,continue_run);
+    ++async_rec.timeout_num_;
+
+    //如果不继续运行了，
+    if (continue_run == false)
+    {
+        ++async_rec.end_num_;
+        async_obj->on_end();
+        free_to_pool(async_obj);
+    }
+
+    return 0;
+}
 
 //通过ID，寻找一个正在运行的异步对象
-int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc)
+int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
+    ZCE_Async_Object *&running_aysnc)
 {
     running_aysnc = NULL;
-    auto iter =  running_aysncobj_.find(id);
-    if (running_aysncobj_.end()== iter)
+    auto iter = running_aysncobj_.find(id);
+    if (running_aysncobj_.end() == iter)
     {
         return -1;
     }
     running_aysnc = iter->second;
     return 0;
 }
-
-//
-inline ZCE_Timer_Queue * ZCE_Async_ObjectMgr::get_timer_queue()
-{
-    return timer_queue_;
-}
-
 
 
