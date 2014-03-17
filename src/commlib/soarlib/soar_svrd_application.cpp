@@ -148,7 +148,7 @@ Comm_Svrd_Appliction::init_instance()
                    app_path.c_str(), ZCE_OS::last_error(),
                    strerror(ZCE_OS::last_error()));
 
-        ZLOG_ERROR("[framework] If last error == 16, could has a same process alread run in this directory."
+        ZLOG_ERROR("[framework] If last error == 16, could has a same process already run in this directory."
                    "Please check PID file or system processes.");
         return SOAR_RET::ERROR_WRITE_ERROR_PIDFILE;
     }

@@ -14,7 +14,7 @@
 *             就一直没有了用武之地，呵呵。也许那天我还是会实现的。
 *
 *             一个人坐在办公室，叼根烟装酷。心中暗骂自己，2B。
-*             
+*
 *             开始搞的时候，认真看了Scott的红黑树的实现，发现底质还可以，
 *             可以直接在上面改，同时看到这个代码，应该可以参考用，
 *             http://www.cnblogs.com/kiven-code/archive/2013/03/01/2938651.html
@@ -37,7 +37,7 @@ enum
     AVLTREE_LEFT_HIGH = 2,
     AVLTREE_RIGHT_HIGH = -2,
 };
-    
+
 
 template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_avl_tree;
 
@@ -104,10 +104,10 @@ public:
 
 
 //AVL tree的迭代器
-template <class _value_type, 
-    class _key_type,
-    class _extract_key,
-    class _compare_key> 
+template < class _value_type,
+         class _key_type,
+         class _extract_key,
+         class _compare_key >
 class _shm_avl_tree_iterator
 {
     typedef _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
@@ -213,16 +213,16 @@ class shm_avl_tree : public _shm_memory_base
 {
 public:
     //定义自己
-    typedef shm_avl_tree<_value_type,
-        _key_type,
-        _extract_key,
-        _compare_key> self;
+    typedef shm_avl_tree < _value_type,
+            _key_type,
+            _extract_key,
+            _compare_key > self;
 
     //定义迭代器
-    typedef _shm_avl_tree_iterator<_value_type,
-        _key_type,
-        _extract_key,
-        _compare_key> iterator;
+    typedef _shm_avl_tree_iterator < _value_type,
+            _key_type,
+            _extract_key,
+            _compare_key > iterator;
 
     //迭代器友元
     friend class _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
@@ -285,7 +285,7 @@ public:
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node()
+    size_t create_node(const _value_type &val)
     {
         //如果没有空间可以分配
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -294,17 +294,20 @@ protected:
         }
 
         //从链上取1个下来
-        size_t node = free_index_->right_;
-        free_index_->right_ = (index_base_ + node)->right_;
+        size_t new_node = free_index_->right_;
+        free_index_->right_ = (index_base_ + new_node)->right_;
         avl_tree_head_->sz_free_node_--;
         avl_tree_head_->sz_use_node_++;
 
         //初始化
-        (index_base_ + node)->parent_ = _INVALID_POINT;
-        (index_base_ + node)->left_ = _INVALID_POINT;
-        (index_base_ + node)->right_ = _INVALID_POINT;
-        (index_base_ + node)->balanced_ = AVLTREE_BALANCED;
-        return node;
+        (index_base_ + new_node)->parent_ = _INVALID_POINT;
+        (index_base_ + new_node)->left_ = _INVALID_POINT;
+        (index_base_ + new_node)->right_ = _INVALID_POINT;
+        (index_base_ + new_node)->balanced_ = AVLTREE_BALANCED;
+
+        new (data_base_ + new_node)_value_type(val);
+
+        return new_node;
     }
 
     //释放一个NODE,将其归还给FREELIST
@@ -322,9 +325,9 @@ public:
     //内存区的构成为 头部定义区,index区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_rb_tree_head)  
-             + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX) 
-             + sizeof(_value_type) * numnode;
+        return  sizeof(_shm_avl_tree_head)
+                + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
+                + sizeof(_value_type) * numnode;
     }
 
     //初始化
@@ -355,16 +358,18 @@ public:
         //头部
         instance->avl_tree_head_ = avl_tree_head;
         //索引区
-        instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(pmmap 
-            + sizeof(_shm_rb_tree_head));
-        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_rb_tree_head) 
-            + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(pmmap
+                                                                        + sizeof(_shm_avl_tree_head));
+        //数据区
+        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap +
+                                                               sizeof(_shm_rb_tree_head)
+                                                               + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-            pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_avl_tree_index) * (numnode));
+                                    pmmap + sizeof(_shm_avl_tree_head) + sizeof(_shm_avl_tree_index) * (numnode));
         instance->free_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-            pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_avl_tree_index) * (numnode + 1));
+                                    pmmap + sizeof(_shm_avl_tree_head) + sizeof(_shm_avl_tree_index) * (numnode + 1));
 
         if (false == if_restore)
         {
@@ -388,8 +393,6 @@ public:
         head_index_->left_ = avl_tree_head_->num_of_node_;
         head_index_->balanced_ = AVLTREE_BALANCED;
 
-        
-        
         //
         free_index_->left_ = _INVALID_POINT;
         free_index_->parent_ = _INVALID_POINT;
@@ -492,27 +495,27 @@ protected:
         return (index_base_ + x)->left_;
     }
 
-    size_t  &right(size_t x)
+    inline size_t  &right(size_t x)
     {
         return (index_base_ + x)->right_;
     }
 
-    size_t  &parent(size_t x)
+    inline size_t  &parent(size_t x)
     {
         return (index_base_ + x)->parent_;
     }
 
-    int32_t  &balanced(size_t x)
+    inline int32_t  &balanced(size_t x)
     {
         return (index_base_ + x)->balanced_;
     }
 
-    const _value_type  &value(size_t x)
+    inline const _value_type  &value(size_t x)
     {
         return *(data_base_ + x);
     }
 
-    const _key_type  &key(size_t x)
+    inline const _key_type  &key(size_t x)
     {
         return _extract_key()(value(x));
     }
@@ -540,416 +543,66 @@ protected:
     }
 
 protected:
+
     //真正的插入是由这个函数完成的
-    iterator __insert(size_t x, size_t y, const _value_type &v)
+    std::pair<iterator, bool> _insert(size_t x, size_t y, const _value_type &v)
     {
         size_t z = create_node();
-
-        if (y == header() || x != _INVALID_POINT || _compare_key()(_extract_key()(v), key(y)))
+        if (_INVALID_POINT == z)
         {
-            left(y) = z;
-
-            if (y == header())
-            {
-                root() = z;
-                rightmost() = z;
-            }
-            else if (y == leftmost())
-            {
-                leftmost() = z;
-            }
-        }
-        else
-        {
-            right(y) = z;
-
-            if (y == rightmost())
-            {
-                rightmost() = z;
-            }
+            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
         }
 
-        parent(z) = y;
-        left(z) = _INVALID_POINT;
-        right(z) = _INVALID_POINT;
-        *(data_base_ + z) = v;
-
-        __rb_tree_rebalance(z, parent(header()));
         return  iterator(z, this);
-    }
-
-    //通过旋转和变色，调整整个树，让其符合RBTree要求
-    //参数1：新增节点
-    //参数2：根节点
-    void __rb_tree_rebalance(size_t x, size_t &root)
-    {
-        balanced(x) = RB_TREE_RED;
-
-        while (x != root && balanced(parent(x)) == RB_TREE_RED)
-        {
-            if (parent(x) == left(parent(parent(x))))
-            {
-                size_t y = right(parent(parent(x)));
-
-                if (y != _INVALID_POINT && balanced(y) == RB_TREE_RED)
-                {
-                    balanced(parent(x)) = RB_TREE_BLACK;
-                    balanced(y) = RB_TREE_BLACK;
-                    balanced(parent(parent(x))) = RB_TREE_RED;
-                    x = parent(parent(x));
-                }
-                else
-                {
-                    if (x == right(parent(x)))
-                    {
-                        x = parent(x);
-                        __rb_tree_rotate_left(x, root);
-                    }
-
-                    balanced(parent(x)) = RB_TREE_BLACK;
-                    balanced(parent(parent(x))) = RB_TREE_RED;
-                    __rb_tree_rotate_right(parent(parent(x)), root);
-                }
-            }
-            else
-            {
-                size_t y = left(parent(parent(x)));
-
-                if (y != _INVALID_POINT && balanced(y) == RB_TREE_RED)
-                {
-                    balanced(parent(x)) = RB_TREE_BLACK;
-                    balanced(y) = RB_TREE_BLACK;
-                    balanced(parent(parent(x))) = RB_TREE_RED;
-                    x = parent(parent(x));
-                }
-                else
-                {
-                    if (x == left(parent(x)))
-                    {
-                        x = parent(x);
-                        __rb_tree_rotate_right(x, root);
-                    }
-
-                    balanced(parent(x)) = RB_TREE_BLACK;
-                    balanced(parent(parent(x))) = RB_TREE_RED;
-                    __rb_tree_rotate_left(parent(parent(x)), root);
-                }
-            }
-        }
-
-        balanced(root) = RB_TREE_BLACK;
-    }
-
-    //左旋函数
-    //参数1：左旋节点
-    //参数2：根节点
-    void __rb_tree_rotate_left(size_t x, size_t &root)
-    {
-        size_t y = right(x);
-        right(x) = left(y);
-
-        if (left(y) != _INVALID_POINT)
-        {
-            parent(left(y)) = x;
-        }
-
-        parent(y) = parent(x);
-
-        if (x == root)
-        {
-            root = y;
-        }
-        else if (x == left(parent(x)))
-        {
-            left(parent(x)) = y;
-        }
-        else
-        {
-            right(parent(x)) = y;
-        }
-
-        left(y) = x;
-        parent(x) = y;
-    }
-
-    //右旋函数
-    //参数1：右旋节点
-    //参数2：根节点
-    void __rb_tree_rotate_right(size_t x, size_t &root)
-    {
-        size_t y = left(x);
-        left(x) = right(y);
-
-        if (right(y) != _INVALID_POINT)
-        {
-            parent(right(y)) = x;
-        }
-
-        parent(y) = parent(x);
-
-        if (x == root)
-        {
-            root = y;
-        }
-        else if (x == right(parent(x)))
-        {
-            right(parent(x)) = y;
-        }
-        else
-        {
-            left(parent(x)) = y;
-        }
-
-        right(y) = x;
-        parent(x) = y;
-    }
-
-    //删除时的树形调整，让其符合RBTree要求
-    size_t __rb_tree_rebalance_for_erase(size_t z, size_t &root, size_t leftmost, size_t rightmost)
-    {
-        size_t y = z;
-        size_t x = _INVALID_POINT;
-        size_t x_parent = _INVALID_POINT;
-
-        if (left(y) == _INVALID_POINT)
-        {
-            x = right(y);
-        }
-        else
-        {
-            if (right(x) == _INVALID_POINT)
-            {
-                x = left(y);
-            }
-            else
-            {
-                y = minimum(right(y));
-                x = right(y);
-            }
-        }
-
-        if (y != z)
-        {
-            parent(left(z)) = y;
-            left(y) = left(z);
-
-            if (y != right(z))
-            {
-                x_parent = parent(y);
-
-                if (x != _INVALID_POINT)
-                {
-                    parent(x) = parent(y);
-                }
-
-                left(parent(y)) = x;
-                right(y) = right(z);
-                parent(right(z)) = y;
-            }
-            else
-            {
-                x_parent = y;
-            }
-
-            if (root == z)
-            {
-                root = y;
-            }
-            else if (left(parent(z)) == z)
-            {
-                left(parent(z)) = y;
-            }
-            else
-            {
-                right(parent(z)) = y;
-            }
-
-            parent(y) = parent(z);
-            balanced_type  c = balanced(y);
-            balanced(y) = balanced(z);
-            balanced(z) = c;
-            y = z;
-        }
-        else
-        {
-            x_parent = parent(y);
-
-            if (x != _INVALID_POINT)
-            {
-                parent(x) = parent(y);
-            }
-
-            if (root == z)
-            {
-                root = x;
-            }
-            else
-            {
-                if (left(parent(z)) == z)
-                {
-                    left(parent(z)) = x;
-                }
-                else
-                {
-                    right(parent(z)) = x;
-                }
-            }
-
-            if (leftmost == z)
-            {
-                if (right(z) == _INVALID_POINT)
-                {
-                    leftmost = parent(z);
-                }
-                else
-                {
-                    leftmost = minimum(x);
-                }
-            }
-
-            if (rightmost == z)
-            {
-                if (left(z) == _INVALID_POINT)
-                {
-                    rightmost = parent(z);
-                }
-                else
-                {
-                    rightmost = maximum(x);
-                }
-            }
-        }
-
-        if (balanced(y) != RB_TREE_RED)
-        {
-            while (x != root && (x == _INVALID_POINT || balanced(x) == RB_TREE_BLACK))
-            {
-                if (x == left(x_parent))
-                {
-                    size_t w = right(x_parent);
-
-                    if (balanced(w) == RB_TREE_RED)
-                    {
-                        balanced(w) = RB_TREE_BLACK;
-                        balanced(x_parent) = RB_TREE_RED;
-                        __rb_tree_rotate_left(x_parent, root);
-                        w = right(x_parent);
-                    }
-
-                    if ((left(w) == _INVALID_POINT || balanced(left(w)) == RB_TREE_BLACK) &&
-                        (right(w) == _INVALID_POINT || balanced(right(w)) == RB_TREE_BLACK))
-                    {
-                        balanced(w) = RB_TREE_RED;
-                        x = x_parent;
-                        x_parent = parent(x_parent);
-                    }
-                    else
-                    {
-                        if (right(w) == _INVALID_POINT || balanced(right(w)) == RB_TREE_BLACK)
-                        {
-                            if (left(w) != _INVALID_POINT)
-                            {
-                                balanced(left(w)) = RB_TREE_BLACK;
-                            }
-
-                            balanced(w) = RB_TREE_RED;
-                            __rb_tree_rotate_right(w, root);
-                            w = right(x_parent);
-                        }
-
-                        balanced(w) = balanced(x_parent);
-                        balanced(x_parent) = RB_TREE_BLACK;
-
-                        if (right(w) != _INVALID_POINT)
-                        {
-                            balanced(right(w)) = RB_TREE_BLACK;
-                        }
-
-                        __rb_tree_rotate_left(x_parent, root);
-                        break;
-                    }
-                }
-                else
-                {
-                    size_t w = left(x_parent);
-
-                    if (balanced(w) == RB_TREE_RED)
-                    {
-                        balanced(w) = RB_TREE_BLACK;
-                        balanced(x_parent) = RB_TREE_RED;
-                        __rb_tree_rotate_right(x_parent, root);
-                        w = left(x_parent);
-                    }
-
-                    if ((right(w) == _INVALID_POINT || balanced(right(w)) == RB_TREE_BLACK) &&
-                        (left(w) == _INVALID_POINT || balanced(left(w)) == RB_TREE_BLACK))
-                    {
-                        balanced(w) = RB_TREE_RED;
-                        x = x_parent;
-                        x_parent = parent(x_parent);
-                    }
-                    else
-                    {
-                        if (left(w) == _INVALID_POINT || balanced(left(w)) == RB_TREE_BLACK)
-                        {
-                            if (right(w) != _INVALID_POINT)
-                            {
-                                balanced(right(w)) = RB_TREE_BLACK;
-                            }
-
-                            balanced(w) = RB_TREE_RED;
-                            __rb_tree_rotate_left(w, root);
-                            w = left(x_parent);
-                        }
-
-                        balanced(w) = balanced(x_parent);
-                        balanced(x_parent) = RB_TREE_BLACK;
-
-                        if (left(w) != _INVALID_POINT)
-                        {
-                            balanced(left(w)) = RB_TREE_BLACK;
-                        }
-
-                        __rb_tree_rotate_right(x_parent, root);
-                        break;
-                    }
-                }
-            }
-
-            if (x != _INVALID_POINT)
-            {
-                balanced(x) = RB_TREE_BLACK;
-            }
-
-        }
-
-        return y;
     }
 
 public:
 
-    //允许重复key插入的插入函数，Multimap、Multimap用这个
-    iterator insert_equal(const _value_type &v)
+    /*!
+    * @brief      允许重复key插入的插入函数，Multimap、Multimap用这个
+    *             因为空间可能满，所以返回的数据中还是有bool的pair
+    * @return     std::pair<iterator, bool>  返回的iterator为迭代器，bool为是否插入成功
+    * @param      v        插入的_value_type的数据
+    */
+    std::pair<iterator, bool> insert_equal(const _value_type &v)
     {
+        //如果依据满了，也返回失败
+        if (avl_tree_head_->sz_free_node_ == 0)
+        {
+            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+        }
+
         size_t y = header();
         size_t x = root();
 
+        //插入到一个叶子上
         while (x != _INVALID_POINT)
         {
             y = x;
             x = _compare_key()(_extract_key()(v), key(x)) ? left(x) : right(x);
         }
 
-        return __insert(x, y, v);
+        return _insert(x, y, v);
     }
 
-    //重复key插入则失败的插入函数，Map、Sap用这个
+    /*!
+    * @brief      重复key插入则失败的插入函数，Map、Sap用这个
+    * @return     std::pair<iterator, bool> 返回的iterator为迭代器，bool为是否插入成功
+    * @param      v 插入的_value_type的数据
+    */
     std::pair<iterator, bool> insert_unique(const _value_type &v)
     {
+        //如果依据满了，也返回失败
+        if (avl_tree_head_->sz_free_node_ == 0)
+        {
+            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+        }
+
         size_t y = header();
         size_t x = root();
         bool comp = true;
 
+        //如果比较(比如是<)返回true,就向左，否则(>=)就向右，
         while (x != _INVALID_POINT)
         {
             y = x;
@@ -963,7 +616,7 @@ public:
         {
             if (j == begin())
             {
-                return std::pair<iterator, bool>(__insert(x, y, v), true);
+                return _insert(x, y, v);
             }
             else
             {
@@ -973,9 +626,10 @@ public:
 
         if (_compare_key()(key(j.getserial()), _extract_key()(v)))
         {
-            return std::pair<iterator, bool>(__insert(x, y, v), true);
+            return _insert(x, y, v);
         }
 
+        //如果既不是>,又不是<，那么就是==,那么返回错误
         return std::pair<iterator, bool>(j, false);
     }
 
@@ -1135,7 +789,8 @@ public:
 };
 
 //用AVL Tree实现SET，不区分multiset和set，通过不通的insert自己区分
-template<class _value_type, class _compare_key = std::less<_value_type> >
+template < class _value_type,
+         class _compare_key = std::less<_value_type> >
 class mmap_avl_set :
     public shm_avl_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
@@ -1153,36 +808,46 @@ protected:
     }
 
 public:
-    static mmap_set< _value_type, _compare_key  >*
+
+    static mmap_avl_set< _value_type, _compare_key  >*
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_set< _value_type, _compare_key  >*>(
-                   shm_avl_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>::initialize(numnode, pmmap, if_restore));
+                   shm_avl_tree < _value_type,
+                   _value_type,
+                   smem_identity<_value_type>,
+                   _compare_key >::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用AVL Tree实现MAP，不区分multiset和set，通过不通的insert自己区分
-template<class _key_type, class _value_type, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _compare_key = std::less<_value_type>  >
-class mmap_map :
+template < class _key_type,
+         class _value_type,
+         class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
+         class _compare_key = std::less<_value_type>  >
+class mmap_avl_map :
     public shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    mmap_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore) :
+    mmap_avl_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore) :
         shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
 
-    ~mmap_map<_key_type, _value_type, _extract_key, _compare_key >()
+    ~mmap_avl_map<_key_type, _value_type, _extract_key, _compare_key >()
     {
     }
 public:
-    static mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*
+    static mmap_avl_map< _key_type, _value_type, _extract_key, _compare_key  >*
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*>(
+        return reinterpret_cast < mmap_avl_map < _key_type,
+               _value_type,
+               _extract_key,
+               _compare_key  > * > (
                    shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，谨慎使用

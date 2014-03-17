@@ -7,14 +7,14 @@
 * @brief      在共享内存中使用的hashtable
 *             为了简化偷懒，我们设计的Hashtable，可以存放相同的key，只要你调用
 *             insert_equal 这类函数就可以了，而不是STL那样，用另外一个类去封装
-* 
+*
 * @details    STL的HASHTABLE太TMD的经典!,从算法到封装,特别是封装，简直让我流口水!.
-* 
+*
 *             2010年4月，
 *             重新整理了这个类，和后来一些封装思路保持一致，去掉了几个外部包装的封装
 *             去掉了_shm_hashtable_node ,_shm_hashtable_index，可以保持代码
 *             一致，另外，从性能的角度讲，少一次拷贝转换？
-* 
+*
 */
 
 #ifndef ZCE_LIB_SMEM_HASH_TABLE_H_
@@ -39,7 +39,11 @@
 namespace ZCE_LIB
 {
 
-template <class _value_type, class _key_type, class _hash_fun, class _extract_key, class _equal_key> class shm_hashtable;
+template < class _value_type,
+         class _key_type,
+         class _hash_fun,
+         class _extract_key,
+         class _equal_key > class shm_hashtable;
 
 ///
 
@@ -144,9 +148,8 @@ protected:
 };
 
 /*!
-* @brief
-* 
-* @note
+* @brief shm_hash_table的头部数据区的结构
+*        记录大小，使用情况等
 */
 class _shm_hash_table_head
 {
@@ -165,21 +168,21 @@ protected:
     }
 
 public:
-    //内存区的长度
+    ///内存区的长度
     size_t                             size_of_mmap_;
 
-    //NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
+    ///NODE,INDEX结点个数,INDEX的个数和NODE的节点个数为1:1,
     size_t                             num_of_node_;
 
-    //FREE的NODE个数
+    ///FREE的NODE个数
     size_t                             sz_freenode_;
-    //USE的NODE个数
+    ///USE的NODE个数
     size_t                             sz_usenode_;
 
-    //使用的INDEX个数,可以了解实际开链的负载比率
+    ///使用的INDEX个数,可以了解实际开链的负载比率
     size_t                             sz_useindex_;
 
-    //FREE NODE的头指针
+    ///FREE NODE的头指针
     size_t                             free_headnode_;
 
 };
@@ -286,12 +289,12 @@ public:
     {
         ZCE_LIB::hash_prime(req_num, real_num);
         return  sizeof(_shm_hash_table_head)  +
-            sizeof(size_t)* (real_num)+
-            sizeof(_value_type)* real_num +
-            sizeof(size_t)* (real_num);
+                sizeof(size_t) * (real_num) +
+                sizeof(_value_type) * real_num +
+                sizeof(size_t) * (real_num);
     }
 
-    
+
     /*!
     * @brief      初始化
     * @return     shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key >*
@@ -300,7 +303,7 @@ public:
     * @param      pmmap
     * @param      if_restore
     */
-    static self* initialize(size_t req_num, size_t &real_num,char *pmmap, bool if_restore = false)
+    static self *initialize(size_t req_num, size_t &real_num, char *pmmap, bool if_restore = false)
     {
         assert(pmmap != NULL && req_num > 0);
         //调整
@@ -320,11 +323,11 @@ public:
                 return NULL;
 #else
                 ZCE_LOGMSG(RS_ALERT, "Hash Table node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                    sz_mmap,
-                    real_num,
-                    hashhead->size_of_mmap_,
-                    hashhead->num_of_node_);
+                           "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                           sz_mmap,
+                           real_num,
+                           hashhead->size_of_mmap_,
+                           hashhead->num_of_node_);
 #endif
             }
         }
@@ -334,7 +337,7 @@ public:
             hashhead->size_of_mmap_ = sz_mmap;
             hashhead->num_of_node_ = real_num;
         }
-        
+
 
         shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key  >* instance
             = new shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key  >();
@@ -486,7 +489,12 @@ public:
         return *iter;
     }
 
-    //插入节点
+
+    /*!
+    * @brief      插入节点,不允许出现相同节点的插入
+    * @return     std::pair<iterator, bool> iterator为返回的迭代器，bool为是否插入成功，
+    * @param      val 插入的数据
+    */
     std::pair<iterator, bool> insert(const _value_type &val)
     {
         size_t idx = bkt_num_value(val);
@@ -511,7 +519,6 @@ public:
 
         //没有找到,插入新数据
         size_t newnode = create_node(val);
-
         //空间不足,
         if (newnode == _INVALID_POINT)
         {
@@ -532,7 +539,12 @@ public:
         return std::pair<iterator, bool>(iterator(newnode, this), true);
     }
 
-    //插入节点,允许相等
+
+    /*!
+    * @brief      插入节点,允许相等（KEY）的节点插入,
+    * @return     std::pair<iterator, bool> iterator为返回的迭代器，bool为是否插入成功，
+    * @param      val 插入的数据
+    */
     std::pair<iterator, bool> insert_equal(const _value_type &val)
     {
         size_t idx = bkt_num_value(val);
@@ -615,15 +627,12 @@ public:
         return equal_count;
     }
 
-    /*
-    //不打算提供这个函数，因为这个函数的含义明显含混，其实统计的还是KEY，不是真正的值
-    //得到某个VALUE的元素个数，有点相当于查询操作
-    size_t count_value(const _value_type& val)
-    {
-        _extract_key get_key;
-        return count(get_key(val));
-    }*/
 
+    /*!
+    * @brief      根据key删除,
+    * @return     bool 是否删除成功
+    * @param      key 删除依据的key
+    */
     bool erase(const _key_type &key)
     {
         size_t idx = bkt_num_key(key);
@@ -668,7 +677,12 @@ public:
         return false;
     }
 
-    //使用迭代器删除,尽量高效所以不用简化写法
+
+    /*!
+    * @brief      使用迭代器删除,尽量高效所以不用简化写法
+    * @return     bool 是否删除成功
+    * @param      it 删除依据的迭代器，
+    */
     bool erase(const iterator &it)
     {
         _extract_key get_key;
@@ -775,14 +789,6 @@ public:
         return erase_count;
     }
 
-    /*
-    //同上面的count_value的问题，不提供这个函数，因为其实删除的还是KEY相等的函数,并不是真正的value相等
-    //删除所有相等的每个数据(还是要KEY相等),和insert_equal配对使用，返回删除了几个数据
-    size_t erase_equal_value(const _value_type& val )
-    {
-        _extract_key get_key;
-        return erase_equal( get_key(val));
-    }*/
 
     //返回链表中已经有的元素个数
     size_t size()
