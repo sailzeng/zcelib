@@ -32,6 +32,8 @@
 #include <zce_shm_list.h>
 #include <zce_shm_cache_chunk.h>
 #include <zce_shm_lockfree_deque.h>
+#include <zce_shm_avltree.h>
+
 #include <zce_time_progress_timer.h>
 
 
@@ -74,6 +76,10 @@
 #include <zce_event_handle_base.h>
 #include <zce_event_handle_inotify.h>
 #include <zce_event_reactor_select.h>
+
+#include <zce_async_fw_base.h>
+#include <zce_async_fw_fsm.h>
+#include <zce_async_fw_coroutine.h>
 
 
 #include <zce_server_status.h>

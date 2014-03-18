@@ -195,7 +195,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
 {
 
     //这两个值必须是重新设置过的
-    ZCE_ASSERT(pool_init_size_ > 0 && pool_extend_size_ >0)
+    ZCE_ASSERT(pool_init_size_ > 0 && pool_extend_size_ > 0);
 
     //
     if (ZCE_Async_ObjectMgr::INVALID_COMMAND == reg_cmd)
@@ -248,16 +248,16 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
         reg_async.coroutine_pool_.pop_front(model_trans);
 
         size_t capacity_of_pool = reg_async.coroutine_pool_.capacity();
-        reg_async.coroutine_pool_.resize(capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
+        reg_async.coroutine_pool_.resize(capacity_of_pool + pool_extend_size_);
 
         ZLOG_INFO("[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
             reg_async.coroutine_pool_.size(),
             cmd,
             capacity_of_pool,
-            capacity_of_pool + POOL_EXTEND_ASYNC_NUM);
+            capacity_of_pool + pool_extend_size_);
 
         //用模型克隆N-1个Trans
-        for (size_t i = 0; i < POOL_EXTEND_ASYNC_NUM; ++i)
+        for (size_t i = 0; i < pool_extend_size_; ++i)
         {
             ZCE_Async_Object *cloned_base = model_trans->clone(this);
             reg_async.coroutine_pool_.push_back(cloned_base);

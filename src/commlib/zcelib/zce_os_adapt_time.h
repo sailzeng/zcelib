@@ -149,7 +149,7 @@ const char *timestamp (char *str_date_time,
 * @note       时间戳打印格式说明,
 *             字符串的输出格式是ISO-8601 format. @ref TIME_STRFFMT_ISO
 *             输出的时间戳格式为2010-09-10 10:03:18.100190       注意末尾还有一个\0
-*                            123456789012345678901234567890
+*                           123456789012345678901234567890
 *             如果是美式时间格式，那么其实是 星期-月-日-年 时：分：秒.微秒   @ref TIME_STRFFMT_US
 *             输出的时间戳格式为Fri Aug 24 2002 07:43:05.100190       注意末尾还有一个\0
 *                            12345678901234567890123456789012
@@ -157,7 +157,9 @@ const char *timestamp (char *str_date_time,
 const char *timestamp_ex(const timeval *timeval,
                          char *str_date_time,
                          size_t datetime_strlen,
-                         int fromat_type = ZCE_OS::TIME_STRFFMT_LOCALTIME | ZCE_OS::TIME_STRFFMT_ISO | ZCE_OS::TIME_STRFFMT_PRECISION_USEC);
+                         int fromat_type = ZCE_OS::TIME_STRFFMT_LOCALTIME |
+                         ZCE_OS::TIME_STRFFMT_ISO | 
+                         ZCE_OS::TIME_STRFFMT_PRECISION_USEC);
 
 /*!
 * @brief      计算timeval内部总计是多少毫秒

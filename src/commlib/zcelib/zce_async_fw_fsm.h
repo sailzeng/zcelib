@@ -30,30 +30,36 @@ protected:
 
 
     /*!
-    * @brief      继承ZCE_Async_Object的函数，
+    * @brief      状态机运行处理，继承ZCE_Async_Object的函数，此函数仅仅用于作为例子进行参考，
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(bool &continue_run);
+    virtual void on_run(bool &continue_run)= 0;
 
     /*!
-    * @brief      异步对象超时处理
+    * @brief      状态机对象超时处理，默认continue_run返回false，让系统回收，
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
     virtual void on_timeout(const ZCE_Time_Value & now_time,
         bool &continue_run);
 
-    
-
+    /*!
+    * @brief      设置的状态机阶段，
+    * @param      stage
+    */
     void set_stage(int stage);
 
+    /*!
+    * @brief      取得的状态机阶段
+    * @return     int
+    */
     int get_stage();
 
 private:
 
     ///状态机的阶段
     int               fsm_stage_;
-}
+};
 
 
 //====================================================================================

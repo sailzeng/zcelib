@@ -138,7 +138,7 @@ public:
     }
 
     //初始化
-    void initialize(size_t seq, shm_rb_tree_t *instance)
+    void initialize(size_t seq, shm_avl_tree_t *instance)
     {
         serial_ = seq;
         avl_tree_inst_ = instance;
@@ -194,14 +194,74 @@ public:
         return tmp;
     }
 
-    //用于实现operator++，找下一个节点
+    ///用于实现operator++，找下一个比自己大(比较函数而言)的节点
     void increment()
     {
+        if ((avl_tree_inst_->index_base_ + serial_)->right_ != _shm_memory_base::_INVALID_POINT)
+        {
+            //如果有右子节点，就向右走，然后一直沿左子树走到底即可
+            serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
+
+            while ((avl_tree_inst_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT)
+            {
+                serial_ = (avl_tree_inst_->index_base_ + serial_)->left_;
+            }
+        }
+        else
+        {
+            //如果没有右子节点，找到父节点，如果当前节点是某个右子节点，就一直上溯到不为右子节点为止
+            size_t y = (avl_tree_inst_->index_base_ + serial_)->parent_;
+
+            while (serial_ == (avl_tree_inst_->index_base_ + y)->right_)
+            {
+                serial_ = y;
+                y = (avl_tree_inst_->index_base_ + y)->parent_;
+            }
+
+            //若此时的右子节点不等于父节点，则父节点即是，否则就是当前节点
+            if ((avl_tree_inst_->index_base_ + serial_)->right_ != y)
+            {
+                serial_ = y;
+            }
+        }
     }
 
     //用于实现operator--，找上一个节点
     void decrement()
     {
+        //如果是红节点，且父节点的的父节点等于自己
+        if ((avl_tree_inst_->index_base_ + serial_)->color == RB_TREE_RED &&
+            (avl_tree_inst_->index_base_ + ((avl_tree_inst_->index_base_ + serial_)->parent_))->parent_ == serial_)
+        {
+            //右子节点即是
+            serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
+        }
+        //如果有左子节点
+        else if ((avl_tree_inst_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT)
+        {
+            //令y指向左子节点，找到y的右子节点，向右走到底即是
+            size_t y = (avl_tree_inst_->index_base_ + serial_)->left_;
+
+            while ((avl_tree_inst_->index_base_ + y)->right_ != _shm_memory_base::_INVALID_POINT)
+            {
+                y = (avl_tree_inst_->index_base_ + y)->right_;
+            }
+
+            serial_ = y;
+        }
+        else
+        {
+            //找出父节点，如果当前节点是个左子节点，就一直上溯，直到不再为左子节点，则其的父节点即是
+            size_t y = (avl_tree_inst_->index_base_ + serial_)->parent_;
+
+            while (serial_ == (avl_tree_inst_->index_base_ + y)->left_)
+            {
+                serial_ = y;
+                y = (avl_tree_inst_->index_base_ + y)->parent_;
+            }
+
+            serial_ = y;
+        }
     }
 };
 
@@ -358,18 +418,24 @@ public:
         //头部
         instance->avl_tree_head_ = avl_tree_head;
         //索引区
-        instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(pmmap
-                                                                        + sizeof(_shm_avl_tree_head));
+        instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(
+            pmmap + 
+            sizeof(_shm_avl_tree_head));
         //数据区
-        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap +
-                                                               sizeof(_shm_rb_tree_head)
-                                                               + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+        instance->data_base_ = reinterpret_cast<_value_type *>(
+            pmmap +
+            sizeof(_shm_rb_tree_head) + 
+            sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-                                    pmmap + sizeof(_shm_avl_tree_head) + sizeof(_shm_avl_tree_index) * (numnode));
+                                    pmmap + 
+                                    sizeof(_shm_avl_tree_head) + 
+                                    sizeof(_shm_avl_tree_index) * (numnode));
         instance->free_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-                                    pmmap + sizeof(_shm_avl_tree_head) + sizeof(_shm_avl_tree_index) * (numnode + 1));
+                                    pmmap + 
+                                    sizeof(_shm_avl_tree_head) + 
+                                    sizeof(_shm_avl_tree_index) * (numnode + 1));
 
         if (false == if_restore)
         {
@@ -415,8 +481,6 @@ public:
 
             pindex++;
         }
-
-
     }
 
     //找到第一个节点
