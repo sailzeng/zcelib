@@ -265,6 +265,15 @@ public:
     }
 };
 
+
+/*!
+* @brief      
+*             
+* @tparam     _value_type   数据类型
+* @tparam     _key_type     KEY的类型
+* @tparam     _extract_key  如果从_value_type中获取_key_type的方法
+* @tparam     _compare_key  比较方法
+*/
 template < class _value_type,
          class _key_type,
          class _extract_key = smem_identity<_value_type>,
@@ -292,20 +301,20 @@ protected:
     static const size_t ADDED_NUM_OF_INDEX = 2;
 
 protected:
-    //RBTree头部
+    ///RBTree头部
     _shm_avl_tree_head            *avl_tree_head_;
 
-    //所有的指针都是根据基地址计算得到的,用于方便计算,每次初始化会重新计算
-    //索引数据区,
+    ///所有的指针都是根据基地址计算得到的,用于方便计算,每次初始化会重新计算
+    ///索引数据区,
     _shm_avl_tree_index            *index_base_;
 
-    //数据区起始指针,
+    ///数据区起始指针,
     _value_type                   *data_base_;
 
-    //头节点的头指针,N+1个索引位表示
+    ///头节点的头指针,N+1个索引位表示
     _shm_avl_tree_index            *head_index_;
 
-    //空节点的头指针,N+2个索引位表示（这里利用right节点做链接，把空节点串起来）
+    ///空节点的头指针,N+2个索引位表示（这里利用right节点做链接，把空节点串起来）
     _shm_avl_tree_index            *free_index_;
 
 public:
@@ -619,6 +628,59 @@ protected:
 
         return  iterator(z, this);
     }
+
+
+    void _balance_adjust(AVLNode<T>* pNode)
+    {
+        //     
+        while (pNode != NULL)//删除节点的子节点进行平衡
+        {
+            pPNode = pNode->pParent;
+            
+            bool bIsLeft = false;
+            if (pPNode != NULL && pNode == pPNode->pLeft)
+            {
+                bIsLeft = true;
+            }
+                
+            
+            pNode->nHeight = Max(Height(pNode->pLeft), Height(pNode->pRight)) + 1;
+            // AVL树不平衡  执行LL型或者LR型旋转
+            if (Height(pNode->pLeft) - Height(pNode->pRight) == 2)    
+            {
+                if (Height(pNode->pLeft->pLeft) - Height(pNode->pLeft->pRight) == -1)
+                    pNode = RotateLeftRight(pNode);
+                else
+                    pNode = RotateLeft(pNode);
+                261
+                    262             if (pPNode != NULL && bIsLeft)
+                    263                 pPNode->pLeft = pNode;
+                    else if (pPNode != NULL)
+                    {
+                        pPNode->pRight = pNode;
+                    }
+                
+            }
+            // AVL树不平衡  执行RR型或者RL型旋转
+            else if (Height(pNode->pLeft) - Height(pNode->pRight) == -2)    
+                268         {
+                269             if (Height(pNode->pRight->pLeft) - Height(pNode->pRight->pRight) == 1)
+                    270                 pNode = RotateRightLeft(pNode);
+                271             else
+                    272                 pNode = RotateRight(pNode);
+                273
+                    274             if (pPNode != NULL && bIsLeft)
+                    275                 pPNode->pLeft = pNode;
+                276             else if (pPNode != NULL)
+                    277                 pPNode->pRight = pNode;
+                278         }
+            
+            pRoot = pNode;
+            pNode = pPNode;
+         }
+        
+        return pRoot;
+     }
 
 public:
 
