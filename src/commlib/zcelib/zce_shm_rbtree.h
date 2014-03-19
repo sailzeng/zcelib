@@ -376,7 +376,9 @@ public:
     //内存区的构成为 定义区,index区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_rb_tree_head)  + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode ;
+        return  sizeof(_shm_rb_tree_head)  + 
+            sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
+            sizeof(_value_type) * numnode ;
     }
 
     //初始化
