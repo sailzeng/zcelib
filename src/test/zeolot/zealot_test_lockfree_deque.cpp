@@ -35,18 +35,18 @@ int test_dequechunk(int /*argc*/ , char * /*argv*/ [])
 
     ZCE_LIB::dequechunk_node *pnode = reinterpret_cast<ZCE_LIB::dequechunk_node *>(&test_abc);
     pmmap->push_end(pnode);
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pmmap->push_end(pnode);
     pmmap->push_end(pnode);
     pmmap->push_end(pnode);
 
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
 
     ZCE_LIB::dequechunk_node *pnode1 = NULL;
     pmmap->pop_front(pnode1);
     std::cout << "pnode1 sz:" << (int)pnode1->size_of_node_ << std::endl;
     std::cout << "pnode1 data:" << pnode1->chunk_data_ << std::endl;
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     delete pnode1;
 
 
@@ -60,12 +60,12 @@ int test_dequechunk(int /*argc*/ , char * /*argv*/ [])
     memset(test_def.data, '2', 2);
     test_def.data[2] = 'B';
     test_def.data[3] = 0;
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pnode = reinterpret_cast<ZCE_LIB::dequechunk_node *>(&test_def);
     pmmap->push_end(pnode);
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pmmap->push_end(pnode);
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
 
     pnode1 = NULL;
     pmmap->pop_front(pnode1);
@@ -77,20 +77,20 @@ int test_dequechunk(int /*argc*/ , char * /*argv*/ [])
     pnode1 = new (1024)ZCE_LIB::dequechunk_node;
     pmmap->pop_front(pnode1);
     delete pnode1;
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pnode1 = new (1024)ZCE_LIB::dequechunk_node;
     pmmap->pop_front(pnode1);
     delete pnode1;
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
 
     pnode1 = NULL;
     pmmap->pop_front(pnode1);
     std::cout << "pnode1 sz:" << (int)pnode1->size_of_node_ << std::endl;
     std::cout << "pnode1 data:" << pnode1->chunk_data_ << std::endl;
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     delete pnode1;
 
-    std::cout << "freesize:" << (int)pmmap->freesize() << std::endl;
+    std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
 
     pnode1 = NULL;
     bool bsucc = pmmap->pop_front(pnode1);

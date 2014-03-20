@@ -56,7 +56,7 @@ public:
     * @param      bus_mmap_name
     * @param      number_of_pipe  管道的数量
     * @param      size_of_pipe    管道的大小
-    * @param      max_frame_len
+    * @param      max_frame_len   最大的帧长度
     * @param      if_restore      是否进行恢复
     * @note       
     */
@@ -76,9 +76,23 @@ public:
     bool is_exist_bus(size_t pipe_id);
     //向管道写入帧
     inline int push_back_bus(size_t pipe_id, const ZCE_LIB::dequechunk_node *node);
-    //从管道POP读取帧，拷贝后删除
+    
+    /*!
+    * @brief      从管道POP读取帧，(就是拷贝后删除)
+    * @return     int
+    * @param      pipe_id  管道ID
+    * @param      node     准备复制node指针，指针的空间请分配好
+    * @note       
+    */
     inline int pop_front_bus(size_t pipe_id, ZCE_LIB::dequechunk_node *node);
-    //从管道拷贝复制一个帧出来
+    
+    /*!
+    * @brief      从管道拷贝复制一个帧出来
+    * @return     int
+    * @param      pipe_id 管道ID
+    * @param      node
+    * @note       
+    */
     inline int read_front_bus(size_t pipe_id, ZCE_LIB::dequechunk_node *&node);
     //抛弃一个帧
     inline int pop_front_bus(size_t pipe_id);
@@ -154,7 +168,7 @@ inline bool ZCE_Bus_MMAPPipe::is_empty_bus(size_t pipe_id)
 inline void ZCE_Bus_MMAPPipe::get_bus_freesize(size_t pipe_id, size_t &pipe_size, size_t &free_size)
 {
     pipe_size = bus_head_.size_of_pipe_[pipe_id];
-    free_size = bus_pipe_pointer_[pipe_id]->freesize();
+    free_size = bus_pipe_pointer_[pipe_id]->free_size();
     return;
 }
 
@@ -169,9 +183,13 @@ inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const ZCE_LIB::dequec
     //
     if (!bret)
     {
-        ZLOG_ALERT("[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. Please increase and check. nodesize=%u, freesize=%u",
-                   pipe_id, node->size_of_node_,
-                   (unsigned int)bus_pipe_pointer_[pipe_id]->freesize());
+        ZLOG_ALERT("[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
+                   "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
+                   pipe_id, 
+                   node->size_of_node_,
+                   bus_pipe_pointer_[pipe_id]->free_size(),
+                   bus_head_.size_of_pipe_[pipe_id],
+                   );
         return -1;
     }
 
@@ -191,21 +209,7 @@ inline int ZCE_Bus_MMAPPipe::get_front_nodesize(size_t pipe_id, size_t &note_siz
 }
 
 
-
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月14日
-Function        : ZCE_Bus_MMAPPipe::pop_front_bus
-Return          : inline int
-Parameter List  :
-  Param1: ZERG_PIPE_ID pipe_id 管道ID
-  Param2: dequechunk_node* const pframe 准备复制node指针，指针是不变的
-Description     : 从管道读取帧
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//从管道弹出POP帧,
 inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id, ZCE_LIB::dequechunk_node *node)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())

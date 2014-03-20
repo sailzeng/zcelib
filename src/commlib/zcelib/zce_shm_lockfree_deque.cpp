@@ -159,7 +159,7 @@ bool shm_dequechunk::push_end(const dequechunk_node *node)
     }
 
     //检查队列的空间是否够用
-    if (freesize() < node->size_of_node_ )
+    if (free_size() < node->size_of_node_ )
     {
         return false;
     }
@@ -374,7 +374,7 @@ bool shm_dequechunk::discard_frond()
 
 
 //FREE的尺寸,空闲的空间有多少
-size_t shm_dequechunk::freesize()
+size_t shm_dequechunk::free_size()
 {
     //取快照
     size_t pstart, pend, szfree;
@@ -400,18 +400,23 @@ size_t shm_dequechunk::freesize()
     return szfree;
 }
 
+//容量
+size_t shm_dequechunk::capacity()
+{
+    return dequechunk_head_->size_of_mmap_;
+}
 
 
 //得到某1时刻的快照是否为EMPTY
 bool shm_dequechunk::empty()
 {
-    return freesize() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
+    return free_size() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
 }
 
 //得到某1时刻的快照是否为FULL
 bool shm_dequechunk::full()
 {
-    return freesize() == 0;
+    return free_size() == 0;
 }
 
 

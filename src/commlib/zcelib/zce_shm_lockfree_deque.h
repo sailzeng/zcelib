@@ -253,7 +253,10 @@ public:
     inline size_t get_front_len();
 
     ///得到FREE空间的快照
-    size_t freesize();
+    size_t free_size();
+
+    ///容量
+    size_t capacity();
 
     ///得到是否满的快照
     bool empty();
