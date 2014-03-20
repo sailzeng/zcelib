@@ -188,7 +188,7 @@ inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const ZCE_LIB::dequec
                    pipe_id, 
                    node->size_of_node_,
                    bus_pipe_pointer_[pipe_id]->free_size(),
-                   bus_head_.size_of_pipe_[pipe_id],
+                   bus_pipe_pointer_[pipe_id]->capacity()
                    );
         return -1;
     }
