@@ -29,14 +29,7 @@
 namespace ZCE_LIB
 {
 
-enum
-{
-    AVLTREE_BALANCED = 0,
-    AVLTREE_LEFT_BALANCED = 1,
-    AVLTREE_RIGHT_BALANCED = -1,
-    AVLTREE_LEFT_HIGH = 2,
-    AVLTREE_RIGHT_HIGH = -2,
-};
+
 
 
 template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_avl_tree;
@@ -77,11 +70,11 @@ public:
         : parent_(_shm_memory_base::_INVALID_POINT)
         , left_(_shm_memory_base::_INVALID_POINT)
         , right_(_shm_memory_base::_INVALID_POINT)
-        , balanced_(AVLTREE_BALANCED)
+        , balanced_(0)
     {
     }
 
-    _shm_avl_tree_index(const size_t &p, const size_t &l, const size_t &r, int32_t hb)
+    _shm_avl_tree_index(const size_t &p, const size_t &l, const size_t &r, int8_t hb)
         : parent_(p)
         , left_(l)
         , right_(r)
@@ -357,7 +350,7 @@ protected:
         (index_base_ + new_node)->parent_ = _INVALID_POINT;
         (index_base_ + new_node)->left_ = _INVALID_POINT;
         (index_base_ + new_node)->right_ = _INVALID_POINT;
-        (index_base_ + new_node)->balanced_ = AVLTREE_BALANCED;
+        (index_base_ + new_node)->balanced_ = 0;
 
         new (data_base_ + new_node)_value_type(val);
 
@@ -451,12 +444,12 @@ public:
         head_index_->parent_ = _INVALID_POINT;
         head_index_->right_ = avl_tree_head_->num_of_node_;
         head_index_->left_ = avl_tree_head_->num_of_node_;
-        head_index_->balanced_ = AVLTREE_BALANCED;
+        head_index_->balanced_ = 0;
 
         //
         free_index_->left_ = _INVALID_POINT;
         free_index_->parent_ = _INVALID_POINT;
-        free_index_->balanced_ = AVLTREE_BALANCED;
+        free_index_->balanced_ = 0;
 
         //用right_串起来FREE NODE的列表
         free_index_->right_ = 0;
@@ -662,8 +655,14 @@ protected:
     }
 
 
+    /*!
+    * @brief      进行平衡调整，内部函数，
+    * @param      z 插入的节点位置
+    */
     void _balance_adjust(size_t z)
     {
+        //其实这个地方直接使用常量还更加清晰一点,所以我没有用枚举或者宏
+
         //找到最小的不平衡的点,
         size_t s = z;
         size_t t = _INVALID_POINT;
@@ -672,28 +671,160 @@ protected:
         {
             t = s;
             s = parent(s);
-            //其实这个地方直接使用常量还更加清晰一点
-            mod_balance = (t == left(s)) ? AVLTREE_LEFT_BALANCED : AVLTREE_RIGHT_BALANCED;
+            mod_balance = (t == left(s)) ? 1 : -1;
 
             //如果是平衡的，修改平衡参数，继续向上干活
-            if (AVLTREE_BALANCED  == balanced(s) )
+            if (0  == balanced(s) )
             {
                 balanced(s) += mod_balance;
                 continue;
             }
-            //这个点上原来就不平衡，
+            //这个点上原来就不平衡，找到最小的不平衡树，进行旋转，让其平衡
             else
             {
                 balanced(s) += mod_balance;
-                //插入让其不平衡
-                if (AVLTREE_LEFT_HIGH == balanced(s) || AVLTREE_RIGHT_HIGH == balanced(s))
+                //根据不平衡的情况，决定进行什么样的旋转
+                if (2 == balanced(s) )
                 {
+                    if (1 == balanced(t))
+                    {
+                        _ll_rotate(s,t);
+                    }
+                    else
+                    {
+                        _lr_rotate(s, t, right(t));
+                    }
+                }
+                else if (-2 == balanced(s))
+                {
+                    if (1 == balanced(t))
+                    {
+                        _rl_rotate(s, t, left(t));
+                    }
+                    else
+                    {
+                        _rr_rotate(s, t);
+                    }
                 }
                 break;
             }
         }
-
         return ;
+    }
+
+    /*!
+    * @brief      LL旋转，
+    * @param      p   父节点，最小的不平衡树的根节点
+    * @param      lc  左边的子节点
+    */
+    void _ll_rotate(size_t p, size_t lc)
+    {
+        size_t gf = parent(p);
+        parent(p) = lc;
+        left(p) = right(lc);
+        right(lc) = p;
+        parent(lc) = gf;
+
+        //调整平衡因子
+        balanced(p) = 0;
+        balanced(lc) = 0;
+
+        //调整p的父节点的左右子树，让其指向新的子树新根
+        if (left(gf) == p)
+        {
+            left(gf) = lc;
+        }
+        else
+        {
+            right(gf) = lc;
+        }
+    }
+
+    /*!
+    * @brief      LR旋转
+    * @param      p   父节点，最小的不平衡树的根节点
+    * @param      lc  p的左子节点
+    * @param      rgs lc的右子节点
+    */
+    void _lr_rotate(size_t p, size_t lc, size_t rgs)
+    {
+        size_t gf = parent(p);
+        parent(p) = rgs;
+        left(p) = right(rgs);
+        parent(lc) = rgs;
+        right(lc) = left(rgs);
+        left(rgs) = lc;
+        right(rgs) = p;
+
+        //调整平衡因子
+        balanced(p) = -1;
+        balanced(lc) = 0;
+        balanced(rgs) = 0;
+
+        //调整p的父节点的左右子树，让其指向新的子树新根
+        if (left(gf) == p)
+        {
+            left(gf) = rgs;
+        }
+        else
+        {
+            right(gf) = rgs;
+        }
+    }
+
+    /*!
+    * @brief      RR旋转，
+    * @param      p   父节点，最小的不平衡树的根节点
+    * @param      rc  右边的子节点
+    */
+    void _rr_rotate(size_t p, size_t rc)
+    {
+        size_t gf = parent(p);
+        parent(p) = rc;
+        right(p) = left(rc);
+        left(rc) = p;
+        parent(rc) = gf;
+
+        //调整平衡因子
+        balanced(p) = 0;
+        balanced(rc) = 0;
+
+        //调整p的父节点的左右子树，让其指向新的子树新根
+        if (left(gf) == p)
+        {
+            left(gf) = rc;
+        }
+        else
+        {
+            right(gf) = rc;
+        }
+    }
+
+    void _rl_rotate(size_t p, size_t rc,size_t lgs)
+    {
+        size_t gf = parent(p);
+        parent(p) = lgs;
+        right(p) = left(lgs);
+        parent(rc) = lgs;
+        left(rc) = right(lgs);
+        left(lgs) = p;
+        right(lgs) = rc;
+        
+
+        //调整平衡因子
+        balanced(p) = 0;
+        balanced(rc) = -1;
+        balanced(lgs) = 0;
+
+        //调整p的父节点的左右子树，让其指向新的子树新根
+        if (left(gf) == p)
+        {
+            left(gf) = lgs;
+        }
+        else
+        {
+            right(gf) = lgs;
+        }
     }
 
 public:
@@ -776,7 +907,7 @@ public:
     //通过迭代器删除一个节点
     iterator erase(const iterator &pos)
     {
-        size_t tmp = __rb_tree_rebalance_for_erase(pos.getserial(), /*head_index_->parent*/root(), leftmost(), rightmost());
+        size_t tmp = _rb_tree_rebalance_for_erase(pos.getserial(), root(), leftmost(), rightmost());
         destroy_node(pos.getserial());
         return iterator(tmp, this);
     }

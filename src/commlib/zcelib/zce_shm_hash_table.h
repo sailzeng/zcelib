@@ -297,7 +297,7 @@ public:
 
     /*!
     * @brief      初始化
-    * @return     shm_hashtable< _value_type, _key_type , _hash_fun, _extract_key, _equal_key >*
+    * @return     self*
     * @param      req_num   请求的NODE数量
     * @param      real_num
     * @param      pmmap
@@ -482,7 +482,7 @@ public:
 
         if (iter == end())
         {
-            std::pair<iterator, bool> pair_iter = insert(val);
+            std::pair<iterator, bool> pair_iter = insert_unique(val);
             return (*(pair_iter.first));
         }
 
@@ -495,7 +495,7 @@ public:
     * @return     std::pair<iterator, bool> iterator为返回的迭代器，bool为是否插入成功，
     * @param      val 插入的数据
     */
-    std::pair<iterator, bool> insert(const _value_type &val)
+    std::pair<iterator, bool> insert_unique(const _value_type &val)
     {
         size_t idx = bkt_num_value(val);
         size_t first_idx = *(index_base_ +  idx);
@@ -600,8 +600,13 @@ public:
         return std::pair<iterator, bool>(iterator(newnode, this), true);
     }
 
-    //得到某个KEY的元素个数，有点相当于查询操作
-    size_t count(const _key_type &key)
+    
+    /*!
+    * @brief      得到KEY相同的元素个数，有点相当于查询操作
+    * @return     size_t 数量
+    * @param      key    查询的key，
+    */
+    size_t count_equal(const _key_type &key)
     {
         size_t equal_count = 0;
         size_t idx = bkt_num_key(key);
@@ -633,7 +638,7 @@ public:
     * @return     bool 是否删除成功
     * @param      key 删除依据的key
     */
-    bool erase(const _key_type &key)
+    bool erase_unique(const _key_type &key)
     {
         size_t idx = bkt_num_key(key);
         //从索引中找到第一个
@@ -723,12 +728,6 @@ public:
         return false;
     }
 
-    //删除某个值
-    bool erase_value(const _value_type &val )
-    {
-        _extract_key get_key;
-        return erase( get_key(val));
-    }
 
     //删除所有相等的KEY的数据,和insert_equal配对使用，返回删除了几个数据
     size_t erase_equal(const _key_type &key)

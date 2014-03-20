@@ -8,19 +8,23 @@
 *             映射共享内存文件可以采用COPY的方式备份,
 *             这个算法的最大好处是数据全部是连续存放的，可以对数据进行直接的备份和操作,
 *             所以我加入了一个SAFE标示
-*             HASH取模的总次数我采用24次,为什么这样呢，因为我做过一些测试，在HASH的次数
-*             在24次左右时，第一次出现冲突的情况的负载率大约是85%以上
+*             HASH取模的总次数我采用24次,为什么这样呢，因为我做过一些测试，在HASH的
+*             次数在24次左右时，第一次出现冲突的情况的负载率大约是85%以上
 *             http://blog.csdn.net/fullsail/article/details/6328702
 *
-* @details    这个算法的基本思路来自即通的几个同事,感谢icezhuang，mikewei，spraydong等
-*             同事，本质上他是一个用再HASH的方式解决冲突的算法，
-*             我所做的事情是用模板，对于整个数据管理进行封装,
+* @details    这个算法的基本思路来自即通的几个同事,感谢icezhuang，mikewei，
+*             spraydong等同事，本质上他是一个用再HASH的方式解决冲突的算法，但为了避
+*             免麻烦，我仍然声明我拥有100%的版权。我所做的事情是用模板，对于整个数据
+*             管理进行封装, 而且做到了动态HASH次数，质数选择，默认值管理等，
+*             而多次HASH解决冲突的思路在《数据结构》严蔚敏的书上也有涉及，只是当年完全
+*             忽视了这段
 *             这个算法的不足之处来自，在极端情况下，其可能出现无法负载的情况，
-*             但是即通的同事说他们测试，这种算法的负载能力能达到95%,正常情况，他们保证
-*             在80%的负载能力的时候进行扩容,（他们的算法是32阶）
+*             但是即通的同事说他们测试，这种算法的负载能力能达到95%,正常情况，他们保
+*             证在80%的负载能力的时候进行扩容,（他们的算法是32阶）
 *             你可以估算一下，这个算法出现冲突的情况应该是非常低的
-*             但是要注意的是，如果多人操作读写（包括备份），还是会出现拷贝的数据只有半截的问题,
-*             这个无法避免,但是由于其中没有链，所以整个数据还是可以使用的，这就是好处,
+*             但是要注意的是，如果多人操作读写（包括备份），还是会出现拷贝的数据只有半
+*             截的问题,这个无法避免,但是由于其中没有链，所以整个数据还是可以使用的，这
+*             就是好处,
 * @note       代码的一些历史，
 *             1.Date  : 2010年04月12日
 *             Author  : Sailzeng
@@ -28,20 +32,24 @@
 *
 *             1.Date  : 2010年04月12日
 *             Author  : Sailzeng
-*             Modification  : 性能测试结果对比HASH的开链方式和多次HASH方式,多次HASH的性能
-*             要慢不少，但1s完成上千万次查询还是可以的,
+*             Modification  : 性能测试结果对比HASH的开链方式和多次HASH方式,多次
+*             HASH的性能要慢不少，但1s完成上千万次查询还是可以的,
 *
 *             2.Date  : 2010年04月20日
 *             Author  : Sailzeng
-*             Modification  :本来不打算加入一个淘汰算法的，因为思前想后，除非在处理的几次取模的过程中进行淘汰，否则意义不大,
-*             后来被kliu同学挑战，重新思考了一下，即使队列的数量大约1亿个，全部扫描要淘汰的数据的时间也用不了1s，真的我那么在乎成本吗？
-*             既然被挑战，我就提供一个吧。反正也是手到擒来的事情,另外，为什么我不另起炉灶呢,因为本来就都是数组,
+*             Modification  :本来不打算加入一个淘汰算法的，因为思前想后，除非在处
+*             理的几次取模的过程中进行淘汰，否则意义不大,后来被kliu同学挑战，重新思
+*             考了一下，即使队列的数量大约1亿个，全部扫描要淘汰的数据的时间也用不了
+*             1s，真的我那么在乎成本吗？既然被挑战，我就提供一个吧。反正也是手到擒来
+*             的事情,另外，为什么我不另起炉灶呢,因为本来就都是数组,
 *
 *             2.Date  : 2010年04月21日
 *             Author  : Sailzeng
-*             Modification  :思考再三，我还是将_equal都删除了，因为REHASH对于insert_equal支持并不好，为什么呢，他的最大支持相等的对象个数
-*             就是质数列表的长度,提供这个仅限于艺术的美感和YY的心理，你一定要用，我先告诉你如果是我自己的代码我是会慎重的
-*             其实很痛心，大量的代码被删除了，但丑陋的东西不出现也许是对的呢
+*             Modification  :思考再三，我还是将_equal都删除了，因为REHASH对于
+*             insert_equal支持并不好，为什么呢，他的最大支持相等的对象个数就是质
+*             数列表的长度,提供这个仅限于艺术的美感和YY的心理，你一定要用，我先告诉
+*             你如果是我自己的代码我是会慎重的其实很痛心，大量的代码被删除了，但丑陋
+*             的东西不出现也许是对的呢
 */
 
 #ifndef ZCE_SHM_HASH_TABLE_REHASH_H_
@@ -258,6 +266,14 @@ public:
             _equal_key,
             _washout_fun > iterator;
 
+    //定义自己
+    typedef shm_hash_rehash < _value_type,
+            _key_type,
+            _hash_fun,
+            _extract_key,
+            _equal_key,
+            _washout_fun > self;
+
     //声明迭代器是友元
     friend class _hash_rehash_iterator < _value_type,
         _key_type,
@@ -320,23 +336,21 @@ protected:
     }
 
     //用于自己的内部的初始化处理
-    static shm_hash_rehash < _value_type,
-           _key_type,
-           _hash_fun,
-           _extract_key,
-           _equal_key > *
-           initialize_i(size_t row_number,
-                        const size_t primes_list[],
-                        size_t num_node,
-                        size_t sz_alloc,
-                        char *pmmap,
-                        const _value_type &invalid_data,
-                        bool if_expire,
-                        bool if_restore)
+    static self  *initialize_i(size_t row_number,
+                               const size_t primes_list[],
+                               size_t num_node,
+                               size_t sz_alloc,
+                               char *pmmap,
+                               const _value_type &invalid_data,
+                               bool if_expire,
+                               bool if_restore)
     {
 
-        shm_hash_rehash< _value_type, _key_type , _hash_fun, _extract_key, _equal_key >* instance
-            = new shm_hash_rehash< _value_type, _key_type , _hash_fun, _extract_key, _equal_key >();
+        self* instance = new shm_hash_rehash< _value_type,
+            _key_type , 
+            _hash_fun, 
+            _extract_key, 
+            _equal_key >();
 
         instance->smem_base_ = pmmap;
         char *tmp_base = instance->smem_base_;
@@ -393,13 +407,13 @@ public:
 
 
     /*!
-    * @brief
+    * @brief      根据你要分配NODE数量，返回需要分配的空间大小，以及相应的质数数组信息
     * @return     size_t 返回值为需要分配的空间大小
-    * @param      req_num   表示所需要的节点个数，
-    * @param      real_num  最后实际分配的节点数量，注意返回的是实际INDEX长度,会增加一些
-    * @param      prime_ary 返回的，质数数组，用于多次REHASH处理
-    * @param      if_expire 是否使用超时处理
-    * @param      row_prime_ary 质数数值的列数量,放在最后一个地方，是为了方便默认值
+    * @param[in]  req_num   表示所需要的节点个数，
+    * @param[out] real_num  最后实际分配的节点数量，注意返回的是实际INDEX长度,会增加一些
+    * @param[out] prime_ary 返回的，质数数组，用于多次REHASH处理
+    * @param[in]  if_expire 是否使用超时处理
+    * @param[in]  row_prime_ary 质数数值的列数量,放在最后一个地方，是为了方便默认值
     * @note       内存区的构成为 define区,index区,data区,返回所需要的长度,
     */
     static size_t getallocsize(size_t req_num,
@@ -427,12 +441,16 @@ public:
         return sz_alloc;
     }
 
-    //返回值为需要分配的空间大小
-    //如果是输入质数队列，用这个函数得到空间,
-    //第一个参数质数队列长度,
-    //第二个参数质数队列，
-    //第三个参数是是否超时，
-    //第三个参数返回参数,总节点个数,
+
+    /*!
+    * @brief      返回值为需要分配的空间大小，如果是输入质数队列，用这个函数得到空间,
+    * @return     size_t         返回值为需要分配的空间大小
+    * @param[in]  row_prime_ary  参数质数队列长度,
+    * @param[in]  primes_list    参数质数队列，
+    * @param[in]  if_expire      是否超时处理
+    * @param[out] node_count     返回参数,总节点个数,
+    * @note
+    */
     static size_t getallocsize(size_t row_prime_ary,
                                const size_t primes_list[],
                                bool if_expire,
@@ -474,23 +492,20 @@ public:
     * @param      req_num        表示所需要的节点个数，你需要放几个元素给你，
     * @param      real_num       注意这个参数会返回一个实际我分配多少尺寸给你
     * @param      pmmap          传递进来的空间指针，空间的大小通过getallocsize得到.
-    * @param      invalid_data   一个无效的数据数据值，因为我懒得给你开辟一个地方记录某个数据是否使用了.所以我会将所有的数据都初始化无效结构，无效结构，我会记录成这个空间没有使用
+    * @param      invalid_data   一个无效的数据数据值，因为我懒得给你开辟一个地方
+    *                            记录某个数据是否使用了.所以我会将所有的数据都初始
+    *                            化无效结构，无效结构，我会视作这个空间没有使用
     * @param      if_expire      是否要使用淘汰功能,如果不适用，空间可以更加小一些
     * @param      if_restore     是否是从一个内存中恢复空间，比如共享内存之类的恢复
     * @note       推荐使用这个函数,你做的事情要少很多
     */
-    static shm_hash_rehash < _value_type,
-    _key_type,
-    _hash_fun,
-    _extract_key,
-    _equal_key > *
-    initialize(size_t req_num, 
-               size_t &real_num,
-               char *pmmap,
-               const _value_type &invalid_data,
-               bool if_expire,
-               size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
-               bool if_restore = false)
+    static self *initialize(size_t req_num,
+                            size_t &real_num,
+                            char *pmmap,
+                            const _value_type &invalid_data,
+                            bool if_expire,
+                            size_t row_prime_ary = DEF_PRIMES_LIST_NUM,
+                            bool if_restore = false)
     {
         ZCE_ASSERT(pmmap != NULL && req_num > 0);
 
@@ -577,12 +592,12 @@ public:
     }
 
     //你也可以传递一个质数队列，作为进行多轮HASH取模的质数队列,
-    static shm_hash_rehash < _value_type,
-    _key_type,
-    _hash_fun,
-    _extract_key,
-    _equal_key > *
-    initialize(size_t primes_number, size_t primes_list[], char *pmmap, _value_type invalid_data, bool if_expire, bool if_restore = false)
+    static self *initialize(size_t primes_number,
+                            size_t primes_list[],
+                            char *pmmap,
+                            const _value_type &invalid_data,
+                            bool if_expire,
+                            bool if_restore = false)
     {
         assert(pmmap != NULL );
 

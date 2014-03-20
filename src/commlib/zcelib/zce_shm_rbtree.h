@@ -66,16 +66,8 @@ public:
 //RBtree的索引的节点
 class _shm_rb_tree_index
 {
-public:
-    //父节点
-    size_t       parent_;
-    //左子树
-    size_t       left_;
-    //右子树
-    size_t       right_;
-    //颜色
-    color_type   color_;
 
+public:
     _shm_rb_tree_index()
         : parent_(_shm_memory_base::_INVALID_POINT)
         , left_(_shm_memory_base::_INVALID_POINT)
@@ -95,6 +87,17 @@ public:
     ~_shm_rb_tree_index()
     {
     }
+
+public:
+    //父节点
+    size_t       parent_;
+    //左子树
+    size_t       left_;
+    //右子树
+    size_t       right_;
+    //颜色
+    color_type   color_;
+
 };
 
 //RBtree的迭代器
@@ -103,12 +106,6 @@ template <class _value_type, class _key_type, class _extract_key, class _compare
     typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
 
     typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
-
-protected:
-    //序列号
-    size_t          serial_;
-    //RBtree的实例指针
-    shm_rb_tree_t  *rb_tree_instance_;
 
 public:
     _shm_rb_tree_iterator(size_t seq, shm_rb_tree_t *instance)
@@ -253,6 +250,13 @@ public:
             serial_ = y;
         }
     }
+
+protected:
+    //序列号
+    size_t          serial_;
+    //RBtree的实例指针
+    shm_rb_tree_t  *rb_tree_instance_;
+
 };
 
 
@@ -283,27 +287,6 @@ public:
     friend class _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
 
 protected:
-    //index区要增加两个数据,一个是头指针，一个是空节点的头指针
-    static const size_t ADDED_NUM_OF_INDEX = 2;
-
-protected:
-    //RBTree头部
-    _shm_rb_tree_head                  *rb_tree_head_;
-
-    //所有的指针都是根据基地址计算得到的,用于方便计算,每次初始化会重新计算
-    //索引数据区,
-    _shm_rb_tree_index                 *index_base_;
-
-    //数据区起始指针,
-    _value_type                         *data_base_;
-
-    //头节点的头指针,N+1个索引位表示
-    _shm_rb_tree_index                 *head_index_;
-
-    //空节点的头指针,N+2个索引位表示（这里利用right节点做链接，把空节点串起来）
-    _shm_rb_tree_index                 *free_index_;
-
-public:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore)
@@ -317,6 +300,7 @@ public:
         : _shm_memory_base(NULL)
     {
     }
+public:
 
     ~shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >()
     {
@@ -580,7 +564,7 @@ protected:
 
 protected:
     //真正的插入是由这个函数完成的
-    iterator __insert(size_t x, size_t y, const _value_type &v)
+    iterator _insert(size_t x, size_t y, const _value_type &v)
     {
         size_t z = create_node();
 
@@ -613,14 +597,14 @@ protected:
         right(z) = _INVALID_POINT;
         *(data_base_ + z) = v;
 
-        __rb_tree_rebalance(z, parent(header()));
+        _rb_tree_rebalance(z, parent(header()));
         return  iterator(z, this);
     }
 
     //通过旋转和变色，调整整个树，让其符合RBTree要求
     //参数1：新增节点
     //参数2：根节点
-    void __rb_tree_rebalance(size_t x, size_t &root)
+    void _rb_tree_rebalance(size_t x, size_t &root)
     {
         color(x) = RB_TREE_RED;
 
@@ -642,12 +626,12 @@ protected:
                     if ( x == right(parent(x)) )
                     {
                         x = parent(x);
-                        __rb_tree_rotate_left(x, root);
+                        _rb_tree_rotate_left(x, root);
                     }
 
                     color(parent(x)) = RB_TREE_BLACK;
                     color(parent(parent(x))) = RB_TREE_RED;
-                    __rb_tree_rotate_right(parent(parent(x)), root);
+                    _rb_tree_rotate_right(parent(parent(x)), root);
                 }
             }
             else
@@ -666,12 +650,12 @@ protected:
                     if ( x == left(parent(x)) )
                     {
                         x = parent(x);
-                        __rb_tree_rotate_right(x, root);
+                        _rb_tree_rotate_right(x, root);
                     }
 
                     color(parent(x)) = RB_TREE_BLACK;
                     color(parent(parent(x))) = RB_TREE_RED;
-                    __rb_tree_rotate_left(parent(parent(x)), root);
+                    _rb_tree_rotate_left(parent(parent(x)), root);
                 }
             }
         }
@@ -682,7 +666,7 @@ protected:
     //左旋函数
     //参数1：左旋节点
     //参数2：根节点
-    void __rb_tree_rotate_left(size_t x, size_t &root)
+    void _rb_tree_rotate_left(size_t x, size_t &root)
     {
         size_t y = right(x);
         right(x) = left(y);
@@ -714,7 +698,7 @@ protected:
     //右旋函数
     //参数1：右旋节点
     //参数2：根节点
-    void __rb_tree_rotate_right(size_t x, size_t &root)
+    void _rb_tree_rotate_right(size_t x, size_t &root)
     {
         size_t y = left(x);
         left(x) = right(y);
@@ -744,7 +728,7 @@ protected:
     }
 
     //删除时的树形调整，让其符合RBTree要求
-    size_t __rb_tree_rebalance_for_erase(size_t z, size_t &root, size_t leftmost, size_t rightmost)
+    size_t _rb_tree_rebalance_for_erase(size_t z, size_t &root, size_t leftmost, size_t rightmost)
     {
         size_t y = z;
         size_t x = _INVALID_POINT;
@@ -871,7 +855,7 @@ protected:
                     {
                         color(w) = RB_TREE_BLACK;
                         color(x_parent) = RB_TREE_RED;
-                        __rb_tree_rotate_left(x_parent, root);
+                        _rb_tree_rotate_left(x_parent, root);
                         w = right(x_parent);
                     }
 
@@ -892,7 +876,7 @@ protected:
                             }
 
                             color(w) = RB_TREE_RED;
-                            __rb_tree_rotate_right(w, root);
+                            _rb_tree_rotate_right(w, root);
                             w = right(x_parent);
                         }
 
@@ -904,7 +888,7 @@ protected:
                             color(right(w)) = RB_TREE_BLACK;
                         }
 
-                        __rb_tree_rotate_left(x_parent, root);
+                        _rb_tree_rotate_left(x_parent, root);
                         break;
                     }
                 }
@@ -916,7 +900,7 @@ protected:
                     {
                         color(w) = RB_TREE_BLACK;
                         color(x_parent) = RB_TREE_RED;
-                        __rb_tree_rotate_right(x_parent, root);
+                        _rb_tree_rotate_right(x_parent, root);
                         w = left(x_parent);
                     }
 
@@ -937,7 +921,7 @@ protected:
                             }
 
                             color(w) = RB_TREE_RED;
-                            __rb_tree_rotate_left(w, root);
+                            _rb_tree_rotate_left(w, root);
                             w = left(x_parent);
                         }
 
@@ -949,7 +933,7 @@ protected:
                             color(left(w)) = RB_TREE_BLACK;
                         }
 
-                        __rb_tree_rotate_right(x_parent, root);
+                        _rb_tree_rotate_right(x_parent, root);
                         break;
                     }
                 }
@@ -979,7 +963,7 @@ public:
             x = _compare_key()( _extract_key()(v), key(x) ) ? left(x) : right(x);
         }
 
-        return __insert(x, y, v);
+        return _insert(x, y, v);
     }
 
     //重复key插入则失败的插入函数，Map、Sap用这个
@@ -1002,7 +986,7 @@ public:
         {
             if ( j == begin() )
             {
-                return std::pair<iterator, bool>(__insert(x, y, v), true);
+                return std::pair<iterator, bool>(_insert(x, y, v), true);
             }
             else
             {
@@ -1012,7 +996,7 @@ public:
 
         if ( _compare_key()(key(j.getserial()), _extract_key()(v)) )
         {
-            return std::pair<iterator, bool>(__insert(x, y, v), true);
+            return std::pair<iterator, bool>(_insert(x, y, v), true);
         }
 
         return std::pair<iterator, bool>(j, false);
@@ -1021,7 +1005,7 @@ public:
     //通过迭代器删除一个节点
     iterator erase(const iterator &pos)
     {
-        size_t tmp = __rb_tree_rebalance_for_erase(pos.getserial(), /*head_index_->parent*/root(), leftmost(), rightmost());
+        size_t tmp = _rb_tree_rebalance_for_erase(pos.getserial(), root(), leftmost(), rightmost());
         destroy_node(pos.getserial());
         return iterator(tmp, this);
     }
@@ -1171,6 +1155,28 @@ public:
 
         return *iter;
     }
+
+protected:
+    //index区要增加两个数据,一个是头指针，一个是空节点的头指针
+    static const size_t ADDED_NUM_OF_INDEX = 2;
+
+protected:
+    //RBTree头部
+    _shm_rb_tree_head                  *rb_tree_head_;
+
+    //所有的指针都是根据基地址计算得到的,用于方便计算,每次初始化会重新计算
+    //索引数据区,
+    _shm_rb_tree_index                 *index_base_;
+
+    //数据区起始指针,
+    _value_type                         *data_base_;
+
+    //头节点的头指针,N+1个索引位表示
+    _shm_rb_tree_index                 *head_index_;
+
+    //空节点的头指针,N+2个索引位表示（这里利用right节点做链接，把空节点串起来）
+    _shm_rb_tree_index                 *free_index_;
+
 };
 
 //用RBTree实现SET，不区分multiset和set，通过不通的insert自己区分

@@ -580,7 +580,7 @@ int test_hash_match(int /*argc*/ , char * /*argv*/ [])
 
     for (size_t y = 0; y < req_node_number; ++y)
     {
-        hash_table_p->insert(insert_node[y]);
+        hash_table_p->insert_unique(insert_node[y]);
     }
 
     std::cout << "Hash link size " << hash_table_p->size() << std::endl;
@@ -737,17 +737,17 @@ int test_hashtable(int /*argc*/ , char * /*argv*/ [])
     memset(tmproom, 0, szalloc + 4);
 
     ZCE_LIB::shm_hashtable<int, int >* pmmap = ZCE_LIB::shm_hashtable<int, int >::initialize(numnode, real_num,tmproom);
-    pmmap->insert(1001);
+    pmmap->insert_unique(1001);
     ZCE_LIB::shm_hashtable<int, int >::iterator it = pmmap->find_value(1001);
 
 
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
-    bool bdel = pmmap->erase(1001);
+    bool bdel = pmmap->erase_unique(1001);
 
     it = pmmap->find_value(1002);
 
-    bdel = pmmap->erase(1001);
+    bdel = pmmap->erase_unique(1001);
 
     std::cout << "it serial: " << (int)(it.getserial()) << std::endl;
 
