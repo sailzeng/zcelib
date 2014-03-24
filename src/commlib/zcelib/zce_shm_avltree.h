@@ -650,8 +650,58 @@ protected:
         {
             _balance_adjust(z);
         }
-        
+
         return   std::pair<iterator, bool>(iterator(z, this), true);
+    }
+
+
+    void _erase(size_t x, size_t y)
+    {
+        //
+        size_t z = _INVALID_POINT;
+        if (left(x) != _INVALID_POINT)
+        {
+            z = minimum(left(x));
+
+        }
+        else if (right(x) != _INVALID_POINT)
+        {
+            z = maximum(right(x));
+        }
+        else
+        {
+            z = _INVALID_POINT;
+        }
+
+        //
+        if (left(y) == x)
+        {
+            left(y) = z;
+            left(z) = left(x);
+            right(z) = right(x);
+            if (y == header())
+            {
+                root() = z;
+                rightmost() = z;
+            }
+            //如果Y是最小值，则吧最小值改为Y
+            else if (y == leftmost())
+            {
+                leftmost() = z;
+            }
+        }
+        else
+        {
+            right(y) = z;
+            left(z) = left(x);
+            right(z) = right(x);
+            if (y == rightmost())
+            {
+                rightmost() = z;
+            }
+        }
+
+        destroy_node(x);
     }
 
 
@@ -688,7 +738,7 @@ protected:
                 {
                     if (1 == balanced(t))
                     {
-                        _ll_rotate(s,t);
+                        _ll_rotate(s, t);
                     }
                     else
                     {
@@ -800,7 +850,7 @@ protected:
         }
     }
 
-    void _rl_rotate(size_t p, size_t rc,size_t lgs)
+    void _rl_rotate(size_t p, size_t rc, size_t lgs)
     {
         size_t gf = parent(p);
         parent(p) = lgs;
@@ -809,7 +859,7 @@ protected:
         left(rc) = right(lgs);
         left(lgs) = p;
         right(lgs) = rc;
-        
+
 
         //调整平衡因子
         balanced(p) = 0;
@@ -912,40 +962,100 @@ public:
         return iterator(tmp, this);
     }
 
-    //通过起始迭代器删除一段节点
-    size_t erase(iterator __first, iterator __last)
-    {
-        size_t ret = 0;
-
-        if (__first == begin() && __last == end())
-        {
-            ret = size();
-            clear();
-        }
-        else
-        {
-            while (__first != __last)
-            {
-                ++ret;
-                erase(__first++);
-            }
-        }
-
-        return ret;
-    }
-
     //通过key删除节点，Map和Set用
     size_t erase_unique(const _key_type &k)
     {
-        iterator it = find(k);
-
-        if (it != end())
+        //如果没有使用的节点
+        if (avl_tree_head_->sz_use_node_ == 0)
         {
-            erase(it);
-            return 1;
+            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
         }
 
-        return 0;
+
+        iterator find_iter = find(k);
+        //没有找到相应的节点，删除失败
+        if (find_iter == end())
+        {
+            return T;
+        }
+
+        //找到了需要删除的节点
+        //需要删除的节点就是当前子树的根节点
+        if (val == T->element)
+        {
+            //左右子树都非空
+            if (T->left && T->right)
+            {
+                //在高度更大的那个子树上进行删除操作
+                if (getHeight(T->left) > getHeight(T->right))
+                {
+                    //左子树高度大，删除左子树中元素值最大的那个节点
+                    T->element = getMaxNode(T->left)->element;
+                    T->left = deleteNode(T->left, T->element);
+                }
+                else
+                {
+                    //删除右子树中元素值最小的那个节点
+                    T->element = getMinNode(T->right)->element;
+                    T->right = deleteNode(T->right, T->element);
+                }
+            }
+            else
+            {
+                //左右子树中有一个不为空，那个直接用需要被删除的节点的子节点替换之即可
+                AVLTree oldNode = T;
+                T = (T->left ? T->left : T->right);
+                delete oldNode;//释放节点所占的空间
+            }
+        }
+        else if (val < T->element)//要删除的节点在左子树中
+        {
+            //在左子树中进行删除
+            T->left = deleteNode(T->left, val);
+            //判断是否仍然满足平衡条件
+            if (getHeight(T->right) - getHeight(T->left) > 1)
+            {
+                if (T->right->left > T->right->right)
+                {
+                    //左双旋转
+                    T = DoubleLeftRotate(T);
+                }
+                else//进行左单旋转
+                {
+                    T = SingleLeftRotate(T);
+                }
+            }
+            else
+                //满足平衡条件，需要更新高度信息
+            {
+                T->height = max(getHeight(T->left), getHeight(T->right)) + 1;
+            }
+        }
+        else//需要删除的节点在右子树中
+        {
+            T->right = deleteNode(T->right, val);
+            //判断是否满足平衡条件
+            if (getHeight(T->left) - getHeight(T->right) > 1)
+            {
+                if (getHeight(T->left->right) > getHeight(T->left->left))
+                    //右双旋转
+                {
+                    T = DoubleRightRotate(T);
+                }
+                else
+                    //右单旋转
+                {
+                    T = SingleRightRotate(T);
+                }
+            }
+            else
+                //只需调整高度即可
+            {
+                T->height = max(getHeight(T->left), getHeight(T->right)) + 1;
+            }
+        }
+
+        return T;
     }
 
     //通过value删除节点，Map和Set用
