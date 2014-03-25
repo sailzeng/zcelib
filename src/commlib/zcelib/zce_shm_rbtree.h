@@ -1011,21 +1011,24 @@ public:
     }
 
     //通过起始迭代器删除一段节点
-    size_t erase(iterator __first, iterator __last)
+    size_t erase(iterator first, iterator last)
     {
         size_t ret = 0;
 
-        if (__first == begin() && __last == end())
+        //特殊情况的加速
+        if (first == begin() && last == end())
         {
             ret = size();
             clear();
         }
         else
         {
-            while (__first != __last)
+            //
+            while (first != last)
             {
                 ++ret;
-                erase(__first++);
+                //注意这个地方用的是erase(first++)，是first
+                erase(first++);
             }
         }
 
@@ -1076,6 +1079,7 @@ public:
 
         while (x != _INVALID_POINT)
         {
+            //上下两个函数就这行代码不一样，注意先后比较
             if (!_compare_key()(key(x), k) )
             {
                 y = x;
@@ -1098,6 +1102,7 @@ public:
 
         while (x != _INVALID_POINT)
         {
+            //上下两个函数就这行代码不一样，注意先后比较关系
             if (_compare_key()(k, key(x)))
             {
                 y = x;

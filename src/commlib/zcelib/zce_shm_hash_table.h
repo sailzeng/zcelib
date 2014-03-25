@@ -67,7 +67,7 @@ public:
     ///构造函数
     _shm_hashtable_iterator(size_t seq, shm_hashtable_t *instance):
         serial_(seq),
-        hashtable_instance_(instance)
+        ht_instance_(instance)
     {
     }
 
@@ -85,13 +85,13 @@ public:
     ///提供这个方法事为了加快很多函数的速度,
     size_t getnext()
     {
-        return *(hashtable_instance_->next_index_ + serial_);
+        return *(ht_instance_->next_index_ + serial_);
     }
 
     ///
     bool operator==(const iterator &x) const
     {
-        return (serial_ == x.serial_ && hashtable_instance_ == x.hashtable_instance_ );
+        return (serial_ == x.serial_ && ht_instance_ == x.hashtable_instance_ );
     }
     ///
     bool operator!=(const iterator &x) const
@@ -102,7 +102,7 @@ public:
     ///提领操作
     _value_type &operator*() const
     {
-        return *(hashtable_instance_->data_base_ + serial_);
+        return *(ht_instance_->data_base_ + serial_);
     }
     ///在多线程的环境下提供这个运送符号是不安全的,我没有加锁,原因如说明
     _value_type *operator->() const
@@ -115,17 +115,17 @@ public:
     iterator &operator++()
     {
         size_t oldseq = serial_;
-        serial_ = *(hashtable_instance_->next_index_ + serial_);
+        serial_ = *(ht_instance_->next_index_ + serial_);
 
         //如果这个节点是末位的节点
         if (serial_ == _shm_memory_base::_INVALID_POINT)
         {
             //顺着Index查询.
-            size_t bucket = hashtable_instance_->bkt_num_value(*(hashtable_instance_->data_base_ + oldseq));
+            size_t bucket = ht_instance_->bkt_num_value(*(ht_instance_->data_base_ + oldseq));
 
-            while (serial_ == _shm_memory_base::_INVALID_POINT && ++bucket < hashtable_instance_->capacity() )
+            while (serial_ == _shm_memory_base::_INVALID_POINT && ++bucket < ht_instance_->capacity() )
             {
-                serial_ = *(hashtable_instance_->index_base_ + bucket);
+                serial_ = *(ht_instance_->index_base_ + bucket);
             }
         }
 
@@ -144,7 +144,7 @@ protected:
     ///序列号
     size_t           serial_;
     ///HashTable的指针,
-    shm_hashtable_t *hashtable_instance_;
+    shm_hashtable_t *ht_instance_;
 };
 
 /*!

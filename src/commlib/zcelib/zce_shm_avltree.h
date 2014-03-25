@@ -94,7 +94,7 @@ public:
     ///右子树
     size_t       right_;
     ///平衡
-    int8_t       balanced_;
+    int32_t      balanced_;
 };
 
 
@@ -599,7 +599,7 @@ protected:
     /*!
     * @brief      真正的插入是由这个函数完成的
     * @return     std::pair<iterator, bool> 返回的插入结构，包括迭代器和结果
-    * @param      x   插入点
+    * @param      x   插入点,大部分时候为_INVALID_POINT
     * @param      y   插入点的父节点
     * @param      val 插入的数据
     */
@@ -648,68 +648,20 @@ protected:
         //如果不是根节点，我们进行平衡调整
         if (y != header())
         {
-            _balance_adjust(z);
+            _balance_adjust(z,true);
         }
 
         return   std::pair<iterator, bool>(iterator(z, this), true);
     }
 
 
-    void _erase(size_t x, size_t y)
-    {
-        //
-        size_t z = _INVALID_POINT;
-        if (left(x) != _INVALID_POINT)
-        {
-            z = minimum(left(x));
-
-        }
-        else if (right(x) != _INVALID_POINT)
-        {
-            z = maximum(right(x));
-        }
-        else
-        {
-            z = _INVALID_POINT;
-        }
-
-        //
-        if (left(y) == x)
-        {
-            left(y) = z;
-            left(z) = left(x);
-            right(z) = right(x);
-            if (y == header())
-            {
-                root() = z;
-                rightmost() = z;
-            }
-            //如果Y是最小值，则吧最小值改为Y
-            else if (y == leftmost())
-            {
-                leftmost() = z;
-            }
-        }
-        else
-        {
-            right(y) = z;
-            left(z) = left(x);
-            right(z) = right(x);
-            if (y == rightmost())
-            {
-                rightmost() = z;
-            }
-        }
-
-        destroy_node(x);
-    }
-
 
     /*!
     * @brief      进行平衡调整，内部函数，
-    * @param      z 插入的节点位置
+    * @param[in]  z 插入的节点位置
+    * @param[in]  if_inssert 是否是插入操作进行调整，如果是删除操作，填写false
     */
-    void _balance_adjust(size_t z)
+    void _balance_adjust(size_t z,bool if_inssert)
     {
         //其实这个地方直接使用常量还更加清晰一点,所以我没有用枚举或者宏
 
@@ -721,7 +673,14 @@ protected:
         {
             t = s;
             s = parent(s);
-            mod_balance = (t == left(s)) ? 1 : -1;
+            if (if_inssert)
+            {
+                mod_balance = (t == left(s)) ? 1 : -1;
+            }
+            else
+            {
+                mod_balance = (t == left(s)) ? -1 : 1;
+            }
 
             //如果是平衡的，修改平衡参数，继续向上干活
             if (0  == balanced(s) )
@@ -957,105 +916,78 @@ public:
     //通过迭代器删除一个节点
     iterator erase(const iterator &pos)
     {
-        size_t tmp = _rb_tree_rebalance_for_erase(pos.getserial(), root(), leftmost(), rightmost());
-        destroy_node(pos.getserial());
-        return iterator(tmp, this);
+        //x,为删除的位置，y为X的父节点，z用于为替换x的节点
+        size_t x = pos.getserial();
+        size_t y = parent(x);
+        size_t z = _INVALID_POINT;
+
+        //默认右子树的值
+        if (right(x) != _INVALID_POINT)
+        {
+            z = maximum(right(x));
+        }
+        else if (left(x) != _INVALID_POINT)
+        {
+            z = minimum(left(x));
+
+        }
+        else
+        {
+            z = _INVALID_POINT;
+        }
+
+        //
+        if (left(y) == x)
+        {
+            left(y) = z;
+            left(z) = left(x);
+            right(z) = right(x);
+            if (y == header())
+            {
+                root() = z;
+                rightmost() = z;
+            }
+            //如果Y是最小值，则吧最小值改为Y
+            else if (x == leftmost())
+            {
+                leftmost() = z;
+            }
+        }
+        else
+        {
+            right(y) = z;
+            left(z) = left(x);
+            right(z) = right(x);
+            if (x == rightmost())
+            {
+                rightmost() = z;
+            }
+        }
+
+        //如果不是根节点，我们进行平衡调整
+        if (y != header())
+        {
+            _balance_adjust(z, false);
+        }
+        destroy_node(x);
+
+        return iterator(z,this);
     }
 
     //通过key删除节点，Map和Set用
     size_t erase_unique(const _key_type &k)
     {
-        //如果没有使用的节点
-        if (avl_tree_head_->sz_use_node_ == 0)
-        {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
-        }
-
 
         iterator find_iter = find(k);
         //没有找到相应的节点，删除失败
         if (find_iter == end())
         {
-            return T;
+            return 0;
         }
 
-        //找到了需要删除的节点
-        //需要删除的节点就是当前子树的根节点
-        if (val == T->element)
-        {
-            //左右子树都非空
-            if (T->left && T->right)
-            {
-                //在高度更大的那个子树上进行删除操作
-                if (getHeight(T->left) > getHeight(T->right))
-                {
-                    //左子树高度大，删除左子树中元素值最大的那个节点
-                    T->element = getMaxNode(T->left)->element;
-                    T->left = deleteNode(T->left, T->element);
-                }
-                else
-                {
-                    //删除右子树中元素值最小的那个节点
-                    T->element = getMinNode(T->right)->element;
-                    T->right = deleteNode(T->right, T->element);
-                }
-            }
-            else
-            {
-                //左右子树中有一个不为空，那个直接用需要被删除的节点的子节点替换之即可
-                AVLTree oldNode = T;
-                T = (T->left ? T->left : T->right);
-                delete oldNode;//释放节点所占的空间
-            }
-        }
-        else if (val < T->element)//要删除的节点在左子树中
-        {
-            //在左子树中进行删除
-            T->left = deleteNode(T->left, val);
-            //判断是否仍然满足平衡条件
-            if (getHeight(T->right) - getHeight(T->left) > 1)
-            {
-                if (T->right->left > T->right->right)
-                {
-                    //左双旋转
-                    T = DoubleLeftRotate(T);
-                }
-                else//进行左单旋转
-                {
-                    T = SingleLeftRotate(T);
-                }
-            }
-            else
-                //满足平衡条件，需要更新高度信息
-            {
-                T->height = max(getHeight(T->left), getHeight(T->right)) + 1;
-            }
-        }
-        else//需要删除的节点在右子树中
-        {
-            T->right = deleteNode(T->right, val);
-            //判断是否满足平衡条件
-            if (getHeight(T->left) - getHeight(T->right) > 1)
-            {
-                if (getHeight(T->left->right) > getHeight(T->left->left))
-                    //右双旋转
-                {
-                    T = DoubleRightRotate(T);
-                }
-                else
-                    //右单旋转
-                {
-                    T = SingleRightRotate(T);
-                }
-            }
-            else
-                //只需调整高度即可
-            {
-                T->height = max(getHeight(T->left), getHeight(T->right)) + 1;
-            }
-        }
+        erase(find_iter);
 
-        return T;
+        return 1;
     }
 
     //通过value删除节点，Map和Set用
@@ -1068,9 +1000,28 @@ public:
     //通过key删除节点，Multimap和Multiset用
     size_t erase_equal(const _key_type &k)
     {
-        iterator it_l = lower_bound(k);
-        iterator it_u = upper_bound(k);
-        return erase(it_l, it_u);
+
+        iterator find_iter = find(k);
+        //没有找到相应的节点，删除失败
+        if (find_iter == end())
+        {
+            return 0;
+        }
+        
+        iterator j = erase(find_iter);
+        if (j == end())
+        {
+            return 1;
+        }
+        
+        size_t erase_count = 1;
+        while (_compare_key()(k, key(j.getserial())) &&
+            _compare_key()(key(j.getserial()), k))
+        {
+            j = erase(j);
+            ++erase_count;
+        }
+        return erase_count;
     }
 
     //通过值删除节点，Multimap和Multiset用
@@ -1078,50 +1029,6 @@ public:
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
-    }
-
-    //找到第一个key值相同的节点
-    iterator lower_bound(const _key_type &k)
-    {
-        size_t y = header();
-        size_t x = root();
-
-        while (x != _INVALID_POINT)
-        {
-            if (!_compare_key()(key(x), k))
-            {
-                y = x;
-                x = left(x);
-            }
-            else
-            {
-                x = right(x);
-            }
-        }
-
-        return iterator(y, this);
-    }
-
-    //找到最后一个key值相同的节点
-    iterator upper_bound(const _key_type &k)
-    {
-        size_t y = header();
-        size_t x = root();
-
-        while (x != _INVALID_POINT)
-        {
-            if (_compare_key()(k, key(x)))
-            {
-                y = x;
-                x = left(x);
-            }
-            else
-            {
-                x = right(x);
-            }
-        }
-
-        return iterator(y, this);
     }
 
     //找key相同的节点
@@ -1144,6 +1051,7 @@ public:
         }
 
         iterator j = iterator(y, this);
+        //注意两次调用_compare_key的比较参数顺序喔
         return (j == end() || _compare_key()(k, key(j.getserial()))) ? end() : j;
     }
 
