@@ -91,7 +91,7 @@ public:
     ///
     bool operator==(const iterator &x) const
     {
-        return (serial_ == x.serial_ && ht_instance_ == x.hashtable_instance_ );
+        return (serial_ == x.serial_ && ht_instance_ == x.ht_instance_);
     }
     ///
     bool operator!=(const iterator &x) const

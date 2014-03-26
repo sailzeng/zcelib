@@ -84,6 +84,10 @@ int test_server_status(int /*argc*/, char * /*argv*/[]);
 int test_coroutine1(int /*argc*/, char * /*argv*/[]);
 int test_coroutine2(int /*argc*/, char * /*argv*/[]);
 
+
+int test_mmap_avltree(int /*argc*/, char * /*argv*/[]);
+int test_mmap_rbtree(int /*argc*/, char * /*argv*/[]);
+
 #endif //
 
 

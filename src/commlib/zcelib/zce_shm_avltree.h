@@ -610,7 +610,7 @@ protected:
         //日过空间不足，无法插入，返回end,false的pair
         if (_INVALID_POINT == z)
         {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
+            return std::pair<iterator, bool>(end(), false);
         }
 
         //把此二货插入进去，而且调整各种东东
@@ -836,91 +836,16 @@ protected:
         }
     }
 
-public:
 
     /*!
-    * @brief      允许重复key插入的插入函数，Multimap、Multimap用这个
-    *             因为空间可能满，所以返回的数据中还是有bool的pair
-    * @return     std::pair<iterator, bool>  返回的iterator为迭代器，bool为是否插入成功
-    * @param      v        插入的_value_type的数据
+    * @brief      真正的删除函数实现
+    * @param      x 为删除的位置
+    * @param      y 为X的父节点
+    * @param      z 用于为替换x的节点
     */
-    std::pair<iterator, bool> insert_equal(const _value_type &v)
+    void _erase(size_t x,size_t y,size_t &z)
     {
-        //如果依据满了，也返回失败
-        if (avl_tree_head_->sz_free_node_ == 0)
-        {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
-        }
-
-        size_t y = header();
-        size_t x = root();
-
-        //插入到一个空节点上
-        while (x != _INVALID_POINT)
-        {
-            y = x;
-            x = _compare_key()(_extract_key()(v), key(x)) ? left(x) : right(x);
-        }
-
-        return _insert(x, y, v);
-    }
-
-    /*!
-    * @brief      重复key插入则失败的插入函数，Map、Sap用这个
-    * @return     std::pair<iterator, bool> 返回的iterator为迭代器，bool为是否插入成功
-    * @param      v 插入的_value_type的数据
-    */
-    std::pair<iterator, bool> insert_unique(const _value_type &v)
-    {
-        //如果依据满了，也返回失败
-        if (avl_tree_head_->sz_free_node_ == 0)
-        {
-            return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
-        }
-
-        size_t y = header();
-        size_t x = root();
-        bool comp = true;
-
-        //如果比较(比如是<)返回true,就向左，否则(>=)就向右，
-        while (x != _INVALID_POINT)
-        {
-            y = x;
-            comp = _compare_key()(_extract_key()(v), key(x));
-            x = comp ? left(x) : right(x);
-        }
-
-        iterator j = iterator(y, this);
-
-        if (comp)
-        {
-            if (j == begin())
-            {
-                return _insert(x, y, v);
-            }
-            else
-            {
-                --j;
-            }
-        }
-
-        if (_compare_key()(key(j.getserial()), _extract_key()(v)))
-        {
-            return _insert(x, y, v);
-        }
-
-        //如果既不是>,又不是<，那么就是==,那么返回错误
-        return std::pair<iterator, bool>(j, false);
-    }
-
-    //通过迭代器删除一个节点
-    iterator erase(const iterator &pos)
-    {
-        //x,为删除的位置，y为X的父节点，z用于为替换x的节点
-        size_t x = pos.getserial();
-        size_t y = parent(x);
-        size_t z = _INVALID_POINT;
-
+        z = _INVALID_POINT;
         //默认右子树的值
         if (right(x) != _INVALID_POINT)
         {
@@ -969,66 +894,207 @@ public:
         {
             _balance_adjust(z, false);
         }
+
+        //
         destroy_node(x);
 
-        return iterator(z,this);
+        return;
     }
 
-    //通过key删除节点，Map和Set用
+public:
+
+    /*!
+    * @brief      允许重复key插入的插入函数，Multimap、Multimap用这个
+    *             因为空间可能满，所以返回的数据中还是有bool的pair
+    * @return     std::pair<iterator, bool>  返回的iterator为迭代器，bool为是否插入成功
+    * @param      v        插入的_value_type的数据
+    */
+    std::pair<iterator, bool> insert_equal(const _value_type &v)
+    {
+        //如果依据满了，也返回失败
+        if (avl_tree_head_->sz_free_node_ == 0)
+        {
+            return std::pair<iterator, bool>(end(), false);
+        }
+
+        size_t y = header();
+        size_t x = root();
+
+        //插入到一个空节点上
+        while (x != _INVALID_POINT)
+        {
+            y = x;
+            x = _compare_key()(_extract_key()(v), key(x)) ? left(x) : right(x);
+        }
+
+        return _insert(x, y, v);
+    }
+
+    /*!
+    * @brief      重复key插入则失败的插入函数，Map、Sap用这个
+    * @return     std::pair<iterator, bool> 返回的iterator为迭代器，bool为是否插入成功
+    * @param      v 插入的_value_type的数据
+    */
+    std::pair<iterator, bool> insert_unique(const _value_type &v)
+    {
+        //如果依据满了，也返回失败
+        if (avl_tree_head_->sz_free_node_ == 0)
+        {
+            return std::pair<iterator, bool>(end(), false);
+        }
+
+        size_t y = header();
+        size_t x = root();
+        bool comp = true;
+
+        //如果比较(比如是<)返回true,就向左，否则(>=)就向右，
+        while (x != _INVALID_POINT)
+        {
+            y = x;
+            comp = _compare_key()(_extract_key()(v), key(x));
+            x = comp ? left(x) : right(x);
+        }
+
+        iterator j = iterator(y, this);
+
+        if (comp)
+        {
+            if (j == begin())
+            {
+                return _insert(x, y, v);
+            }
+            else
+            {
+                --j;
+            }
+        }
+
+        if (_compare_key()(key(j.getserial()), _extract_key()(v)))
+        {
+            return _insert(x, y, v);
+        }
+
+        //如果既不是>,又不是<，那么就是==,那么返回错误
+        return std::pair<iterator, bool>(j, false);
+    }
+
+    /*!
+    * @brief      通过迭代器删除一个节点
+    * @return     void 注意，微软的这个函数好像返回一个迭代器，
+    * @param      pos 删除的迭代器
+    */
+    void erase(const iterator &pos)
+    {
+        //x,为删除的位置，y为X的父节点，z用于为替换x的节点
+        size_t x = pos.getserial();
+        size_t y = parent(x);
+        size_t z = _INVALID_POINT;
+
+        return _erase(x,y,z);
+    }
+
+    //通过起始迭代器删除一段节点
+    size_t erase(iterator first, iterator last)
+    {
+        size_t erase_count = 0;
+
+        //特殊情况的加速
+        if (first == begin() && last == end())
+        {
+            erase_count = size();
+            clear();
+        }
+        else
+        {
+            //
+            while (first != last)
+            {
+                ++erase_count;
+                //注意这个地方用的是erase(first++)，是first
+                erase(first++);
+            }
+        }
+        return erase_count;
+    }
+
+    //通过key删除节点，MAP使用
     size_t erase_unique(const _key_type &k)
     {
-
+        //先尝试找到节点
         iterator find_iter = find(k);
-        //没有找到相应的节点，删除失败
         if (find_iter == end())
         {
             return 0;
         }
-
-        erase(find_iter);
-
-        return 1;
+        return erase(find_iter);
     }
 
-    //通过value删除节点，Map和Set用
+    //通过value删除节点，SET使用
     size_t erase_unique_value(const _value_type &v)
     {
         _extract_key get_key;
         return erase_unique(get_key(v));
     }
 
-    //通过key删除节点，Multimap和Multiset用
+    //通过key删除节点，MULTIMAP用
     size_t erase_equal(const _key_type &k)
     {
-
-        iterator find_iter = find(k);
-        //没有找到相应的节点，删除失败
-        if (find_iter == end())
-        {
-            return 0;
-        }
-        
-        iterator j = erase(find_iter);
-        if (j == end())
-        {
-            return 1;
-        }
-        
-        size_t erase_count = 1;
-        while (_compare_key()(k, key(j.getserial())) &&
-            _compare_key()(key(j.getserial()), k))
-        {
-            j = erase(j);
-            ++erase_count;
-        }
-        return erase_count;
+        iterator it_l = lower_bound(k);
+        iterator it_u = upper_bound(k);
+        return erase(it_l, it_u);
     }
 
-    //通过值删除节点，Multimap和Multiset用
+    //通过值删除节点，MULTISET用
     size_t erase_equal_value(const _value_type &v)
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
+    }
+
+    //找到第一个key值相同的节点
+    iterator lower_bound(const _key_type &k)
+    {
+        size_t y = header();
+        size_t x = root();
+
+        while (x != _INVALID_POINT)
+        {
+            //上下两个函数就这行代码不一样，注意先后比较
+            if (!_compare_key()(key(x), k))
+            {
+                y = x;
+                x = left(x);
+            }
+            else
+            {
+                x = right(x);
+            }
+        }
+
+        return iterator(y, this);
+    }
+
+    //找到最后一个key值相同的节点
+    iterator upper_bound(const _key_type &k)
+    {
+        size_t y = header();
+        size_t x = root();
+
+        while (x != _INVALID_POINT)
+        {
+            //上下两个函数就这行代码不一样，注意先后比较关系
+            if (_compare_key()(k, key(x)))
+            {
+                y = x;
+                x = left(x);
+            }
+            else
+            {
+                x = right(x);
+            }
+        }
+
+        return iterator(y, this);
     }
 
     //找key相同的节点

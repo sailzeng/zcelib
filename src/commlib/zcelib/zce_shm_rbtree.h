@@ -1013,12 +1013,12 @@ public:
     //通过起始迭代器删除一段节点
     size_t erase(iterator first, iterator last)
     {
-        size_t ret = 0;
+        size_t erase_count = 0;
 
         //特殊情况的加速
         if (first == begin() && last == end())
         {
-            ret = size();
+            erase_count = size();
             clear();
         }
         else
@@ -1026,13 +1026,12 @@ public:
             //
             while (first != last)
             {
-                ++ret;
+                ++erase_count;
                 //注意这个地方用的是erase(first++)，是first
                 erase(first++);
             }
         }
-
-        return ret;
+        return erase_count;
     }
 
     //通过key删除节点，Map和Set用

@@ -12,7 +12,11 @@ int main(int argc , char *argv[])
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
 
-    test_compress(argc, argv);
+    test_mmap_rbtree(argc, argv);
+
+    printf("%s", "----------------------------------------------------------------------------\n");
+
+    test_mmap_avltree(argc, argv);
 
 
     system("pause");

@@ -107,12 +107,15 @@ int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
     test_avl_tree->insert_equal(10);
     test_avl_tree->insert_equal(7);
     test_avl_tree->insert_equal(8);
+    /*
     test_avl_tree->insert_equal(15);
     test_avl_tree->insert_equal(5);
     test_avl_tree->insert_equal(12);
     test_avl_tree->insert_equal(6);
     test_avl_tree->insert_equal(11);
     test_avl_tree->insert_equal(12);
+    */
+    
 
     printf("\nAfter insert:size=%u, capacity=%u, empty=%u, full=%u\n",
         test_avl_tree->size(), test_avl_tree->capacity(), test_avl_tree->empty(), test_avl_tree->full());
