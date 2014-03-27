@@ -109,11 +109,49 @@ int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
     test_avl_tree->insert_equal(8);
     test_avl_tree->insert_equal(15);
     test_avl_tree->insert_equal(5);
-    /*
     test_avl_tree->insert_equal(12);
     test_avl_tree->insert_equal(6);
     test_avl_tree->insert_equal(11);
     test_avl_tree->insert_equal(12);
+
+    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
+        0, 
+        test_avl_tree->parent(0),
+        test_avl_tree->left(0), 
+        test_avl_tree->right(0),
+        test_avl_tree->balanced(0)
+        );
+    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
+        1,
+        test_avl_tree->parent(1),
+        test_avl_tree->left(1),
+        test_avl_tree->right(1),
+        test_avl_tree->balanced(1)
+        );
+    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
+        2,
+        test_avl_tree->parent(2),
+        test_avl_tree->left(2),
+        test_avl_tree->right(2),
+        test_avl_tree->balanced(2)
+        );
+    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
+        3,
+        test_avl_tree->parent(3),
+        test_avl_tree->left(3),
+        test_avl_tree->right(3),
+        test_avl_tree->balanced(3)
+        );
+    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
+        4,
+        test_avl_tree->parent(4),
+        test_avl_tree->left(4),
+        test_avl_tree->right(4),
+        test_avl_tree->balanced(4)
+        );
+
+    /*
+    
     */
 
     printf("\nAfter insert:size=%u, capacity=%u, empty=%u, full=%u\n",

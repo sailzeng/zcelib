@@ -668,13 +668,12 @@ protected:
         //其实这个地方直接使用常量还更加清晰一点,所以我没有用枚举或者宏
 
         //找到最小的不平衡的点,
-        size_t s = z;
-        size_t t = _INVALID_POINT;
+        size_t s = parent(z);
+        size_t t = z;
         int32_t mod_balance = 0;
-        while (s != header())
+        for (; s != header(); t = s, s = parent(s))
         {
-            t = s;
-            s = parent(s);
+
             if (if_inssert)
             {
                 mod_balance = (t == left(s)) ? 1 : -1;
@@ -726,146 +725,176 @@ protected:
 
     /*!
     * @brief      LL旋转，
-    * @param      p   父节点，最小的不平衡树的根节点
-    * @param      lc  左边的子节点
+    * @param      a   父节点，最小的不平衡树的根节点
+    * @param      b  左边的子节点
     */
-    void _ll_rotate(size_t p, size_t lc)
+    void _ll_rotate(size_t a, size_t b)
     {
-        size_t gf = parent(p);
-        parent(p) = lc;
-        left(p) = right(lc);
-        right(lc) = p;
-        parent(lc) = gf;
+        size_t gf = parent(a);
+        parent(a) = b;
+        left(a) = right(b);
+        right(b) = a;
+        parent(b) = gf;
 
         //调整平衡因子
-        balanced(p) = 0;
-        balanced(lc) = 0;
+        balanced(a) = 0;
+        balanced(b) = 0;
 
         //调整p的父节点的左右子树，让其指向新的子树新根
         if (gf == header())
         {
-            root() = lc;
+            root() = b;
         }
         else
         {
-            if (left(gf) == p)
+            if (left(gf) == a)
             {
-                left(gf) = lc;
+                left(gf) = b;
             }
             else
             {
-                right(gf) = lc;
+                right(gf) = b;
             }
         }
     }
 
     /*!
     * @brief      LR旋转
-    * @param      p   父节点，最小的不平衡树的根节点
-    * @param      lc  p的左子节点
-    * @param      rgs lc的右子节点
+    * @param      a   父节点，最小的不平衡树的根节点
+    * @param      b   a的左子节点
+    * @param      c   b的右子节点
     */
-    void _lr_rotate(size_t p, size_t lc, size_t rgs)
+    void _lr_rotate(size_t a, size_t b, size_t c)
     {
-        size_t gf = parent(p);
-        parent(p) = rgs;
-        left(p) = right(rgs);
-        parent(lc) = rgs;
-        right(lc) = left(rgs);
-        left(rgs) = lc;
-        right(rgs) = p;
-        parent(rgs) = gf;
+        size_t gf = parent(a);
+        parent(a) = c;
+        left(a) = right(c);
+        parent(b) = c;
+        right(b) = left(c);
+        left(c) = b;
+        right(c) = a;
+        parent(c) = gf;
 
 
-        //调整平衡因子
-        balanced(p) = -1;
-        balanced(lc) = 0;
-        balanced(rgs) = 0;
+        //根据C的状态调整平衡因子
+        if (balanced(c) == 1)
+        {
+            balanced(a) = -1;
+            balanced(b) = 0;
+            balanced(c) = 0;
+        }
+        else if (balanced(c) == -1)
+        {
+            balanced(a) = 0;
+            balanced(b) = 1;
+            balanced(c) = 0;
+        }
+        else
+        {
+            balanced(a) = 0;
+            balanced(b) = 0;
+            balanced(c) = 0;
+        }
 
         //调整p的父节点的左右子树，让其指向新的子树新根
         if (gf == header())
         {
-            root() = rgs;
+            root() = c;
         }
         else
         {
-            if (left(gf) == p)
+            if (left(gf) == a)
             {
-                left(gf) = rgs;
+                left(gf) = c;
             }
             else
             {
-                right(gf) = rgs;
+                right(gf) = c;
             }
         }
     }
 
     /*!
     * @brief      RR旋转，
-    * @param      p   父节点，最小的不平衡树的根节点
-    * @param      rc  右边的子节点
+    * @param      a  父节点，最小的不平衡树的根节点
+    * @param      b  右边的子节点
     */
-    void _rr_rotate(size_t p, size_t rc)
+    void _rr_rotate(size_t a, size_t b)
     {
-        size_t gf = parent(p);
-        parent(p) = rc;
-        right(p) = left(rc);
-        left(rc) = p;
-        parent(rc) = gf;
+        size_t gf = parent(a);
+        parent(a) = b;
+        right(a) = left(b);
+        left(b) = a;
+        parent(b) = gf;
 
         //调整平衡因子
-        balanced(p) = 0;
-        balanced(rc) = 0;
+        balanced(a) = 0;
+        balanced(b) = 0;
 
         //调整p的父节点的左右子树，让其指向新的子树新根
         if (gf == header())
         {
-            root() = rc;
+            root() = b;
         }
         else
         {
-            if (left(gf) == p)
+            if (left(gf) == a)
             {
-                left(gf) = rc;
+                left(gf) = b;
             }
             else
             {
-                right(gf) = rc;
+                right(gf) = b;
             }
         }
         
     }
 
-    void _rl_rotate(size_t p, size_t rc, size_t lgs)
+    void _rl_rotate(size_t a, size_t b, size_t c)
     {
-        size_t gf = parent(p);
-        parent(p) = lgs;
-        right(p) = left(lgs);
-        parent(rc) = lgs;
-        left(rc) = right(lgs);
-        left(lgs) = p;
-        right(lgs) = rc;
-        parent(lgs) = gf;
+        size_t gf = parent(a);
+        parent(a) = c;
+        right(a) = left(c);
+        parent(b) = c;
+        left(b) = right(c);
+        left(c) = a;
+        right(c) = b;
+        parent(c) = gf;
 
-        //调整平衡因子
-        balanced(p) = 0;
-        balanced(rc) = -1;
-        balanced(lgs) = 0;
-
-        //调整p的父节点的左右子树，让其指向新的子树新根
-        if (gf == header())
+        //根据C的状态调整平衡因子
+        if (balanced(c) == 1)
         {
-            root() = lgs;
+            balanced(a) = 0;
+            balanced(b) = -1;
+            balanced(c) = 0;
+        }
+        else if (balanced(c) == -1)
+        {
+            balanced(a) = 1;
+            balanced(b) = 0;
+            balanced(c) = 0;
         }
         else
         {
-            if (left(gf) == p)
+            balanced(a) = 0;
+            balanced(b) = 0;
+            balanced(c) = 0;
+        }
+
+        //调整C的父节点的左右子树，让其指向新的子树新根
+        if (gf == header())
+        {
+            root() = c;
+        }
+        else
+        {
+            if (left(gf) == a)
             {
-                left(gf) = lgs;
+                left(gf) = c;
             }
             else
             {
-                right(gf) = lgs;
+                right(gf) = c;
             }
         }
     }
