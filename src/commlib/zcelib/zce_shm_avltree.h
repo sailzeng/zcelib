@@ -520,7 +520,7 @@ public:
         return avl_tree_head_->sz_free_node_;
     }
 
-protected:
+public:
     inline size_t  &header() const
     {
         return avl_tree_head_->num_of_node_;
@@ -613,6 +613,8 @@ protected:
             return std::pair<iterator, bool>(end(), false);
         }
 
+
+
         //把此二货插入进去，而且调整各种东东
 
         //如果1.插入的是root节点，2.如果插入节点不是空节点，3.如果比较为TRUE
@@ -648,7 +650,7 @@ protected:
         //如果不是根节点，我们进行平衡调整
         if (y != header())
         {
-            _balance_adjust(z,true);
+            _balance_adjust(z, true);
         }
 
         return   std::pair<iterator, bool>(iterator(z, this), true);
@@ -691,6 +693,7 @@ protected:
             //这个点上原来就不平衡，找到最小的不平衡树，进行旋转，让其平衡
             else
             {
+
                 balanced(s) += mod_balance;
                 //根据不平衡的情况，决定进行什么样的旋转
                 if (2 == balanced(s) )
@@ -739,13 +742,20 @@ protected:
         balanced(lc) = 0;
 
         //调整p的父节点的左右子树，让其指向新的子树新根
-        if (left(gf) == p)
+        if (gf == header())
         {
-            left(gf) = lc;
+            root() = lc;
         }
         else
         {
-            right(gf) = lc;
+            if (left(gf) == p)
+            {
+                left(gf) = lc;
+            }
+            else
+            {
+                right(gf) = lc;
+            }
         }
     }
 
@@ -764,6 +774,8 @@ protected:
         right(lc) = left(rgs);
         left(rgs) = lc;
         right(rgs) = p;
+        parent(rgs) = gf;
+
 
         //调整平衡因子
         balanced(p) = -1;
@@ -771,13 +783,20 @@ protected:
         balanced(rgs) = 0;
 
         //调整p的父节点的左右子树，让其指向新的子树新根
-        if (left(gf) == p)
+        if (gf == header())
         {
-            left(gf) = rgs;
+            root() = rgs;
         }
         else
         {
-            right(gf) = rgs;
+            if (left(gf) == p)
+            {
+                left(gf) = rgs;
+            }
+            else
+            {
+                right(gf) = rgs;
+            }
         }
     }
 
@@ -799,14 +818,22 @@ protected:
         balanced(rc) = 0;
 
         //调整p的父节点的左右子树，让其指向新的子树新根
-        if (left(gf) == p)
+        if (gf == header())
         {
-            left(gf) = rc;
+            root() = rc;
         }
         else
         {
-            right(gf) = rc;
+            if (left(gf) == p)
+            {
+                left(gf) = rc;
+            }
+            else
+            {
+                right(gf) = rc;
+            }
         }
+        
     }
 
     void _rl_rotate(size_t p, size_t rc, size_t lgs)
@@ -818,7 +845,7 @@ protected:
         left(rc) = right(lgs);
         left(lgs) = p;
         right(lgs) = rc;
-
+        parent(lgs) = gf;
 
         //调整平衡因子
         balanced(p) = 0;
@@ -826,13 +853,20 @@ protected:
         balanced(lgs) = 0;
 
         //调整p的父节点的左右子树，让其指向新的子树新根
-        if (left(gf) == p)
+        if (gf == header())
         {
-            left(gf) = lgs;
+            root() = lgs;
         }
         else
         {
-            right(gf) = lgs;
+            if (left(gf) == p)
+            {
+                left(gf) = lgs;
+            }
+            else
+            {
+                right(gf) = lgs;
+            }
         }
     }
 

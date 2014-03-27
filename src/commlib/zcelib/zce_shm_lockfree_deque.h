@@ -110,7 +110,7 @@ protected:
     ///内存区的长度
     size_t               size_of_mmap_;
 
-    ///deque的长度,必须>JUDGE_FULL_INTERVAL
+    ///deque的长度,必须>JUDGE_FULL_Iwo1NTERVAL
     size_t               size_of_deque_;
 
     ///node的最大长度
