@@ -217,7 +217,7 @@ public:
     void decrement()
     {
         //如果是红节点，且父节点的的父节点等于自己
-        if ( (rb_tree_instance_->index_base_ + serial_)->color == RB_TREE_RED &&
+        if ( (rb_tree_instance_->index_base_ + serial_)->color_ == RB_TREE_RED &&
              (rb_tree_instance_->index_base_ + ((rb_tree_instance_->index_base_ + serial_)->parent_))->parent_ == serial_ )
         {
             //右子节点即是

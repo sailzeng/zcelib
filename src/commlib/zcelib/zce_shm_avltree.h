@@ -221,7 +221,7 @@ public:
     void decrement()
     {
         //如果是END，serial_就是head_index_的下标，那么其right_就是end前面的那个
-        if (avl_tree_inst_->avl_tree_head_.num_of_node_ == serial_)
+        if (avl_tree_inst_->avl_tree_head_->num_of_node_ == serial_)
         {
             serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
         }
@@ -917,19 +917,22 @@ protected:
         else if (left(x) != _INVALID_POINT)
         {
             z = minimum(left(x));
-
         }
         else
         {
             z = _INVALID_POINT;
         }
 
+        if (z != _INVALID_POINT)
+        {
+            left(z) = left(x);
+            right(z) = right(x);
+        }
+        
         //
         if (left(y) == x)
         {
             left(y) = z;
-            left(z) = left(x);
-            right(z) = right(x);
             if (y == header())
             {
                 root() = z;
@@ -944,8 +947,6 @@ protected:
         else
         {
             right(y) = z;
-            left(z) = left(x);
-            right(z) = right(x);
             if (x == rightmost())
             {
                 rightmost() = z;
@@ -1089,7 +1090,8 @@ public:
         {
             return 0;
         }
-        return erase(find_iter);
+        erase(find_iter);
+        return 1;
     }
 
     //通过value删除节点，SET使用

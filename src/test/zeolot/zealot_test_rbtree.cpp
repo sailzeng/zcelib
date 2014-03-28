@@ -41,6 +41,16 @@ int test_mmap_rbtree(int /*argc*/, char * /*argv*/[])
     test_rb_tree->insert_equal(12);
     test_rb_tree->insert_equal(6);
     test_rb_tree->insert_equal(11);
+    auto insert_iter = test_rb_tree->insert_unique(12);
+    if (insert_iter.second == true)
+    {
+        abort();
+    }
+    else
+    {
+        printf("%s", "OK\n");
+    }
+
     test_rb_tree->insert_equal(12);
 
     printf("\nAfter insert:size=%u, capacity=%u, empty=%u, full=%u\n",
@@ -114,45 +124,15 @@ int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
     test_avl_tree->insert_equal(11);
     test_avl_tree->insert_equal(12);
 
-    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
-        0, 
-        test_avl_tree->parent(0),
-        test_avl_tree->left(0), 
-        test_avl_tree->right(0),
-        test_avl_tree->balanced(0)
-        );
-    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
-        1,
-        test_avl_tree->parent(1),
-        test_avl_tree->left(1),
-        test_avl_tree->right(1),
-        test_avl_tree->balanced(1)
-        );
-    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
-        2,
-        test_avl_tree->parent(2),
-        test_avl_tree->left(2),
-        test_avl_tree->right(2),
-        test_avl_tree->balanced(2)
-        );
-    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
-        3,
-        test_avl_tree->parent(3),
-        test_avl_tree->left(3),
-        test_avl_tree->right(3),
-        test_avl_tree->balanced(3)
-        );
-    printf("Node:size=%u, parent=%u, left=%u, right=%u, balanced=%d.\n",
-        4,
-        test_avl_tree->parent(4),
-        test_avl_tree->left(4),
-        test_avl_tree->right(4),
-        test_avl_tree->balanced(4)
-        );
-
-    /*
-    
-    */
+    auto insert_iter = test_avl_tree->insert_unique(12);
+    if (insert_iter.second == true)
+    {
+        abort();
+    }
+    else
+    {
+        printf("%s", "OK\n");
+    }
 
     printf("\nAfter insert:size=%u, capacity=%u, empty=%u, full=%u\n",
         test_avl_tree->size(), test_avl_tree->capacity(), test_avl_tree->empty(), test_avl_tree->full());
@@ -169,11 +149,21 @@ int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
     TEST_AVL_TREE::iterator iter = test_avl_tree->find(12);
     printf("\nfind : %d \n", (*iter));
 
-    size_t aa = test_avl_tree->erase_equal(12);
+    size_t erase_count = test_avl_tree->erase_unique(5);
 
     printf("\nAfter erase:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
-        test_avl_tree->size(), test_avl_tree->capacity(), test_avl_tree->empty(), test_avl_tree->full(),
-        aa);
+        test_avl_tree->size(), 
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(), 
+        test_avl_tree->full(),
+        erase_count);
+
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
 
     printf("After erase Tree_node: ");
     rb_tree_iter = test_avl_tree->begin();
