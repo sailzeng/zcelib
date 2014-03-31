@@ -950,36 +950,30 @@ protected:
         }
 
         //当C不是叶子节点的时候
-        size_t a = x;
-        size_t p = y;
-        size_t lgs = left(a), rgs = right(a);
-        size_t b = 0;
+        size_t a = x, a_p = y, b = 0, a_l = left(a), a_r = right(a);
         
-        while (lgs != _INVALID_POINT || rgs != _INVALID_POINT)
+        while (a_l != _INVALID_POINT || a_r != _INVALID_POINT)
         {
-            if (lgs != _INVALID_POINT)
+            if (a_l != _INVALID_POINT)
             {
-                b = lgs;
+                b = a_l;
                 while (right(b) != _INVALID_POINT)
                 {
-                    
+                    b = right(b);
                 }
             }
             else
             {
-                b = rgs;
-                roll_down(p, a, b, false);
-                while (left(a) != _INVALID_POINT)
+                b = a_r;
+                while (left(b) != _INVALID_POINT)
                 {
-                    p = b;
-                    b = left(a);
-                    roll_down(p, a, b, true);
+                    b = left(b);
                 }
             }
-            //
-            p = parent(a);
-            lgs = left(a);
-            rgs = right(a);
+            _exchange(a_p, a, b_p, b);
+            //p = parent(a);
+            a_l = left(a);
+            a_r = right(a);
         }
         debug_note(header());
         debug_note(0);
