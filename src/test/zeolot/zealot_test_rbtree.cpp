@@ -203,6 +203,93 @@ int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
         printf("%d ", (*rb_tree_iter));
     }
     printf("%s", "\n");
+
+    erase_count = test_avl_tree->erase_unique(8);
+    printf("\nAfter erase 11:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full(),
+        erase_count);
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+    test_avl_tree->debug_note(3);
+    test_avl_tree->debug_note(4);
+    test_avl_tree->debug_note(5);
+    test_avl_tree->debug_note(6);
+    test_avl_tree->debug_note(7);
+    test_avl_tree->debug_note(8);
+    test_avl_tree->debug_note(9);
+
+    printf("\nAfter erase Tree_node: ");
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s", "\n");
+
+
+    erase_count = test_avl_tree->erase_unique(5);
+    printf("\nAfter erase 11:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full(),
+        erase_count);
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+    test_avl_tree->debug_note(3);
+    test_avl_tree->debug_note(4);
+    test_avl_tree->debug_note(5);
+    test_avl_tree->debug_note(6);
+    test_avl_tree->debug_note(7);
+    test_avl_tree->debug_note(8);
+    test_avl_tree->debug_note(9);
+
+    printf("\nAfter erase Tree_node: ");
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s", "\n");
+
+
+    erase_count = test_avl_tree->erase_unique(15);
+    printf("\nAfter erase 11:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full(),
+        erase_count);
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+    test_avl_tree->debug_note(3);
+    test_avl_tree->debug_note(4);
+    test_avl_tree->debug_note(5);
+    test_avl_tree->debug_note(6);
+    test_avl_tree->debug_note(7);
+    test_avl_tree->debug_note(8);
+    test_avl_tree->debug_note(9);
+
+    printf("\nAfter erase Tree_node: ");
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s", "\n");
+
     return 0;
 }
 

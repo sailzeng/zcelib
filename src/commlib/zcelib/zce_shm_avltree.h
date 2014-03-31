@@ -17,7 +17,9 @@
 *
 *             开始搞的时候，认真看了Scott的红黑树的实现，发现底质还可以，
 *             可以直接在上面改，同时看到这个代码，应该可以参考用，
-*             http://www.cnblogs.com/kiven-code/archive/2013/03/01/2938651.html
+*             最后发现，写起来最苦逼的还是删除代码，我至少废了2个方案。因为
+*             很多帖子的方案都不太靠谱，我在如何把要删除的节点交换到叶子节点
+*             上有犯了傻。
 *
 */
 
@@ -671,7 +673,7 @@ protected:
         //找到最小的不平衡的点,
 
         size_t s = parent(z);
-        size_t t = z;
+        size_t t = z,u = 0;
         int32_t mod_balance = 0;
         for (; s != header(); t = s, s = parent(s))
         {
@@ -704,29 +706,31 @@ protected:
             //这个点上原来就不平衡，找到最小的不平衡树，进行旋转，让其平衡
             else
             {
-
+                
                 balanced(s) += mod_balance;
                 //根据不平衡的情况，决定进行什么样的旋转
                 if (2 == balanced(s))
                 {
-                    if (1 == balanced(t))
+                    u = left(s);
+                    if (1 == balanced(u))
                     {
-                        _ll_rotate(s, t);
+                        _ll_rotate(s, u);
                     }
                     else
                     {
-                        _lr_rotate(s, t, right(t));
+                        _lr_rotate(s, u, right(u));
                     }
                 }
                 else if (-2 == balanced(s))
                 {
-                    if (1 == balanced(t))
+                    u = right(s);
+                    if (1 == balanced(u))
                     {
-                        _rl_rotate(s, t, left(t));
+                        _rl_rotate(s, u, left(u));
                     }
                     else
                     {
-                        _rr_rotate(s, t);
+                        _rr_rotate(s, u);
                     }
                 }
                 if (if_inssert)
@@ -920,14 +924,14 @@ protected:
 
 
     /*!
-    * @brief      真正的删除函数实现
+    * @brief      真正的删除函数实现，感觉AVL的删除绝对不快
     * @param      x 为删除的位置
     * @param      y 为X的父节点
     */
     void _erase(size_t x, size_t y)
     {
 
-        //
+        //对leftmost，rightmost进行处理，
         if (x == leftmost())
         {
             iterator iter(x, this);
@@ -948,16 +952,16 @@ protected:
             }
             
         }
-
-        //当C不是叶子节点的时候
-        size_t a = x, a_p = y, b = 0, a_l = left(a), a_r = right(a);
         
+        size_t a = x, a_p = y, a_l = left(a), a_r = right(a), b = 0, b_p  =0;
+        //要把A向下交换，选择和他最接近的节点B替换他，比如左子树的一直向右边的节点，
+        //比如右子树的一直向左边的节点，直到A是叶子节点
         while (a_l != _INVALID_POINT || a_r != _INVALID_POINT)
         {
             if (a_l != _INVALID_POINT)
             {
                 b = a_l;
-                while (right(b) != _INVALID_POINT)
+                while (_INVALID_POINT != right(b) )
                 {
                     b = right(b);
                 }
@@ -965,27 +969,22 @@ protected:
             else
             {
                 b = a_r;
-                while (left(b) != _INVALID_POINT)
+                while (_INVALID_POINT != left(b))
                 {
                     b = left(b);
                 }
             }
-            _exchange(a_p, a, b_p, b);
-            //p = parent(a);
+            b_p = parent(b);
+            //把A，B进行交换
+            _exchange(a, a_p, b, b_p);
+
             a_l = left(a);
             a_r = right(a);
+            a_p = parent(a);
+
         }
-        debug_note(header());
-        debug_note(0);
-        debug_note(1);
-        debug_note(2);
-        debug_note(3);
-        debug_note(4);
-        debug_note(5);
-        debug_note(6);
-        debug_note(7);
-        debug_note(8);
-        debug_note(9);
+        
+        //做平衡调整
         _balance_adjust(a, false);
 
         size_t last_p = parent(x);
@@ -1010,14 +1009,19 @@ protected:
         return;
     }
 
-    void _exchange(size_t a, size_t b)
+    /*!
+    * @brief      将a,b两个节点左交换，注意这个函数只会进行交换，不会考虑平衡等
+    * @param      a   a 节点，a是b的父节点或者更祖先的的几点，
+    * @param      a_p a他妈
+    * @param      b   b节点，
+    * @param      b_p b他妈
+    */
+    void _exchange(size_t a, size_t a_p, size_t b, size_t b_p)
     {
-        size_t a_p = parent(a);
         size_t a_l = left(a);
         size_t a_r = right(a);
         uint32_t a_b = balanced(a);
 
-        size_t b_p = parent(b);
         size_t b_l = left(b);
         size_t b_r = right(b);
         uint32_t b_b = balanced(b);
@@ -1040,8 +1044,25 @@ protected:
         }
 
         parent(b) = a_p;
-        left(b) = a_l;
-        right(b) = a_r;
+        
+        if (a_l == b)
+        {
+            left(b) = a;
+        }
+        else
+        {
+            left(b) = a_l;
+        }
+        if (a_r == b)
+        {
+            right(b) = a;
+        }
+        else
+        {
+            right(b) = a_r;
+        }
+        
+
         balanced(b) = a_b;
 
         parent(a) = b_p;
@@ -1071,9 +1092,6 @@ protected:
                 parent(a) = b;
             }
         }
-
-
-
         if (b_l != _INVALID_POINT)
         {
             parent(b_l) = a;
@@ -1083,55 +1101,6 @@ protected:
             parent(b_r) = a;
         }
     }
-
-    void roll_down(size_t p,size_t a, size_t b,bool if_left)
-    {
-        if (p != header())
-        {
-            if (left(p) == b)
-            {
-                left(p) = b;
-            }
-            else
-            {
-                right(p) = b;
-            }
-        }
-        else
-        {
-            root() = b;
-        }
-        parent(b) = p;
-
-        size_t b_l = left(b), b_r = right(b);
-        if (if_left)
-        {
-            left(b) = a;
-            right(b) = right(a);
-        }
-        else
-        {
-            right(b) = a;
-            left(a) = left(a);
-        }
-
-        int32_t balanced_b = balanced(b);
-        balanced(b) = balanced(a);
-
-        left(a) = b_l;
-        right(a) = b_r;
-        if (parent(b_l) != _INVALID_POINT)
-        {
-            parent(b_r) = a;
-        }
-        if (parent(b_r) != _INVALID_POINT)
-        {
-            parent(b_r) = a;
-        }
-        parent(a) = b;
-        balanced(a) = balanced_b;
-    }
-
     
 public:
 
