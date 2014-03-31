@@ -265,7 +265,8 @@ protected:
 
 /*!
 * @brief      AVL Tree的容器，用于排序的处理等，
-*
+*             AVL的各方面的处理性能都较为一般，比如插入，删除的耗时都是 O(LOG2N)
+*             的级别
 * @tparam     _value_type   数据类型
 * @tparam     _key_type     KEY的类型
 * @tparam     _extract_key  如果从_value_type中获取_key_type的方法
@@ -280,15 +281,15 @@ class shm_avl_tree : public _shm_memory_base
 public:
     //定义自己
     typedef shm_avl_tree < _value_type,
-            _key_type,
-            _extract_key,
-            _compare_key > self;
+        _key_type,
+        _extract_key,
+        _compare_key > self;
 
     //定义迭代器
     typedef _shm_avl_tree_iterator < _value_type,
-            _key_type,
-            _extract_key,
-            _compare_key > iterator;
+        _key_type,
+        _extract_key,
+        _compare_key > iterator;
 
     //迭代器友元
     friend class _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
@@ -362,6 +363,8 @@ protected:
     {
         size_t freenext = free_index_->right_;
         (index_base_ + pos)->right_ = freenext;
+        (index_base_ + pos)->left_ = _INVALID_POINT;
+        (index_base_ + pos)->parent_ = _INVALID_POINT;
         free_index_->right_ = pos;
         avl_tree_head_->sz_free_node_++;
         avl_tree_head_->sz_use_node_--;
@@ -373,8 +376,8 @@ public:
     static size_t getallocsize(const size_t numnode)
     {
         return  sizeof(_shm_avl_tree_head)
-                + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
-                + sizeof(_value_type) * numnode;
+            +sizeof(_shm_avl_tree_index)* (numnode + ADDED_NUM_OF_INDEX)
+            + sizeof(_value_type)* numnode;
     }
 
     //初始化
@@ -406,23 +409,23 @@ public:
         instance->avl_tree_head_ = avl_tree_head;
         //索引区
         instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(
-                                    pmmap +
-                                    sizeof(_shm_avl_tree_head));
+            pmmap +
+            sizeof(_shm_avl_tree_head));
         //数据区
         instance->data_base_ = reinterpret_cast<_value_type *>(
-                                   pmmap +
-                                   sizeof(_shm_rb_tree_head) +
-                                   sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+            pmmap +
+            sizeof(_shm_rb_tree_head)+
+            sizeof(_shm_avl_tree_index)* (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-                                    pmmap +
-                                    sizeof(_shm_avl_tree_head) +
-                                    sizeof(_shm_avl_tree_index) * (numnode));
+            pmmap +
+            sizeof(_shm_avl_tree_head)+
+            sizeof(_shm_avl_tree_index)* (numnode));
         instance->free_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-                                    pmmap +
-                                    sizeof(_shm_avl_tree_head) +
-                                    sizeof(_shm_avl_tree_index) * (numnode + 1));
+            pmmap +
+            sizeof(_shm_avl_tree_head)+
+            sizeof(_shm_avl_tree_index)* (numnode + 1));
 
         if (false == if_restore)
         {
@@ -613,8 +616,6 @@ protected:
             return std::pair<iterator, bool>(end(), false);
         }
 
-
-
         //把此二货插入进去，而且调整各种东东
 
         //如果1.插入的是root节点，2.如果插入节点不是空节点，3.如果比较为TRUE
@@ -663,11 +664,12 @@ protected:
     * @param[in]  z 插入的节点位置
     * @param[in]  if_inssert 是否是插入操作进行调整，如果是删除操作，填写false
     */
-    void _balance_adjust(size_t z,bool if_inssert)
+    void _balance_adjust(size_t z, bool if_inssert)
     {
         //其实这个地方直接使用常量还更加清晰一点,所以我没有用枚举或者宏
 
         //找到最小的不平衡的点,
+
         size_t s = parent(z);
         size_t t = z;
         int32_t mod_balance = 0;
@@ -684,10 +686,20 @@ protected:
             }
 
             //如果是平衡的，修改平衡参数，继续向上干活
-            if (0  == balanced(s) )
+            if (0 == balanced(s))
             {
                 balanced(s) += mod_balance;
-                continue;
+                
+                //如果是插入，原来节点是平衡的，继续向上，如果是删除，原来节点是平衡的，到此为止
+                if (if_inssert)
+                {
+                    continue;
+                }
+                else
+                {
+                    break;
+                }
+                    
             }
             //这个点上原来就不平衡，找到最小的不平衡树，进行旋转，让其平衡
             else
@@ -695,7 +707,7 @@ protected:
 
                 balanced(s) += mod_balance;
                 //根据不平衡的情况，决定进行什么样的旋转
-                if (2 == balanced(s) )
+                if (2 == balanced(s))
                 {
                     if (1 == balanced(t))
                     {
@@ -717,10 +729,17 @@ protected:
                         _rr_rotate(s, t);
                     }
                 }
-                break;
+                if (if_inssert)
+                {
+                    break;
+                }
+                else
+                {
+                    continue;
+                }
             }
         }
-        return ;
+        return;
     }
 
     /*!
@@ -847,7 +866,7 @@ protected:
                 right(gf) = b;
             }
         }
-        
+
     }
 
     void _rl_rotate(size_t a, size_t b, size_t c)
@@ -904,67 +923,222 @@ protected:
     * @brief      真正的删除函数实现
     * @param      x 为删除的位置
     * @param      y 为X的父节点
-    * @param      z 用于为替换x的节点
     */
-    void _erase(size_t x,size_t y,size_t &z)
+    void _erase(size_t x, size_t y)
     {
-        z = _INVALID_POINT;
-        //默认右子树的值
-        if (right(x) != _INVALID_POINT)
-        {
-            z = maximum(right(x));
-        }
-        else if (left(x) != _INVALID_POINT)
-        {
-            z = minimum(left(x));
-        }
-        else
-        {
-            z = _INVALID_POINT;
-        }
 
-        if (z != _INVALID_POINT)
-        {
-            left(z) = left(x);
-            right(z) = right(x);
-        }
-        
         //
-        if (left(y) == x)
+        if (x == leftmost())
         {
-            left(y) = z;
-            if (y == header())
+            iterator iter(x, this);
+            ++iter;
+            leftmost() = iter.getserial();
+        }
+        if (x == rightmost())
+        {
+            iterator iter(x, this);
+            if (iter != begin())
             {
-                root() = z;
-                rightmost() = z;
+                --iter;
+                rightmost() = iter.getserial();
             }
-            //如果Y是最小值，则吧最小值改为Y
-            else if (x == leftmost())
+            else
             {
-                leftmost() = z;
+                rightmost() = avl_tree_head_->num_of_node_;
+            }
+            
+        }
+
+        //当C不是叶子节点的时候
+        size_t a = x;
+        size_t p = y;
+        size_t lgs = left(a), rgs = right(a);
+        size_t b = 0;
+        
+        while (lgs != _INVALID_POINT || rgs != _INVALID_POINT)
+        {
+            if (lgs != _INVALID_POINT)
+            {
+                b = lgs;
+                while (right(b) != _INVALID_POINT)
+                {
+                    
+                }
+            }
+            else
+            {
+                b = rgs;
+                roll_down(p, a, b, false);
+                while (left(a) != _INVALID_POINT)
+                {
+                    p = b;
+                    b = left(a);
+                    roll_down(p, a, b, true);
+                }
+            }
+            //
+            p = parent(a);
+            lgs = left(a);
+            rgs = right(a);
+        }
+        debug_note(header());
+        debug_note(0);
+        debug_note(1);
+        debug_note(2);
+        debug_note(3);
+        debug_note(4);
+        debug_note(5);
+        debug_note(6);
+        debug_note(7);
+        debug_note(8);
+        debug_note(9);
+        _balance_adjust(a, false);
+
+        size_t last_p = parent(x);
+        if (last_p != header())
+        {
+            if (left(last_p) == a)
+            {
+                left(last_p) = _INVALID_POINT;
+            }
+            else
+            {
+                right(last_p) = _INVALID_POINT;
             }
         }
         else
         {
-            right(y) = z;
-            if (x == rightmost())
-            {
-                rightmost() = z;
-            }
+            root() = _INVALID_POINT;
         }
-
-        //如果不是根节点，我们进行平衡调整
-        if (y != header())
-        {
-            _balance_adjust(z, false);
-        }
-
         //
         destroy_node(x);
 
         return;
     }
 
+    void _exchange(size_t a, size_t b)
+    {
+        size_t a_p = parent(a);
+        size_t a_l = left(a);
+        size_t a_r = right(a);
+        uint32_t a_b = balanced(a);
+
+        size_t b_p = parent(b);
+        size_t b_l = left(b);
+        size_t b_r = right(b);
+        uint32_t b_b = balanced(b);
+
+
+        if (a_p != header())
+        {
+            if (left(a_p) == a)
+            {
+                left(a_p) = b;
+            }
+            else
+            {
+                right(a_p) = b;
+            }
+        }
+        else
+        {
+            root() = b;
+        }
+
+        parent(b) = a_p;
+        left(b) = a_l;
+        right(b) = a_r;
+        balanced(b) = a_b;
+
+        parent(a) = b_p;
+        left(a) = b_l;
+        right(a) = b_r;
+        balanced(a) = b_b;
+
+        if ( a_l != _INVALID_POINT)
+        {
+            if (a_l != b)
+            {
+                parent(a_l) = b;
+            }
+            else
+            {
+                parent(a) = b;
+            }
+        }
+        if ( a_r != _INVALID_POINT)
+        {
+            if (a_r != b)
+            {
+                parent(a_r) = b;
+            }
+            else
+            {
+                parent(a) = b;
+            }
+        }
+
+
+
+        if (b_l != _INVALID_POINT)
+        {
+            parent(b_l) = a;
+        }
+        if (b_r != _INVALID_POINT)
+        {
+            parent(b_r) = a;
+        }
+    }
+
+    void roll_down(size_t p,size_t a, size_t b,bool if_left)
+    {
+        if (p != header())
+        {
+            if (left(p) == b)
+            {
+                left(p) = b;
+            }
+            else
+            {
+                right(p) = b;
+            }
+        }
+        else
+        {
+            root() = b;
+        }
+        parent(b) = p;
+
+        size_t b_l = left(b), b_r = right(b);
+        if (if_left)
+        {
+            left(b) = a;
+            right(b) = right(a);
+        }
+        else
+        {
+            right(b) = a;
+            left(a) = left(a);
+        }
+
+        int32_t balanced_b = balanced(b);
+        balanced(b) = balanced(a);
+
+        left(a) = b_l;
+        right(a) = b_r;
+        if (parent(b_l) != _INVALID_POINT)
+        {
+            parent(b_r) = a;
+        }
+        if (parent(b_r) != _INVALID_POINT)
+        {
+            parent(b_r) = a;
+        }
+        parent(a) = b;
+        balanced(a) = balanced_b;
+    }
+
+    
 public:
 
     /*!
@@ -1052,9 +1226,7 @@ public:
         //x,为删除的位置，y为X的父节点，z用于为替换x的节点
         size_t x = pos.getserial();
         size_t y = parent(x);
-        size_t z = _INVALID_POINT;
-
-        return _erase(x,y,z);
+        return _erase(x,y);
     }
 
     //通过起始迭代器删除一段节点
@@ -1205,6 +1377,18 @@ public:
         }
 
         return *iter;
+    }
+
+
+    void debug_note(size_t x)
+    {
+        std::cout << "Note :"<<std::setw(6) << x
+            << " Data:" << std::setw(8) << data_base_[x]
+            << " parent:" << std::setw(6)<<(int) parent(x)
+            << " left:" << std::setw(6) << (int) left(x)
+            << " right:" << std::setw(6) << (int) right(x)
+            << " balanced:" << balanced(x) 
+            << std::endl;
     }
 
 protected:
