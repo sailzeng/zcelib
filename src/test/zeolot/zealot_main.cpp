@@ -16,7 +16,7 @@ int main(int argc , char *argv[])
 
     printf("%s", "----------------------------------------------------------------------------\n");
 
-    test_mmap_avltree4(argc, argv);
+    test_mmap_avltree2(argc, argv);
     //test_mmap_avltree2(argc, argv);
 
     system("pause");

@@ -757,8 +757,13 @@ protected:
     void _ll_rotate(size_t a, size_t b)
     {
         size_t gf = parent(a);
+        size_t b_r = right(b);
         parent(a) = b;
-        left(a) = right(b);
+        left(a) = b_r;
+        if (_INVALID_POINT != b_r)
+        {
+            parent(b_r) = a;
+        }
         right(b) = a;
         parent(b) = gf;
 
@@ -793,10 +798,19 @@ protected:
     void _lr_rotate(size_t a, size_t b, size_t c)
     {
         size_t gf = parent(a);
+        size_t c_l = left(c), c_r = right(c);
         parent(a) = c;
-        left(a) = right(c);
+        left(a) = c_r;
+        if (_INVALID_POINT != c_r )
+        {
+            parent(c_r) = a;
+        }
         parent(b) = c;
-        right(b) = left(c);
+        right(b) = c_l;
+        if (_INVALID_POINT != c_l)
+        {
+            parent(c_l) = b;
+        }
         left(c) = b;
         right(c) = a;
         parent(c) = gf;
@@ -848,8 +862,13 @@ protected:
     void _rr_rotate(size_t a, size_t b)
     {
         size_t gf = parent(a);
+        size_t b_l = left(b);
         parent(a) = b;
-        right(a) = left(b);
+        right(a) = b_l;
+        if (_INVALID_POINT != b_l)
+        {
+            parent(b_l) = a;
+        }
         left(b) = a;
         parent(b) = gf;
 
@@ -879,14 +898,25 @@ protected:
     void _rl_rotate(size_t a, size_t b, size_t c)
     {
         size_t gf = parent(a);
+        size_t c_l = left(c), c_r = right(c);
         parent(a) = c;
-        right(a) = left(c);
+        right(a) = c_l;
+        if (_INVALID_POINT != c_l )
+        {
+            parent(c_l) = a;
+        }
         parent(b) = c;
-        left(b) = right(c);
+        left(b) = c_r;
+        if ( _INVALID_POINT != c_r)
+        {
+            parent(c_r) = b;
+        }
         left(c) = a;
         right(c) = b;
         parent(c) = gf;
 
+
+        
         //根据C的状态调整平衡因子
         if (balanced(c) == 1)
         {
