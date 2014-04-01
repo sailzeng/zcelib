@@ -370,6 +370,9 @@ protected:
         free_index_->right_ = pos;
         avl_tree_head_->sz_free_node_++;
         avl_tree_head_->sz_use_node_--;
+
+        //调用显式的析构函数
+        (data_base_ + pos)->~_value_type();
     }
 
 public:
@@ -706,11 +709,11 @@ protected:
             //这个点上原来就不平衡，找到最小的不平衡树，进行旋转，让其平衡
             else
             {
-                
                 balanced(s) += mod_balance;
                 //根据不平衡的情况，决定进行什么样的旋转
                 if (2 == balanced(s))
                 {
+                    //考虑到删除的特殊情况，这儿不能直接用t
                     u = left(s);
                     if (1 == balanced(u))
                     {

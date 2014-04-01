@@ -86,20 +86,164 @@ int test_mmap_rbtree(int /*argc*/, char * /*argv*/[])
     return 0;
 }
 
-int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
+//使用随机数测试，AVL Tree
+int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
+{
+
+    typedef ZCE_LIB::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    TEST_AVL_TREE* test_avl_tree;
+    const size_t  SIZE_OF_TREE = 500;
+    TEST_AVL_TREE::iterator  rb_tree_iter, rb_tree_iter_end;
+    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+
+    char *pt_avl_tree = new char[sz_malloc];
+    memset(pt_avl_tree, 0, sz_malloc);
+
+    //初始化
+    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (NULL == test_avl_tree)
+    {
+        return 0;
+    }
+
+    //
+    const uint32_t TEST_SEED = 1010123;
+    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+
+    size_t ins_count = 0;
+    for (ins_count = 0; ins_count < SIZE_OF_TREE;)
+    {
+        int ins = mt11231b_gen.rand() % SIZE_OF_TREE;
+        auto iter = test_avl_tree->insert_unique(ins);
+        if (iter.second == true)
+        {
+            ++ins_count;
+        }
+    }
+
+    auto f_iter = test_avl_tree->insert_unique(1);
+    if (f_iter.second == true)
+    {
+        ZCE_ASSERT_ALL(false);
+    }
+
+    printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full());
+
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    int a = 0, b = 0;
+    for (; rb_tree_iter != rb_tree_iter_end;)
+    {
+        printf("%d ", (*rb_tree_iter));
+        a = (*rb_tree_iter);
+        ++rb_tree_iter;
+        if (rb_tree_iter != rb_tree_iter_end)
+        {
+            b = (*rb_tree_iter);
+            if (a >= b)
+            {
+                //ZCE_ASSERT_ALL(false);
+            }
+        }
+    }
+
+
+    delete[] pt_avl_tree;
+    pt_avl_tree = NULL;
+
+    return 0;
+}
+
+//使用随机数测试，AVL Tree
+int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
+{
+
+    typedef ZCE_LIB::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    TEST_AVL_TREE* test_avl_tree;
+    const size_t  SIZE_OF_TREE = 500;
+    TEST_AVL_TREE::iterator  rb_tree_iter, rb_tree_iter_end;
+    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+
+    char *pt_avl_tree = new char[sz_malloc];
+    memset(pt_avl_tree, 0, sz_malloc);
+
+    //初始化
+    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (NULL == test_avl_tree)
+    {
+        return 0;
+    }
+
+    //
+    const uint32_t TEST_SEED = 1010123;
+    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+    
+    size_t ins_count = 0;
+    for (ins_count = 0; ins_count < SIZE_OF_TREE;)
+    {
+        int ins = mt11231b_gen.rand() % SIZE_OF_TREE;
+        auto iter = test_avl_tree->insert_unique(ins);
+        if (iter.second == true)
+        {
+            ++ins_count;
+        }
+    }
+    
+    auto f_iter = test_avl_tree->insert_unique(1);
+    if (f_iter.second == true)
+    {
+        ZCE_ASSERT_ALL(false);
+    }
+
+    printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full());
+
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    int a = 0, b = 0;
+    for (; rb_tree_iter != rb_tree_iter_end; )
+    {
+        printf("%d ", (*rb_tree_iter));
+        a = (*rb_tree_iter);
+        ++rb_tree_iter;
+        if (rb_tree_iter != rb_tree_iter_end)
+        {
+            b = (*rb_tree_iter);
+            if (a >=  b)
+            {
+                //ZCE_ASSERT_ALL(false);
+            }
+        }
+    }
+
+
+    delete[] pt_avl_tree;
+    pt_avl_tree = NULL;
+
+    return 0;
+}
+
+int test_mmap_avltree3(int /*argc*/, char * /*argv*/[])
 {
     size_t erase_count = 0;
     typedef ZCE_LIB::shm_avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
-    size_t  size_of_tree = 16;
+    const size_t  SIZE_OF_TREE = 16;
     TEST_AVL_TREE::iterator  rb_tree_iter, rb_tree_iter_end;
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(size_of_tree);
+    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
 
-    char *pt_rb_tree = new char[sz_malloc];
-    memset(pt_rb_tree, 0, sz_malloc);
+    char *pt_avl_tree = new char[sz_malloc];
+    memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(size_of_tree, pt_rb_tree, false);
+    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
         return 0;
@@ -284,37 +428,40 @@ int test_mmap_avltree(int /*argc*/, char * /*argv*/[])
     printf("\nAfter erase Tree_node: ");
     rb_tree_iter = test_avl_tree->begin();
     rb_tree_iter_end = test_avl_tree->end();
+
     for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
     {
         printf("%d ", (*rb_tree_iter));
+        
     }
     printf("%s", "\n");
 
+    delete[] pt_avl_tree;
+    pt_avl_tree = NULL;
     return 0;
 }
 
 
-int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
+int test_mmap_avltree5(int /*argc*/, char * /*argv*/[])
 {
     size_t erase_count = 0;
     typedef ZCE_LIB::shm_avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
-    size_t  size_of_tree = 16;
+    size_t  SIZE_OF_TREE = 16;
 
 
-    size_t sz_malloc = TEST_AVL_TREE::getallocsize(size_of_tree);
+    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
 
 
-    char *pt_rb_tree = new char[sz_malloc];
-    memset(pt_rb_tree, 0, sz_malloc);
+    char *pt_avl_tree = new char[sz_malloc];
+    memset(pt_avl_tree, 0, sz_malloc);
 
     //初始化
-    test_avl_tree = TEST_AVL_TREE::initialize(size_of_tree, pt_rb_tree, false);
+    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
         return 0;
     }
-
 
     test_avl_tree->clear();
     bool b_flag = test_avl_tree->empty();
@@ -444,13 +591,139 @@ int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
 
     iter = test_avl_tree->find(12);
     printf("\nfind : %d \n", (*iter));
+
+    delete[] pt_avl_tree;
+    pt_avl_tree = NULL;
+
     return 0;
 }
 
 
 
 
+//使用随机数测试，AVL Tree
+int test_mmap_avltree4(int /*argc*/, char * /*argv*/[])
+{
 
+    typedef ZCE_LIB::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    TEST_AVL_TREE* test_avl_tree;
+    const size_t  SIZE_OF_TREE = 500;
+    TEST_AVL_TREE::iterator  rb_tree_iter, rb_tree_iter_end;
+    size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
+
+    char *pt_avl_tree = new char[sz_malloc];
+    memset(pt_avl_tree, 0, sz_malloc);
+
+    //初始化
+    test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
+    if (NULL == test_avl_tree)
+    {
+        return 0;
+    }
+    
+    test_avl_tree->clear();
+    test_avl_tree->insert_unique(15);
+    test_avl_tree->insert_unique(10);
+    test_avl_tree->insert_unique(5);
+
+    printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full());
+
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    printf("data list:", "\n");
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s","\n");
+
+    //
+    test_avl_tree->clear();
+    test_avl_tree->insert_unique(5);
+    test_avl_tree->insert_unique(10);
+    test_avl_tree->insert_unique(15);
+
+    printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full());
+    
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    printf("data list:", "\n");
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s", "\n");
+
+    //
+    test_avl_tree->clear();
+    test_avl_tree->insert_unique(15);
+    test_avl_tree->insert_unique(10);
+    test_avl_tree->insert_unique(12);
+
+    printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full());
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    printf("data list:", "\n");
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s", "\n");
+
+
+    test_avl_tree->clear();
+    test_avl_tree->insert_unique(15);
+    test_avl_tree->insert_unique(20);
+    test_avl_tree->insert_unique(18);
+
+    printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
+        test_avl_tree->size(),
+        test_avl_tree->capacity(),
+        test_avl_tree->empty(),
+        test_avl_tree->full());
+
+    rb_tree_iter = test_avl_tree->begin();
+    rb_tree_iter_end = test_avl_tree->end();
+    printf("data list:", "\n");
+    for (; rb_tree_iter != rb_tree_iter_end; ++rb_tree_iter)
+    {
+        printf("%d ", (*rb_tree_iter));
+    }
+    printf("%s", "\n");
+    test_avl_tree->debug_note(test_avl_tree->header());
+    test_avl_tree->debug_note(0);
+    test_avl_tree->debug_note(1);
+    test_avl_tree->debug_note(2);
+
+    delete[] pt_avl_tree;
+    pt_avl_tree = NULL;
+
+    return 0;
+}
 
 
 

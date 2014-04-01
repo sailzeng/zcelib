@@ -80,7 +80,25 @@ protected:
 };
 
 
+int test_random_example(int /*argc*/, char * /*argv*/[])
+{
+    const uint32_t TEST_SEED = 1010123;
+    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+    ZCE_LIB::random_mt19937   mt19937_gen(TEST_SEED);
+    ZCE_LIB::random_rand48   rand48_gen(TEST_SEED);
+    ZCE_LIB::random_taus88   taus88_gen(TEST_SEED);
 
+    const size_t TEST_NUM = 1024;
+    for (size_t i = 0; i < TEST_NUM; ++i)
+    {
+        std::cout << mt11231b_gen.rand() << " "
+            << mt19937_gen.rand() << " "
+            << rand48_gen.rand() << " "
+            << taus88_gen.rand() << " " << std::endl;
+    }
+
+    return 0;
+}
 
 //和BOOST的函数做对比的函数
 //int test_matchboost_random(int /*argc*/ , char * /*argv*/ [])
