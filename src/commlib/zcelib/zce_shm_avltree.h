@@ -364,10 +364,14 @@ protected:
     void destroy_node(size_t pos)
     {
         size_t freenext = free_index_->right_;
+
         (index_base_ + pos)->right_ = freenext;
+        free_index_->right_ = pos;
+
         (index_base_ + pos)->left_ = _INVALID_POINT;
         (index_base_ + pos)->parent_ = _INVALID_POINT;
-        free_index_->right_ = pos;
+        (index_base_ + pos)->balanced_ = 0;
+        
         avl_tree_head_->sz_free_node_++;
         avl_tree_head_->sz_use_node_--;
 
@@ -718,24 +722,32 @@ protected:
                     if (1 == balanced(u))
                     {
                         _ll_rotate(s, u);
+                        s = u;
                     }
                     else
                     {
+                        size_t u_r = right(u);
                         _lr_rotate(s, u, right(u));
+                        s = u_r;
+                        
                     }
                 }
                 else if (-2 == balanced(s))
                 {
                     u = right(s);
-                    if (1 == balanced(u))
+                    if (-1 == balanced(u))
                     {
-                        _rl_rotate(s, u, left(u));
+                        _rr_rotate(s, u);
+                        s = u;
                     }
                     else
                     {
-                        _rr_rotate(s, u);
+                        size_t u_l = left(u);
+                        _rl_rotate(s, u, left(u));
+                        s = u_l;
                     }
                 }
+                
                 if (if_inssert)
                 {
                     break;
@@ -816,24 +828,34 @@ protected:
         parent(c) = gf;
 
 
-        //根据C的状态调整平衡因子
-        if (balanced(c) == 1)
+        //对于插入LR旋转，balanced(b)只可能等于-1，但对于删除balanced(b) 还可能等于0
+        if (-1 == balanced(b))
         {
-            balanced(a) = -1;
-            balanced(b) = 0;
-            balanced(c) = 0;
-        }
-        else if (balanced(c) == -1)
-        {
-            balanced(a) = 0;
-            balanced(b) = 1;
-            balanced(c) = 0;
+            //根据C的状态调整平衡因子
+            if (1 == balanced(c) )
+            {
+                balanced(a) = -1;
+                balanced(b) = 0;
+                balanced(c) = 0;
+            }
+            else if (-1 == balanced(c) )
+            {
+                balanced(a) = 0;
+                balanced(b) = 1;
+                balanced(c) = 0;
+            }
+            else
+            {
+                balanced(a) = 0;
+                balanced(b) = 0;
+                balanced(c) = 0;
+            }
         }
         else
         {
             balanced(a) = 0;
-            balanced(b) = 0;
-            balanced(c) = 0;
+            balanced(b) = 1;
+            balanced(c) = 1;
         }
 
         //调整p的父节点的左右子树，让其指向新的子树新根
@@ -915,26 +937,34 @@ protected:
         right(c) = b;
         parent(c) = gf;
 
-
-        
-        //根据C的状态调整平衡因子
-        if (balanced(c) == 1)
+        //对于插入RL，balanced(b)只可能等于1，但对于删除balanced(b) 还可能等于0
+        if (1 == balanced(b))
         {
-            balanced(a) = 0;
-            balanced(b) = -1;
-            balanced(c) = 0;
-        }
-        else if (balanced(c) == -1)
-        {
-            balanced(a) = 1;
-            balanced(b) = 0;
-            balanced(c) = 0;
+            //根据C的状态调整平衡因子
+            if (balanced(c) == 1)
+            {
+                balanced(a) = 0;
+                balanced(b) = -1;
+                balanced(c) = 0;
+            }
+            else if (balanced(c) == -1)
+            {
+                balanced(a) = 1;
+                balanced(b) = 0;
+                balanced(c) = 0;
+            }
+            else
+            {
+                balanced(a) = 0;
+                balanced(b) = 0;
+                balanced(c) = 0;
+            }
         }
         else
         {
             balanced(a) = 0;
-            balanced(b) = 0;
-            balanced(c) = 0;
+            balanced(b) = -1;
+            balanced(c) = -1;
         }
 
         //调整C的父节点的左右子树，让其指向新的子树新根
@@ -1385,6 +1415,32 @@ public:
             << " right:" << std::setw(6) << (int) right(x)
             << " balanced:" << balanced(x) 
             << std::endl;
+    }
+
+    bool check_balanced(size_t x)
+    {
+        int32_t x_b = balanced(x);
+        size_t x_lh = height(left(x));
+        size_t x_rh = height(right(x));
+        if (x_b != x_lh - x_rh)
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+    size_t height(size_t x)
+    {
+        if (x == _INVALID_POINT)
+        {
+            return 0;
+        }
+        size_t l_h = 0, r_h = 0;
+        l_h = height(left(x)) + 1;
+        r_h = height(right(x)) + 1;
+
+        return l_h > r_h ? l_h : r_h;
     }
 
 protected:
