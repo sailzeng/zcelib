@@ -164,7 +164,7 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
 
     typedef ZCE_LIB::shm_avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE* test_avl_tree;
-    const size_t  SIZE_OF_TREE = 100;
+    const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  rb_tree_iter, rb_tree_iter_end;
     size_t sz_malloc = TEST_AVL_TREE::getallocsize(SIZE_OF_TREE);
 
@@ -227,7 +227,6 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
             {
                 ZCE_ASSERT_ALL(false);
             }
-
         }
     }
 
@@ -239,7 +238,7 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
     //printf("%s", "\n-----------------------------------------------------\n");
 
     int del = 0;
-    size_t erase_count = 0, erase_repeat = 0;
+    size_t erase_count = 0;
     size_t del_count = 0;
     for (erase_count = 0; erase_count < SIZE_OF_TREE;)
     {
@@ -251,11 +250,10 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
             printf("del %d .After del list:", del);
             rb_tree_iter = test_avl_tree->begin();
             rb_tree_iter_end = test_avl_tree->end();
-            size_t v = 0;
-            for (; rb_tree_iter != rb_tree_iter_end && v< SIZE_OF_TREE; ++rb_tree_iter)
+            for (; rb_tree_iter != rb_tree_iter_end ; ++rb_tree_iter)
             {
                 printf("%d ", (*rb_tree_iter));
-                ++v;
+
                 bool ok = test_avl_tree->check_balanced(rb_tree_iter.getserial());
                 if (!ok)
                 {
@@ -264,6 +262,17 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
             }
             printf("%s","\n");
 
+            a = (*rb_tree_iter);
+            ++rb_tree_iter;
+            if (rb_tree_iter != rb_tree_iter_end)
+            {
+                b = (*rb_tree_iter);
+                if (a >= b)
+                {
+                    ZCE_ASSERT_ALL(false);
+                }
+            }
+
             //printf("%s", "\n-----------------------------------------------------\n");
             //for (size_t u = 0; u <= SIZE_OF_TREE; ++u)
             //{
@@ -271,19 +280,6 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
             //}
             //printf("%s", "\n-----------------------------------------------------\n");
 
-        }
-        else
-        {
-            ++erase_repeat;
-            if (erase_repeat > 100000)
-            {
-                printf("\nRandom repeat delete:size=%u, capacity=%u, empty=%u, full=%u\n",
-                    test_avl_tree->size(),
-                    test_avl_tree->capacity(),
-                    test_avl_tree->empty(),
-                    test_avl_tree->full());
-                break;
-            }
         }
     }
     printf("%s", "\n---------------------------------------------\n");

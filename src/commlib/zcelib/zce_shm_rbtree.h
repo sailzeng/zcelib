@@ -323,7 +323,7 @@ public:
 
 protected:
     //分配一个NODE,将其从FREELIST中取出
-    size_t create_node()
+    size_t create_node(const _value_type &val)
     {
         //如果没有空间可以分配
         if (rb_tree_head_->sz_free_node_ == 0)
@@ -332,17 +332,20 @@ protected:
         }
 
         //从链上取1个下来
-        size_t node = free_index_->right_;
-        free_index_->right_ = (index_base_ + node)->right_;
+        size_t new_node = free_index_->right_;
+        free_index_->right_ = (index_base_ + new_node)->right_;
         rb_tree_head_->sz_free_node_--;
         rb_tree_head_->sz_use_node_++;
 
         //初始化
-        (index_base_ + node)->parent_ = _INVALID_POINT;
-        (index_base_ + node)->left_ = _INVALID_POINT;
-        (index_base_ + node)->right_ = _INVALID_POINT;
-        (index_base_ + node)->color_ = RB_TREE_RED;
-        return node;
+        (index_base_ + new_node)->parent_ = _INVALID_POINT;
+        (index_base_ + new_node)->left_ = _INVALID_POINT;
+        (index_base_ + new_node)->right_ = _INVALID_POINT;
+        (index_base_ + new_node)->color_ = RB_TREE_RED;
+
+        new (data_base_ + new_node)_value_type(val);
+
+        return new_node;
     }
 
     //释放一个NODE,将其归还给FREELIST
@@ -353,6 +356,9 @@ protected:
         free_index_->right_ = pos;
         rb_tree_head_->sz_free_node_++;
         rb_tree_head_->sz_use_node_--;
+
+        //调用显式的析构函数
+        (data_base_ + pos)->~_value_type();
     }
 
 public:
@@ -564,9 +570,14 @@ protected:
 
 protected:
     //真正的插入是由这个函数完成的
-    iterator _insert(size_t x, size_t y, const _value_type &v)
+    std::pair<iterator, bool>  _insert(size_t x, size_t y, const _value_type &v)
     {
-        size_t z = create_node();
+        size_t z = create_node(v);
+        //日过空间不足，无法插入，返回end,false的pair
+        if (_INVALID_POINT == z)
+        {
+            return std::pair<iterator, bool>(end(), false);
+        }
 
         if ( y == header() || x != _INVALID_POINT || _compare_key()(_extract_key()(v), key(y)) )
         {
@@ -598,7 +609,7 @@ protected:
         *(data_base_ + z) = v;
 
         _rb_tree_rebalance(z, parent(header()));
-        return  iterator(z, this);
+        return  std::pair<iterator, bool>(iterator(z, this), true);
     }
 
     //通过旋转和变色，调整整个树，让其符合RBTree要求
@@ -952,7 +963,7 @@ protected:
 public:
 
     //允许重复key插入的插入函数，Multimap、Multimap用这个
-    iterator insert_equal(const _value_type &v)
+    std::pair<iterator, bool>  insert_equal(const _value_type &v)
     {
         size_t y = header();
         size_t x = root();
@@ -986,7 +997,7 @@ public:
         {
             if ( j == begin() )
             {
-                return std::pair<iterator, bool>(_insert(x, y, v), true);
+                return _insert(x, y, v);
             }
             else
             {
@@ -996,7 +1007,7 @@ public:
 
         if ( _compare_key()(key(j.getserial()), _extract_key()(v)) )
         {
-            return std::pair<iterator, bool>(_insert(x, y, v), true);
+            return _insert(x, y, v);
         }
 
         return std::pair<iterator, bool>(j, false);
@@ -1005,7 +1016,10 @@ public:
     //通过迭代器删除一个节点
     iterator erase(const iterator &pos)
     {
-        size_t tmp = _rb_tree_rebalance_for_erase(pos.getserial(), root(), leftmost(), rightmost());
+        size_t tmp = _rb_tree_rebalance_for_erase(pos.getserial(), 
+            root(), 
+            leftmost(),
+            rightmost());
         destroy_node(pos.getserial());
         return iterator(tmp, this);
     }
