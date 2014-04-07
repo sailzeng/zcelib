@@ -77,6 +77,7 @@ int test_log_debug(int /*argc*/, char * /*argv*/[]);
 
 int test_timer_expire(int /*argc*/, char * /*argv*/[]);
 int test_timer_expire2(int /*argc*/, char * /*argv*/[]);
+int test_os_time(int /*argc*/, char * /*argv*/[]);
 
 int test_server_status(int /*argc*/, char * /*argv*/[]);
 

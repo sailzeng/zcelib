@@ -366,13 +366,23 @@ ZCE_Time_Value::operator timeval *()
 }
 
 //将时间打印出来
-const char *ZCE_Time_Value::timestamp(char *str_date_time,
+const char *ZCE_Time_Value::to_string(char *str_date_time,
                                       size_t datetime_strlen,
-                                      int fromat_type) const
+                                      bool utc_time,
+                                      ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type) const
 {
-    return ZCE_OS::timestamp_ex(&(this->zce_time_value_),
-                                str_date_time,
-                                datetime_strlen,
-                                fromat_type);
+    return ZCE_OS::timeval_to_str(&(this->zce_time_value_),
+                                  str_date_time,
+                                  datetime_strlen,
+                                  utc_time,
+                                  fromat_type);
 }
 
+const char *ZCE_Time_Value::timestamp(char *str_date_time,
+                                      size_t datetime_strlen
+                                     ) const
+{
+    return ZCE_OS::timestamp(&(this->zce_time_value_),
+                             str_date_time,
+                             datetime_strlen);
+}

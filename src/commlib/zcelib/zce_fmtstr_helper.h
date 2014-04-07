@@ -309,7 +309,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (ret_str)
     {
-        use_len = ZCE_OS::LEN_OF_TIME_STAMP;
+        use_len = ZCE_OS::TIMESTR_ISO_USEC_LEN;
     }
     else
     {
@@ -439,7 +439,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (ret_str)
     {
-        use_len = ZCE_OS::LEN_OF_TIME_STAMP;
+        use_len = ZCE_OS::TIMESTR_ISO_USEC_LEN;
     }
     else
     {

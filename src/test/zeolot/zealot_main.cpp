@@ -11,7 +11,7 @@ int main(int argc , char *argv[])
     ZCE_Trace_LogMsg::instance()->init_stdout();
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
-
+    test_os_time(argc, argv);
     test_mmap_rbtree(argc, argv);
 
     printf("%s", "----------------------------------------------------------------------------\n");

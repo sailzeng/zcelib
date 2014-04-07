@@ -391,6 +391,9 @@
     <ClInclude Include="zce_async_fw_fsm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_net_http_client.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -688,6 +691,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_shm_predefine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_net_http_client.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

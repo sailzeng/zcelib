@@ -179,6 +179,17 @@ public:
     */
     void total_usec(uint64_t set_usec);
 
+
+
+    /*!
+    * @brief      
+    * @return     const char*
+    * @param      str_date_time
+    * @param      datetime_strlen
+    */
+    const char *timestamp(char *str_date_time, 
+                          size_t datetime_strlen) const;
+
     /*!
     * @brief      根据你的格式化要求，将时间戳打印出来
     * @return     const char*     打印的字符串，方便你处理
@@ -186,9 +197,11 @@ public:
     * @param[in]  datetime_strlen 字符串的长度
     * @param[in]   fromat_type    时间格式，参考@ref TIME_STR_FORMAT_TYPE 枚举，默认输出ISO格式的本地时间，精度到USEC。
     */
-    const char *timestamp(char *str_date_time,
+    const char *to_string(char *str_date_time,
                           size_t datetime_strlen,
-                          int fromat_type = ZCE_OS::TIME_STRFFMT_LOCALTIME | ZCE_OS::TIME_STRFFMT_ISO | ZCE_OS::TIME_STRFFMT_PRECISION_USEC)  const;
+                          bool uct_time = false,
+                          ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC
+                          )  const;
 
     ///返回一个timespec的对象
     operator ::timespec () const;

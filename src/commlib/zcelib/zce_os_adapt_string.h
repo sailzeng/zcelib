@@ -122,46 +122,7 @@ char *prefix_unique_name(const char *prefix_name,
                          size_t length);
 
 
-//==========================================================================================================
-//从一些字符串中间得到时间的代码，好像是当年计费账单用的代码，时间输出有多种格式，有些有缩写，有些没用
 
-///时间字符的各种格式，
-enum TIME_STRING_FORMAT
-{
-    ///格式：只有年月日的紧缩格式 20041008
-    TSF_YYYYMMDD,
-    ///格式：年月日时分秒的格式，没有分隔符,20041008200145
-    TSF_YYYYMMDDHHMMSS,
-    ///格式：年月日，有分隔符，如2004-10-08
-    TSF_YYYY_MM_DD,
-    ///格式：如2004-10-08 20:01:45
-    TSF_YYYY_MM_DD_HH_MM_SS,
-    ///格式：标准的ISO时间格式，如2004-10-08 20:01:45.123456
-    TSF_YYYY_MM_DD_HH_MM_SS_UUUUUU,
-};
-
-
-/*!
-* @brief      从字符串中高速的得到tm的结构的结果
-* @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STRING_FORMAT
-* @param[in]  strtm   字符串，字符串的正确性你自己要保证
-* @param[out] ptr_tm  返回的tm结构的指针，注意，如果字符串错误，可能会导致tm错误喔
-* @param[out] usec    返回的的微秒的时间，默认为NULL，表示不需要返回，
-*/
-void tm_from_str(TIME_STRING_FORMAT fmt,
-                 const char *strtm ,
-                 struct tm *ptr_tm,
-                 time_t *usec = NULL);
-
-
-/*!
-* @brief      从字符串转换得到时间time_t函数
-* @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STRING_FORMAT
-* @return     time_t  字符串所表示时间
-* @param[in]  strtm   字符串参数
-*/
-time_t time_from_str(TIME_STRING_FORMAT fmt,
-                     const char *strtm);
 
 
 

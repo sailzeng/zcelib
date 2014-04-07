@@ -227,6 +227,7 @@
     <ClInclude Include="zce_mysql_result.h" />
     <ClInclude Include="zce_mysql_stmtbind.h" />
     <ClInclude Include="zce_mysql_stmtcmd.h" />
+    <ClInclude Include="zce_net_http_client.h" />
     <ClInclude Include="zce_os_adapt_condi.h" />
     <ClInclude Include="zce_os_adapt_coroutine.h" />
     <ClInclude Include="zce_os_adapt_dirent.h" />
@@ -341,6 +342,7 @@
     <ClCompile Include="zce_mysql_result.cpp" />
     <ClCompile Include="zce_mysql_stmtbind.cpp" />
     <ClCompile Include="zce_mysql_stmtcmd.cpp" />
+    <ClCompile Include="zce_net_http_client.cpp" />
     <ClCompile Include="zce_os_adapt_condi.cpp" />
     <ClCompile Include="zce_os_adapt_coroutine.cpp" />
     <ClCompile Include="zce_os_adapt_dirent.cpp" />

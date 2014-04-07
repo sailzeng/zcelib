@@ -5,9 +5,9 @@
 * @version
 * @date       2011年5月1日
 * @brief      时间操作的适配器层，主要还是向LINUX下靠拢
-* 
+*
 * @details
-* 
+*
 * @note       timeval在整套库内部使用较多，本来打算彻底用他标识内部的时间，但后来还是整理了自己的Time_Value类，
 *             可能是因为最后写代码时，timeval的很多操作不封装写起来还是繁琐。
 */
@@ -33,7 +33,7 @@ static const time_t ONE_DAY_SECONDS       = 86400;
 
 struct timezone
 {
-    //minutes west of Greenwich
+    //minutes west of Greenwich,注意这儿是分钟
     int tz_minuteswest;
     // type of DST correction ，夏令时，这个值在LINUX下都不再使用了，就饶了我吧
     //int tz_dsttime;
@@ -43,6 +43,8 @@ struct timezone
 
 namespace ZCE_OS
 {
+
+
 
 /*!
 * @brief      非标准函数，得到服务器启动到现在的时间，这个时间是个绝对递增的值，不会调整
@@ -67,67 +69,37 @@ const timeval  get_uptime(void);
 */
 inline int gettimeofday(struct timeval *tv, struct timezone *tz = NULL);
 
-//
+
 /*!
 * @brief      取得当前的时钟
 * @return     inline const timeval 将当前时间timeval作为结果返回
 */
 inline const timeval gettimeofday();
 
-///时间戳字符串的长度，不包括'\0',输入的字符串必须大于这个长度
-static const size_t LEN_OF_TIME_STAMP = 26;
 
-///ISO 时间格式化字符串的长度
-///输出字符串精度到日期的字符串长度
-static const size_t LEN_OF_ISO_DAY_TIMESTRING  = 10;
-///输出字符串精度到秒的字符串长度
-static const size_t LEN_OF_ISO_SEC_TIMESTRING  = 19;
-///输出字符串精度到微秒的字符串长度
-static const size_t LEN_OF_ISO_USEC_TIMESTRING = 26;
+/*!
+* @brief      取得当前的时区,非标准函数，为当前时区和GMT相差的秒数，
+* @return     int 为当前时区和GMT相差的秒数，
+* @note       为什么是秒，而不是第一时区，第二时区，如果你真了解时区，
+*             你就明白了，时区还有+0630这样的时区
+*             理论上timezone要先调用tzset才能初始化。
+*/
+int gettimezone();
 
-///US 米国时间格式字符串的长度
-///输出字符串精度到日期的字符串长度
-static const size_t LEN_OF_US_DAY_TIMESTRING  = 15;
-///输出字符串精度到秒的字符串长度
-static const size_t LEN_OF_US_SEC_TIMESTRING  = 24;
-///输出字符串精度到微秒的字符串长度
-static const size_t LEN_OF_US_USEC_TIMESTRING = 31;
-
-///时间格式化输出的格式类型
-enum TIME_STR_FORMAT_TYPE
-{
-    ///打印本地时间
-    TIME_STRFFMT_LOCALTIME      = 0x1,
-    ///打印UTC时间
-    TIME_STRFFMT_UTCTIME        = 0x2,
-
-    ///用ISO的格式进行时间输出
-    TIME_STRFFMT_ISO            = 0x10,
-    ///用美国的时间格式进行输出
-    TIME_STRFFMT_US             = 0x20,
-
-    ///打印时间精度到到天
-    TIME_STRFFMT_PRECISION_DAY  = 0x100,
-    ///打印时间精度到到秒
-    TIME_STRFFMT_PRECISION_SEC  = 0x200,
-    ///打印时间精度到微秒
-    TIME_STRFFMT_PRECISION_USEC = 0x400,
-
-};
 
 /*!
 * @brief      将参数timeval的值作为的时间格格式化后输出打印出来
 *             时间戳打印函数,字符串的输出格式是ISO-8601 format. 例子 2010-09-10 10:03:18.100190
 *             输出的时间戳格式为2010-09-10 10:03:18.100190       注意末尾还有一个\0
-*                            123456789012345678901234567890
+*                           123456789012345678901234567890
 * @return     const char*         得到的时间字符串
-* @param[out] str_date_time  字符串
+* @param[out] str_date_time   字符串
 * @param[in]  datetime_strlen 字符串长度
 * @note
 */
-const char *timestamp (const timeval *timeval,
-                       char *str_date_time,
-                       size_t datetime_strlen);
+const char *timestamp(const timeval *timeval,
+                      char *str_date_time,
+                      size_t datetime_strlen);
 
 /*!
 * @brief      得到当前的系统时间字符串输出
@@ -136,30 +108,128 @@ const char *timestamp (const timeval *timeval,
 * @param      datetime_strlen
 * @note
 */
-const char *timestamp (char *str_date_time,
-                       size_t datetime_strlen);
+const char *timestamp(char *str_date_time,
+                      size_t datetime_strlen);
+
+
+///时间格式化输出的格式类型
+enum TIME_STR_FORMAT_TYPE
+{
+
+    ///用紧凑的格式进行输出 20100910
+    TIME_STRFMT_COMPACT_DAY  = 1,
+    ///用紧凑的格式进行输出 20100910100318
+    TIME_STRFMT_COMPACT_SEC  = 2,
+
+    ///用ISO的格式进行时间输出，精度到天 2010-09-10
+    TIME_STRFMT_ISO_DAY      = 5,
+    ///用ISO的格式进行时间输出，精度到秒，2010-09-10 10:03:18
+    TIME_STRFMT_ISO_SEC      = 6,
+    ///用ISO的格式进行时间输出，精度到微秒，2010-09-10 10:03:18.100190
+    TIME_STRFMT_ISO_USEC     = 7,
+
+    ///用美国的时间格式进行输出 Fri Aug 24 2002 07:43:05
+    TIME_STRFMT_US_SEC       = 10,
+    ///用美国的时间格式进行输出 Fri Aug 24 2002 07:43:05.100190
+    TIME_STRFMT_US_USEC      = 11,
+
+
+    ///用HTTP头部GMT的时间格式进行输出, Thu, 26 Nov 2009 13:50:19 GMT
+    TIME_STRFMT_HTTP_GMT     = 1001,
+    ///用EMAIL头部DATE的时间格式进行输出, Fri, 08 Nov 2002 09:42:22 +0800
+    TIME_STRFMT_EMAIL_DATE   = 1002,
+};
+
+/*
+20100910100318                            紧凑
+2010-09-10 10:03:18.100190                ISO
+Fri Aug 24 2002 07:43:05.100190           US
+Thu, 26 Nov 2009 13:50:19 GMT             GMT(GMT一般不输出毫秒，在HTTP头中应用)
+Fri, 08 Nov 2002 09:42:22 +0800
+1234567890123456789012345678901234567890
+*/
+
+///注意下面的长度不包括包括'\0'，申请的空间要 + 1，最简单的记法就是保证有32字节的空间
+///（除了GMT精确到us），不采用+1的长度记录，这样写的目的是方便某些计算，
+
+///COMPACT 紧凑时间格式字符串的长度，
+///输出字符串精度到日期的字符串长度
+static const size_t TIMESTR_COMPACT_DAY_LEN = 8;
+///输出字符串精度到秒的字符串长度
+static const size_t TIMESTR_COMPACT_SEC_LEN = 14;
+
+///ISO 时间格式化字符串的长度，
+///输出字符串精度到日期的字符串长度
+static const size_t TIMESTR_ISO_DAY_LEN = 10;
+///输出字符串精度到秒的字符串长度
+static const size_t TIMESTR_ISO_SEC_LEN = 19;
+///[常用]精度到微秒的
+static const size_t TIMESTR_ISO_USEC_LEN = 26;
+
+///US 米国时间格式字符串的长度，精度到秒
+static const size_t TIMESTR_US_SEC_LEN = 24;
+///US 米国时间格式字符串的长度，精度到微秒
+static const size_t TIMESTR_US_USEC_LEN = 31;
+
+///GMT 时间格式字符串的长度，精度到秒
+static const size_t TIMESTR_HTTP_GMT_LEN = 29;
+
+///GMT 时间格式字符串的长度，精度到秒
+static const size_t TIMESTR_EMAIL_DATE_LEN = 31;
+
+
+
+
+
 
 /*!
 * @brief      将参数timeval的值作为的时间格格式化后输出打印出来，可以控制各种格式输出
-* @return     const char*
-* @param[in]  timeval         得到的时间字符串
-* @param[out] str_date_time
-* @param[in]  datetime_strlen
-* @param      fromat_type     参数清参考@ref TIME_STR_FORMAT_TYPE ，可以用|或，可以输出各种长度。毫秒，各种格式
-* @note       时间戳打印格式说明,
-*             字符串的输出格式是ISO-8601 format. @ref TIME_STRFFMT_ISO
-*             输出的时间戳格式为2010-09-10 10:03:18.100190       注意末尾还有一个\0
-*                           123456789012345678901234567890
-*             如果是美式时间格式，那么其实是 星期-月-日-年 时：分：秒.微秒   @ref TIME_STRFFMT_US
-*             输出的时间戳格式为Fri Aug 24 2002 07:43:05.100190       注意末尾还有一个\0
-*                            12345678901234567890123456789012
+* @return     const char*   返回的字符串，其实就是str_date_time
+* @param[in]  timeval       打印的时间timeval
+* @param[out] str_date_time 得到的时间字符串
+* @param[in]  str_len       字符串的长度，最简单的记法就是保证有32字节的空间
+* @param[in]  uct_time      将timeval视为UCT/GMT时间还是本地时间Local Time，true
+*                           表示视为UCT/GMT时间，false表示视为本地时间
+* @param      fmt           参数清参考@ref TIME_STR_FORMAT_TYPE ，
+* @note       时间戳打印格式说明,TIME_STR_FORMAT_TYPE
 */
-const char *timestamp_ex(const timeval *timeval,
-                         char *str_date_time,
-                         size_t datetime_strlen,
-                         int fromat_type = ZCE_OS::TIME_STRFFMT_LOCALTIME |
-                         ZCE_OS::TIME_STRFFMT_ISO | 
-                         ZCE_OS::TIME_STRFFMT_PRECISION_USEC);
+const char *timeval_to_str(const timeval *timeval,
+                           char *str_date_time,
+                           size_t str_len,
+                           bool uct_time = false,
+                           TIME_STR_FORMAT_TYPE fmt = ZCE_OS::TIME_STRFMT_ISO_USEC
+                           );
+
+/*!
+* @brief      从字符串中高速的得到tm的结构的结果
+* @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STR_FORMAT_TYPE
+* @param[in]  strtm   字符串，字符串的正确性你自己要保证
+* @param[out] ptr_tm  返回的tm结构的指针，注意，如果字符串错误，可能会导致tm错误喔
+* @param[out] usec    返回的的微秒的时间，默认为NULL，表示不需要返回，
+* @param[out] tz      返回的的时区,默认为NULL，表示不需要返回，很多种格式里面没有时区信息
+*/
+void str_to_tm(TIME_STR_FORMAT_TYPE fmt,
+               const char *strtm,
+               tm *ptr_tm,
+               time_t *usec = NULL,
+               int *tz = NULL);
+
+
+/*!
+* @brief      从字符串转换得到本地时间timeval函数
+* @return     int == 0 表示成功
+* @param[in]  fmt      字符串的格式，参考枚举值 @ref TIME_STR_FORMAT_TYPE,
+* @param[in]  strtm    字符串参数
+* @param[in]  uct_time 将strtm字符串视为UCT/GMT时间还是本地时间Local Time
+*                      true表示视为UCT/GMT时间，false表示视为本地时间
+* @param[out] tval     返回的时间,
+
+*/
+int str_to_timeval(TIME_STR_FORMAT_TYPE fmt,
+                   const char *strtm,
+                   bool uct_time,
+                   timeval *tval);
+
 
 /*!
 * @brief      计算timeval内部总计是多少毫秒
@@ -371,13 +441,32 @@ inline char *asctime_r(const struct tm *tm, char *buf);
 */
 inline char *ctime_r(const time_t *timep, char *buf);
 
-//-------------------------------------------------------------------------------
 
-//读取TSC，Read Time-Stamp Counter
+/*!
+* @brief      等同于mktime,将tm视为本地时间，转换为time_t
+* @return     time_t 转换得到的UTC世界时间
+* @param      tm 视为本地时间的tm
+*/
+inline time_t timelocal(struct tm *tm);
+
+/*!
+* @brief      类似mktime，但是是把tm视为GMT时间，转换为time_t
+*             WINDOWS下有个mkgmtime，
+* @return     time_t 转换得到的UTC世界时间
+* @param      tm 视为GMT时间的tm
+*/
+inline time_t timegm(struct tm *tm);
+
+/*!
+* @brief      读取TSC，Read Time-Stamp Counter
+* @return     uint64_t TSC值
+*/
 uint64_t rdtsc();
 
-//-------------------------------------------------------------------------------
+
 };
+
+//-------------------------------------------------------------------------------
 
 //兼容LINUX下的gettimeofday
 inline int ZCE_OS::gettimeofday(struct timeval *tv, struct timezone *tz)
@@ -522,7 +611,7 @@ inline char *ZCE_OS::asctime_r(const struct tm *tm_data, char *buf)
 }
 
 //打印time_t锁标识的时间信息
-inline char *ctime_r(const time_t *timep, char *buf)
+inline char *ZCE_OS::ctime_r(const time_t *timep, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -546,6 +635,33 @@ inline char *ctime_r(const time_t *timep, char *buf)
 #if defined (ZCE_OS_LINUX)
     return ::ctime_r(timep, buf);
 #endif //#if defined (ZCE_OS_LINUX)
+}
+
+
+
+//等同于mktime,将tm视为本地时间，转换为世界时间time_t
+inline time_t ZCE_OS::timelocal(struct tm *tm)
+{
+#if defined (ZCE_OS_WINDOWS)
+    return ::mktime(tm);
+#endif
+
+#if defined (ZCE_OS_LINUX)
+    return ::timelocal(tm);
+#endif
+}
+
+
+//类似mktime，但是是把tm视为GMT时间，转换为世界时间time_t
+inline time_t ZCE_OS::timegm(struct tm *tm)
+{
+#if defined (ZCE_OS_WINDOWS)
+    return ::_mkgmtime(tm);
+#endif
+
+#if defined (ZCE_OS_LINUX)
+    return ::timegm(tm);
+#endif
 }
 
 #endif //ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_

@@ -17,90 +17,6 @@
 
 
 
-//==========================================================================================================
-
-//通过字符串翻译得到tm时间结构
-void ZCE_OS::tm_from_str(ZCE_OS::TIME_STRING_FORMAT fmt,
-                         const char *strtm ,
-                         struct tm *ptr_tm,
-                         time_t *usec)
-{
-    ZCE_ASSERT(strtm);
-
-    if (usec != NULL  )
-    {
-        *usec = 0;
-    }
-
-    if (fmt == TSF_YYYYMMDD || fmt ==  TSF_YYYYMMDDHHMMSS)
-    {
-        ptr_tm->tm_isdst = 0;
-        ptr_tm->tm_year = ((*strtm) - '0') * 1000 + (*(strtm + 1) - '0') * 100 + (*(strtm + 2) - '0') * 10 + (*(strtm + 3) - '0') - 1900;
-        ptr_tm->tm_mon  = (*(strtm + 4) - '0') * 10 +  (*(strtm + 5) - '0') - 1;
-        ptr_tm->tm_mday = (*(strtm + 6) - '0') * 10 +  (*(strtm + 7) - '0');
-
-        if (fmt == TSF_YYYYMMDD)
-        {
-            ptr_tm->tm_hour = 0;
-            ptr_tm->tm_min  = 0;
-            ptr_tm->tm_sec  = 0;
-        }
-        else
-        {
-            ptr_tm->tm_hour = (*(strtm + 8) - '0') * 10 +  (*(strtm + 9) - '0');
-            ptr_tm->tm_min  = (*(strtm + 10) - '0') * 10 + (*(strtm + 11) - '0');
-            ptr_tm->tm_sec  = (*(strtm + 12) - '0') * 10 + (*(strtm + 13) - '0');
-        }
-
-        return;
-    }
-
-    if (fmt == TSF_YYYY_MM_DD || fmt ==  TSF_YYYY_MM_DD_HH_MM_SS || fmt == TSF_YYYY_MM_DD_HH_MM_SS_UUUUUU)
-    {
-        ptr_tm->tm_isdst = 0;
-        ptr_tm->tm_year = ((*strtm) - '0') * 1000 + (*(strtm + 1) - '0') * 100 + (*(strtm + 2) - '0') * 10 + (*(strtm + 3) - '0') - 1900;
-        ptr_tm->tm_mon  = (*(strtm + 5) - '0') * 10 +  (*(strtm + 6) - '0') - 1;
-        ptr_tm->tm_mday = (*(strtm + 8) - '0') * 10 +  (*(strtm + 9) - '0');
-
-        if (fmt == TSF_YYYY_MM_DD)
-        {
-            ptr_tm->tm_hour = 0;
-            ptr_tm->tm_min  = 0;
-            ptr_tm->tm_sec  = 0;
-        }
-        else
-        {
-            ptr_tm->tm_hour = (*(strtm + 11) - '0') * 10 +  (*(strtm + 12) - '0');
-            ptr_tm->tm_min  = (*(strtm + 14) - '0') * 10 + (*(strtm + 15) - '0');
-            ptr_tm->tm_sec  = (*(strtm + 17) - '0') * 10 + (*(strtm + 18) - '0');
-        }
-    }
-
-    if (usec != NULL  )
-    {
-        if (fmt == TSF_YYYY_MM_DD_HH_MM_SS_UUUUUU)
-        {
-            *usec = (*(strtm + 20) - '0') * 100000 + (*(strtm + 21) - '0') * 10000 +
-                    + (*(strtm + 22) - '0') * 1000 + (*(strtm + 23) - '0') * 100
-                    + (*(strtm + 24) - '0') * 10 + (*(strtm + 25) - '0');
-        }
-    }
-}
-
-
-/*!
-@brief      从字符串转换得到时间time_t函数
-@param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STRING_FORMAT
-@return     time_t  字符串所表示时间
-@param[in]  strtm   字符串参数
-*/
-time_t ZCE_OS::time_from_str(ZCE_OS::TIME_STRING_FORMAT fmt,
-                             const char *strtm)
-{
-    struct tm tm_value;
-    ZCE_OS::tm_from_str(fmt , strtm , &tm_value);
-    return ::mktime(&tm_value);
-}
 
 
 
@@ -193,7 +109,7 @@ int ZCE_OS::strcasecmp(const char *string1, const char *string2)
 int ZCE_OS::strncasecmp(const char *string1, const char *string2, size_t maxlen)
 {
 #if defined (ZCE_OS_WINDOWS)
-    return ::strnicmp(string1, string2, maxlen);
+    return ::strncasecmp(string1, string2, maxlen);
 #elif defined (ZCE_OS_LINUX)
     return ::strncasecmp(string1, string2, maxlen);
 #endif

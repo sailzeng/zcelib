@@ -674,7 +674,7 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
         ZCE_OS::timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
         //别计算了，快点
-        sz_use_len = ZCE_OS::LEN_OF_TIME_STAMP;
+        sz_use_len = ZCE_OS::TIMESTR_ISO_USEC_LEN;
 
         sz_buf_len -= sz_use_len;
     }

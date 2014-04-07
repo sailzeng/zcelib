@@ -85,6 +85,13 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
     return 0;
 }
 
-
+int test_os_time(int /*argc*/, char * /*argv*/[])
+{
+    int tz = ZCE_OS::gettimezone();
+    std::cout << "Time zone :" << tz << std::endl;
+    tz = ZCE_OS::gettimezone();
+    std::cout << "Time zone :" << tz << std::endl;
+    return 0;
+}
 
 
