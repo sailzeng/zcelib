@@ -5,7 +5,7 @@
 @version
 @date       2009年1月1日
 @brief      tuple的功能类似pair，但可以放置多个变量，参考boost实现的一个类，
-
+            C++ 11已经有过此类，建议优先使用系统的，
 @details
 
 @note

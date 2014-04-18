@@ -606,7 +606,7 @@ public:
     * @return     size_t 数量
     * @param      key    查询的key，
     */
-    size_t count_equal(const _key_type &key)
+    size_t count(const _key_type &key)
     {
         size_t equal_count = 0;
         size_t idx = bkt_num_key(key);

@@ -578,12 +578,18 @@ public:
         return (lru_hash_head_->sz_freenode_ == 0);
     }
 
-    //插入节点
-    //优先级可以，传递入当前时间作为参数，淘汰时用小于某个值都淘汰的方法处理,所以要保证后面传入数据值更大
-    //我为什么不直接用time(NULL),是给你更大的灵活性,
-    //这儿会将插入的数据放在最后淘汰的地方,
-    std::pair<iterator, bool> insert(const _value_type &val,
-                                     unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/  )
+
+    /*!
+    * @brief      插入节点
+    * @return     std::pair<iterator, bool>  返回的迭代器和bool,
+    * @param      val      插入的节点
+    * @param      priority 优先级可以，传递入当前时间作为参数，淘汰时用小于某个值
+    *                      都淘汰的方法处理,所以要保证后面传入数据值更大  我为什
+    *                      么不直接用time(NULL),是给你更大的灵活性,
+    * @note       这儿会将插入的数据放在最后淘汰的地方
+    */
+    std::pair<iterator, bool> insert_unique(const _value_type &val,
+                                            unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/  )
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
@@ -688,6 +694,7 @@ public:
 
         return iterator(first, this);
     }
+
     //
     iterator find_value(const _value_type &val)
     {
@@ -729,7 +736,12 @@ public:
         return count( get_key(val));
     }
 
-    bool erase(const _key_type &key)
+    /*!
+    * @brief      
+    * @return     bool
+    * @param      key
+    */
+    bool erase_unique(const _key_type &key)
     {
         size_t idx = bkt_num_key(key);
         //从索引中找到第一个
@@ -769,8 +781,11 @@ public:
     }
 
 
-
-    //使用迭代器删除,尽量高效所以不用简化写法
+    /*!
+    * @brief      使用迭代器删除,尽量高效所以不用简化写法
+    * @return     bool 返回值
+    * @param      it   删除的迭代器
+    */
     bool erase(const iterator &it)
     {
         _extract_key get_key;
@@ -807,14 +822,19 @@ public:
     }
 
     //删除某个值
-    bool erase_value(const _value_type &val )
+    bool erase_unique_value(const _value_type &val )
     {
         _extract_key get_key;
-        return erase( get_key(val));
+        return erase_unique( get_key(val));
     }
 
 
-    //删除所有相等的KEY的数据,和insert_equal配对使用，返回删除了几个数据
+    /*!
+    * @brief      删除所有相等的KEY的数据,和insert_equal配对使用，返回删除了几个数据
+    * @return     size_t
+    * @param      key
+    * @note       
+    */
     size_t erase_equal(const _key_type &key)
     {
         size_t erase_count = 0;
@@ -866,10 +886,15 @@ public:
     }
 
 
-    //激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
-    //优先级参数可以使用当前的时间
-    bool active(const _key_type &key,
-                unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
+
+    /*!
+    * @brief      激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
+    * @return     bool
+    * @param      key
+    * @param      priority 优先级参数可以使用当前的时间
+    */
+    bool active_unique(const _key_type &key,
+                       unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
@@ -909,10 +934,16 @@ public:
 
 
 
-    //通过VALUE激活，同时讲值替换成最新的数据VALUE
-    //优先级参数可以使用当前的时间
-    bool active_value(const _value_type &val,
-                      unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
+    /*!
+    * @brief      通过VALUE激活，同时讲值替换成最新的数据VALUE，
+    *             优先级参数可以使用当前的时间，MAP使用，
+    * @return     bool     是否激活成功
+    * @param      val      值
+    * @param      priority 优先级
+    * @note       LRU中如果，一个值被使用后，可以认为是激活过一次，
+    */
+    bool active_unique_value(const _value_type &val,
+                             unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
     {
         _extract_key get_key;
         _equal_key   equal_key;
@@ -1071,7 +1102,7 @@ public:
     }
 
     //标注，重新给一个数据打一个优先级标签，淘汰使用函数washout
-    bool mark(const _key_type &key, unsigned int priority)
+    bool mark_unique(const _key_type &key, unsigned int priority)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];

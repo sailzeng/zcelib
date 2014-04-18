@@ -19,32 +19,32 @@ int test_lru_hashtable(int /*argc*/ , char * /*argv*/ [])
 
     //
     ZCE_LIB::shm_hashtable_expire<int, int >* pmmap = ZCE_LIB::shm_hashtable_expire<int, int >::initialize(node_num, real_num, tmproom);
-    pmmap->insert(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(1001, static_cast<unsigned int>(time(NULL)));
 
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
 
-    pmmap->insert(38637, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(38637, static_cast<unsigned int>(time(NULL)));
 
     size_t count = pmmap->count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
-    bool bdel = pmmap->erase(38637);
+    bool bdel = pmmap->erase_unique(38637);
     assert(bdel == true);
 
-    bdel = pmmap->erase(1001);
+    bdel = pmmap->erase_unique(1001);
     assert(bdel == true);
 
     count = pmmap->count(1001);
     std::cout << "count:" << (unsigned int)(count) << std::endl;
 
-    pmmap->insert(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(1001, static_cast<unsigned int>(time(NULL)));
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
     pmmap->insert_equal(1001, static_cast<unsigned int>(time(NULL)));
 
-    pmmap->insert(38637, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(38637, static_cast<unsigned int>(time(NULL)));
     count = pmmap->count(1001);
 
     std::cout << "count:" << (unsigned int)(count) << std::endl;
@@ -83,7 +83,7 @@ int test_lru_hashtable(int /*argc*/ , char * /*argv*/ [])
 
     bdel = true;
 
-    bdel = pmmap->erase(38637);
+    bdel = pmmap->erase_unique(38637);
     assert(bdel == true);
 
     sz_del = pmmap->erase_equal(1001);
@@ -91,11 +91,11 @@ int test_lru_hashtable(int /*argc*/ , char * /*argv*/ [])
 
     std::cout << "size of :" << (unsigned int)(pmmap->size()) << std::endl;
 
-    pmmap->insert(1001, 1);
-    pmmap->insert(1002, 2);
-    pmmap->insert(1003, 3);
-    pmmap->insert(1004, 4);
-    pmmap->insert(38637, 5);
+    pmmap->insert_unique(1001, 1);
+    pmmap->insert_unique(1002, 2);
+    pmmap->insert_unique(1003, 3);
+    pmmap->insert_unique(1004, 4);
+    pmmap->insert_unique(38637, 5);
     std::cout << "size of :" << (unsigned int)(pmmap->size()) << std::endl;
 
     //pmmap->active(1004,1000);
@@ -115,10 +115,10 @@ int test_lru_hashtable(int /*argc*/ , char * /*argv*/ [])
 
     for (size_t i = 0; i < node_num; ++i)
     {
-        pmmap->insert(static_cast<int>(1000 + i), static_cast<unsigned int>(i + 1950));
+        pmmap->insert_unique(static_cast<int>(1000 + i), static_cast<unsigned int>(i + 1950));
     }
 
-    std::pair<ZCE_LIB::shm_hashtable_expire <int, int >::iterator, bool> iter_bool = pmmap->insert(100022, static_cast<unsigned int>(time(NULL)));
+    std::pair<ZCE_LIB::shm_hashtable_expire <int, int >::iterator, bool> iter_bool = pmmap->insert_unique(100022, static_cast<unsigned int>(time(NULL)));
     assert(iter_bool.second == false);
 
     it = pmmap->begin();
@@ -150,10 +150,10 @@ int test_lru_hashtable2(int /*argc*/ , char * /*argv*/ [])
 
     //
     ZCE_LIB::shm_hashtable_expire<int, int >* pmmap = ZCE_LIB::shm_hashtable_expire<int, int >::initialize(numnode, real_num, tmproom);
-    pmmap->insert(1001, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert(38636, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert(36384378, static_cast<unsigned int>(time(NULL)));
-    pmmap->insert(65231237, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(38636, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(36384378, static_cast<unsigned int>(time(NULL)));
+    pmmap->insert_unique(65231237, static_cast<unsigned int>(time(NULL)));
     num_count  = pmmap->count(1001);
 
     ZCE_LIB::shm_hashtable_expire<int, int >::iterator it_tmp = pmmap->begin();
@@ -164,7 +164,7 @@ int test_lru_hashtable2(int /*argc*/ , char * /*argv*/ [])
         std::cout << "it_tmp value: " << (*it_tmp) << std::endl;
     }
 
-    pmmap->active(1001, static_cast<unsigned int>(time(NULL)));
+    pmmap->active_unique(1001, static_cast<unsigned int>(time(NULL)));
     it_tmp = pmmap->begin();
 
     for (; it_tmp != it_end; ++it_tmp)
@@ -303,7 +303,7 @@ public:
     int insert(const MY_DATA &my_data, unsigned int priority = time(NULL) )
     {
         std::pair<HASH_TABLE_MY_DATA::iterator, bool > iter_pair =
-            hash_my_data_->insert(my_data, priority);
+            hash_my_data_->insert_unique(my_data, priority);
         if ( false == iter_pair.second )
         {
             return -1;
@@ -324,7 +324,7 @@ public:
 
     int erase(const MY_DATA &my_data)
     {
-        bool bool_ret = hash_my_data_->erase_value(my_data);
+        bool bool_ret = hash_my_data_->erase_unique_value(my_data);
         if (!bool_ret)
         {
             return -1;
