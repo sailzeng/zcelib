@@ -86,7 +86,10 @@ int test_coroutine1(int /*argc*/, char * /*argv*/[]);
 int test_coroutine2(int /*argc*/, char * /*argv*/[]);
 
 
-int test_mmap_rbtree(int /*argc*/, char * /*argv*/[]);
+int test_mmap_rbtree1(int /*argc*/, char * /*argv*/[]);
+int test_mmap_rbtree2(int /*argc*/, char * /*argv*/[]);
+int test_mmap_rbtree3(int /*argc*/, char * /*argv*/[]);
+
 int test_mmap_avltree1(int /*argc*/, char * /*argv*/[]);
 int test_mmap_avltree2(int /*argc*/, char * /*argv*/[]);
 int test_mmap_avltree3(int /*argc*/, char * /*argv*/[]);

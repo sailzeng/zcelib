@@ -12,11 +12,12 @@ int main(int argc , char *argv[])
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
     test_os_time(argc, argv);
-    test_mmap_rbtree(argc, argv);
-
+    test_mmap_rbtree1(argc, argv);
+    test_mmap_rbtree2(argc, argv);
+    
     printf("%s", "----------------------------------------------------------------------------\n");
 
-    test_mmap_avltree2(argc, argv);
+    test_mmap_avltree5(argc, argv);
     //test_mmap_avltree2(argc, argv);
 
     system("pause");

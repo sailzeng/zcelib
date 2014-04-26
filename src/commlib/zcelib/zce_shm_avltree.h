@@ -1418,8 +1418,8 @@ public:
         return *iter;
     }
 
-
-    void debug_note(size_t x)
+    //调试代码，如果_value_type是整数 的时候生效，否则无效
+    void debug_note(size_t x, typename std::enable_if<std::is_integral<_value_type>::value >::type* = 0)
     {
         std::cout << "Note :"<<std::setw(6) << x
             << " Data:" << std::setw(8) << data_base_[x]
@@ -1430,6 +1430,7 @@ public:
             << std::endl;
     }
 
+    //检查树形结构是否平衡
     bool check_balanced(size_t x)
     {
         int32_t x_b = balanced(x);
@@ -1442,7 +1443,7 @@ public:
         return true;
     }
 
-
+    //得到某个节点的高度
     size_t height(size_t x)
     {
         if (x == _INVALID_POINT)
