@@ -497,6 +497,17 @@ public:
 
 protected:
 
+#define __HEADER       (rb_tree_head_->num_of_node_)
+#define __ROOT         (head_index_->parent_)
+#define __LEFTMOST     (head_index_->left_)
+#define __RIGHTMOST    (head_index_->right_)
+#define __LEFT(x)      ((index_base_ + (x))->left_)
+#define __RIGHT(x)     ((index_base_ + (x))->right_)
+#define __PARENT(x)    ((index_base_ + (x))->parent_)
+#define __COLOR(x)     ((index_base_ + (x))->color_)
+#define __VALUE(x)     (*(data_base_ + (x)))
+#define __KEY(x)       (_extract_key()(*(data_base_ + (x))))
+
     inline size_t  &header() const
     {
         return rb_tree_head_->num_of_node_;
@@ -574,7 +585,7 @@ protected:
     std::pair<iterator, bool>  _insert(size_t x, size_t y, const _value_type &v)
     {
         size_t z = create_node(v);
-        //日过空间不足，无法插入，返回end,false的pair
+        //如果空间不足，无法插入，返回end,false的pair
         if (_INVALID_POINT == z)
         {
             return std::pair<iterator, bool>(end(), false);
@@ -1176,6 +1187,17 @@ public:
 
         return *iter;
     }
+
+#undef  __HEADER       
+#undef __ROOT         
+#undef __LEFTMOST     
+#undef __RIGHTMOST    
+#undef __LEFT(x)      
+#undef __RIGHT(x)     
+#undef __PARENT(x)
+#undef __COLOR(x)
+#undef __VALUE(x)
+#undef __KEY(x)
 
 protected:
     //index区要增加两个数据,一个是头指针，一个是空节点的头指针
