@@ -5,8 +5,12 @@
 * @version
 * @date       2004年7月24日
 * @brief      MySQL的SQL处理对象，Command对象
-* 
-* @details
+*             最开始，我希望同时保有断言，返回值，和异常3种模式，  
+*             结果多年以来，一直还是使用返回值的方法，异常与我无爱。
+*             
+*
+* @details    这居然是刚来腾讯时写的代码，好像那时候大家推荐用的数据库还是MYSQL 3.23，
+*             时间过的飞快，你的执行效率远远赶不上时间的流逝的速度。
 * 
 */
 
@@ -17,7 +21,6 @@
 #if defined MYSQL_VERSION_ID
 
 #include "zce_boost_non_copyable.h"
-#include "zce_mysql_predefine.h"
 #include "zce_mysql_connect.h"
 #include "zce_mysql_result.h"
 
@@ -207,6 +210,10 @@ protected:
                 bool bstore);
 
 protected:
+    //命令缓冲buf的大小
+    static const size_t INITBUFSIZE = 64 * 1024;
+
+protected:
 
     ///联接
     ZCE_Mysql_Connect  *mysql_connect_;
@@ -263,19 +270,19 @@ inline int ZCE_Mysql_Command::set_sql_command(const char *sqlcmd, size_t szsql)
     if (sqlcmd == NULL)
     {
         ZCE_ASSERT(false);
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     //
     mysql_command_.assign(sqlcmd, szsql);
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 //为TXT,BIN二进制的SQL命令提供的赋值方式 ,
 inline int ZCE_Mysql_Command::set_sql_command(const std::string &sqlcmd)
 {
     mysql_command_ = sqlcmd;
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 //

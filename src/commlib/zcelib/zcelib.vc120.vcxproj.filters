@@ -154,9 +154,6 @@
     <ClInclude Include="zce_mysql_field.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_mysql_predefine.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_mysql_process.h">
       <Filter>Source Files</Filter>
     </ClInclude>

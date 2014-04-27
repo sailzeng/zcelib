@@ -60,18 +60,7 @@ int ZCE_Mysql_Process::init_mysql_socketfile(const char *socket_file,
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月28日
-Function        : ZCE_Mysql_Process::connect_mysql_server
-Return          : int
-Parameter List  :
-
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//
 int ZCE_Mysql_Process::connect_mysql_server( )
 {
     int ret = 0;
@@ -95,7 +84,7 @@ int ZCE_Mysql_Process::connect_mysql_server( )
         }
 
         //如果错误
-        if (ret != MYSQL_RETURN_OK)
+        if (ret != 0)
         {
             ZLOG_ERROR("[zcelib] DB Error : [%u]:%s.",
                        db_connect_.get_error_no(),
@@ -137,7 +126,10 @@ Called By       :
 Other           : 注意:几个db_process_query函数连接周期就是对象生存周期,ZCE_Mysql_Connect对象再析构时断链接
 Modify Record   : 自动重连功能加入
 ******************************************************************************************/
-int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect, unsigned int &insertid, size_t sqllen)
+int ZCE_Mysql_Process::db_process_query(const char *sql, 
+    unsigned int &numaffect,
+    unsigned int &insertid,
+    size_t sqllen)
 {
     int ret = 0;
 
@@ -168,7 +160,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
     ret = db_command_.execute(numaffect, insertid);
 
     //如果错误
-    if (ret != MYSQL_RETURN_OK)
+    if (ret != 0)
     {
         ZLOG_ERROR("[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                    db_connect_.get_error_no(),
@@ -227,7 +219,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
     ret = db_command_.execute(numaffect, dbresult);
 
     //如果错误
-    if (ret != MYSQL_RETURN_OK)
+    if (ret != 0)
     {
         ZLOG_ERROR("[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
                    db_connect_.get_error_no(),
@@ -283,7 +275,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbres
     ret = db_command_.execute(dbresult);
 
     //如果错误
-    if (ret != MYSQL_RETURN_OK)
+    if (ret != 0)
     {
         ZLOG_ERROR("[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                    db_connect_.get_error_no(),

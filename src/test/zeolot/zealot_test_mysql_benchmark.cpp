@@ -51,7 +51,7 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &i
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
 
         //如果错误
-        if (ret != MYSQL_RETURN_OK)
+        if (ret != 0)
         {
             sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
             return RETURN_DB_ERROR;
@@ -68,7 +68,7 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &i
     g_db_command.set_sql_command(sql, strlen(sql));
     ret = g_db_command.execute(numaffect, insertid);
     //如果错误
-    if (ret != MYSQL_RETURN_OK)
+    if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
@@ -88,7 +88,7 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Resul
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
 
         //如果错误
-        if (ret != MYSQL_RETURN_OK)
+        if (ret != 0)
         {
             sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
             return RETURN_DB_ERROR;
@@ -104,7 +104,7 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Resul
     g_db_command.set_sql_command(sql, strlen(sql));
     ret = g_db_command.execute(numaffect, dbresult);
     //如果错误
-    if (ret != MYSQL_RETURN_OK)
+    if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
@@ -123,7 +123,7 @@ int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
 
         //如果错误
-        if (ret != MYSQL_RETURN_OK)
+        if (ret != 0)
         {
             sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
             return RETURN_DB_ERROR;
@@ -140,7 +140,7 @@ int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
     g_db_command.set_sql_command(sql, strlen(sql));
     ret = g_db_command.execute(dbresult);
     //如果错误
-    if (ret != MYSQL_RETURN_OK)
+    if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
         return RETURN_DB_ERROR;

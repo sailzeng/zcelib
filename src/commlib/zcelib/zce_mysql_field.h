@@ -16,7 +16,6 @@
 //如果你要用MYSQL的库
 #if defined MYSQL_VERSION_ID
 
-#include "zce_mysql_predefine.h"
 
 /*!
 @brief      MySQL的字段封装

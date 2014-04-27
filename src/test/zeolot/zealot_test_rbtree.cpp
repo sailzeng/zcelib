@@ -31,7 +31,7 @@ int test_mmap_rbtree1(int /*argc*/, char * /*argv*/[])
     bool b_flag = test_rb_tree->empty();
     b_flag = test_rb_tree->full();
     printf("Before insert:size=%u, capacity=%u, empty=%u, full=%u\n",
-        test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full() );
+        test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full());
 
     test_rb_tree->insert_equal(10);
     test_rb_tree->insert_equal(7);
@@ -67,11 +67,27 @@ int test_mmap_rbtree1(int /*argc*/, char * /*argv*/[])
     TEST_RB_TREE::iterator iter = test_rb_tree->find(12);
     printf("\nfind : %d \n", (*iter));
 
-    size_t aa = test_rb_tree->erase_equal(12);
+    size_t erase_count = 0;
+
+    erase_count = test_rb_tree->erase_unique(5);
 
     printf("\nAfter erase:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
         test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full(),
-        aa);
+        erase_count);
+
+    printf("After erase Tree_node: ");
+    tree_iter = test_rb_tree->begin();
+    tree_iter_end = test_rb_tree->end();
+    for (; tree_iter != tree_iter_end; ++tree_iter)
+    {
+        printf("%d ", (*tree_iter));
+    }
+
+    erase_count = test_rb_tree->erase_equal(12);
+
+    printf("\nAfter erase:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
+        test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full(),
+        erase_count);
 
     printf("After erase Tree_node: ");
     tree_iter = test_rb_tree->begin();
@@ -83,6 +99,24 @@ int test_mmap_rbtree1(int /*argc*/, char * /*argv*/[])
 
     iter = test_rb_tree->find(12);
     printf("\nfind : %d \n", (*iter));
+
+
+
+
+    erase_count = test_rb_tree->erase_unique(15);
+
+    printf("\nAfter erase:size=%u, capacity=%u, empty=%u, full=%u erase count =%lu\n",
+        test_rb_tree->size(), test_rb_tree->capacity(), test_rb_tree->empty(), test_rb_tree->full(),
+        erase_count);
+
+    printf("After erase Tree_node: ");
+    tree_iter = test_rb_tree->begin();
+    tree_iter_end = test_rb_tree->end();
+    for (; tree_iter != tree_iter_end; ++tree_iter)
+    {
+        printf("%d ", (*tree_iter));
+    }
+    
     return 0;
 }
 

@@ -8,11 +8,11 @@
 * 
 * @details
 * 
-* @note
+* @note       设计就是无数的选择,我选择我喜欢的和感觉最好的。
 * 
 */
 
-//设计就是无数的选择,我选择我喜欢的和感觉最好的。
+
 
 #ifndef ZCE_LIB_MYSQL_STMT_COMMAND_H_
 #define ZCE_LIB_MYSQL_STMT_COMMAND_H_
@@ -20,7 +20,6 @@
 //如果你要用MYSQL的库
 #if defined MYSQL_VERSION_ID
 
-#include "zce_mysql_predefine.h"
 #include "zce_mysql_connect.h"
 
 //STMT函数都是4.1.2后的版本功能
@@ -37,11 +36,7 @@ class ZCE_Mysql_Result;
 class ZCELIB_EXPORT ZCE_Mysql_STMT_Command
 {
 
-protected:
-    //准备并且绑定参数
-    int stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam, ZCE_Mysql_STMT_Bind *bindresult);
-    //执行SQL命令,
-    int execute(unsigned int *num_affect , unsigned int *lastid);
+
 
 public:
     //
@@ -51,14 +46,28 @@ public:
     //
     ~ZCE_Mysql_STMT_Command();
 
-    //设置Command的ZCE_Mysql_Connect
+    
+    /*!
+    * @brief      设置Command的ZCE_Mysql_Connect
+    * @return     int
+    * @param      ZCE_Mysql_Connect* 设置的链接
+    */
     int set_connection(ZCE_Mysql_Connect *);
+
     //得到此Command的ZCE_Mysql_Connect对象
     inline ZCE_Mysql_Connect *get_connection();
 
     inline MYSQL_STMT *get_stmt_handle();
 
-    //设置SQL Command语句,为BIN型的SQL语句准备,同时绑定参数,结果
+    
+    /*!
+    * @brief      设置SQL Command语句,为BIN型的SQL语句准备,同时绑定参数,结果
+    * @return     int
+    * @param      sqlcmd
+    * @param      bindparam
+    * @param      bindresult
+    * @note       
+    */
     int set_stmt_command(const std::string &sqlcmd,
                          ZCE_Mysql_STMT_Bind *bindparam,
                          ZCE_Mysql_STMT_Bind *bindresult);
@@ -75,15 +84,28 @@ public:
     //得到SQL Command语句
     void get_stmt_command(std::string &) const;
 
-    //执行SQL语句,不用输出结果集合的那种
+
+    /*!
+    * @brief      执行SQL语句,不用输出结果集合的那种
+    * @return     int
+    * @param      num_affect  返回的影响记录条数
+    * @param      lastid      返回的LASTID
+    */
     int execute(unsigned int &num_affect, unsigned int &lastid);
-    //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
+
+    
+    /*!
+    * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,
+    *             注意这个函数条用的是mysql_stmt_store_result. 
+    * @return     int
+    * @param      num_affect 返回的影响记录条数
+    */
     int execute(unsigned int &num_affect);
 
     //从结果结合取出数据
     int fetch_row_next() const;
     //
-    int SeekResultRow(unsigned int nrow) const;
+    int seek_result_row(unsigned int nrow) const;
 
     //取得一个
     int  fetch_column(MYSQL_BIND *bind, unsigned int column, unsigned int offset) const;
@@ -94,14 +116,32 @@ public:
     inline unsigned int get_num_of_result_fields() const;
 
     //将参数转化为MetaData,MySQL的结果集合
-    void ParamToMetadata(ZCE_Mysql_Result *) const;
+    void param_2_metadata(ZCE_Mysql_Result *) const;
     //将结果转化为MetaData,MySQL的结果集合
-    void ResultToMetadata(ZCE_Mysql_Result *) const;
+    void result_2_metadata(ZCE_Mysql_Result *) const;
 
     // 返回错误消息
     inline const char *get_error_message() const;
     // 返回错误号
     inline unsigned int get_error_no() const;
+
+protected:
+    
+    /*!
+    * @brief      预处理SQL,并且分析绑定的变量
+    * @return     int
+    * @param      bindparam    绑定的参数
+    * @param      bindresult   绑定的结果
+    * @note       
+    */
+    int stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam, 
+        ZCE_Mysql_STMT_Bind *bindresult);
+    //SQL 执行命令，这个事一个基础函数，内部调用
+    int _execute(unsigned int *num_affect, unsigned int *lastid);
+
+protected:
+    //命令缓冲buf的大小
+    static const size_t SQL_INIT_BUFSIZE = 64 * 1024;
 
 protected:
 

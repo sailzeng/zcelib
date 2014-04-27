@@ -5,18 +5,7 @@
 //这些函数都是4.1.2后的版本功能
 #if MYSQL_VERSION_ID >= 40100
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年10月17日
-Function        : ZCE_Mysql_STMT_Bind::ZCE_Mysql_STMT_Bind
-Return          : NULL
-Parameter List  :
-  Param1: size_t numbind,要绑定变量,结果的个数
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//构造函数
 ZCE_Mysql_STMT_Bind::ZCE_Mysql_STMT_Bind(size_t numbind):
     num_bind_(numbind),
     current_bind_(0),
@@ -27,6 +16,7 @@ ZCE_Mysql_STMT_Bind::ZCE_Mysql_STMT_Bind(size_t numbind):
     stmt_bind_ = new MYSQL_BIND [numbind];
     memset(stmt_bind_, 0, sizeof(MYSQL_BIND )* numbind);
 
+    //默认所有的绑定都是非NULL
     is_bind_null_ = new my_bool [numbind];
     memset(is_bind_null_, 0, sizeof(my_bool )* numbind);
 
@@ -41,7 +31,7 @@ ZCE_Mysql_STMT_Bind::ZCE_Mysql_STMT_Bind(size_t numbind):
     }
 }
 
-//
+//析构函数
 ZCE_Mysql_STMT_Bind::~ZCE_Mysql_STMT_Bind()
 {
     if (stmt_bind_)
@@ -60,25 +50,18 @@ ZCE_Mysql_STMT_Bind::~ZCE_Mysql_STMT_Bind()
     }
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年10月17日
-Function        : ZCE_Mysql_STMT_Bind::bind_one_param
-Return          : int
-Parameter List  :
-  Param1: size_t paramno 参数
-  Param2: enum_field_types paramtype 参数类型
-  Param3: bool bisnull 是否为NULL
-  Param4: void* paramdata 参数的数据的指针
-  Param5: unsigned long szparam 参数的长度
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int ZCE_Mysql_STMT_Bind::bind_one_param(size_t paramno, enum_field_types paramtype, bool bisnull, void *paramdata , unsigned long szparam)
+//绑定一个参数
+int ZCE_Mysql_STMT_Bind::bind_one_param(size_t paramno,
+                                        ::enum_field_types paramtype,
+                                        bool bisnull,
+                                        void *paramdata ,
+                                        unsigned long szparam)
 {
     ZCE_ASSERT(paramno < num_bind_);
+    if (paramno >= num_bind_)
+    {
+        return -1;
+    }
 
     stmt_bind_[paramno].buffer_type = paramtype;
     stmt_bind_[paramno].buffer = paramdata;
@@ -98,7 +81,7 @@ int ZCE_Mysql_STMT_Bind::bind_one_param(size_t paramno, enum_field_types paramty
     }
 
     stmt_bind_[paramno].buffer_length  = szparam;
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 inline MYSQL_BIND *ZCE_Mysql_STMT_Bind::operator[](unsigned int paramno) const
@@ -106,25 +89,15 @@ inline MYSQL_BIND *ZCE_Mysql_STMT_Bind::operator[](unsigned int paramno) const
     return &stmt_bind_[paramno];
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年10月17日
-Function        : ZCE_Mysql_STMT_Bind::operator <<
-Return          : ZCE_Mysql_STMT_Bind&
-Parameter List  :
-  Param1: char& val
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//绑定一个char
 ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (char &val)
 {
     stmt_bind_[current_bind_].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[current_bind_].buffer = (void *)(&val);
     stmt_bind_[current_bind_].buffer_length = sizeof(char);
 
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
 
     return *this;
 }
@@ -135,7 +108,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (short &val)
     stmt_bind_[current_bind_].buffer = (void *)(&val);
     stmt_bind_[current_bind_].buffer_length = sizeof(short);
 
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
 
     return *this;
 }
@@ -145,7 +119,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (int &val)
     stmt_bind_[current_bind_].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[current_bind_].buffer = (void *)(&val);
 
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
 
     return *this;
 }
@@ -155,7 +130,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (long &val)
     stmt_bind_[current_bind_].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[current_bind_].buffer = (void *)(&val);
 
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
 
     return *this;
 }
@@ -164,8 +140,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (long long &val)
 {
     stmt_bind_[current_bind_].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[current_bind_].buffer = (void *)(&val);
-    //循环当前绑定变量序号
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
 
     return *this;
 }
@@ -177,8 +153,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (unsigned char &val)
 
     //无符号,绑定结果时应该不用
     stmt_bind_[current_bind_].is_unsigned = 1;
-    //循环当前绑定变量序号
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
     return *this;
 }
 //
@@ -189,8 +165,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (unsigned short &val)
 
     //无符号,绑定结果时应该不用
     stmt_bind_[current_bind_].is_unsigned = 1;
-    //循环当前绑定变量序号
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
     return *this;
 }
 //
@@ -201,8 +177,8 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (unsigned int &val)
 
     //无符号,绑定结果时应该不用
     stmt_bind_[current_bind_].is_unsigned = 1;
-    //循环当前绑定变量序号
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
     return *this;
 }
 //
@@ -274,22 +250,17 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (STMT_BindTime_Adaptor &ti
     stmt_bind_[current_bind_].buffer_length  = sizeof(MYSQL_TIME);
     *(stmt_bind_[current_bind_].length) =  sizeof(MYSQL_TIME);
 
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+    //增加当前绑定变量序号
+    ++current_bind_;
     return *this;
 }
-//
-ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (STMT_BindIsNULL_Adaptor &bindisnull)
-{
-    if (bindisnull.is_null_)
-    {
-        is_bind_null_[current_bind_] = 1;
-    }
-    else
-    {
-        is_bind_null_[current_bind_] = 0;
-    }
 
-    current_bind_  = (current_bind_ < num_bind_ - 1) ? current_bind_ + 1 : current_bind_;
+//绑定一个空参数
+ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (STMT_BindNULL_Adaptor &bindisnull)
+{
+    is_bind_null_[current_bind_] = 1;
+    //增加当前绑定变量序号
+    ++current_bind_;
     return *this;
 }
 

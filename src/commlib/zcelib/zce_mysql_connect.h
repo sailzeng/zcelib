@@ -18,7 +18,6 @@
 //如果你要用MYSQL的库
 #if defined MYSQL_VERSION_ID
 
-#include "zce_mysql_predefine.h"
 #include "zce_boost_non_copyable.h"
 
 /*!
@@ -157,13 +156,14 @@ public:
 #endif
 
     /*!
-    * @brief      得到Real Escape String ,Real表示根据当前的MYSQL Connet的字符集,得到Escape String
-    *             Escape String 为将字符传中的相关字符进行转义后的语句,比如',",\等字符
+    * @brief      编码转换，得到Real Escape String ,Real表示根据
+    *             当前的MYSQL Connet的字符集,得到Escape String
+    *             Escape String 为将字符传中的相关字符进行转义后的语
+    *             句,比如',",\等字符
     * @return     unsigned int 编码后字符串的长度
     * @param      tostr        转换得到的字符串,最好保证有fromlen *2的长度
     * @param      fromstr      进行转换的字符串
     * @param      fromlen      转换的字符串长度
-    * @note
     */
     unsigned int make_real_escape_string(char *tostr,
                                          const char *fromstr,
@@ -171,7 +171,18 @@ public:
 
 protected:
 
-    ///连接数据库服务器，内部函数,具体的实现在此，
+    /*!
+    * @brief      连接数据库服务器，内部函数,具体的实现在此，
+    * @return     int
+    * @param      host_name  
+    * @param      socket_file  UNIX SOCKET文件名称或者命名管道名称
+    * @param      user  用户,默认为mysql
+    * @param      pwd  用户密码,默认为""
+    * @param      db 使用的默认数据库,默认为空表示不选择
+    * @param      port  端口,默认为MYSQL_PORT
+    * @param      timeout  连接数据库的超时时间，默认为0,表示不设置
+    * @param      bmultisql 是否使用多语句同时执行的方式,默认为false,可能在事物等处理上有些效果
+    */
     int connect_i(const char *host_name,
                   const char *socket_file,
                   const char *user = "mysql",

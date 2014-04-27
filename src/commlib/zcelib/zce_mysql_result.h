@@ -14,9 +14,10 @@
 *             所以我设计成主动帮你记录当前行的，当前列，你通过fetch_row_next，将当前行+1，
 *             然后你可以通过 >> 操作符号，取得个个字段值。
 *             相对而言还是比较简单的，
+*             早年在代码里面用了很多保护，但后来发现，这些保护的意义实在有限，不如让你崩溃           
 * 
 *             2013年1月，我从新回头整理一下这段代码的注释，我觉得我在提供API上有点偏执狂的
-*             倾向，好吧，想8年钱的懵懂少年致敬。
+*             倾向，好吧，想8年前的懵懂少年致敬。
 * 
 * @note       其中有不少用列字段名称处理的函数，但其实一方面，列名称的处理并不高效，
 *             一方面其实很多结果的列字段名称很不标准，比如大小写，一些字段是组合，函
@@ -32,7 +33,6 @@
 
 #include "zce_os_adapt_string.h"
 #include "zce_trace_log_debug.h"
-#include "zce_mysql_predefine.h"
 #include "zce_mysql_field.h"
 
 /*!
@@ -288,11 +288,11 @@ inline int ZCE_Mysql_Result::get_field_id(const char *fname, unsigned int &field
         if (!strcasecmp(fname, mysql_fields_[i].name))
         {
             field_id = i;
-            return MYSQL_RETURN_OK;
+            return 0;
         }
     }
 
-    return MYSQL_RETURN_FAIL;
+    return -1;
 }
 
 //根据列Field ID 返回表定义列域名,列域名字,可能为空
@@ -339,11 +339,11 @@ inline int ZCE_Mysql_Result::get_field_data(unsigned int fieldid, char *pfdata) 
     if (current_row_ == NULL || fieldid >= num_result_field_ || pfdata == NULL)
     {
         ZCE_ASSERT(false);
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     memcpy(pfdata , current_row_[fieldid], fields_length_[fieldid]);
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 //根据字段顺序ID,得到字段表结构定义的类型
@@ -354,11 +354,11 @@ inline int ZCE_Mysql_Result::get_field_type(unsigned int fieldid, enum_field_typ
     if (current_row_ == NULL || fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     ftype =  mysql_fields_[fieldid].type;
-    return MYSQL_RETURN_OK;
+    return 0;
 
 }
 
@@ -369,11 +369,11 @@ inline int ZCE_Mysql_Result::get_field_length(unsigned int fieldid, unsigned int
     if (current_row_ == NULL && fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     flength = fields_length_[fieldid];
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 inline unsigned int ZCE_Mysql_Result::get_cur_field_length()
@@ -388,11 +388,11 @@ inline int ZCE_Mysql_Result::get_field(unsigned int fieldid , ZCE_Mysql_Field &f
     if (current_row_ == NULL || fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     ffield.set_field(current_row_[fieldid], fields_length_[fieldid], mysql_fields_[fieldid].type);
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 /******************************************************************************************

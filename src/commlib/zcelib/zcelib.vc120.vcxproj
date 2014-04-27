@@ -222,7 +222,6 @@
     <ClInclude Include="zce_mysql_command.h" />
     <ClInclude Include="zce_mysql_connect.h" />
     <ClInclude Include="zce_mysql_field.h" />
-    <ClInclude Include="zce_mysql_predefine.h" />
     <ClInclude Include="zce_mysql_process.h" />
     <ClInclude Include="zce_mysql_result.h" />
     <ClInclude Include="zce_mysql_stmtbind.h" />

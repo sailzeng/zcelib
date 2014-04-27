@@ -38,10 +38,10 @@ int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect *conn)
     if (conn != NULL && conn->is_connected())
     {
         mysql_connect_ = conn;
-        return MYSQL_RETURN_OK;
+        return 0;
     }
 
-    return MYSQL_RETURN_FAIL;
+    return -1;
 }
 
 ///设置SQL Command语句,动态参数版本
@@ -59,14 +59,14 @@ int ZCE_Mysql_Command::set_sql_command(const char *sql_format, ...)
     //如果返回结果错误,_vsnprintf =-1表示Buf长度不够
     if (ret < 0)
     {
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     //设置
     mysql_command_.assign(tmpBuf);
 
     //成功
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 //得到SQL Command. 重载多种形式,用于文本类型
@@ -81,19 +81,19 @@ int ZCE_Mysql_Command::get_sql_command( char *cmdbuf, size_t &szbuf) const
     if (cmdbuf == NULL )
     {
         ZCE_ASSERT(false);
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     size_t size_sql = mysql_command_.length();
 
     if (size_sql + 1 > szbuf)
     {
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     szbuf = size_sql;
     memcpy(cmdbuf, mysql_command_.c_str(), szbuf);
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 //
@@ -111,14 +111,17 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
     //如果没有设置连接或者没有设置命令
     if (mysql_connect_ == NULL || mysql_command_.empty())
     {
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     //执行SQL命令
-    int tmpret = mysql_real_query(mysql_connect_->get_mysql_handle(), mysql_command_.c_str(), (unsigned long)mysql_command_.length());
-
-    //检查命令执行结果,返回错误，或者抛出异常
-    MYSQLCOMMANDCHECK(tmpret == 0);
+    int tmpret = ::mysql_real_query(mysql_connect_->get_mysql_handle(), 
+        mysql_command_.c_str(), 
+        (unsigned long)mysql_command_.length());
+    if (tmpret != 0)
+    {
+        return tmpret;
+    }
 
     //如果用户要求转储结果集
     if (sqlresult)
@@ -128,12 +131,12 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
         if (bstore)
         {
             //转储结果
-            tmp_res = mysql_store_result(mysql_connect_->get_mysql_handle());
+            tmp_res = ::mysql_store_result(mysql_connect_->get_mysql_handle());
         }
         else
         {
             //转储结果
-            tmp_res = mysql_use_result(mysql_connect_->get_mysql_handle());
+            tmp_res = ::mysql_use_result(mysql_connect_->get_mysql_handle());
         }
 
         //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
@@ -142,7 +145,7 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
         //如果MYSQL内部发生某个错误，那么mysql_store_result 返回NULL，但mysql_field_count 会大于0，此时是个错误
         if ( tmp_res == NULL && mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
         {
-            return MYSQL_RETURN_FAIL;
+            return -1;
         }
 
         //得到结果集,查询结果集信息
@@ -152,16 +155,16 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
     //执行SQL命令影响了多少行,mysql_affected_rows 必须在转储结果集后,所以你要注意输入的参数
     if (num_affect)
     {
-        *num_affect = (unsigned int) mysql_affected_rows(mysql_connect_->get_mysql_handle());
+        *num_affect = (unsigned int) ::mysql_affected_rows(mysql_connect_->get_mysql_handle());
     }
 
     if (lastid)
     {
-        *lastid = (unsigned int) mysql_insert_id(mysql_connect_->get_mysql_handle());
+        *lastid = (unsigned int) ::mysql_insert_id(mysql_connect_->get_mysql_handle());
     }
 
     //成功
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
@@ -286,12 +289,12 @@ ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const std::string &tmpstr)
 int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result &sqlresult, bool bstore)
 {
 
-    int tmpret = mysql_next_result(mysql_connect_->get_mysql_handle());
+    int tmpret = ::mysql_next_result(mysql_connect_->get_mysql_handle());
 
     //tmpret == -1表示没有结果集,其他<0的值表示错误
     if (tmpret < 0 )
     {
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     MYSQL_RES *tmp_res = NULL;
@@ -299,26 +302,26 @@ int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result &sqlresult, bool
     if (bstore)
     {
         //转储结果
-        tmp_res = mysql_store_result(mysql_connect_->get_mysql_handle());
+        tmp_res = ::mysql_store_result(mysql_connect_->get_mysql_handle());
     }
     else
     {
         //转储结果
-        tmp_res = mysql_use_result(mysql_connect_->get_mysql_handle());
+        tmp_res = ::mysql_use_result(mysql_connect_->get_mysql_handle());
     }
 
     //比如你用INSERT语句但是,你要取回结果集,我暂时认为你是对的,只是返回的结果集为空或者你不看注释
     //如果转储失败,为什么这样作,见MySQL文档"为什么在mysql_query()返回成功后mysql_store_result()有时返回NULL? "
-    if ( tmp_res == NULL && mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
+    if ( tmp_res == NULL && ::mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
     {
-        return MYSQL_RETURN_FAIL;
+        return -1;
     }
 
     //得到结果集,查询结果集信息
     sqlresult.set_mysql_result(tmp_res);
 
     //成功
-    return MYSQL_RETURN_OK;
+    return 0;
 }
 
 #endif //MYSQL_VERSION_ID > 40100

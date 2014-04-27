@@ -496,52 +496,53 @@ public:
     }
 
 protected:
-    size_t  &header() const
+
+    inline size_t  &header() const
     {
         return rb_tree_head_->num_of_node_;
     }
 
-    size_t  &root() const
+    inline size_t  &root() const
     {
         return head_index_->parent_;
     }
 
-    size_t  &leftmost() const
+    inline size_t  &leftmost() const
     {
         return head_index_->left_;
     }
 
-    size_t  &rightmost() const
+    inline size_t  &rightmost() const
     {
         return head_index_->right_;
     }
 
-    size_t  &left(size_t x)
+    inline size_t  &left(size_t x)
     {
         return (index_base_ + x)->left_;
     }
 
-    size_t  &right(size_t x)
+    inline size_t  &right(size_t x)
     {
         return (index_base_ + x)->right_;
     }
 
-    size_t  &parent(size_t x)
+    inline size_t  &parent(size_t x)
     {
         return (index_base_ + x)->parent_;
     }
 
-    color_type  &color(size_t x)
+    inline color_type  &color(size_t x)
     {
         return (index_base_ + x)->color_;
     }
 
-    const _value_type  &value(size_t x)
+    inline const _value_type  &value(size_t x)
     {
         return *(data_base_ + x);
     }
 
-    const _key_type  &key(size_t x)
+    inline const _key_type  &key(size_t x)
     {
         return _extract_key()(value(x));
     }
@@ -739,22 +740,25 @@ protected:
     }
 
     //删除时的树形调整，让其符合RBTree要求
-    size_t _rb_tree_rebalance_for_erase(size_t z, size_t &root, size_t leftmost, size_t rightmost)
+    size_t _erase(size_t z)
     {
         size_t y = z;
         size_t x = _INVALID_POINT;
         size_t x_parent = _INVALID_POINT;
 
-        if ( left(y) == _INVALID_POINT )
+        //如果左子树为NULL，选择右子树
+        if (left(y) == _INVALID_POINT)
         {
             x = right(y);
         }
         else
         {
-            if ( right(x) == _INVALID_POINT )
+            //如果左子树不为NULL，而右子树为NULL
+            if (right(x) == _INVALID_POINT)
             {
                 x = left(y);
             }
+            //如果左右子树都不为NULL
             else
             {
                 y = minimum(right(y));
@@ -762,16 +766,17 @@ protected:
             }
         }
 
-        if ( y != z )
+        //y不是z,表示y不是自己这颗子树的极小值
+        if (y != z)
         {
             parent(left(z)) = y;
             left(y) = left(z);
 
-            if ( y != right(z) )
+            if (y != right(z))
             {
                 x_parent = parent(y);
 
-                if ( x != _INVALID_POINT )
+                if (x != _INVALID_POINT)
                 {
                     parent(x) = parent(y);
                 }
@@ -785,11 +790,11 @@ protected:
                 x_parent = y;
             }
 
-            if ( root == z )
+            if (root() == z)
             {
-                root = y;
+                root() = y;
             }
-            else if ( left(parent(z)) == z )
+            else if (left(parent(z)) == z)
             {
                 left(parent(z)) = y;
             }
@@ -808,18 +813,18 @@ protected:
         {
             x_parent = parent(y);
 
-            if ( x != _INVALID_POINT )
+            if (x != _INVALID_POINT)
             {
                 parent(x) = parent(y);
             }
 
-            if ( root == z )
+            if (root() == z)
             {
-                root = x;
+                root() = x;
             }
             else
             {
-                if ( left(parent(z)) == z )
+                if (left(parent(z)) == z)
                 {
                     left(parent(z)) = x;
                 }
@@ -829,49 +834,49 @@ protected:
                 }
             }
 
-            if ( leftmost == z )
+            if (leftmost() == z)
             {
-                if ( right(z) == _INVALID_POINT )
+                if (right(z) == _INVALID_POINT)
                 {
-                    leftmost = parent(z);
+                    leftmost() = parent(z);
                 }
                 else
                 {
-                    leftmost = minimum(x);
+                    leftmost() = minimum(x);
                 }
             }
 
-            if ( rightmost == z )
+            if (rightmost() == z)
             {
-                if ( left(z) == _INVALID_POINT )
+                if (left(z) == _INVALID_POINT)
                 {
-                    rightmost = parent(z);
+                    rightmost() = parent(z);
                 }
                 else
                 {
-                    rightmost = maximum(x);
+                    rightmost() = maximum(x);
                 }
             }
         }
 
-        if ( color(y) != RB_TREE_RED )
+        if (color(y) != RB_TREE_RED)
         {
-            while ( x != root && ( x == _INVALID_POINT || color(x) == RB_TREE_BLACK) )
+            while (x != root() && (x == _INVALID_POINT || color(x) == RB_TREE_BLACK))
             {
-                if ( x == left(x_parent) )
+                if (x == left(x_parent))
                 {
                     size_t w = right(x_parent);
 
-                    if ( color(w) == RB_TREE_RED )
+                    if (color(w) == RB_TREE_RED)
                     {
                         color(w) = RB_TREE_BLACK;
                         color(x_parent) = RB_TREE_RED;
-                        _rb_tree_rotate_left(x_parent, root);
+                        _rb_tree_rotate_left(x_parent, root());
                         w = right(x_parent);
                     }
 
-                    if ( (left(w) == _INVALID_POINT || color(left(w)) == RB_TREE_BLACK) &&
-                         ( right(w) == _INVALID_POINT || color(right(w)) == RB_TREE_BLACK ) )
+                    if ((left(w) == _INVALID_POINT || color(left(w)) == RB_TREE_BLACK) &&
+                        (right(w) == _INVALID_POINT || color(right(w)) == RB_TREE_BLACK))
                     {
                         color(w) = RB_TREE_RED;
                         x = x_parent;
@@ -879,27 +884,27 @@ protected:
                     }
                     else
                     {
-                        if ( right(w) == _INVALID_POINT || color(right(w)) == RB_TREE_BLACK)
+                        if (right(w) == _INVALID_POINT || color(right(w)) == RB_TREE_BLACK)
                         {
-                            if ( left(w) != _INVALID_POINT )
+                            if (left(w) != _INVALID_POINT)
                             {
                                 color(left(w)) = RB_TREE_BLACK;
                             }
 
                             color(w) = RB_TREE_RED;
-                            _rb_tree_rotate_right(w, root);
+                            _rb_tree_rotate_right(w, root());
                             w = right(x_parent);
                         }
 
                         color(w) = color(x_parent);
                         color(x_parent) = RB_TREE_BLACK;
 
-                        if ( right(w) != _INVALID_POINT )
+                        if (right(w) != _INVALID_POINT)
                         {
                             color(right(w)) = RB_TREE_BLACK;
                         }
 
-                        _rb_tree_rotate_left(x_parent, root);
+                        _rb_tree_rotate_left(x_parent, root());
                         break;
                     }
                 }
@@ -907,16 +912,16 @@ protected:
                 {
                     size_t w = left(x_parent);
 
-                    if ( color(w) == RB_TREE_RED )
+                    if (color(w) == RB_TREE_RED)
                     {
                         color(w) = RB_TREE_BLACK;
                         color(x_parent) = RB_TREE_RED;
-                        _rb_tree_rotate_right(x_parent, root);
+                        _rb_tree_rotate_right(x_parent, root());
                         w = left(x_parent);
                     }
 
-                    if ( (right(w) == _INVALID_POINT || color(right(w)) == RB_TREE_BLACK) &&
-                         (left(w) == _INVALID_POINT || color(left(w)) == RB_TREE_BLACK))
+                    if ((right(w) == _INVALID_POINT || color(right(w)) == RB_TREE_BLACK) &&
+                        (left(w) == _INVALID_POINT || color(left(w)) == RB_TREE_BLACK))
                     {
                         color(w) = RB_TREE_RED;
                         x = x_parent;
@@ -924,33 +929,33 @@ protected:
                     }
                     else
                     {
-                        if ( left(w) == _INVALID_POINT || color(left(w)) == RB_TREE_BLACK )
+                        if (left(w) == _INVALID_POINT || color(left(w)) == RB_TREE_BLACK)
                         {
-                            if ( right(w) != _INVALID_POINT )
+                            if (right(w) != _INVALID_POINT)
                             {
                                 color(right(w)) = RB_TREE_BLACK;
                             }
 
                             color(w) = RB_TREE_RED;
-                            _rb_tree_rotate_left(w, root);
+                            _rb_tree_rotate_left(w, root());
                             w = left(x_parent);
                         }
 
                         color(w) = color(x_parent);
                         color(x_parent) = RB_TREE_BLACK;
 
-                        if ( left(w) != _INVALID_POINT )
+                        if (left(w) != _INVALID_POINT)
                         {
                             color(left(w)) = RB_TREE_BLACK;
                         }
 
-                        _rb_tree_rotate_right(x_parent, root);
+                        _rb_tree_rotate_right(x_parent, root());
                         break;
                     }
                 }
             }
 
-            if ( x != _INVALID_POINT )
+            if (x != _INVALID_POINT)
             {
                 color(x) = RB_TREE_BLACK;
             }
@@ -958,6 +963,7 @@ protected:
         }
 
         return y;
+
     }
 
 public:
@@ -1016,10 +1022,7 @@ public:
     //通过迭代器删除一个节点
     iterator erase(const iterator &pos)
     {
-        size_t tmp = _rb_tree_rebalance_for_erase(pos.getserial(), 
-            root(), 
-            leftmost(),
-            rightmost());
+        size_t tmp = _erase(pos.getserial());
         destroy_node(pos.getserial());
         return iterator(tmp, this);
     }
