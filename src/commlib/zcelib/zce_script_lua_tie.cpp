@@ -25,7 +25,7 @@ int ZCE_Lua_Tie::open()
         close();
     }
 
-    lua_state_ = luaL_newstate();
+    lua_state_ = lua_open();
     if (nullptr == lua_state_)
     {
         return -1;
@@ -50,45 +50,46 @@ void ZCE_Lua_Tie::close()
 static int tostring_int64(lua_State *lua_state)
 {
     char temp[64];
-    sprintf_s(temp, "%I64d", *(long long *)lua_topointer(lua_state, 1));
+    snprintf(temp, 63, "%lld", *(int64_t *)lua_topointer(lua_state, 1));
     lua_pushstring(lua_state, temp);
     return 1;
 }
 
-
 static int eq_int64(lua_State *lua_state)
 {
-    bool bret =(memcmp(lua_topointer(lua_state, 1),
-        lua_topointer(lua_state, 2),
-        sizeof(int64_t)) == 0);
-    lua_pushboolean(lua_state, bret);
+    int64_t a = *(int64_t *)lua_topointer(lua_state, 1);
+    int64_t b = *(int64_t *)lua_topointer(lua_state, 2);
+    lua_pushboolean(lua_state, (a==b));
     return 1;
 }
 
 static int lt_int64(lua_State *lua_state)
 {
-    bool bret = (memcmp(lua_topointer(lua_state, 1),
-        lua_topointer(lua_state, 2),
-        sizeof(int64_t)) < 0);
-    lua_pushboolean(lua_state, bret);
+    int64_t a = *(int64_t *)lua_topointer(lua_state, 1);
+    int64_t b = *(int64_t *)lua_topointer(lua_state, 2);
+    lua_pushboolean(lua_state, (a < b));
     return 1;
 }
 
 static int le_int64(lua_State *lua_state)
 {
-    bool bret = (memcmp(lua_topointer(lua_state, 1),
-        lua_topointer(lua_state, 2),
-        sizeof(int64_t)) <= 0);
-    lua_pushboolean(lua_state, bret);
+    int64_t a = *(int64_t *)lua_topointer(lua_state, 1);
+    int64_t b = *(int64_t *)lua_topointer(lua_state, 2);
+    lua_pushboolean(lua_state, (a <= b));
     return 1;
 }
 
 static int set_int64(lua_State *lua_state)
 {
-    bool bret = (memcmp(lua_topointer(lua_state, 1),
-        lua_topointer(lua_state, 2),
-        sizeof(int64_t)) <= 0);
-    lua_pushboolean(lua_state, bret);
+    int64_t *data = (int64_t *)lua_topointer(lua_state, 1);
+    sscanf(lua_tostring(lua_state, 2),"%lld",data);
+    return 1;
+}
+
+static int selfadd_int64(lua_State *lua_state)
+{
+    int64_t *data = (int64_t *)lua_topointer(lua_state, 1);
+    ++(*data);
     return 1;
 }
 
@@ -127,7 +128,7 @@ void ZCE_Lua_Tie::register_int64(lua_State *lua_state)
 static int tostring_uint64(lua_State *lua_state)
 {
     char temp[64];
-    sprintf_s(temp, "%I64u", *(unsigned long long *)lua_topointer(lua_state, 1));
+    snprintf(temp,63, "%llu", *(uint64_t *)lua_topointer(lua_state, 1));
     lua_pushstring(lua_state, temp);
     return 1;
 }
