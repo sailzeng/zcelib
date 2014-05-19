@@ -47,7 +47,7 @@ void ZCE_Lua_Tie::close()
 
 //=======================================================================================================
 //为int64_t 准备的metatable
-static int tostring_s64(lua_State *lua_state)
+static int tostring_int64(lua_State *lua_state)
 {
     char temp[64];
     sprintf_s(temp, "%I64d", *(long long *)lua_topointer(lua_state, 1));
@@ -56,7 +56,7 @@ static int tostring_s64(lua_State *lua_state)
 }
 
 
-static int eq_s64(lua_State *lua_state)
+static int eq_int64(lua_State *lua_state)
 {
     bool bret =(memcmp(lua_topointer(lua_state, 1),
         lua_topointer(lua_state, 2),
@@ -65,7 +65,7 @@ static int eq_s64(lua_State *lua_state)
     return 1;
 }
 
-static int lt_s64(lua_State *lua_state)
+static int lt_int64(lua_State *lua_state)
 {
     bool bret = (memcmp(lua_topointer(lua_state, 1),
         lua_topointer(lua_state, 2),
@@ -74,7 +74,16 @@ static int lt_s64(lua_State *lua_state)
     return 1;
 }
 
-static int le_s64(lua_State *lua_state)
+static int le_int64(lua_State *lua_state)
+{
+    bool bret = (memcmp(lua_topointer(lua_state, 1),
+        lua_topointer(lua_state, 2),
+        sizeof(int64_t)) <= 0);
+    lua_pushboolean(lua_state, bret);
+    return 1;
+}
+
+static int set_int64(lua_State *lua_state)
 {
     bool bret = (memcmp(lua_topointer(lua_state, 1),
         lua_topointer(lua_state, 2),
@@ -84,94 +93,99 @@ static int le_s64(lua_State *lua_state)
 }
 
 
-void ZCE_Lua_Tie::::register_int64_t(lua_State *L)
+void ZCE_Lua_Tie::register_int64(lua_State *lua_state)
 {
-    const char *name = "__s64";
-    lua_pushstring(L, name);
-    lua_newtable(L);
+    const char *name = "int64_t";
+    lua_pushstring(lua_state, name);
+    lua_newtable(lua_state);
 
-    lua_pushstring(L, "__name");
-    lua_pushstring(L, name);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__name");
+    lua_pushstring(lua_state, name);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__tostring");
-    lua_pushcclosure(L, tostring_s64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__tostring");
+    lua_pushcclosure(lua_state, tostring_int64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__eq");
-    lua_pushcclosure(L, eq_s64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__eq");
+    lua_pushcclosure(lua_state, eq_int64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__lt");
-    lua_pushcclosure(L, lt_s64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__lt");
+    lua_pushcclosure(lua_state, lt_int64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__le");
-    lua_pushcclosure(L, le_s64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__le");
+    lua_pushcclosure(lua_state, le_int64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_settable(L, LUA_GLOBALSINDEX);
+    lua_settable(lua_state, LUA_GLOBALSINDEX);
 }
 
 //=======================================================================================================
 //为uint64_t 准备的metatable
-static int tostring_u64(lua_State *L)
+static int tostring_uint64(lua_State *lua_state)
 {
     char temp[64];
-    sprintf_s(temp, "%I64u", *(unsigned long long *)lua_topointer(L, 1));
-    lua_pushstring(L, temp);
+    sprintf_s(temp, "%I64u", *(unsigned long long *)lua_topointer(lua_state, 1));
+    lua_pushstring(lua_state, temp);
     return 1;
 }
 
-/*---------------------------------------------------------------------------*/
-static int eq_u64(lua_State *L)
+static int eq_uint64(lua_State *lua_state)
 {
-    lua_pushboolean(L, memcmp(lua_topointer(L, 1), lua_topointer(L, 2), sizeof(unsigned long long)) == 0);
+    bool bret = (memcmp(lua_topointer(lua_state, 1),
+        lua_topointer(lua_state, 2),
+        sizeof(unsigned long long)) == 0);
+    lua_pushboolean(lua_state, bret);
     return 1;
 }
 
-/*---------------------------------------------------------------------------*/
-static int lt_u64(lua_State *L)
+static int lt_uint64(lua_State *lua_state)
 {
-    lua_pushboolean(L, memcmp(lua_topointer(L, 1), lua_topointer(L, 2), sizeof(unsigned long long)) < 0);
+    bool bret = (memcmp(lua_topointer(lua_state, 1),
+        lua_topointer(lua_state, 2),
+        sizeof(unsigned long long)) < 0);
+    lua_pushboolean(lua_state, bret);
     return 1;
 }
 
-/*---------------------------------------------------------------------------*/
-static int le_u64(lua_State *L)
+static int le_uint64(lua_State *lua_state)
 {
-    lua_pushboolean(L, memcmp(lua_topointer(L, 1), lua_topointer(L, 2), sizeof(unsigned long long)) <= 0);
+    bool bret = (memcmp(lua_topointer(lua_state, 1),
+        lua_topointer(lua_state, 2),
+        sizeof(unsigned long long)) <= 0);
+    lua_pushboolean(lua_state, bret);
     return 1;
 }
 
-/*---------------------------------------------------------------------------*/
-void lua_tinker::init_u64(lua_State *L)
+void ZCE_Lua_Tie::register_uint64(lua_State *lua_state)
 {
-    const char *name = "__u64";
-    lua_pushstring(L, name);
-    lua_newtable(L);
+    const char *name = "uint64_t";
+    lua_pushstring(lua_state, name);
+    lua_newtable(lua_state);
 
-    lua_pushstring(L, "__name");
-    lua_pushstring(L, name);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__name");
+    lua_pushstring(lua_state, name);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__tostring");
-    lua_pushcclosure(L, tostring_u64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__tostring");
+    lua_pushcclosure(lua_state, tostring_uint64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__eq");
-    lua_pushcclosure(L, eq_u64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__eq");
+    lua_pushcclosure(lua_state, eq_uint64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__lt");
-    lua_pushcclosure(L, lt_u64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__lt");
+    lua_pushcclosure(lua_state, lt_uint64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_pushstring(L, "__le");
-    lua_pushcclosure(L, le_u64, 0);
-    lua_rawset(L, -3);
+    lua_pushstring(lua_state, "__le");
+    lua_pushcclosure(lua_state, le_uint64, 0);
+    lua_rawset(lua_state, -3);
 
-    lua_settable(L, LUA_GLOBALSINDEX);
+    lua_settable(lua_state, LUA_GLOBALSINDEX);
 }
 
 

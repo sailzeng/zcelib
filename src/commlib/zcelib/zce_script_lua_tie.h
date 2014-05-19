@@ -17,6 +17,11 @@ public:
     //
     void close();
 
+    //
+    void register_int64(lua_State *lua_state);
+    //
+    void register_uint64(lua_State *lua_state);
+
 protected:
 
     //
