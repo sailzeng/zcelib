@@ -250,6 +250,7 @@
     <ClInclude Include="zce_os_adapt_thread.h" />
     <ClInclude Include="zce_os_adapt_time.h" />
     <ClInclude Include="zce_predefine.h" />
+    <ClInclude Include="zce_script_lua_tie.h" />
     <ClInclude Include="zce_server_status.h" />
     <ClInclude Include="zce_server_toolkit.h" />
     <ClInclude Include="zce_share_mem_mmap.h" />
@@ -368,6 +369,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="zce_script_lua_tie.cpp" />
     <ClCompile Include="zce_server_status.cpp" />
     <ClCompile Include="zce_server_toolkit.cpp" />
     <ClCompile Include="zce_share_mem_mmap.cpp" />
