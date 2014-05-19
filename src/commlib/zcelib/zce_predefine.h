@@ -309,7 +309,7 @@ using std::unordered_set;
 #include <mysql.h>
 #endif
 
-//SQLite3的头文件
+//是否使用SQLITE3
 #ifndef ZCE_USE_SQLITE3
 #define ZCE_USE_SQLITE3 0
 #endif
@@ -317,6 +317,24 @@ using std::unordered_set;
 #if defined ZCE_USE_SQLITE3 && ZCE_USE_SQLITE3 == 1
 #include <sqlite3.h>
 #endif
+
+
+//是否使用LUA
+#ifndef ZCE_USE_LUA
+#define ZCE_USE_LUA 1
+#endif
+
+
+#if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
+extern "C"
+{
+#include "lua.h"
+#include "lualib.h"
+#include "lauxlib.h"
+};
+#endif
+
+
 
 //IPV6的宏，暂时不打开
 //#if !defined ZCE_HAS_IPV6    1
