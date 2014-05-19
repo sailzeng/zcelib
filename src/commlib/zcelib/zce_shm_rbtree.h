@@ -497,16 +497,8 @@ public:
 
 protected:
 
-#define __HEADER       (rb_tree_head_->num_of_node_)
-#define __ROOT         (head_index_->parent_)
-#define __LEFTMOST     (head_index_->left_)
-#define __RIGHTMOST    (head_index_->right_)
-#define __LEFT(x)      ((index_base_ + (x))->left_)
-#define __RIGHT(x)     ((index_base_ + (x))->right_)
-#define __PARENT(x)    ((index_base_ + (x))->parent_)
-#define __COLOR(x)     ((index_base_ + (x))->color_)
-#define __VALUE(x)     (*(data_base_ + (x)))
-#define __KEY(x)       (_extract_key()(*(data_base_ + (x))))
+    //本来打算把这段代码全部宏定义的，但考虑了一下，觉得还是inline就足够了。
+    //宏毕竟会让代码变得丑陋，算了。而且这些函数的长度应该是可以被inline的。
 
     inline size_t  &header() const
     {
@@ -1188,16 +1180,6 @@ public:
         return *iter;
     }
 
-#undef  __HEADER       
-#undef __ROOT         
-#undef __LEFTMOST     
-#undef __RIGHTMOST    
-#undef __LEFT(x)      
-#undef __RIGHT(x)     
-#undef __PARENT(x)
-#undef __COLOR(x)
-#undef __VALUE(x)
-#undef __KEY(x)
 
 protected:
     //index区要增加两个数据,一个是头指针，一个是空节点的头指针

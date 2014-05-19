@@ -533,6 +533,10 @@ public:
     }
 
 public:
+
+    //本来打算把这段代码全部宏定义的，但考虑了一下，觉得还是inline就足够了。
+    //宏毕竟会让代码变得丑陋，算了。而且这些函数的长度应该是可以被inline的。
+
     inline size_t  &header() const
     {
         return avl_tree_head_->num_of_node_;
