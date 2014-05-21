@@ -28,43 +28,57 @@ public:
     //
     void close();
 
-    //
-    void register_int64(lua_State *lua_state);
-    //
-    void register_uint64(lua_State *lua_state);
+    ///注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
+    void reg_int64(lua_State *state);
+    ///注册uint64_t的类型
+    void reg_uint64(lua_State *state);
+    ///注册std::string的类型
+    void reg_stdstring(lua_State *state);
 
-protected:
+    //注册枚举值
+    void reg_enum(const char *name,size_t item_num, ...);
+
+public:
 
     //不允许出现long的变量，因为long无法移植，
 
     ///PUSH一个数据到堆栈，
-    static template<>  void push_stack(lua_State *lua_state, char ret);
-    static template<>  void push_stack(lua_State *lua_state, unsigned char ret);
-    static template<>  void push_stack(lua_State *lua_state, short ret);
-    static template<>  void push_stack(lua_State *lua_state, unsigned short ret);
-    static template<>  void push_stack(lua_State *lua_state, int ret);
-    static template<>  void push_stack(lua_State *lua_state, unsigned int ret);
-    static template<>  void push_stack(lua_State *lua_state, float ret);
-    static template<>  void push_stack(lua_State *lua_state, double ret);
-    static template<>  void push_stack(lua_State *lua_state, char *ret);
-    static template<>  void push_stack(lua_State *lua_state, const char *ret);
-    static template<>  void push_stack(lua_State *lua_state, bool ret);
-    static template<>  void push_stack(lua_State *lua_state, int64_t ret);
-    static template<>  void push_stack(lua_State *lua_state, uint64_t ret);
+    template<typename T> static void push_stack(lua_State * /*state*/, T /*val*/)
+    {
+    }
+    template<> static void push_stack(lua_State *state, char val);
+    template<> static void push_stack(lua_State *state, unsigned char val);
+    template<> static void push_stack(lua_State *state, short val);
+    template<> static void push_stack(lua_State *state, unsigned short val);
+    template<> static void push_stack(lua_State *state, int val);
+    template<> static void push_stack(lua_State *state, unsigned int val);
+    template<> static void push_stack(lua_State *state, float val);
+    template<> static void push_stack(lua_State *state, double val);
+    template<> static void push_stack(lua_State *state, char *val);
+    template<> static void push_stack(lua_State *state, const char *val);
+    template<> static void push_stack(lua_State *state, bool val);
+    template<> static void push_stack(lua_State *state, int64_t val);
+    template<> static void push_stack(lua_State *state, uint64_t val);
+    template<> static void push_stack(lua_State *state, std::string val);
 
-    static template<>  char               *read_stack(lua_State *lua_state, int index);
-    static template<>  const char         *read_stack(lua_State *lua_state, int index);
-    static template<>  char                read_stack(lua_State *lua_state, int index);
-    static template<>  unsigned char       read_stack(lua_State *lua_state, int index);
-    static template<>  short               read_stack(lua_State *lua_state, int index);
-    static template<>  unsigned short      read_stack(lua_State *lua_state, int index);
-    static template<>  int                 read_stack(lua_State *lua_state, int index);
-    static template<>  unsigned int        read_stack(lua_State *lua_state, int index);
-    static template<>  float               read_stack(lua_State *lua_state, int index);
-    static template<>  double              read_stack(lua_State *lua_state, int index);
-    static template<>  bool                read_stack(lua_State *lua_state, int index);
-    static template<>  int64_t             read_stack(lua_State *lua_state, int index);
-    static template<>  uint64_t            read_stack(lua_State *lua_state, int index);
+    template<typename T> static  T read_stack(lua_State *L, int index)
+    {
+        return *(T*)(L, index);
+    }
+    template<> static char               *read_stack(lua_State *state, int index);
+    template<> static const char         *read_stack(lua_State *state, int index);
+    template<> static char                read_stack(lua_State *state, int index);
+    template<> static unsigned char       read_stack(lua_State *state, int index);
+    template<> static short               read_stack(lua_State *state, int index);
+    template<> static unsigned short      read_stack(lua_State *state, int index);
+    template<> static int                 read_stack(lua_State *state, int index);
+    template<> static unsigned int        read_stack(lua_State *state, int index);
+    template<> static float               read_stack(lua_State *state, int index);
+    template<> static double              read_stack(lua_State *state, int index);
+    template<> static bool                read_stack(lua_State *state, int index);
+    template<> static int64_t             read_stack(lua_State *state, int index);
+    template<> static uint64_t            read_stack(lua_State *state, int index);
+    template<> static std::string         read_stack(lua_State *state, int index);
 
 protected:
 
