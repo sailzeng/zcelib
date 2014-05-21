@@ -7,14 +7,6 @@
 
 
 
-namespace ZCE_LIB
-{ 
-
-
-
-
-};
-
 
 //LUA 鞋带，用于帮助绑定C++和
 class ZCE_Lua_Tie
@@ -23,20 +15,35 @@ public:
     ZCE_Lua_Tie();
     ~ZCE_Lua_Tie();
 
-    //
+    ///打开lua state
     int open();
-    //
+    ///关闭lua state
     void close();
 
+
+    ///执行一个lua文件
+    void do_file(const char *filename);
+    ///执行一个LUA的buffer
+    void do_buffer(const char *buff, size_t sz);
+
+    // debug helpers
+    void    dump_stack();
+    int     on_error();
+    void    print_error(const char *fmt, ...);
+
+
     ///注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
-    void reg_int64(lua_State *state);
+    void reg_int64();
     ///注册uint64_t的类型
-    void reg_uint64(lua_State *state);
+    void reg_uint64();
     ///注册std::string的类型
-    void reg_stdstring(lua_State *state);
+    void reg_stdstring();
 
     //注册枚举值
-    void reg_enum(const char *name,size_t item_num, ...);
+    void reg_enum(const char *name, size_t item_num, ...);
+
+
+
 
 public:
 

@@ -5,25 +5,20 @@
 
 #if defined  lua_h
 
-
-
-
-
-
 ZCE_Lua_Tie::ZCE_Lua_Tie() :
     lua_state_(nullptr)
 {
 }
-
 
 ZCE_Lua_Tie::~ZCE_Lua_Tie()
 {
     close();
 }
 
-//
+//打开lua state
 int ZCE_Lua_Tie::open()
 {
+    //如果错误
     if (lua_state_)
     {
         ZCE_LOGMSG(RS_ERROR, "lua_state_ != NULL ,reopen?");
@@ -38,7 +33,7 @@ int ZCE_Lua_Tie::open()
     return 0;
 }
 
-//
+//关闭lua state
 void ZCE_Lua_Tie::close()
 {
     if (lua_state_)
@@ -46,6 +41,26 @@ void ZCE_Lua_Tie::close()
         lua_close(lua_state_);
         lua_state_ = nullptr;
     }
+}
+
+// 执行一个LUA的buffer
+void ZCE_Lua_Tie::do_buffer(const char *buff, size_t len)
+{
+    lua_pushcclosure(lua_state_, on_error, 0);
+    int errfunc = lua_gettop(lua_state_);
+
+    int ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
+    if (ret == 0)
+    {
+        lua_pcall(lua_state_, 0, 1, errfunc);
+    }
+    else
+    {
+        print_error(lua_state_, "%s", lua_tostring(L, -1));
+    }
+
+    lua_remove(lua_state_, errfunc);
+    lua_pop(lua_state_, 1);
 }
 
 //=======================================================================================================
@@ -232,6 +247,13 @@ template<> void ZCE_Lua_Tie::push_stack(lua_State *state, uint64_t val)
     lua_setmetatable(state, -2);
 }
 
+//=======================================================================================================
+//一些公用的特性的LUA注册函数，比如只读的table等
+static int newindex_onlyread(lua_State *state)
+{
+    luaL_error(state, "Table is read only ,can't modify,please check your code.");
+    return 1;
+}
 
 //=======================================================================================================
 //为int64_t 准备的metatable
@@ -307,61 +329,61 @@ static int selfsub_int64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::reg_int64(lua_State *state)
+void ZCE_Lua_Tie::reg_int64()
 {
     const char *name = "int64_t";
-    lua_pushstring(state, name);
-    lua_newtable(state);
+    lua_pushstring(lua_state_, name);
+    lua_newtable(lua_state_);
   
 
-    lua_pushstring(state, "__name");
-    lua_pushstring(state, name);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__name");
+    lua_pushstring(lua_state_, name);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__tostring");
-    lua_pushcclosure(state, tostring_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__tostring");
+    lua_pushcclosure(lua_state_, tostring_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__eq");
-    lua_pushcclosure(state, eq_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__eq");
+    lua_pushcclosure(lua_state_, eq_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__lt");
-    lua_pushcclosure(state, lt_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__lt");
+    lua_pushcclosure(lua_state_, lt_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__le");
-    lua_pushcclosure(state, le_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__le");
+    lua_pushcclosure(lua_state_, le_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__add");
-    lua_pushcclosure(state, add_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__add");
+    lua_pushcclosure(lua_state_, add_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__sub");
-    lua_pushcclosure(state, sub_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__sub");
+    lua_pushcclosure(lua_state_, sub_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "selfadd");
-    lua_pushcclosure(state, selfadd_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "selfadd");
+    lua_pushcclosure(lua_state_, selfadd_int64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "selfsub");
-    lua_pushcclosure(state, selfsub_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "selfsub");
+    lua_pushcclosure(lua_state_, selfsub_int64, 0);
+    lua_rawset(lua_state_, -3);
 
     //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
     //LUA中出现这样的调用，i1 =int64_t("123")
-    lua_newtable(state);
+    lua_newtable(lua_state_);
 
-    lua_pushstring(state, "__call");
-    lua_pushcclosure(state, constructor_int64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__call");
+    lua_pushcclosure(lua_state_, constructor_int64, 0);
+    lua_rawset(lua_state_, -3);
 
     //设置这个table作为int64_t 原型的metatable.
-    lua_setmetatable(state, -2);
+    lua_setmetatable(lua_state_, -2);
 
-    lua_settable(state, LUA_GLOBALSINDEX);
+    lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
 //=======================================================================================================
@@ -438,61 +460,61 @@ static int selfsub_uint64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::reg_uint64(lua_State *state)
+void ZCE_Lua_Tie::reg_uint64()
 {
     const char *name = "uint64_t";
-    lua_pushstring(state, name);
-    lua_newtable(state);
+    lua_pushstring(lua_state_, name);
+    lua_newtable(lua_state_);
 
 
-    lua_pushstring(state, "__name");
-    lua_pushstring(state, name);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__name");
+    lua_pushstring(lua_state_, name);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__tostring");
-    lua_pushcclosure(state, tostring_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__tostring");
+    lua_pushcclosure(lua_state_, tostring_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__eq");
-    lua_pushcclosure(state, eq_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__eq");
+    lua_pushcclosure(lua_state_, eq_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__lt");
-    lua_pushcclosure(state, lt_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__lt");
+    lua_pushcclosure(lua_state_, lt_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__le");
-    lua_pushcclosure(state, le_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__le");
+    lua_pushcclosure(lua_state_, le_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__add");
-    lua_pushcclosure(state, add_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__add");
+    lua_pushcclosure(lua_state_, add_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__sub");
-    lua_pushcclosure(state, sub_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__sub");
+    lua_pushcclosure(lua_state_, sub_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "selfadd");
-    lua_pushcclosure(state, selfadd_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "selfadd");
+    lua_pushcclosure(lua_state_, selfadd_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "selfsub");
-    lua_pushcclosure(state, selfsub_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "selfsub");
+    lua_pushcclosure(lua_state_, selfsub_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
     //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
     //LUA中出现这样的调用，i1 =int64_t("123")
-    lua_newtable(state);
+    lua_newtable(lua_state_);
 
-    lua_pushstring(state, "__call");
-    lua_pushcclosure(state, constructor_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__call");
+    lua_pushcclosure(lua_state_, constructor_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
     //设置这个table作为int64_t 原型的metatable.
-    lua_setmetatable(state, -2);
+    lua_setmetatable(lua_state_, -2);
 
-    lua_settable(state, LUA_GLOBALSINDEX);
+    lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
 //=======================================================================================================
@@ -554,76 +576,82 @@ static int constructor_stdstring(lua_State *state)
 }
 
 //注册std::string
-void ZCE_Lua_Tie::reg_stdstring(lua_State *state)
+void ZCE_Lua_Tie::reg_stdstring()
 {
     const char *name = "stdstring";
-    lua_pushstring(state, name);
-    lua_newtable(state);
+    lua_pushstring(lua_state_, name);
+    lua_newtable(lua_state_);
 
 
-    lua_pushstring(state, "__name");
-    lua_pushstring(state, name);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__name");
+    lua_pushstring(lua_state_, name);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__tostring");
-    lua_pushcclosure(state, tostring_stdstring, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__tostring");
+    lua_pushcclosure(lua_state_, tostring_stdstring, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__eq");
-    lua_pushcclosure(state, eq_stdstring, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__eq");
+    lua_pushcclosure(lua_state_, eq_stdstring, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__lt");
-    lua_pushcclosure(state, lt_stdstring, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__lt");
+    lua_pushcclosure(lua_state_, lt_stdstring, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__le");
-    lua_pushcclosure(state, le_stdstring, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__le");
+    lua_pushcclosure(lua_state_, le_stdstring, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__add");
-    lua_pushcclosure(state, add_stdstring, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__add");
+    lua_pushcclosure(lua_state_, add_stdstring, 0);
+    lua_rawset(lua_state_, -3);
 
-    lua_pushstring(state, "__concat");
-    lua_pushcclosure(state, concat_stdstring, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__concat");
+    lua_pushcclosure(lua_state_, concat_stdstring, 0);
+    lua_rawset(lua_state_, -3);
     
     //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
     //LUA中出现这样的调用，i1 =stdstring("123")
-    lua_newtable(state);
+    lua_newtable(lua_state_);
 
-    lua_pushstring(state, "__call");
-    lua_pushcclosure(state, constructor_uint64, 0);
-    lua_rawset(state, -3);
+    lua_pushstring(lua_state_, "__call");
+    lua_pushcclosure(lua_state_, constructor_uint64, 0);
+    lua_rawset(lua_state_, -3);
 
     //设置这个table作为int64_t 原型的metatable.
-    lua_setmetatable(state, -2);
+    lua_setmetatable(lua_state_, -2);
 
-    lua_settable(state, LUA_GLOBALSINDEX);
+    lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
-
-
 
 //=======================================================================================================
 //为std::string 准备的metatable
 
-void ZCE_Lua_Tie::reg_enum(lua_State *state,const char *name, size_t item_num, ...)
+void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 {
-    lua_pushstring(state, name);
-    lua_newtable(state);
+    lua_pushstring(lua_state_, name);
+    lua_newtable(lua_state_);
 
     va_list argp;
     va_start(argp, item_num);
+    //将枚举值和字符串一一做好绑定，
     for (size_t i = 0; i < item_num; ++i)
     {
-        lua_pushstring(state, va_arg(argp, char *));
-        lua_pushnumber(state, va_arg(argp, char *));
-        lua_rawset(state, -3);
+        lua_pushstring(lua_state_, va_arg(argp, char *));
+        lua_pushnumber(lua_state_, va_arg(argp, int));
+        lua_rawset(lua_state_, -3);
     }
     va_end(argp);
 
     //让这个表格只读
+    lua_newtable(lua_state_);
+
+    lua_pushstring(lua_state_, "__newindex");
+    lua_pushcclosure(lua_state_, newindex_onlyread, 0);
+    lua_rawset(lua_state_, -3);
+    
+    lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
 
