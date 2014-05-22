@@ -5,15 +5,7 @@
 
 #if defined  lua_h
 
-ZCE_Lua_Tie::ZCE_Lua_Tie() :
-    lua_state_(nullptr)
-{
-}
 
-ZCE_Lua_Tie::~ZCE_Lua_Tie()
-{
-    close();
-}
 
 
 
@@ -757,6 +749,17 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
     lua_setmetatable(lua_state_, -2);
 
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
+}
+
+//=======================================================================================================
+ZCE_Lua_Tie::ZCE_Lua_Tie() :
+lua_state_(nullptr)
+{
+}
+
+ZCE_Lua_Tie::~ZCE_Lua_Tie()
+{
+    close();
 }
 
 //´ò¿ªlua state

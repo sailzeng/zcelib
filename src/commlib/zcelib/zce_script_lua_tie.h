@@ -32,17 +32,55 @@ public:
     void dump_luacall_stack();
     
 
-    ///注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
+    ///向LUA注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
     void reg_int64();
-    ///注册uint64_t的类型
+    ///向LUA注册uint64_t的类型
     void reg_uint64();
-    ///注册std::string的类型
+    ///向LUA注册std::string的类型
     void reg_stdstring();
 
-    //注册枚举值
+    ///向LUA注册枚举值
     void reg_enum(const char *name, size_t item_num, ...);
 
-    void reg_gobal_val(const char *name, );
+    ///向LUA设置一个全局变量（的名称对应值得拷贝）
+    template<typename val_type>
+    void set_tolua(const char *name, typename val_type val)
+    {
+        //名称对象，
+        lua_pushstring(lua_state_, name);
+        //模板函数，根据val_type绝对如何push
+        push_stack(lua_state_, val);
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    }
+    ///
+    template<typename val_type>
+    typename val_type get_fromlua(const char *name)
+    {
+        lua_pushstring(lua_state_, name);
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        return pop_stack<val_type>(lua_state_);
+    }
+
+    ///注册一个全局函数，或者类的静态函数给lua调用
+    template<typename fun_type>
+    void reg_fun(const char *name, fun_type func)
+    {
+        //函数名称
+        lua_pushstring(lua_state_, name);
+        //将函数指针转换为void * ，作为lightuserdata 放入堆栈，作为closure的upvalue放入
+        lua_pushlightuserdata(lua_state_, (void *)func);
+        //模板函数，放入closure,func是模板参数
+        push_functor(func);
+        //将其放入全局环境表中
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    }
+
+
+    template <typename ret_type, typename... args>
+    void push_functor(ret_type(*func)(args...))
+    {
+        lua_pushcclosure(lua_state_, functor<ret_type, args...>::invoke, 1);
+    }
 
 
 public:
@@ -50,7 +88,7 @@ public:
     //不允许出现long的变量，因为long无法移植，
 
     ///PUSH一个数据到堆栈，
-    template<typename T> static void push_stack(lua_State * /*state*/, T /*val*/)
+    template<typename val_type> static void push_stack(lua_State * /*state*/, val_type /*val*/)
     {
     }
     template<> static void push_stack(lua_State *state, char val);
@@ -68,9 +106,10 @@ public:
     template<> static void push_stack(lua_State *state, uint64_t val);
     template<> static void push_stack(lua_State *state, std::string val);
 
-    template<typename T> static  T read_stack(lua_State *L, int index)
+    ///
+    template<typename val_type> static  val_type read_stack(lua_State *L, int index)
     {
-        return *(T*)(L, index);
+        return *(val_type*)(L, index);
     }
     template<> static char               *read_stack(lua_State *state, int index);
     template<> static const char         *read_stack(lua_State *state, int index);
@@ -86,6 +125,15 @@ public:
     template<> static int64_t             read_stack(lua_State *state, int index);
     template<> static uint64_t            read_stack(lua_State *state, int index);
     template<> static std::string         read_stack(lua_State *state, int index);
+
+    ///
+    template<typename val_type>
+    val_type pop_stack(lua_State *state)
+    {
+        val_type t = read_stack<val_type>(state, -1);
+        lua_pop(L, 1);
+        return t;
+    }
 
 protected:
 
