@@ -183,7 +183,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 //读取事件触发调用函数
 int ZCE_Event_INotify::handle_input ()
 {
-    ZLOG_DEBUG("ZCE_Event_INotify::handle_input"); 
+    ZCE_LOGMSG(RS_DEBUG, "ZCE_Event_INotify::handle_input");
     int detect_ret = 0;
     size_t watch_event_num = 0;
 
@@ -212,7 +212,9 @@ int ZCE_Event_INotify::handle_input ()
         if (active_iter == watch_event_map_.end())
         {
             //某个FD在MAP中间无法找到，最大的可能是
-            ZLOG_DEBUG("You code error or a handle not in map (delete in this do while), please check you code. handle[%u]", ne_ptr->wd);
+            ZCE_LOGMSG(RS_DEBUG, 
+                "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]", 
+                ne_ptr->wd);
             continue;
         }
         EVENT_INOTIFY_NODE *node_ptr = &(active_iter->second);

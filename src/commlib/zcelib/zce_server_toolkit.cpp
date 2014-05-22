@@ -219,7 +219,7 @@ int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
         process_cpu_ratio_ = 0;
     }
 
-    ZLOG_INFO("[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
+    ZCE_LOGMSG(RS_INFO,"[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
               "totoal process user/sys[%lld/%lld] milliseconds "
               "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds "
               "memory use//add [%ld/%ld].",
@@ -290,7 +290,8 @@ int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
         mem_use_ratio_ = 0;
     }
 
-    ZLOG_INFO("[zcelib] [WATCHDOG][SYSTEM] cpu radio [%u] "
+    ZCE_LOGMSG(RS_INFO,
+              "[zcelib] [WATCHDOG][SYSTEM] cpu radio [%u] "
               "totoal usr/nice/sys/idle/iowait/hardirq/softirq "
               "[%lld/%lld/%lld/%lld/%lld/%lld/%lld] milliseconds"
               "leave last point all/use/idle[%lld/%lld/%lld] milliseconds "

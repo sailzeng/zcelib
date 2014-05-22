@@ -22,15 +22,15 @@ public:
 
 
     ///执行一个lua文件
-    void do_file(const char *filename);
+    int do_file(const char *filename);
     ///执行一个LUA的buffer
-    void do_buffer(const char *buff, size_t sz);
+    int do_buffer(const char *buff, size_t sz);
 
-    // debug helpers
-    void    dump_stack();
-    int     on_error();
-    void    print_error(const char *fmt, ...);
-
+    ///dump C调用lua的堆栈，
+    void dump_clua_stack();
+    ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
+    void dump_luacall_stack();
+    
 
     ///注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
     void reg_int64();
@@ -42,7 +42,7 @@ public:
     //注册枚举值
     void reg_enum(const char *name, size_t item_num, ...);
 
-
+    void reg_gobal_val(const char *name, );
 
 
 public:

@@ -160,7 +160,7 @@ void ZCE_Async_ObjectMgr::finish()
         unsigned int regframe_cmd = pooliter->first;
         ASYNC_OBJECT_RECORD &pool_reg = (pooliter->second);
         //记录信息数据
-        ZLOG_INFO("[ZCELIB] Register command:%u size of pool:%u capacity of pool:%u.",
+        ZCE_LOGMSG(RS_INFO,"[ZCELIB] Register command:%u size of pool:%u capacity of pool:%u.",
             regframe_cmd,
             pool_reg.coroutine_pool_.size(),
             pool_reg.coroutine_pool_.capacity()
@@ -242,7 +242,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
     //还有最后一个
     if (reg_async.coroutine_pool_.size() == 1)
     {
-        ZLOG_INFO("[ZCELIB] Before extend pool.");
+        ZCE_LOGMSG(RS_INFO,"[ZCELIB] Before extend pool.");
         //取一个模型
         ZCE_Async_Object *model_trans = NULL;
         reg_async.coroutine_pool_.pop_front(model_trans);
@@ -250,7 +250,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
         size_t capacity_of_pool = reg_async.coroutine_pool_.capacity();
         reg_async.coroutine_pool_.resize(capacity_of_pool + pool_extend_size_);
 
-        ZLOG_INFO("[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
+        ZCE_LOGMSG(RS_INFO,"[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
             reg_async.coroutine_pool_.size(),
             cmd,
             capacity_of_pool,
@@ -265,7 +265,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
 
         //将模型放到第N个
         reg_async.coroutine_pool_.push_back(model_trans);
-        ZLOG_INFO("[ZCELIB] After Extend trans.");
+        ZCE_LOGMSG(RS_INFO,"[ZCELIB] After Extend trans.");
     }
 
     //取得一个事务
@@ -288,7 +288,7 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 
     //
     ASYNC_OBJECT_RECORD &reg_record = mapiter->second;
-    ZLOG_DEBUG("[framework] Return clone frame command %u,Pool size=%u .",
+    ZCE_LOGMSG(RS_DEBUG,"[framework] Return clone frame command %u,Pool size=%u .",
         free_crtn->create_cmd_,
         reg_record.coroutine_pool_.size());
 

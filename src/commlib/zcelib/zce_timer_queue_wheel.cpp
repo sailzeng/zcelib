@@ -120,7 +120,7 @@ void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id)
                          - prev_trigger_msec_) / timer_precision_mesc_ );
 
     //调试代码，暂时屏蔽
-    //ZLOG_DEBUG("[zcelib] ZCE_Timer_Wheel::bind_wheel_listnode next_trigger_point_[%llu] prev_trigger_msec_ [%llu] front_num [%lu]",
+    //ZCE_LOGMSG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel::bind_wheel_listnode next_trigger_point_[%llu] prev_trigger_msec_ [%llu] front_num [%lu]",
     //  time_node_ary_[time_node_id].next_trigger_point_,
     //  prev_trigger_msec_,
     //  front_num);
@@ -350,7 +350,7 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
     size_t passing_wheel_node = static_cast<size_t>( elapsed_msec / timer_precision_mesc_);
 
     //调试代码，暂时关闭
-    //ZLOG_DEBUG("[zcelib] ZCE_Timer_Wheel . now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%u],passing_wheel_node[%lu]",
+    //ZCE_LOGMSG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel . now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%u],passing_wheel_node[%lu]",
     //  now_trigger_msec,
     //  prev_trigger_msec_,
     //  elapsed_msec,

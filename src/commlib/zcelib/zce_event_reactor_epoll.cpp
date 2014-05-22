@@ -283,7 +283,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
     //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
     if (0 != ret)
     {
-        ZLOG_INFO("[zcelib] process_ready_event find_event_handler fail,maybe one handle is close previous.");
+        ZCE_LOGMSG(RS_INFO,"[zcelib] process_ready_event find_event_handler fail,maybe one handle is close previous.");
         return;
     }
 
@@ -326,7 +326,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
             //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
             if (0 != ret)
             {
-                ZLOG_INFO("[zcelib] process_ready_event find_event_handler fail,maybe one handle is close previous.");
+                ZCE_LOGMSG(RS_INFO,"[zcelib] process_ready_event find_event_handler fail,maybe one handle is close previous.");
                 return;
             }
         }
@@ -353,7 +353,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
             //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
             if (0 != ret)
             {
-                ZLOG_INFO("[zcelib] process_ready_event find_event_handler fail,maybe one handle is close previous.");
+                ZCE_LOGMSG(RS_INFO,"[zcelib] process_ready_event find_event_handler fail,maybe one handle is close previous.");
                 return;
             }
         }

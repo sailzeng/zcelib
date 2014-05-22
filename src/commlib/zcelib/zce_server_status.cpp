@@ -633,8 +633,8 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority,bool dump
         stat_process_iter = status_copy_mandy_->begin();
     }
 
-    ZLOG_INFO("Statistics Number: %u", num_of_counter);
-    ZLOG_INFO("index.<statics id,classify id> name                            :number");
+    ZCE_LOGMSG(RS_INFO,"Statistics Number: %u", num_of_counter);
+    ZCE_LOGMSG(RS_INFO,"index.<statics id,classify id> name                            :number");
 
     ZCE_STATUS_ITEM_WITHNAME tmp_check;
     ZCE_Lock_Ptr_Guard guard(stat_lock_);

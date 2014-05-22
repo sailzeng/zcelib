@@ -558,7 +558,9 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
         if (active_iter == watch_event_map_.end())
         {
             //某个FD在MAP中间无法找到，最大的可能是
-            ZLOG_DEBUG("You code error or a handle not in map (delete in this do while), please check you code. handle[%u]", ne_ptr->wd);
+            ZCE_LOGMSG(RS_DEBUG, 
+                       "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]", 
+                       ne_ptr->wd);
             continue;
         }
         ZCE_INOTIFY_NODE *node_ptr = &(active_iter->second);

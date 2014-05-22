@@ -15,53 +15,7 @@ ZCE_Lua_Tie::~ZCE_Lua_Tie()
     close();
 }
 
-//打开lua state
-int ZCE_Lua_Tie::open()
-{
-    //如果错误
-    if (lua_state_)
-    {
-        ZCE_LOGMSG(RS_ERROR, "lua_state_ != NULL ,reopen?");
-        close();
-    }
 
-    lua_state_ = lua_open();
-    if (nullptr == lua_state_)
-    {
-        return -1;
-    }
-    return 0;
-}
-
-//关闭lua state
-void ZCE_Lua_Tie::close()
-{
-    if (lua_state_)
-    {
-        lua_close(lua_state_);
-        lua_state_ = nullptr;
-    }
-}
-
-// 执行一个LUA的buffer
-void ZCE_Lua_Tie::do_buffer(const char *buff, size_t len)
-{
-    lua_pushcclosure(lua_state_, on_error, 0);
-    int errfunc = lua_gettop(lua_state_);
-
-    int ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
-    if (ret == 0)
-    {
-        lua_pcall(lua_state_, 0, 1, errfunc);
-    }
-    else
-    {
-        print_error(lua_state_, "%s", lua_tostring(L, -1));
-    }
-
-    lua_remove(lua_state_, errfunc);
-    lua_pop(lua_state_, 1);
-}
 
 //=======================================================================================================
 //read_stack从堆栈中读取一个数据
@@ -237,22 +191,171 @@ template<> void ZCE_Lua_Tie::push_stack(lua_State *state, int64_t val)
     *(int64_t *)lua_newuserdata(state, sizeof(int64_t)) = val;
     lua_pushstring(state, "int64_t");
     lua_gettable(state, LUA_GLOBALSINDEX);
+
+    //在DEBUG版本增强一些检查，如果不是table
+#if defined DEBUG || defined _DEBUG
+    if (!lua_istable(state, -1))
+    {
+        luaL_error(state, "[int64_t] is not a table? May be you don't register int64_t to lua? type id [%d]",
+            lua_type(state, -1));
+        return;
+    }
+#endif
+
     lua_setmetatable(state, -2);
 }
+
 template<> void ZCE_Lua_Tie::push_stack(lua_State *state, uint64_t val)
 {
     *(uint64_t *)lua_newuserdata(state, sizeof(uint64_t)) = val;
     lua_pushstring(state, "uint64_t");
     lua_gettable(state, LUA_GLOBALSINDEX);
+
+    //在DEBUG版本增强一些检查，如果不是table
+#if defined DEBUG || defined _DEBUG
+    if (!lua_istable(state, -1))
+    {
+        luaL_error(state, "[uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
+            lua_type(state, -1));
+        return;
+    }
+#endif
+
+    lua_setmetatable(state, -2);
+}
+
+template<> void ZCE_Lua_Tie::push_stack(lua_State *state, std::string val)
+{
+    *(std::string *)lua_newuserdata(state, sizeof(std::string)) = val;
+    lua_pushstring(state, "stdstring");
+    lua_gettable(state, LUA_GLOBALSINDEX);
+    
+    //在DEBUG版本增强一些检查，如果不是table
+#if defined DEBUG || defined _DEBUG
+    if (!lua_istable(state, -1))
+    {
+        luaL_error(state,"[stdstring] is not a table? May be you don't register stdstring to lua? type id [%d]",
+            lua_type(state,-1));
+        return;
+    }
+#endif
     lua_setmetatable(state, -2);
 }
 
 //=======================================================================================================
-//一些公用的特性的LUA注册函数，比如只读的table等
+//一些公用的特性的LUA注册函数，
+
+//只读的table的newdindex
 static int newindex_onlyread(lua_State *state)
 {
     luaL_error(state, "Table is read only ,can't modify,please check your code.");
     return 1;
+}
+
+//dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
+static int luacall_stack(lua_State *state)
+{
+    lua_Debug ar;
+    int stack_lvl = 0;
+    while (lua_getstack(state, stack_lvl, &ar) == 1)
+    {
+        lua_getinfo(state, "nSlu", &ar);
+        if (stack_lvl == 0)
+        {
+            ZCE_LOGMSG(RS_INFO,"[LUASTACK]===========================================" );
+        }
+
+        if (ar.name)
+        {
+            ZCE_LOGMSG(RS_INFO, "%3d.%s() : line %d [%s : line %d]", stack_lvl, ar.name, ar.currentline, ar.source, ar.linedefined);
+        }
+        else
+        {
+            ZCE_LOGMSG(RS_INFO, "%3d.unknown : line %d [%s : line %d]", stack_lvl, ar.currentline, ar.source, ar.linedefined);
+        }
+        ++stack_lvl;
+    }
+    return 0;
+}
+
+//dump C调用lua的堆栈，
+static int clua_stack(lua_State *state)
+{
+    int stack_top = lua_gettop(state);
+    ZCE_LOGMSG(RS_INFO,"[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
+    for (int i = 1; i <= stack_top; ++i)
+    {
+        int lua_typeid = lua_type(state, i);
+        switch (lua_typeid)
+        {
+        case LUA_TNIL:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s", 
+                i, 
+                lua_typename(state, lua_typeid));
+            break;
+        case LUA_TBOOLEAN:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s [%s]", 
+                i,
+                lua_typename(state, lua_typeid),
+                lua_toboolean(state, i) ? "true" : "false");
+            break;
+        case LUA_TLIGHTUSERDATA:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s [0x%p]", 
+                i,
+                lua_typename(state, lua_typeid),
+                lua_topointer(state, i));
+            break;
+        case LUA_TNUMBER:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s [%f]", 
+                i, 
+                lua_typename(state, lua_typeid), 
+                lua_tonumber(state, i));
+            break;
+        case LUA_TSTRING:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s[%s]", 
+                i,
+                lua_typename(state, lua_typeid),
+                lua_tostring(state, i));
+            break;
+        case LUA_TTABLE:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s[0x%p]", 
+                i,
+                lua_typename(state, lua_typeid),
+                lua_topointer(state, i));
+            break;
+        case LUA_TFUNCTION:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s() [0x%p]", 
+                i,
+                lua_typename(state, lua_typeid),
+                lua_topointer(state, i));
+            break;
+        case LUA_TUSERDATA:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s[0x%p]", 
+                i,
+                lua_typename(state, lua_typeid),
+                lua_topointer(state, i));
+            break;
+        case LUA_TTHREAD:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s", 
+                i,
+                lua_typename(state, lua_typeid));
+            break;
+        default:
+            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.type id %d type name %s", 
+                i,
+                lua_typeid,
+                lua_typename(state, lua_typeid));
+            break;
+        }
+    }
+    return 0;
+}
+
+static int on_error(lua_State *state)
+{
+    ZCE_LOGMSG(RS_ERROR, "error msg =%s", lua_tostring(state, 1));
+    luacall_stack(state);
+    return 0;
 }
 
 //=======================================================================================================
@@ -616,7 +719,7 @@ void ZCE_Lua_Tie::reg_stdstring()
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__call");
-    lua_pushcclosure(lua_state_, constructor_uint64, 0);
+    lua_pushcclosure(lua_state_, constructor_stdstring, 0);
     lua_rawset(lua_state_, -3);
 
     //设置这个table作为int64_t 原型的metatable.
@@ -650,10 +753,110 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
     lua_pushstring(lua_state_, "__newindex");
     lua_pushcclosure(lua_state_, newindex_onlyread, 0);
     lua_rawset(lua_state_, -3);
-    
+
+    lua_setmetatable(lua_state_, -2);
+
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
+//打开lua state
+int ZCE_Lua_Tie::open()
+{
+    //如果错误
+    if (lua_state_)
+    {
+        ZCE_LOGMSG(RS_ERROR, "lua_state_ != NULL ,reopen?");
+        close();
+    }
+
+    lua_state_ = lua_open();
+    if (nullptr == lua_state_)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//关闭lua state
+void ZCE_Lua_Tie::close()
+{
+    if (lua_state_)
+    {
+        lua_close(lua_state_);
+        lua_state_ = nullptr;
+    }
+}
+
+// 执行一个LUA的buffer
+int ZCE_Lua_Tie::do_buffer(const char *buff, size_t len)
+{
+    int ret = 0;
+
+    lua_pushcclosure(lua_state_, on_error, 0);
+    int errfunc = lua_gettop(lua_state_);
+
+    ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
+            ret,
+            lua_tostring(lua_state_, -1));
+        lua_pop(lua_state_, 1);
+        lua_remove(lua_state_, errfunc);
+        return ret;
+    }
+
+    //lua_pcall的错误是右错误处理函数处理的，
+    ret = lua_pcall(lua_state_, 0, 0, errfunc);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
+    }
+
+    lua_remove(lua_state_, errfunc);
+    return 0;
+}
+
+// 执行一个LUA的文件
+int ZCE_Lua_Tie::do_file(const char *filename)
+{
+    int ret = 0;
+
+    lua_pushcclosure(lua_state_, on_error, 0);
+    int errfunc = lua_gettop(lua_state_);
+
+    ret = luaL_loadfile(lua_state_, filename);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
+            ret,
+            lua_tostring(lua_state_, -1));
+        lua_pop(lua_state_, 1);
+        lua_remove(lua_state_, errfunc);
+        return ret;
+    }
+
+    //lua_pcall的错误是右错误处理函数处理的，
+    ret = lua_pcall(lua_state_, 0, 0, errfunc);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
+    }
+
+    lua_remove(lua_state_, errfunc);
+    return 0;
+}
+
+///dump C调用lua的堆栈，
+void ZCE_Lua_Tie::dump_clua_stack()
+{
+    ::clua_stack(lua_state_);
+}
+///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
+void ZCE_Lua_Tie::dump_luacall_stack()
+{
+    ::luacall_stack(lua_state_);
+}
 
 
 #endif //

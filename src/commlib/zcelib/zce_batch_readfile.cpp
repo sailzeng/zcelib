@@ -26,7 +26,7 @@
 //    if (read_file)
 //    {
 //
-//        ZLOG_INFO("[framework] Batch process file [%s] open success.file .",
+//        ZCE_LOGMSG(RS_INFO,"[framework] Batch process file [%s] open success.file .",
 //            batch_filename_.c_str());
 //
 //        read_file.seekg(0,std::ios::end);
@@ -52,7 +52,7 @@
 //        //+1很重要,保证字符串的结尾是'\0'
 //        read_stream.str(str_readbuf);
 //
-//        ZLOG_INFO("[framework] Batch process file [%s] read success.file size [%u].",
+//        ZCE_LOGMSG(RS_INFO,"[framework] Batch process file [%s] read success.file size [%u].",
 //            batch_filename_.c_str(),
 //            size_of_file);
 //

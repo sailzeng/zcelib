@@ -83,7 +83,8 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-        ZLOG_DEBUG("zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
+        ZCE_LOGMSG(RS_DEBUG, 
+                   "zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
                    nomatch_count,
                    match_count,
                    read_pos - original_buf,
@@ -356,7 +357,8 @@ zlz_token_process:
     }
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-    ZLOG_DEBUG("zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
+    ZCE_LOGMSG(RS_DEBUG, 
+               "zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
                nomatch_count,
                match_count,
                read_pos - original_buf,
@@ -432,7 +434,8 @@ int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compresse
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
 
-        ZLOG_DEBUG("zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u]."
+        ZCE_LOGMSG(RS_DEBUG,
+                   "zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u]."
                    "remain_read[%10u],remain_write[%10u]",
                    noncomp_count,
                    comp_count,
@@ -613,7 +616,8 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
     {
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-        ZLOG_DEBUG("lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
+        ZCE_LOGMSG(RS_DEBUG,
+                   "lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
                    nomatch_count ,
                    match_count ,
                    read_pos - original_buf,
@@ -858,7 +862,8 @@ lz4_end_process:
     match_count = 0;
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-    ZLOG_DEBUG("lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
+    ZCE_LOGMSG(RS_DEBUG,
+               "lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
                nomatch_count ,
                match_count ,
                read_pos - original_buf,
@@ -920,7 +925,8 @@ int ZCE_LIB::LZ4_Compress_Format::decompress_core(const unsigned char *compresse
     {
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
 
-        ZLOG_DEBUG("lz4 no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u]."
+        ZCE_LOGMSG(RS_DEBUG,
+                   "lz4 no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u]."
                    "remain_read[%10u],remain_write[%10u]",
                    noncomp_count,
                    comp_count,
