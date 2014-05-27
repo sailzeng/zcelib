@@ -256,7 +256,7 @@ ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (STMT_BindTime_Adaptor &ti
 }
 
 //绑定一个空参数
-ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (STMT_BindNULL_Adaptor &bindisnull)
+ZCE_Mysql_STMT_Bind &ZCE_Mysql_STMT_Bind::operator << (STMT_BindNULL_Adaptor & /*bindisnull*/)
 {
     is_bind_null_[current_bind_] = 1;
     //增加当前绑定变量序号

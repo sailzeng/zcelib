@@ -864,6 +864,16 @@ struct ZU64_STRUCT
 //自动包含的包含连接，简化你的操作
 #pragma comment(lib, ZCE_LIB_LIBARY_NAME  )
 
+//如果使用了LUA，自动链接LUA的库，
+#if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
+#if !defined LUA_LIB_LIBARY_NAME
+#define LUA_LIB_LIBARY_NAME   "lualib-"ZCE_PLAT_TOOLSET_CONF".lib"
+#endif
+#pragma comment(lib, LUA_LIB_LIBARY_NAME )
+#endif
+
+
+
 #endif
 
 

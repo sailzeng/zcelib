@@ -12,57 +12,57 @@
 //=======================================================================================================
 //read_stack从堆栈中读取一个数据
 
-template<> char *ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> char *ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (char *)lua_tostring(state, index);
 }
 
-template<> const char *ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> const char *ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (const char *)lua_tostring(state, index);
 }
 
-template<> char ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> char ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (char)lua_tonumber(state, index);
 }
 
-template<> unsigned char ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> unsigned char ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (unsigned char)lua_tonumber(state, index);
 }
 
-template<> short ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> short ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (short)lua_tonumber(state, index);
 }
 
-template<> unsigned short ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> unsigned short ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (unsigned short)lua_tonumber(state, index);
 }
 
-template<> int ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> int ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (int)lua_tonumber(state, index);
 }
 
-template<> unsigned int ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> unsigned int ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (unsigned int)lua_tonumber(state, index);
 }
 
-template<> float ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> float ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (float)lua_tonumber(state, index);
 }
 
-template<> double ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> double ZCE_LUA::read_stack(lua_State *state, int index)
 {
     return (double)lua_tonumber(state, index);
 }
 
-template<> bool ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> bool ZCE_LUA::read_stack(lua_State *state, int index)
 {
     if (lua_isboolean(state, index))
     {
@@ -75,110 +75,121 @@ template<> bool ZCE_Lua_Tie::read_stack(lua_State *state, int index)
     }
 }
 
-template<> int64_t ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> int64_t ZCE_LUA::read_stack(lua_State *state, int index)
 {
     if (lua_isnumber(state, index))
     {
         return (int64_t)lua_tonumber(state, index);
     }
-    else
+    else if (lua_isuserdata(state, index))
     {
         return *(int64_t *)lua_touserdata(state, index);
     }
+    else
+    {
+        ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be int64_t ,type id [%d]",
+            index,
+            lua_type(state, index));
+        return 0;
+    }
 }
 
-template<> uint64_t ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> uint64_t ZCE_LUA::read_stack(lua_State *state, int index)
 {
     if (lua_isnumber(state, index))
     {
         return (uint64_t)lua_tonumber(state, index);
     }
-    else
+    else if (lua_isuserdata(state, index))
     {
         return *(uint64_t *)lua_touserdata(state, index);
     }
+    else
+    {
+        ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be uint64_t ,type id [%d]",
+            index,
+            lua_type(state, index));
+        return 0;
+    }
 }
 
-template<> std::string ZCE_Lua_Tie::read_stack(lua_State *state, int index)
+template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
 {
     if (lua_isstring(state, index))
     {
         return std::string (lua_tostring(state, index));
     }
-    else
+    else if (lua_isuserdata(state, index))
     {
         return *(std::string *) (state, index);
+    }
+    else
+    {
+        ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be std::string ,type id [%d]",
+            index,
+            lua_type(state, index));
+        return std::string("");
     }
 }
 //=======================================================================================================
 //read_stack从堆栈中读取一个数据
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, char val)
+template<> void ZCE_LUA::push_stack(lua_State *state, char val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, unsigned char val)
+template<> void ZCE_LUA::push_stack(lua_State *state, unsigned char val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, short val)
+template<> void ZCE_LUA::push_stack(lua_State *state, short val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, unsigned short val)
+template<> void ZCE_LUA::push_stack(lua_State *state, unsigned short val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, long val)
+
+template<> void ZCE_LUA::push_stack(lua_State *state, int val)
 {
     lua_pushnumber(state, val);
 }
 
-template<>
-void ZCE_Lua_Tie::push_stack(lua_State *state, unsigned long val)
+template<> void ZCE_LUA::push_stack(lua_State *state, unsigned int val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, int val)
+template<> void ZCE_LUA::push_stack(lua_State *state, float val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, unsigned int val)
+template<> void ZCE_LUA::push_stack(lua_State *state, double val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, float val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, double val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, char *val)
+template<> void ZCE_LUA::push_stack(lua_State *state, char *val)
 {
     lua_pushstring(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, const char *val)
+template<> void ZCE_LUA::push_stack(lua_State *state, const char *val)
 {
     lua_pushstring(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, bool val)
+template<> void ZCE_LUA::push_stack(lua_State *state, bool val)
 {
     lua_pushboolean(state, val);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, int64_t val)
+template<> void ZCE_LUA::push_stack(lua_State *state, int64_t val)
 {
     *(int64_t *)lua_newuserdata(state, sizeof(int64_t)) = val;
     lua_pushstring(state, "int64_t");
@@ -197,7 +208,7 @@ template<> void ZCE_Lua_Tie::push_stack(lua_State *state, int64_t val)
     lua_setmetatable(state, -2);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, uint64_t val)
+template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
 {
     *(uint64_t *)lua_newuserdata(state, sizeof(uint64_t)) = val;
     lua_pushstring(state, "uint64_t");
@@ -216,7 +227,7 @@ template<> void ZCE_Lua_Tie::push_stack(lua_State *state, uint64_t val)
     lua_setmetatable(state, -2);
 }
 
-template<> void ZCE_Lua_Tie::push_stack(lua_State *state, std::string val)
+template<> void ZCE_LUA::push_stack(lua_State *state, std::string val)
 {
     *(std::string *)lua_newuserdata(state, sizeof(std::string)) = val;
     lua_pushstring(state, "stdstring");
@@ -238,14 +249,14 @@ template<> void ZCE_Lua_Tie::push_stack(lua_State *state, std::string val)
 //一些公用的特性的LUA注册函数，
 
 //只读的table的newdindex
-static int newindex_onlyread(lua_State *state)
+int ZCE_LUA::newindex_onlyread(lua_State *state)
 {
     luaL_error(state, "Table is read only ,can't modify,please check your code.");
     return 1;
 }
 
 //dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
-static int luacall_stack(lua_State *state)
+int ZCE_LUA::dump_luacall_stack(lua_State *state)
 {
     lua_Debug ar;
     int stack_lvl = 0;
@@ -343,10 +354,10 @@ static int clua_stack(lua_State *state)
     return 0;
 }
 
-static int on_error(lua_State *state)
+int ZCE_LUA::on_error(lua_State *state)
 {
     ZCE_LOGMSG(RS_ERROR, "error msg =%s", lua_tostring(state, 1));
-    luacall_stack(state);
+    dump_luacall_stack(state);
     return 0;
 }
 
@@ -389,7 +400,7 @@ static int add_int64(lua_State *state)
     int64_t a = *(int64_t *)lua_touserdata(state, 1);
     int64_t b = *(int64_t *)lua_touserdata(state, 2);
     int64_t c = a + b;
-    ZCE_Lua_Tie::push_stack(state,c);
+    ZCE_LUA::push_stack(state, c);
     return 1;
 }
 
@@ -398,7 +409,7 @@ static int sub_int64(lua_State *state)
     int64_t a = *(int64_t *)lua_touserdata(state, 1);
     int64_t b = *(int64_t *)lua_touserdata(state, 2);
     int64_t c = a - b;
-    ZCE_Lua_Tie::push_stack(state, c);
+    ZCE_LUA::push_stack(state, c);
     return 1;
 }
 
@@ -406,7 +417,7 @@ static int constructor_int64(lua_State *state)
 {
     int64_t data=0;
     sscanf(lua_tostring(state, 1), "%lld", &data);
-    ZCE_Lua_Tie::push_stack(state, data);
+    ZCE_LUA::push_stack(state, data);
     return 1;
 }
 
@@ -520,7 +531,7 @@ static int add_uint64(lua_State *state)
     uint64_t a = *(uint64_t *)lua_touserdata(state, 1);
     uint64_t b = *(uint64_t *)lua_touserdata(state, 2);
     uint64_t c = a + b;
-    ZCE_Lua_Tie::push_stack(state, c);
+    ZCE_LUA::push_stack(state, c);
     return 1;
 }
 
@@ -529,7 +540,7 @@ static int sub_uint64(lua_State *state)
     uint64_t a = *(uint64_t *)lua_touserdata(state, 1);
     uint64_t b = *(uint64_t *)lua_touserdata(state, 2);
     uint64_t c = a - b;
-    ZCE_Lua_Tie::push_stack(state, c);
+    ZCE_LUA::push_stack(state, c);
     return 1;
 }
 //构造函数，让你支持int64_t("123")
@@ -537,7 +548,7 @@ static int constructor_uint64(lua_State *state)
 {
     uint64_t data = 0;
     sscanf(lua_tostring(state, 1), "%llu", &data);
-    ZCE_Lua_Tie::push_stack(state, data);
+    ZCE_LUA::push_stack(state, data);
     return 1;
 }
 
@@ -650,7 +661,7 @@ static int add_stdstring(lua_State *state)
     std::string *a = (std::string *)lua_touserdata(state, 1);
     std::string *b = (std::string *)lua_touserdata(state, 2);
     std::string c = *a + *b;
-    ZCE_Lua_Tie::push_stack(state, c);
+    ZCE_LUA::push_stack(state, c);
     return 1;
 }
 
@@ -659,14 +670,14 @@ static int concat_stdstring(lua_State *state)
     std::string *a = (std::string *)lua_touserdata(state, 1);
     std::string *b = (std::string *)lua_touserdata(state, 2);
     std::string c = *a + *b;
-    ZCE_Lua_Tie::push_stack(state, c);
+    ZCE_LUA::push_stack(state, c);
     return 1;
 }
 
 static int constructor_stdstring(lua_State *state)
 {
     std::string data(lua_tostring(state, 1));
-    ZCE_Lua_Tie::push_stack(state, data);
+    ZCE_LUA::push_stack(state, data);
     return 1;
 }
 
@@ -743,7 +754,7 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__newindex");
-    lua_pushcclosure(lua_state_, newindex_onlyread, 0);
+    lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
     lua_rawset(lua_state_, -3);
 
     lua_setmetatable(lua_state_, -2);
@@ -795,7 +806,7 @@ int ZCE_Lua_Tie::do_buffer(const char *buff, size_t len)
 {
     int ret = 0;
 
-    lua_pushcclosure(lua_state_, on_error, 0);
+    lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
     int errfunc = lua_gettop(lua_state_);
 
     ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
@@ -825,7 +836,7 @@ int ZCE_Lua_Tie::do_file(const char *filename)
 {
     int ret = 0;
 
-    lua_pushcclosure(lua_state_, on_error, 0);
+    lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
     int errfunc = lua_gettop(lua_state_);
 
     ret = luaL_loadfile(lua_state_, filename);
@@ -858,7 +869,7 @@ void ZCE_Lua_Tie::dump_clua_stack()
 ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
 void ZCE_Lua_Tie::dump_luacall_stack()
 {
-    ::luacall_stack(lua_state_);
+    ZCE_LUA::dump_luacall_stack(lua_state_);
 }
 
 
