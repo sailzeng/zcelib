@@ -64,8 +64,11 @@ void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
 
     //MD5的代码用的会比较多，追求极致速度了，
 #if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
+    //小头序下,假设是x86,x64，不考虑对齐的麻烦，直接上，
+    //当然如果不是对其环境,理论上转换一次对齐也许更快
     x = block;
 #else
+    //注意下面的转换同时也避免了对齐偏移的拷贝问题
     uint32_t  wblock[PROCESS_BLOCK_SIZE / 4];
     endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
     x = wblock;

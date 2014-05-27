@@ -193,6 +193,7 @@
     <ClCompile Include="zealot_test_inotify.cpp" />
     <ClCompile Include="zealot_test_list.cpp" />
     <ClCompile Include="zealot_test_lockfree_deque.cpp" />
+    <ClCompile Include="zealot_test_lua.cpp" />
     <ClCompile Include="zealot_test_mysql_benchmark.cpp" />
     <ClCompile Include="zealot_test_rwlock.cpp" />
     <ClCompile Include="zealot_test_os_adapt.cpp" />

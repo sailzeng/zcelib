@@ -96,6 +96,9 @@ int test_mmap_avltree3(int /*argc*/, char * /*argv*/[]);
 int test_mmap_avltree4(int /*argc*/, char * /*argv*/[]);
 int test_mmap_avltree5(int /*argc*/, char * /*argv*/[]);
 
+
+int test_lua_script(int /*argc*/, char * /*argv*/[]);
+
 #endif //
 
 

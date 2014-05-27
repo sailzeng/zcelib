@@ -179,8 +179,6 @@
     <ClInclude Include="zce_boost_non_copyable.h" />
     <ClInclude Include="zce_boost_random.h" />
     <ClInclude Include="zce_boost_singleton.h" />
-    <ClInclude Include="zce_boost_static_assert.h" />
-    <ClInclude Include="zce_boost_tuple.h" />
     <ClInclude Include="zce_bus_mmap_pipe.h" />
     <ClInclude Include="zce_bus_one_way.h" />
     <ClInclude Include="zce_bus_two_way.h" />

@@ -31,12 +31,6 @@
     <ClInclude Include="zce_boost_singleton.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_boost_static_assert.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_boost_tuple.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_bus_mmap_pipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>

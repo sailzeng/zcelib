@@ -81,6 +81,7 @@
 #include <zce_async_fw_fsm.h>
 #include <zce_async_fw_coroutine.h>
 
+#include <zce_script_lua_tie.h>
 
 #include <zce_server_status.h>
 

@@ -5,7 +5,10 @@
 
 #if defined  lua_h
 
-
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( push )
+#pragma warning ( disable : 4127)
+#endif
 
 
 //LUA 鞋带，用于帮助绑定C++和
@@ -14,31 +17,7 @@ class ZCE_Lua_Tie
     //很多基本的模版函数
 public:
 
-    ///用C11的新特效，变参实现
-    template<typename ret_type, typename... args>
-    struct functor
-    {
-        static int invoke(lua_State *state)
-        {
-            //push是将结果放入堆栈
-            void *upvalue_1 = lua_touserdata(state,lua_upvalueindex(1));
-            ret_type(*)((args)...) fun_ptr = (ret_type(*)(args)...) (upvalue_1);
 
-            if (std::is_void<ret_type>::value)
-            {
-                int para_idx = 0;
-                fun_ptr(read_stack(state, para_idx++)...);
-                return 0;
-            }
-            else
-            {
-                int para_idx = 0;
-                push_stack<ret_type>(fun_ptr(read_stack(state, para_idx++)...));
-                return 1;
-            }
-
-        }
-    };
 
     //不允许出现long的变量，因为long无法移植，
 
@@ -142,18 +121,44 @@ public:
     }
 
     ///注册一个全局函数，或者类的静态函数给lua调用
-    template<typename ret_type, typename... args>
-    void reg_fun(const char *name, ret_type(*func)(args...))
+    template<typename ret_type, typename... args_type>
+    void reg_fun(const char *name, ret_type(*func)(args_type...))
     {
         //函数名称
         lua_pushstring(lua_state_, name);
         //将函数指针转换为void * ，作为lightuserdata 放入堆栈，作为closure的upvalue放入
         lua_pushlightuserdata(lua_state_, (void *)func);
         //functor模板函数，放入closure,
-        lua_pushcclosure(lua_state_, functor<ret_type, args...>::invoke, 1);
+        lua_pushcclosure(lua_state_, functor<ret_type, args_type...>::invoke, 1);
         //将其放入全局环境表中
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
+
+    ///用C11的新特效，变参实现
+    template<typename ret_type, typename... args_type>
+    struct functor
+    {
+        static int invoke(lua_State *state)
+        {
+            //push是将结果放入堆栈
+            void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
+            ret_type(*fun_ptr)(args_type...) = (ret_type(*)(args_type...)) (upvalue_1);
+
+            if (std::is_void<ret_type>::value)
+            {
+                int para_idx = 0;
+                fun_ptr(read_stack<args_type>(state, para_idx++)...);
+                return 0;
+            }
+            else
+            {
+                int para_idx = 0;
+                push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx++)...));
+                return 1;
+            }
+        }
+    };
+
 
 protected:
 
@@ -161,7 +166,9 @@ protected:
     lua_State   *lua_state_;
 };
 
-
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( pop )
+#endif
 
 #endif
 
