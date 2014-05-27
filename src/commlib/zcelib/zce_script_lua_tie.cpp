@@ -737,7 +737,8 @@ void ZCE_Lua_Tie::reg_stdstring()
 void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 {
     lua_pushstring(lua_state_, name);
-    lua_newtable(lua_state_);
+    //由于不知道你的枚举值是否是array，所以这样申请的，
+    lua_createtable(lua_state_, 0, item_num);
 
     va_list argp;
     va_start(argp, item_num);
@@ -774,7 +775,8 @@ ZCE_Lua_Tie::~ZCE_Lua_Tie()
 }
 
 //打开lua state
-int ZCE_Lua_Tie::open()
+int ZCE_Lua_Tie::open(bool open_libs,
+    bool reg_common_use)
 {
     //如果错误
     if (lua_state_)

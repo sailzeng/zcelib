@@ -111,8 +111,15 @@ public:
     ZCE_Lua_Tie();
     ~ZCE_Lua_Tie();
 
-    ///打开lua state
-    int open();
+
+    /*!
+    * @brief      打开lua state
+    * @return     int  
+    * @param      open_libs  是否打开常用的一些LUA库
+    * @param      reg_common 是否注册一些常用
+    */
+    int open(bool open_libs,
+        bool reg_common);
     ///关闭lua state
     void close();
 
@@ -138,7 +145,7 @@ public:
     ///向LUA注册枚举值
     void reg_enum(const char *name, size_t item_num, ...);
 
-    ///向LUA设置一个全局变量（的名称对应值得拷贝）
+    ///向LUA设置一个（全局）变量（名称和变量对应值得拷贝）
     template<typename val_type>
     void set_gval(const char *name, typename val_type val)
     {
@@ -149,9 +156,9 @@ public:
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-    ///从LUA读取一个全局变量
+    ///根据名称，从LUA读取一个变量
     template<typename val_type>
-    typename val_type get_gval(const char *name)
+    typename val_type get_val(const char *name)
     {
         lua_pushstring(lua_state_, name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
@@ -160,17 +167,19 @@ public:
 
     ///向LUA设置一个全局的数组
     template<typename val_type>
-    void set_gary(const char *name, 
-        typename const val_type ary_data[],
+    void set_ary(const char *name, 
         size_t ary_num,
+        typename const val_type ary_data[],
         bool read_only = false)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
-        lua_newtable(lua_state_);
+        lua_createtable(lua_state_, ary_num, 0);
+
+        char num_key[64];
         for (size_t i = 0; i<ary_num; ++i)
         {
-            lua_pushnumber(lua_state_,i);
+            lua_pushstring(lua_state_, itoa(i, num_key,10));
             push_stack(lua_state_, ary_data[i]);
             lua_rawset(lua_state_, -3);
         }
@@ -190,43 +199,43 @@ public:
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-    ///向LUA设置一个全局的数组
+    ///从LUA中获取一个全局的数组
     template<typename ary_type>
-    int get_gary(const char *name,
-        typename const ary_type ary_data[],
+    int get_ary(const char *name,
         size_t ary_num,
-        bool read_only = false)
+        typename const ary_type ary_data[]  )
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
-        lua_newtable(lua_state_);
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        //如果不是一个table，错误哦
+        if (!lua_istable(lua_state_, -1))
+        {
+            return -1;
+        }
+
+        char num_key[64];
         for (size_t i = 0; i < ary_num; ++i)
         {
-            lua_pushnumber(lua_state_, i);
-            push_stack(lua_state_, ary_data[i]);
-            lua_rawset(lua_state_, -3);
+            lua_getfield(lua_state_,-1， itoa(i, num_key, 10));
+            if (lua_isnil(lua_state_,-1))
+            {
+                return -1;
+            }
+            ary_data[i] = pop_stack<ary_type>(lua_state_ );
         }
-        //如果希望其只读
-        if (read_only)
-        {
-            //让这个表格只读
-            lua_newtable(lua_state_);
-
-            lua_pushstring(lua_state_, "__newindex");
-            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
-            lua_rawset(lua_state_, -3);
-
-            lua_setmetatable(lua_state_, -2);
-        }
-
-        lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
 
 
-
-
-    ///注册一个全局函数，或者类的静态函数给lua调用
+    /*!
+    * @brief      向LUA注册一个全局函数，或者类的静态函数给lua调用
+    * @tparam     ret_type  返回参数类型
+    * @tparam     args_type 函数的参数类型，变参
+    * @param      name      向LUA注册的函数名称
+    * @param      func      注册的C函数
+    */
     template<typename ret_type, typename... args_type>
     void reg_gfun(const char *name, ret_type(*func)(args_type...))
     {
@@ -238,6 +247,36 @@ public:
         lua_pushcclosure(lua_state_, ZCE_LUA::g_functor<ret_type, args_type...>::invoke, 1);
         //将其放入全局环境表中
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    }
+
+    ///调用LUA的函数，取回一个返回值
+    template<typename ret_type, typename... args_type>
+    int call_luafun(const char *name, ret_type ret, args_type... args)
+    {
+        //放入错误处理的函数，并且记录堆栈的地址
+        lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
+        int errfunc = lua_gettop(lua_state_);
+
+        lua_pushstring(lua_state_, name);
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        //检查其是否是函数
+        if (!lua_isfunction(lua_state_, -1))
+        {
+            print_error(L, "call_luafun() attempt to call global `%s' (not a function)", name);
+            return -1;
+        }
+        
+        //放入堆栈参数，args
+        ZCE_LUA::push_stack(lua_state_, args...);
+
+        //调用lua的函数，默认只有一个返回值，
+        lua_pcall(L, 2, 1, errfunc);
+
+        //在堆栈删除掉错误处理的函数
+        lua_remove(L, errfunc);
+
+        //在堆栈弹出返回值
+        return pop<RVal>(L);
     }
 
 protected:
