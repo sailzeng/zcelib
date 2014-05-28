@@ -262,7 +262,7 @@ public:
         //检查其是否是函数
         if (!lua_isfunction(lua_state_, -1))
         {
-            print_error(L, "call_luafun() attempt to call global `%s' (not a function)", name);
+            ZCE_LOGMSG(RS_ERROR, "call_luafun() attempt to call global `%s' (not a function)", name);
             return -1;
         }
         
@@ -273,10 +273,12 @@ public:
         lua_pcall(L, 2, 1, errfunc);
 
         //在堆栈删除掉错误处理的函数
-        lua_remove(L, errfunc);
+        lua_remove(lua_state_, errfunc);
 
         //在堆栈弹出返回值
-        return pop<RVal>(L);
+        ZCE_LUA::pop_stack<ret_type>(lua_state_);
+        
+        return 0;
     }
 
 protected:
