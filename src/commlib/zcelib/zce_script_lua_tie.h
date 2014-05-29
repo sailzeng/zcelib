@@ -193,10 +193,11 @@ public:
         lua_pushstring(lua_state_, name);
         lua_createtable(lua_state_, ary_num, 0);
 
-        char num_key[64];
         for (size_t i = 0; i<ary_num; ++i)
         {
-            lua_pushstring(lua_state_, itoa(i, num_key,10));
+            //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
+            //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
+            lua_pushnumber(lua_state_,static_cast<int>(i) );
             push_stack(lua_state_, ary_data[i]);
             lua_rawset(lua_state_, -3);
         }
@@ -229,13 +230,14 @@ public:
         //如果不是一个table，错误哦
         if (!lua_istable(lua_state_, -1))
         {
+            lua_pop(lua_state_, 1);
             return -1;
         }
 
-        char num_key[64];
         for (size_t i = 0; i < ary_num; ++i)
         {
-            lua_getfield(lua_state_,-1， itoa(i, num_key, 10));
+            lua_pushnumber(lua_state_, static_cast<int>(i));
+            lua_gettable(lua_state_,-2)
             if (lua_isnil(lua_state_,-1))
             {
                 return -1;
@@ -285,6 +287,7 @@ public:
         if (!lua_isfunction(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "call_luafun() attempt to call global `%s' (not a function)", name);
+            lua_pop(lua_state_,1);
             return -1;
         }
 
@@ -341,8 +344,8 @@ public:
         return 0;
     }
 
+    //template<typename ret_type1, typename ret_type2, typename... args_type>
     
-
 
 protected:
 

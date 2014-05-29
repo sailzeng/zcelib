@@ -109,6 +109,7 @@ template<> uint64_t ZCE_LIB::read_stack(lua_State *state, int index)
         ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be uint64_t ,type id [%d]",
             index,
             lua_type(state, index));
+        lua_pop(state, 1);
         return 0;
     }
 }
@@ -128,6 +129,7 @@ template<> std::string ZCE_LIB::read_stack(lua_State *state, int index)
         ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be std::string ,type id [%d]",
             index,
             lua_type(state, index));
+        lua_pop(state, 1);
         return std::string("");
     }
 }
@@ -201,6 +203,7 @@ template<> void ZCE_LIB::push_stack(lua_State *state, int64_t val)
     {
         luaL_error(state, "[int64_t] is not a table? May be you don't register int64_t to lua? type id [%d]",
             lua_type(state, -1));
+        lua_pop(state, 1);
         return;
     }
 #endif
@@ -220,6 +223,7 @@ template<> void ZCE_LIB::push_stack(lua_State *state, uint64_t val)
     {
         luaL_error(state, "[uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
             lua_type(state, -1));
+        lua_pop(state, 1);
         return;
     }
 #endif
@@ -239,6 +243,7 @@ template<> void ZCE_LIB::push_stack(lua_State *state, std::string val)
     {
         luaL_error(state,"[stdstring] is not a table? May be you don't register stdstring to lua? type id [%d]",
             lua_type(state,-1));
+        lua_pop(state, 1);
         return;
     }
 #endif
@@ -282,7 +287,7 @@ int ZCE_LIB::dump_luacall_stack(lua_State *state)
 }
 
 //dump C调用lua的堆栈，
-static int clua_stack(lua_State *state)
+static int dump_clua_stack(lua_State *state)
 {
     int stack_top = lua_gettop(state);
     ZCE_LOGMSG(RS_INFO,"[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
@@ -357,6 +362,7 @@ static int clua_stack(lua_State *state)
 int ZCE_LIB::on_error(lua_State *state)
 {
     ZCE_LOGMSG(RS_ERROR, "error msg =%s", lua_tostring(state, 1));
+    lua_pop(state, 1);
     dump_luacall_stack(state);
     return 0;
 }
@@ -879,7 +885,7 @@ int ZCE_Lua_Tie::do_file(const char *filename)
 ///dump C调用lua的堆栈，
 void ZCE_Lua_Tie::dump_clua_stack()
 {
-    ::clua_stack(lua_state_);
+    ZCE_LIB::dump_clua_stack(lua_state_);
 }
 ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
 void ZCE_Lua_Tie::dump_luacall_stack()
