@@ -10,8 +10,8 @@
 #pragma warning ( disable : 4127)
 #endif
 
-//最后还是同意用了ZCE_LIB的名字空间
-namespace ZCE_LIB
+//最后还是使用用了ZCE_LUA的名字空间，因为用ZCE_LIB感觉不能完全避免冲突性
+namespace ZCE_LUA
 {
     ///只读的table的newdindex
     int newindex_onlyread(lua_State *state);
@@ -89,7 +89,7 @@ namespace ZCE_LIB
 
     ///用C11的新特效，变参实现
     template<typename ret_type, typename... args_type>
-    struct g_functor
+    struct g_cfunctor
     {
         static int invoke(lua_State *state)
         {
@@ -111,6 +111,26 @@ namespace ZCE_LIB
             }
         }
     };
+    
+    //用模板函数辅助帮忙实现一个方法，可以通过class 找到对应的类名称（注册到LUA的名称），
+    template<typename class_type>
+    struct class_name
+    {
+        // global name
+        static const char *name(const char *name = NULL)
+        {
+            const size_t MAX_LEN = 255;
+            static char temp[MAX_LEN+1] = "";
+            if (name)
+            {
+                strncpy(temp, name, MAX_LEN);
+                temp[MAX_LEN] = '\0';
+            }
+            return temp;
+        }
+    };
+
+
 };
 
 //=======================================================================================================
@@ -208,7 +228,7 @@ public:
             lua_newtable(lua_state_);
 
             lua_pushstring(lua_state_, "__newindex");
-            lua_pushcclosure(lua_state_, ZCE_LIB::newindex_onlyread, 0);
+            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
             lua_rawset(lua_state_, -3);
 
             lua_setmetatable(lua_state_, -2);
@@ -261,7 +281,7 @@ public:
         //将函数指针转换为void * ，作为lightuserdata 放入堆栈，作为closure的upvalue放入
         lua_pushlightuserdata(lua_state_, (void *)func);
         //functor模板函数，放入closure,
-        lua_pushcclosure(lua_state_, ZCE_LIB::g_functor<ret_type, args_type...>::invoke, 1);
+        lua_pushcclosure(lua_state_, ZCE_LUA::g_cfunctor<ret_type, args_type...>::invoke, 1);
         //将其放入全局环境表中
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
@@ -278,7 +298,7 @@ public:
     {
         int ret = 0;
         //放入错误处理的函数，并且记录堆栈的地址
-        lua_pushcclosure(lua_state_, ZCE_LIB::on_error, 0);
+        lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
         int errfunc = lua_gettop(lua_state_);
 
         lua_pushstring(lua_state_, name);
@@ -292,7 +312,7 @@ public:
         }
 
         //放入堆栈参数，args
-        ZCE_LIB::push_stack(lua_state_, args...);
+        ZCE_LUA::push_stack(lua_state_, args...);
 
         size_t arg_num = sizeof...(args);
         //调用lua的函数，默认只有一个返回值，
@@ -324,7 +344,7 @@ public:
             return ret;
         }
         //在堆栈弹出返回值
-        ret_val1 = ZCE_LIB::pop_stack<ret_type1>(lua_state_);
+        ret_val1 = ZCE_LUA::pop_stack<ret_type1>(lua_state_);
         return 0;
     }
 
@@ -339,13 +359,51 @@ public:
             return ret;
         }
         //在堆栈弹出返回值
-        ret_val1 = ZCE_LIB::pop_stack<ret_type1>(lua_state_);
-        ret_val2 = ZCE_LIB::pop_stack<ret_type2>(lua_state_);
+        ret_val1 = ZCE_LUA::pop_stack<ret_type1>(lua_state_);
+        ret_val2 = ZCE_LUA::pop_stack<ret_type2>(lua_state_);
         return 0;
     }
 
+    // class init
+    //类的初始化，让class能在lua中使用
+    //定义类的metatable的表，或者说原型的表。
+    template<typename class_type>
+    void reg_class(lua_State *state, const char *name)
+    {
+        //绑定T和名称
+        ZCE_LUB::class_name<class_type>::name(name);
+
+        //类的名称
+        lua_pushstring(state, name);
+        //new 一个table，这个table是作为其他的类的metatable的（某种程度上也可以说是原型），
+        lua_newtable(state);
+
+        //__name不是标准的元方法，但在例子中有使用
+        lua_pushstring(state, "__name");
+        lua_pushstring(state, name);
+        lua_rawset(state, -3);
+
+        //将meta_get函数作为__index函数
+        lua_pushstring(state, "__index");
+        lua_pushcclosure(state, meta_get, 0);
+        lua_rawset(state, -3);
+
+        //将meta_set函数作为__index函数
+        lua_pushstring(state, "__newindex");
+        lua_pushcclosure(state, meta_set, 0);
+        lua_rawset(state, -3);
+
+        //垃圾回收函数
+        lua_pushstring(state, "__gc");
+        lua_pushcclosure(state, destroyer<class_type>, 0);
+        lua_rawset(state, -3);
+
+        lua_settable(state, LUA_GLOBALSINDEX);
+    }
+
+
     //template<typename ret_type1, typename ret_type2, typename... args_type>
-    
+
 
 protected:
 
