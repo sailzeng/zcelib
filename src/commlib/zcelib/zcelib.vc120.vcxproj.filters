@@ -388,6 +388,9 @@
     <ClInclude Include="zce_script_lua_tie.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_boost_any.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
