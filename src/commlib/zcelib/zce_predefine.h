@@ -62,7 +62,11 @@
 // LINUX平台(GCC)我只打算支持GCC，不好意思
 #if defined(__linux__) && defined (__GNUC__)
 #define ZCE_OS_LINUX 1
-
+#ifndef _GCC_VER
+#define _GCC_VER (__GNUC__ * 10000 \
+    + __GNUC_MINOR__ * 100 \
+    + __GNUC_PATCHLEVEL__)
+#endif
 #if defined(__LP64__)
 #define ZCE_LINUX64 1
 #else
@@ -81,14 +85,36 @@
 //如果你啥都不是或者啥都是，我不活了。
 #if (!defined (ZCE_OS_WINDOWS) && !defined (ZCE_OS_LINUX)) \
     || (defined (ZCE_OS_WINDOWS) && defined (ZCE_OS_LINUX))
-#error " ZCE_OS_WINDOWS and ZCE_OS_LINUX all defined or all undefined.  error."
-#endif 
+#error "[Error]ZCE_OS_WINDOWS and ZCE_OS_LINUX all defined or all undefined.  error."
+#endif
 
 //Windows下必须使用VS作为编辑器，不是我对GCC无爱，是太太麻烦了。
 #if defined (ZCE_OS_WINDOWS)
-#if !defined (_MSC_VER) || (_MSC_VER < 1310)
-#error "Only support 2003 or upper visual studio version."
+#if !defined (_MSC_VER) || (_MSC_VER < 1400)
+#error "[Error]Only support 2005 or upper visual studio version."
 #endif
+#endif
+
+//==================================================================================================
+//关于C++11的特性使用问题，C++11的很多特效如此的诱人，但想真心爱他还是有一些门槛的。
+//我曾经安装C++98的推广速度认为，我们到2015年可以开始使用C++11特性，2018年才能推广，
+//但这一次编译机的厂商感觉都比较努力，到2013年，VC++和GCC 已经大部分完成任务，但要在现
+//有的代码里面使用C++11容易，兼容之就比较蛋疼了。
+//如果有兴趣看看这两篇文档
+//http://gcc.gnu.org/projects/cxx0x.html
+//http://msdn.microsoft.com/en-us/library/hh567368.aspx
+//随便列举几个
+//auto-typed variables                               GCC 4.4 VC++从2010开始逐步支持
+//Non-static data member initializers                GCC 4.7 VC++2013
+//Variadic templates                                 GCC 4.3 VC++2013
+//Default template arguments for function templates  GCC 4.3 VC++2013
+//如果抛开上面的繁杂的特效可以认为，VC++，从2010版本开始支持，在2013版本支持特效比较完整，
+//GCC 从4.3版本开始到.到4.8版本支持比较晚上，GCC4.8的支持特性数量程度都远好于VC++2013
+#if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1800)) \
+    || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 40800)) 
+#define ZCE_SUPPORT_CPP11 1
+#else
+#define ZCE_SUPPORT_CPP11 0
 #endif
 
 //==================================================================================================
@@ -98,6 +124,7 @@
 //#pragma GCC diagnostic pop
 
 //==================================================================================================
+
 
 //WINDOWS的特有头文件部分，
 
@@ -249,28 +276,31 @@
 #include <memory>
 #include <limits>
 
-//hash_map,hash_set的包含
-#if defined ZCE_OS_WINDOWS
+//hash_map,hash_set的头文件包含处理要麻烦一点
+
 //在VS2008以后，才有unordered_map和unordered_set，所以在这之前，你必须用stlport，
 //当然由于stlport的性能强过微软自带的容器，其他版本也建议大家用stlport
-#if !defined _STLP_CONFIX_H && defined (_MSC_VER) && (_MSC_VER <= 1400)
+#if defined ZCE_OS_WINDOWS && !defined _STLP_CONFIX_H && defined (_MSC_VER) && (_MSC_VER <= 1400)
 #error " Please use stlport ,in Visual studio 2005, have not unordered_map and unordered_set ."
 #endif
 
-// hash扩展 windows下用的stlport
+// 在VC++2008版本,VC++2005+STLport，GCC 4.6版本以及更早的版本，unordered_map的名字空间是std::tr1
+#if (defined ZCE_OS_LINUX && (_GCC_VER > 40600)) \
+    || ( defined ZCE_OS_WINDOWS && (_MSC_VER <= 1400) ) \
+    || ( defined _STLP_CONFIX_H) 
 #include <unordered_map>
 #include <unordered_set>
 using std::tr1::unordered_map;
 using std::tr1::unordered_set;
 
-#elif defined ZCE_OS_LINUX
-
+//后面的版本都是直接用了std的名字空间
+#else
 #include <unordered_set>
 #include <unordered_map>
 using std::unordered_map;
 using std::unordered_set;
-
-#endif  //#if defined ZCE_OS_WINDOWS
+#endif  
+//更早的版本其实是支持hash_map和hash_set的头文件的，先我放弃支持了,那个要改一点代码。
 
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( pop )
@@ -443,7 +473,7 @@ typedef __int64             int64_t;
 //我是抄ACE_UNUSED_ARG的呀。我承认呀。windows下也许也可以考虑定义成__noop呀，
 #if !defined (ZCE_UNUSED_ARG)
 #if defined ZCE_OS_LINUX
-#  if defined (__GNUC__) && ((__GNUC__ > 4 || (__GNUC__ == 4 && __GNUC_MINOR__ >= 2)))
+#  if defined ( _GCC_VER >= 40200)
 #    define ZCE_UNUSED_ARG(a) (void) (a)
 #  else
 #    define ZCE_UNUSED_ARG(a) do {/* null */} while (&a == 0)

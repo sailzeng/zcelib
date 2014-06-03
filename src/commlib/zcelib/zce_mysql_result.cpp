@@ -3,7 +3,7 @@
 #include "zce_mysql_result.h"
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 /*********************************************************************************
 class ZCE_Mysql_Result

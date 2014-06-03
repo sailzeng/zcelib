@@ -3,7 +3,12 @@
 #ifndef ZCE_LIB_SCRIPT_LUA_H_
 #define ZCE_LIB_SCRIPT_LUA_H_
 
-#if defined  lua_h
+//LUA目前的包装代码使用C11的新特效，必须用新的编译器
+#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
+
+#if LUA_VERSION_NUM != 501
+#error "[Error] please check your lua libary version,Only support 501. LUA_VERSION_NUM != 501."
+#endif
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
@@ -357,7 +362,7 @@ protected:
 #pragma warning ( pop )
 #endif
 
-#endif
+#endif //#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
 
 #endif // ZCE_LIB_SCRIPT_LUA_H_
 

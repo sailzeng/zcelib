@@ -2,7 +2,7 @@
 #include "zce_mysql_field.h"
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 //High Speed 得到String
 void ZCE_Mysql_Field::get_string(std::string &tmpstr) const
@@ -12,5 +12,5 @@ void ZCE_Mysql_Field::get_string(std::string &tmpstr) const
 }
 
 //如果你要用MYSQL的库
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 

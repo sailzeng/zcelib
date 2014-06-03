@@ -3,7 +3,7 @@
 #include "zce_mysql_connect.h"
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 /*********************************************************************************
 class ZCE_Mysql_Connect
@@ -293,5 +293,5 @@ int ZCE_Mysql_Connect::trans_rollback()
 #endif // MYSQL_VERSION_ID > 40100
 
 //如果你要用MYSQL的库
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 

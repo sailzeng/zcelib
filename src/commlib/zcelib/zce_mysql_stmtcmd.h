@@ -18,7 +18,7 @@
 #define ZCE_LIB_MYSQL_STMT_COMMAND_H_
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 #include "zce_mysql_connect.h"
 
@@ -198,7 +198,7 @@ inline unsigned int ZCE_Mysql_STMT_Command::get_num_of_result_fields() const
 #endif //MYSQL_VERSION_ID >= 40100
 
 //如果你要用MYSQL的库
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_STMT_COMMAND_H_
 

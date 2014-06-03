@@ -18,7 +18,7 @@
 #include "zce_boost_non_copyable.h"
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 #include "zce_mysql_connect.h"
 #include "zce_mysql_command.h"
@@ -161,7 +161,7 @@ protected:
     ZCE_Mysql_Command db_command_;
 };
 
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
 

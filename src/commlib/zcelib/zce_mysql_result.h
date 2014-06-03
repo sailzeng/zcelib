@@ -29,7 +29,7 @@
 #define ZCE_LIB_MYSQL_DB_RESULT_H_
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 #include "zce_os_adapt_string.h"
 #include "zce_trace_log_debug.h"
@@ -414,7 +414,7 @@ inline ZCE_Mysql_Field ZCE_Mysql_Result::operator[](unsigned int fieldid) const
 }
 
 //如果你要用MYSQL的库
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_DB_RESULT_H_
 

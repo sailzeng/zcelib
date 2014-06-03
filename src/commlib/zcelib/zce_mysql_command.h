@@ -18,7 +18,7 @@
 #define ZCE_LIB_MYSQL_DB_COMMAND_H_
 
 //如果你要用MYSQL的库，会包含MYSQL的头文件
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 #include "zce_boost_non_copyable.h"
 #include "zce_mysql_connect.h"
@@ -311,7 +311,7 @@ inline ZCE_Mysql_Command &ZCE_Mysql_Command::operator +=(const std::string &sqlc
     return *this;
 }
 
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_DB_COMMAND_H_
 

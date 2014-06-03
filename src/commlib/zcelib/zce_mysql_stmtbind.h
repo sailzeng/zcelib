@@ -16,7 +16,7 @@
 #define ZCE_LIB_MYSQL_STMT_RESULT_H_
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 //这些函数都是4.1.2后的版本功能
 #if MYSQL_VERSION_ID >= 40100
@@ -218,7 +218,7 @@ inline MYSQL_BIND *ZCE_Mysql_STMT_Bind::get_stmt_bind_handle()
 
 #endif //MYSQL_VERSION_ID >= 40100
 
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
 

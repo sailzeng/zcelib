@@ -3,10 +3,8 @@
 #include "zce_trace_log_debug.h"
 #include "zce_script_lua_tie.h"
 
-#if defined  lua_h
 
-
-
+#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
 
 
 //=======================================================================================================
@@ -287,7 +285,7 @@ int ZCE_LIB::dump_luacall_stack(lua_State *state)
 }
 
 //dump Cµ÷ÓÃluaµÄ¶ÑÕ»£¬
-static int dump_clua_stack(lua_State *state)
+int ZCE_LIB::dump_clua_stack(lua_State *state)
 {
     int stack_top = lua_gettop(state);
     ZCE_LOGMSG(RS_INFO,"[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
@@ -894,4 +892,5 @@ void ZCE_Lua_Tie::dump_luacall_stack()
 }
 
 
-#endif //
+#endif //#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
+

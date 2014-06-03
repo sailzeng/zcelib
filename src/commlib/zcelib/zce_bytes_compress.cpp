@@ -222,7 +222,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 #endif
 
 #else
-#error "code error."
+#error "[Error]Code error,please check."
 #endif
 
                     match_count += match_bytes;
@@ -753,7 +753,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 #endif
 
 #else
-#error "code error."
+#error "[Error]Code error,please check."
 #endif
 
                     read_pos += match_bytes;
