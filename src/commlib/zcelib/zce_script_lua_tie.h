@@ -87,12 +87,12 @@ namespace ZCE_LUA
     val_type pop_stack(lua_State *state)
     {
         val_type t = read_stack<val_type>(state, -1);
-        lua_pop(L, 1);
+        lua_pop(state, 1);
         return t;
     }
 
 
-    ///用C11的新特效，变参实现
+    ///用C++11的新特效，变参实现
     template<typename ret_type, typename... args_type>
     struct g_cfunctor
     {
@@ -105,7 +105,7 @@ namespace ZCE_LUA
             if (std::is_void<ret_type>::value)
             {
                 int para_idx = 0;
-                fun_ptr(read_stack<args_type>(state, para_idx++)...);
+                fun_ptr(read_stack<args_type>(state, ++para_idx)...);
                 return 0;
             }
             else
@@ -135,7 +135,32 @@ namespace ZCE_LUA
         }
     };
 
+    //封装类的构造函数给LUA使用
+    template<typename class_type, typename... args_type>
+    int constructor(lua_State *state)
+    {
+        //new 一个user data，用<T>的大小,同时，同时用placement new 的方式，
+        //（指针式lua_newuserdata分配的）完成构造函数
+        int para_idx = 1;
+        new(lua_newuserdata(state,
+            sizeof(class_type)))
+            class_type(read_stack<args_type>(state, ++para_idx)...);
 
+        lua_pushstring(state, class_name<class_type>::name());
+        lua_gettable(state, LUA_GLOBALSINDEX);
+
+        lua_setmetatable(state, -2);
+
+        return 1;
+    }
+
+    //析构函数的LUA封装
+    template<typename class_type>
+    int destroyer(lua_State *state)
+    {
+        (class_type *)(lua_touserdata(state, 1))->~class_type();
+        return 0;
+    }
 };
 
 //=======================================================================================================
@@ -311,7 +336,7 @@ public:
         //检查其是否是函数
         if (!lua_isfunction(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "call_luafun() attempt to call global `%s' (not a function)", name);
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] call_luafun() attempt to call global `%s' (not a function)", name);
             lua_pop(lua_state_,1);
             return -1;
         }
@@ -327,7 +352,7 @@ public:
             errfunc);
         if (ret != 0)
         {
-            ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] lua_pcall ret = %d", ret);
         }
 
         //在堆栈删除掉错误处理的函数
@@ -390,12 +415,12 @@ public:
 
         //将meta_get函数作为__index函数
         lua_pushstring(lua_state_, "__index");
-        lua_pushcclosure(lua_state_, meta_get, 0);
+        lua_pushcclosure(lua_state_, ZCE_LUA::meta_get, 0);
         lua_rawset(lua_state_, -3);
 
         //将meta_set函数作为__index函数
         lua_pushstring(lua_state_, "__newindex");
-        lua_pushcclosure(lua_state_, meta_set, 0);
+        lua_pushcclosure(lua_state_, ZCE_LUA::meta_set, 0);
         lua_rawset(lua_state_, -3);
 
         //垃圾回收函数
@@ -408,59 +433,45 @@ public:
 
 
     //template<typename ret_type1, typename ret_type2, typename... args_type>
-    // Tinker Class Constructor
-    // T 是类
-    // F 是构造函数的封装，lua_tinker::constructor
-    template<typename T, typename F>
-    void class_con(lua_State *L, F func)
+
+    // class_type 是类
+    // constructor_fun 是构造函数的封装，ZCE_LUA::constructor
+    template<typename class_type, typename constructor_fun>
+    int class_constructor(constructor_fun func)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        push_meta(L, class_name<T>::name());
+        lua_pushstring(lua_state_, class_name<class_type>::name());
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
         //如果栈顶是一个表
-        if (lua_istable(L, -1))
+        if (lua_istable(lua_state_, -1))
         {
             //对这个类的metatable的表，设置一个metatable，在其中增加一个__call的对应函数
             //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
             //LUA中出现这样的调用，
             //object =class_name()
-            lua_newtable(L);
+            lua_newtable(lua_state_);
 
-            lua_pushstring(L, "__call");
-            lua_pushcclosure(L, func, 0);
-            lua_rawset(L, -3);
+            lua_pushstring(lua_state_, "__call");
+            lua_pushcclosure(lua_state_, func, 0);
+            lua_rawset(lua_state_, -3);
             //设置这个table作为class 原型的metatable.
             //或者说设置这个table作为class metatable的metatable.
-            lua_setmetatable(L, -2);
+            lua_setmetatable(lua_state_, -2);
+
+            lua_pop(lua_state_, 1);
+            return 0;
         }
-        lua_pop(L, 1);
+        else
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                class_name<class_type>::name());
+            ZCE_ASSERT(false);
+            lua_pop(lua_state_, 1);
+            return -1;
+        }
     }
 
-    //
-    template<typename T>
-    struct val2user : user
-    {
-        val2user() : user(new T) {}
-
-        template<typename T1>
-        val2user(T1 t1) : user(new T(t1)) {}
-
-        template<typename T1, typename T2>
-        val2user(T1 t1, T2 t2) : user(new T(t1, t2)) {}
-
-        template<typename T1, typename T2, typename T3>
-        val2user(T1 t1, T2 t2, T3 t3) : user(new T(t1, t2, t3)) {}
-
-        template<typename T1, typename T2, typename T3, typename T4>
-        val2user(T1 t1, T2 t2, T3 t3, T4 t4) : user(new T(t1, t2, t3, t4)) {}
-
-        template<typename T1, typename T2, typename T3, typename T4, typename T5>
-        val2user(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) : user(new T(t1, t2, t3, t4, t5)) {}
-
-        ~val2user()
-        {
-            delete ((T *)m_p);
-        }
-    };
 
 protected:
 

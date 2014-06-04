@@ -295,59 +295,59 @@ int ZCE_LIB::dump_clua_stack(lua_State *state)
         switch (lua_typeid)
         {
         case LUA_TNIL:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s", 
                 i, 
                 lua_typename(state, lua_typeid));
             break;
         case LUA_TBOOLEAN:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s [%s]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%s]", 
                 i,
                 lua_typename(state, lua_typeid),
                 lua_toboolean(state, i) ? "true" : "false");
             break;
         case LUA_TLIGHTUSERDATA:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s [0x%p]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [0x%p]", 
                 i,
                 lua_typename(state, lua_typeid),
                 lua_topointer(state, i));
             break;
         case LUA_TNUMBER:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s [%f]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%f]", 
                 i, 
                 lua_typename(state, lua_typeid), 
                 lua_tonumber(state, i));
             break;
         case LUA_TSTRING:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s[%s]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[%s]", 
                 i,
                 lua_typename(state, lua_typeid),
                 lua_tostring(state, i));
             break;
         case LUA_TTABLE:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s[0x%p]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]", 
                 i,
                 lua_typename(state, lua_typeid),
                 lua_topointer(state, i));
             break;
         case LUA_TFUNCTION:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s() [0x%p]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s() [0x%p]", 
                 i,
                 lua_typename(state, lua_typeid),
                 lua_topointer(state, i));
             break;
         case LUA_TUSERDATA:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s[0x%p]", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]", 
                 i,
                 lua_typename(state, lua_typeid),
                 lua_topointer(state, i));
             break;
         case LUA_TTHREAD:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.%s", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s", 
                 i,
                 lua_typename(state, lua_typeid));
             break;
         default:
-            ZCE_LOGMSG(RS_INFO, "[CLSTACK]%3d.type id %d type name %s", 
+            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type id %d type name %s", 
                 i,
                 lua_typeid,
                 lua_typename(state, lua_typeid));
@@ -360,7 +360,7 @@ int ZCE_LIB::dump_clua_stack(lua_State *state)
 //
 int ZCE_LUA::on_error(lua_State *state)
 {
-    ZCE_LOGMSG(RS_ERROR, "error msg =%s", lua_tostring(state, 1));
+    ZCE_LOGMSG(RS_ERROR, "[ZCELUA]error msg =%s", lua_tostring(state, 1));
     lua_pop(state, 1);
     dump_luacall_stack(state);
     return 0;
@@ -377,7 +377,7 @@ int ZCE_LUA::meta_get(lua_State *state)
     //在metatable里面寻找key，
     lua_rawget(state, -2);
 
-    //如果是一个userdata
+    //如果是一个userdata，表示是我们扔进去的，
     if (lua_isuserdata(state, -1))
     {
         //进行调用
@@ -395,9 +395,9 @@ int ZCE_LUA::meta_get(lua_State *state)
         //如果仍然是NULL
         if (lua_isnil(L, -1))
         {
-            lua_pushfstring(state, "can't find '%s' class variable. (forgot registering class variable ?)",
+            lua_pushfstring(state, "[ZCELUA]Can't find '%s' class variable. (forgot registering class variable ?)",
                 lua_tostring(state, 2));
-            lua_error(L);
+            lua_error(state);
         }
     }
     //删除掉metatable，
