@@ -368,42 +368,94 @@ public:
     //类的初始化，让class能在lua中使用
     //定义类的metatable的表，或者说原型的表。
     template<typename class_type>
-    void reg_class(lua_State *state, const char *name)
+    void reg_class(const char *name)
     {
         //绑定T和名称
-        ZCE_LUB::class_name<class_type>::name(name);
+        ZCE_LUA::class_name<class_type>::name(name);
 
         //类的名称
-        lua_pushstring(state, name);
+        lua_pushstring(lua_state_, name);
         //new 一个table，这个table是作为其他的类的metatable的（某种程度上也可以说是原型），
         lua_newtable(state);
 
         //__name不是标准的元方法，但在例子中有使用
-        lua_pushstring(state, "__name");
-        lua_pushstring(state, name);
-        lua_rawset(state, -3);
+        lua_pushstring(lua_state_, "__name");
+        lua_pushstring(lua_state_, name);
+        lua_rawset(lua_state_, -3);
 
         //将meta_get函数作为__index函数
-        lua_pushstring(state, "__index");
-        lua_pushcclosure(state, meta_get, 0);
-        lua_rawset(state, -3);
+        lua_pushstring(lua_state_, "__index");
+        lua_pushcclosure(lua_state_, meta_get, 0);
+        lua_rawset(lua_state_, -3);
 
         //将meta_set函数作为__index函数
-        lua_pushstring(state, "__newindex");
-        lua_pushcclosure(state, meta_set, 0);
-        lua_rawset(state, -3);
+        lua_pushstring(lua_state_, "__newindex");
+        lua_pushcclosure(lua_state_, meta_set, 0);
+        lua_rawset(lua_state_, -3);
 
         //垃圾回收函数
-        lua_pushstring(state, "__gc");
-        lua_pushcclosure(state, destroyer<class_type>, 0);
-        lua_rawset(state, -3);
+        lua_pushstring(lua_state_, "__gc");
+        lua_pushcclosure(lua_state_, destroyer<class_type>, 0);
+        lua_rawset(lua_state_, -3);
 
-        lua_settable(state, LUA_GLOBALSINDEX);
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
 
     //template<typename ret_type1, typename ret_type2, typename... args_type>
+    // Tinker Class Constructor
+    // T 是类
+    // F 是构造函数的封装，lua_tinker::constructor
+    template<typename T, typename F>
+    void class_con(lua_State *L, F func)
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        push_meta(L, class_name<T>::name());
+        //如果栈顶是一个表
+        if (lua_istable(L, -1))
+        {
+            //对这个类的metatable的表，设置一个metatable，在其中增加一个__call的对应函数
+            //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
+            //LUA中出现这样的调用，
+            //object =class_name()
+            lua_newtable(L);
 
+            lua_pushstring(L, "__call");
+            lua_pushcclosure(L, func, 0);
+            lua_rawset(L, -3);
+            //设置这个table作为class 原型的metatable.
+            //或者说设置这个table作为class metatable的metatable.
+            lua_setmetatable(L, -2);
+        }
+        lua_pop(L, 1);
+    }
+
+    //
+    template<typename T>
+    struct val2user : user
+    {
+        val2user() : user(new T) {}
+
+        template<typename T1>
+        val2user(T1 t1) : user(new T(t1)) {}
+
+        template<typename T1, typename T2>
+        val2user(T1 t1, T2 t2) : user(new T(t1, t2)) {}
+
+        template<typename T1, typename T2, typename T3>
+        val2user(T1 t1, T2 t2, T3 t3) : user(new T(t1, t2, t3)) {}
+
+        template<typename T1, typename T2, typename T3, typename T4>
+        val2user(T1 t1, T2 t2, T3 t3, T4 t4) : user(new T(t1, t2, t3, t4)) {}
+
+        template<typename T1, typename T2, typename T3, typename T4, typename T5>
+        val2user(T1 t1, T2 t2, T3 t3, T4 t4, T5 t5) : user(new T(t1, t2, t3, t4, t5)) {}
+
+        ~val2user()
+        {
+            delete ((T *)m_p);
+        }
+    };
 
 protected:
 
