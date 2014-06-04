@@ -14,7 +14,7 @@
 #define ZCE_LIB_MYSQL_DB_FIELD_H_
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 
 /*!

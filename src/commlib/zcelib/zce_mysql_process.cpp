@@ -4,7 +4,7 @@
 #include "zce_mysql_process.h"
 
 //如果你要用MYSQL的库
-#if defined MYSQL_VERSION_ID
+#if defined ZCE_USE_MYSQL
 
 //-----------------------------------------------------------------
 //实例,为了SingleTon类准备
@@ -379,5 +379,5 @@ void ZCE_Mysql_Process::clean_instance()
 }
 
 //如果你要用MYSQL的库
-#endif //#if defined MYSQL_VERSION_ID
+#endif //#if defined ZCE_USE_MYSQL
 
