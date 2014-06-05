@@ -42,8 +42,8 @@ namespace ZCE_LUA
     
     ///PUSH一个数据到堆栈，
     //不允许出现long的变量，因为long无法移植，
-    template<typename val_type> 
-    void push_stack(lua_State * /*state*/, val_type /*val*/)
+    template<typename val_type, enable_if<is_enum<typename>::value > >
+    void push_stack(lua_State * state, val_type /*val*/)
     {
     }
 
@@ -118,37 +118,50 @@ namespace ZCE_LUA
     };
 
 
-    //成员变量的基类，用于初始化
-    //base_var 注意不是一个有模板的函数，这样就可以保证通过void * 转换为 var_base *
-    //而通过var_base *的调用 get, set 帮忙恰恰能直接调用到真正的mem_var <T,V>
-    struct base_var
+    ///成员变量的基类，用于初始化
+    ///memvar_base 注意其不是一个有模板的函数，
+    ///这样就可以保证通过LUA user data里面的void * 转换为 memvar_base *
+    ///而通过memvar_base *的调用 get, set 帮忙恰恰能直接调用到真正的 
+    ///member_var <class_type,var_type>
+    struct memvar_base
     {
         virtual void get(lua_State *state) = 0;
         virtual void set(lua_State *state) = 0;
     };
 
 
-    //T 为class 类型，
-    //V 为变量类型
-    template<typename T, typename V>
-    struct member_var : base_var
+    //class_type 为class 类型，
+    //var_type 为变量类型
+    template<typename class_type, typename var_type>
+    struct member_var : memvar_base
     {
-        V T::*_var;
-        mem_var(V T::*val) :
-            _var(val)
+        //存放类的成员指针
+        var_type class_type::*var_ptr_;
+
+        member_var(var_type class_type::*val) :
+            var_ptr_(val)
         {
         }
+
+
+
+        ///完成设置某个
+        void set(lua_State *state)
+        {
+            //这段看起来是不是有点点晕，其实他干的事情就是下面这段，他是利用类的成员变量指针完成成员的写，
+            //float A::*pfl = &A::float_var;  
+            //A a1;  a1.*pfl = 0.5f;
+            //这个真要感谢airfu GG的精心讲解
+            read_stack<class_type *>(state, 1)->*(var_ptr_) = read_stack<var_type>(state, 3);
+        }
+
         //get是LUA读取的操作，也就是把C++的数据读取到LUA里面，所以是PUSH
-        void get(lua_State *L)
+        void get(lua_State *state)
         {
-            //read其实就是把类的对象的指针读取出来。
-            push<if_<is_obj<V>::value, V &, V>::type>(L, read<T *>(L, 1)->*(_var));
-        }
-        //
-        void set(lua_State *L)
-        {
-            //
-            read<T *>(L, 1)->*(_var) = read<V>(L, 3);
+            //read_stack其实就是把类的对象的指针读取出来。
+            //然后通过类成员指针，把成员获取出来
+            push_stack<var_type>(state,
+                read_stack<class_type *>(state, 1)->*(var_ptr_) );
         }
     };
     

@@ -377,12 +377,12 @@ int ZCE_LUA::meta_get(lua_State *state)
     //在metatable里面寻找key，
     lua_rawget(state, -2);
 
-    //如果是一个userdata，表示是我们扔进去的，
+    //如果是一个userdata，其实其就是我们扔进去的类的成员指针
     if (lua_isuserdata(state, -1))
     {
         //进行调用
-        user2type<base_var *>::invoke(state, -1)->get(state);
-        //从堆栈移除这个key，对应的vlaue
+        ((memvar_base *)lua_touserdata(state, -1))->get(state);
+        //从堆栈移除这个key，
         lua_remove(state, -2);
     }
     //如果没有找到
@@ -417,7 +417,7 @@ int ZCE_LUA::meta_set(lua_State *state)
 
     if (lua_isuserdata(state, -1))
     {
-        user2type<base_var *>::invoke(state, -1)->set(state);
+        user2type<memvar_base *>::invoke(state, -1)->set(state);
     }
     else if (lua_isnil(state, -1))
     {
