@@ -381,7 +381,7 @@ int ZCE_LUA::meta_get(lua_State *state)
     if (lua_isuserdata(state, -1))
     {
         //进行调用
-        user2type<var_base *>::invoke(state, -1)->get(state);
+        user2type<base_var *>::invoke(state, -1)->get(state);
         //从堆栈移除这个key，对应的vlaue
         lua_remove(state, -2);
     }
@@ -417,7 +417,7 @@ int ZCE_LUA::meta_set(lua_State *state)
 
     if (lua_isuserdata(state, -1))
     {
-        user2type<var_base *>::invoke(state, -1)->set(state);
+        user2type<base_var *>::invoke(state, -1)->set(state);
     }
     else if (lua_isnil(state, -1))
     {

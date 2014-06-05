@@ -116,6 +116,41 @@ namespace ZCE_LUA
             }
         }
     };
+
+
+    //成员变量的基类，用于初始化
+    //base_var 注意不是一个有模板的函数，这样就可以保证通过void * 转换为 var_base *
+    //而通过var_base *的调用 get, set 帮忙恰恰能直接调用到真正的mem_var <T,V>
+    struct base_var
+    {
+        virtual void get(lua_State *state) = 0;
+        virtual void set(lua_State *state) = 0;
+    };
+
+
+    //T 为class 类型，
+    //V 为变量类型
+    template<typename T, typename V>
+    struct member_var : base_var
+    {
+        V T::*_var;
+        mem_var(V T::*val) :
+            _var(val)
+        {
+        }
+        //get是LUA读取的操作，也就是把C++的数据读取到LUA里面，所以是PUSH
+        void get(lua_State *L)
+        {
+            //read其实就是把类的对象的指针读取出来。
+            push<if_<is_obj<V>::value, V &, V>::type>(L, read<T *>(L, 1)->*(_var));
+        }
+        //
+        void set(lua_State *L)
+        {
+            //
+            read<T *>(L, 1)->*(_var) = read<V>(L, 3);
+        }
+    };
     
     //用模板函数辅助帮忙实现一个方法，可以通过class 找到对应的类名称（注册到LUA的名称），
     template<typename class_type>
