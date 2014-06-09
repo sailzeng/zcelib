@@ -124,7 +124,7 @@ template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
     }
     else
     {
-        ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be std::string ,type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[ZCELUA]stack index [%d] can't to be std::string ,type id [%d]",
             index,
             lua_type(state, index));
         lua_pop(state, 1);
@@ -199,7 +199,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, int64_t val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        luaL_error(state, "[int64_t] is not a table? May be you don't register int64_t to lua? type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
             lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -219,7 +219,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        luaL_error(state, "[uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
             lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -285,7 +285,7 @@ int ZCE_LUA::dump_luacall_stack(lua_State *state)
 }
 
 //dump C调用lua的堆栈，
-int ZCE_LIB::dump_clua_stack(lua_State *state)
+int ZCE_LUA::dump_clua_stack(lua_State *state)
 {
     int stack_top = lua_gettop(state);
     ZCE_LOGMSG(RS_INFO,"[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
@@ -391,9 +391,9 @@ int ZCE_LUA::meta_get(lua_State *state)
         //去掉
         lua_remove(state, -1);
         //检查的他的父类里面是否有可以调用的
-        invoke_parent(state);
+        //invoke_parent(state);
         //如果仍然是NULL
-        if (lua_isnil(L, -1))
+        if (lua_isnil(state, -1))
         {
             lua_pushfstring(state, "[ZCELUA]Can't find '%s' class variable. (forgot registering class variable ?)",
                 lua_tostring(state, 2));
@@ -417,7 +417,7 @@ int ZCE_LUA::meta_set(lua_State *state)
 
     if (lua_isuserdata(state, -1))
     {
-        user2type<memvar_base *>::invoke(state, -1)->set(state);
+        //user2type<memvar_base *>::invoke(state, -1)->set(state);
     }
     else if (lua_isnil(state, -1))
     {

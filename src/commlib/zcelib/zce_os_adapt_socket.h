@@ -321,24 +321,18 @@ enum HANDLE_READY_TODO
 {
     ///读事件
     HANDLE_READY_READ            = 0x1,
-    ///ACCPET 事件，也是放在读的SET
-    HANDLE_READY_ACCEPT          = 0x1,
 
     ///写事件
     HANDLE_READY_WRITE           = 0x2,
-    ///CONNECT连接成功
-    HANDLE_READY_CONNECT_SUCCESS = 0x2,
 
-    ///异常事件
-    HANDLE_READY_EXCEPTION       = 0x4,
+    ///异常
+    HANDLE_READY_EXCEPTION       = 0x3,
 
-    ///CONNECT 连接失败事件，注意WINDOWS下非阻塞connect链接失败后，是在异常集合返回
-    ///而LINUX是在写事件返回
-#if defined ZCE_OS_WINDOWS
-    HANDLE_READY_CONNECT_FAIL    = 0x4,
-#elif defined ZCE_OS_LINUX
-    HANDLE_READY_CONNECT_FAIL    = 0x1,
-#endif
+    ///ACCPET 事件，也是放在读的SET
+    HANDLE_READY_ACCEPT          = 0x4,
+
+    ///连接成功，我为连接成功做了多少努力，你看不见
+    HANDLE_READY_CONNECTED       = 0x5,
 
 };
 
@@ -348,29 +342,17 @@ enum HANDLE_READY_TODO
 * @param[in]     handle       等待触发的句柄
 * @param[in,out] timeout_tv   超时的时间
 * @param[in]     ready_todo   等待什么事件（只能单个），@ref HANDLE_READY_TODO
-* @note          特别提醒，只能处理单个事件喔，不能同时处理读写,如果需要清使用handle_multi_ready
+* @note          特别提醒，只能处理单个事件喔，不能同时处理读写,
 */
 int handle_ready (ZCE_SOCKET handle,
                   ZCE_Time_Value *timeout_tv,
                   HANDLE_READY_TODO ready_todo);
 
-/*!
-* @brief         用于某些对单个端口的上的多事件处理，返回值和select 一致，成功返回值是触发事件个数，
-*                比如你发起一个非阻塞连接，你可以用handle_multi_ready函数，判断是连接成功还是失败
-* @return        int
-* @param[in]     handle            等待事件触发的句柄
-* @param[in,out] timeout_tv        超时的时间
-* @param[in]     multi_ready_todo  等待的事件（可以多个），multi_ready_todo可以是HANDLE_READY_TODO的值或者值的或(1),@ref HANDLE_READY_TODO
-* @param[out]    multiready_occur   multiready_occur返回值，告诉你实际触发的事件是什么
-* @note
-*/
-int handle_multi_ready (ZCE_SOCKET handle,
-                        ZCE_Time_Value *timeout_tv,
-                        int multi_ready_todo,
-                        int *multiready_occur);
+
 
 //--------------------------------------------------------------------------------------------
-//带有超时处理的一组函数，
+//带有超时处理的一组函数，根据timeout_tv确定是否进行超时处理
+
 
 /*!
 * @brief         接收数据，接收len长的数据或者超时后返回，(也或者一致等待，或者立即返回)
@@ -448,8 +430,18 @@ inline ssize_t sendto (ZCE_SOCKET handle,
                        int flags = 0);
 
 //==================================================================================================
-//一组带有超时的SOCKET处理函数，内部使用使用select作为超时函数处理
+///因为WINdows 不支持取得socket 是否是阻塞的模式，所以Windows 下我无法先取得socket的选项，
+///然后判断是否取消阻塞模式所以请你务必保证你的Socket 是阻塞模式的，否则有问题
+///一组带有超时的SOCKET处理函数，内部使用使用select作为超时函数处理
 //超时的时间参数必须填写
+
+
+
+int connect_timeout(ZCE_SOCKET handle,
+    const sockaddr *addr,
+    socklen_t addrlen,
+    ZCE_Time_Value &timeout_tv);
+
 
 /*!
 * @brief      接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n

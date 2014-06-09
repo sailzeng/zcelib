@@ -20,24 +20,7 @@ ZCE_Socket_Connector::~ZCE_Socket_Connector()
 {
 }
 
-/************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation: 2011年6月21日
-Function        :
-Return          : int
-Parameter List  :
-  Param1: ZCE_Socket_Stream& new_stream
-  Param2: const sockaddr* remote_addr
-  Param3: socklen_t remote_addr_len
-  Param4: const timeval& timeout
-  Param5: int reuse_addr
-  Param6: int protocol
-  Param7: const sockaddr* local_addr
-Description     : 进行超时连接处理
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-************************************************************************************************************/
+
 int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
                                    const ZCE_Sockaddr *remote_addr ,
                                    ZCE_Time_Value &timeout,
@@ -104,7 +87,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     //进行超时处理
     ret = ZCE_OS::handle_ready(new_stream.get_handle(),
                                &timeout,
-                               ZCE_OS::HANDLE_READY_CONNECT_SUCCESS);
+                               ZCE_OS::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -116,7 +99,6 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 
     //关闭非阻塞状态
     ret = new_stream.sock_disable(O_NONBLOCK);
-
     if (ret != 0)
     {
         new_stream.close();
@@ -126,24 +108,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     return 0;
 }
 
-/************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation: 2011年6月21日
-Function        :
-Return          : int
-Parameter List  :
-  Param1: ZCE_Socket_Stream& new_stream 连接的SOCKET 句柄类
-  Param2: const sockaddr* remote_addr   远端的地址，实际结构是sockadd_in，sockadd_in6等
-  Param3: socklen_t remote_addr_len 地址的长度，表示前面的类型是什么，C语言做法
-  Param4: bool non_blocing 是否阻塞进行连接。
-  Param5: int reuse_addr   是否置为reuse_addr选项
-  Param6: int protocol     协议，用于RAW Socket，基本没用
-  Param7: const sockaddr* local_addr 本地的BIND地址信息，CONNECT基本没用
-Description     : 进行连接处理，可以进行非阻塞连接处理，
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-************************************************************************************************************/
+//进行连接处理，可以进行非阻塞连接处理，
 int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
                                    const ZCE_Sockaddr *remote_addr ,
                                    bool non_blocing,

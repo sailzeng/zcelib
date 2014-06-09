@@ -407,55 +407,12 @@ int ZCE_OS::sock_disable(ZCE_SOCKET handle, int flags)
 #endif
 }
 
+
+
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
-int ZCE_OS::handle_ready (ZCE_SOCKET handle,
-                          ZCE_Time_Value *timeout_tv,
-                          HANDLE_READY_TODO ready_todo)
-{
-
-    fd_set handle_set;
-    FD_ZERO(&handle_set);
-
-    //whlie(0)会产生一个告警，这个应该是windows内部自己没有处理好。微软说VS2005SP1就修复了，见鬼。
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(disable : 4127)
-#endif
-    FD_SET(handle, &handle_set);
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(default : 4127)
-#endif
-
-    // Wait for data or for the timeout_tv to elapse.
-    int select_width = 0;
-
-#if defined (ZCE_OS_WINDOWS)
-    // This arg is ignored on Windows and causes pointer truncation
-    // warnings on 64-bit compiles.
-    select_width = 0;
-#elif defined (ZCE_OS_LINUX)
-    select_width = int (handle) + 1;
-#endif
-
-    int result = ZCE_OS::select (select_width,
-                                 (ready_todo == HANDLE_READY_READ ) ? &handle_set : 0,
-                                 (ready_todo == HANDLE_READY_WRITE ) ? &handle_set : 0,
-                                 (ready_todo == HANDLE_READY_EXCEPTION ) ? &handle_set : 0,
-                                 timeout_tv);
-
-    if (0 == result )
-    {
-        errno = ETIMEDOUT;
-        return 0;
-    }
-
-    return result;
-}
-
-//检查在（一定时间内），某个SOCKET句柄关注的多个事件是否触发
-int ZCE_OS::handle_multi_ready (ZCE_SOCKET handle,
-                                ZCE_Time_Value *timeout_tv,
-                                int multi_ready_todo,
-                                int *multiready_occur)
+int ZCE_OS::handle_ready(ZCE_SOCKET handle,
+    ZCE_Time_Value *timeout_tv,
+    HANDLE_READY_TODO ready_todo)
 {
     fd_set handle_set_read, handle_set_write, handle_set_exeception;
     fd_set *p_set_read  = NULL, *p_set_write = NULL, *p_set_exception = NULL;
@@ -463,29 +420,51 @@ int ZCE_OS::handle_multi_ready (ZCE_SOCKET handle,
     FD_ZERO(&handle_set_write);
     FD_ZERO(&handle_set_exeception);
 
-    *multiready_occur = 0;
 
     //FD_SET 里面的 whlie(0)会产生一个告警，这个应该是windows内部自己没有处理好。微软说VS2005SP1就修复了，见鬼。
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning(disable : 4127)
 #endif
 
-    if ( ZCE_BIT_IS_SET(multi_ready_todo, HANDLE_READY_READ) )
+    if (HANDLE_READY_READ == ready_todo)
     {
         FD_SET(handle, &handle_set_read);
         p_set_read = &handle_set_read;
     }
-
-    if ( ZCE_BIT_IS_SET(multi_ready_todo, HANDLE_READY_WRITE) )
+    else if ( HANDLE_READY_WRITE == ready_todo)
     {
         FD_SET(handle, &handle_set_write);
         p_set_write = &handle_set_write;
     }
-
-    if ( ZCE_BIT_IS_SET(multi_ready_todo, HANDLE_READY_EXCEPTION) )
+    else if (HANDLE_READY_EXCEPTION == ready_todo)
     {
         FD_SET(handle, &handle_set_exeception);
         p_set_exception = &handle_set_exeception;
+    }
+    else if (HANDLE_READY_ACCEPT == ready_todo)
+    {
+        //accept事件是利用读取事件
+        FD_SET(handle, &handle_set_read);
+        p_set_read = &handle_set_read;
+    }
+    else if (HANDLE_READY_CONNECTED == ready_todo)
+    {
+        //为什么前面写的这么麻烦，其实就是因为这个CONNECTED的倒霉孩子
+        //首先，CONNECT的处理，要区分成功和失败事件
+        //Windows 非阻塞CONNECT, 失败调用异常，成功调用写事件
+        //Windows 阻塞CONNECT, 失败调用读写事件，成功调用写事件
+        //LINUX 无论阻塞，还是非阻塞，失败调用读写事件，成功调用写事件
+        //所以……，你有没有感觉到蛋蛋的忧伤
+        FD_SET(handle, &handle_set_read);
+        p_set_read = &handle_set_read;
+        FD_SET(handle, &handle_set_write);
+        p_set_write = &handle_set_write;
+        FD_SET(handle, &handle_set_exeception);
+        p_set_exception = &handle_set_exeception;
+    }
+    else
+    {
+        ZCE_ASSERT(false);
     }
 
 #if defined (ZCE_OS_WINDOWS)
@@ -496,6 +475,7 @@ int ZCE_OS::handle_multi_ready (ZCE_SOCKET handle,
     int select_width = 0;
 
 #if defined (ZCE_OS_WINDOWS)
+    //如果不是0Windows下VC++会有告警
     select_width = 0;
 #elif defined (ZCE_OS_LINUX)
     select_width = int (handle) + 1;
@@ -519,20 +499,15 @@ int ZCE_OS::handle_multi_ready (ZCE_SOCKET handle,
         return result;
     }
 
-    //确定那些事件被触发了
-    if ( p_set_read && FD_ISSET(handle, p_set_read) )
+    //我们处理的是CONNECTED成功，
+    if (HANDLE_READY_CONNECTED == ready_todo)
     {
-        (*multiready_occur) |= HANDLE_READY_READ;
-    }
-
-    if ( p_set_write && FD_ISSET(handle, p_set_write))
-    {
-        (*multiready_occur) |= HANDLE_READY_WRITE;
-    }
-
-    if ( p_set_exception && FD_ISSET(handle, p_set_exception) )
-    {
-        (*multiready_occur) |= HANDLE_READY_EXCEPTION;
+        //如果是CONNECTED，读返回或者异常返回都被认为是错误
+        if (FD_ISSET(handle, p_set_read) 
+            || FD_ISSET(handle, p_set_exception))
+        {
+            return -1;
+        }
     }
 
     return result;
@@ -541,6 +516,61 @@ int ZCE_OS::handle_multi_ready (ZCE_SOCKET handle,
 //--------------------------------------------------------------------------------------------
 //因为WINdows 不支持取得socket 是否是阻塞的模式，所以Windows 下我无法先取得socket的选项，然后判断是否取消阻塞模式
 //所以请你务必保证你的Socket 是阻塞模式的，否则有问题
+
+
+int ZCE_OS::connect_timeout(ZCE_SOCKET handle,
+    const sockaddr *addr,
+    socklen_t addrlen,
+    ZCE_Time_Value &timeout_tv)
+{
+
+    int ret = 0;
+    //不能对非阻塞的句柄进行超时处理
+    ret = ZCE_OS::sock_enable(handle, O_NONBLOCK);
+    if (ret != 0)
+    {
+        ZCE_OS::closesocket(handle);
+        return -1;
+    }
+
+    ret = ZCE_OS::connect(handle, addr, addrlen);
+    //
+    if (ret != 0)
+    {
+        //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
+        int last_err = ZCE_OS::last_error();
+
+        if (EINPROGRESS != last_err &&  EWOULDBLOCK != last_err)
+        {
+            ZCE_OS::closesocket(handle);
+            return ret;
+        }
+    }
+
+    //进行超时处理
+    ret = ZCE_OS::handle_ready(handle,
+        &timeout_tv,
+        ZCE_OS::HANDLE_READY_CONNECTED);
+
+    const int HANDLE_READY_ONE = 1;
+
+    if (ret != HANDLE_READY_ONE)
+    {
+        ZCE_OS::closesocket(handle);
+        return -1;
+    }
+
+    ret = ZCE_OS::sock_disable(handle, O_NONBLOCK);
+    if (ret != 0)
+    {
+        ZCE_OS::closesocket(handle);
+        return -1;
+    }
+
+    return 0;
+}
+
+
 ssize_t ZCE_OS::recvn_timeout (ZCE_SOCKET handle,
                                void *buf,
                                size_t len,
@@ -890,7 +920,7 @@ ssize_t ZCE_OS::sendn_timeout2 (ZCE_SOCKET handle,
 
 #elif defined  ZCE_OS_LINUX
     timeval sockopt_tv = timeout_tv;
-    ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
+    ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_SNDTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
 
 #endif
 
