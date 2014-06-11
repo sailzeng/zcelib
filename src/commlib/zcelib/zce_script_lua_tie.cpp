@@ -368,7 +368,7 @@ int ZCE_LUA::on_error(lua_State *state)
 
 
 //LUA的程序通过这个函数完定义类的__index
-int ZCE_LUA::meta_get(lua_State *state)
+int ZCE_LUA::class_meta_get(lua_State *state)
 {
     //要检查的数据在栈底部，取出得到其metatable放入栈顶
     lua_getmetatable(state, 1);
@@ -388,7 +388,7 @@ int ZCE_LUA::meta_get(lua_State *state)
     //如果没有找到
     else if (lua_isnil(state, -1))
     {
-        //去掉
+        //去掉nil
         lua_remove(state, -1);
         //检查的他的父类里面是否有可以调用的
         //invoke_parent(state);
@@ -408,7 +408,7 @@ int ZCE_LUA::meta_get(lua_State *state)
 
 
 //LUA的程序通过这个函数完成定义类的__newindex
-int ZCE_LUA::meta_set(lua_State *state)
+int ZCE_LUA::class_meta_set(lua_State *state)
 {
     
     lua_getmetatable(state, 1);

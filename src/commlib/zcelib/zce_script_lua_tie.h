@@ -3,6 +3,9 @@
 #ifndef ZCE_LIB_SCRIPT_LUA_H_
 #define ZCE_LIB_SCRIPT_LUA_H_
 
+
+
+
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
 #if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
 
@@ -152,7 +155,7 @@ template<> void push_stack(lua_State *state, unsigned long val);
 //枚举
 template<typename val_type  >
 void push_stack(lua_State *state,
-    typename  std::enable_if<std::is_enum<val_type>::value>::type val)
+                typename  std::enable_if<std::is_enum<val_type>::value>::type val)
 {
     lua_pushnumber(state, val);
 }
@@ -162,10 +165,10 @@ void push_stack(lua_State *state,
 //放入一个引用
 template<typename val_type  >
 int push_stack(lua_State *state,
-    typename std::enable_if<std::is_reference<val_type>::value>::type & val)
+               typename std::enable_if<std::is_reference<val_type>::value>::type &val)
 {
     new(lua_newuserdata(state,
-        sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(input);
+                        sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(input);
 
     //根据类的名称，设置metatable
     const char *reg_name = NULL;
@@ -183,10 +186,10 @@ int push_stack(lua_State *state,
     {
         int tid = lua_type(state, -1);
         ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s][%s] is not a table,[%d][%s]? May be you don't register or name conflict? "
-            typeid(val_type).name(),
-            reg_name,
-            tid,
-            lua_typename(state, tid));
+                   typeid(val_type).name(),
+                   reg_name,
+                   tid,
+                   lua_typename(state, tid));
         lua_pop(state, 1);
         return -1;
     }
@@ -197,7 +200,7 @@ int push_stack(lua_State *state,
 //放入一个指针
 template<typename val_type  >
 int push_stack(lua_State *state,
-    typename  std::enable_if<std::is_object<val_type>::value>::type * val)
+               typename  std::enable_if<std::is_object<val_type>::value>::type *val)
 {
     if (val)
     {
@@ -217,10 +220,10 @@ int push_stack(lua_State *state,
         {
             int tid = lua_type(state, -1);
             ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s][%s] is not a table,[%d][%s]? May be you don't register or name conflict? "
-                typeid(val_type).name(),
-                reg_name,
-                tid,
-                lua_typename(state, tid));
+                       typeid(val_type).name(),
+                       reg_name,
+                       tid,
+                       lua_typename(state, tid));
             lua_pop(state, 1);
             return -1;
         }
@@ -262,11 +265,42 @@ val_type pop_stack(lua_State *state)
     return t;
 }
 
-///
-int meta_get(lua_State *state);
+///让LUA从一个绑定的数组（指针）那里得到数组的的值
+template<typename array_type>
+int array_meta_get(lua_State *state)
+{
+    //如果不是
+    int index = lua_tonumber(state, -1);
+    array_type *ptr = ((array_type *)lua_touserdata(state, -2));
+    push_stack<array_type>(state, ptr[index]);
+    //index 应该做个检查
+    //
+    lua_remove(state, -2);
+    return 1;
+}
+
+///让LUA可以设置一个绑定的数组（指针）的某个值
+template<typename array_type>
+int array_meta_set(lua_State *state)
+{
+    array_type *ptr = ((array_type *)lua_touserdata(state, -3));
+    int index = lua_tonumber(state, -2);
+
+    ptr[index] = read_stack<array_type>(state, -1);
+
+    lua_remove(state, -2);
+    lua_remove(state, -1);
+
+    return 0;
+}
+
+
 
 ///
-int meta_set(lua_State *state);
+int class_meta_get(lua_State *state);
+
+///
+int class_meta_set(lua_State *state);
 
 
 ///用C++11的新特效，变参实现
@@ -351,7 +385,7 @@ int constructor(lua_State *state)
     int para_idx = 1;
     new(lua_newuserdata(state,
                         sizeof(val_2_udat<class_type> )))
-                        val_2_udat<class_type>(read_stack<args_type>(state, ++para_idx)...);
+    val_2_udat<class_type>(read_stack<args_type>(state, ++para_idx)...);
 
     lua_pushstring(state, class_name<class_type>::name());
     lua_gettable(state, LUA_GLOBALSINDEX);
@@ -427,7 +461,7 @@ public:
     * @param      val
     */
     template<typename val_type>
-    void set_gval(const char *name, typename val_type val)
+    void set_gvar(const char *name, typename val_type val)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
@@ -438,19 +472,20 @@ public:
 
     ///根据名称，从LUA读取一个变量
     template<typename val_type>
-    typename val_type get_gval(const char *name)
+    typename val_type get_gvar(const char *name)
     {
         lua_pushstring(lua_state_, name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
         return pop_stack<val_type>(lua_state_);
     }
 
-    ///向LUA设置一个全局的数组
+    ///向LUA设置一个数组,在LUA内部保存一个table，
     template<typename val_type>
-    void set_gary(const char *name,
-                  size_t ary_num,
-                  typename const val_type ary_data[],
-                  bool read_only = false)
+    void set_garray(const char *name,
+                    size_t ary_num,
+                    typename const val_type ary_data[],
+                    bool use_reference = false,
+                    bool read_only = false)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
@@ -628,12 +663,12 @@ public:
 
         //将meta_get函数作为__index函数
         lua_pushstring(lua_state_, "__index");
-        lua_pushcclosure(lua_state_, ZCE_LUA::meta_get, 0);
+        lua_pushcclosure(lua_state_, ZCE_LUA::class_meta_get, 0);
         lua_rawset(lua_state_, -3);
 
         //将meta_set函数作为__index函数
         lua_pushstring(lua_state_, "__newindex");
-        lua_pushcclosure(lua_state_, ZCE_LUA::meta_set, 0);
+        lua_pushcclosure(lua_state_, ZCE_LUA::class_meta_set, 0);
         lua_rawset(lua_state_, -3);
 
         //垃圾回收函数
@@ -660,7 +695,7 @@ public:
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                class_name<class_type>::name());
+                       class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -698,7 +733,7 @@ public:
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                class_name<class_type>::name());
+                       class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -708,7 +743,7 @@ public:
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
         new(lua_newuserdata(L, sizeof(mem_var<BASE, VAR>))) mem_var<BASE, VAR>(val);
         lua_rawset(lua_state_, -3);
-        
+
         lua_pop(lua_state_, 1);
         return 0;
     }
