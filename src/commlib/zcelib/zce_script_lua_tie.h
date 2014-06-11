@@ -157,45 +157,72 @@ void push_stack(lua_State *state,
     lua_pushnumber(state, val);
 }
 
+//对于非object类型的数据，不能放入引用和指针，这个请注意！！！
+
 //放入一个引用
 template<typename val_type  >
-void push_stack(lua_State *state,
-    typename std::enable_if<std::is_object<val_type>::value>::type & val)
+int push_stack(lua_State *state,
+    typename std::enable_if<std::is_reference<val_type>::value>::type & val)
 {
     new(lua_newuserdata(state,
         sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(input);
 
     //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<val_type >::name());
+    const char *reg_name = NULL;
+    if (std::is_const<val_type>::value)
+    {
+        reg_name = class_name<val_type >::const_name();
+    }
+    else
+    {
+        reg_name = class_name<val_type >::name();
+    }
+    lua_pushstring(state, reg_name);
     lua_gettable(state, LUA_GLOBALSINDEX);
     if (lua_istable(state, -1))
     {
         int tid = lua_type(state, -1);
-        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s]is not a table,lua type id[%d] name[%s]? May be you don't register or name conflict?
+        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s][%s] is not a table,[%d][%s]? May be you don't register or name conflict? "
             typeid(val_type).name(),
+            reg_name,
             tid,
             lua_typename(state, tid));
+        lua_pop(state, 1);
+        return -1;
     }
     lua_setmetatable(state, -2);
+    return 0;
 }
 
 //放入一个指针
 template<typename val_type  >
-void push_stack(lua_State *state,
+int push_stack(lua_State *state,
     typename  std::enable_if<std::is_object<val_type>::value>::type * val)
 {
     if (val)
     {
         new(lua_newuserdata(state, sizeof(ptr_2_udat<val_type>))) ptr_2_udat<val_type>(input);
-        lua_pushstring(state, class_name<val_type >::name());
+        const char *reg_name = NULL;
+        if (std::is_const<val_type>::value)
+        {
+            reg_name = class_name<val_type >::const_name();
+        }
+        else
+        {
+            reg_name = class_name<val_type >::name();
+        }
+        lua_pushstring(state, reg_name);
         lua_gettable(state, LUA_GLOBALSINDEX);
         if (lua_istable(state, -1))
         {
             int tid = lua_type(state, -1);
-            ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s] lua type id[%d] name[%s]is not a table? May be you don't register or name conflict? 
+            ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s][%s] is not a table,[%d][%s]? May be you don't register or name conflict? "
                 typeid(val_type).name(),
+                reg_name,
                 tid,
                 lua_typename(state, tid));
+            lua_pop(state, 1);
+            return -1;
         }
         lua_setmetatable(state, -2);
     }
@@ -203,59 +230,8 @@ void push_stack(lua_State *state,
     {
         lua_pushnil(state);
     }
+    return 0;
 }
-
-//
-template<typename val_type  >
-void push_stack(lua_State *state,
-    typename const std::enable_if<std::is_object<val_type>::value>::type & val)
-{
-    new(lua_newuserdata(state,
-        sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(input);
-
-    //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<val_type >::const_name());
-    lua_gettable(state, LUA_GLOBALSINDEX);
-    if (lua_istable(state, -1))
-    {
-        int tid = lua_type(state, -1);
-        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s]is not a table,lua type id[%d] name[%s]? May be you don't register or name conflict?
-            typeid(val_type).name(),
-            tid,
-            lua_typename(state, tid));
-    }
-    lua_setmetatable(state, -2);
-}
-
-template<typename val_type  >
-void push_stack(lua_State *state,
-    typename const std::enable_if<std::is_object<val_type>::value>::type * val)
-{
-    if (val)
-    {
-        new(lua_newuserdata(state, sizeof(ptr_2_udat<val_type>))) ptr_2_udat<val_type>(input);
-        lua_pushstring(state, class_name<val_type >::const_name());
-        lua_gettable(state, LUA_GLOBALSINDEX);
-        if (lua_istable(state, -1))
-        {
-            int tid = lua_type(state, -1);
-            ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s] lua type id[%d] name[%s]is not a table? May be you don't register or name conflict? 
-                typeid(val_type).name(),
-                tid,
-                lua_typename(state, tid));
-        }
-        lua_setmetatable(state, -2);
-    }
-    else
-    {
-        lua_pushnil(state);
-    }
-}
-
-//对于非object类型的数据，不能放入引用和指针，这个请注意！！！
-
-
-
 
 ///
 template<typename val_type> static  val_type read_stack(lua_State *L, int index)
@@ -344,8 +320,6 @@ struct member_var : memvar_base
     {
     }
 
-
-
     ///完成设置某个
     void set(lua_State *state)
     {
@@ -392,7 +366,7 @@ int constructor(lua_State *state)
 //这样就保证无论你传递给LUA什么，他们的生命周期都是正确的，
 int destroyer(lua_State *state)
 {
-    (lua_udat_base *)(lua_touserdata(state, 1))->~lua_udat_base();
+    ((lua_udat_base *)(lua_touserdata(state, 1)))->~lua_udat_base();
     return 0;
 }
 
@@ -682,35 +656,62 @@ public:
         lua_pushstring(lua_state_, class_name<class_type>::name());
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
-        //如果栈顶是一个表
-        if (lua_istable(lua_state_, -1))
-        {
-            //对这个类的metatable的表，设置一个metatable，在其中增加一个__call的对应函数
-            //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
-            //LUA中出现这样的调用，
-            //object =class_name()
-            lua_newtable(lua_state_);
-
-            lua_pushstring(lua_state_, "__call");
-            lua_pushcclosure(lua_state_, func, 0);
-            lua_rawset(lua_state_, -3);
-            //设置这个table作为class 原型的metatable.
-            //或者说设置这个table作为class metatable的metatable.
-            lua_setmetatable(lua_state_, -2);
-
-            lua_pop(lua_state_, 1);
-            return 0;
-        }
-        else
+        //如果栈顶是不是一个表，进行错误处理
+        if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       class_name<class_type>::name());
+                class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
         }
+
+        //对这个类的metatable的表，设置一个metatable，在其中增加一个__call的对应函数
+        //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
+        //LUA中出现这样的调用，
+        //object =class_name()
+        lua_newtable(lua_state_);
+
+        lua_pushstring(lua_state_, "__call");
+        lua_pushcclosure(lua_state_, func, 0);
+        lua_rawset(lua_state_, -3);
+        //设置这个table作为class 原型的metatable.
+        //或者说设置这个table作为class metatable的metatable.
+        lua_setmetatable(lua_state_, -2);
+
+        lua_pop(lua_state_, 1);
+        return 0;
     }
 
+    // Tinker Class Variables
+    // T 绑定的类
+    // VAR 是绑定的变量的类型，
+    // BASE 成员所属的类，一般我认为T和BASE是一样的
+    template<typename class_type, typename BASE, typename VAR>
+    int class_mem(lua_State *L, const char *name, VAR BASE::*val)
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        lua_pushstring(lua_state_, class_name<class_type>::name());
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        //
+        if (!lua_istable(lua_state_, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                class_name<class_type>::name());
+            ZCE_ASSERT(false);
+            lua_pop(lua_state_, 1);
+            return -1;
+        }
+
+        lua_pushstring(lua_state_, name);
+        //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
+        new(lua_newuserdata(L, sizeof(mem_var<BASE, VAR>))) mem_var<BASE, VAR>(val);
+        lua_rawset(lua_state_, -3);
+        
+        lua_pop(lua_state_, 1);
+        return 0;
+    }
 
 protected:
 
