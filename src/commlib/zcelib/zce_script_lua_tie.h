@@ -456,27 +456,27 @@ public:
 
     /*!
     * @brief      向LUA设置一个（对LUA而言）全局变量（名称和变量对应值的拷贝）
-    * @tparam     val_type
-    * @param      name
-    * @param      val
+    * @tparam     val_type 放入的数据类型，如果是val，会在LUA里面保留拷贝，如果是ptr，ref，lua内部可以直接修改这个变量
+    * @param      name 名称
+    * @param      val  放入的变量，注意如果要放入引用，需要set_gvar<var_type &>(ref)，这样写
     */
-    template<typename val_type>
-    void set_gvar(const char *name, typename val_type val)
+    template<typename var_type>
+    void set_gvar(const char *name, typename var_type var)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
         //模板函数，根据val_type绝对如何push
-        push_stack(lua_state_, val);
+        push_stack(lua_state_, var);
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
     ///根据名称，从LUA读取一个变量
-    template<typename val_type>
-    typename val_type get_gvar(const char *name)
+    template<typename var_type>
+    typename var_type get_gvar(const char *name)
     {
         lua_pushstring(lua_state_, name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
-        return pop_stack<val_type>(lua_state_);
+        return pop_stack<var_type>(lua_state_);
     }
 
     ///向LUA设置一个数组,在LUA内部保存一个table，
@@ -489,27 +489,53 @@ public:
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
-        lua_createtable(lua_state_, ary_num, 0);
-
-        for (size_t i = 0; i < ary_num; ++i)
+        //如果不是使用引用方式使用，那么会在lua中保留一份拷贝
+        if (!use_reference)
         {
-            //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
-            //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
-            lua_pushnumber(lua_state_, static_cast<int>(i) );
-            push_stack(lua_state_, ary_data[i]);
-            lua_rawset(lua_state_, -3);
+            lua_createtable(lua_state_, ary_num, 0);
+            for (size_t i = 0; i < ary_num; ++i)
+            {
+                //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
+                //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
+                lua_pushnumber(lua_state_, static_cast<int>(i));
+                push_stack(lua_state_, ary_data[i]);
+                lua_rawset(lua_state_, -3);
+            }
+            //如果希望其只读
+            if (read_only)
+            {
+                //让这个表格只读
+                lua_newtable(lua_state_);
+
+                lua_pushstring(lua_state_, "__newindex");
+                lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
+                lua_rawset(lua_state_, -3);
+
+                lua_setmetatable(lua_state_, -2);
+            }
         }
-        //如果希望其只读
-        if (read_only)
+        //引用方式，直接使用指针当作user data,同时设置meta table
+        else
         {
-            //让这个表格只读
+            new lua_newuserdata(lua_state_, sizeof(val_type *))(val_type *)(ary_data);
             lua_newtable(lua_state_);
-
-            lua_pushstring(lua_state_, "__newindex");
-            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
+            lua_pushstring(lua_state_, "__index");
+            lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_get(), 0);
             lua_rawset(lua_state_, -3);
-
-            lua_setmetatable(lua_state_, -2);
+            //非只读
+            if (!read_only)
+            {
+                lua_pushstring(lua_state_, "__newindex"); 
+                lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_set, 0);
+                lua_rawset(lua_state_, -3);
+            }
+            //如果只读，__newindex
+            else
+            {
+                lua_pushstring(lua_state_, "__newindex");
+                lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread(), 0);
+                lua_rawset(lua_state_, -3);
+            }
         }
 
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
@@ -517,7 +543,7 @@ public:
 
     ///从LUA中获取一个全局的数组
     template<typename ary_type>
-    int get_gary(const char *name,
+    int get_garray(const char *name,
                  size_t ary_num,
                  typename const ary_type ary_data[]  )
     {
@@ -646,7 +672,8 @@ public:
     //类的初始化，让class能在lua中使用
     //定义类的metatable的表，或者说原型的表。
     template<typename class_type>
-    void reg_class(const char *name)
+    void reg_class(const char *name,
+        bool read_only)
     {
         //绑定T和名称
         ZCE_LUA::class_name<class_type>::name(name);
@@ -666,14 +693,24 @@ public:
         lua_pushcclosure(lua_state_, ZCE_LUA::class_meta_get, 0);
         lua_rawset(lua_state_, -3);
 
-        //将meta_set函数作为__index函数
-        lua_pushstring(lua_state_, "__newindex");
-        lua_pushcclosure(lua_state_, ZCE_LUA::class_meta_set, 0);
-        lua_rawset(lua_state_, -3);
+        
+        if (!read_only)
+        { 
+            //非只读情况将meta_set函数作为__newindex函数
+            lua_pushstring(lua_state_, "__newindex");
+            lua_pushcclosure(lua_state_, ZCE_LUA::class_meta_set, 0);
+            lua_rawset(lua_state_, -3);
+        }
+        else
+        {
+            lua_pushstring(lua_state_, "__newindex");
+            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread(), 0);
+            lua_rawset(lua_state_, -3);
+        }
 
         //垃圾回收函数
         lua_pushstring(lua_state_, "__gc");
-        lua_pushcclosure(lua_state_, destroyer<class_type>, 0);
+        lua_pushcclosure(lua_state_, ZCE_LUA::destroyer, 0);
         lua_rawset(lua_state_, -3);
 
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
@@ -723,7 +760,7 @@ public:
     // VAR 是绑定的变量的类型，
     // BASE 成员所属的类，一般我认为T和BASE是一样的
     template<typename class_type, typename BASE, typename VAR>
-    int class_mem(lua_State *L, const char *name, VAR BASE::*val)
+    int class_mem_var(const char *name, VAR BASE::*val)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, class_name<class_type>::name());
