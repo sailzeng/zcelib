@@ -61,6 +61,15 @@ int test_lua_script3(int, char *[])
     lua_tie.class_member_var<TA>("a_", &TA::a_);
     lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA,int> );
 
+    TA ta_val(100);
+    TA *ta_ptr = new TA(200);
+    TA ta_1(300);
+    TA &ta_ref = ta_1;
+
+    lua_tie.set_gvar("ta_val",ta_val);
+    lua_tie.set_gvar("ta_ptr", ta_ptr);
+    lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
+
     lua_tie.close();
 
     return 0;

@@ -1,4 +1,6 @@
 //这个代码是参考Tinker实现的，仍然感谢原作者
+//The sun shone, having no alternative, on the nothing new. --Murphy 太阳照常升起，一切都没有改变。—— 《墨菲》
+
 
 #ifndef ZCE_LIB_SCRIPT_LUA_H_
 #define ZCE_LIB_SCRIPT_LUA_H_
@@ -242,13 +244,23 @@ int push_stack(lua_State *state,
 
 //对于非object类型的数据，不能放入引用和指针，这个请注意！！！
 
-
-
-///
-template<typename val_type> static  val_type read_stack(lua_State *L, int index)
+template<typename val_type>
+static
+typename val_type read_stack(lua_State *state, int index)
 {
-    return *(val_type *)(L, index);
+    return *(val_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
 }
+
+///读取枚举值
+template<typename val_type> 
+static 
+typename std::enable_if<std::is_enum<val_type>::value, val_type>::type 
+read_stack(lua_State *state, int index)
+{
+    return (val_type)lua_tonumber(state, index);
+}
+
+///从堆栈中读取某个类型
 template<> char               *read_stack(lua_State *state, int index);
 template<> const char         *read_stack(lua_State *state, int index);
 template<> char                read_stack(lua_State *state, int index);
@@ -263,6 +275,7 @@ template<> bool                read_stack(lua_State *state, int index);
 template<> int64_t             read_stack(lua_State *state, int index);
 template<> uint64_t            read_stack(lua_State *state, int index);
 template<> std::string         read_stack(lua_State *state, int index);
+
 
 ///
 template<typename val_type>

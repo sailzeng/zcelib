@@ -219,7 +219,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? typeid[%d]",
             lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -240,7 +240,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, std::string val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register std::string to lua? type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][std::string] is not a table? May be you don't register std::string to lua?typeid[%d]",
             lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -397,7 +397,7 @@ int ZCE_LUA::class_meta_get(lua_State *state)
         //如果仍然是NULL
         if (lua_isnil(state, -1))
         {
-            lua_pushfstring(state, "[ZCELUA]Can't find '%s' class variable. (forgot registering class variable ?)",
+            lua_pushfstring(state, "[LUATIE]Can't find '%s' class variable. (forgot registering class variable ?)",
                 lua_tostring(state, 2));
             lua_error(state);
         }
@@ -412,14 +412,14 @@ int ZCE_LUA::class_meta_get(lua_State *state)
 //LUA的程序通过这个函数完成定义类的__newindex
 int ZCE_LUA::class_meta_set(lua_State *state)
 {
-    
+    //得到table的meta table，根据变量名称得到对应的变量的set函数
     lua_getmetatable(state, 1);
     lua_pushvalue(state, 2);
     lua_rawget(state, -2);
 
     if (lua_isuserdata(state, -1))
     {
-        //user2type<memvar_base *>::invoke(state, -1)->set(state);
+        ((memvar_base *)lua_touserdata(state, -1))->set(state);
     }
     else if (lua_isnil(state, -1))
     {
@@ -847,14 +847,6 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 
 
 
-//这个函数的堆栈情况可以这样理解
-//-1,结果
-//-2，key
-//-3，metatable
-//-4,key
-//-5,table
-
-
 
 //=======================================================================================================
 ZCE_Lua_Tie::ZCE_Lua_Tie() :
@@ -878,6 +870,7 @@ int ZCE_Lua_Tie::open(bool open_libs,
         close();
     }
 
+    //lua_open 这个东东就是luaL_newstate，这个好像是为了向前兼容
     lua_state_ = lua_open();
     if (nullptr == lua_state_)
     {
