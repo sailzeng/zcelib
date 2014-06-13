@@ -153,7 +153,6 @@ template<> void ZCE_LUA::push_stack(lua_State *state, unsigned short val)
     lua_pushnumber(state, val);
 }
 
-
 template<> void ZCE_LUA::push_stack(lua_State *state, int val)
 {
     lua_pushnumber(state, val);
@@ -199,7 +198,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, int64_t val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
             lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -207,6 +206,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, int64_t val)
 #endif
 
     lua_setmetatable(state, -2);
+    return;
 }
 
 template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
@@ -219,7 +219,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? type id [%d]",
             lua_type(state, -1));
         lua_pop(state, 1);
         return;
@@ -227,6 +227,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
 #endif
 
     lua_setmetatable(state, -2);
+    return;
 }
 
 template<> void ZCE_LUA::push_stack(lua_State *state, std::string val)
@@ -239,13 +240,14 @@ template<> void ZCE_LUA::push_stack(lua_State *state, std::string val)
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
-        luaL_error(state,"[stdstring] is not a table? May be you don't register stdstring to lua? type id [%d]",
-            lua_type(state,-1));
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register std::string to lua? type id [%d]",
+            lua_type(state, -1));
         lua_pop(state, 1);
         return;
     }
 #endif
     lua_setmetatable(state, -2);
+    return;
 }
 
 //=======================================================================================================
@@ -428,6 +430,14 @@ int ZCE_LUA::class_meta_set(lua_State *state)
     lua_settop(state, 3);
     return 0;
 }
+
+
+int ZCE_LUA::destroyer(lua_State *state)
+{
+    ((lua_udat_base *)(lua_touserdata(state, 1)))->~lua_udat_base();
+    return 0;
+}
+
 
 
 //=======================================================================================================
@@ -705,7 +715,7 @@ static int eq_stdstring(lua_State *state)
 {
     std::string *a = (std::string *)lua_touserdata(state, 1);
     std::string *b = (std::string *)lua_touserdata(state, 2);
-    lua_pushboolean(state, (a->c_str() == b->c_str()));
+    lua_pushboolean(state, (*a == *b));
     return 1;
 }
 
@@ -713,7 +723,7 @@ static int lt_stdstring(lua_State *state)
 {
     std::string *a = (std::string *)lua_touserdata(state, 1);
     std::string *b = (std::string *)lua_touserdata(state, 2);
-    lua_pushboolean(state, (a->c_str() < b->c_str()));
+    lua_pushboolean(state, (*a < *b));
     return 1;
 }
 
@@ -721,7 +731,7 @@ static int le_stdstring(lua_State *state)
 {
     std::string *a = (std::string *)lua_touserdata(state, 1);
     std::string *b = (std::string *)lua_touserdata(state, 2);
-    lua_pushboolean(state, (a->c_str() <= b->c_str()));
+    lua_pushboolean(state, (*a <= *b ));
     return 1;
 }
 
@@ -831,6 +841,8 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
+
+
 
 
 

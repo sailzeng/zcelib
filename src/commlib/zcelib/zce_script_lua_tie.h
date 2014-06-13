@@ -9,8 +9,9 @@
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
 #if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
 
+//LUA 5.02版本目前而言，大部分组件都还不支持，所以……
 #if LUA_VERSION_NUM != 501
-#error "[Error] please check your lua libary version,Only support 501. LUA_VERSION_NUM != 501."
+#error "[Error] please check your lua libary version,only support 5.1,Lua 5.2 is not mature. LUA_VERSION_NUM != 501."
 #endif
 
 #if defined (ZCE_OS_WINDOWS)
@@ -50,18 +51,6 @@ struct class_name
         }
         return cname;
     }
-    //对对象的CONST方式也记录一个全局的名称
-    static const char *const_name(const char *name = NULL)
-    {
-        const size_t MAX_LEN = 255;
-        static char const_cname[MAX_LEN + 1] = "";
-        if (name)
-        {
-            snprintf(const_cname, MAX_LEN, "%s.__const__", name);
-            const_cname[MAX_LEN] = '\0';
-        }
-        return const_cname;
-    }
 };
 
 //USER DATA的基类，保存一个void *的指针，用于记录数据的指针，通过
@@ -79,20 +68,26 @@ struct lua_udat_base
     void *obj_ptr_;
 };
 
-//把一个val放入LUA USER DATA的封装
+///把一个val放入LUA USER DATA的封装
 template<typename val_type>
 struct val_2_udat : lua_udat_base
 {
-    val_2_udat()
-        : lua_udat_base(new val_type)
+    val_2_udat() 
+        : lua_udat_base(new val_type) 
+    {
+    } 
+
+    //args_type是构造函数的参数,args_type1 存在的目的是和默认构造函数分开，
+    template<typename args_type1, typename ...args_tlist>
+    val_2_udat(args_type1 arg1, args_tlist ...arg) : lua_udat_base(new val_type(arg1,args_tlist ...))
     {
     }
 
-    //args_type是构造函数的参数
-    template<typename ...args_type>
-    val_2_udat(args_type ...arg) : lua_udat_base(new val_type(args_type ...))
+    template<typename args_type>
+    val_2_udat(args_type arg) : lua_udat_base(new val_type(arg))
     {
     }
+
 
     //辅助完成析构,会,释放分配的空间,原作好像少了virtual
     virtual ~val_2_udat()
@@ -101,6 +96,7 @@ struct val_2_udat : lua_udat_base
     }
 };
 
+///
 template<typename val_type>
 struct ptr_2_udat : lua_udat_base
 {
@@ -110,27 +106,110 @@ struct ptr_2_udat : lua_udat_base
     }
 };
 
+///
 template<typename val_type>
 struct ref_2_udat : lua_udat_base
 {
-    ref_2_udat(val_type &t) : lua_udat_base(&t)
+    //注意第一个&t表示是引用参数，第二个是标示传递指针给lua_udat_base基类
+    ref_2_udat(val_type &t) :
+        lua_udat_base(&t)
     {
     }
 };
 
 
-
+template<typename val_type  >
+void push_stack(lua_State * /*state*/, typename val_type /*val*/)
+{
+    ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+    return;
+}
 
 ///PUSH一个数据到堆栈，
+template<typename val_type  >
+void push_stack(lua_State *state,
+    typename std::enable_if<std::is_object<val_type>::value>::type val)
+{
+    new(lua_newuserdata(state,
+        sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
+    
+    //根据类的名称，设置metatable
+    lua_pushstring(state, class_name<val_type >::name());
+    lua_gettable(state, LUA_GLOBALSINDEX);
+    if (lua_istable(state, -1))
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
+            typeid(val_type).name(),
+            class_name<val_type >::name());
+        lua_pop(state, 1);
+        return;
+    }
+    lua_setmetatable(state, -2);
+    return;
+
+}
 
 ///为变参模板函数递归准备的函数
 template<typename val_type, typename... val_tlist>
 void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 {
     push_stack(state, val, val_s...);
-
+    return;
 }
 
+//放入一个引用
+template<typename val_type  >
+void push_stack(lua_State *state,
+    typename std::enable_if<std::is_reference<val_type>::value>::type val)
+{
+    new(lua_newuserdata(state,
+        sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(val);
+
+    //如果有可能为const多做一些检查
+    //if (std::is_const<val_type>::value)
+
+    //根据类的名称，设置metatable
+    lua_pushstring(state, class_name<val_type >::name());
+    lua_gettable(state, LUA_GLOBALSINDEX);
+    if (lua_istable(state, -1))
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
+            typeid(val_type).name(),
+            class_name<val_type >::name());
+        lua_pop(state, 1);
+        return;
+    }
+    lua_setmetatable(state, -2);
+    return;
+}
+
+//放入一个指针
+template<typename val_type  >
+void push_stack(lua_State *state,
+    typename  std::enable_if<std::is_object<val_type>::value>::type *val)
+{
+    if (val)
+    {
+        new(lua_newuserdata(state, sizeof(ptr_2_udat<val_type>))) ptr_2_udat<val_type>(val);
+
+        lua_pushstring(state, class_name<val_type >::name());
+        lua_gettable(state, LUA_GLOBALSINDEX);
+        if (!lua_istable(state, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
+                typeid(val_type).name(),
+                class_name<val_type >::name());
+            lua_pop(state, 1);
+            return;
+        }
+        lua_setmetatable(state, -2);
+    }
+    else
+    {
+        lua_pushnil(state);
+    }
+    return;
+}
 
 template<> void push_stack(lua_State *state, char val);
 template<> void push_stack(lua_State *state, unsigned char val);
@@ -154,87 +233,16 @@ template<> void push_stack(lua_State *state, unsigned long val);
 
 //枚举
 template<typename val_type  >
-void push_stack(lua_State *state,
+int push_stack(lua_State *state,
                 typename  std::enable_if<std::is_enum<val_type>::value>::type val)
 {
     lua_pushnumber(state, val);
+    return 0;
 }
 
 //对于非object类型的数据，不能放入引用和指针，这个请注意！！！
 
-//放入一个引用
-template<typename val_type  >
-int push_stack(lua_State *state,
-               typename std::enable_if<std::is_reference<val_type>::value>::type &val)
-{
-    new(lua_newuserdata(state,
-                        sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(input);
 
-    //根据类的名称，设置metatable
-    const char *reg_name = NULL;
-    if (std::is_const<val_type>::value)
-    {
-        reg_name = class_name<val_type >::const_name();
-    }
-    else
-    {
-        reg_name = class_name<val_type >::name();
-    }
-    lua_pushstring(state, reg_name);
-    lua_gettable(state, LUA_GLOBALSINDEX);
-    if (lua_istable(state, -1))
-    {
-        int tid = lua_type(state, -1);
-        ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s][%s] is not a table,[%d][%s]? May be you don't register or name conflict? "
-                   typeid(val_type).name(),
-                   reg_name,
-                   tid,
-                   lua_typename(state, tid));
-        lua_pop(state, 1);
-        return -1;
-    }
-    lua_setmetatable(state, -2);
-    return 0;
-}
-
-//放入一个指针
-template<typename val_type  >
-int push_stack(lua_State *state,
-               typename  std::enable_if<std::is_object<val_type>::value>::type *val)
-{
-    if (val)
-    {
-        new(lua_newuserdata(state, sizeof(ptr_2_udat<val_type>))) ptr_2_udat<val_type>(input);
-        const char *reg_name = NULL;
-        if (std::is_const<val_type>::value)
-        {
-            reg_name = class_name<val_type >::const_name();
-        }
-        else
-        {
-            reg_name = class_name<val_type >::name();
-        }
-        lua_pushstring(state, reg_name);
-        lua_gettable(state, LUA_GLOBALSINDEX);
-        if (lua_istable(state, -1))
-        {
-            int tid = lua_type(state, -1);
-            ZCE_LOGMSG(RS_ERROR, "[ZCELUA][%s][%s] is not a table,[%d][%s]? May be you don't register or name conflict? "
-                       typeid(val_type).name(),
-                       reg_name,
-                       tid,
-                       lua_typename(state, tid));
-            lua_pop(state, 1);
-            return -1;
-        }
-        lua_setmetatable(state, -2);
-    }
-    else
-    {
-        lua_pushnil(state);
-    }
-    return 0;
-}
 
 ///
 template<typename val_type> static  val_type read_stack(lua_State *L, int index)
@@ -270,7 +278,7 @@ template<typename array_type>
 int array_meta_get(lua_State *state)
 {
     //如果不是
-    int index = lua_tonumber(state, -1);
+    int index = static_cast<int>( lua_tonumber(state, -1));
     array_type *ptr = ((array_type *)lua_touserdata(state, -2));
     push_stack<array_type>(state, ptr[index]);
     //index 应该做个检查
@@ -284,7 +292,7 @@ template<typename array_type>
 int array_meta_set(lua_State *state)
 {
     array_type *ptr = ((array_type *)lua_touserdata(state, -3));
-    int index = lua_tonumber(state, -2);
+    int index = static_cast<int>(lua_tonumber(state, -2));
 
     ptr[index] = read_stack<array_type>(state, -1);
 
@@ -398,13 +406,7 @@ int constructor(lua_State *state)
 //调用USER_DATA的基类的析构,由于userdata_base其实是一个LUA使用的userdata对象的基类，
 //其子类包括3种，val,ptr,ref,其中val的析构会释放对象，ptr，ref的对象什么都不会做，
 //这样就保证无论你传递给LUA什么，他们的生命周期都是正确的，
-int destroyer(lua_State *state)
-{
-    ((lua_udat_base *)(lua_touserdata(state, 1)))->~lua_udat_base();
-    return 0;
-}
-
-
+int destroyer(lua_State *state);
 
 
 
@@ -466,7 +468,7 @@ public:
         //名称对象，
         lua_pushstring(lua_state_, name);
         //模板函数，根据val_type绝对如何push
-        push_stack(lua_state_, var);
+        ZCE_LUA::push_stack(lua_state_, var);
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
@@ -476,14 +478,15 @@ public:
     {
         lua_pushstring(lua_state_, name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
-        return pop_stack<var_type>(lua_state_);
+        return ZCE_LUA::pop_stack<var_type>(lua_state_);
     }
+
 
     ///向LUA设置一个数组,在LUA内部保存一个table，
     template<typename val_type>
     void set_garray(const char *name,
                     size_t ary_num,
-                    typename const val_type ary_data[],
+                    typename val_type ary_data[],
                     bool use_reference = false,
                     bool read_only = false)
     {
@@ -492,13 +495,13 @@ public:
         //如果不是使用引用方式使用，那么会在lua中保留一份拷贝
         if (!use_reference)
         {
-            lua_createtable(lua_state_, ary_num, 0);
+            lua_createtable(lua_state_, static_cast<int>( ary_num), 0);
             for (size_t i = 0; i < ary_num; ++i)
             {
                 //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
                 //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
                 lua_pushnumber(lua_state_, static_cast<int>(i));
-                push_stack(lua_state_, ary_data[i]);
+                ZCE_LUA::push_stack(lua_state_, ary_data[i]);
                 lua_rawset(lua_state_, -3);
             }
             //如果希望其只读
@@ -517,25 +520,32 @@ public:
         //引用方式，直接使用指针当作user data,同时设置meta table
         else
         {
-            new lua_newuserdata(lua_state_, sizeof(val_type *))(val_type *)(ary_data);
+            new (lua_newuserdata(lua_state_, sizeof(val_type *)))(val_type *)(ary_data);
             lua_newtable(lua_state_);
-            lua_pushstring(lua_state_, "__index");
-            lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_get(), 0);
+
+            lua_pushstring(lua_state_, "__array_size");
+            lua_pushnumber(lua_state_, static_cast<int>( ary_num));
             lua_rawset(lua_state_, -3);
+            
+            lua_pushstring(lua_state_, "__index");
+            lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_get<val_type>, 0);
+            lua_rawset(lua_state_, -3);
+
             //非只读
             if (!read_only)
             {
                 lua_pushstring(lua_state_, "__newindex"); 
-                lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_set, 0);
+                lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_set<val_type>, 0);
                 lua_rawset(lua_state_, -3);
             }
             //如果只读，__newindex
             else
             {
                 lua_pushstring(lua_state_, "__newindex");
-                lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread(), 0);
+                lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
                 lua_rawset(lua_state_, -3);
             }
+            //要不要处理__gc ?
         }
 
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
@@ -578,7 +588,7 @@ public:
     * @param      func      注册的C函数
     */
     template<typename ret_type, typename... args_type>
-    void reg_gfun(const char *name, ret_type(*func)(args_type...))
+    void tie_gfun(const char *name, ret_type(*func)(args_type...))
     {
         //函数名称
         lua_pushstring(lua_state_, name);
@@ -672,7 +682,7 @@ public:
     //类的初始化，让class能在lua中使用
     //定义类的metatable的表，或者说原型的表。
     template<typename class_type>
-    void reg_class(const char *name,
+    void tie_class(const char *name,
         bool read_only)
     {
         //绑定T和名称
@@ -681,7 +691,7 @@ public:
         //类的名称
         lua_pushstring(lua_state_, name);
         //new 一个table，这个table是作为其他的类的metatable的（某种程度上也可以说是原型），
-        lua_newtable(state);
+        lua_newtable(lua_state_);
 
         //__name不是标准的元方法，但在例子中有使用
         lua_pushstring(lua_state_, "__name");
@@ -704,7 +714,7 @@ public:
         else
         {
             lua_pushstring(lua_state_, "__newindex");
-            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread(), 0);
+            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
             lua_rawset(lua_state_, -3);
         }
 
@@ -717,7 +727,6 @@ public:
     }
 
 
-    //template<typename ret_type1, typename ret_type2, typename... args_type>
 
     // class_type 是类
     // constructor_fun 是构造函数的封装，ZCE_LUA::constructor
@@ -725,14 +734,14 @@ public:
     int class_constructor(constructor_fun func)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        lua_pushstring(lua_state_, class_name<class_type>::name());
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
         //如果栈顶是不是一个表，进行错误处理
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       class_name<class_type>::name());
+                       ZCE_LUA::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -740,8 +749,8 @@ public:
 
         //对这个类的metatable的表，设置一个metatable，在其中增加一个__call的对应函数
         //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
-        //LUA中出现这样的调用，
-        //object =class_name()
+        //LUA中出现这样的调用，var1,var2是构造参数，和构造函数一样，这个地方要感谢fergzhang GG的帮助
+        //object =class_name(var1,var2)
         lua_newtable(lua_state_);
 
         lua_pushstring(lua_state_, "__call");
@@ -755,22 +764,22 @@ public:
         return 0;
     }
 
-    // Tinker Class Variables
-    // T 绑定的类
-    // VAR 是绑定的变量的类型，
-    // BASE 成员所属的类，一般我认为T和BASE是一样的
-    template<typename class_type, typename BASE, typename VAR>
-    int class_mem_var(const char *name, VAR BASE::*val)
+    // 
+    // class_type 绑定的类
+    // var_type 是绑定的变量的类型，
+    // base_type 成员所属的类，一般我认为T和BASE是一样的,但你也可以把一个基类的成员绑定在子类的Lua的meta table里面，
+    template<typename class_type, typename base_type, typename var_type>
+    int class_member_var(const char *name, var_type base_type::*val)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
-        lua_pushstring(lua_state_, class_name<class_type>::name());
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
         //
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       class_name<class_type>::name());
+                ZCE_LUA::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -778,7 +787,8 @@ public:
 
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
-        new(lua_newuserdata(L, sizeof(mem_var<BASE, VAR>))) mem_var<BASE, VAR>(val);
+        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_var<base_type, var_type>)))  \
+            ZCE_LUA::member_var<base_type, var_type>(val);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);

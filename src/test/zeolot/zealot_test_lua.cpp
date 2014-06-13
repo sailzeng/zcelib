@@ -10,12 +10,60 @@ int int32_add_fun(int a, int b)
 }
 
 
-int test_lua_script()
+int test_lua_script1()
 {
     ZCE_Lua_Tie lua_tie;
-    lua_tie.open();
-    lua_tie.reg_fun("int32_add_fun", int32_add_fun);
+    lua_tie.open(true,true);
+    lua_tie.tie_gfun("int32_add_fun", int32_add_fun);
     lua_tie.close();
 
     return 0;
 }
+
+
+int g_a = 1;
+int g_b = 2;
+
+
+int g_array[20];
+
+int test_lua_script2(int ,char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+    lua_tie.set_gvar("g_b_var", g_b);
+    lua_tie.set_gvar("g_b_ptr", &g_b);
+    int &ref_gb = g_b;
+    lua_tie.set_gvar<int &>("g_a_ref", ref_gb);
+
+
+    lua_tie.set_garray("g_array", 20, g_array);
+
+    lua_tie.close();
+
+    return 0;
+}
+
+struct TA
+{
+    TA(int a) :a_(a)
+    {
+    }
+
+    int a_;
+};
+
+int test_lua_script3(int, char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+    lua_tie.tie_class<TA>("TA",false);
+    lua_tie.class_member_var<TA>("a_", &TA::a_);
+    lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA,int> );
+
+    lua_tie.close();
+
+    return 0;
+}
+
+
