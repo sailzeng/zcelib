@@ -324,7 +324,7 @@ int class_meta_get(lua_State *state);
 int class_meta_set(lua_State *state);
 
 
-///用C++11的新特效，变参实现
+///用C++11的新特效，变参实现的全局(包括static)函数桥接
 template<typename ret_type, typename... args_type>
 struct g_cfunctor
 {
@@ -333,6 +333,32 @@ struct g_cfunctor
         //push是将结果放入堆栈
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...) = (ret_type( *)(args_type...)) (upvalue_1);
+
+        if (std::is_void<ret_type>::value)
+        {
+            int para_idx = 0;
+            fun_ptr(read_stack<args_type>(state, ++para_idx)...);
+            return 0;
+        }
+        else
+        {
+            int para_idx = 0;
+            push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx++)...));
+            return 1;
+        }
+    }
+};
+
+
+///用C++11的新特效，变参实现的类函数桥接
+template<typename class_type,typename ret_type, , typename... args_type>
+struct mem_cfunctor
+{
+    static int invoke(lua_State *state)
+    {
+        //push是将结果放入堆栈
+        void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
+        ret_type(*fun_ptr)(args_type...) = (ret_type(class_type::*)(args_type...)) (upvalue_1);
 
         if (std::is_void<ret_type>::value)
         {
@@ -807,6 +833,28 @@ public:
         lua_pop(lua_state_, 1);
         return 0;
     }
+
+
+    template<typename class_type, typename F>
+    void class_def(lua_State *L, const char *name, F func)
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        if (lua_istable(L, -1))
+        {
+            lua_pushstring(L, name);
+            //这个类的函数指针作为upvalue_的。
+            //注意这儿是类的成员指针（更加接近size_t），而不是实际的指针，所以这儿不能用light userdata
+            new(lua_newuserdata(L, sizeof(F))) F(func);
+            //
+            push_functor(L, func);
+            lua_rawset(L, -3);
+        }
+        lua_pop(L, 1);
+    }
+
 
 protected:
 
