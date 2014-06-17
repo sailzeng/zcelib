@@ -100,7 +100,7 @@ struct val_2_udat : lua_udat_base
     }
 };
 
-///
+/// 指针到
 template<typename val_type>
 struct ptr_2_udat : lua_udat_base
 {
@@ -121,16 +121,43 @@ struct ref_2_udat : lua_udat_base
     }
 };
 
-
+/// 数组引用 到 userdata
 template<typename val_type>
-struct aux_array_type
+struct arrayref_2_udat : lua_udat_base
 {
-    size_t ary_num_;
-    typename val_type *ary_data_;
-    bool use_reference_;
-    bool read_only_;
+    size_t ary_size_;
+
+    arrayref_2_udat(val_type *t, size_t ary_size) :
+        lua_udat_base(t),
+        ary_size_(ary_size)
+    {
+    }
 };
 
+///辅助绑定lua的数组
+template<typename val_type>
+struct aux_tie_array
+{
+    //
+    val_type *ary_ptr_;
+    //
+    size_t    ary_size_;
+    //数组使用引用
+    bool     use_reference_ = false;
+    ///只读
+    bool     read_only_ = false;
+
+    aux_tie_array(typename val_type *ary_ptr,
+        size_t ary_size,
+        bool use_reference = false,
+        bool read_only = false):
+        ary_ptr_(ary_ptr),
+        ary_size_(ary_size),
+        use_reference_(use_reference),
+        read_only_(read_only)
+    {
+    }
+};
 
 template<typename val_type  >
 void push_stack(lua_State * /*state*/, typename val_type /*val*/)
@@ -138,6 +165,69 @@ void push_stack(lua_State * /*state*/, typename val_type /*val*/)
     ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
     return;
 }
+
+template<typename ary_type  >
+void push_stack(lua_State * state, typename aux_tie_array<ary_type> &ary)
+{
+    //如果不是使用引用方式使用，那么会在lua中保留一份拷贝
+    if (!ary.use_reference_)
+    {
+        lua_createtable(state, static_cast<int>(ary.ary_size_+1), 0);
+        for (size_t i = 0; i < ary.ary_size_; ++i)
+        {
+            //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
+            //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
+            lua_pushnumber(state, static_cast<int>(i) + 1);
+            ZCE_LUA::push_stack(state, ary.ary_ptr_[i]);
+            lua_rawset(state, -3);
+        }
+        //如果希望其只读
+        if (ary.read_only_)
+        {
+            //让这个表格只读
+            lua_newtable(state);
+
+            lua_pushstring(state, "__newindex");
+            lua_pushcclosure(state, ZCE_LUA::newindex_onlyread, 0);
+            lua_rawset(state, -3);
+
+            lua_setmetatable(state, -2);
+        }
+    }
+    //引用方式，直接使用指针当作user data,同时设置meta table
+    else
+    {
+        new (lua_newuserdata(state, sizeof(val_type *)))(val_type *)(ary.ary_ptr_);
+        lua_newtable(state);
+
+        lua_pushstring(state, "__array_size");
+        lua_pushnumber(state, static_cast<int>(ary_num));
+        lua_rawset(state, -3);
+
+        lua_pushstring(state, "__index");
+        lua_pushcclosure(state, ZCE_LUA::array_meta_get<val_type>, 0);
+        lua_rawset(state, -3);
+
+        //非只读
+        if (!ary.read_only_)
+        {
+            lua_pushstring(state, "__newindex");
+            lua_pushcclosure(state, ZCE_LUA::array_meta_set<ary_type>, 0);
+            lua_rawset(state, -3);
+        }
+        //如果只读，__newindex
+        else
+        {
+            lua_pushstring(state, "__newindex");
+            lua_pushcclosure(state, ZCE_LUA::newindex_onlyread, 0);
+            lua_rawset(state, -3);
+        }
+        //要不要处理__gc ?
+    }
+    
+}
+
+
 
 ///PUSH一个数据到堆栈，
 template<typename val_type  >
