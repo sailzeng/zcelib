@@ -134,97 +134,13 @@ struct arrayref_2_udat : lua_udat_base
     }
 };
 
-///辅助绑定lua的数组
-template<typename val_type>
-struct aux_tie_array
-{
-    //
-    val_type *ary_ptr_;
-    //
-    size_t    ary_size_;
-    //数组使用引用
-    bool     use_reference_ = false;
-    ///只读
-    bool     read_only_ = false;
 
-    aux_tie_array(typename val_type *ary_ptr,
-        size_t ary_size,
-        bool use_reference = false,
-        bool read_only = false):
-        ary_ptr_(ary_ptr),
-        ary_size_(ary_size),
-        use_reference_(use_reference),
-        read_only_(read_only)
-    {
-    }
-};
 
 template<typename val_type  >
 void push_stack(lua_State * /*state*/, typename val_type /*val*/)
 {
     ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
     return;
-}
-
-template<typename ary_type  >
-void push_stack(lua_State * state, typename aux_tie_array<ary_type> &ary)
-{
-    //如果不是使用引用方式使用，那么会在lua中保留一份拷贝
-    if (!ary.use_reference_)
-    {
-        lua_createtable(state, static_cast<int>(ary.ary_size_+1), 0);
-        for (size_t i = 0; i < ary.ary_size_; ++i)
-        {
-            //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
-            //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
-            lua_pushnumber(state, static_cast<int>(i) + 1);
-            ZCE_LUA::push_stack(state, ary.ary_ptr_[i]);
-            lua_rawset(state, -3);
-        }
-        //如果希望其只读
-        if (ary.read_only_)
-        {
-            //让这个表格只读
-            lua_newtable(state);
-
-            lua_pushstring(state, "__newindex");
-            lua_pushcclosure(state, ZCE_LUA::newindex_onlyread, 0);
-            lua_rawset(state, -3);
-
-            lua_setmetatable(state, -2);
-        }
-    }
-    //引用方式，直接使用指针当作user data,同时设置meta table
-    else
-    {
-        new (lua_newuserdata(state, sizeof(val_type *)))(val_type *)(ary.ary_ptr_);
-        lua_newtable(state);
-
-        lua_pushstring(state, "__array_size");
-        lua_pushnumber(state, static_cast<int>(ary_num));
-        lua_rawset(state, -3);
-
-        lua_pushstring(state, "__index");
-        lua_pushcclosure(state, ZCE_LUA::array_meta_get<val_type>, 0);
-        lua_rawset(state, -3);
-
-        //非只读
-        if (!ary.read_only_)
-        {
-            lua_pushstring(state, "__newindex");
-            lua_pushcclosure(state, ZCE_LUA::array_meta_set<ary_type>, 0);
-            lua_rawset(state, -3);
-        }
-        //如果只读，__newindex
-        else
-        {
-            lua_pushstring(state, "__newindex");
-            lua_pushcclosure(state, ZCE_LUA::newindex_onlyread, 0);
-            lua_rawset(state, -3);
-        }
-        //要不要处理__gc ?
-    }
-    
 }
 
 
@@ -243,7 +159,7 @@ void push_stack(lua_State *state,
     if (lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
-            typeid(val_type).name(),
+            typeid(val).name(),
             class_name<val_type >::name());
         lua_pop(state, 1);
         return;
@@ -278,7 +194,7 @@ void push_stack(lua_State *state,
     if (lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
-            typeid(val_type).name(),
+            typeid(val).name(),
             class_name<val_type >::name());
         lua_pop(state, 1);
         return;
@@ -301,7 +217,7 @@ void push_stack(lua_State *state,
         if (!lua_istable(state, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
-                typeid(val_type).name(),
+                typeid(val).name(),
                 class_name<val_type >::name());
             lua_pop(state, 1);
             return;
@@ -407,11 +323,24 @@ int array_meta_get(lua_State *state)
 {
     //如果不是
     int index = static_cast<int>( lua_tonumber(state, -1));
-    array_type *ptr = ((array_type *)lua_touserdata(state, -2));
-    push_stack<array_type>(state, ptr[index]);
+    arrayref_2_udat<array_type> *ptr = ((arrayref_2_udat<array_type> *)lua_touserdata(state, -2));
+    if (index < 1 && index > ptr->ary_size_)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
+            index,
+            typeid(ptr->obj_ptr_).name(),
+            static_cast<uint32_t>(ptr->ary_size_));
+        ZCE_ASSERT(false);
+        lua_pushnil(state);
+
+    }
+    else
+    {
+        push_stack<array_type>(state, ptr->obj_ptr_[index]);
+    }
+    
     //index 应该做个检查
-    //
-    lua_remove(state, -2);
+
     return 1;
 }
 
@@ -419,17 +348,37 @@ int array_meta_get(lua_State *state)
 template<typename array_type>
 int array_meta_set(lua_State *state)
 {
-    array_type *ptr = ((array_type *)lua_touserdata(state, -3));
+    arrayref_2_udat<array_type> *ptr = ((arrayref_2_udat<array_type> *)lua_touserdata(state, -3));
     int index = static_cast<int>(lua_tonumber(state, -2));
 
-    ptr[index] = read_stack<array_type>(state, -1);
-
-    lua_remove(state, -2);
-    lua_remove(state, -1);
+    //对index做边界检查
+    if (index < 1 && index > ptr->ary_size_)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
+            index, 
+            typeid(ptr->obj_ptr_).name(),
+            static_cast<uint32_t>(ptr->ary_size_));
+        ZCE_ASSERT(false);
+        
+    }
+    else
+    {
+        ptr->obj_ptr_[index] = read_stack<array_type>(state, -1);
+    }
 
     return 0;
 }
 
+//拷贝数组，迭代器，的数据,到LUA中的一个table中，
+int to_luatable(lua_State *state)
+{
+    return 0;
+}
+
+int from_luatable(lua_State *state)
+{
+    return 0;
+}
 
 
 ///
@@ -640,72 +589,44 @@ public:
     }
 
 
-    ///向LUA设置一个数组,在LUA内部保存一个table，
+
+    ///向LUA设置一个数组的引用,在LUA内部保存一个相关的userdata，
     template<typename val_type>
     void set_garray(const char *name,
                     size_t ary_num,
                     typename val_type ary_data[],
-                    bool use_reference = false,
                     bool read_only = false)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
-        //如果不是使用引用方式使用，那么会在lua中保留一份拷贝
-        if (!use_reference)
+        
+
+        new (lua_newuserdata(lua_state_, sizeof(val_type *)))(val_type *)(ary_data);
+        lua_newtable(lua_state_);
+
+        lua_pushstring(lua_state_, "__array_size");
+        lua_pushnumber(lua_state_, static_cast<int>( ary_num));
+        lua_rawset(lua_state_, -3);
+            
+        lua_pushstring(lua_state_, "__index");
+        lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_get<val_type>, 0);
+        lua_rawset(lua_state_, -3);
+
+        //非只读
+        if (!read_only)
         {
-            lua_createtable(lua_state_, static_cast<int>( ary_num), 0);
-            for (size_t i = 0; i < ary_num; ++i)
-            {
-                //相当于lua_rawseti.只是lua_rawseti的内部其实挑换了堆栈顺序，理解哟点怪，
-                //算了,但的确不知道lua_rawseti是否有一些优化处理，因为感觉lua的hashtable是有一些特殊处理的，
-                lua_pushnumber(lua_state_, static_cast<int>(i));
-                ZCE_LUA::push_stack(lua_state_, ary_data[i]);
-                lua_rawset(lua_state_, -3);
-            }
-            //如果希望其只读
-            if (read_only)
-            {
-                //让这个表格只读
-                lua_newtable(lua_state_);
-
-                lua_pushstring(lua_state_, "__newindex");
-                lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
-                lua_rawset(lua_state_, -3);
-
-                lua_setmetatable(lua_state_, -2);
-            }
+            lua_pushstring(lua_state_, "__newindex"); 
+            lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_set<val_type>, 0);
+            lua_rawset(lua_state_, -3);
         }
-        //引用方式，直接使用指针当作user data,同时设置meta table
+        //如果只读，__newindex
         else
         {
-            new (lua_newuserdata(lua_state_, sizeof(val_type *)))(val_type *)(ary_data);
-            lua_newtable(lua_state_);
-
-            lua_pushstring(lua_state_, "__array_size");
-            lua_pushnumber(lua_state_, static_cast<int>( ary_num));
+            lua_pushstring(lua_state_, "__newindex");
+            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
             lua_rawset(lua_state_, -3);
-            
-            lua_pushstring(lua_state_, "__index");
-            lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_get<val_type>, 0);
-            lua_rawset(lua_state_, -3);
-
-            //非只读
-            if (!read_only)
-            {
-                lua_pushstring(lua_state_, "__newindex"); 
-                lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_set<val_type>, 0);
-                lua_rawset(lua_state_, -3);
-            }
-            //如果只读，__newindex
-            else
-            {
-                lua_pushstring(lua_state_, "__newindex");
-                lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
-                lua_rawset(lua_state_, -3);
-            }
-            //要不要处理__gc ?
         }
-
+        //要不要处理__gc ?
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
@@ -726,17 +647,11 @@ public:
             return -1;
         }
 
-        for (size_t i = 0; i < ary_num; ++i)
-        {
-            lua_pushnumber(lua_state_, static_cast<int>(i));
-            lua_gettable(lua_state_, -2)
-            if (lua_isnil(lua_state_, -1))
-            {
-                return -1;
-            }
-            ary_data[i] = pop_stack<ary_type>(lua_state_ );
-        }
+        return 0;
     }
+
+
+
 
     /*!
     * @brief      向LUA注册一个全局函数，或者类的静态函数给lua调用
