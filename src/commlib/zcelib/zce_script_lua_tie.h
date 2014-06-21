@@ -122,16 +122,22 @@ struct ref_2_udat : lua_udat_base
 };
 
 /// 数组引用 到 userdata
-template<typename val_type>
+template<typename ary_type>
 struct arrayref_2_udat : lua_udat_base
 {
-    size_t ary_size_;
-
-    arrayref_2_udat(val_type *t, size_t ary_size) :
-        lua_udat_base(t),
-        ary_size_(ary_size)
+    ///构造函数
+    arrayref_2_udat(ary_type *ary_ptr, size_t ary_size,bool read_only) :
+        lua_udat_base(ary_ptr),
+        ary_size_(ary_size),
+        read_only_(read_only)
     {
     }
+
+    ///空间长度
+    size_t ary_size_;
+    ///是否只读
+    bool   read_only_;
+
 };
 
 
@@ -142,6 +148,40 @@ void push_stack(lua_State * /*state*/, typename val_type /*val*/)
     ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
     return;
 }
+
+
+template<typename val_type  >
+void push_stack(lua_State * state, typename arrayref_2_udat<val_type> & ary_dat )
+{
+    new (lua_newuserdata(state, sizeof(arrayref_2_udat<array_type>)))
+        (ary_dat);
+    lua_newtable(state);
+
+    lua_pushstring(state, "__array_size");
+    lua_pushnumber(state, static_cast<int>(ary_dat.ary_size_));
+    lua_rawset(state, -3);
+
+    lua_pushstring(state, "__index");
+    lua_pushcclosure(state, ZCE_LUA::array_meta_get<array_type>, 0);
+    lua_rawset(state, -3);
+
+    //非只读
+    if (!ary_dat.read_only_)
+    {
+        lua_pushstring(state, "__newindex");
+        lua_pushcclosure(state, ZCE_LUA::array_meta_set<array_type>, 0);
+        lua_rawset(state, -3);
+    }
+    //如果只读，__newindex
+    else
+    {
+        lua_pushstring(state, "__newindex");
+        lua_pushcclosure(state, ZCE_LUA::newindex_onlyread, 0);
+        lua_rawset(state, -3);
+    }
+    return;
+}
+
 
 
 
@@ -461,9 +501,6 @@ struct memvar_base
 template<typename class_type, typename var_type>
 struct member_var : memvar_base
 {
-    //存放类的成员指针
-    var_type class_type::*var_ptr_;
-
     member_var(var_type class_type::*val) :
         var_ptr_(val)
     {
@@ -487,9 +524,38 @@ struct member_var : memvar_base
         push_stack<var_type>(state,
                              read_stack<class_type *>(state, 1)->*(var_ptr_) );
     }
+
+    //存放类的成员指针
+    var_type class_type::*var_ptr_;
 };
 
+//
+template<typename class_type, typename ary_type>
+struct member_array : memvar_base
+{
+    ///对于成员数组，设置没有任何意义，
+    void set(lua_State *state)
+    {
 
+    }
+
+    //get是LUA读取的操作，也就是把C++的数据读取到LUA里面，所以是PUSH
+    void get(lua_State *state)
+    {
+        //read_stack其实就是把类的对象的指针读取出来。
+        //然后通过类成员指针，把成员获取出来
+        ary_type *ary_ptr = read_stack<class_type *>(state, 1)->*(var_ptr_);
+        push_stack<var_type>(state,
+            );
+    }
+
+    ///
+    var_type class_type::**ary_ptr_;
+    ///
+    size_t                 ary_size_;
+    ///
+    bool                   read_only_;
+}
 
 //封装类的构造函数给LUA使用
 template<typename class_type, typename... args_type>
@@ -591,42 +657,16 @@ public:
 
 
     ///向LUA设置一个数组的引用,在LUA内部保存一个相关的userdata，
-    template<typename val_type>
+    template<typename array_type>
     void set_garray(const char *name,
-                    size_t ary_num,
                     typename val_type ary_data[],
+                    size_t ary_size,
                     bool read_only = false)
     {
+        arrayref_2_udat<array_type> aux_ary(ary_data, ary_size, read_only);
         //名称对象，
         lua_pushstring(lua_state_, name);
-        
-
-        new (lua_newuserdata(lua_state_, sizeof(val_type *)))(val_type *)(ary_data);
-        lua_newtable(lua_state_);
-
-        lua_pushstring(lua_state_, "__array_size");
-        lua_pushnumber(lua_state_, static_cast<int>( ary_num));
-        lua_rawset(lua_state_, -3);
-            
-        lua_pushstring(lua_state_, "__index");
-        lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_get<val_type>, 0);
-        lua_rawset(lua_state_, -3);
-
-        //非只读
-        if (!read_only)
-        {
-            lua_pushstring(lua_state_, "__newindex"); 
-            lua_pushcclosure(lua_state_, ZCE_LUA::array_meta_set<val_type>, 0);
-            lua_rawset(lua_state_, -3);
-        }
-        //如果只读，__newindex
-        else
-        {
-            lua_pushstring(lua_state_, "__newindex");
-            lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
-            lua_rawset(lua_state_, -3);
-        }
-        //要不要处理__gc ?
+        push_stack(aux_ary);
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
@@ -649,9 +689,6 @@ public:
 
         return 0;
     }
-
-
-
 
     /*!
     * @brief      向LUA注册一个全局函数，或者类的静态函数给lua调用
