@@ -37,7 +37,7 @@ int test_lua_script2(int ,char *[])
     lua_tie.set_gvar<int &>("g_a_ref", ref_gb);
 
 
-    lua_tie.set_garray("g_array", 20, g_array);
+    lua_tie.set_garray("g_array", g_array,20);
 
     lua_tie.close();
 
@@ -69,6 +69,10 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar("ta_val",ta_val);
     lua_tie.set_gvar("ta_ptr", ta_ptr);
     lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
+
+    int ret_a = 0, ret_b = 0;
+    int var_a = 100, var_b = 200, var_c = 300;
+    lua_tie.call_luafun_2("add_abc", ret_a, ret_b, var_a, var_b, var_c);
 
     lua_tie.close();
 

@@ -514,7 +514,7 @@ static int selfsub_int64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::reg_int64()
+void ZCE_Lua_Tie::tie_int64()
 {
     const char *name = "int64_t";
     lua_pushstring(lua_state_, name);
@@ -645,7 +645,7 @@ static int selfsub_uint64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::reg_uint64()
+void ZCE_Lua_Tie::tie_uint64()
 {
     const char *name = "uint64_t";
     lua_pushstring(lua_state_, name);
@@ -884,8 +884,8 @@ int ZCE_Lua_Tie::open(bool open_libs,
 
     if (reg_common_use)
     {
-        reg_int64();
-        reg_uint64();
+        tie_int64();
+        tie_uint64();
         reg_stdstring();
     }
 
