@@ -478,39 +478,6 @@ int array_meta_set(lua_State *state)
     return 0;
 }
 
-
-//-------------------------------------------------------------------------------
-
-//拷贝数组，迭代器，的数据,到LUA中的一个table中，
-
-///将一个数组或者vector,放入lua table，（当然list也能放进去，但没啥意义，在luatable里面，table使用number进行查询的，这个样违背list的效果）
-template<class input_iter >
-int to_luatable(lua_State *state,
-                const char *table_name,
-                const input_iter first,
-                const input_iter last)
-{
-    return 0;
-}
-
-//将一个map或者放入lua table
-template<class input_iter >
-int to_luatable(lua_State *state,
-                const char *table_name,
-                const input_iter first,
-                const input_iter last,
-                input_iter::second_type * = nullptr)
-{
-    return 0;
-}
-
-
-//
-//int from_luatable(lua_State *state)
-//{
-//    return 0;
-//}
-
 //-------------------------------------------------------------------------------
 
 //调用lua的函数，（但这个实现没有get返回值，实际应该使用ZCE_Lua_Tie的封装）
@@ -881,7 +848,94 @@ public:
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-public:
+    /*!
+    * @brief      使用迭代器拷贝数组，vector的数据,到LUA中的一个table中，
+    * @tparam     input_iter 输入的迭代器，
+    * @param      table_name table的名称
+    * @param      first      第一个begin迭代器
+    * @param      last       最后一个end的迭代器
+    * @note       当然list等容器也能放进去，但没啥意义，在luatable里面，
+    *             table使用number进行查询的，而这样这个样违背list的效果
+    */
+    template<class input_iter >
+    void to_luatable(const char *table_name,
+        typename const input_iter &first,
+        typename const input_iter &last)
+    {
+        lua_pushstring(lua_state_, table_name);
+        lua_createtable(lua_state_, std::distance(first, last),0);
+        typename input_iter iter_temp = first;
+        for (int i= 0; iter_temp != last; iter_temp++,i++)
+        {
+            //Lua的使用习惯索引是从1开始
+            lua_pushnumber(lua_state_,i + 1);
+            push_stack<iterator_traits<input_iter>::value_type >(lua_state_,*iter_temp);
+            lua_settable(lua_state_, -3);
+        }
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    }
+
+    /*!
+    * @brief      通过迭代器将一个map,或者unorder_map放入lua table，
+    * @tparam     map_iter   迭代器类型
+    * @param      table_name 表的名称
+    * @param      first      第一个迭代器，
+    * @param      last       最后一个迭代器
+    * @param      map_iter::second_type* 这个参数没有使用，用于使用SFINAE明确迭代器是map的
+    * @note       这个其实也支持multi的几个map，但，但……
+    */
+    template<class map_iter >
+    void to_luatable(const char *table_name,
+        typename const map_iter first,
+        typename const map_iter last,
+        typename map_iter::second_type * = nullptr)
+    {
+        lua_pushstring(lua_state_, table_name);
+        lua_createtable(lua_state_, std::distance(first, last), 0);
+
+        typename input_iter iter_temp = first;
+        for (; iter_temp != last; iter_temp++)
+        {
+            //将map的key作为table的key
+            push_stack<input_iter::first_type >(lua_state_, iter_temp.first);
+            push_stack<input_iter::second_type >(lua_state_, iter_temp.second);
+            lua_settable(lua_state_, -3);
+        }
+
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        return 0;
+    }
+
+
+    //从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
+    template<class container_type >
+    int from_luatable(const char *table_name, container_type & container_dat)
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        lua_pushstring(lua_state_, table_name);
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        if (!lua_istable(lua_state_, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
+                table_name);
+            ZCE_ASSERT(false);
+            lua_pop(lua_state_, 1);
+            return -1;
+        }
+
+        //first key ,ferg让我把这东西就理解成迭代器
+        lua_pushnil(lua_state_);  
+        while (lua_next(lua_state_, -2) != 0) 
+        {
+            // uses 'key' (at index -2) and 'value' (at index -1) 
+            int index = read_stack<int>(lua_state_, -2);
+            container_dat[index] = read_stack<container_type::value_type>(lua_state_, -2)
+            // removes 'value'; keeps 'key' for next iteration 
+            lua_pop(lua_state_, 1);
+        }
+        return 0;
+    }
 
     ///调用LUA的函数，只有一个返回值
     template<typename ret_type1, typename... args_type>
@@ -931,14 +985,11 @@ public:
     //类的初始化，让class能在lua中使用
     //定义类的metatable的表，或者说原型的表。
     template<typename class_type>
-    void tie_class(const char *name,
+    void tie_class(const char *class_name,
                    bool read_only)
     {
-        //绑定T和名称
-        ZCE_LUA::class_name<class_type>::name(name);
-
-        //类的名称
-        lua_pushstring(lua_state_, name);
+        //绑定T和名称,类的名称
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name(class_name));
         //new 一个table，这个table是作为其他的类的metatable的（某种程度上也可以说是原型），
         lua_newtable(lua_state_);
 
