@@ -15,6 +15,12 @@ int test_lua_script1()
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true,true);
     lua_tie.tie_gfun("int32_add_fun", int32_add_fun);
+
+
+    int ret_a = 0, ret_b = 0;
+    int var_a = 100, var_b = 200, var_c = 300;
+    lua_tie.call_luafun_2("add_abc", ret_a, ret_b, var_a, var_b, var_c);
+
     lua_tie.close();
 
     return 0;
@@ -53,6 +59,18 @@ struct TA
     int a_;
 };
 
+
+struct TB
+{
+    TB(int b1, int b2, int b3) :b1_(b1), b2_(b2), b3_(b3)
+    {
+    }
+
+    int b1_;
+    int b2_;
+    int b3_;
+};
+
 int test_lua_script3(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
@@ -70,9 +88,13 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar("ta_ptr", ta_ptr);
     lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
 
-    int ret_a = 0, ret_b = 0;
-    int var_a = 100, var_b = 200, var_c = 300;
-    lua_tie.call_luafun_2("add_abc", ret_a, ret_b, var_a, var_b, var_c);
+
+    lua_tie.tie_class<TB>("TB", false).
+        tie_constructor(ZCE_LUA::constructor<TB, int, int, int>).
+        tie_member_var<TB>("b1_", &TB::b1_).
+        tie_member_var<TB>("b1_", &TB::b2_).
+        tie_member_var<TB>("b1_", &TB::b3_);
+
 
     lua_tie.close();
 
@@ -80,3 +102,23 @@ int test_lua_script3(int, char *[])
 }
 
 
+int test_lua_script4(int, char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+    int array_a[100];
+    
+
+    lua_tie.to_luatable("array_a", array_a, array_a + 100);
+
+
+    std::map<int, double> map_a;
+    map_a[9] = 1.0;
+    map_a[10] = 2.1;
+    map_a[11] = 3.1;
+    lua_tie.to_luatable("map_a", map_a.begin(), map_a.end());
+
+    lua_tie.close();
+
+    return 0;
+}
