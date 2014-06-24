@@ -60,15 +60,31 @@ struct TA
 };
 
 
-struct TB
+
+
+struct TB :public TA
 {
-    TB(int b1, int b2, int b3) :b1_(b1), b2_(b2), b3_(b3)
+    TB(int b1, int b2, int b3) :TA(0),b1_(b1), b2_(b2), b3_(b3)
     {
+    }
+
+    int set_b1(int b1)
+    {
+        b1_ = b1;
+        return b1_;
+    }
+
+    int set_b2(int b2_1,int b2_2)
+    {
+        b2_ = b2_1 + b2_2;
+        return b2_;
     }
 
     int b1_;
     int b2_;
     int b3_;
+
+    double b_array_[120];
 };
 
 int test_lua_script3(int, char *[])
@@ -76,8 +92,8 @@ int test_lua_script3(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
     lua_tie.tie_class<TA>("TA",false);
-    lua_tie.tie_member_var<TA>("a_", &TA::a_);
-    lua_tie.tie_constructor<TA>(ZCE_LUA::constructor<TA,int> );
+    lua_tie.class_mem_var<TA>("a_", &TA::a_);
+    lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA,int> );
 
     TA ta_val(100);
     TA *ta_ptr = new TA(200);
@@ -89,11 +105,14 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
 
 
-    lua_tie.tie_class<TB>("TB", false).
-        tie_constructor(ZCE_LUA::constructor<TB, int, int, int>).
-        tie_member_var<TB>("b1_", &TB::b1_).
-        tie_member_var<TB>("b1_", &TB::b2_).
-        tie_member_var<TB>("b1_", &TB::b3_);
+    lua_tie.tie_class<TB>("TB", false)
+        .construct(ZCE_LUA::constructor<TB, int, int, int>)
+        .mem_var("b1_", &TB::b1_)
+        .mem_var("b2_", &TB::b2_)
+        .mem_var("b3_", &TB::b3_)
+        .mem_fun("set_b2", &TB::set_b2);
+
+    
 
 
     lua_tie.close();

@@ -14,6 +14,7 @@
 * @note       我等了四年，就是要等一个机会，我要争一口气，不是想证明我了不起，我是要告诉人家，我失去的东西一定要亲手拿回来！
 *             -- 《英雄本色》 小马哥
 *             2014年6月13日早上，荷兰干净利落的爆了西班牙5：1，
+*             今天看到一段，白发三千丈，代码写万行，不知程序里，何处话凄凉，
 */
 
 
@@ -431,7 +432,7 @@ int array_meta_get(lua_State *state)
     //如果不是
     int index = static_cast<int>( lua_tonumber(state, -1));
     arrayref_2_udat<array_type> *ptr = ((arrayref_2_udat<array_type> *)lua_touserdata(state, -2));
-    if (index < 1 && index > ptr->ary_size_)
+    if (index < 1 && index > static_cast<int>( ptr->ary_size_ ))
     {
         ZCE_LOGMSG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
                    index,
@@ -461,7 +462,7 @@ int array_meta_set(lua_State *state)
     int index = static_cast<int>(lua_tonumber(state, -2));
 
     //对index做边界检查
-    if (index < 1 && index > ptr->ary_size_)
+    if (index < 1 && index > static_cast<int>(ptr->ary_size_) )
     {
         ZCE_LOGMSG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
                    index,
@@ -595,8 +596,14 @@ int destroyer(lua_State *state);
 
 
 
-///用C++11的新特效，变参实现的类函数桥接
-template<typename class_type, typename ret_type, typename... args_type>
+
+/*!
+* @brief      用C++11的新特效，变参实现的类函数桥接
+* @tparam     class_type 类的类型
+* @tparam     ret_type   返回值的类型
+* @tparam     ...args_type 变参的参数类型列表
+*/
+template<typename class_type, typename ret_type, typename ...args_type>
 class member_functor
 {
 public:
@@ -604,7 +611,9 @@ public:
     {
         //push是将结果放入堆栈
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
-        ret_type(*fun_ptr)(args_type...) = (ret_type(class_type:: *)(args_type...)) (upvalue_1);
+        
+        typedef int (class_type::*mem_fun)(int, int);
+        mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
 
         class_type *obj_ptr = read_stack<class_type *>(state, -1);
 
@@ -612,14 +621,16 @@ public:
         {
 
             int para_idx = 1;
-            obj_ptr->fun_ptr(read_stack<args_type>(state, ++para_idx)...);
+            //我恨函数指针，我更恨类成员的指针,注意下面的那个括号。一定要，否则，我看了1个小时
+            (obj_ptr->*fun_ptr)(read_stack<args_type>(state, ++para_idx)... );
             return 0;
         }
         else
         {
             int para_idx = 1;
             push_stack<ret_type>(state,
-                                 obj_ptr->fun_ptr(read_stack<args_type>(state, para_idx++)...));
+                                 (obj_ptr->*fun_ptr)(read_stack<args_type>(state, \
+                                 para_idx++)...));
             return 1;
         }
     }
@@ -724,7 +735,7 @@ public:
 
 
 //=======================================================================================================
-//Tie class to lua的语法糖，
+//Tie class to lua的语法糖，具体函数的解释请参考ZCE_Lua_Tie
 class ZCE_Lua_Tie;
 
 template <typename class_type>
@@ -739,32 +750,32 @@ public:
     {
     }
 
-    template <typename constructor_fun >
-    Candy_Tie_Class& tie_constructor(constructor_fun func)
+    template <typename construct_fun >
+    Candy_Tie_Class& construct(construct_fun func)
     {
-        lua_tie_->tie_constructor<class_type, constructor_fun >(func);
+        lua_tie_->class_constructor<class_type, construct_fun >(func);
         return *this;
     }
 
-    template <typename base_type, typename var_type >
-    Candy_Tie_Class& tie_member_var(const char *name, var_type base_type::*val)
+    template <typename var_type >
+    Candy_Tie_Class& mem_var(const char *name, var_type class_type::*val)
     {
-        lua_tie_->tie_member_var<class_type, base_type, var_type >(name, val);
+        lua_tie_->class_mem_var<class_type, var_type >(name, val);
         return *this;
     }
 
-    template <typename base_type, typename array_type >
-    Candy_Tie_Class& tie_member_array(const char *name, array_type base_type::**ary, size_t array_size)
+    template <typename array_type >
+    Candy_Tie_Class& mem_ary(const char *name, array_type class_type::**ary, size_t array_size)
     {
-        lua_tie_->tie_member_array<class_type, base_type, var_type >(name, ary, array_size, read_only_);
+        lua_tie_->class_mem_ary<class_type, var_type >(name, ary, array_size, read_only_);
         return *this;
     }
 
-
-    template< typename ret_type, typename... args_type>
-    Candy_Tie_Class& tie_member_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
+    //绑定函数
+    template<typename ret_type, typename... args_type>
+    Candy_Tie_Class& mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
-        lua_tie_->tie_member_fun<class_type, ret_type, args_type... >(name, ret_type(class_type::*func)(args_type...));
+        lua_tie_->class_mem_fun<class_type>(name, func);
         return *this;
     }
 
@@ -772,7 +783,7 @@ protected:
     ///Lua的解释器的状态
     ZCE_Lua_Tie   *lua_tie_ = nullptr;
     
-    ///
+    ///这个类是否是只读的方式
     bool           read_only_ = false;
 };
 
@@ -1080,7 +1091,7 @@ public:
     */
     template<typename class_type>
     Candy_Tie_Class<class_type> tie_class(const char *class_name,
-                              bool read_only = false)
+                                          bool read_only = false)
     {
         //绑定T和名称,类的名称
         lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name(class_name));
@@ -1128,12 +1139,12 @@ public:
     /*!
     * @brief
     * @tparam     class_type class_type 是类
-    * @tparam     constructor_fun 是构造函数的封装，ZCE_LUA::constructor
+    * @tparam     construct_fun 是构造函数的封装，ZCE_LUA::constructor
     * @return     int
     * @param      func
     */
-    template<typename class_type, typename constructor_fun>
-    int tie_constructor(constructor_fun func)
+    template<typename class_type, typename construct_fun>
+    int class_constructor(construct_fun func)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
@@ -1167,17 +1178,67 @@ public:
     }
 
 
+    template<typename class_type, typename parent_type>
+    int class_inherit()
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        //如果栈顶是一个表
+        if (!lua_istable(lua_state_, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                ZCE_LUA::class_name<class_type>::name());
+            ZCE_ASSERT(false);
+            lua_pop(lua_state_, 1);
+            return -1;
+        }
+
+        //设置__parent 为 父类名称，目前不能多重继承
+        lua_pushstring(lua_state_, "__parent");
+        lua_gettable(lua_state_, -2);
+
+        //如果有孩子还没有孩子他妈
+        if (lua_isnil(lua_state_, -1))
+        {
+            lua_pushstring(lua_state_, "__parent");
+            lua_pushstring(lua_state_, class_name<parent_type>::name());
+            lua_rawset(lua_state_, -3);
+
+        }
+        //如果孩子已经有一个孩子他妈，要再增加一个，就要放一个群了
+        else if (lua_isstring(lua_state_, -1))
+        {
+
+        }
+        //如果孩子已经有一群（N个）孩子他妈
+        else if (lua_istable(lua_state_, -1))
+        {
+
+        }
+        else
+        {
+            return -1;
+        }
+        //从堆栈弹出push_meta取得的vlue
+        lua_pop(L, 1);
+    }
+
+
     /*!
     * @brief      给一个类的meta table 绑定成员变量
     * @tparam     class_type 绑定的类的类型
-    * @tparam     base_type  成员所属的类，一般我认为T和BASE是一样的,但你也可以把一个基类的成员绑定在子类的Lua的meta table里面，
     * @tparam     var_type   成员类型
     * @return     int        是否绑定成功
     * @param      name       绑定的名称
-    * @param      base_type::*val 绑定的成员变量的指针
+    * @param      class_type::*val 绑定的成员变量的指针
+    * @note       Luatinker中还有一个模板参数base_type，成员所属的类，一般我认为class_type
+    *             和base_type是一样的,但你也可以把一个基类的成员绑定在子类的Lua的meta table里面，
+    *             我自己感觉这东东的存在必要性不大，去掉了
     */
-    template<typename class_type, typename base_type, typename var_type>
-    int tie_member_var(const char *name, var_type base_type::*val)
+    template<typename class_type, typename var_type>
+    int class_mem_var(const char *name, var_type class_type::*val)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
@@ -1195,8 +1256,8 @@ public:
 
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
-        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_var<base_type, var_type>)))  \
-        ZCE_LUA::member_var<base_type, var_type>(val);
+        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_var<class_type, var_type>)))  \
+            ZCE_LUA::member_var<class_type, var_type>(val);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
@@ -1205,9 +1266,9 @@ public:
 
 
     ///给一个类的meta table 绑定成员数组
-    template<typename class_type, typename base_type, typename ary_type>
-    int tie_member_array(const char *name,
-        ary_type base_type:: **mem_ary,
+    template<typename class_type, typename ary_type>
+    int class_mem_ary(const char *name,
+        ary_type class_type:: **mem_ary,
         size_t array_size,
         bool read_only = false)
     {
@@ -1227,8 +1288,8 @@ public:
 
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
-        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_array<base_type, var_type>)))  \
-        ZCE_LUA::member_array<base_type, var_type>(mem_ary, array_size, read_only);
+        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_array<class_type, var_type>)))  \
+            ZCE_LUA::member_array<class_type, var_type>(mem_ary, array_size, read_only);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
@@ -1238,7 +1299,7 @@ public:
 
 
     template<typename class_type, typename ret_type, typename... args_type>
-    int tie_member_fun(const char *name, typename ret_type( class_type::*func)(args_type...))
+    int class_mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
@@ -1257,11 +1318,12 @@ public:
         lua_pushstring(lua_state_, name);
         //这个类的函数指针作为upvalue_的。
         //注意这儿是类的成员指针（更加接近size_t），而不是实际的指针，所以这儿不能用light userdata
-        new(lua_newuserdata(lua_state_, sizeof(ret_type(class_type:: *)(args_type...)))) \
-        ret_type(class_type::*func)(args_type...);
+        //下面这个写法真是要了人民，非要用typedef中转一下
+        typedef ret_type(class_type:: *mem_fun)(args_type...);
+        new(lua_newuserdata(lua_state_, sizeof(mem_fun))) mem_fun(func);
         //
         lua_pushcclosure(lua_state_,
-                         ZCE_LUA::member_functor<class_type, ret_type, args_type...>::invoke, 1);
+            ZCE_LUA::member_functor<class_type, ret_type, args_type...>::invoke, 1);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
