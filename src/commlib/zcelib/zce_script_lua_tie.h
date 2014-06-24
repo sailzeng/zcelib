@@ -1210,19 +1210,37 @@ public:
         //如果孩子已经有一个孩子他妈，要再增加一个，就要放一个群了
         else if (lua_isstring(lua_state_, -1))
         {
+            std::string old_parent = ZCE_LUA::pop_stack(lua_state_);
+            lua_pushstring(lua_state_, "__parent");
+            lua_newtable(lua_state_);
+            //放入原有的那个
+            lua_pushnumber(lua_state_, 1);
+            lua_pushstring(lua_state_, old_parent.c_str());
+            lua_rawset(lua_state_, -3);
 
+            lua_pushnumber(lua_state_, 2);
+            lua_pushstring(lua_state_, class_name<parent_type>::name());
+            lua_rawset(lua_state_, -3);
+            
+            //
+            lua_rawset(lua_state_, -3);
         }
         //如果孩子已经有一群（N个）孩子他妈
         else if (lua_istable(lua_state_, -1))
         {
-
+            int num_parent = lua_objlen(lua_state_, -1);
+            lua_pushnumber(lua_state_, num_parent+1);
+            lua_pushstring(lua_state_, class_name<parent_type>::name());
+            lua_rawset(lua_state_, -3);
         }
         else
         {
+            lua_pop(L, 1);
             return -1;
         }
         //从堆栈弹出push_meta取得的vlue
         lua_pop(L, 1);
+        return 0;
     }
 
 
