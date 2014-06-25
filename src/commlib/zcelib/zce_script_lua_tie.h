@@ -563,11 +563,15 @@ public:
 };
 
 
-///
+///lua读取类里面的数据的meta table的__index对应函数
 int class_meta_get(lua_State *state);
 
-///
+///lua写入类里面的数据的meta table的__newindex对应函数
 int class_meta_set(lua_State *state);
+
+
+///调用父母的函数
+int class_parent_get(lua_State *state);
 
 
 //封装类的构造函数给LUA使用
@@ -1178,6 +1182,12 @@ public:
     }
 
 
+    /*!
+    * @brief      本来想把多重继承实现了，但结果发现作用不大
+    * @tparam     class_type  类型
+    * @tparam     parent_type 父类型
+    * @return     int == 0 返回值标识成功
+    */
     template<typename class_type, typename parent_type>
     int class_inherit()
     {
@@ -1195,51 +1205,30 @@ public:
             return -1;
         }
 
-        //设置__parent 为 父类名称，目前不能多重继承
+        //设置__parent 为 父类名称，目前不能多重继承,我和freg讨论过，其实实现多重集成也可以，
+        //就是在处理查询的时候各种麻烦
+
+#if defined DEBUG || defined _DEBUG
         lua_pushstring(lua_state_, "__parent");
         lua_gettable(lua_state_, -2);
+        ZCE_ASSERT(lua_isnil(lua_state_, -1));
+#endif
 
-        //如果有孩子还没有孩子他妈
-        if (lua_isnil(lua_state_, -1))
+        lua_pushstring(lua_state_, "__parent");
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<parent_type>::name());
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        if (!lua_istable(lua_state_, -1))
         {
-            lua_pushstring(lua_state_, "__parent");
-            lua_pushstring(lua_state_, class_name<parent_type>::name());
-            lua_rawset(lua_state_, -3);
-
-        }
-        //如果孩子已经有一个孩子他妈，要再增加一个，就要放一个群了
-        else if (lua_isstring(lua_state_, -1))
-        {
-            std::string old_parent = ZCE_LUA::pop_stack(lua_state_);
-            lua_pushstring(lua_state_, "__parent");
-            lua_newtable(lua_state_);
-            //放入原有的那个
-            lua_pushnumber(lua_state_, 1);
-            lua_pushstring(lua_state_, old_parent.c_str());
-            lua_rawset(lua_state_, -3);
-
-            lua_pushnumber(lua_state_, 2);
-            lua_pushstring(lua_state_, class_name<parent_type>::name());
-            lua_rawset(lua_state_, -3);
-            
-            //
-            lua_rawset(lua_state_, -3);
-        }
-        //如果孩子已经有一群（N个）孩子他妈
-        else if (lua_istable(lua_state_, -1))
-        {
-            int num_parent = lua_objlen(lua_state_, -1);
-            lua_pushnumber(lua_state_, num_parent+1);
-            lua_pushstring(lua_state_, class_name<parent_type>::name());
-            lua_rawset(lua_state_, -3);
-        }
-        else
-        {
-            lua_pop(L, 1);
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                ZCE_LUA::class_name<parent_type>::name());
+            ZCE_ASSERT(false);
+            lua_pop(lua_state_, 1);
             return -1;
         }
+        lua_rawset(lua_state_, -3);
+
         //从堆栈弹出push_meta取得的vlue
-        lua_pop(L, 1);
+        lua_pop(lua_state_, 1);
         return 0;
     }
 

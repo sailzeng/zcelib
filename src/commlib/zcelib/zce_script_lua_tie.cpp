@@ -393,13 +393,15 @@ int ZCE_LUA::class_meta_get(lua_State *state)
         //去掉nil
         lua_remove(state, -1);
         //检查的他的父类里面是否有可以调用的
-        //invoke_parent(state);
+        int ret = class_parent_get(state);
         //如果仍然是NULL
         if (lua_isnil(state, -1))
         {
             lua_pushfstring(state, "[LUATIE]Can't find '%s' class variable. (forgot registering class variable ?)",
                 lua_tostring(state, 2));
             lua_error(state);
+
+            return 1;
         }
     }
     //删除掉metatable，
@@ -429,6 +431,50 @@ int ZCE_LUA::class_meta_set(lua_State *state)
     }
     lua_settop(state, 3);
     return 0;
+}
+
+
+///调用父母的对应的meta table里面是否有相应的 get
+int ZCE_LUA::class_parent_get(lua_State *state)
+{
+    int pk_ret = 0;
+    //
+    lua_pushstring(state, "__parent");
+    lua_rawget(state, -2);
+    
+    //如果不是table，表示没有父母，消失
+    if (!lua_istable(state, -1))
+    {
+        lua_pop(state, 1);
+        return 0;
+    }
+
+    //如果父母对应的是一个table
+    //复制栈底倒数第二个参数key，放入栈顶,在metatable里面寻找key，
+    lua_pushvalue(state, 2);
+    lua_rawget(state, -2);
+
+    //如果是一个userdata，其实其就是我们扔进去的类的成员指针
+    if (lua_isuserdata(state, -1))
+    {
+        //进行调用
+        ((memvar_base *)lua_touserdata(state, -1))->get(state);
+        pk_ret = 1;
+    }
+    else if (lua_isnil(state, -1))
+    {
+        //弹出nil
+        lua_pop(state, 1);
+        pk_ret = class_parent_get(lua_State *state);
+    }
+    else
+    {
+        lua_pop(state, 1);
+    }
+    //从堆栈移除这个metatable
+    lua_remove(state, -2);
+    return pk_ret;
+
 }
 
 
