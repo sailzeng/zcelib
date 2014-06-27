@@ -110,6 +110,7 @@ int test_lua_script3(int, char *[])
         .mem_var("b1_", &TB::b1_)
         .mem_var("b2_", &TB::b2_)
         .mem_var("b3_", &TB::b3_)
+        .mem_ary<double,120>("b_array_", &TB::b_array_)
         .mem_fun("set_b2", &TB::set_b2);
 
     

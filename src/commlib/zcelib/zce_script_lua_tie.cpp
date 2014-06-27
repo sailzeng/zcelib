@@ -372,6 +372,7 @@ int ZCE_LUA::on_error(lua_State *state)
 //LUA的程序通过这个函数完定义类的__index
 int ZCE_LUA::class_meta_get(lua_State *state)
 {
+    int meta_ret = 0;
     //要检查的数据在栈底部，取出得到其metatable放入栈顶
     lua_getmetatable(state, 1);
     //复制栈底倒数第二个参数key，放入栈顶
@@ -386,6 +387,7 @@ int ZCE_LUA::class_meta_get(lua_State *state)
         ((memvar_base *)lua_touserdata(state, -1))->get(state);
         //从堆栈移除这个key，
         lua_remove(state, -2);
+        meta_ret = 0;
     }
     //如果没有找到
     else if (lua_isnil(state, -1))
@@ -393,17 +395,28 @@ int ZCE_LUA::class_meta_get(lua_State *state)
         //去掉nil
         lua_remove(state, -1);
         //检查的他的父类里面是否有可以调用的
-        int ret = class_parent_get(state);
-        //如果仍然是NULL
-        if (lua_isnil(state, -1))
+        meta_ret = class_parent(state);
+        if (0 == meta_ret )
         {
-            lua_pushfstring(state, "[LUATIE]Can't find '%s' class variable. (forgot registering class variable ?)",
-                lua_tostring(state, 2));
-            lua_error(state);
-
-            return 1;
+            ((memvar_base *)lua_touserdata(state, -1))->get(state);
         }
     }
+    else
+    {
+        lua_remove(state, -1);
+        meta_ret = -1;
+    }
+
+    //如果返回值告诉我们没有得到
+    if (0 != meta_ret)
+    {
+        lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
+            __ZCE_FUNCTION__,
+            lua_tostring(state, 2));
+        lua_error(state);
+        return meta_ret;
+    }
+
     //删除掉metatable，
     lua_remove(state, -2);
 
@@ -414,6 +427,7 @@ int ZCE_LUA::class_meta_get(lua_State *state)
 //LUA的程序通过这个函数完成定义类的__newindex
 int ZCE_LUA::class_meta_set(lua_State *state)
 {
+    int meta_ret = -1;
     //得到table的meta table，根据变量名称得到对应的变量的set函数
     lua_getmetatable(state, 1);
     lua_pushvalue(state, 2);
@@ -425,19 +439,40 @@ int ZCE_LUA::class_meta_set(lua_State *state)
     }
     else if (lua_isnil(state, -1))
     {
-        lua_pushvalue(state, 2);
-        lua_pushvalue(state, 3);
-        lua_rawset(state, -4);
+        //去掉nil
+        lua_remove(state, -1);
+        //检查的他的父类里面是否有可以调用的
+        meta_ret = class_parent(state);
+        if (0 == meta_ret)
+        {
+            ((memvar_base *)lua_touserdata(state, -1))->set(state);
+        }
     }
-    lua_settop(state, 3);
+    else
+    {
+        //去掉nil
+        lua_remove(state, -1);
+        meta_ret = -1;
+    }
+
+    //如果返回值告诉我们没有得到
+    if (0 != meta_ret)
+    {
+        lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
+            __ZCE_FUNCTION__,
+            lua_tostring(state, 2));
+        lua_error(state);
+        return meta_ret;
+    }
+
     return 0;
 }
 
 
 ///调用父母的对应的meta table里面是否有相应的 get
-int ZCE_LUA::class_parent_get(lua_State *state)
+int ZCE_LUA::class_parent(lua_State *state)
 {
-    int pk_ret = 0;
+    
     //
     lua_pushstring(state, "__parent");
     lua_rawget(state, -2);
@@ -446,7 +481,7 @@ int ZCE_LUA::class_parent_get(lua_State *state)
     if (!lua_istable(state, -1))
     {
         lua_pop(state, 1);
-        return 0;
+        return -1;
     }
 
     //如果父母对应的是一个table
@@ -457,24 +492,35 @@ int ZCE_LUA::class_parent_get(lua_State *state)
     //如果是一个userdata，其实其就是我们扔进去的类的成员指针
     if (lua_isuserdata(state, -1))
     {
-        //进行调用
+        //进行调用,会把取出的数据push stack，
         ((memvar_base *)lua_touserdata(state, -1))->get(state);
-        pk_ret = 1;
+        //从堆栈移除这个meta table
+        lua_remove(state, -2);
+        return 0;
     }
     else if (lua_isnil(state, -1))
     {
         //弹出nil
         lua_pop(state, 1);
-        pk_ret = class_parent_get(lua_State *state);
+        int pk_ret = class_parent(state);
+        //如果正确
+        if (pk_ret == 0)
+        {
+            lua_remove(state, -2);
+            
+        }
+        else
+        {
+            lua_remove(state, -1);
+        }
+        return pk_ret;
+
     }
     else
     {
-        lua_pop(state, 1);
+        lua_pop(state, 2);
+        return -1;
     }
-    //从堆栈移除这个metatable
-    lua_remove(state, -2);
-    return pk_ret;
-
 }
 
 
