@@ -581,7 +581,7 @@ int class_meta_set(lua_State *state);
 
 
 ///调用父母的函数
-int class_parent_get(lua_State *state);
+int class_parent(lua_State *state);
 
 
 //封装类的构造函数给LUA使用
@@ -705,16 +705,14 @@ public:
 };
 
 //
-template<typename class_type, typename ary_type>
+template<typename class_type, typename ary_type, size_t ary_size>
 class member_array : memvar_base
 {
 public:
     //构造函数
-    member_array(typename ary_type class_type:: **mem_ary_ptr,
-                 size_t ary_size,
+    member_array(typename ary_type (class_type::*mem_ary_ptr)[ary_size],
                  bool read_only) :
         mem_ary_ptr_(mem_ary_ptr),
-        ary_size_(ary_size),
         read_only_(read_only)
     {
     }
@@ -732,14 +730,13 @@ public:
         //read_stack其实就是把类的对象的指针读取出来。
         //然后通过类成员指针，把成员获取出来
         ary_type *ary_ptr = read_stack<class_type *>(state, 1)->*(mem_ary_ptr_);
-        arrayref_2_udat<ary_type> ary_dat(ary_ptr, ary_size_, read_only_);
+        arrayref_2_udat<ary_type> ary_dat(ary_ptr, ary_size, read_only_);
         push_stack(state, ary_dat);
     }
 
     ///成员数组的指针
-    ary_type class_type:: **mem_ary_ptr_;
-    ///
-    size_t                 ary_size_;
+    ary_type(class_type:: *mem_ary_ptr_)[ary_size];
+
     ///
     bool                   read_only_;
 };
@@ -778,10 +775,10 @@ public:
         return *this;
     }
 
-    template <typename array_type >
-    Candy_Tie_Class& mem_ary(const char *name, array_type class_type::**ary, size_t array_size)
+    template <typename array_type ,size_t array_size>
+    Candy_Tie_Class& mem_ary(const char *name, array_type (class_type::*ary)[array_size])
     {
-        lua_tie_->class_mem_ary<class_type, var_type >(name, ary, array_size, read_only_);
+        lua_tie_->class_mem_ary<class_type, array_type, array_size >(name, ary, read_only_);
         return *this;
     }
 
@@ -1221,7 +1218,14 @@ public:
 #if defined DEBUG || defined _DEBUG
         lua_pushstring(lua_state_, "__parent");
         lua_gettable(lua_state_, -2);
-        ZCE_ASSERT(lua_isnil(lua_state_, -1));
+        if (lua_isnil(lua_state_, -1));
+        {
+            lua_remove(lua_state_, -1);
+        }
+        else
+        {
+            ZCE_ASSERT(false);
+        }
 #endif
 
         lua_pushstring(lua_state_, "__parent");
@@ -1283,10 +1287,9 @@ public:
 
 
     ///给一个类的meta table 绑定成员数组
-    template<typename class_type, typename ary_type>
+    template<typename class_type, typename ary_type, size_t ary_size>
     int class_mem_ary(const char *name,
-        ary_type class_type:: **mem_ary,
-        size_t array_size,
+        ary_type(class_type:: *mem_ary)[ary_size],
         bool read_only = false)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
@@ -1305,8 +1308,8 @@ public:
 
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
-        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_array<class_type, var_type>)))  \
-            ZCE_LUA::member_array<class_type, var_type>(mem_ary, array_size, read_only);
+        new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_array<class_type, ary_type, ary_size>)))  \
+            ZCE_LUA::member_array<class_type, ary_type, ary_size>(mem_ary, read_only);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
