@@ -9,9 +9,13 @@
 int main(int argc , char *argv[])
 {
     ZCE_Trace_LogMsg::instance()->init_stdout();
+
+    test_lua_script1(argc, argv);
+    printf("%s", "----------------------------------------------------------------------------\n");
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
-    test_os_time(argc, argv);
+    test_out_buffer(argc, argv);
+    printf("%s", "----------------------------------------------------------------------------\n");
     test_mmap_rbtree1(argc, argv);
     test_mmap_rbtree2(argc, argv);
     

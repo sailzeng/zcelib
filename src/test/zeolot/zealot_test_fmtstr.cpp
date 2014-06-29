@@ -266,7 +266,7 @@ const char cstr_data[] = "I love you.";
 std::string stdstr_data = "You love me.";
 
 
-int test_out_buffer()
+int test_out_buffer(int /*argc*/,char * /*argv*/[])
 {
     const std::string def("You love me.");
     ZCE_LIB::String_Out_Helper abc(def);
@@ -287,6 +287,22 @@ int test_out_buffer()
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "zce_snprintf use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+
+    progress_timer.restart();
+    for (size_t i = 0; i < A_TEST_TIMES; ++i)
+    {
+        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+            int_data,
+            bool_data,
+            double_data,
+            cstr_data,
+            stdstr_data
+            );
+
+    }
+    progress_timer.end();
+    std::cout << "out string:[" << out_buffer << "]" << std::endl;
+    std::cout << "foo_snprintf use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -313,11 +329,11 @@ int test_out_buffer()
                     << int_data
                     << " bool_data="
                     << (bool_data ? "TRUE" : "FALSE")
-                    << " double_data= "
+                    << " double_data="
                     << double_data
-                    << " cstr_data= "
+                    << " cstr_data="
                     << cstr_data
-                    << " stdstr_data ="
+                    << " stdstr_data="
                     << stdstr_data
                     << " Haha!\n";
     }
@@ -340,6 +356,23 @@ int test_out_buffer()
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
     std::cout << "zce_snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+
+
+    progress_timer.restart();
+    for (size_t i = 0; i < A_TEST_TIMES; ++i)
+    {
+        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+            ZCE_LIB::Int_Out_Helper(int_data, ZCE_LIB::BASE_HEXADECIMAL, 32, 0, ZCE_LIB::FMT_ZERO),
+            bool_data,
+            ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
+            ZCE_LIB::String_Out_Helper(cstr_data, 30),
+            ZCE_LIB::String_Out_Helper(stdstr_data.c_str(), stdstr_data.length())
+            );
+
+    }
+    progress_timer.end();
+    std::cout << "out string:[" << out_buffer << "]" << std::endl;
+    std::cout << "foo_snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)

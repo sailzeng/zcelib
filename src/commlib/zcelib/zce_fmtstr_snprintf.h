@@ -42,6 +42,21 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 #if defined ZCE_SUPPORT_CPP11
 
 
+template <typename out_type,typename... out_tlist >
+void foo_c11_outdata(char *&foo_buffer,
+    size_t &foo_max_len,
+    size_t &foo_use_len,
+    const char *&foo_fmt_spec,
+    const out_type &out_data,
+    out_tlist ... out_datalist)
+{
+    foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
+    foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
+}
+
+
+
+
 template <typename out_type >
 void foo_c11_outdata(char *&foo_buffer,
     size_t &foo_max_len,
@@ -69,7 +84,7 @@ void foo_c11_outdata(char *&foo_buffer,
         if (0 == foo_max_len || id_pos == NULL)
         {
             foo_buffer[0] = '\0';
-            return foo_buffer;
+            return;
         }
 
         //检查后面字符是否是?，用于判断是否是转义
@@ -102,7 +117,7 @@ char *foo_snprintf(char *foo_buffer,
     size_t foo_max_len,
     size_t &foo_use_len,
     const char *foo_fmt_spec,
-    const out_type &out_data...)
+    const out_type & ...out_data)
 {
     foo_use_len = 0;
 
@@ -111,95 +126,13 @@ char *foo_snprintf(char *foo_buffer,
         return foo_buffer;
     }
 
-    size_t max_len = foo_max_len - 1;
-    size_t use_len = 0;
+    size_t max_len = foo_max_len - 1, use_len =0;
     char *buffer = foo_buffer;
     buffer[max_len] = '\0';
     const char *fmt_spec = foo_fmt_spec;
 
-    const char *id_pos = NULL;
 
-    //处理第一个数据的输出，
-    while (max_len > 0)
-    {
-        //找到%?，
-        id_pos = strstr(fmt_spec, ZCE_LIB::SNRPINTF_FMT_IDENTIFY);
-        //将%?前面的字符串输出
-        ZCE_LIB::fmt_str(buffer, max_len, use_len, fmt_spec, (id_pos == NULL) ? strlen(fmt_spec) : (id_pos - fmt_spec));
-
-        buffer += use_len;
-        max_len -= use_len;
-        foo_use_len += use_len;
-        fmt_spec += use_len;
-
-        if (0 == max_len || id_pos == NULL)
-        {
-            buffer[0] = '\0';
-            return foo_buffer;
-        }
-
-        //检查后面字符是否是?，用于判断是否是转义
-        if (*(id_pos + LEN_OF_FMT_IDENTIFY) != ZCE_LIB::SNRPINTF_FMT_ESCAPE_CHAR)
-        {
-            ZCE_LIB::output_helper(buffer, max_len, use_len, out_data);
-            buffer += use_len;
-            max_len -= use_len;
-            foo_use_len += use_len;
-            fmt_spec += LEN_OF_FMT_IDENTIFY;
-            break;
-        }
-        //%??将转义为%?输出
-        else
-        {
-            ZCE_LIB::fmt_str(buffer, max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
-            buffer += use_len;
-            max_len -= use_len;
-            foo_use_len += use_len;
-            fmt_spec += LEN_OF_ESCAPE_IDENTIFY;
-            continue;
-        }
-    }
-
-    //处理第二个数据的输出，
-    while (max_len > 0)
-    {
-        //找到%?，
-        id_pos = strstr(fmt_spec, ZCE_LIB::SNRPINTF_FMT_IDENTIFY);
-        //将%?前面的字符串输出
-        ZCE_LIB::fmt_str(buffer, max_len, use_len, fmt_spec, (id_pos == NULL) ? strlen(fmt_spec) : (id_pos - fmt_spec));
-
-        buffer += use_len;
-        max_len -= use_len;
-        foo_use_len += use_len;
-        fmt_spec += use_len;
-
-        if (0 == max_len || id_pos == NULL)
-        {
-            buffer[0] = '\0';
-            return foo_buffer;
-        }
-
-        //检查后面字符是否是?，用于判断是否是转义
-        if (*(id_pos + LEN_OF_FMT_IDENTIFY) != ZCE_LIB::SNRPINTF_FMT_ESCAPE_CHAR)
-        {
-            ZCE_LIB::output_helper(buffer, max_len, use_len, out_data2);
-            buffer += use_len;
-            max_len -= use_len;
-            foo_use_len += use_len;
-            fmt_spec += LEN_OF_FMT_IDENTIFY;
-            break;
-        }
-        //%??将转义为%?输出
-        else
-        {
-            ZCE_LIB::fmt_str(buffer, max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
-            buffer += use_len;
-            max_len -= use_len;
-            foo_use_len += use_len;
-            fmt_spec += LEN_OF_ESCAPE_IDENTIFY;
-            continue;
-        }
-    }
+    foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
 
     ZCE_LIB::fmt_str(buffer,
         max_len,
@@ -211,6 +144,9 @@ char *foo_snprintf(char *foo_buffer,
     //返回
     return foo_buffer;
 }
+
+
+#else
 
 
 #endif

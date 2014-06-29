@@ -853,7 +853,7 @@ static int constructor_stdstring(lua_State *state)
 }
 
 //注册std::string
-void ZCE_Lua_Tie::reg_stdstring()
+void ZCE_Lua_Tie::tie_stdstring()
 {
     const char *name = "stdstring";
     lua_pushstring(lua_state_, name);
@@ -905,7 +905,7 @@ void ZCE_Lua_Tie::reg_stdstring()
 //=======================================================================================================
 //为std::string 准备的metatable
 
-void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
+void ZCE_Lua_Tie::tie_enum(const char *name, size_t item_num, ...)
 {
     lua_pushstring(lua_state_, name);
     //由于不知道你的枚举值是否是array，所以这样申请的，
@@ -978,7 +978,7 @@ int ZCE_Lua_Tie::open(bool open_libs,
     {
         tie_int64();
         tie_uint64();
-        reg_stdstring();
+        tie_stdstring();
     }
 
     return 0;

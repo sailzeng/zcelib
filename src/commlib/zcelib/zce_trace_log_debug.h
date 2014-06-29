@@ -308,7 +308,6 @@ __THROW __attribute__ ((__noreturn__));
 #define ZCE_ASSERT_ALL(expr) \
     (void) ((!!(expr)) || \
             (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr),0) || \
-            (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __ZCE_FUNCTION__, #expr)) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_ALL(expr) \
@@ -324,7 +323,6 @@ __THROW __attribute__ ((__noreturn__));
 #define ZCE_ASSERT_ALL_EX(expr,str) \
     (void) ((!!(expr)) || \
             (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr,str),0) || \
-            (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __ZCE_FUNCTION__, #expr)) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_ALL_EX(expr,str) \

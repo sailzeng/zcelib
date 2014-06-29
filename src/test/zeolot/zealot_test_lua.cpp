@@ -4,22 +4,33 @@
 
 
 //
-int int32_add_fun(int a, int b)
+int add2_fun(int a, int b)
 {
     return a + b;
 }
 
 
-int test_lua_script1()
+int add3_fun(int a, int b,int c)
+{
+    return a + b+ c;
+}
+
+
+
+int test_lua_script1(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true,true);
-    lua_tie.tie_gfun("int32_add_fun", int32_add_fun);
+    lua_tie.tie_gfun("add2_fun", add2_fun);
 
+    lua_tie.tie_gfun("add3_fun", add3_fun);
+     
 
-    int ret_a = 0, ret_b = 0;
-    int var_a = 100, var_b = 200, var_c = 300;
-    lua_tie.call_luafun_2("add_abc", ret_a, ret_b, var_a, var_b, var_c);
+    lua_tie.do_file("lua/lua_test_01.lua");
+
+    int ret_a = 0, ret_b = 0, ret_c = 0;
+    int var_a = 100, var_b = 200, var_c = 300, var_d = 400;
+    lua_tie.call_luafun_3("lua_func", ret_a, ret_b, ret_c, var_a, var_b, var_c, var_d);
 
     lua_tie.close();
 
@@ -113,11 +124,7 @@ int test_lua_script3(int, char *[])
         .mem_ary<double,120>("b_array_", &TB::b_array_)
         .mem_fun("set_b2", &TB::set_b2);
 
-    
-
-
     lua_tie.close();
-
     return 0;
 }
 

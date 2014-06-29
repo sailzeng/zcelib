@@ -72,7 +72,7 @@ int test_perf_nonalignmemcpy(int argc, char *argv[]);
 
 int benchmark_compress(int /*argc*/, char * /*argv*/[]);
 
-
+int test_out_buffer(int argc, char *argv[]);
 int test_log_debug(int /*argc*/, char * /*argv*/[]);
 
 int test_timer_expire(int /*argc*/, char * /*argv*/[]);
@@ -98,6 +98,10 @@ int test_mmap_avltree5(int /*argc*/, char * /*argv*/[]);
 
 
 int test_lua_script(int /*argc*/, char * /*argv*/[]);
+int test_lua_script1(int /*argc*/, char * /*argv*/[]);
+int test_lua_script2(int /*argc*/, char * /*argv*/[]);
+int test_lua_script3(int /*argc*/, char * /*argv*/[]);
+
 
 #endif //
 

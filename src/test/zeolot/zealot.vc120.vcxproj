@@ -209,6 +209,9 @@
     <ClInclude Include="zealot_test_function.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="lua\lua_test_01.lua" />
+    <None Include="lua\lua_test_02.lua" />
+    <None Include="lua\lua_test_03.lua" />
     <None Include="makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

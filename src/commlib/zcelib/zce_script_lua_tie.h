@@ -421,7 +421,6 @@ template<> int64_t             read_stack(lua_State *state, int index);
 template<> uint64_t            read_stack(lua_State *state, int index);
 template<> std::string         read_stack(lua_State *state, int index);
 
-
 ///
 template<typename val_type>
 val_type pop_stack(lua_State *state)
@@ -557,19 +556,24 @@ public:
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...) = (ret_type( *)(args_type...)) (upvalue_1);
 
+        //根据是否有返回值，决定如何处理，是否push_stack
         if (std::is_void<ret_type>::value)
         {
-            int para_idx = 0;
-            fun_ptr(read_stack<args_type>(state, ++para_idx)...);
+            //这儿要注意，有一个严重的问题。
+            int para_idx = 1;
+            fun_ptr(read_stack<args_type>(state, para_idx++)...);
             return 0;
         }
         else
         {
-            int para_idx = 0;
+            int para_idx = 1;
             push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx++)...));
             return 1;
         }
     }
+
+
+
 };
 
 
@@ -836,10 +840,10 @@ public:
     ///向LUA注册uint64_t的类型
     void tie_uint64();
     ///向LUA注册std::string的类型
-    void reg_stdstring();
+    void tie_stdstring();
 
     ///向LUA注册枚举值
-    void reg_enum(const char *name, size_t item_num, ...);
+    void tie_enum(const char *name, size_t item_num, ...);
 
 
     /*!
@@ -886,20 +890,26 @@ public:
     ///从LUA中获取一个全局的数组
     template<typename ary_type>
     int get_garray(const char *name,
-                   size_t ary_num,
-                   typename const ary_type ary_data[]  )
+                   typename ary_type ary_data[],
+                   size_t &ary_size)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
         //如果不是一个table，错误哦
-        if (!lua_istable(lua_state_, -1))
+        if (!lua_isuserdata(lua_state_, -1))
         {
-            lua_pop(lua_state_, 1);
+            lua_remove(lua_state_, -1);
             return -1;
         }
-
+        ZCE_LUA::arrayref_2_udat<array_type> aux_ary = 
+            *(aux_ary *)lua_touserdata(lua_state_, -1);
+        ary_size = aux_ary.ary_size_;
+        for (size_t i = 0; i < ary_size; ++i)
+        {
+            ary_data[i] = *((ary_type *)aux_ary.obj_ptr_ + i);
+        }
         return 0;
     }
 
@@ -1091,6 +1101,22 @@ public:
         return 0;
     }
 
+    ///调用LUA的函数，有三个返回值
+    template<typename ret_type1, typename ret_type2, typename ret_type3, typename... args_type>
+    int call_luafun_3(const char *fun_name, ret_type1 &ret_val1, ret_type2 &ret_val2, ret_type3 &ret_val3, args_type... args)
+    {
+        int ret = 0;
+        ret = ZCE_LUA::call_luafun(lua_state_, fun_name, 3, args...);
+        if (ret != 0)
+        {
+            return ret; 
+        }
+        //在堆栈弹出返回值
+        ret_val1 = ZCE_LUA::pop_stack<ret_type1>(lua_state_);
+        ret_val2 = ZCE_LUA::pop_stack<ret_type2>(lua_state_);
+        ret_val3 = ZCE_LUA::pop_stack<ret_type3>(lua_state_);
+        return 0;
+    }
 
     /*!
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
