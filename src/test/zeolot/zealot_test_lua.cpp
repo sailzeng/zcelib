@@ -16,7 +16,7 @@ int add3_fun(int a, int b,int c)
 }
 
 
-
+//测试两边函数的互相调用
 int test_lua_script1(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
@@ -32,29 +32,48 @@ int test_lua_script1(int, char *[])
     int var_a = 100, var_b = 200, var_c = 300, var_d = 400;
     lua_tie.call_luafun_3("lua_func", ret_a, ret_b, ret_c, var_a, var_b, var_c, var_d);
 
+    printf("ret a =%d ret b=%d ret c=%d\n", ret_a, ret_b, ret_c);
+
     lua_tie.close();
 
     return 0;
 }
 
 
-int g_a = 1;
-int g_b = 2;
+int g_a = 1111;
+int g_b = 2222;
 
 
 int g_array[20];
 
+//测试全局变量在两边的使用
 int test_lua_script2(int ,char *[])
 {
     ZCE_Lua_Tie lua_tie;
+
+    for (size_t k = 0; k < 20; ++k)
+    {
+        g_array[k] = static_cast<int>(k + 1);
+    }
+
     lua_tie.open(true, true);
+
+
     lua_tie.set_gvar("g_b_var", g_b);
+    //绑定指针
     lua_tie.set_gvar("g_b_ptr", &g_b);
     int &ref_gb = g_b;
     lua_tie.set_gvar<int &>("g_a_ref", ref_gb);
 
 
     lua_tie.set_garray("g_array", g_array,20);
+
+
+    lua_tie.do_file("lua/lua_test_02.lua");
+
+    printf("g_b = %d\n",g_b);
+
+
 
     lua_tie.close();
 

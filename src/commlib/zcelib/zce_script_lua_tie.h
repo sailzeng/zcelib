@@ -5,7 +5,9 @@
 * @version
 * @date       Sunday, June 22, 2014
 * @brief      这个代码是参考Tinker实现的，仍然感谢原作者
-*
+*             今天看到一段，白发三千丈，代码写万行，不知程序里，何处话凄凉，
+*             这个代码的目的一方面是我对于如何捏合一个脚本语言总是好奇，今天
+*             终于有了机会折腾一下
 *
 * @details
 *
@@ -14,7 +16,7 @@
 * @note       我等了四年，就是要等一个机会，我要争一口气，不是想证明我了不起，我是要告诉人家，我失去的东西一定要亲手拿回来！
 *             -- 《英雄本色》 小马哥
 *             2014年6月13日早上，荷兰干净利落的爆了西班牙5：1，
-*             今天看到一段，白发三千丈，代码写万行，不知程序里，何处话凄凉，
+*             
 *             2014年6月25日 别了，布冯，别了，皮尔洛，别了，意大利。
 *             超级颜论的颜强提醒我们应该用这首歌给皮尔洛送别。
 *             长亭外，古道边
@@ -255,8 +257,7 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 * @note
 */
 template<typename val_type  >
-void push_stack(lua_State *state,
-                typename std::enable_if<std::is_reference<val_type>::value>::type ref)
+void push_stack(lua_State *state,typename val_type& ref)
 {
     //
     new(lua_newuserdata(state,
@@ -267,7 +268,7 @@ void push_stack(lua_State *state,
     lua_gettable(state, LUA_GLOBALSINDEX);
     if (lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? ",
                    typeid(ref).name(),
                    class_name<val_type >::name());
         lua_pop(state, 1);
@@ -285,8 +286,7 @@ void push_stack(lua_State *state,
 * @param      ptr      放入的指针
 */
 template<typename val_type  >
-void push_stack(lua_State *state,
-                typename  std::enable_if<std::is_pointer<val_type>::value>::type ptr)
+void push_stack(lua_State *state, typename  val_type* ptr)
 {
     if (ptr)
     {
@@ -296,7 +296,7 @@ void push_stack(lua_State *state,
         lua_gettable(state, LUA_GLOBALSINDEX);
         if (!lua_istable(state, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? ",
                        typeid(ptr).name(),
                        class_name<val_type >::name());
             lua_pop(state, 1);
@@ -556,24 +556,28 @@ public:
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...) = (ret_type( *)(args_type...)) (upvalue_1);
 
+        size_t sz_par = sizeof...(args_type);
+        int para_idx = static_cast<int>(sz_par);
+        //这儿要注意，有一个严重的问题。而我确实找不到方法规避，（不试用变参是可以的）
+        //这样的，C++的模板变参的函数包扩展，在VS2013的编译器，和GCC 4.8的编译器上都有不足，
+        //会出现参数顺序颠倒的情况，问题估计是编译器在扩展处理是，是采用的标准参数处理顺序，从左
+        //到右，但是其处理一个参数就将其后就入栈了，而C++的编译器，标准的栈处理顺序是从右到左，
+        //所函数得到的参数顺序就是反的。所以我只有反过来取参数，
+        //但是这应该是一个bug，我不知道哪天编译器会修复这个问题，咩咩，那时候又只有，，，
+
+
         //根据是否有返回值，决定如何处理，是否push_stack
         if (std::is_void<ret_type>::value)
         {
-            //这儿要注意，有一个严重的问题。
-            int para_idx = 1;
-            fun_ptr(read_stack<args_type>(state, para_idx++)...);
+            fun_ptr(read_stack<args_type>(state, para_idx--)...);
             return 0;
         }
         else
         {
-            int para_idx = 1;
-            push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx++)...));
+            push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx--)...));
             return 1;
         }
     }
-
-
-
 };
 
 
@@ -635,20 +639,23 @@ public:
 
         class_type *obj_ptr = read_stack<class_type *>(state, -1);
 
+        size_t sz_par = sizeof...(args_type);
+        int para_idx = static_cast<int>(sz_par);
+
+        //根据是否有返回值，决定如何处理，是否push_stack
         if (std::is_void<ret_type>::value)
         {
 
-            int para_idx = 1;
             //我恨函数指针，我更恨类成员的指针,注意下面的那个括号。一定要，否则，我看了1个小时
-            (obj_ptr->*fun_ptr)(read_stack<args_type>(state, ++para_idx)... );
+            //为什么采用--，请参考前面的解释 g_functor
+            (obj_ptr->*fun_ptr)(read_stack<args_type>(state, para_idx--)... );
             return 0;
         }
         else
         {
-            int para_idx = 1;
             push_stack<ret_type>(state,
                                  (obj_ptr->*fun_ptr)(read_stack<args_type>(state, \
-                                 para_idx++)...));
+                                 para_idx--)...));
             return 1;
         }
     }
@@ -1081,7 +1088,8 @@ public:
             return ret;
         }
         //在堆栈弹出返回值
-        ret_val1 = ZCE_LUA::pop_stack<ret_type1>(lua_state_);
+        ret_val1 = ZCE_LUA::read_stack<ret_type1>(lua_state_, -1);
+        lua_pop(lua_state_, 2);
         return 0;
     }
 
@@ -1096,12 +1104,13 @@ public:
             return ret;
         }
         //在堆栈弹出返回值
-        ret_val1 = ZCE_LUA::pop_stack<ret_type1>(lua_state_);
-        ret_val2 = ZCE_LUA::pop_stack<ret_type2>(lua_state_);
+        ret_val1 = ZCE_LUA::read_stack<ret_type1>(lua_state_, -2);
+        ret_val2 = ZCE_LUA::read_stack<ret_type2>(lua_state_, -1);
+        lua_pop(lua_state_, 2);
         return 0;
     }
 
-    ///调用LUA的函数，有三个返回值
+    ///调用LUA的函数，有三个返回值,好吧就支持到3个返回值把，实在没兴趣了
     template<typename ret_type1, typename ret_type2, typename ret_type3, typename... args_type>
     int call_luafun_3(const char *fun_name, ret_type1 &ret_val1, ret_type2 &ret_val2, ret_type3 &ret_val3, args_type... args)
     {
@@ -1111,10 +1120,11 @@ public:
         {
             return ret; 
         }
-        //在堆栈弹出返回值
-        ret_val1 = ZCE_LUA::pop_stack<ret_type1>(lua_state_);
-        ret_val2 = ZCE_LUA::pop_stack<ret_type2>(lua_state_);
-        ret_val3 = ZCE_LUA::pop_stack<ret_type3>(lua_state_);
+        //在堆栈弹出返回值,注意参数顺序
+        ret_val1 = ZCE_LUA::read_stack<ret_type1>(lua_state_,-3);
+        ret_val2 = ZCE_LUA::read_stack<ret_type2>(lua_state_,-2);
+        ret_val3 = ZCE_LUA::read_stack<ret_type3>(lua_state_,-1);
+        lua_pop(lua_state_, 3);
         return 0;
     }
 

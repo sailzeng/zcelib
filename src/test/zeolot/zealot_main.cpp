@@ -10,7 +10,9 @@ int main(int argc , char *argv[])
 {
     ZCE_Trace_LogMsg::instance()->init_stdout();
 
-    test_lua_script1(argc, argv);
+    //test_lua_script1(argc, argv);
+    test_lua_script2(argc, argv);
+
     printf("%s", "----------------------------------------------------------------------------\n");
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
