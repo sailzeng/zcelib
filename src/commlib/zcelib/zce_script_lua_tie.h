@@ -155,7 +155,7 @@ template<typename val_type>
 class ptr_2_udat :public lua_udat_base
 {
 public:
-    ptr_2_udat(val_type *t)
+    ptr_2_udat(val_type t)
         : lua_udat_base((void *)t)
     {
     }
@@ -204,9 +204,24 @@ public:
 
 ///最通用的函数，但一般的情况基本都通过重载和特化处理了，所以这儿只打印了一个错误信息
 template<typename val_type >
-void push_stack(lua_State * /*state*/, typename val_type /*val*/)
+void push_stack(lua_State * state, typename val_type val)
 {
     ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+    new(lua_newuserdata(state,
+        sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
+
+    //根据类的名称，设置metatable
+    lua_pushstring(state, class_name<val_type >::name());
+    lua_gettable(state, LUA_GLOBALSINDEX);
+    if (lua_istable(state, -1))
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? ",
+            typeid(val).name(),
+            class_name<val_type >::name());
+        lua_pop(state, 1);
+        return;
+    }
+    lua_setmetatable(state, -2);
     return;
 }
 
@@ -216,28 +231,14 @@ void push_stack(lua_State * /*state*/, typename val_type /*val*/)
 * @param      state  lua state
 * @param      val    值，enable_if和 is_object的用法就不细致说明了
 */
-template<typename val_type  >
-void push_stack(lua_State *state,
-                typename std::enable_if<std::is_object<val_type>::value>::type val)
-{
-    new(lua_newuserdata(state,
-                        sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
-
-    //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<val_type >::name());
-    lua_gettable(state, LUA_GLOBALSINDEX);
-    if (lua_istable(state, -1))
-    {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? "
-                   typeid(val).name(),
-                   class_name<val_type >::name());
-        lua_pop(state, 1);
-        return;
-    }
-    lua_setmetatable(state, -2);
-    return;
-
-}
+//template<typename val_type  >
+//void push_stack(lua_State *state,
+//    typename std::enable_if<std::is_object<val_type>::value, val_type>::type val)
+//{
+//
+//    return;
+//
+//}
 
 ///为变参模板函数递归准备的函数
 template<typename val_type, typename... val_tlist>
@@ -257,7 +258,8 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 * @note
 */
 template<typename val_type  >
-void push_stack(lua_State *state,typename val_type& ref)
+void push_stack(lua_State *state,
+     typename std::enable_if<std::is_reference<val_type>::value, val_type>::type ref)
 {
     //
     new(lua_newuserdata(state,
@@ -286,7 +288,8 @@ void push_stack(lua_State *state,typename val_type& ref)
 * @param      ptr      放入的指针
 */
 template<typename val_type  >
-void push_stack(lua_State *state, typename  val_type* ptr)
+void push_stack(lua_State *state, 
+    typename std::enable_if<std::is_pointer<val_type>::value, val_type>::type ptr)
 {
     if (ptr)
     {
@@ -865,7 +868,7 @@ public:
         //名称对象，
         lua_pushstring(lua_state_, name);
         //模板函数，根据val_type绝对如何push
-        ZCE_LUA::push_stack(lua_state_, var);
+        ZCE_LUA::push_stack<var_type>(lua_state_, var);
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
