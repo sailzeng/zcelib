@@ -170,7 +170,7 @@ class ref_2_udat :public lua_udat_base
 {
 public:
     //注意第一个&t表示是引用参数，第二个是标示传递指针给lua_udat_base基类
-    ref_2_udat(val_type &t) :
+    ref_2_udat(val_type t) :
         lua_udat_base(&t)
     {
     }
@@ -317,7 +317,7 @@ void push_stack(lua_State *state,
 //枚举
 template<typename val_type  >
 int push_stack(lua_State *state,
-               typename  std::enable_if<std::is_enum<val_type>::value>::type val)
+    typename  std::enable_if<std::is_enum<val_type>::value, val_type>::type val)
 {
     lua_pushnumber(state, val);
     return 0;
