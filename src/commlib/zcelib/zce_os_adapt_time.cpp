@@ -403,9 +403,9 @@ const char *ZCE_OS::timeval_to_str(const timeval *timeval,
 
 
 //通过字符串翻译得到tm时间结构
-void ZCE_OS::str_to_tm(TIME_STR_FORMAT_TYPE fmt,
-                       const char *strtm,
+void ZCE_OS::str_to_tm(const char *strtm,
                        tm *ptr_tm,
+                       TIME_STR_FORMAT_TYPE fmt,
                        time_t *usec,
                        int *tz)
 {
@@ -633,10 +633,10 @@ void ZCE_OS::str_to_tm(TIME_STR_FORMAT_TYPE fmt,
 
 
 //从字符串转换得到时间time_t函数
-int ZCE_OS::str_to_timeval(TIME_STR_FORMAT_TYPE fmt,
-                           const char *strtm,
+int ZCE_OS::str_to_timeval(const char *strtm,
+                           timeval *tval,
                            bool uct_time,
-                           timeval *tval)
+                           TIME_STR_FORMAT_TYPE fmt )
 {
     //
     if (!uct_time && ZCE_OS::TIME_STRFMT_HTTP_GMT == fmt)
@@ -653,9 +653,9 @@ int ZCE_OS::str_to_timeval(TIME_STR_FORMAT_TYPE fmt,
     struct tm tm_value;
     time_t usec = 0;
     int tz = 0;
-    ZCE_OS::str_to_tm(fmt,
-        strtm,
+    ZCE_OS::str_to_tm(strtm,
         &tm_value,
+        fmt,
         &usec,
         &tz);
 

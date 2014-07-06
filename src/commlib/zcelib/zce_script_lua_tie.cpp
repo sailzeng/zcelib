@@ -606,7 +606,7 @@ static int selfsub_int64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::tie_int64()
+void ZCE_Lua_Tie::reg_int64()
 {
     const char *name = "int64_t";
     lua_pushstring(lua_state_, name);
@@ -737,7 +737,7 @@ static int selfsub_uint64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::tie_uint64()
+void ZCE_Lua_Tie::reg_uint64()
 {
     const char *name = "uint64_t";
     lua_pushstring(lua_state_, name);
@@ -853,7 +853,7 @@ static int constructor_stdstring(lua_State *state)
 }
 
 //注册std::string
-void ZCE_Lua_Tie::tie_stdstring()
+void ZCE_Lua_Tie::reg_stdstring()
 {
     const char *name = "stdstring";
     lua_pushstring(lua_state_, name);
@@ -905,7 +905,7 @@ void ZCE_Lua_Tie::tie_stdstring()
 //=======================================================================================================
 //为std::string 准备的metatable
 
-void ZCE_Lua_Tie::tie_enum(const char *name, size_t item_num, ...)
+void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 {
     lua_pushstring(lua_state_, name);
     //由于不知道你的枚举值是否是array，所以这样申请的，
@@ -976,9 +976,9 @@ int ZCE_Lua_Tie::open(bool open_libs,
 
     if (reg_common_use)
     {
-        tie_int64();
-        tie_uint64();
-        tie_stdstring();
+        reg_int64();
+        reg_uint64();
+        reg_stdstring();
     }
 
     return 0;

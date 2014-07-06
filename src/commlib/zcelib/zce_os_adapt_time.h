@@ -202,15 +202,15 @@ const char *timeval_to_str(const timeval *timeval,
 
 /*!
 * @brief      从字符串中高速的得到tm的结构的结果
-* @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STR_FORMAT_TYPE
 * @param[in]  strtm   字符串，字符串的正确性你自己要保证
 * @param[out] ptr_tm  返回的tm结构的指针，注意，如果字符串错误，可能会导致tm错误喔
+* @param[in]  fmt     字符串的格式，参考枚举值 @ref TIME_STR_FORMAT_TYPE
 * @param[out] usec    返回的的微秒的时间，默认为NULL，表示不需要返回，
 * @param[out] tz      返回的的时区,默认为NULL，表示不需要返回，很多种格式里面没有时区信息
 */
-void str_to_tm(TIME_STR_FORMAT_TYPE fmt,
-               const char *strtm,
+void str_to_tm(const char *strtm,
                tm *ptr_tm,
+               TIME_STR_FORMAT_TYPE fmt,
                time_t *usec = NULL,
                int *tz = NULL);
 
@@ -218,17 +218,17 @@ void str_to_tm(TIME_STR_FORMAT_TYPE fmt,
 /*!
 * @brief      从字符串转换得到本地时间timeval函数
 * @return     int == 0 表示成功
-* @param[in]  fmt      字符串的格式，参考枚举值 @ref TIME_STR_FORMAT_TYPE,
 * @param[in]  strtm    字符串参数
+* @param[out] tval     返回的时间,
 * @param[in]  uct_time 将strtm字符串视为UCT/GMT时间还是本地时间Local Time
 *                      true表示视为UCT/GMT时间，false表示视为本地时间
-* @param[out] tval     返回的时间,
+* @param[in]  fmt      字符串的格式，参考枚举值 @ref TIME_STR_FORMAT_TYPE,
 
 */
-int str_to_timeval(TIME_STR_FORMAT_TYPE fmt,
-                   const char *strtm,
+int str_to_timeval(const char *strtm,
+                   timeval *tval,
                    bool uct_time,
-                   timeval *tval);
+                   TIME_STR_FORMAT_TYPE fmt);
 
 
 /*!

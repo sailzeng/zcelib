@@ -31,9 +31,18 @@ public:
     //设置地址信息
     virtual  void set_sockaddr (sockaddr *addr, socklen_t len);
 
+    /*!
+    * @brief      根据字符串取得IP地址信息，以及端口号信息,
+    * @return     int == 0表示设置成功
+    * @param      ip_addr_str
+    * @note       如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
+    */
+    int set(const char *ip_addr_str);
+
     //根据地址名字，端口号设置
     int set(const char ip_addr_str[],
             uint16_t port_number);
+
     //根据地址IP，端口号设置
     int set(uint16_t port_number,
             const char ipv6_addr_val[16]);

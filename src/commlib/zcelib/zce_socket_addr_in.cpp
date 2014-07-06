@@ -103,6 +103,20 @@ int ZCE_Sockaddr_In::set(uint32_t ip_addr,
     return 0;
 }
 
+
+//根据字符串设置IP地址，如果有#会提取端口号
+int ZCE_Sockaddr_In::set(const char *ip_addr_str)
+{
+    int ret = ZCE_OS::set_sockaddr_in(&in4_addr_, ip_addr_str);
+
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
 //比较两个地址是否相等
 bool ZCE_Sockaddr_In::operator == (const ZCE_Sockaddr_In &others) const
 {

@@ -1,4 +1,6 @@
 #include "zce_predefine.h"
+#include "zce_socket_addr_in.h"
+#include "zce_socket_addr_in6.h"
 #include "zce_config_property_tree.h"
 
 //构造函数,析构函数
@@ -126,10 +128,12 @@ int ZCE_Conf_PropertyTree::new_child(const std::string &path_str,
 
 }
 
-//本来打算用模版函数,后来发现我还没有BOOST那样蛋疼。
-int ZCE_Conf_PropertyTree::get_leaf_str(const std::string &path_str,
-                                        const std::string &key_data,
-                                        std::string &value_data) const
+//最后还是用模板函数特化了，也许能有什么幸福生活等着我呢？
+
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    std::string &val) const
 {
 
     const PROPERTY_TREE_NODE *child_note = NULL;
@@ -148,90 +152,185 @@ int ZCE_Conf_PropertyTree::get_leaf_str(const std::string &path_str,
         return -1;
     }
 
-    value_data = iter->second;
+    val = iter->second;
     return 0;
 }
 
 //取得一个叶子节点的数据，返回值是char *
-int  ZCE_Conf_PropertyTree::get_leaf_str(const std::string &path_str,
-                                         const std::string &key_data,
-                                         char *&str_data,
-                                         size_t max_str_len) const
+template<>
+int  ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                     const std::string &key_data,
+                                     std::pair<char *, size_t > &str_data) const
 {
     std::string value_data;
-    int ret = get_leaf_str(path_str, key_data, value_data);
+    int ret = get_leaf<std::string>(path_str, key_data, value_data);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    strncpy(str_data, value_data.c_str(), max_str_len);
+    strncpy(str_data.first, value_data.c_str(), str_data.second);
     return 0;
 }
 
 //取得一个叶子节点的数据，取回数据是int,
-int ZCE_Conf_PropertyTree::get_leaf_int(const std::string &path_str,
-                                        const std::string &key_data,
-                                        int32_t &value_int) const
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    int32_t &val) const
 {
-    std::string value_data;
-    int ret = get_leaf_str(path_str, key_data, value_data);
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    sscanf(value_data.c_str(), "%d", &value_int);
-    return ret;
+    val = std::stoi(value_str);
+    return 0;
 }
 
-int ZCE_Conf_PropertyTree::get_leaf_uint(const std::string &path_str,
-                                         const std::string &key_data,
-                                         uint32_t &value_uint) const
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    uint32_t &val) const
 {
-    std::string value_data;
-    int ret = get_leaf_str(path_str, key_data, value_data);
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    sscanf(value_data.c_str(), "%u", &value_uint);
-    return ret;
+    val = static_cast<uint32_t>(std::stoul(value_str));
+    return 0;
+}
+
+
+
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    int64_t &val) const
+{
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
+
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    val = std::stoll(value_str);
+    return 0;
+}
+
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    uint64_t &val) const
+{
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
+
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    val = std::stoull(value_str);
+    return 0;
 }
 
 //取得一个叶子节点的数据，取回数据是bool
-int ZCE_Conf_PropertyTree::get_leaf_bool(const std::string &path_str,
-                                         const std::string &key_data,
-                                         bool &value_bool) const
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    bool &val) const
 {
-    value_bool = false;
+    val = false;
 
-    std::string value_data;
-    int ret = get_leaf_str(path_str, key_data, value_data);
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    if (0 == strcasecmp("TRUE", value_data.c_str()))
+    if (0 == strcasecmp("TRUE", value_str.c_str()))
     {
-        value_bool = true;
+        val = true;
     }
-    else if (1 == atoi(value_data.c_str()))
+    else if (1 == atoi(value_str.c_str()))
     {
-        value_bool = true;
+        val = true;
     }
 
     return ret;
 }
 
+
+///取得IPV6的地址
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    ZCE_Sockaddr_In &val) const
+{
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
+
+    if (0 != ret)
+    {
+        return ret;
+    }
+    val.set(value_str.c_str());
+    return 0;
+}
+
+///IPV6的地址
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    ZCE_Sockaddr_In6 &val) const
+{
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
+
+    if (0 != ret)
+    {
+        return ret;
+    }
+    val.set(value_str.c_str());
+    return 0;
+}
+
+
+//取得时间
+template<>
+int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
+                                    const std::string &key_data,
+                                    ZCE_Time_Value &val) const
+{
+    std::string value_str;
+    int ret = get_leaf<std::string>(path_str, key_data, value_str);
+
+    if (0 != ret)
+    {
+        return ret;
+    }
+    val.from_string(value_str.c_str(), false, ZCE_OS::TIME_STRFMT_US_SEC);
+    return 0;
+}
+
+
+
 //放入一个叶子节点，
-int ZCE_Conf_PropertyTree::put_leaf_str(const std::string &path_str,
+template<>
+int ZCE_Conf_PropertyTree::put_leaf(const std::string &path_str,
                                         const std::string &key_data,
                                         const std::string &value_data)
 {
@@ -256,7 +355,8 @@ int ZCE_Conf_PropertyTree::put_leaf_str(const std::string &path_str,
 }
 
 //
-int ZCE_Conf_PropertyTree::put_leaf_int(const std::string &path_str,
+template<>
+int ZCE_Conf_PropertyTree::put_leaf(const std::string &path_str,
                                         const std::string &key_data,
                                         int value_int)
 {
@@ -264,21 +364,22 @@ int ZCE_Conf_PropertyTree::put_leaf_int(const std::string &path_str,
     char str_int[BUF_LEN + 1];
     str_int[BUF_LEN] = '\0';
     snprintf(str_int, BUF_LEN, "%d", value_int);
-    return put_leaf_str(path_str, key_data, str_int);
+    return put_leaf<std::string>(path_str, key_data, str_int);
 }
 
 //
-int ZCE_Conf_PropertyTree::put_leaf_bool(const std::string &path_str,
+template<>
+int ZCE_Conf_PropertyTree::put_leaf(const std::string &path_str,
                                          const std::string &key_data,
                                          bool value_bool)
 {
     if (value_bool)
     {
-        return put_leaf_str(path_str, key_data, "TRUE");
+        return put_leaf<std::string>(path_str, key_data, "TRUE");
     }
     else
     {
-        return put_leaf_str(path_str, key_data, "FALSE");
+        return put_leaf<std::string>(path_str, key_data, "FALSE");
     }
 
 }

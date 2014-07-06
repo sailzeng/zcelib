@@ -864,9 +864,17 @@ inline int gethostname(char *name, size_t name_len);
 * @param[in]  ipv4_port      端口，本地序
 */
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
-                           const char *ipv4_addr_str = "0.0.0.0",
-                           uint16_t ipv4_port = 0);
+                           const char *ipv4_addr_str,
+                           uint16_t ipv4_port);
 
+/*!
+* @brief      设置一个IPV4的地址，如果字符串里面有端口信息，也会同时设置端口
+* @return     int 错误返回-1，正确返回0
+* @param      sock_addr_ipv4 被设置的IPV4地址
+* @param      ipv4_addr_str  地址字符串,如果里面有字符'#'，会认为有端口号，
+*/
+inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
+    const char *ipv4_addr_str);
 
 /*!
 * @brief      设置一个IPV4的地址
@@ -881,17 +889,27 @@ inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            uint16_t ipv4_port );
 
 
+
 /*!
 * @brief      设置一个IPV6的地址,
 * @return     int 错误返回-1， 正确返回0
 * @param[out] sock_addr_ipv6 被设置的IPV6地址
-* @param[in]  ipv6_addr_str  IPV6地址信息字符串
+* @param[in]  ipv6_addr_str  IPV6地址信息字符串，这种格式"0:0:0:0:0:0:0:0"
 * @param[in]  ipv6_port      端口号，本地序
 */
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
-                            const char *ipv6_addr_str = "0:0:0:0:0:0:0:0",
-                            uint16_t ipv6_port = 0 );
+                            const char *ipv6_addr_str ,
+                            uint16_t ipv6_port);
 
+
+/*!
+* @brief      设置一个IPV4的地址，如果字符串里面有端口信息，也会同时设置端口
+* @return     int 错误返回-1，正确返回0
+* @param      sock_addr_ipv6 被设置的IPV6地址
+* @param      ipv6_addr_str  地址字符串,如果里面有字符'#'，会认为有端口号，
+*/
+inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
+    const char *ipv6_addr_str);
 
 /*!
 * @brief      设置一个IPV6的地址,和上一个函数的区别主要在参数顺序上，注意
@@ -1770,7 +1788,7 @@ inline uint32_t ZCE_OS::get_ip_address(const sockaddr_in *sock_addr_ipv4)
 
 //--------------------------------------------------------------------------------------------------------------------
 
-//设置一个IPV4的地址,错误返回NULL，正确返回设置的地址的变换
+//设置一个IPV4的地址,
 inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                                    const char *ipv4_addr_str,
                                    uint16_t ipv4_port)
@@ -1798,6 +1816,29 @@ inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     }
 }
 
+//设置一个IPV4的地址,如果字符串里面有#，会认为后面有端口号，会同时提取端口号，否则端口号设置0
+inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
+    const char *ipv4_addr_str)
+{
+    int ret = ZCE_OS::set_sockaddr_in(sock_addr_ipv4, ipv4_addr_str, 0);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    //如果有#，而且后面还有空间，
+    const char *port_pos = strchr(ipv4_addr_str, '#');
+    if ( port_pos != NULL && *(++port_pos) != '\0' )
+    {
+        //注意到这儿pos已经++了。
+        uint16_t read_port = 0;
+        sscanf(port_pos, "%hu", &read_port);
+        sock_addr_ipv4->sin_port = htons(read_port);
+    }
+
+    return 0;
+}
+
+
 //设置一个IPV4的地址,错误返回NULL，正确返回设置的地址的变换
 inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                                    uint32_t ipv4_addr_val,
@@ -1817,7 +1858,7 @@ inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     return 0;
 }
 
-//设置一个IPV6的地址,错误返回NULL，正确返回设置的地址的变换
+//设置一个IPV6的地址,
 inline int ZCE_OS::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                                     const char *ipv6_addr_str ,
                                     uint16_t ipv6_port)
@@ -1839,6 +1880,28 @@ inline int ZCE_OS::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
         return -1;
     }
 }
+
+//设置一个IPV6的地址,如果有端口号信息，也会
+inline int ZCE_OS::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
+    const char *ipv6_addr_str)
+{
+    int ret =set_sockaddr_in6(sock_addr_ipv6, ipv6_addr_str, 0);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    //如果有#，而且后面还有空间，
+    const char *port_pos = strchr(ipv6_addr_str, '#');
+    if (port_pos != NULL && *(++port_pos) != '\0')
+    {
+        //注意到这儿pos已经++了。
+        uint16_t read_port = 0;
+        sscanf(port_pos, "%hu", &read_port);
+        sock_addr_ipv6->sin6_port = htons(read_port);
+    }
+    return 0;
+}
+
 
 //设置一个IPV6的地址,错误返回NULL，正确返回设置的地址的变换
 inline int ZCE_OS::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,

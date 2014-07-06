@@ -77,6 +77,21 @@ int ZCE_Sockaddr_In6::set(const char ip_addr_str[],
     return 0;
 }
 
+
+//根据字符串取得IP地址信息，以及端口号信息,如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
+int ZCE_Sockaddr_In6::set(const char *ip_addr_str)
+{
+    int ret = ZCE_OS::set_sockaddr_in6(&in6_addr_, ip_addr_str);
+
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+
 //比较两个地址是否相等
 bool ZCE_Sockaddr_In6::operator == (const ZCE_Sockaddr_In6 &others) const
 {

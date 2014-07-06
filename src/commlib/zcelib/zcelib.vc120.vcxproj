@@ -189,7 +189,7 @@
     <ClInclude Include="zce_bytes_hash.h" />
     <ClInclude Include="zce_config_getopt.h" />
     <ClInclude Include="zce_config_ini_file.h" />
-    <ClInclude Include="zce_config_ini_implement.h" />
+    <ClInclude Include="zce_config_ini_pasttime.h" />
     <ClInclude Include="zce_config_property_tree.h" />
     <ClInclude Include="zce_event_handle_base.h" />
     <ClInclude Include="zce_event_handle_inotify.h" />
@@ -311,7 +311,7 @@
     <ClCompile Include="zce_bytes_hash.cpp" />
     <ClCompile Include="zce_config_getopt.cpp" />
     <ClCompile Include="zce_config_ini_file.cpp" />
-    <ClCompile Include="zce_config_ini_implement.cpp" />
+    <ClCompile Include="zce_config_ini_pasttime.cpp" />
     <ClCompile Include="zce_config_property_tree.cpp" />
     <ClCompile Include="zce_event_handle_base.cpp" />
     <ClCompile Include="zce_event_handle_inotify.cpp" />

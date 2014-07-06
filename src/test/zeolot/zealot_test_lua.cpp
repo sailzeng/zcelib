@@ -21,9 +21,12 @@ int test_lua_script1(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true,true);
-    lua_tie.tie_gfun("add2_fun", add2_fun);
 
-    lua_tie.tie_gfun("add3_fun", add3_fun);
+    
+
+    lua_tie.reg_gfun("add2_fun", add2_fun);
+
+    lua_tie.reg_gfun("add3_fun", add3_fun);
      
 
     lua_tie.do_file("lua/lua_test_01.lua");
@@ -49,19 +52,27 @@ int g_array[20];
 //测试全局变量在两边的使用
 int test_lua_script2(int ,char *[])
 {
-    ZCE_Lua_Tie lua_tie;
 
     for (size_t k = 0; k < 20; ++k)
     {
         g_array[k] = static_cast<int>(k + 1);
     }
 
+    ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
+    //绑定引用和指针之前，要注册这个类
 
     lua_tie.set_gvar("g_b_var", g_b);
     //绑定指针
-    lua_tie.set_gvar("g_b_ptr", &g_b);
+    int *g_b_ptr1 = &g_b;
+    lua_tie.set_gvar("g_b_ptr", g_b_ptr1);
+    //重新得到指针，
+    int *g_b_ptr2 = lua_tie.get_gvar<int *>("g_b_ptr");
+
+
+    printf("g_b_ptr1 = %p g_b_ptr2=%p", g_b_ptr1, g_b_ptr2);
+
     int &ref_gb = g_b;
     lua_tie.set_gvar<int &>("g_a_ref", ref_gb);
 
@@ -121,7 +132,7 @@ int test_lua_script3(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
-    lua_tie.tie_class<TA>("TA",false);
+    lua_tie.reg_class<TA>("TA",false);
     lua_tie.class_mem_var<TA>("a_", &TA::a_);
     lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA,int> );
 
@@ -135,7 +146,7 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
 
 
-    lua_tie.tie_class<TB>("TB", false)
+    lua_tie.reg_class<TB>("TB", false)
         .construct(ZCE_LUA::constructor<TB, int, int, int>)
         .mem_var("b1_", &TB::b1_)
         .mem_var("b2_", &TB::b2_)

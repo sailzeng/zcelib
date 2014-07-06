@@ -203,6 +203,17 @@ public:
                           ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC
                           )  const;
 
+    /*!
+    * @brief      根据你的格式化要求,将字符串，转换为事件
+    * @return     int ==0
+    * @param[in]  strtm       时间字符串
+    * @param[in]  uct_time    是否转换为UTC时间   
+    * @param[in]  fromat_type 时间格式，默认为ISO的usec
+    */
+    int from_string(const char *strtm,
+        bool uct_time = false, 
+        ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC);
+
     ///返回一个timespec的对象
     operator ::timespec () const;
 

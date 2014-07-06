@@ -3,7 +3,13 @@
 
 #include "zce_socket_addr_base.h"
 
-//IPv4的物理结构
+
+
+/*!
+* @brief      IPv4的物理结构
+*             
+* @note       
+*/
 class ZCELIB_EXPORT ZCE_Sockaddr_In : public ZCE_Sockaddr
 {
 public:
@@ -38,6 +44,15 @@ public:
     //根据地址IP整数，端口号设置
     int set(uint32_t ip_addr,
             uint16_t port_number);
+
+    
+    /*!
+    * @brief      根据字符串取得IP地址信息，以及端口号信息,
+    * @return     int
+    * @param      ip_addr_str 
+    * @note       如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
+    */
+    int set(const char *ip_addr_str);
 
     //设置端口好，
     inline void set_port_number (uint16_t);
@@ -88,7 +103,7 @@ public:
 
 protected:
 
-    //IPV4的地址
+    ///IPV4的地址
     sockaddr_in           in4_addr_;
 };
 

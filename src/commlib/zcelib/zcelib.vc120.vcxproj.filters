@@ -58,9 +58,6 @@
     <ClInclude Include="zce_config_ini_file.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_config_ini_implement.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_config_property_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -391,6 +388,9 @@
     <ClInclude Include="zce_boost_any.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_config_ini_pasttime.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -421,9 +421,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_config_ini_file.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_config_ini_implement.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_config_property_tree.cpp">
@@ -694,6 +691,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_script_lua_tie.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_config_ini_pasttime.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -206,7 +206,13 @@ public:
 template<typename val_type >
 void push_stack(lua_State * state, typename val_type val)
 {
-    ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+    //这儿只针对非object对象
+    if (!std::is_class<val_type>::value)
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+        return;
+    }
+    
     new(lua_newuserdata(state,
         sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
 
@@ -215,30 +221,16 @@ void push_stack(lua_State * state, typename val_type val)
     lua_gettable(state, LUA_GLOBALSINDEX);
     if (lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? ",
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
             typeid(val).name(),
             class_name<val_type >::name());
-        lua_pop(state, 1);
+        lua_remove(state, -1);
         return;
     }
     lua_setmetatable(state, -2);
     return;
 }
 
-/*!
-* @brief      PUSH一个object数据到堆栈，
-* @tparam     val_type 值得类型，
-* @param      state  lua state
-* @param      val    值，enable_if和 is_object的用法就不细致说明了
-*/
-//template<typename val_type  >
-//void push_stack(lua_State *state,
-//    typename std::enable_if<std::is_object<val_type>::value, val_type>::type val)
-//{
-//
-//    return;
-//
-//}
 
 ///为变参模板函数递归准备的函数
 template<typename val_type, typename... val_tlist>
@@ -265,18 +257,23 @@ void push_stack(lua_State *state,
     new(lua_newuserdata(state,
                         sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(ref);
 
-    //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<val_type >::name());
-    lua_gettable(state, LUA_GLOBALSINDEX);
-    if (lua_istable(state, -1))
+    //如果原类型（去掉引用）是一个object，
+    if (std::is_class<std::remove_reference<val_type>::type >::value)
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? ",
-                   typeid(ref).name(),
-                   class_name<val_type >::name());
-        lua_pop(state, 1);
-        return;
+        //根据类的名称，设置metatable，注意这儿去掉了引用，进行的查询，
+        lua_pushstring(state, class_name<std::remove_reference<val_type>::type >::name());
+        lua_gettable(state, LUA_GLOBALSINDEX);
+        if (!lua_istable(state, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
+                typeid(ref).name(),
+                class_name<val_type >::name());
+            lua_remove(state, -1);
+            return;
+        }
+        lua_setmetatable(state, -2);
     }
-    lua_setmetatable(state, -2);
+
     return;
 }
 
@@ -295,17 +292,22 @@ void push_stack(lua_State *state,
     {
         new(lua_newuserdata(state, sizeof(ptr_2_udat<val_type>))) ptr_2_udat<val_type>(ptr);
 
-        lua_pushstring(state, class_name<val_type >::name());
-        lua_gettable(state, LUA_GLOBALSINDEX);
-        if (!lua_istable(state, -1))
+        //如果原类型（去掉指针）是一个object，
+        if (std::is_class<std::remove_pointer<val_type>::type >::value)
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,[%d][%s]? May be you don't register or name conflict? ",
-                       typeid(ptr).name(),
-                       class_name<val_type >::name());
-            lua_pop(state, 1);
-            return;
+            //根据类的名称，设置metatable，注意这儿去掉了指针，进行的查询，
+            lua_pushstring(state, class_name<std::remove_pointer<val_type>::type >::name());
+            lua_gettable(state, LUA_GLOBALSINDEX);
+            if (!lua_istable(state, -1))
+            {
+                ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
+                    typeid(ptr).name(),
+                    class_name<val_type >::name());
+                lua_remove(state, -1);
+                return;
+            }
+            lua_setmetatable(state, -2);
         }
-        lua_setmetatable(state, -2);
     }
     else
     {
@@ -372,7 +374,7 @@ template<> void push_stack(lua_State *state, int64_t val);
 template<> void push_stack(lua_State *state, uint64_t val);
 template<> void push_stack(lua_State *state, const std::string &val);
 
-//不允许出现long的变量，因为long无法移植，只定义，所以不实现
+//不允许出现long的变量，因为long无法移植，所以只定义，不实现
 template<> void push_stack(lua_State *state, long val);
 template<> void push_stack(lua_State *state, unsigned long val);
 
@@ -846,14 +848,14 @@ public:
 
 
     ///向LUA注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
-    void tie_int64();
+    void reg_int64();
     ///向LUA注册uint64_t的类型
-    void tie_uint64();
+    void reg_uint64();
     ///向LUA注册std::string的类型
-    void tie_stdstring();
+    void reg_stdstring();
 
     ///向LUA注册枚举值
-    void tie_enum(const char *name, size_t item_num, ...);
+    void reg_enum(const char *name, size_t item_num, ...);
 
 
     /*!
@@ -931,7 +933,7 @@ public:
     * @param      func      注册的C函数
     */
     template<typename ret_type, typename... args_type>
-    void tie_gfun(const char *name, ret_type(*func)(args_type...))
+    void reg_gfun(const char *name, ret_type(*func)(args_type...))
     {
         //函数名称
         lua_pushstring(lua_state_, name);
@@ -965,6 +967,7 @@ public:
         {
             //Lua的使用习惯索引是从1开始
             lua_pushnumber(lua_state_, i + 1);
+            //通过迭代器萃取得到类型，
             ZCE_LUA::push_stack<std::iterator_traits<input_iter>::value_type >(lua_state_, *iter_temp);
             lua_settable(lua_state_, -3);
         }
@@ -1140,7 +1143,7 @@ public:
     * @note
     */
     template<typename class_type>
-    Candy_Tie_Class<class_type> tie_class(const char *class_name,
+    Candy_Tie_Class<class_type> reg_class(const char *class_name,
                                           bool read_only = false)
     {
         //绑定T和名称,类的名称
