@@ -115,27 +115,27 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
     if (host_name)
     {
         ret = ::mysql_real_connect(&mysql_handle_,
-            host_name,
-            user,
-            pwd,
-            db,
-            port,
-            NULL,
-            client_flag);
+                                   host_name,
+                                   user,
+                                   pwd,
+                                   db,
+                                   port,
+                                   NULL,
+                                   client_flag);
     }
     //如果使用UNIXSOCKET或者命名管道进行本地连接
     else if (socket_file)
     {
         //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为NULL，是先进行命名管道连接，如果不行用TCP/IP连接本地
         //如果要不保证绝对使用命名管道，则参数host_name=".",
-        ret =  ::mysql_real_connect(&mysql_handle_, 
-            NULL,
-            user,
-            pwd,
-            db,
-            port,
-            socket_file,
-            client_flag);
+        ret =  ::mysql_real_connect(&mysql_handle_,
+                                    NULL,
+                                    user,
+                                    pwd,
+                                    db,
+                                    port,
+                                    socket_file,
+                                    client_flag);
     }
     //参数使用错误，不能host和unixsocket都为NULL
     else
@@ -231,14 +231,14 @@ unsigned int ZCE_Mysql_Connect::make_escape_string(char *tostr, const char *from
 }
 
 
-unsigned int ZCE_Mysql_Connect::make_real_escape_string(char *tostr, 
-    const char *fromstr, 
-    unsigned int fromlen)
+unsigned int ZCE_Mysql_Connect::make_real_escape_string(char *tostr,
+                                                        const char *fromstr,
+                                                        unsigned int fromlen)
 {
-    return mysql_real_escape_string(&mysql_handle_, 
-        tostr, 
-        fromstr, 
-        fromlen);
+    return mysql_real_escape_string(&mysql_handle_,
+                                    tostr,
+                                    fromstr,
+                                    fromlen);
 }
 
 //这些函数都是4.1后的版本功能

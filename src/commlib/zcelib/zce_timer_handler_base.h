@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_timer_handler_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2008年10月6日
 * @brief      Timer处理的基类
-*             
-*             
-* @details    
-*             
-*             
-*             
+*
+*
+* @details
+*
+*
+*
 * @note       为什么要单独讲NODE放入一个文件中间，因为我可能写多个反应器
-*             
+*
 */
 
 #ifndef ZCE_LIB_TIMER_HANDLER_BASE_H_

@@ -6,7 +6,7 @@
 * @date       2012年4月30日
 * @brief      格式化某些输出，包括int64，double，str，
 *             搞完了，发现也就这3个有格式化，
-* 
+*
 * @details    部分代码最早来自openssh,中间的bsd-snprintf.c代码，原来的代码应该是支持BSD协议的,
 *             我将3个函数整理了出来，打算用于自己的日志输出，也做过一些修正
 *             bsd-snprintf.c是我见过的对于snprintf实现比较干净的代码，但有些地方偷懒不少，
@@ -20,11 +20,11 @@
 *             我参考了libc-5.4.29.tar.gz/libc/cvt/cvt_r.的函数ecvt_r 和 fcvt_r,进行了修正
 *             ecvt_r和fcvt_r两个函数我搞了半天才比较明白他们的意图，他们设计的初衷，可能就是方便我
 *             们进行格式化转换输出的
-* 
+*
 *             这里面的大部分代码是用于我们自己的fmtstr内部使用，外部非请误入。
-* 
+*
 *             后来，后来，google的代码搜索居然停止服务了，伤心。
-* 
+*
 */
 
 #ifndef _ZCE_FORMAT_OUT_STRING_H_

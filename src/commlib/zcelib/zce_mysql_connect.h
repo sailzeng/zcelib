@@ -5,11 +5,11 @@
 * @version
 * @date       2004年7月24日
 * @brief      MYSQL的连接器，用于封装MYSQL的MYSQL句柄
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_MYSQL_DB_CONNECT_H_
@@ -174,7 +174,7 @@ protected:
     /*!
     * @brief      连接数据库服务器，内部函数,具体的实现在此，
     * @return     int
-    * @param      host_name  
+    * @param      host_name
     * @param      socket_file  UNIX SOCKET文件名称或者命名管道名称
     * @param      user  用户,默认为mysql
     * @param      pwd  用户密码,默认为""

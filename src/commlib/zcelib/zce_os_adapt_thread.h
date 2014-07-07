@@ -5,14 +5,14 @@
 * @version
 * @date       2011年9月16日
 * @brief
-* 
+*
 * @details    目的是站在ACE巨人的肩膀上，得到一个更加简单的封装
 *             ACE的线程是依据与SUN平台的基础上实现的，和pthread还真有区别。
 *             另外部分函数我没有保留，因为为了兼容，而且很多代码在两个平台不同，
 *             有些是为了REAL TIME系统准备的
-* 
+*
 * @note       注意WINDOWS下的内核其实使用HANDLE标识一个线程，而不是线程ID，
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_THREAD_H_

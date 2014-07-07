@@ -7,7 +7,7 @@
 
 /*!
 * @brief      线程的等待管理器
-*             
+*
 * @note       本来是在线程ZCE_Thread_Base 内部处理的，但是嵌入过多，而且用大量的static 变量，也影响ZCE_Thread_Base的性能
 */
 class ZCE_Thread_Wait_Manager : public ZCE_NON_Copyable

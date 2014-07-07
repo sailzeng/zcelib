@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_shm_hash_expire.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2005年10月26日
 * @brief      组合HASH TABLE，LIST的功能的HASH表，用于在LRU淘汰的时候方便的
 *             提供HASH的查询功能，同时提供LRU的淘汰机制
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 
@@ -250,7 +250,7 @@ public:
         _hash_fun,
         _extract_key,
         _equal_key,
-        _washout_fun >;
+            _washout_fun >;
 
 protected:
     //
@@ -313,19 +313,19 @@ public:
     * @param      real_num 实际分配的NODE数量
     * @note       注意返回的是实际INDEX长度,会取一个质数
     */
-    static size_t getallocsize(size_t req_num,size_t &real_num)
+    static size_t getallocsize(size_t req_num, size_t &real_num)
     {
         //取得一个比这个数字做一定放大的质数，
         ZCE_LIB::hash_prime(req_num, real_num);
         size_t sz_alloc =  0;
         //
         sz_alloc += sizeof(_hashtable_expire_head);
-        sz_alloc += sizeof(size_t)* real_num;
-        sz_alloc += sizeof(size_t)* real_num;
+        sz_alloc += sizeof(size_t) * real_num;
+        sz_alloc += sizeof(size_t) * real_num;
         //
-        sz_alloc += sizeof(_shm_list_index)* (real_num + LIST_ADD_NODE_NUMBER);
-        sz_alloc += sizeof(unsigned int)* (real_num);
-        sz_alloc += sizeof(_value_type)* (real_num);
+        sz_alloc += sizeof(_shm_list_index) * (real_num + LIST_ADD_NODE_NUMBER);
+        sz_alloc += sizeof(unsigned int) * (real_num);
+        sz_alloc += sizeof(_value_type) * (real_num);
         return sz_alloc;
     }
 
@@ -354,16 +354,16 @@ public:
                 real_num != hashhead->num_of_node_ )
             {
 
-//一般情况下不一致返回NULL，标识恢复失败，
+                //一般情况下不一致返回NULL，标识恢复失败，
 #if ALLOW_RESTORE_INCONFORMITY != 1
                 return NULL;
 #else
                 ZCE_LOGMSG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                    "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                    sz_mmap,
-                    real_num,
-                    hashhead->size_of_mmap_,
-                    hashhead->num_of_node_);
+                           "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                           sz_mmap,
+                           real_num,
+                           hashhead->size_of_mmap_,
+                           hashhead->num_of_node_);
 #endif
             }
         }
@@ -373,7 +373,7 @@ public:
             hashhead->size_of_mmap_ = sz_mmap;
             hashhead->num_of_node_ = real_num;
         }
-        
+
 
         shm_hashtable_expire< _value_type, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun >* instance
             = new shm_hashtable_expire< _value_type, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun>();
@@ -737,7 +737,7 @@ public:
     }
 
     /*!
-    * @brief      
+    * @brief
     * @return     bool
     * @param      key
     */
@@ -833,7 +833,7 @@ public:
     * @brief      删除所有相等的KEY的数据,和insert_equal配对使用，返回删除了几个数据
     * @return     size_t
     * @param      key
-    * @note       
+    * @note
     */
     size_t erase_equal(const _key_type &key)
     {

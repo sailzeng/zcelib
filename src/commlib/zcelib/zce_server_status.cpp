@@ -204,17 +204,17 @@ void ZCE_Server_Status::add_status_item(size_t num_add_stat_item,
     {
         //能写auto正好
         STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(item_ary[i].statics_item_.item_id_.statics_id_);
-        
+
         if (iter == conf_stat_map_.end())
         {
             conf_stat_map_.insert(STATUS_WITHNAME_MAP::value_type(item_ary[i].statics_item_.item_id_.statics_id_,
-                item_ary[i]) );
+                                                                  item_ary[i]) );
         }
         else
         {
             ZLOG_ERROR("Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
-                item_ary[i].statics_item_.item_id_.statics_id_,
-                item_ary[i].item_name_);
+                       item_ary[i].statics_item_.item_id_.statics_id_,
+                       item_ary[i].item_name_);
             continue;
         }
     }
@@ -269,7 +269,7 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     if (iter == conf_stat_map_.end())
     {
         ZLOG_ERROR("Use one statics_id_,it don't config [%u] ,please check your code.",
-            statics_id);
+                   statics_id);
         return -1;
     }
 
@@ -278,7 +278,7 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     if (status_stat_sandy_->full())
     {
         ZLOG_ERROR("Statics array is full,please extend in start. ary size is [%lu]",
-            status_stat_sandy_->size());
+                   status_stat_sandy_->size());
         return -1;
     }
 
@@ -525,21 +525,21 @@ void ZCE_Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME &array_status, bool du
             array_status[i].statics_item_ = (*status_copy_mandy_)[i];
         }
 
-        
+
         STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(array_status[i].statics_item_.item_id_.statics_id_);
 
         if (iter != conf_stat_map_.end())
         {
             strncpy(array_status[i].item_name_,
-                iter->second.item_name_,
-                ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
+                    iter->second.item_name_,
+                    ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
         }
         else
         {
             //因为前面的代码都做过检查，所以，这儿理论不会出现找不到的可能，除非代码错误。
             ZCE_ASSERT(false);
         }
-        
+
     }
 }
 
@@ -593,8 +593,8 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
         if (iter != conf_stat_map_.end())
         {
             strncpy(statics_item_name,
-                iter->second.item_name_,
-                ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
+                    iter->second.item_name_,
+                    ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
         }
         else
         {
@@ -611,7 +611,7 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
 }
 
 //Dump所有的数据
-void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority,bool dump_copy)
+void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dump_copy)
 {
     size_t num_of_counter = 0;
     ZCE_STATUS_ITEM *stat_process_iter = NULL;
@@ -633,8 +633,8 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority,bool dump
         stat_process_iter = status_copy_mandy_->begin();
     }
 
-    ZCE_LOGMSG(RS_INFO,"Statistics Number: %u", num_of_counter);
-    ZCE_LOGMSG(RS_INFO,"index.<statics id,classify id> name                            :number");
+    ZCE_LOGMSG(RS_INFO, "Statistics Number: %u", num_of_counter);
+    ZCE_LOGMSG(RS_INFO, "index.<statics id,classify id> name                            :number");
 
     ZCE_STATUS_ITEM_WITHNAME tmp_check;
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
@@ -646,8 +646,8 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority,bool dump
         if (iter != conf_stat_map_.end())
         {
             strncpy(statics_item_name,
-                iter->second.item_name_,
-                ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
+                    iter->second.item_name_,
+                    ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
         }
         else
         {
@@ -655,14 +655,14 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority,bool dump
             ZCE_ASSERT(false);
         }
 
-        ZCE_LOGMSG(log_priority,"%5u.<%10u, %10u, %10u> %32s : %llu ",
-                  i,
-                  (stat_process_iter + i)->item_id_.statics_id_,
-                  (stat_process_iter + i)->item_id_.app_id_,
-                  (stat_process_iter + i)->item_id_.classify_id_,
-                  statics_item_name,
-                  (stat_process_iter + i)->counter_
-                 );
+        ZCE_LOGMSG(log_priority, "%5u.<%10u, %10u, %10u> %32s : %llu ",
+                   i,
+                   (stat_process_iter + i)->item_id_.statics_id_,
+                   (stat_process_iter + i)->item_id_.app_id_,
+                   (stat_process_iter + i)->item_id_.classify_id_,
+                   statics_item_name,
+                   (stat_process_iter + i)->counter_
+                  );
     }
 }
 

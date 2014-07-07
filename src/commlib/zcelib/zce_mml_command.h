@@ -2,7 +2,7 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_mml_command.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Monday, December 30, 2013
 * @brief      人机交互语言封装，用于一些通用的控制服务器的命令，文本类型
 *             MML Module Management Language,  这是一个网管的术语.也可以翻译为慢慢来
@@ -10,8 +10,8 @@
               用这个名称纪念我两年网管开发的生活,人生很多事情就是这样,慢慢来
 * @details    支持了2种MML语句的封装
 *             支持的分析的命令格式,请参考MML_STRING_PATTERN的说明
-* @note         
-*             
+* @note
+*
 */
 
 #ifndef ZCE_LIB_MML_COMMAND_H_
@@ -64,7 +64,7 @@ public:
     * @param      pattern    MML命令格式
     */
     MML_Console_Command(const char *mml_string,
-        MML_Console_Command::MML_STRING_PATTERN pattern);
+                        MML_Console_Command::MML_STRING_PATTERN pattern);
     ///默认构造函数
     MML_Console_Command();
     ///析构函数
@@ -75,7 +75,7 @@ protected:
 
     ///格式1的MML命令分析语句
     int parse_mml_cnd_string1(const char *mml_string);
-    
+
     ///格式2的MML命令分析语句
     int parse_mml_cnd_string2(const char *mml_string);
 
@@ -90,7 +90,7 @@ public:
     * @param[in]  pattern    命令格式
     */
     int parse_mml_cnd_string(const char *mml_string,
-        MML_Console_Command::MML_STRING_PATTERN pattern);
+                             MML_Console_Command::MML_STRING_PATTERN pattern);
 
     /*!
     * @brief      取得（分析）MML的语句
@@ -142,9 +142,9 @@ public:
     * @param      para_key   参数名称
     */
     const char *get_cmd_parameter(const std::string &para_key)  const;
-    
+
 protected:
-    
+
     ///MML 语句
     std::string             mml_string_;
     ///MML命令

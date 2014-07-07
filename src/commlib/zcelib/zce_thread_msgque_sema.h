@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_msgque_sema.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2011年6月17日
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 
@@ -30,7 +30,7 @@
 
 /*!
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
-*             
+*
 * @tparam     _value_type      消息队列放入的数据类型
 * @tparam     _container_type  消息队列内部容器类型
 */

@@ -83,7 +83,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-        ZCE_LOGMSG(RS_DEBUG, 
+        ZCE_LOGMSG(RS_DEBUG,
                    "zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
                    nomatch_count,
                    match_count,
@@ -94,7 +94,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 #endif
 
         //你可以认为ZCELZ算法的多个块组成，一个块中间有一个不能压缩字段（可选），一个可以压缩字段组成（可选），
-        
+
         nomatch_achor = read_pos;
 
         nomatch_count = 0;
@@ -357,7 +357,7 @@ zlz_token_process:
     }
 
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-    ZCE_LOGMSG(RS_DEBUG, 
+    ZCE_LOGMSG(RS_DEBUG,
                "zlz no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
                nomatch_count,
                match_count,

@@ -7,13 +7,13 @@
 * @brief      所有锁类(记录锁除外)的基础类，让你也有多态使用（改变）加锁行为的方式
 *             为了纪念我用ACE这么多年，我还是倾向用ACE的一些方式解决问题。
 *             虽然我也发现我还是会学习一些BOOST的特性
-* 
+*
 *             请参考
 *             http://www.cnblogs.com/fullsail/archive/2012/07/31/2616106.html
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_BASE_H_
@@ -61,7 +61,7 @@ private:
     * @param      abs_time
     * @note
     */
-    virtual bool systime_lock(const ZCE_Time_Value & abs_time);
+    virtual bool systime_lock(const ZCE_Time_Value &abs_time);
 
     /*!
     * @brief      获得锁，等待一个相对时间
@@ -110,7 +110,7 @@ private:
 /*!
 * @brief      CV,Condition Variable 条件变量的基类，条件变量的
 *             扩展应该都是从这个基类扩展
-* 
+*
 */
 class ZCELIB_EXPORT ZCE_Condition_Base : public ZCE_NON_Copyable
 {

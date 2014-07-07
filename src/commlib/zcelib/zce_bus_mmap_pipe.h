@@ -58,7 +58,7 @@ public:
     * @param      size_of_pipe    管道的大小
     * @param      max_frame_len   最大的帧长度
     * @param      if_restore      是否进行恢复
-    * @note       
+    * @note
     */
     int initialize(const char *bus_mmap_name,
                    size_t number_of_pipe,
@@ -76,22 +76,22 @@ public:
     bool is_exist_bus(size_t pipe_id);
     //向管道写入帧
     inline int push_back_bus(size_t pipe_id, const ZCE_LIB::dequechunk_node *node);
-    
+
     /*!
     * @brief      从管道POP读取帧，(就是拷贝后删除)
     * @return     int
     * @param      pipe_id  管道ID
     * @param      node     准备复制node指针，指针的空间请分配好
-    * @note       
+    * @note
     */
     inline int pop_front_bus(size_t pipe_id, ZCE_LIB::dequechunk_node *node);
-    
+
     /*!
     * @brief      从管道拷贝复制一个帧出来
     * @return     int
     * @param      pipe_id 管道ID
     * @param      node
-    * @note       
+    * @note
     */
     inline int read_front_bus(size_t pipe_id, ZCE_LIB::dequechunk_node *&node);
     //抛弃一个帧
@@ -185,11 +185,11 @@ inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const ZCE_LIB::dequec
     {
         ZLOG_ALERT("[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
                    "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
-                   pipe_id, 
+                   pipe_id,
                    node->size_of_node_,
                    bus_pipe_pointer_[pipe_id]->free_size(),
                    bus_pipe_pointer_[pipe_id]->capacity()
-                   );
+                  );
         return -1;
     }
 

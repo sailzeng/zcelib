@@ -41,12 +41,12 @@ int ZCE_Async_Object::finish()
 //设置超时定时器
 int ZCE_Async_Object::set_timeout(const ZCE_Time_Value &time_out)
 {
-    ZCE_Timer_Queue* timer_queue = async_mgr_->timer_queue();
+    ZCE_Timer_Queue *timer_queue = async_mgr_->timer_queue();
     ZCE_Time_Value delay_time(time_out);
     //注意使用的TIME ID
     timeout_id_ = timer_queue->schedule_timer(async_mgr_,
-        this,
-        delay_time);
+                                              this,
+                                              delay_time);
 
     if (ZCE_Timer_Queue::INVALID_TIMER_ID == timeout_id_)
     {
@@ -61,7 +61,7 @@ void ZCE_Async_Object::cancel_timeout()
 {
     if (ZCE_Timer_Queue::INVALID_TIMER_ID != timeout_id_)
     {
-        ZCE_Timer_Queue* timer_queue = async_mgr_->timer_queue();
+        ZCE_Timer_Queue *timer_queue = async_mgr_->timer_queue();
         timer_queue->cancel_timer(timeout_id_);
         timeout_id_ = ZCE_Timer_Queue::INVALID_TIMER_ID;
     }
@@ -110,7 +110,7 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
 
 //初始化，
 int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
-    size_t running_number)
+                                    size_t running_number)
 {
     //对参数做调整
     if (crtn_type_num < DEFUALT_ASYNC_TYPE_NUM)
@@ -160,18 +160,18 @@ void ZCE_Async_ObjectMgr::finish()
         unsigned int regframe_cmd = pooliter->first;
         ASYNC_OBJECT_RECORD &pool_reg = (pooliter->second);
         //记录信息数据
-        ZCE_LOGMSG(RS_INFO,"[ZCELIB] Register command:%u size of pool:%u capacity of pool:%u.",
-            regframe_cmd,
-            pool_reg.coroutine_pool_.size(),
-            pool_reg.coroutine_pool_.capacity()
-            );
+        ZCE_LOGMSG(RS_INFO, "[ZCELIB] Register command:%u size of pool:%u capacity of pool:%u.",
+                   regframe_cmd,
+                   pool_reg.coroutine_pool_.size(),
+                   pool_reg.coroutine_pool_.capacity()
+                  );
 
         //出现了问题，
         if (pool_reg.coroutine_pool_.size() != pool_reg.coroutine_pool_.capacity())
         {
             ZLOG_ERROR("[ZCELIB] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
-                pool_reg.coroutine_pool_.size(),
-                pool_reg.coroutine_pool_.capacity());
+                       pool_reg.coroutine_pool_.size(),
+                       pool_reg.coroutine_pool_.capacity());
         }
 
         //是否池子
@@ -191,7 +191,7 @@ void ZCE_Async_ObjectMgr::finish()
 
 //注册一类协程，其用reg_cmd对应，
 int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
-    ZCE_Async_Object* coroutine_base)
+                                           ZCE_Async_Object *coroutine_base)
 {
 
     //这两个值必须是重新设置过的
@@ -226,9 +226,9 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
 
 
 //从池子里面分配一个
-int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd, 
-    ASYNC_OBJECT_RECORD *&async_rec,
-    ZCE_Async_Object *&crt_async)
+int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
+                                            ASYNC_OBJECT_RECORD *&async_rec,
+                                            ZCE_Async_Object *&crt_async)
 {
 
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = aysncobj_pool_.find(cmd);
@@ -242,7 +242,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
     //还有最后一个
     if (reg_async.coroutine_pool_.size() == 1)
     {
-        ZCE_LOGMSG(RS_INFO,"[ZCELIB] Before extend pool.");
+        ZCE_LOGMSG(RS_INFO, "[ZCELIB] Before extend pool.");
         //取一个模型
         ZCE_Async_Object *model_trans = NULL;
         reg_async.coroutine_pool_.pop_front(model_trans);
@@ -250,11 +250,11 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
         size_t capacity_of_pool = reg_async.coroutine_pool_.capacity();
         reg_async.coroutine_pool_.resize(capacity_of_pool + pool_extend_size_);
 
-        ZCE_LOGMSG(RS_INFO,"[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
-            reg_async.coroutine_pool_.size(),
-            cmd,
-            capacity_of_pool,
-            capacity_of_pool + pool_extend_size_);
+        ZCE_LOGMSG(RS_INFO, "[ZCELIB] Coroutine pool Size=%u,  command %u, capacity = %u , resize =%u .",
+                   reg_async.coroutine_pool_.size(),
+                   cmd,
+                   capacity_of_pool,
+                   capacity_of_pool + pool_extend_size_);
 
         //用模型克隆N-1个Trans
         for (size_t i = 0; i < pool_extend_size_; ++i)
@@ -265,7 +265,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int cmd,
 
         //将模型放到第N个
         reg_async.coroutine_pool_.push_back(model_trans);
-        ZCE_LOGMSG(RS_INFO,"[ZCELIB] After Extend trans.");
+        ZCE_LOGMSG(RS_INFO, "[ZCELIB] After Extend trans.");
     }
 
     //取得一个事务
@@ -288,9 +288,9 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 
     //
     ASYNC_OBJECT_RECORD &reg_record = mapiter->second;
-    ZCE_LOGMSG(RS_DEBUG,"[framework] Return clone frame command %u,Pool size=%u .",
-        free_crtn->create_cmd_,
-        reg_record.coroutine_pool_.size());
+    ZCE_LOGMSG(RS_DEBUG, "[framework] Return clone frame command %u,Pool size=%u .",
+               free_crtn->create_cmd_,
+               reg_record.coroutine_pool_.size());
 
     //
     reg_record.coroutine_pool_.push_back(free_crtn);
@@ -317,14 +317,14 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     }
     *id = id_builder_;
     crt_async->asyncobj_id_ = id_builder_;
-    
+
     //启动丫的
     crt_async->on_start();
     ++async_rec->start_num_;
 
     bool continue_run = false;
     crt_async->on_run(continue_run);
-    
+
     //如果运行一下就退出了,直接结束回收
     if (continue_run == false)
     {
@@ -380,14 +380,14 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
         async_obj->on_end();
         free_to_pool(async_obj);
     }
-    
+
 
     return 0;
 }
 
 //超时处理
-int ZCE_Async_ObjectMgr::handle_timeout(const ZCE_Time_Value & now_time,
-    const void *act)
+int ZCE_Async_ObjectMgr::handle_timeout(const ZCE_Time_Value &now_time,
+                                        const void *act)
 {
     ZCE_Async_Object *async_obj = (ZCE_Async_Object *)(act);
     //增加记录统计数据
@@ -402,7 +402,7 @@ int ZCE_Async_ObjectMgr::handle_timeout(const ZCE_Time_Value & now_time,
     async_obj->cancel_timeout();
 
     bool continue_run = false;
-    async_obj->on_timeout(now_time,continue_run);
+    async_obj->on_timeout(now_time, continue_run);
     ++async_rec.timeout_num_;
 
     //如果不继续运行了，
@@ -418,7 +418,7 @@ int ZCE_Async_ObjectMgr::handle_timeout(const ZCE_Time_Value & now_time,
 
 //通过ID，寻找一个正在运行的异步对象
 int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
-    ZCE_Async_Object *&running_aysnc)
+                                               ZCE_Async_Object *&running_aysnc)
 {
     running_aysnc = NULL;
     auto iter = running_aysncobj_.find(id);

@@ -7,22 +7,22 @@
 * @brief      时间轮的定时器队列，速度飞飞飞飞飞飞飞快，但是有精度限制的定时器处理，
 *             用一个循环链表记录时间，
 *             他的放置，取消定时器的时间销毁都是O(1)级别，快的如飞，
-* 
+*
 * @details    这个WHEEL和ACE的WHEEL不是一个东西，我的整体思路是将一段时间做成一个
 *             轮子，WHELL,轮子上有N个时间槽，轮子上的每个槽放置一个时间的超时定时器，
 *             这个点都是代表一个固定精度，一般是0.1s，（我觉得这对服务器一般足够了）
-* 
+*
 *             当有一个超时时间的Timer要放入轮子中时，会根据当前的时间，和他超时的时间
 *             放在一个槽点上，如果有多个定时器，会形成一个链表，
 *             链表上的超时数据不会再做任何排序处理，
 *             当时间前进，跨越N个槽位是，这个N个槽位上所有的定时器将被触发，
-* 
+*
 *             在设计这个定时器时，我参考过LINUX内核的实现，和ACE的4种实现，
 *             在这个实现上，我强调了速度，而不考虑完全的准确性（同一个槽位的定时器不做
 *             优先级排序，后放入的定时器会先触发）
-* 
+*
 *             我估计10万的定时器（10s）对于这个实现，估计CPU连1%都不用。
-* 
+*
 */
 
 #ifndef ZCE_TIMER_QUEUE_WHEEL_H_
@@ -79,7 +79,7 @@ protected:
     static const unsigned int DEFAULT_TIMER_LENGTH_MESC   = 72 * 3600 * 1000;
 
     ///最小的周期轮子长度
-    static const unsigned int MIN_TIMER_LENGTH_MESC       = 1 * 3600 *1000;
+    static const unsigned int MIN_TIMER_LENGTH_MESC       = 1 * 3600 * 1000;
 
     ///未来触发的时间ID的数组的初始化大小，
     static const size_t ARRAY_FUTURE_TRIGGER_TIMERID_SIZE = 256;

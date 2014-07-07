@@ -85,7 +85,7 @@ int ZCE_INotify_Dir_Reactor::close()
         delete []read_buffer_;
         read_buffer_ = NULL;
     }
-    
+
     return 0;
 
 #endif
@@ -197,9 +197,9 @@ int ZCE_INotify_Dir_Reactor::add_watch(ZCE_INotify_Event_Base *event_base,
 #endif
 
         //下面这段代码屏蔽的原因是，LInux下，如果inotify_add_watch 同一个目录，handle是一样的。
-//#if defined (ZCE_OS_LINUX)
-//        ::inotify_rm_watch(inotify_handle_, hdl_dir);
-//#endif
+        //#if defined (ZCE_OS_LINUX)
+        //        ::inotify_rm_watch(inotify_handle_, hdl_dir);
+        //#endif
 
         //这样的日志打印可能会丢失数据,因为HANDLE是指针，但暂时不深究了，
         ZLOG_ERROR("[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
@@ -207,7 +207,7 @@ int ZCE_INotify_Dir_Reactor::add_watch(ZCE_INotify_Event_Base *event_base,
                    hdl_dir);
         return -1;
     }
-    
+
 
 #if defined (ZCE_OS_WINDOWS)
     //没法子，问候Windows API设计者老母，这儿我先监控所有的NOTIFY把。
@@ -429,18 +429,18 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
                 if (node_ptr->watch_mask_ | IN_CREATE)
                 {
                     detect_ret = node_ptr->watch_event_->inotify_create(node_ptr->watch_handle_,
-                        node_ptr->watch_mask_,
-                        node_ptr->watch_path_, 
-                        active_path);
+                                                                        node_ptr->watch_mask_,
+                                                                        node_ptr->watch_path_,
+                                                                        active_path);
                 }
                 break;
             case FILE_ACTION_REMOVED:
                 if (node_ptr->watch_mask_ | IN_DELETE)
                 {
                     detect_ret = node_ptr->watch_event_->inotify_delete(node_ptr->watch_handle_,
-                        node_ptr->watch_mask_,
-                        node_ptr->watch_path_, 
-                        active_path);
+                                                                        node_ptr->watch_mask_,
+                                                                        node_ptr->watch_path_,
+                                                                        active_path);
                 }
                 break;
                 //注意Windows 下的这个类型，包括了属性更改
@@ -448,27 +448,27 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
                 if (node_ptr->watch_mask_ | IN_MODIFY)
                 {
                     detect_ret = node_ptr->watch_event_->inotify_modify(node_ptr->watch_handle_,
-                        node_ptr->watch_mask_,
-                        node_ptr->watch_path_, 
-                        active_path);
+                                                                        node_ptr->watch_mask_,
+                                                                        node_ptr->watch_path_,
+                                                                        active_path);
                 }
                 break;
             case FILE_ACTION_RENAMED_OLD_NAME:
                 if (node_ptr->watch_mask_ | IN_MOVED_FROM)
                 {
                     detect_ret = node_ptr->watch_event_->inotify_moved_from(node_ptr->watch_handle_,
-                        node_ptr->watch_mask_,
-                        node_ptr->watch_path_, 
-                        active_path);
+                                                                            node_ptr->watch_mask_,
+                                                                            node_ptr->watch_path_,
+                                                                            active_path);
                 }
                 break;
             case FILE_ACTION_RENAMED_NEW_NAME:
                 if (node_ptr->watch_mask_ | IN_MOVED_TO)
                 {
                     detect_ret = node_ptr->watch_event_->inotify_moved_to(node_ptr->watch_handle_,
-                        node_ptr->watch_mask_,
-                        node_ptr->watch_path_, 
-                        active_path);
+                                                                          node_ptr->watch_mask_,
+                                                                          node_ptr->watch_path_,
+                                                                          active_path);
                 }
                 break;
         }
@@ -558,8 +558,8 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
         if (active_iter == watch_event_map_.end())
         {
             //某个FD在MAP中间无法找到，最大的可能是
-            ZCE_LOGMSG(RS_DEBUG, 
-                       "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]", 
+            ZCE_LOGMSG(RS_DEBUG,
+                       "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]",
                        ne_ptr->wd);
             continue;
         }
@@ -572,37 +572,37 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
         if (ne_ptr->mask & IN_CREATE )
         {
             detect_ret = node_ptr->watch_event_->inotify_create(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                node_ptr->watch_mask_,
+                                                                node_ptr->watch_path_,
+                                                                active_path);
         }
-        else if (ne_ptr->mask & IN_DELETE  ) 
+        else if (ne_ptr->mask & IN_DELETE  )
         {
             detect_ret = node_ptr->watch_event_->inotify_delete(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                node_ptr->watch_mask_,
+                                                                node_ptr->watch_path_,
+                                                                active_path);
         }
         else if ( ne_ptr->mask & IN_MODIFY )
         {
             detect_ret = node_ptr->watch_event_->inotify_modify(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                node_ptr->watch_mask_,
+                                                                node_ptr->watch_path_,
+                                                                active_path);
         }
         else if ( ne_ptr->mask & IN_MOVED_FROM)
         {
             detect_ret = node_ptr->watch_event_->inotify_moved_from(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                    node_ptr->watch_mask_,
+                                                                    node_ptr->watch_path_,
+                                                                    active_path);
         }
         else if ( ne_ptr->mask & IN_MOVED_TO)
         {
             detect_ret = node_ptr->watch_event_->inotify_moved_to(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                  node_ptr->watch_mask_,
+                                                                  node_ptr->watch_path_,
+                                                                  active_path);
         }
 
 #if defined ZCE_OS_LINUX
@@ -610,47 +610,47 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
         else if ( ne_ptr->mask & IN_ACCESS)
         {
             detect_ret = node_ptr->watch_event_->inotify_access(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                node_ptr->watch_mask_,
+                                                                node_ptr->watch_path_,
+                                                                active_path);
         }
         else if (ne_ptr->mask & IN_OPEN)
         {
             detect_ret = node_ptr->watch_event_->inotify_open(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                              node_ptr->watch_mask_,
+                                                              node_ptr->watch_path_,
+                                                              active_path);
         }
         else if (ne_ptr->mask & IN_CLOSE_WRITE || ne_ptr->mask & IN_CLOSE_NOWRITE)
         {
             detect_ret = node_ptr->watch_event_->inotify_close(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                               node_ptr->watch_mask_,
+                                                               node_ptr->watch_path_,
+                                                               active_path);
         }
         else if (ne_ptr->mask & IN_ATTRIB)
         {
             detect_ret = node_ptr->watch_event_->inotify_attrib(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                node_ptr->watch_mask_,
+                                                                node_ptr->watch_path_,
+                                                                active_path);
         }
         else if (ne_ptr->mask & IN_MOVE_SELF)
         {
             detect_ret = node_ptr->watch_event_->inotify_move_slef(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                   node_ptr->watch_mask_,
+                                                                   node_ptr->watch_path_,
+                                                                   active_path);
         }
         else if (ne_ptr->mask & IN_DELETE_SELF)
         {
             detect_ret = node_ptr->watch_event_->inotify_delete_slef(node_ptr->watch_handle_,
-                node_ptr->watch_mask_,
-                node_ptr->watch_path_, 
-                active_path);
+                                                                     node_ptr->watch_mask_,
+                                                                     node_ptr->watch_path_,
+                                                                     active_path);
         }
-#endif 
-            
+#endif
+
         //返回-1，关闭之,
         if (detect_ret == -1)
         {

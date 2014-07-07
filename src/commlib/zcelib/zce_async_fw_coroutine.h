@@ -13,7 +13,7 @@
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class ZCE_Async_Coroutine :private ZCE_Async_Object
+class ZCE_Async_Coroutine : private ZCE_Async_Object
 {
     friend class ZCE_Async_CoroutineMgr;
 
@@ -23,12 +23,12 @@ class ZCE_Async_Coroutine :private ZCE_Async_Object
         //携程传递给管理器的状态值，
         COROUTINE_CONTINUE = 0x10001,
         COROUTINE_EXIT = 0x10002,
-        
+
         //超时后，管理器通知携程的状态值
         COROUTINE_TIMEOUT = 0x20002,
     };
 
-    
+
 public:
     /*!
     * @brief      构造函数，
@@ -55,14 +55,14 @@ public:
     */
     virtual int finish();
 
-protected:    
+protected:
 
     ///协程对象的运行函数
     void coroutine_do();
 
     ///协程运行,你要重载的函数
     virtual int coroutine_run() = 0;
-    
+
     ///切换回Main，协程还会继续运行
     void yeild_main_continue();
 
@@ -86,19 +86,19 @@ protected:
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
     virtual void on_run(bool &continue_run);
-    
+
     /*!
     * @brief      异步对象超时处理
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const ZCE_Time_Value & now_time,
-        bool &continue_run);
+    virtual void on_timeout(const ZCE_Time_Value &now_time,
+                            bool &continue_run);
 
 
 
 protected:
-    
+
     ///最小的堆栈
     static const size_t MIN_STACK_SIZE = 16 * 1024;
     ///默认堆栈
@@ -115,7 +115,7 @@ protected:
 
     ///最小的堆栈
     size_t min_stack_size = 16 * 1024;
-    
+
     ///协程对象
     coroutine_t      handle_;
 
@@ -130,9 +130,9 @@ protected:
 
 /*!
 * @brief      协程对象主控管理类
-*             
+*
 */
-class ZCE_Async_CoroutineMgr :public ZCE_Async_ObjectMgr
+class ZCE_Async_CoroutineMgr : public ZCE_Async_ObjectMgr
 {
 public:
 
@@ -141,7 +141,7 @@ public:
     virtual ~ZCE_Async_CoroutineMgr();
 
 protected:
-    
+
     ///默认异步对象池子的初始化的数量
     static const size_t COROUTINE_POOL_INIT_SIZE = 1;
     ///默认池子扩展的时候，扩展的异步对象的数量

@@ -219,19 +219,19 @@ int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
         process_cpu_ratio_ = 0;
     }
 
-    ZCE_LOGMSG(RS_INFO,"[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
-              "totoal process user/sys[%lld/%lld] milliseconds "
-              "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds "
-              "memory use//add [%ld/%ld].",
-              self_pid_,
-              process_cpu_ratio_,
-              ZCE_OS::total_milliseconds(now_process_perf_.run_utime_),
-              ZCE_OS::total_milliseconds(now_process_perf_.run_stime_),
-              ZCE_OS::total_milliseconds(last_to_now),
-              ZCE_OS::total_milliseconds(proc_utime),
-              ZCE_OS::total_milliseconds(proc_stime),
-              cur_mem_usesize_,
-              vary_mem_size);
+    ZCE_LOGMSG(RS_INFO, "[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
+               "totoal process user/sys[%lld/%lld] milliseconds "
+               "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds "
+               "memory use//add [%ld/%ld].",
+               self_pid_,
+               process_cpu_ratio_,
+               ZCE_OS::total_milliseconds(now_process_perf_.run_utime_),
+               ZCE_OS::total_milliseconds(now_process_perf_.run_stime_),
+               ZCE_OS::total_milliseconds(last_to_now),
+               ZCE_OS::total_milliseconds(proc_utime),
+               ZCE_OS::total_milliseconds(proc_stime),
+               cur_mem_usesize_,
+               vary_mem_size);
 
     // 计算系统的CPU时间，非IDLE以外的时间都是消耗时间
     timeval sys_idletime = ZCE_OS::timeval_sub(now_system_perf_.idle_time_,
@@ -291,29 +291,29 @@ int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
     }
 
     ZCE_LOGMSG(RS_INFO,
-              "[zcelib] [WATCHDOG][SYSTEM] cpu radio [%u] "
-              "totoal usr/nice/sys/idle/iowait/hardirq/softirq "
-              "[%lld/%lld/%lld/%lld/%lld/%lld/%lld] milliseconds"
-              "leave last point all/use/idle[%lld/%lld/%lld] milliseconds "
-              "mem ratio[%u] [totoal/can use/free/buffer/cache] "
-              "[%lld/%lld/%lld/%lld/%lld] bytes",
-              system_cpu_ratio_,
-              ZCE_OS::total_milliseconds(now_system_perf_.user_time_),
-              ZCE_OS::total_milliseconds(now_system_perf_.nice_time_),
-              ZCE_OS::total_milliseconds(now_system_perf_.system_time_),
-              ZCE_OS::total_milliseconds(now_system_perf_.idle_time_),
-              ZCE_OS::total_milliseconds(now_system_perf_.iowait_time_),
-              ZCE_OS::total_milliseconds(now_system_perf_.hardirq_time_),
-              ZCE_OS::total_milliseconds(now_system_perf_.softirq_time_),
-              ZCE_OS::total_milliseconds(last_to_now),
-              ZCE_OS::total_milliseconds(sys_cputime),
-              ZCE_OS::total_milliseconds(sys_idletime),
-              mem_use_ratio_,
-              now_system_perf_.totalram_size_,
-              can_use_size_,
-              now_system_perf_.freeram_size_,
-              now_system_perf_.bufferram_size_,
-              now_system_perf_.cachedram_size_);
+               "[zcelib] [WATCHDOG][SYSTEM] cpu radio [%u] "
+               "totoal usr/nice/sys/idle/iowait/hardirq/softirq "
+               "[%lld/%lld/%lld/%lld/%lld/%lld/%lld] milliseconds"
+               "leave last point all/use/idle[%lld/%lld/%lld] milliseconds "
+               "mem ratio[%u] [totoal/can use/free/buffer/cache] "
+               "[%lld/%lld/%lld/%lld/%lld] bytes",
+               system_cpu_ratio_,
+               ZCE_OS::total_milliseconds(now_system_perf_.user_time_),
+               ZCE_OS::total_milliseconds(now_system_perf_.nice_time_),
+               ZCE_OS::total_milliseconds(now_system_perf_.system_time_),
+               ZCE_OS::total_milliseconds(now_system_perf_.idle_time_),
+               ZCE_OS::total_milliseconds(now_system_perf_.iowait_time_),
+               ZCE_OS::total_milliseconds(now_system_perf_.hardirq_time_),
+               ZCE_OS::total_milliseconds(now_system_perf_.softirq_time_),
+               ZCE_OS::total_milliseconds(last_to_now),
+               ZCE_OS::total_milliseconds(sys_cputime),
+               ZCE_OS::total_milliseconds(sys_idletime),
+               mem_use_ratio_,
+               now_system_perf_.totalram_size_,
+               can_use_size_,
+               now_system_perf_.freeram_size_,
+               now_system_perf_.bufferram_size_,
+               now_system_perf_.cachedram_size_);
 
     return 0;
 }

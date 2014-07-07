@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_msgque_condi.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2011年6月17日
 * @brief      多线程使用的Message Queue，内部的同步对象使用了条件变量
 *             这个类暂时不要使用，他和整个体系是脱节的，完全是为了测试条件变量写的类
 *             同时支持list，deque,和自己的一个容器ZCE_LIB::lordrings 环形队列
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+* @details
+*
+*
+*
+* @note
+*
 */
 
 

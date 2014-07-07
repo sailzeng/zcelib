@@ -8,11 +8,11 @@
 *             包括
 *             错误定义，各种error的定义，
 *             获取errno的函数，last_error()函数等，
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_ERROR_H_

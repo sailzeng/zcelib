@@ -6,9 +6,9 @@
 * @date       2011年8月28日
 * @brief      EPOLL 的IO反应器，IO多路复用模型
 *             他只能在LINUX下使用（虽然可以编译），
-* 
+*
 * @details
-* 
+*
 */
 
 #ifndef ZCE_LIB_EVENT_REACTOR_EPOLL_H_
@@ -18,7 +18,7 @@
 
 /*!
 * @brief      EPOLL 的IO反应器，IO多路复用模型
-* 
+*
 */
 class  ZCE_Epoll_Reactor : public ZCE_Reactor
 {

@@ -77,13 +77,13 @@ int ZCE_Mysql_STMT_Command::set_connection(ZCE_Mysql_Connect *conn)
 
 
 //准备SQL,并且分析绑定的变量
-int ZCE_Mysql_STMT_Command::stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam, 
-    ZCE_Mysql_STMT_Bind *bindresult)
+int ZCE_Mysql_STMT_Command::stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam,
+                                              ZCE_Mysql_STMT_Bind *bindresult)
 {
 
-    int tmpret = ::mysql_stmt_prepare(mysql_stmt_, 
-        stmt_command_.c_str(),
-        static_cast<unsigned long>(stmt_command_.size()));
+    int tmpret = ::mysql_stmt_prepare(mysql_stmt_,
+                                      stmt_command_.c_str(),
+                                      static_cast<unsigned long>(stmt_command_.size()));
     if (tmpret != 0)
     {
         return tmpret;
@@ -139,8 +139,8 @@ int ZCE_Mysql_STMT_Command::set_stmt_command(const char *sqlcmd, size_t szsql, Z
 }
 
 //SQL 执行命令，这个事一个基础函数，内部调用
-int ZCE_Mysql_STMT_Command::_execute(unsigned int *num_affect, 
-    unsigned int *lastid)
+int ZCE_Mysql_STMT_Command::_execute(unsigned int *num_affect,
+                                     unsigned int *lastid)
 {
     int tmpret = 0;
 
@@ -161,7 +161,7 @@ int ZCE_Mysql_STMT_Command::_execute(unsigned int *num_affect,
         }
     }
 
-    //执行SQL命令影响了多少行,mysql_affected_rows 
+    //执行SQL命令影响了多少行,mysql_affected_rows
     //必须在转储结果集后,所以你要注意输入的参数
     if (num_affect)
     {

@@ -37,27 +37,27 @@ class ZCE_INI_PropertyTree : public ZCE_Conf_PropertyTree
 public:
     //∂¡»°≈‰÷√1
     int get_string_value(const std::string &sectionname,
-        const std::string &keyname,
-        std::string &value) const;
+                         const std::string &keyname,
+                         std::string &value) const;
 
     //∂¡»°≈‰÷√£¨
     int get_string_value(const std::string &sectionname,
-        const std::string &keyname,
-        char *buf,
-        size_t size_buf) const;
+                         const std::string &keyname,
+                         char *buf,
+                         size_t size_buf) const;
     //
     int get_int32_value(const std::string &sectionname,
-        const std::string &keyname,
-        int32_t &value) const;
+                        const std::string &keyname,
+                        int32_t &value) const;
 
     int get_uint32_value(const std::string &sectionname,
-        const std::string &keyname,
-        uint32_t &value) const;
+                         const std::string &keyname,
+                         uint32_t &value) const;
 
     //
     int get_bool_value(const std::string &sectionname,
-        const std::string &keyname,
-        bool &value) const;
+                       const std::string &keyname,
+                       bool &value) const;
 };
 
 #endif //ZCE_LIB_CONFIG_INI_IMPLEMENTION_H_

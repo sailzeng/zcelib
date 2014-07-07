@@ -86,8 +86,8 @@ template<> int64_t ZCE_LUA::read_stack(lua_State *state, int index)
     else
     {
         ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be int64_t ,type id [%d]",
-            index,
-            lua_type(state, index));
+                   index,
+                   lua_type(state, index));
         return 0;
     }
 }
@@ -105,8 +105,8 @@ template<> uint64_t ZCE_LUA::read_stack(lua_State *state, int index)
     else
     {
         ZCE_LOGMSG(RS_ERROR, "stack index [%d] can't to be uint64_t ,type id [%d]",
-            index,
-            lua_type(state, index));
+                   index,
+                   lua_type(state, index));
         lua_pop(state, 1);
         return 0;
     }
@@ -125,8 +125,8 @@ template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
     else
     {
         ZCE_LOGMSG(RS_ERROR, "[ZCELUA]stack index [%d] can't to be std::string ,type id [%d]",
-            index,
-            lua_type(state, index));
+                   index,
+                   lua_type(state, index));
         lua_pop(state, 1);
         return std::string("");
     }
@@ -199,7 +199,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, int64_t val)
     if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
-            lua_type(state, -1));
+                   lua_type(state, -1));
         lua_pop(state, 1);
         return;
     }
@@ -220,7 +220,7 @@ template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
     if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? typeid[%d]",
-            lua_type(state, -1));
+                   lua_type(state, -1));
         lua_pop(state, 1);
         return;
     }
@@ -235,13 +235,13 @@ template<> void ZCE_LUA::push_stack(lua_State *state, std::string val)
     *(std::string *)lua_newuserdata(state, sizeof(std::string)) = val;
     lua_pushstring(state, "stdstring");
     lua_gettable(state, LUA_GLOBALSINDEX);
-    
+
     //在DEBUG版本增强一些检查，如果不是table
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][std::string] is not a table? May be you don't register std::string to lua?typeid[%d]",
-            lua_type(state, -1));
+                   lua_type(state, -1));
         lua_pop(state, 1);
         return;
     }
@@ -270,7 +270,7 @@ int ZCE_LUA::dump_luacall_stack(lua_State *state)
         lua_getinfo(state, "nSlu", &ar);
         if (stack_lvl == 0)
         {
-            ZCE_LOGMSG(RS_INFO,"[LUASTACK]===========================================" );
+            ZCE_LOGMSG(RS_INFO, "[LUASTACK]===========================================" );
         }
 
         if (ar.name)
@@ -290,70 +290,70 @@ int ZCE_LUA::dump_luacall_stack(lua_State *state)
 int ZCE_LUA::dump_clua_stack(lua_State *state)
 {
     int stack_top = lua_gettop(state);
-    ZCE_LOGMSG(RS_INFO,"[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
+    ZCE_LOGMSG(RS_INFO, "[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
     for (int i = 1; i <= stack_top; ++i)
     {
         int lua_typeid = lua_type(state, i);
         switch (lua_typeid)
         {
-        case LUA_TNIL:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s", 
-                i, 
-                lua_typename(state, lua_typeid));
-            break;
-        case LUA_TBOOLEAN:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%s]", 
-                i,
-                lua_typename(state, lua_typeid),
-                lua_toboolean(state, i) ? "true" : "false");
-            break;
-        case LUA_TLIGHTUSERDATA:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [0x%p]", 
-                i,
-                lua_typename(state, lua_typeid),
-                lua_topointer(state, i));
-            break;
-        case LUA_TNUMBER:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%f]", 
-                i, 
-                lua_typename(state, lua_typeid), 
-                lua_tonumber(state, i));
-            break;
-        case LUA_TSTRING:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[%s]", 
-                i,
-                lua_typename(state, lua_typeid),
-                lua_tostring(state, i));
-            break;
-        case LUA_TTABLE:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]", 
-                i,
-                lua_typename(state, lua_typeid),
-                lua_topointer(state, i));
-            break;
-        case LUA_TFUNCTION:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s() [0x%p]", 
-                i,
-                lua_typename(state, lua_typeid),
-                lua_topointer(state, i));
-            break;
-        case LUA_TUSERDATA:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]", 
-                i,
-                lua_typename(state, lua_typeid),
-                lua_topointer(state, i));
-            break;
-        case LUA_TTHREAD:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s", 
-                i,
-                lua_typename(state, lua_typeid));
-            break;
-        default:
-            ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type id %d type name %s", 
-                i,
-                lua_typeid,
-                lua_typename(state, lua_typeid));
-            break;
+            case LUA_TNIL:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s",
+                           i,
+                           lua_typename(state, lua_typeid));
+                break;
+            case LUA_TBOOLEAN:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%s]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_toboolean(state, i) ? "true" : "false");
+                break;
+            case LUA_TLIGHTUSERDATA:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [0x%p]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_topointer(state, i));
+                break;
+            case LUA_TNUMBER:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s [%f]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_tonumber(state, i));
+                break;
+            case LUA_TSTRING:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[%s]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_tostring(state, i));
+                break;
+            case LUA_TTABLE:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_topointer(state, i));
+                break;
+            case LUA_TFUNCTION:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s() [0x%p]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_topointer(state, i));
+                break;
+            case LUA_TUSERDATA:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s[0x%p]",
+                           i,
+                           lua_typename(state, lua_typeid),
+                           lua_topointer(state, i));
+                break;
+            case LUA_TTHREAD:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.%s",
+                           i,
+                           lua_typename(state, lua_typeid));
+                break;
+            default:
+                ZCE_LOGMSG(RS_INFO, "[ZCELUA][CLSTACK]%3d.type id %d type name %s",
+                           i,
+                           lua_typeid,
+                           lua_typename(state, lua_typeid));
+                break;
         }
     }
     return 0;
@@ -411,8 +411,8 @@ int ZCE_LUA::class_meta_get(lua_State *state)
     if (0 != meta_ret)
     {
         lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
-            __ZCE_FUNCTION__,
-            lua_tostring(state, 2));
+                        __ZCE_FUNCTION__,
+                        lua_tostring(state, 2));
         lua_error(state);
         return meta_ret;
     }
@@ -459,8 +459,8 @@ int ZCE_LUA::class_meta_set(lua_State *state)
     if (0 != meta_ret)
     {
         lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
-            __ZCE_FUNCTION__,
-            lua_tostring(state, 2));
+                        __ZCE_FUNCTION__,
+                        lua_tostring(state, 2));
         lua_error(state);
         return meta_ret;
     }
@@ -472,11 +472,11 @@ int ZCE_LUA::class_meta_set(lua_State *state)
 ///调用父母的对应的meta table里面是否有相应的 get
 int ZCE_LUA::class_parent(lua_State *state)
 {
-    
+
     //
     lua_pushstring(state, "__parent");
     lua_rawget(state, -2);
-    
+
     //如果不是table，表示没有父母，消失
     if (!lua_istable(state, -1))
     {
@@ -507,7 +507,7 @@ int ZCE_LUA::class_parent(lua_State *state)
         if (pk_ret == 0)
         {
             lua_remove(state, -2);
-            
+
         }
         else
         {
@@ -546,7 +546,7 @@ static int eq_int64(lua_State *state)
 {
     int64_t a = *(int64_t *)lua_touserdata(state, 1);
     int64_t b = *(int64_t *)lua_touserdata(state, 2);
-    lua_pushboolean(state, (a==b));
+    lua_pushboolean(state, (a == b));
     return 1;
 }
 
@@ -586,7 +586,7 @@ static int sub_int64(lua_State *state)
 
 static int constructor_int64(lua_State *state)
 {
-    int64_t data=0;
+    int64_t data = 0;
     sscanf(lua_tostring(state, 1), "%lld", &data);
     ZCE_LUA::push_stack(state, data);
     return 1;
@@ -611,7 +611,7 @@ void ZCE_Lua_Tie::reg_int64()
     const char *name = "int64_t";
     lua_pushstring(lua_state_, name);
     lua_newtable(lua_state_);
-  
+
 
     lua_pushstring(lua_state_, "__name");
     lua_pushstring(lua_state_, name);
@@ -887,7 +887,7 @@ void ZCE_Lua_Tie::reg_stdstring()
     lua_pushstring(lua_state_, "__concat");
     lua_pushcclosure(lua_state_, concat_stdstring, 0);
     lua_rawset(lua_state_, -3);
-    
+
     //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数
     //LUA中出现这样的调用，i1 =stdstring("123")
     lua_newtable(lua_state_);
@@ -909,7 +909,7 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 {
     lua_pushstring(lua_state_, name);
     //由于不知道你的枚举值是否是array，所以这样申请的，
-    lua_createtable(lua_state_, 0,static_cast<int>(item_num));
+    lua_createtable(lua_state_, 0, static_cast<int>(item_num));
 
     va_list argp;
     va_start(argp, item_num);
@@ -942,7 +942,7 @@ void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
 
 //=======================================================================================================
 ZCE_Lua_Tie::ZCE_Lua_Tie() :
-lua_state_(nullptr)
+    lua_state_(nullptr)
 {
 }
 
@@ -953,7 +953,7 @@ ZCE_Lua_Tie::~ZCE_Lua_Tie()
 
 //打开lua state
 int ZCE_Lua_Tie::open(bool open_libs,
-    bool reg_common_use)
+                      bool reg_common_use)
 {
     //如果错误
     if (lua_state_)
@@ -1006,8 +1006,8 @@ int ZCE_Lua_Tie::do_buffer(const char *buff, size_t len)
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
-            ret,
-            lua_tostring(lua_state_, -1));
+                   ret,
+                   lua_tostring(lua_state_, -1));
         lua_pop(lua_state_, 1);
         lua_remove(lua_state_, errfunc);
         return ret;
@@ -1036,8 +1036,8 @@ int ZCE_Lua_Tie::do_file(const char *filename)
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
-            ret,
-            lua_tostring(lua_state_, -1));
+                   ret,
+                   lua_tostring(lua_state_, -1));
         lua_pop(lua_state_, 1);
         lua_remove(lua_state_, errfunc);
         return ret;

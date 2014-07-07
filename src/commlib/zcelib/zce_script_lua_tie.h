@@ -16,7 +16,7 @@
 * @note       我等了四年，就是要等一个机会，我要争一口气，不是想证明我了不起，我是要告诉人家，我失去的东西一定要亲手拿回来！
 *             -- 《英雄本色》 小马哥
 *             2014年6月13日早上，荷兰干净利落的爆了西班牙5：1，
-*             
+*
 *             2014年6月25日 别了，布冯，别了，皮尔洛，别了，意大利。
 *             超级颜论的颜强提醒我们应该用这首歌给皮尔洛送别。
 *             长亭外，古道边
@@ -24,9 +24,9 @@
 *             晚风拂柳笛声残
 *             夕阳山外山
 *             天之涯，地之角
-*             知交半零落              
+*             知交半零落
 *             一瓢(觚)[a]浊酒尽余欢
-*             今宵别梦寒         
+*             今宵别梦寒
 */
 
 
@@ -120,7 +120,7 @@ public:
 * @tparam     val_type 值得类型
 */
 template<typename val_type>
-class val_2_udat :public lua_udat_base
+class val_2_udat : public lua_udat_base
 {
 public:
     val_2_udat()
@@ -152,7 +152,7 @@ public:
 * @tparam     val_type 指针的类型
 */
 template<typename val_type>
-class ptr_2_udat :public lua_udat_base
+class ptr_2_udat : public lua_udat_base
 {
 public:
     ptr_2_udat(val_type t)
@@ -166,7 +166,7 @@ public:
 * @tparam     val_type 引用的类型
 */
 template<typename val_type>
-class ref_2_udat :public lua_udat_base
+class ref_2_udat : public lua_udat_base
 {
 public:
     //注意第一个&t表示是引用参数，第二个是标示传递指针给lua_udat_base基类
@@ -181,7 +181,7 @@ public:
 * @tparam     val_type 引用的类型
 */
 template<typename ary_type>
-class arrayref_2_udat :public lua_udat_base
+class arrayref_2_udat : public lua_udat_base
 {
 public:
     ///构造函数
@@ -204,7 +204,7 @@ public:
 
 ///最通用的函数，但一般的情况基本都通过重载和特化处理了，所以这儿只打印了一个错误信息
 template<typename val_type >
-void push_stack(lua_State * state, typename val_type val)
+void push_stack(lua_State *state, typename val_type val)
 {
     //这儿只针对非object对象
     if (!std::is_class<val_type>::value)
@@ -212,9 +212,9 @@ void push_stack(lua_State * state, typename val_type val)
         ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
         return;
     }
-    
+
     new(lua_newuserdata(state,
-        sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
+                        sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
 
     //根据类的名称，设置metatable
     lua_pushstring(state, class_name<val_type >::name());
@@ -222,8 +222,8 @@ void push_stack(lua_State * state, typename val_type val)
     if (lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
-            typeid(val).name(),
-            class_name<val_type >::name());
+                   typeid(val).name(),
+                   class_name<val_type >::name());
         lua_remove(state, -1);
         return;
     }
@@ -251,7 +251,7 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 */
 template<typename val_type  >
 void push_stack(lua_State *state,
-     typename std::enable_if<std::is_reference<val_type>::value, val_type>::type ref)
+                typename std::enable_if<std::is_reference<val_type>::value, val_type>::type ref)
 {
     //
     new(lua_newuserdata(state,
@@ -266,8 +266,8 @@ void push_stack(lua_State *state,
         if (!lua_istable(state, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
-                typeid(ref).name(),
-                class_name<val_type >::name());
+                       typeid(ref).name(),
+                       class_name<val_type >::name());
             lua_remove(state, -1);
             return;
         }
@@ -285,8 +285,8 @@ void push_stack(lua_State *state,
 * @param      ptr      放入的指针
 */
 template<typename val_type  >
-void push_stack(lua_State *state, 
-    typename std::enable_if<std::is_pointer<val_type>::value, val_type>::type ptr)
+void push_stack(lua_State *state,
+                typename std::enable_if<std::is_pointer<val_type>::value, val_type>::type ptr)
 {
     if (ptr)
     {
@@ -301,8 +301,8 @@ void push_stack(lua_State *state,
             if (!lua_istable(state, -1))
             {
                 ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
-                    typeid(ptr).name(),
-                    class_name<val_type >::name());
+                           typeid(ptr).name(),
+                           class_name<val_type >::name());
                 lua_remove(state, -1);
                 return;
             }
@@ -319,7 +319,7 @@ void push_stack(lua_State *state,
 //枚举
 template<typename val_type  >
 int push_stack(lua_State *state,
-    typename  std::enable_if<std::is_enum<val_type>::value, val_type>::type val)
+               typename  std::enable_if<std::is_enum<val_type>::value, val_type>::type val)
 {
     lua_pushnumber(state, val);
     return 0;
@@ -638,7 +638,7 @@ public:
     {
         //push是将结果放入堆栈
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
-        
+
         typedef int (class_type::*mem_fun)(int, int);
         mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
 
@@ -660,7 +660,7 @@ public:
         {
             push_stack<ret_type>(state,
                                  (obj_ptr->*fun_ptr)(read_stack<args_type>(state, \
-                                 para_idx--)...));
+                                                                           para_idx--)...));
             return 1;
         }
     }
@@ -771,28 +771,28 @@ class Candy_Tie_Class
 public:
     //
     Candy_Tie_Class(ZCE_Lua_Tie *lua_tie,
-        bool read_only):
+                    bool read_only):
         lua_tie_(lua_tie),
         read_only_(read_only)
     {
     }
 
     template <typename construct_fun >
-    Candy_Tie_Class& construct(construct_fun func)
+    Candy_Tie_Class &construct(construct_fun func)
     {
         lua_tie_->class_constructor<class_type, construct_fun >(func);
         return *this;
     }
 
     template <typename var_type >
-    Candy_Tie_Class& mem_var(const char *name, var_type class_type::*val)
+    Candy_Tie_Class &mem_var(const char *name, var_type class_type::*val)
     {
         lua_tie_->class_mem_var<class_type, var_type >(name, val);
         return *this;
     }
 
-    template <typename array_type ,size_t array_size>
-    Candy_Tie_Class& mem_ary(const char *name, array_type (class_type::*ary)[array_size])
+    template <typename array_type , size_t array_size>
+    Candy_Tie_Class &mem_ary(const char *name, array_type (class_type::*ary)[array_size])
     {
         lua_tie_->class_mem_ary<class_type, array_type, array_size >(name, ary, read_only_);
         return *this;
@@ -800,7 +800,7 @@ public:
 
     //绑定函数
     template<typename ret_type, typename... args_type>
-    Candy_Tie_Class& mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
+    Candy_Tie_Class &mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
         lua_tie_->class_mem_fun<class_type>(name, func);
         return *this;
@@ -809,7 +809,7 @@ public:
 protected:
     ///Lua的解释器的状态
     ZCE_Lua_Tie   *lua_tie_ = nullptr;
-    
+
     ///这个类是否是只读的方式
     bool           read_only_ = false;
 };
@@ -915,7 +915,7 @@ public:
             lua_remove(lua_state_, -1);
             return -1;
         }
-        ZCE_LUA::arrayref_2_udat<array_type> aux_ary = 
+        ZCE_LUA::arrayref_2_udat<array_type> aux_ary =
             *(aux_ary *)lua_touserdata(lua_state_, -1);
         ary_size = aux_ary.ary_size_;
         for (size_t i = 0; i < ary_size; ++i)
@@ -960,8 +960,8 @@ public:
                      typename const input_iter last)
     {
         lua_pushstring(lua_state_, table_name);
-        lua_createtable(lua_state_, 
-            static_cast<int>(std::distance(first, last)), 0);
+        lua_createtable(lua_state_,
+                        static_cast<int>(std::distance(first, last)), 0);
         typename input_iter iter_temp = first;
         for (int i = 0; iter_temp != last; iter_temp++, i++)
         {
@@ -990,8 +990,8 @@ public:
                      typename map_iter::second_type * = nullptr)
     {
         lua_pushstring(lua_state_, table_name);
-        lua_createtable(lua_state_, 
-            static_cast<int>(std::distance(first, last)), 0);
+        lua_createtable(lua_state_,
+                        static_cast<int>(std::distance(first, last)), 0);
 
         typename input_iter iter_temp = first;
         for (; iter_temp != last; iter_temp++)
@@ -1124,12 +1124,12 @@ public:
         ret = ZCE_LUA::call_luafun(lua_state_, fun_name, 3, args...);
         if (ret != 0)
         {
-            return ret; 
+            return ret;
         }
         //在堆栈弹出返回值,注意参数顺序
-        ret_val1 = ZCE_LUA::read_stack<ret_type1>(lua_state_,-3);
-        ret_val2 = ZCE_LUA::read_stack<ret_type2>(lua_state_,-2);
-        ret_val3 = ZCE_LUA::read_stack<ret_type3>(lua_state_,-1);
+        ret_val1 = ZCE_LUA::read_stack<ret_type1>(lua_state_, -3);
+        ret_val2 = ZCE_LUA::read_stack<ret_type2>(lua_state_, -2);
+        ret_val3 = ZCE_LUA::read_stack<ret_type3>(lua_state_, -1);
         lua_pop(lua_state_, 3);
         return 0;
     }
@@ -1248,7 +1248,7 @@ public:
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                ZCE_LUA::class_name<class_type>::name());
+                       ZCE_LUA::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1276,7 +1276,7 @@ public:
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                ZCE_LUA::class_name<parent_type>::name());
+                       ZCE_LUA::class_name<parent_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1320,7 +1320,7 @@ public:
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
         new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_var<class_type, var_type>)))  \
-            ZCE_LUA::member_var<class_type, var_type>(val);
+        ZCE_LUA::member_var<class_type, var_type>(val);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
@@ -1331,8 +1331,8 @@ public:
     ///给一个类的meta table 绑定成员数组
     template<typename class_type, typename ary_type, size_t ary_size>
     int class_mem_ary(const char *name,
-        ary_type(class_type:: *mem_ary)[ary_size],
-        bool read_only = false)
+                      ary_type(class_type:: *mem_ary)[ary_size],
+                      bool read_only = false)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
@@ -1351,7 +1351,7 @@ public:
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
         new(lua_newuserdata(lua_state_, sizeof(ZCE_LUA::member_array<class_type, ary_type, ary_size>)))  \
-            ZCE_LUA::member_array<class_type, ary_type, ary_size>(mem_ary, read_only);
+        ZCE_LUA::member_array<class_type, ary_type, ary_size>(mem_ary, read_only);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
@@ -1385,7 +1385,7 @@ public:
         new(lua_newuserdata(lua_state_, sizeof(mem_fun))) mem_fun(func);
         //
         lua_pushcclosure(lua_state_,
-            ZCE_LUA::member_functor<class_type, ret_type, args_type...>::invoke, 1);
+                         ZCE_LUA::member_functor<class_type, ret_type, args_type...>::invoke, 1);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);

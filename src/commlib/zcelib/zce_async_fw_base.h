@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_async_fw_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Saturday, March 01, 2014
-* @brief      
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+* @brief
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 
@@ -28,7 +28,7 @@
 * @brief      异步对象的基类
 *
 */
-class ZCE_Async_Object 
+class ZCE_Async_Object
 {
     friend class ZCE_Async_ObjectMgr;
 
@@ -38,7 +38,7 @@ protected:
     ~ZCE_Async_Object();
 
 public:
-    
+
 
     /*!
     * @brief      初始化函数，在构造函数后调用，在放入池子前执行一次，
@@ -52,11 +52,11 @@ public:
     * @return     int
     */
     virtual int finish();
-    
+
     /*!
     * @brief      克隆自己
     * @return     ZCE_Async_Object*
-    * @param      async_mgr 
+    * @param      async_mgr
     */
     virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr) = 0;
 
@@ -71,18 +71,18 @@ public:
     */
     virtual void on_run(bool &continue_run) = 0;
 
-    
+
     /*!
     * @brief      异步对象超时处理
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const ZCE_Time_Value & now_time,
-        bool &continue_run) = 0;
+    virtual void on_timeout(const ZCE_Time_Value &now_time,
+                            bool &continue_run) = 0;
 
     /*!
     * @brief      异步对象运行结束，做结束，释放资源的事情
-    *             目前这个类做的事情主要是清理定时器 
+    *             目前这个类做的事情主要是清理定时器
     */
     virtual void on_end();
 
@@ -133,7 +133,7 @@ class ZCE_Timer_Queue;
 * @brief      异步对象的管理器基类
 *
 */
-class ZCE_Async_ObjectMgr :public ZCE_Timer_Handler
+class ZCE_Async_ObjectMgr : public ZCE_Timer_Handler
 {
 
 protected:
@@ -191,7 +191,7 @@ public:
     * @param      running_number
     */
     int initialize(size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
-        size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
+                   size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
 
 
     /*!
@@ -203,13 +203,13 @@ public:
 
     /*!
     * @brief      注册一类协程，其用reg_cmd对应，
-    * @return     int 
+    * @return     int
     * @param      reg_cmd
     * @param      async_base
     * @param      init_clone_num
     */
     int register_asyncobj(unsigned int reg_cmd,
-        ZCE_Async_Object* async_base);
+                          ZCE_Async_Object *async_base);
 
     /*!
     * @brief      创建一个异步对象
@@ -223,23 +223,23 @@ public:
     /*!
     * @brief      激活某个已经运行的异步对象,
     * @return     int
-    * @param      id 
+    * @param      id
     */
     int active_asyncobj(unsigned int id);
 
-    
+
 protected:
 
     /*!
     * @brief      从池子里面分配一个异步对象
     * @return     int
-    * @param      cmd 
+    * @param      cmd
     * @param      async_rec
     * @param      alloc_aysnc
     */
-    int allocate_from_pool(unsigned int cmd, 
-        ASYNC_OBJECT_RECORD *&async_rec,
-        ZCE_Async_Object *&alloc_aysnc);
+    int allocate_from_pool(unsigned int cmd,
+                           ASYNC_OBJECT_RECORD *&async_rec,
+                           ZCE_Async_Object *&alloc_aysnc);
 
     /*!
     * @brief      释放一个异步对象到池子里面
@@ -248,7 +248,7 @@ protected:
     */
     int free_to_pool(ZCE_Async_Object *free_async);
 
-    
+
     /*!
     * @brief      通过ID，寻找一个正在运行的异步对象
     * @return     int  返回0表示成功
@@ -256,7 +256,7 @@ protected:
     * @param[out] running_aysnc 查询到的异步对象
     */
     int find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc);
-    
+
 
 
     /*!
@@ -265,8 +265,8 @@ protected:
     * @param      now_time
     * @param      act
     */
-    int handle_timeout(const ZCE_Time_Value & now_time,
-        const void *act);
+    int handle_timeout(const ZCE_Time_Value &now_time,
+                       const void *act);
 
 protected:
 

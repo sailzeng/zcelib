@@ -102,7 +102,7 @@ void ZCE_LIB::hash_prime(const size_t node_num, size_t &real_num)
 #else
 
 #endif
-    
+
     //做一定的放大处理
     size_t zoomin_num = ZCE_LIB::zoomin_nodenum(node_num);
     real_num = nearest_prime(zoomin_num);
@@ -110,11 +110,11 @@ void ZCE_LIB::hash_prime(const size_t node_num, size_t &real_num)
 }
 
 //
-void ZCE_LIB::hash_prime_ary(const size_t num_node,size_t &real_num, size_t row, size_t prime_ary[])
+void ZCE_LIB::hash_prime_ary(const size_t num_node, size_t &real_num, size_t row, size_t prime_ary[])
 {
     //做一定的放大处理
     size_t zoomin_num = ZCE_LIB::zoomin_nodenum(num_node);
-    size_t per_row_num = zoomin_num/row + 1;
+    size_t per_row_num = zoomin_num / row + 1;
 
     //制造一个质数队列，
     size_t test_num = per_row_num;

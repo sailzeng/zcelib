@@ -48,8 +48,8 @@ int ZCE_Socket_Base::open(int type,
     {
         int last_err = ZCE_OS::last_error();
         ZLOG_ERROR("ZCE_OS::socket return fail last error %d|%s.",
-            last_err,
-            strerror(last_err));
+                   last_err,
+                   strerror(last_err));
         return -1;
     }
 

@@ -155,7 +155,7 @@ const char *ZCE_OS::timeval_to_str(const timeval *timeval,
                                    size_t str_len,
                                    bool uct_time,
                                    TIME_STR_FORMAT_TYPE fmt
-                                   )
+                                  )
 {
     //这个实现没有使用strftime的原因是，我对输出精度可能有更高的要求，
     static const char *DAY_OF_WEEK_NAME[] =
@@ -378,16 +378,16 @@ const char *ZCE_OS::timeval_to_str(const timeval *timeval,
         //注意timezone理论上需要tzset()函数初始化
         int tz = timezone;
         snprintf(str_date_time,
-            str_len,
-            "%3s, %2d %3s %04d %02d:%02d:%02d %+05d",
-            DAY_OF_WEEK_NAME[tm_data.tm_wday],
-            tm_data.tm_mday,
-            MONTH_NAME[tm_data.tm_mon],
-            tm_data.tm_year + 1900,
-            tm_data.tm_hour,
-            tm_data.tm_min,
-            tm_data.tm_sec,
-            tz / 360 * 10);
+                 str_len,
+                 "%3s, %2d %3s %04d %02d:%02d:%02d %+05d",
+                 DAY_OF_WEEK_NAME[tm_data.tm_wday],
+                 tm_data.tm_mday,
+                 MONTH_NAME[tm_data.tm_mon],
+                 tm_data.tm_year + 1900,
+                 tm_data.tm_hour,
+                 tm_data.tm_min,
+                 tm_data.tm_sec,
+                 tz / 360 * 10);
     }
     //没有实现，参数错误
     else
@@ -550,7 +550,7 @@ void ZCE_OS::str_to_tm(const char *strtm,
     //Thu, 26 Nov 2009 13:05:19 GMT
     else if (ZCE_OS::TIME_STRFMT_HTTP_GMT == fmt)
     {
-        
+
         char mon_str[4];
         mon_str[0] = strtm[5];
         mon_str[1] = strtm[6];
@@ -596,25 +596,25 @@ void ZCE_OS::str_to_tm(const char *strtm,
             }
         }
         ptr_tm->tm_mday = (*(strtm + 9) - '0') * 10
-            + (*(strtm + 10) - '0');
+                          + (*(strtm + 10) - '0');
         ptr_tm->tm_year = ((*strtm + 12) - '0') * 1000
-            + (*(strtm + 13) - '0') * 100
-            + (*(strtm + 14) - '0') * 10
-            + (*(strtm + 15) - '0')
-            - 1900;
+                          + (*(strtm + 13) - '0') * 100
+                          + (*(strtm + 14) - '0') * 10
+                          + (*(strtm + 15) - '0')
+                          - 1900;
         ptr_tm->tm_hour = (*(strtm + 17) - '0') * 10
-            + (*(strtm + 18) - '0');
+                          + (*(strtm + 18) - '0');
         ptr_tm->tm_min = (*(strtm + 20) - '0') * 10
-            + (*(strtm + 21) - '0');
+                         + (*(strtm + 21) - '0');
         ptr_tm->tm_sec = (*(strtm + 23) - '0') * 10
-            + (*(strtm + 24) - '0');
+                         + (*(strtm + 24) - '0');
 
         if (tz)
         {
             int time_zone = (*(strtm + 27) - '0') * 1000
-                + (*(strtm + 28) - '0') *100
-                + (*(strtm + 28) - '0') * 10
-                + (*(strtm + 30) - '0');
+                            + (*(strtm + 28) - '0') * 100
+                            + (*(strtm + 28) - '0') * 10
+                            + (*(strtm + 30) - '0');
             if (*(strtm + 26) == '-')
             {
                 time_zone = -1 * time_zone;
@@ -654,10 +654,10 @@ int ZCE_OS::str_to_timeval(const char *strtm,
     time_t usec = 0;
     int tz = 0;
     ZCE_OS::str_to_tm(strtm,
-        &tm_value,
-        fmt,
-        &usec,
-        &tz);
+                      &tm_value,
+                      fmt,
+                      &usec,
+                      &tz);
 
     if (uct_time)
     {

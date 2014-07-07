@@ -12,13 +12,13 @@
 *             缺点是，每次发生超时（其实是每个NODE发生超时），设置定时器，取消定时器，就要发生
 *             调整，调整的消耗级别都是O(log2N),N为当前有多少定时器。
 *             分发定时器的消耗来自于分发后的调整，
-* 
+*
 * @details    大致的性能数据，我们在ACE中，用HEAP的定时器模型，测试10W个定时器，每个定时器大致10s
 *             （还是5分钟）触发，压力都不大，CPU.5%以下
 *             我们的实现肯定小于ACE的消耗，
-* 
+*
 * @note
-* 
+*
 */
 #ifndef ZCE_LIB_TIMER_QUEUE_HEAP_H_
 #define ZCE_LIB_TIMER_QUEUE_HEAP_H_

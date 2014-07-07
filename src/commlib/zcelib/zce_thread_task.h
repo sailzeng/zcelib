@@ -23,7 +23,7 @@
 
 /*!
 * @brief      用自己封装的pthread函数构建的TASK类型，每个线程一个对象
-* 
+*
 * @note       对象不可拷贝复制，
 */
 class ZCELIB_EXPORT ZCE_Thread_Task : public ZCE_NON_Copyable

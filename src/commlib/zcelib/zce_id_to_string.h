@@ -6,11 +6,11 @@
 * @date       2004年8月2日
 * @brief      定义几组IDToString的宏,主要用于错误定义等。
 *             命令定义等，
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_ID_TO_STRING_H_

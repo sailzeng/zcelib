@@ -6,15 +6,15 @@
 * @date       2013年2月6日
 * @brief      实现一个C++的snprintf，类型无关的，速度可以是普通snprintf快30-50%，
 *             而且是类型安全的，
-* 
+*
 * @details    在此再次感谢唐声福小伙子，fastformat的门是他给我打开的，我一直认为C++
 *             的格式化输出的输出天生慢过C的。
 *             唐声福告知了我fastformt这个库，以及他的部分代码。打开门这扇门后，我发现
 *             我原来的认知其实有误。
 *             std::iostream C++的慢其实慢在实现。
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_FMTSTR_SNPRINTF_H_
@@ -42,13 +42,13 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 #if defined ZCE_SUPPORT_CPP11
 
 
-template <typename out_type,typename... out_tlist >
+template <typename out_type, typename... out_tlist >
 void foo_c11_outdata(char *&foo_buffer,
-    size_t &foo_max_len,
-    size_t &foo_use_len,
-    const char *&foo_fmt_spec,
-    const out_type &out_data,
-    out_tlist ... out_datalist)
+                     size_t &foo_max_len,
+                     size_t &foo_use_len,
+                     const char *&foo_fmt_spec,
+                     const out_type &out_data,
+                     out_tlist ... out_datalist)
 {
     foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
     foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
@@ -59,11 +59,11 @@ void foo_c11_outdata(char *&foo_buffer,
 
 template <typename out_type >
 void foo_c11_outdata(char *&foo_buffer,
-    size_t &foo_max_len,
-    size_t &foo_use_len,
-    const char *&foo_fmt_spec,
-    const out_type &out_data
-    )
+                     size_t &foo_max_len,
+                     size_t &foo_use_len,
+                     const char *&foo_fmt_spec,
+                     const out_type &out_data
+                    )
 {
     size_t use_len = 0;
     const char *id_pos = NULL;
@@ -114,10 +114,10 @@ void foo_c11_outdata(char *&foo_buffer,
 
 template <typename... out_type >
 char *foo_snprintf(char *foo_buffer,
-    size_t foo_max_len,
-    size_t &foo_use_len,
-    const char *foo_fmt_spec,
-    const out_type & ...out_data)
+                   size_t foo_max_len,
+                   size_t &foo_use_len,
+                   const char *foo_fmt_spec,
+                   const out_type &...out_data)
 {
     foo_use_len = 0;
 
@@ -126,7 +126,7 @@ char *foo_snprintf(char *foo_buffer,
         return foo_buffer;
     }
 
-    size_t max_len = foo_max_len - 1, use_len =0;
+    size_t max_len = foo_max_len - 1, use_len = 0;
     char *buffer = foo_buffer;
     buffer[max_len] = '\0';
     const char *fmt_spec = foo_fmt_spec;
@@ -135,10 +135,10 @@ char *foo_snprintf(char *foo_buffer,
     foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
 
     ZCE_LIB::fmt_str(buffer,
-        max_len,
-        use_len,
-        fmt_spec,
-        strlen(fmt_spec));
+                     max_len,
+                     use_len,
+                     fmt_spec,
+                     strlen(fmt_spec));
     foo_use_len += use_len;
     buffer[use_len] = '\0';
     //返回

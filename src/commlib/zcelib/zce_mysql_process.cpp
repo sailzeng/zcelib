@@ -126,10 +126,10 @@ Called By       :
 Other           : 注意:几个db_process_query函数连接周期就是对象生存周期,ZCE_Mysql_Connect对象再析构时断链接
 Modify Record   : 自动重连功能加入
 ******************************************************************************************/
-int ZCE_Mysql_Process::db_process_query(const char *sql, 
-    unsigned int &numaffect,
-    unsigned int &insertid,
-    size_t sqllen)
+int ZCE_Mysql_Process::db_process_query(const char *sql,
+                                        unsigned int &numaffect,
+                                        unsigned int &insertid,
+                                        size_t sqllen)
 {
     int ret = 0;
 

@@ -5,7 +5,7 @@
 * @version
 * @date       2013年4月1日
 * @brief      监控目录下的文件变化的封装，
-* 
+*
 * @details    Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
 *             由于Windows和LINUX在监控文件变化上差别实在有点大。
 *             Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
@@ -16,7 +16,7 @@
 *             5.Windows 可以监控的类型很少……，……
 *             6.Linux监控的是一个设备句柄，而Windows是对每个目录的句柄进行处理
 *             目前只能考虑用一个更高的层次进行封装了，不能在OS层搞掂了。
-* 
+*
 *             最后吐槽一下，令人发指的Windows API，周末想把inotify在windows下封装一个
 *             可以用的是ReadDirectoryChangesW + FindFirstChangeNotification ,
 *             FindNextChangeNotification这一系列函数。
@@ -30,15 +30,15 @@
 *             什么…………
 *             3.Windows 可以监控子文件夹，这个大概是Windows API可以唯一得瑟一下的东东
 *             和inotify的函数一比，这组Windows API的设计者应该掩面跳楼。
-* 
+*
 *             ZCE_INotify_Dir_Reactor为了兼容多个平台，有点别扭。如果只在Linux下使用，
 *             而且想和Select 和Epoll Reactor一起使用，ZCE_Event_INotify是更好的选择。
-* 
+*
 * 纪念张国荣先生去世10周年，
 * 仍然记得那天，2003年的4月1日下班，非典仍在肆掠，百业萧条，
 * 我和Linhai,Zhangke 在科技园的大冲闲逛，Linhai淘了一张
 * 哥哥的碟。结果第二天就听到了这个噩耗。
-* 
+*
 * 《我》
 * 演唱：张国荣  歌词：林夕
 * i am what i am
@@ -53,8 +53,8 @@
 * 孤独的沙漠里　一样盛放的赤裸裸
 * 多么高兴　在琉璃屋中快乐生活
 * 对世界说　什么是光明和磊落
-* 
-* 
+*
+*
 */
 
 

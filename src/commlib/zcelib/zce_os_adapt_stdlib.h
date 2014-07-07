@@ -5,14 +5,14 @@
 * @version
 * @date       2012年3月3日
 * @brief      stdlib.h文件中间的一些函数的跨平台实现
-* 
+*
 * @details    ecvt_r 和 fcvt_r 函数是干嘛的，2012年以前，我也想不明白喔
 *             如果要搞掂浮点输出，这些方法是必须的，
 *             其实还有一些gcvt_r，
 *             qfcvt_r，qecvt_r（用于long double)
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_OS_ADOPT_STDLIB_H_

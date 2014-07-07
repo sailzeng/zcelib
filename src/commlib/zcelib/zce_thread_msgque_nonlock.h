@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_msgque_nonlock.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Saturday, December 28, 2013
-* @brief      
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+* @brief
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 #ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_NONLOCK_H_

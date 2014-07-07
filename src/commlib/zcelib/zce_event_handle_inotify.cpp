@@ -22,7 +22,7 @@ ZCE_Event_INotify::ZCE_Event_INotify():
 #if !defined ZCE_OS_LINUX
     ZCE_ASSERT_ALL(false);
 #endif
-     
+
     read_buffer_ = new char [READ_BUFFER_LEN + 1];
     read_buffer_[READ_BUFFER_LEN] = '\0';
 }
@@ -40,7 +40,7 @@ ZCE_Event_INotify::~ZCE_Event_INotify()
 int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
 {
     int ret = 0;
-    
+
     //如果已经初始化过了
     if (ZCE_INVALID_HANDLE != inotify_handle_ )
     {
@@ -52,13 +52,13 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     if (ZCE_INVALID_HANDLE == inotify_handle_ )
     {
         ZLOG_ERROR("[%s] invoke ::inotify_init fail,error [%u].",
-            __ZCE_FUNCTION__,
-            ZCE_OS::last_error());
+                   __ZCE_FUNCTION__,
+                   ZCE_OS::last_error());
         return -1;
     }
 
     reactor(reactor_base);
-    ret = reactor()->register_handler(this,READ_MASK);
+    ret = reactor()->register_handler(this, READ_MASK);
     if (ret != 0)
     {
         ::close(inotify_handle_);
@@ -87,7 +87,7 @@ int ZCE_Event_INotify::close()
     if (inotify_handle_ != ZCE_INVALID_HANDLE)
     {
         //从反应器移除
-        ret = reactor()->remove_handler(this,false);
+        ret = reactor()->remove_handler(this, false);
         if (ret != 0)
         {
             return ret;
@@ -102,7 +102,7 @@ int ZCE_Event_INotify::close()
 
 
 
-//添加监控                                 
+//添加监控
 int ZCE_Event_INotify::add_watch(const char *pathname,
                                  uint32_t mask,
                                  ZCE_HANDLE *watch_handle)
@@ -110,12 +110,12 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
     //检查参数是否有效，检查句柄是否已经初始化
     ZCE_ASSERT( pathname
-        &&  mask 
-        && inotify_handle_ != ZCE_INVALID_HANDLE );
+                &&  mask
+                && inotify_handle_ != ZCE_INVALID_HANDLE );
 
     if ( pathname == NULL
-        || mask == 0
-        ||  inotify_handle_ == ZCE_INVALID_HANDLE )
+         || mask == 0
+         ||  inotify_handle_ == ZCE_INVALID_HANDLE )
     {
         errno = EINVAL;
         return -1;
@@ -129,17 +129,17 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     if (hdl_dir == ZCE_INVALID_HANDLE )
     {
         ZLOG_ERROR("[%s] invoke ::inotify_add_watch fail,error [%u].",
-            __ZCE_FUNCTION__,
-            ZCE_OS::last_error());
+                   __ZCE_FUNCTION__,
+                   ZCE_OS::last_error());
         return -1;
     }
-    
+
     watch_note.watch_handle_ = hdl_dir;
     watch_note.watch_mask_ = mask;
     strncpy(watch_note.watch_path_, pathname, MAX_PATH);
 
     std::pair<HDL_TO_EIN_MAP::iterator, bool>
-        ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
+    ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
 
     //如果插入不成功，进行各种难过清理工作
     if (ins_ret.second == false)
@@ -149,8 +149,8 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
         ZLOG_ERROR("[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
-            __ZCE_FUNCTION__,
-            hdl_dir);
+                   __ZCE_FUNCTION__,
+                   hdl_dir);
         return -1;
     }
 
@@ -193,7 +193,7 @@ int ZCE_Event_INotify::handle_input ()
     {
         return -1;
     }
-    
+
     uint32_t read_len = static_cast<uint32_t>(read_ret);
     uint32_t next_entry_offset = 0;
 
@@ -212,9 +212,9 @@ int ZCE_Event_INotify::handle_input ()
         if (active_iter == watch_event_map_.end())
         {
             //某个FD在MAP中间无法找到，最大的可能是
-            ZCE_LOGMSG(RS_DEBUG, 
-                "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]", 
-                ne_ptr->wd);
+            ZCE_LOGMSG(RS_DEBUG,
+                       "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]",
+                       ne_ptr->wd);
             continue;
         }
         EVENT_INOTIFY_NODE *node_ptr = &(active_iter->second);
@@ -227,80 +227,80 @@ int ZCE_Event_INotify::handle_input ()
         if (event_mask & IN_CREATE )
         {
             detect_ret = inotify_create(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                        event_mask,
+                                        node_ptr->watch_path_,
+                                        active_path);
         }
-        else if (event_mask & IN_DELETE  ) 
+        else if (event_mask & IN_DELETE  )
         {
             detect_ret = inotify_delete(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                        event_mask,
+                                        node_ptr->watch_path_,
+                                        active_path);
         }
         else if ( event_mask & IN_MODIFY )
         {
             detect_ret = inotify_modify(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                        event_mask,
+                                        node_ptr->watch_path_,
+                                        active_path);
         }
         else if ( event_mask & IN_MOVED_FROM)
         {
             detect_ret = inotify_moved_from(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                            event_mask,
+                                            node_ptr->watch_path_,
+                                            active_path);
         }
         else if ( event_mask & IN_MOVED_TO)
         {
             detect_ret = inotify_moved_to(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                          event_mask,
+                                          node_ptr->watch_path_,
+                                          active_path);
         }
         //下面这些是LINUX自己特有的
         else if ( event_mask & IN_ACCESS)
         {
             detect_ret = inotify_access(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                        event_mask,
+                                        node_ptr->watch_path_,
+                                        active_path);
         }
         else if (event_mask | IN_OPEN)
         {
             detect_ret = inotify_open(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                      event_mask,
+                                      node_ptr->watch_path_,
+                                      active_path);
         }
         else if (event_mask | IN_CLOSE_WRITE || event_mask | IN_CLOSE_NOWRITE)
         {
             detect_ret = inotify_close(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                       event_mask,
+                                       node_ptr->watch_path_,
+                                       active_path);
         }
         else if (event_mask | IN_ATTRIB)
         {
             detect_ret = inotify_attrib(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                        event_mask,
+                                        node_ptr->watch_path_,
+                                        active_path);
         }
         else if (event_mask | IN_MOVE_SELF)
         {
             detect_ret = inotify_move_slef(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                           event_mask,
+                                           node_ptr->watch_path_,
+                                           active_path);
         }
         else if (event_mask | IN_DELETE_SELF)
         {
             detect_ret = inotify_delete_slef(node_ptr->watch_handle_,
-                event_mask,
-                node_ptr->watch_path_, 
-                active_path);
+                                             event_mask,
+                                             node_ptr->watch_path_,
+                                             active_path);
         }
 
         //返回-1，关闭之,

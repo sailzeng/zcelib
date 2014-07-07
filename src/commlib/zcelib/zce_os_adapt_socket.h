@@ -5,10 +5,10 @@
 * @version
 * @date       2011年5月1日
 * @brief      SOCKET操作的适配器层，主要还是向LINUX下靠拢
-* 
+*
 * @details    ZCE_SOCKET 在LINUX下就是int，文件描述符，
 *             WINDOWS下是SOCKET，你可以认为他就是一个HANDLE，
-* 
+*
 * @note       2011 年 10月31日，做了体检回来改代码
 *             将内部所有的很多timeval 换成ZCE_Time_Value;因为如果不换，其实上层写起来反而难看
 *             2013 年 1月13日 深圳冬天的太阳暖意十足。
@@ -438,9 +438,9 @@ inline ssize_t sendto (ZCE_SOCKET handle,
 
 
 int connect_timeout(ZCE_SOCKET handle,
-    const sockaddr *addr,
-    socklen_t addrlen,
-    ZCE_Time_Value &timeout_tv);
+                    const sockaddr *addr,
+                    socklen_t addrlen,
+                    ZCE_Time_Value &timeout_tv);
 
 
 /*!
@@ -857,7 +857,7 @@ inline int gethostname(char *name, size_t name_len);
 
 
 /*!
-* @brief      
+* @brief
 * @return     int 错误返回-1，正确返回0
 * @param[out] sock_addr_ipv4 被设置的IPV4地址
 * @param[in]  ipv4_addr_str  地址信息字符串
@@ -874,7 +874,7 @@ inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
 * @param      ipv4_addr_str  地址字符串,如果里面有字符'#'，会认为有端口号，
 */
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
-    const char *ipv4_addr_str);
+                           const char *ipv4_addr_str);
 
 /*!
 * @brief      设置一个IPV4的地址
@@ -882,7 +882,7 @@ inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
 * @param[out] sock_addr_ipv4 被设置的IPV4地址
 * @param[in]  ipv4_addr_val  表示IPV4的32位整数，本地序
 * @param[in]  ipv4_port      端口号，本地序
-* @note       
+* @note
 */
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            uint32_t ipv4_addr_val,
@@ -909,7 +909,7 @@ inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
 * @param      ipv6_addr_str  地址字符串,如果里面有字符'#'，会认为有端口号，
 */
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
-    const char *ipv6_addr_str);
+                            const char *ipv6_addr_str);
 
 /*!
 * @brief      设置一个IPV6的地址,和上一个函数的区别主要在参数顺序上，注意
@@ -1818,7 +1818,7 @@ inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
 
 //设置一个IPV4的地址,如果字符串里面有#，会认为后面有端口号，会同时提取端口号，否则端口号设置0
 inline int ZCE_OS::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
-    const char *ipv4_addr_str)
+                                   const char *ipv4_addr_str)
 {
     int ret = ZCE_OS::set_sockaddr_in(sock_addr_ipv4, ipv4_addr_str, 0);
     if (ret != 0)
@@ -1883,9 +1883,9 @@ inline int ZCE_OS::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
 
 //设置一个IPV6的地址,如果有端口号信息，也会
 inline int ZCE_OS::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
-    const char *ipv6_addr_str)
+                                    const char *ipv6_addr_str)
 {
-    int ret =set_sockaddr_in6(sock_addr_ipv6, ipv6_addr_str, 0);
+    int ret = set_sockaddr_in6(sock_addr_ipv6, ipv6_addr_str, 0);
     if (ret != 0)
     {
         return ret;

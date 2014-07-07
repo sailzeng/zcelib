@@ -7,14 +7,14 @@
 * @brief      SPIN 自旋锁的封装，
 *             WINDOWS下用SPIN + 临界区封装
 *             LINUX下用SPIN MUTEX封装
-* 
+*
 * @details    如果就是一些临界区保护，可以用这个封装实验一下，
 *             大部分性能数据，都表示大部分测试结果的反馈是还不错的。
-* 
+*
 *             SPIN 在冲撞特别多的情况，使用要当心一点。
 *             WINDOPWS 的实现可能更加优雅一点，他会在SPIN达到一定的数量的情况下
 *             进入等待，
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_THREAD_SPIN_H_

@@ -5,9 +5,9 @@
 * @version
 * @date       2004年7月24日
 * @brief      MySQL的字段封装
-* 
+*
 * @details
-* 
+*
 */
 
 #ifndef ZCE_LIB_MYSQL_DB_FIELD_H_

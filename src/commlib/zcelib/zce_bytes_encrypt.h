@@ -9,30 +9,30 @@
 *             发现松了一口气后，效率急剧降低，
 *             2013年4月20日
 *             芦山地震，7级，逝者安息，
-* 
+*
 * @brief      加密函数，提供了一些 分组加密函数，以及交织（块）加密的算法，可以直接使用分组加密算法
 *             作为策略，目前已经支持的策略包括TEA,XTEA,XXTEA,RC5,RC6,CAST5,CAST6(CAST-256)
 *             MARS,AES,其中很多代码根据KEY长度，加密轮数，给出了不同定义。你用这些东西足可以写个对
 *             抗系统了.
 *             也许未来会考虑的算法是twofish，safer+，
-* 
+*
 *             交织算法我值选择了最常用的策略CBC（其实我们的实现更接近CBC-MAC）：
 *             http://zh.wikipedia.org/zh-hant/%E5%9D%97%E5%AF%86%E7%A0%81%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F
 *             这个代码库已经可以和相当多的加密代码库叫板一下了。吼吼。
 *             ZCE_Crypt 是一个对于流数据的加密模版，里面根据加密算法的KEY_SIZE（密钥长度）
 *             和BLOCK_SIZE （分组加密算法每次处理的块长度）进行处理，对于流，使用CBC交织算
 *             法（就是前面一个BLOCK数据和后面BLOCK异或）和填充算法进行加密。加密算法只是里面的策略，
-* 
+*
 * @details    CBC的代码，我拥有完全版权，是参考维基算法实现的模版
 *             而具体加密算法大部分代码是从openssl，Cryptlib，libtom-crypt，taocrypt
 *             PolarSSL，移植出来，也有相当的代码来自维基，和 http://code.ohloh.net
 *             的搜索，我的移植过程是把这些代码完全转化成了自己的东东，包括宏转换等，
 *             一般代码没有说明轮数，key长度，和代码实现的关系，我尽最大的努力明晰了一部分
 *             关系
-* 
+*
 *             根据学习的知识，我也重新看了TX的算法，
 *             http://www.cnblogs.com/fullsail/archive/2013/04/29/3051456.html
-* 
+*
 *             性能测试数据，如果每次处理251个字节的数据，每次处理都计算sub key,这时候得到的
 *             性能数据是
 *             算法（名称_块大小_key大小_轮数）         加密包数量(251字节)    解密包数量(251字节)      加密速度(M/s)      解密速度(M/s)  SUBKEY加密          SUBKEY解密
@@ -64,17 +64,17 @@
 *             AES_Crypt_16_16_10                          490680.63           450712.15          140.852         129.379           6.26             3.86
 *             AES_Crypt_16_24_12                          410409.45           387073.16          117.810         111.111           5.13            21.18
 *             AES_Crypt_16_32_14                          365328.38           322226.87          104.869          92.497           4.11             9.04
-* 
+*
 *             对比一下，信心爆棚，快60%
 *             TEA_Crypt_8_16_16                           297709.87           305490.29           85.459          87.692
 *             TXTEA16                                     184472.20           185296.85           52.853          53.644
-* 
+*
 *             每次都使用SUB KEY进行操作，对性能的影响并不太大，我认为原因如下，
 *             1.目前选择的算法KEY == >SUB KEY还并不是最主要消耗CPU的地方，（Blowfish这种算法销毁可能就大不少）
 *             2.密钥的长度还是很短的，（对比起要加密的密文）
 *             3.负数部分应该都不用看，主要可能是计时误差导致的
 *             4.RC，CAST，MARS，AES这类算法使用sub key性能应该都有提升。
-* 
+*
 * @note       1.很多算法的模板都有typedef，请直接使用typedef的类，因为不少实现是有假设的，
 *             2.实现的算法很多时候没有考虑某些平台可能出现的BUS ERROR问题，算了，我的代码能移植到
 *               RISC( SPARC)CPU上吗？(ZINDEX_TO_LEUINT32这类转换是从指针读取整数的，不考虑对齐
@@ -83,7 +83,7 @@
 *               这些宏要改进。
 *             3.所有代码在读取整数是默认采用小头序列，这个是因为我们绝绝大部分时候在小头的机器上运行
 *               而所有代码考虑过大头机器的问题，各种环境都可以正常运行，
-* 
+*
 *             艾琳娜
 *             唱：动力火车    曲：尹恒   词：武雄
 *             L O V E   L O V E   L O V E GO GO GO
@@ -391,7 +391,7 @@ public:
         unsigned char *write_ptr = cipher_buf;
         for (size_t i = 0; i < ENCRYPT_STRATEGY::BLOCK_SIZE / sizeof(uint32_t); ++i)
         {
-            ZUINT32_TO_INDEX(write_ptr,i,ZCE_LIB::mt19937_instance::instance()->rand());
+            ZUINT32_TO_INDEX(write_ptr, i, ZCE_LIB::mt19937_instance::instance()->rand());
         }
         const unsigned char *xor_ptr = write_ptr;
         write_ptr += ENCRYPT_STRATEGY::BLOCK_SIZE;

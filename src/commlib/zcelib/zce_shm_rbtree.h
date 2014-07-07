@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_shm_rbtree.h
 * @author     scottxu(徐昊)
-* @version    
+* @version
 * @date       2007年7月24日
 * @brief      RBTree主要是完成可以排序的MAP,SET,MultiMap,MultiSet的MMAP类
 *             实现了RBTree以及MAP,SET,MultiMap,MultiSet
-*             
-* @details    
-*             
-*             
-*             
+*
+* @details
+*
+*
+*
 * @note       不保证线程安全，上层自己来保证
-*             
+*
 */
 
 
@@ -262,13 +262,13 @@ protected:
 
 
 /*!
-* @brief      
-*             
+* @brief
+*
 * @tparam     _value_type   节点的实际值型别
 * @tparam     _key_type     节点的键的型别
 * @tparam     _extract_key  从节点中得到键值的方法,或者函数对象
 * @tparam     _compare_key  比较键值大小的方法,或者函数对象
-* @note       
+* @note
 */
 template < class _value_type,
          class _key_type,
@@ -366,9 +366,9 @@ public:
     //内存区的构成为 定义区,index区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_rb_tree_head)  + 
-            sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
-            sizeof(_value_type) * numnode ;
+        return  sizeof(_shm_rb_tree_head)  +
+                sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) +
+                sizeof(_value_type) * numnode ;
     }
 
     //初始化

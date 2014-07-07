@@ -5,11 +5,11 @@
 * @version
 * @date       2011年9月12日
 * @brief      线程的互斥量封装，分成3种方式
-*             线程的互斥量，有轻量的锁，递归锁，非递归锁，读写锁  
+*             线程的互斥量，有轻量的锁，递归锁，非递归锁，读写锁
 *             ZCE_Thread_Light_Mutex  轻量级的线程锁，WINDODOWS下用临界区模拟，LINUX用pthread_mutex, 可递归，但是没有超时处理
 *             ZCE_Thread_Recursive_Mutex 递归的线程锁 WINDODOWS下用MUTEX模拟，可递归，有超时处理
 *             ZCE_Thread_NONR_Mutex 不可以递归的线程锁 WINDODOWS用信号灯模拟的MUTEX，不可以递归，有超时处理
-* 
+*
 *             如果是类似临界区的需求，而且希望更快，可以考虑SPIN LOCK，
 */
 

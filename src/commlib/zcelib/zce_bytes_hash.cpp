@@ -466,25 +466,25 @@ uint32_t ZCE_LIB::crc32(uint32_t crcinit, const unsigned char *buf, size_t buf_s
     // 一次处理16个字节的数据，当作4个DWORD计算，
     for (const unsigned char *e = p + (buf_size & ~15); p < e; p += 16)
     {
-        crc ^= ZINDEX_TO_LEUINT32(p,0);
+        crc ^= ZINDEX_TO_LEUINT32(p, 0);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
 
-        crc ^= ZINDEX_TO_LEUINT32(p,1);
+        crc ^= ZINDEX_TO_LEUINT32(p, 1);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
 
-        crc ^= ZINDEX_TO_LEUINT32(p,2);
+        crc ^= ZINDEX_TO_LEUINT32(p, 2);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
 
-        crc ^= ZINDEX_TO_LEUINT32(p,3);
+        crc ^= ZINDEX_TO_LEUINT32(p, 3);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);

@@ -346,11 +346,11 @@ protected:
                                bool if_restore)
     {
 
-        self* instance = new shm_hash_rehash< _value_type,
-            _key_type , 
-            _hash_fun, 
-            _extract_key, 
-            _equal_key >();
+        self *instance = new shm_hash_rehash < _value_type,
+        _key_type ,
+        _hash_fun,
+        _extract_key,
+        _equal_key > ();
 
         instance->smem_base_ = pmmap;
         char *tmp_base = instance->smem_base_;

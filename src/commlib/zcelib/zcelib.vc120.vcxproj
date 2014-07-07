@@ -177,8 +177,10 @@
     <ClInclude Include="zce_boost_any.h" />
     <ClInclude Include="zce_boost_close_assist.h" />
     <ClInclude Include="zce_boost_lord_rings.h" />
+    <ClInclude Include="zce_boost_mpl.h" />
     <ClInclude Include="zce_boost_non_copyable.h" />
     <ClInclude Include="zce_boost_random.h" />
+    <ClInclude Include="zce_boost_signal.h" />
     <ClInclude Include="zce_boost_singleton.h" />
     <ClInclude Include="zce_bus_mmap_pipe.h" />
     <ClInclude Include="zce_bus_one_way.h" />

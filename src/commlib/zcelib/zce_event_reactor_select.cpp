@@ -279,7 +279,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
         //到这个地方，可能是代码有问题(比如你用了多线程？)，也可能不是，因为一个事件处理后，可能就被关闭了？
         if (0 != ret)
         {
-            ZCE_LOGMSG(RS_INFO,"[zcelib] process_ready find_event_handler fail,maybe one handle is close previous.");
+            ZCE_LOGMSG(RS_INFO, "[zcelib] process_ready find_event_handler fail,maybe one handle is close previous.");
             return;
         }
 

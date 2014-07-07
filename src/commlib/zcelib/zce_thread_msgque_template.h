@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_msgque_template.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Saturday, December 28, 2013
-* @brief      
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+* @brief
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 #ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 #define ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
@@ -22,12 +22,12 @@
 
 
 /*!
-* @brief      
-*             
+* @brief
+*
 * @tparam     _zce_synch       ZCE_MT_SYNCH 或者 ZCE_NULL_SYNCH
 * @tparam     _value_type      容器里面的数据类型
 * @tparam     _container_type  QUEUE的类型，deque,list,ZCE_LIB::lordrings
-* @note       
+* @note
 */
 template < typename _zce_synch,
          typename _value_type,
@@ -63,12 +63,12 @@ public:
     */
     inline bool full();
 
-    
+
     /*!
     * @brief      放入数据,如果不能放入一直等待
     * @return     int
     * @param      value_data
-    * @note       
+    * @note
     */
     int enqueue(const _value_type &value_data);
 

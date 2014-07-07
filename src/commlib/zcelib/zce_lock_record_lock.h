@@ -10,7 +10,7 @@
 * @details    有些DB，和我见过的某些产品曾经用记录锁来用同步用户的某些操作，
 *             建议参考一下@ref zce_os_adapt_flock.h
 * @note
-* 
+*
 */
 #ifndef ZCE_LIB_LOCK_RECORD_LOCK_H_
 #define ZCE_LIB_LOCK_RECORD_LOCK_H_
@@ -20,7 +20,7 @@
 
 /*!
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
-* 
+*
 */
 class ZCELIB_EXPORT ZCE_Record_Lock : public ZCE_NON_Copyable
 {

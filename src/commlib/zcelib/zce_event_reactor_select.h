@@ -7,19 +7,19 @@
 * @brief      SELECT 的IO反应器，IO多路复用模型
 *             更多的突出性能第一的前提，你从ZCE_Event_Handler上继承得到处理的句柄
 *             封装，各种事件的处理都已经封装了，而且整体是和LINUX平台一致。
-* 
+*
 *             他的优点是在Windows平台也可以用，缺点就是SELECT函数所有的缺点，
 *             当然我们通过封装，已经保证了在个个平台都有不错的性能。
 *             不容易。
-* 
+*
 * @details    这个和ACE的Reactor有点像，但我们简化了很多地方，我们不融入定时器，
 *             我们也不融入消息队列，他简简单单就是为了IO触发。
-* 
+*
 *             请参考：
 *             http://www.cnblogs.com/fullsail/archive/2012/08/12/2634336.html
 *             http://www.cnblogs.com/fullsail/archive/2011/11/06/2238464.html
 * @note
-* 
+*
 */
 #ifndef ZCE_LIB_EVENT_REACTOR_SELECT_H_
 #define ZCE_LIB_EVENT_REACTOR_SELECT_H_
@@ -28,7 +28,7 @@
 
 /*!
 * @brief      SELECT 的IO反应器，IO多路复用模型
-* 
+*
 */
 class ZCE_Select_Reactor : public ZCE_Reactor
 {

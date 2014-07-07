@@ -283,15 +283,15 @@ class shm_avl_tree : public _shm_memory_base
 public:
     //定义自己
     typedef shm_avl_tree < _value_type,
-        _key_type,
-        _extract_key,
-        _compare_key > self;
+            _key_type,
+            _extract_key,
+            _compare_key > self;
 
     //定义迭代器
     typedef _shm_avl_tree_iterator < _value_type,
-        _key_type,
-        _extract_key,
-        _compare_key > iterator;
+            _key_type,
+            _extract_key,
+            _compare_key > iterator;
 
     //迭代器友元
     friend class _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
@@ -371,7 +371,7 @@ protected:
         (index_base_ + pos)->left_ = _INVALID_POINT;
         (index_base_ + pos)->parent_ = _INVALID_POINT;
         (index_base_ + pos)->balanced_ = 0;
-        
+
         avl_tree_head_->sz_free_node_++;
         avl_tree_head_->sz_use_node_--;
 
@@ -385,8 +385,8 @@ public:
     static size_t getallocsize(const size_t numnode)
     {
         return  sizeof(_shm_avl_tree_head)
-            +sizeof(_shm_avl_tree_index)* (numnode + ADDED_NUM_OF_INDEX)
-            + sizeof(_value_type)* numnode;
+                + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
+                + sizeof(_value_type) * numnode;
     }
 
     //初始化
@@ -418,23 +418,23 @@ public:
         instance->avl_tree_head_ = avl_tree_head;
         //索引区
         instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(
-            pmmap +
-            sizeof(_shm_avl_tree_head));
+                                    pmmap +
+                                    sizeof(_shm_avl_tree_head));
         //数据区
         instance->data_base_ = reinterpret_cast<_value_type *>(
-            pmmap +
-            sizeof(_shm_rb_tree_head)+
-            sizeof(_shm_avl_tree_index)* (numnode + ADDED_NUM_OF_INDEX));
+                                   pmmap +
+                                   sizeof(_shm_rb_tree_head) +
+                                   sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-            pmmap +
-            sizeof(_shm_avl_tree_head)+
-            sizeof(_shm_avl_tree_index)* (numnode));
+                                    pmmap +
+                                    sizeof(_shm_avl_tree_head) +
+                                    sizeof(_shm_avl_tree_index) * (numnode));
         instance->free_index_ = reinterpret_cast<_shm_avl_tree_index *>(
-            pmmap +
-            sizeof(_shm_avl_tree_head)+
-            sizeof(_shm_avl_tree_index)* (numnode + 1));
+                                    pmmap +
+                                    sizeof(_shm_avl_tree_head) +
+                                    sizeof(_shm_avl_tree_index) * (numnode + 1));
 
         if (false == if_restore)
         {
@@ -684,7 +684,7 @@ protected:
         //找到最小的不平衡的点,
 
         size_t s = parent(z);
-        size_t t = z,u = 0;
+        size_t t = z, u = 0;
         int32_t mod_balance = 0;
         for (; s != header(); t = s, s = parent(s))
         {
@@ -702,7 +702,7 @@ protected:
             if (0 == balanced(s))
             {
                 balanced(s) += mod_balance;
-                
+
                 //如果是插入，原来节点是平衡的，继续向上，如果是删除，原来节点是平衡的，到此为止
                 if (if_inssert)
                 {
@@ -712,7 +712,7 @@ protected:
                 {
                     break;
                 }
-                    
+
             }
             //这个点上原来就不平衡，找到最小的不平衡树，进行旋转，让其平衡
             else
@@ -729,7 +729,7 @@ protected:
                         size_t u_r = right(u);
                         _lr_rotate(s, u, right(u));
                         s = u_r;
-                        
+
                     }
                     else if (1 == u_b )
                     {
@@ -798,7 +798,7 @@ protected:
         right(b) = a;
         parent(b) = gf;
 
-        
+
         //调整平衡因子
         if ( 1 == balanced(b) )
         {
@@ -1030,10 +1030,10 @@ protected:
             {
                 rightmost() = avl_tree_head_->num_of_node_;
             }
-            
+
         }
-        
-        size_t a = x, a_p = y, a_l = left(a), a_r = right(a), b = 0, b_p  =0;
+
+        size_t a = x, a_p = y, a_l = left(a), a_r = right(a), b = 0, b_p  = 0;
         //要把A向下交换，选择和他最接近的节点B替换他，比如左子树的一直向右边的节点，
         //比如右子树的一直向左边的节点，直到A是叶子节点
         while (a_l != _INVALID_POINT || a_r != _INVALID_POINT)
@@ -1063,7 +1063,7 @@ protected:
             a_p = parent(a);
 
         }
-        
+
         //做平衡调整
         _balance_adjust(a, false);
 
@@ -1124,7 +1124,7 @@ protected:
         }
 
         parent(b) = a_p;
-        
+
         if (a_l == b)
         {
             left(b) = a;
@@ -1141,7 +1141,7 @@ protected:
         {
             right(b) = a_r;
         }
-        
+
 
         balanced(b) = a_b;
 
@@ -1181,7 +1181,7 @@ protected:
             parent(b_r) = a;
         }
     }
-    
+
 public:
 
     /*!
@@ -1269,7 +1269,7 @@ public:
         //x,为删除的位置，y为X的父节点，z用于为替换x的节点
         size_t x = pos.getserial();
         size_t y = parent(x);
-        return _erase(x,y);
+        return _erase(x, y);
     }
 
     //通过起始迭代器删除一段节点
@@ -1425,13 +1425,13 @@ public:
     //调试代码，如果_value_type是整数 的时候生效，否则无效
     void debug_note(size_t x, typename std::enable_if<std::is_integral<_value_type>::value >::type* = 0)
     {
-        std::cout << "Note :"<<std::setw(6) << x
-            << " Data:" << std::setw(8) << data_base_[x]
-            << " parent:" << std::setw(6)<<(int) parent(x)
-            << " left:" << std::setw(6) << (int) left(x)
-            << " right:" << std::setw(6) << (int) right(x)
-            << " balanced:" << balanced(x) 
-            << std::endl;
+        std::cout << "Note :" << std::setw(6) << x
+                  << " Data:" << std::setw(8) << data_base_[x]
+                  << " parent:" << std::setw(6) << (int) parent(x)
+                  << " left:" << std::setw(6) << (int) left(x)
+                  << " right:" << std::setw(6) << (int) right(x)
+                  << " balanced:" << balanced(x)
+                  << std::endl;
     }
 
     //检查树形结构是否平衡

@@ -6,15 +6,15 @@
 * @date       2003-5-14
 * @brief      所有预定义信息描述，包括所有的外部头文件，全局使用的宏，
 *             个个平台兼容性的一些小东东，数值的typedef，
-* 
-* 
+*
+*
 *  @details   在yunfei改进后的再改进一下，发现每个人看问题的思路还是不一样的。
 *             也吸取教训，写注释，免得大家不理解为啥要这样
 *             请大家仔细看一下每段的分割线和说明，我认为我的划分是很清晰的，不要
 *             一看就认为代码宏定义混乱，
 *             请各位大神动之前放慢你奔腾野马式样的思维，仔细阅读一下注释头文
 *             件分成几个个部分，操作系统定义，头文件包含，数值定义，一些常用宏，
-* 
+*
 *             头文件包含情况如下
 *             1.WINDOWS特有部分的，主要是WINDOWS兼容东西多，容易冲突，甚至
 *               Windows那排文件的定义顺序也是有讲究的
@@ -22,11 +22,11 @@
 *             3.C头文件
 *             4.C++特有部分的，
 *             5.依赖的第3方的库的,请务必不要搞乱，（大部分都是可以打开关闭的）
-* 
+*
 *             数值定义typedef部分代码，以及相关的头文件信息,
 *             宏的定义以宏为核心，不按照操作系统分开，免得找起来痛苦，不要试图
 *             归类，而改变顺序，反而让人难以理解，
-* 
+*
 *             记录一点纯属YY，的东东，
 *             一个得道修仙老前辈送的一段话，记录下来：
 *             侠者，性情也，意气也。故不文，不饰，不求，不争，合则留，不合则去。
@@ -64,8 +64,8 @@
 #define ZCE_OS_LINUX 1
 #ifndef _GCC_VER
 #define _GCC_VER (__GNUC__ * 10000 \
-    + __GNUC_MINOR__ * 100 \
-    + __GNUC_PATCHLEVEL__)
+                  + __GNUC_MINOR__ * 100 \
+                  + __GNUC_PATCHLEVEL__)
 #endif
 #if defined(__LP64__)
 #define ZCE_LINUX64 1
@@ -111,7 +111,7 @@
 //如果抛开上面的繁杂的特效可以认为，VC++，从2010版本开始支持，在2013版本支持特效比较完整，
 //GCC 从4.3版本开始到.到4.8版本支持比较晚上，GCC4.8的支持特性数量程度都远好于VC++2013
 #if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1800)) \
-    || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 40800)) 
+    || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 40800))
 #define ZCE_SUPPORT_CPP11 1
 #else
 #define ZCE_SUPPORT_CPP11 0
@@ -287,7 +287,7 @@
 // 在VC++2008版本,VC++2005+STLport，GCC 4.6版本以及更早的版本，unordered_map的名字空间是std::tr1
 #if (defined ZCE_OS_LINUX && (_GCC_VER > 40600)) \
     || ( defined ZCE_OS_WINDOWS && (_MSC_VER <= 1400) ) \
-    || ( defined _STLP_CONFIX_H) 
+    || ( defined _STLP_CONFIX_H)
 #include <unordered_map>
 #include <unordered_set>
 using std::tr1::unordered_map;
@@ -299,7 +299,7 @@ using std::tr1::unordered_set;
 #include <unordered_map>
 using std::unordered_map;
 using std::unordered_set;
-#endif  
+#endif
 //更早的版本其实是支持hash_map和hash_set的头文件的，先我放弃支持了,那个要改一点代码。
 
 #if defined ZCE_OS_WINDOWS
@@ -834,7 +834,7 @@ struct ZU64_STRUCT
 #  endif
 
 //这个功能到2008才支持
-#if defined ZCE_SUPPORT_WINSVR2008 
+#if defined ZCE_SUPPORT_WINSVR2008
 #  pragma comment(lib, "dbghelp.lib")
 #endif
 

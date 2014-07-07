@@ -10,11 +10,11 @@
 *             在游戏项目组，主要是在游戏道具标识等范围需要这样的东东，主要用于
 *             跟踪某个物品的流转，（我个人对道具使用这个东东作为ID的效果持保守意见）
 *             效果并不明显
-* 
+*
 * @details    支持两种产生方式，随机数和以时间为基数的方式
-* 
+*
 * @note
-* 
+*
 */
 #ifndef _ZCE_LIB_UUID_64_GENERATOR_H_
 #define _ZCE_LIB_UUID_64_GENERATOR_H_
@@ -43,7 +43,7 @@ struct ZCELIB_EXPORT ZCE_UUID64_16_48
 *             @li 64位的整数
 *             @li 16位整数+48为的整数
 *             @li 2个32位的整数
-* 
+*
 */
 class ZCELIB_EXPORT ZCE_UUID64
 {
@@ -113,7 +113,7 @@ Class           : ZCE_UUID64_Generator
 *                 服务器，每个服务器自己产生UUID的情况，只要1s产生的UUID的数量不超过16
 *                 位，就比较很安全。这个方法始作蛹者应该是 sonicmao，你可以根据UUID回溯
 *                 是什么服务器产生的数据
-* 
+*
 */
 class ZCELIB_EXPORT ZCE_UUID64_Generator
 {

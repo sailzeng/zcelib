@@ -300,7 +300,7 @@ void ZCE_Timer_Queue::calc_next_trigger(int time_node_id,
     //如果间隔时间为0，且这个定时器还没有触发过，already_trigger_ 判定其实是检查定时器是否被重新设置过
     if (prc_time_node->interval_time_  == ZCE_Time_Value::ZERO_TIME_VALUE )
     {
-        //        
+        //
         continue_trigger = false;
         return;
     }

@@ -4,18 +4,18 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2013年9月22日
-* 
+*
 * @brief      一个用于在Linux下处理Inotify的事件句柄基类，
 *             可以监听多个目录的反映，用于监控文件系统的变化。
 *             这个类的目的是和Reactor类兼容，而且更加自然
 *             如果你希望跨平台，ZCE_INotify_Dir_Reactor 也许是更好的选择
 *             但ZCE_INotify_Dir_Reactor为了兼容多个平台，有点别扭。
-* 
-* @details    
-* 
+*
+* @details
+*
 * @note       Kliu提醒，Epoll也可以用于处理Inotify的时间反应器，
 *             特此修正，表示感谢。
-* 
+*
 */
 
 #ifndef ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
@@ -85,8 +85,8 @@ public:
     @param[out] watch_handle  返回的监控对应的句柄
     */
     int add_watch(const char *pathname,
-        uint32_t mask,
-        ZCE_HANDLE *watch_handle);
+                  uint32_t mask,
+                  ZCE_HANDLE *watch_handle);
 
 
     /*!
@@ -123,9 +123,9 @@ protected:
     @param[in]  active_path  发生动作，行为的文件或者目录的路径
     */
     virtual int inotify_create(int watch_handle,
-        uint32_t watch_mask,
-        const char *watch_path,
-        const char *active_path)
+                               uint32_t watch_mask,
+                               const char *watch_path,
+                               const char *active_path)
     {
         ZCE_UNUSED_ARG(watch_handle);
         ZCE_UNUSED_ARG(watch_mask);
@@ -136,27 +136,27 @@ protected:
 
     ///监测到有删除文件或者目录,对应掩码IN_DELETE，参数说明参考@fun inotify_create
     virtual int inotify_delete(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                               uint32_t /*watch_mask*/,
+                               const char * /*watch_path*/,
+                               const char * /*active_path*/)
     {
         return 0;
     }
 
     ///监测到有文件被修改,对应掩码IN_MODIFY，参数说明参考@fun inotify_create
     virtual int inotify_modify(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                               uint32_t /*watch_mask*/,
+                               const char * /*watch_path*/,
+                               const char * /*active_path*/)
     {
         return 0;
     }
 
     ///监控文件从某个目录移动出去，IN_MOVED_FROM,参数说明参考@fun inotify_create
     virtual int inotify_moved_from(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                                   uint32_t /*watch_mask*/,
+                                   const char * /*watch_path*/,
+                                   const char * /*active_path*/)
     {
         return 0;
     }
@@ -164,27 +164,27 @@ protected:
     ///监控文件移动到某个目录，IN_MOVED_TO,(我自己测试只有在监控目录下移动才会发生这个事件),
     ///参数说明参考@fun inotify_create
     virtual int inotify_moved_to(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                                 uint32_t /*watch_mask*/,
+                                 const char * /*watch_path*/,
+                                 const char * /*active_path*/)
     {
         return 0;
     }
 
     ///发生监控目录下文件被访问时被回调，IN_ACCESS,参数说明参考@fun inotify_create
     virtual int inotify_access(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                               uint32_t /*watch_mask*/,
+                               const char * /*watch_path*/,
+                               const char * /*active_path*/)
     {
         return 0;
     }
 
     ///发生监控目录下文件被打开时被回调，IN_OPEN,参数说明参考@fun inotify_create
     virtual int inotify_open(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                             uint32_t /*watch_mask*/,
+                             const char * /*watch_path*/,
+                             const char * /*active_path*/)
     {
         return 0;
     }
@@ -192,9 +192,9 @@ protected:
     ///发生监控目录下文件被关闭事件时被回调，IN_CLOSE_WRITE,IN_CLOSE_NOWRITE,
     ///参数说明参考@fun inotify_create
     virtual int inotify_close(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                              uint32_t /*watch_mask*/,
+                              const char * /*watch_path*/,
+                              const char * /*active_path*/)
     {
         return 0;
     }
@@ -203,27 +203,27 @@ protected:
     ///extended attributes, link count (since Linux 2.6.25), UID, GID,
     ///参数说明参考@fun inotify_create
     virtual int inotify_attrib(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                               uint32_t /*watch_mask*/,
+                               const char * /*watch_path*/,
+                               const char * /*active_path*/)
     {
         return 0;
     }
 
     ///发生监控的目录被移动时被回调，IN_MOVE_SELF,参数说明参考@fun inotify_create
     virtual int inotify_move_slef(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                                  uint32_t /*watch_mask*/,
+                                  const char * /*watch_path*/,
+                                  const char * /*active_path*/)
     {
         return 0;
     }
 
     ///发生监控的目录被删除时被回调，IN_DELETE_SELF,参数说明参考@fun inotify_create
     virtual int inotify_delete_slef(int /*watch_handle*/,
-        uint32_t /*watch_mask*/,
-        const char * /*watch_path*/,
-        const char * /*active_path*/)
+                                    uint32_t /*watch_mask*/,
+                                    const char * /*watch_path*/,
+                                    const char * /*active_path*/)
     {
         return 0;
     }

@@ -5,11 +5,11 @@
 * @version
 * @date       2005年10月17日
 * @brief
-* 
+*
 * @details
-* 
+*
 * @note       设计就是无数的选择,我选择我喜欢的和感觉最好的。
-* 
+*
 */
 
 
@@ -46,7 +46,7 @@ public:
     //
     ~ZCE_Mysql_STMT_Command();
 
-    
+
     /*!
     * @brief      设置Command的ZCE_Mysql_Connect
     * @return     int
@@ -59,14 +59,14 @@ public:
 
     inline MYSQL_STMT *get_stmt_handle();
 
-    
+
     /*!
     * @brief      设置SQL Command语句,为BIN型的SQL语句准备,同时绑定参数,结果
     * @return     int
     * @param      sqlcmd
     * @param      bindparam
     * @param      bindresult
-    * @note       
+    * @note
     */
     int set_stmt_command(const std::string &sqlcmd,
                          ZCE_Mysql_STMT_Bind *bindparam,
@@ -93,10 +93,10 @@ public:
     */
     int execute(unsigned int &num_affect, unsigned int &lastid);
 
-    
+
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,
-    *             注意这个函数条用的是mysql_stmt_store_result. 
+    *             注意这个函数条用的是mysql_stmt_store_result.
     * @return     int
     * @param      num_affect 返回的影响记录条数
     */
@@ -126,16 +126,16 @@ public:
     inline unsigned int get_error_no() const;
 
 protected:
-    
+
     /*!
     * @brief      预处理SQL,并且分析绑定的变量
     * @return     int
     * @param      bindparam    绑定的参数
     * @param      bindresult   绑定的结果
-    * @note       
+    * @note
     */
-    int stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam, 
-        ZCE_Mysql_STMT_Bind *bindresult);
+    int stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam,
+                          ZCE_Mysql_STMT_Bind *bindresult);
     //SQL 执行命令，这个事一个基础函数，内部调用
     int _execute(unsigned int *num_affect, unsigned int *lastid);
 

@@ -93,17 +93,17 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     memset(&stackframe, 0, sizeof(STACKFRAME64));
 
     // Fill in register addresses (EIP, ESP, EBP).
-    
+
     stackframe.AddrPC.Mode = AddrModeFlat;
     stackframe.AddrStack.Mode = AddrModeFlat;
     stackframe.AddrFrame.Mode = AddrModeFlat;
 
 #if defined ZCE_WIN32
-    stackframe.AddrPC.Offset = context.Eip;     
+    stackframe.AddrPC.Offset = context.Eip;
     stackframe.AddrStack.Offset = context.Esp;
     stackframe.AddrFrame.Offset = context.Ebp;
 #elif defined ZCE_WIN64
-    stackframe.AddrPC.Offset = context.Rip;     
+    stackframe.AddrPC.Offset = context.Rip;
     stackframe.AddrStack.Offset = context.Rsp;
     stackframe.AddrFrame.Offset = context.Rbp;
 #else

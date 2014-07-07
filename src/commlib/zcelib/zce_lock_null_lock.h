@@ -9,13 +9,13 @@
 *             ACE有专门的一篇文章是讲模板策略锁模式的，
 *             我也对比了过模板策略锁和多态策略锁的优缺点，我觉得各有优劣，
 *             但如果希望不过过度模板化，还是多态好一点。
-* 
+*
 *             请参考
 *             http://www.cnblogs.com/fullsail/archive/2012/07/31/2616106.html
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_NULL_LOCK_H_
@@ -29,7 +29,7 @@ class ZCE_Time_Value;
 
 /*!
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
-* 
+*
 */
 class ZCELIB_EXPORT ZCE_Null_Mutex : public ZCE_Lock_Base
 {

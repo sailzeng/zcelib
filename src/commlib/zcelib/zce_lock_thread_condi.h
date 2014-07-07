@@ -5,11 +5,11 @@
 * @version
 * @date       2013Äê2ÔÂ1ÈÕ
 * @brief
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_THREAD_CONDI_H_

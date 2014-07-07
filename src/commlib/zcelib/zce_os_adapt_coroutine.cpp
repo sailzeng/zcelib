@@ -29,8 +29,8 @@ struct _FIBERS_3PARAFUN_ADAPT
 //帮助完成函数适配适配
 VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 {
-    
-    
+
+
 
     _FIBERS_3PARAFUN_ADAPT *fun_adapt = (_FIBERS_3PARAFUN_ADAPT *)fun_para;
 
@@ -59,12 +59,12 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 
 //兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
 int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
-    size_t stack_size,
-    bool exit_back_main,
-    ZCE_COROUTINE_3PARA fun_ptr,
-    void *para1,
-    void *para2,
-    void *para3)
+                           size_t stack_size,
+                           bool exit_back_main,
+                           ZCE_COROUTINE_3PARA fun_ptr,
+                           void *para1,
+                           void *para2,
+                           void *para3)
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -76,7 +76,7 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     {
         //FIBER_FLAG_FLOAT_SWITCH XP不支持，
         coroutine_hdl->main_ = ::ConvertThreadToFiberEx(NULL,
-            FIBER_FLAG_FLOAT_SWITCH);
+                                                        FIBER_FLAG_FLOAT_SWITCH);
         if (NULL == coroutine_hdl->main_)
         {
             return -1;
@@ -100,14 +100,14 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     fibers_adapt->para1_ = para1;
     fibers_adapt->para2_ = para2;
     fibers_adapt->para3_ = para3;
-    
+
 
     //注意FIBER_FLAG_FLOAT_SWITCH 在XP是不被支持的，
     coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
-        stack_size,
-        FIBER_FLAG_FLOAT_SWITCH,
-        _fibers_adapt_fun,
-        fibers_adapt);
+                                                stack_size,
+                                                FIBER_FLAG_FLOAT_SWITCH,
+                                                _fibers_adapt_fun,
+                                                fibers_adapt);
 
     if (NULL == coroutine_hdl->coroutine_)
     {
@@ -118,7 +118,7 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
 
     return 0;
 #elif defined ZCE_OS_LINUX
-    
+
     //
     int ret = ::getcontext(&(coroutine_hdl->main_));
     if (0 != ret)
@@ -145,12 +145,12 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
     coroutine_hdl->coroutine_.uc_stack.ss_size = stack_size;
 
     ::makecontext(coroutine_hdl->coroutine_,
-        (void(*)(void)) fun_ptr,
-        ONLY_3_ARG_COUNT,
-        para1,
-        para2,
-        para3
-        );
+                  (void( *)(void)) fun_ptr,
+                  ONLY_3_ARG_COUNT,
+                  para1,
+                  para2,
+                  para3
+                 );
     return 0;
 #endif
 }
@@ -192,8 +192,8 @@ int ZCE_OS::yeild_coroutine(coroutine_t *coroutine_hdl)
 
 #elif defined ZCE_OS_LINUX
     return ::swapcontext(coroutine_hdl->main_,
-        coroutine_hdl->coroutine_);
-#endif 
+                         coroutine_hdl->coroutine_);
+#endif
 }
 
 
@@ -214,12 +214,12 @@ int ZCE_OS::yeild_main(coroutine_t *coroutine_hdl)
 
 #elif defined ZCE_OS_LINUX
     return ::swapcontext(&coroutine_hdl->coroutine_,
-        &coroutine_hdl->main_);
-#endif 
+                         &coroutine_hdl->main_);
+#endif
 }
 
 int ZCE_OS::exchage_coroutine(coroutine_t *save_hdl,
-    coroutine_t *goto_hdl)
+                              coroutine_t *goto_hdl)
 {
 
 #if defined ZCE_OS_WINDOWS
@@ -230,7 +230,7 @@ int ZCE_OS::exchage_coroutine(coroutine_t *save_hdl,
 
 #elif defined ZCE_OS_LINUX
     return ::swapcontext(&save_hdl->coroutine_,
-        &goto_hdl->coroutine_);
-#endif 
+                         &goto_hdl->coroutine_);
+#endif
 }
 

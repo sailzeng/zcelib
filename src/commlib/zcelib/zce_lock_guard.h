@@ -7,7 +7,7 @@
 * @brief      GURAD。利用构造函数和析构函数自动加锁，解锁的类，
 *             在各个类里面都有typdef帮助使用
 *             比如ZCE_Thread_Light_Mutex
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_GUARD_H_

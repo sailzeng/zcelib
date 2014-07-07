@@ -7,8 +7,8 @@
 
 /*!
 * @brief      IPv4的物理结构
-*             
-* @note       
+*
+* @note
 */
 class ZCELIB_EXPORT ZCE_Sockaddr_In : public ZCE_Sockaddr
 {
@@ -45,11 +45,11 @@ public:
     int set(uint32_t ip_addr,
             uint16_t port_number);
 
-    
+
     /*!
     * @brief      根据字符串取得IP地址信息，以及端口号信息,
     * @return     int
-    * @param      ip_addr_str 
+    * @param      ip_addr_str
     * @note       如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
     */
     int set(const char *ip_addr_str);

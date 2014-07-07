@@ -5,7 +5,7 @@
 * @version
 * @date       2011年8月13日
 * @brief      跨平台互斥量部分的代码，接口基本模拟了pthread的函数，
-* 
+*
 * @details    在Windows下我们分成几种模式,不用TIMEOUT的锁，递归锁，非递归锁
 *             不用TIMEOUT的MUTEX，我们用临界区模拟实现的，（临界区是递归的呀）
 *             递归锁，WINDOWS自己的MUTEX是递归的，
@@ -14,7 +14,7 @@
 *             @ref zce_lock_process_mutex.h,
 *             所以这儿的东东看看就行了，写代码可以必用。除非你是C爱好狂，
 *             pthread_mutex内部我已经合入了非递归锁功能，用信号灯模拟
-* 
+*
 * @note       pthread_mutex_XXX函数的返回值大都是返回0表示成功，否则是错误ID
 *             这个和POSIX大部分函数不太一样，大部分其他函数是return -1;然后错误
 *             保存在errno中，

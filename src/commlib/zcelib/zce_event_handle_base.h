@@ -5,11 +5,11 @@
 * @version
 * @date       2011年8月29日
 * @brief      IO反应器所使用的事件句柄封装
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_EVENT_HANDLE_BASE_H_

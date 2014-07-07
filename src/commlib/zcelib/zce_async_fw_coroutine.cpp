@@ -26,13 +26,13 @@ int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
     ZCE_Async_Object::initialize(reg_cmd);
     int ret = 0;
     ret = ZCE_OS::make_coroutine(&handle_,
-        stack_size_,
-        true,
-        (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
-        (void *)this,
-        NULL,
-        NULL
-        );
+                                 stack_size_,
+                                 true,
+                                 (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
+                                 (void *)this,
+                                 NULL,
+                                 NULL
+                                );
     if (ret != 0)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::make_coroutine return fail.", ret);
@@ -55,7 +55,7 @@ void ZCE_Async_Coroutine::on_run(bool &continue_run)
     continue_run = false;
 
     yeild_coroutine();
-    
+
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_CONTINUE)
     {
@@ -74,7 +74,7 @@ void ZCE_Async_Coroutine::on_run(bool &continue_run)
 
 //调用协程
 void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/ ,
-    bool &continue_run)
+                                     bool &continue_run)
 {
     continue_run = false;
     coroutine_state_ = COROUTINE_TIMEOUT;
@@ -126,7 +126,7 @@ void ZCE_Async_Coroutine::coroutine_do()
     {
         //
         coroutine_run();
-        
+
         //运行完毕后，返回主程序
         yeild_main_exit();
     }

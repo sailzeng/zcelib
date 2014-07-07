@@ -10,19 +10,19 @@
 *             为什么不直接模拟sysconf 和sysinfo函数,为啥要这样呢，也是倒霉催的，
 *             因为sysinfo的结构其实也是一个升级的结果，
 *             原来2.3.23前面的版本以前的版本内存尺寸不支持
-* 
+*
 * @details    对于函数接口，我总是犹豫来犹豫去，一开始，我模拟sysconf，systinfo，
 *             结果发现sysinfo在内存处理上比较变态，我又倾向了单独接口，结果写了一会，
 *             发现冗余的变态，又犹豫是否写回sysconf，systinfo,但仔细看看systinfo的结构又TMD烦恼。
 *             算了，算了，我自己给个结构吧。让TMD兼容去死。
-* 
+*
 * @note       另外：Windows和LINUX在获取系统信息，进程信息这些事情上基本都是一群打酱油的主，
 *             大家对到底什么都是是系统的，什么东西是进程的都比较含混
 *             LINUX下有函数getrlimit,(ulimit已经不用了),sysconf，sysinfo，等，
 *             Windows下有函数GlobalMemoryStatusEx，GetSystemInfo，
 *             而且WINDOWS对于限制这个东西，很多时候采取的是不太限制的态度，比如他没有最大线程
 *             个数限制，没有最大进程个数限制，等等，他的目标就是用完为止
-* 
+*
 *             听了一首有趣的歌，《流川枫和苍井空》黑撒的，莫名的想抽烟，。
 */
 

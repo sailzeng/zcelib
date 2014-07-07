@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_socket_connector.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2011年6月19日
 * @brief      connect的工厂
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 #ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
 #define ZCE_LIB_SOCKET_CONNECTOR_H_
@@ -26,8 +26,8 @@ class ZCE_Sockaddr;
 
 /*!
 * @brief      connect的工厂，成功连接后产生,用于产生ZCE_Socket_Stream
-*             
-* @note       
+*
+* @note
 */
 class ZCELIB_EXPORT ZCE_Socket_Connector
 {
@@ -53,7 +53,7 @@ public:
                  int protocol = 0,
                  const ZCE_Sockaddr *local_addr = NULL);
 
-    
+
     /*!
     * @brief      阻塞或者非阻塞的连接
     * @return     int

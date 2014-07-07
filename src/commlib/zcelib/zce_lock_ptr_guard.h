@@ -5,9 +5,9 @@
 * @version
 * @date       2012年9月21日
 * @brief      利用多态实现的锁GUARD，
-* 
+*
 *             如果你还能被人噎着，就表示你还不够强大，
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_PTR_GUARD_H_

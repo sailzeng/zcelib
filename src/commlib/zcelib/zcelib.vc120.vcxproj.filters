@@ -391,6 +391,12 @@
     <ClInclude Include="zce_config_ini_pasttime.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_boost_mpl.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_boost_signal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">

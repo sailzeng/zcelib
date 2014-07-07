@@ -115,9 +115,9 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
     }
 
     //Ö´ÐÐSQLÃüÁî
-    int tmpret = ::mysql_real_query(mysql_connect_->get_mysql_handle(), 
-        mysql_command_.c_str(), 
-        (unsigned long)mysql_command_.length());
+    int tmpret = ::mysql_real_query(mysql_connect_->get_mysql_handle(),
+                                    mysql_command_.c_str(),
+                                    (unsigned long)mysql_command_.length());
     if (tmpret != 0)
     {
         return tmpret;

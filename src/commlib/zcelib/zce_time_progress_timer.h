@@ -6,13 +6,13 @@
 * @date       2012年10月1日
 * @brief      计时器的封装，用于记录一些耗时等。也可以用于测量
 *             性能等。
-* 
+*
 * @details    ZCE_Progress_Timer  普通计时器
 *             使用std::clock 计时，性能一般，可以记录较长的时间，
 *             sleep，阻塞等导致CPU切换后，不会对计时产生影响，
 *             但计时精度有缺陷，精度只有10ms级别。
 *             在一些较长时间的计时中，使用较好
-* 
+*
 *             ZCE_HR_Progress_Timer  高精度的计时器
 *             在Windows 下，使用QueryPerformanceFrequency 和QueryPerformanceCounter
 *             在LINUX下，使用clock_getres和clock_gettime得到精确时钟
@@ -20,12 +20,12 @@
 *             但在发生CPU切换后，准确性可能出现问题（其实有一定的保护），另外，相对而言，
 *             比较耗时 （特别是Windows版本）
 *             用于一些短暂的，精确的，不频繁性能测量
-* 
+*
 *             ZCE_TSC_Progress_Timer  使用TSC的计时器
 *             速度飞快的计时器，使用几乎没有什么消耗，所以多次使用不会有什么心理阴影。
 *             精度很高的计时器，但由于在CPU切换，频率变化这类问题上比较无奈，
 *             用于概要性的，多次进行的，每次操作时间不长的计时（累计）。
-* 
+*
 */
 #ifndef ZCE_LIB_TIME_PROGRESS_COUNTER_H_
 #define ZCE_LIB_TIME_PROGRESS_COUNTER_H_
@@ -43,7 +43,7 @@
 *             在LINUX32上，精度可能是微秒，所以可能只能跑72分钟多
 *             别用他来记录超过这个时间的数值，而且注意，你启动的这个服务器已经可能跑了很多天，
 *             这时候计时其实可能溢出导致计时错误。虽然这种事情应该很少出现，但的确有这个可能
-* 
+*
 * @note       精度问题，由于std::clock的实现，其实真正的进度可能在10多ms（15-16）。所以如
 *             果直接拿这个测量某个函数的（一次）耗时，不会准确，误差非常大。
 */
@@ -109,7 +109,7 @@ public:
 *             http://msdn.microsoft.com/en-us/library/windows/desktop/ee417693%28v=vs.85%29.aspx
 *             在LINUX下，使用clock_getres和clock_gettime得到精确时钟,精度可以到ns级别。
 *             做过测试。
-* 
+*
 * @note       精度较高，但也不是没有不足，第一，最好不要在多线程环境下使用，第二，最好不要中间有
 *             sleep操作。（内部使用SetThreadAffinityMask帮助克服部分风险，但由于CPU的变
 *             频机制，所以还是慎重为好） 第三，QueryPerformanceCounter比较耗时，远远不如

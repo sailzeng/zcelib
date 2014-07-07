@@ -2,17 +2,17 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_trace_log_debug.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2004年7月11日
 * @brief      跟踪调试信息函数类ZCE_Trace_LogMsg描述
 *             调试管理工具，可以在STDOUT,STDERR,Windos的调试窗口输出，
 *             调试文件输出，根据不同宏定义保证跨平台允许，
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+* @details
+*
+*
+*
+* @note
+*
 */
 
 
@@ -114,18 +114,18 @@ public:
 namespace ZCE_LIB
 {
 
-    ///输出代码的堆栈信息，用于调试
-    int backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
-        const char *dbg_info);
+///输出代码的堆栈信息，用于调试
+int backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
+                    const char *dbg_info);
 
-    ///日志打印堆栈信息
-    ///调试打印的指针
-    ///指针数据的长度
-    void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
-        const char *dbg_info,
-        const unsigned char  *debug_ptr,
-        size_t data_len);
-    
+///日志打印堆栈信息
+///调试打印的指针
+///指针数据的长度
+void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
+                   const char *dbg_info,
+                   const unsigned char  *debug_ptr,
+                   size_t data_len);
+
 };
 
 //日志打印堆栈信息的宏，x是日志的输出级别

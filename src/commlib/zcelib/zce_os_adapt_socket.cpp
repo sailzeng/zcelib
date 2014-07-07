@@ -411,8 +411,8 @@ int ZCE_OS::sock_disable(ZCE_SOCKET handle, int flags)
 
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
 int ZCE_OS::handle_ready(ZCE_SOCKET handle,
-    ZCE_Time_Value *timeout_tv,
-    HANDLE_READY_TODO ready_todo)
+                         ZCE_Time_Value *timeout_tv,
+                         HANDLE_READY_TODO ready_todo)
 {
     fd_set handle_set_read, handle_set_write, handle_set_exeception;
     fd_set *p_set_read  = NULL, *p_set_write = NULL, *p_set_exception = NULL;
@@ -503,7 +503,7 @@ int ZCE_OS::handle_ready(ZCE_SOCKET handle,
     if (HANDLE_READY_CONNECTED == ready_todo)
     {
         //如果是CONNECTED，读返回或者异常返回都被认为是错误
-        if (FD_ISSET(handle, p_set_read) 
+        if (FD_ISSET(handle, p_set_read)
             || FD_ISSET(handle, p_set_exception))
         {
             return -1;
@@ -519,9 +519,9 @@ int ZCE_OS::handle_ready(ZCE_SOCKET handle,
 
 
 int ZCE_OS::connect_timeout(ZCE_SOCKET handle,
-    const sockaddr *addr,
-    socklen_t addrlen,
-    ZCE_Time_Value &timeout_tv)
+                            const sockaddr *addr,
+                            socklen_t addrlen,
+                            ZCE_Time_Value &timeout_tv)
 {
 
     int ret = 0;
@@ -549,8 +549,8 @@ int ZCE_OS::connect_timeout(ZCE_SOCKET handle,
 
     //进行超时处理
     ret = ZCE_OS::handle_ready(handle,
-        &timeout_tv,
-        ZCE_OS::HANDLE_READY_CONNECTED);
+                               &timeout_tv,
+                               ZCE_OS::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -977,7 +977,7 @@ ssize_t ZCE_OS::recvfrom_timeout2 (ZCE_SOCKET handle,
     int ret = 0;
     //虽然你做了一样的外层封装，但是由于内部实现不一样，你还是要吐血。
 #if defined (ZCE_OS_WINDOWS)
-    
+
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
     ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
@@ -985,7 +985,7 @@ ssize_t ZCE_OS::recvfrom_timeout2 (ZCE_SOCKET handle,
     timeval sockopt_tv = timeout_tv;
     ret = ZCE_OS::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
 #endif
-    
+
     //按照socket类似函数的封装，返回-1标识失败。
     if (0 != ret)
     {
@@ -1428,10 +1428,10 @@ IANA保证这些网络号不会分配给连到Internet上的任何网络，
 
 #if !defined ZCE_IS_INTERNAL
 #define ZCE_IS_INTERNAL(ip_addr)   ((ip_addr >= 0x0A000000 && ip_addr <= 0x0AFFFFFF ) ||  \
-(ip_addr >= 0xAC100000 && ip_addr <= 0xAC1FFFFF) ||  \
-(ip_addr >= 0xC0A80000 && ip_addr <= 0xC0A8FFFF) ||  \
-(ip_addr == INADDR_ANY))
-#endif 
+                                    (ip_addr >= 0xAC100000 && ip_addr <= 0xAC1FFFFF) ||  \
+                                    (ip_addr >= 0xC0A80000 && ip_addr <= 0xC0A8FFFF) ||  \
+                                    (ip_addr == INADDR_ANY))
+#endif
 
 //检测一个地址是否是内网地址
 bool ZCE_OS::is_internal(const sockaddr_in *sock_addr_ipv4)

@@ -4,7 +4,7 @@
 * @version
 * @date       2013年11月27日
 * @brief      协程的OS适配层，
-* 
+*
 * @details    一个简单的协程的封装
 *             最开始参考的文章是这个，
 *             http://www.codeproject.com/Articles/4225/Unix-ucontext_t-Operations-on-Windows-Platforms
@@ -28,11 +28,11 @@
 *             在main里面，在里面用make_coroutine生成协程，
 *             在main里面，switch_to_coroutine切换到协程，
 *             在coroutine里面，使用switch_to_main切换到协程，
-*             
+*
 * @note       关于Fibers函数的说明，清参考如下文档，作者写的非常清楚。
-*             ConvertFiberToThread  
+*             ConvertFiberToThread
 *             http://www.cnblogs.com/wz19860913/archive/2008/08/26/1276816.html
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_CORROUTINE_H_
@@ -51,8 +51,8 @@ struct  coroutine_t
         coroutine_ = NULL;
     }
 
-    void *         main_;
-    void *         coroutine_;
+    void          *main_;
+    void          *coroutine_;
 };
 
 #elif defined ZCE_OS_LINUX
@@ -63,12 +63,12 @@ struct  coroutine_t
     ucontext_t         coroutine_;
 };
 
-#endif 
+#endif
 
 //为什么最后选择3个参数的函数作为支持的类型，大概是因为维基的例子，（我本来一直认为2个参数足够了）
 typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
-    void *para2,
-    void *para3);
+                                      void *para2,
+                                      void *para3);
 
 
 namespace ZCE_OS
@@ -93,25 +93,25 @@ namespace ZCE_OS
 *             都可能失败
 *             6.LINUX的::makecontext可以使用变参，这个函数没有考虑参数，当然这个变
 *             也是有风险，但其实使用参数是有移植风险的，相见下面两个文档的说明，
-*             http://en.wikipedia.org/wiki/Setcontext   
+*             http://en.wikipedia.org/wiki/Setcontext
 *             http://pubs.opengroup.org/onlinepubs/009695399/functions/makecontext.html
 *             另外，为了包装参数传递，在Windows下，这个函数会new一个结构
 * @return     int 返回0标识成功，
-* @param      uctt         ucontext_t，生成的CONTEXT句柄， 
+* @param      uctt         ucontext_t，生成的CONTEXT句柄，
 * @param      stack_size   栈大小
-* @param      back_main    
+* @param      back_main
 * @param      fun_ptr      函数指针，接受3个指针参数
 * @param      para1        指针参数1
 * @param      para2        指针参数2
 * @param      para3        指针参数3
 */
 int make_coroutine(coroutine_t *coroutine_hdl,
-    size_t stack_size,
-    bool back_main,
-    ZCE_COROUTINE_3PARA fun_ptr,
-    void *para1,
-    void *para2,
-    void *para3);
+                   size_t stack_size,
+                   bool back_main,
+                   ZCE_COROUTINE_3PARA fun_ptr,
+                   void *para1,
+                   void *para2,
+                   void *para3);
 
 
 /*!
@@ -126,7 +126,7 @@ void delete_coroutine(coroutine_t *coroutine_hdl);
 /*!
 * @brief      从Main切换到协程，
 * @return     int 返回0标识成功
-* @param      coroutine_hdl 
+* @param      coroutine_hdl
 */
 int yeild_coroutine(coroutine_t *coroutine_hdl);
 
@@ -144,7 +144,7 @@ int yeild_main(coroutine_t *coroutine_hdl);
 * @param      goto_hdl
 */
 int exchage_coroutine(coroutine_t *save_hdl,
-    coroutine_t *goto_hdl);
+                      coroutine_t *goto_hdl);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_CORROUTINE_H_

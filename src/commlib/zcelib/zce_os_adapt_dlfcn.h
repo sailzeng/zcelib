@@ -5,9 +5,9 @@
 * @version
 * @date       2011年7月9日
 * @brief      DLL库操作的几个跨平台函数
-* 
+*
 * @details
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_DLFCN_H_

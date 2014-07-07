@@ -5,7 +5,7 @@
 * @version
 * @date       2013年1月15日
 * @brief      进程间同步用的信号灯，
-* 
+*
 */
 #ifndef ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
 #define ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_

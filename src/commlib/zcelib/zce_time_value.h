@@ -9,10 +9,10 @@
 *             代码会非常多，于是就有了这个东东，
 *             在ZCELIB里面，他和timeval的作用一样，有时候标识时间点，
 *             有时候表示一段时间。
-* 
+*
 * @details    内部封装的还是timeval,这点和ACE一样，我曾经记得ACE曾经
 *             封装过double作为时间值，但无法确认了。
-* 
+*
 */
 #ifndef ZCE_LIB_TIME_VALUE_H_
 #define ZCE_LIB_TIME_VALUE_H_
@@ -22,7 +22,7 @@
 
 /*!
 * @brief      ZCELIB 里面的时间值，时间对象，
-* 
+*
 */
 class ZCE_Time_Value
 {
@@ -182,12 +182,12 @@ public:
 
 
     /*!
-    * @brief      
+    * @brief
     * @return     const char*
     * @param      str_date_time
     * @param      datetime_strlen
     */
-    const char *timestamp(char *str_date_time, 
+    const char *timestamp(char *str_date_time,
                           size_t datetime_strlen) const;
 
     /*!
@@ -201,18 +201,18 @@ public:
                           size_t datetime_strlen,
                           bool uct_time = false,
                           ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC
-                          )  const;
+                         )  const;
 
     /*!
     * @brief      根据你的格式化要求,将字符串，转换为事件
     * @return     int ==0
     * @param[in]  strtm       时间字符串
-    * @param[in]  uct_time    是否转换为UTC时间   
+    * @param[in]  uct_time    是否转换为UTC时间
     * @param[in]  fromat_type 时间格式，默认为ISO的usec
     */
     int from_string(const char *strtm,
-        bool uct_time = false, 
-        ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC);
+                    bool uct_time = false,
+                    ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC);
 
     ///返回一个timespec的对象
     operator ::timespec () const;

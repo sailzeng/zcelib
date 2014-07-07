@@ -2,18 +2,18 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_server_toolkit.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2006年3月7日
 * @brief      服务器的小工具集合,作为服务器基类使用
 *             功能包括：
 *             1.输出PID
               2.监控服务器的内存，CPU占用率等
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+* @details
+*
+*
+*
+* @note
+*
 */
 
 #ifndef ZCE_LIB_SERVER_TOOLKIT_H_

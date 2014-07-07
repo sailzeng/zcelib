@@ -5,11 +5,11 @@
 * @version
 * @date       2011年10月6日 今天Jobs走了，发现自己居然也到了到了开始缅怀前辈年纪，
 * @brief      信号灯的跨平台封装，向LINUX的POSIX的封装靠齐
-* 
+*
 * @details    Windows 和 Linux 在信号灯上比较接近，
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_SEMAPHORE_H_

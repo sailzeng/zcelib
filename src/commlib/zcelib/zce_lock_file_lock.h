@@ -6,11 +6,11 @@
 * @date       2013年1月14日
 * @brief      文件锁，用于整个锁定文件，
 *             记录锁清参考@ref zce_lock_record_lock.h
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_LOCK_FILE_LOCK_H_

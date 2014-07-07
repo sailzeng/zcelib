@@ -5,13 +5,13 @@
 * @version
 * @date       2004年7月24日
 * @brief      MySQL的SQL处理对象，Command对象
-*             最开始，我希望同时保有断言，返回值，和异常3种模式，  
+*             最开始，我希望同时保有断言，返回值，和异常3种模式，
 *             结果多年以来，一直还是使用返回值的方法，异常与我无爱。
-*             
+*
 *
 * @details    这居然是刚来腾讯时写的代码，好像那时候大家推荐用的数据库还是MYSQL 3.23，
 *             时间过的飞快，你的执行效率远远赶不上时间的流逝的速度。
-* 
+*
 */
 
 #ifndef ZCE_LIB_MYSQL_DB_COMMAND_H_
@@ -26,7 +26,7 @@
 
 /*!
 * @brief      MYSQL的命令对象，用于处理SQL语句的执行，获得结果集
-* 
+*
 */
 class ZCELIB_EXPORT ZCE_Mysql_Command: public ZCE_NON_Copyable
 {
@@ -161,7 +161,7 @@ public:
     * @return     const char*
     */
     inline const char *get_error_message();
-    
+
     /*!
     * @brief      返回错误ID
     * @return     unsigned int

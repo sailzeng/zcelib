@@ -5,11 +5,11 @@
 * @version
 * @date       2013年1月3日
 * @brief      进程相关的
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_PROCESS_H_

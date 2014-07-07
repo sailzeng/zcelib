@@ -2,15 +2,15 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_server_status.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2006年3月7日
-* @brief      
-*             
-*             
+* @brief
+*
+*
 * @details    服务器的统计类，
 *             这个想法来自rong,sonicmao的C4A的服务器,向rong,sonicmao致敬.
-*             
-*             
+*
+*
 * @note       修改记录，很简单的一个类，但改动很多
 *     1.Date  :2011年10月30日
 *     Author  :根据ZCELIB的代码对现有的代码进行优化
@@ -24,7 +24,7 @@
 *     4.Date  :2013年10月1日
 *     Author  :Sailzeng
 *     Modification  :有一个防止统计ID重复的需求，将原来的ARRAY改造成了一个MAP，
-*             
+*
 */
 
 #ifndef ZCE_LIB_SERVER_STATUS_H_
@@ -190,7 +190,7 @@ protected:
     //统计ID到数组的下标的hash map
     typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     //statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<unsigned int ,ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+    typedef unordered_map<unsigned int , ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 

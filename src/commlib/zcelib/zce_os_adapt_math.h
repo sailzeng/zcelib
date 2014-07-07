@@ -5,11 +5,11 @@
 * @version
 * @date       2012年8月12日
 * @brief      数据函数集合，目前没有多少料
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_MATH_H_
@@ -66,7 +66,7 @@ inline int scanbit_lsb2msb32(uint32_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanForward(&index,mask);
+    ::_BitScanForward(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_ctz(mask);
@@ -82,7 +82,7 @@ inline int scanbit_msb2lsb32(uint32_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanReverse(&index,mask);
+    ::_BitScanReverse(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_clz(mask);
@@ -102,7 +102,7 @@ inline int scanbit_lsb2msb64(uint64_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanForward64(&index,mask);
+    ::_BitScanForward64(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_ctzll(mask);
@@ -118,7 +118,7 @@ inline int scanbit_msb2lsb64(uint64_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanReverse64(&index,mask);
+    ::_BitScanReverse64(&index, mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_clzll(mask);

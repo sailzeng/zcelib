@@ -7,7 +7,7 @@ class MML_Console_Command 控制台命令
 ****************************************************************************************************/
 //构造函数
 MML_Console_Command::MML_Console_Command(const char *mml_string,
-    MML_Console_Command::MML_STRING_PATTERN pattern)
+                                         MML_Console_Command::MML_STRING_PATTERN pattern)
 {
     mml_string_ = mml_string;
     mml_command_.reserve(32);
@@ -98,20 +98,20 @@ const char *MML_Console_Command::get_cmd_parameter(const std::string &para_key) 
 
 //MML语句分析
 int MML_Console_Command::parse_mml_cnd_string(const char *mml_string,
-    MML_Console_Command::MML_STRING_PATTERN pattern)
+                                              MML_Console_Command::MML_STRING_PATTERN pattern)
 {
 
     switch (pattern)
     {
-    case MML_STRING_PATTERN_1:
-        parse_mml_cnd_string1(mml_string);
-        break;
-    case MML_STRING_PATTERN_2:
-        parse_mml_cnd_string2(mml_string);
-        break;
-    default:
-        ZCE_ASSERT_ALL(false);
-        return -1;
+        case MML_STRING_PATTERN_1:
+            parse_mml_cnd_string1(mml_string);
+            break;
+        case MML_STRING_PATTERN_2:
+            parse_mml_cnd_string2(mml_string);
+            break;
+        default:
+            ZCE_ASSERT_ALL(false);
+            return -1;
     }
     return 0;
 }

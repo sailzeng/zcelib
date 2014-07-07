@@ -5,11 +5,11 @@
 * @version
 * @date       2005年05月18日
 * @brief      读取MYSQL数据库的类,用于读取DB的配置信息
-* 
+*
 * @details    内部有保证自动重连的机制，你不用操心这个问题
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_

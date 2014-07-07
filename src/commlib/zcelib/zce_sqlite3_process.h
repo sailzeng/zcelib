@@ -5,7 +5,7 @@
 * @version
 * @date       2008年3月12日
 * @brief      用于SQLite的一些操作处理，
-* 
+*
 * @details    为啥加了一个3，因为SQlite当时还在2的版本
 *             和3的版本过渡期间，而且SQlite残忍的不兼容了2（该恨就要狠，ACE这点上
 *             婆婆妈妈的，），
@@ -15,12 +15,12 @@
 *             后来living大大告诉我们RTX用了SQLite存放聊天信息，于是我们找来看看。
 *             发现的确很好，后来发现这个数据库一发不可收拾，逐步在手机上成为了移动
 *             终端数据库霸主。也算有缘，看见一个开源好东东的成长。
-* 
+*
 *             6年以后，重新上了SQLite的网站，发现网站进步了不少，代码风格一样，直接
 *             源码，随便你怎么玩。
-* 
+*
 *             关于Sqlite的速度，请参考http://www.sqlite.org/speed.html，
-* 
+*
 */
 #ifndef ZCE_LIB_SQLITE3_PRCOESS_H_
 #define ZCE_LIB_SQLITE3_PRCOESS_H_

@@ -198,7 +198,7 @@ const char *timeval_to_str(const timeval *timeval,
                            size_t str_len,
                            bool uct_time = false,
                            TIME_STR_FORMAT_TYPE fmt = ZCE_OS::TIME_STRFMT_ISO_USEC
-                           );
+                          );
 
 /*!
 * @brief      从字符串中高速的得到tm的结构的结果

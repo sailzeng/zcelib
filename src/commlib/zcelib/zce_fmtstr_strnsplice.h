@@ -5,11 +5,11 @@
 * @version
 * @date       2013Äê2ÔÂ6ÈÕ
 * @brief
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_FMTSTR_STRN_SPLICE_H_

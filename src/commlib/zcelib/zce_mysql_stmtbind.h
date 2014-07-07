@@ -5,11 +5,11 @@
 * @version
 * @date       2005年10月17日
 * @brief
-* 
+*
 * @details
-* 
+*
 * @note
-* 
+*
 */
 
 #ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
@@ -110,9 +110,9 @@ public:
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 class ZCELIB_EXPORT ZCE_Mysql_STMT_Bind
 {
@@ -124,7 +124,7 @@ protected:
     ZCE_Mysql_STMT_Bind &operator=(const ZCE_Mysql_STMT_Bind &others);
 
 public:
-    
+
     /*!
     * @brief      构造函数
     * @param      numbind  要绑定变量,结果的个数
@@ -142,11 +142,11 @@ public:
     * @param      paramdata 参数的数据的指针
     * @param      szparam   参数的长度
     */
-    int bind_one_param(size_t paramno, 
-        ::enum_field_types paramtype,
-        bool bisnull,
-        void *paramdata , 
-        unsigned long szparam = 0);
+    int bind_one_param(size_t paramno,
+                       ::enum_field_types paramtype,
+                       bool bisnull,
+                       void *paramdata ,
+                       unsigned long szparam = 0);
 
     //得到STMT HANDLE
     inline MYSQL_BIND *get_stmt_bind_handle();

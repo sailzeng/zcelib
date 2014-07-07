@@ -6,19 +6,19 @@
 * @date       2011年9月15日
 * @brief      文件（记录）锁的函数，在WIN32，和LINUX 平台通用
 *             其实除了flock这个函数，叫记录锁更贴切一点，因为你可以只对文件的一部分进行操作
-* 
+*
 * @details    文件（记录）锁的适配层，兼容2个平台，参考ACE实现的，这个几乎就是COPY
 *             flock_xxx ，的函数都是非标准的，是ACE自己的一层封装。但可以说，ACE的封装
 *             还是比调用原生API fcntl舒服
 *             另外ACE没有提供flock函数，我提供了，对某个文件的全部内容进行操作是使用
-* 
+*
 * @note       而对于记录锁，其其实也是操作系统中有趣的一部分，而且其实个个平台差别不小。
 *             LINUX下，记录锁是劝告性的锁（默认是），
 *             WINDOWS下是，记录锁是强制的，
 *             http://www.ibm.com/developerworks/cn/linux/l-cn-filelock/index.html
 *             http://www.cnblogs.com/hustcat/archive/2009/03/10/1408208.html
 *             但如果要看UNP V2就会明白，其实最好大家还是遵从相互的约定，使用锁。
-* 
+*
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_FLOCK_H_
