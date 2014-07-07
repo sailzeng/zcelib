@@ -219,7 +219,7 @@ void push_stack(lua_State *state, typename val_type val)
     //根据类的名称，设置metatable
     lua_pushstring(state, class_name<val_type >::name());
     lua_gettable(state, LUA_GLOBALSINDEX);
-    if (lua_istable(state, -1))
+    if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
                    typeid(val).name(),
@@ -355,6 +355,7 @@ void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat
         lua_pushcclosure(state, ZCE_LUA::newindex_onlyread, 0);
         lua_rawset(state, -3);
     }
+    lua_setmetatable(state, -2);
     return;
 }
 
@@ -639,7 +640,7 @@ public:
         //push是将结果放入堆栈
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
 
-        typedef int (class_type::*mem_fun)(int, int);
+        typedef ret_type(class_type::*mem_fun)(args_type...);
         mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
 
         class_type *obj_ptr = read_stack<class_type *>(state, -1);
@@ -802,7 +803,7 @@ public:
     template<typename ret_type, typename... args_type>
     Candy_Tie_Class &mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
-        lua_tie_->class_mem_fun<class_type>(name, func);
+        lua_tie_->class_mem_fun<class_type, ret_type, args_type...>(name, func);
         return *this;
     }
 

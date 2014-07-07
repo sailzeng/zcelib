@@ -373,12 +373,18 @@ int ZCE_LUA::on_error(lua_State *state)
 int ZCE_LUA::class_meta_get(lua_State *state)
 {
     int meta_ret = 0;
+
+    dump_clua_stack(state);
     //要检查的数据在栈底部，取出得到其metatable放入栈顶
     lua_getmetatable(state, 1);
     //复制栈底倒数第二个参数key，放入栈顶
     lua_pushvalue(state, 2);
+
+    dump_clua_stack(state);
+
     //在metatable里面寻找key，
     lua_rawget(state, -2);
+    dump_clua_stack(state);
 
     //如果是一个userdata，其实其就是我们扔进去的类的成员指针
     if (lua_isuserdata(state, -1))
@@ -414,7 +420,7 @@ int ZCE_LUA::class_meta_get(lua_State *state)
                         __ZCE_FUNCTION__,
                         lua_tostring(state, 2));
         lua_error(state);
-        return meta_ret;
+        return 0;
     }
 
     //删除掉metatable，
@@ -436,6 +442,7 @@ int ZCE_LUA::class_meta_set(lua_State *state)
     if (lua_isuserdata(state, -1))
     {
         ((memvar_base *)lua_touserdata(state, -1))->set(state);
+        meta_ret = 0;
     }
     else if (lua_isnil(state, -1))
     {
@@ -462,7 +469,7 @@ int ZCE_LUA::class_meta_set(lua_State *state)
                         __ZCE_FUNCTION__,
                         lua_tostring(state, 2));
         lua_error(state);
-        return meta_ret;
+        return 0;
     }
 
     return 0;

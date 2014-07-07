@@ -84,7 +84,10 @@ int test_lua_script2(int ,char *[])
 
     printf("g_b = %d\n",g_b);
 
-
+    for (size_t k = 0; k < 20; ++k)
+    {
+        printf("g_array[%d]=%d\n", k, g_array[k]);
+    }
 
     lua_tie.close();
 
@@ -121,6 +124,12 @@ struct TB :public TA
         return b2_;
     }
 
+    int set_b3(int b3_1, int b3_2,int b3_3)
+    {
+        b3_ = b3_1 + b3_2 + b3_3;
+        return b3_;
+    }
+
     int b1_;
     int b2_;
     int b3_;
@@ -151,14 +160,43 @@ int test_lua_script3(int, char *[])
         .mem_var("b1_", &TB::b1_)
         .mem_var("b2_", &TB::b2_)
         .mem_var("b3_", &TB::b3_)
-        .mem_ary<double,120>("b_array_", &TB::b_array_)
-        .mem_fun("set_b2", &TB::set_b2);
+        .mem_ary<double, 120>("b_array_", &TB::b_array_)
+        .mem_fun<int, int>("set_b1", &TB::set_b1);
+        
+        //.mem_fun<TB, int, int,int>("set_b2", &TB::set_b2)
+        //.mem_fun<TB, int, int, int,int>("set_b3", &TB::set_b3);
+
+    TB tb_val(100, 200, 300);
+    TB *tb_ptr_1 = new TB(1000, 2000, 3000);
+    TB *tb_ptr_2 = new TB(1000, 2000, 3000);
+    TB tb_1(10000, 20000, 30000);
+    TB &tb_ref = tb_1;
+
+
+    lua_tie.set_gvar("tb_val", tb_val);
+    lua_tie.set_gvar("tb_ptr_1", tb_ptr_1);
+    lua_tie.set_gvar("tb_ptr_2", tb_ptr_2);
+    lua_tie.set_gvar<TB &>("tb_ref", tb_ref);
+
 
     lua_tie.do_file("lua/lua_test_03.lua");
+
+    printf("---------------------------------------------------\n");
     printf("ta_ptr->a_ = %d\n", ta_ptr->a_);
     printf("ta_ref.a_ = %d\n", ta_ref.a_);
     printf("ta_val.a_ = %d\n", ta_val.a_);
+    printf("---------------------------------------------------\n");
+
+    printf("tb_ptr_1->b1_ = %d\n", tb_ptr_1->b1_);
+    printf("tb_ptr_1->b2_ = %d\n", tb_ptr_1->b2_);
+    printf("tb_ptr_1->b3_ = %d\n", tb_ptr_1->b3_);
+
     lua_tie.close();
+
+    delete ta_ptr;
+    delete tb_ptr_1;
+    delete tb_ptr_2;
+
     return 0;
 }
 
