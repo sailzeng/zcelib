@@ -221,7 +221,7 @@ void push_stack(lua_State *state, typename val_type val)
     lua_gettable(state, LUA_GLOBALSINDEX);
     if (lua_istable(state, -1))
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
                    typeid(val).name(),
                    class_name<val_type >::name());
         lua_remove(state, -1);

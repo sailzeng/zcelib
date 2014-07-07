@@ -90,8 +90,7 @@ public:
     /*!
     * @brief      取得一个叶子节点的数据,取回数据是srting
     * @return     int == 0 表示成功
-    * @param      path_str 路径，用|表示一段子树
-    * @param      key_str 叶子节点的key
+    * @param      path_str 路径，用.表示一段子树
     * @param      val      返回的数值
     */
     template<>
@@ -102,7 +101,6 @@ public:
     * @brief      取得一个叶子节点的数据，取回数据是char *
     * @return     int == 0 表示成功
     * @param      path_str
-    * @param      key_str
     * @param      val      是一个pair，输入的时候first 字符串指针，second是字符串的空间长度
     */
     template<>
@@ -113,7 +111,6 @@ public:
     * @brief      取得一个叶子节点的数据，取回数据是int32_t,支持16进制,8进制写法
     * @return     int == 0 表示成功
     * @param      path_str
-    * @param      key_str
     * @param      val      返回的数值
     * @note       如果是8进制的写法，请以0开头，如果是16进制写法，请以0x开头
     */
@@ -145,7 +142,6 @@ public:
     * @brief      取得IPV6的地址
     * @return     int      == 0 表示成功
     * @param      path_str 路径，用|表示一段子树
-    * @param      key_str
     * @param      val      得到的IP地址，如果字符串里面有#，后面加上端口号，也会进行转换
     */
     template<>

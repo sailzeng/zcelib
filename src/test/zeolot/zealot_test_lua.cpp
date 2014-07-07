@@ -154,6 +154,10 @@ int test_lua_script3(int, char *[])
         .mem_ary<double,120>("b_array_", &TB::b_array_)
         .mem_fun("set_b2", &TB::set_b2);
 
+    lua_tie.do_file("lua/lua_test_03.lua");
+    printf("ta_ptr->a_ = %d\n", ta_ptr->a_);
+    printf("ta_ref.a_ = %d\n", ta_ref.a_);
+    printf("ta_val.a_ = %d\n", ta_val.a_);
     lua_tie.close();
     return 0;
 }
