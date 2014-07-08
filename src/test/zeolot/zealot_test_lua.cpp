@@ -161,10 +161,9 @@ int test_lua_script3(int, char *[])
         .mem_var("b2_", &TB::b2_)
         .mem_var("b3_", &TB::b3_)
         .mem_ary<double, 120>("b_array_", &TB::b_array_)
-        .mem_fun<int, int>("set_b1", &TB::set_b1);
-        
-        //.mem_fun<TB, int, int,int>("set_b2", &TB::set_b2)
-        //.mem_fun<TB, int, int, int,int>("set_b3", &TB::set_b3);
+        .mem_fun("set_b1", &TB::set_b1)
+        .mem_fun("set_b2", &TB::set_b2)
+        .mem_fun("set_b3", &TB::set_b3);
 
     TB tb_val(100, 200, 300);
     TB *tb_ptr_1 = new TB(1000, 2000, 3000);

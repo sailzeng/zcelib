@@ -643,10 +643,12 @@ public:
         typedef ret_type(class_type::*mem_fun)(args_type...);
         mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
 
-        class_type *obj_ptr = read_stack<class_type *>(state, -1);
+        //第一个参数是对象指针
+        class_type *obj_ptr = read_stack<class_type *>(state, 1);
 
+        //得到参数个数，+1是因为，第一个参数是函数指针
         size_t sz_par = sizeof...(args_type);
-        int para_idx = static_cast<int>(sz_par);
+        int para_idx = static_cast<int>(sz_par + 1);
 
         //根据是否有返回值，决定如何处理，是否push_stack
         if (std::is_void<ret_type>::value)
