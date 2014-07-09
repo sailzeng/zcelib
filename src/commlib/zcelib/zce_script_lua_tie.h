@@ -390,6 +390,8 @@ typename ret_type read_stack(lua_State *state, int index)
 {
     if (std::is_pointer<ret_type>::value)
     {
+        //注意如果崩溃在这个地方，注意lua代码相关的行是否把:写成了.
+        //
         return (std::remove_pointer<ret_type>::type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
     }
     else if (std::is_reference<ret_type>::value)
@@ -491,6 +493,7 @@ int array_meta_set(lua_State *state)
         array_type *ary_ptr = (array_type *)(ptr->obj_ptr_);
         //注意这儿为了符合Lua的习惯，LUA的索引是从1开始
         ary_ptr[index - 1] = read_stack<array_type>(state, -1);
+        dump_clua_stack(state);
     }
 
     return 0;
@@ -807,6 +810,14 @@ public:
     Candy_Tie_Class &mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
         lua_tie_->class_mem_fun<class_type, ret_type, args_type...>(name, func);
+        return *this;
+    }
+
+    //从某个类集成
+    template<typename parent_type>
+    Candy_Tie_Class &inherit()
+    {
+        lua_tie_->class_inherit<class_type, parent_type>();
         return *this;
     }
 
@@ -1271,7 +1282,7 @@ public:
 #if defined DEBUG || defined _DEBUG
         lua_pushstring(lua_state_, "__parent");
         lua_gettable(lua_state_, -2);
-        if (lua_isnil(lua_state_, -1));
+        if (lua_isnil(lua_state_, -1))
         {
             lua_remove(lua_state_, -1);
         }
