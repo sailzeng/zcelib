@@ -5,7 +5,7 @@
 * @version
 * @date       Sunday, June 22, 2014
 * @brief      这个代码是参考Tinker实现的，仍然感谢原作者
-*             今天看到一段，白发三千丈，代码写万行，不知程序里，何处话凄凉，
+*             
 *             这个代码的目的一方面是我对于如何捏合一个脚本语言总是好奇，今天
 *             终于有了机会折腾一下
 *
@@ -765,6 +765,7 @@ public:
 
 
 //=======================================================================================================
+
 //Tie class to lua的语法糖，具体函数的解释请参考ZCE_Lua_Tie
 class ZCE_Lua_Tie;
 
@@ -1009,8 +1010,15 @@ public:
         return 0;
     }
 
-
-    //从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
+    
+    /*!
+    * @brief      从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
+    * @tparam     container_type
+    * @return     int
+    * @param      table_name
+    * @param      container_dat
+    * @note       
+    */
     template<class container_type >
     int from_luatable(const char *table_name, container_type &container_dat)
     {
@@ -1141,9 +1149,8 @@ public:
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
     * @tparam     class_type
     * @return     Candy_Tie_Class 用于方便绑定类的成员，可以让你写出连续.的操作
-    * @param      class_name
-    * @param      read_only  这个类的数据是否只读，而不能写
-    * @note
+    * @param      class_name      类的名称，在Lua中使用
+    * @param      read_only       这个类的数据是否只读，而不能写
     */
     template<typename class_type>
     Candy_Tie_Class<class_type> reg_class(const char *class_name,
@@ -1235,7 +1242,8 @@ public:
 
 
     /*!
-    * @brief      本来想把多重继承实现了，但结果发现作用不大
+    * @brief      本来想把多重继承实现了，但后面和ferg讨论，觉得结果发现意义不大，
+    *             而且容易
     * @tparam     class_type  类型
     * @tparam     parent_type 父类型
     * @return     int == 0 返回值标识成功
@@ -1293,7 +1301,7 @@ public:
 
 
     /*!
-    * @brief      给一个类的meta table 绑定成员变量
+    * @brief      给一个类（的meta table）注册绑定成员变量
     * @tparam     class_type 绑定的类的类型
     * @tparam     var_type   成员类型
     * @return     int        是否绑定成功
@@ -1331,7 +1339,16 @@ public:
     }
 
 
-    ///给一个类的meta table 绑定成员数组
+    /*!
+    * @brief      给一个类的meta table 绑定成员数组
+    * @tparam     class_type
+    * @tparam     ary_type
+    * @tparam     ary_size
+    * @return     int
+    * @param      name
+    * @param      ary_type
+    * @param      read_only
+    */
     template<typename class_type, typename ary_type, size_t ary_size>
     int class_mem_ary(const char *name,
                       ary_type(class_type:: *mem_ary)[ary_size],
@@ -1363,6 +1380,15 @@ public:
 
 
 
+    /*!
+    * @brief      注册类的成员函数
+    * @tparam     class_type 成员函数所属的类
+    * @tparam     ret_type   返回值
+    * @tparam     args_type  参数列表
+    * @return     int   == 0 表示注册成功
+    * @param      name  函数的名字
+    * @param      func  成员函数指针
+    */
     template<typename class_type, typename ret_type, typename... args_type>
     int class_mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
