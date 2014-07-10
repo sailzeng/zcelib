@@ -132,6 +132,11 @@ template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
     }
 }
 //=======================================================================================================
+void ZCE_LUA::push_stack(lua_State * /*state*/)
+{
+
+}
+
 //read_stack从堆栈中读取一个数据
 template<> void ZCE_LUA::push_stack(lua_State *state, char val)
 {
@@ -1042,12 +1047,12 @@ int ZCE_Lua_Tie::do_file(const char *filename)
 }
 
 ///dump C调用lua的堆栈，
-void ZCE_Lua_Tie::dump_clua_stack()
+void ZCE_Lua_Tie::enum_stack()
 {
     ZCE_LUA::dump_clua_stack(lua_state_);
 }
 ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
-void ZCE_Lua_Tie::dump_luacall_stack()
+void ZCE_Lua_Tie::dump_stack()
 {
     ZCE_LUA::dump_luacall_stack(lua_state_);
 }

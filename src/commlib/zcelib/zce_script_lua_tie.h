@@ -242,6 +242,8 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 }
 
 
+
+
 /*!
 * @brief      放入一个引用
 * @tparam     val_type  引用的类型
@@ -359,7 +361,7 @@ void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat
     return;
 }
 
-
+void push_stack(lua_State * /*state*/);
 template<> void push_stack(lua_State *state, char val);
 template<> void push_stack(lua_State *state, unsigned char val);
 template<> void push_stack(lua_State *state, short val);
@@ -574,6 +576,9 @@ int constructor(lua_State *state)
     //new 一个user data，用<T>的大小,同时，同时用placement new 的方式，
     //（指针式lua_newuserdata分配的）完成构造函数
     int para_idx = 1;
+    //如果参数个数为0，会引发一个告警
+    ZCE_UNUSED_ARG(para_idx);
+
     new(lua_newuserdata(state,
                         sizeof(val_2_udat<class_type>)))
     val_2_udat<class_type>(read_stack<args_type>(state, ++para_idx)...);
@@ -834,9 +839,9 @@ public:
     int do_buffer(const char *buff, size_t sz);
 
     ///dump C调用lua的堆栈，
-    void dump_clua_stack();
+    void enum_stack();
     ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
-    void dump_luacall_stack();
+    void dump_stack();
 
 
     ///向LUA注册int64_t的类型，因为LUA内部的number默认是double，所以其实无法表示。所以要注册这个
@@ -1417,11 +1422,24 @@ public:
     }
 
     //放入某个东东到堆栈
-    //template<typename val_type >
-    //void push(val_type val)
-    //{
-    //    ZCE_LUA::push_stack(lua_state_, val);
-    //}
+    template<typename val_type >
+    inline void push(val_type val)
+    {
+        ZCE_LUA::push_stack(lua_state_, val);
+    }
+
+    //读取堆栈上的某个数据
+    template<typename val_type >
+    inline val_type read(int index)
+    {
+        return ZCE_LUA::read_stack(lua_state_, index);
+    }
+
+    //
+    inline lua_State  *get_state()
+    {
+        return lua_state_;
+    }
 
 protected:
     /*!
@@ -1450,14 +1468,15 @@ protected:
             return -1;
         }
 
-        if (sizeof...(args))
+        size_t arg_num = sizeof...(args);
+        if (arg_num)
         {
             //放入堆栈参数，args
             ZCE_LUA::push_stack(lua_state_, args...);
         }
         
 
-        size_t arg_num = sizeof...(args);
+        
         //调用lua的函数，
         ret = lua_pcall(lua_state_,
             static_cast<int>(arg_num),

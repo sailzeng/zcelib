@@ -141,10 +141,22 @@ struct TB :public TA
     double b_array_[120];
 };
 
+struct TF
+{
+    TF()
+    {
+
+    }
+
+    int f1_;
+    int f2_;
+};
+
 int test_lua_script3(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
+
     lua_tie.reg_class<TA>("TA",false);
     lua_tie.class_mem_var<TA>("a_", &TA::a_);
     lua_tie.class_mem_fun("set_a", &TA::set_a);
@@ -184,6 +196,11 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar<TB &>("tb_ref", tb_ref);
 
 
+    lua_tie.reg_class<TF>("TF", false);
+    lua_tie.class_mem_var<TF>("f1_", &TF::f1_);
+    lua_tie.class_mem_var<TF>("f2_", &TF::f2_);
+    lua_tie.class_constructor<TF>(ZCE_LUA::constructor<TF>);
+
     lua_tie.do_file("lua/lua_test_03.lua");
 
     printf("---------------------------------------------------\n");
@@ -221,42 +238,29 @@ int test_lua_script4(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
-
     //
     printf("%s\n", "-------------------------- current stack");
-    lua_tie.dump_clua_stack();
+    lua_tie.enum_stack();
 
-    // 현재 스택의 내용을 다시 출력한다.
+    //
     printf("%s\n", "-------------------------- stack after push '1'");
-    //lua_tie.push(1);
-    //lua_tie.push(2);
-    //lua_tie.push("333333");
-    lua_tie.dump_clua_stack();
+    lua_tie.push(1);
+    lua_tie.push(2);
+    lua_tie.push("333333");
+    lua_tie.enum_stack();
 
-    // sample5.lua 파일을 로드/실행한다.
-    lua_tie.do_file("sample5.lua");
+    // lua_test_04.lua
+    lua_tie.do_file("lua/lua_test_04.lua");
 
     // test_error() 
     // test_error() 삔딧痰돕 test_error_3() 
     printf("%s\n", "-------------------------- calling test_error()");
-    int abc = 0;
-    lua_tie.call_luafun_0("test_error",abc);
+
+    lua_tie.call_luafun_0("test_error");
 
     // test_error_3()
     printf("%s\n", "-------------------------- calling test_error_3()");
-    //lua_tie.call_luafun_0("test_error_3");
-
-    //// printf() 대신 유저가 제공하는 에러 출력 루틴을 사용할 수 있다.
-    //// 이 에러처리 함수는1개의 루아 문자열로 발생한 에러를 전달하게 된다.
-    //// C++ 에서 등록할 경우 void function(const char*) 형태가 적합하다.
-    //lua_tinker::def(L, "_ALERT", show_error);
-
-    //lua_tinker::call<void>(L, "_ALERT", "test !!!");
-
-    //// test_error() 함수를 호출한다.
-    //// 함수 호출중 발생한 에러는 Lua에 등록된 _ALERT()를 통해서 출력된다.
-    //printf("%s\n", "-------------------------- calling test_error()");
-    //lua_tinker::call<void>(L, "test_error");
+    lua_tie.call_luafun_0("test_error_3");
 
 
     lua_tie.close();
