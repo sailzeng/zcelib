@@ -362,8 +362,7 @@ int ZCE_LUA::dump_clua_stack(lua_State *state)
 //
 int ZCE_LUA::on_error(lua_State *state)
 {
-    ZCE_LOGMSG(RS_ERROR, "[ZCELUA]error msg =%s", lua_tostring(state, 1));
-    lua_pop(state, 1);
+    ZCE_LOGMSG(RS_ERROR, "[LUATIE]error msg =%s", lua_tostring(state, -1));
     dump_luacall_stack(state);
     return 0;
 }

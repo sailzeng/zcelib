@@ -220,6 +220,55 @@ int test_lua_script4(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
+
+
+    //
+    printf("%s\n", "-------------------------- current stack");
+    lua_tie.dump_clua_stack();
+
+    // 현재 스택의 내용을 다시 출력한다.
+    printf("%s\n", "-------------------------- stack after push '1'");
+    //lua_tie.push(1);
+    //lua_tie.push(2);
+    //lua_tie.push("333333");
+    lua_tie.dump_clua_stack();
+
+    // sample5.lua 파일을 로드/실행한다.
+    lua_tie.do_file("sample5.lua");
+
+    // test_error() 
+    // test_error() 삔딧痰돕 test_error_3() 
+    printf("%s\n", "-------------------------- calling test_error()");
+    int abc = 0;
+    lua_tie.call_luafun_0("test_error",abc);
+
+    // test_error_3()
+    printf("%s\n", "-------------------------- calling test_error_3()");
+    //lua_tie.call_luafun_0("test_error_3");
+
+    //// printf() 대신 유저가 제공하는 에러 출력 루틴을 사용할 수 있다.
+    //// 이 에러처리 함수는1개의 루아 문자열로 발생한 에러를 전달하게 된다.
+    //// C++ 에서 등록할 경우 void function(const char*) 형태가 적합하다.
+    //lua_tinker::def(L, "_ALERT", show_error);
+
+    //lua_tinker::call<void>(L, "_ALERT", "test !!!");
+
+    //// test_error() 함수를 호출한다.
+    //// 함수 호출중 발생한 에러는 Lua에 등록된 _ALERT()를 통해서 출력된다.
+    //printf("%s\n", "-------------------------- calling test_error()");
+    //lua_tinker::call<void>(L, "test_error");
+
+
+    lua_tie.close();
+
+    return 0;
+}
+
+
+int test_lua_script5(int, char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
     int array_a[100];
 
 
