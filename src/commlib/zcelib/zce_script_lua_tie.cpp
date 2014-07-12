@@ -292,7 +292,7 @@ int ZCE_LUA::dump_luacall_stack(lua_State *state)
 }
 
 //dump C调用lua的堆栈，
-int ZCE_LUA::dump_clua_stack(lua_State *state)
+int ZCE_LUA::enum_clua_stack(lua_State *state)
 {
     int stack_top = lua_gettop(state);
     ZCE_LOGMSG(RS_INFO, "[CLSTACK]C to lua Stack level:%d ====================================", stack_top);
@@ -1049,7 +1049,7 @@ int ZCE_Lua_Tie::do_file(const char *filename)
 ///dump C调用lua的堆栈，
 void ZCE_Lua_Tie::enum_stack()
 {
-    ZCE_LUA::dump_clua_stack(lua_state_);
+    ZCE_LUA::enum_clua_stack(lua_state_);
 }
 ///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
 void ZCE_Lua_Tie::dump_stack()

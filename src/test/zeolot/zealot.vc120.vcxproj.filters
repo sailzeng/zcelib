@@ -74,6 +74,9 @@
     <ClCompile Include="zealot_test_lua.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zealot_test_copy_boost.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zealot_predefine.h">

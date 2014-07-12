@@ -63,7 +63,7 @@ int newindex_onlyread(lua_State *state);
 int dump_luacall_stack(lua_State *state);
 
 ///dump C调用lua的堆栈，
-int dump_clua_stack(lua_State *state);
+int enum_clua_stack(lua_State *state);
 
 ///在函数处理错误后的处理函数
 int on_error(lua_State *state);
