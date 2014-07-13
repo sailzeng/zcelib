@@ -25,9 +25,14 @@ namespace ZCE_LIB
 
 
 /*!
-* @brief      any 是一个内部保存指针的数据，
-*             
-* @note       里面通过一个holder_base 基类指针，以及带有类型的holder 
+* @brief      any 是一个万能的容器，和Windows内部的variant有点类似，
+*             （注意BOOST也有一个variant，但BOOST那个是一个模板类，）
+*             Any通过内部保存指针的数据，达到存放所有数据的目的，但他存放
+*             的并不是void *，而且可以做类型检查。
+*             里面通过一个holder_base 基类指针，以及带有类型的holder，
+*             完成类型检查
+* @note       any 里面最好不要直接保存指针，而是使用share_ptr这类指针
+*             容器
 *             
 */
 class any
@@ -46,6 +51,7 @@ public:
     {
     }
 
+    //克隆了一个
     any(const any & other)
         : content_(other.content_ ? other.content_->clone() : 0)
     {
@@ -58,12 +64,14 @@ public:
 
 public: // modifiers
 
+    ///交换
     any & swap(any & rhs)
     {
         std::swap(content_, rhs.content_);
         return *this;
     }
 
+    ///boost any 的操作=符号的作用是交换。这点要注意
     template<typename value_type>
     any & operator=(const value_type & rhs)
     {
@@ -90,11 +98,12 @@ public: // queries
         return content_ ? content_->type() : typeid(void);
     }
 
-    //
+    //保存基类指针的类型
     class holder_base
     {
     public: // structors
 
+        //虚析构函数
         virtual ~holder_base()
         {
         }
@@ -125,6 +134,7 @@ public: // queries
             return typeid(value_type);
         }
 
+        //克隆是new一个新的
         virtual holder_base * clone() const
         {
             return new holder(held);

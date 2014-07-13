@@ -746,17 +746,33 @@ public:
 
 };  //namespace ZCE_LUA
 
+class ZCE_Lua_Tie;
 
 //=======================================================================================================
 
-//Tie class to lua的语法糖，具体函数的解释请参考ZCE_Lua_Tie
-class ZCE_Lua_Tie;
+template <typename class_type>
+class Candy_Tie_Table
+{
 
+};
+
+//=======================================================================================================
+
+
+
+/*!
+* @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法
+*             这样的语法，让代码书写更加简单一点。
+*             tie.reg_class<TA>("TA",false).mem_var(...).mem_var(...)
+*             当然缺点也会有，因为这样的操作没有返回值，所以即使有错误也无法反馈
+* @tparam     class_type 绑定的类的名称
+* @note       具体函数的解释请参考ZCE_Lua_Tie
+*/
 template <typename class_type>
 class Candy_Tie_Class
 {
 public:
-    //构造函数
+    ///构造函数
     Candy_Tie_Class(ZCE_Lua_Tie *lua_tie,
                     bool read_only):
         lua_tie_(lua_tie),
@@ -852,7 +868,13 @@ public:
     ///向LUA注册std::string的类型
     void reg_stdstring();
 
-    ///向LUA注册枚举值
+
+    /*!
+    * @brief      向LUA注册枚举值
+    * @param      name 名字
+    * @param      item_num 枚举数量
+    * @param      ... 一个名字一个整数int算一个注册的枚举值
+    */
     void reg_enum(const char *name, size_t item_num, ...);
 
 
@@ -963,7 +985,8 @@ public:
     template<class input_iter >
     void to_luatable(const char *table_name,
                      typename const input_iter first,
-                     typename const input_iter last)
+                     typename const input_iter last,
+                     typename map_iter::second_type * = nullptr)
     {
         lua_pushstring(lua_state_, table_name);
         lua_createtable(lua_state_,

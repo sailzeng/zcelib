@@ -257,16 +257,21 @@ int test_lua_script5(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
     int array_a[100];
-
+    for (size_t i = 0; i < 100; ++i)
+    {
+        array_a[i] = static_cast<int>(9009000 + i);
+    }
 
     lua_tie.to_luatable("array_a", array_a, array_a + 100);
 
 
-    std::map<int, double> map_a;
-    map_a[9] = 1.0;
-    map_a[10] = 2.1;
-    map_a[11] = 3.1;
+    std::map<std::string, double> map_a;
+    map_a[std::string("Wuhan")] = 1.0;
+    map_a[std::string("ZhongGuo")] = 2.1;
+    map_a[std::string("Miaomiao")] = 3.1;
     lua_tie.to_luatable("map_a", map_a.begin(), map_a.end());
+
+    lua_tie.do_file("lua/lua_test_05.lua");
 
     lua_tie.close();
 
