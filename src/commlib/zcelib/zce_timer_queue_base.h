@@ -73,10 +73,13 @@ protected:
         uint64_t                    next_trigger_point_;
 
         ///是否已经触发过了，
-        ///yunfeiyang帮忙发现了一个bug，为了解决这个bug，我们增加了这个字段。
-        ///1. dispatch_timer在调用handle_timeout时，如果handle_timeout中删除了自己的定时器，又增加了自己的定时器，此时增加的定时器，time_node_id与当前的在dispatch_timer中处理的time_node_id是一样的
-        ///2. dispatch调用完handle_timeout后，会reschedule_timer, reschedule_timer发现这个timer是一次性的，删除，因此time_node_id失效
-        ///3. 在事务处理中释放时，time_node_id还有效，所以又会调用cancel_timer函数，但此时这个time_node_id已经释放了，导致出错
+        ///yunfeiyang帮忙发现了一个bug，为了解决这个bug，我们增加了这个字段。出错过程是这样的，
+        ///1. dispatch_timer在调用handle_timeout时，如果handle_timeout中删除了自己的定时器，又增加了自己的定时器，此时增加的定时器，
+        ///   time_node_id与当前的在dispatch_timer中处理的time_node_id是一样的,(因为分配队列的原因)
+        ///2. dispatch调用完handle_timeout后，会reschedule_timer, reschedule_timer发现这个timer是一次性的，删除，因此time_node_id
+        ///   在定时器内部已经失效，（但外部并不知道）
+        ///3. 在事务处理中（外部）释放时，其还会错误time_node_id有效，所以又会调用cancel_timer函数，但此时这个time_node_id在定时器内
+        ///   部会认为已经释放了，导致出错
         bool                        already_trigger_;
 
     public:

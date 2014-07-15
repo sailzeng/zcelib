@@ -35,7 +35,8 @@
 #ifndef ZCE_LIB_SCRIPT_LUA_H_
 #define ZCE_LIB_SCRIPT_LUA_H_
 
-
+#include "zce_predefine.h"
+#include "zce_boost_mpl.h"
 
 
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
@@ -744,6 +745,9 @@ public:
 };
 
 
+
+
+
 };  //namespace ZCE_LUA
 
 class ZCE_Lua_Tie;
@@ -984,9 +988,8 @@ public:
     */
     template<class input_iter >
     void to_luatable(const char *table_name,
-                     typename const input_iter first,
-                     typename const input_iter last,
-                     typename map_iter::second_type * = nullptr)
+        const typename std::enable_if< (typeid(std::iterator_traits<input_iter>::iterator_category) == typeid(std::random_access_iterator_tag)), input_iter>::type  first,
+                     typename const input_iter last)
     {
         lua_pushstring(lua_state_, table_name);
         lua_createtable(lua_state_,
@@ -1014,9 +1017,8 @@ public:
     */
     template<class map_iter >
     void to_luatable(const char *table_name,
-                     typename const map_iter first,
-                     typename const map_iter last,
-                     typename map_iter::second_type * = nullptr)
+        typename const std::enable_if< (typeid(std::iterator_traits<map_iter>::iterator_category) == typeid(std::bidirectional_iterator_tag)), map_iter>::type  first,
+                     typename const map_iter last)
     {
         lua_pushstring(lua_state_, table_name);
         lua_createtable(lua_state_,

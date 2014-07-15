@@ -128,26 +128,24 @@ void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id)
     //找到轮子的位置
     size_t wheel_point_id = (proc_wheel_start_ + front_num) % num_wheel_point_;
 
-    ZCE_Timer_Wheel::bind_wheel_listnode(time_node_id, wheel_point_id);
-}
-
-///
-inline void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id, size_t wheel_point_id)
-{
     //比较难看的双向链表，没法像std那样折腾，只能用这种有一个头指针的难看的写法
-    int old_node_id =  timer_wheel_point_[wheel_point_id];
+    int old_node_id = timer_wheel_point_[wheel_point_id];
     timer_wheel_point_[wheel_point_id] = time_node_id;
 
     //要反向记录，才能在删除时查询到
-    wheel_node_list_[time_node_id].wheel_point_id_ = static_cast<int>( wheel_point_id);
+    wheel_node_list_[time_node_id].wheel_point_id_ = static_cast<int>(wheel_point_id);
 
     //如果原来头指针后面一个数据，要联入，建立双向链表
-    if ( INVALID_TIMER_ID != old_node_id )
+    if (INVALID_TIMER_ID != old_node_id)
     {
         wheel_node_list_[old_node_id].list_prev_ = time_node_id;
         wheel_node_list_[time_node_id].list_next_ = old_node_id;
     }
+
+
 }
+
+
 
 //将Queue和TimerNode解除绑定
 void ZCE_Timer_Wheel::unbind_wheel_listnode(int time_node_id)
@@ -394,6 +392,9 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
                     reschedule_timer(timer_node_id, now_trigger_msec);
                 }
             }
+            //到else 有2个可能，
+            //一个是原来的定时触发时间是一个超长的时间，超过了轮子的周期
+            //一个是时间周期被调整过，（比如向后调整）
             else
             {
                 //先保存着
@@ -409,10 +410,10 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
         //如果本槽位有未来触发的Timer ID，
         if (future_trigger_tid_.size() > 0)
         {
-            //
             for (size_t x = 0; x < future_trigger_tid_.size(); ++x )
             {
-                bind_wheel_listnode(future_trigger_tid_[x], i);
+                //重新计算相关的未来的触发点，然后加入轮子
+                bind_wheel_listnode(future_trigger_tid_[x]);
             }
             //clear应该不会回收空间
             future_trigger_tid_.clear();

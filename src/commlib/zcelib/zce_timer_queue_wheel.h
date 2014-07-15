@@ -82,7 +82,7 @@ protected:
     static const unsigned int MIN_TIMER_LENGTH_MESC       = 1 * 3600 * 1000;
 
     ///未来触发的时间ID的数组的初始化大小，
-    static const size_t ARRAY_FUTURE_TRIGGER_TIMERID_SIZE = 256;
+    static const size_t ARRAY_FUTURE_TRIGGER_TIMERID_SIZE = 512;
 
 public:
 
@@ -165,8 +165,7 @@ protected:
 
     ///将Queue和TimerNode绑定
     void bind_wheel_listnode(int time_node_id);
-    ///
-    inline void bind_wheel_listnode(int time_node_id, size_t wheel_point_id);
+
     ///将Queue和TimerNode解除绑定
     void unbind_wheel_listnode(int time_node_id);
 
