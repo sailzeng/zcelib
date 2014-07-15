@@ -83,6 +83,16 @@ struct has_def_key_type : has_def_key_type_impl < T >
 };
 
 
+//==================================================================
+
+
+template<typename input_iter>
+struct is_random_access_iterator
+{
+    static const bool value = typeid(std::iterator_traits<input_iter>::iterator_category) == typeid(std::random_access_iterator_tag);
+};
+
+
 };
 
 

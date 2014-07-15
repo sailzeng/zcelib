@@ -216,16 +216,17 @@ void push_stack(lua_State *state, typename val_type val)
     }
 
     new(lua_newuserdata(state,
-                        sizeof(val_2_udat<val_type>))) val_2_udat<val_type>(val);
+                        sizeof(val_2_udat<val_type>))) 
+                        val_2_udat<std::remove_const<val_type>::type >(val);
 
     //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<val_type >::name());
+    lua_pushstring(state, class_name<std::remove_const<val_type>::type >::name());
     lua_gettable(state, LUA_GLOBALSINDEX);
     if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
                    typeid(val).name(),
-                   class_name<val_type >::name());
+                   class_name<std::remove_const<val_type>::type >::name());
         lua_remove(state, -1);
         return;
     }
@@ -977,30 +978,53 @@ public:
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
+
+    
+    /*!
+    * @brief      将一个容器里面的数据放入Lua的table中，根据迭代器的类型会选择不同的
+    *             重载函数
+    * @tparam     iter_type   迭代器的类型，（当然也可以是指针）
+    * @param      table_name  table的名称
+    * @param      first       第一个first迭代器
+    * @param      last        最后一个last的迭代器
+    */
+    template<class iter_type >
+    void to_luatable(const char *table_name,
+        const iter_type first,
+        const iter_type last)
+    {
+        to_luatable(table_name,
+            first,
+            last,
+            std::iterator_traits<iter_type>::iterator_category());
+    }
+
+protected:
     /*!
     * @brief      使用迭代器拷贝数组，vector的数据,到LUA中的一个table中，
-    * @tparam     input_iter 输入的迭代器，
+    * @tparam     raiter_type 输入的迭代器，random_access_iterator_tag 类型的迭代器
     * @param      table_name table的名称
-    * @param      first      第一个begin迭代器
-    * @param      last       最后一个end的迭代器
-    * @note       当然list等容器也能放进去，但没啥意义，在luatable里面，
-    *             table使用number进行查询的，而这样这个样违背list的效果
+    * @param      first      第一个first迭代器
+    * @param      last       最后一个last的迭代器
+    * @param      nouse      没有使用的参数，仅仅用于类型重载识别
+    * @note       
     */
-    template<class input_iter >
+    template<class raiter_type >
     void to_luatable(const char *table_name,
-        const typename std::enable_if< (typeid(std::iterator_traits<input_iter>::iterator_category) == typeid(std::random_access_iterator_tag)), input_iter>::type  first,
-                     typename const input_iter last)
+                     const typename raiter_type first,
+                     typename const raiter_type last,
+                     std::random_access_iterator_tag /*nouse*/ )
     {
         lua_pushstring(lua_state_, table_name);
         lua_createtable(lua_state_,
                         static_cast<int>(std::distance(first, last)), 0);
-        typename input_iter iter_temp = first;
+        typename raiter_type iter_temp = first;
         for (int i = 0; iter_temp != last; iter_temp++, i++)
         {
             //Lua的使用习惯索引是从1开始
             lua_pushnumber(lua_state_, i + 1);
             //通过迭代器萃取得到类型，
-            ZCE_LUA::push_stack<std::iterator_traits<input_iter>::value_type >(lua_state_, *iter_temp);
+            ZCE_LUA::push_stack<std::iterator_traits<raiter_type>::value_type >(lua_state_, *iter_temp);
             lua_settable(lua_state_, -3);
         }
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
@@ -1008,36 +1032,38 @@ public:
 
     /*!
     * @brief      通过迭代器将一个map,或者unorder_map放入lua table，
-    * @tparam     map_iter   迭代器类型
-    * @param      table_name 表的名称
-    * @param      first      第一个迭代器，
-    * @param      last       最后一个迭代器
-    * @param      map_iter::second_type* 这个参数没有使用，用于使用SFINAE明确迭代器是map的
+    * @tparam     biiter_type 迭代器类型,bidirectional_iterator_tag,双向迭代器
+    * @param      table_name  表的名称
+    * @param      first       第一个迭代器，
+    * @param      last        最后一个迭代器
+    * @param      nouse       没有使用的参数，仅仅用于类型重载识别
     * @note       这个其实也支持multi的几个map，但，但……
     */
-    template<class map_iter >
+    template<class biiter_type >
     void to_luatable(const char *table_name,
-        typename const std::enable_if< (typeid(std::iterator_traits<map_iter>::iterator_category) == typeid(std::bidirectional_iterator_tag)), map_iter>::type  first,
-                     typename const map_iter last)
+                     const biiter_type  first,
+                     const biiter_type last,
+                     std::bidirectional_iterator_tag /*nouse*/)
     {
         lua_pushstring(lua_state_, table_name);
         lua_createtable(lua_state_,
-                        static_cast<int>(std::distance(first, last)), 0);
+                        0,
+                        static_cast<int>(std::distance(first, last)));
 
-        typename input_iter iter_temp = first;
+        typename biiter_type iter_temp = first;
         for (; iter_temp != last; iter_temp++)
         {
             //将map的key作为table的key
-            ZCE_LUA::push_stack<input_iter::first_type >(lua_state_, iter_temp.first);
-            ZCE_LUA::push_stack<input_iter::second_type >(lua_state_, iter_temp.second);
+            ZCE_LUA::push_stack<std::iterator_traits<biiter_type>::value_type::first_type >(lua_state_, iter_temp->first);
+            ZCE_LUA::push_stack<std::iterator_traits<biiter_type>::value_type::second_type >(lua_state_, iter_temp->second);
             lua_settable(lua_state_, -3);
         }
 
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
-        return 0;
+        return;
     }
 
-    
+
     /*!
     * @brief      从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
     * @tparam     container_type
@@ -1106,6 +1132,8 @@ public:
         }
         return 0;
     }
+
+public:
 
     ///调用LUA的函数，只有一个返回值
     template<typename... args_type>
