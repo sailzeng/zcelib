@@ -17,9 +17,11 @@
 *
 *             开始搞的时候，认真看了Scott的红黑树的实现，发现底质还可以，
 *             可以直接在上面改，同时看到这个代码，应该可以参考用，
-*             最后发现，写起来最苦逼的还是删除代码，我至少废了2个方案。因为
-*             很多帖子的方案都不太靠谱，我在如何把要删除的节点交换到叶子节点
-*             上有犯了傻。
+*             最后发现，写起来最苦逼的还是删除node代码，我至少废了2个方案。
+*             因为很多帖子的方案都不太靠谱，我在如何把要删除的节点交换到叶子
+*             节点上有犯了傻。
+*             而且AVL的删除后，节点的调整也不止那4种变换。
+*             http://www.cnblogs.com/fullsail/p/3729015.html
 *
 */
 
@@ -111,6 +113,13 @@ class _shm_avl_tree_iterator
 
     typedef shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key> shm_avl_tree_t;
 
+
+    //迭代器萃取器所有的东东
+    typedef ptrdiff_t difference_type;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
+    typedef _value_type value_type;
+    typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
     //构造函数

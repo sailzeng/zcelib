@@ -265,9 +265,6 @@
     <ClInclude Include="zce_shm_rbtree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_shm_vector.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_socket_acceptor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -395,6 +392,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce_boost_signal.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_shm_array.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

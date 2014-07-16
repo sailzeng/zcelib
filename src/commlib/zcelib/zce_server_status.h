@@ -31,7 +31,7 @@
 #define ZCE_LIB_SERVER_STATUS_H_
 
 #include "zce_share_mem_posix.h"
-#include "zce_shm_vector.h"
+#include "zce_shm_array.h"
 #include "zce_lock_null_lock.h"
 #include "zce_os_adapt_time.h"
 
@@ -186,7 +186,7 @@ class ZCELIB_EXPORT ZCE_Server_Status : public ZCE_NON_Copyable
 protected:
 
     //存放统计数据的共享内存数组，
-    typedef ZCE_LIB::shm_vector<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
+    typedef ZCE_LIB::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
     //统计ID到数组的下标的hash map
     typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     //statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构

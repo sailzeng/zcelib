@@ -107,6 +107,14 @@ template <class _value_type, class _key_type, class _extract_key, class _compare
 
     typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
 
+
+    //迭代器萃取器所有的东东
+    typedef ptrdiff_t difference_type;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
+    typedef _value_type value_type;
+    typedef std::bidirectional_iterator_tag iterator_category;
+
 public:
     _shm_rb_tree_iterator(size_t seq, shm_rb_tree_t *instance)
         : serial_(seq)

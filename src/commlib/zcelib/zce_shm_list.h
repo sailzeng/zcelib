@@ -57,6 +57,13 @@ template <class _value_type> class _shm_list_iterator
 {
     typedef _shm_list_iterator<_value_type> iterator;
 
+    //迭代器萃取器所有的东东
+    typedef ptrdiff_t difference_type;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
+    typedef _value_type value_type;
+    typedef std::bidirectional_iterator_tag iterator_category;
+
 public:
 
     /*!
