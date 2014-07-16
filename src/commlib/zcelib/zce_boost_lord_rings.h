@@ -45,6 +45,14 @@ protected:
     //定义迭代器
     typedef _lordrings_iterator<_value_type > iterator;
 
+
+    //迭代器萃取器所有的东东
+    typedef ptrdiff_t difference_type;
+    typedef _value_type* pointer;
+    typedef _value_type& reference;
+    typedef _value_type value_type;
+    typedef std::random_access_iterator_tag iterator_category;
+
 public:
     ///构造函数
     _lordrings_iterator():
@@ -95,6 +103,22 @@ public:
     {
         iterator tmp = *this;
         ++*this;
+        return tmp;
+    }
+
+
+    ///前向迭代器
+    iterator &operator--()
+    {
+        serial_--;
+        return *this;
+    }
+
+    ///前向迭代器
+    iterator operator--(int)
+    {
+        iterator tmp = *this;
+        --*this;
         return tmp;
     }
 

@@ -997,7 +997,10 @@ public:
             first,
             last,
             std::iterator_traits<iter_type>::iterator_category());
+        return;
     }
+
+
 
 protected:
     /*!
@@ -1011,8 +1014,8 @@ protected:
     */
     template<class raiter_type >
     void to_luatable(const char *table_name,
-                     const typename raiter_type first,
-                     typename const raiter_type last,
+                     const raiter_type first,
+                     const raiter_type last,
                      std::random_access_iterator_tag /*nouse*/ )
     {
         lua_pushstring(lua_state_, table_name);
@@ -1037,7 +1040,7 @@ protected:
     * @param      first       第一个迭代器，
     * @param      last        最后一个迭代器
     * @param      nouse       没有使用的参数，仅仅用于类型重载识别
-    * @note       这个其实也支持multi的几个map，但，但……
+    * @note       这个其实也支持和multi的几个map，但，但……，另外list也是bidirectional_iterator_tag
     */
     template<class biiter_type >
     void to_luatable(const char *table_name,
@@ -1063,6 +1066,27 @@ protected:
         return;
     }
 
+public:
+
+    /*!
+    * @brief
+    * @tparam     container_type
+    * @return     int
+    * @param      table_name
+    * @param      container_dat
+    * @note
+    */
+    template<class container_type, class iter_type>
+    int from_luatable(const char *table_name,
+                      container_type &container_dat,
+                      iter_type first)
+    {
+        return from_luatable(table_name,
+            container_dat,
+            first,
+            std::iterator_traits<iter_type>::iterator_category());
+    }
+
 
     /*!
     * @brief      从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
@@ -1070,10 +1094,13 @@ protected:
     * @return     int
     * @param      table_name
     * @param      container_dat
-    * @note       
+    * @param      nouse      没有使用的参数，仅仅用于类型重载识别
     */
-    template<class container_type >
-    int from_luatable(const char *table_name, container_type &container_dat)
+    template<class container_type, class iter_type >
+    int from_luatable(const char *table_name,
+        container_type & /*container_dat*/,
+        iter_type first,
+        std::random_access_iterator_tag /*nouse*/)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, table_name);
@@ -1092,9 +1119,11 @@ protected:
         while (lua_next(lua_state_, -2) != 0)
         {
             // uses 'key' (at index -2) and 'value' (at index -1)
-            //
-            int index = read_stack<int>(lua_state_, -2) - 1;
-            container_dat[index] = read_stack<container_type::value_type>(lua_state_, -1);
+            int index = ZCE_LUA::read_stack<int>(lua_state_, -2) - 1;
+            *(first + index) =
+                ZCE_LUA::read_stack
+                <std::iterator_traits<iter_type>::value_type>
+                (lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
             lua_remove(lua_state_, -1);
         }
@@ -1102,10 +1131,11 @@ protected:
     }
 
     //从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
-    template<class container_type >
+    template<class container_type, class biiter_type >
     int from_luatable(const char *table_name,
                       container_type &container_dat,
-                      typename container_type::key_type * = nullptr)
+                      biiter_type first,
+                      std::bidirectional_iterator_tag /*nouse*/)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, table_name);
@@ -1125,8 +1155,8 @@ protected:
         while (lua_next(lua_state_, -2) != 0)
         {
             // uses 'key' (at index -2) and 'value' (at index -1)
-            container_dat[read_stack<container_type::key_type>(lua_state_, -2)] =
-                read_stack<container_type::value_type>(lua_state_, -1);
+            container_dat[ZCE_LUA::read_stack<std::iterator_traits<biiter_type>::value_type::first_type>(lua_state_, -2)] =
+                ZCE_LUA::read_stack<std::iterator_traits<biiter_type>::value_type::second_type>(lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
             lua_remove(lua_state_, -1);
         }
@@ -1201,7 +1231,7 @@ public:
 
     /*!
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
-    * @tparam     class_type
+    * @tparam     class_type      绑定类的类型
     * @return     Candy_Tie_Class 用于方便绑定类的成员，可以让你写出连续.的操作
     * @param      class_name      类的名称，在Lua中使用
     * @param      read_only       这个类的数据是否只读，而不能写

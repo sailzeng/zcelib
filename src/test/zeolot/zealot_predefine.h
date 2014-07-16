@@ -28,7 +28,7 @@
 #include <zce_shm_hash_expire.h>
 #include <zce_shm_hash_table.h>
 #include <zce_shm_rbtree.h>
-#include <zce_shm_vector.h>
+#include <zce_shm_array.h>
 #include <zce_shm_list.h>
 #include <zce_shm_cache_chunk.h>
 #include <zce_shm_lockfree_deque.h>

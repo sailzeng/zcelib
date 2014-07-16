@@ -273,6 +273,12 @@ int test_lua_script5(int, char *[])
 
     lua_tie.do_file("lua/lua_test_05.lua");
 
+    int i_ary[10];
+    lua_tie.from_luatable("table_array", i_ary, i_ary);
+
+    std::map<std::string, double> map_b;
+    lua_tie.from_luatable("table_map", map_b, map_b.begin());
+
     lua_tie.close();
 
     return 0;

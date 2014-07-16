@@ -9,9 +9,7 @@
 int main(int argc , char *argv[])
 {
 
-    typedef std::pair<int, int >  abc;
-    std::cout << ZCE_LIB::has_def_first_type<abc>::value << std::endl;
-    std::cout << ZCE_LIB::has_def_first_type<int>::value << std::endl;
+
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
 
