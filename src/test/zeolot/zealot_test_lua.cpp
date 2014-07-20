@@ -10,9 +10,9 @@ int add2_fun(int a, int b)
 }
 
 
-int add3_fun(int a, int b,int c)
+int add3_fun(int a, int b, int c)
 {
-    return a + b+ c;
+    return a + b + c;
 }
 
 
@@ -20,14 +20,14 @@ int add3_fun(int a, int b,int c)
 int test_lua_script1(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
-    lua_tie.open(true,true);
+    lua_tie.open(true, true);
 
-    
+
 
     lua_tie.reg_gfun("add2_fun", add2_fun);
 
     lua_tie.reg_gfun("add3_fun", add3_fun);
-     
+
 
     lua_tie.do_file("lua/lua_test_01.lua");
 
@@ -50,7 +50,7 @@ int g_b = 2222;
 int g_array[20];
 
 //测试全局变量在两边的使用
-int test_lua_script2(int ,char *[])
+int test_lua_script2(int , char *[])
 {
 
     for (size_t k = 0; k < 20; ++k)
@@ -77,12 +77,12 @@ int test_lua_script2(int ,char *[])
     lua_tie.set_gvar<int &>("g_a_ref", ref_gb);
 
 
-    lua_tie.set_garray("g_array", g_array,20);
+    lua_tie.set_garray("g_array", g_array, 20);
 
 
     lua_tie.do_file("lua/lua_test_02.lua");
 
-    printf("g_b = %d\n",g_b);
+    printf("g_b = %d\n", g_b);
 
     for (size_t k = 0; k < 20; ++k)
     {
@@ -96,7 +96,7 @@ int test_lua_script2(int ,char *[])
 
 struct TA
 {
-    TA(int a) :a_(a)
+    TA(int a) : a_(a)
     {
     }
     int set_a(int a)
@@ -110,9 +110,9 @@ struct TA
 
 
 
-struct TB :public TA
+struct TB : public TA
 {
-    TB(int b1, int b2, int b3) :TA(0),b1_(b1), b2_(b2), b3_(b3)
+    TB(int b1, int b2, int b3) : TA(0), b1_(b1), b2_(b2), b3_(b3)
     {
     }
 
@@ -122,13 +122,13 @@ struct TB :public TA
         return b1_;
     }
 
-    int set_b2(int b2_1,int b2_2)
+    int set_b2(int b2_1, int b2_2)
     {
         b2_ = b2_1 + b2_2;
         return b2_;
     }
 
-    int set_b3(int b3_1, int b3_2,int b3_3)
+    int set_b3(int b3_1, int b3_2, int b3_3)
     {
         b3_ = b3_1 + b3_2 + b3_3;
         return b3_;
@@ -145,31 +145,31 @@ int test_lua_script3(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
-    lua_tie.reg_class<TA>("TA",false);
+    lua_tie.reg_class<TA>("TA", false);
     lua_tie.class_mem_var<TA>("a_", &TA::a_);
     lua_tie.class_mem_fun("set_a", &TA::set_a);
-    lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA,int> );
+    lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA, int> );
 
     TA ta_val(100);
     TA *ta_ptr = new TA(200);
     TA ta_1(300);
     TA &ta_ref = ta_1;
 
-    lua_tie.set_gvar("ta_val",ta_val);
+    lua_tie.set_gvar("ta_val", ta_val);
     lua_tie.set_gvar("ta_ptr", ta_ptr);
     lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
 
 
     lua_tie.reg_class<TB>("TB", false)
-        .construct(ZCE_LUA::constructor<TB, int, int, int>)
-        .inherit<TA>()
-        .mem_var("b1_", &TB::b1_)
-        .mem_var("b2_", &TB::b2_)
-        .mem_var("b3_", &TB::b3_)
-        .mem_ary<double, 120>("b_array_", &TB::b_array_)
-        .mem_fun("set_b1", &TB::set_b1)
-        .mem_fun("set_b2", &TB::set_b2)
-        .mem_fun("set_b3", &TB::set_b3);
+    .construct(ZCE_LUA::constructor<TB, int, int, int>)
+    .inherit<TA>()
+    .mem_var("b1_", &TB::b1_)
+    .mem_var("b2_", &TB::b2_)
+    .mem_var("b3_", &TB::b3_)
+    .mem_ary<double, 120>("b_array_", &TB::b_array_)
+    .mem_fun("set_b1", &TB::set_b1)
+    .mem_fun("set_b2", &TB::set_b2)
+    .mem_fun("set_b3", &TB::set_b3);
 
     TB tb_val(100, 200, 300);
     TB *tb_ptr_1 = new TB(1000, 2000, 3000);
@@ -236,8 +236,8 @@ int test_lua_script4(int, char *[])
     // sample5.lua 颇老阑 肺靛/角青茄促.
     lua_tie.do_file("sample5.lua");
 
-    // test_error() 
-    // test_error() 会调用到 test_error_3() 
+    // test_error()
+    // test_error() 会调用到 test_error_3()
     printf("%s\n", "-------------------------- calling test_error()");
     int abc = 0;
     lua_tie.call_luafun_0("test_error", abc);
@@ -251,7 +251,7 @@ int test_lua_script4(int, char *[])
     return 0;
 }
 
-
+//展现table的几种使用方式
 int test_lua_script5(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
@@ -265,19 +265,46 @@ int test_lua_script5(int, char *[])
     lua_tie.to_luatable("array_a", array_a, array_a + 100);
 
 
-    std::map<std::string, double> map_a;
-    map_a[std::string("Wuhan")] = 1.0;
-    map_a[std::string("ZhongGuo")] = 2.1;
-    map_a[std::string("Miaomiao")] = 3.1;
+    std::map<double, std::string> map_a;
+    map_a[10.2] = std::string("Wuhan");
+    map_a[20.3] = std::string("ZhongGuo");
+    map_a[30.4] = std::string("Miaomiao");
     lua_tie.to_luatable("map_a", map_a.begin(), map_a.end());
+
+    std::map<const char *, std::string> map_b;
+    const char *KEY_1 = "B_KEY_1";
+    const char *KEY_2 = "B_KEY_2";
+    const char *KEY_3 = "B_KEY_3";
+
+    map_b[KEY_1] = std::string("GuangDong");
+    map_b[KEY_2] = std::string("Shenzhen");
+    map_b[KEY_3] = std::string("LuaTie");
+
+    lua_tie.to_luatable("map_b", map_b.begin(), map_b.end());
+
 
     lua_tie.do_file("lua/lua_test_05.lua");
 
-    int i_ary[10];
-    lua_tie.from_luatable("table_array", i_ary, i_ary);
+    printf("%s\n", "-------------------------- ");
+    int read_ary_a[10];
+    lua_tie.from_luatable("table_array", read_ary_a);
+    for (size_t i = 0; i < 10; ++i)
+    {
+        printf("read_ary_a[%d]=%d\n", (int)i, read_ary_a[i]);
+    }
+    printf("%s\n", "-------------------------- ");
+    std::map<int, double> read_map_a;
+    lua_tie.from_luatable("table_map", read_map_a);
 
-    std::map<std::string, double> map_b;
-    lua_tie.from_luatable("table_map", map_b, map_b.begin());
+    auto iter = read_map_a.begin();
+    for (; iter != read_map_a.end(); iter++)
+    {
+        printf("read_map_a[%d]=%f\n",
+               iter->first,
+               iter->second);
+    }
+
+
 
     lua_tie.close();
 

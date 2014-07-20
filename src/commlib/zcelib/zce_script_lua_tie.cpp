@@ -8,59 +8,165 @@
 
 
 //=======================================================================================================
+
+void ZCE_LUA::push_stack(lua_State * /*state*/)
+{
+}
+
+template<> void ZCE_LUA::push_stack_ptr(lua_State *state, char * const ptr)
+{
+    lua_pushstring(state, ptr);
+}
+
+template<> void ZCE_LUA::push_stack_ptr(lua_State *state, const char * const ptr)
+{
+    lua_pushstring(state, ptr);
+}
+
+//read_stack从堆栈中读取一个数据
+template<> void ZCE_LUA::push_stack_val(lua_State *state, char val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, unsigned char val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, short val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, unsigned short val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, int val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, unsigned int val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, float val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, double val)
+{
+    lua_pushnumber(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, bool val)
+{
+    lua_pushboolean(state, val);
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, int64_t val)
+{
+    *(int64_t *)lua_newuserdata(state, sizeof(int64_t)) = val;
+    lua_pushstring(state, "int64_t");
+    lua_gettable(state, LUA_GLOBALSINDEX);
+
+    //在DEBUG版本增强一些检查，如果不是table
+#if defined DEBUG || defined _DEBUG
+    if (!lua_istable(state, -1))
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
+            lua_type(state, -1));
+        lua_pop(state, 1);
+        return;
+    }
+#endif
+
+    lua_setmetatable(state, -2);
+    return;
+}
+
+template<> void ZCE_LUA::push_stack_val(lua_State *state, uint64_t val)
+{
+    *(uint64_t *)lua_newuserdata(state, sizeof(uint64_t)) = val;
+    lua_pushstring(state, "uint64_t");
+    lua_gettable(state, LUA_GLOBALSINDEX);
+
+    //在DEBUG版本增强一些检查，如果不是table
+#if defined DEBUG || defined _DEBUG
+    if (!lua_istable(state, -1))
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? typeid[%d]",
+            lua_type(state, -1));
+        lua_pop(state, 1);
+        return;
+    }
+#endif
+
+    lua_setmetatable(state, -2);
+    return;
+}
+
+
+//=======================================================================================================
 //read_stack从堆栈中读取一个数据
 
-template<> char *ZCE_LUA::read_stack(lua_State *state, int index)
+template<> char *ZCE_LUA::read_stack_ptr(lua_State *state, int index)
 {
     return (char *)lua_tostring(state, index);
 }
 
-template<> const char *ZCE_LUA::read_stack(lua_State *state, int index)
+template<> const char *ZCE_LUA::read_stack_ptr(lua_State *state, int index)
 {
     return (const char *)lua_tostring(state, index);
 }
 
-template<> char ZCE_LUA::read_stack(lua_State *state, int index)
+
+template<> char ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (char)lua_tonumber(state, index);
 }
 
-template<> unsigned char ZCE_LUA::read_stack(lua_State *state, int index)
+template<> unsigned char ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (unsigned char)lua_tonumber(state, index);
 }
 
-template<> short ZCE_LUA::read_stack(lua_State *state, int index)
+template<> short ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (short)lua_tonumber(state, index);
 }
 
-template<> unsigned short ZCE_LUA::read_stack(lua_State *state, int index)
+template<> unsigned short ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (unsigned short)lua_tonumber(state, index);
 }
 
-template<> int ZCE_LUA::read_stack(lua_State *state, int index)
+template<> int ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (int)lua_tonumber(state, index);
 }
 
-template<> unsigned int ZCE_LUA::read_stack(lua_State *state, int index)
+template<> unsigned int ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (unsigned int)lua_tonumber(state, index);
 }
 
-template<> float ZCE_LUA::read_stack(lua_State *state, int index)
+template<> float ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (float)lua_tonumber(state, index);
 }
 
-template<> double ZCE_LUA::read_stack(lua_State *state, int index)
+template<> double ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     return (double)lua_tonumber(state, index);
 }
 
-template<> bool ZCE_LUA::read_stack(lua_State *state, int index)
+template<> bool ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     if (lua_isboolean(state, index))
     {
@@ -73,7 +179,7 @@ template<> bool ZCE_LUA::read_stack(lua_State *state, int index)
     }
 }
 
-template<> int64_t ZCE_LUA::read_stack(lua_State *state, int index)
+template<> int64_t ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     if (lua_isnumber(state, index))
     {
@@ -92,7 +198,7 @@ template<> int64_t ZCE_LUA::read_stack(lua_State *state, int index)
     }
 }
 
-template<> uint64_t ZCE_LUA::read_stack(lua_State *state, int index)
+template<> uint64_t ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     if (lua_isnumber(state, index))
     {
@@ -112,7 +218,7 @@ template<> uint64_t ZCE_LUA::read_stack(lua_State *state, int index)
     }
 }
 
-template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
+template<> std::string ZCE_LUA::read_stack_val(lua_State *state, int index)
 {
     if (lua_isstring(state, index))
     {
@@ -120,7 +226,7 @@ template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
     }
     else if (lua_isuserdata(state, index))
     {
-        return *(std::string *) (state, index);
+        return *(std::string *) (((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
     }
     else
     {
@@ -131,129 +237,8 @@ template<> std::string ZCE_LUA::read_stack(lua_State *state, int index)
         return std::string("");
     }
 }
-//=======================================================================================================
-void ZCE_LUA::push_stack(lua_State * /*state*/)
-{
 
-}
 
-//read_stack从堆栈中读取一个数据
-template<> void ZCE_LUA::push_stack(lua_State *state, char val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, unsigned char val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, short val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, unsigned short val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, int val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, unsigned int val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, float val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, double val)
-{
-    lua_pushnumber(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, char *val)
-{
-    lua_pushstring(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, const char *val)
-{
-    lua_pushstring(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, bool val)
-{
-    lua_pushboolean(state, val);
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, int64_t val)
-{
-    *(int64_t *)lua_newuserdata(state, sizeof(int64_t)) = val;
-    lua_pushstring(state, "int64_t");
-    lua_gettable(state, LUA_GLOBALSINDEX);
-
-    //在DEBUG版本增强一些检查，如果不是table
-#if defined DEBUG || defined _DEBUG
-    if (!lua_istable(state, -1))
-    {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
-                   lua_type(state, -1));
-        lua_pop(state, 1);
-        return;
-    }
-#endif
-
-    lua_setmetatable(state, -2);
-    return;
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, uint64_t val)
-{
-    *(uint64_t *)lua_newuserdata(state, sizeof(uint64_t)) = val;
-    lua_pushstring(state, "uint64_t");
-    lua_gettable(state, LUA_GLOBALSINDEX);
-
-    //在DEBUG版本增强一些检查，如果不是table
-#if defined DEBUG || defined _DEBUG
-    if (!lua_istable(state, -1))
-    {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? typeid[%d]",
-                   lua_type(state, -1));
-        lua_pop(state, 1);
-        return;
-    }
-#endif
-
-    lua_setmetatable(state, -2);
-    return;
-}
-
-template<> void ZCE_LUA::push_stack(lua_State *state, std::string val)
-{
-    *(std::string *)lua_newuserdata(state, sizeof(std::string)) = val;
-    lua_pushstring(state, "stdstring");
-    lua_gettable(state, LUA_GLOBALSINDEX);
-
-    //在DEBUG版本增强一些检查，如果不是table
-#if defined DEBUG || defined _DEBUG
-    if (!lua_istable(state, -1))
-    {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][std::string] is not a table? May be you don't register std::string to lua?typeid[%d]",
-                   lua_type(state, -1));
-        lua_pop(state, 1);
-        return;
-    }
-#endif
-    lua_setmetatable(state, -2);
-    return;
-}
 
 //=======================================================================================================
 //一些公用的特性的LUA注册函数，
@@ -560,8 +545,26 @@ static int le_int64(lua_State *state)
 
 static int add_int64(lua_State *state)
 {
-    int64_t a = *(int64_t *)lua_touserdata(state, 1);
-    int64_t b = *(int64_t *)lua_touserdata(state, 2);
+    int64_t a = 0,b=0;
+    //read a
+    if (lua_isuserdata(state, 1))
+    {
+        a = *(int64_t *)lua_touserdata(state, 1);
+    }
+    else if (lua_isnumber(state, 1))
+    {
+        a = static_cast<int64_t>(lua_tonumber(state, 1));
+    }
+    //read b
+    if (lua_isuserdata(state, 2))
+    {
+        b = *(int64_t *)lua_touserdata(state, 2);
+    }
+    else if (lua_isnumber(state, 2))
+    {
+        b = static_cast<int64_t>(lua_tonumber(state, 2));
+    }
+    
     int64_t c = a + b;
     ZCE_LUA::push_stack(state, c);
     return 1;
@@ -569,8 +572,26 @@ static int add_int64(lua_State *state)
 
 static int sub_int64(lua_State *state)
 {
-    int64_t a = *(int64_t *)lua_touserdata(state, 1);
-    int64_t b = *(int64_t *)lua_touserdata(state, 2);
+    int64_t a = 0, b = 0;
+    //read a
+    if (lua_isuserdata(state, 1))
+    {
+        a = *(int64_t *)lua_touserdata(state, 1);
+    }
+    else if (lua_isnumber(state, 1))
+    {
+        a = static_cast<int64_t>(lua_tonumber(state, 1));
+    }
+    //read b
+    if (lua_isuserdata(state, 2))
+    {
+        b = *(int64_t *)lua_touserdata(state, 2);
+    }
+    else if (lua_isnumber(state, 2))
+    {
+        b = static_cast<int64_t>(lua_tonumber(state, 2));
+    }
+
     int64_t c = a - b;
     ZCE_LUA::push_stack(state, c);
     return 1;
@@ -600,13 +621,14 @@ static int selfsub_int64(lua_State *state)
 
 void ZCE_Lua_Tie::reg_int64()
 {
-    const char *name = "int64_t";
-    lua_pushstring(lua_state_, name);
+    const char *int64_name = "int64_t";
+    ZCE_LUA::class_name<int64_t>::name(int64_name);
+    lua_pushstring(lua_state_, int64_name);
     lua_newtable(lua_state_);
 
 
     lua_pushstring(lua_state_, "__name");
-    lua_pushstring(lua_state_, name);
+    lua_pushstring(lua_state_, int64_name);
     lua_rawset(lua_state_, -3);
 
     lua_pushstring(lua_state_, "__tostring");
@@ -691,8 +713,26 @@ static int le_uint64(lua_State *state)
 
 static int add_uint64(lua_State *state)
 {
-    uint64_t a = *(uint64_t *)lua_touserdata(state, 1);
-    uint64_t b = *(uint64_t *)lua_touserdata(state, 2);
+    uint64_t a = 0, b = 0;
+    //read a
+    if (lua_isuserdata(state, 1))
+    {
+        a = *(uint64_t *)lua_touserdata(state, 1);
+    }
+    else if (lua_isnumber(state, 1))
+    {
+        a = static_cast<uint64_t>(lua_tonumber(state, 1));
+    }
+    //read b
+    if (lua_isuserdata(state, 2))
+    {
+        b = *(uint64_t *)lua_touserdata(state, 2);
+    }
+    else if (lua_isnumber(state, 2))
+    {
+        b = static_cast<uint64_t>(lua_tonumber(state, 2));
+    }
+
     uint64_t c = a + b;
     ZCE_LUA::push_stack(state, c);
     return 1;
@@ -700,8 +740,25 @@ static int add_uint64(lua_State *state)
 
 static int sub_uint64(lua_State *state)
 {
-    uint64_t a = *(uint64_t *)lua_touserdata(state, 1);
-    uint64_t b = *(uint64_t *)lua_touserdata(state, 2);
+    uint64_t a = 0, b = 0;
+    //read a
+    if (lua_isuserdata(state, 1))
+    {
+        a = *(uint64_t *)lua_touserdata(state, 1);
+    }
+    else if (lua_isnumber(state, 1))
+    {
+        a = static_cast<uint64_t>(lua_tonumber(state, 1));
+    }
+    //read b
+    if (lua_isuserdata(state, 2))
+    {
+        b = *(uint64_t *)lua_touserdata(state, 2);
+    }
+    else if (lua_isnumber(state, 2))
+    {
+        b = static_cast<uint64_t>(lua_tonumber(state, 2));
+    }
     uint64_t c = a - b;
     ZCE_LUA::push_stack(state, c);
     return 1;
@@ -731,13 +788,14 @@ static int selfsub_uint64(lua_State *state)
 
 void ZCE_Lua_Tie::reg_uint64()
 {
-    const char *name = "uint64_t";
-    lua_pushstring(lua_state_, name);
+    const char *uint64_name = "uint64_t";
+    ZCE_LUA::class_name<uint64_t>::name(uint64_name);
+    lua_pushstring(lua_state_, uint64_name);
     lua_newtable(lua_state_);
 
 
     lua_pushstring(lua_state_, "__name");
-    lua_pushstring(lua_state_, name);
+    lua_pushstring(lua_state_, uint64_name);
     lua_rawset(lua_state_, -3);
 
     lua_pushstring(lua_state_, "__tostring");
@@ -791,48 +849,71 @@ void ZCE_Lua_Tie::reg_uint64()
 
 static int tostring_stdstring(lua_State *state)
 {
-    lua_pushstring(state, ((std::string *)lua_touserdata(state, 1))->c_str());
+    lua_pushstring(state, ((std::string *)
+        (((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_))->c_str() );
     return 1;
 }
 
 static int eq_stdstring(lua_State *state)
 {
-    std::string *a = (std::string *)lua_touserdata(state, 1);
-    std::string *b = (std::string *)lua_touserdata(state, 2);
+    std::string *a = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_);
+    std::string *b = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 2))->obj_ptr_);
     lua_pushboolean(state, (*a == *b));
     return 1;
 }
 
 static int lt_stdstring(lua_State *state)
 {
-    std::string *a = (std::string *)lua_touserdata(state, 1);
-    std::string *b = (std::string *)lua_touserdata(state, 2);
+    std::string *a = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_);
+    std::string *b = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 2))->obj_ptr_);
     lua_pushboolean(state, (*a < *b));
     return 1;
 }
 
 static int le_stdstring(lua_State *state)
 {
-    std::string *a = (std::string *)lua_touserdata(state, 1);
-    std::string *b = (std::string *)lua_touserdata(state, 2);
+    std::string *a = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_);
+    std::string *b = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 2))->obj_ptr_);
     lua_pushboolean(state, (*a <= *b ));
     return 1;
 }
 
 static int add_stdstring(lua_State *state)
 {
-    std::string *a = (std::string *)lua_touserdata(state, 1);
-    std::string *b = (std::string *)lua_touserdata(state, 2);
-    std::string c = *a + *b;
-    ZCE_LUA::push_stack(state, c);
-    return 1;
-}
+    std::string *ptr_a = nullptr, *ptr_b = nullptr, val_a, val_b;
+    if (lua_isuserdata(state, 1))
+    {
+        ptr_a = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_);
+    }
+    else if (lua_isstring(state, 1))
+    {
+        val_a = lua_tostring(state, 1);
+        ptr_a = &val_a;
+    }
+    if (lua_isuserdata(state, 2))
+    {
+        ptr_b = (std::string *)(((ZCE_LUA::lua_udat_base *)lua_touserdata(state, 2))->obj_ptr_);
+    }
+    else if (lua_isstring(state, 2))
+    {
+        val_b = lua_tostring(state, 2);
+        ptr_b = &val_a;
+    }
 
-static int concat_stdstring(lua_State *state)
-{
-    std::string *a = (std::string *)lua_touserdata(state, 1);
-    std::string *b = (std::string *)lua_touserdata(state, 2);
-    std::string c = *a + *b;
+    if (!ptr_a || !ptr_b)
+    {
+        lua_pushfstring(state, "[LUATIE] %s std::string .. operator is fail. "
+            "var a[%d][%s] or var b[%d][%s] is not string",
+            __ZCE_FUNCTION__,
+            lua_type(state, 1),
+            lua_typename(state, 1),
+            lua_type(state, 2),
+            lua_typename(state, 2)
+            );
+        lua_error(state);
+    }
+
+    std::string c = *ptr_a + *ptr_b;
     ZCE_LUA::push_stack(state, c);
     return 1;
 }
@@ -847,13 +928,14 @@ static int constructor_stdstring(lua_State *state)
 //注册std::string
 void ZCE_Lua_Tie::reg_stdstring()
 {
-    const char *name = "stdstring";
-    lua_pushstring(lua_state_, name);
+    const char *stdstring_name = "stdstring";
+    ZCE_LUA::class_name<std::string>::name(stdstring_name);
+    lua_pushstring(lua_state_, stdstring_name);
     lua_newtable(lua_state_);
 
 
     lua_pushstring(lua_state_, "__name");
-    lua_pushstring(lua_state_, name);
+    lua_pushstring(lua_state_, stdstring_name);
     lua_rawset(lua_state_, -3);
 
     lua_pushstring(lua_state_, "__tostring");
@@ -877,7 +959,7 @@ void ZCE_Lua_Tie::reg_stdstring()
     lua_rawset(lua_state_, -3);
 
     lua_pushstring(lua_state_, "__concat");
-    lua_pushcclosure(lua_state_, concat_stdstring, 0);
+    lua_pushcclosure(lua_state_, add_stdstring, 0);
     lua_rawset(lua_state_, -3);
 
     //这样的目的是这样的，__call是对应一个()调用，但实体不是函数式，的调用函数

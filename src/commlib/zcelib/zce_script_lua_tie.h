@@ -5,7 +5,7 @@
 * @version
 * @date       Sunday, June 22, 2014
 * @brief      这个代码是参考Tinker实现的，仍然感谢原作者
-*             
+*
 *             这个代码的目的一方面是我对于如何捏合一个脚本语言总是好奇，今天
 *             终于有了机会折腾一下
 *
@@ -40,11 +40,19 @@
 
 
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
-#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
+#if ZCE_USE_LUA == 1 && defined ZCE_SUPPORT_CPP11
 
 //LUA 5.02版本目前而言，大部分组件都还不支持，所以……
 #if LUA_VERSION_NUM != 501
 #error "[Error] please check your lua libary version,only support 5.1,Lua 5.2 is not mature. LUA_VERSION_NUM != 501."
+#endif
+
+
+//在Lua的使用过程中，如果一个类不需要再Lua中使用，其实可以不需要先注册进去，
+//这个类就没有meta table而已，但有时候会造成调试麻烦，所以增加这宏，平常可
+//以关闭,仅仅在需要调试的阶段打开。
+#ifndef ZCE_CHECK_CLASS_NOMETA
+#define ZCE_CHECK_CLASS_NOMETA 1
 #endif
 
 #if defined (ZCE_OS_WINDOWS)
@@ -202,38 +210,10 @@ public:
 };
 
 //-------------------------------------------------------------------------------
-///Push 一个数据到Lua的堆栈中
+//Push 一个数据到Lua的堆栈中
 
-///最通用的函数，但一般的情况基本都通过重载和特化处理了，所以这儿只打印了一个错误信息
-template<typename val_type >
-void push_stack(lua_State *state, typename val_type val)
-{
-    //这儿只针对非object对象
-    if (!std::is_class<val_type>::value)
-    {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
-        return;
-    }
-
-    new(lua_newuserdata(state,
-                        sizeof(val_2_udat<val_type>))) 
-                        val_2_udat<std::remove_const<val_type>::type >(val);
-
-    //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<std::remove_const<val_type>::type >::name());
-    lua_gettable(state, LUA_GLOBALSINDEX);
-    if (!lua_istable(state, -1))
-    {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
-                   typeid(val).name(),
-                   class_name<std::remove_const<val_type>::type >::name());
-        lua_remove(state, -1);
-        return;
-    }
-    lua_setmetatable(state, -2);
-    return;
-}
-
+///避免某些编译错误的函数
+void push_stack(lua_State * /*state*/);
 
 ///为变参模板函数递归准备的函数
 template<typename val_type, typename... val_tlist>
@@ -243,9 +223,6 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
     push_stack(state, val_s...);
     return;
 }
-
-
-
 
 /*!
 * @brief      放入一个引用
@@ -266,13 +243,18 @@ void push_stack(lua_State *state,
     if (std::is_class<std::remove_reference<val_type>::type >::value)
     {
         //根据类的名称，设置metatable，注意这儿去掉了引用，进行的查询，
-        lua_pushstring(state, class_name<std::remove_reference<val_type>::type >::name());
+        lua_pushstring(state, class_name<
+            std::remove_reference<
+            std::remove_cv<val_type>::type>::type >::name());
         lua_gettable(state, LUA_GLOBALSINDEX);
         if (!lua_istable(state, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
+#if ZCE_CHECK_CLASS_NOMETA == 1
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]?"
+                       " May be you don't register or name conflict? ",
                        typeid(ref).name(),
                        class_name<val_type >::name());
+#endif
             lua_remove(state, -1);
             return;
         }
@@ -289,25 +271,36 @@ void push_stack(lua_State *state,
 * @param      state    Lua state
 * @param      ptr      放入的指针
 */
-template<typename val_type  >
+template<typename ptr_type  >
 void push_stack(lua_State *state,
-                typename std::enable_if<std::is_pointer<val_type>::value, val_type>::type ptr)
+    typename std::enable_if<std::is_pointer<ptr_type>::value, ptr_type>::type ptr)
+{
+    return push_stack_ptr<std::remove_cv<ptr_type>::type >(state, ptr);
+}
+
+template<typename ptr_type >
+void push_stack_ptr(lua_State *state, typename ptr_type ptr)
 {
     if (ptr)
     {
-        new(lua_newuserdata(state, sizeof(ptr_2_udat<val_type>))) ptr_2_udat<val_type>(ptr);
+        new(lua_newuserdata(state, sizeof(ptr_2_udat<ptr_type>))) ptr_2_udat<ptr_type>(ptr);
 
         //如果原类型（去掉指针）是一个object，
-        if (std::is_class<std::remove_pointer<val_type>::type >::value)
+        if (std::is_class<std::remove_pointer<ptr_type>::type >::value)
         {
             //根据类的名称，设置metatable，注意这儿去掉了指针，进行的查询，
-            lua_pushstring(state, class_name<std::remove_pointer<val_type>::type >::name());
+            lua_pushstring(state, class_name <
+                std::remove_pointer <ptr_type> ::type > ::name());
             lua_gettable(state, LUA_GLOBALSINDEX);
             if (!lua_istable(state, -1))
             {
-                ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]? May be you don't register or name conflict? ",
-                           typeid(ptr).name(),
-                           class_name<val_type >::name());
+#if ZCE_CHECK_CLASS_NOMETA == 1
+                ZCE_LOGMSG(RS_ERROR,
+                    "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
+                    "May be you don't register or name conflict? ",
+                    typeid(ptr).name(),
+                    class_name<std::remove_pointer <ptr_type> ::type >::name());
+#endif
                 lua_remove(state, -1);
                 return;
             }
@@ -321,18 +314,70 @@ void push_stack(lua_State *state,
     return;
 }
 
+///指针的两种特化
+template<> void push_stack_ptr(lua_State *state, char * const val);
+template<> void push_stack_ptr(lua_State *state, const char * const val);
+
 //枚举
 template<typename val_type  >
-int push_stack(lua_State *state,
-               typename  std::enable_if<std::is_enum<val_type>::value, val_type>::type val)
+void push_stack(lua_State *state,
+                typename  std::enable_if<std::is_enum<val_type>::value, val_type>::type val)
 {
     lua_pushnumber(state, val);
-    return 0;
 }
+
+//放入一个val，
+template<typename val_type  >
+void push_stack(lua_State *state,
+                typename  std::enable_if 
+                <!(std::is_pointer<val_type>::value ||
+                  std::is_reference<val_type>::value || 
+                  std::is_enum<val_type>::value), val_type 
+                >::type val)
+{
+    return push_stack_val<std::remove_cv<val_type>::type >(state, val);
+}
+
+//对于非object类型的数据，如果要放入引用和指针，如果希望Lua能使用，要先声明这些对象
+//这个请注意！！！
+
+template<typename val_type >
+void push_stack_val(lua_State *state, typename val_type val)
+{
+    //这儿只针对非object对象
+    if (!std::is_class<val_type>::value)
+    {
+        ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+        return;
+    }
+
+    new(lua_newuserdata(state,
+                        sizeof(val_2_udat<val_type>)))
+    val_2_udat<std::remove_cv<val_type>::type >(val);
+
+    //根据类的名称，设置metatable
+    lua_pushstring(state, class_name<std::remove_cv<val_type>::type >::name());
+    lua_gettable(state, LUA_GLOBALSINDEX);
+    if (!lua_istable(state, -1))
+    {
+#if ZCE_CHECK_CLASS_NOMETA == 1
+        ZCE_LOGMSG(RS_ERROR, 
+                   "[LUATIE][%s] is not tie to lua,name[%s]? "
+                   "May be you don't register or name conflict? ",
+                   typeid(val).name(),
+                   class_name<std::remove_cv<val_type>::type >::name());
+#endif
+        lua_remove(state, -1);
+        return;
+    }
+    lua_setmetatable(state, -2);
+    return;
+}
+
 
 ///放入一个数组的引用
 template<typename array_type  >
-void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat)
+void push_stack_val(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat)
 {
     new (lua_newuserdata(state, sizeof(arrayref_2_udat<array_type>)))
     arrayref_2_udat<array_type>(ary_dat);
@@ -364,75 +409,91 @@ void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat
     return;
 }
 
-void push_stack(lua_State * /*state*/);
-template<> void push_stack(lua_State *state, char val);
-template<> void push_stack(lua_State *state, unsigned char val);
-template<> void push_stack(lua_State *state, short val);
-template<> void push_stack(lua_State *state, unsigned short val);
-template<> void push_stack(lua_State *state, int val);
-template<> void push_stack(lua_State *state, unsigned int val);
-template<> void push_stack(lua_State *state, float val);
-template<> void push_stack(lua_State *state, double val);
-template<> void push_stack(lua_State *state, char *val);
-template<> void push_stack(lua_State *state, const char *val);
-template<> void push_stack(lua_State *state, bool val);
-template<> void push_stack(lua_State *state, int64_t val);
-template<> void push_stack(lua_State *state, uint64_t val);
-template<> void push_stack(lua_State *state, const std::string &val);
+//各种重载的push_back函数
+template<> void push_stack_val(lua_State *state, char val);
+template<> void push_stack_val(lua_State *state, unsigned char val);
+template<> void push_stack_val(lua_State *state, short val);
+template<> void push_stack_val(lua_State *state, unsigned short val);
+template<> void push_stack_val(lua_State *state, int val);
+template<> void push_stack_val(lua_State *state, unsigned int val);
+template<> void push_stack_val(lua_State *state, float val);
+template<> void push_stack_val(lua_State *state, double val);
+template<> void push_stack_val(lua_State *state, bool val);
+template<> void push_stack_val(lua_State *state, int64_t val);
+template<> void push_stack_val(lua_State *state, uint64_t val);
 
 //不允许出现long的变量，因为long无法移植，所以只定义，不实现
-template<> void push_stack(lua_State *state, long val);
-template<> void push_stack(lua_State *state, unsigned long val);
+template<> void push_stack_val(lua_State *state, long val);
+template<> void push_stack_val(lua_State *state, unsigned long val);
 
 
 //-------------------------------------------------------------------------------
 
-///对于非object类型的数据，如果要放入引用和指针，必须先声明这些对象
-///这个请注意！！！
-
+///读取一个指针
 template<typename ret_type>
-typename ret_type read_stack(lua_State *state, int index)
+typename std::enable_if<std::is_pointer<ret_type>::value, typename std::remove_cv<ret_type>::type >::type
+read_stack(lua_State *state, int index)
 {
-    if (std::is_pointer<ret_type>::value)
-    {
-        //注意如果崩溃在这个地方，注意lua代码相关的行是否把:写成了.
-        //
-        return (std::remove_pointer<ret_type>::type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
-    }
-    else if (std::is_reference<ret_type>::value)
-    {
-        return *( std::remove_reference<ret_type>::type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
-    }
-    else
-    {
-        return *(ret_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
-    }
+    return ((std::remove_cv<ret_type>::type)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_));
+}
+
+template < typename ptr_type >
+ptr_type read_stack_ptr(lua_State *state, int index)
+{
+    return (ret_type)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
+}
+
+template<> char               *read_stack_ptr(lua_State *state, int index);
+template<> const char         *read_stack_ptr(lua_State *state, int index);
+
+///读取一个引用
+template<typename ret_type>
+typename std::enable_if<std::is_reference<ret_type>::value, typename std::remove_cv<ret_type>::type>::type
+read_stack(lua_State *state, int index)
+{
+    return *((std::remove_cv< std::remove_reference<ret_type>::type >::type *)
+        (((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_));
 }
 
 ///读取枚举值
-template<typename val_type>
-static
-typename std::enable_if<std::is_enum<val_type>::value, val_type>::type
+template<typename ret_type>
+typename std::enable_if<std::is_enum<ret_type>::value, ret_type>::type
 read_stack(lua_State *state, int index)
 {
     return (val_type)lua_tonumber(state, index);
 }
 
+///读取一个val
+template<typename ret_type>
+typename std::enable_if < !(std::is_pointer<ret_type>::value ||
+                            std::is_reference<ret_type>::value || 
+                            std::is_enum<ret_type>::value
+                            ), typename std::remove_cv<ret_type>::type >::type
+read_stack(lua_State *state, int index)
+{
+    return read_stack_val<std::remove_cv<ret_type>::type>(state, index);
+}
+
+
 ///从堆栈中读取某个类型
-template<> char               *read_stack(lua_State *state, int index);
-template<> const char         *read_stack(lua_State *state, int index);
-template<> char                read_stack(lua_State *state, int index);
-template<> unsigned char       read_stack(lua_State *state, int index);
-template<> short               read_stack(lua_State *state, int index);
-template<> unsigned short      read_stack(lua_State *state, int index);
-template<> int                 read_stack(lua_State *state, int index);
-template<> unsigned int        read_stack(lua_State *state, int index);
-template<> float               read_stack(lua_State *state, int index);
-template<> double              read_stack(lua_State *state, int index);
-template<> bool                read_stack(lua_State *state, int index);
-template<> int64_t             read_stack(lua_State *state, int index);
-template<> uint64_t            read_stack(lua_State *state, int index);
-template<> std::string         read_stack(lua_State *state, int index);
+template < typename ret_type >
+ret_type read_stack_val(lua_State *state, int index)
+{
+    return *(ret_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
+}
+
+template<> char                read_stack_val(lua_State *state, int index);
+template<> unsigned char       read_stack_val(lua_State *state, int index);
+template<> short               read_stack_val(lua_State *state, int index);
+template<> unsigned short      read_stack_val(lua_State *state, int index);
+template<> int                 read_stack_val(lua_State *state, int index);
+template<> unsigned int        read_stack_val(lua_State *state, int index);
+template<> float               read_stack_val(lua_State *state, int index);
+template<> double              read_stack_val(lua_State *state, int index);
+template<> bool                read_stack_val(lua_State *state, int index);
+template<> int64_t             read_stack_val(lua_State *state, int index);
+template<> uint64_t            read_stack_val(lua_State *state, int index);
+template<> std::string         read_stack_val(lua_State *state, int index);
 
 ///
 template<typename val_type>
@@ -506,16 +567,9 @@ int array_meta_set(lua_State *state)
 //-------------------------------------------------------------------------------
 
 
-
-
-
-
-
-
-
 /*!
 * @brief      全局函数的封装类，辅助调用实际注册的全局函数
-*             
+*
 * @tparam     ret_type  返回值类型
 * @tparam     args_type 参数类型列表，0-N个参数
 
@@ -532,7 +586,7 @@ public:
 
         size_t sz_par = sizeof...(args_type);
         int para_idx = static_cast<int>(sz_par);
-        //这儿要注意，有一个严重的问题。而我确实找不到方法规避，（不试用变参是可以的）
+        //这儿要注意，有一个严重的问题。而我确实找不到方法规避，（不使用变参是可以的）
         //这样的，C++的模板变参的函数包扩展，在VS2013的编译器，和GCC 4.8的编译器上都有不足，
         //会出现参数顺序颠倒的情况，问题估计是编译器在扩展处理是，是采用的标准参数处理顺序，从左
         //到右，但是其处理一个参数就将其后就入栈了，而C++的编译器，标准的栈处理顺序是从右到左，
@@ -702,11 +756,11 @@ public:
 
 /*!
 * @brief      成员数组类型的类，用于userdata的处理
-*             
+*
 * @tparam     class_type 类类型
 * @tparam     ary_type   数组类型
 * @tparam     ary_size   数组长度
-* @note       
+* @note
 */
 template<typename class_type, typename ary_type, size_t ary_size>
 class member_array : memvar_base
@@ -979,7 +1033,7 @@ public:
     }
 
 
-    
+
     /*!
     * @brief      将一个容器里面的数据放入Lua的table中，根据迭代器的类型会选择不同的
     *             重载函数
@@ -990,13 +1044,13 @@ public:
     */
     template<class iter_type >
     void to_luatable(const char *table_name,
-        const iter_type first,
-        const iter_type last)
+                     const iter_type first,
+                     const iter_type last)
     {
         to_luatable(table_name,
-            first,
-            last,
-            std::iterator_traits<iter_type>::iterator_category());
+                    first,
+                    last,
+                    std::iterator_traits<iter_type>::iterator_category());
         return;
     }
 
@@ -1010,7 +1064,7 @@ protected:
     * @param      first      第一个first迭代器
     * @param      last       最后一个last的迭代器
     * @param      nouse      没有使用的参数，仅仅用于类型重载识别
-    * @note       
+    * @note
     */
     template<class raiter_type >
     void to_luatable(const char *table_name,
@@ -1027,7 +1081,9 @@ protected:
             //Lua的使用习惯索引是从1开始
             lua_pushnumber(lua_state_, i + 1);
             //通过迭代器萃取得到类型，
-            ZCE_LUA::push_stack<std::iterator_traits<raiter_type>::value_type >(lua_state_, *iter_temp);
+            ZCE_LUA::push_stack<std::iterator_traits<raiter_type>::value_type >(
+                lua_state_,
+                *iter_temp);
             lua_settable(lua_state_, -3);
         }
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
@@ -1057,8 +1113,12 @@ protected:
         for (; iter_temp != last; iter_temp++)
         {
             //将map的key作为table的key
-            ZCE_LUA::push_stack<std::iterator_traits<biiter_type>::value_type::first_type >(lua_state_, iter_temp->first);
-            ZCE_LUA::push_stack<std::iterator_traits<biiter_type>::value_type::second_type >(lua_state_, iter_temp->second);
+            ZCE_LUA::push_stack<std::remove_cv<
+                std::iterator_traits<biiter_type>::value_type::first_type
+                >::type >(lua_state_,iter_temp->first);
+            ZCE_LUA::push_stack<std::remove_cv<
+                std::iterator_traits<biiter_type>::value_type::second_type
+                >::type >(lua_state_, iter_temp->second);
             lua_settable(lua_state_, -3);
         }
 
@@ -1076,31 +1136,18 @@ public:
     * @param      container_dat
     * @note
     */
-    template<class container_type, class iter_type>
+    template<class container_type>
     int from_luatable(const char *table_name,
-                      container_type &container_dat,
-                      iter_type first)
+                      container_type &container_dat)
     {
         return from_luatable(table_name,
-            container_dat,
-            first,
-            std::iterator_traits<iter_type>::iterator_category());
+                             container_dat,
+                             std::iterator_traits<container_type::iterator>::iterator_category());
     }
 
-
-    /*!
-    * @brief      从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
-    * @tparam     container_type
-    * @return     int
-    * @param      table_name
-    * @param      container_dat
-    * @param      nouse      没有使用的参数，仅仅用于类型重载识别
-    */
-    template<class container_type, class iter_type >
+    template<class array_type>
     int from_luatable(const char *table_name,
-        container_type & /*container_dat*/,
-        iter_type first,
-        std::random_access_iterator_tag /*nouse*/)
+                      array_type *array_dat)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, table_name);
@@ -1120,7 +1167,46 @@ public:
         {
             // uses 'key' (at index -2) and 'value' (at index -1)
             int index = ZCE_LUA::read_stack<int>(lua_state_, -2) - 1;
-            *(first + index) =
+            array_dat[index] = ZCE_LUA::read_stack <array_type>(lua_state_, -1);
+            // removes 'value'; keeps 'key' for next iteration
+            lua_remove(lua_state_, -1);
+        }
+        return 0;
+    }
+
+
+    /*!
+    * @brief      从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
+    * @tparam     container_type
+    * @return     int
+    * @param      table_name
+    * @param      container_dat
+    * @param      nouse      没有使用的参数，仅仅用于类型重载识别
+    */
+    template<class container_type>
+    int from_luatable(const char *table_name,
+                      container_type &container_dat,
+                      std::random_access_iterator_tag /*nouse*/)
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        lua_pushstring(lua_state_, table_name);
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        if (!lua_istable(lua_state_, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
+                       table_name);
+            lua_remove(lua_state_, -1);
+            return -1;
+        }
+
+        //first key ,ferg让我把这东西就理解成迭代器
+        lua_pushnil(lua_state_);
+        while (lua_next(lua_state_, -2) != 0)
+        {
+            // uses 'key' (at index -2) and 'value' (at index -1)
+            int index = ZCE_LUA::read_stack<int>(lua_state_, -2) - 1;
+            container_dat[index] =
                 ZCE_LUA::read_stack
                 <std::iterator_traits<iter_type>::value_type>
                 (lua_state_, -1);
@@ -1131,10 +1217,9 @@ public:
     }
 
     //从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
-    template<class container_type, class biiter_type >
+    template<class container_type>
     int from_luatable(const char *table_name,
                       container_type &container_dat,
-                      biiter_type first,
                       std::bidirectional_iterator_tag /*nouse*/)
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
@@ -1155,8 +1240,8 @@ public:
         while (lua_next(lua_state_, -2) != 0)
         {
             // uses 'key' (at index -2) and 'value' (at index -1)
-            container_dat[ZCE_LUA::read_stack<std::iterator_traits<biiter_type>::value_type::first_type>(lua_state_, -2)] =
-                ZCE_LUA::read_stack<std::iterator_traits<biiter_type>::value_type::second_type>(lua_state_, -1);
+            container_dat[ZCE_LUA::read_stack<container_type::value_type::first_type>(lua_state_, -2)] =
+                ZCE_LUA::read_stack<container_type::value_type::second_type>(lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
             lua_remove(lua_state_, -1);
         }
@@ -1196,7 +1281,10 @@ public:
 
     ///调用LUA的函数，有两个返回值
     template<typename ret_type1, typename ret_type2, typename... args_type>
-    int call_luafun_2(const char *fun_name, ret_type1 &ret_val1, ret_type2 &ret_val2, args_type... args)
+    int call_luafun_2(const char *fun_name,
+                      ret_type1 &ret_val1,
+                      ret_type2 &ret_val2,
+                      args_type... args)
     {
         int ret = 0;
         ret = call_luafun(fun_name, 2, args...);
@@ -1213,7 +1301,11 @@ public:
 
     ///调用LUA的函数，有三个返回值,好吧就支持到3个返回值把，实在没兴趣了
     template<typename ret_type1, typename ret_type2, typename ret_type3, typename... args_type>
-    int call_luafun_3(const char *fun_name, ret_type1 &ret_val1, ret_type2 &ret_val2, ret_type3 &ret_val3, args_type... args)
+    int call_luafun_3(const char *fun_name,
+                      ret_type1 &ret_val1,
+                      ret_type2 &ret_val2,
+                      ret_type3 &ret_val3,
+                      args_type... args)
     {
         int ret = 0;
         ret = call_luafun(fun_name, 3, args...);
@@ -1509,14 +1601,14 @@ public:
     template<typename val_type >
     inline void push(val_type val)
     {
-        ZCE_LUA::push_stack(lua_state_, val);
+        ZCE_LUA::push_stack<val_type>(lua_state_, val);
     }
 
     //读取堆栈上的某个数据
     template<typename val_type >
     inline val_type read(int index)
     {
-        return ZCE_LUA::read_stack(lua_state_, index);
+        return ZCE_LUA::read_stack<val_type>(lua_state_, index);
     }
 
     //
@@ -1547,7 +1639,8 @@ protected:
         //检查其是否是函数
         if (!lua_isfunction(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] call_luafun() attempt to call global `%s' (not a function)", fun_name);
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] call_luafun() attempt to call global `%s' (not a function)",
+                       fun_name);
             lua_pop(lua_state_, 1);
             return -1;
         }
@@ -1558,14 +1651,14 @@ protected:
             //放入堆栈参数，args
             ZCE_LUA::push_stack(lua_state_, args...);
         }
-        
 
-        
+
+
         //调用lua的函数，
         ret = lua_pcall(lua_state_,
-            static_cast<int>(arg_num),
-            static_cast<int>(ret_num),
-            errfunc);
+                        static_cast<int>(arg_num),
+                        static_cast<int>(ret_num),
+                        errfunc);
         if (ret != 0)
         {
             ZCE_LOGMSG(RS_ERROR, "[LUATIE] lua_pcall ret = %d", ret);
