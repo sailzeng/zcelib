@@ -1128,6 +1128,14 @@ int ZCE_Lua_Tie::do_file(const char *filename)
     return 0;
 }
 
+
+///在lua中注册一个table，
+Candy_Tie_Table ZCE_Lua_Tie::new_table(const char *table_name)
+{
+
+    return Candy_Tie_Table();
+}
+
 ///dump C调用lua的堆栈，
 void ZCE_Lua_Tie::enum_stack()
 {
