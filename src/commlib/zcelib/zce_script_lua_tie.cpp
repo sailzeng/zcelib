@@ -976,39 +976,6 @@ void ZCE_Lua_Tie::reg_stdstring()
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
-//=======================================================================================================
-//为std::string 准备的metatable
-
-void ZCE_Lua_Tie::reg_enum(const char *name, size_t item_num, ...)
-{
-    lua_pushstring(lua_state_, name);
-    //由于不知道你的枚举值是否是array，所以这样申请的，
-    lua_createtable(lua_state_, 0, static_cast<int>(item_num));
-
-    va_list argp;
-    va_start(argp, item_num);
-    //将枚举值和字符串一一做好绑定，
-    for (size_t i = 0; i < item_num; ++i)
-    {
-        lua_pushstring(lua_state_, va_arg(argp, char *));
-        lua_pushnumber(lua_state_, va_arg(argp, int));
-        lua_rawset(lua_state_, -3);
-    }
-    va_end(argp);
-
-    //让这个表格只读
-    lua_newtable(lua_state_);
-
-    lua_pushstring(lua_state_, "__newindex");
-    lua_pushcclosure(lua_state_, ZCE_LUA::newindex_onlyread, 0);
-    lua_rawset(lua_state_, -3);
-
-    lua_setmetatable(lua_state_, -2);
-
-    lua_settable(lua_state_, LUA_GLOBALSINDEX);
-}
-
-
 
 
 
@@ -1128,13 +1095,6 @@ int ZCE_Lua_Tie::do_file(const char *filename)
     return 0;
 }
 
-
-///在lua中注册一个table，
-Candy_Tie_Table ZCE_Lua_Tie::new_table(const char *table_name)
-{
-
-    return Candy_Tie_Table();
-}
 
 ///dump C调用lua的堆栈，
 void ZCE_Lua_Tie::enum_stack()

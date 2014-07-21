@@ -251,6 +251,14 @@ int test_lua_script4(int, char *[])
     return 0;
 }
 
+
+enum TO_LUA_ENUM
+{
+    ENUM_0001,
+    ENUM_0002,
+    ENUM_0003,
+    ENUM_0004,
+};
 //展现table的几种使用方式
 int test_lua_script5(int, char *[])
 {
@@ -282,6 +290,14 @@ int test_lua_script5(int, char *[])
 
     lua_tie.to_luatable("map_b", map_b.begin(), map_b.end());
 
+    //轻轻松松完成吧枚举值注册给lua的任务
+    lua_tie.new_table("tolua_enum",
+        std::make_pair("ENUM_0001", ENUM_0001),
+        std::make_pair("ENUM_0002", ENUM_0002),
+        std::make_pair("ENUM_0003", ENUM_0003),
+        std::make_pair("ENUM_0004", ENUM_0004)
+        );
+
 
     lua_tie.do_file("lua/lua_test_05.lua");
 
@@ -303,8 +319,6 @@ int test_lua_script5(int, char *[])
                iter->first,
                iter->second);
     }
-
-
 
     lua_tie.close();
 

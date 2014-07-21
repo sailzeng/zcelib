@@ -13,7 +13,7 @@
 *
 *
 *
-* @note       感谢ferg帮忙解释了很多Tinker的实现，
+* @note       感谢fergzhang帮忙解释了很多Tinker的实现，
 *             我等了四年，就是要等一个机会，我要争一口气，不是想证明我了不起，我是要告诉人家，我失去的东西一定要亲手拿回来！
 *             -- 《英雄本色》 小马哥
 *             2014年6月13日早上，荷兰干净利落的爆了西班牙5：1，
@@ -209,7 +209,7 @@ public:
 
 };
 
-//-------------------------------------------------------------------------------
+//=======================================================================================================
 //Push 一个数据到Lua的堆栈中
 
 ///避免某些编译错误的函数
@@ -427,7 +427,7 @@ template<> void push_stack_val(lua_State *state, long val);
 template<> void push_stack_val(lua_State *state, unsigned long val);
 
 
-//-------------------------------------------------------------------------------
+//=======================================================================================================
 
 ///读取一个指针
 template<typename ret_type>
@@ -505,7 +505,7 @@ val_type pop_stack(lua_State *state)
 }
 
 
-//-------------------------------------------------------------------------------
+//=======================================================================================================
 
 
 ///让LUA从一个绑定的数组（指针）那里得到数组的的值
@@ -564,7 +564,7 @@ int array_meta_set(lua_State *state)
     return 0;
 }
 
-//-------------------------------------------------------------------------------
+//=======================================================================================================
 
 
 /*!
@@ -801,24 +801,10 @@ public:
 
 
 
-
-
 };  //namespace ZCE_LUA
 
 class ZCE_Lua_Tie;
 
-//=======================================================================================================
-
-
-class Candy_Tie_Table
-{
-public:
-    Candy_Tie_Table();
-    ~Candy_Tie_Table();
-public:
-    ///Lua的解释器的状态
-    ZCE_Lua_Tie   *lua_tie_ = nullptr;
-};
 
 //=======================================================================================================
 
@@ -898,6 +884,8 @@ class ZCE_Lua_Tie
 {
 
 public:
+
+    ///构造函数
     ZCE_Lua_Tie();
     ~ZCE_Lua_Tie();
 
@@ -933,14 +921,50 @@ public:
     void reg_stdstring();
 
 
-    /*!
-    * @brief      向LUA注册枚举值
-    * @param      name 名字
-    * @param      item_num 枚举数量
-    * @param      ... 一个名字一个整数int算一个注册的枚举值
-    */
-    void reg_enum(const char *name, size_t item_num, ...);
+    //封装lua堆栈的函数
 
+    /// 删除指定索引上的元素，并将该位置之上的所有元素下移。
+    inline void stack_remove(int index)
+    {
+        lua_remove(lua_state_, index);
+    }
+    ///会上移指定位置之上的所有元素以开辟一个槽的空间，然后将栈顶元素移到该位置
+    inline void stack_insert(int index)
+    {
+        return lua_insert(lua_state_, index);
+    }
+    ///返回栈的元素个数
+    inline int stack_gettop()
+    {
+        return lua_gettop(lua_state_);
+    }
+    ///设置栈的元素个数，如果原来的栈空间小于index，填充nil，如果大于index，删除多余元素
+    inline int stack_settop(int index)
+    {
+        return lua_settop(lua_state_, index);
+    }
+    ///确保堆栈空间有extra那么大
+    inline int stack_check(int extra)
+    {
+        return lua_checkstack(lua_state_, extra);
+    }
+    ///把index位置上的值在堆栈顶复制push一个
+    inline int stack_pushvalue(int index)
+    {
+        return lua_pushvalue(lua_state_, index);
+    }
+    ///取得index位置的类型，返回值LUA_TNIL等枚举值
+    inline int stack_type(int index)
+    {
+        return lua_type(lua_state_, index);
+    }
+    ////检查index位置的类型，
+    ///lua_type is LUA_TNIL, LUA_TNUMBER, LUA_TBOOLEAN, LUA_TSTRING, LUA_TTABLE, 
+    ///LUA_TFUNCTION, LUA_TUSERDATA, LUA_TTHREAD, and LUA_TLIGHTUSERDATA
+    inline int stack_checktype(int index,int lua_type)
+    {
+        return luaL_checktype(lua_state_, index, lua_type);
+    }
 
     /*!
     * @brief      向LUA设置一个（对LUA而言）全局变量（名称和变量对应值的拷贝）
@@ -966,8 +990,6 @@ public:
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
         return ZCE_LUA::pop_stack<var_type>(lua_state_);
     }
-
-
 
     /*!
     * @brief      向LUA设置一个数组的引用,在LUA内部保存一个相关的userdata，
@@ -1074,6 +1096,7 @@ public:
                              std::iterator_traits<container_type::iterator>::iterator_category());
     }
 
+    //
     template<class array_type>
     int from_luatable(const char *table_name,
                       array_type *array_dat)
@@ -1175,22 +1198,27 @@ public:
     }
 
 
-    ///在lua中new一个table，
-    Candy_Tie_Table new_table(const char *table_name);
-
-    ///在table上增加一个key
-    template<typename key_type, typename val_type>
-    int table_addkey(const char *table_name,
-        key_type key,
-        val_type val)
+    /*!
+    * @brief      在Lua里面new一个table，同时把pair_list参数里面的数据放入到table中
+    * @tparam     pair_tlist pair list的类型列表
+    * @param      table_name
+    * @param      pair_list  piar的list同时把pair的first，作为key，pair的second作为value，
+    * @note       通过这个函数，可以轻松的把枚举呀，注册给lua使用，比如下面这种方式
+    *             lua_tie.new_table("tolua_enum",std::make_pair("ENUM_0001", ENUM_0001),
+    *                 std::make_pair("ENUM_0002", ENUM_0002);
+    */
+    template<typename ...pair_tlist>
+    void new_table(const char *table_name, pair_tlist ... pair_list)
     {
+        lua_pushstring(lua_state_, table_name);
+        lua_newtable(lua_state_);
+        //向table里面添加pair
+        newtable_addkv(pair_list...);
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-    template<typename key_type>
-    int table_delkey(const char *table_name,
-        key_type key)
-    {
-    }
+
+
 
     /*!
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
@@ -1487,6 +1515,23 @@ public:
 
 protected:
 
+    ///辅助函数，展开kv pari list
+    template<typename... pair_tlist>
+    void newtable_addkv(pair_tlist ... pair_list)
+    {
+        return;
+    }
+    ///辅助函数，展开kv pari list,同时把第一个参数放入table中
+    template<typename pair_type, typename... pair_tlist>
+    void newtable_addkv(pair_type pair_dat, pair_tlist ... pair_list)
+    {
+        ZCE_LUA::push_stack<typename pair_type::first_type>(lua_state_, pair_dat.first);
+        ZCE_LUA::push_stack<typename pair_type::second_type>(lua_state_, pair_dat.second);
+        lua_settable(lua_state_, -3);
+        newtable_addkv(pair_list...);
+        return;
+    }
+
     /*!
     * @brief      调用LUA的函数，没有返回值，（或者暂不取回一个返回值）
     * @tparam     args_type 参数类型列表
@@ -1543,11 +1588,11 @@ protected:
 
     /*!
     * @brief      从Lua中拷贝数据到C++的容器中，包括数组，vector，vector类要先resize
-    * @tparam     container_type
-    * @return     int
-    * @param      table_name
-    * @param      container_dat
-    * @param      nouse      没有使用的参数，仅仅用于类型重载识别
+    * @tparam     container_type  容器类型，
+    * @return     int             成功返回0
+    * @param      table_name      表的名称
+    * @param      container_dat   容器数据
+    * @param      nouse           没有使用的参数，仅仅用于类型重载识别
     */
     template<class container_type>
     int from_luatable(const char *table_name,
