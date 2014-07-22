@@ -328,35 +328,39 @@ int test_lua_script5(int, char *[])
 
 //²âÊÔLua Thread
 
-int TestFunc(lua_State *L)
+int thread_func(ZCE_Lua_Thread *thread_handle)
 {
-    printf("# TestFunc is invoke.\n");
-    return lua_yield(L, 0);
+    printf("# thread_func is invoke.\n");
+    return thread_handle->yield(0);
 }
 
-int TestFunc2(lua_State *L, float a)
+int thread_func2(ZCE_Lua_Thread *thread_handle, float a)
 {
-    printf("# TestFunc2(L,%f) is invoke.\n", a);
-    return lua_yield(L, 0);
+    printf("# thread_func2(L,%f) is invoke.\n", a);
+    return thread_handle->yield(0);
 }
 
-class TestClass
+class Test_Thread_Class
 {
 public:
-
-    //
-    //
-    int TestFunc(lua_State *L)
+    Test_Thread_Class(ZCE_Lua_Thread *thread_handle):
+        thread_handle_(thread_handle)
     {
-        printf("# TestClass::TestFunc is invoke.\n");
-        return lua_yield(L, 0);
+    }
+    //
+    int thread_men_fun()
+    {
+        printf("# Test_Thread_Class::thread_men_fun is invoke.\n");
+        return thread_handle_->yield(0);
     }
 
-    int TestFunc2(lua_State *L, float a)
+    int thread_men_fun2(float a)
     {
-        printf("# TestClass::TestFunc2(L,%f) is invoke.\n", a);
-        return lua_yield(L, 0);
+        printf("# Test_Thread_Class::thread_men_fun2(L,%f) is invoke.\n", a);
+        return thread_handle_->yield(0);
     }
+
+    ZCE_Lua_Thread *thread_handle_;
 };
 
 int test_lua_script6(int, char *[])
@@ -365,42 +369,47 @@ int test_lua_script6(int, char *[])
     lua_tie.open(true, true);
 
 
-    lua_tie.reg_gfun("TestFunc", &TestFunc);
-    lua_tie.reg_gfun("TestFunc2", &TestFunc2);
+    lua_tie.reg_gfun("thread_func", &thread_func);
+    lua_tie.reg_gfun("thread_func2", &thread_func2);
     
 
-    lua_tie.reg_class<TestClass>("TestClass").
-        mem_fun("TestFunc", &TestClass::TestFunc).
-        mem_fun("TestFunc2", &TestClass::TestFunc2);
+    lua_tie.reg_class<Test_Thread_Class>("TestClass").
+        mem_fun("thread_men_fun", &Test_Thread_Class::thread_men_fun).
+        mem_fun("thread_men_fun2", &Test_Thread_Class::thread_men_fun2);
+   
+    
+
+    ZCE_Lua_Thread thread_hdl;
+    int ret = lua_tie.new_thread(&thread_hdl);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    Test_Thread_Class g_test(&thread_hdl);
+    lua_tie.set_gvar("g_test", &g_test);
+    lua_tie.set_gvar("thread_handle", &thread_hdl);
+
+    thread_hdl.do_file("lua/lua_test_06.lua");
 
 
-    TestClass g_test;
-    lua_tinker::set(L, "g_test", &g_test);
+    ret = thread_hdl.get_luaobj("ThreadTest", LUA_TFUNCTION);
 
-
-    lua_tinker::dofile(L, "sample6.lua");
-
-
-    lua_State *L1 = lua_newthread(L);
-    lua_pushstring(L1, "ThreadTest");
-    lua_gettable(L1, LUA_GLOBALSINDEX);
+    printf("* lua_resume() to.. start. \n");
+    thread_hdl.resume(0);
 
 
     printf("* lua_resume() to.. \n");
-    lua_resume(L1, 0);
-
-
-    printf("* lua_resume() to.. \n");
-    lua_resume(L1, 0);
+    thread_hdl.resume(0);
 
     printf("* lua_resume() to.. \n");
-    lua_resume(L1, 0);
+    thread_hdl.resume(0);
 
     printf("* lua_resume() to.. \n");
-    lua_resume(L1, 0);
+    thread_hdl.resume(0);
 
     printf("* lua_resume() to.. \n");
-    lua_resume(L1, 0);
+    thread_hdl.resume(0);
 
     lua_tie.close();
 

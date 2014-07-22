@@ -103,6 +103,7 @@ int test_lua_script2(int /*argc*/, char * /*argv*/[]);
 int test_lua_script3(int /*argc*/, char * /*argv*/[]);
 int test_lua_script4(int /*argc*/, char * /*argv*/[]);
 int test_lua_script5(int /*argc*/, char * /*argv*/[]);
+int test_lua_script6(int /*argc*/, char * /*argv*/[]);
 
 #endif //
 

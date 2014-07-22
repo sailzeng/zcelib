@@ -14,7 +14,7 @@ int main(int argc , char *argv[])
     ZCE_Trace_LogMsg::instance()->init_stdout();
 
     //test_lua_script1(argc, argv);
-    test_lua_script5(argc, argv);
+    test_lua_script6(argc, argv);
 
     printf("%s", "----------------------------------------------------------------------------\n");
 

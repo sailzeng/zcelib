@@ -678,6 +678,8 @@ public:
         //得到参数个数，+1是因为，第一个参数是函数指针
         size_t sz_par = sizeof...(args_type);
         int para_idx = static_cast<int>(sz_par + 1);
+        //避免告警
+        ZCE_UNUSED_ARG(para_idx);
 
         //根据是否有返回值，决定如何处理，是否push_stack
         if (std::is_void<ret_type>::value)
@@ -808,8 +810,6 @@ class ZCE_Lua_Base;
 
 //=======================================================================================================
 
-
-
 /*!
 * @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法
 *             这样的语法，让代码书写更加简单一点。
@@ -882,7 +882,14 @@ protected:
 
 
 //=======================================================================================================
-//LUA 鞋带，用于帮助绑定C++和
+
+
+/*!
+* @brief      Lua 各种封装的基类，大部分功能都封装在这儿，
+*             包括堆栈，各种封装，class，函数的注册，
+* @note       因为协程和Tie都应该会使用到这部分。所以独立
+*             作为基类
+*/
 class ZCE_Lua_Base
 {
 
@@ -921,31 +928,37 @@ public:
     {
         lua_remove(lua_state_, index);
     }
+
     ///会上移指定位置之上的所有元素以开辟一个槽的空间，然后将栈顶元素移到该位置
     inline void stack_insert(int index)
     {
         return lua_insert(lua_state_, index);
     }
+
     ///返回栈的元素个数
     inline int stack_gettop()
     {
         return lua_gettop(lua_state_);
     }
+
     ///设置栈的元素个数，如果原来的栈空间小于index，填充nil，如果大于index，删除多余元素
     inline void stack_settop(int index)
     {
         return lua_settop(lua_state_, index);
     }
+
     ///确保堆栈空间有extra那么大
     inline int stack_check(int extra)
     {
         return lua_checkstack(lua_state_, extra);
     }
+
     ///把index位置上的值在堆栈顶复制push一个
     inline void stack_pushvalue(int index)
     {
         return lua_pushvalue(lua_state_, index);
     }
+
     ///取得index位置的类型，返回值LUA_TNIL等枚举值
     ///lua_type is LUA_TNIL, LUA_TNUMBER, LUA_TBOOLEAN, LUA_TSTRING, LUA_TTABLE, 
     ///LUA_TFUNCTION, LUA_TUSERDATA, LUA_TTHREAD, and LUA_TLIGHTUSERDATA
@@ -953,11 +966,13 @@ public:
     {
         return lua_type(lua_state_, index);
     }
+
     ///检查索引index的位置的数据的类型是否是lua_t
     inline bool stack_istype(int index, int lua_t)
     {
         return lua_type(lua_state_, index) == lua_t;
     }
+
     ///得到堆栈上index位置的类型名称，
     inline const char *stack_typename(int index)
     {
@@ -969,6 +984,7 @@ public:
     {
         return luaL_checktype(lua_state_, index, lua_t);
     }
+
     ///得到对象的长度
     ///for tables, this is the result of the length operator ('#'); 
     ///for userdata, this is the size of the block of memory allocated for the userdata;
@@ -977,6 +993,7 @@ public:
     {
         return lua_objlen(lua_state_, index);
     }
+
     ///取得table的所有元素个数,注意其和stack_objlen的其别,此函数绝对不高效，呵呵
     inline size_t statck_tablecount(int index)
     {
@@ -988,6 +1005,18 @@ public:
             ++table_count;
         }
         return table_count;
+    }
+
+    ///
+    inline int get_luaobj(const char *obj_name,int luatype)
+    {
+        lua_pushstring(lua_state_, obj_name);
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+        if (lua_type(lua_state_, -1) != luatype)
+        {
+            return -1;
+        }
+        return 0;
     }
 
     /*!
@@ -1751,6 +1780,9 @@ protected:
         return;
     }
 
+
+    
+
 protected:
 
     //Lua的解释器的状态
@@ -1760,7 +1792,7 @@ protected:
 
 
 //=======================================================================================================
-//
+//Lua的协程
 class ZCE_Lua_Thread :public ZCE_Lua_Base
 {
 public:
@@ -1777,6 +1809,13 @@ public:
     ///取得线程在创建者堆栈的位置索引
     int get_thread_stackidx();
 
+
+    ///恢复线程运行
+    int resume(int narg);
+
+    ///挂起线程运行
+    int yield(int nresults);
+
 protected:
 
     ///线程在创建者堆栈的位置索引
@@ -1784,7 +1823,13 @@ protected:
 };
 
 //=======================================================================================================
-//
+
+
+/*!
+* @brief      LUA 鞋带，用于帮助绑定何种C，或者C++的代码到Lua，或者使用Lua的各种功能。
+*             同时还可以使用线程等功能
+* @note       
+*/
 class ZCE_Lua_Tie :public ZCE_Lua_Base
 {
 public:
@@ -1808,6 +1853,9 @@ public:
 
     ///关闭，回收一个lua thread
     void del_thread(ZCE_Lua_Thread *lua_thread);
+
+    ///恢复一个线程的运行
+    int resume_thread(ZCE_Lua_Thread *lua_thread, int narg);
 };
 
 

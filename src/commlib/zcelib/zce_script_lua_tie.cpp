@@ -1090,6 +1090,19 @@ int ZCE_Lua_Thread::get_thread_stackidx()
 }
 
 
+//恢复线程运行
+int ZCE_Lua_Thread::resume(int narg)
+{
+    return lua_resume(lua_state_, narg);
+}
+
+//挂起线程运行
+int ZCE_Lua_Thread::yield(int nresults)
+{
+    return lua_yield(lua_state_, nresults);
+}
+
+
 //=======================================================================================================
 ZCE_Lua_Tie::ZCE_Lua_Tie():
     ZCE_Lua_Base(nullptr)
@@ -1166,6 +1179,12 @@ void ZCE_Lua_Tie::del_thread(ZCE_Lua_Thread *lua_thread)
     {
         lua_remove(lua_state_, idx);
     }
+}
+
+//恢复一个线程的运行
+int ZCE_Lua_Tie::resume_thread(ZCE_Lua_Thread *lua_thread, int narg)
+{
+    return lua_thread->resume(narg);
 }
 
 
