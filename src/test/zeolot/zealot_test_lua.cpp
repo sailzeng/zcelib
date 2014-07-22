@@ -326,3 +326,84 @@ int test_lua_script5(int, char *[])
 }
 
 
+//≤‚ ‘Lua Thread
+
+int TestFunc(lua_State *L)
+{
+    printf("# TestFunc is invoke.\n");
+    return lua_yield(L, 0);
+}
+
+int TestFunc2(lua_State *L, float a)
+{
+    printf("# TestFunc2(L,%f) is invoke.\n", a);
+    return lua_yield(L, 0);
+}
+
+class TestClass
+{
+public:
+
+    //
+    //
+    int TestFunc(lua_State *L)
+    {
+        printf("# TestClass::TestFunc is invoke.\n");
+        return lua_yield(L, 0);
+    }
+
+    int TestFunc2(lua_State *L, float a)
+    {
+        printf("# TestClass::TestFunc2(L,%f) is invoke.\n", a);
+        return lua_yield(L, 0);
+    }
+};
+
+int test_lua_script6(int, char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+
+
+    lua_tie.reg_gfun("TestFunc", &TestFunc);
+    lua_tie.reg_gfun("TestFunc2", &TestFunc2);
+    
+
+    lua_tie.reg_class<TestClass>("TestClass").
+        mem_fun("TestFunc", &TestClass::TestFunc).
+        mem_fun("TestFunc2", &TestClass::TestFunc2);
+
+
+    TestClass g_test;
+    lua_tinker::set(L, "g_test", &g_test);
+
+
+    lua_tinker::dofile(L, "sample6.lua");
+
+
+    lua_State *L1 = lua_newthread(L);
+    lua_pushstring(L1, "ThreadTest");
+    lua_gettable(L1, LUA_GLOBALSINDEX);
+
+
+    printf("* lua_resume() to.. \n");
+    lua_resume(L1, 0);
+
+
+    printf("* lua_resume() to.. \n");
+    lua_resume(L1, 0);
+
+    printf("* lua_resume() to.. \n");
+    lua_resume(L1, 0);
+
+    printf("* lua_resume() to.. \n");
+    lua_resume(L1, 0);
+
+    printf("* lua_resume() to.. \n");
+    lua_resume(L1, 0);
+
+    lua_tie.close();
+
+    return 0;
+}
+

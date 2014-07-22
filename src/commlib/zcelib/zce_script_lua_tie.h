@@ -803,7 +803,7 @@ public:
 
 };  //namespace ZCE_LUA
 
-class ZCE_Lua_Tie;
+class ZCE_Lua_Base;
 
 
 //=======================================================================================================
@@ -823,7 +823,7 @@ class Candy_Tie_Class
 {
 public:
     ///构造函数
-    Candy_Tie_Class(ZCE_Lua_Tie *lua_tie,
+    Candy_Tie_Class(ZCE_Lua_Base *lua_tie,
                     bool read_only):
         lua_tie_(lua_tie),
         read_only_(read_only)
@@ -872,35 +872,28 @@ public:
 
 protected:
     ///Lua的解释器的状态
-    ZCE_Lua_Tie   *lua_tie_ = nullptr;
+    ZCE_Lua_Base   *lua_tie_ = nullptr;
 
     ///这个类是否是只读的方式
     bool           read_only_ = false;
 };
 
+
+
+
 //=======================================================================================================
 //LUA 鞋带，用于帮助绑定C++和
-class ZCE_Lua_Tie
+class ZCE_Lua_Base
 {
 
-public:
+protected:
 
     ///构造函数
-    ZCE_Lua_Tie();
-    ~ZCE_Lua_Tie();
+    explicit ZCE_Lua_Base(lua_State *lua_state);
+    ///析构函数
+    virtual ~ZCE_Lua_Base();
 
-
-    /*!
-    * @brief      打开lua state
-    * @return     int
-    * @param      open_libs  是否打开常用的一些LUA库
-    * @param      reg_common 是否注册一些常用
-    */
-    int open(bool open_libs,
-             bool reg_common);
-    ///关闭lua state
-    void close();
-
+public:
 
     ///执行一个lua文件
     int do_file(const char *filename);
@@ -939,7 +932,7 @@ public:
         return lua_gettop(lua_state_);
     }
     ///设置栈的元素个数，如果原来的栈空间小于index，填充nil，如果大于index，删除多余元素
-    inline int stack_settop(int index)
+    inline void stack_settop(int index)
     {
         return lua_settop(lua_state_, index);
     }
@@ -949,21 +942,52 @@ public:
         return lua_checkstack(lua_state_, extra);
     }
     ///把index位置上的值在堆栈顶复制push一个
-    inline int stack_pushvalue(int index)
+    inline void stack_pushvalue(int index)
     {
         return lua_pushvalue(lua_state_, index);
     }
     ///取得index位置的类型，返回值LUA_TNIL等枚举值
+    ///lua_type is LUA_TNIL, LUA_TNUMBER, LUA_TBOOLEAN, LUA_TSTRING, LUA_TTABLE, 
+    ///LUA_TFUNCTION, LUA_TUSERDATA, LUA_TTHREAD, and LUA_TLIGHTUSERDATA
     inline int stack_type(int index)
     {
         return lua_type(lua_state_, index);
     }
-    ////检查index位置的类型，
-    ///lua_type is LUA_TNIL, LUA_TNUMBER, LUA_TBOOLEAN, LUA_TSTRING, LUA_TTABLE, 
-    ///LUA_TFUNCTION, LUA_TUSERDATA, LUA_TTHREAD, and LUA_TLIGHTUSERDATA
-    inline int stack_checktype(int index,int lua_type)
+    ///检查索引index的位置的数据的类型是否是lua_t
+    inline bool stack_istype(int index, int lua_t)
     {
-        return luaL_checktype(lua_state_, index, lua_type);
+        return lua_type(lua_state_, index) == lua_t;
+    }
+    ///得到堆栈上index位置的类型名称，
+    inline const char *stack_typename(int index)
+    {
+        return lua_typename(lua_state_, lua_type(lua_state_,index));
+    }
+
+    ////检查index位置的类型，
+    inline void stack_checktype(int index,int lua_t)
+    {
+        return luaL_checktype(lua_state_, index, lua_t);
+    }
+    ///得到对象的长度
+    ///for tables, this is the result of the length operator ('#'); 
+    ///for userdata, this is the size of the block of memory allocated for the userdata;
+    ///for other values, it is 0. 
+    inline size_t stack_objlen(int index)
+    {
+        return lua_objlen(lua_state_, index);
+    }
+    ///取得table的所有元素个数,注意其和stack_objlen的其别,此函数绝对不高效，呵呵
+    inline size_t statck_tablecount(int index)
+    {
+        size_t table_count = 0;
+        //放入迭代器
+        lua_pushnil(lua_state_);
+        while (lua_next(lua_state_, index) != 0)
+        {
+            ++table_count;
+        }
+        return table_count;
     }
 
     /*!
@@ -1200,8 +1224,8 @@ public:
 
     /*!
     * @brief      在Lua里面new一个table，同时把pair_list参数里面的数据放入到table中
-    * @tparam     pair_tlist pair list的类型列表
-    * @param      table_name
+    * @tparam     pair_tlist pair list的类型列表，必须是std::pair
+    * @param      table_name 表的名称，
     * @param      pair_list  piar的list同时把pair的first，作为key，pair的second作为value，
     * @note       通过这个函数，可以轻松的把枚举呀，注册给lua使用，比如下面这种方式
     *             lua_tie.new_table("tolua_enum",std::make_pair("ENUM_0001", ENUM_0001),
@@ -1218,8 +1242,7 @@ public:
     }
 
 
-
-
+        
     /*!
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
     * @tparam     class_type      绑定类的类型
@@ -1733,6 +1756,62 @@ protected:
     //Lua的解释器的状态
     lua_State   *lua_state_;
 };
+
+
+
+//=======================================================================================================
+//
+class ZCE_Lua_Thread :public ZCE_Lua_Base
+{
+public:
+
+    ZCE_Lua_Thread();
+
+    ///析构代码，Lua Thread的代码不会自己释放自己，Lua Thread在
+    ///堆栈被清空的时候，会被GC回收掉。所以，析构函数什么也不做。
+    ~ZCE_Lua_Thread();
+
+    ///设置线程相关的数据
+    void set_thread(lua_State * lua_thread, int thread_stackidx);
+
+    ///取得线程在创建者堆栈的位置索引
+    int get_thread_stackidx();
+
+protected:
+
+    ///线程在创建者堆栈的位置索引
+    int thread_stackidx_ = 0;
+};
+
+//=======================================================================================================
+//
+class ZCE_Lua_Tie :public ZCE_Lua_Base
+{
+public:
+
+    ZCE_Lua_Tie();
+    ~ZCE_Lua_Tie();
+    
+    /*!
+    * @brief      打开lua state
+    * @return     int
+    * @param      open_libs  是否打开常用的一些LUA库
+    * @param      reg_common 是否注册一些常用
+    */
+    int open(bool open_libs,
+        bool reg_common);
+    ///关闭lua state
+    void close();
+    
+    ///开启一个新的lua thread
+    int new_thread(ZCE_Lua_Thread *lua_thread);
+
+    ///关闭，回收一个lua thread
+    void del_thread(ZCE_Lua_Thread *lua_thread);
+};
+
+
+//=======================================================================================================
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )

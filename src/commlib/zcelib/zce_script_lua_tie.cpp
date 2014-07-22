@@ -619,7 +619,7 @@ static int selfsub_int64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::reg_int64()
+void ZCE_Lua_Base::reg_int64()
 {
     const char *int64_name = "int64_t";
     ZCE_LUA::class_name<int64_t>::name(int64_name);
@@ -786,7 +786,7 @@ static int selfsub_uint64(lua_State *state)
     return 0;
 }
 
-void ZCE_Lua_Tie::reg_uint64()
+void ZCE_Lua_Base::reg_uint64()
 {
     const char *uint64_name = "uint64_t";
     ZCE_LUA::class_name<uint64_t>::name(uint64_name);
@@ -926,7 +926,7 @@ static int constructor_stdstring(lua_State *state)
 }
 
 //注册std::string
-void ZCE_Lua_Tie::reg_stdstring()
+void ZCE_Lua_Base::reg_stdstring()
 {
     const char *stdstring_name = "stdstring";
     ZCE_LUA::class_name<std::string>::name(stdstring_name);
@@ -982,8 +982,117 @@ void ZCE_Lua_Tie::reg_stdstring()
 
 
 //=======================================================================================================
-ZCE_Lua_Tie::ZCE_Lua_Tie() :
-    lua_state_(nullptr)
+ZCE_Lua_Base::ZCE_Lua_Base(lua_State *lua_state) :
+    lua_state_(lua_state)
+{
+}
+
+ZCE_Lua_Base::~ZCE_Lua_Base()
+{
+}
+
+// 执行一个LUA的buffer
+int ZCE_Lua_Base::do_buffer(const char *buff, size_t len)
+{
+    int ret = 0;
+
+    lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
+    int errfunc = lua_gettop(lua_state_);
+
+    ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
+                   ret,
+                   lua_tostring(lua_state_, -1));
+        lua_pop(lua_state_, 1);
+        lua_remove(lua_state_, errfunc);
+        return ret;
+    }
+
+    //lua_pcall的错误是右错误处理函数处理的，
+    ret = lua_pcall(lua_state_, 0, 0, errfunc);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
+    }
+
+    lua_remove(lua_state_, errfunc);
+    return 0;
+}
+
+// 执行一个LUA的文件
+int ZCE_Lua_Base::do_file(const char *filename)
+{
+    int ret = 0;
+
+    lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
+    int errfunc = lua_gettop(lua_state_);
+
+    ret = luaL_loadfile(lua_state_, filename);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
+                   ret,
+                   lua_tostring(lua_state_, -1));
+        lua_pop(lua_state_, 1);
+        lua_remove(lua_state_, errfunc);
+        return ret;
+    }
+
+    //lua_pcall的错误是右错误处理函数处理的，
+    ret = lua_pcall(lua_state_, 0, 0, errfunc);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
+    }
+
+    lua_remove(lua_state_, errfunc);
+    return 0;
+}
+
+
+///dump C调用lua的堆栈，
+void ZCE_Lua_Base::enum_stack()
+{
+    ZCE_LUA::enum_clua_stack(lua_state_);
+}
+///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
+void ZCE_Lua_Base::dump_stack()
+{
+    ZCE_LUA::dump_luacall_stack(lua_state_);
+}
+
+//=======================================================================================================
+//Lua Thread 的封装
+ZCE_Lua_Thread::ZCE_Lua_Thread():
+    ZCE_Lua_Base(nullptr)
+{
+}
+
+
+ZCE_Lua_Thread::~ZCE_Lua_Thread()
+{
+}
+
+
+//设置线程相关的数据
+void ZCE_Lua_Thread::set_thread(lua_State * lua_thread, int thread_stackidx)
+{
+    lua_state_ = lua_thread;
+    thread_stackidx_ = thread_stackidx;
+}
+
+//取得线程在创建者堆栈的位置索引
+int ZCE_Lua_Thread::get_thread_stackidx()
+{
+    return thread_stackidx_;
+}
+
+
+//=======================================================================================================
+ZCE_Lua_Tie::ZCE_Lua_Tie():
+    ZCE_Lua_Base(nullptr)
 {
 }
 
@@ -994,7 +1103,7 @@ ZCE_Lua_Tie::~ZCE_Lua_Tie()
 
 //打开lua state
 int ZCE_Lua_Tie::open(bool open_libs,
-                      bool reg_common_use)
+    bool reg_common_use)
 {
     //如果错误
     if (lua_state_)
@@ -1035,76 +1144,28 @@ void ZCE_Lua_Tie::close()
     }
 }
 
-// 执行一个LUA的buffer
-int ZCE_Lua_Tie::do_buffer(const char *buff, size_t len)
+
+//开启一个新的lua thread
+int ZCE_Lua_Tie::new_thread(ZCE_Lua_Thread *lua_thread)
 {
-    int ret = 0;
-
-    lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
-    int errfunc = lua_gettop(lua_state_);
-
-    ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
-    if (0 != ret)
+    lua_State *tread_state = lua_newthread(lua_state_);
+    if (!tread_state)
     {
-        ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
-                   ret,
-                   lua_tostring(lua_state_, -1));
-        lua_pop(lua_state_, 1);
-        lua_remove(lua_state_, errfunc);
-        return ret;
+        return -1;
     }
-
-    //lua_pcall的错误是右错误处理函数处理的，
-    ret = lua_pcall(lua_state_, 0, 0, errfunc);
-    if (0 != ret)
-    {
-        ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
-    }
-
-    lua_remove(lua_state_, errfunc);
+    lua_thread->set_thread(tread_state, lua_gettop(lua_state_));
     return 0;
 }
 
-// 执行一个LUA的文件
-int ZCE_Lua_Tie::do_file(const char *filename)
+//取得线程在创建者堆栈的位置索引
+void ZCE_Lua_Tie::del_thread(ZCE_Lua_Thread *lua_thread)
 {
-    int ret = 0;
-
-    lua_pushcclosure(lua_state_, ZCE_LUA::on_error, 0);
-    int errfunc = lua_gettop(lua_state_);
-
-    ret = luaL_loadfile(lua_state_, filename);
-    if (0 != ret)
+    ///Lua Thread的代码不会自己释放自己，Lua Thread在堆栈被清空的时候，会被GC回收掉
+    int idx = lua_thread->get_thread_stackidx();
+    if (idx != 0)
     {
-        ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",
-                   ret,
-                   lua_tostring(lua_state_, -1));
-        lua_pop(lua_state_, 1);
-        lua_remove(lua_state_, errfunc);
-        return ret;
+        lua_remove(lua_state_, idx);
     }
-
-    //lua_pcall的错误是右错误处理函数处理的，
-    ret = lua_pcall(lua_state_, 0, 0, errfunc);
-    if (0 != ret)
-    {
-        ZCE_LOGMSG(RS_ERROR, "lua_pcall ret = %d", ret);
-    }
-
-    lua_remove(lua_state_, errfunc);
-    return 0;
-}
-
-
-///dump C调用lua的堆栈，
-void ZCE_Lua_Tie::enum_stack()
-{
-    ZCE_LUA::enum_clua_stack(lua_state_);
-}
-///dump lua运行的的堆栈，用于检查lua运行时的问题，错误处理等
-void ZCE_Lua_Tie::dump_stack()
-{
-    ZCE_LUA::dump_luacall_stack(lua_state_);
 }
 
 
