@@ -59,6 +59,24 @@ struct container_traits< T*>
 
 //==================================================================
 
+// type trait
+template<bool bool_vale, typename type_a, typename type_b>
+struct if_ 
+{
+};
+template<typename type_a, typename type_b>
+struct if_ < true, type_a, type_b >
+{
+    typedef type_a type;
+};
+template<typename type_a, typename type_b>
+struct if_ < false, type_a, type_b >
+{
+    typedef type_b type;
+};
+
+//==================================================================
+
 
 template<typename input_iter>
 struct is_random_access_iterator

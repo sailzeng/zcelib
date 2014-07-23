@@ -252,6 +252,7 @@ void push_stack(lua_State *state,
 #if ZCE_CHECK_CLASS_NOMETA == 1
             ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]?"
                        " May be you don't register or name conflict? ",
+                       __ZCE_FUNCTION__,
                        typeid(ref).name(),
                        class_name<val_type >::name());
 #endif
@@ -298,6 +299,7 @@ void push_stack_ptr(lua_State *state, typename ptr_type ptr)
                 ZCE_LOGMSG(RS_ERROR,
                     "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
                     "May be you don't register or name conflict? ",
+                    __ZCE_FUNCTION__,
                     typeid(ptr).name(),
                     class_name<std::remove_pointer <ptr_type> ::type >::name());
 #endif
@@ -569,13 +571,20 @@ int array_meta_set(lua_State *state)
 
 /*!
 * @brief      全局函数的封装类，辅助调用实际注册的全局函数
-*
+*             根据ret_type 是否是void，分了2个版本。另外一个见g_functor_void
 * @tparam     ret_type  返回值类型
 * @tparam     args_type 参数类型列表，0-N个参数
-
+* note        这儿要注意，有一个严重的问题。而我确实找不到方法规避，（不使用变参是可以避免），
+*             这样的，C++的模板变参的函数包扩展，在VS2013的编译器，和GCC 4.8的编译器上都有
+*             不足，会出现参数顺序颠倒的情况，问题估计是编译器在扩展处理是，是采用的标准参数处
+*             理顺序，从左到右，但是其处理一个参数就将其后就入栈了，而C++的编译器，标准的栈处理
+*             顺序是从右到左，所函数得到的参数顺序就是反的。所以我只有反过来取参数，
+*             但是这应该是一个bug，我不知道哪天编译器会修复这个问题，咩咩，那时候又只有……
 */
-template<typename ret_type, typename... args_type>
-class g_functor
+template<bool last_yield, 
+    typename ret_type, 
+    typename ...args_type>
+class g_functor_ret
 {
 public:
     static int invoke(lua_State *state)
@@ -586,24 +595,50 @@ public:
 
         size_t sz_par = sizeof...(args_type);
         int para_idx = static_cast<int>(sz_par);
-        //这儿要注意，有一个严重的问题。而我确实找不到方法规避，（不使用变参是可以的）
-        //这样的，C++的模板变参的函数包扩展，在VS2013的编译器，和GCC 4.8的编译器上都有不足，
-        //会出现参数顺序颠倒的情况，问题估计是编译器在扩展处理是，是采用的标准参数处理顺序，从左
-        //到右，但是其处理一个参数就将其后就入栈了，而C++的编译器，标准的栈处理顺序是从右到左，
-        //所函数得到的参数顺序就是反的。所以我只有反过来取参数，
-        //但是这应该是一个bug，我不知道哪天编译器会修复这个问题，咩咩，那时候又只有，，，
+        //没有参数时para_idx可能会被编译器认为没有使用过。
+        ZCE_UNUSED_ARG(para_idx);
 
-
+        //如果参数传递顺序错误，请参考note的说明，
+        
         //根据是否有返回值，决定如何处理，是否push_stack
-        if (std::is_void<ret_type>::value)
+        push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx--)...));
+        if (last_yield)
         {
-            fun_ptr(read_stack<args_type>(state, para_idx--)...);
-            return 0;
+            return lua_yield(state, 1);
         }
         else
         {
-            push_stack<ret_type>(state, fun_ptr(read_stack<args_type>(state, para_idx--)...));
             return 1;
+        }
+        
+    }
+};
+///全局没有返回值的函数封装，详细信息见g_functor_ret
+template<bool last_yield,
+    typename... args_type>
+class g_functor_void
+{
+public:
+    static int invoke(lua_State *state)
+    {
+
+        //push是将结果放入堆栈
+        void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
+        void (*fun_ptr)(args_type...) = (void(*)(args_type...)) (upvalue_1);
+
+        size_t sz_par = sizeof...(args_type);
+        int para_idx = static_cast<int>(sz_par);
+        //没有参数时para_idx可能会被编译器认为没有使用过。
+        ZCE_UNUSED_ARG(para_idx);
+
+        fun_ptr(read_stack<args_type>(state, para_idx--)...);
+        if (last_yield)
+        {
+            return lua_yield(state, 0);
+        }
+        else
+        {
+            return 0;
         }
     }
 };
@@ -656,12 +691,14 @@ int destroyer(lua_State *state);
 
 /*!
 * @brief      用C++11的新特效，变参实现的类函数桥接
+* @tparam     last_yield 函数最后是否使用lua_yield返回
 * @tparam     class_type 类的类型
 * @tparam     ret_type   返回值的类型
 * @tparam     ...args_type 变参的参数类型列表
+* note        有一个值得注意的问题请参考说明g_functor_ret
 */
-template<typename class_type, typename ret_type, typename ...args_type>
-class member_functor
+template<bool last_yield,typename class_type, typename ret_type, typename ...args_type>
+class member_functor_ret
 {
 public:
     static int invoke(lua_State *state)
@@ -669,7 +706,7 @@ public:
         //push是将结果放入堆栈
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
 
-        typedef ret_type(class_type::*mem_fun)(args_type...);
+        typedef ret_type (class_type::*mem_fun)(args_type...);
         mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
 
         //第一个参数是对象指针
@@ -682,24 +719,54 @@ public:
         ZCE_UNUSED_ARG(para_idx);
 
         //根据是否有返回值，决定如何处理，是否push_stack
-        if (std::is_void<ret_type>::value)
+        push_stack<ret_type>(state,
+            (obj_ptr->*fun_ptr)(read_stack<args_type>(state, \
+            para_idx--)...));
+        if (last_yield)
         {
-
-            //我恨函数指针，我更恨类成员的指针,注意下面的那个括号。一定要，否则，我看了1个小时
-            //为什么采用--，请参考前面的解释 g_functor
-            (obj_ptr->*fun_ptr)(read_stack<args_type>(state, para_idx--)... );
-            return 0;
+            return lua_yield(state, 1);
         }
-        else
         {
-            push_stack<ret_type>(state,
-                                 (obj_ptr->*fun_ptr)(read_stack<args_type>(state, \
-                                                                           para_idx--)...));
             return 1;
         }
     }
 };
+///
+template<bool last_yield, typename class_type, typename ...args_type>
+class member_functor_void
+{
+public:
+    static int invoke(lua_State *state)
+    {
+        //push是将结果放入堆栈
+        void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
 
+        typedef void (class_type::*mem_fun)(args_type...);
+        mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
+
+        //第一个参数是对象指针
+        class_type *obj_ptr = read_stack<class_type *>(state, 1);
+
+        //得到参数个数，+1是因为，第一个参数是函数指针
+        size_t sz_par = sizeof...(args_type);
+        int para_idx = static_cast<int>(sz_par + 1);
+        //避免告警
+        ZCE_UNUSED_ARG(para_idx);
+
+        //void 函数
+
+        //我恨函数指针，我更恨类成员的指针,注意下面的那个括号。一定要，否则，我看了1个小时
+        //为什么采用--，请参考前面的解释 g_functor_ret
+        (obj_ptr->*fun_ptr)(read_stack<args_type>(state, para_idx--)...);
+        if (last_yield)
+        {
+            return lua_yield(state, 0);
+        }
+        {
+            return 0;
+        }
+    }
+};
 
 /*!
 * @brief      成员变量的处理的基类，用于class_meta_get,class_meta_set内部处理
@@ -862,6 +929,13 @@ public:
         return *this;
     }
 
+    template<typename ret_type, typename... args_type>
+    Candy_Tie_Class &mem_yield_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
+    {
+        lua_tie_->class_mem_yield_fun<class_type, ret_type, args_type...>(name, func);
+        return *this;
+    }
+
     //从某个类继承
     template<typename parent_type>
     Candy_Tie_Class &inherit()
@@ -989,13 +1063,13 @@ public:
     ///for tables, this is the result of the length operator ('#'); 
     ///for userdata, this is the size of the block of memory allocated for the userdata;
     ///for other values, it is 0. 
-    inline size_t stack_objlen(int index)
+    inline size_t get_objlen(int index)
     {
         return lua_objlen(lua_state_, index);
     }
 
     ///取得table的所有元素个数,注意其和stack_objlen的其别,此函数绝对不高效，呵呵
-    inline size_t statck_tablecount(int index)
+    inline size_t get_tablecount(int index)
     {
         size_t table_count = 0;
         //放入迭代器
@@ -1007,7 +1081,7 @@ public:
         return table_count;
     }
 
-    ///
+    ///通过名称取得lua对象，并且检查
     inline int get_luaobj(const char *obj_name,int luatype)
     {
         lua_pushstring(lua_state_, obj_name);
@@ -1092,24 +1166,22 @@ public:
         return 0;
     }
 
-    /*!
-    * @brief      向LUA注册一个全局函数，或者类的静态函数给lua调用
-    * @tparam     ret_type  返回参数类型
-    * @tparam     args_type 函数的参数类型，变参
-    * @param      name      向LUA注册的函数名称
-    * @param      func      注册的C函数
-    */
+
+    ///向LUA注册一个全局函数，或者类的静态函数给lua调用
+    ///参数详细说明请参考reg_gfun_all
     template<typename ret_type, typename... args_type>
     void reg_gfun(const char *name, ret_type(*func)(args_type...))
     {
-        //函数名称
-        lua_pushstring(lua_state_, name);
-        //将函数指针转换为void * ，作为lightuserdata 放入堆栈，作为closure的upvalue放入
-        lua_pushlightuserdata(lua_state_, (void *)func);
-        //functor模板函数，放入closure,
-        lua_pushcclosure(lua_state_, ZCE_LUA::g_functor<ret_type, args_type...>::invoke, 1);
-        //将其放入全局环境表中
-        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+        reg_gfun_all<false, ret_type, args_type...>(name, func);
+    }
+
+
+    ///向LUA注册一个全局函数，或者类的静态函数给lua调用.和reg_gfun的区别是，最后会使用lua_yield返回，
+    ///参数详细说明请参考reg_gfun_all
+    template<typename ret_type, typename... args_type>
+    void reg_yeild_gfun(const char *name, ret_type(*func)(args_type...))
+    {
+        reg_gfun_all<true, ret_type, args_type...>(name, func);
     }
 
     /*!
@@ -1269,7 +1341,6 @@ public:
         newtable_addkv(pair_list...);
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
-
 
         
     /*!
@@ -1504,46 +1575,22 @@ public:
         return 0;
     }
 
-    /*!
-    * @brief      注册类的成员函数
-    * @tparam     class_type 成员函数所属的类
-    * @tparam     ret_type   返回值
-    * @tparam     args_type  参数列表
-    * @return     int   == 0 表示注册成功
-    * @param      name  函数的名字
-    * @param      func  成员函数指针
-    */
+    ///注册一个类的成员函数，名称是name，详细的函数说明，请参考class_mem_fun_all
     template<typename class_type, typename ret_type, typename... args_type>
     int class_mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
     {
-        //根据类的名称，取得类的metatable的表，或者说原型。
-        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
-        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
-
-        //
-        if (!lua_istable(lua_state_, -1))
-        {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LUA::class_name<class_type>::name());
-            ZCE_ASSERT(false);
-            lua_pop(lua_state_, 1);
-            return -1;
-        }
-
-        lua_pushstring(lua_state_, name);
-        //这个类的函数指针作为upvalue_的。
-        //注意这儿是类的成员指针（更加接近size_t），而不是实际的指针，所以这儿不能用light userdata
-        //下面这个写法真是要了人民，非要用typedef中转一下
-        typedef ret_type(class_type:: *mem_fun)(args_type...);
-        new(lua_newuserdata(lua_state_, sizeof(mem_fun))) mem_fun(func);
-        //
-        lua_pushcclosure(lua_state_,
-                         ZCE_LUA::member_functor<class_type, ret_type, args_type...>::invoke, 1);
-        lua_rawset(lua_state_, -3);
-
-        lua_pop(lua_state_, 1);
-        return 0;
+        return class_mem_fun_all<false, class_type, ret_type, args_type...>(name, func);
     }
+
+    ///注册一个类的成员函数，和class_mem_fun的区别是函数最后的返回会调用lua_yield,函数名称是name，
+    ///详细的函数说明，请参考class_mem_fun_all
+    template<typename class_type, typename ret_type, typename... args_type>
+    int class_mem_yield_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
+    {
+        return class_mem_fun_all<true, class_type, ret_type, args_type...>(name, func);
+    }
+
+    
 
     ///放入某个东东到堆栈
     template<typename val_type >
@@ -1557,6 +1604,12 @@ public:
     inline val_type read(int index)
     {
         return ZCE_LUA::read_stack<val_type>(lua_state_, index);
+    }
+
+    template<typename val_type >
+    inline val_type pop()
+    {
+        return ZCE_LUA::pop_stack<val_type>(lua_state_);
     }
 
     //
@@ -1780,8 +1833,79 @@ protected:
         return;
     }
 
-
+    /*!
+    * @brief      向LUA注册一个全局函数，或者类的静态函数给lua调用
+    *             根据last_yield确定返回的方式，是否调用lua_yield
+    * @tparam     last_yield 函数的最后，是否使用yield返回，
+    * @tparam     ret_type   返回参数类型
+    * @tparam     args_type  函数的参数类型，变参
+    * @param      name       向LUA注册的函数名称
+    * @param      func       注册的C函数
+    */
+    template<bool last_yield, typename ret_type, typename... args_type>
+    void reg_gfun_all(const char *name, ret_type(*func)(args_type...))
+    {
+        //函数名称
+        lua_pushstring(lua_state_, name);
+        //将函数指针转换为void * ，作为lightuserdata 放入堆栈，作为closure的upvalue放入
+        lua_pushlightuserdata(lua_state_, (void *)func);
+        //functor模板函数，放入closure,
+        lua_pushcclosure(lua_state_, 
+            ZCE_LIB::if_< std::is_void<ret_type>::value,
+            ZCE_LUA::g_functor_void<last_yield, args_type...>,
+            ZCE_LUA::g_functor_ret<last_yield, ret_type ,args_type...> 
+            >::type::invoke, 
+            1);
+        
+        //将其放入全局环境表中
+        lua_settable(lua_state_, LUA_GLOBALSINDEX);
+    }
     
+    /*!
+    * @brief      注册类的成员函数
+    * @tparam     last_yield 最后，是否使用lua_yield函数返回，主要用于协程中
+    * @tparam     class_type 成员函数所属的类
+    * @tparam     ret_type   返回值
+    * @tparam     args_type  参数列表，是多个参数类型
+    * @return     int   == 0 表示注册成功
+    * @param      name  函数的名字
+    * @param      func  成员函数指针
+    */
+    template<bool last_yield, typename class_type, typename ret_type, typename... args_type>
+    int class_mem_fun_all(const char *name, typename ret_type(class_type::*func)(args_type...))
+    {
+        //根据类的名称，取得类的metatable的表，或者说原型。
+        lua_pushstring(lua_state_, ZCE_LUA::class_name<class_type>::name());
+        lua_gettable(lua_state_, LUA_GLOBALSINDEX);
+
+        //
+        if (!lua_istable(lua_state_, -1))
+        {
+            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                ZCE_LUA::class_name<class_type>::name());
+            ZCE_ASSERT(false);
+            lua_pop(lua_state_, 1);
+            return -1;
+        }
+
+        lua_pushstring(lua_state_, name);
+        //这个类的函数指针作为upvalue_的。
+        //注意这儿是类的成员指针（更加接近size_t），而不是实际的指针，所以这儿不能用light userdata
+        //下面这个写法真是要了人民，非要用typedef中转一下
+        typedef ret_type(class_type:: *mem_fun)(args_type...);
+        new(lua_newuserdata(lua_state_, sizeof(mem_fun))) mem_fun(func);
+        //
+        lua_pushcclosure(lua_state_,
+            ZCE_LIB::if_< std::is_void<ret_type>::value,
+            ZCE_LUA::member_functor_void<last_yield,class_type, args_type...>,
+            ZCE_LUA::member_functor_ret<last_yield, class_type, ret_type, args_type...>
+            >::type::invoke,
+            1);
+        lua_rawset(lua_state_, -3);
+
+        lua_remove(lua_state_, -1);
+        return 0;
+    }
 
 protected:
 

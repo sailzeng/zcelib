@@ -326,58 +326,57 @@ int test_lua_script5(int, char *[])
 }
 
 
-//测试Lua Thread
 
-int thread_func(ZCE_Lua_Thread *thread_handle)
+void thread_func()
 {
     printf("# thread_func is invoke.\n");
-    return thread_handle->yield(0);
+    return;
 }
 
-int thread_func2(ZCE_Lua_Thread *thread_handle, float a)
+double thread_func2(double a, double b)
 {
-    printf("# thread_func2(L,%f) is invoke.\n", a);
-    return thread_handle->yield(0);
+    printf("# thread_func2(%f,%f) is invoke. \n", a,b);
+    return a+b;
 }
 
 class Test_Thread_Class
 {
 public:
-    Test_Thread_Class(ZCE_Lua_Thread *thread_handle):
-        thread_handle_(thread_handle)
-    {
-    }
+
     //
-    int thread_men_fun()
+    void thread_men_fun()
     {
         printf("# Test_Thread_Class::thread_men_fun is invoke.\n");
-        return thread_handle_->yield(0);
+        return;
     }
 
-    int thread_men_fun2(float a)
+    double thread_men_fun2(double a,double b)
     {
-        printf("# Test_Thread_Class::thread_men_fun2(L,%f) is invoke.\n", a);
-        return thread_handle_->yield(0);
+        printf("# Test_Thread_Class::thread_men_fun2(%f,%f) is invoke.\n",  a, b);
+        return a+b;
     }
 
-    ZCE_Lua_Thread *thread_handle_;
 };
 
+//这个测试是和tinker类似的，但仔细你会发现我的实现比tinker高明了很多！！！！
+//我不需要你的函数写成特定的方式。
+
+//测试Lua Thread 协程
 int test_lua_script6(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
-
-    lua_tie.reg_gfun("thread_func", &thread_func);
-    lua_tie.reg_gfun("thread_func2", &thread_func2);
+    //请注意这个地方，注册函数用的是reg_yeild_gfun，这样thread_func执行
+    //完毕会，调用lua_yield
+    lua_tie.reg_yeild_gfun("thread_func", &thread_func);
+    lua_tie.reg_yeild_gfun("thread_func2", &thread_func2);
     
 
     lua_tie.reg_class<Test_Thread_Class>("TestClass").
-        mem_fun("thread_men_fun", &Test_Thread_Class::thread_men_fun).
-        mem_fun("thread_men_fun2", &Test_Thread_Class::thread_men_fun2);
+        mem_yield_fun("thread_men_fun", &Test_Thread_Class::thread_men_fun).
+        mem_yield_fun("thread_men_fun2", &Test_Thread_Class::thread_men_fun2);
    
-    
 
     ZCE_Lua_Thread thread_hdl;
     int ret = lua_tie.new_thread(&thread_hdl);
@@ -386,30 +385,61 @@ int test_lua_script6(int, char *[])
         return ret;
     }
 
-    Test_Thread_Class g_test(&thread_hdl);
+    Test_Thread_Class g_test;
     lua_tie.set_gvar("g_test", &g_test);
-    lua_tie.set_gvar("thread_handle", &thread_hdl);
 
     thread_hdl.do_file("lua/lua_test_06.lua");
 
 
     ret = thread_hdl.get_luaobj("ThreadTest", LUA_TFUNCTION);
-
-    printf("* lua_resume() to.. start. \n");
+    if (ret != 0)
+    {
+        return ret;
+    }
+    printf("* lua_resume() to.. ThreadTest start. =============================\n");
     thread_hdl.resume(0);
 
 
     printf("* lua_resume() to.. \n");
     thread_hdl.resume(0);
+    printf("* pop ret %f\n", thread_hdl.pop<double>());
+
+    printf("* lua_resume() to.. \n");
+    thread_hdl.resume(0);
+    
+    printf("* lua_resume() to.. \n");
+    thread_hdl.resume(0);
+    printf("* pop ret %f\n", thread_hdl.pop<double>());
 
     printf("* lua_resume() to.. \n");
     thread_hdl.resume(0);
 
+    printf("*  ThreadTest end. =================================\n");
+
+
+
+    ret = thread_hdl.get_luaobj("ThreadTest2", LUA_TFUNCTION);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    printf("* lua_resume() to.. ThreadTest2 start. ==============================\n");
+    thread_hdl.resume(0);
     printf("* lua_resume() to.. \n");
+    printf("* pop %d\n", thread_hdl.pop<int>());
+    thread_hdl.resume(0);
+    printf("* lua_resume() to.. \n");
+    printf("* pop %d\n", thread_hdl.pop<int>());
     thread_hdl.resume(0);
 
     printf("* lua_resume() to.. \n");
+    printf("* pop %d\n", thread_hdl.pop<int>());
     thread_hdl.resume(0);
+    printf("* lua_resume() to.. \n");
+    printf("* pop %d\n", thread_hdl.pop<int>());
+    thread_hdl.resume(0);
+
+    printf("*  ThreadTest2 end. =================================\n");
 
     lua_tie.close();
 
