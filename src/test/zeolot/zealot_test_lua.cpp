@@ -446,3 +446,237 @@ int test_lua_script6(int, char *[])
     return 0;
 }
 
+//表述不同的集成方式，以及测试性能数据，
+
+struct Woo_Struct
+{
+    int a_;
+    int b_;
+    int c_;
+    int d_;
+    int e_;
+    int f_;
+};
+
+Woo_Struct woo_result;
+
+void set_woo(int a, int b, int c, int d, int e, int f)
+{
+    woo_result.a_ = a;
+    woo_result.b_ = b;
+    woo_result.c_ = c;
+    woo_result.d_ = d;
+    woo_result.e_ = e;
+    woo_result.f_ = f;
+}
+
+
+const size_t LUA_TEST_COUNT = 10240;
+
+int test_lua_script7(int, char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+
+    Woo_Struct obj_x ,obj_y;
+
+    obj_x.a_ = 1;
+    obj_x.b_ = 2;
+    obj_x.c_ = 3;
+    obj_x.d_ = 4;
+    obj_x.e_ = 5;
+    obj_x.f_ = 6;
+
+    obj_y.a_ = 10;
+    obj_y.b_ = 20;
+    obj_y.c_ = 30;
+    obj_y.d_ = 40;
+    obj_y.e_ = 50;
+    obj_y.f_ = 60;
+
+    lua_tie.reg_gfun("set_result", &set_woo);
+
+    lua_tie.do_file("lua/lua_test_07.lua");
+
+    lua_tie.call_luafun_0("read_objx",
+        obj_x.a_,
+        obj_x.b_, 
+        obj_x.c_, 
+        obj_x.d_, 
+        obj_x.e_, 
+        obj_x.f_);
+
+    lua_tie.call_luafun_0("read_objy",
+        obj_y.a_,
+        obj_y.b_,
+        obj_y.c_,
+        obj_y.d_,
+        obj_y.e_,
+        obj_y.f_);
+
+    lua_tie.call_luafun_0("obj_add");
+    printf("result a=%d b=%d c=%d d=%d e=%d f=%d \n",
+        woo_result.a_,
+        woo_result.b_,
+        woo_result.c_,
+        woo_result.d_,
+        woo_result.e_,
+        woo_result.f_);
+
+    //做一下性能测试。
+    const uint32_t TEST_SEED = 120825;
+    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+
+    ZCE_Progress_Timer timer;
+    timer.restart();
+    for (size_t i = 0; i < LUA_TEST_COUNT; ++i)
+    {
+        obj_x.a_ = mt11231b_gen.get_uint32();
+        obj_x.b_ = mt11231b_gen.get_uint32();
+        obj_x.c_ = mt11231b_gen.get_uint32();
+        obj_x.d_ = mt11231b_gen.get_uint32();
+        obj_x.e_ = mt11231b_gen.get_uint32();
+        obj_x.f_ = mt11231b_gen.get_uint32();
+
+        obj_y.a_ = mt11231b_gen.get_uint32();
+        obj_y.b_ = mt11231b_gen.get_uint32();
+        obj_y.c_ = mt11231b_gen.get_uint32();
+        obj_y.d_ = mt11231b_gen.get_uint32();
+        obj_y.e_ = mt11231b_gen.get_uint32();
+        obj_y.f_ = mt11231b_gen.get_uint32();
+
+
+        lua_tie.call_luafun_0("read_objx",
+            obj_x.a_,
+            obj_x.b_,
+            obj_x.c_,
+            obj_x.d_,
+            obj_x.e_,
+            obj_x.f_);
+
+        lua_tie.call_luafun_0("read_objy",
+            obj_y.a_,
+            obj_y.b_,
+            obj_y.c_,
+            obj_y.d_,
+            obj_y.e_,
+            obj_y.f_);
+
+        lua_tie.call_luafun_0("obj_add");
+    }
+
+    timer.end();
+    std::cout << " elapsed: " << std::setprecision(6) << timer.elapsed_sec()<<std::endl;
+
+
+    lua_tie.close();
+
+    return 0;
+}
+
+
+int test_lua_script8(int, char *[])
+{
+    Woo_Struct obj_x, obj_y, obj_result;
+
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+    lua_tie.reg_class<Woo_Struct>("Woo_Struct").
+        mem_var("a_", &Woo_Struct::a_).
+        mem_var("b_", &Woo_Struct::b_).
+        mem_var("c_", &Woo_Struct::c_).
+        mem_var("d_", &Woo_Struct::d_).
+        mem_var("e_", &Woo_Struct::e_).
+        mem_var("f_", &Woo_Struct::f_);
+
+    obj_x.a_ = 1;
+    obj_x.b_ = 2;
+    obj_x.c_ = 3;
+    obj_x.d_ = 4;
+    obj_x.e_ = 5;
+    obj_x.f_ = 6;
+
+    obj_y.a_ = 10;
+    obj_y.b_ = 20;
+    obj_y.c_ = 30;
+    obj_y.d_ = 40;
+    obj_y.e_ = 50;
+    obj_y.f_ = 60;
+
+    lua_tie.set_gvar("obj_x", &obj_x);
+    lua_tie.set_gvar("obj_y", &obj_y);
+    lua_tie.set_gvar("obj_result", &obj_result);
+
+    lua_tie.do_file("lua/lua_test_08.lua");
+    lua_tie.call_luafun_0("obj_add");
+    printf("result a=%d b=%d c=%d d=%d e=%d f=%d \n",
+        obj_result.a_,
+        obj_result.b_,
+        obj_result.c_,
+        obj_result.d_,
+        obj_result.e_,
+        obj_result.f_);
+
+    //做一下性能测试。
+    const uint32_t TEST_SEED = 120825;
+    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+
+    ZCE_Progress_Timer timer;
+
+    //使用指针对应数据，速度比完全用Lua 栈交互快，但这个测试，数据没有跟换过，
+    //一直使用obj_x，obj_y，obj_result
+    timer.restart();
+    for (size_t i = 0; i < LUA_TEST_COUNT; ++i)
+    {
+        obj_x.a_ = mt11231b_gen.get_uint32();
+        obj_x.b_ = mt11231b_gen.get_uint32();
+        obj_x.c_ = mt11231b_gen.get_uint32();
+        obj_x.d_ = mt11231b_gen.get_uint32();
+        obj_x.e_ = mt11231b_gen.get_uint32();
+        obj_x.f_ = mt11231b_gen.get_uint32();
+
+        obj_y.a_ = mt11231b_gen.get_uint32();
+        obj_y.b_ = mt11231b_gen.get_uint32();
+        obj_y.c_ = mt11231b_gen.get_uint32();
+        obj_y.d_ = mt11231b_gen.get_uint32();
+        obj_y.e_ = mt11231b_gen.get_uint32();
+        obj_y.f_ = mt11231b_gen.get_uint32();
+
+        lua_tie.call_luafun_0("obj_add");
+    }
+    timer.end();
+    std::cout << " elapsed  01: " << std::setprecision(6) << timer.elapsed_sec() << std::endl;
+
+    //如果每次使用的是，都跟换数据，你会发现性能会下降很多，其实也容易理解，绑定是有new操作的
+    timer.restart();
+    for (size_t i = 0; i < LUA_TEST_COUNT; ++i)
+    {
+        obj_x.a_ = mt11231b_gen.get_uint32();
+        obj_x.b_ = mt11231b_gen.get_uint32();
+        obj_x.c_ = mt11231b_gen.get_uint32();
+        obj_x.d_ = mt11231b_gen.get_uint32();
+        obj_x.e_ = mt11231b_gen.get_uint32();
+        obj_x.f_ = mt11231b_gen.get_uint32();
+
+        obj_y.a_ = mt11231b_gen.get_uint32();
+        obj_y.b_ = mt11231b_gen.get_uint32();
+        obj_y.c_ = mt11231b_gen.get_uint32();
+        obj_y.d_ = mt11231b_gen.get_uint32();
+        obj_y.e_ = mt11231b_gen.get_uint32();
+        obj_y.f_ = mt11231b_gen.get_uint32();
+
+        //每次都重新绑定，
+        lua_tie.set_gvar("obj_x", &obj_x);
+        lua_tie.set_gvar("obj_y", &obj_y);
+        lua_tie.set_gvar("obj_result", &obj_result);
+
+        lua_tie.call_luafun_0("obj_add");
+    }
+    timer.end();
+    std::cout << " elapsed  02: " << std::setprecision(6) << timer.elapsed_sec() << std::endl;
+
+    lua_tie.close();
+
+    return 0;
+}
+

@@ -108,5 +108,11 @@
     <None Include="lua\lua_test_06.lua">
       <Filter>Lua Files</Filter>
     </None>
+    <None Include="lua\lua_test_07.lua">
+      <Filter>Lua Files</Filter>
+    </None>
+    <None Include="lua\lua_test_08.lua">
+      <Filter>Lua Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
