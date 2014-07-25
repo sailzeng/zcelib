@@ -144,8 +144,8 @@ namespace ZCE_LIB
              A.)一个BLOCK长度的IV，用随机数填充
              B.)数据区，
              C.)一个4字节的0，用于校验数据(所以其实准确的说，这是CBC-MAC模式)
-             D.)补齐标识，补齐算法为需要补齐3，填写3个字节的3，如果需要补齐长度11，
-                填写11个字节的11，如果正好余0，补齐一个BLOCK_SIZE字节的BLOCK_SIZE值。
+             D.)补齐标识，补齐算法为需要补齐3，填写3个字节的0x3，如果需要补齐长度11，
+                填写11个字节的0xB，如果正好余0，补齐一个BLOCK_SIZE字节的BLOCK_SIZE值。
 
             其他交织算法我也看过（对比而言和CBC并没有优势），暂时没有实现的必要，以后也许
             会实现一套算法加密文件。慢慢来把。
@@ -158,7 +158,7 @@ class ZCE_Crypt
 {
 
 public:
-    //
+    //从策略类萃取SUBKEY结构
     typedef typename ENCRYPT_STRATEGY::SUBKEY_STRUCT   CRYPT_SUBKEY_STRUCT;
 
     /*!
@@ -166,7 +166,7 @@ public:
     @param      key        密钥
     @param      key_len    密钥长度
     @param      sub_key    密钥更换的子key
-    @param      if_encrypt 是否是进行加密处理，因为有些算法（就是AES了）的SKEY，加密和加密不同，
+    @param      if_encrypt 是否是进行加密处理，因为有些算法（就是AES了）的SKEY，加密和解密不同，
     */
     inline static void key_setup(const unsigned char *key,
                                  size_t key_len,
@@ -755,14 +755,88 @@ public:
 
 public:
     //异或算法一次处理一个BLOCK的长度
-    const static size_t BLOCK_SIZE = 16;
+    static const size_t BLOCK_SIZE = 16;
     //异或算法KEY的长度
-    const static size_t KEY_SIZE   = 16;
+    static const size_t KEY_SIZE = 16;
 };
 
 //简单的异或加密，主要用于测试ZCE_Crypt，
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
 typedef ZCE_Crypt<XOR_ECB>   XOR_Crypt_16_16_1;
+
+//=================================================================================================================
+//DES 和 TDES(DES3)的设计实现
+
+class DES_Base
+{
+public:
+    //
+    static const size_t KEY_SIZE = 8;
+public:
+    //
+    static void des_setkey(const unsigned char key[DES_Base::KEY_SIZE],
+        uint32_t SK[32]);
+public:
+
+    static const uint32_t DES_LHS[16];
+
+    static const uint32_t DES_RHS[16];
+};
+
+
+
+class DES_ECB : public DES_Base
+{
+public:
+
+    //
+    static const size_t SUB_KEY_SIZE = 32;
+    //DES算法一次处理一个BLOCK的长度
+    static const size_t BLOCK_SIZE = 8;
+
+    struct DES_SUBKEY
+    {
+        uint32_t sub_key_[SUB_KEY_SIZE];
+    };
+
+    //DES的subkey定义，方便萃取
+    typedef  DES_SUBKEY  SUBKEY_STRUCT;
+
+    ///生成DES算法的sub key
+    static void key_setup(const unsigned char *key,
+        DES_SUBKEY *subkey,
+        bool  if_encrypt);
+
+
+    ///DES块加密函数
+    inline static void ecb_encrypt(const SUBKEY_STRUCT *skey,
+        const unsigned char *src_block,
+        unsigned char *cipher_block)
+    {
+        return des_crypt_ecb(skey, src_block, cipher_block);
+    }
+    ///DES块解密函数
+    inline static void ecb_decrypt(const SUBKEY_STRUCT *skey,
+        const unsigned char *cipher_block,
+        unsigned char *src_block)
+    {
+        return des_crypt_ecb(skey, cipher_block, src_block);
+    }
+
+protected:
+    //
+    static void  des_crypt_ecb(const SUBKEY_STRUCT *sk,
+        const unsigned char input[BLOCK_SIZE],
+        unsigned char output[BLOCK_SIZE]);
+};
+
+
+template <size_t round_size>
+class TDES_ECB
+{
+public:
+
+};
 
 //=================================================================================================================
 
@@ -780,8 +854,6 @@ template <size_t round_size>
 class TEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
-    //
-    static const uint32_t DELTA = 0x9e3779b9;
 
     //使用数组作为SUB KEY，
     typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
@@ -832,6 +904,10 @@ public:
         ZLEUINT32_TO_INDEX(src_block, 1, v1);
     }
 
+protected:
+    //神秘常数δ
+    static const uint32_t DELTA = 0x9e3779b9;
+
 public:
     //TEA算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = 8;
@@ -859,8 +935,7 @@ template <size_t round_size>
 class XTEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
-    //
-    static const uint32_t DELTA = 0x9e3779b9;
+
 
     //使用数组作为SUB KEY，
     typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
@@ -909,6 +984,10 @@ public:
         ZLEUINT32_TO_INDEX(src_block, 1, v1);
     }
 
+protected:
+    //神秘常数δ
+    static const uint32_t DELTA = 0x9e3779b9;
+
 public:
     //XTEA算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = 8;
@@ -937,8 +1016,7 @@ template <size_t block_size , size_t round_size>
 class XXTEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
-    //
-    static const uint32_t DELTA = 0x9e3779b9;
+
 
     //使用数组作为SUB KEY，
     typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
@@ -1034,6 +1112,10 @@ public:
 
 #undef XXTEA_MX
 
+protected:
+    //神秘常数δ
+    static const uint32_t DELTA = 0x9e3779b9;
+
 public:
     //XXTEA算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = block_size;
@@ -1113,7 +1195,7 @@ class RC_ECB_Base : public RC_SBOX_Define
 public:
 
     //RC6的key长度可以是8-128字节(64-1024bit)，我这儿选择16字节(128bit)
-    const static size_t KEY_SIZE   = key_size;
+    static const size_t KEY_SIZE   = key_size;
 
     struct RC_SUBKEY
     {
@@ -1121,9 +1203,9 @@ public:
     };
 
     //加密的轮数
-    const static size_t ROUND_SIZE = round_size;
+    static const size_t ROUND_SIZE = round_size;
     //S BOX的大小
-    const static size_t SBOX_SIZE  = sbox_size;
+    static const size_t SBOX_SIZE = sbox_size;
 
     //
     static void key_setup(const unsigned char *key ,
