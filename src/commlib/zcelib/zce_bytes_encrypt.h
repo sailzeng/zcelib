@@ -777,9 +777,11 @@ public:
     static void des_setkey(const unsigned char key[DES_Base::KEY_SIZE],
         uint32_t SK[32]);
 public:
-
+    ///Expanded DES S-boxes
+    static const uint32_t SB[8][64];
+    ///left halves bit - swap
     static const uint32_t DES_LHS[16];
-
+    ///right halves bit - swap
     static const uint32_t DES_RHS[16];
 };
 
