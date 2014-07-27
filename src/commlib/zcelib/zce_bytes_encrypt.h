@@ -10,18 +10,23 @@
 *             2013年4月20日
 *             芦山地震，7级，逝者安息，
 *
-* @brief      加密函数，提供了一些 分组加密函数，以及交织（块）加密的算法，可以直接使用分组加密算法
-*             作为策略，目前已经支持的策略包括TEA,XTEA,XXTEA,RC5,RC6,CAST5,CAST6(CAST-256)
-*             MARS,AES,其中很多代码根据KEY长度，加密轮数，给出了不同定义。你用这些东西足可以写个对
-*             抗系统了.
+* @brief      加密函数，提供了一些 分组加密函数，以及交织（块）加密的算法，可以直接使用分组加
+*             密算法作为策略，目前已经支持的策略包括TEA,XTEA,XXTEA,RC5,RC6,CAST5,CAST6
+*             (CAST-256)，MARS,DES,3DES,AES,其中很多代码根据KEY长度，加密轮数，给出了不
+*             同定义。你用这些东西足可以写个对抗系统了.
 *             也许未来会考虑的算法是twofish，safer+，
+*
+*             算法内部对数据的处理完全采用了LE(little end)小头编码处理方式，（就是在BE的CPU上也
+*             会转换为LE进行处理）。字节序的处理方式主要体现在如何把一个BLOCK块里面的数据视为怎样的
+*             整数。ZINDEX_TO_LEUINT32 和 ZLEUINT32_TO_INDEX
 *
 *             交织算法我值选择了最常用的策略CBC（其实我们的实现更接近CBC-MAC）：
 *             http://zh.wikipedia.org/zh-hant/%E5%9D%97%E5%AF%86%E7%A0%81%E7%9A%84%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F
 *             这个代码库已经可以和相当多的加密代码库叫板一下了。吼吼。
 *             ZCE_Crypt 是一个对于流数据的加密模版，里面根据加密算法的KEY_SIZE（密钥长度）
 *             和BLOCK_SIZE （分组加密算法每次处理的块长度）进行处理，对于流，使用CBC交织算
-*             法（就是前面一个BLOCK数据和后面BLOCK异或）和填充算法进行加密。加密算法只是里面的策略，
+*             法（就是前面一个BLOCK数据和后面BLOCK异或）和填充算法进行加密。加密算法只是里面
+*             的策略，
 *
 * @details    CBC的代码，我拥有完全版权，是参考维基算法实现的模版
 *             而具体加密算法大部分代码是从openssl，Cryptlib，libtom-crypt，taocrypt
@@ -35,37 +40,38 @@
 *
 *             性能测试数据，如果每次处理251个字节的数据，每次处理都计算sub key,这时候得到的
 *             性能数据是
-*             算法（名称_块大小_key大小_轮数）         加密包数量(251字节)    解密包数量(251字节)      加密速度(M/s)      解密速度(M/s)  SUBKEY加密          SUBKEY解密
-*                                                                                                                            对速度的影响(%)       对速度的影响(%)
-*             XOR_Crypt_16_16_1                          2179373.79          2255380.04          625.602         647.420           2.89            -0.76
-*             TEA_Crypt_8_16_16                           297709.87           305490.29           85.459          87.692           0.31            -0.88
-*             TEA_Crypt_8_16_32                           153337.02           159825.81           44.016          45.878          -6.96             7.51
-*             TEA_Crypt_8_16_64                            78425.59            79057.65           22.512          22.693          -0.03             1.90
-*             TEA_Crypt_8_16_19                           261299.81           284318.22           75.007          81.615           2.58            -2.19
-*             XTEA_Crypt_8_16_16                          311079.10           324171.13           89.297          93.055           0.27            -1.25
-*             XTEA_Crypt_8_16_32                          158950.12           164494.35           45.627          47.219           0.72             7.35
-*             XTEA_Crypt_8_16_64                           81008.23            83274.39           23.253          23.904          -0.91            -0.51
-*             XXTEA_Crypt_8_16_32                         124498.73           119149.72           35.738          34.202          -6.02             6.48
-*             XXTEA_Crypt_16_16_16                        188572.49           197193.52           54.130          56.605           0.98            -0.34
-*             GOST_Crypt_8_32_32                           87889.64            87696.79           25.229          25.173          -0.56             4.66
-*             RC5_Crypt_8_16_12                           539206.99           632568.60          154.782         181.582           4.26            11.15
-*             RC5_Crypt_8_16_20                           340218.62           380260.96           97.661         109.156          -4.05            15.76
-*             RC6_Crypt_16_16_12                          571960.13           623101.80          164.184         178.865           4.69             3.50
-*             RC6_Crypt_16_16_20                          356239.78           407268.43          102.260         116.908           5.53             8.83
-*             CAST5_Crypt_8_16_8                          504649.43           497531.56          144.862         142.819           5.89             8.83
-*             CAST5_Crypt_8_12_16                         247408.71           250209.50           71.020          71.824           5.56             6.31
-*             CAST5_Crypt_8_16_12                         323645.37           327082.12           92.904          93.890           6.69             8.57
-*             CAST6_Crypt_16_16_48                        174607.61           166313.80           50.122          47.741          20.12            20.95
-*             CAST6_Crypt_16_24_48                        171788.15           174149.38           49.312          49.990          20.18            26.61
-*             CAST6_Crypt_16_32_48                        173675.19           171758.58           49.854          49.304          17.22            25.10
-*             MARS_Crypt_16_16_1                          221375.70           213635.99           63.547          61.325          29.57            20.70
-*             MARS_Crypt_16_24_1                          221147.89           213917.35           63.481          61.406          28.58            30.71
-*             MARS_Crypt_16_32_1                          219511.06           214845.17           63.011          61.672          30.32            38.10
-*             AES_Crypt_16_16_10                          490680.63           450712.15          140.852         129.379           6.26             3.86
-*             AES_Crypt_16_24_12                          410409.45           387073.16          117.810         111.111           5.13            21.18
-*             AES_Crypt_16_32_14                          365328.38           322226.87          104.869          92.497           4.11             9.04
+*             算法（名称_块大小_key大小_轮数）  加密解密处理的耗时                            加密包数量(251字节)    解密包数量(251字节)  加密速度(M/s)      解密速度(M/s)           保存SUBKEY 加密，解密
+*                                                                                                                                                                   对速度的影响(%)
+*             XOR_Crypt_128_128_1          usetime[   6193.0279 us][   7550.2505 us] times [  3306944.57/s][  2712492.78/s],speed [   949.278 M/s][   778.637 M/s],subkey[ -2.75][   12.87].
+*             DES_Crypt_64_64_16           usetime[  93373.4321 us][  86166.8413 us] times [   219334.34/s][   237678.43/s],speed [    62.961 M/s][    68.227 M/s],subkey[  8.02][    5.06].
+*             DES3_Crypt_64_192_16         usetime[ 240679.3577 us][ 237867.5682 us] times [    85092.47/s][    86098.33/s],speed [    24.426 M/s][    24.715 M/s],subkey[  6.41][    8.19].
+*             TEA_Crypt_64_128_16          usetime[  42721.7227 us][  41723.7100 us] times [   479381.42/s][   490848.01/s],speed [   137.609 M/s][   140.901 M/s],subkey[  1.64][   -0.15].
+*             TEA_Crypt_64_128_32          usetime[  82524.0484 us][  83136.1048 us] times [   248170.08/s][   246343.03/s],speed [    71.239 M/s][    70.714 M/s],subkey[ -0.87][   -4.29].
+*             TEA_Crypt_64_128_64          usetime[ 165654.5551 us][ 161183.5578 us] times [   123630.77/s][   127060.11/s],speed [    35.489 M/s][    36.473 M/s],subkey[ -0.26][   -1.05].
+*             XTEA_Crypt_64_128_16         usetime[  46351.4535 us][  43234.2577 us] times [   441841.59/s][   473698.43/s],speed [   126.833 M/s][   135.978 M/s],subkey[ -0.23][    1.04].
+*             XTEA_Crypt_64_128_32         usetime[  90651.2118 us][  88223.8235 us] times [   225920.86/s][   232136.84/s],speed [    64.852 M/s][    66.636 M/s],subkey[ -0.77][    0.84].
+*             XTEA_Crypt_64_128_64         usetime[ 181532.5668 us][ 175920.8059 us] times [   112817.22/s][   116416.02/s],speed [    32.385 M/s][    33.418 M/s],subkey[  0.04][   -1.77].
+*             XXTEA_Crypt_64_128_32        usetime[ 187377.2699 us][ 118152.3859 us] times [   109298.21/s][   173335.48/s],speed [    31.375 M/s][    49.757 M/s],subkey[ -0.94][    0.58].
+*             XXTEA_Crypt_128_128_16       usetime[  86094.0663 us][  96435.5801 us] times [   237879.34/s][   212369.75/s],speed [    68.285 M/s][    60.962 M/s],subkey[ -3.74][    9.43].
+*             GOST_Crypt_64_256_32         usetime[ 216748.8236 us][ 171384.8087 us] times [    94487.25/s][   119497.17/s],speed [    27.123 M/s][    34.302 M/s],subkey[ 11.68][   -8.60].
+*             RC5_Crypt_64_128_12          usetime[  23352.6882 us][  19211.9774 us] times [   876986.83/s][  1066001.67/s],speed [   251.744 M/s][   306.002 M/s],subkey[  4.31][    7.84].
+*             RC5_Crypt_64_128_20          usetime[  37303.4064 us][  30671.8625 us] times [   549011.52/s][   667712.96/s],speed [   157.597 M/s][   191.671 M/s],subkey[  5.60][    3.67].
+*             RC6_Crypt_128_128_12         usetime[  19221.9295 us][  17158.4162 us] times [  1065449.75/s][  1193583.35/s],speed [   305.844 M/s][   342.625 M/s],subkey[  7.16][    7.90].
+*             RC6_Crypt_128_128_20         usetime[  30216.2413 us][  28319.7373 us] times [   677781.19/s][   723170.55/s],speed [   194.561 M/s][   207.590 M/s],subkey[  3.42][   12.60].
+*             CAST5_Crypt_64_128_8         usetime[  31392.1484 us][  29553.8022 us] times [   652392.43/s][   692973.44/s],speed [   187.273 M/s][   198.922 M/s],subkey[  5.99][    4.83].
+*             CAST5_Crypt_64_96_16         usetime[  61906.3317 us][  58983.8247 us] times [   330822.38/s][   347213.84/s],speed [    94.965 M/s][    99.670 M/s],subkey[  5.44][    4.19].
+*             CAST5_Crypt_64_128_12        usetime[  47192.7200 us][  43538.1089 us] times [   433965.24/s][   470392.50/s],speed [   124.572 M/s][   135.029 M/s],subkey[  6.00][    4.75].
+*             CAST6_Crypt_128_128_48       usetime[  82599.6224 us][  81944.3365 us] times [   247943.02/s][   249925.75/s],speed [    71.174 M/s][    71.743 M/s],subkey[ 20.23][   20.65].
+*             CAST6_Crypt_128_192_48       usetime[  82101.3936 us][  82218.9532 us] times [   249447.65/s][   249090.98/s],speed [    71.605 M/s][    71.503 M/s],subkey[ 21.16][   18.25].
+*             CAST6_Crypt_128_256_48       usetime[  84457.2509 us][  80539.2192 us] times [   242489.54/s][   254286.05/s],speed [    69.608 M/s][    72.994 M/s],subkey[ 23.33][   19.46].
+*             MARS_Crypt_128_128_1         usetime[  64761.3509 us][  64620.4659 us] times [   316238.00/s][   316927.46/s],speed [    90.778 M/s][    90.976 M/s],subkey[ 35.59][   34.18].
+*             MARS_Crypt_128_192_1         usetime[  65772.1147 us][  63665.9939 us] times [   311378.16/s][   321678.79/s],speed [    89.383 M/s][    92.340 M/s],subkey[ 35.44][   35.48].
+*             MARS_Crypt_128_256_1         usetime[  65402.0197 us][  63582.3337 us] times [   313140.18/s][   322102.05/s],speed [    89.889 M/s][    92.461 M/s],subkey[ 34.10][   35.39].
+*             AES_Crypt_128_128_10         usetime[  29016.3868 us][  29941.3135 us] times [   705808.07/s][   684004.73/s],speed [   202.606 M/s][   196.348 M/s],subkey[  4.78][   10.31].
+*             AES_Crypt_128_192_12         usetime[  33515.0635 us][  35894.8681 us] times [   611068.51/s][   570555.10/s],speed [   175.411 M/s][   163.781 M/s],subkey[  4.44][   10.73].
+*             AES_Crypt_128_256_14         usetime[  38541.8254 us][  40393.5448 us] times [   531370.78/s][   507011.70/s],speed [   152.533 M/s][   145.541 M/s],subkey[  3.61][   10.83].
 *
-*             对比一下，信心爆棚，快60%
+*             对比一下，信心爆棚，快60%                       加密耗时              解密耗时              加密速度(M/s)    解密速度(M/s)
 *             TEA_Crypt_8_16_16                           297709.87           305490.29           85.459          87.692
 *             TXTEA16                                     184472.20           185296.85           52.853          53.644
 *
@@ -762,7 +768,7 @@ public:
 
 //简单的异或加密，主要用于测试ZCE_Crypt，
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<XOR_ECB>   XOR_Crypt_16_16_1;
+typedef ZCE_Crypt<XOR_ECB>   XOR_Crypt_128_128_1;
 
 //=================================================================================================================
 //DES 和 TDES(DES3)的设计实现
@@ -770,12 +776,11 @@ typedef ZCE_Crypt<XOR_ECB>   XOR_Crypt_16_16_1;
 class DES_Base
 {
 public:
-    //
-    static const size_t KEY_SIZE = 8;
+
 public:
     //
-    static void des_setkey(const unsigned char key[DES_Base::KEY_SIZE],
-        uint32_t SK[32]);
+    static void des_setkey(const unsigned char key[8],
+        uint32_t sk[32]);
 public:
     ///Expanded DES S-boxes
     static const uint32_t SB[8][64];
@@ -787,11 +792,24 @@ public:
 
 
 
+
+/*!
+* @brief      DES（Data Encryption Standard）加密算法，是一种使用密钥加密的块密码，
+*             1976年被美国联邦政府的国家标准局确定为联邦资料处理标准（FIPS），随后在国
+*             际上广泛流传开来。它基于使用56位密钥的对称算法。这个算法因为包含一些机密设
+*             计元素，相对短的密钥长度以及怀疑内含美国国家安全局（NSA）的后门而在开始时
+*             有争议，DES因此受到了强烈的学院派式的审查，并以此推动了现代的块密码及其密码
+*             分析的发展。  
+*             在2001年，DES作为一个标准已经被高级加密标准（AES）所取代。
+*             http://zh.wikipedia.org/wiki/DES                   -- 来自维基
+* @note       
+*/
 class DES_ECB : public DES_Base
 {
 public:
-
-    //
+    //秘钥长度
+    static const size_t KEY_SIZE = 8;
+    //SUB Key长度
     static const size_t SUB_KEY_SIZE = 32;
     //DES算法一次处理一个BLOCK的长度
     static const size_t BLOCK_SIZE = 8;
@@ -804,9 +822,9 @@ public:
     //DES的subkey定义，方便萃取
     typedef  DES_SUBKEY  SUBKEY_STRUCT;
 
-    ///生成DES算法的sub key
+    ///生成DES算法的sub key，其加密解密的sub key不同
     static void key_setup(const unsigned char *key,
-        DES_SUBKEY *subkey,
+        SUBKEY_STRUCT *subkey,
         bool  if_encrypt);
 
 
@@ -826,31 +844,93 @@ public:
     }
 
 protected:
-    //
+    //DES 的加密解密是一个函数，（但SUB Key 不同）
     static void  des_crypt_ecb(const SUBKEY_STRUCT *sk,
         const unsigned char input[BLOCK_SIZE],
         unsigned char output[BLOCK_SIZE]);
 };
 
+//DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
+typedef ZCE_Crypt<DES_ECB > DES_Crypt_64_64_16;
 
-template <size_t round_size>
-class TDES_ECB
+
+
+
+/*!
+* @brief      DES3（或称为Triple DES 或者 3DES）是三重数据加密算法（TDEA，Triple 
+*             Data Encryption Algorithm）块密码的通称。它相当于是对每个数据块应用
+*             三次DES加密算法。由于计算机运算能力的增强，原版DES密码的密钥长度变得容易
+*             被暴力破解；3DES即是设计用来提供一种相对简单的方法，即通过增加DES的密钥
+*             长度来避免类似的攻击，而不是设计一种全新的块密码算法。 
+* @note       密文 = EK3(DK2(EK1(平文)))
+*             平文 = DK1(EK2(DK3(密文)))
+*/
+class DES3_ECB : public DES_Base
 {
 public:
+    //秘钥长度
+    static const size_t KEY_SIZE = 24;
+    //3倍的DES sub key長度
+    static const size_t SUB_KEY_SIZE = 96;
+    //DES算法一次处理一个BLOCK的长度
+    static const size_t BLOCK_SIZE = 8;
 
+    struct DES3_SUBKEY
+    {
+        uint32_t sub_key_[SUB_KEY_SIZE];
+    };
+
+    //DES的subkey定义，方便萃取
+    typedef  DES3_SUBKEY  SUBKEY_STRUCT;
+
+    ///生成DES算法的sub key，其加密解密的sub key不同
+    static void key_setup(const unsigned char *key,
+        SUBKEY_STRUCT *subkey,
+        bool  if_encrypt);
+
+    ///DES3块加密函数
+    inline static void ecb_encrypt(const SUBKEY_STRUCT *skey,
+        const unsigned char *src_block,
+        unsigned char *cipher_block)
+    {
+        return des3_crypt_ecb(skey, src_block,cipher_block);
+    }
+    ///DES3块解密函数
+    inline static void ecb_decrypt(const SUBKEY_STRUCT *skey,
+        const unsigned char *cipher_block,
+        unsigned char *src_block)
+    {
+        return des3_crypt_ecb(skey, cipher_block, src_block);
+    }
+
+protected:
+
+    //计算DES3算法的sub key
+    static void des3_set3key(const unsigned char key[KEY_SIZE],
+        uint32_t esk[SUB_KEY_SIZE],
+        uint32_t dsk[SUB_KEY_SIZE]);
+
+    //DES 的加密解密是一个函数，（但SUB Key 不同）
+    static void  des3_crypt_ecb(const SUBKEY_STRUCT *subkey,
+        const unsigned char input[BLOCK_SIZE],
+        unsigned char output[BLOCK_SIZE]);
 };
+
+
+//DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
+typedef ZCE_Crypt<DES3_ECB > DES3_Crypt_64_192_16;
 
 //=================================================================================================================
 
 /*!
-@brief      TEA的加密算法，代码参考来自维基，
-            这个算法估计是因为Tecent用的多，所以这个算法知名度较大，
-            该算法使用了一个神秘常数δ作为倍数，它来源于黄金比率，以保证每一轮加密都不相同。
-            但δ的精确值似乎并不重要，这里 TEA 把它定义为 δ=「(√5 - 1)231」
-            （也就是程序中的 0×9E3779B9）
-@tparam     round_size  加密的轮数，推荐轮数是32或者64，TX的值用了16轮，所以加密性降低，当然性能好一些，
-                        其他数值的轮数应该也可以。
-@note       算法中使用了ZINDEX_TO_LEUINT32，这些宏，其实是相当于我认为算法的编码是小头党
+* @brief      TEA的加密算法，代码参考来自维基，
+*             这个算法估计是因为Tecent用的多，所以这个算法知名度较大，
+*             该算法使用了一个神秘常数δ作为倍数，它来源于黄金比率，以保证每一轮加密都不相同。
+*             但δ的精确值似乎并不重要，这里 TEA 把它定义为 δ=「(√5 - 1)231」
+*             （也就是程序中的 0×9E3779B9）
+* @tparam     round_size  加密的轮数，推荐轮数是32或者64，TX的值用了16轮，所以加密性降低，当然性能好一些，
+*                         其他数值的轮数应该也可以。
+* @note       算法中使用了ZINDEX_TO_LEUINT32，这些宏，其实是相当于我认为算法的编码是小头党
 */
 template <size_t round_size>
 class TEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
@@ -919,9 +999,9 @@ public:
 
 //TEA算法，TX用的是16轮，算法作者推荐是32轮，甚至64轮，
 //typedef命名原则是，加密算法名称，，算法处理的BLOCK长度key长度，轮数(推荐的轮数往往和key长度有一定关系)，
-typedef ZCE_Crypt<TEA_ECB<16 > > TEA_Crypt_8_16_16;
-typedef ZCE_Crypt<TEA_ECB<32 > > TEA_Crypt_8_16_32;
-typedef ZCE_Crypt<TEA_ECB<64 > > TEA_Crypt_8_16_64;
+typedef ZCE_Crypt<TEA_ECB<16 > > TEA_Crypt_64_128_16;
+typedef ZCE_Crypt<TEA_ECB<32 > > TEA_Crypt_64_128_32;
+typedef ZCE_Crypt<TEA_ECB<64 > > TEA_Crypt_64_128_64;
 
 //=================================================================================================================
 
@@ -999,9 +1079,9 @@ public:
 
 //XTEA算法，
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<XTEA_ECB<16 > > XTEA_Crypt_8_16_16;
-typedef ZCE_Crypt<XTEA_ECB<32 > > XTEA_Crypt_8_16_32;
-typedef ZCE_Crypt<XTEA_ECB<64 > > XTEA_Crypt_8_16_64;
+typedef ZCE_Crypt<XTEA_ECB<16 > > XTEA_Crypt_64_128_16;
+typedef ZCE_Crypt<XTEA_ECB<32 > > XTEA_Crypt_64_128_32;
+typedef ZCE_Crypt<XTEA_ECB<64 > > XTEA_Crypt_64_128_64;
 
 //=================================================================================================================
 
@@ -1125,14 +1205,14 @@ public:
     const static size_t KEY_SIZE   = 16;
 };
 
-typedef ZCE_Crypt<XXTEA_ECB<8, 32 > >  XXTEA_Crypt_8_16_32;
-typedef ZCE_Crypt<XXTEA_ECB<16, 16 > > XXTEA_Crypt_16_16_16;
+typedef ZCE_Crypt<XXTEA_ECB<8, 32 > >  XXTEA_Crypt_64_128_32;
+typedef ZCE_Crypt<XXTEA_ECB<16, 16 > > XXTEA_Crypt_128_128_16;
 
 //=================================================================================================================
 
 /*!
 @brief      GOST是当年苏联KKB搞出来的加密算法，其实相对DES，
-            这个东东更加脆弱，但由于GOST的密钥要求256位，加密轮数
+            这个东东更加脆弱，但由于GOST的密钥要求256位，加密轮数也多
             所以安全性好于DES,这个实现的轮数只能是32轮，（轮数无法改变）
 */
 class GOST_ECB : public SubKey_Is_Uint32Ary_ECB<32>
@@ -1164,7 +1244,7 @@ public:
 
 //默认GOST加密8字节的BLOCK，32字节（256bits）的key，32轮,
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < GOST_ECB > GOST_Crypt_8_32_32;
+typedef ZCE_Crypt < GOST_ECB > GOST_Crypt_64_256_32;
 
 //=================================================================================================================
 
@@ -1296,8 +1376,8 @@ public:
 //RC5推荐的加密算法的轮数是12轮，RC5_Crypt_16_12_8，但维基后面也写了一句
 //12-round RC5 (with 64-bit blocks) is susceptible to a differential attack using 2^44 chosen plaintexts
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < RC5_ECB < 16, 12, 12 * 2 + 2 > > RC5_Crypt_8_16_12;
-typedef ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > > RC5_Crypt_8_16_20;
+typedef ZCE_Crypt < RC5_ECB < 16, 12, 12 * 2 + 2 > > RC5_Crypt_64_128_12;
+typedef ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > > RC5_Crypt_64_128_20;
 
 /*!
 @brief      RC6曾经是AES的候选方案之一。
@@ -1383,8 +1463,8 @@ public:
 
 //模版参数是加密轮数，RC6推荐的加密算法的轮数是20，如果考虑加密强度，推荐使用RC6_Crypt_16_20_16
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < RC6_ECB < 16, 12, 12 * 2 + 4 > > RC6_Crypt_16_16_12;
-typedef ZCE_Crypt < RC6_ECB < 16, 20, 20 * 2 + 4 > > RC6_Crypt_16_16_20;
+typedef ZCE_Crypt < RC6_ECB < 16, 12, 12 * 2 + 4 > > RC6_Crypt_128_128_12;
+typedef ZCE_Crypt < RC6_ECB < 16, 20, 20 * 2 + 4 > > RC6_Crypt_128_128_20;
 
 //=================================================================================================================
 
@@ -1658,11 +1738,11 @@ public:
 //第一个参数是密钥长度，第二个参数是加密轮数，如果考虑加密效果，推荐CAST5_Crypt_16_16_8
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
 //注意密钥长度如果是8，
-typedef ZCE_Crypt<CAST5_ECB<8, 12>  >  CAST5_Crypt_8_8_12;
-typedef ZCE_Crypt<CAST5_ECB<12, 16> >  CAST5_Crypt_8_12_16;
-typedef ZCE_Crypt<CAST5_ECB<16, 8>  >  CAST5_Crypt_8_16_8;
-typedef ZCE_Crypt<CAST5_ECB<16, 12> >  CAST5_Crypt_8_16_12;
-typedef ZCE_Crypt<CAST5_ECB<16, 16> >  CAST5_Crypt_8_16_16;
+typedef ZCE_Crypt<CAST5_ECB<8, 12>  >  CAST5_Crypt_64_64_12;
+typedef ZCE_Crypt<CAST5_ECB<12, 16> >  CAST5_Crypt_64_96_16;
+typedef ZCE_Crypt<CAST5_ECB<16, 8>  >  CAST5_Crypt_64_128_8;
+typedef ZCE_Crypt<CAST5_ECB<16, 12> >  CAST5_Crypt_64_128_12;
+typedef ZCE_Crypt<CAST5_ECB<16, 16> >  CAST5_Crypt_64_128_16;
 
 /*!
 @brief      CAST6 又被称为CAST256，也是AES的备选方案，
@@ -1910,14 +1990,14 @@ public:
 
 //第一个参数是密钥长度，第二个参数是加密轮数，如果考虑加密效果，48轮的都值得推荐
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<CAST6_ECB<16, 12> >  CAST6_Crypt_16_16_12;
-typedef ZCE_Crypt<CAST6_ECB<16, 24> >  CAST6_Crypt_16_16_24;
-typedef ZCE_Crypt<CAST6_ECB<16, 36> >  CAST6_Crypt_16_16_36;
-typedef ZCE_Crypt<CAST6_ECB<16, 48> >  CAST6_Crypt_16_16_48;
-typedef ZCE_Crypt<CAST6_ECB<20, 48> >  CAST6_Crypt_16_20_48;
-typedef ZCE_Crypt<CAST6_ECB<24, 48> >  CAST6_Crypt_16_24_48;
-typedef ZCE_Crypt<CAST6_ECB<28, 48> >  CAST6_Crypt_16_28_48;
-typedef ZCE_Crypt<CAST6_ECB<32, 48> >  CAST6_Crypt_16_32_48;
+typedef ZCE_Crypt<CAST6_ECB<16, 12> >  CAST6_Crypt_128_128_12;
+typedef ZCE_Crypt<CAST6_ECB<16, 24> >  CAST6_Crypt_128_128_24;
+typedef ZCE_Crypt<CAST6_ECB<16, 36> >  CAST6_Crypt_128_128_36;
+typedef ZCE_Crypt<CAST6_ECB<16, 48> >  CAST6_Crypt_128_128_48;
+typedef ZCE_Crypt<CAST6_ECB<20, 48> >  CAST6_Crypt_128_160_48;
+typedef ZCE_Crypt<CAST6_ECB<24, 48> >  CAST6_Crypt_128_192_48;
+typedef ZCE_Crypt<CAST6_ECB<28, 48> >  CAST6_Crypt_128_224_48;
+typedef ZCE_Crypt<CAST6_ECB<32, 48> >  CAST6_Crypt_128_256_48;
 
 //=================================================================================================================
 //MARS算法年的定义
@@ -2206,9 +2286,9 @@ public:
 
 //理论可以选择16，20，24，28，32，36，40，44，48，52，56作为key长度
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<MARS_ECB<16> > MARS_Crypt_16_16_1;
-typedef ZCE_Crypt<MARS_ECB<24> > MARS_Crypt_16_24_1;
-typedef ZCE_Crypt<MARS_ECB<32> > MARS_Crypt_16_32_1;
+typedef ZCE_Crypt<MARS_ECB<16> > MARS_Crypt_128_128_1;
+typedef ZCE_Crypt<MARS_ECB<24> > MARS_Crypt_128_192_1;
+typedef ZCE_Crypt<MARS_ECB<32> > MARS_Crypt_128_256_1;
 
 //=================================================================================================================
 //AES 的算法代码来自Taocrypt库，
@@ -2620,9 +2700,9 @@ public:
 
 //24字节的key（196bits),32字节的的key(256bits)的key也被称为AES2
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<AES_ECB<16, 10> > AES_Crypt_16_16_10;
-typedef ZCE_Crypt<AES_ECB<24, 12> > AES_Crypt_16_24_12;
-typedef ZCE_Crypt<AES_ECB<32, 14> > AES_Crypt_16_32_14;
+typedef ZCE_Crypt<AES_ECB<16, 10> > AES_Crypt_128_128_10;
+typedef ZCE_Crypt<AES_ECB<24, 12> > AES_Crypt_128_192_12;
+typedef ZCE_Crypt<AES_ECB<32, 14> > AES_Crypt_128_256_14;
 
 };
 

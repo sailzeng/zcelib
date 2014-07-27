@@ -312,7 +312,7 @@ int perf_encrypt()
 
     ZCE_HR_Progress_Timer hr_timer;
 
-    const size_t TEST_NUMBER = 10240;
+    const size_t TEST_NUMBER = 20480;
 
     //
     hr_timer.restart();
@@ -423,50 +423,34 @@ int bytes_encrypt_perf(int /*argc*/, char * /*argv*/[])
 {
 
 
-    perf_encrypt<ZCE_LIB::XOR_Crypt_16_16_1>();
-
-    perf_encrypt<ZCE_LIB::TEA_Crypt_8_16_16>();
-    perf_encrypt<ZCE_LIB::TEA_Crypt_8_16_32>();
-    perf_encrypt<ZCE_LIB::TEA_Crypt_8_16_64>();
-    //测试一下特殊的轮数
-    perf_encrypt<ZCE_LIB::ZCE_Crypt< ZCE_LIB::TEA_ECB<19 > > >();
-
-    perf_encrypt<ZCE_LIB::XTEA_Crypt_8_16_16>();
-    perf_encrypt<ZCE_LIB::XTEA_Crypt_8_16_32>();
-    perf_encrypt<ZCE_LIB::XTEA_Crypt_8_16_64>();
-
-    perf_encrypt<ZCE_LIB::XXTEA_Crypt_8_16_32>();
-    perf_encrypt<ZCE_LIB::XXTEA_Crypt_16_16_16>();
-
-    perf_encrypt<ZCE_LIB::GOST_Crypt_8_32_32>();
-
-
-    perf_encrypt<ZCE_LIB::RC5_Crypt_8_16_12>();
-    perf_encrypt<ZCE_LIB::RC5_Crypt_8_16_20>();
-
-    perf_encrypt<ZCE_LIB::RC6_Crypt_16_16_12>();
-    perf_encrypt<ZCE_LIB::RC6_Crypt_16_16_20>();
-
-    perf_encrypt<ZCE_LIB::CAST5_Crypt_8_16_8>();
-    perf_encrypt<ZCE_LIB::CAST5_Crypt_8_12_16>();
-    perf_encrypt<ZCE_LIB::CAST5_Crypt_8_16_12>();
-
-
-    perf_encrypt<ZCE_LIB::CAST6_Crypt_16_16_48>();
-    perf_encrypt<ZCE_LIB::CAST6_Crypt_16_24_48>();
-    perf_encrypt<ZCE_LIB::CAST6_Crypt_16_32_48>();
-
-    perf_encrypt<ZCE_LIB::MARS_Crypt_16_16_1>();
-    perf_encrypt<ZCE_LIB::MARS_Crypt_16_24_1>();
-    perf_encrypt<ZCE_LIB::MARS_Crypt_16_32_1>();
-
-
-    perf_encrypt<ZCE_LIB::AES_Crypt_16_16_10>();
-    perf_encrypt<ZCE_LIB::AES_Crypt_16_24_12>();
-    perf_encrypt<ZCE_LIB::AES_Crypt_16_32_14>();
-
-    perf_encrypt<ZCE_LIB::TEA_Crypt_8_16_16>();
-
+    perf_encrypt<ZCE_LIB::XOR_Crypt_128_128_1>();
+    perf_encrypt<ZCE_LIB::DES_Crypt_64_64_16>();
+    perf_encrypt<ZCE_LIB::DES3_Crypt_64_192_16>();
+    perf_encrypt<ZCE_LIB::TEA_Crypt_64_128_16>();
+    perf_encrypt<ZCE_LIB::TEA_Crypt_64_128_32>();
+    perf_encrypt<ZCE_LIB::TEA_Crypt_64_128_64>();
+    perf_encrypt<ZCE_LIB::XTEA_Crypt_64_128_16>();
+    perf_encrypt<ZCE_LIB::XTEA_Crypt_64_128_32>();
+    perf_encrypt<ZCE_LIB::XTEA_Crypt_64_128_64>();
+    perf_encrypt<ZCE_LIB::XXTEA_Crypt_64_128_32>();
+    perf_encrypt<ZCE_LIB::XXTEA_Crypt_128_128_16>();
+    perf_encrypt<ZCE_LIB::GOST_Crypt_64_256_32>();
+    perf_encrypt<ZCE_LIB::RC5_Crypt_64_128_12>();
+    perf_encrypt<ZCE_LIB::RC5_Crypt_64_128_20>();
+    perf_encrypt<ZCE_LIB::RC6_Crypt_128_128_12>();
+    perf_encrypt<ZCE_LIB::RC6_Crypt_128_128_20>();
+    perf_encrypt<ZCE_LIB::CAST5_Crypt_64_128_8>();
+    perf_encrypt<ZCE_LIB::CAST5_Crypt_64_96_16>();
+    perf_encrypt<ZCE_LIB::CAST5_Crypt_64_128_12>();
+    perf_encrypt<ZCE_LIB::CAST6_Crypt_128_128_48>();
+    perf_encrypt<ZCE_LIB::CAST6_Crypt_128_192_48>();
+    perf_encrypt<ZCE_LIB::CAST6_Crypt_128_256_48>();
+    perf_encrypt<ZCE_LIB::MARS_Crypt_128_128_1>();
+    perf_encrypt<ZCE_LIB::MARS_Crypt_128_192_1>();
+    perf_encrypt<ZCE_LIB::MARS_Crypt_128_256_1>();
+    perf_encrypt<ZCE_LIB::AES_Crypt_128_128_10>();
+    perf_encrypt<ZCE_LIB::AES_Crypt_128_192_12>();
+    perf_encrypt<ZCE_LIB::AES_Crypt_128_256_14>();
 
     return 0;
 }
@@ -475,49 +459,49 @@ int bytes_encrypt_perf(int /*argc*/, char * /*argv*/[])
 int bytes_encrypt_right(int /*argc*/, char * /*argv*/[])
 {
 
+    test_encrypt<ZCE_LIB::XOR_Crypt_128_128_1>();
 
-    test_encrypt<ZCE_LIB::GOST_Crypt_8_32_32>();
+    test_encrypt<ZCE_LIB::DES_Crypt_64_64_16>();
+    test_encrypt<ZCE_LIB::DES3_Crypt_64_192_16>();
 
-    test_encrypt<ZCE_LIB::XOR_Crypt_16_16_1>();
-
-    test_encrypt<ZCE_LIB::TEA_Crypt_8_16_16>();
-    test_encrypt<ZCE_LIB::TEA_Crypt_8_16_32>();
-    test_encrypt<ZCE_LIB::TEA_Crypt_8_16_64>();
+    test_encrypt<ZCE_LIB::TEA_Crypt_64_128_16>();
+    test_encrypt<ZCE_LIB::TEA_Crypt_64_128_32>();
+    test_encrypt<ZCE_LIB::TEA_Crypt_64_128_64>();
     //测试一下特殊的轮数
     test_encrypt<ZCE_LIB::ZCE_Crypt< ZCE_LIB::TEA_ECB<19 > > >();
 
-    test_encrypt<ZCE_LIB::XTEA_Crypt_8_16_16>();
-    test_encrypt<ZCE_LIB::XTEA_Crypt_8_16_32>();
-    test_encrypt<ZCE_LIB::XTEA_Crypt_8_16_64>();
+    test_encrypt<ZCE_LIB::XTEA_Crypt_64_128_16>();
+    test_encrypt<ZCE_LIB::XTEA_Crypt_64_128_32>();
+    test_encrypt<ZCE_LIB::XTEA_Crypt_64_128_64>();
 
-    test_encrypt<ZCE_LIB::XXTEA_Crypt_8_16_32>();
-    test_encrypt<ZCE_LIB::XXTEA_Crypt_16_16_16>();
+    test_encrypt<ZCE_LIB::XXTEA_Crypt_64_128_32>();
+    test_encrypt<ZCE_LIB::XXTEA_Crypt_128_128_16>();
+
+    test_encrypt<ZCE_LIB::GOST_Crypt_64_256_32>();
+
+    test_encrypt<ZCE_LIB::RC5_Crypt_64_128_12>();
+    test_encrypt<ZCE_LIB::RC5_Crypt_64_128_20>();
+
+    test_encrypt<ZCE_LIB::RC6_Crypt_128_128_12>();
+    test_encrypt<ZCE_LIB::RC6_Crypt_128_128_20>();
+
+    test_encrypt<ZCE_LIB::CAST5_Crypt_64_128_8>();
+    test_encrypt<ZCE_LIB::CAST5_Crypt_64_96_16>();
+    test_encrypt<ZCE_LIB::CAST5_Crypt_64_128_12>();
+
+    test_encrypt<ZCE_LIB::CAST6_Crypt_128_128_12>();
+    test_encrypt<ZCE_LIB::CAST6_Crypt_128_128_24>();
+    test_encrypt<ZCE_LIB::CAST6_Crypt_128_128_36>();
+    test_encrypt<ZCE_LIB::CAST6_Crypt_128_128_48>();
+    test_encrypt<ZCE_LIB::CAST6_Crypt_128_192_48>();
+    test_encrypt<ZCE_LIB::CAST6_Crypt_128_256_48>();
 
 
+    test_encrypt<ZCE_LIB::MARS_Crypt_128_128_1>();
 
-    test_encrypt<ZCE_LIB::RC5_Crypt_8_16_12>();
-    test_encrypt<ZCE_LIB::RC5_Crypt_8_16_20>();
-
-    test_encrypt<ZCE_LIB::RC6_Crypt_16_16_12>();
-    test_encrypt<ZCE_LIB::RC6_Crypt_16_16_20>();
-
-    test_encrypt<ZCE_LIB::CAST5_Crypt_8_16_8>();
-    test_encrypt<ZCE_LIB::CAST5_Crypt_8_12_16>();
-    test_encrypt<ZCE_LIB::CAST5_Crypt_8_16_12>();
-
-    test_encrypt<ZCE_LIB::CAST6_Crypt_16_16_12>();
-    test_encrypt<ZCE_LIB::CAST6_Crypt_16_16_24>();
-    test_encrypt<ZCE_LIB::CAST6_Crypt_16_16_36>();
-    test_encrypt<ZCE_LIB::CAST6_Crypt_16_16_48>();
-    test_encrypt<ZCE_LIB::CAST6_Crypt_16_24_48>();
-    test_encrypt<ZCE_LIB::CAST6_Crypt_16_32_48>();
-
-
-    test_encrypt<ZCE_LIB::MARS_Crypt_16_16_1>();
-
-    test_encrypt<ZCE_LIB::AES_Crypt_16_16_10>();
-    test_encrypt<ZCE_LIB::AES_Crypt_16_24_12>();
-    test_encrypt<ZCE_LIB::AES_Crypt_16_32_14>();
+    test_encrypt<ZCE_LIB::AES_Crypt_128_128_10>();
+    test_encrypt<ZCE_LIB::AES_Crypt_128_192_12>();
+    test_encrypt<ZCE_LIB::AES_Crypt_128_256_14>();
 
 
     return 0;

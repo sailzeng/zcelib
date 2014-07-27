@@ -169,7 +169,7 @@ const uint32_t DES_Base::DES_RHS[16] =
     }
 
 //
-void DES_Base::des_setkey(const unsigned char key[DES_Base::KEY_SIZE], uint32_t sk[32])
+void DES_Base::des_setkey(const unsigned char key[8], uint32_t sk[32])
 {
 
     uint32_t x = ZINDEX_TO_LEUINT32(key, 0);
@@ -267,14 +267,15 @@ void DES_ECB::key_setup(const unsigned char *key,
 
 //
 void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT *sk,
-    const unsigned char src_block[BLOCK_SIZE],
-    unsigned char cipher_block[BLOCK_SIZE])
+    const unsigned char input[BLOCK_SIZE],
+    unsigned char output[BLOCK_SIZE])
 {
     uint32_t t = 0;
     const uint32_t *sk_p = sk->sub_key_;
 
-    uint32_t x = ZINDEX_TO_LEUINT32(src_block, 0);
-    uint32_t y = ZINDEX_TO_LEUINT32(src_block, 1);
+    //注意DES 内部数据用大头表示的
+    uint32_t x = ZINDEX_TO_LEUINT32(input, 0);
+    uint32_t y = ZINDEX_TO_LEUINT32(input, 1);
 
     DES_IP(x, y, t);
 
@@ -286,8 +287,86 @@ void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT *sk,
 
     DES_FP(y, x, t);
 
-    ZLEUINT32_TO_INDEX(cipher_block, 0, x);
-    ZLEUINT32_TO_INDEX(cipher_block, 1, y);
+    ZLEUINT32_TO_INDEX(output, 0, y);
+    ZLEUINT32_TO_INDEX(output, 1, x);
+}
+
+
+
+void DES3_ECB::des3_set3key(const unsigned char key[KEY_SIZE],
+    uint32_t esk[SUB_KEY_SIZE],
+    uint32_t dsk[SUB_KEY_SIZE])
+{
+    des_setkey(key,esk);
+    des_setkey(key + 8,dsk + 32);
+    des_setkey(key + 16,esk + 64);
+
+    for (size_t i = 0; i < 32; i += 2)
+    {
+        dsk[i] = esk[94 - i];
+        dsk[i + 1] = esk[95 - i];
+
+        esk[i + 32] = dsk[62 - i];
+        esk[i + 33] = dsk[63 - i];
+
+        dsk[i + 64] = esk[30 - i];
+        dsk[i + 65] = esk[31 - i];
+    }
+}
+
+void DES3_ECB::key_setup(const unsigned char *key,
+    SUBKEY_STRUCT *subkey,
+    bool  if_encrypt)
+{
+    uint32_t tmp_key[SUB_KEY_SIZE];
+    if (if_encrypt)
+    {
+        des3_set3key(key, subkey->sub_key_, tmp_key);
+    }
+    else
+    {
+        des3_set3key(key, tmp_key, subkey->sub_key_);
+    }
+}
+
+
+//DES 的加密解密是一个函数，（但SUB Key 不同）
+void  DES3_ECB::des3_crypt_ecb(const SUBKEY_STRUCT *subkey,
+    const unsigned char input[BLOCK_SIZE],
+    unsigned char output[BLOCK_SIZE])
+{
+    uint32_t  t = 0;
+
+    const uint32_t *sk_p = subkey->sub_key_;
+
+    uint32_t x = ZINDEX_TO_LEUINT32(input, 0);
+    uint32_t y = ZINDEX_TO_LEUINT32(input, 1);
+
+
+    DES_IP(x, y, t);
+
+    for (size_t i = 0; i < 8; i++)
+    {
+        DES_ROUND(y, x, t, sk_p);
+        DES_ROUND(x, y, t, sk_p);
+    }
+
+    for (size_t i = 0; i < 8; i++)
+    {
+        DES_ROUND(x, y, t, sk_p);
+        DES_ROUND(y, x, t, sk_p);
+    }
+
+    for (size_t i = 0; i < 8; i++)
+    {
+        DES_ROUND(y, x, t, sk_p);
+        DES_ROUND(x, y, t, sk_p);
+    }
+
+    DES_FP(y, x, t);
+
+    ZLEUINT32_TO_INDEX(output, 0, y);
+    ZLEUINT32_TO_INDEX(output, 1, x);
 }
 
 #undef DES_IP
