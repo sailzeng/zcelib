@@ -222,6 +222,7 @@
     <None Include="lua\lua_test_06.lua" />
     <None Include="lua\lua_test_07.lua" />
     <None Include="lua\lua_test_08.lua" />
+    <None Include="lua\lua_test_09.lua" />
     <None Include="makefile" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

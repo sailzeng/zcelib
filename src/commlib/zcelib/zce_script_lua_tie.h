@@ -52,7 +52,7 @@
 //这个类就没有meta table而已，但有时候会造成调试麻烦，所以增加这宏，平常可
 //以关闭,仅仅在需要调试的阶段打开。
 #ifndef ZCE_CHECK_CLASS_NOMETA
-#define ZCE_CHECK_CLASS_NOMETA 1
+#define ZCE_CHECK_CLASS_NOMETA 0
 #endif
 
 #if defined (ZCE_OS_WINDOWS)
@@ -364,8 +364,9 @@ void push_stack_val(lua_State *state, typename val_type val)
     {
 #if ZCE_CHECK_CLASS_NOMETA == 1
         ZCE_LOGMSG(RS_ERROR, 
-                   "[LUATIE][%s] is not tie to lua,name[%s]? "
+                   "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
                    "May be you don't register or name conflict? ",
+                   __ZCE_FUNCTION__,
                    typeid(val).name(),
                    class_name<std::remove_cv<val_type>::type >::name());
 #endif
@@ -379,7 +380,7 @@ void push_stack_val(lua_State *state, typename val_type val)
 
 ///放入一个数组的引用
 template<typename array_type  >
-void push_stack_val(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat)
+void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat)
 {
     new (lua_newuserdata(state, sizeof(arrayref_2_udat<array_type>)))
     arrayref_2_udat<array_type>(ary_dat);

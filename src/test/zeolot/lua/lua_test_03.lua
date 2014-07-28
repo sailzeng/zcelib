@@ -1,3 +1,6 @@
+-- 对象测试
+tb_ptr_2.b_array_[1] = 10000
+
 tb_ptr_1.a_ = 1111
 tb_ptr_2:set_a(2222)
 
@@ -22,6 +25,7 @@ tb_ptr_1:set_b1(1)
 tb_ptr_1:set_b2(2,3)
 tb_ptr_1:set_b3(4,5,6)
 
+--对象数组
 tb_ptr_2.b_array_[1] = 10000
 tb_ptr_2.b_array_[2] = 20000
 tb_ptr_2.b_array_[3] = 30000

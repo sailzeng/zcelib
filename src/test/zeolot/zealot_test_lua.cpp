@@ -94,9 +94,9 @@ int test_lua_script2(int , char *[])
     return 0;
 }
 
-struct TA
+struct T3A
 {
-    TA(int a) : a_(a)
+    T3A(int a) : a_(a)
     {
     }
     int set_a(int a)
@@ -110,9 +110,9 @@ struct TA
 
 
 
-struct TB : public TA
+struct T3B : public T3A
 {
-    TB(int b1, int b2, int b3) : TA(0), b1_(b1), b2_(b2), b3_(b3)
+    T3B(int b1, int b2, int b3) : T3A(0), b1_(b1), b2_(b2), b3_(b3)
     {
     }
 
@@ -145,43 +145,43 @@ int test_lua_script3(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
-    lua_tie.reg_class<TA>("TA", false);
-    lua_tie.class_mem_var<TA>("a_", &TA::a_);
-    lua_tie.class_mem_fun("set_a", &TA::set_a);
-    lua_tie.class_constructor<TA>(ZCE_LUA::constructor<TA, int> );
+    lua_tie.reg_class<T3A>("T3A", false);
+    lua_tie.class_mem_var<T3A>("a_", &T3A::a_);
+    lua_tie.class_mem_fun("set_a", &T3A::set_a);
+    lua_tie.class_constructor<T3A>(ZCE_LUA::constructor<T3A, int> );
 
-    TA ta_val(100);
-    TA *ta_ptr = new TA(200);
-    TA ta_1(300);
-    TA &ta_ref = ta_1;
+    T3A ta_val(100);
+    T3A *ta_ptr = new T3A(200);
+    T3A ta_1(300);
+    T3A &ta_ref = ta_1;
 
     lua_tie.set_gvar("ta_val", ta_val);
     lua_tie.set_gvar("ta_ptr", ta_ptr);
-    lua_tie.set_gvar<TA &>("ta_ref", ta_ref);
+    lua_tie.set_gvar<T3A &>("ta_ref", ta_ref);
 
 
-    lua_tie.reg_class<TB>("TB", false)
-    .construct(ZCE_LUA::constructor<TB, int, int, int>)
-    .inherit<TA>()
-    .mem_var("b1_", &TB::b1_)
-    .mem_var("b2_", &TB::b2_)
-    .mem_var("b3_", &TB::b3_)
-    .mem_ary<double, 120>("b_array_", &TB::b_array_)
-    .mem_fun("set_b1", &TB::set_b1)
-    .mem_fun("set_b2", &TB::set_b2)
-    .mem_fun("set_b3", &TB::set_b3);
+    lua_tie.reg_class<T3B>("T3B", false)
+    .construct(ZCE_LUA::constructor<T3B, int, int, int>)
+    .inherit<T3A>()
+    .mem_var("b1_", &T3B::b1_)
+    .mem_var("b2_", &T3B::b2_)
+    .mem_var("b3_", &T3B::b3_)
+    .mem_ary<double, 120>("b_array_", &T3B::b_array_)
+    .mem_fun("set_b1", &T3B::set_b1)
+    .mem_fun("set_b2", &T3B::set_b2)
+    .mem_fun("set_b3", &T3B::set_b3);
 
-    TB tb_val(100, 200, 300);
-    TB *tb_ptr_1 = new TB(1000, 2000, 3000);
-    TB *tb_ptr_2 = new TB(1000, 2000, 3000);
-    TB tb_1(10000, 20000, 30000);
-    TB &tb_ref = tb_1;
+    T3B tb_val(100, 200, 300);
+    T3B *tb_ptr_1 = new T3B(1000, 2000, 3000);
+    T3B *tb_ptr_2 = new T3B(1000, 2000, 3000);
+    T3B tb_1(10000, 20000, 30000);
+    T3B &tb_ref = tb_1;
 
 
     lua_tie.set_gvar("tb_val", tb_val);
     lua_tie.set_gvar("tb_ptr_1", tb_ptr_1);
     lua_tie.set_gvar("tb_ptr_2", tb_ptr_2);
-    lua_tie.set_gvar<TB &>("tb_ref", tb_ref);
+    lua_tie.set_gvar<T3B &>("tb_ref", tb_ref);
 
 
     lua_tie.do_file("lua/lua_test_03.lua");
@@ -292,11 +292,11 @@ int test_lua_script5(int, char *[])
 
     //轻轻松松完成吧枚举值注册给lua的任务
     lua_tie.new_table("tolua_enum",
-        std::make_pair("ENUM_0001", ENUM_0001),
-        std::make_pair("ENUM_0002", ENUM_0002),
-        std::make_pair("ENUM_0003", ENUM_0003),
-        std::make_pair("ENUM_0004", ENUM_0004)
-        );
+                      std::make_pair("ENUM_0001", ENUM_0001),
+                      std::make_pair("ENUM_0002", ENUM_0002),
+                      std::make_pair("ENUM_0003", ENUM_0003),
+                      std::make_pair("ENUM_0004", ENUM_0004)
+                     );
 
 
     lua_tie.do_file("lua/lua_test_05.lua");
@@ -335,8 +335,8 @@ void thread_func()
 
 double thread_func2(double a, double b)
 {
-    printf("# thread_func2(%f,%f) is invoke. \n", a,b);
-    return a+b;
+    printf("# thread_func2(%f,%f) is invoke. \n", a, b);
+    return a + b;
 }
 
 class Test_Thread_Class
@@ -350,10 +350,10 @@ public:
         return;
     }
 
-    double thread_men_fun2(double a,double b)
+    double thread_men_fun2(double a, double b)
     {
         printf("# Test_Thread_Class::thread_men_fun2(%f,%f) is invoke.\n",  a, b);
-        return a+b;
+        return a + b;
     }
 
 };
@@ -371,12 +371,12 @@ int test_lua_script6(int, char *[])
     //完毕会，调用lua_yield
     lua_tie.reg_yeild_gfun("thread_func", &thread_func);
     lua_tie.reg_yeild_gfun("thread_func2", &thread_func2);
-    
+
 
     lua_tie.reg_class<Test_Thread_Class>("TestClass").
-        mem_yield_fun("thread_men_fun", &Test_Thread_Class::thread_men_fun).
-        mem_yield_fun("thread_men_fun2", &Test_Thread_Class::thread_men_fun2);
-   
+    mem_yield_fun("thread_men_fun", &Test_Thread_Class::thread_men_fun).
+    mem_yield_fun("thread_men_fun2", &Test_Thread_Class::thread_men_fun2);
+
 
     ZCE_Lua_Thread thread_hdl;
     int ret = lua_tie.new_thread(&thread_hdl);
@@ -406,7 +406,7 @@ int test_lua_script6(int, char *[])
 
     printf("* lua_resume() to.. \n");
     thread_hdl.resume(0);
-    
+
     printf("* lua_resume() to.. \n");
     thread_hdl.resume(0);
     printf("* pop ret %f\n", thread_hdl.pop<double>());
@@ -478,7 +478,7 @@ int test_lua_script7(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
-    Woo_Struct obj_x ,obj_y;
+    Woo_Struct obj_x , obj_y;
 
     obj_x.a_ = 1;
     obj_x.b_ = 2;
@@ -499,29 +499,29 @@ int test_lua_script7(int, char *[])
     lua_tie.do_file("lua/lua_test_07.lua");
 
     lua_tie.call_luafun_0("read_objx",
-        obj_x.a_,
-        obj_x.b_, 
-        obj_x.c_, 
-        obj_x.d_, 
-        obj_x.e_, 
-        obj_x.f_);
+                          obj_x.a_,
+                          obj_x.b_,
+                          obj_x.c_,
+                          obj_x.d_,
+                          obj_x.e_,
+                          obj_x.f_);
 
     lua_tie.call_luafun_0("read_objy",
-        obj_y.a_,
-        obj_y.b_,
-        obj_y.c_,
-        obj_y.d_,
-        obj_y.e_,
-        obj_y.f_);
+                          obj_y.a_,
+                          obj_y.b_,
+                          obj_y.c_,
+                          obj_y.d_,
+                          obj_y.e_,
+                          obj_y.f_);
 
     lua_tie.call_luafun_0("obj_add");
     printf("result a=%d b=%d c=%d d=%d e=%d f=%d \n",
-        woo_result.a_,
-        woo_result.b_,
-        woo_result.c_,
-        woo_result.d_,
-        woo_result.e_,
-        woo_result.f_);
+           woo_result.a_,
+           woo_result.b_,
+           woo_result.c_,
+           woo_result.d_,
+           woo_result.e_,
+           woo_result.f_);
 
     //做一下性能测试。
     const uint32_t TEST_SEED = 120825;
@@ -547,26 +547,26 @@ int test_lua_script7(int, char *[])
 
 
         lua_tie.call_luafun_0("read_objx",
-            obj_x.a_,
-            obj_x.b_,
-            obj_x.c_,
-            obj_x.d_,
-            obj_x.e_,
-            obj_x.f_);
+                              obj_x.a_,
+                              obj_x.b_,
+                              obj_x.c_,
+                              obj_x.d_,
+                              obj_x.e_,
+                              obj_x.f_);
 
         lua_tie.call_luafun_0("read_objy",
-            obj_y.a_,
-            obj_y.b_,
-            obj_y.c_,
-            obj_y.d_,
-            obj_y.e_,
-            obj_y.f_);
+                              obj_y.a_,
+                              obj_y.b_,
+                              obj_y.c_,
+                              obj_y.d_,
+                              obj_y.e_,
+                              obj_y.f_);
 
         lua_tie.call_luafun_0("obj_add");
     }
 
     timer.end();
-    std::cout << " elapsed: " << std::setprecision(6) << timer.elapsed_sec()<<std::endl;
+    std::cout << " elapsed: " << std::setprecision(6) << timer.elapsed_sec() << std::endl;
 
 
     lua_tie.close();
@@ -582,12 +582,12 @@ int test_lua_script8(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
     lua_tie.reg_class<Woo_Struct>("Woo_Struct").
-        mem_var("a_", &Woo_Struct::a_).
-        mem_var("b_", &Woo_Struct::b_).
-        mem_var("c_", &Woo_Struct::c_).
-        mem_var("d_", &Woo_Struct::d_).
-        mem_var("e_", &Woo_Struct::e_).
-        mem_var("f_", &Woo_Struct::f_);
+    mem_var("a_", &Woo_Struct::a_).
+    mem_var("b_", &Woo_Struct::b_).
+    mem_var("c_", &Woo_Struct::c_).
+    mem_var("d_", &Woo_Struct::d_).
+    mem_var("e_", &Woo_Struct::e_).
+    mem_var("f_", &Woo_Struct::f_);
 
     obj_x.a_ = 1;
     obj_x.b_ = 2;
@@ -610,12 +610,12 @@ int test_lua_script8(int, char *[])
     lua_tie.do_file("lua/lua_test_08.lua");
     lua_tie.call_luafun_0("obj_add");
     printf("result a=%d b=%d c=%d d=%d e=%d f=%d \n",
-        obj_result.a_,
-        obj_result.b_,
-        obj_result.c_,
-        obj_result.d_,
-        obj_result.e_,
-        obj_result.f_);
+           obj_result.a_,
+           obj_result.b_,
+           obj_result.c_,
+           obj_result.d_,
+           obj_result.e_,
+           obj_result.f_);
 
     //做一下性能测试。
     const uint32_t TEST_SEED = 120825;
@@ -680,3 +680,104 @@ int test_lua_script8(int, char *[])
     return 0;
 }
 
+//按照Lua Tinker 的例子3复刻的一个例子，用于测试OO部分
+struct T9A
+{
+    T9A(int v) :
+        t9a_val_(v)
+    {
+    }
+    int t9a_val_;
+};
+
+struct T9B
+{
+    int t9b_val_;
+};
+
+struct T9C_base
+{
+    T9C_base() {}
+
+    const char *is_base()
+    {
+        return "this is base";
+    }
+};
+
+class T9C : public T9C_base
+{
+public:
+    T9C(int val) :
+        T9C_base(),
+        t9c_v_(val)
+    {
+    }
+
+    ~T9C()
+    {
+    }
+
+    const char *is_t9c()
+    {
+        return "this is test";
+    }
+
+    void ret_void()
+    {
+    }
+
+    int ret_int()
+    {
+        return t9c_v_;
+    }
+    int ret_mul(int m) const
+    {
+        return t9c_v_ * m;
+    }
+    T9A get()
+    {
+        return T9A(t9c_v_);
+    }
+    void set(T9A a)
+    {
+        t9c_v_ = a.t9a_val_;
+    }
+
+    int t9c_v_;
+
+    T9B t9c_b_;
+};
+
+
+T9C g_t9c(888999);
+
+int test_lua_script9(int, char *[])
+{
+    ZCE_Lua_Tie lua_tie;
+    lua_tie.open(true, true);
+    //注册T9B
+    lua_tie.reg_class<T9B>("T9B").
+    construct(ZCE_LUA::constructor<T9B>).
+    mem_var("t9b_val_", &T9B::t9b_val_);
+
+    lua_tie.reg_class<T9C_base>("T9C_base").
+    mem_fun("is_base", &T9C_base::is_base);
+
+    lua_tie.reg_class<T9C>("T9C").
+    construct(ZCE_LUA::constructor<T9C, int >).
+    inherit<T9C_base>().
+    mem_fun("is_t9c", &T9C::is_t9c).
+    mem_fun("ret_int", &T9C::ret_int).
+    mem_fun("get", &T9C::get).
+    mem_fun("set", &T9C::set).
+    mem_var("t9c_v_", &T9C::t9c_v_).
+    mem_var("t9c_b_", &T9C::t9c_b_);
+
+    lua_tie.set_gvar("g_t9c", &g_t9c);
+
+    lua_tie.do_file("lua/lua_test_09.lua");
+
+    lua_tie.close();
+    return 0;
+}

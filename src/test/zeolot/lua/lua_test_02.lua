@@ -1,8 +1,7 @@
 print("g_b_var = "..g_b_var)
 
-
+--对象， 引用和指针的使用
 g_b_var=3333
-
 g_b_ptr =4444
 g_b_ptr =4444
 

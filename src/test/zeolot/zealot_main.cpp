@@ -14,10 +14,10 @@ int main(int argc , char *argv[])
     ZCE_Trace_LogMsg::instance()->init_stdout();
 
     //test_lua_script1(argc, argv);
-    test_lua_script7(argc, argv);
+    //test_lua_script3(argc, argv);
 
     printf("%s", "----------------------------------------------------------------------------\n");
-    test_lua_script8(argc, argv);
+    test_lua_script9(argc, argv);
     printf("%s", "----------------------------------------------------------------------------\n");
 
     system("pause");
