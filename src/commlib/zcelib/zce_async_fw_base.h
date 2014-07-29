@@ -119,7 +119,7 @@ protected:
     ///对应激活的处理的命令
     unsigned int  create_cmd_;
 
-    //超时的定时器ID
+    ///超时的定时器ID
     int timeout_id_;
 
 };

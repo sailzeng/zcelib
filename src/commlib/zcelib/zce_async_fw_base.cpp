@@ -218,11 +218,13 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     aysncobj_pool_[reg_cmd] = record;
     ASYNC_OBJECT_RECORD &ref_rec = aysncobj_pool_[reg_cmd];
 
+    coroutine_base->create_cmd_ = reg_cmd;
+    ref_rec.coroutine_pool_.initialize(pool_init_size_+1);
     ref_rec.coroutine_pool_.push_back(coroutine_base);
     for (size_t i = 0; i < pool_init_size_; i++)
     {
         ZCE_Async_Object *crtn = coroutine_base->clone(this);
-
+        crtn->create_cmd_ = reg_cmd;
         crtn->initialize(reg_cmd);
         ref_rec.coroutine_pool_.push_back(crtn);
     }

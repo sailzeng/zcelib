@@ -4,12 +4,25 @@
 
 class FSM_1 :public ZCE_Async_FSM
 {
-
+private:
+    enum
+    {
+        //开始
+        FMS1_STAGE_1 = 1,
+        FMS1_STAGE_2 = 2,
+        FSM1_STAGE_3 = 3,
+        //结束
+        FSM1_STAGE_4 = 4,
+    };
 public:
+
     FSM_1(ZCE_Async_ObjectMgr *async_mgr) :
         ZCE_Async_FSM(async_mgr)
     {
+        set_stage(FMS1_STAGE_1);
     }
+
+
 protected:
     virtual ~FSM_1()
     {
@@ -23,19 +36,11 @@ public:
 
     void on_run(bool &continue_run)
     {
-        enum
-        {
-            //开始
-            FMS1_STAGE_1 = 1,
-            FMS1_STAGE_2 = 2,
-            FSM1_STAGE_3 = 3,
-            //结束
-            FSM1_STAGE_4 = 4,
-        };
+
         switch (get_stage())
         {
         case FMS1_STAGE_1:
-            std::cout << "FSM1 stage" << get_stage() << "start."<< std::endl;
+            std::cout << "FSM1 stage" << get_stage() << " start."<< std::endl;
             continue_run = true;
             set_stage(FMS1_STAGE_2);
             break;
@@ -50,7 +55,7 @@ public:
             set_stage(FSM1_STAGE_4);
             break;
         case FSM1_STAGE_4:
-            std::cout << "FSM1 stage" << get_stage() << "end."<<std::endl;
+            std::cout << "FSM1 stage" << get_stage() << " end."<<std::endl;
             continue_run = false;
             break;
         default:
@@ -66,12 +71,22 @@ public:
 
 class FSM_2 :public ZCE_Async_FSM
 {
-
+private:
+    enum
+    {
+        //开始
+        FMS2_STAGE_1 = 1,
+        FMS2_STAGE_2 = 2,
+        FSM2_STAGE_3 = 3,
+        //结束
+        FSM2_STAGE_4 = 4,
+    };
 
 public:
     FSM_2(ZCE_Async_ObjectMgr *async_mgr) :
         ZCE_Async_FSM(async_mgr)
     {
+        set_stage(FMS2_STAGE_1);
     }
 protected:
     virtual ~FSM_2()
@@ -85,15 +100,7 @@ public:
 
     void on_run(bool &continue_run)
     {
-        enum
-        {
-            //开始
-            FMS2_STAGE_1 = 1,
-            FMS2_STAGE_2 = 2,
-            FSM2_STAGE_3 = 3,
-            //结束
-            FSM2_STAGE_4 = 4,
-        };
+
         switch (get_stage())
         {
         case FMS2_STAGE_1:

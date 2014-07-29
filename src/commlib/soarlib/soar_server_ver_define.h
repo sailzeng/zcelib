@@ -1,19 +1,4 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Fullsail Technology (Shenzhen) Company Limited.
-FileName            : soar_server_ver_define.h
-Author              : Sail(ZENGXING)
-Version             :
-Date Of Creation    : 2006Äê9ÔÂ3ÈÕ
-Description         :
 
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #ifndef SOARING_LIB_SERVER_VERSION_DEFINE_H_
 #define SOARING_LIB_SERVER_VERSION_DEFINE_H_
@@ -65,10 +50,8 @@ Modification History:
 #define TSS_SERVER_VER_DECLARE   "Server Version :"TSS_JION_VER_STRING"  .\n" \
     TSS_COMPILE_VERSION_STRING \
     "Compilation Timestamp :"__DATE__" "__TIME__" .\n" \
-    "Copyright :(C) 2008-2012 . Fullsail TSS platform Team (We are best!). All rights reserved. \n"  \
-    "Author :charliedeng chweiling djiang errayzhao fieldsxie gagacui jiangchen junhuanie kelvinpang\n" \
-    "Author :kliu liangfeng longma sailzeng sasukeliu senlyzhang sriverxiao stefzhou wilsonliu\n" \
-    "Author :pascalshen yunfeiyang derrickhu\n\n" \
+    "Copyright :(C) 2008-2012 . Fullsail platform Team (We are best!). All rights reserved. \n"  \
+    "Author :sailzeng and her firends.\n" \
     "Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
 #endif
 
