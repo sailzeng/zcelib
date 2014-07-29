@@ -1080,13 +1080,13 @@ ZCE_Lua_Thread::~ZCE_Lua_Thread()
 void ZCE_Lua_Thread::set_thread(lua_State * lua_thread, int thread_stackidx)
 {
     lua_state_ = lua_thread;
-    thread_stackidx_ = thread_stackidx;
+    luathread_stackidx_ = thread_stackidx;
 }
 
 //取得线程在创建者堆栈的位置索引
 int ZCE_Lua_Thread::get_thread_stackidx()
 {
-    return thread_stackidx_;
+    return luathread_stackidx_;
 }
 
 

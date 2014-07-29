@@ -108,6 +108,9 @@ int test_lua_script7(int /*argc*/, char * /*argv*/[]);
 int test_lua_script8(int /*argc*/, char * /*argv*/[]);
 int test_lua_script9(int /*argc*/, char * /*argv*/[]);
 
+//
+int test_async_fsm(int  /*argc*/, char * /*argv*/[]);
+int test_async_coroutine(int  /*argc*/, char * /*argv*/[]);
 
 #endif //
 

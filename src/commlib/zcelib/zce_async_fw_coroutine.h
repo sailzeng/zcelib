@@ -13,7 +13,7 @@
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class ZCE_Async_Coroutine : private ZCE_Async_Object
+class ZCE_Async_Coroutine : public ZCE_Async_Object
 {
     friend class ZCE_Async_CoroutineMgr;
 

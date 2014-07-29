@@ -69,6 +69,11 @@ void ZCE_Async_Object::cancel_timeout()
 
 
 
+//异步对象开始
+void ZCE_Async_Object::on_start()
+{
+}
+
 //目前基类做的结束操作就是清理定时器
 void ZCE_Async_Object::on_end()
 {
@@ -217,10 +222,10 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int reg_cmd,
     for (size_t i = 0; i < pool_init_size_; i++)
     {
         ZCE_Async_Object *crtn = coroutine_base->clone(this);
+
         crtn->initialize(reg_cmd);
         ref_rec.coroutine_pool_.push_back(crtn);
     }
-
     return 0;
 }
 

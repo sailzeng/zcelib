@@ -11,7 +11,7 @@
 /*!
 * @brief      状态机对象
 */
-class ZCE_Async_FSM : private ZCE_Async_Object
+class ZCE_Async_FSM : public ZCE_Async_Object
 {
     friend class ZCE_Async_FSMMgr;
 
@@ -21,7 +21,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_FSM(ZCE_Async_FSMMgr *async_mgr);
+    ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr);
 protected:
     /*!
     * @brief      析构函数

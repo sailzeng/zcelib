@@ -13,9 +13,9 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
-    bytes_encrypt_right(argc, argv);
-    bytes_encrypt_perf(argc, argv);
+    test_async_fsm(argc, argv);
 
+    //bytes_encrypt_perf(argc, argv);
     //test_lua_script1(argc, argv);
     //test_lua_script3(argc, argv);
 
