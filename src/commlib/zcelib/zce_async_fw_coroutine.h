@@ -34,7 +34,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(ZCE_Async_CoroutineMgr *async_mgr);
+    ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr);
 protected:
     /*!
     * @brief      析构函数
@@ -57,14 +57,17 @@ public:
 
 protected:
 
-    ///协程对象的运行函数
-    void coroutine_do();
+
 
     ///协程运行,你要重载的函数
-    virtual int coroutine_run() = 0;
+    virtual void coroutine_run() = 0;
 
     ///切换回Main，协程还会继续运行
     void yeild_main_continue();
+
+
+    ///协程对象的运行函数
+    void coroutine_do();
 
     ///切换回Main,协程退出
     void yeild_main_exit();

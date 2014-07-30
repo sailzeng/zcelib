@@ -23,6 +23,7 @@
 #include "zce_boost_lord_rings.h"
 #include "zce_os_adapt_coroutine.h"
 #include "zce_timer_handler_base.h"
+#include "zce_trace_log_debug.h"
 
 /*!
 * @brief      异步对象的基类
@@ -148,13 +149,13 @@ protected:
         ~ASYNC_OBJECT_RECORD();
 
         //异步对象池子，
-        ASYNC_OBJECT_POOL coroutine_pool_;
+        ASYNC_OBJECT_POOL aysncobj_pool_;
 
 
         //下面是统计信息
 
         //创建的事务的数量
-        uint64_t start_num_;
+        uint64_t create_num_;
 
         //销毁时状态异常的事务数量
         uint64_t active_num_;
@@ -228,6 +229,13 @@ public:
     int active_asyncobj(unsigned int id);
 
 
+    
+    /*!
+    * @brief      打印管理器的基本信息，运行状态
+    * @param      log_priority   日志的优先级，以此优先级进行输出
+    */
+    void dump_info(ZCE_LOG_PRIORITY log_priority) const;
+
 protected:
 
     /*!
@@ -289,7 +297,7 @@ protected:
     unsigned int id_builder_;
 
     //协程的池子，都是注册进来的
-    ID_TO_REGASYNC_POOL_MAP aysncobj_pool_;
+    ID_TO_REGASYNC_POOL_MAP regaysnc_pool_;
 
     ///正在运行的协程
     RUNNING_ASYNOBJ_MAP running_aysncobj_;

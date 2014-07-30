@@ -8,7 +8,7 @@
 
 //========================================================================================
 
-ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_CoroutineMgr *async_mgr) :
+ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr) :
     ZCE_Async_Object(async_mgr),
     stack_size_(MIN_STACK_SIZE)
 {

@@ -34,28 +34,28 @@ public:
         return dynamic_cast<ZCE_Async_Object * >(new FSM_1(async_mgr));
     }
 
-    void on_run(bool &continue_run)
+    virtual void on_run(bool &continue_run)
     {
 
         switch (get_stage())
         {
         case FMS1_STAGE_1:
-            std::cout << "FSM1 stage" << get_stage() << " start."<< std::endl;
+            std::cout << "FSM1 stage " << get_stage() << " start."<< std::endl;
             continue_run = true;
             set_stage(FMS1_STAGE_2);
             break;
         case FMS1_STAGE_2:
-            std::cout << "FSM1 stage" << get_stage() << std::endl;
+            std::cout << "FSM1 stage " << get_stage() << std::endl;
             continue_run = true;
             set_stage(FSM1_STAGE_3);
             break;
         case FSM1_STAGE_3:
-            std::cout << "FSM1 stage" << get_stage() << std::endl;
+            std::cout << "FSM1 stage " << get_stage() << std::endl;
             continue_run = true;
             set_stage(FSM1_STAGE_4);
             break;
         case FSM1_STAGE_4:
-            std::cout << "FSM1 stage" << get_stage() << " end."<<std::endl;
+            std::cout << "FSM1 stage " << get_stage() << " end."<<std::endl;
             continue_run = false;
             break;
         default:
@@ -98,28 +98,28 @@ public:
         return dynamic_cast<ZCE_Async_Object *>(new FSM_2(async_mgr));
     }
 
-    void on_run(bool &continue_run)
+    virtual void on_run(bool &continue_run)
     {
 
         switch (get_stage())
         {
         case FMS2_STAGE_1:
-            //Do stage 1 something.init.
+            std::cout << "FSM2 stage " << get_stage() << " start." << std::endl;
             continue_run = true;
             set_stage(FMS2_STAGE_2);
             break;
         case FMS2_STAGE_2:
-            //Do stage 2 something.
+            std::cout << "FSM2 stage " << get_stage() << std::endl;
             continue_run = true;
             set_stage(FSM2_STAGE_3);
             break;
         case FSM2_STAGE_3:
-            //Do stage 3 something.
+            std::cout << "FSM2 stage " << get_stage() << std::endl;
             continue_run = true;
             set_stage(FSM2_STAGE_4);
             break;
         case FSM2_STAGE_4:
-            //Do stage 4 something. end.
+            std::cout << "FSM2 stage" << get_stage() << " end." << std::endl;
             continue_run = false;
             break;
         default:
@@ -130,6 +130,8 @@ public:
         return;
     }
 };
+
+
 
 //
 int test_async_fsm(int  /*argc*/, char * /*argv*/[])
@@ -158,16 +160,93 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
     ZCE_ASSERT(ret != 0);
 
     ret = mgr->active_asyncobj(fsm1_async_id1);
+    ret = mgr->active_asyncobj(fsm2_async_id1);
     ret = mgr->active_asyncobj(fsm1_async_id1);
+    ret = mgr->active_asyncobj(fsm2_async_id1);
     ret = mgr->active_asyncobj(fsm1_async_id1);
+    ret = mgr->active_asyncobj(fsm2_async_id1);
     ret = mgr->active_asyncobj(fsm1_async_id1);
+    ret = mgr->active_asyncobj(fsm2_async_id1);
 
 
     return 0;
 }
 
+class Coroutine_1 :public ZCE_Async_Coroutine
+{
+public:
+    Coroutine_1(ZCE_Async_ObjectMgr *async_mgr) :
+        ZCE_Async_Coroutine(async_mgr)
+    {
+    }
+
+    ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr)
+    {
+        return dynamic_cast<ZCE_Async_Object *>(new Coroutine_1(async_mgr));
+    }
+
+    ///协程运行,你要重载的函数
+    virtual void coroutine_run()
+    {
+        std::cout << "Coroutine_1 start." << std::endl;
+        yeild_main_continue();
+
+        std::cout << "Coroutine_1 continue." << std::endl;
+        yeild_main_continue();
+
+        std::cout << "Coroutine_1 end." << std::endl;
+    }
+    
+};
+
+class Coroutine_2 :public ZCE_Async_Coroutine
+{
+public:
+    Coroutine_2(ZCE_Async_ObjectMgr *async_mgr) :
+        ZCE_Async_Coroutine(async_mgr)
+    {
+    }
+
+    ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr)
+    {
+        return dynamic_cast<ZCE_Async_Object *>(new Coroutine_2(async_mgr));
+    }
+
+    virtual void coroutine_run()
+    {
+        std::cout << "Coroutine_2 start." << std::endl;
+        yeild_main_continue();
+
+        std::cout << "Coroutine_2 continue." << std::endl;
+        yeild_main_continue();
+
+        std::cout << "Coroutine_2 end." << std::endl;
+    }
+
+};
+
 //
 int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
 {
+    int ret = 0;
+    const unsigned int CMD_1 = 10001;
+    const unsigned int CMD_2 = 10002;
+    //const unsigned int CMD_3 = 10003;
+
+    ZCE_Timer_Queue *time_queue = new ZCE_Timer_Wheel();
+    ZCE_Async_CoroutineMgr *mgr = new ZCE_Async_CoroutineMgr(time_queue);
+    mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr));
+    mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr));
+
+    unsigned int fsm1_async_id1;
+    ret = mgr->create_asyncobj(CMD_1, &fsm1_async_id1);
+    unsigned int fsm1_async_id2;
+    ret = mgr->create_asyncobj(CMD_1, &fsm1_async_id2);
+
+    ret = mgr->active_asyncobj(fsm1_async_id1);
+    ret = mgr->active_asyncobj(fsm1_async_id2);
+    ret = mgr->active_asyncobj(fsm1_async_id1);
+    ret = mgr->active_asyncobj(fsm1_async_id2);
+
     return 0;
 }
