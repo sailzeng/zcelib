@@ -13,7 +13,8 @@
 *
 *
 * @note      今天IPhone 5没有发布，而是发布了一款Iphone 4S,广大果粉有点失望
-*
+*            
+*            
 */
 
 
@@ -26,28 +27,29 @@ class ZCE_Sockaddr_In;
 class ZCE_Sockaddr_In6;
 class ZCE_Time_Value;
 
-//自己本来就是一个节点
-class ZCE_Conf_PropertyTree;
-//self
-typedef ZCE_Conf_PropertyTree                        PROPERTY_TREE_NODE;
 
+class ZCE_Conf_PropertyTree;
+typedef ZCE_Conf_PropertyTree PROPERTY_TREE_NODE;
 
 
 /*!
 * @brief      配置文件读取后存放的树
 *             其他读取工具读取数据内容后都生成放入ZCE_Conf_PropertyTree中，
-*             思路还是和Property Tree有一定差别
-* @note
+*             思路还是和Property Tree基本一致。
+* @note       2013年回头仔细看了BOOST的说明，发现人家的实现比我考虑的还是完整不
+*             少，最后还是向其靠拢了。
 */
 class ZCE_Conf_PropertyTree
 {
 protected:
 
-    //叶子节点的MAP类型
-    typedef std::multimap<std::string, std::string>           KEY_VALUE_MAP;
+    ///叶子节点
+    typedef std::string  LEAF_NOTE_TYPE;
 
-    //子树的MAP类型
-    typedef std::multimap<std::string, PROPERTY_TREE_NODE>    PROPERTY_TREE_MAP;
+    ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
+    ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
+    ///并不错），所以
+    typedef std::list< std::pair<std::string, PROPERTY_TREE_NODE> > CHILDREN_NOTE_TYPE;
 
     //
 public:
@@ -55,7 +57,6 @@ public:
     ///构造函数
     ZCE_Conf_PropertyTree();
     ~ZCE_Conf_PropertyTree();
-
 
 
     ///根据路径得到一个CHILD 子树，
@@ -73,14 +74,6 @@ public:
     int get_leafptr(const std::string &path_str,
                     const std::string *& leaf_data) const;
 
-    ///放入一个CHILD
-    int put_child(const std::string &path_str,
-                  const std::string &new_child_name,
-                  const PROPERTY_TREE_NODE &value_data);
-
-    ///增加一个新的CHILD,当然里面全部数据为NULL
-    int new_child(const std::string &path_str,
-                  const std::string &new_child_name);
 
     ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     template<typename val_type>
@@ -159,6 +152,13 @@ public:
                  ZCE_Time_Value &val) const;
 
 
+    ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
+    int put_child(const std::string &path_str,
+        const std::string &new_child_name,
+        PROPERTY_TREE_NODE *&new_child_note);
+
+
+
     ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     template<typename val_type>
     int put_leaf(const std::string &path_str,
@@ -196,10 +196,10 @@ protected:
 protected:
 
     ///叶子节点的MAP
-    KEY_VALUE_MAP         leaf_node_map_;
+    LEAF_NOTE_TYPE   leaf_node_;
 
     ///子树节点的MAP
-    PROPERTY_TREE_MAP     child_node_map_;
+    CHILDREN_NOTE_TYPE     child_node_;
 
 };
 

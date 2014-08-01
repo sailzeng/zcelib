@@ -60,7 +60,8 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
             cur_section = one_line;
 
             //
-            propertytree.new_child("", one_line);
+            PROPERTY_TREE_NODE *tree_node=NULL;
+            propertytree.put_child("", one_line, tree_node);
         }
 
         char *str = strstr(one_line, "=");

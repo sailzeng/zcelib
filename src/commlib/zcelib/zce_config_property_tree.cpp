@@ -27,14 +27,21 @@ int ZCE_Conf_PropertyTree::get_child(const std::string &path_str,
         return 0;
     }
 
-    //找到
+    //找到以.开始的分割符号
     size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
 
     std::string start_str(path_str, 0, str_pos);
 
-    PROPERTY_TREE_MAP::const_iterator iter_tmp = child_node_map_.find(start_str);
-
-    if (child_node_map_.end() == iter_tmp)
+    CHILDREN_NOTE_TYPE::const_iterator iter_tmp = child_node_.begin();
+    for (; iter_tmp != child_node_.end(); ++iter_tmp)
+    {
+        if (iter_tmp->first == start_str)
+        {
+            break;
+        }
+    }
+    //如果没有找到
+    if (child_node_.end() == iter_tmp)
     {
         return -1;
     }
@@ -73,9 +80,16 @@ int ZCE_Conf_PropertyTree::get_child(const std::string &path_str,
 
     std::string start_str(path_str, 0, str_pos);
 
-    PROPERTY_TREE_MAP::iterator iter_tmp = child_node_map_.find(start_str);
-
-    if ( child_node_map_.end() == iter_tmp )
+    CHILDREN_NOTE_TYPE::iterator iter_tmp = child_node_.begin();
+    for (; iter_tmp != child_node_.end(); ++iter_tmp)
+    {
+        if (iter_tmp->first == start_str)
+        {
+            break;
+        }
+    }
+    //如果没有找到
+    if (child_node_.end() == iter_tmp)
     {
         return -1;
     }
@@ -101,37 +115,16 @@ int ZCE_Conf_PropertyTree::get_leafptr(const std::string &path_str,
                                        const std::string *& leaf_str_ptr) const
 {
     int ret = 0;
-    leaf_str_ptr = NULL;
-    size_t last_key_pos = path_str.find_last_not_of(SEPARATOR_STRING);
 
-    std::string tree_path, leaf_key;
     const PROPERTY_TREE_NODE *child_note = NULL;
-    //如果没有分隔符号，
-    if (std::string::npos != last_key_pos)
+    ret = get_child(path_str, child_note);
+    if (0 != ret)
     {
-        tree_path.assign(path_str.cbegin(), path_str.cbegin() + last_key_pos);
-        leaf_key.assign(path_str.cbegin() + last_key_pos + 1, path_str.cend());
-
-        ret = get_child(tree_path, child_note);
-        if (0 != ret)
-        {
-            return ret;
-        }
+        return ret;
     }
-    else
-    {
-        leaf_key = path_str;
-        child_note = this;
-    }
+    
 
-    KEY_VALUE_MAP::const_iterator iter = child_note->leaf_node_map_.find(leaf_key);
-    //multimap理论上不会出现失败
-    if (child_note->leaf_node_map_.end() == iter)
-    {
-        return -1;
-    }
-
-    leaf_str_ptr = &iter->second;
+    leaf_str_ptr = &child_note->leaf_node_;
 
     return 0;
 }
@@ -140,73 +133,18 @@ int ZCE_Conf_PropertyTree::get_leafptr(const std::string &path_str,
                                        std::string *& leaf_str_ptr)
 {
     int ret = 0;
-    leaf_str_ptr = NULL;
-    size_t last_key_pos = path_str.find_last_not_of(SEPARATOR_STRING);
 
-    std::string tree_path, leaf_key;
     PROPERTY_TREE_NODE *child_note = NULL;
-    //如果没有分隔符号，
-    if (std::string::npos != last_key_pos)
-    {
-        tree_path.assign(path_str.cbegin(), path_str.cbegin() + last_key_pos);
-        leaf_key.assign(path_str.cbegin() + last_key_pos + 1, path_str.cend());
-
-        ret = get_child(tree_path, child_note);
-        if (0 != ret)
-        {
-            return ret;
-        }
-    }
-    else
-    {
-        leaf_key = path_str;
-        child_note = this;
-    }
-
-    KEY_VALUE_MAP::iterator iter = child_note->leaf_node_map_.find(leaf_key);
-    //multimap理论上不会出现失败
-    if (child_note->leaf_node_map_.end() == iter)
-    {
-        return -1;
-    }
-
-    leaf_str_ptr = &iter->second;
-
-    return 0;
-}
-
-//放入一个CHILD
-int ZCE_Conf_PropertyTree::put_child(const std::string &path_str,
-                                     const std::string &new_child_name,
-                                     const PROPERTY_TREE_NODE &new_child_note)
-{
-    PROPERTY_TREE_NODE *child_note = NULL;
-    int ret = get_child(path_str, child_note);
-
+    ret = get_child(path_str, child_note);
     if (0 != ret)
     {
         return ret;
     }
 
-    PROPERTY_TREE_MAP::iterator iter = child_note->child_node_map_.insert(
-                                           std::pair<std::string, PROPERTY_TREE_NODE>(new_child_name, new_child_note));
 
-    //multimap理论上不会出现失败
-    if ( child_note->child_node_map_.end() == iter )
-    {
-        return -1;
-    }
+    leaf_str_ptr = &child_note->leaf_node_;
 
     return 0;
-}
-
-//增加一个新的CHILD,当然里面全部数据为NULL
-int ZCE_Conf_PropertyTree::new_child(const std::string &path_str,
-                                     const std::string &new_child_name)
-{
-    PROPERTY_TREE_NODE null_node;
-    return put_child(path_str, new_child_name, null_node);
-
 }
 
 //最后还是用模板函数特化了，也许能有什么幸福生活等着我呢？
@@ -389,13 +327,10 @@ int ZCE_Conf_PropertyTree::get_leaf(const std::string &path_str,
     return 0;
 }
 
-
-
-//放入一个叶子节点，
-template<>
-int ZCE_Conf_PropertyTree::put_leaf(const std::string &path_str,
-                                    const std::string &key_str,
-                                    const std::string &value_data)
+//增加一个新的CHILD,当然里面全部数据为NULL
+int ZCE_Conf_PropertyTree::put_child(const std::string &path_str,
+    const std::string &new_child_name,
+    PROPERTY_TREE_NODE *&new_child_note)
 {
     PROPERTY_TREE_NODE *child_note = NULL;
     int ret = get_child(path_str, child_note);
@@ -404,15 +339,29 @@ int ZCE_Conf_PropertyTree::put_leaf(const std::string &path_str,
     {
         return ret;
     }
+    PROPERTY_TREE_NODE null_node;
+    child_note->child_node_.push_back(
+        std::make_pair(new_child_name,
+        null_node));
 
-    KEY_VALUE_MAP::iterator iter = child_note->leaf_node_map_.insert(
-                                       std::pair<std::string, std::string>(key_str, value_data));
+    new_child_note = &( (child_note->child_node_.rbegin())->second );
 
-    //multimap理论上不会出现失败
-    if ( child_note->leaf_node_map_.end() == iter )
-    {
-        return -1;
-    }
+    return 0;
+}
+
+
+
+
+//放入一个叶子节点，
+template<>
+int ZCE_Conf_PropertyTree::put_leaf(const std::string &path_str,
+                                    const std::string &key_str,
+                                    const std::string &value_data)
+{
+    PROPERTY_TREE_NODE *tree_node = NULL;
+    put_child(path_str, key_str, tree_node);
+
+    tree_node->leaf_node_ = value_data;
 
     return 0;
 }
