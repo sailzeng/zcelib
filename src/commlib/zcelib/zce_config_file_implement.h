@@ -1,0 +1,60 @@
+
+#ifndef ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
+#define ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
+
+#include "zce_boost_non_copyable.h"
+#include "zce_config_property_tree.h"
+
+
+
+/*!
+* @brief      INI文件的配置读取，写入实现器
+*             
+* @note       
+*/
+class ZCE_INI_Implement : public ZCE_NON_Copyable
+{
+public:
+    ZCE_INI_Implement();
+    ~ZCE_INI_Implement();
+
+    //读取，将结果保存在ZCE_INI_PropertyTree数据结构里面
+    int read(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+
+    //写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
+    int write(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+
+protected:
+    //每行的最大长度
+    static const size_t LINE_BUFFER_LEN = 8192;
+
+};
+
+
+
+
+/*!
+* @brief      XML文件的配置读取，写入实现器
+*             
+* @note       
+*/
+class ZCE_XML_Implement : public ZCE_NON_Copyable
+{
+public:
+    ZCE_XML_Implement();
+    ~ZCE_XML_Implement();
+
+    //读取，将结果保存在ZCE_INI_PropertyTree数据结构里面
+    int read(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+
+    //写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
+    int write(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+
+protected:
+
+
+};
+
+
+#endif //ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
+

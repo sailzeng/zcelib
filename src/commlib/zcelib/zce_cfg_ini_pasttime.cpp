@@ -1,7 +1,7 @@
 
 #include "zce_predefine.h"
 #include "zce_os_adapt_string.h"
-#include "zce_config_ini_pasttime.h"
+#include "zce_cfg_ini_pasttime.h"
 
 //
 ZCE_CfgFile_INI_Pt::ZCE_CfgFile_INI_Pt(const char *szfname)

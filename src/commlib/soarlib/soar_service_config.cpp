@@ -331,7 +331,7 @@ int ServicesConfig::FindSelfSERVICES_INFO(const char *cfgfile, SERVICES_ID &svri
     char outbuf[BUFFER_LEN];
     uint32_t int_value;
 
-    ZCE_INI_Implemention   read_cfg;
+    ZCE_INI_Implement   read_cfg;
     ZCE_INI_PropertyTree   self_svr_cfg;
 
     ZLOG_INFO("[framework] Read Self Services Configure File. [%s] .", cfgfile);

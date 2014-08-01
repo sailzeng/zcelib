@@ -1,20 +1,20 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_string.h"
-#include "zce_config_ini_file.h"
+#include "zce_config_file_implement.h"
 
 /******************************************************************************************
-class ZCE_INI_Implemention INI文件的配置读取，写入实现器
+class ZCE_INI_Implement INI文件的配置读取，写入实现器
 ******************************************************************************************/
-ZCE_INI_Implemention::ZCE_INI_Implemention()
+ZCE_INI_Implement::ZCE_INI_Implement()
 {
 }
 
-ZCE_INI_Implemention::~ZCE_INI_Implemention()
+ZCE_INI_Implement::~ZCE_INI_Implement()
 {
 }
 
 //
-int ZCE_INI_Implemention::read(const char *file_name, ZCE_Conf_PropertyTree &propertytree)
+int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &propertytree)
 {
     //1行的最大值
     char one_line[LINE_BUFFER_LEN + 1], str_key[LINE_BUFFER_LEN + 1], str_value[LINE_BUFFER_LEN + 1];
@@ -84,3 +84,15 @@ int ZCE_INI_Implemention::read(const char *file_name, ZCE_Conf_PropertyTree &pro
 
 }
 
+
+
+/******************************************************************************************
+class ZCE_XML_Implement INI文件的配置读取，写入实现器
+******************************************************************************************/
+ZCE_XML_Implement::ZCE_XML_Implement()
+{
+}
+
+ZCE_XML_Implement::~ZCE_XML_Implement()
+{
+}
