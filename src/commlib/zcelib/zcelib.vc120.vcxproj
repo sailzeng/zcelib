@@ -307,7 +307,6 @@
     <ClCompile Include="zce_async_fw_coroutine.cpp" />
     <ClCompile Include="zce_async_fw_fsm.cpp" />
     <ClCompile Include="zce_batch_readfile.cpp" />
-    <ClCompile Include="zce_boost_close_assist.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />
     <ClCompile Include="zce_bus_mmap_pipe.cpp" />
     <ClCompile Include="zce_bus_one_way.cpp" />

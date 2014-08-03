@@ -4,8 +4,8 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2011年7月1日
-* @brief
-*
+* @brief      打算用share_ptr,等智能指针实现一堆小东东，
+*             
 *
 * @details
 *
@@ -21,6 +21,7 @@ namespace ZCE_LIB
 
 /*!
 * @brief     用于文件处理过程的自动释放
+*            还没有使用，
 */
 template <class _value_type >
 class close_assist

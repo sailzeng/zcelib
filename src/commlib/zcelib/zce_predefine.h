@@ -311,7 +311,7 @@ using std::unordered_set;
 
 //rapidxml XML文件的头文件以及开关，我们引入的库是rapidxml 库，他的优势是只有头文件，
 #ifndef ZCE_USE_RAPIDXML
-#define ZCE_USE_RAPIDXML 0
+#define ZCE_USE_RAPIDXML 1
 #endif
 
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1

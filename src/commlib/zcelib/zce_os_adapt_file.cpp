@@ -174,7 +174,7 @@ ssize_t ZCE_OS::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
 }
 
 //根据文件名称，判断文件的尺寸,如果文件不存在，打不开等，返回-1
-int ZCE_OS::filesize (const char *filename, size_t *file_size)
+int ZCE_OS::filelen(const char *filename, size_t *file_size)
 {
     int ret = 0;
     ZCE_HANDLE file_handle = ZCE_OS::open(filename, (O_RDONLY));

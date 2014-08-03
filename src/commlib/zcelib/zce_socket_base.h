@@ -15,10 +15,26 @@ protected:
 
     //ZCE_Socket_Base不会提供给外部用，所以不准用
 protected:
-
-    //构造函数，析构函数
+    
+    /*!
+    * @brief      构造函数
+    */
     ZCE_Socket_Base();
+
+    /*!
+    * @brief      拷贝构造函数
+    * @param      socket_hanle
+    */
     explicit ZCE_Socket_Base(const ZCE_SOCKET &socket_hanle);
+
+    
+    /*!
+    * @brief      析构函数，会调用close，
+    * @note       这儿必须说明一下，ACE在设计socket封装的时候，在析构函数里面
+    *             没有调用close，他的出发点是避免在参数(value)传递的时候被析构
+    *             了，但我觉得良好的参数设计应该更好，而让普罗大众知道这个析构没
+    *             有释放资源，这个反而更难。
+    */
     ~ZCE_Socket_Base();
 
 public:
@@ -41,7 +57,7 @@ public:
              int protocol = 0,
              bool reuse_addr = false);
 
-    //关闭之
+    //关闭之,一般情况下，我会假设释放资源是必然成功的一件事
     int close();
 
     int bind(const ZCE_Sockaddr *add_name) const;

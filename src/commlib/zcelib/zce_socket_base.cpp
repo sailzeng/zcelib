@@ -16,8 +16,10 @@ ZCE_Socket_Base::ZCE_Socket_Base(const ZCE_SOCKET &socket_handle):
 {
 }
 
+//析构函数，会调用close，
 ZCE_Socket_Base::~ZCE_Socket_Base()
 {
+    close();
 }
 
 //

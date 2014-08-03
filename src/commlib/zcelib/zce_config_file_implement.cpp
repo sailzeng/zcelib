@@ -1,5 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_string.h"
+#include "zce_os_adapt_file.h"
+#include "zce_trace_log_debug.h"
 #include "zce_config_file_implement.h"
 
 /******************************************************************************************
@@ -85,7 +87,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
 
 }
 
-
+#if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
 
 /******************************************************************************************
 class ZCE_XML_Implement INI文件的配置读取，写入实现器
@@ -97,3 +99,57 @@ ZCE_XML_Implement::ZCE_XML_Implement()
 ZCE_XML_Implement::~ZCE_XML_Implement()
 {
 }
+
+int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &propertytree)
+{
+    int ret = 0;
+    size_t file_size = 0;
+    ret = ZCE_OS::filelen(file_name, &file_size);
+    if (0 != ret)
+    {
+        return 0;
+    }
+    size_t buf_len = file_size+16,read_len = 0;
+    //只有unique_ptr 才能默认直接使用数组，
+    std::unique_ptr<char[]> file_data(new char[buf_len]);
+    ret = ZCE_OS::read_file_data(file_name, file_data.get(), buf_len, &read_len);
+    if (0 != ret)
+    {
+        return 0;
+    }
+    try
+    {
+        // character type defaults to char  
+        rapidxml::xml_document<char> doc;   
+        //parse_non_destructive
+        doc.parse<rapidxml::parse_default>(file_data.get());
+
+        rapidxml::xml_node<char> *root = doc.first_node();
+        //广度遍历dom tree
+
+    }
+    catch (rapidxml::parse_error &e)
+    {
+        ZCE_LOGMSG(RS_ERROR, "[ZCELIB]file [%s] don't parse error what[%s] where[%s].",
+            e.what(),
+            e.where<char>());
+        return -1;
+    }
+    
+    
+    return 0;
+}
+
+
+//
+void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> &note,
+    ZCE_Conf_PropertyTree &propertytree)
+{
+    propertytree.leaf_node_ = note.name();
+
+}
+
+#endif
+
+
+

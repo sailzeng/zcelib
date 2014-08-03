@@ -675,9 +675,6 @@
     <ClCompile Include="zce_os_adapt_coroutine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_boost_close_assist.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce_async_fw_coroutine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

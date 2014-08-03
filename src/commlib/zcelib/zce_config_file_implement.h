@@ -51,7 +51,9 @@ public:
     int write(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
 
 protected:
-
+    //
+    void read_bfs(const rapidxml::xml_node<char> &note ,
+        ZCE_Conf_PropertyTree &propertytree);
 
 };
 

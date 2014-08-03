@@ -101,8 +101,16 @@ int truncate(const char *filename, size_t offset);
 *             但是用size_t作为返回值又恶心,0到底是错误还是尺寸0？所以函数被改成了这样，中规中矩
 */
 int filesize (ZCE_HANDLE file_handle, size_t *file_size);
-///取得文件的长度，通过文件名称,返回0可能表示文件不存在,参考通过文件句柄得到尺寸的方式
-int filesize (const char *filename, size_t *file_size);
+
+///
+/*!
+* @brief      通过文件名称,取得文件的长度，
+* @return     int  返回-1标识失败，返回0标识成功
+* @param      filename  文件
+* @param      file_size 文件的大小
+* @note       不重载filesize的原因是filelen，filesize第一个参数都可能是指针
+*/
+int filelen(const char *filename, size_t *file_size);
 
 /*!
 * @brief      用模版名称建立并且打开一个临时文件，

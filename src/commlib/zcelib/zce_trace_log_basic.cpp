@@ -250,7 +250,7 @@ void ZCE_LogTrace_Basic::make_configure(void)
             //如果要按照SIZE划分日志,得到记录日志文件的尺寸
             if (LOGDEVIDE_BY_SIZE == div_log_file_)
             {
-                ret = ZCE_OS::filesize(log_file_name_.c_str(), &size_log_file_);
+                ret = ZCE_OS::filelen(log_file_name_.c_str(), &size_log_file_);
 
                 if ( 0 != ret  )
                 {
