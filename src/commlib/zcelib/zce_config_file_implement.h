@@ -9,8 +9,8 @@
 
 /*!
 * @brief      INI文件的配置读取，写入实现器
-*             
-* @note       
+*
+* @note
 */
 class ZCE_INI_Implement : public ZCE_NON_Copyable
 {
@@ -35,8 +35,8 @@ protected:
 
 /*!
 * @brief      XML文件的配置读取，写入实现器
-*             
-* @note       
+*
+* @note
 */
 class ZCE_XML_Implement : public ZCE_NON_Copyable
 {
@@ -52,8 +52,8 @@ public:
 
 protected:
     //
-    void read_bfs(const rapidxml::xml_node<char> &note ,
-        ZCE_Conf_PropertyTree &propertytree);
+    void read_bfs(const rapidxml::xml_node<char> *note ,
+                  ZCE_Conf_PropertyTree *propertytree);
 
 };
 

@@ -13,8 +13,8 @@
 *
 *
 * @note      今天IPhone 5没有发布，而是发布了一款Iphone 4S,广大果粉有点失望
-*            
-*            
+*
+*
 */
 
 
@@ -28,8 +28,7 @@ class ZCE_Sockaddr_In6;
 class ZCE_Time_Value;
 
 
-class ZCE_Conf_PropertyTree;
-typedef ZCE_Conf_PropertyTree PROPERTY_TREE_NODE;
+
 
 
 /*!
@@ -49,7 +48,7 @@ protected:
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
-    typedef std::list< std::pair<std::string, PROPERTY_TREE_NODE> > CHILDREN_NOTE_TYPE;
+    typedef std::list< std::pair<std::string, ZCE_Conf_PropertyTree> > CHILDREN_NOTE_TYPE;
 
     //
 public:
@@ -61,11 +60,11 @@ public:
 
     ///根据路径得到一个CHILD 子树，
     int path_get_child(const std::string &path_str,
-                  PROPERTY_TREE_NODE *& child_data);
+                       ZCE_Conf_PropertyTree *& child_data);
 
     ///根据路径得到一个const CHILD 子树，
     int path_get_child(const std::string &path_str,
-                  const PROPERTY_TREE_NODE *& child_data) const;
+                       const ZCE_Conf_PropertyTree *& child_data) const;
 
     //取得叶子节点的string
     int get_leafptr(const std::string &path_str,
@@ -78,7 +77,7 @@ public:
     ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     template<typename val_type>
     int path_get_leaf(const std::string &path_str,
-                 val_type &val) const;
+                      val_type &val) const;
 
     /*!
     * @brief      取得一个叶子节点的数据,取回数据是srting
@@ -88,7 +87,7 @@ public:
     */
     template<>
     int path_get_leaf(const std::string &path_str,
-                 std::string &val) const;
+                      std::string &val) const;
 
     /*!
     * @brief      取得一个叶子节点的数据，取回数据是char *
@@ -98,7 +97,7 @@ public:
     */
     template<>
     int  path_get_leaf(const std::string &path_str,
-                  std::pair<char *, size_t > &val) const;
+                       std::pair<char *, size_t > &val) const;
 
     /*!
     * @brief      取得一个叶子节点的数据，取回数据是int32_t,支持16进制,8进制写法
@@ -109,27 +108,27 @@ public:
     */
     template<>
     int path_get_leaf(const std::string &path_str,
-                 int32_t &val) const;
+                      int32_t &val) const;
 
     ///同上，区别是得到一个无符号32位整数整数，
     template<>
     int path_get_leaf(const std::string &path_str,
-                 uint32_t &val) const;
+                      uint32_t &val) const;
 
     ///同上，区别是得到一个有符号64位整数整数，
     template<>
     int path_get_leaf(const std::string &path_str,
-                 int64_t &val) const;
+                      int64_t &val) const;
 
     ///同上，区别是得到一个无符号64位整数整数，做
     template<>
     int path_get_leaf(const std::string &path_str,
-                 uint64_t &val) const;
+                      uint64_t &val) const;
 
     ///取得一个叶子节点的数据，取回数据是bool
     template<>
     int path_get_leaf(const std::string &path_str,
-                 bool &val) const;
+                      bool &val) const;
 
     /*!
     * @brief      取得IPV6的地址
@@ -139,47 +138,50 @@ public:
     */
     template<>
     int path_get_leaf(const std::string &path_str,
-                 ZCE_Sockaddr_In &val) const;
+                      ZCE_Sockaddr_In &val) const;
 
     ///取得IPV6的地址，
     template<>
     int path_get_leaf(const std::string &path_str,
-                 ZCE_Sockaddr_In6 &val) const;
+                      ZCE_Sockaddr_In6 &val) const;
 
     ///时间戳字符串，使用ISO的格式
     template<>
     int path_get_leaf(const std::string &path_str,
-                 ZCE_Time_Value &val) const;
+                      ZCE_Time_Value &val) const;
 
 
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
-    int put_child(const std::string &key_str,
-        PROPERTY_TREE_NODE *&new_child_note);
-
-    int put_child(const std::string &key_str,
-        const std::string &val_str,
-        PROPERTY_TREE_NODE *&new_child_note);
+    void add_child(const std::string &key_str,
+                  ZCE_Conf_PropertyTree *&new_child_note);
 
     ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     template<typename val_type>
-    int put_leaf(const std::string &key_str,
-                 val_type val);
+    void set_leaf(val_type val);
 
 
     //放入一个叶子节点，string
     template<>
-    int put_leaf(const std::string &key_str,
-                 const std::string &value_data);
+    void set_leaf(const std::string &value_data);
 
     //放入一个叶子节点，int
     template<>
-    int put_leaf(const std::string &key_str,
-                 int value_int);
+    void set_leaf(int value_int);
 
     //放入一个叶子节点，bool
     template<>
-    int put_leaf(const std::string &key_str,
-                 bool value_bool);
+    void set_leaf(bool value_bool);
+
+
+    //
+    template<typename val_type>
+    void add_child_leaf(const std::string &key_str,
+        val_type val)
+    {
+        ZCE_Conf_PropertyTree *tree_node = NULL;
+        add_child(key_str, tree_node);
+        tree_node->set_leaf<val_type>(val);
+    }
 
 public:
     ///设置分割符号,允许你更换这个

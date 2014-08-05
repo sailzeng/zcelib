@@ -49,7 +49,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
         }
 
         //找到一个section
-        PROPERTY_TREE_NODE *tree_node = NULL;
+        ZCE_Conf_PropertyTree *tree_node = NULL;
         if (one_line[0] == '[' && one_line[strlen(one_line) - 1] == ']')
         {
             //已经找到下一个Section,没有发现相关的Key，返回默认值
@@ -63,7 +63,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
             cur_section = one_line;
 
             
-            propertytree.put_child("", one_line, tree_node);
+            propertytree.add_child(one_line, tree_node);
         }
 
         char *str = strstr(one_line, "=");
@@ -79,7 +79,8 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
             ZCE_OS::strtrim(str_value);
 
             //找到返回。
-            tree_node->put_leaf<std::string>(str_key, str_value);
+            std::string val(str_value);
+            tree_node->add_child_leaf<std::string&>(str_key, val);
         }
     }
 
@@ -124,9 +125,9 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
         //parse_non_destructive
         doc.parse<rapidxml::parse_default>(file_data.get());
 
-        rapidxml::xml_node<char> *root = doc.first_node();
+        const rapidxml::xml_node<char> *root = doc.first_node();
         //广度遍历dom tree
-
+        read_bfs(root, &propertytree);
     }
     catch (rapidxml::parse_error &e)
     {
@@ -142,11 +143,44 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
 
 
 //
-void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> &note,
-    ZCE_Conf_PropertyTree &propertytree)
+void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> *node,
+    ZCE_Conf_PropertyTree *propertytree)
 {
-    //propertytree.leaf_node_ = note.name();
+    
+    if (NULL == node->value() && NULL == node->first_attribute()  && NULL == node->first_node() )
+    {
+        return;
+    }
+    ZCE_Conf_PropertyTree *pt_note = NULL;
+    propertytree->add_child(node->name(), pt_note);
 
+    if (node->value())
+    {
+        pt_note->set_leaf(node->value());
+    }
+    if (node->first_attribute())
+    {
+        ZCE_Conf_PropertyTree *pt_attr = NULL;
+        pt_note->add_child("<xmlattr>", pt_attr);
+        rapidxml::xml_attribute<char> *node_attr = node->first_attribute();
+        do 
+        {
+            pt_attr->add_child_leaf(node_attr->name(), node_attr->value());
+            node_attr = node_attr->next_attribute();
+        } while (node_attr);
+    }
+    //
+    if (node->first_node())
+    {
+        rapidxml::xml_node<char> *node_child = node->first_node();
+        do
+        {
+            ZCE_Conf_PropertyTree *pt_child = NULL;
+            pt_note->add_child(node_child->name(), pt_child);
+            read_bfs(node_child, pt_child);
+            node_child = node_child->next_sibling();
+        } while (node_child);
+    }
 }
 
 #endif
