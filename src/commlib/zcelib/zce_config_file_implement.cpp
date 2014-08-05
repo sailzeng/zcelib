@@ -49,6 +49,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
         }
 
         //找到一个section
+        PROPERTY_TREE_NODE *tree_node = NULL;
         if (one_line[0] == '[' && one_line[strlen(one_line) - 1] == ']')
         {
             //已经找到下一个Section,没有发现相关的Key，返回默认值
@@ -61,8 +62,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
             ZCE_OS::strtrim(one_line);
             cur_section = one_line;
 
-            //
-            PROPERTY_TREE_NODE *tree_node=NULL;
+            
             propertytree.put_child("", one_line, tree_node);
         }
 
@@ -79,7 +79,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
             ZCE_OS::strtrim(str_value);
 
             //找到返回。
-            propertytree.put_leaf<std::string>(cur_section, str_key, str_value);
+            tree_node->put_leaf<std::string>(str_key, str_value);
         }
     }
 
@@ -145,7 +145,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
 void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> &note,
     ZCE_Conf_PropertyTree &propertytree)
 {
-    propertytree.leaf_node_ = note.name();
+    //propertytree.leaf_node_ = note.name();
 
 }
 

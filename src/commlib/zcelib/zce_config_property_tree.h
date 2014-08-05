@@ -60,11 +60,11 @@ public:
 
 
     ///根据路径得到一个CHILD 子树，
-    int get_child(const std::string &path_str,
+    int path_get_child(const std::string &path_str,
                   PROPERTY_TREE_NODE *& child_data);
 
     ///根据路径得到一个const CHILD 子树，
-    int get_child(const std::string &path_str,
+    int path_get_child(const std::string &path_str,
                   const PROPERTY_TREE_NODE *& child_data) const;
 
     //取得叶子节点的string
@@ -77,7 +77,7 @@ public:
 
     ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     template<typename val_type>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  val_type &val) const;
 
     /*!
@@ -87,7 +87,7 @@ public:
     * @param      val      返回的数值
     */
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  std::string &val) const;
 
     /*!
@@ -97,7 +97,7 @@ public:
     * @param      val      是一个pair，输入的时候first 字符串指针，second是字符串的空间长度
     */
     template<>
-    int  get_leaf(const std::string &path_str,
+    int  path_get_leaf(const std::string &path_str,
                   std::pair<char *, size_t > &val) const;
 
     /*!
@@ -108,27 +108,27 @@ public:
     * @note       如果是8进制的写法，请以0开头，如果是16进制写法，请以0x开头
     */
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  int32_t &val) const;
 
     ///同上，区别是得到一个无符号32位整数整数，
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  uint32_t &val) const;
 
     ///同上，区别是得到一个有符号64位整数整数，
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  int64_t &val) const;
 
     ///同上，区别是得到一个无符号64位整数整数，做
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  uint64_t &val) const;
 
     ///取得一个叶子节点的数据，取回数据是bool
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  bool &val) const;
 
     /*!
@@ -138,52 +138,50 @@ public:
     * @param      val      得到的IP地址，如果字符串里面有#，后面加上端口号，也会进行转换
     */
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  ZCE_Sockaddr_In &val) const;
 
     ///取得IPV6的地址，
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  ZCE_Sockaddr_In6 &val) const;
 
     ///时间戳字符串，使用ISO的格式
     template<>
-    int get_leaf(const std::string &path_str,
+    int path_get_leaf(const std::string &path_str,
                  ZCE_Time_Value &val) const;
 
 
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
-    int put_child(const std::string &path_str,
-        const std::string &new_child_name,
+    int put_child(const std::string &key_str,
         PROPERTY_TREE_NODE *&new_child_note);
 
-
+    int put_child(const std::string &key_str,
+        const std::string &val_str,
+        PROPERTY_TREE_NODE *&new_child_note);
 
     ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     template<typename val_type>
-    int put_leaf(const std::string &path_str,
-                 const std::string &key_str,
+    int put_leaf(const std::string &key_str,
                  val_type val);
 
 
     //放入一个叶子节点，string
     template<>
-    int put_leaf(const std::string &path_str,
-                 const std::string &key_str,
+    int put_leaf(const std::string &key_str,
                  const std::string &value_data);
 
     //放入一个叶子节点，int
     template<>
-    int put_leaf(const std::string &path_str,
-                 const std::string &key_str,
+    int put_leaf(const std::string &key_str,
                  int value_int);
 
     //放入一个叶子节点，bool
     template<>
-    int put_leaf(const std::string &path_str,
-                 const std::string &key_str,
+    int put_leaf(const std::string &key_str,
                  bool value_bool);
 
+public:
     ///设置分割符号,允许你更换这个
     static void set_separator(char separator_char);
 
