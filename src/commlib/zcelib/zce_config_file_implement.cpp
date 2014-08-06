@@ -16,7 +16,7 @@ ZCE_INI_Implement::~ZCE_INI_Implement()
 }
 
 //
-int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &propertytree)
+int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *propertytree)
 {
     //1行的最大值
     char one_line[LINE_BUFFER_LEN + 1], str_key[LINE_BUFFER_LEN + 1], str_value[LINE_BUFFER_LEN + 1];
@@ -25,7 +25,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
     str_key[LINE_BUFFER_LEN] = '\0';
     str_value[LINE_BUFFER_LEN] = '\0';
 
-    std::string cur_section;
+    ZCE_Conf_PropertyTree *cur_node = NULL;
 
     std::ifstream cfgfile(file_name);
 
@@ -49,7 +49,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
         }
 
         //找到一个section
-        ZCE_Conf_PropertyTree *tree_node = NULL;
+        
         if (one_line[0] == '[' && one_line[strlen(one_line) - 1] == ']')
         {
             //已经找到下一个Section,没有发现相关的Key，返回默认值
@@ -60,15 +60,16 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
 
             //消灭空格
             ZCE_OS::strtrim(one_line);
-            cur_section = one_line;
-
             
-            propertytree.add_child(one_line, tree_node);
+            ZCE_Conf_PropertyTree *tree_node = NULL;
+            propertytree->add_child(one_line, tree_node);
+            cur_node = tree_node;
+
+            continue;
         }
 
         char *str = strstr(one_line, "=");
-
-        if (str != NULL)
+        if (str != NULL && cur_node)
         {
             char *snext = str + 1;
             *str = '\0';
@@ -80,7 +81,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
 
             //找到返回。
             std::string val(str_value);
-            tree_node->add_child_leaf<std::string&>(str_key, val);
+            cur_node->add_child_leaf<std::string&>(str_key, val);
         }
     }
 
@@ -101,7 +102,7 @@ ZCE_XML_Implement::~ZCE_XML_Implement()
 {
 }
 
-int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &propertytree)
+int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *propertytree)
 {
     int ret = 0;
     size_t file_size = 0;
@@ -127,7 +128,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree &proper
 
         const rapidxml::xml_node<char> *root = doc.first_node();
         //广度遍历dom tree
-        read_bfs(root, &propertytree);
+        read_bfs(root, propertytree);
     }
     catch (rapidxml::parse_error &e)
     {

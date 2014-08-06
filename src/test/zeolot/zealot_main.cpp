@@ -13,6 +13,13 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
+
+    test_conf_ini(argc, argv);
+    
+    system("pause");
+
+#if 0
+
     test_async_coroutine(argc, argv);
 
     //bytes_encrypt_perf(argc, argv);
@@ -23,9 +30,7 @@ int main(int argc , char *argv[])
     test_lua_script9(argc, argv);
     printf("%s", "----------------------------------------------------------------------------\n");
 
-    system("pause");
 
-#if 0
     //test_perf_memcpy(argc, argv);
     //test_perf_nonalignmemcpy(argc,argv);
     test_out_buffer(argc, argv);

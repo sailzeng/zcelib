@@ -19,10 +19,10 @@ public:
     ~ZCE_INI_Implement();
 
     //读取，将结果保存在ZCE_INI_PropertyTree数据结构里面
-    int read(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+    int read(const char *file_name, ZCE_Conf_PropertyTree *propertytree);
 
     //写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
-    int write(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+    int write(const char *file_name, const ZCE_Conf_PropertyTree *propertytree);
 
 protected:
     //每行的最大长度
@@ -45,10 +45,10 @@ public:
     ~ZCE_XML_Implement();
 
     //读取，将结果保存在ZCE_INI_PropertyTree数据结构里面
-    int read(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+    int read(const char *file_name, ZCE_Conf_PropertyTree *propertytree);
 
     //写入，暂时没有实现，实在是漏的太多，10.1期间有点贪多，
-    int write(const char *file_name, ZCE_Conf_PropertyTree &propertytree);
+    int write(const char *file_name, const ZCE_Conf_PropertyTree *propertytree);
 
 protected:
     //

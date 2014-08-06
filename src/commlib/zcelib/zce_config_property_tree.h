@@ -73,69 +73,19 @@ public:
     int get_leafptr(const std::string &path_str,
                     const std::string *& leaf_data) const;
 
-
-    ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
+    /*!
+    * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
+    * @tparam     val_type 被特化成 ZCE_Sockaddr_In，ZCE_Sockaddr_In6，ZCE_Time_Value
+    *             int32_t ,int64_t,std::string, 等。
+    * @return     int      是否正常的读取倒了配置
+    * @param      path_str 读取的路径
+    * @param      val      读取返回的值
+    */
     template<typename val_type>
     int path_get_leaf(const std::string &path_str,
                       val_type &val) const;
 
-    /*!
-    * @brief      取得一个叶子节点的数据,取回数据是srting
-    * @return     int == 0 表示成功
-    * @param      path_str 路径，用.表示一段子树
-    * @param      val      返回的数值
-    */
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      std::string &val) const;
 
-    /*!
-    * @brief      取得一个叶子节点的数据，取回数据是char *
-    * @return     int == 0 表示成功
-    * @param      path_str
-    * @param      val      是一个pair，输入的时候first 字符串指针，second是字符串的空间长度
-    */
-    template<>
-    int  path_get_leaf(const std::string &path_str,
-                       std::pair<char *, size_t > &val) const;
-
-    /*!
-    * @brief      取得一个叶子节点的数据，取回数据是int32_t,支持16进制,8进制写法
-    * @return     int == 0 表示成功
-    * @param      path_str
-    * @param      val      返回的数值
-    * @note       如果是8进制的写法，请以0开头，如果是16进制写法，请以0x开头
-    */
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      int32_t &val) const;
-
-    ///同上，区别是得到一个无符号32位整数整数，
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      uint32_t &val) const;
-
-    ///同上，区别是得到一个有符号64位整数整数，
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      int64_t &val) const;
-
-    ///同上，区别是得到一个无符号64位整数整数，做
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      uint64_t &val) const;
-
-    ///取得一个叶子节点的数据，取回数据是bool
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      bool &val) const;
-
-    /*!
-    * @brief      取得IPV6的地址
-    * @return     int      == 0 表示成功
-    * @param      path_str 路径，用|表示一段子树
-    * @param      val      得到的IP地址，如果字符串里面有#，后面加上端口号，也会进行转换
-    */
     template<>
     int path_get_leaf(const std::string &path_str,
                       ZCE_Sockaddr_In &val) const;
