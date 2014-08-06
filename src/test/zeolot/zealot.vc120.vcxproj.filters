@@ -68,9 +68,6 @@
     <ClCompile Include="zealot_test_server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zealot_test_coroutine_.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zealot_test_lua.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -78,6 +75,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zealot_test_async.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zealot_test_config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

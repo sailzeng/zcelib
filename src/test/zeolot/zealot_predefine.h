@@ -18,6 +18,7 @@
 #include <zce_os_adapt_dirent.h>
 #include <zce_os_adapt_math.h>
 #include <zce_os_adapt_stdlib.h>
+#include <zce_os_adapt_coroutine.h>
 
 #include <zce_share_mem_mmap.h>
 #include <zce_share_mem_posix.h>
@@ -86,7 +87,10 @@
 #include <zce_server_status.h>
 
 
-#include <zce_os_adapt_coroutine.h>
+#include <zce_config_property_tree.h>
+#include <zce_config_file_implement.h>
+#include <zce_config_getopt.h>
+
 
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
