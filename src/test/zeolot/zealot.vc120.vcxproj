@@ -215,6 +215,7 @@
     <ClInclude Include="zealot_test_function.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="conf\test_0001.ini" />
     <None Include="lua\lua_test_01.lua" />
     <None Include="lua\lua_test_02.lua" />
     <None Include="lua\lua_test_03.lua" />
@@ -225,6 +226,9 @@
     <None Include="lua\lua_test_08.lua" />
     <None Include="lua\lua_test_09.lua" />
     <None Include="makefile" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="conf\test_0002.xml" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
