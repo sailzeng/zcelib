@@ -12,9 +12,6 @@
     <Filter Include="Lua Files">
       <UniqueIdentifier>{a4e005d7-1e81-4a7c-9940-5fc2e3a75c9e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Config Files">
-      <UniqueIdentifier>{e4d167c4-f636-4429-8e7d-2c340e36cbee}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zealot_main.cpp">
@@ -123,13 +120,5 @@
     <None Include="lua\lua_test_09.lua">
       <Filter>Lua Files</Filter>
     </None>
-    <None Include="conf\test_0001.ini">
-      <Filter>Config Files</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <Xml Include="conf\test_0002.xml">
-      <Filter>Config Files</Filter>
-    </Xml>
   </ItemGroup>
 </Project>
