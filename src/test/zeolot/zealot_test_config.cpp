@@ -16,7 +16,7 @@ int test_conf_xml(int  /*argc*/, char * /*argv*/[])
         return ret;
     }
     int32_t abc =0;
-    ret = pt_tree.path_get_leaf("root.size.width", abc);
+    ret = pt_tree.path_get_leaf("root.size", "width", abc);
     if (ret != 0)
     {
         std::cout << "read fail." << std::endl;
