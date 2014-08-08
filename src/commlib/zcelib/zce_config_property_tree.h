@@ -43,12 +43,12 @@ class ZCE_Conf_PropertyTree
 protected:
 
     ///叶子节点
-    typedef std::string  LEAF_NOTE_TYPE;
-
+    typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
+    ;
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
-    typedef std::list< std::pair<std::string, ZCE_Conf_PropertyTree> > CHILDREN_NOTE_TYPE;
+    typedef std::multimap<std::string, ZCE_Conf_PropertyTree > CHILDREN_NOTE_TYPE;
 
     //
 public:
@@ -58,20 +58,47 @@ public:
     ~ZCE_Conf_PropertyTree();
 
 
-    ///根据路径得到一个CHILD 子树，
+
+    /*!
+    * @brief      根据路径得到一个CHILD 子树，
+    * @return     int
+    * @param      path_str   访问的路径
+    * @param      child_data
+    */
     int path_get_child(const std::string &path_str,
                        ZCE_Conf_PropertyTree *& child_data);
-
-    ///根据路径得到一个const CHILD 子树，
+    ///同上，只是const的
     int path_get_child(const std::string &path_str,
                        const ZCE_Conf_PropertyTree *& child_data) const;
 
-    //取得叶子节点的string
-    int get_leafptr(const std::string &path_str,
-                    std::string *& leaf_data);
 
-    int get_leafptr(const std::string &path_str,
-                    const std::string *& leaf_data) const;
+    /*!
+    * @brief      取得叶子节点的string
+    * @return     int
+    * @param      path_str 访问的路径
+    * @param      key_str  访问val的key
+    * @param      str_ptr  得到val的指针
+    */
+    int path_get_leafptr(const std::string &path_str,
+                         const std::string &key_str,
+                         std::string *& str_ptr);
+    ///同上，只是const的
+    int path_get_leafptr(const std::string &path_str,
+                         const std::string &key_str,
+                         const std::string *& str_ptr) const;
+
+    /*!
+    * @brief      （在自己这儿），通过key，在叶子的map中取得对应的string的指针
+    * @return     int
+    * @param      key_str  访问val的key
+    * @param      str_ptr  得到val的指针
+    */
+    int get_leafptr(const std::string &key_str,
+                    std::string *&str_ptr);
+
+    ///同上，只是const的
+    int get_leafptr(const std::string &key_str,
+                    const std::string *&str_ptr) const;
 
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
@@ -83,55 +110,26 @@ public:
     */
     template<typename val_type>
     int path_get_leaf(const std::string &path_str,
+                      const std::string &key_str,
                       val_type &val) const;
 
 
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      ZCE_Sockaddr_In &val) const;
-
-    ///取得IPV6的地址，
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      ZCE_Sockaddr_In6 &val) const;
-
-    ///时间戳字符串，使用ISO的格式
-    template<>
-    int path_get_leaf(const std::string &path_str,
-                      ZCE_Time_Value &val) const;
+    /*!
+    * @brief      还是用了特化的模板高点这一组函数,模板函数,只定义不实现
+    * @tparam     val_type
+    * @return     void
+    * @param      key_str
+    * @param      val
+    */
+    template<typename val_type>
+    void set_leaf(const std::string &key_str,
+                  val_type val);
 
 
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
     void add_child(const std::string &key_str,
-                  ZCE_Conf_PropertyTree *&new_child_note);
+                   ZCE_Conf_PropertyTree *&new_child_note);
 
-    ///还是用了特化的模板高点这一组函数,模板函数,只定义不实现
-    template<typename val_type>
-    void set_leaf(val_type val);
-
-
-    //放入一个叶子节点，string
-    template<>
-    void set_leaf(const std::string &value_data);
-
-    //放入一个叶子节点，int
-    template<>
-    void set_leaf(int value_int);
-
-    //放入一个叶子节点，bool
-    template<>
-    void set_leaf(bool value_bool);
-
-
-    //
-    template<typename val_type>
-    void add_child_leaf(const std::string &key_str,
-        val_type val)
-    {
-        ZCE_Conf_PropertyTree *tree_node = NULL;
-        add_child(key_str, tree_node);
-        tree_node->set_leaf<val_type>(val);
-    }
 
 public:
     ///设置分割符号,允许你更换这个

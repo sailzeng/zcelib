@@ -14,53 +14,8 @@ ZCE_Conf_PropertyTree::~ZCE_Conf_PropertyTree()
 {
 }
 
-//得到子树节点，const
-int ZCE_Conf_PropertyTree::path_get_child(const std::string &path_str,
-                                          const ZCE_Conf_PropertyTree *& child_data) const
-{
-    child_data = NULL;
 
-    //就是找自己
-    if (0 == path_str.length())
-    {
-        child_data = this;
-        return 0;
-    }
 
-    //找到以.开始的分割符号
-    size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
-
-    std::string start_str(path_str, 0, str_pos);
-
-    CHILDREN_NOTE_TYPE::const_iterator iter_tmp = child_node_.begin();
-    for (; iter_tmp != child_node_.end(); ++iter_tmp)
-    {
-        if (iter_tmp->first == start_str)
-        {
-            break;
-        }
-    }
-    //如果没有找到
-    if (child_node_.end() == iter_tmp)
-    {
-        return -1;
-    }
-
-    const ZCE_Conf_PropertyTree *child_tree = &(iter_tmp->second);
-
-    //还有路径，进行递归查询
-    if (str_pos != std::string::npos)
-    {
-        std::string remain_str(path_str, str_pos + 1);
-        return child_tree->path_get_child(remain_str, child_data);
-    }
-    else
-    {
-        //这儿无非是提前返回了,
-        child_data = child_tree;
-        return 0;
-    }
-}
 
 //得到子树节点，
 int ZCE_Conf_PropertyTree::path_get_child(const std::string &path_str,
@@ -69,7 +24,7 @@ int ZCE_Conf_PropertyTree::path_get_child(const std::string &path_str,
     child_data = NULL;
 
     //就是找自己
-    if ( 0 == path_str.length() )
+    if (0 == path_str.length())
     {
         child_data = this;
         return 0;
@@ -110,27 +65,59 @@ int ZCE_Conf_PropertyTree::path_get_child(const std::string &path_str,
     }
 }
 
-//
-int ZCE_Conf_PropertyTree::get_leafptr(const std::string &path_str,
-                                       const std::string *& leaf_str_ptr) const
+//得到子树节点，const
+int ZCE_Conf_PropertyTree::path_get_child(const std::string &path_str,
+                                          const ZCE_Conf_PropertyTree *& child_data) const
 {
-    int ret = 0;
+    child_data = NULL;
 
-    const ZCE_Conf_PropertyTree *child_note = NULL;
-    ret = path_get_child(path_str, child_note);
-    if (0 != ret)
+    //就是找自己
+    if (0 == path_str.length())
     {
-        return ret;
+        child_data = this;
+        return 0;
     }
 
+    //找到
+    size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
 
-    leaf_str_ptr = &child_note->leaf_node_;
+    std::string start_str(path_str, 0, str_pos);
 
-    return 0;
+    CHILDREN_NOTE_TYPE::const_iterator iter_tmp = child_node_.begin();
+    for (; iter_tmp != child_node_.end(); ++iter_tmp)
+    {
+        if (iter_tmp->first == start_str)
+        {
+            break;
+        }
+    }
+    //如果没有找到
+    if (child_node_.end() == iter_tmp)
+    {
+        return -1;
+    }
+
+    const ZCE_Conf_PropertyTree *child_tree = &(iter_tmp->second);
+
+    //还有路径，进行递归查询
+    if (str_pos != std::string::npos)
+    {
+        std::string remain_str(path_str, str_pos + 1);
+        return child_tree->path_get_child(remain_str, child_data);
+    }
+    else
+    {
+        //这儿无非是提前返回了,
+        child_data = child_tree;
+        return 0;
+    }
 }
 
-int ZCE_Conf_PropertyTree::get_leafptr(const std::string &path_str,
-                                       std::string *& leaf_str_ptr)
+
+//
+int ZCE_Conf_PropertyTree::path_get_leafptr(const std::string &path_str,
+                                            const std::string &key_str,
+                                            std::string *& str_ptr)
 {
     int ret = 0;
 
@@ -142,10 +129,66 @@ int ZCE_Conf_PropertyTree::get_leafptr(const std::string &path_str,
     }
 
 
-    leaf_str_ptr = &child_note->leaf_node_;
+    ret = child_note->get_leafptr(key_str, str_ptr);
+    if (0 != ret)
+    {
+        return ret;
+    }
 
     return 0;
 }
+
+//
+int ZCE_Conf_PropertyTree::path_get_leafptr(const std::string &path_str,
+                                            const std::string &key_str,
+                                            const std::string *& str_ptr) const
+{
+    int ret = 0;
+
+    const ZCE_Conf_PropertyTree *child_note = NULL;
+    ret = path_get_child(path_str, child_note);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+
+    ret = child_note->get_leafptr(key_str, str_ptr);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+
+//（在自己这儿），通过key，在叶子的map中取得对应的string的指针
+int ZCE_Conf_PropertyTree::get_leafptr(const std::string &key_str,
+    std::string *&str_ptr)
+{
+    LEAF_NOTE_TYPE::iterator iter = leaf_node_.find(key_str);
+    if (leaf_node_.end() == iter)
+    {
+        return -1;
+    }
+    str_ptr = &(iter->second);
+    return 0;
+}
+
+//同上，只是const的
+int ZCE_Conf_PropertyTree::get_leafptr(const std::string &key_str,
+    const std::string *&str_ptr) const
+{
+    LEAF_NOTE_TYPE::const_iterator iter = leaf_node_.find(key_str);
+    if (leaf_node_.end() == iter)
+    {
+        return -1;
+    }
+    str_ptr = &(iter->second);
+    return 0;
+}
+
 
 //最后还是用模板函数特化了，也许能有什么幸福生活等着我呢？
 
@@ -157,11 +200,12 @@ int ZCE_Conf_PropertyTree::get_leafptr(const std::string &path_str,
 */
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          std::string &val) const
 {
 
     const std::string *leaf_str_ptr = nullptr;
-    int ret = get_leafptr(path_str, leaf_str_ptr);
+    int ret = path_get_leafptr(path_str, key_str, leaf_str_ptr);
 
     if (0 != ret)
     {
@@ -181,10 +225,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 */
 template<>
 int  ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                          const std::string &key_str,
                                           std::pair<char *, size_t > &str_data) const
 {
     std::string value_data;
-    int ret = path_get_leaf<std::string>(path_str, value_data);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_data);
 
     if (0 != ret)
     {
@@ -205,10 +250,11 @@ int  ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 */
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          int32_t &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -222,10 +268,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 ///同上，区别是得到一个无符号32位整数整数，
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          uint32_t &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -239,10 +286,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 ///同上，区别是得到一个有符号64位整数整数，
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          int64_t &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -256,10 +304,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 ///同上，区别是得到一个无符号64位整数整数，
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          uint64_t &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -273,12 +322,13 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 ///取得一个叶子节点的数据，取回数据是bool
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          bool &val) const
 {
     val = false;
 
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -305,10 +355,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 */
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          ZCE_Sockaddr_In &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -321,10 +372,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 ///IPV6的地址
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          ZCE_Sockaddr_In6 &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -337,10 +389,11 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 ///取得时间
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
+                                         const std::string &key_str,
                                          ZCE_Time_Value &val) const
 {
     std::string value_str;
-    int ret = path_get_leaf<std::string>(path_str, value_str);
+    int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
     if (0 != ret)
     {
@@ -355,57 +408,66 @@ void ZCE_Conf_PropertyTree::add_child(const std::string &key_str,
                                       ZCE_Conf_PropertyTree *&new_child_note)
 {
     ZCE_Conf_PropertyTree null_node;
-    this->child_node_.push_back(
-        std::make_pair(key_str,
-                       null_node));
+    CHILDREN_NOTE_TYPE::iterator iter =
+        this->child_node_.insert(std::make_pair(key_str, null_node));
 
-    new_child_note = &((this->child_node_.rbegin())->second);
+    new_child_note = &(iter->second);
     return;
 }
 
 //
 template<>
-void ZCE_Conf_PropertyTree::set_leaf(const std::string &val_str)
+void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
+    const std::string &val_str)
 {
-    this->leaf_node_ = val_str;
+    this->leaf_node_.insert(std::make_pair(key_str,val_str));
 }
 
 template<>
-void ZCE_Conf_PropertyTree::set_leaf(std::string &val_str)
+void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
+    std::string &val_str)
 {
-    this->leaf_node_ = val_str;
+    this->leaf_node_.insert(std::make_pair(key_str, val_str));
 }
-
 
 template<>
-void ZCE_Conf_PropertyTree::set_leaf(char *val_str)
+void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
+    const char *val_str)
 {
-    this->leaf_node_ = val_str;
+    this->leaf_node_.insert(std::make_pair(key_str, std::string(val_str)));
 }
 
+template<>
+void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
+    char *val_str)
+{
+    this->leaf_node_.insert(std::make_pair(key_str, std::string(val_str)));
+}
 
 //
 template<>
-void ZCE_Conf_PropertyTree::set_leaf(int value_int)
+void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
+    int value_int)
 {
     const size_t BUF_LEN = 24;
     char str_int[BUF_LEN + 1];
     str_int[BUF_LEN] = '\0';
     snprintf(str_int, BUF_LEN, "%d", value_int);
-    return set_leaf<std::string>(str_int);
+    return set_leaf(key_str,str_int);
 }
 
 //
 template<>
-void ZCE_Conf_PropertyTree::set_leaf(bool value_bool)
+void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
+    bool value_bool)
 {
     if (value_bool)
     {
-        return set_leaf<std::string>("TRUE");
+        return set_leaf<const char *>(key_str, "TRUE");
     }
     else
     {
-        return set_leaf<std::string>("FALSE");
+        return set_leaf<const char *>(key_str, "FALSE");
     }
 
 }

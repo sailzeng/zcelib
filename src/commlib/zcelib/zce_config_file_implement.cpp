@@ -81,7 +81,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
             //找到返回。
             std::string val(str_value);
-            cur_node->add_child_leaf<std::string&>(str_key, val);
+            cur_node->set_leaf<std::string&>(str_key, val);
         }
     }
 
@@ -128,7 +128,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
         const rapidxml::xml_node<char> *root = doc.first_node();
         //广度遍历dom tree
-        read_bfs(root, propertytree);
+        read_dfs(root, propertytree);
     }
     catch (rapidxml::parse_error &e)
     {
@@ -143,8 +143,8 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 }
 
 
-//
-void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> *node,
+//深度优先读写
+void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
     ZCE_Conf_PropertyTree *propertytree)
 {
     
@@ -157,16 +157,14 @@ void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> *node,
 
     if (node->value())
     {
-        pt_note->set_leaf(node->value());
+        pt_note->set_leaf("<self_note>",node->value());
     }
     if (node->first_attribute())
     {
-        ZCE_Conf_PropertyTree *pt_attr = NULL;
-        pt_note->add_child("<xmlattr>", pt_attr);
         rapidxml::xml_attribute<char> *node_attr = node->first_attribute();
         do 
         {
-            pt_attr->add_child_leaf(node_attr->name(), node_attr->value());
+            pt_note->set_leaf(node_attr->name(), node_attr->value());
             node_attr = node_attr->next_attribute();
         } while (node_attr);
     }
@@ -178,7 +176,7 @@ void ZCE_XML_Implement::read_bfs(const rapidxml::xml_node<char> *node,
         {
             ZCE_Conf_PropertyTree *pt_child = NULL;
             pt_note->add_child(node_child->name(), pt_child);
-            read_bfs(node_child, pt_child);
+            read_dfs(node_child, pt_child);
             node_child = node_child->next_sibling();
         } while (node_child);
     }

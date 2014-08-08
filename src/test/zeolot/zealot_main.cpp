@@ -13,8 +13,8 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
-
     test_conf_ini(argc, argv);
+    test_conf_xml(argc, argv);
     
     system("pause");
 
