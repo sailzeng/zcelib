@@ -44,12 +44,15 @@ protected:
 
     ///叶子节点
     typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
-    ;
+    typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
+    typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
+    
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
     typedef std::multimap<std::string, ZCE_Conf_PropertyTree > CHILDREN_NOTE_TYPE;
-
+    typedef CHILDREN_NOTE_TYPE::iterator child_iterator;
+    typedef CHILDREN_NOTE_TYPE::const_iterator const_child_iterator;
     //
 public:
 
@@ -60,45 +63,50 @@ public:
 
 
     /*!
-    * @brief      根据路径得到一个CHILD 子树，
-    * @return     int
+    * @brief      根据路径得到一个CHILD 子树节点的迭代器
+    * @return     int == 0 表示成功，
     * @param      path_str   访问的路径
-    * @param      child_data
+    * @param      child_iter 返回的迭代器，注意内部在没有找到的情况下，没有将其置为end，用
+    *                        return 的返回值判断是否成功，不要用这个参数。
     */
-    int path_get_child(const std::string &path_str,
-                       ZCE_Conf_PropertyTree *& child_data);
+    int path_get_childiter(const std::string &path_str,
+                           child_iterator &child_iter);
     ///同上，只是const的
-    int path_get_child(const std::string &path_str,
-                       const ZCE_Conf_PropertyTree *& child_data) const;
-
+    int path_get_childiter(const std::string &path_str,
+                           const_child_iterator &child_iter) const;
 
     /*!
-    * @brief      取得叶子节点的string
+    * @brief      取得叶子节点的迭代器
     * @return     int
     * @param      path_str 访问的路径
     * @param      key_str  访问val的key
     * @param      str_ptr  得到val的指针
     */
-    int path_get_leafptr(const std::string &path_str,
-                         const std::string &key_str,
-                         std::string *& str_ptr);
+    int path_get_leafiter(const std::string &path_str,
+                          const std::string &key_str,
+                          leaf_iterator &leaf_iter);
     ///同上，只是const的
-    int path_get_leafptr(const std::string &path_str,
-                         const std::string &key_str,
-                         const std::string *& str_ptr) const;
+    int path_get_leafiter(const std::string &path_str,
+                          const std::string &key_str,
+                          const_leaf_iterator &leaf_iter) const;
 
-    /*!
-    * @brief      （在自己这儿），通过key，在叶子的map中取得对应的string的指针
-    * @return     int
-    * @param      key_str  访问val的key
-    * @param      str_ptr  得到val的指针
-    */
-    int get_leafptr(const std::string &key_str,
-                    std::string *&str_ptr);
-
+    ///得到path对应的那个child note的指针
+    int path_get_childptr(const std::string &path_str,
+                          ZCE_Conf_PropertyTree *&child_ptr);
     ///同上，只是const的
-    int get_leafptr(const std::string &key_str,
-                    const std::string *&str_ptr) const;
+    int path_get_childptr(const std::string &path_str,
+                          const ZCE_Conf_PropertyTree *&child_ptr) const;
+
+
+    ///得到（当前node）叶子节点的begin 位置的迭代器
+    leaf_iterator leaf_begin();
+    ///得到（当前node）叶子节点的end 位置的迭代器
+    leaf_iterator leaf_end();
+
+    ///得到（当前node）子树节点的begin 位置的迭代器
+    child_iterator child_begin();
+    ///得到（当前node）子树节点的begin 位置的迭代器
+    child_iterator child_end();
 
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
@@ -112,7 +120,6 @@ public:
     int path_get_leaf(const std::string &path_str,
                       const std::string &key_str,
                       val_type &val) const;
-
 
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,只定义不实现

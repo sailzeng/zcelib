@@ -120,5 +120,9 @@
     <None Include="lua\lua_test_09.lua">
       <Filter>Lua Files</Filter>
     </None>
+    <None Include="conf\test_0001.ini" />
+  </ItemGroup>
+  <ItemGroup>
+    <Xml Include="conf\test_0002.xml" />
   </ItemGroup>
 </Project>

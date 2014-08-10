@@ -10,13 +10,13 @@ int test_conf_xml(int  /*argc*/, char * /*argv*/[])
 {
     ZCE_Conf_PropertyTree pt_tree;
     ZCE_XML_Implement xml_imp;
-    int ret = xml_imp.read("conf\test_0002.xml",&pt_tree);
+    int ret = xml_imp.read("conf/test_0002.xml",&pt_tree);
     if (ret != 0)
     {
         return ret;
     }
     int32_t abc =0;
-    ret = pt_tree.path_get_leaf("root.size", "width", abc);
+    ret = pt_tree.path_get_leaf("root.size.width", "", abc);
     if (ret != 0)
     {
         std::cout << "read fail." << std::endl;

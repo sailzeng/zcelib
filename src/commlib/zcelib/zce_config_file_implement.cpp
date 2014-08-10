@@ -109,7 +109,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     ret = ZCE_OS::filelen(file_name, &file_size);
     if (0 != ret)
     {
-        return 0;
+        return ret;
     }
     size_t buf_len = file_size+16,read_len = 0;
     //只有unique_ptr 才能默认直接使用数组，
@@ -117,8 +117,9 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     ret = ZCE_OS::read_file_data(file_name, file_data.get(), buf_len, &read_len);
     if (0 != ret)
     {
-        return 0;
+        return ret;
     }
+
     try
     {
         // character type defaults to char  
@@ -152,6 +153,11 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
     {
         return;
     }
+    //一些node暂时不处理
+    if (node->type() == rapidxml::node_comment)
+    {
+        return;
+    }
     ZCE_Conf_PropertyTree *pt_note = NULL;
     propertytree->add_child(node->name(), pt_note);
 
@@ -168,15 +174,13 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
             node_attr = node_attr->next_attribute();
         } while (node_attr);
     }
-    //
+    //还有子节点，深度递归
     if (node->first_node())
     {
         rapidxml::xml_node<char> *node_child = node->first_node();
         do
         {
-            ZCE_Conf_PropertyTree *pt_child = NULL;
-            pt_note->add_child(node_child->name(), pt_child);
-            read_dfs(node_child, pt_child);
+            read_dfs(node_child, pt_note);
             node_child = node_child->next_sibling();
         } while (node_child);
     }
