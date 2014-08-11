@@ -9,11 +9,12 @@
 *
 * @details    这个类的最终实现目标是实现类似BOOST ，Property Tree 和 ACE_Configuration_Heap
 *             类的目标，将配置信息组织成一棵树存放
-*
-*
-*
-* @note      今天IPhone 5没有发布，而是发布了一款Iphone 4S,广大果粉有点失望
-*
+*             思路还是和BOOST Property Tree有一些区别，我们内部直接放入一个map存放。属性数据，
+*             XML文件的name->value里面的value也放入这个地方。
+*             因为胃觉得BOOST 的Property Tree太慢了，虽然其可能是为了写回配置文件（顺序）有考虑，
+*             但总体看上去有太多的节点。
+* @note       今天IPhone 5没有发布，而是发布了一款Iphone 4S,广大果粉有点失望
+*              
 *
 */
 
@@ -33,16 +34,20 @@ class ZCE_Time_Value;
 
 /*!
 * @brief      配置文件读取后存放的树
-*             其他读取工具读取数据内容后都生成放入ZCE_Conf_PropertyTree中，
-*             思路还是和Property Tree基本一致。
-* @note       2013年回头仔细看了BOOST的说明，发现人家的实现比我考虑的还是完整不
-*             少，最后还是向其靠拢了。
+*             将配置文件读取工具读取数据内容后都生成放入ZCE_Conf_PropertyTree中，
+*             内部有2棵树，
+*             一棵用于存放子树，存放name=>sub tree，
+*             一棵用于存放叶子节点。存放属性key=>value,XML文件的name=>value也存放
+*             在这个地方，
+*             
+* @note       因为有2棵树，所以内部也有两个迭代器，
+*             
 */
 class ZCE_Conf_PropertyTree
 {
 protected:
 
-    ///叶子节点
+    ///叶子节点,以及相应的迭代器
     typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
     typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
     typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
@@ -59,7 +64,6 @@ public:
     ///构造函数
     ZCE_Conf_PropertyTree();
     ~ZCE_Conf_PropertyTree();
-
 
 
     /*!

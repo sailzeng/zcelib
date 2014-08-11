@@ -45,8 +45,7 @@ Comm_Time_Provider::update(const ZCE_Time_Value &now)
     // 使用两个时间字符串，是为了避免在更新时，其它线程访问时，出现错误的字符
     // 只有一个线程在更新，其它多个线程访问更新前的字符串，不会出现乱码的情况
     unsigned int cur_idx = (str_time_idx_+1)%2;
-    cur_time_.timestamp(str_time_[cur_idx], STR_TIME_LEN, 
-        ZCE_OS::TIME_STRFMT_LOCALTIME|ZCE_OS::TIME_STRFFMT_ISO|ZCE_OS::TIME_STRFFMT_PRECISION_SEC);
+    cur_time_.timestamp(str_time_[cur_idx], STR_TIME_LEN);
     str_time_idx_ = cur_idx;
 }
 

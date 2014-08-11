@@ -67,7 +67,7 @@ Modification History:
 #include <zce_lock_null_lock.h>
 #include <zce_lock_thread_mutex.h>
 #include <zce_config_property_tree.h>
-#include <zce_config_ini_file.h>
+#include <zce_config_file_implement.h>
 #include <zce_thread_msgque_sema.h>
 #include <zce_thread_msgque_nonlock.h>
 #include <zce_timer_handler_base.h>
