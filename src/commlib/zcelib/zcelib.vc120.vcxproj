@@ -299,8 +299,7 @@
     <ClInclude Include="zce_trace_log_debug.h" />
     <ClInclude Include="zce_trace_log_msg.h" />
     <ClInclude Include="zce_trace_log_plus.h" />
-    <ClInclude Include="zce_uuid_128_generator.h" />
-    <ClInclude Include="zce_uuid_64_generator.h" />
+    <ClInclude Include="zce_uuid_generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_async_fw_base.cpp" />
@@ -406,8 +405,7 @@
     <ClCompile Include="zce_trace_log_debug.cpp" />
     <ClCompile Include="zce_trace_log_msg.cpp" />
     <ClCompile Include="zce_trace_log_plus.cpp" />
-    <ClCompile Include="zce_uuid_128_generator.cpp" />
-    <ClCompile Include="zce_uuid_64_generator.cpp" />
+    <ClCompile Include="zce_uuid_generator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

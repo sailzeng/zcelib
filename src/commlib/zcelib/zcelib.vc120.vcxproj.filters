@@ -340,12 +340,6 @@
     <ClInclude Include="zce_trace_log_plus.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_uuid_64_generator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_uuid_128_generator.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_time_progress_timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -395,6 +389,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce_config_file_implement.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_uuid_generator.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -654,12 +651,6 @@
     <ClCompile Include="zce_trace_log_plus.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_uuid_64_generator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_uuid_128_generator.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce_time_progress_timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -697,6 +688,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_config_file_implement.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_uuid_generator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
