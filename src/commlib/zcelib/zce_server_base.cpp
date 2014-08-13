@@ -6,16 +6,18 @@
 #include "zce_os_adapt_socket.h"
 #include "zce_os_adapt_time.h"
 #include "zce_trace_log_debug.h"
-#include "zce_server_toolkit.h"
+#include "zce_server_base.h"
 
 /*********************************************************************************
-class ZCE_Server_Toolkit
+class ZCE_Server_Base
 *********************************************************************************/
 
 // 构造函数,私有,使用单子类的实例,
-ZCE_Server_Toolkit::ZCE_Server_Toolkit():
+ZCE_Server_Base::ZCE_Server_Base():
     pid_handle_(ZCE_INVALID_HANDLE),
     self_pid_(0),
+    app_run_(false),
+    app_reload_(false),
     check_leak_times_(0),
     mem_checkpoint_size_(0),
     cur_mem_usesize_(0),
@@ -30,7 +32,7 @@ ZCE_Server_Toolkit::ZCE_Server_Toolkit():
 
 }
 
-ZCE_Server_Toolkit::~ZCE_Server_Toolkit()
+ZCE_Server_Base::~ZCE_Server_Base()
 {
     // 关闭文件
     if (pid_handle_ != ZCE_INVALID_HANDLE)
@@ -41,7 +43,7 @@ ZCE_Server_Toolkit::~ZCE_Server_Toolkit()
 }
 
 // 初始化
-int ZCE_Server_Toolkit::socket_init()
+int ZCE_Server_Base::socket_init()
 {
     int ret = 0;
     ret = ZCE_OS::socket_init();
@@ -54,21 +56,8 @@ int ZCE_Server_Toolkit::socket_init()
     return 0;
 }
 
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007年8月28日
-Function        : ZCE_Server_Toolkit::out_pid_file
-Return          : int ==0 表示成功
-Parameter List  :
-Param1: const char* pragramname  进程的名字，可以将argv[0]传递给我
-Param2: bool lock_pid            是否对PID文件进行加锁处理，
-Description     : 打印输出PID File
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int ZCE_Server_Toolkit::out_pid_file(const char *pragramname,
+//打印输出PID File
+int ZCE_Server_Base::out_pid_file(const char *pragramname,
                                      bool lock_pid)
 {
     int ret = 0;
@@ -130,7 +119,7 @@ int ZCE_Server_Toolkit::out_pid_file(const char *pragramname,
 
 // 监测这个进程的系统状况,每N分钟运行一次就OK了
 // 看门狗得到进程的状态
-int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
+int ZCE_Server_Base::watch_dog_status(bool first_record)
 {
     int ret = 0;
 
@@ -189,7 +178,7 @@ int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
                    now_process_perf_.vm_size_);
 
         // 如果已经监测了若干次内存泄漏,则不再记录告警
-        if (check_leak_times_ > MAX_RECORD_MEMORY_NUMBER)
+        if (check_leak_times_ > MAX_RECORD_MEMLEAK_NUMBER)
         {
             mem_checkpoint_size_ = now_process_perf_.vm_size_;
             check_leak_times_ = 0;
@@ -319,24 +308,353 @@ int ZCE_Server_Toolkit::watch_dog_status(bool first_record)
 }
 
 
-// 获取运行状态统计
-uint32_t ZCE_Server_Toolkit::get_sys_cpu_ratio(void) const
+int ZCE_Server_Base::process_signal(void)
 {
-    return system_cpu_ratio_;
+    //忽视部分信号,这样简单
+    ZCE_OS::signal(SIGHUP, SIG_IGN);
+    ZCE_OS::signal(SIGPIPE, SIG_IGN);
+    ZCE_OS::signal(SIGCHLD, SIG_IGN);
+
+#ifdef ZCE_OS_WINDOWS
+    //Windows下设置退出处理函数，可以用Ctrl + C 退出
+    SetConsoleCtrlHandler((PHANDLER_ROUTINE)exit_signal, TRUE);
+#else
+    //这个几个信号被认可为退出信号
+    ZCE_OS::signal(SIGINT, exit_signal);
+    ZCE_OS::signal(SIGQUIT, exit_signal);
+    ZCE_OS::signal(SIGTERM, exit_signal);
+
+    //重新加载部分配置,用了SIGUSR1 kill -10
+    ZCE_OS::signal(SIGUSR1, reload_config_signal);
+#endif
+
+    //SIGUSR1,SIGUSR2你可以用来干点自己的活,
+    return 0;
 }
 
-uint32_t ZCE_Server_Toolkit::get_app_cpu_ratio(void) const
+int ZCE_Server_Base::daemon_init()
 {
-    return process_cpu_ratio_;
+    //Daemon 精灵进程,但是我不清理目录路径,
+
+#if defined (ZCE_OS_LINUX)
+
+    pid_t pid = ZCE_OS::fork();
+
+    if (pid < 0)
+    {
+        return SOAR_RET::ERROR_FORK_FAIL;
+    }
+    else if (pid > 0)
+    {
+        ::exit(0);
+    }
+
+#endif
+
+    ZCE_OS::setsid();
+    ZCE_OS::umask(0);
+
+#if defined (ZCE_OS_WINDOWS)
+    //设置Console的标题信息
+    std::string out_str = get_app_basename();
+    out_str += " ";
+    out_str += app_author_;
+    ::SetConsoleTitle(out_str.c_str());
+#endif
+
+    return 0;
 }
 
-uint32_t ZCE_Server_Toolkit::get_sys_mem_ratio(void) const
+
+//得到运行信息，可能包括路径信息
+const char *ZCE_Server_Base::get_app_runname()
 {
-    return mem_use_ratio_;
+    return app_run_name_.c_str();
 }
 
-uint64_t ZCE_Server_Toolkit::get_can_use_mem_size(void) const
+//得到程序进程名称，，去掉了路径，WINDOWS下去掉了后缀
+const char *ZCE_Server_Base::get_app_basename()
 {
-    return can_use_size_;
+    return app_base_name_.c_str();
 }
 
+
+//信号处理代码，
+#ifdef ZCE_OS_WINDOWS
+
+BOOL ZCE_Server_Base::exit_signal(DWORD)
+{
+    base_instance_->set_run_sign(false);
+    return TRUE;
+}
+
+#else
+
+void ZCE_Server_Base::exit_signal(int)
+{
+    base_instance_->set_run_sign(false);
+    return;
+}
+
+// USER1信号处理函数
+void ZCE_Server_Base::reload_config_signal(int)
+{
+    // 信号处理函数中不能有IO等不可重入的操作，否则容易死锁
+    base_instance_->set_reload(true);
+    return;
+}
+
+#endif
+
+
+
+
+#if defined ZCE_OS_WINDOWS
+
+//运行服务
+int ZCE_Server_Base::win_services_run()
+{
+    char service_name[PATH_MAX + 1];
+    service_name[PATH_MAX] = '\0';
+    strncpy(service_name, app_base_name_.c_str(), PATH_MAX);
+
+    SERVICE_TABLE_ENTRY st[] =
+    {
+        { service_name, (LPSERVICE_MAIN_FUNCTION)win_service_main },
+        { NULL, NULL }
+    };
+
+    BOOL b_ret = ::StartServiceCtrlDispatcher(st);
+
+    if (b_ret)
+    {
+        //LogEvent(_T("Register Service Main Function Success!"));
+    }
+    else
+    {
+        UINT error_info = ::GetLastError();
+        ZCE_UNUSED_ARG(error_info);
+        //LogEvent(_T("Register Service Main Function Error!"));
+    }
+
+    return 0;
+}
+
+//安装服务
+int ZCE_Server_Base::win_services_install()
+{
+
+    if (win_services_isinstalled())
+    {
+        printf("install service fail. service %s already exist", app_base_name_.c_str());
+        return 0;
+    }
+
+    //打开服务控制管理器
+    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+
+    if (handle_scm == NULL)
+    {
+        //::MessageBox(NULL, _T("Couldn't open service manager"), app_base_name_.c_str(), MB_OK);
+        printf("can't open service manager.\n");
+        return FALSE;
+    }
+
+    // Get the executable file path
+    char file_path[MAX_PATH + 1];
+    file_path[MAX_PATH] = '\0';
+    ::GetModuleFileName(NULL, file_path, MAX_PATH);
+
+    //创建服务
+    SC_HANDLE handle_services = ::CreateService(
+        handle_scm,
+        app_base_name_.c_str(),
+        service_name_.c_str(),
+        SERVICE_ALL_ACCESS,
+        SERVICE_WIN32_OWN_PROCESS,
+        SERVICE_DEMAND_START,
+        SERVICE_ERROR_NORMAL,
+        file_path,
+        NULL,
+        NULL,
+        "",
+        NULL,
+        NULL);
+
+    if (handle_services == NULL)
+    {
+        printf("install service %s fail. err=%d\n", app_base_name_.c_str(),
+            GetLastError());
+        ::CloseServiceHandle(handle_scm);
+        //MessageBox(NULL, _T("Couldn't create service"), app_base_name_.c_str(), MB_OK);
+        return -1;
+    }
+
+    // 修改描述
+    SC_LOCK lock = LockServiceDatabase(handle_scm);
+
+    if (lock != NULL)
+    {
+        SERVICE_DESCRIPTION desc;
+        desc.lpDescription = (LPSTR)service_desc_.c_str();
+
+        ChangeServiceConfig2(handle_services, SERVICE_CONFIG_DESCRIPTION, &desc);
+        UnlockServiceDatabase(handle_scm);
+    }
+
+    ::CloseServiceHandle(handle_services);
+    ::CloseServiceHandle(handle_scm);
+    printf("install service %s succ.\n", app_base_name_.c_str());
+
+    return 0;
+}
+
+//卸载服务
+int ZCE_Server_Base::win_services_uninstall()
+{
+    if (!win_services_isinstalled())
+    {
+        printf("uninstall fail. service %s is not exist.\n", app_base_name_.c_str());
+        return 0;
+    }
+
+    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+
+    if (handle_scm == NULL)
+    {
+        //::MessageBox(NULL, _T("Couldn't open service manager"), app_base_name_.c_str(), MB_OK);
+        printf("uninstall fail. can't open service manager");
+        return FALSE;
+    }
+
+    SC_HANDLE handle_services = ::OpenService(handle_scm,
+        app_base_name_.c_str(),
+        SERVICE_STOP | DELETE);
+
+    if (handle_services == NULL)
+    {
+        ::CloseServiceHandle(handle_scm);
+        //::MessageBox(NULL, _T("Couldn't open service"), app_base_name_.c_str(), MB_OK);
+        printf("can't open service %s\n", app_base_name_.c_str());
+        return -1;
+    }
+
+    SERVICE_STATUS status;
+    ::ControlService(handle_services, SERVICE_CONTROL_STOP, &status);
+
+    //删除服务
+    BOOL bDelete = ::DeleteService(handle_services);
+    ::CloseServiceHandle(handle_services);
+    ::CloseServiceHandle(handle_scm);
+
+    if (bDelete)
+    {
+        printf("uninstall service %s succ.\n", app_base_name_.c_str());
+        return 0;
+    }
+
+    printf("uninstall service %s fail.\n", app_base_name_.c_str());
+    //LogEvent(_T("Service could not be deleted"));
+    return -1;
+
+}
+
+//检查服务是否安装
+bool ZCE_Server_Base::win_services_isinstalled()
+{
+    bool b_result = false;
+
+    //打开服务控制管理器
+    SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
+
+    if (handle_scm != NULL)
+    {
+        //打开服务
+        SC_HANDLE handle_service = ::OpenService(handle_scm, app_base_name_.c_str(), SERVICE_QUERY_CONFIG);
+
+        if (handle_service != NULL)
+        {
+            b_result = true;
+            ::CloseServiceHandle(handle_service);
+        }
+
+        ::CloseServiceHandle(handle_scm);
+    }
+
+    return b_result;
+}
+
+//服务运行函数
+void WINAPI ZCE_Server_Base::win_service_main()
+{
+    //WIN服务用的状态
+    static SERVICE_STATUS_HANDLE handle_service_status = NULL;
+
+    SERVICE_STATUS status;
+
+    status.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
+    status.dwCurrentState = SERVICE_STOPPED;
+    status.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+    status.dwWin32ExitCode = 0;
+    status.dwServiceSpecificExitCode = 0;
+    status.dwCheckPoint = 0;
+    status.dwWaitHint = 0;
+
+    // Register the control request handler
+    status.dwCurrentState = SERVICE_START_PENDING;
+    status.dwControlsAccepted = SERVICE_ACCEPT_STOP;
+
+    //注册服务控制
+    handle_service_status = ::RegisterServiceCtrlHandler(base_instance_->get_app_basename(),
+        win_services_ctrl);
+
+    if (handle_service_status == NULL)
+    {
+        //LogEvent(_T("Handler not installed"));
+        return;
+    }
+
+    SetServiceStatus(handle_service_status, &status);
+
+    status.dwWin32ExitCode = S_OK;
+    status.dwCheckPoint = 0;
+    status.dwWaitHint = 0;
+    status.dwCurrentState = SERVICE_RUNNING;
+    SetServiceStatus(handle_service_status, &status);
+
+    //base_instance_->do_run();
+
+    status.dwCurrentState = SERVICE_STOPPED;
+    SetServiceStatus(handle_service_status, &status);
+    //LogEvent(_T("Service stopped"));
+}
+
+//服务控制台所需要的控制函数
+void WINAPI ZCE_Server_Base::win_services_ctrl(DWORD op_code)
+{
+    switch (op_code)
+    {
+    case SERVICE_CONTROL_STOP:
+        //
+        base_instance_->app_run_ = false;
+        break;
+
+    case SERVICE_CONTROL_PAUSE:
+        break;
+
+    case SERVICE_CONTROL_CONTINUE:
+        break;
+
+    case SERVICE_CONTROL_INTERROGATE:
+        break;
+
+    case SERVICE_CONTROL_SHUTDOWN:
+        break;
+
+    default:
+        //LogEvent(_T("Bad service request"));
+        break;
+    }
+}
+
+#endif //#if defined ZCE_OS_WINDOWS

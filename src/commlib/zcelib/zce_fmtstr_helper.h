@@ -29,8 +29,8 @@
 #include "zce_time_value.h"
 #include "zce_socket_addr_in.h"
 #include "zce_socket_addr_in6.h"
-#include "zce_uuid_128_generator.h"
-#include "zce_uuid_64_generator.h"
+#include "zce_uuid_generator.h"
+#include "zce_uuid_generator.h"
 
 namespace ZCE_LIB
 {

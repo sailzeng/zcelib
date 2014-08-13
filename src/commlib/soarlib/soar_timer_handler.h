@@ -46,7 +46,7 @@ public:
     ///
     /// @return int
     ///
-    int init(unsigned int game_id, bool is_app, ZCE_Server_Toolkit *toolkit);
+    int init(unsigned int game_id, bool is_app, ZCE_Server_Base *toolkit);
 
 private:
     // 时间提供实例
@@ -54,7 +54,7 @@ private:
     // 监控
     Comm_Stat_Monitor *stat_monitor_;
     // App对象
-    ZCE_Server_Toolkit *svrd_app_;
+    ZCE_Server_Base *svrd_app_;
 
     time_t last_check_;
 

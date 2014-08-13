@@ -46,7 +46,7 @@ Modification History:
 #include <zce_mysql_process.h>
 #include <zce_shm_cache_chunk.h>
 #include <zce_shm_lockfree_deque.h>
-#include <zce_server_toolkit.h>
+#include <zce_server_base.h>
 #include <zce_shm_hash_table.h>
 #include <zce_boost_non_copyable.h>
 #include <zce_boost_lord_rings.h>
@@ -111,8 +111,8 @@ Modification History:
 #endif
 
 
-#if !defined ZCE_LIB_LIBARY_NAME
-#define ZCE_LIB_LIBARY_NAME   "soarlib-"ZCE_PLAT_TOOLSET_CONF".lib"
+#if !defined SOAR_LIB_LIBARY_NAME
+#define SOAR_LIB_LIBARY_NAME   "soarlib-"ZCE_PLAT_TOOLSET_CONF".lib"
 #endif
 
 #endif //SOARING_LIB_PER_DEFINE_H_

@@ -9,6 +9,11 @@ class  Comm_Svrd_Appliction 程服务器配置,鸡肋==基类
 ****************************************************************************************************/
 class Comm_Svrd_Config
 {
+
+private:
+    Comm_Svrd_Config();
+    virtual ~Comm_Svrd_Config();
+
 public:
     //取配置信息,取得配置信息后, 需要将各启动参数设置OK
     int init(int argc, const char *argv[]);
@@ -90,9 +95,7 @@ protected:
     // 单子实例
     static Comm_Svrd_Config *instance_;
 
-private:
-    Comm_Svrd_Config();
-    virtual ~Comm_Svrd_Config();
+
 };
 
 #endif //SOARING_LIB_SERVER_CONFIG_H_

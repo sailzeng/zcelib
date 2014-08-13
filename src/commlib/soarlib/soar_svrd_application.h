@@ -12,7 +12,7 @@ class Comm_Timer_Handler;
 class  Comm_Svrd_Appliction
 单线程自动机模型的程序框架基类.
 ****************************************************************************************************/
-class Comm_Svrd_Appliction : public ZCE_Server_Toolkit
+class Comm_Svrd_Appliction : public ZCE_Server_Base
 {
 protected:
 
@@ -25,22 +25,14 @@ public:
     //设置进程暂停运行的标志
     void set_pause_sign(bool app_pause);
 
-    //设置进程是否运行的标志
-    void set_run_sign(bool app_run);
 
-    // 设置reload标志
-    void set_reload(bool app_reload);
 
     //设置日志的优先级
     void set_log_priority(ZCE_LOG_PRIORITY new_log_prio);
     //获得日志的优先级
     ZCE_LOG_PRIORITY get_log_priority();
 
-    //得到运行信息，可能包括路径信息
-    const char *get_app_runname();
 
-    //得到程序进程名称，WINDOWS下去掉了后缀
-    const char *get_app_basename();
 
     int run(int argc, const char *argv[]);
 
@@ -94,11 +86,6 @@ private:
     //得到app_base_name_，app_run_name_
     int create_app_name(const char *argv_0);
 
-    // 精灵化
-    int daemon_init();
-
-    // 信号处理
-    int process_signal();
 
     // 初始化日志帐单
     int init_log();
@@ -161,20 +148,10 @@ protected:
 
 protected:
 
-    //进程名字，抛开运行目录，文件后缀的名字，
-    std::string                  app_base_name_;
-
-    //程序运行名称,如果包含路径运行，会有路径信息
-    std::string                  app_run_name_;
-
-    //运行状态,是否继续运行
-    bool                         app_run_;
-
     //为了加载卸载so，加一个是否暂停的变量
     bool                         app_pause_;
 
-    // 是否加重新加载配置
-    bool                         app_reload_;
+
 
     //自己的服务器ID
     SERVICES_ID                  self_services_id_;
@@ -185,25 +162,17 @@ protected:
     //最大消息个数
     size_t                       max_msg_num_;
 
-    //作者名称
-    std::string                  app_author_;
+
 
     // 与zerg的管道
     Zerg_MMAP_BusPipe           *zerg_mmap_pipe_;
 
-    // 服务名称
-    std::string                 service_name_;
 
-    // 服务描述
-    std::string                 service_desc_;
 
     // 启动参数
     int                         argc_;
     const char                **argv_;
-protected:
 
-    //单子实例
-    static Comm_Svrd_Appliction *base_instance_;
 
 private:
     // 框架定时器处理类

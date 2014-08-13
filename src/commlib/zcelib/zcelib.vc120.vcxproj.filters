@@ -223,9 +223,6 @@
     <ClInclude Include="zce_server_status.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_server_toolkit.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_share_mem_mmap.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -392,6 +389,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce_uuid_generator.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_server_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -567,9 +567,6 @@
     <ClCompile Include="zce_server_status.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_server_toolkit.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce_share_mem_mmap.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -691,6 +688,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_uuid_generator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_server_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

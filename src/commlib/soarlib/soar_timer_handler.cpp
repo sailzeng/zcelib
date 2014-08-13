@@ -115,7 +115,7 @@ Comm_Timer_Handler::~Comm_Timer_Handler()
 }
 
 int
-Comm_Timer_Handler::init(unsigned int game_id, bool is_app, ZCE_Server_Toolkit *toolkit)
+Comm_Timer_Handler::init(unsigned int game_id, bool is_app, ZCE_Server_Base *toolkit)
 {
     time_provider_ = Comm_Time_Provider::instance();
     ZCE_ASSERT(time_provider_ != NULL);
