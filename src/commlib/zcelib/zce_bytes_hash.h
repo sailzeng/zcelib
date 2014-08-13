@@ -130,13 +130,13 @@
 //=====================================================================================================
 
 /*!
-@brief      64字节为BLOCK的HASH算法的处理策略类的基类，定义相关的context结构等
-            如果是从MD的算法系列出来的算法，BLOCK长度是64的，都可以用这个函数扩展出来
-            比如MD4,MD5,SHA0,SHA1,SHA256,SHA224,
-            BLOCK是128的SHA512这些类不能从这个方法扩展得到
-@tparam     result_size    HASH结果的尺寸，字节
-@tparam     little_endian  这个算法是否采用小头编码，如果是用true，如果不是，用false，
-@tparam     HASH_STRATEGY  算法的策略类
+* @brief      64字节为BLOCK的HASH算法的处理策略类的基类，定义相关的context结构等
+*             如果是从MD的算法系列出来的算法，BLOCK长度是64的，都可以用这个函数扩展出来
+*             比如MD4,MD5,SHA0,SHA1,SHA256,SHA224,
+*             BLOCK是128的SHA512这些类不能从这个方法扩展得到
+* @tparam     result_size    HASH结果的尺寸，字节
+* @tparam     little_endian  这个算法是否采用小头编码，如果是用true，如果不是，用false，
+* @tparam     HASH_STRATEGY  算法的策略类
 */
 template <size_t result_size, bool little_endian, typename HASH_STRATEGY>
 class ZCE_HashFun_Block64
@@ -162,10 +162,10 @@ public:
     typedef hash_fun_ctx context;
 
     /*!
-    @brief      内部函数，处理数据的前面部分(>PROCESS_BLOCK_SIZE 65字节的部分)，每次组成一个PROCESS_BLOCK_SIZE字节的block就进行杂凑处理
-    @param[out] ctx  算法的context，用于记录一些处理的上下文和结果
-    @param[in]  buf  处理的数据，
-    @param[in]  buf_size 处理的数据长度
+    * @brief      内部函数，处理数据的前面部分(>PROCESS_BLOCK_SIZE 65字节的部分)，每次组成一个PROCESS_BLOCK_SIZE字节的block就进行杂凑处理
+    * @param[out] ctx  算法的context，用于记录一些处理的上下文和结果
+    * @param[in]  buf  处理的数据，
+    * @param[in]  buf_size 处理的数据长度
     */
     static void process(context *ctx, const unsigned char *buf, size_t buf_size)
     {
@@ -184,11 +184,11 @@ public:
     }
 
     /*!
-    @brief      根据算法要求和当前机器的字节序类型，进行N个uint32_t数据的拷贝操作，
-                如果本地序列和当前机器的字节序类型不符合，会进行SWAP
-    @param      dst      目标指针
-    @param      src      拷贝的源头指针
-    @param      length   长度，注意是字节长度
+    * @brief      根据算法要求和当前机器的字节序类型，进行N个uint32_t数据的拷贝操作，
+    *             如果本地序列和当前机器的字节序类型不符合，会进行SWAP
+    * @param      dst      目标指针
+    * @param      src      拷贝的源头指针
+    * @param      length   长度，注意是字节长度
     */
     inline static void endian_copy(void *dst, const void *src, size_t length)
     {
@@ -230,11 +230,11 @@ public:
     }
 
     /*!
-    @brief      内部函数，处理数据的末尾部分，我们要拼出最后1个（或者两个）要处理的BLOCK，加上0x80，加上长度进行处理
-    @param[in]  ctx    算法的context，用于记录一些处理的上下文和结果
-    @param[in]  buf    处理的数据
-    @param[in]  buf_size   处理buffer的长度
-    @param[out] result 返回的结果，
+    * @brief      内部函数，处理数据的末尾部分，我们要拼出最后1个（或者两个）要处理的BLOCK，加上0x80，加上长度进行处理
+    * @param[in]  ctx    算法的context，用于记录一些处理的上下文和结果
+    * @param[in]  buf    处理的数据
+    * @param[in]  buf_size   处理buffer的长度
+    * @param[out] result 返回的结果，
     */
     static void finalize(context *ctx,
                          const unsigned char *buf,
@@ -308,15 +308,15 @@ public:
 public:
 
     /*!
-    @brief      初始化context，内容
-    @param      ctx  context 的指针
+    * @brief      初始化context，内容
+    * @param      ctx  context 的指针
     */
     //static void initialize(context *ctx);
 
     /*!
-    @brief      将64个字节，16个uint32_t的数组进行摘要（杂凑）处理，
-    @param      state 存放处理的hash数据结果,
-    @param      block 要处理的block，64个字节，16个uint32_t的数组  这个参数没有对编码进行转换
+    * @brief      将64个字节，16个uint32_t的数组进行摘要（杂凑）处理，
+    * @param      state 存放处理的hash数据结果,
+    * @param      block 要处理的block，64个字节，16个uint32_t的数组  这个参数没有对编码进行转换
     */
     //static void process_block(uint32_t state[HASH_RESULT_SIZE / 4],
     //    const uint32_t block[PROCESS_BLOCK_SIZE / 4]);
@@ -397,12 +397,12 @@ namespace ZCE_LIB
 //传统的HASH算法函数，
 
 /*!
-@brief      计算一个内存数据的HASH值，我讨厌重复自己，于是就有了这个模版，和这种实现方式
-@tparam     HASH_STRATEGY 模版参数，对于一个数据求HASH的算法，策略，ZCE_Hash_SHA1，ZCE_Hash_MD5等
-@return     unsigned char * 返回得到的结果
-@param[in]  buf    处理的BUFFER
-@param[in]  buf_size   BUFFER的长度
-@param[out] result 返回的结果数据指针
+* @brief      计算一个内存数据的HASH值，我讨厌重复自己，于是就有了这个模版，和这种实现方式
+* @tparam     HASH_STRATEGY 模版参数，对于一个数据求HASH的算法，策略，ZCE_Hash_SHA1，ZCE_Hash_MD5等
+* @return     unsigned char * 返回得到的结果
+* @param[in]  buf    处理的BUFFER
+* @param[in]  buf_size   BUFFER的长度
+* @param[out] result 返回的结果数据指针
 */
 template<typename HASH_STRATEGY>
 inline unsigned char *hash_fun(const unsigned char *buf,
@@ -419,13 +419,14 @@ inline unsigned char *hash_fun(const unsigned char *buf,
 }
 
 /*!
-@brief      计算一个内存数据的HASH值，一个典型的策略模式
-@tparam     HASH_STRATEGY   模版参数，对于一个数据求HASH的算法，策略，ZCE_Hash_SHA1，ZCE_Hash_MD5等
-@tparam     BUFFER_MULTIPLE 函数函数一般一次处理一个块，你可以通过这个参数设置读取的BUFFER是这个块的倍数，（用于调整你的IO处理和CPU计算）
-@return     int          成功返回0，失败，文件无法打开，无法读取，返回-1
-@param      file_name    文件名称
-@param      result       返回的结果数据指针
-@note
+* @brief      计算一个内存数据的HASH值，一个典型的策略模式
+* @tparam     HASH_STRATEGY   模版参数，对于一个数据求HASH的算法，策略，ZCE_Hash_SHA1，ZCE_Hash_MD5等
+* @tparam     BUFFER_MULTIPLE 函数函数一般一次处理一个块，你可以通过这个参数设置读取的BUFFER是这个块的倍数，
+*                             （用于调整你的IO处理和CPU计算）
+* @return     int       成功返回0，失败，文件无法打开，无法读取，返回-1
+* @param      file_name 文件名称
+* @param      result    返回的结果数据指针
+* @note
 */
 template<typename HASH_STRATEGY, size_t BUFFER_MULTIPLE>
 inline  int hash_file(const char *file_name,
@@ -479,11 +480,11 @@ inline  int hash_file(const char *file_name,
 }
 
 /*!
-@brief      求某个内存块的MD5，写这个函数主要就是为了方便你使用
-@return     unsigned char* 返回的的结果，
-@param[in]  buf    求MD5的内存BUFFER指针
-@param[in]  buf_size   BUFFER长度
-@param[out] result 结果
+* @brief      求某个内存块的MD5，写这个函数主要就是为了方便你使用
+* @return     unsigned char* 返回的的结果，
+* @param[in]  buf    求MD5的内存BUFFER指针
+* @param[in]  buf_size   BUFFER长度
+* @param[out] result 结果
 */
 inline unsigned char *md5(const unsigned char *buf,
                           size_t buf_size,
@@ -493,11 +494,11 @@ inline unsigned char *md5(const unsigned char *buf,
 }
 
 /*!
-@brief      求某个文件的MD5值，内部将文件分片处理，计算得到MD5,这个函数即使文件很大也没有关系，
-            但在32位系统，对于文件长度有限制
-@return     int         返回0标识成功
-@param      file_name   文件路径，名称
-@param      result      返回的结果
+* @brief      求某个文件的MD5值，内部将文件分片处理，计算得到MD5,这个函数即使文件很大也没有关系，
+*             但在32位系统，对于文件长度有限制
+* @return     int         返回0标识成功
+* @param      file_name   文件路径，名称
+* @param      result      返回的结果
 */
 inline int md5_file(const char *file_name,
                     unsigned char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
@@ -506,11 +507,11 @@ inline int md5_file(const char *file_name,
 }
 
 /*!
-@brief      求内存块BUFFER的SHA1值
-@return     unsigned char* 返回的的结果
-@param[in]  buf    求SHA1的内存BUFFER指针
-@param[in]  buf_size   BUFFER长度
-@param[out] result 结果
+* @brief      求内存块BUFFER的SHA1值
+* @return     unsigned char* 返回的的结果
+* @param[in]  buf    求SHA1的内存BUFFER指针
+* @param[in]  buf_size   BUFFER长度
+* @param[out] result 结果
 */
 inline unsigned char *sha1(const unsigned char *buf,
                            size_t buf_size,
@@ -520,11 +521,11 @@ inline unsigned char *sha1(const unsigned char *buf,
 }
 
 /*!
-@brief      求某个文件的SHA1值，内部将文件分片处理，计算得到SHA1,这个函数即使文件很大也没有关系，
-            但在32位系统，对于文件长度有限制
-@return     int         返回0标识成功
-@param[in]  file_name   文件路径，名称
-@param[out] result      返回的结果
+* @brief      求某个文件的SHA1值，内部将文件分片处理，计算得到SHA1,这个函数即使文件很大也没有关系，
+*             但在32位系统，对于文件长度有限制
+* @return     int         返回0标识成功
+* @param[in]  file_name   文件路径，名称
+* @param[out] result      返回的结果
 */
 inline int sha1_file(const char *file_name,
                      unsigned char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
@@ -533,11 +534,11 @@ inline int sha1_file(const char *file_name,
 }
 
 /*!
-@brief      求内存块BUFFER的SHA256值
-@return     unsigned char* 返回的的结果
-@param[in]  buf    求SHA1的内存BUFFER指针
-@param[in]  buf_size   BUFFER长度
-@param[out] result 结果
+* @brief      求内存块BUFFER的SHA256值
+* @return     unsigned char* 返回的的结果
+* @param[in]  buf    求SHA1的内存BUFFER指针
+* @param[in]  buf_size   BUFFER长度
+* @param[out] result 结果
 */
 inline unsigned char *sha256(const unsigned char *buf,
                              size_t buf_size,
@@ -547,11 +548,11 @@ inline unsigned char *sha256(const unsigned char *buf,
 }
 
 /*!
-@brief      求某个文件的SHA256值，内部将文件分片处理，计算得到SHA256,这个函数即使文件很大也没有关系，
-            但在32位系统，对于文件长度有限制
-@return     int         返回0标识成功
-@param[in]  file_name   文件路径，名称
-@param[out] result      返回的结果
+* @brief      求某个文件的SHA256值，内部将文件分片处理，计算得到SHA256,这个函数即使文件很大也没有关系，
+*             但在32位系统，对于文件长度有限制
+* @return     int         返回0标识成功
+* @param[in]  file_name   文件路径，名称
+* @param[out] result      返回的结果
 */
 inline int sha256_file(const char *file_name,
                        unsigned char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
@@ -560,21 +561,21 @@ inline int sha256_file(const char *file_name,
 }
 
 /*!
-@brief      求一个buffer的CRC32值，可以用于一些要求速度的简单校验
-@return     uint32_t 返回求得的CRC32值
-@param[in]  crcinit  CRC的初始值，用于辅助验证,如果在2个地方验证，初始值要一致
-@param[in]  buf      求CRC的内存BUFFER
-@param[in]  buf_size     BUFFER长度
+* @brief      求一个buffer的CRC32值，可以用于一些要求速度的简单校验
+* @return     uint32_t 返回求得的CRC32值
+* @param[in]  crcinit  CRC的初始值，用于辅助验证,如果在2个地方验证，初始值要一致
+* @param[in]  buf      求CRC的内存BUFFER
+* @param[in]  buf_size     BUFFER长度
 */
 uint32_t crc32(uint32_t crcinit,
                const unsigned char *buf,
                size_t buf_size);
 
 /*!
-@brief      初始值为0的CRC32函数
-@return     uint32_t   返回的CRC32值
-@param[in]  buf        计算CRC32的内存
-@param[in]  buf_size   内存长度
+* @brief      初始值为0的CRC32函数
+* @return     uint32_t   返回的CRC32值
+* @param[in]  buf        计算CRC32的内存
+* @param[in]  buf_size   内存长度
 */
 inline uint32_t crc32(const unsigned char *buf,
                       size_t buf_size)
@@ -583,10 +584,10 @@ inline uint32_t crc32(const unsigned char *buf,
 }
 
 /*!
-@brief      初始值为0的计算文件的CRC32的函数
-@return     int        返回0表示成功，否则表示读取文件失败
-@param[in]  file_name  文件名称
-@param[out] result     返回的CRC32值
+* @brief      初始值为0的计算文件的CRC32的函数
+* @return     int        返回0表示成功，否则表示读取文件失败
+* @param[in]  file_name  文件名称
+* @param[out] result     返回的CRC32值
 */
 inline  int crc32_file(const char *file_name,
                        uint32_t *result)
@@ -605,21 +606,21 @@ inline uint16_t crc16(const unsigned char *buf,
 }
 
 //=====================================================================================================
-//计算字符串的HASH算法函数，
-//我选择的算法也就BKDRHash AP Hash,DJBHash,JS Hash
-//前人已经做了很多工作，我就是抄过来了，有兴趣的去研究一些这些文章，
-//http://blog.csdn.net/liuben/article/details/5050697
-//http://www.byvoid.com/blog/string-hash-compare/
-//如果你懒得出奇，那么就选择BKDRHash吧，
-//我的稍微的改进是讲unsigned int 改为了size_t,
-//char *  改为了unsigned char * ，同时增加了长度参数，适应二进制数据，
+///计算字符串的HASH算法函数，
+///我选择的算法也就BKDRHash AP Hash,DJBHash,JS Hash
+///前人已经做了很多工作，我就是抄过来了，有兴趣的去研究一些这些文章，
+///http://blog.csdn.net/liuben/article/details/5050697
+///http://www.byvoid.com/blog/string-hash-compare/
+///如果你懒得出奇，那么就选择BKDRHash吧，
+///我的稍微的改进是讲unsigned int 改为了size_t,
+///char *  改为了unsigned char * ，同时增加了长度参数，适应二进制数据，
 
 /*!
-@brief      计算字符串的HASH算法函数， BKDR 算法 Hash Function，这些函数没有用inline
-            的原因是，在VS2010，Release版本，O2下，发现没有进行inline优化……
-@return     size_t  返回的HASH值，使用size_t在不同环境下不同,看来inline的优化比我想的要难
-@param[in]  str     字符串
-@param[in]  str_len 字符串长度
+* @brief      计算字符串的HASH算法函数， BKDR 算法 Hash Function，这些函数没有用inline
+*             的原因是，在VS2010，Release版本，O2下，发现没有进行inline优化……
+* @return     size_t  返回的HASH值，使用size_t在不同环境下不同,看来inline的优化比我想的要难
+* @param[in]  str     字符串
+* @param[in]  str_len 字符串长度
 */
 size_t bkdr_hash(const unsigned char *str, size_t str_len);
 
