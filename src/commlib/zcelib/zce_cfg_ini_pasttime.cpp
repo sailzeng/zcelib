@@ -4,22 +4,22 @@
 #include "zce_cfg_ini_pasttime.h"
 
 //
-ZCE_CfgFile_INI_Pt::ZCE_CfgFile_INI_Pt(const char *szfname)
+ZCE_INI_Pt::ZCE_INI_Pt(const char *szfname)
 {
     file_name_.assign(szfname);
 }
 
-ZCE_CfgFile_INI_Pt::~ZCE_CfgFile_INI_Pt()
+ZCE_INI_Pt::~ZCE_INI_Pt()
 {
 
 }
 
 //得到key值的String
-size_t ZCE_CfgFile_INI_Pt::get_private_str(const char *sec_name,
-                                           const char *key_name,
-                                           const char *default_str,
-                                           char *return_str,
-                                           const size_t size_ret_str)
+size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
+                                   const char *key_name,
+                                   const char *default_str,
+                                   char *return_str,
+                                   const size_t size_ret_str)
 {
     //调用static get_privateprofile_string函数完成,注意参数
     return get_privateprofile_string(sec_name,
@@ -30,8 +30,8 @@ size_t ZCE_CfgFile_INI_Pt::get_private_str(const char *sec_name,
 }
 
 //得到所有的section,用'\0'分隔，以'\0\0'结束
-size_t ZCE_CfgFile_INI_Pt::get_private_allsection(char *return_str,
-                                                  const size_t size_ret_str)
+size_t ZCE_INI_Pt::get_private_allsection(char *return_str,
+                                          const size_t size_ret_str)
 {
     //调用static get_privateprofile_string函数完成,注意参数
     return get_privateprofile_string(NULL,
@@ -42,17 +42,17 @@ size_t ZCE_CfgFile_INI_Pt::get_private_allsection(char *return_str,
 }
 
 //得到某个Section下所有的Key = string值 用'\0'分隔，以'\0\0'结束
-size_t ZCE_CfgFile_INI_Pt::getprivate_allkey(const char *sec_name,
-                                             char *return_str, const size_t size_ret_str)
+size_t ZCE_INI_Pt::getprivate_allkey(const char *sec_name,
+                                     char *return_str, const size_t size_ret_str)
 {
     //调用static get_privateprofile_string函数完成,注意参数
     return get_privateprofile_string(sec_name, NULL, NULL, return_str, size_ret_str, file_name_.c_str());
 }
 
 //得到Int的 Key值
-int ZCE_CfgFile_INI_Pt::get_private_int(const char *sec_name,
-                                        const char *key_name,
-                                        const int default_int)
+int ZCE_INI_Pt::get_private_int(const char *sec_name,
+                                const char *key_name,
+                                const int default_int)
 {
     //调用static get_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
@@ -68,9 +68,9 @@ int ZCE_CfgFile_INI_Pt::get_private_int(const char *sec_name,
 }
 
 //得到bool的 Key值
-bool ZCE_CfgFile_INI_Pt::get_private_bool(const char *sec_name,
-                                          const char *key_name,
-                                          bool bDefault)
+bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
+                                  const char *key_name,
+                                  bool bDefault)
 {
     //调用static get_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
@@ -98,26 +98,26 @@ bool ZCE_CfgFile_INI_Pt::get_private_bool(const char *sec_name,
 }
 
 //写入String
-bool ZCE_CfgFile_INI_Pt::write_private_string(const char *sec_name,
-                                              const char *key_name,
-                                              const char *write_string)
+bool ZCE_INI_Pt::write_private_string(const char *sec_name,
+                                      const char *key_name,
+                                      const char *write_string)
 {
     //调用static WritePrivateProfileString函数完成,注意参数
     return write_privateprofile_string(sec_name, key_name, write_string, file_name_.c_str());
 }
 
 //修改Section
-bool ZCE_CfgFile_INI_Pt::write_private_section(const char *sec_name,
-                                               const char *write_string)
+bool ZCE_INI_Pt::write_private_section(const char *sec_name,
+                                       const char *write_string)
 {
     //调用static WritePrivateProfileSection函数完成,注意参数
     return   write_privateprofile_section(sec_name, write_string, file_name_.c_str());
 }
 
 //写入Int
-bool ZCE_CfgFile_INI_Pt::write_private_int(const char *sec_name,
-                                           const char *key_name,
-                                           const int nvalue)
+bool ZCE_INI_Pt::write_private_int(const char *sec_name,
+                                   const char *key_name,
+                                   const int nvalue)
 {
     //调用static write_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
@@ -130,9 +130,9 @@ bool ZCE_CfgFile_INI_Pt::write_private_int(const char *sec_name,
 }
 
 //写入Bool变量
-bool ZCE_CfgFile_INI_Pt::write_private_bool(const char *sec_name,
-                                            const char *key_name,
-                                            const bool bvalue)
+bool ZCE_INI_Pt::write_private_bool(const char *sec_name,
+                                    const char *key_name,
+                                    const bool bvalue)
 {
     //调用static write_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
@@ -151,14 +151,14 @@ bool ZCE_CfgFile_INI_Pt::write_private_bool(const char *sec_name,
 }
 
 //删除Key
-bool ZCE_CfgFile_INI_Pt::del_private_key(const char *sec_name, const char *key_name)
+bool ZCE_INI_Pt::del_private_key(const char *sec_name, const char *key_name)
 {
 
     return write_privateprofile_string(sec_name, key_name, NULL, file_name_.c_str());
 }
 
 //删除Section
-bool ZCE_CfgFile_INI_Pt::del_private_section(const char *sec_name)
+bool ZCE_INI_Pt::del_private_section(const char *sec_name)
 {
 
     return write_privateprofile_string(sec_name,
@@ -167,7 +167,7 @@ bool ZCE_CfgFile_INI_Pt::del_private_section(const char *sec_name)
                                        file_name_.c_str());
 }
 
-size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
+size_t ZCE_INI_Pt::get_privateprofile_string(
     const char  *sec_name,
     const char  *key_name,
     const char  *default_str,
@@ -234,7 +234,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
 
     char     *pstrtmp;
     size_t ntmp;
-    bool bApp;
+    bool if_app;
 
     //如果App和Key全部为空，则返回所有的Section，用'\0'分隔，最后一个用两个'\0'标识
     if (operate == 1)
@@ -247,7 +247,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
             return size_ret_str;
         }
 
-        bApp = false;
+        if_app = false;
         pstrtmp = return_str;
         ntmp = size_ret_str - 1;
 
@@ -328,7 +328,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
             return size_ret_str;
         }
 
-        bApp = false;
+        if_app = false;
         pstrtmp = return_str;
         ntmp = size_ret_str - 1;
 
@@ -349,7 +349,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
             if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
             {
                 //已经找到下一个Section,没有发现相关的Key，返回查询的所有Key值
-                if (bApp == true)
+                if (if_app == true)
                 {
                     *pstrtmp = '\0';
                     return size_ret_str - ntmp - 2;
@@ -363,7 +363,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
 
                 if (ZCE_OS::strcasecmp(choneline, sec_name) == 0)
                 {
-                    bApp = true;
+                    if_app = true;
                     pstrtmp = return_str;
                     ntmp = size_ret_str - 1;
                     continue;
@@ -371,7 +371,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
             }
 
             //找key
-            if (bApp == true)
+            if (if_app == true)
             {
                 char *str = strstr(choneline, "=");
 
@@ -479,7 +479,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
     //App，Key部不为空，这返回App，Key都匹配的键值
     if (operate == 4)
     {
-        bApp = false;
+        if_app = false;
 
         while (cfgfile)
         {
@@ -497,7 +497,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
             if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
             {
                 //已经找到下一个Section,没有发现相关的Key，返回默认值
-                if (bApp == true)
+                if (if_app == true)
                 {
                     //返回默认值
                     if (default_str == NULL)
@@ -522,12 +522,12 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
                 //
                 if (ZCE_OS::strcasecmp(choneline, sec_name) == 0)
                 {
-                    bApp = true;
+                    if_app = true;
                     continue;
                 }
             }
 
-            if (bApp == true)
+            if (if_app == true)
             {
                 char *str = strstr(choneline, "=");
 
@@ -571,7 +571,7 @@ size_t ZCE_CfgFile_INI_Pt::get_privateprofile_string(
 }
 
 //读取INI文件的谋个字段作为整数返回
-int ZCE_CfgFile_INI_Pt::get_privateprofile_int(
+int ZCE_INI_Pt::get_privateprofile_int(
     const char *sec_name,
     const char *key_name,
     int default_int,
@@ -580,12 +580,12 @@ int ZCE_CfgFile_INI_Pt::get_privateprofile_int(
     const size_t TMP_BUFFER_LEN = 64;
     char default_str[TMP_BUFFER_LEN + 1], return_str[TMP_BUFFER_LEN + 1];
     snprintf(default_str, TMP_BUFFER_LEN, "%d", default_int);
-    ZCE_CfgFile_INI_Pt::get_privateprofile_string(sec_name, key_name, default_str, return_str, 64, file_name);
+    ZCE_INI_Pt::get_privateprofile_string(sec_name, key_name, default_str, return_str, 64, file_name);
     return atoi(return_str);
 }
 
 //写INI文件的谋个字段，
-bool ZCE_CfgFile_INI_Pt::write_privateprofile_string(
+bool ZCE_INI_Pt::write_privateprofile_string(
     const char *sec_name,
     const char *key_name,
     const char *write_string,
@@ -831,7 +831,7 @@ bool ZCE_CfgFile_INI_Pt::write_privateprofile_string(
     return false;
 }
 
-bool ZCE_CfgFile_INI_Pt::write_privateprofile_section(
+bool ZCE_INI_Pt::write_privateprofile_section(
     const char *sec_name,
     const char *write_string,
     const char *file_name)
@@ -842,8 +842,7 @@ bool ZCE_CfgFile_INI_Pt::write_privateprofile_section(
         return false;
     }
 
-    FILE *pfile;
-    pfile = fopen(file_name, "r+t");
+    FILE *pfile = fopen(file_name, "r+t");
 
     //文件打不开，
     if (pfile == NULL)
@@ -852,7 +851,6 @@ bool ZCE_CfgFile_INI_Pt::write_privateprofile_section(
     }
 
     //8*1024,1行的最大值
-
     char choneline[LINE_BUFFER_LEN + 1], line[LINE_BUFFER_LEN + 1], *read_ret = NULL;
 
     //新文件保存数据区

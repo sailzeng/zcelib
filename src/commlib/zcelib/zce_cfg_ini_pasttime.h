@@ -23,16 +23,16 @@
 /*!
 * @brief      INI文件读写的处理，接口都模仿WIndows的API
 */
-class ZCELIB_EXPORT ZCE_CfgFile_INI_Pt
+class ZCELIB_EXPORT ZCE_INI_Pt
 {
 
 public:
 
     ///构造函数,
     ///@param file_name 文件名称
-    ZCE_CfgFile_INI_Pt(const char *file_name);
+    ZCE_INI_Pt(const char *file_name);
     //析构函数
-    ~ZCE_CfgFile_INI_Pt();
+    ~ZCE_INI_Pt();
 
 public:
 
