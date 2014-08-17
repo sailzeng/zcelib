@@ -394,6 +394,9 @@
     <ClInclude Include="zce_server_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_event_reactor_wfmo.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -691,6 +694,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_server_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_event_reactor_wfmo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

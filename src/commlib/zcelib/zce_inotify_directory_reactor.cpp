@@ -124,7 +124,9 @@ int ZCE_INotify_Dir_Reactor::add_watch(ZCE_INotify_Event_Base *event_base,
     //Windows下只能处理MAXIMUM_WAIT_OBJECTS个目录句柄
     if ( watch_ary_size >= MAXIMUM_WAIT_OBJECTS )
     {
-        ZLOG_ERROR("[%s] in Windows ,watch handle number must less than MAXIMUM_WAIT_OBJECTS,please check you code.", __ZCE_FUNCTION__);
+        ZLOG_ERROR("[%s] in Windows ,watch handle number must less than"
+            " MAXIMUM_WAIT_OBJECTS,please check you code.",
+            __ZCE_FUNCTION__);
         return -1;
     }
 
