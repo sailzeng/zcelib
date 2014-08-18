@@ -343,9 +343,6 @@
     <ClInclude Include="zce_event_handle_inotify.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_batch_readfile.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_mml_command.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -394,7 +391,7 @@
     <ClInclude Include="zce_server_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_event_reactor_wfmo.h">
+    <ClInclude Include="zce_readfile_cvs.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -657,9 +654,6 @@
     <ClCompile Include="zce_event_handle_inotify.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_batch_readfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce_mml_command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -696,7 +690,7 @@
     <ClCompile Include="zce_server_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_event_reactor_wfmo.cpp">
+    <ClCompile Include="zce_readfile_cvs.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

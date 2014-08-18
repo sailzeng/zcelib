@@ -178,7 +178,7 @@
     <ClInclude Include="zce_async_fw_base.h" />
     <ClInclude Include="zce_async_fw_coroutine.h" />
     <ClInclude Include="zce_async_fw_fsm.h" />
-    <ClInclude Include="zce_batch_readfile.h" />
+    <ClInclude Include="zce_readfile_cvs.h" />
     <ClInclude Include="zce_boost_any.h" />
     <ClInclude Include="zce_boost_close_assist.h" />
     <ClInclude Include="zce_boost_lord_rings.h" />
@@ -203,7 +203,6 @@
     <ClInclude Include="zce_event_reactor_base.h" />
     <ClInclude Include="zce_event_reactor_epoll.h" />
     <ClInclude Include="zce_event_reactor_select.h" />
-    <ClInclude Include="zce_event_reactor_wfmo.h" />
     <ClInclude Include="zce_fmtstr_format.h" />
     <ClInclude Include="zce_fmtstr_helper.h" />
     <ClInclude Include="zce_fmtstr_snprintf.h" />
@@ -306,7 +305,7 @@
     <ClCompile Include="zce_async_fw_base.cpp" />
     <ClCompile Include="zce_async_fw_coroutine.cpp" />
     <ClCompile Include="zce_async_fw_fsm.cpp" />
-    <ClCompile Include="zce_batch_readfile.cpp" />
+    <ClCompile Include="zce_readfile_cvs.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />
     <ClCompile Include="zce_bus_mmap_pipe.cpp" />
     <ClCompile Include="zce_bus_one_way.cpp" />
@@ -324,7 +323,6 @@
     <ClCompile Include="zce_event_reactor_base.cpp" />
     <ClCompile Include="zce_event_reactor_epoll.cpp" />
     <ClCompile Include="zce_event_reactor_select.cpp" />
-    <ClCompile Include="zce_event_reactor_wfmo.cpp" />
     <ClCompile Include="zce_fmtstr_format.cpp" />
     <ClCompile Include="zce_fmtstr_helper.cpp" />
     <ClCompile Include="zce_inotify_directory_reactor.cpp" />

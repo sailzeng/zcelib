@@ -607,7 +607,6 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
                                                                   active_path);
         }
 
-#if defined ZCE_OS_LINUX
         //下面这些是LINUX自己特有的
         else if ( ne_ptr->mask & IN_ACCESS)
         {
@@ -651,7 +650,6 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
                                                                      node_ptr->watch_path_,
                                                                      active_path);
         }
-#endif
 
         //返回-1，关闭之,
         if (detect_ret == -1)
