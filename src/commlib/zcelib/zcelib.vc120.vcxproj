@@ -202,6 +202,7 @@
     <ClInclude Include="zce_event_reactor_base.h" />
     <ClInclude Include="zce_event_reactor_epoll.h" />
     <ClInclude Include="zce_event_reactor_select.h" />
+    <ClInclude Include="zce_event_reactor_wfmo.h" />
     <ClInclude Include="zce_fmtstr_format.h" />
     <ClInclude Include="zce_fmtstr_helper.h" />
     <ClInclude Include="zce_fmtstr_snprintf.h" />
@@ -322,6 +323,7 @@
     <ClCompile Include="zce_event_reactor_base.cpp" />
     <ClCompile Include="zce_event_reactor_epoll.cpp" />
     <ClCompile Include="zce_event_reactor_select.cpp" />
+    <ClCompile Include="zce_event_reactor_wfmo.cpp" />
     <ClCompile Include="zce_fmtstr_format.cpp" />
     <ClCompile Include="zce_fmtstr_helper.cpp" />
     <ClCompile Include="zce_inotify_directory_reactor.cpp" />

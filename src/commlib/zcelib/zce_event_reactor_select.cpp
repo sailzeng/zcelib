@@ -5,6 +5,11 @@
 #include "zce_trace_log_debug.h"
 #include "zce_event_reactor_select.h"
 
+//WINDOWS的代码自己会在FD_SET这儿有一个告警
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning(disable : 4127)
+#endif
+
 //
 ZCE_Select_Reactor::ZCE_Select_Reactor():
     max_fd_plus_one_(0)
@@ -20,7 +25,6 @@ ZCE_Select_Reactor::ZCE_Select_Reactor(size_t max_event_number):
 
 ZCE_Select_Reactor::~ZCE_Select_Reactor()
 {
-
 }
 
 //初始化
@@ -51,9 +55,6 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
         return ret;
     }
 
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(disable : 4127)
-#endif
 
     //因为这些标志可以一起注册，所以下面的判断是并列的，但是我这儿统一化的处理序列是读，写，异常
 
@@ -83,9 +84,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
         FD_SET(socket_hd, &exception_fd_set_);
     }
 
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(default : 4127)
-#endif
+
 
     //Windows的select对于这个值没有要求,而且啊CE反馈Windows 64位的版本select函数第一个参数必须传递0
 #if defined ZCE_OS_LINUX
@@ -117,10 +116,7 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int even
         return ret;
     }
 
-    //WINDOWS的代码自己会在这儿有一个告警
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(disable : 4127)
-#endif
+
 
     //因为这些标志可以一起注册，所以下面的判断是并列的
     if ( ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
@@ -146,10 +142,6 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int even
     {
         FD_CLR(socket_hd, &exception_fd_set_);
     }
-
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(default : 4127)
-#endif
 
     ret = ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
 
@@ -328,3 +320,8 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
         }
     }
 }
+
+
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning(default : 4127)
+#endif
