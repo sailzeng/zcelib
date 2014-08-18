@@ -161,7 +161,41 @@ int read_file_data(const char *filename, char *buff, size_t buf_len, size_t *rea
 
 
 
+
+
+
+/*!
+* @brief     用于文件处理过程的自动释放
+*            还没有使用，
+*/
+template <class _value_type >
+class close_assist
+{
+public:
+
+    ///构造函得到文件句柄
+    close_assist(const _value_type to_close) :
+        to_close_(to_close)
+    {
+    }
+
+    //利用析构函数关闭文件
+    ~close_assist();
+
+protected:
+
+    ///自动处理的文件句柄
+    _value_type    to_close_;
+
 };
+
+
+
+
+};
+
+
+
 
 #endif //ZCE_LIB_OS_ADAPT_FILE_H_
 

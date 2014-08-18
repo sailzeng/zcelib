@@ -349,9 +349,6 @@
     <ClInclude Include="zce_os_adapt_coroutine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_boost_close_assist.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_async_fw_coroutine.h">
       <Filter>Source Files</Filter>
     </ClInclude>

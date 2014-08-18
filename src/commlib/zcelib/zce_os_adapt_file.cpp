@@ -529,3 +529,14 @@ int ZCE_OS::read_file_data(const char *filename, char *buffer, size_t buf_len, s
     return 0;
 }
 
+template <> ZCE_OS::close_assist<FILE *>::~close_assist()
+{
+    ::fclose(to_close_);
+}
+
+
+
+template <> ZCE_OS::close_assist<ZCE_HANDLE>::~close_assist()
+{
+    ZCE_OS::close(to_close_);
+}
