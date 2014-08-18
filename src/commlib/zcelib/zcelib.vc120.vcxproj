@@ -180,7 +180,6 @@
     <ClInclude Include="zce_async_fw_fsm.h" />
     <ClInclude Include="zce_batch_readfile.h" />
     <ClInclude Include="zce_boost_any.h" />
-    <ClInclude Include="zce_boost_close_assist.h" />
     <ClInclude Include="zce_boost_lord_rings.h" />
     <ClInclude Include="zce_boost_mpl.h" />
     <ClInclude Include="zce_boost_non_copyable.h" />
