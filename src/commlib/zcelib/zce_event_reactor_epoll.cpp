@@ -84,7 +84,7 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
 int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int event_mask)
 {
     int ret = 0;
-    //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,
+    //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
     ret = ZCE_Reactor::register_handler(event_handler, 0);
 
     if (0 != ret)

@@ -34,6 +34,35 @@ int ZCE_WFMO_Reactor::initialize()
 }
 
 
+int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler, int event_mask)
+{
+    int ret = 0;
+    //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
+    ret = ZCE_Reactor::register_handler(event_handler, 0);
+
+    if (0 != ret)
+    {
+        ZLOG_ERROR("[zcelib] %s fail. please check you code .ret =%d", 
+            __ZCE_FUNCTION__,
+            ret);
+        return -1;
+    }
+
+    event_handler->set_mask(event_mask);
+    //如果是SOCKET网络部分
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK)
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK) 
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK)  )
+    {
+
+    }
+
+    return 0;
+}
+
+//进行IO触发操作
 int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event)
 {
     int ret = 0;

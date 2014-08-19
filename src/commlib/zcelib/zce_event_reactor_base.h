@@ -16,6 +16,7 @@
 #define ZCE_LIB_EVENT_REACTOR_BASE_H_
 
 #include "zce_boost_non_copyable.h"
+#include "zce_trace_log_debug.h"
 
 class ZCE_Event_Handler;
 class ZCE_Time_Value;
