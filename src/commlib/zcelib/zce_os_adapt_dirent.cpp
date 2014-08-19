@@ -27,7 +27,7 @@ DIR *ZCE_OS::opendir (const char *dir_name)
     dir_handle->directory_name_[PATH_MAX] = '\0';
 
     //初始化
-    dir_handle->current_handle_ = INVALID_HANDLE_VALUE;
+    dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
     dir_handle->started_reading_ = 0;
     dir_handle->dirent_ = new dirent();
 
@@ -52,12 +52,12 @@ int ZCE_OS::closedir (DIR *dir_handle)
 #if defined (ZCE_OS_WINDOWS)
 
     //关闭句柄,
-    if (dir_handle->current_handle_ != INVALID_HANDLE_VALUE)
+    if (dir_handle->current_handle_ != ZCE_INVALID_HANDLE)
     {
         ::FindClose (dir_handle->current_handle_);
     }
 
-    dir_handle->current_handle_ = INVALID_HANDLE_VALUE;
+    dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
     dir_handle->started_reading_ = 0;
 
     //释放相应的资源
@@ -113,12 +113,12 @@ struct dirent *ZCE_OS::readdir (DIR *dir_handle)
         {
             // Make sure to close the handle explicitly to avoid a leak!
             ::FindClose (dir_handle->current_handle_);
-            dir_handle->current_handle_ = INVALID_HANDLE_VALUE;
+            dir_handle->current_handle_ = ZCE_INVALID_HANDLE;
         }
     }
 
     //如果有文件
-    if (dir_handle->current_handle_ != INVALID_HANDLE_VALUE)
+    if (dir_handle->current_handle_ != ZCE_INVALID_HANDLE)
     {
         ::strncpy (dir_handle->dirent_->d_name, dir_handle->fdata_.cFileName, PATH_MAX);
         dir_handle->dirent_->d_name[PATH_MAX] = '\0';

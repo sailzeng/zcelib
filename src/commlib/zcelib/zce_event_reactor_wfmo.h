@@ -90,11 +90,18 @@ public:
     virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event);
 
 
+
+    static int wfmo_socket_event(ZCE_Event_Handler *event_handler,
+        WSAEVENT &socket_event);
+
 protected:
 
     ///WaitForMultipleObjects等待的目录句柄
     ///为什么要有这个重复的结构，主要是为了方便使用WaitForMultipleObjects的速度
-    ZCE_HANDLE          watch_handle_ary_[MAXIMUM_WAIT_OBJECTS];
+    ZCE_HANDLE     watch_handle_ary_[MAXIMUM_WAIT_OBJECTS];
+
+    ///
+    ZCE_HANDLE     watch_socket_ary_[MAXIMUM_WAIT_OBJECTS];
 };
 
 #endif //ZCE_LIB_EVENT_REACTOR_WFMO_H_

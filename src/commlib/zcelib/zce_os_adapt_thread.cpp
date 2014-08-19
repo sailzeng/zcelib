@@ -210,7 +210,7 @@ int ZCE_OS::pthread_create(ZCE_THREAD_ID *threadid,
                                                     0,
                                                     threadid);
 
-    if ( INVALID_HANDLE_VALUE == thread_handle )
+    if (ZCE_INVALID_HANDLE == thread_handle)
     {
         delete adapt_object;
         return -1;
@@ -368,7 +368,7 @@ int ZCE_OS::pthread_create(ZCE_THREAD_ID *threadid,
                                                     0,
                                                     threadid);
 
-    if ( INVALID_HANDLE_VALUE == thread_handle )
+    if (ZCE_INVALID_HANDLE == thread_handle)
     {
         return -1;
     }

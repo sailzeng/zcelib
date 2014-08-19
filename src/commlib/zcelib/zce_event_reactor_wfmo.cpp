@@ -27,27 +27,28 @@ int ZCE_WFMO_Reactor::initialize()
     //全部处理为无效
     for (size_t i = 0; i < MAXIMUM_WAIT_OBJECTS; ++i)
     {
-        watch_handle_ary_[i] = INVALID_HANDLE_VALUE;
+        watch_handle_ary_[i] = ZCE_INVALID_HANDLE;
+    }
+    for (size_t i = 0; i < MAXIMUM_WAIT_OBJECTS; ++i)
+    {
+        watch_socket_ary_[i] = ZCE_INVALID_HANDLE;
     }
 
     return ZCE_Reactor::initialize(MAXIMUM_WAIT_OBJECTS);
 }
 
 
-int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler, 
+    int event_mask)
 {
     int ret = 0;
     //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
     ret = ZCE_Reactor::register_handler(event_handler, 0);
-
     if (0 != ret)
     {
-        ZLOG_ERROR("[zcelib] %s fail. please check you code .ret =%d", 
-            __ZCE_FUNCTION__,
-            ret);
         return -1;
     }
-
+    size_t watch_size = handler_map_.size();
     event_handler->set_mask(event_mask);
     //如果是SOCKET网络部分
     if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
@@ -56,10 +57,53 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler, int eve
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK) 
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK)  )
     {
+        WSAEVENT socket_event;
+        ret = wfmo_socket_event(event_handler, socket_event);
+        if (0 != ret)
+        {
+            //出错，回滚
+            ret = ZCE_Reactor::remove_handler(event_handler, false);
+            return ret;
+        }
 
+        //WaitForMultipleObjects
+        watch_handle_ary_[watch_size - 1] = socket_event;
+        watch_socket_ary_[watch_size - 1] = event_handler->get_handle();
+    }
+    else if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK))
+    {
+        watch_handle_ary_[watch_size - 1] = event_handler->get_handle();
+    }
+    else
+    {
+        ZCE_ASSERT(false);
+    }
+    return 0;
+}
+
+//从反应器注销一个ZCE_Event_Handler，同时取消他所有的mask
+int ZCE_WFMO_Reactor::remove_handler(ZCE_Event_Handler *event_handler, 
+    bool call_handle_close)
+{
+    
+    size_t watch_size = handler_map_.size();
+    ZCE_HANDLE socket_handle = event_handler->get_handle();
+    //
+    for (size_t i = 0; i < watch_size; ++i)
+    {
+        if (watch_socket_ary_[i] == socket_handle)
+        {
+            watch_socket_ary_[i] = ZCE_INVALID_HANDLE;
+            watch_handle_ary_[i] = ZCE_INVALID_HANDLE;
+
+            watch_socket_ary_[i] = watch_socket_ary_[watch_size - 1];
+            watch_handle_ary_[i] = watch_handle_ary_[watch_size - 1];
+
+            ::WSACloseEvent(watch_handle_ary_[i]);
+        }
     }
 
-    return 0;
+    return ZCE_Reactor::remove_handler(event_handler, call_handle_close);
 }
 
 //进行IO触发操作
@@ -111,5 +155,46 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
     return 0;
 }
 
+int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
+    WSAEVENT &socket_event)
+{
+    int ret = 0;
+    int event_mask = event_handler->get_mask();
 
+    socket_event = ::WSACreateEvent();
+    if (socket_event == WSA_INVALID_EVENT)
+    {
+        return -1;
+    }
+    long wmfo_net_event = 0;
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK))
+    {
+        wmfo_net_event |= FD_READ | FD_CLOSE;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK))
+    {
+        wmfo_net_event |= FD_WRITE;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+    {
+        wmfo_net_event |= FD_CONNECT;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK))
+    {
+        wmfo_net_event |= FD_ACCEPT;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK))
+    {
+        wmfo_net_event |= FD_OOB;
+    }
+    ret = ::WSAEventSelect((SOCKET)event_handler->get_handle(), 
+        socket_event, 
+        wmfo_net_event);
+    if (ret != 0)
+    {
+        return -1;
+    }
+
+    return 0;
+}
 

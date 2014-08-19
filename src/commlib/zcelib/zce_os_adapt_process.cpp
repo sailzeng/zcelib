@@ -305,7 +305,7 @@ int ZCE_OS::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_inf
                                           false,
                                           process_id);
 
-    if ( INVALID_HANDLE_VALUE == process_handle)
+    if (ZCE_INVALID_HANDLE == process_handle)
     {
         ZLOG_ERROR("[zcelib] OpenProcess error, reson is:%u.", ::GetLastError());
         return -1;

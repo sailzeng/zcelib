@@ -61,7 +61,7 @@ int ReadFile_CVS::readfile_cvs()
             readfile_name_.c_str(),
             size_of_file);
     }
-    else
+    else 
     {
         ZLOG_ERROR("[framework] Batch process file read fail[%s].",readfile_name_.c_str());
         return -1;
