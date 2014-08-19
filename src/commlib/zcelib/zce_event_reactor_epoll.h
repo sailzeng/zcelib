@@ -158,7 +158,7 @@ inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZC
     {
         ep_event->events |= EPOLLERR;
     }
-
+    //Connect有成功和失败两种情况
     if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
     {
         ep_event->events |= EPOLLOUT;
@@ -170,6 +170,10 @@ inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZC
         ep_event->events |= EPOLLIN;
     }
 
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK))
+    {
+        ep_event->events |= EPOLLIN;
+    }
     //如果你要边缘触发
     if (edge_triggered_)
     {

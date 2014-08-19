@@ -44,11 +44,11 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
 {
     int ret = 0;
 
-    ZCE_SOCKET socket_hd = event_handler->get_handle();
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET) (event_handler->get_handle());
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
-    ret = find_event_handler(socket_hd, tmp_handler);
+    ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
 
     if (ret != 0)
     {
@@ -59,9 +59,10 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     //因为这些标志可以一起注册，所以下面的判断是并列的，但是我这儿统一化的处理序列是读，写，异常
 
     //注意connect的失败，会触发读写事件，需要注意,我记得好像自己都错过两次了。
-    if ( ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
-         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
-         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK)
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK) )
     {
         FD_SET(socket_hd, &read_fd_set_);
     }
@@ -105,23 +106,22 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int even
 {
     int ret = 0;
 
-    ZCE_SOCKET socket_hd = event_handler->get_handle();
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET)event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
-    ret = find_event_handler(socket_hd, tmp_handler);
+    ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
 
     if (ret != 0)
     {
         return ret;
     }
 
-
-
     //因为这些标志可以一起注册，所以下面的判断是并列的
     if ( ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
          || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
-         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK) 
+         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK) )
     {
         FD_CLR(socket_hd, &read_fd_set_);
     }
@@ -266,18 +266,17 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
         }
 
         ZCE_Event_Handler *event_hdl = NULL;
-        ret =  find_event_handler(socket_handle, event_hdl);
+        ret =  find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
 
         //到这个地方，可能是代码有问题(比如你用了多线程？)，也可能不是，因为一个事件处理后，可能就被关闭了？
         if (0 != ret)
         {
-            ZCE_LOGMSG(RS_INFO, "[zcelib] process_ready find_event_handler fail,maybe one handle is close previous.");
             return;
         }
 
         //根据不同的事件进行调动，触发
 
-        //READ和ACCEPT事件都调用handle_input，ACCEPT_MASK,不写的原因是，这个函数是我内部调用的，我只用了3个参数
+        //READ和ACCEPT事件都调用handle_input，ACCEPT_MASK,INOTIFY_MASK,不写的原因是，这个函数是我内部调用的，我只用了3个参数
         if (proc_mask == ZCE_Event_Handler::READ_MASK)
         {
             hdl_ret = event_hdl->handle_input();
@@ -308,6 +307,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
 #endif
 
         }
+
         else
         {
             ZCE_ASSERT(false);

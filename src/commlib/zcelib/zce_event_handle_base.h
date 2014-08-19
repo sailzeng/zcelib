@@ -29,16 +29,21 @@ public:
     enum EVENT_MASK
     {
         NULL_MASK    = 0,
-        ///读取事件，但句柄变为可读是，调用handle_input
+
+
+        ///SOCKET读取事件，但句柄变为可读是，调用handle_input
         READ_MASK    = (1 << 1),
-        ///写事件，当句柄变为可写是，handle_output
+        ///SOCKET写事件，当句柄变为可写是，handle_output
         WRITE_MASK   = (1 << 2),
-        ///异常事件，触发后调用handle_exception
+        ///SOCKET异常事件，触发后调用handle_exception
         EXCEPT_MASK  = (1 << 3),
-        ///异步CONNECT成功后，调用handle_output，异步CONNECT失败后，调用handle_input，
+        ///SOCKET异步CONNECT成功后，调用handle_output，异步CONNECT失败后，调用handle_input，(多系统差异会统一)
         CONNECT_MASK = (1 << 4),
-        ///ACCEPT事件，当一个ACCEPT端口可以链接后，调用handle_input，
+        ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用handle_input，
         ACCEPT_MASK  = (1 << 5),
+
+        ///iNotify通知事件，文件系统的改变通知,调用handle_input，
+        INOTIFY_MASK = (1 << 6),
     };
 
 public:
@@ -60,10 +65,10 @@ public:
 public:
 
     /*!
-    * @brief      取回对应的ZCE_SOCKET 句柄
-    * @return     ZCE_SOCKET ZCE_Event_Handler 对应的ZCE_SOCKET 句柄
+    * @brief      取回对应的ZCE_HANDLE 句柄
+    * @return     ZCE_HANDLE ZCE_Event_Handler 对应的ZCE_HANDLE 句柄
     */
-    virtual ZCE_SOCKET get_handle (void) const = 0;
+    virtual ZCE_HANDLE get_handle (void) const = 0;
 
     /*!
     * @brief      读取事件触发调用函数，用于读取数据，accept成功，（connect失败）处理，

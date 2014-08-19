@@ -25,24 +25,7 @@
 //    }
 //}
 
-/************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation:
-Function        :
-Return          : void
-Parameter List  :
-  Param1: char* buffer
-  Param2: size_t max_len
-  Param3: size_t& use_len
-  Param4: const double& fvalue
-  Param5: size_t width
-  Param6: size_t precision
-  Param7: int flags
-Description     :
-Calls           :
-Called By       :
-Other           : 注意这个函数末尾不添加\0
-Modify Record   :
-************************************************************************************************************/
+//格式化double
 void ZCE_LIB::fmt_double(char *buffer,
                          size_t max_len,
                          size_t &use_len,

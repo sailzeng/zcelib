@@ -39,8 +39,7 @@ size_t ZCE_Reactor::max_size()
 int ZCE_Reactor::initialize(size_t max_event_number)
 {
     max_event_number_ = max_event_number;
-    //这个函数只有STLPort的标准STL有，微软没有
-    handler_map_.rehash(max_event_number_);
+    handler_map_.rehash(max_event_number_+16);
 
     return 0;
 }
@@ -82,7 +81,7 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         return -1;
     }
 
-    ZCE_SOCKET socket_hd = event_handler->get_handle();
+    ZCE_HANDLE socket_hd = event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
@@ -111,7 +110,7 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
 {
     int ret = 0;
 
-    ZCE_SOCKET socket_hd = event_handler->get_handle();
+    ZCE_HANDLE socket_hd = event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用handle_close

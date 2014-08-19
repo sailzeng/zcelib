@@ -335,12 +335,11 @@ int ZCE_INotify_Dir_Reactor::watch_event(ZCE_Time_Value *time_out, size_t *watch
 #if defined (ZCE_OS_WINDOWS)
 
     DWORD wait_msec = static_cast<DWORD>( time_out->total_msec());
-    wait_msec = 0;
     DWORD watch_ary_size = static_cast<DWORD>(watch_event_map_.size());
     DWORD wait_status = WaitForMultipleObjects(watch_ary_size,
                                                watch_handle_ary_,
                                                FALSE,
-                                               INFINITE);
+                                               wait_msec);
 
     if ( wait_status == WAIT_FAILED )
     {

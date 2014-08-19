@@ -30,7 +30,7 @@ class ZCE_Reactor : public ZCE_NON_Copyable
 protected:
 
     ///使用hansh map保存句柄到ZCE_Event_Handler的MAP ，力求最高的性能
-    typedef unordered_map<ZCE_SOCKET, ZCE_Event_Handler *>  MAP_OF_HANDLER_TO_EVENT;
+    typedef unordered_map<ZCE_HANDLE, ZCE_Event_Handler *>  MAP_OF_HANDLER_TO_EVENT;
 
 protected:
 
@@ -131,10 +131,10 @@ protected:
     /*!
     * @brief      通过句柄查询event handler，如果存在返回0
     * @return     int           返回值
-    * @param[in]  socket_handle 查询的SOCKET句柄
+    * @param[in]  socket_handle 查询的ZCE_HANDLE句柄
     * @param[out] event_handler 查询得到的句柄对应的ZCE_Event_Handler指针
     */
-    inline int find_event_handler(ZCE_SOCKET socket_handle, ZCE_Event_Handler *&event_handler);
+    inline int find_event_handler(ZCE_HANDLE handle, ZCE_Event_Handler *&event_handler);
 
 public:
 
@@ -166,7 +166,7 @@ protected:
 //查询一个event handler是否注册了，如果存在返回0
 inline int ZCE_Reactor::exist_event_handler(ZCE_Event_Handler *event_handler)
 {
-    ZCE_SOCKET socket_hd = event_handler->get_handle();
+    ZCE_HANDLE socket_hd = event_handler->get_handle();
 
     MAP_OF_HANDLER_TO_EVENT::iterator iter_temp =  handler_map_.find(socket_hd);
 
@@ -180,13 +180,18 @@ inline int ZCE_Reactor::exist_event_handler(ZCE_Event_Handler *event_handler)
 }
 
 //通过句柄查询event handler，如果存在返回0
-inline int ZCE_Reactor::find_event_handler(ZCE_SOCKET socket_handle, ZCE_Event_Handler *&event_handler)
+inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle, 
+    ZCE_Event_Handler *&event_handler)
 {
-    MAP_OF_HANDLER_TO_EVENT::iterator iter_temp =  handler_map_.find(socket_handle);
+    MAP_OF_HANDLER_TO_EVENT::iterator iter_temp = handler_map_.find(handle);
 
     //已经有一个HANDLE了
     if (iter_temp == handler_map_.end())
     {
+        ZCE_LOGMSG(RS_INFO, "[zcelib] %s fail find handle [%lu],maybe one handle is close previous.",
+            __ZCE_FUNCTION__,
+            handle
+            );
         return -1;
     }
 
