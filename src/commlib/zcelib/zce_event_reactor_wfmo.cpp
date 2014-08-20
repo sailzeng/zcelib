@@ -49,7 +49,7 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         return -1;
     }
     size_t watch_size = handler_map_.size();
-    event_handler->set_mask(event_mask);
+    
     //如果是SOCKET网络部分
     if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
@@ -57,7 +57,15 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK) 
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK)  )
     {
-        WSAEVENT socket_event;
+        WSAEVENT socket_event = ::WSACreateEvent();
+        if (socket_event == WSA_INVALID_EVENT)
+        {
+            ZCE_LOGMSG(RS_ERROR, "WSACreateEvent return event fail.last error [%d|%s]",
+                ZCE_OS::last_error(),
+                strerror(ZCE_OS::last_error())
+                );
+            return -1;
+        }
         ret = wfmo_socket_event(event_handler, socket_event);
         if (0 != ret)
         {
@@ -70,14 +78,15 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         watch_handle_ary_[watch_size - 1] = socket_event;
         watch_socket_ary_[watch_size - 1] = event_handler->get_handle();
     }
-    else if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK))
+
+    //
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK))
     {
         watch_handle_ary_[watch_size - 1] = event_handler->get_handle();
     }
-    else
-    {
-        ZCE_ASSERT(false);
-    }
+
+    event_handler->set_mask(event_mask);
+
     return 0;
 }
 
@@ -104,6 +113,103 @@ int ZCE_WFMO_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
     }
 
     return ZCE_Reactor::remove_handler(event_handler, call_handle_close);
+}
+
+
+//
+int ZCE_WFMO_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, 
+    int event_mask)
+{
+    int ret = 0;
+    size_t watch_size = handler_map_.size();
+    ZCE_HANDLE socket_handle = event_handler->get_handle();
+    //
+    for (size_t i = 0; i < watch_size; ++i)
+    {
+        if (watch_socket_ary_[i] == socket_handle)
+        {
+            //注意，让如的是关联的event，也就是watch_handle_ary_[i]
+            ret = wfmo_socket_event(event_handler, watch_handle_ary_[i]);
+            if (0 != ret)
+            {
+                return ret;
+            }
+            break;
+        }
+    }
+
+    return ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
+}
+
+
+//
+int ZCE_WFMO_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,
+    int event_mask)
+{
+    int ret = 0;
+    size_t watch_size = handler_map_.size();
+    ZCE_HANDLE socket_handle = event_handler->get_handle();
+    //
+    for (size_t i = 0; i < watch_size; ++i)
+    {
+        if (watch_socket_ary_[i] == socket_handle)
+        {
+            //注意，让如的是关联的event，也就是watch_handle_ary_[i]
+            ret = wfmo_socket_event(event_handler, watch_handle_ary_[i]);
+            if (0 != ret)
+            {
+                return ret;
+            }
+            break;
+        }
+    }
+
+    return ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
+}
+
+int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
+    WSAEVENT socket_event)
+{
+    int ret = 0;
+    int event_mask = event_handler->get_mask();
+
+
+    long wmfo_net_event = 0;
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK))
+    {
+        wmfo_net_event |= FD_READ | FD_CLOSE;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK))
+    {
+        wmfo_net_event |= FD_WRITE;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+    {
+        wmfo_net_event |= FD_CONNECT;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK))
+    {
+        wmfo_net_event |= FD_ACCEPT;
+    }
+    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK))
+    {
+        wmfo_net_event |= FD_OOB;
+    }
+    ret = ::WSAEventSelect((SOCKET)event_handler->get_handle(), 
+        socket_event, 
+        wmfo_net_event);
+    if (ret != 0)
+    {
+        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]WSAEventSelect return [%d] fail.last error [%d|%s]",
+            __ZCE_FUNCTION__,
+            ret,
+            ZCE_OS::last_error(),
+            strerror(ZCE_OS::last_error())
+            );
+        return -1;
+    }
+
+    return 0;
 }
 
 //进行IO触发操作
@@ -154,47 +260,3 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
 
     return 0;
 }
-
-int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
-    WSAEVENT &socket_event)
-{
-    int ret = 0;
-    int event_mask = event_handler->get_mask();
-
-    socket_event = ::WSACreateEvent();
-    if (socket_event == WSA_INVALID_EVENT)
-    {
-        return -1;
-    }
-    long wmfo_net_event = 0;
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK))
-    {
-        wmfo_net_event |= FD_READ | FD_CLOSE;
-    }
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK))
-    {
-        wmfo_net_event |= FD_WRITE;
-    }
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
-    {
-        wmfo_net_event |= FD_CONNECT;
-    }
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK))
-    {
-        wmfo_net_event |= FD_ACCEPT;
-    }
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK))
-    {
-        wmfo_net_event |= FD_OOB;
-    }
-    ret = ::WSAEventSelect((SOCKET)event_handler->get_handle(), 
-        socket_event, 
-        wmfo_net_event);
-    if (ret != 0)
-    {
-        return -1;
-    }
-
-    return 0;
-}
-

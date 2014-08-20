@@ -92,7 +92,7 @@ public:
 
 
     static int wfmo_socket_event(ZCE_Event_Handler *event_handler,
-        WSAEVENT &socket_event);
+        WSAEVENT socket_event);
 
 protected:
 
