@@ -4,7 +4,8 @@
 
 class HTTP_Net_Client
 {
-
+    HTTP_Net_Client();
+    ~HTTP_Net_Client();
 };
 
 

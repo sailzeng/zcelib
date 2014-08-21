@@ -12,6 +12,11 @@
 ZCE_WFMO_Reactor::ZCE_WFMO_Reactor()
 {
     initialize();
+
+#if defined ZCE_OS_LINUX
+    ZCE_ASSERT(false);
+#endif
+
 }
 
 ZCE_WFMO_Reactor::~ZCE_WFMO_Reactor()

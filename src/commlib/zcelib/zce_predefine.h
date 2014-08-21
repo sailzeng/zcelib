@@ -75,8 +75,10 @@
 
 #endif
 
-#if  ( defined (ZCE_WIN64) || defined(ZCE_LINUX64) || defined(__x86_64__) || defined(__x86_64) || defined(__amd64__)  \
-  || defined(__amd64) || defined(__ppc64__) || defined(_WIN64) || defined(__LP64__) || defined(_LP64) || defined(__ia64__) )
+#if  ( defined (ZCE_WIN64) || defined(ZCE_LINUX64)  \
+  || defined(__x86_64__)|| defined(__x86_64) || defined(__amd64__)  \
+  || defined(__amd64) || defined(__ppc64__) || defined(_WIN64) \
+  || defined(__LP64__) || defined(_LP64) || defined(__ia64__) )
 #  define ZCE_OS64 1
 #else
 #  define ZCE_OS32 1
