@@ -112,15 +112,18 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
 {
     int ret = 0;
 
-    ZCE_HANDLE socket_hd = event_handler->get_handle();
+    ZCE_HANDLE ev_hd = event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用handle_close
-    ret = find_event_handler(socket_hd, tmp_handler);
+    ret = find_event_handler(ev_hd, tmp_handler);
 
     if (ret != 0)
     {
         // 未找到
+        ZCE_LOGMSG(RS_INFO, "[zcelib][%s] find handle [%lu] fail. my be reclose ?",
+            __ZCE_FUNCTION__,
+            ev_hd);
         return -1;
     }
 
@@ -149,9 +152,9 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
 }
 
 //
-int ZCE_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
 {
-    event_handler->disable_mask(event_mask);
+    event_handler->disable_mask(cancel_mask);
     return 0;
 }
 

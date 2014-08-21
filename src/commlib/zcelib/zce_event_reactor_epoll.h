@@ -83,9 +83,9 @@ public:
     * @brief      取消某些mask标志，，
     * @return     int           返回0表示成功，其他表示失败
     * @param[in]  event_handler 操作的句柄
-    * @param[in]  event_mask    要取消的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
+    * @param[in]  cancel_mask   要取消的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     * */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int event_mask);
+    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask);
 
     /*!
     * @brief      打开某些mask标志，

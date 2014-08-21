@@ -1,5 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_time_value.h"
+#include "zce_os_adapt_predefine.h"
 #include "zce_socket_addr_base.h"
 #include "zce_socket_base.h"
 #include "zce_socket_stream.h"

@@ -37,13 +37,14 @@ public:
         WRITE_MASK   = (1 << 2),
         ///SOCKET异常事件，触发后调用handle_exception
         EXCEPT_MASK  = (1 << 3),
-        ///SOCKET异步CONNECT成功后，调用handle_output，异步CONNECT失败后，调用handle_input，(多系统差异会统一)
+        ///SOCKET异步CONNECT成功后，调用handle_output，异步CONNECT失败后，
+        ///会调用handle_input，(多系统差异会统一)
         CONNECT_MASK = (1 << 4),
         ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用handle_input，
         ACCEPT_MASK  = (1 << 5),
 
         ///iNotify通知事件，文件系统的改变通知,调用handle_input，
-        INOTIFY_MASK = (1 << 6),
+        INOTIFY_MASK = (1 << 9),
     };
 
 public:
@@ -73,6 +74,9 @@ public:
     /*!
     * @brief      读取事件触发调用函数，用于读取数据，accept成功，（connect失败）处理，
     * @return     int 返回0表示句柄处理正常，return -1后，反应器会主动handle_close，帮助结束句柄
+    * @note       return -1 后反应器帮助主动调用handle_close这个特性，其实我持保留意见，因为其实
+    *             可以直接调用handle_close，而这两种方式并不兼容，而且直接调用可能更加清晰一下，我个
+    *             不建议使用这个特性，保留其主要是为了和ACE兼容
     */
     virtual int handle_input ();
 

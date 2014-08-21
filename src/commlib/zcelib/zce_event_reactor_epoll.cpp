@@ -158,11 +158,11 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
 }
 
 //取消某些mask标志，，
-int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
 {
     int ret = 0;
 
-    ret = ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
+    ret = ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
 
     //其实ZCE_Reactor::cancel_wakeup不可能失败,
     if (0 != ret)
@@ -183,7 +183,7 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int event
     if (0 != ret)
     {
         //回滚不改动标志位
-        ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
+        ZCE_Reactor::schedule_wakeup(event_handler, cancel_mask);
         ZLOG_ERROR("[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                    __ZCE_FUNCTION__,
                    ret,

@@ -102,7 +102,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
 }
 
 //取消某些mask标志，，
-int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
 {
     int ret = 0;
 
@@ -118,32 +118,32 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int even
     }
 
     //因为这些标志可以一起注册，所以下面的判断是并列的
-    if ( ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
-         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
-         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK) 
-         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK) )
+    if (ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::READ_MASK)
+        || ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::ACCEPT_MASK)
+        || ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::CONNECT_MASK)
+        || ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::INOTIFY_MASK))
     {
         FD_CLR(socket_hd, &read_fd_set_);
     }
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK)
-        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+    if (ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::WRITE_MASK)
+        || ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::CONNECT_MASK))
     {
         FD_CLR(socket_hd, &write_fd_set_);
     }
 
 #if defined (ZCE_OS_WINDOWS)
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK)
-        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+    if (ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::EXCEPT_MASK)
+        || ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::CONNECT_MASK))
 #elif defined (ZCE_OS_LINUX)
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK))
+    if (ZCE_BIT_IS_SET(cancel_mask, ZCE_Event_Handler::EXCEPT_MASK))
 #endif
     {
         FD_CLR(socket_hd, &exception_fd_set_);
     }
 
-    ret = ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
+    ret = ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
 
     if (0 != ret )
     {

@@ -64,9 +64,9 @@ public:
     * @brief      取消某些mask标志，
     * @return     int            返回0表示成功，否则失败
     * @param      event_handler  操作的句柄
-    * @param      event_mask     要取消的MASK值
+    * @param      cancel_mask    要取消的MASK值
     */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int event_mask);
+    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask);
 
 
     /*!

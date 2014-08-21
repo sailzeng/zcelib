@@ -100,15 +100,15 @@ public:
     * @brief      取消某些mask标志，
     * @return     int           0表示成功，否则失败
     * @param[in]  event_handler 处理的句柄
-    * @param[in]  event_mask    句柄
+    * @param[in]  cancel_mask   取消的事件mask标志
     */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int event_mask) = 0;
+    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) = 0;
 
     /*!
     * @brief      打开某些mask标志，
     * @return     virtual int
-    * @param[in]  event_handler
-    * @param[in]  event_mask
+    * @param[in]  event_handler 处理的句柄
+    * @param[in]  event_mask    设置的事件mask标志
     */
     virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) = 0;
 
@@ -189,6 +189,7 @@ inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle,
     //已经有一个HANDLE了
     if (iter_temp == handler_map_.end())
     {
+        event_handler = NULL;
         ZCE_LOGMSG(RS_INFO, "[zcelib] %s fail find handle [%lu],maybe one handle is close previous.",
             __ZCE_FUNCTION__,
             handle

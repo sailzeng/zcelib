@@ -386,7 +386,7 @@ struct DIR
 typedef SOCKET ZCE_SOCKET;
 
 #if !defined (ZCE_INVALID_SOCKET)
-# define ZCE_INVALID_SOCKET INVALID_SOCKET
+# define ZCE_INVALID_SOCKET  INVALID_SOCKET
 #endif
 
 #ifndef ZCE_DEFAULT_BACKLOG
@@ -781,6 +781,11 @@ struct shmid_ds
 
 //================================================================================================
 #elif defined (ZCE_OS_LINUX)
+
+//为了兼容Windows部分代码的宏，
+#if !defined MAXIMUM_WAIT_OBJECTS
+# define MAXIMUM_WAIT_OBJECTS 64
+#endif
 
 #if !defined (ZCE_DEFAULT_FILE_PERMS)
 #define ZCE_DEFAULT_FILE_PERMS  (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)

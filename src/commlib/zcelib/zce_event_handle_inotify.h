@@ -22,7 +22,7 @@
 #define ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 
 //此代码只能在LINUX环境下跑
-#if defined ZCE_OS_LINUX
+
 
 #include "zce_event_handle_base.h"
 
@@ -71,9 +71,13 @@ public:
     @brief      取回对应的ZCE_SOCKET 句柄
     @return     int ZCE_Event_INotify 对应的句柄，注意LINUX下句柄和ZCE_SOCKET都是int
     */
-    virtual int get_handle (void) const
+    virtual ZCE_HANDLE get_handle (void) const
     {
+#if defined ZCE_OS_LINUX
         return inotify_handle_;
+#else if defined ZCE_OS_WINDOWS
+        return watch_handle_;
+#endif
     }
 
 
@@ -83,16 +87,18 @@ public:
     @param[in]  pathname      监控的路径
     @param[in]  mask          监控的选项
     @param[out] watch_handle  返回的监控对应的句柄
+    @param[in]  watch_sub_dir 是否监控子目录，此参数只在Windows下有用，
     */
     int add_watch(const char *pathname,
-                  uint32_t mask,
-                  ZCE_HANDLE *watch_handle);
+        uint32_t mask,
+        ZCE_HANDLE *watch_handle,
+        bool watch_sub_dir = false);
 
 
     /*!
     @brief      通过文件句柄，移除一个要监控的项目，
     @return     int          返回0表示成功，返回-1表示失败
-    @param[in]  watch_handle 监控目录的文件句柄
+    @param[in]  watch_handle 监控目录的文件句柄,Windwos 下这个参数无效
     */
     int rm_watch(ZCE_HANDLE watch_handle);
 
@@ -122,7 +128,7 @@ protected:
     @param[in]  watch_path   监控的路径
     @param[in]  active_path  发生动作，行为的文件或者目录的路径
     */
-    virtual int inotify_create(int watch_handle,
+    virtual int inotify_create(ZCE_HANDLE watch_handle,
                                uint32_t watch_mask,
                                const char *watch_path,
                                const char *active_path)
@@ -135,7 +141,7 @@ protected:
     }
 
     ///监测到有删除文件或者目录,对应掩码IN_DELETE，参数说明参考@fun inotify_create
-    virtual int inotify_delete(int /*watch_handle*/,
+    virtual int inotify_delete(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
                                const char * /*active_path*/)
@@ -144,7 +150,7 @@ protected:
     }
 
     ///监测到有文件被修改,对应掩码IN_MODIFY，参数说明参考@fun inotify_create
-    virtual int inotify_modify(int /*watch_handle*/,
+    virtual int inotify_modify(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
                                const char * /*active_path*/)
@@ -153,7 +159,7 @@ protected:
     }
 
     ///监控文件从某个目录移动出去，IN_MOVED_FROM,参数说明参考@fun inotify_create
-    virtual int inotify_moved_from(int /*watch_handle*/,
+    virtual int inotify_moved_from(ZCE_HANDLE /*watch_handle*/,
                                    uint32_t /*watch_mask*/,
                                    const char * /*watch_path*/,
                                    const char * /*active_path*/)
@@ -163,7 +169,7 @@ protected:
 
     ///监控文件移动到某个目录，IN_MOVED_TO,(我自己测试只有在监控目录下移动才会发生这个事件),
     ///参数说明参考@fun inotify_create
-    virtual int inotify_moved_to(int /*watch_handle*/,
+    virtual int inotify_moved_to(ZCE_HANDLE /*watch_handle*/,
                                  uint32_t /*watch_mask*/,
                                  const char * /*watch_path*/,
                                  const char * /*active_path*/)
@@ -172,7 +178,7 @@ protected:
     }
 
     ///发生监控目录下文件被访问时被回调，IN_ACCESS,参数说明参考@fun inotify_create
-    virtual int inotify_access(int /*watch_handle*/,
+    virtual int inotify_access(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
                                const char * /*active_path*/)
@@ -181,7 +187,7 @@ protected:
     }
 
     ///发生监控目录下文件被打开时被回调，IN_OPEN,参数说明参考@fun inotify_create
-    virtual int inotify_open(int /*watch_handle*/,
+    virtual int inotify_open(ZCE_HANDLE /*watch_handle*/,
                              uint32_t /*watch_mask*/,
                              const char * /*watch_path*/,
                              const char * /*active_path*/)
@@ -191,7 +197,7 @@ protected:
 
     ///发生监控目录下文件被关闭事件时被回调，IN_CLOSE_WRITE,IN_CLOSE_NOWRITE,
     ///参数说明参考@fun inotify_create
-    virtual int inotify_close(int /*watch_handle*/,
+    virtual int inotify_close(ZCE_HANDLE /*watch_handle*/,
                               uint32_t /*watch_mask*/,
                               const char * /*watch_path*/,
                               const char * /*active_path*/)
@@ -202,7 +208,7 @@ protected:
     ///发生目录下有文件或者目录属性被修改事件时被回调，IN_ATTRIB， permissions, timestamps,
     ///extended attributes, link count (since Linux 2.6.25), UID, GID,
     ///参数说明参考@fun inotify_create
-    virtual int inotify_attrib(int /*watch_handle*/,
+    virtual int inotify_attrib(ZCE_HANDLE /*watch_handle*/,
                                uint32_t /*watch_mask*/,
                                const char * /*watch_path*/,
                                const char * /*active_path*/)
@@ -211,7 +217,7 @@ protected:
     }
 
     ///发生监控的目录被移动时被回调，IN_MOVE_SELF,参数说明参考@fun inotify_create
-    virtual int inotify_move_slef(int /*watch_handle*/,
+    virtual int inotify_move_slef(ZCE_HANDLE /*watch_handle*/,
                                   uint32_t /*watch_mask*/,
                                   const char * /*watch_path*/,
                                   const char * /*active_path*/)
@@ -220,7 +226,7 @@ protected:
     }
 
     ///发生监控的目录被删除时被回调，IN_DELETE_SELF,参数说明参考@fun inotify_create
-    virtual int inotify_delete_slef(int /*watch_handle*/,
+    virtual int inotify_delete_slef(ZCE_HANDLE /*watch_handle*/,
                                     uint32_t /*watch_mask*/,
                                     const char * /*watch_path*/,
                                     const char * /*active_path*/)
@@ -253,8 +259,6 @@ protected:
 
     };
 
-
-
 protected:
 
     ///BUFFER的长度
@@ -262,6 +266,7 @@ protected:
 
 protected:
 
+#if defined ZCE_OS_LINUX
     ///EINN是Event，Inotify Node的缩写
     typedef unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
     ///反应器管理的目录节点信息的MAP,
@@ -269,14 +274,29 @@ protected:
 
     ///inotify_init 初始化得到的句柄
     int                inotify_handle_;
+    
 
-    ///
+#elif defined ZCE_OS_WINDOWS
+
+    ///监控的句柄
+    ZCE_HANDLE        watch_handle_;
+    ///监视的文件路径
+    char              watch_path_[MAX_PATH];
+    ///监控项的掩码
+    uint32_t          watch_mask_;
+    ///over lapped 使用的对象
+    OVERLAPPED        over_lapped_;
+    ///是否监控子目录
+    BOOL              watch_sub_dir_;
+#endif
+
+    ///读取的Buffer，
     char              *read_buffer_;
 
 
-};
 
-#endif //#if defined ZCE_OS_LINUX
+
+};
 
 
 #endif //ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
