@@ -1,5 +1,5 @@
 #include "soar_predefine.h"
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 
 /****************************************************************************************************
 class SERVICES_ID 服务信息,
@@ -58,7 +58,7 @@ bool SERVICES_ID::operator <(const SERVICES_ID &others) const
 /******************************************************************************************
 struct SERVICES_IP_INFO 服务ID信息 + IP信息
 ******************************************************************************************/
-SERVICES_IP_INFO::SERVICES_IP_INFO():
+SERVICES_INFO::SERVICES_INFO():
     ip_addr_(0),
     port_(0),
     idc_no_(0),
@@ -67,7 +67,7 @@ SERVICES_IP_INFO::SERVICES_IP_INFO():
     cfg_info_[0] = '\0';
 }
 
-SERVICES_IP_INFO::~SERVICES_IP_INFO()
+SERVICES_INFO::~SERVICES_INFO()
 {
 }
 

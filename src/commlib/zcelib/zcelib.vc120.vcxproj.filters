@@ -85,12 +85,6 @@
     <ClInclude Include="zce_id_to_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_inotify_directory_reactor.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_inotify_event_base.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_lock_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -445,12 +439,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_fmtstr_helper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_inotify_directory_reactor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_inotify_event_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_lock_base.cpp">

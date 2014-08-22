@@ -1,5 +1,5 @@
 #include "soar_predefine.h"
-#include "soar_service_peer.h"
+#include "soar_ogre_svc_peer.h"
 
 /****************************************************************************************************
 class  Socket_Peer_Info 　服务信息,为了同时表示IP+端口的模式采用了UNION方式

@@ -73,8 +73,6 @@
 #include <zce_bytes_compress.h>
 
 
-#include <zce_inotify_directory_reactor.h>
-#include <zce_inotify_event_base.h>
 #include <zce_event_handle_base.h>
 #include <zce_event_handle_inotify.h>
 #include <zce_event_reactor_select.h>

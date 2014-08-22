@@ -1,6 +1,6 @@
 #include "soar_predefine.h"
 #include "soar_error_code.h"
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 #include "soar_frame_command.h"
 #include "soar_zerg_frame.h"
 #include "soar_zerg_sndrcv_zulu.h"

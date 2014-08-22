@@ -1,6 +1,6 @@
 #include "soar_predefine.h"
 #include "soar_error_code.h"
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 #include "soar_server_ver_define.h"
 #include "soar_svrd_application.h"
 #include "soar_svrd_config.h"

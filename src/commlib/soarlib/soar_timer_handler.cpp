@@ -1,10 +1,3 @@
-/// @file       soar_timer_handler.cpp
-/// @date       2012/08/13 10:24
-///
-/// @author     yunfeiyang
-///
-/// @brief      框架定时器处理类
-///
 
 #include "soar_predefine.h"
 #include "soar_timer_handler.h"
@@ -85,16 +78,24 @@ Comm_Timer_Handler::report_status()
         {
             // 上报监控数据
             stat_monitor_->set_by_statid(COMM_STAT_SYS_CPU_RATIO,
-                game_id_, classify_id_, svrd_app_->get_sys_cpu_ratio());
+                game_id_, 
+                classify_id_,
+                svrd_app_->system_cpu_ratio_);
 
             stat_monitor_->set_by_statid(COMM_STAT_PROCESS_CPU_RATIO,
-                game_id_, classify_id_, svrd_app_->get_app_cpu_ratio());
+                game_id_, 
+                classify_id_, 
+                svrd_app_->process_cpu_ratio_);
 
             stat_monitor_->set_by_statid(COMM_STAT_SYS_MEM_USE_RATIO,
-                game_id_, classify_id_, svrd_app_->get_sys_mem_ratio());
+                game_id_, 
+                classify_id_,
+                svrd_app_->mem_use_ratio_);
 
             stat_monitor_->set_by_statid(COMM_STAT_AVAILABLE_MEM_SIZE,
-                game_id_, classify_id_, svrd_app_->get_can_use_mem_size());
+                game_id_, 
+                classify_id_, 
+                svrd_app_->can_use_size_);
 
         }
     }

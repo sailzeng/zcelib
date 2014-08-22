@@ -108,7 +108,11 @@ int ZCE_WFMO_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
         if (watch_socket_ary_[i] == socket_handle)
         {
             
-            ::WSACloseEvent(watch_handle_ary_[i]);
+            if ( ZCE_INVALID_HANDLE != watch_handle_ary_[i])
+            {
+                ::WSACloseEvent(watch_handle_ary_[i]);
+            }
+            
 
             //将最后一个数组成员移动到这个地方
             watch_socket_ary_[i] = watch_socket_ary_[watch_size - 1];
@@ -234,8 +238,8 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
     *size_event = 0;
 
     DWORD wait_msec = static_cast<DWORD>(time_out->total_msec());
-    wait_msec = 0;
     DWORD watch_ary_size = static_cast<DWORD>(handler_map_.size());
+
     DWORD wait_status = WaitForMultipleObjects(watch_ary_size,
         watch_handle_ary_,
         FALSE,
@@ -260,11 +264,25 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
     size_t activate_id = wait_status - WAIT_OBJECT_0;
 
     ZCE_Event_Handler *event_hdl = NULL;
-    //注意这儿用的是watch_socket_ary_
-    ret = find_event_handler((ZCE_HANDLE)watch_socket_ary_[activate_id], 
-        event_hdl);
+    
+    //因为Socket 的事件处理，放入的反应器的是事件句柄，但在event handle内部是socket句柄，而
+    //保存event handle的 map是用socket句柄做得key，所以有如下的代码
+    if (ZCE_INVALID_SOCKET != watch_socket_ary_[activate_id])
+    {
+        ret = find_event_handler((ZCE_HANDLE)watch_socket_ary_[activate_id],
+            event_hdl);
+    }
+    else
+    {
+        ret = find_event_handler((ZCE_HANDLE)watch_handle_ary_[activate_id],
+            event_hdl);
+    }
+        
     if (0 != ret)
     {
+        ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
+            __ZCE_FUNCTION__,
+            watch_socket_ary_[activate_id]);
         return -1;
     }
 

@@ -18,7 +18,7 @@
 #include "soar_predefine.h"
 #include "soar_svrd_application.h"
 #include "soar_zerg_mmappipe.h"
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 #include "soar_svrd_config.h"
 #include "soar_stat_define.h"
 #include "soar_stat_monitor.h"

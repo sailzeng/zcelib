@@ -3,18 +3,68 @@
 * @filename   zce_event_handle_inotify.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013年9月22日
+* @date       2013年4月1日
 *
-* @brief      一个用于在Linux下处理Inotify的事件句柄基类，
+* @brief      一个用于在Linux，Windows，Inotify的事件句柄基类，监控目录下的文件变化的封装，
 *             可以监听多个目录的反映，用于监控文件系统的变化。
 *             这个类的目的是和Reactor类兼容，而且更加自然
-*             如果你希望跨平台，ZCE_INotify_Dir_Reactor 也许是更好的选择
-*             但ZCE_INotify_Dir_Reactor为了兼容多个平台，有点别扭。
+*             Linux 可以使用EPOLL Reactor，Select Reactor
+*             Windows 下只能使用WFMO Reactor
 *
-* @details
+* @details    Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
+*             由于Windows和LINUX在监控文件变化上差别实在有点大。
+*             Linux下使用的INotify+SELECT机制，而Windows下使用ReadDirectoryChangesW的OverLapped
+*             1.Windows是一个异步（OverLapped）调用过程，而Linux是一个IO复用过程，很难完全一致。
+*             2.Windows 下只能监听MAXIMUM_WAIT_OBJECTS个目录，而Linux 没有限制
+*             3.Windows 只能监听目录，而不能监听文件
+*             4.Windows 可以监控子目录，而Linux不可以。
+*             5.Windows 可以监控的类型很少……，……
+*             6.Linux监控的是一个设备句柄，而Windows是对每个目录的句柄进行处理
+*             目前只能考虑用一个更高的层次进行封装了，不能在OS层搞掂了。
 *
-* @note       Kliu提醒，Epoll也可以用于处理Inotify的时间反应器，
-*             特此修正，表示感谢。
+*             最后吐槽一下，令人发指的Windows API，周末想把inotify在windows下封装一个
+*             可以用的是ReadDirectoryChangesW + FindFirstChangeNotification ,
+*             FindNextChangeNotification这一系列函数。
+*             1.如果配合上Windows IO机制，使用方式就超级TMD的多了。如果你不想使用阻塞的模式，你就要和
+*             Overlapped这个孩子打交道。好吧Windows IO就是这样的，这个也忍了。但
+*             FindFirstChangeNotification又被折腾成是句柄+WaitForSingleObject模式，这你让人如
+*             何搞。
+*             2.ReadDirectoryChangesW 函数，监控的参数dwNotifyFilter 参数和返回的Action完全是两
+*             回事。所以当你得到Action时，你能判定的东东其实很少。比起Inotify的的监控细分，简直不值一提。
+*             FindFirstChangeNotification 函数就更加不值一提了。你知道事情发生了，你完全不知道事情是
+*             什么…………
+*             3.Windows 可以监控子文件夹，这个大概是Windows API可以唯一得瑟一下的东东
+*             和inotify的函数一比，这组Windows API的设计者应该掩面跳楼。
+*
+*             
+*             而且想和Select 和Epoll Reactor一起使用，ZCE_Event_INotify是更好的选择。
+*             Kliu提醒，Epoll也可以用于处理Inotify的时间反应器，特此修正，表示感谢。
+*
+*
+* @note      原来为Inotify单独写了一个反应器和event 代码，但在Kliu的劝解下考虑再三，还是考虑
+*            在Linux下先用反应器使用了这个event handle，后面慢慢实现了WFMO 的Reactor，
+*            就把Windows 部分的代码也统一过来了，
+*             
+*
+* 纪念张国荣先生去世10周年，
+* 仍然记得那天，2003年的4月1日下班，非典仍在肆掠，百业萧条，
+* 我和Linhai,Zhangke 在科技园的大冲闲逛，Linhai淘了一张
+* 哥哥的碟。结果第二天就听到了这个噩耗。有些事就是这样巧。
+*
+* 《我》
+* 演唱：张国荣  歌词：林夕
+* i am what i am
+* 我永远都爱这样的我
+* 快乐是　快乐的方式不只一种
+* 最荣幸是　谁都是造物者的光荣
+* 不用闪躲　为我喜欢的生活而活
+* 不用粉墨　就站在光明的角落
+* #我就是我　是颜色不一样的烟火
+* 天空海阔　要做最坚强的泡沫
+* 我喜欢我　让蔷薇开出一种结果
+* 孤独的沙漠里　一样盛放的赤裸裸
+* 多么高兴　在琉璃屋中快乐生活
+* 对世界说　什么是光明和磊落
 *
 */
 

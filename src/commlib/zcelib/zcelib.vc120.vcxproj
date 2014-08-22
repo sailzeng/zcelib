@@ -209,8 +209,6 @@
     <ClInclude Include="zce_fmtstr_snprintf.h" />
     <ClInclude Include="zce_fmtstr_strnsplice.h" />
     <ClInclude Include="zce_id_to_string.h" />
-    <ClInclude Include="zce_inotify_directory_reactor.h" />
-    <ClInclude Include="zce_inotify_event_base.h" />
     <ClInclude Include="zce_lock_base.h" />
     <ClInclude Include="zce_lock_file_lock.h" />
     <ClInclude Include="zce_lock_guard.h" />
@@ -328,8 +326,6 @@
     <ClCompile Include="zce_event_reactor_select.cpp" />
     <ClCompile Include="zce_fmtstr_format.cpp" />
     <ClCompile Include="zce_fmtstr_helper.cpp" />
-    <ClCompile Include="zce_inotify_directory_reactor.cpp" />
-    <ClCompile Include="zce_inotify_event_base.cpp" />
     <ClCompile Include="zce_lock_base.cpp" />
     <ClCompile Include="zce_lock_file_lock.cpp" />
     <ClCompile Include="zce_lock_null_lock.cpp" />

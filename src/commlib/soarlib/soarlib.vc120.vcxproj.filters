@@ -28,15 +28,6 @@
     <ClCompile Include="soar_predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_service_config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_service_info.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_service_peer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_stat_monitor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +82,15 @@
     <ClCompile Include="soar_ogre_frame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="soar_zerg_svc_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_zerg_svc_table.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_ogre_svc_peer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="soar_fsm_notify_taskbase.h">
@@ -109,15 +109,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_server_ver_define.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_service_config.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_service_info.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_service_peer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_stat_define.h">
@@ -184,6 +175,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_ogre_frame.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_svc_info.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_zerg_svc_table.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_ogre_svc_peer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -66,11 +66,11 @@ public:
 /******************************************************************************************
 struct SERVICES_IP_INFO 服务ID信息 + IP信息
 ******************************************************************************************/
-struct SOARING_EXPORT SERVICES_IP_INFO
+struct SOARING_EXPORT SERVICES_INFO
 {
 public:
     //服务ID信息
-    SERVICES_ID              services_info_;
+    SERVICES_ID              services_id_;
 
     //服务IP
     unsigned int             ip_addr_;
@@ -89,17 +89,17 @@ public:
 
 public:
     //
-    SERVICES_IP_INFO();
-    ~SERVICES_IP_INFO();
+    SERVICES_INFO();
+    ~SERVICES_INFO();
 };
 
 //得到KEY的HASH函数
-class SOARING_EXPORT HashofSvrIPInfo
+class SOARING_EXPORT Hash_of_SvcIPInfo
 {
 public:
-    size_t operator()(const SERVICES_IP_INFO &svripinfo) const
+    size_t operator()(const SERVICES_INFO &svripinfo) const
     {
-        return (size_t (svripinfo.services_info_.services_type_) << 16) + svripinfo.services_info_.services_id_ ;
+        return (size_t (svripinfo.services_id_.services_type_) << 16) + svripinfo.services_id_.services_id_ ;
     }
 };
 
@@ -107,10 +107,10 @@ class SOARING_EXPORT EqualSvrIPInfo
 {
 public:
     //注意判断条件不是所有的变量
-    bool operator()(const SERVICES_IP_INFO &right, const SERVICES_IP_INFO &left) const
+    bool operator()(const SERVICES_INFO &right, const SERVICES_INFO &left) const
     {
         //检查SVC INFO的相等,就认为相等
-        if (right.services_info_ == left.services_info_ )
+        if (right.services_id_ == left.services_id_ )
         {
             return true;
         }

@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 #define SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 
-#include "soar_service_peer.h"
+#include "soar_ogre_svc_peer.h"
 
 /******************************************************************************************
 struct  Ogre4a_App_Frame OGRE 服务器的内部命令帧头

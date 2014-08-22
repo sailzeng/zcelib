@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_SERVER_CONFIG_H_
 #define SOARING_LIB_SERVER_CONFIG_H_
 
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 
 /****************************************************************************************************
 class  Comm_Svrd_Appliction 程服务器配置,鸡肋==基类

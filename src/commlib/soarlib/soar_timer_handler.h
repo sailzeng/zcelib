@@ -1,10 +1,4 @@
-/// @file       soar_timer_handler.h
-/// @date       2012/08/13 10:21
-///
-/// @author     yunfeiyang
-///
-/// @brief      框架定时器处理类
-///
+
 #ifndef SOARING_LIB_TIMER_HANDLER_H_
 #define SOARING_LIB_TIMER_HANDLER_H_
 

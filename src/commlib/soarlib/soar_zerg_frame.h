@@ -3,7 +3,7 @@
 #define SOARING_LIB_SERVER_APP_FRAME_H_
 
 #include "soar_enum_define.h"
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 #include "soar_frame_command.h"
 #include "soar_error_code.h"
 
@@ -105,21 +105,10 @@ public:
     //---------------------------------------------------------------------------
     //FRAME的一些长度参数,
 
-    //frame_appdata_的最大长度
-#if defined    HUGE_LEN_OF_APPFRAME
-    static const size_t MAX_LEN_OF_APPFRAME  = 256 * 1024;
-#elif defined  LARGE_LEN_OF_APPFRAME
-    static const size_t MAX_LEN_OF_APPFRAME  = 128 * 1024;
-#elif defined  MIDDLE_LEN_OF_APPFRAME
-    static const size_t MAX_LEN_OF_APPFRAME  = 32 * 1024;
-#elif defined  TINY_LEN_OF_APPFRAME
-    static const size_t MAX_LEN_OF_APPFRAME  = 16 * 1024;
-#else
-
     //默认的最大长度是64K
     //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
     static const size_t MAX_LEN_OF_APPFRAME  = 64 * 1024;
-#endif
+
 
     //TEA加密后增加的长度,UPD的数据区麻烦自己搞掂长度限制等问题
     static const size_t LEN_OF_TEA_REMAIN_ROOM = 17;

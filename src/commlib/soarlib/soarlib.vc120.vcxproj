@@ -119,6 +119,7 @@
       <PrecompiledHeaderFile>soar_predefine.h</PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
       <AssemblerOutput>NoListing</AssemblerOutput>
+      <AdditionalIncludeDirectories>../zcelib/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Lib>
       <OutputFile>$(OutDir)soarlib_d.lib</OutputFile>
@@ -179,9 +180,9 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="soar_service_config.cpp" />
-    <ClCompile Include="soar_service_info.cpp" />
-    <ClCompile Include="soar_service_peer.cpp" />
+    <ClCompile Include="soar_zerg_svc_table.cpp" />
+    <ClCompile Include="soar_zerg_svc_info.cpp" />
+    <ClCompile Include="soar_ogre_svc_peer.cpp" />
     <ClCompile Include="soar_zerg_frame_malloc.cpp" />
     <ClCompile Include="soar_zerg_sndrcv_base.cpp" />
     <ClCompile Include="soar_zerg_sndrcv_lolo.cpp" />
@@ -210,9 +211,9 @@
     <ClInclude Include="soar_mmapalloc.h" />
     <ClInclude Include="soar_predefine.h" />
     <ClInclude Include="soar_server_ver_define.h" />
-    <ClInclude Include="soar_service_config.h" />
-    <ClInclude Include="soar_service_info.h" />
-    <ClInclude Include="soar_service_peer.h" />
+    <ClInclude Include="soar_zerg_svc_table.h" />
+    <ClInclude Include="soar_zerg_svc_info.h" />
+    <ClInclude Include="soar_ogre_svc_peer.h" />
     <ClInclude Include="soar_zerg_frame_malloc.h" />
     <ClInclude Include="soar_zerg_sndrcv_base.h" />
     <ClInclude Include="soar_zerg_sndrcv_lolo.h" />

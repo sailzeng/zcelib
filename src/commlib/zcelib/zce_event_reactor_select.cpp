@@ -49,9 +49,11 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
 
     //如果已经存在，不能继续注册
     ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
-
     if (ret != 0)
     {
+        ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
+            __ZCE_FUNCTION__,
+            socket_hd);
         return ret;
     }
 
@@ -111,9 +113,11 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
 
     //如果已经存在，不能继续注册
     ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
-
     if (ret != 0)
     {
+        ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
+            __ZCE_FUNCTION__,
+            socket_hd);
         return ret;
     }
 

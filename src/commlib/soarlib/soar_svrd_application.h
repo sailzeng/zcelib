@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_SERVER_APPLICATION_H_
 #define SOARING_LIB_SERVER_APPLICATION_H_
 
-#include "soar_service_info.h"
+#include "soar_zerg_svc_info.h"
 #include "soar_error_code.h"
 
 class Comm_Svrd_Config;

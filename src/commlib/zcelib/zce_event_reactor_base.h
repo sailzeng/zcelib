@@ -190,10 +190,6 @@ inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle,
     if (iter_temp == handler_map_.end())
     {
         event_handler = NULL;
-        ZCE_LOGMSG(RS_INFO, "[zcelib] %s fail find handle [%lu],maybe one handle is close previous.",
-            __ZCE_FUNCTION__,
-            handle
-            );
         return -1;
     }
 

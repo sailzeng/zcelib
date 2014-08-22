@@ -117,7 +117,6 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
 
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用handle_close
     ret = find_event_handler(ev_hd, tmp_handler);
-
     if (ret != 0)
     {
         // 未找到

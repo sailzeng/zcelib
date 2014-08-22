@@ -27,7 +27,9 @@
 
 
 
-class My_INotify_Event : public ZCE_INotify_Event_Base
+
+
+class My_INotify_Event : public ZCE_Event_INotify
 {
 public:
     My_INotify_Event()
@@ -39,119 +41,8 @@ public:
 
     }
 protected:
-    virtual int watch_close()
-    {
-        return 0;
-    }
 
     virtual int inotify_create(ZCE_HANDLE watch_handle,
-        uint32_t watch_mask,
-        const char *watch_path,
-        const char *active_path)
-    {
-        ZCE_UNUSED_ARG(watch_handle);
-        ZCE_UNUSED_ARG(watch_mask);
-        std::cout << "Event add .watch path[" << watch_path << "]ative path[" <<
-            active_path << "]." << std::endl;
-        return 0;
-    }
-
-    virtual int inotify_delete(ZCE_HANDLE watch_handle,
-        uint32_t watch_mask,
-        const char *watch_path,
-        const char *active_path)
-    {
-        ZCE_UNUSED_ARG(watch_handle);
-        ZCE_UNUSED_ARG(watch_mask);
-        std::cout << "Event delete .watch path[" << watch_path << "]ative path[" <<
-            active_path << "]." << std::endl;
-        return 0;
-    }
-
-    virtual int inotify_modify(ZCE_HANDLE watch_handle,
-        uint32_t watch_mask,
-        const char *watch_path,
-        const char *active_path)
-    {
-        ZCE_UNUSED_ARG(watch_handle);
-        ZCE_UNUSED_ARG(watch_mask);
-        std::cout << "Event modify .watch path[" << watch_path << "]ative path[" <<
-            active_path << "]." << std::endl;
-        return 0;
-    }
-
-
-    virtual int inotify_moved_from(ZCE_HANDLE watch_handle,
-        uint32_t watch_mask,
-        const char *watch_path,
-        const char *active_path)
-    {
-        ZCE_UNUSED_ARG(watch_handle);
-        ZCE_UNUSED_ARG(watch_mask);
-        std::cout << "Event move from .watch path[" << watch_path << "]ative path[" <<
-            active_path << "]." << std::endl;
-        return 0;
-    }
-
-    virtual int inotify_moved_to(ZCE_HANDLE watch_handle,
-        uint32_t watch_mask,
-        const char *watch_path,
-        const char *active_path)
-    {
-        ZCE_UNUSED_ARG(watch_handle);
-        ZCE_UNUSED_ARG(watch_mask);
-        std::cout << "Event move to .watch path[" << watch_path << "]ative path[" <<
-            active_path << "]." << std::endl;
-        return 0;
-    }
-};
-
-//独立的Inotify reactor，
-int test_inotify_reactor2(int /*argc*/, char * /*argv*/[])
-{
-    My_INotify_Event inotify_event;
-    ZCE_INotify_Dir_Reactor *reactor = new ZCE_INotify_Dir_Reactor();
-    ZCE_HANDLE watch_handle = ZCE_INVALID_HANDLE;
-    reactor->open();
-    reactor->add_watch(&inotify_event,
-        TEST_PATH_1,
-        IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
-        &watch_handle);
-
-    reactor->add_watch(&inotify_event,
-        TEST_PATH_2,
-        IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
-        &watch_handle);
-
-    for (;;)
-    {
-        ZCE_Time_Value time_out(5, 0);
-        size_t num_event;
-        reactor->watch_event(&time_out, &num_event);
-    }
-
-    return 0;
-
-}
-
-
-
-//#if defined ZCE_OS_LINUX
-
-class My_INotify_EvtHandle : public ZCE_Event_INotify
-{
-public:
-    My_INotify_EvtHandle()
-    {
-
-    }
-    ~My_INotify_EvtHandle()
-    {
-
-    }
-protected:
-
-    virtual int inotify_create(int watch_handle,
         uint32_t watch_mask,
         const char *watch_path,
         const char *active_path)
@@ -164,7 +55,7 @@ protected:
     }
 
     ///监测到有删除文件或者目录,对应掩码IN_DELETE，参数说明参考@fun inotify_create
-    virtual int inotify_delete(int watch_handle,
+    virtual int inotify_delete(ZCE_HANDLE watch_handle,
         uint32_t watch_mask,
         const char *watch_path,
         const char *active_path)
@@ -176,7 +67,7 @@ protected:
     }
 
     ///监测到有文件被修改,对应掩码IN_MODIFY，参数说明参考@fun inotify_create
-    virtual int inotify_modify(int watch_handle,
+    virtual int inotify_modify(ZCE_HANDLE watch_handle,
         uint32_t watch_mask,
         const char *watch_path,
         const char *active_path)
@@ -188,7 +79,7 @@ protected:
     }
 
     ///监控文件从某个目录移动出去，IN_MOVED_FROM,参数说明参考@fun inotify_create
-    virtual int inotify_moved_from(int watch_handle,
+    virtual int inotify_moved_from(ZCE_HANDLE watch_handle,
         uint32_t watch_mask,
         const char *watch_path,
         const char *active_path)
@@ -201,7 +92,7 @@ protected:
 
     ///监控文件移动到某个目录，IN_MOVED_TO,(我自己测试只有在监控目录下移动才会发生这个事件),
     ///参数说明参考@fun inotify_create
-    virtual int inotify_moved_to(int watch_handle,
+    virtual int inotify_moved_to(ZCE_HANDLE watch_handle,
         uint32_t watch_mask,
         const char *watch_path,
         const char *active_path)
@@ -220,7 +111,7 @@ protected:
 int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 {
     int ret = 0;
-    My_INotify_EvtHandle *inotify_event = new My_INotify_EvtHandle();
+    My_INotify_Event *inotify_event = new My_INotify_Event();
 
 #if defined ZCE_OS_WINDOWS
     ZCE_WFMO_Reactor *reactor_ptr = new ZCE_WFMO_Reactor();
@@ -255,30 +146,46 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZLOG_ERROR("add_watch fial? ret =%d", ret);
+        ZLOG_ERROR("inotify_event add_watch fail.dir[%s]? ret =%d", TEST_PATH_1, ret);
         return ret;
     }
 
-
+    //Linux下，一个event handle可以监控多个目录
     ret = inotify_event->add_watch(TEST_PATH_2,
         IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
         &watch_handle);
 
     if (ret != 0)
     {
-        ZLOG_ERROR("add_watch fial? ret =%d", ret);
-#if defined ZCE_OS_WINDOWS
+        ZLOG_ERROR("inotify_event add_watch fail.dir[%s]? ret =%d,This is ok in windows.", TEST_PATH_2,ret );
+        //Windows下，是比如俺出错的。Windows下一个event handle，只能监控一个目录
+#if !defined ZCE_OS_WINDOWS
         return ret;
 #endif
     }
 
+#if defined ZCE_OS_WINDOWS
+    //Windows下，可以用一个新的event handle监控目录，
+    //当然Windows有一个功能，使用监控子目录的功能
+    My_INotify_Event *inotify_event2 = new My_INotify_Event();
+    ret = inotify_event2->open(ZCE_Reactor::instance());
+    ret = inotify_event2->add_watch(TEST_PATH_2,
+        IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
+        &watch_handle);
+
+    if (ret != 0)
+    {
+        ZLOG_ERROR("inotify_event2 add_watch fail.dir[%s]? ret =%d", ret, TEST_PATH_2);
+        return ret;
+    }
+#endif
 
     for (;;)
     {
-        ZCE_Time_Value time_out(5, 0);
+        ZCE_Time_Value time_out(60, 0);
         size_t num_event;
         ret = ZCE_Reactor::instance()->handle_events(&time_out, &num_event);
-        ZLOG_INFO("handle_events? ret =[%d] number of event[%u]",ret,num_event);
+        //ZLOG_INFO("handle_events? ret =[%d] number of event[%u]",ret,num_event);
         std::cout<<"handle_events ret ="<<ret << " number of event="<<num_event<<std::endl;
     }
     

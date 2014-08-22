@@ -3,7 +3,7 @@
 #ifndef SOARING_LIB_SERVER_VERSION_DEFINE_H_
 #define SOARING_LIB_SERVER_VERSION_DEFINE_H_
 
-//PET服务器的版本信息，每个版本应该主动改写这个
+//服务器的版本信息，每个版本应该主动改写这个
 //改写的途径应该是在Makefile为好
 
 #ifndef TSS_MAJOR_VER
@@ -50,7 +50,7 @@
 #define TSS_SERVER_VER_DECLARE   "Server Version :"TSS_JION_VER_STRING"  .\n" \
     TSS_COMPILE_VERSION_STRING \
     "Compilation Timestamp :"__DATE__" "__TIME__" .\n" \
-    "Copyright :(C) 2008-2012 . Fullsail platform Team (We are best!). All rights reserved. \n"  \
+    "Copyright :(C) 2008-2012 . Fullsail Team (We are best!). All rights reserved. \n"  \
     "Author :sailzeng and her firends.\n" \
     "Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
 #endif
