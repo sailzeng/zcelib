@@ -78,6 +78,7 @@
 #include <zce_event_handle_base.h>
 #include <zce_event_handle_inotify.h>
 #include <zce_event_reactor_select.h>
+#include <zce_event_reactor_wfmo.h>
 
 #include <zce_async_fw_base.h>
 #include <zce_async_fw_fsm.h>

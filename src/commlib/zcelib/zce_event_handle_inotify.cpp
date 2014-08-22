@@ -24,6 +24,7 @@ ZCE_Event_INotify::ZCE_Event_INotify():
     watch_path_[0] = '\0';
     watch_mask_ = 0;
     watch_sub_dir_ = FALSE;
+    memset((void *)&over_lapped_, 0, sizeof(OVERLAPPED));
 #endif
 }
 
@@ -227,9 +228,10 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     //如果读取失败，一般而言，这是这段代码有问题
     if (bret == FALSE)
     {
-        ZLOG_ERROR("[%s] ::ReadDirectoryChangesW fail,error [%u].",
+        ZLOG_ERROR("[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
                    __ZCE_FUNCTION__,
-                   ZCE_OS::last_error());
+                   ZCE_OS::last_error(),
+                   strerror(ZCE_OS::last_error()));
 
         ::CloseHandle(watch_handle_);
 

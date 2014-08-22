@@ -56,11 +56,9 @@ int bytes_encrypt_perf(int argc, char *argv[]);
 
 int test_scandir(int argc, char *argv[]);
 
+//int test_inotify_reactor(int argc, char *argv[]);
 int test_inotify_reactor(int argc, char *argv[]);
-
-#if defined ZCE_OS_LINUX
-int test_inotify_eventreactor(int argc, char *argv[]);
-#endif
+int test_inotify_reactor2(int /*argc*/, char * /*argv*/[]);
 
 int test_template_random_2(int argc, char *argv[]);
 int test_random_elapsed_time(int argc, char *argv[]);
