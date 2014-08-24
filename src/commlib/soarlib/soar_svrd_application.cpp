@@ -25,12 +25,8 @@
 #include "soar_timer_handler.h"
 
 
-Comm_Svrd_Appliction *Comm_Svrd_Appliction::base_instance_ = NULL;
 
 Comm_Svrd_Appliction::Comm_Svrd_Appliction():
-    app_run_(true),
-    app_pause_(false),
-    app_reload_(false),
     self_services_id_(),
     run_as_win_serivces_(false),
     max_msg_num_(1024),
@@ -210,8 +206,8 @@ Comm_Svrd_Appliction::init_instance()
 #endif
 
     //初始化内存管道
-    ret = Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg(
-              svd_config->zerg_config_);
+    //ret = Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg(
+    //          svd_config->zerg_config_);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -351,22 +347,9 @@ int Comm_Svrd_Appliction::exit_instance()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-//设置进程暂停运行的标志
-void Comm_Svrd_Appliction::set_pause_sign(bool app_pause)
-{
-    app_pause_ = app_pause;
-}
 
-//设置进程是否运行的标志
-void Comm_Svrd_Appliction::set_run_sign(bool app_run)
-{
-    app_run_ = app_run;
-}
 
-void Comm_Svrd_Appliction::set_reload(bool app_reload)
-{
-    app_reload_ = app_reload;
-}
+
 
 
 
@@ -401,7 +384,7 @@ int Comm_Svrd_Appliction::register_soar_timer()
         is_app = false;
     }
     
-    timer_handler_->init(CfgSvrSdk::instance()->get_game_id(), is_app, this);
+    //timer_handler_->init(CfgSvrSdk::instance()->get_game_id(), is_app, this);
 
     ZCE_Time_Value delay;
     ZCE_Time_Value interval;
@@ -459,14 +442,7 @@ int Comm_Svrd_Appliction::reload_config()
 
 
 
-//得到实例指针
-Comm_Svrd_Appliction *Comm_Svrd_Appliction::instance()
-{
-    return base_instance_;
-}
-
-int
-Comm_Svrd_Appliction::proc_start_args(int argc, const char *argv[])
+int Comm_Svrd_Appliction::proc_start_args(int argc, const char *argv[])
 {
     int ret = 0;
     argc_ = argc;

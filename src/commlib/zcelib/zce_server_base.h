@@ -65,44 +65,43 @@ public:
     /// 设置reload标志
     void set_reload(bool app_reload);
 
-    //得到运行信息，可能包括路径信息
+    ///得到运行信息，可能包括路径信息
     const char *get_app_runname();
 
-    //得到程序进程名称，WINDOWS下去掉了后缀
+    ///得到程序进程名称，WINDOWS下去掉了后缀
     const char *get_app_basename();
-
 
 
     //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
 
-    //WIN 下面的退出处理
+    ///WIN 下面的退出处理
     static BOOL exit_signal(DWORD);
 
 #else
 
-    //退出信号
+    ///退出信号
     static void exit_signal(int);
 
-    //重新加载配置
+    ///重新加载配置
     static void reload_cfg_signal(int);
 #endif
 
     //WIN 服务的代码，用于服务器的注册注销等
 #ifdef ZCE_OS_WINDOWS
-    //运行服务
+    ///运行服务
     int win_services_run();
 
-    //安装服务
+    ///安装服务
     int win_services_install();
-    //卸载服务
+    ///卸载服务
     int win_services_uninstall();
-    //检查服务是否安装
+    ///检查服务是否安装
     bool win_services_isinstalled();
 
-    //服务运行函数
+    ///服务运行函数
     static void WINAPI win_service_main();
-    //服务控制台所需要的控制函数
+    ///服务控制台所需要的控制函数
     static void WINAPI win_services_ctrl(DWORD op_code);
 
 #endif

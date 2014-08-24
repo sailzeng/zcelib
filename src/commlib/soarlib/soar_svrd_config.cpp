@@ -238,13 +238,7 @@ Comm_Svrd_Config::load_config()
         return SOAR_RET::ERROR_FRAMEWORK_READ_SELF_CFG_FAIL;
     }
 
-    // 重置监控uin列表
-    monitor_uin_set_.clear();
 
-    for (unsigned int i = 0; i < framework_config_.log_info_.monitor_uin_count_; ++i)
-    {
-        monitor_uin_set_.insert(framework_config_.log_info_.monitor_uin_list_[i]);
-    }
 
     // 总感觉这样处理好不好，框架需要感知zerg的配置来进行初始化 by stefzhou
     if ((strcasecmp(zerg_config_.soar_cfg.get_svr_info_type, "cfgfile")) == 0)
@@ -275,8 +269,4 @@ Comm_Svrd_Config::reload()
     return load_config();
 }
 
-bool
-Comm_Svrd_Config::is_monitor_uin(unsigned int uin)
-{
-    return (monitor_uin_set_.find(uin) != monitor_uin_set_.end());
-}
+

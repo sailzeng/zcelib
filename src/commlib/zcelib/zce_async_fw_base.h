@@ -4,8 +4,8 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Saturday, March 01, 2014
-* @brief
-*
+* @brief      一套很简单的异步框架的基类，已经扩展出了FSM和协程的两个子类，
+*             Lua的协程如果我想封装应该也不难，Lua代码部分我已经没有障碍。
 *
 * @details
 *

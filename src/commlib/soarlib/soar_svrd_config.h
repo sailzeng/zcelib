@@ -4,9 +4,67 @@
 
 #include "soar_zerg_svc_info.h"
 
-/****************************************************************************************************
-class  Comm_Svrd_Appliction 程服务器配置,鸡肋==基类
-****************************************************************************************************/
+
+struct ZERG_CONFIG
+{
+
+};
+
+
+
+struct FRAMEWORK_CONFIG
+{
+    struct LogInfo
+    {
+    public: /* members */
+        char log_level_[32]; // app日志级别: debug info error final
+        uint32_t log_output_; // 日志输出方式: 0001=file 0010=stdout 0100=stderr 1000=windbg,多种输出方式可以组合
+        uint32_t log_div_type_; // 日志分割方式:101按大小 201按小时 205按天
+        uint32_t max_log_file_num_; // 日志文件保留个数，多出的日志文件将会被删除
+        uint32_t max_log_file_size_; // 日志文件最大大小
+    };
+
+    struct TaskInfo
+    {
+    public: /* members */
+        uint32_t task_thread_num_; // task线程数量
+        uint32_t task_thread_stack_size_; // task线程堆栈大小
+        uint32_t enqueue_timeout_sec_; // push数据到task队列时的超时时间秒
+        uint32_t enqueue_timeout_usec_; // push数据到task队列时的超时时间微秒
+    };
+
+    struct TransInfo
+    {
+    public: /* members */
+        uint32_t trans_num_; // 事务的数量
+        uint32_t trans_cmd_num_; // 事务命令字的个数
+        uint32_t func_cmd_num_; // 函数命令字的个数
+    };
+
+    struct MonitorInfo
+    {
+    public: /* members */
+        uint32_t filter_statics_id_cnt_; // 要排除的统计ID个数
+        uint32_t filter_statics_id_list_[100]; // 要排除的统计ID列表
+    };
+
+    TransInfo trans_info_; // 事务的配置
+    TaskInfo task_info_; // Task的配置，使用notifytrans时有效
+    LogInfo log_info_; // 日志帐单的配置信息
+    MonitorInfo monitor_info_; // 监控配置信息
+};
+
+struct SVCID_CONFIG
+{
+
+};
+
+
+/*!
+* @brief
+*
+* @note
+*/
 class Comm_Svrd_Config
 {
 
@@ -27,8 +85,6 @@ public:
     // 加载zerg framwork app的配置
     int load_config();
 
-    // 判定uin是否为监控uin
-    bool is_monitor_uin(unsigned int uin);
 
 private:
     // 使用帮助
@@ -59,14 +115,14 @@ public:
     // 是否卸载服务
     bool app_uninstall_service_;
 
-    //// zerg的配置
-    //conf_zerg::ZERG_CONFIG zerg_config_;
+    // zerg的配置
+    ZERG_CONFIG zerg_config_;
 
-    //// framework的配置
-    //conf_framework::FRAMEWORK_CONFIG framework_config_;
+    // framework的配置
+    FRAMEWORK_CONFIG framework_config_;
 
-    //// svcid的配置
-    //conf_svcid::SVCID_CONFIG svcid_config_;
+    // svcid的配置
+    SVCID_CONFIG svcid_config_;
 
     // 日志路径
     std::string log_file_prefix_;
@@ -89,8 +145,6 @@ public:
     // 是否使用配置服务器，如果false，则使用本地配置
     bool is_use_cfgsvr_;
 
-    // 监控uin
-    std::set<unsigned int> monitor_uin_set_;
 protected:
     // 单子实例
     static Comm_Svrd_Config *instance_;

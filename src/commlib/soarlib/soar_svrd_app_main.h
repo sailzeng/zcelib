@@ -4,19 +4,16 @@
 
 //本来用宏实现了，但是写完了，稍微想改几行，就发现剧烈痛苦。还是用模版把。
 
-namespace TSS_LIB
+namespace SOAR_LIB
 {
 
 template <class application_class, class  config_class>
-int tss_svrd_main(int argc, char *argv[])
+int soar_svrd_main(int argc, char *argv[])
 {
     //不处理异常，因为处理了不好调试,特别是在Win32下调试。
 
     application_class::instance();
     config_class::instance();
-
-    const size_t ERROR_INFO_LEN = 512;
-    char err_str_info[ERROR_INFO_LEN];
 
     //开始日志是无法输出，
     //ZLOG_INFO("[framework] App init_instance start");
@@ -26,12 +23,11 @@ int tss_svrd_main(int argc, char *argv[])
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
-        SOAR_RET::ZLoadString(ret, err_str_info);
         ZLOG_ERROR("[framework] App name [%s] class [%s] init_instance fail:%d|%s",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name(),
                    ret,
-                   err_str_info);
+                   SOAR_RET::error_string(ret));
         return ret;
     }
 
@@ -48,12 +44,11 @@ int tss_svrd_main(int argc, char *argv[])
     //标示运行失败
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
-        SOAR_RET::ZLoadString(ret, err_str_info);
         ZLOG_ERROR("[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name(),
                    ret,
-                   err_str_info);
+                   SOAR_RET::error_string(ret));
         //这儿是退出,还是进行exit_instance,这是一个问题，哈哈
         //return ret;
     }

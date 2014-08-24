@@ -152,10 +152,6 @@ inline int Zerg_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
                                      proc_frame->frame_command_,
                                      proc_frame->frame_length_);
 
-        if (config_->is_monitor_uin(proc_frame->frame_uin_))
-        {
-            proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
-        }
 
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
         if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
@@ -177,11 +173,6 @@ inline int Zerg_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
         ZLOG_ERROR("[framework] Frame Len is error ,frame length :%u ,Please check your code.",
                    proc_frame->frame_length_);
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
-    }
-
-    if (config_->is_monitor_uin(proc_frame->frame_uin_))
-    {
-        proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
     }
 
     //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
