@@ -9,8 +9,8 @@
 int test_conf_xml(int  /*argc*/, char * /*argv*/[])
 {
     ZCE_Conf_PropertyTree pt_tree;
-    ZCE_XML_Implement xml_imp;
-    int ret = xml_imp.read("conf/test_0002.xml",&pt_tree);
+
+     int ret = ZCE_XML_Implement::read("conf/test_0002.xml", &pt_tree);
     if (ret != 0)
     {
         return ret;
@@ -29,8 +29,8 @@ int test_conf_xml(int  /*argc*/, char * /*argv*/[])
 int test_conf_ini(int  /*argc*/, char * /*argv*/[])
 {
     ZCE_Conf_PropertyTree pt_tree;
-    ZCE_INI_Implement ini_imp;
-    int ret = ini_imp.read("conf/test_0001.ini", &pt_tree);
+
+    int ret = ZCE_INI_Implement::read("conf/test_0001.ini", &pt_tree);
     if (ret != 0)
     {
         return ret;

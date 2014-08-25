@@ -9,12 +9,12 @@
 Comm_Svrd_Config *Comm_Svrd_Config::instance_ = NULL;
 
 Comm_Svrd_Config::Comm_Svrd_Config():
+    instance_id_(1),
     self_svr_id_(0, 0),
     if_restore_pipe_(true),
     app_run_daemon_(false),
     app_install_service_(false),
     app_uninstall_service_(false),
-    instance_id_(1),
     is_use_cfgsvr_(false)
 {
 }
@@ -36,8 +36,7 @@ int Comm_Svrd_Config::init(int argc, const char *argv[])
     }
 
     // 加载配置
-    ret = load_config();
-
+    ret = load_config_file();
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         return ret;
@@ -213,60 +212,32 @@ void Comm_Svrd_Config::clean_instance()
     return;
 }
 
-int
-Comm_Svrd_Config::load_config()
+int Comm_Svrd_Config::load_config_file()
 {
     // 加载zerg 配置
-    int ret = zerg_config_.fromXmlFile(zerg_cfg_file_.c_str());
+    int ret = 0;
 
+    ret = ZCE_INI_Implement::read(zerg_cfg_file_.c_str(), &zerg_ptree_);
     if (ret != 0)
     {
-        ZLOG_ERROR("Comm_Svrd_Config: load zerg config fail. ret=%d, path=%s", ret, zerg_cfg_file_.c_str());
         return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
     }
 
-    self_svr_id_.services_id_ = zerg_config_.self_cfg.self_svr_info.svr_id;
-    self_svr_id_.services_type_ = zerg_config_.self_cfg.self_svr_info.svr_type;
-
-    // 加载framework的配置
-    ret = framework_config_.fromXmlFile(framework_cfg_file_.c_str());
-
+    ret = ZCE_INI_Implement::read(framework_cfg_file_.c_str(), &framework_ptree_);
     if (ret != 0)
     {
-        // 加载framework配置失败
-        ZLOG_ERROR("Comm_Svrd_Config: load framework config fail.ret=%d", ret);
-        return SOAR_RET::ERROR_FRAMEWORK_READ_SELF_CFG_FAIL;
+        return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
     }
-
-
-
-    // 总感觉这样处理好不好，框架需要感知zerg的配置来进行初始化 by stefzhou
-    if ((strcasecmp(zerg_config_.soar_cfg.get_svr_info_type, "cfgfile")) == 0)
-    {
-        // 加载svcid配置
-        ret = svcid_config_.fromXmlFile(svcid_cfg_file_.c_str());
-
-        if (ret != 0)
-        {
-            // 加载svcid配置失败
-            ZLOG_ERROR("Comm_Svrd_Config: load svcid config fail. ret=%d", ret);
-            return SOAR_RET::ERROR_FRAMEWORK_READ_SVCID_CFG_FAIL;
-        }
-    }
-
-    log_file_prefix_ = app_run_dir_ + "/log/";
-    log_file_prefix_ += Comm_Svrd_Appliction::instance()->get_app_basename();
 
     // 配置加载成功
     ZLOG_INFO("Comm_Svrd_Config: load framework config succ.");
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int
-Comm_Svrd_Config::reload()
+int Comm_Svrd_Config::reload()
 {
     ZLOG_INFO("app start reload");
-    return load_config();
+    return load_config_file();
 }
 
 

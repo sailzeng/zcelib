@@ -83,9 +83,11 @@ public:
     int proc_start_arg(int argc, const char *argv[]);
 
     // 加载zerg framwork app的配置
-    int load_config();
+    int load_config_file();
 
+protected:
 
+    
 private:
     // 使用帮助
     int usage(const char *program_name);
@@ -97,32 +99,34 @@ public:
     static void clean_instance();
 
 public:
+    // 服务器实例id
+    unsigned int instance_id_;
+    // 进行运行目录
+    std::string   app_run_dir_;
+
+
     // 自己的服务器ID
     SERVICES_ID self_svr_id_;
+    // framework的配置
+    FRAMEWORK_CONFIG framework_config_;
 
-    // 进行运行目录
-    std::string app_run_dir_;
 
     //是否恢复管道
     bool if_restore_pipe_;
 
-    // 是否后台运行, windows下以如果设置了此值，则以服务的方式运行
+
+    /// 是否后台运行, windows下以如果设置了此值，则以服务的方式运行
     bool app_run_daemon_;
-
-    // 是否安装服务
+    /// Windows下是否安装服务
     bool app_install_service_;
-
-    // 是否卸载服务
+    /// Windows下是否卸载服务
     bool app_uninstall_service_;
 
-    // zerg的配置
-    ZERG_CONFIG zerg_config_;
+    //
+    ZCE_Conf_PropertyTree zerg_ptree_;
+    //
+    ZCE_Conf_PropertyTree framework_ptree_;
 
-    // framework的配置
-    FRAMEWORK_CONFIG framework_config_;
-
-    // svcid的配置
-    SVCID_CONFIG svcid_config_;
 
     // 日志路径
     std::string log_file_prefix_;
@@ -136,14 +140,14 @@ public:
     // svcid的配置文件
     std::string svcid_cfg_file_;
 
+    // 是否使用配置服务器，如果false，则使用本地配置
+    bool is_use_cfgsvr_;
     // 配置服务器信息
     std::string master_cfgsvr_ip_;
 
-    // 服务器实例id
-    unsigned short instance_id_;
 
-    // 是否使用配置服务器，如果false，则使用本地配置
-    bool is_use_cfgsvr_;
+
+
 
 protected:
     // 单子实例

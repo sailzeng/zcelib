@@ -46,6 +46,7 @@ public:
 
     //重新加载配置
     int reload_config();
+
 protected:
     // 应用需要实现的函数
 

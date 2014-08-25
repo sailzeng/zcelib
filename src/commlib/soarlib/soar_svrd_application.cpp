@@ -494,8 +494,7 @@ int Comm_Svrd_Appliction::proc_start_args(int argc, const char *argv[])
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int
-Comm_Svrd_Appliction::do_run()
+int Comm_Svrd_Appliction::do_run()
 {
     // 框架要先初始化
     int ret = init_instance();
@@ -534,8 +533,7 @@ Comm_Svrd_Appliction::do_run()
     return ret;
 }
 
-void
-Comm_Svrd_Appliction::set_service_info(const char *svc_name, const char *svc_desc)
+void Comm_Svrd_Appliction::set_service_info(const char *svc_name, const char *svc_desc)
 {
     if (svc_name != NULL)
     {
@@ -548,8 +546,7 @@ Comm_Svrd_Appliction::set_service_info(const char *svc_name, const char *svc_des
     }
 }
 
-int
-Comm_Svrd_Appliction::init_log()
+int Comm_Svrd_Appliction::init_log()
 {
     Comm_Svrd_Config *config = Comm_Svrd_Config::instance();
     int ret = 0;
