@@ -43,15 +43,6 @@
     <ClCompile Include="soar_svrd_application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_svrd_config.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_time_provider.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_timer_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_zerg_mmappipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,6 +80,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="soar_ogre_svc_peer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_timer_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_cfg_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_cfg_trans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -130,15 +130,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_svrd_application.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_svrd_config.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_time_provider.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_timer_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_zerg_mmappipe.h">
@@ -184,6 +175,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_ogre_svc_peer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_timer_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_cfg_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_cfg_trans.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,7 +12,7 @@ TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid, const ZCE_Socka
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
     sessionkey_verify_(sessionkey_verify),
-    ip_restrict_(Zerg_IPRestrict_Mgr::instance()),
+    ip_restrict_(Zerg_IPRestrict_Mgr::instance())
 {
 }
 
@@ -135,7 +135,6 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
 
     if (phandler != NULL)
     {
-        phandler->change_impl(tcp_handler_impl_);
         phandler->init_tcpsvr_handler(my_svc_info_, sockstream, remote_address, sessionkey_verify_);
     }
     else
@@ -146,9 +145,9 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
     return 0;
 }
 //
-ZCE_SOCKET TCP_Accept_Handler::get_handle(void) const
+ZCE_HANDLE TCP_Accept_Handler::get_handle(void) const
 {
-    return peer_acceptor_.get_handle();
+    return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
 //

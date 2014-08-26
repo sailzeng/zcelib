@@ -3,12 +3,10 @@
 #include "soar_zerg_svc_info.h"
 #include "soar_server_ver_define.h"
 #include "soar_svrd_application.h"
-#include "soar_svrd_config.h"
+#include "soar_svrd_cfg_base.h"
 
 
-Comm_Svrd_Config *Comm_Svrd_Config::instance_ = NULL;
-
-Comm_Svrd_Config::Comm_Svrd_Config():
+Server_Config_Base::Server_Config_Base():
     instance_id_(1),
     self_svr_id_(0, 0),
     if_restore_pipe_(true),
@@ -19,12 +17,12 @@ Comm_Svrd_Config::Comm_Svrd_Config():
 {
 }
 
-Comm_Svrd_Config::~Comm_Svrd_Config()
+Server_Config_Base::~Server_Config_Base()
 {
 }
 
 // 取配置信息,取得配置信息后, 需要将各启动参数设置OK
-int Comm_Svrd_Config::init(int argc, const char *argv[])
+int Server_Config_Base::initialize(int argc, const char *argv[])
 {
     // 处理命令行参数
     int ret = SOAR_RET::SOAR_RET_SUCC;
@@ -45,7 +43,7 @@ int Comm_Svrd_Config::init(int argc, const char *argv[])
     return ret;
 }
 
-int Comm_Svrd_Config::proc_start_arg(int argc, const char *argv[])
+int Server_Config_Base::proc_start_arg(int argc, const char *argv[])
 {
     // 取得运行目录
     char cur_dir[PATH_MAX + 1];
@@ -174,7 +172,7 @@ int Comm_Svrd_Config::proc_start_arg(int argc, const char *argv[])
 }
 
 //
-int Comm_Svrd_Config::usage(const char *program_name)
+int Server_Config_Base::usage(const char *program_name)
 {
     std::cout << "usage: " << program_name << std::endl;
     std::cout << "   -z [zergling cfg path]" << std::endl;
@@ -193,51 +191,5 @@ int Comm_Svrd_Config::usage(const char *program_name)
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-//单子实例函数
-Comm_Svrd_Config *Comm_Svrd_Config::instance()
-{
-    if (instance_ == NULL)
-    {
-        instance_ = new Comm_Svrd_Config();
-    }
-
-    return instance_;
-}
-
-//清理单子实例
-void Comm_Svrd_Config::clean_instance()
-{
-    delete instance_;
-    instance_ = NULL;
-    return;
-}
-
-int Comm_Svrd_Config::load_cfgfile()
-{
-    // 加载zerg 配置
-    int ret = 0;
-
-    ret = ZCE_INI_Implement::read(zerg_cfg_file_.c_str(), &zerg_ptree_);
-    if (ret != 0)
-    {
-        return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
-    }
-
-    ret = ZCE_INI_Implement::read(framework_cfg_file_.c_str(), &framework_ptree_);
-    if (ret != 0)
-    {
-        return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
-    }
-
-    // 配置加载成功
-    ZLOG_INFO("Comm_Svrd_Config: load framework config succ.");
-    return SOAR_RET::SOAR_RET_SUCC;
-}
-
-int Comm_Svrd_Config::reload_cfgfile()
-{
-    ZLOG_INFO("app start reload");
-    return load_cfgfile();
-}
 
 

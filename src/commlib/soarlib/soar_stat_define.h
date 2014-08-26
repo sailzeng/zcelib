@@ -9,7 +9,6 @@
 #ifndef SOARING_LIB_MONITOR_DEFINE_H_
 #define SOARING_LIB_MONITOR_DEFINE_H_
 
-#include "soar_svrd_config.h"
 
 // 框架特性ID从9100开始
 enum CommStatFeatureID

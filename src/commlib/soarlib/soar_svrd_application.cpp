@@ -19,10 +19,11 @@
 #include "soar_svrd_application.h"
 #include "soar_zerg_mmappipe.h"
 #include "soar_zerg_svc_info.h"
-#include "soar_svrd_config.h"
+#include "soar_svrd_cfg_trans.h"
+#include "soar_svrd_timer_base.h"
 #include "soar_stat_define.h"
 #include "soar_stat_monitor.h"
-#include "soar_timer_handler.h"
+
 
 
 
@@ -85,8 +86,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int
-Comm_Svrd_Appliction::init_instance()
+int Comm_Svrd_Appliction::init_instance()
 {
     //忽视信号
     process_signal();
@@ -165,7 +165,7 @@ Comm_Svrd_Appliction::init_instance()
 
     // 加载框架配置
     Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
-    ret = svd_config->init(argc_, argv_);
+    ret = svd_config->initialize(argc_, argv_);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -374,7 +374,7 @@ int Comm_Svrd_Appliction::register_soar_timer()
     // 注册框架定时器
     ZCE_ASSERT(timer_handler_ == NULL);
     ZCE_Timer_Queue *timer_queue = ZCE_Timer_Queue::instance();
-    timer_handler_ = new Comm_Timer_Handler(timer_queue);
+    timer_handler_ = new Comm_Svrd_Timer_Base(timer_queue);
 
     // 通过进程名判断是否app进程还是zerg进程
     bool is_app = true;

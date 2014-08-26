@@ -19,7 +19,7 @@ const int Zerg_App_Timer_Handler::ZERGAPP_TIME_ID[] =
 //
 //heartbeat_counter_不从0开始计数是避免第一次模除的时候就发生事情
 Zerg_App_Timer_Handler::Zerg_App_Timer_Handler(ZCE_Timer_Queue *time_queue):
-    zce_Timer_Handler(time_queue),
+    ZCE_Timer_Handler(time_queue),
     heartbeat_counter_(1)
 {
     srand(static_cast<unsigned int>(ZCE_OS::pthread_self()));

@@ -168,6 +168,7 @@
   <ItemGroup>
     <ClCompile Include="soar_error_code.cpp" />
     <ClCompile Include="soar_ogre_frame.cpp" />
+    <ClCompile Include="soar_svrd_cfg_base.cpp" />
     <ClCompile Include="soar_zerg_frame.cpp" />
     <ClCompile Include="soar_fsm_notify_transbase.cpp" />
     <ClCompile Include="soar_fsm_notify_trans_mgr.cpp" />
@@ -192,9 +193,8 @@
     <ClCompile Include="soar_svrd_app_non_ctrl.cpp" />
     <ClCompile Include="soar_svrd_app_notify_trans.cpp" />
     <ClCompile Include="soar_svrd_app_trans.cpp" />
-    <ClCompile Include="soar_svrd_config.cpp" />
-    <ClCompile Include="soar_timer_handler.cpp" />
-    <ClCompile Include="soar_time_provider.cpp" />
+    <ClCompile Include="soar_svrd_cfg_trans.cpp" />
+    <ClCompile Include="soar_svrd_timer_base.cpp" />
     <ClCompile Include="soar_zerg_mmappipe.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -202,6 +202,7 @@
     <ClInclude Include="soar_error_code.h" />
     <ClInclude Include="soar_frame_command.h" />
     <ClInclude Include="soar_ogre_frame.h" />
+    <ClInclude Include="soar_svrd_cfg_base.h" />
     <ClInclude Include="soar_zerg_frame.h" />
     <ClInclude Include="soar_fsm_notify_transbase.h" />
     <ClInclude Include="soar_fsm_notify_trans_mgr.h" />
@@ -225,9 +226,8 @@
     <ClInclude Include="soar_svrd_app_non_ctrl.h" />
     <ClInclude Include="soar_svrd_app_notify_trans.h" />
     <ClInclude Include="soar_svrd_app_trans.h" />
-    <ClInclude Include="soar_svrd_config.h" />
-    <ClInclude Include="soar_timer_handler.h" />
-    <ClInclude Include="soar_time_provider.h" />
+    <ClInclude Include="soar_svrd_cfg_trans.h" />
+    <ClInclude Include="soar_svrd_timer_base.h" />
     <ClInclude Include="soar_zerg_mmappipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

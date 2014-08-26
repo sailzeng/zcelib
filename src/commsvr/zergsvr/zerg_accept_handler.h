@@ -31,12 +31,9 @@ public:
     virtual int handle_close ();
 
     //µÃµ½AcceptorµÄ¾ä±ú
-    ZCE_SOCKET get_handle(void) const;
+    virtual ZCE_HANDLE get_handle(void) const;
 
-    void set_extern_svc_acceptor(TcpHandlerImpl *tcp_handler_impl)
-    {
-        tcp_handler_impl_ = tcp_handler_impl;
-    }
+
 
 protected:
 

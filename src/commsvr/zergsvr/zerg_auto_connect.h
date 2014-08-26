@@ -26,11 +26,6 @@ public:
     //备份路由IP地址信息
     ZCE_Sockaddr_In             back_route_ip_;
 
-    // 是否使用非标准协议
-    bool  external_;
-
-    // 如果是外部协议，协议解析相关配置项索引
-    size_t proto_cfg_index_;
 };
 
 //

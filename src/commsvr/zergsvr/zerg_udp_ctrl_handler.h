@@ -35,7 +35,7 @@ protected:
 
 public:
     //È¡µÃ¾ä±ú
-    virtual ZCE_SOCKET get_handle(void) const;
+    virtual ZCE_HANDLE get_handle(void) const;
     //
     virtual int handle_input();
     //

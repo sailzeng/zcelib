@@ -1,19 +1,3 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_application.cpp
-Author              : Sail(ZENGXING)
-Version             :
-Date Of Creation    : 2005年11月17日
-Description         :
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #include "zerg_predefine.h"
 #include "zerg_application.h"
@@ -135,8 +119,7 @@ Zerg_Service_App::init_instance()
     Zerg_IPRestrict_Mgr::instance();
     //通信管理器初始化
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
-    //控制台初始化
-    Zerg_Console_Handler::instance(new Zerg_Console_Handler(ZCE_Reactor::instance()));
+
 
     //加载动态配置部分
     ret = reload_daynamic_config();
@@ -319,7 +302,7 @@ int Zerg_Service_App::exit_instance()
 
     //清理单子
     Zerg_IPRestrict_Mgr::clean_instance();
-    Zerg_Console_Handler::clean_instance();
+    
     Comm_Stat_Monitor::clean_instance();
 
     //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现

@@ -1,8 +1,9 @@
 
-#ifndef SOARING_LIB_SERVER_CONFIG_H_
-#define SOARING_LIB_SERVER_CONFIG_H_
+#ifndef SOARING_LIB_SERVER_CONFIG_TRANS_H_
+#define SOARING_LIB_SERVER_CONFIG_TRANS_H_
 
 #include "soar_zerg_svc_info.h"
+#include "soar_svrd_cfg_base.h"
 
 
 struct ZERG_CONFIG
@@ -54,18 +55,18 @@ struct FRAMEWORK_CONFIG
     MonitorInfo monitor_info_; // 监控配置信息
 };
 
-struct SVCID_CONFIG
+struct SVCID_CONFIG 
 {
 
 };
 
 
 /*!
-* @brief 配置
+* @brief 框架业务服务器的配置
 *
 * @note
 */
-class Comm_Svrd_Config
+class Comm_Svrd_Config :public Server_Config_Base
 {
 
 protected:
@@ -75,27 +76,8 @@ protected:
 
 public:
 
-    /*!
-    * @brief      取配置信息,取得配置信息后, 需要将各启动参数设置OK
-    * @return     virtual int
-    * @param      argc
-    * @param      argv
-    */
-    virtual int init(int argc, const char *argv[]);
-
-    /*!
-    * @brief      处理命令行参数
-    * @return     virtual int
-    * @param      argc
-    * @param      argv
-    */
-    virtual int proc_start_arg(int argc, const char *argv[]);
-
     /// 加载zerg framwork app的配置
     virtual int load_cfgfile();
-
-    /// 重新加载配置
-    virtual int reload_cfgfile();
 
 protected:
 
@@ -110,52 +92,9 @@ public:
     static void clean_instance();
 
 public:
-    // 服务器实例id
-    unsigned int instance_id_;
-    // 进行运行目录
-    std::string   app_run_dir_;
-
-
-    // 自己的服务器ID
-    SERVICES_ID self_svr_id_;
-    // framework的配置
+    
+    //
     FRAMEWORK_CONFIG framework_config_;
-
-
-    //是否恢复管道
-    bool if_restore_pipe_;
-
-
-    /// 是否后台运行, windows下以如果设置了此值，则以服务的方式运行
-    bool app_run_daemon_;
-    /// Windows下是否安装服务
-    bool app_install_service_;
-    /// Windows下是否卸载服务
-    bool app_uninstall_service_;
-
-    //
-    ZCE_Conf_PropertyTree zerg_ptree_;
-    //
-    ZCE_Conf_PropertyTree framework_ptree_;
-
-
-    // 日志路径
-    std::string log_file_prefix_;
-
-    // ZERG的配置文件
-    std::string zerg_cfg_file_;
-    // 自己的配置文件
-    std::string app_cfg_file_;
-    // framework的配置文件
-    std::string framework_cfg_file_;
-    // svcid的配置文件
-    std::string svcid_cfg_file_;
-
-    // 是否使用配置服务器，如果false，则使用本地配置
-    bool is_use_cfgsvr_;
-    // 配置服务器信息
-    std::string master_cfgsvr_ip_;
-
 
 protected:
     // 单子实例
@@ -164,5 +103,5 @@ protected:
 
 };
 
-#endif //SOARING_LIB_SERVER_CONFIG_H_
+#endif //SOARING_LIB_SERVER_CONFIG_TRANS_H_
 

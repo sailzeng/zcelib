@@ -6,7 +6,7 @@
 #include "soar_error_code.h"
 #include "soar_stat_monitor.h"
 #include "soar_stat_define.h"
-#include "soar_svrd_config.h"
+#include "soar_svrd_cfg_trans.h"
 
 class Zerg_App_Frame;
 

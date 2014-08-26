@@ -7,7 +7,7 @@
 
 class Comm_Svrd_Config;
 class Zerg_MMAP_BusPipe;
-class Comm_Timer_Handler;
+class Comm_Svrd_Timer_Base;
 /****************************************************************************************************
 class  Comm_Svrd_Appliction
 单线程自动机模型的程序框架基类.
@@ -21,9 +21,6 @@ protected:
     virtual ~Comm_Svrd_Appliction();
 
 public:
-
-    //设置进程暂停运行的标志
-    void set_pause_sign(bool app_pause);
 
 
 
@@ -100,13 +97,6 @@ private:
     //WIN 下面的退出处理
     static BOOL exit_signal(DWORD );
 
-    //安装服务
-    int win_services_install();
-    //卸载服务
-    int win_services_uninstall();
-    //检查服务是否安装
-    bool win_services_isinstalled();
-
     //服务运行函数
     static void WINAPI win_service_main();
     //服务控制台所需要的控制函数
@@ -177,7 +167,7 @@ protected:
 
 private:
     // 框架定时器处理类
-    Comm_Timer_Handler          *timer_handler_;
+    Comm_Svrd_Timer_Base          *timer_handler_;
 
 };
 

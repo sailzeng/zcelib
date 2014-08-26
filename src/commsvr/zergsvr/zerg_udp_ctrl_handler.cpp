@@ -1,19 +1,3 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_udpctrlsvr.cpp [Read Only]
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2007年11月17日
-Description         :
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #include "zerg_predefine.h"
 #include "zerg_udp_ctrl_handler.h"
@@ -190,9 +174,9 @@ int UDP_Svc_Handler::init_udp_services()
 }
 
 //取得句柄
-ZCE_SOCKET UDP_Svc_Handler::get_handle(void) const
+ZCE_HANDLE UDP_Svc_Handler::get_handle(void) const
 {
-    return dgram_peer_.get_handle();
+    return(ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
 int UDP_Svc_Handler::handle_input()
@@ -241,7 +225,7 @@ int UDP_Svc_Handler::handle_close ()
 {
 
     //
-    if (dgram_peer_.get_handle () != zce_INVALID_SOCKET)
+    if (dgram_peer_.get_handle () != ZCE_INVALID_SOCKET)
     {
         //内部会进行remove_handler
         ZCE_Event_Handler::handle_close ();
@@ -405,7 +389,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     size_revc = recvret;
 
     // 考虑到性能问题，这里的日志不使用ZLOG_DEBUG，而使用zce_LOGMSG_DBG-RS_DEBUG
-    zce_LOGMSG_DBG(RS_DEBUG, "[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
+    ZCE_LOGMSG_DBG(RS_DEBUG, "[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    dgram_peer_.get_handle(),

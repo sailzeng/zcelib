@@ -34,7 +34,7 @@ int Zerg_IPRestrict_Mgr::get_iprestrict_conf(const conf_zerg::ZERG_CONFIG &confi
     //ret  = cfg_file.get_uint32_value("RESTRICT","NUMALLOW",tmp_uint);
     std::vector<std::string> v;
     split(config.restrict_cfg.allow_ips, " ", v);
-    allow_ip_set_.resize(v.size());
+    allow_ip_set_.rehash(v.size());
 
     //读取运行连接的服务器IP地址
     for (unsigned int i = 0; i < v.size(); ++i )
@@ -58,7 +58,7 @@ int Zerg_IPRestrict_Mgr::get_iprestrict_conf(const conf_zerg::ZERG_CONFIG &confi
     //ret  = cfg_file.get_uint32_value("RESTRICT","NUMREJECT",tmp_uint);
     v.clear();
     split(config.restrict_cfg.reject_ips, " ", v);
-    reject_ip_set_.resize(v.size());
+    reject_ip_set_.rehash(v.size());
 
     for (unsigned int i = 0; i < v.size(); ++i)
     {

@@ -4,7 +4,6 @@
 #include "zerg_udp_ctrl_handler.h"
 #include "zerg_accept_handler.h"
 #include "zerg_app_handler.h"
-#include "zerg_external_connect_handler.h"
 #include "zerg_comm_manager.h"
 
 

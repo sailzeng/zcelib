@@ -229,7 +229,7 @@ public:
 
     //ZEN的一组要求自己继承的函数.
     //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
-    virtual ZCE_SOCKET get_handle(void) const;
+    virtual ZCE_HANDLE get_handle(void) const;
 
     //读事件触发
     virtual int handle_input();
