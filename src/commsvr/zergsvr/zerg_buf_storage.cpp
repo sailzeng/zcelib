@@ -9,31 +9,31 @@ class ZByteBuffer
 
 ZBuffer_Storage *ZBuffer_Storage::instance_ = NULL;
 
-ZByteBuffer::ZByteBuffer():
+Zerg_Buffer::Zerg_Buffer():
     size_of_use_(0),
     size_of_buffer_(0)
 {
 }
 
 //
-ZByteBuffer::~ZByteBuffer()
+Zerg_Buffer::~Zerg_Buffer()
 {
 }
 
 //
-void ZByteBuffer::fill_write_data(const size_t szdata, const char *data)
+void Zerg_Buffer::fill_write_data(const size_t szdata, const char *data)
 {
     memcpy(buffer_data_, data, szdata);
     size_of_buffer_ += szdata;
     //
 }
 //
-void ZByteBuffer::get_read_data(size_t &szdata, char *data)
+void Zerg_Buffer::get_read_data(size_t &szdata, char *data)
 {
     memcpy(data, buffer_data_, szdata);
 }
 
-void ZByteBuffer::clear_buffer()
+void Zerg_Buffer::clear_buffer()
 {
     size_of_buffer_ = 0;
     size_of_use_  = 0;
@@ -107,7 +107,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-ZByteBuffer *ZBuffer_Storage::allocate_buffer()
+Zerg_Buffer *ZBuffer_Storage::allocate_buffer()
 {
     //缓冲区使用完了,扩展
     if ( true == buffer_deque_.empty() )
@@ -115,14 +115,14 @@ ZByteBuffer *ZBuffer_Storage::allocate_buffer()
         extend_bufferlist();
     }
 
-    ZByteBuffer *tmppr = buffer_deque_[0];
+    Zerg_Buffer *tmppr = buffer_deque_[0];
     buffer_deque_[0] = NULL;
     buffer_deque_.pop_front();
     return tmppr;
 }
 
 //
-void ZBuffer_Storage::free_byte_buffer(ZByteBuffer *ptrbuf)
+void ZBuffer_Storage::free_byte_buffer(Zerg_Buffer *ptrbuf)
 {
     ZCE_ASSERT(ptrbuf);
     ptrbuf->clear_buffer();
@@ -148,14 +148,14 @@ void ZBuffer_Storage::extend_bufferlist(size_t szlist)
     ZLOG_INFO("[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
               szlist,
               size_of_bufferalloc_,
-              szlist * ZByteBuffer::CAPACITY_OF_BUFFER,
-              size_of_bufferalloc_ * ZByteBuffer::CAPACITY_OF_BUFFER
+              szlist * Zerg_Buffer::CAPACITY_OF_BUFFER,
+              size_of_bufferalloc_ * Zerg_Buffer::CAPACITY_OF_BUFFER
              );
     buffer_deque_.resize(size_of_bufferalloc_ + szlist);
 
     for (size_t i = 0; i < szlist; ++i)
     {
-        ZByteBuffer *tmppr = new ZByteBuffer();
+        Zerg_Buffer *tmppr = new Zerg_Buffer();
         tmppr->clear_buffer();
         buffer_deque_.push_back(tmppr);
     }

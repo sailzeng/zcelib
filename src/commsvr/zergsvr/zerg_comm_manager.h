@@ -126,7 +126,7 @@ public:
     // 收到心跳包请求，打上接收时间戳
     void proc_zerg_heart_beat(Zerg_App_Frame * recv_frame);
 
-    int send_single_buf( ZByteBuffer * tmpbuf );
+    int send_single_buf( Zerg_Buffer * tmpbuf );
 
 };
 

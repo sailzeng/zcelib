@@ -1,20 +1,3 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_configure.cpp
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2005年11月17日
-Description         :
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
-
 #include "zerg_predefine.h"
 #include "zerg_configure.h"
 #include "zerg_udp_ctrl_handler.h"
@@ -73,16 +56,6 @@ int Zerg_Server_Config::GetServicesIPInfo(const SERVICES_ID &svc_info,
 {
     int ret = 0;
     unsigned int idc_no;
-
-    ret = CfgSvrSdk::instance()->get_ip_info(svc_info, ipaddr, idc_no);
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC )
-    {
-        ZLOG_ERROR("[zergsvr] Can't get svc [%u|%u] ip info from config center .",
-            svc_info.services_type_,
-            svc_info.services_id_);
-        return ret;
-    }
 
     //打印一下
     ZLOG_INFO("[zergsvr] Svc_info [%u|%u] ipaddress info [%s|%u].",

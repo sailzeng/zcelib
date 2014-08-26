@@ -1,29 +1,13 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_tcpctrlsvr.cpp
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2005年11月17日
-Description         :
 
-Others              : ZENLIB相关地方return 0,部分地方用枚举,
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #include "zerg_predefine.h"
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_comm_manager.h"
 #include "zerg_app_handler.h"
 #include "zerg_stat_define.h"
-#include "zerg_inner_connect_handler.h"
 #include "zerg_application.h"
 
-using namespace sec_proto;
+
 
 /****************************************************************************************************
 class  TCP_Svc_Handler
@@ -109,7 +93,7 @@ Modify Record   :
 ******************************************************************************************/
 TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
-    zce_Timer_Handler(ZCE_Timer_Queue::instance()),
+    ZCE_Timer_Handler(ZCE_Timer_Queue::instance()),
     handler_mode_(hdl_mode),
     my_svc_info_(0, 0),
     peer_svr_info_(0, 0),
@@ -1155,7 +1139,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 
     //充分利用缓冲区去接收
     recvret = socket_peer_.recv(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_,
-                                ZByteBuffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
+                                Zerg_Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
                                 0);
 
     //表示被关闭或者出现错误
@@ -1410,7 +1394,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
     //#endif //#if defined DEBUG || defined _DEBUG
 
     //前面有检查,不会越界
-    ZByteBuffer *sndbuffer = snd_buffer_deque_[0];
+    Zerg_Buffer *sndbuffer = snd_buffer_deque_[0];
 
     ssize_t sendret = socket_peer_.send(sndbuffer->buffer_data_ + sndbuffer->size_of_buffer_,
                                         sndbuffer->size_of_use_ - sndbuffer->size_of_buffer_,
@@ -1476,7 +1460,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
 }
 
 //处理发送错误.
-int TCP_Svc_Handler::process_send_error(ZByteBuffer *tmpbuf, bool frame_encode)
+int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
 {
     //记录已经使用到的位置
     size_t use_start = tmpbuf->size_of_buffer_;
@@ -1623,7 +1607,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int TCP_Svc_Handler::process_send_data(ZByteBuffer *tmpbuf )
+int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf )
 {
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
     DEBUGDUMP_FRAME_HEAD(proc_frame, "process_send_data Before framehead_encode:", RS_DEBUG);
@@ -1793,7 +1777,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     //    peer_address_.get_port_number(),
     //    cmd);
     //向对方发送一个心跳包
-    ZByteBuffer *tmpbuf = zbuffer_storage_->allocate_buffer();
+    Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
     proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, option, cmd);
@@ -1820,7 +1804,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
 int TCP_Svc_Handler::send_zerg_heart_beat_reg()
 {
     //向对方发送一个心跳包
-    ZByteBuffer *tmpbuf = zbuffer_storage_->allocate_buffer();
+    Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
     proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, 0, ZERG_HEART_BEAT_REQ);
@@ -1870,7 +1854,7 @@ Called By       :
 Other           : 如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
 Modify Record   : put_frame_to_sendlist内部进行了错误处理，回收等操作
 ******************************************************************************************/
-int TCP_Svc_Handler::put_frame_to_sendlist(ZByteBuffer *tmpbuf)
+int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 {
     int ret = 0;
 

@@ -8,7 +8,7 @@ class  Zerg_IPRestrict_Mgr
 class Zerg_IPRestrict_Mgr
 {
 
-    typedef unordered_set<unsigned int> SetOfIPAddress;
+    typedef unordered_set<unsigned int> Set_Of_IPAddress;
 
 protected:
     //
@@ -24,9 +24,9 @@ public:
 protected:
 
     //允许进行连接的IP地址
-    SetOfIPAddress           allow_ip_set_;
+    Set_Of_IPAddress           allow_ip_set_;
     //拒绝进行连接的IP地址
-    SetOfIPAddress           reject_ip_set_;
+    Set_Of_IPAddress           reject_ip_set_;
 
 protected:
     //单子实例

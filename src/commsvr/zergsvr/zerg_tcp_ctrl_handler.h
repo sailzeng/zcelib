@@ -7,7 +7,7 @@
 #include "zerg_auto_connect.h"
 #include "zerg_service_info_set.h"
 
-class ZByteBuffer;
+class Zerg_Buffer;
 class mmap_dequechunk;
 class Zerg_Auto_Connector;
 class Zerg_Comm_Manager;
@@ -151,10 +151,10 @@ protected:
     SERVICES_ID                peer_svr_info_;
 
     //接收数据的缓冲
-    ZByteBuffer               *rcv_buffer_;
+    Zerg_Buffer               *rcv_buffer_;
 
     //发送的数据可能要排队
-    ZCE_LIB::lordrings<ZByteBuffer *>  snd_buffer_deque_;
+    ZCE_LIB::lordrings<Zerg_Buffer *>  snd_buffer_deque_;
 
     // 内外协议不同处理逻辑实现类
     TcpHandlerImpl *impl_;
@@ -302,7 +302,7 @@ protected:
     int push_frame_to_comm_mgr();
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(ZByteBuffer *tmpbuf);
+    int put_frame_to_sendlist(Zerg_Buffer *tmpbuf);
     //合并发送的数据
     void unite_frame_sendlist();
 
@@ -349,11 +349,11 @@ public:
 protected:
 
     //处理发送错误
-    int process_send_error(ZByteBuffer *tmpbuf, bool frame_encode);
+    int process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode);
 
 public:
     //处理发送一个数据
-    static int process_send_data(ZByteBuffer *tmpbuf );
+    static int process_send_data(Zerg_Buffer *tmpbuf );
 };
 
 #endif //_ZERG_TCP_CONTROL_SERVICE_H_

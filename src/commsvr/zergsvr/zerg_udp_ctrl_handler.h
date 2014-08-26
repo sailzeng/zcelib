@@ -4,7 +4,7 @@
 
 //forward declaration
 class Zerg_App_Frame;
-class ZByteBuffer;
+class Zerg_Buffer;
 class UDPSessionKeyMgr;
 class Zerg_IPRestrict_Mgr;
 class Zerg_Comm_Manager;
@@ -105,7 +105,7 @@ protected:
     uint32_t                cmd_len_;
 
     //数据缓冲区，UDP只有一个
-    ZByteBuffer             *dgram_databuf_;
+    Zerg_Buffer             *dgram_databuf_;
     //IP限制管理器
     Zerg_IPRestrict_Mgr      *ip_restrict_;
 

@@ -1,7 +1,7 @@
 
 #include "zerg_predefine.h"
 #include "zerg_ip_restrict.h"
-#include "zce_string_util.h"
+
 
 //实例
 Zerg_IPRestrict_Mgr *Zerg_IPRestrict_Mgr::instance_ = NULL;
@@ -85,7 +85,7 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
     //如果允许的连接的服务器地址中间没有... kill
     if (allow_ip_set_.empty() == false )
     {
-        hash_set<unsigned int>::iterator iter = allow_ip_set_.find(remoteaddress.get_ip_address());
+        Set_Of_IPAddress::iterator iter = allow_ip_set_.find(remoteaddress.get_ip_address());
 
         if ( iter == allow_ip_set_.end() )
         {
@@ -99,7 +99,7 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
     //如果是要被拒绝连接的IP地址...kill
     if (reject_ip_set_.empty() == false )
     {
-        hash_set<unsigned int>::iterator iter = reject_ip_set_.find(remoteaddress.get_ip_address());
+        Set_Of_IPAddress::iterator iter = reject_ip_set_.find(remoteaddress.get_ip_address());
 
         if ( iter != reject_ip_set_.end() )
         {

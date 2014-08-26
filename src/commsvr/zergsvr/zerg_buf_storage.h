@@ -3,9 +3,9 @@
 #define ZERG_BUFFER_STORAGE_H_
 
 /****************************************************************************************************
-class ZByteBuffer
+class Zerg_Buffer
 ****************************************************************************************************/
-class ZByteBuffer
+class Zerg_Buffer
 {
 public:
     //
@@ -24,9 +24,9 @@ public:
 
 public:
     //
-    ZByteBuffer();
+    Zerg_Buffer();
     //
-    ~ZByteBuffer();
+    ~Zerg_Buffer();
 
     //填充数据
     void fill_write_data(const size_t szdata, const char *data);
@@ -89,7 +89,7 @@ protected:
 
 protected:
     //
-    typedef ZCE_LIB::lordrings <ZByteBuffer *> ZListBufferAry;
+    typedef ZCE_LIB::lordrings <Zerg_Buffer *> ZListBufferAry;
 
     //我担心内存泄露,所以加个总数计数
     size_t                size_of_bufferalloc_;
@@ -123,10 +123,10 @@ public:
     void uninit_buffer_list();
 
     //分配一个Buffer到List中
-    ZByteBuffer *allocate_buffer();
+    Zerg_Buffer *allocate_buffer();
 
     //释放一个Buffer到List中
-    void free_byte_buffer(ZByteBuffer *ptrbuf );
+    void free_byte_buffer(Zerg_Buffer *ptrbuf );
 
     //扩展BufferList
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);

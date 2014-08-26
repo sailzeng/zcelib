@@ -242,7 +242,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
     while (zerg_mmap_pipe_->is_empty_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID) == false && num_send_frame < want_send_frame )
     {
 
-        ZByteBuffer *tmpbuf = zbuffer_storage_->allocate_buffer();
+        Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
         //
         Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
@@ -315,7 +315,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
                     }
                     else
                     {
-                        ZByteBuffer *send_buf = zbuffer_storage_->allocate_buffer();
+                        Zerg_Buffer *send_buf = zbuffer_storage_->allocate_buffer();
                         memcpy(send_buf->buffer_data_, tmpbuf->buffer_data_, tmpbuf->size_of_use_);
                         reinterpret_cast<Zerg_App_Frame *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
                         send_buf->size_of_use_ = tmpbuf->size_of_use_;
@@ -561,7 +561,7 @@ Zerg_Comm_Manager::stat_heart_beat_distribute(const Zerg_App_Frame * proc_frame,
     }
 }
 
-int Zerg_Comm_Manager::send_single_buf( ZByteBuffer * tmpbuf )
+int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer * tmpbuf )
 {
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
