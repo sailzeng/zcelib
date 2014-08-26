@@ -65,7 +65,7 @@ protected:
     size_t                    size_of_wantconnect_;
 
     //连接器
-    zce_Socket_Connector      zerg_connector_;
+    ZCE_Socket_Connector      zerg_connector_;
 
 private:
     //主路由id列表

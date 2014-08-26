@@ -46,7 +46,7 @@ UDP_Svc_Handler::UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
                                  bool is_external_pkg,
                                  uint32_t cmd_offset,
                                  uint32_t cmd_len):
-    zce_Event_Handler(ZCE_Reactor::instance()),
+    ZCE_Event_Handler(ZCE_Reactor::instance()),
     self_udp_addr_(addr),
     peer_udp_addr_(ZCE_Sockaddr_In()),
     self_svc_info_(my_svcinfo),
@@ -69,7 +69,7 @@ UDP_Svc_Handler::UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
                                  bool is_external_pkg,
                                  uint32_t cmd_offset,
                                  uint32_t cmd_len):
-    zce_Event_Handler(ZCE_Reactor::instance()),
+    ZCE_Event_Handler(ZCE_Reactor::instance()),
     self_udp_addr_(ZCE_Sockaddr_In()),
     peer_udp_addr_(peer_addr),
     self_svc_info_(my_svcinfo),
@@ -121,7 +121,7 @@ int UDP_Svc_Handler::init_udpsvr_handler()
     dgram_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
     dgram_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void *>(&opval), opvallen);
 
-    ret = reactor()->register_handler(this, zce_Event_Handler::READ_MASK);
+    ret = reactor()->register_handler(this, ZCE_Event_Handler::READ_MASK);
 
     if (ret != 0)
     {
@@ -172,7 +172,7 @@ int UDP_Svc_Handler::init_udp_services()
     dgram_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
     dgram_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void *>(&opval), opvallen);
 
-    ret = reactor()->register_handler (this, zce_Event_Handler::READ_MASK );
+    ret = reactor()->register_handler (this, ZCE_Event_Handler::READ_MASK );
 
     if (ret != 0)
     {
@@ -190,7 +190,7 @@ int UDP_Svc_Handler::init_udp_services()
 }
 
 //取得句柄
-zce_SOCKET UDP_Svc_Handler::get_handle(void) const
+ZCE_SOCKET UDP_Svc_Handler::get_handle(void) const
 {
     return dgram_peer_.get_handle();
 }
@@ -208,11 +208,11 @@ int UDP_Svc_Handler::handle_input()
         //读取数据
         ret = read_data_from_udp(szrevc);
 
-        zce_LOGMSG_DBG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
+        ZCE_LOGMSG_DBG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
 
         if (ret != SOAR_RET::SOAR_RET_SUCC)
         {
-            zce_LOGMSG_DBG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,ZCE_OS::last_error()=%d|%s",
+            ZCE_LOGMSG_DBG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,ZCE_OS::last_error()=%d|%s",
                            ret,
                            szrevc,
                            ZCE_OS::last_error(),
@@ -224,7 +224,7 @@ int UDP_Svc_Handler::handle_input()
         //如果出来成功
         if (szrevc > 0)
         {
-            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<Comm_App_Frame *>(dgram_databuf_->buffer_data_));
+            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<Zerg_App_Frame *>(dgram_databuf_->buffer_data_));
         }
         else
         {
@@ -244,7 +244,7 @@ int UDP_Svc_Handler::handle_close ()
     if (dgram_peer_.get_handle () != zce_INVALID_SOCKET)
     {
         //内部会进行remove_handler
-        zce_Event_Handler::handle_close ();
+        ZCE_Event_Handler::handle_close ();
         dgram_peer_.close ();
     }
 
@@ -274,10 +274,10 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     ZCE_Sockaddr_In     remote_addr;
 
-    Comm_App_Frame *proc_frame;
+    Zerg_App_Frame *proc_frame;
 
-    recvret = dgram_peer_.recvfrom(dgram_databuf_->buffer_data_ + Comm_App_Frame::LEN_OF_APPFRAME_HEAD, // 后移动50个字节, 方便接收非框架包
-                                   Comm_App_Frame::MAX_LEN_OF_APPFRAME_DATA - Comm_App_Frame::LEN_OF_APPFRAME_HEAD,
+    recvret = dgram_peer_.recvfrom(dgram_databuf_->buffer_data_ + Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, // 后移动50个字节, 方便接收非框架包
+                                   Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD,
                                    0,
                                    &remote_addr);
 
@@ -330,8 +330,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     if (is_external_pkg_)
     {
         // 非框架包需要先转成框架包, 越过的50个字节为包头
-        proc_frame = reinterpret_cast<Comm_App_Frame *> (dgram_databuf_->buffer_data_);
-        uint32_t tmpframe_length = recvret + Comm_App_Frame::LEN_OF_APPFRAME_HEAD;
+        proc_frame = reinterpret_cast<Zerg_App_Frame *> (dgram_databuf_->buffer_data_);
+        uint32_t tmpframe_length = recvret + Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
         uint32_t tmp_cmd = 0;
 
         if ((cmd_offset_>>31) == 1)
@@ -345,7 +345,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
             if (ret != SOAR_RET::SOAR_RET_SUCC)
             {
                 ZLOG_ERROR("[%s]get external udp pkg cmd failed, ret=%d, recvlen=%d, cmdoffset=%u, cmdlen=%u",
-                    __zce_FUNCTION__,
+                    __ZCE_FUNCTION__,
                     ret,
                     recvret,
                     cmd_offset_,
@@ -354,12 +354,12 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
             }
         }
 
-        proc_frame->init_framehead(tmpframe_length, Comm_App_Frame::DESC_UDP_FRAME, tmp_cmd);
+        proc_frame->init_framehead(tmpframe_length, Zerg_App_Frame::DESC_UDP_FRAME, tmp_cmd);
     }
     else
     {
         // 收包处往后调整了50个字节
-        proc_frame = reinterpret_cast<Comm_App_Frame *> (dgram_databuf_->buffer_data_ + Comm_App_Frame::LEN_OF_APPFRAME_HEAD);
+        proc_frame = reinterpret_cast<Zerg_App_Frame *> (dgram_databuf_->buffer_data_ + Zerg_App_Frame::LEN_OF_APPFRAME_HEAD);
         proc_frame->framehead_decode();
 
         //如果收到的是APPFRAME的数据，检查对方帧是否填写正确
@@ -400,7 +400,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     //避免发生其他人填写的情况
     proc_frame->clear_inner_option();
-    proc_frame->frame_option_ |= Comm_App_Frame::DESC_UDP_FRAME;
+    proc_frame->frame_option_ |= Zerg_App_Frame::DESC_UDP_FRAME;
 
     size_revc = recvret;
 
@@ -419,14 +419,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
 Function        : UDP_Svc_Handler::write_data_to_udp
 Return          : int
 Parameter List  :
-  Param1: Comm_App_Frame* send_frame
+  Param1: Zerg_App_Frame* send_frame
 Description     :
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int UDP_Svc_Handler::write_data_to_udp(Comm_App_Frame *send_frame)
+int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 {
     ssize_t szsend = 0;
 
@@ -454,7 +454,7 @@ int UDP_Svc_Handler::write_data_to_udp(Comm_App_Frame *send_frame)
     {
         // 如果是发给非框架服务器，是不需要发送包头的
         szsend = dgram_peer_.sendto(send_frame->frame_appdata_,
-                                    send_len - Comm_App_Frame::LEN_OF_APPFRAME_HEAD,
+                                    send_len - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD,
                                     0,
                                     &remote_addr);
     }
@@ -479,7 +479,7 @@ int UDP_Svc_Handler::write_data_to_udp(Comm_App_Frame *send_frame)
     }
 
     // 考虑到性能问题，这里的日志不使用ZLOG_DEBUG，而使用zce_LOGMSG_DBG-RS_DEBUG
-    zce_LOGMSG_DBG(RS_DEBUG, "[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
+    ZCE_LOGMSG_DBG(RS_DEBUG, "[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    dgram_peer_.get_handle(),
@@ -496,14 +496,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
 Function        : UDP_Svc_Handler::send_all_to_udp
 Return          : int
 Parameter List  :
-  Param1: Comm_App_Frame* send_frame
+  Param1: Zerg_App_Frame* send_frame
 Description     : 发送UDP数据
 Calls           :
 Called By       :
 Other           : 要找到原有的
 Modify Record   :
 ******************************************************************************************/
-int UDP_Svc_Handler::send_all_to_udp(Comm_App_Frame *send_frame)
+int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
 {
     for (size_t i = 0; i < ary_udpsvc_handler_.size(); ++i)
     {
@@ -568,7 +568,7 @@ int UDP_Svc_Handler::init_all_static_data()
 int UDP_Svc_Handler::get_udpctrl_conf(const conf_zerg::ZERG_CONFIG *config)
 {
     // 是否proxy的配置从命令行读取，不再从配置中读取
-    zce_UNUSED_ARG(config);
+    ZCE_UNUSED_ARG(config);
     if_proxy_ = Zerg_Service_App::instance()->if_proxy();
     return SOAR_RET::SOAR_RET_SUCC;
 }

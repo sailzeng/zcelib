@@ -1,31 +1,15 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : ogre_udpctrlsvr.h
-Author              : Sail(ZENGXING)
-Version             :
-Date Of Creation    : 2007年3月7日,
-Description         : UDP的Handler处理类
-
-Others              : XXX的UDP，改死我了。你现在看到的代码简单，当年可是有加解密部分的。
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #ifndef ZERG_UDP_CONTROL_SERVICE_H_
 #define ZERG_UDP_CONTROL_SERVICE_H_
 
 //forward declaration
-class Comm_App_Frame;
+class Zerg_App_Frame;
 class ZByteBuffer;
 class UDPSessionKeyMgr;
 class Zerg_IPRestrict_Mgr;
 class Zerg_Comm_Manager;
 
-class UDP_Svc_Handler: public zce_Event_Handler
+class UDP_Svc_Handler: public ZCE_Event_Handler
 {
 protected:
 
@@ -51,7 +35,7 @@ protected:
 
 public:
     //取得句柄
-    virtual zce_SOCKET get_handle(void) const;
+    virtual ZCE_SOCKET get_handle(void) const;
     //
     virtual int handle_input();
     //
@@ -71,7 +55,7 @@ protected:
     int read_data_from_udp(size_t &szrevc);
 
     //发送UDP的数据
-    int write_data_to_udp(Comm_App_Frame *send_frame);
+    int write_data_to_udp(Zerg_App_Frame *send_frame);
 
     // 获取外部协议包的cmd
     int get_external_pkg_cmd(uint32_t &cmd, const uint8_t *buff, const ssize_t buf_len);
@@ -81,7 +65,7 @@ public:
     static int init_all_static_data();
 
     //
-    static int send_all_to_udp(Comm_App_Frame *send_frame);
+    static int send_all_to_udp(Zerg_App_Frame *send_frame);
 
     //
     static int get_udpctrl_conf(const conf_zerg::ZERG_CONFIG *config);
@@ -97,7 +81,7 @@ protected:
 protected:
 
     //数据包
-    zce_Socket_DataGram      dgram_peer_;
+    ZCE_Socket_DataGram      dgram_peer_;
 
     // 自己的监听地址
     ZCE_Sockaddr_In          self_udp_addr_;

@@ -7,7 +7,7 @@
 /****************************************************************************************************
 class  Zerg_App_Timer_Handler
 ****************************************************************************************************/
-zce_Time_Value Zerg_App_Timer_Handler::now_time_ = ZCE_OS::gettimeofday();
+ZCE_Time_Value Zerg_App_Timer_Handler::now_time_ = ZCE_OS::gettimeofday();
 
 //定时器ID,避免New传递,回收
 const int Zerg_App_Timer_Handler::ZERGAPP_TIME_ID[] =
@@ -28,9 +28,9 @@ Zerg_App_Timer_Handler::Zerg_App_Timer_Handler(ZCE_Timer_Queue *time_queue):
     last_trigger_reload_time_ = heartbeat_counter_;
 
     //定时心跳,每秒心跳一下，得到当前的时间
-    zce_Time_Value interval = ZCE_OS::make_timeval(HEARTBEAT_TIME_INTERVAL, 0);
+    ZCE_Time_Value interval = ZCE_OS::make_timeval(HEARTBEAT_TIME_INTERVAL, 0);
     timer_queue()->schedule_timer (this, &(ZERGAPP_TIME_ID[0]),
-                                   zce_Time_Value::ZERO_TIME_VALUE,
+                                   ZCE_Time_Value::ZERO_TIME_VALUE,
                                    interval);
 }
 
@@ -39,7 +39,7 @@ Zerg_App_Timer_Handler::~Zerg_App_Timer_Handler()
 }
 
 //
-int Zerg_App_Timer_Handler::handle_timeout(const zce_Time_Value &time_now, const void *arg)
+int Zerg_App_Timer_Handler::handle_timeout(const ZCE_Time_Value &time_now, const void *arg)
 {
     //等到当前的时间
     now_time_ = time_now;

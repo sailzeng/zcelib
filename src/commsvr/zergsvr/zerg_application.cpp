@@ -360,7 +360,7 @@ int Zerg_Service_App::run_instance()
     ZCE_Reactor *preactor = ZCE_Reactor::instance();
     ZCE_Timer_Queue *p_timer_queue = ZCE_Timer_Queue::instance();
 
-    zce_Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
+    ZCE_Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
 
     for (size_t i = 0; app_run_; ++i)
     {
@@ -410,7 +410,7 @@ int Zerg_Service_App::run_instance()
         //
         preactor->handle_events(&run_interval, &num_io_event);
 
-        //每次都在这儿初始化zce_Time_Value不好,其要调整.
+        //每次都在这儿初始化ZCE_Time_Value不好,其要调整.
         zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
 
         //如果发送队列很忙，再进行一次发送

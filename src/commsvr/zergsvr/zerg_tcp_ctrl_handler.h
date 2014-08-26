@@ -1,19 +1,4 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_tcpctrlsvr.h
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2005年12月19日
-Description         : 没有使用ACE Connector,Acceptor模型,
-                      不过也好,zce_Event_Handler毕竟更加轻便一些.自己完全控制
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
+
 
 #ifndef ZERG_TCP_CONTROL_SERVICE_H_
 #define ZERG_TCP_CONTROL_SERVICE_H_
@@ -169,7 +154,7 @@ protected:
     ZByteBuffer               *rcv_buffer_;
 
     //发送的数据可能要排队
-    zce_LIB::lordrings<ZByteBuffer *>  snd_buffer_deque_;
+    ZCE_LIB::lordrings<ZByteBuffer *>  snd_buffer_deque_;
 
     // 内外协议不同处理逻辑实现类
     TcpHandlerImpl *impl_;
@@ -243,8 +228,8 @@ public:
     void change_impl(TcpHandlerImpl *impl);
 
     //ZEN的一组要求自己继承的函数.
-    //zce_Event_Handler必须重载的函数，取得SOCKET句柄
-    virtual zce_SOCKET get_handle(void) const;
+    //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
+    virtual ZCE_SOCKET get_handle(void) const;
 
     //读事件触发
     virtual int handle_input();
@@ -253,7 +238,7 @@ public:
     virtual int handle_output();
 
     //超时事件触发
-    virtual int handle_timeout(const zce_Time_Value &time, const void *arg);
+    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
 
     //关闭事件触发
     virtual int handle_close ();
@@ -308,7 +293,7 @@ protected:
     int write_all_data_to_peer();
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(Comm_App_Frame *proc_frame);
+    int  preprocess_recvframe(Zerg_App_Frame *proc_frame);
 
     //处理发送的REGISTER数据,连接后发送第一个数据
     int  process_connect_register();

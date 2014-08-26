@@ -35,12 +35,6 @@
     <ClCompile Include="zerg_console_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_external_connect_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_inner_connect_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zerg_ip_restrict.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -54,9 +48,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zerg_tcp_ctrl_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_tcp_handler_impl.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zerg_udp_ctrl_handler.cpp">
@@ -88,12 +79,6 @@
     <ClInclude Include="zerg_console_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zerg_external_connect_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_inner_connect_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zerg_ip_restrict.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -107,9 +92,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg_tcp_ctrl_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_tcp_handler_impl.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg_udp_ctrl_handler.h">

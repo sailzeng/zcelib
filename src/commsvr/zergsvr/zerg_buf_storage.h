@@ -9,7 +9,7 @@ class ZByteBuffer
 {
 public:
     //
-    static const unsigned int CAPACITY_OF_BUFFER = Comm_App_Frame::MAX_LEN_OF_APPFRAME + 16;
+    static const unsigned int CAPACITY_OF_BUFFER = Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16;
 
 public:
 
@@ -89,7 +89,7 @@ protected:
 
 protected:
     //
-    typedef zce_LIB::lordrings <ZByteBuffer *> ZListBufferAry;
+    typedef ZCE_LIB::lordrings <ZByteBuffer *> ZListBufferAry;
 
     //我担心内存泄露,所以加个总数计数
     size_t                size_of_bufferalloc_;

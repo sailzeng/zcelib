@@ -42,7 +42,7 @@ public:
 
     //初始化Socket, backlog默认值和open中使用的默认值保持一致
     int init_socketpeer(ZERG_SERVICES_INFO &init_svcid,
-        unsigned int backlog = zce_DEFAULT_BACKLOG,
+        unsigned int backlog = ZCE_DEFAULT_BACKLOG,
         bool is_extern_svc = false,
         unsigned int proto_index = 0);
 
@@ -53,7 +53,7 @@ public:
     int popall_sendpipe_write(size_t want_, size_t &proc_frame_num);
 
     //
-    inline void pushback_recvpipe(Comm_App_Frame *recv_frame);
+    inline void pushback_recvpipe(Zerg_App_Frame *recv_frame);
 
     //检查发包频率
     void check_freamcount(unsigned int now);
@@ -78,7 +78,7 @@ protected:
     //UPD的HANDLER数组
     UDPSVC_HANDLER_LIST       zerg_updsvc_;
 
-    std::vector<TcpHandlerImpl*> external_proto_handler_;
+
 
     //对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
     unsigned int              error_try_num_;
@@ -118,20 +118,20 @@ public:
     static void clean_instance();
 
     // 统计心跳包收发间隔
-    void stat_heart_beat_gap(const Comm_App_Frame * proc_frame);
+    void stat_heart_beat_gap(const Zerg_App_Frame * proc_frame);
     // 统计收发分布
-    void stat_heart_beat_distribute(const Comm_App_Frame * proc_frame, unsigned int use_time,
+    void stat_heart_beat_distribute(const Zerg_App_Frame * proc_frame, unsigned int use_time,
         ZERG_MONITOR_FEATURE_ID feature_id);
 
     // 收到心跳包请求，打上接收时间戳
-    void proc_zerg_heart_beat(Comm_App_Frame * recv_frame);
+    void proc_zerg_heart_beat(Zerg_App_Frame * recv_frame);
 
     int send_single_buf( ZByteBuffer * tmpbuf );
 
 };
 
 //希望加快所以用了inline，不过看函数长度，优化的可能性小。
-inline void Zerg_Comm_Manager::pushback_recvpipe(Comm_App_Frame *recv_frame)
+inline void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -153,16 +153,11 @@ inline void Zerg_Comm_Manager::pushback_recvpipe(Comm_App_Frame *recv_frame)
         }
     }
 
-    // 如果是监控uin,数据头部加上标记
-    if (comm_config_->is_monitor_uin(recv_frame->frame_uin_))
-    {
-        recv_frame->frame_option_ |= Comm_App_Frame::DESC_MONITOR_TRACK;
-    }
 
     //为了提高效率，先检查标志位，
-    if (recv_frame->frame_option_ & Comm_App_Frame::DESC_MONITOR_TRACK)
+    if (recv_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
-        Comm_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]opt", RS_INFO);
+        Zerg_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]opt", RS_INFO);
     }
     else
     {
@@ -172,14 +167,14 @@ inline void Zerg_Comm_Manager::pushback_recvpipe(Comm_App_Frame *recv_frame)
         {
             if (monitor_cmd_[i] == recv_frame->frame_command_)
             {
-                recv_frame->frame_option_ |= Comm_App_Frame::DESC_MONITOR_TRACK;
-                Comm_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]cmd", RS_INFO);
+                recv_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+                Zerg_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]cmd", RS_INFO);
             }
         }
     }
 
     int ret = zerg_mmap_pipe_->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast< const zce_LIB::dequechunk_node *>(recv_frame));
+        reinterpret_cast< const ZCE_LIB::dequechunk_node *>(recv_frame));
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {

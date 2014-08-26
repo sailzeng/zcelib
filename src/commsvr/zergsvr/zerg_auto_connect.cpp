@@ -1,19 +1,4 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_autoconnect.cpp
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2005Äê11ÔÂ17ÈÕ
-Description         :
 
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 #include "zerg_predefine.h"
 #include "zerg_auto_connect.h"
 #include "zerg_application.h"
@@ -876,7 +861,7 @@ int Zerg_Auto_Connector::get_all_conn_server( unsigned short svr_type,
         }
 
         ZLOG_ERROR("[%s] fail get should connect svr, svrinfo:[%u|%u]",
-            __zce_FUNCTION__,
+            __ZCE_FUNCTION__,
             svrinfo.services_type_,
             svrinfo.services_id_);
     }

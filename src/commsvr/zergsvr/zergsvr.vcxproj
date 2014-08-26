@@ -92,14 +92,11 @@
     <ClCompile Include="zerg_comm_manager.cpp" />
     <ClCompile Include="zerg_configure.cpp" />
     <ClCompile Include="zerg_console_handler.cpp" />
-    <ClCompile Include="zerg_external_connect_handler.cpp" />
-    <ClCompile Include="zerg_inner_connect_handler.cpp" />
     <ClCompile Include="zerg_ip_restrict.cpp" />
     <ClCompile Include="zerg_main.cpp" />
     <ClCompile Include="zerg_predefine.cpp" />
     <ClCompile Include="zerg_service_info_set.cpp" />
     <ClCompile Include="zerg_tcp_ctrl_handler.cpp" />
-    <ClCompile Include="zerg_tcp_handler_impl.cpp" />
     <ClCompile Include="zerg_udp_ctrl_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -111,14 +108,11 @@
     <ClInclude Include="zerg_comm_manager.h" />
     <ClInclude Include="zerg_configure.h" />
     <ClInclude Include="zerg_console_handler.h" />
-    <ClInclude Include="zerg_external_connect_handler.h" />
-    <ClInclude Include="zerg_inner_connect_handler.h" />
     <ClInclude Include="zerg_ip_restrict.h" />
     <ClInclude Include="zerg_predefine.h" />
     <ClInclude Include="zerg_service_info_set.h" />
     <ClInclude Include="zerg_stat_define.h" />
     <ClInclude Include="zerg_tcp_ctrl_handler.h" />
-    <ClInclude Include="zerg_tcp_handler_impl.h" />
     <ClInclude Include="zerg_udp_ctrl_handler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

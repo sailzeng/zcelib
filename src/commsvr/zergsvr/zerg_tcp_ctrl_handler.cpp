@@ -108,7 +108,7 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode):
-    zce_Event_Handler(ZCE_Reactor::instance()),
+    ZCE_Event_Handler(ZCE_Reactor::instance()),
     zce_Timer_Handler(ZCE_Timer_Queue::instance()),
     handler_mode_(hdl_mode),
     my_svc_info_(0, 0),
@@ -214,7 +214,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
         //注册读写事件
         ret = reactor()->register_handler(this,
-                                          zce_Event_Handler::READ_MASK | zce_Event_Handler::WRITE_MASK);
+                                          ZCE_Event_Handler::READ_MASK | ZCE_Event_Handler::WRITE_MASK);
 
         //
         if (ret != 0)
@@ -230,7 +230,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
             return;
         }
 
-        reactor()->cancel_wakeup(this, zce_Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
         //统计
         server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0, static_cast<int>(num_accept_peer_));
@@ -251,8 +251,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     //如果配置了超时出来,N秒必须收到一个包
     //if ( connect_timeout_ > 0 || receive_timeout_ > 0)
 
-    zce_Time_Value delay(0, 0);
-    zce_Time_Value interval(0, 0);
+    ZCE_Time_Value delay(0, 0);
+    ZCE_Time_Value interval(0, 0);
 
     //
     (connect_timeout_ > 0) ? delay.sec(connect_timeout_) : delay.sec(STAT_TIMER_INTERVAL_SEC);
@@ -335,7 +335,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     snd_buffer_deque_.initialize(connect_send_deque_size_);
 
     //注册到
-    ret = reactor()->register_handler(this, zce_Event_Handler::CONNECT_MASK);
+    ret = reactor()->register_handler(this, ZCE_Event_Handler::CONNECT_MASK);
 
     //我几乎没有见过register_handler失败,
     if (ret != 0)
@@ -364,8 +364,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
     ++num_connect_peer_;
 
-    zce_Time_Value delay(STAT_TIMER_INTERVAL_SEC, 0);
-    zce_Time_Value interval(STAT_TIMER_INTERVAL_SEC, 0);
+    ZCE_Time_Value delay(STAT_TIMER_INTERVAL_SEC, 0);
+    ZCE_Time_Value interval(STAT_TIMER_INTERVAL_SEC, 0);
 
     timeout_time_id_ = timer_queue()->schedule_timer (this, &TCPCTRL_TIME_ID[0], delay, interval);
 
@@ -443,7 +443,7 @@ int TCP_Svc_Handler::get_tcpctrl_conf(const conf_zerg::ZERG_CONFIG *config)
 
     //最大的帧长度,在APPFRAME的长度基础上可以在限制,主要是写入的数据大小
     max_frame_len_ = config->comm_cfg.max_frame_len;
-    TESTCONFIG((ret == 0 && max_frame_len_ <= Comm_App_Frame::MAX_LEN_OF_APPFRAME && max_frame_len_ > 1024), "COMMCFG|MAXFRAMELEN key error.");
+    TESTCONFIG((ret == 0 && max_frame_len_ <= Zerg_App_Frame::MAX_LEN_OF_APPFRAME && max_frame_len_ > 1024), "COMMCFG|MAXFRAMELEN key error.");
 
     //是否检查FRAME
     if_check_frame_ = (config->check_cfg.check_frame == 1);
@@ -550,15 +550,15 @@ int TCP_Svc_Handler::init_all_static_data()
     //连接所有的SERVER
     size_t szsucc = 0, szfail = 0, szvalid = 0;
     zerg_auto_connect_.reconnect_tcpserver(szvalid, szsucc, szfail);
-	
-	// 在这里把udp的也已经创建了，位置可能不太合适，但是是改动最小的方式
+    
+    // 在这里把udp的也已经创建了，位置可能不太合适，但是是改动最小的方式
     zerg_auto_connect_.reconnect_udpserver(szvalid, szsucc, szfail);
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
 //取得句柄
-zce_SOCKET TCP_Svc_Handler::get_handle(void) const
+ZCE_SOCKET TCP_Svc_Handler::get_handle(void) const
 {
     return socket_peer_.get_handle();
 }
@@ -666,7 +666,7 @@ Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
 Function        : TCP_Svc_Handler::handle_timeout
 Return          : int
 Parameter List  :
-  Param1: const zce_Time_Value& * time  时间,
+  Param1: const ZCE_Time_Value& * time  时间,
   Param2: const void* arg               唯一标示参数
 Description     : 定时触发
 Calls           :
@@ -674,7 +674,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int TCP_Svc_Handler::handle_timeout(const zce_Time_Value &now_time, const void *arg)
+int TCP_Svc_Handler::handle_timeout(const ZCE_Time_Value &now_time, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
 
@@ -775,7 +775,7 @@ int TCP_Svc_Handler::handle_close ()
 
     //取消MASK,最后阶段,避免调用handle_close,
     //内部会进行remove_handler
-    zce_Event_Handler::handle_close ();
+    ZCE_Event_Handler::handle_close ();
 
     //关闭端口,
     socket_peer_.close();
@@ -813,11 +813,11 @@ int TCP_Svc_Handler::handle_close ()
 #pragma warning ( disable : 4815)
 #endif
             //数据区的长度
-            Comm_App_Frame appframe;
+            Zerg_App_Frame appframe;
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( default : 4815)
 #endif
-            appframe.init_framehead(Comm_App_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
+            appframe.init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
             appframe.send_service_ = peer_svr_info_;
 
             zerg_comm_mgr_->pushback_recvpipe(&appframe);
@@ -882,17 +882,17 @@ Author          : Sail ZENGXING  Date Of Creation: 2005年11月23日
 Function        : TCP_Svc_Handler::preprocess_recvframe
 Return          : int
 Parameter List  :
-    Param1: Comm_App_Frame *proc_frame
+    Param1: Zerg_App_Frame *proc_frame
 Description     :
 Calls           :
 Called By       :
 Other           : 同时完成帧头数据的解码工作
 Modify Record   :
 ******************************************************************************************/
-    int TCP_Svc_Handler::preprocess_recvframe(Comm_App_Frame *proc_frame)
+    int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
     {
         int ret = 0;
-        //Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( rcv_buffer_->buffer_data_);
+        //Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( rcv_buffer_->buffer_data_);
 
         DEBUGDUMP_FRAME_HEAD(proc_frame, "preprocess_recvframe After framehead_decode:", RS_DEBUG);
 
@@ -1040,7 +1040,7 @@ Modify Record   :
         else
         {
             if ((SERVICES_ID::DYNAMIC_ALLOC_SERVICES_ID != proc_frame->send_service_.services_id_) \
-				&& (! multi_con_flag_))
+                && (! multi_con_flag_))
             {
                 if (impl_->check_sender())
                 {
@@ -1109,10 +1109,10 @@ int TCP_Svc_Handler::process_connect_register()
     }
 
     //再折腾了我至少3天以后，终于发现了EPOLL反复触发写事件的原因是没有取消CONNECT_MASK
-    reactor()->cancel_wakeup(this, zce_Event_Handler::CONNECT_MASK);
+    reactor()->cancel_wakeup(this, ZCE_Event_Handler::CONNECT_MASK);
 
     //注册读取的MASK
-    reactor()->schedule_wakeup(this, zce_Event_Handler::READ_MASK);
+    reactor()->schedule_wakeup(this, ZCE_Event_Handler::READ_MASK);
 
     //打印信息
     ZCE_Sockaddr_In      peeraddr;
@@ -1228,11 +1228,11 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
                    peer_address_.get_host_addr(),
                    peer_address_.get_port_number(),
                    whole_frame_len,
-                   Comm_App_Frame::MAX_LEN_OF_APPFRAME,
+                   Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
                    rcv_buffer_->size_of_buffer_,
                    rcv_buffer_->size_of_use_);
         //
-        DEBUGDUMP_FRAME_HEAD(reinterpret_cast<Comm_App_Frame *>(rcv_buffer_->buffer_data_
+        DEBUGDUMP_FRAME_HEAD(reinterpret_cast<Zerg_App_Frame *>(rcv_buffer_->buffer_data_
             + rcv_buffer_->size_of_use_), "Error frame before framehead_decode,", RS_DEBUG);
         return ret;
     }
@@ -1322,10 +1322,10 @@ int TCP_Svc_Handler::write_all_data_to_peer()
     if (snd_buffer_deque_.size() == 0)
     {
         //
-        if ( handle_mask & zce_Event_Handler::WRITE_MASK )
+        if ( handle_mask & ZCE_Event_Handler::WRITE_MASK )
         {
             //取消可写的MASK值,
-            ret = reactor()->cancel_wakeup(this, zce_Event_Handler::WRITE_MASK);
+            ret = reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
             //return -1表示错误，正确返回的是old mask值
             if ( -1  ==  ret )
@@ -1359,9 +1359,9 @@ int TCP_Svc_Handler::write_all_data_to_peer()
     else
     {
         //没有WRITE MASK，准备增加写标志
-        if (!(handle_mask & zce_Event_Handler::WRITE_MASK))
+        if (!(handle_mask & ZCE_Event_Handler::WRITE_MASK))
         {
-            ret = reactor()->schedule_wakeup(this, zce_Event_Handler::WRITE_MASK);
+            ret = reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
             //schedule_wakeup 返回return -1表示错误，再次BS ACE一次，正确返回的是old mask值
             if ( -1 == ret)
@@ -1402,7 +1402,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
         ZLOG_ERROR("[zergsvr] Goto handle_output|write_data_to_peer ,but not data to send. Please check,buffer deque size=%u.",
                    snd_buffer_deque_.size());
         zce_BACKTRACE_STACK(RS_ERROR);
-        reactor()->cancel_wakeup (this, zce_Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup (this, ZCE_Event_Handler::WRITE_MASK);
         zce_ASSERT(false);
         return SOAR_RET::SOAR_RET_SUCC;
     }
@@ -1494,7 +1494,7 @@ int TCP_Svc_Handler::process_send_error(ZByteBuffer *tmpbuf, bool frame_encode)
     //一个队列中间可能有多个FRAME，要对头部进行解码，所以必须一个个弄出来
     while (tmpbuf->size_of_buffer_ != tmpbuf->size_of_use_)
     {
-        Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( tmpbuf->buffer_data_ + tmpbuf->size_of_buffer_);
+        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_ + tmpbuf->size_of_buffer_);
 
         //如果FRAME已经编码
         if (frame_encode)
@@ -1509,7 +1509,7 @@ int TCP_Svc_Handler::process_send_error(ZByteBuffer *tmpbuf, bool frame_encode)
         {
 
             //如果是要记录的命令，记录下来，可以帮忙回溯一些问题
-            if (proc_frame->frame_option_ & Comm_App_Frame::DESC_SEND_FAIL_RECORD)
+            if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD)
             {
                 ZLOG_ERROR("[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame uin[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s|%u],peer status[%u]. ",
                            proc_frame->frame_length_,
@@ -1625,7 +1625,7 @@ Modify Record   :
 ******************************************************************************************/
 int TCP_Svc_Handler::process_send_data(ZByteBuffer *tmpbuf )
 {
-    Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
     DEBUGDUMP_FRAME_HEAD(proc_frame, "process_send_data Before framehead_encode:", RS_DEBUG);
 
     // 统计发送数据
@@ -1794,9 +1794,9 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     //    cmd);
     //向对方发送一个心跳包
     ZByteBuffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-    Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
-    proc_frame->init_framehead(Comm_App_Frame::LEN_OF_APPFRAME_HEAD, option, cmd);
+    proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, option, cmd);
     //注册命令
     proc_frame->send_service_ = my_svc_info_;
 
@@ -1810,7 +1810,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     proc_frame->recv_service_ = recv_services_info;
 
     //
-    tmpbuf->size_of_use_ = Comm_App_Frame::LEN_OF_APPFRAME_HEAD;
+    tmpbuf->size_of_use_ = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
 
     //
     return put_frame_to_sendlist(tmpbuf);
@@ -1821,9 +1821,9 @@ int TCP_Svc_Handler::send_zerg_heart_beat_reg()
 {
     //向对方发送一个心跳包
     ZByteBuffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-    Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
-    proc_frame->init_framehead(Comm_App_Frame::LEN_OF_APPFRAME_HEAD, 0, ZERG_HEART_BEAT_REQ);
+    proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, 0, ZERG_HEART_BEAT_REQ);
 
     proc_frame->app_id_ = game_id_;
     proc_frame->send_service_ = my_svc_info_;
@@ -1836,7 +1836,7 @@ int TCP_Svc_Handler::send_zerg_heart_beat_reg()
 
     proc_frame->recv_service_ = peer_svr_info_;
 
-    zce_Time_Value send_time;
+    ZCE_Time_Value send_time;
 
     // 打上发送的时间
     send_time.gettimeofday();
@@ -1845,11 +1845,11 @@ int TCP_Svc_Handler::send_zerg_heart_beat_reg()
     heart_beat_pkg.zerg_send_req_time_.sec_ = (uint32_t)send_time.sec();
     heart_beat_pkg.zerg_send_req_time_.usec_ = (uint32_t)send_time.usec();
 
-    int ret = proc_frame->appdata_encode(Comm_App_Frame::MAX_LEN_OF_APPFRAME_DATA, heart_beat_pkg);
+    int ret = proc_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, heart_beat_pkg);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC )
     {
-        ZLOG_ERROR("[%s]app data encode fail. ret=%d", __zce_FUNCTION__, ret);
+        ZLOG_ERROR("[%s]app data encode fail. ret=%d", __ZCE_FUNCTION__, ret);
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
 
@@ -1874,7 +1874,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(ZByteBuffer *tmpbuf)
 {
     int ret = 0;
 
-    Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
     //如果是通知关闭端口
     if (proc_frame->frame_command_ == INNER_RSP_CLOSE_SOCKET)
@@ -1896,9 +1896,9 @@ int TCP_Svc_Handler::put_frame_to_sendlist(ZByteBuffer *tmpbuf)
     }
 
     //如果发送完成,并且后台业务要求关闭端口,注意必须转换网络序
-    if ( proc_frame->frame_option_ & Comm_App_Frame::DESC_SNDPRC_CLOSE_PEER)
+    if ( proc_frame->frame_option_ & Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER)
     {
-        ZLOG_INFO("[zergsvr] This Peer Services[%u|%u] IP|Port :[%s|%u] will close when all frame send complete ,because send frame has option Comm_App_Frame::DESC_SNDPRC_CLOSE_PEER.",
+        ZLOG_INFO("[zergsvr] This Peer Services[%u|%u] IP|Port :[%s|%u] will close when all frame send complete ,because send frame has option Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER.",
                   peer_svr_info_.services_type_,
                   peer_svr_info_.services_id_,
                   peer_address_.get_host_addr(),
@@ -1918,7 +1918,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(ZByteBuffer *tmpbuf)
     if (impl_ != InnerConnectHandler::instance())
     {
         //外部非框架包不需要发送包头
-        tmpbuf->size_of_buffer_ += Comm_App_Frame::LEN_OF_APPFRAME_HEAD;
+        tmpbuf->size_of_buffer_ += Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
     }
 
     //放入发送队列,并注册标志位
@@ -1999,7 +1999,7 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     }
 
     //如果倒数第2个桶有能力放下倒数第1个桶的FRAME数据，则进行合并操作。
-    if ( Comm_App_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
+    if ( Zerg_App_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
     {
         //将倒数第1个节点的数据放入倒数第2个节点中间。所以实际的Cache能力是非常强的，
         //空间利用率也很高。越发佩服我自己了。
@@ -2017,11 +2017,11 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     ////下面的代码用于合并的测试，平常会注释掉
     //else
     //{
-    //    zce_LOGMSG_DBG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,Comm_App_Frame::MAX_LEN_OF_APPFRAME=%u,"
+    //    zce_LOGMSG_DBG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,Zerg_App_Frame::MAX_LEN_OF_APPFRAME=%u,"
     //        "snd_buffer_deque_[sz_deque-2]->size_of_use_=%u,"
     //        "snd_buffer_deque_[sz_deque-1]->size_of_use_=%u.",
     //        sz_deque,
-    //        Comm_App_Frame::MAX_LEN_OF_APPFRAME,
+    //        Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
     //        snd_buffer_deque_[sz_deque-2]->size_of_use_,
     //        snd_buffer_deque_[sz_deque-1]->size_of_use_);
     //}
@@ -2036,7 +2036,7 @@ Parameter List  : NULL
 Description     :
 Calls           :
 Called By       :
-Other           : 到这个函数是,Comm_App_Frame已经经过解码了.请注意.
+Other           : 到这个函数是,Zerg_App_Frame已经经过解码了.请注意.
 Modify Record   :
 ******************************************************************************************/
 int TCP_Svc_Handler::push_frame_to_comm_mgr()
@@ -2066,7 +2066,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             break;
         }
 
-        Comm_App_Frame *proc_frame = impl_->get_recvframe( rcv_buffer_, whole_frame_len);
+        Zerg_App_Frame *proc_frame = impl_->get_recvframe( rcv_buffer_, whole_frame_len);
 
         //如果已经收集了一个数据
         ret = preprocess_recvframe(proc_frame);

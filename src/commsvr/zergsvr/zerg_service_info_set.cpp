@@ -19,8 +19,8 @@ Service_Info_Set::~Service_Info_Set()
 
 void Service_Info_Set::init_services_peerinfo(size_t max_accept, size_t max_connect)
 {
-    accept_svr_info_set_.resize(max_accept);
-    connect_svr_info_set_.resize(max_connect);
+    accept_svr_info_set_.rehash(max_accept);
+    connect_svr_info_set_.rehash(max_connect);
 }
 
 //根据SERVICEINFO查询PEER信息

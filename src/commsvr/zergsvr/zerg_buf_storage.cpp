@@ -1,19 +1,3 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_bufferstorage.cpp
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2005Äê11ÔÂ11ÈÕ
-Description         :
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #include "zerg_predefine.h"
 #include "zerg_buf_storage.h"
@@ -140,7 +124,7 @@ ZByteBuffer *ZBuffer_Storage::allocate_buffer()
 //
 void ZBuffer_Storage::free_byte_buffer(ZByteBuffer *ptrbuf)
 {
-    zce_ASSERT(ptrbuf);
+    ZCE_ASSERT(ptrbuf);
     ptrbuf->clear_buffer();
     buffer_deque_.push_back(ptrbuf);
 }

@@ -2,7 +2,7 @@
 #include "zerg_accept_handler.h"
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_ip_restrict.h"
-#include "zerg_inner_connect_handler.h"
+
 
 /****************************************************************************************************
 class  TCP_Accept_Handler TCP Accept 处理的EventHandler,
@@ -13,9 +13,9 @@ TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid, const ZCE_Socka
     accept_bind_addr_(addr),
     sessionkey_verify_(sessionkey_verify),
     ip_restrict_(Zerg_IPRestrict_Mgr::instance()),
-    tcp_handler_impl_(InnerConnectHandler::instance())
 {
 }
+
 //自己清理的类型，统一关闭在handle_close,这个地方不用关闭
 TCP_Accept_Handler::~TCP_Accept_Handler()
 {

@@ -5,7 +5,7 @@
 /****************************************************************************************************
 class  Zerg_App_Timer_Handler
 ****************************************************************************************************/
-class  Zerg_App_Timer_Handler: public  zce_Timer_Handler
+class  Zerg_App_Timer_Handler: public  ZCE_Timer_Handler
 {
 
 public:
@@ -28,7 +28,7 @@ public:
     static const unsigned int SEND_FRAME_CHECK_INTERVAL = 10;
 
     //当前的时间
-    static zce_Time_Value  now_time_;
+    static ZCE_Time_Value  now_time_;
 
 protected:
     //心跳计数器
@@ -48,7 +48,7 @@ protected:
     ~Zerg_App_Timer_Handler();
 
     //
-    virtual int handle_timeout(const zce_Time_Value &time, const void *arg);
+    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
     //
     virtual int timer_close();
 

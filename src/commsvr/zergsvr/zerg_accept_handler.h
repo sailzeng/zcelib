@@ -7,10 +7,10 @@ class Zerg_IPRestrict_Mgr;
 /****************************************************************************************************
 class  TCP_Accept_Handler TCP Accept 处理的EventHandler
 ****************************************************************************************************/
-class TCP_Accept_Handler : public zce_Event_Handler
+class TCP_Accept_Handler : public ZCE_Event_Handler
 {
 
-    typedef hash_set<unsigned int> SetOfIPAddress;
+    typedef unordered_set<unsigned int> SetOfIPAddress;
 
 protected:
 
@@ -31,7 +31,7 @@ public:
     virtual int handle_close ();
 
     //得到Acceptor的句柄
-    zce_SOCKET get_handle(void) const;
+    ZCE_SOCKET get_handle(void) const;
 
     void set_extern_svc_acceptor(TcpHandlerImpl *tcp_handler_impl)
     {
@@ -55,8 +55,6 @@ protected:
     //IP限制管理器
     Zerg_IPRestrict_Mgr      *ip_restrict_;
 
-    //
-    TcpHandlerImpl           *tcp_handler_impl_;
 
 };
 

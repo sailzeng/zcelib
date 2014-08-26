@@ -9,7 +9,7 @@ class  Service_Info_Set
 class Service_Info_Set
 {
 protected:
-    typedef hash_map<SERVICES_ID, TCP_Svc_Handler *, HashofSvrInfo> MapOfSvrPeerInfo;
+    typedef unordered_map<SERVICES_ID, TCP_Svc_Handler *, HashofSvrInfo> MapOfSvrPeerInfo;
     
     // acceptµÄÁ¬½Ó
     MapOfSvrPeerInfo  accept_svr_info_set_;

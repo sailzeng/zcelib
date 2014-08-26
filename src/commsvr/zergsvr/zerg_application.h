@@ -79,7 +79,7 @@ private:
     int init()
     {
         // 框架 已经加载了zerg的配置
-        //zce_UNUSED_ARG(config);
+        //ZCE_UNUSED_ARG(config);
         return 0;
     }
     void exit() {}

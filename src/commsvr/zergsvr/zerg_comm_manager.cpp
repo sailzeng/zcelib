@@ -7,7 +7,6 @@
 #include "zerg_external_connect_handler.h"
 #include "zerg_comm_manager.h"
 
-using namespace sec_proto;
 
 //实例
 Zerg_Comm_Manager *Zerg_Comm_Manager::instance_ = NULL;
@@ -245,22 +244,22 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
 
         ZByteBuffer *tmpbuf = zbuffer_storage_->allocate_buffer();
         //
-        Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>( tmpbuf->buffer_data_);
+        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
-        zerg_mmap_pipe_->pop_front_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID, reinterpret_cast< zce_LIB::dequechunk_node*&>(proc_frame));
+        zerg_mmap_pipe_->pop_front_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID, reinterpret_cast< ZCE_LIB::dequechunk_node*&>(proc_frame));
 
         tmpbuf->size_of_use_ = proc_frame->frame_length_;
 
         if (comm_config_->is_monitor_uin(proc_frame->frame_uin_))
         {
-            proc_frame->frame_option_ |= Comm_App_Frame::DESC_MONITOR_TRACK;
+            proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
         }
 
         //如果是要跟踪的命令
-        if (proc_frame->frame_option_ & Comm_App_Frame::DESC_MONITOR_TRACK)
+        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
         {
-            Comm_App_Frame::dumpoutput_framehead(proc_frame, "[TRACK MONITOR][SEND]opt", RS_INFO);
+            Zerg_App_Frame::dumpoutput_framehead(proc_frame, "[TRACK MONITOR][SEND]opt", RS_INFO);
         }
         else
         {
@@ -268,8 +267,8 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             {
                 if (monitor_cmd_[i] == proc_frame->frame_command_)
                 {
-                    proc_frame->frame_option_ |= Comm_App_Frame::DESC_MONITOR_TRACK;
-                    Comm_App_Frame::dumpoutput_framehead(proc_frame, "[TRACK MONITOR][SEND]cmd", RS_INFO);
+                    proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+                    Zerg_App_Frame::dumpoutput_framehead(proc_frame, "[TRACK MONITOR][SEND]cmd", RS_INFO);
                 }
             }
         }
@@ -281,7 +280,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         }
 
         //发送UDP的数据
-        if (proc_frame->frame_option_ & Comm_App_Frame::DESC_UDP_FRAME)
+        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
         {
             //发送错误日志在send_all_to_udp函数内部处理，这儿不增加重复记录
             UDP_Svc_Handler::send_all_to_udp(proc_frame);
@@ -298,7 +297,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
                 if (ret != SOAR_RET::SOAR_RET_SUCC)
                 {
                     ZLOG_ERROR("[%s] fetch broadcast pkg error, recv svrinfo:[%u|%u]",
-                        __zce_FUNCTION__,
+                        __ZCE_FUNCTION__,
                         proc_frame->recv_service_.services_type_,
                         proc_frame->recv_service_.services_id_);
 
@@ -310,7 +309,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
                 {
                     if (i == size -1)
                     {
-                        reinterpret_cast<Comm_App_Frame *>(tmpbuf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
+                        reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
                         // last Buf就用本身的tmpbuf来发，稍微加快速度
                         ret = send_single_buf(tmpbuf);
                     }
@@ -318,7 +317,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
                     {
                         ZByteBuffer *send_buf = zbuffer_storage_->allocate_buffer();
                         memcpy(send_buf->buffer_data_, tmpbuf->buffer_data_, tmpbuf->size_of_use_);
-                        reinterpret_cast<Comm_App_Frame *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
+                        reinterpret_cast<Zerg_App_Frame *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
                         send_buf->size_of_use_ = tmpbuf->size_of_use_;
                         ret = send_single_buf(send_buf);
                     }
@@ -432,13 +431,13 @@ void Zerg_Comm_Manager::clean_instance()
 }
 
 void
-Zerg_Comm_Manager::stat_heart_beat_gap(const Comm_App_Frame * proc_frame)
+Zerg_Comm_Manager::stat_heart_beat_gap(const Zerg_App_Frame * proc_frame)
 {
-    zce_Time_Value recv_time, send_time, dst_recv_time, dst_send_time;
+    ZCE_Time_Value recv_time, send_time, dst_recv_time, dst_send_time;
     recv_time.gettimeofday();
 
     // 先校验包长，如果是没升级的心跳包直接丢弃
-    if (proc_frame->frame_length_ == Comm_App_Frame::LEN_OF_APPFRAME_HEAD)
+    if (proc_frame->frame_length_ == Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
     {
         return;
     }
@@ -450,7 +449,7 @@ Zerg_Comm_Manager::stat_heart_beat_gap(const Comm_App_Frame * proc_frame)
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("[%s] app data decode fail, ret=%d, send svr %d:%d, ",
-            __zce_FUNCTION__, ret,
+            __ZCE_FUNCTION__, ret,
             proc_frame->send_service_.services_type_,
             proc_frame->send_service_.services_id_);
         return ;
@@ -465,7 +464,7 @@ Zerg_Comm_Manager::stat_heart_beat_gap(const Comm_App_Frame * proc_frame)
     unsigned int app_use_time = (unsigned int)(dst_send_time.total_msec() - dst_recv_time.total_msec());
     unsigned int zerg_use_time = total_use_time - app_use_time;
 
-    ZLOG_DEBUG("[%s] heart beat gap dst type [%dms]: total [%dms], app [%dms], zerg [%dms]", __zce_FUNCTION__,
+    ZLOG_DEBUG("[%s] heart beat gap dst type [%dms]: total [%dms], app [%dms], zerg [%dms]", __ZCE_FUNCTION__,
         proc_frame->send_service_.services_type_,
         total_use_time, app_use_time, zerg_use_time);
 
@@ -474,13 +473,13 @@ Zerg_Comm_Manager::stat_heart_beat_gap(const Comm_App_Frame * proc_frame)
 }
 
 void
-Zerg_Comm_Manager::proc_zerg_heart_beat(Comm_App_Frame * recv_frame)
+Zerg_Comm_Manager::proc_zerg_heart_beat(Zerg_App_Frame * recv_frame)
 {
-    zce_Time_Value zerg_recv_time;
+    ZCE_Time_Value zerg_recv_time;
     HeartBeatPkg heart_beat_pkg;
 
     // 先校验包长，如果是没升级的心跳包直接丢弃
-    if (recv_frame->frame_length_ == Comm_App_Frame::LEN_OF_APPFRAME_HEAD)
+    if (recv_frame->frame_length_ == Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
     {
         return;
     }
@@ -490,7 +489,7 @@ Zerg_Comm_Manager::proc_zerg_heart_beat(Comm_App_Frame * recv_frame)
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("[%s] app data decode fail, ret=%d, send svr %d:%d",
-            __zce_FUNCTION__, ret,
+            __ZCE_FUNCTION__, ret,
             recv_frame->send_service_.services_type_,
             recv_frame->send_service_.services_id_);
         return ;
@@ -511,23 +510,23 @@ Zerg_Comm_Manager::proc_zerg_heart_beat(Comm_App_Frame * recv_frame)
     }
     else
     {
-        ZLOG_ERROR("[%s] error command %d", __zce_FUNCTION__,
+        ZLOG_ERROR("[%s] error command %d", __ZCE_FUNCTION__,
             recv_frame->frame_command_);
         return;
     }
 
     // 再打进去
-    ret = recv_frame->appdata_encode(Comm_App_Frame::MAX_LEN_OF_APPFRAME_DATA, heart_beat_pkg);
+    ret = recv_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, heart_beat_pkg);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC )
     {
-        ZLOG_ERROR("[%s]app data encode fail. ret=%d", __zce_FUNCTION__, ret);
+        ZLOG_ERROR("[%s]app data encode fail. ret=%d", __ZCE_FUNCTION__, ret);
         return ;
     }
 }
 
 void
-Zerg_Comm_Manager::stat_heart_beat_distribute(const Comm_App_Frame * proc_frame, unsigned int use_time,
+Zerg_Comm_Manager::stat_heart_beat_distribute(const Zerg_App_Frame * proc_frame, unsigned int use_time,
                                               ZERG_MONITOR_FEATURE_ID feature_id)
 {
     // 总量统计
@@ -567,13 +566,13 @@ int Zerg_Comm_Manager::send_single_buf( ZByteBuffer * tmpbuf )
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
 
-    Comm_App_Frame *proc_frame = reinterpret_cast<Comm_App_Frame *>(tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
 
     //如果失败归还缓存，如果成功的情况下，会放入发送队列，放入发送队列的归还和这个不一样
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         //记录下来处理
-        if (proc_frame->frame_option_ & Comm_App_Frame::DESC_SEND_FAIL_RECORD )
+        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD )
         {
             ZLOG_ERROR("[zergsvr] A Frame frame len[%u] cmd[%u] uin[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                        proc_frame->frame_length_,
