@@ -61,36 +61,47 @@ struct SVCID_CONFIG
 
 
 /*!
-* @brief
+* @brief 配置
 *
 * @note
 */
 class Comm_Svrd_Config
 {
 
-private:
+protected:
+    //构造函数
     Comm_Svrd_Config();
     virtual ~Comm_Svrd_Config();
 
 public:
-    //取配置信息,取得配置信息后, 需要将各启动参数设置OK
-    int init(int argc, const char *argv[]);
 
-    //重新加载配置
-    int reload();
+    /*!
+    * @brief      取配置信息,取得配置信息后, 需要将各启动参数设置OK
+    * @return     virtual int
+    * @param      argc
+    * @param      argv
+    */
+    virtual int init(int argc, const char *argv[]);
 
-    // 处理命令行参数
-    int proc_start_arg(int argc, const char *argv[]);
+    /*!
+    * @brief      处理命令行参数
+    * @return     virtual int
+    * @param      argc
+    * @param      argv
+    */
+    virtual int proc_start_arg(int argc, const char *argv[]);
 
-    // 加载zerg framwork app的配置
-    int load_config_file();
+    /// 加载zerg framwork app的配置
+    virtual int load_cfgfile();
+
+    /// 重新加载配置
+    virtual int reload_cfgfile();
 
 protected:
 
     
-private:
-    // 使用帮助
-    int usage(const char *program_name);
+    /// 使用帮助
+    virtual int usage(const char *program_name);
 
 public:
     //单子实例函数
@@ -144,9 +155,6 @@ public:
     bool is_use_cfgsvr_;
     // 配置服务器信息
     std::string master_cfgsvr_ip_;
-
-
-
 
 
 protected:

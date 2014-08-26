@@ -36,7 +36,7 @@ int Comm_Svrd_Config::init(int argc, const char *argv[])
     }
 
     // º”‘ÿ≈‰÷√
-    ret = load_config_file();
+    ret = load_cfgfile();
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         return ret;
@@ -212,7 +212,7 @@ void Comm_Svrd_Config::clean_instance()
     return;
 }
 
-int Comm_Svrd_Config::load_config_file()
+int Comm_Svrd_Config::load_cfgfile()
 {
     // º”‘ÿzerg ≈‰÷√
     int ret = 0;
@@ -234,10 +234,10 @@ int Comm_Svrd_Config::load_config_file()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int Comm_Svrd_Config::reload()
+int Comm_Svrd_Config::reload_cfgfile()
 {
     ZLOG_INFO("app start reload");
-    return load_config_file();
+    return load_cfgfile();
 }
 
 

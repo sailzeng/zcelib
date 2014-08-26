@@ -113,7 +113,7 @@ Modify Record   :
 //    char tmpkey[BUFFER_LEN],tmpbuf[BUFFER_LEN],outbuf[BUFFER_LEN];
 //
 //    ZCE_INI_Implemention   read_cfg;
-//    Zen_INI_PropertyTree   svrinfo_cfg;
+//    zce_INI_PropertyTree   svrinfo_cfg;
 //
 //    ZLOG_INFO("[framework] Read Sevices Info Configure File. [%s] .",cfgfile);
 //    ret = read_cfg.read(cfgfile,svrinfo_cfg);

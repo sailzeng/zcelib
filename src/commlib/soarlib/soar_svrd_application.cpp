@@ -313,7 +313,7 @@ int Comm_Svrd_Appliction::create_app_name(const char *argv_0)
 //ÖØÐÂ¼ÓÔØÅäÖÃ
 int Comm_Svrd_Appliction::reload_instance()
 {
-    int ret = Comm_Svrd_Config::instance()->reload();
+    int ret = Comm_Svrd_Config::instance()->reload_cfgfile();
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("load frame config fail. ret=%d", ret);
