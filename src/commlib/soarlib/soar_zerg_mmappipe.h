@@ -6,7 +6,7 @@
 #include "soar_error_code.h"
 #include "soar_stat_monitor.h"
 #include "soar_stat_define.h"
-#include "soar_svrd_cfg_trans.h"
+#include "soar_svrd_cfg_fsm.h"
 
 class Zerg_App_Frame;
 
@@ -30,7 +30,7 @@ protected:
     Comm_Stat_Monitor *monitor_;
 
     // 配置对象
-    Comm_Svrd_Config *config_;
+    Server_Config_FSM *config_;
 
 protected:
     //instance函数使用的东西

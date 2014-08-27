@@ -1,8 +1,9 @@
 #include "soar_predefine.h"
 #include "soar_fsm_trans_mgr.h"
-#include "soar_svrd_config.h"
-#include "soar_svrd_app_trans.h"
+#include "soar_svrd_app_fsm.h"
 #include "soar_zerg_mmappipe.h"
+#include "soar_svrd_cfg_fsm.h"
+
 
 //
 Comm_SvrdApp_Transaction::Comm_SvrdApp_Transaction()
@@ -26,7 +27,7 @@ Comm_SvrdApp_Transaction::init_instance()
         return ret;
     }
 
-    Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
+    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
 
     //事务管理器的初始化, 自动机不使用notify
     Transaction_Manager *p_trans_mgr_ = new Transaction_Manager();

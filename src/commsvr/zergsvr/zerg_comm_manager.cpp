@@ -45,7 +45,7 @@ Zerg_Comm_Manager::~Zerg_Comm_Manager()
 //≥ı ºªØ
 int Zerg_Comm_Manager::get_config(const conf_zerg::ZERG_CONFIG &config)
 {
-    comm_config_ = Comm_Svrd_Config::instance();
+    comm_config_ = Server_Config_FSM::instance();
 
     int ret = 0;
     const size_t LEN_TMP_BUFFER = 256;

@@ -66,13 +66,13 @@ struct SVCID_CONFIG
 *
 * @note
 */
-class Comm_Svrd_Config :public Server_Config_Base
+class Server_Config_FSM :public Server_Config_Base
 {
 
 protected:
     //构造函数
-    Comm_Svrd_Config();
-    virtual ~Comm_Svrd_Config();
+    Server_Config_FSM();
+    virtual ~Server_Config_FSM();
 
 public:
 
@@ -87,7 +87,7 @@ protected:
 
 public:
     //单子实例函数
-    static Comm_Svrd_Config *instance();
+    static Server_Config_FSM *instance();
     //清理单子实例
     static void clean_instance();
 
@@ -96,9 +96,12 @@ public:
     //
     FRAMEWORK_CONFIG framework_config_;
 
+    ZCE_Conf_PropertyTree zerg_ptree_;
+    ZCE_Conf_PropertyTree framework_ptree_;
+
 protected:
     // 单子实例
-    static Comm_Svrd_Config *instance_;
+    static Server_Config_FSM *instance_;
 
 
 };

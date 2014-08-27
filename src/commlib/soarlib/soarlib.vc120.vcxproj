@@ -192,8 +192,8 @@
     <ClCompile Include="soar_svrd_application.cpp" />
     <ClCompile Include="soar_svrd_app_non_ctrl.cpp" />
     <ClCompile Include="soar_svrd_app_notify_trans.cpp" />
-    <ClCompile Include="soar_svrd_app_trans.cpp" />
-    <ClCompile Include="soar_svrd_cfg_trans.cpp" />
+    <ClCompile Include="soar_svrd_app_fsm.cpp" />
+    <ClCompile Include="soar_svrd_cfg_fsm.cpp" />
     <ClCompile Include="soar_svrd_timer_base.cpp" />
     <ClCompile Include="soar_zerg_mmappipe.cpp" />
   </ItemGroup>
@@ -225,8 +225,8 @@
     <ClInclude Include="soar_svrd_app_main.h" />
     <ClInclude Include="soar_svrd_app_non_ctrl.h" />
     <ClInclude Include="soar_svrd_app_notify_trans.h" />
-    <ClInclude Include="soar_svrd_app_trans.h" />
-    <ClInclude Include="soar_svrd_cfg_trans.h" />
+    <ClInclude Include="soar_svrd_app_fsm.h" />
+    <ClInclude Include="soar_svrd_cfg_fsm.h" />
     <ClInclude Include="soar_svrd_timer_base.h" />
     <ClInclude Include="soar_zerg_mmappipe.h" />
   </ItemGroup>

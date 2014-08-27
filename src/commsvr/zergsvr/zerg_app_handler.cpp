@@ -65,7 +65,7 @@ int Zerg_App_Timer_Handler::handle_timeout(const ZCE_Time_Value &time_now, const
                     last_trigger_reload_time_ = heartbeat_counter_;
 
                     //存在连不上的情况时获取ip信息再重连
-                    TCP_Svc_Handler::reload_auto_connect(&Comm_Svrd_Config::instance()->zerg_config_);
+                    TCP_Svc_Handler::reload_auto_connect(&Server_Config_FSM::instance()->zerg_config_);
                 }
             }
         }
@@ -77,7 +77,7 @@ int Zerg_App_Timer_Handler::handle_timeout(const ZCE_Time_Value &time_now, const
 
         if (random_reload_point_ == heartbeat_counter_ % AUTOCONNECT_RELOAD_INTERVAL)
         {
-            TCP_Svc_Handler::reload_auto_connect(&Comm_Svrd_Config::instance()->zerg_config_);
+            TCP_Svc_Handler::reload_auto_connect(&Server_Config_FSM::instance()->zerg_config_);
         }
 
     }

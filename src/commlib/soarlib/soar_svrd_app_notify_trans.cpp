@@ -1,7 +1,7 @@
 #include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_zerg_frame_malloc.h"
-#include "soar_svrd_config.h"
+#include "soar_svrd_cfg_fsm.h"
 #include "soar_fsm_notify_trans_mgr.h"
 #include "soar_fsm_notify_taskbase.h"
 #include "soar_fsm_notify_transbase.h"
@@ -31,7 +31,7 @@ Comm_SvrdApp_NotifyTrans::init_instance()
 
     THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
 
-    Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
+    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
     MT_NOTIFY_TRANS_MANGER *trans_mgr = new MT_NOTIFY_TRANS_MANGER();
     Transaction_Manager::instance(trans_mgr);
     ZCE_Time_Value enqueue_timeout;

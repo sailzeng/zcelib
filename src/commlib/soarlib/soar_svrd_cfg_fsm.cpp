@@ -3,22 +3,22 @@
 #include "soar_zerg_svc_info.h"
 #include "soar_server_ver_define.h"
 #include "soar_svrd_application.h"
-#include "soar_svrd_cfg_trans.h"
+#include "soar_svrd_cfg_fsm.h"
 
 
-Comm_Svrd_Config *Comm_Svrd_Config::instance_ = NULL;
+Server_Config_FSM *Server_Config_FSM::instance_ = NULL;
 
-Comm_Svrd_Config::Comm_Svrd_Config()
+Server_Config_FSM::Server_Config_FSM()
 {
 }
 
-Comm_Svrd_Config::~Comm_Svrd_Config()
+Server_Config_FSM::~Server_Config_FSM()
 {
 }
 
 
 
-int Comm_Svrd_Config::load_cfgfile()
+int Server_Config_FSM::load_cfgfile()
 {
     // º”‘ÿzerg ≈‰÷√
     int ret = 0;
@@ -40,10 +40,5 @@ int Comm_Svrd_Config::load_cfgfile()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int Comm_Svrd_Config::reload_cfgfile()
-{
-    ZLOG_INFO("app start reload");
-    return load_cfgfile();
-}
 
 

@@ -19,7 +19,7 @@
 #include "soar_svrd_application.h"
 #include "soar_zerg_mmappipe.h"
 #include "soar_zerg_svc_info.h"
-#include "soar_svrd_cfg_trans.h"
+#include "soar_svrd_cfg_fsm.h"
 #include "soar_svrd_timer_base.h"
 #include "soar_stat_define.h"
 #include "soar_stat_monitor.h"
@@ -56,7 +56,7 @@ int Comm_Svrd_Appliction::run(int argc, const char *argv[])
         return ret;
     }
 
-    Comm_Svrd_Config *config = Comm_Svrd_Config::instance();
+    Server_Config_FSM *config = Server_Config_FSM::instance();
 
     if (config->app_run_daemon_)
     {
@@ -91,7 +91,7 @@ int Comm_Svrd_Appliction::init_instance()
     //忽视信号
     process_signal();
 
-    std::string log_file_prefix = Comm_Svrd_Config::instance()->app_run_dir_ + "/log/";
+    std::string log_file_prefix = Server_Config_FSM::instance()->app_run_dir_ + "/log/";
     log_file_prefix += app_base_name_;
     log_file_prefix += "_init";
 
@@ -120,19 +120,19 @@ int Comm_Svrd_Appliction::init_instance()
     }
 
     // 切换运行目录
-    ret = ZCE_OS::chdir(Comm_Svrd_Config::instance()->app_run_dir_.c_str());
+    ret = ZCE_OS::chdir(Server_Config_FSM::instance()->app_run_dir_.c_str());
 
     if (ret != 0)
     {
         ZLOG_ERROR("[framework] change run directory to %s fail. err=%d",
-                   Comm_Svrd_Config::instance()->app_run_dir_.c_str(), errno);
+                   Server_Config_FSM::instance()->app_run_dir_.c_str(), errno);
         return ret;
     }
 
-    ZLOG_INFO("[framework] change work dir to %s", Comm_Svrd_Config::instance()->app_run_dir_.c_str());
+    ZLOG_INFO("[framework] change work dir to %s", Server_Config_FSM::instance()->app_run_dir_.c_str());
 
     // 运行目录写PID File.
-    std::string app_path = Comm_Svrd_Config::instance()->app_run_dir_
+    std::string app_path = Server_Config_FSM::instance()->app_run_dir_
                            + "/"
                            + get_app_basename();
     ret = out_pid_file(app_path.c_str(), true);
@@ -164,7 +164,7 @@ int Comm_Svrd_Appliction::init_instance()
     //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
 
     // 加载框架配置
-    Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
+    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
     ret = svd_config->initialize(argc_, argv_);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
@@ -313,7 +313,7 @@ int Comm_Svrd_Appliction::create_app_name(const char *argv_0)
 //重新加载配置
 int Comm_Svrd_Appliction::reload_instance()
 {
-    int ret = Comm_Svrd_Config::instance()->reload_cfgfile();
+    int ret = Server_Config_FSM::instance()->reload_cfgfile();
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("load frame config fail. ret=%d", ret);
@@ -336,7 +336,7 @@ int Comm_Svrd_Appliction::exit_instance()
 
     Zerg_MMAP_BusPipe::clean_instance();
 
-    Comm_Svrd_Config::clean_instance();
+    Server_Config_FSM::clean_instance();
     //
     ZLOG_INFO("[framework] %s exit_instance Succ.Have Fun.!!!",
               app_run_name_.c_str());
@@ -460,7 +460,7 @@ int Comm_Svrd_Appliction::proc_start_args(int argc, const char *argv[])
         return ret;
     }
 
-    Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
+    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
 
     // 处理启动参数
     ret = svd_config->proc_start_arg(argc, argv);
@@ -548,7 +548,7 @@ void Comm_Svrd_Appliction::set_service_info(const char *svc_name, const char *sv
 
 int Comm_Svrd_Appliction::init_log()
 {
-    Comm_Svrd_Config *config = Comm_Svrd_Config::instance();
+    Server_Config_FSM *config = Server_Config_FSM::instance();
     int ret = 0;
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {

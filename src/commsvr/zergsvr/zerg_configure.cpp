@@ -83,10 +83,10 @@ void Zerg_Server_Config::dump_status_info(std::ostringstream &ostr_stream)
         ostr_stream << " IP:" << slave_svc_ary_[i].zerg_ip_addr_.get_host_addr() << "|" << slave_svc_ary_[i].zerg_ip_addr_.get_port_number() << std::endl;
     }
 
-    ostr_stream << std::setw(24) << "RESTORE_PIPE:" << Comm_Svrd_Config::instance()->if_restore_pipe_ << std::endl;
-    ostr_stream << std::setw(24) << "ZERG_CONFG_PATH:" << Comm_Svrd_Config::instance()->zerg_cfg_file_ << std::endl;
+    ostr_stream << std::setw(24) << "RESTORE_PIPE:" << Server_Config_FSM::instance()->if_restore_pipe_ << std::endl;
+    ostr_stream << std::setw(24) << "ZERG_CONFG_PATH:" << Server_Config_FSM::instance()->zerg_cfg_file_ << std::endl;
     ostr_stream << std::setw(24) << "ZERG_STAT_PATH:" << zerg_stat_file_ << std::endl;
-    ostr_stream << std::setw(24) << "LOG_FILE_PREFIX :" << Comm_Svrd_Config::instance()->log_file_prefix_ << std::endl;
+    ostr_stream << std::setw(24) << "LOG_FILE_PREFIX :" << Server_Config_FSM::instance()->log_file_prefix_ << std::endl;
     //ostr_stream<<std::setw(24)<<"LOG_PRIORITY:"<<Comm_Svrd_Config::instance()->log_priority_<<std::endl;
 }
 
@@ -146,7 +146,7 @@ int Zerg_Server_Config::init(const conf_zerg::ZERG_CONFIG *config)
     }
 
     //self_services_id_是基类读取出来的
-    self_svc_info_.zerg_svc_info_ = Comm_Svrd_Config::instance()->self_svr_id_;
+    self_svc_info_.zerg_svc_info_ = Server_Config_FSM::instance()->self_svr_id_;
 
     ZCE_Sockaddr_In     inetadd;
     snprintf(err_buf, LEN_TMP_BUFFER, "SELFCFG|SELFSVRTYPE|SELFSVRID key error.");

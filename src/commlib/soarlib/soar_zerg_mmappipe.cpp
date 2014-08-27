@@ -44,7 +44,7 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
 {
 
     monitor_ = Comm_Stat_Monitor::instance();
-    config_ = Comm_Svrd_Config::instance();
+    config_ = Server_Config_FSM::instance();
 
     zerg_svr_info_ = svrinfo;
 

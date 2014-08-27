@@ -5,7 +5,7 @@
 #include "soar_zerg_svc_info.h"
 #include "soar_error_code.h"
 
-class Comm_Svrd_Config;
+class Server_Config_FSM;
 class Zerg_MMAP_BusPipe;
 class Comm_Svrd_Timer_Base;
 /****************************************************************************************************

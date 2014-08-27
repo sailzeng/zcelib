@@ -104,7 +104,7 @@ protected:
     unsigned int              send_frame_count_;
 
     // 框架配置对象
-    Comm_Svrd_Config          *comm_config_;
+    Server_Config_FSM          *comm_config_;
 
 protected:
     //单子实例

@@ -71,7 +71,7 @@ Zerg_Service_App::init_instance()
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = Comm_Stat_Monitor::instance()->initialize(true,
-                                                    Comm_Svrd_Config::instance()->self_svr_id_,
+                                                    Server_Config_FSM::instance()->self_svr_id_,
                                                     0,
                                                     NULL,
                                                     false);
@@ -82,7 +82,7 @@ Zerg_Service_App::init_instance()
         return ret;
     }
 
-    config_ = &(Comm_Svrd_Config::instance()->zerg_config_);
+    config_ = &(Server_Config_FSM::instance()->zerg_config_);
     ret = Zerg_Server_Config::instance()->init(config_);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
@@ -417,14 +417,14 @@ int Zerg_Service_App::run_instance()
 bool 
 Zerg_Service_App::if_proxy()
 {
-    unsigned short self_svc_type = Comm_Svrd_Config::instance()->self_svr_id_.services_type_;
+    unsigned short self_svc_type = Server_Config_FSM::instance()->self_svr_id_.services_type_;
     if (self_svc_type == SVC_PROXY_SERVER
         || self_svc_type == SVC_PROXY_SERVER_MOBILE)
     {
         return true;
     }
 
-    if (Comm_Svrd_Config::instance()->if_proxy_)
+    if (Server_Config_FSM::instance()->if_proxy_)
     {
         return true;
     }

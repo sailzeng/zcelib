@@ -2,7 +2,6 @@
 #include "soar_zerg_frame.h"
 #include "soar_svrd_app_non_ctrl.h"
 #include "soar_zerg_mmappipe.h"
-#include "soar_svrd_config.h"
 #include "soar_error_code.h"
 
 Comm_SvrdApp_NonCtrl::Comm_SvrdApp_NonCtrl():

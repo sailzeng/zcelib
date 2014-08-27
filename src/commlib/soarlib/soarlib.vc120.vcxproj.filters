@@ -19,12 +19,6 @@
     <ClCompile Include="soar_fsm_notify_taskbase.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_fsm_trans_base.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_fsm_trans_mgr.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -35,9 +29,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="soar_svrd_app_notify_trans.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_svrd_app_trans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="soar_svrd_application.cpp">
@@ -88,18 +79,21 @@
     <ClCompile Include="soar_svrd_cfg_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_svrd_cfg_trans.cpp">
+    <ClCompile Include="soar_svrd_app_fsm.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_fsm_trans_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_fsm_trans_mgr.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_svrd_cfg_fsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="soar_fsm_notify_taskbase.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_fsm_trans_base.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_fsm_trans_mgr.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_mmapalloc.h">
@@ -124,9 +118,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_svrd_app_notify_trans.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_svrd_app_trans.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_svrd_application.h">
@@ -183,7 +174,16 @@
     <ClInclude Include="soar_svrd_cfg_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="soar_svrd_cfg_trans.h">
+    <ClInclude Include="soar_svrd_app_fsm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_fsm_trans_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_fsm_trans_mgr.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_cfg_fsm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
