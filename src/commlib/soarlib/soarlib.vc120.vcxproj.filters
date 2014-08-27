@@ -31,9 +31,6 @@
     <ClCompile Include="soar_svrd_app_notify_trans.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_svrd_application.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_zerg_mmappipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,6 +88,9 @@
     <ClCompile Include="soar_svrd_cfg_fsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="soar_svrd_app_base.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="soar_fsm_notify_taskbase.h">
@@ -118,9 +118,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_svrd_app_notify_trans.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_svrd_application.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_zerg_mmappipe.h">
@@ -184,6 +181,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_svrd_cfg_fsm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_svrd_app_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

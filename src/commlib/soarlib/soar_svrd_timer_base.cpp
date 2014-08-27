@@ -3,32 +3,32 @@
 #include "soar_svrd_timer_base.h"
 #include "soar_stat_define.h"
 #include "soar_stat_monitor.h"
-#include "soar_svrd_application.h"
+#include "soar_svrd_app_base.h"
 
 
-ZCE_Time_Value Comm_Svrd_Timer_Base::cur_time_ = ZCE_OS::gettimeofday();
+ZCE_Time_Value Server_Timer_Base::cur_time_ = ZCE_OS::gettimeofday();
 
 //定时器ID,避免New传递,回收
-const int Comm_Svrd_Timer_Base::SERVER_TIMER_ID[] =
+const int Server_Timer_Base::SERVER_TIMER_ID[] =
 {
     0x1,                    //心跳ID
     0x2,
 };
 
 
-Comm_Svrd_Timer_Base::Comm_Svrd_Timer_Base(ZCE_Timer_Queue *queue) : 
+Server_Timer_Base::Server_Timer_Base(ZCE_Timer_Queue *queue) : 
     ZCE_Timer_Handler(queue)
 {
     stat_monitor_ = NULL;
 }
 
-Comm_Svrd_Timer_Base::~Comm_Svrd_Timer_Base()
+Server_Timer_Base::~Server_Timer_Base()
 {
     stat_monitor_ = NULL;
 }
 
 
-int Comm_Svrd_Timer_Base::initialize()
+int Server_Timer_Base::initialize()
 {
     stat_monitor_ = Comm_Stat_Monitor::instance();
     ZCE_ASSERT(stat_monitor_ != NULL);
@@ -47,7 +47,7 @@ int Comm_Svrd_Timer_Base::initialize()
 }
 
 
-int Comm_Svrd_Timer_Base::handle_timeout(const ZCE_Time_Value &now_time,
+int Server_Timer_Base::handle_timeout(const ZCE_Time_Value &now_time,
                                        const void *act /*= 0*/)
 {
     ZCE_UNUSED_ARG(act);
@@ -65,7 +65,7 @@ int Comm_Svrd_Timer_Base::handle_timeout(const ZCE_Time_Value &now_time,
 
 
 // 检查监控是否超时
-void Comm_Svrd_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
+void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
 {
     time_t now_sec = now_time.sec();
 

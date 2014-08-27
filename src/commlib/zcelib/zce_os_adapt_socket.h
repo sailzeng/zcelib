@@ -178,7 +178,10 @@ inline int setsockopt (ZCE_SOCKET handle,
 * @brief      监听某个端口
 * @return     int 0成功，-1失败
 * @param      handle 监听端口的句柄
-* @param      backlog 内核为次套接字排队的最大连接数量，WINDOWS下默认一般为SOMAXCONN,LINUX下，好像此数值作用不大
+* @param      backlog 内核为次套接字排队的最大连接数量，同学们反馈此数值在大规模链接的服务器还是
+*             挺有用的，如果规模较大，建议调整这个数值
+*             同时请调整  /proc/sys/net/core/somaxconn 
+*             /proc/sys/net/ipv4/tcp_max_syn_backlog
 */
 inline int listen (ZCE_SOCKET handle,
                    int backlog = ZCE_DEFAULT_BACKLOG);

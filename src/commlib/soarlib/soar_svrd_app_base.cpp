@@ -16,7 +16,7 @@
 */
 
 #include "soar_predefine.h"
-#include "soar_svrd_application.h"
+#include "soar_svrd_app_base.h"
 #include "soar_zerg_mmappipe.h"
 #include "soar_zerg_svc_info.h"
 #include "soar_svrd_cfg_fsm.h"
@@ -374,7 +374,7 @@ int Comm_Svrd_Appliction::register_soar_timer()
     // 注册框架定时器
     ZCE_ASSERT(timer_handler_ == NULL);
     ZCE_Timer_Queue *timer_queue = ZCE_Timer_Queue::instance();
-    timer_handler_ = new Comm_Svrd_Timer_Base(timer_queue);
+    timer_handler_ = new Server_Timer_Base(timer_queue);
 
     // 通过进程名判断是否app进程还是zerg进程
     bool is_app = true;

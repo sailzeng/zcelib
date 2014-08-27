@@ -189,7 +189,7 @@
     <ClCompile Include="soar_zerg_sndrcv_lolo.cpp" />
     <ClCompile Include="soar_zerg_sndrcv_zulu.cpp" />
     <ClCompile Include="soar_stat_monitor.cpp" />
-    <ClCompile Include="soar_svrd_application.cpp" />
+    <ClCompile Include="soar_svrd_app_base.cpp" />
     <ClCompile Include="soar_svrd_app_non_ctrl.cpp" />
     <ClCompile Include="soar_svrd_app_notify_trans.cpp" />
     <ClCompile Include="soar_svrd_app_fsm.cpp" />
@@ -221,7 +221,7 @@
     <ClInclude Include="soar_zerg_sndrcv_zulu.h" />
     <ClInclude Include="soar_stat_define.h" />
     <ClInclude Include="soar_stat_monitor.h" />
-    <ClInclude Include="soar_svrd_application.h" />
+    <ClInclude Include="soar_svrd_app_base.h" />
     <ClInclude Include="soar_svrd_app_main.h" />
     <ClInclude Include="soar_svrd_app_non_ctrl.h" />
     <ClInclude Include="soar_svrd_app_notify_trans.h" />

@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_SVRD_APP_TRNAS_H_
 #define SOARING_LIB_SVRD_APP_TRNAS_H_
 
-#include "soar_svrd_application.h"
+#include "soar_svrd_app_base.h"
 
 #define REGISTER_TRANSACTION_CMD(trans_class, cmd_word ) \
     { \

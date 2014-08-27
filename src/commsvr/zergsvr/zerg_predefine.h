@@ -46,13 +46,14 @@
 
 #include <soar_predefine.h>
 #include <soar_error_code.h>
-#include <soar_svrd_config.h>
+#include <soar_svrd_cfg_base.h>
 #include <soar_zerg_frame.h>
 #include <soar_zerg_mmappipe.h>
-#include <soar_svrd_config.h>
-#include <soar_svrd_application.h>
+#include <soar_svrd_app_base.h>
 #include <soar_svrd_app_main.h>
 #include <soar_stat_monitor.h>
+#include <soar_svrd_timer_base.h>
+#include <soar_zerg_svc_table.h>
 
 
 

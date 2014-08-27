@@ -9,84 +9,67 @@ struct ZERG_SERVICES_INFO
 public:
     //
     SERVICES_ID        zerg_svc_info_;
-    //
-    bool               zerg_sessionkey_;
+
     //
     ZCE_Sockaddr_In    zerg_ip_addr_;
 
-    // 是否接收外部包
-    bool is_recv_external_pkg_;
-    // cmd offset
-    uint32_t cmd_offset_;
-    // cmd len
-    uint32_t cmd_len_;
-
-    ZERG_SERVICES_INFO();
-    ~ZERG_SERVICES_INFO();
 };
 
-//
-typedef std::vector<ZERG_SERVICES_INFO>  SELF_SERVICESINFO_LIST;
 
-//用XML作为配置文件还是INI作为配置文件,经过投票调查,大部分人喜欢INI,
-//看来喜欢简单的土人居多,
+struct ZERG_CONFIG
+{
+    //最大的
+    static const size_t MAX_SELF_SERVICES_ID = 4;
+
+    //
+    ZERG_SERVICES_INFO  svc_info_ary_[MAX_SELF_SERVICES_ID];
+
+
+    //服务的配置集合
+    Services_Table_Config  services_info_cfg_;
+
+
+    //统计文件
+    std::string            zerg_stat_file_;
+
+    //ZERG的保险是否使用
+    bool                   zerg_insurance_;
+
+
+    // 被动连接的发送BUFFER可容纳最大FRAME的个数 默认32，连接数少而流量较大的后端服务器可填的大一些, 目前DB填256，其它全部是32
+    uint32_t accept_send_buf_size; 
+    // 每个tcp连接的发送队列长度
+    uint32_t connect_send_deque_size; 
+    // #从CONNECT到收到数据,最小时长,0-50，接入层必须配置>0,建议15-60秒以内
+    uint32_t connect_timeout; 
+
+    // RECEIVE一个数据的超时时间,为0表示不限制,建议根据业务层的逻辑判断一下
+    uint32_t recv_timeout; 
+
+    // 是否做为代理服务器
+    uint8_t is_proxy; 
+    // #最大连接的服务器个数 ##前端128000，后端1024
+    uint32_t max_accept_svr; 
+    // #对一个错误数据重复尝试发送的次数
+    uint8_t retry_error; 
+    // 接收管道长度, 默认50M
+    uint32_t recv_pipe_len;
+    // 发送管道长度, 默认50M
+    uint32_t send_pipe_len;
+    
+};
+
+
 /****************************************************************************************************
 class  Zerg_Server_Config
 ****************************************************************************************************/
-class Zerg_Server_Config
+class Zerg_Server_Config :public Server_Config_Base
 {
 
     Zerg_Server_Config();
     ~Zerg_Server_Config();
 
     //
-
-    //最大的
-    static const size_t MAX_SELF_SERVICES_ID = 4;
-public:
-    //早上6:00更新Operation key
-    static const time_t UPDATE_OPERATION_KEY_TIME = 3600 * 6;
-
-public:
-
-    //统计文件
-    std::string            zerg_stat_file_;
-
-    //命令统计文件
-    std::string            cmd_stat_file_;
-
-    //ZERG的保险是否使用
-    bool                   zerg_insurance_;
-
-    //
-    bool                   zerg_need_opkey_;
-    //是否有UDP SESSION
-    bool                   zerg_udp_session_;
-
-    //服务的配置集合
-    ServicesConfig         services_info_cfg_;
-
-    //监听队列长度
-    unsigned int backlog_;
-
-    //下面这几个为了加快使用速度，使用了STATIC,在美学和速度面前选择速度
-public:
-
-    //自己的服务器的标示ID,
-    static ZERG_SERVICES_INFO         self_svc_info_;
-
-    //SLAVE的服务器的标示ID,用于启动第2个端口，或者N个端口
-    static SELF_SERVICESINFO_LIST     slave_svc_ary_;
-
-    // 接收外部Udp端口信息
-    static SELF_SERVICESINFO_LIST     external_udp_svr_ary_;
-
-    //
-    static SELF_SERVICESINFO_LIST     extern_svc_ary_;
-
-    //单子实例
-    static Zerg_Server_Config        *instance_;
-
 public:
 
     //得到文件配置参数
@@ -111,7 +94,18 @@ public:
     //清理单子指针函数
     static void clean_instance();
 
-    const conf_zerg::ZERG_CONFIG *config_;
+
+
+public:
+
+    ZERG_CONFIG   zerg_config_;
+
+
+    //单子实例
+    static Zerg_Server_Config  *instance_;
+
+
+
 };
 
 #endif //_ZERG_SERVER_CONFIG_H_

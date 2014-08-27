@@ -12,14 +12,14 @@ class Comm_Svrd_Appliction;
 *             可以从其得到当前的时钟
 * @note       
 */
-class Comm_Svrd_Timer_Base : public ZCE_Timer_Handler
+class Server_Timer_Base : public ZCE_Timer_Handler
 {
     
 
 public:
     //构造函数
-    Comm_Svrd_Timer_Base(ZCE_Timer_Queue *queue);
-    ~Comm_Svrd_Timer_Base();
+    Server_Timer_Base(ZCE_Timer_Queue *queue);
+    ~Server_Timer_Base();
 
 
 

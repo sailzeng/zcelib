@@ -4,26 +4,14 @@
 #include "zerg_tcp_ctrl_handler.h"
 
 //自己的服务器的标示ID,
-ZERG_SERVICES_INFO Zerg_Server_Config::self_svc_info_;
 
-//SLAVE的服务器的标示ID,用于启动第二个端口
-SELF_SERVICESINFO_LIST Zerg_Server_Config::slave_svc_ary_;
-
-// 接收外部Udp包的服务器信息
-SELF_SERVICESINFO_LIST Zerg_Server_Config::external_udp_svr_ary_;
-
-//提供外部服务的端口
-SELF_SERVICESINFO_LIST Zerg_Server_Config::extern_svc_ary_;
 
 /****************************************************************************************************
 class  ZERG_SERVICES_INFO
 ****************************************************************************************************/
 ZERG_SERVICES_INFO::ZERG_SERVICES_INFO():
     zerg_svc_info_(0, 0),
-    zerg_sessionkey_(true),
-    zerg_ip_addr_("1.1.1.1", 6868),
-    is_recv_external_pkg_(false),
-    cmd_offset_(0)
+    zerg_ip_addr_("1.1.1.1", 6868)
 {
 }
 
@@ -36,14 +24,10 @@ Zerg_Server_Config *Zerg_Server_Config::instance_ = NULL;
 /****************************************************************************************************
 class  Zerg_Server_Config
 ****************************************************************************************************/
-Zerg_Server_Config::Zerg_Server_Config():
-    zerg_insurance_(true),
-    zerg_need_opkey_(false),
-    zerg_udp_session_(false)
+Zerg_Server_Config::Zerg_Server_Config()
 {
     //统计文件的默认位置
     zerg_stat_file_ = "./ZERGLING.STAT";
-    cmd_stat_file_ = "./ZERG.CMD.STAT";
 }
 
 Zerg_Server_Config::~Zerg_Server_Config()
@@ -127,7 +111,6 @@ int Zerg_Server_Config::init(const conf_zerg::ZERG_CONFIG *config)
     char err_buf[LEN_TMP_BUFFER + 1] = {0};
     char out_buf[LEN_TMP_BUFFER + 1] = {0};
 
-    backlog_ = config_->comm_cfg.backlog;
 
     //TCP读取配置
     ret = TCP_Svc_Handler::get_tcpctrl_conf(config_);
@@ -159,9 +142,7 @@ int Zerg_Server_Config::init(const conf_zerg::ZERG_CONFIG *config)
     //
     self_svc_info_.zerg_ip_addr_ = inetadd;
 
-    self_svc_info_.zerg_sessionkey_ =
-        (config_->self_cfg.self_svr_info.use_encrypt == 1);
-    self_svc_info_.is_recv_external_pkg_ = false;
+
 
     //读取SLAVE端口的配置
     unsigned int slave_num = 0;

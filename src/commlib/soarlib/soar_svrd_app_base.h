@@ -7,7 +7,7 @@
 
 class Server_Config_FSM;
 class Zerg_MMAP_BusPipe;
-class Comm_Svrd_Timer_Base;
+class Server_Timer_Base;
 /****************************************************************************************************
 class  Comm_Svrd_Appliction
 单线程自动机模型的程序框架基类.
@@ -167,7 +167,7 @@ protected:
 
 private:
     // 框架定时器处理类
-    Comm_Svrd_Timer_Base          *timer_handler_;
+    Server_Timer_Base          *timer_handler_;
 
 };
 

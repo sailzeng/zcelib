@@ -150,17 +150,10 @@ Zerg_Service_App::init_instance()
         return ret;
     }
 
-    //初始化主端口, 如果配置中有设置这个值才使用, 否则使用默认值, window和linux的默认值不同
-    if (Zerg_Server_Config::instance()->backlog_ == 0)
-    {
-        ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->self_svc_info_);
-    }
-    else
-    {
-        ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->self_svc_info_,
-            Zerg_Server_Config::instance()->backlog_);
-    }
-
+    //直接把backlog干上一个很大的值
+    const int MAX_ZERG_BACKLOG = 1024;
+    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->self_svc_info_,
+        MAX_ZERG_BACKLOG);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         return ret;

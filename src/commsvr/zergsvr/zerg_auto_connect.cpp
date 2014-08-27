@@ -413,7 +413,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo,
 
         //HANDLER_MODE_CONNECT模式理论不会失败
         TCP_Svc_Handler *p_handler = TCP_Svc_Handler::AllocSvcHandlerFromPool(TCP_Svc_Handler::HANDLER_MODE_CONNECT);
-        zce_ASSERT(p_handler);
+        ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
         p_handler->init_tcpsvr_handler(Zerg_Server_Config::instance()->self_svc_info_.zerg_svc_info_,
                                        svrinfo,
@@ -477,7 +477,7 @@ int Zerg_Auto_Connector::connect_udpserver_bysvcid(const SERVICES_ID& svrinfo,
                                                      ary_want_connect_[index].external_,
                                                      Zerg_Server_Config::instance()->config_->external_proto_cfg.item[proto_cfg_index].pkg_len_offset,
                                                      Zerg_Server_Config::instance()->config_->external_proto_cfg.item[proto_cfg_index].pkg_len_bytes);
-    zce_ASSERT(p_handler);
+    ZCE_ASSERT(p_handler);
     //链接其他服务器.
     return p_handler->init_udpsvr_handler();
 }

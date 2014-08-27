@@ -826,7 +826,7 @@ typedef int ZCE_SOCKET;
 #endif
 
 #ifndef ZCE_DEFAULT_BACKLOG
-#define ZCE_DEFAULT_BACKLOG 16
+#define ZCE_DEFAULT_BACKLOG 128
 #endif
 
 //线程的通用化定义pthread_t一般在的定义是unsigned long

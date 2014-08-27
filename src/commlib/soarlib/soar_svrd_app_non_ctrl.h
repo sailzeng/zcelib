@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_
 #define SOARING_LIB_SVRD_APP_NONCTRL_H_
 
-#include "soar_svrd_application.h"
+#include "soar_svrd_app_base.h"
 
 class Zerg_App_Frame;
 //单个函数处理APP FRAME
