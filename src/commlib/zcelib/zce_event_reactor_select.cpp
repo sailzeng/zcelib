@@ -210,7 +210,7 @@ int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
     fd_set exception_fd_set = exception_fd_set_;
 
     //
-    int const nfds = ZCE_OS::select (max_fd_plus_one_,
+    int const nfds = ZCE_LIB::select (max_fd_plus_one_,
                                      &read_fd_set,
                                      &write_fd_set,
                                      &exception_fd_set,
@@ -262,7 +262,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
     for (int i = 0; i < max_process; i++)
     {
         ZCE_SOCKET socket_handle;
-        bool hd_ready = ZCE_OS::is_ready_fds(i, out_fds, &socket_handle);
+        bool hd_ready = ZCE_LIB::is_ready_fds(i, out_fds, &socket_handle);
 
         if (!hd_ready)
         {

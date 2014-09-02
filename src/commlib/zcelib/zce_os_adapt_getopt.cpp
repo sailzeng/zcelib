@@ -84,7 +84,7 @@ static void permute_args(int panonopt_start,
     // compute lengths of blocks and number and size of cycles
     nnonopts = panonopt_end - panonopt_start;
     nopts = opt_end - panonopt_end;
-    ncycle = ZCE_OS::gcd(nnonopts, nopts);
+    ncycle = ZCE_LIB::gcd(nnonopts, nopts);
     cyclelen = (opt_end - panonopt_start) / ncycle;
 
     for (i = 0; i < ncycle; i++)
@@ -600,7 +600,7 @@ start:
  *
  * [eventually this will replace the BSD getopt]
  */
-int ZCE_OS::getopt(int nargc, char *const *nargv, const char *options)
+int ZCE_LIB::getopt(int nargc, char *const *nargv, const char *options)
 {
 #if defined (ZCE_OS_WINDOWS)
     /*
@@ -624,7 +624,7 @@ int ZCE_OS::getopt(int nargc, char *const *nargv, const char *options)
  *      Parse argc/argv argument vector.
  */
 int
-ZCE_OS::getopt_long(int nargc,
+ZCE_LIB::getopt_long(int nargc,
                     char *const *nargv,
                     const char *options,
                     const struct option *long_options,
@@ -652,7 +652,7 @@ ZCE_OS::getopt_long(int nargc,
  *      Parse argc/argv argument vector.
  */
 int
-ZCE_OS::getopt_long_only(int nargc,
+ZCE_LIB::getopt_long_only(int nargc,
                          char *const *nargv,
                          const char *options,
                          const struct option *long_options,

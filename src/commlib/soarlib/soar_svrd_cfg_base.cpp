@@ -48,7 +48,7 @@ int Server_Config_Base::proc_start_arg(int argc, const char *argv[])
     // 取得运行目录
     char cur_dir[PATH_MAX + 1];
     cur_dir[PATH_MAX] = 0;
-    ZCE_OS::getcwd(cur_dir, sizeof(cur_dir) - 1);
+    ZCE_LIB::getcwd(cur_dir, sizeof(cur_dir) - 1);
 
     app_run_dir_ = cur_dir;
 

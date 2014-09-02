@@ -5,7 +5,7 @@
 //注意这个字符串是一个纯粹的数字字符串，
 //ndigits为要求返回数字的长度，是所有数字，这个参数fcvt_r有区别，尾数即使是0也会输出
 //返回参数，decpt返回指数，sign返回符号
-int ZCE_OS::ecvt_r(double number,
+int ZCE_LIB::ecvt_r(double number,
                    int ndigits,
                    int *decpt,
                    int *sign,
@@ -35,7 +35,7 @@ int ZCE_OS::ecvt_r(double number,
 //注意这个字符串是一个纯粹的数字字符串，
 //ndigits为要求返回小数个数的长度，这个和ecvt_r有区别，注意是小数，小数即使是0也会输出
 //返回参数，decpt返回指数，sign返回符号
-int ZCE_OS::fcvt_r(double number,
+int ZCE_LIB::fcvt_r(double number,
                    int ndigits,
                    int *decpt,
                    int *sign,

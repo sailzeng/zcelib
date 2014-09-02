@@ -50,7 +50,7 @@ __declspec(thread) static int __zce_tls_read_or_write = ZCE_SLIM_USE_SHARED_LOCK
 
 #endif
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 /*!

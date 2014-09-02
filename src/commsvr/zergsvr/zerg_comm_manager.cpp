@@ -58,7 +58,7 @@ int Zerg_Comm_Manager::get_config(const conf_zerg::ZERG_CONFIG &config)
 
     //错误发送数据尝试发送次数
     //ret = cfg_file.get_uint32_value("COMMCFG","TRYERROR",tmp_uint );
-    error_try_num_ = config.comm_cfg.retry_error;
+    error_try_num_ = config.comm_cfg.retry_error_;
     TESTCONFIG((ret == 0 && error_try_num_ < 10), "COMMCFG|TRYERROR key error.");
 
     //错误发送数据尝试发送次数
@@ -139,8 +139,8 @@ int Zerg_Comm_Manager::init_socketpeer(ZERG_SERVICES_INFO &init_svcid,
         {
             ZLOG_ERROR("[zergsvr] Init tcp accept scoket fail ret = %d.error[%u|%s]",
                        ret,
-                       ZCE_OS::last_error(),
-                       strerror(ZCE_OS::last_error())
+                       ZCE_LIB::last_error(),
+                       strerror(ZCE_LIB::last_error())
                       );
             return  SOAR_RET::ERR_ZERG_INIT_ACCEPT_SOCKET_FAIL;
         }

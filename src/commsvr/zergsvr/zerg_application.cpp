@@ -22,23 +22,10 @@ Zerg_Service_App::Zerg_Service_App():
     zerg_comm_mgr_(NULL),
     conf_timestamp_(0)
 {
-    config_ = new conf_zerg::ZERG_CONFIG();
 }
 
 Zerg_Service_App::~Zerg_Service_App()
 {
-    if (config_)
-    {
-        delete config_;
-        config_ = NULL;
-    }
-
-    //关闭timer_queue_
-    if (timer_queue_)
-    {
-        delete timer_queue_;
-        timer_queue_ = NULL;
-    }
 
     //zerg_acceptor_ 会自己删除?
 }
@@ -225,7 +212,7 @@ int Zerg_Service_App::reload_daynamic_config()
 
     //部分配置可以动态重复加载
     //看IP限制部分部分
-    ret = Zerg_IPRestrict_Mgr::instance()->get_iprestrict_conf(*config_);
+    ret = Zerg_IPRestrict_Mgr::instance()->get_config(*config_);
 
     if ( SOAR_RET::SOAR_RET_SUCC != ret )
     {

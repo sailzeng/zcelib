@@ -108,7 +108,7 @@ int printf_double()
 
     int dec, sign;
     test_double = 1.000000000;
-    ZCE_OS::fcvt_r(test_double,
+    ZCE_LIB::fcvt_r(test_double,
                    5,
                    &dec,
                    &sign,
@@ -116,7 +116,7 @@ int printf_double()
                    1024
                   );
     test_double = 0.000000000;
-    ZCE_OS::ecvt_r(
+    ZCE_LIB::ecvt_r(
         test_double,
         5,
         &dec,
@@ -135,7 +135,7 @@ int printf_double()
 #endif
 
     test_double = 0.000000012345678912;
-    ZCE_OS::fcvt_r(
+    ZCE_LIB::fcvt_r(
         test_double,
         10,
         &dec,
@@ -144,7 +144,7 @@ int printf_double()
         1024
     );
 
-    ZCE_OS::ecvt_r(
+    ZCE_LIB::ecvt_r(
         test_double,
         5,
         &dec,
@@ -503,7 +503,7 @@ int test_out_file_stream()
     std::cout << "zce_snprintf with ofstream use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
-    ZCE_HANDLE file_handle = ZCE_OS::open("FILE_B2.txt", O_CREAT | O_TRUNC | O_RDWR | O_APPEND, S_IWRITE | S_IREAD);
+    ZCE_HANDLE file_handle = ZCE_LIB::open("FILE_B2.txt", O_CREAT | O_TRUNC | O_RDWR | O_APPEND, S_IWRITE | S_IREAD);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
         ZCE_LIB::zce_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
@@ -513,11 +513,11 @@ int test_out_file_stream()
                               cstr_data,
                               stdstr_data
                              );
-        ZCE_OS::write(file_handle, out_buffer, cur_len);
+        ZCE_LIB::write(file_handle, out_buffer, cur_len);
     }
-    ZCE_OS::close(file_handle);
+    ZCE_LIB::close(file_handle);
     progress_timer.end();
-    std::cout << "zce_snprintf  with  ZCE_OS::write use" << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "zce_snprintf  with  ZCE_LIB::write use" << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
 
     progress_timer.restart();

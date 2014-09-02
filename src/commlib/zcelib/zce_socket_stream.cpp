@@ -62,7 +62,7 @@ int ZCE_Socket_Stream::open(const ZCE_Sockaddr *local_addr,
 //shutdown,特殊的关闭方式函数，how参数向LINUX下靠齐,SHUT_RD,SHUT_WR,SHUT_RDWR
 int ZCE_Socket_Stream::shutdown (int how) const
 {
-    return ZCE_OS::shutdown(socket_handle_, how);
+    return ZCE_LIB::shutdown(socket_handle_, how);
 }
 
 //带超时处理的发送函数，接收N个字节后返回,内部用的是select记录时间，记时不是特别准确，
@@ -71,7 +71,7 @@ ssize_t ZCE_Socket_Stream::recv_n (void *buf,
                                    ZCE_Time_Value  *timeout_tv,
                                    int flags)  const
 {
-    return ZCE_OS::recv_n(socket_handle_,
+    return ZCE_LIB::recv_n(socket_handle_,
                           buf,
                           len,
                           timeout_tv,
@@ -84,7 +84,7 @@ ssize_t ZCE_Socket_Stream::send_n (const void *buf,
                                    ZCE_Time_Value  *timeout_tv,
                                    int flags)  const
 {
-    return ZCE_OS::send_n(socket_handle_,
+    return ZCE_LIB::send_n(socket_handle_,
                           buf,
                           len,
                           timeout_tv,
@@ -97,7 +97,7 @@ ssize_t ZCE_Socket_Stream::recvn_timeout (void *buf,
                                           ZCE_Time_Value  &timeout_tv,
                                           int flags)  const
 {
-    return ZCE_OS::recvn_timeout(socket_handle_,
+    return ZCE_LIB::recvn_timeout(socket_handle_,
                                  buf,
                                  len,
                                  timeout_tv,
@@ -110,7 +110,7 @@ ssize_t ZCE_Socket_Stream::sendn_timeout (void *buf,
                                           ZCE_Time_Value  &timeout_tv,
                                           int flags)
 {
-    return ZCE_OS::sendn_timeout(socket_handle_,
+    return ZCE_LIB::sendn_timeout(socket_handle_,
                                  buf,
                                  len,
                                  timeout_tv,

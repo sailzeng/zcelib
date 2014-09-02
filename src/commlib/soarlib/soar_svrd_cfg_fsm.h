@@ -6,12 +6,6 @@
 #include "soar_svrd_cfg_base.h"
 
 
-struct ZERG_CONFIG
-{
-
-};
-
-
 
 struct FRAMEWORK_CONFIG
 {

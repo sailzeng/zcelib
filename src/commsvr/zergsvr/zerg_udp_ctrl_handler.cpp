@@ -196,11 +196,11 @@ int UDP_Svc_Handler::handle_input()
 
         if (ret != SOAR_RET::SOAR_RET_SUCC)
         {
-            ZCE_LOGMSG_DBG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,ZCE_OS::last_error()=%d|%s",
+            ZCE_LOGMSG_DBG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,ZCE_LIB::last_error()=%d|%s",
                            ret,
                            szrevc,
-                           ZCE_OS::last_error(),
-                           strerror(ZCE_OS::last_error()));
+                           ZCE_LIB::last_error(),
+                           strerror(ZCE_LIB::last_error()));
             //return -1吗，但是我真不知道如何处理
             break;
         }
@@ -267,22 +267,22 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     if (recvret < 0)
     {
-        if (ZCE_OS::last_error() != EWOULDBLOCK )
+        if (ZCE_LIB::last_error() != EWOULDBLOCK )
         {
 
             //遇到中断,等待重入
-            if (ZCE_OS::last_error() == EINVAL)
+            if (ZCE_LIB::last_error() == EINVAL)
             {
                 return SOAR_RET::SOAR_RET_SUCC;
             }
 
             //记录错误,返回错误
-            ZLOG_ERROR("[zergsvr] UDP receive data error IP[%s|%u] peer:%u ZCE_OS::last_error()=%d|%s.",
+            ZLOG_ERROR("[zergsvr] UDP receive data error IP[%s|%u] peer:%u ZCE_LIB::last_error()=%d|%s.",
                        remote_addr.get_host_addr(),
                        remote_addr.get_port_number(),
                        dgram_peer_.get_handle(),
-                       ZCE_OS::last_error(),
-                       strerror(ZCE_OS::last_error()));
+                       ZCE_LIB::last_error(),
+                       strerror(ZCE_LIB::last_error()));
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
         else
@@ -453,12 +453,12 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
     //
     if (szsend <= 0)
     {
-        ZLOG_ERROR("[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u ZCE_OS::last_error()=%d|%s.",
+        ZLOG_ERROR("[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u ZCE_LIB::last_error()=%d|%s.",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    dgram_peer_.get_handle(),
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()));
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()));
         return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
     }
 
@@ -549,7 +549,7 @@ int UDP_Svc_Handler::init_all_static_data()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int UDP_Svc_Handler::get_udpctrl_conf(const conf_zerg::ZERG_CONFIG *config)
+int UDP_Svc_Handler::get_config(const conf_zerg::ZERG_CONFIG *config)
 {
     // 是否proxy的配置从命令行读取，不再从配置中读取
     ZCE_UNUSED_ARG(config);

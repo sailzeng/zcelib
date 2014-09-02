@@ -149,11 +149,11 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 ///
 #ifndef ZCE_TRACE_FAIL_RETURN
-#define ZCE_TRACE_FAIL_RETURN(x,y,z) ZCE_LOGMSG(x,"[FAIL RETRUN]Fail in file [%s|%d],function:%s,fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNCTION__,y,z,ZCE_OS::last_error())
+#define ZCE_TRACE_FAIL_RETURN(x,y,z) ZCE_LOGMSG(x,"[FAIL RETRUN]Fail in file [%s|%d],function:%s,fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNCTION__,y,z,ZCE_LIB::last_error())
 #endif
 
 #ifndef ZCE_RECORD_FAIL_API
-#define ZCE_RECORD_FAIL_API(x,y)     ZCE_LOGMSG(x,"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNCTION__,y,ZCE_OS::last_error())
+#define ZCE_RECORD_FAIL_API(x,y)     ZCE_LOGMSG(x,"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNCTION__,y,ZCE_LIB::last_error())
 #endif
 
 

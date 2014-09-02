@@ -50,7 +50,7 @@ int test_timer_expire(int /*argc*/, char * /*argv*/ [])
     for (size_t j = 0; j < 100000; j++)
     {
         ZCE_Timer_Queue::instance()->expire();
-        ZCE_OS::usleep(100000);
+        ZCE_LIB::usleep(100000);
     }
     ZCE_UNUSED_ARG(timer_id);
     return 0;
@@ -77,7 +77,7 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
     //一些特殊情况下，定时器很长时间无法触发，导致的问题
     for (size_t j = 0; j < 100000; j++)
     {
-        ZCE_OS::sleep(60);
+        ZCE_LIB::sleep(60);
         ZCE_Timer_Queue::instance()->expire();
         
     }
@@ -87,9 +87,9 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
 
 int test_os_time(int /*argc*/, char * /*argv*/[])
 {
-    int tz = ZCE_OS::gettimezone();
+    int tz = ZCE_LIB::gettimezone();
     std::cout << "Time zone :" << tz << std::endl;
-    tz = ZCE_OS::gettimezone();
+    tz = ZCE_LIB::gettimezone();
     std::cout << "Time zone :" << tz << std::endl;
     return 0;
 }

@@ -72,7 +72,7 @@ int ZCE_Timer_Queue::initialize(size_t num_timer_node,
     if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
     {
         //得到一个时间长度，用于比较衡量
-        ZCE_Time_Value  now_time(ZCE_OS::gettimeofday());
+        ZCE_Time_Value  now_time(ZCE_LIB::gettimeofday());
 
         //取得毫秒
         prev_trigger_msec_ = now_time.total_msec();
@@ -81,7 +81,7 @@ int ZCE_Timer_Queue::initialize(size_t num_timer_node,
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(ZCE_OS::get_uptime());
+        ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         prev_trigger_msec_ = cpu_tick.total_msec();
     }
     else
@@ -258,7 +258,7 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(ZCE_OS::get_uptime());
+        ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         now_point = cpu_tick.total_msec();
     }
 
@@ -356,7 +356,7 @@ int ZCE_Timer_Queue::get_first_timeout(ZCE_Time_Value *first_timeout)
         return -1;
     }
 
-    ZCE_Time_Value now_time(ZCE_OS::gettimeofday());
+    ZCE_Time_Value now_time(ZCE_LIB::gettimeofday());
     uint64_t now_trigger_msec = 0;
 
     //触发模式
@@ -369,7 +369,7 @@ int ZCE_Timer_Queue::get_first_timeout(ZCE_Time_Value *first_timeout)
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(ZCE_OS::get_uptime());
+        ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         now_trigger_msec = cpu_tick.total_msec();
     }
     else
@@ -392,7 +392,7 @@ int ZCE_Timer_Queue::get_first_timeout(ZCE_Time_Value *first_timeout)
 
 size_t ZCE_Timer_Queue::expire()
 {
-    ZCE_Time_Value now_time(ZCE_OS::gettimeofday());
+    ZCE_Time_Value now_time(ZCE_LIB::gettimeofday());
 
     uint64_t now_trigger_msec = 0;
 
@@ -406,7 +406,7 @@ size_t ZCE_Timer_Queue::expire()
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(ZCE_OS::get_uptime());
+        ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         now_trigger_msec = cpu_tick.total_msec();
     }
     else

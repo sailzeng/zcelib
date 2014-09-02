@@ -62,7 +62,7 @@ void ZCE_LIB::fmt_double(char *buffer,
     if (flags & FMT_EXPONENT)
     {
         //指数ecvt的精度是输出数字的长度，不是小数点的长度，所以会有precision + 1
-        ZCE_OS::ecvt_r(fvalue,
+        ZCE_LIB::ecvt_r(fvalue,
                        static_cast<int>(precision + 1),
                        &decimal,
                        &sign,
@@ -72,7 +72,7 @@ void ZCE_LIB::fmt_double(char *buffer,
     }
     else
     {
-        ZCE_OS::fcvt_r(fvalue,
+        ZCE_LIB::fcvt_r(fvalue,
                        static_cast<int>(precision),
                        &decimal,
                        &sign,

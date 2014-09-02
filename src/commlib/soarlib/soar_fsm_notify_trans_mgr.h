@@ -165,9 +165,9 @@ public:
             if (ret != 0 )
             {
                 //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-                //if ( ZCE_OS::last_error() != EAGAIN )
+                //if ( ZCE_LIB::last_error() != EAGAIN )
                 //{
-                //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_OS::last_error());
+                //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
                 //  return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
                 //}
                 return SOAR_RET::SOAR_RET_SUCC;
@@ -217,9 +217,9 @@ public:
         if (ret < 0)
         {
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-            //if ( ZCE_OS::last_error() != ETIME )
+            //if ( ZCE_LIB::last_error() != ETIME )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_OS::last_error());
+            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
         }
@@ -236,9 +236,9 @@ public:
         if (ret < 0)
         {
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-            //if ( ZCE_OS::last_error() != EAGAIN )
+            //if ( ZCE_LIB::last_error() != EAGAIN )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_OS::last_error());
+            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
         }
@@ -255,9 +255,9 @@ public:
         if (ret < 0)
         {
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-            //if ( ZCE_OS::last_error() != ETIME )
+            //if ( ZCE_LIB::last_error() != ETIME )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_OS::last_error());
+            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
         }
@@ -274,9 +274,9 @@ public:
         if (ret < 0)
         {
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
-            //if ( ZCE_OS::last_error() != EAGAIN )
+            //if ( ZCE_LIB::last_error() != EAGAIN )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_OS::last_error());
+            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
         }

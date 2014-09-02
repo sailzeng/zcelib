@@ -434,7 +434,7 @@ inline  int hash_file(const char *file_name,
 {
 
     //打开文件
-    ZCE_HANDLE  fd = ZCE_OS::open(file_name, O_RDONLY);
+    ZCE_HANDLE  fd = ZCE_LIB::open(file_name, O_RDONLY);
     if (ZCE_INVALID_HANDLE == fd)
     {
         return -1;
@@ -442,7 +442,7 @@ inline  int hash_file(const char *file_name,
 
     //获取文件尺寸，有长度可以避免有时候如果读取的文件长度和缓冲相等，要读取一次的麻烦，
     size_t file_size = 0;
-    int ret = ZCE_OS::filesize(fd, &file_size);
+    int ret = ZCE_LIB::filesize(fd, &file_size);
     if ( 0 != ret)
     {
         return -1;
@@ -460,11 +460,11 @@ inline  int hash_file(const char *file_name,
     do
     {
         //读取内容
-        read_len = ZCE_OS::read(fd, read_buf, READ_LEN);
+        read_len = ZCE_LIB::read(fd, read_buf, READ_LEN);
         if (read_len < 0)
         {
             delete [] read_buf;
-            ZCE_OS::close(fd);
+            ZCE_LIB::close(fd);
             return -1;
         }
         HASH_STRATEGY::process(&ctx, (unsigned char *) read_buf, read_len);
@@ -474,7 +474,7 @@ inline  int hash_file(const char *file_name,
 
     HASH_STRATEGY::finalize(&ctx, (unsigned char *) read_buf, read_len , result);
     delete [] read_buf;
-    ZCE_OS::close(fd);
+    ZCE_LIB::close(fd);
 
     return 0;
 }

@@ -41,7 +41,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
 {
     int ret = 0;
     ZCE_PROCESS_PERFORM prc_perf_info;
-    ret = ZCE_OS::get_self_perf(&prc_perf_info);
+    ret = ZCE_LIB::get_self_perf(&prc_perf_info);
 
     if (ret != 0)
     {
@@ -49,7 +49,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
     }
 
     ZCE_SYSTEM_INFO zce_system_info;
-    ret = ZCE_OS::get_system_info(&zce_system_info);
+    ret = ZCE_LIB::get_system_info(&zce_system_info);
 
     if (ret != 0)
     {
@@ -57,7 +57,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
     }
 
     ZCE_SYSTEM_PERFORMANCE zce_system_perf;
-    ret =  ZCE_OS::get_system_perf(&zce_system_perf);
+    ret =  ZCE_LIB::get_system_perf(&zce_system_perf);
 
     if (ret != 0)
     {
@@ -92,12 +92,12 @@ int hfile_selector(const struct dirent *dir_info)
 
 int test_scandir(int /*argc*/, char /*argv*/ *[])
 {
-    ZCE_OS::clear_last_error();
+    ZCE_LIB::clear_last_error();
     struct  dirent  **namelist = NULL;
-    int number_file =  ZCE_OS::scandir("E:\\Courage\\readline-5.2",
+    int number_file =  ZCE_LIB::scandir("E:\\Courage\\readline-5.2",
                                        &namelist,
                                        hfile_selector,
-                                       ZCE_OS::alphasort);
+                                       ZCE_LIB::alphasort);
 
     if (number_file <= 0)
     {
@@ -111,7 +111,7 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
     }
 
 
-    ZCE_OS::free_scandir_result(number_file, namelist);
+    ZCE_LIB::free_scandir_result(number_file, namelist);
 
     //for (int i = 0; i < number_file; ++i)
     //{

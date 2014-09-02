@@ -44,7 +44,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
     }
 
     //得到当前时间
-    timeval now_time_val (ZCE_OS::gettimeofday());
+    timeval now_time_val (ZCE_LIB::gettimeofday());
 
     //我要保留一个位置放'\0'
     char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];

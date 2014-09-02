@@ -27,7 +27,7 @@ void ZCE_Thread_Task::svc_run (void *args)
     //保存返回的结果
     t->thread_return_ = svc_status;
 
-    ZCE_OS::pthread_exit();
+    ZCE_LIB::pthread_exit();
 
     return;
 }
@@ -41,7 +41,7 @@ int ZCE_Thread_Task::activate(int group_id,
 {
     int ret = 0;
     //创建线程
-    ret = ZCE_OS::pthread_createex(ZCE_Thread_Task::svc_run,
+    ret = ZCE_LIB::pthread_createex(ZCE_Thread_Task::svc_run,
                                    static_cast<void *> (this),
                                    threadid,
                                    detachstate,
@@ -79,13 +79,13 @@ ZCE_THREAD_ID ZCE_Thread_Task::thread_id() const
 //脱离绑定关系
 int ZCE_Thread_Task::detach()
 {
-    return ZCE_OS::pthread_detach(thread_id_);
+    return ZCE_LIB::pthread_detach(thread_id_);
 }
 
 //
 int ZCE_Thread_Task::wait_join()
 {
-    return ZCE_OS::pthread_join(thread_id_);
+    return ZCE_LIB::pthread_join(thread_id_);
 }
 
 //需要继承的处理的函数,理论上重载这一个函数就OK
@@ -97,6 +97,6 @@ int ZCE_Thread_Task::svc (void)
 //让出CPU时间
 int ZCE_Thread_Task::yield()
 {
-    return ZCE_OS::pthread_yield();
+    return ZCE_LIB::pthread_yield();
 }
 

@@ -86,13 +86,13 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     //如果不恢复,干脆删除原有的MMAP文件,避免使用的时候出现问题.
     if ( if_restore == false )
     {
-        ZCE_OS::unlink(bus_mmap_name_);
+        ZCE_LIB::unlink(bus_mmap_name_);
     }
     //如果没有这个文件,那么只能重建
     else
     {
         zce_os_stat mmapfile_stat;
-        ret = ZCE_OS::stat(bus_mmap_name_, &mmapfile_stat);
+        ret = ZCE_LIB::stat(bus_mmap_name_, &mmapfile_stat);
 
         if (ret != 0 )
         {
@@ -123,8 +123,8 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         ZLOG_ERROR("[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
                    bus_mmap_name_,
                    ret,
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()) );
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()) );
         return -1;
     }
 
@@ -186,7 +186,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     strncpy(bus_mmap_name_, bus_mmap_name, PATH_MAX);
 
     zce_os_stat mmapfile_stat;
-    ret = ZCE_OS::stat(bus_mmap_name_, &mmapfile_stat);
+    ret = ZCE_LIB::stat(bus_mmap_name_, &mmapfile_stat);
 
     if (ret != 0 )
     {
@@ -208,8 +208,8 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         ZLOG_ERROR("[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
                    bus_mmap_name_,
                    ret,
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()) );
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()) );
         return -1;
     }
 

@@ -70,7 +70,7 @@ ssize_t ZCE_Socket_DataGram::recvfrom_timeout (void *buf,
                                                ZCE_Time_Value &timeout_tv,
                                                int flags)  const
 {
-    return ZCE_OS::recvfrom_timeout (socket_handle_,
+    return ZCE_LIB::recvfrom_timeout (socket_handle_,
                                      buf,
                                      len,
                                      from_addr->sockaddr_ptr_,
@@ -87,7 +87,7 @@ ssize_t ZCE_Socket_DataGram::sendto_timeout (const void *buf,
                                              ZCE_Time_Value &timeout_tv,
                                              int flags)  const
 {
-    return ZCE_OS::sendto_timeout (socket_handle_,
+    return ZCE_LIB::sendto_timeout (socket_handle_,
                                    buf,
                                    len,
                                    to_addr->sockaddr_ptr_,

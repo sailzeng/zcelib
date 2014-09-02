@@ -302,14 +302,14 @@ inline void output_helper(char *buffer,
                           timeval &out_data)
 {
 
-    const char *ret_str = ZCE_OS::timestamp(&out_data,
+    const char *ret_str = ZCE_LIB::timestamp(&out_data,
                                             buffer,
                                             max_len);
 
     //返回成功
     if (ret_str)
     {
-        use_len = ZCE_OS::TIMESTR_ISO_USEC_LEN;
+        use_len = ZCE_LIB::TIMESTR_ISO_USEC_LEN;
     }
     else
     {
@@ -323,7 +323,7 @@ inline void output_helper(char *buffer,
                           size_t &use_len,
                           const sockaddr_in &out_data)
 {
-    const char *ret_str = ZCE_OS::socketaddr_ntop_ex((const sockaddr *)(&out_data),
+    const char *ret_str = ZCE_LIB::socketaddr_ntop_ex((const sockaddr *)(&out_data),
                                                      buffer,
                                                      max_len);
 
@@ -344,7 +344,7 @@ inline void output_helper(char *buffer,
                           size_t &use_len,
                           const sockaddr_in6 &out_data)
 {
-    const char *ret_str = ZCE_OS::socketaddr_ntop_ex((const sockaddr *)(&out_data),
+    const char *ret_str = ZCE_LIB::socketaddr_ntop_ex((const sockaddr *)(&out_data),
                                                      buffer,
                                                      max_len);
 
@@ -365,7 +365,7 @@ inline void output_helper(char *buffer,
                           size_t &use_len,
                           const sockaddr *out_data)
 {
-    const char *ret_str = ZCE_OS::socketaddr_ntop_ex(out_data,
+    const char *ret_str = ZCE_LIB::socketaddr_ntop_ex(out_data,
                                                      buffer,
                                                      max_len);
 
@@ -386,7 +386,7 @@ inline void output_helper(char *buffer,
                           size_t &use_len,
                           const in_addr &out_data)
 {
-    const char *ret_str = ZCE_OS::inet_ntop(AF_INET,
+    const char *ret_str = ZCE_LIB::inet_ntop(AF_INET,
                                             (void *)(&out_data),
                                             buffer,
                                             max_len);
@@ -408,7 +408,7 @@ inline void output_helper(char *buffer,
                           size_t &use_len,
                           const in6_addr &out_data)
 {
-    const char *ret_str = ZCE_OS::inet_ntop(AF_INET6,
+    const char *ret_str = ZCE_LIB::inet_ntop(AF_INET6,
                                             (void *)(&out_data),
                                             buffer,
                                             max_len);
@@ -439,7 +439,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (ret_str)
     {
-        use_len = ZCE_OS::TIMESTR_ISO_USEC_LEN;
+        use_len = ZCE_LIB::TIMESTR_ISO_USEC_LEN;
     }
     else
     {

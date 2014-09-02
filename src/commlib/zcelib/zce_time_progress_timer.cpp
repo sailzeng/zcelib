@@ -106,7 +106,7 @@ ZCE_HR_Progress_Timer::ZCE_HR_Progress_Timer()
     int ret = ::clock_getres(CLOCK_MONOTONIC, &precision_);
     if (ret != 0)
     {
-        ZLOG_ERROR("::clock_getres return fail. error is %d.", ZCE_OS::last_error());
+        ZLOG_ERROR("::clock_getres return fail. error is %d.", ZCE_LIB::last_error());
     }
 
 #endif
@@ -132,7 +132,7 @@ void ZCE_HR_Progress_Timer::restart()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZLOG_ERROR("::clock_gettime return fail. error is %d.", ZCE_OS::last_error());
+        ZLOG_ERROR("::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -165,7 +165,7 @@ void ZCE_HR_Progress_Timer::addup_start()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZLOG_ERROR("::clock_gettime return fail. error is %d.", ZCE_OS::last_error());
+        ZLOG_ERROR("::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -191,7 +191,7 @@ void ZCE_HR_Progress_Timer::end()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &end_time_);
     if (ret != 0)
     {
-        ZLOG_ERROR("::clock_gettime return fail. error is %d.", ZCE_OS::last_error());
+        ZLOG_ERROR("::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
     }
 #endif
 }
@@ -254,13 +254,13 @@ void ZCE_TSC_Progress_Timer::restart()
 {
     end_time_ = 0;
     addup_time_ = 0;
-    start_time_ = ZCE_OS::rdtsc();
+    start_time_ = ZCE_LIB::rdtsc();
 }
 
 //结束计时
 void ZCE_TSC_Progress_Timer::end()
 {
-    end_time_ = ZCE_OS::rdtsc();
+    end_time_ = ZCE_LIB::rdtsc();
 }
 
 ///累计计时开始,用于多次计时的过程，
@@ -273,7 +273,7 @@ void ZCE_TSC_Progress_Timer::addup_start()
     //会有一些特殊情况，导致 start_time_ > end_time_,最大可能是在不同的CPU上计时了,
 
     end_time_ = 0;
-    start_time_ = ZCE_OS::rdtsc();
+    start_time_ = ZCE_LIB::rdtsc();
 }
 
 //计算消耗的TICK（CPU周期）数量，注意这个值，只能在自己的机器上做对比才有意义，
@@ -295,14 +295,14 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
     if ( 0 == cpu_hz_ )
     {
         ZCE_SYSTEM_INFO system_info;
-        ret = ZCE_OS::get_system_info(&system_info);
+        ret = ZCE_LIB::get_system_info(&system_info);
         if (0 == ret )
         {
             cpu_hz_ = system_info.cpu_hz_;
         }
         else
         {
-            ZLOG_ERROR("ZCE_OS::get_system_info return fail. cpu use default 1G.");
+            ZLOG_ERROR("ZCE_LIB::get_system_info return fail. cpu use default 1G.");
             //用1G作为作为默认值
             cpu_hz_ = DEFAULT_CPU_HZ;
         }

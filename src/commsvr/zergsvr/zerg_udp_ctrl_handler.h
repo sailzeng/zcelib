@@ -5,7 +5,7 @@
 //forward declaration
 class Zerg_App_Frame;
 class Zerg_Buffer;
-class UDPSessionKeyMgr;
+class Zerg_Server_Config;
 class Zerg_IPRestrict_Mgr;
 class Zerg_Comm_Manager;
 
@@ -68,7 +68,7 @@ public:
     static int send_all_to_udp(Zerg_App_Frame *send_frame);
 
     //
-    static int get_udpctrl_conf(const conf_zerg::ZERG_CONFIG *config);
+    static int get_config(Zerg_Server_Config *config);
 
     //根据有的SVR INFO，查询相应的handle
     static int find_services_peer(const SERVICES_ID &svr_info, UDP_Svc_Handler *&svchanle);
@@ -118,9 +118,6 @@ protected:
 
     //UPD的数组，可以有多个UDP
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
-
-    //UDP的SESSION管理器
-    static UDPSessionKeyMgr        *udp_session_mgr_;
 
     //统计，使用单子类的指针
     static Comm_Stat_Monitor       *server_status_;

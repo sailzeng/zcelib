@@ -44,7 +44,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Zerg_Auto_Connector::get_autoconnect_cfg(const conf_zerg::ZERG_CONFIG *config)
+int Zerg_Auto_Connector::get_config(const conf_zerg::ZERG_CONFIG *config)
 {
     int ret = 0;
     SERVICES_ROUTE_INFO svc_route;
@@ -405,7 +405,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo,
     if (ret < 0)
     {
         //按照UNIX网络编程 V1的说法是 EINPROGRESS,但ACE的介绍说是 EWOULDBLOCK,
-        if (ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EINPROGRESS )
+        if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS )
         {
             tcpscoket.close();
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
@@ -686,7 +686,7 @@ Zerg_Auto_Connector::reload_cfg(const conf_zerg::ZERG_CONFIG *config)
     want_connect_type_2_index_.clear();
     ary_want_connect_.clear();
 
-    int ret = get_autoconnect_cfg(config);
+    int ret = get_config(config);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {

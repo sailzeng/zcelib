@@ -56,7 +56,7 @@ void NotifyTrans_TaskBase::stop_task_run()
 
 int NotifyTrans_TaskBase::svc (void)
 {
-    ZLOG_INFO("[framework] Task stop start run. thread id = %u", ZCE_OS::pthread_self());
+    ZLOG_INFO("[framework] Task stop start run. thread id = %u", ZCE_LIB::pthread_self());
 
     int ret = 0;
     task_run_ = true;
@@ -119,7 +119,7 @@ int NotifyTrans_TaskBase::svc (void)
         }
     }
 
-    ZLOG_INFO("[framework] Task stop run. thread id = %u", ZCE_OS::pthread_self());
+    ZLOG_INFO("[framework] Task stop run. thread id = %u", ZCE_LIB::pthread_self());
 
     return 0;
 }

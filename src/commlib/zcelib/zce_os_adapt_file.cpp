@@ -7,7 +7,7 @@
 #include "zce_os_adapt_file.h"
 
 //读取文件
-ssize_t ZCE_OS::read(ZCE_HANDLE file_handle, void *buf, size_t count)
+ssize_t ZCE_LIB::read(ZCE_HANDLE file_handle, void *buf, size_t count)
 {
     //WINDOWS下，长度无法突破32位的，参数限制了ReadFileEx也一样，大概WINDOWS认为没人这样读取文件
 #if defined (ZCE_OS_WINDOWS)
@@ -33,7 +33,7 @@ ssize_t ZCE_OS::read(ZCE_HANDLE file_handle, void *buf, size_t count)
 }
 
 //写如文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
-ssize_t ZCE_OS::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
+ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 {
 #if defined (ZCE_OS_WINDOWS)
     DWORD ok_len;
@@ -58,27 +58,27 @@ ssize_t ZCE_OS::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 }
 
 //截断文件
-int ZCE_OS::truncate(const char *filename, size_t offset)
+int ZCE_LIB::truncate(const char *filename, size_t offset)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int ret = 0;
     //打开文件，并且截断，最后关闭
-    ZCE_HANDLE file_handle = ZCE_OS::open(filename, (O_CREAT | O_RDWR));
+    ZCE_HANDLE file_handle = ZCE_LIB::open(filename, (O_CREAT | O_RDWR));
 
     if ( ZCE_INVALID_HANDLE == file_handle)
     {
         return -1;
     }
 
-    ret = ZCE_OS::ftruncate(file_handle, offset);
+    ret = ZCE_LIB::ftruncate(file_handle, offset);
 
     if (0 != ret )
     {
         return ret;
     }
 
-    ZCE_OS::close(file_handle);
+    ZCE_LIB::close(file_handle);
     return 0;
 #endif
 
@@ -90,7 +90,7 @@ int ZCE_OS::truncate(const char *filename, size_t offset)
 //截断文件，倒霉的是WINDOWS下又TMD 没有，用BOOST的又非要遵守他的参数规范，我蛋疼
 //其实可以变长，呵呵。
 //注意这儿的fd是WIN32 API OpenFile得到的函数，不是你用ISO函数打开的那个fd，
-int ZCE_OS::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
+int ZCE_LIB::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
 {
     //Windows2000以前没有 SetFilePointerEx，我不是ACE，我不支持那么多屁事
 #if defined (ZCE_OS_WINDOWS)
@@ -124,7 +124,7 @@ int ZCE_OS::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
 }
 
 //在文件内进行偏移
-ssize_t ZCE_OS::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
+ssize_t ZCE_LIB::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -174,22 +174,22 @@ ssize_t ZCE_OS::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
 }
 
 //根据文件名称，判断文件的尺寸,如果文件不存在，打不开等，返回-1
-int ZCE_OS::filelen(const char *filename, size_t *file_size)
+int ZCE_LIB::filelen(const char *filename, size_t *file_size)
 {
     int ret = 0;
-    ZCE_HANDLE file_handle = ZCE_OS::open(filename, (O_RDONLY));
+    ZCE_HANDLE file_handle = ZCE_LIB::open(filename, (O_RDONLY));
 
     if ( ZCE_INVALID_HANDLE == file_handle)
     {
         return -1;
     }
 
-    ret = ZCE_OS::filesize (file_handle, file_size);
-    ZCE_OS::close (file_handle);
+    ret = ZCE_LIB::filesize (file_handle, file_size);
+    ZCE_LIB::close (file_handle);
     return ret;
 }
 
-int ZCE_OS::filesize (ZCE_HANDLE file_handle, size_t *file_size)
+int ZCE_LIB::filesize (ZCE_HANDLE file_handle, size_t *file_size)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -227,7 +227,7 @@ int ZCE_OS::filesize (ZCE_HANDLE file_handle, size_t *file_size)
 
 //为什么要提供这个API呢，因为WINDOWS平台大部分都是采用HANDLE处理的
 
-ZCE_HANDLE ZCE_OS::open (const char *filename,
+ZCE_HANDLE ZCE_LIB::open (const char *filename,
                          int open_mode,
                          mode_t perms)
 {
@@ -341,7 +341,7 @@ ZCE_HANDLE ZCE_OS::open (const char *filename,
 }
 
 //关闭一个文件
-int ZCE_OS::close (ZCE_HANDLE handle)
+int ZCE_LIB::close (ZCE_HANDLE handle)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
@@ -362,18 +362,18 @@ int ZCE_OS::close (ZCE_HANDLE handle)
 }
 
 //用模版名称建立并且打开一个临时文件，
-ZCE_HANDLE ZCE_OS::mkstemp(char *template_name)
+ZCE_HANDLE ZCE_LIB::mkstemp(char *template_name)
 {
 #if defined (ZCE_OS_WINDOWS)
     char *tmp_filename = _mktemp(template_name);
-    return ZCE_OS::open(tmp_filename, ZCE_DEFAULT_FILE_PERMS);
+    return ZCE_LIB::open(tmp_filename, ZCE_DEFAULT_FILE_PERMS);
 #elif defined (ZCE_OS_LINUX)
     return ::mkstemp(template_name);
 #endif
 }
 
 //通过文件名称得到文件的stat信息，你可以认为zce_os_stat就是stat，只是在WINDOWS下stat64,主要是为了长文件考虑的
-int ZCE_OS::stat(const char *path, zce_os_stat *file_stat)
+int ZCE_LIB::stat(const char *path, zce_os_stat *file_stat)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_stat64(path, file_stat);
@@ -383,7 +383,7 @@ int ZCE_OS::stat(const char *path, zce_os_stat *file_stat)
 }
 
 //通过文件的句柄得到文件的stat信息
-int ZCE_OS::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
+int ZCE_LIB::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -400,9 +400,9 @@ int ZCE_OS::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
     }
 
     //转换时间
-    timeval tv_ct_time = ZCE_OS::make_timeval(&file_info.ftCreationTime);
-    timeval tv_ac_time = ZCE_OS::make_timeval(&file_info.ftLastAccessTime);
-    timeval tv_wt_time = ZCE_OS::make_timeval(&file_info.ftLastWriteTime);
+    timeval tv_ct_time = ZCE_LIB::make_timeval(&file_info.ftCreationTime);
+    timeval tv_ac_time = ZCE_LIB::make_timeval(&file_info.ftLastAccessTime);
+    timeval tv_wt_time = ZCE_LIB::make_timeval(&file_info.ftLastWriteTime);
 
     LARGE_INTEGER file_size;
     file_size.HighPart = file_info.nFileSizeHigh;
@@ -444,11 +444,11 @@ int ZCE_OS::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
 
 
 //路径是否是一个目录，如果是返回TRUE，如果不是返回FALSE
-bool ZCE_OS::is_directory(const char *path_name)
+bool ZCE_LIB::is_directory(const char *path_name)
 {
     int ret = 0;
     zce_os_stat file_stat;
-    ret = ZCE_OS::stat(path_name, &file_stat);
+    ret = ZCE_LIB::stat(path_name, &file_stat);
     if (0 != ret)
     {
         return false;
@@ -466,7 +466,7 @@ bool ZCE_OS::is_directory(const char *path_name)
 
 
 //删除文件
-int ZCE_OS::unlink(const char *filename )
+int ZCE_LIB::unlink(const char *filename )
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_unlink(filename);
@@ -476,7 +476,7 @@ int ZCE_OS::unlink(const char *filename )
 }
 
 //
-mode_t ZCE_OS::umask (mode_t cmask)
+mode_t ZCE_LIB::umask (mode_t cmask)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_umask(cmask);
@@ -487,7 +487,7 @@ mode_t ZCE_OS::umask (mode_t cmask)
 
 //检查文件是否OK，吼吼
 //mode 两个平台都支持F_OK,R_OK,W_OK,R_OK|W_OK，X_OK参数LINUX支持,WIN不支持
-int ZCE_OS::access(const char *pathname, int mode)
+int ZCE_LIB::access(const char *pathname, int mode)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_access_s(pathname, mode);
@@ -499,27 +499,27 @@ int ZCE_OS::access(const char *pathname, int mode)
 //--------------------------------------------------------------------------------------------------
 //非标准函数
 //用只读方式读取一个文件的内容，返回的buffer最后填充'\0',buf_len >= 2
-int ZCE_OS::read_file_data(const char *filename, char *buffer, size_t buf_len, size_t *read_len)
+int ZCE_LIB::read_file_data(const char *filename, char *buffer, size_t buf_len, size_t *read_len)
 {
     //参数检查
     ZCE_ASSERT(filename && buffer && buf_len >= 2);
 
     //打开文件
-    ZCE_HANDLE  fd = ZCE_OS::open(filename, O_RDONLY);
+    ZCE_HANDLE  fd = ZCE_LIB::open(filename, O_RDONLY);
 
     if (ZCE_INVALID_HANDLE == fd)
     {
-        ZLOG_ERROR("open file [%s]  fail ,error =%d", filename, ZCE_OS::last_error());
+        ZLOG_ERROR("open file [%s]  fail ,error =%d", filename, ZCE_LIB::last_error());
         return -1;
     }
 
     //读取内容
-    ssize_t len = ZCE_OS::read(fd, buffer, buf_len - 1);
-    ZCE_OS::close(fd);
+    ssize_t len = ZCE_LIB::read(fd, buffer, buf_len - 1);
+    ZCE_LIB::close(fd);
 
     if (len < 0)
     {
-        ZLOG_ERROR("read file [%s] fail ,error =%d", filename, ZCE_OS::last_error());
+        ZLOG_ERROR("read file [%s] fail ,error =%d", filename, ZCE_LIB::last_error());
         return -1;
     }
 
@@ -529,14 +529,14 @@ int ZCE_OS::read_file_data(const char *filename, char *buffer, size_t buf_len, s
     return 0;
 }
 
-template <> ZCE_OS::close_assist<FILE *>::~close_assist()
+template <> ZCE_LIB::close_assist<FILE *>::~close_assist()
 {
     ::fclose(to_close_);
 }
 
 
 
-template <> ZCE_OS::close_assist<ZCE_HANDLE>::~close_assist()
+template <> ZCE_LIB::close_assist<ZCE_HANDLE>::~close_assist()
 {
-    ZCE_OS::close(to_close_);
+    ZCE_LIB::close(to_close_);
 }

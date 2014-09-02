@@ -27,20 +27,124 @@
 
 
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
+//==========================================================================================================
+
+//
 
 
+/*!
+* @brief      字符的功能的萃取类，用在兼容char，wchar_t字符串处理的时候还是挺有用的
+*             yunfeiyang GG搞得一套东西，
+* @tparam     char_type 字符类型，char 或者 wchar_t
+* @note       char_traits里面还有 length,move等函数
+*/
+template <typename char_type>
+struct yun_char_traits : public std::char_traits < char_type >
+{
+};
+
+template <>
+struct yun_char_traits < char > : public std::char_traits < char >
+{
+    typedef std::string string_type;
+
+    static int tolower(int c)
+    {
+        return ::tolower(c);
+    }
+    static int toupper(int c)
+    {
+        return ::toupper(c);
+    }
+
+    static int isspace(int c)
+    {
+        return (isascii(c) && ::isspace(c));
+    }
+
+    static char_type *strend(char_type *s)
+    {
+        return ::strchr(s, 0);
+    }
+    static const char_type *strend(const char_type *s)
+    {
+        return ::strchr(s, 0);
+    }
+
+};
+
+template <>
+struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
+{
+    typedef std::wstring    string_type;
+
+    static int tolower(int c)
+    {
+        return ::towlower(c);
+    }
+
+    static int toupper(int c)
+    {
+        return ::towupper(c);
+    }
+
+    static int isspace(int c)
+    {
+        return ::iswspace(c);
+    }
+
+    static char_type *strend(char_type *s)
+    {
+        return ::wcschr(s, 0);
+    }
+
+    static const char_type *strend(const char_type *s)
+    {
+        return ::wcschr(s, 0);
+    }
+
+};
 
 
 //==========================================================================================================
+//原来的代码中有人对ASCII 255的字符进行了判定处理，ASCII255是Non-breaking space，
+//我暂时去掉了。感觉好像出现这种情况很特例。因为当时没有写注释，所以完全不记得场景了。
 
 /*!
 * @brief      左规整字符串，去掉字符串左边的空格，换行，回车，Tab
-* @return     char*
+* @tparam     char_type 字符类型，char or wchar_t
+* @return     char_type *
 * @param      str
 */
-char *strtrimleft(char *str);
+template <typename char_type>
+char_type *strtrimleft(char_type *str)
+{
+    ZCE_ASSERT(str);
+
+    char_type *lstr = str;
+    for (; *lstr != '\0'; lstr++)
+    {
+        //注意isspace的参数是int,（WIN下）要求字符是0~255,
+        if (yun_char_traits<char_type>::isspace(*lstr) != 0)
+        {
+            continue;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    if (lstr != str)
+    {
+        yun_char_traits<char_type>::move(str, lstr, 
+            yun_char_traits<char_type>::length(lstr) + 1);
+    }
+
+    return str;
+}
 
 
 /*!
@@ -48,7 +152,32 @@ char *strtrimleft(char *str);
 * @return     char*
 * @param      str
 */
-char *strtrimright(char *str);
+template <typename char_type>
+char *strtrimright(char_type *str)
+{
+    ZCE_ASSERT(str);
+    char_type *lstr = str + yun_char_traits<char_type>::length(str) - 1;
+
+    for (; lstr >= str; lstr--)
+    {
+        //注意isspace的参数是int,（WIN下）要求字符是0~255,
+        if (yun_char_traits<char_type>::isspace(*lstr) != 0)
+        {
+            continue;
+        }
+        else
+        {
+            break;
+        }
+    }
+
+    if (lstr != str + yun_char_traits<char_type>::length(str) - 1)
+    {
+        *++lstr = 0;
+    }
+
+    return str;
+}
 
 
 /*!
@@ -56,16 +185,66 @@ char *strtrimright(char *str);
 * @return     char*
 * @param      str
 */
-char *strtrim(char *str);
+template <typename char_type>
+inline char *strtrim(char_type *str)
+{
+    ZCE_LIB::strtrimleft<char_type>(str);
+    ZCE_LIB::strtrimright<char_type>(str);
+    return str;
+}
+
+
+
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+void trimleft_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+{
+    typename std::basic_string<char_type, char_traits_type, allocator_typ>::iterator it = str.begin();
+
+    while (it != str.end() && yun_char_traits<char_type>::isspace(*it))
+    {
+        ++it;
+    }
+
+    str.erase(str.begin(), it);
+    return;
+}
+
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+void trimright_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+{
+    typename std::basic_string<char_type, char_traits_type, allocator_typ>::iterator it = str.end();
+
+    if (it == str.begin())
+    {
+        return;
+    }
+
+    while (it != str.begin() && yun_char_traits<char_type>::isspace(*--it));
+
+    str.erase(it + 1, str.end());
+
+    return;
+}
+
+template < typename char_type, typename char_traits_type, typename allocator_typ >
+inline void trim(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+{
+    trimright_stdstr(str);
+    trimleft_stdstr(str);
+
+    return;
+}
 
 //==========================================================================================================
 //下面这几个函数目前的平台可能有，但当时的某个平台可能缺失，是HP？还是IBM？SUN？无法确认了，
+//暂时保留了。
 
 
 /*!
 * @brief      将字符串全部转换为大写字符
 */
 char *strupr(char *str);
+
 
 /*!
 * @brief      将字符串全部转换为小写字符

@@ -34,7 +34,7 @@ int Comm_Stat_Monitor::initialize(bool if_zerg,
     create_stat_fname(if_zerg, service_info);
 
     // 将stat_mmap_filename_转换为大写
-    ZCE_OS::strupr(stat_mmap_filename_);
+    ZCE_LIB::strupr(stat_mmap_filename_);
 
     int ret = ZCE_Server_Status::initialize(stat_mmap_filename_,
                                             num_stat_item,

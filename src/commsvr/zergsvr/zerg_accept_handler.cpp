@@ -39,8 +39,8 @@ int TCP_Accept_Handler::create_listen(unsigned int backlog)
         ZLOG_ERROR("[zergsvr] Bind Listen IP|Port :[%s|%u] Fail.Error: %d|%s.",
                    accept_bind_addr_.get_host_addr(),
                    accept_bind_addr_.get_port_number(),
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()));
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()));
         return SOAR_RET::ERR_ZERG_INIT_LISTEN_PORT_FAIL;
     }
 
@@ -98,7 +98,7 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
         const size_t TMP_ADDR_LEN = 64;
         char str_local_addr[TMP_ADDR_LEN], str_remote_addr[TMP_ADDR_LEN];
 
-        int accept_error =  ZCE_OS::last_error();
+        int accept_error =  ZCE_LIB::last_error();
         ZLOG_ERROR("[zergsvr] Local peer[%s|%u] Accept remote [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%d|%s ",
                    accept_bind_addr_.get_host_addr(str_local_addr, TMP_ADDR_LEN),
                    accept_bind_addr_.get_port_number(),

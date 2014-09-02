@@ -18,7 +18,7 @@
 #ifndef ZCE_OS_ADOPT_STDLIB_H_
 #define ZCE_OS_ADOPT_STDLIB_H_
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 /*!

@@ -12,12 +12,12 @@
 template <>
 void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait (ZCE_Thread_Light_Mutex *external_mutex)
 {
-    int ret = ZCE_OS::pthread_cond_wait(&lock_,
+    int ret = ZCE_LIB::pthread_cond_wait(&lock_,
                                         external_mutex->get_lock());
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_cond_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_init", ret);
         return;
     }
 }
@@ -29,13 +29,13 @@ template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light_Mutex *external_mutex,
                                                                 const ZCE_Time_Value &abs_time)
 {
-    int ret = ZCE_OS::pthread_cond_timedwait(&lock_,
+    int ret = ZCE_LIB::pthread_cond_timedwait(&lock_,
                                              external_mutex->get_lock(),
                                              abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_cond_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_init", ret);
         return false;
     }
 
@@ -46,7 +46,7 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex *external_mutex, const ZCE_Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time (ZCE_OS::gettimeofday());
+    ZCE_Time_Value abs_time (ZCE_LIB::gettimeofday());
     abs_time += relative_time;
     return systime_wait(external_mutex, abs_time);
 }
@@ -57,12 +57,12 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Ligh
 template <>
 void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait (ZCE_Thread_Recursive_Mutex *external_mutex)
 {
-    int ret = ZCE_OS::pthread_cond_wait(&lock_,
+    int ret = ZCE_LIB::pthread_cond_wait(&lock_,
                                         external_mutex->get_lock());
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_cond_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_init", ret);
         return;
     }
 }
@@ -74,13 +74,13 @@ template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
                                                                     const ZCE_Time_Value &abs_time)
 {
-    int ret = ZCE_OS::pthread_cond_timedwait(&lock_,
+    int ret = ZCE_LIB::pthread_cond_timedwait(&lock_,
                                              external_mutex->get_lock(),
                                              abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_cond_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_init", ret);
         return false;
     }
 
@@ -92,7 +92,7 @@ template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::duration_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
                                                                      const ZCE_Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time (ZCE_OS::gettimeofday());
+    ZCE_Time_Value abs_time (ZCE_LIB::gettimeofday());
     abs_time += relative_time;
     return systime_wait(external_mutex, abs_time);
 }

@@ -37,8 +37,8 @@ ZCE_Server_Base::~ZCE_Server_Base()
     // 关闭文件
     if (pid_handle_ != ZCE_INVALID_HANDLE)
     {
-        ZCE_OS::flock(pid_handle_, LOCK_UN);
-        ZCE_OS::close(pid_handle_);
+        ZCE_LIB::flock(pid_handle_, LOCK_UN);
+        ZCE_LIB::close(pid_handle_);
     }
 }
 
@@ -46,7 +46,7 @@ ZCE_Server_Base::~ZCE_Server_Base()
 int ZCE_Server_Base::socket_init()
 {
     int ret = 0;
-    ret = ZCE_OS::socket_init();
+    ret = ZCE_LIB::socket_init();
 
     if (ret != 0)
     {
@@ -69,7 +69,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
     // 设置文件读取参数,表示其他用户可以读取，open函数会自动帮忙调整参数的。
     int fileperms = 0644;
 
-    pid_handle_ = ZCE_OS::open(filename.c_str(),
+    pid_handle_ = ZCE_LIB::open(filename.c_str(),
                                O_RDWR | O_CREAT,
                                static_cast<mode_t>(fileperms));
 
@@ -83,18 +83,18 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
     char tmpbuff[BUFFER_LEN + 1];
 
     // 这儿不对buffer做判断的原因是，肯定够长
-    self_pid_ = ZCE_OS::getpid();
+    self_pid_ = ZCE_LIB::getpid();
     int len = snprintf(tmpbuff, BUFFER_LEN, "%u", self_pid_ );
 
     // 截断文件为len，这点很重要,用了自己的OS 匹配层
     // 我是用WINDOWS下的记录锁模拟的文件锁，所以要先把文件长度调整对
-    ZCE_OS::ftruncate(pid_handle_, len);
+    ZCE_LIB::ftruncate(pid_handle_, len);
 
     // 如果PID文件要加锁
     if (lock_pid)
     {
         // 尝试锁定全部文件，为啥要try，见下面,这儿系统调用的是F_SETLK,
-        ret = ZCE_OS::flock(pid_handle_, LOCK_EX | LOCK_NB);
+        ret = ZCE_LIB::flock(pid_handle_, LOCK_EX | LOCK_NB);
 
         if (ret != 0)
         {
@@ -105,12 +105,12 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
         // 为此代码还分了WINDOWS进行特殊处理
         // 后来发现其实是自己考虑错了，这根本就是不是一个double check的地方，try就会进行加锁。二了。
         // 锁定全部文件，不知道为何，，,这儿系统调用的是，F_SETLKW
-        // ret = ZCE_OS::flock(pid_handle_,LOCK_EX);
+        // ret = ZCE_LIB::flock(pid_handle_,LOCK_EX);
     }
 
-    ZCE_OS::write(pid_handle_, tmpbuff, static_cast<unsigned int>(len));
+    ZCE_LIB::write(pid_handle_, tmpbuff, static_cast<unsigned int>(len));
 
-    // ZCE_OS::close(pid_handle_);
+    // ZCE_LIB::close(pid_handle_);
 
     return 0;
 }
@@ -130,14 +130,14 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
         last_system_perf_ = now_system_perf_;
     }
 
-    ret = ZCE_OS::get_self_perf(&now_process_perf_);
+    ret = ZCE_LIB::get_self_perf(&now_process_perf_);
 
     if (0 != ret)
     {
         return ret;
     }
 
-    ret = ZCE_OS::get_system_perf(&now_system_perf_);
+    ret = ZCE_LIB::get_system_perf(&now_system_perf_);
 
     if (0 != ret)
     {
@@ -187,21 +187,21 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
 
     // 其实到这个地方了，你可以干的事情很多，
     // 甚至计算某一段时间内程序的CPU占用率过高(TNNND,后来我真做了)
-    timeval last_to_now = ZCE_OS::timeval_sub(now_system_perf_.up_time_,
+    timeval last_to_now = ZCE_LIB::timeval_sub(now_system_perf_.up_time_,
                                               last_system_perf_.up_time_);
 
     // 得到进程的CPU利用率
-    timeval proc_utime = ZCE_OS::timeval_sub(now_process_perf_.run_utime_,
+    timeval proc_utime = ZCE_LIB::timeval_sub(now_process_perf_.run_utime_,
                                              last_process_perf_.run_utime_);
-    timeval proc_stime = ZCE_OS::timeval_sub(now_process_perf_.run_stime_,
+    timeval proc_stime = ZCE_LIB::timeval_sub(now_process_perf_.run_stime_,
                                              last_process_perf_.run_stime_);
-    timeval proc_cpu_time = ZCE_OS::timeval_add(proc_utime, proc_stime);
+    timeval proc_cpu_time = ZCE_LIB::timeval_add(proc_utime, proc_stime);
 
     // 如果间隔时间不为0
-    if (ZCE_OS::total_milliseconds(last_to_now) > 0)
+    if (ZCE_LIB::total_milliseconds(last_to_now) > 0)
     {
-        process_cpu_ratio_ = static_cast<uint32_t>(ZCE_OS::total_milliseconds(proc_cpu_time)
-                                                   * 1000 / ZCE_OS::total_milliseconds(last_to_now));
+        process_cpu_ratio_ = static_cast<uint32_t>(ZCE_LIB::total_milliseconds(proc_cpu_time)
+                                                   * 1000 / ZCE_LIB::total_milliseconds(last_to_now));
     }
     else
     {
@@ -214,31 +214,31 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
                "memory use//add [%ld/%ld].",
                self_pid_,
                process_cpu_ratio_,
-               ZCE_OS::total_milliseconds(now_process_perf_.run_utime_),
-               ZCE_OS::total_milliseconds(now_process_perf_.run_stime_),
-               ZCE_OS::total_milliseconds(last_to_now),
-               ZCE_OS::total_milliseconds(proc_utime),
-               ZCE_OS::total_milliseconds(proc_stime),
+               ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
+               ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
+               ZCE_LIB::total_milliseconds(last_to_now),
+               ZCE_LIB::total_milliseconds(proc_utime),
+               ZCE_LIB::total_milliseconds(proc_stime),
                cur_mem_usesize_,
                vary_mem_size);
 
     // 计算系统的CPU时间，非IDLE以外的时间都是消耗时间
-    timeval sys_idletime = ZCE_OS::timeval_sub(now_system_perf_.idle_time_,
+    timeval sys_idletime = ZCE_LIB::timeval_sub(now_system_perf_.idle_time_,
                                                last_system_perf_.idle_time_);
-    timeval sys_cputime = ZCE_OS::timeval_sub(last_to_now, sys_idletime);
+    timeval sys_cputime = ZCE_LIB::timeval_sub(last_to_now, sys_idletime);
 
     // 如果间隔时间不为0
-    if (ZCE_OS::total_milliseconds(last_to_now) > 0)
+    if (ZCE_LIB::total_milliseconds(last_to_now) > 0)
     {
         system_cpu_ratio_ =
-            static_cast<uint32_t>(ZCE_OS::total_milliseconds(sys_cputime)
-                                  * 1000 / ZCE_OS::total_milliseconds(last_to_now));
+            static_cast<uint32_t>(ZCE_LIB::total_milliseconds(sys_cputime)
+                                  * 1000 / ZCE_LIB::total_milliseconds(last_to_now));
     }
     else
     {
         ZLOG_ERROR("system_uptime = %llu, process_start_time = %llu",
-                   ZCE_OS::total_milliseconds(now_system_perf_.up_time_),
-                   ZCE_OS::total_milliseconds(now_process_perf_.start_time_));
+                   ZCE_LIB::total_milliseconds(now_system_perf_.up_time_),
+                   ZCE_LIB::total_milliseconds(now_process_perf_.start_time_));
         system_cpu_ratio_ = 0;
     }
 
@@ -257,11 +257,11 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
                    double(PROCESS_CPU_RATIO_THRESHOLD) / 10,
                    double(system_cpu_ratio_) / 10,
                    double(SYSTEM_CPU_RATIO_THRESHOLD) / 10,
-                   ZCE_OS::total_milliseconds(now_process_perf_.run_utime_),
-                   ZCE_OS::total_milliseconds(now_process_perf_.run_stime_),
-                   ZCE_OS::total_milliseconds(last_to_now),
-                   ZCE_OS::total_milliseconds(proc_utime),
-                   ZCE_OS::total_milliseconds(proc_stime));
+                   ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
+                   ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
+                   ZCE_LIB::total_milliseconds(last_to_now),
+                   ZCE_LIB::total_milliseconds(proc_utime),
+                   ZCE_LIB::total_milliseconds(proc_stime));
     }
 
     // 内存使用情况的监控
@@ -287,16 +287,16 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
                "mem ratio[%u] [totoal/can use/free/buffer/cache] "
                "[%lld/%lld/%lld/%lld/%lld] bytes",
                system_cpu_ratio_,
-               ZCE_OS::total_milliseconds(now_system_perf_.user_time_),
-               ZCE_OS::total_milliseconds(now_system_perf_.nice_time_),
-               ZCE_OS::total_milliseconds(now_system_perf_.system_time_),
-               ZCE_OS::total_milliseconds(now_system_perf_.idle_time_),
-               ZCE_OS::total_milliseconds(now_system_perf_.iowait_time_),
-               ZCE_OS::total_milliseconds(now_system_perf_.hardirq_time_),
-               ZCE_OS::total_milliseconds(now_system_perf_.softirq_time_),
-               ZCE_OS::total_milliseconds(last_to_now),
-               ZCE_OS::total_milliseconds(sys_cputime),
-               ZCE_OS::total_milliseconds(sys_idletime),
+               ZCE_LIB::total_milliseconds(now_system_perf_.user_time_),
+               ZCE_LIB::total_milliseconds(now_system_perf_.nice_time_),
+               ZCE_LIB::total_milliseconds(now_system_perf_.system_time_),
+               ZCE_LIB::total_milliseconds(now_system_perf_.idle_time_),
+               ZCE_LIB::total_milliseconds(now_system_perf_.iowait_time_),
+               ZCE_LIB::total_milliseconds(now_system_perf_.hardirq_time_),
+               ZCE_LIB::total_milliseconds(now_system_perf_.softirq_time_),
+               ZCE_LIB::total_milliseconds(last_to_now),
+               ZCE_LIB::total_milliseconds(sys_cputime),
+               ZCE_LIB::total_milliseconds(sys_idletime),
                mem_use_ratio_,
                now_system_perf_.totalram_size_,
                can_use_size_,
@@ -311,21 +311,21 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
 int ZCE_Server_Base::process_signal(void)
 {
     //忽视部分信号,这样简单
-    ZCE_OS::signal(SIGHUP, SIG_IGN);
-    ZCE_OS::signal(SIGPIPE, SIG_IGN);
-    ZCE_OS::signal(SIGCHLD, SIG_IGN);
+    ZCE_LIB::signal(SIGHUP, SIG_IGN);
+    ZCE_LIB::signal(SIGPIPE, SIG_IGN);
+    ZCE_LIB::signal(SIGCHLD, SIG_IGN);
 
 #ifdef ZCE_OS_WINDOWS
     //Windows下设置退出处理函数，可以用Ctrl + C 退出
     SetConsoleCtrlHandler((PHANDLER_ROUTINE)exit_signal, TRUE);
 #else
     //这个几个信号被认可为退出信号
-    ZCE_OS::signal(SIGINT, exit_signal);
-    ZCE_OS::signal(SIGQUIT, exit_signal);
-    ZCE_OS::signal(SIGTERM, exit_signal);
+    ZCE_LIB::signal(SIGINT, exit_signal);
+    ZCE_LIB::signal(SIGQUIT, exit_signal);
+    ZCE_LIB::signal(SIGTERM, exit_signal);
 
     //重新加载部分配置,用了SIGUSR1 kill -10
-    ZCE_OS::signal(SIGUSR1, reload_config_signal);
+    ZCE_LIB::signal(SIGUSR1, reload_config_signal);
 #endif
 
     //SIGUSR1,SIGUSR2你可以用来干点自己的活,
@@ -338,7 +338,7 @@ int ZCE_Server_Base::daemon_init()
 
 #if defined (ZCE_OS_LINUX)
 
-    pid_t pid = ZCE_OS::fork();
+    pid_t pid = ZCE_LIB::fork();
 
     if (pid < 0)
     {
@@ -351,8 +351,8 @@ int ZCE_Server_Base::daemon_init()
 
 #endif
 
-    ZCE_OS::setsid();
-    ZCE_OS::umask(0);
+    ZCE_LIB::setsid();
+    ZCE_LIB::umask(0);
 
 #if defined (ZCE_OS_WINDOWS)
     //设置Console的标题信息

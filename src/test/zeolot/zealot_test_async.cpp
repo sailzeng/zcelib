@@ -259,10 +259,10 @@ int test_coroutine1(int argc, char * argv[])
 {
 coroutine_t context;
 
-ZCE_OS::getcontext(&context);
+ZCE_LIB::getcontext(&context);
 puts("Hello world");
-ZCE_OS::sleep(1);
-ZCE_OS::setcontext(&context);
+ZCE_LIB::sleep(1);
+ZCE_LIB::setcontext(&context);
 return 0;
 }
 */
@@ -289,7 +289,7 @@ void loop(
 
         /* Save the loop context (this point in the code) into ''loop_context'',
         * and switch to other_context. */
-        ZCE_OS::yeild_main(loop_context);
+        ZCE_LIB::yeild_main(loop_context);
     }
 
     /* The function falls through to the calling context with an implicit
@@ -319,7 +319,7 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
     /* Fill in loop_context so that it makes swapcontext start loop. The
     * (void (*)(void)) typecast is to avoid a compiler warning but it is
     * not relevant to the behaviour of the function. */
-    ZCE_OS::make_coroutine(&loop_context,
+    ZCE_LIB::make_coroutine(&loop_context,
         8192 * 100,
         true,
         (ZCE_COROUTINE_3PARA)loop,
@@ -332,7 +332,7 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
 
     /* Save the current context into main_context1. When loop is finished,
     * control flow will return to this point. */
-    //ZCE_OS::getcontext(&main_context1);
+    //ZCE_LIB::getcontext(&main_context1);
 
     if (!iterator_finished)
     {
@@ -346,7 +346,7 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
             /* Save this point into main_context2 and switch into the iterator.
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
-            ZCE_OS::yeild_coroutine(&loop_context);
+            ZCE_LIB::yeild_coroutine(&loop_context);
             printf("%d\n", i_from_iterator);
         }
     }

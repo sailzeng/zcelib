@@ -6,7 +6,7 @@
 #include "soar_svrd_app_base.h"
 
 
-ZCE_Time_Value Server_Timer_Base::cur_time_ = ZCE_OS::gettimeofday();
+ZCE_Time_Value Server_Timer_Base::cur_time_ = ZCE_LIB::gettimeofday();
 
 //定时器ID,避免New传递,回收
 const int Server_Timer_Base::SERVER_TIMER_ID[] =
@@ -34,12 +34,12 @@ int Server_Timer_Base::initialize()
     ZCE_ASSERT(stat_monitor_ != NULL);
 
     //定时心跳,每100msec心跳一下，得到当前的时间
-    ZCE_Time_Value interval = ZCE_OS::make_timeval(0, HEARTBEAT_INTERVAL_MSEC);
+    ZCE_Time_Value interval = ZCE_LIB::make_timeval(0, HEARTBEAT_INTERVAL_MSEC);
     timer_queue()->schedule_timer(this,
         &(SERVER_TIMER_ID[0]),
         ZCE_Time_Value::ZERO_TIME_VALUE,
         interval);
-    cur_time_ = ZCE_OS::gettimeofday();
+    cur_time_ = ZCE_LIB::gettimeofday();
 
     last_check_ = time(NULL);
 
@@ -53,7 +53,7 @@ int Server_Timer_Base::handle_timeout(const ZCE_Time_Value &now_time,
     ZCE_UNUSED_ARG(act);
 
     //
-    cur_time_ = ZCE_OS::gettimeofday();
+    cur_time_ = ZCE_LIB::gettimeofday();
 
 
     // 处理监控

@@ -122,7 +122,7 @@ inline uint16_t ZCE_Sockaddr_In6::get_port_number (void) const
 //取得以.符号的IP地址信息STRING
 inline const char *ZCE_Sockaddr_In6::get_host_addr (char *addr_buf, int addr_size) const
 {
-    return ZCE_OS::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in6_addr_),
+    return ZCE_LIB::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in6_addr_),
                                    addr_buf,
                                    addr_size);
 }
@@ -134,7 +134,7 @@ inline const char *ZCE_Sockaddr_In6::get_host_addr (void) const
     static char in4_buf[BUF_LEN + 1];
     in4_buf[BUF_LEN] = '\0';
 
-    return ZCE_OS::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in6_addr_),
+    return ZCE_LIB::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in6_addr_),
                                    in4_buf,
                                    BUF_LEN);
 }
@@ -142,7 +142,7 @@ inline const char *ZCE_Sockaddr_In6::get_host_addr (void) const
 //取得以.符号的IP地址#端口号STRING
 inline const char *ZCE_Sockaddr_In6::get_host_addr_port(char *addr_buf, int addr_size) const
 {
-    return ZCE_OS::socketaddr_ntop_ex(reinterpret_cast<const sockaddr *>(&in6_addr_),
+    return ZCE_LIB::socketaddr_ntop_ex(reinterpret_cast<const sockaddr *>(&in6_addr_),
                                       addr_buf,
                                       addr_size);
 }

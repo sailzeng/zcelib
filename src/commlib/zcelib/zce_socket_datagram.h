@@ -78,7 +78,7 @@ inline ssize_t ZCE_Socket_DataGram::recvfrom (void *buf,
                                               int flags,
                                               ZCE_Sockaddr *addr)  const
 {
-    return ZCE_OS::recvfrom (socket_handle_,
+    return ZCE_LIB::recvfrom (socket_handle_,
                              buf,
                              len,
                              flags,
@@ -93,7 +93,7 @@ inline ssize_t ZCE_Socket_DataGram::sendto (const void *buf,
                                             int flags,
                                             const ZCE_Sockaddr *to_addr)  const
 {
-    return ZCE_OS::sendto (socket_handle_,
+    return ZCE_LIB::sendto (socket_handle_,
                            buf,
                            len,
                            flags,
@@ -108,7 +108,7 @@ inline ssize_t ZCE_Socket_DataGram::recvfrom (void *buf,
                                               ZCE_Time_Value *timeout_tv,
                                               int flags)  const
 {
-    return ZCE_OS::recvfrom (socket_handle_,
+    return ZCE_LIB::recvfrom (socket_handle_,
                              buf,
                              len,
                              from_addr->sockaddr_ptr_,
@@ -125,7 +125,7 @@ inline ssize_t ZCE_Socket_DataGram::sendto (const void *buf,
                                             ZCE_Time_Value *timeout_tv,
                                             int flags)  const
 {
-    return ZCE_OS::sendto (socket_handle_,
+    return ZCE_LIB::sendto (socket_handle_,
                            buf,
                            len,
                            to_addr->sockaddr_ptr_,

@@ -424,7 +424,7 @@
 #  endif
 #endif
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 //取得最后的errno，在Windows下有点
@@ -432,7 +432,7 @@ inline int last_error (void)
 {
 
 #if defined (ZCE_OS_WINDOWS)
-    // ZCE_OS::last_error() prefers errnor since started out as a way to
+    // ZCE_LIB::last_error() prefers errnor since started out as a way to
     // avoid directly accessing errno in ACE code - particularly the ACE
     // C++ socket wrapper facades.  On Windows, some things that would
     // use errno on UNIX require ::GetLastError(), so this method tries

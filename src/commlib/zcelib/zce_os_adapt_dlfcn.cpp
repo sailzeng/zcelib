@@ -6,7 +6,7 @@
 //----------------------------------------------------------------------------------------
 //动态库使用的一部分函数封装
 //关闭动态库使用的函数
-int ZCE_OS::dlclose (ZCE_SHLIB_HANDLE handle)
+int ZCE_LIB::dlclose (ZCE_SHLIB_HANDLE handle)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -26,7 +26,7 @@ int ZCE_OS::dlclose (ZCE_SHLIB_HANDLE handle)
 
 }
 
-const char *ZCE_OS::dlerror (void)
+const char *ZCE_LIB::dlerror (void)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -46,7 +46,7 @@ const char *ZCE_OS::dlerror (void)
 
 }
 
-ZCE_SHLIB_HANDLE  ZCE_OS::dlopen (const char *fname,
+ZCE_SHLIB_HANDLE  ZCE_LIB::dlopen (const char *fname,
                                   int mode)
 {
 
@@ -61,7 +61,7 @@ ZCE_SHLIB_HANDLE  ZCE_OS::dlopen (const char *fname,
 
 }
 
-void *ZCE_OS::dlsym (ZCE_SHLIB_HANDLE handle,
+void *ZCE_LIB::dlsym (ZCE_SHLIB_HANDLE handle,
                      const char *symbolname)
 {
 

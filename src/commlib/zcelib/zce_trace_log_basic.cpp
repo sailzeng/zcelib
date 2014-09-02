@@ -206,13 +206,13 @@ void ZCE_LogTrace_Basic::make_configure(void)
     char dir_name[PATH_MAX + 16];
     dir_name[PATH_MAX] = '\0';
 
-    ZCE_OS::dirname(log_file_prefix_.c_str(), dir_name, PATH_MAX + 1);
+    ZCE_LIB::dirname(log_file_prefix_.c_str(), dir_name, PATH_MAX + 1);
     log_file_dir_ = dir_name;
 
     time_t cur_time = 0;
 
     // 如果目录不存在，则创建
-    if (ZCE_OS::mkdir_recurse(log_file_dir_.c_str()) != 0)
+    if (ZCE_LIB::mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
         // 创建失败，
         printf("mkdir %s fail. err=%s\n", log_file_dir_.c_str(), strerror(errno));
@@ -250,7 +250,7 @@ void ZCE_LogTrace_Basic::make_configure(void)
             //如果要按照SIZE划分日志,得到记录日志文件的尺寸
             if (LOGDEVIDE_BY_SIZE == div_log_file_)
             {
-                ret = ZCE_OS::filelen(log_file_name_.c_str(), &size_log_file_);
+                ret = ZCE_LIB::filelen(log_file_name_.c_str(), &size_log_file_);
 
                 if ( 0 != ret  )
                 {
@@ -501,7 +501,7 @@ void ZCE_LogTrace_Basic::del_old_time_logfile(time_t cur_time, bool init)
     else
     {
         //过滤目录
-        DIR *dir_handle = ZCE_OS::opendir(log_file_dir_.c_str());
+        DIR *dir_handle = ZCE_LIB::opendir(log_file_dir_.c_str());
 
         if (NULL == dir_handle)
         {
@@ -510,9 +510,9 @@ void ZCE_LogTrace_Basic::del_old_time_logfile(time_t cur_time, bool init)
 
         dirent *find_file = NULL;
 
-        for ( find_file = ZCE_OS::readdir(dir_handle);
+        for ( find_file = ZCE_LIB::readdir(dir_handle);
               find_file != NULL;
-              find_file = ZCE_OS::readdir(dir_handle))
+              find_file = ZCE_LIB::readdir(dir_handle))
         {
             int ret_cmp = 0;
             std::string process_file_name(log_file_dir_);
@@ -550,7 +550,7 @@ void ZCE_LogTrace_Basic::del_old_time_logfile(time_t cur_time, bool init)
             }
         }
 
-        ZCE_OS::closedir(dir_handle);
+        ZCE_LIB::closedir(dir_handle);
 
     }
 }
@@ -671,10 +671,10 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
     if (record_info_ & LOG_HEAD_RECORD_CURRENTTIME)
     {
         //转换为语句
-        ZCE_OS::timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
+        ZCE_LIB::timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
         //别计算了，快点
-        sz_use_len = ZCE_OS::TIMESTR_ISO_USEC_LEN;
+        sz_use_len = ZCE_LIB::TIMESTR_ISO_USEC_LEN;
 
         sz_buf_len -= sz_use_len;
     }
@@ -717,13 +717,13 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
     //如果纪录当前的PID
     if (record_info_ & LOG_HEAD_RECORD_PROCESSID)
     {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]", static_cast<unsigned int>(ZCE_OS::getpid()));
+        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]", static_cast<unsigned int>(ZCE_LIB::getpid()));
         sz_buf_len -= sz_use_len;
     }
 
     if (record_info_ & LOG_HEAD_RECORD_THREADID)
     {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[TID:%u]", static_cast<unsigned int>(ZCE_OS::pthread_self()));
+        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[TID:%u]", static_cast<unsigned int>(ZCE_LIB::pthread_self()));
         sz_buf_len -= sz_use_len;
     }
 }
@@ -856,6 +856,6 @@ void ZCE_LogTrace_Basic::del_old_logfile(time_t cur_time, bool init)
             del_old_id_logfile();
         }
 
-        ZCE_OS::clear_last_error();
+        ZCE_LIB::clear_last_error();
     }
 }

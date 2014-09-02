@@ -139,15 +139,15 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     {
         ZLOG_INFO("[framework] Link is disconnect recv ret =%d, error[%u|%s].",
                   socket_ret,
-                  ZCE_OS::last_error(),
-                  strerror(ZCE_OS::last_error()));
+                  ZCE_LIB::last_error(),
+                  strerror(ZCE_LIB::last_error()));
         return SOAR_RET::ERROR_ZULU_LINK_DISCONNECT;
     }
     //小于0一般表示错误,对于阻塞，这儿也表示一个错误,我给了你等待时间作为选择
     else if (socket_ret < 0)
     {
         //如果错误是信号导致的重入
-        int last_error =  ZCE_OS::last_error();
+        int last_error =  ZCE_LIB::last_error();
 
         ZLOG_ERROR("[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
                    socket_ret,
@@ -166,8 +166,8 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     {
         ZLOG_ERROR("[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                    tibetan_recv_appframe_->frame_length_,
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()) );
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()) );
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
     }
 
@@ -249,8 +249,8 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int qq_uin,
     {
         ZLOG_ERROR("[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                    tibetan_recv_appframe_->frame_length_,
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()) );
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()) );
         return SOAR_RET::ERROR_ZULU_SEND_PACKAGE_FAIL;
     }
 

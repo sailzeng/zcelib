@@ -582,7 +582,7 @@ int perf_fast_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        ZCE_OS::fast_memcpy(dst_buf, src_buf, test_len);
+        ZCE_LIB::fast_memcpy(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_1_use =  hr_timer.elapsed_usec();
@@ -591,7 +591,7 @@ int perf_fast_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        ZCE_OS::fast_memcpy2(dst_buf, src_buf, test_len);
+        ZCE_LIB::fast_memcpy2(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_2_use =  hr_timer.elapsed_usec();
@@ -681,7 +681,7 @@ int perf_nonalign_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        ZCE_OS::fast_memcpy(dst_buf, src_buf, test_len);
+        ZCE_LIB::fast_memcpy(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_1_use =  hr_timer.elapsed_usec();
@@ -690,7 +690,7 @@ int perf_nonalign_memcpy(size_t test_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         src_buf[0] += 1;
-        ZCE_OS::fast_memcpy2(dst_buf, src_buf, test_len);
+        ZCE_LIB::fast_memcpy2(dst_buf, src_buf, test_len);
     }
     hr_timer.end();
     double fast_2_use =  hr_timer.elapsed_usec();
@@ -804,7 +804,7 @@ int test_compress_filedata(const char *file_name)
     unsigned char *file_buffer = new unsigned char [40 * 1024 * 1024];
     size_t file_len;
     int ret = 0;
-    ret = ZCE_OS::read_file_data(file_name, (char *)file_buffer, 40 * 1024 * 1024, &file_len);
+    ret = ZCE_LIB::read_file_data(file_name, (char *)file_buffer, 40 * 1024 * 1024, &file_len);
     if (ret != 0)
     {
         delete []file_buffer;
@@ -985,7 +985,7 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
     unsigned char *file_buffer = new unsigned char [40 * 1024 * 1024];
     size_t file_len;
     int ret = 0;
-    ret = ZCE_OS::read_file_data("D:\\TestDir\\compress\\5.txt", (char *)file_buffer, 40 * 1024 * 1024, &file_len);
+    ret = ZCE_LIB::read_file_data("D:\\TestDir\\compress\\5.txt", (char *)file_buffer, 40 * 1024 * 1024, &file_len);
     if (ret != 0)
     {
         delete []file_buffer;
@@ -1002,7 +1002,7 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
     unsigned char *compress_buf = new unsigned char [40 * 1024 * 1024];
     unsigned char *decompress_buf = new unsigned char [40 * 1024 * 1024];
 
-    ZCE_OS::sleep(1);
+    ZCE_LIB::sleep(1);
 
     double compress_use = 0.0 , decompress_use = 0.0;
     /*

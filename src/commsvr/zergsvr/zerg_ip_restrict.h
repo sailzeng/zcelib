@@ -2,6 +2,8 @@
 #ifndef ZERG_IP_RESTRICT_H_
 #define ZERG_IP_RESTRICT_H_
 
+class Zerg_Server_Config;
+
 /****************************************************************************************************
 class  Zerg_IPRestrict_Mgr
 ****************************************************************************************************/
@@ -17,9 +19,16 @@ protected:
 
 public:
     //从配置文件中得到相关的配置
-    int get_iprestrict_conf(const conf_zerg::ZERG_CONFIG &cfg_file);
+    int get_config(const Zerg_Server_Config *config);
     //检查IP限制
     int check_iprestrict(const ZCE_Sockaddr_In &remoteaddress);
+
+public:
+
+    //单子实例函数
+    static Zerg_IPRestrict_Mgr *instance();
+    //清理单子实例
+    static void clean_instance();
 
 protected:
 
@@ -31,13 +40,6 @@ protected:
 protected:
     //单子实例
     static Zerg_IPRestrict_Mgr        *instance_;
-
-public:
-
-    //单子实例函数
-    static Zerg_IPRestrict_Mgr *instance();
-    //清理单子实例
-    static void clean_instance();
 
 };
 

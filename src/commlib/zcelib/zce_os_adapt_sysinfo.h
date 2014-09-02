@@ -113,7 +113,7 @@ struct ZCE_SYSTEM_PERFORMANCE
 
 };
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 //----------------------------------------------------------------------------------------------

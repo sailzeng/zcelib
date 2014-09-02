@@ -54,7 +54,7 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     {
         ZLOG_ERROR("[%s] invoke ::inotify_init fail,error [%u].",
                    __ZCE_FUNCTION__,
-                   ZCE_OS::last_error());
+                   ZCE_LIB::last_error());
         return -1;
     }
 
@@ -138,7 +138,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     {
         ZLOG_ERROR("[%s] invoke ::inotify_add_watch fail,error [%u].",
                    __ZCE_FUNCTION__,
-                   ZCE_OS::last_error());
+                   ZCE_LIB::last_error());
         return -1;
     }
 
@@ -194,7 +194,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         ZLOG_ERROR("[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
                    __ZCE_FUNCTION__,
                    pathname,
-                   ZCE_OS::last_error());
+                   ZCE_LIB::last_error());
         return -1;
     }
 
@@ -230,8 +230,8 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     {
         ZLOG_ERROR("[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
                    __ZCE_FUNCTION__,
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()));
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()));
 
         ::CloseHandle(watch_handle_);
 
@@ -299,7 +299,7 @@ int ZCE_Event_INotify::handle_input ()
     size_t watch_event_num = 0;
 
     //∂¡»°
-    ssize_t read_ret = ZCE_OS::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
+    ssize_t read_ret = ZCE_LIB::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
     if (read_ret <= 0)
     {
         return -1;
@@ -442,7 +442,7 @@ int ZCE_Event_INotify::handle_input ()
     {
         ZLOG_ERROR("[%s] ::GetOverlappedResult fail,error [%u].",
                    __ZCE_FUNCTION__,
-                   ZCE_OS::last_error());
+                   ZCE_LIB::last_error());
         return -1;
     }
 
@@ -580,7 +580,7 @@ int ZCE_Event_INotify::handle_input ()
     {
         ZLOG_ERROR("[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
                    __ZCE_FUNCTION__,
-                   ZCE_OS::last_error());
+                   ZCE_LIB::last_error());
     }
 
     return 0;

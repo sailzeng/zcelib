@@ -61,10 +61,10 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
 //int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const conf_zerg::ZERG_CONFIG &zerg_config)
 //{
 //    int ret = 0;
-//    bus_head_.size_of_pipe_[RECV_PIPE_ID] = zerg_config.soar_cfg.recv_pipe_len;
+//    bus_head_.size_of_pipe_[RECV_PIPE_ID] = zerg_config.soar_cfg.recv_pipe_len_;
 //    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
 //
-//    bus_head_.size_of_pipe_[SEND_PIPE_ID] = zerg_config.soar_cfg.send_pipe_len;
+//    bus_head_.size_of_pipe_[SEND_PIPE_ID] = zerg_config.soar_cfg.send_pipe_len_;
 //    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
 //
 //    //读取自己的配置

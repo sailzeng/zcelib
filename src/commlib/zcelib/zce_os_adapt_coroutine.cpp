@@ -58,7 +58,7 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 
 
 //兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
-int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
+int ZCE_LIB::make_coroutine(coroutine_t *coroutine_hdl,
                            size_t stack_size,
                            bool exit_back_main,
                            ZCE_COROUTINE_3PARA fun_ptr,
@@ -156,7 +156,7 @@ int ZCE_OS::make_coroutine(coroutine_t *coroutine_hdl,
 }
 
 //非标准函数，
-void ZCE_OS::delete_coroutine(coroutine_t *coroutine_hdl)
+void ZCE_LIB::delete_coroutine(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     //
@@ -167,7 +167,7 @@ void ZCE_OS::delete_coroutine(coroutine_t *coroutine_hdl)
     return ;
 #elif defined ZCE_OS_LINUX
 
-    //释放ZCE_OS::makecontext申请的空间
+    //释放ZCE_LIB::makecontext申请的空间
     delete[](char *) coroutine_hdl->coroutine_.uc_stack.ss_sp;
     coroutine_hdl->coroutine_.uc_stack.ss_sp = NULL;
     coroutine_hdl->coroutine_.uc_stack.ss_size = 0;
@@ -176,7 +176,7 @@ void ZCE_OS::delete_coroutine(coroutine_t *coroutine_hdl)
 
 
 //切换到协程
-int ZCE_OS::yeild_coroutine(coroutine_t *coroutine_hdl)
+int ZCE_LIB::yeild_coroutine(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
@@ -198,7 +198,7 @@ int ZCE_OS::yeild_coroutine(coroutine_t *coroutine_hdl)
 
 
 //切换到Main
-int ZCE_OS::yeild_main(coroutine_t *coroutine_hdl)
+int ZCE_LIB::yeild_main(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
     int ret = 0;
@@ -218,7 +218,7 @@ int ZCE_OS::yeild_main(coroutine_t *coroutine_hdl)
 #endif
 }
 
-int ZCE_OS::exchage_coroutine(coroutine_t *save_hdl,
+int ZCE_LIB::exchage_coroutine(coroutine_t *save_hdl,
                               coroutine_t *goto_hdl)
 {
 

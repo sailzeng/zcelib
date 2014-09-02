@@ -200,7 +200,7 @@ public:
     const char *to_string(char *str_date_time,
                           size_t datetime_strlen,
                           bool uct_time = false,
-                          ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC
+                          ZCE_LIB::TIME_STR_FORMAT_TYPE fromat_type = ZCE_LIB::TIME_STRFMT_ISO_USEC
                          )  const;
 
     /*!
@@ -212,7 +212,7 @@ public:
     */
     int from_string(const char *strtm,
                     bool uct_time = false,
-                    ZCE_OS::TIME_STR_FORMAT_TYPE fromat_type = ZCE_OS::TIME_STRFMT_ISO_USEC);
+                    ZCE_LIB::TIME_STR_FORMAT_TYPE fromat_type = ZCE_LIB::TIME_STRFMT_ISO_USEC);
 
     ///返回一个timespec的对象
     operator ::timespec () const;

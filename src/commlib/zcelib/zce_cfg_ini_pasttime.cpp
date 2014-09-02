@@ -87,7 +87,7 @@ bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
 
     get_privateprofile_string(sec_name, key_name, default_str, return_str, 64, file_name_.c_str());
 
-    if (ZCE_OS::strcasecmp(return_str, "TRUE"))
+    if (ZCE_LIB::strcasecmp(return_str, "TRUE"))
     {
         return false;
     }
@@ -256,7 +256,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
             //fgets(choneline,LINE_BUFFER_LEN,pfile);
             //整理，
-            ZCE_OS::strtrim(choneline);
+            ZCE_LIB::strtrim(choneline);
 
             //注释行
             if (choneline[0] == ';' || choneline[0] == '#')
@@ -337,7 +337,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
             //整理，
-            ZCE_OS::strtrim(choneline);
+            ZCE_LIB::strtrim(choneline);
 
             //注释行
             if (choneline[0] == ';' || choneline[0] == '#')
@@ -359,9 +359,9 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                 memmove(choneline, choneline + 1, strlen(choneline) - 1);
                 choneline[strlen(choneline) - 2] = '\0';
                 //整理，
-                ZCE_OS::strtrim(choneline);
+                ZCE_LIB::strtrim(choneline);
 
-                if (ZCE_OS::strcasecmp(choneline, sec_name) == 0)
+                if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
                 {
                     if_app = true;
                     pstrtmp = return_str;
@@ -434,7 +434,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         {
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
             //整理
-            ZCE_OS::strtrim(choneline);
+            ZCE_LIB::strtrim(choneline);
 
             //注释行
             if (choneline[0] == ';' || choneline[0] == '#')
@@ -453,7 +453,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
                 ////
                 //找到返回。
-                if (ZCE_OS::strcasecmp(chkey, key_name) == 0)
+                if (ZCE_LIB::strcasecmp(chkey, key_name) == 0)
                 {
                     strncpy(return_str, chstring, size_ret_str - 1);
                     *(return_str + size_ret_str - 1) = '\0';
@@ -486,7 +486,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
             //整理
-            ZCE_OS::strtrim(choneline);
+            ZCE_LIB::strtrim(choneline);
 
             //注释行
             if (choneline[0] == ';' || choneline[0] == '#')
@@ -517,10 +517,10 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                 memmove(choneline, choneline + 1, strlen(choneline) - 1);
                 choneline[strlen(choneline) - 2] = '\0';
                 //
-                ZCE_OS::strtrim(choneline);
+                ZCE_LIB::strtrim(choneline);
 
                 //
-                if (ZCE_OS::strcasecmp(choneline, sec_name) == 0)
+                if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
                 {
                     if_app = true;
                     continue;
@@ -538,11 +538,11 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                     strncpy(chkey, choneline, LINE_BUFFER_LEN);
                     strncpy(chstring, snext, LINE_BUFFER_LEN);
                     ////
-                    ZCE_OS::strtrim(chkey);
-                    ZCE_OS::strtrim(chstring);
+                    ZCE_LIB::strtrim(chkey);
+                    ZCE_LIB::strtrim(chstring);
 
                     //找到返回。
-                    if (ZCE_OS::strcasecmp(chkey, key_name) == 0)
+                    if (ZCE_LIB::strcasecmp(chkey, key_name) == 0)
                     {
                         strncpy(return_str, chstring, size_ret_str - 1);
                         *(return_str + size_ret_str - 1) = '\0';
@@ -668,7 +668,7 @@ bool ZCE_INI_Pt::write_privateprofile_string(
 
             memmove(line, choneline, strlen(choneline) + 1);
             //整理
-            ZCE_OS::strtrim(choneline);
+            ZCE_LIB::strtrim(choneline);
 
             //注释行,空行
             if (choneline[0] == ';' || choneline[0] == '#' || choneline[0] == '\0')
@@ -695,13 +695,13 @@ bool ZCE_INI_Pt::write_privateprofile_string(
 
                 choneline[strlen(choneline) - 1] = '\0';
                 //规整
-                ZCE_OS::strtrimleft(choneline);
+                ZCE_LIB::strtrimleft(choneline);
                 //去掉'[',']'
                 memmove(choneline, choneline + 1, strlen(choneline));
-                ZCE_OS::strtrimright(choneline);
+                ZCE_LIB::strtrimright(choneline);
 
                 //比较Section部分
-                if (ZCE_OS::strcasecmp(choneline, sec_name) == 0)
+                if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
                 {
                     bApp = true;
 
@@ -736,11 +736,11 @@ bool ZCE_INI_Pt::write_privateprofile_string(
                     strncpy(chkey, choneline, LINE_BUFFER_LEN);
                     strncpy(chstring, snext, LINE_BUFFER_LEN);
                     //规整
-                    ZCE_OS::strtrim(chkey);
-                    ZCE_OS::strtrim(chstring);
+                    ZCE_LIB::strtrim(chkey);
+                    ZCE_LIB::strtrim(chstring);
 
                     //找到对应的Key
-                    if (ZCE_OS::strcasecmp(chkey, key_name) == 0)
+                    if (ZCE_LIB::strcasecmp(chkey, key_name) == 0)
                     {
                         //表示找到键值
                         bkey = true;
@@ -877,7 +877,7 @@ bool ZCE_INI_Pt::write_privateprofile_section(
         }
         memmove(line, choneline, strlen(choneline) + 1);
         //整理
-        ZCE_OS::strtrim(choneline);
+        ZCE_LIB::strtrim(choneline);
 
         //注释行,空行
         if (choneline[0] == ';' || choneline[0] == '#' || choneline[0] == '\0')
@@ -892,10 +892,10 @@ bool ZCE_INI_Pt::write_privateprofile_section(
             memmove(choneline, choneline + 1, strlen(choneline) - 1);
             choneline[strlen(choneline) - 2] = '\0';
             //规整
-            ZCE_OS::strtrim(choneline);
+            ZCE_LIB::strtrim(choneline);
 
             //比较Section部分
-            if (ZCE_OS::strcasecmp(choneline, sec_name) == 0)
+            if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
             {
                 bApp = true;
                 //要修改这个App

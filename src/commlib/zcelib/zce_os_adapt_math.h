@@ -17,7 +17,7 @@
 
 #include "zce_os_adapt_predefine.h"
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 /*!
@@ -35,8 +35,8 @@ inline bool is_prime (const size_t n)
     {
         return true;
     }
-    size_t test_max = static_cast<size_t>(::sqrt(static_cast<double>(n)));
-    for (size_t i = 2; i <= test_max + 1 ; ++i)
+    size_t test_max = static_cast<size_t>(::sqrt(static_cast<double>(n)) +1);
+    for (size_t i = 2; i <= test_max; ++i)
     {
         if (n % i == 0)
         {

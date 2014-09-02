@@ -45,11 +45,11 @@ int ZCE_Socket_Base::open(int type,
     //防止你干坏事，重复调用，造成资源无法释放
     assert(socket_handle_ == ZCE_INVALID_SOCKET);
 
-    socket_handle_ = ZCE_OS::socket(family, type, protocol);
+    socket_handle_ = ZCE_LIB::socket(family, type, protocol);
     if (ZCE_INVALID_SOCKET == socket_handle_ )
     {
-        int last_err = ZCE_OS::last_error();
-        ZLOG_ERROR("ZCE_OS::socket return fail last error %d|%s.",
+        int last_err = ZCE_LIB::last_error();
+        ZLOG_ERROR("ZCE_LIB::socket return fail last error %d|%s.",
                    last_err,
                    strerror(last_err));
         return -1;
@@ -59,7 +59,7 @@ int ZCE_Socket_Base::open(int type,
     if (reuse_addr)
     {
         int one = 1;
-        ret = ZCE_OS::setsockopt (socket_handle_,
+        ret = ZCE_LIB::setsockopt (socket_handle_,
                                   SOL_SOCKET,
                                   SO_REUSEADDR,
                                   &one,
@@ -67,7 +67,7 @@ int ZCE_Socket_Base::open(int type,
 
         if (ret != 0)
         {
-            ZCE_OS::closesocket(socket_handle_);
+            ZCE_LIB::closesocket(socket_handle_);
             return -1;
         }
     }
@@ -121,7 +121,7 @@ int ZCE_Socket_Base::open(int type,
 //关闭之
 int ZCE_Socket_Base::close()
 {
-    int ret = ZCE_OS::closesocket(socket_handle_);
+    int ret = ZCE_LIB::closesocket(socket_handle_);
 
     if (0 == ret)
     {
@@ -133,19 +133,19 @@ int ZCE_Socket_Base::close()
 
 int ZCE_Socket_Base::bind(const ZCE_Sockaddr *add_name) const
 {
-    return ZCE_OS::bind(socket_handle_, add_name->sockaddr_ptr_, add_name->sockaddr_size_);
+    return ZCE_LIB::bind(socket_handle_, add_name->sockaddr_ptr_, add_name->sockaddr_size_);
 }
 
 //打开某些选项，WIN32目前只支持O_NONBLOCK
 int ZCE_Socket_Base::sock_enable (int value) const
 {
-    return ZCE_OS::sock_enable(socket_handle_, value);
+    return ZCE_LIB::sock_enable(socket_handle_, value);
 }
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
 int ZCE_Socket_Base::sock_disable(int value) const
 {
-    return ZCE_OS::sock_disable(socket_handle_, value);
+    return ZCE_LIB::sock_disable(socket_handle_, value);
 }
 
 //获取Socket的选项
@@ -154,7 +154,7 @@ int ZCE_Socket_Base::getsockopt (int level,
                                  void *optval,
                                  socklen_t *optlen)  const
 {
-    return ZCE_OS::getsockopt(socket_handle_, level, optname, optval, optlen);
+    return ZCE_LIB::getsockopt(socket_handle_, level, optname, optval, optlen);
 }
 
 //设置Socket的选项
@@ -163,7 +163,7 @@ int ZCE_Socket_Base::setsockopt (int level,
                                  const void *optval,
                                  int optlen) const
 {
-    return ZCE_OS::setsockopt(socket_handle_,
+    return ZCE_LIB::setsockopt(socket_handle_,
                               level,
                               optname,
                               optval,
@@ -173,7 +173,7 @@ int ZCE_Socket_Base::setsockopt (int level,
 //取得对端的地址信息
 int ZCE_Socket_Base::getpeername (ZCE_Sockaddr *addr)  const
 {
-    return ZCE_OS::getpeername (socket_handle_,
+    return ZCE_LIB::getpeername (socket_handle_,
                                 addr->sockaddr_ptr_,
                                 &addr->sockaddr_size_);
 
@@ -182,7 +182,7 @@ int ZCE_Socket_Base::getpeername (ZCE_Sockaddr *addr)  const
 //取得本地的地址信息
 int ZCE_Socket_Base::getsockname (ZCE_Sockaddr *addr)  const
 {
-    return ZCE_OS::getsockname (socket_handle_,
+    return ZCE_LIB::getsockname (socket_handle_,
                                 addr->sockaddr_ptr_,
                                 &addr->sockaddr_size_);
 }
@@ -190,7 +190,7 @@ int ZCE_Socket_Base::getsockname (ZCE_Sockaddr *addr)  const
 //connect某个地址
 int ZCE_Socket_Base::connect(const ZCE_Sockaddr *addr) const
 {
-    return ZCE_OS::connect(socket_handle_,
+    return ZCE_LIB::connect(socket_handle_,
                            addr->sockaddr_ptr_,
                            addr->sockaddr_size_);
 }
@@ -200,7 +200,7 @@ ssize_t ZCE_Socket_Base::recv (void *buf,
                                size_t len,
                                int flags) const
 {
-    return ZCE_OS::recv(socket_handle_,
+    return ZCE_LIB::recv(socket_handle_,
                         buf,
                         len,
                         flags);
@@ -211,7 +211,7 @@ ssize_t ZCE_Socket_Base::send (const void *buf,
                                size_t len,
                                int flags) const
 {
-    return ZCE_OS::send(socket_handle_,
+    return ZCE_LIB::send(socket_handle_,
                         buf,
                         len,
                         flags);

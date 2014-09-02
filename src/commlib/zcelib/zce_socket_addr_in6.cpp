@@ -23,7 +23,7 @@ ZCE_Sockaddr_In6::ZCE_Sockaddr_In6 (const char ip_addr_str[],
                                     uint16_t port_number):
     ZCE_Sockaddr(reinterpret_cast<sockaddr *>(&in6_addr_), sizeof(sockaddr_in))
 {
-    int ret = ZCE_OS::set_sockaddr_in6(&in6_addr_, ip_addr_str, port_number);
+    int ret = ZCE_LIB::set_sockaddr_in6(&in6_addr_, ip_addr_str, port_number);
 
     if (ret != 0)
     {
@@ -36,7 +36,7 @@ ZCE_Sockaddr_In6::ZCE_Sockaddr_In6 (uint16_t port_number,
                                     const char ipv6_addr_val[16]):
     ZCE_Sockaddr(reinterpret_cast<sockaddr *>(&in6_addr_), sizeof(sockaddr_in))
 {
-    int ret = ZCE_OS::set_sockaddr_in6(&in6_addr_, port_number, ipv6_addr_val);
+    int ret = ZCE_LIB::set_sockaddr_in6(&in6_addr_, port_number, ipv6_addr_val);
 
     if (ret != 0)
     {
@@ -67,7 +67,7 @@ void ZCE_Sockaddr_In6::set_sockaddr (sockaddr *addr, socklen_t len)
 int ZCE_Sockaddr_In6::set(const char ip_addr_str[],
                           uint16_t port_number)
 {
-    int ret = ZCE_OS::set_sockaddr_in6(&in6_addr_, ip_addr_str, port_number);
+    int ret = ZCE_LIB::set_sockaddr_in6(&in6_addr_, ip_addr_str, port_number);
 
     if (ret != 0)
     {
@@ -81,7 +81,7 @@ int ZCE_Sockaddr_In6::set(const char ip_addr_str[],
 //根据字符串取得IP地址信息，以及端口号信息,如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
 int ZCE_Sockaddr_In6::set(const char *ip_addr_str)
 {
-    int ret = ZCE_OS::set_sockaddr_in6(&in6_addr_, ip_addr_str);
+    int ret = ZCE_LIB::set_sockaddr_in6(&in6_addr_, ip_addr_str);
 
     if (ret != 0)
     {
@@ -130,7 +130,7 @@ bool ZCE_Sockaddr_In6::is_ip_equal (const ZCE_Sockaddr_In6 &others) const
 //取得IP地址相关的域名信息，调用的是getnameinfo
 int ZCE_Sockaddr_In6::get_name_info(char *host_name, size_t name_len) const
 {
-    return ZCE_OS::getnameinfo(reinterpret_cast<const sockaddr *>(&in6_addr_),
+    return ZCE_LIB::getnameinfo(reinterpret_cast<const sockaddr *>(&in6_addr_),
                                sizeof(sockaddr_in6),
                                host_name,
                                name_len,
@@ -143,7 +143,7 @@ int ZCE_Sockaddr_In6::get_name_info(char *host_name, size_t name_len) const
 int ZCE_Sockaddr_In6::get_addr_info(const char *hostname, uint16_t service_port)
 {
     size_t only_one_addr = 1;
-    return ZCE_OS::getaddrinfo_in6ary(hostname,
+    return ZCE_LIB::getaddrinfo_in6ary(hostname,
                                       service_port,
                                       &only_one_addr,
                                       &in6_addr_);
@@ -152,19 +152,19 @@ int ZCE_Sockaddr_In6::get_addr_info(const char *hostname, uint16_t service_port)
 //这个IPV6的地址是否是IPV4的地址映射的
 bool ZCE_Sockaddr_In6::is_v4mapped() const
 {
-    return ZCE_OS::is_in6_addr_v4mapped(&(in6_addr_.sin6_addr));
+    return ZCE_LIB::is_in6_addr_v4mapped(&(in6_addr_.sin6_addr));
 }
 
 //从一个IPV4的地址得到对应映射的IPV6的地址，
 int ZCE_Sockaddr_In6::map_from_inaddr(const ZCE_Sockaddr_In &from)
 {
-    return ZCE_OS::sockin_map_sockin6((from), &(in6_addr_));
+    return ZCE_LIB::sockin_map_sockin6((from), &(in6_addr_));
 }
 
 //如果这个IPV6的地址是IPV4映射过来的，将其还原为IPV4的地址
 int ZCE_Sockaddr_In6::mapped_to_inaddr(ZCE_Sockaddr_In &to) const
 {
-    return ZCE_OS::mapped_sockin6_to_sockin(&(in6_addr_), (to));
+    return ZCE_LIB::mapped_sockin6_to_sockin(&(in6_addr_), (to));
 }
 
 //返回sockaddr_in

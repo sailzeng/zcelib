@@ -42,7 +42,7 @@
     { \
         return; \
     } \
-    timeval now_time_val (ZCE_OS::gettimeofday()); \
+    timeval now_time_val (ZCE_LIB::gettimeofday()); \
     char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1]; \
     log_tmp_buffer[LOG_TMP_BUFFER_SIZE ] = '\0'; \
     size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 1; \
@@ -93,7 +93,7 @@ public:
         }
 
         //得到当前时间
-        timeval now_time_val (ZCE_OS::gettimeofday());
+        timeval now_time_val (ZCE_LIB::gettimeofday());
 
         //我要保留一个位置放'\0'
         char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];

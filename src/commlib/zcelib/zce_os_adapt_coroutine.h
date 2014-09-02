@@ -71,7 +71,7 @@ typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
                                       void *para3);
 
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 

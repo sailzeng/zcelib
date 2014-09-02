@@ -32,7 +32,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     int ret = 0;
 
     //清理最后的错误值
-    ZCE_OS::clear_last_error();
+    ZCE_LIB::clear_last_error();
 
     //如果没有初始化
     if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
@@ -67,7 +67,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     }
 
     //进行连接尝试
-    ret = ZCE_OS::connect(new_stream.get_handle(),
+    ret = ZCE_LIB::connect(new_stream.get_handle(),
                           remote_addr->sockaddr_ptr_,
                           remote_addr->sockaddr_size_);
 
@@ -75,7 +75,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     if (ret != 0  )
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
-        int last_err =  ZCE_OS::last_error();
+        int last_err =  ZCE_LIB::last_error();
 
         if ( EINPROGRESS != last_err &&  EWOULDBLOCK != last_err )
         {
@@ -85,9 +85,9 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     }
 
     //进行超时处理
-    ret = ZCE_OS::handle_ready(new_stream.get_handle(),
+    ret = ZCE_LIB::handle_ready(new_stream.get_handle(),
                                &timeout,
-                               ZCE_OS::HANDLE_READY_CONNECTED);
+                               ZCE_LIB::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -119,7 +119,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     int ret = 0;
 
     //清理最后的错误值
-    ZCE_OS::clear_last_error();
+    ZCE_LIB::clear_last_error();
 
     //初始化Socket，如果需要绑定，会绑定IP和端口
     //如果没有初始化
@@ -151,7 +151,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     //errno = 0;
 
     //进行连接
-    ret = ZCE_OS::connect(new_stream.get_handle(),
+    ret = ZCE_LIB::connect(new_stream.get_handle(),
                           remote_addr->sockaddr_ptr_,
                           remote_addr->sockaddr_size_);
 
@@ -159,7 +159,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     if (ret != 0 )
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
-        int last_error = ZCE_OS::last_error();
+        int last_error = ZCE_LIB::last_error();
 
         if ( non_blocing && ( EINPROGRESS == last_error ||  EWOULDBLOCK == last_error ) )
         {

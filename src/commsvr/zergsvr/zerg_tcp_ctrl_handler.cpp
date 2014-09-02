@@ -207,8 +207,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
                        peer_address_.get_host_addr(),
                        peer_address_.get_port_number(),
                        ret,
-                       ZCE_OS::last_error(),
-                       strerror(ZCE_OS::last_error()));
+                       ZCE_LIB::last_error(),
+                       strerror(ZCE_LIB::last_error()));
 
             handle_close();
             return;
@@ -330,8 +330,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
                    peer_address_.get_host_addr(),
                    peer_address_.get_port_number(),
                    ret,
-                   ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()));
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()));
         handle_close();
         return;
     }
@@ -388,7 +388,7 @@ TCP_Svc_Handler::~TCP_Svc_Handler()
 
 /******************************************************************************************
 Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : TCP_Svc_Handler::get_tcpctrl_conf
+Function        : TCP_Svc_Handler::get_config
 Return          : int
 Parameter List  :
   Param1: const char* cfgfilename 配置文件名称
@@ -398,17 +398,17 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int TCP_Svc_Handler::get_tcpctrl_conf(const conf_zerg::ZERG_CONFIG *config)
+int TCP_Svc_Handler::get_config(const conf_zerg::ZERG_CONFIG *config)
 {
     int ret = 0;
 
     //unsigned int tmp_uint = 0 ;
     //从CONNECT到收到数据的时长
-    connect_timeout_ = config->comm_cfg.connect_timeout;
+    connect_timeout_ = config->comm_cfg.connect_timeout_;
     TESTCONFIG((ret == 0 && connect_timeout_ <= 60 ), "COMMCFG|CONNECTTIMEOUT key error.");
 
     //RECEIVE一个数据的超时时间,为0表示不限制
-    receive_timeout_ = config->comm_cfg.recv_timeout;
+    receive_timeout_ = config->comm_cfg.recv_timeout_;
     TESTCONFIG((ret == 0 && receive_timeout_ <= 2000 ), "COMMCFG|RECEIVETIMEOUT key error.");
 
     //是否是一个代理服务,代理的发送行为和普通服务器不一样.
@@ -416,7 +416,7 @@ int TCP_Svc_Handler::get_tcpctrl_conf(const conf_zerg::ZERG_CONFIG *config)
     TESTCONFIG((ret == 0), "COMMCFG|IFPROXY key error.");
 
     //最大的链接我的服务器个数
-    max_accept_svr_ = config->comm_cfg.max_accept_svr;
+    max_accept_svr_ = config->comm_cfg.max_accept_svr_;
     TESTCONFIG((ret == 0 && max_accept_svr_ <= 409600 && max_accept_svr_ > 50), "COMMCFG|MAXACCEPTSVR key error.");
 
     //容量告警阈值
@@ -1145,13 +1145,13 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
     //表示被关闭或者出现错误
     if (recvret < 0)
     {
-        //我只使用EWOULDBLOCK 但是要注意EAGAIN, ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EAGAIN
-        if (ZCE_OS::last_error() != EWOULDBLOCK )
+        //我只使用EWOULDBLOCK 但是要注意EAGAIN, ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EAGAIN
+        if (ZCE_LIB::last_error() != EWOULDBLOCK )
         {
             szrevc = 0;
 
             //遇到中断,等待重入
-            if (ZCE_OS::last_error() == EINTR)
+            if (ZCE_LIB::last_error() == EINTR)
             {
                 return SOAR_RET::SOAR_RET_SUCC;
             }
@@ -1160,14 +1160,14 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
             server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, game_id_, 1);
 
             //记录错误,返回错误
-            ZLOG_ERROR("[zergsvr] Receive data error ,services[%u|%u],IP[%s|%u] socket_fd:%u,ZCE_OS::last_error()=%d|%s.",
+            ZLOG_ERROR("[zergsvr] Receive data error ,services[%u|%u],IP[%s|%u] socket_fd:%u,ZCE_LIB::last_error()=%d|%s.",
                        peer_svr_info_.services_type_,
                        peer_svr_info_.services_id_,
                        peer_address_.get_host_addr(),
                        peer_address_.get_port_number(),
                        socket_peer_.get_handle(),
-                       ZCE_OS::last_error(),
-                       strerror(ZCE_OS::last_error()));
+                       ZCE_LIB::last_error(),
+                       strerror(ZCE_LIB::last_error()));
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
@@ -1316,8 +1316,8 @@ int TCP_Svc_Handler::write_all_data_to_peer()
             {
                 ZLOG_ERROR("[zergsvr] TNNND cancel_wakeup return(%d) == -1 errno=%d|%s. ",
                            ret,
-                           ZCE_OS::last_error(),
-                           strerror(ZCE_OS::last_error()));
+                           ZCE_LIB::last_error(),
+                           strerror(ZCE_LIB::last_error()));
             }
 
             if (if_socket_block_)
@@ -1352,8 +1352,8 @@ int TCP_Svc_Handler::write_all_data_to_peer()
             {
                 ZLOG_ERROR("[zergsvr] TNNND schedule_wakeup return (%d)== -1 errno=%d|%s. ",
                            ret,
-                           ZCE_OS::last_error(),
-                           strerror(ZCE_OS::last_error()));
+                           ZCE_LIB::last_error(),
+                           strerror(ZCE_LIB::last_error()));
             }
         }
     }
@@ -1403,9 +1403,9 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
     if (sendret <= 0)
     {
 
-        //遇到中断,等待重入的判断是if (ZCE_OS::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
-        //我只使用EWOULDBLOCK 但是要注意EAGAIN ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EAGAIN
-        if (ZCE_OS::last_error() != EWOULDBLOCK )
+        //遇到中断,等待重入的判断是if (ZCE_LIB::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
+        //我只使用EWOULDBLOCK 但是要注意EAGAIN ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EAGAIN
+        if (ZCE_LIB::last_error() != EWOULDBLOCK )
         {
             //后面应该会打印方的IP，这儿不重复
             ZLOG_ERROR("[zergsvr] Send data error,services[%u|%u] IP|Port [%s|%u],Peer:%d errno=%d|%s .",
@@ -1414,8 +1414,8 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
                        peer_address_.get_host_addr(),
                        peer_address_.get_port_number(),
                        socket_peer_.get_handle(),
-                       ZCE_OS::last_error(),
-                       strerror(ZCE_OS::last_error()));
+                       ZCE_LIB::last_error(),
+                       strerror(ZCE_LIB::last_error()));
             server_status_->increase_once(ZERG_SEND_FAIL_COUNTER, game_id_);
             server_status_->increase_once(ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE, 
                 game_id_, peer_svr_info_.services_type_);
@@ -1429,8 +1429,8 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
             peer_address_.get_host_addr(),
             peer_address_.get_port_number(),
             socket_peer_.get_handle(),
-            ZCE_OS::last_error(),
-            strerror(ZCE_OS::last_error()));
+            ZCE_LIB::last_error(),
+            strerror(ZCE_LIB::last_error()));
 
         //统计发送阻塞的错误
         server_status_->increase_by_statid(ZERG_SEND_BLOCK_COUNTER, game_id_, 1);
@@ -2277,7 +2277,7 @@ TCP_Svc_Handler::adjust_svc_handler_pool()
 }
 
 int 
-TCP_Svc_Handler::reload_auto_connect(const conf_zerg::ZERG_CONFIG *config)
+TCP_Svc_Handler::reload_config(const conf_zerg::ZERG_CONFIG *config)
 {
     return zerg_auto_connect_.reload_cfg(config);
 }

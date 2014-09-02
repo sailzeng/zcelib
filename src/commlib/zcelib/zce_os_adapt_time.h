@@ -41,7 +41,7 @@ struct timezone
 
 #endif
 
-namespace ZCE_OS
+namespace ZCE_LIB
 {
 
 
@@ -197,7 +197,7 @@ const char *timeval_to_str(const timeval *timeval,
                            char *str_date_time,
                            size_t str_len,
                            bool uct_time = false,
-                           TIME_STR_FORMAT_TYPE fmt = ZCE_OS::TIME_STRFMT_ISO_USEC
+                           TIME_STR_FORMAT_TYPE fmt = ZCE_LIB::TIME_STRFMT_ISO_USEC
                           );
 
 /*!
@@ -469,7 +469,7 @@ uint64_t rdtsc();
 //-------------------------------------------------------------------------------
 
 //兼容LINUX下的gettimeofday
-inline int ZCE_OS::gettimeofday(struct timeval *tv, struct timezone *tz)
+inline int ZCE_LIB::gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     //
 #if defined ZCE_OS_WINDOWS
@@ -529,15 +529,15 @@ inline int ZCE_OS::gettimeofday(struct timeval *tv, struct timezone *tz)
 
 }
 
-inline const timeval ZCE_OS::gettimeofday()
+inline const timeval ZCE_LIB::gettimeofday()
 {
     timeval now_time;
-    ZCE_OS::gettimeofday(&now_time);
+    ZCE_LIB::gettimeofday(&now_time);
     return now_time;
 }
 
 //得到本地时间
-inline struct tm *ZCE_OS::localtime_r(const time_t *timep, struct tm *result)
+inline struct tm *ZCE_LIB::localtime_r(const time_t *timep, struct tm *result)
 {
 #if defined (ZCE_OS_WINDOWS)
     //WINDOWS下使用默认的_s 系列的API
@@ -560,7 +560,7 @@ inline struct tm *ZCE_OS::localtime_r(const time_t *timep, struct tm *result)
 }
 
 //GM时间
-inline struct tm *ZCE_OS::gmtime_r(const time_t *timep, struct tm *result)
+inline struct tm *ZCE_LIB::gmtime_r(const time_t *timep, struct tm *result)
 {
 #if defined (ZCE_OS_WINDOWS)
     //WINDOWS下使用默认的_s 系列的API
@@ -583,7 +583,7 @@ inline struct tm *ZCE_OS::gmtime_r(const time_t *timep, struct tm *result)
 }
 
 //打印TM内部的时间信息
-inline char *ZCE_OS::asctime_r(const struct tm *tm_data, char *buf)
+inline char *ZCE_LIB::asctime_r(const struct tm *tm_data, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -611,7 +611,7 @@ inline char *ZCE_OS::asctime_r(const struct tm *tm_data, char *buf)
 }
 
 //打印time_t锁标识的时间信息
-inline char *ZCE_OS::ctime_r(const time_t *timep, char *buf)
+inline char *ZCE_LIB::ctime_r(const time_t *timep, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -640,7 +640,7 @@ inline char *ZCE_OS::ctime_r(const time_t *timep, char *buf)
 
 
 //等同于mktime,将tm视为本地时间，转换为世界时间time_t
-inline time_t ZCE_OS::timelocal(struct tm *tm)
+inline time_t ZCE_LIB::timelocal(struct tm *tm)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::mktime(tm);
@@ -653,7 +653,7 @@ inline time_t ZCE_OS::timelocal(struct tm *tm)
 
 
 //类似mktime，但是是把tm视为GMT时间，转换为世界时间time_t
-inline time_t ZCE_OS::timegm(struct tm *tm)
+inline time_t ZCE_LIB::timegm(struct tm *tm)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_mkgmtime(tm);

@@ -29,7 +29,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     {
         ZCE_LOGMSG(RS_ERROR,"[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]", 
             file_name,
-            ZCE_OS::last_error() );
+            ZCE_LIB::last_error() );
         return -1;
     }
 
@@ -38,7 +38,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
         cfgfile.getline(one_line, LINE_BUFFER_LEN);
         //整理
-        ZCE_OS::strtrim(one_line);
+        ZCE_LIB::strtrim(one_line);
 
         //注释行
         if (one_line[0] == ';' || one_line[0] == '#')
@@ -57,7 +57,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
             one_line[strlen(one_line) - 2] = '\0';
 
             //消灭空格
-            ZCE_OS::strtrim(one_line);
+            ZCE_LIB::strtrim(one_line);
             
             ZCE_Conf_PropertyTree *tree_node = NULL;
             propertytree->add_child(one_line, tree_node);
@@ -74,8 +74,8 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
             strncpy(str_key, one_line, LINE_BUFFER_LEN);
             strncpy(str_value, snext, LINE_BUFFER_LEN);
             ////
-            ZCE_OS::strtrim(str_key);
-            ZCE_OS::strtrim(str_value);
+            ZCE_LIB::strtrim(str_key);
+            ZCE_LIB::strtrim(str_value);
 
             //找到返回。
             std::string val(str_value);
@@ -98,25 +98,25 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 {
     int ret = 0;
     size_t file_size = 0;
-    ret = ZCE_OS::filelen(file_name, &file_size);
+    ret = ZCE_LIB::filelen(file_name, &file_size);
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_OS::filelen."
+        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::filelen."
             "path=[%s],last error [%d]",
             file_name,
-            ZCE_OS::last_error());
+            ZCE_LIB::last_error());
         return ret;
     }
     size_t buf_len = file_size+16,read_len = 0;
     //只有unique_ptr 才能默认直接使用数组，
     std::unique_ptr<char[]> file_data(new char[buf_len]);
-    ret = ZCE_OS::read_file_data(file_name, file_data.get(), buf_len, &read_len);
+    ret = ZCE_LIB::read_file_data(file_name, file_data.get(), buf_len, &read_len);
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_OS::read_file_data."
+        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::read_file_data."
             "path=[%s],last error [%d]",
             file_name,
-            ZCE_OS::last_error());
+            ZCE_LIB::last_error());
         return ret;
     }
 

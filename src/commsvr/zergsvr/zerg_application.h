@@ -45,19 +45,7 @@ protected:
     Zerg_Service_App(const Zerg_Service_App *);
     const Zerg_Service_App &operator =(const Zerg_Service_App &);
 
-public:
 
-    //ZEN的TimeQueue，这个最后要自己释放
-    ZCE_Timer_Queue         *timer_queue_;
-
-    Zerg_Comm_Manager       *zerg_comm_mgr_;
-
-    //OP KEY文件的时间戳
-    time_t                   conf_timestamp_;
-
-protected:
-    //单子的static实例
-    static Zerg_Service_App *instance_;
 
 public:
 
@@ -94,7 +82,18 @@ public:
     //清理单子实例
     static void clean_instance();
 
-    conf_zerg::ZERG_CONFIG *config_;
+public:
+
+
+    Zerg_Comm_Manager       *zerg_comm_mgr_;
+
+    //OP KEY文件的时间戳
+    time_t                   conf_timestamp_;
+
+protected:
+    //单子的static实例
+    static Zerg_Service_App *instance_;
+
 
 };
 

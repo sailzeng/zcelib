@@ -25,7 +25,7 @@ int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
 {
     ZCE_Async_Object::initialize(reg_cmd);
     int ret = 0;
-    ret = ZCE_OS::make_coroutine(&handle_,
+    ret = ZCE_LIB::make_coroutine(&handle_,
                                  stack_size_,
                                  true,
                                  (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
@@ -35,7 +35,7 @@ int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
                                 );
     if (ret != 0)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::make_coroutine return fail.", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::make_coroutine return fail.", ret);
         return ret;
     }
     return 0;
@@ -45,7 +45,7 @@ int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
 int ZCE_Async_Coroutine::finish()
 {
     ZCE_Async_Object::finish();
-    ZCE_OS::delete_coroutine(&handle_);
+    ZCE_LIB::delete_coroutine(&handle_);
     return 0;
 }
 
@@ -99,21 +99,21 @@ void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/ ,
 void ZCE_Async_Coroutine::yeild_main_continue()
 {
     coroutine_state_ = COROUTINE_CONTINUE;
-    ZCE_OS::yeild_main(&handle_);
+    ZCE_LIB::yeild_main(&handle_);
 }
 
 //切换回Main,协程退出
 void ZCE_Async_Coroutine::yeild_main_exit()
 {
     coroutine_state_ = COROUTINE_EXIT;
-    ZCE_OS::yeild_main(&handle_);
+    ZCE_LIB::yeild_main(&handle_);
 }
 
 
 //切换回协程，也就是切换到他自己运行
 void ZCE_Async_Coroutine::yeild_coroutine()
 {
-    ZCE_OS::yeild_coroutine(&handle_);
+    ZCE_LIB::yeild_coroutine(&handle_);
 }
 
 

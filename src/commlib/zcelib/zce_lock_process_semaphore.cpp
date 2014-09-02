@@ -23,12 +23,12 @@ ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
 
     strncpy(sema_name_, sem_name, PATH_MAX);
 
-    lock_ = ZCE_OS::sem_open(sem_name, O_CREAT, ZCE_DEFAULT_FILE_PERMS, init_value);
+    lock_ = ZCE_LIB::sem_open(sem_name, O_CREAT, ZCE_DEFAULT_FILE_PERMS, init_value);
 
     if (!lock_)
     {
         ret = -1;
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::sem_open fail.", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::sem_open fail.", ret);
     }
 
 }
@@ -45,13 +45,13 @@ ZCE_Process_Semaphore::~ZCE_Process_Semaphore()
     if ( '\0' != sema_name_[0] )
     {
         //释放，关闭信号灯对象，删除名字关联的文件
-        ZCE_OS::sem_close(lock_);
-        ZCE_OS::sem_unlink(sema_name_);
+        ZCE_LIB::sem_close(lock_);
+        ZCE_LIB::sem_unlink(sema_name_);
         lock_ = NULL;
     }
     else
     {
-        ZCE_OS::sem_destroy(lock_);
+        ZCE_LIB::sem_destroy(lock_);
 
         //sem_destroy不会释放，
         delete lock_;
@@ -64,11 +64,11 @@ ZCE_Process_Semaphore::~ZCE_Process_Semaphore()
 void ZCE_Process_Semaphore::lock()
 {
     //信号灯锁定
-    int ret =  ZCE_OS::sem_wait (lock_);
+    int ret =  ZCE_LIB::sem_wait (lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::sem_wait", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::sem_wait", ret);
         return;
     }
 }
@@ -77,7 +77,7 @@ void ZCE_Process_Semaphore::lock()
 bool ZCE_Process_Semaphore::try_lock()
 {
     //信号灯锁定
-    int ret =  ZCE_OS::sem_trywait (lock_);
+    int ret =  ZCE_LIB::sem_trywait (lock_);
 
     if (0 != ret)
     {
@@ -90,11 +90,11 @@ bool ZCE_Process_Semaphore::try_lock()
 //解锁,
 void ZCE_Process_Semaphore::unlock()
 {
-    int ret = ZCE_OS::sem_post (lock_);
+    int ret = ZCE_LIB::sem_post (lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::sem_post", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::sem_post", ret);
         return;
     }
 }
@@ -103,13 +103,13 @@ void ZCE_Process_Semaphore::unlock()
 bool ZCE_Process_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
-    ret = ZCE_OS::sem_timedwait(lock_, abs_time);
+    ret = ZCE_LIB::sem_timedwait(lock_, abs_time);
 
     if (0 != ret)
     {
         if (errno != ETIMEDOUT)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::sem_timedwait", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::sem_timedwait", ret);
         }
 
         return false;
@@ -121,8 +121,8 @@ bool ZCE_Process_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
 //相对时间的超时锁定，超时后，解锁
 bool ZCE_Process_Semaphore::duration_lock(const ZCE_Time_Value &relative_time)
 {
-    timeval abs_time = ZCE_OS::gettimeofday();
-    abs_time = ZCE_OS::timeval_add(abs_time, relative_time);
+    timeval abs_time = ZCE_LIB::gettimeofday();
+    abs_time = ZCE_LIB::timeval_add(abs_time, relative_time);
     return systime_lock(abs_time);
 }
 

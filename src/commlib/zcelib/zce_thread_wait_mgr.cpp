@@ -39,7 +39,7 @@ void ZCE_Thread_Wait_Manager::wait_all()
     {
         MANAGE_WAIT_INFO wait_thread = *wait_thread_list_.begin();
         //等待这个线程退出
-        ZCE_OS::pthread_join(wait_thread.wait_thr_id_);
+        ZCE_LIB::pthread_join(wait_thread.wait_thr_id_);
         //
         wait_thread_list_.pop_front();
     }
@@ -57,7 +57,7 @@ void ZCE_Thread_Wait_Manager::wait_group(int group_id)
         {
             MANAGE_WAIT_INFO wait_thread = *iter_temp;
             //等待这个线程退出
-            ZCE_OS::pthread_join(wait_thread.wait_thr_id_);
+            ZCE_LIB::pthread_join(wait_thread.wait_thr_id_);
 
             //先保存原来的迭代器作为要删除的迭代器
             MANAGE_WAIT_THREAD_LIST::iterator del_iter = iter_temp;

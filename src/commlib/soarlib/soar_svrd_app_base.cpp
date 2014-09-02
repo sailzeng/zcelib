@@ -120,7 +120,7 @@ int Comm_Svrd_Appliction::init_instance()
     }
 
     // 切换运行目录
-    ret = ZCE_OS::chdir(Server_Config_FSM::instance()->app_run_dir_.c_str());
+    ret = ZCE_LIB::chdir(Server_Config_FSM::instance()->app_run_dir_.c_str());
 
     if (ret != 0)
     {
@@ -141,8 +141,8 @@ int Comm_Svrd_Appliction::init_instance()
     {
         //如果有错误显示错误，如果错误==16，表示可能是PID文件被锁定,
         ZLOG_ERROR("[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
-                   app_path.c_str(), ZCE_OS::last_error(),
-                   strerror(ZCE_OS::last_error()));
+                   app_path.c_str(), ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()));
 
         ZLOG_ERROR("[framework] If last error == 16, could has a same process already run in this directory."
                    "Please check PID file or system processes.");
@@ -263,7 +263,7 @@ int Comm_Svrd_Appliction::create_app_name(const char *argv_0)
     // 取得base name
     char str_base_name[PATH_MAX + 1];
     str_base_name[PATH_MAX] = '\0';
-    ZCE_OS::basename(argv_0, str_base_name, PATH_MAX);
+    ZCE_LIB::basename(argv_0, str_base_name, PATH_MAX);
 
 #if defined ZCE_OS_WINDOWS
 

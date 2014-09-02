@@ -125,7 +125,7 @@ ZCE_Get_Option::ZCE_Get_Option (int argc,
     // Win32 is the only platform capable of wide-char env var.
     const char *env_check = "POSIXLY_CORRECT";
 
-    if (ZCE_OS::getenv (env_check) != 0)
+    if (ZCE_LIB::getenv (env_check) != 0)
     {
         this->ordering_ = REQUIRE_ORDER;
     }
@@ -623,7 +623,7 @@ ZCE_Get_Option::permute_args (void)
 
     nnonopts = this->nonopt_end_ - this->nonopt_start_;
     nopts = opt_end - this->nonopt_end_;
-    ncycle = ZCE_OS::gcd (nnonopts, nopts);
+    ncycle = ZCE_LIB::gcd (nnonopts, nopts);
     cyclelen = (opt_end - this->nonopt_start_) / ncycle;
 
     this->optind = this->optind - nnonopts;

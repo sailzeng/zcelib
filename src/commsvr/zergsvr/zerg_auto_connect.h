@@ -1,7 +1,7 @@
 #ifndef ZERG_SERVER_AUTO_CONNECT_H_
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
-//class TcpHandlerImpl;
+class Zerg_Server_Config;
 
 /****************************************************************************************************
 strcut SERVICES_ROUTE_INFO
@@ -80,10 +80,10 @@ public:
     ~Zerg_Auto_Connector();
 
     //
-    int get_autoconnect_cfg(const conf_zerg::ZERG_CONFIG *config);
+    int get_config(Zerg_Server_Config *config);
 
     // 重新加载主动连接配置
-    int reload_cfg(const conf_zerg::ZERG_CONFIG *config);
+    int reload_cfg(Zerg_Server_Config *config);
 
     //链接所有的tcp服务器
     void reconnect_tcpserver(size_t &szvalid, size_t &sz_succ, size_t &szfail);

@@ -23,7 +23,7 @@
 //因为我我用预编译头文件的缘故，所以这儿不用包括这个文件
 
 /*!
-* @namespace ZCE_OS  跨平台的函数的名字空间定义，其中的函数主要向LINUX，POSIX看起，也有少量
+* @namespace ZCE_LIB 跨平台的函数的名字空间定义，其中的函数主要向LINUX，POSIX看起，也有少量
 *                    自己写的函数，
 *                    主要覆盖面，包括网络，文件，目录，动态库，同步对象，线程，共享内存，时间
 *                    字符串，机器性能等。
@@ -359,7 +359,7 @@ struct DIR
 // If we are using winsock2 then the SO_REUSEADDR feature is broken
 // SO_REUSEADDR=1 behaves like SO_REUSEPORT=1. (SO_REUSEPORT is an
 // extension to sockets on some platforms)
-// We define SO_REUSEPORT here so that ZCE_OS::setsockopt() can still
+// We define SO_REUSEPORT here so that ZCE_LIB::setsockopt() can still
 // allow the user to specify that a socketaddr can *always* be reused.
 #if ! defined(SO_REUSEPORT)
 #define SO_REUSEPORT 0x0400  // We just have to pick a value that won't conflict

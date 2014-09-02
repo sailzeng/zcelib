@@ -21,11 +21,11 @@ ZCE_Thread_RW_Mutex::ZCE_Thread_RW_Mutex()
     //pthread_rwlockattr_t属性的初始化
     int ret = 0;
 
-    ret = ZCE_OS::pthread_rwlock_initex(&rw_lock_, false);
+    ret = ZCE_LIB::pthread_rwlock_initex(&rw_lock_, false);
 
     if (0 != ret )
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_mutex_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_init", ret);
         return;
     }
 
@@ -34,11 +34,11 @@ ZCE_Thread_RW_Mutex::ZCE_Thread_RW_Mutex()
 ZCE_Thread_RW_Mutex::~ZCE_Thread_RW_Mutex()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_destroy (&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_destroy (&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_destroy", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_destroy", ret);
         return;
     }
 }
@@ -47,11 +47,11 @@ ZCE_Thread_RW_Mutex::~ZCE_Thread_RW_Mutex()
 void ZCE_Thread_RW_Mutex::lock_read()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_rdlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_rdlock(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_rdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_rdlock", ret);
         return;
     }
 }
@@ -60,7 +60,7 @@ void ZCE_Thread_RW_Mutex::lock_read()
 bool ZCE_Thread_RW_Mutex::try_lock_read()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_trywrlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_trywrlock(&rw_lock_);
 
     if (0 != ret)
     {
@@ -75,12 +75,12 @@ bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
 
-    ret = ZCE_OS::pthread_rwlock_timedrdlock(&rw_lock_,
+    ret = ZCE_LIB::pthread_rwlock_timedrdlock(&rw_lock_,
                                              abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_timedrdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_timedrdlock", ret);
         return false;
     }
 
@@ -89,7 +89,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
 //相对时间
 bool ZCE_Thread_RW_Mutex::duration_lock_read(const ZCE_Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time(ZCE_OS::gettimeofday());
+    ZCE_Time_Value abs_time(ZCE_LIB::gettimeofday());
     abs_time += relative_time;
     return systime_lock_read(abs_time);
 }
@@ -98,11 +98,11 @@ bool ZCE_Thread_RW_Mutex::duration_lock_read(const ZCE_Time_Value &relative_time
 void ZCE_Thread_RW_Mutex::lock_write()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_wrlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_wrlock(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_wrlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_wrlock", ret);
         return;
     }
 }
@@ -111,7 +111,7 @@ void ZCE_Thread_RW_Mutex::lock_write()
 bool ZCE_Thread_RW_Mutex::try_lock_write()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_trywrlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_trywrlock(&rw_lock_);
 
     if (0 != ret)
     {
@@ -126,12 +126,12 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
 
-    ret = ZCE_OS::pthread_rwlock_timedwrlock(&rw_lock_,
+    ret = ZCE_LIB::pthread_rwlock_timedwrlock(&rw_lock_,
                                              abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_mutex_timedlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_timedlock", ret);
         return false;
     }
 
@@ -141,7 +141,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
 //写锁定超时，相对时间
 bool ZCE_Thread_RW_Mutex::duration_lock_write(const ZCE_Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time(ZCE_OS::gettimeofday());
+    ZCE_Time_Value abs_time(ZCE_LIB::gettimeofday());
     abs_time += relative_time;
     return systime_lock_write(abs_time);
 }
@@ -151,11 +151,11 @@ void ZCE_Thread_RW_Mutex::unlock()
 {
     //解锁
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_unlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_unlock", ret);
         return;
     }
 }
@@ -181,11 +181,11 @@ ZCE_Thread_Light_RW_Mutex::ZCE_Thread_Light_RW_Mutex()
     use_win2008_rwlock = true;
 #endif
 
-    ret = ZCE_OS::pthread_rwlock_initex(&rw_lock_, use_win2008_rwlock);
+    ret = ZCE_LIB::pthread_rwlock_initex(&rw_lock_, use_win2008_rwlock);
 
     if (0 != ret )
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_mutex_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_init", ret);
         return;
     }
 
@@ -194,11 +194,11 @@ ZCE_Thread_Light_RW_Mutex::ZCE_Thread_Light_RW_Mutex()
 ZCE_Thread_Light_RW_Mutex::~ZCE_Thread_Light_RW_Mutex()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_destroy (&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_destroy (&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_destroy", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_destroy", ret);
         return;
     }
 }
@@ -207,11 +207,11 @@ ZCE_Thread_Light_RW_Mutex::~ZCE_Thread_Light_RW_Mutex()
 void ZCE_Thread_Light_RW_Mutex::lock_read()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_rdlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_rdlock(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_rdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_rdlock", ret);
         return;
     }
 }
@@ -220,7 +220,7 @@ void ZCE_Thread_Light_RW_Mutex::lock_read()
 bool ZCE_Thread_Light_RW_Mutex::try_lock_read()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_trywrlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_trywrlock(&rw_lock_);
 
     if (0 != ret)
     {
@@ -234,11 +234,11 @@ bool ZCE_Thread_Light_RW_Mutex::try_lock_read()
 void ZCE_Thread_Light_RW_Mutex::lock_write()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_wrlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_wrlock(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_wrlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_wrlock", ret);
         return;
     }
 }
@@ -247,7 +247,7 @@ void ZCE_Thread_Light_RW_Mutex::lock_write()
 bool ZCE_Thread_Light_RW_Mutex::try_lock_write()
 {
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_trywrlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_trywrlock(&rw_lock_);
 
     if (0 != ret)
     {
@@ -262,11 +262,11 @@ void ZCE_Thread_Light_RW_Mutex::unlock()
 {
     //解锁
     int ret = 0;
-    ret = ZCE_OS::pthread_rwlock_unlock(&rw_lock_);
+    ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_OS::pthread_rwlock_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_unlock", ret);
         return;
     }
 }

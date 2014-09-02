@@ -369,7 +369,7 @@ int test_sql_main (int argc, char *argv[])
             break;
     }
 
-    ZCE_OS::sleep(num_sleep);
+    ZCE_LIB::sleep(num_sleep);
 
     return 0;
 }

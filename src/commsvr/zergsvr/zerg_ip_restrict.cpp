@@ -18,10 +18,10 @@ Zerg_IPRestrict_Mgr::~Zerg_IPRestrict_Mgr()
 }
 
 //从配置文件中得到相关的配置
-int Zerg_IPRestrict_Mgr::get_iprestrict_conf(const conf_zerg::ZERG_CONFIG &config)
+int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
-    //    unsigned int tmp_uint= 0;
+    //unsigned int tmp_uint= 0;
 
     allow_ip_set_.clear();
     reject_ip_set_.clear();
@@ -49,7 +49,6 @@ int Zerg_IPRestrict_Mgr::get_iprestrict_conf(const conf_zerg::ZERG_CONFIG &confi
 
         ZCE_Sockaddr_In     inetadd;
         ret = inetadd.set(v[i].c_str(), 10);
-        TESTCONFIG((ret == 0), err_outbuf);
 
         allow_ip_set_.insert(inetadd.get_ip_address());
     }
