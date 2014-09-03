@@ -22,7 +22,7 @@ public:
                        bool sessionkey_verify = true);
 
     //创建监听的端口
-    int create_listen(unsigned int backlog);
+    int create_listen();
 
     //处理有端口
     virtual int handle_input();

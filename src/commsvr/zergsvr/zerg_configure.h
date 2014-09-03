@@ -11,10 +11,10 @@ public:
     ~ZERG_SERVICES_INFO();
 
     //
-    SERVICES_ID        zerg_svc_info_;
+    SERVICES_ID      zerg_svc_info_;
 
     //
-    ZCE_Sockaddr_In    zerg_ip_addr_;
+    ZCE_Sockaddr_In  zerg_ip_addr_;
 
 };
 
@@ -25,6 +25,9 @@ public:
 
     //最大的
     static const size_t MAX_SELF_SERVICES_ID = 4;
+
+    ///最大的监控的FRAME的数量,不希望太多,可能严重影响效率
+    static const size_t MAX_NUMBER_OF_MONITOR_FRAME = 16;
 
 public:
     //
@@ -43,7 +46,7 @@ public:
     // 被动连接的发送BUFFER可容纳最大FRAME的个数 默认32，连接数少而流量较大的后端服务器可填的大一些, 目前DB填256，其它全部是32
     uint32_t accept_send_buf_size_; 
     // 每个tcp连接的发送队列长度
-    uint32_t connect_send_deque_size; 
+    uint32_t connect_send_deque_size_; 
 
     // #从CONNECT到收到数据,最小时长,0-50，接入层必须配置>0,建议15-60秒以内
     uint32_t connect_timeout_; 
@@ -51,11 +54,12 @@ public:
     uint32_t recv_timeout_; 
 
     // 是否做为代理服务器
-    uint8_t is_proxy_; 
+    bool is_proxy_; 
+
     // #最大连接的服务器个数 ##前端128000，后端1024
     uint32_t max_accept_svr_;
     // #对一个错误数据重复尝试发送的次数
-    uint8_t retry_error_; 
+    uint32_t retry_error_;
 
     // 接收管道长度, 默认50M
     uint32_t recv_pipe_len_;
@@ -66,6 +70,15 @@ public:
     std::string reject_ip_;
     ///允许链接的IP地址列表
     std::string allow_ip_;
+
+    ///
+    size_t monitor_cmd_count_;
+    ///
+    uint32_t monitor_cmd_list_[MAX_NUMBER_OF_MONITOR_FRAME];
+
+
+    size_t auto_connect_num_;
+
 };
 
 

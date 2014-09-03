@@ -3,11 +3,13 @@
 #include "soar_zerg_frame.h"
 
 //ZERG服务器间传递消息的通用帧头
-Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned int frameoption):
+Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
+                               uint32_t lenframe,
+                               uint32_t frameoption):
     frame_length_(lenframe),
     frame_option_(frameoption),
     frame_command_(cmd),
-    frame_uin_(0),
+    frame_uid_(0),
     send_service_(0, 0),
     recv_service_(0, 0),
     proxy_service_(0, 0),
@@ -18,11 +20,16 @@ Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned
 }
 
 //构造函数,用于,客户端初始化,
-Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned int uin, unsigned short sndsvrtype, unsigned short rcvsvctype, unsigned int frameoption):
+Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
+                               uint32_t lenframe,
+                               uint32_t uin,
+                               uint16_t sndsvrtype,
+                               uint16_t rcvsvctype,
+                               uint32_t frameoption):
     frame_length_(lenframe),
     frame_option_(frameoption),
     frame_command_(cmd),
-    frame_uin_(uin),
+    frame_uid_(uin),
     send_service_(sndsvrtype, uin),
     recv_service_(rcvsvctype, 0),
     proxy_service_(0, 0),
@@ -33,11 +40,16 @@ Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned
 {
 }
 //构造函数,用于发送给一个非代理服务器
-Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned int uin, const SERVICES_ID sndsvr, SERVICES_ID rcvsvr, unsigned int frameoption):
+Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
+                               uint32_t lenframe,
+                               uint32_t uin,
+                               const SERVICES_ID &sndsvr,
+                               const SERVICES_ID &rcvsvr,
+                               uint32_t frameoption):
     frame_length_(lenframe),
     frame_option_(frameoption),
     frame_command_(cmd),
-    frame_uin_(uin),
+    frame_uid_(uin),
     send_service_(sndsvr),
     recv_service_(rcvsvr),
     proxy_service_(0, 0),
@@ -49,11 +61,11 @@ Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned
 }
 
 //构造函数,用于发送给一个代理服务器
-Zerg_App_Frame::Zerg_App_Frame(unsigned int cmd, unsigned int lenframe, unsigned int uin, const SERVICES_ID &sndsvr, const SERVICES_ID &proxysvr, unsigned short rcvsvrtype, unsigned int frameoption):
+Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd, uint32_t lenframe, uint32_t uin, const SERVICES_ID &sndsvr, const SERVICES_ID &proxysvr, uint16_t rcvsvrtype, uint32_t frameoption):
     frame_length_(lenframe),
     frame_option_(frameoption),
     frame_command_(cmd),
-    frame_uin_(uin),
+    frame_uid_(uin),
     send_service_(sndsvr),
     recv_service_(rcvsvrtype, 0),
     proxy_service_(proxysvr),
@@ -97,7 +109,7 @@ void   *Zerg_App_Frame::operator new (size_t , size_t lenframe)
     memset(ptr, 0, lenframe);
 #endif //DEBUG
 
-    //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<unsigned int>(lenframe);
+    //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
     return ptr;
 }
 
@@ -109,25 +121,7 @@ void Zerg_App_Frame::operator delete(void *ptrframe, size_t )
     delete []ptr;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年11月2日
-Function        : Zerg_App_Frame::FillDatainAppFrame
-Return          : Zerg_App_Frame*
-Parameter List  :
-  Param1: const size_t szdata  数据区的尺寸
-  Param2: const char* data     数据区的大小
-Description     : 将数据填充到一个帧内部
-Calls           :
-Called By       :
-Other           : 自己释放分配的数据
-Modify Record   :
-******************************************************************************************/
-Zerg_App_Frame *Zerg_App_Frame::FillDatainAppFrame(const size_t szdata, const char *vardata)
-{
-    Zerg_App_Frame *ptr = new(szdata + LEN_OF_APPFRAME_HEAD) Zerg_App_Frame();
-    memcpy(ptr->frame_appdata_, vardata, szdata);
-    return ptr;
-}
+
 
 //填充AppData数据到APPFrame
 int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
@@ -140,7 +134,7 @@ int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
 
     //填写数据区的长度
     memcpy(frame_appdata_, vardata, szdata);
-    frame_length_ = static_cast<unsigned int>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
+    frame_length_ = static_cast<uint32_t>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
@@ -149,7 +143,7 @@ Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年11月3
 Function        : Zerg_App_Frame::framehead_encode
 Return          : void
 Parameter List  : NULL
-Description     : 将所有的unsigned short,unsigned int转换为网络序
+Description     : 将所有的uint16_t,uint32_t转换为网络序
 Calls           :
 Called By       :
 Other           :
@@ -161,7 +155,7 @@ void Zerg_App_Frame::framehead_encode()
     frame_option_ = htonl(frame_option_);
     frame_command_ = htonl(frame_command_);
 
-    frame_uin_ = htonl(frame_uin_);
+    frame_uid_ = htonl(frame_uid_);
 
     //
     recv_service_.services_type_ = htons(recv_service_.services_type_);
@@ -186,7 +180,7 @@ Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年11月3
 Function        : Zerg_App_Frame::framehead_decode
 Return          : void
 Parameter List  : NULL
-Description     : 将所有的unsigned short,unsigned int转换为本地序
+Description     : 将所有的uint16_t,uint32_t转换为本地序
 Calls           :
 Called By       :
 Other           :
@@ -197,7 +191,7 @@ void Zerg_App_Frame::framehead_decode()
     frame_length_ = ntohl(frame_length_);
     frame_option_ = ntohl(frame_option_);
     frame_command_ = ntohl(frame_command_);
-    frame_uin_ = ntohl(frame_uin_);
+    frame_uid_ = ntohl(frame_uid_);
 
     //
     recv_service_.services_type_ = ntohs(recv_service_.services_type_);
@@ -217,14 +211,14 @@ void Zerg_App_Frame::framehead_decode()
 }
 
 //初始化包头的数据
-void Zerg_App_Frame::init_framehead(unsigned int lenframe, unsigned int option, unsigned int cmd)
+void Zerg_App_Frame::init_framehead(uint32_t lenframe, uint32_t option, uint32_t cmd)
 {
-    frame_length_ = static_cast<unsigned int>(lenframe);
+    frame_length_ = static_cast<uint32_t>(lenframe);
     frame_command_ = cmd;
     frame_option_ = option ;
     inner_option_.frame_version_ = TSS_APPFRAME_V1;
 
-    frame_uin_ = 0;
+    frame_uid_ = 0;
 
     send_service_.set_serviceid(0, 0);
     recv_service_.set_serviceid(0, 0);
@@ -236,19 +230,19 @@ void Zerg_App_Frame::init_framehead(unsigned int lenframe, unsigned int option, 
 }
 
 //填写发送者服务信息
-void Zerg_App_Frame::set_send_svcid(unsigned short svrtype, unsigned int svrid)
+void Zerg_App_Frame::set_send_svcid(uint16_t svrtype, uint32_t svrid)
 {
     send_service_.services_type_ = svrtype;
     send_service_.services_id_  = svrid;
 }
 
-void Zerg_App_Frame::set_recv_svcid(unsigned short svrtype, unsigned int svrid)
+void Zerg_App_Frame::set_recv_svcid(uint16_t svrtype, uint32_t svrid)
 {
     recv_service_.services_type_ = svrtype;
     recv_service_.services_id_ = svrid;
 }
 
-void Zerg_App_Frame::set_proxy_svcid(unsigned short svrtype, unsigned int svrid)
+void Zerg_App_Frame::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
 {
     proxy_service_.services_type_ = svrtype;
     proxy_service_.services_id_ = svrid;
@@ -289,7 +283,7 @@ void Zerg_App_Frame::exchange_rcvsnd_svcid(Zerg_App_Frame &exframe )
     transaction_id_ = exframe.transaction_id_;
     backfill_trans_id_ = exframe.backfill_trans_id_;
     app_id_ = exframe.app_id_;
-    frame_uin_ = exframe.frame_uin_;
+    frame_uid_ = exframe.frame_uid_;
 }
 
 void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
@@ -301,7 +295,7 @@ void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
     //回去的事务id应当是请求的事务id
     backfill_trans_id_ = exframe.transaction_id_;
     app_id_ = exframe.app_id_;
-    frame_uin_ = exframe.frame_uin_;
+    frame_uid_ = exframe.frame_uid_;
 }
 
 /******************************************************************************************
@@ -327,14 +321,14 @@ void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
 void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 {
     //
-    char tmpstr[MAX_LEN_OF_APPFRAME*2+1];
+    char tmpstr[MAX_LEN_OF_APPFRAME * 2 + 1];
     size_t datalen = frame_length_ - LEN_OF_APPFRAME_HEAD;
     size_t out_len = MAX_LEN_OF_APPFRAME * 2 + 1;
 
     ZCE_LIB::base16_encode((unsigned char *)frame_appdata_, datalen, (unsigned char *)tmpstr, &out_len);
-    
-    strstream <<" data:" <<  tmpstr << std::endl;
-    
+
+    strstream << " data:" <<  tmpstr << std::endl;
+
 }
 
 /******************************************************************************************
@@ -354,7 +348,7 @@ void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
     strstream << "Len:" << frame_length_
               << " Framedesc:0x " << frame_option_
               << " Command:" << frame_command_
-              << " Uin:" << frame_uin_
+              << " Uin:" << frame_uid_
               << " TransactionID:" << transaction_id_
               << " BackfillTransID:" << backfill_trans_id_
               << " ProcessHandler:" << app_id_
@@ -396,7 +390,7 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const Zerg_App_Frame *proc_frame , con
 }
 
 //Clone一个APP FRAME
-Zerg_App_Frame *Zerg_App_Frame::CloneAppFrame() const
+Zerg_App_Frame *Zerg_App_Frame::clone() const
 {
     Zerg_App_Frame *proc_frame = new(frame_length_) Zerg_App_Frame();
     memcpy(proc_frame, this, frame_length_);
@@ -404,14 +398,14 @@ Zerg_App_Frame *Zerg_App_Frame::CloneAppFrame() const
 }
 
 //Clone一个APP FRAME
-void Zerg_App_Frame::CloneAppFrame(Zerg_App_Frame *clone_frame) const
+void Zerg_App_Frame::clone(Zerg_App_Frame *clone_frame) const
 {
     memcpy(clone_frame, this, frame_length_);
     return ;
 }
 
 //Clone一个APP FRAME 的头部
-void Zerg_App_Frame::CloneFrameHead(Zerg_App_Frame *clone_frame) const
+void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 {
     memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);
     return ;

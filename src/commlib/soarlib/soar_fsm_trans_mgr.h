@@ -479,7 +479,7 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
     Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(fake_recv_buffer_);
     tmp_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_uin_ = qquin;
+    tmp_frame->frame_uid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_services_id_;
     tmp_frame->proxy_service_ = proxy_svc;
@@ -524,7 +524,7 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
     Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(fake_recv_buffer_);
     tmp_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_uin_ = qquin;
+    tmp_frame->frame_uid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_services_id_;
     tmp_frame->proxy_service_ = proxy_svc;
@@ -600,7 +600,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(trans_send_buffer_);
     rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    rsp_msg->frame_uin_ = qquin;
+    rsp_msg->frame_uid_ = qquin;
     rsp_msg->transaction_id_ = trans_id;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;

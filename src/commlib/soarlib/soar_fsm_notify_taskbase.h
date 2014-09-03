@@ -57,7 +57,7 @@ protected:
         Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(task_frame_buf_);
         rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uin_ = recv_frame->frame_uin_;
+        rsp_msg->frame_uid_ = recv_frame->frame_uid_;
 
         rsp_msg->recv_service_ = recv_frame->send_service_;
         rsp_msg->proxy_service_ = recv_frame->proxy_service_;
@@ -107,7 +107,7 @@ protected:
         Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(task_frame_buf_);
         rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uin_ = qq_uin;
+        rsp_msg->frame_uid_ = qq_uin;
 
         SERVICES_ID proxy_svcid(0, 0);
         rsp_msg->recv_service_ = mgr_svc_id_;

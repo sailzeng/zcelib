@@ -22,7 +22,7 @@ TCP_Accept_Handler::~TCP_Accept_Handler()
 }
 
 //
-int TCP_Accept_Handler::create_listen(unsigned int backlog)
+int TCP_Accept_Handler::create_listen()
 {
     //
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;
@@ -30,7 +30,7 @@ int TCP_Accept_Handler::create_listen(unsigned int backlog)
 
     //
     socklen_t sndbuflen = 0, rcvbuflen = 0;
-    int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC, backlog);
+    int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC);
 
     //如果不能Bind相应的端口
     if (ret != 0)

@@ -11,25 +11,29 @@ struct SOARING_EXPORT SERVICES_ID
 {
 public:
 
-    //无效的SERVICE 类型
-    static const unsigned short  INVALID_SERVICES_TYPE = 0;
+    ///无效的SERVICE 类型
+    static const uint16_t  INVALID_SERVICES_TYPE = 0;
 
-    //无效的SERVICE ID
-    static const unsigned int    INVALID_SERVICES_ID   = 0;
+    ///无效的SERVICE ID
+    static const uint32_t    INVALID_SERVICES_ID   = 0;
+
+    ///
+    static const uint32_t    BROADCAST_SERVICES_ID = -1;
+
     //表示是动态分片的SERVICE ID
-    static const unsigned int    DYNAMIC_ALLOC_SERVICES_ID = static_cast<unsigned int>(-1);
+    static const uint32_t    DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint32_t>(-1);
 
 public:
 
     //服务的类型,参考枚举值SERVICES_TYPE，无效时用INVALID_SERVICES_TYPE
-    unsigned short           services_type_;
+    uint16_t           services_type_;
 
     //服务的编号,采用两种表现方式,服务编号可以是一个服务器定义值,也可以是一个UIN.
-    unsigned int             services_id_;
+    uint32_t           services_id_;
 
 public:
     //构造,析构函数,默认为0
-    explicit SERVICES_ID(unsigned short svrtype = INVALID_SERVICES_TYPE, unsigned int svrno = INVALID_SERVICES_ID);
+    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE, uint32_t svrno = INVALID_SERVICES_ID);
     //
     ~SERVICES_ID();
 
@@ -40,7 +44,7 @@ public:
     }
 
     //
-    void set_serviceid(unsigned short svrtype, unsigned int svrid );
+    void set_serviceid(uint16_t svrtype, uint32_t svrid );
 
     //比较函数,services_type_,services_id_
     bool operator ==(const SERVICES_ID &others) const;
@@ -70,22 +74,22 @@ struct SOARING_EXPORT SERVICES_INFO
 {
 public:
     //服务ID信息
-    SERVICES_ID              services_id_;
+    SERVICES_ID       services_id_;
 
     //服务IP
-    unsigned int             ip_addr_;
+    uint32_t          ip_addr_;
 
     //服务端口
-    unsigned short           port_;
+    uint16_t          port_;
 
     //服务器所属 IDC的编号
-    unsigned int             idc_no_;
+    uint32_t          idc_no_;
 
     //服务器编号
-    unsigned int             server_guid_no_;
+    uint32_t          server_guid_no_;
 
     //额外的配置信息,是一个字符串，各个模块自己解析
-    char                     cfg_info_[MAX_NAME_LEN_STRING + 1];
+    char              cfg_info_[MAX_NAME_LEN_STRING + 1];
 
 public:
     //

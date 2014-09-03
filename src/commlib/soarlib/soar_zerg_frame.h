@@ -19,10 +19,10 @@ struct _ZERG_FRAME_OPTION
 public:
 
     //frame_option_的头24个BIT作为选项字段,,
-    unsigned int         inner_option_: 24;
+    uint32_t     inner_option_ : 24;
 
     //后4BIT作为版本标识
-    unsigned int         frame_version_: 8;
+    uint32_t     frame_version_ : 8;
 };
 
 
@@ -90,9 +90,9 @@ public:
     };
 
     //内部选项描述的掩码,内部选项在网络间看不见，在通讯服务器和业务服务器前可见。
-    static const unsigned int INNER_OPTION_MASK = 0xFFFF;
+    static const uint32_t INNER_OPTION_MASK = 0xFFFF;
     //外部选项描述+版本号的掩码
-    static const unsigned int OUTER_OPTION_MASK = 0xFFFF0000;
+    static const uint32_t OUTER_OPTION_MASK = 0xFFFF0000;
 
 public:
 
@@ -122,44 +122,44 @@ public:
 public:
 
     //整个通讯包长度,留足空间,包括帧头的长度.
-    unsigned int            frame_length_;
+    uint32_t               frame_length_;
 
     union
     {
-        unsigned int        frame_option_;
+        uint32_t           frame_option_;
         //
-        _ZERG_FRAME_OPTION   inner_option_;
+        _ZERG_FRAME_OPTION inner_option_;
     };
 
     //命令字 命令字还是放在包头比较好,
-    unsigned int            frame_command_;
+    uint32_t               frame_command_;
 
-    //UIN    用户QQ号码,
-    unsigned int            frame_uin_;
+    //UID
+    uint32_t               frame_uid_;
 
     //发送和接收的服务器应用也要填写
 
     //发送服务,包括发送服务器类型，发送服务器编号,没有编号，或者不是服务填写0
-    SERVICES_ID             send_service_;
+    SERVICES_ID            send_service_;
     //接受服务器
-    SERVICES_ID             recv_service_;
+    SERVICES_ID            recv_service_;
     //代理服务器
-    SERVICES_ID             proxy_service_;
+    SERVICES_ID            proxy_service_;
 
     //事务ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
-    unsigned int            transaction_id_;
+    uint32_t               transaction_id_;
     //回填的请求者的事务ID,
-    unsigned int            backfill_trans_id_;
+    uint32_t               backfill_trans_id_;
 
     //业务ID，GAMEID，用于标识游戏内部ID
-    unsigned int            app_id_;
+    uint32_t               app_id_;
 
     union
     {
         //发送序列号，计划只在通讯层用,暂时没用用
-        unsigned int       send_serial_number_;
+        uint32_t           send_serial_number_;
         //发送者的IP地址，内部使用
-        unsigned int       send_ip_address_;
+        uint32_t           send_ip_address_;
 
     };
 
@@ -174,34 +174,34 @@ public:
 
 public:
     //构造函数，大家都可以用的.
-    Zerg_App_Frame(unsigned int cmd = CMD_INVALID_CMD,
-                   unsigned int lenframe = LEN_OF_APPFRAME_HEAD,
-                   unsigned int frameoption = DESC_V1_VERSION);
+    Zerg_App_Frame(uint32_t cmd = CMD_INVALID_CMD,
+                   uint32_t lenframe = LEN_OF_APPFRAME_HEAD,
+                   uint32_t frameoption = DESC_V1_VERSION);
 
     //构造函数,用于,客户端初始化,
-    Zerg_App_Frame(unsigned int cmd,
-                   unsigned int lenframe,
-                   unsigned int uin,
-                   unsigned short sndsvrtype,
-                   unsigned short rcvsvctype,
-                   unsigned int frameoption = DESC_V1_VERSION);
+    Zerg_App_Frame(uint32_t cmd,
+                   uint32_t lenframe,
+                   uint32_t uin,
+                   uint16_t sndsvrtype,
+                   uint16_t rcvsvctype,
+                   uint32_t frameoption = DESC_V1_VERSION);
 
     //构造函数,用于发送给一个非代理服务器
-    Zerg_App_Frame(unsigned int cmd,
-                   unsigned int lenframe,
-                   unsigned int uin,
-                   const SERVICES_ID sndsvr,
-                   SERVICES_ID rcvsvc,
-                   unsigned int frameoption = DESC_V1_VERSION);
+    Zerg_App_Frame(uint32_t cmd,
+                   uint32_t lenframe,
+                   uint32_t uin,
+                   const SERVICES_ID &sndsvr,
+                   const SERVICES_ID &rcvsvc,
+                   uint32_t frameoption = DESC_V1_VERSION);
 
     //构造函数,用于发送给一个代理服务器
-    Zerg_App_Frame(unsigned int cmd,
-                   unsigned int lenframe,
-                   unsigned int uin,
+    Zerg_App_Frame(uint32_t cmd,
+                   uint32_t lenframe,
+                   uint32_t uin,
                    const SERVICES_ID &sndsvr,
                    const SERVICES_ID &proxy,
-                   unsigned short rcvsvc,
-                   unsigned int frameoption = DESC_V1_VERSION);
+                   uint16_t rcvsvc,
+                   uint32_t frameoption = DESC_V1_VERSION);
 
     //析构函数
     ~Zerg_App_Frame();
@@ -219,22 +219,22 @@ public:
     //清理所有的选项心想
     inline void clear_all_option();
 
-    //将帧头的所有的unsigned short,unsigned int转换为网络序
+    //将帧头的所有的uint16_t,uint32_t转换为网络序
     void framehead_encode();
-    //将帧头的所有的unsigned short,unsigned int转换为本地序
+    //将帧头的所有的uint16_t,uint32_t转换为本地序
     void framehead_decode();
 
     //初始化V1版本的包头,所有数据清0
-    void init_framehead(unsigned int lenframe,
-                        unsigned int option = 0,
-                        unsigned int cmd = 0);
+    void init_framehead(uint32_t lenframe,
+                        uint32_t option = 0,
+                        uint32_t cmd = 0);
 
     //填充发送SVR信息
-    void set_send_svcid(unsigned short svrtype, unsigned int svrid);
+    void set_send_svcid(uint16_t svrtype, uint32_t svrid);
     //填充发送SVR信息
-    void set_recv_svcid(unsigned short svrtype, unsigned int svrid);
+    void set_recv_svcid(uint16_t svrtype, uint32_t svrid);
     //填充代理SVR信息
-    void set_proxy_svcid(unsigned short svrtype, unsigned int svrid);
+    void set_proxy_svcid(uint16_t svrtype, uint32_t svrid);
 
     //填写所有的服务信息,
     void set_all_svcid(const SERVICES_ID &rcvinfo, const SERVICES_ID &sndinfo, const SERVICES_ID &proxyinfo);
@@ -250,11 +250,11 @@ public:
     void fillback_appframe_head(Zerg_App_Frame &exframe );
 
     //Clone一个APP FRAME
-    Zerg_App_Frame *CloneAppFrame() const;
+    Zerg_App_Frame *clone() const;
     //
-    void CloneAppFrame(Zerg_App_Frame *clone_frame) const;
+    void clone(Zerg_App_Frame *clone_frame) const;
     //
-    void CloneFrameHead(Zerg_App_Frame *clone_frame) const;
+    void clone_head(Zerg_App_Frame *clone_frame) const;
 
     //Dump头部和DATA区的数据
     void dump_appframe_info(std::ostringstream &strstream) const;
@@ -294,7 +294,7 @@ public:
     //ssize_t CopyCDRMsgBlock(const ACE_OutputCDR& outcdr);
 
     //取得IP地址信息
-    unsigned int get_send_ip() const;
+    uint32_t get_send_ip() const;
 
     //-----------------------------------------------------------------------------------
     //FRAME的数据进行TEA算法加密解密的函数，不知道Jovi当年为啥要写成STATIC的，呵呵
@@ -316,8 +316,6 @@ public:
 
 public:
 
-    //
-    static Zerg_App_Frame *FillDatainAppFrame(const size_t szdata, const char *vardata);
 
     //重载New函数
     static void   *operator new (size_t , size_t lenframe = LEN_OF_APPFRAME_HEAD);
@@ -339,7 +337,7 @@ public:
     //--------------------------------------------------------------------------
     //FRAME的数据进行TEA算法加密解密的函数，STATIC函数，不知道Jovi当年为啥要写成STATIC的，呵呵
     //构造签名包
-    static void signature_construct(Zerg_App_Frame *&proc_frame, unsigned int uin, const char *pSignature, size_t len);
+    static void signature_construct(Zerg_App_Frame *&proc_frame, uint32_t uin, const char *pSignature, size_t len);
 
 };
 
@@ -368,7 +366,7 @@ inline  size_t Zerg_App_Frame::get_frame_datalen() const
 }
 
 //得到发送者的IP地址,网络字节序的，
-inline unsigned int Zerg_App_Frame::get_send_ip() const
+inline uint32_t Zerg_App_Frame::get_send_ip() const
 {
     return send_ip_address_;
 }
@@ -440,7 +438,7 @@ int Zerg_App_Frame::appdata_encode(size_t szframe_appdata,
 
     // 调整frame的长度
     frame_length_
-        = (unsigned int)(data_start + use_len + LEN_OF_APPFRAME_HEAD);
+        = (uint32_t)(data_start + use_len + LEN_OF_APPFRAME_HEAD);
     return SOAR_RET::SOAR_RET_SUCC;
 }
 

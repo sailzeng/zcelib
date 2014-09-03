@@ -124,7 +124,7 @@ int Transaction_Base::initialize_trans(Zerg_App_Frame *proc_frame, unsigned int 
     req_session_id_ = proc_frame->backfill_trans_id_;
     req_game_app_id_ =  proc_frame->app_id_;
 
-    req_qq_uin_ = proc_frame->frame_uin_;
+    req_qq_uin_ = proc_frame->frame_uid_;
 
     req_ip_address_ = proc_frame->send_ip_address_;
     req_frame_option_ = proc_frame->frame_option_;

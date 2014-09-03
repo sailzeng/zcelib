@@ -15,9 +15,6 @@ class TCP_Accept_Handler;
 class UDP_Svc_Handler;
 class Zerg_MMAP_BusPipe;
 class ZBuffer_Storage;
-class Zerg_Server_Config;
-
-
 
 /****************************************************************************************************
 class  Zerg_Comm_Manager
@@ -39,13 +36,10 @@ protected:
 public:
 
     //初始化,从配置文件读取配置
-    int get_config(const Zerg_Server_Config config);
+    int get_config(const Zerg_Server_Config *config);
 
     //初始化Socket, backlog默认值和open中使用的默认值保持一致
-    int init_socketpeer(ZERG_SERVICES_INFO &init_svcid,
-        unsigned int backlog = ZCE_DEFAULT_BACKLOG,
-        bool is_extern_svc = false,
-        unsigned int proto_index = 0);
+    int init_socketpeer(ZERG_SERVICES_INFO &init_svcid);
 
     //检查端口是否安全,安全端口必须不使用保险(FALSE)
     int check_safeport(ZCE_Sockaddr_In     &inetadd);
@@ -54,17 +48,12 @@ public:
     int popall_sendpipe_write(size_t want_, size_t &proc_frame_num);
 
     //
-    inline void pushback_recvpipe(Zerg_App_Frame *recv_frame);
+    void pushback_recvpipe(Zerg_App_Frame *recv_frame);
 
     //检查发包频率
     void check_freamcount(unsigned int now);
 
-    TcpHandlerImpl* get_extern_proto_handler(unsigned int index);
-
-protected:
-    int init_extern_proto_handler();
-
-
+    int send_single_buf(Zerg_Buffer * tmpbuf);
 
 public:
 
@@ -73,25 +62,12 @@ public:
     //清理单子实例
     static void clean_instance();
 
-    // 统计心跳包收发间隔
-    void stat_heart_beat_gap(const Zerg_App_Frame * proc_frame);
-    // 统计收发分布
-    void stat_heart_beat_distribute(const Zerg_App_Frame * proc_frame, unsigned int use_time,
-        ZERG_MONITOR_FEATURE_ID feature_id);
-
-    // 收到心跳包请求，打上接收时间戳
-    void proc_zerg_heart_beat(Zerg_App_Frame * recv_frame);
-
-    int send_single_buf( Zerg_Buffer * tmpbuf );
-
-
 protected:
 
     //一次最多发送2048帧
     static const unsigned int MAX_ONCE_SEND_FRAME = 4096;
 
-    //最大的监控的FRAME的数量,不希望太多,可能严重影响效率
-    static const size_t       MAX_NUMBER_OF_MONITOR_FRAME = 16;
+
 
 
 protected:
@@ -113,7 +89,7 @@ protected:
     //监控命令的数量，为了加快速度，多用变量。
     size_t                    monitor_size_;
     //监控的命令
-    unsigned int              monitor_cmd_[MAX_NUMBER_OF_MONITOR_FRAME];
+    unsigned int              monitor_cmd_[ZERG_CONFIG::MAX_NUMBER_OF_MONITOR_FRAME];
 
     //内存管道类的实例对象，保留它仅仅为了加速
     Zerg_MMAP_BusPipe        *zerg_mmap_pipe_;
@@ -130,8 +106,6 @@ protected:
     //协议包发送计数器
     unsigned int              send_frame_count_;
 
-    // 框架配置对象
-    Server_Config_FSM          *comm_config_;
 
 };
 

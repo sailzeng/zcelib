@@ -644,7 +644,7 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
 
     Transaction_Base *crt_trans = NULL;
     ret = get_clone_from_pool(ppetappframe->frame_command_,
-                              ppetappframe->frame_uin_,
+                              ppetappframe->frame_uid_,
                               crt_trans);
 
     //是一个激活事务的命令
@@ -862,7 +862,7 @@ int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
 
     rsp_msg->frame_length_ = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
     rsp_msg->frame_command_ = cmd;
-    rsp_msg->frame_uin_ = qquin;
+    rsp_msg->frame_uid_ = qquin;
 
     rsp_msg->transaction_id_ = 0;
     rsp_msg->recv_service_ = rcvsvc;

@@ -542,9 +542,6 @@ int UDP_Svc_Handler::init_all_static_data()
     //通信管理器
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
-    // 为提高性能，初始化时就将game_id保存下来
-    game_id_ = CfgSvrSdk::instance()->get_game_id();
-
     return SOAR_RET::SOAR_RET_SUCC;
 }
 

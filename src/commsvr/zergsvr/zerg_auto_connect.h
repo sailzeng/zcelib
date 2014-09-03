@@ -1,7 +1,11 @@
+
 #ifndef ZERG_SERVER_AUTO_CONNECT_H_
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
+
+
 class Zerg_Server_Config;
+
 
 /****************************************************************************************************
 strcut SERVICES_ROUTE_INFO
@@ -71,7 +75,6 @@ private:
 
     //主动连接type到index的map
     RouteType2Index             want_connect_type_2_index_;
-//    std::vector<TcpHandlerImpl*> external_proto_handler_;
 
 public:
 
@@ -80,52 +83,35 @@ public:
     ~Zerg_Auto_Connector();
 
     //
-    int get_config(Zerg_Server_Config *config);
+    int get_config(const Zerg_Server_Config *config);
 
     // 重新加载主动连接配置
-    int reload_cfg(Zerg_Server_Config *config);
+    int reload_cfg(const Zerg_Server_Config *config);
 
-    //链接所有的tcp服务器
-    void reconnect_tcpserver(size_t &szvalid, size_t &sz_succ, size_t &szfail);
+    //链接所有的服务器
+    void reconnect_allserver(size_t &szvalid, size_t &sz_succ, size_t &szfail);
 
-    //连接所有的udp服务器
-    void reconnect_udpserver(size_t &szvalid, size_t &sz_succ, size_t &szfail);
 
     //链接的数量
     size_t numsvr_connect();
 
     //根据主服务器，得到备份服务器的信息
     int get_backupsvcinfo(const SERVICES_ID &main_svrinfo,
-                          bool &backroute_valid,
-                          SERVICES_ID &backroute_svrinfo);
+        bool &backroute_valid,
+        SERVICES_ID &backroute_svrinfo);
 
     //根据SVRINFO,检查是否是主动连接的服务.,
     int reconnect_server(const SERVICES_ID &reconnect_svrinfo);
 
-    //根据svr type获取serviceid，有多个id时随机获取一个
-    int get_server(unsigned short svr_type,
-                   SERVICES_ID *svrinfo);
-
-    //根据svr type按uin hash方式获取serviceid
-    int get_server_byuinhash(unsigned short svr_type,
-                   SERVICES_ID *svrinfo,
-                   unsigned int uin);
-
-    int get_all_conn_server(unsigned short svr_type,
-        std::vector<SERVICES_ID> &vec);
+    //根据svr type获取serviceid，有多个id时随机获取一个 
+    int get_server(unsigned short svr_type, SERVICES_ID *svrinfo);
 protected:
 
     //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-    int connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In &inet_addr, size_t index);
-
-    //主动连接udp服务器
-    int connect_udpserver_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In &inet_addr, int index);
+    int connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In &inet_addr);
 
     //根据svrinfo 检查是否已经连接
     bool is_connected(const SERVICES_ID &svrinfo);
-
-    //根据svrinfo 检查连接是否有阻塞
-    bool is_socket_block(const SERVICES_ID &svrinfo);
 
 private:
     //添加主动连接服务信息
@@ -136,5 +122,7 @@ private:
 
 };
 
+
 #endif //_ZERG_SERVER_AUTO_CONNECT_H_
+
 
