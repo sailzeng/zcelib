@@ -1,5 +1,6 @@
 
 #include "zerg_predefine.h"
+#include "zerg_configure.h"
 #include "zerg_ip_restrict.h"
 
 
@@ -27,51 +28,39 @@ int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
     reject_ip_set_.clear();
 
     const size_t TMP_BUFFER_LEN = 256;
-    //char tmp_key[TMP_BUFFER_LEN+1] = {0};
-    //char tmp_value[TMP_BUFFER_LEN+1] = {0};
     char err_outbuf[TMP_BUFFER_LEN + 1] = {0};
 
-    //ret  = cfg_file.get_uint32_value("RESTRICT","NUMALLOW",tmp_uint);
     std::vector<std::string> v;
-    split(config.restrict_cfg.allow_ips, " ", v);
+    ZCE_LIB::str_split(config->zerg_config_.allow_ip_.c_str(), " ", v);
     allow_ip_set_.rehash(v.size());
 
     //读取运行连接的服务器IP地址
     for (unsigned int i = 0; i < v.size(); ++i )
     {
-
-        //tmp_key[0] = '\0';
-        //snprintf(tmp_key,sizeof(tmp_key)-1,"ALLOWIP%d",i);
-        //snprintf(err_outbuf,TMP_BUFFER_LEN,"RESTRICT|%s key error.",tmp_key);
-        //
-        //cfg_file.get_string_value("RESTRICT",tmp_key,tmp_value,TMP_BUFFER_LEN);
-        ////TESTCONFIG((ret == 0),err_outbuf);
-
         ZCE_Sockaddr_In     inetadd;
-        ret = inetadd.set(v[i].c_str(), 10);
+        //0是一个默认端口
+        ret = inetadd.set(v[i].c_str(), 0);
+        if (0 != ret)
+        {
+            return -1;
+        }
 
         allow_ip_set_.insert(inetadd.get_ip_address());
     }
 
     //读取拒绝连接的服务器IP地址
-    //ret  = cfg_file.get_uint32_value("RESTRICT","NUMREJECT",tmp_uint);
     v.clear();
-    split(config.restrict_cfg.reject_ips, " ", v);
+    ZCE_LIB::str_split(config->zerg_config_.reject_ip_.c_str(), " ", v);
     reject_ip_set_.rehash(v.size());
 
     for (unsigned int i = 0; i < v.size(); ++i)
     {
-        //tmp_key[0] = '\0';
-        //snprintf(tmp_key,sizeof(tmp_key)-1,"REJECTIP%d",i+1);
-        //snprintf(err_outbuf,TMP_BUFFER_LEN,"RESTRICT|%s key error.",tmp_key);
-
-        //ret = cfg_file.get_string_value("RESTRICT",tmp_key,tmp_value,TMP_BUFFER_LEN);
-        //TESTCONFIG((ret == 0),err_outbuf);
-
         ZCE_Sockaddr_In     inetadd;
-        ret = inetadd.set(v[i].c_str(), 10);
-        TESTCONFIG((ret == 0), err_outbuf);
-
+        ret = inetadd.set(v[i].c_str(), 0);
+        if (0 != ret)
+        {
+            return -1;
+        }
         reject_ip_set_.insert(inetadd.get_ip_address());
     }
 

@@ -50,16 +50,17 @@ struct yun_char_traits < char > : public std::char_traits < char >
 {
     typedef std::string string_type;
 
-    static int tolower(int c)
+    //注意 int_type 就是std::char_traits<wchar_t>::int_type
+    static int tolower(int_type c)
     {
         return ::tolower(c);
     }
-    static int toupper(int c)
+    static int toupper(int_type c)
     {
         return ::toupper(c);
     }
 
-    static int isspace(int c)
+    static int isspace(int_type c)
     {
         return (isascii(c) && ::isspace(c));
     }
@@ -80,17 +81,18 @@ struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
 {
     typedef std::wstring    string_type;
 
-    static int tolower(int c)
+    //注意 int_type 就是std::char_traits<wchar_t>::int_type
+    static int tolower(int_type c)
     {
         return ::towlower(c);
     }
 
-    static int toupper(int c)
+    static int toupper(int_type c)
     {
         return ::towupper(c);
     }
 
-    static int isspace(int c)
+    static int isspace(int_type c)
     {
         return ::iswspace(c);
     }
@@ -193,8 +195,6 @@ inline char *strtrim(char_type *str)
     return str;
 }
 
-
-
 template < typename char_type, typename char_traits_type, typename allocator_typ >
 void trimleft_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
 {
@@ -227,11 +227,10 @@ void trimright_stdstr(std::basic_string<char_type, char_traits_type, allocator_t
 }
 
 template < typename char_type, typename char_traits_type, typename allocator_typ >
-inline void trim(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+inline void trim_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
 {
     trimright_stdstr(str);
     trimleft_stdstr(str);
-
     return;
 }
 
@@ -302,8 +301,77 @@ char *prefix_unique_name(const char *prefix_name,
 
 
 
+//==========================================================================================================
+
+/*!
+* @brief      分割字符串，
+* @tparam     iter_type1  被分割数据的迭代器类型
+* @tparam     iter_type2  分割标示的迭代器类型
+* @tparam     compare_type 比较方式
+* @tparam     container_type 容器类型
+* @param      fs 被分割数据开始位置的迭代器
+* @param      ls 被分割数据结束位置的迭代器
+* @param      fo 分割标示的开始位置迭代器
+* @param      lo 分割标示的结束位置迭代器
+* @param      pr 比较方式
+* @param      v  输出的容器
+*/
+template < typename iter_type1, typename iter_type2, typename compare_type, typename container_type>
+void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type &v)
+{
+
+    std::back_insert_iterator<container_type> o = std::back_inserter(v);
+    if (fo == lo)
+    {
+        *o = container_type::value_type(fs, ls);
+        return;
+    }
+
+    // current position old_str in str
+    iter_type1 pos = std::search(fs, ls, fo, lo, pr);
+
+    if (pos == ls)
+    {
+        if (fs < ls)
+        {
+            *o = container_type::value_type(fs, ls);
+        }
+
+        return;
+    }
+
+    size_t old_size = std::distance(fo, lo);
+
+    for (; pos != ls;)
+    {
+        // append src string
+        *o = container_type::value_type(fs, pos);
+        // ignore old_str
+        fs = pos + old_size;
+        // find next
+        pos = std::search(fs, ls, fo, lo, pr);
+    }
+
+    if (fs != ls)
+    {
+        *o = container_type::value_type(fs, ls);
+    }
+
+    return;
+}
 
 
+template < typename char_type, typename container_type >
+inline void str_split(const char_type *str, const char_type *separator, container_type &v)
+{
+    str_split(str,
+        yun_char_traits<char_type>::strend(str),
+        separator,
+        yun_char_traits<char_type>::strend(separator),
+        std::equal_to<char_type>(),
+        v);
+    return;
+}
 
 //==========================================================================================================
 //用于一些表格字符串分析函数

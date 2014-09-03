@@ -35,8 +35,6 @@ public:
     Services_Table_Config  services_info_cfg_;
 
 
-    //统计文件
-    std::string zerg_stat_file_;
 
     //ZERG的保险是否使用
     bool zerg_insurance_;
@@ -63,7 +61,11 @@ public:
     uint32_t recv_pipe_len_;
     // 发送管道长度, 默认50M
     uint32_t send_pipe_len_;
-    
+
+    ///拒绝不允许链接的IP地址
+    std::string reject_ip_;
+    ///允许链接的IP地址列表
+    std::string allow_ip_;
 };
 
 

@@ -1,7 +1,7 @@
 //
 //Author:ZengXing
 //用于ASNI string函数的补充
-//2002-06-22
+//始于2002-06-22，当然内部反复改写过
 //
 
 
@@ -43,8 +43,12 @@ char *ZCE_LIB::prefix_unique_name(const char *prefix_name,
                                  char *name,
                                  size_t length)
 {
-    static unsigned int uniqueid_builder = 0;
+    
 
+    ZCE_Thread_Light_Mutex id_lock;
+    ZCE_Lock_Guard<ZCE_Thread_Light_Mutex> id_guard(id_lock);
+
+    static unsigned int uniqueid_builder = 0;
     ++uniqueid_builder;
 
     snprintf (name,

@@ -607,6 +607,69 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer * tmpbuf )
 }
 
 
+//希望加快所以用了inline，不过看函数长度，优化的可能性小。
+inline void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
+{
+    // 如果是通信服务器的命令,不进行任何处理
+    if (true == recv_frame->is_zerg_processcmd())
+    {
+        // 心跳回包则对心跳包收发间隔进行监控
+        if (true == recv_frame->is_zerg_heart_beat_rsp())
+        {
+            stat_heart_beat_gap(recv_frame);
+            return;
+        }
+        else if (true == recv_frame->is_zerg_heart_beat_req())
+        {
+            // 心跳请求包，打上接收时间戳继续丢给APP去处理
+            proc_zerg_heart_beat(recv_frame);
+        }
+        else
+        {
+            return;
+        }
+    }
 
+
+    //为了提高效率，先检查标志位，
+    if (recv_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    {
+        Zerg_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]opt", RS_INFO);
+    }
+    else
+    {
+        //这段代码在发送接收时都要检查，否则都有可能漏掉
+        //如果是要跟踪的命令
+        for (size_t i = 0; i < monitor_size_; ++i)
+        {
+            if (monitor_cmd_[i] == recv_frame->frame_command_)
+            {
+                recv_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+                Zerg_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]cmd", RS_INFO);
+            }
+        }
+    }
+
+    int ret = zerg_mmap_pipe_->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
+        reinterpret_cast<const ZCE_LIB::dequechunk_node *>(recv_frame));
+
+    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    {
+        server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
+            recv_frame->app_id_);
+    }
+    else
+    {
+        server_status_->increase_once(ZERG_RECV_FRAME_COUNTER,
+            recv_frame->app_id_);
+        server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
+            recv_frame->app_id_,
+            recv_frame->frame_command_);
+        server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
+            recv_frame->app_id_,
+            recv_frame->send_service_.services_type_);
+    }
+
+}
 
 

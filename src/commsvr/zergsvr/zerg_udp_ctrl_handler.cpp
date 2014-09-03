@@ -10,8 +10,7 @@
 
 //
 UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
-//
-UDPSessionKeyMgr *UDP_Svc_Handler::udp_session_mgr_ = NULL;
+
 //
 Comm_Stat_Monitor  *UDP_Svc_Handler::server_status_ = NULL;
 //通信管理器
@@ -503,7 +502,7 @@ int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
         else
         {
             // 监听
-			//找到原来的那个UDP端口，使用原来的端口发送，
+            //找到原来的那个UDP端口，使用原来的端口发送，
             //这样可以保证防火墙的穿透问题
             if (ary_udpsvc_handler_[i]->self_svc_info_ ==
                 send_frame->send_service_)
