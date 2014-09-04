@@ -24,12 +24,16 @@ class TCP_Svc_Handler : public ZCE_Event_Handler,
     public ZCE_Timer_Handler
 {
 public:
-    //服务的模式
+
+    ///服务的模式
     enum HANDLER_MODE
     {
-        HANDLER_MODE_INVALID,          //无效的链接
-        HANDLER_MODE_CONNECT,          //主动连接的Handler
-        HANDLER_MODE_ACCEPTED,         //被动接受某个端口的Handler
+        ///无效的链接
+        HANDLER_MODE_INVALID,     
+        ///主动连接的Handler
+        HANDLER_MODE_CONNECT,       
+        ///被动接受某个端口的Handler
+        HANDLER_MODE_ACCEPTED,         
     };
 
     //
@@ -44,26 +48,47 @@ public:
 
 protected:
 
+    //
     typedef ZCE_LIB::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
 
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
-    //
+    
+    /*!
+    * @brief      构造函数
+    * @param      hdl_mode 模式，参考@enum HANDLER_MODE,根据模式的不同内部发送队列大小不一致
+    */
     TCP_Svc_Handler(HANDLER_MODE hdl_mode);
-    //
+    ///析构函数
     virtual ~TCP_Svc_Handler();
 
 public:
 
-    //
+
+    /*!
+    * @brief      用于Accept的端口的处理Event Handle初始化处理.
+    * @return     void
+    * @param      my_svcinfo  此句柄对应的本端的SVC ID
+    * @param      sockstream  SOCKET 句柄
+    * @param      socketaddr  对端的地址，其实可以从sockstream中得到，但为了效率和方便.
+    * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
+    */
     void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
         const ZCE_Socket_Stream &sockstream,
-        const ZCE_Sockaddr_In     &socketaddr,
-        bool sessionkey_verify);
+        const ZCE_Sockaddr_In     &socketaddr);
 
-    //主动CONNET链接出去的HANDLER
+    
+    /*!
+    * @brief      主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
+    * @return     void
+    * @param      my_svcinfo  此句柄对应的本端SVC ID
+    * @param      svrinfo     对端的SVC ID
+    * @param      sockstream  SOCKET 句柄
+    * @param      socketaddr  对应连接的对端地址信息
+    * @note       
+    */
     void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
         const SERVICES_ID &svrinfo,
         const ZCE_Socket_Stream &sockstream,
@@ -250,10 +275,10 @@ protected:
 
 
     //要自动链接的服务器
-    static Zerg_Auto_Connector    zerg_auto_connect_;
+    static Zerg_Auto_Connector zerg_auto_connect_;
 
     //SVRINFO对应的PEER的HASHMAP
-    static Service_Info_Set svr_peer_info_set_;
+    static Service_Info_Set    svr_peer_info_set_;
 
 
     //已经Accept的PEER数量
@@ -328,9 +353,6 @@ protected:
     int                       timeout_time_id_;
     //一个时间间隔内接受数据的次数
     unsigned int              receive_times_;
-
-    //是否验证用户的sessionkey_verify
-    bool                      sessionkey_verify_;
 
     //是否是后端服务器强制关闭这个PEER
     bool                      if_force_close_;

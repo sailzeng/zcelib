@@ -5,7 +5,7 @@
 #include "soar_zerg_svc_info.h"
 #include "soar_error_code.h"
 
-class Server_Config_FSM;
+class Server_Config_Base;
 class Zerg_MMAP_BusPipe;
 class Server_Timer_Base;
 /****************************************************************************************************
@@ -17,12 +17,10 @@ class Comm_Svrd_Appliction : public ZCE_Server_Base
 protected:
 
     //构造函数和析构函数
-    Comm_Svrd_Appliction();
+    Comm_Svrd_Appliction(Server_Config_Base *config);
     virtual ~Comm_Svrd_Appliction();
 
 public:
-
-
 
     //设置日志的优先级
     void set_log_priority(ZCE_LOG_PRIORITY new_log_prio);
@@ -33,83 +31,35 @@ public:
 
     int run(int argc, const char *argv[]);
 
-    int do_run();
+    //int do_run();
 
     //得到APP的版本信息
     const char *get_app_version();
 
-    // windows下设置服务信息
-    void set_service_info(const char *svc_name, const char *svc_desc);
+
 
     //重新加载配置
     int reload_config();
 
 protected:
-    // 应用需要实现的函数
-
-    // 加载app配置, app需自己实现
-    // 框架初始化调用app接口的顺序： load_app_conf register_notify_task(notifytrans才有) init
-    virtual int load_app_conf();
 
     // app的初始化
-    virtual int init() = 0;
+    virtual int init(int argc, const char *argv[]) = 0;
 
     // 重新加载配置
     // 框架reload调用app接口的顺序: load_app_conf reload
     virtual int reload() = 0;
 
     // app的退出
-    virtual void exit();
+    virtual int exit();
 
-protected:
-    // 框架中不同的app类可以重载的函数
-    // 框架初始化
-    virtual int init_instance();
-
-    int proc_start_args(int argc, const char *argv[]);
-
-    // 框架退出
-    virtual int exit_instance();
-
-    // 框架运行处理,
-    virtual int run_instance() = 0;
-
-    // 框架重新加载配置
-    virtual int reload_instance();
 
 private:
     //设置定时器, 定时检查更新
     int register_soar_timer();
 
-    //得到app_base_name_，app_run_name_
-    int create_app_name(const char *argv_0);
-
-
     // 初始化日志帐单
     int init_log();
-
-    //WIN 服务的代码，用于服务器的注册注销等
-#ifdef ZCE_OS_WINDOWS
-
-    //运行服务
-    int win_services_run();
-
-    //WIN 下面的退出处理
-    static BOOL exit_signal(DWORD );
-
-    //服务运行函数
-    static void WINAPI win_service_main();
-    //服务控制台所需要的控制函数
-    static void WINAPI win_services_ctrl(DWORD op_code);
-
-#else
-
-    //退出信号
-    static void exit_signal(int );
-
-    //重新加载配置
-    static void reload_config_signal(int );
-#endif
 
 public:
 
@@ -139,35 +89,25 @@ protected:
 
 protected:
 
-    //为了加载卸载so，加一个是否暂停的变量
-    bool                         app_pause_;
-
-
 
     //自己的服务器ID
-    SERVICES_ID                  self_services_id_;
+    SERVICES_ID          self_services_id_;
 
     //以windows的服务方式运行，
-    bool                         run_as_win_serivces_;
+    bool                 run_as_win_serivces_;
 
     //最大消息个数
-    size_t                       max_msg_num_;
-
-
+    size_t               max_msg_num_;
 
     // 与zerg的管道
-    Zerg_MMAP_BusPipe           *zerg_mmap_pipe_;
+    Zerg_MMAP_BusPipe   *zerg_mmap_pipe_;
 
 
+    /// 框架定时器处理类
+    Server_Timer_Base   *timer_handler_;
 
-    // 启动参数
-    int                         argc_;
-    const char                **argv_;
-
-
-private:
-    // 框架定时器处理类
-    Server_Timer_Base          *timer_handler_;
+    ///
+    Server_Config_Base  *config_;
 
 };
 

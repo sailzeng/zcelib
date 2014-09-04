@@ -3,34 +3,8 @@
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
 
-
+struct ZERG_SERVICES_INFO;
 class Zerg_Server_Config;
-
-
-/****************************************************************************************************
-strcut SERVICES_ROUTE_INFO
-****************************************************************************************************/
-struct SERVICES_ROUTE_INFO
-{
-public:
-
-    SERVICES_ROUTE_INFO();
-    ~SERVICES_ROUTE_INFO();
-
-public:
-    //主路由SVCID
-    SERVICES_ID                 main_route_info_;
-    //主路由IP地址信息
-    ZCE_Sockaddr_In             main_route_ip_;
-
-    //备份路由是否有效
-    bool                        back_route_valid_;
-    //备份路由信息
-    SERVICES_ID                 back_route_info_;
-    //备份路由IP地址信息
-    ZCE_Sockaddr_In             back_route_ip_;
-
-};
 
 
 
@@ -55,27 +29,27 @@ class Zerg_Auto_Connector
 class Zerg_Auto_Connector
 {
     //
-    typedef std::vector< SERVICES_ROUTE_INFO > ArrayOfSvcInfoIPAddr;
+    typedef std::vector< ZERG_SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
 
 protected:
 
     //
-    ArrayOfSvcInfoIPAddr      ary_want_connect_;
+    ARRAY_OF_ZERG_SVCINFO   ary_want_connect_;
     //
-    size_t                    size_of_wantconnect_;
+    size_t                  size_of_wantconnect_;
 
     //连接器
-    ZCE_Socket_Connector      zerg_connector_;
+    ZCE_Socket_Connector    zerg_connector_;
 
 private:
     //主路由id列表
-    ListOfMainRouteId           list_of_want_connect_main_id_;
+    ListOfMainRouteId       list_of_want_connect_main_id_;
 
     //备份路由id列表
-    ListOfMainRouteId           list_of_want_connect_back_id_;
+    ListOfMainRouteId       list_of_want_connect_back_id_;
 
     //主动连接type到index的map
-    RouteType2Index             want_connect_type_2_index_;
+    RouteType2Index         want_connect_type_2_index_;
 
 public:
 

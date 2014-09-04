@@ -65,12 +65,23 @@ public:
     /// 设置reload标志
     void set_reload(bool app_reload);
 
+    ///通过启动参数0,得到app_base_name_，app_run_name_
+    int create_app_name(const char *argv_0);
+
+
     ///得到运行信息，可能包括路径信息
     const char *get_app_runname();
 
     ///得到程序进程名称，WINDOWS下去掉了后缀
     const char *get_app_basename();
 
+
+    /*!
+    * @brief      windows下设置服务信息
+    * @param      svc_name 服务名称
+    * @param      svc_desc 服务描述
+    */
+    void set_service_info(const char *svc_name, const char *svc_desc);
 
     //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
@@ -143,12 +154,13 @@ protected:
 
     ///进程名字，抛开运行目录，文件后缀的名字，
     std::string           app_base_name_;
+    ///程序运行名称,如果包含路径运行，会有路径信息
+    std::string           app_run_name_;
 
     ///作者名称
     std::string           app_author_;
 
-    ///程序运行名称,如果包含路径运行，会有路径信息
-    std::string           app_run_name_;
+
 
     ///服务名称
     std::string           service_name_;

@@ -89,7 +89,7 @@ protected:
     //监控命令的数量，为了加快速度，多用变量。
     size_t                    monitor_size_;
     //监控的命令
-    unsigned int              monitor_cmd_[ZERG_CONFIG::MAX_NUMBER_OF_MONITOR_FRAME];
+    unsigned int              monitor_cmd_[ZERG_CONFIG::MAX_MONITOR_FRAME_NUMBER];
 
     //内存管道类的实例对象，保留它仅仅为了加速
     Zerg_MMAP_BusPipe        *zerg_mmap_pipe_;

@@ -57,15 +57,28 @@ public:
              int protocol = 0,
              bool reuse_addr = false);
 
-    //关闭之,一般情况下，我会假设释放资源是必然成功的一件事
+    ///关闭之,一般情况下，我会假设释放资源是必然成功的一件事
     int close();
 
+
+    /*!
+    * @brief      释放对句柄的管理，将句柄置为无效而已，在其和其的子类作为参数传递时
+    *             为了避免析构函数主动关闭close了句柄时，在析构前使用这个函数
+    * @note       请参考析构函数的说明
+    */
+    void release_noclose();
+
+    /*!
+    * @brief      绑定某个本地的IP地址，
+    * @return     int
+    * @param      add_name
+    */
     int bind(const ZCE_Sockaddr *add_name) const;
 
-    //打开某些选项，WIN32目前只支持O_NONBLOCK
+    ///打开某些选项，WIN32目前只支持O_NONBLOCK
     int sock_enable (int value) const;
 
-    //关闭某些选项，WIN32目前只支持O_NONBLOCK
+    ///关闭某些选项，WIN32目前只支持O_NONBLOCK
     int sock_disable(int value) const;
 
     //获取Socket的选项

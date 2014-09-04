@@ -89,10 +89,10 @@ Zerg_Service_App::init_instance()
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
 #ifdef ZCE_OS_WINDOWS
     //
-    ZCE_Reactor::instance(new zce_Select_Reactor(max_peer));
+    ZCE_Reactor::instance(new ZCE_Select_Reactor(max_peer));
     ZLOG_DEBUG("[zergsvr] ZCE_Reactor and zce_Select_Reactor initialized.");
 #else
-    ZCE_Reactor::instance(new zce_Epoll_Reactor(max_peer));
+    ZCE_Reactor::instance(new ZCE_Epoll_Reactor(max_peer));
     ZLOG_INFO("[zergsvr] ZCE_Reactor and zce_Epoll_Reactor initialized.");
 #endif
 
@@ -228,8 +228,8 @@ int Zerg_Service_App::reload_daynamic_config()
     }
 
     //控制台初始化
-    ret = Zerg_Console_Handler::instance()->initialize(*config_);
-    ZLOG_INFO("[zergsvr] Console initialize ret =%d .", ret);
+    //ret = Zerg_Console_Handler::instance()->initialize(*config_);
+    //ZLOG_INFO("[zergsvr] Console initialize ret =%d .", ret);
 
     if (ret != 0 )
     {

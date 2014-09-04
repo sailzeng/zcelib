@@ -37,7 +37,7 @@ public:
     * @param      argc
     * @param      argv
     */
-    virtual int proc_start_arg(int argc, const char *argv[]);
+    virtual int start_arg(int argc, const char *argv[]);
 
     /// 加载zerg framwork app的配置
     virtual int load_cfgfile();
@@ -57,15 +57,18 @@ public:
     //清理单子实例
     static void clean_instance();
 
-public:
-    // 服务器实例id
-    unsigned int instance_id_;
-    // 进行运行目录
-    std::string   app_run_dir_;
+protected:
 
+    //默认定时器的事数量
+    static const size_t DEFAULT_TIMER_NUMBER = 1024;
+
+public:
 
     // 自己的服务器ID
-    SERVICES_ID self_svr_id_;
+    SERVICES_ID self_svc_id_;
+
+    // 服务器实例id
+    unsigned int instance_id_;
 
 
     //是否恢复管道
@@ -74,10 +77,20 @@ public:
 
     /// 是否后台运行, windows下以如果设置了此值，则以服务的方式运行
     bool app_run_daemon_;
+
     /// Windows下是否安装服务
-    bool app_install_service_;
+    bool win_install_service_;
     /// Windows下是否卸载服务
-    bool app_uninstall_service_;
+    bool win_uninstall_service_;
+
+    // 是否使用配置服务器，如果false，则使用本地配置
+    bool is_use_cfgsvr_;
+
+    //定时器的数量，用于初始化
+    size_t timer_nuamber_;
+
+    // 进行运行目录
+    std::string   app_run_dir_;
 
     // 日志路径
     std::string log_file_prefix_;
@@ -91,8 +104,7 @@ public:
     // svcid的配置文件
     std::string svcid_cfg_file_;
 
-    // 是否使用配置服务器，如果false，则使用本地配置
-    bool is_use_cfgsvr_;
+
     // 配置服务器信息
     std::string master_cfgsvr_ip_;
     

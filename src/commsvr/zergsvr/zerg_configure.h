@@ -1,9 +1,12 @@
 #ifndef ZERG_SERVER_CONFIG_H_
 #define ZERG_SERVER_CONFIG_H_
 
-/****************************************************************************************************
-class  ZERG_SERVICES_INFO
-****************************************************************************************************/
+
+/*!
+* @brief      
+*             
+* @note       
+*/
 struct ZERG_SERVICES_INFO
 {
 public:
@@ -19,15 +22,26 @@ public:
 };
 
 
+
+
+
+
 struct ZERG_CONFIG
 {
 public:
 
-    //最大的
+    ///最大的
     static const size_t MAX_SELF_SERVICES_ID = 4;
 
     ///最大的监控的FRAME的数量,不希望太多,可能严重影响效率
-    static const size_t MAX_NUMBER_OF_MONITOR_FRAME = 16;
+    static const size_t MAX_MONITOR_FRAME_NUMBER = 16;
+
+    ///最大的主动链接服务器数量
+    static const size_t MAX_AUTO_CONNECT_SVRS = 512;
+    
+    ///最大的跟踪记录的最大服务器类型，用于自动选择路由，广播等
+    static const size_t MAX_RECORD_SERVICES_TYPE = 16;
+
 
 public:
     //
@@ -74,10 +88,12 @@ public:
     ///
     size_t monitor_cmd_count_;
     ///
-    uint32_t monitor_cmd_list_[MAX_NUMBER_OF_MONITOR_FRAME];
+    uint32_t monitor_cmd_list_[MAX_MONITOR_FRAME_NUMBER];
 
-
+    //
     size_t auto_connect_num_;
+    //
+    SERVICES_ID  auto_connect_svrs_[MAX_AUTO_CONNECT_SVRS];
 
 };
 
@@ -114,8 +130,6 @@ public:
     int GetServicesIPInfo(const SERVICES_ID &svc_info, ZCE_Sockaddr_In     &ipaddr);
 
     
-    //初始化外部服务
-    int init_extern_svc();
 
 public:
 

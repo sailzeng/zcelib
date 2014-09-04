@@ -7,14 +7,16 @@
 
 
 Server_Config_Base::Server_Config_Base():
+    self_svc_id_(0, 0),
     instance_id_(1),
-    self_svr_id_(0, 0),
     if_restore_pipe_(true),
     app_run_daemon_(false),
-    app_install_service_(false),
-    app_uninstall_service_(false),
-    is_use_cfgsvr_(false)
+    win_install_service_(false),
+    win_uninstall_service_(false),
+    is_use_cfgsvr_(false),
+    timer_nuamber_(0)
 {
+    timer_nuamber_ = DEFAULT_TIMER_NUMBER;
 }
 
 Server_Config_Base::~Server_Config_Base()
@@ -26,7 +28,7 @@ int Server_Config_Base::initialize(int argc, const char *argv[])
 {
     // 处理命令行参数
     int ret = SOAR_RET::SOAR_RET_SUCC;
-    ret = proc_start_arg(argc, argv);
+    ret = start_arg(argc, argv);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -43,20 +45,15 @@ int Server_Config_Base::initialize(int argc, const char *argv[])
     return ret;
 }
 
-int Server_Config_Base::proc_start_arg(int argc, const char *argv[])
+int Server_Config_Base::start_arg(int argc, const char *argv[])
 {
     // 取得运行目录
-    char cur_dir[PATH_MAX + 1];
-    cur_dir[PATH_MAX] = 0;
-    ZCE_LIB::getcwd(cur_dir, sizeof(cur_dir) - 1);
 
-    app_run_dir_ = cur_dir;
 
     // 指明RETURN_IN_ORDER 不调整顺序
     ZCE_Get_Option get_opt(argc, (char **)argv,
                            "umvndhpi:t:r:a:", 1, 0, ZCE_Get_Option::RETURN_IN_ORDER);
-    int c;
-
+    int c = 0;
     while ((c = get_opt()) != EOF)
     {
         switch (c)
@@ -110,7 +107,7 @@ int Server_Config_Base::proc_start_arg(int argc, const char *argv[])
             case 't':
             {
                 // 指定了服务器type
-                self_svr_id_.services_type_ = static_cast<unsigned short>(atoi(get_opt.optarg));
+                self_svc_id_.services_type_ = static_cast<unsigned short>(atoi(get_opt.optarg));
                 break;
             }
 
@@ -124,14 +121,14 @@ int Server_Config_Base::proc_start_arg(int argc, const char *argv[])
             case 'u':
             {
                 // windows卸载服务
-                app_uninstall_service_ = true;
+                win_uninstall_service_ = true;
                 break;
             }
 
             case 'm':
             {
                 // windows安装服务
-                app_install_service_ = true;
+                win_install_service_ = true;
                 break;
             }
 
@@ -148,6 +145,16 @@ int Server_Config_Base::proc_start_arg(int argc, const char *argv[])
                 return SOAR_RET::ERR_ZERG_GET_STARTUP_CONFIG_FAIL;
             }
         }
+    }
+
+    //如果没有设置运行目录
+    if (app_run_dir_.empty())
+    {
+        char cur_dir[PATH_MAX + 1];
+        cur_dir[PATH_MAX] = 0;
+        ZCE_LIB::getcwd(cur_dir, sizeof(cur_dir) - 1);
+
+        app_run_dir_ = cur_dir;
     }
 
     log_file_prefix_ = app_run_dir_ + "/log/";

@@ -5,8 +5,10 @@
 #include "zce_os_adapt_process.h"
 #include "zce_os_adapt_socket.h"
 #include "zce_os_adapt_time.h"
+#include "zce_os_adapt_dirent.h"
 #include "zce_trace_log_debug.h"
 #include "zce_server_base.h"
+
 
 /*********************************************************************************
 class ZCE_Server_Base
@@ -364,6 +366,77 @@ int ZCE_Server_Base::daemon_init()
 
     return 0;
 }
+
+
+//通过启动参数0，得到app_base_name_，app_run_name_
+int ZCE_Server_Base::create_app_name(const char *argv_0)
+{
+    app_run_name_ = argv_0;
+    // 取得base name
+    char str_base_name[PATH_MAX + 1];
+    str_base_name[PATH_MAX] = '\0';
+    ZCE_LIB::basename(argv_0, str_base_name, PATH_MAX);
+
+#if defined ZCE_OS_WINDOWS
+
+    //Windows下要去掉,EXE后缀
+    const size_t WIN_EXE_SUFFIX_LEN = 4;
+    size_t name_len = strlen(str_base_name);
+
+    if (name_len <= WIN_EXE_SUFFIX_LEN)
+    {
+        ZLOG_ERROR("[framework] Exe file name is not expect?Path name[%s].", argv_0);
+        return -1;
+    }
+
+    //如果有后缀才取消，没有就放鸭子
+    if (strcasecmp(str_base_name + name_len - WIN_EXE_SUFFIX_LEN, ".EXE") == 0)
+    {
+        str_base_name[name_len - WIN_EXE_SUFFIX_LEN] = '\0';
+    }
+
+#endif
+
+    //如果是调试版本，去掉后缀符号_d
+#if defined (DEBUG) || defined (_DEBUG)
+
+    //如果是调试版本，去掉后缀符号_d
+    const size_t DEBUG_SUFFIX_LEN = 2;
+    size_t debug_name_len = strlen(str_base_name);
+
+    if (debug_name_len <= DEBUG_SUFFIX_LEN)
+    {
+        ZLOG_ERROR("[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
+        return -1;
+    }
+
+    if (0 == strcasecmp(str_base_name + debug_name_len - DEBUG_SUFFIX_LEN, "_D"))
+    {
+        str_base_name[debug_name_len - DEBUG_SUFFIX_LEN] = '\0';
+    }
+
+#endif
+
+    app_base_name_ = str_base_name;
+
+    return 0;
+}
+
+//windows下设置服务信息
+void ZCE_Server_Base::set_service_info(const char *svc_name, 
+    const char *svc_desc)
+{
+    if (svc_name != NULL)
+    {
+        service_name_ = svc_name;
+    }
+
+    if (svc_desc != NULL)
+    {
+        service_desc_ = svc_desc;
+    }
+}
+
 
 
 //得到运行信息，可能包括路径信息

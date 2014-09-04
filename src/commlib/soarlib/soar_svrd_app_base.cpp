@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_svrd_application.cpp
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2008年1月22日
-* @brief      
+* @brief
 *             终于讲sonicmao的这个类发扬广大了，
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 #include "soar_predefine.h"
@@ -27,17 +27,16 @@
 
 
 
-Comm_Svrd_Appliction::Comm_Svrd_Appliction():
+Comm_Svrd_Appliction::Comm_Svrd_Appliction(Server_Config_Base *config) :
     self_services_id_(),
     run_as_win_serivces_(false),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
-    timer_handler_(NULL)
+    timer_handler_(NULL),
+    config_(config)
 {
     //作者名称
     app_author_ = "TSS Platform Server Dev Team.";
-    argc_ = 0;
-    argv_ = NULL;
 }
 
 Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
@@ -46,31 +45,25 @@ Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
     timer_handler_ = NULL;
 }
 
-int Comm_Svrd_Appliction::run(int argc, const char *argv[])
-{
-    // 先处理命令行数据, 加载配置
-    int ret = proc_start_args(argc, argv);
+//int Comm_Svrd_Appliction::run(int argc, const char *argv[])
+//{
 
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    Server_Config_FSM *config = Server_Config_FSM::instance();
-
-    if (config->app_run_daemon_)
-    {
-#ifdef ZCE_OS_WINDOWS
-        // 如果在windows下后台运行，则以服务的方式运行
-        return win_services_run();
-#elif defined(ZCE_OS_LINUX)
-        daemon_init();
-#endif
-    }
-
-    //
-    return do_run();
-}
+//
+//    Server_Config_FSM *config = Server_Config_FSM::instance();
+//
+//    if (config->app_run_daemon_)
+//    {
+//#ifdef ZCE_OS_WINDOWS
+//        // 如果在windows下后台运行，则以服务的方式运行
+//        return win_services_run();
+//#elif defined(ZCE_OS_LINUX)
+//        daemon_init();
+//#endif
+//    }
+//
+//    //
+//    return do_run();
+//}
 
 /******************************************************************************************
 Author          : Sonicmao(MaoJian)  Date Of Creation: 2008年1月22日
@@ -86,8 +79,52 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Comm_Svrd_Appliction::init_instance()
+int Comm_Svrd_Appliction::init(int argc, const char *argv[])
 {
+
+    //Comm_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
+    base_instance_ = this;
+
+
+
+    int ret = SOAR_RET::SOAR_RET_SUCC;
+    //得到APP的名字，去掉路径，后缀的名字
+    ret = create_app_name(argv[0]);
+    if (0 != ret)
+    {
+        ZLOG_ERROR("svr create_app_base_name init fail. ret=%d", ret);
+        return ret;
+    }
+
+    // 处理启动参数
+    ret = config_->start_arg(argc, argv);
+    if (ret != 0)
+    {
+        ZLOG_ERROR("svr config start_arg init fail. ret=%d", ret);
+        return ret;
+    }
+
+
+#ifdef ZCE_OS_WINDOWS
+
+    if (config_->win_install_service_)
+    {
+        // 安装服务
+        ret = win_services_install();
+        // 直接退出？
+        ::exit(ret);
+    }
+    if (config_->win_uninstall_service_)
+    {
+        // 卸载服务
+        ret = win_services_uninstall();
+        // 直接退出？
+        ::exit(ret);
+    }
+
+#endif
+
+
     //忽视信号
     process_signal();
 
@@ -110,10 +147,9 @@ int Comm_Svrd_Appliction::init_instance()
     ZLOG_INFO("------------------------------------------------------------------------------------------------------");
     ZLOG_INFO("[framework] %s start init", app_base_name_.c_str());
 
-    int ret = SOAR_RET::SOAR_RET_SUCC;
+
     //初始化SOCKET等
     ret = ZCE_Server_Base::socket_init();
-
     if (ret != 0)
     {
         return ret;
@@ -121,7 +157,6 @@ int Comm_Svrd_Appliction::init_instance()
 
     // 切换运行目录
     ret = ZCE_LIB::chdir(Server_Config_FSM::instance()->app_run_dir_.c_str());
-
     if (ret != 0)
     {
         ZLOG_ERROR("[framework] change run directory to %s fail. err=%d",
@@ -163,23 +198,18 @@ int Comm_Svrd_Appliction::init_instance()
     //CfgSvrSdk::instance()->start_task();
     //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
 
-    // 加载框架配置
-    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
-    ret = svd_config->initialize(argc_, argv_);
-
+    // 加载框架配置,由于是虚函数，也会调用到非框架的配置读取
+    ret = config_->initialize(argc, argv);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("[framework] framwork config init fail. ret=%d", ret);
         return ret;
     }
 
-    self_services_id_ = svd_config->self_svr_id_;
+    self_services_id_ = config_->self_svc_id_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
-    assert((self_services_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
-           (self_services_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
-
-    // 加载App配置
-    ret = load_app_conf();
+    ZCE_ASSERT((self_services_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
+               (self_services_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -190,7 +220,7 @@ int Comm_Svrd_Appliction::init_instance()
 
     //使用WHEEL型的定时器队列
     ZCE_Timer_Queue::instance(new ZCE_Timer_Wheel(
-                                  svd_config->framework_config_.trans_info_.trans_num_ + 1024));
+                                  config_->timer_nuamber_));
 
     //监控对象添加框架的监控对象
     Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
@@ -215,9 +245,9 @@ int Comm_Svrd_Appliction::init_instance()
         return ret;
     }
 
-    ret = Zerg_MMAP_BusPipe::instance()->init_after_getcfg(Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
-                                                           svd_config->if_restore_pipe_);
-
+    ret = Zerg_MMAP_BusPipe::instance()->
+          init_after_getcfg(Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+                            config_->if_restore_pipe_);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
@@ -245,85 +275,23 @@ int Comm_Svrd_Appliction::init_instance()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-// 加载app配置, app需自己实现
-int Comm_Svrd_Appliction::load_app_conf()
-{
-    return SOAR_RET::SOAR_RET_SUCC;
-}
 
-// app的退出
-void Comm_Svrd_Appliction::exit()
-{
-}
 
-//得到app_base_name_，app_run_name_
-int Comm_Svrd_Appliction::create_app_name(const char *argv_0)
-{
-    app_run_name_ = argv_0;
-    // 取得base name
-    char str_base_name[PATH_MAX + 1];
-    str_base_name[PATH_MAX] = '\0';
-    ZCE_LIB::basename(argv_0, str_base_name, PATH_MAX);
-
-#if defined ZCE_OS_WINDOWS
-
-    //Windows下要去掉,EXE后缀
-    const size_t WIN_EXE_SUFFIX_LEN = 4;
-    size_t name_len = strlen(str_base_name);
-
-    if (name_len <= WIN_EXE_SUFFIX_LEN)
-    {
-        ZLOG_ERROR("[framework] Exe file name is not expect?Path name[%s].", argv_0);
-        return -1;
-    }
-
-    //如果有后缀才取消，没有就放鸭子
-    if (strcasecmp(str_base_name + name_len - WIN_EXE_SUFFIX_LEN, ".EXE") == 0)
-    {
-        str_base_name[name_len - WIN_EXE_SUFFIX_LEN] = '\0';
-    }
-
-#endif
-
-    //如果是调试版本，去掉后缀符号_d
-#if defined (DEBUG) || defined (_DEBUG)
-
-    //如果是调试版本，去掉后缀符号_d
-    const size_t DEBUG_SUFFIX_LEN = 2;
-    size_t debug_name_len = strlen(str_base_name);
-
-    if (debug_name_len <= DEBUG_SUFFIX_LEN)
-    {
-        ZLOG_ERROR("[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
-        return -1;
-    }
-
-    if (0 == strcasecmp(str_base_name + debug_name_len - DEBUG_SUFFIX_LEN, "_D") )
-    {
-        str_base_name[debug_name_len - DEBUG_SUFFIX_LEN] = '\0';
-    }
-
-#endif
-
-    app_base_name_ = str_base_name;
-
-    return SOAR_RET::SOAR_RET_SUCC;
-}
 
 //重新加载配置
-int Comm_Svrd_Appliction::reload_instance()
-{
-    int ret = Server_Config_FSM::instance()->reload_cfgfile();
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("load frame config fail. ret=%d", ret);
-        return ret;
-    }
-    return SOAR_RET::SOAR_RET_SUCC;
-}
+//int Comm_Svrd_Appliction::reload()
+//{
+//    int ret = Server_Config_FSM::instance()->reload_cfgfile();
+//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    {
+//        ZLOG_ERROR("load frame config fail. ret=%d", ret);
+//        return ret;
+//    }
+//    return SOAR_RET::SOAR_RET_SUCC;
+//}
 
 //退出的工作
-int Comm_Svrd_Appliction::exit_instance()
+int Comm_Svrd_Appliction::exit()
 {
     //可能要增加多线程的等待
     ZCE_Thread_Wait_Manager::instance()->wait_all();
@@ -331,8 +299,7 @@ int Comm_Svrd_Appliction::exit_instance()
 
     //
     ZCE_Reactor::instance()->close();
-    //清理Instacne
-    //Transaction_Manager::clean_instance();
+
 
     Zerg_MMAP_BusPipe::clean_instance();
 
@@ -383,7 +350,7 @@ int Comm_Svrd_Appliction::register_soar_timer()
         // zergsvr
         is_app = false;
     }
-    
+
     //timer_handler_->init(CfgSvrSdk::instance()->get_game_id(), is_app, this);
 
     ZCE_Time_Value delay;
@@ -411,7 +378,7 @@ int Comm_Svrd_Appliction::reload_config()
     app_reload_ = false;
 
     // 先框架reload
-    int ret = reload_instance();
+    int ret = reload();
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -419,132 +386,52 @@ int Comm_Svrd_Appliction::reload_config()
         return ret;
     }
 
-    // app load config
-    ret = load_app_conf();
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("load app config error, ret=%d", ret);
-        return ret;
-    }
-
-    // 然后app reload
-    ret = reload();
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("app reload config error, ret=%d", ret);
-        return ret;
-    }
-
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
 
 
-int Comm_Svrd_Appliction::proc_start_args(int argc, const char *argv[])
-{
-    int ret = 0;
-    argc_ = argc;
-    argv_ = argv;
 
-    //Comm_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
-    base_instance_ = this;
+//int Comm_Svrd_Appliction::do_run()
+//{
+//    // 框架要先初始化
+//    int ret = init_instance();
+//
+//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    {
+//        ZLOG_ERROR("application: init_instance fail. ret=%d", ret);
+//        return ret;
+//    }
+//
+//    // 调用app的init函数
+//    ret = init();
+//
+//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    {
+//        ZLOG_ERROR("application: init_app fail. ret=%d", ret);
+//        return ret;
+//    }
+//
+//    ZLOG_INFO("[framework]application: init succ. start run");
+//    ret = run_instance();
+//
+//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    {
+//        ZLOG_ERROR("application: run_instance fail. ret=%d", ret);
+//    }
+//
+//    // 不管run_instance返回什么值，退出时的清理都是需要的
+//    // app的退出调用
+//    exit();
+//    // 最后才是框架的退出
+//    exit_instance();
+//
+//    ZLOG_INFO("[framework] application exit.");
+//
+//    return ret;
+//}
 
-    //得到APP的名字，去掉路径，后缀的名字
-    ret = create_app_name(argv[0]);
 
-    if (0 != ret )
-    {
-        ZLOG_ERROR("svr create_app_base_name init fail. ret=%d", ret);
-        return ret;
-    }
-
-    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
-
-    // 处理启动参数
-    ret = svd_config->proc_start_arg(argc, argv);
-
-    if (ret != 0)
-    {
-        ZLOG_ERROR("svr config init fail. ret=%d", ret);
-        return ret;
-    }
-
-#ifdef ZCE_OS_WINDOWS
-
-    if (svd_config->app_install_service_)
-    {
-        // 安装服务
-        ret = win_services_install();
-        // 直接退出？
-        ::exit(ret);
-    }
-
-    if (svd_config->app_uninstall_service_)
-    {
-        // 卸载服务
-        ret = win_services_uninstall();
-        // 直接退出？
-        ::exit(ret);
-    }
-
-#endif
-
-    return SOAR_RET::SOAR_RET_SUCC;
-}
-
-int Comm_Svrd_Appliction::do_run()
-{
-    // 框架要先初始化
-    int ret = init_instance();
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("application: init_instance fail. ret=%d", ret);
-        return ret;
-    }
-
-    // 调用app的init函数
-    ret = init();
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("application: init_app fail. ret=%d", ret);
-        return ret;
-    }
-
-    ZLOG_INFO("[framework]application: init succ. start run");
-    ret = run_instance();
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("application: run_instance fail. ret=%d", ret);
-    }
-
-    // 不管run_instance返回什么值，退出时的清理都是需要的
-    // app的退出调用
-    exit();
-    // 最后才是框架的退出
-    exit_instance();
-
-    ZLOG_INFO("[framework] application exit.");
-
-    return ret;
-}
-
-void Comm_Svrd_Appliction::set_service_info(const char *svc_name, const char *svc_desc)
-{
-    if (svc_name != NULL)
-    {
-        service_name_ = svc_name;
-    }
-
-    if (svc_desc != NULL)
-    {
-        service_desc_ = svc_desc;
-    }
-}
 
 int Comm_Svrd_Appliction::init_log()
 {

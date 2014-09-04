@@ -131,6 +131,12 @@ int ZCE_Socket_Base::close()
     return ret;
 }
 
+//释放对句柄的管理，
+void ZCE_Socket_Base::release_noclose()
+{
+    socket_handle_ = ZCE_INVALID_SOCKET;
+}
+
 int ZCE_Socket_Base::bind(const ZCE_Sockaddr *add_name) const
 {
     return ZCE_LIB::bind(socket_handle_, add_name->sockaddr_ptr_, add_name->sockaddr_size_);

@@ -89,10 +89,6 @@ int Zerg_Server_Config::initialize(int argc, const char *argv[])
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int Zerg_Server_Config::init_extern_svc()
-{
-    return SOAR_RET::SOAR_RET_SUCC;
-}
 
 //得到唯一的单子实例
 Zerg_Server_Config *Zerg_Server_Config::instance()

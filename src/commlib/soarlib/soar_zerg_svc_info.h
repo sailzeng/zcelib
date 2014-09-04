@@ -18,7 +18,7 @@ public:
     static const uint32_t    INVALID_SERVICES_ID   = 0;
 
     ///
-    static const uint32_t    BROADCAST_SERVICES_ID = -1;
+    static const uint32_t    BROADCAST_SERVICES_ID = (uint32_t)-1;
 
     //表示是动态分片的SERVICE ID
     static const uint32_t    DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint32_t>(-1);

@@ -4,14 +4,13 @@
 #include "zerg_ip_restrict.h"
 
 
-/****************************************************************************************************
-class  TCP_Accept_Handler TCP Accept 处理的EventHandler,
-****************************************************************************************************/
-TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid, const ZCE_Sockaddr_In     &addr, bool sessionkey_verify):
+
+//TCP Accept 处理的EventHandler,
+TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid, 
+    const ZCE_Sockaddr_In &addr):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
-    sessionkey_verify_(sessionkey_verify),
     ip_restrict_(Zerg_IPRestrict_Mgr::instance())
 {
 }
@@ -21,7 +20,7 @@ TCP_Accept_Handler::~TCP_Accept_Handler()
 {
 }
 
-//
+//创建监听端口
 int TCP_Accept_Handler::create_listen()
 {
     //
@@ -84,7 +83,7 @@ int TCP_Accept_Handler::create_listen()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-//
+//事件触发处理，表示有一个accept 的数据
 int TCP_Accept_Handler::handle_input(/*handle*/)
 {
     ZCE_Socket_Stream  sockstream;
@@ -135,7 +134,9 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
 
     if (phandler != NULL)
     {
-        phandler->init_tcpsvr_handler(my_svc_info_, sockstream, remote_address, sessionkey_verify_);
+        phandler->init_tcpsvr_handler(my_svc_info_, sockstream, remote_address);
+        //避免析构的时候close句柄
+        sockstream.release_noclose();
     }
     else
     {
@@ -144,13 +145,14 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
 
     return 0;
 }
-//
+
+//返回句柄ID
 ZCE_HANDLE TCP_Accept_Handler::get_handle(void) const
 {
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
-//
+//退出处理
 int TCP_Accept_Handler::handle_close ()
 {
     //

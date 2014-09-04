@@ -21,7 +21,7 @@ Comm_SvrdApp_NonCtrl::~Comm_SvrdApp_NonCtrl()
 }
 
 //ÔËÐÐº¯Êý
-int Comm_SvrdApp_NonCtrl::run_instance()
+int Comm_SvrdApp_NonCtrl::run()
 {
     ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
               get_app_basename(),
