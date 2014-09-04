@@ -56,7 +56,7 @@ int Zerg_App_Timer_Handler::handle_timeout(const ZCE_Time_Value &time_now, const
             size_t valid = 0;
             size_t succ = 0;
             size_t fail = 0;
-            TCP_Svc_Handler::auto_connect_allserver(valid, succ, fail);
+            TCP_Svc_Handler::reconnect_allserver(valid, succ, fail);
             if (succ || fail)
             {
                 // succ和fail意味着发生了重连请求
@@ -65,7 +65,7 @@ int Zerg_App_Timer_Handler::handle_timeout(const ZCE_Time_Value &time_now, const
                     last_trigger_reload_time_ = heartbeat_counter_;
 
                     //存在连不上的情况时获取ip信息再重连
-                    TCP_Svc_Handler::reload_config(&Server_Config_FSM::instance()->zerg_config_);
+                    //TCP_Svc_Handler::reload_config(&Server_Config_FSM::instance()->zerg_config_);
                 }
             }
         }
@@ -77,7 +77,7 @@ int Zerg_App_Timer_Handler::handle_timeout(const ZCE_Time_Value &time_now, const
 
         if (random_reload_point_ == heartbeat_counter_ % AUTOCONNECT_RELOAD_INTERVAL)
         {
-            TCP_Svc_Handler::reload_config(&Server_Config_FSM::instance()->zerg_config_);
+            //TCP_Svc_Handler::reload_config();
         }
 
     }

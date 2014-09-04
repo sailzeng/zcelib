@@ -1,22 +1,3 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : zerg_tcpctrlsvr.h
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2005年12月19日
-Description         : 没有使用ACE Connector,Acceptor模型,
-不过也好,ZCE_Event_Handler毕竟更加轻便一些.自己完全控制
-Others              :
-Function List       :
-1.  ......
-Modification History:
-1.Date  :
-Author  :
-Modification  :
-******************************************************************************************/
-
-
-
 #ifndef ZERG_TCP_CONTROL_SERVICE_H_
 #define ZERG_TCP_CONTROL_SERVICE_H_
 
@@ -64,6 +45,147 @@ public:
 protected:
 
     typedef ZCE_LIB::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
+
+
+
+    //为了让你无法在堆以外使用TCP_Svc_Handler
+protected:
+    //
+    TCP_Svc_Handler(HANDLER_MODE hdl_mode);
+    //
+    virtual ~TCP_Svc_Handler();
+
+public:
+
+    //
+    void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
+        const ZCE_Socket_Stream &sockstream,
+        const ZCE_Sockaddr_In     &socketaddr,
+        bool sessionkey_verify);
+
+    //主动CONNET链接出去的HANDLER
+    void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
+        const SERVICES_ID &svrinfo,
+        const ZCE_Socket_Stream &sockstream,
+        const ZCE_Sockaddr_In     &socketaddr);
+
+    //ZEN的一组要求自己继承的函数.
+    //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
+    virtual ZCE_HANDLE get_handle(void) const;
+
+    //读事件触发
+    virtual int handle_input();
+
+    //写事件触发
+    virtual int handle_output();
+
+    //超时事件触发
+    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
+
+    //关闭事件触发
+    virtual int handle_close();
+
+
+    //得到Handle对应PEER的端口
+    unsigned short get_peer_port();
+
+    //得到Handle对应PEER的IP地址
+    const char *get_peer_address();
+
+    //得到每个PEER状态信息
+    void dump_status_info(std::ostringstream &ostr_stream);
+
+    //发送简单的ZERG命令给对方
+    int send_simple_zerg_cmd(unsigned int cmd,
+        const SERVICES_ID &recv_services_info,
+        unsigned int option = 0);
+
+    //发送心跳
+    int send_zergheatbeat_reg();
+
+    //得到一个PEER的状态
+    PEER_STATUS  get_peer_status();
+
+    //获得一个整型的handle
+    unsigned int get_handle_id();
+
+    const ZCE_Sockaddr_In &get_peer_sockaddr() const;
+
+protected:
+
+    //从PEER读取数据
+    int read_data_from_peer(size_t &szrevc);
+
+    //检查收到的数据是否含有一个完整的数据包.
+    int check_recv_full_frame(bool &bfull, unsigned int &whole_frame_len);
+
+    //将数据写入PEER
+    int write_data_to_peer(size_t &szsend, bool &bfull);
+    //将数据写入PEER，同时处理周边的事情，包括写事件注册等
+    int write_all_data_to_peer();
+
+
+    //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
+    int  preprocess_recvframe(Zerg_App_Frame *proc_frame);
+
+    //处理发送的REGISTER数据,连接后发送第一个数据
+    int  process_connect_register();
+
+
+    //将数据帧放入管道
+    int push_frame_to_comm_mgr();
+
+    //将一个发送的帧放入等待发送队列
+    int put_frame_to_sendlist(Zerg_Buffer *tmpbuf);
+    //合并发送的数据
+    void unite_frame_sendlist();
+
+
+public:
+    //初始化静态参数
+    static int init_all_static_data();
+    //读取配置文件
+    static int get_config(const Zerg_Server_Config *config);
+
+    //注销静态参数
+    static int uninit_all_staticdata();
+
+    //从SEND管道找到所有的数据去发送,
+    static int popall_sendpipe_write(size_t &procframe);
+
+    //得到最大的
+    static void get_max_peer_num(size_t &maxaccept, size_t &maxconnect);
+
+    //关闭svr_info相应的PEER
+    static int close_services_peer(const SERVICES_ID &svr_info);
+
+    //根据有的SVR INFO，查询相应的HDL
+    static int find_services_peer(const SERVICES_ID &svr_info, TCP_Svc_Handler *&svchanle);
+
+    //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
+    static void reconnect_allserver(size_t szsucc,
+        size_t szfail,
+        size_t szvalid);
+
+    //从池子里面得到一个Handler给大家使用
+    static TCP_Svc_Handler *AllocSvcHandlerFromPool(HANDLER_MODE handler_mode);
+
+    //Dump所有的STATIC变量的信息
+    static void dump_status_staticinfo(std::ostringstream &ostr_stream);
+
+    //Dump 所有的PEER信息
+    static void dump_svcpeer_info(std::ostringstream &ostr_stream, size_t startno, size_t numquery);
+
+
+protected:
+
+    //处理发送错误
+    int process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode);
+
+public:
+    //处理发送一个数据
+    static int process_send_data(Zerg_Buffer *tmpbuf);
+
 
 protected:
 
@@ -215,142 +337,6 @@ protected:
 
     //开始的事件，其实是第一次进入定时器的事件,
     time_t                    start_live_time_;
-
-    //为了让你无法在堆以外使用TCP_Svc_Handler
-protected:
-    //
-    TCP_Svc_Handler(HANDLER_MODE hdl_mode);
-    //
-    virtual ~TCP_Svc_Handler();
-
-public:
-
-    //
-    void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
-        const ZCE_Socket_Stream &sockstream,
-        const ZCE_Sockaddr_In     &socketaddr,
-        bool sessionkey_verify);
-
-    //主动CONNET链接出去的HANDLER
-    void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
-        const SERVICES_ID &svrinfo,
-        const ZCE_Socket_Stream &sockstream,
-        const ZCE_Sockaddr_In     &socketaddr);
-
-    //ZEN的一组要求自己继承的函数.
-    //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
-    virtual ZCE_HANDLE get_handle(void) const;
-
-    //读事件触发
-    virtual int handle_input();
-
-    //写事件触发
-    virtual int handle_output();
-
-    //超时事件触发
-    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
-
-    //关闭事件触发
-    virtual int handle_close();
-
-
-    //得到Handle对应PEER的端口
-    unsigned short get_peer_port();
-
-    //得到Handle对应PEER的IP地址
-    const char *get_peer_address();
-
-    //得到每个PEER状态信息
-    void dump_status_info(std::ostringstream &ostr_stream);
-
-    //发送简单的ZERG命令给对方
-    int send_simple_zerg_cmd(unsigned int cmd,
-        const SERVICES_ID &recv_services_info,
-        unsigned int option = 0);
-
-    //发送心跳
-    int send_zergheatbeat_reg();
-
-    //得到一个PEER的状态
-    PEER_STATUS  get_peer_status();
-
-    //获得一个整型的handle
-    unsigned int get_handle_id();
-
-    const ZCE_Sockaddr_In &get_peer_sockaddr() const;
-
-protected:
-
-    //从PEER读取数据
-    int read_data_from_peer(size_t &szrevc);
-
-    //检查收到的数据是否含有一个完整的数据包.
-    int check_recv_full_frame(bool &bfull, unsigned int &whole_frame_len);
-
-    //将数据写入PEER
-    int write_data_to_peer(size_t &szsend, bool &bfull);
-    //将数据写入PEER，同时处理周边的事情，包括写事件注册等
-    int write_all_data_to_peer();
-
-
-    //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(Zerg_App_Frame *proc_frame);
-
-    //处理发送的REGISTER数据,连接后发送第一个数据
-    int  process_connect_register();
-
-
-    //将数据帧放入管道
-    int push_frame_to_comm_mgr();
-
-    //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(Zerg_Buffer *tmpbuf);
-    //合并发送的数据
-    void unite_frame_sendlist();
-
-
-public:
-    //初始化静态参数
-    static int init_all_static_data();
-    //读取配置文件
-    static int get_config(const Zerg_Server_Config *config);
-
-    //注销静态参数
-    static int uninit_all_staticdata();
-
-    //从SEND管道找到所有的数据去发送,
-    static int popall_sendpipe_write(size_t &procframe);
-
-    //得到最大的
-    static void get_max_peer_num(size_t &maxaccept, size_t &maxconnect);
-
-    //关闭svr_info相应的PEER
-    static int close_services_peer(const SERVICES_ID &svr_info);
-
-    //根据有的SVR INFO，查询相应的HDL
-    static int find_services_peer(const SERVICES_ID &svr_info, TCP_Svc_Handler *&svchanle);
-
-    //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
-    static void auto_connect_allserver();
-
-    //从池子里面得到一个Handler给大家使用
-    static TCP_Svc_Handler *AllocSvcHandlerFromPool(HANDLER_MODE handler_mode);
-
-    //Dump所有的STATIC变量的信息
-    static void dump_status_staticinfo(std::ostringstream &ostr_stream);
-
-    //Dump 所有的PEER信息
-    static void dump_svcpeer_info(std::ostringstream &ostr_stream, size_t startno, size_t numquery);
-
-
-protected:
-
-    //处理发送错误
-    int process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode);
-
-public:
-    //处理发送一个数据
-    static int process_send_data(Zerg_Buffer *tmpbuf);
 
 };
 

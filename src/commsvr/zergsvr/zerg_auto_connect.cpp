@@ -24,7 +24,6 @@ class Zerg_Auto_Connector
 Zerg_Auto_Connector::Zerg_Auto_Connector() :
 size_of_wantconnect_(0)
 {
-    srand((unsigned int)time(NULL));
 }
 //
 Zerg_Auto_Connector::~Zerg_Auto_Connector()
@@ -331,7 +330,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
     if (ret < 0)
     {
         //按照UNIX网络编程 V1的说法是 EINPROGRESS,但ACE的介绍说是 EWOULDBLOCK,
-        if (ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EINPROGRESS)
+        if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS)
         {
             tcpscoket.close();
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
@@ -484,7 +483,7 @@ Zerg_Auto_Connector::reload_cfg(const Zerg_Server_Config *config)
     want_connect_type_2_index_.clear();
     ary_want_connect_.clear();
 
-    int ret = get_autoconnect_cfg(config);
+    int ret = get_config(config);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         // 重新加载失败，则配置回退

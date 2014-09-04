@@ -353,12 +353,14 @@ const timeval make_timeval2(const FILETIME *file_time);
 //我整体对timespec不想做太多支持，
 
 /*!
-* @brief
+* @brief      POSIX 新的推荐使用的时间函数，
 * @return     int
-* @param      clk_id
-* @param      ts
+* @param      clk_id  Linux 下支持很多参数包括时间，打点，启动时间，进程，线程时间等
+*                     WIN 下有有效的是， CLOCK_REALTIME 高精度实际时间，CLOCK_MONOTONIC，
+*                     单调（打点）计数器，其他的的不考虑
+* @param      ts      返回的时间
 */
-int clock_gettime (clockid_t clk_id, timespec *ts);
+inline int clock_gettime(clockid_t clk_id, timespec *ts);
 
 /*!
 * @brief      计算timespec内部总计是多少毫秒
@@ -528,6 +530,33 @@ inline int ZCE_LIB::gettimeofday(struct timeval *tv, struct timezone *tz)
 #endif //
 
 }
+
+
+//得到时间各种时间
+inline int ZCE_LIB::clock_gettime(clockid_t clk_id, timespec *ts)
+{
+#if defined ZCE_OS_WINDOWS
+    timeval tv;
+    if (CLOCK_REALTIME  == clk_id)
+    {
+        ZCE_LIB::gettimeofday(&tv);
+    }
+    else if(CLOCK_MONOTONIC  == clk_id)
+    {
+        tv = ZCE_LIB::get_uptime();
+    }
+    else
+    {
+        return EINVAL;
+    }
+    ts->tv_sec = tv.tv_sec;
+    ts->tv_nsec = tv.tv_usec * 1000;
+    return 0;
+#else
+    return ::clock_gettime(clk_id, ts);
+#endif //
+}
+
 
 inline const timeval ZCE_LIB::gettimeofday()
 {

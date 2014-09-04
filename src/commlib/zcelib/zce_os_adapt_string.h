@@ -23,7 +23,7 @@
 #define ZCE_LIB_OS_ADAPT_STRING_H_
 
 
-
+#include "zce_trace_log_debug.h"
 
 
 

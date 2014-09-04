@@ -32,8 +32,7 @@ public:
 
 };
 
-//
-typedef std::vector< SERVICES_ROUTE_INFO > ArrayOfSvcInfoIPAddr;
+
 
 /****************************************************************************************************
 按services type保存服务器主动连接信息
@@ -55,6 +54,8 @@ class Zerg_Auto_Connector
 ****************************************************************************************************/
 class Zerg_Auto_Connector
 {
+    //
+    typedef std::vector< SERVICES_ROUTE_INFO > ArrayOfSvcInfoIPAddr;
 
 protected:
 

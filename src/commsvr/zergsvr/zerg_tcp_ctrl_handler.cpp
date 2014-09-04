@@ -1489,10 +1489,11 @@ TCP_Svc_Handler *TCP_Svc_Handler::AllocSvcHandlerFromPool(HANDLER_MODE handler_m
 
 
 //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后。又没有数据发送的情况
-void TCP_Svc_Handler::auto_connect_allserver()
+void TCP_Svc_Handler::reconnect_allserver(size_t szsucc,
+    size_t szfail,
+    size_t szvalid)
 {
     //连接所有的SERVER
-    size_t szsucc = 0, szfail = 0, szvalid = 0;
     zerg_auto_connect_.reconnect_allserver(szvalid, szsucc, szfail);
 }
 //
