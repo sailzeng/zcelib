@@ -12,29 +12,6 @@ class  Zerg_Service_App
 class Zerg_Service_App : public Comm_Svrd_Appliction
 {
 
-protected:
-
-    //
-    static const size_t NORMAL_MAX_ONCE_SEND_FRAME   = 4096;
-    //
-    static const size_t SENDBUSY_MAX_ONCE_SEND_FRAME = 12288;
-
-    //
-    static const size_t SEND_BUSY_JUDGE_STANDARD     = NORMAL_MAX_ONCE_SEND_FRAME / 2;
-    //
-    static const size_t SEND_IDLE_JUDGE_STANDARD     = 128;
-
-    //
-    static const time_t IDLE_REACTOR_WAIT_USEC       = 1000;
-    //
-    static const time_t NORMAL_REACTOR_WAIT_USEC     = 100;
-    //
-    static const time_t BUSY_REACTOR_WAIT_USEC       = 20;
-    //
-    static const time_t SEND_BUSY_REACTOR_WAIT_USEC  = 0;
-
-    //
-    static const size_t DEFAULT_IO_FIRST_RATIO       = 32;
 
 protected:
     //我又要偷偷藏着
@@ -46,32 +23,19 @@ protected:
     const Zerg_Service_App &operator =(const Zerg_Service_App &);
 
 
-
 public:
 
     //初始化
-    int init_instance();
+    virtual int on_start(int argc,const char *argv[]);
     //退出实例化
-    int exit_instance();
+    virtual int on_exit();
     //运行
-    int run_instance();
+    virtual int run();
 
     bool if_proxy();
 
 private:
-    int load_app_conf()
-    {
-        // 框架 已经加载了zerg的配置
-        return 0;
-    }
-    int init()
-    {
-        // 框架 已经加载了zerg的配置
-        //ZCE_UNUSED_ARG(config);
-        return 0;
-    }
-    void exit() {}
-    int reload();
+   
 
     int reload_daynamic_config();
 

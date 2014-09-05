@@ -44,9 +44,11 @@
 #include <zce_socket_stream.h>
 #include <zce_mml_command.h>
 
+
 #include <soar_predefine.h>
 #include <soar_error_code.h>
 #include <soar_svrd_cfg_base.h>
+#include <soar_svrd_app_main.h>
 #include <soar_zerg_frame.h>
 #include <soar_zerg_mmappipe.h>
 #include <soar_svrd_app_base.h>

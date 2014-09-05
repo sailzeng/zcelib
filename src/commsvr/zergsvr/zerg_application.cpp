@@ -18,7 +18,6 @@ Zerg_Service_App *Zerg_Service_App::instance_ = NULL;
 
 //我又要偷偷藏着
 Zerg_Service_App::Zerg_Service_App():
-    timer_queue_(NULL),
     zerg_comm_mgr_(NULL),
     conf_timestamp_(0)
 {
@@ -26,8 +25,6 @@ Zerg_Service_App::Zerg_Service_App():
 
 Zerg_Service_App::~Zerg_Service_App()
 {
-
-    //zerg_acceptor_ 会自己删除?
 }
 
 /******************************************************************************************
@@ -43,13 +40,11 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int
-Zerg_Service_App::init_instance()
+int Zerg_Service_App::on_start(int argc,const char *argv[])
 {
     int ret = 0;
 
-    ret = Comm_Svrd_Appliction::init_instance();
-
+    ret = Comm_Svrd_Appliction::on_start(argc,argv);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         return ret;
@@ -58,24 +53,16 @@ Zerg_Service_App::init_instance()
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = Comm_Stat_Monitor::instance()->initialize(true,
-                                                    Server_Config_FSM::instance()->self_svr_id_,
+                                                    self_services_id_,
                                                     0,
                                                     NULL,
                                                     false);
-
     if (ret != 0)
     {
         ZLOG_ERROR("zce_Server_Status init fail. ret=%d", ret);
         return ret;
     }
 
-    config_ = &(Server_Config_FSM::instance()->zerg_config_);
-    ret = Zerg_Server_Config::instance()->init(config_);
-
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        return ret;
-    }
 
     size_t max_accept = 0, max_connect = 0, max_peer = 0;
     TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
@@ -147,7 +134,7 @@ Zerg_Service_App::init_instance()
     }
 
     //初始化备份端口
-    for (unsigned int i = 0; i < config_->self_cfg.slave_svr_count; ++i)
+    for (unsigned int i = 0; i < config_base_->self_cfg.slave_svr_count; ++i)
     {
         ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->slave_svc_ary_[i]);
 
@@ -175,7 +162,7 @@ Zerg_Service_App::init_instance()
         ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->extern_svc_ary_[i],
                                               zce_DEFAULT_BACKLOG,
                                               true,
-                                              config_->extern_svc_cfg.extern_svc_item[i].proto_cfg_index);
+                                              config_base_->extern_svc_cfg.extern_svc_item[i].proto_cfg_index);
 
         if (ret != SOAR_RET::SOAR_RET_SUCC)
         {
@@ -189,8 +176,8 @@ Zerg_Service_App::init_instance()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-int 
-Zerg_Service_App::reload()
+//
+int Zerg_Service_App::reload()
 {
     int ret = reload_daynamic_config();
 
@@ -212,7 +199,7 @@ int Zerg_Service_App::reload_daynamic_config()
 
     //部分配置可以动态重复加载
     //看IP限制部分部分
-    ret = Zerg_IPRestrict_Mgr::instance()->get_config(*config_);
+    ret = Zerg_IPRestrict_Mgr::instance()->get_config(*config_base_);
 
     if ( SOAR_RET::SOAR_RET_SUCC != ret )
     {
@@ -220,7 +207,7 @@ int Zerg_Service_App::reload_daynamic_config()
     }
 
     //通信管理器读取配置文件
-    ret = zerg_comm_mgr_->get_config(*config_);
+    ret = zerg_comm_mgr_->get_config(*config_base_);
 
     if (SOAR_RET::SOAR_RET_SUCC != ret )
     {
@@ -245,10 +232,10 @@ int Zerg_Service_App::reload_daynamic_config()
     }
 
     //动态修改日志的级别
-    set_log_priority(zce_LogTrace_Basic::log_priorities((const char *)(config_->log_cfg.log_level)));
+    set_log_priority(zce_LogTrace_Basic::log_priorities((const char *)(config_base_->log_cfg.log_level)));
 
     // 配置重新加载
-    ret = Zerg_Server_Config::instance()->init(config_);
+    ret = Zerg_Server_Config::instance()->init(config_base_);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -315,6 +302,29 @@ Modify Record   : 为了加快发送的速度，对多种请求做了不同的微调。
 ******************************************************************************************/
 int Zerg_Service_App::run_instance()
 {
+
+    //
+    const size_t NORMAL_MAX_ONCE_SEND_FRAME = 4096;
+    //
+    const size_t SENDBUSY_MAX_ONCE_SEND_FRAME = 12288;
+
+    //
+    const size_t SEND_BUSY_JUDGE_STANDARD = NORMAL_MAX_ONCE_SEND_FRAME / 2;
+    //
+    const size_t SEND_IDLE_JUDGE_STANDARD = 128;
+
+    //
+    const time_t IDLE_REACTOR_WAIT_USEC = 1000;
+    //
+    const time_t NORMAL_REACTOR_WAIT_USEC = 100;
+    //
+    const time_t BUSY_REACTOR_WAIT_USEC = 20;
+    //
+    const time_t SEND_BUSY_REACTOR_WAIT_USEC = 0;
+
+    //
+    const size_t DEFAULT_IO_FIRST_RATIO = 32;
+
     size_t num_io_event = 0, num_send_frame = 0, want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
 
     ZLOG_INFO("[zergsvr] Zerg_Service_App::run_instance start.");

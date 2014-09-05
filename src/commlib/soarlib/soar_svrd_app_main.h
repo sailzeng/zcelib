@@ -7,19 +7,22 @@
 namespace SOAR_LIB
 {
 
-template <class application_class, class  config_class>
-int soar_svrd_main(int argc, char *argv[])
+template <class application_class, class  config_class ,class timer_class >
+int soar_svrd_main(int argc,const char *argv[])
 {
     //不处理异常，因为处理了不好调试,特别是在Win32下调试。
 
-    application_class::instance();
-    config_class::instance();
+    application_class::instance(new application_class());
+
+    application_class::instance()->initialize(new config_class(),
+        new timer_class());
+    
 
     //开始日志是无法输出，
     //ZLOG_INFO("[framework] App init_instance start");
 
     //初始化
-    int ret = application_class::instance()->init_instance(argc, argv, config_class::instance());
+    int ret = application_class::instance()->on_init(argc, argv);
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -35,11 +38,12 @@ int soar_svrd_main(int argc, char *argv[])
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
 
+
     ZLOG_INFO("[framework] App name [%s] class [%s] run_instance start.",
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
     //运行
-    ret = application_class::instance()->run_instance();
+    ret = application_class::instance()->on_run();
 
     //标示运行失败
     if (ret != SOAR_RET::SOAR_RET_SUCC)
@@ -63,7 +67,7 @@ int soar_svrd_main(int argc, char *argv[])
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
     //退出处理
-    application_class::instance()->exit_instance();
+    application_class::instance()->exit();
 
     ZLOG_INFO("[framework] App name [%s] class [%s] exit_instance start.",
               application_class::instance()->get_app_runname(),

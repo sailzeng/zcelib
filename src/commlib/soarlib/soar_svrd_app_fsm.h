@@ -14,35 +14,36 @@
         } \
     }
 
-class Comm_SvrdApp_Transaction : public Comm_Svrd_Appliction
+
+
+/*!
+* @brief      状态机的APP
+*             
+* @note       
+*/
+class Comm_SvrdApp_FSM : public Comm_Svrd_Appliction
 {
 
 protected:
 
     //使用事务处理的Application
-    Comm_SvrdApp_Transaction();
-    ~Comm_SvrdApp_Transaction();
+    Comm_SvrdApp_FSM();
+    virtual ~Comm_SvrdApp_FSM();
 
 public:
 
     //增加调用register_func_cmd
-    virtual int init_instance();
+    virtual int on_start(int argc, const char *argv[]);
 
     //运行处理,
-    virtual int run_instance();
+    virtual int on_run();
 
     //退出处理
-    virtual int exit_instance();
+    virtual int on_exit();
 
 protected:
 
-    // 处理想要处理的数据
-    virtual int proc(size_t &proc_data_num)
-    {
-        proc_data_num = 0;
-        return 0;
-    }
-
+    
     virtual int register_trans_cmd() = 0;
 
 };

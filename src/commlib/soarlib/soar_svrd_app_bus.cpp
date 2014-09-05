@@ -1,16 +1,17 @@
 #include "soar_predefine.h"
 #include "soar_zerg_frame.h"
-#include "soar_svrd_app_non_ctrl.h"
+#include "soar_svrd_app_bus.h"
 #include "soar_zerg_mmappipe.h"
 #include "soar_error_code.h"
 
-Comm_SvrdApp_NonCtrl::Comm_SvrdApp_NonCtrl():
+Comm_SvrdApp_BUS::Comm_SvrdApp_BUS() :
+    Comm_Svrd_Appliction(),
     nonctrl_recv_buffer_(NULL)
 {
     nonctrl_recv_buffer_ = new (Zerg_App_Frame::MAX_LEN_OF_APPFRAME) Zerg_App_Frame();
 }
 
-Comm_SvrdApp_NonCtrl::~Comm_SvrdApp_NonCtrl()
+Comm_SvrdApp_BUS::~Comm_SvrdApp_BUS()
 {
     //释放资源
     if (nonctrl_recv_buffer_)
@@ -21,11 +22,26 @@ Comm_SvrdApp_NonCtrl::~Comm_SvrdApp_NonCtrl()
 }
 
 //运行函数
-int Comm_SvrdApp_NonCtrl::run()
+int Comm_SvrdApp_BUS::on_run()
 {
+    ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
-              get_app_basename(),
-              typeid(*this).name());
+        get_app_basename(),
+        typeid(*this).name());
+
+    //空闲N次后,调整SELECT的等待时间间隔
+    const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
+    //空闲N次后,SLEEP的时间间隔
+    const unsigned int HEAVY_IDLE_SLEEP_INTERVAL = 10240;
+
+    //microsecond
+    // 64位tlinux下idle的时间如果太短会导致cpu过高
+    const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
+    const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
+
+    /// 一次最大处理的FRAME个数
+    static const size_t MAX_ONCE_PROCESS_FRAME = 2048;
+
     //
     size_t size_io_event = 0 , size_timer_expire  = 0;
 
@@ -38,21 +54,10 @@ int Comm_SvrdApp_NonCtrl::run()
 
     for (; app_run_;)
     {
-        // 检查是否需要重新加载配置
-        if (app_reload_)
-        {
-            // 重新加载配置
-            reload_config();
-        }
-
         //处理收到的命令
-        popfront_recvpipe(prc_frame);
+        popfront_recvpipe(MAX_ONCE_PROCESS_FRAME, prc_frame);
 
         size_timer_expire = time_queue->expire();
-
-        // 处理其他方式通信数据
-        proc_data_num = 0;
-        proc(proc_data_num);
 
         //如果没有处理任何帧
         // 处理管道的包少于要求处理的最大数则说明管道已经空了
@@ -73,7 +78,7 @@ int Comm_SvrdApp_NonCtrl::run()
         // 网卡按1Gbit计算，则管道临界大小为1Gbit-per(S)/8/10≈12MByte，再加上管道自身的内存结构占用
         // 考虑为16MByte也即足以，所以只要管道大小超过16MByte应该就顶的住。
         // 所以这里就不用空跑那么多次了。
-        if (idle < 1)
+        if (idle < LIGHT_IDLE_SELECT_INTERVAL)
         {
             continue;
         }
@@ -99,14 +104,14 @@ int Comm_SvrdApp_NonCtrl::run()
 }
 
 //从管道中收取一组数据进行处理
-int Comm_SvrdApp_NonCtrl::popfront_recvpipe(size_t &proc_frame)
+int Comm_SvrdApp_BUS::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
 {
     int ret = 0;
 
     //一次处理大量的数据
     for (proc_frame = 0;
          zerg_mmap_pipe_->is_empty_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID) == false
-         && proc_frame < MAX_ONCE_PROCESS_FRAME ;
+         && proc_frame < max_prc;
          ++proc_frame)
     {
         //

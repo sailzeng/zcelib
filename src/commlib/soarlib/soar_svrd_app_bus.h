@@ -6,7 +6,7 @@
 
 class Zerg_App_Frame;
 //单个函数处理APP FRAME
-class Comm_SvrdApp_NonCtrl : public Comm_Svrd_Appliction
+class Comm_SvrdApp_BUS : public Comm_Svrd_Appliction
 {
 protected:
 
@@ -15,28 +15,23 @@ protected:
 
 protected:
     //
-    Comm_SvrdApp_NonCtrl();
-    virtual ~Comm_SvrdApp_NonCtrl();
+    Comm_SvrdApp_BUS();
+    virtual ~Comm_SvrdApp_BUS();
 
 public:
 
     //运行处理,
-    virtual int run_instance();
+    virtual int on_run();
 
 protected:
 
     //处理接收到的Frame,
-    virtual int popfront_recvpipe(size_t &procframe);
+    virtual int popfront_recvpipe(size_t max_prc, size_t &proc_frame);
+
     //处理收到的APPFRAME，不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
     virtual int process_recv_appframe(Zerg_App_Frame *recv_frame) = 0;
 
-    // 处理想要处理的数据
-    virtual int proc(size_t &proc_data_num)
-    {
-        proc_data_num = 0;
-        return 0;
-    }
-
+    
 };
 
 #endif //#ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_

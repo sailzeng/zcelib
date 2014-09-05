@@ -16,25 +16,25 @@
 
 class NotifyTrans_TaskBase;
 
-class Comm_SvrdApp_NotifyTrans : public Comm_Svrd_Appliction
+class Comm_SvrdApp_FSM_Notify : public Comm_Svrd_Appliction
 {
 
 protected:
 
     //使用事务处理的Application
-    Comm_SvrdApp_NotifyTrans();
-    ~Comm_SvrdApp_NotifyTrans();
+    Comm_SvrdApp_FSM_Notify();
+    virtual ~Comm_SvrdApp_FSM_Notify();
 
 public:
 
     //增加调用register_func_cmd
-    virtual int init_instance();
+    virtual int on_start(int argc, const char *argv[]);
 
     //运行处理,
-    virtual int run_instance();
+    virtual int on_run();
 
     //退出处理
-    virtual int exit_instance();
+    virtual int on_exit();
 
 protected:
 

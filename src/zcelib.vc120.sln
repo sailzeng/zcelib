@@ -23,6 +23,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "makefile", "makefile", "{A9
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soarlib", "commlib\soarlib\soarlib.vc120.vcxproj", "{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commsvr", "commsvr", "{77938720-9F15-4AED-AA59-D74E375244B6}"
 EndProject

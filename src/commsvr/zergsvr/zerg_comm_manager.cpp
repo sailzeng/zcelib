@@ -75,18 +75,7 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007Äê10ÔÂ24ÈÕ
-Function        : Zerg_Service_App::init_socketpeer
-Return          : int
-Parameter List  :
-    Param1: ZERG_SERVICES_INFO& init_svcid
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//
 int Zerg_Comm_Manager::init_socketpeer(ZERG_SERVICES_INFO &init_svcid)
 {
     int ret = 0;

@@ -16,7 +16,7 @@
 class Server_Config_Base
 {
 
-protected:
+public:
     //构造函数
     Server_Config_Base();
     virtual ~Server_Config_Base();
@@ -51,16 +51,7 @@ protected:
     /// 使用帮助
     virtual int usage(const char *program_name);
 
-public:
-    //单子实例函数
-    static Server_Config_Base *instance();
-    //清理单子实例
-    static void clean_instance();
 
-protected:
-
-    //默认定时器的事数量
-    static const size_t DEFAULT_TIMER_NUMBER = 1024;
 
 public:
 
@@ -70,12 +61,13 @@ public:
     // 服务器实例id
     unsigned int instance_id_;
 
+    
 
     //是否恢复管道
     bool if_restore_pipe_;
 
 
-    /// 是否后台运行, windows下以如果设置了此值，则以服务的方式运行
+    ///是否后台运行, windows下以如果设置了此值，则以服务的方式运行
     bool app_run_daemon_;
 
     /// Windows下是否安装服务
@@ -83,13 +75,20 @@ public:
     /// Windows下是否卸载服务
     bool win_uninstall_service_;
 
-    // 是否使用配置服务器，如果false，则使用本地配置
+    ///是否使用配置服务器，如果false，则使用本地配置
     bool is_use_cfgsvr_;
 
-    //定时器的数量，用于初始化
-    size_t timer_nuamber_;
+    ///配置服务器信息
+    ZCE_Sockaddr_In master_cfgsvr_ip_;
 
-    // 进行运行目录
+
+    ///定时器的数量，用于初始化
+    size_t timer_nuamber_;
+    ///定时器的精度
+    ZCE_Time_Value tiemr_precision_;
+
+
+    ///进行运行目录
     std::string   app_run_dir_;
 
     // 日志路径
@@ -104,9 +103,7 @@ public:
     // svcid的配置文件
     std::string svcid_cfg_file_;
 
-
-    // 配置服务器信息
-    std::string master_cfgsvr_ip_;
+       
     
 };
 

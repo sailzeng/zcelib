@@ -190,8 +190,8 @@
     <ClCompile Include="soar_zerg_sndrcv_zulu.cpp" />
     <ClCompile Include="soar_stat_monitor.cpp" />
     <ClCompile Include="soar_svrd_app_base.cpp" />
-    <ClCompile Include="soar_svrd_app_non_ctrl.cpp" />
-    <ClCompile Include="soar_svrd_app_notify_trans.cpp" />
+    <ClCompile Include="soar_svrd_app_bus.cpp" />
+    <ClCompile Include="soar_svrd_app_fsm_notify.cpp" />
     <ClCompile Include="soar_svrd_app_fsm.cpp" />
     <ClCompile Include="soar_svrd_cfg_fsm.cpp" />
     <ClCompile Include="soar_svrd_timer_base.cpp" />
@@ -223,8 +223,8 @@
     <ClInclude Include="soar_stat_monitor.h" />
     <ClInclude Include="soar_svrd_app_base.h" />
     <ClInclude Include="soar_svrd_app_main.h" />
-    <ClInclude Include="soar_svrd_app_non_ctrl.h" />
-    <ClInclude Include="soar_svrd_app_notify_trans.h" />
+    <ClInclude Include="soar_svrd_app_bus.h" />
+    <ClInclude Include="soar_svrd_app_fsm_notify.h" />
     <ClInclude Include="soar_svrd_app_fsm.h" />
     <ClInclude Include="soar_svrd_cfg_fsm.h" />
     <ClInclude Include="soar_svrd_timer_base.h" />

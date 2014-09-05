@@ -6,8 +6,8 @@
 
 int main(int argc, const char *argv[])
 {
-    // 设置服务名
-    Zerg_Service_App::instance()->set_service_info("Zerg Svr", "");
-    return Zerg_Service_App::instance()->run(argc, argv);
+    return SOAR_LIB::soar_svrd_main<Zerg_Service_App,
+        Zerg_Server_Config,
+        Zerg_App_Timer_Handler>(argc, argv);
 }
 

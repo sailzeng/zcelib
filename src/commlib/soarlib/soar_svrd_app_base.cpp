@@ -27,13 +27,13 @@
 
 
 
-Comm_Svrd_Appliction::Comm_Svrd_Appliction(Server_Config_Base *config) :
+Comm_Svrd_Appliction::Comm_Svrd_Appliction() :
     self_services_id_(),
     run_as_win_serivces_(false),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
-    timer_handler_(NULL),
-    config_(config)
+    timer_base_(NULL),
+    config_base_(NULL)
 {
     //作者名称
     app_author_ = "TSS Platform Server Dev Team.";
@@ -41,29 +41,22 @@ Comm_Svrd_Appliction::Comm_Svrd_Appliction(Server_Config_Base *config) :
 
 Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
 {
-    delete timer_handler_;
-    timer_handler_ = NULL;
+    delete timer_base_;
+    timer_base_ = NULL;
+
+    delete config_base_;
+    config_base_ = NULL;
 }
 
-//int Comm_Svrd_Appliction::run(int argc, const char *argv[])
-//{
+//初始化，放入一些基类的指针，
+int Comm_Svrd_Appliction::initialize(Server_Config_Base *config_base,
+    Server_Timer_Base *timer_base)
+{
+    config_base_ = config_base;
+    timer_base_ = timer_base;
+    return 0;
+}
 
-//
-//    Server_Config_FSM *config = Server_Config_FSM::instance();
-//
-//    if (config->app_run_daemon_)
-//    {
-//#ifdef ZCE_OS_WINDOWS
-//        // 如果在windows下后台运行，则以服务的方式运行
-//        return win_services_run();
-//#elif defined(ZCE_OS_LINUX)
-//        daemon_init();
-//#endif
-//    }
-//
-//    //
-//    return do_run();
-//}
 
 /******************************************************************************************
 Author          : Sonicmao(MaoJian)  Date Of Creation: 2008年1月22日
@@ -79,15 +72,13 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Comm_Svrd_Appliction::init(int argc, const char *argv[])
+int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 {
 
     //Comm_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
-
-
-
     int ret = SOAR_RET::SOAR_RET_SUCC;
+
     //得到APP的名字，去掉路径，后缀的名字
     ret = create_app_name(argv[0]);
     if (0 != ret)
@@ -95,35 +86,6 @@ int Comm_Svrd_Appliction::init(int argc, const char *argv[])
         ZLOG_ERROR("svr create_app_base_name init fail. ret=%d", ret);
         return ret;
     }
-
-    // 处理启动参数
-    ret = config_->start_arg(argc, argv);
-    if (ret != 0)
-    {
-        ZLOG_ERROR("svr config start_arg init fail. ret=%d", ret);
-        return ret;
-    }
-
-
-#ifdef ZCE_OS_WINDOWS
-
-    if (config_->win_install_service_)
-    {
-        // 安装服务
-        ret = win_services_install();
-        // 直接退出？
-        ::exit(ret);
-    }
-    if (config_->win_uninstall_service_)
-    {
-        // 卸载服务
-        ret = win_services_uninstall();
-        // 直接退出？
-        ::exit(ret);
-    }
-
-#endif
-
 
     //忽视信号
     process_signal();
@@ -141,10 +103,42 @@ int Comm_Svrd_Appliction::init(int argc, const char *argv[])
         10 * 1024 * 1024,
         2);
 
+
+    // 处理启动参数
+    ret = config_base_->start_arg(argc, argv);
+    if (ret != 0)
+    {
+        ZLOG_ERROR("svr config start_arg init fail. ret=%d", ret);
+        return ret;
+    }
+
+
+#ifdef ZCE_OS_WINDOWS
+
+    if (config_base_->win_install_service_)
+    {
+        // 安装服务
+        ret = win_services_install();
+        // 直接退出？
+        ::exit(ret);
+    }
+    if (config_base_->win_uninstall_service_)
+    {
+        // 卸载服务
+        ret = win_services_uninstall();
+        // 直接退出？
+        ::exit(ret);
+    }
+
+#endif
+
+
+
+
     //我是华丽的分割线
-    ZLOG_INFO("------------------------------------------------------------------------------------------------------");
-    ZLOG_INFO("------------------------------------------------------------------------------------------------------");
-    ZLOG_INFO("------------------------------------------------------------------------------------------------------");
+    ZLOG_INFO("======================================================================================================");
+    ZLOG_INFO("======================================================================================================");
+    ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("[framework] %s start init", app_base_name_.c_str());
 
 
@@ -199,14 +193,14 @@ int Comm_Svrd_Appliction::init(int argc, const char *argv[])
     //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
 
     // 加载框架配置,由于是虚函数，也会调用到非框架的配置读取
-    ret = config_->initialize(argc, argv);
+    ret = config_base_->initialize(argc, argv);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_ERROR("[framework] framwork config init fail. ret=%d", ret);
         return ret;
     }
 
-    self_services_id_ = config_->self_svc_id_;
+    self_services_id_ = config_base_->self_svc_id_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
     ZCE_ASSERT((self_services_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
                (self_services_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
@@ -220,7 +214,7 @@ int Comm_Svrd_Appliction::init(int argc, const char *argv[])
 
     //使用WHEEL型的定时器队列
     ZCE_Timer_Queue::instance(new ZCE_Timer_Wheel(
-                                  config_->timer_nuamber_));
+                                  config_base_->timer_nuamber_));
 
     //监控对象添加框架的监控对象
     Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
@@ -247,7 +241,7 @@ int Comm_Svrd_Appliction::init(int argc, const char *argv[])
 
     ret = Zerg_MMAP_BusPipe::instance()->
           init_after_getcfg(Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
-                            config_->if_restore_pipe_);
+                            config_base_->if_restore_pipe_);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
@@ -291,7 +285,7 @@ int Comm_Svrd_Appliction::init(int argc, const char *argv[])
 //}
 
 //退出的工作
-int Comm_Svrd_Appliction::exit()
+int Comm_Svrd_Appliction::on_exit()
 {
     //可能要增加多线程的等待
     ZCE_Thread_Wait_Manager::instance()->wait_all();
@@ -307,9 +301,9 @@ int Comm_Svrd_Appliction::exit()
     //
     ZLOG_INFO("[framework] %s exit_instance Succ.Have Fun.!!!",
               app_run_name_.c_str());
-    ZLOG_INFO("------------------------------------------------------------------------------------------------------");
-    ZLOG_INFO("------------------------------------------------------------------------------------------------------");
-    ZLOG_INFO("------------------------------------------------------------------------------------------------------");
+    ZLOG_INFO("======================================================================================================");
+    ZLOG_INFO("======================================================================================================");
+    ZLOG_INFO("======================================================================================================");
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
@@ -339,9 +333,9 @@ ZCE_LOG_PRIORITY Comm_Svrd_Appliction::get_log_priority()
 int Comm_Svrd_Appliction::register_soar_timer()
 {
     // 注册框架定时器
-    ZCE_ASSERT(timer_handler_ == NULL);
+    ZCE_ASSERT(timer_base_ == NULL);
     ZCE_Timer_Queue *timer_queue = ZCE_Timer_Queue::instance();
-    timer_handler_ = new Server_Timer_Base(timer_queue);
+    timer_base_ = new Server_Timer_Base(timer_queue);
 
     // 通过进程名判断是否app进程还是zerg进程
     bool is_app = true;
@@ -351,19 +345,13 @@ int Comm_Svrd_Appliction::register_soar_timer()
         is_app = false;
     }
 
-    //timer_handler_->init(CfgSvrSdk::instance()->get_game_id(), is_app, this);
-
-    ZCE_Time_Value delay;
-    ZCE_Time_Value interval;
-
-    //下次触发时间
-    delay.set(0, 0);
-
-    //每次触发间隔时间，每100毫秒触发一次
-    interval.set(0, FRAMEWORK_TIMER_INTERVAL);
+    
+    //下次触发时间，以及间隔触发时间精度
+    ZCE_Time_Value delay(0,0);
+    ZCE_Time_Value interval = config_base_->timer_nuamber_;
 
     //注册定时器
-    timer_queue->schedule_timer(timer_handler_,
+    timer_queue->schedule_timer(timer_base_,
                                 NULL,
                                 delay,
                                 interval);

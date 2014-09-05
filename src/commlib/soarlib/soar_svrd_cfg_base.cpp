@@ -16,7 +16,14 @@ Server_Config_Base::Server_Config_Base():
     is_use_cfgsvr_(false),
     timer_nuamber_(0)
 {
+
+    //默认定时器的事数量
+    const size_t DEFAULT_TIMER_NUMBER = 1024;
     timer_nuamber_ = DEFAULT_TIMER_NUMBER;
+
+    //默认框架定时器间隔时间 100毫秒
+    const time_t DEF_TIMER_INTERVAL_USEC = 100000;
+    tiemr_precision_.set(0, DEF_TIMER_INTERVAL_USEC);
 }
 
 Server_Config_Base::~Server_Config_Base()
@@ -90,10 +97,10 @@ int Server_Config_Base::start_arg(int argc, const char *argv[])
 
             case 'a':
             {
-                // 主cfgsvr ip地址
+                // 主cfgsvr ip地址 端口号用#隔离
                 // 指定了配置地址，则从配置服务器拉配置
                 is_use_cfgsvr_ = true;
-                master_cfgsvr_ip_ = get_opt.optarg;
+                master_cfgsvr_ip_.set(get_opt.optarg);
                 break;
             }
 

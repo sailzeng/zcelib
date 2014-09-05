@@ -1,19 +1,19 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Fullsail Technology (Shenzhen) Company Limited.
-FileName            :
-Author              : 原作者Scottxu ，移植,Sailzeng
-Version             :
-Date Of Creation    : 2006年9月8日
-Description         :
-
-Others              :
-Function List       :
-1.  ......
-    Modification History:
-1.Date  :
-Author  :Sailzeng 将这段代码移动到COMM,模板化
-Modification  :
-******************************************************************************************/
+/*!
+* @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
+* @filename   soar_zerg_sndrcv_zulu.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version    
+* @date       Friday, September 05, 2014
+* @brief      2006年9月8日,原作者Scottxu ，移植,Sailzeng
+*             
+*             
+* @details    
+*             
+*             
+*             
+* @note       将这段代码移动到COMM,模板化
+*             
+*/
 
 #ifndef SOARING_LIB_SNDRCV_TCP_ZULU_H_
 #define SOARING_LIB_SNDRCV_TCP_ZULU_H_

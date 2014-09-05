@@ -5,25 +5,24 @@
 #include "soar_fsm_notify_trans_mgr.h"
 #include "soar_fsm_notify_taskbase.h"
 #include "soar_fsm_notify_transbase.h"
-#include "soar_svrd_app_notify_trans.h"
+#include "soar_svrd_app_fsm_notify.h"
 
-Comm_SvrdApp_NotifyTrans::Comm_SvrdApp_NotifyTrans()
+Comm_SvrdApp_FSM_Notify::Comm_SvrdApp_FSM_Notify():
+    Comm_Svrd_Appliction()
 {
-
 };
 
-Comm_SvrdApp_NotifyTrans::~Comm_SvrdApp_NotifyTrans()
+Comm_SvrdApp_FSM_Notify::~Comm_SvrdApp_FSM_Notify()
 {
 
 };
 
 //增加调用register_func_cmd
-int
-Comm_SvrdApp_NotifyTrans::init_instance()
+int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Comm_Svrd_Appliction::init_instance();
 
+    ret = Comm_Svrd_Appliction::on_start(argc,argv);
     if (SOAR_RET::SOAR_RET_SUCC != ret)
     {
         return ret;
@@ -82,12 +81,24 @@ Comm_SvrdApp_NotifyTrans::init_instance()
 }
 
 //运行处理,
-int Comm_SvrdApp_NotifyTrans::run_instance()
+int Comm_SvrdApp_FSM_Notify::on_run()
 {
     // fix me add log
+    ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
               get_app_basename(),
               typeid(*this).name());
+
+    //空闲N次后,调整SELECT的等待时间间隔
+    const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
+    //空闲N次后,SLEEP的时间间隔
+    const unsigned int HEAVY_IDLE_SLEEP_INTERVAL = 10240;
+
+    //microsecond
+    // 64位tlinux下idle的时间如果太短会导致cpu过高
+    const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
+    const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
+
 
     size_t all_proc_frame = 0 , all_gen_trans = 0;
     size_t prcframe_queue = 0 , gentrans_queue = 0, num_timer_expire = 0, num_io_event = 0;
@@ -102,11 +113,7 @@ int Comm_SvrdApp_NotifyTrans::run_instance()
     for (; app_run_;)
     {
         // 检查是否需要重新加载配置
-        if (app_reload_)
-        {
-            // 重新加载配置
-            reload_config();
-        }
+
 
         //从PIPE处理收到的命令
         notify_trans_mgr->process_pipe_frame(all_proc_frame, all_gen_trans);
@@ -148,12 +155,12 @@ int Comm_SvrdApp_NotifyTrans::run_instance()
         }
     }
 
-    ZLOG_INFO("[framework] DBSvrdAppliction Run end.");
+    ZLOG_INFO("======================================================================================================");
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
 //退出处理
-int Comm_SvrdApp_NotifyTrans::exit_instance()
+int Comm_SvrdApp_FSM_Notify::on_exit()
 {
     //通知所有的线程退出
     MT_NOTIFY_TRANS_MANGER *notify_trans_mgr = static_cast<MT_NOTIFY_TRANS_MANGER *>(Transaction_Manager::instance());
@@ -165,7 +172,7 @@ int Comm_SvrdApp_NotifyTrans::exit_instance()
     //等待所有的Join的线程退出
     //ACE_Thread_Manager::instance()->wait();
 
-    ret = Comm_Svrd_Appliction::exit_instance();
+    ret = Comm_Svrd_Appliction::on_exit();
 
     if ( SOAR_RET::SOAR_RET_SUCC != ret )
     {

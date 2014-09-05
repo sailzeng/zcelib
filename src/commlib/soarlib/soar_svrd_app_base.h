@@ -17,44 +17,51 @@ class Comm_Svrd_Appliction : public ZCE_Server_Base
 protected:
 
     //构造函数和析构函数
-    Comm_Svrd_Appliction(Server_Config_Base *config);
+    Comm_Svrd_Appliction();
     virtual ~Comm_Svrd_Appliction();
 
 public:
 
-    //设置日志的优先级
+    ///设置日志的优先级
     void set_log_priority(ZCE_LOG_PRIORITY new_log_prio);
-    //获得日志的优先级
+
+    ///获得日志的优先级
     ZCE_LOG_PRIORITY get_log_priority();
 
-
-
-    int run(int argc, const char *argv[]);
-
-    //int do_run();
-
-    //得到APP的版本信息
+    ///得到APP的版本信息
     const char *get_app_version();
 
-
-
-    //重新加载配置
+    ///重新加载配置
     int reload_config();
+
+
+    /*!
+    * @brief      初始化，放入一些基类的指针，
+    * @return     int
+    * @param      config_base
+    * @param      timer_base
+    */
+    int initialize(Server_Config_Base *config_base, 
+        Server_Timer_Base *timer_base);
 
 protected:
 
-    // app的初始化
-    virtual int init(int argc, const char *argv[]) = 0;
+    // app的开始运行
+    virtual int on_start(int argc, const char *argv[]);
+
+    /// app
+    virtual int on_run() = 0;
+
+    // app的退出
+    virtual int on_exit();
 
     // 重新加载配置
     // 框架reload调用app接口的顺序: load_app_conf reload
     virtual int reload() = 0;
 
-    // app的退出
-    virtual int exit();
-
 
 private:
+
     //设置定时器, 定时检查更新
     int register_soar_timer();
 
@@ -63,29 +70,12 @@ private:
 
 public:
 
-    //得到实例指针
+    ///注册实例指针
+    static void instance(Comm_Svrd_Appliction *inst );
+
+    ///得到实例指针
     static Comm_Svrd_Appliction *instance();
 
-protected:
-
-    // 一次最大处理的FRAME个数
-    static const size_t MAX_ONCE_PROCESS_FRAME  = 2048;
-
-    //空闲N次后,调整SELECT的等待时间间隔
-    static const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 512;
-
-    //空闲N次后,SLEEP的时间间隔
-    static const unsigned int HEAVY_IDLE_SLEEP_INTERVAL  = 10240;
-
-    //microsecond
-    // 64位tlinux下idle的时间如果太短会导致cpu过高
-    static const int LIGHT_IDLE_INTERVAL_MICROSECOND  = 10000;
-    static const int HEAVY_IDLE_INTERVAL_MICROSECOND  = 100000;
-
-    //定时检查配置是否更新时间(秒)
-    static const int CHECK_CONFIG_UPDATE_TIME = 10;
-    // 框架定时器间隔时间 100毫秒
-    static const unsigned int FRAMEWORK_TIMER_INTERVAL = 100000;
 
 protected:
 
@@ -99,15 +89,15 @@ protected:
     //最大消息个数
     size_t               max_msg_num_;
 
-    // 与zerg的管道
+    ///与zerg的管道
     Zerg_MMAP_BusPipe   *zerg_mmap_pipe_;
 
 
-    /// 框架定时器处理类
-    Server_Timer_Base   *timer_handler_;
+    ///框架定时器处理类
+    Server_Timer_Base   *timer_base_;
 
-    ///
-    Server_Config_Base  *config_;
+    ///配置的处理的基类
+    Server_Config_Base  *config_base_;
 
 };
 
