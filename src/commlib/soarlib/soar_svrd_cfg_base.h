@@ -51,6 +51,22 @@ protected:
     /// 使用帮助
     virtual int usage(const char *program_name);
 
+public:
+
+    struct LOG_INFO
+    {
+    public:
+        // app日志级别: debug info error final
+        ZCE_LOG_PRIORITY log_level_;
+        // 日志输出方式: 0001=file 0010=stdout 0100=stderr 1000=windbg,多种输出方式可以组合
+        uint32_t log_output_;
+        // 日志分割方式:101按大小 201按小时 205按天
+        ZCE_LOGFILE_DEVIDE log_div_type_;
+        // 日志文件保留个数，多出的日志文件将会被删除
+        uint32_t reserve_file_num_;
+        // 日志文件最大大小,当log_div_type_ 是 LOGDEVIDE_BY_SIZE 时有效。
+        uint32_t max_log_file_size_;
+    };
 
 
 public:
@@ -84,8 +100,8 @@ public:
 
     ///定时器的数量，用于初始化
     size_t timer_nuamber_;
-    ///定时器的精度
-    ZCE_Time_Value tiemr_precision_;
+    ///心跳的精度
+    ZCE_Time_Value heart_precision_;
 
 
     ///进行运行目录
@@ -103,8 +119,8 @@ public:
     // svcid的配置文件
     std::string svcid_cfg_file_;
 
-       
-    
+    // 日志帐单的配置信息   
+    LOG_INFO log_info_;
 };
 
 #endif //SOARING_LIB_SERVER_CONFIG_BASE_H_

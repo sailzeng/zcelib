@@ -52,8 +52,9 @@ int Zerg_Service_App::on_start(int argc,const char *argv[])
 
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
-    ret = Comm_Stat_Monitor::instance()->initialize(true,
-                                                    self_services_id_,
+    ret = Comm_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
+                                                    business_id_,
+                                                    self_svc_id_,
                                                     0,
                                                     NULL,
                                                     false);
@@ -83,8 +84,6 @@ int Zerg_Service_App::on_start(int argc,const char *argv[])
     ZLOG_INFO("[zergsvr] ZCE_Reactor and zce_Epoll_Reactor initialized.");
 #endif
 
-    //得到系统时钟等,
-    new Zerg_App_Timer_Handler(ZCE_Timer_Queue::instance());
 
     //设置发送接收缓冲的数量
     ZBuffer_Storage::instance()->init_buflist_by_hdlnum(max_peer);
@@ -124,51 +123,51 @@ int Zerg_Service_App::on_start(int argc,const char *argv[])
         return ret;
     }
 
-    //直接把backlog干上一个很大的值
-    const int MAX_ZERG_BACKLOG = 1024;
-    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->self_svc_info_,
-        MAX_ZERG_BACKLOG);
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        return ret;
-    }
+    ////直接把backlog干上一个很大的值
+    //const int MAX_ZERG_BACKLOG = 1024;
+    //ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->self_svc_info_,
+    //    MAX_ZERG_BACKLOG);
+    //if (ret != SOAR_RET::SOAR_RET_SUCC)
+    //{
+    //    return ret;
+    //}
 
-    //初始化备份端口
-    for (unsigned int i = 0; i < config_base_->self_cfg.slave_svr_count; ++i)
-    {
-        ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->slave_svc_ary_[i]);
+    ////初始化备份端口
+    //for (unsigned int i = 0; i < config_base_->self_cfg.slave_svr_count; ++i)
+    //{
+    //    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->slave_svc_ary_[i]);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
-        {
-            return ret;
-        }
-    }
+    //    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    //    {
+    //        return ret;
+    //    }
+    //}
 
-    // 初始化对外提供Udp服务的端口
-    uint32_t ary_size = static_cast<uint32_t>(Zerg_Server_Config::instance()->external_udp_svr_ary_.size());
-    for (unsigned int i = 0; i < ary_size; i ++)
-    {
-        ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->external_udp_svr_ary_[i]);
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
-        {
-            return ret;
-        }
-    }
+    //// 初始化对外提供Udp服务的端口
+    //uint32_t ary_size = static_cast<uint32_t>(Zerg_Server_Config::instance()->external_udp_svr_ary_.size());
+    //for (unsigned int i = 0; i < ary_size; i ++)
+    //{
+    //    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->external_udp_svr_ary_[i]);
+    //    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    //    {
+    //        return ret;
+    //    }
+    //}
 
-    ary_size = static_cast<uint32_t>(Zerg_Server_Config::instance()->extern_svc_ary_.size());
-    //初始化外部服务端口
-    for (unsigned int i = 0; i < ary_size; ++ i)
-    {
-        ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->extern_svc_ary_[i],
-                                              zce_DEFAULT_BACKLOG,
-                                              true,
-                                              config_base_->extern_svc_cfg.extern_svc_item[i].proto_cfg_index);
+    //ary_size = static_cast<uint32_t>(Zerg_Server_Config::instance()->extern_svc_ary_.size());
+    ////初始化外部服务端口
+    //for (unsigned int i = 0; i < ary_size; ++ i)
+    //{
+    //    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->extern_svc_ary_[i],
+    //                                          zce_DEFAULT_BACKLOG,
+    //                                          true,
+    //                                          config_base_->extern_svc_cfg.extern_svc_item[i].proto_cfg_index);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
-        {
-            return ret;
-        }
-    }
+    //    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    //    {
+    //        return ret;
+    //    }
+    //}
 
     ZLOG_INFO("[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
@@ -176,21 +175,21 @@ int Zerg_Service_App::on_start(int argc,const char *argv[])
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
+////
+//int Zerg_Service_App::reload()
+//{
+//    int ret = reload_daynamic_config();
 //
-int Zerg_Service_App::reload()
-{
-    int ret = reload_daynamic_config();
-
-    if ( ret != SOAR_RET::SOAR_RET_SUCC )
-    {
-        ZLOG_INFO("[zergsvr] reload config fail,ret = %d.", ret);
-        return ret;
-    }
-
-    TCP_Svc_Handler::adjust_svc_handler_pool();
-
-    return SOAR_RET::SOAR_RET_SUCC;
-}
+//    if ( ret != SOAR_RET::SOAR_RET_SUCC )
+//    {
+//        ZLOG_INFO("[zergsvr] reload config fail,ret = %d.", ret);
+//        return ret;
+//    }
+//
+//    TCP_Svc_Handler::adjust_svc_handler_pool();
+//
+//    return SOAR_RET::SOAR_RET_SUCC;
+//}
 
 //重新加载配置文件
 int Zerg_Service_App::reload_daynamic_config()
@@ -199,7 +198,17 @@ int Zerg_Service_App::reload_daynamic_config()
 
     //部分配置可以动态重复加载
     //看IP限制部分部分
-    ret = Zerg_IPRestrict_Mgr::instance()->get_config(*config_base_);
+    Zerg_Server_Config *zerg_config = dynamic_cast<Zerg_Server_Config *>(config_base_);
+    // 配置重新加载
+    ret = zerg_config->load_cfgfile();
+    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    {
+        ZLOG_ERROR("zerg reload config fail. ret=%d", ret);
+        return ret;
+    }
+
+
+    ret = Zerg_IPRestrict_Mgr::instance()->get_config(zerg_config);
 
     if ( SOAR_RET::SOAR_RET_SUCC != ret )
     {
@@ -207,7 +216,7 @@ int Zerg_Service_App::reload_daynamic_config()
     }
 
     //通信管理器读取配置文件
-    ret = zerg_comm_mgr_->get_config(*config_base_);
+    ret = zerg_comm_mgr_->get_config(zerg_config);
 
     if (SOAR_RET::SOAR_RET_SUCC != ret )
     {
@@ -232,16 +241,9 @@ int Zerg_Service_App::reload_daynamic_config()
     }
 
     //动态修改日志的级别
-    set_log_priority(zce_LogTrace_Basic::log_priorities((const char *)(config_base_->log_cfg.log_level)));
+    set_log_priority(zerg_config->log_info_.log_level_);
 
-    // 配置重新加载
-    ret = Zerg_Server_Config::instance()->init(config_base_);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    {
-        ZLOG_ERROR("zerg reload config fail. ret=%d", ret);
-        return ret;
-    }
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
@@ -257,7 +259,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Zerg_Service_App::exit_instance()
+int Zerg_Service_App::on_exit()
 {
     ZLOG_INFO("[zergsvr] exit_instance Succ.Have Fun.!!!");
 
@@ -300,7 +302,7 @@ Called By       :
 Other           : 最重要的函数,但是也最简单,
 Modify Record   : 为了加快发送的速度，对多种请求做了不同的微调。
 ******************************************************************************************/
-int Zerg_Service_App::run_instance()
+int Zerg_Service_App::on_run()
 {
 
     //
@@ -337,12 +339,6 @@ int Zerg_Service_App::run_instance()
 
     for (size_t i = 0; app_run_; ++i)
     {
-        // 检查是否需要重新加载配置
-        if (app_reload_)
-        {
-            // 重新加载配置
-            reload_config();
-        }
 
         //如果比较忙，
         if ( num_send_frame >= SEND_BUSY_JUDGE_STANDARD )
@@ -407,18 +403,11 @@ int Zerg_Service_App::run_instance()
 bool 
 Zerg_Service_App::if_proxy()
 {
-    unsigned short self_svc_type = Server_Config_FSM::instance()->self_svr_id_.services_type_;
-    if (self_svc_type == SVC_PROXY_SERVER
-        || self_svc_type == SVC_PROXY_SERVER_MOBILE)
+    unsigned short self_svc_type = self_svc_id_.services_type_;
+    if (self_svc_type == SVC_PROXY_SERVER)
     {
         return true;
     }
-
-    if (Server_Config_FSM::instance()->if_proxy_)
-    {
-        return true;
-    }
-
     return false;
 }
 

@@ -30,6 +30,10 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commsvr", "commsvr", "{77938720-9F15-4AED-AA59-D74E375244B6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zergsvr", "commsvr\zergsvr\zergsvr.vcxproj", "{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}"
+	ProjectSection(ProjectDependencies) = postProject
+		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7} = {C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}
+		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -65,7 +69,8 @@ Global
 		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}.Release|x64.Build.0 = Release|x64
 		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|Win32.ActiveCfg = Debug|Win32
 		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|Win32.Build.0 = Debug|Win32
-		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|x64.ActiveCfg = Debug|Win32
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|x64.ActiveCfg = Debug|x64
+		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Debug|x64.Build.0 = Debug|x64
 		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|Win32.ActiveCfg = Release|Win32
 		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|Win32.Build.0 = Release|Win32
 		{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}.Release|x64.ActiveCfg = Release|Win32

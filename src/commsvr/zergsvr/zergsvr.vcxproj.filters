@@ -14,9 +14,6 @@
     <ClCompile Include="zerg_accept_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_app_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zerg_application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -53,12 +50,12 @@
     <ClCompile Include="zerg_udp_ctrl_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zerg_app_timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zerg_accept_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_app_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg_application.h">
@@ -95,6 +92,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg_udp_ctrl_handler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zerg_app_timer.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -3,25 +3,25 @@
 #define ZERG_SERVER_APPLICATION_H_
 
 #include "zerg_tcp_ctrl_handler.h"
-#include "zerg_app_handler.h"
+
 
 class Zerg_Comm_Manager;
-/****************************************************************************************************
-class  Zerg_Service_App
-****************************************************************************************************/
+
+
+
+/*!
+* @brief      
+*             
+* @note       
+*/
 class Zerg_Service_App : public Comm_Svrd_Appliction
 {
 
 
-protected:
+public:
     //我又要偷偷藏着
     Zerg_Service_App();
     ~Zerg_Service_App();
-
-    //定义而不实现
-    Zerg_Service_App(const Zerg_Service_App *);
-    const Zerg_Service_App &operator =(const Zerg_Service_App &);
-
 
 public:
 
@@ -30,7 +30,7 @@ public:
     //退出实例化
     virtual int on_exit();
     //运行
-    virtual int run();
+    virtual int on_run();
 
     bool if_proxy();
 

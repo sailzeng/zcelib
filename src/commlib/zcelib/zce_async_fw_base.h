@@ -273,7 +273,7 @@ protected:
     * @param      now_time
     * @param      act
     */
-    int handle_timeout(const ZCE_Time_Value &now_time,
+    int timer_timeout(const ZCE_Time_Value &now_time,
                        const void *act);
 
 protected:

@@ -8,7 +8,7 @@ int TEST_TIMER_ACT [10] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 class Test_Timer_Handler : public ZCE_Timer_Handler
 {
 public:
-    virtual int handle_timeout(const ZCE_Time_Value &now_timenow_time,
+    virtual int timer_timeout(const ZCE_Time_Value &now_timenow_time,
                                const void *act)
     {
         char time_str[128];

@@ -37,12 +37,19 @@ public:
 
     /*!
     * @brief      初始化，放入一些基类的指针，
-    * @return     int
-    * @param      config_base
-    * @param      timer_base
+    * @return     int 
+    * @param      config_base 配置类指针，注意new了放进来
+    * @param      timer_base  定时器触发句柄的指针，注意new了放进来
     */
     int initialize(Server_Config_Base *config_base, 
         Server_Timer_Base *timer_base);
+
+
+    /*!
+    * @brief      返回APP的配置类指针
+    * @return     Server_Config_Base*配置类的指针
+    */
+    Server_Config_Base  *config_instance();
 
 protected:
 
@@ -56,8 +63,7 @@ protected:
     virtual int on_exit();
 
     // 重新加载配置
-    // 框架reload调用app接口的顺序: load_app_conf reload
-    virtual int reload() = 0;
+    virtual int reload();
 
 
 private:
@@ -71,17 +77,22 @@ private:
 public:
 
     ///注册实例指针
-    static void instance(Comm_Svrd_Appliction *inst );
+    static void set_instance(Comm_Svrd_Appliction *inst);
 
     ///得到实例指针
     static Comm_Svrd_Appliction *instance();
 
+protected:
+
+    //实例指针
+    static Comm_Svrd_Appliction *instance_;
 
 protected:
 
-
+    //业务ID
+    unsigned int         business_id_;
     //自己的服务器ID
-    SERVICES_ID          self_services_id_;
+    SERVICES_ID          self_svc_id_;
 
     //以windows的服务方式运行，
     bool                 run_as_win_serivces_;

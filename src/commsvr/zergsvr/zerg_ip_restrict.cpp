@@ -27,9 +27,6 @@ int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
     allow_ip_set_.clear();
     reject_ip_set_.clear();
 
-    const size_t TMP_BUFFER_LEN = 256;
-    char err_outbuf[TMP_BUFFER_LEN + 1] = {0};
-
     std::vector<std::string> v;
     ZCE_LIB::str_split(config->zerg_config_.allow_ip_.c_str(), " ", v);
     allow_ip_set_.rehash(v.size());

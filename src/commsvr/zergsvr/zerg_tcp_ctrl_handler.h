@@ -105,7 +105,7 @@ public:
     virtual int handle_output();
 
     //超时事件触发
-    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
+    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
     //关闭事件触发
     virtual int handle_close();
@@ -214,7 +214,7 @@ public:
 
 protected:
 
-    //定时器ID,避免New传递,回收,我讨厌这个想法,ACE handle_timeout为什么不直接使用TIMEID
+    //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
     static const  int         TCPCTRL_TIME_ID[];
 
 
@@ -263,9 +263,6 @@ protected:
     //服务示是代理服务器
     static bool                if_proxy_;
 
-    //允许的最大的帧的长度
-    static unsigned int        max_frame_len_;
-
     //Connect后等待动作的时长,Connect超时
     static unsigned int        connect_timeout_;
 
@@ -287,9 +284,6 @@ protected:
     static size_t              num_connect_peer_;
 
 
-    //是否检查帧的数据
-    static bool                if_check_frame_;
-
     //ACCEPT SVC handler的池子
     static POOL_OF_TCP_HANDLER pool_of_acpthdl_;
 
@@ -305,9 +299,6 @@ protected:
 
     //
     static unsigned int        handler_id_builder_;
-
-    // gameid
-    static unsigned int        game_id_;
 
 protected:
     //服务模式

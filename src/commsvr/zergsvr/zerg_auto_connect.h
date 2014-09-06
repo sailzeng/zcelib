@@ -31,25 +31,7 @@ class Zerg_Auto_Connector
     //
     typedef std::vector< ZERG_SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
 
-protected:
 
-    //
-    ARRAY_OF_ZERG_SVCINFO   ary_want_connect_;
-    //
-    size_t                  size_of_wantconnect_;
-
-    //连接器
-    ZCE_Socket_Connector    zerg_connector_;
-
-private:
-    //主路由id列表
-    ListOfMainRouteId       list_of_want_connect_main_id_;
-
-    //备份路由id列表
-    ListOfMainRouteId       list_of_want_connect_back_id_;
-
-    //主动连接type到index的map
-    RouteType2Index         want_connect_type_2_index_;
 
 public:
 
@@ -70,11 +52,6 @@ public:
     //链接的数量
     size_t numsvr_connect();
 
-    //根据主服务器，得到备份服务器的信息
-    int get_backupsvcinfo(const SERVICES_ID &main_svrinfo,
-        bool &backroute_valid,
-        SERVICES_ID &backroute_svrinfo);
-
     //根据SVRINFO,检查是否是主动连接的服务.,
     int reconnect_server(const SERVICES_ID &reconnect_svrinfo);
 
@@ -94,6 +71,29 @@ private:
 
     // 判定是否当前主动连接
     bool is_current_auto_connect(const SERVICES_ID &service, bool is_main_service);
+
+protected:
+
+    //
+    ARRAY_OF_ZERG_SVCINFO    ary_want_connect_;
+    //
+    size_t                   size_of_wantconnect_;
+
+    //连接器
+    ZCE_Socket_Connector     zerg_connector_;
+
+private:
+    //主路由id列表
+    ListOfMainRouteId        list_of_want_connect_main_id_;
+
+    //备份路由id列表
+    ListOfMainRouteId        list_of_want_connect_back_id_;
+
+    //主动连接type到index的map
+    RouteType2Index          want_connect_type_2_index_;
+
+    //配置实例指针
+    const Zerg_Server_Config *zerg_svr_cfg_;
 
 };
 

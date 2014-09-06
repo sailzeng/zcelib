@@ -18,9 +18,6 @@ Zerg_Comm_Manager *UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
 //自己是否是代理
 bool           UDP_Svc_Handler::if_proxy_ = false;
 
-// game_id 
-unsigned int UDP_Svc_Handler::game_id_ = 0;
-
 //
 UDP_Svc_Handler::UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
     const ZCE_Sockaddr_In     &addr,
@@ -236,8 +233,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     }
 
     //这个函数放在这儿好不好，hoho，有点耗时喔，呵呵
-    server_status_->increase_by_statid(ZERG_UDP_RECV_COUNTER, game_id_, 1);
-    server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER, game_id_, recvret);
+    server_status_->increase_by_statid(ZERG_UDP_RECV_COUNTER, 0, 0, 1);
+    server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER, 0,0 , recvret);
 
 
     proc_frame->framehead_decode();
@@ -326,8 +323,8 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
         dgram_peer_.get_handle(),
         send_len);
     //
-    server_status_->increase_by_statid(ZERG_UDP_SEND_COUNTER, game_id_, 1);
-    server_status_->increase_by_statid(ZERG_UDP_SEND_BYTES_COUNTER, game_id_, szsend);
+    server_status_->increase_by_statid(ZERG_UDP_SEND_COUNTER, 0, 0, 1);
+    server_status_->increase_by_statid(ZERG_UDP_SEND_BYTES_COUNTER, 0, 0, szsend);
 
     return SOAR_RET::SOAR_RET_SUCC;
 }

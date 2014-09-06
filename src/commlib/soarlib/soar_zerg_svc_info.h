@@ -9,6 +9,29 @@ class  SERVICES_ID 　服务编号信息,
 ****************************************************************************************************/
 struct SOARING_EXPORT SERVICES_ID
 {
+
+public:
+    //构造,析构函数,默认为0
+    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE, uint32_t svrno = INVALID_SERVICES_ID);
+    //
+    ~SERVICES_ID();
+
+    void  clear()
+    {
+        services_type_ = 0;
+        services_id_ = 0;
+    }
+
+    //
+    void set_serviceid(uint16_t svrtype, uint32_t svrid);
+
+    //比较函数,services_type_,services_id_
+    bool operator ==(const SERVICES_ID &others) const;
+    //比较不同函数,
+    bool operator !=(const SERVICES_ID &others) const;
+    //有个排序需求,
+    bool operator <(const SERVICES_ID &others) const;
+
 public:
 
     ///无效的SERVICE 类型
@@ -31,27 +54,7 @@ public:
     //服务的编号,采用两种表现方式,服务编号可以是一个服务器定义值,也可以是一个UIN.
     uint32_t           services_id_;
 
-public:
-    //构造,析构函数,默认为0
-    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE, uint32_t svrno = INVALID_SERVICES_ID);
-    //
-    ~SERVICES_ID();
 
-    void  clear()
-    {
-        services_type_ = 0;
-        services_id_ = 0;
-    }
-
-    //
-    void set_serviceid(uint16_t svrtype, uint32_t svrid );
-
-    //比较函数,services_type_,services_id_
-    bool operator ==(const SERVICES_ID &others) const;
-    //比较不同函数,
-    bool operator !=(const SERVICES_ID &others) const;
-    //有个排序需求,
-    bool operator <(const SERVICES_ID &others) const;
 };
 
 #pragma pack ()

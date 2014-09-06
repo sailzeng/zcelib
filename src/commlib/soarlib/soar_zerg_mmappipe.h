@@ -27,10 +27,8 @@ protected:
     static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
 
     // 监控对象
-    Comm_Stat_Monitor *monitor_;
+    Comm_Stat_Monitor   *monitor_;
 
-    // 配置对象
-    Server_Config_FSM *config_;
 
 protected:
     //instance函数使用的东西

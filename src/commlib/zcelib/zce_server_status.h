@@ -35,11 +35,13 @@
 #include "zce_lock_null_lock.h"
 #include "zce_os_adapt_time.h"
 
-/******************************************************************************************
-状态统计的方式，比如5分钟记录一次的方式，一个小时记录的方式等
-******************************************************************************************/
 
-//为什么放到类里面，增强他的约束
+//===========================================================================================
+/*!
+* @brief      状态统计的方式，比如5分钟记录一次的方式，一个小时记录的方式等
+*
+* @note
+*/
 enum ZCE_STATUS_STATICS_TYPE
 {
     //标识范围
@@ -60,48 +62,57 @@ enum ZCE_STATUS_STATICS_TYPE
 
 };
 
-/******************************************************************************************
-struct ZCE_STATUS_ITEM_ID
-******************************************************************************************/
+//===========================================================================================
+/*!
+* @brief      统计项目ID,
+*
+* @note
+*/
 struct ZCELIB_EXPORT ZCE_STATUS_ITEM_ID
 {
 public:
 
-    //统计ID
+    ///统计ID
     unsigned int              statics_id_;
-    //分类ID，目前好像主要是业务ID,这个是可以变化的
-    unsigned int              app_id_;
-    //子分类ID，这个也是可以变化的，
+    ///分类ID，目前好像主要是业务ID,这个是可以变化的
     unsigned int              classify_id_;
+    ///子分类ID，这个也是可以变化的，
+    unsigned int              subclassing_id_;
 
 public:
 
     ZCE_STATUS_ITEM_ID(unsigned int statics_id,
-                       unsigned int app_id,
-                       unsigned int classify_id);
+                       unsigned int classify_id,
+                       unsigned int subclassing_id);
     ZCE_STATUS_ITEM_ID();
     ~ZCE_STATUS_ITEM_ID();
 
     bool operator == (const ZCE_STATUS_ITEM_ID &others) const;
 };
 
-///得到HASH因子的函数，
+//===========================================================================================
+/*!
+* @brief      ZCE_STATUS_ITEM_ID得到HASH因子的函数，
+*
+*/
 struct ZCELIB_EXPORT HASH_ZCE_STATUS_ITEM_ID
 {
 public:
     //就把3个数值相+，这样冲突感觉还小一点，（左移反而感觉不好）
-    //
     size_t operator()(const ZCE_STATUS_ITEM_ID &stat_item) const
     {
         return (size_t (stat_item.statics_id_
-                        + (stat_item.app_id_ << 8)
-                        + stat_item.classify_id_));
+                        + (stat_item.classify_id_ << 8)
+                        + stat_item.subclassing_id_));
     }
 };
 
-/******************************************************************************************
-struct ZCE_STATUS_ITEM 状态计数器项
-******************************************************************************************/
+
+//===========================================================================================
+/*!
+* @brief      状态计数器项,包括ID，统计方式，以及数值
+*
+*/
 class ZCELIB_EXPORT ZCE_STATUS_ITEM
 {
 public:
@@ -114,19 +125,21 @@ public:
 
 public:
 
-    //ID标识
+    ///ID标识
     ZCE_STATUS_ITEM_ID        item_id_;
 
-    //可以重新计数
+    ///可以重新计数
     ZCE_STATUS_STATICS_TYPE   statics_type_;
 
-    //计数器
+    ///计数器
     uint64_t                  counter_;
 };
 
-/******************************************************************************************
-class ZCE_STATUS_ITEM_WITHNAME 状态计数器+名字，用于配置，DUMP输出等
-******************************************************************************************/
+//===========================================================================================
+/*!
+* @brief      状态计数器+名字，用于配置，DUMP输出等
+*
+*/
 class ZCELIB_EXPORT ZCE_STATUS_ITEM_WITHNAME
 {
 public:
@@ -158,10 +171,13 @@ public:
 #define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) ZCE_STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
 #endif
 
-/******************************************************************************************
-struct ZCE_STATUS_HEAD 状态文件的头部
-******************************************************************************************/
 
+//===========================================================================================
+
+/*!
+* @brief      存放统计信息的状态文件的头部。记录监控时间等时间戳
+*
+*/
 struct ZCELIB_EXPORT ZCE_STATUS_HEAD
 {
     //监控开始时间
@@ -177,113 +193,160 @@ struct ZCELIB_EXPORT ZCE_STATUS_HEAD
     uint32_t active_time_;
 };
 
-/******************************************************************************************
-使用Posix MMAP,记录保存服务器的一些计数器,状态,
-本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
-******************************************************************************************/
+
+//===========================================================================================
+
+
+/*!
+* @brief      使用Posix MMAP,记录保存服务器的一些计数器,状态,
+*
+* @note       本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
+*/
 class ZCELIB_EXPORT ZCE_Server_Status : public ZCE_NON_Copyable
 {
 protected:
 
-    //存放统计数据的共享内存数组，
+    ///存放统计数据的共享内存数组，
     typedef ZCE_LIB::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
-    //统计ID到数组的下标的hash map
+    ///统计ID到数组的下标的hash map
     typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
-    //statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
+    ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
     typedef unordered_map<unsigned int , ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
-    //统计数据的数组，用于dump输出的数据结构
-    typedef std::vector<ZCE_STATUS_ITEM_WITHNAME>     ARRAY_OF_STATUS_WITHNAME;
+    ///统计数据的数组，用于dump输出的数据结构
+    typedef std::vector<ZCE_STATUS_ITEM_WITHNAME>  ARRAY_OF_STATUS_WITHNAME;
 
 public:
 
-    //构造函数,也给你单独使用的机会，所以不用protected
+    ///构造函数,也给你单独使用的机会，所以不用protected
     ZCE_Server_Status();
-    //析构函数
+    ///析构函数
     virtual ~ZCE_Server_Status();
 
 protected:
 
-    //初始化的方法,通用的底层，
-    //Param1: char* statfilename MMAP影射的状态文件名称
-    //Param2: bool restore_mmap 是否用于恢复MMAP，如果是恢复，文件必须是存在的,
+
+    /*!
+    * @brief      初始化的方法,通用的底层，
+    * @return     int
+    * @param[in]  stat_filename MMAP影射的状态文件名称
+    * @param[in]  restore_mmap  是否用于恢复MMAP，如果是恢复，文件必须是存在的,
+    * @param[in]  multi_thread  是否是多线程环境使用
+    */
     int initialize(const char *stat_filename,
                    bool restore_mmap,
                    bool multi_thread);
 
-    //在sandy数据区里面，找数据项目
+    /*!
+    * @brief      在数据区里面，找数据项目
+    * @return     int 如果成功找到返回0
+    * @param[in]  statics_id  统计ID
+    * @param[in]  classify_id 分类ID
+    * @param[in]  subclassing_id 子分类ID
+    * @param[out] idx 查询到数据项目存放索引
+    */
     int find_insert_idx(unsigned int statics_id,
-                        unsigned int app_id,
                         unsigned int classify_id,
-                        size_t *sandy_idx);
+                        unsigned int subclassing_id,
+                        size_t *idx);
 
 public:
 
-    //根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
-    //Param1: char* statfilename MMAP影射的状态文件名称
-    int initialize(const char *stat_filename);
 
-    //创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
+    /*!
+    * @brief      根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
+    * @return     int
+    * @param[in]  stat_filename MMAP影射的状态文件名称
+    * @param[in]  multi_thread  是否多线程
+    */
+    int initialize(const char *stat_filename,
+                   bool multi_thread);
+
+    
+    /*!
+    * @brief      创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
+    * @return     int
+    * @param[in]  stat_filename MMAP影射的状态文件名称
+    * @param[in]  num_stat_item item_ary的数量，
+    * @param[in]  item_ary      统计项目，
+    * @param[in]  multi_thread  是否多线程
+    * @note       注意统计项目数量不是监控ID的数量，监控ID数量默认是固定的 @ref MAX_MONITOR_STAT_ITEM
+    */
     int initialize(const char *stat_filename,
                    size_t num_stat_item,
                    const ZCE_STATUS_ITEM_WITHNAME item_ary[],
                    bool multi_thread);
 
-    //增加一些监控项目
+    /*!
+    * @brief      增加一些监控项目，如果有2段的初始化（比如框架一次，业务一次）时使用
+    * @return     void
+    * @param      num_stat_item item_ary的数量
+    * @param      item_ary      增加的统计项目
+    */
     void add_status_item(size_t num_stat_item,
                          const ZCE_STATUS_ITEM_WITHNAME item_ary[]);
 
-    //初始化以后，修改是否需要多线程保护
+    ///初始化以后，修改是否需要多线程保护
     void modify_multi_thread_guard(bool multi_thread);
 
-    //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
-    int increase_by_statid(unsigned int statics_id,
-                           unsigned int app_id,
-                           unsigned int classify_id,
-                           int64_t incre_value);
 
-    //不要处理classify_id的情况的自增特例化
-    inline int increase_by_statid(unsigned int statics_id,
-                                  unsigned int app_id,
-                                  int64_t incre_value);
-
-    //不要处理classify_id和app_id的增加数值情况
-    inline int increase_by_statid(unsigned int statics_id,
-                                  int64_t incre_value);
-
-    //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
+    /*!
+    * @brief      使用统计ID和分类ID作为key,对统计值增加1
+    * @return     int
+    * @param[in]  statics_id  统计ID
+    * @param[in]  classify_id 分类ID
+    * @param[in]  subclassing_id 子分类ID
+    */
     inline int increase_once(unsigned int statics_id,
-                             unsigned int app_id,
-                             unsigned int classify_id);
+                             unsigned int classify_id,
+                             unsigned int subclassing_id)
+    {
+        return increase_by_statid(statics_id, classify_id, subclassing_id, 1);
+    }
 
-    //不要处理classify_id的情况的自增特例化
-    inline int increase_once(unsigned int statics_id,
-                             unsigned int app_id);
-
-    //不要处理classify_id和app_id的增加数值情况
-    inline int increase_once(unsigned int statics_id);
-
-    //绝对值修改监控统计项目
+    
+    /*!
+    * @brief      使用统计ID和分类ID作为key,绝对值修改监控统计项目
+    * @return     int
+    * @param[in]  statics_id  统计ID
+    * @param[in]  classify_id 分类ID
+    * @param[in]  subclassing_id 子分类ID
+    * @param[in]  set_value 修改的统计值
+    */
     int set_by_statid(unsigned int statics_id,
-                      unsigned int app_id,
                       unsigned int classify_id,
+                      unsigned int subclassing_id,
                       uint64_t set_value);
 
-    //不要处理classify_id的情况的设置特例化
-    inline int set_by_statid(unsigned int statics_id,
-                             unsigned int app_id,
-                             uint64_t set_value);
+    /*!
+    * @brief      使用统计ID和分类ID作为key,相对值修改监控统计值
+    * @return     int
+    * @param[in]  statics_id  统计ID
+    * @param[in]  classify_id 分类ID
+    * @param[in]  subclassing_id 子分类ID
+    * @param[in]  incre_value 修改的相对值，符号整数，可加可减
+    */
+    int increase_by_statid(unsigned int statics_id,
+                           unsigned int classify_id,
+                           unsigned int subclassing_id,
+                           int64_t incre_value);
 
-    //不要处理classify_id和app_id的设置数值情况
-    inline int set_by_statid(unsigned int statics_id,
-                             uint64_t set_value);
 
-    //根据统计ID和分类ID作为key，得到统计数值
+
+
+    
+    /*!
+    * @brief      根据统计ID和分类ID作为key，得到统计数值
+    * @return     uint64_t 返回的统计值
+    * @param[in]  statics_id  统计ID
+    * @param[in]  classify_id 分类ID
+    * @param[in]  subclassing_id 子分类ID
+    */
     uint64_t get_counter(unsigned int statics_id,
-                         unsigned int app_id,
-                         unsigned int classify_id);
+                         unsigned int classify_id,
+                         unsigned int subclassing_id);
 
     //取得计数器的个数
     size_t num_of_counter();
@@ -295,35 +358,36 @@ public:
     //理论上每5分钟调用一次就OK
     void check_overtime(time_t now_time);
 
-    //备份计数器信息
+    ///备份计数器信息
     void copy_stat_counter();
 
-    //由于将内部数据全部取出，用于你外部打包之类
+    ///由于将内部数据全部取出，用于你外部打包之类
     void dump_all(ARRAY_OF_STATUS_WITHNAME &array_status,
                   bool dump_copy = false);
 
-    //Dump所有的数据
+    ///Dump所有的数据
     void dump_status_info(std::ostringstream &strstream,
                           bool dump_copy = false);
 
-    //Dump所有的数据
+    ///Dump所有的数据
     void dump_status_info(ZCE_LOG_PRIORITY log_priority,
                           bool dump_copy = false);
 
-    //得到文件的头部信息
+    ///得到文件的头部信息
     void get_stat_head(ZCE_STATUS_HEAD *stat_head );
 
-    //记录监控的上报时间
+    ///记录监控的上报时间
     void report_monitor_time(uint32_t report_time = static_cast<uint32_t>(time(NULL)));
 
     //单子的函数群，不是我不知道可以用BOOST的模板使用单子，是这样更加直接清爽，容易扩张修改一些
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
 
-private:
-    //需要新增的监控项是否已经存在
+protected:
+
+    ///需要新增的监控项是否已经存在
     bool is_stat_id_exist(unsigned int stat_id);
 
-    //新增监控项
+    ///新增监控项
     int add_stat_id(unsigned int stat_id);
 
 public:
@@ -393,57 +457,6 @@ protected:
 };
 
 
-//监控项目数据增加1
-int ZCE_Server_Status::increase_once(unsigned int statics_id,
-                                     unsigned int app_id,
-                                     unsigned int classify_id)
-{
-    return increase_by_statid(statics_id, app_id, classify_id, INCREASE_VALUE_ONCE);
-}
-
-//不要处理classify_id的情况的监控项目数据增加1
-int ZCE_Server_Status::increase_once(unsigned int statics_id,
-                                     unsigned int app_id)
-{
-    return increase_by_statid(statics_id, app_id, 0, INCREASE_VALUE_ONCE);
-}
-
-//不要处理classify_id和app_id的监控项目数据增加1
-int ZCE_Server_Status::increase_once(unsigned int statics_id)
-{
-    return increase_by_statid(statics_id, 0, 0, INCREASE_VALUE_ONCE);
-}
-
-
-//不要处理classify_id的情况的自增特例化
-int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
-                                          unsigned int app_id,
-                                          int64_t incre_value)
-{
-    return increase_by_statid(statics_id, app_id, 0, incre_value);
-}
-
-//不要处理classify_id和app_id的增加数值情况
-int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
-                                          int64_t incre_value)
-{
-    return increase_by_statid(statics_id, 0, 0, incre_value);
-}
-
-//不要处理classify_id的情况的设置特例化
-int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
-                                     unsigned int app_id,
-                                     uint64_t set_value)
-{
-    return set_by_statid(statics_id, app_id, 0, set_value);
-}
-
-//不要处理classify_id和app_id的设置数值情况
-int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
-                                     uint64_t set_value)
-{
-    return set_by_statid(statics_id, 0, 0, set_value);
-}
 
 #endif //_ZCE_LIB_SERVER_STATUS_H_
 

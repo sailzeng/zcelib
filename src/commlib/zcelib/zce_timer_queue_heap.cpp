@@ -114,7 +114,7 @@ size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
             //标记这个定时器已经触发过，详细见already_trigger_的解释
             time_node_ary_[timer_node_id].already_trigger_ = true;
             //时钟触发
-            time_node_ary_[timer_node_id].timer_handle_->handle_timeout(now_time,
+            time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
                                                                         time_node_ary_[timer_node_id].action_);
 
         }
@@ -123,7 +123,7 @@ size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
             break;
         }
 
-        //因为handle_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
+        //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
         if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true )
         {
             //重新规划这个TIME NODE的位置等,如果不需要触发了则取消定时器

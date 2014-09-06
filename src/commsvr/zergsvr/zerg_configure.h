@@ -103,7 +103,7 @@ class  Zerg_Server_Config
 ****************************************************************************************************/
 class Zerg_Server_Config :public Server_Config_Base
 {
-
+public:
     Zerg_Server_Config();
     ~Zerg_Server_Config();
 
@@ -127,29 +127,13 @@ public:
     //void dump_status_info(std::ostringstream &ostr_stream);
 
     //根据SVCINFO得到IP地址信息
-    int GetServicesIPInfo(const SERVICES_ID &svc_info, ZCE_Sockaddr_In     &ipaddr);
-
-    
-
-public:
-
-    //单子函数
-    static Zerg_Server_Config *instance();
-    //清理单子指针函数
-    static void clean_instance();
-
+    int GetServicesIPInfo(const SERVICES_ID &svc_info, ZCE_Sockaddr_In     &ipaddr) const;
 
 
 public:
 
     //
     ZERG_CONFIG  zerg_config_;
-
-
-    //单子实例
-    static Zerg_Server_Config  *instance_;
-
-
 
 };
 

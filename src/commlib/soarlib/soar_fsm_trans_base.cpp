@@ -192,7 +192,7 @@ int Transaction_Base::receive_trans_msg(Zerg_App_Frame *proc_frame)
 
 /******************************************************************************************
 Author          : Sail(ZENGXING)  Date Of Creation: 2009年7月11日
-Function        : Transaction_Base::handle_timeout
+Function        : Transaction_Base::timer_timeout
 Return          : int
 Parameter List  :
   Param1: const ZCE_Time_Value& // time 时间
@@ -203,7 +203,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Transaction_Base::handle_timeout(const ZCE_Time_Value & /*time*/, const void *arg)
+int Transaction_Base::timer_timeout(const ZCE_Time_Value & /*time*/, const void *arg)
 {
     int ret = 0;
 #if defined DEBUG || defined _DEBUG

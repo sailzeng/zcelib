@@ -5,12 +5,18 @@
 
 
 class TCP_Svc_Handler;
-/****************************************************************************************************
-class  Service_Info_Set
-****************************************************************************************************/
+
+
+/*!
+* @brief      
+*             
+* @note       
+*/
 class Service_Info_Set
 {
 protected:
+
+    //
     typedef unordered_map<SERVICES_ID, TCP_Svc_Handler *, HashofSvrInfo> MapOfSvrPeerInfo;
     //
     MapOfSvrPeerInfo  svr_info_set_;

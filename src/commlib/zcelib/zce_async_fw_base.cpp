@@ -430,7 +430,7 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
 }
 
 //≥¨ ±¥¶¿Ì
-int ZCE_Async_ObjectMgr::handle_timeout(const ZCE_Time_Value &now_time,
+int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
                                         const void *act)
 {
     ZCE_Async_Object *async_obj = (ZCE_Async_Object *)(act);

@@ -14,6 +14,10 @@
 class ZCE_Server_Base
 *********************************************************************************/
 
+
+ZCE_Server_Base * ZCE_Server_Base::base_instance_ = NULL;
+
+
 // 构造函数,私有,使用单子类的实例,
 ZCE_Server_Base::ZCE_Server_Base():
     pid_handle_(ZCE_INVALID_HANDLE),
@@ -327,7 +331,7 @@ int ZCE_Server_Base::process_signal(void)
     ZCE_LIB::signal(SIGTERM, exit_signal);
 
     //重新加载部分配置,用了SIGUSR1 kill -10
-    ZCE_LIB::signal(SIGUSR1, reload_config_signal);
+    ZCE_LIB::signal(SIGUSR1, reload_signal);
 #endif
 
     //SIGUSR1,SIGUSR2你可以用来干点自己的活,
@@ -452,6 +456,20 @@ const char *ZCE_Server_Base::get_app_basename()
 }
 
 
+
+//设置进程是否运行的标志
+void ZCE_Server_Base::set_run_sign(bool app_run)
+{
+    app_run_ = app_run;
+}
+
+//设置reload标志
+void ZCE_Server_Base::set_reload_sign(bool app_reload)
+{
+    app_reload_ = app_reload;
+}
+
+
 //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
 
@@ -470,10 +488,10 @@ void ZCE_Server_Base::exit_signal(int)
 }
 
 // USER1信号处理函数
-void ZCE_Server_Base::reload_config_signal(int)
+void ZCE_Server_Base::reload_signal(int)
 {
     // 信号处理函数中不能有IO等不可重入的操作，否则容易死锁
-    base_instance_->set_reload(true);
+    base_instance_->set_reload_sign(true);
     return;
 }
 

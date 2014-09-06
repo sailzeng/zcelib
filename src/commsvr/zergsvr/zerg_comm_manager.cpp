@@ -3,20 +3,21 @@
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_udp_ctrl_handler.h"
 #include "zerg_accept_handler.h"
-#include "zerg_app_handler.h"
+#include "zerg_app_timer.h"
 #include "zerg_comm_manager.h"
 
 
 //实例
 Zerg_Comm_Manager *Zerg_Comm_Manager::instance_ = NULL;
 
-Zerg_Comm_Manager::Zerg_Comm_Manager()
-    : error_try_num_(3)
-    , monitor_size_(0)
-    , zerg_mmap_pipe_(NULL)
-    , zbuffer_storage_(NULL)
-    , server_status_(NULL)
-    , send_frame_count_(0)
+Zerg_Comm_Manager::Zerg_Comm_Manager():
+    error_try_num_(3),
+    monitor_size_(0),
+    zerg_mmap_pipe_(NULL),
+    zbuffer_storage_(NULL),
+    server_status_(NULL),
+    send_frame_count_(0),
+    zerg_svr_cfg_(NULL)
 
 {
     zerg_mmap_pipe_ = Zerg_MMAP_BusPipe::instance();
@@ -45,10 +46,8 @@ Zerg_Comm_Manager::~Zerg_Comm_Manager()
 //初始化
 int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
 {
-    int ret = 0;
-    const size_t LEN_TMP_BUFFER = 256;
-    //char key_buf[LEN_TMP_BUFFER+1]={0};
-    char err_buf[LEN_TMP_BUFFER + 1] = {0};
+    
+    zerg_svr_cfg_ = config;
 
     //清理监控命令
     monitor_size_ = 0;
@@ -160,7 +159,7 @@ int Zerg_Comm_Manager::check_safeport(ZCE_Sockaddr_In     &inetadd)
         inetadd.get_port_number() == UNSAFE_PORT4 )
     {
         //如果使用保险打开(TRUE)
-        if (Zerg_Server_Config::instance()->zerg_config_.zerg_insurance_)
+        if (zerg_svr_cfg_->zerg_config_.zerg_insurance_)
         {
             ZLOG_ERROR("[zergsvr] Unsafe port %u,if you need to open this port,please close insurance. ",
                        inetadd.get_port_number());
@@ -385,7 +384,8 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer * tmpbuf )
 
         //
         server_status_->increase_once(ZERG_SEND_FAIL_COUNTER,
-            proc_frame->app_id_);
+            proc_frame->app_id_,
+            0);
         if (proc_frame->recv_service_.services_type_ == 0)
         {
             // 不应该出现0的services_type
@@ -403,7 +403,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer * tmpbuf )
 
 
 //
-inline void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
+void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -436,12 +436,14 @@ inline void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
-            recv_frame->app_id_);
+            recv_frame->app_id_,
+            0);
     }
     else
     {
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER,
-            recv_frame->app_id_);
+            recv_frame->app_id_,
+            0);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
             recv_frame->app_id_,
             recv_frame->frame_command_);

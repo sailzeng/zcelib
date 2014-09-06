@@ -6,8 +6,6 @@
 #include "soar_svrd_cfg_fsm.h"
 
 
-Server_Config_FSM *Server_Config_FSM::instance_ = NULL;
-
 Server_Config_FSM::Server_Config_FSM()
 {
 }
@@ -15,8 +13,6 @@ Server_Config_FSM::Server_Config_FSM()
 Server_Config_FSM::~Server_Config_FSM()
 {
 }
-
-
 
 int Server_Config_FSM::load_cfgfile()
 {

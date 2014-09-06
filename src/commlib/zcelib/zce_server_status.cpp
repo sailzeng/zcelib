@@ -11,19 +11,19 @@ class ZCE_STATUS_ITEM_ID
 ******************************************************************************************/
 
 ZCE_STATUS_ITEM_ID::ZCE_STATUS_ITEM_ID(unsigned int statics_id,
-                                       unsigned int app_id,
-                                       unsigned int classify_id) :
+                                       unsigned int classify_id,
+                                       unsigned int subclassing_id) :
     statics_id_(statics_id),
-    app_id_(app_id),
-    classify_id_(classify_id)
+    classify_id_(classify_id),
+    subclassing_id_(subclassing_id)
 {
 
 }
 
 ZCE_STATUS_ITEM_ID::ZCE_STATUS_ITEM_ID():
     statics_id_(0),
-    app_id_(0),
-    classify_id_(0)
+    classify_id_(0),
+    subclassing_id_(0)
 {
 }
 
@@ -35,8 +35,8 @@ ZCE_STATUS_ITEM_ID::~ZCE_STATUS_ITEM_ID()
 bool ZCE_STATUS_ITEM_ID::operator == (const ZCE_STATUS_ITEM_ID &others) const
 {
     if (this->statics_id_ == others.statics_id_
-        && this->app_id_ == others.app_id_
-        && this->classify_id_ == others.classify_id_)
+        && this->classify_id_ == others.classify_id_
+        && this->subclassing_id_ == others.subclassing_id_)
     {
         return true;
     }
@@ -249,13 +249,13 @@ void ZCE_Server_Status::modify_multi_thread_guard(bool multi_thread)
 //在sandy数据区里面，找数据项目
 //这个函数里面不要加锁（在上层加），因为这个函数是一个公用函数，可能会……
 int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
-                                       unsigned int app_id,
                                        unsigned int classify_id,
+                                       unsigned int subclassing_id,
                                        size_t *sandy_idx)
 {
     *sandy_idx = static_cast<size_t>(-1);
 
-    ZCE_STATUS_ITEM_ID stat_item_id(statics_id, app_id, classify_id);
+    ZCE_STATUS_ITEM_ID stat_item_id(statics_id, classify_id, subclassing_id);
     STATID_TO_INDEX_MAP::iterator iter_tmp = statid_to_index_.find(stat_item_id);
 
     if ( iter_tmp != statid_to_index_.end() )
@@ -299,14 +299,13 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
 }
 
 //根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
-//Param1: char* statfilename MMAP影射的状态文件名称
-int ZCE_Server_Status::initialize(const char *stat_filename)
+int ZCE_Server_Status::initialize(const char *stat_filename, bool multi_thread)
 {
     ZCE_ASSERT(stat_filename != NULL );
 
     int ret = 0;
     //
-    ret = initialize(stat_filename, true, false);
+    ret = initialize(stat_filename, true, multi_thread);
 
     if ( 0 != ret)
     {
@@ -354,8 +353,8 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
 
 //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
 int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
-                                          unsigned int app_id,
                                           unsigned int classify_id,
+                                          unsigned int subclassing_id,
                                           int64_t incre_value)
 {
     if (!initialized_)
@@ -370,7 +369,7 @@ int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
 
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
-    ret = find_insert_idx(statics_id, app_id, classify_id, &sandy_idx);
+    ret = find_insert_idx(statics_id, classify_id, subclassing_id, &sandy_idx);
 
     if ( 0 != ret )
     {
@@ -384,8 +383,8 @@ int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
 
 //绝对值修改监控统计项目，
 int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
-                                     unsigned int app_id,
                                      unsigned int classify_id,
+                                     unsigned int subclassing_id,
                                      uint64_t set_value)
 {
     if (!initialized_)
@@ -400,7 +399,7 @@ int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
 
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
-    ret = find_insert_idx(statics_id, app_id, classify_id , &sandy_idx);
+    ret = find_insert_idx(statics_id, classify_id, subclassing_id , &sandy_idx);
 
     if ( 0 != ret )
     {
@@ -414,10 +413,10 @@ int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
 
 //根据统计ID和分类ID作为key，得到统计数值
 uint64_t ZCE_Server_Status::get_counter(unsigned int statics_id,
-                                        unsigned int app_id,
-                                        unsigned int classify_id)
+                                        unsigned int classify_id,
+                                        unsigned int subclassing_id)
 {
-    ZCE_STATUS_ITEM_ID stat_item_id(statics_id, app_id, classify_id);
+    ZCE_STATUS_ITEM_ID stat_item_id(statics_id, classify_id, subclassing_id);
     STATID_TO_INDEX_MAP::iterator iter_tmp = statid_to_index_.find(stat_item_id);
 
     if ( iter_tmp != statid_to_index_.end() )
@@ -604,8 +603,8 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
 
         strstream << std::setw(6) << i << ".";
         strstream << "statics id<" << std::setw(10) << (stat_process_iter + i)->item_id_.statics_id_ << ">";
-        strstream << "game app id<" << std::setw(10) << (stat_process_iter + i)->item_id_.app_id_ << ">";
-        strstream << "classify id<" << std::setw(10) << (stat_process_iter + i)->item_id_.classify_id_ << ">";
+        strstream << "game app id<" << std::setw(10) << (stat_process_iter + i)->item_id_.classify_id_ << ">";
+        strstream << "classify id<" << std::setw(10) << (stat_process_iter + i)->item_id_.subclassing_id_ << ">";
         strstream << std::setw(ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN) << statics_item_name << ":" << (stat_process_iter + i)->counter_ << std::endl;
     }
 }
@@ -658,8 +657,8 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
         ZCE_LOGMSG(log_priority, "%5u.<%10u, %10u, %10u> %32s : %llu ",
                    i,
                    (stat_process_iter + i)->item_id_.statics_id_,
-                   (stat_process_iter + i)->item_id_.app_id_,
                    (stat_process_iter + i)->item_id_.classify_id_,
+                   (stat_process_iter + i)->item_id_.subclassing_id_,
                    statics_item_name,
                    (stat_process_iter + i)->counter_
                   );

@@ -2,7 +2,7 @@
 #include "zerg_predefine.h"
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_comm_manager.h"
-#include "zerg_app_handler.h"
+#include "zerg_app_timer.h"
 #include "zerg_stat_define.h"
 
 /****************************************************************************************************
@@ -35,9 +35,6 @@ Comm_Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
 
 //自己是否是代理
 bool           TCP_Svc_Handler::if_proxy_ = false;
-
-// game_id
-unsigned int   TCP_Svc_Handler::game_id_ = 0;
 
 //
 size_t         TCP_Svc_Handler::num_accept_peer_ = 0;
@@ -184,8 +181,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
         reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
         //统计
-        server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0, static_cast<int>(num_accept_peer_));
-        server_status_->increase_by_statid(ZERG_ACCEPT_PEER_COUNTER, game_id_, 1);
+        server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0,0, static_cast<int>(num_accept_peer_));
+        server_status_->increase_by_statid(ZERG_ACCEPT_PEER_COUNTER, 0,0, 1);
     }
     //要测试检查一下,
     else
@@ -308,9 +305,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     timeout_time_id_ = timer_queue()->schedule_timer(this, &TCPCTRL_TIME_ID[0], delay, interval);
 
     //统计
-    server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER, 0,
-                                  static_cast<int>(num_connect_peer_));
-    server_status_->increase_by_statid(ZERG_CONNECT_PEER_COUNTER, game_id_, 1);
+    server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER, 0, 0,num_connect_peer_);
+    server_status_->increase_by_statid(ZERG_CONNECT_PEER_COUNTER, 0, 0, 1);
 
     //SO_RCVBUF，SO_SNDBUF，按照UNPv1的讲解，应该在connect之前设置，虽然我的测试证明，放在这儿设置也可以。
 
@@ -589,7 +585,7 @@ int TCP_Svc_Handler::handle_output()
 
 /******************************************************************************************
 Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
-Function        : TCP_Svc_Handler::handle_timeout
+Function        : TCP_Svc_Handler::timer_timeout
 Return          : int
 Parameter List  :
 Param1: const ZCE_Time_Value& * time  时间,
@@ -600,7 +596,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int TCP_Svc_Handler::handle_timeout(const ZCE_Time_Value &now_time, const void *arg)
+int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
 
@@ -650,14 +646,10 @@ int TCP_Svc_Handler::handle_timeout(const ZCE_Time_Value &now_time, const void *
                    receive_times_);
 
         //这类统计如果过于频繁影响程序的运行,所以放入定时器作,虽然会感觉不是太准确,但是性能优先
-        server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER, game_id_,
-                                           peer_svr_info_.services_type_, static_cast<int>(recieve_counter_));
-        server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER, game_id_,
-                                           peer_svr_info_.services_type_, static_cast<int>(send_counter_));
-        server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER, game_id_,
-                                           peer_svr_info_.services_type_, static_cast<int64_t>(send_bytes_));
-        server_status_->increase_by_statid(ZERG_RECV_BYTES_COUNTER, game_id_,
-                                           peer_svr_info_.services_type_, static_cast<int64_t>(recieve_bytes_));
+        server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER, 0,0,recieve_counter_);
+        server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER, 0,0, send_counter_);
+        server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER,0,0,send_bytes_);
+        server_status_->increase_by_statid(ZERG_RECV_BYTES_COUNTER,0,0, recieve_bytes_);
 
         recieve_counter_ = 0;
         recieve_bytes_ = 0;
@@ -753,14 +745,16 @@ int TCP_Svc_Handler::handle_close()
     }
 
     //这类统计如果过于频繁影响程序的运行,所以放入最后作,虽然会感觉不是太准确,但是性能优先
-    server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER, game_id_,
-                                       peer_svr_info_.services_type_, static_cast<int>(recieve_counter_));
-    server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER, game_id_,
-                                       peer_svr_info_.services_type_, static_cast<int>(send_counter_));
-    server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER, game_id_,
-                                       peer_svr_info_.services_type_, static_cast<int64_t>(send_bytes_));
-    server_status_->increase_by_statid(ZERG_RECV_BYTES_COUNTER, game_id_,
-                                       peer_svr_info_.services_type_, static_cast<int64_t>(recieve_bytes_));
+    server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER, 0, 0,recieve_counter_);
+    server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER, 0, 0,send_counter_);
+    server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER,0, 0,send_bytes_);
+    server_status_->increase_by_statid(ZERG_RECV_BYTES_COUNTER,0, 0,recieve_bytes_);
+
+    recieve_counter_ = 0;
+    recieve_bytes_ = 0;
+    send_counter_ = 0;
+    send_bytes_ = 0;
+
 
     peer_status_ = PEER_STATUS_NOACTIVE;
 
@@ -777,8 +771,8 @@ int TCP_Svc_Handler::handle_close()
                  );
 
         --num_connect_peer_;
-        server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER, 0,
-                                      static_cast<int>(num_connect_peer_));
+        server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER, 0,0,
+                                      num_connect_peer_);
         //将指针归还到池子中间去
         pool_of_cnthdl_.push_back(this);
     }
@@ -792,8 +786,7 @@ int TCP_Svc_Handler::handle_close()
                  );
 
         --num_accept_peer_;
-        server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0,
-                                      static_cast<int>(num_accept_peer_));
+        server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0, 0,num_accept_peer_);
         //将指针归还到池子中间去
         pool_of_acpthdl_.push_back(this);
     }
@@ -1050,7 +1043,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
             }
 
             //统计接收错误
-            server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, game_id_, 1);
+            server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, 0,0, 1);
 
             //记录错误,返回错误
             ZLOG_ERROR("[zergsvr] Receive data error ,services[%u|%u],IP[%s|%u] peer:%u,ZCE_LIB::last_error()=%d|%s.",
@@ -1065,7 +1058,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
         }
 
         //统计接收阻塞的错误
-        server_status_->increase_by_statid(ZERG_RECV_BLOCK_COUNTER, game_id_, 1);
+        server_status_->increase_by_statid(ZERG_RECV_BLOCK_COUNTER, 0, 0, 1);
 
         //如果错误是阻塞,什么都不作
         return SOAR_RET::SOAR_RET_SUCC;
@@ -1308,13 +1301,13 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
                        socket_peer_.get_handle(),
                        ZCE_LIB::last_error(),
                        strerror(ZCE_LIB::last_error()));
-            server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER, game_id_, 1);
+            server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER, 0, 0, 1);
 
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
         //统计发送阻塞的错误
-        server_status_->increase_by_statid(ZERG_SEND_BLOCK_COUNTER, game_id_, 1);
+        server_status_->increase_by_statid(ZERG_SEND_BLOCK_COUNTER, 0, 0, 1);
 
         //如果错误是阻塞,什么都不作
         return SOAR_RET::SOAR_RET_SUCC;
@@ -1385,7 +1378,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
         }
 
         //增加错误发送的处理
-        server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER, game_id_, 1);
+        server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER, 0, 0, 1);
 
         //
         tmpbuf->size_of_buffer_ += proc_frame->frame_length_;
@@ -1485,7 +1478,7 @@ Modify Record   :
 ******************************************************************************************/
 int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 {
-    server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, game_id_, 1);
+    server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, 0, 0, 1);
     //
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
     DEBUGDUMP_FRAME_HEAD(proc_frame, "process_send_data Before framehead_encode:", RS_DEBUG);
@@ -1534,9 +1527,9 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
     {
 
         //看这个服务器是否是否是要重连的服务器，并且检查是否有备份路由
-        ret = zerg_auto_connect_.get_backupsvcinfo(*p_sendto_svrinfo,
-                                                   backroute_valid,
-                                                   backroute_svcinfo);
+        //ret = zerg_auto_connect_.get_backupsvcinfo(*p_sendto_svrinfo,
+        //                                           backroute_valid,
+        //                                           backroute_svcinfo);
 
         //如果是要主动连接出去的服务器
         if (ret == SOAR_RET::SOAR_RET_SUCC  && svchanle == NULL)
@@ -1725,7 +1718,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 
     if (!bret)
     {
-        server_status_->increase_by_statid(ZERG_SEND_LIST_FULL_COUNTER, game_id_, 1);
+        server_status_->increase_by_statid(ZERG_SEND_LIST_FULL_COUNTER, 0, 0, 1);
         //丢弃或者错误处理那个数据比较好呢?这儿值得商榷, 我这儿进行错误处理(可能丢弃)的是最新的.
         //我的考虑是如果命令有先后性.而且可以避免内存操作.
         ZLOG_ERROR("[zergsvr] Services [%u|%u] IP|Port[%s|%u] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.",
@@ -1916,7 +1909,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             }
 
             //统计接收错误
-            server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, game_id_, 1);
+            server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, 0, 0, 1);
             return -1;
         }
 
@@ -1970,13 +1963,11 @@ void TCP_Svc_Handler::dump_status_staticinfo(std::ostringstream &ostr_stream)
     ostr_stream << "MAX ACCEPT SVR:" << static_cast<unsigned int>(max_accept_svr_) << std::endl;
     ostr_stream << "MAX_CONNECT SVR:" << static_cast<unsigned int>(max_connect_svr_) << std::endl;
     ostr_stream << "IF PROXY:" << if_proxy_ << std::endl;
-    ostr_stream << "MAX FRAME LEN:" << max_frame_len_ << std::endl;
     ostr_stream << "CONNECT TIMEOUT:" << connect_timeout_ << std::endl;
     ostr_stream << "RECEIVE TIMEOUT:" << receive_timeout_ << std::endl;
     ostr_stream << "NUMBER ACCEPT PEER:" << static_cast<unsigned int>(num_accept_peer_) << std::endl;
     ostr_stream << "NUMBER CONNECT PEER:" << static_cast<unsigned int>(num_connect_peer_) << std::endl;
     ostr_stream << "NUM CONNECT PEER:" << static_cast<unsigned int>(num_connect_peer_) << std::endl;
-    ostr_stream << "IF CHECK FRAME:" << if_check_frame_ << std::endl;
 }
 
 

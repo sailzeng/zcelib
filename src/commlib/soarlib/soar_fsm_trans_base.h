@@ -268,7 +268,7 @@ protected:
     int set_timetouch_timer(int sec, int usec = 0);
 
     //定时器触发
-    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
+    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
     //关闭
     virtual int handle_close ();
 

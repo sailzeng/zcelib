@@ -164,6 +164,7 @@ void ZBuffer_Storage::extend_bufferlist(size_t szlist)
 
     Comm_Stat_Monitor::instance()->set_by_statid(ZERG_BUFFER_STORAGE_NUMBER,
                                                  0,
+                                                 0,
                                                  size_of_bufferalloc_);
 }
 

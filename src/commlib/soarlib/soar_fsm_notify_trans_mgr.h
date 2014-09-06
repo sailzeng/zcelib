@@ -179,7 +179,7 @@ public:
             bool bcrtcx = false;
 
             //增加一步
-            tmp_frame->recv_service_ = self_services_id_;
+            tmp_frame->recv_service_ = self_svc_id_;
 
             //tmp_frame  马上回收
             ret = process_appframe(tmp_frame, bcrtcx);
@@ -319,9 +319,9 @@ public:
                                  qquin,
                                  trans_id,
                                  backfill_trans_id,
-                                 self_services_id_,
+                                 self_svc_id_,
                                  proxysvc,
-                                 self_services_id_,
+                                 self_svc_id_,
                                  info,
                                  app_id,
                                  option);
@@ -417,7 +417,8 @@ public:
             
             // 加个监控
             Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
-                tmp_frame->app_id_);
+                tmp_frame->app_id_,
+                0);
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
         }
 

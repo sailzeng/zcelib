@@ -27,13 +27,13 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
         return ret;
     }
 
-    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
+    Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
 
     //事务管理器的初始化, 自动机不使用notify
     Transaction_Manager *p_trans_mgr_ = new Transaction_Manager();
     p_trans_mgr_->initialize(svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
-                             self_services_id_,
+                             self_svc_id_,
                              ZCE_Timer_Queue::instance(),
                              Zerg_MMAP_BusPipe::instance());
     Transaction_Manager::instance(p_trans_mgr_);

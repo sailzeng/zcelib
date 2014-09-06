@@ -6,7 +6,7 @@
 #include "soar_svrd_cfg_base.h"
 
 
-Server_Config_Base::Server_Config_Base():
+Server_Config_Base::Server_Config_Base() :
     self_svc_id_(0, 0),
     instance_id_(1),
     if_restore_pipe_(true),
@@ -23,7 +23,18 @@ Server_Config_Base::Server_Config_Base():
 
     //默认框架定时器间隔时间 100毫秒
     const time_t DEF_TIMER_INTERVAL_USEC = 100000;
-    tiemr_precision_.set(0, DEF_TIMER_INTERVAL_USEC);
+    heart_precision_.set(0, DEF_TIMER_INTERVAL_USEC);
+
+    const size_t DEF_RESERVE_FILE_NUM = 10;
+    const size_t DEF_MAX_LOG_FILE_SIZE = 16 * 1024 * 1024;
+
+    log_info_.log_level_ = RS_DEBUG;
+    log_info_.log_div_type_ = LOGDEVIDE_BY_DATE;
+    log_info_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
+    
+    log_info_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
+    log_info_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
+
 }
 
 Server_Config_Base::~Server_Config_Base()
@@ -206,4 +217,13 @@ int Server_Config_Base::usage(const char *program_name)
 }
 
 
+int Server_Config_Base::load_cfgfile()
+{
+    return 0;
+}
 
+
+int Server_Config_Base::reload_cfgfile()
+{
+    return load_cfgfile();
+}

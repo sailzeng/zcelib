@@ -27,7 +27,7 @@
 /*********************************************************************************
 class ZCE_Server_Toolkit
 *********************************************************************************/
-class ZCELIB_EXPORT ZCE_Server_Base
+class ZCELIB_EXPORT ZCE_Server_Base :public ZCE_NON_Copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,
@@ -63,7 +63,7 @@ public:
     void set_run_sign(bool app_run);
 
     /// 设置reload标志
-    void set_reload(bool app_reload);
+    void set_reload_sign(bool app_reload);
 
     ///通过启动参数0,得到app_base_name_，app_run_name_
     int create_app_name(const char *argv_0);

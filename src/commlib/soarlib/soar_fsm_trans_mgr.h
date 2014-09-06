@@ -406,7 +406,7 @@ protected:
     unsigned int                trans_id_builder_;
 
     //自己的Services Info
-    SERVICES_ID                 self_services_id_;
+    SERVICES_ID                 self_svc_id_;
 
     //默认使用的
     ZCE_Timer_Queue            *timer_queue_;
@@ -481,7 +481,7 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
 
     tmp_frame->frame_uid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
-    tmp_frame->recv_service_ = self_services_id_;
+    tmp_frame->recv_service_ = self_svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
     tmp_frame->transaction_id_ = trans_id;
@@ -526,7 +526,7 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
 
     tmp_frame->frame_uid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
-    tmp_frame->recv_service_ = self_services_id_;
+    tmp_frame->recv_service_ = self_svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
     tmp_frame->transaction_id_ = trans_id;
@@ -554,7 +554,7 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
 //
 inline const SERVICES_ID *Transaction_Manager::self_svc_info()
 {
-    return &self_services_id_;
+    return &self_svc_id_;
 }
 
 //管理器发送一个命令给一个服务器,内部函数
@@ -639,9 +639,9 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     const T &info,
     unsigned int option)
 {
-    SERVICES_ID rcvsvc = self_services_id_;
+    SERVICES_ID rcvsvc = self_svc_id_;
     SERVICES_ID proxysvc(0, 0);
-    SERVICES_ID sndsvc = self_services_id_;
+    SERVICES_ID sndsvc = self_svc_id_;
     return mgr_postframe_to_msgqueue(
                cmd,
                qquin,

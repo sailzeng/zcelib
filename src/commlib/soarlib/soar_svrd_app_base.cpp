@@ -4,8 +4,8 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2008年1月22日
-* @brief
-*             终于讲sonicmao的这个类发扬广大了，
+* @brief      终于讲sonicmao的这个类发扬广大了，当然到今天，里面的代码已经基本100%重写了。
+*             作为一个进程处理的过程，
 *
 * @details
 *
@@ -25,10 +25,11 @@
 #include "soar_stat_monitor.h"
 
 
-
+Comm_Svrd_Appliction *Comm_Svrd_Appliction::instance_ = NULL;
 
 Comm_Svrd_Appliction::Comm_Svrd_Appliction() :
-    self_services_id_(),
+    business_id_(INVALID_BUSINESS_ID),
+    self_svc_id_(),
     run_as_win_serivces_(false),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
@@ -50,28 +51,21 @@ Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
 
 //初始化，放入一些基类的指针，
 int Comm_Svrd_Appliction::initialize(Server_Config_Base *config_base,
-    Server_Timer_Base *timer_base)
+                                     Server_Timer_Base *timer_base)
 {
     config_base_ = config_base;
     timer_base_ = timer_base;
     return 0;
 }
 
+//获取配置的指针
+Server_Config_Base *Comm_Svrd_Appliction::config_instance()
+{
+    return config_base_;
+}
 
-/******************************************************************************************
-Author          : Sonicmao(MaoJian)  Date Of Creation: 2008年1月22日
-Function        : Comm_Svrd_Appliction::Init
-Return          : int
-Parameter List  :
-  Param1: int argc     启动参数个数
-  Param2: char* argv[] 启动参数信息
-  Param2: Comm_Svrd_Config *svd_config 配置类,
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//启动过程的处理
 int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 {
 
@@ -86,11 +80,17 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
         ZLOG_ERROR("svr create_app_base_name init fail. ret=%d", ret);
         return ret;
     }
+    //初始化SOCKET等
+    ret = ZCE_Server_Base::socket_init();
+    if (ret != 0)
+    {
+        return ret;
+    }
 
     //忽视信号
     process_signal();
 
-    std::string log_file_prefix = Server_Config_FSM::instance()->app_run_dir_ + "/log/";
+    std::string log_file_prefix = config_base_->app_run_dir_ + "/log/";
     log_file_prefix += app_base_name_;
     log_file_prefix += "_init";
 
@@ -132,36 +132,25 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 
 #endif
 
-
-
-
     //我是华丽的分割线
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("[framework] %s start init", app_base_name_.c_str());
 
-
-    //初始化SOCKET等
-    ret = ZCE_Server_Base::socket_init();
-    if (ret != 0)
-    {
-        return ret;
-    }
-
     // 切换运行目录
-    ret = ZCE_LIB::chdir(Server_Config_FSM::instance()->app_run_dir_.c_str());
+    ret = ZCE_LIB::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
         ZLOG_ERROR("[framework] change run directory to %s fail. err=%d",
-                   Server_Config_FSM::instance()->app_run_dir_.c_str(), errno);
+                   config_base_->app_run_dir_.c_str(), errno);
         return ret;
     }
 
-    ZLOG_INFO("[framework] change work dir to %s", Server_Config_FSM::instance()->app_run_dir_.c_str());
+    ZLOG_INFO("[framework] change work dir to %s", config_base_->app_run_dir_.c_str());
 
     // 运行目录写PID File.
-    std::string app_path = Server_Config_FSM::instance()->app_run_dir_
+    std::string app_path = config_base_->app_run_dir_
                            + "/"
                            + get_app_basename();
     ret = out_pid_file(app_path.c_str(), true);
@@ -200,10 +189,10 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
         return ret;
     }
 
-    self_services_id_ = config_base_->self_svc_id_;
+    self_svc_id_ = config_base_->self_svc_id_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
-    ZCE_ASSERT((self_services_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
-               (self_services_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
+    ZCE_ASSERT((self_svc_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
+               (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -215,6 +204,10 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     //使用WHEEL型的定时器队列
     ZCE_Timer_Queue::instance(new ZCE_Timer_Wheel(
                                   config_base_->timer_nuamber_));
+
+    //注册定时器
+    timer_base_->initialize(ZCE_Timer_Queue::instance(), config_base_);
+
 
     //监控对象添加框架的监控对象
     Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
@@ -253,8 +246,6 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ZLOG_INFO("[framework] MMAP Pipe init success,gogogo."
               "The more you have,the more you want. ");
 
-    //注册配置更新检查定时器
-    register_soar_timer();
 
     // 初始化日志
     ret = init_log();
@@ -269,21 +260,6 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-
-
-
-//重新加载配置
-//int Comm_Svrd_Appliction::reload()
-//{
-//    int ret = Server_Config_FSM::instance()->reload_cfgfile();
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
-//    {
-//        ZLOG_ERROR("load frame config fail. ret=%d", ret);
-//        return ret;
-//    }
-//    return SOAR_RET::SOAR_RET_SUCC;
-//}
-
 //退出的工作
 int Comm_Svrd_Appliction::on_exit()
 {
@@ -297,7 +273,6 @@ int Comm_Svrd_Appliction::on_exit()
 
     Zerg_MMAP_BusPipe::clean_instance();
 
-    Server_Config_FSM::clean_instance();
     //
     ZLOG_INFO("[framework] %s exit_instance Succ.Have Fun.!!!",
               app_run_name_.c_str());
@@ -307,13 +282,6 @@ int Comm_Svrd_Appliction::on_exit()
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
-
-
-
-
-
-
-
 
 //设置日志的优先级
 void Comm_Svrd_Appliction::set_log_priority(ZCE_LOG_PRIORITY log_prio)
@@ -333,28 +301,10 @@ ZCE_LOG_PRIORITY Comm_Svrd_Appliction::get_log_priority()
 int Comm_Svrd_Appliction::register_soar_timer()
 {
     // 注册框架定时器
-    ZCE_ASSERT(timer_base_ == NULL);
-    ZCE_Timer_Queue *timer_queue = ZCE_Timer_Queue::instance();
-    timer_base_ = new Server_Timer_Base(timer_queue);
 
-    // 通过进程名判断是否app进程还是zerg进程
-    bool is_app = true;
-    if (strncasecmp(app_base_name_.c_str(), "zergsvr", strlen("zergsvr") == 0))
-    {
-        // zergsvr
-        is_app = false;
-    }
 
-    
     //下次触发时间，以及间隔触发时间精度
-    ZCE_Time_Value delay(0,0);
-    ZCE_Time_Value interval = config_base_->timer_nuamber_;
 
-    //注册定时器
-    timer_queue->schedule_timer(timer_base_,
-                                NULL,
-                                delay,
-                                interval);
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
@@ -376,9 +326,6 @@ int Comm_Svrd_Appliction::reload_config()
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
-
-
-
 
 //int Comm_Svrd_Appliction::do_run()
 //{
@@ -423,7 +370,6 @@ int Comm_Svrd_Appliction::reload_config()
 
 int Comm_Svrd_Appliction::init_log()
 {
-    Server_Config_FSM *config = Server_Config_FSM::instance();
     int ret = 0;
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
@@ -442,13 +388,13 @@ int Comm_Svrd_Appliction::init_log()
     ZCE_Trace_LogMsg::instance()->finalize();
 
     // 初始化日志
-    ZCE_Trace_LogMsg::instance()->initialize((ZCE_LOGFILE_DEVIDE)config->framework_config_.log_info_.log_div_type_,
-                                             config->log_file_prefix_.c_str(),
+    ZCE_Trace_LogMsg::instance()->initialize((ZCE_LOGFILE_DEVIDE)config_base_->log_info_.log_div_type_,
+                                             config_base_->log_file_prefix_.c_str(),
                                              false,
                                              true,
-                                             config->framework_config_.log_info_.max_log_file_size_,
-                                             config->framework_config_.log_info_.max_log_file_num_,
-                                             config->framework_config_.log_info_.log_output_,
+                                             config_base_->log_info_.max_log_file_size_,
+                                             config_base_->log_info_.reserve_file_num_,
+                                             config_base_->log_info_.log_output_,
                                              LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
 
     ZLOG_DEBUG("log instance reinit .");
@@ -456,3 +402,29 @@ int Comm_Svrd_Appliction::init_log()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
+
+//重新加载配置
+int Comm_Svrd_Appliction::reload()
+{
+    int ret = config_base_->reload_cfgfile();
+    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    {
+        ZLOG_ERROR("load frame config fail. ret=%d", ret);
+        return ret;
+    }
+    return SOAR_RET::SOAR_RET_SUCC;
+}
+
+
+
+//注册实例指针
+void Comm_Svrd_Appliction::set_instance(Comm_Svrd_Appliction *inst)
+{
+    instance_ = inst;
+}
+
+//得到实例指针
+Comm_Svrd_Appliction *Comm_Svrd_Appliction::instance()
+{
+    return instance_;
+}

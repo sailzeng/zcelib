@@ -19,8 +19,6 @@ ZERG_SERVICES_INFO::~ZERG_SERVICES_INFO()
 {
 }
 
-//单子示例static初始化
-Zerg_Server_Config *Zerg_Server_Config::instance_ = NULL;
 /****************************************************************************************************
 class  Zerg_Server_Config
 ****************************************************************************************************/
@@ -34,7 +32,7 @@ Zerg_Server_Config::~Zerg_Server_Config()
 
 //根据SVCINFO得到IP地址信息
 int Zerg_Server_Config::GetServicesIPInfo(const SERVICES_ID &svc_info,
-                                          ZCE_Sockaddr_In     &ipaddr)
+                                          ZCE_Sockaddr_In     &ipaddr) const
 {
     int ret = 0;
 
@@ -90,25 +88,3 @@ int Zerg_Server_Config::initialize(int argc, const char *argv[])
 }
 
 
-//得到唯一的单子实例
-Zerg_Server_Config *Zerg_Server_Config::instance()
-{
-    if (instance_ == NULL)
-    {
-        instance_ = new Zerg_Server_Config();
-    }
-
-    return instance_;
-}
-
-//清除单子实例
-void Zerg_Server_Config::clean_instance()
-{
-    if (instance_)
-    {
-        delete instance_;
-    }
-
-    instance_ = NULL;
-    return;
-}

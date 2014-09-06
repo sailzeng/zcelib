@@ -305,9 +305,9 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
     //分派了多少个定时器计数
     size_t num_dispatch = 0;
 
-    //先调整计时的参考点，因为在处理定时器的过程，回调handle_timeout时，有人会在handle_timeout重新设置定时器，
+    //先调整计时的参考点，因为在处理定时器的过程，回调timer_timeout时，有人会在timer_timeout重新设置定时器，
     //如果不调整timer_refer_pointer_，那么这是设置的时间可能出现问题，
-    //如果中间等了一个很长时间，如果timer_refer_pointer_没有先调整，回调handle_timeout时设置的定时器就错误了。（可能会造成死循环）
+    //如果中间等了一个很长时间，如果timer_refer_pointer_没有先调整，回调timer_timeout时设置的定时器就错误了。（可能会造成死循环）
     timer_refer_pointer_ = now_trigger_msec;
 
     //如果代码进入下面的if，表示时间同步调整，导致时间跳变到过去的某个时间上(pasttime)去了,
@@ -380,12 +380,12 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
                 //标记这个定时器已经触发过，详细见already_trigger_的解释
                 time_node_ary_[timer_node_id].already_trigger_ = true;
                 //时钟触发
-                time_node_ary_[timer_node_id].timer_handle_->handle_timeout(now_time,
+                time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
                                                                             time_node_ary_[timer_node_id].action_);
 
                 ++num_dispatch;
 
-                //因为handle_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
+                //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
                 if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true )
                 {
                     //重新规划这个定时器是否要安排，如果不用内部会取消他，理论不可能失败，暂时不加跟踪

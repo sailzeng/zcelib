@@ -95,8 +95,7 @@ protected:
     //是否是代理服务器
     static bool                     if_proxy_;
 
-    // game_id
-    static unsigned int             game_id_;
+
 };
 
 

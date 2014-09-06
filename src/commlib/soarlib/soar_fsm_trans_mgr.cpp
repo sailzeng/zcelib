@@ -50,7 +50,7 @@ Transaction_Manager *Transaction_Manager::instance_ = NULL;
 Transaction_Manager::Transaction_Manager()
     : max_trans_(0)
     , trans_id_builder_(0)
-    , self_services_id_(0, 0)
+    , self_svc_id_(0, 0)
     , timer_queue_(NULL)
     , zerg_mmap_pipe_(NULL)
     , statistics_clock_(NULL)
@@ -152,7 +152,7 @@ void Transaction_Manager::initialize(size_t  szregtrans,
     regtrans_pool_map_.rehash(szregtrans + 128);
     transc_map_.rehash(sztransmap + 1024);
     max_trans_ = sztransmap;
-    self_services_id_ = selfsvr;
+    self_svc_id_ = selfsvr;
     timer_queue_ = timer_queue;
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
@@ -867,7 +867,7 @@ int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
     rsp_msg->transaction_id_ = 0;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
-    rsp_msg->send_service_ =  this->self_services_id_;
+    rsp_msg->send_service_ =  this->self_svc_id_;
     rsp_msg->frame_option_ = option;
 
     //»ØÌîÊÂÎñID

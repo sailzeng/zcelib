@@ -30,7 +30,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 
     THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
 
-    Server_Config_FSM *svd_config = Server_Config_FSM::instance();
+    Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
     MT_NOTIFY_TRANS_MANGER *trans_mgr = new MT_NOTIFY_TRANS_MANGER();
     Transaction_Manager::instance(trans_mgr);
     ZCE_Time_Value enqueue_timeout;
@@ -40,7 +40,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
     trans_mgr->initialize(
         svd_config->framework_config_.trans_info_.trans_cmd_num_,
         svd_config->framework_config_.trans_info_.trans_num_,
-        self_services_id_,
+        self_svc_id_,
         enqueue_timeout,
         ZCE_Timer_Queue::instance(),
         Zerg_MMAP_BusPipe::instance(),

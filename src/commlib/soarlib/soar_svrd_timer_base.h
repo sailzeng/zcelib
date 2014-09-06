@@ -4,7 +4,7 @@
 
 
 class Comm_Stat_Monitor;
-class Comm_Svrd_Appliction;
+class Server_Config_Base;
 
 
 /*!
@@ -15,20 +15,16 @@ class Comm_Svrd_Appliction;
 class Server_Timer_Base : public ZCE_Timer_Handler
 {
     
-
+    friend class Comm_Svrd_Appliction;
 public:
-    //构造函数
-    Server_Timer_Base(ZCE_Timer_Queue *queue);
+
+    ///构造函数,因为框架的设计构造的时候不初始化timer queue，
+    Server_Timer_Base();
+    ///析构函数
     ~Server_Timer_Base();
 
-
-
 protected:
-
-    ///初始化
-    int initialize();
-
-
+    
     // 检查监控数据
     void check_monitor(const ZCE_Time_Value &now_time);
 
@@ -41,23 +37,41 @@ protected:
 
 protected:
 
-    // 定时处理监控数据
-    virtual int handle_timeout(const ZCE_Time_Value &now_time,
+    ///初始化
+    virtual int initialize(ZCE_Timer_Queue *queue,
+        Server_Config_Base *config_base);
+
+
+    /// 定时处理监控数据
+    virtual int timer_timeout(const ZCE_Time_Value &now_time,
         const void *act = 0);
 
+    ///定时器关闭
+    virtual int timer_close();
 
 protected:
        
     ///服务器定时器ID
-    static const  int      SERVER_TIMER_ID[];
+    static const  int  SERVER_TIMER_ID[];
 
     ///服务器每100 mesc 心跳一次
     static const time_t HEARTBEAT_INTERVAL_MSEC = 100;
 
+public:
     ///当前时间
-    static ZCE_Time_Value cur_time_;
+    static ZCE_Time_Value now_time_;
 
 protected:
+
+    ///
+    ZCE_Time_Value heart_precision_;
+
+    ///心跳计数器
+    uint64_t  heartbeat_counter_;
+
+    ///从开始心跳到现在的毫秒数，这个数值是通过heartbeat_counter_和精度得到的，
+    ///并不准确，用于各种初略计算
+    uint64_t  heart_total_mesc_;
 
     // 监控
     Comm_Stat_Monitor *stat_monitor_;

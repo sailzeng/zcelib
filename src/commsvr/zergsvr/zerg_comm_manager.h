@@ -106,7 +106,8 @@ protected:
     //协议包发送计数器
     unsigned int              send_frame_count_;
 
-
+    //配置实例指针
+    const Zerg_Server_Config *zerg_svr_cfg_;
 };
 
 

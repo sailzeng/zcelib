@@ -2,6 +2,8 @@
 
 #include "zerg_predefine.h"
 #include "zerg_application.h"
+#include "zerg_configure.h"
+#include "zerg_app_timer.h"
 
 
 int main(int argc, const char *argv[])

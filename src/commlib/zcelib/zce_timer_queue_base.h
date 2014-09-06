@@ -74,9 +74,9 @@ protected:
 
         ///是否已经触发过了，
         ///yunfeiyang帮忙发现了一个bug，为了解决这个bug，我们增加了这个字段。出错过程是这样的，
-        ///1. dispatch_timer在调用handle_timeout时，如果handle_timeout中删除了自己的定时器，又增加了自己的定时器，此时增加的定时器，
+        ///1. dispatch_timer在调用timer_timeout时，如果timer_timeout中删除了自己的定时器，又增加了自己的定时器，此时增加的定时器，
         ///   time_node_id与当前的在dispatch_timer中处理的time_node_id是一样的,(因为分配队列的原因)
-        ///2. dispatch调用完handle_timeout后，会reschedule_timer, reschedule_timer发现这个timer是一次性的，删除，因此time_node_id
+        ///2. dispatch调用完timer_timeout后，会reschedule_timer, reschedule_timer发现这个timer是一次性的，删除，因此time_node_id
         ///   在定时器内部已经失效，（但外部并不知道）
         ///3. 在事务处理中（外部）释放时，其还会错误time_node_id有效，所以又会调用cancel_timer函数，但此时这个time_node_id在定时器内
         ///   部会认为已经释放了，导致出错
@@ -228,7 +228,7 @@ protected:
     @brief      分配一个崭新的Timer Node
     @return     int             返回0标识分配成功
     @param[in]  timer_hdl       Timer Handler的指针，TIMER NODE中需要记录的，
-    @param[in]  action          schedule_timer的参数，在回调handle_timeout的时候会回填回去
+    @param[in]  action          schedule_timer的参数，在回调timer_timeout的时候会回填回去
     @param[in]  delay_time_     第一次触发的时间
     @param[in]  interval_time_  后续持续触发的间隔时间
     @param[out] time_node_id    返回的分配的ID

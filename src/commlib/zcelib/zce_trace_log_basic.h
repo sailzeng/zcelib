@@ -41,7 +41,7 @@
 enum ZCE_LOGFILE_DEVIDE
 {
     ///记录单个个日志文件,不分割
-    LOGDEVIDE_NONE       = 1,
+    LOGDEVIDE_NONE          = 1,
 
     ///按照尺寸记录分割日志文件,用ID标识,这个ID的意思是滚动处理的ID，
     ///当前的日志文件是.log这个文件，其他的就有日志文件名称是1-N，当前处理的文件
@@ -49,25 +49,25 @@ enum ZCE_LOGFILE_DEVIDE
     ///文件作为当前写入的日志文件。这种方式好处是大小绝对固定，好处是文件名称总在变
     ///化，并不利于维护和管理
     //在32位的机器，分割日志的大小不要超过4G，64位理论无限制,代码内部限制是16G
-    LOGDEVIDE_BY_SIZE    = 101,
+    LOGDEVIDE_BY_SIZE       = 101,
 
     //
-    LOGDEVIDE_BY_TIMEBEGIN     = 200,
+    LOGDEVIDE_BY_TIMEBEGIN  = 200,
 
     ///按5分钟生成一个文件
-    LOGDEVIDE_BY_FIVEMINUTE    = 201,
+    LOGDEVIDE_BY_FIVEMINUTE = 201,
     ///按一刻钟生成一个文件
-    LOGDEVIDE_BY_QUARTER       = 202,
+    LOGDEVIDE_BY_QUARTER    = 202,
     ///按照小时分割日志,
-    LOGDEVIDE_BY_HOUR          = 203,
+    LOGDEVIDE_BY_HOUR       = 203,
     ///按照6个小时分割日志,1天分割为4个
-    LOGDEVIDE_BY_SIXHOUR       = 204,
+    LOGDEVIDE_BY_SIXHOUR    = 204,
     ///按照日期分割日志,
-    LOGDEVIDE_BY_DATE          = 205,
+    LOGDEVIDE_BY_DATE       = 205,
     ///按照月份分割日志,
-    LOGDEVIDE_BY_MONTH         = 206,
+    LOGDEVIDE_BY_MONTH      = 206,
     ///按照年分割日志,
-    LOGDEVIDE_BY_YEAR          = 207,
+    LOGDEVIDE_BY_YEAR       = 207,
 
     LOGDEVIDE_BY_TIMEEND,
 

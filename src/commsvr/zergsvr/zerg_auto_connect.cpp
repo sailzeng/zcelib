@@ -10,7 +10,8 @@
 class Zerg_Auto_Connector
 ****************************************************************************************************/
 Zerg_Auto_Connector::Zerg_Auto_Connector() :
-    size_of_wantconnect_(0)
+    size_of_wantconnect_(0),
+    zerg_svr_cfg_(NULL)
 {
 }
 //
@@ -18,37 +19,24 @@ Zerg_Auto_Connector::~Zerg_Auto_Connector()
 {
 }
 
-
-
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年1月12日
-Function        : Zerg_Auto_Connector::get_autoconnect_cfg
-Return          : int
-Parameter List  :
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//取得配置信息
 int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
-
-    ZERG_SERVICES_INFO svc_route;
-
-
-    size_of_wantconnect_ = config->zerg_config_.auto_connect_num_;
     
+    zerg_svr_cfg_ = config;
+    
+    size_of_wantconnect_ = config->zerg_config_.auto_connect_num_;
 
     //循环处理所有的数据
+    ZERG_SERVICES_INFO svc_route;
     for (size_t i = 0; i < size_of_wantconnect_; ++i)
     {
 
         svc_route.zerg_svc_info_ = config->zerg_config_.auto_connect_svrs_[i];
 
         //找到相关的IP配置
-        ret = Zerg_Server_Config::instance()->GetServicesIPInfo(svc_route.zerg_svc_info_,
+        ret = config->GetServicesIPInfo(svc_route.zerg_svc_info_,
             svc_route.zerg_ip_addr_);
 
         //如果查询不到
@@ -171,29 +159,6 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svrinfo)
 }
 
 
-//根据主服务器，得到备份服务器的信息
-//int Zerg_Auto_Connector::get_backupsvcinfo(const SERVICES_ID &main_svrinfo,
-//    bool &backroute_valid,
-//    SERVICES_ID &backroute_svrinfo)
-//{
-//    backroute_valid = false;
-//
-//    for (size_t i = 0; i < size_of_wantconnect_; ++i)
-//    {
-//        if (ary_want_connect_[i].main_route_info_ == main_svrinfo)
-//        {
-//            ZCE_Sockaddr_In     inetaddr = ary_want_connect_[i].main_route_ip_;
-//            backroute_valid = ary_want_connect_[i].back_route_valid_;
-//            backroute_svrinfo = ary_want_connect_[i].back_route_info_;
-//            return SOAR_RET::SOAR_RET_SUCC;
-//        }
-//    }
-//
-//    //这个错误无需记录,可能是这个SVCID根本不是要主动连接的服务器
-//    return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
-//}
-
-
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
 int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In     &inetaddr)
 {
@@ -215,7 +180,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
 
     //tcpscoket.sock_enable (O_NONBLOCK);
 
-    //记住,是这个时间标志使SOCKET异步连接,
+    //记住,是这个时间标志使SOCKET异步连接,第3个参数true表示是非阻塞
     int ret = zerg_connector_.connect(sockstream, &inetaddr, true);
 
     //必然失败!?
@@ -228,11 +193,13 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
+        
         //HANDLER_MODE_CONNECT模式理论不会失败
-        TCP_Svc_Handler *p_handler = TCP_Svc_Handler::AllocSvcHandlerFromPool(TCP_Svc_Handler::HANDLER_MODE_CONNECT);
+        TCP_Svc_Handler *p_handler = TCP_Svc_Handler::AllocSvcHandlerFromPool(
+            TCP_Svc_Handler::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
-        p_handler->init_tcpsvr_handler(Zerg_Server_Config::instance()->self_svc_id_,
+        p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_id_,
             svrinfo,
             sockstream,
             inetaddr);
@@ -415,7 +382,7 @@ Zerg_Auto_Connector::is_current_auto_connect(const SERVICES_ID &service, bool is
 
             // 找到，则比较一下ip和端口
             ZCE_Sockaddr_In     svr_ip_addr;
-            ret = Zerg_Server_Config::instance()->GetServicesIPInfo(service, svr_ip_addr);
+            ret = zerg_svr_cfg_->GetServicesIPInfo(service, svr_ip_addr);
             if (ret != SOAR_RET::SOAR_RET_SUCC)
             {
                 // 如果这个service已经找不到对应的IP配置，可能已经去除了
