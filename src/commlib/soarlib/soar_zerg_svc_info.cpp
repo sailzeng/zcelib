@@ -16,7 +16,7 @@ SERVICES_ID::~SERVICES_ID()
 }
 
 //
-void SERVICES_ID::set_serviceid(unsigned short svrtype, unsigned int svrid )
+void SERVICES_ID::set_svcid(unsigned short svrtype, unsigned int svrid )
 {
     services_type_ = svrtype;
     services_id_ = svrid;
@@ -58,16 +58,4 @@ bool SERVICES_ID::operator <(const SERVICES_ID &others) const
 /******************************************************************************************
 struct SERVICES_IP_INFO 服务ID信息 + IP信息
 ******************************************************************************************/
-SERVICES_INFO::SERVICES_INFO():
-    ip_addr_(0),
-    port_(0),
-    idc_no_(0),
-    server_guid_no_(0)
-{
-    cfg_info_[0] = '\0';
-}
-
-SERVICES_INFO::~SERVICES_INFO()
-{
-}
 

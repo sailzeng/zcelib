@@ -12,18 +12,16 @@ ZCE_Time_Value Server_Timer_Base::now_time_ = ZCE_LIB::gettimeofday();
 //定时器ID,避免New传递,回收
 const int Server_Timer_Base::SERVER_TIMER_ID[] =
 {
-    0x1,                    //心跳ID
-    0x2,
+    0x1,                      //心跳ID
+    0x101,                    //ZAN1
+    0x102,                    //ZAN2
+    0x103,                    //ZAN3
 };
 
 
-//heartbeat_counter_不从0开始计数是避免第一次模除的时候就发生事情
+//
 Server_Timer_Base::Server_Timer_Base() : 
-    ZCE_Timer_Handler(),
-    heart_precision_(0,0),
-    heartbeat_counter_(1),
-    heart_total_mesc_(0),
-    stat_monitor_(NULL)
+    ZCE_Timer_Handler()
 {
 }
 
@@ -33,15 +31,14 @@ Server_Timer_Base::~Server_Timer_Base()
 }
 
 
-int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue, 
-    Server_Config_Base *config_base)
+//初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
+int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
 {
+    stat_monitor_ = Comm_Stat_Monitor::instance();
+
     timer_queue(queue);
 
     now_time_ = ZCE_LIB::gettimeofday();
-
-    //定时心跳,每100msec心跳一下，得到当前的时间
-    heart_precision_ = config_base->heart_precision_;
 
     timer_queue()->schedule_timer(this,
         &(SERVER_TIMER_ID[0]),

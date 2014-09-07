@@ -17,7 +17,7 @@ Zerg_Comm_Manager::Zerg_Comm_Manager():
     zbuffer_storage_(NULL),
     server_status_(NULL),
     send_frame_count_(0),
-    zerg_svr_cfg_(NULL)
+    zerg_config_(NULL)
 
 {
     zerg_mmap_pipe_ = Zerg_MMAP_BusPipe::instance();
@@ -47,19 +47,18 @@ Zerg_Comm_Manager::~Zerg_Comm_Manager()
 int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
 {
     
-    zerg_svr_cfg_ = config;
+    zerg_config_ = config;
 
     //清理监控命令
     monitor_size_ = 0;
     memset(monitor_cmd_, 0, sizeof(monitor_cmd_));
 
     //错误发送数据尝试发送次数
-    //ret = cfg_file.get_uint32_value("COMMCFG","TRYERROR",tmp_uint );
-    error_try_num_ = config->zerg_config_.retry_error_;
+    error_try_num_ = config->zerg_cfg_data_.retry_error_;
     
 
     //错误发送数据尝试发送次数
-    monitor_size_ = config->zerg_config_.monitor_cmd_count_;
+    monitor_size_ = config->zerg_cfg_data_.monitor_cmd_count_;
 
     ZLOG_INFO("[zergsvr] Zerg_Comm_Manager::get_config monitor_size_ = %u", monitor_size_);
 
@@ -67,33 +66,55 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
     //但是最好不要对所有的机器进行监控，
     for (size_t i = 0; i < monitor_size_; ++i)
     {
-        monitor_cmd_[i] = config->zerg_config_.monitor_cmd_list_[i];
+        monitor_cmd_[i] = config->zerg_cfg_data_.monitor_cmd_list_[i];
     }
 
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
+int Zerg_Comm_Manager::init_allpeer()
+{
+    int ret = 0;
+    //初始化所有的监听端口
+    for (unsigned int i = 0; i < zerg_config_->zerg_cfg_data_.valid_svc_num_; ++i)
+    {
+        ret = init_socketpeer(zerg_config_->zerg_cfg_data_.bind_svcid_ary_[i]);
+        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        {
+            return ret;
+        }
+    }
+
+    return SOAR_RET::SOAR_RET_SUCC;
+}
+
 //
-int Zerg_Comm_Manager::init_socketpeer(ZERG_SERVICES_INFO &init_svcid)
+int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
 {
     int ret = 0;
 
-    //检查一下端口
-    ret = check_safeport(init_svcid.zerg_ip_addr_);
 
+    SERVICES_INFO svc_info;
+    ret = zerg_config_->get_svcinfo_by_svcid(init_svcid, svc_info);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //检查一下端口
+    ret = check_safeport(svc_info.ip_address_);
     if (ret != 0)
     {
         return ret;
     }
 
     //如果是TCP的接口
-    if (init_svcid.zerg_svc_info_.services_type_ < SVC_UDP_SERVER_BEGIN )
+    if (init_svcid.services_type_ < SVC_UDP_SERVER_BEGIN )
     {
         //设置Bind地址
-        TCP_Accept_Handler *tmp_acceptor = new TCP_Accept_Handler(init_svcid.zerg_svc_info_,
-                                                                  init_svcid.zerg_ip_addr_);
-
+        TCP_Accept_Handler *tmp_acceptor = new TCP_Accept_Handler(init_svcid,
+            svc_info.ip_address_);
         //采用同步的方式创建LISTER PEER
         ret = tmp_acceptor->create_listen();
 
@@ -113,8 +134,8 @@ int Zerg_Comm_Manager::init_socketpeer(ZERG_SERVICES_INFO &init_svcid)
     else
     {
         //
-        UDP_Svc_Handler *tmp_udphdl =  new UDP_Svc_Handler(init_svcid.zerg_svc_info_,
-                                                           init_svcid.zerg_ip_addr_);
+        UDP_Svc_Handler *tmp_udphdl =  new UDP_Svc_Handler(init_svcid,
+            svc_info.ip_address_);
 
         //初始化UDP的端口
         ret = tmp_udphdl->init_udp_services();
@@ -131,19 +152,8 @@ int Zerg_Comm_Manager::init_socketpeer(ZERG_SERVICES_INFO &init_svcid)
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年4月12日
-Function        : Zerg_Comm_Manager::check_safeport
-Return          : int
-Parameter List  :
-Param1: ZCE_Sockaddr_In    & ipaddr
-Description     : 检查一个端口是否安全，
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int Zerg_Comm_Manager::check_safeport(ZCE_Sockaddr_In     &inetadd)
+//检查一个端口是否安全
+int Zerg_Comm_Manager::check_safeport(const ZCE_Sockaddr_In  &inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -159,7 +169,7 @@ int Zerg_Comm_Manager::check_safeport(ZCE_Sockaddr_In     &inetadd)
         inetadd.get_port_number() == UNSAFE_PORT4 )
     {
         //如果使用保险打开(TRUE)
-        if (zerg_svr_cfg_->zerg_config_.zerg_insurance_)
+        if (zerg_config_->zerg_cfg_data_.zerg_insurance_)
         {
             ZLOG_ERROR("[zergsvr] Unsafe port %u,if you need to open this port,please close insurance. ",
                        inetadd.get_port_number());

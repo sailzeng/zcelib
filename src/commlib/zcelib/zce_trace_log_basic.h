@@ -63,7 +63,7 @@ enum ZCE_LOGFILE_DEVIDE
     ///按照6个小时分割日志,1天分割为4个
     LOGDEVIDE_BY_SIXHOUR    = 204,
     ///按照日期分割日志,
-    LOGDEVIDE_BY_DATE       = 205,
+    LOGDEVIDE_BY_DAY        = 205,
     ///按照月份分割日志,
     LOGDEVIDE_BY_MONTH      = 206,
     ///按照年分割日志,
@@ -386,7 +386,9 @@ public:
 
     ///根据字符串，得到日志级别
     static ZCE_LOG_PRIORITY log_priorities(const char *str_priority);
-
+    
+    ///根据字符串,得到日志分割方式的枚举
+    static ZCE_LOGFILE_DEVIDE log_file_devide(const char *str_devide);
 
 protected:
 

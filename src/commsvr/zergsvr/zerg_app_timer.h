@@ -19,11 +19,10 @@ protected:
     //自己管理自己的清理
     ~Zerg_App_Timer_Handler();
 
-    ///
-    int initialize(ZCE_Timer_Queue *queue,
-        Server_Config_Base *config_base);
+    ///初始化，
+    int initialize(ZCE_Timer_Queue *queue);
 
-    //
+    ///定时器触发
     virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
     
@@ -40,8 +39,6 @@ public:
     static const  int      AUTOCONNECT_RELOAD_INTERVAL = 300000;
     //自动连接有连接异常时会触发一次reload操作重新拉取ip, 一定时间内只触发一次, 120s
     static const unsigned int  RETRY_TRIGGER_RELOAD_INTERVAL = 120000;
-
-
 
 protected:
     

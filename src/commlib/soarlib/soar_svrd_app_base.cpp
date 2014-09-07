@@ -206,7 +206,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
                                   config_base_->timer_nuamber_));
 
     //注册定时器
-    timer_base_->initialize(ZCE_Timer_Queue::instance(), config_base_);
+    timer_base_->initialize(ZCE_Timer_Queue::instance());
 
 
     //监控对象添加框架的监控对象
@@ -388,13 +388,13 @@ int Comm_Svrd_Appliction::init_log()
     ZCE_Trace_LogMsg::instance()->finalize();
 
     // 初始化日志
-    ZCE_Trace_LogMsg::instance()->initialize((ZCE_LOGFILE_DEVIDE)config_base_->log_info_.log_div_type_,
+    ZCE_Trace_LogMsg::instance()->initialize((ZCE_LOGFILE_DEVIDE)config_base_->log_config_.log_div_type_,
                                              config_base_->log_file_prefix_.c_str(),
                                              false,
                                              true,
-                                             config_base_->log_info_.max_log_file_size_,
-                                             config_base_->log_info_.reserve_file_num_,
-                                             config_base_->log_info_.log_output_,
+                                             config_base_->log_config_.max_log_file_size_,
+                                             config_base_->log_config_.reserve_file_num_,
+                                             config_base_->log_config_.log_output_,
                                              LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
 
     ZLOG_DEBUG("log instance reinit .");

@@ -394,7 +394,7 @@ int UDP_Svc_Handler::init_all_static_data()
 
 int UDP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 {
-    if_proxy_ = config->zerg_config_.is_proxy_;
+    if_proxy_ = config->zerg_cfg_data_.is_proxy_;
     return SOAR_RET::SOAR_RET_SUCC;
 }
 

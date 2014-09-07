@@ -3,7 +3,7 @@
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
 
-struct ZERG_SERVICES_INFO;
+
 class Zerg_Server_Config;
 
 
@@ -29,7 +29,7 @@ class Zerg_Auto_Connector
 class Zerg_Auto_Connector
 {
     //
-    typedef std::vector< ZERG_SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
+    typedef std::vector<SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
 
 
 

@@ -13,27 +13,26 @@ Server_Config_Base::Server_Config_Base() :
     app_run_daemon_(false),
     win_install_service_(false),
     win_uninstall_service_(false),
-    is_use_cfgsvr_(false),
-    timer_nuamber_(0)
+    is_use_cfgsvr_(false)
 {
 
     //默认定时器的事数量
-    const size_t DEFAULT_TIMER_NUMBER = 1024;
-    timer_nuamber_ = DEFAULT_TIMER_NUMBER;
+    //const size_t DEFAULT_TIMER_NUMBER = 1024;
+    
 
     //默认框架定时器间隔时间 100毫秒
-    const time_t DEF_TIMER_INTERVAL_USEC = 100000;
-    heart_precision_.set(0, DEF_TIMER_INTERVAL_USEC);
+    //
+    //heart_precision_.set(0, DEF_TIMER_INTERVAL_USEC);
 
     const size_t DEF_RESERVE_FILE_NUM = 10;
     const size_t DEF_MAX_LOG_FILE_SIZE = 16 * 1024 * 1024;
 
-    log_info_.log_level_ = RS_DEBUG;
-    log_info_.log_div_type_ = LOGDEVIDE_BY_DATE;
-    log_info_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
+    log_config_.log_level_ = RS_DEBUG;
+    log_config_.log_div_type_ = LOGDEVIDE_BY_DAY;
+    log_config_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
     
-    log_info_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
-    log_info_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
+    log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
+    log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
 
 }
 
@@ -185,13 +184,13 @@ int Server_Config_Base::start_arg(int argc, const char *argv[])
     app_cfg_file_ += "_config.xml";
 
     // 未指定通讯服务器配置
-    zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.xml";
+    zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.cfg";
 
     // 未指定svcid配置文件
-    svcid_cfg_file_ = app_run_dir_ + "/cfg/svcid.xml";
+    svcid_table_file_ = app_run_dir_ + "/cfg/svctabe.cfg";
 
     // 框架的配置是不会变的
-    framework_cfg_file_ = app_run_dir_ + "/cfg/framework.xml";
+    framework_cfg_file_ = app_run_dir_ + "/cfg/framework.cfg";
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
@@ -216,10 +215,10 @@ int Server_Config_Base::usage(const char *program_name)
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-
+//读取配置文件，主要是框架的配置，包括日志，定时器等
 int Server_Config_Base::load_cfgfile()
 {
-    return 0;
+    return SOAR_RET::SOAR_RET_SUCC;
 }
 
 
@@ -227,3 +226,86 @@ int Server_Config_Base::reload_cfgfile()
 {
     return load_cfgfile();
 }
+
+
+
+void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
+{
+    
+    ZCE_LOGMSG(out_lvl, "Application run dir :%s",app_run_dir_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application frame work config file :%s", framework_cfg_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svcid_table_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svcid_table_file_.c_str());
+}
+
+
+#define TRACE_CONFIG_BASE_ERROR(cfg_file) ZCE_LOGMSG(RS_ERROR, "[soarlib][%s]Read config file [%s] fail.",\
+    __ZCE_FUNCTION__, \
+    cfg_file)
+
+//从配置中读取self_svc_id_的
+int Server_Config_Base::get_selfsvcid_cfg(const char *cfg_file_name,
+    const ZCE_Conf_PropertyTree *conf_tree)
+{
+    int ret = 0;
+    ret = conf_tree->path_get_leaf("SELF_SVCID", "SVC_TYPE", self_svc_id_.services_type_);
+    if (0 != ret || self_svc_id_.services_id_ == SERVICES_ID::INVALID_SERVICES_TYPE)
+    {
+        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+
+    ret = conf_tree->path_get_leaf("SELF_SVCID", "SVC_ID", self_svc_id_.services_id_);
+    if (0 != ret || self_svc_id_.services_id_ == SERVICES_ID::INVALID_SERVICES_ID)
+    {
+        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+    return SOAR_RET::SOAR_RET_SUCC;
+}
+
+//从配置中读取日志的配置
+int Server_Config_Base::get_log_cfg(const char *cfg_file_name, 
+    const ZCE_Conf_PropertyTree *conf_tree)
+{
+    int ret = 0;
+    std::string temp_value;
+
+    ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_LEVEL", temp_value);
+    log_config_.log_level_ = ZCE_LogTrace_Basic::log_priorities(temp_value.c_str());
+    if (0 != ret )
+    {
+        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+    
+    ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_FILE_DEVIDE", temp_value);
+    log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
+    if (0 != ret)
+    {
+        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+
+    ret = conf_tree->path_get_leaf("LOG_CFG", "RESERVE_FILE_NUM", log_config_.reserve_file_num_);
+    if (0 != ret )
+    {
+        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+
+    //仅仅当分割方式是SIZE时有用
+    ret = conf_tree->path_get_leaf("LOG_CFG", "MAX_FILE_SIZE", log_config_.max_log_file_size_);
+    if (0 != ret)
+    {
+        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+
+    return SOAR_RET::SOAR_RET_SUCC;
+}
+
+

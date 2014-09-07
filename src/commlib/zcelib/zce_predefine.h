@@ -119,6 +119,13 @@
 #define ZCE_SUPPORT_CPP11 0
 #endif
 
+//我懒了，我不想倒退回去支持非C11的编译器了，我努力拥抱C11，如果你要向更低的VS编译器靠近，要修改
+//一些auto或者默认非静态成员初始化，
+#if ZCE_SUPPORT_CPP11 == 0
+#error "[Error]Only support C11 compiler, include Visual Studio 2013 and "\
+    "upper version, or GCC 4.8 and upper version."
+#endif
+
 //==================================================================================================
 //LINUX GCC下的告警屏蔽功能，其必须在GCC 4.2以后才有，而且push,pop的功能，必须在GCC，4.6以后才有，
 //这两个屏蔽告警的东东要等待GCC4.6以后才有。命苦的人。

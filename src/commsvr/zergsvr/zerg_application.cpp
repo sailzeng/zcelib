@@ -114,60 +114,19 @@ int Zerg_Service_App::on_start(int argc,const char *argv[])
     {
         return ret;
     }
-
-    //
     ret = UDP_Svc_Handler::init_all_static_data();
-
     if ( ret != SOAR_RET::SOAR_RET_SUCC )
     {
         return ret;
     }
 
-    ////直接把backlog干上一个很大的值
-    //const int MAX_ZERG_BACKLOG = 1024;
-    //ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->self_svc_info_,
-    //    MAX_ZERG_BACKLOG);
-    //if (ret != SOAR_RET::SOAR_RET_SUCC)
-    //{
-    //    return ret;
-    //}
+    //
+    ret = zerg_comm_mgr_->init_allpeer();
+    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    {
+        return ret;
+    }
 
-    ////初始化备份端口
-    //for (unsigned int i = 0; i < config_base_->self_cfg.slave_svr_count; ++i)
-    //{
-    //    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->slave_svc_ary_[i]);
-
-    //    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    //    {
-    //        return ret;
-    //    }
-    //}
-
-    //// 初始化对外提供Udp服务的端口
-    //uint32_t ary_size = static_cast<uint32_t>(Zerg_Server_Config::instance()->external_udp_svr_ary_.size());
-    //for (unsigned int i = 0; i < ary_size; i ++)
-    //{
-    //    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->external_udp_svr_ary_[i]);
-    //    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    //    {
-    //        return ret;
-    //    }
-    //}
-
-    //ary_size = static_cast<uint32_t>(Zerg_Server_Config::instance()->extern_svc_ary_.size());
-    ////初始化外部服务端口
-    //for (unsigned int i = 0; i < ary_size; ++ i)
-    //{
-    //    ret = zerg_comm_mgr_->init_socketpeer(Zerg_Server_Config::instance()->extern_svc_ary_[i],
-    //                                          zce_DEFAULT_BACKLOG,
-    //                                          true,
-    //                                          config_base_->extern_svc_cfg.extern_svc_item[i].proto_cfg_index);
-
-    //    if (ret != SOAR_RET::SOAR_RET_SUCC)
-    //    {
-    //        return ret;
-    //    }
-    //}
 
     ZLOG_INFO("[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
@@ -241,7 +200,7 @@ int Zerg_Service_App::reload_daynamic_config()
     }
 
     //动态修改日志的级别
-    set_log_priority(zerg_config->log_info_.log_level_);
+    set_log_priority(zerg_config->log_config_.log_level_);
 
 
 

@@ -13,38 +13,34 @@ class  Services_Table_Config ·şÎñÅäÖÃĞÅÏ¢±í,Í¨¹ıSERVICEINFO¡¡ÕÒµ½IPµØÖ·£¬¶Ë¿ÚºÅµ
 
 
 //·şÎñÅäÖÃ
-class SOARING_EXPORT Services_Table_Config
+class SOARING_EXPORT SERVICES_INFO_TABLE
 {
 
-    typedef unordered_set<SERVICES_INFO, Hash_of_SvcIPInfo, EqualSvrIPInfo> Set_Of_SvcInfo;
+    typedef unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> Set_Of_SvcInfo;
 
 public:
     //¹¹Ôìº¯Êı,
-    Services_Table_Config(size_t sz_table = INIT_NUM_OF_SVR_CONFG);
-    ~Services_Table_Config();
+    SERVICES_INFO_TABLE(size_t sz_table = INIT_NUM_OF_SVR_CONFG);
+    ~SERVICES_INFO_TABLE();
 
 
     /*!
     * @brief      ¸ù¾İSvrInfoĞÅÏ¢²éÑ¯IPÅäÖÃĞÅÏ¢
     * @return     int
-    * @param      svc_id    ´«Èë²ÎÊı,·şÎñÆ÷ĞÅÏ¢SVCINFO
-    * @param      ipaddress Êä³ö²ÎÊı,·şÎñÆ÷ĞÅÏ¢SVCINFO
-    * @param      port      Êä³ö²ÎÊı,¶Ë¿ÚĞÅÏ¢
-    * @param      idc_no    Êä³ö²ÎÊı,IDCĞÅÏ¢
-    * @param      server_guid_no  Êä³ö²ÎÊı,·şÎñÆ÷±àºÅ
-    * @param      cfg_info  Êä³ö²ÎÊı,Ä¬ÈÏ´«µİNULL±íÊ¾Äã²»¹ØĞÄÕâ¸ö²ÎÊı,±£Ö¤MAX_NAME_LEN_STRING+1µÄ¿Õ¼ä³¤¶È,ËÀ»úÁË×Ô¼º¸ºÔğ,
-    * @note       
+    * @param      svc_id      ´«Èë²ÎÊı,·şÎñÆ÷ĞÅÏ¢SVCINFO
+    * @param      ip_address  Êä³ö²ÎÊı,·şÎñÆ÷ĞÅÏ¢SVCINFO
+    * @param      idc_no      Êä³ö²ÎÊı,IDCĞÅÏ¢
+    * @param      business_id Êä³ö²ÎÊı,·şÎñÆ÷±àºÅ
+    * @note
     */
-    int find_svcinfo(const SERVICES_ID &svc_id,
-                           unsigned int &ipaddress,
-                           unsigned short &port,
-                           unsigned int &idc_no,
-                           unsigned int &server_guid_no,
-                           char *cfg_info = NULL) const;
+    int find_svcinfo(const SERVICES_ID &svr_id,
+                     ZCE_Sockaddr_In &ip_address,
+                     unsigned int &idc_no,
+                     unsigned int &business_id) const;
 
     //¸ù¾İSvrInfoĞÅÏ¢²éÑ¯IPÅäÖÃĞÅÏ¢
     int find_svcinfo(const SERVICES_ID &svc_id,
-        SERVICES_INFO &svc_info) const;
+                     SERVICES_INFO &svc_info) const;
 
     //¼ì²éÊÇ·ñÓµÓĞÏàÓ¦µÄServices Info
     bool hash_svcinfo(const SERVICES_ID &svrinfo) const;
@@ -53,7 +49,7 @@ public:
     int add_svcinfo(const SERVICES_INFO &svc_info);
 
     //µÃµ½Ä³¸öÅäÖÃÎÄ¼şµÄÅäÖÃĞÅÏ¢,ÅäÖÃÎÄ¼şÆäÖĞÓĞ[SERVICESINFO]×Ö¶Î
-    int loadtable_from_cfg(const char *cfgfile);
+    int loadtable_from_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
     //ÇåÀíSVRÅäÖÃĞÅÏ¢.
     void clear();

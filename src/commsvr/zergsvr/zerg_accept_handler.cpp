@@ -23,13 +23,15 @@ TCP_Accept_Handler::~TCP_Accept_Handler()
 //创建监听端口
 int TCP_Accept_Handler::create_listen()
 {
+    //直接把backlog干上一个很大的值
+    const int DEF_ZERG_BACKLOG = 512;
     //
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;
     socklen_t opvallen = sizeof(socklen_t);
 
     //
     socklen_t sndbuflen = 0, rcvbuflen = 0;
-    int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC);
+    int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC,DEF_ZERG_BACKLOG);
 
     //如果不能Bind相应的端口
     if (ret != 0)

@@ -26,25 +26,25 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
     
     zerg_svr_cfg_ = config;
     
-    size_of_wantconnect_ = config->zerg_config_.auto_connect_num_;
+    size_of_wantconnect_ = config->zerg_cfg_data_.auto_connect_num_;
 
     //循环处理所有的数据
-    ZERG_SERVICES_INFO svc_route;
+    SERVICES_INFO svc_route;
     for (size_t i = 0; i < size_of_wantconnect_; ++i)
     {
 
-        svc_route.zerg_svc_info_ = config->zerg_config_.auto_connect_svrs_[i];
+        svc_route.svc_id_ = config->zerg_cfg_data_.auto_connect_svrs_[i];
 
         //找到相关的IP配置
-        ret = config->GetServicesIPInfo(svc_route.zerg_svc_info_,
-            svc_route.zerg_ip_addr_);
+        ret = config->get_svcinfo_by_svcid(svc_route.svc_id_,
+            svc_route);
 
         //如果查询不到
         if (ret != SOAR_RET::SOAR_RET_SUCC)
         {
             ZLOG_ERROR("[zergsvr] Count find Auto Connect Services Info SvrType=%u,SvrID=%u .Please Check Config file. ",
-                svc_route.zerg_svc_info_.services_type_,
-                svc_route.zerg_svc_info_.services_id_);
+                svc_route.svc_id_.services_type_,
+                svc_route.svc_id_.services_id_);
             return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
         }
 
@@ -56,10 +56,10 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         char mainroute_addr[TMP_ADDR_LEN + 1];
 
         ZLOG_INFO("[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s|%u].",
-            svc_route.zerg_svc_info_.services_type_,
-            svc_route.zerg_svc_info_.services_id_,
-            svc_route.zerg_ip_addr_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
-            svc_route.zerg_ip_addr_.get_port_number()
+            svc_route.svc_id_.services_type_,
+            svc_route.svc_id_.services_id_,
+            svc_route.ip_address_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
+            svc_route.ip_address_.get_port_number()
             );
     }
 
@@ -93,12 +93,12 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
     {
         TCP_Svc_Handler *svchandle = NULL;
         //如果已经有相应的链接了，跳过
-        ret = TCP_Svc_Handler::find_services_peer(ary_want_connect_[i].zerg_svc_info_, svchandle);
+        ret = TCP_Svc_Handler::find_services_peer(ary_want_connect_[i].svc_id_, svchandle);
 
         if (SOAR_RET::SOAR_RET_SUCC != ret)
         {
             //进行连接,
-            ret = connect_server_bysvcid(ary_want_connect_[i].zerg_svc_info_, ary_want_connect_[i].zerg_ip_addr_);
+            ret = connect_server_bysvcid(ary_want_connect_[i].svc_id_, ary_want_connect_[i].ip_address_);
 
             if (ret == SOAR_RET::SOAR_RET_SUCC)
             {
@@ -147,9 +147,9 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svrinfo)
 
     for (size_t i = 0; i < size_of_wantconnect_; ++i)
     {
-        if (ary_want_connect_[i].zerg_svc_info_ == reconnect_svrinfo )
+        if (ary_want_connect_[i].svc_id_ == reconnect_svrinfo )
         {
-            ZCE_Sockaddr_In     inetaddr = ary_want_connect_[i].zerg_ip_addr_;
+            ZCE_Sockaddr_In     inetaddr = ary_want_connect_[i].ip_address_;
             return connect_server_bysvcid(reconnect_svrinfo, inetaddr);
         }
     }
@@ -246,14 +246,14 @@ int Zerg_Auto_Connector::get_server(unsigned short svr_type, SERVICES_ID *svrinf
         unsigned int rand_num = rand() % id_num;
 
         //首先看主路由svr是否处于连接状态
-        svrinfo->set_serviceid(svr_type, list_of_want_connect_main_id_[index][rand_num]);
+        svrinfo->set_svcid(svr_type, list_of_want_connect_main_id_[index][rand_num]);
         if (is_connected(*svrinfo))
         {
             return SOAR_RET::SOAR_RET_SUCC;
         }
 
         //主路由不处于连接状态, 则试着选择从路由svr
-        svrinfo->set_serviceid(svr_type, list_of_want_connect_back_id_[index][rand_num]);
+        svrinfo->set_svcid(svr_type, list_of_want_connect_back_id_[index][rand_num]);
         if (is_connected(*svrinfo))
         {
             return SOAR_RET::SOAR_RET_SUCC;
@@ -381,15 +381,15 @@ Zerg_Auto_Connector::is_current_auto_connect(const SERVICES_ID &service, bool is
             }
 
             // 找到，则比较一下ip和端口
-            ZCE_Sockaddr_In     svr_ip_addr;
-            ret = zerg_svr_cfg_->GetServicesIPInfo(service, svr_ip_addr);
+            SERVICES_INFO     svr_info;
+            ret = zerg_svr_cfg_->get_svcinfo_by_svcid(service, svr_info);
             if (ret != SOAR_RET::SOAR_RET_SUCC)
             {
                 // 如果这个service已经找不到对应的IP配置，可能已经去除了
                 return false;
             }
 
-            if (svr_ip_addr != svchandle->get_peer_sockaddr())
+            if (svr_info.ip_address_ != svchandle->get_peer_sockaddr())
             {
                 // 地址不相等
                 return false;

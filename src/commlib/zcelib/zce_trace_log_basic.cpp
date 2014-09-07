@@ -231,7 +231,7 @@ void ZCE_LogTrace_Basic::make_configure(void)
         case LOGDEVIDE_BY_QUARTER:
         case LOGDEVIDE_BY_HOUR:
         case LOGDEVIDE_BY_SIXHOUR:
-        case LOGDEVIDE_BY_DATE:
+        case LOGDEVIDE_BY_DAY:
         case LOGDEVIDE_BY_MONTH:
         case LOGDEVIDE_BY_YEAR:
             cur_time = time(NULL);
@@ -357,7 +357,7 @@ void ZCE_LogTrace_Basic::make_new_logfile(time_t cur_time, bool init)
 
         case LOGDEVIDE_BY_HOUR:
         case LOGDEVIDE_BY_SIXHOUR:
-        case LOGDEVIDE_BY_DATE:
+        case LOGDEVIDE_BY_DAY:
         case LOGDEVIDE_BY_MONTH:
         case LOGDEVIDE_BY_YEAR:
             //得到小时精度的时间记录,
@@ -470,7 +470,7 @@ void ZCE_LogTrace_Basic::del_old_time_logfile(time_t cur_time, bool init)
             del_file_time = cur_time - reserve_file_num_ * 6 * ONE_HOUR_SECONDS;
             break;
 
-        case LOGDEVIDE_BY_DATE:
+        case LOGDEVIDE_BY_DAY:
             del_file_time = cur_time - reserve_file_num_ * 24 * ONE_HOUR_SECONDS;
             break;
 
@@ -610,7 +610,7 @@ void ZCE_LogTrace_Basic::create_time_logname(time_t tmt, std::string &logfilenam
         }
 
         //以天为单位
-        case LOGDEVIDE_BY_DATE:
+        case LOGDEVIDE_BY_DAY:
             strftime( tmpbuf, buflen, "_%Y%m%d", &curtm);
             ::strcat(tmpbuf, STR_LOG_POSTFIX);
             break;
@@ -819,6 +819,51 @@ ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::log_priorities(const char *str_priority)
     else
     {
         return RS_DEBUG;
+    }
+
+    //Never Goto Here.
+    //return RS_DEBUG;
+}
+
+
+//通过字符串得到对应的日志策略,
+ZCE_LOGFILE_DEVIDE ZCE_LogTrace_Basic::log_file_devide(const char *str_devide)
+{
+    if (strcasecmp(str_devide, ("SIZE")) == 0)
+    {
+        return LOGDEVIDE_BY_SIZE;
+    }
+    else if (strcasecmp(str_devide, ("FIVEMINUTE")) == 0)
+    {
+        return LOGDEVIDE_BY_FIVEMINUTE;
+    }
+    else if (strcasecmp(str_devide, ("QUARTER")) == 0)
+    {
+        return LOGDEVIDE_BY_QUARTER;
+    }
+    else if (strcasecmp(str_devide, ("HOUR")) == 0)
+    {
+        return LOGDEVIDE_BY_HOUR;
+    }
+    else if (strcasecmp(str_devide, ("SIXHOUR")) == 0)
+    {
+        return LOGDEVIDE_BY_SIXHOUR;
+    }
+    else if (strcasecmp(str_devide, ("DAY")) == 0)
+    {
+        return LOGDEVIDE_BY_DAY;
+    }
+    else if (strcasecmp(str_devide, ("MONTH")) == 0)
+    {
+        return LOGDEVIDE_BY_MONTH;
+    }
+    else if (strcasecmp(str_devide, ("YEAR")) == 0)
+    {
+        return LOGDEVIDE_BY_YEAR;
+    }
+    else
+    {
+        return LOGDEVIDE_BY_DAY;
     }
 
     //Never Goto Here.

@@ -35,14 +35,31 @@ protected:
 
 public:
 
-    //初始化,从配置文件读取配置
+    
+    /*!
+    * @brief      初始化,从配置文件读取配置
+    * @return     int
+    * @param      config
+    */
     int get_config(const Zerg_Server_Config *config);
 
-    //初始化Socket, backlog默认值和open中使用的默认值保持一致
-    int init_socketpeer(ZERG_SERVICES_INFO &init_svcid);
+    /*!
+    * @brief      初始化所有的监听，UDP端口，
+    * @return     int
+    */
+    int init_allpeer();
+    
+    /*!
+    * @brief      根据SVC INFO 初始化Socket, 
+    * @return     int
+    * @param      init_svcid 初始化所依据的SVC INFO
+    */
+    int init_socketpeer(const SERVICES_ID &init_svcid);
+
+
 
     //检查端口是否安全,安全端口必须不使用保险(FALSE)
-    int check_safeport(ZCE_Sockaddr_In     &inetadd);
+    int check_safeport(const ZCE_Sockaddr_In &inetadd);
 
     //取得发送数据进行发送
     int popall_sendpipe_write(size_t want_, size_t &proc_frame_num);
@@ -77,19 +94,19 @@ protected:
 
 protected:
 
-    //ACCEPET的HANDLER数组
+    ///ACCEPET的HANDLER数组
     TCPACCEPT_HANDLER_LIST    zerg_acceptor_;
-    //UPD的HANDLER数组
+    ///UPD的HANDLER数组
     UDPSVC_HANDLER_LIST       zerg_updsvc_;
 
 
-    //对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
+    ///对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
     unsigned int              error_try_num_;
 
-    //监控命令的数量，为了加快速度，多用变量。
+    ///监控命令的数量，为了加快速度，多用变量。
     size_t                    monitor_size_;
-    //监控的命令
-    unsigned int              monitor_cmd_[ZERG_CONFIG::MAX_MONITOR_FRAME_NUMBER];
+    ///监控的命令
+    unsigned int              monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
 
     //内存管道类的实例对象，保留它仅仅为了加速
     Zerg_MMAP_BusPipe        *zerg_mmap_pipe_;
@@ -107,7 +124,7 @@ protected:
     unsigned int              send_frame_count_;
 
     //配置实例指针
-    const Zerg_Server_Config *zerg_svr_cfg_;
+    const Zerg_Server_Config *zerg_config_;
 };
 
 

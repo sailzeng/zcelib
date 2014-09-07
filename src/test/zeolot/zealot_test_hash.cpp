@@ -467,7 +467,7 @@ int test_lux_data_manager(int argc , char * /*argv*/ [])
     Lux_Data_Manager::instance()->clean_instance();
 
     //
-    ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DATE, "C:\\123");
+    ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DAY, "C:\\123");
 
     ZCE_LOGMSG(RS_ERROR, "ni shi yi zhi da wu gui.\n");
     ZCE_LOGMSG(RS_ERROR, "ni shi yi zhi da wu gui.\n");

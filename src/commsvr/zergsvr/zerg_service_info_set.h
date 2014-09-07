@@ -17,7 +17,7 @@ class Service_Info_Set
 protected:
 
     //
-    typedef unordered_map<SERVICES_ID, TCP_Svc_Handler *, HashofSvrInfo> MapOfSvrPeerInfo;
+    typedef unordered_map<SERVICES_ID, TCP_Svc_Handler *, HASH_OF_SVCID> MapOfSvrPeerInfo;
     //
     MapOfSvrPeerInfo  svr_info_set_;
 

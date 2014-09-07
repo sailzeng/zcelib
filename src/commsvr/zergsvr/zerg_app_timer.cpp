@@ -26,11 +26,10 @@ Zerg_App_Timer_Handler::~Zerg_App_Timer_Handler()
 
 
 //
-int Zerg_App_Timer_Handler::initialize(ZCE_Timer_Queue *queue,
-    Server_Config_Base *config_base)
+int Zerg_App_Timer_Handler::initialize(ZCE_Timer_Queue *queue)
 {
     int ret = 0;
-    ret = Server_Timer_Base::initialize(queue, config_base);
+    ret = Server_Timer_Base::initialize(queue);
     if (SOAR_RET::SOAR_RET_SUCC != ret)
     {
         return ret;

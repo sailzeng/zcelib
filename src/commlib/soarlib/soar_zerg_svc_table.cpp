@@ -7,57 +7,53 @@
 /****************************************************************************************************
 class  ServicesConfig  服务配置信息表,通过SERVICEINFO　找到IP地址，端口号的配置,
 ****************************************************************************************************/
-Services_Table_Config::Services_Table_Config(size_t szconf)
+SERVICES_INFO_TABLE::SERVICES_INFO_TABLE(size_t szconf)
 {
     services_table_.rehash(szconf);
 }
 
-Services_Table_Config::~Services_Table_Config()
+SERVICES_INFO_TABLE::~SERVICES_INFO_TABLE()
 {
 }
 
 
-int Services_Table_Config::find_svcinfo(const SERVICES_ID &svrinfo,
-                                       unsigned int &ipaddress,
-                                       unsigned short &port,
-                                       unsigned int &idc_no,
-                                       unsigned int &server_guid_no,
-                                       char *cfg_info) const
+int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
+                                      ZCE_Sockaddr_In &ip_address,
+                                      unsigned int &idc_no,
+                                      unsigned int &business_id) const
 {
     SERVICES_INFO svc_ip_info;
-    svc_ip_info.services_id_ = svrinfo;
+    svc_ip_info.svc_id_ = svc_id;
     Set_Of_SvcInfo::iterator iter = services_table_.find(svc_ip_info);
 
     if (iter == services_table_.end() )
     {
+        ZCE_LOGMSG(RS_ERROR, "[soarlib]Can't find svc id [%u|%u] info.", 
+            svc_id.services_type_,
+            svc_id.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
 
-    ipaddress = iter->ip_addr_;
-    port = iter->port_;
+    ip_address = iter->ip_address_;
     idc_no = iter->idc_no_;
-    server_guid_no = iter->server_guid_no_;
-
-    //
-    if (cfg_info)
-    {
-        strncpy(cfg_info, iter->cfg_info_, MAX_NAME_LEN_STRING);
-        cfg_info[MAX_NAME_LEN_STRING] = '\0';
-    }
-
+    business_id = iter->business_id_;
+    
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
 
 //根据SvrInfo信息查询IP配置信息
-int Services_Table_Config::find_svcinfo(const SERVICES_ID &svc_id,
+int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
     SERVICES_INFO &svc_info) const
 {
-    svc_info.services_id_ = svc_id;
+    svc_info.svc_id_ = svc_id;
     Set_Of_SvcInfo::iterator iter = services_table_.find(svc_info);
 
     if (iter == services_table_.end())
     {
+        ZCE_LOGMSG(RS_ERROR, "[soarlib]Can't find svc id [%u|%u] info.",
+            svc_id.services_type_,
+            svc_id.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
     svc_info = *iter;
@@ -66,10 +62,10 @@ int Services_Table_Config::find_svcinfo(const SERVICES_ID &svc_id,
 }
 
 //检查是否拥有相应的Services Info
-bool Services_Table_Config::hash_svcinfo(const SERVICES_ID &svrinfo) const
+bool SERVICES_INFO_TABLE::hash_svcinfo(const SERVICES_ID &svrinfo) const
 {
     SERVICES_INFO svc_ip_info;
-    svc_ip_info.services_id_ = svrinfo;
+    svc_ip_info.svc_id_ = svrinfo;
     Set_Of_SvcInfo::iterator iter = services_table_.find(svc_ip_info);
 
     if (iter == services_table_.end() )
@@ -81,7 +77,7 @@ bool Services_Table_Config::hash_svcinfo(const SERVICES_ID &svrinfo) const
 }
 
 //设置配置信息
-int Services_Table_Config::add_svcinfo(const SERVICES_INFO &svc_info)
+int SERVICES_INFO_TABLE::add_svcinfo(const SERVICES_INFO &svc_info)
 {
 
     std::pair<Set_Of_SvcInfo::iterator, bool> insert_result = services_table_.insert(svc_info);
@@ -203,7 +199,7 @@ Modify Record   :
 
 
 
-void Services_Table_Config::clear()
+void SERVICES_INFO_TABLE::clear()
 {
     services_table_.clear();
 }

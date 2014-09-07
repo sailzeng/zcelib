@@ -220,9 +220,9 @@ void Zerg_App_Frame::init_framehead(uint32_t lenframe, uint32_t option, uint32_t
 
     frame_uid_ = 0;
 
-    send_service_.set_serviceid(0, 0);
-    recv_service_.set_serviceid(0, 0);
-    proxy_service_.set_serviceid(0, 0);
+    send_service_.set_svcid(0, 0);
+    recv_service_.set_svcid(0, 0);
+    proxy_service_.set_svcid(0, 0);
     send_serial_number_ = 0;
     transaction_id_ = 0;
     backfill_trans_id_ = 0;

@@ -111,7 +111,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
     my_svc_info_ = my_svcinfo;
-    peer_svr_info_.set_serviceid(0, 0);
+    peer_svr_info_.set_svcid(0, 0);
     rcv_buffer_ = NULL;
     recieve_counter_ = 0;
     send_counter_ = 0;
@@ -355,19 +355,19 @@ int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 
     //unsigned int tmp_uint = 0 ;
     //从CONNECT到收到数据的时长
-    connect_timeout_ = config->zerg_config_.connect_timeout_;
+    connect_timeout_ = config->zerg_cfg_data_.connect_timeout_;
 
 
     //RECEIVE一个数据的超时时间,为0表示不限制
-    receive_timeout_ = config->zerg_config_.recv_timeout_;
+    receive_timeout_ = config->zerg_cfg_data_.recv_timeout_;
     TESTCONFIG((ret == 0 && receive_timeout_ <= 2000), "COMMCFG|RECEIVETIMEOUT key error.");
 
     //是否是一个代理服务,代理的发送行为和普通服务器不一样.
-    if_proxy_ = config->zerg_config_.is_proxy_;
+    if_proxy_ = config->zerg_cfg_data_.is_proxy_;
 
 
     //最大的链接我的服务器个数
-    max_accept_svr_ = config->zerg_config_.max_accept_svr_;
+    max_accept_svr_ = config->zerg_cfg_data_.max_accept_svr_;
 
 
     //容量告警阈值
@@ -378,11 +378,11 @@ int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 
 
     //发送缓冲区的最大frame数
-    snd_buf_size_ = config->zerg_config_.accept_send_buf_size_;
+    snd_buf_size_ = config->zerg_cfg_data_.acpt_send_deque_size_;
     TESTCONFIG((ret == 0), "COMMCFG|ACCEPTSNDBUFSIZE key error.");
 
     //主动连接的发送队列长度
-    connect_send_deque_size_ = config->zerg_config_.connect_send_deque_size_;
+    connect_send_deque_size_ = config->zerg_cfg_data_.cnnt_send_deque_size_;
     ZLOG_INFO("[zergsvr] conncet send deque size :%d", connect_send_deque_size_);
 
     //得到连接的SERVER的配置
