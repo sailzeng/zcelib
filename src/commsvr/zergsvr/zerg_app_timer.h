@@ -6,12 +6,12 @@
 
 /*!
 * @brief      ZERG服务的定时器，定时器用于各种处理
-*             
-* @note       
+*
+* @note
 */
 class  Zerg_App_Timer_Handler : public  Server_Timer_Base
 {
-    
+
 public:
     //
     Zerg_App_Timer_Handler();
@@ -25,7 +25,7 @@ protected:
     ///定时器触发
     virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
-    
+
 
 public:
 
@@ -41,7 +41,7 @@ public:
     static const unsigned int  RETRY_TRIGGER_RELOAD_INTERVAL = 120000;
 
 protected:
-    
+
     ///发包频率检查间隔的心跳次数，根据心跳精度计算
     uint64_t connect_retry_heart_;
 

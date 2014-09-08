@@ -8,8 +8,8 @@ class Zerg_IPRestrict_Mgr;
 
 /*!
 * @brief      TCP Accept 处理的EventHandler,
-*             
-* @note       
+*
+* @note
 */
 class TCP_Accept_Handler : public ZCE_Event_Handler
 {
@@ -18,7 +18,7 @@ public:
     /*!
     * @brief      构造函数
     * @param      svcid  相应的svc id
-    * @param      addr   相应的IP地址 
+    * @param      addr   相应的IP地址
     */
     TCP_Accept_Handler(const SERVICES_ID &svcid,
                        const ZCE_Sockaddr_In &addr);

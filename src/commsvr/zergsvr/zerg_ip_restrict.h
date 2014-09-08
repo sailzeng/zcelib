@@ -7,9 +7,9 @@ class Zerg_Server_Config;
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 class Zerg_IPRestrict_Mgr
 {

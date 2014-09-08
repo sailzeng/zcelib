@@ -10,9 +10,9 @@ class Zerg_Comm_Manager;
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 class Zerg_Service_App : public Comm_Svrd_Appliction
 {
@@ -25,17 +25,18 @@ public:
 
 public:
 
-    //初始化
-    virtual int on_start(int argc,const char *argv[]);
-    //退出实例化
+    ///初始化,根据启动参数启动
+    virtual int on_start(int argc, const char *argv[]);
+    ///处理退出的清理工作
     virtual int on_exit();
-    //运行
+
+    ///运行,运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。
     virtual int on_run();
 
     bool if_proxy();
 
 private:
-   
+
 
     int reload_daynamic_config();
 

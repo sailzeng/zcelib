@@ -27,24 +27,12 @@ Zerg_Service_App::~Zerg_Service_App()
 {
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月17日
-Function        : Zerg_Service_App::init_instance
-Return          : int
-Parameter List  :
-  Param1: int argc
-  Param2: char* argv[]
-Description     : 根据启动参数启动
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int Zerg_Service_App::on_start(int argc,const char *argv[])
+//根据启动参数启动
+int Zerg_Service_App::on_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Comm_Svrd_Appliction::on_start(argc,argv);
+    ret = Comm_Svrd_Appliction::on_start(argc, argv);
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         return ret;
@@ -207,17 +195,7 @@ int Zerg_Service_App::reload_daynamic_config()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月29日
-Function        : Zerg_Service_App::exit_instance
-Return          : int
-Parameter List  : NULL
-Description     : 处理退出的清理工作
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
 int Zerg_Service_App::on_exit()
 {
     ZLOG_INFO("[zergsvr] exit_instance Succ.Have Fun.!!!");
@@ -230,7 +208,7 @@ int Zerg_Service_App::on_exit()
 
     //清理单子
     Zerg_IPRestrict_Mgr::clean_instance();
-    
+
     Comm_Stat_Monitor::clean_instance();
 
     //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现
@@ -250,17 +228,8 @@ int Zerg_Service_App::on_exit()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月29日
-Function        : Zerg_Service_App::run_instance
-Return          : int
-Parameter List  : NULL
-Description     : 运行函数,不到万不得已,不会退出
-Calls           :
-Called By       :
-Other           : 最重要的函数,但是也最简单,
-Modify Record   : 为了加快发送的速度，对多种请求做了不同的微调。
-******************************************************************************************/
+
+//运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。最重要的函数,但是也最简单,
 int Zerg_Service_App::on_run()
 {
 
@@ -359,8 +328,7 @@ int Zerg_Service_App::on_run()
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-bool 
-Zerg_Service_App::if_proxy()
+bool Zerg_Service_App::if_proxy()
 {
     unsigned short self_svc_type = self_svc_id_.services_type_;
     if (self_svc_type == SVC_PROXY_SERVER)

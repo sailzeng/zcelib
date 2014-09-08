@@ -1,39 +1,38 @@
 #include "zerg_predefine.h"
-#include "zerg_service_info_set.h"
 #include "zerg_tcp_ctrl_handler.h"
-
+#include "zerg_active_svchdl_set.h"
 
 
 /****************************************************************************************************
 class  Service_Info_Set ,
-反思一下，
-是否应该做这个封装，我也很矛盾，如果在TCP_Svc_Handler直接使用STL的封装数据，
-那么我们的封装后再聚和的方式不是那么的好。在TCP_Svc_Handler还要再次封装。。。。
+，
+
+
 ****************************************************************************************************/
-Service_Info_Set::Service_Info_Set()
+Active_SvcHandle_Set::Active_SvcHandle_Set()
 {
 }
 
-Service_Info_Set::~Service_Info_Set()
+Active_SvcHandle_Set::~Active_SvcHandle_Set()
 {
     //ZLOG_INFO("[zergsvr] Service_Info_Set::~Service_Info_Set.");
 }
 
-void Service_Info_Set::init_services_peerinfo(size_t szpeer)
+void Active_SvcHandle_Set::init_services_peerinfo(size_t szpeer)
 {
     svr_info_set_.rehash(szpeer);
 }
 
 //根据SERVICEINFO查询PEER信息
-int Service_Info_Set::find_services_peerinfo(const SERVICES_ID &svrinfo, TCP_Svc_Handler *&svrhandle)
+int Active_SvcHandle_Set::find_services_peerinfo(const SERVICES_ID &svrinfo, TCP_Svc_Handler *&svrhandle)
 {
     MapOfSvrPeerInfo::iterator iter = svr_info_set_.find(svrinfo);
 
     if (iter == svr_info_set_.end())
     {
         ZLOG_ERROR("[zergsvr] Can't find svchanle info. Svrinfo Type|ID:[%u|%u] .",
-            svrinfo.services_type_,
-            svrinfo.services_id_);
+                   svrinfo.services_type_,
+                   svrinfo.services_id_);
         return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
     }
 
@@ -43,23 +42,10 @@ int Service_Info_Set::find_services_peerinfo(const SERVICES_ID &svrinfo, TCP_Svc
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年5月29日
-Function        : Service_Info_Set::replace_services_peerInfo
-Return          : int
-Parameter List  :
-Param1: const SERVICES_ID& svrinfo 原油的SVC INFO服务器
-Param2: TCP_Svc_Handler* new_svchdl  新增加的服务器
-Param3: TCP_Svc_Handler*& old_svchdl 如果原来有一个svrinfo对应的Hdler,返回通知你,
-Description     : 增加PEER信息的
-Calls           :
-Called By       :
-Other           : 返回的old_svchdl,可以用于清理
-Modify Record   :
-******************************************************************************************/
-int Service_Info_Set::replace_services_peerInfo(const SERVICES_ID &svrinfo,
-    TCP_Svc_Handler *new_svchdl,
-    TCP_Svc_Handler *&old_svchdl)
+//更新设置配置信息
+int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svrinfo,
+                                                    TCP_Svc_Handler *new_svchdl,
+                                                    TCP_Svc_Handler *&old_svchdl)
 {
     old_svchdl = NULL;
     MapOfSvrPeerInfo::iterator iter = svr_info_set_.find(svrinfo);
@@ -75,13 +61,13 @@ int Service_Info_Set::replace_services_peerInfo(const SERVICES_ID &svrinfo,
         strncpy(old_addr, old_svchdl->get_peer_address(), TMP_ADDR_LEN);
 
         ZLOG_INFO("[zergsvr] replace_services_peerInfo:%u|%u ,Find Old IP|Port:[%s|%u],New IP Port[%s|%u],Replace old.",
-            svrinfo.services_type_,
-            svrinfo.services_id_,
-            old_addr,
-            old_svchdl->get_peer_port(),
-            new_addr,
-            new_svchdl->get_peer_port()
-            );
+                  svrinfo.services_type_,
+                  svrinfo.services_id_,
+                  old_addr,
+                  old_svchdl->get_peer_port(),
+                  new_addr,
+                  new_svchdl->get_peer_port()
+                 );
 
     }
 
@@ -90,21 +76,9 @@ int Service_Info_Set::replace_services_peerInfo(const SERVICES_ID &svrinfo,
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年5月29日
-Function        : Service_Info_Set::add_services_peerinfo
-Return          : int
-Parameter List  :
-Param1: const SERVICES_ID& svrinfo SVC INFO服务器
-Param2: TCP_Svc_Handler* new_svchdl  新增加的服务器
-Description     : 增加PEER信息的
-Calls           :
-Called By       :
-Other           : 返回的old_svchdl,可以用于清理
-Modify Record   :
-******************************************************************************************/
-int Service_Info_Set::add_services_peerinfo(const SERVICES_ID &svrinfo,
-    TCP_Svc_Handler *new_svchdl)
+//增加设置配置信息
+int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svrinfo,
+                                                TCP_Svc_Handler *new_svchdl)
 {
     MapOfSvrPeerInfo::iterator iter = svr_info_set_.find(svrinfo);
 
@@ -120,13 +94,13 @@ int Service_Info_Set::add_services_peerinfo(const SERVICES_ID &svrinfo,
         strncpy(old_addr, old_svchdl->get_peer_address(), TMP_ADDR_LEN);
 
         ZLOG_ERROR("[zergsvr] add_services_peerinfo:%u|%u Fail,Find Old IP|Port:[%s|%u],New IP Port[%s|%u],Replace old.",
-            svrinfo.services_type_,
-            svrinfo.services_id_,
-            old_addr,
-            old_svchdl->get_peer_port(),
-            new_addr,
-            new_svchdl->get_peer_port()
-            );
+                   svrinfo.services_type_,
+                   svrinfo.services_id_,
+                   old_addr,
+                   old_svchdl->get_peer_port(),
+                   new_addr,
+                   new_svchdl->get_peer_port()
+                  );
         return SOAR_RET::ERR_ZERG_SERVER_ALREADY_LONGIN;
     }
 
@@ -136,19 +110,9 @@ int Service_Info_Set::add_services_peerinfo(const SERVICES_ID &svrinfo,
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : Service_Info_Set::del_services_peerInfo
-Return          : size_t
-Parameter List  :
-Param1: const SERVICES_ID& svrinfo
-Description     : 根据SERVICES_ID,删除PEER信息,
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-size_t Service_Info_Set::del_services_peerInfo(const SERVICES_ID &svrinfo)
+
+//根据SERVICES_ID,删除PEER信息,
+size_t Active_SvcHandle_Set::del_services_peerInfo(const SERVICES_ID &svrinfo)
 {
     MapOfSvrPeerInfo::iterator iter = svr_info_set_.find(svrinfo);
 
@@ -158,10 +122,10 @@ size_t Service_Info_Set::del_services_peerInfo(const SERVICES_ID &svrinfo)
     if (szdel <= 0)
     {
         ZLOG_INFO("[zergsvr] Can't Service_Info_Set::del_services_peerInfo Size svr_info_set_ %u: szdel:%u svrinfo:%u|%u .",
-            svr_info_set_.size(),
-            szdel,
-            svrinfo.services_type_,
-            svrinfo.services_id_);
+                  svr_info_set_.size(),
+                  szdel,
+                  svrinfo.services_type_,
+                  svrinfo.services_id_);
     }
 
     //ZCE_ASSERT(szdel >0 );
@@ -169,28 +133,14 @@ size_t Service_Info_Set::del_services_peerInfo(const SERVICES_ID &svrinfo)
 }
 
 //
-size_t Service_Info_Set::get_services_peersize()
+size_t Active_SvcHandle_Set::get_services_peersize()
 {
     return svr_info_set_.size();
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年10月17日
-Function        : Service_Info_Set::dump_svr_peerinfo
-Return          : void
-Parameter List  :
-Param1: char* ret_string
-Param2: size_t& str_len
-Param3: size_t startno        查询
-Param4: size_t numquery       查询
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-void Service_Info_Set::dump_svr_peerinfo(std::ostringstream &ostr_stream, size_t startno, size_t numquery)
+//
+void Active_SvcHandle_Set::dump_svr_peerinfo(std::ostringstream &ostr_stream, size_t startno, size_t numquery)
 {
     //
 
@@ -221,7 +171,7 @@ void Service_Info_Set::dump_svr_peerinfo(std::ostringstream &ostr_stream, size_t
 }
 
 //关闭所有的PEER
-void Service_Info_Set::clear_and_closeall()
+void Active_SvcHandle_Set::clear_and_closeall()
 {
     const size_t SHOWINFO_NUMBER = 500;
 

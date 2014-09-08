@@ -23,9 +23,9 @@ Zerg_Auto_Connector::~Zerg_Auto_Connector()
 int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
-    
+
     zerg_svr_cfg_ = config;
-    
+
     size_of_wantconnect_ = config->zerg_cfg_data_.auto_connect_num_;
 
     //循环处理所有的数据
@@ -37,14 +37,14 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 
         //找到相关的IP配置
         ret = config->get_svcinfo_by_svcid(svc_route.svc_id_,
-            svc_route);
+                                           svc_route);
 
         //如果查询不到
         if (ret != SOAR_RET::SOAR_RET_SUCC)
         {
             ZLOG_ERROR("[zergsvr] Count find Auto Connect Services Info SvrType=%u,SvrID=%u .Please Check Config file. ",
-                svc_route.svc_id_.services_type_,
-                svc_route.svc_id_.services_id_);
+                       svc_route.svc_id_.services_type_,
+                       svc_route.svc_id_.services_id_);
             return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
         }
 
@@ -56,33 +56,21 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         char mainroute_addr[TMP_ADDR_LEN + 1];
 
         ZLOG_INFO("[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s|%u].",
-            svc_route.svc_id_.services_type_,
-            svc_route.svc_id_.services_id_,
-            svc_route.ip_address_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
-            svc_route.ip_address_.get_port_number()
-            );
+                  svc_route.svc_id_.services_type_,
+                  svc_route.svc_id_.services_id_,
+                  svc_route.ip_address_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
+                  svc_route.ip_address_.get_port_number()
+                 );
     }
 
     ZLOG_INFO("[zergsvr] Get number [%lu] auto connect config success.",
-        size_of_wantconnect_);
+              size_of_wantconnect_);
 
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年6月26日
-Function        : Zerg_Auto_Connector::ConnectAllServer
-Return          : void
-Parameter List  :
-Param1: size_t& szsucc 成功开始连接的服务器个数
-Param2: size_t& szfail 链接失败的服务器数量，但是由于是异步链接，这个地方并不一定真是进行了链接
-Description     : 链接所有的服务器,如果已经有链接，就跳过,
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//链接所有的服务器,如果已经有链接，就跳过,
 void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, size_t &szfail)
 {
     int ret = 0;
@@ -122,35 +110,23 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
     }
 
     ZLOG_INFO("[zergsvr] Auto NONBLOCK connect server,vaild number:%d ,success Number :%d,fail number:%d .",
-        szvalid,
-        szsucc,
-        szfail);
+              szvalid,
+              szsucc,
+              szfail);
     return;
 }
 
 
-
-/******************************************************************************************
-Author          : Sail(ZENGXING)  Date Of Creation: 2009年6月30日
-Function        : Zerg_Auto_Connector::reconnect_server
-Return          : int
-Parameter List  :
-Param1: const SERVICES_ID& main_svrinfo 要进行重连的主路由信息
-Description     : 根据SVRINFO,检查是否是主动连接的服务.,
-Calls           :
-Called By       :
-Other           : 为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能handle_close.
-Modify Record   :
-******************************************************************************************/
-int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svrinfo)
+//根据SVC ID,检查是否是主动连接的服务.,
+int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
 {
 
     for (size_t i = 0; i < size_of_wantconnect_; ++i)
     {
-        if (ary_want_connect_[i].svc_id_ == reconnect_svrinfo )
+        if (ary_want_connect_[i].svc_id_ == reconnect_svcid)
         {
             ZCE_Sockaddr_In     inetaddr = ary_want_connect_[i].ip_address_;
-            return connect_server_bysvcid(reconnect_svrinfo, inetaddr);
+            return connect_server_bysvcid(reconnect_svcid, inetaddr);
         }
     }
 
@@ -163,11 +139,11 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svrinfo)
 int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In     &inetaddr)
 {
     ZLOG_DEBUG("[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
-        svrinfo.services_type_,
-        svrinfo.services_id_,
-        inetaddr.get_host_addr(),
-        inetaddr.get_port_number()
-        );
+               svrinfo.services_type_,
+               svrinfo.services_id_,
+               inetaddr.get_host_addr(),
+               inetaddr.get_port_number()
+              );
 
     ZCE_Socket_Stream sockstream;
     sockstream.open();
@@ -193,16 +169,16 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
-        
+
         //HANDLER_MODE_CONNECT模式理论不会失败
         TCP_Svc_Handler *p_handler = TCP_Svc_Handler::AllocSvcHandlerFromPool(
-            TCP_Svc_Handler::HANDLER_MODE_CONNECT);
+                                         TCP_Svc_Handler::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
         p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_id_,
-            svrinfo,
-            sockstream,
-            inetaddr);
+                                       svrinfo,
+                                       sockstream,
+                                       inetaddr);
 
         //避免析构的时候close句柄
         sockstream.release_noclose();
@@ -222,7 +198,7 @@ size_t Zerg_Auto_Connector::numsvr_connect()
     return size_of_wantconnect_;
 }
 
-//根据svr type获取serviceid，有多个id时随机获取一个 
+//根据svr type获取serviceid，有多个id时随机获取一个
 int Zerg_Auto_Connector::get_server(unsigned short svr_type, SERVICES_ID *svrinfo)
 {
     //从map中获取相应的index
@@ -324,7 +300,7 @@ int Zerg_Auto_Connector::reload_cfg(const Zerg_Server_Config *config)
             {
                 // 不在当前主动连接中，则关闭当前连接
                 ZLOG_INFO("zergsvr close old auto connect. svr_type=%u svr_id=%u",
-                    service.services_type_, service.services_id_);
+                          service.services_type_, service.services_id_);
                 TCP_Svc_Handler::close_services_peer(service);
             }
         }
@@ -346,8 +322,8 @@ int Zerg_Auto_Connector::reload_cfg(const Zerg_Server_Config *config)
 }
 
 // 判定一个svr是否在当前的主动连接中
-bool
-Zerg_Auto_Connector::is_current_auto_connect(const SERVICES_ID &service, bool is_main_service)
+bool Zerg_Auto_Connector::is_current_auto_connect(const SERVICES_ID &service,
+                                                  bool is_main_service)
 {
     RouteType2Index::iterator iter = want_connect_type_2_index_.find(service.services_type_);
     if (iter == want_connect_type_2_index_.end())

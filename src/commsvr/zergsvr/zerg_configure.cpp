@@ -21,19 +21,19 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
                                              SERVICES_INFO &svc_info) const
 {
     int ret = 0;
-    ret = services_info_cfg_.find_svcinfo(svc_id,svc_info);
+    ret = services_info_cfg_.find_svcinfo(svc_id, svc_info);
     if (0 != ret)
     {
         return ret;
     }
-    
+
 
     //´òÓ¡Ò»ÏÂ
     ZLOG_INFO("[zergsvr] Svc id [%u|%u] ipaddress info [%s|%u].",
-        svc_id.services_type_,
-        svc_id.services_id_,
-        svc_info.ip_address_.get_host_addr(),
-        svc_info.ip_address_.get_port_number());
+              svc_id.services_type_,
+              svc_id.services_id_,
+              svc_info.ip_address_.get_host_addr(),
+              svc_info.ip_address_.get_port_number());
 
     return ret;
 }

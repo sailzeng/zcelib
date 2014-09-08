@@ -41,9 +41,6 @@
     <ClCompile Include="zerg_predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_service_info_set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zerg_tcp_ctrl_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -51,6 +48,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zerg_app_timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zerg_active_svchdl_set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -82,9 +82,6 @@
     <ClInclude Include="zerg_predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zerg_service_info_set.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zerg_stat_define.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -95,6 +92,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zerg_app_timer.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zerg_active_svchdl_set.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

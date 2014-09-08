@@ -173,7 +173,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="zerg_service_info_set.cpp" />
+    <ClCompile Include="zerg_active_svchdl_set.cpp" />
     <ClCompile Include="zerg_tcp_ctrl_handler.cpp" />
     <ClCompile Include="zerg_udp_ctrl_handler.cpp" />
   </ItemGroup>
@@ -188,7 +188,7 @@
     <ClInclude Include="zerg_console_handler.h" />
     <ClInclude Include="zerg_ip_restrict.h" />
     <ClInclude Include="zerg_predefine.h" />
-    <ClInclude Include="zerg_service_info_set.h" />
+    <ClInclude Include="zerg_active_svchdl_set.h" />
     <ClInclude Include="zerg_stat_define.h" />
     <ClInclude Include="zerg_tcp_ctrl_handler.h" />
     <ClInclude Include="zerg_udp_ctrl_handler.h" />

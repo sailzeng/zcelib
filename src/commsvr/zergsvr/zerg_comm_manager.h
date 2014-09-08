@@ -35,7 +35,7 @@ protected:
 
 public:
 
-    
+
     /*!
     * @brief      初始化,从配置文件读取配置
     * @return     int
@@ -48,9 +48,9 @@ public:
     * @return     int
     */
     int init_allpeer();
-    
+
     /*!
-    * @brief      根据SVC INFO 初始化Socket, 
+    * @brief      根据SVC INFO 初始化Socket,
     * @return     int
     * @param      init_svcid 初始化所依据的SVC INFO
     */
@@ -58,11 +58,23 @@ public:
 
 
 
-    //检查端口是否安全,安全端口必须不使用保险(FALSE)
+
+    /*!
+    * @brief      检查端口是否安全,安全端口必须不使用保险(FALSE)
+    * @return     int
+    * @param      inetadd 检查的的地址信息
+    */
     int check_safeport(const ZCE_Sockaddr_In &inetadd);
 
-    //取得发送数据进行发送
-    int popall_sendpipe_write(size_t want_, size_t &proc_frame_num);
+
+    /*!
+    * @brief      取得发送数据进行发送
+    * @return     int
+    * @param      want_send_frame  希望发送的数量，想了想，还是加了一个最多发送的帧的限额
+    * @param      proc_frame_num   实际处理的数量
+    * @note
+    */
+    int popall_sendpipe_write(size_t want_send_frame, size_t &proc_frame_num);
 
     //
     void pushback_recvpipe(Zerg_App_Frame *recv_frame);
@@ -70,7 +82,7 @@ public:
     //检查发包频率
     void check_freamcount(unsigned int now);
 
-    int send_single_buf(Zerg_Buffer * tmpbuf);
+    int send_single_buf(Zerg_Buffer *tmpbuf);
 
 public:
 

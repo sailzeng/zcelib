@@ -2,9 +2,13 @@
 #ifndef ZERG_BUFFER_STORAGE_H_
 #define ZERG_BUFFER_STORAGE_H_
 
-/****************************************************************************************************
-class Zerg_Buffer
-****************************************************************************************************/
+//===================================================================================================
+
+/*!
+* @brief
+*
+* @note
+*/
 class Zerg_Buffer
 {
 public:
@@ -71,36 +75,16 @@ public:
 
 };
 
-/****************************************************************************************************
-class ZBuffer_Storage
-****************************************************************************************************/
+
+//===================================================================================================
+
+/*!
+* @brief
+*
+* @note
+*/
 class ZBuffer_Storage
 {
-
-protected:
-
-    //每次如果BufferStroge不够用了，扩展的个数
-    static const size_t EXTEND_NUM_OF_LIST = 1024;
-
-    //最小最大边界
-    static const size_t MIN_HDL_LIST_NUMBER = 128;
-    //
-    static const size_t MAX_HDL_LIST_NUMBER = 12800;
-
-protected:
-    //
-    typedef ZCE_LIB::lordrings <Zerg_Buffer *> ZListBufferAry;
-
-    //我担心内存泄露,所以加个总数计数
-    size_t                size_of_bufferalloc_;
-
-    //
-    ZListBufferAry        buffer_deque_;
-
-protected:
-    //单子实例指针
-    static ZBuffer_Storage *instance_;
-
 protected:
 
     //只声明不实现,避免错误
@@ -122,13 +106,13 @@ public:
     //反初始化,是否所有的申请空间,结束后一定要调用
     void uninit_buffer_list();
 
-    //分配一个Buffer到List中
+    //从队列分配一个Buffer出来
     Zerg_Buffer *allocate_buffer();
 
-    //释放一个Buffer到List中
+    //释放一个Buffer到队列中
     void free_byte_buffer(Zerg_Buffer *ptrbuf );
 
-    //扩展BufferList
+    //扩展Buffer队列
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);
 
 public:
@@ -137,6 +121,33 @@ public:
     static ZBuffer_Storage *instance();
     //清理单子实例
     static void clean_instance();
+
+protected:
+    //单子实例指针
+    static ZBuffer_Storage *instance_;
+
+protected:
+
+    //每次如果BufferStroge不够用了，扩展的个数
+    static const size_t EXTEND_NUM_OF_LIST = 1024;
+
+    //最小最大边界
+    static const size_t MIN_HDL_LIST_NUMBER = 128;
+    //
+    static const size_t MAX_HDL_LIST_NUMBER = 12800;
+
+protected:
+
+    ///存放BUFF 的队列类型
+    typedef ZCE_LIB::lordrings <Zerg_Buffer *> ZBUFFER_RINGS;
+
+    ///我担心内存泄露,所以加个总数计数
+    size_t                size_of_bufferalloc_;
+
+    ///BUFF队列
+    ZBUFFER_RINGS         buffer_deque_;
+
+
 
 };
 

@@ -46,7 +46,7 @@ Zerg_Comm_Manager::~Zerg_Comm_Manager()
 //初始化
 int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
 {
-    
+
     zerg_config_ = config;
 
     //清理监控命令
@@ -55,7 +55,7 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
 
     //错误发送数据尝试发送次数
     error_try_num_ = config->zerg_cfg_data_.retry_error_;
-    
+
 
     //错误发送数据尝试发送次数
     monitor_size_ = config->zerg_cfg_data_.monitor_cmd_count_;
@@ -114,7 +114,7 @@ int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
     {
         //设置Bind地址
         TCP_Accept_Handler *tmp_acceptor = new TCP_Accept_Handler(init_svcid,
-            svc_info.ip_address_);
+                                                                  svc_info.ip_address_);
         //采用同步的方式创建LISTER PEER
         ret = tmp_acceptor->create_listen();
 
@@ -135,7 +135,7 @@ int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
     {
         //
         UDP_Svc_Handler *tmp_udphdl =  new UDP_Svc_Handler(init_svcid,
-            svc_info.ip_address_);
+                                                           svc_info.ip_address_);
 
         //初始化UDP的端口
         ret = tmp_udphdl->init_udp_services();
@@ -188,19 +188,8 @@ int Zerg_Comm_Manager::check_safeport(const ZCE_Sockaddr_In  &inetadd)
     return SOAR_RET::SOAR_RET_SUCC;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月20日
-Function        : Zerg_Comm_Manager::popall_sendpipe_write
-Return          : int
-Parameter List  :
-  Param1: const size_t want_send_frame
-  Param2: size_t& num_send_frame
-Description     : 将所有的队列中的数据发送，
-Calls           :
-Called By       :
-Other           : 想了想，还是加了一个最多发送的帧的限额
-Modify Record   :
-******************************************************************************************/
+
+//取得发送数据进行发送
 int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t &num_send_frame)
 {
     num_send_frame = 0;
@@ -214,7 +203,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
-        zerg_mmap_pipe_->pop_front_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID, reinterpret_cast< ZCE_LIB::dequechunk_node*&>(proc_frame));
+        zerg_mmap_pipe_->pop_front_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID, reinterpret_cast< ZCE_LIB::dequechunk_node* &>(proc_frame));
 
         tmpbuf->size_of_use_ = proc_frame->frame_length_;
 
@@ -364,7 +353,7 @@ void Zerg_Comm_Manager::clean_instance()
 
 
 
-int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer * tmpbuf )
+int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 {
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
@@ -394,13 +383,13 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer * tmpbuf )
 
         //
         server_status_->increase_once(ZERG_SEND_FAIL_COUNTER,
-            proc_frame->app_id_,
-            0);
+                                      proc_frame->app_id_,
+                                      0);
         if (proc_frame->recv_service_.services_type_ == 0)
         {
             // 不应该出现0的services_type
             server_status_->increase_once(ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
-                proc_frame->app_id_, proc_frame->recv_service_.services_type_);
+                                          proc_frame->app_id_, proc_frame->recv_service_.services_type_);
         }
         //
         zbuffer_storage_->free_byte_buffer(tmpbuf);
@@ -441,25 +430,25 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
     }
 
     int ret = zerg_mmap_pipe_->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
-        reinterpret_cast<const ZCE_LIB::dequechunk_node *>(recv_frame));
+                                             reinterpret_cast<const ZCE_LIB::dequechunk_node *>(recv_frame));
 
     if (ret != SOAR_RET::SOAR_RET_SUCC)
     {
         server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
-            recv_frame->app_id_,
-            0);
+                                      recv_frame->app_id_,
+                                      0);
     }
     else
     {
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER,
-            recv_frame->app_id_,
-            0);
+                                      recv_frame->app_id_,
+                                      0);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
-            recv_frame->app_id_,
-            recv_frame->frame_command_);
+                                      recv_frame->app_id_,
+                                      recv_frame->frame_command_);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
-            recv_frame->app_id_,
-            recv_frame->send_service_.services_type_);
+                                      recv_frame->app_id_,
+                                      recv_frame->send_service_.services_type_);
     }
 
 }

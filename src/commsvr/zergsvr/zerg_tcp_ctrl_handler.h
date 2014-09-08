@@ -7,7 +7,7 @@
 
 #include "zerg_buf_storage.h"
 #include "zerg_auto_connect.h"
-#include "zerg_service_info_set.h"
+#include "zerg_active_svchdl_set.h"
 
 
 
@@ -29,11 +29,11 @@ public:
     enum HANDLER_MODE
     {
         ///无效的链接
-        HANDLER_MODE_INVALID,     
+        HANDLER_MODE_INVALID,
         ///主动连接的Handler
-        HANDLER_MODE_CONNECT,       
+        HANDLER_MODE_CONNECT,
         ///被动接受某个端口的Handler
-        HANDLER_MODE_ACCEPTED,         
+        HANDLER_MODE_ACCEPTED,
     };
 
     //
@@ -55,7 +55,7 @@ protected:
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
-    
+
     /*!
     * @brief      构造函数
     * @param      hdl_mode 模式，参考@enum HANDLER_MODE,根据模式的不同内部发送队列大小不一致
@@ -76,10 +76,10 @@ public:
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
     void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
-        const ZCE_Socket_Stream &sockstream,
-        const ZCE_Sockaddr_In     &socketaddr);
+                             const ZCE_Socket_Stream &sockstream,
+                             const ZCE_Sockaddr_In     &socketaddr);
 
-    
+
     /*!
     * @brief      主动CONNET链接出去的HANDLER，对应Event Handle的初始化.
     * @return     void
@@ -87,12 +87,12 @@ public:
     * @param      svrinfo     对端的SVC ID
     * @param      sockstream  SOCKET 句柄
     * @param      socketaddr  对应连接的对端地址信息
-    * @note       
+    * @note
     */
     void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
-        const SERVICES_ID &svrinfo,
-        const ZCE_Socket_Stream &sockstream,
-        const ZCE_Sockaddr_In     &socketaddr);
+                             const SERVICES_ID &svrinfo,
+                             const ZCE_Socket_Stream &sockstream,
+                             const ZCE_Sockaddr_In     &socketaddr);
 
     //ZEN的一组要求自己继承的函数.
     //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
@@ -122,8 +122,8 @@ public:
 
     //发送简单的ZERG命令给对方
     int send_simple_zerg_cmd(unsigned int cmd,
-        const SERVICES_ID &recv_services_info,
-        unsigned int option = 0);
+                             const SERVICES_ID &recv_services_info,
+                             unsigned int option = 0);
 
     //发送心跳
     int send_zergheatbeat_reg();
@@ -189,8 +189,8 @@ public:
 
     //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
     static void reconnect_allserver(size_t szsucc,
-        size_t szfail,
-        size_t szvalid);
+                                    size_t szfail,
+                                    size_t szvalid);
 
     //从池子里面得到一个Handler给大家使用
     static TCP_Svc_Handler *AllocSvcHandlerFromPool(HANDLER_MODE handler_mode);
@@ -275,7 +275,7 @@ protected:
     static Zerg_Auto_Connector zerg_auto_connect_;
 
     //SVRINFO对应的PEER的HASHMAP
-    static Service_Info_Set    svr_peer_info_set_;
+    static Active_SvcHandle_Set    svr_peer_info_set_;
 
 
     //已经Accept的PEER数量

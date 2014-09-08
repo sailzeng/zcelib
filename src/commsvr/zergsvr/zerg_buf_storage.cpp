@@ -96,17 +96,7 @@ void ZBuffer_Storage::uninit_buffer_list()
     size_of_bufferalloc_ = 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : ZBuffer_Storage::allocate_buffer
-Return          : ZByteBuffer*
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//分配一个Buffer出来
 Zerg_Buffer *ZBuffer_Storage::allocate_buffer()
 {
     //缓冲区使用完了,扩展
@@ -129,19 +119,7 @@ void ZBuffer_Storage::free_byte_buffer(Zerg_Buffer *ptrbuf)
     buffer_deque_.push_back(ptrbuf);
 }
 
-//
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : ZBuffer_Storage::extend_bufferlist
-Return          : void
-Parameter List  :
-  Param1: size_t szlist
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//扩展Buffer队列
 void ZBuffer_Storage::extend_bufferlist(size_t szlist)
 {
     //打印占用的内存数量

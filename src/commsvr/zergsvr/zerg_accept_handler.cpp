@@ -6,8 +6,8 @@
 
 
 //TCP Accept 处理的EventHandler,
-TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid, 
-    const ZCE_Sockaddr_In &addr):
+TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid,
+                                       const ZCE_Sockaddr_In &addr):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
@@ -31,7 +31,7 @@ int TCP_Accept_Handler::create_listen()
 
     //
     socklen_t sndbuflen = 0, rcvbuflen = 0;
-    int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC,DEF_ZERG_BACKLOG);
+    int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC, DEF_ZERG_BACKLOG);
 
     //如果不能Bind相应的端口
     if (ret != 0)
