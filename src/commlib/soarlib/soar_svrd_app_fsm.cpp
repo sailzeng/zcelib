@@ -22,7 +22,7 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
     int ret = 0;
     ret = Comm_Svrd_Appliction::on_start(argc,argv);
 
-    if (SOAR_RET::SOAR_RET_SUCC != ret)
+    if (0 != ret)
     {
         return ret;
     }
@@ -40,13 +40,13 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 
     ret = register_trans_cmd();
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] register trans cmd fail. ret=%d", ret);
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //运行处理,
@@ -123,7 +123,7 @@ int Comm_SvrdApp_FSM::on_run()
               get_app_basename(),
               typeid(*this).name());
     ZLOG_INFO("======================================================================================================");
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //退出处理
@@ -134,11 +134,11 @@ int Comm_SvrdApp_FSM::on_exit()
 
     ret = Comm_Svrd_Appliction::on_exit();
 
-    if ( SOAR_RET::SOAR_RET_SUCC != ret )
+    if ( 0 != ret )
     {
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 

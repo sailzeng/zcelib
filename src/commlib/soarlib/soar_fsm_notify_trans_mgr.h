@@ -170,7 +170,7 @@ public:
                 //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
                 //  return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
                 //}
-                return SOAR_RET::SOAR_RET_SUCC;
+                return 0;
             }
 
             DEBUGDUMP_FRAME_HEAD(tmp_frame, "FROM RECV QUEUE FRAME:", RS_DEBUG);
@@ -187,7 +187,7 @@ public:
             frame_mallocor_->free_appframe(tmp_frame);
 
             //
-            if (ret != SOAR_RET::SOAR_RET_SUCC)
+            if (ret != 0)
             {
                 continue;
             }
@@ -200,7 +200,7 @@ public:
         }
 
         //
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //激活线程
@@ -224,7 +224,7 @@ public:
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
         }
 
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //从recv的消息队列中去一个数据出来，不进行超时等待
@@ -243,7 +243,7 @@ public:
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
         }
 
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //从send的消息队列中去一个数据出来，进行超时等待
@@ -262,7 +262,7 @@ public:
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
         }
 
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //从send的消息队列中去一个数据出来，不进行超时等待
@@ -281,7 +281,7 @@ public:
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
         }
 
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     bool is_sendqueue_empty() const
@@ -357,7 +357,7 @@ public:
         //拷贝发送的MSG Block
         int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC )
+        if (ret != 0 )
         {
             return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
         }
@@ -366,7 +366,7 @@ public:
         ret = enqueue_sendqueue(rsp_msg, false);
         DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO SEND QUEUE FRAME", RS_DEBUG);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             ZLOG_ERROR("[framework] Wait %d seconds to enqueue_sendqueue but fail. \
                        Send queue is full or task process too slow to process request.",
@@ -374,7 +374,7 @@ public:
             return ret;
         }
 
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     /******************************************************************************************
@@ -426,7 +426,7 @@ public:
         //ZCE_LOGMSG_DBG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
         //    send_msg_queue_->size(),
         //    send_msg_queue_->size() * sizeof(Zerg_App_Frame *));
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     /******************************************************************************************
@@ -461,7 +461,7 @@ public:
         //  recv_msg_queue_->size(),
         //  recv_msg_queue_->size() * sizeof(Zerg_App_Frame *));
 
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 };
 

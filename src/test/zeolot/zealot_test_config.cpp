@@ -10,7 +10,7 @@ int test_conf_xml(int  /*argc*/, char * /*argv*/[])
 {
     ZCE_Conf_PropertyTree pt_tree;
 
-     int ret = ZCE_XML_Implement::read("conf/test_0002.xml", &pt_tree);
+    int ret = ZCE_XML_Implement::read("conf/test_0002.xml", &pt_tree);
     if (ret != 0)
     {
         return ret;

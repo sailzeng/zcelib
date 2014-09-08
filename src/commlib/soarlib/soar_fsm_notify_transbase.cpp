@@ -91,7 +91,7 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
 
     ret = trans_notify_mgr_->enqueue_sendqueue(abnormal_frame_, true);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -99,7 +99,7 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
     //发送成功后，这个数据已经交割Send Queue，
     abnormal_frame_ = NULL;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 };
 
 //回收后的处理，用于资源的释放，等等，尽量保证基类的这个函数最后调用，类似析构函数。

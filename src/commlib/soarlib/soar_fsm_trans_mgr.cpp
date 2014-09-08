@@ -216,7 +216,7 @@ int Transaction_Manager::register_trans_cmd(unsigned int cmd,
     //这个地方违背了谁申请，谁删除的原则，不好，但是
     delete ptxbase;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -257,7 +257,7 @@ int Transaction_Manager::regiester_trans_id(unsigned int transid,
 
     transc_map_[transid] = ptxbase;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -319,7 +319,7 @@ int Transaction_Manager::unregiester_trans_id(unsigned int transid,
     //返回池子
     return_clone_to_pool(trans_cmd, rt_tsbase);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -347,9 +347,9 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
         //
         ret = zerg_mmap_pipe_->pop_front_recvpipe(tmp_frame);
 
-        if (ret !=  SOAR_RET::SOAR_RET_SUCC)
+        if (ret !=  0)
         {
-            return SOAR_RET::SOAR_RET_SUCC;
+            return 0;
         }
 
         DEBUGDUMP_FRAME_HEAD(tmp_frame, "FROM RECV PIPE FRAME", RS_DEBUG);
@@ -360,7 +360,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
         ret = process_appframe(tmp_frame, bcrtcx);
 
         //
-        if (ret !=  SOAR_RET::SOAR_RET_SUCC)
+        if (ret !=  0)
         {
             continue;
         }
@@ -373,7 +373,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
     }
 
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //将数据放入发送管道
@@ -424,7 +424,7 @@ int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
                                    reg_ctr_trans.trans_lock_cmd_,
                                    frame_cmd);
 
-        if (SOAR_RET::SOAR_RET_SUCC != ret )
+        if (0 != ret )
         {
             return ret;
         }
@@ -469,7 +469,7 @@ int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
     //初始化丫的
     crt_trans->re_init();
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -514,7 +514,7 @@ int Transaction_Manager::return_clone_to_pool(unsigned int frame_cmd, Transactio
 
     //
     reg_ctr_trans.crttrs_cmd_pool_.push_back(rt_txbase);
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -607,7 +607,7 @@ int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int qq_uin,
         return -1;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //对某一个用户的一个命令的事务进行加锁
@@ -648,7 +648,7 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
                               crt_trans);
 
     //是一个激活事务的命令
-    if (ret == SOAR_RET::SOAR_RET_SUCC)
+    if (ret == 0)
     {
 
         //跳过0，认为错误的Transaction ID默认为0,所以这样有好处,容易发现错误.
@@ -660,7 +660,7 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
         ret = regiester_trans_id(trans_id_builder_, ppetappframe->frame_command_, crt_trans);
 
         //创建了一个事务
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             //
             return_clone_to_pool(ppetappframe->frame_command_, crt_trans);
@@ -670,7 +670,7 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
         ret = crt_trans->initialize_trans(ppetappframe, trans_id_builder_);
 
         //注意这儿销毁用的是handle_close
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             crt_trans->handle_close();
             return ret;
@@ -693,7 +693,7 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
                                      ppetappframe->frame_command_,
                                      run_tans);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC )
+        if (ret != 0 )
         {
             return ret;
         }
@@ -703,7 +703,7 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
         //检查受到的FRAME的数据和信息
         ret = run_tans->check_receive_frame(ppetappframe);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC )
+        if (ret != 0 )
         {
             return ret;
         }
@@ -711,14 +711,14 @@ int Transaction_Manager::process_appframe( Zerg_App_Frame *ppetappframe, bool &b
         //收到一个数据，进行处理。
         ret = run_tans->receive_trans_msg(ppetappframe);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC )
+        if (ret != 0 )
         {
             run_tans->handle_close();
             return ret;
         }
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -750,7 +750,7 @@ int Transaction_Manager::get_handler_by_transid(unsigned int transid, unsigned i
 
     ptxbase = mapiter->second;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -909,7 +909,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
         return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //处理从接收队列取出的FRAME
@@ -930,7 +930,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
         if (ret < 0)
         {
             ZLOG_ERROR("[framework] Recv queue dequeue fail ,ret=%u,", ret);
-            return SOAR_RET::SOAR_RET_SUCC;
+            return 0;
         }
 
         DEBUGDUMP_FRAME_HEAD(tmp_frame, "FROM RECV QUEUE FRAME:", RS_DEBUG);
@@ -944,7 +944,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
         inner_frame_malloc_->free_appframe(tmp_frame);
 
         //
-        if (ret !=  SOAR_RET::SOAR_RET_SUCC)
+        if (ret !=  0)
         {
             continue;
         }
@@ -957,7 +957,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
     }
 
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //得到管理器的负载参数

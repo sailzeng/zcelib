@@ -71,7 +71,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     //Comm_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
-    int ret = SOAR_RET::SOAR_RET_SUCC;
+    int ret = 0;
 
     //得到APP的名字，去掉路径，后缀的名字
     ret = create_app_name(argv[0]);
@@ -171,7 +171,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ///*CfgSvrSdk *cfgsvr_sdk = CfgSvrSdk::instance();
     //ret = cfgsvr_sdk->init();*/
 
-    //if (ret != SOAR_RET::SOAR_RET_SUCC)
+    //if (ret != 0)
     //{
     //    ZLOG_ERROR("[framework] cfgsvrsdk init fail. ret=%d", ret);
     //    return ret;
@@ -183,7 +183,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     // 加载框架配置,由于是虚函数，也会调用到非框架的配置读取
     ret = config_base_->initialize(argc, argv);
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] framwork config init fail. ret=%d", ret);
         return ret;
@@ -194,7 +194,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ZCE_ASSERT((self_svc_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
                (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] %s load app config fail. ret=%d",
                    __ZCE_FUNCTION__, ret);
@@ -226,7 +226,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     //ret = Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg(
     //          svd_config->zerg_config_);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg fail,ret = %d.", ret);
         return ret;
@@ -235,7 +235,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = Zerg_MMAP_BusPipe::instance()->
           init_after_getcfg(Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
                             config_base_->if_restore_pipe_);
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
         return ret;
@@ -250,14 +250,14 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     // 初始化日志
     ret = init_log();
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] init log fail. ret=%d", ret);
         return ret;
     }
 
     ZLOG_INFO("[framework] Comm_Svrd_Appliction::init_instance Success.");
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //退出的工作
@@ -280,7 +280,7 @@ int Comm_Svrd_Appliction::on_exit()
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //设置日志的优先级
@@ -306,7 +306,7 @@ int Comm_Svrd_Appliction::register_soar_timer()
     //下次触发时间，以及间隔触发时间精度
 
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //重新加载配置
@@ -318,13 +318,13 @@ int Comm_Svrd_Appliction::reload_config()
     // 先框架reload
     int ret = reload();
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("framework reload config error:ret=%d", ret);
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //int Comm_Svrd_Appliction::do_run()
@@ -332,7 +332,7 @@ int Comm_Svrd_Appliction::reload_config()
 //    // 框架要先初始化
 //    int ret = init_instance();
 //
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        ZLOG_ERROR("application: init_instance fail. ret=%d", ret);
 //        return ret;
@@ -341,7 +341,7 @@ int Comm_Svrd_Appliction::reload_config()
 //    // 调用app的init函数
 //    ret = init();
 //
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        ZLOG_ERROR("application: init_app fail. ret=%d", ret);
 //        return ret;
@@ -350,7 +350,7 @@ int Comm_Svrd_Appliction::reload_config()
 //    ZLOG_INFO("[framework]application: init succ. start run");
 //    ret = run_instance();
 //
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        ZLOG_ERROR("application: run_instance fail. ret=%d", ret);
 //    }
@@ -371,13 +371,13 @@ int Comm_Svrd_Appliction::reload_config()
 int Comm_Svrd_Appliction::init_log()
 {
     int ret = 0;
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] init bill fail. ret=%d", ret);
         return ret;
     }
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] init stat fail. ret=%d", ret);
         return ret;
@@ -399,7 +399,7 @@ int Comm_Svrd_Appliction::init_log()
 
     ZLOG_DEBUG("log instance reinit .");
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -407,12 +407,12 @@ int Comm_Svrd_Appliction::init_log()
 int Comm_Svrd_Appliction::reload()
 {
     int ret = config_base_->reload_cfgfile();
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("load frame config fail. ret=%d", ret);
         return ret;
     }
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 

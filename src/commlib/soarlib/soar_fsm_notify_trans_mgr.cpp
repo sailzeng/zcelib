@@ -79,7 +79,7 @@ int NotifyTrans_Manger<ZCE_NULL_SYNCH>::active_notify_task(NotifyTrans_TaskBase 
                                                            size_t /*task_stack_size*/ )
 {
     ZCE_ASSERT(false);
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -116,7 +116,7 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
         ret = task_list_[i]->initialize(this);
 
         //任何一个不成功，都返回错误
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -144,7 +144,7 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
         }
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -163,7 +163,7 @@ int NotifyTrans_Manger<ZCE_NULL_SYNCH>::stop_notify_task()
 {
     ZCE_ASSERT(false);
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -200,6 +200,6 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::stop_notify_task()
     }
 
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 

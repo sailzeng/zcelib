@@ -55,7 +55,7 @@ Transaction_Base::Transaction_Base(ZCE_Timer_Queue *timer_queue,
     , wait_cmd_(CMD_INVALID_CMD)
     , trans_create_time_(0)
     , trace_log_pri_(RS_DEBUG)
-    , process_errno_(SOAR_RET::SOAR_RET_SUCC)
+    , process_errno_(0)
 {
 }
 
@@ -87,7 +87,7 @@ void Transaction_Base::re_init()
     wait_cmd_ = CMD_INVALID_CMD;
     trans_create_time_ = 0;
     trace_log_pri_ = RS_DEBUG;
-    process_errno_ = SOAR_RET::SOAR_RET_SUCC;
+    process_errno_ = 0;
 }
 
 //回收后的处理，用于资源的释放，等等，尽量保证基类的这个函数最后调用，类似析构函数。
@@ -148,7 +148,7 @@ int Transaction_Base::initialize_trans(Zerg_App_Frame *proc_frame, unsigned int 
     //清理掉临时的接收命令
     tmp_recv_frame_ = NULL;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //超时处理函数，有默认实现，如果你在超时时要返回数据，你就要要重载这个函数
@@ -187,7 +187,7 @@ int Transaction_Base::receive_trans_msg(Zerg_App_Frame *proc_frame)
     //清理掉临时的接收命令
     tmp_recv_frame_ = NULL;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -224,7 +224,7 @@ int Transaction_Base::timer_timeout(const ZCE_Time_Value & /*time*/, const void 
     ret = process_trans_event();
 
     //如果处理的已经结束或者发生什么错误，调用handle_close
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         //原来是return -1 底层会调用handle_close，但是发现这样调用的方式会先用指针取消定时器,
         //直接调用handle_close，追求性能
@@ -374,7 +374,7 @@ int Transaction_Base::process_trans_event()
             //这儿相当于递归调用
             ret = process_trans_event();
 
-            if (ret != SOAR_RET::SOAR_RET_SUCC)
+            if (ret != 0)
             {
                 return ret;
             }
@@ -481,7 +481,7 @@ int Transaction_Base::set_timeout_timer(int sec, int usec, bool active_auto_stop
 
     active_auto_stop_ = active_auto_stop;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -510,7 +510,7 @@ int Transaction_Base::set_timetouch_timer(int sec, int usec)
     ZCE_Time_Value delay(sec, usec);
     trans_touchtimer_id_ = timer_queue()->schedule_timer (this, &TRANSACTION_TIME_ID[1], delay);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -574,7 +574,7 @@ int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame)
     //调用默认函数
     set_wait_cmd();
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //对当前用户的一个锁ID进行加锁

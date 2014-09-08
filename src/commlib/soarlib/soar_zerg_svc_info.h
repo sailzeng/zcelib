@@ -13,7 +13,8 @@ struct SOARING_EXPORT SERVICES_ID
 public:
 
     ///构造,析构函数,默认为0
-    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE, uint32_t svrno = INVALID_SERVICES_ID);
+    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE, 
+                         uint32_t svrno = INVALID_SERVICES_ID);
     //
     ~SERVICES_ID();
 
@@ -22,6 +23,19 @@ public:
         services_type_ = 0;
         services_id_ = 0;
     }
+
+    
+    /*!
+    * @brief      从string中得到SVC ID
+    * @return     int == 0 表示成功
+    * @param      str 转换的字符串
+    * @param      check_valid 检查是否有效
+    */
+    int from_str(const char *str, 
+                 bool check_valid = false);
+
+    ///转换string
+    const char *to_str(char *str_buffer, size_t buf_len);
 
     ///设置
     void set_svcid(uint16_t svrtype, uint32_t svrid);

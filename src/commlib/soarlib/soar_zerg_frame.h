@@ -439,7 +439,7 @@ int Zerg_App_Frame::appdata_encode(size_t szframe_appdata,
     // 调整frame的长度
     frame_length_
         = (uint32_t)(data_start + use_len + LEN_OF_APPFRAME_HEAD);
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -478,7 +478,7 @@ int Zerg_App_Frame::appdata_decode(  T &info,
         return SOAR_RET::ERROR_CDR_ENCODE_FAIL;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //很耗时的操作，注意使用频度

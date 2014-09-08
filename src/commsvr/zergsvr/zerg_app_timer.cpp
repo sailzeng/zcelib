@@ -30,7 +30,7 @@ int Zerg_App_Timer_Handler::initialize(ZCE_Timer_Queue *queue)
 {
     int ret = 0;
     ret = Server_Timer_Base::initialize(queue);
-    if (SOAR_RET::SOAR_RET_SUCC != ret)
+    if (0 != ret)
     {
         return ret;
     }
@@ -39,7 +39,7 @@ int Zerg_App_Timer_Handler::initialize(ZCE_Timer_Queue *queue)
     connect_retry_heart_ = AUTOCONNECT_RETRY_MESC / heart_precision_.total_msec() + 1;
     send_check_heart_ = SEND_FRAME_CHECK_MSEC / heart_precision_.total_msec() + 1;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 

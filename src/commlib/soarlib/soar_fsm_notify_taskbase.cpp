@@ -40,12 +40,12 @@ int NotifyTrans_TaskBase::initialize(NotifyTrans_Manger<ZCE_MT_SYNCH> *trans_not
 
     ret = task_initialize();
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 };
 
 //
@@ -85,7 +85,7 @@ int NotifyTrans_TaskBase::svc (void)
                 ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame, tv);
             }
 
-            if (ret != SOAR_RET::SOAR_RET_SUCC)
+            if (ret != 0)
             {
                 break;
             }
@@ -98,7 +98,7 @@ int NotifyTrans_TaskBase::svc (void)
             //»ØÊÕFRAME
             trans_notify_mgr_->free_appframe(tmp_frame);
 
-            if (ret != SOAR_RET::SOAR_RET_SUCC)
+            if (ret != 0)
             {
                 ZLOG_ERROR("[framework] taskprocess_appframe ret =%u", ret);
             }
@@ -127,18 +127,18 @@ int NotifyTrans_TaskBase::svc (void)
 //
 int NotifyTrans_TaskBase::task_initialize()
 {
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //
 int NotifyTrans_TaskBase::task_finish()
 {
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 int NotifyTrans_TaskBase::task_moonlighting (size_t &send_frame_num)
 {
     send_frame_num = 0;
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 

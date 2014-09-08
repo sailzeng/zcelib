@@ -190,7 +190,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
         }
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //发送数据
@@ -254,7 +254,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int qq_uin,
         return SOAR_RET::ERROR_ZULU_SEND_PACKAGE_FAIL;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //发送和接收数据，一起一锅搞掂的方式
@@ -278,14 +278,14 @@ int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
                            app_id,
                            backfill_trans_id);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
     if (false == if_recv)
     {
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //收取数据，
@@ -294,12 +294,12 @@ int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
                               time_wait
                              );
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 #endif //COMM_SNDRCV_UDP_NET_LO_LO_H_

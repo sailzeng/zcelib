@@ -71,7 +71,7 @@ protected:
         //拷贝发送的MSG Block
         int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC )
+        if (ret != 0 )
         {
             return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
         }
@@ -85,14 +85,14 @@ protected:
                                                    &wait_sec);
 
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
-        if ( ret != SOAR_RET::SOAR_RET_SUCC )
+        if ( ret != 0 )
         {
             ZLOG_ERROR("[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
             return ret;
         }
 
         DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO RECV QUEUE FRAME", RS_DEBUG);
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //将数据放入管理器，
@@ -122,7 +122,7 @@ protected:
         //拷贝发送的MSG Block
         int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC )
+        if (ret != 0 )
         {
             return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
         }
@@ -137,14 +137,14 @@ protected:
                                                    &wait_sec);
 
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
-        if ( ret != SOAR_RET::SOAR_RET_SUCC )
+        if ( ret != 0 )
         {
             ZLOG_ERROR("[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
             return ret;
         }
 
         DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO RECV QUEUE FRAME", RS_DEBUG);
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
 protected:

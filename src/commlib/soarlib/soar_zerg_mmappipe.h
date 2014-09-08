@@ -140,7 +140,7 @@ inline int Zerg_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
     int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<ZCE_LIB::dequechunk_node*&>(proc_frame));
 
     // 加监控数据
-    if (ret == SOAR_RET::SOAR_RET_SUCC)
+    if (ret == 0)
     {
         monitor_->increase_once(COMM_STAT_RECV_PKG_COUNT,
                                 proc_frame->app_id_,
@@ -202,7 +202,7 @@ inline int Zerg_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
     }
 
     // 返回成功
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -343,7 +343,7 @@ int Zerg_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 
     ret = send_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC )
+    if (ret != 0 )
     {
         ZLOG_ERROR("[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
                    __ZCE_FUNCTION__,

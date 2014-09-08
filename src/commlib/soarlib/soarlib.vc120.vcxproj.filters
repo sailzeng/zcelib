@@ -58,9 +58,6 @@
     <ClCompile Include="soar_zerg_svc_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_zerg_svc_table.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_ogre_svc_peer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -151,9 +148,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_zerg_svc_info.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_zerg_svc_table.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_ogre_svc_peer.h">

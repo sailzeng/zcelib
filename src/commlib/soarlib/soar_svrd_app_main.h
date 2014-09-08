@@ -24,7 +24,7 @@ int soar_svrd_main(int argc,const char *argv[])
     //初始化
     int ret = application_class::instance()->on_start(argc, argv);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] App name [%s] class [%s] init_instance fail:%d|%s",
                    application_class::instance()->get_app_runname(),
@@ -46,7 +46,7 @@ int soar_svrd_main(int argc,const char *argv[])
     ret = application_class::instance()->on_run();
 
     //标示运行失败
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
                    application_class::instance()->get_app_runname(),
@@ -79,7 +79,7 @@ int soar_svrd_main(int argc,const char *argv[])
     //关闭日志
     ZCE_Trace_LogMsg::clean_instance();
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 
 }
 

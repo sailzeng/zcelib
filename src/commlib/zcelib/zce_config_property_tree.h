@@ -14,7 +14,7 @@
 *             因为胃觉得BOOST 的Property Tree太慢了，虽然其可能是为了写回配置文件（顺序）有考虑，
 *             但总体看上去有太多的节点。
 * @note       今天IPhone 5没有发布，而是发布了一款Iphone 4S,广大果粉有点失望
-*              
+*
 *
 */
 
@@ -39,9 +39,9 @@ class ZCE_Time_Value;
 *             一棵用于存放子树，存放name=>sub tree，
 *             一棵用于存放叶子节点。存放属性key=>value,XML文件的name=>value也存放
 *             在这个地方，
-*             
+*
 * @note       因为有2棵树，所以内部也有两个迭代器，
-*             
+*
 */
 class ZCE_Conf_PropertyTree
 {
@@ -51,7 +51,7 @@ protected:
     typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
     typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
     typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
-    
+
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
@@ -125,6 +125,27 @@ public:
                       const std::string &key_str,
                       val_type &val) const;
 
+
+
+    /*!
+    * @brief      上面的函数的扩展函数，
+    * @tparam     val_type 参考上面函数
+    * @return     int
+    * @param      path_str 参考上面函数
+    * @param      key_str  参考上面函数
+    * @param      key_sequence key的序列号
+    * @note
+    */
+    template<typename val_type>
+    int pathseq_get_leaf(const std::string &path_str,
+                         const std::string &key_str,
+                         size_t key_sequence,
+                         val_type &val) const
+    {
+        std::string seqkey_str = key_str + std::to_string(key_sequence);
+        return path_get_leaf(path_str, seqkey_str, val);
+    }
+
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,只定义不实现
     * @tparam     val_type
@@ -140,6 +161,10 @@ public:
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
     void add_child(const std::string &key_str,
                    ZCE_Conf_PropertyTree *&new_child_note);
+
+
+    ///清理
+    void clear();
 
 
 public:

@@ -49,7 +49,7 @@ public:
 
     enum
     {
-        SOAR_RET_SUCC = 0,
+
         FAIL_INTERNAL_ERORR  = -1,
 
         ERROR_COMMLIB_BEGIN = 5000,
@@ -134,7 +134,8 @@ public:
         ERROR_ZULU_SEND_PACKAGE_FAIL= 5093,
         ERROR_ZULU_RECEIVE_PACKAGE_FAIL= 5094,
         ERROR_ZULU_RECEIVE_OTHERS_COMMAND= 5095,
-
+        ERROR_STRING_TO_SVCID_FAIL = 5096,
+        ERROR_SERVICES_ID_INVALID = 5097,
 
 
         ERROR_MML_COMMAND_INVALID = 5096,                 //MML命令字无法识别

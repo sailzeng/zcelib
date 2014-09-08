@@ -40,7 +40,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
                                            svc_route);
 
         //如果查询不到
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             ZLOG_ERROR("[zergsvr] Count find Auto Connect Services Info SvrType=%u,SvrID=%u .Please Check Config file. ",
                        svc_route.svc_id_.services_type_,
@@ -66,7 +66,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
     ZLOG_INFO("[zergsvr] Get number [%lu] auto connect config success.",
               size_of_wantconnect_);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -83,12 +83,12 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
         //如果已经有相应的链接了，跳过
         ret = TCP_Svc_Handler::find_services_peer(ary_want_connect_[i].svc_id_, svchandle);
 
-        if (SOAR_RET::SOAR_RET_SUCC != ret)
+        if (0 != ret)
         {
             //进行连接,
             ret = connect_server_bysvcid(ary_want_connect_[i].svc_id_, ary_want_connect_[i].ip_address_);
 
-            if (ret == SOAR_RET::SOAR_RET_SUCC)
+            if (ret == 0)
             {
                 ++szsucc;
             }
@@ -190,7 +190,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
         ZLOG_ERROR("[zergsvr] My God! NonBlock Socket Connect Success , ACE is a cheat.");
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 size_t Zerg_Auto_Connector::numsvr_connect()
@@ -225,14 +225,14 @@ int Zerg_Auto_Connector::get_server(unsigned short svr_type, SERVICES_ID *svrinf
         svrinfo->set_svcid(svr_type, list_of_want_connect_main_id_[index][rand_num]);
         if (is_connected(*svrinfo))
         {
-            return SOAR_RET::SOAR_RET_SUCC;
+            return 0;
         }
 
         //主路由不处于连接状态, 则试着选择从路由svr
         svrinfo->set_svcid(svr_type, list_of_want_connect_back_id_[index][rand_num]);
         if (is_connected(*svrinfo))
         {
-            return SOAR_RET::SOAR_RET_SUCC;
+            return 0;
         }
     }
 
@@ -248,7 +248,7 @@ bool Zerg_Auto_Connector::is_connected(const SERVICES_ID &svrinfo)
     // 主动连接目前还不支持udp
     int ret = TCP_Svc_Handler::find_services_peer(svrinfo, svchandle);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         // 没找到
         return false;
@@ -275,7 +275,7 @@ int Zerg_Auto_Connector::reload_cfg(const Zerg_Server_Config *config)
     ary_want_connect_.clear();
 
     int ret = get_config(config);
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         // 重新加载失败，则配置回退
         ZLOG_ERROR("zergsvr reload autoconnect fail. ret=%d", ret);
@@ -318,7 +318,7 @@ int Zerg_Auto_Connector::reload_cfg(const Zerg_Server_Config *config)
 
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 // 判定一个svr是否在当前的主动连接中
@@ -350,7 +350,7 @@ bool Zerg_Auto_Connector::is_current_auto_connect(const SERVICES_ID &service,
             // svr_type和id都一样，还要检查一下对应的ip和端口是否有变化
             TCP_Svc_Handler *svchandle = NULL;
             int ret = TCP_Svc_Handler::find_services_peer(service, svchandle);
-            if (ret != SOAR_RET::SOAR_RET_SUCC)
+            if (ret != 0)
             {
                 // 这个连接不存在
                 return true;
@@ -359,7 +359,7 @@ bool Zerg_Auto_Connector::is_current_auto_connect(const SERVICES_ID &service,
             // 找到，则比较一下ip和端口
             SERVICES_INFO     svr_info;
             ret = zerg_svr_cfg_->get_svcinfo_by_svcid(service, svr_info);
-            if (ret != SOAR_RET::SOAR_RET_SUCC)
+            if (ret != 0)
             {
                 // 如果这个service已经找不到对应的IP配置，可能已经去除了
                 return false;

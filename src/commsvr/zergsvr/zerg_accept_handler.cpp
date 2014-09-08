@@ -82,7 +82,7 @@ int TCP_Accept_Handler::create_listen()
     //
     reactor()->register_handler(this, ZCE_Event_Handler::ACCEPT_MASK);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //事件触发处理，表示有一个accept 的数据
@@ -126,7 +126,7 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
 
     ret = ip_restrict_->check_iprestrict(remote_address);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         sockstream.close();
         return 0;

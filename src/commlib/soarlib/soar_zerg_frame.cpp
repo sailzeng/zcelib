@@ -135,7 +135,7 @@ int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
     //填写数据区的长度
     memcpy(frame_appdata_, vardata, szdata);
     frame_length_ = static_cast<uint32_t>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************

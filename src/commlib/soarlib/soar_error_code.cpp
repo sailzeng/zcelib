@@ -6,8 +6,6 @@ const char *SOAR_RET::error_string(int error_id)
 {
     switch (error_id)
     {
-    case SOAR_RET_SUCC:
-        return "Success .";
     case FAIL_INTERNAL_ERORR:
         return "Internal system error.";
     case ERROR_PROCESS_MYSQLDB:

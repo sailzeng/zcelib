@@ -58,7 +58,7 @@ int Zulu_SendRecv_Package::set_zulu_svcinfo(const char *svc_ip,
         return SOAR_RET::ERROR_ZULU_INPUT_IPADDRESS_ERROR;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //链接服务器
@@ -93,7 +93,7 @@ int Zulu_SendRecv_Package::connect_zulu_server(ZCE_Time_Value *time_wait)
 
     zulu_connected_ = true;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 void Zulu_SendRecv_Package::close()
@@ -254,7 +254,7 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //发送tibetan_send_appframe_出去，
@@ -294,7 +294,7 @@ int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
         return SOAR_RET::ERROR_ZULU_SEND_PACKAGE_FAIL;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
@@ -305,7 +305,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int &recv_cmd,
 
     ret = receive_svc_package(time_out);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         zulu_stream_.close();
         zulu_connected_ = false;
@@ -315,7 +315,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int &recv_cmd,
     //接收的命令
     recv_cmd = tibetan_recv_appframe_->frame_command_;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //取得本地的地址信息

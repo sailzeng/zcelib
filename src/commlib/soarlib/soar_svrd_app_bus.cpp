@@ -100,7 +100,7 @@ int Comm_SvrdApp_BUS::on_run()
     ZLOG_INFO("[framework] app %s class [%s] run_instance end.",
               get_app_basename(),
               typeid(*this).name());
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //从管道中收取一组数据进行处理
@@ -117,9 +117,9 @@ int Comm_SvrdApp_BUS::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
         //
         ret = zerg_mmap_pipe_->pop_front_recvpipe(nonctrl_recv_buffer_);
 
-        if (ret !=  SOAR_RET::SOAR_RET_SUCC)
+        if (ret !=  0)
         {
-            return SOAR_RET::SOAR_RET_SUCC;
+            return 0;
         }
 
         DEBUGDUMP_FRAME_HEAD(nonctrl_recv_buffer_, "FROM RECV PIPE FRAME", RS_DEBUG);
@@ -128,12 +128,12 @@ int Comm_SvrdApp_BUS::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
         ret = process_recv_appframe(nonctrl_recv_buffer_);
 
         //
-        if (ret !=  SOAR_RET::SOAR_RET_SUCC)
+        if (ret !=  0)
         {
             continue;
         }
     }
 
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }

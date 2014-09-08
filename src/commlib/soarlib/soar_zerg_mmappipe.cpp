@@ -78,7 +78,7 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
 //    zerg_svr_info_.set_serviceid(svrtype, svrid);
 //
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 
 //int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const ZCE_INI_PropertyTree &zerglingcfg)
@@ -111,7 +111,7 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
 //
 //    zerg_svr_info_.set_serviceid(svrtype, svrid);
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 
 //通讯服务器初始化内存管道
@@ -191,7 +191,7 @@ Zerg_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
 
     int ret = send_frame->fill_appdata(buf_len, (const char *)buf);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC )
+    if (ret != 0 )
     {
         ZLOG_ERROR("[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
                    __ZCE_FUNCTION__,

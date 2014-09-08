@@ -518,7 +518,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 //所以请你务必保证你的Socket 是阻塞模式的，否则有问题
 
 
-int ZCE_LIB::connect_timeout_(ZCE_SOCKET handle,
+int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
                             const sockaddr *addr,
                             socklen_t addrlen,
                             ZCE_Time_Value &timeout_tv)

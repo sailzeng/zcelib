@@ -8,7 +8,7 @@
     { \
         int __ret_register_ = Transaction_Manager::instance()->register_trans_cmd(cmd_word, \
                                                                                   new trans_class(ZCE_Timer_Queue::instance(),Transaction_Manager::instance())); \
-        if (__ret_register_ !=  SOAR_RET::SOAR_RET_SUCC) \
+        if (__ret_register_ !=  0) \
         { \
             return __ret_register_; \
         } \

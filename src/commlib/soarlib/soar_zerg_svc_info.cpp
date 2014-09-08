@@ -1,4 +1,5 @@
 #include "soar_predefine.h"
+#include "soar_error_code.h"
 #include "soar_zerg_svc_info.h"
 
 /****************************************************************************************************
@@ -54,6 +55,40 @@ bool SERVICES_ID::operator <(const SERVICES_ID &others) const
 
     return false;
 }
+
+
+///转换string
+const char *SERVICES_ID::to_str(char *str_buffer, size_t buf_len)
+{
+    snprintf(str_buffer,
+             buf_len,
+             "%hu,%u",
+             services_type_,
+             services_id_);
+    return str_buffer;
+}
+
+int SERVICES_ID::from_str(const char *str_buffer,bool check_valid)
+{
+    int ret_num = sscanf(str_buffer,
+                         "%hu,%u",
+                         &services_type_,
+                         &services_id_);
+    if (check_valid 
+        && (INVALID_SERVICES_TYPE == services_type_ || INVALID_SERVICES_ID == services_id_))
+    {
+        return SOAR_RET::ERROR_SERVICES_ID_INVALID;
+    }
+    if (ret_num != 2)
+    {
+        return SOAR_RET::ERROR_STRING_TO_SVCID_FAIL;
+    }
+    else
+    {
+        return 0;
+    }
+}
+
 
 /******************************************************************************************
 struct SERVICES_IP_INFO 服务ID信息 + IP信息

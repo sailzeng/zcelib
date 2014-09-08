@@ -126,14 +126,14 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
                                                bool error_continue ,
                                                ZCE_Time_Value *time_wait)
 {
-    int ret = SOAR_RET::SOAR_RET_SUCC;
+    int ret = 0;
 
     //用死循环保证错误继续处理和资源统一释放
     for (;;)
     {
         ret = receive_svc_package(time_wait);
 
-        if ( SOAR_RET::SOAR_RET_SUCC != ret )
+        if ( 0 != ret )
         {
             break;
         }
@@ -172,14 +172,14 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
     }
 
     //接收有错误，进行特殊处理
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         zulu_stream_.close();
         zulu_connected_ = false;
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -213,7 +213,7 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int qq_uin,
     {
         ret = connect_zulu_server(time_wait);
 
-        if (SOAR_RET::SOAR_RET_SUCC != ret)
+        if (0 != ret)
         {
             return ret;
         }
@@ -234,14 +234,14 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int qq_uin,
 
     ret = send_svc_package(time_wait);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         zulu_stream_.close();
         zulu_connected_ = false;
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -285,7 +285,7 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
                            app_id,
                            backfill_trans_id);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -293,7 +293,7 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
     //为什么要有这个参数…………，我已经想不起来了，晕
     if (false == if_recv)
     {
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //收取数据，
@@ -303,12 +303,12 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
                               time_wait
                              );
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 #endif //SOARING_LIB_SNDRCV_TCP_ZULU_H_

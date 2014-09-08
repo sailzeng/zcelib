@@ -44,17 +44,17 @@ Server_Config_Base::~Server_Config_Base()
 int Server_Config_Base::initialize(int argc, const char *argv[])
 {
     // 处理命令行参数
-    int ret = SOAR_RET::SOAR_RET_SUCC;
+    int ret = 0;
     ret = start_arg(argc, argv);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
     // 加载配置
     ret = load_cfgfile();
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -187,12 +187,12 @@ int Server_Config_Base::start_arg(int argc, const char *argv[])
     zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.cfg";
 
     // 未指定svcid配置文件
-    svcid_table_file_ = app_run_dir_ + "/cfg/svctabe.cfg";
+    svc_table_file_ = app_run_dir_ + "/cfg/svctabe.cfg";
 
     // 框架的配置是不会变的
     framework_cfg_file_ = app_run_dir_ + "/cfg/framework.cfg";
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //
@@ -212,13 +212,13 @@ int Server_Config_Base::usage(const char *program_name)
     std::cout << "   -h show help info." << std::endl;
     std::cout << TSS_SERVER_VER_DECLARE << std::endl;
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //读取配置文件，主要是框架的配置，包括日志，定时器等
 int Server_Config_Base::load_cfgfile()
 {
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -237,39 +237,38 @@ void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
     ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application frame work config file :%s", framework_cfg_file_.c_str());
-    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svcid_table_file_.c_str());
-    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svcid_table_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
 }
 
 
-#define TRACE_CONFIG_BASE_ERROR(cfg_file) ZCE_LOGMSG(RS_ERROR, "[soarlib][%s]Read config file [%s] fail.",\
-    __ZCE_FUNCTION__, \
-    cfg_file)
+#define TRACE_CONFIG_BASE_ERROR ZCE_LOGMSG(RS_ERROR, "[soarlib][%s]Read config file [%s] fail.",\
+    __ZCE_FUNCTION__ )
 
 //从配置中读取self_svc_id_的
-int Server_Config_Base::get_selfsvcid_cfg(const char *cfg_file_name,
-    const ZCE_Conf_PropertyTree *conf_tree)
+int Server_Config_Base::get_selfsvcid_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
-    ret = conf_tree->path_get_leaf("SELF_SVCID", "SVC_TYPE", self_svc_id_.services_type_);
-    if (0 != ret || self_svc_id_.services_id_ == SERVICES_ID::INVALID_SERVICES_TYPE)
+    std::string temp_value;
+
+    ret = conf_tree->path_get_leaf("SELF_SVCID", "SERVICES_ID", temp_value);
+    if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        TRACE_CONFIG_BASE_ERROR;
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = conf_tree->path_get_leaf("SELF_SVCID", "SVC_ID", self_svc_id_.services_id_);
-    if (0 != ret || self_svc_id_.services_id_ == SERVICES_ID::INVALID_SERVICES_ID)
+    ret = self_svc_id_.from_str(temp_value.c_str(),true);
+    if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        TRACE_CONFIG_BASE_ERROR;
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //从配置中读取日志的配置
-int Server_Config_Base::get_log_cfg(const char *cfg_file_name, 
-    const ZCE_Conf_PropertyTree *conf_tree)
+int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
     std::string temp_value;
@@ -278,22 +277,22 @@ int Server_Config_Base::get_log_cfg(const char *cfg_file_name,
     log_config_.log_level_ = ZCE_LogTrace_Basic::log_priorities(temp_value.c_str());
     if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        TRACE_CONFIG_BASE_ERROR;
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     
-    ret = conf_tree->path_get_leaf("LOG_CFG", "LOG_FILE_DEVIDE", temp_value);
+    ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
     log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
-        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        TRACE_CONFIG_BASE_ERROR;
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "RESERVE_FILE_NUM", log_config_.reserve_file_num_);
     if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        TRACE_CONFIG_BASE_ERROR;
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -301,11 +300,11 @@ int Server_Config_Base::get_log_cfg(const char *cfg_file_name,
     ret = conf_tree->path_get_leaf("LOG_CFG", "MAX_FILE_SIZE", log_config_.max_log_file_size_);
     if (0 != ret)
     {
-        TRACE_CONFIG_BASE_ERROR(cfg_file_name);
+        TRACE_CONFIG_BASE_ERROR;
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 

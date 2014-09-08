@@ -144,6 +144,6 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     *find_pos = '\0';
     strncpy(app_base_name, file_name + 6, STAT_MMAP_FILENAME_LEN);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 

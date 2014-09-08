@@ -545,3 +545,11 @@ void ZCE_Conf_PropertyTree::set_separator(char separator_char)
     SEPARATOR_STRING[0] = separator_char;
 }
 
+
+
+void ZCE_Conf_PropertyTree::clear()
+{
+    leaf_node_.clear();
+    child_node_.clear();
+}
+

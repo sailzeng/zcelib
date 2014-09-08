@@ -47,7 +47,7 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
     
     last_check_ = time(NULL);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //≥¨ ±¥¶¿Ì
@@ -72,7 +72,7 @@ int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
     }
     
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 

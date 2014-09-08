@@ -182,6 +182,7 @@ inline int setsockopt (ZCE_SOCKET handle,
 *             挺有用的，如果规模较大，建议调整这个数值
 *             同时请调整  /proc/sys/net/core/somaxconn 
 *             /proc/sys/net/ipv4/tcp_max_syn_backlog
+*             请参考 http://linux.die.net/man/2/listen 
 */
 inline int listen (ZCE_SOCKET handle,
                    int backlog = ZCE_DEFAULT_BACKLOG);
@@ -440,7 +441,7 @@ inline ssize_t sendto (ZCE_SOCKET handle,
 
 
 
-int connect_timeout_(ZCE_SOCKET handle,
+int connect_timeout(ZCE_SOCKET handle,
                     const sockaddr *addr,
                     socklen_t addrlen,
                     ZCE_Time_Value &timeout_tv);

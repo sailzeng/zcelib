@@ -91,12 +91,10 @@ protected:
     //由于
 
     ///从配置中读取self_svc_id_的
-    int get_selfsvcid_cfg(const char *cfg_file_name, 
-        const ZCE_Conf_PropertyTree *conf_tree);
+    int get_selfsvcid_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
     ///从配置中读取日志的配置
-    int get_log_cfg(const char *cfg_file_name, 
-        const ZCE_Conf_PropertyTree *conf_tree);
+    int get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
 public:
@@ -144,7 +142,7 @@ public:
     ///framework的配置文件
     std::string framework_cfg_file_;
     ///svcid的配置文件
-    std::string svcid_table_file_;
+    std::string svc_table_file_;
 
     ///日志帐单的配置数据   
     SOAR_LOG_CFG_DATA log_config_;

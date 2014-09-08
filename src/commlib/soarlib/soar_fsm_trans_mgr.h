@@ -490,7 +490,7 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
 
     ret = tmp_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -499,12 +499,12 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
     bool crttx;
     ret = process_appframe(tmp_frame, crttx);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
+    if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 // recv_svr填的是自己，就假装收到一个包，如其名fake
@@ -543,12 +543,12 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
     bool crttx = false;
     ret = process_appframe(tmp_frame, crttx);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
+    if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //
@@ -613,7 +613,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     //拷贝发送的MSG Block
     int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC )
+    if (ret != 0 )
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
@@ -622,13 +622,13 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     ret = mgr_postframe_to_msgqueue(rsp_msg);
     DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO MESSAGE QUEUE FRAME", RS_DEBUG);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //Post一个FRAME数据到消息队列

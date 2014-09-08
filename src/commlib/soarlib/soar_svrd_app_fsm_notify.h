@@ -8,7 +8,7 @@
     { \
         int __ret_register_ = MT_NOTIFY_TRANS_MANGER::instance()->register_trans_cmd(cmd_word, \
                                                                                      new notify_trans_class(ZCE_Timer_Queue::instance(),MT_NOTIFY_TRANS_MANGER::instance())); \
-        if (__ret_register_ !=  SOAR_RET::SOAR_RET_SUCC) \
+        if (__ret_register_ !=  0) \
         { \
             return __ret_register_; \
         } \

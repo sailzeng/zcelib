@@ -33,7 +33,7 @@ int Server_Config_FSM::load_cfgfile()
 
     // ≈‰÷√º”‘ÿ≥…π¶
     ZLOG_INFO("Comm_Svrd_Config: load framework config succ.");
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 

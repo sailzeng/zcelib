@@ -96,7 +96,7 @@ int UDP_Svc_Handler::init_udp_services()
     ZLOG_INFO("[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] success.",
               udp_bind_addr_.get_host_addr(),
               udp_bind_addr_.get_port_number());
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //取得句柄
@@ -122,7 +122,7 @@ int UDP_Svc_Handler::handle_input()
 
         ZCE_LOGMSG_DBG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
 
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             ZCE_LOGMSG_DBG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,ZCE_LIB::last_error()=%d|%s",
                            ret,
@@ -198,7 +198,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
             //遇到中断,等待重入
             if (ZCE_LIB::last_error() == EINVAL)
             {
-                return SOAR_RET::SOAR_RET_SUCC;
+                return 0;
             }
 
             //记录错误,返回错误
@@ -212,13 +212,13 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         }
         else
         {
-            return SOAR_RET::SOAR_RET_SUCC;
+            return 0;
         }
     }
 
     ret = ip_restrict_->check_iprestrict(remote_addr);
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -229,7 +229,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         ZLOG_ERROR("[zergsvr] UDP Peer IP [%s|%u] recv return 0, I don't know how to process.?",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number());
-        return SOAR_RET::SOAR_RET_SUCC;
+        return 0;
     }
 
     //这个函数放在这儿好不好，hoho，有点耗时喔，呵呵
@@ -271,7 +271,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
                dgram_peer_.get_handle(),
                size_revc);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -326,7 +326,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
     server_status_->increase_by_statid(ZERG_UDP_SEND_COUNTER, 0, 0, 1);
     server_status_->increase_by_statid(ZERG_UDP_SEND_BYTES_COUNTER, 0, 0, szsend);
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -389,13 +389,13 @@ int UDP_Svc_Handler::init_all_static_data()
     //通信管理器
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 int UDP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 {
     if_proxy_ = config->zerg_cfg_data_.is_proxy_;
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 

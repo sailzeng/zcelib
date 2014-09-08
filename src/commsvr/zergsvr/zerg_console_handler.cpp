@@ -33,7 +33,7 @@
 //    std::string mml_cmd;
 //    ret = console_command_.GetMMLCommand(mml_cmd);
 //
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        return ret;
 //    }
@@ -43,7 +43,7 @@
 //    {
 //        ret = cmd_get_zergstats(ret_string, str_len);
 //
-//        if (ret != SOAR_RET::SOAR_RET_SUCC)
+//        if (ret != 0)
 //        {
 //            return ret;
 //        }
@@ -52,7 +52,7 @@
 //    {
 //        ret = cmd_get_peer_stats(ret_string, str_len);
 //
-//        if (ret != SOAR_RET::SOAR_RET_SUCC)
+//        if (ret != 0)
 //        {
 //            return ret;
 //        }
@@ -62,7 +62,7 @@
 //    {
 //        ret = cmd_close_socketpeer(ret_string, str_len);
 //
-//        if (ret != SOAR_RET::SOAR_RET_SUCC)
+//        if (ret != 0)
 //        {
 //            return ret;
 //        }
@@ -73,7 +73,7 @@
 //    {
 //        ret = cmd_modify_logpriority(ret_string, str_len);
 //
-//        if (ret != SOAR_RET::SOAR_RET_SUCC)
+//        if (ret != 0)
 //        {
 //            return ret;
 //        }
@@ -83,7 +83,7 @@
 //    {
 //        ret = cmd_close_services(ret_string, str_len);
 //
-//        if (ret != SOAR_RET::SOAR_RET_SUCC)
+//        if (ret != 0)
 //        {
 //            return ret;
 //        }
@@ -98,7 +98,7 @@
 //
 //    //处理
 //    ZLOG_INFO("[zergsvr] Process Command %s, Ret:%u.", mml_cmd.c_str(), ret);
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 //
 ///******************************************************************************************
@@ -137,7 +137,7 @@
 //    //
 //    str_len = tmp_size;
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 //
 ///******************************************************************************************
@@ -167,7 +167,7 @@
 //    ret = console_command_.GetCmdParameter("STARTNO", tmpstr);
 //
 //    //使用默认参数
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        startno = 0;
 //    }
@@ -178,7 +178,7 @@
 //    const size_t MAX_QUERY_NUMBER = 1024;
 //    ret = console_command_.GetCmdParameter("NUMQUERY", tmpstr);
 //
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        numquery = MAX_QUERY_NUMBER;
 //    }
@@ -196,7 +196,7 @@
 //
 //    str_len = tmp_size;
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 //
 ////停止运行
@@ -208,7 +208,7 @@
 //    str_len = tmp_size;
 //    ZLOG_INFO("[zergsvr] %s", ret_string);
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 //
 ////
@@ -222,7 +222,7 @@
 //    ret = console_command_.GetCmdParameter("SVCTYPE", tmpstr);
 //
 //    //使用默认参数
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        return ret;
 //    }
@@ -232,7 +232,7 @@
 //    ret = console_command_.GetCmdParameter("SVCID", tmpstr);
 //
 //    //使用默认参数
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        return ret;
 //    }
@@ -243,11 +243,11 @@
 //    ret = TCP_Svc_Handler::close_connect_services_peer(svr_info);
 //
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console To close One Services: %u|%u %s.", svr_info.services_type_, svr_info.services_id_,
-//                         (ret == SOAR_RET::SOAR_RET_SUCC) ? "Success" : "Fail" );
+//                         (ret == 0) ? "Success" : "Fail" );
 //
 //    str_len = tmp_size;
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 //
 ///******************************************************************************************
@@ -269,7 +269,7 @@
 //    std::string tmpstr;
 //    ret = console_command_.GetCmdParameter("PRIORITY", tmpstr);
 //
-//    if (ret != SOAR_RET::SOAR_RET_SUCC)
+//    if (ret != 0)
 //    {
 //        return ret;
 //    }
@@ -284,6 +284,6 @@
 //    str_len = tmp_size;
 //    ZLOG_INFO("[zergsvr] %s", ret_string);
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 //

@@ -33,7 +33,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     int ret = 0;
 
     ret = Comm_Svrd_Appliction::on_start(argc, argv);
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -85,7 +85,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     //加载动态配置部分
     ret = reload_daynamic_config();
 
-    if ( ret != SOAR_RET::SOAR_RET_SUCC )
+    if ( ret != 0 )
     {
         ZLOG_INFO("[zergsvr] ReloadDynamicConfig fail,ret = %d.", ret);
         return ret;
@@ -98,19 +98,19 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     //初始化静态数据
     ret = TCP_Svc_Handler::init_all_static_data();
 
-    if ( ret != SOAR_RET::SOAR_RET_SUCC )
+    if ( ret != 0 )
     {
         return ret;
     }
     ret = UDP_Svc_Handler::init_all_static_data();
-    if ( ret != SOAR_RET::SOAR_RET_SUCC )
+    if ( ret != 0 )
     {
         return ret;
     }
 
     //
     ret = zerg_comm_mgr_->init_allpeer();
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -119,7 +119,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     ZLOG_INFO("[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 ////
@@ -127,7 +127,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
 //{
 //    int ret = reload_daynamic_config();
 //
-//    if ( ret != SOAR_RET::SOAR_RET_SUCC )
+//    if ( ret != 0 )
 //    {
 //        ZLOG_INFO("[zergsvr] reload config fail,ret = %d.", ret);
 //        return ret;
@@ -135,7 +135,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
 //
 //    TCP_Svc_Handler::adjust_svc_handler_pool();
 //
-//    return SOAR_RET::SOAR_RET_SUCC;
+//    return 0;
 //}
 
 //重新加载配置文件
@@ -148,7 +148,7 @@ int Zerg_Service_App::reload_daynamic_config()
     Zerg_Server_Config *zerg_config = dynamic_cast<Zerg_Server_Config *>(config_base_);
     // 配置重新加载
     ret = zerg_config->load_cfgfile();
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR("zerg reload config fail. ret=%d", ret);
         return ret;
@@ -157,7 +157,7 @@ int Zerg_Service_App::reload_daynamic_config()
 
     ret = Zerg_IPRestrict_Mgr::instance()->get_config(zerg_config);
 
-    if ( SOAR_RET::SOAR_RET_SUCC != ret )
+    if ( 0 != ret )
     {
         return ret;
     }
@@ -165,7 +165,7 @@ int Zerg_Service_App::reload_daynamic_config()
     //通信管理器读取配置文件
     ret = zerg_comm_mgr_->get_config(zerg_config);
 
-    if (SOAR_RET::SOAR_RET_SUCC != ret )
+    if (0 != ret )
     {
         return ret;
     }
@@ -192,7 +192,7 @@ int Zerg_Service_App::reload_daynamic_config()
 
 
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -225,7 +225,7 @@ int Zerg_Service_App::on_exit()
 
     ZBuffer_Storage::instance()->uninit_buffer_list();
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -325,7 +325,7 @@ int Zerg_Service_App::on_run()
 
     ZLOG_INFO("[zergsvr] Zerg_Service_App::run_instance end.");
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 bool Zerg_Service_App::if_proxy()

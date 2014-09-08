@@ -55,6 +55,6 @@ int Lolo_SendRecv_Package::set_lolo_svcinfo(const char *svc_ip,
         lolo_datagram_.connect(&lolo_svc_ip_);
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 

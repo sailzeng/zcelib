@@ -231,7 +231,7 @@ protected:
 
     // 定时上报统计数据的时间, 每30秒上报一次数据，
     // 间隔设置短点可以避免两个5分钟统计的数据与实际数据的误差太大
-    static const unsigned int STAT_TIMER_INTERVAL_SEC = 30;
+    static const unsigned int STAT_TIMER_INTERVAL_SEC = 60;
 
     //SessionKey
     static const size_t   MAX_SESSION_KEY_LEN = 32;
@@ -263,10 +263,10 @@ protected:
     //服务示是代理服务器
     static bool                if_proxy_;
 
-    //Connect后等待动作的时长,Connect超时
-    static unsigned int        connect_timeout_;
+    //ACCEPT端口的后等待动作的时长,如果之后一段时间没有动作，判为僵死，KO
+    static unsigned int        accepted_timeout_;
 
-    //等待接受一个完整数据的超时时间,为0表示不限制
+    //等待接受一个完整数据的超时时间,为0表示不限制,判为僵死，KO
     static unsigned int        receive_timeout_;
 
 
@@ -305,16 +305,21 @@ protected:
     HANDLER_MODE               handler_mode_;
 
     //自己的服务的标示
-    SERVICES_ID                my_svc_info_;
+    SERVICES_ID                my_svc_id_;
 
     //PEER的ServiceInfo
-    SERVICES_ID                peer_svr_info_;
+    SERVICES_ID                peer_svr_id_;
 
 
     //接收数据的缓冲
     Zerg_Buffer               *rcv_buffer_;
 
-    //发送的数据可能要排队
+    ///发送队列的大小，如果一个端口接受数据比较缓慢，则可能会先放入发送队列，等端口变为可写才能发送过去，
+    ///那么发送队列就要负担缓冲这种危机的任务，发送总缓冲长度实际等于 = 发送队列的长度*每个队列成员BUFFER的大小(64K)，
+    ///如果是一个需要很多人请求的，或者面向外网的客户端服务器，ACPT_SEND_DEQUE_SIZE 不要设置过大，建议32，
+    ///如果是内网，请求数量有限，那么设置成128, 256也是可以接受的，但其实际意义有待观察
+
+    ///发送的数据可能要排队
     ZCE_LIB::lordrings<Zerg_Buffer *>  snd_buffer_deque_;
 
 

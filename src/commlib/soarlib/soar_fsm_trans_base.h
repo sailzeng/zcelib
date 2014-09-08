@@ -444,7 +444,7 @@ inline int Transaction_Base::check_req_qquin(unsigned int qq_uin) const
         return SOAR_RET::ERROR_QQUIN_INCERTITUDE;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //取得请求命令的IP地址信息

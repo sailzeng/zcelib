@@ -70,7 +70,7 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
     }
 
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 int Zerg_Comm_Manager::init_allpeer()
@@ -80,13 +80,13 @@ int Zerg_Comm_Manager::init_allpeer()
     for (unsigned int i = 0; i < zerg_config_->zerg_cfg_data_.valid_svc_num_; ++i)
     {
         ret = init_socketpeer(zerg_config_->zerg_cfg_data_.bind_svcid_ary_[i]);
-        if (ret != SOAR_RET::SOAR_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //
@@ -149,7 +149,7 @@ int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
         zerg_updsvc_.push_back(tmp_udphdl);
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //检查一个端口是否安全
@@ -185,7 +185,7 @@ int Zerg_Comm_Manager::check_safeport(const ZCE_Sockaddr_In  &inetadd)
     }
 
     //
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -239,7 +239,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             //{
             //    std::vector<SERVICES_ID> vec;
             //    ret = TCP_Svc_Handler::get_zerg_auto_connect().get_all_conn_server(proc_frame->recv_service_.services_type_, vec);
-            //    if (ret != SOAR_RET::SOAR_RET_SUCC)
+            //    if (ret != 0)
             //    {
             //        ZLOG_ERROR("[%s] fetch broadcast pkg error, recv svrinfo:[%u|%u]",
             //            __ZCE_FUNCTION__,
@@ -267,7 +267,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             //            ret = send_single_buf(send_buf);
             //        }
 
-            //        if (ret != SOAR_RET::SOAR_RET_SUCC)
+            //        if (ret != 0)
             //        {
             //            continue;
             //        }
@@ -278,7 +278,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             //else
             {
                 ret = send_single_buf(tmpbuf);
-                if (ret != SOAR_RET::SOAR_RET_SUCC)
+                if (ret != 0)
                 {
                     // 没有发成功，不加入后面的统计
                     continue;
@@ -292,7 +292,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         ++num_send_frame;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 //检查发包频率
@@ -361,7 +361,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
 
     //如果失败归还缓存，如果成功的情况下，会放入发送队列，放入发送队列的归还和这个不一样
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         //记录下来处理
         if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD )
@@ -397,7 +397,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
         return ret;
     }
 
-    return SOAR_RET::SOAR_RET_SUCC;
+    return 0;
 }
 
 
@@ -432,7 +432,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
     int ret = zerg_mmap_pipe_->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
                                              reinterpret_cast<const ZCE_LIB::dequechunk_node *>(recv_frame));
 
-    if (ret != SOAR_RET::SOAR_RET_SUCC)
+    if (ret != 0)
     {
         server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
                                       recv_frame->app_id_,
