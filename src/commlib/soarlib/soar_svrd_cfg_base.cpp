@@ -231,14 +231,18 @@ int Server_Config_Base::reload_cfgfile()
 
 void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
-    ZCE_LOGMSG(out_lvl, "Application svc id:%hu.%u",self_svc_id_.services_type_,self_svc_id_.services_id_);
+    ZCE_LOGMSG(out_lvl, "Application base name %s svc id:%hu.%u",
+        Comm_Svrd_Appliction::instance()->get_app_basename(),
+        self_svc_id_.services_type_,
+        self_svc_id_.services_id_);
     ZCE_LOGMSG(out_lvl, "Application run dir :%s",app_run_dir_.c_str());
     ZCE_LOGMSG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
     ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application frame work config file :%s", framework_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
-    ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application get  :%s", svc_table_file_.c_str());
+    ZCE_LOGMSG(out_lvl, "Application if_restore_pipe_ :%s", if_restore_pipe_ ?"TRUE":"FALSE");
 }
 
 //从配置中读取self_svc_id_的

@@ -100,7 +100,7 @@ public:
 //ZCE_FUNCTION_TRACE(RS_DEBUG)宏用于跟踪函数的进出
 //请在函数的开始使用ZCE_FUNCTION_TRACE(RS_DEBUG)这个宏，后面必须加分号
 #ifndef ZCE_TRACE_FUNCTION
-#define ZCE_TRACE_FUNCTION(x)        ZCE_Trace_Function  ____tmp_func_trace_(__ZCE_FUNCTION__,__FILE__,__LINE__,(x))
+#define ZCE_TRACE_FUNCTION(x)        ZCE_Trace_Function  ____tmp_func_trace_(__ZCE_FUNC__,__FILE__,__LINE__,(x))
 #endif
 
 //==========================================================================================================
@@ -130,12 +130,12 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 //日志打印堆栈信息的宏，x是日志的输出级别
 #ifndef ZCE_BACKTRACE_STACK
-#define ZCE_BACKTRACE_STACK(x)            ZCE_LIB::backtrace_stack(x,__ZCE_FUNCTION__)
+#define ZCE_BACKTRACE_STACK(x)            ZCE_LIB::backtrace_stack(x,__ZCE_FUNC__)
 #endif
 
 //日志打印堆栈信息的宏，x是日志的输出级别,y是指针，z是指针长度
 #ifndef ZCE_TRACE_POINTER_DATA
-#define ZCE_TRACE_POINTER_DATA(x,y,z)     ZCE_LIB::debug_pointer((x),__ZCE_FUNCTION__,(y),(z))
+#define ZCE_TRACE_POINTER_DATA(x,y,z)     ZCE_LIB::debug_pointer((x),__ZCE_FUNC__,(y),(z))
 #endif
 
 //==========================================================================================================
@@ -144,16 +144,16 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 ///用于程序运行到的地方。
 #ifndef ZCE_TRACE_FILELINE
-#define ZCE_TRACE_FILELINE(x)        ZCE_LOGMSG(x,"[FILELINE TRACE]goto File %s|%d,function:%s.",__FILE__,__LINE__,__ZCE_FUNCTION__)
+#define ZCE_TRACE_FILELINE(x)        ZCE_LOGMSG(x,"[FILELINE TRACE]goto File %s|%d,function:%s.",__FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 
 ///
 #ifndef ZCE_TRACE_FAIL_RETURN
-#define ZCE_TRACE_FAIL_RETURN(x,y,z) ZCE_LOGMSG(x,"[FAIL RETRUN]Fail in file [%s|%d],function:%s,fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNCTION__,y,z,ZCE_LIB::last_error())
+#define ZCE_TRACE_FAIL_RETURN(x,y,z) ZCE_LOGMSG(x,"[FAIL RETRUN]Fail in file [%s|%d],function:%s,fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,y,z,ZCE_LIB::last_error())
 #endif
 
 #ifndef ZCE_RECORD_FAIL_API
-#define ZCE_RECORD_FAIL_API(x,y)     ZCE_LOGMSG(x,"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNCTION__,y,ZCE_LIB::last_error())
+#define ZCE_RECORD_FAIL_API(x,y)     ZCE_LOGMSG(x,"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,y,ZCE_LIB::last_error())
 #endif
 
 
@@ -249,14 +249,14 @@ __THROW __attribute__ ((__noreturn__));
 #if defined (ZCE_OS_WINDOWS)
 #define ZCE_ASSERT(expr) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr),0) || \
-            (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __ZCE_FUNCTION__, #expr)) || \
+            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
+            (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __ZCE_FUNC__, #expr)) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT(expr) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr),0) || \
-            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNCTION__),0))
+            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
+            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif
 
@@ -264,14 +264,14 @@ __THROW __attribute__ ((__noreturn__));
 #if defined (ZCE_OS_WINDOWS)
 #define ZCE_ASSERT_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr,str),0) || \
-            (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __ZCE_FUNCTION__, #expr)) || \
+            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
+            (1 != _CrtDbgReport(_CRT_ASSERT, __FILE__, __LINE__, __ZCE_FUNC__, #expr)) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr,str),0) || \
-            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNCTION__),0))
+            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
+            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif
 
@@ -307,13 +307,13 @@ __THROW __attribute__ ((__noreturn__));
 #if defined (ZCE_OS_WINDOWS)
 #define ZCE_ASSERT_ALL(expr) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr),0) || \
+            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_ALL(expr) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr),0) || \
-            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNCTION__),0))
+            (ZCE_Trace_LogMsg::debug_assert(__FILE__,__LINE__,__ZCE_FUNC__,#expr),0) || \
+            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif
 
@@ -322,13 +322,13 @@ __THROW __attribute__ ((__noreturn__));
 #if defined (ZCE_OS_WINDOWS)
 #define ZCE_ASSERT_ALL_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr,str),0) || \
+            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
             (_CrtDbgBreak(), 0))
 #else
 #define ZCE_ASSERT_ALL_EX(expr,str) \
     (void) ((!!(expr)) || \
-            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNCTION__,#expr,str),0) || \
-            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNCTION__),0))
+            (ZCE_Trace_LogMsg::debug_assert_ex(__FILE__,__LINE__,__ZCE_FUNC__,#expr,str),0) || \
+            (__assert_fail (#expr, __FILE__, __LINE__, __ZCE_FUNC__),0))
 #endif
 #endif
 

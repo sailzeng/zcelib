@@ -77,7 +77,7 @@ int Zerg_Comm_Manager::init_allpeer()
 {
     int ret = 0;
     //初始化所有的监听端口
-    for (unsigned int i = 0; i < zerg_config_->zerg_cfg_data_.valid_svc_num_; ++i)
+    for (unsigned int i = 0; i < zerg_config_->zerg_cfg_data_.bind_svcid_num_; ++i)
     {
         ret = init_socketpeer(zerg_config_->zerg_cfg_data_.bind_svcid_ary_[i]);
         if (ret != 0)

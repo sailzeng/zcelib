@@ -117,7 +117,7 @@ public:
 
 
     ///服务器支持的SVC ID的数量，至少>=1
-    size_t valid_svc_num_ = 0;
+    size_t bind_svcid_num_ = 0;
     ///服务器支持的SVC ID，注意，self_svc_id_永远配置在第一个
     SERVICES_ID  bind_svcid_ary_[MAX_BIND_SERVICES_ID];
 

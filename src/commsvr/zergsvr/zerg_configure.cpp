@@ -314,18 +314,18 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 
     //BIND SVCID 读取配置
     ret = conf_tree->path_get_leaf("SLAVE_SVCID", "SLAVE_SVC_NUM", 
-        zerg_cfg_data_.valid_svc_num_);
-    if (0 != ret || zerg_cfg_data_.valid_svc_num_ > ZERG_CONFIG_DATA::MAX_SLAVE_SERVICES_ID)
+        zerg_cfg_data_.bind_svcid_num_);
+    if (0 != ret || zerg_cfg_data_.bind_svcid_num_ > ZERG_CONFIG_DATA::MAX_SLAVE_SERVICES_ID)
     {
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
     //第0个位置是给self_svc_id_ 主ID的
     zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_id_;
-    zerg_cfg_data_.valid_svc_num_ += 1;
+    zerg_cfg_data_.bind_svcid_num_ += 1;
 
     //注意是从1开始
-    for (size_t i = 1; i < zerg_cfg_data_.valid_svc_num_; ++i)
+    for (size_t i = 1; i < zerg_cfg_data_.bind_svcid_num_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("SLAVE_SVCID", "SLAVE_SERVICES_ID_",i,temp_value);
         if (0 != ret)
@@ -406,7 +406,20 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
 void Zerg_Server_Config::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     Server_Config_Base::dump_cfg_info(out_lvl);
-        
+
+    ZCE_LOGMSG(out_lvl, "[ZERG]Bind svcid number :%u", zerg_cfg_data_.bind_svcid_num_);
+    for (size_t i = 0; i < zerg_cfg_data_.bind_svcid_num_; ++i)
+    {
+        ZCE_LOGMSG(out_lvl, "[ZERG]Bind svcid %u :%u.%u", 
+            i,
+            zerg_cfg_data_.bind_svcid_ary_[i].services_type_,
+            zerg_cfg_data_.bind_svcid_ary_[i].services_id_
+            );
+    }
+
+    ZCE_LOGMSG(out_lvl, "[ZERG]recv_pipe_len_ :%lu ,send_pipe_len_ :%lu",
+        zerg_cfg_data_.recv_pipe_len_, zerg_cfg_data_.send_pipe_len_);
+
 }
 
 
