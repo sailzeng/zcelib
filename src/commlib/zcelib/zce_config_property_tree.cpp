@@ -30,7 +30,7 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     if (child_node_.end() == iter_tmp)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             path_str.c_str());
         return -1;
     }
@@ -66,7 +66,7 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     if (child_node_.end() == iter_tmp)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             path_str.c_str());
         return -1;
     }
@@ -100,7 +100,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             path_str.c_str(),
             key_str.c_str());
         return ret;
@@ -145,7 +145,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     if (key_str.length() != 0)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             path_str.c_str(),
             key_str.c_str());
         leaf_iter = child_note->leaf_node_.find(key_str);
@@ -158,7 +158,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     if (child_note->leaf_node_.end() == leaf_iter)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config key fail, path[%s] key[%s]. ",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             path_str.c_str(),
             key_str.c_str());
         return -1;

@@ -29,7 +29,7 @@ public:
     * @brief      从string中得到SVC ID
     * @return     int == 0 表示成功
     * @param      str 转换的字符串
-    * @param      check_valid 检查是否有效
+    * @param      check_valid 检查是否有效,svcid的type和id 不能是0
     */
     int from_str(const char *str, 
                  bool check_valid = false);
@@ -91,6 +91,15 @@ struct SERVICES_IP_INFO 服务ID信息 + IP信息
 struct SOARING_EXPORT SERVICES_INFO
 {
 public:
+    
+    ///从字符串中获取
+    int from_str(const char *str,
+                 bool check_valid = false);
+
+    ///转换string
+    const char *to_str(char *str_buffer, size_t buf_len);
+
+public:
 
     ///服务ID信息
     SERVICES_ID      svc_id_ = SERVICES_ID(0, 0);
@@ -99,12 +108,11 @@ public:
     ///服务IP,服务端口
     ZCE_Sockaddr_In  ip_address_;
 
-    ///服务器所属 IDC的编号
-    unsigned int     idc_no_ = 0;
-
     ///业务ID
     unsigned int     business_id_ = 0;
 
+    ///服务器所属 IDC的编号
+    unsigned int     idc_no_ = 0;
 };
 
 //得到KEY的HASH函数

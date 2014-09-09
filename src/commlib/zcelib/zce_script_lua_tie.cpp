@@ -407,7 +407,7 @@ int ZCE_LIB::class_meta_get(lua_State *state)
     if (0 != ret)
     {
         lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
-                        __ZCE_FUNCTION__,
+                        __ZCE_FUNC__,
                         lua_tostring(state, 2));
         lua_error(state);
         return 0;
@@ -456,7 +456,7 @@ int ZCE_LIB::class_meta_set(lua_State *state)
     if (0 != ret)
     {
         lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
-                        __ZCE_FUNCTION__,
+                        __ZCE_FUNC__,
                         lua_tostring(state, 2));
         lua_error(state);
         return 0;
@@ -904,7 +904,7 @@ static int add_stdstring(lua_State *state)
     {
         lua_pushfstring(state, "[LUATIE] %s std::string .. operator is fail. "
             "var a[%d][%s] or var b[%d][%s] is not string",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             lua_type(state, 1),
             lua_typename(state, 1),
             lua_type(state, 2),
@@ -999,7 +999,7 @@ int ZCE_Lua_Base::do_buffer(const char *buff, size_t len)
     lua_pushcclosure(lua_state_, ZCE_LIB::on_error, 0);
     int errfunc = lua_gettop(lua_state_);
 
-    ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNCTION__);
+    ret = luaL_loadbuffer(lua_state_, buff, len, __ZCE_FUNC__);
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "luaL_loadbuffer ret= %d error msg= %s",

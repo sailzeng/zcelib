@@ -52,7 +52,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     if (ret != 0)
     {
         ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             socket_hd);
         return ret;
     }
@@ -116,7 +116,7 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
     if (ret != 0)
     {
         ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             socket_hd);
         return ret;
     }

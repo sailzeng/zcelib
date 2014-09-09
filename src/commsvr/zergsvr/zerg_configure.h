@@ -191,7 +191,7 @@ public:
     int get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
-    //得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
+    ///得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
     int get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
@@ -212,7 +212,7 @@ public:
     ZERG_CONFIG_DATA  zerg_cfg_data_;
 
     ///服务的配置集合标
-    SERVICES_INFO_TABLE  services_info_cfg_;
+    SERVICES_INFO_TABLE  services_info_table_;
 };
 
 #endif //_ZERG_SERVER_CONFIG_H_

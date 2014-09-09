@@ -610,8 +610,8 @@ const char *inet_ntop (int family,
                        size_t len);
 
 /*!
-* @brief      转换字符串到网络地址，第一个参数af是地址族，转换后存在addrptr中，
-* @return     int  注意这个函数返回1标识成功，返回0表示失败，尊重原来的设计（但这个设计也太）
+* @brief      根据字符串转换得到网络地址，第一个参数af是地址族，转换后存在addrptr中，
+* @return     int  注意这个函数返回1标识成功，返回0表示失败，尊重原来的设计（但这个设计也太……）
 * @param      family 协议族
 * @param      strptr 地址的字符传标识
 * @param      addrptr 转换得到的地址
@@ -1794,8 +1794,8 @@ inline uint32_t ZCE_LIB::get_ip_address(const sockaddr_in *sock_addr_ipv4)
 
 //设置一个IPV4的地址,
 inline int ZCE_LIB::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
-                                   const char *ipv4_addr_str,
-                                   uint16_t ipv4_port)
+                                    const char *ipv4_addr_str,
+                                    uint16_t ipv4_port)
 {
     sock_addr_ipv4->sin_family = AF_INET;
     //htons在某些情况下是一个宏，
@@ -1822,7 +1822,7 @@ inline int ZCE_LIB::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
 
 //设置一个IPV4的地址,如果字符串里面有#，会认为后面有端口号，会同时提取端口号，否则端口号设置0
 inline int ZCE_LIB::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
-                                   const char *ipv4_addr_str)
+                                    const char *ipv4_addr_str)
 {
     int ret = ZCE_LIB::set_sockaddr_in(sock_addr_ipv4, ipv4_addr_str, 0);
     if (ret != 0)

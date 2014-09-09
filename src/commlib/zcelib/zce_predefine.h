@@ -511,11 +511,11 @@ typedef __int64             int64_t;
 
 //__FUNCTION__定义的替换，尽最大可能帮你输出更加详细的函数名称信息
 #if defined ZCE_OS_WINDOWS
-#define __ZCE_FUNCTION__   __FUNCSIG__
+#define __ZCE_FUNC__   __FUNCSIG__
 #elif defined ZCE_OS_LINUX
-#define __ZCE_FUNCTION__   __PRETTY_FUNCTION__
+#define __ZCE_FUNC__   __PRETTY_FUNCTION__
 #else
-#define __ZCE_FUNCTION__   __FUNCTION__
+#define __ZCE_FUNC__   __FUNCTION__
 #endif
 
 //

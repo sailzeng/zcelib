@@ -231,7 +231,7 @@ int Server_Config_Base::reload_cfgfile()
 
 void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
-    
+    ZCE_LOGMSG(out_lvl, "Application svc id:%hu.%u",self_svc_id_.services_type_,self_svc_id_.services_id_);
     ZCE_LOGMSG(out_lvl, "Application run dir :%s",app_run_dir_.c_str());
     ZCE_LOGMSG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
     ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
@@ -240,10 +240,6 @@ void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
     ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
 }
-
-
-#define TRACE_CONFIG_BASE_ERROR ZCE_LOGMSG(RS_ERROR, "[soarlib][%s]Read config file [%s] fail.",\
-    __ZCE_FUNCTION__ )
 
 //从配置中读取self_svc_id_的
 int Server_Config_Base::get_selfsvcid_cfg(const ZCE_Conf_PropertyTree *conf_tree)
@@ -254,14 +250,14 @@ int Server_Config_Base::get_selfsvcid_cfg(const ZCE_Conf_PropertyTree *conf_tree
     ret = conf_tree->path_get_leaf("SELF_SVCID", "SERVICES_ID", temp_value);
     if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR;
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
     ret = self_svc_id_.from_str(temp_value.c_str(),true);
     if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR;
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     return 0;
@@ -277,7 +273,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     log_config_.log_level_ = ZCE_LogTrace_Basic::log_priorities(temp_value.c_str());
     if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR;
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     
@@ -285,14 +281,14 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
     if (0 != ret)
     {
-        TRACE_CONFIG_BASE_ERROR;
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
     ret = conf_tree->path_get_leaf("LOG_CFG", "RESERVE_FILE_NUM", log_config_.reserve_file_num_);
     if (0 != ret )
     {
-        TRACE_CONFIG_BASE_ERROR;
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -300,7 +296,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     ret = conf_tree->path_get_leaf("LOG_CFG", "MAX_FILE_SIZE", log_config_.max_log_file_size_);
     if (0 != ret)
     {
-        TRACE_CONFIG_BASE_ERROR;
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 

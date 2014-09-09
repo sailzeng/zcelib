@@ -251,7 +251,7 @@ void push_stack(lua_State *state,
 #if ZCE_CHECK_CLASS_NOMETA == 1
             ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]?"
                        " May be you don't register or name conflict? ",
-                       __ZCE_FUNCTION__,
+                       __ZCE_FUNC__,
                        typeid(ref).name(),
                        class_name<val_type >::name());
 #endif
@@ -298,7 +298,7 @@ void push_stack_ptr(lua_State *state, typename ptr_type ptr)
                 ZCE_LOGMSG(RS_ERROR,
                     "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
                     "May be you don't register or name conflict? ",
-                    __ZCE_FUNCTION__,
+                    __ZCE_FUNC__,
                     typeid(ptr).name(),
                     class_name<std::remove_pointer <ptr_type> ::type >::name());
 #endif
@@ -365,7 +365,7 @@ void push_stack_val(lua_State *state, typename val_type val)
         ZCE_LOGMSG(RS_ERROR, 
                    "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
                    "May be you don't register or name conflict? ",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    typeid(val).name(),
                    class_name<std::remove_cv<val_type>::type >::name());
 #endif

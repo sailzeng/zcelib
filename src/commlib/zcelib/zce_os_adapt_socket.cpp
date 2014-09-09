@@ -1248,7 +1248,7 @@ int ZCE_LIB::inet_pton (int family,
 }
 
 //函数原型如下[将“点分十进制” －> “整数”],IPV6将，:分割16进制转换成128位数字
-const char *ZCE_LIB::inet_ntop (int family,
+const char *ZCE_LIB::inet_ntop(int family,
                                const void *addrptr,
                                char *strptr,
                                size_t len)

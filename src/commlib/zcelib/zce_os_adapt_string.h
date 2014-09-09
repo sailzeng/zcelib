@@ -309,12 +309,12 @@ char *prefix_unique_name(const char *prefix_name,
 * @tparam     iter_type2  分割标示的迭代器类型
 * @tparam     compare_type 比较方式
 * @tparam     container_type 容器类型
-* @param      fs 被分割数据开始位置的迭代器
-* @param      ls 被分割数据结束位置的迭代器
-* @param      fo 分割标示的开始位置迭代器
-* @param      lo 分割标示的结束位置迭代器
-* @param      pr 比较方式
-* @param      v  输出的容器
+* @param[in]  fs 被分割数据开始位置的迭代器
+* @param[in]  ls 被分割数据结束位置的迭代器
+* @param[in]  fo 分割标示的开始位置迭代器
+* @param[in]  lo 分割标示的结束位置迭代器
+* @param[in]  pr 比较方式
+* @param[out] v  输出的容器
 */
 template < typename iter_type1, typename iter_type2, typename compare_type, typename container_type>
 void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type &v)
@@ -361,6 +361,14 @@ void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compa
 }
 
 
+/*!
+* @brief      
+* @tparam     char_type      字符类型
+* @tparam     container_type 容器类型，
+* @param[in]  str            处理的字符串，
+* @param[in]  separator      风格字符串，注意如果是单个字符，也要用""括起来
+* @param[out] v              容器，用于存放分隔的结果
+*/
 template < typename char_type, typename container_type >
 inline void str_split(const char_type *str, const char_type *separator, container_type &v)
 {
@@ -409,8 +417,6 @@ const char *skip_line(const char *str);
 * @param[in]  separator_char 分割字符，要找到这个字符为止，（跳到这个字符后面）
 */
 const char *skip_separator(const char *str, char separator_char);
-
-
 
 
 

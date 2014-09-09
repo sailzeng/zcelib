@@ -89,7 +89,7 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
     if (ret == 0)
     {
         ZLOG_ERROR("[zcelib] [%s] find_event_handler eaqul handle [%lu]. please check you code .",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             tmp_handler);
         return -1;
     }
@@ -121,7 +121,7 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
     {
         // Œ¥’“µΩ
         ZCE_LOGMSG(RS_INFO, "[zcelib][%s] find handle [%lu] fail. my be reclose ?",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             ev_hd);
         return -1;
     }

@@ -346,7 +346,7 @@ int Zerg_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
     if (ret != 0 )
     {
         ZLOG_ERROR("[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ret);
         return ret;
     }

@@ -109,7 +109,7 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
         ret = ZCE_Reactor::remove_handler(event_handler, false);
 
         ZLOG_ERROR("[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ret,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()));
@@ -135,7 +135,7 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
     if (0 != ret)
     {
         ZLOG_ERROR("[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ret,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()));
@@ -185,7 +185,7 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
         //回滚不改动标志位
         ZCE_Reactor::schedule_wakeup(event_handler, cancel_mask);
         ZLOG_ERROR("[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ret,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()));
@@ -222,7 +222,7 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
         //回滚，修复标志位
         ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
         ZLOG_ERROR("[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ret,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()));

@@ -197,7 +197,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     if (ret != 0)
     {
         ZLOG_ERROR("[framework] %s load app config fail. ret=%d",
-                   __ZCE_FUNCTION__, ret);
+                   __ZCE_FUNC__, ret);
         return ret;
     }
 

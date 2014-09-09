@@ -112,7 +112,7 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
                                              SERVICES_INFO &svc_info) const
 {
     int ret = 0;
-    ret = services_info_cfg_.find_svcinfo(svc_id, svc_info);
+    ret = services_info_table_.find_svcinfo(svc_id, svc_info);
     if (0 != ret)
     {
         return ret;
@@ -292,7 +292,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     str_ary.clear();
-    ZCE_LIB::str_split(temp_value.c_str(), " ", str_ary);
+    ZCE_LIB::str_split(temp_value.c_str(), "|", str_ary);
     if (str_ary.size() > ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER)
     {
 
@@ -327,7 +327,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     //注意是从1开始
     for (size_t i = 1; i < zerg_cfg_data_.valid_svc_num_; ++i)
     {
-        ret = conf_tree->pathseq_get_leaf("SLAVE_SVCID", "SLAVE_SERVICES_ID",i,temp_value);
+        ret = conf_tree->pathseq_get_leaf("SLAVE_SVCID", "SLAVE_SERVICES_ID_",i,temp_value);
         if (0 != ret)
         {
             return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
@@ -349,7 +349,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
     for (size_t i = 0; i < zerg_cfg_data_.auto_connect_num_; ++i)
     {
-        ret = conf_tree->pathseq_get_leaf("AUTO_CONNECT", "CNT_SERVICES_ID", i+1, temp_value);
+        ret = conf_tree->pathseq_get_leaf("AUTO_CONNECT", "CNT_SERVICES_ID_", i+1, temp_value);
         if (0 != ret)
         {
             return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
@@ -365,11 +365,48 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 }
 
 
+//得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
+int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree)
+{
+    int ret = 0;
+    std::string temp_value;
+
+    size_t svc_table_num;
+    ret = conf_tree->path_get_leaf("SERVICES_TABLE", "SERVICES_NUM",
+        svc_table_num);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+
+    SERVICES_INFO svc_info;
+    for (size_t i = 0; i < zerg_cfg_data_.auto_connect_num_; ++i)
+    {
+        ret = conf_tree->pathseq_get_leaf("SERVICES_TABLE", "SERVICES_INFO_", i + 1, temp_value);
+        if (0 != ret)
+        {
+            ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
+            return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+        }
+
+        ret = svc_info.from_str(temp_value.c_str(), true);
+        if (0 != ret)
+        {
+            ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
+            return ret;
+        }
+        services_info_table_.add_svcinfo(svc_info);
+
+    }
+    return 0;
+}
+
 //Dump配置的数据信息
 void Zerg_Server_Config::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     Server_Config_Base::dump_cfg_info(out_lvl);
-    
+        
 }
 
 

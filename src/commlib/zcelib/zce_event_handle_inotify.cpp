@@ -53,7 +53,7 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     if (ZCE_INVALID_HANDLE == inotify_handle_ )
     {
         ZLOG_ERROR("[%s] invoke ::inotify_init fail,error [%u].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ZCE_LIB::last_error());
         return -1;
     }
@@ -137,7 +137,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     if (hdl_dir == ZCE_INVALID_HANDLE )
     {
         ZLOG_ERROR("[%s] invoke ::inotify_add_watch fail,error [%u].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ZCE_LIB::last_error());
         return -1;
     }
@@ -157,7 +157,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
         ZLOG_ERROR("[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    hdl_dir);
         return -1;
     }
@@ -174,7 +174,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
         ZLOG_ERROR("[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
-            __ZCE_FUNCTION__,
+            __ZCE_FUNC__,
             watch_handle_);
         return -1;
     }
@@ -192,7 +192,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     if (watch_handle_ == ZCE_INVALID_HANDLE)
     {
         ZLOG_ERROR("[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    pathname,
                    ZCE_LIB::last_error());
         return -1;
@@ -229,7 +229,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     if (bret == FALSE)
     {
         ZLOG_ERROR("[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()));
 
@@ -441,7 +441,7 @@ int ZCE_Event_INotify::handle_input ()
     if (FALSE == bret)
     {
         ZLOG_ERROR("[%s] ::GetOverlappedResult fail,error [%u].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ZCE_LIB::last_error());
         return -1;
     }
@@ -579,7 +579,7 @@ int ZCE_Event_INotify::handle_input ()
     if (FALSE == bret)
     {
         ZLOG_ERROR("[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
-                   __ZCE_FUNCTION__,
+                   __ZCE_FUNC__,
                    ZCE_LIB::last_error());
     }
 

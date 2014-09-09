@@ -323,7 +323,7 @@ public:
             || src_len <= 0)
         {
             ZLOG_ERROR("Fun[%s] key[%p][%lu] soucre[%p][%lu] cipher[%p][%lu] ",
-                       __ZCE_FUNCTION__,
+                       __ZCE_FUNC__,
                        key,
                        key_len,
                        src_buf,
@@ -375,7 +375,7 @@ public:
              || *cipher_len < cphbuf_need_len )
         {
             ZLOG_ERROR("Fun[%s] sub_key [%p] soucre[%p][%lu] cipher[%p][%lu], cipher buffer need len[%lu]. ",
-                       __ZCE_FUNCTION__,
+                       __ZCE_FUNC__,
                        sub_key,
                        src_buf,
                        src_len,
@@ -504,7 +504,7 @@ public:
             || *src_len < srcbuf_need_len )
         {
             ZLOG_ERROR("Fun[%s] key[%p][%lu] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
-                       __ZCE_FUNCTION__,
+                       __ZCE_FUNC__,
                        key,
                        key_len,
                        cipher_buf,
@@ -558,7 +558,7 @@ public:
              || *src_len < srcbuf_need_len )
         {
             ZLOG_ERROR("Fun[%s] sub_key[%p] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
-                       __ZCE_FUNCTION__,
+                       __ZCE_FUNC__,
                        sub_key,
                        cipher_buf,
                        cipher_len,
@@ -599,7 +599,7 @@ public:
         {
             if ( pid_len != src_buf[srcbuf_need_len - i] )
             {
-                ZLOG_ERROR("Fun[%s] pid data fill error.", __ZCE_FUNCTION__);
+                ZLOG_ERROR("Fun[%s] pid data fill error.", __ZCE_FUNC__);
                 return -1;
             }
         }
@@ -609,7 +609,7 @@ public:
         {
             if ( '\0' != src_buf[srcbuf_need_len - pid_len - j] )
             {
-                ZLOG_ERROR("Fun[%s] zero data verify error.", __ZCE_FUNCTION__);
+                ZLOG_ERROR("Fun[%s] zero data verify error.", __ZCE_FUNC__);
                 return -1;
             }
         }
