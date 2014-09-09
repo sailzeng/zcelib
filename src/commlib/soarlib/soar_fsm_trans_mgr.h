@@ -199,11 +199,11 @@ public:
     void unlock_qquin_trans_cmd(unsigned int qq_uin,
                                 unsigned int trnas_lock_id);
 
-    
+
     /*!
     * @brief      注册命令以及对应的事务处理的类
     * @return     int
-    * @param      cmd 注册的命令字           
+    * @param      cmd 注册的命令字
     * @param      ptxbase 命令对应的处理Handler，最后会删除
     * @param      if_lock_trans 这个事务是否加锁，事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
     * @param      lock_trans_cmd 加锁的ID,可以是命令ID,也可以多个命令共用一个个ID,
@@ -282,15 +282,15 @@ public:
 
     //假装收到一个消息(buffer)
     inline int fake_receive_appframe_buffer(unsigned int cmd,
-        unsigned int qquin,
-        unsigned int trans_id,
-        unsigned int backfill_trans_id,
-        const SERVICES_ID &proxy_svc,
-        const SERVICES_ID &snd_svc,
-        const char *send_buff,
-        unsigned int buff_size,
-        unsigned int app_id,
-        unsigned int option);
+                                            unsigned int qquin,
+                                            unsigned int trans_id,
+                                            unsigned int backfill_trans_id,
+                                            const SERVICES_ID &proxy_svc,
+                                            const SERVICES_ID &snd_svc,
+                                            const char *send_buff,
+                                            unsigned int buff_size,
+                                            unsigned int app_id,
+                                            unsigned int option);
 
     //----------------------------------------------------------------------------------------------------------
     //Post一个FRAME数据到消息队列,简单版本，没有特殊要求，你可以用这个
@@ -534,7 +534,7 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
     tmp_frame->app_id_ = app_id;
 
     tmp_frame->frame_length_ = (unsigned int)(buff_size + Zerg_App_Frame::LEN_OF_APPFRAME_HEAD);
-    if(tmp_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA)
+    if (tmp_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }

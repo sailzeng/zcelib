@@ -8,6 +8,7 @@
 
 int main(int argc, const char *argv[])
 {
+    //利用模板开始启动  
     return SOAR_LIB::soar_svrd_main < Zerg_Service_App,
            Zerg_Server_Config,
            Zerg_App_Timer_Handler > (argc, argv);

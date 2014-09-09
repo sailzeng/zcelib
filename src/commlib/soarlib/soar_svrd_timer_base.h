@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_svrd_timer_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Monday, September 08, 2014
-* @brief      
-*             
-*             
+* @brief
+*
+*
 * @details    所以你按赞因为你孤单,所以你按赞好像你存在
-*             
-*             
-*             
-* @note 
-*      赞   
+*
+*
+*
+* @note
+*      赞
 *      演唱：陶晶莹
 *      有上山下海有侧拍自拍
 *      有宠物有小孩
@@ -27,7 +27,7 @@
 *      所以你按赞因为你孤单
 *      所以你按赞好像你存在
 *      所以我按赞
-*      
+*
 *      有人晒恩爱有人耍白烂
 *      有小菜有大餐
 *      有前男友前女友
@@ -37,11 +37,11 @@
 *      有潜水偷看有大惊小怪
 *      有黑特有公关
 *      有摸不到的云端
-*      
+*
 *      所以你按赞因为你孤单
 *      所以你按赞好像你存在
 *      所以我按赞
-*      
+*
 *      游乐园幻化成数位源
 *      在你的屏幕前取代了全世界
 *      刷了又刷不重要的近况
@@ -49,7 +49,7 @@
 *      所以你按赞因为你孤单
 *      所以你按赞好像你存在
 *      所以我按赞
-*             
+*
 */
 
 #ifndef SOARING_LIB_TIMER_HANDLER_H_
@@ -63,11 +63,11 @@ class Server_Config_Base;
 /*!
 * @brief      服务器框架的定时器处理类
 *             可以从其得到当前的时钟
-* @note       
+* @note
 */
 class Server_Timer_Base : public ZCE_Timer_Handler
 {
-    
+
     friend class Comm_Svrd_Appliction;
 public:
 
@@ -77,7 +77,7 @@ public:
     ~Server_Timer_Base();
 
 protected:
-    
+
     // 检查监控数据
     void check_monitor(const ZCE_Time_Value &now_time);
 
@@ -101,13 +101,13 @@ protected:
 
     /// 定时处理监控数据
     virtual int timer_timeout(const ZCE_Time_Value &now_time,
-        const void *act = 0);
+                              const void *act = 0);
 
     ///定时器关闭
     virtual int timer_close();
 
 protected:
-       
+
     ///服务器定时器ID
     static const  int  SERVER_TIMER_ID[];
 
@@ -120,7 +120,7 @@ protected:
 
     ///心跳的精度，
     ZCE_Time_Value heart_precision_ = ZCE_Time_Value(0, DEF_TIMER_INTERVAL_USEC);
-    
+
     ///非心跳以外，还可以设置N个APP定时器，你自己配置,
     size_t zan_timer_num_ = 0;
     ///

@@ -13,7 +13,7 @@ struct SOARING_EXPORT SERVICES_ID
 public:
 
     ///构造,析构函数,默认为0
-    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE, 
+    explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE,
                          uint32_t svrno = INVALID_SERVICES_ID);
     //
     ~SERVICES_ID();
@@ -24,14 +24,14 @@ public:
         services_id_ = 0;
     }
 
-    
+
     /*!
     * @brief      从string中得到SVC ID
     * @return     int == 0 表示成功
     * @param      str 转换的字符串
     * @param      check_valid 检查是否有效,svcid的type和id 不能是0
     */
-    int from_str(const char *str, 
+    int from_str(const char *str,
                  bool check_valid = false);
 
     ///转换string
@@ -56,7 +56,7 @@ public:
     static const uint32_t INVALID_SERVICES_ID   = 0;
 
     ///
-    static const uint32_t BROADCAST_SERVICES_ID = (uint32_t)-2;
+    static const uint32_t BROADCAST_SERVICES_ID = (uint32_t) - 2;
 
     ///表示是动态分片的SERVICE ID
     static const uint32_t DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint32_t>(-1);
@@ -91,7 +91,7 @@ struct SERVICES_IP_INFO 服务ID信息 + IP信息
 struct SOARING_EXPORT SERVICES_INFO
 {
 public:
-    
+
     ///从字符串中获取
     int from_str(const char *str,
                  bool check_valid = false);

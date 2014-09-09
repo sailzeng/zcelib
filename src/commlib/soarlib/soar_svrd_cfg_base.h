@@ -8,9 +8,9 @@
 
 //============================================================================================
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 struct SOAR_LOG_CFG_DATA
 {
@@ -144,9 +144,9 @@ public:
     ///svcid的配置文件
     std::string svc_table_file_;
 
-    ///日志帐单的配置数据   
+    ///日志帐单的配置数据
     SOAR_LOG_CFG_DATA log_config_;
-    
+
 };
 
 #endif //SOARING_LIB_SERVER_CONFIG_BASE_H_

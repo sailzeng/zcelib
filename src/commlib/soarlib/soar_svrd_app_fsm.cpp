@@ -20,7 +20,7 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Comm_Svrd_Appliction::on_start(argc,argv);
+    ret = Comm_Svrd_Appliction::on_start(argc, argv);
 
     if (0 != ret)
     {
@@ -68,7 +68,7 @@ int Comm_SvrdApp_FSM::on_run()
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
     Transaction_Manager *trans_mgr = Transaction_Manager::instance();
-    
+
     size_t size_io_event = 0 , num_timer_expire  = 0;
 
     size_t proc_frame = 0, gen_trans = 0, proc_data_num = 0;

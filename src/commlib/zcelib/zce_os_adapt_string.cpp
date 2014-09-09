@@ -24,8 +24,8 @@
 //==========================================================================================================
 //取得一个唯一的名称,用于一些需要取唯一名字的地方，object一般选取一些指针考虑
 char *ZCE_LIB::object_unique_name (const void *object_ptr,
-                                  char *name,
-                                  size_t length)
+                                   char *name,
+                                   size_t length)
 {
     snprintf (name,
               length,
@@ -40,10 +40,10 @@ char *ZCE_LIB::object_unique_name (const void *object_ptr,
 
 //通过前缀式，得到一个唯一的名称,
 char *ZCE_LIB::prefix_unique_name(const char *prefix_name,
-                                 char *name,
-                                 size_t length)
+                                  char *name,
+                                  size_t length)
 {
-    
+
 
     ZCE_Thread_Light_Mutex id_lock;
     ZCE_Lock_Guard<ZCE_Thread_Light_Mutex> id_guard(id_lock);
@@ -118,6 +118,49 @@ int ZCE_LIB::strncasecmp(const char *string1, const char *string2, size_t maxlen
     return ::strncasecmp(string1, string2, maxlen);
 #endif
 }
+
+
+
+//替换src字符串中的sub字符串为replace，保存到dst字符串中
+const char* ZCE_LIB::str_replace(const char* src, char* dst, const char* sub, const char* replace)
+{
+    ZCE_ASSERT(src && dst && sub && replace);
+
+    //记录当前指针位置,偏移
+    size_t  dst_offset = 0, src_offset = 0;
+    
+    //求得各字符串长度
+    size_t src_len = strlen(src);
+    size_t sub_len = strlen(sub);
+    size_t replace_len = strlen(replace);
+
+    const char *find_pos = NULL;
+    //strstr查找sub字符串出现的指针
+    while ( 0 != (find_pos = strstr(src + src_offset, sub)) )
+    {
+
+        //拷贝src字符串，从首地址开始，pos个字符。
+        memcpy(dst + dst_offset, src + src_offset, find_pos - (src + src_offset));
+
+        dst_offset += find_pos - (src + src_offset);
+        src_offset = find_pos - src + sub_len;
+
+        memcpy(dst + dst_offset, replace, replace_len);
+        dst_offset += replace_len;
+    }
+
+    //把sub字符串后面的字符串到dst中
+    memcpy(dst + dst_offset, src + src_offset, src_len - src_offset);
+    dst_offset += src_len - src_offset;
+
+    //最后添加字符串结尾标记'\0'
+    *(dst + dst_offset) = '\0';
+    
+    //返回dst
+    return dst;
+}
+
+
 
 
 //-------------------------------------------------------------------------------------------------------------------

@@ -20,7 +20,7 @@ const int Server_Timer_Base::SERVER_TIMER_ID[] =
 
 
 //
-Server_Timer_Base::Server_Timer_Base() : 
+Server_Timer_Base::Server_Timer_Base() :
     ZCE_Timer_Handler()
 {
 }
@@ -41,10 +41,10 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
     now_time_ = ZCE_LIB::gettimeofday();
 
     timer_queue()->schedule_timer(this,
-        &(SERVER_TIMER_ID[0]),
-        ZCE_Time_Value::ZERO_TIME_VALUE,
-        heart_precision_);
-    
+                                  &(SERVER_TIMER_ID[0]),
+                                  ZCE_Time_Value::ZERO_TIME_VALUE,
+                                  heart_precision_);
+
     last_check_ = time(NULL);
 
     return 0;
@@ -52,7 +52,7 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
 
 //超时处理
 int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
-                                       const void *act /*= 0*/)
+                                     const void *act /*= 0*/)
 {
     ZCE_UNUSED_ARG(act);
 
@@ -70,7 +70,7 @@ int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
         check_monitor(now_time);
 
     }
-    
+
 
     return 0;
 }
@@ -117,7 +117,7 @@ void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
 void Server_Timer_Base::report_status()
 {
     // 上报进程存活状态
-    stat_monitor_->increase_once(COMM_STAT_APP_ALIVE, 0,0);
+    stat_monitor_->increase_once(COMM_STAT_APP_ALIVE, 0, 0);
     Comm_Svrd_Appliction *svrd_app = Comm_Svrd_Appliction::instance();
 
     {
@@ -132,24 +132,24 @@ void Server_Timer_Base::report_status()
         {
             // 上报监控数据
             stat_monitor_->set_by_statid(COMM_STAT_SYS_CPU_RATIO,
-                0, 
-                0,
-                svrd_app->system_cpu_ratio_);
+                                         0,
+                                         0,
+                                         svrd_app->system_cpu_ratio_);
 
             stat_monitor_->set_by_statid(COMM_STAT_PROCESS_CPU_RATIO,
-                0, 
-                0, 
-                svrd_app->process_cpu_ratio_);
+                                         0,
+                                         0,
+                                         svrd_app->process_cpu_ratio_);
 
             stat_monitor_->set_by_statid(COMM_STAT_SYS_MEM_USE_RATIO,
-                0, 
-                0,
-                svrd_app->mem_use_ratio_);
+                                         0,
+                                         0,
+                                         svrd_app->mem_use_ratio_);
 
             stat_monitor_->set_by_statid(COMM_STAT_AVAILABLE_MEM_SIZE,
-                0, 
-                0, 
-                svrd_app->can_use_size_);
+                                         0,
+                                         0,
+                                         svrd_app->can_use_size_);
 
         }
     }

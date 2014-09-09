@@ -30,7 +30,7 @@ Modification History:
 #define SOARING_EXPORT __declspec (dllexport)
 #else
 #define SOARING_EXPORT __declspec (dllimport)
-#endif 
+#endif
 #else
 #define SOARING_EXPORT
 #endif

@@ -18,8 +18,8 @@
 
 /*!
 * @brief      ×´Ì¬»úµÄAPP
-*             
-* @note       
+*
+* @note
 */
 class Comm_SvrdApp_FSM : public Comm_Svrd_Appliction
 {
@@ -43,7 +43,7 @@ public:
 
 protected:
 
-    
+
     virtual int register_trans_cmd() = 0;
 
 };

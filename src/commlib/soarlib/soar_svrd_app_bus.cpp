@@ -26,8 +26,8 @@ int Comm_SvrdApp_BUS::on_run()
 {
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
-        get_app_basename(),
-        typeid(*this).name());
+              get_app_basename(),
+              typeid(*this).name());
 
     //空闲N次后,调整SELECT的等待时间间隔
     const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
@@ -104,7 +104,7 @@ int Comm_SvrdApp_BUS::on_run()
 }
 
 //从管道中收取一组数据进行处理
-int Comm_SvrdApp_BUS::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
+int Comm_SvrdApp_BUS::popfront_recvpipe(size_t max_prc, size_t &proc_frame)
 {
     int ret = 0;
 

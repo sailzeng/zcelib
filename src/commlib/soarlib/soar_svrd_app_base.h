@@ -37,12 +37,12 @@ public:
 
     /*!
     * @brief      初始化，放入一些基类的指针，
-    * @return     int 
+    * @return     int
     * @param      config_base 配置类指针，注意new了放进来
     * @param      timer_base  定时器触发句柄的指针，注意new了放进来
     */
-    int initialize(Server_Config_Base *config_base, 
-        Server_Timer_Base *timer_base);
+    int initialize(Server_Config_Base *config_base,
+                   Server_Timer_Base *timer_base);
 
 
     /*!

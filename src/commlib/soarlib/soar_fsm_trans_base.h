@@ -54,7 +54,7 @@ protected:
         TOO_TOO_LONG_TIME_OUT               = 480,
     };
 
-    
+
 
 protected:
 
@@ -456,7 +456,7 @@ inline unsigned int Transaction_Base::get_req_ipaddress() const
 //用于检查请求的IP地址是否是内部IP地址,是返回0，不是返回非0
 inline int Transaction_Base::check_request_internal() const
 {
-    return (ZCE_LIB::is_internal(req_ip_address_))?0:-1;
+    return (ZCE_LIB::is_internal(req_ip_address_)) ? 0 : -1;
 }
 
 //请求发送消息的Service,

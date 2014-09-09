@@ -7,16 +7,16 @@
 namespace SOAR_LIB
 {
 
-template <class application_class, class  config_class ,class timer_class >
-int soar_svrd_main(int argc,const char *argv[])
+template <class application_class, class  config_class , class timer_class >
+int soar_svrd_main(int argc, const char *argv[])
 {
     //不处理异常，因为处理了不好调试,特别是在Win32下调试。
 
     application_class::set_instance(new application_class());
 
     application_class::instance()->initialize(new config_class() ,
-        new timer_class );
-    
+                                              new timer_class );
+
 
     //开始日志是无法输出，
     //ZLOG_INFO("[framework] App init_instance start");

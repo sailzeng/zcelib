@@ -413,12 +413,12 @@ public:
         if (ret < 0)
         {
             ZLOG_ERROR("[framework] Post message to send queue fail.ret =%d, uin=%u cmd=%u",
-                ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
-            
+                       ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
+
             // ¼Ó¸ö¼à¿Ø
             Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
-                tmp_frame->app_id_,
-                0);
+                                                         tmp_frame->app_id_,
+                                                         0);
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
         }
 

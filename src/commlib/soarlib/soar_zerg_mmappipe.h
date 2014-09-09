@@ -137,7 +137,7 @@ public:
 //从RECV管道读取帧，
 inline int Zerg_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 {
-    int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<ZCE_LIB::dequechunk_node*&>(proc_frame));
+    int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<ZCE_LIB::dequechunk_node* &>(proc_frame));
 
     // 加监控数据
     if (ret == 0)

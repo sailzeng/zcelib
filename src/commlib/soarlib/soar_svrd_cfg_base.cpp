@@ -18,7 +18,7 @@ Server_Config_Base::Server_Config_Base() :
 
     //默认定时器的事数量
     //const size_t DEFAULT_TIMER_NUMBER = 1024;
-    
+
 
     //默认框架定时器间隔时间 100毫秒
     //
@@ -30,7 +30,7 @@ Server_Config_Base::Server_Config_Base() :
     log_config_.log_level_ = RS_DEBUG;
     log_config_.log_div_type_ = LOGDEVIDE_BY_DAY;
     log_config_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
-    
+
     log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
     log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
 
@@ -232,17 +232,17 @@ int Server_Config_Base::reload_cfgfile()
 void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     ZCE_LOGMSG(out_lvl, "Application base name %s svc id:%hu.%u",
-        Comm_Svrd_Appliction::instance()->get_app_basename(),
-        self_svc_id_.services_type_,
-        self_svc_id_.services_id_);
-    ZCE_LOGMSG(out_lvl, "Application run dir :%s",app_run_dir_.c_str());
+               Comm_Svrd_Appliction::instance()->get_app_basename(),
+               self_svc_id_.services_type_,
+               self_svc_id_.services_id_);
+    ZCE_LOGMSG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());
     ZCE_LOGMSG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
     ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application frame work config file :%s", framework_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application get  :%s", svc_table_file_.c_str());
-    ZCE_LOGMSG(out_lvl, "Application if_restore_pipe_ :%s", if_restore_pipe_ ?"TRUE":"FALSE");
+    ZCE_LOGMSG(out_lvl, "Application if_restore_pipe_ :%s", if_restore_pipe_ ? "TRUE" : "FALSE");
 }
 
 //从配置中读取self_svc_id_的
@@ -258,7 +258,7 @@ int Server_Config_Base::get_selfsvcid_cfg(const ZCE_Conf_PropertyTree *conf_tree
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = self_svc_id_.from_str(temp_value.c_str(),true);
+    ret = self_svc_id_.from_str(temp_value.c_str(), true);
     if (0 != ret )
     {
         ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
@@ -280,7 +280,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
-    
+
     ret = conf_tree->path_get_leaf("LOG_CFG", "FILE_DEVIDE", temp_value);
     log_config_.log_div_type_ = ZCE_LogTrace_Basic::log_file_devide(temp_value.c_str());
     if (0 != ret)

@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_zerg_sndrcv_zulu.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Friday, September 05, 2014
 * @brief      2006年9月8日,原作者Scottxu ，移植,Sailzeng
-*             
-*             
-* @details    
-*             
-*             
-*             
+*
+*
+* @details
+*
+*
+*
 * @note       将这段代码移动到COMM,模板化
-*             
+*
 */
 
 #ifndef SOARING_LIB_SNDRCV_TCP_ZULU_H_

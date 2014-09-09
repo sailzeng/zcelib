@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_sndrcv_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2011年11月30日
 * @brief      用于将TCP，UDP的发送代码部分做一个整合，搞出一个base类，处理一些共有事情
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 

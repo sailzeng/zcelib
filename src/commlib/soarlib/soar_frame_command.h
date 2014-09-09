@@ -2,11 +2,11 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_frame_command.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2006年10月20日
-* @brief      
-*             
-*             
+* @brief
+*
+*
 * @details    README:
 * 拜托在改命令的时候先把目光投射过来
 * 命令定义的规则
@@ -19,11 +19,11 @@
 * 7.所有的命令字采用对应服务器的TYPE*10000+命令ID的方式定义.1-9999作为通讯服务器和业务服务器间的内部命令
 * 8.主动发送给客户端的用RSP开头
 * 9.麻烦对齐，我好不若能够以对齐的，你老搞坏了，我会画圈圈诅咒你的。
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+*
+* @note
+*
 */
 
 

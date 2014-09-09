@@ -12,7 +12,7 @@
 
 /*!
 * @brief      FRAME的选项字节的UNION结构
-*             
+*
 */
 struct _ZERG_FRAME_OPTION
 {
@@ -29,7 +29,7 @@ public:
 
 /*!
 * @brief      Zerg服务器间传递消息的通用帧头
-*             
+*
 */
 class SOARING_EXPORT Zerg_App_Frame
 {

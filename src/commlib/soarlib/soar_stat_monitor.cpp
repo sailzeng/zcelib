@@ -60,13 +60,13 @@ void Comm_Stat_Monitor::create_stat_fname(const char *app_base_name,
                                           unsigned int business_id,
                                           const SERVICES_ID &service_info)
 {
-    snprintf(stat_mmap_filename_, 
-        STAT_MMAP_FILENAME_LEN,
-        "STATS_%s_%u_%hu.%u.SHM",
-        app_base_name,
-        business_id,
-        service_info.services_type_,
-        service_info.services_id_);
+    snprintf(stat_mmap_filename_,
+             STAT_MMAP_FILENAME_LEN,
+             "STATS_%s_%u_%hu.%u.SHM",
+             app_base_name,
+             business_id,
+             service_info.services_type_,
+             service_info.services_id_);
 
     stat_mmap_filename_[STAT_MMAP_FILENAME_LEN] = '\0';
 }
@@ -78,7 +78,7 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
                                            SERVICES_ID *service_id,
                                            char *app_base_name)
 {
-    
+
     ZCE_ASSERT(stat_file_name != NULL);
     ZCE_ASSERT(service_id != NULL);
 
@@ -115,9 +115,9 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
-    ret = sscanf(find_pos + 1, "%hu.%u", 
-        &tmp_service_info.services_type_,
-        &tmp_service_info.services_id_);
+    ret = sscanf(find_pos + 1, "%hu%.%u",
+                 &tmp_service_info.services_type_,
+                 &tmp_service_info.services_id_);
     //!=2 表示没有得到两个数字
     if (ret != 2)
     {
@@ -133,7 +133,7 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
     ret = sscanf(find_pos + 1, "%u",
-        &tmp_business_id);
+                 &tmp_business_id);
     if (ret != 1)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;

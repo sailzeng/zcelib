@@ -37,11 +37,11 @@ struct FRAMEWORK_CONFIG
 
     TransInfo trans_info_; // 事务的配置
     TaskInfo task_info_; // Task的配置，使用notifytrans时有效
-    
+
     MonitorInfo monitor_info_; // 监控配置信息
 };
 
-struct SVCID_CONFIG 
+struct SVCID_CONFIG
 {
 
 };
@@ -52,7 +52,7 @@ struct SVCID_CONFIG
 *
 * @note
 */
-class Server_Config_FSM :public Server_Config_Base
+class Server_Config_FSM : public Server_Config_Base
 {
 
 protected:
@@ -67,12 +67,12 @@ public:
 
 protected:
 
-    
+
     /// 使用帮助
     virtual int usage(const char *program_name);
 
 public:
-    
+
     //
     FRAMEWORK_CONFIG framework_config_;
 

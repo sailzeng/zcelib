@@ -22,7 +22,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Comm_Svrd_Appliction::on_start(argc,argv);
+    ret = Comm_Svrd_Appliction::on_start(argc, argv);
     if (0 != ret)
     {
         return ret;

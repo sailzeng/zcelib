@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_enum_define.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2006年6月22日
 * @brief      这个.h请务必保持干净.
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 
@@ -25,7 +25,7 @@ enum SOAR_BUSINESS_ID
 {
     //业务ID
     INVALID_BUSINESS_ID = 0,
-    
+
     //公用业务ID从1-1000
     SOAR_PUBLIC_BUSINESS_ID = 100,
 

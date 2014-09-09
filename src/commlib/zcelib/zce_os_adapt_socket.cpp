@@ -1034,9 +1034,9 @@ int ZCE_LIB::inet_pton (int family,
 
     //为什么不让我用inet_pton ,(Vista才支持),不打开下面注释的原因是，编译会通过了，但你也没法用,XP和WINSERVER2003都无法使用，
     //VISTA,WINSERVER2008的_WIN32_WINNT都是0x0600
-    //#if defined (_WIN32_WINNT) && _WIN32_WINNT >=  0x0600
-    //    return ::inet_pton(family,strptr,addrptr);
-    //#else
+#if defined ZCE_SUPPORT_WINSVR2008
+    return ::inet_pton(family,strptr,addrptr);
+#else
 
     //sscanf取得的域的个数
     int get_fields_num = 0;
@@ -1049,7 +1049,7 @@ int ZCE_LIB::inet_pton (int family,
         const int NUM_FIELDS_AF_INET = 4;
         uint32_t u[NUM_FIELDS_AF_INET] = {0};
         get_fields_num = sscanf(strptr,
-                                "%u.%u.%u.%u",
+                                "%u%.%u%.%u%.%u",
                                 &(u[0]),
                                 &(u[1]),
                                 &(u[2]),
@@ -1063,12 +1063,9 @@ int ZCE_LIB::inet_pton (int family,
             return 0;
         }
 
-        //读取了4个域,
-        //这个转换只能在WINDOWS下用（这些union只有WINDOWS下有定义），如果要通用，要改代码。
-        in_val->S_un.S_un_b.s_b1 = static_cast<unsigned char> (u[0]);
-        in_val->S_un.S_un_b.s_b2 = static_cast<unsigned char> (u[1]);
-        in_val->S_un.S_un_b.s_b3 = static_cast<unsigned char> (u[2]);
-        in_val->S_un.S_un_b.s_b4 = static_cast<unsigned char> (u[3]);
+        uint32_t u32_addr = u[0] << 24 | u[1] << 16 | u[2] << 8 | u[3];
+        in_val->S_un.S_addr = htonl(u32_addr);
+
 
         //注意，返回1标识成功
         return (1);
@@ -1192,7 +1189,7 @@ int ZCE_LIB::inet_pton (int family,
             const int NUM_FIELDS_AF_INET = 4;
             uint32_t u[NUM_FIELDS_AF_INET] = {0};
             get_fields_num = sscanf(strptr + word_start_pos,
-                                    "%u.%u.%u.%u",
+                                    "%u%.%u%.%u%.%u",
                                     &(u[0]),
                                     &(u[1]),
                                     &(u[2]),
@@ -1240,6 +1237,7 @@ int ZCE_LIB::inet_pton (int family,
         errno = EAFNOSUPPORT;
         return 0;
     }
+#endif
 
 #elif defined (ZCE_OS_LINUX)
     //LINuX下有这个函数

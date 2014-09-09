@@ -99,8 +99,8 @@ void Ogre4a_App_Frame::ExchangeRcvSndPeerInfo(const Ogre4a_App_Frame *exframe )
 
 //输出APPFRAME的全部部信息
 void Ogre4a_App_Frame::DumOgreFrameHead(const Ogre4a_App_Frame *proc_frame,
-                                       const char *outstr,
-                                       ZCE_LOG_PRIORITY log_priority)
+                                        const char *outstr,
+                                        ZCE_LOG_PRIORITY log_priority)
 {
 
     ZCE_LOGMSG(log_priority, "[framework] [OGRE_FRAME_MONITOR]location:%s ,frame_len:%u,send_ip:%u,send_port:%u,rcv_ip:%u,rcv_port:%u,",
@@ -120,7 +120,7 @@ void Ogre4a_App_Frame::DumOgreFrameHead(const Ogre4a_App_Frame *proc_frame,
 
 //输出APPFRAME的全部部信息
 void Ogre4a_App_Frame::DumOgreFrameHead(const char *outstr,
-                                       ZCE_LOG_PRIORITY log_priority) const
+                                        ZCE_LOG_PRIORITY log_priority) const
 {
     this->DumOgreFrameHead(this, outstr, log_priority);
 }

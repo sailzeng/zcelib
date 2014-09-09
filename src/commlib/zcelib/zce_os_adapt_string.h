@@ -141,8 +141,8 @@ char_type *strtrimleft(char_type *str)
 
     if (lstr != str)
     {
-        yun_char_traits<char_type>::move(str, lstr, 
-            yun_char_traits<char_type>::length(lstr) + 1);
+        yun_char_traits<char_type>::move(str, lstr,
+                                         yun_char_traits<char_type>::length(lstr) + 1);
     }
 
     return str;
@@ -362,7 +362,7 @@ void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compa
 
 
 /*!
-* @brief      
+* @brief
 * @tparam     char_type      字符类型
 * @tparam     container_type 容器类型，
 * @param[in]  str            处理的字符串，
@@ -373,13 +373,28 @@ template < typename char_type, typename container_type >
 inline void str_split(const char_type *str, const char_type *separator, container_type &v)
 {
     str_split(str,
-        yun_char_traits<char_type>::strend(str),
-        separator,
-        yun_char_traits<char_type>::strend(separator),
-        std::equal_to<char_type>(),
-        v);
+              yun_char_traits<char_type>::strend(str),
+              separator,
+              yun_char_traits<char_type>::strend(separator),
+              std::equal_to<char_type>(),
+              v);
     return;
 }
+
+
+
+/*!
+* @brief      
+* @return     const char*
+* @param      src
+* @param      dst
+* @param      sub
+* @param      replace
+*/
+const char *str_replace(const char *src,
+                        char *dst,
+                        const char *sub,
+                        const char *replace);
 
 //==========================================================================================================
 //用于一些表格字符串分析函数
