@@ -290,8 +290,17 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     {
         return ret;
     }
-
-    val = std::stoi(value_str);
+    if (value_str.empty())
+    {
+        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ", 
+            path_str.c_str(),key_str.c_str());
+        val = 0;
+    }
+    else
+    {
+        val = std::stoi(value_str);
+    }
+    
     return 0;
 }
 
@@ -309,7 +318,16 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
         return ret;
     }
 
-    val = static_cast<int16_t>(std::stoi(value_str));
+    if (value_str.empty())
+    {
+        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+            path_str.c_str(), key_str.c_str());
+        val = 0;
+    }
+    else
+    {
+        val = static_cast<int16_t>(std::stoi(value_str));
+    }
     return 0;
 }
 
@@ -327,8 +345,16 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     {
         return ret;
     }
-
-    val = static_cast<uint16_t>( std::stoul(value_str));
+    if (value_str.empty())
+    {
+        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+            path_str.c_str(), key_str.c_str());
+        val = 0;
+    }
+    else
+    {
+        val = static_cast<uint16_t>(std::stoul(value_str));
+    }
     return 0;
 }
 
@@ -345,8 +371,17 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     {
         return ret;
     }
-
-    val = static_cast<uint32_t>(std::stoul(value_str));
+    if (value_str.empty())
+    {
+        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+            path_str.c_str(), key_str.c_str());
+        val = 0;
+    }
+    else
+    {
+        val = static_cast<uint32_t>(std::stoul(value_str));
+    }
+    
     return 0;
 }
 
@@ -359,12 +394,20 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     std::string value_str;
     int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
 
-    if (0 != ret)
+    if (0 != ret || true == value_str.empty())
     {
         return ret;
     }
-
-    val = std::stoll(value_str);
+    if (value_str.empty())
+    {
+        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+            path_str.c_str(), key_str.c_str());
+        val = 0;
+    }
+    else
+    {
+        val = std::stoll(value_str);
+    }
     return 0;
 }
 
@@ -381,8 +424,16 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     {
         return ret;
     }
-
-    val = std::stoull(value_str);
+    if (value_str.empty())
+    {
+        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+            path_str.c_str(), key_str.c_str());
+        val = 0;
+    }
+    else
+    {
+        val = std::stoull(value_str);
+    }
     return 0;
 }
 
@@ -396,7 +447,6 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 
     std::string value_str;
     int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
-
     if (0 != ret)
     {
         return ret;
