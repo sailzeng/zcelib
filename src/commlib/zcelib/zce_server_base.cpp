@@ -68,7 +68,6 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
 {
     int ret = 0;
 
-    // std::string filename =  ACE::basename(pragramname);
     std::string filename = pragramname;
     filename += ".pid";
 
@@ -76,7 +75,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
     int fileperms = 0644;
 
     pid_handle_ = ZCE_LIB::open(filename.c_str(),
-                               O_RDWR | O_CREAT,
+                               O_RDWR | O_CREAT ,
                                static_cast<mode_t>(fileperms));
 
     if (pid_handle_ == ZCE_INVALID_HANDLE)
@@ -113,9 +112,9 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
         // 锁定全部文件，不知道为何，，,这儿系统调用的是，F_SETLKW
         // ret = ZCE_LIB::flock(pid_handle_,LOCK_EX);
     }
-
+    ZCE_LIB::lseek(pid_handle_,0,SEEK_SET);
     ZCE_LIB::write(pid_handle_, tmpbuff, static_cast<unsigned int>(len));
-
+    
     // ZCE_LIB::close(pid_handle_);
 
     return 0;

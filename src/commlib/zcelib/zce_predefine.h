@@ -146,6 +146,7 @@
 // 用于告诉VC++，我不强迫使用_s类型的API，_CRT_SECURE_NO_DEPRECATE是_CRT_SECURE_NO_WARNINGS的老版本
 #define _CRT_SECURE_NO_WARNINGS   1
 #define _CRT_SECURE_NO_DEPRECATE  1
+#define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 
 //==================================================================================================
 

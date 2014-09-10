@@ -197,6 +197,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         || zerg_cfg_data_.recv_pipe_len_ < 1024 * 1024
         || zerg_cfg_data_.recv_pipe_len_ > 1024 * 1024 * 1024)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     ret = conf_tree->path_get_leaf("ZERG_CFG", "SEND_PIPE_LEN",
@@ -205,6 +206,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         || zerg_cfg_data_.send_pipe_len_ < 1024 * 1024
         || zerg_cfg_data_.send_pipe_len_ > 1024 * 1024 * 1024)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -213,6 +215,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.max_accept_svr_);
     if (0 != ret || zerg_cfg_data_.max_accept_svr_ < 32)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -223,6 +226,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         || zerg_cfg_data_.acpt_send_deque_size_ < ZERG_CONFIG_DATA::MIN_SEND_DEQUE_SIZE
         || zerg_cfg_data_.acpt_send_deque_size_ > ZERG_CONFIG_DATA::MAX_SEND_DEQUE_SIZE)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     ret = conf_tree->path_get_leaf("ZERG_CFG", "CNNT_SEND_DEQUE_SIZE",
@@ -231,6 +235,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         || zerg_cfg_data_.cnnt_send_deque_size_ < ZERG_CONFIG_DATA::MIN_SEND_DEQUE_SIZE
         || zerg_cfg_data_.cnnt_send_deque_size_ > ZERG_CONFIG_DATA::MAX_SEND_DEQUE_SIZE)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -239,18 +244,21 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.zerg_insurance_);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
     //BACKLOG
-    ret = conf_tree->path_get_leaf("ZERG_CFG", "ACCEPT_BACKLOG",
+    ret = conf_tree->path_get_leaf("ZERG_CFG", "LISTEN_BACKLOG",
         zerg_cfg_data_.accept_backlog_);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     if (zerg_cfg_data_.accept_backlog_ == 0)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         zerg_cfg_data_.accept_backlog_ = ZCE_DEFAULT_BACKLOG;
     }
 
@@ -259,12 +267,14 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.accepted_timeout_);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     ret = conf_tree->path_get_leaf("ZERG_CFG", "RECV_TIMEOUT",
         zerg_cfg_data_.receive_timeout_);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -274,12 +284,14 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.reject_ip_);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     ret = conf_tree->path_get_leaf("ZERG_CFG", "ALLOW_IP",
         zerg_cfg_data_.allow_ip_);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -289,13 +301,14 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         temp_value);
     if (0 != ret)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     str_ary.clear();
     ZCE_LIB::str_split(temp_value.c_str(), "|", str_ary);
     if (str_ary.size() > ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER)
     {
-
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     zerg_cfg_data_.monitor_cmd_count_ = str_ary.size();
     for (size_t i = 0; i < str_ary.size(); ++i)
@@ -305,10 +318,11 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 
 
     //´íÎóÖØÊÔ´ÎÊý
-    ret = conf_tree->path_get_leaf("SLAVE_SVCID", "RETRY_ERROR",
+    ret = conf_tree->path_get_leaf("ZERG_CFG", "RETRY_ERROR",
         zerg_cfg_data_.retry_error_);
     if (0 != ret || zerg_cfg_data_.retry_error_ > 5)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -317,6 +331,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.bind_svcid_num_);
     if (0 != ret || zerg_cfg_data_.bind_svcid_num_ > ZERG_CONFIG_DATA::MAX_SLAVE_SERVICES_ID)
     {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -377,6 +392,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
+        
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 

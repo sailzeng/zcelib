@@ -38,6 +38,12 @@ public:
 };
 
 
+///用于程序运行到的地方。
+#ifndef SOAR_CFG_READ_FAIL
+#define SOAR_CFG_READ_FAIL(x)        ZCE_LOGMSG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
+    __FILE__,__LINE__,__ZCE_FUNC__)
+#endif
+
 //============================================================================================
 /*!
 * @brief 配置
