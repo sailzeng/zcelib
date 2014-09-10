@@ -77,7 +77,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = create_app_name(argv[0]);
     if (0 != ret)
     {
-        ZLOG_ERROR("svr create_app_base_name init fail. ret=%d", ret);
+        printf("svr create_app_base_name init fail. ret=%d", ret);
         return ret;
     }
     //初始化SOCKET等
@@ -90,28 +90,35 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     //忽视信号
     process_signal();
 
-    std::string log_file_prefix = config_base_->app_run_dir_ + "/log/";
-    log_file_prefix += app_base_name_;
-    log_file_prefix += "_init";
-
-    //先打开日志，记录一段数据，直到日志的启动参数获得
-    // 初始化日志用滚动的方式可以保留的天数多点
-    ZCE_Trace_LogMsg::instance()->init_size_log(
-        log_file_prefix.c_str(),
-        false,
-        true,
-        10 * 1024 * 1024,
-        2);
-
-
     // 处理启动参数
     ret = config_base_->start_arg(argc, argv);
     if (ret != 0)
     {
-        ZLOG_ERROR("svr config start_arg init fail. ret=%d", ret);
+        printf("svr config start_arg init fail. ret=%d", ret);
         return ret;
     }
 
+    // 切换运行目录
+    ret = ZCE_LIB::chdir(config_base_->app_run_dir_.c_str());
+    if (ret != 0)
+    {
+        printf("[framework] change run directory to %s fail. error=%d",
+            config_base_->app_run_dir_.c_str(), errno);
+        return ret;
+    }
+
+
+    //先打开日志，记录一段数据，直到日志的启动参数获得
+    // 初始化日志用滚动的方式可以保留的天数多点
+    ZCE_Trace_LogMsg::instance()->init_size_log(
+        config_base_->log_file_prefix_.c_str(),
+        false,
+        true,
+        10 * 1024 * 1024,
+        3);
+
+    ZCE_LOGMSG(RS_INFO,"[framework] change run directory to %s .",
+        config_base_->app_run_dir_.c_str());
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -133,7 +140,6 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 #endif
 
     //我是华丽的分割线
-    ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("[framework] %s start init", app_base_name_.c_str());
@@ -182,24 +188,31 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
 
     // 加载框架配置,由于是虚函数，也会调用到非框架的配置读取
-    ret = config_base_->initialize(argc, argv);
+    ret = config_base_->load_cfgfile();
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] framwork config init fail. ret=%d", ret);
+        ZLOG_ERROR("[framework] framwork config load_cfgfile fail. ret=%d", ret);
         return ret;
     }
+
+    
+    // 初始化日志
+    ret = init_log();
+    if (ret != 0)
+    {
+        ZLOG_ERROR("[framework] init log fail. ret=%d", ret);
+        return ret;
+    }
+
+    ZLOG_INFO("======================================================================================================");
+    ZLOG_INFO("======================================================================================================");
+    ZLOG_INFO("[framework] %s load_cfgfile success and init_log success.", app_base_name_.c_str());
 
     self_svc_id_ = config_base_->self_svc_id_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
     ZCE_ASSERT((self_svc_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
                (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
-    if (ret != 0)
-    {
-        ZLOG_ERROR("[framework] %s load app config fail. ret=%d",
-                   __ZCE_FUNC__, ret);
-        return ret;
-    }
 
     //使用WHEEL型的定时器队列
     ZCE_Timer_Queue::instance(new ZCE_Timer_Wheel(
@@ -223,18 +236,13 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 #endif
 
     //初始化内存管道
-    //ret = Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg(
-    //          svd_config->zerg_config_);
-
-    if (ret != 0)
-    {
-        ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg fail,ret = %d.", ret);
-        return ret;
-    }
-
     ret = Zerg_MMAP_BusPipe::instance()->
-          init_after_getcfg(Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
-                            config_base_->if_restore_pipe_);
+          initialize(self_svc_id_,
+          config_base_->pipe_cfg_.recv_pipe_len_,
+          config_base_->pipe_cfg_.send_pipe_len_,
+          Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+          config_base_->pipe_cfg_.if_restore_pipe_);
+
     if (ret != 0)
     {
         ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
@@ -245,16 +253,6 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     ZLOG_INFO("[framework] MMAP Pipe init success,gogogo."
               "The more you have,the more you want. ");
-
-
-    // 初始化日志
-    ret = init_log();
-
-    if (ret != 0)
-    {
-        ZLOG_ERROR("[framework] init log fail. ret=%d", ret);
-        return ret;
-    }
 
     ZLOG_INFO("[framework] Comm_Svrd_Appliction::init_instance Success.");
     return 0;
@@ -278,8 +276,6 @@ int Comm_Svrd_Appliction::on_exit()
               app_run_name_.c_str());
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
-    ZLOG_INFO("======================================================================================================");
-
     return 0;
 }
 
@@ -326,46 +322,6 @@ int Comm_Svrd_Appliction::reload_config()
 
     return 0;
 }
-
-//int Comm_Svrd_Appliction::do_run()
-//{
-//    // 框架要先初始化
-//    int ret = init_instance();
-//
-//    if (ret != 0)
-//    {
-//        ZLOG_ERROR("application: init_instance fail. ret=%d", ret);
-//        return ret;
-//    }
-//
-//    // 调用app的init函数
-//    ret = init();
-//
-//    if (ret != 0)
-//    {
-//        ZLOG_ERROR("application: init_app fail. ret=%d", ret);
-//        return ret;
-//    }
-//
-//    ZLOG_INFO("[framework]application: init succ. start run");
-//    ret = run_instance();
-//
-//    if (ret != 0)
-//    {
-//        ZLOG_ERROR("application: run_instance fail. ret=%d", ret);
-//    }
-//
-//    // 不管run_instance返回什么值，退出时的清理都是需要的
-//    // app的退出调用
-//    exit();
-//    // 最后才是框架的退出
-//    exit_instance();
-//
-//    ZLOG_INFO("[framework] application exit.");
-//
-//    return ret;
-//}
-
 
 
 int Comm_Svrd_Appliction::init_log()

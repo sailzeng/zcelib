@@ -12,22 +12,7 @@ class Zerg_App_Frame;
 
 class SOARING_EXPORT Zerg_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
 {
-protected:
 
-    //ZERG管道的名称,放在这儿，因为大家都用
-    static const char          ZERG_PIPENAME[NUM_OF_PIPE][16];
-
-protected:
-    //是否做线程检查
-    bool                if_check_pthrad_;
-
-    //这个服务器的配置信息.
-    SERVICES_ID         zerg_svr_info_;
-    //发送的缓冲区
-    static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
-
-    // 监控对象
-    Comm_Stat_Monitor   *monitor_;
 
 
 protected:
@@ -48,15 +33,7 @@ public:
                    size_t max_frame_len,
                    bool if_restore);
 
-    //读取配置,初始化部分参数,
-    //int getpara_from_zergcfg(const ZCE_INI_PropertyTree &zerglingcfg);
-    //int getpara_from_zergcfg(const conf_zerg::ZERG_CONFIG &zerg_cfg);
 
-    //初始化内存管道,业务服务器使用
-
-    //通讯服务器初始化内存管道
-    int init_after_getcfg(size_t max_frame_len,
-                          bool if_restore = true);
 
     //生成MMAP的配置文件名称
     void get_mmapfile_name(char *mmapfile, size_t buflen);
@@ -131,6 +108,24 @@ public:
     static Zerg_MMAP_BusPipe *instance();
     //清除实例
     static void clean_instance();
+
+protected:
+
+    //ZERG管道的名称,放在这儿，因为大家都用
+    static const char    ZERG_PIPENAME[NUM_OF_PIPE][16];
+
+protected:
+
+    ///是否做线程检查
+    bool                if_check_pthrad_ = false;
+
+    ///这个服务器的配置信息.
+    SERVICES_ID         zerg_svr_info_ = SERVICES_ID(0,0);
+    ///发送的缓冲区
+    static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
+
+    ///监控对象
+    Comm_Stat_Monitor   *monitor_ = NULL;
 
 };
 

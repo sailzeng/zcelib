@@ -25,7 +25,7 @@ int Server_Config_FSM::load_cfgfile()
         return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
     }
 
-    ret = ZCE_INI_Implement::read(framework_cfg_file_.c_str(), &framework_ptree_);
+    ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(), &framework_ptree_);
     if (ret != 0)
     {
         return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;

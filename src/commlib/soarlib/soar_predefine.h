@@ -114,7 +114,7 @@ Modification History:
 #if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
 
 #if !defined SOAR_LIB_LIBARY_NAME
-#define SOAR_LIB_LIBARY_NAME   "soarlib-"ZCE_PLAT_TOOLSET_CONF".lib"
+#define SOAR_LIB_LIBARY_NAME   "soarlib.lib"
 #endif
 
 //自动包含的包含连接，简化你的操作

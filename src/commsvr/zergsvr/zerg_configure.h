@@ -92,13 +92,6 @@ public:
 
 public:
 
-
-    /// 接收管道长度, 默认50M
-    uint32_t recv_pipe_len_ = 50 * 1024 * 1024;
-    /// 发送管道长度, 默认50M
-    uint32_t send_pipe_len_ = 50 * 1024 * 1024;
-
-
     /// #最大连接的服务器个数 ##前端128000，后端1024
     size_t max_accept_svr_ = 1024;
 
@@ -173,14 +166,6 @@ public:
 
     //
 public:
-
-    /*!
-    * @brief      取配置信息,取得配置信息后, 需要将各启动参数设置OK
-    * @return     virtual int
-    * @param      argc
-    * @param      argv
-    */
-    virtual int initialize(int argc, const char *argv[]);
 
 
     ///读取配置文件，得到文件配置参数

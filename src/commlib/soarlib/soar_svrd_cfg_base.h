@@ -4,11 +4,29 @@
 
 #include "soar_zerg_svc_info.h"
 
+//============================================================================================
 
+/*!
+* @brief      PIPE的配置数据
+*             
+* @note       
+*/
+struct SOAR_PIPE_CFG_DATA
+{
+
+public:
+    ///是否恢复管道
+    bool if_restore_pipe_ = true;
+
+    /// 接收管道长度, 默认50M
+    uint32_t recv_pipe_len_ = 50 * 1024 * 1024;
+    /// 发送管道长度, 默认50M
+    uint32_t send_pipe_len_ = 50 * 1024 * 1024;
+};
 
 //============================================================================================
 /*!
-* @brief
+* @brief      日志的配置数据
 *
 * @note
 */
@@ -38,7 +56,7 @@ public:
 };
 
 
-///用于程序运行到的地方。
+///用于读取配置失败记录发送失败的地点的地方，
 #ifndef SOAR_CFG_READ_FAIL
 #define SOAR_CFG_READ_FAIL(x)        ZCE_LOGMSG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
     __FILE__,__LINE__,__ZCE_FUNC__)
@@ -76,7 +94,7 @@ public:
     */
     virtual int start_arg(int argc, const char *argv[]);
 
-    /// 加载zerg framwork app的配置
+    /// 加载配置文件的配置
     virtual int load_cfgfile();
 
     /// 重新加载配置
@@ -96,8 +114,8 @@ protected:
 
     //由于
 
-    ///从配置中读取self_svc_id_的
-    int get_selfsvcid_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    ///从配置中读取框架基础的配置,包括self_svc_id_等
+    int get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
     ///从配置中读取日志的配置
     int get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree);
@@ -109,15 +127,17 @@ public:
 
 public:
 
-    // 自己的服务器ID
+    /// 自己的服务器ID
     SERVICES_ID self_svc_id_;
 
-    // 服务器实例id
-    unsigned int instance_id_ = 0;
+    /// 服务器实例id
+    unsigned int instance_id_ = 1;
 
-    //是否恢复管道
-    bool if_restore_pipe_ = true;
-
+    ///管道的配置
+    SOAR_PIPE_CFG_DATA pipe_cfg_;
+    
+    ///日志帐单的配置数据
+    SOAR_LOG_CFG_DATA log_config_;
 
     ///是否后台运行, windows下以如果设置了此值，则以服务的方式运行
     bool app_run_daemon_ = false;
@@ -141,17 +161,17 @@ public:
     ///日志路径
     std::string log_file_prefix_;
 
+    ///业务和通信进程公用的的配置文件
+    std::string common_cfg_file_;
     ///ZERG的配置文件
     std::string zerg_cfg_file_;
     ///自己的配置文件
     std::string app_cfg_file_;
-    ///framework的配置文件
-    std::string framework_cfg_file_;
+
     ///svcid的配置文件
     std::string svc_table_file_;
 
-    ///日志帐单的配置数据
-    SOAR_LOG_CFG_DATA log_config_;
+
 
 };
 

@@ -9,9 +9,7 @@ Zerg_MMAP_BusPipe *Zerg_MMAP_BusPipe::zerg_bus_instance_ = NULL;
 char Zerg_MMAP_BusPipe::send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
 
 Zerg_MMAP_BusPipe::Zerg_MMAP_BusPipe():
-    ZCE_BusPipe_TwoWay(),
-    zerg_svr_info_(0, 0),
-    monitor_(NULL)
+    ZCE_BusPipe_TwoWay()
 {
 }
 
@@ -20,22 +18,7 @@ Zerg_MMAP_BusPipe::~Zerg_MMAP_BusPipe()
 
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年7月12日
-Function        : Zerg_MMAP_BusPipe::initialize
-Return          : void
-Parameter List  :
-  Param1: SERVICES_INFO& svrinfo
-  Param2: size_t szrecv
-  Param3: size_t szsend
-  Param4: size_t szerror
-  Param5: bool block
-Description     : 初始化
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//初始化
 int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                   size_t size_recv_pipe,
                                   size_t size_send_pipe,
@@ -55,74 +38,6 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                           size_send_pipe,
                                           max_frame_len,
                                           if_restore);
-}
-
-//int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const conf_zerg::ZERG_CONFIG &zerg_config)
-//{
-//    int ret = 0;
-//    bus_head_.size_of_pipe_[RECV_PIPE_ID] = zerg_config.soar_cfg.recv_pipe_len_;
-//    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
-//
-//    bus_head_.size_of_pipe_[SEND_PIPE_ID] = zerg_config.soar_cfg.send_pipe_len_;
-//    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
-//
-//    //读取自己的配置
-//    unsigned short svrtype = 0;
-//    svrtype = zerg_config.self_cfg.self_svr_info.svr_type;
-//    TESTCONFIG((ret == 0 && svrtype != 0), "SELFCFG|SELFSVRTYPE key error.");
-//
-//    unsigned int svrid = 0;
-//    svrid = zerg_config.self_cfg.self_svr_info.svr_id;
-//    TESTCONFIG((ret == 0 && svrid != 0), "SELFCFG|SELFSVRID key error.");
-//
-//    zerg_svr_info_.set_serviceid(svrtype, svrid);
-//
-//
-//    return 0;
-//}
-
-//int Zerg_MMAP_BusPipe::getpara_from_zergcfg(const ZCE_INI_PropertyTree &zerglingcfg)
-//{
-//
-//    int ret = 0;
-//
-//    uint32_t tmp_value = 0;
-//    ret = zerglingcfg.get_uint32_value("COMMCFG", "RECVPIPELEN", tmp_value);
-//    bus_head_.size_of_pipe_[RECV_PIPE_ID] = tmp_value;
-//    TESTCONFIG(( ret == 0 && bus_head_.size_of_pipe_[RECV_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[RECV_PIPE_ID] < 800 * 1024 * 1024), "COMMCFG|RECVPIPELEN key error.");
-//
-//    ret = zerglingcfg.get_uint32_value("COMMCFG", "SENDPIPELEN", tmp_value);
-//    bus_head_.size_of_pipe_[SEND_PIPE_ID] = tmp_value;
-//    TESTCONFIG(ret == 0 && bus_head_.size_of_pipe_[SEND_PIPE_ID] > 2 * 1024 * 1024 && bus_head_.size_of_pipe_[SEND_PIPE_ID] < 800 * 1024 * 1024, "COMMCFG|SENDPIPELEN key error.");
-//
-//    uint32_t tmpuint = 0;
-//
-//    //读取自己的配置
-//    unsigned short svrtype = 0;
-//
-//    ret = zerglingcfg.get_uint32_value("SELFCFG", "SELFSVRTYPE", tmpuint);
-//    svrtype = static_cast<unsigned short>(tmpuint);
-//    TESTCONFIG((ret == 0 && svrtype != 0), "SELFCFG|SELFSVRTYPE key error.");
-//
-//    unsigned int svrid = 0;
-//    ret = zerglingcfg.get_uint32_value("SELFCFG", "SELFSVRID", tmpuint);
-//    svrid = static_cast<unsigned int>(tmpuint);
-//    TESTCONFIG((ret == 0 && svrid != 0), "SELFCFG|SELFSVRID key error.");
-//
-//    zerg_svr_info_.set_serviceid(svrtype, svrid);
-//
-//    return 0;
-//}
-
-//通讯服务器初始化内存管道
-int Zerg_MMAP_BusPipe::init_after_getcfg(size_t max_frame_len,
-                                         bool if_restore)
-{
-    return initialize(zerg_svr_info_,
-                      bus_head_.size_of_pipe_[RECV_PIPE_ID],
-                      bus_head_.size_of_pipe_[SEND_PIPE_ID],
-                      max_frame_len,
-                      if_restore);
 }
 
 //根据SVR INFO得到MMAP文件名称

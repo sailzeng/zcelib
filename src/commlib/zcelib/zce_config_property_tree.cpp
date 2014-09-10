@@ -65,7 +65,7 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     //如果没有找到
     if (child_node_.end() == iter_tmp)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
+        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] .",
             __ZCE_FUNC__,
             path_str.c_str());
         return -1;

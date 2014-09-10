@@ -37,8 +37,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zergsvr", "commsvr\zergsvr\
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cfgfile", "cfgfile", "{4DEED325-86F5-43A8-8DF0-729785F52BF8}"
 	ProjectSection(SolutionItems) = preProject
-		..\bin\cfg\svctabe.cfg = ..\bin\cfg\svctabe.cfg
-		..\bin\cfg\zergsvrd.cfg = ..\bin\cfg\zergsvrd.cfg
+		..\run\cfg\common.cfg = ..\run\cfg\common.cfg
+		..\run\cfg\svctabe.cfg = ..\run\cfg\svctabe.cfg
+		..\run\cfg\zergsvrd.cfg = ..\run\cfg\zergsvrd.cfg
 	EndProjectSection
 EndProject
 Global

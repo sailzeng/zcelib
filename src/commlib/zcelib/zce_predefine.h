@@ -931,8 +931,9 @@ struct ZU64_STRUCT
 #  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Release"
 #endif
 
+//目前通过工程的目录设置区分文件，没有继续使用文件名称
 #if !defined ZCE_LIB_LIBARY_NAME
-#define ZCE_LIB_LIBARY_NAME   "zcelib-"ZCE_PLAT_TOOLSET_CONF".lib"
+#define ZCE_LIB_LIBARY_NAME   "zcelib.lib"
 #endif
 
 //自动包含的包含连接，简化你的操作

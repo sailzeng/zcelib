@@ -69,27 +69,27 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)../bin/</OutDir>
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
+    <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)../bin/</OutDir>
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
+    <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <OutDir>$(SolutionDir)../bin/</OutDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
+    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)/$(ProjectName)/$(Configuration)/</IntDir>
-    <OutDir>$(SolutionDir)../bin/</OutDir>
-    <TargetName>$(ProjectName)-$(PlatformName)-$(PlatformToolset)-$(Configuration)</TargetName>
+    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
