@@ -336,18 +336,7 @@ TCP_Svc_Handler::~TCP_Svc_Handler()
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : TCP_Svc_Handler::get_tcpctrl_conf
-Return          : int
-Parameter List  :
-Param1: const char* cfgfilename 配置文件名称
-Description     : 从配置文件读取配置信息
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//从配置文件读取配置信息
 int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
@@ -398,17 +387,8 @@ int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : TCP_Svc_Handler::init_all_static_data
-Return          : int
-Parameter List  : NULL
-Description     : 将配置参数初始化
-Calls           :
-Called By       :
-Other           : 一些参数从配置类读取,避免后面的操作还要访问配置类
-Modify Record   :
-******************************************************************************************/
+//将需要初始化的静态参数初始化
+//一些参数从配置类读取,避免后面的操作还要访问配置类
 int TCP_Svc_Handler::init_all_static_data()
 {
     //
@@ -495,17 +475,8 @@ unsigned int TCP_Svc_Handler::get_handle_id()
 #endif
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : TCP_Svc_Handler::handle_input
-Return          : int
-Parameter List  :
-Description     : 读取,断连的事件触发处理函数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//读取,断连的事件触发处理函数
 int TCP_Svc_Handler::handle_input()
 {
     //读取数据
@@ -541,18 +512,8 @@ int TCP_Svc_Handler::handle_input()
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : TCP_Svc_Handler::handle_output
-Return          : int
-Parameter List  :
-Param1: ZCE_HANDLE
-Description     : ACE读取,断连的事件触发处理函数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//读取,断连的事件触发处理函数
 int TCP_Svc_Handler::handle_output()
 {
 
@@ -582,19 +543,7 @@ int TCP_Svc_Handler::handle_output()
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
-Function        : TCP_Svc_Handler::timer_timeout
-Return          : int
-Parameter List  :
-Param1: const ZCE_Time_Value& * time  时间,
-Param2: const void* arg               唯一标示参数
-Description     : 定时触发
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//定时器触发
 int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
@@ -616,7 +565,8 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
                 (0 < start_live_time_ && 0 < receive_timeout_)))
             {
 
-                ZLOG_ERROR("[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] want to close handle. live time %lu. recieve times=%u.",
+                ZLOG_ERROR("[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] "
+                           "want to close handle. live time %lu. recieve times=%u.",
                            peer_svr_id_.services_type_,
                            peer_svr_id_.services_id_,
                            peer_address_.get_host_addr(),
@@ -637,7 +587,8 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
         }
 
         //打印一下各个端口的生存信息
-        ZLOG_DEBUG("[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] live time %lu. recieve times=%u.",
+        ZLOG_DEBUG("[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] live "
+                   "time %lu. recieve times=%u.",
                    peer_svr_id_.services_type_,
                    peer_svr_id_.services_id_,
                    peer_address_.get_host_addr(),
@@ -663,22 +614,12 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
-Function        : TCP_Svc_Handler::handle_close
-Return          : int
-Parameter List  :
-Param1: ZCE_HANDLE prchandle
-Param2: ACE_Reactor_Mask closemask
-Description     : PEER Event Handler关闭的处理
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//PEER Event Handler关闭的处理
 int TCP_Svc_Handler::handle_close()
 {
-    ZLOG_DEBUG("[zergsvr] TCP_Svc_Handler::handle_close : %u|%u.", peer_svr_id_.services_type_, peer_svr_id_.services_id_);
+    ZLOG_DEBUG("[zergsvr] TCP_Svc_Handler::handle_close : %u.%u.", 
+               peer_svr_id_.services_type_, peer_svr_id_.services_id_);
 
     //不要使用cancel_timer(this),其繁琐,而且慢,好要new,而且有一个不知名的死机
 
@@ -792,18 +733,9 @@ int TCP_Svc_Handler::handle_close()
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月23日
-Function        : TCP_Svc_Handler::preprocess_recvframe
-Return          : int
-Parameter List  :
-Param1: Zerg_App_Frame *proc_frame
-Description     :
-Calls           :
-Called By       :
-Other           : 同时完成帧头数据的解码工作
-Modify Record   :
-******************************************************************************************/
+
+//收到一个完整的帧后的预处理工作
+//合并发送队列
 int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
 {
     int ret = 0;
@@ -994,18 +926,8 @@ int TCP_Svc_Handler::process_connect_register()
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : TCP_Svc_Handler::read_data_from_peer
-Return          : int
-Parameter List  :
-Param1: size_t& szrevc 读取的字节数量
-Description     : 从PEER读取数据
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//从PEER读取数据
 int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 {
 
@@ -1132,17 +1054,7 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2008年2月4日
-Function        : TCP_Svc_Handler::write_all_data_to_peer
-Return          : int
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//将数据写入PEER，同时处理周边的事情，包括写事件注册,如果发送队列还有数据，继续发送等
 int TCP_Svc_Handler::write_all_data_to_peer()
 {
     int ret = 0;
@@ -1241,19 +1153,7 @@ int TCP_Svc_Handler::write_all_data_to_peer()
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : TCP_Svc_Handler::write_data_to_peer
-Return          : int
-Parameter List  :
-Param1: size_t& szsend
-Param2: bool& bfull
-Description     : 向PEER写数据
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//将数据写入PEER
 int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
 {
     bfull = false;
@@ -1391,19 +1291,8 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年12月24日
-Function        : TCP_Svc_Handler::AllocSvcHandlerFromPool
-Return          : TCP_Svc_Handler*
-Parameter List  :
-Param1: HANDLER_MODE handler_mode
-Description     : 从池子里面得到一个Handler给大家使用
-Calls           :
-Called By       :
-Other           : Connect的端口应该永远不发生取不到Hanler的事情
-Modify Record   :
-******************************************************************************************/
-TCP_Svc_Handler *TCP_Svc_Handler::AllocSvcHandlerFromPool(HANDLER_MODE handler_mode)
+// 从池子里面得到一个Handler给大家使用
+TCP_Svc_Handler *TCP_Svc_Handler::alloce_hdl_from_pool(HANDLER_MODE handler_mode)
 {
     //
     if (handler_mode == HANDLER_MODE_ACCEPTED)
@@ -1461,18 +1350,7 @@ int TCP_Svc_Handler::uninit_all_staticdata()
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : TCP_Svc_Handler::process_send_data
-Return          : int
-Parameter List  :
-Param1: Zerg_Buffer* tmpbuf   要得到数据的Zerg_Buffer,要求分配好,
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//处理发送一个数据
 int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 {
     server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, 0, 0, 1);
@@ -1562,7 +1440,8 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
                 }
 
                 //
-                ZLOG_ERROR("[zergsvr] Want to use back route to send data,but backup svc[%u|%u] not active main svc[%u|%u].",
+                ZLOG_ERROR("[zergsvr] Want to use back route to send data,but backup svc[%u|%u] "
+                           " not active main svc[%u|%u].",
                            backroute_svcinfo.services_type_,
                            backroute_svcinfo.services_id_,
                            p_sendto_svrinfo->services_type_,
@@ -1577,7 +1456,8 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
     if (svchanle == NULL)
     {
         //这儿还没有编码
-        ZLOG_ERROR("[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could have been existed. frame command[%u]. uin[%u] frame length[%u].",
+        ZLOG_ERROR("[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
+                   "have been existed. frame command[%u]. uin[%u] frame length[%u].",
                    p_sendto_svrinfo->services_type_,
                    p_sendto_svrinfo->services_id_,
                    proc_frame->frame_command_,
@@ -1605,9 +1485,6 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 
     return 0;
 }
-
-
-
 
 
 //发送简单的的ZERG命令,用于某些特殊命令的处理
@@ -1653,18 +1530,9 @@ int TCP_Svc_Handler::send_zergheatbeat_reg()
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : TCP_Svc_Handler::put_frame_to_sendlist
-Return          : int
-Parameter List  :
-Param1: Zerg_Buffer* tmpbuf
-Description     : 将发送数据放入发送队列中
-Calls           :
-Called By       :
-Other           : 如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
-Modify Record   : put_frame_to_sendlist内部进行了错误处理，回收等操作
-******************************************************************************************/
+//将发送数据放入发送队列中
+//如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
+//put_frame_to_sendlist内部进行了错误处理，回收等操作
 int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 {
     int ret = 0;
@@ -1758,17 +1626,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2008年1月23日
-Function        : TCP_Svc_Handler::unite_frame_sendlist
-Return          : void
-Parameter List  : NULL
-Description     : 合并发送队列
-Calls           :
-Called By       :
-Other           : 如果有2个以上的的发送队列，则可以考虑合并处理
-Modify Record   :
-******************************************************************************************/
+//合并发送队列
 void TCP_Svc_Handler::unite_frame_sendlist()
 {
     //如果有2个以上的的发送队列，则可以考虑合并处理
@@ -1811,17 +1669,7 @@ void TCP_Svc_Handler::unite_frame_sendlist()
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : TCP_Svc_Handler::push_frame_to_comm_mgr
-Return          : int
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           : 到这个函数是,Zerg_App_Frame已经经过解码了.请注意.
-Modify Record   :
-******************************************************************************************/
+//将数据帧交给通信管理器，放入管道
 int TCP_Svc_Handler::push_frame_to_comm_mgr()
 {
 
@@ -1929,7 +1777,6 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
         {
 
         }
-
     }
 
     return 0;
@@ -1954,38 +1801,45 @@ const char *TCP_Svc_Handler::get_peer_address()
     return peer_address_.get_host_addr();
 }
 
-void TCP_Svc_Handler::dump_status_staticinfo(std::ostringstream &ostr_stream)
+void TCP_Svc_Handler::dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl)
 {
-    ostr_stream << "Dump TCP_Svc_Handler Static Info:" << std::endl;
-    ostr_stream << "MAX ACCEPT SVR:" << static_cast<unsigned int>(max_accept_svr_) << std::endl;
-    ostr_stream << "MAX_CONNECT SVR:" << static_cast<unsigned int>(max_connect_svr_) << std::endl;
-    ostr_stream << "IF PROXY:" << if_proxy_ << std::endl;
-    ostr_stream << "CONNECT TIMEOUT:" << accepted_timeout_ << std::endl;
-    ostr_stream << "RECEIVE TIMEOUT:" << receive_timeout_ << std::endl;
-    ostr_stream << "NUMBER ACCEPT PEER:" << static_cast<unsigned int>(num_accept_peer_) << std::endl;
-    ostr_stream << "NUMBER CONNECT PEER:" << static_cast<unsigned int>(num_connect_peer_) << std::endl;
-    ostr_stream << "NUM CONNECT PEER:" << static_cast<unsigned int>(num_connect_peer_) << std::endl;
+    ZCE_LOGMSG(out_lvl, "Dump TCP_Svc_Handler Static Info:");
+    ZCE_LOGMSG(out_lvl, "max_accept_svr_=%lu" , max_accept_svr_);
+    ZCE_LOGMSG(out_lvl, "max_connect_svr_=%lu" , max_connect_svr_);
+    ZCE_LOGMSG(out_lvl, "if_proxy_= %s", if_proxy_ ? "True" : "False");
+    ZCE_LOGMSG(out_lvl, "accepted_timeout_=%u:", accepted_timeout_);
+    ZCE_LOGMSG(out_lvl, "receive_timeout_=%u", receive_timeout_);
+    ZCE_LOGMSG(out_lvl, "num_accept_peer_=%u", num_accept_peer_);
+    ZCE_LOGMSG(out_lvl, "num_connect_peer_=%lu", num_connect_peer_);
+    ZCE_LOGMSG(out_lvl, "NUM CONNECT PEER=%lu" , num_connect_peer_);
 }
 
 
 
 //
-void TCP_Svc_Handler::dump_status_info(std::ostringstream &ostr_stream)
+void TCP_Svc_Handler::dump_status_info(ZCE_LOG_PRIORITY out_lvl)
 {
-
-    ostr_stream << "SELF SVC INFO:" << my_svc_id_.services_type_ << "|" << my_svc_id_.services_id_ << " ";
-    ostr_stream << "PEER SVC INFO:" << peer_svr_id_.services_type_ << "|" << peer_svr_id_.services_id_;
-    ostr_stream << "IP:" << peer_address_.get_host_addr() << "|" << peer_address_.get_port_number();
-    ostr_stream << "STATUS:" << peer_status_ << " HANDLE:" << get_handle();
-    ostr_stream << "RECV:" << static_cast<unsigned int>(recieve_bytes_) << "|" << ((rcv_buffer_ != NULL) ? 1 : 0);
-    ostr_stream << "SEND:" << static_cast<unsigned int>(send_bytes_) << "|" << static_cast<unsigned int>(snd_buffer_deque_.size()) << std::endl;
+    const size_t OUT_BUF_LEN = 64;
+    char out_buf[OUT_BUF_LEN];
+    out_buf[OUT_BUF_LEN] = '\0';
+    ZCE_LOGMSG(out_lvl, "my_svc_id_=[%hu.%u]",my_svc_id_.services_type_ ,my_svc_id_.services_id_);
+    ZCE_LOGMSG(out_lvl, "peer_svr_id_=[%hu.%u]",peer_svr_id_.services_type_,peer_svr_id_.services_id_);
+    ZCE_LOGMSG(out_lvl, "peer_address_=%s", peer_address_.to_string(out_buf, OUT_BUF_LEN-1));
+    ZCE_LOGMSG(out_lvl, "peer_status_=%d", peer_status_);
+#if defined (ZCE_OS_WINDOWS)
+    ZCE_LOGMSG(out_lvl, "get_handle=%p", get_handle());
+#elif defined (ZCE_OS_LINUX)
+    ZCE_LOGMSG(out_lvl, "get_handle=%d", get_handle());
+#endif
+    ZCE_LOGMSG(out_lvl, "recieve_bytes_ =%lu,rcv_buffer_ =%d",recieve_bytes_,((rcv_buffer_ != NULL) ? 1 : 0));
+    ZCE_LOGMSG(out_lvl, "send_bytes_=%lu snd_buffer_deque_.size=%lu", send_bytes_, snd_buffer_deque_.size());
 }
 
 //Dump 所有的PEER信息
-void TCP_Svc_Handler::dump_svcpeer_info(std::ostringstream &ostr_stream, size_t startno, size_t numquery)
+void TCP_Svc_Handler::dump_svcpeer_info(ZCE_LOG_PRIORITY out_lvl)
 {
-    ostr_stream << "Services Peer Size" << static_cast<unsigned int>(svr_peer_info_set_.get_services_peersize()) << std::endl;
-    svr_peer_info_set_.dump_svr_peerinfo(ostr_stream, startno, numquery);
+    ZCE_LOGMSG(out_lvl, "Services Peer Size =%lu",svr_peer_info_set_.get_services_peersize());
+    svr_peer_info_set_.dump_svr_peerinfo(out_lvl);
 }
 
 //关闭相应的连接

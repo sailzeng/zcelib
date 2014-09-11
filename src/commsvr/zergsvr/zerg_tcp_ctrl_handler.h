@@ -1,16 +1,9 @@
 #ifndef ZERG_TCP_CONTROL_SERVICE_H_
 #define ZERG_TCP_CONTROL_SERVICE_H_
 
-
-
-
-
 #include "zerg_buf_storage.h"
 #include "zerg_auto_connect.h"
 #include "zerg_active_svchdl_set.h"
-
-
-
 
 class Zerg_Buffer;
 class mmap_dequechunk;
@@ -39,19 +32,21 @@ public:
     //
     enum PEER_STATUS
     {
-        PEER_STATUS_NOACTIVE,        //PEER 没有连接上
-        PEER_STATUS_JUST_ACCEPT,     //PEER 刚刚ACCEPT上,但是没有发送或者受到任何数据
-        PEER_STATUS_JUST_CONNECT,    //PEER 刚刚CONNECT上,但是没有收到任何数据
-        PEER_STATUS_ACTIVE,          //PEER 已经处于激活状态,
+        ///PEER 没有连接上
+        PEER_STATUS_NOACTIVE,        
+        ///PEER 刚刚ACCEPT上,但是没有发送或者受到任何数据
+        PEER_STATUS_JUST_ACCEPT,     
+        ///PEER 刚刚CONNECT上,但是没有收到任何数据
+        PEER_STATUS_JUST_CONNECT,    
+        ///PEER 已经处于激活状态,
+        PEER_STATUS_ACTIVE,          
     };
 
 
 protected:
 
-    //
+    ///句柄的池子，避免每次都new处理
     typedef ZCE_LIB::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
-
-
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
@@ -98,27 +93,41 @@ public:
     //ZCE_Event_Handler必须重载的函数，取得SOCKET句柄
     virtual ZCE_HANDLE get_handle(void) const;
 
-    //读事件触发
+    
+    /*!
+    * @brief      读事件触发 ，异步链接失败触发
+    * @return     int 返回0，继续
+    */
     virtual int handle_input();
 
-    //写事件触发
+    ///写事件触发
+    /*!
+    * @brief      读事件触发 ，异步链接成功触发
+    * @return     int 返回0，继续
+    */
     virtual int handle_output();
-
-    //超时事件触发
-    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
-
-    //关闭事件触发
+    
+    ///关闭事件触发
     virtual int handle_close();
 
+    /*!
+    * @brief      超时事件触发
+    * @return     virtual int
+    * @param      time  时间
+    * @param      arg   唯一标示参数
+    */
+    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
-    //得到Handle对应PEER的端口
+
+
+    ///得到Handle对应PEER的端口
     unsigned short get_peer_port();
 
-    //得到Handle对应PEER的IP地址
+    ///得到Handle对应PEER的IP地址
     const char *get_peer_address();
 
     //得到每个PEER状态信息
-    void dump_status_info(std::ostringstream &ostr_stream);
+    void dump_status_info(ZCE_LOG_PRIORITY out_lvl);
 
     //发送简单的ZERG命令给对方
     int send_simple_zerg_cmd(unsigned int cmd,
@@ -138,15 +147,30 @@ public:
 
 protected:
 
-    //从PEER读取数据
+    /*!
+    * @brief      从PEER读取数据
+    * @return     int
+    * @param      szrevc 读取的字节数量
+    */
     int read_data_from_peer(size_t &szrevc);
 
     //检查收到的数据是否含有一个完整的数据包.
     int check_recv_full_frame(bool &bfull, unsigned int &whole_frame_len);
-
-    //将数据写入PEER
+    
+    /*!
+    * @brief      将数据写入PEER
+    * @return     int 成功 ==0
+    * @param      szsend 发送的字节数量
+    * @param      bfull  是否完整的发送出去了，
+    */
     int write_data_to_peer(size_t &szsend, bool &bfull);
-    //将数据写入PEER，同时处理周边的事情，包括写事件注册等
+
+    
+    /*!
+    * @brief      将数据写入PEER，同时处理周边的事情，包括写事件注册,如果发送队列还有数据，继续发送等
+    * @return     int ==0 表示成功
+    * @note       如果发送队列还有数据，会继续尝试发送
+    */
     int write_all_data_to_peer();
 
 
@@ -157,14 +181,25 @@ protected:
     int  process_connect_register();
 
 
-    //将数据帧放入管道
+    /*!
+    * @brief      将数据帧交给通信管理器，放入管道
+    * @return     int
+    * @note       到这个函数是 Zerg_App_Frame已经经过解码了.请注意.
+    */
     int push_frame_to_comm_mgr();
 
     //将一个发送的帧放入等待发送队列
     int put_frame_to_sendlist(Zerg_Buffer *tmpbuf);
-    //合并发送的数据
+    
+    /*!
+    * @brief      合并发送队列
+    * @note       如果有2个以上的的发送队列，则可以考虑合并处理
+    */
     void unite_frame_sendlist();
 
+
+    //处理发送错误
+    int process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode);
 
 public:
     //初始化静态参数
@@ -192,25 +227,23 @@ public:
                                     size_t szfail,
                                     size_t szvalid);
 
-    //从池子里面得到一个Handler给大家使用
-    static TCP_Svc_Handler *AllocSvcHandlerFromPool(HANDLER_MODE handler_mode);
 
-    //Dump所有的STATIC变量的信息
-    static void dump_status_staticinfo(std::ostringstream &ostr_stream);
+    /*!
+    * @brief      从池子里面得到一个Handler给大家使用
+    * @return     TCP_Svc_Handler* 返回的分配的句柄
+    * @param      handler_mode     所需的句柄的模式，是accept 还是connect的 
+    & @note       Connect的端口应该永远不发生取不到Hanler的事情
+    */
+    static TCP_Svc_Handler *alloce_hdl_from_pool(HANDLER_MODE handler_mode);
 
-    //Dump 所有的PEER信息
-    static void dump_svcpeer_info(std::ostringstream &ostr_stream, size_t startno, size_t numquery);
+    ///Dump所有的STATIC变量的信息
+    static void dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl);
 
+    ///Dump 所有的PEER信息
+    static void dump_svcpeer_info(ZCE_LOG_PRIORITY out_lvl);
 
-protected:
-
-    //处理发送错误
-    int process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode);
-
-public:
     //处理发送一个数据
     static int process_send_data(Zerg_Buffer *tmpbuf);
-
 
 protected:
 
@@ -275,7 +308,7 @@ protected:
     static Zerg_Auto_Connector zerg_auto_connect_;
 
     //SVRINFO对应的PEER的HASHMAP
-    static Active_SvcHandle_Set    svr_peer_info_set_;
+    static Active_SvcHandle_Set svr_peer_info_set_;
 
 
     //已经Accept的PEER数量

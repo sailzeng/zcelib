@@ -21,7 +21,7 @@ class Zerg_Service_App : public Comm_Svrd_Appliction
 public:
     //我又要偷偷藏着
     Zerg_Service_App();
-    ~Zerg_Service_App();
+    virtual ~Zerg_Service_App();
 
 public:
 
@@ -36,33 +36,17 @@ public:
     ///加载配置
     virtual int load_config();
 
-
+    ///是否是代理服务器
     bool if_proxy();
 
-private:
-
-
-    
 
 public:
 
-    //单子实例函数
-    static Zerg_Service_App *instance();
-    //清理单子实例
-    static void clean_instance();
-
-public:
-
-
+    ///通信管理器
     Zerg_Comm_Manager       *zerg_comm_mgr_;
 
-    //OP KEY文件的时间戳
+    ///OP KEY文件的时间戳
     time_t                   conf_timestamp_;
-
-protected:
-    //单子的static实例
-    static Zerg_Service_App *instance_;
-
 
 };
 

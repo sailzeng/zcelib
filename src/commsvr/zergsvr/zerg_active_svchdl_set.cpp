@@ -140,7 +140,7 @@ size_t Active_SvcHandle_Set::get_services_peersize()
 
 
 //
-void Active_SvcHandle_Set::dump_svr_peerinfo(std::ostringstream &ostr_stream, size_t startno, size_t numquery)
+void Active_SvcHandle_Set::dump_svr_peerinfo(ZCE_LOG_PRIORITY out_lvl)
 {
     //
 
@@ -150,21 +150,9 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(std::ostringstream &ostr_stream, si
     //这是一个非常非常耗时的操作.
     for (size_t i = 0; iter_tmp != iter_end; ++iter_tmp, ++i)
     {
-        //查询起始
-        if (i < startno)
-        {
-            continue;
-        }
-
-        //对于查询的个数计数
-        if (numquery > 0 && i > numquery + startno)
-        {
-            break;
-        }
-
         SERVICES_ID svr_info = (*(iter_tmp)).first;
         TCP_Svc_Handler *svrhandle = (*(iter_tmp)).second;
-        svrhandle->dump_status_info(ostr_stream);
+        svrhandle->dump_status_info(out_lvl);
     }
 
     return;

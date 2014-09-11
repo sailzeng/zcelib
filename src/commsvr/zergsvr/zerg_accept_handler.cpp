@@ -132,7 +132,7 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
         return 0;
     }
 
-    TCP_Svc_Handler *phandler = TCP_Svc_Handler::AllocSvcHandlerFromPool(TCP_Svc_Handler::HANDLER_MODE_ACCEPTED);
+    TCP_Svc_Handler *phandler = TCP_Svc_Handler::alloce_hdl_from_pool(TCP_Svc_Handler::HANDLER_MODE_ACCEPTED);
 
     if (phandler != NULL)
     {

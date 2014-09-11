@@ -148,7 +148,6 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
 
     log_file_prefix_ = app_run_dir_ + "/log/";
     log_file_prefix_ += Comm_Svrd_Appliction::instance()->get_app_basename();
-    log_file_prefix_ += "_init";
 
     // 未指定app的配置文件，则使用默认的
     app_cfg_file_ = app_run_dir_ + "/cfg/";

@@ -73,9 +73,8 @@ int soar_svrd_main(int argc, const char *argv[])
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
 
-    //清理APP 和配置的instance
+    //
     application_class::clean_instance();
-
     //关闭日志
     ZCE_Trace_LogMsg::clean_instance();
 

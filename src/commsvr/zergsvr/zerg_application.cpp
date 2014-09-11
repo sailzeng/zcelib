@@ -14,7 +14,6 @@ class  Zerg_Service_App
 ****************************************************************************************************/
 
 //单子的static实例
-Zerg_Service_App *Zerg_Service_App::instance_ = NULL;
 
 //我又要偷偷藏着
 Zerg_Service_App::Zerg_Service_App():
@@ -304,25 +303,3 @@ bool Zerg_Service_App::if_proxy()
     return false;
 }
 
-//得到唯一的单子实例
-Zerg_Service_App *Zerg_Service_App::instance()
-{
-    if (instance_ == NULL)
-    {
-        instance_ = new Zerg_Service_App();
-    }
-
-    return instance_;
-}
-
-//清除单子实例
-void Zerg_Service_App::clean_instance()
-{
-    if (instance_)
-    {
-        delete instance_;
-    }
-
-    instance_ = NULL;
-    return;
-}

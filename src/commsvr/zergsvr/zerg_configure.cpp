@@ -85,6 +85,8 @@ int SERVICES_INFO_TABLE::add_svcinfo(const SERVICES_INFO &svc_info)
 
     if (insert_result.second == false)
     {
+        ZCE_LOGMSG(RS_ERROR,"add svcinfo fail. may be have repeat svc info[%hu.%u].",
+                   svc_info.svc_id_.services_type_, svc_info.svc_id_.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
 
@@ -379,7 +381,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
     }
 
     SERVICES_INFO svc_info;
-    for (size_t i = 0; i < zerg_cfg_data_.auto_connect_num_; ++i)
+    for (size_t i = 0; i < svc_table_num; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("SERVICES_TABLE", "SERVICES_INFO_", i + 1, temp_value);
         if (0 != ret)
@@ -394,9 +396,15 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
             SOAR_CFG_READ_FAIL(RS_ERROR);
             return ret;
         }
-        services_info_table_.add_svcinfo(svc_info);
+        ret = services_info_table_.add_svcinfo(svc_info);
+        if (0 != ret)
+        {
+            SOAR_CFG_READ_FAIL(RS_ERROR);
+            return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+        }
 
     }
+    
     return 0;
 }
 

@@ -42,11 +42,17 @@ Comm_Svrd_Appliction::Comm_Svrd_Appliction() :
 
 Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
 {
-    delete timer_base_;
-    timer_base_ = NULL;
+    if (timer_base_)
+    {
+        delete timer_base_;
+        timer_base_ = NULL;
+    }
 
-    delete config_base_;
-    config_base_ = NULL;
+    if (config_base_)
+    {
+        delete config_base_;
+        config_base_ = NULL;
+    }
 }
 
 //初始化，放入一些基类的指针，
@@ -103,22 +109,24 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     if (ret != 0)
     {
         printf("[framework] change run directory to %s fail. error=%d",
-            config_base_->app_run_dir_.c_str(), errno);
+               config_base_->app_run_dir_.c_str(), errno);
         return ret;
     }
 
 
     //先打开日志，记录一段数据，直到日志的启动参数获得
     // 初始化日志用滚动的方式可以保留的天数多点
+    std::string init_log_name(config_base_->log_file_prefix_.c_str());
+    init_log_name += "_init";
     ZCE_Trace_LogMsg::instance()->init_size_log(
-        config_base_->log_file_prefix_.c_str(),
+        init_log_name.c_str(),
         false,
         true,
         10 * 1024 * 1024,
         3);
 
-    ZCE_LOGMSG(RS_INFO,"[framework] change run directory to %s .",
-        config_base_->app_run_dir_.c_str());
+    ZCE_LOGMSG(RS_INFO, "[framework] change run directory to %s .",
+               config_base_->app_run_dir_.c_str());
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -195,7 +203,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
         return ret;
     }
 
-    
+
     // 初始化日志
     ret = init_log();
     if (ret != 0)
@@ -250,10 +258,10 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     //初始化内存管道
     ret = Zerg_MMAP_BusPipe::instance()->
           initialize(self_svc_id_,
-          config_base_->pipe_cfg_.recv_pipe_len_,
-          config_base_->pipe_cfg_.send_pipe_len_,
-          Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
-          config_base_->pipe_cfg_.if_restore_pipe_);
+                     config_base_->pipe_cfg_.recv_pipe_len_,
+                     config_base_->pipe_cfg_.send_pipe_len_,
+                     Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+                     config_base_->pipe_cfg_.if_restore_pipe_);
 
     if (0 != ret)
     {
@@ -307,31 +315,25 @@ ZCE_LOG_PRIORITY Comm_Svrd_Appliction::get_log_priority()
 int Comm_Svrd_Appliction::init_log()
 {
     int ret = 0;
-    if (ret != 0)
-    {
-        ZLOG_ERROR("[framework] init bill fail. ret=%d", ret);
-        return ret;
-    }
-
-    if (ret != 0)
-    {
-        ZLOG_ERROR("[framework] init stat fail. ret=%d", ret);
-        return ret;
-    }
 
     ZLOG_DEBUG("log instance finalize .");
     //关闭原来的日志输出方法
     ZCE_Trace_LogMsg::instance()->finalize();
 
     // 初始化日志
-    ZCE_Trace_LogMsg::instance()->initialize((ZCE_LOGFILE_DEVIDE)config_base_->log_config_.log_div_type_,
-                                             config_base_->log_file_prefix_.c_str(),
-                                             false,
-                                             true,
-                                             config_base_->log_config_.max_log_file_size_,
-                                             config_base_->log_config_.reserve_file_num_,
-                                             config_base_->log_config_.log_output_,
-                                             LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
+    ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_div_type_,
+                                                   config_base_->log_file_prefix_.c_str(),
+                                                   false,
+                                                   true,
+                                                   config_base_->log_config_.max_log_file_size_,
+                                                   config_base_->log_config_.reserve_file_num_,
+                                                   config_base_->log_config_.log_output_,
+                                                   LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
+    if (0 != ret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "ZCE_Trace_LogMsg::instance()->initialize ret fail.");
+        return ret;
+    }
 
     ZLOG_DEBUG("log instance reinit .");
 
@@ -363,3 +365,15 @@ Comm_Svrd_Appliction *Comm_Svrd_Appliction::instance()
 {
     return instance_;
 }
+
+//清理实例指针
+void Comm_Svrd_Appliction::clean_instance()
+{
+    if (instance_)
+    {
+        delete instance_;
+        instance_ = NULL;
+    }
+
+}
+

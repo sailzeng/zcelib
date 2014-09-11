@@ -16,8 +16,9 @@ class Comm_Svrd_Appliction : public ZCE_Server_Base
 {
 protected:
 
-    //构造函数和析构函数
+    ///构造函数和析构函数
     Comm_Svrd_Appliction();
+    ///析构函数
     virtual ~Comm_Svrd_Appliction();
 
 public:
@@ -48,7 +49,7 @@ public:
     */
     Server_Config_Base  *config_instance();
 
-protected:
+public:
 
     // app的开始运行
     virtual int on_start(int argc, const char *argv[]);
@@ -58,6 +59,8 @@ protected:
 
     // app的退出
     virtual int on_exit();
+
+protected:
 
     /// 加载配置,不在读取配置的时候加载配置，
     virtual int load_config();
@@ -75,6 +78,9 @@ public:
 
     ///得到实例指针
     static Comm_Svrd_Appliction *instance();
+
+    ///清理实例实例指针
+    static void clean_instance();
 
 protected:
 
