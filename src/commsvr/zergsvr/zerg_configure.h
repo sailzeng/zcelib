@@ -169,15 +169,7 @@ public:
 
 
     ///读取配置文件，得到文件配置参数
-    virtual int load_cfgfile();
-
-
-    ///从配置中读取ZERG的配置
-    int get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree);
-
-
-    ///得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
-    int get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+    virtual int read_cfgfile();
 
 
     /*!
@@ -187,8 +179,18 @@ public:
     virtual void dump_cfg_info(ZCE_LOG_PRIORITY out_lvl);
 
 
+
+
     //根据SVCID得到SVC INFO地址信息
     int get_svcinfo_by_svcid(const SERVICES_ID &svc_id, SERVICES_INFO  &svc_info) const;
+
+
+    ///从配置中读取ZERG的配置
+    int get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree);
+
+
+    ///得到某个配置文件的配置信息,配置文件其中有[SERVICES_TABLE]字段
+    int get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
 public:

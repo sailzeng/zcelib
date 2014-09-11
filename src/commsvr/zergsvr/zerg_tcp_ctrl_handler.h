@@ -292,7 +292,7 @@ protected:
 
 
     //发送缓冲区的最大frame数
-    static size_t              snd_buf_size_;
+    static size_t              accept_send_deque_size_;
 
     //主动连接的发送队列长度
     static size_t              connect_send_deque_size_;

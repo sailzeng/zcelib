@@ -62,7 +62,7 @@ TCP_Svc_Handler::POOL_OF_TCP_HANDLER TCP_Svc_Handler::pool_of_acpthdl_;
 TCP_Svc_Handler::POOL_OF_TCP_HANDLER TCP_Svc_Handler::pool_of_cnthdl_;
 
 //发送缓冲区的最大frame数，从配置读取
-size_t         TCP_Svc_Handler::snd_buf_size_ = 0;
+size_t         TCP_Svc_Handler::accept_send_deque_size_ = 0;
 
 //主动连接的发送队列长度
 size_t  TCP_Svc_Handler::connect_send_deque_size_ = 0;
@@ -95,7 +95,7 @@ TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
     }
     else if (HANDLER_MODE_ACCEPTED == hdl_mode)
     {
-        snd_buffer_deque_.initialize(snd_buf_size_);
+        snd_buffer_deque_.initialize(accept_send_deque_size_);
     }
     else
     {
@@ -377,12 +377,12 @@ int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 
 
     //发送缓冲区的最大frame数
-    snd_buf_size_ = config->zerg_cfg_data_.acpt_send_deque_size_;
-    TESTCONFIG((ret == 0), "COMMCFG|ACCEPTSNDBUFSIZE key error.");
+    accept_send_deque_size_ = config->zerg_cfg_data_.acpt_send_deque_size_;
 
     //主动连接的发送队列长度
     connect_send_deque_size_ = config->zerg_cfg_data_.cnnt_send_deque_size_;
-    ZLOG_INFO("[zergsvr] conncet send deque size :%d", connect_send_deque_size_);
+    ZLOG_INFO("[zergsvr] conncet send deque size :%u ,accept send deque size :%u",
+              connect_send_deque_size_, accept_send_deque_size_);
 
     //得到连接的SERVER的配置
     ret = zerg_auto_connect_.get_config(config);
@@ -448,9 +448,9 @@ int TCP_Svc_Handler::init_all_static_data()
     ZLOG_INFO("[zergsvr] Accept Hanlder:size of TCP_Svc_Handler [%u],one accept handler have deqeue length [%u],number of accept handler [%u]."
               "About need  memory [%u] bytes.",
               sizeof(TCP_Svc_Handler),
-              snd_buf_size_,
+              accept_send_deque_size_,
               max_accept_svr_,
-              (max_accept_svr_ * (sizeof(TCP_Svc_Handler) + snd_buf_size_ * sizeof(size_t)))
+              (max_accept_svr_ * (sizeof(TCP_Svc_Handler) + accept_send_deque_size_ * sizeof(size_t)))
              );
     pool_of_acpthdl_.initialize(max_accept_svr_);
 

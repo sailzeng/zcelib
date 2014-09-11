@@ -79,27 +79,15 @@ public:
 public:
 
     /*!
-    * @brief      取配置信息,取得配置信息后, 需要将各启动参数设置OK
-    * @return     virtual int
-    * @param      argc
-    * @param      argv
-    */
-    virtual int initialize(int argc, const char *argv[]);
-
-    /*!
     * @brief      处理命令行参数
     * @return     virtual int
     * @param      argc
     * @param      argv
     */
-    virtual int start_arg(int argc, const char *argv[]);
+    virtual int read_start_arg(int argc, const char *argv[]);
 
     /// 加载配置文件的配置
-    virtual int load_cfgfile();
-
-    /// 重新加载配置
-    virtual int reload_cfgfile();
-
+    virtual int read_cfgfile();
 
     /*!
     * @brief      读取，在日志里面输出一些配置信息，以便跟踪回溯
@@ -153,7 +141,10 @@ public:
     ///配置服务器信息
     ZCE_Sockaddr_In master_cfgsvr_ip_;
 
-    size_t timer_nuamber_ = 1024;
+    ///最大的定时器个数
+    size_t max_timer_nuamber_ = 1024;
+    ///最大的反应器的句柄数量
+    size_t max_reactor_hdl_num_ = 1024;
 
     ///进行运行目录
     std::string app_run_dir_;

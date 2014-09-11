@@ -57,21 +57,6 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
 
-    //更新定时器
-    //size_t old_node_num;
-    //ZCE_Timer_Queue::instance()->extend_node(max_peer, old_node_num);
-
-    //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
-    //居然在同一条河里淹死了好几次。最新的一次是20070929，
-#ifdef ZCE_OS_WINDOWS
-    //
-    ZCE_Reactor::instance(new ZCE_Select_Reactor(max_peer));
-    ZLOG_DEBUG("[zergsvr] ZCE_Reactor and zce_Select_Reactor initialized.");
-#else
-    ZCE_Reactor::instance(new ZCE_Epoll_Reactor(max_peer));
-    ZLOG_INFO("[zergsvr] ZCE_Reactor and zce_Epoll_Reactor initialized.");
-#endif
-
 
     //设置发送接收缓冲的数量
     ZBuffer_Storage::instance()->init_buflist_by_hdlnum(max_peer);
@@ -81,15 +66,6 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     //通信管理器初始化
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
-
-    //加载动态配置部分
-    ret = reload_daynamic_config();
-
-    if ( ret != 0 )
-    {
-        ZLOG_INFO("[zergsvr] ReloadDynamicConfig fail,ret = %d.", ret);
-        return ret;
-    }
 
     //
     ZLOG_INFO("[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
@@ -121,80 +97,6 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
 
     return 0;
 }
-
-////
-//int Zerg_Service_App::reload()
-//{
-//    int ret = reload_daynamic_config();
-//
-//    if ( ret != 0 )
-//    {
-//        ZLOG_INFO("[zergsvr] reload config fail,ret = %d.", ret);
-//        return ret;
-//    }
-//
-//    TCP_Svc_Handler::adjust_svc_handler_pool();
-//
-//    return 0;
-//}
-
-//重新加载配置文件
-int Zerg_Service_App::reload_daynamic_config()
-{
-    int ret = 0;
-
-    //部分配置可以动态重复加载
-    //看IP限制部分部分
-    Zerg_Server_Config *zerg_config = dynamic_cast<Zerg_Server_Config *>(config_base_);
-    // 配置重新加载
-    ret = zerg_config->load_cfgfile();
-    if (ret != 0)
-    {
-        ZLOG_ERROR("zerg reload config fail. ret=%d", ret);
-        return ret;
-    }
-
-
-    ret = Zerg_IPRestrict_Mgr::instance()->get_config(zerg_config);
-
-    if ( 0 != ret )
-    {
-        return ret;
-    }
-
-    //通信管理器读取配置文件
-    ret = zerg_comm_mgr_->get_config(zerg_config);
-
-    if (0 != ret )
-    {
-        return ret;
-    }
-
-    //控制台初始化
-    //ret = Zerg_Console_Handler::instance()->initialize(*config_);
-    //ZLOG_INFO("[zergsvr] Console initialize ret =%d .", ret);
-
-    if (ret != 0 )
-    {
-        //控制台不启动，不终止程序运行,
-        if ( SOAR_RET::ERROR_CONSOLE_IS_CLOSED  == ret)
-        {
-            ZLOG_INFO("[zergsvr] Console close .ret = %u", ret);
-        }
-        else
-        {
-            ZLOG_ERROR("[zergsvr] Console initialize fail.ret = %u", ret);
-        }
-    }
-
-    //动态修改日志的级别
-    set_log_priority(zerg_config->log_config_.log_level_);
-
-
-
-    return 0;
-}
-
 
 int Zerg_Service_App::on_exit()
 {
@@ -327,6 +229,70 @@ int Zerg_Service_App::on_run()
 
     return 0;
 }
+
+
+// 加载配置,不在读取配置的时候加载配置，
+int Zerg_Service_App::load_config()
+{
+    int ret = 0;
+    Zerg_Server_Config *config = reinterpret_cast<Zerg_Server_Config *>(config_base_);
+    ret = Zerg_IPRestrict_Mgr::instance()->get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //通信管理器读取配置文件
+    ret = Zerg_Comm_Manager::instance()->get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    ret = TCP_Svc_Handler::get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    ret = UDP_Svc_Handler::get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+
+    return 0;
+}
+
+////
+//int Zerg_Service_App::reload()
+//{
+//    int ret = reload_daynamic_config();
+//
+//    if ( ret != 0 )
+//    {
+//        ZLOG_INFO("[zergsvr] reload config fail,ret = %d.", ret);
+//        return ret;
+//    }
+//
+//    TCP_Svc_Handler::adjust_svc_handler_pool();
+//
+//    return 0;
+//}
+
+//重新加载配置文件
+//int Zerg_Service_App::reload_daynamic_config()
+//{
+//
+//
+//    //动态修改日志的级别
+//    set_log_priority(zerg_config->log_config_.log_level_);
+//
+//
+//
+//    return 0;
+//}
 
 bool Zerg_Service_App::if_proxy()
 {

@@ -29,6 +29,7 @@ obj
 *.obj
 *.ncb
 
+log
 *.log
 
 *.tlog
@@ -39,3 +40,4 @@ obj
 *~
 
 *.pid
+*.MMAP

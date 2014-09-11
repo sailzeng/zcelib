@@ -14,7 +14,8 @@
 class TCP_Accept_Handler;
 class UDP_Svc_Handler;
 class Zerg_MMAP_BusPipe;
-class ZBuffer_Storage;
+
+#include "zerg_buf_storage.h"
 
 /****************************************************************************************************
 class  Zerg_Comm_Manager
@@ -82,6 +83,7 @@ public:
     //检查发包频率
     void check_freamcount(unsigned int now);
 
+    //
     int send_single_buf(Zerg_Buffer *tmpbuf);
 
 public:

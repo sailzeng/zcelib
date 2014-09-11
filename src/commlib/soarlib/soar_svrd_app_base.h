@@ -31,9 +31,6 @@ public:
     ///得到APP的版本信息
     const char *get_app_version();
 
-    ///重新加载配置
-    int reload_config();
-
 
     /*!
     * @brief      初始化，放入一些基类的指针，
@@ -62,14 +59,11 @@ protected:
     // app的退出
     virtual int on_exit();
 
+    /// 加载配置,不在读取配置的时候加载配置，
+    virtual int load_config();
+
     // 重新加载配置
     virtual int reload();
-
-
-private:
-
-    //设置定时器, 定时检查更新
-    int register_soar_timer();
 
     // 初始化日志帐单
     int init_log();

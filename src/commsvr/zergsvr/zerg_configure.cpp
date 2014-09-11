@@ -1,5 +1,7 @@
 #include "zerg_predefine.h"
 #include "zerg_configure.h"
+#include "zerg_ip_restrict.h"
+#include "zerg_comm_manager.h"
 #include "zerg_udp_ctrl_handler.h"
 #include "zerg_tcp_ctrl_handler.h"
 
@@ -130,12 +132,12 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
 }
 
 
-int Zerg_Server_Config::load_cfgfile()
+int Zerg_Server_Config::read_cfgfile()
 {
     //
     int ret = 0;
 
-    ret = Server_Config_Base::load_cfgfile();
+    ret = Server_Config_Base::read_cfgfile();
     if (ret != 0)
     {
         return ret;
@@ -324,6 +326,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         ret = conf_tree->pathseq_get_leaf("SLAVE_SVCID", "SLAVE_SERVICES_ID_", i, temp_value);
         if (0 != ret)
         {
+            SOAR_CFG_READ_FAIL(RS_ERROR);
             return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
         }
         ret = zerg_cfg_data_.bind_svcid_ary_[i].from_str(temp_value.c_str(), true);
@@ -346,6 +349,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         ret = conf_tree->pathseq_get_leaf("AUTO_CONNECT", "CNT_SERVICES_ID_", i + 1, temp_value);
         if (0 != ret)
         {
+            SOAR_CFG_READ_FAIL(RS_ERROR);
             return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
         }
         ret = zerg_cfg_data_.auto_connect_svrs_[i].from_str(temp_value.c_str(), true);
@@ -370,8 +374,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
                                    svc_table_num);
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
-
+        SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
@@ -381,14 +384,14 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
         ret = conf_tree->pathseq_get_leaf("SERVICES_TABLE", "SERVICES_INFO_", i + 1, temp_value);
         if (0 != ret)
         {
-            ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
+            SOAR_CFG_READ_FAIL(RS_ERROR);
             return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
         }
 
         ret = svc_info.from_str(temp_value.c_str(), true);
         if (0 != ret)
         {
-            ZCE_LOGMSG(RS_ERROR, "Read config file fun[%s]line[%u] fail.", __ZCE_FUNC__, __LINE__);
+            SOAR_CFG_READ_FAIL(RS_ERROR);
             return ret;
         }
         services_info_table_.add_svcinfo(svc_info);

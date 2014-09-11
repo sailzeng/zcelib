@@ -35,29 +35,8 @@ Server_Config_Base::~Server_Config_Base()
 {
 }
 
-// 取配置信息,取得配置信息后, 需要将各启动参数设置OK
-int Server_Config_Base::initialize(int argc, const char *argv[])
-{
-    // 处理命令行参数
-    int ret = 0;
-    ret = start_arg(argc, argv);
 
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    // 加载配置
-    ret = load_cfgfile();
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    return ret;
-}
-
-int Server_Config_Base::start_arg(int argc, const char *argv[])
+int Server_Config_Base::read_start_arg(int argc, const char *argv[])
 {
 
     // 指明RETURN_IN_ORDER 不调整顺序
@@ -209,7 +188,7 @@ int Server_Config_Base::usage(const char *program_name)
 }
 
 //读取配置文件，主要是框架的配置，包括日志，定时器等
-int Server_Config_Base::load_cfgfile()
+int Server_Config_Base::read_cfgfile()
 {
     int ret = 0;
 
@@ -230,14 +209,6 @@ int Server_Config_Base::load_cfgfile()
 
     return 0;
 }
-
-
-int Server_Config_Base::reload_cfgfile()
-{
-    return load_cfgfile();
-}
-
-
 
 void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {

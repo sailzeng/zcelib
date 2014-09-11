@@ -33,12 +33,16 @@ public:
     ///运行,运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。
     virtual int on_run();
 
+    ///加载配置
+    virtual int load_config();
+
+
     bool if_proxy();
 
 private:
 
 
-    int reload_daynamic_config();
+    
 
 public:
 

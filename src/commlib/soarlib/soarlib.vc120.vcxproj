@@ -66,22 +66,22 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
-    <IntDir>$(SolutionDir)../obj/$(ProjectName)/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

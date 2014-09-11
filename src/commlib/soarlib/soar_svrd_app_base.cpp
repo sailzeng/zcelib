@@ -91,7 +91,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     process_signal();
 
     // 处理启动参数
-    ret = config_base_->start_arg(argc, argv);
+    ret = config_base_->read_start_arg(argc, argv);
     if (ret != 0)
     {
         printf("svr config start_arg init fail. ret=%d", ret);
@@ -188,7 +188,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
 
     // 加载框架配置,由于是虚函数，也会调用到非框架的配置读取
-    ret = config_base_->load_cfgfile();
+    ret = config_base_->read_cfgfile();
     if (ret != 0)
     {
         ZLOG_ERROR("[framework] framwork config load_cfgfile fail. ret=%d", ret);
@@ -214,9 +214,18 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
                (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
 
+    //加载配置
+    ret = load_config();
+    if (0 != ret)
+    {
+        ZLOG_INFO("[framework] config_base_->load_config fail,ret = %d.", ret);
+        return ret;
+    }
+
+
     //使用WHEEL型的定时器队列
     ZCE_Timer_Queue::instance(new ZCE_Timer_Wheel(
-                                  config_base_->timer_nuamber_));
+                                  config_base_->max_timer_nuamber_));
 
     //注册定时器
     timer_base_->initialize(ZCE_Timer_Queue::instance());
@@ -226,12 +235,15 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
                                                    COMM_STAT_ITEM_WITH_NAME);
 
-    //业务服务器不可能需要很多的IO处理，默认一个值
+    //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
+    //居然在同一条河里淹死了好几次。最新的一次是20070929，
+    //根据所需的IO句柄数量初始化
+    size_t max_reactor_hdl = config_base_->max_reactor_hdl_num_ + 16;
 #ifdef ZCE_OS_WINDOWS
-    ZCE_Reactor::instance(new ZCE_Select_Reactor(1024));
+    ZCE_Reactor::instance(new ZCE_Select_Reactor(max_reactor_hdl));
     ZLOG_DEBUG("[framework] ZCE_Reactor and ZCE_Select_Reactor u.");
 #else
-    ZCE_Reactor::instance(new ZCE_Epoll_Reactor(1024));
+    ZCE_Reactor::instance(new ZCE_Epoll_Reactor(max_reactor_hdl));
     ZLOG_DEBUG("[framework] ZCE_Reactor and ZCE_Epoll_Reactor initialized.");
 #endif
 
@@ -243,7 +255,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
           Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
           config_base_->pipe_cfg_.if_restore_pipe_);
 
-    if (ret != 0)
+    if (0 != ret)
     {
         ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
         return ret;
@@ -291,39 +303,7 @@ ZCE_LOG_PRIORITY Comm_Svrd_Appliction::get_log_priority()
     return ZCE_Trace_LogMsg::instance()->get_log_priority();
 }
 
-
-
-//注册定时器, 定时检查配置是否更新
-int Comm_Svrd_Appliction::register_soar_timer()
-{
-    // 注册框架定时器
-
-
-    //下次触发时间，以及间隔触发时间精度
-
-
-    return 0;
-}
-
-//重新加载配置
-int Comm_Svrd_Appliction::reload_config()
-{
-    // 重置重新加载的标志
-    app_reload_ = false;
-
-    // 先框架reload
-    int ret = reload();
-
-    if (ret != 0)
-    {
-        ZLOG_ERROR("framework reload config error:ret=%d", ret);
-        return ret;
-    }
-
-    return 0;
-}
-
-
+//日志初始化
 int Comm_Svrd_Appliction::init_log()
 {
     int ret = 0;
@@ -359,18 +339,17 @@ int Comm_Svrd_Appliction::init_log()
 }
 
 
-//重新加载配置
-int Comm_Svrd_Appliction::reload()
+//加载配置,不在读取配置的时候加载配置，
+int Comm_Svrd_Appliction::load_config()
 {
-    int ret = config_base_->reload_cfgfile();
-    if (ret != 0)
-    {
-        ZLOG_ERROR("load frame config fail. ret=%d", ret);
-        return ret;
-    }
     return 0;
 }
 
+//重新加载配置
+int Comm_Svrd_Appliction::reload()
+{
+    return 0;
+}
 
 
 //注册实例指针

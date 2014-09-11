@@ -511,8 +511,9 @@ typedef __int64             int64_t;
 #endif
 
 //__FUNCTION__定义的替换，尽最大可能帮你输出更加详细的函数名称信息
+//Windows 下你可以用__FUNCSIG__，其优点是会有参数信息，但缺点也是有参数信息，一些带有模板的信息很长很长，反而影响你的感觉
 #if defined ZCE_OS_WINDOWS
-#define __ZCE_FUNC__   __FUNCSIG__
+#define __ZCE_FUNC__   __FUNCTION__ 
 #elif defined ZCE_OS_LINUX
 #define __ZCE_FUNC__   __PRETTY_FUNCTION__
 #else
