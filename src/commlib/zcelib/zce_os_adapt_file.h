@@ -67,6 +67,7 @@ ssize_t read(ZCE_HANDLE file_handle, void *buf, size_t count);
 * @param      file_handle 文件句柄
 * @param      buf 读取的buffer参数
 * @param      count buffer的长度，WINDOWS下，长度无法突破32位的，当然有人需要写入4G数据吗？
+* @note       注意Windows下默认调用的WriteFile还是有缓冲的，我为了和POSIX统一，还是用了FlushFileBuffers
 */
 ssize_t write(ZCE_HANDLE file_handle, const void *buf, size_t count);
 

@@ -122,3 +122,46 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
     return 0;
 }
 
+int test_file(int /*argc*/, char * /*argv*/[])
+{
+    int ret = 0;
+    ZCE_HANDLE open_file;
+    open_file = ZCE_LIB::open("C:\\1.txt", O_CREAT | O_TRUNC | O_RDWR);
+    if (open_file == ZCE_INVALID_HANDLE)
+    {
+        return -1;
+    }
+
+    const char *write_str = "11111111111111111112222222222222222233333333333333333\n";
+    size_t write_len = strlen(write_str);
+    ZCE_LIB::ftruncate(open_file, write_len);
+    ZCE_LIB::lseek(open_file, SEEK_SET, 0);
+    ret = ZCE_LIB::flock(open_file, LOCK_EX | LOCK_NB);
+    if (0 != ret)
+    {
+        return -1;
+    }
+
+    ssize_t ok_len = ZCE_LIB::write(open_file, write_str, write_len);
+
+    if (ok_len <= 0)
+    {
+        return -1;
+    }
+
+    ZCE_LIB::close(open_file);
+    return 0;
+}
+
+struct Zealot_SVC :public ZCE_Server_Base
+{
+
+};
+
+int test_pid_file(int /*argc*/, char /*argv*/ *[])
+{
+    Zealot_SVC svc;
+    svc.out_pid_file("C:\\1",true);
+    return 0;
+}
+

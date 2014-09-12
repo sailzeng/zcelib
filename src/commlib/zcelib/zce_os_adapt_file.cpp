@@ -33,9 +33,11 @@ ssize_t ZCE_LIB::read(ZCE_HANDLE file_handle, void *buf, size_t count)
 }
 
 //写如文件，WINDOWS下，长度无法突破32位的,当然有人需要写入4G数据吗？
+//Windows下尽量向POSIX 靠拢了
 ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 {
 #if defined (ZCE_OS_WINDOWS)
+
     DWORD ok_len;
     BOOL ret_bool = ::WriteFile (file_handle,
                                  buf,
@@ -45,12 +47,19 @@ ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 
     if (ret_bool)
     {
+        //注意ZCE_LIB Windows 下的write是有缓冲的，这个和Linux下的略有区别，
+        //如果需要立即看到，可以用FlushFileBuffers,我暂时看不出一定要这样做的必要，
+        //这个地方为了和POSIX统一，还是调用了这个函数
+        //另外一个方法是在CreateFile 时增加属性 FILE_FLAG_NO_BUFFERING and FILE_FLAG_WRITE_THROUGH
+        ::FlushFileBuffers(file_handle);
         return (ssize_t) ok_len;
     }
     else
     {
         return -1;
     }
+
+    
 
 #elif defined (ZCE_OS_LINUX)
     return ::write (file_handle, buf, count);

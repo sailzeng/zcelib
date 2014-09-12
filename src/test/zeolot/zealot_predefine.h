@@ -20,6 +20,7 @@
 #include <zce_os_adapt_math.h>
 #include <zce_os_adapt_stdlib.h>
 #include <zce_os_adapt_coroutine.h>
+#include <zce_os_adapt_flock.h>
 
 #include <zce_share_mem_mmap.h>
 #include <zce_share_mem_posix.h>
@@ -84,6 +85,7 @@
 
 #include <zce_script_lua_tie.h>
 
+#include <zce_server_base.h>
 #include <zce_server_status.h>
 
 

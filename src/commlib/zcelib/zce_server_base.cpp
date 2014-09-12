@@ -63,8 +63,7 @@ int ZCE_Server_Base::socket_init()
 }
 
 //打印输出PID File
-int ZCE_Server_Base::out_pid_file(const char *pragramname,
-                                     bool lock_pid)
+int ZCE_Server_Base::out_pid_file(const char *pragramname ,bool lock_pid)
 {
     int ret = 0;
 
@@ -80,7 +79,21 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
 
     if (pid_handle_ == ZCE_INVALID_HANDLE)
     {
+        ZCE_LOGMSG(RS_ERROR, "Open pid file [%s]fail.", filename.c_str());
         return -1;
+    }
+
+
+    // 尝试锁定全部文件，为啥要try，见下面,这儿系统调用的是F_SETLK,
+    if (lock_pid)
+    {
+        ret = ZCE_LIB::flock(pid_handle_, LOCK_EX | LOCK_NB);
+        if (ret != 0)
+        {
+            ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d", 
+                filename.c_str(),ZCE_LIB::last_error());
+            return ret;
+        }
     }
 
     // 写入文件内容
@@ -94,27 +107,26 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname,
     // 截断文件为len，这点很重要,用了自己的OS 匹配层
     // 我是用WINDOWS下的记录锁模拟的文件锁，所以要先把文件长度调整对
     ZCE_LIB::ftruncate(pid_handle_, len);
-
-    // 如果PID文件要加锁
-    if (lock_pid)
-    {
-        // 尝试锁定全部文件，为啥要try，见下面,这儿系统调用的是F_SETLK,
-        ret = ZCE_LIB::flock(pid_handle_, LOCK_EX | LOCK_NB);
-
-        if (ret != 0)
-        {
-            return ret;
-        }
-
-        // 原来的代码有下面一行代码，但在WINDOWS下这个地方会阻塞，我疑惑和很久，
-        // 为此代码还分了WINDOWS进行特殊处理
-        // 后来发现其实是自己考虑错了，这根本就是不是一个double check的地方，try就会进行加锁。二了。
-        // 锁定全部文件，不知道为何，，,这儿系统调用的是，F_SETLKW
-        // ret = ZCE_LIB::flock(pid_handle_,LOCK_EX);
-    }
-    ZCE_LIB::lseek(pid_handle_,0,SEEK_SET);
+    ZCE_LIB::lseek(pid_handle_, 0, SEEK_SET);
     ZCE_LIB::write(pid_handle_, tmpbuff, static_cast<unsigned int>(len));
+
+#if defined ZCE_OS_WINDOWS
     
+    //为什么这个地方的代码看上去有点2，其实这也不是double check，原因如下，Windows下的文件锁，其实是用记录锁模拟的，
+    //所以第一次加锁，其实并不一定锁定文件全部内容，
+    //if (lock_pid)
+    //{
+    //    ZCE_LIB::flock(pid_handle_, LOCK_UN);
+    //    ret = ZCE_LIB::flock(pid_handle_, LOCK_EX | LOCK_NB);
+    //    if (ret != 0)
+    //    {
+    //        ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
+    //            filename.c_str(), ZCE_LIB::last_error());
+    //        return ret;
+    //    }
+    //}
+#endif
+
     // ZCE_LIB::close(pid_handle_);
 
     return 0;
