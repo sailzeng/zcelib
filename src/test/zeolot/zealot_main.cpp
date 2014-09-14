@@ -13,7 +13,7 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
-    test_pid_file(argc, argv);
+    test_container_performance(argc, argv);
   
     system("pause");
 

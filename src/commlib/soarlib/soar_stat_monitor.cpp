@@ -75,7 +75,7 @@ void Comm_Stat_Monitor::create_stat_fname(const char *app_base_name,
 //从文件名称中得到相应的信息
 int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
                                            unsigned int *business_id,
-                                           SERVICES_ID *service_id,
+                                           SERVICES_ID *svc_id,
                                            char *app_base_name)
 {
 
@@ -107,7 +107,7 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     }
 
     //从后面开始找_
-    SERVICES_ID tmp_service_info;
+    SERVICES_ID tmp_svc_id;
     char *find_pos = NULL;
     //反向查询的，先解决svc id，
     find_pos = strrchr(file_name, '_');
@@ -116,13 +116,15 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
     ret = sscanf(find_pos + 1, "%hu%.%u",
-                 &tmp_service_info.services_type_,
-                 &tmp_service_info.services_id_);
+                 &tmp_svc_id.services_type_,
+                 &tmp_svc_id.services_id_);
     //!=2 表示没有得到两个数字
     if (ret != 2)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
+
+    *svc_id = tmp_svc_id;
 
     //再处理业务ID
     *find_pos = '\0';

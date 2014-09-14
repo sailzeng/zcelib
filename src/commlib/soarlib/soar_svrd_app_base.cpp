@@ -167,7 +167,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     std::string app_path = config_base_->app_run_dir_
                            + "/"
                            + get_app_basename();
-    ret = out_pid_file(app_path.c_str(), true);
+    ret = out_pid_file(app_path.c_str());
 
     if (ret != 0)
     {

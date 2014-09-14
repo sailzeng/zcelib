@@ -9,27 +9,10 @@ class Zerg_Server_Config;
 
 
 /****************************************************************************************************
-按services type保存服务器主动连接信息
-
-用两个二维数组保存服务器主动连接的services id，一个数组对应主路由id列表，一个数组对应备份路由id列表
-数组的第一级数组成员对应services type(对应关系保存用map保存)，第二级数组成员为services id
-****************************************************************************************************/
-//保存services type到数组索引对应关系的map
-typedef std::map<unsigned short, unsigned int>  RouteType2Index;
-
-//主路由id列表
-typedef std::vector<std::vector<unsigned int> > ListOfMainRouteId;
-
-//备份路由id列表
-typedef std::vector<std::vector<unsigned int> > ListOfBackRouteId;
-
-/****************************************************************************************************
 class Zerg_Auto_Connector
 ****************************************************************************************************/
 class Zerg_Auto_Connector
 {
-    //
-    typedef std::vector<SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
 
 public:
 
@@ -67,45 +50,56 @@ public:
     */
     int reconnect_server(const SERVICES_ID &reconnect_svcid);
 
-    //根据svr type获取serviceid，有多个id时随机获取一个
-    int get_server(unsigned short svr_type, SERVICES_ID *svrinfo);
+
+    /*!
+    * @brief      根据services_type查询对应的配置主备服务器列表数组 MS（主备）
+    * @return     int == 0 表示成功
+    * @param[in]  services_type
+    * @param[out] ms_svcid_ary   配置的主备服务器列表数组
+    */
+    int find_confms_svcid_ary(uint16_t services_type,
+                              std::vector<uint32_t> *& ms_svcid_ary);
+
+    /*!
+    * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
+    *             只能用于在AUTO CONNECT配置的链接出去的服务器，主备顺序根据AUTO CONNECT配置
+    *             顺序决定，配置在前面的服务器优先考虑 MS(Main Standby)
+    * @return     int ==0表示查询成功
+    * @param[in]  services_type 服务器类型
+    * @param[out] find_services_id  查询到的SVC ID
+    * @param[out] svc_handle    返回对应的Handle
+    * @note       优先主，主有问题，选择备份。这样可以保证发送的数据都（尽量）给一个服务器
+    *             注意这样模式，配置的主备服务器不要数量过多(<=4)，
+    */
+
 protected:
 
     //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-    int connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In &inet_addr);
-
-    //根据svrinfo 检查是否已经连接
-    bool is_connected(const SERVICES_ID &svrinfo);
-
-private:
-    //添加主动连接服务信息
-    void add_auto_connect_info(const SERVICES_ID &main_svrinfo, const SERVICES_ID &back_svrinfo);
-
-    // 判定是否当前主动连接
-    bool is_current_auto_connect(const SERVICES_ID &service, bool is_main_service);
+    int connect_server_bysvcid(const SERVICES_ID &svrinfo, 
+                               const ZCE_Sockaddr_In &inet_addr);
 
 protected:
 
     //
-    ARRAY_OF_ZERG_SVCINFO    ary_want_connect_;
-    //
-    size_t                   size_of_wantconnect_;
+    typedef std::vector<SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
+
+    ///类型对应的SERVICES ID 数组的MAP的类型,
+    typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
 
     //连接器
     ZCE_Socket_Connector     zerg_connector_;
 
-private:
-    //主路由id列表
-    ListOfMainRouteId        list_of_want_connect_main_id_;
-
-    //备份路由id列表
-    ListOfMainRouteId        list_of_want_connect_back_id_;
-
-    //主动连接type到index的map
-    RouteType2Index          want_connect_type_2_index_;
-
     //配置实例指针
-    const Zerg_Server_Config *zerg_svr_cfg_;
+    const Zerg_Server_Config *zerg_svr_cfg_ = NULL;
+
+    //
+    size_t                   size_of_wantconnect_ = 0;
+    //
+    ARRAY_OF_ZERG_SVCINFO    ary_want_connect_;
+
+
+    //类型对应的SERVICES ID 数组 的MAP，数组里面的id的顺序其实是主备顺序
+    MAP_OF_TYPE_TO_IDARY     type_to_idary_map_;
 
 };
 

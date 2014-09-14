@@ -21,6 +21,7 @@
 
 #include "zce_os_adapt_process.h"
 #include "zce_os_adapt_sysinfo.h"
+#include "zce_os_adapt_flock.h"
 
 
 
@@ -46,8 +47,7 @@ public:
     * @param      lock_pid    是否对PID文件进行加锁处理，
     * @note       
     */
-    int out_pid_file(const char *pragramname,
-                     bool lock_pid);
+    int out_pid_file(const char *pragramname);
 
     ///监控进程的运行状态
     int watch_dog_status(bool first_record);
@@ -118,6 +118,9 @@ public:
 #endif
 
 protected:
+    
+    //PID文件长度，用一个最大长度，避免一些长度变化的麻烦，
+    static const size_t   PID_FILE_LEN = 16;
 
     //最大的记录内存泄漏的次数
     static const int      MAX_RECORD_MEMLEAK_NUMBER = 5;
@@ -140,6 +143,8 @@ protected:
 
     ///PID 文件句柄
     ZCE_HANDLE            pid_handle_;
+    ///
+    zce_flock_t           pidfile_lock_;
 
     ///self的PID
     pid_t                 self_pid_;

@@ -64,7 +64,7 @@ int UDP_Svc_Handler::init_udp_services()
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] fail.",
+        ZCE_LOGMSG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] fail.",
                    udp_bind_addr_.get_host_addr(),
                    udp_bind_addr_.get_port_number());
         handle_close();
@@ -86,16 +86,16 @@ int UDP_Svc_Handler::init_udp_services()
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] fail.",
+        ZCE_LOGMSG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] fail.",
                    udp_bind_addr_.get_host_addr(),
                    udp_bind_addr_.get_port_number());
         handle_close();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
-    ZLOG_INFO("[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] success.",
-              udp_bind_addr_.get_host_addr(),
-              udp_bind_addr_.get_port_number());
+    ZCE_LOGMSG(RS_INFO, "[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] success.",
+               udp_bind_addr_.get_host_addr(),
+               udp_bind_addr_.get_port_number());
     return 0;
 }
 
@@ -202,7 +202,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
             }
 
             //记录错误,返回错误
-            ZLOG_ERROR("[zergsvr] UDP receive data error IP[%s|%u] peer:%u ZCE_LIB::last_error()=%d|%s.",
+            ZCE_LOGMSG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s|%u] peer:%u ZCE_LIB::last_error()=%d|%s.",
                        remote_addr.get_host_addr(),
                        remote_addr.get_port_number(),
                        dgram_peer_.get_handle(),
@@ -226,7 +226,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     //Socket被关闭，也返回错误标示,但是我不知道会不会出现这个问题...
     if (recvret == 0)
     {
-        ZLOG_ERROR("[zergsvr] UDP Peer IP [%s|%u] recv return 0, I don't know how to process.?",
+        ZCE_LOGMSG(RS_ERROR, "[zergsvr] UDP Peer IP [%s|%u] recv return 0, I don't know how to process.?",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number());
         return 0;
@@ -308,7 +308,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
     //
     if (szsend <= 0)
     {
-        ZLOG_ERROR("[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u ZCE_LIB::last_error()=%d|%s.",
+        ZCE_LOGMSG(RS_ERROR, "[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u ZCE_LIB::last_error()=%d|%s.",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    dgram_peer_.get_handle(),
@@ -361,7 +361,7 @@ int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
     }
 
     //
-    ZLOG_ERROR("[zergsvr] Error UDP Send Svc Info %u|%u.",
+    ZCE_LOGMSG(RS_ERROR, "[zergsvr] Error UDP Send Svc Info %u|%u.",
                send_frame->send_service_.services_type_,
                send_frame->send_service_.services_id_
               );

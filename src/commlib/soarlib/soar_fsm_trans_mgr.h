@@ -150,9 +150,9 @@ class SOARING_EXPORT Transaction_Manager
 protected:
 
     //命令字对应池子的代码
-    typedef std::unordered_map<unsigned int, CREATE_TRANS_RECORD >        HASHMAP_OF_POLLREGTRANS;
+    typedef unordered_map<unsigned int, CREATE_TRANS_RECORD >        HASHMAP_OF_POLLREGTRANS;
     //事务ID对应事务的管理器
-    typedef std::unordered_map<unsigned int, Transaction_Base * >         HASHMAP_OF_TRANSACTION;
+    typedef unordered_map<unsigned int, Transaction_Base * >         HASHMAP_OF_TRANSACTION;
 
     //注意这儿用的不是指针,但其实他用的是指针
     typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, Zerg_App_Frame *> INNER_FRAME_MESSAGE_QUEUE;

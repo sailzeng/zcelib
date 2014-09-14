@@ -22,7 +22,7 @@ ZCE_Server_Base * ZCE_Server_Base::base_instance_ = NULL;
 ZCE_Server_Base::ZCE_Server_Base():
     pid_handle_(ZCE_INVALID_HANDLE),
     self_pid_(0),
-    app_run_(false),
+    app_run_(true),
     app_reload_(false),
     check_leak_times_(0),
     mem_checkpoint_size_(0),
@@ -43,7 +43,8 @@ ZCE_Server_Base::~ZCE_Server_Base()
     // 关闭文件
     if (pid_handle_ != ZCE_INVALID_HANDLE)
     {
-        ZCE_LIB::flock(pid_handle_, LOCK_UN);
+        ZCE_LIB::flock_unlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
+        ZCE_LIB::flock_destroy(&pidfile_lock_);
         ZCE_LIB::close(pid_handle_);
     }
 }
@@ -63,71 +64,66 @@ int ZCE_Server_Base::socket_init()
 }
 
 //打印输出PID File
-int ZCE_Server_Base::out_pid_file(const char *pragramname ,bool lock_pid)
+int ZCE_Server_Base::out_pid_file(const char *pragramname)
 {
     int ret = 0;
 
-    std::string filename = pragramname;
-    filename += ".pid";
+    std::string pidfile_name = pragramname;
+    pidfile_name += ".pid";
+
+    self_pid_ = ZCE_LIB::getpid();
+
+    //检查PID文件是否存在，，
+    bool must_create_new = false;
+    ret = ZCE_LIB::access(pidfile_name.c_str(),F_OK);
+    if ( 0 != ret)
+    {
+        must_create_new = true;
+    }
 
     // 设置文件读取参数,表示其他用户可以读取，open函数会自动帮忙调整参数的。
     int fileperms = 0644;
 
-    pid_handle_ = ZCE_LIB::open(filename.c_str(),
+    pid_handle_ = ZCE_LIB::open(pidfile_name.c_str(),
                                O_RDWR | O_CREAT ,
                                static_cast<mode_t>(fileperms));
 
     if (pid_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZCE_LOGMSG(RS_ERROR, "Open pid file [%s]fail.", filename.c_str());
+        ZCE_LOGMSG(RS_ERROR, "Open pid file [%s]fail.", pidfile_name.c_str());
         return -1;
     }
 
-
-    // 尝试锁定全部文件，为啥要try，见下面,这儿系统调用的是F_SETLK,
-    if (lock_pid)
+    //如果PID文件不存在，调整文件长度，(说明见下)
+    //这个地方没有原子保护，有一定风险,但……
+    if (true == must_create_new)
     {
-        ret = ZCE_LIB::flock(pid_handle_, LOCK_EX | LOCK_NB);
-        if (ret != 0)
-        {
-            ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d", 
-                filename.c_str(),ZCE_LIB::last_error());
-            return ret;
-        }
+        //我是用WINDOWS下的记录锁是模拟和Linux类似，但Windows的文件锁其实没有对将长度参数设置0，
+        //锁定整个文件的功能，所以要先把文件长度调整
+        ZCE_LIB::ftruncate(pid_handle_, PID_FILE_LEN);
     }
 
-    // 写入文件内容
-    const size_t BUFFER_LEN = 128;
-    char tmpbuff[BUFFER_LEN + 1];
 
-    // 这儿不对buffer做判断的原因是，肯定够长
-    self_pid_ = ZCE_LIB::getpid();
-    int len = snprintf(tmpbuff, BUFFER_LEN, "%u", self_pid_ );
+    ZCE_LIB::flock_init(&pidfile_lock_, pid_handle_);
 
-    // 截断文件为len，这点很重要,用了自己的OS 匹配层
-    // 我是用WINDOWS下的记录锁模拟的文件锁，所以要先把文件长度调整对
-    ZCE_LIB::ftruncate(pid_handle_, len);
-    ZCE_LIB::lseek(pid_handle_, 0, SEEK_SET);
-    ZCE_LIB::write(pid_handle_, tmpbuff, static_cast<unsigned int>(len));
-
-#if defined ZCE_OS_WINDOWS
+    const size_t PID_FILE_LEN = 16;
+    char tmpbuff[PID_FILE_LEN + 1];
     
-    //为什么这个地方的代码看上去有点2，其实这也不是double check，原因如下，Windows下的文件锁，其实是用记录锁模拟的，
-    //所以第一次加锁，其实并不一定锁定文件全部内容，
-    //if (lock_pid)
-    //{
-    //    ZCE_LIB::flock(pid_handle_, LOCK_UN);
-    //    ret = ZCE_LIB::flock(pid_handle_, LOCK_EX | LOCK_NB);
-    //    if (ret != 0)
-    //    {
-    //        ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
-    //            filename.c_str(), ZCE_LIB::last_error());
-    //        return ret;
-    //    }
-    //}
-#endif
+    snprintf(tmpbuff, PID_FILE_LEN+1, "%*.u",(int)PID_FILE_LEN*(-1), self_pid_);
 
-    // ZCE_LIB::close(pid_handle_);
+    // 尝试锁定全部文件，如果锁定不成功，表示有人正在用这个文件
+    ret = ZCE_LIB::flock_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
+    if (ret != 0)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
+            pidfile_name.c_str(), ZCE_LIB::last_error());
+        return ret;
+    }
+
+    //写入文件内容, 截断文件为BUFFER_LEN，
+    ZCE_LIB::ftruncate(pid_handle_, PID_FILE_LEN);
+    ZCE_LIB::lseek(pid_handle_, 0, SEEK_SET);
+    ZCE_LIB::write(pid_handle_, tmpbuff, PID_FILE_LEN);
 
     return 0;
 }

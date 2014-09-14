@@ -17,25 +17,48 @@ class TCP_Svc_Handler;
 */
 class Active_SvcHandle_Set
 {
-protected:
 
-    //
-    typedef unordered_map<SERVICES_ID, TCP_Svc_Handler *, HASH_OF_SVCID> MapOfSvrPeerInfo;
-    //
-    MapOfSvrPeerInfo  svr_info_set_;
 
 public:
-    //构造函数,
+    ///构造函数,
     Active_SvcHandle_Set();
+    ///析构函数
     ~Active_SvcHandle_Set();
 
-    //
-    void init_services_peerinfo(size_t szpeer);
+    //初始化
+    void initialize(size_t sz_peer);
 
-    //查询配置信息
-    int find_services_peerinfo(const SERVICES_ID &svrinfo,
-                               TCP_Svc_Handler * &);
 
+    /*!
+    * @brief      根据SVCID，在Active的Handle里面查询是否尊重
+    * @return     int ==0 表示查询成功，
+    * @param[in]  svrinfo    查询的SERVICES_ID,
+    * @param[out] svc_handle 返回的对应的handle
+    */
+    int find_handle_by_svcid(const SERVICES_ID &svc_id,
+                             TCP_Svc_Handler *& svc_handle);
+
+    /*!
+    * @brief      以负载均衡的方式，根据services type查询一个的SVC，按照数组顺序轮询的返回，LB(Load Balance)
+    * @return     int  ==0表示查询成功
+    * @param[in]  services_type 服务器类型
+    * @param[out] services_id   查询到的SVC ID
+    * @param      svc_handle     返回对应的Handle
+    * @note       这样查询保证发送的数据尽量负载均衡，
+    */
+    int find_lbhdl_by_type(uint16_t services_type,
+                           uint32_t &services_id,
+                           TCP_Svc_Handler*& svc_handle);
+
+
+    /*!
+    * @brief      查询类型对应的所有active的SVC ID数组，用于广播等
+    * @return     int       ==0表示查询成功
+    * @param      services_type  查询的服务器类型
+    * @param      id_ary    这个类型对应的所有active的SVC ID的services_id数值
+    * @note       可以对某个类型进行广播
+    */
+    int find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *& id_ary);
 
     /*!
     * @brief      增加设置配置信息
@@ -62,21 +85,48 @@ public:
 
     /*!
     * @brief      根据SERVICES_ID,删除PEER信息,
-    * @return     size_t   删除数量
+    * @return     int    ==0表示删除成功
     * @param      svc_id   要删除服务器的SVC ID
     * @note
     */
-    size_t del_services_peerInfo(const SERVICES_ID &svc_id);
+    int del_services_peerInfo(const SERVICES_ID &svc_id);
 
     ///当前的数量
     size_t get_services_peersize();
 
-    //
+    ///
     void dump_svr_peerinfo(ZCE_LOG_PRIORITY out_lvl);
 
-    //关闭所有的PEER
+    ///关闭所有的PEER
     void clear_and_closeall();
 
+
+protected:
+
+
+
+    struct SERVICES_ID_TABLE
+    {
+        ///
+        size_t orderid_use_id_ = 0;
+        ///
+        std::vector<uint32_t>  services_id_ary_;
+    };
+
+    ///
+    typedef std::unordered_map<SERVICES_ID, TCP_Svc_Handler *, HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
+
+    ///用于根据TYPE选择一个任意服务器，或者根据TYPE广播给所有这个类型的服务器
+    typedef std::unordered_map<uint16_t, SERVICES_ID_TABLE > MAP_OF_TYPE_TO_IDTABLE;
+
+
+    ///
+    size_t max_peer_size_ = 0;
+
+    ///
+    MAP_OF_SVCPEERINFO  svr_info_set_;
+    ///
+    MAP_OF_TYPE_TO_IDTABLE type_to_idtable_;
 };
 
 

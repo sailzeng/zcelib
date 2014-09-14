@@ -60,12 +60,12 @@ public:
     inline uint16_t get_port_number (void) const;
 
     //取得以.符号的IP地址信息STRING
-    inline const char *get_host_addr (char *addr, int addr_size) const;
+    inline const char *get_host_addr(char *addr, size_t buf_size) const;
     //不可冲入的非安全函数
     inline const char *get_host_addr (void) const;
 
     //取得以.符号的IP地址#端口号STRING
-    const char *get_host_addr_port(char *addr, int addr_size) const;
+    const char *get_host_addr_port(char *addr, size_t buf_size) const;
     //不可冲入的非安全函数
     //const char *get_host_addr_port() const;
 
@@ -125,11 +125,11 @@ inline uint16_t ZCE_Sockaddr_In::get_port_number (void) const
 }
 
 //取得以.符号的IP地址信息STRING
-inline const char *ZCE_Sockaddr_In::get_host_addr (char *addr_buf, int addr_size) const
+inline const char *ZCE_Sockaddr_In::get_host_addr(char *addr_buf, size_t buf_size) const
 {
     return ZCE_LIB::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in4_addr_),
                                    addr_buf,
-                                   addr_size);
+                                   buf_size);
 }
 
 //不可冲入的非安全函数
@@ -145,11 +145,11 @@ inline const char *ZCE_Sockaddr_In::get_host_addr (void) const
 }
 
 //取得以.符号的IP地址#端口号STRING
-inline const char *ZCE_Sockaddr_In::get_host_addr_port(char *addr_buf, int addr_size) const
+inline const char *ZCE_Sockaddr_In::get_host_addr_port(char *addr_buf, size_t buf_size) const
 {
     return ZCE_LIB::socketaddr_ntop_ex(reinterpret_cast<const sockaddr *>(&in4_addr_),
                                       addr_buf,
-                                      addr_size);
+                                      buf_size);
 }
 
 #endif  //ZCE_LIB_SOCKET_ADDR_IN_

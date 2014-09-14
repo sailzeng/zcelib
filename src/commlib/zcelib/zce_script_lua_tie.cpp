@@ -4,7 +4,7 @@
 #include "zce_script_lua_tie.h"
 
 
-#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
+#if ZCE_USE_LUA == 1 && defined ZCE_SUPPORT_CPP11
 
 
 //=======================================================================================================

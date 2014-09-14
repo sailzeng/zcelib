@@ -9,7 +9,8 @@
 *             另外由于，记录的特殊原因，他不能从ZCE_Lock_Base上面继承了，
 * @details    有些DB，和我见过的某些产品曾经用记录锁来用同步用户的某些操作，
 *             建议参考一下@ref zce_os_adapt_flock.h
-* @note
+* @note       由于Windows 下记录锁，锁区域参数size 为0时，并不锁定从起始偏移
+*             到文件偏移的最大值，所以，所以如果文件大小变化，会出现部分区域没有锁定
 *
 */
 #ifndef ZCE_LIB_LOCK_RECORD_LOCK_H_
@@ -59,10 +60,9 @@ public:
     int open(ZCE_HANDLE file_handle);
 
     /*!
-    * @brief      关闭之，如果是ZCE_Record_Lock内部自己打开的文件（不是文件句柄参数），关闭时会关闭文件
-    * @return     int   0成功，-1失败
+    * @brief      关闭之，
     */
-    int close();
+    void close();
 
     /*!
     * @brief      得到记录锁文件的句柄

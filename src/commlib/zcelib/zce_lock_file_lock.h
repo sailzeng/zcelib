@@ -34,8 +34,6 @@ public:
 public:
 
     //构造函数
-    ZCE_File_Lock(ZCE_HANDLE file_handle);
-
     ZCE_File_Lock();
     ~ZCE_File_Lock();
 
@@ -77,6 +75,12 @@ protected:
 
     ///自己打开的这个文件，也就是调用过open函数
     bool          open_by_self_;
+    
+    ///
+    size_t        file_len_;
+
+    ///文件锁句柄
+    zce_flock_t   file_lock_hdl_;
 
 };
 

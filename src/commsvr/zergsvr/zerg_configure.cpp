@@ -85,7 +85,7 @@ int SERVICES_INFO_TABLE::add_svcinfo(const SERVICES_INFO &svc_info)
 
     if (insert_result.second == false)
     {
-        ZCE_LOGMSG(RS_ERROR,"add svcinfo fail. may be have repeat svc info[%hu.%u].",
+        ZCE_LOGMSG(RS_ERROR, "add svcinfo fail. may be have repeat svc info[%hu.%u].",
                    svc_info.svc_id_.services_type_, svc_info.svc_id_.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
@@ -124,11 +124,11 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
 
 
     //´òÓ¡Ò»ÏÂ
-    ZLOG_INFO("[zergsvr] Svc id [%u|%u] ipaddress info [%s|%u].",
-              svc_id.services_type_,
-              svc_id.services_id_,
-              svc_info.ip_address_.get_host_addr(),
-              svc_info.ip_address_.get_port_number());
+    ZCE_LOGMSG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s|%u].",
+               svc_id.services_type_,
+               svc_id.services_id_,
+               svc_info.ip_address_.get_host_addr(),
+               svc_info.ip_address_.get_port_number());
 
     return ret;
 }
@@ -404,7 +404,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
         }
 
     }
-    
+
     return 0;
 }
 

@@ -1,4 +1,5 @@
 #include "zce_predefine.h"
+#include "zce_os_adapt_file.h"
 #include "zce_lock_record_lock.h"
 
 //记录锁的封装，
@@ -23,10 +24,13 @@ int ZCE_Record_Lock::open(const char *file_name,
                           int open_mode,
                           mode_t perms)
 {
+    //打开这个文件
+    ZCE_HANDLE lock_hadle = ZCE_LIB::open(file_name,
+        open_mode,
+        perms);
+
     return ZCE_LIB::flock_init(&record_lock_,
-                              file_name,
-                              open_mode,
-                              perms);
+        lock_hadle);
 }
 
 //用一个文件Handle初始化,外部传入的ZCE_HANDLE，我不会关闭，文件
@@ -42,9 +46,10 @@ ZCE_HANDLE ZCE_Record_Lock::get_file_handle()
 }
 
 //关闭之，如果是ZCE_Record_Lock内部自己打开的文件（不是文件句柄参数），关闭时会关闭文件
-int ZCE_Record_Lock::close()
+void ZCE_Record_Lock::close()
 {
-    return ZCE_LIB::flock_destroy(&record_lock_);
+    ZCE_LIB::flock_destroy(&record_lock_);
+    return;
 }
 
 //文件记录读写锁

@@ -74,9 +74,9 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
 
         if ( iter == allow_ip_set_.end() )
         {
-            ZLOG_INFO("[zergsvr] A NO Allowed IP|Port : [%s|%u] Connect me.",
-                      remoteaddress.get_host_addr(),
-                      remoteaddress.get_port_number());
+            ZCE_LOGMSG(RS_INFO, "[zergsvr] A NO Allowed IP|Port : [%s|%u] Connect me.",
+                       remoteaddress.get_host_addr(),
+                       remoteaddress.get_port_number());
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }
     }
@@ -88,9 +88,9 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
 
         if ( iter != reject_ip_set_.end() )
         {
-            ZLOG_INFO("[zergsvr] Reject IP|Port : %s|%u connect me.",
-                      remoteaddress.get_host_addr(),
-                      remoteaddress.get_port_number());
+            ZCE_LOGMSG(RS_INFO, "[zergsvr] Reject IP|Port : %s|%u connect me.",
+                       remoteaddress.get_host_addr(),
+                       remoteaddress.get_port_number());
             return SOAR_RET::ERR_ZERG_IP_RESTRICT_CHECK_FAIL;
         }
     }

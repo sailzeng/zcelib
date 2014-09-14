@@ -6,9 +6,9 @@
 #include "zce_os_adapt_flock.h"
 
 void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
-                                  int whence,
-                                  size_t &start,
-                                  size_t &len)
+                                   int whence,
+                                   size_t &start,
+                                   size_t &len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -61,6 +61,7 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
     lock->overlapped_.OffsetHigh = large_start.HighPart;
 
     //如果长度为0，标识对全文件进行操作，在WINDOWS平台调整成文件长度
+    //注意这儿的适配是有一些问题的，因为linux的文件锁如果长度是0，是锁定从开始到文件偏移的最大可能值。
     if (len == 0)
     {
         size_t file_size = 0;
@@ -82,31 +83,10 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
 #endif
 }
 
-//文件锁初始化zce_flock_t,打开文件，得到FD
-int ZCE_LIB::flock_init (zce_flock_t *lock,
-                        const char *file_name,
-                        int flags,
-                        mode_t perms)
-{
-    //
-    ZCE_ASSERT(file_name && lock);
-
-    ZCE_HANDLE fd = ZCE_LIB::open (file_name, flags, perms);
-
-    if (fd == ZCE_INVALID_HANDLE)
-    {
-        return -1;
-    }
-
-    //调整打开的标志
-    lock->open_by_self_ = true;
-
-    return ZCE_LIB::flock_init(lock, fd);
-}
 
 //文件锁初始化zce_flock_t,直接用fd
 int ZCE_LIB::flock_init (zce_flock_t *lock,
-                        ZCE_HANDLE file_hadle)
+                         ZCE_HANDLE file_hadle)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -123,33 +103,20 @@ int ZCE_LIB::flock_init (zce_flock_t *lock,
 #endif
 
     lock->handle_ = file_hadle;
-
     return 0;
 }
 
 //销毁锁？这样解释不是特别合理，其实应该说，销毁zce_flock_t这个结构
-int ZCE_LIB::flock_destroy (zce_flock_t *lock)
+void ZCE_LIB::flock_destroy (zce_flock_t * /*lock*/)
 {
-
-    if (lock->handle_ != ZCE_INVALID_HANDLE)
-    {
-
-        if (lock->open_by_self_)
-        {
-            //close the handle.
-            ZCE_LIB::close (lock->handle_);
-            lock->handle_ = ZCE_INVALID_HANDLE;
-        }
-    }
-
-    return 0;
+    return;
 }
 
 //whence == SEEK_SET,SEEK_CUR
 int ZCE_LIB::flock_unlock (zce_flock_t *lock,
-                          int  whence,
-                          size_t start,
-                          size_t len)
+                           int  whence,
+                           size_t start,
+                           size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -185,9 +152,9 @@ int ZCE_LIB::flock_unlock (zce_flock_t *lock,
 }
 
 int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
-                          int  whence,
-                          size_t start,
-                          size_t len)
+                           int  whence,
+                           size_t start,
+                           size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -226,9 +193,9 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
 
 //测试是否可以加锁，如果不行立即返回
 int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
-                             int  whence,
-                             size_t start,
-                             size_t len)
+                              int  whence,
+                              size_t start,
+                              size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -276,9 +243,9 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
 
 //尝试进行写锁定
 int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
-                             int  whence,
-                             size_t start,
-                             size_t len)
+                              int  whence,
+                              size_t start,
+                              size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -324,9 +291,9 @@ int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
 }
 
 int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
-                          int whence,
-                          size_t start,
-                          size_t len)
+                           int whence,
+                           size_t start,
+                           size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -373,84 +340,84 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //A call to flock() may block if an incompatible lock is held by another process. To make a non-blocking request, include LOCK_NB (by ORing) with any of the above operations.
 
 //文件锁函数，只对一个文件进行加锁
-int ZCE_LIB::flock(ZCE_HANDLE file_hadle, int operation)
-{
-#if defined (ZCE_OS_WINDOWS)
-
-    zce_flock_t lock_handle;
-
-    int ret = 0;
-    ret = ZCE_LIB::flock_init (&lock_handle,
-                              file_hadle);
-
-    //读取锁，共享锁
-    if (LOCK_SH & operation )
-    {
-        //如果是不阻塞的
-        if ( LOCK_NB & operation)
-        {
-            ret = ZCE_LIB::flock_tryrdlock (&lock_handle,
-                                           SEEK_SET,
-                                           0,
-                                           0);
-        }
-        //如果是阻塞调用
-        else
-        {
-            ret = ZCE_LIB::flock_rdlock (&lock_handle,
-                                        SEEK_SET,
-                                        0,
-                                        0);
-        }
-
-    }
-    //写锁
-    else if (LOCK_EX & operation)
-    {
-        //如果是不阻塞的
-        if ( LOCK_NB & operation)
-        {
-            ret = ZCE_LIB::flock_trywrlock (&lock_handle,
-                                           SEEK_SET,
-                                           0,
-                                           0);
-        }
-        //如果是阻塞调用
-        else
-        {
-            ret = ZCE_LIB::flock_wrlock (&lock_handle,
-                                        SEEK_SET,
-                                        0,
-                                        0);
-        }
-    }
-    //解开锁
-    else if ( LOCK_UN & operation)
-    {
-        ret = ZCE_LIB::flock_unlock (&lock_handle,
-                                    SEEK_SET,
-                                    0,
-                                    0);
-    }
-    else
-    {
-        errno = EINVAL;
-        ret = -1;
-    }
-
-    if (ret != 0)
-    {
-        ZLOG_ERROR("[zcelib] ZCE_LIB::flock fail. operation =%d ret =%d", operation, ret);
-    }
-
-    //其实完全可以不掉用这个函数,调用他是为了让你觉得公正,
-    ZCE_LIB::flock_destroy(&lock_handle);
-
-    return ret;
-
-#elif defined (ZCE_OS_LINUX)
-    return ::flock(file_hadle, operation);
-#endif
-
-}
-
+//int ZCE_LIB::flock(ZCE_HANDLE file_hadle, int operation)
+//{
+//#if defined (ZCE_OS_WINDOWS)
+//
+//    zce_flock_t lock_handle;
+//
+//    int ret = 0;
+//    ret = ZCE_LIB::flock_init (&lock_handle,
+//                               file_hadle);
+//
+//    //读取锁，共享锁
+//    if (LOCK_SH & operation )
+//    {
+//        //如果是不阻塞的
+//        if ( LOCK_NB & operation)
+//        {
+//            ret = ZCE_LIB::flock_tryrdlock (&lock_handle,
+//                                            SEEK_SET,
+//                                            0,
+//                                            0);
+//        }
+//        //如果是阻塞调用
+//        else
+//        {
+//            ret = ZCE_LIB::flock_rdlock (&lock_handle,
+//                                         SEEK_SET,
+//                                         0,
+//                                         0);
+//        }
+//
+//    }
+//    //写锁
+//    else if (LOCK_EX & operation)
+//    {
+//        //如果是不阻塞的
+//        if ( LOCK_NB & operation)
+//        {
+//            ret = ZCE_LIB::flock_trywrlock (&lock_handle,
+//                                            SEEK_SET,
+//                                            0,
+//                                            0);
+//        }
+//        //如果是阻塞调用
+//        else
+//        {
+//            ret = ZCE_LIB::flock_wrlock (&lock_handle,
+//                                         SEEK_SET,
+//                                         0,
+//                                         0);
+//        }
+//    }
+//    //解开锁
+//    else if ( LOCK_UN & operation)
+//    {
+//        ret = ZCE_LIB::flock_unlock (&lock_handle,
+//                                     SEEK_SET,
+//                                     0,
+//                                     0);
+//    }
+//    else
+//    {
+//        errno = EINVAL;
+//        ret = -1;
+//    }
+//
+//    if (ret != 0)
+//    {
+//        ZLOG_ERROR("[zcelib] ZCE_LIB::flock fail. operation =%d ret =%d", operation, ret);
+//    }
+//
+//    //其实完全可以不掉用这个函数,调用他是为了让你觉得公正,
+//    ZCE_LIB::flock_destroy(&lock_handle);
+//
+//    return ret;
+//
+//#elif defined (ZCE_OS_LINUX)
+//    return ::flock(file_hadle, operation);
+//#endif
+//
+//}
+//

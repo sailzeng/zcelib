@@ -27,13 +27,13 @@ public:
     * @note
     */
     int find_svcinfo(const SERVICES_ID &svc_id,
-        ZCE_Sockaddr_In &ip_address,
-        unsigned int &idc_no,
-        unsigned int &business_id) const;
+                     ZCE_Sockaddr_In &ip_address,
+                     unsigned int &idc_no,
+                     unsigned int &business_id) const;
 
     //根据SvrInfo信息查询IP配置信息
     int find_svcinfo(const SERVICES_ID &svc_id,
-        SERVICES_INFO &svc_info) const;
+                     SERVICES_INFO &svc_info) const;
 
     //检查是否拥有相应的Services Info
     bool hash_svcinfo(const SERVICES_ID &svc_id) const;
@@ -71,7 +71,7 @@ public:
     ///最大的的绑定的SVC ID数量，也就是监听数量
     static const size_t MAX_BIND_SERVICES_ID = 4;
     ///
-    static const size_t MAX_SLAVE_SERVICES_ID = MAX_BIND_SERVICES_ID -1;
+    static const size_t MAX_SLAVE_SERVICES_ID = MAX_BIND_SERVICES_ID - 1;
 
     ///最大的监控的FRAME的数量,不希望太多,可能严重影响效率
     static const size_t MAX_MONITOR_FRAME_NUMBER = 16;
@@ -103,7 +103,7 @@ public:
 
 
 
-    /// 被动连接的发送BUFFER可容纳最大FRAME的个数 连接数少而流量较大的后端服务器可填的大一些, 
+    /// 被动连接的发送BUFFER可容纳最大FRAME的个数 连接数少而流量较大的后端服务器可填的大一些,
     uint32_t acpt_send_deque_size_ = 32;
     /// 每个connect 出去的，tcp连接的发送队列长度
     uint32_t cnnt_send_deque_size_ = 128;
@@ -131,7 +131,7 @@ public:
     /// 是否做为代理服务器
     bool is_proxy_ = false;
 
-    
+
 
     /// #对一个错误数据重复尝试发送的次数,目前这个值没用用处了，
     uint32_t retry_error_ = 3;

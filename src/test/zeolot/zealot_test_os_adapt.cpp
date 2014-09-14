@@ -122,46 +122,123 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
     return 0;
 }
 
-int test_file(int /*argc*/, char * /*argv*/[])
-{
-    int ret = 0;
-    ZCE_HANDLE open_file;
-    open_file = ZCE_LIB::open("C:\\1.txt", O_CREAT | O_TRUNC | O_RDWR);
-    if (open_file == ZCE_INVALID_HANDLE)
-    {
-        return -1;
-    }
-
-    const char *write_str = "11111111111111111112222222222222222233333333333333333\n";
-    size_t write_len = strlen(write_str);
-    ZCE_LIB::ftruncate(open_file, write_len);
-    ZCE_LIB::lseek(open_file, SEEK_SET, 0);
-    ret = ZCE_LIB::flock(open_file, LOCK_EX | LOCK_NB);
-    if (0 != ret)
-    {
-        return -1;
-    }
-
-    ssize_t ok_len = ZCE_LIB::write(open_file, write_str, write_len);
-
-    if (ok_len <= 0)
-    {
-        return -1;
-    }
-
-    ZCE_LIB::close(open_file);
-    return 0;
-}
 
 struct Zealot_SVC :public ZCE_Server_Base
 {
 
 };
 
+Zealot_SVC svc;
 int test_pid_file(int /*argc*/, char /*argv*/ *[])
 {
-    Zealot_SVC svc;
-    svc.out_pid_file("C:\\1",true);
+    svc.out_pid_file("C:\\1");
     return 0;
 }
 
+
+const size_t TEST_NUMBER = 100000 * 10;
+
+void test_findwith_container(size_t container_len)
+{
+
+    std::vector<int>          int_vector;
+    std::map<int, int>         int_map;
+    unordered_map<int, int>    int_hash;
+
+    int_vector.resize(container_len);
+    int_hash.rehash(container_len);
+
+    //
+    for (size_t i = 0; i < container_len; i++)
+    {
+        int_vector[i] = (int)i;
+        int_map[(int)i] = (int)i;
+        int_hash[(int)i] = (int)i;
+
+    }
+
+    ZCE_HR_Progress_Timer test_timer;
+
+    test_timer.restart();
+    for (size_t i = 0; i < TEST_NUMBER; ++i)
+    {
+
+        int find_number =(int) i%container_len;
+        //
+        for (size_t j = 0; j < container_len; j++)
+        {
+
+            if (int_vector[j] == find_number)
+            {
+                break;
+            }
+        }
+    }
+
+    test_timer.end();
+   
+
+    std::cout << "test vector gettimeofday :" << test_timer.elapsed_usec() << " " << std::endl;
+
+    test_timer.restart();
+    for (size_t i = 0; i < TEST_NUMBER; ++i)
+    {
+
+        int find_number = (int)i%container_len;
+        int_map.find(find_number);
+    }
+
+    test_timer.end();
+
+    std::cout << "test map gettimeofday :" << test_timer.elapsed_usec() << " " << std::endl;
+
+
+    test_timer.restart();
+    for (size_t i = 0; i < TEST_NUMBER; ++i)
+    {
+        int find_number = (int)i%container_len;
+        int_hash.find(find_number);
+    }
+
+    test_timer.end();
+
+
+    std::cout << "test hash gettimeofday :" << test_timer.elapsed_usec() << " " << std::endl;
+
+}
+
+
+
+//
+
+int test_container_performance(int  /*argc*/, char * /*argv*/[])
+{
+
+    for (int j = 0; j < 3; ++j)
+    {
+
+        std::cout << "container length = 10 " << std::endl;
+        test_findwith_container(10);
+
+        std::cout << "container length = 20 " << std::endl;
+        test_findwith_container(20);
+
+        std::cout << "container length = 50 " << std::endl;
+        test_findwith_container(50);
+
+        std::cout << "container length = 100 " << std::endl;
+        test_findwith_container(100);
+
+        std::cout << "container length = 200 " << std::endl;
+        test_findwith_container(200);
+
+        std::cout << "container length = 500 " << std::endl;
+        test_findwith_container(500);
+
+        std::cout << "container length = 1000 " << std::endl;
+        test_findwith_container(1000);
+
+    }
+
+    return 0;
+}

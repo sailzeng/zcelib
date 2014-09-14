@@ -33,8 +33,7 @@ struct zce_flock_t
 {
     //构造函数和析构函数
     zce_flock_t():
-        handle_(ZCE_INVALID_HANDLE),
-        open_by_self_(false)
+        handle_(ZCE_INVALID_HANDLE)
     {
     }
     ~zce_flock_t()
@@ -56,11 +55,6 @@ public:
     ///处理的文件句柄 Handle to the underlying file.
     ZCE_HANDLE   handle_;
 
-    ///文件是否是被flock_init函数打开的，如果是自己打开的，在销毁时会关闭文件。
-    ///2个flock_init函数中有一个是直接传递handle_，此时open_by_self_ 为false
-    ///另外一个传递文件名称作为参数，此时open_by_self_ 为true
-    bool         open_by_self_;
-
 };
 
 namespace ZCE_LIB
@@ -78,24 +72,13 @@ namespace ZCE_LIB
 * @param[in]     whence  计算的起始根源位置，如SEEK_SET，SEEK_CUR，SEEK_END
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
+* @note          平台的不兼容会带来某种风险，Windows下一旦文件大小调整，锁锁定的区域就不对了，
+*                所以在需要兼容的环境，最好文件大小是不调整的，
 */
 void flock_adjust_params (zce_flock_t *lock,
                           int whence,
                           size_t &start,
                           size_t &len);
-
-/*!
-* @brief      文件锁初始化,根据文件名称等参数打开这个文件
-* @return         int         0成功，-1失败
-* @param[in,out]  lock        文件锁对象
-* @param[in]      file_name   文件名称，路径
-* @param[in]      open_mode   打开文件的模式
-* @param[in]      perms       文件的共享模式
-*/
-int flock_init (zce_flock_t *lock,
-                const char *file_name,
-                int open_mode,
-                mode_t perms = ZCE_DEFAULT_FILE_PERMS);
 
 /*!
 * @brief      文件锁初始化,直接用fd
@@ -108,11 +91,9 @@ int flock_init (zce_flock_t *lock,
 
 /*!
 * @brief      销毁文件锁对象zce_flock_t，也可以同时解开锁，可以同时关闭文件
-* @return     int  0成功，-1失败
 * @param[in]  lock 文件锁对象
-* @note       如果是flock_init函数打开的文件，会销毁掉
 */
-int flock_destroy (zce_flock_t *lock);
+void flock_destroy (zce_flock_t *lock);
 
 /*!
 * @brief   加文件读取锁，共享锁，如果不能加上锁，会阻塞等待，共享锁不会阻止其他人读取
@@ -179,21 +160,6 @@ int flock_unlock (zce_flock_t *lock,
                   size_t start = 0,
                   size_t len = 0);
 
-//-----------------------------------------------------------------------------------------
-//文件锁
-
-
-/*!
-* @brief      文件锁函数，只对整个文件进行加锁操作  flock - apply or remove an advisory lock on an open file
-* @return     int         0成功，-1失败
-* @param[in]  file_hadle  操作的文件句柄
-* @param[in]  operation   参数为LOCK_SH，LOCK_EX，LOCK_UN，另外读写锁可以加入LOCK_NB标识非阻塞
-*                         LOCK_SH : 共享锁
-*                         LOCK_EX : 排他锁
-*                         LOCK_UN : 解锁
-*                         LOCK_NB : 非阻塞，try
-*/
-int flock(ZCE_HANDLE file_hadle, int operation);
 
 };
 
