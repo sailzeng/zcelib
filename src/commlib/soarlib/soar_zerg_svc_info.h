@@ -55,11 +55,22 @@ public:
     ///无效的SERVICE ID
     static const uint32_t INVALID_SERVICES_ID   = 0;
 
-    ///
-    static const uint32_t BROADCAST_SERVICES_ID = (uint32_t) - 2;
-
-    ///表示是动态分片的SERVICE ID
+    ///让ZERG帮忙动态分配一个SERVICES_ID ，用于某些客户端请求
     static const uint32_t DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint32_t>(-1);
+
+    ///对某个type进行广播。
+    static const uint32_t BROADCAST_SERVICES_ID = static_cast<uint32_t>(-2);
+
+    ///使用均衡负载的方式动态分片的SERVICE ID
+    static const uint32_t LOAD_BALANCE_DYNAMIC_ID = static_cast<uint32_t>(-3);
+
+    ///使用主从的方式（根据AUTO CONNECT的顺序）动态分配的SERVICE ID
+    static const uint32_t MAIN_STANDBY_DYNAMIC_ID = static_cast<uint32_t>(-4);
+
+    ///随机动态选择一个SERVICE ID
+    static const uint32_t RANDROM_SELECT_DYNAMIC_ID = static_cast<uint32_t>(-5);
+
+    
 
 public:
 

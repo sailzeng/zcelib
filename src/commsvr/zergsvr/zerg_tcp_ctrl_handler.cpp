@@ -228,7 +228,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     opvallen = sizeof(socklen_t);
     socket_peer_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     socket_peer_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZLOG_DEBUG("[zergsvr] Accept peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
+    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] Accept peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 
 #endif
 }
@@ -328,7 +328,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     opvallen = sizeof(socklen_t);
     socket_peer_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     socket_peer_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZLOG_DEBUG("[zergsvr] Set Connect Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
+    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] Set Connect Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 #endif
 
 }
@@ -589,7 +589,7 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
         }
 
         //打印一下各个端口的生存信息
-        ZLOG_DEBUG("[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] live "
+        ZCE_LOGMSG(RS_DEBUG, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] live "
                    "time %lu. recieve times=%u.",
                    peer_svr_id_.services_type_,
                    peer_svr_id_.services_id_,
@@ -620,7 +620,7 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
 //PEER Event Handler关闭的处理
 int TCP_Svc_Handler::handle_close()
 {
-    ZLOG_DEBUG("[zergsvr] TCP_Svc_Handler::handle_close : %u.%u.",
+    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] TCP_Svc_Handler::handle_close : %u.%u.",
                peer_svr_id_.services_type_, peer_svr_id_.services_id_);
 
     //不要使用cancel_timer(this),其繁琐,而且慢,好要new,而且有一个不知名的死机
@@ -1349,12 +1349,10 @@ int TCP_Svc_Handler::uninit_all_staticdata()
     return 0;
 }
 
-
-
-
 //处理发送一个数据
 int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 {
+    int ret = 0;
     server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, 0, 0, 1);
     //
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
@@ -1372,120 +1370,134 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         p_sendto_svrinfo = &(proc_frame->recv_service_);
     }
 
-    if (p_sendto_svrinfo->services_id_ == 0)
+    //广播
+    if (p_sendto_svrinfo->services_id_ == SERVICES_ID::BROADCAST_SERVICES_ID)
     {
-        // 未指定services_id的话，就从auto connect中找一个
-        SERVICES_ID svrinfo;
-        int ret = zerg_auto_connect_.get_server(p_sendto_svrinfo->services_type_, &svrinfo);
-
-        if (ret != 0)
+        std::vector<uint32_t> *id_ary;
+        ret = svr_peer_info_set_.find_hdlary_by_type(p_sendto_svrinfo->services_type_, id_ary);
+        if (0 != ret )
         {
-            ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==0 but cant't find auto connect had service_type=%d svrinfo",
-                       p_sendto_svrinfo->services_type_);
+            ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==BROADCAST_SERVICES_ID but cant't find has service_type=%d svrinfo",
+                p_sendto_svrinfo->services_type_);
             return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
         }
 
-        // 修改一下要发送的svrinfo的id
-        p_sendto_svrinfo->services_id_ = svrinfo.services_id_;
-        ZLOG_DEBUG("process_send_data: service_type=%d service_id=0, change service id to %d",
-                   p_sendto_svrinfo->services_type_,
-                   p_sendto_svrinfo->services_id_);
-    }
-
-    int ret = 0;
-    TCP_Svc_Handler *svchanle = NULL;
-    ret = svr_peer_info_set_.find_handle_by_svcid(*p_sendto_svrinfo, svchanle);
-
-    //如果是要重新进行连接的服务器主动主动连接,
-    bool backroute_valid = false;
-    SERVICES_ID backroute_svcinfo;
-
-    if (svchanle == NULL || (svchanle != NULL  && svchanle->peer_status_ != PEER_STATUS_ACTIVE))
-    {
-
-        //看这个服务器是否是否是要重连的服务器，并且检查是否有备份路由
-        //ret = zerg_auto_connect_.get_backupsvcinfo(*p_sendto_svrinfo,
-        //                                           backroute_valid,
-        //                                           backroute_svcinfo);
-
-        //如果是要主动连接出去的服务器
-        if (ret == 0  && svchanle == NULL)
+        size_t ary_size = id_ary->size();
+        TCP_Svc_Handler *svchanle = NULL;
+        for (size_t i = 0; i < ary_size; ++i)
         {
-            //不检查是否成功，异步连接，99.99999%是成功的,
-            zerg_auto_connect_.reconnect_server(*p_sendto_svrinfo);
+            SERVICES_ID bc_svc_id(p_sendto_svrinfo->services_type_, (*id_ary)[i]);
+            ret = svr_peer_info_set_.find_handle_by_svcid(bc_svc_id, svchanle);
+
+            //理论上不可能找不到
+            ZCE_ASSERT(ret == 0);
+            if (ret != 0)
+            {
+            }
+
+            p_sendto_svrinfo->services_id_ = bc_svc_id.services_id_;
+            svchanle->put_frame_to_sendlist(tmpbuf);
+        }
+        
+    }
+    //给一个人
+    else
+    {
+        uint32_t services_id = SERVICES_ID::INVALID_SERVICES_ID;
+        TCP_Svc_Handler *svchanle = NULL;
+
+        //对一些动态的SVC ID进行处理
+        //负载均衡的方式
+        if (p_sendto_svrinfo->services_id_ == SERVICES_ID::LOAD_BALANCE_DYNAMIC_ID)
+        {
+
+            ret = svr_peer_info_set_.find_lbhdl_by_type(p_sendto_svrinfo->services_type_, services_id, svchanle);
+            if (ret != 0)
+            {
+                ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==LOAD_BALANCE_DYNAMIC_ID but cant't find has service_type=%d svrinfo",
+                    p_sendto_svrinfo->services_type_);
+            }
+
+            // 修改一下要发送的svrinfo的id
+            p_sendto_svrinfo->services_id_ = services_id;
+            ZCE_LOGMSG(RS_DEBUG, "process_send_data: service_type=%d service_id= LOAD_BALANCE_DYNAMIC_ID,"
+                " change service id to %u",
+                p_sendto_svrinfo->services_type_,
+                p_sendto_svrinfo->services_id_);
+        }
+        //这种情况，配置的服务器数量不能太多
+        //负载均衡的方式
+        else if (p_sendto_svrinfo->services_id_ == SERVICES_ID::MAIN_STANDBY_DYNAMIC_ID)
+        {
+            ret = svr_peer_info_set_.find_mshdl_by_type(p_sendto_svrinfo->services_type_, services_id, svchanle);
+            if (ret != 0)
+            {
+                ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==MAIN_STANDBY_DYNAMIC_ID but cant't find has service_type=%d svrinfo",
+                    p_sendto_svrinfo->services_type_);
+            }
+            // 修改一下要发送的svrinfo的id
+            p_sendto_svrinfo->services_id_ = services_id;
+            ZCE_LOGMSG(RS_DEBUG, "process_send_data: service_type=%d service_id= LOAD_BALANCE_DYNAMIC_ID,"
+                " change service id to %u",
+                p_sendto_svrinfo->services_type_,
+                p_sendto_svrinfo->services_id_);
+            //到达这儿应该有几种情况,
+            //主路由OK，处于ACTIVE状态，使用主路由发送
+            //主路由不处于ACTIVE状态，但是备份路由处于ACTIVE状态，使用备份路由发送
+            //主路由存在，但是不处于ACTIVE状态，备份路由也不处于ACTIVE状态，将数据交给一个人，缓冲到发送队列
+        }
+        else if (p_sendto_svrinfo->services_id_ == SERVICES_ID::RANDROM_SELECT_DYNAMIC_ID)
+        {
+
+        }
+        else
+        {
+            ret = svr_peer_info_set_.find_handle_by_svcid(*p_sendto_svrinfo, svchanle);
+            //如果是要主动连接出去的服务器
+            if (ret == 0 && svchanle == NULL)
+            {
+                //不检查是否成功，异步连接，99.99999%是成功的,
+                zerg_auto_connect_.reconnect_server(*p_sendto_svrinfo);
+            }
         }
 
-        //如果这个链接有备份路由，优先选择备份路由进行处理
-        if (backroute_valid)
+        //Double Check方法
+        //如果SVCHANDLE为空,表示没有相关的连接,进行错误处理
+        if (svchanle == NULL)
         {
-            //如果没有连接成功,或者句柄的状态还不处于激活状态,
-            //为什么要加入Socket Peer状态的判断?因为状态如果不是激活状态,可能数据无法正常发送,
-            //我们使用的是非阻塞连接,连接函数返回成功未必是真正的成功
-
-            //如果有备份路由，而且其处于激活状态,则将数据交给备份路由发送
-            TCP_Svc_Handler *backroute_svchanle = NULL;
-            ret = svr_peer_info_set_.find_handle_by_svcid(backroute_svcinfo, backroute_svchanle);
-
-            //如果备份路由处于OK状态，用备份路由发送
-            if (ret == 0 && backroute_svchanle->peer_status_ == PEER_STATUS_ACTIVE)
-            {
-                svchanle = backroute_svchanle;
-                //修改接受者
-                *p_sendto_svrinfo = backroute_svcinfo;
-            }
-            else
-            {
-                //如果没有找到对应的
-                if (backroute_svchanle == NULL)
-                {
-                    zerg_auto_connect_.reconnect_server(backroute_svcinfo);
-                }
-
-                //
-                ZCE_LOGMSG(RS_ERROR, "[zergsvr] Want to use back route to send data,but backup svc[%u|%u] "
-                           " not active main svc[%u|%u].",
-                           backroute_svcinfo.services_type_,
-                           backroute_svcinfo.services_id_,
-                           p_sendto_svrinfo->services_type_,
-                           p_sendto_svrinfo->services_id_
-                          );
-            }
+            //这儿还没有编码
+            ZCE_LOGMSG(RS_ERROR, "[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
+                "have been existed. frame command[%u]. uin[%u] frame length[%u].",
+                p_sendto_svrinfo->services_type_,
+                p_sendto_svrinfo->services_id_,
+                proc_frame->frame_command_,
+                proc_frame->frame_uid_,
+                proc_frame->frame_length_
+                );
+            DEBUGDUMP_FRAME_HEAD(proc_frame, "[SEND TO NO EXIST HANDLE]", RS_ERROR);
+            return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
         }
+
+
+        //将发送的FRAME给HANDLE对象，当然这个地方未必一定放的进去，因为有几种情况,
+        //1.就是一个关闭指令,
+        //2.HANDLE内部的队列满了,
+
+        //这儿不进行错误处理，因为put_frame_to_sendlist内部进行了错误处理，回收等操作
+        //到这儿为止，认为成功
+        svchanle->put_frame_to_sendlist(tmpbuf);
     }
-
-    //Double Check方法
-    //如果SVCHANDLE为空,表示没有相关的连接,进行错误处理
-    if (svchanle == NULL)
-    {
-        //这儿还没有编码
-        ZCE_LOGMSG(RS_ERROR, "[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
-                   "have been existed. frame command[%u]. uin[%u] frame length[%u].",
-                   p_sendto_svrinfo->services_type_,
-                   p_sendto_svrinfo->services_id_,
-                   proc_frame->frame_command_,
-                   proc_frame->frame_uid_,
-                   proc_frame->frame_length_
-                  );
-        DEBUGDUMP_FRAME_HEAD(proc_frame, "[SEND TO NO EXIST HANDLE]", RS_ERROR);
-        return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
-    }
-
-
-    //到达这儿应该有几种情况,
-    //主路由OK，处于ACTIVE状态，使用主路由发送
-    //主路由不处于ACTIVE状态，但是备份路由处于ACTIVE状态，使用备份路由发送
-    //主路由存在，但是不处于ACTIVE状态，备份路由也不处于ACTIVE状态，将数据交给主路由，缓冲到发送队列
-
-    //将发送的FRAME给HANDLE对象，当然这个地方未必一定放的进去，因为有几种情况,
-    //1.就是一个关闭指令,
-    //2.HANDLE内部的队列满了,
-
-    //这儿不进行错误处理，因为put_frame_to_sendlist内部进行了错误处理，回收等操作
-    //到这儿为止，认为成功
-    svchanle->put_frame_to_sendlist(tmpbuf);
-
 
     return 0;
+}
+
+
+///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
+///请参考 @ref Zerg_Auto_Connector
+int TCP_Svc_Handler::find_conf_ms_svcid_ary(uint16_t services_type,
+                                            std::vector<uint32_t> *& ms_svcid_ary)
+{
+    return zerg_auto_connect_.find_conf_ms_svcid_ary(services_type, ms_svcid_ary);
 }
 
 

@@ -80,7 +80,7 @@ int Comm_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
 {
 
     ZCE_ASSERT(stat_file_name != NULL);
-    ZCE_ASSERT(service_id != NULL);
+    ZCE_ASSERT(svc_id != NULL);
 
     int ret = 0;
     char file_name[STAT_MMAP_FILENAME_LEN + 1];

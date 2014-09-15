@@ -162,18 +162,7 @@ int UDP_Svc_Handler::handle_close()
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
-Function        : UDP_Svc_Handler::read_data_from_udp
-Return          : int
-Parameter List  :
-Param1: size_t& szrevc
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//
 int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 {
     int ret = 0;
@@ -265,7 +254,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     size_revc = recvret;
 
-    ZLOG_DEBUG("[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
+    ZCE_LOGMSG(RS_DEBUG,"[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
                remote_addr.get_host_addr(),
                remote_addr.get_port_number(),
                dgram_peer_.get_handle(),
@@ -274,18 +263,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
-Function        : UDP_Svc_Handler::write_data_to_udp
-Return          : int
-Parameter List  :
-Param1: Zerg_App_Frame* send_frame
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//
 int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 {
     ssize_t szsend = 0;
@@ -317,7 +295,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
         return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
     }
 
-    ZLOG_DEBUG("[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
+    ZCE_LOGMSG(RS_DEBUG,"[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
                remote_addr.get_host_addr(),
                remote_addr.get_port_number(),
                dgram_peer_.get_handle(),
@@ -334,18 +312,6 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
-Function        : UDP_Svc_Handler::send_all_to_udp
-Return          : int
-Parameter List  :
-Param1: Zerg_App_Frame* send_frame
-Description     : 发送UDP数据
-Calls           :
-Called By       :
-Other           : 要找到原有的
-Modify Record   :
-******************************************************************************************/
 int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
 {
     //找到原来的那个UDP端口，使用原来的端口发送，
@@ -369,17 +335,7 @@ int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
 }
 
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
-Function        : UDP_Svc_Handler::init_all_static_data
-Return          : int
-Parameter List  : NULL
-Description     : 初始化静态参数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//初始化静态参数
 int UDP_Svc_Handler::init_all_static_data()
 {
 

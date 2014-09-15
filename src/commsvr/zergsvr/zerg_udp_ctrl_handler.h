@@ -64,36 +64,39 @@ protected:
 
 protected:
 
-    //数据包
-    ZCE_Socket_DataGram      dgram_peer_;
-
-    //邦定的地址
-    ZCE_Sockaddr_In          udp_bind_addr_;
-
-    //
-    SERVICES_ID              my_svc_info_;
-    //是否进行SESSION校验
-    bool                     sessionkey_verify_;
-    //数据缓冲区，UDP只有一个
-    Zerg_Buffer             *dgram_databuf_;
-    //IP限制管理器
-    Zerg_IPRestrict_Mgr      *ip_restrict_;
-
-protected:
-    //
+    ///
     typedef std::vector< UDP_Svc_Handler *>  ARY_OF_UDPSVC_HANDLER;
 
-    //UPD的数组，可以有多个UDP
+    ///UPD的数组，可以有多个UDP
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
-    //统计，使用单子类的指针
+    ///统计，使用单子类的指针
     static Comm_Stat_Monitor       *server_status_;
 
-    //通讯管理器,保存是为了加快速度
+    ///通讯管理器,保存是为了加快速度
     static Zerg_Comm_Manager       *zerg_comm_mgr_;
 
-    //是否是代理服务器
+    ///是否是代理服务器
     static bool                     if_proxy_;
+
+
+protected:
+
+    ///数据包UDP发送的Socket
+    ZCE_Socket_DataGram      dgram_peer_;
+
+    ///邦定的地址
+    ZCE_Sockaddr_In          udp_bind_addr_;
+
+    ///
+    SERVICES_ID              my_svc_info_;
+    ///是否进行SESSION校验
+    bool                     sessionkey_verify_;
+    ///数据缓冲区，UDP只有一个
+    Zerg_Buffer             *dgram_databuf_;
+    ///IP限制管理器
+    Zerg_IPRestrict_Mgr      *ip_restrict_;
+
 
 
 };

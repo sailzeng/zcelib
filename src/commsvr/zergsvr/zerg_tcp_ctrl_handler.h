@@ -253,8 +253,8 @@ public:
 
     ///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
     ///请参考 @ref Zerg_Auto_Connector
-    static int find_confms_svcid_ary(uint16_t services_type,
-                                     std::vector<uint32_t> *& ms_svcid_ary);
+    static int find_conf_ms_svcid_ary(uint16_t services_type,
+                                      std::vector<uint32_t> *& ms_svcid_ary);
 protected:
 
     //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
@@ -285,32 +285,32 @@ protected:
 protected:
 
     ///通讯管理器,保存是为了加快速度
-    static  Zerg_Comm_Manager   *zerg_comm_mgr_;
+    static  Zerg_Comm_Manager *zerg_comm_mgr_;
 
     ///存储缓存,全局唯一,保存是为了加快速度
-    static ZBuffer_Storage     *zbuffer_storage_;
+    static ZBuffer_Storage *zbuffer_storage_;
 
     ///统计，使用单子类的指针
-    static Comm_Stat_Monitor    *server_status_;
+    static Comm_Stat_Monitor *server_status_;
 
     ///最大能够Accept的PEER数量,
-    static size_t              max_accept_svr_;
+    static size_t max_accept_svr_;
     ///最大能够Connect的PEER数量
-    static size_t              max_connect_svr_;
+    static size_t max_connect_svr_;
 
     ///容量告警阈值,
-    static size_t              accpet_threshold_warn_;
+    static size_t accpet_threshold_warn_;
     ///已经超过告警阈值的次数
-    static size_t              threshold_warn_number_;
+    static size_t threshold_warn_number_;
 
     ///服务示是代理服务器
-    static bool                if_proxy_;
+    static bool if_proxy_;
 
     ///ACCEPT端口的后等待动作的时长,如果之后一段时间没有动作，判为僵死，KO
-    static unsigned int        accepted_timeout_;
+    static unsigned int accepted_timeout_;
 
     ///等待接受一个完整数据的超时时间,为0表示不限制,判为僵死，KO
-    static unsigned int        receive_timeout_;
+    static unsigned int receive_timeout_;
 
 
 
@@ -322,26 +322,26 @@ protected:
 
 
     ///已经Accept的PEER数量
-    static size_t              num_accept_peer_;
+    static size_t num_accept_peer_;
     ///已经Connect的PEER数量
-    static size_t              num_connect_peer_;
+    static size_t num_connect_peer_;
 
 
     ///ACCEPT SVC handler的池子
-    static POOL_OF_TCP_HANDLER pool_of_acpthdl_;
+    static POOL_OF_TCP_HANDLER  pool_of_acpthdl_;
 
     ///CONNECT svc handler的池子
-    static POOL_OF_TCP_HANDLER pool_of_cnthdl_;
+    static POOL_OF_TCP_HANDLER  pool_of_cnthdl_;
 
 
     ///发送缓冲区的最大frame数
-    static size_t              accept_send_deque_size_;
+    static size_t accept_send_deque_size_;
 
     ///主动连接的发送队列长度
-    static size_t              connect_send_deque_size_;
+    static size_t connect_send_deque_size_;
 
     ///Handle ID生成器，这个东东主要用于需要服务器主动分配SERVICES ID的地方
-    static unsigned int        handler_id_builder_;
+    static unsigned int         handler_id_builder_;
 
 protected:
     ///服务模式

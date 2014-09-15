@@ -43,12 +43,43 @@ public:
     * @return     int  ==0表示查询成功
     * @param[in]  services_type 服务器类型
     * @param[out] services_id   查询到的SVC ID
-    * @param      svc_handle     返回对应的Handle
+    * @param      svc_handle    返回对应的Handle
     * @note       这样查询保证发送的数据尽量负载均衡，
     */
     int find_lbhdl_by_type(uint16_t services_type,
                            uint32_t &services_id,
                            TCP_Svc_Handler*& svc_handle);
+
+
+
+    /*!
+    * @brief      以随机选择的方式，根据services type查询一个的SVC的ID和句柄，RD(random),也是负载均衡的一种模式
+    * @return     int
+    * @param      services_type 服务器类型
+    * @param      services_id   查询到的SVC ID 
+    * @param      svc_handle    返回对应的Handle
+    */
+    int find_rdhdl_by_type(uint16_t services_type,
+                           uint32_t &services_id,
+                           TCP_Svc_Handler*& svc_handle);
+
+
+    /*!
+    * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
+    *             只能用于在AUTO CONNECT配置的链接出去的服务器，主备顺序根据AUTO CONNECT配置
+    *             顺序决定，配置在前面的服务器优先考虑 MS(Main Standby)
+    * @return     int ==0表示查询成功
+    * @param[in]  services_type 服务器类型
+    * @param[out] find_services_id  查询到的SVC ID
+    * @param[out] svc_handle    返回对应的Handle
+    * @note       优先主，主有问题，选择备份。这样可以保证发送的数据都（尽量）给一个服务器
+    *             注意这样模式，配置的主备服务器不要数量过多(<=4)，
+    */
+    int find_mshdl_by_type(uint16_t services_type,
+                           uint32_t &find_services_id,
+                           TCP_Svc_Handler*& svc_handle);
+
+
 
 
     /*!

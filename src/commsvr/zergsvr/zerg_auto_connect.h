@@ -57,20 +57,10 @@ public:
     * @param[in]  services_type
     * @param[out] ms_svcid_ary   配置的主备服务器列表数组
     */
-    int find_confms_svcid_ary(uint16_t services_type,
-                              std::vector<uint32_t> *& ms_svcid_ary);
+    int find_conf_ms_svcid_ary(uint16_t services_type,
+                               std::vector<uint32_t> *& ms_svcid_ary);
 
-    /*!
-    * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
-    *             只能用于在AUTO CONNECT配置的链接出去的服务器，主备顺序根据AUTO CONNECT配置
-    *             顺序决定，配置在前面的服务器优先考虑 MS(Main Standby)
-    * @return     int ==0表示查询成功
-    * @param[in]  services_type 服务器类型
-    * @param[out] find_services_id  查询到的SVC ID
-    * @param[out] svc_handle    返回对应的Handle
-    * @note       优先主，主有问题，选择备份。这样可以保证发送的数据都（尽量）给一个服务器
-    *             注意这样模式，配置的主备服务器不要数量过多(<=4)，
-    */
+
 
 protected:
 

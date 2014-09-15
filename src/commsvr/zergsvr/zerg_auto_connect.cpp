@@ -151,7 +151,7 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
 int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In     &inetaddr)
 {
-    ZLOG_DEBUG("[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
+    ZCE_LOGMSG(RS_DEBUG,"[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
                svrinfo.services_type_,
                svrinfo.services_id_,
                inetaddr.get_host_addr(),
@@ -212,8 +212,8 @@ size_t Zerg_Auto_Connector::numsvr_connect()
 }
 
 //根据services_type查询对应的配置主备服务器列表数组 MS（主备）
-int Zerg_Auto_Connector::find_confms_svcid_ary(uint16_t services_type,
-                                               std::vector<uint32_t> *& ms_svcid_ary)
+int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
+                                                std::vector<uint32_t> *& ms_svcid_ary)
 {
     auto map_iter = type_to_idary_map_.find(services_type);
     if (type_to_idary_map_.end() == map_iter)
