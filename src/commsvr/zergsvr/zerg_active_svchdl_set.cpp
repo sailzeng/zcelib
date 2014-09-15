@@ -133,58 +133,6 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
 }
 
 
-//以随机选择的方式，根据services type查询一个的SVC的ID和句柄，RD(random),也是负载均衡的一种模式
-int Active_SvcHandle_Set::find_rdhdl_by_type(uint16_t services_type,
-                                             uint32_t &find_services_id,
-                                             TCP_Svc_Handler *& svc_handle)
-{
-    //看type类型的MAP里面是否有这种类型的数据了
-    MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
-        type_to_idtable_.find(services_type);
-    if (table_iter == type_to_idtable_.end())
-    {
-        ZCE_LOGMSG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
-            __ZCE_FUNC__,
-            services_type);
-        return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
-    }
-    SERVICES_ID_TABLE *id_table = &(table_iter->second);
-    size_t ary_size = id_table->services_id_ary_.size();
-
-    //orderid_use_id_是一个自增值，用于负载均衡
-    for (size_t j = 0; j < ary_size; ++j)
-    {
-        size_t lb_id = (id_table->orderid_use_id_) % ary_size;
-        id_table->orderid_use_id_ += 1;
-
-        find_services_id = id_table->services_id_ary_[lb_id];
-        SERVICES_ID lb_svcid(services_type, find_services_id);
-        auto iter = svr_info_set_.find(lb_svcid);
-
-        //到这儿就是你代码写错了，
-        ZCE_ASSERT(iter != svr_info_set_.end());
-        if (iter == svr_info_set_.end())
-        {
-            ZCE_LOGMSG(RS_ALERT, "[zergsvr]Code error, can't find svchanle info. Svrinfo Type.ID:[%u.%u] .",
-                lb_svcid.services_type_,
-                lb_svcid.services_id_);
-            return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
-        }
-
-        svc_handle = (*(iter)).second;
-
-        //会尽量选择一个激活状态的发送
-        if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
-        {
-            break;
-        }
-    }
-
-    return 0;
-}
-
-
-
 //查询类型对应的所有active的SVC ID数组，用于广播等
 int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *& id_ary)
 {

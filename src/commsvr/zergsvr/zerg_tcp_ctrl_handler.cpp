@@ -1446,10 +1446,6 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
             //主路由不处于ACTIVE状态，但是备份路由处于ACTIVE状态，使用备份路由发送
             //主路由存在，但是不处于ACTIVE状态，备份路由也不处于ACTIVE状态，将数据交给一个人，缓冲到发送队列
         }
-        else if (p_sendto_svrinfo->services_id_ == SERVICES_ID::RANDROM_SELECT_DYNAMIC_ID)
-        {
-
-        }
         else
         {
             ret = svr_peer_info_set_.find_handle_by_svcid(*p_sendto_svrinfo, svchanle);

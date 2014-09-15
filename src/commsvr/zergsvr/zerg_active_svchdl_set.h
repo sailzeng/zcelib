@@ -50,20 +50,7 @@ public:
                            uint32_t &services_id,
                            TCP_Svc_Handler*& svc_handle);
 
-
-
-    /*!
-    * @brief      以随机选择的方式，根据services type查询一个的SVC的ID和句柄，RD(random),也是负载均衡的一种模式
-    * @return     int
-    * @param      services_type 服务器类型
-    * @param      services_id   查询到的SVC ID 
-    * @param      svc_handle    返回对应的Handle
-    */
-    int find_rdhdl_by_type(uint16_t services_type,
-                           uint32_t &services_id,
-                           TCP_Svc_Handler*& svc_handle);
-
-
+    
     /*!
     * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
     *             只能用于在AUTO CONNECT配置的链接出去的服务器，主备顺序根据AUTO CONNECT配置
@@ -78,8 +65,6 @@ public:
     int find_mshdl_by_type(uint16_t services_type,
                            uint32_t &find_services_id,
                            TCP_Svc_Handler*& svc_handle);
-
-
 
 
     /*!
