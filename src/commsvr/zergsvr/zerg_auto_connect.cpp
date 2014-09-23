@@ -40,10 +40,20 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         //如果查询不到
         if (ret != 0)
         {
-            ZCE_LOGMSG(RS_ERROR, "[zergsvr] Count find Auto Connect Services Info SvrType=%u,SvrID=%u .Please Check Config file. ",
+            ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't find Auto connect services ID %u.%u .Please check config file. ",
                        svc_route.svc_id_.services_type_,
                        svc_route.svc_id_.services_id_);
             return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
+        }
+
+        auto ins_iter = set_auto_cnt_svcid_.insert(svc_route.svc_id_);
+        if (ins_iter.second == false)
+        {
+            ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't insert auto connect services ID %u.%u "
+                       "into set .Please check config file. ",
+                       svc_route.svc_id_.services_type_,
+                       svc_route.svc_id_.services_id_);
+            return SOAR_RET::ERR_ZERG_CONNECT_REPEAT_SVCID;
         }
 
         ary_want_connect_.push_back(svc_route);
@@ -151,7 +161,7 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
 int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In     &inetaddr)
 {
-    ZCE_LOGMSG(RS_DEBUG,"[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
+    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
                svrinfo.services_type_,
                svrinfo.services_id_,
                inetaddr.get_host_addr(),

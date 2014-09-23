@@ -361,7 +361,7 @@ using std::unordered_set;
 
 // «∑Ò π”√LUA
 #ifndef ZCE_USE_LUA
-#define ZCE_USE_LUA 0
+#define ZCE_USE_LUA 1
 #endif
 
 

@@ -61,32 +61,45 @@ public:
                                std::vector<uint32_t> *& ms_svcid_ary);
 
 
-
+    inline bool is_auto_connect_svcid(const SERVICES_ID &svc_id)
+    {
+        //如果在SET里面找不到
+        if (set_auto_cnt_svcid_.find(svc_id) == set_auto_cnt_svcid_.end())
+        {
+            return false;
+        }
+        return true;
+    }
 protected:
 
     //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-    int connect_server_bysvcid(const SERVICES_ID &svrinfo, 
+    int connect_server_bysvcid(const SERVICES_ID &svc_id,
                                const ZCE_Sockaddr_In &inet_addr);
 
 protected:
 
     //
     typedef std::vector<SERVICES_INFO > ARRAY_OF_ZERG_SVCINFO;
+    //
+    typedef std::unordered_set<SERVICES_ID, HASH_OF_SVCID> SET_OF_SVCID;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
     typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
 
+protected:
+
     //连接器
-    ZCE_Socket_Connector     zerg_connector_;
+    ZCE_Socket_Connector zerg_connector_;
 
     //配置实例指针
     const Zerg_Server_Config *zerg_svr_cfg_ = NULL;
 
-    //
-    size_t                   size_of_wantconnect_ = 0;
-    //
+    ///
+    size_t size_of_wantconnect_ = 0;
+    ///
     ARRAY_OF_ZERG_SVCINFO    ary_want_connect_;
-
+    ///
+    SET_OF_SVCID set_auto_cnt_svcid_;;
 
     //类型对应的SERVICES ID 数组 的MAP，数组里面的id的顺序其实是主备顺序
     MAP_OF_TYPE_TO_IDARY     type_to_idary_map_;

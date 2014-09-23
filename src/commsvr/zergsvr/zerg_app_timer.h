@@ -30,7 +30,7 @@ protected:
 public:
 
     //主动重现链接的间隔时间，单位毫秒
-    static const uint32_t AUTOCONNECT_RETRY_MESC = 8000;
+    static const uint32_t AUTOCONNECT_RETRY_MESC = 5000;
 
     //发包频率检查的间隔时间，单位毫秒
     static const uint32_t SEND_FRAME_CHECK_MSEC = 10000;

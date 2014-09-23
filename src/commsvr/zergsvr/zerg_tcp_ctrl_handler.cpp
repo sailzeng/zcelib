@@ -1411,7 +1411,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         if (p_sendto_svrinfo->services_id_ == SERVICES_ID::LOAD_BALANCE_DYNAMIC_ID)
         {
 
-            ret = svr_peer_info_set_.find_lbhdl_by_type(p_sendto_svrinfo->services_type_, services_id, svchanle);
+            ret = svr_peer_info_set_.find_lbseqhdl_by_type(p_sendto_svrinfo->services_type_, services_id, svchanle);
             if (ret != 0)
             {
                 ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==LOAD_BALANCE_DYNAMIC_ID but cant't find has service_type=%d svrinfo",
@@ -1450,10 +1450,17 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         {
             ret = svr_peer_info_set_.find_handle_by_svcid(*p_sendto_svrinfo, svchanle);
             //如果是要主动连接出去的服务器
-            if (ret == 0 && svchanle == NULL)
+            if (0 != ret )
             {
-                //不检查是否成功，异步连接，99.99999%是成功的,
-                zerg_auto_connect_.reconnect_server(*p_sendto_svrinfo);
+                ZCE_LOGMSG(RS_ERROR, "process_send_data: but cant't find has svc id=%u.%u svrinfo",
+                    p_sendto_svrinfo->services_type_,
+                    p_sendto_svrinfo->services_id_);
+
+                //if (zerg_auto_connect_.is_auto_connect_svcid(*p_sendto_svrinfo))
+                //{
+                //    //不检查是否成功，异步连接，99.99999%是成功的,
+                //    zerg_auto_connect_.reconnect_server(*p_sendto_svrinfo);
+                //}
             }
         }
 

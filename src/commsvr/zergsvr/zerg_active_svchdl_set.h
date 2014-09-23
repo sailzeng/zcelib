@@ -39,16 +39,31 @@ public:
                              TCP_Svc_Handler *& svc_handle);
 
     /*!
-    * @brief      以负载均衡的方式，根据services type查询一个的SVC，按照数组顺序轮询的返回，LB(Load Balance)
+    * @brief      以负载均衡的方式，根据services type查询一个的SVC，按照序列数组顺序轮询的返回，
+    *             lbseq(Load Balance sequence)
     * @return     int  ==0表示查询成功
     * @param[in]  services_type 服务器类型
     * @param[out] services_id   查询到的SVC ID
     * @param      svc_handle    返回对应的Handle
     * @note       这样查询保证发送的数据尽量负载均衡，
     */
-    int find_lbhdl_by_type(uint16_t services_type,
-                           uint32_t &services_id,
-                           TCP_Svc_Handler*& svc_handle);
+    int find_lbseqhdl_by_type(uint16_t services_type,
+                              uint32_t &services_id,
+                              TCP_Svc_Handler*& svc_handle);
+
+
+    /*!
+    * @brief      
+    * @return     int
+    * @param      services_type
+    * @param      lb_factor
+    * @param      services_id
+    * @param      svc_handle
+    */
+    int find_lbfactorhdl_by_type(uint16_t services_type,
+                                 uint32_t lb_factor,
+                                 uint32_t &services_id,
+                                 TCP_Svc_Handler*& svc_handle);
 
     
     /*!
