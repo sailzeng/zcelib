@@ -14,7 +14,7 @@ class Zerg_Server_Config;
 class Zerg_IPRestrict_Mgr
 {
 
-    typedef unordered_set<unsigned int> Set_Of_IPAddress;
+    typedef std::unordered_set<unsigned int> Set_Of_IPAddress;
 
 protected:
     //
@@ -33,6 +33,10 @@ public:
     static Zerg_IPRestrict_Mgr *instance();
     //清理单子实例
     static void clean_instance();
+    
+protected:
+    //单子实例
+    static Zerg_IPRestrict_Mgr        *instance_;
 
 protected:
 
@@ -40,10 +44,6 @@ protected:
     Set_Of_IPAddress           allow_ip_set_;
     //拒绝进行连接的IP地址
     Set_Of_IPAddress           reject_ip_set_;
-
-protected:
-    //单子实例
-    static Zerg_IPRestrict_Mgr        *instance_;
 
 };
 

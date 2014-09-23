@@ -1,0 +1,304 @@
+#ifndef ARBITER_PROXY_PROCESS_H_
+#define ARBITER_PROXY_PROCESS_H_
+
+/****************************************************************************************************
+class Interface_Proxy_Process
+****************************************************************************************************/
+class InterfaceProxyProcess
+{
+public:
+
+    // 代理的类型
+    enum PROXY_TYPE
+    {
+        PROXY_TYPE_INVALID           = 0, // 无效的TYPE
+        PROXY_TYPE_ECHO              = 1, // 将所有的数据数据回显
+        PROXY_TYPE_DB_MODAL          = 2, // 按照UIN取模进行Proxy转发，用于DBServer和金融服务器
+        PROXY_TYPE_TRANSMIT          = 3, // 直接进行转发处理，不对数据帧进行任何处理
+        PROXY_TYPE_COPY_TRANS_ALL    = 4, // 将数据复制转发给所有配置的服务器
+        PROXY_TYPE_DB_MODAL_MG       = 5, // 按照APPID和UIN进行Proxy转发，用于手游类业务
+        PROXY_TYPE_COPY_TRANS_ALL_MG = 6, // 将数据复制转发给所有配置的服务器,手游类业务
+    };
+
+protected:
+
+    // 默认初始化的长度
+    static const size_t  INIT_PROCESS_FRAME = 64;
+
+    // 是否检查帧
+    uint32_t                           if_check_frame_;
+
+    // 代理处理的命令,
+    hash_set<unsigned int>        proxy_processcmd_;
+
+    //
+    Zerg_MMAP_BusPipe             *zerg_mmap_pipe_;
+
+protected:
+
+    // 命令的过滤器,看不出有什么扩展必要,所以放在这儿,
+    inline int FilterCommand(unsigned long cmd);
+
+    // 初始化内存管道
+    int InitArbiterMMAPPipe();
+
+public:
+
+    // 构造函数
+    InterfaceProxyProcess();
+    virtual ~InterfaceProxyProcess();
+
+    //
+    virtual int InitProxyInstance();
+
+    // 通过xml文件取得代理的配置信息,这个函数只取过滤命令部分的代码,要使用指定基类访问
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+
+    // 代理的处理,返回生产的帧的个数
+    virtual int process_proxy(Comm_App_Frame *proc_frame) = 0;
+
+public:
+    // 代理接口制造的工厂
+    static InterfaceProxyProcess *CreatePorxyFactory(PROXY_TYPE proxytype);
+};
+
+/******************************************************************************************
+Author          : Sail ZENGXING  Date Of Creation: 2005年12月1日
+Function        : Interface_Proxy_Process::FilterCommand
+Return          : inline int == 0 表示成功
+Parameter List  :
+Param1: unsigned long cmd 要检查的CMD
+Description     : 过滤命令,看是否是要自己处理的,
+Calls           :
+Called By       :
+Other           : Inline,
+Modify Record   :
+******************************************************************************************/
+inline int InterfaceProxyProcess::FilterCommand(unsigned long cmd)
+{
+    // 检查处理的命令
+    if (proxy_processcmd_.size() > 0)
+    {
+        if (proxy_processcmd_.find(cmd) == proxy_processcmd_.end())
+        {
+            return TSS_RET::ERR_PROXY_APPFRAME_CMD_ERROR;
+        }
+    }
+
+    // 返回成功
+    return TSS_RET::TSS_RET_SUCC;
+}
+
+/****************************************************************************************************
+class  Echo_Proxy_Process 回送处理数据,
+****************************************************************************************************/
+class Echo_Proxy_Process : public InterfaceProxyProcess
+{
+
+protected:
+
+public:
+    // Echo处理
+    Echo_Proxy_Process();
+    virtual ~Echo_Proxy_Process();
+
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    // 进行代理的处理
+    virtual int process_proxy(Comm_App_Frame *proc_frame);
+};
+
+class DBModalProxyInfo
+{
+public:
+    // 分布的位移
+    unsigned int distribute_offset_;
+
+    // 分布的取模
+    unsigned int distribute_module_;
+
+    // 路由的服务器类型
+    unsigned short router_svr_type_;
+
+    // 主路由配置，
+    std::vector<unsigned int> normal_router_cfg_;
+
+    // 克隆路由的配置，
+    std::vector<unsigned int> clone_router_cfg_;
+
+};
+
+/****************************************************************************************************
+class  DBModalProxyProcess DB取模进行数据转发的处理方式
+****************************************************************************************************/
+class DBModalProxyProcess : public InterfaceProxyProcess
+{
+
+protected:
+    // 从测试上来看偏移取8和16差不多,肯定可以保证数据量最大偏差在10%以内,所以你尽管放心
+    // 我测试的最差的取模的方式是模10类似的方式.
+
+    // 这个分布的方法来自于QQGame,我认为OFFSET取8应该有更好的表现,但是,但是
+    // 取16可以保证TC的Leader们都在机器1上,安全第一,安全第一,
+    // 为什么已经固定了256个模数,因为不会超过,日后也容易改,所以我放弃配置
+
+    // 路由表, key为service_type, value为对应路由信息
+    std::map<unsigned short, DBModalProxyInfo*> dbmodal_proxy_map_;
+
+public:
+    DBModalProxyProcess();
+    virtual ~DBModalProxyProcess();
+    //
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    //
+    virtual int process_proxy(Comm_App_Frame *proc_frame);
+};
+
+/****************************************************************************************************
+class  TransmitProxyProcess 直接进行转发，不进行任何处理的Proxy方式
+****************************************************************************************************/
+class TransmitProxyProcess : public InterfaceProxyProcess
+{
+public:
+    TransmitProxyProcess();
+    virtual ~TransmitProxyProcess();
+    //
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    //
+    virtual int process_proxy(Comm_App_Frame *proc_frame);
+};
+
+/****************************************************************************************************
+class  CopyTransmitAllProxyProcess 将数据复制转发给所有配置的服务器
+****************************************************************************************************/
+class CopyTransmitAllProxyProcess : public InterfaceProxyProcess
+{
+protected:
+    //
+    static const size_t MAX_NUM_COPY_SVC = 512;
+protected:
+
+    // 要复制的服务器类型
+    unsigned short                copytrans_svctype_;
+    // 要复制的数量
+    size_t                        copytrans_svcnum_;
+    // 要复制的FRAME的尺寸
+    unsigned int copytrans_svcid_[MAX_NUM_COPY_SVC];
+
+public:
+    CopyTransmitAllProxyProcess();
+    virtual ~CopyTransmitAllProxyProcess();
+    //
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    //
+    virtual int process_proxy(Comm_App_Frame *proc_frame);
+};
+
+/****************************************************************************
+struct DBModalMGKey DBModalMGProxyProcess使用的索引表的key
+**************************************************************************/
+struct DBModalMGKey
+{
+public:
+    uint32_t app_id_;
+    uint32_t service_type_;
+    bool operator<(const DBModalMGKey r)const
+    {
+        return ((this->app_id_!=r.app_id_)?this->app_id_<r.app_id_:this->service_type_<r.service_type_);
+    }
+};
+
+struct DBModalMGRouteItem
+{
+public:
+    // 路由入口的hash值
+    uint16_t hash_;
+    // 主路由id
+    unsigned int normal_router_;
+    // 克隆路由id
+    unsigned int clone_router_;
+    // 旁路路由id
+    unsigned int passby_router_;
+
+    bool operator<(DBModalMGRouteItem r)const
+    {
+        return this->hash_ < r.hash_;
+    }
+};
+
+class DBModalMGProxyInfo
+{
+public:
+    // 路由的服务器类型
+    unsigned short router_svr_type_;
+    // 路由表
+    std::vector<DBModalMGRouteItem> route_cfg_;
+
+    const DBModalMGRouteItem *find_route(unsigned int uin);
+};
+/****************************************************************************************************
+class  DBModalProxyMGProcess 手游类按照APPID和UIN进行数据转发的处理方式
+****************************************************************************************************/
+class DBModalMGProxyProcess : public InterfaceProxyProcess
+{
+protected:
+    //
+    std::vector<DBModalMGProxyInfo*> dbmodal_mg_proxys_;
+    //
+    std::map<DBModalMGKey, DBModalMGProxyInfo*> dbmodal_mg_proxy_map_;
+
+public:
+    DBModalMGProxyProcess();
+    virtual ~DBModalMGProxyProcess();
+    //
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    //
+    virtual int process_proxy(Comm_App_Frame *proc_frame);
+
+private:
+    //
+    DBModalMGProxyInfo *add_proxy(conf_proxysvr::RouteInfo *route_info);
+    //
+    int add_entry(uint32_t app_id, uint32_t service_type, DBModalMGProxyInfo *proxy_info);
+    //
+    const DBModalMGRouteItem *find_proxy(uint32_t app_id, uint32_t service_type, uint32_t uin, uint32_t &recv_service);
+    //
+    void clear_all_entrys();
+};
+
+class CopyTransmitAllMGProxyInfo
+{
+public:
+    uint32_t service_type_;
+    std::vector<uint32_t> svcid_;
+};
+
+/****************************************************************************************************
+class  CopyTransmitAllMGProxyProcess 将数据复制转发给所有配置的服务器,手游类业务
+****************************************************************************************************/
+class CopyTransmitAllMGProxyProcess : public InterfaceProxyProcess
+{
+protected:
+    std::vector<CopyTransmitAllMGProxyInfo*> proxys_;
+    std::map<uint32_t, CopyTransmitAllMGProxyInfo*> proxy_map_;
+
+public:
+    CopyTransmitAllMGProxyProcess();
+    virtual ~CopyTransmitAllMGProxyProcess();
+    //
+    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    //
+    virtual int process_proxy(Comm_App_Frame *proc_frame);
+
+private:
+    //
+    CopyTransmitAllMGProxyInfo *add_proxy(conf_proxysvr::CopySvrIdMG *copy_svr_id);
+    //
+    int add_entry(uint32_t app_id, CopyTransmitAllMGProxyInfo *proxy_info);
+    //
+    CopyTransmitAllMGProxyInfo *find_proxy(uint32_t app_id);
+    //
+    void clear_all_entrys();
+};
+
+#endif  //ARBITER_PROXY_PROCESS_H_
+

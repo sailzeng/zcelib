@@ -1,0 +1,412 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="12.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{C2D23FE7-03ED-4516-9603-604BA4617FDB}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>zenlib</RootNamespace>
+    <ProjectName>zcelib</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>StaticLibrary</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>NotSet</CharacterSet>
+    <PlatformToolset>v120</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <TargetName>$(ProjectName)</TargetName>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeaderFile>zce_predefine.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>true</TreatWarningAsError>
+      <PrecompiledHeaderFile>zce_predefine.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AssemblerOutput>NoListing</AssemblerOutput>
+      <MultiProcessorCompilation>false</MultiProcessorCompilation>
+      <MinimalRebuild>false</MinimalRebuild>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <PrecompiledHeaderFile>zce_predefine.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level4</WarningLevel>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <Optimization>MaxSpeed</Optimization>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <PrecompiledHeaderFile>zce_predefine.h</PrecompiledHeaderFile>
+      <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <OptimizeReferences>true</OptimizeReferences>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <None Include="makefile" />
+    <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="zce_async_fw_base.h" />
+    <ClInclude Include="zce_async_fw_coroutine.h" />
+    <ClInclude Include="zce_async_fw_fsm.h" />
+    <ClInclude Include="zce_event_proactor.h" />
+    <ClInclude Include="zce_event_reactor_wfmo.h" />
+    <ClInclude Include="zce_readfile_cvs.h" />
+    <ClInclude Include="zce_boost_any.h" />
+    <ClInclude Include="zce_boost_lord_rings.h" />
+    <ClInclude Include="zce_boost_mpl.h" />
+    <ClInclude Include="zce_boost_non_copyable.h" />
+    <ClInclude Include="zce_boost_random.h" />
+    <ClInclude Include="zce_boost_signal.h" />
+    <ClInclude Include="zce_boost_singleton.h" />
+    <ClInclude Include="zce_bus_mmap_pipe.h" />
+    <ClInclude Include="zce_bus_one_way.h" />
+    <ClInclude Include="zce_bus_two_way.h" />
+    <ClInclude Include="zce_bytes_compress.h" />
+    <ClInclude Include="zce_bytes_encode.h" />
+    <ClInclude Include="zce_bytes_encrypt.h" />
+    <ClInclude Include="zce_bytes_hash.h" />
+    <ClInclude Include="zce_config_getopt.h" />
+    <ClInclude Include="zce_config_file_implement.h" />
+    <ClInclude Include="zce_cfg_ini_pasttime.h" />
+    <ClInclude Include="zce_config_property_tree.h" />
+    <ClInclude Include="zce_event_handle_base.h" />
+    <ClInclude Include="zce_event_handle_inotify.h" />
+    <ClInclude Include="zce_event_reactor_base.h" />
+    <ClInclude Include="zce_event_reactor_epoll.h" />
+    <ClInclude Include="zce_event_reactor_select.h" />
+    <ClInclude Include="zce_fmtstr_format.h" />
+    <ClInclude Include="zce_fmtstr_helper.h" />
+    <ClInclude Include="zce_fmtstr_snprintf.h" />
+    <ClInclude Include="zce_fmtstr_strnsplice.h" />
+    <ClInclude Include="zce_id_to_string.h" />
+    <ClInclude Include="zce_lock_base.h" />
+    <ClInclude Include="zce_lock_file_lock.h" />
+    <ClInclude Include="zce_lock_guard.h" />
+    <ClInclude Include="zce_lock_null_lock.h" />
+    <ClInclude Include="zce_lock_process_mutex.h" />
+    <ClInclude Include="zce_lock_process_semaphore.h" />
+    <ClInclude Include="zce_lock_ptr_guard.h" />
+    <ClInclude Include="zce_lock_record_lock.h" />
+    <ClInclude Include="zce_lock_synch_traits.h" />
+    <ClInclude Include="zce_lock_thread_condi.h" />
+    <ClInclude Include="zce_lock_thread_mutex.h" />
+    <ClInclude Include="zce_lock_thread_rw_mutex.h" />
+    <ClInclude Include="zce_lock_thread_semaphore.h" />
+    <ClInclude Include="zce_lock_thread_spin.h" />
+    <ClInclude Include="zce_mml_command.h" />
+    <ClInclude Include="zce_mysql_command.h" />
+    <ClInclude Include="zce_mysql_connect.h" />
+    <ClInclude Include="zce_mysql_field.h" />
+    <ClInclude Include="zce_mysql_process.h" />
+    <ClInclude Include="zce_mysql_result.h" />
+    <ClInclude Include="zce_mysql_stmtbind.h" />
+    <ClInclude Include="zce_mysql_stmtcmd.h" />
+    <ClInclude Include="zce_net_http_client.h" />
+    <ClInclude Include="zce_os_adapt_condi.h" />
+    <ClInclude Include="zce_os_adapt_coroutine.h" />
+    <ClInclude Include="zce_os_adapt_dirent.h" />
+    <ClInclude Include="zce_os_adapt_dlfcn.h" />
+    <ClInclude Include="zce_os_adapt_error.h" />
+    <ClInclude Include="zce_os_adapt_file.h" />
+    <ClInclude Include="zce_os_adapt_flock.h" />
+    <ClInclude Include="zce_os_adapt_getopt.h" />
+    <ClInclude Include="zce_os_adapt_math.h" />
+    <ClInclude Include="zce_os_adapt_mutex.h" />
+    <ClInclude Include="zce_os_adapt_predefine.h" />
+    <ClInclude Include="zce_os_adapt_process.h" />
+    <ClInclude Include="zce_os_adapt_rwlock.h" />
+    <ClInclude Include="zce_os_adapt_semaphore.h" />
+    <ClInclude Include="zce_os_adapt_shm.h" />
+    <ClInclude Include="zce_os_adapt_socket.h" />
+    <ClInclude Include="zce_os_adapt_spin.h" />
+    <ClInclude Include="zce_os_adapt_stdlib.h" />
+    <ClInclude Include="zce_os_adapt_string.h" />
+    <ClInclude Include="zce_os_adapt_sysinfo.h" />
+    <ClInclude Include="zce_os_adapt_thread.h" />
+    <ClInclude Include="zce_os_adapt_time.h" />
+    <ClInclude Include="zce_predefine.h" />
+    <ClInclude Include="zce_script_lua_tie.h" />
+    <ClInclude Include="zce_server_status.h" />
+    <ClInclude Include="zce_server_base.h" />
+    <ClInclude Include="zce_share_mem_mmap.h" />
+    <ClInclude Include="zce_share_mem_posix.h" />
+    <ClInclude Include="zce_share_mem_systemv.h" />
+    <ClInclude Include="zce_shm_avltree.h" />
+    <ClInclude Include="zce_shm_cache_chunk.h" />
+    <ClInclude Include="zce_shm_hash_expire.h" />
+    <ClInclude Include="zce_shm_hash_rehash.h" />
+    <ClInclude Include="zce_shm_hash_table.h" />
+    <ClInclude Include="zce_shm_list.h" />
+    <ClInclude Include="zce_shm_lockfree_deque.h" />
+    <ClInclude Include="zce_shm_predefine.h" />
+    <ClInclude Include="zce_shm_rbtree.h" />
+    <ClInclude Include="zce_shm_array.h" />
+    <ClInclude Include="zce_socket_acceptor.h" />
+    <ClInclude Include="zce_socket_addr_base.h" />
+    <ClInclude Include="zce_socket_addr_in.h" />
+    <ClInclude Include="zce_socket_addr_in6.h" />
+    <ClInclude Include="zce_socket_base.h" />
+    <ClInclude Include="zce_socket_connector.h" />
+    <ClInclude Include="zce_socket_datagram.h" />
+    <ClInclude Include="zce_socket_stream.h" />
+    <ClInclude Include="zce_sqlite3_process.h" />
+    <ClInclude Include="zce_sqlite3_stmt_handler.h" />
+    <ClInclude Include="zce_thread_bus_pipe.h" />
+    <ClInclude Include="zce_thread_msgque_condi.h" />
+    <ClInclude Include="zce_thread_msgque_nonlock.h" />
+    <ClInclude Include="zce_thread_msgque_sema.h" />
+    <ClInclude Include="zce_thread_msgque_template.h" />
+    <ClInclude Include="zce_thread_task.h" />
+    <ClInclude Include="zce_thread_wait_mgr.h" />
+    <ClInclude Include="zce_timer_handler_base.h" />
+    <ClInclude Include="zce_timer_queue_base.h" />
+    <ClInclude Include="zce_timer_queue_heap.h" />
+    <ClInclude Include="zce_timer_queue_wheel.h" />
+    <ClInclude Include="zce_time_progress_timer.h" />
+    <ClInclude Include="zce_time_value.h" />
+    <ClInclude Include="zce_trace_log_basic.h" />
+    <ClInclude Include="zce_trace_log_debug.h" />
+    <ClInclude Include="zce_trace_log_msg.h" />
+    <ClInclude Include="zce_trace_log_plus.h" />
+    <ClInclude Include="zce_uuid_generator.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="zce_async_fw_base.cpp" />
+    <ClCompile Include="zce_async_fw_coroutine.cpp" />
+    <ClCompile Include="zce_async_fw_fsm.cpp" />
+    <ClCompile Include="zce_event_proactor.cpp" />
+    <ClCompile Include="zce_event_reactor_wfmo.cpp" />
+    <ClCompile Include="zce_readfile_cvs.cpp" />
+    <ClCompile Include="zce_boost_random.cpp" />
+    <ClCompile Include="zce_bus_mmap_pipe.cpp" />
+    <ClCompile Include="zce_bus_one_way.cpp" />
+    <ClCompile Include="zce_bus_two_way.cpp" />
+    <ClCompile Include="zce_bytes_compress.cpp" />
+    <ClCompile Include="zce_bytes_encode.cpp" />
+    <ClCompile Include="zce_bytes_encrypt.cpp" />
+    <ClCompile Include="zce_bytes_hash.cpp" />
+    <ClCompile Include="zce_config_getopt.cpp" />
+    <ClCompile Include="zce_config_file_implement.cpp" />
+    <ClCompile Include="zce_cfg_ini_pasttime.cpp" />
+    <ClCompile Include="zce_config_property_tree.cpp" />
+    <ClCompile Include="zce_event_handle_base.cpp" />
+    <ClCompile Include="zce_event_handle_inotify.cpp" />
+    <ClCompile Include="zce_event_reactor_base.cpp" />
+    <ClCompile Include="zce_event_reactor_epoll.cpp" />
+    <ClCompile Include="zce_event_reactor_select.cpp" />
+    <ClCompile Include="zce_fmtstr_format.cpp" />
+    <ClCompile Include="zce_fmtstr_helper.cpp" />
+    <ClCompile Include="zce_lock_base.cpp" />
+    <ClCompile Include="zce_lock_file_lock.cpp" />
+    <ClCompile Include="zce_lock_null_lock.cpp" />
+    <ClCompile Include="zce_lock_process_mutex.cpp" />
+    <ClCompile Include="zce_lock_process_semaphore.cpp" />
+    <ClCompile Include="zce_lock_record_lock.cpp" />
+    <ClCompile Include="zce_lock_thread_condi.cpp" />
+    <ClCompile Include="zce_lock_thread_mutex.cpp" />
+    <ClCompile Include="zce_lock_thread_rw_mutex.cpp" />
+    <ClCompile Include="zce_lock_thread_semaphore.cpp" />
+    <ClCompile Include="zce_lock_thread_spin.cpp" />
+    <ClCompile Include="zce_mml_command.cpp" />
+    <ClCompile Include="zce_mysql_command.cpp" />
+    <ClCompile Include="zce_mysql_connect.cpp" />
+    <ClCompile Include="zce_mysql_field.cpp" />
+    <ClCompile Include="zce_mysql_process.cpp" />
+    <ClCompile Include="zce_mysql_result.cpp" />
+    <ClCompile Include="zce_mysql_stmtbind.cpp" />
+    <ClCompile Include="zce_mysql_stmtcmd.cpp" />
+    <ClCompile Include="zce_net_http_client.cpp" />
+    <ClCompile Include="zce_os_adapt_condi.cpp" />
+    <ClCompile Include="zce_os_adapt_coroutine.cpp" />
+    <ClCompile Include="zce_os_adapt_dirent.cpp" />
+    <ClCompile Include="zce_os_adapt_dlfcn.cpp" />
+    <ClCompile Include="zce_os_adapt_file.cpp" />
+    <ClCompile Include="zce_os_adapt_flock.cpp" />
+    <ClCompile Include="zce_os_adapt_getopt.cpp" />
+    <ClCompile Include="zce_os_adapt_math.cpp" />
+    <ClCompile Include="zce_os_adapt_mutex.cpp" />
+    <ClCompile Include="zce_os_adapt_process.cpp" />
+    <ClCompile Include="zce_os_adapt_rwlock.cpp" />
+    <ClCompile Include="zce_os_adapt_semaphore.cpp" />
+    <ClCompile Include="zce_os_adapt_shm.cpp" />
+    <ClCompile Include="zce_os_adapt_socket.cpp" />
+    <ClCompile Include="zce_os_adapt_spin.cpp" />
+    <ClCompile Include="zce_os_adapt_stdlib.cpp" />
+    <ClCompile Include="zce_os_adapt_string.cpp" />
+    <ClCompile Include="zce_os_adapt_sysinfo.cpp" />
+    <ClCompile Include="zce_os_adapt_thread.cpp" />
+    <ClCompile Include="zce_os_adapt_time.cpp" />
+    <ClCompile Include="zce_predefine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="zce_script_lua_tie.cpp" />
+    <ClCompile Include="zce_server_status.cpp" />
+    <ClCompile Include="zce_server_base.cpp" />
+    <ClCompile Include="zce_share_mem_mmap.cpp" />
+    <ClCompile Include="zce_share_mem_posix.cpp" />
+    <ClCompile Include="zce_share_mem_systemv.cpp" />
+    <ClCompile Include="zce_shm_cache_chunk.cpp" />
+    <ClCompile Include="zce_shm_lockfree_deque.cpp" />
+    <ClCompile Include="zce_shm_predefine.cpp" />
+    <ClCompile Include="zce_socket_acceptor.cpp" />
+    <ClCompile Include="zce_socket_addr_base.cpp" />
+    <ClCompile Include="zce_socket_addr_in.cpp" />
+    <ClCompile Include="zce_socket_addr_in6.cpp" />
+    <ClCompile Include="zce_socket_base.cpp" />
+    <ClCompile Include="zce_socket_connector.cpp" />
+    <ClCompile Include="zce_socket_datagram.cpp" />
+    <ClCompile Include="zce_socket_stream.cpp" />
+    <ClCompile Include="zce_sqlite3_process.cpp" />
+    <ClCompile Include="zce_sqlite3_stmt_handler.cpp" />
+    <ClCompile Include="zce_thread_bus_pipe.cpp" />
+    <ClCompile Include="zce_thread_task.cpp" />
+    <ClCompile Include="zce_thread_wait_mgr.cpp" />
+    <ClCompile Include="zce_timer_handler_base.cpp" />
+    <ClCompile Include="zce_timer_queue_base.cpp" />
+    <ClCompile Include="zce_timer_queue_heap.cpp" />
+    <ClCompile Include="zce_timer_queue_wheel.cpp" />
+    <ClCompile Include="zce_time_progress_timer.cpp" />
+    <ClCompile Include="zce_time_value.cpp" />
+    <ClCompile Include="zce_trace_log_basic.cpp" />
+    <ClCompile Include="zce_trace_log_debug.cpp" />
+    <ClCompile Include="zce_trace_log_msg.cpp" />
+    <ClCompile Include="zce_trace_log_plus.cpp" />
+    <ClCompile Include="zce_uuid_generator.cpp" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
