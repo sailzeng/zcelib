@@ -50,7 +50,7 @@ public:
     bool                     if_run_;
 
     //ZEN LIB的TimeQueue，这个最后要自己释放
-    ZEN_Timer_Queue          *timer_queue_;
+    ZCE_Timer_Queue          *timer_queue_;
 
 protected:
 

@@ -9,7 +9,7 @@
 struct SERVICES_INFO_TABLE
 {
 
-    typedef unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
+    typedef std::unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
 
 public:
     //构造函数,
@@ -177,8 +177,6 @@ public:
     * @param      out_lvl 输出级别，
     */
     virtual void dump_cfg_info(ZCE_LOG_PRIORITY out_lvl);
-
-
 
 
     //根据SVCID得到SVC INFO地址信息

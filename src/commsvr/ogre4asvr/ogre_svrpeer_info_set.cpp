@@ -33,11 +33,11 @@ int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const Socket_Peer_Info &svrin
         ZLOG_INFO( "Can't find svchanle info. svrinfo IP|Port:[%s|%u] .\n",
                    ZEN_OS::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
                    svrinfo.peer_port_);
-        return TSS_RET::ERR_OGRE_NO_FIND_EVENT_HANDLE;
+        return SOAR_RET::ERR_OGRE_NO_FIND_EVENT_HANDLE;
     }
 
     svrhandle = (*(iter)).second;
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //ÉèÖÃPEERÐÅÏ¢
@@ -54,12 +54,12 @@ int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const Socket_Peer_Info &peer_i
         ZLOG_INFO( "Can't add_services_peerinfo peer_info:[%s|%u] ",
                    ZEN_OS::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
                    peer_info.peer_port_);
-        return TSS_RET::ERR_OGRE_SERVER_ALREADY_LONGIN;
+        return SOAR_RET::ERR_OGRE_SERVER_ALREADY_LONGIN;
     }
 
     peer_info_set_[peer_info] = svrhandle;
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -86,7 +86,7 @@ size_t PeerInfoSetToTCPHdlMap::del_services_peerinfo(const Socket_Peer_Info &pee
         ZLOG_ERROR( "Can't PeerInfoSetToTCPHdlMap::del_services_peerinfo Size peer_info_set_ %u: szdel:%u peer_info:%u|%u .\n", peer_info_set_.size(), szdel, peer_info.peer_ip_address_, peer_info.peer_port_);
     }
 
-    //ZEN_ASSERT(szdel >0 );
+    //ZCE_ASSERT(szdel >0 );
     return szdel;
 }
 

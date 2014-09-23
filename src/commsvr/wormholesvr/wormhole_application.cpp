@@ -1,27 +1,20 @@
 #include "wormhole_predefine.h"
-#include "wormhole_application.h"
-#include "wormhole_app_timer.h"
-#include "wormhole_stat_define.h"
 
-//
-ArbiterAppliction *ArbiterAppliction::instance_ = NULL;
+#include "wormhole_app_timer.h"
+#include "wormhole_configture.h"
+#include "wormhole_stat_define.h"
+#include "wormhole_application.h"
 
 /****************************************************************************************************
 class  Arbiter_Appliction
 ****************************************************************************************************/
-ArbiterAppliction::ArbiterAppliction():
+Wormhole_Proxy_App::Wormhole_Proxy_App():
     interface_proxy_(NULL)
 {
-    conf_ = new conf_proxysvr::CONFIG();
 }
 
-ArbiterAppliction::~ArbiterAppliction()
+Wormhole_Proxy_App::~Wormhole_Proxy_App()
 {
-    if (conf_)
-    {
-        delete conf_;
-        conf_ = NULL;
-    }
 
     if (interface_proxy_)
     {
@@ -30,163 +23,88 @@ ArbiterAppliction::~ArbiterAppliction()
     }
 }
 
-int ArbiterAppliction::init()
+int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
 {
-    ZLOG_INFO("Arbiter_Appliction::init begin. ");
-
     int ret = 0;
+    ret = Comm_Svrd_Appliction::on_start(argc, argv);
+    if (ret != 0)
+    {
+        return ret;
+    }
 
-    // 注册定时器
-    ZEN_Timer_Queue *timer_queue = ZEN_Timer_Queue::instance();
-    ZEN_Time_Value delay;
-    ZEN_Time_Value interval;
+    ZLOG_INFO("ArbiterAppliction::initon_start begin. ");
 
-    delay.set(0, TIMER_INTERVAL);
-    interval.set(0, TIMER_INTERVAL);
-    timer_queue->schedule_timer(new ArbiterTimerHandler(timer_queue),
-                                NULL,
-                                delay,
-                                interval);
+
+    Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
 
     // 初始化数据转发模式
-    interface_proxy_ = InterfaceProxyProcess::CreatePorxyFactory(
-        static_cast<InterfaceProxyProcess::PROXY_TYPE>(conf_->proxy_type_));
-    ZEN_ASSERT(interface_proxy_);
+    interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
+        static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
+    ZCE_ASSERT(interface_proxy_);
 
-    ret = interface_proxy_->get_proxy_config(conf_);
-
-    if (ret != TSS_RET::TSS_RET_SUCC)
-    {
-        return ret;
-    }
-
-    ret = interface_proxy_->InitProxyInstance();
-
-    if (ret != TSS_RET::TSS_RET_SUCC)
-    {
-        return ret;
-    }
-
-    // 账单写到网路用的Transaction_Manager，需要先初始化下
-    Transaction_Manager *p_trans_mgr_ = new Transaction_Manager();
-    p_trans_mgr_->initialize(Comm_Svrd_Config::instance()->framework_config_.trans_info_.trans_cmd_num_,
-                             Comm_Svrd_Config::instance()->framework_config_.trans_info_.trans_num_,
-                             self_services_id_,
-                             ZEN_Timer_Queue::instance(),
-                             Zerg_MMAP_BusPipe::instance());
-    Transaction_Manager::instance(p_trans_mgr_);
-
-    // 初始化统计MMAP文件
-    ret = Comm_Stat_Monitor::instance()->initialize(false,
-                                                    Comm_Svrd_Config::instance()->self_svr_id_,
-                                                    ARBITER_FRATURE_NUM,
-                                                    STR_ARBITER_STAT,
-                                                    false);
+    ret = interface_proxy_->get_proxy_config(wh_cfg->proxy_conf_tree_);
 
     if (ret != 0)
     {
-        ZLOG_ERROR("Zen_Server_Status init fail. ret=%d", ret);
         return ret;
     }
 
-    // 设置日志优先级
-    set_log_priority(ZEN_LogTrace_Basic::log_priorities(conf_->log_level_));
+    ret = interface_proxy_->init_proxy_instance();
 
-    ZLOG_INFO("Arbiter_Appliction::init end. ");
+    if (ret != 0)
+    {
+        return ret;
+    }
 
-    return TSS_RET::TSS_RET_SUCC;
+    ZLOG_INFO("ArbiterAppliction::on_start end. ");
+
+    return 0;
 }
 
 //
-void ArbiterAppliction::exit()
+int Wormhole_Proxy_App::on_exit()
 {
-    ZLOG_INFO("Arbiter_Appliction::exit. ");
+    ZLOG_INFO("ArbiterAppliction::exit. ");
 }
 
-int ArbiterAppliction::reload()
+int Wormhole_Proxy_App::reload()
 {
     int ret = 0;
 
-    ZLOG_INFO("Arbiter_Appliction::reload start");
+    ZLOG_INFO("Wormhole_Proxy_App::reload start");
 
     // 重新初始化数据转发模式
     delete interface_proxy_;
-    interface_proxy_ = InterfaceProxyProcess::CreatePorxyFactory(
-        static_cast<InterfaceProxyProcess::PROXY_TYPE>(conf_->proxy_type_));
-    ZEN_ASSERT(interface_proxy_);
 
-    ret = interface_proxy_->get_proxy_config(conf_);
+    Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
+    // 初始化数据转发模式
+    interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
+        static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
+    ZCE_ASSERT(interface_proxy_);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
-    {
-        return ret;
-    }
-
-    ret = interface_proxy_->InitProxyInstance();
-
-    if (ret != TSS_RET::TSS_RET_SUCC)
-    {
-        return ret;
-    }
-
-    // 设置日志优先级
-    set_log_priority(ZEN_LogTrace_Basic::log_priorities(conf_->log_level_));
-
-    ZLOG_INFO("Arbiter_Appliction::reload end. ");
-
-    return TSS_RET::TSS_RET_SUCC;
-}
-
-int ArbiterAppliction::process_recv_appframe(Comm_App_Frame *recv_frame)
-{
-    return interface_proxy_->process_proxy(recv_frame);
-}
-
-// 单子实例函数
-ArbiterAppliction *ArbiterAppliction::instance()
-{
-    if (NULL == instance_)
-    {
-        instance_ = new ArbiterAppliction();
-    }
-
-    return instance_;
-}
-
-// 清理单子实例
-void ArbiterAppliction::clean_instance()
-{
-    if (instance_)
-    {
-        delete instance_;
-    }
-
-    instance_ = NULL;
-}
-
-int ArbiterAppliction::load_app_conf()
-{
-    CommXMLConfig xml_config;
-    int ret = xml_config.load(Comm_Svrd_Config::instance()->app_cfg_file_.c_str(), conf_);
+    ret = interface_proxy_->get_proxy_config(wh_cfg->proxy_conf_tree_);
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[%s], Arbiter_Appliction app load config fail, ret=%d",
-            __ZEN_FUNCTION__, ret);
         return ret;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    ret = interface_proxy_->init_proxy_instance();
+
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+
+    ZLOG_INFO("Wormhole_Proxy_App::reload end. ");
+
+    return 0;
 }
 
-
-int ArbiterAppliction::merge_app_cfg_file()
+int Wormhole_Proxy_App::process_recv_frame(Zerg_App_Frame *recv_frame)
 {
-    Comm_Svrd_Config *svd_config = Comm_Svrd_Config::instance();
-    int ret = TSS_RET::TSS_RET_SUCC;
-
-    ret = merge_xml_file<conf_proxysvr::CONFIG>(svd_config->app_cfg_file_.c_str());
-    return ret;
+    return interface_proxy_->process_proxy(recv_frame);
 }
 
 

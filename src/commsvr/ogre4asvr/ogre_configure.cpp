@@ -69,11 +69,11 @@ int Ogre_Svr_Config::get_startup_param(int argc, char *argv[])
             case 'h':
             default:
                 print_startup_paraminfo(argv[0]);
-                return TSS_RET::ERROR_GET_STARTUP_CONFIG_FAIL;
+                return SOAR_RET::ERROR_GET_STARTUP_CONFIG_FAIL;
         }
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -133,19 +133,19 @@ int Ogre_Svr_Config::get_file_configure()
 
     ret = cfg_ogre4a_.get_string_value("LOGCFG", "PRIORITY", tmpstr);
     TESTCONFIG(ret == 0, "LOGCFG|PRIORITY");
-    log_priority_ = ZEN_LogTrace_Basic::log_priorities(tmpstr.c_str());
+    log_priority_ = ZCE_LogTrace_Basic::log_priorities(tmpstr.c_str());
 
     //Ogre_Comm_Manger 读取配置文件
     ret = Ogre_Comm_Manger::instance()->get_configure(cfg_ogre4a_);
 
-    if (TSS_RET::TSS_RET_SUCC != ret )
+    if (0 != ret )
     {
         return ret;
     }
 
     ZLOG_INFO( "Get File Configure Success.\n");
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //单子实例获得函数

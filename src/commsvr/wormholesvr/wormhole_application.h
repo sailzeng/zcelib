@@ -1,64 +1,51 @@
-#ifndef ARBITER_APPLICATION_H_
-#define ARBITER_APPLICATION_H_
+#ifndef WORMHOLE_APPLICATION_H_
+#define WORMHOLE_APPLICATION_H_
 
-#include "arbiter_proxyprocess.h"
+#include "wormhole_proxyprocess.h"
 
-/****************************************************************************************************
-class  Arbiter_Appliction
-****************************************************************************************************/
-class ArbiterAppliction : public Comm_SvrdApp_NonCtrl
+
+
+/*!
+* @brief      
+*             
+* @note       
+*/
+class Wormhole_Proxy_App : public Comm_SvrdApp_BUS
 {
-protected:
 
-    // 定时器处罚时间间隔, 不能太小, 这里设置为200毫秒
-    static const unsigned int TIMER_INTERVAL = 200000;
-
-protected:
+public:
     // 自己的单子偷偷藏着，
-    ArbiterAppliction();
-    ~ArbiterAppliction();
+    Wormhole_Proxy_App();
+    ~Wormhole_Proxy_App();
+
+public:
+    // 处理收到的APPFRAME,不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
+    virtual int process_recv_frame(Zerg_App_Frame *recv_frame);
+
+    ///初始化,根据启动参数启动
+    virtual int on_start(int argc, const char *argv[]);
+    ///处理退出的清理工作
+    virtual int on_exit();
+
+    ///运行,运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。
+    virtual int on_run();
+
+    ///加载配置
+    virtual int load_config();
+
+    ///重新加载配置
+    virtual int reload();
+
+
 
 protected:
     // 处理的PROXY的接口
-    InterfaceProxyProcess     *interface_proxy_;
+    Interface_WH_Proxy     *interface_proxy_;
 
     // 处理的FRAME的总数
     unsigned int                 process_frame_count_;
 
-    // 配置文件
-    conf_proxysvr::LPCONFIG      conf_;
-
-protected:
-    static ArbiterAppliction   *instance_;
-
-public:
-    // 处理收到的APPFRAME,不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
-    virtual int process_recv_appframe(Comm_App_Frame *recv_frame);
-
-    // 加载配置
-    virtual int load_app_conf();
-    virtual int merge_app_cfg_file();
-
-    virtual int init();
-
-    virtual void exit();
-
-    // 重新加载路由表
-    virtual int reload();
-
-public:
-    // 单子实例函数
-    static ArbiterAppliction *instance();
-
-    // 清理单子实例
-    static void clean_instance();
-
-    const conf_proxysvr::LPCONFIG get_config()
-    {
-        return conf_;
-    }
-
 };
 
-#endif //ARBITER_APPLICATION_H_
+#endif //WORMHOLE_APPLICATION_H_
 

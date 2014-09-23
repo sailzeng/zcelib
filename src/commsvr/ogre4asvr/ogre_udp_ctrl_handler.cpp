@@ -63,7 +63,7 @@ int OgreUDPSvcHandler::InitUDPServices()
         return -2;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //打开一个临时PEER用于发送UDP数据
@@ -73,10 +73,10 @@ int OgreUDPSvcHandler::OpenUDPSendPeer()
 
     if (ret != 0)
     {
-        return TSS_RET::ERR_OGRE_INIT_UDP_PEER;
+        return SOAR_RET::ERR_OGRE_INIT_UDP_PEER;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //取得句柄
@@ -99,7 +99,7 @@ int OgreUDPSvcHandler::handle_input(ZEN_HANDLE)
                    ret,
                    szrevc);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         //return -1吗，但是我真不知道如何处理
         //return -1;
@@ -162,7 +162,7 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_a
             //遇到中断,等待重入
             if (ZEN_OS::last_error() == EINVAL)
             {
-                return TSS_RET::TSS_RET_SUCC;
+                return 0;
             }
 
             //记录错误,返回错误
@@ -172,18 +172,18 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_a
                         dgram_peer_.get_handle(),
                         ZEN_OS::last_error(),
                         strerror(ZEN_OS::last_error()));
-            return TSS_RET::ERR_OGRE_SOCKET_OP_ERROR;
+            return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
         else
         {
-            return TSS_RET::TSS_RET_SUCC;
+            return 0;
         }
     }
 
     //如果允许的连接的服务器地址中间没有.或者在拒绝的服务列表中... kill
     ret =  ip_restrict_->check_ip_restrict(remote_addr) ;
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -194,7 +194,7 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_a
         ZLOG_ERROR( "UDP Read error [%s|%u].UDP Peer recv return 0, I don't know how to process.?\n",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number());
-        return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+        return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
     dgram_databuf_->snd_peer_info_.SetSocketPeerInfo(remote_addr);
@@ -206,7 +206,7 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_a
 
     szrevc = recvret;
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 int OgreUDPSvcHandler::pushdata_to_recvpipe()
@@ -218,12 +218,12 @@ int OgreUDPSvcHandler::pushdata_to_recvpipe()
     //无论处理正确与否,都释放缓冲区的空间
 
     //日志在函数中有输出,这儿略.
-    if (ret != TSS_RET::TSS_RET_SUCC )
+    if (ret != 0 )
     {
-        return TSS_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
+        return SOAR_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -270,7 +270,7 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
         ZLOG_ERROR( "Can't find send peer[%s|%u].Please check code.\n",
                     ZEN_OS::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
                     send_frame->snd_peer_info_.peer_port_);
-        return TSS_RET::ERR_OGRE_SOCKET_OP_ERROR;
+        return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
     //发送失败
@@ -282,12 +282,12 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
                     ary_upd_peer_[i]->get_handle(),
                     ZEN_OS::last_error(),
                     strerror(ZEN_OS::last_error()));
-        return TSS_RET::ERR_OGRE_SOCKET_OP_ERROR;
+        return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
     ZEN_LOGMSG_DBG(RS_DEBUG, "UDP Send data to peer [%s|%u]  Socket %u bytes data Succ.\n",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    szsend);
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }

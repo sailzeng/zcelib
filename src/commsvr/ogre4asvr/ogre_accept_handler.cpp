@@ -40,7 +40,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
         ZLOG_ERROR( "Open Module [%s] fail. recv_mod_handler =%u .\n",
                     recv_mod_file_.c_str(),
                     recv_mod_handler_);
-        return TSS_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
+        return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
 
     fp_judge_whole_frame_ = (FPJudgeRecvWholeFrame)ZEN_OS::dlsym(recv_mod_handler_, StrJudgeRecvWholeFrame);
@@ -51,7 +51,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
                     recv_mod_file_.c_str(),
                     StrJudgeRecvWholeFrame,
                     recv_mod_handler_);
-        return TSS_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
+        return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
 
     peer_acceptor_.sock_enable(O_NONBLOCK);
@@ -83,7 +83,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
                     accept_bind_addr_.get_port_number(),
                     last_err,
                     strerror(last_err));
-        return TSS_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
+        return SOAR_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
     }
 
     ZLOG_INFO( "Bind listen IP|Port : [%s|%u] Success.\n",
@@ -112,7 +112,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
     //
     reactor()->register_handler(this, ZEN_Event_Handler::ACCEPT_MASK);
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //
@@ -154,7 +154,7 @@ int OgreTCPAcceptHandler::handle_input(ZEN_HANDLE /*handle*/)
     //如果允许的连接的服务器地址中间没有.或者在拒绝的服务列表中... kill
     ret =  ip_restrict_->check_ip_restrict(remoteaddress) ;
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }

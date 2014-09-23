@@ -66,7 +66,7 @@ Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MO
     }
     else
     {
-        ZEN_ASSERT(false);
+        ZCE_ASSERT(false);
     }
 }
 
@@ -152,8 +152,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstr
     //如果配置了超时出来,N秒必须收到一个包
     if ( connect_timeout_ > 0 || receive_timeout_ > 0)
     {
-        ZEN_Time_Value delay(0, 0);
-        ZEN_Time_Value interval(0, 0);
+        ZCE_Time_Value delay(0, 0);
+        ZCE_Time_Value interval(0, 0);
 
         delay.sec(connect_timeout_);
         interval.sec(receive_timeout_);
@@ -172,7 +172,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstr
     ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_info, this);
 
     //在这儿自杀是不是危险了一点
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         handle_close();
         return;
@@ -233,7 +233,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstr
     ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_info, this);
 
     //在这儿自杀是不是危险了一点
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         handle_close();
         return;
@@ -290,7 +290,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZEN_HANDLE)
                szrecv);
 
     //这儿任何错误都关闭,
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return -1;
     }
@@ -307,7 +307,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZEN_HANDLE)
                                     if_recv_whole,
                                     size_frame);
 
-        if (TSS_RET::TSS_RET_SUCC != ret)
+        if (0 != ret)
         {
             ZLOG_ERROR( "Read data error [%s|%u].Judge whole fale error ret=%u.\n",
                         remote_address_.get_host_addr(),
@@ -375,7 +375,7 @@ int Ogre_TCP_Svc_Handler::handle_output(ZEN_HANDLE)
     int ret =  write_all_aata_to_peer();
 
     //出现错误,
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         //为什么我不处理错误呢,不return -1,因为如果错误会关闭Socket,handle_input将被调用,这儿不重复处理
         //如果是中断等错误,程序可以继续的.
@@ -390,7 +390,7 @@ Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
 Function        : Ogre_TCP_Svc_Handler::handle_timeout
 Return          : int
 Parameter List  :
-  Param1: const ZEN_Time_Value& * time  时间,
+  Param1: const ZCE_Time_Value& * time  时间,
   Param2: const void* arg               唯一标示参数
 Description     : 定时触发
 Calls           :
@@ -398,7 +398,7 @@ Called By       :
 Other           : ACE为什么不直接使用TIME ID,
 Modify Record   :
 ******************************************************************************************/
-int Ogre_TCP_Svc_Handler::handle_timeout(const ZEN_Time_Value &/*time*/, const void *arg)
+int Ogre_TCP_Svc_Handler::handle_timeout(const ZCE_Time_Value &/*time*/, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
 
@@ -562,7 +562,7 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
                remote_addr,
                remote_address_.get_port_number()
              );
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -610,7 +610,7 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
                     remote_address_.get_host_addr(),
                     remote_address_.get_port_number()
                   );
-        return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+        return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
     //表示被关闭或者出现错误
@@ -624,7 +624,7 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
             //遇到中断,等待重入
             if (ZEN_OS::last_error() == EINVAL)
             {
-                return TSS_RET::TSS_RET_SUCC;
+                return 0;
             }
 
             //记录错误,返回错误
@@ -635,17 +635,17 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
                         ZEN_OS::last_error(),
                         strerror(ZEN_OS::last_error()));
 
-            return TSS_RET::ERR_OGRE_SOCKET_OP_ERROR;
+            return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
 
         //如果错误是阻塞,什么都不作
-        return TSS_RET::TSS_RET_SUCC;
+        return 0;
     }
 
     //Socket被关闭，也返回错误标示
     if (recvret == 0)
     {
-        return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+        return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
     //此时RET应该> 0
@@ -655,7 +655,7 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
     rcv_buffer_->ogre_frame_len_ += static_cast<unsigned int>(szrevc) ;
     recieve_bytes_ +=  static_cast<size_t>(szrevc);
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 
 }
 
@@ -687,7 +687,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
                     remote_address_.get_port_number()
                   );
         reactor()->cancel_wakeup (this, ZEN_Event_Handler::WRITE_MASK);
-        return TSS_RET::TSS_RET_SUCC;
+        return 0;
     }
 
     //#endif //#if defined DEBUG || defined _DEBUG
@@ -715,11 +715,11 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
         //EWOULDBLOCK:我只使用EWOULDBLOCK 但是要注意EAGAIN ZEN_OS::last_error() != EWOULDBLOCK && ZEN_OS::last_error() != EAGAIN
         if (  EWOULDBLOCK  != last_error && EINVAL != last_error )
         {
-            return TSS_RET::ERR_OGRE_SOCKET_OP_ERROR;
+            return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
 
         //如果错误是阻塞,什么都不作
-        return TSS_RET::TSS_RET_SUCC;
+        return 0;
     }
 
     szsend  = sendret;
@@ -733,7 +733,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
         send_bytes_ = 0;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -760,7 +760,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
         int ret =  write_data_to_peer(szsend, bfull);
 
         //出现错误,
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -805,7 +805,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
                             last_err,
                             strerror(last_err));
                 //认为这种情况是出现了问题，关闭之
-                return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+                return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
             }
         }
 
@@ -817,7 +817,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
                        remote_address_.get_host_addr(),
                        remote_address_.get_port_number());
             //让上层去关闭，要小心，小心，很麻烦，很多生命周期的问题,因为有两个地方调用这个函数
-            return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+            return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
         }
     }
     //如过没有发送成功，全部发送出去，则准备进行写事件
@@ -837,12 +837,12 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
                             last_err,
                             strerror(last_err));
                 //认为这种情况是出现了问题，关闭之
-                return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+                return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
             }
         }
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //处理发送错误.
@@ -877,16 +877,16 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_AppFrame *inner_frame)
         ret = Zerg_MMAP_BusPipe::instance()->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
                                                            reinterpret_cast<const ZEN_LIB::dequechunk_node *>(inner_frame));
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
-            return TSS_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
+            return SOAR_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
         }
     }
 
     //归还到POOL中间。
     Ogre_Buffer_Storage::instance()->free_byte_buffer(inner_frame);
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -906,7 +906,7 @@ int Ogre_TCP_Svc_Handler::get_configure(Zen_INI_PropertyTree &cfg_file)
     int ret = 0;
     ret = Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg(cfg_file);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -943,7 +943,7 @@ int Ogre_TCP_Svc_Handler::get_configure(Zen_INI_PropertyTree &cfg_file)
     //最大要链接数量等于自动链接服务的数量
     max_connect_svr_ = zerg_auto_connect_.num_svr_to_connect() ;
     //
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -1007,12 +1007,12 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
     ZLOG_INFO( "Have %u server to auto connect ,success %u ,ret =%d.\n",
                sz_of_svr, sz_of_succ, ret);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //
@@ -1020,7 +1020,7 @@ int Ogre_TCP_Svc_Handler::unInit_all_static_data()
 {
     //
     svr_peer_info_set_.clear_and_close();
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -1056,7 +1056,7 @@ Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
     //Connect的端口应该永远不发生取不到Hanler的事情
     else if ( HANDLER_MODE_CONNECT == handler_mode )
     {
-        ZEN_ASSERT(pool_of_cnthdl_.size() > 0);
+        ZCE_ASSERT(pool_of_cnthdl_.size() > 0);
         Ogre_TCP_Svc_Handler *p_handler = NULL;
         pool_of_cnthdl_.pop_front(p_handler);
         return p_handler;
@@ -1064,7 +1064,7 @@ Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
     //Never go here.
     else
     {
-        ZEN_ASSERT(false);
+        ZCE_ASSERT(false);
         return NULL;
     }
 }
@@ -1102,7 +1102,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_AppFrame *ogre_frame )
         ret = zerg_auto_connect_.connect_server_by_svrinfo(svrinfo);
 
         //这个地方是一个Double Check,如果发起连接成功
-        if (ret == TSS_RET::TSS_RET_SUCC)
+        if (ret == 0)
         {
             ret = svr_peer_info_set_.find_services_peerinfo(svrinfo, svchanle);
         }
@@ -1120,7 +1120,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_AppFrame *ogre_frame )
                    ogre_frame->snd_peer_info_.peer_port_,
                    ogre_frame->ogre_frame_len_
                  );
-        return TSS_RET::ERR_OGRE_SEND_FRAME_FAIL;
+        return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
 
     //如果是通知关闭端口
@@ -1131,7 +1131,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_AppFrame *ogre_frame )
                    svrinfo.peer_port_);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
         svchanle->handle_close();
-        return TSS_RET::ERR_OGRE_SOCKET_CLOSE;
+        return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
     //将发送的FRAME给HANDLE对象，当然这个地方未必一定放的进去，因为有几种情况,
@@ -1140,7 +1140,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_AppFrame *ogre_frame )
 
     svchanle->put_frame_to_sendlist(ogre_frame);
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -1166,7 +1166,7 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_AppFrame *ogre_frame)
         //丢弃或者错误处理那个数据比较好呢?这儿值得商榷, 我这儿进行错误处理(可能丢弃)的是最新的.
         //我的考虑是如果命令有先后性.而且可以避免内存操作.
         process_senderror(ogre_frame);
-        return TSS_RET::ERR_OGRE_SEND_FRAME_FAIL;
+        return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
 
     //如果发送完成,并且后台业务要求关闭端口,注意必须转换网络序
@@ -1195,7 +1195,7 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_AppFrame *ogre_frame)
         //回收帧
         process_senderror(ogre_frame);
         //返回一个错误
-        return TSS_RET::ERR_OGRE_SEND_FRAME_FAIL;
+        return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
 
     //尝试发送这个数据包
@@ -1206,13 +1206,13 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_AppFrame *ogre_frame)
         ret = write_all_aata_to_peer();
 
         //出现错误,
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             //这儿已经进行了调整，坚决关闭之，对于中断错误在上层已经转化了错误
             handle_close();
 
             //发送数据已经放入队列，返回OK
-            return TSS_RET::TSS_RET_SUCC;
+            return 0;
         }
     }
 
@@ -1220,7 +1220,7 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_AppFrame *ogre_frame)
     unite_frame_sendlist();
 
     //只有放入发送队列才算成功.
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -1313,18 +1313,18 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
     //代码错误
     else
     {
-        ZEN_ASSERT(false);
+        ZCE_ASSERT(false);
     }
 
     //无论处理正确与否,都释放缓冲区的空间
 
     //日志在函数中有输出,这儿略.
-    if (ret != TSS_RET::TSS_RET_SUCC )
+    if (ret != 0 )
     {
-        return TSS_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
+        return SOAR_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //

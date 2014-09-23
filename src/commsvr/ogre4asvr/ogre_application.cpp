@@ -53,7 +53,7 @@ int Ogre4a_Service_App::init_instance()
     //
     ret = Comm_Svrd_Appliction::init_instance();
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -61,7 +61,7 @@ int Ogre4a_Service_App::init_instance()
     //得到文件配置参数
     ret = Ogre_Svr_Config::instance()->get_file_configure();
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         ZLOG_ERROR( "Get config fail，Please check config!\n");
         return ret;
@@ -75,7 +75,7 @@ int Ogre4a_Service_App::init_instance()
 
     //更新定时器
     size_t old_node_num;
-    ZEN_Timer_Queue::instance()->extend_node(max_peer, old_node_num);
+    ZCE_Timer_Queue::instance()->extend_node(max_peer, old_node_num);
 
     //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
@@ -106,11 +106,11 @@ int Ogre4a_Service_App::init_instance()
     if (ret != 0 )
     {
         ZLOG_ERROR( "Ogre_Comm_Manger::instance()->init_comm_manger() fail !\n");
-        return TSS_RET::ERR_OGRE_INIT_COMM_MANAGER;
+        return SOAR_RET::ERR_OGRE_INIT_COMM_MANAGER;
     }
 
     ZLOG_INFO( "InitInstance success.Have fun, my brother!!!\n");
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -137,7 +137,7 @@ int Ogre4a_Service_App::exit_instance()
     //
     ZLOG_INFO( "ExitInstance Succ.Have Fun.!!!\n");
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -160,12 +160,12 @@ int Ogre4a_Service_App::run_instance()
     //microsecond
     const int INTERVAL_MACRO_SECOND = 10000;
 
-    ZEN_Time_Value sleeptime(0, INTERVAL_MACRO_SECOND);
-    ZEN_Time_Value interval(0, INTERVAL_MACRO_SECOND);
+    ZCE_Time_Value sleeptime(0, INTERVAL_MACRO_SECOND);
+    ZCE_Time_Value interval(0, INTERVAL_MACRO_SECOND);
 
     for (; if_run_;)
     {
-        //每次都在这儿初始化ZEN_Time_Value不好,其要调整.
+        //每次都在这儿初始化ZCE_Time_Value不好,其要调整.
         interval.usec(INTERVAL_MACRO_SECOND);
         ZEN_Reactor::instance()->handle_events(&interval, &numevent);
 
@@ -191,7 +191,7 @@ int Ogre4a_Service_App::run_instance()
         }
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //设置是否继续运行

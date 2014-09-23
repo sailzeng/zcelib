@@ -14,7 +14,7 @@ class Zerg_MMAP_BusPipe;
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
 class Ogre_TCP_Svc_Handler : public  ZEN_Event_Handler,
-    public ZEN_Timer_Handler
+    public ZCE_Timer_Handler
 {
 
 public:
@@ -144,7 +144,7 @@ public:
     //
     virtual int handle_output(ZEN_HANDLE);
     //
-    virtual int handle_timeout(const ZEN_Time_Value &time, const void *arg);
+    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
     //
     virtual int handle_close ();
 

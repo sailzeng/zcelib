@@ -52,7 +52,7 @@ int Ogre_Comm_Manger::check_safe_port(ZEN_Sockaddr_In &inetadd)
             ZLOG_ERROR( "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
                         inetadd.get_host_addr(),
                         inetadd.get_port_number());
-            return TSS_RET::ERR_OGRE_UNSAFE_PORT_WARN;
+            return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
         else
@@ -65,7 +65,7 @@ int Ogre_Comm_Manger::check_safe_port(ZEN_Sockaddr_In &inetadd)
     }
 
     //
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //
@@ -110,7 +110,7 @@ int Ogre_Comm_Manger::init_accept_by_conf(Zen_INI_PropertyTree &cfg_file)
 
         ret = check_safe_port(accept_bind_addr);
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -125,7 +125,7 @@ int Ogre_Comm_Manger::init_accept_by_conf(Zen_INI_PropertyTree &cfg_file)
         accept_handler_ary_.push_back(accpet_hd);
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //
@@ -170,7 +170,7 @@ int Ogre_Comm_Manger::init_udp_by_conf(Zen_INI_PropertyTree &cfg_file)
 
         ret = check_safe_port(udp_bind_addr);
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -179,7 +179,7 @@ int Ogre_Comm_Manger::init_udp_by_conf(Zen_INI_PropertyTree &cfg_file)
         udp_handler_ary_.push_back(udp_hd);
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 
 }
 
@@ -191,7 +191,7 @@ int Ogre_Comm_Manger::get_configure(Zen_INI_PropertyTree &cfg_file)
     //IP限制,
     ret = Ogre4aIPRestrictMgr::instance()->get_ip_restrict_conf(cfg_file);
 
-    if (TSS_RET::TSS_RET_SUCC != ret )
+    if (0 != ret )
     {
         return ret;
     }
@@ -247,8 +247,8 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
             ZLOG_ALERT("Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
                        send_frame->ogre_frame_len_);
             DEBUGDUMP_OGRE_HEAD(send_frame, "Ogre_Comm_Manger::get_all_senddata_to_write", RS_ALERT);
-            ZEN_ASSERT(false);
-            return TSS_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
+            ZCE_ASSERT(false);
+            return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
         }
 
         //如果是TCP
@@ -256,7 +256,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         {
             ret = Ogre_TCP_Svc_Handler::process_send_data(send_frame);
 
-            if (ret != TSS_RET::TSS_RET_SUCC)
+            if (ret != 0)
             {
                 //归还缓存
                 Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
@@ -279,7 +279,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         }
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //初始化通讯管理器
@@ -319,7 +319,7 @@ int Ogre_Comm_Manger::init_comm_manger(Zen_INI_PropertyTree &cfg_file)
                                                     Ogre_Svr_Config::instance()->if_restore_pipe_,
                                                     false);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -329,7 +329,7 @@ int Ogre_Comm_Manger::init_comm_manger(Zen_INI_PropertyTree &cfg_file)
     {
         ret = accept_handler_ary_[i]->create_listenpeer();
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -337,7 +337,7 @@ int Ogre_Comm_Manger::init_comm_manger(Zen_INI_PropertyTree &cfg_file)
 
     ret = OgreUDPSvcHandler::OpenUDPSendPeer();
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -347,7 +347,7 @@ int Ogre_Comm_Manger::init_comm_manger(Zen_INI_PropertyTree &cfg_file)
     {
         ret = udp_handler_ary_[i]->InitUDPServices();
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -356,12 +356,12 @@ int Ogre_Comm_Manger::init_comm_manger(Zen_INI_PropertyTree &cfg_file)
     //初始化静态数据
     ret = Ogre_TCP_Svc_Handler::init_all_static_data();
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //注销通讯管理器
@@ -374,7 +374,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
     {
         ret = accept_handler_ary_[i]->handle_close();
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -385,7 +385,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
     {
         ret = udp_handler_ary_[i]->handle_close();
 
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -396,7 +396,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
     //
     Ogre4aIPRestrictMgr::clean_instance();
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //得到单子的实例

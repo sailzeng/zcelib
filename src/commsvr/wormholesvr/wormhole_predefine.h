@@ -1,5 +1,5 @@
-#ifndef _ARBITER_SERVER_PRE_DEFINE_H_
-#define _ARBITER_SERVER_PRE_DEFINE_H_
+#ifndef _WORMHOLE_SERVER_PRE_DEFINE_H_
+#define _WORMHOLE_SERVER_PRE_DEFINE_H_
 
 //ZENLIB
 #include <zce_predefine.h>
@@ -40,7 +40,6 @@
 #include <zce_event_handle_base.h>
 #include <zce_event_reactor_base.h>
 #include <zce_config_getopt.h>
-#include <zce_config_ini_implement.h>
 #include <zce_socket_base.h>
 #include <zce_socket_acceptor.h>
 #include <zce_socket_connector.h>
@@ -49,25 +48,18 @@
 
 #include <soar_predefine.h>
 #include <soar_error_code.h>
-#include <soar_random_number.h>
-#include <soar_service_config.h>
-#include <soar_app_frame.h>
+#include <soar_svrd_cfg_base.h>
+#include <soar_zerg_frame.h>
 #include <soar_zerg_mmappipe.h>
-#include <soar_mml_command.h>
-#include <soar_mml_console_handler.h>
-#include <soar_encrypt_arithmetic.h>
-#include <soar_cmd_statistic.h>
-#include <soar_service_config.h>
-#include <soar_svrd_config.h>
-#include <soar_svrd_application.h>
-#include <soar_svrd_app_non_ctrl.h>
+#include <soar_svrd_app_bus.h>
 #include <soar_svrd_app_main.h>
 #include <soar_enum_define.h>
 #include <soar_stat_monitor.h>
+#include <soar_svrd_timer_base.h>
 
 
 
 
 
-#endif //_ARBITER_SERVER_PRE_DEFINE_H_
+#endif //_WORMHOLE_SERVER_PRE_DEFINE_H_
 

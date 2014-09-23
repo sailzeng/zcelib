@@ -125,7 +125,7 @@ int Comm_SvrdApp_BUS::popfront_recvpipe(size_t max_prc, size_t &proc_frame)
         DEBUGDUMP_FRAME_HEAD(nonctrl_recv_buffer_, "FROM RECV PIPE FRAME", RS_DEBUG);
 
         //处理一个收到的数据
-        ret = process_recv_appframe(nonctrl_recv_buffer_);
+        ret = process_recv_frame(nonctrl_recv_buffer_);
 
         //
         if (ret !=  0)

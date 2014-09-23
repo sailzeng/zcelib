@@ -24,7 +24,7 @@ Ogre_App_Handler::~Ogre_App_Handler()
 }
 
 //
-int Ogre_App_Handler::handle_timeout(const ZEN_Time_Value &/*time*/, const void *arg)
+int Ogre_App_Handler::handle_timeout(const ZCE_Time_Value &/*time*/, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
 
@@ -43,7 +43,7 @@ int Ogre_App_Handler::handle_timeout(const ZEN_Time_Value &/*time*/, const void 
 //设置错误重试的定时器
 int Ogre_App_Handler::SetErrorRetryTimer()
 {
-    ZEN_Time_Value delay(RETRY_TIME_INTERVAL, 0);
+    ZCE_Time_Value delay(RETRY_TIME_INTERVAL, 0);
     timer_queue()->schedule_timer (this,
                                    &(OGRE_APP_TIME_ID[0]),
                                    delay);

@@ -6,7 +6,7 @@
 /****************************************************************************************************
 class  Ogre_App_Handler APP的定时器Handler处理类
 ****************************************************************************************************/
-class  Ogre_App_Handler: public  ZEN_Timer_Handler
+class  Ogre_App_Handler: public  ZCE_Timer_Handler
 {
 
 public:
@@ -16,7 +16,7 @@ protected:
     ~Ogre_App_Handler();
 
     //
-    virtual int handle_timeout(const ZEN_Time_Value &time, const void *arg);
+    virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
 
 public:
     //设置错误重试的定时器

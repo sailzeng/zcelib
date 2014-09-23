@@ -156,7 +156,6 @@ protected:
     ///是否加重新加载配置
     bool                  app_reload_;
 
-
     ///进程名字，抛开运行目录，文件后缀的名字，
     std::string           app_base_name_;
     ///程序运行名称,如果包含路径运行，会有路径信息
@@ -164,8 +163,6 @@ protected:
 
     ///作者名称
     std::string           app_author_;
-
-
 
     ///服务名称
     std::string           service_name_;

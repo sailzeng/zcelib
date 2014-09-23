@@ -29,7 +29,7 @@ protected:
     virtual int popfront_recvpipe(size_t max_prc, size_t &proc_frame);
 
     //处理收到的APPFRAME，不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
-    virtual int process_recv_appframe(Zerg_App_Frame *recv_frame) = 0;
+    virtual int process_recv_frame(Zerg_App_Frame *recv_frame) = 0;
 
 
 };

@@ -37,7 +37,7 @@ Comm_Svrd_Appliction::Comm_Svrd_Appliction() :
     config_base_(NULL)
 {
     //×÷ÕßÃû³Æ
-    app_author_ = "TSS Platform Server Dev Team.";
+    app_author_ = "FXL Platform Server Dev Team.";
 }
 
 Comm_Svrd_Appliction::~Comm_Svrd_Appliction()

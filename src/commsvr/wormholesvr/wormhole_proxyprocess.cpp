@@ -2,33 +2,22 @@
 #include "wormhole_proxyprocess.h"
 #include "wormhole_application.h"
 #include "wormhole_stat_define.h"
-#include "wormhole_flow_stat.h"
 
-/****************************************************************************************************
-class Interface_Proxy_Process
-****************************************************************************************************/
-InterfaceProxyProcess::InterfaceProxyProcess()
+
+//===================================================================================================
+//class Interface_Proxy_Process
+//===================================================================================================
+Interface_WH_Proxy::Interface_WH_Proxy()
 {
 }
-InterfaceProxyProcess::~InterfaceProxyProcess()
+Interface_WH_Proxy::~Interface_WH_Proxy()
 {
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月23日
-Function        : Interface_Proxy_Process::CreatePorxyFactory
-Return          : Interface_Proxy_Process*
-Parameter List  :
-Param1: PROXY_TYPE proxytype 代理类型
-Description     :
-Calls           :
-Called By       :
-Other           : 根据代理类型返回代理的接口，
-Modify Record   :
-******************************************************************************************/
-InterfaceProxyProcess *InterfaceProxyProcess::CreatePorxyFactory(PROXY_TYPE proxytype)
+//代理接口制造的工厂
+Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytype)
 {
-    InterfaceProxyProcess *tmpintface = NULL;
+    Interface_WH_Proxy *tmpintface = NULL;
     ZLOG_INFO("Interface_Proxy_Process::CreatePorxyFactory PROXY_TYPE: %d.", proxytype);
 
     switch (proxytype)
@@ -50,7 +39,7 @@ InterfaceProxyProcess *InterfaceProxyProcess::CreatePorxyFactory(PROXY_TYPE prox
         // 透转转发的方式
         case PROXY_TYPE_TRANSMIT:
         {
-            tmpintface = new TransmitProxyProcess();
+            tmpintface = new Transmit_Proxy();
             break;
         }
 
@@ -68,13 +57,6 @@ InterfaceProxyProcess *InterfaceProxyProcess::CreatePorxyFactory(PROXY_TYPE prox
             break;
         }
 
-        // 对数据进行拷贝分发广播,手游类业务
-        case PROXY_TYPE_COPY_TRANS_ALL_MG:
-        {
-            tmpintface = new CopyTransmitAllMGProxyProcess();
-            break;
-        }
-
         default:
             // 错误
             ZLOG_ERROR("Error Proxy Type define. Please check you code. ");
@@ -84,70 +66,27 @@ InterfaceProxyProcess *InterfaceProxyProcess::CreatePorxyFactory(PROXY_TYPE prox
     return tmpintface;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月12日
-Function        : Interface_Proxy_Process::InitProxyInstance
-Return          : int
-Parameter List  : NULL
-Description     : 初始化化代理,
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int InterfaceProxyProcess::InitProxyInstance()
+
+int Interface_WH_Proxy::init_proxy_instance()
 {
     // int ret =0;
     // 初始化MMAP内存的PIPE
     zerg_mmap_pipe_ = Zerg_MMAP_BusPipe::instance();
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月12日
-Function        : Interface_Proxy_Process::get_proxy_config
-Return          : int
-Parameter List  : NULL
-Description     : 读取配置
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int InterfaceProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
+
+//读取配置
+int Interface_WH_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 {
-    unsigned int numcmd = 0;
-
-    // 是否检查帧
-    if_check_frame_ = cfg->if_check_frame_;
-    ZLOG_DEBUG("If check frame: %d.", if_check_frame_);
-
-    numcmd = cfg->process_cmd_info_.process_cmd_num_;
-    ZLOG_DEBUG("Process cmd count: %d.", numcmd);
-
-    char tmp[64];
-    char tmpbuf[128];
-
-    proxy_processcmd_.resize(numcmd);
-
-    for (unsigned int i = 0; i < numcmd; ++i)
-    {
-        // 如果有重复的我只能默哀了
-        unsigned int prccmd;
-        snprintf(tmp, 64, "PROCESSCMD%i", i);
-        snprintf(tmpbuf, 64, "NORMALPROCESSCMD|%s key error.", tmp);
-        prccmd = cfg->process_cmd_info_.process_cmd_[i];
-        TESTCONFIG(prccmd != 0, tmpbuf);
-
-        proxy_processcmd_.insert(prccmd);
-    }
-
-    return TSS_RET::TSS_RET_SUCC;
+    ZCE_UNUSED_ARG(conf_tree);
+    return 0;
 }
+
 
 /****************************************************************************************************
-class  Echo_Proxy_Process 回显得的代理服务器处理 PROXY_TYPE_ECHO
+ Echo_Proxy_Process 回显得的代理服务器处理 PROXY_TYPE_ECHO
 ****************************************************************************************************/
 Echo_Proxy_Process::Echo_Proxy_Process()
 {
@@ -158,32 +97,20 @@ Echo_Proxy_Process::~Echo_Proxy_Process()
 
 }
 
-int Echo_Proxy_Process::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
+int Echo_Proxy_Process::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 {
     //
-    int ret = InterfaceProxyProcess::get_proxy_config(cfg);
-
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    int ret = Interface_WH_Proxy::get_proxy_config(conf_tree);
+    if (ret != 0)
     {
         return ret;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月12日
-Function        : Echo_Proxy_Process::process_proxy
-Return          : int
-Parameter List  :
-Param1: Comm_App_Frame* proc_frame 要处理的帧
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int Echo_Proxy_Process::process_proxy(Comm_App_Frame *proc_frame)
+
+int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
 {
 
     ZLOG_DEBUG("Receive a echo frame to process,"
@@ -196,7 +123,7 @@ int Echo_Proxy_Process::process_proxy(Comm_App_Frame *proc_frame)
                proc_frame->send_service_.services_id_,
                proc_frame->recv_service_.services_type_,
                proc_frame->recv_service_.services_id_,
-               proc_frame->frame_uin_,
+               proc_frame->frame_uid_,
                proc_frame->frame_command_,
                proc_frame->frame_length_);
 
@@ -207,8 +134,8 @@ int Echo_Proxy_Process::process_proxy(Comm_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                   proc_frame->frame_uin_, proc_frame->frame_command_);
-        return TSS_RET::TSS_RET_SUCC;
+                   proc_frame->frame_uid_, proc_frame->frame_command_);
+        return 0;
     }
 
     // 返回这个帧
@@ -217,25 +144,25 @@ int Echo_Proxy_Process::process_proxy(Comm_App_Frame *proc_frame)
     ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
     //
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
-        return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+        return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
 
     ZLOG_DEBUG( "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
                 proc_frame->recv_service_.services_type_,
                 proc_frame->recv_service_.services_id_,
-                proc_frame->frame_uin_,
+                proc_frame->frame_uid_,
                 proc_frame->frame_command_,
                 proc_frame->frame_length_);
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /****************************************************************************************************
 class DBModalProxyProcess 按照DB取模进行Proxy转发，用于DBServer和金融服务器 PROXY_TYPE_DB_MODAL
 ****************************************************************************************************/
 DBModalProxyProcess::DBModalProxyProcess():
-    InterfaceProxyProcess()
+    Interface_WH_Proxy()
 {
 }
 DBModalProxyProcess::~DBModalProxyProcess()
@@ -250,27 +177,16 @@ DBModalProxyProcess::~DBModalProxyProcess()
     }
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月24日
-Function        : DBModalProxyProcess::get_proxy_config
-Return          : int
-Parameter List  :
-Param1: const char* cfgfile
-Description     : 读取NORMAL的配置
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int DBModalProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
+
+int DBModalProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 {
 
     int ret = 0;
 
     //得到过滤得命令
-    ret = InterfaceProxyProcess::get_proxy_config(cfg);
+    ret = Interface_WH_Proxy::get_proxy_config(conf_tree);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -314,7 +230,7 @@ int DBModalProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
             (dbmodal_proxy_info->router_svr_type_, dbmodal_proxy_info));
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -322,14 +238,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2005年12月12日
 Function        : DBModalProxyProcess::process_proxy
 Return          : int
 Parameter List  :
-Param1: Comm_App_Frame* proc_frame 要处理的帧
+Param1: Zerg_App_Frame* proc_frame 要处理的帧
 Description     :
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
+int DBModalProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 {
     ZLOG_DEBUG("Receive a dbmode frame to process,"
                "send svr:[%u|%u], "
@@ -341,7 +257,7 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
                proc_frame->send_service_.services_id_,
                proc_frame->recv_service_.services_type_,
                proc_frame->recv_service_.services_id_,
-               proc_frame->frame_uin_,
+               proc_frame->frame_uid_,
                proc_frame->frame_command_,
                proc_frame->frame_length_);
 
@@ -352,8 +268,8 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZLOG_INFO("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                  proc_frame->frame_uin_, proc_frame->frame_command_);
-        return TSS_RET::TSS_RET_SUCC;
+                  proc_frame->frame_uid_, proc_frame->frame_command_);
+        return 0;
     }
 
     std::map<unsigned short, DBModalProxyInfo*>::iterator iter =
@@ -365,7 +281,7 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         DBModalProxyInfo *dbmodal_proxy_info = iter->second;
 
         //------------------------------------------------------------------
-        unsigned int uin = proc_frame->frame_uin_;
+        unsigned int uin = proc_frame->frame_uid_;
 
         // 过滤掉uin为0的数据
         if (uin == 0 )
@@ -373,9 +289,9 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
 
             proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_ERROR);
 
-            Comm_Stat_Monitor::instance()->increase_once(ARBITER_TRANS_PKG_ERROR);
+            Comm_Stat_Monitor::instance()->increase_once(WORMHOLE_TRANS_PKG_ERROR);
 
-            return TSS_RET::ERROR_APPFRAME_ERROR;
+            return SOAR_RET::ERROR_APPFRAME_ERROR;
         }
 
         // 关键代码处
@@ -391,7 +307,7 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
             "frame_command:%u, frame_len:%u, trans_id[%u]. ",
                    proc_frame->recv_service_.services_type_,
                    proc_frame->recv_service_.services_id_,
-                   proc_frame->frame_uin_,
+                   proc_frame->frame_uid_,
                    proc_frame->frame_command_,
                    proc_frame->frame_length_,
                    proc_frame->transaction_id_);
@@ -400,9 +316,9 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         int ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
         //
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
-            return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+            return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
         }
 
         // 如果有备份路由,则将数据转发给一个备份的代理
@@ -414,21 +330,17 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
                 " frame_command:%u, frame_len:%u, back trans_id[%u]. ",
                       proc_frame->recv_service_.services_type_,
                       proc_frame->recv_service_.services_id_,
-                      proc_frame->frame_uin_,
+                      proc_frame->frame_uid_,
                       proc_frame->frame_command_,
                       proc_frame->frame_length_,
                       proc_frame->backfill_trans_id_);
 
             ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
-            if (ret != TSS_RET::TSS_RET_SUCC)
+            if (ret != 0)
             {
-                return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+                return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
             }
-
-            // 备份路由, 多增加一次
-            ArbiterFlowStat::instance()->increase_channel_pkg_num(proc_frame->send_service_.services_type_,
-                                                                  proc_frame->recv_service_.services_type_);
         }
 
     }
@@ -440,52 +352,47 @@ int DBModalProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         ZLOG_INFO("Send back [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_uin_,
+                  proc_frame->frame_uid_,
                   proc_frame->frame_command_,
                   proc_frame->frame_length_);
 
         ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
         //
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
-            return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+            return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
         }
     }
 
-    // else ELSE不做处理，DB Modal PROXY只是将发向DB一侧的数据进行修改。
-
-    ArbiterFlowStat::instance()->increase_channel_pkg_num(proc_frame->send_service_.services_type_,
-                                                          proc_frame->recv_service_.services_type_);
-
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /****************************************************************************************************
 class TransmitProxyProcess 直接进行转发处理，不对数据帧进行任何处理
 ****************************************************************************************************/
-TransmitProxyProcess::TransmitProxyProcess()
+Transmit_Proxy::Transmit_Proxy()
 {
 }
 
-TransmitProxyProcess::~TransmitProxyProcess()
+Transmit_Proxy::~Transmit_Proxy()
 {
 }
 
-int TransmitProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg )
+int Transmit_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 {
     //
-    int ret = InterfaceProxyProcess::get_proxy_config(cfg);
+    int ret = Interface_WH_Proxy::get_proxy_config(cfg);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
-int TransmitProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
+int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
 {
     ZLOG_DEBUG("Receive a transmit frame to process,"
                "send svr:[%u|%u], "
@@ -497,7 +404,7 @@ int TransmitProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
                proc_frame->send_service_.services_id_,
                proc_frame->recv_service_.services_type_,
                proc_frame->recv_service_.services_id_,
-               proc_frame->frame_uin_,
+               proc_frame->frame_uid_,
                proc_frame->frame_command_,
                proc_frame->frame_length_);
 
@@ -509,37 +416,34 @@ int TransmitProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                   proc_frame->frame_uin_, proc_frame->frame_command_);
-        return TSS_RET::TSS_RET_SUCC;
+                   proc_frame->frame_uid_, proc_frame->frame_command_);
+        return 0;
     }
 
     ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
     //
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
-        return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+        return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
-
-    ArbiterFlowStat::instance()->increase_channel_pkg_num(proc_frame->send_service_.services_type_,
-                                                          proc_frame->recv_service_.services_type_);
 
     ZLOG_DEBUG( "Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                 proc_frame->recv_service_.services_type_,
                 proc_frame->recv_service_.services_id_,
-                proc_frame->frame_uin_,
+                proc_frame->frame_uid_,
                 proc_frame->frame_command_,
                 proc_frame->frame_length_,
                 proc_frame->transaction_id_);
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /****************************************************************************************************
 class CopyTransmitAllProxyProcess 将数据复制转发给所有配置的服务器 PROXY_TYPE_COPY_TRANS_ALL
 ****************************************************************************************************/
 CopyTransmitAllProxyProcess::CopyTransmitAllProxyProcess():
-    InterfaceProxyProcess(),
+    Interface_WH_Proxy(),
     copytrans_svctype_(0),
     copytrans_svcnum_(0)
 {
@@ -550,12 +454,12 @@ CopyTransmitAllProxyProcess::~CopyTransmitAllProxyProcess()
 {
 }
 
-int CopyTransmitAllProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
+int CopyTransmitAllProxyProcess::get_proxy_config()
 {
     //
-    int ret = InterfaceProxyProcess::get_proxy_config(cfg);
+    int ret = Interface_WH_Proxy::get_proxy_config(cfg);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -600,14 +504,14 @@ int CopyTransmitAllProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
     if (check_list.size() != copytrans_svcnum_ )
     {
         ZLOG_ERROR("Cfg file have repeat COPYSVCID,Please check.");
-        return TSS_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //
-int CopyTransmitAllProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
+int CopyTransmitAllProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 {
     int ret = 0;
 
@@ -620,15 +524,15 @@ int CopyTransmitAllProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                   proc_frame->frame_uin_, proc_frame->frame_command_);
-        return TSS_RET::TSS_RET_SUCC;
+                   proc_frame->frame_uid_, proc_frame->frame_command_);
+        return 0;
     }
 
     // 这样处理是否好，我不知道，
     if (proc_frame->recv_service_.services_type_ != copytrans_svctype_)
     {
         ZLOG_ERROR("Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
-        return TSS_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
+        return SOAR_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
     }
 
     // 复制生成N个帧，转发到不同的服务器
@@ -639,7 +543,7 @@ int CopyTransmitAllProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
         //
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
             return ret;
         }
@@ -647,13 +551,13 @@ int CopyTransmitAllProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         ZLOG_DEBUG( "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                     proc_frame->recv_service_.services_type_,
                     proc_frame->recv_service_.services_id_,
-                    proc_frame->frame_uin_,
+                    proc_frame->frame_uid_,
                     proc_frame->frame_command_,
                     proc_frame->frame_length_,
                     proc_frame->transaction_id_);
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 const DBModalMGRouteItem *DBModalMGProxyInfo::find_route(unsigned int uin)
@@ -661,7 +565,7 @@ const DBModalMGRouteItem *DBModalMGProxyInfo::find_route(unsigned int uin)
     if (route_cfg_.size() == 0)
     {
         // 没有配置路由,这一定是个错误
-        ZLOG_ERROR("[%s] no route configed", __ZEN_FUNCTION__);
+        ZLOG_ERROR("[%s] no route configed", __ZCE_FUNC__);
         return NULL;
     }
 
@@ -685,7 +589,7 @@ const DBModalMGRouteItem *DBModalMGProxyInfo::find_route(unsigned int uin)
 class DBModalMGProxyProcess 按照APPID和UIN进行Proxy转发，用于手游类业务 PROXY_TYPE_DB_MODAL_MG
 ****************************************************************************************************/
 DBModalMGProxyProcess::DBModalMGProxyProcess():
-    InterfaceProxyProcess()
+    Interface_WH_Proxy()
 {
 }
 
@@ -694,14 +598,14 @@ DBModalMGProxyProcess::~DBModalMGProxyProcess()
     clear_all_entrys();
 }
 
-int DBModalMGProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
+int DBModalMGProxyProcess::get_proxy_config()
 {
-    int ret = TSS_RET::TSS_RET_SUCC;
+    int ret = 0;
 
     // 得到过滤得命令
-    ret = InterfaceProxyProcess::get_proxy_config(cfg);
+    ret = Interface_WH_Proxy::get_proxy_config(cfg);
 
-    if (ret != TSS_RET::TSS_RET_SUCC)
+    if (ret != 0)
     {
         return ret;
     }
@@ -720,7 +624,7 @@ int DBModalMGProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
                 {
                     ret = add_entry(cfg->dbmodal_info_mg_.entrys_[i].app_id_[k],
                         dbmodal_mg_proxy_info->router_svr_type_, dbmodal_mg_proxy_info);
-                    if(ret != TSS_RET::TSS_RET_SUCC)
+                    if(ret != 0)
                     {
                         return ret;
                     }
@@ -730,7 +634,7 @@ int DBModalMGProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
             {
                 // 没有指定appid的是默认路由
                 ret = add_entry(0, dbmodal_mg_proxy_info->router_svr_type_, dbmodal_mg_proxy_info);
-                if(ret != TSS_RET::TSS_RET_SUCC)
+                if(ret != 0)
                 {
                     return ret;
                 }
@@ -741,7 +645,7 @@ int DBModalMGProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
     return ret;
 }
 
-int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
+int DBModalMGProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 {
     ZLOG_DEBUG("Receive a dbmodemg frame to process,"
                "send svr:[%u|%u], "
@@ -753,7 +657,7 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
                proc_frame->send_service_.services_id_,
                proc_frame->recv_service_.services_type_,
                proc_frame->recv_service_.services_id_,
-               proc_frame->frame_uin_,
+               proc_frame->frame_uid_,
                proc_frame->frame_command_,
                proc_frame->frame_length_);
 
@@ -764,13 +668,13 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZLOG_INFO("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                  proc_frame->frame_uin_, proc_frame->frame_command_);
-        return TSS_RET::TSS_RET_SUCC;
+                  proc_frame->frame_uid_, proc_frame->frame_command_);
+        return 0;
     }
 
     uint32_t recv_service;
     const DBModalMGRouteItem *route_item =
-        find_proxy(proc_frame->app_id_, proc_frame->recv_service_.services_type_, proc_frame->frame_uin_, recv_service);
+        find_proxy(proc_frame->app_id_, proc_frame->recv_service_.services_type_, proc_frame->frame_uid_, recv_service);
 
     if(route_item != NULL)
     {
@@ -781,7 +685,7 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         ZLOG_DEBUG("Send to main services [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                    proc_frame->recv_service_.services_type_,
                    proc_frame->recv_service_.services_id_,
-                   proc_frame->frame_uin_,
+                   proc_frame->frame_uid_,
                    proc_frame->frame_command_,
                    proc_frame->frame_length_,
                    proc_frame->transaction_id_);
@@ -790,9 +694,9 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         int ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
         //
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
-            return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+            return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
         }
 
         // 如果有备份路由,则将数据转发给一个备份的代理
@@ -802,21 +706,18 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
             ZLOG_INFO("Send to backup services [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, back trans_id[%u]. ",
                       proc_frame->recv_service_.services_type_,
                       proc_frame->recv_service_.services_id_,
-                      proc_frame->frame_uin_,
+                      proc_frame->frame_uid_,
                       proc_frame->frame_command_,
                       proc_frame->frame_length_,
                       proc_frame->backfill_trans_id_);
 
             ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
-            if (ret != TSS_RET::TSS_RET_SUCC)
+            if (ret != 0)
             {
-                return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+                return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
             }
 
-            // 备份路由, 多增加一次
-            ArbiterFlowStat::instance()->increase_channel_pkg_num(proc_frame->send_service_.services_type_,
-                                                                  proc_frame->recv_service_.services_type_);
         }
 
         // 如果有旁路路由,则将数据转发给一个旁路的代理
@@ -826,22 +727,18 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
             ZLOG_INFO("Send to passby services [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, back trans_id[%u]. ",
                 proc_frame->recv_service_.services_type_,
                 proc_frame->recv_service_.services_id_,
-                proc_frame->frame_uin_,
+                proc_frame->frame_uid_,
                 proc_frame->frame_command_,
                 proc_frame->frame_length_,
                 proc_frame->backfill_trans_id_);
 
             ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
-            if (ret != TSS_RET::TSS_RET_SUCC)
+            if (ret != 0)
             {
-                return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+                return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
             }
 
-            //备份路由, 多增加一次
-            ArbiterFlowStat::instance()->increase_channel_pkg_num(
-                proc_frame->send_service_.services_type_,
-                proc_frame->recv_service_.services_type_);
         }
 
     }
@@ -853,31 +750,23 @@ int DBModalMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
         ZLOG_INFO("Send back [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
                   proc_frame->recv_service_.services_type_,
                   proc_frame->recv_service_.services_id_,
-                  proc_frame->frame_uin_,
+                  proc_frame->frame_uid_,
                   proc_frame->frame_command_,
                   proc_frame->frame_length_);
 
         ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
         //
-        if (ret != TSS_RET::TSS_RET_SUCC)
+        if (ret != 0)
         {
-            return TSS_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+            return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
         }
     }
 
     //else ELSE不做处理，DB Modal PROXY只是将发向DB一侧的数据进行修改。
 
-    ArbiterFlowStat::instance()->increase_channel_pkg_num(proc_frame->send_service_.services_type_,
-                                                          proc_frame->recv_service_.services_type_);
 
-    // 出包量统计
-    ArbiterSendStat::instance()->send_flow_increase_once(
-        proc_frame->recv_service_.services_type_,
-        proc_frame->recv_service_.services_id_);
-
-
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 DBModalMGProxyInfo *DBModalMGProxyProcess::add_proxy(conf_proxysvr::RouteInfo *route_info)
@@ -949,16 +838,16 @@ int DBModalMGProxyProcess::add_entry(uint32_t app_id, uint32_t service_type, DBM
     if(itor != dbmodal_mg_proxy_map_.end())
     {
         ZLOG_ERROR("[%s] proxy entry is conflict, app id: %u, service_type: %u",
-            __ZEN_FUNCTION__, app_id, service_type);
+            __ZCE_FUNC__, app_id, service_type);
         return -1;
     }
 
     dbmodal_mg_proxy_map_.insert(std::map<DBModalMGKey, DBModalMGProxyInfo*>::value_type(key, proxy_info));
 
     ZLOG_INFO("[%s] add proxy entry succ, app id: %u, service_type: %u",
-        __ZEN_FUNCTION__, app_id, service_type);
+        __ZCE_FUNC__, app_id, service_type);
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 const DBModalMGRouteItem *DBModalMGProxyProcess::find_proxy(uint32_t app_id, uint32_t service_type, uint32_t uin, uint32_t &recv_service)
@@ -987,7 +876,7 @@ const DBModalMGRouteItem *DBModalMGProxyProcess::find_proxy(uint32_t app_id, uin
 
     //默认路由表也不存在,真的是出问题了
     ZLOG_ERROR("[%s] proxy entry is not exist, app id: %u, service_type: %u",
-        __ZEN_FUNCTION__, app_id, service_type);
+        __ZCE_FUNC__, app_id, service_type);
 
     return NULL;
 }
@@ -1000,175 +889,4 @@ void DBModalMGProxyProcess::clear_all_entrys()
     }
     dbmodal_mg_proxys_.clear();
     dbmodal_mg_proxy_map_.clear();
-}
-
-/****************************************************************************************************
-class CopyTransmitAllMGProxyProcess 将数据复制转发给所有配置的服务器,手游类业务 PROXY_TYPE_COPY_TRANS_ALL_MG
-****************************************************************************************************/
-CopyTransmitAllMGProxyProcess::CopyTransmitAllMGProxyProcess()
-{
-}
-
-CopyTransmitAllMGProxyProcess::~CopyTransmitAllMGProxyProcess()
-{
-    clear_all_entrys();
-}
-
-int CopyTransmitAllMGProxyProcess::get_proxy_config(conf_proxysvr::LPCONFIG cfg)
-{
-    //
-    int ret = InterfaceProxyProcess::get_proxy_config(cfg);
-
-    if (ret != TSS_RET::TSS_RET_SUCC)
-    {
-        return ret;
-    }
-
-    clear_all_entrys();
-
-    for(size_t i = 0; i < cfg->copy_info_mg_.entry_cnt_; i++)
-    {
-        CopyTransmitAllMGProxyInfo *proxy_info = add_proxy(&cfg->copy_info_mg_.entrys_[i]);
-        if(cfg->copy_info_mg_.entrys_[i].app_id_cnt_ > 0)
-        {
-            for(size_t j = 0; j < cfg->copy_info_mg_.entrys_[i].app_id_cnt_; j++)
-            {
-                ret = add_entry(cfg->copy_info_mg_.entrys_[i].app_id_[j], proxy_info);
-                if(ret != TSS_RET::TSS_RET_SUCC)
-                {
-                    return ret;
-                }
-            }
-        }
-        else
-        {
-            //没有appid的是默认路由
-            ret = add_entry(0, proxy_info);
-            if(ret != TSS_RET::TSS_RET_SUCC)
-            {
-                return ret;
-            }
-        }
-    }
-
-    return TSS_RET::TSS_RET_SUCC;
-}
-
-int CopyTransmitAllMGProxyProcess::process_proxy(Comm_App_Frame *proc_frame)
-{
-    int ret = 0;
-
-    //输出包头，看看
-    proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_DEBUG);
-
-    //内部处理的命令,跳过
-    bool bsnderr;
-
-    if (proc_frame->is_internal_process(bsnderr) == true)
-    {
-        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                   proc_frame->frame_uin_, proc_frame->frame_command_);
-        return TSS_RET::TSS_RET_SUCC;
-    }
-
-    CopyTransmitAllMGProxyInfo *proxy_info = find_proxy(proc_frame->app_id_);
-    if(proxy_info == NULL)
-    {
-        ZLOG_ERROR("[%s] proxy is not exist,app id: %u",
-            __ZEN_FUNCTION__, proc_frame->app_id_);
-        return -1;
-    }
-
-    //这样处理是否好，我不知道，
-    if (proc_frame->recv_service_.services_type_ != proxy_info->service_type_)
-    {
-        ZLOG_ERROR("Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
-        return TSS_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
-    }
-
-    //复制生成N个帧，转发到不同的服务器
-    for(size_t i = 0; i < proxy_info->svcid_.size(); i++)
-    {
-        //修改为新的ID
-        proc_frame->recv_service_.services_id_ = proxy_info->svcid_[i];
-        ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
-
-        //
-        if (ret != TSS_RET::TSS_RET_SUCC)
-        {
-            return ret;
-        }
-
-        ZLOG_DEBUG( "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
-                    proc_frame->recv_service_.services_type_,
-                    proc_frame->recv_service_.services_id_,
-                    proc_frame->frame_uin_,
-                    proc_frame->frame_command_,
-                    proc_frame->frame_length_,
-                    proc_frame->transaction_id_);
-    }
-
-    return TSS_RET::TSS_RET_SUCC;
-}
-
-CopyTransmitAllMGProxyInfo *CopyTransmitAllMGProxyProcess::add_proxy(conf_proxysvr::CopySvrIdMG *copy_svr_id)
-{
-    CopyTransmitAllMGProxyInfo *proxy_info = new CopyTransmitAllMGProxyInfo;
-
-    proxy_info->service_type_ = copy_svr_id->svr_type_;
-    for(size_t i = 0; i < copy_svr_id->copy_cnt_; i++)
-    {
-        proxy_info->svcid_.push_back(copy_svr_id->svr_id_[i].service_id_);
-    }
-
-    return proxy_info;
-}
-
-int CopyTransmitAllMGProxyProcess::add_entry(uint32_t app_id, CopyTransmitAllMGProxyInfo *proxy_info)
-{
-    std::map<uint32_t, CopyTransmitAllMGProxyInfo*>::iterator itor = proxy_map_.find(app_id);
-
-    if(itor != proxy_map_.end())
-    {
-        ZLOG_ERROR("[%s] proxy is conflict, app id: %u",
-            __ZEN_FUNCTION__, app_id);
-        return -1;
-    }
-
-    proxy_map_.insert(std::map<uint32_t, CopyTransmitAllMGProxyInfo*>::value_type(app_id, proxy_info));
-
-    return TSS_RET::TSS_RET_SUCC;
-}
-
-CopyTransmitAllMGProxyInfo *CopyTransmitAllMGProxyProcess::find_proxy(uint32_t app_id)
-{
-    std::map<uint32_t, CopyTransmitAllMGProxyInfo*>::iterator itor = proxy_map_.find(app_id);
-
-    if(itor != proxy_map_.end())
-    {
-        return itor->second;
-    }
-
-    //尝试使用默认配置
-
-    itor = proxy_map_.find(0);
-    if(itor != proxy_map_.end())
-    {
-        return itor->second;
-    }
-
-    ZLOG_ERROR("[%s] proxy entry is not exist, app id: %u",
-        __ZEN_FUNCTION__, app_id);
-
-    return NULL;
-}
-
-void CopyTransmitAllMGProxyProcess::clear_all_entrys()
-{
-    for(size_t i = 0; i < proxys_.size(); i++)
-    {
-        delete proxys_[i];
-    }
-    proxys_.clear();
-    proxy_map_.clear();
 }

@@ -82,7 +82,7 @@ int Ogre4aIPRestrictMgr::check_ip_restrict(const ZEN_Sockaddr_In &remoteaddress)
         if ( iter == allow_ip_set_.end() )
         {
             ZLOG_INFO( "A NO Allowed IP|Port : %s|%u Connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
-            return TSS_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
+            return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }
     }
 
@@ -94,11 +94,11 @@ int Ogre4aIPRestrictMgr::check_ip_restrict(const ZEN_Sockaddr_In &remoteaddress)
         if ( iter != reject_ip_set_.end() )
         {
             ZLOG_INFO( "Reject IP|Port : %s|%u connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
-            return TSS_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
+            return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 //单子实例函数

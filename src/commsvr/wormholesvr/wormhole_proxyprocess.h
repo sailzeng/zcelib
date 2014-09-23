@@ -1,10 +1,13 @@
-#ifndef ARBITER_PROXY_PROCESS_H_
-#define ARBITER_PROXY_PROCESS_H_
+#ifndef WORMHOLE_PROXY_PROCESS_H_
+#define WORMHOLE_PROXY_PROCESS_H_
 
-/****************************************************************************************************
-class Interface_Proxy_Process
-****************************************************************************************************/
-class InterfaceProxyProcess
+
+/*!
+* @brief      
+*             
+* @note       
+*/
+class Interface_WH_Proxy
 {
 public:
 
@@ -16,83 +19,66 @@ public:
         PROXY_TYPE_DB_MODAL          = 2, // 按照UIN取模进行Proxy转发，用于DBServer和金融服务器
         PROXY_TYPE_TRANSMIT          = 3, // 直接进行转发处理，不对数据帧进行任何处理
         PROXY_TYPE_COPY_TRANS_ALL    = 4, // 将数据复制转发给所有配置的服务器
-        PROXY_TYPE_DB_MODAL_MG       = 5, // 按照APPID和UIN进行Proxy转发，用于手游类业务
-        PROXY_TYPE_COPY_TRANS_ALL_MG = 6, // 将数据复制转发给所有配置的服务器,手游类业务
+        PROXY_TYPE_DB_MODAL_MG       = 5, // 按照APPID和UIN进行Proxy转发
     };
+
+public:
+
+    ///构造函数
+    Interface_WH_Proxy();
+    virtual ~Interface_WH_Proxy();
+
+    //初始化代理的实例
+    virtual int init_proxy_instance();
+
+    /// 通过配置文件取得代理的配置信息,这个函数只取过滤命令部分的代码,要使用指定基类访问
+    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+
+    ///代理的处理,返回生产的帧的个数
+    virtual int process_proxy(Zerg_App_Frame *proc_frame) = 0;
+
+
+protected:
+
+    /*!
+    * @brief      命令的过滤器,看不出有什么扩展必要,所以放在这儿,
+    * @return     int
+    * @param      cmd  要检查的CMD
+    * @note
+    */
+    inline int filter_command(unsigned long cmd);
+
+public:
+    
+    /*!
+    * @brief      代理接口制造的工厂
+    * @return     Interface_WH_Proxy*
+    * @param      proxytype
+    */
+    static Interface_WH_Proxy *create_proxy_factory(PROXY_TYPE proxytype);
+
 
 protected:
 
     // 默认初始化的长度
-    static const size_t  INIT_PROCESS_FRAME = 64;
+    static const size_t INIT_PROCESS_FRAME = 64;
 
-    // 是否检查帧
-    uint32_t                           if_check_frame_;
-
-    // 代理处理的命令,
-    hash_set<unsigned int>        proxy_processcmd_;
 
     //
-    Zerg_MMAP_BusPipe             *zerg_mmap_pipe_;
-
-protected:
-
-    // 命令的过滤器,看不出有什么扩展必要,所以放在这儿,
-    inline int FilterCommand(unsigned long cmd);
-
-    // 初始化内存管道
-    int InitArbiterMMAPPipe();
-
-public:
-
-    // 构造函数
-    InterfaceProxyProcess();
-    virtual ~InterfaceProxyProcess();
-
-    //
-    virtual int InitProxyInstance();
-
-    // 通过xml文件取得代理的配置信息,这个函数只取过滤命令部分的代码,要使用指定基类访问
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
-
-    // 代理的处理,返回生产的帧的个数
-    virtual int process_proxy(Comm_App_Frame *proc_frame) = 0;
-
-public:
-    // 代理接口制造的工厂
-    static InterfaceProxyProcess *CreatePorxyFactory(PROXY_TYPE proxytype);
+    Zerg_MMAP_BusPipe *zerg_mmap_pipe_;
 };
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月1日
-Function        : Interface_Proxy_Process::FilterCommand
-Return          : inline int == 0 表示成功
-Parameter List  :
-Param1: unsigned long cmd 要检查的CMD
-Description     : 过滤命令,看是否是要自己处理的,
-Calls           :
-Called By       :
-Other           : Inline,
-Modify Record   :
-******************************************************************************************/
-inline int InterfaceProxyProcess::FilterCommand(unsigned long cmd)
-{
-    // 检查处理的命令
-    if (proxy_processcmd_.size() > 0)
-    {
-        if (proxy_processcmd_.find(cmd) == proxy_processcmd_.end())
-        {
-            return TSS_RET::ERR_PROXY_APPFRAME_CMD_ERROR;
-        }
-    }
 
-    // 返回成功
-    return TSS_RET::TSS_RET_SUCC;
-}
 
-/****************************************************************************************************
-class  Echo_Proxy_Process 回送处理数据,
-****************************************************************************************************/
-class Echo_Proxy_Process : public InterfaceProxyProcess
+
+
+
+/*!
+* @brief      回送处理数据
+*             
+* @note       
+*/
+class Echo_Proxy_Process : public Interface_WH_Proxy
 {
 
 protected:
@@ -102,10 +88,33 @@ public:
     Echo_Proxy_Process();
     virtual ~Echo_Proxy_Process();
 
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     // 进行代理的处理
-    virtual int process_proxy(Comm_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
+
+
+
+
+/****************************************************************************************************
+Transmit_Proxy 直接进行转发，不进行任何处理的Proxy方式
+****************************************************************************************************/
+class Transmit_Proxy : public Interface_WH_Proxy
+{
+public:
+    Transmit_Proxy();
+    virtual ~Transmit_Proxy();
+    //
+    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
+    //
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+};
+
+
+
+/****************************************************************************************************
+class  DBModalProxyProcess DB取模进行数据转发的处理方式
+****************************************************************************************************/
 
 class DBModalProxyInfo
 {
@@ -127,10 +136,7 @@ public:
 
 };
 
-/****************************************************************************************************
-class  DBModalProxyProcess DB取模进行数据转发的处理方式
-****************************************************************************************************/
-class DBModalProxyProcess : public InterfaceProxyProcess
+class DBModalProxyProcess : public Interface_WH_Proxy
 {
 
 protected:
@@ -148,29 +154,17 @@ public:
     DBModalProxyProcess();
     virtual ~DBModalProxyProcess();
     //
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     //
-    virtual int process_proxy(Comm_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
 
-/****************************************************************************************************
-class  TransmitProxyProcess 直接进行转发，不进行任何处理的Proxy方式
-****************************************************************************************************/
-class TransmitProxyProcess : public InterfaceProxyProcess
-{
-public:
-    TransmitProxyProcess();
-    virtual ~TransmitProxyProcess();
-    //
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
-    //
-    virtual int process_proxy(Comm_App_Frame *proc_frame);
-};
+
 
 /****************************************************************************************************
 class  CopyTransmitAllProxyProcess 将数据复制转发给所有配置的服务器
 ****************************************************************************************************/
-class CopyTransmitAllProxyProcess : public InterfaceProxyProcess
+class CopyTransmitAllProxyProcess : public Interface_WH_Proxy
 {
 protected:
     //
@@ -188,9 +182,9 @@ public:
     CopyTransmitAllProxyProcess();
     virtual ~CopyTransmitAllProxyProcess();
     //
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     //
-    virtual int process_proxy(Comm_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
 
 /****************************************************************************
@@ -235,10 +229,12 @@ public:
 
     const DBModalMGRouteItem *find_route(unsigned int uin);
 };
+
+
 /****************************************************************************************************
 class  DBModalProxyMGProcess 手游类按照APPID和UIN进行数据转发的处理方式
 ****************************************************************************************************/
-class DBModalMGProxyProcess : public InterfaceProxyProcess
+class DBModalMGProxyProcess : public Interface_WH_Proxy
 {
 protected:
     //
@@ -250,13 +246,13 @@ public:
     DBModalMGProxyProcess();
     virtual ~DBModalMGProxyProcess();
     //
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
+    virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     //
-    virtual int process_proxy(Comm_App_Frame *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 
 private:
     //
-    DBModalMGProxyInfo *add_proxy(conf_proxysvr::RouteInfo *route_info);
+    DBModalMGProxyInfo *add_proxy();
     //
     int add_entry(uint32_t app_id, uint32_t service_type, DBModalMGProxyInfo *proxy_info);
     //
@@ -272,33 +268,6 @@ public:
     std::vector<uint32_t> svcid_;
 };
 
-/****************************************************************************************************
-class  CopyTransmitAllMGProxyProcess 将数据复制转发给所有配置的服务器,手游类业务
-****************************************************************************************************/
-class CopyTransmitAllMGProxyProcess : public InterfaceProxyProcess
-{
-protected:
-    std::vector<CopyTransmitAllMGProxyInfo*> proxys_;
-    std::map<uint32_t, CopyTransmitAllMGProxyInfo*> proxy_map_;
 
-public:
-    CopyTransmitAllMGProxyProcess();
-    virtual ~CopyTransmitAllMGProxyProcess();
-    //
-    virtual int get_proxy_config(conf_proxysvr::LPCONFIG cfg);
-    //
-    virtual int process_proxy(Comm_App_Frame *proc_frame);
-
-private:
-    //
-    CopyTransmitAllMGProxyInfo *add_proxy(conf_proxysvr::CopySvrIdMG *copy_svr_id);
-    //
-    int add_entry(uint32_t app_id, CopyTransmitAllMGProxyInfo *proxy_info);
-    //
-    CopyTransmitAllMGProxyInfo *find_proxy(uint32_t app_id);
-    //
-    void clear_all_entrys();
-};
-
-#endif  //ARBITER_PROXY_PROCESS_H_
+#endif  //WORMHOLE_PROXY_PROCESS_H_
 

@@ -86,7 +86,7 @@ int Ogre_Connect_Server::get_configure(Zen_INI_PropertyTree &cfg_file)
 
     ZLOG_INFO("Get AutoConnect Config Success.\n");
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -117,7 +117,7 @@ int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
         if ( ZEN_SHLIB_INVALID_HANDLE == ary_peer_fprecv_module_[i].recv_mod_handler_)
         {
             ZLOG_ERROR( "Open Module [%s] fail. recv_mod_handler =%u .\n", ary_peer_fprecv_module_[i].rec_mod_file_.c_str(), ary_peer_fprecv_module_[i].recv_mod_handler_);
-            return TSS_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
+            return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
         }
 
         ary_peer_fprecv_module_[i].fp_judge_whole_frame_ = (FPJudgeRecvWholeFrame)ZEN_OS::dlsym(ary_peer_fprecv_module_[i].recv_mod_handler_, StrJudgeRecvWholeFrame);
@@ -125,7 +125,7 @@ int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
         if ( NULL == ary_peer_fprecv_module_[i].fp_judge_whole_frame_ )
         {
             ZLOG_ERROR( "Open Module [%s|%s] fail. recv_mod_handler =%u .\n", ary_peer_fprecv_module_[i].rec_mod_file_.c_str(), StrJudgeRecvWholeFrame, ary_peer_fprecv_module_[i].recv_mod_handler_);
-            return TSS_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
+            return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
         }
     }
 
@@ -135,7 +135,7 @@ int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
     {
         ret = connect_server_by_svrinfo(ary_peer_fprecv_module_[i].peer_socket_info_);
 
-        if (ret == TSS_RET::TSS_RET_SUCC)
+        if (ret == 0)
         {
             szsucc++;
         }
@@ -143,7 +143,7 @@ int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
 
     ZLOG_INFO( "Auto NONBLOCK Connect Server,Success Number :%d,Counter:%d .\n", szsucc, szserver);
     //返回开始连接的服务器数量
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 /******************************************************************************************
@@ -175,7 +175,7 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
     //如果没有找到
     if (ary_len == i)
     {
-        return TSS_RET::ERR_OGRE_NO_FIND_SERVICES_INFO;
+        return SOAR_RET::ERR_OGRE_NO_FIND_SERVICES_INFO;
     }
 
     ZEN_Sockaddr_In inetaddr(svrinfo.peer_ip_address_, svrinfo.peer_port_);
@@ -195,12 +195,12 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
         if (ZEN_OS::last_error() != EWOULDBLOCK && ZEN_OS::last_error() != EINPROGRESS )
         {
             tcpscoket.close();
-            return TSS_RET::ERR_OGRE_SOCKET_OP_ERROR;
+            return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
 
         //从池子中取得HDL，初始化之，CONNECThdl的数量不可能小于0
         Ogre_TCP_Svc_Handler *connect_hdl = Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(Ogre_TCP_Svc_Handler::HANDLER_MODE_CONNECT);
-        ZEN_ASSERT(connect_hdl);
+        ZCE_ASSERT(connect_hdl);
         connect_hdl->init_tcp_svc_handler(tcpscoket, inetaddr, ary_peer_fprecv_module_[i].fp_judge_whole_frame_);
 
     }
@@ -212,7 +212,7 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
         ZLOG_ERROR( "My God! NonBlock Socket Connect Success , ACE is a cheat....\n");
     }
 
-    return TSS_RET::TSS_RET_SUCC;
+    return 0;
 }
 
 size_t Ogre_Connect_Server::num_svr_to_connect() const
