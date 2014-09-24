@@ -195,7 +195,7 @@ void ZCE_Trace_LogMsg::debug_traceex(const char *str_format , ... )
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_debugEx(const char *str_format , ... )
+void ZCE_Trace_LogMsg::debug_debugex(const char *str_format , ... )
 {
     va_list args;
     va_start(args, str_format);

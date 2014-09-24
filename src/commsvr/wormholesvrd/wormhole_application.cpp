@@ -42,7 +42,7 @@ int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
         static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
-    ret = interface_proxy_->get_proxy_config(wh_cfg->proxy_conf_tree_);
+    ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
 
     if (ret != 0)
     {
@@ -83,7 +83,7 @@ int Wormhole_Proxy_App::reload()
         static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
-    ret = interface_proxy_->get_proxy_config(wh_cfg->proxy_conf_tree_);
+    ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
 
     if (ret != 0)
     {

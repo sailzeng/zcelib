@@ -45,7 +45,7 @@
 
 //提供一些简写的方式，虽然我也觉得不是特别好
 #define ZLOG_TRACE            ZCE_Trace_LogMsg::debug_traceex
-#define ZLOG_DEBUG            ZCE_Trace_LogMsg::debug_debugEx
+#define ZLOG_DEBUG            ZCE_Trace_LogMsg::debug_debugex
 #define ZLOG_INFO             ZCE_Trace_LogMsg::debug_infoex
 #define ZLOG_ERROR            ZCE_Trace_LogMsg::debug_errorex
 #define ZLOG_ALERT            ZCE_Trace_LogMsg::debug_alertex

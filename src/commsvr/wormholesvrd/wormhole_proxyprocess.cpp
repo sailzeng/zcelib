@@ -30,7 +30,7 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
         }
 
         // DBPROXY的模式，采用UIN取模的方式的到服务器的ID
-        case PROXY_TYPE_DB_MODAL:
+        case PROXY_TYPE_MODULO_UID:
         {
             tmpintface = new DBModalProxyProcess();
             break;
@@ -44,14 +44,14 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
         }
 
         // 对数据进行拷贝分发广播
-        case PROXY_TYPE_COPY_TRANS_ALL:
+        case PROXY_TYPE_BROADCAST:
         {
             tmpintface = new CopyTransmitAllProxyProcess();
             break;
         }
 
         // DBPROXY的模式，采用APPID和UIN的方式的到服务器的ID
-        case PROXY_TYPE_DB_MODAL_MG:
+        case PROXY_TYPE_MODULO_APPUID:
         {
             tmpintface = new DBModalMGProxyProcess();
             break;
@@ -113,7 +113,7 @@ int Echo_Proxy_Process::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
 {
 
-    ZLOG_DEBUG("Receive a echo frame to process,"
+    ZCE_LOGMSG_DBG(RS_DEBUG, "Receive a echo frame to process,"
                "send svr:[%u|%u], "
                "recv svr:[%u|%u], "
                "frame_uin:%u, "
@@ -149,7 +149,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
         return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
 
-    ZLOG_DEBUG( "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
+    ZCE_LOGMSG_DBG(RS_DEBUG, "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
                 proc_frame->recv_service_.services_type_,
                 proc_frame->recv_service_.services_id_,
                 proc_frame->frame_uid_,
@@ -186,7 +186,7 @@ int Transmit_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 
 int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
 {
-    ZLOG_DEBUG("Receive a transmit frame to process,"
+    ZCE_LOGMSG_DBG(RS_DEBUG, "Receive a transmit frame to process,"
         "send svr:[%u|%u], "
         "recv svr:[%u|%u], "
         "frame_uin:%u, "
@@ -220,7 +220,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
         return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
     }
 
-    ZLOG_DEBUG("Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
+    ZCE_LOGMSG_DBG(RS_DEBUG,"Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
         proc_frame->recv_service_.services_type_,
         proc_frame->recv_service_.services_id_,
         proc_frame->frame_uid_,
@@ -232,7 +232,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
 }
 
 /****************************************************************************************************
-class DBModalProxyProcess 按照DB取模进行Proxy转发，用于DBServer和金融服务器 PROXY_TYPE_DB_MODAL
+class DBModalProxyProcess 按照DB取模进行Proxy转发，用于DBServer和金融服务器 PROXY_TYPE_UID_MODAL
 ****************************************************************************************************/
 DBModalProxyProcess::DBModalProxyProcess():
     Interface_WH_Proxy()

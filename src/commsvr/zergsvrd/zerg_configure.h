@@ -120,9 +120,6 @@ public:
     SERVICES_ID  auto_connect_svrs_[MAX_AUTO_CONNECT_SVRS];
 
 
-
-
-
     /// #从CONNECT到收到数据,最小时长,0-50，接入层必须配置>0,建议15-60秒以内
     uint32_t accepted_timeout_ = 60;
     /// RECEIVE一个数据的超时时间,为0表示不限制,建议根据业务层的逻辑判断一下
@@ -130,7 +127,6 @@ public:
 
     /// 是否做为代理服务器
     bool is_proxy_ = false;
-
 
 
     /// #对一个错误数据重复尝试发送的次数,目前这个值没用用处了，

@@ -83,7 +83,7 @@ public:
     //使用 RS_TRACE 调试级别输出
     static void debug_traceex(const char * , ... );
     //使用 RS_DEBUG 调试级别输出
-    static void debug_debugEx(const char *str_format, ... );
+    static void debug_debugex(const char *str_format, ... );
     //使用 RS_INFO 调试级别输出
     static void debug_infoex(const char *str_format, ... );
     //使用 RS_ERROR 错误级别输出
