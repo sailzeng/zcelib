@@ -31,7 +31,7 @@ int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const Socket_Peer_Info &svrin
     if (iter == peer_info_set_.end() )
     {
         ZLOG_INFO( "Can't find svchanle info. svrinfo IP|Port:[%s|%u] .\n",
-                   ZEN_OS::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
+                   ZCE_OS::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
                    svrinfo.peer_port_);
         return SOAR_RET::ERR_OGRE_NO_FIND_EVENT_HANDLE;
     }
@@ -52,7 +52,7 @@ int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const Socket_Peer_Info &peer_i
     if (iter != peer_info_set_.end() )
     {
         ZLOG_INFO( "Can't add_services_peerinfo peer_info:[%s|%u] ",
-                   ZEN_OS::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
+                   ZCE_OS::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
                    peer_info.peer_port_);
         return SOAR_RET::ERR_OGRE_SERVER_ALREADY_LONGIN;
     }

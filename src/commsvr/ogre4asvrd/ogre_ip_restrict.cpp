@@ -40,7 +40,7 @@ int Ogre4aIPRestrictMgr::get_ip_restrict_conf(Zen_INI_PropertyTree &cfg_file)
         cfg_file.get_string_value("RESTRICT", tmp_key, tmp_value, TMP_BUFFER_LEN);
         TESTCONFIG((ret == 0), err_outbuf);
 
-        ZEN_Sockaddr_In inetadd;
+        ZCE_Sockaddr_In inetadd;
         ret = inetadd.set(tmp_value, 10);
         TESTCONFIG((ret == 0), err_outbuf);
 
@@ -60,7 +60,7 @@ int Ogre4aIPRestrictMgr::get_ip_restrict_conf(Zen_INI_PropertyTree &cfg_file)
         ret = cfg_file.get_string_value("RESTRICT", tmp_key, tmp_value, TMP_BUFFER_LEN);
         TESTCONFIG((ret == 0), err_outbuf);
 
-        ZEN_Sockaddr_In inetadd;
+        ZCE_Sockaddr_In inetadd;
         ret = inetadd.set(tmp_value, 10);
         TESTCONFIG((ret == 0), err_outbuf);
 
@@ -71,7 +71,7 @@ int Ogre4aIPRestrictMgr::get_ip_restrict_conf(Zen_INI_PropertyTree &cfg_file)
 }
 
 //
-int Ogre4aIPRestrictMgr::check_ip_restrict(const ZEN_Sockaddr_In &remoteaddress)
+int Ogre4aIPRestrictMgr::check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress)
 {
 
     //如果允许的连接的服务器地址中间没有... kill

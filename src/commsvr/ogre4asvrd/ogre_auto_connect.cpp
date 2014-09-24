@@ -15,9 +15,9 @@ Ogre_Connect_Server::~Ogre_Connect_Server()
 {
     for (size_t i = 0; i < ary_peer_fprecv_module_.size(); ++i)
     {
-        if (ZEN_SHLIB_INVALID_HANDLE != ary_peer_fprecv_module_[i].recv_mod_handler_ )
+        if (ZCE_SHLIB_INVALID_HANDLE != ary_peer_fprecv_module_[i].recv_mod_handler_ )
         {
-            ZEN_OS::dlclose(ary_peer_fprecv_module_[i].recv_mod_handler_);
+            ZCE_OS::dlclose(ary_peer_fprecv_module_[i].recv_mod_handler_);
         }
     }
 }
@@ -66,7 +66,7 @@ int Ogre_Connect_Server::get_configure(Zen_INI_PropertyTree &cfg_file)
         TESTCONFIG((ret == 0 && tmp_uint != 0), err_outbuf);
 
         //找到相关的IP配置
-        ZEN_Sockaddr_In svraddr;
+        ZCE_Sockaddr_In svraddr;
         ret = svraddr.set(tmp_value, static_cast<unsigned short>(tmp_uint));
         snprintf(err_outbuf, TMP_BUFFER_LEN, "AUTOCONNECT|PEERIP|%s key error.", tmp_key);
         TESTCONFIG((ret == 0 ), err_outbuf);
@@ -112,15 +112,15 @@ int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
     //检查所有的服务器的模块十分正确
     for (i = 0; i < szserver; ++i)
     {
-        ary_peer_fprecv_module_[i].recv_mod_handler_ = ZEN_OS::dlopen(ary_peer_fprecv_module_[i].rec_mod_file_.c_str());
+        ary_peer_fprecv_module_[i].recv_mod_handler_ = ZCE_OS::dlopen(ary_peer_fprecv_module_[i].rec_mod_file_.c_str());
 
-        if ( ZEN_SHLIB_INVALID_HANDLE == ary_peer_fprecv_module_[i].recv_mod_handler_)
+        if ( ZCE_SHLIB_INVALID_HANDLE == ary_peer_fprecv_module_[i].recv_mod_handler_)
         {
             ZLOG_ERROR( "Open Module [%s] fail. recv_mod_handler =%u .\n", ary_peer_fprecv_module_[i].rec_mod_file_.c_str(), ary_peer_fprecv_module_[i].recv_mod_handler_);
             return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
         }
 
-        ary_peer_fprecv_module_[i].fp_judge_whole_frame_ = (FPJudgeRecvWholeFrame)ZEN_OS::dlsym(ary_peer_fprecv_module_[i].recv_mod_handler_, StrJudgeRecvWholeFrame);
+        ary_peer_fprecv_module_[i].fp_judge_whole_frame_ = (FPJudgeRecvWholeFrame)ZCE_OS::dlsym(ary_peer_fprecv_module_[i].recv_mod_handler_, StrJudgeRecvWholeFrame);
 
         if ( NULL == ary_peer_fprecv_module_[i].fp_judge_whole_frame_ )
         {
@@ -178,9 +178,9 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
         return SOAR_RET::ERR_OGRE_NO_FIND_SERVICES_INFO;
     }
 
-    ZEN_Sockaddr_In inetaddr(svrinfo.peer_ip_address_, svrinfo.peer_port_);
+    ZCE_Sockaddr_In inetaddr(svrinfo.peer_ip_address_, svrinfo.peer_port_);
 
-    ZEN_Socket_Stream tcpscoket;
+    ZCE_Socket_Stream tcpscoket;
     tcpscoket.sock_enable(O_NONBLOCK);
 
     ZLOG_INFO( "Try NONBLOCK connect server IP|Port :[%s|%u] .\n", inetaddr.get_host_addr(), inetaddr.get_port_number());
@@ -192,7 +192,7 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
     if (ret < 0)
     {
         //按照UNIX网络编程 V1的说法是 EINPROGRESS,但ACE的介绍说是 EWOULDBLOCK,
-        if (ZEN_OS::last_error() != EWOULDBLOCK && ZEN_OS::last_error() != EINPROGRESS )
+        if (ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EINPROGRESS )
         {
             tcpscoket.close();
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;

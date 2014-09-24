@@ -42,7 +42,7 @@ public:
     int get_all_senddata_to_write(size_t &procframe);
 
     //检查安全端口
-    int check_safe_port(ZEN_Sockaddr_In &inetadd);
+    int check_safe_port(ZCE_Sockaddr_In &inetadd);
 
     //初始化通讯管理器
     int init_comm_manger(Zen_INI_PropertyTree &cfg_file);

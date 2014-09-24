@@ -10,7 +10,7 @@ class Ogre_Buffer_Storage
 {
 
     //
-    typedef ZEN_LIB::lordrings <Ogre4a_AppFrame *> SAIL_FRAME_BUFFER_POOL;
+    typedef ZCE_LIB::lordrings <Ogre4a_AppFrame *> SAIL_FRAME_BUFFER_POOL;
 
 protected:
 

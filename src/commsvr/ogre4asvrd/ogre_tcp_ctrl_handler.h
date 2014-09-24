@@ -13,7 +13,7 @@ class Zerg_MMAP_BusPipe;
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
-class Ogre_TCP_Svc_Handler : public  ZEN_Event_Handler,
+class Ogre_TCP_Svc_Handler : public  ZCE_Event_Handler,
     public ZCE_Timer_Handler
 {
 
@@ -28,7 +28,7 @@ public:
 
 protected:
 
-    typedef ZEN_LIB::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
+    typedef ZCE_LIB::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
 protected:
 
@@ -92,7 +92,7 @@ protected:
     Ogre4a_AppFrame              *rcv_buffer_;
 
     //发送的数据可能要排队
-    ZEN_LIB::lordrings<Ogre4a_AppFrame *>  \
+    ZCE_LIB::lordrings<Ogre4a_AppFrame *>  \
     snd_buffer_deque_;
 
     //这个PEER接受数据
@@ -101,12 +101,12 @@ protected:
     size_t                        send_bytes_;
 
     //ACE Socket Stream,
-    ZEN_Socket_Stream             socket_peer_;
+    ZCE_Socket_Stream             socket_peer_;
 
     //PEER连接的远端IP地址信息,有他不过是为了加快速度.
-    ZEN_Sockaddr_In               remote_address_;
+    ZCE_Sockaddr_In               remote_address_;
     //PEER连接的本地IP地址信息,有他不过是为了加快速度.
-    ZEN_Sockaddr_In               local_address_;
+    ZCE_Sockaddr_In               local_address_;
 
     //是否处于活动状态
     PEER_STATUS                   peer_status_;
@@ -132,17 +132,17 @@ protected:
 public:
 
     //初始化对象，
-    void init_tcp_svc_handler(const ZEN_Socket_Stream &sockstream, FPJudgeRecvWholeFrame fp_judge_whole);
+    void init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream, FPJudgeRecvWholeFrame fp_judge_whole);
     //
-    void init_tcp_svc_handler(const ZEN_Socket_Stream &sockstream, const ZEN_Sockaddr_In &socketaddr, FPJudgeRecvWholeFrame fp_judge_whole);
+    void init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream, const ZCE_Sockaddr_In &socketaddr, FPJudgeRecvWholeFrame fp_judge_whole);
 
     //ZEN的一组要求自己继承的函数.
     //
-    virtual ZEN_SOCKET get_handle(void) const;
+    virtual ZCE_SOCKET get_handle(void) const;
     //
-    virtual int handle_input(ZEN_HANDLE);
+    virtual int handle_input(ZCE_HANDLE);
     //
-    virtual int handle_output(ZEN_HANDLE);
+    virtual int handle_output(ZCE_HANDLE);
     //
     virtual int handle_timeout(const ZCE_Time_Value &time, const void *arg);
     //

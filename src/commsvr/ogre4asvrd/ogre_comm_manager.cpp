@@ -24,14 +24,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2007年4月12日
 Function        : Ogre_Comm_Manger::check_safe_port
 Return          : int
 Parameter List  :
-Param1: ZEN_Sockaddr_In& ipaddr
+Param1: ZCE_Sockaddr_In& ipaddr
 Description     : 检查一个端口是否安全，
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Ogre_Comm_Manger::check_safe_port(ZEN_Sockaddr_In &inetadd)
+int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -104,7 +104,7 @@ int Ogre_Comm_Manger::init_accept_by_conf(Zen_INI_PropertyTree &cfg_file)
         snprintf(err_outbuf, TMP_BUFFER_LEN, "TCPACCEPT|%s key error.", tmp_key);
         TESTCONFIG((ret == 0), err_outbuf);
 
-        ZEN_Sockaddr_In accept_bind_addr;
+        ZCE_Sockaddr_In accept_bind_addr;
         ret = accept_bind_addr.set(tmp_value, static_cast<unsigned short>(tmp_uint));
         TESTCONFIG((ret == 0), err_outbuf);
 
@@ -164,7 +164,7 @@ int Ogre_Comm_Manger::init_udp_by_conf(Zen_INI_PropertyTree &cfg_file)
         snprintf(err_outbuf, TMP_BUFFER_LEN, "UDPCOMM|%s key error.", tmp_key);
         TESTCONFIG((ret == 0), err_outbuf);
 
-        ZEN_Sockaddr_In udp_bind_addr;
+        ZCE_Sockaddr_In udp_bind_addr;
         ret = udp_bind_addr.set(tmp_value, static_cast<unsigned short>(tmp_uint));
         TESTCONFIG((ret == 0), err_outbuf);
 
@@ -232,7 +232,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 
         //
         ret = Zerg_MMAP_BusPipe::instance()->pop_front_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID,
-                                                           reinterpret_cast< ZEN_LIB::dequechunk_node*&>(send_frame));
+                                                           reinterpret_cast< ZCE_LIB::dequechunk_node*&>(send_frame));
 
         if (ret != 0)
         {

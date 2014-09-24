@@ -52,13 +52,13 @@ public:
     //日志文件前缀
     std::string             log_file_prefix_;
     //ACE_TRACE的日志输出级别,大于这个级别的都输出
-    ZEN_LOG_PRIORITY        log_priority_;
+    ZCE_LOG_PRIORITY        log_priority_;
 
     //自己帮定的TCP IP地址
-    ZEN_Sockaddr_In         self_tcp_ip_addr_;
+    ZCE_Sockaddr_In         self_tcp_ip_addr_;
 
     //自己帮定的UDP IP地址
-    ZEN_Sockaddr_In         self_udp_ip_addr_;
+    ZCE_Sockaddr_In         self_udp_ip_addr_;
 
     //最大的帧的长度
     unsigned int            max_data_len_ ;

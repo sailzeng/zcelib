@@ -45,7 +45,7 @@ Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_cnthdl_;
 
 //构造函数
 Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode ):
-    ZEN_Event_Handler(ZEN_Reactor::instance()),
+    ZCE_Event_Handler(ZCE_Reactor::instance()),
     handler_mode_(hdl_mode),
     rcv_buffer_(NULL),
     recieve_bytes_(0),
@@ -81,15 +81,15 @@ Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
 Function        : Ogre_TCP_Svc_Handler::init_tcp_svc_handler
 Return          : void
 Parameter List  :
-  Param1: const ZEN_Socket_Stream& sockstream
-  Param2: const ZEN_Sockaddr_In& socketaddr   Socket的地址，其实可以从sockstream中得到，但为了效率和方便.
+  Param1: const ZCE_Socket_Stream& sockstream
+  Param2: const ZCE_Sockaddr_In& socketaddr   Socket的地址，其实可以从sockstream中得到，但为了效率和方便.
 Description     : 初始化函数,用于Accept的端口的处理Event Handle构造.
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstream,
+void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
                                                 FPJudgeRecvWholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
@@ -127,17 +127,17 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstr
     if (num_accept_peer_ < max_accept_svr_)
     {
         //注册读写事件
-        ret = reactor()->register_handler(this, ZEN_Event_Handler::READ_MASK | ZEN_Event_Handler::WRITE_MASK);
+        ret = reactor()->register_handler(this, ZCE_Event_Handler::READ_MASK | ZCE_Event_Handler::WRITE_MASK);
 
         //
         if (ret != 0)
         {
-            ZLOG_ERROR( "Register Accept handler fail! ret =%d  errno=%u|%s \n", ret, ZEN_OS::last_error(), strerror(ZEN_OS::last_error()));
+            ZLOG_ERROR( "Register Accept handler fail! ret =%d  errno=%u|%s \n", ret, ZCE_OS::last_error(), strerror(ZCE_OS::last_error()));
             handle_close();
             return;
         }
 
-        reactor()->cancel_wakeup(this, ZEN_Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
     }
     //要测试检查一下,
     else
@@ -187,16 +187,16 @@ Function        : Ogre_TCP_Svc_Handler::init_tcp_svc_handler
 Return          : void
 Parameter List  :
   Param1: const Socket_Peer_Info& svrinfo        Socket_Peer_Info信息
-  Param2: const ZEN_Socket_Stream& sockstream  Sokcet Peer
-  Param3: const ZEN_Sockaddr_In& socketaddr    对应连接的地址信息
+  Param2: const ZCE_Socket_Stream& sockstream  Sokcet Peer
+  Param3: const ZCE_Sockaddr_In& socketaddr    对应连接的地址信息
 Description     : 初始化函数,用于Connect出去的PEER 对应Event Handle构造.
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstream,
-                                                const ZEN_Sockaddr_In &socketaddr,
+void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
+                                                const ZCE_Sockaddr_In &socketaddr,
                                                 FPJudgeRecvWholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
@@ -217,13 +217,13 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstr
     socket_peer_.getsockname(&local_address_);
 
     //注册到
-    ret = reactor()->register_handler(this, ZEN_Event_Handler::CONNECT_MASK);
+    ret = reactor()->register_handler(this, ZCE_Event_Handler::CONNECT_MASK);
 
     //我几乎没有见过register_handler失败,
     if (ret != 0)
     {
 
-        ZLOG_ERROR("Register Connect handler fail! ret =%  errno=%u|%s \n", ret, ZEN_OS::last_error(), strerror(ZEN_OS::last_error()));
+        ZLOG_ERROR("Register Connect handler fail! ret =%  errno=%u|%s \n", ret, ZCE_OS::last_error(), strerror(ZCE_OS::last_error()));
         handle_close();
         return;
     }
@@ -259,7 +259,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZEN_Socket_Stream &sockstr
 }
 
 //取得句柄
-ZEN_SOCKET Ogre_TCP_Svc_Handler::get_handle(void) const
+ZCE_SOCKET Ogre_TCP_Svc_Handler::get_handle(void) const
 {
     return socket_peer_.get_handle();
 }
@@ -269,14 +269,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
 Function        : Ogre_TCP_Svc_Handler::handle_input
 Return          : int
 Parameter List  :
-  Param1: ZEN_HANDLE
+  Param1: ZCE_HANDLE
 Description     : ACE读取,断连的事件触发处理函数
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Ogre_TCP_Svc_Handler::handle_input(ZEN_HANDLE)
+int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
 {
     //读取数据
     size_t szrecv;
@@ -320,7 +320,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZEN_HANDLE)
         if (if_recv_whole == true)
         {
             //将数据放入接收的管道,不检测错误,因为错误会记录日志,而且有错误，也无法处理
-            ZEN_LOGMSG_DBG(RS_DEBUG, "Read a whole data [%s|%u] recv buffer len:%u, Frame len:%u.\n",
+            ZCE_LOGMSG_DBG(RS_DEBUG, "Read a whole data [%s|%u] recv buffer len:%u, Frame len:%u.\n",
                            remote_address_.get_host_addr(),
                            remote_address_.get_port_number(),
                            rcv_buffer_->ogre_frame_len_ - Ogre4a_AppFrame::LEN_OF_OGRE_FRAME_HEAD,
@@ -352,14 +352,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
 Function        : Ogre_TCP_Svc_Handler::handle_output
 Return          : int
 Parameter List  :
-  Param1: ZEN_HANDLE
+  Param1: ZCE_HANDLE
 Description     : ACE读取,断连的事件触发处理函数
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Ogre_TCP_Svc_Handler::handle_output(ZEN_HANDLE)
+int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
 {
 
     //如果NON BLOCK Connect成功,也会调用handle_output
@@ -538,17 +538,17 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
     peer_status_ = PEER_STATUS_ACTIVE;
 
     //再折腾了我至少3天以后，终于发现了EPOLL反复触发写事件的原因是没有取消CONNECT_MASK
-    reactor()->cancel_wakeup(this, ZEN_Event_Handler::CONNECT_MASK);
+    reactor()->cancel_wakeup(this, ZCE_Event_Handler::CONNECT_MASK);
 
     //如果有数据要发送
     if (snd_buffer_deque_.empty() != true )
     {
-        reactor()->schedule_wakeup(this, ZEN_Event_Handler::WRITE_MASK | ZEN_Event_Handler::READ_MASK);
+        reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK | ZCE_Event_Handler::READ_MASK);
     }
     //只读取
     else
     {
-        reactor()->schedule_wakeup(this, ZEN_Event_Handler::READ_MASK);
+        reactor()->schedule_wakeup(this, ZCE_Event_Handler::READ_MASK);
     }
 
     //打印信息
@@ -616,24 +616,24 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
     //表示被关闭或者出现错误
     if (recvret < 0)
     {
-        //我只使用EWOULDBLOCK 但是要注意EAGAIN, ZEN_OS::last_error() != EWOULDBLOCK && ZEN_OS::last_error() != EAGAIN
-        if (ZEN_OS::last_error() != EWOULDBLOCK )
+        //我只使用EWOULDBLOCK 但是要注意EAGAIN, ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EAGAIN
+        if (ZCE_OS::last_error() != EWOULDBLOCK )
         {
             szrevc = 0;
 
             //遇到中断,等待重入
-            if (ZEN_OS::last_error() == EINVAL)
+            if (ZCE_OS::last_error() == EINVAL)
             {
                 return 0;
             }
 
             //记录错误,返回错误
-            ZLOG_ERROR( "Read error,[%s|%u] receive data error peer:%u ZEN_OS::last_error()=%d|%s.\n",
+            ZLOG_ERROR( "Read error,[%s|%u] receive data error peer:%u ZCE_OS::last_error()=%d|%s.\n",
                         remote_address_.get_host_addr(),
                         remote_address_.get_port_number(),
                         socket_peer_.get_handle(),
-                        ZEN_OS::last_error(),
-                        strerror(ZEN_OS::last_error()));
+                        ZCE_OS::last_error(),
+                        strerror(ZCE_OS::last_error()));
 
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
@@ -686,7 +686,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
                     remote_address_.get_host_addr(),
                     remote_address_.get_port_number()
                   );
-        reactor()->cancel_wakeup (this, ZEN_Event_Handler::WRITE_MASK);
+        reactor()->cancel_wakeup (this, ZCE_Event_Handler::WRITE_MASK);
         return 0;
     }
 
@@ -700,7 +700,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
 
     if (sendret < 0)
     {
-        int last_error = ZEN_OS::last_error();
+        int last_error = ZCE_OS::last_error();
 
         szsend = 0;
         //后面应该会打印方的IP，这儿不重复
@@ -711,8 +711,8 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
                     last_error,
                     strerror(last_error));
 
-        //EINVAL:遇到中断,等待重入的判断是if (ZEN_OS::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
-        //EWOULDBLOCK:我只使用EWOULDBLOCK 但是要注意EAGAIN ZEN_OS::last_error() != EWOULDBLOCK && ZEN_OS::last_error() != EAGAIN
+        //EINVAL:遇到中断,等待重入的判断是if (ZCE_OS::last_error() == EINVAL),但这儿不仔细检查错误,一视同仁,上层回忽视所有错误,如果错误致命,还会有handle_input反射
+        //EWOULDBLOCK:我只使用EWOULDBLOCK 但是要注意EAGAIN ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EAGAIN
         if (  EWOULDBLOCK  != last_error && EINVAL != last_error )
         {
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
@@ -729,7 +729,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
     if (sndbuffer->ogre_frame_len_ - Ogre4a_AppFrame::LEN_OF_OGRE_FRAME_HEAD == send_bytes_ )
     {
         if_full = true;
-        ZEN_LOGMSG_DBG(RS_DEBUG, "Send a whole frame To  IP|Port :%s|%u FrameLen:%u.\n", remote_address_.get_host_addr(), remote_address_.get_port_number(), send_bytes_);
+        ZCE_LOGMSG_DBG(RS_DEBUG, "Send a whole frame To  IP|Port :%s|%u FrameLen:%u.\n", remote_address_.get_host_addr(), remote_address_.get_port_number(), send_bytes_);
         send_bytes_ = 0;
     }
 
@@ -791,15 +791,15 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
     if (snd_buffer_deque_.size() == 0)
     {
         //如果有写标志，取消之
-        if ( handle_mask & ZEN_Event_Handler::WRITE_MASK )
+        if ( handle_mask & ZCE_Event_Handler::WRITE_MASK )
         {
             //取消可写的MASK值,
-            ret = reactor()->cancel_wakeup(this, ZEN_Event_Handler::WRITE_MASK);
+            ret = reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
             //return -1表示错误，正确返回的是old mask值
             if ( -1  ==  ret )
             {
-                int last_err = ZEN_OS::last_error();
+                int last_err = ZCE_OS::last_error();
                 ZLOG_ERROR( "TNNND cancel_wakeup return(%d) == -1 errno=%d|%s. \n",
                             ret,
                             last_err,
@@ -824,14 +824,14 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
     else
     {
         //没有WRITE MASK，准备增加写标志
-        if (!(handle_mask & ZEN_Event_Handler::WRITE_MASK))
+        if (!(handle_mask & ZCE_Event_Handler::WRITE_MASK))
         {
-            ret = reactor()->schedule_wakeup(this, ZEN_Event_Handler::WRITE_MASK);
+            ret = reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
             //schedule_wakeup 返回return -1表示错误，再次BS ACE一次，正确返回的是old mask值
             if ( -1 == ret)
             {
-                int last_err = ZEN_OS::last_error();
+                int last_err = ZCE_OS::last_error();
                 ZLOG_ERROR( "TNNND schedule_wakeup return (%d)== -1 errno=%d|%s. \n",
                             ret,
                             last_err,
@@ -875,7 +875,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_AppFrame *inner_frame)
 
         //日志在函数中有输出,这儿略.
         ret = Zerg_MMAP_BusPipe::instance()->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
-                                                           reinterpret_cast<const ZEN_LIB::dequechunk_node *>(inner_frame));
+                                                           reinterpret_cast<const ZCE_LIB::dequechunk_node *>(inner_frame));
 
         if (ret != 0)
         {
@@ -1114,9 +1114,9 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_AppFrame *ogre_frame )
 
         //无法发送
         ZLOG_INFO( "Can't find handle remote address[%s|%u],send fail ,local address [%s|%u],frame len[%u].\n",
-                   ZEN_OS::inet_ntoa(ogre_frame->rcv_peer_info_.peer_ip_address_, remote_ip_str, TMP_IP_ADDRESS_LEN),
+                   ZCE_OS::inet_ntoa(ogre_frame->rcv_peer_info_.peer_ip_address_, remote_ip_str, TMP_IP_ADDRESS_LEN),
                    ogre_frame->rcv_peer_info_.peer_port_,
-                   ZEN_OS::inet_ntoa(ogre_frame->snd_peer_info_.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
+                   ZCE_OS::inet_ntoa(ogre_frame->snd_peer_info_.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
                    ogre_frame->snd_peer_info_.peer_port_,
                    ogre_frame->ogre_frame_len_
                  );
@@ -1127,7 +1127,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_AppFrame *ogre_frame )
     if (ogre_frame->ogre_frame_option_ & Ogre4a_AppFrame::OGREDESC_CLOSE_PEER )
     {
         ZLOG_INFO( "Recvice DESC_CLOSE_PEER,Svchanle will close, svrinfo [IP|Port:%s|%u ].\n",
-                   ZEN_OS::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
+                   ZCE_OS::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
                    svrinfo.peer_port_);
         //如果不是UDP的处理,关闭端口,UDP的东西没有链接的概念,
         svchanle->handle_close();
@@ -1291,7 +1291,7 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
 
     int ret = Zerg_MMAP_BusPipe::instance()->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
-                                                           reinterpret_cast<ZEN_LIB::dequechunk_node *>(rcv_buffer_));
+                                                           reinterpret_cast<ZCE_LIB::dequechunk_node *>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,
     if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_AppFrame::LEN_OF_OGRE_FRAME_HEAD )

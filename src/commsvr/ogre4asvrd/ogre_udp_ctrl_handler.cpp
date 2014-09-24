@@ -8,8 +8,8 @@
 std::vector<OgreUDPSvcHandler *> OgreUDPSvcHandler::ary_upd_peer_;
 
 //构造函数
-OgreUDPSvcHandler::OgreUDPSvcHandler(const ZEN_Sockaddr_In &upd_addr, ZEN_Reactor *reactor):
-    ZEN_Event_Handler(reactor),
+OgreUDPSvcHandler::OgreUDPSvcHandler(const ZCE_Sockaddr_In &upd_addr, ZCE_Reactor *reactor):
+    ZCE_Event_Handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port_number()),
     dgram_databuf_(NULL),
@@ -56,7 +56,7 @@ int OgreUDPSvcHandler::InitUDPServices()
         return -1;
     }
 
-    ret = reactor()->register_handler (this, ZEN_Event_Handler::READ_MASK );
+    ret = reactor()->register_handler (this, ZCE_Event_Handler::READ_MASK );
 
     if (ret != 0)
     {
@@ -80,20 +80,20 @@ int OgreUDPSvcHandler::OpenUDPSendPeer()
 }
 
 //取得句柄
-ZEN_SOCKET OgreUDPSvcHandler::get_handle(void) const
+ZCE_SOCKET OgreUDPSvcHandler::get_handle(void) const
 {
     return dgram_peer_.get_handle();
 }
 
-int OgreUDPSvcHandler::handle_input(ZEN_HANDLE)
+int OgreUDPSvcHandler::handle_input(ZCE_HANDLE)
 {
     size_t szrevc = 0;
     int ret = 0;
-    ZEN_Sockaddr_In remote_addr;
+    ZCE_Sockaddr_In remote_addr;
     //读取数据
     ret = ReadDataFromUDP(szrevc, remote_addr);
 
-    ZEN_LOGMSG_DBG(RS_DEBUG, "UDP Read Event[%s|%u].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
+    ZCE_LOGMSG_DBG(RS_DEBUG, "UDP Read Event[%s|%u].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    ret,
@@ -118,7 +118,7 @@ int OgreUDPSvcHandler::handle_input(ZEN_HANDLE)
 int OgreUDPSvcHandler::handle_close ()
 {
     //
-    if (dgram_peer_.get_handle () != ZEN_INVALID_SOCKET)
+    if (dgram_peer_.get_handle () != ZCE_INVALID_SOCKET)
     {
         reactor()->remove_handler (this, false);
         dgram_peer_.close ();
@@ -136,14 +136,14 @@ Function        : OgreUDPSvcHandler::ReadDataFromUDP
 Return          : int == 0表示成功
 Parameter List  :
   Param1: size_t& szrevc 收到数据的长度
-  Param2: ZEN_Sockaddr_In &remote_addr 远端的地址
+  Param2: ZCE_Sockaddr_In &remote_addr 远端的地址
 Description     : 读取UDP数据
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_addr)
+int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_addr)
 {
     int ret = 0;
     szrevc = 0;
@@ -157,21 +157,21 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_a
     if (recvret < 0)
     {
 
-        if (ZEN_OS::last_error() != EWOULDBLOCK )
+        if (ZCE_OS::last_error() != EWOULDBLOCK )
         {
             //遇到中断,等待重入
-            if (ZEN_OS::last_error() == EINVAL)
+            if (ZCE_OS::last_error() == EINVAL)
             {
                 return 0;
             }
 
             //记录错误,返回错误
-            ZLOG_ERROR( "UDP Read error [%s|%u],receive data error peer:%u ZEN_OS::last_error()=%d|%s.\n",
+            ZLOG_ERROR( "UDP Read error [%s|%u],receive data error peer:%u ZCE_OS::last_error()=%d|%s.\n",
                         remote_addr.get_host_addr(),
                         remote_addr.get_port_number(),
                         dgram_peer_.get_handle(),
-                        ZEN_OS::last_error(),
-                        strerror(ZEN_OS::last_error()));
+                        ZCE_OS::last_error(),
+                        strerror(ZCE_OS::last_error()));
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
         else
@@ -213,7 +213,7 @@ int OgreUDPSvcHandler::pushdata_to_recvpipe()
 {
 
     int ret = Zerg_MMAP_BusPipe::instance()->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
-                                                           reinterpret_cast<ZEN_LIB::dequechunk_node *>(dgram_databuf_));
+                                                           reinterpret_cast<ZCE_LIB::dequechunk_node *>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 
@@ -245,7 +245,7 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
     const size_t BUFFER_LEN = 32;
     char buffer[BUFFER_LEN + 1];
 
-    ZEN_Sockaddr_In remote_addr(send_frame->rcv_peer_info_.peer_ip_address_,
+    ZCE_Sockaddr_In remote_addr(send_frame->rcv_peer_info_.peer_ip_address_,
                                 send_frame->rcv_peer_info_.peer_port_);
 
     //
@@ -268,7 +268,7 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
     if (i == ary_upd_peer_.size())
     {
         ZLOG_ERROR( "Can't find send peer[%s|%u].Please check code.\n",
-                    ZEN_OS::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
+                    ZCE_OS::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
                     send_frame->snd_peer_info_.peer_port_);
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
@@ -276,16 +276,16 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
     //发送失败
     if (szsend <= 0)
     {
-        ZLOG_ERROR( "UDP send error[%s|%u]. Send data error peer:%u ZEN_OS::last_error()=%d|%s.\n",
+        ZLOG_ERROR( "UDP send error[%s|%u]. Send data error peer:%u ZCE_OS::last_error()=%d|%s.\n",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number(),
                     ary_upd_peer_[i]->get_handle(),
-                    ZEN_OS::last_error(),
-                    strerror(ZEN_OS::last_error()));
+                    ZCE_OS::last_error(),
+                    strerror(ZCE_OS::last_error()));
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
-    ZEN_LOGMSG_DBG(RS_DEBUG, "UDP Send data to peer [%s|%u]  Socket %u bytes data Succ.\n",
+    ZCE_LOGMSG_DBG(RS_DEBUG, "UDP Send data to peer [%s|%u]  Socket %u bytes data Succ.\n",
                    remote_addr.get_host_addr(),
                    remote_addr.get_port_number(),
                    szsend);

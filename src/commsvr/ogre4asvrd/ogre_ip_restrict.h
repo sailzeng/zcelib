@@ -19,7 +19,7 @@ public:
     //从配置文件中得到相关的配置
     int get_ip_restrict_conf(Zen_INI_PropertyTree &cfg_file);
     //检查IP限制
-    int check_ip_restrict(const ZEN_Sockaddr_In &remoteaddress);
+    int check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress);
 
 protected:
 

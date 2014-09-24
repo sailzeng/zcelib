@@ -50,7 +50,7 @@ int Ogre_Svr_Config::get_startup_param(int argc, char *argv[])
     //在这里保证配置和进程名相同
     ogre_cfg_path_ = "./cfg/" + process_mod_name + ".conf";
 
-    ZEN_Get_Option get_opt(argc, argv, "nfhs:", 0);
+    ZCE_Get_Option get_opt(argc, argv, "nfhs:", 0);
     int c;
 
     while ((c = get_opt()) != EOF)
@@ -94,7 +94,7 @@ int Ogre_Svr_Config::get_file_configure()
     unsigned int tmp_uint = 0;
     char tmpbuf[256];
 
-    ZEN_INI_Implemention ini_read;
+    ZCE_INI_Implemention ini_read;
 
     ret = ini_read.read(ogre_cfg_path_.c_str(), cfg_ogre4a_);
     snprintf(tmpbuf, 256, "Can't Open Ogre4a Configure file [%s].", ogre_cfg_path_.c_str());

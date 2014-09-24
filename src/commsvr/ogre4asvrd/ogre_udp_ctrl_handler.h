@@ -6,21 +6,21 @@
 //forward declaration
 class Ogre4aIPRestrictMgr;
 
-class OgreUDPSvcHandler: public ZEN_Event_Handler
+class OgreUDPSvcHandler: public ZCE_Event_Handler
 {
 protected:
     //
 public:
-    OgreUDPSvcHandler(const ZEN_Sockaddr_In &upd_addr,
-                      ZEN_Reactor *reactor = ZEN_Reactor::instance());
+    OgreUDPSvcHandler(const ZCE_Sockaddr_In &upd_addr,
+                      ZCE_Reactor *reactor = ZCE_Reactor::instance());
 protected:
     ~OgreUDPSvcHandler();
 
 public:
     //取得句柄
-    virtual ZEN_SOCKET get_handle(void) const;
+    virtual ZCE_SOCKET get_handle(void) const;
     //
-    virtual int handle_input(ZEN_HANDLE);
+    virtual int handle_input(ZCE_HANDLE);
     //
     virtual int handle_close();
 
@@ -38,19 +38,19 @@ public:
 protected:
 
     //从PEER读取数据
-    int ReadDataFromUDP(size_t &szrevc, ZEN_Sockaddr_In &remote_addr);
+    int ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_addr);
     //将收到的数据放入管道
     int pushdata_to_recvpipe();
 
 protected:
 
     //
-    Zen_Socket_DataGram        dgram_peer_;
+    ZCE_Socket_DataGram        dgram_peer_;
 
     //邦定的地址
-    ZEN_Sockaddr_In            udp_bind_addr_;
+    ZCE_Sockaddr_In            udp_bind_addr_;
     //Socket_Peer_Info
-    Socket_Peer_Info             peer_svc_info_;
+    Socket_Peer_Info           peer_svc_info_;
 
     //
     Ogre4a_AppFrame           *dgram_databuf_;

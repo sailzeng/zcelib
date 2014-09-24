@@ -28,7 +28,12 @@
     <ClCompile Include="ogre_configure.cpp" />
     <ClCompile Include="ogre_ip_restrict.cpp" />
     <ClCompile Include="ogre_main.cpp" />
-    <ClCompile Include="ogre_predefine.cpp" />
+    <ClCompile Include="ogre_predefine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="ogre_svrpeer_info_set.cpp" />
     <ClCompile Include="ogre_tcp_ctrl_handler.cpp" />
     <ClCompile Include="ogre_udp_ctrl_handler.cpp" />
@@ -128,7 +133,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -144,7 +149,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -162,7 +167,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -182,7 +187,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>ogre_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

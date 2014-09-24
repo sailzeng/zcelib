@@ -79,13 +79,13 @@ int Ogre4a_Service_App::init_instance()
 
     //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
-#ifdef ZEN_OS_WINDOWS
+#ifdef ZCE_OS_WINDOWS
     //
-    ZEN_Reactor::instance(new ZEN_Select_Reactor(max_peer));
-    ZLOG_DEBUG("[zergsvr] ZEN_Reactor and ZEN_Select_Reactor initialized.");
+    ZCE_Reactor::instance(new ZCE_Select_Reactor(max_peer));
+    ZLOG_DEBUG("[zergsvr] ZCE_Reactor and ZCE_Select_Reactor initialized.");
 #else
-    ZEN_Reactor::instance(new ZEN_Epoll_Reactor(max_peer));
-    ZLOG_INFO("[zergsvr] ZEN_Reactor and ZEN_Epoll_Reactor initialized.");
+    ZCE_Reactor::instance(new ZCE_Epoll_Reactor(max_peer));
+    ZLOG_INFO("[zergsvr] ZCE_Reactor and ZCE_Epoll_Reactor initialized.");
 #endif
 
     //
@@ -131,7 +131,7 @@ int Ogre4a_Service_App::exit_instance()
     Ogre_Comm_Manger::clean_instance();
 
     //释放所有资源,会关闭所有的handle吗?看是什么Reactor
-    ZEN_Reactor::instance()->close();
+    ZCE_Reactor::instance()->close();
     Ogre_Buffer_Storage::instance()->uninit_buffer_list();
 
     //
@@ -167,7 +167,7 @@ int Ogre4a_Service_App::run_instance()
     {
         //每次都在这儿初始化ZCE_Time_Value不好,其要调整.
         interval.usec(INTERVAL_MACRO_SECOND);
-        ZEN_Reactor::instance()->handle_events(&interval, &numevent);
+        ZCE_Reactor::instance()->handle_events(&interval, &numevent);
 
         //取得发送数据数据
         Ogre_Comm_Manger::instance()->get_all_senddata_to_write(procframe);
@@ -187,7 +187,7 @@ int Ogre4a_Service_App::run_instance()
         //你可以根据空闲状态处理一些自己的事情,
         if (idle > IDLE_SLEEP_INTERVAL )
         {
-            ZEN_OS::sleep(sleeptime);
+            ZCE_OS::sleep(sleeptime);
         }
     }
 

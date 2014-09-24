@@ -15,7 +15,7 @@ public:
     //
     std::string             rec_mod_file_;
     //TCP收取数据的模块HANDLER
-    ZEN_SHLIB_HANDLE        recv_mod_handler_;
+    ZCE_SHLIB_HANDLE        recv_mod_handler_;
     //
     FPJudgeRecvWholeFrame   fp_judge_whole_frame_;
 };
@@ -27,7 +27,7 @@ class Ogre_Connect_Server
 protected:
 
     //
-    ZEN_Socket_Connector            ogre_connector_;
+    ZCE_Socket_Connector            ogre_connector_;
     //
     ARRAY_OF_PEER_FPRECV_MODULE     ary_peer_fprecv_module_;
 
