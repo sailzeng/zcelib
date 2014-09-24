@@ -18,11 +18,32 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="wormhole_application.cpp" />
+    <ClCompile Include="wormhole_app_timer.cpp" />
+    <ClCompile Include="wormhole_configture.cpp" />
+    <ClCompile Include="wormhole_main.cpp" />
+    <ClCompile Include="wormhole_predefine.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="wormhole_proxyprocess.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="wormhole_application.h" />
+    <ClInclude Include="wormhole_app_timer.h" />
+    <ClInclude Include="wormhole_configture.h" />
+    <ClInclude Include="wormhole_predefine.h" />
+    <ClInclude Include="wormhole_proxyprocess.h" />
+    <ClInclude Include="wormhole_stat_define.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}</ProjectGuid>
+    <ProjectGuid>{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>zergsvr</RootNamespace>
-    <ProjectName>zergsvr</ProjectName>
+    <ProjectName>wormholesvrd</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -99,7 +120,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,7 +136,7 @@
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,7 +154,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -153,7 +174,7 @@
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>wormhole_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -163,43 +184,6 @@
       <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="zerg_accept_handler.cpp" />
-    <ClCompile Include="zerg_application.cpp" />
-    <ClCompile Include="zerg_app_timer.cpp" />
-    <ClCompile Include="zerg_auto_connect.cpp" />
-    <ClCompile Include="zerg_buf_storage.cpp" />
-    <ClCompile Include="zerg_comm_manager.cpp" />
-    <ClCompile Include="zerg_configure.cpp" />
-    <ClCompile Include="zerg_console_handler.cpp" />
-    <ClCompile Include="zerg_ip_restrict.cpp" />
-    <ClCompile Include="zerg_main.cpp" />
-    <ClCompile Include="zerg_predefine.cpp">
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
-      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
-    </ClCompile>
-    <ClCompile Include="zerg_active_svchdl_set.cpp" />
-    <ClCompile Include="zerg_tcp_ctrl_handler.cpp" />
-    <ClCompile Include="zerg_udp_ctrl_handler.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="zerg_accept_handler.h" />
-    <ClInclude Include="zerg_application.h" />
-    <ClInclude Include="zerg_app_timer.h" />
-    <ClInclude Include="zerg_auto_connect.h" />
-    <ClInclude Include="zerg_buf_storage.h" />
-    <ClInclude Include="zerg_comm_manager.h" />
-    <ClInclude Include="zerg_configure.h" />
-    <ClInclude Include="zerg_console_handler.h" />
-    <ClInclude Include="zerg_ip_restrict.h" />
-    <ClInclude Include="zerg_predefine.h" />
-    <ClInclude Include="zerg_active_svchdl_set.h" />
-    <ClInclude Include="zerg_stat_define.h" />
-    <ClInclude Include="zerg_tcp_ctrl_handler.h" />
-    <ClInclude Include="zerg_udp_ctrl_handler.h" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

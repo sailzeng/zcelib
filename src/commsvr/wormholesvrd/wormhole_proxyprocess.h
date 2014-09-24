@@ -16,8 +16,8 @@ public:
     {
         PROXY_TYPE_INVALID           = 0, // 无效的TYPE
         PROXY_TYPE_ECHO              = 1, // 将所有的数据数据回显
-        PROXY_TYPE_DB_MODAL          = 2, // 按照UIN取模进行Proxy转发，用于DBServer和金融服务器
-        PROXY_TYPE_TRANSMIT          = 3, // 直接进行转发处理，不对数据帧进行任何处理
+        PROXY_TYPE_TRANSMIT          = 2, // 直接进行转发处理，不对数据帧进行任何处理
+        PROXY_TYPE_DB_MODAL          = 3, // 按照UIN取模进行Proxy转发，用于DBServer和金融服务器
         PROXY_TYPE_COPY_TRANS_ALL    = 4, // 将数据复制转发给所有配置的服务器
         PROXY_TYPE_DB_MODAL_MG       = 5, // 按照APPID和UIN进行Proxy转发
     };

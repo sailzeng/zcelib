@@ -158,6 +158,79 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
     return 0;
 }
 
+
+
+
+/****************************************************************************************************
+class Transmit_Proxy 直接进行转发处理，不对数据帧进行任何处理
+****************************************************************************************************/
+Transmit_Proxy::Transmit_Proxy()
+{
+}
+
+Transmit_Proxy::~Transmit_Proxy()
+{
+}
+
+int Transmit_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
+{
+    //
+    int ret = Interface_WH_Proxy::get_proxy_config(conf_tree);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
+{
+    ZLOG_DEBUG("Receive a transmit frame to process,"
+        "send svr:[%u|%u], "
+        "recv svr:[%u|%u], "
+        "frame_uin:%u, "
+        "frame_cmd:%u, "
+        "frame_len:%u. ",
+        proc_frame->send_service_.services_type_,
+        proc_frame->send_service_.services_id_,
+        proc_frame->recv_service_.services_type_,
+        proc_frame->recv_service_.services_id_,
+        proc_frame->frame_uid_,
+        proc_frame->frame_command_,
+        proc_frame->frame_length_);
+
+    int ret = 0;
+
+    // 内部处理的命令,跳过
+    bool bsnderr;
+
+    if (proc_frame->is_internal_process(bsnderr) == true)
+    {
+        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
+            proc_frame->frame_uid_, proc_frame->frame_command_);
+        return 0;
+    }
+
+    ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+
+    //
+    if (ret != 0)
+    {
+        return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
+    }
+
+    ZLOG_DEBUG("Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
+        proc_frame->recv_service_.services_type_,
+        proc_frame->recv_service_.services_id_,
+        proc_frame->frame_uid_,
+        proc_frame->frame_command_,
+        proc_frame->frame_length_,
+        proc_frame->transaction_id_);
+
+    return 0;
+}
+
 /****************************************************************************************************
 class DBModalProxyProcess 按照DB取模进行Proxy转发，用于DBServer和金融服务器 PROXY_TYPE_DB_MODAL
 ****************************************************************************************************/
@@ -165,6 +238,7 @@ DBModalProxyProcess::DBModalProxyProcess():
     Interface_WH_Proxy()
 {
 }
+
 DBModalProxyProcess::~DBModalProxyProcess()
 {
     std::map<unsigned short, DBModalProxyInfo*>::iterator iter = dbmodal_proxy_map_.begin();
@@ -185,7 +259,6 @@ int DBModalProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
 
     //得到过滤得命令
     ret = Interface_WH_Proxy::get_proxy_config(conf_tree);
-
     if (ret != 0)
     {
         return ret;
@@ -368,76 +441,7 @@ int DBModalProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     return 0;
 }
 
-/****************************************************************************************************
-class TransmitProxyProcess 直接进行转发处理，不对数据帧进行任何处理
-****************************************************************************************************/
-Transmit_Proxy::Transmit_Proxy()
-{
-}
 
-Transmit_Proxy::~Transmit_Proxy()
-{
-}
-
-int Transmit_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
-{
-    //
-    int ret = Interface_WH_Proxy::get_proxy_config(cfg);
-
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    return 0;
-}
-
-int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
-{
-    ZLOG_DEBUG("Receive a transmit frame to process,"
-               "send svr:[%u|%u], "
-               "recv svr:[%u|%u], "
-               "frame_uin:%u, "
-               "frame_cmd:%u, "
-               "frame_len:%u. ",
-               proc_frame->send_service_.services_type_,
-               proc_frame->send_service_.services_id_,
-               proc_frame->recv_service_.services_type_,
-               proc_frame->recv_service_.services_id_,
-               proc_frame->frame_uid_,
-               proc_frame->frame_command_,
-               proc_frame->frame_length_);
-
-    int ret = 0;
-
-    // 内部处理的命令,跳过
-    bool bsnderr;
-
-    if (proc_frame->is_internal_process(bsnderr) == true)
-    {
-        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                   proc_frame->frame_uid_, proc_frame->frame_command_);
-        return 0;
-    }
-
-    ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
-
-    //
-    if (ret != 0)
-    {
-        return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
-    }
-
-    ZLOG_DEBUG( "Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
-                proc_frame->recv_service_.services_type_,
-                proc_frame->recv_service_.services_id_,
-                proc_frame->frame_uid_,
-                proc_frame->frame_command_,
-                proc_frame->frame_length_,
-                proc_frame->transaction_id_);
-
-    return 0;
-}
 
 /****************************************************************************************************
 class CopyTransmitAllProxyProcess 将数据复制转发给所有配置的服务器 PROXY_TYPE_COPY_TRANS_ALL
@@ -805,7 +809,7 @@ DBModalMGProxyInfo *DBModalMGProxyProcess::add_proxy(conf_proxysvr::RouteInfo *r
         unsigned int svc_id = item.normal_router_;
         for(size_t i = 0; i < 100; i++, svc_id += 1000)
         {
-            item.hash_ = ZEN_LIB::crc16((const unsigned char *)&svc_id, sizeof(svc_id));
+            item.hash_ = ZCE_LIB::crc16((const unsigned char *)&svc_id, sizeof(svc_id));
 
             dbmodal_mg_proxy_info->route_cfg_.push_back(item);
         }

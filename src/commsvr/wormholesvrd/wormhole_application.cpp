@@ -64,7 +64,8 @@ int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
 //
 int Wormhole_Proxy_App::on_exit()
 {
-    ZLOG_INFO("ArbiterAppliction::exit. ");
+    ZLOG_INFO("Wormhole_Proxy_App::exit. ");
+    return 0;
 }
 
 int Wormhole_Proxy_App::reload()
