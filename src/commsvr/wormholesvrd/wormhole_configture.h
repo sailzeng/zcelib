@@ -25,8 +25,8 @@ public:
 
 public:
 
-    ///
-    Interface_WH_Proxy::PROXY_TYPE  proxy_type_;
+    ///代理类型
+    Interface_WH_Proxy::PROXY_TYPE  proxy_type_ = Interface_WH_Proxy::INVALID_PROXY_TYPE;
 
     ///代理的配置数据要
     ZCE_Conf_PropertyTree proxy_conf_tree_;

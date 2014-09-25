@@ -226,7 +226,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = load_config();
     if (0 != ret)
     {
-        ZLOG_INFO("[framework] config_base_->load_config fail,ret = %d.", ret);
+        ZLOG_INFO("[framework] load_config fail,ret = %d.", ret);
         return ret;
     }
 

@@ -39,11 +39,11 @@ public:
 
 
 protected:
-    // 处理的PROXY的接口
-    Interface_WH_Proxy     *interface_proxy_;
 
-    // 处理的FRAME的总数
-    unsigned int                 process_frame_count_;
+    /// 处理的PROXY的接口
+    Interface_WH_Proxy *interface_proxy_ = NULL;
+
+
 
 };
 

@@ -322,7 +322,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_id_;
     zerg_cfg_data_.bind_svcid_num_ += 1;
 
-    //注意是从1开始
+    //注意是从1开始,注意bind_svcid_num_上面已经+1了，
     for (size_t i = 1; i < zerg_cfg_data_.bind_svcid_num_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("SLAVE_SVCID", "SLAVE_SERVICES_ID_", i, temp_value);
