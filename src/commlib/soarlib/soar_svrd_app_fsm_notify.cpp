@@ -8,7 +8,7 @@
 #include "soar_svrd_app_fsm_notify.h"
 
 Comm_SvrdApp_FSM_Notify::Comm_SvrdApp_FSM_Notify():
-    Comm_Svrd_Appliction()
+    Soar_Svrd_Appliction()
 {
 };
 
@@ -22,7 +22,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Comm_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::on_start(argc, argv);
     if (0 != ret)
     {
         return ret;
@@ -43,7 +43,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
         self_svc_id_,
         enqueue_timeout,
         ZCE_Timer_Queue::instance(),
-        Zerg_MMAP_BusPipe::instance(),
+        Soar_MMAP_BusPipe::instance(),
         THREADMUTEX_APPFRAME_MALLOCOR::instance());
 
     ret = register_notifytrans_cmd();
@@ -172,7 +172,7 @@ int Comm_SvrdApp_FSM_Notify::on_exit()
     //等待所有的Join的线程退出
     //ACE_Thread_Manager::instance()->wait();
 
-    ret = Comm_Svrd_Appliction::on_exit();
+    ret = Soar_Svrd_Appliction::on_exit();
 
     if ( 0 != ret )
     {

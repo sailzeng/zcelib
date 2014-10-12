@@ -70,6 +70,7 @@ const char *SERVICES_ID::to_str(char *str_buffer, size_t buf_len)
 
 int SERVICES_ID::from_str(const char *str_buffer, bool check_valid)
 {
+    //注意.前面的%号
     int ret_num = sscanf(str_buffer,
                          "%hu%.%u",
                          &services_type_,

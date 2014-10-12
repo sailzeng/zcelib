@@ -19,35 +19,15 @@ Ogre_Comm_Manger::~Ogre_Comm_Manger()
 
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年4月12日
-Function        : Ogre_Comm_Manger::check_safe_port
-Return          : int
-Parameter List  :
-Param1: ZCE_Sockaddr_In& ipaddr
-Description     : 检查一个端口是否安全，
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//检查一个端口是否安全.然后根据配置进行处理
 int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
 {
-    //高危端口检查常量
-    const unsigned short UNSAFE_PORT1 = 1024;
-    const unsigned short UNSAFE_PORT2 = 3306;
-    const unsigned short UNSAFE_PORT3 = 36000;
-    const unsigned short UNSAFE_PORT4 = 56000;
-    const unsigned short SAFE_PORT1 = 80;
 
     //如果打开了保险检查,检查配置的端口
-    if ((inetadd.get_port_number() <= UNSAFE_PORT1 && inetadd.get_port_number() != SAFE_PORT1)  ||
-        inetadd.get_port_number() == UNSAFE_PORT2  ||
-        inetadd.get_port_number() == UNSAFE_PORT3 ||
-        inetadd.get_port_number() == UNSAFE_PORT4 )
+    if ( false == inetadd.check_safeport() )
     {
         //如果使用保险打开(TRUE)
-        if (Ogre_Svr_Config::instance()->zerg_insurance_)
+        if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
             ZLOG_ERROR( "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
                         inetadd.get_host_addr(),
@@ -63,7 +43,6 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
                        inetadd.get_port_number());
         }
     }
-
     //
     return 0;
 }
@@ -184,12 +163,12 @@ int Ogre_Comm_Manger::init_udp_by_conf(Zen_INI_PropertyTree &cfg_file)
 }
 
 //得到配置
-int Ogre_Comm_Manger::get_configure(Zen_INI_PropertyTree &cfg_file)
+int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
 
     //IP限制,
-    ret = Ogre4aIPRestrictMgr::instance()->get_ip_restrict_conf(cfg_file);
+    ret = Ogre_IPRestrict_Mgr::instance()->get_config(config);
 
     if (0 != ret )
     {
@@ -197,7 +176,7 @@ int Ogre_Comm_Manger::get_configure(Zen_INI_PropertyTree &cfg_file)
     }
 
     //TCP 读取配置
-    ret = Ogre_TCP_Svc_Handler::get_configure(cfg_file);
+    ret = Ogre_TCP_Svc_Handler::get_config(config);
 
     if (ret != 0)
     {
@@ -207,31 +186,22 @@ int Ogre_Comm_Manger::get_configure(Zen_INI_PropertyTree &cfg_file)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月20日
-Function        : Ogre_TCP_Svc_Handler::get_all_senddata_to_write
-Return          : int
-Parameter List  :
-Param1: size_t& procframe
-Description     : 将所有的队列中的数据发送，从SEND管道找到所有的数据去发送,
-Calls           :
-Called By       :
-Other           : 想了想，还是加了一个最多发送的帧的限额
-Modify Record   :
-******************************************************************************************/
+
+//将所有的队列中的数据发送，从SEND管道找到所有的数据去发送,
+//想了想，还是加了一个最多发送的帧的限额
 int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 {
     int ret = 0;
 
     //
     for (procframe = 0;
-         Zerg_MMAP_BusPipe::instance()->is_empty_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID) == false &&
+         Soar_MMAP_BusPipe::instance()->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false &&
          procframe < MAX_ONCE_SEND_FRAME; ++procframe)
     {
-        Ogre4a_AppFrame *send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
+        Ogre4a_App_Frame *send_frame = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
 
         //
-        ret = Zerg_MMAP_BusPipe::instance()->pop_front_bus(Zerg_MMAP_BusPipe::SEND_PIPE_ID,
+        ret = Soar_MMAP_BusPipe::instance()->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
                                                            reinterpret_cast< ZCE_LIB::dequechunk_node*&>(send_frame));
 
         if (ret != 0)
@@ -242,7 +212,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         }
 
         //如果FRAME的长度
-        if (send_frame->ogre_frame_len_ > Ogre4a_AppFrame::MAX_OF_OGRE_FRAME_LEN)
+        if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
         {
             ZLOG_ALERT("Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
                        send_frame->ogre_frame_len_);
@@ -252,7 +222,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         }
 
         //如果是TCP
-        if (send_frame->ogre_frame_option_ & Ogre4a_AppFrame::OGREDESC_PEER_TCP )
+        if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_TCP )
         {
             ret = Ogre_TCP_Svc_Handler::process_send_data(send_frame);
 
@@ -265,7 +235,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         }
 
         //如果是UDP
-        else if (send_frame->ogre_frame_option_ & Ogre4a_AppFrame::OGREDESC_PEER_UDP )
+        else if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_UDP )
         {
             //不检查错误
             OgreUDPSvcHandler::SendAllDataToUDP(send_frame);
@@ -283,46 +253,11 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 }
 
 //初始化通讯管理器
-int Ogre_Comm_Manger::init_comm_manger(Zen_INI_PropertyTree &cfg_file)
+int Ogre_Comm_Manger::init_comm_manger()
 {
     int ret = 0;
 
-    ret = Zerg_MMAP_BusPipe::instance()->getpara_from_zergcfg(cfg_file);
 
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    //ACCEPT Handler读取配置
-    ret = init_accept_by_conf(cfg_file);
-
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    //UDP Handler读取配置
-    ret =  init_udp_by_conf(cfg_file);
-
-    if (ret != 0)
-    {
-        return ret;
-    }
-
-    ZLOG_INFO( "Restore MMAP Pipe %s \n", Ogre_Svr_Config::instance()->if_restore_pipe_ == true ? "TRUE" : "FALSE");
-    //初始化内存管道
-    ret = Zerg_MMAP_BusPipe::instance()->initialize(Ogre_Svr_Config::instance()->self_svr_info_,
-                                                    0,
-                                                    0,
-                                                    Ogre4a_AppFrame::MAX_OF_OGRE_FRAME_LEN,
-                                                    Ogre_Svr_Config::instance()->if_restore_pipe_,
-                                                    false);
-
-    if (ret != 0)
-    {
-        return ret;
-    }
 
     //初始化所有的监听端口
     for (size_t i = 0; i < accept_handler_ary_.size(); ++i)
@@ -394,7 +329,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
     //
     Ogre_TCP_Svc_Handler::unInit_all_static_data();
     //
-    Ogre4aIPRestrictMgr::clean_instance();
+    Ogre_IPRestrict_Mgr::clean_instance();
 
     return 0;
 }

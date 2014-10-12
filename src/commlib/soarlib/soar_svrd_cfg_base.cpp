@@ -147,21 +147,9 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
     }
 
     log_file_prefix_ = app_run_dir_ + "/log/";
-    log_file_prefix_ += Comm_Svrd_Appliction::instance()->get_app_basename();
+    log_file_prefix_ += Soar_Svrd_Appliction::instance()->get_app_basename();
 
-    // 未指定app的配置文件，则使用默认的
-    app_cfg_file_ = app_run_dir_ + "/cfg/";
-    app_cfg_file_ += Comm_Svrd_Appliction::instance()->get_app_basename();
-    app_cfg_file_ += "_config.xml";
 
-    // 未指定通讯服务器配置
-    zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.cfg";
-
-    // 未指定svcid配置文件
-    svc_table_file_ = app_run_dir_ + "/cfg/svctabe.cfg";
-
-    // 框架的配置是不会变的
-    common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";
 
     return 0;
 }
@@ -191,6 +179,17 @@ int Server_Config_Base::read_cfgfile()
 {
     int ret = 0;
 
+    // 未指定app的配置文件，则使用默认的
+    app_cfg_file_ = app_run_dir_ + "/cfg/";
+    app_cfg_file_ += Soar_Svrd_Appliction::instance()->get_app_basename();
+    app_cfg_file_ += ".cfg";
+
+    // 未指定svcid配置文件
+    svc_table_file_ = app_run_dir_ + "/cfg/svctabe.cfg";
+
+    // 框架的配置是不会变的
+    common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";
+
     ZCE_Conf_PropertyTree pt_tree;
     ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(), &pt_tree);
     ZCE_LOGMSG(RS_INFO, "Application read config file [%s] ret [%d].",
@@ -212,12 +211,11 @@ int Server_Config_Base::read_cfgfile()
 void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     ZCE_LOGMSG(out_lvl, "Application base name %s svc id:%hu.%u",
-               Comm_Svrd_Appliction::instance()->get_app_basename(),
+               Soar_Svrd_Appliction::instance()->get_app_basename(),
                self_svc_id_.services_type_,
                self_svc_id_.services_id_);
     ZCE_LOGMSG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());
     ZCE_LOGMSG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
-    ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application frame work config file :%s", common_cfg_file_.c_str());
     ZCE_LOGMSG(out_lvl, "Application svc id table config file :%s", svc_table_file_.c_str());

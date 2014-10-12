@@ -50,7 +50,7 @@
 #include <soar_svrd_cfg_base.h>
 #include <soar_svrd_app_main.h>
 #include <soar_zerg_frame.h>
-#include <soar_zerg_mmappipe.h>
+#include <soar_mmap_buspipe.h>
 #include <soar_svrd_app_base.h>
 #include <soar_svrd_app_main.h>
 #include <soar_stat_monitor.h>

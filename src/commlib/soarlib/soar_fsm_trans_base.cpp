@@ -323,7 +323,7 @@ int Transaction_Base::process_trans_event()
                    trans_phase_);
 
         // 事务处理超时，统计数据
-        Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_TIMEOUT,
+        Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_TIMEOUT,
                                                      req_game_app_id_,
                                                      trans_command_);
 
@@ -385,7 +385,7 @@ int Transaction_Base::process_trans_event()
         case EXIT_PROCESS_SUCC:
         {
             // 成功退出，修改监控数据
-            Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_SUCC,
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_SUCC,
                                                          req_game_app_id_,
                                                          trans_command_);
             return SOAR_RET::ERROR_TRANS_HAS_FINISHED;
@@ -394,10 +394,10 @@ int Transaction_Base::process_trans_event()
         case EXIT_PROCESS_FAIL:
         {
             // 失败退出，修改监控数据
-            Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_FAIL,
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_FAIL,
                                                          req_game_app_id_,
                                                          trans_command_);
-            Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
                                                          req_game_app_id_,
                                                          process_errno_);
             return SOAR_RET::ERROR_TRANS_HAS_FINISHED;

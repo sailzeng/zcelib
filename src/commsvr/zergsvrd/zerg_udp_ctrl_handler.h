@@ -54,7 +54,7 @@ public:
     //
     static int send_all_to_udp(Zerg_App_Frame *send_frame);
 
-    //
+    ///读取配置
     static int get_config(const Zerg_Server_Config *config);
 
 protected:
@@ -71,7 +71,7 @@ protected:
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
     ///统计，使用单子类的指针
-    static Comm_Stat_Monitor       *server_status_;
+    static Soar_Stat_Monitor       *server_status_;
 
     ///通讯管理器,保存是为了加快速度
     static Zerg_Comm_Manager       *zerg_comm_mgr_;

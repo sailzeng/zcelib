@@ -72,7 +72,6 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
             break;
         }
 
-
         // DBPROXY的模式，采用UIN取模的方式的到服务器的ID
         case PROXY_TYPE_MODULO_UID:
         {
@@ -88,9 +87,12 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
         }
 
         default:
+        {
             // 错误
             ZLOG_ERROR("Error Proxy Type define. Please check you code. ");
             return NULL;
+        }
+        
     }
 
     return tmpintface;
@@ -104,7 +106,7 @@ int Interface_WH_Proxy::init_proxy_instance()
 {
     // int ret =0;
     // 初始化MMAP内存的PIPE
-    zerg_mmap_pipe_ = Zerg_MMAP_BusPipe::instance();
+    zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
 
     return 0;
 }
@@ -678,7 +680,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //            proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_ERROR);
 //
-//            Comm_Stat_Monitor::instance()->increase_once(WORMHOLE_TRANS_PKG_ERROR);
+//            Soar_Stat_Monitor::instance()->increase_once(WORMHOLE_TRANS_PKG_ERROR);
 //
 //            return SOAR_RET::ERROR_APPFRAME_ERROR;
 //        }

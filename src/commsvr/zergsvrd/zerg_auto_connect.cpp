@@ -148,7 +148,7 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
     {
         if (ary_want_connect_[i].svc_id_ == reconnect_svcid)
         {
-            ZCE_Sockaddr_In     inetaddr = ary_want_connect_[i].ip_address_;
+            ZCE_Sockaddr_In inetaddr (ary_want_connect_[i].ip_address_);
             return connect_server_bysvcid(reconnect_svcid, inetaddr);
         }
     }

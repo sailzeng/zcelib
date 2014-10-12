@@ -13,127 +13,42 @@ Ogre_Connect_Server::Ogre_Connect_Server()
 //
 Ogre_Connect_Server::~Ogre_Connect_Server()
 {
-    for (size_t i = 0; i < ary_peer_fprecv_module_.size(); ++i)
-    {
-        if (ZCE_SHLIB_INVALID_HANDLE != ary_peer_fprecv_module_[i].recv_mod_handler_ )
-        {
-            ZCE_OS::dlclose(ary_peer_fprecv_module_[i].recv_mod_handler_);
-        }
-    }
+
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年1月12日
-Function        : Ogre_Connect_Server::get_configure
-Return          : int
-Parameter List  :
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int Ogre_Connect_Server::get_configure(Zen_INI_PropertyTree &cfg_file)
+
+int Ogre_Connect_Server::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
+    auto_connect_num_ = config->ogre_cfg_data_.auto_connect_num_;
 
-    unsigned int tmp_uint = 0;
-
-    const size_t TMP_BUFFER_LEN = 256;
-    char err_outbuf[TMP_BUFFER_LEN + 1] = {0};
-    char tmp_key[TMP_BUFFER_LEN + 1] = {0};
-    char tmp_value[TMP_BUFFER_LEN + 1] = {0};
-
-    //
-    ret = cfg_file.get_uint32_value("AUTOCONNECT", "NUMSVRINFO", tmp_uint);
-    snprintf(err_outbuf, TMP_BUFFER_LEN, "AUTOCONNECT|NUMSVRINFO key error.");
-    TESTCONFIG((ret == 0), err_outbuf);
-    size_t numsvr =  tmp_uint;
-
-    ary_peer_fprecv_module_.resize(numsvr);
-
-    //循环处理所有的数据
-    for (size_t i = 1; i <= numsvr; ++i)
+    for (size_t i = 0; i < auto_connect_num_; ++i)
     {
-        snprintf(tmp_key, sizeof(tmp_key) - 1, "PEERIP%zu", i);
-        ret = cfg_file.get_string_value("AUTOCONNECT", tmp_key, tmp_value, TMP_BUFFER_LEN);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "AUTOCONNECT|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0 ), err_outbuf);
-
-        snprintf(tmp_key, sizeof(tmp_key) - 1, "PEERPORT%zu", i);
-        ret = cfg_file.get_uint32_value("AUTOCONNECT", tmp_key, tmp_uint);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "AUTOCONNECT|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0 && tmp_uint != 0), err_outbuf);
-
-        //找到相关的IP配置
-        ZCE_Sockaddr_In svraddr;
-        ret = svraddr.set(tmp_value, static_cast<unsigned short>(tmp_uint));
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "AUTOCONNECT|PEERIP|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0 ), err_outbuf);
-
-        snprintf(tmp_key, sizeof(tmp_key) - 1, "PEERMODULE%zu", i);
-        ret = cfg_file.get_string_value("AUTOCONNECT", tmp_key, tmp_value, TMP_BUFFER_LEN);
-        snprintf(err_outbuf, sizeof(err_outbuf) - 1, "AUTOCONNECT|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0 ), err_outbuf);
-
-        //
-        ary_peer_fprecv_module_[i - 1].peer_socket_info_.peer_ip_address_ = svraddr.get_ip_address();
-        ary_peer_fprecv_module_[i - 1].peer_socket_info_.peer_port_ = svraddr.get_port_number();
-        //
-        ary_peer_fprecv_module_[i - 1].rec_mod_file_ = tmp_value;
-
+        autocnt_module_ary_[i].peer_info_ = config->ogre_cfg_data_.auto_cnt_peer_ary_[i];
+        ret = autocnt_module_ary_[i].open_module();
+        if (ret != 0)
+        {
+            return ret;
+        }
     }
-
-    ZLOG_INFO("Get AutoConnect Config Success.\n");
 
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年12月14日
-Function        : Ogre_Connect_Server::connect_all_server
-Return          : int
-Parameter List  :
-  Param1: size_t& szserver 要链接的服务器总数
-  Param2: size_t& szsucc   成功开始连接的服务器个数,
-Description     : 链接所有的服务器
-Calls           :
-Called By       :
-Other           : 对于短连接的服务器,也可以说是一个连接测试,
-Modify Record   :
-******************************************************************************************/
+
+//链接所有的服务器
+//要链接的服务器总数,成功开始连接的服务器个数,
 int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
 {
     int ret = 0;
 
     size_t i = 0;
-    szserver = ary_peer_fprecv_module_.size();
+    
 
     //检查所有的服务器的模块十分正确
-    for (i = 0; i < szserver; ++i)
+    for (i = 0; i < auto_connect_num_; ++i)
     {
-        ary_peer_fprecv_module_[i].recv_mod_handler_ = ZCE_OS::dlopen(ary_peer_fprecv_module_[i].rec_mod_file_.c_str());
-
-        if ( ZCE_SHLIB_INVALID_HANDLE == ary_peer_fprecv_module_[i].recv_mod_handler_)
-        {
-            ZLOG_ERROR( "Open Module [%s] fail. recv_mod_handler =%u .\n", ary_peer_fprecv_module_[i].rec_mod_file_.c_str(), ary_peer_fprecv_module_[i].recv_mod_handler_);
-            return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
-        }
-
-        ary_peer_fprecv_module_[i].fp_judge_whole_frame_ = (FPJudgeRecvWholeFrame)ZCE_OS::dlsym(ary_peer_fprecv_module_[i].recv_mod_handler_, StrJudgeRecvWholeFrame);
-
-        if ( NULL == ary_peer_fprecv_module_[i].fp_judge_whole_frame_ )
-        {
-            ZLOG_ERROR( "Open Module [%s|%s] fail. recv_mod_handler =%u .\n", ary_peer_fprecv_module_[i].rec_mod_file_.c_str(), StrJudgeRecvWholeFrame, ary_peer_fprecv_module_[i].recv_mod_handler_);
-            return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
-        }
-    }
-
-    szsucc = 0;
-
-    for (i = 0; i < szserver; ++i)
-    {
-        ret = connect_server_by_svrinfo(ary_peer_fprecv_module_[i].peer_socket_info_);
+        ret = connect_server_by_peerid(ary_peer_fprecv_module_[i].peer_socket_info_);
 
         if (ret == 0)
         {
@@ -146,25 +61,12 @@ int Ogre_Connect_Server::connect_all_server(size_t &szserver, size_t &szsucc)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : Ogre_Connect_Server::connect_server_by_svrinfo
-Return          : int
-Parameter List  :
-  Param1: const Socket_Peer_Info& svrinfo
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrinfo)
+
+int Ogre_Connect_Server::connect_server_by_peerid(const SOCKET_PERR_ID &svrinfo)
 {
 
     size_t i = 0;
-    size_t ary_len = ary_peer_fprecv_module_.size();
-
-    for (; i < ary_len; ++i)
+    for (; i < auto_connect_num_; ++i)
     {
         if (ary_peer_fprecv_module_[i].peer_socket_info_ == svrinfo )
         {
@@ -173,7 +75,7 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
     }
 
     //如果没有找到
-    if (ary_len == i)
+    if (auto_connect_num_ == i)
     {
         return SOAR_RET::ERR_OGRE_NO_FIND_SERVICES_INFO;
     }
@@ -192,7 +94,7 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
     if (ret < 0)
     {
         //按照UNIX网络编程 V1的说法是 EINPROGRESS,但ACE的介绍说是 EWOULDBLOCK,
-        if (ZCE_OS::last_error() != EWOULDBLOCK && ZCE_OS::last_error() != EINPROGRESS )
+        if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS )
         {
             tcpscoket.close();
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
@@ -215,8 +117,4 @@ int Ogre_Connect_Server::connect_server_by_svrinfo(const Socket_Peer_Info &svrin
     return 0;
 }
 
-size_t Ogre_Connect_Server::num_svr_to_connect() const
-{
-    return ary_peer_fprecv_module_.size();
-}
 

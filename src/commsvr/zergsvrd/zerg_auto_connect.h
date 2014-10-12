@@ -20,7 +20,7 @@ public:
     Zerg_Auto_Connector();
     ~Zerg_Auto_Connector();
 
-    //
+    ///读取配置
     int get_config(const Zerg_Server_Config *config);
 
     // 重新加载主动连接配置

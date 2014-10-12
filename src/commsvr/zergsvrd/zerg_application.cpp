@@ -31,15 +31,39 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Comm_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::on_start(argc, argv);
     if (ret != 0)
     {
         return ret;
     }
+    Zerg_Server_Config *config = reinterpret_cast<Zerg_Server_Config *>(config_base_);
+    ret = Zerg_IPRestrict_Mgr::instance()->get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
 
+    //通信管理器读取配置文件
+    ret = Zerg_Comm_Manager::instance()->get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    ret = TCP_Svc_Handler::get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    ret = UDP_Svc_Handler::get_config(config);
+    if (0 != ret)
+    {
+        return ret;
+    }
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
-    ret = Comm_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
+    ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
                                                     business_id_,
                                                     self_svc_id_,
                                                     0,
@@ -60,8 +84,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     //设置发送接收缓冲的数量
     ZBuffer_Storage::instance()->init_buflist_by_hdlnum(max_peer);
 
-    //Zerg_Comm_Manager的配置部分可以动态重复加载
-    Zerg_IPRestrict_Mgr::instance();
+
     //通信管理器初始化
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
@@ -110,21 +133,11 @@ int Zerg_Service_App::on_exit()
     //清理单子
     Zerg_IPRestrict_Mgr::clean_instance();
 
-    Comm_Stat_Monitor::clean_instance();
-
-    //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现
-    if (ZCE_Reactor::instance())
-    {
-        ZCE_Reactor::instance()->close();
-    }
-
     //
-    if (ZCE_Timer_Queue::instance())
-    {
-        ZCE_Timer_Queue::instance()->close();
-    }
-
     ZBuffer_Storage::instance()->uninit_buffer_list();
+    
+    //基类的退出
+    Soar_Svrd_Appliction::on_exit();
 
     return 0;
 }
@@ -230,76 +243,8 @@ int Zerg_Service_App::on_run()
 }
 
 
-// 加载配置,不在读取配置的时候加载配置，
-int Zerg_Service_App::load_config()
-{
-    int ret = 0;
-    Zerg_Server_Config *config = reinterpret_cast<Zerg_Server_Config *>(config_base_);
-    ret = Zerg_IPRestrict_Mgr::instance()->get_config(config);
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    //通信管理器读取配置文件
-    ret = Zerg_Comm_Manager::instance()->get_config(config);
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    ret = TCP_Svc_Handler::get_config(config);
-    if (0 != ret)
-    {
-        return ret;
-    }
-
-    ret = UDP_Svc_Handler::get_config(config);
-    if (0 != ret)
-    {
-        return ret;
-    }
 
 
-    return 0;
-}
 
-////
-//int Zerg_Service_App::reload()
-//{
-//    int ret = reload_daynamic_config();
-//
-//    if ( ret != 0 )
-//    {
-//        ZCE_LOGMSG(RS_INFO,"[zergsvr] reload config fail,ret = %d.", ret);
-//        return ret;
-//    }
-//
-//    TCP_Svc_Handler::adjust_svc_handler_pool();
-//
-//    return 0;
-//}
 
-//重新加载配置文件
-//int Zerg_Service_App::reload_daynamic_config()
-//{
-//
-//
-//    //动态修改日志的级别
-//    set_log_priority(zerg_config->log_config_.log_level_);
-//
-//
-//
-//    return 0;
-//}
-
-bool Zerg_Service_App::if_proxy()
-{
-    unsigned short self_svc_type = self_svc_id_.services_type_;
-    if (self_svc_type == SVC_PROXY_SERVER)
-    {
-        return true;
-    }
-    return false;
-}
 

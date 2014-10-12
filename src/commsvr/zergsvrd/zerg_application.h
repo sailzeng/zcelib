@@ -14,7 +14,7 @@ class Zerg_Comm_Manager;
 *
 * @note
 */
-class Zerg_Service_App : public Comm_Svrd_Appliction
+class Zerg_Service_App : public Soar_Svrd_Appliction
 {
 
 
@@ -27,18 +27,12 @@ public:
 
     ///初始化,根据启动参数启动
     virtual int on_start(int argc, const char *argv[]);
+
     ///处理退出的清理工作
     virtual int on_exit();
 
     ///运行,运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。
     virtual int on_run();
-
-    ///加载配置
-    virtual int load_config();
-
-    ///是否是代理服务器
-    bool if_proxy();
-
 
 public:
 

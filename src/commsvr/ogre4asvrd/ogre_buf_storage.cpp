@@ -47,7 +47,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
 /******************************************************************************************
 Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
 Function        : Ogre_Buffer_Storage::allocate_byte_buffer
-Return          : Ogre4a_AppFrame*
+Return          : Ogre4a_App_Frame*
 Parameter List  : NULL
 Description     :
 Calls           :
@@ -55,7 +55,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-Ogre4a_AppFrame *Ogre_Buffer_Storage::allocate_byte_buffer()
+Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
 {
 
     //缓冲区使用完了,扩展
@@ -64,14 +64,14 @@ Ogre4a_AppFrame *Ogre_Buffer_Storage::allocate_byte_buffer()
         extend_buffer_list();
     }
 
-    Ogre4a_AppFrame *tmppr = frame_buffer_ary_[0];
+    Ogre4a_App_Frame *tmppr = frame_buffer_ary_[0];
     frame_buffer_ary_[0] = NULL;
     frame_buffer_ary_.pop_front();
     return tmppr;
 }
 
 //
-void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_AppFrame *ptrbuf)
+void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
 {
     ptrbuf->ResetFrameHead();
     frame_buffer_ary_.push_back(ptrbuf);
@@ -96,8 +96,8 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     ZLOG_INFO( "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
                szlist,
                size_buffer_alloc_,
-               szlist * (Ogre4a_AppFrame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
-               size_buffer_alloc_ * (Ogre4a_AppFrame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
+               szlist * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
+               size_buffer_alloc_ * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
              );
 
     //重新扩展一下空间
@@ -106,7 +106,7 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     //将新的NEW数据装载进去
     for (size_t i = 0; i < szlist; ++i)
     {
-        Ogre4a_AppFrame *tmppr = new(Ogre4a_AppFrame::MAX_OF_OGRE_FRAME_LEN) Ogre4a_AppFrame();
+        Ogre4a_App_Frame *tmppr = new(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN) Ogre4a_App_Frame();
         tmppr->ResetFrameHead();
         frame_buffer_ary_.push_back(tmppr);
     }

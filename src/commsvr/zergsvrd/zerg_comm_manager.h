@@ -13,7 +13,7 @@
 
 class TCP_Accept_Handler;
 class UDP_Svc_Handler;
-class Zerg_MMAP_BusPipe;
+class Soar_MMAP_BusPipe;
 
 #include "zerg_buf_storage.h"
 
@@ -57,9 +57,6 @@ public:
     */
     int init_socketpeer(const SERVICES_ID &init_svcid);
 
-
-
-
     /*!
     * @brief      检查端口是否安全,安全端口必须不使用保险(FALSE)
     * @return     int
@@ -98,9 +95,6 @@ protected:
     //一次最多发送2048帧
     static const unsigned int MAX_ONCE_SEND_FRAME = 4096;
 
-
-
-
 protected:
     //单子实例
     static Zerg_Comm_Manager  *instance_;
@@ -109,33 +103,33 @@ protected:
 protected:
 
     ///ACCEPET的HANDLER数组
-    TCPACCEPT_HANDLER_LIST    zerg_acceptor_;
+    TCPACCEPT_HANDLER_LIST zerg_acceptor_;
     ///UPD的HANDLER数组
-    UDPSVC_HANDLER_LIST       zerg_updsvc_;
+    UDPSVC_HANDLER_LIST zerg_updsvc_;
 
 
     ///对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
-    unsigned int              error_try_num_;
+    unsigned int error_try_num_;
 
     ///监控命令的数量，为了加快速度，多用变量。
-    size_t                    monitor_size_;
+    size_t monitor_size_;
     ///监控的命令
-    unsigned int              monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
+    unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
 
     //内存管道类的实例对象，保留它仅仅为了加速
-    Zerg_MMAP_BusPipe        *zerg_mmap_pipe_;
+    Soar_MMAP_BusPipe *zerg_mmap_pipe_;
     //发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
-    ZBuffer_Storage          *zbuffer_storage_;
+    ZBuffer_Storage *zbuffer_storage_;
     //统计，使用单子类的指针，保留它仅仅为了加速
-    Comm_Stat_Monitor          *server_status_;
+    Soar_Stat_Monitor *server_status_;
 
 
     //发包数告警值
     static const unsigned int SEND_FRAME_ALERT_VALUE = 40000;
     //计数起始时间
-    unsigned int              count_start_time_;
+    unsigned int count_start_time_;
     //协议包发送计数器
-    unsigned int              send_frame_count_;
+    unsigned int send_frame_count_;
 
     //配置实例指针
     const Zerg_Server_Config *zerg_config_;

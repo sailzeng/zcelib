@@ -1,8 +1,8 @@
 #include "ogre_predefine.h"
-#include "ogre_udp_ctrl_handler.h"
 #include "ogre_buf_storage.h"
 #include "ogre_configure.h"
 #include "ogre_ip_restrict.h"
+#include "ogre_udp_ctrl_handler.h"
 
 //所有UPD端口的句柄
 std::vector<OgreUDPSvcHandler *> OgreUDPSvcHandler::ary_upd_peer_;
@@ -13,7 +13,7 @@ OgreUDPSvcHandler::OgreUDPSvcHandler(const ZCE_Sockaddr_In &upd_addr, ZCE_Reacto
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port_number()),
     dgram_databuf_(NULL),
-    ip_restrict_(Ogre4aIPRestrictMgr::instance())
+    ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {
     //保存到PEER数组
     ary_upd_peer_.push_back(this);
@@ -80,9 +80,9 @@ int OgreUDPSvcHandler::OpenUDPSendPeer()
 }
 
 //取得句柄
-ZCE_SOCKET OgreUDPSvcHandler::get_handle(void) const
+ZCE_HANDLE OgreUDPSvcHandler::get_handle(void) const
 {
-    return dgram_peer_.get_handle();
+    return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
 int OgreUDPSvcHandler::handle_input(ZCE_HANDLE)
@@ -150,28 +150,28 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_a
     ssize_t recvret = 0;
 
     recvret = dgram_peer_.recvfrom(dgram_databuf_->frame_data_,
-                                   Ogre4a_AppFrame::MAX_OF_OGRE_DATA_LEN,
+                                   Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN,
                                    0,
                                    &remote_addr);
 
     if (recvret < 0)
     {
 
-        if (ZCE_OS::last_error() != EWOULDBLOCK )
+        if (ZCE_LIB::last_error() != EWOULDBLOCK )
         {
             //遇到中断,等待重入
-            if (ZCE_OS::last_error() == EINVAL)
+            if (ZCE_LIB::last_error() == EINVAL)
             {
                 return 0;
             }
 
             //记录错误,返回错误
-            ZLOG_ERROR( "UDP Read error [%s|%u],receive data error peer:%u ZCE_OS::last_error()=%d|%s.\n",
+            ZLOG_ERROR( "UDP Read error [%s|%u],receive data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
                         remote_addr.get_host_addr(),
                         remote_addr.get_port_number(),
                         dgram_peer_.get_handle(),
-                        ZCE_OS::last_error(),
-                        strerror(ZCE_OS::last_error()));
+                        ZCE_LIB::last_error(),
+                        strerror(ZCE_LIB::last_error()));
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
         else
@@ -197,12 +197,12 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_a
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
-    dgram_databuf_->snd_peer_info_.SetSocketPeerInfo(remote_addr);
+    dgram_databuf_->snd_peer_info_.set(remote_addr);
     dgram_databuf_->rcv_peer_info_ = this->peer_svc_info_;
-    dgram_databuf_->ogre_frame_len_ = Ogre4a_AppFrame::LEN_OF_OGRE_FRAME_HEAD + recvret;
+    dgram_databuf_->ogre_frame_len_ = Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD + recvret;
     //避免发生其他人填写的情况
     dgram_databuf_->ogre_frame_option_ = 0;
-    dgram_databuf_->ogre_frame_option_ |= Ogre4a_AppFrame::OGREDESC_PEER_UDP;
+    dgram_databuf_->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_PEER_UDP;
 
     szrevc = recvret;
 
@@ -212,7 +212,7 @@ int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_a
 int OgreUDPSvcHandler::pushdata_to_recvpipe()
 {
 
-    int ret = Zerg_MMAP_BusPipe::instance()->push_back_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID,
+    int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
                                                            reinterpret_cast<ZCE_LIB::dequechunk_node *>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
@@ -231,14 +231,14 @@ Author          : Sail ZENGXING  Date Of Creation: 2007年7月18日
 Function        : OgreUDPSvcHandler::SendAllDataToUDP
 Return          : int
 Parameter List  :
-  Param1: Ogre4a_AppFrame* send_frame 发送的FRAME
+  Param1: Ogre4a_App_Frame* send_frame 发送的FRAME
 Description     : 发送UDP数据。
 Calls           :
 Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
+int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_App_Frame *send_frame)
 {
     ssize_t szsend = -1;
 
@@ -257,7 +257,7 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
         if (ary_upd_peer_[i]->peer_svc_info_ == send_frame->snd_peer_info_ )
         {
             szsend = ary_upd_peer_[i]->dgram_peer_.sendto(send_frame->frame_data_,
-                                                          send_frame->ogre_frame_len_ - Ogre4a_AppFrame::LEN_OF_OGRE_FRAME_HEAD,
+                                                          send_frame->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
                                                           0,
                                                           &remote_addr);
             break;
@@ -268,7 +268,7 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
     if (i == ary_upd_peer_.size())
     {
         ZLOG_ERROR( "Can't find send peer[%s|%u].Please check code.\n",
-                    ZCE_OS::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
+                    ZCE_LIB::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
                     send_frame->snd_peer_info_.peer_port_);
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
@@ -276,12 +276,12 @@ int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_AppFrame *send_frame)
     //发送失败
     if (szsend <= 0)
     {
-        ZLOG_ERROR( "UDP send error[%s|%u]. Send data error peer:%u ZCE_OS::last_error()=%d|%s.\n",
+        ZLOG_ERROR( "UDP send error[%s|%u]. Send data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number(),
                     ary_upd_peer_[i]->get_handle(),
-                    ZCE_OS::last_error(),
-                    strerror(ZCE_OS::last_error()));
+                    ZCE_LIB::last_error(),
+                    strerror(ZCE_LIB::last_error()));
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 

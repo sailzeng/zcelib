@@ -70,7 +70,7 @@ int Zerg_App_Timer_Handler::timer_timeout(const ZCE_Time_Value &time_now, const 
 
     if (random_reload_point_ == heartbeat_counter_ % AUTOCONNECT_RELOAD_INTERVAL)
     {
-        //TCP_Svc_Handler::reload_config();
+
     }
 
     return 0;

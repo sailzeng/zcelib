@@ -210,7 +210,8 @@ protected:
 public:
     //初始化静态参数
     static int init_all_static_data();
-    //读取配置文件
+    
+    ///读取配置文件
     static int get_config(const Zerg_Server_Config *config);
 
     //注销静态参数
@@ -291,7 +292,7 @@ protected:
     static ZBuffer_Storage *zbuffer_storage_;
 
     ///统计，使用单子类的指针
-    static Comm_Stat_Monitor *server_status_;
+    static Soar_Stat_Monitor *server_status_;
 
     ///最大能够Accept的PEER数量,
     static size_t max_accept_svr_;

@@ -10,7 +10,7 @@
 *             
 * @note       
 */
-class Wormhole_Proxy_App : public Comm_SvrdApp_BUS
+class Wormhole_Proxy_App : public Soar_SvrdApp_ZergBus
 {
 
 public:
@@ -19,24 +19,21 @@ public:
     ~Wormhole_Proxy_App();
 
 public:
-    // 处理收到的APPFRAME,不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
+
+    //on_run 函数，在基类已经实现。
+
+    /// 处理收到的APPFRAME,不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
     virtual int process_recv_frame(Zerg_App_Frame *recv_frame);
 
     ///初始化,根据启动参数启动
     virtual int on_start(int argc, const char *argv[]);
+
     ///处理退出的清理工作
     virtual int on_exit();
 
-    ///运行,运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。
-    virtual int on_run();
-
-    ///加载配置
-    virtual int load_config();
-
+protected:
     ///重新加载配置
-    virtual int reload();
-
-
+    virtual int reload_config();
 
 protected:
 

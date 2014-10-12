@@ -6,20 +6,24 @@
 #include "soar_error_code.h"
 
 class Server_Config_Base;
-class Zerg_MMAP_BusPipe;
+class Soar_MMAP_BusPipe;
 class Server_Timer_Base;
-/****************************************************************************************************
-class  Comm_Svrd_Appliction
-单线程自动机模型的程序框架基类.
-****************************************************************************************************/
-class Comm_Svrd_Appliction : public ZCE_Server_Base
+
+
+
+/*!
+* @brief      单线程自动机模型的程序框架基类
+*             
+* @note       
+*/
+class Soar_Svrd_Appliction : public ZCE_Server_Base
 {
 protected:
 
     ///构造函数和析构函数
-    Comm_Svrd_Appliction();
+    Soar_Svrd_Appliction();
     ///析构函数
-    virtual ~Comm_Svrd_Appliction();
+    virtual ~Soar_Svrd_Appliction();
 
 public:
 
@@ -54,30 +58,27 @@ public:
     // app的开始运行
     virtual int on_start(int argc, const char *argv[]);
 
-    /// app
+    /// app 运行
     virtual int on_run() = 0;
 
-    // app的退出
+    /// app的退出
     virtual int on_exit();
 
 protected:
+    
+    ///重新加载配置
+    virtual int reload_config();
 
-    /// 加载配置,不在读取配置的时候加载配置，
-    virtual int load_config();
-
-    // 重新加载配置
-    virtual int reload();
-
-    // 初始化日志帐单
+    ///初始化日志模块
     int init_log();
 
 public:
 
     ///注册实例指针
-    static void set_instance(Comm_Svrd_Appliction *inst);
+    static void set_instance(Soar_Svrd_Appliction *inst);
 
     ///得到实例指针
-    static Comm_Svrd_Appliction *instance();
+    static Soar_Svrd_Appliction *instance();
 
     ///清理实例实例指针
     static void clean_instance();
@@ -85,7 +86,7 @@ public:
 protected:
 
     //实例指针
-    static Comm_Svrd_Appliction *instance_;
+    static Soar_Svrd_Appliction *instance_;
 
 protected:
 
@@ -101,7 +102,7 @@ protected:
     size_t               max_msg_num_;
 
     ///与zerg的管道
-    Zerg_MMAP_BusPipe   *zerg_mmap_pipe_;
+    Soar_MMAP_BusPipe   *zerg_mmap_pipe_;
 
 
     ///框架定时器处理类

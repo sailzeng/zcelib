@@ -1,13 +1,13 @@
 #include "soar_predefine.h"
 #include "soar_fsm_trans_mgr.h"
 #include "soar_svrd_app_fsm.h"
-#include "soar_zerg_mmappipe.h"
+#include "soar_mmap_buspipe.h"
 #include "soar_svrd_cfg_fsm.h"
 
 
 //
 Comm_SvrdApp_FSM::Comm_SvrdApp_FSM() :
-    Comm_Svrd_Appliction()
+    Soar_Svrd_Appliction()
 {
 }
 
@@ -20,7 +20,7 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Comm_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::on_start(argc, argv);
 
     if (0 != ret)
     {
@@ -35,7 +35,7 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_id_,
                              ZCE_Timer_Queue::instance(),
-                             Zerg_MMAP_BusPipe::instance());
+                             Soar_MMAP_BusPipe::instance());
     Transaction_Manager::instance(p_trans_mgr_);
 
     ret = register_trans_cmd();
@@ -132,7 +132,7 @@ int Comm_SvrdApp_FSM::on_exit()
     int ret = 0;
     Transaction_Manager::clean_instance();
 
-    ret = Comm_Svrd_Appliction::on_exit();
+    ret = Soar_Svrd_Appliction::on_exit();
 
     if ( 0 != ret )
     {

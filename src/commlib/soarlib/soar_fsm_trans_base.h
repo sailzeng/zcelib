@@ -7,7 +7,7 @@
 #include "soar_error_code.h"
 
 class Zerg_App_Frame;
-class Zerg_MMAP_BusPipe;
+class Soar_MMAP_BusPipe;
 
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
 

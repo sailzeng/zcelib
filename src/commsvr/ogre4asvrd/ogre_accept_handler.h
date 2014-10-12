@@ -1,27 +1,15 @@
-/******************************************************************************************
-Copyright           : 2000-2004, FXL Technology (Shenzhen) Company Limited.
-FileName            : ogre_accepthandler.h
-Author              : Jovi(HuangHao),Sail(ZENGXING)
-Version             :
-Date Of Creation    : 2006年11月7日
-Description         : ACCPET的Handler的类
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-******************************************************************************************/
 
 #ifndef OGRE_TCP_ACCEPT_HANDLER_H_
 #define OGRE_TCP_ACCEPT_HANDLER_H_
 
-/****************************************************************************************************
-class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler
-****************************************************************************************************/
-class Ogre4aIPRestrictMgr;
+
+class Ogre_IPRestrict_Mgr;
+
+/*!
+* @brief      TCP Accept 处理的EventHandler
+*             
+* @note       
+*/
 class OgreTCPAcceptHandler : public ZCE_Event_Handler
 {
 
@@ -46,7 +34,7 @@ public:
     virtual int handle_close ();
 
     //得到Acceptor的句柄
-    ZCE_SOCKET get_handle(void) const;
+    ZCE_HANDLE get_handle(void) const;
 
 protected:
 
@@ -62,10 +50,10 @@ protected:
     ZCE_SHLIB_HANDLE           recv_mod_handler_;
 
     //模块总结的函数名称
-    FPJudgeRecvWholeFrame      fp_judge_whole_frame_;
+    FP_JudgeRecv_WholeFrame    fp_judge_whole_frame_;
 
     //IP限制管理器
-    Ogre4aIPRestrictMgr       *ip_restrict_;
+    Ogre_IPRestrict_Mgr       *ip_restrict_;
 
 };
 

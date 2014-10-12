@@ -14,25 +14,20 @@ Server_Config_FSM::~Server_Config_FSM()
 {
 }
 
-int Server_Config_FSM::load_cfgfile()
+int Server_Config_FSM::read_cfgfile()
 {
     // 加载zerg 配置
     int ret = 0;
 
-    ret = ZCE_INI_Implement::read(zerg_cfg_file_.c_str(), &zerg_ptree_);
-    if (ret != 0)
-    {
-        return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
-    }
 
-    ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(), &framework_ptree_);
+    ret = Server_Config_Base::read_cfgfile();
     if (ret != 0)
     {
-        return SOAR_RET::ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL;
+        return ret;
     }
 
     // 配置加载成功
-    ZLOG_INFO("Comm_Svrd_Config: load framework config succ.");
+    ZLOG_INFO("Comm_Svrd_Config load framework config succ.");
     return 0;
 }
 

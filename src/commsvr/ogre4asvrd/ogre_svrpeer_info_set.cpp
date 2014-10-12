@@ -17,11 +17,11 @@ PeerInfoSetToTCPHdlMap::~PeerInfoSetToTCPHdlMap()
 
 void PeerInfoSetToTCPHdlMap::init_services_peerinfo(size_t szpeer)
 {
-    peer_info_set_.resize(szpeer);
+    peer_info_set_.rehash(szpeer);
 }
 
 //根据SERVICEINFO查询PEER信息
-int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const Socket_Peer_Info &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
+int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const SOCKET_PERR_ID &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
 {
     MapOfSocketPeerInfo::iterator iter = peer_info_set_.find(svrinfo);
 
@@ -31,7 +31,7 @@ int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const Socket_Peer_Info &svrin
     if (iter == peer_info_set_.end() )
     {
         ZLOG_INFO( "Can't find svchanle info. svrinfo IP|Port:[%s|%u] .\n",
-                   ZCE_OS::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
+                   ZCE_LIB::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
                    svrinfo.peer_port_);
         return SOAR_RET::ERR_OGRE_NO_FIND_EVENT_HANDLE;
     }
@@ -41,7 +41,7 @@ int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const Socket_Peer_Info &svrin
 }
 
 //设置PEER信息
-int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const Socket_Peer_Info &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
+int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const SOCKET_PERR_ID &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
 {
     MapOfSocketPeerInfo::iterator iter = peer_info_set_.find(peer_info);
 
@@ -52,7 +52,7 @@ int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const Socket_Peer_Info &peer_i
     if (iter != peer_info_set_.end() )
     {
         ZLOG_INFO( "Can't add_services_peerinfo peer_info:[%s|%u] ",
-                   ZCE_OS::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
+                   ZCE_LIB::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
                    peer_info.peer_port_);
         return SOAR_RET::ERR_OGRE_SERVER_ALREADY_LONGIN;
     }
@@ -74,7 +74,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-size_t PeerInfoSetToTCPHdlMap::del_services_peerinfo(const Socket_Peer_Info &peer_info)
+size_t PeerInfoSetToTCPHdlMap::del_services_peerinfo(const SOCKET_PERR_ID &peer_info)
 {
     MapOfSocketPeerInfo::iterator iter = peer_info_set_.find(peer_info);
 
