@@ -50,7 +50,7 @@ ZBuffer_Storage::ZBuffer_Storage():
 //
 ZBuffer_Storage::~ZBuffer_Storage()
 {
-    uninit_buffer_list();
+    close();
 }
 
 //跟进外部的Handler的数量，初始化得到Buffer List的尺寸
@@ -80,7 +80,7 @@ void ZBuffer_Storage::init_buffer_list(size_t szlist)
 }
 
 //
-void ZBuffer_Storage::uninit_buffer_list()
+void ZBuffer_Storage::close()
 {
     //
     //少使用函数，懒得注意效率

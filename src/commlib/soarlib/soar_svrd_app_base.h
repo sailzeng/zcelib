@@ -51,24 +51,24 @@ public:
 
 public:
 
-    // app的开始运行
+    /// app的开始运行
     virtual int on_start(int argc, const char *argv[]);
 
     /// app
     virtual int on_run() = 0;
 
-    // app的退出
+    /// app的退出
     virtual int on_exit();
 
 protected:
 
-    /// 加载配置,不在读取配置的时候加载配置，
+    /// 配置类读取配置完成后，APP（其他）加载配置
     virtual int load_config();
 
-    // 重新加载配置
-    virtual int reload();
+    /// 重新读取并且加载配置,如果服务器需要加载配置时，重载这个函数
+    virtual int re_read_load_cfg();
 
-    // 初始化日志帐单
+    /// 初始化日志帐单
     int init_log();
 
 public:

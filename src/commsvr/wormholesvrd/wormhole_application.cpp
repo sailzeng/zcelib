@@ -65,14 +65,26 @@ int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
 int Wormhole_Proxy_App::on_exit()
 {
     ZLOG_INFO("Wormhole_Proxy_App::exit. ");
+    int ret = 0;
+
+    //最后调用通用的退出模块
+    ret = Comm_Svrd_Appliction::on_exit();
+    
     return 0;
 }
 
-int Wormhole_Proxy_App::reload()
+
+///加载配置
+int Wormhole_Proxy_App::load_config()
+{
+
+}
+
+int Wormhole_Proxy_App::re_read_load_cfg()
 {
     int ret = 0;
 
-    ZLOG_INFO("Wormhole_Proxy_App::reload start");
+    ZLOG_INFO("%s start.",__ZCE_FUNC__);
 
     // 重新初始化数据转发模式
     delete interface_proxy_;
@@ -91,14 +103,13 @@ int Wormhole_Proxy_App::reload()
     }
 
     ret = interface_proxy_->init_proxy_instance();
-
     if (ret != 0)
     {
         return ret;
     }
 
 
-    ZLOG_INFO("Wormhole_Proxy_App::reload end. ");
+    ZLOG_INFO("%s end.", __ZCE_FUNC__);
 
     return 0;
 }

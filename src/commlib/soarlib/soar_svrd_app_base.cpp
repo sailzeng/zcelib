@@ -181,20 +181,6 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
         return SOAR_RET::ERROR_WRITE_ERROR_PIDFILE;
     }
 
-    // cfgsdk拉取配置
-    ///*CfgSvrSdk *cfgsvr_sdk = CfgSvrSdk::instance();
-    //ret = cfgsvr_sdk->init();*/
-
-    //if (ret != 0)
-    //{
-    //    ZLOG_ERROR("[framework] cfgsvrsdk init fail. ret=%d", ret);
-    //    return ret;
-    //}
-
-    ////启动配置更新线程
-    //CfgSvrSdk::instance()->start_task();
-    //ZLOG_INFO("[framework] cfgsdk init succ. start task succ");
-
     // 加载框架配置,由于是虚函数，也会调用到非框架的配置读取
     ret = config_base_->read_cfgfile();
     if (ret != 0)
@@ -222,13 +208,32 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
                (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
 
-    //加载配置
+    //配置类读取配置完成后，APP加载配置
     ret = load_config();
     if (0 != ret)
     {
         ZLOG_INFO("[framework] load_config fail,ret = %d.", ret);
         return ret;
     }
+
+
+    //初始化统计模块
+    //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
+    ret = Comm_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
+        business_id_,
+        self_svc_id_,
+        0,
+        NULL,
+        false);
+    if (ret != 0)
+    {
+        ZCE_LOGMSG(RS_ERROR, "zce_Server_Status init fail. ret=%d", ret);
+        return ret;
+    }
+
+    //监控对象添加框架的监控对象
+    Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
+        COMM_STAT_ITEM_WITH_NAME);
 
 
     //使用WHEEL型的定时器队列
@@ -239,9 +244,6 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     timer_base_->initialize(ZCE_Timer_Queue::instance());
 
 
-    //监控对象添加框架的监控对象
-    Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
-                                                   COMM_STAT_ITEM_WITH_NAME);
 
     //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
@@ -285,13 +287,24 @@ int Comm_Svrd_Appliction::on_exit()
     ZCE_Thread_Wait_Manager::instance()->wait_all();
     ZCE_Thread_Wait_Manager::clean_instance();
 
+    //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现
+    if (ZCE_Reactor::instance())
+    {
+        ZCE_Reactor::instance()->close();
+    }
+
     //
-    ZCE_Reactor::instance()->close();
-
-
+    if (ZCE_Timer_Queue::instance())
+    {
+        ZCE_Timer_Queue::instance()->close();
+    }
+        
+    //单子实例清空
     Zerg_MMAP_BusPipe::clean_instance();
-
-    //
+    ZCE_Reactor::clean_instance();
+    ZCE_Timer_Queue::clean_instance();
+    Comm_Stat_Monitor::clean_instance();
+    
     ZLOG_INFO("[framework] %s exit_instance Succ.Have Fun.!!!",
               app_run_name_.c_str());
     ZLOG_INFO("======================================================================================================");
@@ -341,14 +354,14 @@ int Comm_Svrd_Appliction::init_log()
 }
 
 
-//加载配置,不在读取配置的时候加载配置，
+//配置类读取配置完成后，APP加载配置
 int Comm_Svrd_Appliction::load_config()
 {
     return 0;
 }
 
 //重新加载配置
-int Comm_Svrd_Appliction::reload()
+int Comm_Svrd_Appliction::re_read_load_cfg()
 {
     return 0;
 }

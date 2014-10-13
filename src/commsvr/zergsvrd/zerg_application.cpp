@@ -37,21 +37,6 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
         return ret;
     }
 
-    //初始化统计模块
-    //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
-    ret = Comm_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
-                                                    business_id_,
-                                                    self_svc_id_,
-                                                    0,
-                                                    NULL,
-                                                    false);
-    if (ret != 0)
-    {
-        ZCE_LOGMSG(RS_ERROR, "zce_Server_Status init fail. ret=%d", ret);
-        return ret;
-    }
-
-
     size_t max_accept = 0, max_connect = 0, max_peer = 0;
     TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
@@ -110,21 +95,12 @@ int Zerg_Service_App::on_exit()
     //清理单子
     Zerg_IPRestrict_Mgr::clean_instance();
 
-    Comm_Stat_Monitor::clean_instance();
-
-    //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现
-    if (ZCE_Reactor::instance())
-    {
-        ZCE_Reactor::instance()->close();
-    }
-
     //
-    if (ZCE_Timer_Queue::instance())
-    {
-        ZCE_Timer_Queue::instance()->close();
-    }
+    ZBuffer_Storage::instance()->close();
 
-    ZBuffer_Storage::instance()->uninit_buffer_list();
+    
+    //最后调用基类的退出函数
+    Comm_Svrd_Appliction::on_exit();
 
     return 0;
 }
@@ -230,7 +206,7 @@ int Zerg_Service_App::on_run()
 }
 
 
-// 加载配置,不在读取配置的时候加载配置，
+// 加载配置
 int Zerg_Service_App::load_config()
 {
     int ret = 0;

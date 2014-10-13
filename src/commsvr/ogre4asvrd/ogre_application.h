@@ -34,7 +34,7 @@ public:
         return 0;
     }
 
-    virtual int reload()
+    virtual int re_read_load_cfg()
     {
         return 0;
     }

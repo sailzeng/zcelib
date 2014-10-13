@@ -104,7 +104,7 @@ public:
     void init_buflist_by_hdlnum(size_t num_of_hdl);
 
     //反初始化,是否所有的申请空间,结束后一定要调用
-    void uninit_buffer_list();
+    void close();
 
     //从队列分配一个Buffer出来
     Zerg_Buffer *allocate_buffer();
