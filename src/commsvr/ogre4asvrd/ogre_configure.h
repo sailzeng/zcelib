@@ -150,13 +150,12 @@ public:
 class Ogre_Server_Config : public Server_Config_Base
 {
 
-protected:
+public:
 
     Ogre_Server_Config();
     virtual ~Ogre_Server_Config();
 
 public:
-
 
     ///读取配置文件，得到文件配置参数
     virtual int read_cfgfile();
@@ -173,11 +172,6 @@ public:
 
     //OGRE配置模块的路径
     std::string             ogre_mod_path_;
-
-
-
-
-
 
     ///ZERG的配置数据
     OGRE_CONFIG_DATA        ogre_cfg_data_;

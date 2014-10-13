@@ -73,7 +73,7 @@ Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
 //
 void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
 {
-    ptrbuf->ResetFrameHead();
+    ptrbuf->reset_framehead();
     frame_buffer_ary_.push_back(ptrbuf);
 }
 
@@ -107,7 +107,7 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     for (size_t i = 0; i < szlist; ++i)
     {
         Ogre4a_App_Frame *tmppr = new(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN) Ogre4a_App_Frame();
-        tmppr->ResetFrameHead();
+        tmppr->reset_framehead();
         frame_buffer_ary_.push_back(tmppr);
     }
 

@@ -163,6 +163,15 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     std::vector <std::string> str_ary;
 
     //最大Accept 数量
+    ret = conf_tree->path_get_leaf("OGRE_CFG", "MAX_FRAMEDATA_LEN",
+        ogre_cfg_data_.max_data_len_);
+    if (0 != ret || ogre_cfg_data_.max_data_len_ > 8*1024*1024)
+    {
+        SOAR_CFG_READ_FAIL(RS_ERROR);
+        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
+    }
+
+    //最大Accept 数量
     ret = conf_tree->path_get_leaf("OGRE_CFG", "MAX_ACCEPT_SVR",
         ogre_cfg_data_.max_accept_svr_);
     if (0 != ret || ogre_cfg_data_.max_accept_svr_ < 32)

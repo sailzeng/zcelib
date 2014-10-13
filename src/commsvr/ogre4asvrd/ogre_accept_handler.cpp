@@ -7,51 +7,30 @@
 /****************************************************************************************************
 class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler,
 ****************************************************************************************************/
-OgreTCPAcceptHandler::OgreTCPAcceptHandler(const ZCE_Sockaddr_In &listen_addr,
-                                           const char *recv_mod_file,
-                                           ZCE_Reactor *reactor):
+Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
+                                       ZCE_Reactor *reactor):
     ZCE_Event_Handler(reactor),
-    accept_bind_addr_(listen_addr),
-    recv_mod_file_(recv_mod_file),
-    recv_mod_handler_(ZCE_SHLIB_INVALID_HANDLE),
-    fp_judge_whole_frame_(NULL),
     ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {
+    peer_module_info_.peer_info_ = config_info;
+    ZCE_ASSERT(fp_judge_whole_frame_);
 }
 
 //自己清理的类型，统一关闭在handle_close,这个地方不用关闭
-OgreTCPAcceptHandler::~OgreTCPAcceptHandler()
+Ogre_TCPAccept_Hdl::~Ogre_TCPAccept_Hdl()
 {
-    if (ZCE_SHLIB_INVALID_HANDLE != recv_mod_handler_)
-    {
-        ZCE_LIB::dlclose(recv_mod_handler_);
-    }
+    peer_module_info_.close_module();
 }
 
 //
-int OgreTCPAcceptHandler::create_listenpeer()
+int Ogre_TCPAccept_Hdl::create_listenpeer()
 {
 
-    //加载外部.so协议判定模块
-    recv_mod_handler_ = ZCE_LIB::dlopen(recv_mod_file_.c_str());
-
-    if ( ZCE_SHLIB_INVALID_HANDLE == recv_mod_handler_)
+    int ret = 0;
+    ret = peer_module_info_.open_module();
+    if (ret != 0)
     {
-        ZLOG_ERROR( "Open Module [%s] fail. recv_mod_handler =%u .\n",
-                    recv_mod_file_.c_str(),
-                    recv_mod_handler_);
-        return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
-    }
-
-    fp_judge_whole_frame_ = (FP_JudgeRecv_WholeFrame)ZCE_LIB::dlsym(recv_mod_handler_, STR_JUDGE_RECV_WHOLEFRAME);
-
-    if ( NULL == fp_judge_whole_frame_)
-    {
-        ZLOG_ERROR( "Open Module [%s][%s] fail. recv_mod_handler =%u .\n",
-                    recv_mod_file_.c_str(),
-                    STR_JUDGE_RECV_WHOLEFRAME,
-                    recv_mod_handler_);
-        return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
+        return ret;
     }
 
     peer_acceptor_.sock_enable(O_NONBLOCK);
@@ -72,23 +51,23 @@ int OgreTCPAcceptHandler::create_listenpeer()
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
     ZLOG_INFO( "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
-    int ret = peer_acceptor_.open(&accept_bind_addr_);
+    ret = peer_acceptor_.open(&peer_module_info_.peer_info_.peer_socketin_);
 
     //如果不能Bind相应的端口
     if (ret != 0)
     {
         int last_err = ZCE_LIB::last_error();
-        ZLOG_ERROR( "Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
-                    accept_bind_addr_.get_host_addr(),
-                    accept_bind_addr_.get_port_number(),
+        ZLOG_ERROR("Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
+                    peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
+                    peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
                     last_err,
                     strerror(last_err));
         return SOAR_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
     }
 
     ZLOG_INFO( "Bind listen IP|Port : [%s|%u] Success.\n",
-               accept_bind_addr_.get_host_addr(),
-               accept_bind_addr_.get_port_number());
+               peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
+               peer_module_info_.peer_info_.peer_socketin_.get_port_number());
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
@@ -116,7 +95,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
 }
 
 //
-int OgreTCPAcceptHandler::handle_input(ZCE_HANDLE /*handle*/)
+int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
 {
     ZCE_Socket_Stream  sockstream;
     ZCE_Sockaddr_In   remoteaddress;
@@ -163,7 +142,7 @@ int OgreTCPAcceptHandler::handle_input(ZCE_HANDLE /*handle*/)
 
     if (phandler != NULL)
     {
-        phandler->init_tcp_svc_handler(sockstream, fp_judge_whole_frame_);
+        phandler->init_tcp_svc_handler(sockstream, peer_module_info_.fp_judge_whole_frame_);
     }
     else
     {
@@ -173,19 +152,15 @@ int OgreTCPAcceptHandler::handle_input(ZCE_HANDLE /*handle*/)
     return 0;
 }
 //
-ZCE_HANDLE OgreTCPAcceptHandler::get_handle(void) const
+ZCE_HANDLE Ogre_TCPAccept_Hdl::get_handle(void) const
 {
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
-//设置地址
-void OgreTCPAcceptHandler::set_peer_bindaddr(ZCE_Sockaddr_In &addr)
-{
-    accept_bind_addr_ = addr;
-}
+
 
 //
-int OgreTCPAcceptHandler::handle_close ()
+int Ogre_TCPAccept_Hdl::handle_close ()
 {
     //
     if (peer_acceptor_.get_handle () != ZCE_INVALID_SOCKET)

@@ -10,7 +10,8 @@
 
 Ogre_Comm_Manger *Ogre_Comm_Manger::instance_ = NULL;
 
-Ogre_Comm_Manger::Ogre_Comm_Manger()
+Ogre_Comm_Manger::Ogre_Comm_Manger():
+    ogre_config_(NULL)
 {
 }
 
@@ -52,6 +53,9 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
 
+    //设置处理的帧的最大长度
+    Ogre4a_App_Frame::set_max_framedata_len(config ->ogre_cfg_data_.max_data_len_);
+
     //IP限制,
     ret = Ogre_IPRestrict_Mgr::instance()->get_config(config);
 
@@ -66,19 +70,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
     {
         return ret;
     }
-
-    for (unsigned int i = 1; i <= accept_num; ++i)
-    {
-        OgreTCPAcceptHandler *accpet_hd = new OgreTCPAcceptHandler(accept_bind_addr, tmp_value);
-        accept_handler_ary_.push_back(accpet_hd);
-    }
-
-
-    for (unsigned int i = 1; i <= accept_num; ++i)
-    {
-        OgreUDPSvcHandler *udp_hd = new OgreUDPSvcHandler(udp_bind_addr);
-        udp_handler_ary_.push_back(udp_hd);
-    }
+    ogre_config_ = config;
     return 0;
 }
 
@@ -134,7 +126,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         else if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_UDP )
         {
             //不检查错误
-            OgreUDPSvcHandler::SendAllDataToUDP(send_frame);
+            Ogre_UDPSvc_Hdl::send_alldata_to_udp(send_frame);
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
         }
         //你都不填写，我如何发送？
@@ -154,28 +146,27 @@ int Ogre_Comm_Manger::init_comm_manger()
     int ret = 0;
 
     //初始化所有的监听端口
-    for (size_t i = 0; i < accept_handler_ary_.size(); ++i)
-    {
-        ret = accept_handler_ary_[i]->create_listenpeer();
 
-        if (ret != 0)
+    for (unsigned int i = 0; i < ogre_config_->ogre_cfg_data_.accept_peer_num_; ++i)
+    {
+        Ogre_TCPAccept_Hdl *accpet_hd = new Ogre_TCPAccept_Hdl(
+            ogre_config_->ogre_cfg_data_.accept_peer_ary_[i]);
+
+        ret = accpet_hd->create_listenpeer();
+        if (0 != ret)
         {
             return ret;
         }
     }
 
-    ret = OgreUDPSvcHandler::OpenUDPSendPeer();
-    if (ret != 0)
-    {
-        return ret;
-    }
 
-    //初始化所有的UDP端口
-    for (size_t i = 0; i < udp_handler_ary_.size(); ++i)
+    for (unsigned int i = 0; i <= ogre_config_->ogre_cfg_data_.udp_peer_num_; ++i)
     {
-        ret = udp_handler_ary_[i]->InitUDPServices();
+        Ogre_UDPSvc_Hdl *udp_hd = new Ogre_UDPSvc_Hdl(
+            ogre_config_->ogre_cfg_data_.udp_peer_ary_[i]);
 
-        if (ret != 0)
+        ret = udp_hd->init_udp_peer();
+        if (0 != ret)
         {
             return ret;
         }
@@ -195,30 +186,6 @@ int Ogre_Comm_Manger::init_comm_manger()
 //注销通讯管理器
 int Ogre_Comm_Manger::uninit_comm_manger()
 {
-    int ret = 0;
-
-    //初始化所有的监听端口
-    for (size_t i = 0; i < accept_handler_ary_.size(); ++i)
-    {
-        ret = accept_handler_ary_[i]->handle_close();
-
-        if (ret != 0)
-        {
-            return ret;
-        }
-    }
-
-    //初始化所有的UDP端口
-    for (size_t i = 0; i < udp_handler_ary_.size(); ++i)
-    {
-        ret = udp_handler_ary_[i]->handle_close();
-
-        if (ret != 0)
-        {
-            return ret;
-        }
-    }
-
     //
     Ogre_TCP_Svc_Handler::unInit_all_static_data();
     //

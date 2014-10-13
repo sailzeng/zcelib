@@ -6,7 +6,7 @@
 /****************************************************************************************************
 class  Ogre_App_Timer_Handler APP的定时器Handler处理类
 ****************************************************************************************************/
-class  Ogre_App_Timer_Handler: public  ZCE_Timer_Handler
+class  Ogre_App_Timer_Handler : public  Server_Timer_Base
 {
 
 public:

@@ -13,7 +13,10 @@ Ogre_Connect_Server::Ogre_Connect_Server()
 //
 Ogre_Connect_Server::~Ogre_Connect_Server()
 {
-
+    for (size_t i = 0; i < auto_connect_num_; ++i)
+    {
+        autocnt_module_ary_[i].close_module();
+    }
 }
 
 //È¡µÃÅäÖÃ

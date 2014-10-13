@@ -2,27 +2,28 @@
 #ifndef OGRE_TCP_ACCEPT_HANDLER_H_
 #define OGRE_TCP_ACCEPT_HANDLER_H_
 
+#include "ogre_configure.h"
 
 class Ogre_IPRestrict_Mgr;
+
 
 /*!
 * @brief      TCP Accept 处理的EventHandler
 *             
 * @note       
 */
-class OgreTCPAcceptHandler : public ZCE_Event_Handler
+class Ogre_TCPAccept_Hdl : public ZCE_Event_Handler
 {
 
 public:
+
     //构造函数
-    OgreTCPAcceptHandler(const ZCE_Sockaddr_In &listen_addr,
-                         const char *recv_mod_file,
-                         ZCE_Reactor *reactor = ZCE_Reactor::instance());
+    Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
+                       ZCE_Reactor *reactor = ZCE_Reactor::instance());
 protected:
-    ~OgreTCPAcceptHandler();
+    ~Ogre_TCPAccept_Hdl();
 public:
-    //设置Bind的IP地址
-    void set_peer_bindaddr(ZCE_Sockaddr_In &addr);
+
 
     //创建监听的端口
     int create_listenpeer();
@@ -39,21 +40,13 @@ public:
 protected:
 
     //ACCPET PEER
-    ZCE_Socket_Acceptor        peer_acceptor_;
+    ZCE_Socket_Acceptor    peer_acceptor_;
 
-    //邦定的地址
-    ZCE_Sockaddr_In            accept_bind_addr_;
-
-    //收取数据的模块的文件名称
-    std::string                recv_mod_file_;
-    //TCP收取数据的模块HANDLER
-    ZCE_SHLIB_HANDLE           recv_mod_handler_;
-
-    //模块总结的函数名称
-    FP_JudgeRecv_WholeFrame    fp_judge_whole_frame_;
+    
+    TCP_PEER_MODULE_INFO   peer_module_info_;
 
     //IP限制管理器
-    Ogre_IPRestrict_Mgr       *ip_restrict_;
+    Ogre_IPRestrict_Mgr   *ip_restrict_;
 
 };
 

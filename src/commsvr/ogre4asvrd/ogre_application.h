@@ -9,15 +9,11 @@ class  Ogre_Service_App
 class Ogre_Service_App : public Soar_Svrd_Appliction
 {
 
-protected:
+public:
 
     //我又要偷偷藏着
     Ogre_Service_App();
     virtual ~Ogre_Service_App();
-
-    //定义而不实现
-    Ogre_Service_App(const Ogre_Service_App &);
-    const Ogre_Service_App &operator =(const Ogre_Service_App &);
 
 public:
 

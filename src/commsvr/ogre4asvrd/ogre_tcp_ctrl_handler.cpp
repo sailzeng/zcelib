@@ -13,7 +13,7 @@
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
 //CONNECT后等待数据的超时时间
-unsigned int   Ogre_TCP_Svc_Handler::connect_timeout_ = 3;
+unsigned int   Ogre_TCP_Svc_Handler::accept_timeout_ = 3;
 //接受数据的超时时间
 unsigned int   Ogre_TCP_Svc_Handler::receive_timeout_ = 5;
 
@@ -76,19 +76,8 @@ Ogre_TCP_Svc_Handler::~Ogre_TCP_Svc_Handler()
 
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : Ogre_TCP_Svc_Handler::init_tcp_svc_handler
-Return          : void
-Parameter List  :
-  Param1: const ZCE_Socket_Stream& sockstream
-  Param2: const ZCE_Sockaddr_In& socketaddr   Socket的地址，其实可以从sockstream中得到，但为了效率和方便.
-Description     : 初始化函数,用于Accept的端口的处理Event Handle构造.
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//初始化函数,用于Accept的端口的处理Event Handle构造.
 void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
@@ -132,7 +121,10 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         //
         if (ret != 0)
         {
-            ZLOG_ERROR( "Register Accept handler fail! ret =%d  errno=%u|%s \n", ret, ZCE_LIB::last_error(), strerror(ZCE_LIB::last_error()));
+            ZLOG_ERROR( "Register Accept handler fail! ret =%d  errno=%u|%s \n", 
+                ret, 
+                ZCE_LIB::last_error(), 
+                strerror(ZCE_LIB::last_error()));
             handle_close();
             return;
         }
@@ -150,16 +142,16 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     }
 
     //如果配置了超时出来,N秒必须收到一个包
-    if ( connect_timeout_ > 0 || receive_timeout_ > 0)
+    if ( accept_timeout_ > 0 || receive_timeout_ > 0)
     {
         ZCE_Time_Value delay(0, 0);
         ZCE_Time_Value interval(0, 0);
 
-        delay.sec(connect_timeout_);
+        delay.sec(accept_timeout_);
         interval.sec(receive_timeout_);
 
         //如果配置了接收数据超时，那么无论如何连接部分都有超时
-        if (connect_timeout_ <= 0)
+        if (accept_timeout_ <= 0)
         {
             delay.sec(receive_timeout_);
         }
@@ -181,20 +173,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     peer_status_ = PEER_STATUS_ACTIVE;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : Ogre_TCP_Svc_Handler::init_tcp_svc_handler
-Return          : void
-Parameter List  :
-  Param1: const Socket_Peer_Info& svrinfo        Socket_Peer_Info信息
-  Param2: const ZCE_Socket_Stream& sockstream  Sokcet Peer
-  Param3: const ZCE_Sockaddr_In& socketaddr    对应连接的地址信息
-Description     : 初始化函数,用于Connect出去的PEER 对应Event Handle构造.
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//初始化函数,用于Connect出去的PEER 对应Event Handle构造.
 void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
                                                 const ZCE_Sockaddr_In &socketaddr,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
@@ -223,7 +203,10 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     if (ret != 0)
     {
 
-        ZLOG_ERROR("Register Connect handler fail! ret =%  errno=%u|%s \n", ret, ZCE_LIB::last_error(), strerror(ZCE_LIB::last_error()));
+        ZLOG_ERROR("Register Connect handler fail! ret =%  errno=%u|%s \n", 
+            ret, 
+            ZCE_LIB::last_error(), 
+            strerror(ZCE_LIB::last_error()));
         handle_close();
         return;
     }
@@ -264,18 +247,7 @@ ZCE_HANDLE Ogre_TCP_Svc_Handler::get_handle(void) const
     return (ZCE_HANDLE)socket_peer_.get_handle();
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : Ogre_TCP_Svc_Handler::handle_input
-Return          : int
-Parameter List  :
-  Param1: ZCE_HANDLE
-Description     : ACE读取,断连的事件触发处理函数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//读取,断连的事件触发处理函数
 int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
 {
     //读取数据
@@ -347,18 +319,8 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : Ogre_TCP_Svc_Handler::handle_output
-Return          : int
-Parameter List  :
-  Param1: ZCE_HANDLE
-Description     : ACE读取,断连的事件触发处理函数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//写事件触发,链接成功的事件触发处理函数
 int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
 {
 
@@ -385,19 +347,8 @@ int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
-Function        : Ogre_TCP_Svc_Handler::timer_timeout
-Return          : int
-Parameter List  :
-  Param1: const ZCE_Time_Value& * time  时间,
-  Param2: const void* arg               唯一标示参数
-Description     : 定时触发
-Calls           :
-Called By       :
-Other           : ACE为什么不直接使用TIME ID,
-Modify Record   :
-******************************************************************************************/
+
+//定时触发
 int Ogre_TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &/*time*/, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
@@ -430,17 +381,8 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &/*time*/, const vo
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年12月20日
-Function        : Ogre_TCP_Svc_Handler::handle_close
-Return          : int
-Parameter List  :
-Description     : PEER Event Handler关闭的处理
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//PEER Event Handler关闭的处理
 int Ogre_TCP_Svc_Handler::handle_close ()
 {
     //不要使用cancel_timer(this),其繁琐,而且慢,好要new,而且有一个不知名的死机
@@ -521,17 +463,8 @@ Ogre_TCP_Svc_Handler::PEER_STATUS  Ogre_TCP_Svc_Handler::get_peer_status()
     return peer_status_;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : Ogre_TCP_Svc_Handler::process_connect_register
-Return          : int
-Parameter List  : NULL
-Description     : 处理注册发送,
-Calls           :
-Called By       :
-Other           : 刚刚连接上对方,发送一个注册信息给对方.如果有命令发送命令
-Modify Record   :
-******************************************************************************************/
+
+//处理注册发送
 int Ogre_TCP_Svc_Handler::process_connect_register()
 {
 
@@ -565,18 +498,8 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : Ogre_TCP_Svc_Handler::read_data_from_peer
-Return          : int
-Parameter List  :
-  Param1: size_t& szrevc
-Description     : 从PEER读取数据
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//从PEER读取数据
 int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 {
     szrevc = 0;
@@ -659,19 +582,8 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : Ogre_TCP_Svc_Handler::write_data_to_peer
-Return          : int
-Parameter List  :
-  Param1: size_t& szsend
-  Param2: bool& bfull
-Description     : 向PEER写数据
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//向PEER写数据
 int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
 {
     if_full = false;
@@ -736,17 +648,8 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2008年2月4日
-Function        : Ogre_TCP_Svc_Handler::write_all_aata_to_peer
-Return          : int
-Parameter List  : NULL
-Description     : 给力的发送所有要发送的数据，尽自己最大的努力
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//给力的发送所有要发送的数据，尽自己最大的努力
 int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
 {
     int ret = 0;
@@ -889,31 +792,19 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
     return 0;
 }
 
-
+//
 int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
-
-    unsigned int tmp_uint = 0 ;
-    //从CONNECT到收到数据的时长
-    ret  = cfg_file.get_uint32_value("COMMCFG", "CONNECTTIMEOUT", tmp_uint);
-    connect_timeout_ = tmp_uint;
-    TESTCONFIG((ret == 0 && connect_timeout_ <= 50 ), "COMMCFG|CONNECTTIMEOUT key error.");
-
-    //RECEIVE一个数据的超时时间,为0表示不限制
-    ret = cfg_file.get_uint32_value("COMMCFG", "RECEIVETIMEOUT", tmp_uint );
-    receive_timeout_ = tmp_uint;
-    TESTCONFIG((ret == 0 && receive_timeout_ <= 1800 ), "COMMCFG|RECEIVETIMEOUT key error.");
-
-    //最大的链接我的服务器个数
-    ret = cfg_file.get_uint32_value("COMMCFG", "MAXACCEPTSVR", tmp_uint);
-    max_accept_svr_ = tmp_uint;
-    TESTCONFIG((ret == 0 && max_accept_svr_ <= 409600 && max_accept_svr_ > 0), "COMMCFG|MAXACCEPTSVR key error.");
-
-    //错误发送数据尝试发送次数
-    ret = cfg_file.get_uint32_value("COMMCFG", "TRYERROR", tmp_uint );
-    error_try_num_ = tmp_uint;
-    TESTCONFIG((ret == 0 && error_try_num_ < 10), "COMMCFG|TRYERROR key error.");
+    
+    accept_timeout_ = config->ogre_cfg_data_.accepted_timeout_;
+    receive_timeout_ = config->ogre_cfg_data_.receive_timeout_;
+    
+    max_accept_svr_ = config->ogre_cfg_data_.max_accept_svr_;
+    max_connect_svr_ = config->ogre_cfg_data_.auto_connect_num_;
+    
+    error_try_num_ = config->ogre_cfg_data_.retry_error_;
+    
 
     //自动链接部分读取配置
     ret = zerg_auto_connect_.get_config(config);
@@ -922,23 +813,12 @@ int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config *config)
         return ret;
     }
 
-    //最大要链接数量等于自动链接服务的数量
-    max_connect_svr_ = zerg_auto_connect_.num_svr_to_connect() ;
-    //
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : Ogre_TCP_Svc_Handler::init_all_static_data
-Return          : int
-Parameter List  : NULL
-Description     : 将配置参数初始化
-Calls           :
-Called By       :
-Other           : 一些参数从配置类读取,避免后面的操作还要访问配置类
-Modify Record   :
-******************************************************************************************/
+
+//根据配置参数初始化静态数据
+//一些参数从配置类读取,避免后面的操作还要访问配置类
 int Ogre_TCP_Svc_Handler::init_all_static_data()
 {
     int ret = 0;
@@ -1005,18 +885,9 @@ int Ogre_TCP_Svc_Handler::unInit_all_static_data()
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年12月24日
-Function        : Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool
-Return          : Ogre_TCP_Svc_Handler*
-Parameter List  :
-Param1: OGRE_HANDLER_MODE handler_mode
-Description     : 从池子里面得到一个Handler给大家使用
-Calls           :
-Called By       :
-Other           : Connect的端口应该永远不发生取不到Hanler的事情
-Modify Record   :
-******************************************************************************************/
+
+//从池子里面得到一个Handler给大家使用
+//Connect的端口应该永远不发生取不到Hanler的事情
 Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
 {
     //
@@ -1051,18 +922,8 @@ Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
     }
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月15日
-Function        : Ogre_TCP_Svc_Handler::process_send_data
-Return          : int
-Parameter List  :
-    Param1: ZByteBuffer* tmpbuf   要得到数据的ZByteBuffer,要求分配好,
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//要得到数据的ZByteBuffer,要求分配好,
 int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
 {
 
@@ -1125,18 +986,9 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : Ogre_TCP_Svc_Handler::put_frame_to_sendlist
-Return          : int
-Parameter List  :
-Param1: ZByteBuffer* tmpbuf
-Description     : 将发送数据放入发送队列中
-Calls           :
-Called By       :
-Other           : 如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
-Modify Record   :
-******************************************************************************************/
+
+//将发送数据放入发送队列中
+//如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
 int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame *ogre_frame)
 {
     int ret = 0;
@@ -1205,17 +1057,9 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame *ogre_frame)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2008年1月23日
-Function        : Ogre_TCP_Svc_Handler::unite_frame_sendlist
-Return          : void
-Parameter List  : NULL
-Description     : 合并发送队列
-Calls           :
-Called By       :
-Other           : 如果有2个以上的的发送队列，则可以考虑合并处理
-Modify Record   :
-******************************************************************************************/
+
+//合并发送队列
+//如果有2个以上的的发送队列，则可以考虑合并处理
 void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 {
     //如果有2个以上的的发送队列，则可以考虑合并处理
@@ -1255,20 +1099,10 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
     //        snd_buffer_deque_[sz_deque-2]->ogre_frame_len_,
     //        snd_buffer_deque_[sz_deque-1]->ogre_frame_len_));
     //}
-
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : Ogre_TCP_Svc_Handler::push_frame_to_recvpipe
-Return          : int
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//
 int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
 
@@ -1321,6 +1155,7 @@ unsigned short Ogre_TCP_Svc_Handler::get_peer_port()
 {
     return remote_address_.get_port_number();
 }
+
 //得到Handle对应PEER的IP地址
 const char *Ogre_TCP_Svc_Handler::get_peer_address()
 {

@@ -5,10 +5,10 @@
 #include "ogre_udp_ctrl_handler.h"
 
 //所有UPD端口的句柄
-std::vector<OgreUDPSvcHandler *> OgreUDPSvcHandler::ary_upd_peer_;
+std::vector<Ogre_UDPSvc_Hdl *> Ogre_UDPSvc_Hdl::ary_upd_peer_;
 
 //构造函数
-OgreUDPSvcHandler::OgreUDPSvcHandler(const ZCE_Sockaddr_In &upd_addr, ZCE_Reactor *reactor):
+Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const ZCE_Sockaddr_In &upd_addr, ZCE_Reactor *reactor):
     ZCE_Event_Handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port_number()),
@@ -20,7 +20,7 @@ OgreUDPSvcHandler::OgreUDPSvcHandler(const ZCE_Sockaddr_In &upd_addr, ZCE_Reacto
 }
 
 //析构函数
-OgreUDPSvcHandler::~OgreUDPSvcHandler()
+Ogre_UDPSvc_Hdl::~Ogre_UDPSvc_Hdl()
 {
     if (dgram_databuf_ != NULL)
     {
@@ -28,8 +28,8 @@ OgreUDPSvcHandler::~OgreUDPSvcHandler()
     }
 
     //删除掉保存的PEER数组
-    std::vector<OgreUDPSvcHandler *>::iterator iter_tmp = ary_upd_peer_.begin();
-    std::vector<OgreUDPSvcHandler *>::iterator iter_end = ary_upd_peer_.begin();
+    std::vector<Ogre_UDPSvc_Hdl *>::iterator iter_tmp = ary_upd_peer_.begin();
+    std::vector<Ogre_UDPSvc_Hdl *>::iterator iter_end = ary_upd_peer_.begin();
 
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
@@ -42,14 +42,13 @@ OgreUDPSvcHandler::~OgreUDPSvcHandler()
 }
 
 //初始化一个UDP PEER
-int OgreUDPSvcHandler::InitUDPServices()
+int Ogre_UDPSvc_Hdl::init_udp_peer()
 {
 
     dgram_databuf_ = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
 
     int ret = 0;
     ret = dgram_peer_.open(&udp_bind_addr_);
-
     if (ret != 0)
     {
         handle_close();
@@ -66,26 +65,13 @@ int OgreUDPSvcHandler::InitUDPServices()
     return 0;
 }
 
-//打开一个临时PEER用于发送UDP数据
-int OgreUDPSvcHandler::OpenUDPSendPeer()
-{
-    int ret = 0;
-
-    if (ret != 0)
-    {
-        return SOAR_RET::ERR_OGRE_INIT_UDP_PEER;
-    }
-
-    return 0;
-}
-
 //取得句柄
-ZCE_HANDLE OgreUDPSvcHandler::get_handle(void) const
+ZCE_HANDLE Ogre_UDPSvc_Hdl::get_handle(void) const
 {
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-int OgreUDPSvcHandler::handle_input(ZCE_HANDLE)
+int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
 {
     size_t szrevc = 0;
     int ret = 0;
@@ -115,7 +101,7 @@ int OgreUDPSvcHandler::handle_input(ZCE_HANDLE)
 }
 
 //
-int OgreUDPSvcHandler::handle_close ()
+int Ogre_UDPSvc_Hdl::handle_close ()
 {
     //
     if (dgram_peer_.get_handle () != ZCE_INVALID_SOCKET)
@@ -131,7 +117,7 @@ int OgreUDPSvcHandler::handle_close ()
 }
 
 //读取UDP数据
-int OgreUDPSvcHandler::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr)
+int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr)
 {
     int ret = 0;
     szrevc = 0;
@@ -197,7 +183,7 @@ int OgreUDPSvcHandler::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote
     return 0;
 }
 
-int OgreUDPSvcHandler::pushdata_to_recvpipe()
+int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
 
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
@@ -214,19 +200,9 @@ int OgreUDPSvcHandler::pushdata_to_recvpipe()
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年7月18日
-Function        : OgreUDPSvcHandler::SendAllDataToUDP
-Return          : int
-Parameter List  :
-  Param1: Ogre4a_App_Frame* send_frame 发送的FRAME
-Description     : 发送UDP数据。
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int OgreUDPSvcHandler::SendAllDataToUDP(Ogre4a_App_Frame *send_frame)
+
+//发送UDP数据。
+int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
 {
     ssize_t szsend = -1;
 

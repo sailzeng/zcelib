@@ -6,15 +6,15 @@
 //forward declaration
 class Ogre_IPRestrict_Mgr;
 
-class OgreUDPSvcHandler: public ZCE_Event_Handler
+class Ogre_UDPSvc_Hdl: public ZCE_Event_Handler
 {
 protected:
     //
 public:
-    OgreUDPSvcHandler(const ZCE_Sockaddr_In &upd_addr,
-                      ZCE_Reactor *reactor = ZCE_Reactor::instance());
+    Ogre_UDPSvc_Hdl(const ZCE_Sockaddr_In &upd_addr,
+                    ZCE_Reactor *reactor = ZCE_Reactor::instance());
 protected:
-    ~OgreUDPSvcHandler();
+    ~Ogre_UDPSvc_Hdl();
 
 public:
     //取得句柄
@@ -26,14 +26,12 @@ public:
 
 public:
     //初始化UPD端口
-    int InitUDPServices();
-    //
-    int SendDataToUDP(Ogre4a_App_Frame *send_frame);
+    int init_udp_peer();
+
 public:
-    //初始化静态的发送端口
-    static int OpenUDPSendPeer();
+
     //发送UDP数据给
-    static int SendAllDataToUDP(Ogre4a_App_Frame *send_frame);
+    static int send_alldata_to_udp(Ogre4a_App_Frame *send_frame);
 
 protected:
 
@@ -60,7 +58,7 @@ protected:
 
 protected:
     //
-    static  std::vector<OgreUDPSvcHandler *> ary_upd_peer_;
+    static  std::vector<Ogre_UDPSvc_Hdl *> ary_upd_peer_;
 
 };
 

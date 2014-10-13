@@ -147,7 +147,7 @@ protected:
     static size_t                  max_connect_svr_;
 
     //Connect后等待动作的时长,Connect超时
-    static unsigned int           connect_timeout_;
+    static unsigned int           accept_timeout_;
 
     //等待接受一个完整数据的超时时间,为0表示不限制
     static unsigned int           receive_timeout_;

@@ -3,8 +3,8 @@
 #ifndef OGRE_COMMUNICATE_MANGER_H_
 #define OGRE_COMMUNICATE_MANGER_H_
 
-class OgreTCPAcceptHandler;
-class OgreUDPSvcHandler;
+class Ogre_TCPAccept_Hdl;
+class Ogre_UDPSvc_Hdl;
 class Ogre4a_App_Frame;
 class Ogre_Connect_Server;
 class Ogre_Server_Config;
@@ -49,12 +49,6 @@ protected:
     static Ogre_Comm_Manger *instance_;
 
 protected:
-
-    //侦听端口的Handler句柄队列
-    std::vector<OgreTCPAcceptHandler *> accept_handler_ary_;
-    //UDP端口的Handler句柄队列
-    std::vector<OgreUDPSvcHandler *> udp_handler_ary_;
-
 
     //配置实例指针
     const Ogre_Server_Config *ogre_config_;

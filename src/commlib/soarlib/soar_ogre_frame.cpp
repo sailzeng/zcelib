@@ -1,4 +1,5 @@
 #include "soar_predefine.h"
+#include "soar_error_code.h"
 #include "soar_ogre_frame.h"
 
 /******************************************************************************************
@@ -21,19 +22,8 @@ Ogre4a_App_Frame::~Ogre4a_App_Frame()
 {
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年11月2日
-Function        : new
-Return          : void* Zerg_App_Frame::operator
-Parameter List  :
-Param1: size_t
-Param2: size_t lenframe
-Description     : 重载New函数
-Calls           :
-Called By       :
-Other           : 应该写个delete
-Modify Record   :
-******************************************************************************************/
+
+//重载New函数
 void   *Ogre4a_App_Frame::operator new (size_t , size_t lenframe)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
@@ -54,27 +44,34 @@ void   *Ogre4a_App_Frame::operator new (size_t , size_t lenframe)
     return ptr;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年11月30日
-Function        : delete
-Return          : void Ogre4a_App_Frame::operator
-Parameter List  :
-Param1: void* ptrframe
-Param2: size_t
-Description     : 养成好习惯,写new,就写delete.
-Calls           :
-Called By       :
-Other           : 其实不写也不会有内存泄露,但是为了不得罪讨厌的编译器.
-Modify Record   :
-******************************************************************************************/
+
+//养成好习惯,写new,就写delete.
+//其实不写也不会有内存泄露,但是为了不得罪讨厌的编译器.
 void Ogre4a_App_Frame::operator delete(void *ptrframe, size_t )
 {
     char *ptr = reinterpret_cast<char *>(ptrframe) ;
     delete []ptr;
 }
 
+
+//增加数据
+int Ogre4a_App_Frame::add_data(unsigned int add_size, char *add_data)
+{
+    if (ogre_frame_len_ + add_size > MAX_OF_OGRE_DATA_LEN)
+    {
+        return SOAR_RET::ERROR_APPFRAME_ERROR;
+    }
+    else
+    {
+        memcpy(frame_data_ + ogre_frame_len_, add_data, add_size);
+        ogre_frame_len_ += add_size;
+        return 0;
+    }
+}
+
+
 //配置最大的DATA数据区长度,
-void Ogre4a_App_Frame::SetMaxFrameDataLen(unsigned int  max_framedata)
+void Ogre4a_App_Frame::set_max_framedata_len(unsigned int  max_framedata)
 {
     MAX_OF_OGRE_DATA_LEN = max_framedata;
     //最大的FRAME的长度,为MAX_OF_OGRE_DATA_LEN ＋ LEN_OF_OGRE_FRAME_HEAD
@@ -82,7 +79,7 @@ void Ogre4a_App_Frame::SetMaxFrameDataLen(unsigned int  max_framedata)
 }
 
 //交换自己Rcv ,Snd Peer Info
-void Ogre4a_App_Frame::ExchangeRcvSndPeerInfo()
+void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
 {
     SOCKET_PERR_ID sock_peer = snd_peer_info_;
     snd_peer_info_  = rcv_peer_info_;
@@ -90,7 +87,7 @@ void Ogre4a_App_Frame::ExchangeRcvSndPeerInfo()
 }
 
 //和其他人交换Rcv ,Snd Peer Info,
-void Ogre4a_App_Frame::ExchangeRcvSndPeerInfo(const Ogre4a_App_Frame *exframe )
+void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe )
 {
     ogre_frame_option_ = exframe->ogre_frame_option_;
     rcv_peer_info_ = exframe->snd_peer_info_ ;
@@ -98,7 +95,7 @@ void Ogre4a_App_Frame::ExchangeRcvSndPeerInfo(const Ogre4a_App_Frame *exframe )
 }
 
 //输出APPFRAME的全部部信息
-void Ogre4a_App_Frame::DumOgreFrameHead(const Ogre4a_App_Frame *proc_frame,
+void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
                                         const char *outstr,
                                         ZCE_LOG_PRIORITY log_priority)
 {
@@ -119,9 +116,9 @@ void Ogre4a_App_Frame::DumOgreFrameHead(const Ogre4a_App_Frame *proc_frame,
 }
 
 //输出APPFRAME的全部部信息
-void Ogre4a_App_Frame::DumOgreFrameHead(const char *outstr,
+void Ogre4a_App_Frame::dump_ogre_framehead(const char *outstr,
                                         ZCE_LOG_PRIORITY log_priority) const
 {
-    this->DumOgreFrameHead(this, outstr, log_priority);
+    this->dump_ogre_framehead(this, outstr, log_priority);
 }
 
