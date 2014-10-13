@@ -10,19 +10,17 @@
 
 class Zerg_App_Frame;
 
-class SOARING_EXPORT Zerg_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
+class SOARING_EXPORT Soar_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
 {
 
 
 
-protected:
-    //instance函数使用的东西
-    static Zerg_MMAP_BusPipe *zerg_bus_instance_;
+
 public:
     //构造函数,
-    Zerg_MMAP_BusPipe();
+    Soar_MMAP_BusPipe();
     //析购函数
-    ~Zerg_MMAP_BusPipe();
+    ~Soar_MMAP_BusPipe();
 
 public:
 
@@ -103,9 +101,9 @@ public:
 
     //为了SingleTon类准备
     //实例的赋值
-    static void instance(Zerg_MMAP_BusPipe *);
+    static void instance(Soar_MMAP_BusPipe *);
     //实例的获得
-    static Zerg_MMAP_BusPipe *instance();
+    static Soar_MMAP_BusPipe *instance();
     //清除实例
     static void clean_instance();
 
@@ -115,9 +113,10 @@ protected:
     static const char    ZERG_PIPENAME[NUM_OF_PIPE][16];
 
 protected:
+    //instance函数使用的东西
+    static Soar_MMAP_BusPipe *zerg_bus_instance_;
 
-    ///是否做线程检查
-    bool                if_check_pthrad_ = false;
+protected:
 
     ///这个服务器的配置信息.
     SERVICES_ID         zerg_svr_info_ = SERVICES_ID(0,0);
@@ -125,12 +124,12 @@ protected:
     static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
 
     ///监控对象
-    Comm_Stat_Monitor   *monitor_ = NULL;
+    Soar_Stat_Monitor   *monitor_ = NULL;
 
 };
 
 //从RECV管道读取帧，
-inline int Zerg_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
+inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<ZCE_LIB::dequechunk_node* &>(proc_frame));
 
@@ -157,7 +156,7 @@ inline int Zerg_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 }
 
 //向SEND管道写入帧，
-inline int Zerg_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
+inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 {
     DEBUGDUMP_FRAME_HEAD(proc_frame, "TO SEND PIPE FRAME:", RS_DEBUG);
 
@@ -220,7 +219,7 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 template< class T>
-int Zerg_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
+int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
                                                unsigned int qquin,
                                                unsigned int transaction_id,
                                                unsigned int backfill_trans_id,
@@ -264,7 +263,7 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 template< class T>
-int Zerg_MMAP_BusPipe::pipe_sendmsg_to_proxy(unsigned int cmd,
+int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(unsigned int cmd,
                                              unsigned int qquin,
                                              unsigned int transaction_id,
                                              unsigned int backfill_trans_id,
@@ -309,7 +308,7 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 template< class T>
-int Zerg_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
+int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
                                                unsigned int qquin,
                                                unsigned int transaction_id,
                                                unsigned int backfill_trans_id,

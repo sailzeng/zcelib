@@ -113,7 +113,6 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
         return ret;
     }
 
-
     ZCE_LOGMSG(RS_INFO, "[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
 
@@ -133,11 +132,8 @@ int Zerg_Service_App::on_exit()
     //清理单子
     Zerg_IPRestrict_Mgr::clean_instance();
 
-    //
-    //
-    
     //最后调用基类的退出函数
-    Comm_Svrd_Appliction::on_exit();
+    Soar_Svrd_Appliction::on_exit();
     
     //基类的退出
     Soar_Svrd_Appliction::on_exit();

@@ -68,19 +68,15 @@ int Wormhole_Proxy_App::on_exit()
     int ret = 0;
 
     //最后调用通用的退出模块
-    ret = Comm_Svrd_Appliction::on_exit();
+    ret = Soar_Svrd_Appliction::on_exit();
     
     return 0;
 }
 
+
+
+
 int Wormhole_Proxy_App::reload_config()
-///加载配置
-int Wormhole_Proxy_App::load_config()
-{
-
-}
-
-int Wormhole_Proxy_App::re_read_load_cfg()
 {
     int ret = 0;
 

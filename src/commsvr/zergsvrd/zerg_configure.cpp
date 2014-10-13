@@ -195,6 +195,9 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     std::string temp_value;
     std::vector <std::string> str_ary;
 
+    const size_t MIN_SEND_DEQUE_SIZE = 4;
+    const size_t MAX_SEND_DEQUE_SIZE = 512;
+
     //最大Accept 数量
     ret = conf_tree->path_get_leaf("ZERG_CFG", "MAX_ACCEPT_SVR",
                                    zerg_cfg_data_.max_accept_svr_);
@@ -208,8 +211,8 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     ret = conf_tree->path_get_leaf("ZERG_CFG", "ACPT_SEND_DEQUE_SIZE",
                                    zerg_cfg_data_.acpt_send_deque_size_);
     if (0 != ret
-        || zerg_cfg_data_.acpt_send_deque_size_ < ZERG_CONFIG_DATA::MIN_SEND_DEQUE_SIZE
-        || zerg_cfg_data_.acpt_send_deque_size_ > ZERG_CONFIG_DATA::MAX_SEND_DEQUE_SIZE)
+        || zerg_cfg_data_.acpt_send_deque_size_ < MIN_SEND_DEQUE_SIZE
+        || zerg_cfg_data_.acpt_send_deque_size_ > MAX_SEND_DEQUE_SIZE)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
@@ -217,8 +220,8 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     ret = conf_tree->path_get_leaf("ZERG_CFG", "CNNT_SEND_DEQUE_SIZE",
                                    zerg_cfg_data_.cnnt_send_deque_size_);
     if (0 != ret
-        || zerg_cfg_data_.cnnt_send_deque_size_ < ZERG_CONFIG_DATA::MIN_SEND_DEQUE_SIZE
-        || zerg_cfg_data_.cnnt_send_deque_size_ > ZERG_CONFIG_DATA::MAX_SEND_DEQUE_SIZE)
+        || zerg_cfg_data_.cnnt_send_deque_size_ < MIN_SEND_DEQUE_SIZE
+        || zerg_cfg_data_.cnnt_send_deque_size_ > MAX_SEND_DEQUE_SIZE)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;

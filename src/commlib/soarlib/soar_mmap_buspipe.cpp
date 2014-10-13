@@ -2,31 +2,31 @@
 
 #include "soar_predefine.h"
 #include "soar_zerg_frame.h"
-#include "soar_zerg_mmappipe.h"
+#include "soar_mmap_buspipe.h"
 
-Zerg_MMAP_BusPipe *Zerg_MMAP_BusPipe::zerg_bus_instance_ = NULL;
+Soar_MMAP_BusPipe *Soar_MMAP_BusPipe::zerg_bus_instance_ = NULL;
 
-char Zerg_MMAP_BusPipe::send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
+char Soar_MMAP_BusPipe::send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
 
-Zerg_MMAP_BusPipe::Zerg_MMAP_BusPipe():
+Soar_MMAP_BusPipe::Soar_MMAP_BusPipe():
     ZCE_BusPipe_TwoWay()
 {
 }
 
-Zerg_MMAP_BusPipe::~Zerg_MMAP_BusPipe()
+Soar_MMAP_BusPipe::~Soar_MMAP_BusPipe()
 {
 
 }
 
 //初始化
-int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
+int Soar_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                   size_t size_recv_pipe,
                                   size_t size_send_pipe,
                                   size_t max_frame_len,
                                   bool if_restore)
 {
 
-    monitor_ = Comm_Stat_Monitor::instance();
+    monitor_ = Soar_Stat_Monitor::instance();
 
     zerg_svr_info_ = svrinfo;
 
@@ -41,24 +41,24 @@ int Zerg_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
 }
 
 //根据SVR INFO得到MMAP文件名称
-void Zerg_MMAP_BusPipe::get_mmapfile_name(char *mmapfile, size_t buflen)
+void Soar_MMAP_BusPipe::get_mmapfile_name(char *mmapfile, size_t buflen)
 {
     snprintf(mmapfile, buflen, "./ZERGPIPE.%u.%u.MMAP", zerg_svr_info_.services_type_, zerg_svr_info_.services_id_);
 }
 
 //得到唯一的单子实例
-Zerg_MMAP_BusPipe *Zerg_MMAP_BusPipe::instance()
+Soar_MMAP_BusPipe *Soar_MMAP_BusPipe::instance()
 {
     if (zerg_bus_instance_ == NULL)
     {
-        zerg_bus_instance_ = new Zerg_MMAP_BusPipe();
+        zerg_bus_instance_ = new Soar_MMAP_BusPipe();
     }
 
     return zerg_bus_instance_;
 }
 
 //赋值唯一的单子实例
-void Zerg_MMAP_BusPipe::instance(Zerg_MMAP_BusPipe *pinstatnce)
+void Soar_MMAP_BusPipe::instance(Soar_MMAP_BusPipe *pinstatnce)
 {
     clean_instance();
     zerg_bus_instance_ = pinstatnce;
@@ -66,7 +66,7 @@ void Zerg_MMAP_BusPipe::instance(Zerg_MMAP_BusPipe *pinstatnce)
 }
 
 //清除单子实例
-void Zerg_MMAP_BusPipe::clean_instance()
+void Soar_MMAP_BusPipe::clean_instance()
 {
     if (zerg_bus_instance_)
     {
@@ -78,7 +78,7 @@ void Zerg_MMAP_BusPipe::clean_instance()
 }
 
 int
-Zerg_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
+Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
                                            unsigned int qquin,
                                            unsigned int transaction_id,
                                            unsigned int backfill_trans_id,
