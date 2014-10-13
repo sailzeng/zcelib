@@ -24,11 +24,13 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 
     zerg_svr_cfg_ = config;
 
-    size_of_wantconnect_ = config->zerg_cfg_data_.auto_connect_num_;
+    size_of_autoconnect_ = config->zerg_cfg_data_.auto_connect_num_;
+    //不预分配过大
+    autocnt_svcinfo_set_.rehash(size_of_autoconnect_ + 16);
 
     //循环处理所有的数据
     SERVICES_INFO svc_route;
-    for (size_t i = 0; i < size_of_wantconnect_; ++i)
+    for (size_t i = 0; i < size_of_autoconnect_; ++i)
     {
 
         svc_route.svc_id_ = config->zerg_cfg_data_.auto_connect_svrs_[i];
@@ -46,7 +48,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
             return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
         }
 
-        auto ins_iter = set_auto_cnt_svcid_.insert(svc_route.svc_id_);
+        auto ins_iter = autocnt_svcinfo_set_.insert(svc_route);
         if (ins_iter.second == false)
         {
             ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't insert auto connect services ID %u.%u "
@@ -55,8 +57,6 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
                        svc_route.svc_id_.services_id_);
             return SOAR_RET::ERR_ZERG_CONNECT_REPEAT_SVCID;
         }
-
-        ary_want_connect_.push_back(svc_route);
 
 
         //由于该死的C/C++的返回静态指针的问题，这儿要输出两个地址，所以只能先打印到其他地方
@@ -80,14 +80,14 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
             ZCE_ASSERT(false == insert_iter.second);
 
             map_iter = insert_iter.first;
-            map_iter->second.reserve(size_of_wantconnect_ + 16);
+            map_iter->second.reserve(size_of_autoconnect_ + 16);
         }
         std::vector<uint32_t> *ptr_ary = &(map_iter->second);
         ptr_ary->push_back(svc_route.svc_id_.services_id_);
     }
 
     ZCE_LOGMSG(RS_INFO, "[zergsvr] Get number [%lu] auto connect config success.",
-               size_of_wantconnect_);
+               size_of_autoconnect_);
 
     return 0;
 }
@@ -100,16 +100,18 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
     szvalid = szsucc = szfail = 0;
     //循环将所有的SERVER链接一次,代码写的很绕口
 
-    for (size_t i = 0; i < size_of_wantconnect_; ++i)
+    auto iter_end = autocnt_svcinfo_set_.end();
+    auto iter_tmp = autocnt_svcinfo_set_.begin();
+    for (; iter_tmp != iter_end; ++iter_tmp)
     {
         TCP_Svc_Handler *svchandle = NULL;
         //如果已经有相应的链接了，跳过
-        ret = TCP_Svc_Handler::find_services_peer(ary_want_connect_[i].svc_id_, svchandle);
+        ret = TCP_Svc_Handler::find_services_peer(iter_tmp->svc_id_, svchandle);
 
         if (0 != ret)
         {
             //进行连接,
-            ret = connect_server_bysvcid(ary_want_connect_[i].svc_id_, ary_want_connect_[i].ip_address_);
+            ret = connect_server_bysvcid(iter_tmp->svc_id_, iter_tmp->ip_address_);
 
             if (ret == 0)
             {
@@ -144,17 +146,18 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
 int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
 {
 
-    for (size_t i = 0; i < size_of_wantconnect_; ++i)
-    {
-        if (ary_want_connect_[i].svc_id_ == reconnect_svcid)
-        {
-            ZCE_Sockaddr_In inetaddr (ary_want_connect_[i].ip_address_);
-            return connect_server_bysvcid(reconnect_svcid, inetaddr);
-        }
-    }
+    //如果在SET里面找不到
+    SERVICES_INFO svc_info;
+    svc_info.svc_id_ = reconnect_svcid;
+    auto iter = autocnt_svcinfo_set_.find(svc_info);
 
     //这个错误无需记录,可能是这个SVCID根本不是要主动连接的服务器
-    return SOAR_RET::ERR_ZERG_ISNOT_CONNECT_SERVICES;
+    if (iter == autocnt_svcinfo_set_.end())
+    {
+        return SOAR_RET::ERR_ZERG_ISNOT_CONNECT_SERVICES;
+    }
+
+    return connect_server_bysvcid(reconnect_svcid, iter->ip_address_);
 }
 
 
@@ -216,11 +219,6 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
     return 0;
 }
 
-size_t Zerg_Auto_Connector::numsvr_connect()
-{
-    return size_of_wantconnect_;
-}
-
 //根据services_type查询对应的配置主备服务器列表数组 MS（主备）
 int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
                                                 std::vector<uint32_t> *& ms_svcid_ary)
@@ -233,3 +231,17 @@ int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
     ms_svcid_ary = &(map_iter->second);
     return 0;
 }
+
+//检查这个SVC ID是否是主动链接的服务器
+bool Zerg_Auto_Connector::is_auto_connect_svcid(const SERVICES_ID &svc_id)
+{
+    //如果在SET里面找不到
+    SERVICES_INFO svc_info;
+    svc_info.svc_id_ = svc_id;
+    if (autocnt_svcinfo_set_.find(svc_info) == autocnt_svcinfo_set_.end())
+    {
+        return false;
+    }
+    return true;
+}
+

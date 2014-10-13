@@ -356,8 +356,9 @@ int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
     if_proxy_ = config->zerg_cfg_data_.is_proxy_;
 
 
-    //最大的链接我的服务器个数
+    //最大的链接我的,我链接出去的服务器个数
     max_accept_svr_ = config->zerg_cfg_data_.max_accept_svr_;
+    max_connect_svr_ = config->zerg_cfg_data_.auto_connect_num_;
 
 
     //容量告警阈值
@@ -406,7 +407,6 @@ int TCP_Svc_Handler::init_all_static_data()
 
 
     //最大要链接数量等于自动链接服务的数量,增加16个
-    max_connect_svr_ = zerg_auto_connect_.numsvr_connect() + 16;
 
     ZCE_LOGMSG(RS_INFO, "[zergsvr] MaxAcceptSvr:%u MaxConnectSvr:%u.", max_accept_svr_, max_connect_svr_);
 

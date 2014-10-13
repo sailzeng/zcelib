@@ -38,7 +38,7 @@ public:
 protected:
 
     //从PEER读取数据
-    int ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_addr);
+    int read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr);
     //将收到的数据放入管道
     int pushdata_to_recvpipe();
 

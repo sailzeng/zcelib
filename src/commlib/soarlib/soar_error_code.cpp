@@ -11,7 +11,7 @@ const char *SOAR_RET::error_string(int error_id)
         case ERROR_PROCESS_MYSQLDB:
             return  "Commlib: ERROR_PROCESS_MYSQLDB.";
         case ERROR_PROCESS_SQLITE:
-            return  "Commlib: ERROR_PROCESS_SQLITE.";;
+            return  "Commlib: ERROR_PROCESS_SQLITE.";
         case ERROR_INIT_RECEIVE_PIPE:
             return  "Commlib: Create Receive Pipe Error.";
         case ERROR_INIT_SEND_PIPE:

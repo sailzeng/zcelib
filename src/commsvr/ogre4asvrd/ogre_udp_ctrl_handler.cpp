@@ -91,7 +91,7 @@ int OgreUDPSvcHandler::handle_input(ZCE_HANDLE)
     int ret = 0;
     ZCE_Sockaddr_In remote_addr;
     //读取数据
-    ret = ReadDataFromUDP(szrevc, remote_addr);
+    ret = read_data_fromudp(szrevc, remote_addr);
 
     ZCE_LOGMSG_DBG(RS_DEBUG, "UDP Read Event[%s|%u].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
                    remote_addr.get_host_addr(),
@@ -130,20 +130,8 @@ int OgreUDPSvcHandler::handle_close ()
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年7月18日
-Function        : OgreUDPSvcHandler::ReadDataFromUDP
-Return          : int == 0表示成功
-Parameter List  :
-  Param1: size_t& szrevc 收到数据的长度
-  Param2: ZCE_Sockaddr_In &remote_addr 远端的地址
-Description     : 读取UDP数据
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int OgreUDPSvcHandler::ReadDataFromUDP(size_t &szrevc, ZCE_Sockaddr_In &remote_addr)
+//读取UDP数据
+int OgreUDPSvcHandler::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr)
 {
     int ret = 0;
     szrevc = 0;

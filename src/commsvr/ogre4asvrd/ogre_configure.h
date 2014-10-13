@@ -52,6 +52,8 @@ public:
 
     ///
     TCP_PEER_CONFIG_INFO peer_info_;
+    ///
+    SOCKET_PERR_ID  peer_id_;
 
     ///TCP收取数据的模块HANDLER
     ZCE_SHLIB_HANDLE     recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;

@@ -47,121 +47,6 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
     return 0;
 }
 
-//
-int Ogre_Comm_Manger::init_accept_by_conf(Zen_INI_PropertyTree &cfg_file)
-{
-    int ret = 0;
-    unsigned int tmp_uint = 0;
-
-    const size_t TMP_BUFFER_LEN = 256;
-    char tmp_key[TMP_BUFFER_LEN + 1];
-    char tmp_value[TMP_BUFFER_LEN + 1];
-    char err_outbuf[TMP_BUFFER_LEN + 1];
-
-    ret = cfg_file.get_uint32_value("TCPACCEPT", "OPENNUMBER", tmp_uint);
-    snprintf(err_outbuf, TMP_BUFFER_LEN, "TCPACCEPT|OPENNUMBER key .");
-    TESTCONFIG((ret == 0), err_outbuf);
-    unsigned int accept_num = tmp_uint;
-
-    //如果没有配置打开，不用读取后面的配置
-    if (0 == accept_num)
-    {
-        return 0;
-    }
-
-    for (unsigned int i = 1; i <= accept_num; ++i)
-    {
-
-        //读取bind的IP端口
-        snprintf(tmp_key, TMP_BUFFER_LEN, "ACCEPTIP%u", i);
-        ret = cfg_file.get_string_value("TCPACCEPT", tmp_key, tmp_value, TMP_BUFFER_LEN);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "TCPACCEPT|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        snprintf(tmp_key, TMP_BUFFER_LEN, "ACCEPTPORT%u", i);
-        ret  = cfg_file.get_uint32_value("TCPACCEPT", tmp_key, tmp_uint);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "TCPACCEPT|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        ZCE_Sockaddr_In accept_bind_addr;
-        ret = accept_bind_addr.set(tmp_value, static_cast<unsigned short>(tmp_uint));
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        ret = check_safe_port(accept_bind_addr);
-
-        if (ret != 0)
-        {
-            return ret;
-        }
-
-        //TCP收取数据的模块
-        snprintf(tmp_key, TMP_BUFFER_LEN, "ACCEPTMODULE%u", i);
-        ret = cfg_file.get_string_value("TCPACCEPT", tmp_key, tmp_value, TMP_BUFFER_LEN);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "TCPACCEPT|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        OgreTCPAcceptHandler *accpet_hd = new OgreTCPAcceptHandler(accept_bind_addr, tmp_value);
-        accept_handler_ary_.push_back(accpet_hd);
-    }
-
-    return 0;
-}
-
-//
-int Ogre_Comm_Manger::init_udp_by_conf(Zen_INI_PropertyTree &cfg_file)
-{
-    int ret = 0;
-    unsigned int tmp_uint = 0;
-
-    const size_t TMP_BUFFER_LEN = 256;
-    char tmp_key[TMP_BUFFER_LEN + 1];
-    char tmp_value[TMP_BUFFER_LEN + 1];
-    char err_outbuf[TMP_BUFFER_LEN + 1];
-
-    ret = cfg_file.get_uint32_value("UDPCOMM", "OPENNUMBER", tmp_uint);
-    snprintf(err_outbuf, TMP_BUFFER_LEN, "UDPCOMM|OPENNUMBER key .");
-    TESTCONFIG((ret == 0), err_outbuf);
-    unsigned int udp_num = tmp_uint;
-
-    //如果没有配置打开，不用读取后面的配置
-    if (0 == udp_num)
-    {
-        return 0;
-    }
-
-    for (unsigned int i = 1; i <= udp_num; ++i)
-    {
-
-        //读取bind的IP端口
-        snprintf(tmp_key, TMP_BUFFER_LEN, "UDPIP%u", i);
-        ret = cfg_file.get_string_value("UDPCOMM", tmp_key, tmp_value, TMP_BUFFER_LEN);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "UDPCOMM|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        snprintf(tmp_key, TMP_BUFFER_LEN, "UDPPORT%u", i);
-        ret  = cfg_file.get_uint32_value("UDPCOMM", tmp_key, tmp_uint);
-        snprintf(err_outbuf, TMP_BUFFER_LEN, "UDPCOMM|%s key error.", tmp_key);
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        ZCE_Sockaddr_In udp_bind_addr;
-        ret = udp_bind_addr.set(tmp_value, static_cast<unsigned short>(tmp_uint));
-        TESTCONFIG((ret == 0), err_outbuf);
-
-        ret = check_safe_port(udp_bind_addr);
-
-        if (ret != 0)
-        {
-            return ret;
-        }
-
-        OgreUDPSvcHandler *udp_hd = new OgreUDPSvcHandler(udp_bind_addr);
-        udp_handler_ary_.push_back(udp_hd);
-    }
-
-    return 0;
-
-}
-
 //得到配置
 int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 {
@@ -177,12 +62,23 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 
     //TCP 读取配置
     ret = Ogre_TCP_Svc_Handler::get_config(config);
-
     if (ret != 0)
     {
         return ret;
     }
 
+    for (unsigned int i = 1; i <= accept_num; ++i)
+    {
+        OgreTCPAcceptHandler *accpet_hd = new OgreTCPAcceptHandler(accept_bind_addr, tmp_value);
+        accept_handler_ary_.push_back(accpet_hd);
+    }
+
+
+    for (unsigned int i = 1; i <= accept_num; ++i)
+    {
+        OgreUDPSvcHandler *udp_hd = new OgreUDPSvcHandler(udp_bind_addr);
+        udp_handler_ary_.push_back(udp_hd);
+    }
     return 0;
 }
 
@@ -257,8 +153,6 @@ int Ogre_Comm_Manger::init_comm_manger()
 {
     int ret = 0;
 
-
-
     //初始化所有的监听端口
     for (size_t i = 0; i < accept_handler_ary_.size(); ++i)
     {
@@ -271,7 +165,6 @@ int Ogre_Comm_Manger::init_comm_manger()
     }
 
     ret = OgreUDPSvcHandler::OpenUDPSendPeer();
-
     if (ret != 0)
     {
         return ret;
