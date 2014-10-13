@@ -5,8 +5,9 @@
 #include "soar_svrd_app_base.h"
 
 class Zerg_App_Frame;
+
 //单个函数处理APP FRAME
-class Comm_SvrdApp_BUS : public Comm_Svrd_Appliction
+class Soar_SvrdApp_ZergBus : public Soar_Svrd_Appliction
 {
 protected:
 
@@ -15,8 +16,8 @@ protected:
 
 protected:
     //
-    Comm_SvrdApp_BUS();
-    virtual ~Comm_SvrdApp_BUS();
+    Soar_SvrdApp_ZergBus();
+    virtual ~Soar_SvrdApp_ZergBus();
 
 public:
 

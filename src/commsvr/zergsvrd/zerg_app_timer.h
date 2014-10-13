@@ -37,6 +37,7 @@ public:
 
     //reload主动连接的间隔时间, 300s
     static const  int      AUTOCONNECT_RELOAD_INTERVAL = 300000;
+
     //自动连接有连接异常时会触发一次reload操作重新拉取ip, 一定时间内只触发一次, 120s
     static const unsigned int  RETRY_TRIGGER_RELOAD_INTERVAL = 120000;
 

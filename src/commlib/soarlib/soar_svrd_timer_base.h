@@ -56,7 +56,7 @@
 #define SOARING_LIB_TIMER_HANDLER_H_
 
 
-class Comm_Stat_Monitor;
+class Soar_Stat_Monitor;
 class Server_Config_Base;
 
 
@@ -68,7 +68,7 @@ class Server_Config_Base;
 class Server_Timer_Base : public ZCE_Timer_Handler
 {
 
-    friend class Comm_Svrd_Appliction;
+    friend class Soar_Svrd_Appliction;
 public:
 
     ///构造函数,因为框架的设计构造的时候不初始化timer queue，
@@ -135,7 +135,7 @@ protected:
     uint64_t  heart_total_mesc_ = 0;
 
     // 监控的实例
-    Comm_Stat_Monitor *stat_monitor_ = NULL;
+    Soar_Stat_Monitor *stat_monitor_ = NULL;
 
 
     time_t last_check_ = 0;

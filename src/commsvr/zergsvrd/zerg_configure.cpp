@@ -138,12 +138,14 @@ int Zerg_Server_Config::read_cfgfile()
 {
     //
     int ret = 0;
-
     ret = Server_Config_Base::read_cfgfile();
     if (ret != 0)
     {
         return ret;
     }
+
+    // 未指定通讯服务器配置
+    zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.cfg";
 
     ZCE_Conf_PropertyTree pt_tree;
     ret = ZCE_INI_Implement::read(zerg_cfg_file_.c_str(), &pt_tree);
@@ -361,6 +363,10 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         }
     }
 
+    //设置reactor的句柄数量
+    max_reactor_hdl_num_ = zerg_cfg_data_.max_accept_svr_ + zerg_cfg_data_.auto_connect_num_ + 64;
+    max_reactor_hdl_num_ = max_reactor_hdl_num_ > 64 ? max_reactor_hdl_num_ : 1024;
+
     return 0;
 }
 
@@ -412,6 +418,8 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
 void Zerg_Server_Config::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     Server_Config_Base::dump_cfg_info(out_lvl);
+
+    ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
 
     ZCE_LOGMSG(out_lvl, "[ZERG]Bind svcid number :%u", zerg_cfg_data_.bind_svcid_num_);
     for (size_t i = 0; i < zerg_cfg_data_.bind_svcid_num_; ++i)

@@ -5,7 +5,7 @@
 
 //原来是使用模版策略锁，后来发现模版容易将问题扩大化，
 //改成多态策略
-class Comm_Stat_Monitor : public ZCE_Server_Status
+class Soar_Stat_Monitor : public ZCE_Server_Status
 {
 
 
@@ -13,9 +13,9 @@ class Comm_Stat_Monitor : public ZCE_Server_Status
 public:
     //gunner里面有接收多个cgi统计上报的需求
     //单件无法支持
-    Comm_Stat_Monitor();
+    Soar_Stat_Monitor();
 
-    ~Comm_Stat_Monitor();
+    ~Soar_Stat_Monitor();
 
     /*!
     * @brief      初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
@@ -59,7 +59,7 @@ protected:
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
 public:
     //
-    static Comm_Stat_Monitor *instance();
+    static Soar_Stat_Monitor *instance();
     //
     static void clean_instance();
 
@@ -73,7 +73,7 @@ protected:
 
 protected:
     //单子实例
-    static Comm_Stat_Monitor *instance_;
+    static Soar_Stat_Monitor *instance_;
 };
 
 #endif //SOARING_LIB_MONITOR_STAT_H_

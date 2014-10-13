@@ -1010,6 +1010,14 @@ int mapped_in6_to_in(const in6_addr *src, in_addr *dst);
 */
 int mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst);
 
+/*!
+* @brief      检查一个端口是否安全，一些端口是黑客重点扫描的端口，比如1024以下，
+* @return     bool
+* @param      check_port
+*/
+bool check_safeport(uint16_t check_port);
+
+
 }
 
 //-----------------------------------------------------------------------------------------
@@ -1368,7 +1376,7 @@ inline ssize_t ZCE_LIB::recv (ZCE_SOCKET handle, void *buf, size_t len, int flag
     //统一错误成EWOULDBLOCK
 # if (EAGAIN != EWOULDBLOCK)
 
-    if (zce_result_ == -1 && errno == EAGAIN)
+    if (zce_result == -1 && errno == EAGAIN)
     {
         errno = EWOULDBLOCK;
     }

@@ -10,7 +10,7 @@
 *             
 * @note       
 */
-class Wormhole_Proxy_App : public Comm_SvrdApp_BUS
+class Wormhole_Proxy_App : public Soar_SvrdApp_ZergBus
 {
 
 public:
@@ -31,16 +31,13 @@ public:
 
     ///初始化,根据启动参数启动
     virtual int on_start(int argc, const char *argv[]);
+
     ///处理退出的清理工作
     virtual int on_exit();
 
-    ///加载配置
-    virtual int load_config();
-
+protected:
     ///重新加载配置
-    virtual int re_read_load_cfg();
-
-
+    virtual int reload_config();
 
 protected:
 

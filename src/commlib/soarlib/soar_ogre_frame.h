@@ -49,9 +49,9 @@ public:
     unsigned int                   ogre_frame_len_;
 
     //对端信息
-    Socket_Peer_Info               snd_peer_info_;
+    SOCKET_PERR_ID               snd_peer_info_;
     //对端信息
-    Socket_Peer_Info               rcv_peer_info_;
+    SOCKET_PERR_ID               rcv_peer_info_;
 
     //帧的选项，见
     unsigned int                   ogre_frame_option_: 28;
@@ -72,7 +72,7 @@ public:
     //
     Ogre4a_App_Frame();
     //
-    Ogre4a_App_Frame(const Socket_Peer_Info);
+    Ogre4a_App_Frame(const SOCKET_PERR_ID);
     //
     ~Ogre4a_App_Frame();
 
@@ -165,9 +165,9 @@ inline void Ogre4a_App_Frame::AddFrameLen(unsigned int add_frame_len)
 ******************************************************************************************/
 //
 //从.so加载函数名称
-static const char StrJudgeRecvWholeFrame[] = "JudgeRecvWholeFrame";
+static const char STR_JUDGE_RECV_WHOLEFRAME[] = "JudgeRecvWholeFrame";
 //
-typedef int ( *FPJudgeRecvWholeFrame)(const char *recv_buf,
+typedef int ( *FP_JudgeRecv_WholeFrame)(const char *recv_buf,
                                       unsigned int buf_len,
                                       unsigned int max_buf_len,
                                       bool &if_whole,

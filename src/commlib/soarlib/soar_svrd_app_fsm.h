@@ -21,7 +21,7 @@
 *
 * @note
 */
-class Comm_SvrdApp_FSM : public Comm_Svrd_Appliction
+class Comm_SvrdApp_FSM : public Soar_Svrd_Appliction
 {
 
 protected:

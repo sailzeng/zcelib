@@ -1867,3 +1867,25 @@ int ZCE_LIB::mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst)
                                     &(dst->sin_addr));
 }
 
+//对端口进行检查，一些端口是黑客重点扫描的端口，
+bool ZCE_LIB::check_safeport(uint16_t check_port)
+{
+    //高危端口检查常量
+    const unsigned short UNSAFE_PORT1 = 1024;
+    const unsigned short UNSAFE_PORT2 = 3306;
+    const unsigned short UNSAFE_PORT3 = 36000;
+    const unsigned short UNSAFE_PORT4 = 56000;
+    const unsigned short SAFE_PORT1 = 80;
+
+    //如果打开了保险检查,检查配置的端口
+    if ((check_port <= UNSAFE_PORT1 && check_port != SAFE_PORT1) ||
+        check_port == UNSAFE_PORT2 ||
+        check_port == UNSAFE_PORT3 ||
+        check_port == UNSAFE_PORT4)
+    {
+        return false;
+    }
+    //
+    return true;
+}
+

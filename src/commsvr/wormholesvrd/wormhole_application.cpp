@@ -26,7 +26,7 @@ Wormhole_Proxy_App::~Wormhole_Proxy_App()
 int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Comm_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::on_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -73,7 +73,7 @@ int Wormhole_Proxy_App::on_exit()
     return 0;
 }
 
-
+int Wormhole_Proxy_App::reload_config()
 ///加载配置
 int Wormhole_Proxy_App::load_config()
 {
@@ -84,7 +84,7 @@ int Wormhole_Proxy_App::re_read_load_cfg()
 {
     int ret = 0;
 
-    ZLOG_INFO("%s start.",__ZCE_FUNC__);
+    ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
 
     // 重新初始化数据转发模式
     delete interface_proxy_;
@@ -96,7 +96,6 @@ int Wormhole_Proxy_App::re_read_load_cfg()
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
-
     if (ret != 0)
     {
         return ret;
@@ -107,9 +106,6 @@ int Wormhole_Proxy_App::re_read_load_cfg()
     {
         return ret;
     }
-
-
-    ZLOG_INFO("%s end.", __ZCE_FUNC__);
 
     return 0;
 }

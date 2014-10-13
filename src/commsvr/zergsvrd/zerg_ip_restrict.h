@@ -22,9 +22,10 @@ protected:
     ~Zerg_IPRestrict_Mgr();
 
 public:
-    //从配置文件中得到相关的配置
+
+    ///从配置文件中得到相关的配置
     int get_config(const Zerg_Server_Config *config);
-    //检查IP限制
+    ///检查IP限制
     int check_iprestrict(const ZCE_Sockaddr_In &remoteaddress);
 
 public:

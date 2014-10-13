@@ -84,11 +84,7 @@ public:
 
     ///默认的ACCEPT端口的backlog，LightHTTP这个值得配置是1024，如果需要猛然间登陆很多人，可以调整到更大
     static const int DEFUALT_ZERG_BACKLOG = 128;
-
-    ///最小的端口的发送队列长度
-    static const uint32_t MIN_SEND_DEQUE_SIZE = 4;
-    ///默认Accept 端口的发送队列长度
-    static const uint32_t MAX_SEND_DEQUE_SIZE = 512;
+    
 
 public:
 
@@ -188,6 +184,8 @@ public:
 
 
 public:
+    ///ZERG的配置文件
+    std::string zerg_cfg_file_;
 
     ///ZERG的配置数据
     ZERG_CONFIG_DATA  zerg_cfg_data_;

@@ -86,7 +86,7 @@ protected:
 
 
     //
-    Zerg_MMAP_BusPipe *zerg_mmap_pipe_ = NULL;
+    Soar_MMAP_BusPipe *zerg_mmap_pipe_ = NULL;
 };
 
 

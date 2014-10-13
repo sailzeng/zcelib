@@ -25,7 +25,7 @@ public:
     //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
     ZCE_Sockaddr_In6 (const ZCE_Sockaddr_In6 &others);
 
-    ~ZCE_Sockaddr_In6();
+    virtual ~ZCE_Sockaddr_In6();
 
 public:
     //设置地址信息
@@ -47,10 +47,13 @@ public:
     int set(uint16_t port_number,
             const char ipv6_addr_val[16]);
 
-    //设置端口好，
+    ///设置端口好，
     inline void set_port_number (uint16_t);
-    //取得端口号
+    ///取得端口号
     inline uint16_t get_port_number (void) const;
+
+    ///检查端口号是否是一个安全端口
+    bool check_safeport();
 
     //不可冲入的非安全函数
     inline const char *get_host_name (void) const;

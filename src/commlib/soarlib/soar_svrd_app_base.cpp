@@ -17,7 +17,7 @@
 
 #include "soar_predefine.h"
 #include "soar_svrd_app_base.h"
-#include "soar_zerg_mmappipe.h"
+#include "soar_mmap_buspipe.h"
 #include "soar_zerg_svc_info.h"
 #include "soar_svrd_cfg_fsm.h"
 #include "soar_svrd_timer_base.h"
@@ -25,9 +25,9 @@
 #include "soar_stat_monitor.h"
 
 
-Comm_Svrd_Appliction *Comm_Svrd_Appliction::instance_ = NULL;
+Soar_Svrd_Appliction *Soar_Svrd_Appliction::instance_ = NULL;
 
-Comm_Svrd_Appliction::Comm_Svrd_Appliction() :
+Soar_Svrd_Appliction::Soar_Svrd_Appliction() :
     business_id_(INVALID_BUSINESS_ID),
     self_svc_id_(),
     run_as_win_serivces_(false),
@@ -40,7 +40,7 @@ Comm_Svrd_Appliction::Comm_Svrd_Appliction() :
     app_author_ = "FXL Platform Server Dev Team.";
 }
 
-Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
+Soar_Svrd_Appliction::~Soar_Svrd_Appliction()
 {
     if (timer_base_)
     {
@@ -56,7 +56,7 @@ Comm_Svrd_Appliction::~Comm_Svrd_Appliction()
 }
 
 //初始化，放入一些基类的指针，
-int Comm_Svrd_Appliction::initialize(Server_Config_Base *config_base,
+int Soar_Svrd_Appliction::initialize(Server_Config_Base *config_base,
                                      Server_Timer_Base *timer_base)
 {
     config_base_ = config_base;
@@ -65,17 +65,17 @@ int Comm_Svrd_Appliction::initialize(Server_Config_Base *config_base,
 }
 
 //获取配置的指针
-Server_Config_Base *Comm_Svrd_Appliction::config_instance()
+Server_Config_Base *Soar_Svrd_Appliction::config_instance()
 {
     return config_base_;
 }
 
 
 //启动过程的处理
-int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
+int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
 {
 
-    //Comm_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
+    //Soar_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
     base_instance_ = this;
     int ret = 0;
 
@@ -185,7 +185,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = config_base_->read_cfgfile();
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] framwork config load_cfgfile fail. ret=%d", ret);
+        ZLOG_ERROR("[framework] framwork config read_cfgfile fail. ret=%d", ret);
         return ret;
     }
 
@@ -200,7 +200,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     ZLOG_INFO("======================================================================================================");
     ZLOG_INFO("======================================================================================================");
-    ZLOG_INFO("[framework] %s load_cfgfile success and init_log success.", app_base_name_.c_str());
+    ZLOG_INFO("[framework] %s read_cfgfile success and init_log success.", app_base_name_.c_str());
 
     self_svc_id_ = config_base_->self_svc_id_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
@@ -208,18 +208,9 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
                (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
 
-    //配置类读取配置完成后，APP加载配置
-    ret = load_config();
-    if (0 != ret)
-    {
-        ZLOG_INFO("[framework] load_config fail,ret = %d.", ret);
-        return ret;
-    }
-
-
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
-    ret = Comm_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
+    ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
         business_id_,
         self_svc_id_,
         0,
@@ -232,7 +223,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     }
 
     //监控对象添加框架的监控对象
-    Comm_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
+    Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
         COMM_STAT_ITEM_WITH_NAME);
 
 
@@ -244,11 +235,13 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
     timer_base_->initialize(ZCE_Timer_Queue::instance());
 
 
+    Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM, 
+        COMM_STAT_ITEM_WITH_NAME);
 
     //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
     //根据所需的IO句柄数量初始化
-    size_t max_reactor_hdl = config_base_->max_reactor_hdl_num_ + 16;
+    size_t max_reactor_hdl = config_base_->max_reactor_hdl_num_;
 #ifdef ZCE_OS_WINDOWS
     ZCE_Reactor::instance(new ZCE_Select_Reactor(max_reactor_hdl));
     ZLOG_DEBUG("[framework] ZCE_Reactor and ZCE_Select_Reactor u.");
@@ -258,7 +251,7 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 #endif
 
     //初始化内存管道
-    ret = Zerg_MMAP_BusPipe::instance()->
+    ret = Soar_MMAP_BusPipe::instance()->
           initialize(self_svc_id_,
                      config_base_->pipe_cfg_.recv_pipe_len_,
                      config_base_->pipe_cfg_.send_pipe_len_,
@@ -267,31 +260,43 @@ int Comm_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     if (0 != ret)
     {
-        ZLOG_INFO("[framework] Zerg_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
+        ZLOG_INFO("[framework] Soar_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
         return ret;
     }
 
-    zerg_mmap_pipe_ = Zerg_MMAP_BusPipe::instance();
+    zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
 
     ZLOG_INFO("[framework] MMAP Pipe init success,gogogo."
               "The more you have,the more you want. ");
 
-    ZLOG_INFO("[framework] Comm_Svrd_Appliction::init_instance Success.");
+    ZLOG_INFO("[framework] Soar_Svrd_Appliction::init_instance Success.");
     return 0;
 }
 
 //退出的工作
-int Comm_Svrd_Appliction::on_exit()
+int Soar_Svrd_Appliction::on_exit()
 {
     //可能要增加多线程的等待
     ZCE_Thread_Wait_Manager::instance()->wait_all();
     ZCE_Thread_Wait_Manager::clean_instance();
+
+    Soar_Stat_Monitor::clean_instance();
+
+    Soar_MMAP_BusPipe::clean_instance();
 
     //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现
     if (ZCE_Reactor::instance())
     {
         ZCE_Reactor::instance()->close();
     }
+    ZCE_Reactor::clean_instance();
+
+    //
+    if (ZCE_Timer_Queue::instance())
+    {
+        ZCE_Timer_Queue::instance()->close();
+    }
+    ZCE_Timer_Queue::clean_instance();
 
     //
     if (ZCE_Timer_Queue::instance())
@@ -300,10 +305,9 @@ int Comm_Svrd_Appliction::on_exit()
     }
         
     //单子实例清空
-    Zerg_MMAP_BusPipe::clean_instance();
     ZCE_Reactor::clean_instance();
     ZCE_Timer_Queue::clean_instance();
-    Comm_Stat_Monitor::clean_instance();
+    Soar_Stat_Monitor::clean_instance();
     
     ZLOG_INFO("[framework] %s exit_instance Succ.Have Fun.!!!",
               app_run_name_.c_str());
@@ -313,19 +317,19 @@ int Comm_Svrd_Appliction::on_exit()
 }
 
 //设置日志的优先级
-void Comm_Svrd_Appliction::set_log_priority(ZCE_LOG_PRIORITY log_prio)
+void Soar_Svrd_Appliction::set_log_priority(ZCE_LOG_PRIORITY log_prio)
 {
     ZCE_Trace_LogMsg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
-ZCE_LOG_PRIORITY Comm_Svrd_Appliction::get_log_priority()
+ZCE_LOG_PRIORITY Soar_Svrd_Appliction::get_log_priority()
 {
     return ZCE_Trace_LogMsg::instance()->get_log_priority();
 }
 
 //日志初始化
-int Comm_Svrd_Appliction::init_log()
+int Soar_Svrd_Appliction::init_log()
 {
     int ret = 0;
 
@@ -354,33 +358,27 @@ int Comm_Svrd_Appliction::init_log()
 }
 
 
-//配置类读取配置完成后，APP加载配置
-int Comm_Svrd_Appliction::load_config()
-{
-    return 0;
-}
-
 //重新加载配置
-int Comm_Svrd_Appliction::re_read_load_cfg()
+int Soar_Svrd_Appliction::reload_config()
 {
     return 0;
 }
 
 
 //注册实例指针
-void Comm_Svrd_Appliction::set_instance(Comm_Svrd_Appliction *inst)
+void Soar_Svrd_Appliction::set_instance(Soar_Svrd_Appliction *inst)
 {
     instance_ = inst;
 }
 
 //得到实例指针
-Comm_Svrd_Appliction *Comm_Svrd_Appliction::instance()
+Soar_Svrd_Appliction *Soar_Svrd_Appliction::instance()
 {
     return instance_;
 }
 
 //清理实例指针
-void Comm_Svrd_Appliction::clean_instance()
+void Soar_Svrd_Appliction::clean_instance()
 {
     if (instance_)
     {

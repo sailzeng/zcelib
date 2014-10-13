@@ -86,7 +86,10 @@ public:
     */
     virtual int read_start_arg(int argc, const char *argv[]);
 
-    /// 加载配置文件的配置
+    /*!
+    * @brief      加载配置文件的配置
+    * @return     int
+    */
     virtual int read_cfgfile();
 
     /*!
@@ -154,8 +157,7 @@ public:
 
     ///业务和通信进程公用的的配置文件
     std::string common_cfg_file_;
-    ///ZERG的配置文件
-    std::string zerg_cfg_file_;
+
     ///自己的配置文件
     std::string app_cfg_file_;
 

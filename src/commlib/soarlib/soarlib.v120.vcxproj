@@ -198,7 +198,7 @@
     <ClCompile Include="soar_svrd_app_fsm.cpp" />
     <ClCompile Include="soar_svrd_cfg_fsm.cpp" />
     <ClCompile Include="soar_svrd_timer_base.cpp" />
-    <ClCompile Include="soar_zerg_mmappipe.cpp" />
+    <ClCompile Include="soar_mmap_buspipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="soar_enum_define.h" />
@@ -230,7 +230,7 @@
     <ClInclude Include="soar_svrd_app_fsm.h" />
     <ClInclude Include="soar_svrd_cfg_fsm.h" />
     <ClInclude Include="soar_svrd_timer_base.h" />
-    <ClInclude Include="soar_zerg_mmappipe.h" />
+    <ClInclude Include="soar_mmap_buspipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

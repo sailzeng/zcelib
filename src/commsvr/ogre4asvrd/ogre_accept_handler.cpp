@@ -1,8 +1,8 @@
 #include "ogre_predefine.h"
-#include "ogre_accept_handler.h"
 #include "ogre_tcp_ctrl_handler.h"
 #include "ogre_configure.h"
 #include "ogre_ip_restrict.h"
+#include "ogre_accept_handler.h"
 
 /****************************************************************************************************
 class  OgreTCPAcceptHandler TCP Accept 处理的EventHandler,
@@ -15,7 +15,7 @@ OgreTCPAcceptHandler::OgreTCPAcceptHandler(const ZCE_Sockaddr_In &listen_addr,
     recv_mod_file_(recv_mod_file),
     recv_mod_handler_(ZCE_SHLIB_INVALID_HANDLE),
     fp_judge_whole_frame_(NULL),
-    ip_restrict_(Ogre4aIPRestrictMgr::instance())
+    ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {
 }
 
@@ -24,7 +24,7 @@ OgreTCPAcceptHandler::~OgreTCPAcceptHandler()
 {
     if (ZCE_SHLIB_INVALID_HANDLE != recv_mod_handler_)
     {
-        ZCE_OS::dlclose(recv_mod_handler_);
+        ZCE_LIB::dlclose(recv_mod_handler_);
     }
 }
 
@@ -33,7 +33,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
 {
 
     //加载外部.so协议判定模块
-    recv_mod_handler_ = ZCE_OS::dlopen(recv_mod_file_.c_str());
+    recv_mod_handler_ = ZCE_LIB::dlopen(recv_mod_file_.c_str());
 
     if ( ZCE_SHLIB_INVALID_HANDLE == recv_mod_handler_)
     {
@@ -43,13 +43,13 @@ int OgreTCPAcceptHandler::create_listenpeer()
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
 
-    fp_judge_whole_frame_ = (FPJudgeRecvWholeFrame)ZCE_OS::dlsym(recv_mod_handler_, StrJudgeRecvWholeFrame);
+    fp_judge_whole_frame_ = (FP_JudgeRecv_WholeFrame)ZCE_LIB::dlsym(recv_mod_handler_, STR_JUDGE_RECV_WHOLEFRAME);
 
     if ( NULL == fp_judge_whole_frame_)
     {
         ZLOG_ERROR( "Open Module [%s][%s] fail. recv_mod_handler =%u .\n",
                     recv_mod_file_.c_str(),
-                    StrJudgeRecvWholeFrame,
+                    STR_JUDGE_RECV_WHOLEFRAME,
                     recv_mod_handler_);
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
@@ -77,7 +77,7 @@ int OgreTCPAcceptHandler::create_listenpeer()
     //如果不能Bind相应的端口
     if (ret != 0)
     {
-        int last_err = ZCE_OS::last_error();
+        int last_err = ZCE_LIB::last_error();
         ZLOG_ERROR( "Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
                     accept_bind_addr_.get_host_addr(),
                     accept_bind_addr_.get_port_number(),
@@ -130,7 +130,7 @@ int OgreTCPAcceptHandler::handle_input(ZCE_HANDLE /*handle*/)
         sockstream.close();
 
         //记录错误
-        int accept_error =  ZCE_OS::last_error();
+        int accept_error =  ZCE_LIB::last_error();
         ZLOG_ERROR( "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
                     remoteaddress.get_host_addr(),
                     remoteaddress.get_port_number(),
@@ -173,9 +173,9 @@ int OgreTCPAcceptHandler::handle_input(ZCE_HANDLE /*handle*/)
     return 0;
 }
 //
-ZCE_SOCKET OgreTCPAcceptHandler::get_handle(void) const
+ZCE_HANDLE OgreTCPAcceptHandler::get_handle(void) const
 {
-    return peer_acceptor_.get_handle();
+    return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
 //设置地址

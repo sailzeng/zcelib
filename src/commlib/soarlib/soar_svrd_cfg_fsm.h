@@ -63,7 +63,7 @@ protected:
 public:
 
     /// º”‘ÿzerg framwork appµƒ≈‰÷√
-    virtual int load_cfgfile();
+    virtual int read_cfgfile();
 
 protected:
 
@@ -73,11 +73,10 @@ protected:
 
 public:
 
-    //
+    ///
     FRAMEWORK_CONFIG framework_config_;
 
-    ZCE_Conf_PropertyTree zerg_ptree_;
-
+    ///    
     ZCE_Conf_PropertyTree framework_ptree_;
 
 };

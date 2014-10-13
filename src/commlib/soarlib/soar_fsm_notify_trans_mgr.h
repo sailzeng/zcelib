@@ -21,7 +21,7 @@ Modification  :
 #include "soar_zerg_frame.h"
 #include "soar_zerg_frame_malloc.h"
 #include "soar_fsm_trans_mgr.h"
-#include "soar_zerg_mmappipe.h"
+#include "soar_mmap_buspipe.h"
 
 class NotifyTrans_TaskBase;
 
@@ -78,7 +78,7 @@ public:
     Param2: size_t sztransmap     处理的TRANS的个数
     Param3: SERVICES_ID selfsvr  自己的服务器ID
     Param4: ZCE_Timer_Queue* timer_queue 翻译器
-    Param5: Zerg_MMAP_BusPipe* zerg_mmap_pipe 管道数据
+    Param5: Soar_MMAP_BusPipe* zerg_mmap_pipe 管道数据
     Param6: AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX>* frame_mallocor FRAME分配器
     Description     : 构造函数
     Calls           :
@@ -90,7 +90,7 @@ public:
                        size_t sztransmap,
                        SERVICES_ID selfsvr,
                        ZCE_Timer_Queue *timer_queue,
-                       Zerg_MMAP_BusPipe *zerg_mmap_pipe,
+                       Soar_MMAP_BusPipe *zerg_mmap_pipe,
                        AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX> *frame_mallocor
                       ):
         send_msg_queue_(NULL),
@@ -125,7 +125,7 @@ public:
                     const SERVICES_ID &selfsvr,
                     const ZCE_Time_Value &enqueue_timeout,
                     ZCE_Timer_Queue *timer_queue,
-                    Zerg_MMAP_BusPipe *zerg_mmap_pipe,
+                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
                     APPFRAME_MALLOCOR *frame_mallocor)
     {
         //根据最大的FRAME长度调整Manager内部的数据
@@ -416,7 +416,7 @@ public:
                        ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
 
             // 加个监控
-            Comm_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
                                                          tmp_frame->app_id_,
                                                          0);
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;

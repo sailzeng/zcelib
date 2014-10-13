@@ -117,6 +117,13 @@ int ZCE_Sockaddr_In::set(const char *ip_addr_str)
     return 0;
 }
 
+
+///检查端口号是否是一个安全端口
+bool ZCE_Sockaddr_In::check_safeport()
+{
+    return ZCE_LIB::check_safeport(this->get_port_number());
+}
+
 //比较两个地址是否相等
 bool ZCE_Sockaddr_In::operator == (const ZCE_Sockaddr_In &others) const
 {

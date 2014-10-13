@@ -34,7 +34,7 @@ Server_Timer_Base::~Server_Timer_Base()
 //初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
 int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
 {
-    stat_monitor_ = Comm_Stat_Monitor::instance();
+    stat_monitor_ = Soar_Stat_Monitor::instance();
 
     timer_queue(queue);
 
@@ -118,7 +118,7 @@ void Server_Timer_Base::report_status()
 {
     // 上报进程存活状态
     stat_monitor_->increase_once(COMM_STAT_APP_ALIVE, 0, 0);
-    Comm_Svrd_Appliction *svrd_app = Comm_Svrd_Appliction::instance();
+    Soar_Svrd_Appliction *svrd_app = Soar_Svrd_Appliction::instance();
 
     {
         // 获取服务器状态信息

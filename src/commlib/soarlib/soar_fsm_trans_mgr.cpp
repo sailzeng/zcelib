@@ -140,7 +140,7 @@ void Transaction_Manager::initialize(size_t  szregtrans,
                                      size_t sztransmap,
                                      const SERVICES_ID &selfsvr,
                                      ZCE_Timer_Queue *timer_queue,
-                                     Zerg_MMAP_BusPipe *zerg_mmap_pipe,
+                                     Soar_MMAP_BusPipe *zerg_mmap_pipe,
                                      unsigned int max_frame_len,
                                      bool init_inner_queue,
                                      bool init_lock_pool)
@@ -342,7 +342,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
 
     Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(trans_recv_buffer_);
 
-    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Zerg_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
+    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
     {
         //
         ret = zerg_mmap_pipe_->pop_front_recvpipe(tmp_frame);
@@ -379,7 +379,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
 //将数据放入发送管道
 int Transaction_Manager::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 {
-    //Zerg_MMAP_BusPipe必须先初始化....
+    //Soar_MMAP_BusPipe必须先初始化....
     return zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 }
 

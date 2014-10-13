@@ -31,7 +31,7 @@ ZBuffer_Storage  *TCP_Svc_Handler::zbuffer_storage_ = NULL;
 //通信管理器
 Zerg_Comm_Manager *TCP_Svc_Handler::zerg_comm_mgr_ = NULL;
 //
-Comm_Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
+Soar_Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
 
 //自己是否是代理
 bool           TCP_Svc_Handler::if_proxy_ = false;
@@ -402,7 +402,7 @@ int TCP_Svc_Handler::init_all_static_data()
     zbuffer_storage_ = ZBuffer_Storage::instance();
 
     //服务器的统计操作实例
-    server_status_ = Comm_Stat_Monitor::instance();
+    server_status_ = Soar_Stat_Monitor::instance();
 
 
     //最大要链接数量等于自动链接服务的数量,增加16个
