@@ -52,12 +52,6 @@
     <ClCompile Include="soar_ogre_frame.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar_zerg_svc_info.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="soar_ogre_svc_peer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar_svrd_timer_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -86,6 +80,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="soar_mmap_buspipe.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_ogre_peer_id.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar_services_info.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -144,12 +144,6 @@
     <ClInclude Include="soar_ogre_frame.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="soar_zerg_svc_info.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="soar_ogre_svc_peer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="soar_svrd_timer_base.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -178,6 +172,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar_mmap_buspipe.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_ogre_peer_id.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar_services_info.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

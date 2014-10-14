@@ -1,7 +1,7 @@
 #ifndef SOARING_LIB_MONITOR_STAT_H_
 #define SOARING_LIB_MONITOR_STAT_H_
 
-#include "soar_zerg_svc_info.h"
+#include "soar_services_info.h"
 
 //原来是使用模版策略锁，后来发现模版容易将问题扩大化，
 //改成多态策略

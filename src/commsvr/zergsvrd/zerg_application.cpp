@@ -135,9 +135,6 @@ int Zerg_Service_App::on_exit()
     //最后调用基类的退出函数
     Soar_Svrd_Appliction::on_exit();
     
-    //基类的退出
-    Soar_Svrd_Appliction::on_exit();
-
     return 0;
 }
 

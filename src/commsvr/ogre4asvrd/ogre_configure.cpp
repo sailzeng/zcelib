@@ -47,11 +47,6 @@ int TCP_PEER_CONFIG_INFO::from_str(const char * peer_info_str)
 
 //======================================================================================
 
-TCP_PEER_MODULE_INFO::TCP_PEER_MODULE_INFO(const TCP_PEER_CONFIG_INFO &peer_info) :
-    peer_info_(peer_info)
-{
-}
-
 TCP_PEER_MODULE_INFO::TCP_PEER_MODULE_INFO()
 {
 
@@ -64,12 +59,12 @@ TCP_PEER_MODULE_INFO::~TCP_PEER_MODULE_INFO()
 ///¼ÓÔØÄ£¿é
 int TCP_PEER_MODULE_INFO::open_module()
 {
-    recv_mod_handler_ = ZCE_LIB::dlopen(module_file_.c_str());
+    recv_mod_handler_ = ZCE_LIB::dlopen(peer_info_.module_file_.c_str());
 
     if (ZCE_SHLIB_INVALID_HANDLE == recv_mod_handler_)
     {
         ZLOG_ERROR("Open Module [%s] fail. recv_mod_handler =%u .\n",
-            module_file_.c_str(),
+            peer_info_.module_file_.c_str(),
             recv_mod_handler_);
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
@@ -80,7 +75,7 @@ int TCP_PEER_MODULE_INFO::open_module()
     if (NULL == fp_judge_whole_frame_)
     {
         ZLOG_ERROR("Open Module [%s|%s] fail. recv_mod_handler =%u .\n", 
-            module_file_.c_str(), 
+            peer_info_.module_file_.c_str(),
             STR_JUDGE_RECV_WHOLEFRAME, 
             recv_mod_handler_);
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
@@ -95,7 +90,9 @@ int TCP_PEER_MODULE_INFO::close_module()
     if (ZCE_SHLIB_INVALID_HANDLE != recv_mod_handler_)
     {
         ZCE_LIB::dlclose(recv_mod_handler_);
+        recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;
     }
+
     return 0;
 }
 

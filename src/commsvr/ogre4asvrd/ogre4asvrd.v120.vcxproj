@@ -34,7 +34,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ogre_svrpeer_info_set.cpp" />
+    <ClCompile Include="ogre_tcppeer_id_set.cpp" />
     <ClCompile Include="ogre_tcp_ctrl_handler.cpp" />
     <ClCompile Include="ogre_udp_ctrl_handler.cpp" />
   </ItemGroup>
@@ -48,7 +48,7 @@
     <ClInclude Include="ogre_configure.h" />
     <ClInclude Include="ogre_ip_restrict.h" />
     <ClInclude Include="ogre_predefine.h" />
-    <ClInclude Include="ogre_svrpeer_info_set.h" />
+    <ClInclude Include="ogre_tcppeer_id_set.h" />
     <ClInclude Include="ogre_tcp_ctrl_handler.h" />
     <ClInclude Include="ogre_udp_ctrl_handler.h" />
   </ItemGroup>

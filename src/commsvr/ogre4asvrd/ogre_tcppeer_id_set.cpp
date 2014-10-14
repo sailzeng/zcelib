@@ -1,29 +1,29 @@
 #include "ogre_predefine.h"
-#include "ogre_svrpeer_info_set.h"
+#include "ogre_tcppeer_id_set.h"
 #include "ogre_auto_connect.h"
 #include "ogre_tcp_ctrl_handler.h"
-#include "ogre_svrpeer_info_set.h"
+#include "ogre_tcppeer_id_set.h"
 
 /****************************************************************************************************
 class  PeerInfoSetToTCPHdlMap
 ****************************************************************************************************/
-PeerInfoSetToTCPHdlMap::PeerInfoSetToTCPHdlMap()
+PeerID_To_TCPHdl_Map::PeerID_To_TCPHdl_Map()
 {
 }
 
-PeerInfoSetToTCPHdlMap::~PeerInfoSetToTCPHdlMap()
+PeerID_To_TCPHdl_Map::~PeerID_To_TCPHdl_Map()
 {
 }
 
-void PeerInfoSetToTCPHdlMap::init_services_peerinfo(size_t szpeer)
+void PeerID_To_TCPHdl_Map::init_services_peerinfo(size_t szpeer)
 {
     peer_info_set_.rehash(szpeer);
 }
 
 //根据SERVICEINFO查询PEER信息
-int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const SOCKET_PERR_ID &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
+int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PERR_ID &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
 {
-    MapOfSocketPeerInfo::iterator iter = peer_info_set_.find(svrinfo);
+    MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(svrinfo);
 
     const size_t BUFFER_SIZE = 32;
     char buffer[BUFFER_SIZE];
@@ -41,9 +41,9 @@ int PeerInfoSetToTCPHdlMap::find_services_peerinfo(const SOCKET_PERR_ID &svrinfo
 }
 
 //设置PEER信息
-int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const SOCKET_PERR_ID &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
+int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PERR_ID &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
 {
-    MapOfSocketPeerInfo::iterator iter = peer_info_set_.find(peer_info);
+    MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
     const size_t BUFFER_SIZE = 32;
     char buffer[BUFFER_SIZE];
@@ -62,21 +62,10 @@ int PeerInfoSetToTCPHdlMap::add_services_peerinfo(const SOCKET_PERR_ID &peer_inf
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2006年3月22日
-Function        : PeerInfoSetToTCPHdlMap::del_services_peerinfo
-Return          : size_t
-Parameter List  :
-Param1: const Socket_Peer_Info& svrinfo
-Description     : 根据Socket_Peer_Info,删除PEER信息,
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-size_t PeerInfoSetToTCPHdlMap::del_services_peerinfo(const SOCKET_PERR_ID &peer_info)
+//根据Socket_Peer_Info,删除PEER信息,
+size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PERR_ID &peer_info)
 {
-    MapOfSocketPeerInfo::iterator iter = peer_info_set_.find(peer_info);
+    MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
     size_t szdel = peer_info_set_.erase(peer_info);
 
@@ -90,7 +79,7 @@ size_t PeerInfoSetToTCPHdlMap::del_services_peerinfo(const SOCKET_PERR_ID &peer_
     return szdel;
 }
 
-void PeerInfoSetToTCPHdlMap::clear_and_close()
+void PeerID_To_TCPHdl_Map::clear_and_close()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
@@ -104,7 +93,7 @@ void PeerInfoSetToTCPHdlMap::clear_and_close()
             ZLOG_INFO( "Now remain %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
         }
 
-        MapOfSocketPeerInfo::iterator iter = peer_info_set_.begin();
+        MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();
         Ogre_TCP_Svc_Handler *svrhandle = (*(iter)).second;
 
         //Ogre_TCP_Svc_Handler::handle_close调用了del_services_peerinfo

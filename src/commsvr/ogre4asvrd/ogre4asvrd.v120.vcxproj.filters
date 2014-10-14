@@ -41,13 +41,13 @@
     <ClCompile Include="ogre_predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ogre_svrpeer_info_set.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ogre_tcp_ctrl_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ogre_udp_ctrl_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ogre_tcppeer_id_set.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -79,13 +79,13 @@
     <ClInclude Include="ogre_predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ogre_svrpeer_info_set.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="ogre_tcp_ctrl_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="ogre_udp_ctrl_handler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ogre_tcppeer_id_set.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

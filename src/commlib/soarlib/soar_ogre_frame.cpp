@@ -81,7 +81,7 @@ void Ogre4a_App_Frame::set_max_framedata_len(unsigned int  max_framedata)
 //½»»»×Ô¼ºRcv ,Snd Peer Info
 void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
 {
-    SOCKET_PERR_ID sock_peer = snd_peer_info_;
+    OGRE_PERR_ID sock_peer = snd_peer_info_;
     snd_peer_info_  = rcv_peer_info_;
     rcv_peer_info_ = sock_peer;
 }

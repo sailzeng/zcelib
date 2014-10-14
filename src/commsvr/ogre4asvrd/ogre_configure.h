@@ -32,11 +32,10 @@ public:
 *             
 * @note       
 */
-struct TCP_PEER_MODULE_INFO :public TCP_PEER_CONFIG_INFO
+struct TCP_PEER_MODULE_INFO 
 {
 public:
 
-    TCP_PEER_MODULE_INFO(const TCP_PEER_CONFIG_INFO &peer_config);
     TCP_PEER_MODULE_INFO();
     ~TCP_PEER_MODULE_INFO();
 
@@ -51,15 +50,43 @@ public:
 public:
 
     ///
-    TCP_PEER_CONFIG_INFO peer_info_;
+    OGRE_PERR_ID  peer_id_;
+
     ///
-    SOCKET_PERR_ID  peer_id_;
+    TCP_PEER_CONFIG_INFO peer_info_;
 
     ///TCP收取数据的模块HANDLER
     ZCE_SHLIB_HANDLE     recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;
     ///
     FP_JudgeRecv_WholeFrame   fp_judge_whole_frame_ = NULL;
 
+};
+
+
+//得到KEY的HASH函数
+struct HASH_OF_PEER_MODULE
+{
+public:
+    size_t operator()(const TCP_PEER_MODULE_INFO &peer_module) 
+    {
+        return (size_t(peer_module.peer_id_.peer_port_) << 16) + peer_module.peer_id_.peer_ip_address_;
+    }
+};
+
+struct EQUAL_OF_PEER_MODULE
+{
+public:
+    //注意判断条件不是所有的变量
+    bool operator()(const TCP_PEER_MODULE_INFO &left, const TCP_PEER_MODULE_INFO &right)
+    {
+        //检查SVC INFO的相等,就认为相等
+        if (right.peer_id_ == left.peer_id_)
+        {
+            return true;
+        }
+
+        return false;
+    }
 };
 
 //======================================================================================

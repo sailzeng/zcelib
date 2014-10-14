@@ -129,7 +129,7 @@ public:
                     APPFRAME_MALLOCOR *frame_mallocor)
     {
         //根据最大的FRAME长度调整Manager内部的数据
-        size_t max_frame_len = frame_mallocor->GetMaxFrameLength();
+        size_t max_frame_len = frame_mallocor->get_max_framelen();
         Transaction_Manager::initialize(szregtrans,
                                         sztransmap,
                                         selfsvr,

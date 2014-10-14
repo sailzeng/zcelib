@@ -1,7 +1,7 @@
 
 
 #include "ogre_predefine.h"
-#include "ogre_svrpeer_info_set.h"
+#include "ogre_tcppeer_id_set.h"
 #include "ogre_app_timer.h"
 #include "ogre_configure.h"
 #include "ogre_buf_storage.h"
@@ -23,7 +23,7 @@ const int      Ogre_TCP_Svc_Handler::TCPCTRL_TIME_ID[] = {1, 2};
 unsigned int   Ogre_TCP_Svc_Handler::error_try_num_ = 3;
 
 //
-PeerInfoSetToTCPHdlMap Ogre_TCP_Svc_Handler::svr_peer_info_set_;
+PeerID_To_TCPHdl_Map Ogre_TCP_Svc_Handler::svr_peer_info_set_;
 
 Ogre_Connect_Server Ogre_TCP_Svc_Handler::zerg_auto_connect_;
 
@@ -159,7 +159,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         timeout_time_id_ = timer_queue()->schedule_timer (this, &TCPCTRL_TIME_ID[0], delay, interval);
     }
 
-    SOCKET_PERR_ID peer_svr_info(remote_address_);
+    OGRE_PERR_ID peer_svr_info(remote_address_);
     //放入连接处理的MAP
     ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_info, this);
 
@@ -211,7 +211,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         return;
     }
 
-    SOCKET_PERR_ID peer_svr_info(remote_address_);
+    OGRE_PERR_ID peer_svr_info(remote_address_);
     //放入连接处理的MAP
     ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_info, this);
 
@@ -422,7 +422,7 @@ int Ogre_TCP_Svc_Handler::handle_close ()
     //如果服务是激活状态，或者是主动连接的服务.
     if (peer_status_ == PEER_STATUS_ACTIVE || handler_mode_ == HANDLER_MODE_CONNECT)
     {
-        SOCKET_PERR_ID peer_svr_info(remote_address_);
+        OGRE_PERR_ID peer_svr_info(remote_address_);
         //注销这些信息
         svr_peer_info_set_.del_services_peerinfo(peer_svr_info);
 
@@ -933,7 +933,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
     const size_t TMP_IP_ADDRESS_LEN = 32;
     char remote_ip_str[TMP_IP_ADDRESS_LEN], local_ip_str[TMP_IP_ADDRESS_LEN];
 
-    SOCKET_PERR_ID svrinfo = ogre_frame->rcv_peer_info_;
+    OGRE_PERR_ID svrinfo = ogre_frame->rcv_peer_info_;
 
     Ogre_TCP_Svc_Handler *svchanle = NULL;
     ret = svr_peer_info_set_.find_services_peerinfo(svrinfo, svchanle);

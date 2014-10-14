@@ -3,7 +3,7 @@
 #define SOARING_LIB_SERVER_APP_FRAME_H_
 
 #include "soar_enum_define.h"
-#include "soar_zerg_svc_info.h"
+#include "soar_services_info.h"
 #include "soar_frame_command.h"
 #include "soar_error_code.h"
 

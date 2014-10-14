@@ -13,7 +13,7 @@ Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
     ip_restrict_(Ogre_IPRestrict_Mgr::instance())
 {
     peer_module_info_.peer_info_ = config_info;
-    ZCE_ASSERT(fp_judge_whole_frame_);
+    ZCE_ASSERT(peer_module_info_.fp_judge_whole_frame_);
 }
 
 //自己清理的类型，统一关闭在handle_close,这个地方不用关闭

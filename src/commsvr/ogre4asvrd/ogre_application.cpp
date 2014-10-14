@@ -26,7 +26,7 @@ Ogre_Service_App::~Ogre_Service_App()
 int Ogre_Service_App::on_start(int argc, const char *argv[])
 {
     int ret = 0;
-
+    ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
     //
     ret = Soar_Svrd_Appliction::on_start(argc,argv);
 

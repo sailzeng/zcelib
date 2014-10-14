@@ -10,12 +10,11 @@
 class Ogre_TCP_Svc_Handler;
 
 
-
-typedef std::vector <TCP_PEER_MODULE_INFO> ARRAY_OF_PEER_FPRECV_MODULE;
-
-
-
-
+/*!
+* @brief      主动链接其他服务器的管理类
+*             
+* @note       
+*/
 class Ogre_Connect_Server
 {
 public:
@@ -27,23 +26,42 @@ public:
     ///读取配置
     int get_config(const Ogre_Server_Config *config);
 
-    //链接所有的服务器
-    int connect_all_server(size_t &szserver, size_t &szsucc) ;
+    /*!
+    * @brief      对所有的服务器进行重新链接
+    * @return     int == 0表示成功
+    * @param      num_connect 进行链接的服务器数量
+    * @param      num_succ    成功进行链接的服务器数量，
+    */
+    int connect_all_server(size_t &num_connect, size_t &num_succ) ;
 
+    /*!
+    * @brief      根据SVRINFO,检查是否是主动连接的服务.并进行连接
+    * @return     int  == 0表示成功
+    * @param      peer_id 要链接服务器的PEER ID
+    */
+    int connect_server_by_peerid(const OGRE_PERR_ID &peer_id);
 
-    //根据SVRINFO,检查是否是主动连接的服务.并进行连接
-    int connect_server_by_peerid(const SOCKET_PERR_ID &socket_peer) ;
-
+protected:
+    /*!
+    * @brief      重链某个服务器
+    * @return     int == 0表示成功
+    * @param      peer_module 服务器的配置信息
+    */
+    int connect_one_server(const TCP_PEER_MODULE_INFO &peer_module);
 
 protected:
 
-    ///
+    typedef std::unordered_set <TCP_PEER_MODULE_INFO,
+        HASH_OF_PEER_MODULE,
+        EQUAL_OF_PEER_MODULE> SET_OF_TCP_PEER_MODULE;
+
+    ///连接器
     ZCE_Socket_Connector ogre_connector_;
 
     ///
     size_t auto_connect_num_ = 0;
-    ///
-    TCP_PEER_MODULE_INFO     autocnt_module_ary_[OGRE_CONFIG_DATA::MAX_AUTO_CONNECT_PEER_NUM];
+    ///要主动链接的PEER的SET，用SET是查询方便
+    SET_OF_TCP_PEER_MODULE     autocnt_module_set_;
 
 };
 

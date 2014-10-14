@@ -3,7 +3,7 @@
 #ifndef OGRE_TCP_CONTROL_SERVICE_H_
 #define OGRE_TCP_CONTROL_SERVICE_H_
 
-#include "ogre_svrpeer_info_set.h"
+#include "ogre_tcppeer_id_set.h"
 #include "ogre_auto_connect.h"
 
 class Ogre4a_App_Frame;
@@ -156,7 +156,7 @@ protected:
     static unsigned int           error_try_num_;
 
     //SVRINFO对应的PEER的HASHMAP
-    static PeerInfoSetToTCPHdlMap svr_peer_info_set_;
+    static PeerID_To_TCPHdl_Map svr_peer_info_set_;
     //
     //要自动链接的服务器
     static Ogre_Connect_Server    zerg_auto_connect_;

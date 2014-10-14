@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_SERVER_CONFIG_BASE_H_
 #define SOARING_LIB_SERVER_CONFIG_BASE_H_
 
-#include "soar_zerg_svc_info.h"
+#include "soar_services_info.h"
 
 //============================================================================================
 

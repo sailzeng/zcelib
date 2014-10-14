@@ -2,7 +2,7 @@
 #ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 #define SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 
-#include "soar_ogre_svc_peer.h"
+#include "soar_ogre_peer_id.h"
 
 /******************************************************************************************
 struct  Ogre4a_App_Frame OGRE 服务器的内部命令帧头
@@ -99,9 +99,9 @@ public:
     unsigned int ogre_frame_len_;
 
     //对端信息
-    SOCKET_PERR_ID snd_peer_info_;
+    OGRE_PERR_ID snd_peer_info_;
     //对端信息
-    SOCKET_PERR_ID rcv_peer_info_;
+    OGRE_PERR_ID rcv_peer_info_;
 
     //帧的选项，见
     unsigned int ogre_frame_option_ : 28;
@@ -124,7 +124,7 @@ public:
 //---------------------------------------------------------------------------------------------
 //打印输出头部信息的控制宏
 #if defined _DEBUG || defined DEBUG
-#define DEBUGDUMP_OGRE_HEAD(x,y,z)      Ogre4a_App_Frame::DumOgreFrameHead(x,y,z);
+#define DEBUGDUMP_OGRE_HEAD(x,y,z)      Ogre4a_App_Frame::dump_ogre_framehead(x,y,z);
 #else
 #define DEBUGDUMP_OGRE_HEAD(x,y,z)
 #endif

@@ -1,7 +1,7 @@
 #include "soar_predefine.h"
 #include "soar_zerg_frame.h"
 #include "soar_fsm_trans_base.h"
-#include "soar_zerg_svc_info.h"
+#include "soar_services_info.h"
 #include "soar_zerg_frame_malloc.h"
 #include "soar_fsm_trans_mgr.h"
 

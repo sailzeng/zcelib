@@ -1,6 +1,6 @@
 #include "soar_predefine.h"
 #include "soar_error_code.h"
-#include "soar_zerg_svc_info.h"
+#include "soar_services_info.h"
 
 /****************************************************************************************************
 class SERVICES_ID 服务信息,
