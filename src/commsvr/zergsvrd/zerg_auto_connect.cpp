@@ -45,7 +45,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
             ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't find Auto connect services ID %u.%u .Please check config file. ",
                        svc_route.svc_id_.services_type_,
                        svc_route.svc_id_.services_id_);
-            return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
+            return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO; 
         }
 
         auto ins_iter = autocnt_svcinfo_set_.insert(svc_route);
@@ -55,7 +55,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
                        "into set .Please check config file. ",
                        svc_route.svc_id_.services_type_,
                        svc_route.svc_id_.services_id_);
-            return SOAR_RET::ERR_ZERG_CONNECT_REPEAT_SVCID;
+            return SOAR_RET::ERR_ZERG_CONFIG_REPEAT_SVCID;
         }
 
 
@@ -104,18 +104,19 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
     auto iter_tmp = autocnt_svcinfo_set_.begin();
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
-        TCP_Svc_Handler *svchandle = NULL;
-        //如果已经有相应的链接了，跳过
-        ret = TCP_Svc_Handler::find_services_peer(iter_tmp->svc_id_, svchandle);
-
+        TCP_Svc_Handler *svc_handle = NULL;
+        //进行连接,
+        ret = connect_one_server(iter_tmp->svc_id_, iter_tmp->ip_address_, svc_handle);
         if (0 != ret)
         {
-            //进行连接,
-            ret = connect_server_bysvcid(iter_tmp->svc_id_, iter_tmp->ip_address_);
-
-            if (ret == 0)
+            if (ret == SOAR_RET::ERR_ZERG_SVCID_ALREADY_CONNECTED)
             {
-                ++szsucc;
+                ++szvalid;
+                //如果是激活状态才进行心跳包发送
+                if (svc_handle->get_peer_status() == TCP_Svc_Handler::PEER_STATUS_ACTIVE)
+                {
+                    svc_handle->send_zergheatbeat_reg();
+                }
             }
             else
             {
@@ -124,13 +125,7 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
         }
         else
         {
-            ++szvalid;
-
-            //如果是激活状态才进行心跳包发送
-            if (svchandle->get_peer_status() == TCP_Svc_Handler::PEER_STATUS_ACTIVE)
-            {
-                svchandle->send_zergheatbeat_reg();
-            }
+            ++szsucc;
         }
     }
 
@@ -143,7 +138,7 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
 
 
 //根据SVC ID,检查是否是主动连接的服务.,
-int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
+int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &reconnect_svcid)
 {
 
     //如果在SET里面找不到
@@ -157,16 +152,27 @@ int Zerg_Auto_Connector::reconnect_server(const SERVICES_ID &reconnect_svcid)
         return SOAR_RET::ERR_ZERG_ISNOT_CONNECT_SERVICES;
     }
 
-    return connect_server_bysvcid(reconnect_svcid, iter->ip_address_);
+    TCP_Svc_Handler *svc_handle = NULL;
+    return connect_one_server(reconnect_svcid, iter->ip_address_,svc_handle);
 }
 
 
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, const ZCE_Sockaddr_In     &inetaddr)
+int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id, 
+                                            const ZCE_Sockaddr_In &inetaddr,
+                                            TCP_Svc_Handler *&svc_handle)
 {
+    int ret = 0;
+    //如果已经有相应的链接了，跳过
+    ret = TCP_Svc_Handler::find_services_peer(svc_id, svc_handle);
+    if (ret == 0)
+    {
+        return SOAR_RET::ERR_ZERG_SVCID_ALREADY_CONNECTED;
+    }
+
     ZCE_LOGMSG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
-               svrinfo.services_type_,
-               svrinfo.services_id_,
+               svc_id.services_type_,
+               svc_id.services_id_,
                inetaddr.get_host_addr(),
                inetaddr.get_port_number()
               );
@@ -183,7 +189,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
     //tcpscoket.sock_enable (O_NONBLOCK);
 
     //记住,是这个时间标志使SOCKET异步连接,第3个参数true表示是非阻塞
-    int ret = zerg_connector_.connect(sockstream, &inetaddr, true);
+    ret = zerg_connector_.connect(sockstream, &inetaddr, true);
 
     //必然失败!?
     if (ret < 0)
@@ -202,7 +208,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &svrinfo, cons
         ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
         p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_id_,
-                                       svrinfo,
+                                       svc_id,
                                        sockstream,
                                        inetaddr);
 

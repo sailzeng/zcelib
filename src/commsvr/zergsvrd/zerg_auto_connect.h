@@ -5,7 +5,7 @@
 
 
 class Zerg_Server_Config;
-
+class TCP_Svc_Handler;
 
 
 /****************************************************************************************************
@@ -44,7 +44,7 @@ public:
     * @param      reconnect_svcid 要进行重连的主路由信息
     * @note       为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能handle_close.
     */
-    int reconnect_server(const SERVICES_ID &reconnect_svcid);
+    int connect_server_bysvcid(const SERVICES_ID &reconnect_svcid);
 
 
     /*!
@@ -66,9 +66,17 @@ public:
 
 protected:
 
-    //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-    int connect_server_bysvcid(const SERVICES_ID &svc_id,
-                               const ZCE_Sockaddr_In &inet_addr);
+    //
+    /*!
+    * @brief      根据SVC ID+IP,检查是否是主动连接的服务.并进行连接
+    * @return     int
+    * @param      svc_id       要进行连接的SVC ID
+    * @param      inet_addr    地址
+    * @param      svc_handle , 如果已经有相应的连接，在这个地方返回对用的Handle
+    */
+    int connect_one_server(const SERVICES_ID &svc_id,
+                           const ZCE_Sockaddr_In &inet_addr,
+                           TCP_Svc_Handler *&svc_handle);
 
 protected:
 

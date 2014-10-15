@@ -106,26 +106,34 @@ protected:
     ///定时器关闭
     virtual int timer_close();
 
+    ///设置心跳定时器的进度，默认是0.5s一次，如果觉得不够，在initialize前重新设置
+    ///精度USEC
+    void set_heart_precision(const ZCE_Time_Value &precision);
+
+
+    /*!
+    * @brief      增加一个APP的定时器
+    * @param[in]  interval 增加的定时器的间隔 
+    * @param[in]  act      增加的定时器的标示
+    */
+    void add_app_timer(const ZCE_Time_Value &interval, const void *act);
+
+    
 protected:
 
-    ///服务器定时器ID
+    ///服务器定时器ID, 
     static const  int  SERVER_TIMER_ID[];
 
     ///APP Timer的最大数量，
-    static const size_t MAX_APP_TIMER_NUMBER = 3;
-    ///
-    static const time_t DEF_TIMER_INTERVAL_USEC = 100000;
+    static const size_t MAX_APP_TIMER_NUMBER = 6;
+
+    ///默认心跳的精度
+    static const time_t DEF_TIMER_INTERVAL_USEC = 500000;
 
 protected:
 
     ///心跳的精度，
     ZCE_Time_Value heart_precision_ = ZCE_Time_Value(0, DEF_TIMER_INTERVAL_USEC);
-
-    ///非心跳以外，还可以设置N个APP定时器，你自己配置,
-    size_t zan_timer_num_ = 0;
-    ///
-    ZCE_Time_Value zan_timer_prec_[MAX_APP_TIMER_NUMBER];
-
 
     ///心跳计数器，heartbeat_counter_不从0开始计数是避免第一次模除的时候就发生事情
     uint64_t  heartbeat_counter_ = 1;
@@ -134,11 +142,19 @@ protected:
     ///并不准确，用于各种初略计算
     uint64_t  heart_total_mesc_ = 0;
 
+    time_t last_check_ = 0;
+
     // 监控的实例
     Soar_Stat_Monitor *stat_monitor_ = NULL;
 
-
-    time_t last_check_ = 0;
+    
+    ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
+    size_t zan_timer_num_ = 0;
+    ///
+    ZCE_Time_Value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
+    ///
+    const void *zan_timer_act_[MAX_APP_TIMER_NUMBER];
+    
 
 public:
     ///当前时间

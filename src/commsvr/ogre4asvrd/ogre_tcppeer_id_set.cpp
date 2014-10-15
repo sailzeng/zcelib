@@ -21,7 +21,7 @@ void PeerID_To_TCPHdl_Map::init_services_peerinfo(size_t szpeer)
 }
 
 //根据SERVICEINFO查询PEER信息
-int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PERR_ID &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
+int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(svrinfo);
 
@@ -41,7 +41,7 @@ int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PERR_ID &svrinfo, Og
 }
 
 //设置PEER信息
-int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PERR_ID &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
+int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
@@ -63,7 +63,7 @@ int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PERR_ID &peer_info, O
 }
 
 //根据Socket_Peer_Info,删除PEER信息,
-size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PERR_ID &peer_info)
+size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PEER_ID &peer_info)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 

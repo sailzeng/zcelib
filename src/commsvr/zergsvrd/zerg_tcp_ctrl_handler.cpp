@@ -1872,10 +1872,10 @@ int TCP_Svc_Handler::close_services_peer(const SERVICES_ID &svr_info)
 }
 
 //根据有的SVR INFO，查询相应的HDL
-int TCP_Svc_Handler::find_services_peer(const SERVICES_ID &svr_info, TCP_Svc_Handler *&svchanle)
+int TCP_Svc_Handler::find_services_peer(const SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle)
 {
     int ret = 0;
-    ret = svr_peer_info_set_.find_handle_by_svcid(svr_info, svchanle);
+    ret = svr_peer_info_set_.find_handle_by_svcid(svc_id, svchanle);
 
     //如果是要重新进行连接的服务器主动主动连接,
     if (ret != 0)

@@ -62,32 +62,46 @@ int Ogre_Connect_Server::get_config(const Ogre_Server_Config *config)
 
 //链接所有的服务器
 //要链接的服务器总数,成功开始连接的服务器个数,
-int Ogre_Connect_Server::connect_all_server(size_t &num_connect, size_t &num_succ)
+int Ogre_Connect_Server::connect_all_server(size_t &num_vaild, size_t &num_succ,size_t &num_fail)
 {
     int ret = 0;
 
-    num_connect = 0;
+    num_vaild = 0;
     num_succ = 0;
+    num_fail = 0;
     
     SET_OF_TCP_PEER_MODULE::iterator iter_tmp = autocnt_module_set_.begin();
     SET_OF_TCP_PEER_MODULE::iterator iter_end = autocnt_module_set_.end();
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
-        ++num_connect;
         ret = connect_one_server(*iter_tmp);
         if (0 == ret)
         {
             ++num_succ;
         }
+        else
+        {
+            if (SOAR_RET::ERR_OGRE_ALREADY_CONNECTED == ret)
+            {
+                ++num_vaild;
+            }
+            else
+            {
+                ++num_fail;
+            }
+        }
     }
     
-    ZLOG_INFO("Auto NONBLOCK Connect Server,counter number :%d,success :%d .\n", num_connect, num_succ);
+    ZLOG_INFO("Auto NONBLOCK Connect Server,vaild number :%u,success :%u fail %u.\n",
+        num_vaild, 
+        num_succ, 
+        num_fail);
     //返回开始连接的服务器数量
     return 0;
 }
 
 
-int Ogre_Connect_Server::connect_server_by_peerid(const OGRE_PERR_ID &socket_peer)
+int Ogre_Connect_Server::connect_server_by_peerid(const OGRE_PEER_ID &socket_peer)
 {
     TCP_PEER_MODULE_INFO peer_module;
     peer_module.peer_id_ = socket_peer;
@@ -108,7 +122,17 @@ int Ogre_Connect_Server::connect_server_by_peerid(const OGRE_PERR_ID &socket_pee
 
 int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_module)
 {
-    ZCE_Sockaddr_In inetaddr(peer_module.peer_id_.peer_ip_address_, 
+    int ret = 0;
+
+    //如果已经连接上了，不进行连接
+    Ogre_TCP_Svc_Handler *tcp_hdl = NULL;
+    ret = Ogre_TCP_Svc_Handler::find_services_peer(peer_module.peer_id_, tcp_hdl);
+    if (ret == 0)
+    {
+        return SOAR_RET::ERR_OGRE_ALREADY_CONNECTED;
+    }
+
+    ZCE_Sockaddr_In inetaddr(peer_module.peer_id_.peer_ip_address_,
         peer_module.peer_id_.peer_port_);
 
     ZCE_Socket_Stream tcpscoket;
@@ -119,7 +143,7 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
         inetaddr.get_port_number());
 
     //记住,是这个时间标志使SOCKET异步连接,
-    int ret = ogre_connector_.connect(tcpscoket, &inetaddr, true);
+    ret = ogre_connector_.connect(tcpscoket, &inetaddr, true);
 
     //必然失败!?
     if (ret < 0)

@@ -23,7 +23,7 @@ const int      Ogre_TCP_Svc_Handler::TCPCTRL_TIME_ID[] = {1, 2};
 unsigned int   Ogre_TCP_Svc_Handler::error_try_num_ = 3;
 
 //
-PeerID_To_TCPHdl_Map Ogre_TCP_Svc_Handler::svr_peer_info_set_;
+PeerID_To_TCPHdl_Map Ogre_TCP_Svc_Handler::svr_peer_hdl_set_;
 
 Ogre_Connect_Server Ogre_TCP_Svc_Handler::zerg_auto_connect_;
 
@@ -159,9 +159,9 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         timeout_time_id_ = timer_queue()->schedule_timer (this, &TCPCTRL_TIME_ID[0], delay, interval);
     }
 
-    OGRE_PERR_ID peer_svr_info(remote_address_);
+    OGRE_PEER_ID peer_svr_info(remote_address_);
     //放入连接处理的MAP
-    ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_info, this);
+    ret = svr_peer_hdl_set_.add_services_peerinfo(peer_svr_info, this);
 
     //在这儿自杀是不是危险了一点
     if (ret != 0)
@@ -211,9 +211,9 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         return;
     }
 
-    OGRE_PERR_ID peer_svr_info(remote_address_);
+    OGRE_PEER_ID peer_svr_info(remote_address_);
     //放入连接处理的MAP
-    ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_info, this);
+    ret = svr_peer_hdl_set_.add_services_peerinfo(peer_svr_info, this);
 
     //在这儿自杀是不是危险了一点
     if (ret != 0)
@@ -422,9 +422,9 @@ int Ogre_TCP_Svc_Handler::handle_close ()
     //如果服务是激活状态，或者是主动连接的服务.
     if (peer_status_ == PEER_STATUS_ACTIVE || handler_mode_ == HANDLER_MODE_CONNECT)
     {
-        OGRE_PERR_ID peer_svr_info(remote_address_);
+        OGRE_PEER_ID peer_svr_info(remote_address_);
         //注销这些信息
-        svr_peer_info_set_.del_services_peerinfo(peer_svr_info);
+        svr_peer_hdl_set_.del_services_peerinfo(peer_svr_info);
 
     }
 
@@ -861,14 +861,13 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
     }
 
     //初始化所有的端口对应表,
-    svr_peer_info_set_.init_services_peerinfo(max_accept_svr_ + max_connect_svr_ + 64);
+    svr_peer_hdl_set_.init_services_peerinfo(max_accept_svr_ + max_connect_svr_ + 64);
 
     //连接所有的SERVER,如果有严重错误退出
-    size_t sz_of_svr = 0, sz_of_succ = 0;
-    ret = zerg_auto_connect_.connect_all_server(sz_of_svr, sz_of_succ);
-    ZLOG_INFO( "Have %u server to auto connect ,success %u ,ret =%d.\n",
-               sz_of_svr, sz_of_succ, ret);
-
+    size_t num_vaild = 0, num_succ = 0,num_fail;
+    ret = zerg_auto_connect_.connect_all_server(num_vaild, num_succ, num_fail);
+    ZLOG_INFO("Have %u server to auto connect ,success %u , fail %u,ret =%d.\n",
+        num_vaild, num_succ, num_fail, ret);
     if (ret != 0)
     {
         return ret;
@@ -881,7 +880,7 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
 int Ogre_TCP_Svc_Handler::unInit_all_static_data()
 {
     //
-    svr_peer_info_set_.clear_and_close();
+    svr_peer_hdl_set_.clear_and_close();
     return 0;
 }
 
@@ -933,10 +932,10 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
     const size_t TMP_IP_ADDRESS_LEN = 32;
     char remote_ip_str[TMP_IP_ADDRESS_LEN], local_ip_str[TMP_IP_ADDRESS_LEN];
 
-    OGRE_PERR_ID svrinfo = ogre_frame->rcv_peer_info_;
+    OGRE_PEER_ID svrinfo = ogre_frame->rcv_peer_info_;
 
     Ogre_TCP_Svc_Handler *svchanle = NULL;
-    ret = svr_peer_info_set_.find_services_peerinfo(svrinfo, svchanle);
+    ret = svr_peer_hdl_set_.find_services_peerinfo(svrinfo, svchanle);
 
     //如果是要重新进行连接的服务器主动主动连接,
     if ( ret != 0 )
@@ -947,7 +946,7 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
         //这个地方是一个Double Check,如果发起连接成功
         if (ret == 0)
         {
-            ret = svr_peer_info_set_.find_services_peerinfo(svrinfo, svchanle);
+            ret = svr_peer_hdl_set_.find_services_peerinfo(svrinfo, svchanle);
         }
     }
 
@@ -1138,6 +1137,23 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
     if (ret != 0 )
     {
         return SOAR_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
+    }
+
+    return 0;
+}
+
+
+//根据有的SVR INFO，查询相应的HDL
+int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID &peer_id, 
+    Ogre_TCP_Svc_Handler *&svchanle)
+{
+    int ret = 0;
+    ret = svr_peer_hdl_set_.find_services_peerinfo(peer_id, svchanle);
+
+    //如果是要重新进行连接的服务器主动主动连接,
+    if (ret != 0)
+    {
+        return ret;
     }
 
     return 0;

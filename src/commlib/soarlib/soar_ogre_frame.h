@@ -99,9 +99,9 @@ public:
     unsigned int ogre_frame_len_;
 
     //对端信息
-    OGRE_PERR_ID snd_peer_info_;
+    OGRE_PEER_ID snd_peer_info_;
     //对端信息
-    OGRE_PERR_ID rcv_peer_info_;
+    OGRE_PEER_ID rcv_peer_info_;
 
     //帧的选项，见
     unsigned int ogre_frame_option_ : 28;

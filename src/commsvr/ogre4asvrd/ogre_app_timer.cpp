@@ -23,8 +23,11 @@ Ogre_App_Timer_Handler::~Ogre_App_Timer_Handler()
 }
 
 //
-int Ogre_App_Timer_Handler::timer_timeout(const ZCE_Time_Value &/*time*/, const void *arg)
+int Ogre_App_Timer_Handler::timer_timeout(const ZCE_Time_Value &time_now, const void *arg)
 {
+    //等到当前的时间
+    Server_Timer_Base::timer_timeout(time_now, arg);
+
     const int timeid = *(static_cast<const int *>(arg));
 
     //处理一个错误发送数据

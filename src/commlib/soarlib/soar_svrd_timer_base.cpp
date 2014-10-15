@@ -12,10 +12,7 @@ ZCE_Time_Value Server_Timer_Base::now_time_ = ZCE_LIB::gettimeofday();
 //定时器ID,避免New传递,回收
 const int Server_Timer_Base::SERVER_TIMER_ID[] =
 {
-    0x1,                      //心跳ID
-    0x101,                    //ZAN1
-    0x102,                    //ZAN2
-    0x103,                    //ZAN3
+    0x201208,                      //心跳ID
 };
 
 
@@ -39,20 +36,27 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
     timer_queue(queue);
 
     now_time_ = ZCE_LIB::gettimeofday();
+    last_check_ = now_time_.sec();
 
     timer_queue()->schedule_timer(this,
                                   &(SERVER_TIMER_ID[0]),
                                   ZCE_Time_Value::ZERO_TIME_VALUE,
                                   heart_precision_);
 
-    last_check_ = time(NULL);
-
+    //根据设置把这些定时器也开启
+    for (size_t i = 0; i < zan_timer_num_; ++i)
+    {
+        timer_queue()->schedule_timer(this,
+            zan_timer_act_[i],
+            zan_timer_internal_[i],
+            zan_timer_internal_[i]);
+    }
     return 0;
 }
 
 //超时处理
 int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
-                                     const void *act /*= 0*/)
+                                     const void *act )
 {
     ZCE_UNUSED_ARG(act);
 
@@ -68,9 +72,7 @@ int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
 
         // 处理监控
         check_monitor(now_time);
-
     }
-
 
     return 0;
 }
@@ -108,9 +110,6 @@ void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
         last_check_ = now_sec - (now_sec % FIVE_MINUTE_SECONDS);
     }
 }
-
-
-
 
 
 // 系统及进程状态采样
@@ -156,8 +155,23 @@ void Server_Timer_Base::report_status()
 }
 
 
+//设置心跳定时器的进度，默认是0.5s一次，如果觉得不够，在initialize前重新设置
+void Server_Timer_Base::set_heart_precision(const ZCE_Time_Value &precision)
+{
+    heart_precision_ = precision;
+}
 
 
 
+//增加一个APP的定时器
+void Server_Timer_Base::add_app_timer(const ZCE_Time_Value &interval, const void *act)
+{
+    ZCE_ASSERT(zan_timer_num_ +1 >= MAX_APP_TIMER_NUMBER);
 
+    zan_timer_internal_[zan_timer_num_] = interval;
+    zan_timer_act_[zan_timer_num_] = act;
+    ++zan_timer_num_;
+    
+    
+}
 

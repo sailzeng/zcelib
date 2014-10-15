@@ -226,8 +226,8 @@ public:
     //关闭svr_info相应的PEER
     static int close_services_peer(const SERVICES_ID &svr_info);
 
-    //根据有的SVR INFO，查询相应的HDL
-    static int find_services_peer(const SERVICES_ID &svr_info, TCP_Svc_Handler *&svchanle);
+    //根据有的SVR ID，查询相应的HDL
+    static int find_services_peer(const SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle);
 
     //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
     static void reconnect_allserver(size_t szsucc,

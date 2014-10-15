@@ -50,7 +50,7 @@ public:
 public:
 
     ///
-    OGRE_PERR_ID  peer_id_;
+    OGRE_PEER_ID  peer_id_;
 
     ///
     TCP_PEER_CONFIG_INFO peer_info_;

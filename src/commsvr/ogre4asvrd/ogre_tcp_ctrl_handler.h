@@ -21,21 +21,23 @@ public:
     //服务的模式
     enum OGRE_HANDLER_MODE
     {
-        HANDLER_MODE_CONNECT,          //主动连接的Handler
-        HANDLER_MODE_ACCEPTED,         //被动接受某个端口的Handler
+        //主动连接的Handler
+        HANDLER_MODE_CONNECT,          
+        //被动接受某个端口的Handler
+        HANDLER_MODE_ACCEPTED,         
     };
-
-protected:
-    typedef ZCE_LIB::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
 protected:
 
     //
     enum PEER_STATUS
     {
-        PEER_STATUS_NOACTIVE,        //PEER 没有连接上
-        PEER_STATUS_JUST_CONNECT,    //PEER 刚刚连接上,但是没有发送或者受到任何数据
-        PEER_STATUS_ACTIVE,          //PEER 已经处于激活状态,
+        //PEER 没有连接上
+        PEER_STATUS_NOACTIVE,        
+        //PEER 刚刚连接上,但是没有发送或者受到任何数据
+        PEER_STATUS_JUST_CONNECT,    
+        //PEER 已经处于激活状态,
+        PEER_STATUS_ACTIVE,          
     };
 
 public:
@@ -48,16 +50,27 @@ protected:
 
 public:
 
-    //初始化对象，
+    
+    /*!
+    * @brief      初始化对象
+    * @return     void
+    * @param      sockstream
+    * @param      fp_judge_whole
+    */
     void init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
         FP_JudgeRecv_WholeFrame fp_judge_whole);
-    //
+    
+    /*!
+    * @brief      
+    * @param      sockstream
+    * @param      socketaddr
+    * @param      fp_judge_whole
+    */
     void init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream, 
         const ZCE_Sockaddr_In &socketaddr,
         FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     //ZEN的一组要求自己继承的函数.
-    //
     virtual ZCE_HANDLE get_handle(void) const;
     //
     virtual int handle_input(ZCE_HANDLE);
@@ -123,91 +136,106 @@ public:
     //将数据从端口发送数据
     static int process_send_data(Ogre4a_App_Frame *tmpbuf );
 
-
+    
+    /*!
+    * @brief      
+    * @return     int == 0表示找到，
+    * @param      peer_id  查询的PEER ID
+    * @param      svchanle 返回查询到的句柄
+    */
+    static int find_services_peer(const OGRE_PEER_ID &peer_id,
+        Ogre_TCP_Svc_Handler *&svchanle);
 
 protected:
+    
+    ///
+    typedef ZCE_LIB::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
-
-    //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
+    ///定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
     static const  int      TCPCTRL_TIME_ID[];
 
-    //一个未能连接上的Connect 最大可以等待发送的FRAME数量
+    ///一个未能连接上的Connect 最大可以等待发送的FRAME数量
     static const size_t   MAX_LEN_OF_SEND_LIST = 8;
 
-    //ACCEPT PEER最大可以等待发送的FRAME数量
+    ///ACCEPT PEER最大可以等待发送的FRAME数量
     static const size_t   MAX_OF_ACCEPT_PEER_SEND_DEQUE = 64;
-    //CONNECT PEER最大可以等待发送的FRAME数量,
+    ///CONNECT PEER最大可以等待发送的FRAME数量,
     static const size_t   MAX_OF_CONNECT_PEER_SEND_DEQUE = 256;
 
 protected:
 
-    //最大能够Accept的PEER数量,
+    ///最大能够Accept的PEER数量,
     static size_t                  max_accept_svr_;
-    //最大能够Connect的PEER数量
+    ///最大能够Connect的PEER数量
     static size_t                  max_connect_svr_;
 
-    //Connect后等待动作的时长,Connect超时
+    ///Connect后等待动作的时长,Connect超时
     static unsigned int           accept_timeout_;
 
-    //等待接受一个完整数据的超时时间,为0表示不限制
+    ///等待接受一个完整数据的超时时间,为0表示不限制
     static unsigned int           receive_timeout_;
 
-    //对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
+    ///对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
     static unsigned int           error_try_num_;
 
-    //SVRINFO对应的PEER的HASHMAP
-    static PeerID_To_TCPHdl_Map svr_peer_info_set_;
-    //
-    //要自动链接的服务器
+    ///SVRINFO对应的PEER的HASHMAP
+    static PeerID_To_TCPHdl_Map   svr_peer_hdl_set_;
+    
+    ///要自动链接的服务器的管理类
     static Ogre_Connect_Server    zerg_auto_connect_;
 
-    //已经Accept的PEER数量
+    ///已经Accept的PEER数量
     static size_t                 num_accept_peer_;
-    //已经Connect的PEER数量
+    ///已经Connect的PEER数量
     static size_t                 num_connect_peer_;
 
-    //ACCEPT SVC handler的池子
+    ///ACCEPT SVC handler的池子
     static POOL_OF_TCP_HANDLER    pool_of_acpthdl_;
 
-    //CONNECT svc handler的池子
+    ///CONNECT svc handler的池子
     static POOL_OF_TCP_HANDLER    pool_of_cnthdl_;
 
 protected:
-    //服务模式
+    
+    ///服务模式
     OGRE_HANDLER_MODE             handler_mode_;
 
-    //接收数据的缓冲
+    ///接收数据的缓冲
     Ogre4a_App_Frame              *rcv_buffer_;
 
-    //发送的数据可能要排队
+    
+    ///发送的数据可能要排队
     ZCE_LIB::lordrings<Ogre4a_App_Frame *>  \
         snd_buffer_deque_;
 
-    //这个PEER接受数据
+    ///这个PEER接受数据
     size_t                        recieve_bytes_;
-    //这个PEER发送数据
+    
+    ///这个PEER发送数据
     size_t                        send_bytes_;
 
-    //ACE Socket Stream,
+    ///ACE Socket Stream,
     ZCE_Socket_Stream             socket_peer_;
 
-    //PEER连接的远端IP地址信息,有他不过是为了加快速度.
+    ///PEER连接的远端IP地址信息,有他不过是为了加快速度.
     ZCE_Sockaddr_In               remote_address_;
-    //PEER连接的本地IP地址信息,有他不过是为了加快速度.
+    
+    ///PEER连接的本地IP地址信息,有他不过是为了加快速度.
     ZCE_Sockaddr_In               local_address_;
 
     //是否处于活动状态
     PEER_STATUS                   peer_status_;
 
-    //连接后无反应超时的TimeID,
+    ///连接后无反应超时的TimeID,
     long                          timeout_time_id_;
-    //一个时间间隔内接受数据的次数
+    
+    ///一个时间间隔内接受数据的次数
     unsigned int                  receive_times_;
 
-    //是否被强制要求在发送完成后关闭端口
+    ///是否被强制要求在发送完成后关闭端口
     bool                          if_force_close_;
 
-    //判断接收到的数据是否是完整的处理函数指针
+    ///判断接收到的数据是否是完整的处理函数指针
     FP_JudgeRecv_WholeFrame       fp_judge_whole_frame_;
 
 };

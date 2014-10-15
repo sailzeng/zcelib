@@ -48,7 +48,7 @@ protected:
     //°î¶¨µÄµØÖ·
     ZCE_Sockaddr_In            udp_bind_addr_;
     //Socket_Peer_Info
-    OGRE_PERR_ID           peer_svc_info_;
+    OGRE_PEER_ID           peer_svc_info_;
 
     //
     Ogre4a_App_Frame           *dgram_databuf_;
