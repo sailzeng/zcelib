@@ -20,7 +20,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="wormhole_application.cpp" />
-    <ClCompile Include="wormhole_app_timer.cpp" />
     <ClCompile Include="wormhole_configture.cpp" />
     <ClCompile Include="wormhole_main.cpp" />
     <ClCompile Include="wormhole_predefine.cpp">
@@ -33,7 +32,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="wormhole_application.h" />
-    <ClInclude Include="wormhole_app_timer.h" />
     <ClInclude Include="wormhole_configture.h" />
     <ClInclude Include="wormhole_predefine.h" />
     <ClInclude Include="wormhole_proxyprocess.h" />

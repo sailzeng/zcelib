@@ -1330,19 +1330,17 @@ TCP_Svc_Handler *TCP_Svc_Handler::alloce_hdl_from_pool(HANDLER_MODE handler_mode
 
 
 //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后。又没有数据发送的情况
-void TCP_Svc_Handler::reconnect_allserver(size_t szsucc,
-                                          size_t szfail,
-                                          size_t szvalid)
+void TCP_Svc_Handler::reconnect_allserver()
 {
     //连接所有的SERVER
-    zerg_auto_connect_.reconnect_allserver(szvalid, szsucc, szfail);
+    size_t num_valid = 0, num_succ = 0, num_fail = 0;
+    zerg_auto_connect_.reconnect_allserver(num_valid, num_succ, num_fail);
 }
 //
 int TCP_Svc_Handler::uninit_all_staticdata()
 {
     //
     svr_peer_info_set_.clear_and_closeall();
-
     //
     pool_of_acpthdl_.clear();
 
@@ -1378,7 +1376,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         if (0 != ret )
         {
             ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==BROADCAST_SERVICES_ID but cant't find has service_type=%d svrinfo",
-                p_sendto_svrinfo->services_type_);
+                       p_sendto_svrinfo->services_type_);
             return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
         }
 
@@ -1398,7 +1396,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
             p_sendto_svrinfo->services_id_ = bc_svc_id.services_id_;
             svchanle->put_frame_to_sendlist(tmpbuf);
         }
-        
+
     }
     //给一个人
     else
@@ -1415,15 +1413,15 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
             if (ret != 0)
             {
                 ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==LOAD_BALANCE_DYNAMIC_ID but cant't find has service_type=%d svrinfo",
-                    p_sendto_svrinfo->services_type_);
+                           p_sendto_svrinfo->services_type_);
             }
 
             // 修改一下要发送的svrinfo的id
             p_sendto_svrinfo->services_id_ = services_id;
             ZCE_LOGMSG(RS_DEBUG, "process_send_data: service_type=%d service_id= LOAD_BALANCE_DYNAMIC_ID,"
-                " change service id to %u",
-                p_sendto_svrinfo->services_type_,
-                p_sendto_svrinfo->services_id_);
+                       " change service id to %u",
+                       p_sendto_svrinfo->services_type_,
+                       p_sendto_svrinfo->services_id_);
         }
         //这种情况，配置的服务器数量不能太多
         //负载均衡的方式
@@ -1433,14 +1431,14 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
             if (ret != 0)
             {
                 ZCE_LOGMSG(RS_ERROR, "process_send_data: service_id==MAIN_STANDBY_DYNAMIC_ID but cant't find has service_type=%d svrinfo",
-                    p_sendto_svrinfo->services_type_);
+                           p_sendto_svrinfo->services_type_);
             }
             // 修改一下要发送的svrinfo的id
             p_sendto_svrinfo->services_id_ = services_id;
             ZCE_LOGMSG(RS_DEBUG, "process_send_data: service_type=%d service_id= LOAD_BALANCE_DYNAMIC_ID,"
-                " change service id to %u",
-                p_sendto_svrinfo->services_type_,
-                p_sendto_svrinfo->services_id_);
+                       " change service id to %u",
+                       p_sendto_svrinfo->services_type_,
+                       p_sendto_svrinfo->services_id_);
             //到达这儿应该有几种情况,
             //主路由OK，处于ACTIVE状态，使用主路由发送
             //主路由不处于ACTIVE状态，但是备份路由处于ACTIVE状态，使用备份路由发送
@@ -1453,8 +1451,8 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
             if (0 != ret )
             {
                 ZCE_LOGMSG(RS_ERROR, "process_send_data: but cant't find has svc id=%u.%u svrinfo",
-                    p_sendto_svrinfo->services_type_,
-                    p_sendto_svrinfo->services_id_);
+                           p_sendto_svrinfo->services_type_,
+                           p_sendto_svrinfo->services_id_);
 
                 //if (zerg_auto_connect_.is_auto_connect_svcid(*p_sendto_svrinfo))
                 //{
@@ -1470,13 +1468,13 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         {
             //这儿还没有编码
             ZCE_LOGMSG(RS_ERROR, "[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
-                "have been existed. frame command[%u]. uin[%u] frame length[%u].",
-                p_sendto_svrinfo->services_type_,
-                p_sendto_svrinfo->services_id_,
-                proc_frame->frame_command_,
-                proc_frame->frame_uid_,
-                proc_frame->frame_length_
-                );
+                       "have been existed. frame command[%u]. uin[%u] frame length[%u].",
+                       p_sendto_svrinfo->services_type_,
+                       p_sendto_svrinfo->services_id_,
+                       proc_frame->frame_command_,
+                       proc_frame->frame_uid_,
+                       proc_frame->frame_length_
+                      );
             DEBUGDUMP_FRAME_HEAD(proc_frame, "[SEND TO NO EXIST HANDLE]", RS_ERROR);
             return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
         }

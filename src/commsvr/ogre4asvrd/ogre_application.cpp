@@ -28,7 +28,7 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
     int ret = 0;
     ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
     //
-    ret = Soar_Svrd_Appliction::on_start(argc,argv);
+    ret = Soar_Svrd_Appliction::on_start(argc, argv);
 
     if (ret != 0)
     {
@@ -42,7 +42,7 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
     ZLOG_INFO( "Ogre max accept number :%u,max connect number:%u.\n",
                max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
-    
+
     //在配置文件没有读取出来的时候,只显示调试信息
 
     //使用日志策略,得到配置文件,才能得到日志文件名称
@@ -59,7 +59,7 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
         return SOAR_RET::ERR_OGRE_INIT_COMM_MANAGER;
     }
 
-    ZLOG_INFO( "%s success.Have fun, my brother!!!\n",__ZCE_FUNC__);
+    ZLOG_INFO( "%s success.Have fun, my brother!!!\n", __ZCE_FUNC__);
     return 0;
 }
 
@@ -76,7 +76,7 @@ int Ogre_Service_App::on_exit()
     Soar_Svrd_Appliction::on_exit();
 
     //
-    ZLOG_INFO( "%s Succ.Have Fun.!!!\n",__ZCE_FUNC__);
+    ZLOG_INFO( "%s Succ.Have Fun.!!!\n", __ZCE_FUNC__);
 
     return 0;
 }
@@ -86,6 +86,9 @@ int Ogre_Service_App::on_exit()
 //最重要的函数, 但是也最简单
 int Ogre_Service_App::on_run()
 {
+    //空闲N次后,SLEEP的时间间隔
+    const unsigned int  IDLE_SLEEP_INTERVAL = 512;
+
     size_t numevent = 0;
     unsigned int idle = 0;
     size_t procframe = 0;

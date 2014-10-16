@@ -30,13 +30,13 @@ public:
 
 public:
 
-    //单子实例函数
+    ///单子实例函数
     static Zerg_IPRestrict_Mgr *instance();
-    //清理单子实例
+    ///清理单子实例
     static void clean_instance();
-    
+
 protected:
-    //单子实例
+    ///单子实例
     static Zerg_IPRestrict_Mgr        *instance_;
 
 protected:

@@ -3,9 +3,9 @@
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 class Interface_WH_Proxy
 {
@@ -15,17 +15,17 @@ public:
     enum PROXY_TYPE
     {
         /// 无效的TYPE
-        INVALID_PROXY_TYPE           = 0, 
+        INVALID_PROXY_TYPE           = 0,
 
         /// 将所有的数据数据回显
-        PROXY_TYPE_ECHO              = 1, 
+        PROXY_TYPE_ECHO              = 1,
         /// 直接进行转发处理，不对数据帧进行任何处理
-        PROXY_TYPE_TRANSMIT          = 2, 
+        PROXY_TYPE_TRANSMIT          = 2,
         /// 将数据复制转发给所有配置的服务器
-        PROXY_TYPE_BROADCAST         = 3, 
+        PROXY_TYPE_BROADCAST         = 3,
 
         /// 按照UID取模进行Proxy转发，
-        PROXY_TYPE_MODULO_UID        = 101, 
+        PROXY_TYPE_MODULO_UID        = 101,
         /// 按照SENDSVC_ID取模进行Proxy转发，
         PROXY_TYPE_MODULO_SENDSVCID = 102,
 
@@ -62,7 +62,7 @@ protected:
     inline int filter_command(unsigned long cmd);
 
 public:
-    
+
     /*!
     * @brief      代理接口制造的工厂
     * @return     Interface_WH_Proxy*
@@ -71,9 +71,9 @@ public:
     static Interface_WH_Proxy *create_proxy_factory(PROXY_TYPE proxytype);
 
 
-    
+
     /*!
-    * @brief      
+    * @brief
     * @return     PROXY_TYPE
     * @param      str_proxy
     */
@@ -96,8 +96,8 @@ protected:
 
 /*!
 * @brief      回送处理数据
-*             
-* @note       
+*
+* @note
 */
 class Echo_Proxy_Process : public Interface_WH_Proxy
 {
@@ -117,8 +117,8 @@ public:
 
 /*!
 * @brief      直接进行转发，不进行任何处理的Proxy方式
-*             
-* @note       
+*
+* @note
 */
 class Transmit_Proxy : public Interface_WH_Proxy
 {
@@ -139,8 +139,8 @@ public:
 
 /*!
 * @brief      将数据复制转发给所有配置的服务器
-*             
-* @note       
+*
+* @note
 */
 class Broadcast_ProxyProcess : public Interface_WH_Proxy
 {
@@ -149,7 +149,7 @@ class Broadcast_ProxyProcess : public Interface_WH_Proxy
 public:
     Broadcast_ProxyProcess();
     virtual ~Broadcast_ProxyProcess();
-    
+
     ///处理配置文件
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     ///

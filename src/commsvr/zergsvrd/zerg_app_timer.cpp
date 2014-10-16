@@ -9,7 +9,7 @@
 class  Zerg_App_Timer_Handler
 ****************************************************************************************************/
 
-///ZERG服务器定时器ID, 
+///ZERG服务器定时器ID,
 const int Zerg_App_Timer_Handler::ZERG_TIMER_ID[] =
 {
     0x101,
@@ -30,7 +30,7 @@ Zerg_App_Timer_Handler::Zerg_App_Timer_Handler():
 
     //主动重现链接的间隔时间
     const time_t AUTOCONNECT_RETRY_SEC = 5;
-    ZCE_Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC,0);
+    ZCE_Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
 
     add_app_timer(connect_all_internal, &ZERG_TIMER_ID[0]);
 }
@@ -50,11 +50,8 @@ int Zerg_App_Timer_Handler::timer_timeout(const ZCE_Time_Value &time_now, const 
     const int zerg_timeid = *(static_cast<const int *>(act));
     if (ZERG_TIMER_ID[0] == zerg_timeid)
     {
-        size_t valid = 0;
-        size_t succ = 0;
-        size_t fail = 0;
-        TCP_Svc_Handler::reconnect_allserver(valid, succ, fail);
-        
+        TCP_Svc_Handler::reconnect_allserver();
+
     }
     return 0;
 }

@@ -21,7 +21,7 @@ enum ArbiterMonitorFeatureID
 };
 
 // 上报数据项个数
-static const unsigned int WORMHOLE_FRATURE_NUM = 
+static const unsigned int WORMHOLE_FRATURE_NUM =
     WORMHOLE_SERVICE_STAT_END - WORMHOLE_SERVICE_STAT_BEGIN - 1;
 
 // 统计信息字符串

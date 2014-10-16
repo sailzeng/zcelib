@@ -121,10 +121,10 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         //
         if (ret != 0)
         {
-            ZLOG_ERROR( "Register Accept handler fail! ret =%d  errno=%u|%s \n", 
-                ret, 
-                ZCE_LIB::last_error(), 
-                strerror(ZCE_LIB::last_error()));
+            ZLOG_ERROR( "Register Accept handler fail! ret =%d  errno=%u|%s \n",
+                        ret,
+                        ZCE_LIB::last_error(),
+                        strerror(ZCE_LIB::last_error()));
             handle_close();
             return;
         }
@@ -203,10 +203,10 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     if (ret != 0)
     {
 
-        ZLOG_ERROR("Register Connect handler fail! ret =%  errno=%u|%s \n", 
-            ret, 
-            ZCE_LIB::last_error(), 
-            strerror(ZCE_LIB::last_error()));
+        ZLOG_ERROR("Register Connect handler fail! ret =%  errno=%u|%s \n",
+                   ret,
+                   ZCE_LIB::last_error(),
+                   strerror(ZCE_LIB::last_error()));
         handle_close();
         return;
     }
@@ -796,15 +796,15 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
 int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
-    
+
     accept_timeout_ = config->ogre_cfg_data_.accepted_timeout_;
     receive_timeout_ = config->ogre_cfg_data_.receive_timeout_;
-    
+
     max_accept_svr_ = config->ogre_cfg_data_.max_accept_svr_;
     max_connect_svr_ = config->ogre_cfg_data_.auto_connect_num_;
-    
+
     error_try_num_ = config->ogre_cfg_data_.retry_error_;
-    
+
 
     //自动链接部分读取配置
     ret = zerg_auto_connect_.get_config(config);
@@ -864,10 +864,10 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
     svr_peer_hdl_set_.init_services_peerinfo(max_accept_svr_ + max_connect_svr_ + 64);
 
     //连接所有的SERVER,如果有严重错误退出
-    size_t num_vaild = 0, num_succ = 0,num_fail;
+    size_t num_vaild = 0, num_succ = 0, num_fail;
     ret = zerg_auto_connect_.connect_all_server(num_vaild, num_succ, num_fail);
     ZLOG_INFO("Have %u server to auto connect ,success %u , fail %u,ret =%d.\n",
-        num_vaild, num_succ, num_fail, ret);
+              num_vaild, num_succ, num_fail, ret);
     if (ret != 0)
     {
         return ret;
@@ -1144,8 +1144,8 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 
 
 //根据有的SVR INFO，查询相应的HDL
-int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID &peer_id, 
-    Ogre_TCP_Svc_Handler *&svchanle)
+int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID &peer_id,
+                                             Ogre_TCP_Svc_Handler *&svchanle)
 {
     int ret = 0;
     ret = svr_peer_hdl_set_.find_services_peerinfo(peer_id, svchanle);
@@ -1157,6 +1157,13 @@ int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID &peer_id,
     }
 
     return 0;
+}
+
+//对没有链接的的服务器进行重连
+int Ogre_TCP_Svc_Handler::connect_all_server()
+{
+    size_t num_vaild = 0, num_succ = 0, num_fail = 0;
+    return zerg_auto_connect_.connect_all_server(num_vaild, num_succ, num_fail);
 }
 
 //

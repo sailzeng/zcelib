@@ -1,6 +1,4 @@
 #include "wormhole_predefine.h"
-
-#include "wormhole_app_timer.h"
 #include "wormhole_configture.h"
 #include "wormhole_stat_define.h"
 #include "wormhole_application.h"
@@ -39,7 +37,7 @@ int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
 
     // 初始化数据转发模式
     interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
-        static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
+                           static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
@@ -69,7 +67,7 @@ int Wormhole_Proxy_App::on_exit()
 
     //最后调用通用的退出模块
     ret = Soar_Svrd_Appliction::on_exit();
-    
+
     return 0;
 }
 
@@ -88,7 +86,7 @@ int Wormhole_Proxy_App::reload_config()
     Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
     // 初始化数据转发模式
     interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
-        static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
+                           static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));

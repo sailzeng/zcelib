@@ -12,8 +12,8 @@ class Ogre_TCP_Svc_Handler;
 
 /*!
 * @brief      主动链接其他服务器的管理类
-*             
-* @note       
+*
+* @note
 */
 class Ogre_Connect_Server
 {
@@ -52,9 +52,9 @@ protected:
 
 protected:
 
-    typedef std::unordered_set <TCP_PEER_MODULE_INFO,
-        HASH_OF_PEER_MODULE,
-        EQUAL_OF_PEER_MODULE> SET_OF_TCP_PEER_MODULE;
+    typedef std::unordered_set < TCP_PEER_MODULE_INFO,
+            HASH_OF_PEER_MODULE,
+            EQUAL_OF_PEER_MODULE > SET_OF_TCP_PEER_MODULE;
 
     ///连接器
     ZCE_Socket_Connector ogre_connector_;

@@ -108,8 +108,8 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
     if (table_iter == type_to_idtable_.end())
     {
         ZCE_LOGMSG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
-            __ZCE_FUNC__,
-            services_type);
+                   __ZCE_FUNC__,
+                   services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
     }
 
@@ -129,8 +129,8 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         if (iter == svr_info_set_.end())
         {
             ZCE_LOGMSG(RS_ALERT, "[zergsvr]Code error, can't find svc hanle info. SVC ID:[%u.%u] .",
-                lb_svcid.services_type_,
-                lb_svcid.services_id_);
+                       lb_svcid.services_type_,
+                       lb_svcid.services_id_);
             return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
         }
 
@@ -371,14 +371,16 @@ void Active_SvcHandle_Set::clear_and_closeall()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Has %u peer want to close. Please wait. ACE that is accursed.", svr_info_set_.size());
+    ZCE_LOGMSG(RS_INFO, "[zergsvr] Has %u peer want to close. Please wait. ACE that is accursed.",
+               svr_info_set_.size());
 
     //这个函数可能是绝对的慢
     while (svr_info_set_.size() > 0)
     {
         if (svr_info_set_.size() % SHOWINFO_NUMBER == 0)
         {
-            ZCE_LOGMSG(RS_INFO, "[zergsvr] Now remain %u peer want to close. Please wait. ACE that is accursed.", svr_info_set_.size());
+            ZCE_LOGMSG(RS_INFO, "[zergsvr] Now remain %u peer want to close. Please wait. ACE that is accursed.",
+                       svr_info_set_.size());
         }
 
         MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.begin();

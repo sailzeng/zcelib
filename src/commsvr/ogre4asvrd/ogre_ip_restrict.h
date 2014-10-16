@@ -41,5 +41,5 @@ protected:
     static Ogre_IPRestrict_Mgr     *instance_;
 };
 
-#endif //_OGRE4A_IP_RESTRICT_H_
+#endif //OGRE4A_IP_RESTRICT_H_
 

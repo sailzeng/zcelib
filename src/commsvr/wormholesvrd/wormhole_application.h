@@ -6,9 +6,9 @@
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 class Wormhole_Proxy_App : public Soar_SvrdApp_ZergBus
 {

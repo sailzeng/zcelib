@@ -56,7 +56,7 @@ public:
     int find_conf_ms_svcid_ary(uint16_t services_type,
                                std::vector<uint32_t> *& ms_svcid_ary);
 
-    
+
     /*!
     * @brief      检查这个SVC ID是否是主动链接的服务器
     * @return     bool
@@ -81,7 +81,7 @@ protected:
 protected:
 
     //
-    typedef std::unordered_set<SERVICES_INFO,HASH_OF_SVCINFO,EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
+    typedef std::unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
     typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;

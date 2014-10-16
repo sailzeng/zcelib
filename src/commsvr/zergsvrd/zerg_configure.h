@@ -84,7 +84,7 @@ public:
 
     ///默认的ACCEPT端口的backlog，LightHTTP这个值得配置是1024，如果需要猛然间登陆很多人，可以调整到更大
     static const int DEFUALT_ZERG_BACKLOG = 128;
-    
+
 
 public:
 

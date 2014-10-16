@@ -62,5 +62,5 @@ protected:
 
 };
 
-#endif //#ifndef _OGRE_UDP_CONTROL_SERVICE_H_
+#endif //#ifndef OGRE_UDP_CONTROL_SERVICE_H_
 

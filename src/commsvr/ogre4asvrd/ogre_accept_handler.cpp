@@ -58,10 +58,10 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     {
         int last_err = ZCE_LIB::last_error();
         ZLOG_ERROR("Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
-                    peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
-                    peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
-                    last_err,
-                    strerror(last_err));
+                   peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
+                   peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
+                   last_err,
+                   strerror(last_err));
         return SOAR_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
     }
 

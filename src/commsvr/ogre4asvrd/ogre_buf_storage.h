@@ -69,5 +69,5 @@ protected:
 
 };
 
-#endif //_OGRE_BUFFER_STORAGE_H_
+#endif //OGRE_BUFFER_STORAGE_H_
 

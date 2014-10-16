@@ -8,15 +8,15 @@
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 struct TCP_PEER_CONFIG_INFO
 {
 public:
     ///从字符串中转换得到
-    int from_str(const char * peer_info_str);
+    int from_str(const char *peer_info_str);
 
 public:
 
@@ -28,11 +28,11 @@ public:
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
-struct TCP_PEER_MODULE_INFO 
+struct TCP_PEER_MODULE_INFO
 {
 public:
 
@@ -67,7 +67,7 @@ public:
 struct HASH_OF_PEER_MODULE
 {
 public:
-    size_t operator()(const TCP_PEER_MODULE_INFO &peer_module) 
+    size_t operator()(const TCP_PEER_MODULE_INFO &peer_module)
     {
         return (size_t(peer_module.peer_id_.peer_port_) << 16) + peer_module.peer_id_.peer_ip_address_;
     }
@@ -93,9 +93,9 @@ public:
 
 
 /*!
-* @brief      
-*             
-* @note       
+* @brief
+*
+* @note
 */
 struct OGRE_CONFIG_DATA
 {
@@ -119,7 +119,7 @@ public:
 public:
 
     ///最大的帧的长度
-    unsigned int max_data_len_ = 32*1024;
+    unsigned int max_data_len_ = 32 * 1024;
 
     /// #最大连接的服务器个数 ##前端128000，后端1024
     size_t max_accept_svr_ = 1024;
@@ -206,5 +206,5 @@ public:
 
 };
 
-#endif //_OGRE_SERVER_CONFIG_H_
+#endif //OGRE_SERVER_CONFIG_H_
 

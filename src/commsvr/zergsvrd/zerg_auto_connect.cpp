@@ -45,7 +45,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
             ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't find Auto connect services ID %u.%u .Please check config file. ",
                        svc_route.svc_id_.services_type_,
                        svc_route.svc_id_.services_id_);
-            return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO; 
+            return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
         }
 
         auto ins_iter = autocnt_svcinfo_set_.insert(svc_route);
@@ -153,12 +153,12 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &reconnect_svc
     }
 
     TCP_Svc_Handler *svc_handle = NULL;
-    return connect_one_server(reconnect_svcid, iter->ip_address_,svc_handle);
+    return connect_one_server(reconnect_svcid, iter->ip_address_, svc_handle);
 }
 
 
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id, 
+int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
                                             const ZCE_Sockaddr_In &inetaddr,
                                             TCP_Svc_Handler *&svc_handle)
 {

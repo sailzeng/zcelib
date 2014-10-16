@@ -75,5 +75,5 @@ typedef std::unordered_set<unsigned int> SetOfIPAddress;
 //    NUMBER_OF_COUNTER,                   //
 //};
 
-#endif //_OGRE_SERVER_PRE_DEFINE_H_
+#endif //OGRE_SERVER_PRE_DEFINE_H_
 

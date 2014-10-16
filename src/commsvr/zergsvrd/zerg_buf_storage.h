@@ -83,15 +83,8 @@ public:
 *
 * @note
 */
-class ZBuffer_Storage
+class ZBuffer_Storage : public ZCE_NON_Copyable
 {
-protected:
-
-    //只声明不实现,避免错误
-    ZBuffer_Storage(const ZBuffer_Storage &);
-    //只声明不实现,避免错误
-    ZBuffer_Storage &operator =(const ZBuffer_Storage &);
-
 public:
     //构造函数和析构函数
     ZBuffer_Storage();
@@ -130,11 +123,6 @@ protected:
 
     //每次如果BufferStroge不够用了，扩展的个数
     static const size_t EXTEND_NUM_OF_LIST = 1024;
-
-    //最小最大边界
-    static const size_t MIN_HDL_LIST_NUMBER = 128;
-    //
-    static const size_t MAX_HDL_LIST_NUMBER = 12800;
 
 protected:
 

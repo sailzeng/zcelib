@@ -53,7 +53,7 @@ public:
 
 
     /*!
-    * @brief      
+    * @brief
     * @return     int
     * @param      services_type
     * @param      lb_factor
@@ -65,7 +65,7 @@ public:
                                  uint32_t &services_id,
                                  TCP_Svc_Handler*& svc_handle);
 
-    
+
     /*!
     * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
     *             只能用于在AUTO CONNECT配置的链接出去的服务器，主备顺序根据AUTO CONNECT配置

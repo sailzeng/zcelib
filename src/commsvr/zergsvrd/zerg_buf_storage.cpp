@@ -58,6 +58,11 @@ void ZBuffer_Storage::init_buflist_by_hdlnum(size_t num_of_hdl)
 {
     size_t szlist = (num_of_hdl / 100);
 
+
+    //最小最大边界
+    const size_t MIN_HDL_LIST_NUMBER = 128;
+    const size_t MAX_HDL_LIST_NUMBER = 12800;
+
     //如果小于最小值，调整为最小值
     if (szlist < MIN_HDL_LIST_NUMBER)
     {

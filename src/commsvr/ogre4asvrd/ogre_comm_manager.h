@@ -54,5 +54,5 @@ protected:
     const Ogre_Server_Config *ogre_config_;
 };
 
-#endif //#ifndef _OGRE_COMMUNICATE_MANGER_H_
+#endif //#ifndef OGRE_COMMUNICATE_MANGER_H_
 

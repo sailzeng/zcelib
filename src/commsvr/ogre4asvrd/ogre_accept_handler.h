@@ -9,8 +9,8 @@ class Ogre_IPRestrict_Mgr;
 
 /*!
 * @brief      TCP Accept 处理的EventHandler
-*             
-* @note       
+*
+* @note
 */
 class Ogre_TCPAccept_Hdl : public ZCE_Event_Handler
 {
@@ -42,7 +42,7 @@ protected:
     //ACCPET PEER
     ZCE_Socket_Acceptor    peer_acceptor_;
 
-    
+
     TCP_PEER_MODULE_INFO   peer_module_info_;
 
     //IP限制管理器
@@ -50,5 +50,5 @@ protected:
 
 };
 
-#endif //_OGRE_TCP_ACCEPT_HANDLER_H_
+#endif //OGRE_TCP_ACCEPT_HANDLER_H_
 

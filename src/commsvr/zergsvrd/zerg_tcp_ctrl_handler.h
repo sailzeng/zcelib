@@ -210,7 +210,7 @@ protected:
 public:
     //初始化静态参数
     static int init_all_static_data();
-    
+
     ///读取配置文件
     static int get_config(const Zerg_Server_Config *config);
 
@@ -229,10 +229,8 @@ public:
     //根据有的SVR ID，查询相应的HDL
     static int find_services_peer(const SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle);
 
-    //链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
-    static void reconnect_allserver(size_t szsucc,
-                                    size_t szfail,
-                                    size_t szvalid);
+    ///链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
+    static void reconnect_allserver();
 
 
     /*!

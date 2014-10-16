@@ -25,9 +25,9 @@ protected:
 
 public:
 
-    ///ZERG服务器定时器ID, 
+    ///ZERG服务器定时器ID,
     static const  int  ZERG_TIMER_ID[];
-    
+
 protected:
 
 

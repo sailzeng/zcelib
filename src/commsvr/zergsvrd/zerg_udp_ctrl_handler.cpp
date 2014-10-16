@@ -253,7 +253,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     size_revc = recvret;
 
-    ZCE_LOGMSG(RS_DEBUG,"[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
+    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
                remote_addr.get_host_addr(),
                remote_addr.get_port_number(),
                dgram_peer_.get_handle(),
@@ -294,7 +294,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
         return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
     }
 
-    ZCE_LOGMSG(RS_DEBUG,"[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
+    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
                remote_addr.get_host_addr(),
                remote_addr.get_port_number(),
                dgram_peer_.get_handle(),

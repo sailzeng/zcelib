@@ -92,8 +92,11 @@ public:
 
 protected:
 
-    //一次最多发送2048帧
+    ///一次最多发送2048帧
     static const unsigned int MAX_ONCE_SEND_FRAME = 4096;
+
+    ///发包数告警值
+    static const unsigned int SEND_FRAME_ALERT_VALUE = 40000;
 
 protected:
     //单子实例
@@ -116,22 +119,21 @@ protected:
     ///监控的命令
     unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
 
-    //内存管道类的实例对象，保留它仅仅为了加速
+    ///内存管道类的实例对象，保留它仅仅为了加速
     Soar_MMAP_BusPipe *zerg_mmap_pipe_;
-    //发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
+    ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
     ZBuffer_Storage *zbuffer_storage_;
-    //统计，使用单子类的指针，保留它仅仅为了加速
+    ///统计，使用单子类的指针，保留它仅仅为了加速
     Soar_Stat_Monitor *server_status_;
 
 
-    //发包数告警值
-    static const unsigned int SEND_FRAME_ALERT_VALUE = 40000;
-    //计数起始时间
+
+    ///计数起始时间
     unsigned int count_start_time_;
-    //协议包发送计数器
+    ///协议包发送计数器
     unsigned int send_frame_count_;
 
-    //配置实例指针
+    ///配置实例指针
     const Zerg_Server_Config *zerg_config_;
 };
 
