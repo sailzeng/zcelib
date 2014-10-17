@@ -206,7 +206,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     if (ZCE_Async_ObjectMgr::INVALID_COMMAND == create_cmd)
     {
         ZCE_LOGMSG(RS_ERROR, "[ZCELIB] Register command[%u] error.",
-            create_cmd);
+                   create_cmd);
         return -1;
     }
 
@@ -215,7 +215,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     if (iter_temp != regaysnc_pool_.end())
     {
         ZCE_LOGMSG(RS_ERROR, "[ZCELIB] Register command[%u] repeat error.",
-            create_cmd);
+                   create_cmd);
         return -1;
     }
     ASYNC_OBJECT_RECORD record;
@@ -223,7 +223,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     ASYNC_OBJECT_RECORD &ref_rec = regaysnc_pool_[create_cmd];
 
     coroutine_base->initialize(create_cmd);
-    ref_rec.aysncobj_pool_.initialize(pool_init_size_+1);
+    ref_rec.aysncobj_pool_.initialize(pool_init_size_ + 1);
     ref_rec.aysncobj_pool_.push_back(coroutine_base);
     for (size_t i = 0; i < pool_init_size_; i++)
     {
@@ -284,8 +284,8 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
     async_rec = &reg_async;
 
     ZCE_LOGMSG(RS_DEBUG, "[ZCELIB] Allocate async object command[%u],after alloc pool size[%u] .",
-        create_cmd,
-        reg_async.aysncobj_pool_.size());
+               create_cmd,
+               reg_async.aysncobj_pool_.size());
 
     return 0;
 }
@@ -360,9 +360,9 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     }
 
     ZCE_LOGMSG(RS_DEBUG, "[ZCELIB] Async object create. command [%u] create, id [%u],and continue run [%s].",
-        cmd,
-        id_builder_,
-        continue_run?"TRUE":"FALSE");
+               cmd,
+               id_builder_,
+               continue_run ? "TRUE" : "FALSE");
 
     return 0;
 }
@@ -370,14 +370,14 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
 
 //通过ID，寻找一个正在运行的异步对象
 int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
-    ZCE_Async_Object *&running_aysnc)
+                                               ZCE_Async_Object *&running_aysnc)
 {
     running_aysnc = NULL;
     auto iter = running_aysncobj_.find(id);
     if (running_aysncobj_.end() == iter)
     {
         ZCE_LOGMSG(RS_ERROR, "[ZCELIB] Can't find async object id [%u] .",
-            id);
+                   id);
         return -1;
     }
     running_aysnc = iter->second;
@@ -401,8 +401,8 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
     {
         //到这儿应该是框架代码错误了，一个异步对象的创建命令字没有注册？
         ZCE_LOGMSG(RS_ERROR, "[ZCELIB] Can't find async object id [%u] create cmd [%u].",
-            id,
-            async_obj->create_cmd_);
+                   id,
+                   async_obj->create_cmd_);
         return -1;
     }
     ASYNC_OBJECT_RECORD &async_rec = mapiter->second;
@@ -422,16 +422,16 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
         free_to_pool(async_obj);
     }
     ZCE_LOGMSG(RS_DEBUG, "[ZCELIB] Async object active. command [%u] create, id [%u],and continue run [%s].",
-        async_obj->create_cmd_,
-        id,
-        continue_run ? "TRUE" : "FALSE");
+               async_obj->create_cmd_,
+               id,
+               continue_run ? "TRUE" : "FALSE");
 
     return 0;
 }
 
 //超时处理
 int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
-                                        const void *act)
+                                       const void *act)
 {
     ZCE_Async_Object *async_obj = (ZCE_Async_Object *)(act);
     //增加记录统计数据
@@ -458,9 +458,9 @@ int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
     }
 
     ZCE_LOGMSG(RS_DEBUG, "[ZCELIB] Async object timeout. command [%u] create, id [%u],and continue run [%s].",
-        async_obj->create_cmd_,
-        async_obj->asyncobj_id_,
-        continue_run ? "TRUE" : "FALSE");
+               async_obj->create_cmd_,
+               async_obj->asyncobj_id_,
+               continue_run ? "TRUE" : "FALSE");
 
     return 0;
 }
@@ -471,8 +471,8 @@ void ZCE_Async_ObjectMgr::dump_info(ZCE_LOG_PRIORITY log_priority) const
 {
     //
     ZCE_LOGMSG(log_priority, "Register create cmd size[%lu].active running async object size[%lu].",
-        regaysnc_pool_.size(),
-        running_aysncobj_.size());
+               regaysnc_pool_.size(),
+               running_aysncobj_.size());
     //打印每个创建命令对于异步对象池子的数据
     auto iter =  regaysnc_pool_.begin();
     for (; iter != regaysnc_pool_.end(); ++iter)
@@ -480,16 +480,16 @@ void ZCE_Async_ObjectMgr::dump_info(ZCE_LOG_PRIORITY log_priority) const
         const ASYNC_OBJECT_RECORD &async_rec = iter->second;
         unsigned int create_cmd = iter->first;
         ZCE_LOGMSG(log_priority, "[ZCELIB] Async object create_cmd [%u]."
-            "Pool capacity[%lu] size[%lu] create_num[%llu],active_num[%llu]"
-            "end_num [%llu] force_end_num[%llu] timeout_num_[%llu].",
-            create_cmd,
-            async_rec.aysncobj_pool_.capacity(),
-            async_rec.aysncobj_pool_.size(),
-            async_rec.create_num_,
-            async_rec.active_num_,
-            async_rec.end_num_,
-            async_rec.force_end_num_,
-            async_rec.timeout_num_);
+                   "Pool capacity[%lu] size[%lu] create_num[%llu],active_num[%llu]"
+                   "end_num [%llu] force_end_num[%llu] timeout_num_[%llu].",
+                   create_cmd,
+                   async_rec.aysncobj_pool_.capacity(),
+                   async_rec.aysncobj_pool_.size(),
+                   async_rec.create_num_,
+                   async_rec.active_num_,
+                   async_rec.end_num_,
+                   async_rec.force_end_num_,
+                   async_rec.timeout_num_);
     }
 }
 

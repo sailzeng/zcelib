@@ -15,7 +15,7 @@ protected:
 
     //ZCE_Socket_Base不会提供给外部用，所以不准用
 protected:
-    
+
     /*!
     * @brief      构造函数
     */
@@ -27,7 +27,7 @@ protected:
     */
     explicit ZCE_Socket_Base(const ZCE_SOCKET &socket_hanle);
 
-    
+
     /*!
     * @brief      析构函数，会调用close，
     * @note       这儿必须说明一下，ACE在设计socket封装的时候，在析构函数里面

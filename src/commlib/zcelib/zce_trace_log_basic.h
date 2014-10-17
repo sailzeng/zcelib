@@ -386,7 +386,7 @@ public:
 
     ///根据字符串，得到日志级别
     static ZCE_LOG_PRIORITY log_priorities(const char *str_priority);
-    
+
     ///根据字符串,得到日志分割方式的枚举
     static ZCE_LOGFILE_DEVIDE log_file_devide(const char *str_devide);
 

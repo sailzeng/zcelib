@@ -13,8 +13,8 @@ int ZCE_LIB::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 
     //进行初始化，多线程下用临界区模拟
     ret = ZCE_LIB::pthread_spin_initex(lock,
-                                      (pshared == PTHREAD_PROCESS_SHARED) ? true : false,
-                                      NULL);
+                                       (pshared == PTHREAD_PROCESS_SHARED) ? true : false,
+                                       NULL);
 
     if (0 != ret)
     {
@@ -31,8 +31,8 @@ int ZCE_LIB::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 
 //SPIN 锁的初始化扩展版本
 int ZCE_LIB::pthread_spin_initex(pthread_spinlock_t *lock,
-                                bool process_share,
-                                const char *spin_name)
+                                 bool process_share,
+                                 const char *spin_name)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -41,10 +41,10 @@ int ZCE_LIB::pthread_spin_initex(pthread_spinlock_t *lock,
 
     //进行初始化，多线程下用临界区模拟
     ret = ZCE_LIB::pthread_mutex_initex(lock,
-                                       process_share,
-                                       true,
-                                       false,
-                                       spin_name);
+                                        process_share,
+                                        true,
+                                        false,
+                                        spin_name);
 
     if (0 != ret)
     {

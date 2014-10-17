@@ -33,12 +33,12 @@ namespace ZCE_LIB
 *             完成类型检查
 * @note       any 里面最好不要直接保存指针，而是使用share_ptr这类指针
 *             容器
-*             
+*
 */
 class any
 {
     //构造函数和析构函数
-public: 
+public:
 
     any()
         : content_(nullptr)
@@ -46,13 +46,13 @@ public:
     }
 
     template<typename value_type>
-    any(const value_type & value)
+    any(const value_type &value)
         : content_(new holder<value_type>(value))
     {
     }
 
     //克隆了一个
-    any(const any & other)
+    any(const any &other)
         : content_(other.content_ ? other.content_->clone() : 0)
     {
     }
@@ -65,7 +65,7 @@ public:
 public: // modifiers
 
     ///交换
-    any & swap(any & rhs)
+    any &swap(any &rhs)
     {
         std::swap(content_, rhs.content_);
         return *this;
@@ -73,13 +73,13 @@ public: // modifiers
 
     ///boost any 的操作=符号的作用是交换。这点要注意
     template<typename value_type>
-    any & operator=(const value_type & rhs)
+    any &operator=(const value_type &rhs)
     {
         any(rhs).swap(*this);
         return *this;
     }
 
-    any & operator=(any rhs)
+    any &operator=(any rhs)
     {
         rhs.swap(*this);
         return *this;
@@ -93,7 +93,7 @@ public: // queries
         return !content_;
     }
 
-    const std::type_info & type() const
+    const std::type_info &type() const
     {
         return content_ ? content_->type() : typeid(void);
     }
@@ -110,9 +110,9 @@ public: // queries
 
     public: // queries
 
-        virtual const std::type_info & type() const = 0;
+        virtual const std::type_info &type() const = 0;
 
-        virtual holder_base * clone() const = 0;
+        virtual holder_base *clone() const = 0;
 
     };
 
@@ -122,20 +122,20 @@ public: // queries
     {
     public: // structors
 
-        holder(const value_type & value)
+        holder(const value_type &value)
             : held(value)
         {
         }
 
     public: // queries
 
-        virtual const std::type_info & type() const
+        virtual const std::type_info &type() const
         {
             return typeid(value_type);
         }
 
         //克隆是new一个新的
-        virtual holder_base * clone() const
+        virtual holder_base *clone() const
         {
             return new holder(held);
         }
@@ -144,55 +144,55 @@ public: // queries
 
         value_type held;
 
-    // intentionally left unimplemented
-    private: 
-        holder & operator=(const holder &);
+        // intentionally left unimplemented
+    private:
+        holder &operator=(const holder &);
     };
 
 
 private: // representation
 
     template<typename value_type>
-    friend value_type * any_cast(any *);
+    friend value_type *any_cast(any *);
 
     template<typename value_type>
-    friend value_type * unsafe_any_cast(any *);
+    friend value_type *unsafe_any_cast(any *);
 
-    holder_base * content_;
+    holder_base *content_;
 
 };
 
 class bad_any_cast : public std::bad_cast
 {
 public:
-    virtual const char * what() const throw()
+    virtual const char *what() const throw()
     {
         return "boost::bad_any_cast: "
-            "failed conversion using boost::any_cast";
+               "failed conversion using boost::any_cast";
     }
 };
 
 template<typename value_type>
-value_type * any_cast(any * operand)
+value_type *any_cast(any *operand)
 {
     return operand &&
 #ifdef BOOST_AUX_ANY_TYPE_ID_NAME
-        std::strcmp(operand->type().name(), typeid(value_type).name()) == 0
+           std::strcmp(operand->type().name(), typeid(value_type).name()) == 0
 #else
-        operand->type() == typeid(value_type)
+           operand->type() == typeid(value_type)
 #endif
-        ? &static_cast<any::holder<value_type> *>(operand->content_)->held
-        : 0;
+           ? &static_cast<any::holder<value_type> *>(operand->content_)->held
+           : 0;
 }
 
 template<typename value_type>
-inline const value_type * any_cast(const any * operand)
+inline const value_type *any_cast(const any *operand)
 {
     return any_cast<value_type>(const_cast<any *>(operand));
 }
 
 template<typename value_type>
-value_type any_cast(any & operand)
+value_type any_cast(any &operand)
 {
     typedef BOOST_DEDUCED_TYPENAME remove_reference<value_type>::type nonref;
 
@@ -206,14 +206,16 @@ value_type any_cast(any & operand)
     BOOST_STATIC_ASSERT(!is_reference<nonref>::value);
 #endif
 
-    nonref * result = any_cast<nonref>(&operand);
+    nonref *result = any_cast<nonref>(&operand);
     if (!result)
+    {
         boost::throw_exception(bad_any_cast());
+    }
     return *result;
 }
 
 template<typename value_type>
-inline value_type any_cast(const any & operand)
+inline value_type any_cast(const any &operand)
 {
     typedef BOOST_DEDUCED_TYPENAME remove_reference<value_type>::type nonref;
 
@@ -232,13 +234,13 @@ inline value_type any_cast(const any & operand)
 // use typeid() comparison, e.g., when our types may travel across
 // different shared libraries.
 template<typename value_type>
-inline value_type * unsafe_any_cast(any * operand)
+inline value_type *unsafe_any_cast(any *operand)
 {
     return &static_cast<any::holder<value_type> *>(operand->content_)->held;
 }
 
 template<typename value_type>
-inline const value_type * unsafe_any_cast(const any * operand)
+inline const value_type *unsafe_any_cast(const any *operand)
 {
     return unsafe_any_cast<value_type>(const_cast<any *>(operand));
 }

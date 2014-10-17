@@ -63,21 +63,21 @@ void ZCE_LIB::fmt_double(char *buffer,
     {
         //指数ecvt的精度是输出数字的长度，不是小数点的长度，所以会有precision + 1
         ZCE_LIB::ecvt_r(fvalue,
-                       static_cast<int>(precision + 1),
-                       &decimal,
-                       &sign,
-                       tmp_out_buf,
-                       LEN_OF_TMP_OUT_BUF);
+                        static_cast<int>(precision + 1),
+                        &decimal,
+                        &sign,
+                        tmp_out_buf,
+                        LEN_OF_TMP_OUT_BUF);
 
     }
     else
     {
         ZCE_LIB::fcvt_r(fvalue,
-                       static_cast<int>(precision),
-                       &decimal,
-                       &sign,
-                       tmp_out_buf,
-                       LEN_OF_TMP_OUT_BUF);
+                        static_cast<int>(precision),
+                        &decimal,
+                        &sign,
+                        tmp_out_buf,
+                        LEN_OF_TMP_OUT_BUF);
     }
 
     int cvt_str_len = static_cast<int>( strlen(tmp_out_buf));

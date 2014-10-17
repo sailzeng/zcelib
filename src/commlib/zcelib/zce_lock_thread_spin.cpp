@@ -35,8 +35,8 @@ ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
     int ret = 0;
 
     ret = ZCE_LIB::pthread_spin_initex(&lock_,
-                                      false,
-                                      NULL);
+                                       false,
+                                       NULL);
 
     if (0 != ret)
     {

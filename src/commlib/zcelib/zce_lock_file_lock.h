@@ -75,7 +75,7 @@ protected:
 
     ///自己打开的这个文件，也就是调用过open函数
     bool          open_by_self_;
-    
+
     ///
     size_t        file_len_;
 

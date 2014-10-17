@@ -120,7 +120,7 @@ char *ZCE_LIB::getenv(const char *name)
 }
 
 sighandler_t ZCE_LIB::signal (int signum,
-                             sighandler_t  func )
+                              sighandler_t  func )
 {
 
     //如果这个信号，在这个平台不支持，就放弃把

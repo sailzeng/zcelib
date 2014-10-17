@@ -52,7 +52,7 @@ public:
 protected:
     //
     static void read_dfs(const rapidxml::xml_node<char> *note,
-                  ZCE_Conf_PropertyTree *propertytree);
+                         ZCE_Conf_PropertyTree *propertytree);
 
 };
 

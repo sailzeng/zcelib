@@ -2,17 +2,17 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_net_http_client.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Monday, August 25, 2014
 * @brief      代码的第一版本来自libghttp，还没有任何改写，只是尝试移植。
 *             有点违反他的版权（GNU），但我肯定要改写移植的。
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 #ifndef _ZCE_LIB_NET_HTTP_CLIENT_H_
 #define _ZCE_LIB_NET_HTTP_CLIENT_H_
@@ -48,32 +48,32 @@ http_hdr_list_destroy(http_hdr_list *a_list);
 /* set a value in a list */
 int
 http_hdr_set_value(http_hdr_list *a_list,
-const char *a_name,
-const char *a_val);
+                   const char *a_name,
+                   const char *a_val);
 
 /* set the value in a list from a range, not a NTS */
 int
 http_hdr_set_value_no_nts(http_hdr_list *a_list,
-const char *a_name_start,
-int a_name_len,
-const char *a_val_start,
-int a_val_len);
+                          const char *a_name_start,
+                          int a_name_len,
+                          const char *a_val_start,
+                          int a_val_len);
 
 /* get a copy of a value in a list */
 char *
 http_hdr_get_value(http_hdr_list *a_list,
-const char *a_name);
+                   const char *a_name);
 
 /* get a copy of the headers in a list */
 int
 http_hdr_get_headers(http_hdr_list *a_list,
-char ***a_names,
-int *a_num_names);
+                     char ***a_names,
+                     int *a_num_names);
 
 /* clear a header in a list */
 int
 http_hdr_clear_value(http_hdr_list *a_list,
-const char *a_name);
+                     const char *a_name);
 
 
 typedef struct http_uri_tag
@@ -93,18 +93,20 @@ http_uri_destroy(http_uri *a_uri);
 
 int
 http_uri_parse(char *a_uri,
-http_uri *a_request);
+               http_uri *a_request);
 
 
 //========================================================================================
 
 
-typedef enum http_trans_err_type_tag {
+typedef enum http_trans_err_type_tag
+{
     http_trans_err_type_host = 0,
     http_trans_err_type_errno
 } http_trans_err_type;
 
-typedef struct http_trans_conn_tag {
+typedef struct http_trans_conn_tag
+{
     struct hostent      *hostinfo;
     struct sockaddr_in   saddr;
     char                *host;
@@ -147,8 +149,8 @@ http_trans_get_host_error(int a_herror);
 
 int
 http_trans_append_data_to_buf(http_trans_conn *a_conn,
-char *a_data,
-int a_data_len);
+                              char *a_data,
+                              int a_data_len);
 
 int
 http_trans_read_into_buf(http_trans_conn *a_conn);
@@ -158,13 +160,14 @@ http_trans_write_buf(http_trans_conn *a_conn);
 
 char *
 http_trans_buf_has_patt(char *a_buf, int a_len,
-char *a_pat, int a_patlen);
+                        char *a_pat, int a_patlen);
 
 
 //========================================================================================
 
 
-typedef enum http_req_type {
+typedef enum http_req_type
+{
     http_req_type_get = 0,
     http_req_type_options,
     http_req_type_head,
@@ -182,7 +185,8 @@ typedef enum http_req_type {
     http_req_type_unlock
 } http_req_type;
 
-typedef enum http_req_state_tag {
+typedef enum http_req_state_tag
+{
     http_req_state_start = 0,
     http_req_state_sending_request,
     http_req_state_sending_headers,
@@ -200,7 +204,8 @@ typedef enum http_req_state_tag {
 
 extern const char *http_req_type_char[];
 
-typedef struct http_req_tag {
+typedef struct http_req_tag
+{
     http_req_type type;
     float          http_ver;
     char          *host;
@@ -266,15 +271,15 @@ http_resp_destroy(http_resp *a_resp);
 
 int
 http_resp_read_body(http_resp *a_resp,
-http_req *a_req,
-http_trans_conn *a_conn);
+                    http_req *a_req,
+                    http_trans_conn *a_conn);
 
 int
 http_resp_read_headers(http_resp *a_resp, http_trans_conn *a_conn);
 
 void
 http_resp_flush(http_resp *a_resp,
-http_trans_conn *a_conn);
+                http_trans_conn *a_conn);
 
 
 //========================================================================================

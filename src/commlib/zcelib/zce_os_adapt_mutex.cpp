@@ -64,7 +64,7 @@ int ZCE_LIB::pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 
 //互斥量属性设置共享属性PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
 int ZCE_LIB::pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
-                                          int pshared)
+                                           int pshared)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -85,7 +85,7 @@ int ZCE_LIB::pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
 
 //取得线程的共享属性
 int ZCE_LIB::pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr,
-                                         int *pshared)
+                                          int *pshared)
 {
 #if defined (ZCE_OS_WINDOWS)
     *pshared = attr->lock_shared_;
@@ -108,7 +108,7 @@ int ZCE_LIB::pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 
 //取得线程的属性
 int ZCE_LIB::pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
-                                      int *type)
+                                       int *type)
 {
 #if defined (ZCE_OS_WINDOWS)
     *type = attr->lock_type_;
@@ -122,10 +122,10 @@ int ZCE_LIB::pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_mutex_t放入共享内存
 int ZCE_LIB::pthread_mutex_initex(pthread_mutex_t *mutex,
-                                 bool process_share,
-                                 bool recursive,
-                                 bool need_timeout,
-                                 const char *mutex_name)
+                                  bool process_share,
+                                  bool recursive,
+                                  bool need_timeout,
+                                  const char *mutex_name)
 {
 
     //前面有错误返回，
@@ -210,7 +210,7 @@ int ZCE_LIB::pthread_mutex_initex(pthread_mutex_t *mutex,
 //如果是递归的，线程内部递归的，而且不需要超时等待，用轻量级的临界区模拟
 //如果需要递归的，线程内部需要超时的，进程间的，那么选择MUTEX，
 int ZCE_LIB::pthread_mutex_init (pthread_mutex_t *mutex,
-                                const pthread_mutexattr_t *attr)
+                                 const pthread_mutexattr_t *attr)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
@@ -243,9 +243,9 @@ int ZCE_LIB::pthread_mutex_init (pthread_mutex_t *mutex,
         {
             mutex->non_recursive_mutex_ = new sem_t();
             int ret = ZCE_LIB::sem_init(mutex->non_recursive_mutex_,
-                                       mutex->lock_shared_,
-                                       1,
-                                       1);
+                                        mutex->lock_shared_,
+                                        1,
+                                        1);
 
             if (ret != 0)
             {
@@ -260,10 +260,10 @@ int ZCE_LIB::pthread_mutex_init (pthread_mutex_t *mutex,
         {
             //,当前值和最大值都调整成1
             mutex->non_recursive_mutex_ = ZCE_LIB::sem_open(mutex_name,
-                                                           O_CREAT,
-                                                           ZCE_DEFAULT_FILE_PERMS,
-                                                           1,
-                                                           1);
+                                                            O_CREAT,
+                                                            ZCE_DEFAULT_FILE_PERMS,
+                                                            1,
+                                                            1);
         }
 
         if (!mutex->non_recursive_mutex_)
@@ -428,7 +428,7 @@ int ZCE_LIB::pthread_mutex_lock (pthread_mutex_t *mutex)
 
 //pthread mutex 超时锁定，
 int ZCE_LIB::pthread_mutex_timedlock(pthread_mutex_t *mutex,
-                                    const ::timespec *abs_timeout_spec)
+                                     const ::timespec *abs_timeout_spec)
 {
 #if defined (ZCE_OS_WINDOWS)
     //
@@ -509,7 +509,7 @@ int ZCE_LIB::pthread_mutex_timedlock(pthread_mutex_t *mutex,
 
 //pthread mutex 超时锁定，非标准实现,是用我内部的时间变量timeval
 int ZCE_LIB::pthread_mutex_timedlock (pthread_mutex_t *mutex,
-                                     const timeval *abs_timeout_val)
+                                      const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间

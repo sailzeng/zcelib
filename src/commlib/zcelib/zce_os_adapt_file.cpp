@@ -59,7 +59,7 @@ ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
         return -1;
     }
 
-    
+
 
 #elif defined (ZCE_OS_LINUX)
     return ::write (file_handle, buf, count);
@@ -237,8 +237,8 @@ int ZCE_LIB::filesize (ZCE_HANDLE file_handle, size_t *file_size)
 //为什么要提供这个API呢，因为WINDOWS平台大部分都是采用HANDLE处理的
 
 ZCE_HANDLE ZCE_LIB::open (const char *filename,
-                         int open_mode,
-                         mode_t perms)
+                          int open_mode,
+                          mode_t perms)
 {
     //Windows平台
 #if defined (ZCE_OS_WINDOWS)

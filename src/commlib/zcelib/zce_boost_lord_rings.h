@@ -48,8 +48,8 @@ protected:
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type* pointer;
-    typedef _value_type& reference;
+    typedef _value_type *pointer;
+    typedef _value_type &reference;
     typedef _value_type value_type;
     typedef std::random_access_iterator_tag iterator_category;
 

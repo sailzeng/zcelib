@@ -28,7 +28,7 @@
 /*********************************************************************************
 class ZCE_Server_Toolkit
 *********************************************************************************/
-class ZCELIB_EXPORT ZCE_Server_Base :public ZCE_NON_Copyable
+class ZCELIB_EXPORT ZCE_Server_Base : public ZCE_NON_Copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,
@@ -45,7 +45,7 @@ public:
     * @return     int
     * @param      pragramname 进程的名字，可以将argv[0]传递给我,内部会处理,
     * @param      lock_pid    是否对PID文件进行加锁处理，
-    * @note       
+    * @note
     */
     int out_pid_file(const char *pragramname);
 
@@ -118,7 +118,7 @@ public:
 #endif
 
 protected:
-    
+
     //PID文件长度，用一个最大长度，避免一些长度变化的麻烦，
     static const size_t   PID_FILE_LEN = 16;
 

@@ -100,7 +100,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
                             bool check_valid)
 {
     const size_t SVC_INFO_STR_LEN = 512;
-    if (strlen(svc_info_str) > SVC_INFO_STR_LEN -1)
+    if (strlen(svc_info_str) > SVC_INFO_STR_LEN - 1)
     {
         return SOAR_RET::ERROR_STRING_TO_SVCID_FAIL;
     }

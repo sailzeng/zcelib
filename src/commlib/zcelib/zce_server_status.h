@@ -264,7 +264,7 @@ public:
     int initialize(const char *stat_filename,
                    bool multi_thread);
 
-    
+
     /*!
     * @brief      创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
     * @return     int
@@ -306,7 +306,7 @@ public:
         return increase_by_statid(statics_id, classify_id, subclassing_id, 1);
     }
 
-    
+
     /*!
     * @brief      使用统计ID和分类ID作为key,绝对值修改监控统计项目
     * @return     int
@@ -336,7 +336,7 @@ public:
 
 
 
-    
+
     /*!
     * @brief      根据统计ID和分类ID作为key，得到统计数值
     * @return     uint64_t 返回的统计值

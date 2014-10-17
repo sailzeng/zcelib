@@ -181,8 +181,8 @@ inline int ZCE_Reactor::exist_event_handler(ZCE_Event_Handler *event_handler)
 }
 
 //通过句柄查询event handler，如果存在返回0
-inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle, 
-    ZCE_Event_Handler *&event_handler)
+inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle,
+                                           ZCE_Event_Handler *&event_handler)
 {
     MAP_OF_HANDLER_TO_EVENT::iterator iter_temp = handler_map_.find(handle);
 

@@ -625,10 +625,10 @@ int ZCE_LIB::getopt(int nargc, char *const *nargv, const char *options)
  */
 int
 ZCE_LIB::getopt_long(int nargc,
-                    char *const *nargv,
-                    const char *options,
-                    const struct option *long_options,
-                    int *idx)
+                     char *const *nargv,
+                     const char *options,
+                     const struct option *long_options,
+                     int *idx)
 {
 #if defined (ZCE_OS_WINDOWS)
     return (getopt_internal(nargc,
@@ -653,10 +653,10 @@ ZCE_LIB::getopt_long(int nargc,
  */
 int
 ZCE_LIB::getopt_long_only(int nargc,
-                         char *const *nargv,
-                         const char *options,
-                         const struct option *long_options,
-                         int *idx)
+                          char *const *nargv,
+                          const char *options,
+                          const struct option *long_options,
+                          int *idx)
 {
 
 #if defined (ZCE_OS_WINDOWS)

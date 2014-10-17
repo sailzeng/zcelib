@@ -211,11 +211,11 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
-        business_id_,
-        self_svc_id_,
-        0,
-        NULL,
-        false);
+                                                    business_id_,
+                                                    self_svc_id_,
+                                                    0,
+                                                    NULL,
+                                                    false);
     if (ret != 0)
     {
         ZCE_LOGMSG(RS_ERROR, "zce_Server_Status init fail. ret=%d", ret);
@@ -224,7 +224,7 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     //监控对象添加框架的监控对象
     Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
-        COMM_STAT_ITEM_WITH_NAME);
+                                                   COMM_STAT_ITEM_WITH_NAME);
 
 
     //使用WHEEL型的定时器队列
@@ -235,8 +235,8 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     timer_base_->initialize(ZCE_Timer_Queue::instance());
 
 
-    Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM, 
-        COMM_STAT_ITEM_WITH_NAME);
+    Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
+                                                   COMM_STAT_ITEM_WITH_NAME);
 
     //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，
@@ -303,12 +303,12 @@ int Soar_Svrd_Appliction::on_exit()
     {
         ZCE_Timer_Queue::instance()->close();
     }
-        
+
     //单子实例清空
     ZCE_Reactor::clean_instance();
     ZCE_Timer_Queue::clean_instance();
     Soar_Stat_Monitor::clean_instance();
-    
+
     ZLOG_INFO("[framework] %s exit_instance Succ.Have Fun.!!!",
               app_run_name_.c_str());
     ZLOG_INFO("======================================================================================================");

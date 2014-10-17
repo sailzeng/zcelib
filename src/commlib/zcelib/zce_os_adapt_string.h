@@ -384,7 +384,7 @@ inline void str_split(const char_type *str, const char_type *separator, containe
 
 
 /*!
-* @brief      
+* @brief
 * @return     const char*
 * @param      src
 * @param      dst

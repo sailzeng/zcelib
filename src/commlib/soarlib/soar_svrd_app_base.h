@@ -13,8 +13,8 @@ class Server_Timer_Base;
 
 /*!
 * @brief      单线程自动机模型的程序框架基类
-*             
-* @note       
+*
+* @note
 */
 class Soar_Svrd_Appliction : public ZCE_Server_Base
 {
@@ -65,7 +65,7 @@ public:
     virtual int on_exit();
 
 protected:
-    
+
     ///重新加载配置
     virtual int reload_config();
 

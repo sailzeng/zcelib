@@ -27,9 +27,9 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        ZCE_LOGMSG(RS_ERROR,"[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]", 
-            file_name,
-            ZCE_LIB::last_error() );
+        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]",
+                   file_name,
+                   ZCE_LIB::last_error() );
         return -1;
     }
 
@@ -47,7 +47,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
         }
 
         //找到一个section
-        
+
         if (one_line[0] == '[' && one_line[strlen(one_line) - 1] == ']')
         {
             //已经找到下一个Section,没有发现相关的Key，返回默认值
@@ -58,7 +58,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
             //消灭空格
             ZCE_LIB::strtrim(one_line);
-            
+
             ZCE_Conf_PropertyTree *tree_node = NULL;
             propertytree->add_child(one_line, tree_node);
             cur_node = tree_node;
@@ -79,7 +79,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
             //找到返回。
             std::string val(str_value);
-            cur_node->set_leaf<std::string&>(str_key, val);
+            cur_node->set_leaf<std::string &>(str_key, val);
         }
     }
 
@@ -102,28 +102,28 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::filelen."
-            "path=[%s],last error [%d]",
-            file_name,
-            ZCE_LIB::last_error());
+                   "path=[%s],last error [%d]",
+                   file_name,
+                   ZCE_LIB::last_error());
         return ret;
     }
-    size_t buf_len = file_size+16,read_len = 0;
+    size_t buf_len = file_size + 16, read_len = 0;
     //只有unique_ptr 才能默认直接使用数组，
     std::unique_ptr<char[]> file_data(new char[buf_len]);
     ret = ZCE_LIB::read_file_data(file_name, file_data.get(), buf_len, &read_len);
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::read_file_data."
-            "path=[%s],last error [%d]",
-            file_name,
-            ZCE_LIB::last_error());
+                   "path=[%s],last error [%d]",
+                   file_name,
+                   ZCE_LIB::last_error());
         return ret;
     }
 
     try
     {
-        // character type defaults to char  
-        rapidxml::xml_document<char> doc;   
+        // character type defaults to char
+        rapidxml::xml_document<char> doc;
         //parse_non_destructive
         doc.parse<rapidxml::parse_default>(file_data.get());
 
@@ -134,21 +134,21 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     catch (rapidxml::parse_error &e)
     {
         ZCE_LOGMSG(RS_ERROR, "[ZCELIB]file [%s] don't parse error what[%s] where[%s].",
-            e.what(),
-            e.where<char>());
+                   e.what(),
+                   e.where<char>());
         return -1;
     }
-    
-    
+
+
     return 0;
 }
 
 
 //深度优先读写
 void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
-    ZCE_Conf_PropertyTree *propertytree)
+                                 ZCE_Conf_PropertyTree *propertytree)
 {
-    
+
     if (NULL == node->value() && NULL == node->first_attribute()  && NULL == node->first_node() )
     {
         return;
@@ -163,16 +163,17 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
 
     if (node->value())
     {
-        pt_note->set_leaf("<self_note>",node->value());
+        pt_note->set_leaf("<self_note>", node->value());
     }
     if (node->first_attribute())
     {
         rapidxml::xml_attribute<char> *node_attr = node->first_attribute();
-        do 
+        do
         {
             pt_note->set_leaf(node_attr->name(), node_attr->value());
             node_attr = node_attr->next_attribute();
-        } while (node_attr);
+        }
+        while (node_attr);
     }
     //还有子节点，深度递归
     if (node->first_node())
@@ -182,7 +183,8 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
         {
             read_dfs(node_child, pt_note);
             node_child = node_child->next_sibling();
-        } while (node_child);
+        }
+        while (node_child);
     }
 }
 

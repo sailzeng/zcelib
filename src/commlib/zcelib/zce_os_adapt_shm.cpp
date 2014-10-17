@@ -9,11 +9,11 @@
 
 //
 void *ZCE_LIB::mmap (void *addr,
-                    size_t len,
-                    int prot,
-                    int flags,
-                    ZCE_HANDLE file_handle,
-                    size_t off)
+                     size_t len,
+                     int prot,
+                     int flags,
+                     ZCE_HANDLE file_handle,
+                     size_t off)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -222,8 +222,8 @@ int ZCE_LIB::munmap (void *addr, size_t len)
 
 
 ZCE_HANDLE ZCE_LIB::shm_open (const char *file_path,
-                             int mode,
-                             mode_t perms)
+                              int mode,
+                              mode_t perms)
 {
     //
 #if defined (ZCE_OS_WINDOWS)

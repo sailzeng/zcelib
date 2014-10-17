@@ -122,13 +122,13 @@ int ZCE_LIB::strncasecmp(const char *string1, const char *string2, size_t maxlen
 
 
 //替换src字符串中的sub字符串为replace，保存到dst字符串中
-const char* ZCE_LIB::str_replace(const char* src, char* dst, const char* sub, const char* replace)
+const char *ZCE_LIB::str_replace(const char *src, char *dst, const char *sub, const char *replace)
 {
     ZCE_ASSERT(src && dst && sub && replace);
 
     //记录当前指针位置,偏移
     size_t  dst_offset = 0, src_offset = 0;
-    
+
     //求得各字符串长度
     size_t src_len = strlen(src);
     size_t sub_len = strlen(sub);
@@ -155,7 +155,7 @@ const char* ZCE_LIB::str_replace(const char* src, char* dst, const char* sub, co
 
     //最后添加字符串结尾标记'\0'
     *(dst + dst_offset) = '\0';
-    
+
     //返回dst
     return dst;
 }

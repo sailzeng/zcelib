@@ -13,7 +13,7 @@ template <>
 void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait (ZCE_Thread_Light_Mutex *external_mutex)
 {
     int ret = ZCE_LIB::pthread_cond_wait(&lock_,
-                                        external_mutex->get_lock());
+                                         external_mutex->get_lock());
 
     if (0 != ret)
     {
@@ -30,8 +30,8 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
                                                                 const ZCE_Time_Value &abs_time)
 {
     int ret = ZCE_LIB::pthread_cond_timedwait(&lock_,
-                                             external_mutex->get_lock(),
-                                             abs_time);
+                                              external_mutex->get_lock(),
+                                              abs_time);
 
     if (0 != ret)
     {
@@ -58,7 +58,7 @@ template <>
 void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait (ZCE_Thread_Recursive_Mutex *external_mutex)
 {
     int ret = ZCE_LIB::pthread_cond_wait(&lock_,
-                                        external_mutex->get_lock());
+                                         external_mutex->get_lock());
 
     if (0 != ret)
     {
@@ -75,8 +75,8 @@ bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_R
                                                                     const ZCE_Time_Value &abs_time)
 {
     int ret = ZCE_LIB::pthread_cond_timedwait(&lock_,
-                                             external_mutex->get_lock(),
-                                             abs_time);
+                                              external_mutex->get_lock(),
+                                              abs_time);
 
     if (0 != ret)
     {

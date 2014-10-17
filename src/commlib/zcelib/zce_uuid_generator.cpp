@@ -206,22 +206,22 @@ const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len) const
 
     //输出8-4-4-4-12的格式
     int ret = snprintf(buffer, buf_len, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
-        this->u_16uint8_[15],
-        this->u_16uint8_[14],
-        this->u_16uint8_[13],
-        this->u_16uint8_[12],
-        this->u_16uint8_[11],
-        this->u_16uint8_[10],
-        this->u_16uint8_[9],
-        this->u_16uint8_[8],
-        this->u_16uint8_[7],
-        this->u_16uint8_[6],
-        this->u_16uint8_[5],
-        this->u_16uint8_[4],
-        this->u_16uint8_[3],
-        this->u_16uint8_[2],
-        this->u_16uint8_[1],
-        this->u_16uint8_[0]);
+                       this->u_16uint8_[15],
+                       this->u_16uint8_[14],
+                       this->u_16uint8_[13],
+                       this->u_16uint8_[12],
+                       this->u_16uint8_[11],
+                       this->u_16uint8_[10],
+                       this->u_16uint8_[9],
+                       this->u_16uint8_[8],
+                       this->u_16uint8_[7],
+                       this->u_16uint8_[6],
+                       this->u_16uint8_[5],
+                       this->u_16uint8_[4],
+                       this->u_16uint8_[3],
+                       this->u_16uint8_[2],
+                       this->u_16uint8_[1],
+                       this->u_16uint8_[0]);
 
     if (ret < 0 || ret > static_cast<int>(buf_len))
     {
@@ -240,7 +240,7 @@ ZCE_UUID128_Generator *ZCE_UUID128_Generator::instance_ = NULL;
 
 //构造函数
 ZCE_UUID128_Generator::ZCE_UUID128_Generator() :
-generator_type_(UUID128_GENERATOR_INVALID)
+    generator_type_(UUID128_GENERATOR_INVALID)
 {
 }
 ZCE_UUID128_Generator::~ZCE_UUID128_Generator()

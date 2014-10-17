@@ -541,7 +541,7 @@ inline int ZCE_LIB::clock_gettime(clockid_t clk_id, timespec *ts)
     {
         ZCE_LIB::gettimeofday(&tv);
     }
-    else if(CLOCK_MONOTONIC  == clk_id)
+    else if (CLOCK_MONOTONIC  == clk_id)
     {
         tv = ZCE_LIB::get_uptime();
     }

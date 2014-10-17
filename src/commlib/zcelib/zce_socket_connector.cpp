@@ -68,8 +68,8 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 
     //进行连接尝试
     ret = ZCE_LIB::connect(new_stream.get_handle(),
-                          remote_addr->sockaddr_ptr_,
-                          remote_addr->sockaddr_size_);
+                           remote_addr->sockaddr_ptr_,
+                           remote_addr->sockaddr_size_);
 
     //
     if (ret != 0  )
@@ -86,8 +86,8 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 
     //进行超时处理
     ret = ZCE_LIB::handle_ready(new_stream.get_handle(),
-                               &timeout,
-                               ZCE_LIB::HANDLE_READY_CONNECTED);
+                                &timeout,
+                                ZCE_LIB::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -152,8 +152,8 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 
     //进行连接
     ret = ZCE_LIB::connect(new_stream.get_handle(),
-                          remote_addr->sockaddr_ptr_,
-                          remote_addr->sockaddr_size_);
+                           remote_addr->sockaddr_ptr_,
+                           remote_addr->sockaddr_size_);
 
     //进行非阻塞的连接，一般都是返回错误。但是UNIX 网络卷一也提到了过本地连接立即返回0，我自己测试过好像都是返回-1
     if (ret != 0 )

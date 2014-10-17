@@ -36,7 +36,7 @@
 *             3.Windows 可以监控子文件夹，这个大概是Windows API可以唯一得瑟一下的东东
 *             和inotify的函数一比，这组Windows API的设计者应该掩面跳楼。
 *
-*             
+*
 *             而且想和Select 和Epoll Reactor一起使用，ZCE_Event_INotify是更好的选择。
 *             Kliu提醒，Epoll也可以用于处理Inotify的时间反应器，特此修正，表示感谢。
 *
@@ -44,7 +44,7 @@
 * @note      原来为Inotify单独写了一个反应器和event 代码，但在Kliu的劝解下考虑再三，还是考虑
 *            在Linux下先用反应器使用了这个event handle，后面慢慢实现了WFMO 的Reactor，
 *            就把Windows 部分的代码也统一过来了，
-*             
+*
 *
 * 纪念张国荣先生去世10周年，
 * 仍然记得那天，2003年的4月1日下班，非典仍在肆掠，百业萧条，
@@ -140,9 +140,9 @@ public:
     @param[in]  watch_sub_dir 是否监控子目录，此参数只在Windows下有用，
     */
     int add_watch(const char *pathname,
-        uint32_t mask,
-        ZCE_HANDLE *watch_handle,
-        bool watch_sub_dir = false);
+                  uint32_t mask,
+                  ZCE_HANDLE *watch_handle,
+                  bool watch_sub_dir = false);
 
 
     /*!
@@ -324,7 +324,7 @@ protected:
 
     ///inotify_init 初始化得到的句柄
     int                inotify_handle_;
-    
+
 
 #elif defined ZCE_OS_WINDOWS
 

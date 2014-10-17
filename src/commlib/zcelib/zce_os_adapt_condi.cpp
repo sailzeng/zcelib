@@ -46,7 +46,7 @@ int ZCE_LIB::pthread_condattr_destroy(pthread_condattr_t *attr)
 
 //条件变量对象的初始化
 int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
-                              const pthread_condattr_t *attr)
+                               const pthread_condattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -90,7 +90,7 @@ int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
     //初始化线程的互斥量
     int result = 0;
     result = ZCE_LIB::pthread_mutex_init(&cond->simulate_cv_.waiters_lock_,
-                                        &waiters_lock_attr);
+                                         &waiters_lock_attr);
 
     if (result != 0)
     {
@@ -98,9 +98,9 @@ int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
     }
 
     cond->simulate_cv_.block_sema_ = ZCE_LIB::sem_open(sem_block_ptr,
-                                                      O_CREAT,
-                                                      ZCE_DEFAULT_FILE_PERMS,
-                                                      0);
+                                                       O_CREAT,
+                                                       ZCE_DEFAULT_FILE_PERMS,
+                                                       0);
 
     //如果失败了，要回收前面获得的资源
     if (!cond->simulate_cv_.block_sema_)
@@ -110,9 +110,9 @@ int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
     }
 
     cond->simulate_cv_.finish_broadcast_ = ZCE_LIB::sem_open(sem_finish_ptr,
-                                                            O_CREAT,
-                                                            ZCE_DEFAULT_FILE_PERMS,
-                                                            0);
+                                                             O_CREAT,
+                                                             ZCE_DEFAULT_FILE_PERMS,
+                                                             0);
 
     //如果失败了，要回收前面获得的资源,这种分段申请资源最麻烦
     if (!cond->simulate_cv_.finish_broadcast_)
@@ -135,7 +135,7 @@ int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_condattr_t放入共享内存
 int ZCE_LIB::pthread_cond_initex(pthread_cond_t *cond,
-                                bool win_mutex_or_sema)
+                                 bool win_mutex_or_sema)
 {
 
     //前面有错误返回，
@@ -217,8 +217,8 @@ int ZCE_LIB::pthread_cond_destroy(pthread_cond_t *cond)
 
 //条件变量等待一段时间，超时后继续
 int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
-                                   pthread_mutex_t *external_mutex,
-                                   const ::timespec *abs_timespec_out)
+                                    pthread_mutex_t *external_mutex,
+                                    const ::timespec *abs_timespec_out)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -294,7 +294,7 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
     if (abs_timespec_out)
     {
         result = ZCE_LIB::sem_timedwait(cond->simulate_cv_.block_sema_,
-                                       abs_timespec_out);
+                                        abs_timespec_out);
 
     }
     else
@@ -345,27 +345,27 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
 
 //条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
 int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
-                                   pthread_mutex_t *external_mutex,
-                                   const timeval *abs_timeout_val)
+                                    pthread_mutex_t *external_mutex,
+                                    const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
     return ZCE_LIB::pthread_cond_timedwait(cond,
-                                          external_mutex,
-                                          &abs_timeout_spec);
+                                           external_mutex,
+                                           &abs_timeout_spec);
 }
 
 //条件变量等待
 int ZCE_LIB::pthread_cond_wait(pthread_cond_t *cond,
-                              pthread_mutex_t *external_mutex)
+                               pthread_mutex_t *external_mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
     //这样写是为了避免函数冲突告警，
     const ::timespec *abs_timespec_out = NULL;
     return ZCE_LIB::pthread_cond_timedwait(cond,
-                                          external_mutex,
-                                          abs_timespec_out);
+                                           external_mutex,
+                                           abs_timespec_out);
 #elif defined (ZCE_OS_LINUX)
     //
     return ::pthread_cond_wait(cond,

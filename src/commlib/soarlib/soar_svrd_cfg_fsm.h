@@ -76,7 +76,7 @@ public:
     ///
     FRAMEWORK_CONFIG framework_config_;
 
-    ///    
+    ///
     ZCE_Conf_PropertyTree framework_ptree_;
 
 };

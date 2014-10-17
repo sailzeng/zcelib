@@ -174,8 +174,8 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
         ZLOG_ERROR("[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
-            __ZCE_FUNC__,
-            watch_handle_);
+                   __ZCE_FUNC__,
+                   watch_handle_);
         return -1;
     }
 

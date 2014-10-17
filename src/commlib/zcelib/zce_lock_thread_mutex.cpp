@@ -18,10 +18,10 @@ ZCE_Thread_Light_Mutex::ZCE_Thread_Light_Mutex ()
     int ret = 0;
 
     ret = ZCE_LIB::pthread_mutex_initex(&lock_,
-                                       false,
-                                       true,
-                                       false,
-                                       NULL);
+                                        false,
+                                        true,
+                                        false,
+                                        NULL);
 
     if (0 != ret)
     {
@@ -100,10 +100,10 @@ ZCE_Thread_Recursive_Mutex::ZCE_Thread_Recursive_Mutex ()
 
     //这个地方唯一和上面不同的就是need_timeout被调整为了true
     ret = ZCE_LIB::pthread_mutex_initex(&lock_,
-                                       false,
-                                       true,
-                                       true,
-                                       NULL);
+                                        false,
+                                        true,
+                                        true,
+                                        NULL);
 
     if (0 != ret)
     {
@@ -206,10 +206,10 @@ ZCE_Thread_NONR_Mutex::ZCE_Thread_NONR_Mutex ()
 
     //注意recursive被调整为了false
     ret = ZCE_LIB::pthread_mutex_initex(&lock_,
-                                       false,
-                                       false,
-                                       true,
-                                       NULL);
+                                        false,
+                                        false,
+                                        true,
+                                        NULL);
 
     if (0 != ret)
     {

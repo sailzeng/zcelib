@@ -138,12 +138,12 @@ bool ZCE_Sockaddr_In6::is_ip_equal (const ZCE_Sockaddr_In6 &others) const
 int ZCE_Sockaddr_In6::get_name_info(char *host_name, size_t name_len) const
 {
     return ZCE_LIB::getnameinfo(reinterpret_cast<const sockaddr *>(&in6_addr_),
-                               sizeof(sockaddr_in6),
-                               host_name,
-                               name_len,
-                               NULL,
-                               0,
-                               NI_NAMEREQD);
+                                sizeof(sockaddr_in6),
+                                host_name,
+                                name_len,
+                                NULL,
+                                0,
+                                NI_NAMEREQD);
 }
 
 //取得域名相关的IP地址信息，调用的是getaddrinfo
@@ -151,9 +151,9 @@ int ZCE_Sockaddr_In6::get_addr_info(const char *hostname, uint16_t service_port)
 {
     size_t only_one_addr = 1;
     return ZCE_LIB::getaddrinfo_in6ary(hostname,
-                                      service_port,
-                                      &only_one_addr,
-                                      &in6_addr_);
+                                       service_port,
+                                       &only_one_addr,
+                                       &in6_addr_);
 }
 
 //这个IPV6的地址是否是IPV4的地址映射的

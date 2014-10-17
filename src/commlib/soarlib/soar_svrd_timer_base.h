@@ -113,15 +113,15 @@ protected:
 
     /*!
     * @brief      增加一个APP的定时器
-    * @param[in]  interval 增加的定时器的间隔 
+    * @param[in]  interval 增加的定时器的间隔
     * @param[in]  act      增加的定时器的标示
     */
     void add_app_timer(const ZCE_Time_Value &interval, const void *act);
 
-    
+
 protected:
 
-    ///服务器定时器ID, 
+    ///服务器定时器ID,
     static const  int  SERVER_TIMER_ID[];
 
     ///APP Timer的最大数量，
@@ -147,14 +147,14 @@ protected:
     // 监控的实例
     Soar_Stat_Monitor *stat_monitor_ = NULL;
 
-    
+
     ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
     size_t zan_timer_num_ = 0;
     ///
     ZCE_Time_Value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
     ///
     const void *zan_timer_act_[MAX_APP_TIMER_NUMBER];
-    
+
 
 public:
     ///当前时间

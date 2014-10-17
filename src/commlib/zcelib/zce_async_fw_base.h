@@ -229,7 +229,7 @@ public:
     int active_asyncobj(unsigned int id);
 
 
-    
+
     /*!
     * @brief      打印管理器的基本信息，运行状态
     * @param      log_priority   日志的优先级，以此优先级进行输出
@@ -274,7 +274,7 @@ protected:
     * @param      act
     */
     int timer_timeout(const ZCE_Time_Value &now_time,
-                       const void *act);
+                      const void *act);
 
 protected:
 

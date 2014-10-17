@@ -15,7 +15,7 @@ class ZCE_Server_Base
 *********************************************************************************/
 
 
-ZCE_Server_Base * ZCE_Server_Base::base_instance_ = NULL;
+ZCE_Server_Base *ZCE_Server_Base::base_instance_ = NULL;
 
 
 // 构造函数,私有,使用单子类的实例,
@@ -75,7 +75,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     //检查PID文件是否存在，，
     bool must_create_new = false;
-    ret = ZCE_LIB::access(pidfile_name.c_str(),F_OK);
+    ret = ZCE_LIB::access(pidfile_name.c_str(), F_OK);
     if ( 0 != ret)
     {
         must_create_new = true;
@@ -85,8 +85,8 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
     int fileperms = 0644;
 
     pid_handle_ = ZCE_LIB::open(pidfile_name.c_str(),
-                               O_RDWR | O_CREAT ,
-                               static_cast<mode_t>(fileperms));
+                                O_RDWR | O_CREAT ,
+                                static_cast<mode_t>(fileperms));
 
     if (pid_handle_ == ZCE_INVALID_HANDLE)
     {
@@ -108,15 +108,15 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     const size_t PID_FILE_LEN = 16;
     char tmpbuff[PID_FILE_LEN + 1];
-    
-    snprintf(tmpbuff, PID_FILE_LEN+1, "%*.u",(int)PID_FILE_LEN*(-1), self_pid_);
+
+    snprintf(tmpbuff, PID_FILE_LEN + 1, "%*.u", (int)PID_FILE_LEN * (-1), self_pid_);
 
     // 尝试锁定全部文件，如果锁定不成功，表示有人正在用这个文件
     ret = ZCE_LIB::flock_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
     if (ret != 0)
     {
         ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
-            pidfile_name.c_str(), ZCE_LIB::last_error());
+                   pidfile_name.c_str(), ZCE_LIB::last_error());
         return ret;
     }
 
@@ -201,13 +201,13 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     // 其实到这个地方了，你可以干的事情很多，
     // 甚至计算某一段时间内程序的CPU占用率过高(TNNND,后来我真做了)
     timeval last_to_now = ZCE_LIB::timeval_sub(now_system_perf_.up_time_,
-                                              last_system_perf_.up_time_);
+                                               last_system_perf_.up_time_);
 
     // 得到进程的CPU利用率
     timeval proc_utime = ZCE_LIB::timeval_sub(now_process_perf_.run_utime_,
-                                             last_process_perf_.run_utime_);
+                                              last_process_perf_.run_utime_);
     timeval proc_stime = ZCE_LIB::timeval_sub(now_process_perf_.run_stime_,
-                                             last_process_perf_.run_stime_);
+                                              last_process_perf_.run_stime_);
     timeval proc_cpu_time = ZCE_LIB::timeval_add(proc_utime, proc_stime);
 
     // 如果间隔时间不为0
@@ -237,7 +237,7 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
 
     // 计算系统的CPU时间，非IDLE以外的时间都是消耗时间
     timeval sys_idletime = ZCE_LIB::timeval_sub(now_system_perf_.idle_time_,
-                                               last_system_perf_.idle_time_);
+                                                last_system_perf_.idle_time_);
     timeval sys_cputime = ZCE_LIB::timeval_sub(last_to_now, sys_idletime);
 
     // 如果间隔时间不为0
@@ -434,8 +434,8 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
 }
 
 //windows下设置服务信息
-void ZCE_Server_Base::set_service_info(const char *svc_name, 
-    const char *svc_desc)
+void ZCE_Server_Base::set_service_info(const char *svc_name,
+                                       const char *svc_desc)
 {
     if (svc_name != NULL)
     {
@@ -565,24 +565,24 @@ int ZCE_Server_Base::win_services_install()
 
     //创建服务
     SC_HANDLE handle_services = ::CreateService(
-        handle_scm,
-        app_base_name_.c_str(),
-        service_name_.c_str(),
-        SERVICE_ALL_ACCESS,
-        SERVICE_WIN32_OWN_PROCESS,
-        SERVICE_DEMAND_START,
-        SERVICE_ERROR_NORMAL,
-        file_path,
-        NULL,
-        NULL,
-        "",
-        NULL,
-        NULL);
+                                    handle_scm,
+                                    app_base_name_.c_str(),
+                                    service_name_.c_str(),
+                                    SERVICE_ALL_ACCESS,
+                                    SERVICE_WIN32_OWN_PROCESS,
+                                    SERVICE_DEMAND_START,
+                                    SERVICE_ERROR_NORMAL,
+                                    file_path,
+                                    NULL,
+                                    NULL,
+                                    "",
+                                    NULL,
+                                    NULL);
 
     if (handle_services == NULL)
     {
         printf("install service %s fail. err=%d\n", app_base_name_.c_str(),
-            GetLastError());
+               GetLastError());
         ::CloseServiceHandle(handle_scm);
         //MessageBox(NULL, _T("Couldn't create service"), app_base_name_.c_str(), MB_OK);
         return -1;
@@ -626,8 +626,8 @@ int ZCE_Server_Base::win_services_uninstall()
     }
 
     SC_HANDLE handle_services = ::OpenService(handle_scm,
-        app_base_name_.c_str(),
-        SERVICE_STOP | DELETE);
+                                              app_base_name_.c_str(),
+                                              SERVICE_STOP | DELETE);
 
     if (handle_services == NULL)
     {
@@ -704,7 +704,7 @@ void WINAPI ZCE_Server_Base::win_service_main()
 
     //注册服务控制
     handle_service_status = ::RegisterServiceCtrlHandler(base_instance_->get_app_basename(),
-        win_services_ctrl);
+                                                         win_services_ctrl);
 
     if (handle_service_status == NULL)
     {
@@ -732,26 +732,26 @@ void WINAPI ZCE_Server_Base::win_services_ctrl(DWORD op_code)
 {
     switch (op_code)
     {
-    case SERVICE_CONTROL_STOP:
-        //
-        base_instance_->app_run_ = false;
-        break;
+        case SERVICE_CONTROL_STOP:
+            //
+            base_instance_->app_run_ = false;
+            break;
 
-    case SERVICE_CONTROL_PAUSE:
-        break;
+        case SERVICE_CONTROL_PAUSE:
+            break;
 
-    case SERVICE_CONTROL_CONTINUE:
-        break;
+        case SERVICE_CONTROL_CONTINUE:
+            break;
 
-    case SERVICE_CONTROL_INTERROGATE:
-        break;
+        case SERVICE_CONTROL_INTERROGATE:
+            break;
 
-    case SERVICE_CONTROL_SHUTDOWN:
-        break;
+        case SERVICE_CONTROL_SHUTDOWN:
+            break;
 
-    default:
-        //LogEvent(_T("Bad service request"));
-        break;
+        default:
+            //LogEvent(_T("Bad service request"));
+            break;
     }
 }
 

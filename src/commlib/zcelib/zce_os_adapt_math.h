@@ -35,7 +35,7 @@ inline bool is_prime (const size_t n)
     {
         return true;
     }
-    size_t test_max = static_cast<size_t>(::sqrt(static_cast<double>(n)) +1);
+    size_t test_max = static_cast<size_t>(::sqrt(static_cast<double>(n)) + 1);
     for (size_t i = 2; i <= test_max; ++i)
     {
         if (n % i == 0)

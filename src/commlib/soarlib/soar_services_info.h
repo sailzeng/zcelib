@@ -66,7 +66,7 @@ public:
 
     ///使用主从的方式（根据AUTO CONNECT的顺序）动态分配的SERVICE ID
     static const uint32_t MAIN_STANDBY_DYNAMIC_ID = static_cast<uint32_t>(-4);
-  
+
 
 public:
 

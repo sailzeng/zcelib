@@ -13,12 +13,12 @@ void ZCE_LIB::push_stack(lua_State * /*state*/)
 {
 }
 
-template<> void ZCE_LIB::push_stack_ptr(lua_State *state, char * const ptr)
+template<> void ZCE_LIB::push_stack_ptr(lua_State *state, char *const ptr)
 {
     lua_pushstring(state, ptr);
 }
 
-template<> void ZCE_LIB::push_stack_ptr(lua_State *state, const char * const ptr)
+template<> void ZCE_LIB::push_stack_ptr(lua_State *state, const char *const ptr)
 {
     lua_pushstring(state, ptr);
 }
@@ -80,7 +80,7 @@ template<> void ZCE_LIB::push_stack_val(lua_State *state, int64_t val)
     if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][int64_t] is not a table ? May be you don't register int64_t to lua? type id [%d]",
-            lua_type(state, -1));
+                   lua_type(state, -1));
         lua_pop(state, 1);
         return;
     }
@@ -101,7 +101,7 @@ template<> void ZCE_LIB::push_stack_val(lua_State *state, uint64_t val)
     if (!lua_istable(state, -1))
     {
         ZCE_LOGMSG(RS_ERROR, "[LUATIE][uint64_t] is not a table? May be you don't register uint64_t to lua? typeid[%d]",
-            lua_type(state, -1));
+                   lua_type(state, -1));
         lua_pop(state, 1);
         return;
     }
@@ -381,7 +381,7 @@ int ZCE_LIB::class_meta_get(lua_State *state)
     }
 
     if (ret == 0)
-    { 
+    {
         //如果是一个userdata，其实其就是我们扔进去的类的成员指针
         if (lua_isuserdata(state, -1))
         {
@@ -545,7 +545,7 @@ static int le_int64(lua_State *state)
 
 static int add_int64(lua_State *state)
 {
-    int64_t a = 0,b=0;
+    int64_t a = 0, b = 0;
     //read a
     if (lua_isuserdata(state, 1))
     {
@@ -564,7 +564,7 @@ static int add_int64(lua_State *state)
     {
         b = static_cast<int64_t>(lua_tonumber(state, 2));
     }
-    
+
     int64_t c = a + b;
     ZCE_LIB::push_stack(state, c);
     return 1;
@@ -850,7 +850,7 @@ void ZCE_Lua_Base::reg_uint64()
 static int tostring_stdstring(lua_State *state)
 {
     lua_pushstring(state, ((std::string *)
-        (((ZCE_LIB::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_))->c_str() );
+                           (((ZCE_LIB::lua_udat_base *)lua_touserdata(state, 1))->obj_ptr_))->c_str() );
     return 1;
 }
 
@@ -903,13 +903,13 @@ static int add_stdstring(lua_State *state)
     if (!ptr_a || !ptr_b)
     {
         lua_pushfstring(state, "[LUATIE] %s std::string .. operator is fail. "
-            "var a[%d][%s] or var b[%d][%s] is not string",
-            __ZCE_FUNC__,
-            lua_type(state, 1),
-            lua_typename(state, 1),
-            lua_type(state, 2),
-            lua_typename(state, 2)
-            );
+                        "var a[%d][%s] or var b[%d][%s] is not string",
+                        __ZCE_FUNC__,
+                        lua_type(state, 1),
+                        lua_typename(state, 1),
+                        lua_type(state, 2),
+                        lua_typename(state, 2)
+                       );
         lua_error(state);
     }
 
@@ -1077,7 +1077,7 @@ ZCE_Lua_Thread::~ZCE_Lua_Thread()
 
 
 //设置线程相关的数据
-void ZCE_Lua_Thread::set_thread(lua_State * lua_thread, int thread_stackidx)
+void ZCE_Lua_Thread::set_thread(lua_State *lua_thread, int thread_stackidx)
 {
     lua_state_ = lua_thread;
     luathread_stackidx_ = thread_stackidx;
@@ -1116,7 +1116,7 @@ ZCE_Lua_Tie::~ZCE_Lua_Tie()
 
 //打开lua state
 int ZCE_Lua_Tie::open(bool open_libs,
-    bool reg_common_use)
+                      bool reg_common_use)
 {
     //如果错误
     if (lua_state_)

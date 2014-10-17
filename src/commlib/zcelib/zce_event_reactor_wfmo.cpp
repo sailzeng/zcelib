@@ -43,8 +43,8 @@ int ZCE_WFMO_Reactor::initialize()
 #if defined ZCE_OS_WINDOWS
 
 //注册一个句柄，以及他关心的事件
-int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler, 
-    int event_mask)
+int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
+                                       int event_mask)
 {
     int ret = 0;
     //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
@@ -54,21 +54,21 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         return -1;
     }
     size_t watch_size = handler_map_.size();
-    
+
     //如果是SOCKET网络部分
     if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK)
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK)
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK)
-        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK) 
+        || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK)
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK)  )
     {
         WSAEVENT socket_event = ::WSACreateEvent();
         if (socket_event == WSA_INVALID_EVENT)
         {
             ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]WSACreateEvent return fail.last error [%d]",
-                __ZCE_FUNC__,
-                ZCE_LIB::last_error()
-                );
+                       __ZCE_FUNC__,
+                       ZCE_LIB::last_error()
+                      );
             return -1;
         }
         ret = wfmo_socket_event(event_handler, socket_event, event_mask);
@@ -81,7 +81,7 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
 
         //WaitForMultipleObjects
         watch_handle_ary_[watch_size - 1] = socket_event;
-        watch_socket_ary_[watch_size - 1] =(SOCKET) event_handler->get_handle();
+        watch_socket_ary_[watch_size - 1] = (SOCKET) event_handler->get_handle();
     }
 
     //如果是INOTIFY 的事件，直接注册句柄进去
@@ -96,23 +96,23 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
 }
 
 //从反应器注销一个ZCE_Event_Handler，同时取消他所有的mask
-int ZCE_WFMO_Reactor::remove_handler(ZCE_Event_Handler *event_handler, 
-    bool call_handle_close)
+int ZCE_WFMO_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
+                                     bool call_handle_close)
 {
-    
+
     size_t watch_size = handler_map_.size();
-    ZCE_SOCKET socket_handle =(SOCKET) event_handler->get_handle();
+    ZCE_SOCKET socket_handle = (SOCKET) event_handler->get_handle();
     //
     for (size_t i = 0; i < watch_size; ++i)
     {
         if (watch_socket_ary_[i] == socket_handle)
         {
-            
+
             if ( ZCE_INVALID_HANDLE != watch_handle_ary_[i])
             {
                 ::WSACloseEvent(watch_handle_ary_[i]);
             }
-            
+
 
             //将最后一个数组成员移动到这个地方
             watch_socket_ary_[i] = watch_socket_ary_[watch_size - 1];
@@ -131,8 +131,8 @@ int ZCE_WFMO_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
 
 
 //对一个（已经注册的）句柄，设置他关心的事件
-int ZCE_WFMO_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, 
-    int event_mask)
+int ZCE_WFMO_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler,
+                                      int event_mask)
 {
     int ret = 0;
     size_t watch_size = handler_map_.size();
@@ -159,7 +159,7 @@ int ZCE_WFMO_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler,
 
 //对一个（已经注册的）句柄，取消他关心的事件
 int ZCE_WFMO_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,
-    int cancel_mask)
+                                    int cancel_mask)
 {
     int ret = 0;
     //得到取消后的mask值
@@ -167,7 +167,7 @@ int ZCE_WFMO_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,
     event_mask &= (~cancel_mask);
 
     size_t watch_size = handler_map_.size();
-    SOCKET socket_handle =(SOCKET) event_handler->get_handle();
+    SOCKET socket_handle = (SOCKET) event_handler->get_handle();
     //
     for (size_t i = 0; i < watch_size; ++i)
     {
@@ -188,8 +188,8 @@ int ZCE_WFMO_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,
 
 //Windows 下 对Socket 根据EVENT_MASK设置其对应的网络事件，并且绑定到事件上
 int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
-    WSAEVENT socket_event,
-    int event_mask)
+                                        WSAEVENT socket_event,
+                                        int event_mask)
 {
     int ret = 0;
 
@@ -214,17 +214,17 @@ int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
     {
         wmfo_net_event |= FD_OOB;
     }
-    ret = ::WSAEventSelect((SOCKET)event_handler->get_handle(), 
-        socket_event, 
-        wmfo_net_event);
+    ret = ::WSAEventSelect((SOCKET)event_handler->get_handle(),
+                           socket_event,
+                           wmfo_net_event);
     if (ret != 0)
     {
         ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]WSAEventSelect return [%d] fail,event mask [%d],last error [%d]",
-            __ZCE_FUNC__,
-            ret,
-            event_mask,
-            ZCE_LIB::last_error()
-            );
+                   __ZCE_FUNC__,
+                   ret,
+                   event_mask,
+                   ZCE_LIB::last_error()
+                  );
         return -1;
     }
 
@@ -241,15 +241,15 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
     DWORD watch_ary_size = static_cast<DWORD>(handler_map_.size());
 
     DWORD wait_status = WaitForMultipleObjects(watch_ary_size,
-        watch_handle_ary_,
-        FALSE,
-        wait_msec);
+                                               watch_handle_ary_,
+                                               FALSE,
+                                               wait_msec);
 
     if (wait_status == WAIT_FAILED)
     {
         ZLOG_ERROR("[%s] ::WaitForMultipleObjects fail,error [%u].",
-            __ZCE_FUNC__,
-            ZCE_LIB::last_error());
+                   __ZCE_FUNC__,
+                   ZCE_LIB::last_error());
         return -1;
     }
 
@@ -264,25 +264,25 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
     size_t activate_id = wait_status - WAIT_OBJECT_0;
 
     ZCE_Event_Handler *event_hdl = NULL;
-    
+
     //因为Socket 的事件处理，放入的反应器的是事件句柄，但在event handle内部是socket句柄，而
     //保存event handle的 map是用socket句柄做得key，所以有如下的代码
     if (ZCE_INVALID_SOCKET != watch_socket_ary_[activate_id])
     {
         ret = find_event_handler((ZCE_HANDLE)watch_socket_ary_[activate_id],
-            event_hdl);
+                                 event_hdl);
     }
     else
     {
         ret = find_event_handler((ZCE_HANDLE)watch_handle_ary_[activate_id],
-            event_hdl);
+                                 event_hdl);
     }
-        
+
     if (0 != ret)
     {
         ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
-            __ZCE_FUNC__,
-            watch_socket_ary_[activate_id]);
+                   __ZCE_FUNC__,
+                   watch_socket_ary_[activate_id]);
         return -1;
     }
 
@@ -296,9 +296,9 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
         || ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK))
     {
         WSANETWORKEVENTS socket_event;
-        ::WSAEnumNetworkEvents((SOCKET)watch_socket_ary_[activate_id], 
-            watch_handle_ary_[activate_id],
-            &socket_event);
+        ::WSAEnumNetworkEvents((SOCKET)watch_socket_ary_[activate_id],
+                               watch_handle_ary_[activate_id],
+                               &socket_event);
         SOCKET socket_handle = (SOCKET)watch_socket_ary_[activate_id];
         if (ZCE_BIT_IS_SET(socket_event.lNetworkEvents, FD_ACCEPT))
         {

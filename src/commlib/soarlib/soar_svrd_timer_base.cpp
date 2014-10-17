@@ -47,9 +47,9 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
     for (size_t i = 0; i < zan_timer_num_; ++i)
     {
         timer_queue()->schedule_timer(this,
-            zan_timer_act_[i],
-            zan_timer_internal_[i],
-            zan_timer_internal_[i]);
+                                      zan_timer_act_[i],
+                                      zan_timer_internal_[i],
+                                      zan_timer_internal_[i]);
     }
     return 0;
 }
@@ -166,12 +166,12 @@ void Server_Timer_Base::set_heart_precision(const ZCE_Time_Value &precision)
 //增加一个APP的定时器
 void Server_Timer_Base::add_app_timer(const ZCE_Time_Value &interval, const void *act)
 {
-    ZCE_ASSERT(zan_timer_num_ +1 >= MAX_APP_TIMER_NUMBER);
+    ZCE_ASSERT(zan_timer_num_ + 1 >= MAX_APP_TIMER_NUMBER);
 
     zan_timer_internal_[zan_timer_num_] = interval;
     zan_timer_act_[zan_timer_num_] = act;
     ++zan_timer_num_;
-    
-    
+
+
 }
 

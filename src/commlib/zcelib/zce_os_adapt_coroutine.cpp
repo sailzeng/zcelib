@@ -59,12 +59,12 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 
 //兼容封装的makecontext，非标准函数，可以使用2个参数的函数指针
 int ZCE_LIB::make_coroutine(coroutine_t *coroutine_hdl,
-                           size_t stack_size,
-                           bool exit_back_main,
-                           ZCE_COROUTINE_3PARA fun_ptr,
-                           void *para1,
-                           void *para2,
-                           void *para3)
+                            size_t stack_size,
+                            bool exit_back_main,
+                            ZCE_COROUTINE_3PARA fun_ptr,
+                            void *para1,
+                            void *para2,
+                            void *para3)
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -219,7 +219,7 @@ int ZCE_LIB::yeild_main(coroutine_t *coroutine_hdl)
 }
 
 int ZCE_LIB::exchage_coroutine(coroutine_t *save_hdl,
-                              coroutine_t *goto_hdl)
+                               coroutine_t *goto_hdl)
 {
 
 #if defined ZCE_OS_WINDOWS

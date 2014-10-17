@@ -136,8 +136,8 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
 
 //read dir 可以重入版本，
 int ZCE_LIB::readdir_r (DIR *dir_handle,
-                       dirent *entry,
-                       dirent **result)
+                        dirent *entry,
+                        dirent **result)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -175,9 +175,9 @@ int ZCE_LIB::readdir_r (DIR *dir_handle,
 //选择器的函数指针
 //比较函数排序函数的指针
 int ZCE_LIB::scandir (const char *dirname,
-                     dirent **namelist[],
-                     int (*selector)(const struct dirent *),
-                     int (*comparator)(const struct dirent **, const struct dirent **))
+                      dirent **namelist[],
+                      int (*selector)(const struct dirent *),
+                      int (*comparator)(const struct dirent **, const struct dirent **))
 {
 
     //Windows下使用opendir等函数实现，

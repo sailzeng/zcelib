@@ -246,7 +246,7 @@ int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     ret = conf_tree->path_get_leaf("PIPE_CONFIG", "RECV_PIPE_LEN",
-        pipe_cfg_.recv_pipe_len_);
+                                   pipe_cfg_.recv_pipe_len_);
     if (0 != ret
         || pipe_cfg_.recv_pipe_len_ < 1024 * 1024
         || pipe_cfg_.recv_pipe_len_ > 1024 * 1024 * 1024)
@@ -255,7 +255,7 @@ int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     ret = conf_tree->path_get_leaf("PIPE_CONFIG", "SEND_PIPE_LEN",
-        pipe_cfg_.send_pipe_len_);
+                                   pipe_cfg_.send_pipe_len_);
     if (0 != ret
         || pipe_cfg_.send_pipe_len_ < 1024 * 1024
         || pipe_cfg_.send_pipe_len_ > 1024 * 1024 * 1024)

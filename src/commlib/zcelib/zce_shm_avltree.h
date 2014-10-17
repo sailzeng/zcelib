@@ -116,8 +116,8 @@ class _shm_avl_tree_iterator
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
-    typedef _value_type* pointer;
-    typedef _value_type& reference;
+    typedef _value_type *pointer;
+    typedef _value_type &reference;
     typedef _value_type value_type;
     typedef std::bidirectional_iterator_tag iterator_category;
 

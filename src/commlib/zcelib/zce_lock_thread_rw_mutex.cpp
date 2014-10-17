@@ -76,7 +76,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
     int ret = 0;
 
     ret = ZCE_LIB::pthread_rwlock_timedrdlock(&rw_lock_,
-                                             abs_time);
+                                              abs_time);
 
     if (0 != ret)
     {
@@ -127,7 +127,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
     int ret = 0;
 
     ret = ZCE_LIB::pthread_rwlock_timedwrlock(&rw_lock_,
-                                             abs_time);
+                                              abs_time);
 
     if (0 != ret)
     {

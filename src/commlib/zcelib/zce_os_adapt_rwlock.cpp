@@ -10,7 +10,7 @@
 
 //读写锁的对象的初始化
 int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
-                                const pthread_rwlockattr_t *attr)
+                                 const pthread_rwlockattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -53,7 +53,7 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
     //等待读取的条件变量初始化
     if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->simulate_rw_.rw_condreaders_,
-                                               false )) != 0)
+                                                false )) != 0)
     {
         ZCE_LIB::pthread_mutex_destroy(&rwlock->simulate_rw_.rw_mutex_);
         return EINVAL;
@@ -61,7 +61,7 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
     //等待写入的条件变量初始化
     if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->simulate_rw_.rw_condwriters_,
-                                               false)) != 0)
+                                                false)) != 0)
     {
         ZCE_LIB::pthread_cond_destroy(&rwlock->simulate_rw_.rw_condreaders_);
         ZCE_LIB::pthread_mutex_destroy(&rwlock->simulate_rw_.rw_mutex_);
@@ -83,8 +83,8 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
 //初始化读写锁对象
 int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
-                                  bool  use_win_slim,
-                                  bool  priority_to_write)
+                                   bool  use_win_slim,
+                                   bool  priority_to_write)
 {
     int result = 0;
     pthread_rwlockattr_t attr;
@@ -202,7 +202,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
         rwlock->simulate_rw_.rw_nwaitreaders_++;
         //进入wait函数，simulate_rw_.rw_mutex_会被打开，让其他人活动，出来的时候会获得
         result = ZCE_LIB::pthread_cond_wait(&rwlock->simulate_rw_.rw_condreaders_,
-                                           &(rwlock->simulate_rw_.rw_mutex_));
+                                            &(rwlock->simulate_rw_.rw_mutex_));
         rwlock->simulate_rw_.rw_nwaitreaders_--;
 
         if (result != 0)
@@ -277,7 +277,7 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 
 //读取锁的超时锁定，这个代码UNP V2并没有给出，
 int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
-                                       const ::timespec *abs_timeout_spec)
+                                        const ::timespec *abs_timeout_spec)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -292,7 +292,7 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 #endif
 
     int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->simulate_rw_.rw_mutex_,
-                                                 abs_timeout_spec);
+                                                  abs_timeout_spec);
 
     //我有点理解为啥phtread的很多函数用绝对时间了，abs_timeout_spec
     if ( result != 0)
@@ -307,8 +307,8 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
         rwlock->simulate_rw_.rw_nwaitreaders_++;
         //进入wait函数，simulate_rw_.rw_mutex_会被打开，让其他人活动，出来的时候会获得
         result = ZCE_LIB::pthread_cond_timedwait(&rwlock->simulate_rw_.rw_condreaders_,
-                                                &(rwlock->simulate_rw_.rw_mutex_),
-                                                abs_timeout_spec);
+                                                 &(rwlock->simulate_rw_.rw_mutex_),
+                                                 abs_timeout_spec);
         rwlock->simulate_rw_.rw_nwaitreaders_--;
 
         if (result != 0)
@@ -333,7 +333,7 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 
 //非标准，读取锁的超时锁定，时间参数调整成timeval，
 int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
-                                       const timeval *abs_timeout_val)
+                                        const timeval *abs_timeout_val)
 {
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
@@ -370,7 +370,7 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
     {
         rwlock->simulate_rw_.rw_nwaitwriters_++;
         result = ZCE_LIB::pthread_cond_wait(&rwlock->simulate_rw_.rw_condwriters_,
-                                           &(rwlock->simulate_rw_.rw_mutex_));
+                                            &(rwlock->simulate_rw_.rw_mutex_));
         rwlock->simulate_rw_.rw_nwaitwriters_--;
 
         if (result != 0)
@@ -444,7 +444,7 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
 
 //获取写锁，并且等待到超时为止，
 int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
-                                       const ::timespec *abs_timeout_spec)
+                                        const ::timespec *abs_timeout_spec)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -471,8 +471,8 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
     {
         rwlock->simulate_rw_.rw_nwaitwriters_++;
         result = ZCE_LIB::pthread_cond_timedwait(&rwlock->simulate_rw_.rw_condwriters_,
-                                                &(rwlock->simulate_rw_.rw_mutex_),
-                                                abs_timeout_spec);
+                                                 &(rwlock->simulate_rw_.rw_mutex_),
+                                                 abs_timeout_spec);
         rwlock->simulate_rw_.rw_nwaitwriters_--;
 
         if (result != 0)
@@ -496,7 +496,7 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 
 //非标准，读取锁的超时锁定，时间参数调整成timeval，
 int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
-                                       const timeval *abs_timeout_val)
+                                        const timeval *abs_timeout_val)
 {
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);

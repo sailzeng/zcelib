@@ -60,10 +60,10 @@ int ZCE_Socket_Base::open(int type,
     {
         int one = 1;
         ret = ZCE_LIB::setsockopt (socket_handle_,
-                                  SOL_SOCKET,
-                                  SO_REUSEADDR,
-                                  &one,
-                                  sizeof (int));
+                                   SOL_SOCKET,
+                                   SO_REUSEADDR,
+                                   &one,
+                                   sizeof (int));
 
         if (ret != 0)
         {
@@ -170,18 +170,18 @@ int ZCE_Socket_Base::setsockopt (int level,
                                  int optlen) const
 {
     return ZCE_LIB::setsockopt(socket_handle_,
-                              level,
-                              optname,
-                              optval,
-                              optlen);
+                               level,
+                               optname,
+                               optval,
+                               optlen);
 }
 
 //取得对端的地址信息
 int ZCE_Socket_Base::getpeername (ZCE_Sockaddr *addr)  const
 {
     return ZCE_LIB::getpeername (socket_handle_,
-                                addr->sockaddr_ptr_,
-                                &addr->sockaddr_size_);
+                                 addr->sockaddr_ptr_,
+                                 &addr->sockaddr_size_);
 
 }
 
@@ -189,16 +189,16 @@ int ZCE_Socket_Base::getpeername (ZCE_Sockaddr *addr)  const
 int ZCE_Socket_Base::getsockname (ZCE_Sockaddr *addr)  const
 {
     return ZCE_LIB::getsockname (socket_handle_,
-                                addr->sockaddr_ptr_,
-                                &addr->sockaddr_size_);
+                                 addr->sockaddr_ptr_,
+                                 &addr->sockaddr_size_);
 }
 
 //connect某个地址
 int ZCE_Socket_Base::connect(const ZCE_Sockaddr *addr) const
 {
     return ZCE_LIB::connect(socket_handle_,
-                           addr->sockaddr_ptr_,
-                           addr->sockaddr_size_);
+                            addr->sockaddr_ptr_,
+                            addr->sockaddr_size_);
 }
 
 //接收数据，根据阻塞状态决定行为
@@ -207,9 +207,9 @@ ssize_t ZCE_Socket_Base::recv (void *buf,
                                int flags) const
 {
     return ZCE_LIB::recv(socket_handle_,
-                        buf,
-                        len,
-                        flags);
+                         buf,
+                         len,
+                         flags);
 }
 
 //发送数据，根据阻塞状态决定行为
@@ -218,8 +218,8 @@ ssize_t ZCE_Socket_Base::send (const void *buf,
                                int flags) const
 {
     return ZCE_LIB::send(socket_handle_,
-                        buf,
-                        len,
-                        flags);
+                         buf,
+                         len,
+                         flags);
 }
 

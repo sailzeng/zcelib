@@ -1,18 +1,18 @@
 /*!
-* @copyright  2004-2014  Apache License, Version 2.0 
+* @copyright  2004-2014  Apache License, Version 2.0
 * @filename   zce_config_getopt.h
-* @author     
-* @version    
+* @author
+* @version
 * @date       Monday, August 25, 2014
 * @brief      这个代码是ACE的ACE_Get_Option的代码，我没有版权，
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 #ifndef ZCE_LIB_GET_OPTION_H_
 #define ZCE_LIB_GET_OPTION_H_

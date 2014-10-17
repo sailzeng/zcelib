@@ -22,8 +22,8 @@ public:
 
 public:
     //构造,析构函数,默认为0
-    explicit OGRE_PEER_ID(unsigned int peer_ip_address = INVALID_PERR_IP_ADDRESS, 
-        unsigned short peer_port = INVALID_PERR_PORT);
+    explicit OGRE_PEER_ID(unsigned int peer_ip_address = INVALID_PERR_IP_ADDRESS,
+                          unsigned short peer_port = INVALID_PERR_PORT);
     explicit OGRE_PEER_ID(const ZCE_Sockaddr_In &);
     //
     ~OGRE_PEER_ID();

@@ -9,9 +9,9 @@
 
 //初始化，创建一个无名（匿名）信号灯,对应的销毁函数sem_destroy
 int ZCE_LIB::sem_init(sem_t *sem,
-                     int pshared,
-                     unsigned int init_value,
-                     unsigned int max_val)
+                      int pshared,
+                      unsigned int init_value,
+                      unsigned int max_val)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -64,10 +64,10 @@ int ZCE_LIB::sem_destroy(sem_t *sem)
 //打开(有名)信号灯,最大值不是标准参数，所以用默认只修饰了，这个主要用于创建有名信号灯,
 //打开后，要使用sem_close，sem_unlink
 sem_t *ZCE_LIB::sem_open(const char *name,
-                        int oflag,
-                        mode_t mode,
-                        unsigned int init_value,
-                        unsigned int max_val)
+                         int oflag,
+                         mode_t mode,
+                         unsigned int init_value,
+                         unsigned int max_val)
 {
 #if defined (ZCE_OS_WINDOWS)
 

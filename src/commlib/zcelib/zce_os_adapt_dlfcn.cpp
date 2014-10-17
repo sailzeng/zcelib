@@ -47,7 +47,7 @@ const char *ZCE_LIB::dlerror (void)
 }
 
 ZCE_SHLIB_HANDLE  ZCE_LIB::dlopen (const char *fname,
-                                  int mode)
+                                   int mode)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -62,7 +62,7 @@ ZCE_SHLIB_HANDLE  ZCE_LIB::dlopen (const char *fname,
 }
 
 void *ZCE_LIB::dlsym (ZCE_SHLIB_HANDLE handle,
-                     const char *symbolname)
+                      const char *symbolname)
 {
 
 #if defined (ZCE_OS_WINDOWS)

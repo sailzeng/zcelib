@@ -96,21 +96,21 @@ public:
 
     //利用构造函数显示进入函数的输出
     ZCE_Trace_Function(const char *func_name,
-        const char *file_name,
-        int file_line,
-        ZCE_LOG_PRIORITY   log_priority,
-        int *ret_ptr) :
+                       const char *file_name,
+                       int file_line,
+                       ZCE_LOG_PRIORITY   log_priority,
+                       int *ret_ptr) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
         log_priority_(log_priority),
         ret_ptr_(ret_ptr)
     {
-        ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].", 
-            func_name_, 
-            codefile_name_, 
-            code_line_,
-            *ret_ptr_);
+        ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].",
+                   func_name_,
+                   codefile_name_,
+                   code_line_,
+                   *ret_ptr_);
     }
 
     //利用析构函数显示进入函数的输出
@@ -121,19 +121,19 @@ public:
         {
             //这个地方输出的成功失败文字只有相对参考意义。
             ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
-                "ret = [%d],return %s.",
-                func_name_,
-                codefile_name_,
-                code_line_,
-                *ret_ptr_,
-                (*ret_ptr_ == 0)?"success":"fail");
+                       "ret = [%d],return %s.",
+                       func_name_,
+                       codefile_name_,
+                       code_line_,
+                       *ret_ptr_,
+                       (*ret_ptr_ == 0) ? "success" : "fail");
         }
         else
         {
-            ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .", 
-                func_name_,
-                codefile_name_,
-                code_line_);
+            ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .",
+                       func_name_,
+                       codefile_name_,
+                       code_line_);
         }
     }
 

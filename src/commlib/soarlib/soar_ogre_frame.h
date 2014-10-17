@@ -53,7 +53,7 @@ public:
     inline void fill_write_data(const unsigned int size_data, const char *src_data);
     //读取数据
     inline void get_data(unsigned int &size_data, char *dest_data) const;
-    
+
     //增加DATA数据
     int add_data(unsigned int add_size, char *add_data);
 
@@ -165,10 +165,10 @@ inline void Ogre4a_App_Frame::get_data(unsigned int &size_data, char *dest_data)
 static const char STR_JUDGE_RECV_WHOLEFRAME[] = "JudgeRecvWholeFrame";
 //
 typedef int ( *FP_JudgeRecv_WholeFrame)(const char *recv_buf,
-                                      unsigned int buf_len,
-                                      unsigned int max_buf_len,
-                                      bool &if_whole,
-                                      unsigned int &frame_len);
+                                        unsigned int buf_len,
+                                        unsigned int max_buf_len,
+                                        bool &if_whole,
+                                        unsigned int &frame_len);
 
 #endif //#ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 

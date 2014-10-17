@@ -26,13 +26,13 @@ int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
     ZCE_Async_Object::initialize(reg_cmd);
     int ret = 0;
     ret = ZCE_LIB::make_coroutine(&handle_,
-                                 stack_size_,
-                                 true,
-                                 (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
-                                 (void *)this,
-                                 NULL,
-                                 NULL
-                                );
+                                  stack_size_,
+                                  true,
+                                  (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
+                                  (void *)this,
+                                  NULL,
+                                  NULL
+                                 );
     if (ret != 0)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::make_coroutine return fail.", ret);

@@ -6,11 +6,11 @@
 //ndigits为要求返回数字的长度，是所有数字，这个参数fcvt_r有区别，尾数即使是0也会输出
 //返回参数，decpt返回指数，sign返回符号
 int ZCE_LIB::ecvt_r(double number,
-                   int ndigits,
-                   int *decpt,
-                   int *sign,
-                   char *buf,
-                   size_t len)
+                    int ndigits,
+                    int *decpt,
+                    int *sign,
+                    char *buf,
+                    size_t len)
 {
 #ifdef ZCE_OS_WINDOWS
     return _ecvt_s(buf,
@@ -36,11 +36,11 @@ int ZCE_LIB::ecvt_r(double number,
 //ndigits为要求返回小数个数的长度，这个和ecvt_r有区别，注意是小数，小数即使是0也会输出
 //返回参数，decpt返回指数，sign返回符号
 int ZCE_LIB::fcvt_r(double number,
-                   int ndigits,
-                   int *decpt,
-                   int *sign,
-                   char *buf,
-                   size_t len)
+                    int ndigits,
+                    int *decpt,
+                    int *sign,
+                    char *buf,
+                    size_t len)
 {
 #ifdef ZCE_OS_WINDOWS
     return _fcvt_s(buf,

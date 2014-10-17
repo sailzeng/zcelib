@@ -112,11 +112,11 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
     //进行共享内存映射
     void *nonconst_addr = const_cast<void *>( want_address);
     mmap_addr_ = ZCE_LIB::mmap (nonconst_addr,
-                               shm_size,
-                               mmap_prot,
-                               mmap_flags,
-                               mmap_handle_,
-                               offset);
+                                shm_size,
+                                mmap_prot,
+                                mmap_flags,
+                                mmap_handle_,
+                                offset);
 
     //返回值不正确
     if (!mmap_addr_ ||  MAP_FAILED == mmap_addr_)

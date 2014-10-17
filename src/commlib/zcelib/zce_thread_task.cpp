@@ -42,12 +42,12 @@ int ZCE_Thread_Task::activate(int group_id,
     int ret = 0;
     //创建线程
     ret = ZCE_LIB::pthread_createex(ZCE_Thread_Task::svc_run,
-                                   static_cast<void *> (this),
-                                   threadid,
-                                   detachstate,
-                                   stacksize,
-                                   threadpriority
-                                  );
+                                    static_cast<void *> (this),
+                                    threadid,
+                                    detachstate,
+                                    stacksize,
+                                    threadpriority
+                                   );
 
     if ( 0 != ret)
     {

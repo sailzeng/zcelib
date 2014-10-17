@@ -119,7 +119,7 @@ protected:
 protected:
 
     ///这个服务器的配置信息.
-    SERVICES_ID         zerg_svr_info_ = SERVICES_ID(0,0);
+    SERVICES_ID         zerg_svr_info_ = SERVICES_ID(0, 0);
     ///发送的缓冲区
     static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
 

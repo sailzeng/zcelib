@@ -780,7 +780,7 @@ public:
 public:
     //
     static void des_setkey(const unsigned char key[8],
-        uint32_t sk[32]);
+                           uint32_t sk[32]);
 public:
     ///Expanded DES S-boxes
     static const uint32_t SB[8][64];
@@ -799,10 +799,10 @@ public:
 *             际上广泛流传开来。它基于使用56位密钥的对称算法。这个算法因为包含一些机密设
 *             计元素，相对短的密钥长度以及怀疑内含美国国家安全局（NSA）的后门而在开始时
 *             有争议，DES因此受到了强烈的学院派式的审查，并以此推动了现代的块密码及其密码
-*             分析的发展。  
+*             分析的发展。
 *             在2001年，DES作为一个标准已经被高级加密标准（AES）所取代。
 *             http://zh.wikipedia.org/wiki/DES                   -- 来自维基
-* @note       
+* @note
 */
 class DES_ECB : public DES_Base
 {
@@ -824,21 +824,21 @@ public:
 
     ///生成DES算法的sub key，其加密解密的sub key不同
     static void key_setup(const unsigned char *key,
-        SUBKEY_STRUCT *subkey,
-        bool  if_encrypt);
+                          SUBKEY_STRUCT *subkey,
+                          bool  if_encrypt);
 
 
     ///DES块加密函数
     inline static void ecb_encrypt(const SUBKEY_STRUCT *skey,
-        const unsigned char *src_block,
-        unsigned char *cipher_block)
+                                   const unsigned char *src_block,
+                                   unsigned char *cipher_block)
     {
         return des_crypt_ecb(skey, src_block, cipher_block);
     }
     ///DES块解密函数
     inline static void ecb_decrypt(const SUBKEY_STRUCT *skey,
-        const unsigned char *cipher_block,
-        unsigned char *src_block)
+                                   const unsigned char *cipher_block,
+                                   unsigned char *src_block)
     {
         return des_crypt_ecb(skey, cipher_block, src_block);
     }
@@ -846,8 +846,8 @@ public:
 protected:
     //DES 的加密解密是一个函数，（但SUB Key 不同）
     static void  des_crypt_ecb(const SUBKEY_STRUCT *sk,
-        const unsigned char input[BLOCK_SIZE],
-        unsigned char output[BLOCK_SIZE]);
+                               const unsigned char input[BLOCK_SIZE],
+                               unsigned char output[BLOCK_SIZE]);
 };
 
 //DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
@@ -857,11 +857,11 @@ typedef ZCE_Crypt<DES_ECB > DES_Crypt_64_64_16;
 
 
 /*!
-* @brief      DES3（或称为Triple DES 或者 3DES）是三重数据加密算法（TDEA，Triple 
+* @brief      DES3（或称为Triple DES 或者 3DES）是三重数据加密算法（TDEA，Triple
 *             Data Encryption Algorithm）块密码的通称。它相当于是对每个数据块应用
 *             三次DES加密算法。由于计算机运算能力的增强，原版DES密码的密钥长度变得容易
 *             被暴力破解；3DES即是设计用来提供一种相对简单的方法，即通过增加DES的密钥
-*             长度来避免类似的攻击，而不是设计一种全新的块密码算法。 
+*             长度来避免类似的攻击，而不是设计一种全新的块密码算法。
 * @note       密文 = EK3(DK2(EK1(平文)))
 *             平文 = DK1(EK2(DK3(密文)))
 */
@@ -885,20 +885,20 @@ public:
 
     ///生成DES算法的sub key，其加密解密的sub key不同
     static void key_setup(const unsigned char *key,
-        SUBKEY_STRUCT *subkey,
-        bool  if_encrypt);
+                          SUBKEY_STRUCT *subkey,
+                          bool  if_encrypt);
 
     ///DES3块加密函数
     inline static void ecb_encrypt(const SUBKEY_STRUCT *skey,
-        const unsigned char *src_block,
-        unsigned char *cipher_block)
+                                   const unsigned char *src_block,
+                                   unsigned char *cipher_block)
     {
-        return des3_crypt_ecb(skey, src_block,cipher_block);
+        return des3_crypt_ecb(skey, src_block, cipher_block);
     }
     ///DES3块解密函数
     inline static void ecb_decrypt(const SUBKEY_STRUCT *skey,
-        const unsigned char *cipher_block,
-        unsigned char *src_block)
+                                   const unsigned char *cipher_block,
+                                   unsigned char *src_block)
     {
         return des3_crypt_ecb(skey, cipher_block, src_block);
     }
@@ -907,13 +907,13 @@ protected:
 
     //计算DES3算法的sub key
     static void des3_set3key(const unsigned char key[KEY_SIZE],
-        uint32_t esk[SUB_KEY_SIZE],
-        uint32_t dsk[SUB_KEY_SIZE]);
+                             uint32_t esk[SUB_KEY_SIZE],
+                             uint32_t dsk[SUB_KEY_SIZE]);
 
     //DES 的加密解密是一个函数，（但SUB Key 不同）
     static void  des3_crypt_ecb(const SUBKEY_STRUCT *subkey,
-        const unsigned char input[BLOCK_SIZE],
-        unsigned char output[BLOCK_SIZE]);
+                                const unsigned char input[BLOCK_SIZE],
+                                unsigned char output[BLOCK_SIZE]);
 };
 
 

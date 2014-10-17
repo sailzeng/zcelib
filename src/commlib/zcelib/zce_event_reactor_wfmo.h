@@ -2,21 +2,21 @@
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_event_reactor_wfmo.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       Sunday, August 17, 2014
 * @brief      WFMO 是WaitForMultipleObjects的缩写。这个事Windows专有的东东。
 *             为什么非要有这个东东，主要是因为WaitForMultipleObjects才是Windwos，
 *             核心的事件触发器，
-*             
+*
 * @details    WFMO 的Reactor 实现不算高效，完美
 *             第一，WaitForMultipleObjects的特点决定了，他只能等待64个句柄，
 *             第二，我目前只设计了SOCKET和INOTIFY相关的代码。
 *             第三，WFMO对于写事件的处理时边缘触发，不是水平触发，写代码的时候要注意，
 *             第四，在一些句柄处理时，会有一个循环检查处理
-*             
-*             
-* @note       
-*             
+*
+*
+* @note
+*
 */
 
 #ifndef ZCE_LIB_EVENT_REACTOR_WFMO_H_
@@ -103,8 +103,8 @@ public:
     * @param      event_mask    希望设置的EVENT_MASK
     */
     static int wfmo_socket_event(ZCE_Event_Handler *event_handler,
-        WSAEVENT socket_event,
-        int event_mask);
+                                 WSAEVENT socket_event,
+                                 int event_mask);
 
 protected:
 

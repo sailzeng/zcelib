@@ -7,21 +7,21 @@ namespace ZCE_LIB
 
 //=====================================================================================================================
 
-    void XOR_ECB::ecb_encrypt(const SUBKEY_STRUCT *sub_key, const unsigned char *src_block, unsigned char *cipher_block)
+void XOR_ECB::ecb_encrypt(const SUBKEY_STRUCT *sub_key, const unsigned char *src_block, unsigned char *cipher_block)
+{
+    for (size_t i = 0; i < BLOCK_SIZE; ++i)
     {
-        for (size_t i = 0; i < BLOCK_SIZE; ++i)
-        {
-            cipher_block[i] = sub_key->skey_[i] ^ src_block[i];
-        }
+        cipher_block[i] = sub_key->skey_[i] ^ src_block[i];
     }
+}
 
-    void XOR_ECB::ecb_decrypt(const SUBKEY_STRUCT *sub_key, const unsigned char *cipher_block, unsigned char *src_block)
+void XOR_ECB::ecb_decrypt(const SUBKEY_STRUCT *sub_key, const unsigned char *cipher_block, unsigned char *src_block)
+{
+    for (size_t i = 0; i < BLOCK_SIZE; ++i)
     {
-        for (size_t i = 0; i < BLOCK_SIZE; ++i)
-        {
-            src_block[i] = sub_key->skey_[i] ^ cipher_block[i];
-        }
+        src_block[i] = sub_key->skey_[i] ^ cipher_block[i];
     }
+}
 
 //=====================================================================================================================
 
@@ -186,7 +186,7 @@ void DES_Base::des_setkey(const unsigned char key[8], uint32_t sk[32])
     x ^= t;
     y ^= (t);
 
-    x = (DES_LHS[(x)& 0xF] << 3) | (DES_LHS[(x >> 8) & 0xF] << 2)
+    x = (DES_LHS[(x) & 0xF] << 3) | (DES_LHS[(x >> 8) & 0xF] << 2)
         | (DES_LHS[(x >> 16) & 0xF] << 1) | (DES_LHS[(x >> 24) & 0xF])
         | (DES_LHS[(x >> 5) & 0xF] << 7) | (DES_LHS[(x >> 13) & 0xF] << 6)
         | (DES_LHS[(x >> 21) & 0xF] << 5) | (DES_LHS[(x >> 29) & 0xF] << 4);
@@ -216,28 +216,28 @@ void DES_Base::des_setkey(const unsigned char key[8], uint32_t sk[32])
         }
 
         *sk++ = ((x << 4) & 0x24000000) | ((x << 28) & 0x10000000)
-            | ((x << 14) & 0x08000000) | ((x << 18) & 0x02080000)
-            | ((x << 6) & 0x01000000) | ((x << 9) & 0x00200000)
-            | ((x >> 1) & 0x00100000) | ((x << 10) & 0x00040000)
-            | ((x << 2) & 0x00020000) | ((x >> 10) & 0x00010000)
-            | ((y >> 13) & 0x00002000) | ((y >> 4) & 0x00001000)
-            | ((y << 6) & 0x00000800) | ((y >> 1) & 0x00000400)
-            | ((y >> 14) & 0x00000200) | ((y)& 0x00000100)
-            | ((y >> 5) & 0x00000020) | ((y >> 10) & 0x00000010)
-            | ((y >> 3) & 0x00000008) | ((y >> 18) & 0x00000004)
-            | ((y >> 26) & 0x00000002) | ((y >> 24) & 0x00000001);
+                | ((x << 14) & 0x08000000) | ((x << 18) & 0x02080000)
+                | ((x << 6) & 0x01000000) | ((x << 9) & 0x00200000)
+                | ((x >> 1) & 0x00100000) | ((x << 10) & 0x00040000)
+                | ((x << 2) & 0x00020000) | ((x >> 10) & 0x00010000)
+                | ((y >> 13) & 0x00002000) | ((y >> 4) & 0x00001000)
+                | ((y << 6) & 0x00000800) | ((y >> 1) & 0x00000400)
+                | ((y >> 14) & 0x00000200) | ((y) & 0x00000100)
+                | ((y >> 5) & 0x00000020) | ((y >> 10) & 0x00000010)
+                | ((y >> 3) & 0x00000008) | ((y >> 18) & 0x00000004)
+                | ((y >> 26) & 0x00000002) | ((y >> 24) & 0x00000001);
 
         *sk++ = ((x << 15) & 0x20000000) | ((x << 17) & 0x10000000)
-            | ((x << 10) & 0x08000000) | ((x << 22) & 0x04000000)
-            | ((x >> 2) & 0x02000000) | ((x << 1) & 0x01000000)
-            | ((x << 16) & 0x00200000) | ((x << 11) & 0x00100000)
-            | ((x << 3) & 0x00080000) | ((x >> 6) & 0x00040000)
-            | ((x << 15) & 0x00020000) | ((x >> 4) & 0x00010000)
-            | ((y >> 2) & 0x00002000) | ((y << 8) & 0x00001000)
-            | ((y >> 14) & 0x00000808) | ((y >> 9) & 0x00000400)
-            | ((y)& 0x00000200) | ((y << 7) & 0x00000100)
-            | ((y >> 7) & 0x00000020) | ((y >> 3) & 0x00000011)
-            | ((y << 2) & 0x00000004) | ((y >> 21) & 0x00000002);
+                | ((x << 10) & 0x08000000) | ((x << 22) & 0x04000000)
+                | ((x >> 2) & 0x02000000) | ((x << 1) & 0x01000000)
+                | ((x << 16) & 0x00200000) | ((x << 11) & 0x00100000)
+                | ((x << 3) & 0x00080000) | ((x >> 6) & 0x00040000)
+                | ((x << 15) & 0x00020000) | ((x >> 4) & 0x00010000)
+                | ((y >> 2) & 0x00002000) | ((y << 8) & 0x00001000)
+                | ((y >> 14) & 0x00000808) | ((y >> 9) & 0x00000400)
+                | ((y) & 0x00000200) | ((y << 7) & 0x00000100)
+                | ((y >> 7) & 0x00000020) | ((y >> 3) & 0x00000011)
+                | ((y << 2) & 0x00000004) | ((y >> 21) & 0x00000002);
     }
 }
 
@@ -247,11 +247,11 @@ void DES_ECB::key_setup(const unsigned char *key,
 {
     if (if_encrypt)
     {
-        des_setkey(key,sk->sub_key_);
+        des_setkey(key, sk->sub_key_);
     }
     else
     {
-        des_setkey(key,sk->sub_key_);
+        des_setkey(key, sk->sub_key_);
         uint32_t t = 0;
         for (size_t i = 0; i < 16; i += 2)
         {
@@ -267,8 +267,8 @@ void DES_ECB::key_setup(const unsigned char *key,
 
 //
 void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT *sk,
-    const unsigned char input[BLOCK_SIZE],
-    unsigned char output[BLOCK_SIZE])
+                             const unsigned char input[BLOCK_SIZE],
+                             unsigned char output[BLOCK_SIZE])
 {
     uint32_t t = 0;
     const uint32_t *sk_p = sk->sub_key_;
@@ -294,12 +294,12 @@ void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT *sk,
 
 
 void DES3_ECB::des3_set3key(const unsigned char key[KEY_SIZE],
-    uint32_t esk[SUB_KEY_SIZE],
-    uint32_t dsk[SUB_KEY_SIZE])
+                            uint32_t esk[SUB_KEY_SIZE],
+                            uint32_t dsk[SUB_KEY_SIZE])
 {
-    des_setkey(key,esk);
-    des_setkey(key + 8,dsk + 32);
-    des_setkey(key + 16,esk + 64);
+    des_setkey(key, esk);
+    des_setkey(key + 8, dsk + 32);
+    des_setkey(key + 16, esk + 64);
 
     for (size_t i = 0; i < 32; i += 2)
     {
@@ -315,8 +315,8 @@ void DES3_ECB::des3_set3key(const unsigned char key[KEY_SIZE],
 }
 
 void DES3_ECB::key_setup(const unsigned char *key,
-    SUBKEY_STRUCT *subkey,
-    bool  if_encrypt)
+                         SUBKEY_STRUCT *subkey,
+                         bool  if_encrypt)
 {
     uint32_t tmp_key[SUB_KEY_SIZE];
     if (if_encrypt)
@@ -332,8 +332,8 @@ void DES3_ECB::key_setup(const unsigned char *key,
 
 //DES 的加密解密是一个函数，（但SUB Key 不同）
 void  DES3_ECB::des3_crypt_ecb(const SUBKEY_STRUCT *subkey,
-    const unsigned char input[BLOCK_SIZE],
-    unsigned char output[BLOCK_SIZE])
+                               const unsigned char input[BLOCK_SIZE],
+                               unsigned char output[BLOCK_SIZE])
 {
     uint32_t  t = 0;
 

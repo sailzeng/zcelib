@@ -178,6 +178,7 @@
     <ClInclude Include="zce_async_fw_base.h" />
     <ClInclude Include="zce_async_fw_coroutine.h" />
     <ClInclude Include="zce_async_fw_fsm.h" />
+    <ClInclude Include="zce_bytes_data_represent.h" />
     <ClInclude Include="zce_event_proactor.h" />
     <ClInclude Include="zce_event_reactor_wfmo.h" />
     <ClInclude Include="zce_readfile_cvs.h" />
@@ -304,6 +305,7 @@
     <ClCompile Include="zce_async_fw_base.cpp" />
     <ClCompile Include="zce_async_fw_coroutine.cpp" />
     <ClCompile Include="zce_async_fw_fsm.cpp" />
+    <ClCompile Include="zce_bytes_data_represent.cpp" />
     <ClCompile Include="zce_event_proactor.cpp" />
     <ClCompile Include="zce_event_reactor_wfmo.cpp" />
     <ClCompile Include="zce_readfile_cvs.cpp" />

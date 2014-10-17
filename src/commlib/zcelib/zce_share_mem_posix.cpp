@@ -108,11 +108,11 @@ int ZCE_ShareMem_Posix::open(const char *shm_name,
     //进行共享内存映射
     void *nonconst_addr = const_cast<void *>(want_address);
     mmap_addr_ = ZCE_LIB::mmap (nonconst_addr,
-                               shm_size,
-                               mmap_prot,
-                               mmap_flags,
-                               mmap_handle_,
-                               offset);
+                                shm_size,
+                                mmap_prot,
+                                mmap_flags,
+                                mmap_handle_,
+                                offset);
 
     //
     if (!mmap_addr_)

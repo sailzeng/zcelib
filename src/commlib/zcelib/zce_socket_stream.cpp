@@ -72,10 +72,10 @@ ssize_t ZCE_Socket_Stream::recv_n (void *buf,
                                    int flags)  const
 {
     return ZCE_LIB::recv_n(socket_handle_,
-                          buf,
-                          len,
-                          timeout_tv,
-                          flags);
+                           buf,
+                           len,
+                           timeout_tv,
+                           flags);
 }
 
 //带超时处理的发送函数，发送N个字节后返回,内部用的是select记录时间，记时不是特别准确，
@@ -85,10 +85,10 @@ ssize_t ZCE_Socket_Stream::send_n (const void *buf,
                                    int flags)  const
 {
     return ZCE_LIB::send_n(socket_handle_,
-                          buf,
-                          len,
-                          timeout_tv,
-                          flags);
+                           buf,
+                           len,
+                           timeout_tv,
+                           flags);
 }
 
 //带超时处理的接受函数，发送N个字节后返回,内部用的是SO_RCVTIMEO，记时不是特别准确，
@@ -98,10 +98,10 @@ ssize_t ZCE_Socket_Stream::recvn_timeout (void *buf,
                                           int flags)  const
 {
     return ZCE_LIB::recvn_timeout(socket_handle_,
-                                 buf,
-                                 len,
-                                 timeout_tv,
-                                 flags);
+                                  buf,
+                                  len,
+                                  timeout_tv,
+                                  flags);
 }
 
 //带超时处理的发送函数，发送N个字节后返回,内部用的是SO_SNDTIMEO，记时不是特别准确，
@@ -111,9 +111,9 @@ ssize_t ZCE_Socket_Stream::sendn_timeout (void *buf,
                                           int flags)
 {
     return ZCE_LIB::sendn_timeout(socket_handle_,
-                                 buf,
-                                 len,
-                                 timeout_tv,
-                                 flags);
+                                  buf,
+                                  len,
+                                  timeout_tv,
+                                  flags);
 }
 

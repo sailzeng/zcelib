@@ -38,7 +38,7 @@ public:
     * @brief      初始化
     * @param      init_num   每个POOL内部的FRAME数量
     * @param      max_frame_len 最大的FRAME的长度，跟进这个分配后面的
-    * @note       
+    * @note
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
                     size_t max_frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
@@ -61,7 +61,7 @@ public:
     * @brief      复制一个APPFRAME
     * @param      model_freame  模板FRAME
     * @param      cloned_frame  被克隆的FRAME
-    * @note       
+    * @note
     */
     void clone_appframe(const Zerg_App_Frame *model_freame, Zerg_App_Frame *&cloned_frame);
 
@@ -76,17 +76,17 @@ public:
 
 protected:
 
-    
+
     /*!
     * @brief      扩展POOL中某个LIST的容量
     * @param      list_no  LiST的下标
     * @param      extend_num 扩展的数量
     */
     void extend_list_capacity(size_t list_no, size_t extend_num);
-    
-    
+
+
     /*!
-    * @brief      
+    * @brief
     * @return     size_t   返回相关的LiST的下标编号
     * @param      sz_frame 需要分配的frame的长度
     */

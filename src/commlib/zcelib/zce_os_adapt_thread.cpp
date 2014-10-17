@@ -39,10 +39,10 @@ int ZCE_LIB::pthread_attr_destroy(pthread_attr_t *attr )
 //设置，或者获得线程属性变量属性
 //你可以设置，线程的的分离，JOIN属性，堆栈大小，线程的调度优先级
 int ZCE_LIB::pthread_attr_getex(const pthread_attr_t *attr,
-                               int *detachstate,
-                               size_t *stacksize,
-                               int *threadpriority
-                              )
+                                int *detachstate,
+                                size_t *stacksize,
+                                int *threadpriority
+                               )
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -81,10 +81,10 @@ int ZCE_LIB::pthread_attr_getex(const pthread_attr_t *attr,
 }
 
 int ZCE_LIB::pthread_attr_setex(pthread_attr_t *attr,
-                               int detachstate,
-                               size_t stacksize,
-                               int threadpriority
-                              )
+                                int detachstate,
+                                size_t stacksize,
+                                int threadpriority
+                               )
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -193,9 +193,9 @@ public:
 //因为WIN32下返回unsigned int，LINUX下返回void *，我要考虑平台兼容性，将谁转换给谁都不合适,所以我放弃
 //所以统一没有返回值，给你出错的可能，反而害死自己
 int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
-                           const pthread_attr_t *attr,
-                           void (*start_routine)(void *),
-                           void *arg)
+                            const pthread_attr_t *attr,
+                            void (*start_routine)(void *),
+                            void *arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -245,12 +245,12 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
 //这个不是POSIX的封装，但推荐使用
 //还是提供一个简单一点的封装吧，这个不用处理pthread_attr_t
 int ZCE_LIB::pthread_createex(void (*start_routine)(void *),
-                             void *arg,
-                             ZCE_THREAD_ID *threadid,
-                             int detachstate,
-                             size_t stacksize,
-                             int threadpriority
-                            )
+                              void *arg,
+                              ZCE_THREAD_ID *threadid,
+                              int detachstate,
+                              size_t stacksize,
+                              int threadpriority
+                             )
 {
     int ret = 0;
     pthread_attr_t attr;
@@ -263,10 +263,10 @@ int ZCE_LIB::pthread_createex(void (*start_routine)(void *),
 
     //设置线程参数
     ret = ZCE_LIB::pthread_attr_setex(&attr,
-                                     detachstate,
-                                     stacksize,
-                                     threadpriority
-                                    );
+                                      detachstate,
+                                      stacksize,
+                                      threadpriority
+                                     );
 
     if (0 != ret)
     {
@@ -276,9 +276,9 @@ int ZCE_LIB::pthread_createex(void (*start_routine)(void *),
 
     //创建线程
     ret = ZCE_LIB::pthread_create(threadid,
-                                 &attr,
-                                 start_routine,
-                                 arg);
+                                  &attr,
+                                  start_routine,
+                                  arg);
 
     if (0 != ret)
     {
@@ -353,9 +353,9 @@ public:
 
 //创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值
 int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
-                           const pthread_attr_t *attr,
-                           ZCE_THR_FUNC_RETURN (* start_routine)(void *),
-                           void *arg)
+                            const pthread_attr_t *attr,
+                            ZCE_THR_FUNC_RETURN (* start_routine)(void *),
+                            void *arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 

@@ -8,8 +8,8 @@
 
 /*!
 * @brief      PIPE的配置数据
-*             
-* @note       
+*
+* @note
 */
 struct SOAR_PIPE_CFG_DATA
 {
@@ -59,7 +59,7 @@ public:
 ///用于读取配置失败记录发送失败的地点的地方，
 #ifndef SOAR_CFG_READ_FAIL
 #define SOAR_CFG_READ_FAIL(x)        ZCE_LOGMSG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
-    __FILE__,__LINE__,__ZCE_FUNC__)
+                                                __FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 
 //============================================================================================
@@ -126,7 +126,7 @@ public:
 
     ///管道的配置
     SOAR_PIPE_CFG_DATA pipe_cfg_;
-    
+
     ///日志帐单的配置数据
     SOAR_LOG_CFG_DATA log_config_;
 

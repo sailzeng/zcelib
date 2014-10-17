@@ -151,11 +151,11 @@ int ZCE_LIB::gettimezone()
 //可以控制各种格式输出
 //如果成功，返回参数字符串str_date_time，如果失败返回NULL
 const char *ZCE_LIB::timeval_to_str(const timeval *timeval,
-                                   char *str_date_time,
-                                   size_t str_len,
-                                   bool uct_time,
-                                   TIME_STR_FORMAT_TYPE fmt
-                                  )
+                                    char *str_date_time,
+                                    size_t str_len,
+                                    bool uct_time,
+                                    TIME_STR_FORMAT_TYPE fmt
+                                   )
 {
     //这个实现没有使用strftime的原因是，我对输出精度可能有更高的要求，
     static const char *DAY_OF_WEEK_NAME[] =
@@ -404,10 +404,10 @@ const char *ZCE_LIB::timeval_to_str(const timeval *timeval,
 
 //通过字符串翻译得到tm时间结构
 void ZCE_LIB::str_to_tm(const char *strtm,
-                       tm *ptr_tm,
-                       TIME_STR_FORMAT_TYPE fmt,
-                       time_t *usec,
-                       int *tz)
+                        tm *ptr_tm,
+                        TIME_STR_FORMAT_TYPE fmt,
+                        time_t *usec,
+                        int *tz)
 {
     static const char *MONTH_NAME[] =
     {
@@ -634,9 +634,9 @@ void ZCE_LIB::str_to_tm(const char *strtm,
 
 //从字符串转换得到时间time_t函数
 int ZCE_LIB::str_to_timeval(const char *strtm,
-                           timeval *tval,
-                           bool uct_time,
-                           TIME_STR_FORMAT_TYPE fmt )
+                            timeval *tval,
+                            bool uct_time,
+                            TIME_STR_FORMAT_TYPE fmt )
 {
     //
     if (!uct_time && ZCE_LIB::TIME_STRFMT_HTTP_GMT == fmt)
@@ -654,10 +654,10 @@ int ZCE_LIB::str_to_timeval(const char *strtm,
     time_t usec = 0;
     int tz = 0;
     ZCE_LIB::str_to_tm(strtm,
-                      &tm_value,
-                      fmt,
-                      &usec,
-                      &tz);
+                       &tm_value,
+                       fmt,
+                       &usec,
+                       &tz);
 
     if (uct_time)
     {

@@ -123,7 +123,7 @@
 //一些auto或者默认非静态成员初始化，
 #if ZCE_SUPPORT_CPP11 == 0
 #error "[Error]Only support C11 compiler, include Visual Studio 2013 and "\
-    "upper version, or GCC 4.8 and upper version."
+"upper version, or GCC 4.8 and upper version."
 #endif
 
 //==================================================================================================
@@ -513,7 +513,7 @@ typedef __int64             int64_t;
 //__FUNCTION__定义的替换，尽最大可能帮你输出更加详细的函数名称信息
 //Windows 下你可以用__FUNCSIG__，其优点是会有参数信息，但缺点也是有参数信息，一些带有模板的信息很长很长，反而影响你的感觉
 #if defined ZCE_OS_WINDOWS
-#define __ZCE_FUNC__   __FUNCTION__ 
+#define __ZCE_FUNC__   __FUNCTION__
 #elif defined ZCE_OS_LINUX
 #define __ZCE_FUNC__   __PRETTY_FUNCTION__
 #else
@@ -715,9 +715,9 @@ struct ZU64_STRUCT
 # define ZINDEX_TO_BEUINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
 
 ///向一个(char *)指针内写入一个大头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上要进行转换
-# define ZBEUINT16_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data))
-# define ZBEUINT32_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data))
-# define ZBEUINT64_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data))
+# define ZBEUINT16_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data)
+# define ZBEUINT32_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data)
+# define ZBEUINT64_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data)
 
 //向一个(char *)指针内写入一个大头字节序的uuint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZBEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)

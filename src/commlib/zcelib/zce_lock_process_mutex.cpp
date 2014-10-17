@@ -39,10 +39,10 @@ ZCE_Process_Mutex::ZCE_Process_Mutex (const char *mutex_name, bool recursive):
 #endif
 
     ret = ZCE_LIB::pthread_mutex_initex(lock_,
-                                       true,
-                                       recursive,
-                                       true,
-                                       mutex_name);
+                                        true,
+                                        recursive,
+                                        true,
+                                        mutex_name);
 
     if (0 != ret)
     {
