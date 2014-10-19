@@ -916,7 +916,7 @@ int test_compress_filedata(const char *file_name)
     return 0;
 }
 
-int test_compress(int /*argc*/, char * /*argv*/[])
+int test_bytes_compress(int /*argc*/, char * /*argv*/[])
 {
 
     char test_filename[PATH_MAX+1];
@@ -1115,5 +1115,81 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
     return 0;
 }
 
+struct DR_DATA_1
+{
+    int a1_ = 1;
+    float b1_ = 2.0;
+    double b2_ = 3.001;
+};
 
 
+struct DR_DATA_2
+{
+    static const size_t ARY_SIZE = 256;
+    int a1_ = 1;
+    float b1_ = 2.0;
+    double b2_ = 3.001;
+
+    char c1_[ARY_SIZE];
+    double c2_[ARY_SIZE];
+    int c3_[ARY_SIZE];
+
+    unsigned int d_num_ = 0;
+    unsigned short d_ary_[ARY_SIZE];
+};
+
+ZCE_DR_Encode& operator <<(ZCE_DR_Encode &dr_encode, const DR_DATA_2 &val)
+{
+    dr_encode.write(val.a1_);
+    dr_encode.write(val.b1_);
+    dr_encode.write(val.b2_);
+
+    dr_encode.write_array(val.c1_, DR_DATA_2::ARY_SIZE);
+    dr_encode.write_array(val.c2_, DR_DATA_2::ARY_SIZE);
+    dr_encode.write_array(val.c3_, DR_DATA_2::ARY_SIZE);
+
+    dr_encode.write(val.d_num_);
+    dr_encode.write_array(val.d_ary_, val.d_num_);
+
+    return dr_encode;
+}
+
+ZCE_DR_Decode& operator >>(ZCE_DR_Decode &dr_decode, DR_DATA_2 *val)
+{
+    dr_decode.read(&val->a1_);
+    dr_decode.read(&val->b1_);
+    dr_decode.read(&val->b2_);
+
+    size_t ary_size = DR_DATA_2::ARY_SIZE;
+    dr_decode.read_array(val->c1_, &ary_size);
+    dr_decode.read_array(val->c2_, &ary_size);
+    dr_decode.read_array(val->c3_, &ary_size);
+
+    dr_decode.read(&val->d_num_);
+    if (val->d_num_ > DR_DATA_2::ARY_SIZE)
+    {
+        dr_decode.set_bad();
+        return dr_decode;
+    }
+    size_t read_ary = val->d_num_;
+    dr_decode.read_array(val->d_ary_, &read_ary);
+
+    return dr_decode;
+}
+
+int test_bytes_data_represent(int /*argc*/ , char * /*argv */ [])
+{
+    const size_t BUFFER_LEN_1 = 10 * 1024;
+    char buffer_1[BUFFER_LEN_1];
+
+    ZCE_DR_Encode dr_encode(buffer_1, BUFFER_LEN_1);
+
+    DR_DATA_1 data_1;
+    dr_encode << data_1.a1_ << data_1.b1_ << data_1.b2_;
+
+
+    ZCE_DR_Decode dr_decode(buffer_1, BUFFER_LEN_1);
+    dr_decode >> &data_1.a1_ >> &data_1.b1_ >> &data_1.b2_;
+
+    return 0;
+}

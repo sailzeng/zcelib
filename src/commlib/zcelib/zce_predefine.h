@@ -449,7 +449,7 @@ typedef  unsigned int       uint32_t;
 //
 #if _MSC_VER >= 1300
 typedef unsigned long long  uint64_t;
-typedef long long           int64_t;
+typedef long long           floatint64_t;
 #else
 typedef unsigned __int64    uint64_t;
 typedef __int64             int64_t;
@@ -621,6 +621,14 @@ struct ZU64_STRUCT
 {
     uint64_t value_;
 };
+struct ZFLOAT_STRUCT
+{
+    float value_;
+};
+struct ZDOUBLE_STRUCT
+{
+    double value_;
+};
 
 #pragma pack(pop)
 
@@ -638,7 +646,14 @@ struct ZU64_STRUCT
 {
     uint64_t value_;
 } __attribute__ ((packed));
-
+struct ZFLOAT_STRUCT
+{
+    float value_;
+} __attribute__((packed));
+struct ZDOUBLE_STRUCT
+{
+    double value_;
+} __attribute__((packed));
 #endif
 
 
@@ -662,6 +677,19 @@ struct ZU64_STRUCT
 # define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU32_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 # define ZUINT64_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU64_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 
+
+//FLOAT 和 DOUBLE的处理
+# define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
+# define ZBYTE_TO_DOUBLE(ptr)  ((ZDOUBLE_STRUCT *)(ptr))->value_
+
+# define ZFLOAT_TO_BYTE(ptr,wr_data)  ((ZFLOAT_STRUCT *)(ptr))->value_ = (wr_data)
+# define ZDOUBLE_TO_BYTE(ptr,wr_data)  ((ZDOUBLE_STRUCT *)(ptr))->value_ = (wr_data)
+
+# define ZFLOAT_TO_INDEX(ptr,ary_index,wr_data)  (((((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+# define ZDOUBLE_TO_INDEX(ptr,ary_index,wr_data)  (((((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+
+# define ZINDEX_TO_FLOAT(ptr,ary_index)  (((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_
+# define ZINDEX_TO_DOUBLE(ptr,ary_index)  (((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_
 
 //上面的代码从功能上等同下面的代码。但是这些写会导致BUS ERROR问题。
 //# define ZBYTE_TO_UINT32(ptr)  (*(uint32_t *)(ptr))
