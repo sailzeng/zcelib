@@ -52,6 +52,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zergsvrd", "commsvr\zergsvr
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ogremod", "ogremod", "{4339808F-E2E2-4949-8C3F-56F76E69B866}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "readme", "readme", "{0A482110-AF2B-43D9-A1F1-94484BDCBC0B}"
+	ProjectSection(SolutionItems) = preProject
+		..\README.md = ..\README.md
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
