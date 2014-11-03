@@ -63,12 +63,7 @@ using namespace std;
 #endif //#ifdef WIN32
 
 
-// mso.dll
-#import "libid:{2df8d04c-5bfa-101b-bde5-00aa0044de52}"  auto_rename
-// vb6ext.olb
-#import "libid:{0002e157-0000-0000-c000-000000000046}"  auto_rename
-// excel.exe
-#import "libid:{00020813-0000-0000-c000-000000000046}"  auto_rename
+
 
 //用了一个不应该用的
 #include <CRange.h>
@@ -77,6 +72,20 @@ using namespace std;
 #include <CWorksheet.h>
 #include <CWorksheets.h>
 #include <CApplication.h>
+
+//如果出现 error C3505: cannot load type library '{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}
+//请确认一下注册表中的项目
+//HKEY_CLASSES_ROOT\TypeLib\{2DF8D04C - 5BFA - 101B - BDE5 - 00AA0044DE52}
+//有时候安装过多个版本的EXCEL会有这个问题。
+
+// mso.dll
+#import "libid:{2df8d04c-5bfa-101b-bde5-00aa0044de52}"  auto_rename
+// vb6ext.olb
+#import "libid:{0002e157-0000-0000-c000-000000000046}"  auto_rename
+// excel.exe
+#import "libid:{00020813-0000-0000-c000-000000000046}"  auto_rename
+
+
 
 #ifdef WIN32
 #pragma warning(default : 4003)

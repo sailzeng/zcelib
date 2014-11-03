@@ -58,7 +58,7 @@ Illusion_ExcelFile::Illusion_ExcelFile():
 Illusion_ExcelFile::~Illusion_ExcelFile()
 {
     //
-    CloseExcelFile();
+    close_excelfile();
 }
 
 
@@ -86,10 +86,10 @@ void Illusion_ExcelFile::release_excel()
 }
 
 //打开excel文件
-BOOL Illusion_ExcelFile::OpenExcelFile(const char *file_name)
+BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
 {
     //先关闭
-    CloseExcelFile();
+    close_excelfile();
     
     //利用模板文件建立新文档 
     excel_books_.AttachDispatch(excel_application_.get_Workbooks(),true); 
@@ -113,7 +113,7 @@ BOOL Illusion_ExcelFile::OpenExcelFile(const char *file_name)
 }
 
 //关闭打开的Excel 文件,默认情况不保存文件
-void Illusion_ExcelFile::CloseExcelFile(BOOL if_save)
+void Illusion_ExcelFile::close_excelfile(BOOL if_save)
 {
     //如果已经打开，关闭文件
     if (open_excel_file_.IsEmpty() == FALSE)
@@ -171,7 +171,7 @@ int Illusion_ExcelFile::sheets_count()
 }
 
 
-CString Illusion_ExcelFile::GetSheetName(long table_index)
+CString Illusion_ExcelFile::sheet_name(long table_index)
 {
     CWorksheet sheet;
     _variant_t v_t_idx((long)table_index);
@@ -203,7 +203,7 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index,BOOL pre_load)
     //如果进行预先加载
     if (pre_load)
     {
-        PreLoadSheet();
+        preload_sheet();
         already_preload_ = TRUE;
     }
 
@@ -211,7 +211,7 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index,BOOL pre_load)
 }
 
 //按照名称加载Sheet表格,可以提前加载所有的表格内部数据
-BOOL Illusion_ExcelFile::load_sheet(const char* sheet,BOOL pre_load)
+BOOL Illusion_ExcelFile::load_sheet(const CString &sheet,BOOL pre_load)
 {
     LPDISPATCH lpDis = NULL;
     excel_current_range_.ReleaseDispatch();
@@ -234,14 +234,14 @@ BOOL Illusion_ExcelFile::load_sheet(const char* sheet,BOOL pre_load)
     if (pre_load)
     {
         already_preload_ = TRUE;
-        PreLoadSheet();
+        preload_sheet();
     }
 
     return TRUE;
 }
 
 //得到列的总数
-int Illusion_ExcelFile::GetColumnCount()
+int Illusion_ExcelFile::column_count()
 {
     CRange range;
     CRange usedRange;
@@ -254,7 +254,7 @@ int Illusion_ExcelFile::GetColumnCount()
 }
 
 //得到行的总数
-int Illusion_ExcelFile::GetRowCount()
+int Illusion_ExcelFile::row_count()
 {
     CRange range;
     CRange usedRange;
@@ -299,7 +299,7 @@ BOOL Illusion_ExcelFile::is_cell_number(long irow, long icolumn)
 }
 
 //
-CString Illusion_ExcelFile::GetCellString(long irow, long icolumn)
+CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
 {
    
     COleVariant vResult ;
@@ -358,7 +358,7 @@ CString Illusion_ExcelFile::GetCellString(long irow, long icolumn)
 }
 
 //VT_R8
-int Illusion_ExcelFile::GetCellInt(long irow, long icolumn)
+int Illusion_ExcelFile::get_cell_int(long irow, long icolumn)
 {
     int num;
     COleVariant vresult;
@@ -387,7 +387,7 @@ int Illusion_ExcelFile::GetCellInt(long irow, long icolumn)
     return num;
 }
 
-void Illusion_ExcelFile::set_cell_string(long irow, long icolumn,CString new_string)
+void Illusion_ExcelFile::set_cell_string(long irow, long icolumn, const CString &new_string)
 {
     _variant_t new_value(new_string);
     _variant_t v_pos("A1");
@@ -428,15 +428,15 @@ void Illusion_ExcelFile::show_in_excel(BOOL bShow)
 }
 
 //返回打开的EXCEL文件名称
-CString Illusion_ExcelFile::GetOpenFileName()
+CString Illusion_ExcelFile::open_filename()
 {
     return open_excel_file_;
 }
 
 //取得列的名称，比如27->AA
-char *Illusion_ExcelFile::GetColumnName(long icolumn)
+TCHAR *Illusion_ExcelFile::column_name(long icolumn)
 {   
-    static char column_name[64];
+    static TCHAR column_name[64];
     size_t str_len = 0;
     
     while(icolumn > 0)
@@ -448,18 +448,19 @@ char *Illusion_ExcelFile::GetColumnName(long icolumn)
             num_data = 26;
             icolumn--;
         }
-        column_name[str_len] = (char)((num_data-1) + 'A' );
+        //不知道这个对不，
+        column_name[str_len] = (TCHAR)((num_data-1) + _T('A') );
         str_len ++;
     }
     column_name[str_len] = '\0';
     //反转
-    _strrev(column_name);
+    _tcsrev(column_name);
 
     return column_name;
 }
 
 //预先加载
-void Illusion_ExcelFile::PreLoadSheet()
+void Illusion_ExcelFile::preload_sheet()
 {
 
     CRange used_range;

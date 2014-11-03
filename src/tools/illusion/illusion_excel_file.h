@@ -29,11 +29,12 @@ protected:
     //
     CRange        excel_current_range_; 
 
-
-    //
+    ///是否进行预先加载，预加载更加消耗内存，但读取效率提高几十倍
     BOOL          already_preload_;
+
     //Create the SAFEARRAY from the VARIANT ret.
     COleSafeArray ole_safe_array_;
+    
 
 protected:
     //
@@ -47,41 +48,41 @@ public:
     //检查一个CELL是否是数值
     BOOL    is_cell_number(long iRow, long iColumn);
 
-    //得到一个CELL的String
-    CString GetCellString(long iRow, long iColumn);
+    //得到一个CELL的CString
+    CString get_cell_cstring(long iRow, long iColumn);
     //得到整数
-    int     GetCellInt(long iRow, long iColumn);
+    int     get_cell_int(long iRow, long iColumn);
     //得到double的数据
-    double  GetCellDouble(long iRow, long iColumn);
+    double  get_celldouble(long iRow, long iColumn);
 
     //取得行的总数
-    int GetRowCount();
+    int row_count();
     //取得列的总数
-    int GetColumnCount();
+    int column_count();
 
     //使用某个shet，shit，shit
     BOOL load_sheet(long table_index,BOOL pre_load = FALSE);
     //通过名称使用某个sheet，
-    BOOL load_sheet(const char* sheet,BOOL pre_load = FALSE);
+    BOOL load_sheet(const CString& sheet,BOOL pre_load = FALSE);
     //通过序号取得某个Sheet的名称
-    CString GetSheetName(long table_index);
+    CString sheet_name(long table_index);
 
     //得到Sheet的总数
     int sheets_count();
 
     //打开文件
-    BOOL OpenExcelFile(const char * file_name);
+    BOOL open_excelfile(const CString &file_name);
     //关闭打开的Excel 文件，有时候打开EXCEL文件就要
-    void CloseExcelFile(BOOL if_save = FALSE);
+    void close_excelfile(BOOL if_save = FALSE);
     //另存为一个EXCEL文件
     void saveas_excelfile(const CString &xls_file);
     //取得打开文件的名称
-    CString GetOpenFileName();
+    CString open_filename();
     
     //
     void set_cell_int(long irow, long icolumn,int new_int);
     //
-    void set_cell_string(long irow, long icolumn,CString new_string);
+    void set_cell_string(long irow, long icolumn,const CString &new_string);
     
 public:
     //初始化EXCEL OLE
@@ -89,10 +90,10 @@ public:
     //释放EXCEL的 OLE
     static void release_excel();
     //取得列的名称，比如27->AA
-    static char *GetColumnName(long iColumn);
+    static TCHAR *column_name(long iColumn);
     
 protected:
 
     //预先加载
-    void PreLoadSheet();
+    void preload_sheet();
 };
