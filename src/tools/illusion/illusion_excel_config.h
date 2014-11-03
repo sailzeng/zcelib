@@ -32,7 +32,6 @@ public:
         unsigned int table_id_ = 0;
         //表格索引的字段1的列号
         unsigned int index1_column_ = 0;
-
         //表格索引的字段2的列号
         unsigned int index2_column_ = 0;
 
@@ -87,10 +86,10 @@ public:
 protected:
 
     //读枚举值
-    int read_enumconfig(EXCEL_FILE_DATA & file_Cfg_data);
+    int read_enumconfig(EXCEL_FILE_DATA & file_cfg_data);
 
     //读取表格配置
-    int read_tableconfig(EXCEL_FILE_DATA & file_Cfg_data);
+    int read_tableconfig(EXCEL_FILE_DATA & file_cfg_data);
 
 };
 
