@@ -408,12 +408,16 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
 }
 
 
+//如果使用打了的端口,select 是不合适的，需要使用EPOLL,此时
+#define HANDLEREADY_USE_EPOLL
 
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
 int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
                           ZCE_Time_Value *timeout_tv,
                           HANDLE_READY_TODO ready_todo)
 {
+#if defined ZCE_OS_WINDOWS || (defined ZCE_OS_LINUX && !defined HANDLEREADY_USE_EPOLL)
+
     fd_set handle_set_read, handle_set_write, handle_set_exeception;
     fd_set *p_set_read  = NULL, *p_set_write = NULL, *p_set_exception = NULL;
     FD_ZERO(&handle_set_read);
@@ -511,6 +515,99 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     }
 
     return result;
+
+#else 
+    
+    //用EPOLL 完成事件触发，优点是能处理的数据多，缺点是系统调用太多
+    int ret = 0;
+    
+    int epoll_fd = ::epoll_create(max_event_number_ + 64);
+
+    struct epoll_event ep_event;
+    if (HANDLE_READY_READ == ready_todo)
+    {
+        ep_event->events |= EPOLLIN;
+    }
+    else if ( HANDLE_READY_WRITE == ready_todo)
+    {
+        ep_event->events |= EPOLLOUT;
+    }
+    else if (HANDLE_READY_EXCEPTION == ready_todo)
+    {
+        ep_event->events |= EPOLLERR;
+    }
+    else if (HANDLE_READY_ACCEPT == ready_todo)
+    {
+        //accept事件是利用读取事件
+        ep_event->events |= EPOLLIN;
+    }
+    else if (HANDLE_READY_CONNECTED == ready_todo)
+    {
+        //LINUX 无论阻塞，还是非阻塞，失败调用读写事件，成功调用写事件
+        ep_event->events |= EPOLLOUT;
+        ep_event->events |= EPOLLIN;
+    }
+    else
+    {
+        ZCE_ASSERT(false);
+    }
+
+    ret = ::epoll_ctl(epoll_fd, EPOLL_CTL_ADD, handle, &ep_event);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    //默认一直阻塞
+    int msec_timeout = -1;
+
+    if (timeout_tv)
+    {
+        //根据bluehu 提醒修改了下面这段，（不过小伙子们，你们改代码要认真一点喔）
+        //由于select的超时参数可以精确到微秒，而epoll_wait的参数只精确到毫秒
+        //当超时时间小于1000微秒时，比如20微秒，将时间转换成毫秒会变成0毫秒
+        //所以如果用epoll_wait的话，超时时间大于0并且小于1毫秒的情况下统一改为1毫秒
+
+        msec_timeout = static_cast<int>( timeout_tv->total_msec_round());
+    }
+
+    int event_happen = 0;
+    //EPOLL等待事件触发，
+    const int ONCE_MAX_EVENTS = 10;
+    struct epoll_event once_events_ary[ONCE_MAX_EVENTS];
+
+    event_happen = ::epoll_wait(epoll_fd, once_events_ary, ONCE_MAX_EVENTS, msec_timeout);
+
+
+
+
+    //完成清理工程，调用epoll_ctl EPOLL_CTL_DEL 删除注册对象,
+    struct epoll_event event_del;
+    event_del.events = 0;
+    ::epoll_ctl(epoll_fd, EPOLL_CTL_DEL, handle, &event_del);
+    ::close(epoll_fd);
+
+    if (0 == event_happen )
+    {
+        errno = ETIMEDOUT;
+        return 0;
+    }
+
+    //出现错误，
+    if (0 > event_happen )
+    {
+        return event_happen;
+    }
+
+    if (HANDLE_READY_CONNECTED == ready_todo)
+    {
+        if (once_events_ary[1].events & EPOLLIN)
+        {
+            return -1;
+        }
+    }
+    return event_happen;
+#endif
 }
 
 //--------------------------------------------------------------------------------------------
