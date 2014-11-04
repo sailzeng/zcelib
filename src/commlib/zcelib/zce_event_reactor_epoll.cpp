@@ -301,7 +301,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
 
     //代码有点怪，部分目的是加快速度,避免每个调用都要检查，
 
-    //WRITE和CONNECT事件都调用handle_output
+    //READ和CONNECT事件都调用handle_input
     if (ep_event->events &  EPOLLIN )
     {
         event_in_happen = true;
