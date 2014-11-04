@@ -238,7 +238,7 @@ int Illusion_Excel_Config::process_excelfile(const CString &open_file)
     }
 
     //
-    int ret = read_tableconfig(cfg_data);
+    ret = read_tableconfig(cfg_data);
     if (0 != ret)
     {
         ::AfxMessageBox(_T("你选择的配置EXCEL文件中的TABLE_CONFIG表不正确，请重现检查后打开。!"));

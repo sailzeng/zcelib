@@ -169,6 +169,11 @@ IDR_MAINFRAME MENU
 BEGIN
     POPUP "&File"
     BEGIN
+        MENUITEM "Open Protobuf Files",         ID_FILE_OPENPROTOBUFFILES
+        MENUITEM "Open Excel Files",            ID_FILE_OPENEXCELFILE
+        MENUITEM SEPARATOR
+        MENUITEM "Scan Excel Directory",        ID_FILE_SCANEXCELDIR
+        MENUITEM "Scan Protobuf Directory",     ID_S_SCANPROTOBUFDIRECTORY
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM SEPARATOR
@@ -208,12 +213,6 @@ IDR_illusionTYPE MENU
 BEGIN
     POPUP "&Files"
     BEGIN
-        MENUITEM "Open Protobuf Files",         ID_FILE_OPENPROTOBUFFILES
-        MENUITEM "Open Excel Files",            ID_FILE_OPENEXCELFILE
-        MENUITEM SEPARATOR
-        MENUITEM "Scan Excel Directory",        ID_FILE_SCANEXCELDIR
-        MENUITEM "Scan Protobuf Directory",     ID_S_SCANPROTOBUFDIRECTORY
-        MENUITEM SEPARATOR
         MENUITEM "&New\tCtrl+N",                ID_FILE_NEW
         MENUITEM "&Close",                      ID_FILE_CLOSE
         MENUITEM SEPARATOR
