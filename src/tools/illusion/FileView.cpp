@@ -1,6 +1,6 @@
 
 #include "stdafx.h"
-#include "mainfrm.h"
+#include "illusion_mainfrm.h"
 #include "FileView.h"
 #include "Resource.h"
 #include "illusion.h"

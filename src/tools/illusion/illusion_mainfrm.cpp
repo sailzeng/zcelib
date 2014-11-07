@@ -5,7 +5,7 @@
 #include "stdafx.h"
 #include "illusion.h"
 
-#include "MainFrm.h"
+#include "illusion_mainfrm.h"
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

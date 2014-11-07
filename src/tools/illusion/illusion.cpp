@@ -6,7 +6,7 @@
 #include "afxwinappex.h"
 #include "afxdialogex.h"
 #include "illusion.h"
-#include "MainFrm.h"
+#include "illusion_mainfrm.h"
 
 #include "ChildFrm.h"
 

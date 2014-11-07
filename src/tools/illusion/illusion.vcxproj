@@ -120,7 +120,7 @@
     <ClInclude Include="illusion.h" />
     <ClInclude Include="illusion_excel_config.h" />
     <ClInclude Include="illusion_excel_file.h" />
-    <ClInclude Include="MainFrm.h" />
+    <ClInclude Include="illusion_mainfrm.h" />
     <ClInclude Include="OutputWnd.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="stdafx.h" />
@@ -135,7 +135,7 @@
     <ClCompile Include="illusion.cpp" />
     <ClCompile Include="illusion_excel_config.cpp" />
     <ClCompile Include="illusion_excel_file.cpp" />
-    <ClCompile Include="MainFrm.cpp" />
+    <ClCompile Include="illusion_mainfrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
     <ClCompile Include="stdafx.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>

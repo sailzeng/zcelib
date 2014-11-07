@@ -35,9 +35,6 @@
     <ClInclude Include="illusion_excel_file.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="MainFrm.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="OutputWnd.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -74,15 +71,15 @@
     <ClInclude Include="illusion_excel_config.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="illusion_mainfrm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="illusion.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="MainFrm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="ChildFrm.cpp">
@@ -107,6 +104,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="illusion_excel_config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="illusion_mainfrm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
