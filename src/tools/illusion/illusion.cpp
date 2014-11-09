@@ -6,6 +6,8 @@
 #include "afxwinappex.h"
 #include "afxdialogex.h"
 #include "illusion.h"
+#include "illusion_excel_file.h"
+#include "illusion_excel_config.h"
 #include "illusion_mainfrm.h"
 
 #include "ChildFrm.h"
@@ -75,6 +77,13 @@ BOOL CillusionApp::InitInstance()
 		return FALSE;
 	}
 
+    BOOL bret = Illusion_Excel_Config::instance()->initialize();
+    if (FALSE == bret)
+    {
+        ::AfxMessageBox(_T("创建Excel服务失败,你可能没有安装EXCEL，请检查!"));
+        return FALSE;
+    }
+
 	AfxEnableControlContainer();
 
 	EnableTaskbarInteraction();
@@ -135,6 +144,8 @@ int CillusionApp::ExitInstance()
 		FreeResource(m_hMDIMenu);
 	if (m_hMDIAccel != NULL)
 		FreeResource(m_hMDIAccel);
+
+    Illusion_Excel_Config::instance()->finalize();
 
 	AfxOleTerm(FALSE);
 

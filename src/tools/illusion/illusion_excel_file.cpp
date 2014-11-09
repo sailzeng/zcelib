@@ -65,11 +65,9 @@ Illusion_ExcelFile::~Illusion_ExcelFile()
 //初始化EXCEL文件，
 BOOL Illusion_ExcelFile::init_excel()
 {
-
     //创建Excel 2000服务器(启动Excel) 
     if (!excel_application_.CreateDispatch(_T("Excel.Application"),NULL)) 
     { 
-        AfxMessageBox(_T("创建Excel服务失败,你可能没有安装EXCEL，请检查!"));
         return FALSE;
     }
 
@@ -188,11 +186,20 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index,BOOL pre_load)
     excel_current_range_.ReleaseDispatch();
     excel_work_sheet_.ReleaseDispatch();
     _variant_t v_t_idx((long)table_index);
-    lpDis = excel_sheets_.get_Item(v_t_idx);
+    try
+    {
+        lpDis = excel_sheets_.get_Item(v_t_idx);
+    }
+    catch (...)
+    {
+        lpDis = NULL;
+    }
+  
+    
     if (lpDis)
     {
-        excel_work_sheet_.AttachDispatch(lpDis,true);
-        excel_current_range_.AttachDispatch(excel_work_sheet_.get_Cells(), true);
+        excel_work_sheet_.AttachDispatch(lpDis,TRUE);
+        excel_current_range_.AttachDispatch(excel_work_sheet_.get_Cells(), TRUE);
     }
     else
     {
@@ -216,12 +223,20 @@ BOOL Illusion_ExcelFile::load_sheet(const CString &sheet,BOOL pre_load)
     LPDISPATCH lpDis = NULL;
     excel_current_range_.ReleaseDispatch();
     excel_work_sheet_.ReleaseDispatch();
-    _variant_t v_sheet(sheet);
-    lpDis = excel_sheets_.get_Item(v_sheet);
+    _variant_t  v_sheet(sheet);
+    try
+    {
+        lpDis = excel_sheets_.get_Item(v_sheet);
+    }
+    catch (...)
+    {
+        lpDis = NULL;
+    }
+
     if (lpDis)
     {
-        excel_work_sheet_.AttachDispatch(lpDis,true);
-        excel_current_range_.AttachDispatch(excel_work_sheet_.get_Cells(), true);
+        excel_work_sheet_.AttachDispatch(lpDis, TRUE);
+        excel_current_range_.AttachDispatch(excel_work_sheet_.get_Cells(), TRUE);
         
     }
     else

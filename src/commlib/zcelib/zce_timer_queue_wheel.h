@@ -115,11 +115,11 @@ public:
     * @param[in]  trigger_mode          触发模式是用墙上时钟还是CPU TICK，参考 @ref ZCE_Timer_Queue::TRIGGER_MODE
     * @param[in]  dynamic_expand_node   如果初始化的NODE节点数量不够，是否自动扩展
     */
-    int initiate(size_t num_timer_node ,
-                 unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
-                 unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                 TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
-                 bool dynamic_expand_node = true );
+    int initialize(size_t num_timer_node,
+                   unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
+                   unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                   bool dynamic_expand_node = true );
 
     /*!
     * @brief      设置第一个定时器，接口参考了ACE的设计，这个设计其实算很完整了

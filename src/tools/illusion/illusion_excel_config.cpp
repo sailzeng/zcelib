@@ -17,6 +17,35 @@ Illusion_Excel_Config::~Illusion_Excel_Config()
 }
 
 
+Illusion_Excel_Config *Illusion_Excel_Config::instance()
+{
+    if (instance_ == NULL)
+    {
+        instance_ = new Illusion_Excel_Config();
+    }
+    return instance_;
+}
+
+void Illusion_Excel_Config::clean_instance()
+{ 
+    if (instance_)
+    {
+        delete instance_;
+        instance_ = NULL;
+    }
+}
+
+//
+BOOL Illusion_Excel_Config::initialize()
+{
+    return illusion_excel_file_.init_excel();
+}
+//
+void Illusion_Excel_Config::finalize()
+{
+    return illusion_excel_file_.release_excel();
+}
+
 //清理所有的读取数据
 void Illusion_Excel_Config::clear()
 {
@@ -26,7 +55,7 @@ void Illusion_Excel_Config::clear()
 
 
 //读取所有的枚举值
-int Illusion_Excel_Config::read_enumconfig(EXCEL_FILE_DATA & file_cfg_data)
+int Illusion_Excel_Config::read_enum_data(EXCEL_FILE_DATA & file_cfg_data)
 {
     //前面检查过了
     BOOL bret =  illusion_excel_file_.load_sheet(_T("ENUM_CONFIG"),TRUE);
@@ -69,7 +98,7 @@ int Illusion_Excel_Config::read_enumconfig(EXCEL_FILE_DATA & file_cfg_data)
 
 
 //读取表格配置
-int Illusion_Excel_Config::read_tableconfig(EXCEL_FILE_DATA & file_cfg_data)
+int Illusion_Excel_Config::read_table_config(EXCEL_FILE_DATA & file_cfg_data)
 {
     //前面检查过了
     BOOL bret = illusion_excel_file_.load_sheet(_T("TABLE_CONFIG"), TRUE);
@@ -101,6 +130,7 @@ int Illusion_Excel_Config::read_tableconfig(EXCEL_FILE_DATA & file_cfg_data)
             {
                 return -1;
             }
+            //检查EXCEL文件中是否有这个表格
             if (illusion_excel_file_.load_sheet(tc_data.table_name_, FALSE) == FALSE)
             {
                 return -3;
@@ -200,7 +230,19 @@ int Illusion_Excel_Config::read_tableconfig(EXCEL_FILE_DATA & file_cfg_data)
 }
 
 
-int Illusion_Excel_Config::process_excelfile(const CString &open_file)
+//读取表格数据
+int Illusion_Excel_Config::read_table_data(TABLE_CONFIG & tc_data)
+{
+    //检查EXCEL文件中是否有这个表格
+    if (illusion_excel_file_.load_sheet(tc_data.table_name_, TRUE) == FALSE)
+    {
+        return -3;
+    }
+
+    return 0;
+}
+
+int Illusion_Excel_Config::read_excelconfig(const CString &open_file)
 {
     BOOL bret = illusion_excel_file_.open_excelfile(open_file);
     //Excel文件打开失败
@@ -230,7 +272,7 @@ int Illusion_Excel_Config::process_excelfile(const CString &open_file)
 
     //
     EXCEL_FILE_DATA &cfg_data = (*result.first).second;
-    int ret = read_enumconfig(cfg_data);
+    int ret = read_enum_data(cfg_data);
     if (0 != ret)
     {
         ::AfxMessageBox(_T("你选择的配置EXCEL文件中的ENUM_CONFIG表不正确，请重现检查后打开。!"));
@@ -238,7 +280,7 @@ int Illusion_Excel_Config::process_excelfile(const CString &open_file)
     }
 
     //
-    ret = read_tableconfig(cfg_data);
+    ret = read_table_config(cfg_data);
     if (0 != ret)
     {
         ::AfxMessageBox(_T("你选择的配置EXCEL文件中的TABLE_CONFIG表不正确，请重现检查后打开。!"));

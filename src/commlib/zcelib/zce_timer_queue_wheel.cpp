@@ -15,15 +15,15 @@ ZCE_Timer_Wheel::ZCE_Timer_Wheel(size_t num_timer_node,
     proc_wheel_start_(0)
 {
     int ret = 0;
-    ret = initiate( num_timer_node,
-                    timer_length_mesc,
-                    timer_precision_mesc,
-                    trigger_mode,
-                    dynamic_expand_node);
+    ret = initialize(num_timer_node,
+                     timer_length_mesc,
+                     timer_precision_mesc,
+                     trigger_mode,
+                     dynamic_expand_node);
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[zcelib] ZCE_Timer_Wheel::initiate fail.");
+        ZLOG_ERROR("[zcelib] ZCE_Timer_Wheel::initialize fail.");
     }
 }
 
@@ -40,11 +40,11 @@ ZCE_Timer_Wheel::~ZCE_Timer_Wheel()
 {
 }
 
-int ZCE_Timer_Wheel::initiate(size_t num_timer_node,
-                              unsigned int timer_length_mesc,
-                              unsigned int timer_precision_mesc,
-                              TRIGGER_MODE trigger_mode,
-                              bool dynamic_expand_node)
+int ZCE_Timer_Wheel::initialize(size_t num_timer_node,
+                                unsigned int timer_length_mesc,
+                                unsigned int timer_precision_mesc,
+                                TRIGGER_MODE trigger_mode,
+                                bool dynamic_expand_node)
 {
 
     int ret = 0;

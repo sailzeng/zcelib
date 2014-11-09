@@ -5,6 +5,8 @@
 #include "stdafx.h"
 #include "illusion.h"
 
+#include "illusion_excel_file.h"
+#include "illusion_excel_config.h"
 #include "illusion_mainfrm.h"
 
 #ifdef _DEBUG
@@ -59,6 +61,8 @@ CMainFrame::~CMainFrame()
 
 int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
+
+
     if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
         return -1;
 
@@ -467,11 +471,11 @@ void CMainFrame::OnFileOpenprotobuffiles()
 void CMainFrame::OnFileOpenexcelfile()
 {
     //TODO:为什么有无穷无尽的TODO
-    CFileDialog  open_file(TRUE, 
-        NULL, 
-        NULL, 
+    CFileDialog  open_file(TRUE,
+        NULL,
+        NULL,
         OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-        _T("Worksheet Files (*.xls)|*.xls|All Files (*.*)|*.*||"), 
+        _T("Worksheet Files (*.xls;*.xlsx)|*.xls;*.xlsx|All Files (*.*)|*.*||"),
         this);
 
     ////取消了什么都不做
@@ -483,8 +487,7 @@ void CMainFrame::OnFileOpenexcelfile()
     CString  cfg_file_path = open_file.GetPathName();
 
     BeginWaitCursor();
-
-
+    Illusion_Excel_Config::instance()->read_excelconfig(cfg_file_path);
     EndWaitCursor();
 
 
