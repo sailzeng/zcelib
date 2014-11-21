@@ -317,6 +317,57 @@ using std::unordered_set;
 #endif
 
 //==================================================================================================
+
+//标准整数数值定义部分，由于VS2010前的库没有按照C99的标准执行，所以下面这两个库没有。
+//所有的代码中,(除非用于兼容API)，不准出现long，longlong这种定义，不准，出现就弹小JJ . 注：弹到死
+
+//整数类型定义,推荐使用，特别是64位的uint64_t,
+
+//LINUX下已经有相关的定义了，万幸
+#if defined(ZCE_OS_LINUX)
+#include <stdint.h>
+#include <inttypes.h>
+#endif //#if defined(ZCE_OS_LINUX)
+
+//WINDOWS下，各种不同，各种不一致，你只能自己来
+#if defined(ZCE_OS_WINDOWS)
+
+//到VS2010为止，ssize_t还没有被支持
+#if defined (ZCE_WIN64)
+typedef SSIZE_T ssize_t;
+#else
+typedef int ssize_t;
+#endif
+
+//VC++ 2010，以及遵守这个标准了
+#if _MSC_VER >= 1500
+#include <stdint.h>
+//VC++ 2005
+#else
+
+//The stdint declaras
+typedef  signed char        int8_t;
+typedef  short              int16_t;
+typedef  int                int32_t;
+typedef  unsigned char      uint8_t;
+typedef  unsigned short     uint16_t;
+typedef  unsigned int       uint32_t;
+
+//
+#if _MSC_VER >= 1300
+typedef unsigned long long  uint64_t;
+typedef long long           floatint64_t;
+#else
+typedef unsigned __int64    uint64_t;
+typedef __int64             int64_t;
+#endif //#if _MSC_VER >= 1300
+
+#endif //#if _MSC_VER >= 1500
+
+#endif //#if defined(ZCE_OS_WINDOWS)
+
+
+//==================================================================================================
 //我们引入的外部库，目前包括,rapidxml,MYSQL,SQLite,
 
 //rapidxml XML文件的头文件以及开关，我们引入的库是rapidxml 库，他的优势是只有头文件，
@@ -381,6 +432,30 @@ extern "C"
 //#define ZCE_HAS_IPV6
 //#endif
 
+
+//是否使用Google Protobuf,如果你仅仅使用Protobuf - Lite，也请关闭这儿，
+#ifndef ZCE_USE_PROTOBUF
+#define ZCE_USE_PROTOBUF 1
+#endif
+
+#if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( push )
+#pragma warning ( disable : 4512)
+#pragma warning ( disable : 4100)
+#endif
+
+#include <google/protobuf/descriptor.h>
+#include <google/protobuf/descriptor.pb.h>
+#include <google/protobuf/dynamic_message.h>
+#include <google/protobuf/compiler/importer.h>
+#include <google/protobuf/text_format.h>
+
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( pop )
+#endif
+#endif
+
 //==================================================================================================
 //字节序的小头和大头的问题
 #define ZCE_LITTLE_ENDIAN  0x1234
@@ -409,55 +484,6 @@ extern "C"
 #endif
 #endif  //#ifndef ZCE_BYTES_ORDER
 
-//==================================================================================================
-
-//标准整数数值定义部分，由于VS2010前的库没有按照C99的标准执行，所以下面这两个库没有。
-//所有的代码中,(除非用于兼容API)，不准出现long，longlong这种定义，不准，出现就弹小JJ . 注：弹到死
-
-//整数类型定义,推荐使用，特别是64位的uint64_t,
-
-//LINUX下已经有相关的定义了，万幸
-#if defined(ZCE_OS_LINUX)
-#include <stdint.h>
-#include <inttypes.h>
-#endif //#if defined(ZCE_OS_LINUX)
-
-//WINDOWS下，各种不同，各种不一致，你只能自己来
-#if defined(ZCE_OS_WINDOWS)
-
-//到VS2010为止，ssize_t还没有被支持
-#if defined (ZCE_WIN64)
-typedef SSIZE_T ssize_t;
-#else
-typedef int ssize_t;
-#endif
-
-//VC++ 2010，以及遵守这个标准了
-#if _MSC_VER >= 1500
-#include <stdint.h>
-//VC++ 2005
-#else
-
-//The stdint declaras
-typedef  signed char        int8_t;
-typedef  short              int16_t;
-typedef  int                int32_t;
-typedef  unsigned char      uint8_t;
-typedef  unsigned short     uint16_t;
-typedef  unsigned int       uint32_t;
-
-//
-#if _MSC_VER >= 1300
-typedef unsigned long long  uint64_t;
-typedef long long           floatint64_t;
-#else
-typedef unsigned __int64    uint64_t;
-typedef __int64             int64_t;
-#endif //#if _MSC_VER >= 1300
-
-#endif //#if _MSC_VER >= 1500
-
-#endif //#if defined(ZCE_OS_WINDOWS)
 
 //==================================================================================================
 //各种宏定义，编译定义，一些比较常用的宏，帮助你节省一些代码
@@ -962,21 +988,21 @@ struct ZDOUBLE_STRUCT
 
 //目前通过工程的目录设置区分文件，没有继续使用文件名称
 #if !defined ZCE_LIB_LIBARY_NAME
-#define ZCE_LIB_LIBARY_NAME   "zcelib.lib"
+#define ZCE_LIB_LIBARY_NAME   
 #endif
 
+
 //自动包含的包含连接，简化你的操作
-#pragma comment(lib, ZCE_LIB_LIBARY_NAME  )
+#pragma comment(lib, "zcelib.lib"  )
 
 //如果使用了LUA，自动链接LUA的库，
 #if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
-#if !defined LUA_LIB_LIBARY_NAME
-#define LUA_LIB_LIBARY_NAME   "lualib-"ZCE_PLAT_TOOLSET_CONF".lib"
-#endif
-#pragma comment(lib, LUA_LIB_LIBARY_NAME )
+#pragma comment(lib, "lualib.lib" )
 #endif
 
-
+#if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
+#pragma comment(lib, "libprotobuf.lib" )
+#endif
 
 #endif
 

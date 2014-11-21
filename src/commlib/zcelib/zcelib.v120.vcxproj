@@ -180,6 +180,7 @@
     <ClInclude Include="zce_async_fw_fsm.h" />
     <ClInclude Include="zce_event_proactor.h" />
     <ClInclude Include="zce_event_reactor_wfmo.h" />
+    <ClInclude Include="zce_protobuf_reflect.h" />
     <ClInclude Include="zce_readfile_cvs.h" />
     <ClInclude Include="zce_boost_any.h" />
     <ClInclude Include="zce_boost_lord_rings.h" />
@@ -306,6 +307,7 @@
     <ClCompile Include="zce_async_fw_fsm.cpp" />
     <ClCompile Include="zce_event_proactor.cpp" />
     <ClCompile Include="zce_event_reactor_wfmo.cpp" />
+    <ClCompile Include="zce_protobuf_reflect.cpp" />
     <ClCompile Include="zce_readfile_cvs.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />
     <ClCompile Include="zce_bus_mmap_pipe.cpp" />

@@ -391,6 +391,9 @@
     <ClInclude Include="zce_event_proactor.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_protobuf_reflect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -688,6 +691,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_event_proactor.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_protobuf_reflect.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
