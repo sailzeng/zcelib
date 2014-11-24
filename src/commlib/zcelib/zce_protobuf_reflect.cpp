@@ -5,6 +5,13 @@
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
+//======================================================================================
+
+
+
+//======================================================================================
+
+//构造
 ZCE_Protobuf_Reflect::ZCE_Protobuf_Reflect():
     protobuf_importer_(NULL)
 {
@@ -20,7 +27,7 @@ ZCE_Protobuf_Reflect::~ZCE_Protobuf_Reflect()
     }
 }
 
-//
+//映射路径
 void ZCE_Protobuf_Reflect::map_path(const std::string &path)
 {
     source_tree_.MapPath(NULL, path);
@@ -30,6 +37,9 @@ void ZCE_Protobuf_Reflect::map_path(const std::string &path)
 //
 int ZCE_Protobuf_Reflect::import_file(const std::string &file_name)
 {
+
+    error_collector_.clear_error();
+
     const google::protobuf::FileDescriptor *file_desc =
         protobuf_importer_->Import(file_name);
     if (file_desc)
@@ -54,18 +64,18 @@ int ZCE_Protobuf_Reflect::new_proc_mesage(const std::string &type_name)
     {
         return -1;
     }
-
+    
     //根据名称得到结构描述
-    proc_msg_desc_ =
+    const google::protobuf::Descriptor *proc_msg_desc =
         protobuf_importer_->pool()->FindMessageTypeByName(type_name);
-    if (!proc_msg_desc_)
+    if (!proc_msg_desc)
     {
         return -1;
     }
 
     // build a dynamic message by "desc_msg" proto
     google::protobuf::DynamicMessageFactory factory;
-    const google::protobuf::Message *message = factory.GetPrototype(proc_msg_desc_);
+    const google::protobuf::Message *message = factory.GetPrototype(proc_msg_desc);
     if (!message)
     {
         return -1;
@@ -80,8 +90,6 @@ void ZCE_Protobuf_Reflect::del_proc_message()
 {
     delete proc_message_;
     proc_message_ = NULL;
-
-    proc_msg_desc_ = NULL;
 }
 
 //
@@ -92,14 +100,15 @@ void ZCE_Protobuf_Reflect::del_proc_message()
 //}
 
 
-int ZCE_Protobuf_Reflect::set_msg_field(google::protobuf::Message *msg,
-    const google::protobuf::Descriptor *msg_desc,
+int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
     const std::string &field_name,
     const std::string &set_data)
 {
     const google::protobuf::Reflection *reflection = msg->GetReflection();
+    const google::protobuf::Descriptor *msg_desc = msg->GetDescriptor();
 
     const google::protobuf::FieldDescriptor *field = NULL;
+    
     field = msg_desc->FindFieldByName(field_name);
 
     //没有找到对应的字段描述
@@ -337,12 +346,13 @@ int ZCE_Protobuf_Reflect::set_msg_field(google::protobuf::Message *msg,
 
 //定位一个子结构
 int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
-    const google::protobuf::Descriptor *msg_desc,
     const std::string &submsg_field_name,
-    google::protobuf::Message *&sub_msg,
-    const google::protobuf::Descriptor *&submsg_desc)
+    bool repeated_add,
+    google::protobuf::Message *&sub_msg)
 {
+    //得到结构的描述和反射
     const google::protobuf::Reflection *reflection = msg->GetReflection();
+    const google::protobuf::Descriptor *msg_desc = msg->GetDescriptor();
 
     const google::protobuf::FieldDescriptor *field = NULL;
     field = msg_desc->FindFieldByName(submsg_field_name);
@@ -356,9 +366,14 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
     if (field->label() == google::protobuf::FieldDescriptor::Label::LABEL_REQUIRED ||
         field->label() == google::protobuf::FieldDescriptor::Label::LABEL_OPTIONAL)
     {
+        //如果是一个子结构
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
         {
-            //reflection->SetInt32(msg, field, 0);
+            sub_msg = reflection->MutableMessage(msg, field, 0);
+            if (!sub_msg)
+            {
+                return -1;
+            }
         }
     }
     else if (field->label() == google::protobuf::FieldDescriptor::Label::LABEL_REPEATED)
@@ -366,7 +381,29 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
         // Length-delimited message.
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
         {
-        //reflection->SetInt32(msg, field, 0);
+            //如果要增加一个repeated的数据
+            if (repeated_add)
+            {
+                sub_msg = reflection->AddMessage(msg, field, NULL);
+                if (!sub_msg)
+                {
+                    return -1;
+                }
+            }
+            //如果不用增加，使用repeated 数组的最后一个数据，
+            else
+            {
+                int ary_size = reflection->FieldSize(*msg, field);
+                if (ary_size == 0)
+                {
+                    return -1;
+                }
+                sub_msg = reflection->MutableRepeatedMessage(msg, field, ary_size - 1);
+                if (!sub_msg)
+                {
+                    return -1;
+                }
+            }
         }
     }
     else
@@ -377,6 +414,16 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
 
 
     return 0;
+}
+
+//根据fullname，也就是 phone_book.number 设置一个Message的field
+static int set_field_by_fullname(google::protobuf::Message *msg,
+    const std::string &full_name,
+    const std::string &set_data,
+    bool repeated_add)
+{
+    
+
 }
 
 

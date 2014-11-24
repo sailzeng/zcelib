@@ -5,6 +5,8 @@
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
+//======================================================================================
+
 //
 struct ZCE_PROTO_ERROR
 {
@@ -31,13 +33,15 @@ public:
         int column, 
         const std::string & message);
 
+    void clear_error();
+
 public:
     //
     PROTO_ERROR_ARRAY error_array_;
 };
 
 
-
+//======================================================================================
 
 /*!
 * @brief      
@@ -60,7 +64,7 @@ public:
     ///导入一个proto 文件
     int import_file(const std::string &file_name);
 
-    //
+    //返回错误信息
     void error_info(PROTO_ERROR_ARRAY &error_ary);
 
     //根据名称创建Message,new 的message 会保存做出当前处理的message对象
@@ -75,26 +79,32 @@ public:
 
     //
 public:
+    
+    //根据fullname，也就是 phone_book.number 设置一个Message的field
+    static int set_field_by_fullname(google::protobuf::Message *msg,
+        const std::string &full_name,
+        const std::string &set_data,
+        bool repeated_add);
+
 
     //设置一个Message的field
-    static int set_msg_field(google::protobuf::Message *msg,
-        const google::protobuf::Descriptor *msg_desc,
+    static int set_field(google::protobuf::Message *msg,
         const std::string &field_name,
         const std::string &set_data);
 
 
     //定位一个子结构
     static int locate_sub_msg(google::protobuf::Message *msg,
-        const google::protobuf::Descriptor *msg_desc,
         const std::string &submsg_field_name,
-        google::protobuf::Message *&sub_msg,
-        const google::protobuf::Descriptor *&submsg_desc);
+        bool repeated_add,
+        google::protobuf::Message *&sub_msg);
 
 protected:
 
+    ///
     google::protobuf::compiler::Importer *protobuf_importer_;
 
-    //
+    ///
     google::protobuf::compiler::DiskSourceTree source_tree_;
 
     //
@@ -103,11 +113,9 @@ protected:
     //
     ZCE_Error_Collector error_collector_;
 
-
     ///
     google::protobuf::Message *proc_message_;
-    ///
-    const google::protobuf::Descriptor *proc_msg_desc_;
+
 
 
 };

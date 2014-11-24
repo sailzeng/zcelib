@@ -154,7 +154,36 @@ const char *ZCE_LIB::str_replace(const char *src, char *dst, const char *sub, co
 }
 
 
+void str_split_into2(const std::string &src_str,
+    const std::string &search_str,
+    std::string &str_1,
+    std::string &str_2)
+{
+    // current position old_str in str
+    auto pos = std::search(src_str.begin(), 
+        src_str.end(), 
+        search_str.begin(), 
+        search_str.end());
 
+    if (pos == src_str.end())
+    {
+        str_1.assign(src_str.begin(), src_str.end());
+        return;
+    }
+
+    size_t old_size = search_str.length();
+
+    if ( pos != src_str.end())
+    {
+        // append src string
+        str_1.assign(src_str.begin(), pos );
+    }
+
+    if (pos + old_size != src_str.end())
+    {
+        str_2.assign(pos + old_size, src_str.end());
+    }
+}
 
 //-------------------------------------------------------------------------------------------------------------------
 //跨越空白符，指空格、水平制表、垂直制表、换页、回车和换行符，这类字符都跨越，

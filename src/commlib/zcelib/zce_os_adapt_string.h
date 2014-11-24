@@ -312,12 +312,13 @@ char *prefix_unique_name(const char *prefix_name,
 * @param[in]  fo 分割标示的开始位置迭代器
 * @param[in]  lo 分割标示的结束位置迭代器
 * @param[in]  pr 比较方式
-* @param[out] v  输出的容器
+* @param[out] v  输出的容器，一般是vector<string>
 */
 template < typename iter_type1, typename iter_type2, typename compare_type, typename container_type>
 void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type &v)
 {
 
+    //使用尾部插入的迭代器
     std::back_insert_iterator<container_type> o = std::back_inserter(v);
     if (fo == lo)
     {
@@ -364,8 +365,8 @@ void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compa
 * @tparam     char_type      字符类型
 * @tparam     container_type 容器类型，
 * @param[in]  str            处理的字符串，
-* @param[in]  separator      风格字符串，注意如果是单个字符，也要用""括起来
-* @param[out] v              容器，用于存放分隔的结果
+* @param[in]  separator      分割字符串，注意如果是单个字符，也要用""括起来
+* @param[out] v              容器，用于存放分隔的结果,一般是vector<string>
 */
 template < typename char_type, typename container_type >
 inline void str_split(const char_type *str, const char_type *separator, container_type &v)
@@ -379,6 +380,12 @@ inline void str_split(const char_type *str, const char_type *separator, containe
     return;
 }
 
+
+
+void str_split_into2(const std::string &src_str,
+    const char *search_str,
+    std::string &str_1,
+    std::string &str_2);
 
 
 /*!
@@ -477,7 +484,7 @@ void *fast_memcpy(void *dst, const void *src, size_t sz);
 
 void *fast_memcpy2(void *dst, const void *src, size_t sz);
 
-
+//==========================================================================================================
 /*!
 * @brief      从字符串转换得到数据类型
 * @tparam     ret_type  返回的类型
