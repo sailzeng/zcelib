@@ -76,11 +76,19 @@ public:
     //
 public:
 
-    //
+    //设置一个Message的field
     static int set_msg_field(google::protobuf::Message *msg,
         const google::protobuf::Descriptor *msg_desc,
         const std::string &field_name,
         const std::string &set_data);
+
+
+    //定位一个子结构
+    static int locate_sub_msg(google::protobuf::Message *msg,
+        const google::protobuf::Descriptor *msg_desc,
+        const std::string &submsg_field_name,
+        google::protobuf::Message *&sub_msg,
+        const google::protobuf::Descriptor *&submsg_desc);
 
 protected:
 

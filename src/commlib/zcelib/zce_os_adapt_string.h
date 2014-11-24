@@ -299,8 +299,6 @@ char *prefix_unique_name(const char *prefix_name,
                          char *name,
                          size_t length);
 
-
-
 //==========================================================================================================
 
 /*!
@@ -443,7 +441,7 @@ const char *skip_separator(const char *str, char separator_char);
 * @param      stream  文件流对象，stdout,stderr也都可以
 * @param      mem     调试的内存指针
 * @param      mem_len 指针长度，
-* @note       如果是日志输出提供了方便的辅助类，这仅仅由于不需要使用日志的地方
+* @note       如果是日志输出提供了方便的辅助类，这仅仅用于不需要使用日志的地方
 */
 void memory_debug(FILE *stream, const unsigned char *mem, size_t mem_len);
 
@@ -478,6 +476,17 @@ void *fast_memcpy(void *dst, const void *src, size_t sz);
 
 
 void *fast_memcpy2(void *dst, const void *src, size_t sz);
+
+
+/*!
+* @brief      从字符串转换得到数据类型
+* @tparam     ret_type  返回的类型
+* @return     ret_type  返回的数据类型
+* @param      str       字符串
+*/
+template<typename ret_type>
+ret_type str_to_val(const std::string &str);
+
 
 };
 

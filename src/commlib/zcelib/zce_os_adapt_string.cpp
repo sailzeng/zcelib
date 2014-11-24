@@ -8,17 +8,10 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_process.h"
 #include "zce_trace_log_debug.h"
+#include "zce_socket_addr_in.h"
+#include "zce_socket_addr_in6.h"
+#include "zce_time_value.h"
 #include "zce_os_adapt_string.h"
-
-
-
-
-
-
-
-
-
-
 
 
 //==========================================================================================================
@@ -352,4 +345,98 @@ void *ZCE_LIB::fast_memcpy2(void *dst, const void *src, size_t sz)
         (*dst_u8++ = *src_u8++);
     }
     return r;
+}
+
+//==========================================================================================================
+
+template<>
+int16_t ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<int16_t>(std::stoi(str));
+}
+
+template<>
+uint16_t ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<uint16_t>(std::stoul(str));
+}
+
+template<>
+int32_t ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<int32_t>(std::stoi(str));
+}
+
+
+template<>
+uint32_t ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<uint32_t>(std::stoul(str));
+}
+
+
+template<>
+int64_t ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<int64_t>(std::stoll(str));
+}
+
+
+template<>
+uint64_t ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<uint64_t>(std::stoull(str));
+}
+
+template<>
+double ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<double>(std::stod(str));
+}
+
+
+template<>
+float ZCE_LIB::str_to_val(const std::string &str)
+{
+    return static_cast<float>(std::stod(str));
+}
+
+
+template<>
+bool ZCE_LIB::str_to_val(const std::string &str)
+{
+    if (0 == strcasecmp("TRUE", str.c_str()))
+    {
+        return true;
+    }
+    else if (1 == atoi(str.c_str()))
+    {
+        return true;
+    }
+    return false;
+}
+
+
+template<>
+ZCE_Sockaddr_In ZCE_LIB::str_to_val(const std::string &str)
+{
+    ZCE_Sockaddr_In val;
+    val.set(str.c_str());
+    return val;
+}
+
+template<>
+ZCE_Sockaddr_In6 ZCE_LIB::str_to_val(const std::string &str)
+{
+    ZCE_Sockaddr_In6 val;
+    val.set(str.c_str());
+    return val;
+}
+
+template<>
+ZCE_Time_Value ZCE_LIB::str_to_val(const std::string &str)
+{
+    ZCE_Time_Value val;
+    val.from_string(str.c_str(), false, ZCE_LIB::TIME_STRFMT_US_SEC);
+    return val;
 }

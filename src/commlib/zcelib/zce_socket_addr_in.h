@@ -18,7 +18,7 @@ public:
     ZCE_Sockaddr_In (void);
 
     ///根据sockaddr_in构造，
-    explicit ZCE_Sockaddr_In (const sockaddr_in *addr);
+    ZCE_Sockaddr_In (const sockaddr_in *addr);
 
     ///根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号初始化构造
     ZCE_Sockaddr_In (const char *ip_addr_str,
