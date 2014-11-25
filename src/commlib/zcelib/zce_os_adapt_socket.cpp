@@ -516,11 +516,11 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 
     return result;
 
-#else 
-    
+#else
+
     //用EPOLL 完成事件触发，优点是能处理的数据多，缺点是系统调用太多
     int ret = 0;
-    
+
     int epoll_fd = ::epoll_create(max_event_number_ + 64);
 
     struct epoll_event ep_event;

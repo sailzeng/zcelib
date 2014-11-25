@@ -146,7 +146,7 @@ public:
     ///ZCE_DR_Encode& operator <<(ZCE_DR_Encode &dr_encode,const val_type &val);
     ///bool operator <<(ZCE_DR_Encode &dr_encode,const val_type &val);
     template<typename val_type>
-    ZCE_DR_Encode& operator <<(val_type val);
+    ZCE_DR_Encode &operator <<(val_type val);
 
     ///写入一个数组
     template<typename ary_type>
@@ -202,7 +202,7 @@ bool ZCE_DR_Encode::write_vector(const std::vector<vector_type> &vector_data)
 
 //
 template<typename val_type>
-ZCE_DR_Encode& ZCE_DR_Encode::operator << (val_type val)
+ZCE_DR_Encode &ZCE_DR_Encode::operator << (val_type val)
 {
     this->write<val_type>(val);
     return *this;
@@ -247,7 +247,7 @@ public:
     ///ZCE_DR_Decode& operator >>(ZCE_DR_Decode &dr_encode,val_type *val);
     ///bool operator >>(ZCE_DR_Decode &dr_encode,val_type *val);
     template<typename val_type>
-    ZCE_DR_Decode& operator >>(val_type *val);
+    ZCE_DR_Decode &operator >>(val_type *val);
 
     /*!
     * @brief      读取一个数组
@@ -301,7 +301,7 @@ template<typename vector_type>
 bool ZCE_DR_Decode::read_vector(std::vector<vector_type> *vector_data, size_t *vector_size)
 {
     unsigned int read_ary_size = 0
-        this->read<unsigned int>(read_ary_size);
+                                 this->read<unsigned int>(read_ary_size);
     if (read_ary_size > *vector_size)
     {
         is_good_ = false;
@@ -325,7 +325,7 @@ bool ZCE_DR_Decode::read_vector(std::vector<vector_type> *vector_data, size_t *v
 
 
 template<typename val_type>
-ZCE_DR_Decode& ZCE_DR_Decode::operator >> (val_type *val)
+ZCE_DR_Decode &ZCE_DR_Decode::operator >> (val_type *val)
 {
     this->read<val_type>(val);
     return *this;

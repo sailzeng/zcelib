@@ -401,11 +401,11 @@ typedef __int64             int64_t;
 #endif
 
 //是否使用SQLITE3
-#ifndef ZCE_USE_SQLITE3
-#define ZCE_USE_SQLITE3 0
+#ifndef ZCE_USE_SQLITE
+#define ZCE_USE_SQLITE 1
 #endif
 
-#if defined ZCE_USE_SQLITE3 && ZCE_USE_SQLITE3 == 1
+#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 #include <sqlite3.h>
 #endif
 
@@ -988,7 +988,7 @@ struct ZDOUBLE_STRUCT
 
 //目前通过工程的目录设置区分文件，没有继续使用文件名称
 #if !defined ZCE_LIB_LIBARY_NAME
-#define ZCE_LIB_LIBARY_NAME   
+#define ZCE_LIB_LIBARY_NAME
 #endif
 
 
@@ -1002,6 +1002,10 @@ struct ZDOUBLE_STRUCT
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 #pragma comment(lib, "libprotobuf.lib" )
+#endif
+
+#if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
+#pragma comment(lib, "sqlite.lib" )
 #endif
 
 #endif

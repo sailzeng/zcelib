@@ -22,8 +22,8 @@
 *             关于Sqlite的速度，请参考http://www.sqlite.org/speed.html，
 *
 */
-#ifndef ZCE_LIB_SQLITE3_PRCOESS_H_
-#define ZCE_LIB_SQLITE3_PRCOESS_H_
+#ifndef ZCE_LIB_SQLITE_PRCOESS_H_
+#define ZCE_LIB_SQLITE_PRCOESS_H_
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3003000

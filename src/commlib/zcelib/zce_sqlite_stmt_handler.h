@@ -1,5 +1,5 @@
-#ifndef ZCE_LIB_SQLITE3_STMT_HANDLER_H_
-#define ZCE_LIB_SQLITE3_STMT_HANDLER_H_
+#ifndef ZCE_LIB_SQLITE_STMT_HANDLER_H_
+#define ZCE_LIB_SQLITE_STMT_HANDLER_H_
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3003000
@@ -8,7 +8,7 @@
 @brief      SQlite STMT的句柄
             用于SQL的处理等，STMT是个好东东，就是理解上麻烦一点。
 */
-class ZCELIB_EXPORT SQLite3_STMT_Handler
+class ZCELIB_EXPORT SQLite_STMT_Handler
 {
 public:
 
@@ -35,11 +35,11 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    SQLite3_STMT_Handler(SQLite3_DB_Handler *sqlite3_handler);
+    SQLite_STMT_Handler(SQLite3_DB_Handler *sqlite3_handler);
     /*!
     * @brief      析构函数
     */
-    ~SQLite3_STMT_Handler();
+    ~SQLite_STMT_Handler();
 
 public:
 
@@ -105,47 +105,47 @@ public:
     //SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
     //SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
 
-    SQLite3_STMT_Handler &operator << (char );
-    SQLite3_STMT_Handler &operator << (short );
-    SQLite3_STMT_Handler &operator << (int );
-    SQLite3_STMT_Handler &operator << (long );
-    SQLite3_STMT_Handler &operator << (long long );
+    SQLite_STMT_Handler &operator << (char );
+    SQLite_STMT_Handler &operator << (short );
+    SQLite_STMT_Handler &operator << (int );
+    SQLite_STMT_Handler &operator << (long );
+    SQLite_STMT_Handler &operator << (long long );
 
-    SQLite3_STMT_Handler &operator << (unsigned char );
-    SQLite3_STMT_Handler &operator << (unsigned short );
-    SQLite3_STMT_Handler &operator << (unsigned int );
-    SQLite3_STMT_Handler &operator << (unsigned long );
-    SQLite3_STMT_Handler &operator << (unsigned long long );
+    SQLite_STMT_Handler &operator << (unsigned char );
+    SQLite_STMT_Handler &operator << (unsigned short );
+    SQLite_STMT_Handler &operator << (unsigned int );
+    SQLite_STMT_Handler &operator << (unsigned long );
+    SQLite_STMT_Handler &operator << (unsigned long long );
 
-    SQLite3_STMT_Handler &operator << (float );
-    SQLite3_STMT_Handler &operator << (double );
+    SQLite_STMT_Handler &operator << (float );
+    SQLite_STMT_Handler &operator << (double );
 
-    SQLite3_STMT_Handler &operator << (const char *);
-    SQLite3_STMT_Handler &operator << (const std::string &);
+    SQLite_STMT_Handler &operator << (const char *);
+    SQLite_STMT_Handler &operator << (const std::string &);
 
     //
-    SQLite3_STMT_Handler &operator << (const BINARY &);
+    SQLite_STMT_Handler &operator << (const BINARY &);
 
-    SQLite3_STMT_Handler &operator >> (char &);
-    SQLite3_STMT_Handler &operator >> (short &);
-    SQLite3_STMT_Handler &operator >> (int &);
-    SQLite3_STMT_Handler &operator >> (long &);
-    SQLite3_STMT_Handler &operator >> (long long &);
+    SQLite_STMT_Handler &operator >> (char &);
+    SQLite_STMT_Handler &operator >> (short &);
+    SQLite_STMT_Handler &operator >> (int &);
+    SQLite_STMT_Handler &operator >> (long &);
+    SQLite_STMT_Handler &operator >> (long long &);
 
-    SQLite3_STMT_Handler &operator >> (unsigned char &);
-    SQLite3_STMT_Handler &operator >> (unsigned short &);
-    SQLite3_STMT_Handler &operator >> (unsigned int &);
-    SQLite3_STMT_Handler &operator >> (unsigned long &);
-    SQLite3_STMT_Handler &operator >> (unsigned long long &);
+    SQLite_STMT_Handler &operator >> (unsigned char &);
+    SQLite_STMT_Handler &operator >> (unsigned short &);
+    SQLite_STMT_Handler &operator >> (unsigned int &);
+    SQLite_STMT_Handler &operator >> (unsigned long &);
+    SQLite_STMT_Handler &operator >> (unsigned long long &);
 
-    SQLite3_STMT_Handler &operator >> (float &);
-    SQLite3_STMT_Handler &operator >> (double &);
+    SQLite_STMT_Handler &operator >> (float &);
+    SQLite_STMT_Handler &operator >> (double &);
 
-    SQLite3_STMT_Handler &operator >> (char *);
-    SQLite3_STMT_Handler &operator >> (std::string &);
+    SQLite_STMT_Handler &operator >> (char *);
+    SQLite_STMT_Handler &operator >> (std::string &);
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-    SQLite3_STMT_Handler &operator >> (BINARY &);
+    SQLite_STMT_Handler &operator >> (BINARY &);
 
 protected:
 

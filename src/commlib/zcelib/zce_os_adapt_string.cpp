@@ -155,15 +155,15 @@ const char *ZCE_LIB::str_replace(const char *src, char *dst, const char *sub, co
 
 
 void str_split_into2(const std::string &src_str,
-    const std::string &search_str,
-    std::string &str_1,
-    std::string &str_2)
+                     const std::string &search_str,
+                     std::string &str_1,
+                     std::string &str_2)
 {
     // current position old_str in str
-    auto pos = std::search(src_str.begin(), 
-        src_str.end(), 
-        search_str.begin(), 
-        search_str.end());
+    auto pos = std::search(src_str.begin(),
+                           src_str.end(),
+                           search_str.begin(),
+                           search_str.end());
 
     if (pos == src_str.end())
     {
@@ -379,66 +379,75 @@ void *ZCE_LIB::fast_memcpy2(void *dst, const void *src, size_t sz)
 //==========================================================================================================
 
 template<>
-int16_t ZCE_LIB::str_to_val(const std::string &str)
+int16_t ZCE_LIB::str_to_val(const char *str)
 {
-    return static_cast<int16_t>(std::stoi(str));
+    //10表示10进制，
+    char   *stopstring = NULL;
+    return static_cast<int16_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
-uint16_t ZCE_LIB::str_to_val(const std::string &str)
+uint16_t ZCE_LIB::str_to_val(const char *str)
 {
-    return static_cast<uint16_t>(std::stoul(str));
+    char   *stopstring = NULL;
+    return static_cast<uint16_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
-int32_t ZCE_LIB::str_to_val(const std::string &str)
+int32_t ZCE_LIB::str_to_val(const char *str)
 {
-    return static_cast<int32_t>(std::stoi(str));
-}
-
-
-template<>
-uint32_t ZCE_LIB::str_to_val(const std::string &str)
-{
-    return static_cast<uint32_t>(std::stoul(str));
+    char   *stopstring = NULL;
+    return static_cast<int32_t>(::strtol(str, &stopstring, 10));
 }
 
 
 template<>
-int64_t ZCE_LIB::str_to_val(const std::string &str)
+uint32_t ZCE_LIB::str_to_val(const char *str)
 {
-    return static_cast<int64_t>(std::stoll(str));
+    char   *stopstring = NULL;
+    return static_cast<uint32_t>(::strtoul(str, &stopstring, 10));
 }
 
 
 template<>
-uint64_t ZCE_LIB::str_to_val(const std::string &str)
+int64_t ZCE_LIB::str_to_val(const char *str)
 {
-    return static_cast<uint64_t>(std::stoull(str));
-}
-
-template<>
-double ZCE_LIB::str_to_val(const std::string &str)
-{
-    return static_cast<double>(std::stod(str));
+    char   *stopstring = NULL;
+    return static_cast<int64_t>(::strtoll(str, &stopstring, 10));
 }
 
 
 template<>
-float ZCE_LIB::str_to_val(const std::string &str)
+uint64_t ZCE_LIB::str_to_val(const char *str)
 {
-    return static_cast<float>(std::stod(str));
+    char   *stopstring = NULL;
+    return static_cast<uint64_t>(::strtoull(str, &stopstring, 10));
+}
+
+template<>
+double ZCE_LIB::str_to_val(const char *str)
+{
+    char   *stopstring = NULL;
+    return static_cast<double>(::strtod(str, &stopstring));
 }
 
 
 template<>
-bool ZCE_LIB::str_to_val(const std::string &str)
+float ZCE_LIB::str_to_val(const char *str)
 {
-    if (0 == strcasecmp("TRUE", str.c_str()))
+    char   *stopstring = NULL;
+    return static_cast<float>(::strtod(str, &stopstring));
+}
+
+
+template<>
+bool ZCE_LIB::str_to_val(const char *str)
+{
+    if (0 == strcasecmp("TRUE", str))
     {
         return true;
     }
-    else if (1 == atoi(str.c_str()))
+    else if (1 == ::atoi(str))
     {
         return true;
     }
@@ -447,25 +456,25 @@ bool ZCE_LIB::str_to_val(const std::string &str)
 
 
 template<>
-ZCE_Sockaddr_In ZCE_LIB::str_to_val(const std::string &str)
+ZCE_Sockaddr_In ZCE_LIB::str_to_val(const char *str)
 {
     ZCE_Sockaddr_In val;
-    val.set(str.c_str());
+    val.set(str);
     return val;
 }
 
 template<>
-ZCE_Sockaddr_In6 ZCE_LIB::str_to_val(const std::string &str)
+ZCE_Sockaddr_In6 ZCE_LIB::str_to_val(const char *str)
 {
     ZCE_Sockaddr_In6 val;
-    val.set(str.c_str());
+    val.set(str);
     return val;
 }
 
 template<>
-ZCE_Time_Value ZCE_LIB::str_to_val(const std::string &str)
+ZCE_Time_Value ZCE_LIB::str_to_val(const char *str)
 {
     ZCE_Time_Value val;
-    val.from_string(str.c_str(), false, ZCE_LIB::TIME_STRFMT_US_SEC);
+    val.from_string(str, false, ZCE_LIB::TIME_STRFMT_US_SEC);
     return val;
 }

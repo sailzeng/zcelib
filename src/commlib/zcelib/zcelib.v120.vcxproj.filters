@@ -277,12 +277,6 @@
     <ClInclude Include="zce_socket_stream.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_sqlite3_process.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_sqlite3_stmt_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_thread_bus_pipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -392,6 +386,15 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce_protobuf_reflect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_sqlite_conf_table.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_sqlite_process.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_sqlite_stmt_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -600,12 +603,6 @@
     <ClCompile Include="zce_socket_stream.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_sqlite3_process.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_sqlite3_stmt_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce_thread_bus_pipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -694,6 +691,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_protobuf_reflect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_sqlite_conf_table.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_sqlite_process.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_sqlite_stmt_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

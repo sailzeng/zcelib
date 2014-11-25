@@ -280,8 +280,9 @@
     <ClInclude Include="zce_socket_connector.h" />
     <ClInclude Include="zce_socket_datagram.h" />
     <ClInclude Include="zce_socket_stream.h" />
-    <ClInclude Include="zce_sqlite3_process.h" />
-    <ClInclude Include="zce_sqlite3_stmt_handler.h" />
+    <ClInclude Include="zce_sqlite_conf_table.h" />
+    <ClInclude Include="zce_sqlite_process.h" />
+    <ClInclude Include="zce_sqlite_stmt_handler.h" />
     <ClInclude Include="zce_thread_bus_pipe.h" />
     <ClInclude Include="zce_thread_msgque_condi.h" />
     <ClInclude Include="zce_thread_msgque_nonlock.h" />
@@ -391,8 +392,9 @@
     <ClCompile Include="zce_socket_connector.cpp" />
     <ClCompile Include="zce_socket_datagram.cpp" />
     <ClCompile Include="zce_socket_stream.cpp" />
-    <ClCompile Include="zce_sqlite3_process.cpp" />
-    <ClCompile Include="zce_sqlite3_stmt_handler.cpp" />
+    <ClCompile Include="zce_sqlite_conf_table.cpp" />
+    <ClCompile Include="zce_sqlite_process.cpp" />
+    <ClCompile Include="zce_sqlite_stmt_handler.cpp" />
     <ClCompile Include="zce_thread_bus_pipe.cpp" />
     <ClCompile Include="zce_thread_task.cpp" />
     <ClCompile Include="zce_thread_wait_mgr.cpp" />

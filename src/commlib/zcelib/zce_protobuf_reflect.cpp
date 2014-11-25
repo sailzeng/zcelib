@@ -6,9 +6,34 @@
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
 //======================================================================================
+//分析的错误信息收集装置，
+ZCE_Error_Collector::ZCE_Error_Collector()
+{
+}
 
 
+ZCE_Error_Collector::~ZCE_Error_Collector()
+{
+}
 
+void ZCE_Error_Collector::AddError(const std::string &file_name,
+                                   int line,
+                                   int column,
+                                   const std::string &message)
+{
+    ZCE_PROTO_ERROR proto_err;
+    proto_err.file_name_ = file_name;
+    proto_err.line_ = line;
+    proto_err.column_ = column;
+    proto_err.message_ = message;
+
+    error_array_.push_back(proto_err);
+}
+
+void ZCE_Error_Collector::clear_error()
+{
+    error_array_.clear();
+}
 //======================================================================================
 
 //构造
@@ -64,7 +89,7 @@ int ZCE_Protobuf_Reflect::new_proc_mesage(const std::string &type_name)
     {
         return -1;
     }
-    
+
     //根据名称得到结构描述
     const google::protobuf::Descriptor *proc_msg_desc =
         protobuf_importer_->pool()->FindMessageTypeByName(type_name);
@@ -101,14 +126,14 @@ void ZCE_Protobuf_Reflect::del_proc_message()
 
 
 int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
-    const std::string &field_name,
-    const std::string &set_data)
+                                    const std::string &field_name,
+                                    const std::string &set_data)
 {
     const google::protobuf::Reflection *reflection = msg->GetReflection();
     const google::protobuf::Descriptor *msg_desc = msg->GetDescriptor();
 
     const google::protobuf::FieldDescriptor *field = NULL;
-    
+
     field = msg_desc->FindFieldByName(field_name);
 
     //没有找到对应的字段描述
@@ -136,42 +161,42 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // double, exactly eight bytes on the wire.
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_DOUBLE)
         {
-            reflection->SetDouble(msg, field, ZCE_LIB::str_to_val<double>(set_data));
+            reflection->SetDouble(msg, field, ZCE_LIB::string_to_val<double>(set_data));
         }
         // float, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FLOAT)
         {
-            reflection->SetFloat(msg, field, ZCE_LIB::str_to_val<float>(set_data));
+            reflection->SetFloat(msg, field, ZCE_LIB::string_to_val<float>(set_data));
         }
         // int64, varint on the wire.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT64)
         {
-            reflection->SetInt64(msg, field, ZCE_LIB::str_to_val<int64_t>(set_data));
+            reflection->SetInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
         }
         // uint64, exactly eight bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT64)
         {
-            reflection->SetUInt64(msg, field, ZCE_LIB::str_to_val<uint64_t>(set_data));
+            reflection->SetUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
         }
         //int32, varint on the wire.Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT32)
         {
-            reflection->SetInt32(msg, field, ZCE_LIB::str_to_val<int32_t>(set_data));
+            reflection->SetInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
         }
         //
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED64)
         {
-            reflection->SetUInt64(msg, field, ZCE_LIB::str_to_val<uint64_t>(set_data));
+            reflection->SetUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
         }
         // uint32, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED32)
         {
-            reflection->SetUInt32(msg, field, ZCE_LIB::str_to_val<uint32_t>(set_data));
+            reflection->SetUInt32(msg, field, ZCE_LIB::string_to_val<uint32_t>(set_data));
         }
         // bool, varint on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_BOOL)
         {
-            reflection->SetBool(msg, field, ZCE_LIB::str_to_val<bool>(set_data));
+            reflection->SetBool(msg, field, ZCE_LIB::string_to_val<bool>(set_data));
         }
         // UTF-8 text.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
@@ -202,27 +227,27 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
             {
                 return -1;
             }
-                
+
         }
         // int32, exactly four bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED32)
         {
-            reflection->SetInt32(msg, field, ZCE_LIB::str_to_val<int32_t>(set_data));
+            reflection->SetInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
         }
         // int64, exactly eight bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED64)
         {
-            reflection->SetInt64(msg, field, ZCE_LIB::str_to_val<int64_t>(set_data));
+            reflection->SetInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
         }
         // int32, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT32)
         {
-            reflection->SetInt32(msg, field, ZCE_LIB::str_to_val<int32_t>(set_data));
+            reflection->SetInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
         }
         // int64, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT64)
         {
-            reflection->SetInt64(msg, field, ZCE_LIB::str_to_val<int64_t>(set_data));
+            reflection->SetInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
         }
         else
         {
@@ -236,42 +261,42 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // double, exactly eight bytes on the wire.
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_DOUBLE)
         {
-            reflection->AddDouble(msg, field, ZCE_LIB::str_to_val<double>(set_data));
+            reflection->AddDouble(msg, field, ZCE_LIB::string_to_val<double>(set_data));
         }
         // float, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FLOAT)
         {
-            reflection->AddFloat(msg, field, ZCE_LIB::str_to_val<float>(set_data));
+            reflection->AddFloat(msg, field, ZCE_LIB::string_to_val<float>(set_data));
         }
         // int64, varint on the wire.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT64)
         {
-            reflection->AddInt64(msg, field, ZCE_LIB::str_to_val<int64_t>(set_data));
+            reflection->AddInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
         }
         // uint64, exactly eight bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT64)
         {
-            reflection->AddUInt64(msg, field, ZCE_LIB::str_to_val<uint64_t>(set_data));
+            reflection->AddUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
         }
         //int32, varint on the wire.Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT32)
         {
-            reflection->AddInt32(msg, field, ZCE_LIB::str_to_val<int32_t>(set_data));
+            reflection->AddInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
         }
         //
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED64)
         {
-            reflection->AddUInt64(msg, field, ZCE_LIB::str_to_val<uint64_t>(set_data));
+            reflection->AddUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
         }
         // uint32, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED32)
         {
-            reflection->AddUInt32(msg, field, ZCE_LIB::str_to_val<uint32_t>(set_data));
+            reflection->AddUInt32(msg, field, ZCE_LIB::string_to_val<uint32_t>(set_data));
         }
         // bool, varint on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_BOOL)
         {
-            reflection->AddBool(msg, field, ZCE_LIB::str_to_val<bool>(set_data));
+            reflection->AddBool(msg, field, ZCE_LIB::string_to_val<bool>(set_data));
         }
         // UTF-8 text.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
@@ -312,22 +337,22 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // int32, exactly four bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED32)
         {
-            reflection->AddInt32(msg, field, ZCE_LIB::str_to_val<int32_t>(set_data));
+            reflection->AddInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
         }
         // int64, exactly eight bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED64)
         {
-            reflection->AddInt64(msg, field, ZCE_LIB::str_to_val<int64_t>(set_data));
+            reflection->AddInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
         }
         // int32, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT32)
         {
-            reflection->AddInt32(msg, field, ZCE_LIB::str_to_val<int32_t>(set_data));
+            reflection->AddInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
         }
         // int64, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT64)
         {
-            reflection->AddInt64(msg, field, ZCE_LIB::str_to_val<int64_t>(set_data));
+            reflection->AddInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
         }
         else
         {
@@ -346,9 +371,9 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
 
 //定位一个子结构
 int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
-    const std::string &submsg_field_name,
-    bool repeated_add,
-    google::protobuf::Message *&sub_msg)
+                                         const std::string &submsg_field_name,
+                                         bool repeated_add,
+                                         google::protobuf::Message *&sub_msg)
 {
     //得到结构的描述和反射
     const google::protobuf::Reflection *reflection = msg->GetReflection();
@@ -417,15 +442,45 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
 }
 
 //根据fullname，也就是 phone_book.number 设置一个Message的field
-static int set_field_by_fullname(google::protobuf::Message *msg,
-    const std::string &full_name,
-    const std::string &set_data,
-    bool repeated_add)
+int ZCE_Protobuf_Reflect::set_field_by_fullname(google::protobuf::Message *msg,
+                                                const std::string &full_name,
+                                                const std::string &set_data,
+                                                bool repeated_add)
 {
-    
+    int ret = 0;
+    google::protobuf::Message *src_msg = msg;
+    google::protobuf::Message *sub_msg = NULL;
+    const char *FIELD_SEPARATOR = ".";
+    std::vector<std::string> v;
+    ZCE_LIB::string_split(full_name, FIELD_SEPARATOR, v);
 
+    size_t level_num = v.size();
+    if (level_num > 1)
+    {
+        for (size_t i = 0; i < level_num - 1; ++i)
+        {
+            ret = ZCE_Protobuf_Reflect::locate_sub_msg(src_msg,
+                                                       v[i],
+                                                       repeated_add,
+                                                       sub_msg);
+            if (0 != ret)
+            {
+                return ret;
+            }
+            src_msg = sub_msg;
+        }
+    }
+    ret = ZCE_Protobuf_Reflect::set_field(src_msg,
+                                          v[level_num - 1],
+                                          set_data);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    return 0;
 }
 
 
-#endif 
+#endif
 

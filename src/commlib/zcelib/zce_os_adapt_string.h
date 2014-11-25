@@ -315,7 +315,7 @@ char *prefix_unique_name(const char *prefix_name,
 * @param[out] v  输出的容器，一般是vector<string>
 */
 template < typename iter_type1, typename iter_type2, typename compare_type, typename container_type>
-void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type &v)
+void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type &v)
 {
 
     //使用尾部插入的迭代器
@@ -361,7 +361,7 @@ void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compa
 
 
 /*!
-* @brief
+* @brief      根据分割符，将一个字符串，分割成若干个字符串，放入容器v
 * @tparam     char_type      字符类型
 * @tparam     container_type 容器类型，
 * @param[in]  str            处理的字符串，
@@ -371,21 +371,41 @@ void str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compa
 template < typename char_type, typename container_type >
 inline void str_split(const char_type *str, const char_type *separator, container_type &v)
 {
-    str_split(str,
-              yun_char_traits<char_type>::strend(str),
-              separator,
-              yun_char_traits<char_type>::strend(separator),
-              std::equal_to<char_type>(),
-              v);
+    _str_split(str,
+               yun_char_traits<char_type>::strend(str),
+               separator,
+               yun_char_traits<char_type>::strend(separator),
+               std::equal_to<char_type>(),
+               v);
     return;
 }
 
 
+inline void string_split(const std::string &source_str,
+                         const std::string &separator,
+                         std::vector<std::string> &v)
+{
+    _str_split(source_str.begin(),
+               source_str.begin(),
+               separator.begin(),
+               separator.end(),
+               std::equal_to<std::string::value_type>(),
+               v);
+    return;
+}
 
+
+/*!
+* @brief      将一个字符串根据分割符（也可以是一个字符串）分成2个字符串。
+* @param      src_str 原字符串
+* @param      search_str 分割的字符串
+* @param      str_1 分割的第一个字符串
+* @param      str_2 分割得到的第二个字符串
+*/
 void str_split_into2(const std::string &src_str,
-    const char *search_str,
-    std::string &str_1,
-    std::string &str_2);
+                     const char *search_str,
+                     std::string &str_1,
+                     std::string &str_2);
 
 
 /*!
@@ -485,6 +505,11 @@ void *fast_memcpy(void *dst, const void *src, size_t sz);
 void *fast_memcpy2(void *dst, const void *src, size_t sz);
 
 //==========================================================================================================
+
+
+template<typename ret_type>
+ret_type str_to_val(const char *str);
+
 /*!
 * @brief      从字符串转换得到数据类型
 * @tparam     ret_type  返回的类型
@@ -492,7 +517,11 @@ void *fast_memcpy2(void *dst, const void *src, size_t sz);
 * @param      str       字符串
 */
 template<typename ret_type>
-ret_type str_to_val(const std::string &str);
+ret_type string_to_val(const std::string &stdstr)
+{
+    return str_to_val<ret_type>(stdstr.c_str());
+}
+
 
 
 };

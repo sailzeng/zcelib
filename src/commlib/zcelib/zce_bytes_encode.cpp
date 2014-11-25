@@ -259,11 +259,11 @@ int ZCE_LIB::base16_decode(const unsigned char *in,
 
 ///构造函数
 ZCE_DR_Encode::ZCE_DR_Encode(char *write_buf, size_t buf_len) :
-is_good_(true),
-write_buf_(write_buf),
-buf_len_(buf_len),
-write_pos_(write_buf),
-end_pos_(write_buf + buf_len)
+    is_good_(true),
+    write_buf_(write_buf),
+    buf_len_(buf_len),
+    write_pos_(write_buf),
+    end_pos_(write_buf + buf_len)
 {
 }
 
@@ -647,11 +647,11 @@ bool ZCE_DR_Encode::write(const std::string &val)
 
 //构造函数
 ZCE_DR_Decode::ZCE_DR_Decode(const char *read_buf, size_t buf_len) :
-is_good_(true),
-read_buf_(read_buf),
-buf_len_(buf_len),
-read_pos_(read_buf),
-end_pos_(read_buf + buf_len)
+    is_good_(true),
+    read_buf_(read_buf),
+    buf_len_(buf_len),
+    read_pos_(read_buf),
+    end_pos_(read_buf + buf_len)
 {
 }
 

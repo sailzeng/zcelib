@@ -5,8 +5,8 @@
 #if SQLITE_VERSION_NUMBER >= 3003000
 
 #include "zce_trace_log_debug.h"
-#include "zce_sqlite3_process.h"
-#include "zce_sqlite3_stmt_handler.h"
+#include "zce_sqlite_process.h"
+#include "zce_sqlite_stmt_handler.h"
 
 
 
@@ -16,7 +16,7 @@
 SQLite3_STMT_Handler
 ******************************************************************************************/
 //构造函数,从很细小的地方就可以看出SQLITE的设计有不足，一个INDEX从1开始，1个从0
-SQLite3_STMT_Handler::SQLite3_STMT_Handler(SQLite3_DB_Handler *sqlite3_handler):
+SQLite_STMT_Handler::SQLite_STMT_Handler(SQLite3_DB_Handler *sqlite3_handler):
     sqlite3_db_handler_(sqlite3_handler),
     sqlite3_stmt_handler_(NULL),
     current_bind_(1),
@@ -25,7 +25,7 @@ SQLite3_STMT_Handler::SQLite3_STMT_Handler(SQLite3_DB_Handler *sqlite3_handler):
     assert(sqlite3_handler != NULL && sqlite3_handler->get_sqlite_handler() != NULL);
 }
 
-SQLite3_STMT_Handler::~SQLite3_STMT_Handler()
+SQLite_STMT_Handler::~SQLite_STMT_Handler()
 {
     finalize_stmt_handler();
 }
@@ -41,7 +41,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int SQLite3_STMT_Handler::finalize_stmt_handler()
+int SQLite_STMT_Handler::finalize_stmt_handler()
 {
     //销毁SQLITE3的STMT HANDLER
     int ret =  sqlite3_finalize(sqlite3_stmt_handler_);
@@ -58,9 +58,9 @@ int SQLite3_STMT_Handler::finalize_stmt_handler()
 }
 
 //
-int SQLite3_STMT_Handler::reset_stmt_handler()
+int SQLite_STMT_Handler::reset_stmt_handler()
 {
-    int ret =   sqlite3_reset(sqlite3_stmt_handler_);
+    int ret = ::sqlite3_reset(sqlite3_stmt_handler_);
 
     if ( SQLITE_OK  != ret)
     {
@@ -85,24 +85,24 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int SQLite3_STMT_Handler::prepare_sql_string(const char *sql_string)
+int SQLite_STMT_Handler::prepare_sql_string(const char *sql_string)
 {
     if (sqlite3_stmt_handler_)
     {
         finalize_stmt_handler();
     }
 
-    int ret =  sqlite3_prepare(sqlite3_db_handler_->get_sqlite_handler(),
-                               sql_string,
-                               -1,                                      //注意这个参数，必须小于0
-                               &sqlite3_stmt_handler_,
-                               NULL);
+    int ret =  ::sqlite3_prepare(sqlite3_db_handler_->get_sqlite_handler(),
+                                 sql_string,
+                                 -1,                                      //注意这个参数，必须小于0
+                                 &sqlite3_stmt_handler_,
+                                 NULL);
 
     //如果分析结果错误，或者不是一个SQL
     if ( SQLITE_OK  != ret || sqlite3_stmt_handler_ == NULL)
     {
         //其他返回错误
-        ZLOG_ERROR("[zcelib] Error:[%d][%s]", get_dbret_error_id(), get_db_reterror_str());
+        ZLOG_ERROR("[zcelib] Error:[%d][%s]", get_dbret_errid(), get_dbret_errstr());
         return -1;
     }
 
@@ -123,11 +123,11 @@ Called By       :
 Other           : 要执行多次，第一次得到结果集合，后面移动游标。
 Modify Record   :
 ******************************************************************************************/
-int SQLite3_STMT_Handler::execute_stmt_sql(bool &has_reuslt)
+int SQLite_STMT_Handler::execute_stmt_sql(bool &has_reuslt)
 {
     has_reuslt = false;
     //
-    int ret = sqlite3_step(sqlite3_stmt_handler_);
+    int ret = ::sqlite3_step(sqlite3_stmt_handler_);
 
     //
     if (SQLITE_ROW == ret)
@@ -143,17 +143,56 @@ int SQLite3_STMT_Handler::execute_stmt_sql(bool &has_reuslt)
     }
 
     //其他返回错误
-    ZLOG_ERROR("[zcelib] Error:[%d][%s]", get_dbret_error_id(), get_db_reterror_str());
+    ZLOG_ERROR("[zcelib] Error:[%d][%s]", get_dbret_errid(), get_dbret_errstr());
     return -1;
 }
 
 //返回当前列的长度
-unsigned int SQLite3_STMT_Handler::get_cur_field_length()
+unsigned int SQLite_STMT_Handler::get_cur_field_length()
 {
-    return sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
+    return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (char tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (char tmpvalue)
+{
+    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
+
+    if ( SQLITE_OK  != ret)
+    {
+        return *this;
+    }
+
+    ++current_bind_ ;
+    return *this;
+}
+
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (short tmpvalue)
+{
+    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
+
+    if ( SQLITE_OK  != ret)
+    {
+        return *this;
+    }
+
+    ++current_bind_ ;
+    return *this;
+}
+
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (int tmpvalue)
+{
+    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, tmpvalue);
+
+    if ( SQLITE_OK  != ret)
+    {
+        return *this;
+    }
+
+    ++current_bind_ ;
+    return *this;
+}
+
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (long tmpvalue)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
 
@@ -166,46 +205,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (char tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (short tmpvalue)
-{
-    int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
-
-    if ( SQLITE_OK  != ret)
-    {
-        return *this;
-    }
-
-    ++current_bind_ ;
-    return *this;
-}
-
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (int tmpvalue)
-{
-    int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, tmpvalue);
-
-    if ( SQLITE_OK  != ret)
-    {
-        return *this;
-    }
-
-    ++current_bind_ ;
-    return *this;
-}
-
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (long tmpvalue)
-{
-    int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
-
-    if ( SQLITE_OK  != ret)
-    {
-        return *this;
-    }
-
-    ++current_bind_ ;
-    return *this;
-}
-
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (long long tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (long long tmpvalue)
 {
     int ret = sqlite3_bind_int64(sqlite3_stmt_handler_, current_bind_, tmpvalue);
 
@@ -218,7 +218,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (long long tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned char tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (unsigned char tmpvalue)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
 
@@ -231,7 +231,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned char tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned short tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (unsigned short tmpvalue)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
 
@@ -244,7 +244,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned short tmpvalue
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned int tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (unsigned int tmpvalue)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, tmpvalue);
 
@@ -257,7 +257,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned int tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned long tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (unsigned long tmpvalue)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( tmpvalue));
 
@@ -270,7 +270,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned long tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned long long tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (unsigned long long tmpvalue)
 {
     int ret = sqlite3_bind_int64(sqlite3_stmt_handler_, current_bind_, tmpvalue);
 
@@ -283,7 +283,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (unsigned long long tmpv
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (float tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (float tmpvalue)
 {
     int ret = sqlite3_bind_double(sqlite3_stmt_handler_, current_bind_, static_cast<double>( tmpvalue));
 
@@ -296,7 +296,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (float tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (double tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (double tmpvalue)
 {
 
     int ret = sqlite3_bind_double(sqlite3_stmt_handler_, current_bind_, tmpvalue);
@@ -310,7 +310,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (double tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (const char *tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (const char *tmpvalue)
 {
     //SQLITE_TRANSIENT是表示底层会复制这个数据区，但是我有点晕。
     int ret = sqlite3_bind_text(sqlite3_stmt_handler_,
@@ -328,7 +328,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (const char *tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (const  std::string &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (const  std::string &tmpvalue)
 {
     //SQLITE_TRANSIENT是表示底层会复制这个数据区，但是我有点晕。
     //
@@ -347,7 +347,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (const  std::string &tmp
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (const SQLite3_STMT_Handler::BINARY &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator << (const SQLite_STMT_Handler::BINARY &tmpvalue)
 {
     //SQLITE_TRANSIENT是表示底层会复制这个数据区，但是我有点晕。
     int ret = sqlite3_bind_blob(sqlite3_stmt_handler_,
@@ -365,7 +365,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator << (const SQLite3_STMT_Hand
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (char &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (char &tmpvalue)
 {
     tmpvalue = static_cast<char>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
 
@@ -373,7 +373,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (char &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (short &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (short &tmpvalue)
 {
     tmpvalue = static_cast<short>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
 
@@ -381,7 +381,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (short &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (int &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (int &tmpvalue)
 {
     tmpvalue = sqlite3_column_int(sqlite3_stmt_handler_, current_col_);
 
@@ -389,7 +389,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (int &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (long &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (long &tmpvalue)
 {
     tmpvalue  = sqlite3_column_int(sqlite3_stmt_handler_, current_col_);
 
@@ -397,7 +397,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (long &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (long long &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (long long &tmpvalue)
 {
     tmpvalue = sqlite3_column_int64(sqlite3_stmt_handler_, current_col_);
 
@@ -405,14 +405,14 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (long long &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned char &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (unsigned char &tmpvalue)
 {
     tmpvalue = static_cast<unsigned char>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
     ++current_col_ ;
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned short &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (unsigned short &tmpvalue)
 {
     tmpvalue = static_cast<unsigned short>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
 
@@ -420,7 +420,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned short &tmpvalu
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned int &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (unsigned int &tmpvalue)
 {
     tmpvalue = static_cast<unsigned int>(  sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
 
@@ -428,7 +428,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned int &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned long &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (unsigned long &tmpvalue)
 {
     tmpvalue  = static_cast<unsigned long>(  sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
 
@@ -436,7 +436,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned long &tmpvalue
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned long long &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (unsigned long long &tmpvalue)
 {
     tmpvalue = static_cast<unsigned long long > (sqlite3_column_int64(sqlite3_stmt_handler_, current_col_));
 
@@ -444,7 +444,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (unsigned long long &tmp
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (float &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (float &tmpvalue)
 {
     tmpvalue = static_cast<float > (sqlite3_column_double(sqlite3_stmt_handler_, current_col_));
 
@@ -452,7 +452,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (float &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (double &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (double &tmpvalue)
 {
     tmpvalue = sqlite3_column_double(sqlite3_stmt_handler_, current_col_);
 
@@ -460,7 +460,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (double &tmpvalue)
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (char *tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (char *tmpvalue)
 {
     //Fisk这个变态让我改了地方，为了安全检查。
     strncpy(tmpvalue,
@@ -470,7 +470,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (char *tmpvalue)
     return *this;
 }
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (SQLite3_STMT_Handler::BINARY &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (SQLite_STMT_Handler::BINARY &tmpvalue)
 {
     tmpvalue.binary_len_ = sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
     //为了获取二进制数据，与ZCE_Mysql_Result相对应,长度不+1
@@ -480,7 +480,7 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (SQLite3_STMT_Handler::B
     return *this;
 }
 
-SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (std::string &tmpvalue)
+SQLite_STMT_Handler &SQLite_STMT_Handler::operator >> (std::string &tmpvalue)
 {
     tmpvalue = reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_, current_col_));
     ++current_col_ ;
@@ -488,24 +488,24 @@ SQLite3_STMT_Handler &SQLite3_STMT_Handler::operator >> (std::string &tmpvalue)
 }
 
 //
-void SQLite3_STMT_Handler::get_column_count(int &num_col)
+void SQLite_STMT_Handler::get_column_count(int &num_col)
 {
     num_col = sqlite3_column_count(sqlite3_stmt_handler_);
 }
 
 //开始一个事务
-int SQLite3_STMT_Handler::begin_transaction()
+int SQLite_STMT_Handler::begin_transaction()
 {
     return sqlite3_db_handler_->begin_transaction();
 }
 
 //提交一个事务
-int SQLite3_STMT_Handler::commit_transction()
+int SQLite_STMT_Handler::commit_transction()
 {
     return sqlite3_db_handler_->commit_transction();
 }
 
-int SQLite3_STMT_Handler::turn_off_synch()
+int SQLite_STMT_Handler::turn_off_synch()
 {
     return sqlite3_db_handler_->turn_off_synch();
 }
