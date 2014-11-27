@@ -5,8 +5,8 @@
 * @version
 * @date       2008年3月12日
 * @brief      用于SQLite的一些操作处理，
-*
-* @details    为啥加了一个3，因为SQlite当时还在2的版本
+*             在这个内部包装的实现完全用UTF8的格式函数，不考虑UTF16
+* @details    原来为啥加了一个后缀3，因为SQlite当时还在2的版本
 *             和3的版本过渡期间，而且SQlite残忍的不兼容了2（该恨就要狠，ACE这点上
 *             婆婆妈妈的，），
 *             SQLite的处理类，08年吗？感觉应该更早一点把，应该是07把，
@@ -26,7 +26,7 @@
 #define ZCE_LIB_SQLITE_PRCOESS_H_
 
 //目前版本限制只加这一个
-#if SQLITE_VERSION_NUMBER >= 3003000
+#if SQLITE_VERSION_NUMBER >= 3005000
 
 /*!
 @brief      连接处理一个SQLite3数据库的，打开一个SQLite3数据库就得到Handler
@@ -48,11 +48,12 @@ public:
     @param      db_file  数据库文件的名称，
                          由于整体代码的关系，这儿假设在WINDOWS你传入的是ANSI的
                          字符串，在LINUX，你传入的是UTF8
+    @param      create_db 是否需要创建数据库，
     */
-    int open_database(const char *db_file);
+    int open_database(const char *db_file,
+                      bool create_db = false);
 
-    ///这个特性要3.5以后的版本才可以用
-#if SQLITE_VERSION_NUMBER >= 3005000
+
 
     /*!
     @brief      只读方式打开数据库,这个特性要3.5以后的版本才可以用。
@@ -60,7 +61,7 @@ public:
     @param      db_file  数据库文件的名称,ANSI 字符串
     */
     int open_readonly_db(const char *db_file);
-#endif
+
 
     ///关闭数据库
     void close_database();
@@ -94,7 +95,7 @@ protected:
 
 };
 
-#endif //SQLITE_VERSION_NUMBER >= 3003000
+#endif //SQLITE_VERSION_NUMBER >= 3005000
 
 #endif //ZCE_LIB_SQLITE3_PRCOESS_H_
 

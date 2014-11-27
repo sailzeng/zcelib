@@ -2,7 +2,7 @@
 #define ZCE_LIB_SQLITE_STMT_HANDLER_H_
 
 //目前版本限制只加这一个
-#if SQLITE_VERSION_NUMBER >= 3003000
+#if SQLITE_VERSION_NUMBER >= 3005000
 
 /*!
 @brief      SQlite STMT的句柄
@@ -63,9 +63,10 @@ public:
     int finalize_stmt_handler();
 
     /*!
-    * @brief      执行SQL
+    * @brief      执行SQL，第一次是执行SQL，后面移动游标
     * @return     int         0成功，否则失败
     * @param[out] hash_reuslt 返回值,是否有结果
+    * note        要执行多次，第一次得到结果集合，后面移动游标。
     */
     int execute_stmt_sql(bool &hash_reuslt);
 
@@ -104,48 +105,13 @@ public:
 
     //SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
     //SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
-
-    SQLite_STMT_Handler &operator << (char );
-    SQLite_STMT_Handler &operator << (short );
-    SQLite_STMT_Handler &operator << (int );
-    SQLite_STMT_Handler &operator << (long );
-    SQLite_STMT_Handler &operator << (long long );
-
-    SQLite_STMT_Handler &operator << (unsigned char );
-    SQLite_STMT_Handler &operator << (unsigned short );
-    SQLite_STMT_Handler &operator << (unsigned int );
-    SQLite_STMT_Handler &operator << (unsigned long );
-    SQLite_STMT_Handler &operator << (unsigned long long );
-
-    SQLite_STMT_Handler &operator << (float );
-    SQLite_STMT_Handler &operator << (double );
-
-    SQLite_STMT_Handler &operator << (const char *);
-    SQLite_STMT_Handler &operator << (const std::string &);
-
-    //
-    SQLite_STMT_Handler &operator << (const BINARY &);
-
-    SQLite_STMT_Handler &operator >> (char &);
-    SQLite_STMT_Handler &operator >> (short &);
-    SQLite_STMT_Handler &operator >> (int &);
-    SQLite_STMT_Handler &operator >> (long &);
-    SQLite_STMT_Handler &operator >> (long long &);
-
-    SQLite_STMT_Handler &operator >> (unsigned char &);
-    SQLite_STMT_Handler &operator >> (unsigned short &);
-    SQLite_STMT_Handler &operator >> (unsigned int &);
-    SQLite_STMT_Handler &operator >> (unsigned long &);
-    SQLite_STMT_Handler &operator >> (unsigned long long &);
-
-    SQLite_STMT_Handler &operator >> (float &);
-    SQLite_STMT_Handler &operator >> (double &);
-
-    SQLite_STMT_Handler &operator >> (char *);
-    SQLite_STMT_Handler &operator >> (std::string &);
+    //如需要bind blob数据，使用BINARY
+    template <class bind_type>
+    int bind(bind_type val);
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-    SQLite_STMT_Handler &operator >> (BINARY &);
+    template <class bind_type>
+    void column(bind_type &val);
 
 protected:
 
@@ -161,7 +127,7 @@ protected:
     int                    current_col_;
 };
 
-#endif //SQLITE_VERSION_NUMBER >= 3003000
+#endif //SQLITE_VERSION_NUMBER >= 3005000
 
 #endif //ZCE_LIB_SQLITE3_STMT_HANDLER_H_
 

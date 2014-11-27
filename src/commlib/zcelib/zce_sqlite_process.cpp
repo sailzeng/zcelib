@@ -20,10 +20,18 @@ SQLite3_DB_Handler::~SQLite3_DB_Handler()
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
 //int == 0表示成功，否则失败
-int SQLite3_DB_Handler::open_database(const char *db_file)
+int SQLite3_DB_Handler::open_database(const char *db_file, bool create_db)
 {
-    //这段代码是客户端兄弟们加的。
-    int ret = sqlite3_open(db_file, &sqlite3_handler_);
+    int flags = SQLITE_OPEN_READWRITE;
+    if (create_db)
+    {
+        flags |= SQLITE_OPEN_CREATE;
+    }
+
+    int ret = ::sqlite3_open_v2(db_file,
+                                &sqlite3_handler_,
+                                flags,
+                                NULL);
     if (ret != SQLITE_OK )
     {
         return -1;
@@ -33,17 +41,17 @@ int SQLite3_DB_Handler::open_database(const char *db_file)
 
 }
 
-//这个特性要3.5以后的版本才可以用
-#if SQLITE_VERSION_NUMBER >= 3005000
+
 
 //以只读的方式打开一个数据库
 //这个特性要3.5以后的版本才可以用。
-//数据库文件路径,在win32平台对传入参数进行UTF-8转码，
 int SQLite3_DB_Handler::open_readonly_db(const char *db_file)
 {
 
-    int ret = ::sqlite3_open_v2(db_file, &sqlite3_handler_, SQLITE_OPEN_READONLY, NULL);
-
+    int ret = ::sqlite3_open_v2(db_file,
+                                &sqlite3_handler_,
+                                SQLITE_OPEN_READONLY,
+                                NULL);
     //
     if (ret != SQLITE_OK )
     {
@@ -54,14 +62,13 @@ int SQLite3_DB_Handler::open_readonly_db(const char *db_file)
 
 }
 
-#endif //#if SQLITE_VERSION_NUMBER >= 3005000
 
 //关闭数据库。
 void SQLite3_DB_Handler::close_database()
 {
     if (sqlite3_handler_)
     {
-        ::sqlite3_close(sqlite3_handler_);
+        ::sqlite3_close_v2(sqlite3_handler_);
         sqlite3_handler_ = NULL;
     }
 }
