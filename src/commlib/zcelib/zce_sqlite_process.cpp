@@ -3,7 +3,7 @@
 #include "zce_sqlite_process.h"
 
 //对于SQLITE的最低版本限制
-#if SQLITE_VERSION_NUMBER >= 3003000
+#if SQLITE_VERSION_NUMBER >= 3005000
 
 /******************************************************************************************
 SQLite3_DB_Handler SQLite3DB Handler 连接处理一个SQLite3数据库的Handler
@@ -148,5 +148,5 @@ int SQLite3_DB_Handler::turn_off_synch()
     }
 }
 
-#endif //#if SQLITE_VERSION_NUMBER >= 3003000
+#endif //#if SQLITE_VERSION_NUMBER >= 3005000
 

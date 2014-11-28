@@ -107,8 +107,8 @@ int SQLite_STMT_Handler::execute_stmt_sql(bool &has_reuslt)
     //
     else if (SQLITE_DONE == ret)
     {
-        has_reuslt = false
-                     return 0;
+        has_reuslt = false;
+        return 0;
     }
 
     //其他返回错误
@@ -122,6 +122,8 @@ unsigned int SQLite_STMT_Handler::get_cur_field_length()
     return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
 }
 
+//Bind 函数群
+template<>
 int SQLite_STMT_Handler::bind(char val)
 {
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( val));
@@ -135,6 +137,7 @@ int SQLite_STMT_Handler::bind(char val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(short val)
 {
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( val));
@@ -148,6 +151,7 @@ int SQLite_STMT_Handler::bind(short val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(int val)
 {
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, val);
@@ -161,6 +165,7 @@ int SQLite_STMT_Handler::bind(int val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(long val)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( val));
@@ -174,6 +179,7 @@ int SQLite_STMT_Handler::bind(long val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(long long val)
 {
     int ret = sqlite3_bind_int64(sqlite3_stmt_handler_, current_bind_, val);
@@ -187,6 +193,7 @@ int SQLite_STMT_Handler::bind(long long val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(unsigned char val)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( val));
@@ -200,6 +207,7 @@ int SQLite_STMT_Handler::bind(unsigned char val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(unsigned short val)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( val));
@@ -213,6 +221,7 @@ int SQLite_STMT_Handler::bind(unsigned short val)
     return ret;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(unsigned int val)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, val);
@@ -226,6 +235,7 @@ int SQLite_STMT_Handler::bind(unsigned int val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(unsigned long val)
 {
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, current_bind_, static_cast<int>( val));
@@ -239,6 +249,7 @@ int SQLite_STMT_Handler::bind(unsigned long val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(unsigned long long val)
 {
     int ret = sqlite3_bind_int64(sqlite3_stmt_handler_, current_bind_, val);
@@ -252,6 +263,7 @@ int SQLite_STMT_Handler::bind(unsigned long long val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(float val)
 {
     int ret = sqlite3_bind_double(sqlite3_stmt_handler_, current_bind_, static_cast<double>( val));
@@ -265,6 +277,7 @@ int SQLite_STMT_Handler::bind(float val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(double val)
 {
 
@@ -279,6 +292,7 @@ int SQLite_STMT_Handler::bind(double val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(const char *val)
 {
     //SQLITE_TRANSIENT是表示底层会复制这个数据区，但是我有点晕。
@@ -297,6 +311,7 @@ int SQLite_STMT_Handler::bind(const char *val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(const  std::string &val)
 {
     //SQLITE_TRANSIENT是表示底层会复制这个数据区，但是我有点晕。
@@ -317,6 +332,7 @@ int SQLite_STMT_Handler::bind(const  std::string &val)
     return 0;
 }
 
+template<>
 int SQLite_STMT_Handler::bind(const SQLite_STMT_Handler::BINARY &val)
 {
     //SQLITE_TRANSIENT是表示底层会复制这个数据区，但是我有点晕。
@@ -336,6 +352,7 @@ int SQLite_STMT_Handler::bind(const SQLite_STMT_Handler::BINARY &val)
     return 0;
 }
 
+template<>
 void SQLite_STMT_Handler::column(char &val)
 {
     val = static_cast<char>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
@@ -344,6 +361,7 @@ void SQLite_STMT_Handler::column(char &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(short &val)
 {
     val = static_cast<short>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
@@ -352,6 +370,7 @@ void SQLite_STMT_Handler::column(short &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(int &val)
 {
     val = sqlite3_column_int(sqlite3_stmt_handler_, current_col_);
@@ -360,6 +379,7 @@ void SQLite_STMT_Handler::column(int &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(long &val)
 {
     val  = sqlite3_column_int(sqlite3_stmt_handler_, current_col_);
@@ -368,6 +388,7 @@ void SQLite_STMT_Handler::column(long &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(long long &val)
 {
     val = sqlite3_column_int64(sqlite3_stmt_handler_, current_col_);
@@ -376,6 +397,7 @@ void SQLite_STMT_Handler::column(long long &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(unsigned char &val)
 {
     val = static_cast<unsigned char>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
@@ -383,6 +405,7 @@ void SQLite_STMT_Handler::column(unsigned char &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(unsigned short &val)
 {
     val = static_cast<unsigned short>( sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
@@ -391,6 +414,7 @@ void SQLite_STMT_Handler::column(unsigned short &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(unsigned int &val)
 {
     val = static_cast<unsigned int>(  sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
@@ -399,6 +423,7 @@ void SQLite_STMT_Handler::column(unsigned int &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(unsigned long &val)
 {
     val  = static_cast<unsigned long>(  sqlite3_column_int(sqlite3_stmt_handler_, current_col_));
@@ -407,6 +432,7 @@ void SQLite_STMT_Handler::column(unsigned long &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(unsigned long long &val)
 {
     val = static_cast<unsigned long long > (sqlite3_column_int64(sqlite3_stmt_handler_, current_col_));
@@ -415,6 +441,7 @@ void SQLite_STMT_Handler::column(unsigned long long &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(float &val)
 {
     val = static_cast<float > (sqlite3_column_double(sqlite3_stmt_handler_, current_col_));
@@ -423,6 +450,7 @@ void SQLite_STMT_Handler::column(float &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(double &val)
 {
     val = sqlite3_column_double(sqlite3_stmt_handler_, current_col_);
@@ -431,6 +459,7 @@ void SQLite_STMT_Handler::column(double &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(char *val)
 {
     //Fisk这个变态让我改了地方，为了安全检查。
@@ -440,7 +469,9 @@ void SQLite_STMT_Handler::column(char *val)
     ++current_col_ ;
     return;
 }
+
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
+template<>
 void SQLite_STMT_Handler::column(SQLite_STMT_Handler::BINARY &val)
 {
     val.binary_len_ = sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
@@ -451,6 +482,7 @@ void SQLite_STMT_Handler::column(SQLite_STMT_Handler::BINARY &val)
     return;
 }
 
+template<>
 void SQLite_STMT_Handler::column(std::string &val)
 {
     val = reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_, current_col_));
@@ -459,9 +491,9 @@ void SQLite_STMT_Handler::column(std::string &val)
 }
 
 //
-void SQLite_STMT_Handler::get_column_count(int &num_col)
+void SQLite_STMT_Handler::column_count(int &num_col)
 {
-    num_col = sqlite3_column_count(sqlite3_stmt_handler_);
+    num_col = ::sqlite3_column_count(sqlite3_stmt_handler_);
 }
 
 //开始一个事务

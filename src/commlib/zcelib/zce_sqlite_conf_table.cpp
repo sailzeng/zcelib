@@ -3,7 +3,7 @@
 
 
 //目前版本限制只加这一个
-#if SQLITE_VERSION_NUMBER >= 3003000
+#if SQLITE_VERSION_NUMBER >= 3005000
 
 
 /*****************************************************************************************************************
@@ -11,11 +11,17 @@ struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信息的方法
 *****************************************************************************************************************/
 General_SQLite_Config::General_SQLite_Config()
 {
+    sql_string_ = new char[MAX_SQLSTRING_LEN];
 }
 
 
 General_SQLite_Config::~General_SQLite_Config()
 {
+    if (sql_string_)
+    {
+        delete sql_string_;
+        sql_string_ = NULL;
+    }
 }
 
 
@@ -117,7 +123,7 @@ void General_SQLite_Config::sql_getarray(unsigned int table_id,
 
 
 
-#endif //SQLITE_VERSION_NUMBER >= 3003000
+#endif //SQLITE_VERSION_NUMBER >= 3005000
 
 
 

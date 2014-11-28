@@ -74,7 +74,7 @@ public:
     * @brief      取得列的数量
     * @param      num_col
     */
-    void get_column_count(int &num_col);
+    void column_count(int &num_col);
 
     ///开始一个事务
     int begin_transaction();
@@ -111,7 +111,7 @@ public:
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
     template <class bind_type>
-    void column(bind_type &val);
+    void column(bind_type val);
 
 protected:
 
