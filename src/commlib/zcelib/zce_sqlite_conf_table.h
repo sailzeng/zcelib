@@ -34,7 +34,7 @@
 *
 * @note
 */
-struct AI_IIJIMA_BINARY_DATA
+struct ZCELIB_EXPORT AI_IIJIMA_BINARY_DATA
 {
 
 
@@ -59,14 +59,14 @@ public:
 public:
 
     //动态编解码的数据区长度
-    static const size_t MAX_LEN_OF_AI_IIJIMA_DATA = 32 * 1024 - 1;
+    static const int MAX_LEN_OF_AI_IIJIMA_DATA = 32 * 1024 - 1;
 
 public:
 
     //数据区长度
-    unsigned int           ai_data_length_;
+    int ai_data_length_;
     //动态数据取
-    char                   ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA];
+    char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA];
 
 };
 
@@ -128,7 +128,7 @@ struct BaobaoGeneralDBConf 一个很通用的从DB中间得到通用配置信息的方法
 ******************************************************************************************/
 
 //一个很通用的从DB中间得到通用配置信息的结构
-class General_SQLite_Config
+class ZCELIB_EXPORT General_SQLite_Config
 {
 
 public:
@@ -137,42 +137,70 @@ public:
     ~General_SQLite_Config();
 
 protected:
-
     //改写的SQL
-    void sql_replace(unsigned int table_id,
-                     unsigned int conf_id_1,
-                     unsigned int conf_id_2,
-                     const AI_IIJIMA_BINARY_DATA &conf_data,
-                     unsigned int last_mod_time);
+    void sql_replace_one(unsigned int table_id,
+                         unsigned int conf_id_1,
+                         unsigned int conf_id_2,
+                         unsigned int last_mod_time);
 
     //得到选择一个确定数据的SQL
-    void sql_select(unsigned int table_id,
-                    unsigned int conf_id_1,
-                    unsigned int conf_id_2);
+    void sql_select_one(unsigned int table_id,
+                        unsigned int conf_id_1,
+                        unsigned int conf_id_2);
 
     //得到删除数据的SQL
-    void sql_delete(unsigned int table_id,
+    void sql_delete_one(unsigned int table_id,
+                        unsigned int conf_id_1,
+                        unsigned int conf_id_2);
+
+
+    //
+    void sql_counter(unsigned int table_id);
+
+    //
+    void sql_select_array(unsigned int table_id,
+                          unsigned int startno,
+                          unsigned int numquery);
+
+    ///
+    int replace_one(unsigned int table_id,
                     unsigned int conf_id_1,
-                    unsigned int conf_id_2);
+                    unsigned int conf_id_2,
+                    const AI_IIJIMA_BINARY_DATA &conf_data,
+                    unsigned int last_mod_time);
 
+    ///
+    int select_one(unsigned int table_id,
+                   unsigned int conf_id_1,
+                   unsigned int conf_id_2,
+                   AI_IIJIMA_BINARY_DATA &conf_data,
+                   unsigned int &last_mod_time);
 
-    //
-    void sql_getcounter(unsigned int table_id);
+    ///
+    int delete_one(unsigned int table_id,
+                   unsigned int conf_id_1,
+                   unsigned int conf_id_2);
 
-    //
-    void sql_getarray(unsigned int table_id,
-                      unsigned int startno,
-                      unsigned int numquery);
+    ///
+    int counter(unsigned int table_id,
+                unsigned int &rec_count);
+
+    ///
+    int select_array(unsigned int table_id,
+                     unsigned int startno,
+                     unsigned int numquery,
+                     ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma);
+
 public:
     //
     size_t MAX_SQLSTRING_LEN = 64 * 1024;
 
 public:
 
-    //
+    ///
     char *sql_string_ = NULL;
-    //
-
+    ///
+    SQLite_DB_Handler *sqlite_handler_;
 
 
 };

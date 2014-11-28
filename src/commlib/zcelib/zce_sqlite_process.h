@@ -32,15 +32,15 @@
 @brief      连接处理一个SQLite3数据库的，打开一个SQLite3数据库就得到Handler
             用Handler完成后面各种数据库操作。
 */
-class ZCELIB_EXPORT SQLite3_DB_Handler
+class ZCELIB_EXPORT SQLite_DB_Handler
 {
 
 public:
 
     ///构造函数，
-    SQLite3_DB_Handler();
+    SQLite_DB_Handler();
     ///析构函数
-    ~SQLite3_DB_Handler();
+    ~SQLite_DB_Handler();
 
     /*!
     @brief      打开数据库，注意文件名称的路径要用UTF8编码，所以最好不要用中文?
@@ -67,9 +67,9 @@ public:
     void close_database();
 
     ///取得错误语句Str
-    const char *get_dbret_errstr();
+    const char *error_message();
     ///取得DB返回的错误ID
-    unsigned int get_dbret_errid();
+    unsigned int error_code();
 
     ///取得SQLite的句柄
     inline sqlite3 *get_sqlite_handler()

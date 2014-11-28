@@ -1,4 +1,6 @@
 #include "zce_predefine.h"
+#include "zce_sqlite_process.h"
+#include "zce_sqlite_stmt_handler.h"
 #include "zce_sqlite_conf_table.h"
 
 
@@ -12,6 +14,7 @@ struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信息的方法
 General_SQLite_Config::General_SQLite_Config()
 {
     sql_string_ = new char[MAX_SQLSTRING_LEN];
+    sqlite_handler_ = new SQLite_DB_Handler();
 }
 
 
@@ -26,23 +29,22 @@ General_SQLite_Config::~General_SQLite_Config()
 
 
 //改写的SQL
-void General_SQLite_Config::sql_replace(unsigned int table_id,
-                                        unsigned int conf_id_1,
-                                        unsigned int conf_id_2,
-                                        const AI_IIJIMA_BINARY_DATA &conf_data,
-                                        unsigned int last_mod_time)
+void General_SQLite_Config::sql_replace_one(unsigned int table_id,
+                                            unsigned int conf_id_1,
+                                            unsigned int conf_id_2,
+                                            unsigned int last_mod_time)
 {
     //构造后面的SQL
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
+    //注意里面的?
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(conf_id_1,conf_id_2,conf_data,last_mod_time ) VALUES "
-                       "(%u,%u,'%s',%u) ",
+                       "(%u,%u,?,%u) ",
                        table_id,
                        conf_id_1,
                        conf_id_2,
-                       conf_data.ai_iijima_data_,
                        last_mod_time
                       );
     ptmppoint += len;
@@ -50,15 +52,15 @@ void General_SQLite_Config::sql_replace(unsigned int table_id,
 }
 
 //得到选择一个确定数据的SQL
-void General_SQLite_Config::sql_select(unsigned int table_id,
-                                       unsigned int conf_id_1,
-                                       unsigned int conf_id_2)
+void General_SQLite_Config::sql_select_one(unsigned int table_id,
+                                           unsigned int conf_id_1,
+                                           unsigned int conf_id_2)
 {
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
-    int len = snprintf(ptmppoint, buflen, "SELECT conf_id_1,conf_id_2,conf_data,last_mod_time "
+    int len = snprintf(ptmppoint, buflen, "SELECT conf_data,last_mod_time "
                        "FROM config_table_%u WHERE ((conf_id_1=%u) AND (conf_id_2=%u)) ",
                        table_id,
                        conf_id_1,
@@ -68,15 +70,18 @@ void General_SQLite_Config::sql_select(unsigned int table_id,
 }
 
 //得到删除数据的SQL
-void General_SQLite_Config::sql_delete(unsigned int table_id,
-                                       unsigned int conf_id_1,
-                                       unsigned int conf_id_2)
+void General_SQLite_Config::sql_delete_one(unsigned int table_id,
+                                           unsigned int conf_id_1,
+                                           unsigned int conf_id_2)
 {
 
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    int len = snprintf(ptmppoint, buflen, "DELETE FROM config_table_%u WHERE ((conf_id_1=%u) AND (conf_id_2=%u)) ",
+    int len = snprintf(ptmppoint,
+                       buflen,
+                       "DELETE FROM config_table_%u WHERE "
+                       " ((conf_id_1=%u) AND (conf_id_2=%u)) ",
                        table_id,
                        conf_id_1,
                        conf_id_2);
@@ -84,7 +89,7 @@ void General_SQLite_Config::sql_delete(unsigned int table_id,
     buflen -= len;
 }
 //
-void General_SQLite_Config::sql_getcounter(unsigned int table_id)
+void General_SQLite_Config::sql_counter(unsigned int table_id)
 {
     //构造SQL
     char *ptmppoint = sql_string_;
@@ -97,15 +102,15 @@ void General_SQLite_Config::sql_getcounter(unsigned int table_id)
 }
 
 //
-void General_SQLite_Config::sql_getarray(unsigned int table_id,
-                                         unsigned int startno,
-                                         unsigned int numquery)
+void General_SQLite_Config::sql_select_array(unsigned int table_id,
+                                             unsigned int startno,
+                                             unsigned int numquery)
 {
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
-    int len = snprintf(ptmppoint, buflen, "SELECT conf_id_1,conf_id_2,conf_data,last_mod_time "
+    int len = snprintf(ptmppoint, buflen, "SELECT conf_data "
                        "FROM config_table_%u ",
                        table_id);
     ptmppoint += len;
@@ -120,7 +125,163 @@ void General_SQLite_Config::sql_getarray(unsigned int table_id,
     }
 }
 
+///
+int General_SQLite_Config::replace_one(unsigned int table_id,
+                                       unsigned int conf_id_1,
+                                       unsigned int conf_id_2,
+                                       const AI_IIJIMA_BINARY_DATA &conf_data,
+                                       unsigned int last_mod_time)
+{
+    //构造后面的SQL
+    sql_replace_one(table_id, conf_id_1, conf_id_2, last_mod_time);
+    SQLite_STMT_Handler stmt_handler(sqlite_handler_);
+    int ret = 0;
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
 
+    ret = stmt_handler.bind(SQLite_STMT_Handler::BINARY((void *)conf_data.ai_iijima_data_,
+                                                        conf_data.ai_data_length_));
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    bool hash_result = false;
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
+
+///
+int General_SQLite_Config::select_one(unsigned int table_id,
+                                      unsigned int conf_id_1,
+                                      unsigned int conf_id_2,
+                                      AI_IIJIMA_BINARY_DATA &conf_data,
+                                      unsigned int &last_mod_time)
+{
+    sql_select_one(table_id, conf_id_1, conf_id_2);
+    SQLite_STMT_Handler stmt_handler(sqlite_handler_);
+    int ret = 0;
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    bool hash_result = false;
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0 )
+    {
+        return ret;
+    }
+
+    if (false == hash_result)
+    {
+        return -1;
+    }
+
+
+    stmt_handler.column(SQLite_STMT_Handler::BINARY((void *)conf_data.ai_iijima_data_,
+                                                    conf_data.ai_data_length_));
+    stmt_handler.column(last_mod_time);
+
+    return 0;
+}
+
+///
+int General_SQLite_Config::delete_one(unsigned int table_id,
+                                      unsigned int conf_id_1,
+                                      unsigned int conf_id_2)
+{
+    //构造后面的SQL
+    sql_delete_one(table_id, conf_id_1, conf_id_2);
+    SQLite_STMT_Handler stmt_handler(sqlite_handler_);
+    int ret = 0;
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    bool hash_result = false;
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
+
+///
+int General_SQLite_Config::counter(unsigned int table_id,
+                                   unsigned int &rec_count)
+{
+    sql_counter(table_id);
+    SQLite_STMT_Handler stmt_handler(sqlite_handler_);
+    int ret = 0;
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    bool hash_result = false;
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    if (false == hash_result)
+    {
+        return -1;
+    }
+
+    stmt_handler.column(rec_count);
+    return 0;
+}
+
+///
+int General_SQLite_Config::select_array(unsigned int table_id,
+                                        unsigned int startno,
+                                        unsigned int numquery,
+                                        ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma)
+{
+    sql_select_array(table_id, startno, numquery);
+    SQLite_STMT_Handler stmt_handler(sqlite_handler_);
+    int ret = 0;
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    bool hash_result;
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    while (ret == 0 && hash_result == true)
+    {
+
+        //ary_ai_iijma.push_back(house_info);
+        ret = stmt_handler.execute_stmt_sql(hash_result);
+    }
+
+    //出现错误或者没有找到
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //没有找到数据
+    if (ary_ai_iijma.size() == 0)
+    {
+        return -1;
+    }
+    return 0;
+}
 
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000

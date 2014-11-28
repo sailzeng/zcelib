@@ -35,7 +35,7 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    SQLite_STMT_Handler(SQLite3_DB_Handler *sqlite3_handler);
+    SQLite_STMT_Handler(SQLite_DB_Handler *sqlite3_handler);
     /*!
     * @brief      析构函数
     */
@@ -70,11 +70,7 @@ public:
     */
     int execute_stmt_sql(bool &hash_reuslt);
 
-    /*!
-    * @brief      取得列的数量
-    * @param      num_col
-    */
-    void column_count(int &num_col);
+
 
     ///开始一个事务
     int begin_transaction();
@@ -90,18 +86,36 @@ public:
     }
 
     ///错误语句Str
-    const char *get_dbret_errstr()
+    inline const char *error_message()
     {
-        return sqlite3_db_handler_->get_dbret_errstr();
+        return sqlite_handler_->error_message();
     }
     ///DB返回的错误ID
-    unsigned int get_dbret_errid()
+    inline  unsigned int error_code()
     {
-        return sqlite3_db_handler_->get_dbret_errid();
+        return sqlite_handler_->error_code();
     }
 
-    //得到当前返回列的长度
-    unsigned int get_cur_field_length();
+    //
+    /*!
+    * @brief      得到当前返回列的长度
+    * @return     unsigned int
+    * @note
+    */
+    inline int column_bytes()
+    {
+        return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
+    }
+
+    /*!
+    * @brief      取得列的数量
+    * @return     int
+    * @param      num_col
+    */
+    int column_count()
+    {
+        return ::sqlite3_column_count(sqlite3_stmt_handler_);
+    }
 
     //SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
     //SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
@@ -110,13 +124,23 @@ public:
     int bind(bind_type val);
 
     ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
-    template <class bind_type>
-    void column(bind_type val);
+    template <class value_type>
+    void column(value_type val);
+
+
+    ///导出结果
+    template <class value_type>
+    SQLite_STMT_Handler &operator >> (value_type val)
+    {
+        column<value_type>(val);
+        return *this;
+    }
+
 
 protected:
 
     ///SQLite的DB句柄
-    SQLite3_DB_Handler    *sqlite3_db_handler_;
+    SQLite_DB_Handler    *sqlite_handler_;
 
     ///SQLite原声的STMT的句柄
     sqlite3_stmt          *sqlite3_stmt_handler_;
