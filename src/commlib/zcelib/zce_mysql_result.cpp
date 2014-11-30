@@ -104,7 +104,7 @@ bool ZCE_Mysql_Result::fetch_row_next()
     }
 
     //检索一个结果集合的下一行
-    current_row_ = mysql_fetch_row(mysql_result_);
+    current_row_ = ::mysql_fetch_row(mysql_result_);
 
     //如果NEXT行为空,结束访问
     if (current_row_ == NULL )
@@ -113,7 +113,7 @@ bool ZCE_Mysql_Result::fetch_row_next()
     }
 
     //得到此行所有列的长度
-    fields_length_ = mysql_fetch_lengths(mysql_result_);
+    fields_length_ = ::mysql_fetch_lengths(mysql_result_);
 
     current_field_ = 0;
     return true;
@@ -130,18 +130,18 @@ int ZCE_Mysql_Result::seek_row(unsigned int row_id)
     }
 
     mysql_data_seek(mysql_result_, row_id);
-    current_row_   = mysql_fetch_row(mysql_result_);
-    fields_length_ = mysql_fetch_lengths(mysql_result_);
+    current_row_   = ::mysql_fetch_row(mysql_result_);
+    fields_length_ = ::mysql_fetch_lengths(mysql_result_);
     current_field_ = 0;
     return 0;
 }
 
 //根据列序号ID得到字段值,data作为返回值
-const char *ZCE_Mysql_Result::get_field_data(const char *fname) const
+const char *ZCE_Mysql_Result::field_data(const char *fname) const
 {
     //根据列的名字得到Field ID
     unsigned int fid = 0;
-    int ret = get_field_id(fname, fid);
+    int ret = field_index(fname, fid);
 
     if (ret == -1 || current_row_ == NULL)
     {
@@ -153,11 +153,11 @@ const char *ZCE_Mysql_Result::get_field_data(const char *fname) const
 }
 
 //根据字段列ID,得到字段值
-int ZCE_Mysql_Result::get_field_data(const char *fname, char *pfdata) const
+int ZCE_Mysql_Result::field_data(const char *fname, char *pfdata) const
 {
     //根据列的名字得到Field ID
     unsigned int fid = 0;
-    int ret = get_field_id(fname, fid);
+    int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL || pfdata == NULL)
@@ -177,7 +177,7 @@ int ZCE_Mysql_Result::get_field(const char *fname, ZCE_Mysql_Field &ffield) cons
 {
     //循环比较所有的列名,效率比较低下
     unsigned int fid = 0;
-    int ret = get_field_id(fname, fid);
+    int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL)
@@ -192,12 +192,12 @@ int ZCE_Mysql_Result::get_field(const char *fname, ZCE_Mysql_Field &ffield) cons
 
 //根据字段名称得到字段表结构定义的类型,效率较低,
 //返回-1 表示错误
-int ZCE_Mysql_Result::get_field_type(const char *fname, enum_field_types &ftype) const
+int ZCE_Mysql_Result::field_type(const char *fname, enum_field_types &ftype) const
 {
 
     //循环比较所有的列名,效率比较低下
     unsigned int fid = 0;
-    int ret = get_field_id(fname, fid);
+    int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL)
@@ -211,11 +211,11 @@ int ZCE_Mysql_Result::get_field_type(const char *fname, enum_field_types &ftype)
 }
 
 //根据Field Name 得到此列值的实际长度
-int ZCE_Mysql_Result::get_field_length(const char *fname, unsigned int &flength ) const
+int ZCE_Mysql_Result::field_length(const char *fname, unsigned int &flength ) const
 {
     //根据列的名字得到Field ID
     unsigned int fid = 0;
-    int ret = get_field_id(fname, fid);
+    int ret = field_index(fname, fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL)
@@ -229,7 +229,7 @@ int ZCE_Mysql_Result::get_field_length(const char *fname, unsigned int &flength 
 }
 
 //根据字段顺序ID,得到表结构定义的字段长度
-int ZCE_Mysql_Result::get_define_field_size(unsigned int fieldid, unsigned int &flength) const
+int ZCE_Mysql_Result::field_define_size(unsigned int fieldid, unsigned int &flength) const
 {
 
     //检查结果集合为空,或者参数fieldid错误
@@ -244,12 +244,12 @@ int ZCE_Mysql_Result::get_define_field_size(unsigned int fieldid, unsigned int &
 }
 
 //根据字段名称得到表结构定义的字段长度,效率较低
-int ZCE_Mysql_Result::get_define_field_size(const char *fname, unsigned int &fdefsz) const
+int ZCE_Mysql_Result::field_define_size(const char *fname, unsigned int &fdefsz) const
 {
 
     //循环比较所有的列名,效率比较低下
     unsigned int fid = 0;
-    int ret = get_field_id(fname, fid);
+    int ret = field_index(fname, fid);
 
     //如果结果集为空
     if (ret == -1 || mysql_result_ != NULL)

@@ -161,42 +161,42 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // double, exactly eight bytes on the wire.
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_DOUBLE)
         {
-            reflection->SetDouble(msg, field, ZCE_LIB::string_to_val<double>(set_data));
+            reflection->SetDouble(msg, field, ZCE_LIB::string_to_value<double>(set_data));
         }
         // float, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FLOAT)
         {
-            reflection->SetFloat(msg, field, ZCE_LIB::string_to_val<float>(set_data));
+            reflection->SetFloat(msg, field, ZCE_LIB::string_to_value<float>(set_data));
         }
         // int64, varint on the wire.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT64)
         {
-            reflection->SetInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
+            reflection->SetInt64(msg, field, ZCE_LIB::string_to_value<int64_t>(set_data));
         }
         // uint64, exactly eight bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT64)
         {
-            reflection->SetUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
+            reflection->SetUInt64(msg, field, ZCE_LIB::string_to_value<uint64_t>(set_data));
         }
         //int32, varint on the wire.Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT32)
         {
-            reflection->SetInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
+            reflection->SetInt32(msg, field, ZCE_LIB::string_to_value<int32_t>(set_data));
         }
         //
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED64)
         {
-            reflection->SetUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
+            reflection->SetUInt64(msg, field, ZCE_LIB::string_to_value<uint64_t>(set_data));
         }
         // uint32, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED32)
         {
-            reflection->SetUInt32(msg, field, ZCE_LIB::string_to_val<uint32_t>(set_data));
+            reflection->SetUInt32(msg, field, ZCE_LIB::string_to_value<uint32_t>(set_data));
         }
         // bool, varint on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_BOOL)
         {
-            reflection->SetBool(msg, field, ZCE_LIB::string_to_val<bool>(set_data));
+            reflection->SetBool(msg, field, ZCE_LIB::string_to_value<bool>(set_data));
         }
         // UTF-8 text.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
@@ -232,22 +232,22 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // int32, exactly four bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED32)
         {
-            reflection->SetInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
+            reflection->SetInt32(msg, field, ZCE_LIB::string_to_value<int32_t>(set_data));
         }
         // int64, exactly eight bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED64)
         {
-            reflection->SetInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
+            reflection->SetInt64(msg, field, ZCE_LIB::string_to_value<int64_t>(set_data));
         }
         // int32, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT32)
         {
-            reflection->SetInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
+            reflection->SetInt32(msg, field, ZCE_LIB::string_to_value<int32_t>(set_data));
         }
         // int64, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT64)
         {
-            reflection->SetInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
+            reflection->SetInt64(msg, field, ZCE_LIB::string_to_value<int64_t>(set_data));
         }
         else
         {
@@ -261,42 +261,42 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // double, exactly eight bytes on the wire.
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_DOUBLE)
         {
-            reflection->AddDouble(msg, field, ZCE_LIB::string_to_val<double>(set_data));
+            reflection->AddDouble(msg, field, ZCE_LIB::string_to_value<double>(set_data));
         }
         // float, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FLOAT)
         {
-            reflection->AddFloat(msg, field, ZCE_LIB::string_to_val<float>(set_data));
+            reflection->AddFloat(msg, field, ZCE_LIB::string_to_value<float>(set_data));
         }
         // int64, varint on the wire.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT64)
         {
-            reflection->AddInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
+            reflection->AddInt64(msg, field, ZCE_LIB::string_to_value<int64_t>(set_data));
         }
         // uint64, exactly eight bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT64)
         {
-            reflection->AddUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
+            reflection->AddUInt64(msg, field, ZCE_LIB::string_to_value<uint64_t>(set_data));
         }
         //int32, varint on the wire.Negative numbers take 10 bytes.  Use TYPE_SINT32 if negative values are likely.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT32)
         {
-            reflection->AddInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
+            reflection->AddInt32(msg, field, ZCE_LIB::string_to_value<int32_t>(set_data));
         }
         //
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED64)
         {
-            reflection->AddUInt64(msg, field, ZCE_LIB::string_to_val<uint64_t>(set_data));
+            reflection->AddUInt64(msg, field, ZCE_LIB::string_to_value<uint64_t>(set_data));
         }
         // uint32, exactly four bytes on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED32)
         {
-            reflection->AddUInt32(msg, field, ZCE_LIB::string_to_val<uint32_t>(set_data));
+            reflection->AddUInt32(msg, field, ZCE_LIB::string_to_value<uint32_t>(set_data));
         }
         // bool, varint on the wire.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_BOOL)
         {
-            reflection->AddBool(msg, field, ZCE_LIB::string_to_val<bool>(set_data));
+            reflection->AddBool(msg, field, ZCE_LIB::string_to_value<bool>(set_data));
         }
         // UTF-8 text.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
@@ -337,22 +337,22 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         // int32, exactly four bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED32)
         {
-            reflection->AddInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
+            reflection->AddInt32(msg, field, ZCE_LIB::string_to_value<int32_t>(set_data));
         }
         // int64, exactly eight bytes on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED64)
         {
-            reflection->AddInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
+            reflection->AddInt64(msg, field, ZCE_LIB::string_to_value<int64_t>(set_data));
         }
         // int32, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT32)
         {
-            reflection->AddInt32(msg, field, ZCE_LIB::string_to_val<int32_t>(set_data));
+            reflection->AddInt32(msg, field, ZCE_LIB::string_to_value<int32_t>(set_data));
         }
         // int64, ZigZag-encoded varint on the wire
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT64)
         {
-            reflection->AddInt64(msg, field, ZCE_LIB::string_to_val<int64_t>(set_data));
+            reflection->AddInt64(msg, field, ZCE_LIB::string_to_value<int64_t>(set_data));
         }
         else
         {

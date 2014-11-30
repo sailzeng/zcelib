@@ -28,19 +28,23 @@
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 
+
+//==============================================================================================
+class ZCE_SQLite_Result;
+
 /*!
 @brief      连接处理一个SQLite3数据库的，打开一个SQLite3数据库就得到Handler
             用Handler完成后面各种数据库操作。
 */
-class ZCELIB_EXPORT SQLite_DB_Handler
+class ZCELIB_EXPORT ZCE_SQLite_DB_Handler
 {
 
 public:
 
     ///构造函数，
-    SQLite_DB_Handler();
+    ZCE_SQLite_DB_Handler();
     ///析构函数
-    ~SQLite_DB_Handler();
+    ~ZCE_SQLite_DB_Handler();
 
     /*!
     @brief      打开数据库，注意文件名称的路径要用UTF8编码，所以最好不要用中文?
@@ -69,7 +73,7 @@ public:
     ///取得错误语句Str
     const char *error_message();
     ///取得DB返回的错误ID
-    unsigned int error_code();
+    int error_code();
 
     ///取得SQLite的句柄
     inline sqlite3 *get_sqlite_handler()
@@ -85,14 +89,115 @@ public:
     ///将同步选项关闭，建议不要使用
     int turn_off_synch();
 
-    //执行INSERT、REPLACE的插入语句，支持多条记录一次性插入,
-    //int execute_insert_sql(const char *sql_string);
+
+    /*!
+    * @brief      执行SQL查下的封装,（二进制的不行）
+    * @return     int 返回0表示成功，
+    * @param      sql_string SQL语句
+    * @param      执行的结果，返回值
+    * @note       内部会调用sqlite3_get_table,sqlite3_free_table，
+    *             这个函数在SQLite中不是被推荐的函数，建议使用时考虑一下，虽然其
+    *             执行查询，确实比sqlite3_exec，方便
+    *             另外，这个函数应该不能处理二进制数据，因为你无法得知结果长度
+    */
+    int get_table(const char *sql_string,
+                  ZCE_SQLite_Result *result);
 
 protected:
 
     ///sqlite3的处理Handler
     sqlite3         *sqlite3_handler_;
 
+};
+
+
+
+//==============================================================================================
+
+/*!
+* @brief      get_table 函数返回的结果参数
+*             其实就是sqlite3_get_table 的结果参数的封装
+* @note       请注意，sqlite3_get_table 只是应该向后兼容的函数
+*/
+class ZCE_SQLite_Result
+{
+    friend class ZCE_SQLite_DB_Handler;
+
+public:
+
+    ZCE_SQLite_Result();
+    ~ZCE_SQLite_Result();
+
+    ///结果集合释放为NULL
+    inline bool is_null()
+    {
+        return (result_ == NULL);
+    }
+
+
+    ///释放结果集合
+    void free_result();
+
+    /*!
+    * @brief      返回一个字段的名称
+    * @return     const char* 字段的名称
+    * @param      column 字段的列号,从1开始
+    */
+    const char *field_name(int column)
+    {
+        return result_[column - 1];
+    }
+
+    /*!
+    * @brief      返回一个字段的数据，
+    * @return     const char* 字段的数据
+    * @param      row    字段的列号,从1开始
+    * @param      column 字段的行号,从1开始
+    */
+    const char *field_cstr(int row, int column)
+    {
+        return result_[row * column_ + column - 1];
+    }
+
+    /*!
+    * @brief      根据类型，返回一个字段的数据，
+    * @tparam     value_type
+    * @return     value_type
+    * @param      row    字段的列号,从1开始
+    * @param      column 字段的行号,从1开始
+    * @note
+    */
+    template <class value_type>
+    value_type field_data(int row, int column)
+    {
+        return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
+    }
+
+    ///行的数量
+    inline int row_number()
+    {
+        return row_;
+    }
+
+    ///列的数量
+    inline int column_number()
+    {
+        return column_;
+    }
+
+
+protected:
+
+    /// Results of the query
+    char **result_ = NULL;
+    /// Number of result rows written here ，row_也是从1开始
+    int row_ = 0;
+
+    /// Number of result columns written here ,column_ 从1开始
+    int column_ = 0;
+
+    /// Error msg written here
+    char *err_msg_ = NULL;
 };
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000

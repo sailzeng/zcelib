@@ -128,13 +128,13 @@ struct BaobaoGeneralDBConf 一个很通用的从DB中间得到通用配置信息的方法
 ******************************************************************************************/
 
 //一个很通用的从DB中间得到通用配置信息的结构
-class ZCELIB_EXPORT General_SQLite_Config
+class ZCELIB_EXPORT ZCE_General_Config_Table
 {
 
 public:
 
-    General_SQLite_Config();
-    ~General_SQLite_Config();
+    ZCE_General_Config_Table();
+    ~ZCE_General_Config_Table();
 
 protected:
     //改写的SQL
@@ -200,7 +200,7 @@ public:
     ///
     char *sql_string_ = NULL;
     ///
-    SQLite_DB_Handler *sqlite_handler_;
+    ZCE_SQLite_DB_Handler *sqlite_handler_;
 
 
 };

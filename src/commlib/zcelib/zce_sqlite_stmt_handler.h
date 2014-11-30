@@ -8,7 +8,7 @@
 @brief      SQlite STMT的句柄
             用于SQL的处理等，STMT是个好东东，就是理解上麻烦一点。
 */
-class ZCELIB_EXPORT SQLite_STMT_Handler
+class ZCELIB_EXPORT ZCE_SQLite_STMTHdl
 {
 public:
 
@@ -35,11 +35,11 @@ public:
     * @brief      构造函数
     * @param      sqlite3_handler  SQlite3的DB封装句柄。
     */
-    SQLite_STMT_Handler(SQLite_DB_Handler *sqlite3_handler);
+    ZCE_SQLite_STMTHdl(ZCE_SQLite_DB_Handler *sqlite3_handler);
     /*!
     * @brief      析构函数
     */
-    ~SQLite_STMT_Handler();
+    ~ZCE_SQLite_STMTHdl();
 
 public:
 
@@ -99,12 +99,13 @@ public:
     //
     /*!
     * @brief      得到当前返回列的长度
-    * @return     unsigned int
+    * @return     int 长度
+    * @param[in]  result_col
     * @note
     */
-    inline int column_bytes()
+    inline int column_bytes(int result_col)
     {
-        return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
+        return ::sqlite3_column_bytes(sqlite3_stmt_handler_, result_col);
     }
 
     /*!
@@ -117,38 +118,62 @@ public:
         return ::sqlite3_column_count(sqlite3_stmt_handler_);
     }
 
-    //SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
-    //SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
-    //如需要bind blob数据，使用BINARY
+
+    /*!
+    * @brief      对于SQL语句的?参数，进行绑定，
+    * @tparam     bind_type 绑定的参数类型
+    * @return     int       返回 0 表示成功，
+    * @param      bind_index 绑定的下标，从1开始
+    * @param      val       SQL语句绑定的参数
+    * @note       SQLite STMT和MYSQL的API好像有一些本质区别，看看他的函数,下面没有引用,
+    *             SQLite在Bind函数调用的时候就取得了值？至少从函数的参数上可以这样分析
+    *             如需要bind blob数据，使用BINARY
+    */
     template <class bind_type>
-    int bind(bind_type val);
+    int bind(int bind_col, bind_type val);
 
-    ///二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
+    /*!
+    * @brief      取得列的结果
+    * @tparam     value_type 结果的类型
+    * @param      result_col 列号，从0开始
+    * @param      val 取出的结果
+    * @note       二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
+    */
     template <class value_type>
-    void column(value_type val);
+    void column(int result_col, value_type val);
 
 
-    ///导出结果
+    ///导出结果,列号自动++
     template <class value_type>
-    SQLite_STMT_Handler &operator >> (value_type val)
+    ZCE_SQLite_STMTHdl &operator >> (value_type val)
     {
-        column<value_type>(val);
+        column<value_type>(current_col_, val);
+        ++current_col_;
         return *this;
     }
 
+    ///bind绑定参数,列号自动++
+    template <class bind_type>
+    ZCE_SQLite_STMTHdl &operator << (bind_type val)
+    {
+        bind<bind_type>(current_bind_, val);
+        ++current_bind_;
+        return *this;
+    }
 
 protected:
 
     ///SQLite的DB句柄
-    SQLite_DB_Handler    *sqlite_handler_;
+    ZCE_SQLite_DB_Handler *sqlite_handler_;
 
     ///SQLite原声的STMT的句柄
-    sqlite3_stmt          *sqlite3_stmt_handler_;
+    sqlite3_stmt *sqlite3_stmt_handler_;
 
-    ///当前绑定的,用于<<函数,从1开始
-    int                    current_bind_;
-    ///当前的列,用于>>函数,从0开始
-    int                    current_col_;
+    ///当前取结果的列,用于>>函数,从0开始
+    int current_col_;
+
+    ///当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
+    int current_bind_;
 };
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000

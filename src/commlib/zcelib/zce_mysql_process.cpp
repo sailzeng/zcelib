@@ -72,11 +72,17 @@ int ZCE_Mysql_Process::connect_mysql_server( )
         //如果设置过HOST，用HOST NAME进行连接
         if (db_hostname_.length() > 0)
         {
-            ret = db_connect_.connect_by_host(db_hostname_.c_str(), db_user_name_.c_str(), db_password_.c_str(), NULL, db_port_);
+            ret = db_connect_.connect_by_host(db_hostname_.c_str(),
+                                              db_user_name_.c_str(),
+                                              db_password_.c_str(),
+                                              NULL,
+                                              db_port_);
         }
         else if (db_socket_file_.length() > 0)
         {
-            ret = db_connect_.connect_by_socketfile(db_socket_file_.c_str(), db_user_name_.c_str(), db_password_.c_str());
+            ret = db_connect_.connect_by_socketfile(db_socket_file_.c_str(),
+                                                    db_user_name_.c_str(),
+                                                    db_password_.c_str());
         }
         else
         {

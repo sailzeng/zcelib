@@ -489,7 +489,7 @@ void memory_debug_ex(FILE *stream, const unsigned char *mem, size_t mem_len);
 /*!
 * @brief      快速内存拷贝函数，主要就是利用字节对齐，8字节的拷贝快过单字节进行，
 *             主要是受到文章  http://blog.chinaunix.net/uid-20043340-id-154852.html 的影响
-*             但其实这文章可信度不大，我字节实际测试仍然是memcpy更快，作者可能是在非优化条件下的测试。
+*             但其实这文章可信度不大，我自己实际测试仍然是memcpy更快，作者可能是在非优化条件下的测试。
 *             有兴趣的参考阅读。
 *             http://www.cnblogs.com/fullsail/p/3160098.html
 *             里面参考的阅读的部分也都可以读一下。
@@ -507,22 +507,49 @@ void *fast_memcpy2(void *dst, const void *src, size_t sz);
 //==========================================================================================================
 
 
-template<typename ret_type>
-ret_type str_to_val(const char *str);
-
 /*!
-* @brief      从字符串转换得到数据类型
-* @tparam     ret_type  返回的类型
-* @return     ret_type  返回的数据类型
-* @param      str       字符串
+* @brief      将c str 转换为很多数值类型，作为返回值返回
+* @tparam     ret_type 返回值类型
+* @return     ret_type
+* @param[in]  str  c string 字符串参数
 */
 template<typename ret_type>
-ret_type string_to_val(const std::string &stdstr)
+ret_type str_to_value(const char *str);
+
+
+/*!
+* @brief      将c string 转换为很多数值类型，作为指针参数返回
+* @tparam     ptr_type 指针参数类型
+* @param[in]  str c string 字符串参数
+* @param[out] ptr 指针参数
+*/
+template<typename ptr_type>
+void str_to_ptr(const char *str, ptr_type *ptr);
+
+
+/*!
+* @brief      从std string字符串转换得到数据类型
+* @tparam     ret_type  返回的类型
+* @return     ret_type  返回的数据类型
+* @param[in]  str       字符串
+*/
+template<typename ret_type>
+ret_type string_to_value(const std::string &stdstr)
 {
-    return str_to_val<ret_type>(stdstr.c_str());
+    return str_to_value<ret_type>(stdstr.c_str());
 }
 
-
+/*!
+* @brief      将std string 转换为很多数值类型，作为指针参数返回
+* @tparam     ptr_type  指针参数类型
+* @param      stdstr
+* @param      ptr
+*/
+template<typename ptr_type>
+void string_to_ptr(const std::string &stdstr, ptr_type *ptr)
+{
+    str_to_ptr<ret_type>(stdstr.c_str(), ptr);
+}
 
 };
 

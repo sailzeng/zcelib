@@ -378,8 +378,24 @@ void *ZCE_LIB::fast_memcpy2(void *dst, const void *src, size_t sz)
 
 //==========================================================================================================
 
+//将c str 转换为很多数值类型，作为返回值返回
 template<>
-int16_t ZCE_LIB::str_to_val(const char *str)
+int8_t ZCE_LIB::str_to_value(const char *str)
+{
+    //10表示10进制，
+    char   *stopstring = NULL;
+    return static_cast<int8_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+uint8_t ZCE_LIB::str_to_value(const char *str)
+{
+    char   *stopstring = NULL;
+    return static_cast<uint8_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+int16_t ZCE_LIB::str_to_value(const char *str)
 {
     //10表示10进制，
     char   *stopstring = NULL;
@@ -387,14 +403,14 @@ int16_t ZCE_LIB::str_to_val(const char *str)
 }
 
 template<>
-uint16_t ZCE_LIB::str_to_val(const char *str)
+uint16_t ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<uint16_t>(::strtol(str, &stopstring, 10));
 }
 
 template<>
-int32_t ZCE_LIB::str_to_val(const char *str)
+int32_t ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<int32_t>(::strtol(str, &stopstring, 10));
@@ -402,7 +418,7 @@ int32_t ZCE_LIB::str_to_val(const char *str)
 
 
 template<>
-uint32_t ZCE_LIB::str_to_val(const char *str)
+uint32_t ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<uint32_t>(::strtoul(str, &stopstring, 10));
@@ -410,7 +426,7 @@ uint32_t ZCE_LIB::str_to_val(const char *str)
 
 
 template<>
-int64_t ZCE_LIB::str_to_val(const char *str)
+int64_t ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<int64_t>(::strtoll(str, &stopstring, 10));
@@ -418,14 +434,14 @@ int64_t ZCE_LIB::str_to_val(const char *str)
 
 
 template<>
-uint64_t ZCE_LIB::str_to_val(const char *str)
+uint64_t ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<uint64_t>(::strtoull(str, &stopstring, 10));
 }
 
 template<>
-double ZCE_LIB::str_to_val(const char *str)
+double ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<double>(::strtod(str, &stopstring));
@@ -433,7 +449,7 @@ double ZCE_LIB::str_to_val(const char *str)
 
 
 template<>
-float ZCE_LIB::str_to_val(const char *str)
+float ZCE_LIB::str_to_value(const char *str)
 {
     char   *stopstring = NULL;
     return static_cast<float>(::strtod(str, &stopstring));
@@ -441,7 +457,7 @@ float ZCE_LIB::str_to_val(const char *str)
 
 
 template<>
-bool ZCE_LIB::str_to_val(const char *str)
+bool ZCE_LIB::str_to_value(const char *str)
 {
     if (0 == strcasecmp("TRUE", str))
     {
@@ -455,8 +471,9 @@ bool ZCE_LIB::str_to_val(const char *str)
 }
 
 
+//
 template<>
-ZCE_Sockaddr_In ZCE_LIB::str_to_val(const char *str)
+ZCE_Sockaddr_In ZCE_LIB::str_to_value(const char *str)
 {
     ZCE_Sockaddr_In val;
     val.set(str);
@@ -464,7 +481,7 @@ ZCE_Sockaddr_In ZCE_LIB::str_to_val(const char *str)
 }
 
 template<>
-ZCE_Sockaddr_In6 ZCE_LIB::str_to_val(const char *str)
+ZCE_Sockaddr_In6 ZCE_LIB::str_to_value(const char *str)
 {
     ZCE_Sockaddr_In6 val;
     val.set(str);
@@ -472,9 +489,119 @@ ZCE_Sockaddr_In6 ZCE_LIB::str_to_val(const char *str)
 }
 
 template<>
-ZCE_Time_Value ZCE_LIB::str_to_val(const char *str)
+ZCE_Time_Value ZCE_LIB::str_to_value(const char *str)
 {
     ZCE_Time_Value val;
     val.from_string(str, false, ZCE_LIB::TIME_STRFMT_US_SEC);
     return val;
+}
+
+
+//将c str 转换为很多数值类型，作为指针参数返回
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, int8_t *ptr)
+{
+    //10表示10进制，
+    char   *stopstring = NULL;
+    *ptr = static_cast<int8_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, uint8_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<uint8_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, int16_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<int16_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, uint16_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<uint16_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, int32_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<int32_t>(::strtol(str, &stopstring, 10));
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, uint32_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<uint32_t>(::strtoul(str, &stopstring, 10));
+}
+
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, int64_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<int64_t>(::strtoll(str, &stopstring, 10));
+}
+
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, uint64_t *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<uint64_t>(::strtoull(str, &stopstring, 10));
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, double *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<double>(::strtod(str, &stopstring));
+}
+
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, float *ptr)
+{
+    char   *stopstring = NULL;
+    *ptr = static_cast<float>(::strtod(str, &stopstring));
+}
+
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, bool *ptr)
+{
+    if (0 == strcasecmp("TRUE", str))
+    {
+        *ptr = true;
+    }
+    else if (1 == ::atoi(str))
+    {
+        *ptr = true;
+    }
+    *ptr = false;
+}
+
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, ZCE_Sockaddr_In *ptr)
+{
+    ptr->set(str);
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, ZCE_Sockaddr_In6 *ptr)
+{
+    ptr->set(str);
+}
+
+template<>
+void ZCE_LIB::str_to_ptr(const char *str, ZCE_Time_Value *ptr)
+{
+    ptr->from_string(str, false, ZCE_LIB::TIME_STRFMT_US_SEC);
 }
