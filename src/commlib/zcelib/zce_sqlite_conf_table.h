@@ -21,6 +21,14 @@
 *             想起那段把一个产品做了3遍的历史。
 */
 
+
+/*
+表格和索引定义，
+CREATE TABLE IF NO EXIST config_table_%u(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
+CREATE INDEX UNIQUE cfg_table_idx_%u ON config_table_%u (index_1,index_2)
+
+*/
+
 #ifndef ZCE_LIB_SQLITE_CONF_TABLE_H_
 #define ZCE_LIB_SQLITE_CONF_TABLE_H_
 
@@ -39,6 +47,7 @@ struct ZCELIB_EXPORT AI_IIJIMA_BINARY_DATA
 
 
 public:
+
     //构造和析构函数
     AI_IIJIMA_BINARY_DATA();
     ~AI_IIJIMA_BINARY_DATA();
@@ -47,12 +56,17 @@ public:
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
-    //将一个结构进行编码
+    ///将一个结构进行编码
     template<class T>
-    int protobuf_encode(const T &info);
-    //将一个结构进行解码
+    int protobuf_encode(unsigned int index_1,
+                        unsigned int index_2,
+                        const T &info);
+
+    ///将一个结构进行解码
     template<class T>
-    int protobuf_decode(T &info);
+    int protobuf_decode(unsigned int &index_1,
+                        unsigned int &index_2,
+                        T &info);
 
 #endif
 
@@ -63,10 +77,16 @@ public:
 
 public:
 
+    //索引1
+    unsigned int index_1_ = 0;
+    //索引2 默认为0
+    unsigned int index_2_ = 0;
+
     //数据区长度
-    int ai_data_length_;
+    int ai_data_length_ = 0;
     //动态数据取
     char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA];
+
 
 };
 
@@ -74,7 +94,9 @@ public:
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
 template<class T>
-int AI_IIJIMA_BINARY_DATA::protobuf_decode(T &info)
+int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int &index_1,
+                                           unsigned int &index_2,
+                                           T &info)
 {
     bool bret = info.ParseFromArray(ai_iijima_data_, ai_data_length_);
 
@@ -88,19 +110,27 @@ int AI_IIJIMA_BINARY_DATA::protobuf_decode(T &info)
 }
 
 template<class T>
-int AI_IIJIMA_BINARY_DATA::protobuf_encode(const T &info)
+int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
+                                           unsigned int index_2,
+                                           const T &info)
 {
+
     if (info.IsInitialized())
     {
-        ZCE_LOGMSG(RS_ERROR, "Class %s protobuf encode fail, IsInitialized return false.\n",
+        ZCE_LOGMSG(RS_ERROR, "class %s protobuf encode fail, IsInitialized return false.\n",
                    typeid(info).name());
         return -1;
     }
 
+    index_1_ = index_1;
+    index_2_ = index_2;
+
     int protobuf_len = info.ByteSize();
     if (protobuf_len > MAX_LEN_OF_AI_IIJIMA_DATA)
     {
-        ZCE_LOGMSG(RS_ERROR, "Class %s CDR Encode fail, ByteSize return .\n",
+        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d > MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
+                   index_1,
+                   index_2,
                    typeid(info).name(),
                    protobuf_len);
         return -1
@@ -109,7 +139,9 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(const T &info)
            bool bret = info.SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
     if (bret)
     {
-        ZCE_LOGMSG(RS_ERROR, "Class %s protobuf encode fail, SerializeToArray return false.\n",
+        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.\n",
+                   index_1,
+                   index_2,
                    typeid(info).name());
         return -1;
     }
@@ -138,24 +170,26 @@ public:
 
 protected:
     //改写的SQL
-    void sql_replace_one(unsigned int table_id,
-                         unsigned int conf_id_1,
-                         unsigned int conf_id_2,
+    void sql_replace_one(unsigned  int table_id,
+                         unsigned int index_1,
+                         unsigned int index_2,
                          unsigned int last_mod_time);
 
     //得到选择一个确定数据的SQL
     void sql_select_one(unsigned int table_id,
-                        unsigned int conf_id_1,
-                        unsigned int conf_id_2);
+                        unsigned int index_1,
+                        unsigned int index_2);
 
     //得到删除数据的SQL
     void sql_delete_one(unsigned int table_id,
-                        unsigned int conf_id_1,
-                        unsigned int conf_id_2);
+                        unsigned int index_1,
+                        unsigned int index_2);
 
 
     //
-    void sql_counter(unsigned int table_id);
+    void sql_counter(unsigned int table_id,
+                     unsigned int startno,
+                     unsigned int numquery);
 
     //
     void sql_select_array(unsigned int table_id,
@@ -164,25 +198,23 @@ protected:
 
     ///
     int replace_one(unsigned int table_id,
-                    unsigned int conf_id_1,
-                    unsigned int conf_id_2,
                     const AI_IIJIMA_BINARY_DATA &conf_data,
                     unsigned int last_mod_time);
 
     ///
     int select_one(unsigned int table_id,
-                   unsigned int conf_id_1,
-                   unsigned int conf_id_2,
                    AI_IIJIMA_BINARY_DATA &conf_data,
                    unsigned int &last_mod_time);
 
     ///
     int delete_one(unsigned int table_id,
-                   unsigned int conf_id_1,
-                   unsigned int conf_id_2);
+                   unsigned int index_1,
+                   unsigned int index_2);
 
     ///
     int counter(unsigned int table_id,
+                unsigned int startno,
+                unsigned int numquery,
                 unsigned int &rec_count);
 
     ///
