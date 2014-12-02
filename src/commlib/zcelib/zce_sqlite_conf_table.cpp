@@ -47,6 +47,41 @@ ZCE_General_Config_Table::~ZCE_General_Config_Table()
 }
 
 
+//创建TABLE SQL语句
+void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
+{
+    //构造后面的SQL
+    char *ptmppoint = sql_string_;
+    size_t buflen = MAX_SQLSTRING_LEN;
+
+    //注意里面的?
+    int len = snprintf(ptmppoint, buflen, 
+        "CREATE TABLE IF NOT EXISTS config_table_%u(index_1 INTEGER,"
+        "index_2 INTEGER, conf_data BLOB, last_mod_time INTEGER)",
+        table_id);
+    ptmppoint += len;
+    buflen -= len;
+
+    
+}
+
+
+//创建INDEX SQL语句
+void ZCE_General_Config_Table::sql_create_index(unsigned  int table_id)
+{
+    //构造后面的SQL
+    char *ptmppoint = sql_string_;
+    size_t buflen = MAX_SQLSTRING_LEN;
+
+    //注意里面的?
+    int len = snprintf(ptmppoint, buflen,
+        "CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_%u ON config_table_%u(index_1, index_2)",
+        table_id,
+        table_id);
+    ptmppoint += len;
+    buflen -= len;
+}
+
 //改写的SQL
 void ZCE_General_Config_Table::sql_replace_one(unsigned int table_id,
                                                unsigned int index_1,
@@ -154,7 +189,44 @@ void ZCE_General_Config_Table::sql_select_array(unsigned int table_id,
     }
 }
 
-///
+///创建数据表
+int ZCE_General_Config_Table::create_table(unsigned int table_id)
+{
+
+    //建表
+    sql_create_table(table_id);
+    ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    int ret = 0;
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    bool hash_result = false;
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    //索引
+    sql_create_index(table_id);
+    ret = stmt_handler.prepare_sql_string(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    
+    ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+
+//更新一条记录，
 int ZCE_General_Config_Table::replace_one(unsigned int table_id,
                                           const AI_IIJIMA_BINARY_DATA &conf_data,
                                           unsigned int last_mod_time)
@@ -224,7 +296,7 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
     return 0;
 }
 
-///
+//删除一条记录
 int ZCE_General_Config_Table::delete_one(unsigned int table_id,
                                          unsigned int index_1,
                                          unsigned int index_2)

@@ -24,8 +24,8 @@
 
 /*
 表格和索引定义，
-CREATE TABLE IF NO EXIST config_table_%u(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
-CREATE INDEX UNIQUE cfg_table_idx_%u ON config_table_%u (index_1,index_2)
+CREATE TABLE IF NOT EXISTS config_table_1(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
+CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_1 ON config_table_1 (index_1,index_2)
 
 */
 
@@ -33,7 +33,7 @@ CREATE INDEX UNIQUE cfg_table_idx_%u ON config_table_%u (index_1,index_2)
 #define ZCE_LIB_SQLITE_CONF_TABLE_H_
 
 //目前版本限制只加这一个
-#if SQLITE_VERSION_NUMBER >= 3003000
+#if SQLITE_VERSION_NUMBER >= 3005000
 
 
 
@@ -169,6 +169,13 @@ public:
     ~ZCE_General_Config_Table();
 
 protected:
+
+    ///创建TABLE SQL语句
+    void sql_create_table(unsigned  int table_id);
+    ///创建INDEX SQL语句
+    void sql_create_index(unsigned  int table_id);
+
+
     //改写的SQL
     void sql_replace_one(unsigned  int table_id,
                          unsigned int index_1,
@@ -195,6 +202,11 @@ protected:
     void sql_select_array(unsigned int table_id,
                           unsigned int startno,
                           unsigned int numquery);
+    
+public:
+
+    ///创建数据表
+    int create_table(unsigned int table_id);
 
     ///
     int replace_one(unsigned int table_id,
@@ -223,9 +235,9 @@ protected:
                      unsigned int numquery,
                      ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma);
 
-public:
+protected:
     //
-    size_t MAX_SQLSTRING_LEN = 64 * 1024;
+    const static size_t MAX_SQLSTRING_LEN = 8 * 1024;
 
 public:
 
@@ -238,6 +250,6 @@ public:
 };
 
 
-#endif //SQLITE_VERSION_NUMBER >= 3003000
+#endif //SQLITE_VERSION_NUMBER >= 3005000
 
 #endif //ZCE_LIB_SQLITE_CONF_TABLE_H_
