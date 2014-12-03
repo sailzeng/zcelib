@@ -77,17 +77,18 @@ public:
 
 public:
 
-    //索引1
+    ///索引1
     unsigned int index_1_ = 0;
-    //索引2 默认为0
+    ///索引2 默认为0
     unsigned int index_2_ = 0;
 
-    //数据区长度
+    ///数据区长度
     int ai_data_length_ = 0;
-    //动态数据取
+    ///动态数据取
     char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA];
 
-
+    ///最后修改时间
+    unsigned int last_mod_time_ =0;
 };
 
 
@@ -182,7 +183,7 @@ protected:
                          unsigned int index_2,
                          unsigned int last_mod_time);
 
-    //得到选择一个确定数据的SQL
+    ///得到选择一个确定数据的SQL
     void sql_select_one(unsigned int table_id,
                         unsigned int index_1,
                         unsigned int index_2);
@@ -193,48 +194,58 @@ protected:
                         unsigned int index_2);
 
 
-    //
+    ///计算查询的总数
     void sql_counter(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery);
 
-    //
+    ///查询数据队列，部分数据或者全部数据
     void sql_select_array(unsigned int table_id,
                           unsigned int startno,
-                          unsigned int numquery);
+                          unsigned int numquery,
+                          bool order_by_idx);
     
 public:
+
+    ///打开一个通用的数据库
+    int open_dbfile(const char *db_file, 
+                    bool create_db);
 
     ///创建数据表
     int create_table(unsigned int table_id);
 
     ///
     int replace_one(unsigned int table_id,
-                    const AI_IIJIMA_BINARY_DATA &conf_data,
-                    unsigned int last_mod_time);
+                    const AI_IIJIMA_BINARY_DATA &conf_data);
 
-    ///
+    ///查询了一条记录
     int select_one(unsigned int table_id,
-                   AI_IIJIMA_BINARY_DATA &conf_data,
-                   unsigned int &last_mod_time);
+                   AI_IIJIMA_BINARY_DATA &conf_data);
 
-    ///
+    ///删除一条记录
     int delete_one(unsigned int table_id,
                    unsigned int index_1,
                    unsigned int index_2);
 
-    ///
+    ///查询记录总数
     int counter(unsigned int table_id,
                 unsigned int startno,
                 unsigned int numquery,
                 unsigned int &rec_count);
 
-    ///
+    ///查询数据队列，部分数据（限制查询数量）或者全部数据
     int select_array(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery,
+                     bool order_by_idx,
                      ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma);
 
+    
+    ///对比两个数据表格，找出差异，然后找出差异的SQL
+    int compare_table(const char *old_db,
+                      const char *new_db,
+                      unsigned int table_id,
+                      std::string & update_sql);
 protected:
     //
     const static size_t MAX_SQLSTRING_LEN = 8 * 1024;

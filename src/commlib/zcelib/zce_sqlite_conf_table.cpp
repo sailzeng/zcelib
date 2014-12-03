@@ -24,6 +24,7 @@ void AI_IIJIMA_BINARY_DATA::clear()
     index_2_ = 0;
     ai_data_length_ = 0;
     ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA] = '\0';
+    last_mod_time_ = 0;
 }
 
 
@@ -44,8 +45,24 @@ ZCE_General_Config_Table::~ZCE_General_Config_Table()
         delete sql_string_;
         sql_string_ = NULL;
     }
+    if (sqlite_handler_)
+    {
+        delete sqlite_handler_;
+        sqlite_handler_ = NULL;
+    }
 }
 
+//打开一个通用的数据库
+int ZCE_General_Config_Table::open_dbfile(const char *db_file,
+                                          bool create_db)
+{
+    int ret = sqlite_handler_->open_database(db_file, create_db);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    return 0;
+}
 
 //创建TABLE SQL语句
 void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
@@ -55,31 +72,18 @@ void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //注意里面的?
-    int len = snprintf(ptmppoint, buflen, 
+    int len = snprintf(ptmppoint, buflen,
         "CREATE TABLE IF NOT EXISTS config_table_%u(index_1 INTEGER,"
-        "index_2 INTEGER, conf_data BLOB, last_mod_time INTEGER)",
+        "index_2 INTEGER, conf_data BLOB, last_mod_time INTEGER);"
+        "CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_%u ON "
+        "config_table_%u(index_1, index_2)",
+        table_id,
+        table_id,
         table_id);
     ptmppoint += len;
     buflen -= len;
 
     
-}
-
-
-//创建INDEX SQL语句
-void ZCE_General_Config_Table::sql_create_index(unsigned  int table_id)
-{
-    //构造后面的SQL
-    char *ptmppoint = sql_string_;
-    size_t buflen = MAX_SQLSTRING_LEN;
-
-    //注意里面的?
-    int len = snprintf(ptmppoint, buflen,
-        "CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_%u ON config_table_%u(index_1, index_2)",
-        table_id,
-        table_id);
-    ptmppoint += len;
-    buflen -= len;
 }
 
 //改写的SQL
@@ -168,13 +172,14 @@ void ZCE_General_Config_Table::sql_counter(unsigned int table_id,
 //
 void ZCE_General_Config_Table::sql_select_array(unsigned int table_id,
                                                 unsigned int startno,
-                                                unsigned int numquery)
+                                                unsigned int numquery,
+                                                bool order_by_idx)
 {
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //构造SQL
-    int len = snprintf(ptmppoint, buflen, "SELECT index_1,index_2,conf_data "
+    int len = snprintf(ptmppoint, buflen, "SELECT index_1,index_2,conf_data,last_mod_time "
                        "FROM config_table_%u ",
                        table_id);
     ptmppoint += len;
@@ -187,13 +192,20 @@ void ZCE_General_Config_Table::sql_select_array(unsigned int table_id,
         ptmppoint += len;
         buflen -= len;
     }
+
+    if (order_by_idx)
+    {
+        len = snprintf(ptmppoint, buflen, "ORDER BY index_1,index_2 ", startno, numquery);
+        ptmppoint += len;
+        buflen -= len;
+    }
 }
 
 ///创建数据表
 int ZCE_General_Config_Table::create_table(unsigned int table_id)
 {
 
-    //建表
+    //建表和建立索引
     sql_create_table(table_id);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
@@ -208,34 +220,19 @@ int ZCE_General_Config_Table::create_table(unsigned int table_id)
     {
         return ret;
     }
-    //索引
-    sql_create_index(table_id);
-    ret = stmt_handler.prepare_sql_string(sql_string_);
-    if (ret != 0)
-    {
-        return ret;
-    }
-    
-    ret = stmt_handler.execute_stmt_sql(hash_result);
-    if (ret != 0)
-    {
-        return ret;
-    }
-
     return 0;
 }
 
 
 //更新一条记录，
 int ZCE_General_Config_Table::replace_one(unsigned int table_id,
-                                          const AI_IIJIMA_BINARY_DATA &conf_data,
-                                          unsigned int last_mod_time)
+                                          const AI_IIJIMA_BINARY_DATA &conf_data)
 {
     //构造后面的SQL
     sql_replace_one(table_id,
                     conf_data.index_1_,
                     conf_data.index_2_,
-                    last_mod_time);
+                    conf_data.last_mod_time_);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare_sql_string(sql_string_);
@@ -262,8 +259,7 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
 
 //
 int ZCE_General_Config_Table::select_one(unsigned int table_id,
-                                         AI_IIJIMA_BINARY_DATA &conf_data,
-                                         unsigned int &last_mod_time)
+                                         AI_IIJIMA_BINARY_DATA &conf_data)
 {
     sql_select_one(table_id,
                    conf_data.index_1_,
@@ -291,7 +287,7 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
 
     stmt_handler >> ZCE_SQLite_STMTHdl::BINARY((void *)conf_data.ai_iijima_data_,
                                                conf_data.ai_data_length_);
-    stmt_handler >> last_mod_time ;
+    stmt_handler >> conf_data.last_mod_time_;
 
     return 0;
 }
@@ -354,6 +350,7 @@ int ZCE_General_Config_Table::counter(unsigned int table_id,
 int ZCE_General_Config_Table::select_array(unsigned int table_id,
                                            unsigned int startno,
                                            unsigned int numquery,
+                                           bool order_by_idx,
                                            ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma)
 {
     int ret = 0;
@@ -373,7 +370,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
     }
     ary_ai_iijma.resize(num_counter);
 
-    sql_select_array(table_id, startno, numquery);
+    sql_select_array(table_id, startno, numquery, order_by_idx);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
 
     ret = stmt_handler.prepare_sql_string(sql_string_);
@@ -391,6 +388,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
         stmt_handler >> ary_ai_iijma[i].index_2_;
         stmt_handler >> ZCE_SQLite_STMTHdl::BINARY((void *)ary_ai_iijma[i].ai_iijima_data_,
                                                    ary_ai_iijma[i].ai_data_length_);
+        stmt_handler >> ary_ai_iijma[i].last_mod_time_;
 
         ret = stmt_handler.execute_stmt_sql(hash_result);
     }
@@ -400,7 +398,6 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
     {
         return ret;
     }
-
 
     return 0;
 }
