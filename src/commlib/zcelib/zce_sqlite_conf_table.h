@@ -48,11 +48,15 @@ struct ZCELIB_EXPORT AI_IIJIMA_BINARY_DATA
 
 public:
 
-    //构造和析构函数
+    ///构造和析构函数
     AI_IIJIMA_BINARY_DATA();
     ~AI_IIJIMA_BINARY_DATA();
-    //
+
+    ///
     void clear();
+
+    ///比较函数
+    bool operator < (const AI_IIJIMA_BINARY_DATA right);
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
@@ -88,7 +92,7 @@ public:
     char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA];
 
     ///最后修改时间
-    unsigned int last_mod_time_ =0;
+    unsigned int last_mod_time_ = 0;
 };
 
 
@@ -177,11 +181,20 @@ protected:
     void sql_create_index(unsigned  int table_id);
 
 
-    //改写的SQL
+    //改写的STMT SQL
+    void sql_replace_stmt(unsigned  int table_id,
+                          unsigned int index_1,
+                          unsigned int index_2,
+                          unsigned int last_mod_time);
+
+    ///改写的SQL,文本格式，用x
     void sql_replace_one(unsigned  int table_id,
                          unsigned int index_1,
                          unsigned int index_2,
+                         size_t blob_len,
+                         const char *blob_data,
                          unsigned int last_mod_time);
+
 
     ///得到选择一个确定数据的SQL
     void sql_select_one(unsigned int table_id,
@@ -202,13 +215,12 @@ protected:
     ///查询数据队列，部分数据或者全部数据
     void sql_select_array(unsigned int table_id,
                           unsigned int startno,
-                          unsigned int numquery,
-                          bool order_by_idx);
-    
+                          unsigned int numquery);
+
 public:
 
     ///打开一个通用的数据库
-    int open_dbfile(const char *db_file, 
+    int open_dbfile(const char *db_file,
                     bool create_db);
 
     ///创建数据表
@@ -237,18 +249,17 @@ public:
     int select_array(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery,
-                     bool order_by_idx,
                      ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma);
 
-    
+
     ///对比两个数据表格，找出差异，然后找出差异的SQL
     int compare_table(const char *old_db,
                       const char *new_db,
                       unsigned int table_id,
-                      std::string & update_sql);
+                      std::string &update_sql);
 protected:
     //
-    const static size_t MAX_SQLSTRING_LEN = 8 * 1024;
+    const static size_t MAX_SQLSTRING_LEN = AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA * 2 + 1024;
 
 public:
 
