@@ -62,13 +62,14 @@ public:
 
 #if defined ZCE_OS_WINDOWS 
     /*!
-    @brief      用UTF16(Windows下说的UNICODE)的路径名称打开一个目录,因为我内部用的全部是
-    *           UTF8的函数，所以这会有问题，而Windows现在很多地方必须用UTF16的编码，所以必
-    *           须转换编码，
+    @brief      用MBCS(Windows下说的 multibyte character set )的路径名称打开一个目录,
+    *           因为我内部用的全部是UTF8的函数，所以这会有问题，必须用须转换编码，
     */
-    int open_utf16_path_db(const char *utf16_db_path, 
+    int open_mbcs_path_db(const char *utf16_db_path, 
         bool read_only,
         bool create_db = false);
+
+
 #endif
 
 

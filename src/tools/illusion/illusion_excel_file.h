@@ -19,22 +19,22 @@ protected:
     CString       open_excel_file_;
 
     //
-    CWorkbooks    excel_books_; 
+    CWorkbooks    excel_books_;
     //
-    CWorkbook     excel_work_book_; 
+    CWorkbook     excel_work_book_;
     //
-    CWorksheets   excel_sheets_; 
+    CWorksheets   excel_sheets_;
     //
-    CWorksheet    excel_work_sheet_; 
+    CWorksheet    excel_work_sheet_;
     //
-    CRange        excel_current_range_; 
+    CRange        excel_current_range_;
 
     ///是否进行预先加载，预加载更加消耗内存，但读取效率提高几十倍
     BOOL          already_preload_;
 
     //Create the SAFEARRAY from the VARIANT ret.
     COleSafeArray ole_safe_array_;
-    
+
 
 protected:
     //
@@ -61,9 +61,9 @@ public:
     int column_count();
 
     //使用某个shet，shit，shit
-    BOOL load_sheet(long table_index,BOOL pre_load = FALSE);
+    BOOL load_sheet(long table_index, BOOL pre_load = FALSE);
     //通过名称使用某个sheet，
-    BOOL load_sheet(const CString& sheet,BOOL pre_load = FALSE);
+    BOOL load_sheet(const CString &sheet, BOOL pre_load = FALSE);
     //通过序号取得某个Sheet的名称
     CString sheet_name(long table_index);
 
@@ -78,12 +78,12 @@ public:
     void saveas_excelfile(const CString &xls_file);
     //取得打开文件的名称
     CString open_filename();
-    
+
     //
-    void set_cell_int(long irow, long icolumn,int new_int);
+    void set_cell_int(long irow, long icolumn, int new_int);
     //
-    void set_cell_string(long irow, long icolumn,const CString &new_string);
-    
+    void set_cell_string(long irow, long icolumn, const CString &new_string);
+
 public:
     //初始化EXCEL OLE
     static BOOL init_excel();
@@ -91,7 +91,7 @@ public:
     static void release_excel();
     //取得列的名称，比如27->AA
     static TCHAR *column_name(long iColumn);
-    
+
 protected:
 
     //预先加载

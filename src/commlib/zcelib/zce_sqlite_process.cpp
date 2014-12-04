@@ -59,15 +59,15 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
 
 #if defined ZCE_OS_WINDOWS 
 
-//以UTF16路径的打开一个DB文件
-int ZCE_SQLite_DB_Handler::open_utf16_path_db(const char *db_file, 
+//以MBCS路径的打开一个DB文件
+int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file, 
     bool read_only,
     bool create_db)
 {
-    //////////////////////////////////////////////////////////////////////////
+    
     // Begin(把一个ascii码字符转换成UTF-8)
 
-    DWORD utf16_buffer_len = MultiByteToWideChar(CP_ACP, 0, db_file, -1, NULL, 0);
+    DWORD utf16_buffer_len = ::MultiByteToWideChar(CP_ACP, 0, db_file, -1, NULL, 0);
     if (utf16_buffer_len > MAX_PATH)
     {
         return -1;
@@ -75,18 +75,23 @@ int ZCE_SQLite_DB_Handler::open_utf16_path_db(const char *db_file,
     wchar_t utf16_buffer[MAX_PATH+1];
 
     // 第一次先把ascii码转换成UTF-16
-    MultiByteToWideChar(CP_ACP, 0, db_file, -1, utf16_buffer, utf16_buffer_len);
+    ::MultiByteToWideChar(CP_ACP, 0, db_file, -1, utf16_buffer, utf16_buffer_len);
 
     DWORD utf8_buffer_len = WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, NULL, 0, NULL, FALSE);
-    char utf8_buffer [MAX_PATH*3];
+    if (utf8_buffer_len > MAX_PATH)
+    {
+        return -1;
+    }
+
+    char utf8_buffer [MAX_PATH+1];
 
     // 第二次再把UTF-16编码转换为UTF-8编码
-    WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, utf8_buffer, utf8_buffer_len, NULL, 0);
+    ::WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, utf8_buffer, utf8_buffer_len, NULL, 0);
 
     // End(把一个ascii码字符转换成UTF-8)
-    //////////////////////////////////////////////////////////////////////////
+    
 
-    int ret = open_database(db_file,
+    int ret = open_database(utf8_buffer,
         read_only,
         create_db);
     //

@@ -6,7 +6,7 @@
 #include "illusion.h"
 
 #include "illusion_excel_file.h"
-#include "illusion_excel_config.h"
+#include "illusion_read_config.h"
 #include "illusion_mainfrm.h"
 
 #ifdef _DEBUG
@@ -64,7 +64,9 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
 
 
     if (CMDIFrameWndEx::OnCreate(lpCreateStruct) == -1)
+    {
         return -1;
+    }
 
     BOOL bNameValid;
 
@@ -112,7 +114,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
         TRACE0("Failed to create status bar\n");
         return -1;      // fail to create
     }
-    m_wndStatusBar.SetIndicators(indicators, sizeof(indicators)/sizeof(UINT));
+    m_wndStatusBar.SetIndicators(indicators, sizeof(indicators) / sizeof(UINT));
 
     // TODO: Delete these five lines if you don't want the toolbar and menubar to be dockable
     m_wndMenuBar.EnableDocking(CBRS_ALIGN_ANY);
@@ -140,7 +142,7 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     m_wndFileView.EnableDocking(CBRS_ALIGN_ANY);
     m_wndClassView.EnableDocking(CBRS_ALIGN_ANY);
     DockPane(&m_wndFileView);
-    CDockablePane* pTabbedBar = NULL;
+    CDockablePane *pTabbedBar = NULL;
     m_wndClassView.AttachToTabWnd(&m_wndFileView, DM_SHOW, TRUE, &pTabbedBar);
     m_wndOutput.EnableDocking(CBRS_ALIGN_ANY);
     DockPane(&m_wndOutput);
@@ -199,10 +201,12 @@ int CMainFrame::OnCreate(LPCREATESTRUCT lpCreateStruct)
     return 0;
 }
 
-BOOL CMainFrame::PreCreateWindow(CREATESTRUCT& cs)
+BOOL CMainFrame::PreCreateWindow(CREATESTRUCT &cs)
 {
-    if( !CMDIFrameWndEx::PreCreateWindow(cs) )
+    if ( !CMDIFrameWndEx::PreCreateWindow(cs) )
+    {
         return FALSE;
+    }
     // TODO: Modify the Window class or styles here by modifying
     //  the CREATESTRUCT cs
 
@@ -227,7 +231,7 @@ BOOL CMainFrame::CreateDockingWindows()
     CString strFileView;
     bNameValid = strFileView.LoadString(IDS_FILE_VIEW);
     ASSERT(bNameValid);
-    if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT| CBRS_FLOAT_MULTI))
+    if (!m_wndFileView.Create(strFileView, this, CRect(0, 0, 200, 200), TRUE, ID_VIEW_FILEVIEW, WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS | WS_CLIPCHILDREN | CBRS_LEFT | CBRS_FLOAT_MULTI))
     {
         TRACE0("Failed to create File View window\n");
         return FALSE; // failed to create
@@ -269,7 +273,7 @@ void CMainFrame::AssertValid() const
     CMDIFrameWndEx::AssertValid();
 }
 
-void CMainFrame::Dump(CDumpContext& dc) const
+void CMainFrame::Dump(CDumpContext &dc) const
 {
     CMDIFrameWndEx::Dump(dc);
 }
@@ -285,20 +289,20 @@ void CMainFrame::OnWindowManager()
 
 void CMainFrame::OnViewCustomize()
 {
-    CMFCToolBarsCustomizeDialog* pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
+    CMFCToolBarsCustomizeDialog *pDlgCust = new CMFCToolBarsCustomizeDialog(this, TRUE /* scan menus */);
     pDlgCust->EnableUserDefinedToolbars();
     pDlgCust->Create();
 }
 
-LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp,LPARAM lp)
+LRESULT CMainFrame::OnToolbarCreateNew(WPARAM wp, LPARAM lp)
 {
-    LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp,lp);
+    LRESULT lres = CMDIFrameWndEx::OnToolbarCreateNew(wp, lp);
     if (lres == 0)
     {
         return 0;
     }
 
-    CMFCToolBar* pUserToolbar = (CMFCToolBar*)lres;
+    CMFCToolBar *pUserToolbar = (CMFCToolBar *)lres;
     ASSERT_VALID(pUserToolbar);
 
     BOOL bNameValid;
@@ -318,61 +322,61 @@ void CMainFrame::OnApplicationLook(UINT id)
 
     switch (theApp.m_nAppLook)
     {
-    case ID_VIEW_APPLOOK_WIN_2000:
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManager));
-        break;
-
-    case ID_VIEW_APPLOOK_OFF_XP:
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOfficeXP));
-        break;
-
-    case ID_VIEW_APPLOOK_WIN_XP:
-        CMFCVisualManagerWindows::m_b3DTabsXPTheme = TRUE;
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
-        break;
-
-    case ID_VIEW_APPLOOK_OFF_2003:
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2003));
-        CDockingManager::SetDockingMode(DT_SMART);
-        break;
-
-    case ID_VIEW_APPLOOK_VS_2005:
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2005));
-        CDockingManager::SetDockingMode(DT_SMART);
-        break;
-
-    case ID_VIEW_APPLOOK_VS_2008:
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
-        CDockingManager::SetDockingMode(DT_SMART);
-        break;
-
-    case ID_VIEW_APPLOOK_WINDOWS_7:
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
-        CDockingManager::SetDockingMode(DT_SMART);
-        break;
-
-    default:
-        switch (theApp.m_nAppLook)
-        {
-        case ID_VIEW_APPLOOK_OFF_2007_BLUE:
-            CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_LunaBlue);
+        case ID_VIEW_APPLOOK_WIN_2000:
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManager));
             break;
 
-        case ID_VIEW_APPLOOK_OFF_2007_BLACK:
-            CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_ObsidianBlack);
+        case ID_VIEW_APPLOOK_OFF_XP:
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOfficeXP));
             break;
 
-        case ID_VIEW_APPLOOK_OFF_2007_SILVER:
-            CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Silver);
+        case ID_VIEW_APPLOOK_WIN_XP:
+            CMFCVisualManagerWindows::m_b3DTabsXPTheme = TRUE;
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows));
             break;
 
-        case ID_VIEW_APPLOOK_OFF_2007_AQUA:
-            CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Aqua);
+        case ID_VIEW_APPLOOK_OFF_2003:
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2003));
+            CDockingManager::SetDockingMode(DT_SMART);
             break;
-        }
 
-        CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2007));
-        CDockingManager::SetDockingMode(DT_SMART);
+        case ID_VIEW_APPLOOK_VS_2005:
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2005));
+            CDockingManager::SetDockingMode(DT_SMART);
+            break;
+
+        case ID_VIEW_APPLOOK_VS_2008:
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerVS2008));
+            CDockingManager::SetDockingMode(DT_SMART);
+            break;
+
+        case ID_VIEW_APPLOOK_WINDOWS_7:
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerWindows7));
+            CDockingManager::SetDockingMode(DT_SMART);
+            break;
+
+        default:
+            switch (theApp.m_nAppLook)
+            {
+                case ID_VIEW_APPLOOK_OFF_2007_BLUE:
+                    CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_LunaBlue);
+                    break;
+
+                case ID_VIEW_APPLOOK_OFF_2007_BLACK:
+                    CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_ObsidianBlack);
+                    break;
+
+                case ID_VIEW_APPLOOK_OFF_2007_SILVER:
+                    CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Silver);
+                    break;
+
+                case ID_VIEW_APPLOOK_OFF_2007_AQUA:
+                    CMFCVisualManagerOffice2007::SetStyle(CMFCVisualManagerOffice2007::Office2007_Aqua);
+                    break;
+            }
+
+            CMFCVisualManager::SetDefaultManager(RUNTIME_CLASS(CMFCVisualManagerOffice2007));
+            CDockingManager::SetDockingMode(DT_SMART);
     }
 
     m_wndOutput.UpdateFonts();
@@ -381,7 +385,7 @@ void CMainFrame::OnApplicationLook(UINT id)
     theApp.WriteInt(_T("ApplicationLook"), theApp.m_nAppLook);
 }
 
-void CMainFrame::OnUpdateApplicationLook(CCmdUI* pCmdUI)
+void CMainFrame::OnUpdateApplicationLook(CCmdUI *pCmdUI)
 {
     pCmdUI->SetRadio(theApp.m_nAppLook == pCmdUI->m_nID);
 }
@@ -394,7 +398,7 @@ void CMainFrame::OnViewFileView()
     m_wndFileView.SetFocus();
 }
 
-void CMainFrame::OnUpdateViewFileView(CCmdUI* pCmdUI)
+void CMainFrame::OnUpdateViewFileView(CCmdUI *pCmdUI)
 {
     pCmdUI->Enable(TRUE);
 }
@@ -407,7 +411,7 @@ void CMainFrame::OnViewClassView()
     m_wndClassView.SetFocus();
 }
 
-void CMainFrame::OnUpdateViewClassView(CCmdUI* pCmdUI)
+void CMainFrame::OnUpdateViewClassView(CCmdUI *pCmdUI)
 {
     pCmdUI->Enable(TRUE);
 }
@@ -420,13 +424,13 @@ void CMainFrame::OnViewOutputWindow()
     m_wndOutput.SetFocus();
 }
 
-void CMainFrame::OnUpdateViewOutputWindow(CCmdUI* pCmdUI)
+void CMainFrame::OnUpdateViewOutputWindow(CCmdUI *pCmdUI)
 {
     pCmdUI->Enable(TRUE);
 }
 
 
-BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParentWnd, CCreateContext* pContext) 
+BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd *pParentWnd, CCreateContext *pContext)
 {
     // base class does the real work
 
@@ -444,7 +448,7 @@ BOOL CMainFrame::LoadFrame(UINT nIDResource, DWORD dwDefaultStyle, CWnd* pParent
 
     for (int i = 0; i < iMaxUserToolbars; i ++)
     {
-        CMFCToolBar* pUserToolbar = GetUserToolBarByIndex(i);
+        CMFCToolBar *pUserToolbar = GetUserToolBarByIndex(i);
         if (pUserToolbar != NULL)
         {
             pUserToolbar->EnableCustomizeButton(TRUE, ID_VIEW_CUSTOMIZE, strCustomize);
@@ -472,11 +476,11 @@ void CMainFrame::OnFileOpenexcelfile()
 {
     //TODO:为什么有无穷无尽的TODO
     CFileDialog  open_file(TRUE,
-        NULL,
-        NULL,
-        OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
-        _T("Worksheet Files (*.xls;*.xlsx)|*.xls;*.xlsx|All Files (*.*)|*.*||"),
-        this);
+                           NULL,
+                           NULL,
+                           OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT,
+                           _T("Worksheet Files (*.xls;*.xlsx)|*.xls;*.xlsx|All Files (*.*)|*.*||"),
+                           this);
 
     ////取消了什么都不做
     if (open_file.DoModal() != IDOK)
@@ -487,7 +491,7 @@ void CMainFrame::OnFileOpenexcelfile()
     CString  cfg_file_path = open_file.GetPathName();
 
     BeginWaitCursor();
-    Illusion_Excel_Config::instance()->read_excelconfig(cfg_file_path);
+    Illusion_Read_Config::instance()->read_excelconfig(cfg_file_path);
     EndWaitCursor();
 
 

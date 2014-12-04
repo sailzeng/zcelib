@@ -10,27 +10,27 @@
 
 class CChildView : public CWnd
 {
-// Construction
+    // Construction
 public:
-	CChildView();
+    CChildView();
 
-// Attributes
-public:
-
-// Operations
+    // Attributes
 public:
 
-// Overrides
-	protected:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-
-// Implementation
+    // Operations
 public:
-	virtual ~CChildView();
 
-	// Generated message map functions
+    // Overrides
 protected:
-	afx_msg void OnPaint();
-	DECLARE_MESSAGE_MAP()
+    virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
+
+    // Implementation
+public:
+    virtual ~CChildView();
+
+    // Generated message map functions
+protected:
+    afx_msg void OnPaint();
+    DECLARE_MESSAGE_MAP()
 };
 

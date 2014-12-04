@@ -68,10 +68,10 @@
     <ClInclude Include="excel\CWorksheets.h">
       <Filter>Excel OLE Head Files</Filter>
     </ClInclude>
-    <ClInclude Include="illusion_excel_config.h">
+    <ClInclude Include="illusion_mainfrm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="illusion_mainfrm.h">
+    <ClInclude Include="illusion_read_config.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -103,10 +103,10 @@
     <ClCompile Include="illusion_excel_file.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="illusion_excel_config.cpp">
+    <ClCompile Include="illusion_mainfrm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="illusion_mainfrm.cpp">
+    <ClCompile Include="illusion_read_config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -7,35 +7,35 @@
 
 class CChildFrame : public CMDIChildWndEx
 {
-	DECLARE_DYNCREATE(CChildFrame)
+    DECLARE_DYNCREATE(CChildFrame)
 public:
-	CChildFrame();
+    CChildFrame();
 
-// Attributes
-public:
-
-// Operations
+    // Attributes
 public:
 
-// Overrides
-	public:
-	virtual BOOL PreCreateWindow(CREATESTRUCT& cs);
-	virtual BOOL OnCmdMsg(UINT nID, int nCode, void* pExtra, AFX_CMDHANDLERINFO* pHandlerInfo);
-
-// Implementation
+    // Operations
 public:
-	// view for the client area of the frame.
-	CChildView m_wndView;
-	virtual ~CChildFrame();
+
+    // Overrides
+public:
+    virtual BOOL PreCreateWindow(CREATESTRUCT &cs);
+    virtual BOOL OnCmdMsg(UINT nID, int nCode, void *pExtra, AFX_CMDHANDLERINFO *pHandlerInfo);
+
+    // Implementation
+public:
+    // view for the client area of the frame.
+    CChildView m_wndView;
+    virtual ~CChildFrame();
 #ifdef _DEBUG
-	virtual void AssertValid() const;
-	virtual void Dump(CDumpContext& dc) const;
+    virtual void AssertValid() const;
+    virtual void Dump(CDumpContext &dc) const;
 #endif
 
-// Generated message map functions
+    // Generated message map functions
 protected:
-	afx_msg void OnFileClose();
-	afx_msg void OnSetFocus(CWnd* pOldWnd);
-	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
-	DECLARE_MESSAGE_MAP()
+    afx_msg void OnFileClose();
+    afx_msg void OnSetFocus(CWnd *pOldWnd);
+    afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
+    DECLARE_MESSAGE_MAP()
 };

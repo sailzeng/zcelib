@@ -6,18 +6,18 @@
 
 class CViewTree : public CTreeCtrl
 {
-// Construction
+    // Construction
 public:
-	CViewTree();
+    CViewTree();
 
-// Overrides
+    // Overrides
 protected:
-	virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT* pResult);
+    virtual BOOL OnNotify(WPARAM wParam, LPARAM lParam, LRESULT *pResult);
 
-// Implementation
+    // Implementation
 public:
-	virtual ~CViewTree();
+    virtual ~CViewTree();
 
 protected:
-	DECLARE_MESSAGE_MAP()
+    DECLARE_MESSAGE_MAP()
 };

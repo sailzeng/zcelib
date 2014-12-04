@@ -7,7 +7,7 @@
 
 
 
-class Illusion_Excel_Config 
+class Illusion_Read_Config
 {
 public:
 
@@ -36,8 +36,8 @@ public:
         unsigned int index2_column_ = 0;
 
 
-        ///
-        std::vector<CString>  proto_tag_;
+        ///Protobuf item定义的数据
+        std::vector<std::string>  proto_tag_;
 
     };
 
@@ -59,32 +59,24 @@ public:
 
 
 
+
+
 protected: // 仅从序列化创建
-    Illusion_Excel_Config();
+    Illusion_Read_Config();
 protected:
-    virtual ~Illusion_Excel_Config();
+    virtual ~Illusion_Read_Config();
 
 
 public:
 
     ///
-    static Illusion_Excel_Config *instance();
-    
+    static Illusion_Read_Config *instance();
+
     ///
     static void clean_instance();
 
-protected:
 
-    ///Excel的处理对象,EXCEL的处理类
-    Illusion_ExcelFile illusion_excel_file_;
 
-    ///文件对应的配置数据，用于我的查询
-    MAP_FNAME_TO_CFGDATA   file_cfg_map_;
-
-protected:
-    //单子实例
-    static Illusion_Excel_Config  *instance_;
-    
 public:
     //
     BOOL initialize();
@@ -101,13 +93,37 @@ public:
 protected:
 
     //读枚举值
-    int read_enum_data(EXCEL_FILE_DATA & file_cfg_data);
+    int read_enum_data(EXCEL_FILE_DATA &file_cfg_data);
 
     //读取表格配置
-    int read_table_config(EXCEL_FILE_DATA & file_cfg_data);
+    int read_table_config(EXCEL_FILE_DATA &file_cfg_data);
 
     //读取表格数据
-    int read_table_data(TABLE_CONFIG & table_cfg);
+    int read_table_data(TABLE_CONFIG &table_cfg);
+
+
+    //
+    void convert_to_utf8(CString &src, std::string &dst);
+    //
+    void convert_to_utf16(CString &src, std::string &dst);
+    //
+    void convert_to_mbcs(CString &src, std::string &dst);
+
+
+protected:
+
+    ///Excel的处理对象,EXCEL的处理类
+    Illusion_ExcelFile illusion_excel_file_;
+
+    ///文件对应的配置数据，用于我的查询
+    MAP_FNAME_TO_CFGDATA   file_cfg_map_;
+
+    ///
+    wchar_t
+
+protected:
+    //单子实例
+    static Illusion_Read_Config  *instance_;
 };
 
 

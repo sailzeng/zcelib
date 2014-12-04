@@ -2,12 +2,12 @@
 Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
 FileName            : illusion_excel_file.cpp
 Author              : Sail(ZENGXING)//Author name here
-Version             : 
+Version             :
 Date Of Creation    : 2009年4月3日
-Description         : 
+Description         :
 
-Others              : 
-Function List       : 
+Others              :
+Function List       :
     1.  ......
         Modification History:
     1.Date  :
@@ -44,7 +44,7 @@ Modification  :
 _variant_t CONST_VARIANT_TRUE((short)TRUE);
 _variant_t CONST_VARIANT_FALSE((short)FALSE);
 _variant_t CONST_VARIANT_OPTIONAL((long)DISP_E_PARAMNOTFOUND, VT_ERROR);
- 
+
 
 //
 CApplication Illusion_ExcelFile::excel_application_;
@@ -65,13 +65,13 @@ Illusion_ExcelFile::~Illusion_ExcelFile()
 //初始化EXCEL文件，
 BOOL Illusion_ExcelFile::init_excel()
 {
-    //创建Excel 2000服务器(启动Excel) 
-    if (!excel_application_.CreateDispatch(_T("Excel.Application"),NULL)) 
-    { 
+    //创建Excel 2000服务器(启动Excel)
+    if (!excel_application_.CreateDispatch(_T("Excel.Application"), NULL))
+    {
         return FALSE;
     }
 
-    excel_application_.put_DisplayAlerts(FALSE); 
+    excel_application_.put_DisplayAlerts(FALSE);
     return TRUE;
 }
 
@@ -80,7 +80,7 @@ void Illusion_ExcelFile::release_excel()
 {
     excel_application_.Quit();
     excel_application_.ReleaseDispatch();
-    excel_application_=NULL;
+    excel_application_ = NULL;
 }
 
 //打开excel文件
@@ -88,25 +88,25 @@ BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
 {
     //先关闭
     close_excelfile();
-    
-    //利用模板文件建立新文档 
-    excel_books_.AttachDispatch(excel_application_.get_Workbooks(),true); 
+
+    //利用模板文件建立新文档
+    excel_books_.AttachDispatch(excel_application_.get_Workbooks(), true);
 
     LPDISPATCH lpDis = NULL;
     _variant_t v_fn(file_name);
     lpDis = excel_books_.Add(v_fn);
     if (lpDis)
     {
-        excel_work_book_.AttachDispatch(lpDis); 
-        //得到Worksheets 
-        excel_sheets_.AttachDispatch(excel_work_book_.get_Worksheets(),true); 
-        
+        excel_work_book_.AttachDispatch(lpDis);
+        //得到Worksheets
+        excel_sheets_.AttachDispatch(excel_work_book_.get_Worksheets(), true);
+
         //记录打开的文件名称
         open_excel_file_ = file_name;
 
         return TRUE;
     }
-    
+
     return FALSE;
 }
 
@@ -126,8 +126,8 @@ void Illusion_ExcelFile::close_excelfile(BOOL if_save)
             //
             _variant_t v_excel_file(open_excel_file_);
             excel_work_book_.Close(CONST_VARIANT_FALSE,
-                v_excel_file,
-                CONST_VARIANT_OPTIONAL);
+                                   v_excel_file,
+                                   CONST_VARIANT_OPTIONAL);
             excel_books_.Close();
         }
 
@@ -135,7 +135,7 @@ void Illusion_ExcelFile::close_excelfile(BOOL if_save)
         open_excel_file_.Empty();
     }
 
-    
+
 
     excel_sheets_.ReleaseDispatch();
     excel_work_sheet_.ReleaseDispatch();
@@ -148,17 +148,17 @@ void Illusion_ExcelFile::saveas_excelfile(const CString &xls_file)
 {
     _variant_t v_xls_file(xls_file);
     excel_work_book_.SaveAs(v_xls_file,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        0,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL,
-        CONST_VARIANT_OPTIONAL);
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            0,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL,
+                            CONST_VARIANT_OPTIONAL);
     return;
 }
 
@@ -180,7 +180,7 @@ CString Illusion_ExcelFile::sheet_name(long table_index)
 }
 
 //按照序号加载Sheet表格,可以提前加载所有的表格内部数据
-BOOL Illusion_ExcelFile::load_sheet(long table_index,BOOL pre_load)
+BOOL Illusion_ExcelFile::load_sheet(long table_index, BOOL pre_load)
 {
     LPDISPATCH lpDis = NULL;
     excel_current_range_.ReleaseDispatch();
@@ -194,18 +194,18 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index,BOOL pre_load)
     {
         lpDis = NULL;
     }
-  
-    
+
+
     if (lpDis)
     {
-        excel_work_sheet_.AttachDispatch(lpDis,TRUE);
+        excel_work_sheet_.AttachDispatch(lpDis, TRUE);
         excel_current_range_.AttachDispatch(excel_work_sheet_.get_Cells(), TRUE);
     }
     else
     {
         return FALSE;
     }
-    
+
     already_preload_ = FALSE;
     //如果进行预先加载
     if (pre_load)
@@ -218,7 +218,7 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index,BOOL pre_load)
 }
 
 //按照名称加载Sheet表格,可以提前加载所有的表格内部数据
-BOOL Illusion_ExcelFile::load_sheet(const CString &sheet,BOOL pre_load)
+BOOL Illusion_ExcelFile::load_sheet(const CString &sheet, BOOL pre_load)
 {
     LPDISPATCH lpDis = NULL;
     excel_current_range_.ReleaseDispatch();
@@ -237,7 +237,7 @@ BOOL Illusion_ExcelFile::load_sheet(const CString &sheet,BOOL pre_load)
     {
         excel_work_sheet_.AttachDispatch(lpDis, TRUE);
         excel_current_range_.AttachDispatch(excel_work_sheet_.get_Cells(), TRUE);
-        
+
     }
     else
     {
@@ -288,9 +288,9 @@ BOOL Illusion_ExcelFile::is_cell_string(long irow, long icolumn)
     _variant_t v_row((long)irow);
     _variant_t v_column((long)icolumn);
     range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
-    COleVariant vResult =range.get_Value2();
+    COleVariant vResult = range.get_Value2();
     //VT_BSTR标示字符串
-    if(vResult.vt == VT_BSTR)       
+    if (vResult.vt == VT_BSTR)
     {
         return TRUE;
     }
@@ -306,7 +306,7 @@ BOOL Illusion_ExcelFile::is_cell_number(long irow, long icolumn)
     range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
     VARIANT vResult = range.get_Value2();
     //好像一般都是VT_R8
-    if(vResult.vt == VT_INT || vResult.vt == VT_R8)       
+    if (vResult.vt == VT_INT || vResult.vt == VT_R8)
     {
         return TRUE;
     }
@@ -316,7 +316,7 @@ BOOL Illusion_ExcelFile::is_cell_number(long irow, long icolumn)
 //
 CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
 {
-   
+
     COleVariant vResult ;
     CString str;
     //字符串
@@ -326,7 +326,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
         _variant_t v_row((long)irow);
         _variant_t v_column((long)icolumn);
         range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
-        vResult =range.get_Value2();
+        vResult = range.get_Value2();
         range.ReleaseDispatch();
     }
     //如果数据依据预先加载了
@@ -340,34 +340,34 @@ CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
         vResult = val;
     }
 
-    if(vResult.vt == VT_BSTR)
+    if (vResult.vt == VT_BSTR)
     {
-        str=vResult.bstrVal;
+        str = vResult.bstrVal;
     }
     //整数
-    else if (vResult.vt==VT_INT)
+    else if (vResult.vt == VT_INT)
     {
-        str.Format(_T("%d"),vResult.pintVal);
+        str.Format(_T("%d"), vResult.pintVal);
     }
-    //8字节的数字 
-    else if (vResult.vt==VT_R8)     
+    //8字节的数字
+    else if (vResult.vt == VT_R8)
     {
         str.Format(_T("%0.0f"), vResult.dblVal);
     }
     //时间格式
-    else if(vResult.vt==VT_DATE)    
+    else if (vResult.vt == VT_DATE)
     {
         SYSTEMTIME st;
         VariantTimeToSystemTime(vResult.date, &st);
-        CTime tm(st); 
+        CTime tm(st);
         str = tm.Format(_T("%Y-%m-%d"));
 
     }
     //单元格空的
-    else if(vResult.vt==VT_EMPTY)   
+    else if (vResult.vt == VT_EMPTY)
     {
-        str="";
-    }  
+        str = "";
+    }
 
     return str;
 }
@@ -408,8 +408,8 @@ void Illusion_ExcelFile::set_cell_string(long irow, long icolumn, const CString 
     _variant_t v_pos("A1");
     CRange start_range = excel_work_sheet_.get_Range(v_pos, CONST_VARIANT_OPTIONAL);
 
-    _variant_t v_row((long)irow -1);
-    _variant_t v_column((long)icolumn -1);
+    _variant_t v_row((long)irow - 1);
+    _variant_t v_column((long)icolumn - 1);
 
     CRange write_range = start_range.get_Offset(v_row, v_column);
     write_range.put_Value2(new_value);
@@ -418,10 +418,10 @@ void Illusion_ExcelFile::set_cell_string(long irow, long icolumn, const CString 
 
 }
 
-void Illusion_ExcelFile::set_cell_int(long irow, long icolumn,int new_int)
+void Illusion_ExcelFile::set_cell_int(long irow, long icolumn, int new_int)
 {
     _variant_t new_value((long)new_int);
-    
+
     _variant_t v_pos("A1");
     CRange start_range = excel_work_sheet_.get_Range(v_pos, CONST_VARIANT_OPTIONAL);
 
@@ -450,11 +450,11 @@ CString Illusion_ExcelFile::open_filename()
 
 //取得列的名称，比如27->AA
 TCHAR *Illusion_ExcelFile::column_name(long icolumn)
-{   
+{
     static TCHAR column_name[64];
     size_t str_len = 0;
-    
-    while(icolumn > 0)
+
+    while (icolumn > 0)
     {
         int num_data = icolumn % 26;
         icolumn /= 26;
@@ -464,7 +464,7 @@ TCHAR *Illusion_ExcelFile::column_name(long icolumn)
             icolumn--;
         }
         //不知道这个对不，
-        column_name[str_len] = (TCHAR)((num_data-1) + _T('A') );
+        column_name[str_len] = (TCHAR)((num_data - 1) + _T('A') );
         str_len ++;
     }
     column_name[str_len] = '\0';
@@ -480,7 +480,7 @@ void Illusion_ExcelFile::preload_sheet()
 
     CRange used_range;
 
-    used_range = excel_work_sheet_.get_UsedRange();	
+    used_range = excel_work_sheet_.get_UsedRange();
 
 
     VARIANT ret_ary = used_range.get_Value2();
@@ -490,6 +490,6 @@ void Illusion_ExcelFile::preload_sheet()
     }
     //
     ole_safe_array_.Clear();
-    ole_safe_array_.Attach(ret_ary); 
+    ole_safe_array_.Attach(ret_ary);
 }
 

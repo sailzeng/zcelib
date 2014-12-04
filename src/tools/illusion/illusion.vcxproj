@@ -118,7 +118,7 @@
     <ClInclude Include="excel\CWorksheets.h" />
     <ClInclude Include="FileView.h" />
     <ClInclude Include="illusion.h" />
-    <ClInclude Include="illusion_excel_config.h" />
+    <ClInclude Include="illusion_read_config.h" />
     <ClInclude Include="illusion_excel_file.h" />
     <ClInclude Include="illusion_mainfrm.h" />
     <ClInclude Include="OutputWnd.h" />
@@ -133,7 +133,7 @@
     <ClCompile Include="ClassView.cpp" />
     <ClCompile Include="FileView.cpp" />
     <ClCompile Include="illusion.cpp" />
-    <ClCompile Include="illusion_excel_config.cpp" />
+    <ClCompile Include="illusion_read_config.cpp" />
     <ClCompile Include="illusion_excel_file.cpp" />
     <ClCompile Include="illusion_mainfrm.cpp" />
     <ClCompile Include="OutputWnd.cpp" />
