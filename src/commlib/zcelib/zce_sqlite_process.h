@@ -52,19 +52,24 @@ public:
     @param      db_file  数据库文件的名称，
                          由于整体代码的关系，这儿假设在WINDOWS你传入的是ANSI的
                          字符串，在LINUX，你传入的是UTF8
+    @param      read_only 只读
     @param      create_db 是否需要创建数据库，
     */
     int open_database(const char *db_file,
+                      bool read_only,
                       bool create_db = false);
 
 
-
+#if defined ZCE_OS_WINDOWS 
     /*!
-    @brief      只读方式打开数据库,这个特性要3.5以后的版本才可以用。
-    @return     int      打开数据库是否成功 0 成功，其他失败
-    @param      db_file  数据库文件的名称,ANSI 字符串
+    @brief      用UTF16(Windows下说的UNICODE)的路径名称打开一个目录,因为我内部用的全部是
+    *           UTF8的函数，所以这会有问题，而Windows现在很多地方必须用UTF16的编码，所以必
+    *           须转换编码，
     */
-    int open_readonly_db(const char *db_file);
+    int open_utf16_path_db(const char *utf16_db_path, 
+        bool read_only,
+        bool create_db = false);
+#endif
 
 
     ///关闭数据库

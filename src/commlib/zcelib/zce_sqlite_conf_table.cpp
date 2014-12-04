@@ -1,5 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_bytes_encode.h"
+#include "zce_trace_log_debug.h"
 #include "zce_sqlite_process.h"
 #include "zce_sqlite_stmt_handler.h"
 #include "zce_sqlite_conf_table.h"
@@ -111,7 +112,7 @@ void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
 }
 
 //改写的SQL
-void ZCE_General_Config_Table::sql_replace_stmt(unsigned int table_id,
+void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id,
                                                 unsigned int index_1,
                                                 unsigned int index_2,
                                                 unsigned int last_mod_time)
@@ -146,7 +147,7 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    //对于空间，我们是预留了足够的空间的
+    //对于空间，我们是预留了足够的空间的，就不检查边界了
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES ;"
                        "(%u,%u,x'",
@@ -284,7 +285,7 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
                                           const AI_IIJIMA_BINARY_DATA &conf_data)
 {
     //构造后面的SQL
-    sql_replace_stmt(table_id,
+    sql_replace_bind(table_id,
                      conf_data.index_1_,
                      conf_data.index_2_,
                      conf_data.last_mod_time_);
@@ -440,6 +441,16 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
     {
         stmt_handler >> ary_ai_iijma[i].index_1_;
         stmt_handler >> ary_ai_iijma[i].index_2_;
+
+        int blob_len = stmt_handler.cur_column_bytes();
+        if (blob_len > AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
+        {
+            ZCE_LOGMSG(RS_ERROR,"Error current column bytes length [%u] > "
+                "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u]." ,
+                blob_len, AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
+            return -1;
+        }
+
         stmt_handler >> ZCE_SQLite_STMTHdl::BINARY((void *)ary_ai_iijma[i].ai_iijima_data_,
                                                    ary_ai_iijma[i].ai_data_length_);
         stmt_handler >> ary_ai_iijma[i].last_mod_time_;
@@ -535,7 +546,6 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
 
                 ++p;
                 ++q;
-
             }
 
         }
@@ -557,6 +567,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                         r_is_equal = true;
                     }
 
+                    //index相同的位置的数据是否一致的，决定这个位置是否更新
                     size_t end_pos = r_is_equal ? r - 1 : r;
                     for (size_t s = q; s < end_pos; ++s)
                     {
@@ -573,10 +584,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                     break;
 
                 }
-
-                //
             }
-
 
             if (r < new_ai_iijma.size())
             {
@@ -586,7 +594,6 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
             //old[p] 是多出的，DELETE
             else
             {
-
                 sql_delete_one(table_id, old_ai_iijma[p].index_1_, old_ai_iijma[p].index_2_);
                 update_sql += sql_string_;
                 ++p;

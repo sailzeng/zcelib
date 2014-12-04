@@ -133,7 +133,8 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
     int protobuf_len = info.ByteSize();
     if (protobuf_len > MAX_LEN_OF_AI_IIJIMA_DATA)
     {
-        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d > MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
+        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
+                   " MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
                    index_1,
                    index_2,
                    typeid(info).name(),
@@ -141,7 +142,7 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
         return -1
     }
 
-           bool bret = info.SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
+    bool bret = info.SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
     if (bret)
     {
         ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.\n",
@@ -182,7 +183,7 @@ protected:
 
 
     //¸ÄÐ´µÄSTMT SQL
-    void sql_replace_stmt(unsigned  int table_id,
+    void sql_replace_bind(unsigned  int table_id,
                           unsigned int index_1,
                           unsigned int index_2,
                           unsigned int last_mod_time);

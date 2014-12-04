@@ -96,7 +96,6 @@ public:
         return sqlite_handler_->error_code();
     }
 
-    //
     /*!
     * @brief      得到当前返回列的长度
     * @return     int 长度
@@ -150,6 +149,12 @@ public:
         column<value_type>(current_col_, val);
         ++current_col_;
         return *this;
+    }
+
+    //当前column的数据长度
+    inline int cur_column_bytes()
+    {
+        return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
     }
 
     ///bind绑定参数,列号自动++

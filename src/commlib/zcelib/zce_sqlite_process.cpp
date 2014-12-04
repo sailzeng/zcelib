@@ -23,12 +23,21 @@ ZCE_SQLite_DB_Handler::~ZCE_SQLite_DB_Handler()
 
 //const char* db_file ,数据库名称文件路径,接口要求UTF8编码，
 //int == 0表示成功，否则失败
-int ZCE_SQLite_DB_Handler::open_database(const char *db_file, bool create_db)
+int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
+                                         bool read_only,
+                                         bool create_db)
 {
     int flags = SQLITE_OPEN_READWRITE;
     if (create_db)
     {
         flags |= SQLITE_OPEN_CREATE;
+        //不能同时存在
+        ZCE_ASSERT(read_only == false);
+    }
+
+    if (read_only)
+    {
+        flags = SQLITE_OPEN_READONLY;
     }
 
     int ret = ::sqlite3_open_v2(db_file,
@@ -37,7 +46,8 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file, bool create_db)
                                 NULL);
     if (ret != SQLITE_OK )
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_open_v2 fail:[%d][%s]",
+        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
+                   db_file,
                    error_code(),
                    error_message());
         return -1;
@@ -47,29 +57,48 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file, bool create_db)
 
 }
 
+#if defined ZCE_OS_WINDOWS 
 
-
-//以只读的方式打开一个数据库
-//这个特性要3.5以后的版本才可以用。
-int ZCE_SQLite_DB_Handler::open_readonly_db(const char *db_file)
+//以UTF16路径的打开一个DB文件
+int ZCE_SQLite_DB_Handler::open_utf16_path_db(const char *db_file, 
+    bool read_only,
+    bool create_db)
 {
+    //////////////////////////////////////////////////////////////////////////
+    // Begin(把一个ascii码字符转换成UTF-8)
 
-    int ret = ::sqlite3_open_v2(db_file,
-                                &sqlite3_handler_,
-                                SQLITE_OPEN_READONLY,
-                                NULL);
-    //
-    if (ret != SQLITE_OK )
+    DWORD utf16_buffer_len = MultiByteToWideChar(CP_ACP, 0, db_file, -1, NULL, 0);
+    if (utf16_buffer_len > MAX_PATH)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_open_v2 open readonly table fail:[%d][%s]",
-                   error_code(),
-                   error_message());
         return -1;
     }
+    wchar_t utf16_buffer[MAX_PATH+1];
 
+    // 第一次先把ascii码转换成UTF-16
+    MultiByteToWideChar(CP_ACP, 0, db_file, -1, utf16_buffer, utf16_buffer_len);
+
+    DWORD utf8_buffer_len = WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, NULL, 0, NULL, FALSE);
+    char utf8_buffer [MAX_PATH*3];
+
+    // 第二次再把UTF-16编码转换为UTF-8编码
+    WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, utf8_buffer, utf8_buffer_len, NULL, 0);
+
+    // End(把一个ascii码字符转换成UTF-8)
+    //////////////////////////////////////////////////////////////////////////
+
+    int ret = open_database(db_file,
+        read_only,
+        create_db);
+    //
+    if (ret != 0)
+    {
+        return ret;
+    }
     return 0;
-
 }
+
+
+#endif
 
 
 //关闭数据库。
