@@ -9,11 +9,30 @@ Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
 //
 Illusion_Read_Config::Illusion_Read_Config()
 {
+    
+    cvt_utf16_buf_ = new wchar_t[64*1024];
+    cvt_utf8_buf_ = new char [64*1024];
+    cvt_mbcs_buf_ = new char[64 * 1024];
 }
 
 
 Illusion_Read_Config::~Illusion_Read_Config()
 {
+    if (cvt_utf16_buf_)
+    {
+        delete cvt_utf16_buf_;
+        cvt_utf16_buf_ = NULL;
+    }
+    if (cvt_utf8_buf_)
+    {
+        delete cvt_utf8_buf_;
+        cvt_utf8_buf_ = NULL;
+    }
+    if (cvt_mbcs_buf_)
+    {
+        delete cvt_mbcs_buf_;
+        cvt_mbcs_buf_ = NULL;
+    }
 }
 
 
@@ -308,33 +327,107 @@ int Illusion_Read_Config::read_excelconfig(const CString &open_file)
 }
 
 
-//
-void Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
+//根据当前默认的字符编码方式，转换为UTF8
+int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
+     
+    DWORD ret = 0;
+    ret = ::WideCharToMultiByte(CP_UTF8, 
+        NULL, 
+        (LPCTSTR)src,
+        src.GetLength(),
+        cvt_utf8_buf_,
+        CONVERT_BUFFER_LEN,
+        NULL,
+        0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    return 0;
 
 #else
+    // MBCS ===> UTF16 ===> UTF8
 
+    // 第一次先把MBCS码转换成UTF-16
+    DWORD ret = 0;
+    ret = ::MultiByteToWideChar(CP_ACP, 
+        0,
+        (LPCTSTR)src,
+        src.GetLength(),
+        cvt_utf16_buf_,
+        CONVERT_BUFFER_LEN);
+    if (ret == 0)
+    {
+        return -1;
+    }
+
+    // 第二次再把UTF-16编码转换为UTF-8编码
+    ret = ::WideCharToMultiByte(CP_UTF8, 
+        NULL, 
+        cvt_utf16_buf_,
+        -1, 
+        cvt_utf8_buf_,
+        CONVERT_BUFFER_LEN,
+        NULL,
+        0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    return 0;
 #endif
 }
 
-//
-void Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
+//根据当前默认的字符编码方式，转换为UTF16(UNICODE)
+int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
-
+    // UTF16 == UTF16
+    if (src.GetLength() > CONVERT_BUFFER_LEN)
+    {
+        return -1;
+    }
+    dst.assign(((const char *)((LPCTSTR)src)),(src.GetLength()*( sizeof(wchar_t))) );
+    return 0;
 #else
-
+    // MBCS ===> UTF16
+    DWORD ret = 0;
+    ret = ::MultiByteToWideChar(CP_ACP,
+        0,
+        (LPCTSTR)src,
+        src.GetLength(),
+        cvt_utf16_buf_,
+        CONVERT_BUFFER_LEN);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    return 0;
 #endif
 }
 
-//
-void Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
+//根据当前默认的字符编码方式，转换为MBCS
+int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
-
+    //UTF16 == > MBCS
+    DWORD ret = 0;
+    ret = ::WideCharToMultiByte(CP_ACP, NULL, (LPCTSTR)src, src.GetLength(), cvt_mbcs_buf_, CONVERT_BUFFER_LEN, NULL, 0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    return 0;
 #else
-
+    // MBCS ===> MBCS
+    if (src.GetLength() > CONVERT_BUFFER_LEN)
+    {
+        return -1;
+    }
+    dst.assign(((const char *)((LPCTSTR)src)), (src.GetLength()*(sizeof(wchar_t))));
+    return 0;
 #endif
 }
 

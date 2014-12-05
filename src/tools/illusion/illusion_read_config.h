@@ -58,7 +58,12 @@ public:
     typedef std::map <CString, EXCEL_FILE_DATA> MAP_FNAME_TO_CFGDATA;
 
 
-
+    enum CVT_CODING
+    {
+        CVT_UTF8,
+        CVT_UTF16,
+        CVT_MBCS,
+    };
 
 
 protected: // 仅从序列化创建
@@ -103,12 +108,20 @@ protected:
 
 
     //
-    void convert_to_utf8(CString &src, std::string &dst);
+    int convert_to_utf8(CString &src, std::string &dst);
     //
-    void convert_to_utf16(CString &src, std::string &dst);
+    int convert_to_utf16(CString &src, std::string &dst);
     //
-    void convert_to_mbcs(CString &src, std::string &dst);
+    int convert_to_mbcs(CString &src, std::string &dst);
 
+protected:
+    //
+    static const size_t CONVERT_BUFFER_LEN = 64 * 1024;
+
+protected:
+
+    //单子实例
+    static Illusion_Read_Config  *instance_;
 
 protected:
 
@@ -119,11 +132,17 @@ protected:
     MAP_FNAME_TO_CFGDATA   file_cfg_map_;
 
     ///
-    wchar_t
+    CVT_CODING cur_cvt_coding_ = CVT_UTF8;
 
-protected:
-    //单子实例
-    static Illusion_Read_Config  *instance_;
+    ///
+    wchar_t *cvt_utf16_buf_ = NULL;
+
+    ///
+    char *cvt_utf8_buf_ = NULL;
+
+    ///
+    char *cvt_mbcs_buf_ = NULL;
+
 };
 
 
