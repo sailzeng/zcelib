@@ -1,9 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2013
-VisualStudioVersion = 12.0.30501.0
+VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "illusion", "illusion.vcxproj", "{0ABF043E-3CCA-463A-93F0-A6713AF6A64E}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "illusion", "illusion.vcxproj", "{DAA5178E-6C26-4B4B-B89C-52C6B188758B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -11,10 +11,10 @@ Global
 		Release|Win32 = Release|Win32
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0ABF043E-3CCA-463A-93F0-A6713AF6A64E}.Debug|Win32.ActiveCfg = Debug|Win32
-		{0ABF043E-3CCA-463A-93F0-A6713AF6A64E}.Debug|Win32.Build.0 = Debug|Win32
-		{0ABF043E-3CCA-463A-93F0-A6713AF6A64E}.Release|Win32.ActiveCfg = Release|Win32
-		{0ABF043E-3CCA-463A-93F0-A6713AF6A64E}.Release|Win32.Build.0 = Release|Win32
+		{DAA5178E-6C26-4B4B-B89C-52C6B188758B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{DAA5178E-6C26-4B4B-B89C-52C6B188758B}.Debug|Win32.Build.0 = Debug|Win32
+		{DAA5178E-6C26-4B4B-B89C-52C6B188758B}.Release|Win32.ActiveCfg = Release|Win32
+		{DAA5178E-6C26-4B4B-B89C-52C6B188758B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
