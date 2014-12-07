@@ -97,7 +97,7 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
     int number_file =  ZCE_LIB::scandir("E:\\Courage\\readline-5.2",
                                        &namelist,
                                        hfile_selector,
-                                       ZCE_LIB::alphasort);
+                                       ZCE_LIB::scandir_namesort);
 
     if (number_file <= 0)
     {

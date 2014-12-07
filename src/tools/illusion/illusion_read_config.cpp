@@ -139,18 +139,19 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 
         CString tc_key = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_KEY);
 
-
+        CString ;
         TABLE_CONFIG tc_data;
 
         if (tc_key == _T("表格名称"))
         {
-            tc_data.table_name_ = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
-            if (tc_data.table_name_.IsEmpty())
+            
+            tc_data.excel_table_name_ = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
+            if (tc_data.excel_table_name_.IsEmpty())
             {
                 return -1;
             }
             //检查EXCEL文件中是否有这个表格
-            if (illusion_excel_file_.load_sheet(tc_data.table_name_, FALSE) == FALSE)
+            if (illusion_excel_file_.load_sheet(tc_data.excel_table_name_, FALSE) == FALSE)
             {
                 return -3;
             }
@@ -171,6 +172,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
+
             tc_data.protobuf_message_ = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
             if (tc_data.protobuf_message_.IsEmpty())
             {
@@ -232,7 +234,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
                 return -1;
             }
 
-            auto result = file_cfg_data.file_table_cfg_.insert(std::make_pair(tc_data.table_name_, tc_data));
+            auto result = file_cfg_data.file_table_cfg_.insert(std::make_pair(tc_data.excel_table_name_, tc_data));
             if (false == result.second)
             {
                 return -2;
@@ -252,13 +254,13 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 int Illusion_Read_Config::read_table_data(TABLE_CONFIG &tc_data)
 {
     //检查EXCEL文件中是否有这个表格
-    if (illusion_excel_file_.load_sheet(tc_data.table_name_, TRUE) == FALSE)
+    if (illusion_excel_file_.load_sheet(tc_data.excel_table_name_, TRUE) == FALSE)
     {
         return -3;
     }
     long row_count = illusion_excel_file_.row_count();
     long col_count = illusion_excel_file_.column_count();
-    TRACE("%s table have col_count = %u row_count =%u\n", tc_data.table_name_, col_count, row_count);
+    TRACE("%s table have col_count = %u row_count =%u\n", tc_data.excel_table_name_, col_count, row_count);
 
     CString proto_item_name;
     std::string std_item_name;

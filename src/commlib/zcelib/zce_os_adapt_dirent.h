@@ -87,7 +87,24 @@ void free_scandir_result(int list_number, dirent *namelist[]);
 * @param      left  比较的目录项目
 * @param      right 比较的目录项目
 */
-int alphasort (const struct dirent **left, const struct dirent **right);
+int scandir_namesort (const struct dirent **left, 
+                      const struct dirent **right);
+
+/*!
+* @brief      
+* @return     int
+* @param      ext_name
+* @param      left
+* @note       
+*/
+int scandir_extselector(const char *ext_name, 
+                        const struct dirent *left);
+
+
+
+int easy_scandir(const char *dirname,
+                 const char *ext_name,
+                 std::vector<std::string> &file_ary);
 
 /*!
 * @brief      从一个路径得到文件的名称，应该是非标准函数
@@ -148,7 +165,42 @@ int mkdir_recurse(const char *pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 */
 int rmdir(const char *pathname);
 
+
+/*!
+* @brief
+* @return     const char*
+* @param      dst
+* @param      src
+* @note
+*/
+inline const char *path_str_cat(char *dst,
+                                const char *src)
+{
+    size_t dst_len = ::strlen(dst);
+    if (IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+    {
+        ::strcat(dst , ZCE_DIRECTORY_SEPARATOR_STR);
+    }
+    ::strcat(dst, src);
+    return dst;
+}
+
+
+inline std::string &path_string_cat(std::string &dst,
+                                    const std::string &src)
+{
+    size_t dst_len = dst.length();
+    if (IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+    {
+        dst += ZCE_DIRECTORY_SEPARATOR_STR;
+    }
+    dst += src;
+    return dst;
+}
+
+
 };
+
 
 #endif //ZCE_LIB_OS_ADAPT_DIRENT_H_
 

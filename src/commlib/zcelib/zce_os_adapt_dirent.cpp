@@ -331,6 +331,49 @@ int ZCE_LIB::scandir (const char *dirname,
 #endif
 }
 
+
+//比较尾部的扩展名称
+int scandir_extselector(const char *ext_name,
+                        const struct dirent *left)
+{
+    size_t ext_len = ::strlen(ext_name);
+    size_t name_len = ::strlen(left->d_name);
+
+    if (name_len > ext_len && 
+        0 == ::strcmp(left->d_name + name_len - ext_len, ext_name) )
+    {
+        return 1;
+    }
+    return 0;
+}
+
+
+//
+int ZCE_LIB::easy_scandir(const char *dirname,
+                          const char *ext_name,
+                          std::vector<std::string> &file_ary)
+{
+    struct  dirent  **namelist = NULL;
+
+    std::function<int(const struct dirent *)> f_ext_selector =
+        std::bind(scandir_extselector, std::placeholders::_1);
+
+    int number_file = ZCE_LIB::scandir(dirname,
+        &namelist,
+        f_ext_selector()(ext_name),
+        NULL);
+    if (number_file < 0)
+    {
+        return -1;
+    }
+
+    ZCE_LIB::free_scandir_result(number_file, namelist);
+    return 0;
+}
+
+
+
+
 //释放scandir 返回参数的里面的各种分配数据，非标准函数
 void ZCE_LIB::free_scandir_result(int list_number, dirent *namelist[])
 {
@@ -345,7 +388,7 @@ void ZCE_LIB::free_scandir_result(int list_number, dirent *namelist[])
 }
 
 //用于目录排序比较
-int ZCE_LIB::alphasort (const struct dirent **left, const struct dirent **right)
+int ZCE_LIB::scandir_namesort (const struct dirent **left, const struct dirent **right)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::strcmp ((*(left))->d_name,   (*(right))->d_name);
@@ -511,4 +554,5 @@ int ZCE_LIB::rmdir(const char *pathname)
     return ::rmdir(pathname);
 #endif
 }
+
 

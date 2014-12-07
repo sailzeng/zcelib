@@ -156,8 +156,8 @@
 #define ZCE_SUPPORT_WINSVR2008 1
 
 //Windows 的Vista和WinServer2008以后，支持了很多新的API,如果需要支持，需要打开支持开关
-#if (defined _WIN32_WINNT) && (_WIN32_WINNT >=  0x0600) && defined (_MSC_VER) && (_MSC_VER >= 1400)
 #ifndef ZCE_SUPPORT_WINSVR2008
+#if (defined _WIN32_WINNT) && (_WIN32_WINNT >=  0x0600) && defined (_MSC_VER) && (_MSC_VER >= 1400)
 #define ZCE_SUPPORT_WINSVR2008 1
 #else
 #define ZCE_SUPPORT_WINSVR2008 0

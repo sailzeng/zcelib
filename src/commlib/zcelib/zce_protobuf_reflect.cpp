@@ -117,13 +117,6 @@ void ZCE_Protobuf_Reflect::del_proc_message()
     proc_message_ = NULL;
 }
 
-//
-//int ZCE_Protobuf_Reflect::set_proc_msg_field(const std::string &field_name,
-//    const std::string &set_data)
-//{
-//
-//}
-
 
 int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
                                     const std::string &field_name,

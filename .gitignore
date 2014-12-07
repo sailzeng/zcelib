@@ -43,3 +43,6 @@ log
 *.MMAP
 
 *.aps
+
+Debug
+Release

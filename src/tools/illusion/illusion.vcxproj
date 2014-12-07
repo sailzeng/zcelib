@@ -11,7 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{DAA5178E-6C26-4B4B-B89C-52C6B188758B}</ProjectGuid>
+    <ProjectGuid>{0ABF043E-3CCA-463A-93F0-A6713AF6A64E}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>illusion</RootNamespace>
   </PropertyGroup>
@@ -21,6 +21,7 @@
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v120</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
+    <UseOfMfc>Static</UseOfMfc>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -52,6 +53,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>./excelole/;../../commlib/zcelib</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -76,6 +78,22 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="excelole\CApplication.h" />
+    <ClInclude Include="excelole\CRange.h" />
+    <ClInclude Include="excelole\CWorkbook.h" />
+    <ClInclude Include="excelole\CWorkbooks.h" />
+    <ClInclude Include="excelole\CWorksheet.h" />
+    <ClInclude Include="excelole\CWorksheets.h" />
+    <ClInclude Include="illusion_excel_file.h" />
+    <ClInclude Include="illusion_main.h" />
+    <ClInclude Include="illusion_read_config.h" />
+    <ClInclude Include="stdafx.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="illusion_excel_file.cpp" />
+    <ClCompile Include="illusion_main.cpp" />
+    <ClCompile Include="illusion_read_config.cpp" />
+    <ClCompile Include="stdafx.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

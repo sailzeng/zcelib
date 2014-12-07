@@ -317,7 +317,7 @@ typedef struct __stat64       zce_os_stat;
 
 //Windows下的POSOX文件统一放一个目录,
 
-#define ZCE_POSIX_MMAP_DIRECTORY   "C:\\Temp\\"
+#define ZCE_POSIX_MMAP_DIRECTORY   "C:\\dev.shm\\"
 
 ///
 struct dirent

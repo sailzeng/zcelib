@@ -1,5 +1,4 @@
-// illusion_doc.h :  CillusionDoc 类的接口
-//
+
 
 
 #pragma once
@@ -14,19 +13,19 @@ public:
     struct TABLE_CONFIG
     {
         ///表格名称
-        CString table_name_;
+        CString excel_table_name_;
 
         ///表格数据从第几行读取
         unsigned int read_data_start_ = 3;
 
         ///表格对应的protobuf的message名称
-        CString  protobuf_message_;
+        std::string   protobuf_message_;
 
         ///表格的第几行描述字段对应的protobuf
         unsigned int protobuf_cfg_line_ = 2;
 
         ///表格存放的数据库（SQLite）文件名称
-        CString sqlite3_db_name_;
+        std::string sqlite3_db_name_;
 
         ///表格对应的table id
         unsigned int table_id_ = 0;
@@ -79,8 +78,6 @@ public:
 
     ///
     static void clean_instance();
-
-
 
 public:
     //
