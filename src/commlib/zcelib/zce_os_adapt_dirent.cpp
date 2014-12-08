@@ -35,6 +35,7 @@ DIR *ZCE_LIB::opendir (const char *dir_name)
     dir_handle->dirent_->d_ino = 0;
     dir_handle->dirent_->d_off = 0;
 
+    dir_handle->dirent_->d_type = DT_UNKNOWN;
     dir_handle->dirent_->d_reclen = sizeof (dirent);
 
     dir_handle->dirent_->d_name[0] = '\0';
@@ -93,11 +94,11 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
         //WINDOS目前实际支持两种分节符
         if ( ZCE_IS_DIRECTORY_SEPARATOR(scan_dirname[lastchar - 1] ) )
         {
-            ::strcat (scan_dirname, ("\\*"));
+            ::strcat(scan_dirname, ("*")); 
         }
         else
         {
-            ::strcat (scan_dirname,  ("*"));
+            ::strcat(scan_dirname, ("\\*"));
         }
 
         dir_handle->current_handle_ = ::FindFirstFileA (scan_dirname,
@@ -205,6 +206,7 @@ int ZCE_LIB::readdir_fileary(const char *dirname,
 
     //循环所有文件，检测扩展名称
     dirent dir_tmp, *dir_p = NULL;
+
     for (retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p);
          dir_p && retval == 0;
          retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p))

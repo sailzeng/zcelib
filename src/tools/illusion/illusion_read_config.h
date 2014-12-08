@@ -87,7 +87,10 @@ public:
 
 
     //处理EXCEL文件
-    int read_excelconfig(const CString &open_file);
+    int read_excelfile(const CString &open_file);
+    ///
+    int read_excelfile_mbcs(const std::string &mbcs_name);
+
 
     //清理所有的读取数据
     void clear();

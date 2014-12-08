@@ -138,7 +138,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 
         CString tc_key = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_KEY);
 
-        CString ;
+        CString temp_value;
         TABLE_CONFIG tc_data;
 
         if (tc_key == _T("表格名称"))
@@ -172,12 +172,12 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
                 return -1;
             }
 
-            tc_data.protobuf_message_ = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
-            if (tc_data.protobuf_message_.IsEmpty())
+            temp_value  = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
+            if (temp_value.IsEmpty())
             {
                 return -1;
             }
-
+            convert_to_utf8(temp_value, tc_data.protobuf_message_);
             ++row_no;
             if (row_no > row_no)
             {
@@ -194,11 +194,12 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            tc_data.sqlite3_db_name_ = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
-            if (tc_data.sqlite3_db_name_.IsEmpty())
+            temp_value = illusion_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
+            if (temp_value.IsEmpty())
             {
                 return -1;
             }
+            convert_to_utf8(temp_value, tc_data.sqlite3_db_name_);
 
             ++row_no;
             if (row_no > row_no)
@@ -279,7 +280,7 @@ int Illusion_Read_Config::read_table_data(TABLE_CONFIG &tc_data)
     return 0;
 }
 
-int Illusion_Read_Config::read_excelconfig(const CString &open_file)
+int Illusion_Read_Config::read_excelfile(const CString &open_file)
 {
     BOOL bret = illusion_excel_file_.open_excelfile(open_file);
     //Excel文件打开失败
@@ -325,6 +326,29 @@ int Illusion_Read_Config::read_excelconfig(const CString &open_file)
     }
 
     return 0;
+}
+
+
+///
+int Illusion_Read_Config::read_excelfile_mbcs(const std::string &mbcs_name)
+{
+#if defined UNICODE || defined _UNICODE
+    DWORD ret = 0;
+    ret = ::MultiByteToWideChar(CP_ACP,
+        0,
+        mbcs_name.c_str(),
+        mbcs_name.length(),
+        cvt_utf16_buf_,
+        CONVERT_BUFFER_LEN);
+    if (ret == 0)
+    {
+        return -1;
+    }
+
+    return read_excelfile(cvt_utf16_buf_);
+#else
+    return read_excelfile(mbcs_name.c_str());
+#endif
 }
 
 
@@ -431,10 +455,4 @@ int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
     return 0;
 #endif
 }
-
-
-
-
-
-
 

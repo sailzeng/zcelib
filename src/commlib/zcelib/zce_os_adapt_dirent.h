@@ -176,9 +176,16 @@ inline const char *path_str_cat(char *dst,
                                 const char *src)
 {
     size_t dst_len = ::strlen(dst);
-    if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+    if ( dst_len > 0 )
     {
-        ::strcat(dst , ZCE_DIRECTORY_SEPARATOR_STR);
+        if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+        {
+            ::strcat(dst, ZCE_DIRECTORY_SEPARATOR_STR);
+        }
+    }
+    else
+    {
+        ::strcat(dst, ZCE_CURRENT_DIRECTORY_STR);
     }
     ::strcat(dst, src);
     return dst;
@@ -189,9 +196,16 @@ inline std::string &path_string_cat(std::string &dst,
                                     const std::string &src)
 {
     size_t dst_len = dst.length();
-    if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+    if ( dst_len > 0 )
     {
-        dst += ZCE_DIRECTORY_SEPARATOR_STR;
+        if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+        {
+            dst += ZCE_DIRECTORY_SEPARATOR_STR;
+        }
+    }
+    else
+    {
+        dst = ZCE_CURRENT_DIRECTORY_STR;
     }
     dst += src;
     return dst;

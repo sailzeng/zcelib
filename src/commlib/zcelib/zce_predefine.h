@@ -1005,7 +1005,7 @@ struct ZDOUBLE_STRUCT
 #endif
 
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
-#pragma comment(lib, "sqlite.lib" )
+#pragma comment(lib, "sqlite3.lib" )
 #endif
 
 #endif
