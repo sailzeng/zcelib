@@ -55,10 +55,25 @@ struct dirent *readdir (DIR *dir_handle);
 * @param[in]  dir_handle 读取目录DIR句柄，
 * @param[out] entry 返回的读取到的目录项目,entry必须是外部已经分配好的变量
 * @param[out] result 读取到的目录项目指针，如果是已经读取到了最后，*result将被置为NULL
+*                    如果读取到了项目，result指向entry
 */
 int readdir_r (DIR *dir_handle,
                struct dirent *entry,
                struct dirent **result);
+
+
+/*!
+* @brief      根据前缀和后缀，读取目录下面的各种文件，
+* @return     int == 0 表示成功
+* @param[in]  dirname 读取目录
+* @param[in]  prefix_name 前缀名称，可以为NULL，也可以就是某个文件名称
+* @param[in]  ext_name 后缀名称，可以为NULL，为NULL表示不检查
+* @param[out] file_name_ary 文件名称队列
+*/
+int readdir_fileary(const char *dirname,
+                    const char *prefix_name,
+                    const char *ext_name,
+                    std::vector<std::string> &file_name_ary);
 
 /*!
 * @brief      扫描一个目录里面的目录项目，就一个函数，看上去简单，而且可以利用选择器等工具加快开发速度，但要注意结果释放
@@ -87,24 +102,8 @@ void free_scandir_result(int list_number, dirent *namelist[]);
 * @param      left  比较的目录项目
 * @param      right 比较的目录项目
 */
-int scandir_namesort (const struct dirent **left, 
+int scandir_namesort (const struct dirent **left,
                       const struct dirent **right);
-
-/*!
-* @brief      
-* @return     int
-* @param      ext_name
-* @param      left
-* @note       
-*/
-int scandir_extselector(const char *ext_name, 
-                        const struct dirent *left);
-
-
-
-int easy_scandir(const char *dirname,
-                 const char *ext_name,
-                 std::vector<std::string> &file_ary);
 
 /*!
 * @brief      从一个路径得到文件的名称，应该是非标准函数
@@ -177,7 +176,7 @@ inline const char *path_str_cat(char *dst,
                                 const char *src)
 {
     size_t dst_len = ::strlen(dst);
-    if (IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+    if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
     {
         ::strcat(dst , ZCE_DIRECTORY_SEPARATOR_STR);
     }
@@ -190,7 +189,7 @@ inline std::string &path_string_cat(std::string &dst,
                                     const std::string &src)
 {
     size_t dst_len = dst.length();
-    if (IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
+    if (ZCE_IS_DIRECTORY_SEPARATOR(dst[dst_len - 1]) == false)
     {
         dst += ZCE_DIRECTORY_SEPARATOR_STR;
     }

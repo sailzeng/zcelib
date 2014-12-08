@@ -9,7 +9,6 @@ Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
 //
 Illusion_Read_Config::Illusion_Read_Config()
 {
-    
     cvt_utf16_buf_ = new wchar_t[64*1024];
     cvt_utf8_buf_ = new char [64*1024];
     cvt_mbcs_buf_ = new char[64 * 1024];

@@ -1,40 +1,8 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Tencent Technology (Shenzhen) Company Limited.
-FileName            : illusion_excel_file.cpp
-Author              : Sail(ZENGXING)//Author name here
-Version             :
-Date Of Creation    : 2009年4月3日
-Description         :
-
-Others              :
-Function List       :
-    1.  ......
-        Modification History:
-    1.Date  :
-Author  :
-Modification  :
-
-    这个类是从网上下载的，我坐享其成，感谢原来的作者，我只试试是稍稍做了一下修正。
-    修正包括一些参数的使用不谨慎，bool 改为BOOL等,对于对象关系，我改了一部分，感觉原来的作者对于OO的思路部分不是很清楚。
-    对于这类东西OLE，我完全不了解，用别人封装的东西感觉还是放心了很多，C++，伟大的C++
-     http://blog.csdn.net/gyssoft/archive/2007/04/29/1592104.aspx
-
-    OLE读写EXCEL都比较慢，所以应该尽量减少OLE的次数
-    对于读取，还有解决方法，请试用一下预加载的方式，这个方法一次加载所有的读取数据,如此速度就飞快了。
-    据说写数据是没有什么方法加快的
-    http://topic.csdn.net/t/20030626/21/1962211.html
-
-    增加了一些写入方式的代码，保证可以写入EXCEL数据区，但是对于保存，我发现如果调用CLOSE并且保存的方式，
-    速度非常慢，我不理解为什么。
-    所以我吧EXCEL打开了，让你进行后续管理,
-
-
-******************************************************************************************/
 
 
 
 
-//-----------------------excelfile.cpp----------------
+
 
 #include "stdafx.h"
 #include "illusion_excel_file.h"

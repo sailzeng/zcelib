@@ -309,7 +309,7 @@ typedef struct __stat64       zce_os_stat;
 #define WIN_DIRECTORY_SEPARATOR_CHAR2 '/'
 
 //WINDOWS平台现在这两个字符都支持
-#define IS_DIRECTORY_SEPARATOR(ch) (('\\'==(ch)) || ('/'==(ch)))
+#define ZCE_IS_DIRECTORY_SEPARATOR(ch) (('\\'==(ch)) || ('/'==(ch)))
 
 #define ZCE_DIRECTORY_SEPARATOR_CHAR '\\'
 #define ZCE_DIRECTORY_SEPARATOR_STR  "\\"
@@ -318,6 +318,41 @@ typedef struct __stat64       zce_os_stat;
 //Windows下的POSOX文件统一放一个目录,
 
 #define ZCE_POSIX_MMAP_DIRECTORY   "C:\\dev.shm\\"
+
+//The file type is unknown.
+#ifndef DT_UNKNOWN
+#define DT_UNKNOWN      0
+#endif
+//This is a named pipe(FIFO).
+#ifndef DT_FIFO
+#define DT_FIFO         1
+#endif
+//This is a character device.
+#ifndef DT_CHR
+#define DT_CHR          2
+#endif
+//This is a directory.
+#ifndef DT_DIR
+#define DT_DIR          4
+#endif
+//This is a block device.
+#ifndef DT_BLK
+#define DT_BLK          6
+#endif
+//This is a regular file.
+#ifndef DT_REG
+#define DT_REG          8
+#endif
+//This is a symbolic link.
+#ifndef DT_LNK
+#define DT_LNK          10
+#endif
+//This is a UNIX domain socket.
+#ifndef DT_SOCK
+#define DT_SOCK         12
+#endif
+
+
 
 ///
 struct dirent
@@ -330,8 +365,8 @@ struct dirent
     //长度记录
     unsigned short d_reclen;
 
-    //文件类型,LINUX在比较2.6.XX后面的版本才支持这个选项
-    //unsigned char  d_type;
+    ///文件类型,LINUX在2.6.XX后面的版本才支持这个选项
+    unsigned char  d_type;
 
     //文件名称
     char           d_name[PATH_MAX + 1];
@@ -817,7 +852,7 @@ struct shmid_ds
 #define LINUX_DIRECTORY_SEPARATOR_CHAR '/'
 
 //WINDOWS平台现在这两个字符都支持
-#define IS_DIRECTORY_SEPARATOR(ch) ('/'==(ch))
+#define ZCE_IS_DIRECTORY_SEPARATOR(ch) ('/'==(ch))
 
 // Define the pathname separator characters for UNIX.
 #define ZCE_DIRECTORY_SEPARATOR_STR   "/"

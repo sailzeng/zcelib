@@ -91,8 +91,7 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
         assert(lastchar > 0);
 
         //WINDOS目前实际支持两种分节符
-        if ( scan_dirname[lastchar - 1] != '\\'
-             && scan_dirname[lastchar - 1] != '/' )
+        if ( ZCE_IS_DIRECTORY_SEPARATOR(scan_dirname[lastchar - 1] ) )
         {
             ::strcat (scan_dirname, ("\\*"));
         }
@@ -122,6 +121,17 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
     {
         ::strncpy (dir_handle->dirent_->d_name, dir_handle->fdata_.cFileName, PATH_MAX);
         dir_handle->dirent_->d_name[PATH_MAX] = '\0';
+
+        //把目录标识出来
+        if (dir_handle->fdata_.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
+            dir_handle->dirent_->d_type = DT_DIR;
+        }
+        else
+        {
+            dir_handle->dirent_->d_type = DT_REG;
+        }
+
         return dir_handle->dirent_;
     }
     else
@@ -167,6 +177,75 @@ int ZCE_LIB::readdir_r (DIR *dir_handle,
     return ::readdir_r(dir_handle, entry, result);
 #endif
 
+}
+
+
+//读取某个前缀，后缀的文件名称
+int ZCE_LIB::readdir_fileary(const char *dirname,
+                             const char *prefix_name,
+                             const char *ext_name,
+                             std::vector<std::string> &file_name_ary)
+{
+    int retval = 0;
+    DIR *dir_hdl = ZCE_LIB::opendir(dirname);
+    if (dir_hdl == NULL)
+    {
+        return -1;
+    }
+
+    size_t ext_len = 0, prefix_len = 0;
+    if (prefix_name)
+    {
+        prefix_len = ::strlen(prefix_name);
+    }
+    if (ext_name)
+    {
+        ext_len = ::strlen(ext_name);
+    }
+
+    //循环所有文件，检测扩展名称
+    dirent dir_tmp, *dir_p = NULL;
+    for (retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p);
+         dir_p && retval == 0;
+         retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p))
+    {
+        //目录
+        if (dir_tmp.d_type == DT_DIR)
+        {
+            continue;
+        }
+        size_t name_len = ::strlen(dir_tmp.d_name);
+
+        //比较前缀
+        if (prefix_name)
+        {
+            if (name_len < prefix_len ||
+                0 != ::strncmp(dir_tmp.d_name, prefix_name, prefix_len))
+            {
+                continue;
+
+            }
+        }
+
+        //比较后缀文件
+        if (ext_name)
+        {
+            if (name_len <= ext_len ||
+                0 != ::strcmp(dir_tmp.d_name + name_len - ext_len, ext_name))
+            {
+                continue;
+            }
+        }
+        file_name_ary.push_back(dir_tmp.d_name);
+    }
+
+    ZCE_LIB::closedir(dir_hdl);
+
+    if (retval != 0)
+    {
+        return retval;
+    }
+    return 0;
 }
 
 //过滤扫描检查一个目录
@@ -332,48 +411,6 @@ int ZCE_LIB::scandir (const char *dirname,
 }
 
 
-//比较尾部的扩展名称
-int scandir_extselector(const char *ext_name,
-                        const struct dirent *left)
-{
-    size_t ext_len = ::strlen(ext_name);
-    size_t name_len = ::strlen(left->d_name);
-
-    if (name_len > ext_len && 
-        0 == ::strcmp(left->d_name + name_len - ext_len, ext_name) )
-    {
-        return 1;
-    }
-    return 0;
-}
-
-
-//
-int ZCE_LIB::easy_scandir(const char *dirname,
-                          const char *ext_name,
-                          std::vector<std::string> &file_ary)
-{
-    struct  dirent  **namelist = NULL;
-
-    std::function<int(const struct dirent *)> f_ext_selector =
-        std::bind(scandir_extselector, std::placeholders::_1);
-
-    int number_file = ZCE_LIB::scandir(dirname,
-        &namelist,
-        f_ext_selector()(ext_name),
-        NULL);
-    if (number_file < 0)
-    {
-        return -1;
-    }
-
-    ZCE_LIB::free_scandir_result(number_file, namelist);
-    return 0;
-}
-
-
-
-
 //释放scandir 返回参数的里面的各种分配数据，非标准函数
 void ZCE_LIB::free_scandir_result(int list_number, dirent *namelist[])
 {
@@ -518,17 +555,15 @@ int ZCE_LIB::mkdir_recurse(const char *pathname, mode_t mode)
     //循环处理，对每一层目录都尝试建立
     for (size_t i = 0; i < path_len; ++i)
     {
-        if (IS_DIRECTORY_SEPARATOR(pathname[i]))
+        if (ZCE_IS_DIRECTORY_SEPARATOR(pathname[i]))
         {
 
 #if defined ZCE_OS_WINDOWS
-
             //Windows下，由于有盘符的存在，比如F:\ABC\EDF，你建立F:\是会发生错误的,而且不是EEXIST（好像是EINVAL），所以必须判断一下
             if ( i > 0 &&  pathname[i - 1] == ':')
             {
                 continue;
             }
-
 #endif
 
             ::strncpy(process_dir, pathname, i + 1);
