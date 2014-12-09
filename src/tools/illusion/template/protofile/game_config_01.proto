@@ -1,0 +1,29 @@
+//option optimize_for = LITE_RUNTIME;
+
+enum ENUM_WEEK 
+{
+    MON = 1;
+    TUE = 2;
+    WED = 3;
+    THU = 3;
+    FRI = 4;
+    SAT = 5;
+    SUN = 6;
+}
+
+message GAME_CFG_STRUCT_1
+{
+	optional int32 s1_a = 1;
+	optional uint32 s1_b = 2 ;
+	optional double s1_c = 3;
+	optional float s1_d = 4 ;
+	optional int64 s1_e = 5;
+	optional uint64 s1_f = 6 ;
+	optional bool s1_g = 7;
+	optional string s1_h = 8 ;
+	optional bytes s1_i = 9;
+	repeated  int32 s1_j = 10 ;
+	repeated  string s1_k = 11;
+	optional ENUM_WEEK s1_l = 12;
+}
+

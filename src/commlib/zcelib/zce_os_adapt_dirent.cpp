@@ -120,8 +120,6 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
     //如果有文件
     if (dir_handle->current_handle_ != ZCE_INVALID_HANDLE)
     {
-        ::strncpy (dir_handle->dirent_->d_name, dir_handle->fdata_.cFileName, PATH_MAX);
-        dir_handle->dirent_->d_name[PATH_MAX] = '\0';
 
         //把目录标识出来
         if (dir_handle->fdata_.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
@@ -132,6 +130,10 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
         {
             dir_handle->dirent_->d_type = DT_REG;
         }
+        ::strncpy (dir_handle->dirent_->d_name, dir_handle->fdata_.cFileName, PATH_MAX);
+        dir_handle->dirent_->d_name[PATH_MAX] = '\0';
+
+
 
         return dir_handle->dirent_;
     }
@@ -182,9 +184,11 @@ int ZCE_LIB::readdir_r (DIR *dir_handle,
 
 
 //读取某个前缀，后缀的文件名称
-int ZCE_LIB::readdir_fileary(const char *dirname,
+int ZCE_LIB::readdir_nameary(const char *dirname,
                              const char *prefix_name,
                              const char *ext_name,
+                             bool select_dir,
+                             bool select_file,
                              std::vector<std::string> &file_name_ary)
 {
     int retval = 0;
@@ -212,13 +216,29 @@ int ZCE_LIB::readdir_fileary(const char *dirname,
          retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p))
     {
         //目录
-        if (dir_tmp.d_type == DT_DIR)
+        if (dir_tmp.d_type == DT_DIR )
+        {
+            if (select_dir == false)
+            {
+                continue;
+            }
+        }
+        //文件
+        else if (dir_tmp.d_type == DT_REG )
+        {
+            if (select_file == false)
+            {
+                continue;
+            }
+        }
+        else
         {
             continue;
         }
-        size_t name_len = ::strlen(dir_tmp.d_name);
+
 
         //比较前缀
+        size_t name_len = ::strlen(dir_tmp.d_name);
         if (prefix_name)
         {
             if (name_len < prefix_len ||

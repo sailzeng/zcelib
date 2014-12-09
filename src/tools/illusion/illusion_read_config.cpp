@@ -149,14 +149,9 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            //检查EXCEL文件中是否有这个表格
-            if (illusion_excel_file_.load_sheet(tc_data.excel_table_name_, FALSE) == FALSE)
-            {
-                return -3;
-            }
 
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
@@ -167,7 +162,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             }
 
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
@@ -179,7 +174,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             }
             convert_to_utf8(temp_value, tc_data.protobuf_message_);
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
@@ -190,7 +185,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             }
 
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
@@ -202,7 +197,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             convert_to_utf8(temp_value, tc_data.sqlite3_db_name_);
 
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
@@ -213,7 +208,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             }
 
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
@@ -224,15 +219,13 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             }
 
             ++row_no;
-            if (row_no > row_no)
+            if (row_no > row_count)
             {
                 return -1;
             }
             tc_data.index2_column_ = illusion_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
-            if (tc_data.index2_column_ <= 0)
-            {
-                return -1;
-            }
+            //INDEX 2可以为0
+            //if (tc_data.index2_column_ <= 0)
 
             auto result = file_cfg_data.file_table_cfg_.insert(std::make_pair(tc_data.excel_table_name_, tc_data));
             if (false == result.second)
@@ -337,7 +330,7 @@ int Illusion_Read_Config::read_excelfile_mbcs(const std::string &mbcs_name)
     ret = ::MultiByteToWideChar(CP_ACP,
         0,
         mbcs_name.c_str(),
-        mbcs_name.length(),
+        mbcs_name.length()+1,
         cvt_utf16_buf_,
         CONVERT_BUFFER_LEN);
     if (ret == 0)
@@ -361,7 +354,7 @@ int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
     ret = ::WideCharToMultiByte(CP_UTF8, 
         NULL, 
         (LPCTSTR)src,
-        src.GetLength(),
+        src.GetLength()+1,
         cvt_utf8_buf_,
         CONVERT_BUFFER_LEN,
         NULL,
@@ -370,6 +363,7 @@ int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
     {
         return -1;
     }
+    dst = cvt_utf8_buf_;
     return 0;
 
 #else
@@ -380,7 +374,7 @@ int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
     ret = ::MultiByteToWideChar(CP_ACP, 
         0,
         (LPCTSTR)src,
-        src.GetLength(),
+        src.GetLength()+1,
         cvt_utf16_buf_,
         CONVERT_BUFFER_LEN);
     if (ret == 0)
@@ -401,6 +395,8 @@ int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
     {
         return -1;
     }
+    dst = cvt_utf8_buf_;
+
     return 0;
 #endif
 }
@@ -422,13 +418,14 @@ int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
     ret = ::MultiByteToWideChar(CP_ACP,
         0,
         (LPCTSTR)src,
-        src.GetLength(),
+        src.GetLength()+1,
         cvt_utf16_buf_,
         CONVERT_BUFFER_LEN);
     if (ret == 0)
     {
         return -1;
     }
+    dst.assign(((const char *)(cvt_utf16_buf_)), (ret*(sizeof(wchar_t))));
     return 0;
 #endif
 }
@@ -439,11 +436,19 @@ int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
 #if defined UNICODE || defined _UNICODE
     //UTF16 == > MBCS
     DWORD ret = 0;
-    ret = ::WideCharToMultiByte(CP_ACP, NULL, (LPCTSTR)src, src.GetLength(), cvt_mbcs_buf_, CONVERT_BUFFER_LEN, NULL, 0);
+    ret = ::WideCharToMultiByte(CP_ACP, 
+        NULL, 
+        (LPCTSTR)src,
+        src.GetLength()+1, 
+        cvt_mbcs_buf_,
+        CONVERT_BUFFER_LEN, 
+        NULL,
+        0);
     if (ret == 0)
     {
         return -1;
     }
+    dst = cvt_mbcs_buf_;
     return 0;
 #else
     // MBCS ===> MBCS
@@ -451,7 +456,7 @@ int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
     {
         return -1;
     }
-    dst.assign(((const char *)((LPCTSTR)src)), (src.GetLength()*(sizeof(wchar_t))));
+    dst  = ((LPCTSTR)src);
     return 0;
 #endif
 }

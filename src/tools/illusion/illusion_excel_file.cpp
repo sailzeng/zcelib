@@ -57,12 +57,17 @@ BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
     //先关闭
     close_excelfile();
 
+
+
     //利用模板文件建立新文档
     excel_books_.AttachDispatch(excel_application_.get_Workbooks(), true);
 
     LPDISPATCH lpDis = NULL;
     _variant_t v_fn(file_name);
-    lpDis = excel_books_.Add(v_fn);
+    lpDis = excel_books_.Open(file_name,
+                              vtMissing, vtMissing, vtMissing, vtMissing, vtMissing,
+                              vtMissing, vtMissing, vtMissing, vtMissing, vtMissing,
+                              vtMissing, vtMissing, vtMissing, vtMissing);
     if (lpDis)
     {
         excel_work_book_.AttachDispatch(lpDis);
@@ -76,6 +81,7 @@ BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
     }
 
     return FALSE;
+
 }
 
 //关闭打开的Excel 文件,默认情况不保存文件

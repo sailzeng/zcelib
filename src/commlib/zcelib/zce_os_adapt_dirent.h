@@ -68,11 +68,15 @@ int readdir_r (DIR *dir_handle,
 * @param[in]  dirname 读取目录
 * @param[in]  prefix_name 前缀名称，可以为NULL，也可以就是某个文件名称
 * @param[in]  ext_name 后缀名称，可以为NULL，为NULL表示不检查
+* @param[in]  select_dir 选择目录
+* @param[in]  select_file 选择文件
 * @param[out] file_name_ary 文件名称队列
 */
-int readdir_fileary(const char *dirname,
+int readdir_nameary(const char *dirname,
                     const char *prefix_name,
                     const char *ext_name,
+                    bool select_dir,
+                    bool select_file,
                     std::vector<std::string> &file_name_ary);
 
 /*!
