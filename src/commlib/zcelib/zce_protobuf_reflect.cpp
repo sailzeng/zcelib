@@ -55,7 +55,7 @@ ZCE_Protobuf_Reflect::~ZCE_Protobuf_Reflect()
 //映射路径
 void ZCE_Protobuf_Reflect::map_path(const std::string &path)
 {
-    source_tree_.MapPath(NULL, path);
+    source_tree_.MapPath("", path);
     protobuf_importer_ = new google::protobuf::compiler::Importer(&source_tree_, &error_collector_);
 }
 
@@ -82,13 +82,9 @@ void ZCE_Protobuf_Reflect::error_info(PROTO_ERROR_ARRAY &error_ary)
 }
 
 //
-int ZCE_Protobuf_Reflect::new_proc_mesage(const std::string &type_name)
+int ZCE_Protobuf_Reflect::new_mesage(const std::string &type_name,
+                                     google::protobuf::Message *&new_msg)
 {
-    //如果原来有数据,请先用del_proc_message 清理
-    if (proc_message_ )
-    {
-        return -1;
-    }
 
     //根据名称得到结构描述
     const google::protobuf::Descriptor *proc_msg_desc =
@@ -105,16 +101,16 @@ int ZCE_Protobuf_Reflect::new_proc_mesage(const std::string &type_name)
     {
         return -1;
     }
-    proc_message_ = message->New();
+    new_msg = message->New();
 
     return 0;
 }
 
 //
-void ZCE_Protobuf_Reflect::del_proc_message()
+void ZCE_Protobuf_Reflect::del_message(google::protobuf::Message *del_msg)
 {
-    delete proc_message_;
-    proc_message_ = NULL;
+    delete del_msg;
+    del_msg = NULL;
 }
 
 

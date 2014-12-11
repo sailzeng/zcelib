@@ -110,7 +110,7 @@ protected:
     int read_table_config(EXCEL_FILE_DATA &file_cfg_data);
 
     //读取表格数据
-    int read_table_data(TABLE_CONFIG &table_cfg);
+    int read_table_cfgdata(TABLE_CONFIG &table_cfg);
 
 
     //

@@ -121,7 +121,7 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
     auto iter_tmp = xls_data.xls_table_cfg_.begin();
     for (; iter_tmp != xls_data.xls_table_cfg_.end(); ++iter_tmp)
     {
-        read_table_data(iter_tmp->second);
+        read_table_cfgdata(iter_tmp->second);
     }
 
     return 0;
@@ -340,13 +340,22 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 
 
 //读取表格数据read_table_data
-int Illusion_Read_Config::read_table_data(TABLE_CONFIG &tc_data)
+int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
 {
+    int ret = 0;
     //检查EXCEL文件中是否有这个表格
     if (ils_excel_file_.load_sheet(tc_data.excel_table_name_, TRUE) == FALSE)
     {
         return -3;
     }
+
+    google::protobuf::Message *new_msg = NULL;
+    ret = ils_proto_reflect_.new_mesage(tc_data.protobuf_message_, new_msg);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
     long line_count = ils_excel_file_.row_count();
     long col_count = ils_excel_file_.column_count();
     TRACE("%s table have col_count = %u row_count =%u\n", tc_data.excel_table_name_, col_count, line_count);
@@ -377,6 +386,7 @@ int Illusion_Read_Config::read_table_data(TABLE_CONFIG &tc_data)
     //读取每一行的数据
     for (long line_no = tc_data.read_data_start_; line_no <= line_count; ++line_no)
     {
+        new_msg->Clear();
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
             read_data = ils_excel_file_.get_cell_cstring(line_no, col_no);
