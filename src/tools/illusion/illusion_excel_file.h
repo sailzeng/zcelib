@@ -18,7 +18,7 @@
 *                 对于这类东西OLE，我完全不了解，用别人封装的东西感觉还是放心了
 *                 很多，开源，伟大的开源加上 C++
 *                 http://blog.csdn.net/gyssoft/archive/2007/04/29/1592104.aspx
-*                 
+*
 *                 OLE读写EXCEL都比较慢，所以应该尽量减少OLE的次数
 *                 对于读取，还有解决方法，请试用一下预加载的方式，这个方法一次加载
 *                 所有的读取数据,如此速度就飞快了。
@@ -43,28 +43,6 @@ public:
     virtual ~Illusion_ExcelFile();
 
 protected:
-    //打开的EXCEL文件名称
-    CString       open_excel_file_;
-
-    //
-    CWorkbooks    excel_books_;
-    //
-    CWorkbook     excel_work_book_;
-    //
-    CWorksheets   excel_sheets_;
-    //
-    CWorksheet    excel_work_sheet_;
-    //
-    CRange        excel_current_range_;
-
-    ///是否进行预先加载，预加载更加消耗内存，但读取效率提高几十倍
-    BOOL          already_preload_;
-
-    //Create the SAFEARRAY from the VARIANT ret.
-    COleSafeArray ole_safe_array_;
-
-
-protected:
     //
     static CApplication excel_application_;
 public:
@@ -84,9 +62,9 @@ public:
     double  get_celldouble(long iRow, long iColumn);
 
     //取得行的总数
-    int row_count();
+    long row_count();
     //取得列的总数
-    int column_count();
+    long column_count();
 
     //使用某个shet，shit，shit
     BOOL load_sheet(long table_index, BOOL pre_load = FALSE);
@@ -108,9 +86,9 @@ public:
     CString open_filename();
 
     //
-    void set_cell_int(long irow, long icolumn, int new_int);
+    void set_cell_int(long iline, long icolumn, int new_int);
     //
-    void set_cell_string(long irow, long icolumn, const CString &new_string);
+    void set_cell_string(long iline, long icolumn, const CString &new_string);
 
 public:
     //初始化EXCEL OLE
@@ -124,4 +102,25 @@ protected:
 
     //预先加载
     void preload_sheet();
+
+protected:
+    //打开的EXCEL文件名称
+    CString       open_excel_file_;
+
+    //
+    CWorkbooks    excel_books_;
+    //
+    CWorkbook     excel_work_book_;
+    //
+    CWorksheets   excel_sheets_;
+    //
+    CWorksheet    excel_work_sheet_;
+    //
+    CRange        excel_current_range_;
+
+    ///是否进行预先加载，预加载更加消耗内存，但读取效率提高几十倍
+    BOOL          already_preload_;
+
+    //Create the SAFEARRAY from the VARIANT ret.
+    COleSafeArray ole_safe_array_;
 };

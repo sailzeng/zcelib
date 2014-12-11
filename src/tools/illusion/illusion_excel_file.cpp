@@ -230,26 +230,26 @@ BOOL Illusion_ExcelFile::load_sheet(const CString &sheet, BOOL pre_load)
 }
 
 //得到列的总数
-int Illusion_ExcelFile::column_count()
+long Illusion_ExcelFile::column_count()
 {
     CRange range;
     CRange usedRange;
     usedRange.AttachDispatch(excel_work_sheet_.get_UsedRange(), true);
     range.AttachDispatch(usedRange.get_Columns(), true);
-    int count = range.get_Count();
+    long count = range.get_Count();
     usedRange.ReleaseDispatch();
     range.ReleaseDispatch();
     return count;
 }
 
 //得到行的总数
-int Illusion_ExcelFile::row_count()
+long Illusion_ExcelFile::row_count()
 {
     CRange range;
     CRange usedRange;
     usedRange.AttachDispatch(excel_work_sheet_.get_UsedRange(), true);
     range.AttachDispatch(usedRange.get_Rows(), true);
-    int count = range.get_Count();
+    long count = range.get_Count();
     usedRange.ReleaseDispatch();
     range.ReleaseDispatch();
     return count;
@@ -272,10 +272,10 @@ BOOL Illusion_ExcelFile::is_cell_string(long irow, long icolumn)
 }
 
 //检查一个CELL是否是数值
-BOOL Illusion_ExcelFile::is_cell_number(long irow, long icolumn)
+BOOL Illusion_ExcelFile::is_cell_number(long iline, long icolumn)
 {
     CRange range;
-    _variant_t v_row((long)irow);
+    _variant_t v_row((long)iline);
     _variant_t v_column((long)icolumn);
     range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
     VARIANT vResult = range.get_Value2();
@@ -288,7 +288,7 @@ BOOL Illusion_ExcelFile::is_cell_number(long irow, long icolumn)
 }
 
 //
-CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
+CString Illusion_ExcelFile::get_cell_cstring(long iline, long icolumn)
 {
 
     COleVariant vResult ;
@@ -297,8 +297,8 @@ CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
     if (already_preload_ == FALSE)
     {
         CRange range;
-        _variant_t v_row((long)irow);
-        _variant_t v_column((long)icolumn);
+        _variant_t v_row(iline);
+        _variant_t v_column(icolumn);
         range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
         vResult = range.get_Value2();
         range.ReleaseDispatch();
@@ -308,7 +308,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
     {
         long read_address[2];
         VARIANT val;
-        read_address[0] = irow;
+        read_address[0] = iline;
         read_address[1] = icolumn;
         ole_safe_array_.GetElement(read_address, &val);
         vResult = val;
@@ -347,7 +347,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long irow, long icolumn)
 }
 
 //VT_R8
-int Illusion_ExcelFile::get_cell_int(long irow, long icolumn)
+int Illusion_ExcelFile::get_cell_int(long iline, long icolumn)
 {
     int num;
     COleVariant vresult;
@@ -355,7 +355,7 @@ int Illusion_ExcelFile::get_cell_int(long irow, long icolumn)
     if (already_preload_ == FALSE)
     {
         CRange range;
-        _variant_t v_row((long)irow);
+        _variant_t v_row((long)iline);
         _variant_t v_column((long)icolumn);
         range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
         vresult = range.get_Value2();
@@ -365,7 +365,7 @@ int Illusion_ExcelFile::get_cell_int(long irow, long icolumn)
     {
         long read_address[2];
         VARIANT val;
-        read_address[0] = irow;
+        read_address[0] = iline;
         read_address[1] = icolumn;
         ole_safe_array_.GetElement(read_address, &val);
         vresult = val;
@@ -376,13 +376,13 @@ int Illusion_ExcelFile::get_cell_int(long irow, long icolumn)
     return num;
 }
 
-void Illusion_ExcelFile::set_cell_string(long irow, long icolumn, const CString &new_string)
+void Illusion_ExcelFile::set_cell_string(long iline, long icolumn, const CString &new_string)
 {
     _variant_t new_value(new_string);
     _variant_t v_pos("A1");
     CRange start_range = excel_work_sheet_.get_Range(v_pos, CONST_VARIANT_OPTIONAL);
 
-    _variant_t v_row((long)irow - 1);
+    _variant_t v_row((long)iline - 1);
     _variant_t v_column((long)icolumn - 1);
 
     CRange write_range = start_range.get_Offset(v_row, v_column);
@@ -392,14 +392,14 @@ void Illusion_ExcelFile::set_cell_string(long irow, long icolumn, const CString 
 
 }
 
-void Illusion_ExcelFile::set_cell_int(long irow, long icolumn, int new_int)
+void Illusion_ExcelFile::set_cell_int(long iline, long icolumn, int new_int)
 {
     _variant_t new_value((long)new_int);
 
     _variant_t v_pos("A1");
     CRange start_range = excel_work_sheet_.get_Range(v_pos, CONST_VARIANT_OPTIONAL);
 
-    _variant_t v_row((long)irow - 1);
+    _variant_t v_row((long)iline - 1);
     _variant_t v_column((long)icolumn - 1);
 
     CRange write_range = start_range.get_Offset(v_row, v_column);

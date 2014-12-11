@@ -16,13 +16,13 @@ public:
         CString excel_table_name_;
 
         ///表格数据从第几行读取
-        unsigned int read_data_start_ = 3;
+        long read_data_start_ = 3;
 
         ///表格对应的protobuf的message名称
         std::string   protobuf_message_;
 
         ///表格的第几行描述字段对应的protobuf
-        unsigned int protobuf_cfg_line_ = 2;
+        long protobuf_item_line_ = 2;
 
         ///表格存放的数据库（SQLite）文件名称
         std::string sqlite3_db_name_;
@@ -36,7 +36,7 @@ public:
 
 
         ///Protobuf item定义的数据
-        std::vector<std::string>  proto_tag_;
+        std::vector<std::string>  proto_item_ary_;
 
     };
 
@@ -49,9 +49,9 @@ public:
     ///
     struct EXCEL_FILE_DATA
     {
-        MAP_CSTRING_TO_CSTRING  file_enum_;
+        MAP_CSTRING_TO_CSTRING  xls_enum_;
 
-        MAP_TABLE_TO_CONFIG  file_table_cfg_;
+        MAP_TABLE_TO_CONFIG  xls_table_cfg_;
     };
 
     typedef std::map <CString, EXCEL_FILE_DATA> MAP_FNAME_TO_CFGDATA;
@@ -86,10 +86,16 @@ public:
     void finalize();
 
 
-    //处理EXCEL文件
-    int read_excelfile(const CString &open_file);
     ///
-    int read_excelfile_mbcs(const std::string &mbcs_name);
+    int read_excel_byucname(const CString &open_file);
+    ///
+    int read_excel(const std::string &proto_fname);
+
+
+    ///
+    void map_proto_path(const std::string &path_name);
+    ///
+    int read_proto(const std::string &mbcs_name);
 
 
     //清理所有的读取数据
@@ -98,7 +104,7 @@ public:
 protected:
 
     //读枚举值
-    int read_enum_data(EXCEL_FILE_DATA &file_cfg_data);
+    int read_table_enum(EXCEL_FILE_DATA &file_cfg_data);
 
     //读取表格配置
     int read_table_config(EXCEL_FILE_DATA &file_cfg_data);
@@ -126,7 +132,10 @@ protected:
 protected:
 
     ///Excel的处理对象,EXCEL的处理类
-    Illusion_ExcelFile illusion_excel_file_;
+    Illusion_ExcelFile ils_excel_file_;
+
+    ///
+    ZCE_Protobuf_Reflect ils_proto_reflect_;
 
     ///文件对应的配置数据，用于我的查询
     MAP_FNAME_TO_CFGDATA   file_cfg_map_;
