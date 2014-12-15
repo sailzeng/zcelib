@@ -140,6 +140,7 @@ protected:
     //
     google::protobuf::DynamicMessageFactory msg_factory_;
 
+
     //
     ZCE_Error_Collector error_collector_;
 

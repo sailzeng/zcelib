@@ -121,7 +121,12 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
     auto iter_tmp = xls_data.xls_table_cfg_.begin();
     for (; iter_tmp != xls_data.xls_table_cfg_.end(); ++iter_tmp)
     {
-        read_table_cfgdata(iter_tmp->second);
+
+        ret = read_table_cfgdata(iter_tmp->second);
+        if (0 != ret)
+        {
+            return ret;
+        }
     }
 
     return 0;
@@ -383,13 +388,22 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
     }
 
     CString read_data;
+    std::string std_read_data;
+
     //读取每一行的数据
     for (long line_no = tc_data.read_data_start_; line_no <= line_count; ++line_no)
     {
         new_msg->Clear();
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
+            //如果为空表示不需要关注这列
+            if (tc_data.proto_item_ary_[col_no - 1].length() ==  0)
+            {
+                continue;
+            }
+
             read_data = ils_excel_file_.get_cell_cstring(line_no, col_no);
+
         }
     }
 

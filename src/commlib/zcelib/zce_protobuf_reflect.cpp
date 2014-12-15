@@ -94,13 +94,13 @@ int ZCE_Protobuf_Reflect::new_mesage(const std::string &type_name,
         return -1;
     }
 
-    // build a dynamic message by "desc_msg" proto
-    google::protobuf::DynamicMessageFactory factory;
-    const google::protobuf::Message *message = factory.GetPrototype(proc_msg_desc);
+    // build a dynamic message by "proc_msg_desc" proto
+    const google::protobuf::Message *message = msg_factory_.GetPrototype(proc_msg_desc);
     if (!message)
     {
         return -1;
     }
+
     new_msg = message->New();
 
     return 0;

@@ -31,7 +31,7 @@ int Illusion_Application::on_start(int argc, const char *argv[])
         return -1;
     }
 
-    config_path_ = "E:\\Config.Test";
+    config_path_ = "E:\\Courage\\zcelib.git\\src\\tools\\illusion\\template";
 
     excel_path_ = config_path_;
     ZCE_LIB::path_string_cat(excel_path_, "excelcfg");
@@ -112,8 +112,6 @@ int Illusion_Application::on_run()
 {
     int ret = 0;
 
-
-
     Illusion_Read_Config::instance()->map_proto_path(proto_path_);
     for (size_t i = 0; i < proto_cfg_fileary_.size(); ++i)
     {
@@ -146,10 +144,6 @@ int Illusion_Application::on_run()
             return ret;
         }
     }
-
-
-
-
 
     return 0;
 }

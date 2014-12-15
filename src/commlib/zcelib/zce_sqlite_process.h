@@ -20,6 +20,8 @@
 *             源码，随便你怎么玩。
 *
 *             关于Sqlite的速度，请参考http://www.sqlite.org/speed.html，
+*             
+*             幸福就是，坚持了应该坚持的，放弃了应该放弃的，珍惜现在拥有的，不后悔已经决定的
 *
 */
 #ifndef ZCE_LIB_SQLITE_PRCOESS_H_
