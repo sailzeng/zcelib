@@ -23,6 +23,9 @@ void *ZCE_LIB::mmap (void *addr,
         addr = 0;
     }
 
+    DWORD nt_flag_protect = 0;
+    DWORD  nt_flags = 0;
+
     // can not map to address 0
     if (ZCE_BIT_IS_SET (flags, MAP_FIXED) && 0 == addr )
     {
@@ -30,8 +33,13 @@ void *ZCE_LIB::mmap (void *addr,
         return MAP_FAILED;
     }
 
-    DWORD nt_flag_protect = 0;
-    DWORD  nt_flags = 0;
+    //匿名使用，必须文件句柄是无效值
+    if (ZCE_BIT_IS_SET(flags, MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle)
+    {
+        errno = ENOTSUP;
+        return MAP_FAILED;
+    }
+
 
     //这段在干嘛，就是将mmap的prot参数转换成微软的的参数，TNND，
     if ( PROT_NONE == prot )
@@ -40,7 +48,7 @@ void *ZCE_LIB::mmap (void *addr,
     }
     else if (PROT_READ == prot)
     {
-        nt_flag_protect = PAGE_READONLY;
+        nt_flag_protect = PAGE_READWRITE;
         nt_flags = FILE_MAP_READ;
     }
     else if ( ZCE_BIT_IS_SET(prot, PROT_READ ) && ZCE_BIT_IS_SET(prot, PROT_WRITE) )
@@ -72,6 +80,8 @@ void *ZCE_LIB::mmap (void *addr,
     //如果是私有的，相当于所有人都是副本
     if (ZCE_BIT_IS_SET (flags, MAP_PRIVATE))
     {
+        //PAGE_WRITECOPY 等价 PAGE_READONLY
+        nt_flag_protect |= PAGE_WRITECOPY;
         nt_flags = FILE_MAP_COPY;
     }
 
@@ -79,7 +89,7 @@ void *ZCE_LIB::mmap (void *addr,
     LARGE_INTEGER longlong_value;
     longlong_value.QuadPart = len;
 
-    //file_handle == ZCE_INVALID_HANDLE后，创建的共享内存不再文件里面，而在系统映射文件中 system paging file
+    //file_handle == ZCE_INVALID_HANDLE后，创建的共享内存不在文件里面，而在系统映射文件中 system paging file
     ZCE_HANDLE file_mapping = ::CreateFileMappingA (file_handle,
                                                     NULL,
                                                     nt_flag_protect,
