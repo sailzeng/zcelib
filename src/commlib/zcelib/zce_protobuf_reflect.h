@@ -110,23 +110,29 @@ public:
     //
 public:
 
-    //根据fullname，也就是 phone_book.number 设置一个Message的field
-    static int set_field_by_fullname(google::protobuf::Message *msg,
-                                     const std::string &full_name,
-                                     const std::string &set_data,
-                                     bool repeated_add);
-
-
-    //设置一个Message的field
+    ///根据fullname，也就是 phone_book.number 设置一个Message的field
     static int set_field(google::protobuf::Message *msg,
-                         const std::string &field_name,
-                         const std::string &set_data);
+                         const std::string &full_name,
+                         const std::string &set_data,
+                         bool message_add);
+
+    ///根据fullname,得到某个字段的描述信息
+    static int get_fielddesc(google::protobuf::Message *msg,
+                             const std::string &full_name,
+                             bool message_add,
+                             google::protobuf::Message *&sub_msg,
+                             const google::protobuf::FieldDescriptor *&field);
+    
+    ///设置一个Message的field
+    static int set_fielddata(google::protobuf::Message *msg,
+                             const google::protobuf::FieldDescriptor *field,
+                             const std::string &set_data);
 
 
     //定位一个子结构
     static int locate_sub_msg(google::protobuf::Message *msg,
                               const std::string &submsg_field_name,
-                              bool repeated_add,
+                              bool message_add,
                               google::protobuf::Message *&sub_msg);
 
 protected:

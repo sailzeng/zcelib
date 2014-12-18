@@ -114,23 +114,14 @@ void ZCE_Protobuf_Reflect::del_message(google::protobuf::Message *del_msg)
 }
 
 
-int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
-                                    const std::string &field_name,
-                                    const std::string &set_data)
+int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
+                                        const google::protobuf::FieldDescriptor *field,
+                                        const std::string &set_data)
 {
+    ZCE_ASSERT(field);
+
     const google::protobuf::Reflection *reflection = msg->GetReflection();
-    const google::protobuf::Descriptor *msg_desc = msg->GetDescriptor();
-
-    const google::protobuf::FieldDescriptor *field = NULL;
-
-    field = msg_desc->FindFieldByName(field_name);
-
-    //没有找到对应的字段描述
-    if (!field)
-    {
-        return -1;
-    }
-
+        
     //如果没有设置数据，看看是否是必要字段，而且是否有默认值
     if (set_data.length() == 0)
     {
@@ -361,7 +352,7 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
 //定位一个子结构
 int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
                                          const std::string &submsg_field_name,
-                                         bool repeated_add,
+                                         bool message_add,
                                          google::protobuf::Message *&sub_msg)
 {
     //得到结构的描述和反射
@@ -396,7 +387,7 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
         {
             //如果要增加一个repeated的数据
-            if (repeated_add)
+            if (message_add)
             {
                 sub_msg = reflection->AddMessage(msg, field, NULL);
                 if (!sub_msg)
@@ -426,19 +417,21 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
         return -1;
     }
 
-
     return 0;
 }
 
-//根据fullname，也就是 phone_book.number 设置一个Message的field
-int ZCE_Protobuf_Reflect::set_field_by_fullname(google::protobuf::Message *msg,
-                                                const std::string &full_name,
-                                                const std::string &set_data,
-                                                bool repeated_add)
+
+int ZCE_Protobuf_Reflect::get_fielddesc(google::protobuf::Message *msg,
+    const std::string &full_name,
+    bool message_add,
+    google::protobuf::Message *&sub_msg,
+    const google::protobuf::FieldDescriptor *&field)
 {
     int ret = 0;
+
+    field = NULL;
+
     google::protobuf::Message *src_msg = msg;
-    google::protobuf::Message *sub_msg = NULL;
     const char *FIELD_SEPARATOR = ".";
     std::vector<std::string> v;
     ZCE_LIB::string_split(full_name, FIELD_SEPARATOR, v);
@@ -449,9 +442,9 @@ int ZCE_Protobuf_Reflect::set_field_by_fullname(google::protobuf::Message *msg,
         for (size_t i = 0; i < level_num - 1; ++i)
         {
             ret = ZCE_Protobuf_Reflect::locate_sub_msg(src_msg,
-                                                       v[i],
-                                                       repeated_add,
-                                                       sub_msg);
+                v[i],
+                message_add,
+                sub_msg);
             if (0 != ret)
             {
                 return ret;
@@ -459,9 +452,42 @@ int ZCE_Protobuf_Reflect::set_field_by_fullname(google::protobuf::Message *msg,
             src_msg = sub_msg;
         }
     }
-    ret = ZCE_Protobuf_Reflect::set_field(src_msg,
-                                          v[level_num - 1],
-                                          set_data);
+    
+    const google::protobuf::Descriptor *msg_desc = sub_msg->GetDescriptor();
+
+    field = msg_desc->FindFieldByName(v[level_num - 1]);
+
+    //没有找到对应的字段描述
+    if (!field)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+//根据fullname，也就是 phone_book.number 设置一个Message的field
+int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
+                                    const std::string &full_name,
+                                    const std::string &set_data,
+                                    bool repeated_add)
+{
+    int ret = 0;
+    const google::protobuf::FieldDescriptor *field = NULL;
+    google::protobuf::Message *sub_msg = NULL;
+
+    //取得字段的描述
+    ret = ZCE_Protobuf_Reflect::get_fielddesc(msg,
+                                              full_name,
+                                              repeated_add,
+                                              sub_msg,
+                                              field);
+    if (0 != ret)
+    {
+        return ret;
+    }
+
+    //根据描述，设置字段的数据
+    ret = set_fielddata(sub_msg, field, set_data);
     if (0 != ret)
     {
         return ret;
