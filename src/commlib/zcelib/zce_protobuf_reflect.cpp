@@ -121,7 +121,7 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
     ZCE_ASSERT(field);
 
     const google::protobuf::Reflection *reflection = msg->GetReflection();
-        
+
     //如果没有设置数据，看看是否是必要字段，而且是否有默认值
     if (set_data.length() == 0)
     {
@@ -231,7 +231,12 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
         }
         else
         {
-            assert(false);
+            //不支持的类型，这个地方如果出现TYPE_MESSAGE。也是不正常的。
+            ZCE_LOGMSG(RS_ERROR, "I don't field [%s] support this type.%d %s", 
+                field->full_name(), 
+                field->type(), 
+                field->type_name());
+            ZCE_ASSERT(false);
             return -1;
         }
     }
@@ -283,11 +288,6 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
         {
             reflection->AddString(msg, field, set_data);
         }
-        // Length-delimited message.
-        else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
-        {
-            //reflection->SetInt32(msg, field, 0);
-        }
         // Arbitrary byte array.
         else if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
         {
@@ -336,13 +336,21 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
         }
         else
         {
-            assert(false);
+            ZCE_LOGMSG(RS_ERROR, "I don't field [%s] support this type.%d %s",
+                field->full_name(),
+                field->type(),
+                field->type_name());
+            ZCE_ASSERT(false);
             return -1;
         }
     }
     else
     {
-        assert(false);
+        ZCE_LOGMSG(RS_ERROR, "I don't field [%s] support this type.%d %s",
+            field->full_name(),
+            field->type(),
+            field->type_name());
+        ZCE_ASSERT(false);
         return -1;
     }
 
@@ -422,16 +430,17 @@ int ZCE_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
 
 
 int ZCE_Protobuf_Reflect::get_fielddesc(google::protobuf::Message *msg,
-    const std::string &full_name,
-    bool message_add,
-    google::protobuf::Message *&sub_msg,
-    const google::protobuf::FieldDescriptor *&field)
+                                        const std::string &full_name,
+                                        bool message_add,
+                                        google::protobuf::Message *&field_msg,
+                                        const google::protobuf::FieldDescriptor *&field_desc)
 {
     int ret = 0;
 
-    field = NULL;
+    field_desc = NULL;
 
     google::protobuf::Message *src_msg = msg;
+    field_msg = msg;
     const char *FIELD_SEPARATOR = ".";
     std::vector<std::string> v;
     ZCE_LIB::string_split(full_name, FIELD_SEPARATOR, v);
@@ -442,23 +451,23 @@ int ZCE_Protobuf_Reflect::get_fielddesc(google::protobuf::Message *msg,
         for (size_t i = 0; i < level_num - 1; ++i)
         {
             ret = ZCE_Protobuf_Reflect::locate_sub_msg(src_msg,
-                v[i],
-                message_add,
-                sub_msg);
+                                                       v[i],
+                                                       message_add,
+                                                       field_msg);
             if (0 != ret)
             {
                 return ret;
             }
-            src_msg = sub_msg;
+            src_msg = field_msg;
         }
     }
-    
-    const google::protobuf::Descriptor *msg_desc = sub_msg->GetDescriptor();
 
-    field = msg_desc->FindFieldByName(v[level_num - 1]);
+    const google::protobuf::Descriptor *msg_desc = field_msg->GetDescriptor();
+
+    field_desc = msg_desc->FindFieldByName(v[level_num - 1]);
 
     //没有找到对应的字段描述
-    if (!field)
+    if (!field_desc)
     {
         return -1;
     }
@@ -487,7 +496,7 @@ int ZCE_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
     }
 
     //根据描述，设置字段的数据
-    ret = set_fielddata(sub_msg, field, set_data);
+    ret = ZCE_Protobuf_Reflect::set_fielddata(sub_msg, field, set_data);
     if (0 != ret)
     {
         return ret;

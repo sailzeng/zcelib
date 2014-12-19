@@ -386,7 +386,7 @@ inline void string_split(const std::string &source_str,
                          std::vector<std::string> &v)
 {
     _str_split(source_str.begin(),
-               source_str.begin(),
+               source_str.end(),
                separator.begin(),
                separator.end(),
                std::equal_to<std::string::value_type>(),

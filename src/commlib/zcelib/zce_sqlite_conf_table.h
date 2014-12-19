@@ -72,6 +72,12 @@ public:
                         unsigned int &index_2,
                         T &info);
 
+    ///
+    int pbmsg_encode();
+
+    ///
+    int pbmsg_decode();
+
 #endif
 
 public:

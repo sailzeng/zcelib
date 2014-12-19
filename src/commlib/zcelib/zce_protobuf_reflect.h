@@ -120,8 +120,8 @@ public:
     static int get_fielddesc(google::protobuf::Message *msg,
                              const std::string &full_name,
                              bool message_add,
-                             google::protobuf::Message *&sub_msg,
-                             const google::protobuf::FieldDescriptor *&field);
+                             google::protobuf::Message *&field_msg,
+                             const google::protobuf::FieldDescriptor *&field_desc);
     
     ///设置一个Message的field
     static int set_fielddata(google::protobuf::Message *msg,

@@ -273,7 +273,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            convert_to_utf8(temp_value, tc_data.protobuf_message_);
+            convert_to_utf8(temp_value, tc_data.pb_msg_name_);
             ++row_no;
             if (row_no > row_count)
             {
@@ -355,7 +355,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
     }
 
     google::protobuf::Message *new_msg = NULL;
-    ret = ils_proto_reflect_.new_mesage(tc_data.protobuf_message_, new_msg);
+    ret = ils_proto_reflect_.new_mesage(tc_data.pb_msg_name_, new_msg);
     if (ret != 0)
     {
         return ret;
@@ -383,10 +383,41 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
 #else
         std_item_name = (LPCTSTR)proto_item_name;
 #endif
-        tc_data.proto_item_ary_.push_back(std_item_name);
+        tc_data.proto_field_ary_.push_back(std_item_name);
+
+        
+        size_t find_pos = tc_data.proto_field_ary_[col_no - 1].find_last_of('.');
+        if (find_pos != std::string::npos)
+        {
+            if (0 == strcmp(tc_data.firstshow_field_.c_str(), 
+                std_item_name.c_str()))
+            {
+                tc_data.item_msg_firstshow_.push_back(true);
+            }
+            else
+            {
+                if (0 == strncmp(tc_data.firstshow_msg_.c_str(),
+                    std_item_name.c_str(), 
+                    tc_data.firstshow_msg_.length()) )
+                {
+                    tc_data.item_msg_firstshow_.push_back(false);
+                }
+                else
+                {
+                    tc_data.firstshow_field_ = std_item_name;
+                    tc_data.firstshow_msg_.assign(std_item_name, 0, find_pos + 1);
+                    tc_data.item_msg_firstshow_.push_back(true);
+                }
+            }
+        }
+        else
+        {
+            tc_data.item_msg_firstshow_.push_back(false);
+        }
 
     }
 
+    int index_1 =0, index_2 = 0;
     CString read_data;
     std::string std_read_data;
 
@@ -397,22 +428,99 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
             //如果为空表示不需要关注这列
-            if (tc_data.proto_item_ary_[col_no - 1].length() ==  0)
+            if (tc_data.proto_field_ary_[col_no - 1].length() ==  0)
             {
                 continue;
             }
 
+            //读出EXCEL数据，注意这个地方是根据MFC的编码决定CString数据的编码
             read_data = ils_excel_file_.get_cell_cstring(line_no, col_no);
 
+            //取得字段的描述
+            google::protobuf::Message *field_msg = NULL;
+            const google::protobuf::FieldDescriptor *field_desc = NULL;
+            ret = ZCE_Protobuf_Reflect::get_fielddesc(new_msg,
+                tc_data.proto_field_ary_[col_no - 1],
+                tc_data.item_msg_firstshow_[col_no - 1] ==1 ?true:false,
+                field_msg,
+                field_desc);
+            if (0 != ret)
+            {
+                return ret;
+            }
+
+            std::string set_data;
+            //如果是string 类型，根据要求的编码进行转换。
+            if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING )
+            {
+                if (cur_cvt_coding_ == CVT_UTF8)
+                {
+                    ret = convert_to_utf8(read_data, set_data);
+                }
+                else if (cur_cvt_coding_ == CVT_UTF16)
+                {
+                    ret = convert_to_utf16(read_data, set_data);
+                }
+                else if (cur_cvt_coding_ == CVT_MBCS)
+                {
+                    ret = convert_to_mbcs(read_data, set_data);
+                }
+                else
+                {
+                    ZCE_ASSERT(false);
+                }
+            }
+            //对于BYTES，我理解为二进制，你可以用BASE16的字符串输入
+            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
+            {
+            }
+            //其他字段类型统一转换为UTF8的编码
+            else
+            {
+                ret = convert_to_utf8(read_data, set_data);
+            }
+            //根据描述，设置字段的数据
+            ret = ZCE_Protobuf_Reflect::set_fielddata(field_msg, field_desc, set_data);
+            if (0 != ret)
+            {
+                ZCE_LOGMSG(RS_ERROR, "Message [%s] field [%s] type [%d][%s] set_fielddata fail. Line,Colmn[%d|%d]",
+                    tc_data.pb_msg_name_.c_str(),
+                    field_desc->full_name(),
+                    field_desc->type(),
+                    field_desc->type_name(),
+                    line_no,
+                    col_no
+                    );
+                return ret;
+            }
+
+            //读取索引
+            if (col_no == tc_data.index1_column_)
+            {
+                index_1 = std::stol(set_data,0,10 );
+            }
+            if (tc_data.index2_column_ != 0 && col_no == tc_data.index2_column_)
+            {
+                index_2 = std::stol(set_data, 0, 10);
+            }
         }
+
+        //如果没有初始化
+        if (!new_msg->IsInitialized())
+        {
+            ZCE_LOGMSG(RS_ERROR,"Message [%s] is not IsInitialized, please check your excel or proto file.",
+                tc_data.pb_msg_name_.c_str());
+            return -1;
+        }
+        std::cout << "index:"<<index_1<<","<<index_2 << std::endl;
+        std::cout << new_msg->DebugString() << std::endl;
+
     }
+
+    ils_proto_reflect_.del_message(new_msg);
 
     return 0;
 }
-
-
-
-
 
 //根据当前默认的字符编码方式，转换为UTF8
 int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
@@ -450,12 +558,12 @@ int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
     {
         return -1;
     }
-
+    int u16_buf_len = ret;
     // 第二次再把UTF-16编码转换为UTF-8编码
     ret = ::WideCharToMultiByte(CP_UTF8,
                                 NULL,
                                 cvt_utf16_buf_,
-                                -1,
+                                u16_buf_len,
                                 cvt_utf8_buf_,
                                 CONVERT_BUFFER_LEN,
                                 NULL,
@@ -479,7 +587,7 @@ int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
     {
         return -1;
     }
-    dst.assign(((const char *)((LPCTSTR)src)), (src.GetLength() * ( sizeof(wchar_t))) );
+    dst.assign(((const char *)((LPCTSTR)src)), ((src.GetLength() +1) * ( sizeof(wchar_t))) );
     return 0;
 #else
     // MBCS ===> UTF16

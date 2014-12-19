@@ -10,6 +10,14 @@ class Illusion_Read_Config
 {
 public:
 
+    enum CVT_CODING
+    {
+        CVT_UTF8,
+        CVT_UTF16,
+        CVT_MBCS,
+    };
+
+
     struct TABLE_CONFIG
     {
         ///表格名称
@@ -19,7 +27,7 @@ public:
         long read_data_start_ = 3;
 
         ///表格对应的protobuf的message名称
-        std::string   protobuf_message_;
+        std::string   pb_msg_name_;
 
         ///表格的第几行描述字段对应的protobuf
         long protobuf_item_line_ = 2;
@@ -36,7 +44,23 @@ public:
 
 
         ///Protobuf item定义的数据
-        std::vector<std::string>  proto_item_ary_;
+        std::vector<std::string>  proto_field_ary_;
+        
+        ///假设结构如下，record是一个repeated 的message，
+        ///phonebook.master
+        ///phonebook.record.name
+        ///phonebook.record.tele_number
+        ///phonebook.record.email
+        ///phonebook.record.name
+        ///phonebook.record.tele_number
+        ///phonebook.record.email
+        ///那么phonebook.record.name出现的位置会被标识为item_msg_firstshow_ 为1
+        std::vector<int> item_msg_firstshow_;
+
+        ///在上面的例子  会被记录为phonebook.record.name
+        std::string firstshow_field_;
+        ///在上面的例子 会被记录为phonebook.record
+        std::string firstshow_msg_;
 
     };
 
@@ -56,15 +80,6 @@ public:
 
     typedef std::map <CString, EXCEL_FILE_DATA> MAP_FNAME_TO_CFGDATA;
 
-
-    enum CVT_CODING
-    {
-        CVT_UTF8,
-        CVT_UTF16,
-        CVT_MBCS,
-    };
-
-
 protected: // 仅从序列化创建
     Illusion_Read_Config();
 protected:
@@ -80,21 +95,38 @@ public:
     static void clean_instance();
 
 public:
-    //
+
+    ///初始化
     BOOL initialize();
     //
     void finalize();
 
-
-    ///
+    /*!
+    * @brief      
+    * @return     int
+    * @param      open_file 打开的EXCEL文件名称，名称MFC
+    */
     int read_excel_byucname(const CString &open_file);
-    ///
-    int read_excel(const std::string &proto_fname);
 
+    /*!
+    * @brief      
+    * @return     int
+    * @param      proto_fname EXCEL文件名称。
+    */
+    int read_excel(const std::string &excel_fname);
 
-    ///
+    /*!
+    * @brief      
+    * @param      path_name
+    */
     void map_proto_path(const std::string &path_name);
-    ///
+
+    /*!
+    * @brief      
+    * @return     int
+    * @param      mbcs_name
+    * @note       
+    */
     int read_proto(const std::string &mbcs_name);
 
 
@@ -106,15 +138,22 @@ protected:
     //读枚举值
     int read_table_enum(EXCEL_FILE_DATA &file_cfg_data);
 
-    //读取表格配置
+    ///读取表格配置
     int read_table_config(EXCEL_FILE_DATA &file_cfg_data);
 
-    //读取表格数据
+    ///读取表格数据
     int read_table_cfgdata(TABLE_CONFIG &table_cfg);
 
 
-    //
+    /*!
+    * @brief      根据当前默认的字符编码方式，转换为UTF8
+    * @return     int == 0表示转换成功
+    * @param      src 源字符串，CString结构，根据MFC的字符集编码集决定
+    * @param      dst 转后的的字符串，这个函数默认转换为UTF8的字符集合
+    * @note       
+    */
     int convert_to_utf8(CString &src, std::string &dst);
+    
     //
     int convert_to_utf16(CString &src, std::string &dst);
     //
@@ -122,7 +161,7 @@ protected:
 
 protected:
     //
-    static const size_t CONVERT_BUFFER_LEN = 64 * 1024;
+    static const size_t CONVERT_BUFFER_LEN = 64 * 1024 -1;
 
 protected:
 
