@@ -391,10 +391,10 @@
     <ClInclude Include="zce_sqlite_conf_table.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_sqlite_process.h">
+    <ClInclude Include="zce_sqlite_stmt_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_sqlite_stmt_handler.h">
+    <ClInclude Include="zce_sqlite_db_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -696,10 +696,10 @@
     <ClCompile Include="zce_sqlite_conf_table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_sqlite_process.cpp">
+    <ClCompile Include="zce_sqlite_stmt_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_sqlite_stmt_handler.cpp">
+    <ClCompile Include="zce_sqlite_db_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

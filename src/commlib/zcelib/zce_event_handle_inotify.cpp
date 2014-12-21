@@ -52,9 +52,9 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     inotify_handle_ = ::inotify_init();
     if (ZCE_INVALID_HANDLE == inotify_handle_ )
     {
-        ZLOG_ERROR("[%s] invoke ::inotify_init fail,error [%u].",
-                   __ZCE_FUNC__,
-                   ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "[%s] invoke ::inotify_init fail,error [%u].",
+                 __ZCE_FUNC__,
+                 ZCE_LIB::last_error());
         return -1;
     }
 
@@ -136,9 +136,9 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     hdl_dir =  ::inotify_add_watch(inotify_handle_, pathname, mask);
     if (hdl_dir == ZCE_INVALID_HANDLE )
     {
-        ZLOG_ERROR("[%s] invoke ::inotify_add_watch fail,error [%u].",
-                   __ZCE_FUNC__,
-                   ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "[%s] invoke ::inotify_add_watch fail,error [%u].",
+                 __ZCE_FUNC__,
+                 ZCE_LIB::last_error());
         return -1;
     }
 
@@ -156,9 +156,9 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         //下面这段代码屏蔽的原因是，而LInux下，如果inotify_add_watch 同一个目录，handle是一样的。
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
-        ZLOG_ERROR("[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
-                   __ZCE_FUNC__,
-                   hdl_dir);
+        ZLOG_MSG(RS_ERROR, "[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
+                 __ZCE_FUNC__,
+                 hdl_dir);
         return -1;
     }
     *watch_handle = hdl_dir;
@@ -173,9 +173,9 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     //已经监控了一个目录，Windows的一个ZCE_Event_INotify不能同时监控两个目录
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
-        ZLOG_ERROR("[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
-                   __ZCE_FUNC__,
-                   watch_handle_);
+        ZLOG_MSG(RS_ERROR, "[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
+                 __ZCE_FUNC__,
+                 watch_handle_);
         return -1;
     }
 
@@ -191,10 +191,10 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
     if (watch_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZLOG_ERROR("[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
-                   __ZCE_FUNC__,
-                   pathname,
-                   ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
+                 __ZCE_FUNC__,
+                 pathname,
+                 ZCE_LIB::last_error());
         return -1;
     }
 
@@ -228,10 +228,10 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     //如果读取失败，一般而言，这是这段代码有问题
     if (bret == FALSE)
     {
-        ZLOG_ERROR("[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
-                   __ZCE_FUNC__,
-                   ZCE_LIB::last_error(),
-                   strerror(ZCE_LIB::last_error()));
+        ZLOG_MSG(RS_ERROR, "[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
+                 __ZCE_FUNC__,
+                 ZCE_LIB::last_error(),
+                 strerror(ZCE_LIB::last_error()));
 
         ::CloseHandle(watch_handle_);
 
@@ -440,9 +440,9 @@ int ZCE_Event_INotify::handle_input ()
     //读取结果失败
     if (FALSE == bret)
     {
-        ZLOG_ERROR("[%s] ::GetOverlappedResult fail,error [%u].",
-                   __ZCE_FUNC__,
-                   ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "[%s] ::GetOverlappedResult fail,error [%u].",
+                 __ZCE_FUNC__,
+                 ZCE_LIB::last_error());
         return -1;
     }
 
@@ -578,9 +578,9 @@ int ZCE_Event_INotify::handle_input ()
            );
     if (FALSE == bret)
     {
-        ZLOG_ERROR("[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
-                   __ZCE_FUNC__,
-                   ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
+                 __ZCE_FUNC__,
+                 ZCE_LIB::last_error());
     }
 
     return 0;

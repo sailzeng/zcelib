@@ -309,7 +309,7 @@ int Transaction_Base::process_trans_event()
             trans_timeout_id_ = -1;
         }
 
-        ZLOG_ERROR("%s::on_timeout start,transaction id:%u,requst trans id:%u,trans phase:%d.",
+        ZLOG_MSG(RS_ERROR,"%s::on_timeout start,transaction id:%u,requst trans id:%u,trans phase:%d.",
                    typeid(*this).name(),
                    transaction_id_,
                    req_trans_id_,
@@ -344,12 +344,12 @@ int Transaction_Base::process_trans_event()
             trans_timeout_id_ = -1;
         }
 
-        ZLOG_ERROR("%s::on_exception start,transaction id:%u,requst trans id:%u,trans phase:%d.", typeid(*this).name(),
+        ZLOG_MSG(RS_ERROR,"%s::on_exception start,transaction id:%u,requst trans id:%u,trans phase:%d.", typeid(*this).name(),
                    transaction_id_,
                    req_trans_id_,
                    trans_phase_);
         txprocess = on_exception();
-        ZLOG_ERROR("%s::on_exception end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
+        ZLOG_MSG(RS_ERROR,"%s::on_exception end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
                    typeid(*this).name(),
                    transaction_id_,
                    req_trans_id_,
@@ -563,7 +563,7 @@ int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame)
     //
     if (wait_cmd_ != CMD_INVALID_CMD && recv_frame->frame_command_ != wait_cmd_)
     {
-        ZLOG_ERROR("[framework] check_receive_frame error,Transaction need Cmd error!Wait command[%u],Recieve command[%u] Transaction ID:[%u].",
+        ZLOG_MSG(RS_ERROR,"[framework] check_receive_frame error,Transaction need Cmd error!Wait command[%u],Recieve command[%u] Transaction ID:[%u].",
                    wait_cmd_,
                    recv_frame->frame_command_,
                    recv_frame->transaction_id_

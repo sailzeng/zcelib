@@ -2,6 +2,9 @@
 #include "illusion_excel_file.h"
 #include "illusion_read_config.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 //处理的单子实例
 Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
@@ -9,9 +12,9 @@ Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
 //
 Illusion_Read_Config::Illusion_Read_Config()
 {
-    cvt_utf16_buf_ = new wchar_t[64 * 1024];
-    cvt_utf8_buf_ = new char [64 * 1024];
-    cvt_mbcs_buf_ = new char[64 * 1024];
+    cvt_utf16_buf_ = new wchar_t[CONVERT_BUFFER_LEN + 1];
+    cvt_utf8_buf_ = new char[CONVERT_BUFFER_LEN + 1];
+    cvt_mbcs_buf_ = new char[CONVERT_BUFFER_LEN + 1];
 }
 
 
@@ -53,28 +56,182 @@ void Illusion_Read_Config::clean_instance()
     }
 }
 
-//
-BOOL Illusion_Read_Config::initialize()
+
+//根据当前默认的字符编码方式，转换为UTF8
+int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
 {
-    return ils_excel_file_.init_excel();
+#if defined UNICODE || defined _UNICODE
+
+    DWORD ret = 0;
+    ret = ::WideCharToMultiByte(CP_UTF8,
+        NULL,
+        (LPCTSTR)src,
+        src.GetLength() + 1,
+        cvt_utf8_buf_,
+        CONVERT_BUFFER_LEN,
+        NULL,
+        0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    dst = cvt_utf8_buf_;
+    return 0;
+
+#else
+    // MBCS ===> UTF16 ===> UTF8
+
+    // 第一次先把MBCS码转换成UTF-16
+    DWORD ret = 0;
+    ret = ::MultiByteToWideChar(CP_ACP,
+        0,
+        (LPCTSTR)src,
+        src.GetLength() + 1,
+        cvt_utf16_buf_,
+        CONVERT_BUFFER_LEN);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    int u16_buf_len = ret;
+    // 第二次再把UTF-16编码转换为UTF-8编码
+    ret = ::WideCharToMultiByte(CP_UTF8,
+        NULL,
+        cvt_utf16_buf_,
+        u16_buf_len,
+        cvt_utf8_buf_,
+        CONVERT_BUFFER_LEN,
+        NULL,
+        0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    dst = cvt_utf8_buf_;
+
+    return 0;
+#endif
 }
+
+//根据当前默认的字符编码方式，转换为UTF16(UNICODE)
+int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
+{
+#if defined UNICODE || defined _UNICODE
+    // UTF16 == UTF16
+    if (src.GetLength() > CONVERT_BUFFER_LEN)
+    {
+        return -1;
+    }
+    dst.assign(((const char *)((LPCTSTR)src)), ((src.GetLength() + 1) * (sizeof(wchar_t))));
+    return 0;
+#else
+    // MBCS ===> UTF16
+    DWORD ret = 0;
+    ret = ::MultiByteToWideChar(CP_ACP,
+        0,
+        (LPCTSTR)src,
+        src.GetLength() + 1,
+        cvt_utf16_buf_,
+        CONVERT_BUFFER_LEN);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    dst.assign(((const char *)(cvt_utf16_buf_)), (ret * (sizeof(wchar_t))));
+    return 0;
+#endif
+}
+
+//根据当前默认的字符编码方式，转换为MBCS
+int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
+{
+#if defined UNICODE || defined _UNICODE
+    //UTF16 == > MBCS
+    DWORD ret = 0;
+    ret = ::WideCharToMultiByte(CP_ACP,
+        NULL,
+        (LPCTSTR)src,
+        src.GetLength() + 1,
+        cvt_mbcs_buf_,
+        CONVERT_BUFFER_LEN,
+        NULL,
+        0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    dst = cvt_mbcs_buf_;
+    return 0;
+#else
+    // MBCS ===> MBCS
+    if (src.GetLength() > CONVERT_BUFFER_LEN)
+    {
+        return -1;
+    }
+    dst = ((LPCTSTR)src);
+    return 0;
+#endif
+}
+
+//
+bool Illusion_Read_Config::initialize(bool need_open_excel,
+                                      const std::string &config_path)
+{
+    config_path_ = config_path;
+
+    //db3的路径没有可以创建
+    sqlitedb_pah_ = config_path_;
+    ZCE_LIB::path_string_cat(sqlitedb_pah_, "db3");
+    if (false == ZCE_LIB::is_directory(sqlitedb_pah_.c_str()))
+    {
+        ZCE_LIB::mkdir_recurse(sqlitedb_pah_.c_str());
+    }
+
+    //log的路径没有可以创建
+    outlog_dir_path_ = config_path_;
+    ZCE_LIB::path_string_cat(outlog_dir_path_, "log");
+    if (false == ZCE_LIB::is_directory(outlog_dir_path_.c_str()))
+    {
+        ZCE_LIB::mkdir_recurse(outlog_dir_path_.c_str());
+    }
+
+    need_open_excel_ = need_open_excel;
+    if (need_open_excel_)
+    {
+        BOOL bret = ils_excel_file_.init_excel();
+        if (FALSE == bret)
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 //
 void Illusion_Read_Config::finalize()
 {
-    return ils_excel_file_.release_excel();
+    clear();
+
+    if (need_open_excel_)
+    {
+        ils_excel_file_.close_excelfile(FALSE);
+        Illusion_ExcelFile::release_excel();
+    }
+    
+    return;
 }
 
 //清理所有的读取数据
 void Illusion_Read_Config::clear()
 {
     file_cfg_map_.clear();
-
-
 }
 
 
 int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
 {
+    clear();
+
     BOOL bret = ils_excel_file_.open_excelfile(open_file);
     //Excel文件打开失败
     if (bret != TRUE)
@@ -118,11 +275,20 @@ int Illusion_Read_Config::read_excel_byucname(const CString &open_file)
         return ret;
     }
 
+    ///
+    ARRARY_OF_AI_IIJIMA_BINARY  fandaoai_ary;
+
     auto iter_tmp = xls_data.xls_table_cfg_.begin();
     for (; iter_tmp != xls_data.xls_table_cfg_.end(); ++iter_tmp)
     {
 
-        ret = read_table_cfgdata(iter_tmp->second);
+        ret = read_table_cfgdata(iter_tmp->second, &fandaoai_ary);
+        if (0 != ret)
+        {
+            return ret;
+        }
+
+        ret = save_to_sqlitedb(iter_tmp->second, &fandaoai_ary);
         if (0 != ret)
         {
             return ret;
@@ -160,6 +326,7 @@ void Illusion_Read_Config::map_proto_path(const std::string &path_name)
 {
     ils_proto_reflect_.map_path(path_name);
 }
+
 ///
 int Illusion_Read_Config::read_proto(const std::string &proto_fname)
 {
@@ -279,8 +446,8 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            tc_data.protobuf_item_line_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
-            if (tc_data.protobuf_item_line_ <= 0)
+            tc_data.pb_fieldname_line_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
+            if (tc_data.pb_fieldname_line_ <= 0)
             {
                 return -1;
             }
@@ -345,7 +512,8 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
 
 
 //读取表格数据read_table_data
-int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
+int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
+                                             ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary)
 {
     int ret = 0;
     //检查EXCEL文件中是否有这个表格
@@ -354,58 +522,56 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
         return -3;
     }
 
-    google::protobuf::Message *new_msg = NULL;
-    ret = ils_proto_reflect_.new_mesage(tc_data.pb_msg_name_, new_msg);
+    google::protobuf::Message *temp_msg = NULL;
+    ret = ils_proto_reflect_.new_mesage(tc_data.pb_msg_name_, temp_msg);
+    std::shared_ptr<google::protobuf::Message> new_msg(temp_msg);
     if (ret != 0)
     {
         return ret;
     }
+    //std::shared_ptr <google::protobuf::Message> new_msg(tmp_msg);
 
     long line_count = ils_excel_file_.row_count();
     long col_count = ils_excel_file_.column_count();
     TRACE("%s table have col_count = %u row_count =%u\n", tc_data.excel_table_name_, col_count, line_count);
 
-    CString proto_item_name;
-    std::string std_item_name;
+    CString field_name_cstring;
+    std::string field_name_stdstr;
 
-    if (tc_data.protobuf_item_line_ > line_count || tc_data.read_data_start_ > line_count )
+    if (tc_data.pb_fieldname_line_ > line_count || tc_data.read_data_start_ > line_count )
     {
         return -4;
     }
 
     for (long col_no = 1; col_no <= col_count; ++col_no)
     {
-        proto_item_name = ils_excel_file_.get_cell_cstring(tc_data.protobuf_item_line_, col_no);
+        field_name_cstring = ils_excel_file_.get_cell_cstring(tc_data.pb_fieldname_line_, col_no);
+
+        ret = convert_to_mbcs(field_name_cstring, field_name_stdstr);
+
+        tc_data.proto_field_ary_.push_back(field_name_stdstr);
 
 
-#if defined UNICODE || defined _UNICODE
-        convert_to_utf8(proto_item_name, std_item_name);
-#else
-        std_item_name = (LPCTSTR)proto_item_name;
-#endif
-        tc_data.proto_field_ary_.push_back(std_item_name);
-
-        
         size_t find_pos = tc_data.proto_field_ary_[col_no - 1].find_last_of('.');
         if (find_pos != std::string::npos)
         {
-            if (0 == strcmp(tc_data.firstshow_field_.c_str(), 
-                std_item_name.c_str()))
+            if (0 == strcmp(tc_data.firstshow_field_.c_str(),
+                            field_name_stdstr.c_str()))
             {
                 tc_data.item_msg_firstshow_.push_back(true);
             }
             else
             {
                 if (0 == strncmp(tc_data.firstshow_msg_.c_str(),
-                    std_item_name.c_str(), 
-                    tc_data.firstshow_msg_.length()) )
+                                 field_name_stdstr.c_str(),
+                                 tc_data.firstshow_msg_.length()) )
                 {
                     tc_data.item_msg_firstshow_.push_back(false);
                 }
                 else
                 {
-                    tc_data.firstshow_field_ = std_item_name;
-                    tc_data.firstshow_msg_.assign(std_item_name, 0, find_pos + 1);
+                    tc_data.firstshow_field_ = field_name_stdstr;
+                    tc_data.firstshow_msg_.assign(field_name_stdstr, 0, find_pos + 1);
                     tc_data.item_msg_firstshow_.push_back(true);
                 }
             }
@@ -417,14 +583,90 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
 
     }
 
-    int index_1 =0, index_2 = 0;
-    CString read_data;
-    std::string std_read_data;
+    std::vector<google::protobuf::Message *> field_msg_ary;
+    std::vector<const google::protobuf::FieldDescriptor *> field_desc_ary;
 
-    //读取每一行的数据
+    google::protobuf::Message *field_msg = NULL;
+    const google::protobuf::FieldDescriptor *field_desc = NULL;
+    for (long col_no = 1; col_no <= col_count; ++col_no)
+    {
+        //如果为空表示不需要关注这列
+        if (tc_data.proto_field_ary_[col_no - 1].length() == 0)
+        {
+            field_msg_ary.push_back(NULL);
+            field_desc_ary.push_back(NULL);
+            continue;
+        }
+
+        //取得字段的描述
+        ret = ZCE_Protobuf_Reflect::get_fielddesc(new_msg.get(),
+                                                  tc_data.proto_field_ary_[col_no - 1],
+                                                  tc_data.item_msg_firstshow_[col_no - 1] == 1 ? true : false,
+                                                  field_msg,
+                                                  field_desc);
+        if (0 != ret)
+        {
+            ZCE_LOGMSG(RS_ERROR, "Message [%s] don't find field [%s] field name define in L/C[%d/%d]",
+                       tc_data.pb_msg_name_.c_str(),
+                       tc_data.proto_field_ary_[col_no - 1].c_str(),
+                       tc_data.pb_fieldname_line_,
+                       col_no
+                      );
+            return ret;
+        }
+        field_msg_ary.push_back(field_msg);
+        field_desc_ary.push_back(field_desc);
+    }
+
+
+
+
+    //吧啦吧啦吧啦吧啦吧啦吧啦吧啦，这段啰嗦的代码只是为了搞个日志的名字,EXCEFILENAE_TABLENAME.log
+    std::string xlsfile_stdstring;
+    convert_to_mbcs(ils_excel_file_.open_filename(), xlsfile_stdstring);
+    ZCE_LIB::basename(xlsfile_stdstring.c_str(), cvt_utf8_buf_, CONVERT_BUFFER_LEN);
+    std::string log_file_name = cvt_utf8_buf_;
+    log_file_name += "_";
+
+    std::string tablename_stdstring;
+    convert_to_mbcs(tc_data.excel_table_name_, tablename_stdstring);
+    log_file_name += tablename_stdstring;
+    log_file_name += ".log";
+    std::string out_log_file = outlog_dir_path_;
+    ZCE_LIB::path_string_cat(out_log_file, log_file_name.c_str());
+
+    std::ofstream read_table_log;
+    read_table_log.open(out_log_file.c_str());
+
+    if (!read_table_log.good())
+    {
+        return -1;
+    }
+
+    //什么？为啥不用google pb 的debugstring直接输出？为啥，自己考虑
+    read_table_log << "Read excel file:" << xlsfile_stdstring.c_str() << " line count" << line_count
+                   << "column count " << col_count << std::endl;
+    read_table_log << "Read table:" << tablename_stdstring.c_str() << std::endl;
+
+    ZCE_LOGMSG(RS_INFO, "Read excel file:%s table :%s start. line count %u column %u.",
+               xlsfile_stdstring.c_str(),
+               tablename_stdstring.c_str(),
+               line_count,
+               col_count);
+
+    int index_1 = 0, index_2 = 0;
+    CString read_data;
+    std::string set_data, show_data;
+
+    //读取每一行的数据 ,+1是因为read_data_start_也要读取
+    aiiijma_ary->resize(line_count - tc_data.read_data_start_+1);
     for (long line_no = tc_data.read_data_start_; line_no <= line_count; ++line_no)
     {
         new_msg->Clear();
+
+        read_table_log << "Read line:" << line_no << std::endl << "{" << std::endl;
+        ZCE_LOGMSG(RS_INFO, "Read line：%u", line_no);
+
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
             //如果为空表示不需要关注这列
@@ -437,21 +679,18 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
             read_data = ils_excel_file_.get_cell_cstring(line_no, col_no);
 
             //取得字段的描述
-            google::protobuf::Message *field_msg = NULL;
-            const google::protobuf::FieldDescriptor *field_desc = NULL;
-            ret = ZCE_Protobuf_Reflect::get_fielddesc(new_msg,
-                tc_data.proto_field_ary_[col_no - 1],
-                tc_data.item_msg_firstshow_[col_no - 1] ==1 ?true:false,
-                field_msg,
-                field_desc);
-            if (0 != ret)
-            {
-                return ret;
-            }
+            field_msg = field_msg_ary[ col_no - 1 ];
+            field_desc = field_desc_ary[col_no - 1];
 
-            std::string set_data;
-            //如果是string 类型，根据要求的编码进行转换。
+            //如果是string 类型，Google PB之支持UTF8
             if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING )
+            {
+                ret = convert_to_utf8(read_data, set_data);
+                //
+                ret = convert_to_mbcs(read_data, show_data);
+            }
+            //对于BYTES，
+            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
             {
                 if (cur_cvt_coding_ == CVT_UTF8)
                 {
@@ -469,172 +708,133 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data)
                 {
                     ZCE_ASSERT(false);
                 }
-            }
-            //对于BYTES，我理解为二进制，你可以用BASE16的字符串输入
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
-            {
+                show_data = set_data;
             }
             //其他字段类型统一转换为UTF8的编码
             else
             {
                 ret = convert_to_utf8(read_data, set_data);
+                show_data = set_data;
             }
             //根据描述，设置字段的数据
             ret = ZCE_Protobuf_Reflect::set_fielddata(field_msg, field_desc, set_data);
             if (0 != ret)
             {
                 ZCE_LOGMSG(RS_ERROR, "Message [%s] field [%s] type [%d][%s] set_fielddata fail. Line,Colmn[%d|%d]",
-                    tc_data.pb_msg_name_.c_str(),
-                    field_desc->full_name(),
-                    field_desc->type(),
-                    field_desc->type_name(),
-                    line_no,
-                    col_no
-                    );
+                           tc_data.pb_msg_name_.c_str(),
+                           field_desc->full_name(),
+                           field_desc->type(),
+                           field_desc->type_name(),
+                           line_no,
+                           col_no
+                          );
                 return ret;
             }
 
             //读取索引
             if (col_no == tc_data.index1_column_)
             {
-                index_1 = std::stol(set_data,0,10 );
+                index_1 = std::stol(set_data, 0, 10 );
             }
             if (tc_data.index2_column_ != 0 && col_no == tc_data.index2_column_)
             {
                 index_2 = std::stol(set_data, 0, 10);
             }
+
+            read_table_log << "\t" << tc_data.proto_field_ary_[col_no - 1].c_str() << ":" << show_data.c_str()
+                           << std::endl;
         }
 
         //如果没有初始化
         if (!new_msg->IsInitialized())
         {
-            ZCE_LOGMSG(RS_ERROR,"Message [%s] is not IsInitialized, please check your excel or proto file.",
-                tc_data.pb_msg_name_.c_str());
+            ZCE_LOGMSG(RS_ERROR, "Message [%s] is not IsInitialized, please check your excel or proto file.",
+                       tc_data.pb_msg_name_.c_str());
             return -1;
         }
-        std::cout << "index:"<<index_1<<","<<index_2 << std::endl;
-        std::cout << new_msg->DebugString() << std::endl;
 
+        read_table_log << "} index_1 :" << index_1 << "index_2" << index_2 << std::endl;
+
+        if (!new_msg->IsInitialized())
+        {
+            ZCE_LOGMSG(RS_ERROR, "Message [%s] protobuf_encode fail, please check your excel or proto file.",
+                       tc_data.pb_msg_name_.c_str());
+            return -1;
+        }
+        ret = (*aiiijma_ary)[line_no - tc_data.read_data_start_].protobuf_encode(index_1, index_2, new_msg.get());
     }
 
-    ils_proto_reflect_.del_message(new_msg);
+    ZCE_LOGMSG(RS_INFO, "Read excel file:%s table :%s end.", xlsfile_stdstring.c_str(),
+               tablename_stdstring.c_str());
 
     return 0;
 }
 
-//根据当前默认的字符编码方式，转换为UTF8
-int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
+
+int Illusion_Read_Config::save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
+                                           const ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary)
 {
-#if defined UNICODE || defined _UNICODE
+    int ret = 0;
+    std::string db3_file = sqlitedb_pah_;
+    ZCE_LIB::path_string_cat(db3_file, table_cfg.sqlite3_db_name_);
 
-    DWORD ret = 0;
-    ret = ::WideCharToMultiByte(CP_UTF8,
-                                NULL,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_utf8_buf_,
-                                CONVERT_BUFFER_LEN,
-                                NULL,
-                                0);
-    if (ret == 0)
+    ret = sqlite_config_.open_dbfile(db3_file.c_str(),false,true);
+    if (ret != 0)
     {
-        return -1;
+        return ret;
     }
-    dst = cvt_utf8_buf_;
-    return 0;
 
-#else
-    // MBCS ===> UTF16 ===> UTF8
+    ret = sqlite_config_.create_table(table_cfg.table_id_);
+    if (ret != 0)
+    {
+        return ret;
+    }
 
-    // 第一次先把MBCS码转换成UTF-16
-    DWORD ret = 0;
-    ret = ::MultiByteToWideChar(CP_ACP,
-                                0,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_utf16_buf_,
-                                CONVERT_BUFFER_LEN);
-    if (ret == 0)
+    //更新数据库
+    ret = sqlite_config_.replace_array(table_cfg.table_id_, aiiijma_ary);
+    if (ret != 0)
     {
-        return -1;
+        return ret;
     }
-    int u16_buf_len = ret;
-    // 第二次再把UTF-16编码转换为UTF-8编码
-    ret = ::WideCharToMultiByte(CP_UTF8,
-                                NULL,
-                                cvt_utf16_buf_,
-                                u16_buf_len,
-                                cvt_utf8_buf_,
-                                CONVERT_BUFFER_LEN,
-                                NULL,
-                                0);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst = cvt_utf8_buf_;
 
     return 0;
-#endif
 }
 
-//根据当前默认的字符编码方式，转换为UTF16(UNICODE)
-int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
+
+
+
+///从DB3文件里面读取某个配置表的配置
+int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
+    unsigned int table_id,
+    const std::string &conf_message_name)
 {
-#if defined UNICODE || defined _UNICODE
-    // UTF16 == UTF16
-    if (src.GetLength() > CONVERT_BUFFER_LEN)
-    {
-        return -1;
-    }
-    dst.assign(((const char *)((LPCTSTR)src)), ((src.GetLength() +1) * ( sizeof(wchar_t))) );
-    return 0;
-#else
-    // MBCS ===> UTF16
-    DWORD ret = 0;
-    ret = ::MultiByteToWideChar(CP_ACP,
-                                0,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_utf16_buf_,
-                                CONVERT_BUFFER_LEN);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst.assign(((const char *)(cvt_utf16_buf_)), (ret * (sizeof(wchar_t))));
-    return 0;
-#endif
-}
+    int ret = 0;
+    std::string db3_file = sqlitedb_pah_;
+    ZCE_LIB::path_string_cat(db3_file, db3_fname);
 
-//根据当前默认的字符编码方式，转换为MBCS
-int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
-{
-#if defined UNICODE || defined _UNICODE
-    //UTF16 == > MBCS
-    DWORD ret = 0;
-    ret = ::WideCharToMultiByte(CP_ACP,
-                                NULL,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_mbcs_buf_,
-                                CONVERT_BUFFER_LEN,
-                                NULL,
-                                0);
-    if (ret == 0)
+    ret = sqlite_config_.open_dbfile(db3_file.c_str(), true, false);
+    if (ret != 0)
     {
-        return -1;
+        return ret;
     }
-    dst = cvt_mbcs_buf_;
-    return 0;
-#else
-    // MBCS ===> MBCS
-    if (src.GetLength() > CONVERT_BUFFER_LEN)
-    {
-        return -1;
-    }
-    dst  = ((LPCTSTR)src);
-    return 0;
-#endif
-}
 
+    ARRARY_OF_AI_IIJIMA_BINARY aiiijma_ary;
+    //更新数据库
+    ret = sqlite_config_.select_array(table_id, 0, 0 ,&aiiijma_ary);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    google::protobuf::Message *temp_msg = NULL;
+    ret = ils_proto_reflect_.new_mesage(conf_message_name, temp_msg);
+    std::shared_ptr<google::protobuf::Message> new_msg(temp_msg);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+
+
+    return 0;
+}

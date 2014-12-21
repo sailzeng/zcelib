@@ -1,7 +1,7 @@
 
 #include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
-#include "zce_sqlite_process.h"
+#include "zce_sqlite_db_handler.h"
 
 //对于SQLITE的最低版本限制
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -57,14 +57,14 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
 
 }
 
-#if defined ZCE_OS_WINDOWS 
+#if defined ZCE_OS_WINDOWS
 
 //以MBCS路径的打开一个DB文件
-int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file, 
-    bool read_only,
-    bool create_db)
+int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
+                                             bool read_only,
+                                             bool create_db)
 {
-    
+
     // Begin(把一个ascii码字符转换成UTF-8)
 
     DWORD utf16_buffer_len = ::MultiByteToWideChar(CP_ACP, 0, db_file, -1, NULL, 0);
@@ -72,7 +72,7 @@ int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
     {
         return -1;
     }
-    wchar_t utf16_buffer[MAX_PATH+1];
+    wchar_t utf16_buffer[MAX_PATH + 1];
 
     // 第一次先把ascii码转换成UTF-16
     ::MultiByteToWideChar(CP_ACP, 0, db_file, -1, utf16_buffer, utf16_buffer_len);
@@ -83,17 +83,17 @@ int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
         return -1;
     }
 
-    char utf8_buffer [MAX_PATH+1];
+    char utf8_buffer [MAX_PATH + 1];
 
     // 第二次再把UTF-16编码转换为UTF-8编码
     ::WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, utf8_buffer, utf8_buffer_len, NULL, 0);
 
     // End(把一个ascii码字符转换成UTF-8)
-    
+
 
     int ret = open_database(utf8_buffer,
-        read_only,
-        create_db);
+                            read_only,
+                            create_db);
     //
     if (ret != 0)
     {
@@ -131,65 +131,46 @@ int ZCE_SQLite_DB_Handler::error_code()
 //开始一个事务
 int ZCE_SQLite_DB_Handler::begin_transaction()
 {
-    int ret = 0;
-    char *err_msg = NULL;
-    ret = ::sqlite3_exec(sqlite3_handler_,
-                         "BEGIN TRANSACTION;",
-                         NULL,
-                         NULL,
-                         &err_msg);
-
-    if (ret == SQLITE_OK)
-    {
-        return 0;
-    }
-    else
-    {
-        return -1;
-    }
+    return execute("BEGIN TRANSACTION;");
 }
 
 //提交一个事务
 int ZCE_SQLite_DB_Handler::commit_transction()
 {
-    int ret = 0;
-    char *err_msg = NULL;
-    ret = ::sqlite3_exec(sqlite3_handler_,
-                         "COMMIT TRANSACTION;",
-                         NULL,
-                         NULL,
-                         &err_msg);
-
-    if (ret == SQLITE_OK)
-    {
-        return 0;
-    }
-    else
-    {
-        return -1;
-    }
+    return execute("COMMIT TRANSACTION;");
 }
 
 //将同步选项关闭，可以适当的提高insert的速度，但是为了安全起见，建议不要使用
 int ZCE_SQLite_DB_Handler::turn_off_synch()
 {
+    return execute("PRAGMA synchronous=OFF;");
+}
+
+///执行DDL等不需要结果的SQL
+int ZCE_SQLite_DB_Handler::execute(const char *sql_string)
+{
     int ret = 0;
     char *err_msg = NULL;
     ret = ::sqlite3_exec(sqlite3_handler_,
-                         "PRAGMA synchronous=OFF;",
-                         NULL,
-                         NULL,
-                         &err_msg);
-
+        sql_string,
+        NULL,
+        NULL,
+        &err_msg);
     if (ret == SQLITE_OK)
     {
         return 0;
     }
     else
     {
+        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_exec execute sql [%s] fail.:[%d][%s].",
+            sql_string,
+            ret,
+            err_msg);
+        ::sqlite3_free(err_msg);
         return -1;
     }
 }
+
 
 //执行SQL 查询，取得结果
 int ZCE_SQLite_DB_Handler::get_table(const char *sql_string,

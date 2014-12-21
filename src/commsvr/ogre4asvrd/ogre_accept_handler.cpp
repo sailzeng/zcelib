@@ -57,7 +57,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     if (ret != 0)
     {
         int last_err = ZCE_LIB::last_error();
-        ZLOG_ERROR("Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
+        ZLOG_MSG(RS_ERROR,"Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
                    peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
                    peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
                    last_err,
@@ -110,7 +110,7 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
 
         //¼ÇÂ¼´íÎó
         int accept_error =  ZCE_LIB::last_error();
-        ZLOG_ERROR( "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
+        ZLOG_MSG(RS_ERROR, "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
                     remoteaddress.get_host_addr(),
                     remoteaddress.get_port_number(),
                     ret,

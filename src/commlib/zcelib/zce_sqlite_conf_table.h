@@ -61,22 +61,14 @@ public:
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
     ///将一个结构进行编码
-    template<class T>
     int protobuf_encode(unsigned int index_1,
                         unsigned int index_2,
-                        const T &info);
+                        const google::protobuf::MessageLite *msg);
 
     ///将一个结构进行解码
-    template<class T>
-    int protobuf_decode(unsigned int &index_1,
-                        unsigned int &index_2,
-                        T &info);
-
-    ///
-    int pbmsg_encode();
-
-    ///
-    int pbmsg_decode();
+    int protobuf_decode(unsigned int *index_1,
+                        unsigned int *index_2,
+                        google::protobuf::MessageLite *msg);
 
 #endif
 
@@ -102,66 +94,6 @@ public:
 };
 
 
-#if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
-
-template<class T>
-int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int &index_1,
-                                           unsigned int &index_2,
-                                           T &info)
-{
-    bool bret = info.ParseFromArray(ai_iijima_data_, ai_data_length_);
-
-    if (false == bret)
-    {
-        ZCE_LOGMSG(RS_ERROR, "Class %s protobuf decode fail,ParseFromArray return false.\n", typeid(info).name());
-        return -1;
-    }
-
-    return 0;
-}
-
-template<class T>
-int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
-                                           unsigned int index_2,
-                                           const T &info)
-{
-
-    if (info.IsInitialized())
-    {
-        ZCE_LOGMSG(RS_ERROR, "class %s protobuf encode fail, IsInitialized return false.\n",
-                   typeid(info).name());
-        return -1;
-    }
-
-    index_1_ = index_1;
-    index_2_ = index_2;
-
-    int protobuf_len = info.ByteSize();
-    if (protobuf_len > MAX_LEN_OF_AI_IIJIMA_DATA)
-    {
-        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
-                   " MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
-                   index_1,
-                   index_2,
-                   typeid(info).name(),
-                   protobuf_len);
-        return -1
-    }
-
-    bool bret = info.SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
-    if (bret)
-    {
-        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.\n",
-                   index_1,
-                   index_2,
-                   typeid(info).name());
-        return -1;
-    }
-    ai_data_length_ = protobuf_len;
-    return 0;
-}
-
-#endif
 
 typedef std::vector <AI_IIJIMA_BINARY_DATA>   ARRARY_OF_AI_IIJIMA_BINARY;
 
@@ -189,10 +121,7 @@ protected:
 
 
     //改写的STMT SQL
-    void sql_replace_bind(unsigned  int table_id,
-                          unsigned int index_1,
-                          unsigned int index_2,
-                          unsigned int last_mod_time);
+    void sql_replace_bind(unsigned  int table_id);
 
     ///改写的SQL,文本格式，用x
     void sql_replace_one(unsigned  int table_id,
@@ -228,18 +157,23 @@ public:
 
     ///打开一个通用的数据库
     int open_dbfile(const char *db_file,
+                    bool read_only,
                     bool create_db);
 
     ///创建数据表
     int create_table(unsigned int table_id);
 
-    ///
+    ///UPDATE 或者 INSERT 一个记录
     int replace_one(unsigned int table_id,
-                    const AI_IIJIMA_BINARY_DATA &conf_data);
+                    const AI_IIJIMA_BINARY_DATA *conf_data);
+
+    //UPDATE 或者 INSERT 一组记录
+    int replace_array(unsigned int table_id,
+                      const ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma);
 
     ///查询了一条记录
     int select_one(unsigned int table_id,
-                   AI_IIJIMA_BINARY_DATA &conf_data);
+                   AI_IIJIMA_BINARY_DATA *conf_data);
 
     ///删除一条记录
     int delete_one(unsigned int table_id,
@@ -250,20 +184,20 @@ public:
     int counter(unsigned int table_id,
                 unsigned int startno,
                 unsigned int numquery,
-                unsigned int &rec_count);
+                unsigned int *rec_count);
 
     ///查询数据队列，部分数据（限制查询数量）或者全部数据
     int select_array(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery,
-                     ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma);
+                     ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma);
 
 
     ///对比两个数据表格，找出差异，然后找出差异的SQL
     int compare_table(const char *old_db,
                       const char *new_db,
                       unsigned int table_id,
-                      std::string &update_sql);
+                      std::string *update_sql);
 protected:
     //
     const static size_t MAX_SQLSTRING_LEN = AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA * 2 + 1024;

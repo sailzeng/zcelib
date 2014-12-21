@@ -1,7 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_bytes_encode.h"
 #include "zce_trace_log_debug.h"
-#include "zce_sqlite_process.h"
+#include "zce_sqlite_db_handler.h"
 #include "zce_sqlite_stmt_handler.h"
 #include "zce_sqlite_conf_table.h"
 
@@ -54,6 +54,70 @@ bool AI_IIJIMA_BINARY_DATA::operator < (const AI_IIJIMA_BINARY_DATA right)
     }
 }
 
+
+#if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
+
+
+int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
+                                           unsigned int index_2,
+                                           const google::protobuf::MessageLite *msg)
+{
+
+    if (!msg->IsInitialized())
+    {
+        ZCE_LOGMSG(RS_ERROR, "class %s protobuf encode fail, IsInitialized return false.",
+                   typeid(msg).name());
+        return -1;
+    }
+
+    index_1_ = index_1;
+    index_2_ = index_2;
+
+    int protobuf_len = msg->ByteSize();
+    if (protobuf_len > MAX_LEN_OF_AI_IIJIMA_DATA)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
+                   " MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
+                   index_1,
+                   index_2,
+                   typeid(msg).name(),
+                   protobuf_len);
+        return -1;
+    }
+
+    bool bret = msg->SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
+    if (!bret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.",
+                   index_1,
+                   index_2,
+                   typeid(msg).name());
+        return -1;
+    }
+    ai_data_length_ = protobuf_len;
+    last_mod_time_ = static_cast<unsigned int>( ::time(NULL));
+    return 0;
+}
+
+
+int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int *index_1,
+                                           unsigned int *index_2,
+                                           google::protobuf::MessageLite *msg)
+{
+    bool bret = msg->ParseFromArray(ai_iijima_data_, ai_data_length_);
+
+    if (false == bret)
+    {
+        ZCE_LOGMSG(RS_ERROR, "Class %s protobuf decode fail,ParseFromArray return false.", typeid(msg).name());
+        return -1;
+    }
+    *index_1 = index_1_;
+    *index_2 = index_2_;
+    return 0;
+}
+
+#endif
+
 /*****************************************************************************************************************
 struct General_SQLite_Config 一个很通用的从DB中间得到通用配置信息的方法
 *****************************************************************************************************************/
@@ -71,6 +135,8 @@ ZCE_General_Config_Table::~ZCE_General_Config_Table()
         delete sql_string_;
         sql_string_ = NULL;
     }
+
+    sqlite_handler_->close_database();
     if (sqlite_handler_)
     {
         delete sqlite_handler_;
@@ -80,9 +146,10 @@ ZCE_General_Config_Table::~ZCE_General_Config_Table()
 
 //打开一个通用的数据库
 int ZCE_General_Config_Table::open_dbfile(const char *db_file,
+                                          bool read_only,
                                           bool create_db)
 {
-    int ret = sqlite_handler_->open_database(db_file, create_db);
+    int ret = sqlite_handler_->open_database(db_file, read_only, create_db);
     if (ret != 0)
     {
         return ret;
@@ -98,10 +165,14 @@ void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
     size_t buflen = MAX_SQLSTRING_LEN;
 
     int len = snprintf(ptmppoint, buflen,
+                       "DROP TABLE IF EXISTS config_table_%u;"
+                       "DROP INDEX IF EXISTS cfg_table_idx_%u;"
                        "CREATE TABLE IF NOT EXISTS config_table_%u(index_1 INTEGER,"
                        "index_2 INTEGER, conf_data BLOB, last_mod_time INTEGER);"
                        "CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_%u ON "
                        "config_table_%u(index_1, index_2);",
+                       table_id,
+                       table_id,
                        table_id,
                        table_id,
                        table_id);
@@ -112,10 +183,7 @@ void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
 }
 
 //改写的SQL
-void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id,
-                                                unsigned int index_1,
-                                                unsigned int index_2,
-                                                unsigned int last_mod_time)
+void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id)
 {
     //构造后面的SQL
     char *ptmppoint = sql_string_;
@@ -123,12 +191,9 @@ void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id,
 
     //注意里面的?
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
-                       "(index_1,index_2,conf_data,last_mod_time ) VALUES ;"
-                       "(%u,%u,?,%u) ",
-                       table_id,
-                       index_1,
-                       index_2,
-                       last_mod_time
+                       "(index_1,index_2,conf_data,last_mod_time ) VALUES "
+                       "(?,?,?,?) ;",
+                       table_id
                       );
     ptmppoint += len;
     buflen -= len;
@@ -149,7 +214,7 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
 
     //对于空间，我们是预留了足够的空间的，就不检查边界了
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
-                       "(index_1,index_2,conf_data,last_mod_time ) VALUES ;"
+                       "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(%u,%u,x'",
                        table_id,
                        index_1,
@@ -263,15 +328,53 @@ int ZCE_General_Config_Table::create_table(unsigned int table_id)
 
     //建表和建立索引
     sql_create_table(table_id);
+
+    int ret = 0;
+    ret = sqlite_handler_->execute(sql_string_);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+
+//更新一条记录，
+int ZCE_General_Config_Table::replace_one(unsigned int table_id,
+                                          const AI_IIJIMA_BINARY_DATA *conf_data)
+{
+    //构造后面的SQL
+    sql_replace_bind(table_id);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
+
+    ret = stmt_handler.begin_transaction();
+    if (ret != 0)
+    {
+        return ret;
+    }
+
     ret = stmt_handler.prepare_sql_string(sql_string_);
     if (ret != 0)
     {
         return ret;
     }
+
+    ZCE_SQLite_STMTHdl::BINARY binary_data((void *)conf_data->ai_iijima_data_,
+        conf_data->ai_data_length_);
+    stmt_handler << conf_data->index_1_;
+    stmt_handler << conf_data->index_2_;
+    stmt_handler << binary_data;
+    stmt_handler << conf_data->last_mod_time_;
+    
     bool hash_result = false;
     ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = stmt_handler.commit_transction();
     if (ret != 0)
     {
         return ret;
@@ -280,25 +383,36 @@ int ZCE_General_Config_Table::create_table(unsigned int table_id)
 }
 
 
-//更新一条记录，
-int ZCE_General_Config_Table::replace_one(unsigned int table_id,
-                                          const AI_IIJIMA_BINARY_DATA &conf_data)
+int ZCE_General_Config_Table::replace_array(unsigned int table_id,
+                                            const ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma)
 {
     //构造后面的SQL
-    sql_replace_bind(table_id,
-                     conf_data.index_1_,
-                     conf_data.index_2_,
-                     conf_data.last_mod_time_);
+    sql_replace_bind(table_id);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
+
+    ret = stmt_handler.begin_transaction();
+    if (ret != 0)
+    {
+        return ret;
+    }
+
     ret = stmt_handler.prepare_sql_string(sql_string_);
     if (ret != 0)
     {
         return ret;
     }
 
-    stmt_handler << ZCE_SQLite_STMTHdl::BINARY((void *)conf_data.ai_iijima_data_,
-                                               conf_data.ai_data_length_);
+    const size_t ary_size = ary_ai_iijma->size();
+    for (size_t i = 0; i < ary_size; ++i)
+    {
+        ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
+            (*ary_ai_iijma)[i].ai_data_length_);
+        stmt_handler << (*ary_ai_iijma)[i].index_1_;
+        stmt_handler << (*ary_ai_iijma)[i].index_2_;
+        stmt_handler << binary_data;
+        stmt_handler << (*ary_ai_iijma)[i].last_mod_time_;
+    }
     if (ret != 0)
     {
         return ret;
@@ -306,6 +420,11 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
 
     bool hash_result = false;
     ret = stmt_handler.execute_stmt_sql(hash_result);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    ret = stmt_handler.commit_transction();
     if (ret != 0)
     {
         return ret;
@@ -315,11 +434,11 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
 
 //
 int ZCE_General_Config_Table::select_one(unsigned int table_id,
-                                         AI_IIJIMA_BINARY_DATA &conf_data)
+                                         AI_IIJIMA_BINARY_DATA *conf_data)
 {
     sql_select_one(table_id,
-                   conf_data.index_1_,
-                   conf_data.index_2_);
+                   conf_data->index_1_,
+                   conf_data->index_2_);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare_sql_string(sql_string_);
@@ -340,10 +459,10 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
         return -1;
     }
 
-
-    stmt_handler >> ZCE_SQLite_STMTHdl::BINARY((void *)conf_data.ai_iijima_data_,
-                                               conf_data.ai_data_length_);
-    stmt_handler >> conf_data.last_mod_time_;
+    ZCE_SQLite_STMTHdl::BINARY binary_data((void *)conf_data->ai_iijima_data_,
+        conf_data->ai_data_length_);
+    stmt_handler >> binary_data;
+    stmt_handler >> conf_data->last_mod_time_;
 
     return 0;
 }
@@ -375,7 +494,7 @@ int ZCE_General_Config_Table::delete_one(unsigned int table_id,
 int ZCE_General_Config_Table::counter(unsigned int table_id,
                                       unsigned int startno,
                                       unsigned int numquery,
-                                      unsigned int &rec_count)
+                                      unsigned int *rec_count)
 {
     sql_counter(table_id, startno, numquery);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
@@ -398,7 +517,7 @@ int ZCE_General_Config_Table::counter(unsigned int table_id,
         return -1;
     }
 
-    stmt_handler >> rec_count;
+    stmt_handler >> *rec_count;
     return 0;
 }
 
@@ -406,13 +525,13 @@ int ZCE_General_Config_Table::counter(unsigned int table_id,
 int ZCE_General_Config_Table::select_array(unsigned int table_id,
                                            unsigned int startno,
                                            unsigned int numquery,
-                                           ARRARY_OF_AI_IIJIMA_BINARY &ary_ai_iijma)
+                                           ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma)
 {
     int ret = 0;
 
     //先计算数量
     unsigned int  num_counter = 0;
-    ret = counter(table_id, startno, numquery, num_counter);
+    ret = counter(table_id, startno, numquery, &num_counter);
     if (0 != ret)
     {
         return ret;
@@ -423,7 +542,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
     {
         return -1;
     }
-    ary_ai_iijma.resize(num_counter);
+    ary_ai_iijma->resize(num_counter);
 
     sql_select_array(table_id, startno, numquery);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
@@ -439,21 +558,23 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
 
     for (size_t i = 0; ret == 0 && hash_result == true; ++i)
     {
-        stmt_handler >> ary_ai_iijma[i].index_1_;
-        stmt_handler >> ary_ai_iijma[i].index_2_;
+        stmt_handler >> (*ary_ai_iijma)[i].index_1_;
+        stmt_handler >> (*ary_ai_iijma)[i].index_2_;
 
         int blob_len = stmt_handler.cur_column_bytes();
         if (blob_len > AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
         {
-            ZCE_LOGMSG(RS_ERROR,"Error current column bytes length [%u] > "
-                "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u]." ,
-                blob_len, AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
+            ZCE_LOGMSG(RS_ERROR, "Error current column bytes length [%u] > "
+                       "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u]." ,
+                       blob_len, AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
             return -1;
         }
 
-        stmt_handler >> ZCE_SQLite_STMTHdl::BINARY((void *)ary_ai_iijma[i].ai_iijima_data_,
-                                                   ary_ai_iijma[i].ai_data_length_);
-        stmt_handler >> ary_ai_iijma[i].last_mod_time_;
+        ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
+            (*ary_ai_iijma)[i].ai_data_length_);
+
+        stmt_handler >> binary_data;
+        stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
 
         ret = stmt_handler.execute_stmt_sql(hash_result);
     }
@@ -472,14 +593,14 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
 int ZCE_General_Config_Table::compare_table(const char *old_db,
                                             const char *new_db,
                                             unsigned int table_id,
-                                            std::string &update_sql)
+                                            std::string *update_sql)
 {
     int ret = 0;
 
 
 
     //读取旧数据
-    ret = open_dbfile(old_db, false);
+    ret = open_dbfile(old_db, true , false);
     if (0 != ret)
     {
         return ret;
@@ -488,14 +609,14 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
     ret = select_array(table_id,
                        0,
                        0,
-                       old_ai_iijma);
+                       &old_ai_iijma);
     if (0 != ret)
     {
         return ret;
     }
 
     //读取新数据
-    ret = open_dbfile(new_db, false);
+    ret = open_dbfile(new_db, true, false);
     if (0 != ret)
     {
         return ret;
@@ -504,7 +625,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
     ret = select_array(table_id,
                        0,
                        0,
-                       new_ai_iijma);
+                       &new_ai_iijma);
     if (0 != ret)
     {
         return ret;
@@ -514,7 +635,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
     std::sort(old_ai_iijma.begin(), old_ai_iijma.end());
     std::sort(new_ai_iijma.begin(), new_ai_iijma.end());
 
-    update_sql.reserve(MAX_SQLSTRING_LEN);
+    update_sql->reserve(MAX_SQLSTRING_LEN);
 
     //两个都有序，找出差异的元素
     size_t p = 0, q = 0;
@@ -542,7 +663,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                                 new_ai_iijma[q].ai_data_length_,
                                 new_ai_iijma[q].ai_iijima_data_,
                                 new_ai_iijma[q].last_mod_time_);
-                update_sql += sql_string_;
+                *update_sql += sql_string_;
 
                 ++p;
                 ++q;
@@ -578,7 +699,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                                         new_ai_iijma[s].ai_data_length_,
                                         new_ai_iijma[s].ai_iijima_data_,
                                         new_ai_iijma[s].last_mod_time_);
-                        update_sql += sql_string_;
+                        *update_sql += sql_string_;
                     }
 
                     break;
@@ -595,7 +716,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
             else
             {
                 sql_delete_one(table_id, old_ai_iijma[p].index_1_, old_ai_iijma[p].index_2_);
-                update_sql += sql_string_;
+                *update_sql += sql_string_;
                 ++p;
             }
         }
@@ -612,11 +733,15 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                         new_ai_iijma[q].ai_data_length_,
                         new_ai_iijma[q].ai_iijima_data_,
                         new_ai_iijma[q].last_mod_time_);
-        update_sql += sql_string_;
+        *update_sql += sql_string_;
     }
 
     return 0;
 }
+
+
+
+
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
 

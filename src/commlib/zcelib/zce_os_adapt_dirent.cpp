@@ -94,7 +94,7 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
         //WINDOS目前实际支持两种分节符
         if ( ZCE_IS_DIRECTORY_SEPARATOR(scan_dirname[lastchar - 1] ) )
         {
-            ::strcat(scan_dirname, ("*")); 
+            ::strcat(scan_dirname, ("*"));
         }
         else
         {
@@ -597,6 +597,12 @@ int ZCE_LIB::mkdir_recurse(const char *pathname, mode_t mode)
                 return ret;
             }
         }
+    }
+
+    //如果你写的路径最后不是以\或者/结尾，以整个路径创建一下
+    if (path_len > 0 && false == ZCE_IS_DIRECTORY_SEPARATOR(pathname[path_len - 1]) )
+    {
+        ret = ZCE_LIB::mkdir(pathname, mode);
     }
 
     return 0;

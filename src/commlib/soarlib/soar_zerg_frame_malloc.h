@@ -222,7 +222,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
         else
         {
             //
-            ZLOG_ERROR("[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
+            ZLOG_MSG(RS_ERROR,"[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
                        i,
                        size_appframe_[i],
                        frame_pool_[i].freesize(),

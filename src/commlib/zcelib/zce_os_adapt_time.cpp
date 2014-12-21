@@ -93,7 +93,7 @@ const timeval ZCE_LIB::get_uptime()
     }
     else
     {
-        ZLOG_ERROR("::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d", ret, ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "::clock_gettime(CLOCK_MONOTONIC, &sp) ret != 0,fail.ret = %d lasterror = %d", ret, ZCE_LIB::last_error());
         up_time.tv_sec = 0;
         up_time.tv_usec = 0;
     }

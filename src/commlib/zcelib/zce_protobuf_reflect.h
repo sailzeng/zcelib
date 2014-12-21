@@ -97,11 +97,11 @@ public:
     void error_info(PROTO_ERROR_ARRAY &error_ary);
 
     //根据名称创建Message,new 的message 会保存做出当前处理的message对象
-    int new_mesage(const std::string &type_name, 
+    int new_mesage(const std::string &type_name,
                    google::protobuf::Message *&new_msg);
 
     //
-    void del_message(google::protobuf::Message *del_msg);
+    void del_message(google::protobuf::Message *&del_msg);
 
     //
     int set_proc_msg_field(const std::string &field_name,
@@ -122,7 +122,7 @@ public:
                              bool message_add,
                              google::protobuf::Message *&field_msg,
                              const google::protobuf::FieldDescriptor *&field_desc);
-    
+
     ///设置一个Message的field
     static int set_fielddata(google::protobuf::Message *msg,
                              const google::protobuf::FieldDescriptor *field,

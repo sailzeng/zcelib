@@ -212,9 +212,9 @@ void ZCE_Server_Status::add_status_item(size_t num_add_stat_item,
         }
         else
         {
-            ZLOG_ERROR("Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
-                       item_ary[i].statics_item_.item_id_.statics_id_,
-                       item_ary[i].item_name_);
+            ZLOG_MSG(RS_ERROR, "Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
+                     item_ary[i].statics_item_.item_id_.statics_id_,
+                     item_ary[i].item_name_);
             continue;
         }
     }
@@ -268,8 +268,8 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(statics_id);
     if (iter == conf_stat_map_.end())
     {
-        ZLOG_ERROR("Use one statics_id_,it don't config [%u] ,please check your code.",
-                   statics_id);
+        ZLOG_MSG(RS_ERROR, "Use one statics_id_,it don't config [%u] ,please check your code.",
+                 statics_id);
         return -1;
     }
 
@@ -277,8 +277,8 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     //如果已经满了，也算了
     if (status_stat_sandy_->full())
     {
-        ZLOG_ERROR("Statics array is full,please extend in start. ary size is [%lu]",
-                   status_stat_sandy_->size());
+        ZLOG_MSG(RS_ERROR, "Statics array is full,please extend in start. ary size is [%lu]",
+                 status_stat_sandy_->size());
         return -1;
     }
 

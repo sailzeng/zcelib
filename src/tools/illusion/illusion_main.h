@@ -32,7 +32,7 @@ protected:
     ///
     std::string proto_path_;
     ///
-    std::string db3_path_;
+    std::string logdir_path_;
 
     ///
     std::vector<std::string > execl_cfg_fileary_;

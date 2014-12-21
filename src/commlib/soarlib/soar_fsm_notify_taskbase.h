@@ -87,7 +87,7 @@ protected:
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if ( ret != 0 )
         {
-            ZLOG_ERROR("[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
+            ZLOG_MSG(RS_ERROR,"[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
             return ret;
         }
 
@@ -139,7 +139,7 @@ protected:
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if ( ret != 0 )
         {
-            ZLOG_ERROR("[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
+            ZLOG_MSG(RS_ERROR,"[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
             return ret;
         }
 

@@ -149,7 +149,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
         //如果错误是信号导致的重入
         int last_error =  ZCE_LIB::last_error();
 
-        ZLOG_ERROR("[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
+        ZLOG_MSG(RS_ERROR,"[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
                    socket_ret,
                    last_error,
                    strerror(last_error));
@@ -164,7 +164,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
 
     if (data_len < 0)
     {
-        ZLOG_ERROR("[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
+        ZLOG_MSG(RS_ERROR,"[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                    tibetan_recv_appframe_->frame_length_,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()) );
@@ -247,7 +247,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int qq_uin,
     //ZLOG_DEBUG("[framework] SEND %u BYTES  Frame To Svr Succ. ",ret);
     if (socket_ret <= 0 )
     {
-        ZLOG_ERROR("[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
+        ZLOG_MSG(RS_ERROR,"[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                    tibetan_recv_appframe_->frame_length_,
                    ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()) );

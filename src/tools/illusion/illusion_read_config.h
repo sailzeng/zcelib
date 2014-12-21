@@ -30,7 +30,7 @@ public:
         std::string   pb_msg_name_;
 
         ///表格的第几行描述字段对应的protobuf
-        long protobuf_item_line_ = 2;
+        long pb_fieldname_line_ = 2;
 
         ///表格存放的数据库（SQLite）文件名称
         std::string sqlite3_db_name_;
@@ -45,7 +45,7 @@ public:
 
         ///Protobuf item定义的数据
         std::vector<std::string>  proto_field_ary_;
-        
+
         ///假设结构如下，record是一个repeated 的message，
         ///phonebook.master
         ///phonebook.record.name
@@ -97,41 +97,50 @@ public:
 public:
 
     ///初始化
-    BOOL initialize();
+    bool initialize(bool need_open_excel,
+                    const std::string &config_path);
     //
     void finalize();
 
     /*!
-    * @brief      
+    * @brief
     * @return     int
     * @param      open_file 打开的EXCEL文件名称，名称MFC
     */
     int read_excel_byucname(const CString &open_file);
 
     /*!
-    * @brief      
+    * @brief
     * @return     int
     * @param      proto_fname EXCEL文件名称。
     */
     int read_excel(const std::string &excel_fname);
 
     /*!
-    * @brief      
+    * @brief
     * @param      path_name
     */
     void map_proto_path(const std::string &path_name);
 
     /*!
-    * @brief      
+    * @brief
     * @return     int
     * @param      mbcs_name
-    * @note       
+    * @note
     */
     int read_proto(const std::string &mbcs_name);
 
 
     //清理所有的读取数据
     void clear();
+
+    ///
+    void set_string_coding(CVT_CODING cvt_coding);
+
+    ///从DB3文件里面读取某个配置表的配置
+    int read_db3_conftable(const std::string db3_fname, 
+        unsigned int table_id,
+        const std::string &conf_message_name);
 
 protected:
 
@@ -142,18 +151,22 @@ protected:
     int read_table_config(EXCEL_FILE_DATA &file_cfg_data);
 
     ///读取表格数据
-    int read_table_cfgdata(TABLE_CONFIG &table_cfg);
+    int read_table_cfgdata(TABLE_CONFIG &table_cfg,
+                           ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
 
+
+    int save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
+                         const ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
 
     /*!
     * @brief      根据当前默认的字符编码方式，转换为UTF8
     * @return     int == 0表示转换成功
     * @param      src 源字符串，CString结构，根据MFC的字符集编码集决定
     * @param      dst 转后的的字符串，这个函数默认转换为UTF8的字符集合
-    * @note       
+    * @note
     */
     int convert_to_utf8(CString &src, std::string &dst);
-    
+
     //
     int convert_to_utf16(CString &src, std::string &dst);
     //
@@ -161,7 +174,7 @@ protected:
 
 protected:
     //
-    static const size_t CONVERT_BUFFER_LEN = 64 * 1024 -1;
+    static const size_t CONVERT_BUFFER_LEN = 64 * 1024 - 1;
 
 protected:
 
@@ -169,6 +182,17 @@ protected:
     static Illusion_Read_Config  *instance_;
 
 protected:
+
+    ///配置路径
+    std::string config_path_;
+
+    ///日志输出的目录
+    std::string outlog_dir_path_;
+
+    ///DB3文件输出的目录
+    std::string sqlitedb_pah_;
+
+    bool need_open_excel_ = false;
 
     ///Excel的处理对象,EXCEL的处理类
     Illusion_ExcelFile ils_excel_file_;
@@ -180,16 +204,19 @@ protected:
     MAP_FNAME_TO_CFGDATA   file_cfg_map_;
 
     ///
-    CVT_CODING cur_cvt_coding_ = CVT_UTF8;
+    ZCE_General_Config_Table sqlite_config_;
+
+    ///
+    CVT_CODING cur_cvt_coding_ = CVT_MBCS;
 
     ///
     wchar_t *cvt_utf16_buf_ = NULL;
-
     ///
     char *cvt_utf8_buf_ = NULL;
-
     ///
     char *cvt_mbcs_buf_ = NULL;
+
+
 
 };
 

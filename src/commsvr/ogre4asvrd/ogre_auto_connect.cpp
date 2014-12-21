@@ -166,8 +166,8 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
     //而ACE的说明是立即返回错误,我暂时不处理这种情况,实在不行又只有根据类型写晦涩的朦胧诗了
     else
     {
-        ZLOG_ERROR("My God! NonBlock Socket Connect Success , ACE is a cheat.\n");
-        ZLOG_ERROR("My God! NonBlock Socket Connect Success , ACE is a cheat....\n");
+        ZLOG_MSG(RS_ERROR,"My God! NonBlock Socket Connect Success , ACE is a cheat.\n");
+        ZLOG_MSG(RS_ERROR,"My God! NonBlock Socket Connect Success , ACE is a cheat....\n");
     }
 
     return 0;

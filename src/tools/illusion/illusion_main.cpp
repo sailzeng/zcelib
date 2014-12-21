@@ -2,11 +2,16 @@
 // illusion.cpp : Defines the class behaviors for the application.
 //
 
+
+
 #include "stdafx.h"
 #include "illusion_excel_file.h"
 #include "illusion_read_config.h"
 #include "illusion_main.h"
 
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 Illusion_Application::Illusion_Application()
 {
@@ -47,13 +52,15 @@ int Illusion_Application::on_start(int argc, const char *argv[])
         return -1;
     }
 
-    //db3的路径没有可以创建
-    db3_path_ = config_path_;
-    ZCE_LIB::path_string_cat(db3_path_, "db3");
-    if (false == ZCE_LIB::is_directory(db3_path_.c_str()))
+    logdir_path_ = config_path_;
+    ZCE_LIB::path_string_cat(logdir_path_, "log");
+    if (false == ZCE_LIB::is_directory(logdir_path_.c_str()))
     {
-        ZCE_LIB::mkdir_recurse(db3_path_.c_str());
+        ZCE_LIB::mkdir_recurse(logdir_path_.c_str());
     }
+    ZCE_LIB::path_string_cat(logdir_path_, "illusion_operation");
+
+    ZCE_Trace_LogMsg::instance()->init_size_log(logdir_path_.c_str());
 
     //读取.xls , .xlsx 文件
     ret = ZCE_LIB::readdir_nameary(excel_path_.c_str(),
@@ -98,7 +105,7 @@ int Illusion_Application::on_start(int argc, const char *argv[])
         return 0;
     }
 
-    BOOL bret = Illusion_Read_Config::instance()->initialize();
+    BOOL bret = Illusion_Read_Config::instance()->initialize(config_path_);
     if (!bret)
     {
         return -1;
@@ -155,6 +162,8 @@ int Illusion_Application::on_exit()
 
     ::CoUninitialize();
 
+    Illusion_Read_Config::clean_instance();
+
     return 0;
 }
 
@@ -176,6 +185,8 @@ int main(int argc, const char *argv[])
         }
 
         the_app.on_run();
+        the_app.on_exit();
+        return 0;
     }
     // For the Try...Catch error message.
     catch (COleException *e)
@@ -211,6 +222,5 @@ int main(int argc, const char *argv[])
     }
 
     the_app.on_exit();
-
     return 0;
 }

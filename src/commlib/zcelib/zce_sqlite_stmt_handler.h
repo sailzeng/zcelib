@@ -70,8 +70,6 @@ public:
     */
     int execute_stmt_sql(bool &hash_reuslt);
 
-
-
     ///开始一个事务
     int begin_transaction();
     ///提交一个事务
@@ -144,9 +142,9 @@ public:
 
     ///导出结果,列号自动++
     template <class value_type>
-    ZCE_SQLite_STMTHdl &operator >> (value_type val)
+    ZCE_SQLite_STMTHdl &operator >> (value_type &val)
     {
-        column<value_type>(current_col_, val);
+        column<value_type &>(current_col_, val);
         ++current_col_;
         return *this;
     }
@@ -165,6 +163,10 @@ public:
         ++current_bind_;
         return *this;
     }
+
+    ZCE_SQLite_STMTHdl &operator << (const ZCE_SQLite_STMTHdl::BINARY &val);
+    ZCE_SQLite_STMTHdl &operator << (const std::string &val);
+
 
 protected:
 

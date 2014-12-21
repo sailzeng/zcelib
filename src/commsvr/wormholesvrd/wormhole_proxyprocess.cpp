@@ -89,7 +89,7 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
         default:
         {
             // 错误
-            ZLOG_ERROR("Error Proxy Type define. Please check you code. ");
+            ZLOG_MSG(RS_ERROR,"Error Proxy Type define. Please check you code. ");
             return NULL;
         }
 
@@ -338,7 +338,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
     check_list.unique();
     if (check_list.size() != broadcast_svcnum_)
     {
-        ZLOG_ERROR("Cfg file have repeat svc id,Please check.");
+        ZLOG_MSG(RS_ERROR,"Cfg file have repeat svc id,Please check.");
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
@@ -367,7 +367,7 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     // 这样处理是否好，我不知道，
     if (proc_frame->recv_service_.services_type_ != broadcast_svctype_)
     {
-        ZLOG_ERROR("Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
+        ZLOG_MSG(RS_ERROR,"Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
         return SOAR_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
     }
 
@@ -463,7 +463,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
     check_list.unique();
     if (check_list.size() != modulo_svcnum_)
     {
-        ZLOG_ERROR("Cfg file have repeat svc id,Please check.");
+        ZLOG_MSG(RS_ERROR,"Cfg file have repeat svc id,Please check.");
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
@@ -492,7 +492,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     // 这样处理是否好，我不知道，
     if (proc_frame->recv_service_.services_type_ != modulo_svctype_)
     {
-        ZLOG_ERROR("Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
+        ZLOG_MSG(RS_ERROR,"Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
         return SOAR_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
     }
 
@@ -537,7 +537,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //    if (route_cfg_.size() == 0)
 //    {
 //        // 没有配置路由,这一定是个错误
-//        ZLOG_ERROR("[%s] no route configed", __ZCE_FUNC__);
+//        ZLOG_MSG(RS_ERROR,"[%s] no route configed", __ZCE_FUNC__);
 //        return NULL;
 //    }
 //

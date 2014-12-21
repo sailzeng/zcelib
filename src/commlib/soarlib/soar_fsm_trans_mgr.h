@@ -624,7 +624,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
+        ZLOG_MSG(RS_ERROR,"[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
         return ret;
     }
 

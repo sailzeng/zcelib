@@ -278,9 +278,9 @@ ZCE_Get_Option::long_option_i (void)
         // one and it wasn't exact.
         if (this->opterr)
         {
-            ZLOG_ERROR("[zcelib] %s: option `%s' is ambiguous",
-                       this->argv_[0],
-                       this->argv_[this->optind]);
+            ZLOG_MSG(RS_ERROR, "[zcelib] %s: option `%s' is ambiguous",
+                     this->argv_[0],
+                     this->argv_[this->optind]);
         }
 
         this->nextchar_ = 0;
@@ -309,11 +309,11 @@ ZCE_Get_Option::long_option_i (void)
                 // don't want one.
                 if (this->opterr)
                 {
-                    ZLOG_ERROR("[zcelib] "
-                               "%s: long option `--%s' doesn't allow "
-                               "an argument",
-                               this->argv_[0],
-                               pfound->name_.c_str());
+                    ZLOG_MSG(RS_ERROR, "[zcelib] "
+                             "%s: long option `--%s' doesn't allow "
+                             "an argument",
+                             this->argv_[0],
+                             pfound->name_.c_str());
                 }
 
                 // The spec doesn't cover this, so we keep going and the program
@@ -335,9 +335,9 @@ ZCE_Get_Option::long_option_i (void)
                 // All out of elements, so we have to punt...
                 if (this->opterr)
                 {
-                    ZLOG_ERROR("[zcelib] %s: long option '--%s' requires an argument\n",
-                               this->argv_[0],
-                               pfound->name_.c_str());
+                    ZLOG_MSG(RS_ERROR, "[zcelib] %s: long option '--%s' requires an argument\n",
+                             this->argv_[0],
+                             pfound->name_.c_str());
                 }
 
                 this->nextchar_ = 0;
@@ -362,9 +362,9 @@ ZCE_Get_Option::long_option_i (void)
         // signature was passed, e.g. "--", or it's not a short (not sure when
         // this could happen) it's an error.
         if (this->opterr)
-            ZLOG_ERROR("[zcelib] %s: illegal long option '--%s'",
-                       this->argv_[0],
-                       this->nextchar_);
+            ZLOG_MSG(RS_ERROR, "[zcelib] %s: illegal long option '--%s'",
+                     this->argv_[0],
+                     this->nextchar_);
 
         this->nextchar_ = 0;
         this->optind++;
@@ -397,9 +397,9 @@ ZCE_Get_Option::short_option_i (void)
     {
         if (this->opterr)
         {
-            ZLOG_ERROR("[zcelib] %s: illegal short option -- %c\n",
-                       this->argv_[0],
-                       opt);
+            ZLOG_MSG(RS_ERROR, "[zcelib] %s: illegal short option -- %c\n",
+                     this->argv_[0],
+                     opt);
         }
 
         return '?';
@@ -450,9 +450,9 @@ ZCE_Get_Option::short_option_i (void)
                 // Ran out of arguments before finding required argument.
                 if (this->opterr)
                 {
-                    ZLOG_ERROR("[zcelib] %s: short option requires an argument -- %c",
-                               this->argv_[0],
-                               opt);
+                    ZLOG_MSG(RS_ERROR, "[zcelib] %s: short option requires an argument -- %c",
+                             this->argv_[0],
+                             opt);
                 }
 
                 opt = this->has_colon_ ? ':' : '?';
@@ -543,10 +543,10 @@ ZCE_Get_Option::long_option (const char *name,
                     {
                         if (this->opterr)
                         {
-                            ZLOG_ERROR("[zcelib] "
-                                       "Existing short option '%c' takes optional argument; adding %s requires ARG_OPTIONAL\n",
-                                       short_option,
-                                       name);
+                            ZLOG_MSG(RS_ERROR, "[zcelib] "
+                                     "Existing short option '%c' takes optional argument; adding %s requires ARG_OPTIONAL\n",
+                                     short_option,
+                                     name);
                         }
 
                         return -1;
@@ -556,10 +556,10 @@ ZCE_Get_Option::long_option (const char *name,
                 {
                     if (this->opterr)
                     {
-                        ZLOG_ERROR("[zcelib] "
-                                   "Existing short option '%c' requires an argument; adding %s requires ARG_REQUIRED.\n",
-                                   short_option,
-                                   name);
+                        ZLOG_MSG(RS_ERROR, "[zcelib] "
+                                 "Existing short option '%c' requires an argument; adding %s requires ARG_REQUIRED.\n",
+                                 short_option,
+                                 name);
                     }
 
                     return -1;
@@ -569,10 +569,10 @@ ZCE_Get_Option::long_option (const char *name,
             {
                 if (this->opterr)
                 {
-                    ZLOG_ERROR("[zcelib] "
-                               "Existing short option '%c' does not accept an argument; adding %s requires NO_ARG\n",
-                               short_option,
-                               name);
+                    ZLOG_MSG(RS_ERROR, "[zcelib] "
+                             "Existing short option '%c' does not accept an argument; adding %s requires NO_ARG\n",
+                             short_option,
+                             name);
                 }
 
                 return -1;

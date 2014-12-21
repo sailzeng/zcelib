@@ -439,7 +439,7 @@ inline int Transaction_Base::check_req_qquin(unsigned int qq_uin) const
 {
     if (qq_uin != req_qq_uin_)
     {
-        ZLOG_ERROR("[framework] QQuin in header , body and snd_service is diffrent.body: %u| request appframe header: %u.",
+        ZLOG_MSG(RS_ERROR,"[framework] QQuin in header , body and snd_service is diffrent.body: %u| request appframe header: %u.",
                    qq_uin, req_qq_uin_);
         return SOAR_RET::ERROR_QQUIN_INCERTITUDE;
     }

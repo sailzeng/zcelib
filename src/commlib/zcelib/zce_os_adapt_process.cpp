@@ -307,7 +307,7 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
 
     if (ZCE_INVALID_HANDLE == process_handle)
     {
-        ZLOG_ERROR("[zcelib] OpenProcess error, reson is:%u.", ::GetLastError());
+        ZLOG_MSG(RS_ERROR, "[zcelib] OpenProcess error, reson is:%u.", ::GetLastError());
         return -1;
     }
 
@@ -325,7 +325,7 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
     //如果返回成功
     if (bret == FALSE)
     {
-        ZLOG_ERROR("[zcelib] GetProcessTimes error, reson is:%u.", ::GetLastError());
+        ZLOG_MSG(RS_ERROR, "[zcelib] GetProcessTimes error, reson is:%u.", ::GetLastError());
         return -1;
     }
 
@@ -346,9 +346,9 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
 
     if (bret == FALSE)
     {
-        ZLOG_ERROR("[zcelib] GetProcessMemoryInfo error, reson is:%u, %s.",
-                   ::GetLastError(),
-                   ::strerror(::GetLastError()));
+        ZLOG_MSG(RS_ERROR, "[zcelib] GetProcessMemoryInfo error, reson is:%u, %s.",
+                 ::GetLastError(),
+                 ::strerror(::GetLastError()));
         return -1;
     }
 
@@ -356,9 +356,9 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
 
     if (0 == priority)
     {
-        ZLOG_ERROR("[zcelib] GetPriorityClass error, reson is:%u, %s.",
-                   ::GetLastError(),
-                   ::strerror(::GetLastError()));
+        ZLOG_MSG(RS_ERROR, "[zcelib] GetPriorityClass error, reson is:%u, %s.",
+                 ::GetLastError(),
+                 ::strerror(::GetLastError()));
         return -1;
     }
 

@@ -26,7 +26,7 @@ int soar_svrd_main(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] App name [%s] class [%s] init_instance fail:%d|%s",
+        ZLOG_MSG(RS_ERROR,"[framework] App name [%s] class [%s] init_instance fail:%d|%s",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name(),
                    ret,
@@ -48,7 +48,7 @@ int soar_svrd_main(int argc, const char *argv[])
     //标示运行失败
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
+        ZLOG_MSG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name(),
                    ret,
@@ -58,7 +58,7 @@ int soar_svrd_main(int argc, const char *argv[])
     }
     else
     {
-        ZLOG_ERROR("[framework] App name [%s] class [%s] run_instance sucess.",
+        ZLOG_MSG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance sucess.",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name());
     }

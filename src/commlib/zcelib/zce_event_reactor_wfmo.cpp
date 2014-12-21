@@ -247,9 +247,9 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
 
     if (wait_status == WAIT_FAILED)
     {
-        ZLOG_ERROR("[%s] ::WaitForMultipleObjects fail,error [%u].",
-                   __ZCE_FUNC__,
-                   ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "[%s] ::WaitForMultipleObjects fail,error [%u].",
+                 __ZCE_FUNC__,
+                 ZCE_LIB::last_error());
         return -1;
     }
 

@@ -55,7 +55,7 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
     ret = Ogre_Comm_Manger::instance()->get_config(config);
     if (ret != 0 )
     {
-        ZLOG_ERROR( "Ogre_Comm_Manger::instance()->init_comm_manger() fail !\n");
+        ZLOG_MSG(RS_ERROR, "Ogre_Comm_Manger::instance()->init_comm_manger() fail !\n");
         return SOAR_RET::ERR_OGRE_INIT_COMM_MANAGER;
     }
 

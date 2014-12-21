@@ -44,5 +44,12 @@ log
 
 *.aps
 
+*.db3
+
+#微软的一些临时文件
+~$*.*
+
+#这些目录都忽视
+log
 Debug
 Release

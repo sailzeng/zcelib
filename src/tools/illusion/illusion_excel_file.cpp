@@ -1,13 +1,10 @@
 
-
-
-
-
-
 #include "stdafx.h"
 #include "illusion_excel_file.h"
 
-
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#endif
 
 _variant_t CONST_VARIANT_TRUE((short)TRUE);
 _variant_t CONST_VARIANT_FALSE((short)FALSE);
@@ -56,8 +53,6 @@ BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
 {
     //先关闭
     close_excelfile();
-
-
 
     //利用模板文件建立新文档
     excel_books_.AttachDispatch(excel_application_.get_Workbooks(), true);

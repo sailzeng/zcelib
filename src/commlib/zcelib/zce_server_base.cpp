@@ -184,11 +184,11 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     if (vary_mem_size >= MEMORY_LEAK_THRESHOLD)
     {
         ++check_leak_times_;
-        ZLOG_ERROR("[zcelib] [WATCHDOG][PID:%u] Monitor could memory leak,"
-                   "mem_checkpoint_size_ =[%u],run_mem_size_=[%u].",
-                   self_pid_,
-                   mem_checkpoint_size_,
-                   now_process_perf_.vm_size_);
+        ZLOG_MSG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] Monitor could memory leak,"
+                 "mem_checkpoint_size_ =[%u],run_mem_size_=[%u].",
+                 self_pid_,
+                 mem_checkpoint_size_,
+                 now_process_perf_.vm_size_);
 
         // 如果已经监测了若干次内存泄漏,则不再记录告警
         if (check_leak_times_ > MAX_RECORD_MEMLEAK_NUMBER)
@@ -249,9 +249,9 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     }
     else
     {
-        ZLOG_ERROR("system_uptime = %llu, process_start_time = %llu",
-                   ZCE_LIB::total_milliseconds(now_system_perf_.up_time_),
-                   ZCE_LIB::total_milliseconds(now_process_perf_.start_time_));
+        ZLOG_MSG(RS_ERROR, "system_uptime = %llu, process_start_time = %llu",
+                 ZCE_LIB::total_milliseconds(now_system_perf_.up_time_),
+                 ZCE_LIB::total_milliseconds(now_process_perf_.start_time_));
         system_cpu_ratio_ = 0;
     }
 
@@ -259,22 +259,22 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     if (process_cpu_ratio_ >= PROCESS_CPU_RATIO_THRESHOLD ||
         system_cpu_ratio_ >= SYSTEM_CPU_RATIO_THRESHOLD)
     {
-        ZLOG_ERROR("[zcelib] [WATCHDOG][PID:%u] point[%u] vm_size[%u] "
-                   "process cpu ratio [%f] threshold [%f], system cpu ratio[%f] threshold[%f] "
-                   "totoal process user/sys[%lld/%lld] milliseconds "
-                   "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds.",
-                   self_pid_,
-                   mem_checkpoint_size_,
-                   now_process_perf_.vm_size_,
-                   double(process_cpu_ratio_) / 10,
-                   double(PROCESS_CPU_RATIO_THRESHOLD) / 10,
-                   double(system_cpu_ratio_) / 10,
-                   double(SYSTEM_CPU_RATIO_THRESHOLD) / 10,
-                   ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
-                   ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
-                   ZCE_LIB::total_milliseconds(last_to_now),
-                   ZCE_LIB::total_milliseconds(proc_utime),
-                   ZCE_LIB::total_milliseconds(proc_stime));
+        ZLOG_MSG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] point[%u] vm_size[%u] "
+                 "process cpu ratio [%f] threshold [%f], system cpu ratio[%f] threshold[%f] "
+                 "totoal process user/sys[%lld/%lld] milliseconds "
+                 "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds.",
+                 self_pid_,
+                 mem_checkpoint_size_,
+                 now_process_perf_.vm_size_,
+                 double(process_cpu_ratio_) / 10,
+                 double(PROCESS_CPU_RATIO_THRESHOLD) / 10,
+                 double(system_cpu_ratio_) / 10,
+                 double(SYSTEM_CPU_RATIO_THRESHOLD) / 10,
+                 ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
+                 ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
+                 ZCE_LIB::total_milliseconds(last_to_now),
+                 ZCE_LIB::total_milliseconds(proc_utime),
+                 ZCE_LIB::total_milliseconds(proc_stime));
     }
 
     // 内存使用情况的监控
@@ -396,7 +396,7 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
 
     if (name_len <= WIN_EXE_SUFFIX_LEN)
     {
-        ZLOG_ERROR("[framework] Exe file name is not expect?Path name[%s].", argv_0);
+        ZLOG_MSG(RS_ERROR, "[framework] Exe file name is not expect?Path name[%s].", argv_0);
         return -1;
     }
 
@@ -417,7 +417,7 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
 
     if (debug_name_len <= DEBUG_SUFFIX_LEN)
     {
-        ZLOG_ERROR("[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
+        ZLOG_MSG(RS_ERROR, "[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
         return -1;
     }
 

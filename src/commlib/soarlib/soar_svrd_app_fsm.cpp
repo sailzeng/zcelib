@@ -42,7 +42,7 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] register trans cmd fail. ret=%d", ret);
+        ZLOG_MSG(RS_ERROR,"[framework] register trans cmd fail. ret=%d", ret);
         return ret;
     }
 

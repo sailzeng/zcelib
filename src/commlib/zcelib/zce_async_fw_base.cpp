@@ -174,9 +174,9 @@ void ZCE_Async_ObjectMgr::finish()
         //出现了问题，
         if (pool_reg.aysncobj_pool_.size() != pool_reg.aysncobj_pool_.capacity())
         {
-            ZLOG_ERROR("[ZCELIB] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
-                       pool_reg.aysncobj_pool_.size(),
-                       pool_reg.aysncobj_pool_.capacity());
+            ZLOG_MSG(RS_ERROR, "[ZCELIB] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
+                     pool_reg.aysncobj_pool_.size(),
+                     pool_reg.aysncobj_pool_.capacity());
         }
 
         //是否池子

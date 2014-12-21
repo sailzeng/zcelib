@@ -88,9 +88,9 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
     ret = find_event_handler(socket_hd, tmp_handler);
     if (ret == 0)
     {
-        ZLOG_ERROR("[zcelib] [%s] find_event_handler eaqul handle [%lu]. please check you code .",
-                   __ZCE_FUNC__,
-                   tmp_handler);
+        ZLOG_MSG(RS_ERROR, "[zcelib] [%s] find_event_handler eaqul handle [%lu]. please check you code .",
+                 __ZCE_FUNC__,
+                 tmp_handler);
         return -1;
     }
 

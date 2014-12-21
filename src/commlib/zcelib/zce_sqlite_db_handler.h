@@ -20,12 +20,12 @@
 *             源码，随便你怎么玩。
 *
 *             关于Sqlite的速度，请参考http://www.sqlite.org/speed.html，
-*             
+*
 *             幸福就是，坚持了应该坚持的，放弃了应该放弃的，珍惜现在拥有的，不后悔已经决定的
 *
 */
-#ifndef ZCE_LIB_SQLITE_PRCOESS_H_
-#define ZCE_LIB_SQLITE_PRCOESS_H_
+#ifndef ZCE_LIB_SQLITE_DBHANDLE_H_
+#define ZCE_LIB_SQLITE_DBHANDLE_H_
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -59,17 +59,17 @@ public:
     */
     int open_database(const char *db_file,
                       bool read_only,
-                      bool create_db = false);
+                      bool create_db);
 
 
-#if defined ZCE_OS_WINDOWS 
+#if defined ZCE_OS_WINDOWS
     /*!
     @brief      用MBCS(Windows下说的 multibyte character set )的路径名称打开一个目录,
     *           因为我内部用的全部是UTF8的函数，所以这会有问题，必须用须转换编码，
     */
-    int open_mbcs_path_db(const char *utf16_db_path, 
-        bool read_only,
-        bool create_db = false);
+    int open_mbcs_path_db(const char *utf16_db_path,
+                          bool read_only,
+                          bool create_db = false);
 
 
 #endif
@@ -97,6 +97,8 @@ public:
     ///将同步选项关闭，建议不要使用
     int turn_off_synch();
 
+    ///执行DDL等不需要结果的SQL
+    int execute(const char *sql_string);
 
     /*!
     * @brief      执行SQL查下的封装,（二进制的不行）
@@ -210,5 +212,5 @@ protected:
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
 
-#endif //ZCE_LIB_SQLITE3_PRCOESS_H_
+#endif //ZCE_LIB_SQLITE_DBHANDLE_H_
 

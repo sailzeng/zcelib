@@ -63,7 +63,7 @@ int ReadFile_CVS::readfile_cvs()
     }
     else
     {
-        ZLOG_ERROR("[framework] Batch process file read fail[%s].", readfile_name_.c_str());
+        ZLOG_MSG(RS_ERROR, "[framework] Batch process file read fail[%s].", readfile_name_.c_str());
         return -1;
     }
 

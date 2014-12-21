@@ -162,7 +162,7 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 
     if (proc_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME || proc_frame->frame_length_ < Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
     {
-        ZLOG_ERROR("[framework] Frame Len is error ,frame length :%u ,Please check your code.",
+        ZLOG_MSG(RS_ERROR,"[framework] Frame Len is error ,frame length :%u ,Please check your code.",
                    proc_frame->frame_length_);
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
@@ -339,7 +339,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 
     if (ret != 0 )
     {
-        ZLOG_ERROR("[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
+        ZLOG_MSG(RS_ERROR,"[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
                    __ZCE_FUNC__,
                    ret);
         return ret;

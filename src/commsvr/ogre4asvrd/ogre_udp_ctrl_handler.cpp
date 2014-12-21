@@ -140,7 +140,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_a
             }
 
             //记录错误,返回错误
-            ZLOG_ERROR( "UDP Read error [%s|%u],receive data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
+            ZLOG_MSG(RS_ERROR, "UDP Read error [%s|%u],receive data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
                         remote_addr.get_host_addr(),
                         remote_addr.get_port_number(),
                         dgram_peer_.get_handle(),
@@ -165,7 +165,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_a
     //Socket被关闭，也返回错误标示,但是我不知道会不会出现这个问题...
     if (recvret == 0)
     {
-        ZLOG_ERROR( "UDP Read error [%s|%u].UDP Peer recv return 0, I don't know how to process.?\n",
+        ZLOG_MSG(RS_ERROR, "UDP Read error [%s|%u].UDP Peer recv return 0, I don't know how to process.?\n",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number());
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
@@ -231,7 +231,7 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     //没有找到相应的端口，给你一点信息
     if (i == ary_upd_peer_.size())
     {
-        ZLOG_ERROR( "Can't find send peer[%s|%u].Please check code.\n",
+        ZLOG_MSG(RS_ERROR, "Can't find send peer[%s|%u].Please check code.\n",
                     ZCE_LIB::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
                     send_frame->snd_peer_info_.peer_port_);
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
@@ -240,7 +240,7 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     //发送失败
     if (szsend <= 0)
     {
-        ZLOG_ERROR( "UDP send error[%s|%u]. Send data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
+        ZLOG_MSG(RS_ERROR, "UDP send error[%s|%u]. Send data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number(),
                     ary_upd_peer_[i]->get_handle(),

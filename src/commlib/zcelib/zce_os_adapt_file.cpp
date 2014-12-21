@@ -518,7 +518,7 @@ int ZCE_LIB::read_file_data(const char *filename, char *buffer, size_t buf_len, 
 
     if (ZCE_INVALID_HANDLE == fd)
     {
-        ZLOG_ERROR("open file [%s]  fail ,error =%d", filename, ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "open file [%s]  fail ,error =%d", filename, ZCE_LIB::last_error());
         return -1;
     }
 
@@ -528,7 +528,7 @@ int ZCE_LIB::read_file_data(const char *filename, char *buffer, size_t buf_len, 
 
     if (len < 0)
     {
-        ZLOG_ERROR("read file [%s] fail ,error =%d", filename, ZCE_LIB::last_error());
+        ZLOG_MSG(RS_ERROR, "read file [%s] fail ,error =%d", filename, ZCE_LIB::last_error());
         return -1;
     }
 

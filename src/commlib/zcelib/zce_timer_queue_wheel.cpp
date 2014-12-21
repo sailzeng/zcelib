@@ -23,7 +23,7 @@ ZCE_Timer_Wheel::ZCE_Timer_Wheel(size_t num_timer_node,
 
     if (ret != 0)
     {
-        ZLOG_ERROR("[zcelib] ZCE_Timer_Wheel::initialize fail.");
+        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel::initialize fail.");
     }
 }
 
@@ -314,9 +314,9 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
     if (now_trigger_msec < prev_trigger_msec_)
     {
         //这儿用错误是因为有必要提醒一下你，定时器被调整了，
-        ZLOG_ERROR("[zcelib] ZCE_Timer_Wheel error. now_trigger_msec[%llu] < prev_trigger_msec_[%llu],may be you adjust systime time to past time.",
-                   now_trigger_msec,
-                   prev_trigger_msec_);
+        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel error. now_trigger_msec[%llu] < prev_trigger_msec_[%llu],may be you adjust systime time to past time.",
+                 now_trigger_msec,
+                 prev_trigger_msec_);
         prev_trigger_msec_ = now_trigger_msec;
         return 0;
     }

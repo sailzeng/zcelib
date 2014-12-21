@@ -156,7 +156,7 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = ZCE_LIB::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] change run directory to %s fail. err=%d",
+        ZLOG_MSG(RS_ERROR,"[framework] change run directory to %s fail. err=%d",
                    config_base_->app_run_dir_.c_str(), errno);
         return ret;
     }
@@ -172,11 +172,11 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     if (ret != 0)
     {
         //如果有错误显示错误，如果错误==16，表示可能是PID文件被锁定,
-        ZLOG_ERROR("[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
+        ZLOG_MSG(RS_ERROR,"[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
                    app_path.c_str(), ZCE_LIB::last_error(),
                    strerror(ZCE_LIB::last_error()));
 
-        ZLOG_ERROR("[framework] If last error == 16, could has a same process already run in this directory."
+        ZLOG_MSG(RS_ERROR,"[framework] If last error == 16, could has a same process already run in this directory."
                    "Please check PID file or system processes.");
         return SOAR_RET::ERROR_WRITE_ERROR_PIDFILE;
     }
@@ -185,7 +185,7 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = config_base_->read_cfgfile();
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] framwork config read_cfgfile fail. ret=%d", ret);
+        ZLOG_MSG(RS_ERROR,"[framework] framwork config read_cfgfile fail. ret=%d", ret);
         return ret;
     }
 
@@ -194,7 +194,7 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = init_log();
     if (ret != 0)
     {
-        ZLOG_ERROR("[framework] init log fail. ret=%d", ret);
+        ZLOG_MSG(RS_ERROR,"[framework] init log fail. ret=%d", ret);
         return ret;
     }
 

@@ -100,7 +100,7 @@ int NotifyTrans_TaskBase::svc (void)
 
             if (ret != 0)
             {
-                ZLOG_ERROR("[framework] taskprocess_appframe ret =%u", ret);
+                ZLOG_MSG(RS_ERROR,"[framework] taskprocess_appframe ret =%u", ret);
             }
         }
 

@@ -30,7 +30,7 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
         //如果使用保险打开(TRUE)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
-            ZLOG_ERROR( "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
+            ZLOG_MSG(RS_ERROR, "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
                         inetadd.get_host_addr(),
                         inetadd.get_port_number());
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
@@ -132,7 +132,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //你都不填写，我如何发送？
         else
         {
-            ZLOG_ERROR( "Ogre frame have not send option,Please Check you code.\n");
+            ZLOG_MSG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
         }
     }

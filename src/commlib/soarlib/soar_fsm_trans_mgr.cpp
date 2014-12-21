@@ -103,7 +103,7 @@ Transaction_Manager::~Transaction_Manager()
         //出现了问题，
         if (pool_reg_trans.size() != pool_reg_trans.capacity())
         {
-            ZLOG_ERROR("[framework] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
+            ZLOG_MSG(RS_ERROR,"[framework] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
                        pool_reg_trans.size(),
                        pool_reg_trans.capacity());
         }
@@ -191,7 +191,7 @@ int Transaction_Manager::register_trans_cmd(unsigned int cmd,
 
     if (mapiter != regtrans_pool_map_.end())
     {
-        ZLOG_ERROR("[framework] Find Repeat Command ID:%u From MAP.", cmd);
+        ZLOG_MSG(RS_ERROR,"[framework] Find Repeat Command ID:%u From MAP.", cmd);
         delete ptxbase;
         return SOAR_RET::ERROR_FIND_REPEAT_CMD_ID;
     }
@@ -242,7 +242,7 @@ int Transaction_Manager::regiester_trans_id(unsigned int transid,
 
     if (mapiter != transc_map_.end())
     {
-        ZLOG_ERROR("[framework] Find Repeat Transaction ID:%u From MAP.", transid);
+        ZLOG_MSG(RS_ERROR,"[framework] Find Repeat Transaction ID:%u From MAP.", transid);
         return SOAR_RET::ERROR_FIND_REPEAT_TRANSACTION_ID;
     }
 
@@ -283,7 +283,7 @@ int Transaction_Manager::unregiester_trans_id(unsigned int transid,
 
     if (mapiter == transc_map_.end())
     {
-        ZLOG_ERROR("[framework] unregiester_trans_id,Can't Find Transaction ID:%u From MAP.", transid);
+        ZLOG_MSG(RS_ERROR,"[framework] unregiester_trans_id,Can't Find Transaction ID:%u From MAP.", transid);
         return SOAR_RET::ERROR_CANNOT_FIND_TRANSACTION_ID;
     }
 
@@ -600,7 +600,7 @@ int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int qq_uin,
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second )
     {
-        ZLOG_ERROR("[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
+        ZLOG_MSG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
                    qq_uin,
                    trnas_lock_id,
                    frame_cmd);
@@ -929,7 +929,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
         //如果小于0表示错误，到这个地方应该是一个错误，因为上面还有一个判断
         if (ret < 0)
         {
-            ZLOG_ERROR("[framework] Recv queue dequeue fail ,ret=%u,", ret);
+            ZLOG_MSG(RS_ERROR,"[framework] Recv queue dequeue fail ,ret=%u,", ret);
             return 0;
         }
 
