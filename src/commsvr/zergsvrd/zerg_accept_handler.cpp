@@ -37,24 +37,24 @@ int TCP_Accept_Handler::create_listen()
     if (ret != 0)
     {
 
-        ZCE_LOGMSG(RS_ERROR, "[zergsvr] Bind Listen IP|Port :[%s|%u] Fail.Error: %d|%s.",
-                   accept_bind_addr_.get_host_addr(),
-                   accept_bind_addr_.get_port_number(),
-                   ZCE_LIB::last_error(),
-                   strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[zergsvr] Bind Listen IP|Port :[%s|%u] Fail.Error: %d|%s.",
+                accept_bind_addr_.get_host_addr(),
+                accept_bind_addr_.get_port_number(),
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
         return SOAR_RET::ERR_ZERG_INIT_LISTEN_PORT_FAIL;
     }
 
     peer_acceptor_.sock_enable(O_NONBLOCK);
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Bind Listen IP|Port : [%s|%u] Success.",
-               accept_bind_addr_.get_host_addr(),
-               accept_bind_addr_.get_port_number());
+    ZCE_LOG(RS_INFO, "[zergsvr] Bind Listen IP|Port : [%s|%u] Success.",
+            accept_bind_addr_.get_host_addr(),
+            accept_bind_addr_.get_port_number());
 
     //被Accept的端口会继承这些选项
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_INFO, "[zergsvr] Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 
     //设置一个SND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
@@ -62,7 +62,7 @@ int TCP_Accept_Handler::create_listen()
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_INFO, "[zergsvr] Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 
 #ifndef ZCE_OS_WINDOWS
 
@@ -74,7 +74,7 @@ int TCP_Accept_Handler::create_listen()
     //TCP_DEFER_ACCEPT,这个选项我暂时不开，但是这个选项是一个很好的避免攻击的手段。
     //int val = 1;
     //ret = peer_acceptor_.set_option(IPPROTO_TCP, TCP_DEFER_ACCEPT, &val, sizeof(val));
-    //ZCE_LOGMSG(RS_INFO,"[zergsvr]  setsockopt TCP_DEFER_ACCEPT val(%d) ret(%d). ", val, ret);
+    //ZCE_LOG(RS_INFO,"[zergsvr]  setsockopt TCP_DEFER_ACCEPT val(%d) ret(%d). ", val, ret);
 
 #endif
 
@@ -99,14 +99,14 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
         char str_local_addr[TMP_ADDR_LEN], str_remote_addr[TMP_ADDR_LEN];
 
         int accept_error =  ZCE_LIB::last_error();
-        ZCE_LOGMSG(RS_ERROR, "[zergsvr] Local peer[%s|%u] Accept remote [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%d|%s ",
-                   accept_bind_addr_.get_host_addr(str_local_addr, TMP_ADDR_LEN),
-                   accept_bind_addr_.get_port_number(),
-                   remote_address.get_host_addr(str_remote_addr, TMP_ADDR_LEN),
-                   remote_address.get_port_number(),
-                   ret,
-                   accept_error,
-                   strerror(accept_error));
+        ZCE_LOG(RS_ERROR, "[zergsvr] Local peer[%s|%u] Accept remote [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%d|%s ",
+                accept_bind_addr_.get_host_addr(str_local_addr, TMP_ADDR_LEN),
+                accept_bind_addr_.get_port_number(),
+                remote_address.get_host_addr(str_remote_addr, TMP_ADDR_LEN),
+                remote_address.get_port_number(),
+                ret,
+                accept_error,
+                strerror(accept_error));
         sockstream.close();
 
         //如果是这些错误继续。

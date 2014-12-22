@@ -212,9 +212,9 @@ void ZCE_Server_Status::add_status_item(size_t num_add_stat_item,
         }
         else
         {
-            ZLOG_MSG(RS_ERROR, "Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
-                     item_ary[i].statics_item_.item_id_.statics_id_,
-                     item_ary[i].item_name_);
+            ZCE_LOG(RS_ERROR, "Add repeat ZCE_STATUS_ITEM_WITHNAME statics_id_[%u] name[%s],please check your code.",
+                    item_ary[i].statics_item_.item_id_.statics_id_,
+                    item_ary[i].item_name_);
             continue;
         }
     }
@@ -268,8 +268,8 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(statics_id);
     if (iter == conf_stat_map_.end())
     {
-        ZLOG_MSG(RS_ERROR, "Use one statics_id_,it don't config [%u] ,please check your code.",
-                 statics_id);
+        ZCE_LOG(RS_ERROR, "Use one statics_id_,it don't config [%u] ,please check your code.",
+                statics_id);
         return -1;
     }
 
@@ -277,8 +277,8 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     //如果已经满了，也算了
     if (status_stat_sandy_->full())
     {
-        ZLOG_MSG(RS_ERROR, "Statics array is full,please extend in start. ary size is [%lu]",
-                 status_stat_sandy_->size());
+        ZCE_LOG(RS_ERROR, "Statics array is full,please extend in start. ary size is [%lu]",
+                status_stat_sandy_->size());
         return -1;
     }
 
@@ -632,8 +632,8 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
         stat_process_iter = status_copy_mandy_->begin();
     }
 
-    ZCE_LOGMSG(RS_INFO, "Statistics Number: %u", num_of_counter);
-    ZCE_LOGMSG(RS_INFO, "index.<statics id,classify id> name                            :number");
+    ZCE_LOG(RS_INFO, "Statistics Number: %u", num_of_counter);
+    ZCE_LOG(RS_INFO, "index.<statics id,classify id> name                            :number");
 
     ZCE_STATUS_ITEM_WITHNAME tmp_check;
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
@@ -654,14 +654,14 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
             ZCE_ASSERT(false);
         }
 
-        ZCE_LOGMSG(log_priority, "%5u.<%10u, %10u, %10u> %32s : %llu ",
-                   i,
-                   (stat_process_iter + i)->item_id_.statics_id_,
-                   (stat_process_iter + i)->item_id_.classify_id_,
-                   (stat_process_iter + i)->item_id_.subclassing_id_,
-                   statics_item_name,
-                   (stat_process_iter + i)->counter_
-                  );
+        ZCE_LOG(log_priority, "%5u.<%10u, %10u, %10u> %32s : %llu ",
+                i,
+                (stat_process_iter + i)->item_id_.statics_id_,
+                (stat_process_iter + i)->item_id_.classify_id_,
+                (stat_process_iter + i)->item_id_.subclassing_id_,
+                statics_item_name,
+                (stat_process_iter + i)->counter_
+               );
     }
 }
 

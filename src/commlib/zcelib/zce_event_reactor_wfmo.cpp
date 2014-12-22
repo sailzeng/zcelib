@@ -65,10 +65,10 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         WSAEVENT socket_event = ::WSACreateEvent();
         if (socket_event == WSA_INVALID_EVENT)
         {
-            ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]WSACreateEvent return fail.last error [%d]",
-                       __ZCE_FUNC__,
-                       ZCE_LIB::last_error()
-                      );
+            ZCE_LOG(RS_ERROR, "[zcelib][%s]WSACreateEvent return fail.last error [%d]",
+                    __ZCE_FUNC__,
+                    ZCE_LIB::last_error()
+                   );
             return -1;
         }
         ret = wfmo_socket_event(event_handler, socket_event, event_mask);
@@ -219,12 +219,12 @@ int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
                            wmfo_net_event);
     if (ret != 0)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]WSAEventSelect return [%d] fail,event mask [%d],last error [%d]",
-                   __ZCE_FUNC__,
-                   ret,
-                   event_mask,
-                   ZCE_LIB::last_error()
-                  );
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]WSAEventSelect return [%d] fail,event mask [%d],last error [%d]",
+                __ZCE_FUNC__,
+                ret,
+                event_mask,
+                ZCE_LIB::last_error()
+               );
         return -1;
     }
 
@@ -247,9 +247,9 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
 
     if (wait_status == WAIT_FAILED)
     {
-        ZLOG_MSG(RS_ERROR, "[%s] ::WaitForMultipleObjects fail,error [%u].",
-                 __ZCE_FUNC__,
-                 ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[%s] ::WaitForMultipleObjects fail,error [%u].",
+                __ZCE_FUNC__,
+                ZCE_LIB::last_error());
         return -1;
     }
 
@@ -280,9 +280,9 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
 
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
-                   __ZCE_FUNC__,
-                   watch_socket_ary_[activate_id]);
+        ZCE_LOG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
+                __ZCE_FUNC__,
+                watch_socket_ary_[activate_id]);
         return -1;
     }
 

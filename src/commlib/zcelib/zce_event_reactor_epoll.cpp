@@ -54,7 +54,7 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
 
     if (0  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] Epoll reactor ZCE_Reactor::initialize fail.please check code. ret = %u.", ret);
+        ZCE_LOG(RS_ERROR, "[zcelib] Epoll reactor ZCE_Reactor::initialize fail.please check code. ret = %u.", ret);
         return ret;
     }
 
@@ -67,9 +67,9 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
 
     if (epoll_fd_ < 0)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] Epoll reactor ::epoll_create fail.please check code. error = [%u|%u]",
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[zcelib] Epoll reactor ::epoll_create fail.please check code. error = [%u|%u]",
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
         return -1;
     }
 
@@ -89,7 +89,7 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
 
     if (0 != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Reactor::register_handler fail. please check you code .ret =%d", ret);
+        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Reactor::register_handler fail. please check you code .ret =%d", ret);
         return -1;
     }
 
@@ -108,11 +108,11 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
         //回滚
         ret = ZCE_Reactor::remove_handler(event_handler, false);
 
-        ZLOG_MSG(RS_ERROR, "[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
-                 __ZCE_FUNC__,
-                 ret,
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
+                __ZCE_FUNC__,
+                ret,
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
         return -1;
     }
 
@@ -134,11 +134,11 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
 
     if (0 != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
-                 __ZCE_FUNC__,
-                 ret,
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
+                __ZCE_FUNC__,
+                ret,
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
         //这个不返回好还是返回好呢？这真是一个问题
         //return -1;
     }
@@ -150,7 +150,7 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
 
     if (0 != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Reactor::remove_handler fail. please check you code .ret =%u", ret);
+        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Reactor::remove_handler fail. please check you code .ret =%u", ret);
         return -1;
     }
 
@@ -184,11 +184,11 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
     {
         //回滚不改动标志位
         ZCE_Reactor::schedule_wakeup(event_handler, cancel_mask);
-        ZLOG_MSG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
-                 __ZCE_FUNC__,
-                 ret,
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
+                __ZCE_FUNC__,
+                ret,
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
         return -1;
     }
 
@@ -221,11 +221,11 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
     {
         //回滚，修复标志位
         ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
-        ZLOG_MSG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
-                 __ZCE_FUNC__,
-                 ret,
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
+                __ZCE_FUNC__,
+                ret,
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
         return -1;
     }
 

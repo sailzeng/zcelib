@@ -30,9 +30,9 @@ int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Og
 
     if (iter == peer_info_set_.end() )
     {
-        ZLOG_INFO( "Can't find svchanle info. svrinfo IP|Port:[%s|%u] .\n",
-                   ZCE_LIB::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
-                   svrinfo.peer_port_);
+        ZCE_LOG(RS_INFO, "Can't find svchanle info. svrinfo IP|Port:[%s|%u] .\n",
+                ZCE_LIB::inet_ntoa(svrinfo.peer_ip_address_, buffer, BUFFER_SIZE),
+                svrinfo.peer_port_);
         return SOAR_RET::ERR_OGRE_NO_FIND_EVENT_HANDLE;
     }
 
@@ -51,9 +51,9 @@ int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID &peer_info, O
     //已经有相关的记录了
     if (iter != peer_info_set_.end() )
     {
-        ZLOG_INFO( "Can't add_services_peerinfo peer_info:[%s|%u] ",
-                   ZCE_LIB::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
-                   peer_info.peer_port_);
+        ZCE_LOG(RS_INFO, "Can't add_services_peerinfo peer_info:[%s|%u] ",
+                ZCE_LIB::inet_ntoa(peer_info.peer_ip_address_, buffer, BUFFER_SIZE),
+                peer_info.peer_port_);
         return SOAR_RET::ERR_OGRE_SERVER_ALREADY_LONGIN;
     }
 
@@ -72,7 +72,7 @@ size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PEER_ID &peer_info
     //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了handle_close.
     if (szdel <= 0)
     {
-        ZLOG_MSG(RS_ERROR, "Can't PeerInfoSetToTCPHdlMap::del_services_peerinfo Size peer_info_set_ %u: szdel:%u peer_info:%u|%u .\n", peer_info_set_.size(), szdel, peer_info.peer_ip_address_, peer_info.peer_port_);
+        ZCE_LOG(RS_ERROR, "Can't PeerInfoSetToTCPHdlMap::del_services_peerinfo Size peer_info_set_ %u: szdel:%u peer_info:%u|%u .\n", peer_info_set_.size(), szdel, peer_info.peer_ip_address_, peer_info.peer_port_);
     }
 
     //ZCE_ASSERT(szdel >0 );
@@ -83,14 +83,14 @@ void PeerID_To_TCPHdl_Map::clear_and_close()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
-    ZLOG_INFO( "Has %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
+    ZCE_LOG(RS_INFO, "Has %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
 
     //这个函数可能是绝对的慢
     while (peer_info_set_.size() > 0)
     {
         if (peer_info_set_.size() % SHOWINFO_NUMBER == 0 )
         {
-            ZLOG_INFO( "Now remain %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
+            ZCE_LOG(RS_INFO, "Now remain %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
         }
 
         MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();

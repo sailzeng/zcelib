@@ -249,11 +249,11 @@ void push_stack(lua_State *state,
         if (!lua_istable(state, -1))
         {
 #if ZCE_CHECK_CLASS_NOMETA == 1
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]?"
-                       " May be you don't register or name conflict? ",
-                       __ZCE_FUNC__,
-                       typeid(ref).name(),
-                       class_name<val_type >::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE][%s][%s] is not tie to lua,name[%s]?"
+                    " May be you don't register or name conflict? ",
+                    __ZCE_FUNC__,
+                    typeid(ref).name(),
+                    class_name<val_type >::name());
 #endif
             lua_remove(state, -1);
             return;
@@ -295,12 +295,12 @@ void push_stack_ptr(lua_State *state, typename ptr_type ptr)
             if (!lua_istable(state, -1))
             {
 #if ZCE_CHECK_CLASS_NOMETA == 1
-                ZCE_LOGMSG(RS_ERROR,
-                           "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
-                           "May be you don't register or name conflict? ",
-                           __ZCE_FUNC__,
-                           typeid(ptr).name(),
-                           class_name<std::remove_pointer <ptr_type> ::type >::name());
+                ZCE_LOG(RS_ERROR,
+                        "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
+                        "May be you don't register or name conflict? ",
+                        __ZCE_FUNC__,
+                        typeid(ptr).name(),
+                        class_name<std::remove_pointer <ptr_type> ::type >::name());
 #endif
                 lua_remove(state, -1);
                 return;
@@ -348,7 +348,7 @@ void push_stack_val(lua_State *state, typename val_type val)
     //这儿只针对非object对象
     if (!std::is_class<val_type>::value)
     {
-        ZCE_LOGMSG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+        ZCE_LOG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
         return;
     }
 
@@ -362,12 +362,12 @@ void push_stack_val(lua_State *state, typename val_type val)
     if (!lua_istable(state, -1))
     {
 #if ZCE_CHECK_CLASS_NOMETA == 1
-        ZCE_LOGMSG(RS_ERROR,
-                   "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
-                   "May be you don't register or name conflict? ",
-                   __ZCE_FUNC__,
-                   typeid(val).name(),
-                   class_name<std::remove_cv<val_type>::type >::name());
+        ZCE_LOG(RS_ERROR,
+                "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
+                "May be you don't register or name conflict? ",
+                __ZCE_FUNC__,
+                typeid(val).name(),
+                class_name<std::remove_cv<val_type>::type >::name());
 #endif
         lua_remove(state, -1);
         return;
@@ -519,10 +519,10 @@ int array_meta_get(lua_State *state)
     arrayref_2_udat<array_type> *ptr = ((arrayref_2_udat<array_type> *)lua_touserdata(state, -2));
     if (index < 1 && index > static_cast<int>( ptr->ary_size_ ))
     {
-        ZCE_LOGMSG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
-                   index,
-                   typeid(array_type).name(),
-                   static_cast<uint32_t>(ptr->ary_size_));
+        ZCE_LOG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
+                index,
+                typeid(array_type).name(),
+                static_cast<uint32_t>(ptr->ary_size_));
         ZCE_ASSERT(false);
         lua_pushnil(state);
 
@@ -549,10 +549,10 @@ int array_meta_set(lua_State *state)
     //对index做边界检查
     if (index < 1 && index > static_cast<int>(ptr->ary_size_) )
     {
-        ZCE_LOGMSG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
-                   index,
-                   typeid(array_type).name(),
-                   static_cast<uint32_t>(ptr->ary_size_));
+        ZCE_LOG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
+                index,
+                typeid(array_type).name(),
+                static_cast<uint32_t>(ptr->ary_size_));
         ZCE_ASSERT(false);
 
     }
@@ -1232,8 +1232,8 @@ public:
 
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
-                       table_name);
+            ZCE_LOG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
+                    table_name);
             lua_remove(lua_state_, -1);
             return -1;
         }
@@ -1413,8 +1413,8 @@ public:
         //如果栈顶是不是一个表，进行错误处理
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LIB::class_name<class_type>::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                    ZCE_LIB::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1455,8 +1455,8 @@ public:
         //如果栈顶是一个表
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LIB::class_name<class_type>::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                    ZCE_LIB::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1483,8 +1483,8 @@ public:
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LIB::class_name<parent_type>::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                    ZCE_LIB::class_name<parent_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1518,8 +1518,8 @@ public:
         //
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LIB::class_name<class_type>::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                    ZCE_LIB::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1558,8 +1558,8 @@ public:
         //
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LIB::class_name<class_type>::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                    ZCE_LIB::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;
@@ -1658,8 +1658,8 @@ protected:
         //检查其是否是函数
         if (!lua_isfunction(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] call_luafun() attempt to call global `%s' (not a function)",
-                       fun_name);
+            ZCE_LOG(RS_ERROR, "[LUATIE] call_luafun() attempt to call global `%s' (not a function)",
+                    fun_name);
             lua_pop(lua_state_, 1);
             return -1;
         }
@@ -1680,7 +1680,7 @@ protected:
                         errfunc);
         if (ret != 0)
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] lua_pcall ret = %d", ret);
+            ZCE_LOG(RS_ERROR, "[LUATIE] lua_pcall ret = %d", ret);
         }
 
         //在堆栈删除掉错误处理的函数
@@ -1710,8 +1710,8 @@ protected:
 
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
-                       table_name);
+            ZCE_LOG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
+                    table_name);
             lua_remove(lua_state_, -1);
             return -1;
         }
@@ -1744,8 +1744,8 @@ protected:
 
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
-                       table_name);
+            ZCE_LOG(RS_ERROR, "[LUATIE] table name[%s] is not tie to lua.",
+                    table_name);
             ZCE_ASSERT(false);
             lua_remove(lua_state_, -1);
             return -1;
@@ -1881,8 +1881,8 @@ protected:
         //
         if (!lua_istable(lua_state_, -1))
         {
-            ZCE_LOGMSG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
-                       ZCE_LIB::class_name<class_type>::name());
+            ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
+                    ZCE_LIB::class_name<class_type>::name());
             ZCE_ASSERT(false);
             lua_pop(lua_state_, 1);
             return -1;

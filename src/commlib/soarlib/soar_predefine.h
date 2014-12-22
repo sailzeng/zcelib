@@ -137,12 +137,12 @@ Modification History:
 //这样嵌套是为了让客户端和服务器端使用部分统一的配置
 
 #if  defined(DEBUG) || defined(_DEBUG)
-#define TESTCONFIG(condition,outstring)   if (!(condition) ) ZLOG_MSG(RS_ERROR,"[framework] Get configure file error. %s.",outstring); \
+#define TESTCONFIG(condition,outstring)   if (!(condition) ) ZCE_LOG(RS_ERROR,"[framework] Get configure file error. %s.",outstring); \
     ZCE_ASSERT(condition)
 #else
 #define TESTCONFIG(condition,outstring)   if(!(condition))\
     { \
-        ZLOG_MSG(RS_ERROR,"[framework] Get configure file error. %s.",outstring); \
+        ZCE_LOG(RS_ERROR,"[framework] Get configure file error. %s.",outstring); \
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL; \
     }
 #endif

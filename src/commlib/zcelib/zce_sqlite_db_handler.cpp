@@ -46,10 +46,10 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
                                 NULL);
     if (ret != SQLITE_OK )
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
-                   db_file,
-                   error_code(),
-                   error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_open_v2 open db [%s] fail:[%d][%s]",
+                db_file,
+                error_code(),
+                error_message());
         return -1;
     }
 
@@ -152,20 +152,20 @@ int ZCE_SQLite_DB_Handler::execute(const char *sql_string)
     int ret = 0;
     char *err_msg = NULL;
     ret = ::sqlite3_exec(sqlite3_handler_,
-        sql_string,
-        NULL,
-        NULL,
-        &err_msg);
+                         sql_string,
+                         NULL,
+                         NULL,
+                         &err_msg);
     if (ret == SQLITE_OK)
     {
         return 0;
     }
     else
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_exec execute sql [%s] fail.:[%d][%s].",
-            sql_string,
-            ret,
-            err_msg);
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_exec execute sql [%s] fail.:[%d][%s].",
+                sql_string,
+                ret,
+                err_msg);
         ::sqlite3_free(err_msg);
         return -1;
     }
@@ -184,9 +184,9 @@ int ZCE_SQLite_DB_Handler::get_table(const char *sql_string,
                               &(result->err_msg_));
     if (ret != SQLITE_OK)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib] sqlite3_get_table execute fail:[%d][%s]",
-                   ret,
-                   result->err_msg_);
+        ZCE_LOG(RS_ERROR, "[zcelib] sqlite3_get_table execute fail:[%d][%s]",
+                ret,
+                result->err_msg_);
     }
     return 0;
 }

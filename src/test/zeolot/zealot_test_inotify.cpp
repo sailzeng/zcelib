@@ -124,7 +124,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
         
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"reactor initialize fial? ret =%d", ret); 
+        ZCE_LOG(RS_ERROR,"reactor initialize fial? ret =%d", ret); 
         delete reactor_ptr;
         return ret;
     }
@@ -133,7 +133,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
     ret = inotify_event->open(ZCE_Reactor::instance());
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"Open fial? ret =%d",ret);
+        ZCE_LOG(RS_ERROR,"Open fial? ret =%d",ret);
         return ret;
     }
 
@@ -146,7 +146,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"inotify_event add_watch fail.dir[%s]? ret =%d", TEST_PATH_1, ret);
+        ZCE_LOG(RS_ERROR,"inotify_event add_watch fail.dir[%s]? ret =%d", TEST_PATH_1, ret);
         return ret;
     }
 
@@ -157,7 +157,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"inotify_event add_watch fail.dir[%s]? ret =%d,This is ok in windows.", TEST_PATH_2,ret );
+        ZCE_LOG(RS_ERROR,"inotify_event add_watch fail.dir[%s]? ret =%d,This is ok in windows.", TEST_PATH_2,ret );
         //Windows下，是比如俺出错的。Windows下一个event handle，只能监控一个目录
 #if !defined ZCE_OS_WINDOWS
         return ret;
@@ -175,7 +175,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"inotify_event2 add_watch fail.dir[%s]? ret =%d", ret, TEST_PATH_2);
+        ZCE_LOG(RS_ERROR,"inotify_event2 add_watch fail.dir[%s]? ret =%d", ret, TEST_PATH_2);
         return ret;
     }
 #endif
@@ -185,7 +185,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
         ZCE_Time_Value time_out(60, 0);
         size_t num_event;
         ret = ZCE_Reactor::instance()->handle_events(&time_out, &num_event);
-        //ZLOG_INFO("handle_events? ret =[%d] number of event[%u]",ret,num_event);
+        //ZCE_LOG(RS_INFO,"handle_events? ret =[%d] number of event[%u]",ret,num_event);
         std::cout<<"handle_events ret ="<<ret << " number of event="<<num_event<<std::endl;
     }
     

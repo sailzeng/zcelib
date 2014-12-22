@@ -277,7 +277,7 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
     ++num_use_node_;
 
     //调试代码，测试时打开
-    //ZCE_LOGMSG(RS_DEBUG,"[zcelib] ZCE_Timer_Queue alloc_timernode.time_node_id[%d] "
+    //ZCE_LOG(RS_DEBUG,"[zcelib] ZCE_Timer_Queue alloc_timernode.time_node_id[%d] "
     //  "next_trigger_point_[%llu], prev_trigger_msec_[%llu],timer_refer_pointer_[%llu].",
     //  time_node_id,
     //  alloc_time_node->next_trigger_point_,

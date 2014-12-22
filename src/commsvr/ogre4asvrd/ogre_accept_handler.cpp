@@ -41,7 +41,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     socklen_t sndbuflen, rcvbuflen;
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZLOG_INFO( "Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_INFO, "Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
     //设置一个SND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
@@ -49,7 +49,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZLOG_INFO( "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_INFO, "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
     ret = peer_acceptor_.open(&peer_module_info_.peer_info_.peer_socketin_);
 
@@ -57,21 +57,21 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     if (ret != 0)
     {
         int last_err = ZCE_LIB::last_error();
-        ZLOG_MSG(RS_ERROR,"Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
-                   peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
-                   peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
-                   last_err,
-                   strerror(last_err));
+        ZCE_LOG(RS_ERROR, "Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
+                peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
+                peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
+                last_err,
+                strerror(last_err));
         return SOAR_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
     }
 
-    ZLOG_INFO( "Bind listen IP|Port : [%s|%u] Success.\n",
-               peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
-               peer_module_info_.peer_info_.peer_socketin_.get_port_number());
+    ZCE_LOG(RS_INFO, "Bind listen IP|Port : [%s|%u] Success.\n",
+            peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
+            peer_module_info_.peer_info_.peer_socketin_.get_port_number());
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZLOG_INFO( "Get listen peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_INFO, "Get listen peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
     //设置一个SND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
@@ -79,7 +79,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZLOG_INFO( "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    ZCE_LOG(RS_INFO, "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
 #ifndef WIN32
     //避免DELAY发送这种情况
@@ -110,12 +110,12 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
 
         //记录错误
         int accept_error =  ZCE_LIB::last_error();
-        ZLOG_MSG(RS_ERROR, "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
-                    remoteaddress.get_host_addr(),
-                    remoteaddress.get_port_number(),
-                    ret,
-                    accept_error,
-                    strerror(accept_error));
+        ZCE_LOG(RS_ERROR, "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
+                remoteaddress.get_host_addr(),
+                remoteaddress.get_port_number(),
+                ret,
+                accept_error,
+                strerror(accept_error));
 
         //如果是这些错误继续。
         if ( accept_error == EWOULDBLOCK || accept_error == EINVAL

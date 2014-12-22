@@ -60,8 +60,8 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
     //如果没有成功打开文件
     if (mmap_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] Mmap(file map) memory open fail ,ZCE_LIB::shm_open fail. last error =%d",
-                 ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib] Mmap(file map) memory open fail ,ZCE_LIB::shm_open fail. last error =%d",
+                ZCE_LIB::last_error());
         return -1;
     }
 
@@ -81,9 +81,9 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
 
         if ( 0 != ret)
         {
-            ZLOG_MSG(RS_ERROR, "[zcelib]  Mmap(file map) memory  open fail ,ZCE_LIB::file size ret =%ld last error=%d",
-                     filelen,
-                     ZCE_LIB::last_error());
+            ZCE_LOG(RS_ERROR, "[zcelib]  Mmap(file map) memory  open fail ,ZCE_LIB::file size ret =%ld last error=%d",
+                    filelen,
+                    ZCE_LIB::last_error());
             ZCE_LIB::close(mmap_handle_);
             mmap_handle_ = ZCE_INVALID_HANDLE;
             return -1;
@@ -99,9 +99,9 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
             //文件的空间都不够的情况
             if (filelen < static_cast<size_t> (shm_size + offset))
             {
-                ZLOG_MSG(RS_ERROR, "[zcelib] Posix memory open fail ,old file size(%lu) < request file size(%lu). ",
-                         filelen,
-                         shm_size + offset);
+                ZCE_LOG(RS_ERROR, "[zcelib] Posix memory open fail ,old file size(%lu) < request file size(%lu). ",
+                        filelen,
+                        shm_size + offset);
                 ZCE_LIB::close(mmap_handle_);
                 mmap_handle_ = ZCE_INVALID_HANDLE;
                 return -1;

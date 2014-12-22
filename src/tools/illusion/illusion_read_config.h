@@ -138,9 +138,11 @@ public:
     void set_string_coding(CVT_CODING cvt_coding);
 
     ///从DB3文件里面读取某个配置表的配置
-    int read_db3_conftable(const std::string db3_fname, 
-        unsigned int table_id,
-        const std::string &conf_message_name);
+    int read_db3_conftable(const std::string db3_fname,
+                           const std::string &conf_message_name,
+                           unsigned int table_id,
+                           unsigned int index_1 = 0,
+                           unsigned int index_2 = 0);
 
 protected:
 
@@ -154,9 +156,11 @@ protected:
     int read_table_cfgdata(TABLE_CONFIG &table_cfg,
                            ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
 
-
+    ///将数据保存到SQLite3 DB文件里面
     int save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
                          const ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
+
+    
 
     /*!
     * @brief      根据当前默认的字符编码方式，转换为UTF8
@@ -171,6 +175,10 @@ protected:
     int convert_to_utf16(CString &src, std::string &dst);
     //
     int convert_to_mbcs(CString &src, std::string &dst);
+
+
+    static void protobuf_output(const google::protobuf::Message *msg, 
+        std::ostream *out);
 
 protected:
     //

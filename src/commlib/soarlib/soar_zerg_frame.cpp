@@ -367,7 +367,7 @@ void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY l
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
-    ZCE_LOGMSG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
+    ZCE_LOG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
 }
 //输出APPFRAME的全部部信息
 void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
@@ -375,7 +375,7 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
 
     std::ostringstream strstream;
     dump_appframe_info(strstream);
-    ZCE_LOGMSG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
+    ZCE_LOG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
 }
 
 //输出APPFRAME的头部信息

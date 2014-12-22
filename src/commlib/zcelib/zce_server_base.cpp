@@ -90,7 +90,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     if (pid_handle_ == ZCE_INVALID_HANDLE)
     {
-        ZCE_LOGMSG(RS_ERROR, "Open pid file [%s]fail.", pidfile_name.c_str());
+        ZCE_LOG(RS_ERROR, "Open pid file [%s]fail.", pidfile_name.c_str());
         return -1;
     }
 
@@ -115,8 +115,8 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
     ret = ZCE_LIB::flock_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
     if (ret != 0)
     {
-        ZCE_LOGMSG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
-                   pidfile_name.c_str(), ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",
+                pidfile_name.c_str(), ZCE_LIB::last_error());
         return ret;
     }
 
@@ -184,11 +184,11 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     if (vary_mem_size >= MEMORY_LEAK_THRESHOLD)
     {
         ++check_leak_times_;
-        ZLOG_MSG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] Monitor could memory leak,"
-                 "mem_checkpoint_size_ =[%u],run_mem_size_=[%u].",
-                 self_pid_,
-                 mem_checkpoint_size_,
-                 now_process_perf_.vm_size_);
+        ZCE_LOG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] Monitor could memory leak,"
+                "mem_checkpoint_size_ =[%u],run_mem_size_=[%u].",
+                self_pid_,
+                mem_checkpoint_size_,
+                now_process_perf_.vm_size_);
 
         // 如果已经监测了若干次内存泄漏,则不再记录告警
         if (check_leak_times_ > MAX_RECORD_MEMLEAK_NUMBER)
@@ -221,19 +221,19 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
         process_cpu_ratio_ = 0;
     }
 
-    ZCE_LOGMSG(RS_INFO, "[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
-               "totoal process user/sys[%lld/%lld] milliseconds "
-               "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds "
-               "memory use//add [%ld/%ld].",
-               self_pid_,
-               process_cpu_ratio_,
-               ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
-               ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
-               ZCE_LIB::total_milliseconds(last_to_now),
-               ZCE_LIB::total_milliseconds(proc_utime),
-               ZCE_LIB::total_milliseconds(proc_stime),
-               cur_mem_usesize_,
-               vary_mem_size);
+    ZCE_LOG(RS_INFO, "[zcelib] [WATCHDOG][PID:%u] cpu ratio[%u] "
+            "totoal process user/sys[%lld/%lld] milliseconds "
+            "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds "
+            "memory use//add [%ld/%ld].",
+            self_pid_,
+            process_cpu_ratio_,
+            ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
+            ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
+            ZCE_LIB::total_milliseconds(last_to_now),
+            ZCE_LIB::total_milliseconds(proc_utime),
+            ZCE_LIB::total_milliseconds(proc_stime),
+            cur_mem_usesize_,
+            vary_mem_size);
 
     // 计算系统的CPU时间，非IDLE以外的时间都是消耗时间
     timeval sys_idletime = ZCE_LIB::timeval_sub(now_system_perf_.idle_time_,
@@ -249,9 +249,9 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     }
     else
     {
-        ZLOG_MSG(RS_ERROR, "system_uptime = %llu, process_start_time = %llu",
-                 ZCE_LIB::total_milliseconds(now_system_perf_.up_time_),
-                 ZCE_LIB::total_milliseconds(now_process_perf_.start_time_));
+        ZCE_LOG(RS_ERROR, "system_uptime = %llu, process_start_time = %llu",
+                ZCE_LIB::total_milliseconds(now_system_perf_.up_time_),
+                ZCE_LIB::total_milliseconds(now_process_perf_.start_time_));
         system_cpu_ratio_ = 0;
     }
 
@@ -259,22 +259,22 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     if (process_cpu_ratio_ >= PROCESS_CPU_RATIO_THRESHOLD ||
         system_cpu_ratio_ >= SYSTEM_CPU_RATIO_THRESHOLD)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] point[%u] vm_size[%u] "
-                 "process cpu ratio [%f] threshold [%f], system cpu ratio[%f] threshold[%f] "
-                 "totoal process user/sys[%lld/%lld] milliseconds "
-                 "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds.",
-                 self_pid_,
-                 mem_checkpoint_size_,
-                 now_process_perf_.vm_size_,
-                 double(process_cpu_ratio_) / 10,
-                 double(PROCESS_CPU_RATIO_THRESHOLD) / 10,
-                 double(system_cpu_ratio_) / 10,
-                 double(SYSTEM_CPU_RATIO_THRESHOLD) / 10,
-                 ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
-                 ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
-                 ZCE_LIB::total_milliseconds(last_to_now),
-                 ZCE_LIB::total_milliseconds(proc_utime),
-                 ZCE_LIB::total_milliseconds(proc_stime));
+        ZCE_LOG(RS_ERROR, "[zcelib] [WATCHDOG][PID:%u] point[%u] vm_size[%u] "
+                "process cpu ratio [%f] threshold [%f], system cpu ratio[%f] threshold[%f] "
+                "totoal process user/sys[%lld/%lld] milliseconds "
+                "leave last point all/usr/sys[%lld/%lld/%lld] milliseconds.",
+                self_pid_,
+                mem_checkpoint_size_,
+                now_process_perf_.vm_size_,
+                double(process_cpu_ratio_) / 10,
+                double(PROCESS_CPU_RATIO_THRESHOLD) / 10,
+                double(system_cpu_ratio_) / 10,
+                double(SYSTEM_CPU_RATIO_THRESHOLD) / 10,
+                ZCE_LIB::total_milliseconds(now_process_perf_.run_utime_),
+                ZCE_LIB::total_milliseconds(now_process_perf_.run_stime_),
+                ZCE_LIB::total_milliseconds(last_to_now),
+                ZCE_LIB::total_milliseconds(proc_utime),
+                ZCE_LIB::total_milliseconds(proc_stime));
     }
 
     // 内存使用情况的监控
@@ -292,30 +292,30 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
         mem_use_ratio_ = 0;
     }
 
-    ZCE_LOGMSG(RS_INFO,
-               "[zcelib] [WATCHDOG][SYSTEM] cpu radio [%u] "
-               "totoal usr/nice/sys/idle/iowait/hardirq/softirq "
-               "[%lld/%lld/%lld/%lld/%lld/%lld/%lld] milliseconds"
-               "leave last point all/use/idle[%lld/%lld/%lld] milliseconds "
-               "mem ratio[%u] [totoal/can use/free/buffer/cache] "
-               "[%lld/%lld/%lld/%lld/%lld] bytes",
-               system_cpu_ratio_,
-               ZCE_LIB::total_milliseconds(now_system_perf_.user_time_),
-               ZCE_LIB::total_milliseconds(now_system_perf_.nice_time_),
-               ZCE_LIB::total_milliseconds(now_system_perf_.system_time_),
-               ZCE_LIB::total_milliseconds(now_system_perf_.idle_time_),
-               ZCE_LIB::total_milliseconds(now_system_perf_.iowait_time_),
-               ZCE_LIB::total_milliseconds(now_system_perf_.hardirq_time_),
-               ZCE_LIB::total_milliseconds(now_system_perf_.softirq_time_),
-               ZCE_LIB::total_milliseconds(last_to_now),
-               ZCE_LIB::total_milliseconds(sys_cputime),
-               ZCE_LIB::total_milliseconds(sys_idletime),
-               mem_use_ratio_,
-               now_system_perf_.totalram_size_,
-               can_use_size_,
-               now_system_perf_.freeram_size_,
-               now_system_perf_.bufferram_size_,
-               now_system_perf_.cachedram_size_);
+    ZCE_LOG(RS_INFO,
+            "[zcelib] [WATCHDOG][SYSTEM] cpu radio [%u] "
+            "totoal usr/nice/sys/idle/iowait/hardirq/softirq "
+            "[%lld/%lld/%lld/%lld/%lld/%lld/%lld] milliseconds"
+            "leave last point all/use/idle[%lld/%lld/%lld] milliseconds "
+            "mem ratio[%u] [totoal/can use/free/buffer/cache] "
+            "[%lld/%lld/%lld/%lld/%lld] bytes",
+            system_cpu_ratio_,
+            ZCE_LIB::total_milliseconds(now_system_perf_.user_time_),
+            ZCE_LIB::total_milliseconds(now_system_perf_.nice_time_),
+            ZCE_LIB::total_milliseconds(now_system_perf_.system_time_),
+            ZCE_LIB::total_milliseconds(now_system_perf_.idle_time_),
+            ZCE_LIB::total_milliseconds(now_system_perf_.iowait_time_),
+            ZCE_LIB::total_milliseconds(now_system_perf_.hardirq_time_),
+            ZCE_LIB::total_milliseconds(now_system_perf_.softirq_time_),
+            ZCE_LIB::total_milliseconds(last_to_now),
+            ZCE_LIB::total_milliseconds(sys_cputime),
+            ZCE_LIB::total_milliseconds(sys_idletime),
+            mem_use_ratio_,
+            now_system_perf_.totalram_size_,
+            can_use_size_,
+            now_system_perf_.freeram_size_,
+            now_system_perf_.bufferram_size_,
+            now_system_perf_.cachedram_size_);
 
     return 0;
 }
@@ -396,7 +396,7 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
 
     if (name_len <= WIN_EXE_SUFFIX_LEN)
     {
-        ZLOG_MSG(RS_ERROR, "[framework] Exe file name is not expect?Path name[%s].", argv_0);
+        ZCE_LOG(RS_ERROR, "[framework] Exe file name is not expect?Path name[%s].", argv_0);
         return -1;
     }
 
@@ -417,7 +417,7 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
 
     if (debug_name_len <= DEBUG_SUFFIX_LEN)
     {
-        ZLOG_MSG(RS_ERROR, "[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
+        ZCE_LOG(RS_ERROR, "[framework] Exe file name is not debug _d suffix?str_base_name[%s].", str_base_name);
         return -1;
     }
 

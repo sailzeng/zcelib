@@ -47,7 +47,7 @@ Interface_WH_Proxy::PROXY_TYPE Interface_WH_Proxy::str_to_proxytype(const char *
 Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytype)
 {
     Interface_WH_Proxy *tmpintface = NULL;
-    ZLOG_INFO("Interface_Proxy_Process::CreatePorxyFactory PROXY_TYPE: %d.", proxytype);
+    ZCE_LOG(RS_INFO,"Interface_Proxy_Process::CreatePorxyFactory PROXY_TYPE: %d.", proxytype);
 
     switch (proxytype)
     {
@@ -89,7 +89,7 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
         default:
         {
             // 错误
-            ZLOG_MSG(RS_ERROR,"Error Proxy Type define. Please check you code. ");
+            ZCE_LOG(RS_ERROR,"Error Proxy Type define. Please check you code. ");
             return NULL;
         }
 
@@ -338,7 +338,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
     check_list.unique();
     if (check_list.size() != broadcast_svcnum_)
     {
-        ZLOG_MSG(RS_ERROR,"Cfg file have repeat svc id,Please check.");
+        ZCE_LOG(RS_ERROR,"Cfg file have repeat svc id,Please check.");
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
@@ -367,7 +367,7 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     // 这样处理是否好，我不知道，
     if (proc_frame->recv_service_.services_type_ != broadcast_svctype_)
     {
-        ZLOG_MSG(RS_ERROR,"Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
+        ZCE_LOG(RS_ERROR,"Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
         return SOAR_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
     }
 
@@ -463,7 +463,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
     check_list.unique();
     if (check_list.size() != modulo_svcnum_)
     {
-        ZLOG_MSG(RS_ERROR,"Cfg file have repeat svc id,Please check.");
+        ZCE_LOG(RS_ERROR,"Cfg file have repeat svc id,Please check.");
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
@@ -492,7 +492,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     // 这样处理是否好，我不知道，
     if (proc_frame->recv_service_.services_type_ != modulo_svctype_)
     {
-        ZLOG_MSG(RS_ERROR,"Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
+        ZCE_LOG(RS_ERROR,"Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
         return SOAR_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
     }
 
@@ -537,7 +537,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //    if (route_cfg_.size() == 0)
 //    {
 //        // 没有配置路由,这一定是个错误
-//        ZLOG_MSG(RS_ERROR,"[%s] no route configed", __ZCE_FUNC__);
+//        ZCE_LOG(RS_ERROR,"[%s] no route configed", __ZCE_FUNC__);
 //        return NULL;
 //    }
 //
@@ -602,7 +602,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        dbmodal_proxy_info->distribute_offset_ = route_info->distribute_offset_;
 //        dbmodal_proxy_info->router_svr_type_ = route_info->svr_type_;
 //
-//        ZLOG_INFO("[DBModalProxy] route_svr_type:%u, distribute_offset:%u, distribute_module:%u",
+//        ZCE_LOG(RS_INFO,"[DBModalProxy] route_svr_type:%u, distribute_offset:%u, distribute_module:%u",
 //            dbmodal_proxy_info->router_svr_type_,
 //            dbmodal_proxy_info->distribute_offset_,
 //            dbmodal_proxy_info->distribute_module_);
@@ -623,7 +623,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //                dbmodal_proxy_info->clone_router_cfg_[k] = SERVICES_ID::INVALID_SERVICES_ID;
 //            }
 //
-//            ZLOG_INFO("[DBModalProxy] normal service:%u|%u, clone service:%u|%u, passby service:%u|%u",
+//            ZCE_LOG(RS_INFO,"[DBModalProxy] normal service:%u|%u, clone service:%u|%u, passby service:%u|%u",
 //                dbmodal_proxy_info->router_svr_type_, dbmodal_proxy_info->normal_router_cfg_[k],
 //                dbmodal_proxy_info->router_svr_type_, dbmodal_proxy_info->clone_router_cfg_[k]);
 //        }
@@ -658,7 +658,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //    if (proc_frame->is_internal_process(bsnderr) == true)
 //    {
-//        ZLOG_INFO("Receive a internal command, frame_uin:%u, frame_command:%u. ",
+//        ZCE_LOG(RS_INFO,"Receive a internal command, frame_uin:%u, frame_command:%u. ",
 //                  proc_frame->frame_uid_, proc_frame->frame_command_);
 //        return 0;
 //    }
@@ -717,7 +717,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        {
 //
 //            proc_frame->recv_service_.services_id_ = dbmodal_proxy_info->clone_router_cfg_[mod];
-//            ZLOG_INFO("Send to backup services [%u|%u], frame_uin:%u,"
+//            ZCE_LOG(RS_INFO,"Send to backup services [%u|%u], frame_uin:%u,"
 //                " frame_command:%u, frame_len:%u, back trans_id[%u]. ",
 //                      proc_frame->recv_service_.services_type_,
 //                      proc_frame->recv_service_.services_id_,
@@ -740,7 +740,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //    {
 //        //
 //        // 加一条日志，方便跟踪
-//        ZLOG_INFO("Send back [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
+//        ZCE_LOG(RS_INFO,"Send back [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
 //                  proc_frame->recv_service_.services_type_,
 //                  proc_frame->recv_service_.services_id_,
 //                  proc_frame->frame_uid_,

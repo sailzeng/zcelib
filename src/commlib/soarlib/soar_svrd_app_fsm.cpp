@@ -42,7 +42,7 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"[framework] register trans cmd fail. ret=%d", ret);
+        ZCE_LOG(RS_ERROR,"[framework] register trans cmd fail. ret=%d", ret);
         return ret;
     }
 
@@ -52,8 +52,8 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 //运行处理,
 int Comm_SvrdApp_FSM::on_run()
 {
-    ZLOG_INFO("======================================================================================================");
-    ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
               get_app_basename(),
               typeid(*this).name());
 
@@ -119,10 +119,10 @@ int Comm_SvrdApp_FSM::on_run()
         }
     }
 
-    ZLOG_INFO("[framework] app %s class [%s] run_instance end.",
+    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance end.",
               get_app_basename(),
               typeid(*this).name());
-    ZLOG_INFO("======================================================================================================");
+    ZCE_LOG(RS_INFO,"======================================================================================================");
     return 0;
 }
 

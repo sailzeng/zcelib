@@ -92,10 +92,10 @@ int ZCE_Mysql_Process::connect_mysql_server( )
         //如果错误
         if (ret != 0)
         {
-            ZLOG_MSG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
-                     db_connect_.get_error_no(),
-                     db_connect_.get_error_message()
-                    );
+            ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
+                    db_connect_.get_error_no(),
+                    db_connect_.get_error_message()
+                   );
             return -1;
         }
 
@@ -168,10 +168,10 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
     //如果错误
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                 db_connect_.get_error_no(),
-                 db_connect_.get_error_message(),
-                 sql);
+        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+                db_connect_.get_error_no(),
+                db_connect_.get_error_message(),
+                sql);
         return -1;
     }
 
@@ -227,10 +227,10 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
     //如果错误
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
-                 db_connect_.get_error_no(),
-                 db_connect_.get_error_message(),
-                 sql);
+        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
+                db_connect_.get_error_no(),
+                db_connect_.get_error_message(),
+                sql);
         return -1;
     }
 
@@ -283,10 +283,10 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbres
     //如果错误
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
-                 db_connect_.get_error_no(),
-                 db_connect_.get_error_message(),
-                 sql);
+        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+                db_connect_.get_error_no(),
+                db_connect_.get_error_message(),
+                sql);
         return -1;
     }
 

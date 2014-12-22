@@ -92,12 +92,12 @@
 //    //To Do:来,添加你自己喜欢的监控
 //    else
 //    {
-//        ZCE_LOGMSG(RS_ERROR,"[zergsvr] Can't Process this command :%s.", mml_cmd.c_str());
+//        ZCE_LOG(RS_ERROR,"[zergsvr] Can't Process this command :%s.", mml_cmd.c_str());
 //        str_len = 0;
 //    }
 //
 //    //处理
-//    ZCE_LOGMSG(RS_INFO,"[zergsvr] Process Command %s, Ret:%u.", mml_cmd.c_str(), ret);
+//    ZCE_LOG(RS_INFO,"[zergsvr] Process Command %s, Ret:%u.", mml_cmd.c_str(), ret);
 //    return 0;
 //}
 //
@@ -206,7 +206,7 @@
 //
 //    size_t tmp_size = snprintf(ret_string, str_len, "Console close services. Server exit at immediately,Please wait.");
 //    str_len = tmp_size;
-//    ZCE_LOGMSG(RS_INFO,"[zergsvr] %s", ret_string);
+//    ZCE_LOG(RS_INFO,"[zergsvr] %s", ret_string);
 //
 //    return 0;
 //}
@@ -239,7 +239,7 @@
 //
 //    svr_info.services_id_ = atoi(tmpstr.c_str());
 //
-//    ZCE_LOGMSG(RS_INFO,"[zergsvr] Console To close One Services:%u|%u", svr_info.services_id_, svr_info.services_type_);
+//    ZCE_LOG(RS_INFO,"[zergsvr] Console To close One Services:%u|%u", svr_info.services_id_, svr_info.services_type_);
 //    ret = TCP_Svc_Handler::close_connect_services_peer(svr_info);
 //
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console To close One Services: %u|%u %s.", svr_info.services_type_, svr_info.services_id_,
@@ -282,7 +282,7 @@
 //    size_t tmp_size = 0;
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console modify log priority.Old log priority %u, New log priority %u .", old_log_priority, new_log_priority);
 //    str_len = tmp_size;
-//    ZCE_LOGMSG(RS_INFO,"[zergsvr] %s", ret_string);
+//    ZCE_LOG(RS_INFO,"[zergsvr] %s", ret_string);
 //
 //    return 0;
 //}

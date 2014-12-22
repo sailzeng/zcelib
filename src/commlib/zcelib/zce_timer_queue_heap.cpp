@@ -24,7 +24,7 @@ ZCE_Timer_Heap::ZCE_Timer_Heap(size_t num_timer_node,
     //
     if ( 0 != ret )
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Timer_Heap::initialize fail.");
+        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Timer_Heap::initialize fail.");
     }
 
 }

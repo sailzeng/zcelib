@@ -407,7 +407,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //
 //    if (ret != 0)
 //    {
-//        ZLOG_MSG(RS_ERROR,"[zcelib] ZCE_LIB::flock fail. operation =%d ret =%d", operation, ret);
+//        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_LIB::flock fail. operation =%d ret =%d", operation, ret);
 //    }
 //
 //    //其实完全可以不掉用这个函数,调用他是为了让你觉得公正,

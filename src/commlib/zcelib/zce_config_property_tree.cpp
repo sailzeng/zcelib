@@ -29,9 +29,9 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     //如果没有找到
     if (child_node_.end() == iter_tmp)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-                   __ZCE_FUNC__,
-                   path_str.c_str());
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
+                __ZCE_FUNC__,
+                path_str.c_str());
         return -1;
     }
 
@@ -65,9 +65,9 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     //如果没有找到
     if (child_node_.end() == iter_tmp)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] .",
-                   __ZCE_FUNC__,
-                   path_str.c_str());
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] .",
+                __ZCE_FUNC__,
+                path_str.c_str());
         return -1;
     }
 
@@ -99,10 +99,10 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     ret = path_get_childiter(path_str, child_iter);
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-                   __ZCE_FUNC__,
-                   path_str.c_str(),
-                   key_str.c_str());
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
+                __ZCE_FUNC__,
+                path_str.c_str(),
+                key_str.c_str());
         return ret;
     }
 
@@ -118,9 +118,9 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     }
     if (child_note->leaf_node_.end() == leaf_iter)
     {
-        ZCE_LOGMSG(RS_ERROR, "Read config key fail, path[%s] key[%s]. ",
-                   path_str.c_str(),
-                   key_str.c_str());
+        ZCE_LOG(RS_ERROR, "Read config key fail, path[%s] key[%s]. ",
+                path_str.c_str(),
+                key_str.c_str());
         return -1;
     }
 
@@ -144,10 +144,10 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     const ZCE_Conf_PropertyTree *child_note = &(child_iter->second);
     if (key_str.length() != 0)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
-                   __ZCE_FUNC__,
-                   path_str.c_str(),
-                   key_str.c_str());
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
+                __ZCE_FUNC__,
+                path_str.c_str(),
+                key_str.c_str());
         leaf_iter = child_note->leaf_node_.find(key_str);
     }
     else
@@ -157,10 +157,10 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     }
     if (child_note->leaf_node_.end() == leaf_iter)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib][%s]Read config key fail, path[%s] key[%s]. ",
-                   __ZCE_FUNC__,
-                   path_str.c_str(),
-                   key_str.c_str());
+        ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config key fail, path[%s] key[%s]. ",
+                __ZCE_FUNC__,
+                path_str.c_str(),
+                key_str.c_str());
         return -1;
     }
 
@@ -292,8 +292,8 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     }
     if (value_str.empty())
     {
-        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
-                   path_str.c_str(), key_str.c_str());
+        ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                path_str.c_str(), key_str.c_str());
         val = 0;
     }
     else
@@ -320,8 +320,8 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 
     if (value_str.empty())
     {
-        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
-                   path_str.c_str(), key_str.c_str());
+        ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                path_str.c_str(), key_str.c_str());
         val = 0;
     }
     else
@@ -347,8 +347,8 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     }
     if (value_str.empty())
     {
-        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
-                   path_str.c_str(), key_str.c_str());
+        ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                path_str.c_str(), key_str.c_str());
         val = 0;
     }
     else
@@ -373,8 +373,8 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     }
     if (value_str.empty())
     {
-        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
-                   path_str.c_str(), key_str.c_str());
+        ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                path_str.c_str(), key_str.c_str());
         val = 0;
     }
     else
@@ -400,8 +400,8 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     }
     if (value_str.empty())
     {
-        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
-                   path_str.c_str(), key_str.c_str());
+        ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                path_str.c_str(), key_str.c_str());
         val = 0;
     }
     else
@@ -426,8 +426,8 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     }
     if (value_str.empty())
     {
-        ZCE_LOGMSG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
-                   path_str.c_str(), key_str.c_str());
+        ZCE_LOG(RS_INFO, "Value string is empty. path[%s] key [%s] ",
+                path_str.c_str(), key_str.c_str());
         val = 0;
     }
     else

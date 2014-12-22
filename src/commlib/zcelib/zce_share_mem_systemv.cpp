@@ -43,7 +43,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
 
     if (ZCE_INVALID_HANDLE == sysv_shmid_ )
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] System memory shmget fail ,sysv key = %d,last error =%d. ", sysv_key, ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmget fail ,sysv key = %d,last error =%d. ", sysv_key, ZCE_LIB::last_error());
         return -1;
     }
 
@@ -51,7 +51,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
 
     if (shm_addr_ == MAP_FAILED)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] System memory shmat fail ,last error =%d. ", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmat fail ,last error =%d. ", ZCE_LIB::last_error());
         return -1;
     }
 

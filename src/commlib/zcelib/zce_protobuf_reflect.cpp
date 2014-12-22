@@ -69,8 +69,8 @@ int ZCE_Protobuf_Reflect::import_file(const std::string &file_name)
         protobuf_importer_->Import(file_name);
     if (file_desc)
     {
-        ZCE_LOGMSG(RS_ERROR, "Importer Import filename [%s] fail.",
-            file_name.c_str());
+        ZCE_LOG(RS_ERROR, "Importer Import filename [%s] fail.",
+                file_name.c_str());
         return -1;
     }
 
@@ -93,8 +93,8 @@ int ZCE_Protobuf_Reflect::new_mesage(const std::string &type_name,
         protobuf_importer_->pool()->FindMessageTypeByName(type_name);
     if (!proc_msg_desc)
     {
-        ZCE_LOGMSG(RS_ERROR, "Importer DescriptorPool FindMessageTypeByName by name [%s] fail.",
-            type_name.c_str());
+        ZCE_LOG(RS_ERROR, "Importer DescriptorPool FindMessageTypeByName by name [%s] fail.",
+                type_name.c_str());
         return -1;
     }
 
@@ -102,8 +102,8 @@ int ZCE_Protobuf_Reflect::new_mesage(const std::string &type_name,
     const google::protobuf::Message *message = msg_factory_.GetPrototype(proc_msg_desc);
     if (!message)
     {
-        ZCE_LOGMSG(RS_ERROR, "DynamicMessageFactory GetPrototype by name [%s] fail.",
-            type_name.c_str());
+        ZCE_LOG(RS_ERROR, "DynamicMessageFactory GetPrototype by name [%s] fail.",
+                type_name.c_str());
         return -1;
     }
 
@@ -133,8 +133,8 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
     {
         if (field->label() == google::protobuf::FieldDescriptor::Label::LABEL_REQUIRED)
         {
-            ZCE_LOGMSG(RS_ERROR, "set_data is null but field name [%s] label is REQUIRED.",
-                field->full_name().c_str());
+            ZCE_LOG(RS_ERROR, "set_data is null but field name [%s] label is REQUIRED.",
+                    field->full_name().c_str());
             return -1;
         }
         else
@@ -213,9 +213,9 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
             }
             else
             {
-                ZCE_LOGMSG(RS_ERROR, "Don't find EnumValueDescriptor by name [%s] in enum [%s].",
-                    set_data.c_str(),
-                    enum_desc->full_name().c_str());
+                ZCE_LOG(RS_ERROR, "Don't find EnumValueDescriptor by name [%s] in enum [%s].",
+                        set_data.c_str(),
+                        enum_desc->full_name().c_str());
                 return -1;
             }
 
@@ -243,10 +243,10 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
         else
         {
             //不支持的类型，这个地方如果出现TYPE_MESSAGE。也是不正常的。
-            ZCE_LOGMSG(RS_ERROR, "I don't field [%s] support this type.%d %s",
-                       field->full_name().c_str(),
-                       field->type(),
-                       field->type_name());
+            ZCE_LOG(RS_ERROR, "I don't field [%s] support this type.%d %s",
+                    field->full_name().c_str(),
+                    field->type(),
+                    field->type_name());
             ZCE_ASSERT(false);
             return -1;
         }
@@ -321,9 +321,9 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
             }
             else
             {
-                ZCE_LOGMSG(RS_ERROR, "Don't find EnumValueDescriptor by name [%s] in enum [%s].",
-                    set_data.c_str(),
-                    enum_desc->full_name().c_str());
+                ZCE_LOG(RS_ERROR, "Don't find EnumValueDescriptor by name [%s] in enum [%s].",
+                        set_data.c_str(),
+                        enum_desc->full_name().c_str());
                 return -1;
             }
 
@@ -350,20 +350,20 @@ int ZCE_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
         }
         else
         {
-            ZCE_LOGMSG(RS_ERROR, "I don't field [%s] support this type.%d %s",
-                       field->full_name().c_str(),
-                       field->type(),
-                       field->type_name());
+            ZCE_LOG(RS_ERROR, "I don't field [%s] support this type.%d %s",
+                    field->full_name().c_str(),
+                    field->type(),
+                    field->type_name());
             ZCE_ASSERT(false);
             return -1;
         }
     }
     else
     {
-        ZCE_LOGMSG(RS_ERROR, "I don't field [%s] support this type.%d %s",
-                   field->full_name().c_str(),
-                   field->type(),
-                   field->type_name());
+        ZCE_LOG(RS_ERROR, "I don't field [%s] support this type.%d %s",
+                field->full_name().c_str(),
+                field->type(),
+                field->type_name());
         ZCE_ASSERT(false);
         return -1;
     }

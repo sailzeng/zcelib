@@ -23,7 +23,7 @@ ZCE_Timer_Wheel::ZCE_Timer_Wheel(size_t num_timer_node,
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel::initialize fail.");
+        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel::initialize fail.");
     }
 }
 
@@ -120,7 +120,7 @@ void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id)
                          - prev_trigger_msec_) / timer_precision_mesc_ );
 
     //调试代码，暂时屏蔽
-    //ZCE_LOGMSG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel::bind_wheel_listnode next_trigger_point_[%llu] prev_trigger_msec_ [%llu] front_num [%lu]",
+    //ZCE_LOG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel::bind_wheel_listnode next_trigger_point_[%llu] prev_trigger_msec_ [%llu] front_num [%lu]",
     //  time_node_ary_[time_node_id].next_trigger_point_,
     //  prev_trigger_msec_,
     //  front_num);
@@ -314,9 +314,9 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
     if (now_trigger_msec < prev_trigger_msec_)
     {
         //这儿用错误是因为有必要提醒一下你，定时器被调整了，
-        ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel error. now_trigger_msec[%llu] < prev_trigger_msec_[%llu],may be you adjust systime time to past time.",
-                 now_trigger_msec,
-                 prev_trigger_msec_);
+        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel error. now_trigger_msec[%llu] < prev_trigger_msec_[%llu],may be you adjust systime time to past time.",
+                now_trigger_msec,
+                prev_trigger_msec_);
         prev_trigger_msec_ = now_trigger_msec;
         return 0;
     }
@@ -329,12 +329,12 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
         //注释掉断言，yunfei说明了一种情况，如果时间向前跳变超过了循环周期.虽然我认为这个情况暂时不会发生，就是将定时器调整成未来的某个时间，
         //assert (elapsed_msec < timer_length_mesc_);
 
-        ZLOG_ALERT("[zcelib] ZCE_Timer_Wheel alert. now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%llu],"
-                   "may be you adjust systime time to future time or you ,or wheel is too little ,or dispatch_timer or expire invoke too little.",
-                   now_trigger_msec,
-                   prev_trigger_msec_,
-                   elapsed_msec,
-                   timer_length_mesc_);
+        ZCE_LOG(RS_ALERT, "[zcelib] ZCE_Timer_Wheel alert. now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%llu],"
+                "may be you adjust systime time to future time or you ,or wheel is too little ,or dispatch_timer or expire invoke too little.",
+                now_trigger_msec,
+                prev_trigger_msec_,
+                elapsed_msec,
+                timer_length_mesc_);
 
         //先用安全的方式?
         prev_trigger_msec_ = now_trigger_msec;
@@ -348,7 +348,7 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
     size_t passing_wheel_node = static_cast<size_t>( elapsed_msec / timer_precision_mesc_);
 
     //调试代码，暂时关闭
-    //ZCE_LOGMSG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel . now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%u],passing_wheel_node[%lu]",
+    //ZCE_LOG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel . now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%u],passing_wheel_node[%lu]",
     //  now_trigger_msec,
     //  prev_trigger_msec_,
     //  elapsed_msec,

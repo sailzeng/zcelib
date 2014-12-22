@@ -93,12 +93,12 @@ Modify Record   :
 void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 {
     //
-    ZLOG_INFO( "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
-               szlist,
-               size_buffer_alloc_,
-               szlist * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
-               size_buffer_alloc_ * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
-             );
+    ZCE_LOG(RS_INFO, "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
+            szlist,
+            size_buffer_alloc_,
+            szlist * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
+            size_buffer_alloc_ * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
+           );
 
     //重新扩展一下空间
     frame_buffer_ary_.resize(size_buffer_alloc_ + szlist);

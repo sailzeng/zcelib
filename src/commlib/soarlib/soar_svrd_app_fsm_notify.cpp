@@ -73,7 +73,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        ZLOG_INFO("[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u", ret);
+        ZCE_LOG(RS_INFO,"[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u", ret);
         return ret;
     }
 
@@ -84,8 +84,8 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 int Comm_SvrdApp_FSM_Notify::on_run()
 {
     // fix me add log
-    ZLOG_INFO("======================================================================================================");
-    ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
               get_app_basename(),
               typeid(*this).name());
 
@@ -155,7 +155,7 @@ int Comm_SvrdApp_FSM_Notify::on_run()
         }
     }
 
-    ZLOG_INFO("======================================================================================================");
+    ZCE_LOG(RS_INFO,"======================================================================================================");
     return 0;
 }
 

@@ -67,11 +67,11 @@ Transaction_Manager::Transaction_Manager()
 //事务管理器的析构函数
 Transaction_Manager::~Transaction_Manager()
 {
-    ZLOG_INFO("[framework] Transaction_Manager::~Transaction_Manager start.");
+    ZCE_LOG(RS_INFO,"[framework] Transaction_Manager::~Transaction_Manager start.");
 
     //
     size_t trans_size  = transc_map_.size();
-    ZLOG_INFO("[framework] close all transaction, transc_map_ size =%u", trans_size);
+    ZCE_LOG(RS_INFO,"[framework] close all transaction, transc_map_ size =%u", trans_size);
 
     //TMD在删除迭代器的这个阴沟里面翻了多少次船了，BS你的记忆力。
     for (size_t i = 0; i < trans_size; ++i)
@@ -94,7 +94,7 @@ Transaction_Manager::~Transaction_Manager()
         unsigned int regframe_cmd = pooliter->first;
         POOL_OF_REGISTERTRANS &pool_reg_trans = (pooliter->second).crttrs_cmd_pool_;
         //记录信息数据
-        ZLOG_INFO("[framework] Register command:%u size of pool:%u capacity of pool:%u.",
+        ZCE_LOG(RS_INFO,"[framework] Register command:%u size of pool:%u capacity of pool:%u.",
                   regframe_cmd,
                   pool_reg_trans.size(),
                   pool_reg_trans.capacity()
@@ -103,7 +103,7 @@ Transaction_Manager::~Transaction_Manager()
         //出现了问题，
         if (pool_reg_trans.size() != pool_reg_trans.capacity())
         {
-            ZLOG_MSG(RS_ERROR,"[framework] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
+            ZCE_LOG(RS_ERROR,"[framework] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
                        pool_reg_trans.size(),
                        pool_reg_trans.capacity());
         }
@@ -191,7 +191,7 @@ int Transaction_Manager::register_trans_cmd(unsigned int cmd,
 
     if (mapiter != regtrans_pool_map_.end())
     {
-        ZLOG_MSG(RS_ERROR,"[framework] Find Repeat Command ID:%u From MAP.", cmd);
+        ZCE_LOG(RS_ERROR,"[framework] Find Repeat Command ID:%u From MAP.", cmd);
         delete ptxbase;
         return SOAR_RET::ERROR_FIND_REPEAT_CMD_ID;
     }
@@ -242,7 +242,7 @@ int Transaction_Manager::regiester_trans_id(unsigned int transid,
 
     if (mapiter != transc_map_.end())
     {
-        ZLOG_MSG(RS_ERROR,"[framework] Find Repeat Transaction ID:%u From MAP.", transid);
+        ZCE_LOG(RS_ERROR,"[framework] Find Repeat Transaction ID:%u From MAP.", transid);
         return SOAR_RET::ERROR_FIND_REPEAT_TRANSACTION_ID;
     }
 
@@ -283,7 +283,7 @@ int Transaction_Manager::unregiester_trans_id(unsigned int transid,
 
     if (mapiter == transc_map_.end())
     {
-        ZLOG_MSG(RS_ERROR,"[framework] unregiester_trans_id,Can't Find Transaction ID:%u From MAP.", transid);
+        ZCE_LOG(RS_ERROR,"[framework] unregiester_trans_id,Can't Find Transaction ID:%u From MAP.", transid);
         return SOAR_RET::ERROR_CANNOT_FIND_TRANSACTION_ID;
     }
 
@@ -438,7 +438,7 @@ int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
     //还有最后一个
     if (reg_ctr_trans.crttrs_cmd_pool_.size() == 1)
     {
-        ZLOG_INFO("[framework] Before extend trans.");
+        ZCE_LOG(RS_INFO,"[framework] Before extend trans.");
         //取一个模型
         Transaction_Base *model_trans = NULL;
         reg_ctr_trans.crttrs_cmd_pool_.pop_front(model_trans);
@@ -446,7 +446,7 @@ int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
         size_t capacity_of_pool = reg_ctr_trans.crttrs_cmd_pool_.capacity();
         reg_ctr_trans.crttrs_cmd_pool_.resize(capacity_of_pool + POOL_EXTEND_TRANSACTION_NUM);
 
-        ZLOG_INFO("[framework] Pool Size=%u,  command %u, capacity = %u , resize =%u .",
+        ZCE_LOG(RS_INFO,"[framework] Pool Size=%u,  command %u, capacity = %u , resize =%u .",
                   reg_ctr_trans.crttrs_cmd_pool_.size(),
                   frame_cmd,
                   capacity_of_pool,
@@ -461,7 +461,7 @@ int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
 
         //将模型放到第N个
         reg_ctr_trans.crttrs_cmd_pool_.push_back(model_trans);
-        ZLOG_INFO("[framework] After Extend trans.");
+        ZCE_LOG(RS_INFO,"[framework] After Extend trans.");
     }
 
     //取得一个事务
@@ -534,14 +534,14 @@ void Transaction_Manager::recycle_clone_from_pool()
     HASHMAP_OF_POLLREGTRANS::iterator iter_tmp = regtrans_pool_map_.begin();
     HASHMAP_OF_POLLREGTRANS::iterator iter_end = regtrans_pool_map_.end();
     //因为比较关键，用了RS_INFO
-    ZLOG_INFO("[framework] Recycle trans,transaction manager are processing pool number [%d] . ",
+    ZCE_LOG(RS_INFO,"[framework] Recycle trans,transaction manager are processing pool number [%d] . ",
               regtrans_pool_map_.size());
 
     for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
     {
         unsigned int frame_command = iter_tmp->first;
         POOL_OF_REGISTERTRANS &pool_regtrans = (iter_tmp->second).crttrs_cmd_pool_;
-        ZLOG_INFO("[framework] %u.Pool porcess command:%u,capacity:%u,size:%u,use:%u.",
+        ZCE_LOG(RS_INFO,"[framework] %u.Pool porcess command:%u,capacity:%u,size:%u,use:%u.",
                   i,
                   frame_command,
                   pool_regtrans.capacity(),
@@ -600,7 +600,7 @@ int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int qq_uin,
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second )
     {
-        ZLOG_MSG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
+        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
                    qq_uin,
                    trnas_lock_id,
                    frame_cmd);
@@ -742,7 +742,7 @@ int Transaction_Manager::get_handler_by_transid(unsigned int transid, unsigned i
 
     if (mapiter == transc_map_.end())
     {
-        ZLOG_INFO("[framework] get_handler_by_transid,Can't Find Transaction ID:%u,Command:%u From MAP.",
+        ZCE_LOG(RS_INFO,"[framework] get_handler_by_transid,Can't Find Transaction ID:%u,Command:%u From MAP.",
                   transid,
                   trans_cmd);
         return SOAR_RET::ERROR_CANNOT_FIND_TRANSACTION_ID;
@@ -770,12 +770,12 @@ void Transaction_Manager::dump_all_trans_info() const
     HASHMAP_OF_TRANSACTION::const_iterator iter_tmp = transc_map_.begin();
     HASHMAP_OF_TRANSACTION::const_iterator iter_end = transc_map_.end();
     //因为比较关键，用了RS_INFO
-    ZLOG_INFO("[framework] Transaction Manager are processing [%d] transactions. ", transc_map_.size());
+    ZCE_LOG(RS_INFO,"[framework] Transaction Manager are processing [%d] transactions. ", transc_map_.size());
 
     for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
     {
         Transaction_Base *pbase = iter_tmp->second;
-        ZLOG_INFO("[framework] %u.Transaction ID:%u,Request UIN:%u,Command:%u,State:%u.",
+        ZCE_LOG(RS_INFO,"[framework] %u.Transaction ID:%u,Request UIN:%u,Command:%u,State:%u.",
                   i,
                   (pbase)->req_qq_uin_,
                   (pbase)->req_qq_uin_,
@@ -794,13 +794,13 @@ void Transaction_Manager::dump_trans_pool_info() const
     HASHMAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
     HASHMAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
     //因为比较关键，用了RS_INFO
-    ZLOG_INFO("[framework] Transaction Manager are processing pool number [%d] . ", regtrans_pool_map_.size());
+    ZCE_LOG(RS_INFO,"[framework] Transaction Manager are processing pool number [%d] . ", regtrans_pool_map_.size());
 
     for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
     {
         unsigned int frame_command = iter_tmp->first;
         const POOL_OF_REGISTERTRANS &pool_regtrans = (iter_tmp->second).crttrs_cmd_pool_;
-        ZLOG_INFO("[framework] %u.Pool porcess command:%u,capacity:%u,size:%u.",
+        ZCE_LOG(RS_INFO,"[framework] %u.Pool porcess command:%u,capacity:%u,size:%u.",
                   i,
                   frame_command,
                   pool_regtrans.capacity(),
@@ -819,16 +819,16 @@ void Transaction_Manager::dump_statistics_info() const
     HASHMAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
     HASHMAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
 
-    ZLOG_INFO("[framework] [TRANS INFO] All generate transaction counter [%llu] ,previous cycle generate transaction number[%llu].",
+    ZCE_LOG(RS_INFO,"[framework] [TRANS INFO] All generate transaction counter [%llu] ,previous cycle generate transaction number[%llu].",
               gen_trans_counter_,
               cycle_gentrans_counter_);
 
     //因为比较关键，用了RS_INFO
-    ZLOG_INFO("[framework] Transaction Manager are processing [%d] transactions. ", transc_map_.size());
+    ZCE_LOG(RS_INFO,"[framework] Transaction Manager are processing [%d] transactions. ", transc_map_.size());
 
     for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
     {
-        ZLOG_INFO("[framework] [TRANS INFO]%u.Transaction command ID [%u],create [%llu], destroy right[%llu], destroy timeout[%llu],destroy exception[%llu],consume seconds[%llu]",
+        ZCE_LOG(RS_INFO,"[framework] [TRANS INFO]%u.Transaction command ID [%u],create [%llu], destroy right[%llu], destroy timeout[%llu],destroy exception[%llu],consume seconds[%llu]",
                   i,
                   (iter_tmp->second).trans_command_,
                   (iter_tmp->second).create_trans_num_,
@@ -929,7 +929,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
         //如果小于0表示错误，到这个地方应该是一个错误，因为上面还有一个判断
         if (ret < 0)
         {
-            ZLOG_MSG(RS_ERROR,"[framework] Recv queue dequeue fail ,ret=%u,", ret);
+            ZCE_LOG(RS_ERROR,"[framework] Recv queue dequeue fail ,ret=%u,", ret);
             return 0;
         }
 

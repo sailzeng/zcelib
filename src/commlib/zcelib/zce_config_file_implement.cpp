@@ -27,9 +27,9 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]",
-                   file_name,
-                   ZCE_LIB::last_error() );
+        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]",
+                file_name,
+                ZCE_LIB::last_error() );
         return -1;
     }
 
@@ -101,10 +101,10 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     ret = ZCE_LIB::filelen(file_name, &file_size);
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::filelen."
-                   "path=[%s],last error [%d]",
-                   file_name,
-                   ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::filelen."
+                "path=[%s],last error [%d]",
+                file_name,
+                ZCE_LIB::last_error());
         return ret;
     }
     size_t buf_len = file_size + 16, read_len = 0;
@@ -113,10 +113,10 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     ret = ZCE_LIB::read_file_data(file_name, file_data.get(), buf_len, &read_len);
     if (0 != ret)
     {
-        ZCE_LOGMSG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::read_file_data."
-                   "path=[%s],last error [%d]",
-                   file_name,
-                   ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,ZCE_LIB::read_file_data."
+                "path=[%s],last error [%d]",
+                file_name,
+                ZCE_LIB::last_error());
         return ret;
     }
 
@@ -133,9 +133,9 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     }
     catch (rapidxml::parse_error &e)
     {
-        ZCE_LOGMSG(RS_ERROR, "[ZCELIB]file [%s] don't parse error what[%s] where[%s].",
-                   e.what(),
-                   e.where<char>());
+        ZCE_LOG(RS_ERROR, "[ZCELIB]file [%s] don't parse error what[%s] where[%s].",
+                e.what(),
+                e.where<char>());
         return -1;
     }
 

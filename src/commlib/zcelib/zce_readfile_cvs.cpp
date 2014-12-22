@@ -31,8 +31,8 @@ int ReadFile_CVS::readfile_cvs()
     if (read_file)
     {
 
-        ZCE_LOGMSG(RS_INFO, "[framework] Batch process file [%s] open success.file .",
-                   readfile_name_.c_str());
+        ZCE_LOG(RS_INFO, "[framework] Batch process file [%s] open success.file .",
+                readfile_name_.c_str());
 
         read_file.seekg(0, std::ios::end);
         std::streamsize size_of_file = read_file.tellg();
@@ -57,13 +57,13 @@ int ReadFile_CVS::readfile_cvs()
         //+1很重要,保证字符串的结尾是'\0'
         read_stream.str(str_readbuf);
 
-        ZCE_LOGMSG(RS_INFO, "[framework] Batch process file [%s] read success.file size [%u].",
-                   readfile_name_.c_str(),
-                   size_of_file);
+        ZCE_LOG(RS_INFO, "[framework] Batch process file [%s] read success.file size [%u].",
+                readfile_name_.c_str(),
+                size_of_file);
     }
     else
     {
-        ZLOG_MSG(RS_ERROR, "[framework] Batch process file read fail[%s].", readfile_name_.c_str());
+        ZCE_LOG(RS_ERROR, "[framework] Batch process file read fail[%s].", readfile_name_.c_str());
         return -1;
     }
 

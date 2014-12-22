@@ -81,9 +81,9 @@ int ZCE_SQLite_STMTHdl::prepare_sql_string(const char *sql_string)
     if ( SQLITE_OK  != ret || sqlite3_stmt_handler_ == NULL)
     {
         //其他返回错误
-        ZLOG_MSG(RS_ERROR, "[zcelib] Error:[%d][%s]",
-                 error_code(),
-                 error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",
+                error_code(),
+                error_message());
         return -1;
     }
 
@@ -114,7 +114,7 @@ int ZCE_SQLite_STMTHdl::execute_stmt_sql(bool &has_reuslt)
     }
 
     //其他返回错误
-    ZLOG_MSG(RS_ERROR, "[zcelib] Error:[%d][%s]", error_code(), error_message());
+    ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]", error_code(), error_message());
     return -1;
 }
 
@@ -127,7 +127,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, char val)
                                  static_cast<int>( val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
     return 0;
@@ -139,7 +139,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, short val)
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, static_cast<int>(val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -152,9 +152,9 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, int val)
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, val);
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
-                 error_code(),
-                 error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
+                error_code(),
+                error_message());
         return ret;
     }
 
@@ -167,9 +167,9 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, long val)
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, static_cast<int>(val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
-                 error_code(),
-                 error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
+                error_code(),
+                error_message());
         return ret;
     }
 
@@ -182,9 +182,9 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, long long val)
     int ret = ::sqlite3_bind_int64(sqlite3_stmt_handler_, bind_index, val);
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
-                 error_code(),
-                 error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
+                error_code(),
+                error_message());
         return ret;
     }
 
@@ -197,9 +197,9 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned char val)
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, static_cast<int>(val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
-                 error_code(),
-                 error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]",
+                error_code(),
+                error_message());
         return ret;
     }
 
@@ -212,7 +212,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned short val)
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, static_cast<int>(val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -225,7 +225,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned int val)
     int ret = sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, val);
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -239,7 +239,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned long val)
     int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_, bind_index, static_cast<int>(val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -252,7 +252,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned long long val)
     int ret = ::sqlite3_bind_int64(sqlite3_stmt_handler_, bind_index, val);
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -265,7 +265,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, float val)
     int ret = ::sqlite3_bind_double(sqlite3_stmt_handler_, bind_index, static_cast<double>(val));
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -281,7 +281,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, double val)
                                     val);
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
     return 0;
@@ -316,7 +316,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, const  std::string &val)
 
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 
@@ -334,7 +334,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, const ZCE_SQLite_STMTHdl::BINARY &v
 
     if ( SQLITE_OK  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
+        ZCE_LOG(RS_ERROR, "[zcelib] bind error :[%d][%s]", error_code(), error_message());
         return ret;
     }
 

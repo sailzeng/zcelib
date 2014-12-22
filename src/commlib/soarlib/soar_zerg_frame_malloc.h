@@ -141,7 +141,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::initialize(size_t init_num,
 {
     ZCE_ASSERT(max_frame_len > 2048 && init_num > 8);
 
-    ZLOG_INFO("[framework] AppFrame_Mallocor_Mgr::AppFrame_Mallocor_Mgr init num=%u,max_frame_len=%u.",
+    ZCE_LOG(RS_INFO,"[framework] AppFrame_Mallocor_Mgr::AppFrame_Mallocor_Mgr init num=%u,max_frame_len=%u.",
               init_num,
               max_frame_len);
 
@@ -202,7 +202,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 {
 
     //
-    ZLOG_INFO("[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
+    ZCE_LOG(RS_INFO,"[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
 
     //最后应该size == capacity , freesize==0
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
@@ -211,7 +211,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
         if (frame_pool_[i].freesize() == 0)
         {
             //
-            ZLOG_INFO("[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Ok.",
+            ZCE_LOG(RS_INFO,"[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Ok.",
                       i,
                       size_appframe_[i],
                       frame_pool_[i].freesize(),
@@ -222,7 +222,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
         else
         {
             //
-            ZLOG_MSG(RS_ERROR,"[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
+            ZCE_LOG(RS_ERROR,"[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
                        i,
                        size_appframe_[i],
                        frame_pool_[i].freesize(),

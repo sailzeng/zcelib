@@ -24,8 +24,8 @@ Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
 //ÔËÐÐº¯Êý
 int Soar_SvrdApp_ZergBus::on_run()
 {
-    ZLOG_INFO("======================================================================================================");
-    ZLOG_INFO("[framework] app %s class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
               get_app_basename(),
               typeid(*this).name());
 
@@ -97,7 +97,7 @@ int Soar_SvrdApp_ZergBus::on_run()
         reactor->handle_events(&select_interval, &size_io_event);
     }
 
-    ZLOG_INFO("[framework] app %s class [%s] run_instance end.",
+    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance end.",
               get_app_basename(),
               typeid(*this).name());
     return 0;

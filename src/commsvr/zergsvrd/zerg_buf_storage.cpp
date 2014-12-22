@@ -128,12 +128,12 @@ void ZBuffer_Storage::free_byte_buffer(Zerg_Buffer *ptrbuf)
 void ZBuffer_Storage::extend_bufferlist(size_t szlist)
 {
     //打印占用的内存数量
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
-               szlist,
-               size_of_bufferalloc_,
-               szlist * Zerg_Buffer::CAPACITY_OF_BUFFER,
-               size_of_bufferalloc_ * Zerg_Buffer::CAPACITY_OF_BUFFER
-              );
+    ZCE_LOG(RS_INFO, "[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
+            szlist,
+            size_of_bufferalloc_,
+            szlist * Zerg_Buffer::CAPACITY_OF_BUFFER,
+            size_of_bufferalloc_ * Zerg_Buffer::CAPACITY_OF_BUFFER
+           );
     buffer_deque_.resize(size_of_bufferalloc_ + szlist);
 
     for (size_t i = 0; i < szlist; ++i)

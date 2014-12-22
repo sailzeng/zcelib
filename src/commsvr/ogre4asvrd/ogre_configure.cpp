@@ -63,9 +63,9 @@ int TCP_PEER_MODULE_INFO::open_module()
 
     if (ZCE_SHLIB_INVALID_HANDLE == recv_mod_handler_)
     {
-        ZLOG_MSG(RS_ERROR,"Open Module [%s] fail. recv_mod_handler =%u .\n",
-                   peer_info_.module_file_.c_str(),
-                   recv_mod_handler_);
+        ZCE_LOG(RS_ERROR, "Open Module [%s] fail. recv_mod_handler =%u .\n",
+                peer_info_.module_file_.c_str(),
+                recv_mod_handler_);
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
 
@@ -74,10 +74,10 @@ int TCP_PEER_MODULE_INFO::open_module()
 
     if (NULL == fp_judge_whole_frame_)
     {
-        ZLOG_MSG(RS_ERROR,"Open Module [%s|%s] fail. recv_mod_handler =%u .\n",
-                   peer_info_.module_file_.c_str(),
-                   STR_JUDGE_RECV_WHOLEFRAME,
-                   recv_mod_handler_);
+        ZCE_LOG(RS_ERROR, "Open Module [%s|%s] fail. recv_mod_handler =%u .\n",
+                peer_info_.module_file_.c_str(),
+                STR_JUDGE_RECV_WHOLEFRAME,
+                recv_mod_handler_);
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
 
@@ -125,8 +125,8 @@ int Ogre_Server_Config::read_cfgfile()
 
     ZCE_Conf_PropertyTree pt_tree;
     ret = ZCE_INI_Implement::read(ogre_cfg_file_.c_str(), &pt_tree);
-    ZCE_LOGMSG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
-               ogre_cfg_file_.c_str(), ret);
+    ZCE_LOG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
+            ogre_cfg_file_.c_str(), ret);
     if (ret != 0)
     {
         return ret;

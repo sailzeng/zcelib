@@ -71,7 +71,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
                                                     false);
     if (ret != 0)
     {
-        ZCE_LOGMSG(RS_ERROR, "zce_Server_Status init fail. ret=%d", ret);
+        ZCE_LOG(RS_ERROR, "zce_Server_Status init fail. ret=%d", ret);
         return ret;
     }
 
@@ -90,7 +90,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
 
 
     //
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
+    ZCE_LOG(RS_INFO, "[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
 
     //-----------------------------------------------------------------------------------------------
     //初始化静态数据
@@ -113,7 +113,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
         return ret;
     }
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] init_instance Succ.Have Fun.!!!");
+    ZCE_LOG(RS_INFO, "[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
 
     return 0;
@@ -121,7 +121,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
 
 int Zerg_Service_App::on_exit()
 {
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
+    ZCE_LOG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
 
     //释放所有的静态资源，关闭所有的句柄
     TCP_Svc_Handler::uninit_all_staticdata();
@@ -167,7 +167,7 @@ int Zerg_Service_App::on_run()
 
     size_t num_io_event = 0, num_send_frame = 0, want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Zerg_Service_App::run_instance start.");
+    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_Service_App::run_instance start.");
 
     //microsecond
     ZCE_Reactor *preactor = ZCE_Reactor::instance();
@@ -233,7 +233,7 @@ int Zerg_Service_App::on_run()
         }
     }
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Zerg_Service_App::run_instance end.");
+    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_Service_App::run_instance end.");
 
     return 0;
 }

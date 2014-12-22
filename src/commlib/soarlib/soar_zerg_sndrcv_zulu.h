@@ -148,7 +148,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
             }
             else
             {
-                ZLOG_MSG(RS_ERROR,"[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.", cmd, tibetan_recv_appframe_->frame_command_);
+                ZCE_LOG(RS_ERROR,"[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.", cmd, tibetan_recv_appframe_->frame_command_);
                 ret =  SOAR_RET::ERROR_ZULU_RECEIVE_OTHERS_COMMAND;
                 break;
             }

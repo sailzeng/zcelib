@@ -61,9 +61,9 @@ void ZCE_Async_FSM::on_timeout(const ZCE_Time_Value &now_time,
                                bool &continue_run)
 {
     char time_string[64 + 1];
-    ZCE_LOGMSG(RS_INFO, "Time out event ,fun[%s] ,now time[%s].",
-               __ZCE_FUNC__,
-               now_time.timestamp(time_string, 64));
+    ZCE_LOG(RS_INFO, "Time out event ,fun[%s] ,now time[%s].",
+            __ZCE_FUNC__,
+            now_time.timestamp(time_string, 64));
     continue_run = false;
     return;
 }

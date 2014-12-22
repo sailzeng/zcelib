@@ -207,7 +207,7 @@ int Transaction_Base::timer_timeout(const ZCE_Time_Value & /*time*/, const void 
 {
     int ret = 0;
 #if defined DEBUG || defined _DEBUG
-    ZCE_LOGMSG(trace_log_pri_, "[framework] %s::Time Out touch off,Transprocess:%u,Transphase:%d.", typeid(*this).name(),
+    ZCE_LOG(trace_log_pri_, "[framework] %s::Time Out touch off,Transprocess:%u,Transphase:%d.", typeid(*this).name(),
                transaction_id_,
                trans_phase_);
     output_trans_info("[Timeout]:");
@@ -309,7 +309,7 @@ int Transaction_Base::process_trans_event()
             trans_timeout_id_ = -1;
         }
 
-        ZLOG_MSG(RS_ERROR,"%s::on_timeout start,transaction id:%u,requst trans id:%u,trans phase:%d.",
+        ZCE_LOG(RS_ERROR,"%s::on_timeout start,transaction id:%u,requst trans id:%u,trans phase:%d.",
                    typeid(*this).name(),
                    transaction_id_,
                    req_trans_id_,
@@ -344,12 +344,12 @@ int Transaction_Base::process_trans_event()
             trans_timeout_id_ = -1;
         }
 
-        ZLOG_MSG(RS_ERROR,"%s::on_exception start,transaction id:%u,requst trans id:%u,trans phase:%d.", typeid(*this).name(),
+        ZCE_LOG(RS_ERROR,"%s::on_exception start,transaction id:%u,requst trans id:%u,trans phase:%d.", typeid(*this).name(),
                    transaction_id_,
                    req_trans_id_,
                    trans_phase_);
         txprocess = on_exception();
-        ZLOG_MSG(RS_ERROR,"%s::on_exception end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
+        ZCE_LOG(RS_ERROR,"%s::on_exception end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
                    typeid(*this).name(),
                    transaction_id_,
                    req_trans_id_,
@@ -527,7 +527,7 @@ Modify Record   :
 int Transaction_Base::close_request_service() const
 {
 
-    ZLOG_INFO("[framework] close_request_service() at trans_command_=%u,trans_phase_=%d,qq_uin_=%u.",
+    ZCE_LOG(RS_INFO,"[framework] close_request_service() at trans_command_=%u,trans_phase_=%d,qq_uin_=%u.",
               trans_command_,
               trans_phase_,
               req_qq_uin_);
@@ -563,7 +563,7 @@ int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame)
     //
     if (wait_cmd_ != CMD_INVALID_CMD && recv_frame->frame_command_ != wait_cmd_)
     {
-        ZLOG_MSG(RS_ERROR,"[framework] check_receive_frame error,Transaction need Cmd error!Wait command[%u],Recieve command[%u] Transaction ID:[%u].",
+        ZCE_LOG(RS_ERROR,"[framework] check_receive_frame error,Transaction need Cmd error!Wait command[%u],Recieve command[%u] Transaction ID:[%u].",
                    wait_cmd_,
                    recv_frame->frame_command_,
                    recv_frame->transaction_id_

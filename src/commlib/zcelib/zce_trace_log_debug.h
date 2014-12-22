@@ -35,11 +35,11 @@
 //输出MASK级别,小于这个级别的日志信息不予输出
 #define ZLOG_OUTLEVEL_MASK    ZCE_Trace_LogMsg::set_log_priority
 
-//ZCE_LOGMSG为什么要你用双括号，GCC2.9惹得祸,土死了，但是我无能为力,
+//ZCE_LOG为什么要你用双括号，GCC2.9惹得祸,土死了，但是我无能为力,
 //我不打算兼容那么多版本，我懒
 
 //使用调试级别输出日志
-#define ZCE_LOGMSG            ZCE_Trace_LogMsg::debug_output
+#define ZCE_LOG               ZCE_Trace_LogMsg::debug_output
 
 #if _MSC_VER <= 1300
 
@@ -56,7 +56,7 @@
 #define ZLOG_TRACE(...)       ZCE_Trace_LogMsg::debug_output(RS_TRACE,__VA_ARGS__)
 #define ZLOG_DEBUG(...)       ZCE_Trace_LogMsg::debug_output(RS_DEBUG,__VA_ARGS__)
 #define ZLOG_INFO(...)        ZCE_Trace_LogMsg::debug_output(RS_INFO,__VA_ARGS__)
-#define ZLOG_MSG(RS_ERROR,...)       ZCE_Trace_LogMsg::debug_output(RS_ERROR,__VA_ARGS__)
+#define ZLOG_ERROR(...)       ZCE_Trace_LogMsg::debug_output(RS_ERROR,__VA_ARGS__)
 #define ZLOG_ALERT(...)       ZCE_Trace_LogMsg::debug_output(RS_ALERT,__VA_ARGS__)
 #define ZLOG_FATAL(...)       ZCE_Trace_LogMsg::debug_output(RS_FATAL,__VA_ARGS__)
 
@@ -91,7 +91,7 @@ public:
         log_priority_(log_priority),
         ret_ptr_(NULL)
     {
-        ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ", func_name_, codefile_name_, code_line_);
+        ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ", func_name_, codefile_name_, code_line_);
     }
 
     //利用构造函数显示进入函数的输出
@@ -106,11 +106,11 @@ public:
         log_priority_(log_priority),
         ret_ptr_(ret_ptr)
     {
-        ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].",
-                   func_name_,
-                   codefile_name_,
-                   code_line_,
-                   *ret_ptr_);
+        ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].",
+                func_name_,
+                codefile_name_,
+                code_line_,
+                *ret_ptr_);
     }
 
     //利用析构函数显示进入函数的输出
@@ -120,20 +120,20 @@ public:
         if (ret_ptr_)
         {
             //这个地方输出的成功失败文字只有相对参考意义。
-            ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
-                       "ret = [%d],return %s.",
-                       func_name_,
-                       codefile_name_,
-                       code_line_,
-                       *ret_ptr_,
-                       (*ret_ptr_ == 0) ? "success" : "fail");
+            ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
+                    "ret = [%d],return %s.",
+                    func_name_,
+                    codefile_name_,
+                    code_line_,
+                    *ret_ptr_,
+                    (*ret_ptr_ == 0) ? "success" : "fail");
         }
         else
         {
-            ZCE_LOGMSG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .",
-                       func_name_,
-                       codefile_name_,
-                       code_line_);
+            ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .",
+                    func_name_,
+                    codefile_name_,
+                    code_line_);
         }
     }
 
@@ -192,16 +192,16 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 ///用于程序运行到的地方。
 #ifndef ZCE_TRACE_FILELINE
-#define ZCE_TRACE_FILELINE(x)        ZCE_LOGMSG(x,"[FILELINE TRACE]goto File %s|%d,function:%s.",__FILE__,__LINE__,__ZCE_FUNC__)
+#define ZCE_TRACE_FILELINE(x)        ZCE_LOG(x,"[FILELINE TRACE]goto File %s|%d,function:%s.",__FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 
 ///
 #ifndef ZCE_TRACE_FAIL_RETURN
-#define ZCE_TRACE_FAIL_RETURN(x,y,z) ZCE_LOGMSG(x,"[FAIL RETRUN]Fail in file [%s|%d],function:%s,fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,y,z,ZCE_LIB::last_error())
+#define ZCE_TRACE_FAIL_RETURN(x,y,z) ZCE_LOG(x,"[FAIL RETRUN]Fail in file [%s|%d],function:%s,fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,y,z,ZCE_LIB::last_error())
 #endif
 
 #ifndef ZCE_RECORD_FAIL_API
-#define ZCE_RECORD_FAIL_API(x,y)     ZCE_LOGMSG(x,"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,y,ZCE_LIB::last_error())
+#define ZCE_RECORD_FAIL_API(x,y)     ZCE_LOG(x,"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,y,ZCE_LIB::last_error())
 #endif
 
 
@@ -214,7 +214,7 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 #if defined DEBUG || defined _DEBUG
 
 #ifndef ZCE_LOGMSG_DBG
-#define ZCE_LOGMSG_DBG        ZCE_LOGMSG
+#define ZCE_LOGMSG_DBG        ZCE_LOG
 #endif
 
 #ifndef ZCE_ASSERT_DGB

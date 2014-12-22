@@ -49,9 +49,9 @@ int ZCE_Socket_Base::open(int type,
     if (ZCE_INVALID_SOCKET == socket_handle_ )
     {
         int last_err = ZCE_LIB::last_error();
-        ZLOG_MSG(RS_ERROR, "ZCE_LIB::socket return fail last error %d|%s.",
-                 last_err,
-                 strerror(last_err));
+        ZCE_LOG(RS_ERROR, "ZCE_LIB::socket return fail last error %d|%s.",
+                last_err,
+                strerror(last_err));
         return -1;
     }
 

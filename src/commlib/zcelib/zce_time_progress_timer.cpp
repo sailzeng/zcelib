@@ -106,7 +106,7 @@ ZCE_HR_Progress_Timer::ZCE_HR_Progress_Timer()
     int ret = ::clock_getres(CLOCK_MONOTONIC, &precision_);
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "::clock_getres return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_getres return fail. error is %d.", ZCE_LIB::last_error());
     }
 
 #endif
@@ -132,7 +132,7 @@ void ZCE_HR_Progress_Timer::restart()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -165,7 +165,7 @@ void ZCE_HR_Progress_Timer::addup_start()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -191,7 +191,7 @@ void ZCE_HR_Progress_Timer::end()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &end_time_);
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
     }
 #endif
 }
@@ -302,7 +302,7 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
         }
         else
         {
-            ZLOG_MSG(RS_ERROR, "ZCE_LIB::get_system_info return fail. cpu use default 1G.");
+            ZCE_LOG(RS_ERROR, "ZCE_LIB::get_system_info return fail. cpu use default 1G.");
             //用1G作为作为默认值
             cpu_hz_ = DEFAULT_CPU_HZ;
         }

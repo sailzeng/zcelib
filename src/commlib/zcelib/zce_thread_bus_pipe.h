@@ -113,12 +113,12 @@ public:
         //管道创建自己也会检查是否能恢复
         if ( NULL == bus_pipe_[THR_RECV_PIPE_ID]  || NULL == bus_pipe_[THR_SEND_PIPE_ID])
         {
-            ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Thread_Bus_Pipe::initialize pipe fail recv[%p]size[%u],send[%p],size[%u].",
-                     bus_pipe_[THR_RECV_PIPE_ID],
-                     size_pipe_[THR_RECV_PIPE_ID],
-                     bus_pipe_[THR_SEND_PIPE_ID],
-                     size_pipe_[THR_SEND_PIPE_ID]
-                    );
+            ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Thread_Bus_Pipe::initialize pipe fail recv[%p]size[%u],send[%p],size[%u].",
+                    bus_pipe_[THR_RECV_PIPE_ID],
+                    size_pipe_[THR_RECV_PIPE_ID],
+                    bus_pipe_[THR_SEND_PIPE_ID],
+                    size_pipe_[THR_SEND_PIPE_ID]
+                   );
             return -1;
         }
 

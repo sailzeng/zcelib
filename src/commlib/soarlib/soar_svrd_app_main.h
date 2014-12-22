@@ -19,14 +19,14 @@ int soar_svrd_main(int argc, const char *argv[])
 
 
     //开始日志是无法输出，
-    //ZLOG_INFO("[framework] App init_instance start");
+    //ZCE_LOG(RS_INFO,"[framework] App init_instance start");
 
     //初始化
     int ret = application_class::instance()->on_start(argc, argv);
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"[framework] App name [%s] class [%s] init_instance fail:%d|%s",
+        ZCE_LOG(RS_ERROR,"[framework] App name [%s] class [%s] init_instance fail:%d|%s",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name(),
                    ret,
@@ -34,12 +34,12 @@ int soar_svrd_main(int argc, const char *argv[])
         return ret;
     }
 
-    ZLOG_INFO("[framework] App name [%s] class [%s] init_instance sucess.",
+    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] init_instance sucess.",
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
 
 
-    ZLOG_INFO("[framework] App name [%s] class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] run_instance start.",
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
     //运行
@@ -48,7 +48,7 @@ int soar_svrd_main(int argc, const char *argv[])
     //标示运行失败
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
+        ZCE_LOG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name(),
                    ret,
@@ -58,18 +58,18 @@ int soar_svrd_main(int argc, const char *argv[])
     }
     else
     {
-        ZLOG_MSG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance sucess.",
+        ZCE_LOG(RS_ERROR,"[framework] App name [%s] class [%s] run_instance sucess.",
                    application_class::instance()->get_app_runname(),
                    typeid(*application_class::instance()).name());
     }
 
-    ZLOG_INFO("[framework] App name [%s] class [%s] exit_instance start.",
+    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] exit_instance start.",
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
     //退出处理
     application_class::instance()->on_exit();
 
-    ZLOG_INFO("[framework] App name [%s] class [%s] exit_instance start.",
+    ZCE_LOG(RS_INFO,"[framework] App name [%s] class [%s] exit_instance start.",
               application_class::instance()->get_app_runname(),
               typeid(*application_class::instance()).name());
 

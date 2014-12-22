@@ -368,7 +368,7 @@ public:
 
         if (ret != 0)
         {
-            ZLOG_MSG(RS_ERROR,"[framework] Wait %d seconds to enqueue_sendqueue but fail. \
+            ZCE_LOG(RS_ERROR,"[framework] Wait %d seconds to enqueue_sendqueue but fail. \
                        Send queue is full or task process too slow to process request.",
                        enqueue_timeout_.sec());
             return ret;
@@ -412,7 +412,7 @@ public:
         //返回值小于0表示失败
         if (ret < 0)
         {
-            ZLOG_MSG(RS_ERROR,"[framework] Post message to send queue fail.ret =%d, uin=%u cmd=%u",
+            ZCE_LOG(RS_ERROR,"[framework] Post message to send queue fail.ret =%d, uin=%u cmd=%u",
                        ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
 
             // 加个监控
@@ -452,7 +452,7 @@ public:
         //返回值小于0表示失败
         if (ret < 0)
         {
-            ZLOG_MSG(RS_ERROR,"[framework] Post message to recv queue fail.ret =%d.", ret);
+            ZCE_LOG(RS_ERROR,"[framework] Post message to recv queue fail.ret =%d.", ret);
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_ENQUEUE_FAIL;
         }
 

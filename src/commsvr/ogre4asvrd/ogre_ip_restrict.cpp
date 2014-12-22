@@ -74,7 +74,7 @@ int Ogre_IPRestrict_Mgr::check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress)
 
         if ( iter == allow_ip_set_.end() )
         {
-            ZLOG_INFO( "A NO Allowed IP|Port : %s|%u Connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
+            ZCE_LOG(RS_INFO, "A NO Allowed IP|Port : %s|%u Connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
             return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }
     }
@@ -86,7 +86,7 @@ int Ogre_IPRestrict_Mgr::check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress)
 
         if ( iter != reject_ip_set_.end() )
         {
-            ZLOG_INFO( "Reject IP|Port : %s|%u connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
+            ZCE_LOG(RS_INFO, "Reject IP|Port : %s|%u connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
             return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }
     }

@@ -65,8 +65,8 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
 
     if (!msg->IsInitialized())
     {
-        ZCE_LOGMSG(RS_ERROR, "class %s protobuf encode fail, IsInitialized return false.",
-                   typeid(msg).name());
+        ZCE_LOG(RS_ERROR, "class %s protobuf encode fail, IsInitialized return false.",
+                typeid(msg).name());
         return -1;
     }
 
@@ -76,22 +76,22 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
     int protobuf_len = msg->ByteSize();
     if (protobuf_len > MAX_LEN_OF_AI_IIJIMA_DATA)
     {
-        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
-                   " MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
-                   index_1,
-                   index_2,
-                   typeid(msg).name(),
-                   protobuf_len);
+        ZCE_LOG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, ByteSize return %d >"
+                " MAX_LEN_OF_AI_IIJIMA_DATA %d.\n",
+                index_1,
+                index_2,
+                typeid(msg).name(),
+                protobuf_len);
         return -1;
     }
 
     bool bret = msg->SerializeToArray(ai_iijima_data_, MAX_LEN_OF_AI_IIJIMA_DATA);
     if (!bret)
     {
-        ZCE_LOGMSG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.",
-                   index_1,
-                   index_2,
-                   typeid(msg).name());
+        ZCE_LOG(RS_ERROR, "Config [%d|%d] class %s protobuf encode fail, SerializeToArray return false.",
+                index_1,
+                index_2,
+                typeid(msg).name());
         return -1;
     }
     ai_data_length_ = protobuf_len;
@@ -108,7 +108,7 @@ int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int *index_1,
 
     if (false == bret)
     {
-        ZCE_LOGMSG(RS_ERROR, "Class %s protobuf decode fail,ParseFromArray return false.", typeid(msg).name());
+        ZCE_LOG(RS_ERROR, "Class %s protobuf decode fail,ParseFromArray return false.", typeid(msg).name());
         return -1;
     }
     *index_1 = index_1_;
@@ -362,12 +362,12 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
     }
 
     ZCE_SQLite_STMTHdl::BINARY binary_data((void *)conf_data->ai_iijima_data_,
-        conf_data->ai_data_length_);
+                                           conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
     stmt_handler << binary_data;
     stmt_handler << conf_data->last_mod_time_;
-    
+
     bool hash_result = false;
     ret = stmt_handler.execute_stmt_sql(hash_result);
     if (ret != 0)
@@ -407,7 +407,7 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
     for (size_t i = 0; i < ary_size; ++i)
     {
         ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-            (*ary_ai_iijma)[i].ai_data_length_);
+                                               (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
@@ -460,7 +460,7 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
     }
 
     ZCE_SQLite_STMTHdl::BINARY binary_data((void *)conf_data->ai_iijima_data_,
-        conf_data->ai_data_length_);
+                                           conf_data->ai_data_length_);
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -564,14 +564,14 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
         int blob_len = stmt_handler.cur_column_bytes();
         if (blob_len > AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
         {
-            ZCE_LOGMSG(RS_ERROR, "Error current column bytes length [%u] > "
-                       "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u]." ,
-                       blob_len, AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
+            ZCE_LOG(RS_ERROR, "Error current column bytes length [%u] > "
+                    "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u]." ,
+                    blob_len, AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
             return -1;
         }
 
         ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-            (*ary_ai_iijma)[i].ai_data_length_);
+                                               (*ary_ai_iijma)[i].ai_data_length_);
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;

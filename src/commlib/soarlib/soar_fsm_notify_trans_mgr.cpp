@@ -137,7 +137,7 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
 
         if (ret != 0)
         {
-            ZLOG_ALERT("[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
+            ZCE_LOG(RS_ALERT,"[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
                        static_cast<unsigned int>(i),
                        static_cast<unsigned int>(task_stack_size));
             return -1;

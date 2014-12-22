@@ -183,13 +183,13 @@ inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const ZCE_LIB::dequec
     //
     if (!bret)
     {
-        ZLOG_ALERT("[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
-                   "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
-                   pipe_id,
-                   node->size_of_node_,
-                   bus_pipe_pointer_[pipe_id]->free_size(),
-                   bus_pipe_pointer_[pipe_id]->capacity()
-                  );
+        ZCE_LOG(RS_ALERT, "[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
+                "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
+                pipe_id,
+                node->size_of_node_,
+                bus_pipe_pointer_[pipe_id]->free_size(),
+                bus_pipe_pointer_[pipe_id]->capacity()
+               );
         return -1;
     }
 

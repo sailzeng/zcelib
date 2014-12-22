@@ -102,7 +102,7 @@ void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
 
         if (now_sec - last_check_ > FIVE_MINUTE_SECONDS)
         {
-            ZLOG_MSG(RS_ERROR,"check monitor more than five minutes:real_second=%d %d",
+            ZCE_LOG(RS_ERROR,"check monitor more than five minutes:real_second=%d %d",
                        now_sec - last_check_, now_sec % FIVE_MINUTE_SECONDS);
         }
 
@@ -125,7 +125,7 @@ void Server_Timer_Base::report_status()
 
         if (ret != 0)
         {
-            ZLOG_MSG(RS_ERROR,"watch dog get sys/app status failed, ret = %d", ret);
+            ZCE_LOG(RS_ERROR,"watch dog get sys/app status failed, ret = %d", ret);
         }
         else
         {

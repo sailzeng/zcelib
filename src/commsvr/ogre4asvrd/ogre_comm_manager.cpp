@@ -30,18 +30,18 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
         //如果使用保险打开(TRUE)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
-            ZLOG_MSG(RS_ERROR, "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
-                        inetadd.get_host_addr(),
-                        inetadd.get_port_number());
+            ZCE_LOG(RS_ERROR, "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
+                    inetadd.get_host_addr(),
+                    inetadd.get_port_number());
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
         else
         {
             //给出警告
-            ZLOG_INFO( "Warn!Warn! Unsafe port [%s|%u] listen.Please notice! \n",
-                       inetadd.get_host_addr(),
-                       inetadd.get_port_number());
+            ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s|%u] listen.Please notice! \n",
+                    inetadd.get_host_addr(),
+                    inetadd.get_port_number());
         }
     }
     //
@@ -102,8 +102,8 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //如果FRAME的长度
         if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
         {
-            ZLOG_ALERT("Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
-                       send_frame->ogre_frame_len_);
+            ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
+                    send_frame->ogre_frame_len_);
             DEBUGDUMP_OGRE_HEAD(send_frame, "Ogre_Comm_Manger::get_all_senddata_to_write", RS_ALERT);
             ZCE_ASSERT(false);
             return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
@@ -132,7 +132,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //你都不填写，我如何发送？
         else
         {
-            ZLOG_MSG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
+            ZCE_LOG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
         }
     }

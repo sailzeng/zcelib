@@ -120,11 +120,11 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
 
     if (0  != ret)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
-                 bus_mmap_name_,
-                 ret,
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()) );
+        ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
+                bus_mmap_name_,
+                ret,
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()) );
         return -1;
     }
 
@@ -138,11 +138,11 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         if (pipe_head->size_of_sizet_ != bus_head_.size_of_sizet_
             || pipe_head->number_of_pipe_ != bus_head_.number_of_pipe_)
         {
-            ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
-                     pipe_head->size_of_sizet_,
-                     pipe_head->number_of_pipe_,
-                     bus_head_.size_of_sizet_,
-                     bus_head_.number_of_pipe_);
+            ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
+                    pipe_head->size_of_sizet_,
+                    pipe_head->number_of_pipe_,
+                    bus_head_.size_of_sizet_,
+                    bus_head_.number_of_pipe_);
             return -1;
         }
 
@@ -151,12 +151,12 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
             if (pipe_head->size_of_pipe_[i] != bus_head_.size_of_pipe_[i]
                 || pipe_head->size_of_room_[i] != bus_head_.size_of_room_[i])
             {
-                ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD <%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
-                         i,
-                         pipe_head->size_of_pipe_[i],
-                         pipe_head->size_of_room_[i],
-                         bus_head_.size_of_pipe_[i],
-                         bus_head_.size_of_room_[i]);
+                ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe fail. ZCE_BUS_PIPE_HEAD <%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
+                        i,
+                        pipe_head->size_of_pipe_[i],
+                        pipe_head->size_of_room_[i],
+                        bus_head_.size_of_pipe_[i],
+                        bus_head_.size_of_room_[i]);
                 return -1;
             }
         }
@@ -205,11 +205,11 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
 
     if (ret != 0)
     {
-        ZLOG_MSG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
-                 bus_mmap_name_,
-                 ret,
-                 ZCE_LIB::last_error(),
-                 strerror(ZCE_LIB::last_error()) );
+        ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
+                bus_mmap_name_,
+                ret,
+                ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()) );
         return -1;
     }
 
@@ -250,10 +250,10 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
         //管道创建自己也会检查是否能恢复
         if (bus_pipe_pointer_[i] == NULL)
         {
-            ZLOG_MSG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe[%u] size[%u] room[%u] fail.",
-                     i,
-                     bus_head_.size_of_pipe_[i],
-                     bus_head_.size_of_room_[i]);
+            ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Bus_MMAPPipe::initialize pipe[%u] size[%u] room[%u] fail.",
+                    i,
+                    bus_head_.size_of_pipe_[i],
+                    bus_head_.size_of_room_[i]);
             return -1;
         }
 

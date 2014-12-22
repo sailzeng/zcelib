@@ -58,7 +58,7 @@ public:
 
 ///用于读取配置失败记录发送失败的地点的地方，
 #ifndef SOAR_CFG_READ_FAIL
-#define SOAR_CFG_READ_FAIL(x)        ZCE_LOGMSG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
+#define SOAR_CFG_READ_FAIL(x)        ZCE_LOG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
                                                 __FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 

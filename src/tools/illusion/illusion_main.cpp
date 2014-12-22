@@ -105,7 +105,7 @@ int Illusion_Application::on_start(int argc, const char *argv[])
         return 0;
     }
 
-    BOOL bret = Illusion_Read_Config::instance()->initialize(config_path_);
+    bool bret = Illusion_Read_Config::instance()->initialize(true,config_path_);
     if (!bret)
     {
         return -1;

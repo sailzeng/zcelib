@@ -29,9 +29,9 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
 
     if (iter == services_table_.end())
     {
-        ZCE_LOGMSG(RS_ERROR, "[soarlib]Can't find svc id [%u|%u] info.",
-                   svc_id.services_type_,
-                   svc_id.services_id_);
+        ZCE_LOG(RS_ERROR, "[soarlib]Can't find svc id [%u|%u] info.",
+                svc_id.services_type_,
+                svc_id.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
 
@@ -52,9 +52,9 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
 
     if (iter == services_table_.end())
     {
-        ZCE_LOGMSG(RS_ERROR, "[soarlib]Can't find svc id [%u|%u] info.",
-                   svc_id.services_type_,
-                   svc_id.services_id_);
+        ZCE_LOG(RS_ERROR, "[soarlib]Can't find svc id [%u|%u] info.",
+                svc_id.services_type_,
+                svc_id.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
     svc_info = *iter;
@@ -85,8 +85,8 @@ int SERVICES_INFO_TABLE::add_svcinfo(const SERVICES_INFO &svc_info)
 
     if (insert_result.second == false)
     {
-        ZCE_LOGMSG(RS_ERROR, "add svcinfo fail. may be have repeat svc info[%hu.%u].",
-                   svc_info.svc_id_.services_type_, svc_info.svc_id_.services_id_);
+        ZCE_LOG(RS_ERROR, "add svcinfo fail. may be have repeat svc info[%hu.%u].",
+                svc_info.svc_id_.services_type_, svc_info.svc_id_.services_id_);
         return SOAR_RET::ERROR_SERVICES_INFO_CONFIG;
     }
 
@@ -124,11 +124,11 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
 
 
     //´òÓ¡Ò»ÏÂ
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s|%u].",
-               svc_id.services_type_,
-               svc_id.services_id_,
-               svc_info.ip_address_.get_host_addr(),
-               svc_info.ip_address_.get_port_number());
+    ZCE_LOG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s|%u].",
+            svc_id.services_type_,
+            svc_id.services_id_,
+            svc_info.ip_address_.get_host_addr(),
+            svc_info.ip_address_.get_port_number());
 
     return ret;
 }
@@ -149,8 +149,8 @@ int Zerg_Server_Config::read_cfgfile()
 
     ZCE_Conf_PropertyTree pt_tree;
     ret = ZCE_INI_Implement::read(zerg_cfg_file_.c_str(), &pt_tree);
-    ZCE_LOGMSG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
-               zerg_cfg_file_.c_str(), ret);
+    ZCE_LOG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
+            zerg_cfg_file_.c_str(), ret);
     if (ret != 0)
     {
         return ret;
@@ -171,9 +171,9 @@ int Zerg_Server_Config::read_cfgfile()
 
     pt_tree.clear();
     ret = ZCE_INI_Implement::read(svc_table_file_.c_str(), &pt_tree);
-    ZCE_LOGMSG(RS_INFO, "zergsvr read svcid table file [%s] ret [%d].",
-               svc_table_file_.c_str(),
-               ret);
+    ZCE_LOG(RS_INFO, "zergsvr read svcid table file [%s] ret [%d].",
+            svc_table_file_.c_str(),
+            ret);
     if (ret != 0)
     {
         return ret;
@@ -422,16 +422,16 @@ void Zerg_Server_Config::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     Server_Config_Base::dump_cfg_info(out_lvl);
 
-    ZCE_LOGMSG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
+    ZCE_LOG(out_lvl, "Application zerg config file :%s", zerg_cfg_file_.c_str());
 
-    ZCE_LOGMSG(out_lvl, "[ZERG]Bind svcid number :%u", zerg_cfg_data_.bind_svcid_num_);
+    ZCE_LOG(out_lvl, "[ZERG]Bind svcid number :%u", zerg_cfg_data_.bind_svcid_num_);
     for (size_t i = 0; i < zerg_cfg_data_.bind_svcid_num_; ++i)
     {
-        ZCE_LOGMSG(out_lvl, "[ZERG]Bind svcid %u :%u.%u",
-                   i,
-                   zerg_cfg_data_.bind_svcid_ary_[i].services_type_,
-                   zerg_cfg_data_.bind_svcid_ary_[i].services_id_
-                  );
+        ZCE_LOG(out_lvl, "[ZERG]Bind svcid %u :%u.%u",
+                i,
+                zerg_cfg_data_.bind_svcid_ary_[i].services_type_,
+                zerg_cfg_data_.bind_svcid_ary_[i].services_id_
+               );
     }
 }
 

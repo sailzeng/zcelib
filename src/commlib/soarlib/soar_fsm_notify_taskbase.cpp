@@ -56,7 +56,7 @@ void NotifyTrans_TaskBase::stop_task_run()
 
 int NotifyTrans_TaskBase::svc (void)
 {
-    ZLOG_INFO("[framework] Task stop start run. thread id = %u", ZCE_LIB::pthread_self());
+    ZCE_LOG(RS_INFO,"[framework] Task stop start run. thread id = %u", ZCE_LIB::pthread_self());
 
     int ret = 0;
     task_run_ = true;
@@ -100,7 +100,7 @@ int NotifyTrans_TaskBase::svc (void)
 
             if (ret != 0)
             {
-                ZLOG_MSG(RS_ERROR,"[framework] taskprocess_appframe ret =%u", ret);
+                ZCE_LOG(RS_ERROR,"[framework] taskprocess_appframe ret =%u", ret);
             }
         }
 
@@ -119,7 +119,7 @@ int NotifyTrans_TaskBase::svc (void)
         }
     }
 
-    ZLOG_INFO("[framework] Task stop run. thread id = %u", ZCE_LIB::pthread_self());
+    ZCE_LOG(RS_INFO,"[framework] Task stop run. thread id = %u", ZCE_LIB::pthread_self());
 
     return 0;
 }

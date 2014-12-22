@@ -19,13 +19,13 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     const size_t SIZE_OF_BACKTRACE_FUNC = 100;
 
 #if defined(ZCE_OS_LINUX)
-    ZCE_LOGMSG(dbg_lvl, "[BACKTRACE]This program compiled by Linux GCC. %s", dbg_info);
+    ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Linux GCC. %s", dbg_info);
     //Windows 下必须是2008或者VISTA之后的SDK才支持，
 #elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
-    ZCE_LOGMSG(dbg_lvl, "[BACKTRACE]This program compiled by Windows Visual studio .%s", dbg_info);
+    ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Windows Visual studio .%s", dbg_info);
 #else
     ZCE_UNUSED_ARG(SIZE_OF_BACKTRACE_FUNC);
-    ZCE_LOGMSG(dbg_lvl, "[BACKTRACE]back_trace_stack don't support this system.%s", dbg_info);
+    ZCE_LOG(dbg_lvl, "[BACKTRACE]back_trace_stack don't support this system.%s", dbg_info);
 #endif
 
 
@@ -43,13 +43,13 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 
     if (symbols_strings == NULL)
     {
-        ZCE_LOGMSG(dbg_lvl, "%s", "[BACKTRACE] backtrace_symbols return fail.");
+        ZCE_LOG(dbg_lvl, "%s", "[BACKTRACE] backtrace_symbols return fail.");
     }
 
     //打印所有的堆栈信息,有些时候信息无法显示符号表，建议使用
     for (int j = 0; j < sz_of_stack; j++)
     {
-        ZCE_LOGMSG(dbg_lvl, "[BACKTRACE] %u, %s.", j + 1, symbols_strings[j]);
+        ZCE_LOG(dbg_lvl, "[BACKTRACE] %u, %s.", j + 1, symbols_strings[j]);
     }
 
     //释放空间
@@ -167,7 +167,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
                 use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "%s", "\tNo debug symbol loaded for this function.");
             }
         }
-        ZCE_LOGMSG(dbg_lvl, "[BACKTRACE] %u, %s.", k + 1, line_out);
+        ZCE_LOG(dbg_lvl, "[BACKTRACE] %u, %s.", k + 1, line_out);
         ++k;
     }
 
@@ -190,7 +190,7 @@ void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
                             const unsigned char  *debug_ptr,
                             size_t data_len)
 {
-    ZCE_LOGMSG(dbg_lvl, "[DEBUG_POINTER] out pointer address[%p] [%s].", dbg_info, dbg_info);
+    ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] out pointer address[%p] [%s].", dbg_info, dbg_info);
     //60个字符换行
     const unsigned int LINE_OUT_NUM = 60;
 
@@ -211,7 +211,7 @@ void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
         {
             use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "  %s", ascii_str);
 
-            ZCE_LOGMSG(dbg_lvl, "[DEBUG_POINTER] %s.", line_out);
+            ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] %s.", line_out);
             //从头开始记录
             j = 0;
             use_len = 0;
@@ -241,7 +241,7 @@ void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
         ascii_str[j] = '\0';
         use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "  %s\n", ascii_str);
     }
-    ZCE_LOGMSG(dbg_lvl, "[DEBUG_POINTER] %s", line_out);
+    ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] %s", line_out);
 
     return;
 }

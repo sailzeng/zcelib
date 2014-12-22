@@ -39,8 +39,8 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
 
     size_t max_accept = 0, max_connect = 0, max_peer = 0;
     Ogre_TCP_Svc_Handler::get_maxpeer_num(max_accept, max_connect);
-    ZLOG_INFO( "Ogre max accept number :%u,max connect number:%u.\n",
-               max_accept, max_connect);
+    ZCE_LOG(RS_INFO, "Ogre max accept number :%u,max connect number:%u.\n",
+            max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
 
     //在配置文件没有读取出来的时候,只显示调试信息
@@ -55,11 +55,11 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
     ret = Ogre_Comm_Manger::instance()->get_config(config);
     if (ret != 0 )
     {
-        ZLOG_MSG(RS_ERROR, "Ogre_Comm_Manger::instance()->init_comm_manger() fail !\n");
+        ZCE_LOG(RS_ERROR, "Ogre_Comm_Manger::instance()->init_comm_manger() fail !\n");
         return SOAR_RET::ERR_OGRE_INIT_COMM_MANAGER;
     }
 
-    ZLOG_INFO( "%s success.Have fun, my brother!!!\n", __ZCE_FUNC__);
+    ZCE_LOG(RS_INFO, "%s success.Have fun, my brother!!!\n", __ZCE_FUNC__);
     return 0;
 }
 
@@ -76,7 +76,7 @@ int Ogre_Service_App::on_exit()
     Soar_Svrd_Appliction::on_exit();
 
     //
-    ZLOG_INFO( "%s Succ.Have Fun.!!!\n", __ZCE_FUNC__);
+    ZCE_LOG(RS_INFO, "%s Succ.Have Fun.!!!\n", __ZCE_FUNC__);
 
     return 0;
 }
@@ -92,7 +92,7 @@ int Ogre_Service_App::on_run()
     size_t numevent = 0;
     unsigned int idle = 0;
     size_t procframe = 0;
-    ZLOG_INFO( "Ogre_Service_App::Run Start.\n");
+    ZCE_LOG(RS_INFO, "Ogre_Service_App::Run Start.\n");
     //microsecond
     const int INTERVAL_MACRO_SECOND = 10000;
 

@@ -358,12 +358,12 @@ public:
 #if ALLOW_RESTORE_INCONFORMITY != 1
                 return NULL;
 #else
-                ZCE_LOGMSG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
-                           "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
-                           sz_mmap,
-                           real_num,
-                           hashhead->size_of_mmap_,
-                           hashhead->num_of_node_);
+                ZCE_LOG(RS_ALERT, "Expire hash node initialize number[%lu|%lu] and restore number [%lu|%lu] "
+                        "is different,but user defind ALLOW_RESTORE_INCONFORMITY == 1.Please notice!!! ",
+                        sz_mmap,
+                        real_num,
+                        hashhead->size_of_mmap_,
+                        hashhead->num_of_node_);
 #endif
             }
         }

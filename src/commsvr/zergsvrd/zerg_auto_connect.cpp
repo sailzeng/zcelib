@@ -42,19 +42,19 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         //如果查询不到
         if (ret != 0)
         {
-            ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't find Auto connect services ID %u.%u .Please check config file. ",
-                       svc_route.svc_id_.services_type_,
-                       svc_route.svc_id_.services_id_);
+            ZCE_LOG(RS_ERROR, "[zergsvr] Can't find Auto connect services ID %u.%u .Please check config file. ",
+                    svc_route.svc_id_.services_type_,
+                    svc_route.svc_id_.services_id_);
             return SOAR_RET::ERR_ZERG_CONNECT_NO_FIND_SVCINFO;
         }
 
         auto ins_iter = autocnt_svcinfo_set_.insert(svc_route);
         if (ins_iter.second == false)
         {
-            ZCE_LOGMSG(RS_ERROR, "[zergsvr] Can't insert auto connect services ID %u.%u "
-                       "into set .Please check config file. ",
-                       svc_route.svc_id_.services_type_,
-                       svc_route.svc_id_.services_id_);
+            ZCE_LOG(RS_ERROR, "[zergsvr] Can't insert auto connect services ID %u.%u "
+                    "into set .Please check config file. ",
+                    svc_route.svc_id_.services_type_,
+                    svc_route.svc_id_.services_id_);
             return SOAR_RET::ERR_ZERG_CONFIG_REPEAT_SVCID;
         }
 
@@ -63,12 +63,12 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         const size_t TMP_ADDR_LEN = 32;
         char mainroute_addr[TMP_ADDR_LEN + 1];
 
-        ZCE_LOGMSG(RS_INFO, "[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s|%u].",
-                   svc_route.svc_id_.services_type_,
-                   svc_route.svc_id_.services_id_,
-                   svc_route.ip_address_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
-                   svc_route.ip_address_.get_port_number()
-                  );
+        ZCE_LOG(RS_INFO, "[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s|%u].",
+                svc_route.svc_id_.services_type_,
+                svc_route.svc_id_.services_id_,
+                svc_route.ip_address_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
+                svc_route.ip_address_.get_port_number()
+               );
 
         auto map_iter = type_to_idary_map_.find(svc_route.svc_id_.services_type_);
         if (type_to_idary_map_.end() == map_iter)
@@ -86,8 +86,8 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         ptr_ary->push_back(svc_route.svc_id_.services_id_);
     }
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Get number [%lu] auto connect config success.",
-               size_of_autoconnect_);
+    ZCE_LOG(RS_INFO, "[zergsvr] Get number [%lu] auto connect config success.",
+            size_of_autoconnect_);
 
     return 0;
 }
@@ -129,10 +129,10 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
         }
     }
 
-    ZCE_LOGMSG(RS_INFO, "[zergsvr] Auto NONBLOCK connect server,vaild number:%d ,success Number :%d,fail number:%d .",
-               szvalid,
-               szsucc,
-               szfail);
+    ZCE_LOG(RS_INFO, "[zergsvr] Auto NONBLOCK connect server,vaild number:%d ,success Number :%d,fail number:%d .",
+            szvalid,
+            szsucc,
+            szfail);
     return;
 }
 
@@ -170,12 +170,12 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
         return SOAR_RET::ERR_ZERG_SVCID_ALREADY_CONNECTED;
     }
 
-    ZCE_LOGMSG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
-               svc_id.services_type_,
-               svc_id.services_id_,
-               inetaddr.get_host_addr(),
-               inetaddr.get_port_number()
-              );
+    ZCE_LOG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
+            svc_id.services_type_,
+            svc_id.services_id_,
+            inetaddr.get_host_addr(),
+            inetaddr.get_port_number()
+           );
 
     ZCE_Socket_Stream sockstream;
     sockstream.open();
@@ -219,7 +219,7 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
     //而ACE的说明是立即返回错误,我暂时不处理这种情况,实在不行又只有根据类型写晦涩的朦胧诗了
     else
     {
-        ZCE_LOGMSG(RS_ERROR, "[zergsvr] My God! NonBlock Socket Connect Success , ACE is a cheat.");
+        ZCE_LOG(RS_ERROR, "[zergsvr] My God! NonBlock Socket Connect Success , ACE is a cheat.");
     }
 
     return 0;
