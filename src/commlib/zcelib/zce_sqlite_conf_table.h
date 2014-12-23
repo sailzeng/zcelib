@@ -163,6 +163,9 @@ public:
     ///创建数据表
     int create_table(unsigned int table_id);
 
+    ///关闭打开的数据库
+    void close_dbfile();
+
     ///UPDATE 或者 INSERT 一个记录
     int replace_one(unsigned int table_id,
                     const AI_IIJIMA_BINARY_DATA *conf_data);

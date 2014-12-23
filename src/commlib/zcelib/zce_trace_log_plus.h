@@ -43,9 +43,9 @@
         return; \
     } \
     timeval now_time_val (ZCE_LIB::gettimeofday()); \
-    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1]; \
-    log_tmp_buffer[LOG_TMP_BUFFER_SIZE ] = '\0'; \
-    size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 1; \
+    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE ]; \
+    log_tmp_buffer[LOG_TMP_BUFFER_SIZE -1] = '\0'; \
+    size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 2; \
     size_t sz_use_len = 0; \
     stringbuf_loghead(outlevel,now_time_val,log_tmp_buffer,sz_buf_len,sz_use_len); \
     sz_buf_len -= sz_use_len; \
@@ -96,11 +96,11 @@ public:
         timeval now_time_val (ZCE_LIB::gettimeofday());
 
         //我要保留一个位置放'\0'
-        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];
-        log_tmp_buffer[LOG_TMP_BUFFER_SIZE ] = '\0';
+        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE ];
+        log_tmp_buffer[LOG_TMP_BUFFER_SIZE -1] = '\0';
 
         //还是为\n考虑留一个空间
-        size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 1;
+        size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 2;
         size_t sz_use_len = 0;
 
         stringbuf_loghead(outlevel,

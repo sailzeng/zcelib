@@ -67,7 +67,7 @@ int ZCE_Protobuf_Reflect::import_file(const std::string &file_name)
 
     const google::protobuf::FileDescriptor *file_desc =
         protobuf_importer_->Import(file_name);
-    if (file_desc)
+    if (!file_desc)
     {
         ZCE_LOG(RS_ERROR, "Importer Import filename [%s] fail.",
                 file_name.c_str());

@@ -157,6 +157,12 @@ int ZCE_General_Config_Table::open_dbfile(const char *db_file,
     return 0;
 }
 
+
+void ZCE_General_Config_Table::close_dbfile()
+{
+    sqlite_handler_->close_database();
+}
+
 //创建TABLE SQL语句
 void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
 {
@@ -397,33 +403,31 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
         return ret;
     }
 
-    ret = stmt_handler.prepare_sql_string(sql_string_);
-    if (ret != 0)
-    {
-        return ret;
-    }
-
     const size_t ary_size = ary_ai_iijma->size();
     for (size_t i = 0; i < ary_size; ++i)
     {
+        //感觉SQLite3的 STMT欠火候，第二次使用还要
+        ret = stmt_handler.prepare_sql_string(sql_string_);
+        if (ret != 0)
+        {
+            return ret;
+        }
+
         ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
                                                (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
         stmt_handler << (*ary_ai_iijma)[i].last_mod_time_;
-    }
-    if (ret != 0)
-    {
-        return ret;
+
+        bool hash_result = false;
+        ret = stmt_handler.execute_stmt_sql(hash_result);
+        if (ret != 0)
+        {
+            return ret;
+        }
     }
 
-    bool hash_result = false;
-    ret = stmt_handler.execute_stmt_sql(hash_result);
-    if (ret != 0)
-    {
-        return ret;
-    }
     ret = stmt_handler.commit_transction();
     if (ret != 0)
     {

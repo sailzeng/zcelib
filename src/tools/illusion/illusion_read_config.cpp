@@ -58,7 +58,7 @@ void Illusion_Read_Config::clean_instance()
 
 
 //根据当前默认的字符编码方式，转换为UTF8
-int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
+int Illusion_Read_Config::default_to_utf8(CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
 
@@ -114,7 +114,7 @@ int Illusion_Read_Config::convert_to_utf8(CString &src, std::string &dst)
 }
 
 //根据当前默认的字符编码方式，转换为UTF16(UNICODE)
-int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
+int Illusion_Read_Config::default_to_utf16(CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
     // UTF16 == UTF16
@@ -143,7 +143,7 @@ int Illusion_Read_Config::convert_to_utf16(CString &src, std::string &dst)
 }
 
 //根据当前默认的字符编码方式，转换为MBCS
-int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
+int Illusion_Read_Config::default_to_mbcs(CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
     //UTF16 == > MBCS
@@ -171,6 +171,41 @@ int Illusion_Read_Config::convert_to_mbcs(CString &src, std::string &dst)
     dst = ((LPCTSTR)src);
     return 0;
 #endif
+}
+
+
+///
+int Illusion_Read_Config::utf8_to_mbcs(std::string &src, std::string &dst)
+{
+    // 第一次先把UTF8码转换成UTF-16
+    DWORD ret = 0;
+    ret = ::MultiByteToWideChar(CP_UTF8,
+        0,
+        src.c_str(),
+        src.length() + 1,
+        cvt_utf16_buf_,
+        CONVERT_BUFFER_LEN);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    int u16_buf_len = ret;
+    // 第二次再把UTF-16编码转换为MBCS编码
+    ret = ::WideCharToMultiByte(CP_ACP,
+        NULL,
+        cvt_utf16_buf_,
+        u16_buf_len,
+        cvt_mbcs_buf_,
+        CONVERT_BUFFER_LEN,
+        NULL,
+        0);
+    if (ret == 0)
+    {
+        return -1;
+    }
+    dst = cvt_mbcs_buf_;
+
+    return 0;
 }
 
 
@@ -223,7 +258,10 @@ void Illusion_Read_Config::protobuf_output(const google::protobuf::Message *msg,
             }
             else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
             {
-                *out << reflection->GetString(*msg, field_desc) << std::endl;
+                std::string utf8_string = reflection->GetString(*msg, field_desc);
+                std::string mbcs_string;
+                utf8_to_mbcs(utf8_string, mbcs_string);
+                *out << mbcs_string << std::endl;
             }
             else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
             {
@@ -341,8 +379,13 @@ void Illusion_Read_Config::protobuf_output(const google::protobuf::Message *msg,
             {
                 for (int j = 0; j < field_size; ++j)
                 {
+                    std::string utf8_string = reflection->GetRepeatedString(*msg, field_desc, j);
+                    std::string mbcs_string;
+                    utf8_to_mbcs(utf8_string, mbcs_string);
+                    *out << mbcs_string << std::endl;
+
                     *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedString(*msg, field_desc, j) << std::endl;
+                        mbcs_string << std::endl;
                 }
             }
             else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
@@ -588,7 +631,7 @@ int Illusion_Read_Config::read_proto(const std::string &proto_fname)
 {
 
     int ret = ils_proto_reflect_.import_file(proto_fname);
-    if (ret == 0)
+    if (ret != 0)
     {
         return -1;
     }
@@ -696,7 +739,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            convert_to_utf8(temp_value, tc_data.pb_msg_name_);
+            default_to_utf8(temp_value, tc_data.pb_msg_name_);
             ++row_no;
             if (row_no > row_count)
             {
@@ -718,7 +761,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            convert_to_utf8(temp_value, tc_data.sqlite3_db_name_);
+            default_to_utf8(temp_value, tc_data.sqlite3_db_name_);
 
             ++row_no;
             if (row_no > row_count)
@@ -803,7 +846,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     {
         field_name_cstring = ils_excel_file_.get_cell_cstring(tc_data.pb_fieldname_line_, col_no);
 
-        ret = convert_to_mbcs(field_name_cstring, field_name_stdstr);
+        ret = default_to_mbcs(field_name_cstring, field_name_stdstr);
 
         tc_data.proto_field_ary_.push_back(field_name_stdstr);
 
@@ -874,18 +917,15 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         field_desc_ary.push_back(field_desc);
     }
 
-
-
-
     //吧啦吧啦吧啦吧啦吧啦吧啦吧啦，这段啰嗦的代码只是为了搞个日志的名字,EXCEFILENAE_TABLENAME.log
     std::string xlsfile_stdstring;
-    convert_to_mbcs(ils_excel_file_.open_filename(), xlsfile_stdstring);
+    default_to_mbcs(ils_excel_file_.open_filename(), xlsfile_stdstring);
     ZCE_LIB::basename(xlsfile_stdstring.c_str(), cvt_utf8_buf_, CONVERT_BUFFER_LEN);
     std::string log_file_name = cvt_utf8_buf_;
     log_file_name += "_";
 
     std::string tablename_stdstring;
-    convert_to_mbcs(tc_data.excel_table_name_, tablename_stdstring);
+    default_to_mbcs(tc_data.excel_table_name_, tablename_stdstring);
     log_file_name += tablename_stdstring;
     log_file_name += ".log";
     std::string out_log_file = outlog_dir_path_;
@@ -921,7 +961,6 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         new_msg->Clear();
 
         read_table_log << "Read line:" << line_no << std::endl << "{" << std::endl;
-        ZCE_LOG(RS_INFO, "Read line：%u", line_no);
 
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
@@ -941,24 +980,24 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             //如果是string 类型，Google PB之支持UTF8
             if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING )
             {
-                ret = convert_to_utf8(read_data, set_data);
+                ret = default_to_utf8(read_data, set_data);
                 //
-                ret = convert_to_mbcs(read_data, show_data);
+                ret = default_to_mbcs(read_data, show_data);
             }
             //对于BYTES，
             else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
             {
                 if (cur_cvt_coding_ == CVT_UTF8)
                 {
-                    ret = convert_to_utf8(read_data, set_data);
+                    ret = default_to_utf8(read_data, set_data);
                 }
                 else if (cur_cvt_coding_ == CVT_UTF16)
                 {
-                    ret = convert_to_utf16(read_data, set_data);
+                    ret = default_to_utf16(read_data, set_data);
                 }
                 else if (cur_cvt_coding_ == CVT_MBCS)
                 {
-                    ret = convert_to_mbcs(read_data, set_data);
+                    ret = default_to_mbcs(read_data, set_data);
                 }
                 else
                 {
@@ -969,7 +1008,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             //其他字段类型统一转换为UTF8的编码
             else
             {
-                ret = convert_to_utf8(read_data, set_data);
+                ret = default_to_utf8(read_data, set_data);
                 show_data = set_data;
             }
             //根据描述，设置字段的数据
@@ -1011,13 +1050,14 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
 
         read_table_log << "} index_1 :" << index_1 << "index_2" << index_2 << std::endl;
 
-        if (!new_msg->IsInitialized())
+        read_table_log << new_msg->DebugString() << std::endl;
+
+        ret = (*aiiijma_ary)[line_no - tc_data.read_data_start_].protobuf_encode(
+            index_1, index_2, new_msg.get());
+        if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "Message [%s] protobuf_encode fail, please check your excel or proto file.",
-                    tc_data.pb_msg_name_.c_str());
             return -1;
         }
-        ret = (*aiiijma_ary)[line_no - tc_data.read_data_start_].protobuf_encode(index_1, index_2, new_msg.get());
     }
 
     ZCE_LOG(RS_INFO, "Read excel file:%s table :%s end.", xlsfile_stdstring.c_str(),
@@ -1034,20 +1074,21 @@ int Illusion_Read_Config::save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
     std::string db3_file = sqlitedb_pah_;
     ZCE_LIB::path_string_cat(db3_file, table_cfg.sqlite3_db_name_);
 
-    ret = sqlite_config_.open_dbfile(db3_file.c_str(), false, true);
+    ZCE_General_Config_Table sqlite_config;
+    ret = sqlite_config.open_dbfile(db3_file.c_str(), false, true);
     if (ret != 0)
     {
         return ret;
     }
 
-    ret = sqlite_config_.create_table(table_cfg.table_id_);
+    ret = sqlite_config.create_table(table_cfg.table_id_);
     if (ret != 0)
     {
         return ret;
     }
 
     //更新数据库
-    ret = sqlite_config_.replace_array(table_cfg.table_id_, aiiijma_ary);
+    ret = sqlite_config.replace_array(table_cfg.table_id_, aiiijma_ary);
     if (ret != 0)
     {
         return ret;
@@ -1070,7 +1111,10 @@ int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
     std::string db3_file = sqlitedb_pah_;
     ZCE_LIB::path_string_cat(db3_file, db3_fname);
 
-    ret = sqlite_config_.open_dbfile(db3_file.c_str(), true, false);
+
+    ///
+    ZCE_General_Config_Table sqlite_config;
+    ret = sqlite_config.open_dbfile(db3_file.c_str(), true, false);
     if (ret != 0)
     {
         return ret;
@@ -1105,7 +1149,7 @@ int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
     {
         ARRARY_OF_AI_IIJIMA_BINARY aiiijma_ary;
         //更新数据库
-        ret = sqlite_config_.select_array(table_id, 0, 0, &aiiijma_ary);
+        ret = sqlite_config.select_array(table_id, 0, 0, &aiiijma_ary);
         if (ret != 0)
         {
             return ret;
@@ -1118,10 +1162,13 @@ int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
             ret = aiiijma_ary[i].protobuf_decode(&index_1, &index_2, new_msg.get());
             if (ret != 0)
             {
-
+                return ret;
             }
 
             protobuf_output(new_msg.get(),&read_db3_log);
+
+            std::cout << new_msg->DebugString() << std::endl;
+            read_db3_log << new_msg->DebugString() <<std::endl;
         }
     }
     else

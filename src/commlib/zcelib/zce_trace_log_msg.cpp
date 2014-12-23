@@ -47,11 +47,11 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
     timeval now_time_val (ZCE_LIB::gettimeofday());
 
     //我要保留一个位置放'\0'
-    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];
-    log_tmp_buffer[LOG_TMP_BUFFER_SIZE ] = '\0';
+    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE ];
+    log_tmp_buffer[LOG_TMP_BUFFER_SIZE -1 ] = '\0';
 
     //还是为\n考虑留一个空间
-    size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 1;
+    size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 2;
     size_t sz_use_len = 0;
 
     //输出头部信息
@@ -68,7 +68,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
     //如果输出的字符串比想想的长
     if (len_of_out >= static_cast<int>( sz_buf_len) || len_of_out < 0)
     {
-        sz_use_len = LOG_TMP_BUFFER_SIZE;
+        sz_use_len = LOG_TMP_BUFFER_SIZE-1;
         sz_buf_len = 0;
     }
     else

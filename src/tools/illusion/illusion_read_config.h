@@ -169,15 +169,19 @@ protected:
     * @param      dst 转后的的字符串，这个函数默认转换为UTF8的字符集合
     * @note
     */
-    int convert_to_utf8(CString &src, std::string &dst);
+    int default_to_utf8(CString &src, std::string &dst);
 
-    //
-    int convert_to_utf16(CString &src, std::string &dst);
-    //
-    int convert_to_mbcs(CString &src, std::string &dst);
+    ///默认编码转换为UTF16
+    int default_to_utf16(CString &src, std::string &dst);
+    //默认编码转换为MBCS
+    int default_to_mbcs(CString &src, std::string &dst);
+
+    ///
+    int utf8_to_mbcs(std::string &src, std::string &dst);
 
 
-    static void protobuf_output(const google::protobuf::Message *msg, 
+
+    void protobuf_output(const google::protobuf::Message *msg, 
         std::ostream *out);
 
 protected:
@@ -211,8 +215,7 @@ protected:
     ///文件对应的配置数据，用于我的查询
     MAP_FNAME_TO_CFGDATA   file_cfg_map_;
 
-    ///
-    ZCE_General_Config_Table sqlite_config_;
+    
 
     ///
     CVT_CODING cur_cvt_coding_ = CVT_MBCS;

@@ -152,6 +152,14 @@ int Illusion_Application::on_run()
         }
     }
 
+    ret = Illusion_Read_Config::instance()->read_db3_conftable(
+        "game_config.db3",
+        "GAME_CFG_STRUCT_1",
+        1);
+    if (ret != 0)
+    {
+        return ret;
+    }
     return 0;
 }
 
