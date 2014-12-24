@@ -382,7 +382,6 @@ void Illusion_Read_Config::protobuf_output(const google::protobuf::Message *msg,
                     std::string utf8_string = reflection->GetRepeatedString(*msg, field_desc, j);
                     std::string mbcs_string;
                     utf8_to_mbcs(utf8_string, mbcs_string);
-                    *out << mbcs_string << std::endl;
 
                     *out << "\t" << field_desc->full_name() << ":" <<
                         mbcs_string << std::endl;

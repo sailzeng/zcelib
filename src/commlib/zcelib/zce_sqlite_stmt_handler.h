@@ -77,19 +77,19 @@ public:
     * @return     int
     * @param      sql_string
     */
-    int prepare_sql_string(const char *sql_string);
+    int prepare(const char *sql_string);
 
     /*!
     * @brief      重新初始化STMT的Handler
     * @return     int
     */
-    int reset_stmt_handler();
+    int reset();
 
     /*!
     * @brief      销毁SQLITE3的STMT HANDLER,恢复初始化值等。
     * @return     int
     */
-    int finalize_stmt_handler();
+    int finalize();
 
     /*!
     * @brief      执行SQL，第一次是执行SQL，后面移动游标
@@ -144,6 +144,11 @@ public:
         return ::sqlite3_column_count(sqlite3_stmt_handler_);
     }
 
+    ///当前column的数据长度
+    inline int cur_column_bytes()
+    {
+        return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
+    }
 
     /*!
     * @brief      对于SQL语句的?参数，进行绑定，
@@ -178,11 +183,7 @@ public:
         return *this;
     }
 
-    //当前column的数据长度
-    inline int cur_column_bytes()
-    {
-        return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
-    }
+
 
     ///bind绑定参数,列号自动++
     template <class bind_type>

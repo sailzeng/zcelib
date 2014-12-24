@@ -202,7 +202,7 @@ public:
     int bind_one_result(size_t paramno,
                         ::enum_field_types paramtype,
                         void *paramdata,
-                        unsigned long *szparam = NULL);
+                        unsigned long *szparam);
 
     ///得到STMT HANDLE
     inline MYSQL_BIND *get_stmt_bind_handle()
@@ -215,34 +215,45 @@ public:
         return &stmt_bind_[paramno];
     }
 
-    //将变量绑定
-    ZCE_Mysql_STMT_Bind &operator << (char &);
-    ZCE_Mysql_STMT_Bind &operator << (short &);
-    ZCE_Mysql_STMT_Bind &operator << (int &);
-    ZCE_Mysql_STMT_Bind &operator << (long &);
-    ZCE_Mysql_STMT_Bind &operator << (long long &);
+    ///重新设置
+    void reset();
 
-    ZCE_Mysql_STMT_Bind &operator << (unsigned char &);
-    ZCE_Mysql_STMT_Bind &operator << (unsigned short &);
-    ZCE_Mysql_STMT_Bind &operator << (unsigned int &);
-    ZCE_Mysql_STMT_Bind &operator << (unsigned long &);
-    ZCE_Mysql_STMT_Bind &operator << (unsigned long long &);
+    ///将变量绑定
+    void bind(size_t bind_col, char val);
+    void bind(size_t bind_col, char &val);
+    void bind(size_t bind_col, short &val);
+    void bind(size_t bind_col, int &val);
+    void bind(size_t bind_col, long &val);
+    void bind(size_t bind_col, long long &val);
 
-    ZCE_Mysql_STMT_Bind &operator << (float &);
-    ZCE_Mysql_STMT_Bind &operator << (double &);
+    
+    void bind(size_t bind_col, unsigned char &val);
+    void bind(size_t bind_col, unsigned short &val);
+    void bind(size_t bind_col, unsigned int &val);
+    void bind(size_t bind_col, unsigned long &val);
+    void bind(size_t bind_col, unsigned long long &val);
 
-    //ZCE_Mysql_STMT_Bind& operator << (char *);
+    void bind(size_t bind_col, float &val);
+    void bind(size_t bind_col, double &val);
 
-    //为了使用几个类型的适配器
-
+    ///为了使用几个类型的适配器
     ///绑定二进制数据，的适配器
-    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::BinData_Param &);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Param &val);
     ///绑定二进制结果的适配器
-    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::BinData_Result &);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result &val);
     ///绑定时间的适配器
-    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::TimeData &);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData &val);
     ///绑定空的适配器
-    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::NULL_Param &);
+    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param &val);
+
+
+    template <class bind_type>
+    ZCE_Mysql_STMT_Bind &operator << (bind_type &val)
+    {
+        bind<bind_type &>(current_bind_, val);
+        ++current_bind_;
+        return *this;
+    }
 
 protected:
 

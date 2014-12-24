@@ -25,12 +25,12 @@ ZCE_SQLite_STMTHdl::ZCE_SQLite_STMTHdl(ZCE_SQLite_DB_Handler *sqlite3_handler):
 
 ZCE_SQLite_STMTHdl::~ZCE_SQLite_STMTHdl()
 {
-    finalize_stmt_handler();
+    finalize();
 }
 
 
 //销毁SQLITE3的STMT HANDLER，恢复初始化值等。
-int ZCE_SQLite_STMTHdl::finalize_stmt_handler()
+int ZCE_SQLite_STMTHdl::finalize()
 {
     //销毁SQLITE3的STMT HANDLER
     int ret =  ::sqlite3_finalize(sqlite3_stmt_handler_);
@@ -47,7 +47,7 @@ int ZCE_SQLite_STMTHdl::finalize_stmt_handler()
 }
 
 //
-int ZCE_SQLite_STMTHdl::reset_stmt_handler()
+int ZCE_SQLite_STMTHdl::reset()
 {
     int ret = ::sqlite3_reset(sqlite3_stmt_handler_);
 
@@ -64,11 +64,11 @@ int ZCE_SQLite_STMTHdl::reset_stmt_handler()
 
 
 //分析SQL语句，检查是否能够正确执行
-int ZCE_SQLite_STMTHdl::prepare_sql_string(const char *sql_string)
+int ZCE_SQLite_STMTHdl::prepare(const char *sql_string)
 {
     if (sqlite3_stmt_handler_)
     {
-        finalize_stmt_handler();
+        finalize();
     }
 
     int ret =  ::sqlite3_prepare_v2(sqlite_handler_->get_sqlite_handler(),

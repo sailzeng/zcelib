@@ -361,7 +361,7 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
         return ret;
     }
 
-    ret = stmt_handler.prepare_sql_string(sql_string_);
+    ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
     {
         return ret;
@@ -407,7 +407,7 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
     for (size_t i = 0; i < ary_size; ++i)
     {
         //感觉SQLite3的 STMT欠火候，第二次使用还要
-        ret = stmt_handler.prepare_sql_string(sql_string_);
+        ret = stmt_handler.prepare(sql_string_);
         if (ret != 0)
         {
             return ret;
@@ -445,7 +445,7 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
                    conf_data->index_2_);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
-    ret = stmt_handler.prepare_sql_string(sql_string_);
+    ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
     {
         return ret;
@@ -480,7 +480,7 @@ int ZCE_General_Config_Table::delete_one(unsigned int table_id,
     sql_delete_one(table_id, index_1, index_2);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
-    ret = stmt_handler.prepare_sql_string(sql_string_);
+    ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
     {
         return ret;
@@ -503,7 +503,7 @@ int ZCE_General_Config_Table::counter(unsigned int table_id,
     sql_counter(table_id, startno, numquery);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
-    ret = stmt_handler.prepare_sql_string(sql_string_);
+    ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
     {
         return ret;
@@ -551,7 +551,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
     sql_select_array(table_id, startno, numquery);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
 
-    ret = stmt_handler.prepare_sql_string(sql_string_);
+    ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
     {
         return ret;
