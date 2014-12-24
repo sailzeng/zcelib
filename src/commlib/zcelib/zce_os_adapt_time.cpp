@@ -404,8 +404,8 @@ const char *ZCE_LIB::timeval_to_str(const timeval *timeval,
 
 //通过字符串翻译得到tm时间结构
 void ZCE_LIB::str_to_tm(const char *strtm,
-                        tm *ptr_tm,
                         TIME_STR_FORMAT_TYPE fmt,
+                        tm *ptr_tm,
                         time_t *usec,
                         int *tz)
 {
@@ -634,9 +634,9 @@ void ZCE_LIB::str_to_tm(const char *strtm,
 
 //从字符串转换得到时间time_t函数
 int ZCE_LIB::str_to_timeval(const char *strtm,
-                            timeval *tval,
+                            TIME_STR_FORMAT_TYPE fmt,
                             bool uct_time,
-                            TIME_STR_FORMAT_TYPE fmt )
+                            timeval *tval)
 {
     //
     if (!uct_time && ZCE_LIB::TIME_STRFMT_HTTP_GMT == fmt)
@@ -654,8 +654,8 @@ int ZCE_LIB::str_to_timeval(const char *strtm,
     time_t usec = 0;
     int tz = 0;
     ZCE_LIB::str_to_tm(strtm,
-                       &tm_value,
                        fmt,
+                       &tm_value,
                        &usec,
                        &tz);
 
@@ -693,6 +693,22 @@ int ZCE_LIB::str_to_timeval(const char *strtm,
         tval->tv_sec += tz;
     }
 
+    return 0;
+}
+
+
+///本地时间字符串转换为time_t
+int ZCE_LIB::localtimestr_to_time_t(const char *localtime_str,
+    TIME_STR_FORMAT_TYPE fmt,
+    time_t *time_t_val)
+{
+    timeval tval;
+    int ret = str_to_timeval(localtime_str, fmt, false, &tval);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    *time_t_val = tval.tv_sec;
     return 0;
 }
 

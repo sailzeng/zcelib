@@ -96,7 +96,7 @@ int ZCE_Mysql_STMT_Command::stmt_prepare_bind(ZCE_Mysql_STMT_Bind *bindparam,
     //ZASSERT(paramcount > 0 &&  bindparam!=NULL || paramcount == 0 && bindparam == NULL);
 
     //绑定的参数
-    if ( bindparam != NULL)
+    if (bindparam)
     {
         tmpret = ::mysql_stmt_bind_param(mysql_stmt_, bindparam->get_stmt_bind_handle());
         if (tmpret != 0)

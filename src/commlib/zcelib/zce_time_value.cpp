@@ -385,9 +385,10 @@ int ZCE_Time_Value::from_string(const char *strtm,
                                 ZCE_LIB::TIME_STR_FORMAT_TYPE fmt)
 {
     return ZCE_LIB::str_to_timeval(strtm,
-                                   &zce_time_value_,
+                                   fmt,
                                    uct_time,
-                                   fmt);
+                                   &zce_time_value_
+                                   );
 }
 
 const char *ZCE_Time_Value::timestamp(char *str_date_time,

@@ -12,23 +12,52 @@ class ZCELIB_EXPORT ZCE_SQLite_STMTHdl
 {
 public:
 
-    ///定义二进制数据结构，用于BLOB类型的数据
-    struct BINARY
+    ///定义二进制数据结构，用于辅助绑定BLOB类型的参数数据
+    struct BIN_Param
     {
-        ///2进制数据的指针
-        void         *binary_data_;
-        ///二进制数据的长度
-        int           binary_len_;
-        //
-        BINARY(void *binary_data, int binary_len)
+        /*!
+        * @brief      
+        * @param      binary_data 二进制数据BUFFER
+        * @param      binary_len  数据长度，
+        */
+        BIN_Param(void *binary_data, int binary_len)
             : binary_data_(binary_data)
             , binary_len_(binary_len)
         {
         }
-        ~BINARY()
+        ~BIN_Param()
         {
         }
+
+        ///2进制数据的指针
+        void   *binary_data_;
+        ///二进制数据的长度,
+        int    binary_len_;
     };
+
+    ///定义二进制数据结构，用于辅助绑定BLOB类型的数据结果
+    struct BIN_Result
+    {
+        /*!
+        * @brief
+        * @param      binary_data 二进制数据BUFFER
+        * @param      binary_len  数据长度，初始化为数据长度，使用后记录数据结果长度
+        */
+        BIN_Result(void *binary_data, int *binary_len)
+            : binary_data_(binary_data)
+            , binary_len_(binary_len)
+        {
+        }
+        ~BIN_Result()
+        {
+        }
+
+        ///2进制数据的指针
+        void   *binary_data_;
+        ///二进制数据的长度,注意绑定结果时，这个数值座位结果绑定的时候，会辅助返回长度
+        int    *binary_len_;
+    };
+
 
 public:
     /*!
@@ -164,7 +193,8 @@ public:
         return *this;
     }
 
-    ZCE_SQLite_STMTHdl &operator << (const ZCE_SQLite_STMTHdl::BINARY &val);
+    //这两个类型的<<函数使用的是引用，所以重载一下，
+    ZCE_SQLite_STMTHdl &operator << (const ZCE_SQLite_STMTHdl::BIN_Param &val);
     ZCE_SQLite_STMTHdl &operator << (const std::string &val);
 
 

@@ -367,7 +367,7 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
         return ret;
     }
 
-    ZCE_SQLite_STMTHdl::BINARY binary_data((void *)conf_data->ai_iijima_data_,
+    ZCE_SQLite_STMTHdl::BIN_Param binary_data((void *)conf_data->ai_iijima_data_,
                                            conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
@@ -413,7 +413,7 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
             return ret;
         }
 
-        ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
+        ZCE_SQLite_STMTHdl::BIN_Param binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
                                                (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
@@ -463,8 +463,8 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
         return -1;
     }
 
-    ZCE_SQLite_STMTHdl::BINARY binary_data((void *)conf_data->ai_iijima_data_,
-                                           conf_data->ai_data_length_);
+    ZCE_SQLite_STMTHdl::BIN_Result binary_data((void *)conf_data->ai_iijima_data_,
+                                           &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -574,8 +574,8 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
             return -1;
         }
 
-        ZCE_SQLite_STMTHdl::BINARY binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                               (*ary_ai_iijma)[i].ai_data_length_);
+        ZCE_SQLite_STMTHdl::BIN_Result binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
+                                               &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;

@@ -325,7 +325,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, const  std::string &val)
 }
 
 template<>
-int ZCE_SQLite_STMTHdl::bind(int bind_index, const ZCE_SQLite_STMTHdl::BINARY &val)
+int ZCE_SQLite_STMTHdl::bind(int bind_index, const ZCE_SQLite_STMTHdl::BIN_Param &val)
 {
     int ret = ::sqlite3_bind_blob(sqlite3_stmt_handler_,
                                   bind_index,
@@ -344,9 +344,9 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, const ZCE_SQLite_STMTHdl::BINARY &v
 
 
 
-ZCE_SQLite_STMTHdl &ZCE_SQLite_STMTHdl::operator << (const ZCE_SQLite_STMTHdl::BINARY &val)
+ZCE_SQLite_STMTHdl &ZCE_SQLite_STMTHdl::operator << (const ZCE_SQLite_STMTHdl::BIN_Param &val)
 {
-    bind<const ZCE_SQLite_STMTHdl::BINARY &>(current_bind_, val);
+    bind<const ZCE_SQLite_STMTHdl::BIN_Param &>(current_bind_, val);
     ++current_bind_;
     return *this;
 }
@@ -476,12 +476,12 @@ void ZCE_SQLite_STMTHdl::column(int result_col, char *val)
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 template<>
-void ZCE_SQLite_STMTHdl::column(int result_col, ZCE_SQLite_STMTHdl::BINARY &val)
+void ZCE_SQLite_STMTHdl::column(int result_col, ZCE_SQLite_STMTHdl::BIN_Result &val)
 {
-    val.binary_len_ = sqlite3_column_bytes(sqlite3_stmt_handler_, result_col);
+    *val.binary_len_ = ::sqlite3_column_bytes(sqlite3_stmt_handler_, result_col);
     //为了获取二进制数据，与ZCE_Mysql_Result相对应,长度不+1
-    memcpy(val.binary_data_, sqlite3_column_blob(sqlite3_stmt_handler_, result_col),
-           val.binary_len_);
+    memcpy(val.binary_data_, ::sqlite3_column_blob(sqlite3_stmt_handler_, result_col),
+           *val.binary_len_);
     return;
 }
 
@@ -490,11 +490,8 @@ void ZCE_SQLite_STMTHdl::column(int result_col, std::string &val)
 {
     val = reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_,
                                                              result_col));
-
     return;
 }
-
-
 
 //开始一个事务
 int ZCE_SQLite_STMTHdl::begin_transaction()

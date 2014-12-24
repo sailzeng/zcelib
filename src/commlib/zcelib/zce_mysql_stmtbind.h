@@ -19,104 +19,146 @@
 #if defined ZCE_USE_MYSQL
 
 //这些函数都是4.1.2后的版本功能
-#if MYSQL_VERSION_ID >= 40100
 
 #include "zce_trace_log_debug.h"
 
 
-class STMT_BindData_Adaptor;
-class STMT_BindTime_Adaptor;
-class ZCE_Mysql_STMT_Bind;
-
 /*!
-* @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
-*             绑定2进制数据
-*/
-class ZCELIB_EXPORT STMT_BindData_Adaptor
-{
-
-    friend class ZCE_Mysql_STMT_Bind;
-
-public:
-    //
-    STMT_BindData_Adaptor(enum_field_types strtype, void *strdata, unsigned long szstr):
-        stmt_data_type_(strtype),
-        stmt_pdata_(strdata),
-        stmt_data_length_(szstr)
-    {
-    };
-    //
-    ~STMT_BindData_Adaptor()
-    {
-    };
-protected:
-    //
-    enum_field_types  stmt_data_type_;
-    //
-    void             *stmt_pdata_;
-    //
-    unsigned long     stmt_data_length_;
-};
-
-/*!
-@brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
-
-*/
-class ZCELIB_EXPORT STMT_BindTime_Adaptor
-{
-    friend class ZCE_Mysql_STMT_Bind;
-protected:
-    //
-    enum_field_types  stmt_timetype_;
-    //
-    MYSQL_TIME       *stmt_ptime_;
-
-public:
-    //
-    STMT_BindTime_Adaptor(enum_field_types timetype, MYSQL_TIME *pstmttime):
-        stmt_timetype_(timetype),
-        stmt_ptime_(pstmttime)
-    {
-        ZCE_ASSERT(stmt_timetype_ == MYSQL_TYPE_TIMESTAMP ||
-                   stmt_timetype_ == MYSQL_TYPE_DATE ||
-                   stmt_timetype_ == MYSQL_TYPE_DATETIME ||
-                   stmt_timetype_ == MYSQL_TYPE_TIMESTAMP
-                  );
-    };
-    //
-    ~STMT_BindTime_Adaptor()
-    {
-    };
-};
-
-/*!
-* @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
-*             绑定一个空参数
-* @note
-*/
-class ZCELIB_EXPORT STMT_BindNULL_Adaptor
-{
-    friend class ZCE_Mysql_STMT_Bind;
-
-public:
-    STMT_BindNULL_Adaptor()
-    {
-    };
-    ~STMT_BindNULL_Adaptor()
-    {
-    };
-};
-
-
-
-/*!
-* @brief
+* @brief MYSQL_BIND 的包装封装累，
 *
-* @note
+* @note  ZCE_Mysql_STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
+*        外部的保存生命周期，请慎重处理。
 */
 class ZCELIB_EXPORT ZCE_Mysql_STMT_Bind
 {
+public:
 
+    /*!
+    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    *             绑定2进制参数数据，用于 mysql_stmt_bind_param
+    */
+    class BinData_Param
+    {
+        friend class ZCE_Mysql_STMT_Bind;
+
+    public:
+
+        /*!
+        * @brief
+        * @param[in] data_type 数据类型，只能是MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
+        * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
+        * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
+        */
+        BinData_Param(enum_field_types data_type, void *pdata, unsigned long data_len) :
+            stmt_data_type_(data_type),
+            stmt_pdata_(pdata),
+            stmt_data_length_(data_len)
+        {
+            ZCE_ASSERT(MYSQL_TYPE_BLOB == stmt_data_type_
+                       || MYSQL_TYPE_STRING == stmt_data_type_);
+        };
+        //
+        ~BinData_Param()
+        {
+        };
+    protected:
+        //
+        enum_field_types  stmt_data_type_;
+        //
+        void             *stmt_pdata_;
+        //
+        unsigned long     stmt_data_length_;
+    };
+
+
+    /*!
+    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    *             绑定2进制结果数据，用于 mysql_stmt_bind_result
+    */
+    class BinData_Result
+    {
+        friend class ZCE_Mysql_STMT_Bind;
+
+    public:
+
+        /*!
+        * @brief
+        * @param[in] data_type 数据类型，只能是MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
+        * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
+        * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
+        */
+        BinData_Result(enum_field_types data_type, void *pdata, unsigned long *data_len) :
+            stmt_data_type_(data_type),
+            stmt_pdata_(pdata),
+            stmt_data_length_(data_len)
+        {
+            ZCE_ASSERT(MYSQL_TYPE_BLOB == stmt_data_type_
+                       || MYSQL_TYPE_STRING == stmt_data_type_);
+        };
+        //
+        ~BinData_Result()
+        {
+        };
+    protected:
+        //
+        enum_field_types  stmt_data_type_;
+        //
+        void             *stmt_pdata_;
+        //
+        unsigned long    *stmt_data_length_;
+    };
+
+    /*!
+    @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+
+    */
+    class TimeData
+    {
+        friend class ZCE_Mysql_STMT_Bind;
+    public:
+        //
+        TimeData(enum_field_types timetype, MYSQL_TIME *pstmttime) :
+            stmt_timetype_(timetype),
+            stmt_ptime_(pstmttime)
+        {
+            ZCE_ASSERT(stmt_timetype_ == MYSQL_TYPE_TIMESTAMP ||
+                       stmt_timetype_ == MYSQL_TYPE_DATE ||
+                       stmt_timetype_ == MYSQL_TYPE_DATETIME ||
+                       stmt_timetype_ == MYSQL_TYPE_TIMESTAMP
+                      );
+        };
+        //
+        ~TimeData()
+        {
+        };
+
+    protected:
+        //
+        enum_field_types  stmt_timetype_;
+        //
+        MYSQL_TIME       *stmt_ptime_;
+    };
+
+    /*!
+    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    *             绑定一个空参数
+    * @note
+    */
+    class NULL_Param
+    {
+        friend class ZCE_Mysql_STMT_Bind;
+
+    public:
+        NULL_Param(my_bool *is_null):
+            is_null_(is_null)
+        {
+        };
+        ~NULL_Param()
+        {
+        };
+
+        my_bool *is_null_;
+    };
 
 protected:
 
@@ -138,22 +180,40 @@ public:
     * @return     int
     * @param      paramno   参数的编号
     * @param      paramtype 参数类型
-    * @param      bisnull   是否为NULL
+    * @param      bisnull   是否为NULL,
     * @param      paramdata 参数的数据的指针
     * @param      szparam   参数的长度
     */
     int bind_one_param(size_t paramno,
                        ::enum_field_types paramtype,
-                       bool bisnull,
+                       my_bool *is_null,
                        void *paramdata ,
                        unsigned long szparam = 0);
 
-    //得到STMT HANDLE
-    inline MYSQL_BIND *get_stmt_bind_handle();
 
-    inline MYSQL_BIND *operator[](unsigned int paramno) const;
+    /*!
+    * @brief
+    * @return     int
+    * @param[in]     paramno
+    * @param[in]     paramtype
+    * @param[in]     paramdata
+    * @param[in,out] szparam
+    */
+    int bind_one_result(size_t paramno,
+                        ::enum_field_types paramtype,
+                        void *paramdata,
+                        unsigned long *szparam = NULL);
 
-    //理论应该为Const定义一组，用于绑定变量
+    ///得到STMT HANDLE
+    inline MYSQL_BIND *get_stmt_bind_handle()
+    {
+        return stmt_bind_;
+    }
+
+    inline MYSQL_BIND *operator[](size_t paramno) const
+    {
+        return &stmt_bind_[paramno];
+    }
 
     //将变量绑定
     ZCE_Mysql_STMT_Bind &operator << (char &);
@@ -174,49 +234,30 @@ public:
     //ZCE_Mysql_STMT_Bind& operator << (char *);
 
     //为了使用几个类型的适配器
-    ZCE_Mysql_STMT_Bind &operator << (STMT_BindData_Adaptor &);
-    ZCE_Mysql_STMT_Bind &operator << (STMT_BindTime_Adaptor &);
-    ZCE_Mysql_STMT_Bind &operator << (STMT_BindNULL_Adaptor &);
 
-    //检查第几个绑定的参数是否为NULL
-    bool get_bind_is_null(const size_t paramno) const;
-    //设置第几个绑定的参数是否为NULL
-    void set_bind_is_null(const size_t paramno, const bool isnull);
-
-    //得到第几个绑定的参数Buf的长度
-    unsigned long get_bind_buf_length(const size_t paramno) const;
-    //设置第几个绑定的参数Buf的长度
-    void set_bind_buf_length(const size_t paramno, unsigned long buflen);
-
-    //得到BIND数据的实际长度
-    unsigned long get_bind_data_length(const size_t paramno) const;
-    //
-    void set_bind_data_length(const size_t paramno, unsigned long buflen);
-
+    ///绑定二进制数据，的适配器
+    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::BinData_Param &);
+    ///绑定二进制结果的适配器
+    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::BinData_Result &);
+    ///绑定时间的适配器
+    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::TimeData &);
+    ///绑定空的适配器
+    ZCE_Mysql_STMT_Bind &operator << (ZCE_Mysql_STMT_Bind::NULL_Param &);
 
 protected:
 
-    //绑定的变量个数
+    ///绑定的变量个数
     size_t           num_bind_;
 
-    //当前使用的绑定参数序号,用于<<
+    ///当前使用的绑定参数序号,用于<<
     size_t            current_bind_;
 
-    //BIND MySQL的封装方式让我不能用vector,
+    ///BIND MySQL的封装方式让我不能用vector,
     MYSQL_BIND       *stmt_bind_;
-    //是否为NULL
-    my_bool          *is_bind_null_;
 
-    //BIND的数据实际的长度
-    unsigned long    *bind_length_;
 };
 
-inline MYSQL_BIND *ZCE_Mysql_STMT_Bind::get_stmt_bind_handle()
-{
-    return stmt_bind_;
-}
 
-#endif //MYSQL_VERSION_ID >= 40100
 
 #endif //#if defined ZCE_USE_MYSQL
 
