@@ -39,24 +39,24 @@ int Illusion_Application::on_start(int argc, const char *argv[])
     //    return -1;
     //}
     
-    HANDLE handle_out = ::GetStdHandle(STD_OUTPUT_HANDLE);
-    if (handle_out == INVALID_HANDLE_VALUE)
-    {
-        return -1;
-    }
-    //设置屏幕缓冲区和输出屏幕大小
-    COORD coord = { 161, 481 };
-    bret = ::SetConsoleScreenBufferSize(handle_out, coord);
-    if (bret == FALSE)
-    {
-        return -1;
-    }
-    SMALL_RECT rect = { 0, 0, 160, 48 };
-    bret = ::SetConsoleWindowInfo(handle_out, TRUE, &rect);
-    if (bret == FALSE)
-    {
-        return -1;
-    }
+    //HANDLE handle_out = ::GetStdHandle(STD_OUTPUT_HANDLE);
+    //if (handle_out == INVALID_HANDLE_VALUE)
+    //{
+    //    return -1;
+    //}
+    ////设置屏幕缓冲区和输出屏幕大小
+    //COORD coord = { 161, 481 };
+    //bret = ::SetConsoleScreenBufferSize(handle_out, coord);
+    //if (bret == FALSE)
+    //{
+    //    return -1;
+    //}
+    //SMALL_RECT rect = { 0, 0, 160, 48 };
+    //bret = ::SetConsoleWindowInfo(handle_out, TRUE, &rect);
+    //if (bret == FALSE)
+    //{
+    //    return -1;
+    //}
     //::CloseHandle(handle_out);
 
     ::SetConsoleTitle(_T("illusion -- EXCEL config to SQlite3 DB Tools!"));

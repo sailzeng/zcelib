@@ -1,0 +1,88 @@
+//option optimize_for = LITE_RUNTIME;
+
+enum ENUM_COUNTRY
+{
+	AUSTRALIA =          61;         // Australia
+	CHILE =              56;         // Chile
+	EGYPT =              20;         // Egypt
+	FINLAND =            358;        // Finland
+	FRANCE =             33;         // France
+	GERMANY =            49;         // Germany
+	HONG_KONG =          852;        // Hong Kong S.A.R., P.R.C.
+	ICELAND =            354;        // Iceland
+	INDIA =              91;         // India
+	IRAN =               981;        // Iran
+	IRAQ =               964;        // Iraq
+	IRELAND =            353;        // Ireland
+	ITALY =              39;         // Italy
+	JAPAN =              81;         // Japan
+	MALAYSIA =           60;         // Malaysia
+	NORWAY  =            47;         // Norway
+	PRCHINA =            86;         // People's Republic of China
+	POLAND =             48;         // Poland
+	RUSSIA =             7;          // Russia
+	SOUTH_KOREA =        82;         // Korea
+	SPAIN =              34;          // Spain
+	TAIWAN =             886;         // Taiwan
+	UNITED_STATES =      1;           // United States
+}
+
+message SUB_STRUCT_A
+{
+	required double sub_a_1 = 1;
+	required double sub_a_2 = 2;
+	required string sub_a_3 = 3;
+	required bytes sub_a_4 = 4;
+}
+
+message SUB_STRUCT_B
+{
+	optional int32 sub_b_1 = 1;
+	optional int64 sub_b_2 = 2;
+	optional uint32 sub_b_3 = 3;
+	optional int64 sub_b_4 = 4;
+}
+
+
+message GAME_CFG_STRUCT_2
+{
+	enum NESTED_ENUM 
+	{
+		MON = 1;
+		TUE = 2;
+		WED = 3;
+		THU = 4;
+		FRI = 5;
+		SAT = 6;
+		SUN = 7;
+	}
+	
+	message NESTED_STRUCT_C
+	{
+		optional sint32  nested_c_1 = 1;
+		optional sint64  nested_c_2 = 2;
+		optional fixed32  nested_c_3 = 3;
+		optional fixed64  nested_c_4 = 4;
+		optional NESTED_ENUM nested_c_5 =5;
+	}
+	
+    message NESTED_STRUCT_D
+	{
+		optional sfixed32  nested_d_1 = 1;
+		optional sfixed64  nested_d_2 = 2;
+		optional string  nested_d_3 = 3;
+		optional bytes  nested_d_4 = 4;
+	}
+	
+	optional int32 s2_a = 1;
+	optional int32 s2_b = 2;
+	optional uint32 s2_c = 3 ;
+	repeated uint64 s2_d = 4 ;
+	optional SUB_STRUCT_A  s2_e = 5 ;
+	repeated SUB_STRUCT_B  s2_f = 6 ;
+	optional NESTED_STRUCT_C s2_g = 7 ;
+	repeated NESTED_STRUCT_D s2_h = 8 ;
+	optional NESTED_ENUM s2_i = 9;
+	required ENUM_COUNTRY s2_j = 10;
+}
+

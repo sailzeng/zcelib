@@ -15,10 +15,10 @@ message GAME_CFG_STRUCT_1
 {
 	optional int32 s1_a = 1;
 	optional uint32 s1_b = 2 ;
-	optional double s1_c = 3;
-	optional float s1_d = 4 ;
-	optional int64 s1_e = 5;
-	optional uint64 s1_f = 6 ;
+	optional int64 s1_c = 3;
+	optional uint64 s1_d = 4 ;
+	optional double s1_e = 5;
+	optional float s1_f = 6 ;
 	optional bool s1_g = 7;
 	optional string s1_h = 8 ;
 	optional bytes s1_i = 9;

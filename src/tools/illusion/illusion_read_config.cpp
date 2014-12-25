@@ -713,9 +713,20 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             tc_data.excel_table_name_ = ils_excel_file_.get_cell_cstring(row_no, COL_TC_VALUE);
             if (tc_data.excel_table_name_.IsEmpty())
             {
-                return -1;
+                continue;
             }
 
+            ++row_no;
+            if (row_no > row_count)
+            {
+                return -1;
+            }
+            //table id
+            tc_data.table_id_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
+            if (tc_data.table_id_ <= 0)
+            {
+                return -1;
+            }
             ++row_no;
             if (row_no > row_count)
             {
@@ -767,17 +778,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            tc_data.table_id_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
-            if (tc_data.table_id_ <= 0)
-            {
-                return -1;
-            }
-
-            ++row_no;
-            if (row_no > row_count)
-            {
-                return -1;
-            }
+            
             tc_data.index1_column_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
             if (tc_data.index1_column_ <= 0)
             {
@@ -1049,8 +1050,6 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         }
 
         sstr_stream << "} index_1 :" << index_1 << "index_2" << index_2 << std::endl;
-
-        sstr_stream << new_msg->DebugString() << std::endl;
 
         ret = (*aiiijma_ary)[line_no - tc_data.read_data_start_].protobuf_encode(
             index_1, index_2, new_msg.get());

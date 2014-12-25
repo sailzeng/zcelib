@@ -24,8 +24,8 @@
 
 /*
 表格和索引定义，
-CREATE TABLE IF NOT EXISTS config_table_1(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
-CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_1 ON config_table_1 (index_1,index_2)
+CREATE TABLE IF NOT EXISTS config_table_8(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
+CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,index_2)
 
 */
 
