@@ -937,11 +937,12 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         ZCE_LOG(RS_ERROR, "Read excel file data log file [%s] open fail.", out_log_file.c_str());
         return -1;
     }
+    std::stringstream sstr_stream;
 
     //什么？为啥不用google pb 的debugstring直接输出？为啥，自己考虑
-    read_table_log << "Read excel file:" << xlsfile_stdstring.c_str() << " line count" << line_count
+    sstr_stream << "Read excel file:" << xlsfile_stdstring.c_str() << " line count" << line_count
                    << "column count " << col_count << std::endl;
-    read_table_log << "Read table:" << tablename_stdstring.c_str() << std::endl;
+    sstr_stream << "Read table:" << tablename_stdstring.c_str() << std::endl;
 
     ZCE_LOG(RS_INFO, "Read excel file:%s table :%s start. line count %u column %u.",
             xlsfile_stdstring.c_str(),
@@ -959,7 +960,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     {
         new_msg->Clear();
 
-        read_table_log << "Read line:" << line_no << std::endl << "{" << std::endl;
+        sstr_stream << "Read line:" << line_no << std::endl << "{" << std::endl;
 
         for (long col_no = 1; col_no <= col_count; ++col_no)
         {
@@ -1035,7 +1036,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
                 index_2 = std::stol(set_data, 0, 10);
             }
 
-            read_table_log << "\t" << tc_data.proto_field_ary_[col_no - 1].c_str() << ":" << show_data.c_str()
+            sstr_stream << "\t" << tc_data.proto_field_ary_[col_no - 1].c_str() << ":" << show_data.c_str()
                            << std::endl;
         }
 
@@ -1047,9 +1048,9 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             return -1;
         }
 
-        read_table_log << "} index_1 :" << index_1 << "index_2" << index_2 << std::endl;
+        sstr_stream << "} index_1 :" << index_1 << "index_2" << index_2 << std::endl;
 
-        read_table_log << new_msg->DebugString() << std::endl;
+        sstr_stream << new_msg->DebugString() << std::endl;
 
         ret = (*aiiijma_ary)[line_no - tc_data.read_data_start_].protobuf_encode(
             index_1, index_2, new_msg.get());
@@ -1058,6 +1059,13 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             return -1;
         }
     }
+
+    std::string out_string;
+    out_string.reserve(64 * 1024 * 1024);
+    out_string = sstr_stream.str();
+
+    ZCE_LOG(RS_INFO, "\n%s", out_string.c_str());
+    read_table_log << out_string;
 
     ZCE_LOG(RS_INFO, "Read excel file:%s table :%s end.", xlsfile_stdstring.c_str(),
             tablename_stdstring.c_str());
@@ -1100,16 +1108,23 @@ int Illusion_Read_Config::save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
 
 
 ///从DB3文件里面读取某个配置表的配置
-int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
+int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
                                              const std::string &conf_message_name,
                                              unsigned int table_id,
                                              unsigned int index_1,
                                              unsigned int index_2)
 {
+    //
+    ZCE_LOG(RS_INFO, "Read sqlite db3 file:%s message :%s table id :%u index 1:%u index2: %u start.",
+        db3_fname.c_str(),
+        conf_message_name.c_str(),
+        table_id,
+        index_1,
+        index_2);
+
     int ret = 0;
     std::string db3_file = sqlitedb_pah_;
     ZCE_LIB::path_string_cat(db3_file, db3_fname);
-
 
     ///
     ZCE_General_Config_Table sqlite_config;
@@ -1144,8 +1159,12 @@ int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
         return ret;
     }
 
+    std::stringstream sstr_stream;
+
+    //不制定查询对象，查询所有的列表
     if (index_1 == 0 && index_2 == 0)
     {
+
         ARRARY_OF_AI_IIJIMA_BINARY aiiijma_ary;
         //更新数据库
         ret = sqlite_config.select_array(table_id, 0, 0, &aiiijma_ary);
@@ -1154,9 +1173,10 @@ int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
             return ret;
         }
 
-        //
         for (size_t i = 0; i < aiiijma_ary.size(); ++i)
         {
+            sstr_stream << "index 1:" << aiiijma_ary[i].index_1_ << " index 2:"
+                << aiiijma_ary[i].index_2_ << " " << std::endl << "{" << std::endl;
             new_msg->Clear();
             ret = aiiijma_ary[i].protobuf_decode(&index_1, &index_2, new_msg.get());
             if (ret != 0)
@@ -1164,17 +1184,50 @@ int Illusion_Read_Config::read_db3_conftable(const std::string db3_fname,
                 return ret;
             }
 
-            protobuf_output(new_msg.get(),&read_db3_log);
-
-            std::cout << new_msg->DebugString() << std::endl;
-            read_db3_log << new_msg->DebugString() <<std::endl;
+            protobuf_output(new_msg.get(), &sstr_stream);
+            sstr_stream << "}" << std::endl;
         }
     }
     else
     {
+        AI_IIJIMA_BINARY_DATA aiiijma_data;
+        aiiijma_data.index_1_ = index_1;
+        aiiijma_data.index_2_ = index_2;
+        ret = sqlite_config.select_one(table_id, &aiiijma_data);
+        if (ret != 0)
+        {
+            return ret;
+        }
 
+        new_msg->Clear();
+
+        sstr_stream << "index 1:" << aiiijma_data.index_1_ << " index 2:"
+            << aiiijma_data.index_2_ << " " << std::endl << "{" << std::endl;
+
+        ret = aiiijma_data.protobuf_decode(&index_1, &index_2, new_msg.get());
+        if (ret != 0)
+        {
+            return ret;
+        }
+        protobuf_output(new_msg.get(), &sstr_stream);
+
+        sstr_stream << "}" << std::endl;
     }
 
+    std::string out_string;
+    out_string.reserve(64 * 1024 * 1024);
+    out_string = sstr_stream.str();
+    
+    //打印日志，屏幕输出，
+    ZCE_LOG(RS_INFO, "\n%s", out_string.c_str());
+    read_db3_log << out_string;
+
+    ZCE_LOG(RS_INFO, "Read sqlite db3 file:%s message :%s table id :%u index 1:%u index2: %u end.",
+        db3_fname.c_str(),
+        conf_message_name.c_str(),
+        table_id,
+        index_1,
+        index_2);
 
     return 0;
 }

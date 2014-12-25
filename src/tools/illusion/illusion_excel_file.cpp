@@ -30,9 +30,19 @@ Illusion_ExcelFile::~Illusion_ExcelFile()
 //初始化EXCEL文件，
 BOOL Illusion_ExcelFile::init_excel()
 {
+    
+    HRESULT hret = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
+    //其实这个初始化放在这儿并不见得合理，
+    if (FAILED(hret))
+    {
+        ::AfxMessageBox(_T("初始化COM支持库失败!"));
+        return FALSE;
+    }
+
     //创建Excel 2000服务器(启动Excel)
     if (!excel_application_.CreateDispatch(_T("Excel.Application"), NULL))
     {
+        ::AfxMessageBox(_T("无法启动EXCEL,请检查是否安装了Office EXCEL，或者检查注册表。"));
         return FALSE;
     }
 
@@ -46,6 +56,8 @@ void Illusion_ExcelFile::release_excel()
     excel_application_.Quit();
     excel_application_.ReleaseDispatch();
     excel_application_ = NULL;
+
+    ::CoUninitialize();
 }
 
 //打开excel文件

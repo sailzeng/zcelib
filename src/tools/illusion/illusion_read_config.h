@@ -138,7 +138,7 @@ public:
     void set_string_coding(CVT_CODING cvt_coding);
 
     ///从DB3文件里面读取某个配置表的配置
-    int read_db3_conftable(const std::string db3_fname,
+    int read_db3_conftable(const std::string &db3_fname,
                            const std::string &conf_message_name,
                            unsigned int table_id,
                            unsigned int index_1 = 0,

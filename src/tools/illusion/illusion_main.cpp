@@ -30,11 +30,36 @@ int Illusion_Application::on_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    if (::CoInitialize(NULL) != 0)
+    BOOL bret = FALSE;
+
+    //使用UTF8代码也输出，测试发现还是有很多问题，因为自己的库内部使用的是Not set的字符集。
+    //bret = ::SetConsoleOutputCP(CP_UTF8);
+    //if (bret == FALSE)
+    //{
+    //    return -1;
+    //}
+    
+    HANDLE handle_out = ::GetStdHandle(STD_OUTPUT_HANDLE);
+    if (handle_out == INVALID_HANDLE_VALUE)
     {
-        ::AfxMessageBox(_T("初始化COM支持库失败!"));
         return -1;
     }
+    //设置屏幕缓冲区和输出屏幕大小
+    COORD coord = { 161, 481 };
+    bret = ::SetConsoleScreenBufferSize(handle_out, coord);
+    if (bret == FALSE)
+    {
+        return -1;
+    }
+    SMALL_RECT rect = { 0, 0, 160, 48 };
+    bret = ::SetConsoleWindowInfo(handle_out, TRUE, &rect);
+    if (bret == FALSE)
+    {
+        return -1;
+    }
+    //::CloseHandle(handle_out);
+
+    ::SetConsoleTitle(_T("illusion -- EXCEL config to SQlite3 DB Tools!"));
 
     config_path_ = "E:\\Courage\\zcelib.git\\src\\tools\\illusion\\template";
 
@@ -105,8 +130,8 @@ int Illusion_Application::on_start(int argc, const char *argv[])
         return 0;
     }
 
-    bool bret = Illusion_Read_Config::instance()->initialize(true,config_path_);
-    if (!bret)
+    bool std_bret = Illusion_Read_Config::instance()->initialize(true,config_path_);
+    if (!std_bret)
     {
         return -1;
     }
@@ -168,8 +193,6 @@ int Illusion_Application::on_exit()
 {
     Illusion_Read_Config::instance()->finalize();
 
-    ::CoUninitialize();
-
     Illusion_Read_Config::clean_instance();
 
     return 0;
@@ -194,6 +217,7 @@ int main(int argc, const char *argv[])
 
         the_app.on_run();
         the_app.on_exit();
+        system("PAUSE");
         return 0;
     }
     // For the Try...Catch error message.
