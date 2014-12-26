@@ -95,8 +95,12 @@ public:
     static BOOL init_excel();
     //释放EXCEL的 OLE
     static void release_excel();
+
     //取得列的名称，比如27->AA
-    static TCHAR *column_name(long iColumn);
+    static TCHAR *column_name(long column_no);
+
+    //还是要考虑对于一些打印输出的情况。
+    static char *column_mbcs_name(long column_no);
 
 protected:
 

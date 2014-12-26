@@ -861,9 +861,10 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             }
             else
             {
-                if (0 == strncmp(tc_data.firstshow_msg_.c_str(),
+                if (tc_data.firstshow_msg_.length() > 0 &&
+                    0 == strncmp(tc_data.firstshow_msg_.c_str(),
                                  field_name_stdstr.c_str(),
-                                 tc_data.firstshow_msg_.length()) )
+                                 tc_data.firstshow_msg_.length()))
                 {
                     tc_data.item_msg_firstshow_.push_back(false);
                 }
@@ -905,11 +906,12 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
                                                   field_desc);
         if (0 != ret)
         {
-            ZCE_LOG(RS_ERROR, "Message [%s] don't find field_desc [%s] field_desc name define in L/C[%d/%d]",
+            ZCE_LOG(RS_ERROR, "Message [%s] don't find field_desc [%s] field_desc name define in Line/Column[%d/%d(%s)]",
                     tc_data.pb_msg_name_.c_str(),
                     tc_data.proto_field_ary_[col_no - 1].c_str(),
                     tc_data.pb_fieldname_line_,
-                    col_no
+                    col_no,
+
                    );
             return ret;
         }
@@ -1018,7 +1020,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             {
                 ZCE_LOG(RS_ERROR, "Message [%s] field_desc [%s] type [%d][%s] set_fielddata fail. Line,Colmn[%d|%d]",
                         tc_data.pb_msg_name_.c_str(),
-                        field_desc->full_name(),
+                        field_desc->full_name().c_str(),
                         field_desc->type(),
                         field_desc->type_name(),
                         line_no,

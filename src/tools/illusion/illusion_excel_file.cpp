@@ -474,3 +474,7 @@ void Illusion_ExcelFile::preload_sheet()
     ole_safe_array_.Attach(ret_ary);
 }
 
+char *Illusion_ExcelFile::column_mbcs_name(long column_no)
+{
+
+}
