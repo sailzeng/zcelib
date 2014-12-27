@@ -42,9 +42,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -86,14 +90,18 @@
     <ClInclude Include="excelole\CWorkbooks.h" />
     <ClInclude Include="excelole\CWorksheet.h" />
     <ClInclude Include="excelole\CWorksheets.h" />
+    <ClInclude Include="illusion_coding_convert.h" />
     <ClInclude Include="illusion_excel_file.h" />
     <ClInclude Include="illusion_main.h" />
+    <ClInclude Include="illusion_protobuf_reflect.h" />
     <ClInclude Include="illusion_read_config.h" />
     <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="illusion_coding_convert.cpp" />
     <ClCompile Include="illusion_excel_file.cpp" />
     <ClCompile Include="illusion_main.cpp" />
+    <ClCompile Include="illusion_protobuf_reflect.cpp" />
     <ClCompile Include="illusion_read_config.cpp" />
     <ClCompile Include="stdafx.cpp" />
   </ItemGroup>

@@ -38,7 +38,7 @@ int Illusion_Application::on_start(int argc, const char *argv[])
     //{
     //    return -1;
     //}
-    
+
     //HANDLE handle_out = ::GetStdHandle(STD_OUTPUT_HANDLE);
     //if (handle_out == INVALID_HANDLE_VALUE)
     //{
@@ -57,7 +57,6 @@ int Illusion_Application::on_start(int argc, const char *argv[])
     //{
     //    return -1;
     //}
-    //::CloseHandle(handle_out);
 
     ::SetConsoleTitle(_T("illusion -- EXCEL config to SQlite3 DB Tools!"));
 
@@ -130,7 +129,7 @@ int Illusion_Application::on_start(int argc, const char *argv[])
         return 0;
     }
 
-    bool std_bret = Illusion_Read_Config::instance()->initialize(true,config_path_);
+    bool std_bret = Illusion_Read_Config::instance()->initialize(true, config_path_);
     if (!std_bret)
     {
         return -1;
@@ -178,9 +177,9 @@ int Illusion_Application::on_run()
     }
 
     ret = Illusion_Read_Config::instance()->read_db3_conftable(
-        "game_config.db3",
-        "GAME_CFG_STRUCT_1",
-        1);
+              "game_config.db3",
+              "GAME_CFG_STRUCT_2",
+              2);
     if (ret != 0)
     {
         return ret;

@@ -46,6 +46,12 @@
     <ClInclude Include="stdafx.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="illusion_protobuf_reflect.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="illusion_coding_convert.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="illusion_excel_file.cpp">
@@ -58,6 +64,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="illusion_protobuf_reflect.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="illusion_coding_convert.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

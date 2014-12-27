@@ -28,11 +28,9 @@
 * 让我再次拥抱你，郑州
 */
 
-#ifndef _ZCE_LIB_PROTOBUF_REFLECT_H_
-#define _ZCE_LIB_PROTOBUF_REFLECT_H_
+#ifndef _ILLUSION_PROTOBUF_REFLECT_H_
+#define _ILLUSION_PROTOBUF_REFLECT_H_
 
-
-#if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
 //======================================================================================
 
@@ -77,13 +75,13 @@ public:
 *
 * @note
 */
-class ZCE_Protobuf_Reflect
+class Illusion_Protobuf_Reflect
 {
 public:
     //
-    ZCE_Protobuf_Reflect();
+    Illusion_Protobuf_Reflect();
     //
-    ~ZCE_Protobuf_Reflect();
+    ~Illusion_Protobuf_Reflect();
 
 public:
 
@@ -129,11 +127,20 @@ public:
                              const std::string &set_data);
 
 
-    //定位一个子结构
+    ///定位一个子结构
     static int locate_sub_msg(google::protobuf::Message *msg,
                               const std::string &submsg_field_name,
                               bool message_add,
                               google::protobuf::Message *&sub_msg);
+
+    ///打印输出一个Message的信息到ostream里面，
+    static void protobuf_output(const google::protobuf::Message *msg,
+                                std::ostream *out);
+
+    ///将message里面所有的字段设置为默认值，
+    ///注意这儿不直接用Clear函数的原因是，我在读取配置的过程已经把Message结构构造好了
+    ///对应的Field的指针也保存了，如果Clear这一切都失效了（对repeated里面新增的Mesage）。
+    static void message_set_default(google::protobuf::Message *msg);
 
 protected:
 
@@ -141,19 +148,18 @@ protected:
     google::protobuf::compiler::Importer *protobuf_importer_;
 
     ///
-    google::protobuf::compiler::DiskSourceTree source_tree_;
+    google::protobuf::compiler::DiskSourceTree *source_tree_;
 
     //
-    google::protobuf::DynamicMessageFactory msg_factory_;
-
+    google::protobuf::DynamicMessageFactory *msg_factory_;
 
     //
     ZCE_Error_Collector error_collector_;
 
 };
 
-#endif
 
-#endif //# _ZCE_LIB_PROTOBUF_REFLECT_H_
+
+#endif //# _ILLUSION_PROTOBUF_REFLECT_H_
 
 

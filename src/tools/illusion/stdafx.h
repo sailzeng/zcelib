@@ -50,11 +50,11 @@
 
 
 #include "zce_predefine.h"
-#include "zce_protobuf_reflect.h"
 #include "zce_trace_log_msg.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_dirent.h"
 #include "zce_os_adapt_file.h"
+#include "zce_os_adapt_string.h"
 #include "zce_sqlite_db_handler.h"
 #include "zce_sqlite_conf_table.h"
 

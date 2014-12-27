@@ -907,7 +907,7 @@ struct ZDOUBLE_STRUCT
 #else
 //在VS2005以后，使用安全API,保证WINDOWS下更加接近于LINUX，保证末尾会添加'\0'
 #define snprintf(buffer,buf_count,fmt,...) _snprintf_s((buffer),(buf_count),((buf_count)-1),(fmt),__VA_ARGS__)
-#define vsnprintf(buffer,buf_count,fmt,argptr_list)  _vsnprintf_s((buffer),((buf_count)-1),(buf_count),(fmt),(argptr_list))
+#define vsnprintf(buffer,buf_count,fmt,argptr_list)  _vsnprintf_s((buffer),((buf_count)),(buf_count-1),(fmt),(argptr_list))
 #endif
 
 #define strtoull _strtoui64

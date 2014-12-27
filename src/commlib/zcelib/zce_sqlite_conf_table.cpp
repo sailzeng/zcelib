@@ -65,8 +65,9 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
 
     if (!msg->IsInitialized())
     {
-        ZCE_LOG(RS_ERROR, "class %s protobuf encode fail, IsInitialized return false.",
-                typeid(msg).name());
+        ZCE_LOG(RS_ERROR, "class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
+            msg->GetTypeName().c_str(),
+            msg->InitializationErrorString().c_str());
         return -1;
     }
 
@@ -108,11 +109,18 @@ int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int *index_1,
 
     if (false == bret)
     {
-        ZCE_LOG(RS_ERROR, "Class %s protobuf decode fail,ParseFromArray return false.", typeid(msg).name());
+        ZCE_LOG(RS_ERROR, "Class [%s] protobuf decode fail,ParseFromArray return false.", msg->GetTypeName().c_str());
         return -1;
     }
     *index_1 = index_1_;
     *index_2 = index_2_;
+    if (!msg->IsInitialized())
+    {
+        ZCE_LOG(RS_ERROR, "class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
+            msg->GetTypeName().c_str(),
+            msg->InitializationErrorString().c_str());
+        return -1;
+    }
     return 0;
 }
 

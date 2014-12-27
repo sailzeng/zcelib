@@ -1,21 +1,12 @@
-
-
-
 #pragma once
 
-
+#include "illusion_protobuf_reflect.h"
 
 
 class Illusion_Read_Config
 {
 public:
 
-    enum CVT_CODING
-    {
-        CVT_UTF8,
-        CVT_UTF16,
-        CVT_MBCS,
-    };
 
 
     struct TABLE_CONFIG
@@ -134,8 +125,7 @@ public:
     //清理所有的读取数据
     void clear();
 
-    ///
-    void set_string_coding(CVT_CODING cvt_coding);
+
 
     ///从DB3文件里面读取某个配置表的配置
     int read_db3_conftable(const std::string &db3_fname,
@@ -160,33 +150,7 @@ protected:
     int save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
                          const ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
 
-    
 
-    /*!
-    * @brief      根据当前默认的字符编码方式，转换为UTF8
-    * @return     int == 0表示转换成功
-    * @param      src 源字符串，CString结构，根据MFC的字符集编码集决定
-    * @param      dst 转后的的字符串，这个函数默认转换为UTF8的字符集合
-    * @note
-    */
-    int default_to_utf8(CString &src, std::string &dst);
-
-    ///默认编码转换为UTF16
-    int default_to_utf16(CString &src, std::string &dst);
-    //默认编码转换为MBCS
-    int default_to_mbcs(CString &src, std::string &dst);
-
-    ///
-    int utf8_to_mbcs(std::string &src, std::string &dst);
-
-
-
-    void protobuf_output(const google::protobuf::Message *msg, 
-        std::ostream *out);
-
-protected:
-    //
-    static const size_t CONVERT_BUFFER_LEN = 64 * 1024 - 1;
 
 protected:
 
@@ -210,22 +174,16 @@ protected:
     Illusion_ExcelFile ils_excel_file_;
 
     ///
-    ZCE_Protobuf_Reflect ils_proto_reflect_;
+    Illusion_Protobuf_Reflect ils_proto_reflect_;
 
     ///文件对应的配置数据，用于我的查询
     MAP_FNAME_TO_CFGDATA   file_cfg_map_;
 
-    
 
-    ///
-    CVT_CODING cur_cvt_coding_ = CVT_MBCS;
 
-    ///
-    wchar_t *cvt_utf16_buf_ = NULL;
-    ///
-    char *cvt_utf8_buf_ = NULL;
-    ///
-    char *cvt_mbcs_buf_ = NULL;
+
+
+
 
 
 

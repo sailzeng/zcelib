@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "illusion_excel_file.h"
+#include "illusion_coding_convert.h"
 #include "illusion_read_config.h"
 
 #ifdef _DEBUG
@@ -12,29 +13,11 @@ Illusion_Read_Config *Illusion_Read_Config::instance_ = NULL;
 //
 Illusion_Read_Config::Illusion_Read_Config()
 {
-    cvt_utf16_buf_ = new wchar_t[CONVERT_BUFFER_LEN + 1];
-    cvt_utf8_buf_ = new char[CONVERT_BUFFER_LEN + 1];
-    cvt_mbcs_buf_ = new char[CONVERT_BUFFER_LEN + 1];
 }
 
 
 Illusion_Read_Config::~Illusion_Read_Config()
 {
-    if (cvt_utf16_buf_)
-    {
-        delete cvt_utf16_buf_;
-        cvt_utf16_buf_ = NULL;
-    }
-    if (cvt_utf8_buf_)
-    {
-        delete cvt_utf8_buf_;
-        cvt_utf8_buf_ = NULL;
-    }
-    if (cvt_mbcs_buf_)
-    {
-        delete cvt_mbcs_buf_;
-        cvt_mbcs_buf_ = NULL;
-    }
 }
 
 
@@ -57,419 +40,6 @@ void Illusion_Read_Config::clean_instance()
 }
 
 
-//根据当前默认的字符编码方式，转换为UTF8
-int Illusion_Read_Config::default_to_utf8(CString &src, std::string &dst)
-{
-#if defined UNICODE || defined _UNICODE
-
-    DWORD ret = 0;
-    ret = ::WideCharToMultiByte(CP_UTF8,
-                                NULL,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_utf8_buf_,
-                                CONVERT_BUFFER_LEN,
-                                NULL,
-                                0);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst = cvt_utf8_buf_;
-    return 0;
-
-#else
-    // MBCS ===> UTF16 ===> UTF8
-
-    // 第一次先把MBCS码转换成UTF-16
-    DWORD ret = 0;
-    ret = ::MultiByteToWideChar(CP_ACP,
-                                0,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_utf16_buf_,
-                                CONVERT_BUFFER_LEN);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    int u16_buf_len = ret;
-    // 第二次再把UTF-16编码转换为UTF-8编码
-    ret = ::WideCharToMultiByte(CP_UTF8,
-                                NULL,
-                                cvt_utf16_buf_,
-                                u16_buf_len,
-                                cvt_utf8_buf_,
-                                CONVERT_BUFFER_LEN,
-                                NULL,
-                                0);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst = cvt_utf8_buf_;
-
-    return 0;
-#endif
-}
-
-//根据当前默认的字符编码方式，转换为UTF16(UNICODE)
-int Illusion_Read_Config::default_to_utf16(CString &src, std::string &dst)
-{
-#if defined UNICODE || defined _UNICODE
-    // UTF16 == UTF16
-    if (src.GetLength() > CONVERT_BUFFER_LEN)
-    {
-        return -1;
-    }
-    dst.assign(((const char *)((LPCTSTR)src)), ((src.GetLength() + 1) * (sizeof(wchar_t))));
-    return 0;
-#else
-    // MBCS ===> UTF16
-    DWORD ret = 0;
-    ret = ::MultiByteToWideChar(CP_ACP,
-                                0,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_utf16_buf_,
-                                CONVERT_BUFFER_LEN);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst.assign(((const char *)(cvt_utf16_buf_)), (ret * (sizeof(wchar_t))));
-    return 0;
-#endif
-}
-
-//根据当前默认的字符编码方式，转换为MBCS
-int Illusion_Read_Config::default_to_mbcs(CString &src, std::string &dst)
-{
-#if defined UNICODE || defined _UNICODE
-    //UTF16 == > MBCS
-    DWORD ret = 0;
-    ret = ::WideCharToMultiByte(CP_ACP,
-                                NULL,
-                                (LPCTSTR)src,
-                                src.GetLength() + 1,
-                                cvt_mbcs_buf_,
-                                CONVERT_BUFFER_LEN,
-                                NULL,
-                                0);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst = cvt_mbcs_buf_;
-    return 0;
-#else
-    // MBCS ===> MBCS
-    if (src.GetLength() > CONVERT_BUFFER_LEN)
-    {
-        return -1;
-    }
-    dst = ((LPCTSTR)src);
-    return 0;
-#endif
-}
-
-
-///
-int Illusion_Read_Config::utf8_to_mbcs(std::string &src, std::string &dst)
-{
-    // 第一次先把UTF8码转换成UTF-16
-    DWORD ret = 0;
-    ret = ::MultiByteToWideChar(CP_UTF8,
-        0,
-        src.c_str(),
-        src.length() + 1,
-        cvt_utf16_buf_,
-        CONVERT_BUFFER_LEN);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    int u16_buf_len = ret;
-    // 第二次再把UTF-16编码转换为MBCS编码
-    ret = ::WideCharToMultiByte(CP_ACP,
-        NULL,
-        cvt_utf16_buf_,
-        u16_buf_len,
-        cvt_mbcs_buf_,
-        CONVERT_BUFFER_LEN,
-        NULL,
-        0);
-    if (ret == 0)
-    {
-        return -1;
-    }
-    dst = cvt_mbcs_buf_;
-
-    return 0;
-}
-
-
-void Illusion_Read_Config::protobuf_output(const google::protobuf::Message *msg,
-    std::ostream *out)
-{
-    const google::protobuf::Descriptor *msg_desc = msg->GetDescriptor();
-    const google::protobuf::Reflection *reflection = msg->GetReflection();
-    for (int i = 0; i < msg_desc->field_count(); ++i)
-    {
-        const google::protobuf::FieldDescriptor *field_desc =
-            msg_desc->field(i);
-        
-
-        if (field_desc->label() == google::protobuf::FieldDescriptor::Label::LABEL_REQUIRED ||
-            field_desc->label() == google::protobuf::FieldDescriptor::Label::LABEL_OPTIONAL)
-        {
-            *out <<"\t"<<field_desc->full_name() << ":";
-            if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_DOUBLE)
-            {
-                *out << reflection->GetDouble(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_FLOAT)
-            {
-                *out << reflection->GetFloat(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT64)
-            {
-                *out << reflection->GetInt64(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT64)
-            {
-                *out << reflection->GetUInt64(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT32)
-            {
-                *out << reflection->GetInt32(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED64)
-            {
-                *out << reflection->GetUInt64(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED32)
-            {
-                *out << reflection->GetUInt32(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BOOL)
-            {
-                *out << reflection->GetBool(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
-            {
-                std::string utf8_string = reflection->GetString(*msg, field_desc);
-                std::string mbcs_string;
-                utf8_to_mbcs(utf8_string, mbcs_string);
-                *out << mbcs_string << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
-            {
-                const google::protobuf::Message &sub_msg = reflection->GetMessage(*msg, field_desc);
-                protobuf_output(&sub_msg, out);
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
-            {
-                *out << reflection->GetString(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT32)
-            {
-                *out << reflection->GetUInt32(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_ENUM)
-            {
-                const google::protobuf::EnumValueDescriptor *enum_vale =
-                    reflection->GetEnum(*msg, field_desc);
-                
-                *out << enum_vale->full_name() << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED32)
-            {
-                *out << reflection->GetInt32(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED64)
-            {
-                *out << reflection->GetInt64(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT32)
-            {
-                *out << reflection->GetInt32(*msg, field_desc) << std::endl;
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT64)
-            {
-                *out << reflection->GetInt64(*msg, field_desc) << std::endl;
-            }
-            else
-            {
-                ZCE_LOG(RS_ERROR, "I don't field_desc [%s] support this type.%d %s",
-                    field_desc->full_name().c_str(),
-                    field_desc->type(),
-                    field_desc->type_name());
-                ZCE_ASSERT(false);
-            }
-        }
-        else if (field_desc->label() == google::protobuf::FieldDescriptor::Label::LABEL_REPEATED)
-        {
-            int field_size = reflection->FieldSize(*msg, field_desc);
-            if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_DOUBLE)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedDouble(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_FLOAT)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedFloat(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT64)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedInt64(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT64)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedUInt64(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_INT32)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedInt32(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED64)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedUInt64(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_FIXED32)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedUInt32(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BOOL)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedBool(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    std::string utf8_string = reflection->GetRepeatedString(*msg, field_desc, j);
-                    std::string mbcs_string;
-                    utf8_to_mbcs(utf8_string, mbcs_string);
-
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        mbcs_string << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    const google::protobuf::Message &sub_msg = reflection->GetRepeatedMessage(*msg, field_desc,i);
-                    protobuf_output(&sub_msg, out);
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedString(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_UINT32)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedUInt32(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_ENUM)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    const google::protobuf::EnumValueDescriptor *enum_vale =
-                        reflection->GetRepeatedEnum(*msg, field_desc, j);
-                    *out << "\t" << field_desc->full_name() << ":" << enum_vale->full_name();
-                }
-
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED32)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedInt32(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SFIXED64)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedInt64(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT32)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedInt32(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_SINT64)
-            {
-                for (int j = 0; j < field_size; ++j)
-                {
-                    *out << "\t" << field_desc->full_name() << ":" <<
-                        reflection->GetRepeatedInt64(*msg, field_desc, j) << std::endl;
-                }
-            }
-            else
-            {
-                ZCE_LOG(RS_ERROR, "I don't field_desc [%s] support this type.%d %s",
-                    field_desc->full_name().c_str(),
-                    field_desc->type(),
-                    field_desc->type_name());
-                ZCE_ASSERT(false);
-                return;
-            }
-        }
-        else
-        {
-            ZCE_ASSERT(false);
-        }
-    }
-    return;
-}
 
 //
 bool Illusion_Read_Config::initialize(bool need_open_excel,
@@ -601,18 +171,20 @@ int Illusion_Read_Config::read_excel(const std::string &mbcs_name)
 {
 #if defined UNICODE || defined _UNICODE
     DWORD ret = 0;
+    const size_t UTF16_NAME_BUFFER = 16 * 1024;
+    wchar_t utf16_name[UTF16_NAME_BUFFER];
     ret = ::MultiByteToWideChar(CP_ACP,
                                 0,
                                 mbcs_name.c_str(),
                                 mbcs_name.length() + 1,
-                                cvt_utf16_buf_,
-                                CONVERT_BUFFER_LEN);
+                                utf16_name,
+                                UTF16_NAME_BUFFER);
     if (ret == 0)
     {
         return -1;
     }
 
-    return read_excel_byucname(cvt_utf16_buf_);
+    return read_excel_byucname(utf16_name);
 #else
     return read_excel_byucname(mbcs_name.c_str());
 #endif
@@ -749,7 +321,7 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            default_to_utf8(temp_value, tc_data.pb_msg_name_);
+            Coding_Convert::instance()->default_to_utf8(temp_value, tc_data.pb_msg_name_);
             ++row_no;
             if (row_no > row_count)
             {
@@ -771,14 +343,14 @@ int Illusion_Read_Config::read_table_config(EXCEL_FILE_DATA &file_cfg_data)
             {
                 return -1;
             }
-            default_to_utf8(temp_value, tc_data.sqlite3_db_name_);
+            Coding_Convert::instance()->default_to_utf8(temp_value, tc_data.sqlite3_db_name_);
 
             ++row_no;
             if (row_no > row_count)
             {
                 return -1;
             }
-            
+
             tc_data.index1_column_ = ils_excel_file_.get_cell_int(row_no, COL_TC_VALUE);
             if (tc_data.index1_column_ <= 0)
             {
@@ -821,14 +393,13 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         return -3;
     }
 
-    google::protobuf::Message *temp_msg = NULL;
-    ret = ils_proto_reflect_.new_mesage(tc_data.pb_msg_name_, temp_msg);
-    std::shared_ptr<google::protobuf::Message> new_msg(temp_msg);
+    google::protobuf::Message *tmp_msg = NULL;
+    ret = ils_proto_reflect_.new_mesage(tc_data.pb_msg_name_, tmp_msg);
     if (ret != 0)
     {
         return ret;
     }
-    //std::shared_ptr <google::protobuf::Message> new_msg(tmp_msg);
+    std::shared_ptr <google::protobuf::Message> new_msg(tmp_msg);
 
     long line_count = ils_excel_file_.row_count();
     long col_count = ils_excel_file_.column_count();
@@ -846,7 +417,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     {
         field_name_cstring = ils_excel_file_.get_cell_cstring(tc_data.pb_fieldname_line_, col_no);
 
-        ret = default_to_mbcs(field_name_cstring, field_name_stdstr);
+        ret = Coding_Convert::instance()->default_to_mbcs(field_name_cstring, field_name_stdstr);
 
         tc_data.proto_field_ary_.push_back(field_name_stdstr);
 
@@ -899,11 +470,11 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
         }
 
         //取得字段的描述
-        ret = ZCE_Protobuf_Reflect::get_fielddesc(new_msg.get(),
-                                                  tc_data.proto_field_ary_[col_no - 1],
-                                                  tc_data.item_msg_firstshow_[col_no - 1] == 1 ? true : false,
-                                                  field_msg,
-                                                  field_desc);
+        ret = Illusion_Protobuf_Reflect::get_fielddesc(new_msg.get(),
+                                                       tc_data.proto_field_ary_[col_no - 1],
+                                                       tc_data.item_msg_firstshow_[col_no - 1] == 1 ? true : false,
+                                                       field_msg,
+                                                       field_desc);
         if (0 != ret)
         {
             ZCE_LOG(RS_ERROR, "Message [%s] don't find field_desc [%s] field_desc name define in Line/Column[%d/%d(%s)]",
@@ -911,7 +482,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
                     tc_data.proto_field_ary_[col_no - 1].c_str(),
                     tc_data.pb_fieldname_line_,
                     col_no,
-
+                    Illusion_ExcelFile::column_mbcs_name(col_no)
                    );
             return ret;
         }
@@ -921,13 +492,14 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
 
     //吧啦吧啦吧啦吧啦吧啦吧啦吧啦，这段啰嗦的代码只是为了搞个日志的名字,EXCEFILENAE_TABLENAME.log
     std::string xlsfile_stdstring;
-    default_to_mbcs(ils_excel_file_.open_filename(), xlsfile_stdstring);
-    ZCE_LIB::basename(xlsfile_stdstring.c_str(), cvt_utf8_buf_, CONVERT_BUFFER_LEN);
-    std::string log_file_name = cvt_utf8_buf_;
+    Coding_Convert::instance()->default_to_mbcs(ils_excel_file_.open_filename(), xlsfile_stdstring);
+    char file_basename[MAX_PATH];
+    ZCE_LIB::basename(xlsfile_stdstring.c_str(), file_basename, MAX_PATH);
+    std::string log_file_name = file_basename;
     log_file_name += "_";
 
     std::string tablename_stdstring;
-    default_to_mbcs(tc_data.excel_table_name_, tablename_stdstring);
+    Coding_Convert::instance()->default_to_mbcs(tc_data.excel_table_name_, tablename_stdstring);
     log_file_name += tablename_stdstring;
     log_file_name += ".log";
     std::string out_log_file = outlog_dir_path_;
@@ -944,7 +516,7 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
 
     //什么？为啥不用google pb 的debugstring直接输出？为啥，自己考虑
     sstr_stream << "Read excel file:" << xlsfile_stdstring.c_str() << " line count" << line_count
-                   << "column count " << col_count << std::endl;
+                << "column count " << col_count << std::endl;
     sstr_stream << "Read table:" << tablename_stdstring.c_str() << std::endl;
 
     ZCE_LOG(RS_INFO, "Read excel file:%s table :%s start. line count %u column %u.",
@@ -961,8 +533,9 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
     aiiijma_ary->resize(line_count - tc_data.read_data_start_ + 1);
     for (long line_no = tc_data.read_data_start_; line_no <= line_count; ++line_no)
     {
-        new_msg->Clear();
+        //new_msg->Clear();
 
+        ZCE_LOG(RS_ERROR, "Read line [%d] ", line_no);
         sstr_stream << "Read line:" << line_no << std::endl << "{" << std::endl;
 
         for (long col_no = 1; col_no <= col_count; ++col_no)
@@ -983,48 +556,34 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             //如果是string 类型，Google PB之支持UTF8
             if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_STRING )
             {
-                ret = default_to_utf8(read_data, set_data);
+                ret = Coding_Convert::instance()->default_to_utf8(read_data, set_data);
                 //
-                ret = default_to_mbcs(read_data, show_data);
+                ret = Coding_Convert::instance()->default_to_mbcs(read_data, show_data);
             }
             //对于BYTES，
             else if (field_desc->type() == google::protobuf::FieldDescriptor::Type::TYPE_BYTES)
             {
-                if (cur_cvt_coding_ == CVT_UTF8)
-                {
-                    ret = default_to_utf8(read_data, set_data);
-                }
-                else if (cur_cvt_coding_ == CVT_UTF16)
-                {
-                    ret = default_to_utf16(read_data, set_data);
-                }
-                else if (cur_cvt_coding_ == CVT_MBCS)
-                {
-                    ret = default_to_mbcs(read_data, set_data);
-                }
-                else
-                {
-                    ZCE_ASSERT(false);
-                }
+                ret = Coding_Convert::instance()->default_to_bytescoding(read_data, set_data);
                 show_data = set_data;
             }
             //其他字段类型统一转换为UTF8的编码
             else
             {
-                ret = default_to_utf8(read_data, set_data);
+                ret = Coding_Convert::instance()->default_to_utf8(read_data, set_data);
                 show_data = set_data;
             }
             //根据描述，设置字段的数据
-            ret = ZCE_Protobuf_Reflect::set_fielddata(field_msg, field_desc, set_data);
+            ret = Illusion_Protobuf_Reflect::set_fielddata(field_msg, field_desc, set_data);
             if (0 != ret)
             {
-                ZCE_LOG(RS_ERROR, "Message [%s] field_desc [%s] type [%d][%s] set_fielddata fail. Line,Colmn[%d|%d]",
+                ZCE_LOG(RS_ERROR, "Message [%s] field_desc [%s] type [%d][%s] set_fielddata fail. Line,Colmn[%d|%d(%s)]",
                         tc_data.pb_msg_name_.c_str(),
                         field_desc->full_name().c_str(),
                         field_desc->type(),
                         field_desc->type_name(),
                         line_no,
-                        col_no
+                        col_no,
+                        Illusion_ExcelFile::column_mbcs_name(col_no)
                        );
                 return ret;
             }
@@ -1040,25 +599,32 @@ int Illusion_Read_Config::read_table_cfgdata(TABLE_CONFIG &tc_data,
             }
 
             sstr_stream << "\t" << tc_data.proto_field_ary_[col_no - 1].c_str() << ":" << show_data.c_str()
-                           << std::endl;
+                        << std::endl;
         }
 
         //如果没有初始化
         if (!new_msg->IsInitialized())
         {
-            ZCE_LOG(RS_ERROR, "Message [%s] is not IsInitialized, please check your excel or proto file.",
+            ZCE_LOG(RS_ERROR, "Read line [%d] message [%s] is not IsInitialized, please check your excel or proto file.",
+                    line_no,
                     tc_data.pb_msg_name_.c_str());
+
+            ZCE_LOG(RS_ERROR, "Read line [%d] message [%s] InitializationErrorString :%s;",
+                    line_no,
+                    tc_data.pb_msg_name_.c_str(),
+                    new_msg->InitializationErrorString().c_str());
             return -1;
         }
 
         sstr_stream << "} index_1 :" << index_1 << "index_2" << index_2 << std::endl;
 
         ret = (*aiiijma_ary)[line_no - tc_data.read_data_start_].protobuf_encode(
-            index_1, index_2, new_msg.get());
+                  index_1, index_2, new_msg.get());
         if (ret != 0)
         {
             return -1;
         }
+        std::cout << new_msg->DebugString() << std::endl;
     }
 
     std::string out_string;
@@ -1117,11 +683,11 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
 {
     //
     ZCE_LOG(RS_INFO, "Read sqlite db3 file:%s message :%s table id :%u index 1:%u index2: %u start.",
-        db3_fname.c_str(),
-        conf_message_name.c_str(),
-        table_id,
-        index_1,
-        index_2);
+            db3_fname.c_str(),
+            conf_message_name.c_str(),
+            table_id,
+            index_1,
+            index_2);
 
     int ret = 0;
     std::string db3_file = sqlitedb_pah_;
@@ -1139,7 +705,7 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
     log_file_name += "_";
 
     char table_id_buf[32];
-    snprintf(table_id_buf,31 ,"%u", table_id);
+    snprintf(table_id_buf, 31 , "%u", table_id);
     log_file_name += table_id_buf;
     log_file_name += ".log";
     std::string out_log_file = outlog_dir_path_;
@@ -1176,8 +742,8 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
 
         for (size_t i = 0; i < aiiijma_ary.size(); ++i)
         {
-            sstr_stream << "index 1:" << aiiijma_ary[i].index_1_ << " index 2:"
-                << aiiijma_ary[i].index_2_ << " " << std::endl << "{" << std::endl;
+            sstr_stream << "index1:" << aiiijma_ary[i].index_1_ << " index2:"
+                        << aiiijma_ary[i].index_2_ << " " << std::endl << "{" << std::endl;
             new_msg->Clear();
             ret = aiiijma_ary[i].protobuf_decode(&index_1, &index_2, new_msg.get());
             if (ret != 0)
@@ -1185,7 +751,7 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
                 return ret;
             }
 
-            protobuf_output(new_msg.get(), &sstr_stream);
+            Illusion_Protobuf_Reflect::protobuf_output(new_msg.get(), &sstr_stream);
             sstr_stream << "}" << std::endl;
         }
     }
@@ -1203,14 +769,14 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
         new_msg->Clear();
 
         sstr_stream << "index 1:" << aiiijma_data.index_1_ << " index 2:"
-            << aiiijma_data.index_2_ << " " << std::endl << "{" << std::endl;
+                    << aiiijma_data.index_2_ << " " << std::endl << "{" << std::endl;
 
         ret = aiiijma_data.protobuf_decode(&index_1, &index_2, new_msg.get());
         if (ret != 0)
         {
             return ret;
         }
-        protobuf_output(new_msg.get(), &sstr_stream);
+        Illusion_Protobuf_Reflect::protobuf_output(new_msg.get(), &sstr_stream);
 
         sstr_stream << "}" << std::endl;
     }
@@ -1218,17 +784,17 @@ int Illusion_Read_Config::read_db3_conftable(const std::string &db3_fname,
     std::string out_string;
     out_string.reserve(64 * 1024 * 1024);
     out_string = sstr_stream.str();
-    
+
     //打印日志，屏幕输出，
     ZCE_LOG(RS_INFO, "\n%s", out_string.c_str());
     read_db3_log << out_string;
 
-    ZCE_LOG(RS_INFO, "Read sqlite db3 file:%s message :%s table id :%u index 1:%u index2: %u end.",
-        db3_fname.c_str(),
-        conf_message_name.c_str(),
-        table_id,
-        index_1,
-        index_2);
+    ZCE_LOG(RS_INFO, "Read sqlite db3 file:%s message :%s table id :%u index1:%u index2: %u end.",
+            db3_fname.c_str(),
+            conf_message_name.c_str(),
+            table_id,
+            index_1,
+            index_2);
 
     return 0;
 }

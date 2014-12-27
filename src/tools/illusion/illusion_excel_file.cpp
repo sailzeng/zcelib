@@ -30,7 +30,7 @@ Illusion_ExcelFile::~Illusion_ExcelFile()
 //初始化EXCEL文件，
 BOOL Illusion_ExcelFile::init_excel()
 {
-    
+
     HRESULT hret = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
     //其实这个初始化放在这儿并不见得合理，
     if (FAILED(hret))
@@ -106,8 +106,8 @@ void Illusion_ExcelFile::close_excelfile(BOOL if_save)
         {
             //
             _variant_t v_excel_file(open_excel_file_);
-            excel_work_book_.Close(CONST_VARIANT_FALSE,
-                                   v_excel_file,
+            excel_work_book_.Close(CONST_VARIANT_OPTIONAL,
+                                   CONST_VARIANT_OPTIONAL,
                                    CONST_VARIANT_OPTIONAL);
             excel_books_.Close();
         }
@@ -115,8 +115,6 @@ void Illusion_ExcelFile::close_excelfile(BOOL if_save)
         //打开文件的名称清空
         open_excel_file_.Empty();
     }
-
-
 
     excel_sheets_.ReleaseDispatch();
     excel_work_sheet_.ReleaseDispatch();
@@ -175,7 +173,6 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index, BOOL pre_load)
     {
         lpDis = NULL;
     }
-
 
     if (lpDis)
     {
@@ -333,7 +330,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long iline, long icolumn)
     //8字节的数字
     else if (vResult.vt == VT_R8)
     {
-        str.Format(_T("%0.0f"), vResult.dblVal);
+        str.Format(_T("%.6f"), vResult.dblVal);
     }
     //时间格式
     else if (vResult.vt == VT_DATE)
@@ -430,19 +427,19 @@ CString Illusion_ExcelFile::open_filename()
 }
 
 //取得列的名称，比如27->AA
-TCHAR *Illusion_ExcelFile::column_name(long icolumn)
+TCHAR *Illusion_ExcelFile::column_name(long column_no)
 {
     static TCHAR column_name[64];
     size_t str_len = 0;
 
-    while (icolumn > 0)
+    while (column_no > 0)
     {
-        int num_data = icolumn % 26;
-        icolumn /= 26;
+        int num_data = column_no % 26;
+        column_no /= 26;
         if (num_data == 0)
         {
             num_data = 26;
-            icolumn--;
+            column_no--;
         }
         //不知道这个对不，
         column_name[str_len] = (TCHAR)((num_data - 1) + _T('A') );
@@ -453,6 +450,31 @@ TCHAR *Illusion_ExcelFile::column_name(long icolumn)
     _tcsrev(column_name);
 
     return column_name;
+}
+
+char *Illusion_ExcelFile::column_mbcs_name(long column_no)
+{
+    static unsigned char column_name[64];
+    size_t str_len = 0;
+
+    while (column_no > 0)
+    {
+        int num_data = column_no % 26;
+        column_no /= 26;
+        if (num_data == 0)
+        {
+            num_data = 26;
+            column_no--;
+        }
+        //不知道这个对不，
+        column_name[str_len] = (char)((num_data - 1) + ('A'));
+        str_len++;
+    }
+    column_name[str_len] = '\0';
+    //反转
+    _mbsrev(column_name);
+
+    return(char *) column_name;
 }
 
 //预先加载
@@ -474,7 +496,3 @@ void Illusion_ExcelFile::preload_sheet()
     ole_safe_array_.Attach(ret_ary);
 }
 
-char *Illusion_ExcelFile::column_mbcs_name(long column_no)
-{
-
-}
