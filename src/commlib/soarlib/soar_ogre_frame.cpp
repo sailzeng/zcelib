@@ -101,13 +101,13 @@ void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
 {
 
     ZCE_LOG(log_priority, "[framework] [OGRE_FRAME_MONITOR]location:%s ,frame_len:%u,send_ip:%u,send_port:%u,rcv_ip:%u,rcv_port:%u,",
-               outstr,
-               proc_frame->ogre_frame_len_,
-               proc_frame->snd_peer_info_.peer_ip_address_,
-               proc_frame->snd_peer_info_.peer_port_,
-               proc_frame->rcv_peer_info_.peer_ip_address_,
-               proc_frame->rcv_peer_info_.peer_port_
-              );
+            outstr,
+            proc_frame->ogre_frame_len_,
+            proc_frame->snd_peer_info_.peer_ip_address_,
+            proc_frame->snd_peer_info_.peer_port_,
+            proc_frame->rcv_peer_info_.peer_ip_address_,
+            proc_frame->rcv_peer_info_.peer_port_
+           );
 
 #ifdef ZCE_OS_WINDOWS
     ZCE_UNUSED_ARG(outstr);

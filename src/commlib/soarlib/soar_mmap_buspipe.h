@@ -13,9 +13,6 @@ class Zerg_App_Frame;
 class SOARING_EXPORT Soar_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
 {
 
-
-
-
 public:
     //构造函数,
     Soar_MMAP_BusPipe();
@@ -148,7 +145,7 @@ inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
         if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
         {
-            Zerg_App_Frame::dumpoutput_frameinfo(proc_frame, "[TRACK MONITOR][Recv]", RS_ERROR);
+            Zerg_App_Frame::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Recv]", proc_frame);
         }
     }
 
@@ -158,19 +155,19 @@ inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 //向SEND管道写入帧，
 inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 {
-    DEBUGDUMP_FRAME_HEAD(proc_frame, "TO SEND PIPE FRAME:", RS_DEBUG);
+    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO SEND PIPE FRAME:", proc_frame);
 
     if (proc_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME || proc_frame->frame_length_ < Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
     {
-        ZCE_LOG(RS_ERROR,"[framework] Frame Len is error ,frame length :%u ,Please check your code.",
-                   proc_frame->frame_length_);
+        ZCE_LOG(RS_ERROR, "[framework] Frame Len is error ,frame length :%u ,Please check your code.",
+                proc_frame->frame_length_);
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
 
     //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
     if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
-        Zerg_App_Frame::dumpoutput_frameinfo(proc_frame, "[TRACK MONITOR][Send]", RS_ERROR);
+        Zerg_App_Frame::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Send]", proc_frame);
     }
 
     int ret = push_back_bus(SEND_PIPE_ID,
@@ -339,9 +336,9 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 
     if (ret != 0 )
     {
-        ZCE_LOG(RS_ERROR,"[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
-                   __ZCE_FUNC__,
-                   ret);
+        ZCE_LOG(RS_ERROR, "[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
+                __ZCE_FUNC__,
+                ret);
         return ret;
     }
 

@@ -27,11 +27,11 @@ Zerg_Service_App::~Zerg_Service_App()
 }
 
 //根据启动参数启动
-int Zerg_Service_App::on_start(int argc, const char *argv[])
+int Zerg_Service_App::app_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Soar_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -119,7 +119,7 @@ int Zerg_Service_App::on_start(int argc, const char *argv[])
     return 0;
 }
 
-int Zerg_Service_App::on_exit()
+int Zerg_Service_App::app_exit()
 {
     ZCE_LOG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
 
@@ -133,14 +133,14 @@ int Zerg_Service_App::on_exit()
     Zerg_IPRestrict_Mgr::clean_instance();
 
     //最后调用基类的退出函数
-    Soar_Svrd_Appliction::on_exit();
+    Soar_Svrd_Appliction::app_exit();
 
     return 0;
 }
 
 
 //运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。最重要的函数,但是也最简单,
-int Zerg_Service_App::on_run()
+int Zerg_Service_App::app_run()
 {
 
     //

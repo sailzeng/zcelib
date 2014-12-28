@@ -28,13 +28,13 @@ protected:
 public:
 
     //增加调用register_func_cmd
-    virtual int on_start(int argc, const char *argv[]);
+    virtual int app_start(int argc, const char *argv[]);
 
     //运行处理,
-    virtual int on_run();
+    virtual int app_run();
 
     //退出处理
-    virtual int on_exit();
+    virtual int app_exit();
 
 protected:
 

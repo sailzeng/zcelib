@@ -56,7 +56,7 @@ void NotifyTrans_TaskBase::stop_task_run()
 
 int NotifyTrans_TaskBase::svc (void)
 {
-    ZCE_LOG(RS_INFO,"[framework] Task stop start run. thread id = %u", ZCE_LIB::pthread_self());
+    ZCE_LOG(RS_INFO, "[framework] Task stop start run. thread id = %u", ZCE_LIB::pthread_self());
 
     int ret = 0;
     task_run_ = true;
@@ -92,7 +92,7 @@ int NotifyTrans_TaskBase::svc (void)
 
             // 一旦不忙时收到数据，idle状态改为忙
             idle = 0;
-            DEBUGDUMP_FRAME_HEAD(tmp_frame, "FROM SEND QUEUE FRAME:", RS_DEBUG);
+            DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM SEND QUEUE FRAME:", tmp_frame);
 
             ret = taskprocess_appframe(tmp_frame);
             //回收FRAME
@@ -100,7 +100,7 @@ int NotifyTrans_TaskBase::svc (void)
 
             if (ret != 0)
             {
-                ZCE_LOG(RS_ERROR,"[framework] taskprocess_appframe ret =%u", ret);
+                ZCE_LOG(RS_ERROR, "[framework] taskprocess_appframe ret =%u", ret);
             }
         }
 
@@ -119,7 +119,7 @@ int NotifyTrans_TaskBase::svc (void)
         }
     }
 
-    ZCE_LOG(RS_INFO,"[framework] Task stop run. thread id = %u", ZCE_LIB::pthread_self());
+    ZCE_LOG(RS_INFO, "[framework] Task stop run. thread id = %u", ZCE_LIB::pthread_self());
 
     return 0;
 }

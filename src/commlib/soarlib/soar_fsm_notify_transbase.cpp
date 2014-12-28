@@ -9,8 +9,8 @@ class Notify_Trans_Base
 /******************************************************************************************
 class Notify_Trans_Abnormal_Base 在某些特殊时候(避免多次拷贝),时使用，除非对性能有强烈的爱好，否则不要用
 ******************************************************************************************/
-Notify_Trans_Abnormal_Base::Notify_Trans_Abnormal_Base(ZCE_Timer_Queue *timer_queue, Transaction_Manager *trans_notify_mgr)
-    : Notify_Trans_Base<ZCE_MT_SYNCH>(timer_queue, trans_notify_mgr)
+Notify_Trans_Abnormal_Base::Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr)
+    : Notify_Trans_Base<ZCE_MT_SYNCH>(trans_notify_mgr)
     , abnormal_frame_(NULL)
 {
     //必须要求trans_notify_mgr至少是trans_notify_mgr的子类，
@@ -75,9 +75,9 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
     unsigned int frame_len = abnormal_frame_->frame_length_;
     abnormal_frame_->init_framehead(frame_len, option, cmd);
 
-    abnormal_frame_->frame_uid_ = req_qq_uin_;
+    abnormal_frame_->frame_uid_ = req_user_id_;
     //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
-    abnormal_frame_->transaction_id_ = transaction_id_;
+    abnormal_frame_->transaction_id_ = asyncobj_id_;
     abnormal_frame_->backfill_trans_id_ = req_session_id_;
 
     SERVICES_ID proxysvc(0, 0);
@@ -113,5 +113,6 @@ void Notify_Trans_Abnormal_Base::finish()
     }
 
     Transaction_Base::finish();
+    return;
 }
 

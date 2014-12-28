@@ -193,7 +193,7 @@ int Server_Config_Base::read_cfgfile()
     ZCE_Conf_PropertyTree pt_tree;
     ret = ZCE_INI_Implement::read(common_cfg_file_.c_str(), &pt_tree);
     ZCE_LOG(RS_INFO, "Application read config file [%s] ret [%d].",
-               common_cfg_file_.c_str(), ret);
+            common_cfg_file_.c_str(), ret);
     if (ret != 0)
     {
         return ret;
@@ -211,9 +211,9 @@ int Server_Config_Base::read_cfgfile()
 void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Application base name %s svc id:%hu.%u",
-               Soar_Svrd_Appliction::instance()->get_app_basename(),
-               self_svc_id_.services_type_,
-               self_svc_id_.services_id_);
+            Soar_Svrd_Appliction::instance()->get_app_basename(),
+            self_svc_id_.services_type_,
+            self_svc_id_.services_id_);
     ZCE_LOG(out_lvl, "Application run dir :%s", app_run_dir_.c_str());
     ZCE_LOG(out_lvl, "Application log file prefix :%s", log_file_prefix_.c_str());
     ZCE_LOG(out_lvl, "Application self config file :%s", app_cfg_file_.c_str());
@@ -222,7 +222,7 @@ void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
     ZCE_LOG(out_lvl, "Application get  :%s", svc_table_file_.c_str());
     ZCE_LOG(out_lvl, "[PIPE] if_restore_pipe_ :%s", pipe_cfg_.if_restore_pipe_ ? "TRUE" : "FALSE");
     ZCE_LOG(out_lvl, "[PIPE]recv_pipe_len_ :%lu ,send_pipe_len_ :%lu",
-               pipe_cfg_.recv_pipe_len_, pipe_cfg_.send_pipe_len_);
+            pipe_cfg_.recv_pipe_len_, pipe_cfg_.send_pipe_len_);
 }
 
 //从配置中读取self_svc_id_的

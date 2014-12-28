@@ -31,9 +31,11 @@ protected:
 
     /*!
     * @brief      状态机运行处理，继承ZCE_Async_Object的函数，此函数仅仅用于作为例子进行参考，
+    * @param[in]  outer_data 传入参数，外部调用数据
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(bool &continue_run) = 0;
+    virtual void on_run(void *outer_data,
+                        bool &continue_run) = 0;
 
     /*!
     * @brief      状态机对象超时处理，默认continue_run返回false，让系统回收，
@@ -53,9 +55,9 @@ protected:
     * @brief      取得的状态机阶段
     * @return     int
     */
-    int get_stage();
+    int get_stage() const;
 
-private:
+protected:
 
     ///状态机的阶段
     int               fsm_stage_;
@@ -73,7 +75,7 @@ class ZCE_Async_FSMMgr : public ZCE_Async_ObjectMgr
 public:
 
     //
-    ZCE_Async_FSMMgr(ZCE_Timer_Queue *timer_queue);
+    ZCE_Async_FSMMgr();
     virtual ~ZCE_Async_FSMMgr();
 
 protected:

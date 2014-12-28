@@ -1,56 +1,55 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Fullsail Technology (Shenzhen) Company Limited.
-FileName            : soar_predefine.h
-Author              : Sail(ZENGXING)
-Version             :
-Date Of Creation    : 2006年6月22日
-Description         : 大规模工程文件的基础头文件真的是一件讨厌的事情.
+/*!
+* @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
+* @filename   soar_predefine.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version
+* @date       2006年6月22日
+* @brief      大规模工程文件的基础头文件真的是一件讨厌的事情.
+*
+*
+* @details
+*
+*
+*
+* @note       为了避免一些保持部分代码的纯洁，
+*
+*  最后一枪
+*  崔建
+*  一颗流弹打入我胸膛
+*  刹那间往事涌在我心上
+*  哦
+*  只有泪水
+*  哦
+*  没有悲伤
+*  如果这是最后的一枪
+*  我愿接受这莫大的荣光
+*  哦
+*  最后一枪
+*  哦
+*  最后一枪
+*  不知道有多少 有多少话还没讲
+*  不知道有多少 有多少欢乐没享
+*  不知道有多少 多少人和我一样
+*  不知道有多少 多少个最后一枪
+*  安睡在这温暖的土地上
+*  朝露夕阳花木自芬芳
+*  哦哦 只有一句话 留在世界上
+*  不知道有多少 有多少话还没讲
+*  不知道有多少 有多少欢乐没享
+*  不知道有多少 多少人和我一样
+*  不知道有多少 多少个最后一枪
+*  一颗流弹打入我的胸膛
+*  刹那间往事涌在我的心上
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*  哦哦 最后一枪
+*/
 
-Others              : 为了避免一些保持部分代码的纯洁，
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-
-      最后一枪
-      崔建
-      一颗流弹打入我胸膛
-      刹那间往事涌在我心上
-      哦
-      只有泪水
-      哦
-      没有悲伤
-      如果这是最后的一枪
-      我愿接受这莫大的荣光
-      哦
-      最后一枪
-      哦
-      最后一枪
-      不知道有多少 有多少话还没讲
-      不知道有多少 有多少欢乐没享
-      不知道有多少 多少人和我一样
-      不知道有多少 多少个最后一枪
-      安睡在这温暖的土地上
-      朝露夕阳花木自芬芳
-      哦哦 只有一句话 留在世界上
-      不知道有多少 有多少话还没讲
-      不知道有多少 有多少欢乐没享
-      不知道有多少 多少人和我一样
-      不知道有多少 多少个最后一枪
-      一颗流弹打入我的胸膛
-      刹那间往事涌在我的心上
-      哦哦 最后一枪
-      哦哦 最后一枪
-      哦哦 最后一枪
-      哦哦 最后一枪
-      哦哦 最后一枪
-      哦哦 最后一枪
-      哦哦 最后一枪
-      哦哦 最后一枪
-
-******************************************************************************************/
 
 #ifndef SOARING_LIB_PER_DEFINE_H_
 #define SOARING_LIB_PER_DEFINE_H_
@@ -59,18 +58,7 @@ Modification History:
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_SECURE_NO_WARNINGS   1
 
-//------------------------------------------------------------------------------------
-//客户端服务器公用的头文件,服务器的头文件定义在下面
 
-#if defined ZCE_OS_WINDOWS && defined TSSCOMM_HASDLL
-#ifdef BUILD_SOARING_MODULE_DLL
-#define SOARING_EXPORT __declspec (dllexport)
-#else
-#define SOARING_EXPORT __declspec (dllimport)
-#endif
-#else
-#define SOARING_EXPORT
-#endif
 
 //---------------------------------------------------------------------------------------------
 
@@ -130,22 +118,8 @@ Modification History:
 #include <zce_lock_file_lock.h>
 #include <zce_bytes_hash.h>
 #include <zce_bytes_encode.h>
-
-
-
-
-//这样嵌套是为了让客户端和服务器端使用部分统一的配置
-
-#if  defined(DEBUG) || defined(_DEBUG)
-#define TESTCONFIG(condition,outstring)   if (!(condition) ) ZCE_LOG(RS_ERROR,"[framework] Get configure file error. %s.",outstring); \
-    ZCE_ASSERT(condition)
-#else
-#define TESTCONFIG(condition,outstring)   if(!(condition))\
-    { \
-        ZCE_LOG(RS_ERROR,"[framework] Get configure file error. %s.",outstring); \
-        return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL; \
-    }
-#endif
+#include <zce_async_fw_base.h>
+#include <zce_async_fw_fsm.h>
 
 //
 #if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
@@ -157,6 +131,20 @@ Modification History:
 //自动包含的包含连接，简化你的操作
 #pragma comment(lib, SOAR_LIB_LIBARY_NAME  )
 
+#endif
+
+
+//------------------------------------------------------------------------------------
+//客户端服务器公用的头文件,服务器的头文件定义在下面
+
+#if defined ZCE_OS_WINDOWS && defined TSSCOMM_HASDLL
+#ifdef BUILD_SOARING_MODULE_DLL
+#define SOARING_EXPORT __declspec (dllexport)
+#else
+#define SOARING_EXPORT __declspec (dllimport)
+#endif
+#else
+#define SOARING_EXPORT
 #endif
 
 

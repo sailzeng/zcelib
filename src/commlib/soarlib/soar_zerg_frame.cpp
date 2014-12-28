@@ -61,7 +61,13 @@ Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
 }
 
 //构造函数,用于发送给一个代理服务器
-Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd, uint32_t lenframe, uint32_t uin, const SERVICES_ID &sndsvr, const SERVICES_ID &proxysvr, uint16_t rcvsvrtype, uint32_t frameoption):
+Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
+                               uint32_t lenframe,
+                               uint32_t uin,
+                               const SERVICES_ID &sndsvr,
+                               const SERVICES_ID &proxysvr,
+                               uint16_t rcvsvrtype,
+                               uint32_t frameoption):
     frame_length_(lenframe),
     frame_option_(frameoption),
     frame_command_(cmd),
@@ -138,17 +144,7 @@ int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年11月3日
-Function        : Zerg_App_Frame::framehead_encode
-Return          : void
-Parameter List  : NULL
-Description     : 将所有的uint16_t,uint32_t转换为网络序
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//将所有的uint16_t,uint32_t转换为网络序
 void Zerg_App_Frame::framehead_encode()
 {
     frame_length_ = htonl(frame_length_);
@@ -379,12 +375,16 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
 }
 
 //输出APPFRAME的头部信息
-void Zerg_App_Frame::dumpoutput_framehead(const Zerg_App_Frame *proc_frame, const char *outstr, ZCE_LOG_PRIORITY log_priority)
+void Zerg_App_Frame::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
+                                          const char *outstr,
+                                          const Zerg_App_Frame *proc_frame )
 {
     proc_frame->dumpoutput_framehead(outstr, log_priority);
 }
 //输出APPFRAME的全部部信息
-void Zerg_App_Frame::dumpoutput_frameinfo(const Zerg_App_Frame *proc_frame , const char *outstr, ZCE_LOG_PRIORITY log_priority)
+void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
+                                          const char *outstr,
+                                          const Zerg_App_Frame *proc_frame)
 {
     proc_frame->dumpoutput_frameinfo(outstr, log_priority);
 }

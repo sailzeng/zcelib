@@ -11,13 +11,7 @@
 //简单，但是不要太简单.....
 //感觉我的想法是比较简单的,表面看我没有事件队列,其实我用了Reactor进行管理,其实内部实际是由队列的.
 
-//我暂时不改.....
 
-//class ITransIOProcess
-//{
-//    ReceiveMessage(Zerg_App_Frame *proc_frame) = 0;
-//    SendMessage(const Zerg_App_Frame *proc_frame) = 0;
-//};
 
 /************************************************************************************
 2008年12月26日,圣诞的后面一天，这一周简直是浑天黑地,不过还好是周末了
@@ -55,50 +49,50 @@ class Soar_MMAP_BusPipe;
 class Transaction_Base;
 class Zerg_App_Frame;
 
-/******************************************************************************************
-struct CREATE_TRANS_RECORD 事务的统计信息
-******************************************************************************************/
-//注册的事务的池子
-typedef ZCE_LIB::lordrings<Transaction_Base *>                     POOL_OF_REGISTERTRANS;
-
-struct CREATE_TRANS_RECORD
-{
-public:
-    //
-    CREATE_TRANS_RECORD(unsigned int trans_cmd = 0);
-    ~CREATE_TRANS_RECORD();
-
-public:
-
-    //注册事务的命令
-    unsigned int                 trans_command_;
-    //注册事务的池子
-    POOL_OF_REGISTERTRANS        crttrs_cmd_pool_;
-
-    //-------------------------------------------------
-    //是否自动进行事务的锁
-    bool                         if_auto_trans_lock_;
-    //事务锁的ID,可以用事务命令,如果多个事务要一起加锁,
-    //可以在命令列表上占位一个地方，用于加锁
-    unsigned int                 trans_lock_cmd_;
-
-    //--------------------------------------------------------------
-    //下面是统计信息
-
-    //创建的事务的数量
-    uint64_t                     create_trans_num_;
-
-    //销毁时在正确状态的事务数量
-    uint64_t                     destroy_right_num_;
-    //销毁时超时状态的事务
-    uint64_t                     destroy_timeout_num_;
-    //销毁时状态异常的事务数量
-    uint64_t                     destroy_exception_num_;
-
-    //事务的总消耗时间
-    uint64_t                     trans_consume_time_;
-
-};
+///******************************************************************************************
+//struct CREATE_TRANS_RECORD 事务的统计信息
+//******************************************************************************************/
+////注册的事务的池子
+//typedef ZCE_LIB::lordrings<Transaction_Base *>                     POOL_OF_REGISTERTRANS;
+//
+//struct CREATE_TRANS_RECORD
+//{
+//public:
+//    //
+//    CREATE_TRANS_RECORD(unsigned int trans_cmd = 0);
+//    ~CREATE_TRANS_RECORD();
+//
+//public:
+//
+//    //注册事务的命令
+//    unsigned int                 trans_command_;
+//    //注册事务的池子
+//    POOL_OF_REGISTERTRANS        crttrs_cmd_pool_;
+//
+//    //-------------------------------------------------
+//    //是否自动进行事务的锁
+//    bool                         if_auto_trans_lock_;
+//    //事务锁的ID,可以用事务命令,如果多个事务要一起加锁,
+//    //可以在命令列表上占位一个地方，用于加锁
+//    unsigned int                 trans_lock_cmd_;
+//
+//    //--------------------------------------------------------------
+//    //下面是统计信息
+//
+//    //创建的事务的数量
+//    uint64_t                     create_trans_num_;
+//
+//    //销毁时在正确状态的事务数量
+//    uint64_t                     destroy_right_num_;
+//    //销毁时超时状态的事务
+//    uint64_t                     destroy_timeout_num_;
+//    //销毁时状态异常的事务数量
+//    uint64_t                     destroy_exception_num_;
+//
+//    //事务的总消耗时间
+//    uint64_t                     trans_consume_time_;
+//
+//};
 
 /******************************************************************************************
 struct TRANS_LOCK_RECORD 加锁的记录单元
@@ -142,21 +136,17 @@ public:
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-class SOARING_EXPORT Transaction_Manager
+class SOARING_EXPORT Transaction_Manager : public ZCE_Async_FSMMgr
 {
     //声明友元
     friend class Transaction_Base;
 
 protected:
 
-    //命令字对应池子的代码
-    typedef unordered_map<unsigned int, CREATE_TRANS_RECORD >        HASHMAP_OF_POLLREGTRANS;
-    //事务ID对应事务的管理器
-    typedef unordered_map<unsigned int, Transaction_Base * >         HASHMAP_OF_TRANSACTION;
 
-    //注意这儿用的不是指针,但其实他用的是指针
+    ///
     typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, Zerg_App_Frame *> INNER_FRAME_MESSAGE_QUEUE;
-    //APPFRAME的分配器
+    ///APPFRAME的分配器
     typedef AppFrame_Mallocor_Mgr<ZCE_Null_Mutex>                     INNER_APPFRAME_MALLOCOR;
 
     //内部的锁的数量
@@ -222,14 +212,17 @@ public:
     int create_self(Transaction_Base *ptxbase);
 
     //初始化,住一个几个默认参数
-    void initialize(size_t szregtrans,
-                    size_t sztransmap,
-                    const SERVICES_ID &selfsvr,
-                    ZCE_Timer_Queue *time_reactor,
-                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                    unsigned int max_frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
-                    bool init_inner_queue = false,
-                    bool init_lock_pool = false);
+    int initialize(ZCE_Timer_Queue *timer_queue,
+                   size_t szregtrans,
+                   size_t sztransmap,
+                   const SERVICES_ID &selfsvr,
+                   Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                   unsigned int max_frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+                   bool init_inner_queue = false,
+                   bool init_lock_pool = false);
+
+    //
+    void finish();
 
     //得到一个SvrInfo
     inline const SERVICES_ID *self_svc_info();
@@ -390,26 +383,15 @@ protected:
 
 protected:
 
-    //注册事件的ID和对应的处理Handler.
-    HASHMAP_OF_TRANSACTION      transc_map_;
-
-    //
-    HASHMAP_OF_POLLREGTRANS     regtrans_pool_map_;
-
     //锁的池子
     INNER_TRANS_LOCK_POOL       trans_lock_pool_;
 
     //最大的事件个数
     size_t                      max_trans_;
 
-    //事务ID发生器
-    unsigned int                trans_id_builder_;
 
     //自己的Services Info
     SERVICES_ID                 self_svc_id_;
-
-    //默认使用的
-    ZCE_Timer_Queue            *timer_queue_;
 
     //共享内存的管道
     Soar_MMAP_BusPipe          *zerg_mmap_pipe_;
@@ -620,11 +602,11 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
 
     //相信这个锁不会占据主循环
     ret = mgr_postframe_to_msgqueue(rsp_msg);
-    DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO MESSAGE QUEUE FRAME", RS_DEBUG);
+    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
+        ZCE_LOG(RS_ERROR, "[framework] mgr_postframe_to_msgqueue but fail.Send queue is full or task process too slow to process request.");
         return ret;
     }
 

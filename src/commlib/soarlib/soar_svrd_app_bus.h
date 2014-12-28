@@ -22,7 +22,7 @@ protected:
 public:
 
     //运行处理,
-    virtual int on_run();
+    virtual int app_run();
 
 protected:
 

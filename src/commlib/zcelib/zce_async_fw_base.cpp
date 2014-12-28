@@ -32,9 +32,9 @@ int ZCE_Async_Object::initialize(unsigned int reg_cmd)
 }
 
 //结束销毁函数，在析构前的调用
-int ZCE_Async_Object::finish()
+void ZCE_Async_Object::finish()
 {
-    return 0;
+    return;
 }
 
 
@@ -100,8 +100,8 @@ ZCE_Async_ObjectMgr::ASYNC_OBJECT_RECORD::~ASYNC_OBJECT_RECORD()
 }
 
 
-ZCE_Async_ObjectMgr::ZCE_Async_ObjectMgr(ZCE_Timer_Queue *timer_queue) :
-    ZCE_Timer_Handler(timer_queue),
+ZCE_Async_ObjectMgr::ZCE_Async_ObjectMgr() :
+    ZCE_Timer_Handler(),
     id_builder_(1),
     pool_init_size_(0),
     pool_extend_size_(0)
@@ -114,9 +114,11 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
 
 
 //初始化，
-int ZCE_Async_ObjectMgr::initialize(size_t crtn_type_num,
+int ZCE_Async_ObjectMgr::initialize(ZCE_Timer_Queue *tq,
+                                    size_t crtn_type_num,
                                     size_t running_number)
 {
+    timer_queue(tq);
     //对参数做调整
     if (crtn_type_num < DEFUALT_ASYNC_TYPE_NUM)
     {
@@ -214,7 +216,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     ID_TO_REGASYNC_POOL_MAP::iterator iter_temp = regaysnc_pool_.find(create_cmd);
     if (iter_temp != regaysnc_pool_.end())
     {
-        ZCE_LOG(RS_ERROR, "[ZCELIB] Register command[%u] repeat error.",
+        ZCE_LOG(RS_ERROR, "[ZCELIB] Register command[%u] repeated error.",
                 create_cmd);
         return -1;
     }
@@ -234,6 +236,16 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     return 0;
 }
 
+//判断某个命令是否是注册（创建）异步对象命令
+bool ZCE_Async_ObjectMgr::is_register_cmd(unsigned int cmd)
+{
+    ID_TO_REGASYNC_POOL_MAP::iterator mapiter = regaysnc_pool_.find(cmd);
+    if (mapiter == regaysnc_pool_.end())
+    {
+        return false;
+    }
+    return true;
+}
 
 //从池子里面分配一个
 int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
@@ -313,7 +325,7 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 }
 
 //创建异步对象
-int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
+int ZCE_Async_ObjectMgr::create_asyncobj(void *outer_data, unsigned int cmd, unsigned int *id)
 {
     int ret = 0;
     ZCE_Async_Object *crt_async = NULL;
@@ -338,7 +350,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, unsigned int *id)
     ++async_rec->create_num_;
 
     bool continue_run = false;
-    crt_async->on_run(continue_run);
+    crt_async->on_run(outer_data,continue_run);
 
     //如果运行一下就退出了,直接结束回收
     if (continue_run == false)
@@ -385,7 +397,7 @@ int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
 }
 
 //激活某个已经运行的异步对象
-int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
+int ZCE_Async_ObjectMgr::active_asyncobj(void *outer_data, unsigned int id)
 {
     int ret = 0;
     ZCE_Async_Object *async_obj = NULL;
@@ -411,7 +423,7 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id)
     async_obj->cancel_timeout();
 
     bool continue_run = false;
-    async_obj->on_run(continue_run);
+    async_obj->on_run(outer_data,continue_run);
     ++async_rec.active_num_;
 
     //如果不继续运行了，

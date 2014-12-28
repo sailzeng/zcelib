@@ -34,9 +34,9 @@ public:
         return dynamic_cast<ZCE_Async_Object * >(new FSM_1(async_mgr));
     }
 
-    virtual void on_run(bool &continue_run)
+    virtual void on_run(void *outer_data, bool &continue_run)
     {
-
+        ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
         {
         case FMS1_STAGE_1:
@@ -98,9 +98,9 @@ public:
         return dynamic_cast<ZCE_Async_Object *>(new FSM_2(async_mgr));
     }
 
-    virtual void on_run(bool &continue_run)
+    virtual void on_run(void *outer_data, bool &continue_run)
     {
-
+        ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
         {
         case FMS2_STAGE_1:

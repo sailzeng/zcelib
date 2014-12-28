@@ -56,13 +56,13 @@ public:
 public:
 
     /// app的开始运行
-    virtual int on_start(int argc, const char *argv[]);
+    virtual int app_start(int argc, const char *argv[]);
 
     /// app 运行
-    virtual int on_run() = 0;
+    virtual int app_run() = 0;
 
     /// app的退出
-    virtual int on_exit();
+    virtual int app_exit();
 
 protected:
 

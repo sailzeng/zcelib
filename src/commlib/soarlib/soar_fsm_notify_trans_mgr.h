@@ -130,10 +130,11 @@ public:
     {
         //根据最大的FRAME长度调整Manager内部的数据
         size_t max_frame_len = frame_mallocor->get_max_framelen();
-        Transaction_Manager::initialize(szregtrans,
+        Transaction_Manager::initialize(timer_queue,
+                                        szregtrans,
                                         sztransmap,
                                         selfsvr,
-                                        timer_queue,
+
                                         zerg_mmap_pipe,
                                         static_cast<unsigned int>(max_frame_len));
         //
@@ -167,13 +168,13 @@ public:
                 //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
                 //if ( ZCE_LIB::last_error() != EAGAIN )
                 //{
-                //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
+                //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
                 //  return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
                 //}
                 return 0;
             }
 
-            DEBUGDUMP_FRAME_HEAD(tmp_frame, "FROM RECV QUEUE FRAME:", RS_DEBUG);
+            DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame);
 
             //是否创建一个事务，
             bool bcrtcx = false;
@@ -219,7 +220,7 @@ public:
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
             //if ( ZCE_LIB::last_error() != ETIME )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
+            //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
         }
@@ -238,7 +239,7 @@ public:
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
             //if ( ZCE_LIB::last_error() != EAGAIN )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
+            //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
         }
@@ -257,7 +258,7 @@ public:
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
             //if ( ZCE_LIB::last_error() != ETIME )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
+            //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
         }
@@ -276,7 +277,7 @@ public:
             //下面这段代码用于调试，暂时不打开,注意TRY的错误返回EAGAIN，超时返回ETIME
             //if ( ZCE_LIB::last_error() != EAGAIN )
             //{
-            //  ZLOG_DEBUG("[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
+            //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,ZCE_LIB::last_error());
             //}
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_DEQUEUE_FAIL;
         }
@@ -364,13 +365,13 @@ public:
 
         //相信这个锁不会占据主循环
         ret = enqueue_sendqueue(rsp_msg, false);
-        DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO SEND QUEUE FRAME", RS_DEBUG);
+        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO SEND QUEUE FRAME", rsp_msg);
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR,"[framework] Wait %d seconds to enqueue_sendqueue but fail. \
+            ZCE_LOG(RS_ERROR, "[framework] Wait %d seconds to enqueue_sendqueue but fail. \
                        Send queue is full or task process too slow to process request.",
-                       enqueue_timeout_.sec());
+                    enqueue_timeout_.sec());
             return ret;
         }
 
@@ -412,8 +413,8 @@ public:
         //返回值小于0表示失败
         if (ret < 0)
         {
-            ZCE_LOG(RS_ERROR,"[framework] Post message to send queue fail.ret =%d, uin=%u cmd=%u",
-                       ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
+            ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uin=%u cmd=%u",
+                    ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
 
             // 加个监控
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
@@ -452,7 +453,7 @@ public:
         //返回值小于0表示失败
         if (ret < 0)
         {
-            ZCE_LOG(RS_ERROR,"[framework] Post message to recv queue fail.ret =%d.", ret);
+            ZCE_LOG(RS_ERROR, "[framework] Post message to recv queue fail.ret =%d.", ret);
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_ENQUEUE_FAIL;
         }
 

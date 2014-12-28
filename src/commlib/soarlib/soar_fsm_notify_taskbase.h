@@ -87,11 +87,11 @@ protected:
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if ( ret != 0 )
         {
-            ZCE_LOG(RS_ERROR,"[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
+            ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
             return ret;
         }
 
-        DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO RECV QUEUE FRAME", RS_DEBUG);
+        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO RECV QUEUE FRAME", rsp_msg);
         return 0;
     }
 
@@ -139,11 +139,11 @@ protected:
         //按照我们计算的数值，理论可以无限等待，除非前面的处理能力很弱
         if ( ret != 0 )
         {
-            ZCE_LOG(RS_ERROR,"[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
+            ZCE_LOG(RS_ERROR, "[framework] Wait NULL seconds to enqueue_recvqueue but fail.Recv queue is full or transaction main task process too slow to process request.");
             return ret;
         }
 
-        DEBUGDUMP_FRAME_HEAD(rsp_msg, "TO RECV QUEUE FRAME", RS_DEBUG);
+        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO RECV QUEUE FRAME", rsp_msg );
         return 0;
     }
 

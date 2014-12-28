@@ -29,9 +29,9 @@ public:
         ///表格对应的table id
         unsigned int table_id_ = 0;
         ///表格索引的字段1的列号
-        unsigned int index1_column_ = 0;
+        long index1_column_ = 0;
         ///表格索引的字段2的列号
-        unsigned int index2_column_ = 0;
+        long index2_column_ = 0;
 
 
         ///Protobuf item定义的数据

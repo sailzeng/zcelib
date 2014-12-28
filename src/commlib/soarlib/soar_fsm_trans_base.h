@@ -1,3 +1,21 @@
+/*!
+* @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
+* @filename   soar_fsm_trans_base.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version
+* @date       2006年3月29日
+* @brief
+*
+*
+* @details
+*
+*
+*
+* @note       为了让TRANSACTION自动注册,自动销毁,让TRANSACTION保留了MANAGER的指针
+*             而且是静态的,这个想法其实限制了部分行为.好不好?
+*             2010年3月22日
+*             这个类也写了4年了,能坚持4年，不容易，而且今天是Google离开中国的第3天，无奈，无语中
+*/
 
 #ifndef SOARING_LIB_TRANSACTION_BASE_H_
 #define SOARING_LIB_TRANSACTION_BASE_H_
@@ -11,36 +29,11 @@ class Soar_MMAP_BusPipe;
 
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
 
-class SOARING_EXPORT Transaction_Base : public ZCE_Timer_Handler
+class SOARING_EXPORT Transaction_Base : public ZCE_Async_FSM
 {
     friend class Transaction_Manager;
 protected:
-    //事务状态
-    enum TRANSACTION_RUN_STATE
-    {
-        //初始化的状态
-        INIT_RUN_STATE       = 1,
-        //正常的状态
-        RIGHT_RUN_STATE      = 2,
-        //超时的状态
-        TIMEOUT_RUN_STATE    = 3,
-        //异常的状态
-        EXCEPTION_RUN_STATE  = 5,
-    };
 
-    //事务处理方式
-    enum TRANSACTION_PROCESS
-    {
-        //等待状态,当向某个服务发送消息后就处于等待状态；
-        WAIT_PROCESS   = 1,
-        //继续执行状态,用于将长时间处理分成小的时间片；
-        NEXT_PROCESS   = 2,
-        // 这里将事务退出拆分成成功退出和失败退出，目的是为了框架能监控事务处理结果w
-        //事务处理成功结束状态,可以删除事务了,调用handle_close
-        EXIT_PROCESS_SUCC   = 3,
-        //事务处理失败结束状态,可以删除事务了,调用handle_close
-        EXIT_PROCESS_FAIL   = 4,
-    };
 
     enum WAIT_TIMEOUT_VALUE
     {
@@ -63,41 +56,16 @@ protected:
 
 public:
     //构造函数
-    Transaction_Base(ZCE_Timer_Queue *timer_queue,
-                     Transaction_Manager *pmngr,
+    Transaction_Base(Transaction_Manager *pmngr,
                      bool trans_locker = false);
 
     //每次重新进行初始化时候的事情，等等，尽量保证基类的这个函数优先调用，类似构造函数
-    virtual void re_init() = 0;
+    virtual void on_start() = 0;
     //回收后的处理，用于资源的释放，等等，尽量保证基类的这个函数最后调用，类似析构函数。
     virtual void finish();
 
-    //工厂的调用函数,
-    virtual Transaction_Base *create_self(ZCE_Timer_Queue *timer_queue,
-                                          Transaction_Manager *pmngr) = 0;
-
-    //初始化,这个函数必须在你继承的初始化函数的尾部使用,
-    virtual TRANSACTION_PROCESS on_init() = 0;
-
-    //运行函数,你必须继承的函数,系统在状态机器运行的时候调用这个函数,TOUCH OUT触发后也调用这个函数
-    virtual TRANSACTION_PROCESS on_active() = 0;
-
-    //超时处理函数，有默认实现，如果你在超时时要返回数据，你就要要重载这个函数
-    virtual TRANSACTION_PROCESS on_timeout();
-
-    //异常处理函数，有默认实现，如果你在定时触发要返回数据，你就要要重载这个函数
-    virtual TRANSACTION_PROCESS on_exception();
-
     //退出的调用的函数.
     virtual int on_exit();
-
-    //得到搜索的FRAME数据，注意呀。如果过了接收数据的时间跑(阶段)，这个返回值就是失效了。切记。切记。
-    inline Zerg_App_Frame *get_recv_appframe();
-
-    //得到当前的阶段
-    inline int get_phase();
-    //得到事务ID
-    inline int get_transaction_id() const;
 
     inline unsigned int get_wait_cmd() const;
 
@@ -248,27 +216,10 @@ public:
                            unsigned int option);
 
 protected:
+
     //初始化
-    int initialize_trans(Zerg_App_Frame *proc_frame, unsigned int transid);
+    int initialize_trans(Zerg_App_Frame *proc_frame);
 
-    //取消触发定时器
-    void cancel_touch_timer();
-    //取消超时定时器
-    void cancel_timeout_timer();
-
-    /*!
-    @brief                   设置超时定时器
-    @param  sec              超时的秒
-    @param  usec             超时的微秒数
-    @param  active_auto_stop 经过一次active 后，是否自动取消超时定时器，默认为false
-    */
-    int set_timeout_timer(int sec, int usec = 0, bool active_stop = true);
-
-    //设置触发定时器
-    int set_timetouch_timer(int sec, int usec = 0);
-
-    //定时器触发
-    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
     //关闭
     virtual int handle_close ();
 
@@ -288,8 +239,7 @@ protected:
 
     //设置事务阶段
     inline void set_phase(int transphase);
-    //设置事务的状态
-    inline void set_state(TRANSACTION_RUN_STATE txstate);
+
 
     //设置事务需要检查的命令(也就是明确他要等待的命令是什么)
     inline void set_wait_cmd(unsigned int need_cmd = CMD_INVALID_CMD);
@@ -326,21 +276,15 @@ protected:
 
     //事件管理器
     Transaction_Manager     *trans_manager_;
-    //事务ID
-    unsigned int            transaction_id_;
+
     //是否加事务锁
     bool                    trans_locker_;
 
-    //请求的事务UIN
-    unsigned int            req_qq_uin_;
+    //请求的事务UID
+    unsigned int            req_user_id_;
     //这个事务的命令字
     unsigned int            trans_command_;
 
-    //事务运行状态
-    TRANSACTION_RUN_STATE   trans_run_state_;
-
-    //事务阶段
-    int                     trans_phase_;
 
     //请求事务的发送者
     SERVICES_ID             req_snd_service_;
@@ -361,9 +305,6 @@ protected:
     //请求的FRAME的的选项
     unsigned int            req_frame_option_;
 
-    //当前接收的Frame,为临时缓冲,一有数据填充,
-    Zerg_App_Frame         *tmp_recv_frame_;
-
     //事务超时的定时器ID
     int                     trans_timeout_id_;
     //发生active后，是否自动停止time out定时器
@@ -383,21 +324,6 @@ protected:
     int                     process_errno_;
 };
 
-//得到接收到的数据
-inline Zerg_App_Frame *Transaction_Base::get_recv_appframe()
-{
-    return tmp_recv_frame_;
-}
-//得到当前的阶段
-inline int Transaction_Base::get_phase()
-{
-    return trans_phase_;
-}
-//得到ID
-inline int Transaction_Base::get_transaction_id() const
-{
-    return transaction_id_;
-}
 //得到CMD
 inline unsigned int Transaction_Base::get_req_cmd() const
 {
@@ -409,17 +335,7 @@ inline unsigned int Transaction_Base::get_wait_cmd() const
     return wait_cmd_;
 }
 
-//设置交易阶段
-inline void Transaction_Base::set_phase(int transphase)
-{
-    trans_phase_ = transphase;
-}
 
-//设置事务的状态
-inline void Transaction_Base::set_state(Transaction_Base::TRANSACTION_RUN_STATE txstate)
-{
-    trans_run_state_ = txstate;
-}
 
 //设置事务需要检查的命令
 //need_cmd == 0表示不进行命令
@@ -437,10 +353,10 @@ inline  Transaction_Manager *Transaction_Base::get_trans_mgr()  const
 //检测包头和包体的qq_uin以及发送的service_id是否一致,
 inline int Transaction_Base::check_req_qquin(unsigned int qq_uin) const
 {
-    if (qq_uin != req_qq_uin_)
+    if (qq_uin != req_user_id_)
     {
-        ZCE_LOG(RS_ERROR,"[framework] QQuin in header , body and snd_service is diffrent.body: %u| request appframe header: %u.",
-                   qq_uin, req_qq_uin_);
+        ZCE_LOG(RS_ERROR, "[framework] QQuin in header , body and snd_service is diffrent.body: %u| request appframe header: %u.",
+                qq_uin, req_user_id_);
         return SOAR_RET::ERROR_QQUIN_INCERTITUDE;
     }
 
@@ -469,8 +385,8 @@ int Transaction_Base::request_send_to_peer(unsigned int cmd,
 {
     SERVICES_ID proxy_svc(0, 0);
     return sendmsg_to_service(cmd,
-                              req_qq_uin_,
-                              this->transaction_id_,
+                              req_user_id_,
+                              this->asyncobj_id_,
                               0,
                               rcv_svc,
                               proxy_svc,
@@ -493,7 +409,7 @@ int Transaction_Base::request_send_to_peer(unsigned int cmd,
     SERVICES_ID proxy_svc(0, 0);
     return sendmsg_to_service(cmd,
                               qquin,
-                              this->transaction_id_,
+                              this->asyncobj_id_,
                               backfill_trans_id,
                               rcv_svc,
                               proxy_svc,
@@ -515,7 +431,7 @@ int Transaction_Base::request_send_to_peer(unsigned int cmd,
     SERVICES_ID proxy_svc(0, 0);
     return sendmsg_to_service(cmd,
                               qquin,
-                              this->transaction_id_,
+                              this->asyncobj_id_,
                               0,
                               rcv_svc,
                               proxy_svc,
@@ -538,8 +454,8 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
 {
     SERVICES_ID rcv_svc(rcvtype, 0);
     return sendmsg_to_service(cmd,
-                              this->req_qq_uin_,
-                              this->transaction_id_,
+                              this->req_user_id_,
+                              this->asyncobj_id_,
                               0,
                               rcv_svc,
                               proxy_svc,
@@ -562,7 +478,7 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
     SERVICES_ID rcv_svc(rcvtype, 0);
     return sendmsg_to_service(cmd,
                               qquin,
-                              this->transaction_id_,
+                              this->asyncobj_id_,
                               0,
                               rcv_svc,
                               proxy_svc,
@@ -585,7 +501,7 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
 {
     return sendmsg_to_service(cmd,
                               qquin,
-                              this->transaction_id_,
+                              this->asyncobj_id_,
                               0,
                               recvsvc,
                               proxy_svc,
@@ -609,7 +525,7 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
 {
     return sendmsg_to_service(cmd,
                               qquin,
-                              this->transaction_id_,
+                              this->asyncobj_id_,
                               backfill_trans_id,
                               recvsvc,
                               proxy_svc,
@@ -635,8 +551,8 @@ int Transaction_Base::response_sendback(unsigned int cmd,
 
     //
     return sendmsg_to_service(cmd,
-                              this->req_qq_uin_,
-                              this->transaction_id_,
+                              this->req_user_id_,
+                              this->asyncobj_id_,
                               this->req_trans_id_,
                               this->req_snd_service_,
                               this->req_proxy_service_,
@@ -664,7 +580,7 @@ int Transaction_Base::response_sendback2(unsigned int cmd,
     //
     return sendmsg_to_service(cmd,
                               qquin,
-                              this->transaction_id_,
+                              this->asyncobj_id_,
                               this->req_trans_id_,
                               this->req_snd_service_,
                               this->req_proxy_service_,

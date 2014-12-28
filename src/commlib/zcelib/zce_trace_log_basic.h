@@ -394,8 +394,8 @@ protected:
 
     ///日志的缓冲区的尺寸,这儿用了8K，很长了，
     ///由于我内部还是使用的C++的stream 作为输出对象，所以我在多线程下还是使用了锁。
-    ///但如果直接用write 函数写，4096是一个更合适的值，
-    static const size_t  LOG_TMP_BUFFER_SIZE    = 8192;
+    ///但如果直接用write 函数写，4096(-1)是一个更合适的值，
+    static const size_t  LOG_TMP_BUFFER_SIZE    = 8191;
 
     ///默认的保留的文件的数量
     static const size_t DEFAULT_RESERVE_FILENUM = 100;

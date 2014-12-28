@@ -42,11 +42,11 @@ int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
 }
 
 //清理协程对象
-int ZCE_Async_Coroutine::finish()
+void ZCE_Async_Coroutine::finish()
 {
     ZCE_Async_Object::finish();
     ZCE_LIB::delete_coroutine(&handle_);
-    return 0;
+    return;
 }
 
 //调用协程
@@ -158,8 +158,8 @@ int ZCE_Async_Coroutine::waitfor_timeout(const ZCE_Time_Value &time_out)
 //=====================================================================================
 
 //携程主控管理类
-ZCE_Async_CoroutineMgr::ZCE_Async_CoroutineMgr(ZCE_Timer_Queue *timer_queue) :
-    ZCE_Async_ObjectMgr(timer_queue)
+ZCE_Async_CoroutineMgr::ZCE_Async_CoroutineMgr() :
+    ZCE_Async_ObjectMgr()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;

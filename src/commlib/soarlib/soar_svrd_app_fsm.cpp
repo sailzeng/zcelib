@@ -17,10 +17,10 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 }
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
+int Comm_SvrdApp_FSM::app_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Soar_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::app_start(argc, argv);
 
     if (0 != ret)
     {
@@ -31,10 +31,11 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 
     //事务管理器的初始化, 自动机不使用notify
     Transaction_Manager *p_trans_mgr_ = new Transaction_Manager();
-    p_trans_mgr_->initialize(svd_config->framework_config_.trans_info_.trans_cmd_num_,
+    p_trans_mgr_->initialize(ZCE_Timer_Queue::instance(),
+                             svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_id_,
-                             ZCE_Timer_Queue::instance(),
+
                              Soar_MMAP_BusPipe::instance());
     Transaction_Manager::instance(p_trans_mgr_);
 
@@ -42,7 +43,7 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] register trans cmd fail. ret=%d", ret);
+        ZCE_LOG(RS_ERROR, "[framework] register trans cmd fail. ret=%d", ret);
         return ret;
     }
 
@@ -50,12 +51,12 @@ int Comm_SvrdApp_FSM::on_start(int argc, const char *argv[])
 }
 
 //运行处理,
-int Comm_SvrdApp_FSM::on_run()
+int Comm_SvrdApp_FSM::app_run()
 {
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
-              get_app_basename(),
-              typeid(*this).name());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
+            get_app_basename(),
+            typeid(*this).name());
 
     //空闲N次后,调整SELECT的等待时间间隔
     const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
@@ -119,20 +120,20 @@ int Comm_SvrdApp_FSM::on_run()
         }
     }
 
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance end.",
-              get_app_basename(),
-              typeid(*this).name());
-    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance end.",
+            get_app_basename(),
+            typeid(*this).name());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
     return 0;
 }
 
 //退出处理
-int Comm_SvrdApp_FSM::on_exit()
+int Comm_SvrdApp_FSM::app_exit()
 {
     int ret = 0;
     Transaction_Manager::clean_instance();
 
-    ret = Soar_Svrd_Appliction::on_exit();
+    ret = Soar_Svrd_Appliction::app_exit();
 
     if ( 0 != ret )
     {

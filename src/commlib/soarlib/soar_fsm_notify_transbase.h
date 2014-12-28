@@ -23,8 +23,8 @@ public:
     //必须如此。
     //这儿是一个典型的设计两难，如果使用向下朔型DOWNCAST，无意是丑陋的。
     //但是我觉得那部分功能还是在NotifyTrans_Manger比较好。用virual函数也不是太好,甚至不可能，我用了模板函数。我。。。。
-    Notify_Trans_Base(ZCE_Timer_Queue *timer_queue, Transaction_Manager *trans_notify_mgr)
-        : Transaction_Base(timer_queue, trans_notify_mgr)
+    Notify_Trans_Base(Transaction_Manager *trans_notify_mgr)
+        : Transaction_Base(trans_notify_mgr)
         , trans_notify_mgr_(NULL)
     {
         //必须要求trans_notify_mgr至少是trans_notify_mgr的子类，
@@ -48,7 +48,7 @@ protected:
     {
         SERVICES_ID proxy_svc(0, 0);
         return trans_notify_mgr_->enqueue_sendqueue(cmd,
-                                                    this->req_qq_uin_,
+                                                    this->req_user_id_,
                                                     this->transaction_id_,
                                                     0,
                                                     info,
@@ -86,7 +86,7 @@ private:
 
 public:
     //构造函数
-    Notify_Trans_Abnormal_Base(ZCE_Timer_Queue *timer_queue, Transaction_Manager *trans_notify_mgr);
+    Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr);
 protected:
     //
     virtual ~Notify_Trans_Abnormal_Base();

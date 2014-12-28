@@ -22,12 +22,12 @@ Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
 }
 
 //运行函数
-int Soar_SvrdApp_ZergBus::on_run()
+int Soar_SvrdApp_ZergBus::app_run()
 {
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
-              get_app_basename(),
-              typeid(*this).name());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
+            get_app_basename(),
+            typeid(*this).name());
 
     //空闲N次后,调整SELECT的等待时间间隔
     const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
@@ -97,9 +97,9 @@ int Soar_SvrdApp_ZergBus::on_run()
         reactor->handle_events(&select_interval, &size_io_event);
     }
 
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance end.",
-              get_app_basename(),
-              typeid(*this).name());
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance end.",
+            get_app_basename(),
+            typeid(*this).name());
     return 0;
 }
 
@@ -122,7 +122,7 @@ int Soar_SvrdApp_ZergBus::popfront_recvpipe(size_t max_prc, size_t &proc_frame)
             return 0;
         }
 
-        DEBUGDUMP_FRAME_HEAD(nonctrl_recv_buffer_, "FROM RECV PIPE FRAME", RS_DEBUG);
+        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV PIPE FRAME", nonctrl_recv_buffer_ );
 
         //处理一个收到的数据
         ret = process_recv_frame(nonctrl_recv_buffer_);

@@ -288,6 +288,24 @@ public:
         size_t data_start = 0,
         size_t *sz_code = NULL) const;
 
+
+#if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
+
+    ///将一个结构进行编码
+    int protobuf_encode(size_t szframe_appdata,
+                        const google::protobuf::MessageLite *msg,
+                        size_t data_start = 0,
+                        size_t *sz_code = NULL
+                       );
+
+    ///将一个结构进行解码
+    int protobuf_decode(google::protobuf::MessageLite *msg,
+                        size_t data_start = 0,
+                        size_t *sz_code = NULL);
+
+#endif
+
+
     //拷贝Output CDR中的Msg,Block数据,szframe_appdata为frame_appdata_的buffer长度,如果frame_appdata_为一个缓冲,使用此函数
     //ssize_t CopyCDRMsgBlock(size_t szframe_appdata,const ACE_OutputCDR& outcdr );
     //如果AppFrame为一个恰好长度的Frame,长度已经填写,使用此函数,
@@ -322,17 +340,15 @@ public:
     //不重载delte与情理不通，但是其实没有什么问题,
     static void operator delete(void *ptrframe, size_t );
 
-    //直接使用一个buf作为填充区
-    //static ssize_t CopyCDRMsgBlock(char *buf,size_t szbuf,const ACE_OutputCDR& outcdr);
 
     //输出APPFRAME的头部信息
-    static void dumpoutput_framehead(const Zerg_App_Frame *proc_frame,
+    static void dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
-                                     ZCE_LOG_PRIORITY log_priority);
+                                     const Zerg_App_Frame *frame);
     //输出APPFRAME的尾部信息
-    static void dumpoutput_frameinfo(const Zerg_App_Frame *proc_frame ,
+    static void dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
-                                     ZCE_LOG_PRIORITY log_priority);
+                                     const Zerg_App_Frame *frame);
 
     //--------------------------------------------------------------------------
     //FRAME的数据进行TEA算法加密解密的函数，STATIC函数，不知道Jovi当年为啥要写成STATIC的，呵呵
@@ -481,13 +497,19 @@ int Zerg_App_Frame::appdata_decode(  T &info,
     return 0;
 }
 
+
 //很耗时的操作，注意使用频度
+#define DEBUGDUMP_FRAME_HEAD(x,y,z)    Zerg_App_Frame::dumpoutput_framehead(x,y,z);
+#define DEBUGDUMP_FRAME_INFO(x,y,z)    Zerg_App_Frame::dumpoutput_frameinfo(x,y,z);
+
+
+//非DEBUG版本会优化掉的宏
 #if defined _DEBUG || defined DEBUG
-#define DEBUGDUMP_FRAME_HEAD(x,y,z)      Zerg_App_Frame::dumpoutput_framehead(x,y,z);
-#define DEBUGDUMP_FRAME_INFO(x,y,z)      Zerg_App_Frame::dumpoutput_frameInfo(x,y,z)
+#define DEBUGDUMP_FRAME_HEAD_DBG(x,y,z)      Zerg_App_Frame::dumpoutput_framehead(x,y,z);
+#define DEBUGDUMP_FRAME_INFO_DBG(x,y,z)      Zerg_App_Frame::dumpoutput_frameinfo(x,y,z)
 #else
-#define DEBUGDUMP_FRAME_HEAD(x,y,z)
-#define DEBUGDUMP_FRAME_INFO(x,y,z)
+#define DEBUGDUMP_FRAME_HEAD_DBG(x,y,z)
+#define DEBUGDUMP_FRAME_INFO_DBG(x,y,z)
 #endif
 
 #endif //SOARING_LIB_SERVER_APP_FRAME_H_

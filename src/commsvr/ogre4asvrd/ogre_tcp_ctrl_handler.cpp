@@ -255,7 +255,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
 
     int ret = read_data_from_peer(szrecv);
 
-    ZLOG_DEBUG("Read event,[%s|%u] ,TCP handle input event triggered. ret:%d,szrecv:%u.\n",
+    ZCE_LOG(RS_DEBUG,"Read event,[%s|%u] ,TCP handle input event triggered. ret:%d,szrecv:%u.\n",
                remote_address_.get_host_addr(),
                remote_address_.get_port_number(),
                ret,

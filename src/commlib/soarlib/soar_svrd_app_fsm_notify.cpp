@@ -18,11 +18,11 @@ Comm_SvrdApp_FSM_Notify::~Comm_SvrdApp_FSM_Notify()
 };
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
+int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Soar_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::app_start(argc, argv);
     if (0 != ret)
     {
         return ret;
@@ -73,7 +73,7 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_INFO,"[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u", ret);
+        ZCE_LOG(RS_INFO, "[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u", ret);
         return ret;
     }
 
@@ -81,13 +81,13 @@ int Comm_SvrdApp_FSM_Notify::on_start(int argc, const char *argv[])
 }
 
 //运行处理,
-int Comm_SvrdApp_FSM_Notify::on_run()
+int Comm_SvrdApp_FSM_Notify::app_run()
 {
     // fix me add log
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
-              get_app_basename(),
-              typeid(*this).name());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
+            get_app_basename(),
+            typeid(*this).name());
 
     //空闲N次后,调整SELECT的等待时间间隔
     const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
@@ -155,12 +155,12 @@ int Comm_SvrdApp_FSM_Notify::on_run()
         }
     }
 
-    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO, "======================================================================================================");
     return 0;
 }
 
 //退出处理
-int Comm_SvrdApp_FSM_Notify::on_exit()
+int Comm_SvrdApp_FSM_Notify::app_exit()
 {
     //通知所有的线程退出
     MT_NOTIFY_TRANS_MANGER *notify_trans_mgr = static_cast<MT_NOTIFY_TRANS_MANGER *>(Transaction_Manager::instance());
@@ -172,7 +172,7 @@ int Comm_SvrdApp_FSM_Notify::on_exit()
     //等待所有的Join的线程退出
     //ACE_Thread_Manager::instance()->wait();
 
-    ret = Soar_Svrd_Appliction::on_exit();
+    ret = Soar_Svrd_Appliction::app_exit();
 
     if ( 0 != ret )
     {

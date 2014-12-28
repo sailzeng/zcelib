@@ -166,7 +166,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
 
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
-        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
+        ZCE_LOG(RS_DEBUG,"Receive a internal command, frame_uin:%u, frame_command:%u. ",
                    proc_frame->frame_uid_, proc_frame->frame_command_);
         return 0;
     }
@@ -242,7 +242,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
 
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
-        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
+        ZCE_LOG(RS_DEBUG,"Receive a internal command, frame_uin:%u, frame_command:%u. ",
                    proc_frame->frame_uid_, proc_frame->frame_command_);
         return 0;
     }
@@ -303,7 +303,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
 
     ret = conf_tree->path_get_leaf("BROADCAST_CFG", "BROADCAST_NUM",
                                    broadcast_svcnum_);
-    ZLOG_DEBUG("Broadcast service num: %u.", broadcast_svcnum_);
+    ZCE_LOG(RS_DEBUG,"Broadcast service num: %u.", broadcast_svcnum_);
     if (0 != ret || broadcast_svcnum_ == 0 || broadcast_svcnum_ > MAX_NUM_COPY_SVC)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -317,7 +317,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
     for (size_t i = 0; i < broadcast_svcnum_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("BROADCAST_CFG", "BROADCAST_SVCID_", i + 1, broadcast_svcid_[i]);
-        ZLOG_DEBUG("Broadcast service id: %hu.%u.", broadcast_svctype_, broadcast_svcid_[i]);
+        ZCE_LOG(RS_DEBUG,"Broadcast service id: %hu.%u.", broadcast_svctype_, broadcast_svcid_[i]);
         if (0 != ret)
         {
             SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -359,7 +359,7 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
-        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
+        ZCE_LOG(RS_DEBUG,"Receive a internal command, frame_uin:%u, frame_command:%u. ",
                    proc_frame->frame_uid_, proc_frame->frame_command_);
         return 0;
     }
@@ -431,7 +431,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
 
     ret = conf_tree->path_get_leaf("MODULO_CFG", "MODULO_NUM",
                                    modulo_svcnum_);
-    ZLOG_DEBUG("Modulo service num: %u.", modulo_svcnum_);
+    ZCE_LOG(RS_DEBUG,"Modulo service num: %u.", modulo_svcnum_);
     if (0 != ret || modulo_svcnum_ == 0 || modulo_svcnum_ > MAX_NUM_MODULO_SVC)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -442,7 +442,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
     for (size_t i = 0; i < modulo_svcnum_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("MODULO_CFG", "MODULO_SVCID_", i + 1, modulo_svcid_[i]);
-        ZLOG_DEBUG("Broadcast service id: %hu.%u.", modulo_svctype_, modulo_svcid_[i]);
+        ZCE_LOG(RS_DEBUG,"Broadcast service id: %hu.%u.", modulo_svctype_, modulo_svcid_[i]);
         if (0 != ret)
         {
             SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -484,7 +484,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
-        ZLOG_DEBUG("Receive a internal command, frame_uin:%u, frame_command:%u. ",
+        ZCE_LOG(RS_DEBUG,"Receive a internal command, frame_uin:%u, frame_command:%u. ",
                    proc_frame->frame_uid_, proc_frame->frame_command_);
         return 0;
     }
@@ -638,7 +638,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 ////要处理的帧
 //int DBModalProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //{
-//    ZLOG_DEBUG("Receive a dbmode frame to process,"
+//    ZCE_LOG(RS_DEBUG,"Receive a dbmode frame to process,"
 //               "send svr:[%u|%u], "
 //               "recv svr:[%u|%u], "
 //               "frame_uin:%u, "
@@ -694,7 +694,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        proc_frame->recv_service_.services_id_ =  dbmodal_proxy_info->normal_router_cfg_[mod];
 //
 //        // 日志调整为DEBUG级别的
-//        ZLOG_DEBUG("Send to main services [%u|%u], frame_uin:%u, "
+//        ZCE_LOG(RS_DEBUG,"Send to main services [%u|%u], frame_uin:%u, "
 //            "frame_command:%u, frame_len:%u, trans_id[%u]. ",
 //                   proc_frame->recv_service_.services_type_,
 //                   proc_frame->recv_service_.services_id_,

@@ -102,8 +102,8 @@ void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
 
         if (now_sec - last_check_ > FIVE_MINUTE_SECONDS)
         {
-            ZCE_LOG(RS_ERROR,"check monitor more than five minutes:real_second=%d %d",
-                       now_sec - last_check_, now_sec % FIVE_MINUTE_SECONDS);
+            ZCE_LOG(RS_ERROR, "check monitor more than five minutes:real_second=%d %d",
+                    now_sec - last_check_, now_sec % FIVE_MINUTE_SECONDS);
         }
 
         // 这里是为了保证每次检查在5分钟整
@@ -125,7 +125,7 @@ void Server_Timer_Base::report_status()
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR,"watch dog get sys/app status failed, ret = %d", ret);
+            ZCE_LOG(RS_ERROR, "watch dog get sys/app status failed, ret = %d", ret);
         }
         else
         {

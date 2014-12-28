@@ -72,7 +72,7 @@ Server_Config_Base *Soar_Svrd_Appliction::config_instance()
 
 
 //启动过程的处理
-int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
+int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 {
 
     //Soar_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
@@ -126,7 +126,7 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
         3);
 
     ZCE_LOG(RS_INFO, "[framework] change run directory to %s .",
-               config_base_->app_run_dir_.c_str());
+            config_base_->app_run_dir_.c_str());
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -148,20 +148,20 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
 #endif
 
     //我是华丽的分割线
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] %s start init", app_base_name_.c_str());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] %s start init", app_base_name_.c_str());
 
     // 切换运行目录
     ret = ZCE_LIB::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] change run directory to %s fail. err=%d",
-                   config_base_->app_run_dir_.c_str(), errno);
+        ZCE_LOG(RS_ERROR, "[framework] change run directory to %s fail. err=%d",
+                config_base_->app_run_dir_.c_str(), errno);
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"[framework] change work dir to %s", config_base_->app_run_dir_.c_str());
+    ZCE_LOG(RS_INFO, "[framework] change work dir to %s", config_base_->app_run_dir_.c_str());
 
     // 运行目录写PID File.
     std::string app_path = config_base_->app_run_dir_
@@ -172,12 +172,12 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     if (ret != 0)
     {
         //如果有错误显示错误，如果错误==16，表示可能是PID文件被锁定,
-        ZCE_LOG(RS_ERROR,"[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
-                   app_path.c_str(), ZCE_LIB::last_error(),
-                   strerror(ZCE_LIB::last_error()));
+        ZCE_LOG(RS_ERROR, "[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
+                app_path.c_str(), ZCE_LIB::last_error(),
+                strerror(ZCE_LIB::last_error()));
 
-        ZCE_LOG(RS_ERROR,"[framework] If last error == 16, could has a same process already run in this directory."
-                   "Please check PID file or system processes.");
+        ZCE_LOG(RS_ERROR, "[framework] If last error == 16, could has a same process already run in this directory."
+                "Please check PID file or system processes.");
         return SOAR_RET::ERROR_WRITE_ERROR_PIDFILE;
     }
 
@@ -185,7 +185,7 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = config_base_->read_cfgfile();
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] framwork config read_cfgfile fail. ret=%d", ret);
+        ZCE_LOG(RS_ERROR, "[framework] framwork config read_cfgfile fail. ret=%d", ret);
         return ret;
     }
 
@@ -194,13 +194,13 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     ret = init_log();
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR,"[framework] init log fail. ret=%d", ret);
+        ZCE_LOG(RS_ERROR, "[framework] init log fail. ret=%d", ret);
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"[framework] %s read_cfgfile success and init_log success.", app_base_name_.c_str());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] %s read_cfgfile success and init_log success.", app_base_name_.c_str());
 
     self_svc_id_ = config_base_->self_svc_id_;
     //取得配置信息后, 需要将启动参数全部配置OK. 以下的assert做强制检查
@@ -244,10 +244,10 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
     size_t max_reactor_hdl = config_base_->max_reactor_hdl_num_;
 #ifdef ZCE_OS_WINDOWS
     ZCE_Reactor::instance(new ZCE_Select_Reactor(max_reactor_hdl));
-    ZLOG_DEBUG("[framework] ZCE_Reactor and ZCE_Select_Reactor u.");
+    ZCE_LOG(RS_DEBUG, "[framework] ZCE_Reactor and ZCE_Select_Reactor u.");
 #else
     ZCE_Reactor::instance(new ZCE_Epoll_Reactor(max_reactor_hdl));
-    ZLOG_DEBUG("[framework] ZCE_Reactor and ZCE_Epoll_Reactor initialized.");
+    ZCE_LOG(RS_DEBUG, "[framework] ZCE_Reactor and ZCE_Epoll_Reactor initialized.");
 #endif
 
     //初始化内存管道
@@ -260,21 +260,21 @@ int Soar_Svrd_Appliction::on_start(int argc, const char *argv[])
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_INFO,"[framework] Soar_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
+        ZCE_LOG(RS_INFO, "[framework] Soar_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.", ret);
         return ret;
     }
 
     zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
 
-    ZCE_LOG(RS_INFO,"[framework] MMAP Pipe init success,gogogo."
-              "The more you have,the more you want. ");
+    ZCE_LOG(RS_INFO, "[framework] MMAP Pipe init success,gogogo."
+            "The more you have,the more you want. ");
 
-    ZCE_LOG(RS_INFO,"[framework] Soar_Svrd_Appliction::init_instance Success.");
+    ZCE_LOG(RS_INFO, "[framework] Soar_Svrd_Appliction::init_instance Success.");
     return 0;
 }
 
 //退出的工作
-int Soar_Svrd_Appliction::on_exit()
+int Soar_Svrd_Appliction::app_exit()
 {
     //可能要增加多线程的等待
     ZCE_Thread_Wait_Manager::instance()->wait_all();
@@ -309,10 +309,10 @@ int Soar_Svrd_Appliction::on_exit()
     ZCE_Timer_Queue::clean_instance();
     Soar_Stat_Monitor::clean_instance();
 
-    ZCE_LOG(RS_INFO,"[framework] %s exit_instance Succ.Have Fun.!!!",
-              app_run_name_.c_str());
-    ZCE_LOG(RS_INFO,"======================================================================================================");
-    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO, "[framework] %s exit_instance Succ.Have Fun.!!!",
+            app_run_name_.c_str());
+    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO, "======================================================================================================");
     return 0;
 }
 
@@ -333,7 +333,7 @@ int Soar_Svrd_Appliction::init_log()
 {
     int ret = 0;
 
-    ZLOG_DEBUG("log instance finalize .");
+    ZCE_LOG(RS_DEBUG, "log instance finalize .");
     //关闭原来的日志输出方法
     ZCE_Trace_LogMsg::instance()->finalize();
 
@@ -352,7 +352,7 @@ int Soar_Svrd_Appliction::init_log()
         return ret;
     }
 
-    ZLOG_DEBUG("log instance reinit .");
+    ZCE_LOG(RS_DEBUG, "log instance reinit .");
 
     return 0;
 }

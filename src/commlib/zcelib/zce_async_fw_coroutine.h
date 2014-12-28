@@ -53,7 +53,7 @@ public:
     * @brief      结束销毁函数，在析构前的调用
     * @return     int
     */
-    virtual int finish();
+    virtual void finish();
 
 protected:
 
@@ -140,7 +140,7 @@ class ZCE_Async_CoroutineMgr : public ZCE_Async_ObjectMgr
 public:
 
     //
-    ZCE_Async_CoroutineMgr(ZCE_Timer_Queue *timer_queue);
+    ZCE_Async_CoroutineMgr();
     virtual ~ZCE_Async_CoroutineMgr();
 
 protected:

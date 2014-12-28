@@ -21,10 +21,10 @@ Wormhole_Proxy_App::~Wormhole_Proxy_App()
     }
 }
 
-int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
+int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Soar_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -60,13 +60,13 @@ int Wormhole_Proxy_App::on_start(int argc, const char *argv[])
 }
 
 //
-int Wormhole_Proxy_App::on_exit()
+int Wormhole_Proxy_App::app_exit()
 {
     ZCE_LOG(RS_INFO,"Wormhole_Proxy_App::exit. ");
     int ret = 0;
 
     //最后调用通用的退出模块
-    ret = Soar_Svrd_Appliction::on_exit();
+    ret = Soar_Svrd_Appliction::app_exit();
 
     return 0;
 }

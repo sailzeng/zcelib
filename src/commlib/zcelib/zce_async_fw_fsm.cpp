@@ -16,8 +16,9 @@ ZCE_Async_FSM::~ZCE_Async_FSM()
 }
 
 //状态机运行的代码，这只是一个参考示例
-void ZCE_Async_FSM::on_run(bool &continue_run)
+void ZCE_Async_FSM::on_run(void *outer_data, bool &continue_run)
 {
+    ZCE_UNUSED_ARG(outer_data);
     enum
     {
         //开始
@@ -76,7 +77,7 @@ void ZCE_Async_FSM::set_stage(int stage)
 
 
 //取得的状态机阶段
-int ZCE_Async_FSM::get_stage()
+int ZCE_Async_FSM::get_stage() const
 {
     return fsm_stage_;
 }
@@ -84,8 +85,8 @@ int ZCE_Async_FSM::get_stage()
 //=====================================================================================
 
 //状态机主控管理类
-ZCE_Async_FSMMgr::ZCE_Async_FSMMgr(ZCE_Timer_Queue *timer_queue) :
-    ZCE_Async_ObjectMgr(timer_queue)
+ZCE_Async_FSMMgr::ZCE_Async_FSMMgr() :
+    ZCE_Async_ObjectMgr()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;

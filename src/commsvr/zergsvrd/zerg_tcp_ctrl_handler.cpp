@@ -745,7 +745,7 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
 
     //必须解码,否则后面的管道无法识别
     proc_frame->framehead_decode();
-    DEBUGDUMP_FRAME_HEAD(proc_frame, "preprocess_recvframe After framehead_decode:", RS_DEBUG);
+    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "preprocess_recvframe After framehead_decode:", proc_frame);
 
     //清理内部选项,避免被错误数据或者其他人整蛊
     proc_frame->clear_inner_option();
@@ -1033,7 +1033,9 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
                     rcv_buffer_->size_of_buffer_,
                     rcv_buffer_->size_of_use_);
             //
-            DEBUGDUMP_FRAME_HEAD(reinterpret_cast<Zerg_App_Frame *>(rcv_buffer_->buffer_data_), "Error frame before framehead_decode,", RS_DEBUG);
+            DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG ,
+                "Error frame before framehead_decode,",
+                reinterpret_cast<Zerg_App_Frame *>(rcv_buffer_->buffer_data_));
             return SOAR_RET::ERR_ZERG_GREATER_MAX_LEN_FRAME;
         }
     }
@@ -1354,7 +1356,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
     server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, 0, 0, 1);
     //
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
-    DEBUGDUMP_FRAME_HEAD(proc_frame, "process_send_data Before framehead_encode:", RS_DEBUG);
+    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "process_send_data Before framehead_encode:", proc_frame);
 
     SERVICES_ID *p_sendto_svrinfo = NULL;
 
@@ -1475,7 +1477,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
                     proc_frame->frame_uid_,
                     proc_frame->frame_length_
                    );
-            DEBUGDUMP_FRAME_HEAD(proc_frame, "[SEND TO NO EXIST HANDLE]", RS_ERROR);
+            DEBUGDUMP_FRAME_HEAD_DBG(RS_ERROR, "[SEND TO NO EXIST HANDLE]", proc_frame );
             return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
         }
 

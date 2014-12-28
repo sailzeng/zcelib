@@ -23,12 +23,12 @@ Ogre_Service_App::~Ogre_Service_App()
 }
 
 //
-int Ogre_Service_App::on_start(int argc, const char *argv[])
+int Ogre_Service_App::app_start(int argc, const char *argv[])
 {
     int ret = 0;
     ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
     //
-    ret = Soar_Svrd_Appliction::on_start(argc, argv);
+    ret = Soar_Svrd_Appliction::app_start(argc, argv);
 
     if (ret != 0)
     {
@@ -64,7 +64,7 @@ int Ogre_Service_App::on_start(int argc, const char *argv[])
 }
 
 //处理退出的清理工作
-int Ogre_Service_App::on_exit()
+int Ogre_Service_App::app_exit()
 {
     //
     Ogre_Comm_Manger::instance()->uninit_comm_manger();
@@ -73,7 +73,7 @@ int Ogre_Service_App::on_exit()
     Ogre_Buffer_Storage::instance()->uninit_buffer_list();
 
     //基类的退出
-    Soar_Svrd_Appliction::on_exit();
+    Soar_Svrd_Appliction::app_exit();
 
     //
     ZCE_LOG(RS_INFO, "%s Succ.Have Fun.!!!\n", __ZCE_FUNC__);
@@ -84,7 +84,7 @@ int Ogre_Service_App::on_exit()
 
 //运行函数,不到万不得已,不会退出.
 //最重要的函数, 但是也最简单
-int Ogre_Service_App::on_run()
+int Ogre_Service_App::app_run()
 {
     //空闲N次后,SLEEP的时间间隔
     const unsigned int  IDLE_SLEEP_INTERVAL = 512;

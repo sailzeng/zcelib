@@ -52,7 +52,7 @@ public:
     * @brief      结束销毁函数，在析构前的调用
     * @return     int
     */
-    virtual int finish();
+    virtual void finish();
 
     /*!
     * @brief      克隆自己
@@ -70,7 +70,7 @@ public:
     * @brief      异步对象运行
     * @param[out] continue_run 异步对象是否继续运行，如果不继续(返回false)，
     */
-    virtual void on_run(bool &continue_run) = 0;
+    virtual void on_run(void *outer_data, bool &continue_run) = 0;
 
 
     /*!
@@ -182,7 +182,7 @@ protected:
 public:
 
     ///异步对象管理器的构造函数
-    ZCE_Async_ObjectMgr(ZCE_Timer_Queue *timer_queue);
+    ZCE_Async_ObjectMgr();
     virtual ~ZCE_Async_ObjectMgr();
 
     /*!
@@ -191,7 +191,8 @@ public:
     * @param      crtn_type_num
     * @param      running_number
     */
-    int initialize(size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
+    int initialize(ZCE_Timer_Queue *tq,
+                   size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
                    size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
 
 
@@ -213,22 +214,29 @@ public:
                           ZCE_Async_Object *async_base);
 
     /*!
+    * @brief      判断某个命令是否是注册（创建）异步对象命令
+    * @return     bool
+    * @param      cmd
+    */
+    bool is_register_cmd(unsigned int cmd);
+
+    /*!
     * @brief      创建一个异步对象
     * @return     int
+    * @param      outer_data
     * @param      cmd
     * @param      id
     */
-    int create_asyncobj(unsigned int cmd, unsigned int *id);
+    int create_asyncobj(void *outer_data, unsigned int cmd, unsigned int *id);
 
 
     /*!
     * @brief      激活某个已经运行的异步对象,
     * @return     int
+    * @param      outer_data
     * @param      id
     */
-    int active_asyncobj(unsigned int id);
-
-
+    int active_asyncobj(void *outer_data, unsigned int id);
 
     /*!
     * @brief      打印管理器的基本信息，运行状态

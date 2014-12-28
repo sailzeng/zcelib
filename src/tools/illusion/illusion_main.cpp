@@ -26,12 +26,9 @@ Illusion_Application::~Illusion_Application()
 
 
 /// app的开始运行
-int Illusion_Application::on_start(int argc, const char *argv[])
+int Illusion_Application::on_start(int /*argc*/, const char * /*argv*/[])
 {
     int ret = 0;
-
-    BOOL bret = FALSE;
-
     //使用UTF8代码也输出，测试发现还是有很多问题，因为自己的库内部使用的是Not set的字符集。
     //bret = ::SetConsoleOutputCP(CP_UTF8);
     //if (bret == FALSE)
@@ -84,7 +81,8 @@ int Illusion_Application::on_start(int argc, const char *argv[])
     }
     ZCE_LIB::path_string_cat(logdir_path_, "illusion_operation");
 
-    ZCE_Trace_LogMsg::instance()->init_size_log(logdir_path_.c_str());
+    ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DAY,
+        logdir_path_.c_str());
 
     //读取.xls , .xlsx 文件
     ret = ZCE_LIB::readdir_nameary(excel_path_.c_str(),
