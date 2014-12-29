@@ -8,8 +8,8 @@
 
 //========================================================================================
 
-ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr) :
-    ZCE_Async_Object(async_mgr),
+ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr,unsigned int reg_cmd) :
+    ZCE_Async_Object(async_mgr, reg_cmd),
     stack_size_(MIN_STACK_SIZE)
 {
     //堆栈大小默认选择最小的，
@@ -21,9 +21,9 @@ ZCE_Async_Coroutine::~ZCE_Async_Coroutine()
 
 
 //初始化协程的对象
-int ZCE_Async_Coroutine::initialize(unsigned int reg_cmd)
+int ZCE_Async_Coroutine::initialize()
 {
-    ZCE_Async_Object::initialize(reg_cmd);
+    ZCE_Async_Object::initialize();
     int ret = 0;
     ret = ZCE_LIB::make_coroutine(&handle_,
                                   stack_size_,

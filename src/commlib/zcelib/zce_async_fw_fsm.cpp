@@ -6,8 +6,8 @@
 
 //=====================================================================================
 //状态机的异步对象
-ZCE_Async_FSM::ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr) :
-    ZCE_Async_Object(async_mgr)
+ZCE_Async_FSM::ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr, unsigned int reg_cmd) :
+    ZCE_Async_Object(async_mgr, reg_cmd)
 {
 }
 

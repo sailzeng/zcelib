@@ -34,7 +34,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr);
+    ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr,unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -47,7 +47,7 @@ public:
     * @brief      初始化函数，在构造函数后调用，在放入池子前执行一次，
     * @return     int 0标识成功
     */
-    virtual int initialize(unsigned int reg_cmd);
+    virtual int initialize();
 
     /*!
     * @brief      结束销毁函数，在析构前的调用

@@ -57,12 +57,11 @@ protected:
 public:
     //构造函数
     Transaction_Base(Transaction_Manager *pmngr,
+                     unsigned int reg_cmd,
                      bool trans_locker = false);
 
     //每次重新进行初始化时候的事情，等等，尽量保证基类的这个函数优先调用，类似构造函数
-    virtual void on_start() = 0;
-    //回收后的处理，用于资源的释放，等等，尽量保证基类的这个函数最后调用，类似析构函数。
-    virtual void finish();
+    virtual void on_start();
 
     //退出的调用的函数.
     virtual int on_exit();
@@ -265,11 +264,6 @@ protected:
     void output_trans_info(const char *outstr = "Output Transaction Info") const;
 
 public:
-    //无效的阶段ID
-    static const int INVALID_PHASE_ID = 0;
-
-    //TIME ID
-    static const int TRANSACTION_TIME_ID[];
 
     //这儿对封装要求很严格，但是我感觉对外暴露的接口足够了。
 protected:

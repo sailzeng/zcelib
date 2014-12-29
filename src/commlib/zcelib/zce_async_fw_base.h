@@ -34,7 +34,8 @@ class ZCE_Async_Object
     friend class ZCE_Async_ObjectMgr;
 
 public:
-    ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr);
+    ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
+                     unsigned int reg_cmd);
 protected:
     ~ZCE_Async_Object();
 
@@ -43,13 +44,14 @@ public:
 
     /*!
     * @brief      初始化函数，在构造函数后调用，在放入池子前执行一次，
+    *             为什么不妨到构造函数，因为担心有些初始化会有不成功的情况，
     * @return     int 0标识成功
     */
-    virtual int initialize(unsigned int reg_cmd);
+    virtual int initialize();
 
 
     /*!
-    * @brief      结束销毁函数，在析构前的调用
+    * @brief      结束销毁函数，在析构前的调用，其实就是对应上面
     * @return     int
     */
     virtual void finish();
@@ -59,7 +61,8 @@ public:
     * @return     ZCE_Async_Object*
     * @param      async_mgr
     */
-    virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr) = 0;
+    virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr,
+                                    unsigned int reg_cmd) = 0;
 
     /*!
     * @brief      异步对象开始

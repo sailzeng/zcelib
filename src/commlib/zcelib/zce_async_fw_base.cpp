@@ -11,10 +11,11 @@
 const int ZCE_Async_Object::ASYNCOBJ_ACTION_ID[] = { 10001, 20001 };
 
 //构造函数
-ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr) :
+ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
+                                   unsigned int reg_cmd) :
     asyncobj_id_(ZCE_Async_ObjectMgr::INVALID_IDENTITY),
     async_mgr_(async_mgr),
-    create_cmd_(ZCE_Async_ObjectMgr::INVALID_COMMAND),
+    create_cmd_(reg_cmd),
     timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID)
 {
 }
@@ -25,9 +26,8 @@ ZCE_Async_Object::~ZCE_Async_Object()
 }
 
 //初始化函数，在构造函数后调用，
-int ZCE_Async_Object::initialize(unsigned int reg_cmd)
+int ZCE_Async_Object::initialize()
 {
-    create_cmd_ = reg_cmd;
     return 0;
 }
 
@@ -224,13 +224,13 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     regaysnc_pool_[create_cmd] = record;
     ASYNC_OBJECT_RECORD &ref_rec = regaysnc_pool_[create_cmd];
 
-    coroutine_base->initialize(create_cmd);
+    coroutine_base->initialize();
     ref_rec.aysncobj_pool_.initialize(pool_init_size_ + 1);
     ref_rec.aysncobj_pool_.push_back(coroutine_base);
     for (size_t i = 0; i < pool_init_size_; i++)
     {
-        ZCE_Async_Object *crtn = coroutine_base->clone(this);
-        crtn->initialize(create_cmd);
+        ZCE_Async_Object *crtn = coroutine_base->clone(this, create_cmd);
+        crtn->initialize();
         ref_rec.aysncobj_pool_.push_back(crtn);
     }
     return 0;
@@ -282,7 +282,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
         //用模型克隆N-1个Trans
         for (size_t i = 0; i < pool_extend_size_; ++i)
         {
-            ZCE_Async_Object *cloned_base = model_trans->clone(this);
+            ZCE_Async_Object *cloned_base = model_trans->clone(this, create_cmd);
             reg_async.aysncobj_pool_.push_back(cloned_base);
         }
 
