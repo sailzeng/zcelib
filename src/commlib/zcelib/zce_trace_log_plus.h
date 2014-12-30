@@ -87,7 +87,7 @@ public:
         }
 
         //如果输出的日志级别低于Mask值
-        if (out_level_mask_ > outlevel )
+        if (permit_outlevel_ > outlevel )
         {
             return;
         }

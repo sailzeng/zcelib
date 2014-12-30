@@ -33,7 +33,7 @@
 //关闭输出
 #define ZLOG_DISABLE          ZCE_Trace_LogMsg::disable_output_logmsg
 //输出MASK级别,小于这个级别的日志信息不予输出
-#define ZLOG_OUTLEVEL_MASK    ZCE_Trace_LogMsg::set_log_priority
+#define ZLOG_SET_OUTLEVEL     ZCE_Trace_LogMsg::set_log_priority
 
 //ZCE_LOG为什么要你用双括号，GCC2.9惹得祸,土死了，但是我无能为力,
 //我不打算兼容那么多版本，我懒

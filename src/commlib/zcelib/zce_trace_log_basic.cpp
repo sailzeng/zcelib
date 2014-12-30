@@ -23,7 +23,7 @@ ZCE_LogTrace_Basic::ZCE_LogTrace_Basic():
     reserve_file_num_(DEFAULT_RESERVE_FILENUM),
     record_info_(LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL),
     current_click_(1),
-    out_level_mask_(RS_TRACE),
+    permit_outlevel_(RS_TRACE),
     size_log_file_(0),
     if_output_log_(true)
 {
@@ -139,7 +139,7 @@ int ZCE_LogTrace_Basic::initialize(ZCE_LOGFILE_DEVIDE div_log_file,
     reserve_file_num_ = reserve_file_num;
     record_info_ = head_record;
     current_click_ = 1;
-    out_level_mask_ = RS_TRACE;
+    permit_outlevel_ = RS_TRACE;
     size_log_file_ = 0;
 
     if_output_log_ = true;
@@ -177,7 +177,7 @@ void ZCE_LogTrace_Basic::finalize()
     }
 
     current_click_ = 1;
-    out_level_mask_ = RS_TRACE;
+    permit_outlevel_ = RS_TRACE;
 
     div_log_file_ = LOGDEVIDE_NONE;
     output_way_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
@@ -276,17 +276,17 @@ void ZCE_LogTrace_Basic::disable_output_logmsg(void)
     if_output_log_ = false;
 }
 
-//设置日志输出Mask
+//设置日志输出Level
 ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::set_log_priority( ZCE_LOG_PRIORITY outlevel )
 {
-    ZCE_LOG_PRIORITY oldlevel = out_level_mask_;
-    out_level_mask_ = outlevel;
+    ZCE_LOG_PRIORITY oldlevel = permit_outlevel_;
+    permit_outlevel_ = outlevel;
     return oldlevel;
 }
-//取得输出Mask
+//取得输出Level
 ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::get_log_priority(void )
 {
-    return out_level_mask_;
+    return permit_outlevel_;
 }
 
 //设置默认输出的信息类型

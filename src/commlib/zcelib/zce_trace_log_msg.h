@@ -32,13 +32,8 @@ public:
     ZCE_Trace_LogMsg();
     virtual ~ZCE_Trace_LogMsg();
 
-    //为C爱好者准备的封装，且记不要混用
-    ///输出一条(行)日志记录.
+    ///为C爱好者准备的封装，且记不要混用,输出一条(行)日志记录.
     void write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ...);
-
-    ///打印某个对象的信息，需要对象支持函数
-    template <typename T>
-    void write_multiline_object(ZCE_LOG_PRIORITY outlevel, const char *tips, const T &out_object);
 
 protected:
 

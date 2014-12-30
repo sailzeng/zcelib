@@ -77,7 +77,7 @@ enum ZCE_LOGFILE_DEVIDE
 
 
 ///RS的缩写是用于纪念Richard steven
-///日志输出级别,日志记录时使用的是级别,使用这样的枚举值定义是因为,我原来考虑Mask是用按位与的方式.
+///日志输出级别,日志记录时使用的是级别,
 enum ZCE_LOG_PRIORITY
 {
     ///跟踪信息,默认Mask输出级别,默认全部输出
@@ -243,13 +243,13 @@ public:
 
 
     /*!
-    @brief      设置日志输出级别的Mask
+    @brief      设置日志输出级别的Level
     @return     ZCE_LOG_PRIORITY  旧的日志输出级别
     @param[in]  outmask           设置的日志输出级别
     */
-    ZCE_LOG_PRIORITY set_log_priority(ZCE_LOG_PRIORITY outmask );
+    ZCE_LOG_PRIORITY set_log_priority(ZCE_LOG_PRIORITY out_level );
     /*!
-    @brief      取得输出Mask
+    @brief      取得输出Level
     @return     ZCE_LOG_PRIORITY
     */
     ZCE_LOG_PRIORITY get_log_priority(void );
@@ -461,7 +461,7 @@ protected:
     time_t                current_click_;
 
     ///输出日志信息的Mask值,小于这个信息的信息不予以输出
-    ZCE_LOG_PRIORITY      out_level_mask_;
+    ZCE_LOG_PRIORITY      permit_outlevel_;
 
 
     ///日志文件的尺寸

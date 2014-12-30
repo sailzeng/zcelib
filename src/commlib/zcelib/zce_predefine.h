@@ -90,12 +90,6 @@
 #error "[Error]ZCE_OS_WINDOWS and ZCE_OS_LINUX all defined or all undefined.  error."
 #endif
 
-//Windows下必须使用VS作为编辑器，不是我对GCC无爱，是太太麻烦了。
-#if defined (ZCE_OS_WINDOWS)
-#if !defined (_MSC_VER) || (_MSC_VER < 1400)
-#error "[Error]Only support 2005 or upper visual studio version."
-#endif
-#endif
 
 //==================================================================================================
 //关于C++11的特性使用问题，C++11的很多特效如此的诱人，但想真心爱他还是有一些门槛的。
@@ -432,6 +426,7 @@ extern "C"
 //#define ZCE_HAS_IPV6
 //#endif
 
+//==================================================================================================
 
 //是否使用Google Protobuf,如果你仅仅使用Protobuf - Lite，也请关闭这儿，
 #ifndef ZCE_USE_PROTOBUF
@@ -495,16 +490,7 @@ extern "C"
 #pragma hdrstop
 #endif //#if defined ZCE_OS_WINDOWS
 
-//编译动态库用的东西
-#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
-#  ifdef BUILD_ZCELIB_DLL
-#    define ZCELIB_EXPORT __declspec (dllexport)
-#  else
-#    define ZCELIB_EXPORT __declspec (dllimport)
-#  endif //#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
-#else
-#  define ZCELIB_EXPORT
-#endif //#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
+
 
 //我是抄ACE_UNUSED_ARG的呀。我承认呀。windows下也许也可以考虑定义成__noop呀，
 #if !defined (ZCE_UNUSED_ARG)
@@ -579,6 +565,68 @@ extern "C"
 #define ZCE_ARRAY_SIZE(ary) (sizeof(ary)/sizeof((ary)[0]))
 #endif
 
+
+// 取大小值, min max在linux下没有定义
+#define ZCE_MAX(a,b) (((a) > (b)) ? (a) : (b))
+#define ZCE_MIN(a,b) (((a) < (b)) ? (a) : (b))
+
+//==================================================================================================
+
+// 一些C函数的重命名，保持兼容，避免费力折腾
+#if defined ZCE_OS_WINDOWS
+
+#if _MSC_VER <= 1300
+#define snprintf     _snprintf
+#define vsnprintf    _vsnprintf
+#else
+//在VS2005以后，使用安全API,保证WINDOWS下更加接近于LINUX，保证末尾会添加'\0'
+#define snprintf(buffer,buf_count,fmt,...) _snprintf_s((buffer),(buf_count),((buf_count)-1),(fmt),__VA_ARGS__)
+#define vsnprintf(buffer,buf_count,fmt,argptr_list)  _vsnprintf_s((buffer),((buf_count)),(buf_count-1),(fmt),(argptr_list))
+#endif
+
+#define strtoull _strtoui64
+#define strcasecmp   _stricmp
+#define strncasecmp  _strnicmp
+
+#endif
+
+
+//==================================================================================================
+// 名称的最大长度
+#if !defined (NAME_MAX)
+#  if defined (FILENAME_MAX)
+#    define NAME_MAX FILENAME_MAX
+#  elif defined (_MAX_FNAME)
+#    define NAME_MAX _MAX_FNAME
+#  else /* _MAX_FNAME */
+#    define NAME_MAX 256
+#  endif /* MAXNAMLEN */
+#endif /* !NAME_MAX */
+
+// 主机名称的最大长度
+#if !defined (HOST_NAME_MAX)
+#  define HOST_NAME_MAX 256
+#endif /* !HOST_NAME_MAX */
+
+//路径的最大长度，
+//普及一下小知识，注意一下其实MAX_PATH未必真正够用，MS一般的定义是260，但是，其实你可以超过,
+#ifndef MAX_PATH
+#  define MAX_PATH 512
+#endif
+#if !defined (PATH_MAX)
+#  if defined (_MAX_PATH)
+#    define PATH_MAX _MAX_PATH
+#  elif defined (MAX_PATH)
+#    define PATH_MAX MAX_PATH
+#  elif defined (_POSIX_PATH_MAX)
+#     define PATH_MAX _POSIX_PATH_MAX
+#  else /* !_MAX_PATH */
+#    define PATH_MAX 512
+#  endif /* _MAX_PATH */
+#endif /* !PATH_MAX */
+
+//==================================================================================================
+
 //一些字节序交换的宏
 //#if (_MSC_VER > 1300) && (defined(CPU_IA32) || defined(CPU_X64)) /* MS VC */
 //_MSC_VER > 1300  _byteswap_ushort,_byteswap_ulong,_byteswap_uint64
@@ -629,7 +677,6 @@ extern "C"
 //(m必 须是2的幂次方)。并且其占用的空间，即大小,也是m的整数倍，以保证在申请连续存储空间的时候，
 //每一个元素的地址也是按照m字节对齐。 __attribute__((aligned(m)))也可以作用于一个单独的变量。
 //由上可以看出__attribute__((aligned(m)))的功能更全。
-
 
 #if defined ZCE_OS_WINDOWS
 
@@ -861,61 +908,6 @@ struct ZDOUBLE_STRUCT
 #define ZCE_IS_ALIGNED_64(p) (0 == (0x7 & ((const char*)(p) - (const char*)0)))
 #endif
 
-// 取大小值, min max在linux下没有定义
-#define ZCE_MAX(a,b) (((a) > (b)) ? (a) : (b))
-#define ZCE_MIN(a,b) (((a) < (b)) ? (a) : (b))
-
-// 名称的最大长度
-#if !defined (NAME_MAX)
-#  if defined (FILENAME_MAX)
-#    define NAME_MAX FILENAME_MAX
-#  elif defined (_MAX_FNAME)
-#    define NAME_MAX _MAX_FNAME
-#  else /* _MAX_FNAME */
-#    define NAME_MAX 256
-#  endif /* MAXNAMLEN */
-#endif /* !NAME_MAX */
-
-// 主机名称的最大长度
-#if !defined (HOST_NAME_MAX)
-#  define HOST_NAME_MAX 256
-#endif /* !HOST_NAME_MAX */
-
-//路径的最大长度，
-//普及一下小知识，注意一下其实MAX_PATH未必真正够用，MS一般的定义是260，但是，其实你可以超过,
-#ifndef MAX_PATH
-#  define MAX_PATH 512
-#endif
-#if !defined (PATH_MAX)
-#  if defined (_MAX_PATH)
-#    define PATH_MAX _MAX_PATH
-#  elif defined (MAX_PATH)
-#    define PATH_MAX MAX_PATH
-#  elif defined (_POSIX_PATH_MAX)
-#     define PATH_MAX _POSIX_PATH_MAX
-#  else /* !_MAX_PATH */
-#    define PATH_MAX 512
-#  endif /* _MAX_PATH */
-#endif /* !PATH_MAX */
-
-// 一些C函数的重命名，保持兼容，避免费力折腾
-#if defined ZCE_OS_WINDOWS
-
-#if _MSC_VER <= 1300
-#define snprintf     _snprintf
-#define vsnprintf    _vsnprintf
-#else
-//在VS2005以后，使用安全API,保证WINDOWS下更加接近于LINUX，保证末尾会添加'\0'
-#define snprintf(buffer,buf_count,fmt,...) _snprintf_s((buffer),(buf_count),((buf_count)-1),(fmt),__VA_ARGS__)
-#define vsnprintf(buffer,buf_count,fmt,argptr_list)  _vsnprintf_s((buffer),((buf_count)),(buf_count-1),(fmt),(argptr_list))
-#endif
-
-#define strtoull _strtoui64
-#define strcasecmp   _stricmp
-#define strncasecmp  _strnicmp
-
-#endif
-
 //==================================================================================================
 //Windows 下的自动链接
 #if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
@@ -986,10 +978,6 @@ struct ZDOUBLE_STRUCT
 #  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Release"
 #endif
 
-//目前通过工程的目录设置区分文件，没有继续使用文件名称
-#if !defined ZCE_LIB_LIBARY_NAME
-#define ZCE_LIB_LIBARY_NAME
-#endif
 
 
 //自动包含的包含连接，简化你的操作
@@ -1008,10 +996,18 @@ struct ZDOUBLE_STRUCT
 #pragma comment(lib, "sqlite3.lib" )
 #endif
 
+//编译动态库用的东西
+#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
+#  ifdef BUILD_ZCELIB_DLL
+#    define ZCELIB_EXPORT __declspec (dllexport)
+#  else
+#    define ZCELIB_EXPORT __declspec (dllimport)
+#  endif //#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
+#else
+#  define ZCELIB_EXPORT
+#endif //#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
+
 #endif
-
-
-
 
 
 #endif //ZCE_LIB_PREDEFINE_H_
