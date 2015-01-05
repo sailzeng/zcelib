@@ -88,7 +88,7 @@ protected:
     * @brief      继承ZCE_Async_Object的函数，
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(bool &continue_run);
+    virtual void on_run(void *outer_data,bool &continue_run);
 
     /*!
     * @brief      异步对象超时处理
@@ -98,7 +98,15 @@ protected:
     virtual void on_timeout(const ZCE_Time_Value &now_time,
                             bool &continue_run);
 
-
+    
+    /*!
+    * @brief      得到外部数据的指针，
+    * @return     void* 外部数据指针
+    */
+    inline void * get_outer_data()
+    {
+        return outer_data_;
+    }
 
 protected:
 
@@ -116,17 +124,17 @@ public:
 
 protected:
 
-    ///最小的堆栈
-    size_t min_stack_size = 16 * 1024;
-
     ///协程对象
-    coroutine_t      handle_;
+    coroutine_t   handle_;
 
     ///协程的堆栈大小，
     size_t           stack_size_;
 
     ///协程的状态
     COROUTINE_STATE  coroutine_state_;
+
+    ///传递的外部数据，
+    void *outer_data_=NULL;
 };
 
 //====================================================================================

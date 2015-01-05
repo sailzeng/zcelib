@@ -100,14 +100,14 @@ protected:
     int pushbak_mgr_recvqueue(unsigned int cmd,
                               const T &info,
                               unsigned int backfill_trans_id,
-                              unsigned int qq_uin = 0,
+                              unsigned int user_id = 0,
                               unsigned int option = 0
                              )
     {
         Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(task_frame_buf_);
         rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uid_ = qq_uin;
+        rsp_msg->frame_uid_ = user_id;
 
         SERVICES_ID proxy_svcid(0, 0);
         rsp_msg->recv_service_ = mgr_svc_id_;

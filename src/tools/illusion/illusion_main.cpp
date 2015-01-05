@@ -26,7 +26,7 @@ Illusion_Application::~Illusion_Application()
 
 
 /// app的开始运行
-int Illusion_Application::on_start(int /*argc*/, const char * /*argv*/[])
+int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
 {
     int ret = 0;
     //使用UTF8代码也输出，测试发现还是有很多问题，因为自己的库内部使用的是Not set的字符集。
@@ -205,7 +205,7 @@ int main(int argc, const char *argv[])
     try
     {
         int ret = 0;
-        ret = the_app.on_start(argc, argv);
+        ret = the_app.app_start(argc, argv);
         if (ret != 0)
         {
             the_app.on_exit();

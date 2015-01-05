@@ -35,7 +35,7 @@ class ZCE_Async_Object
 
 public:
     ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
-                     unsigned int reg_cmd);
+                     unsigned int create_cmd);
 protected:
     ~ZCE_Async_Object();
 
@@ -65,7 +65,7 @@ public:
                                     unsigned int reg_cmd) = 0;
 
     /*!
-    * @brief      异步对象开始
+    * @brief      异步对象开始,可以用来做每次重新进行初始化时候的事情
     */
     virtual void on_start();
 
@@ -90,6 +90,12 @@ public:
     */
     virtual void on_end();
 
+
+    /*!
+    * @brief      记录处理过程发生的错误
+    * @param      error_no
+    */
+    void set_errorno(int error_no);
 
 protected:
 
@@ -126,6 +132,12 @@ protected:
     ///超时的定时器ID
     int timeout_id_;
 
+    /// 异步对象处理的错误码，统计事物错误的时候使用
+    int process_errno_;
+
+
+    ///日志跟踪的优先级
+    ZCE_LOG_PRIORITY trace_log_pri_;
 };
 
 
@@ -209,11 +221,11 @@ public:
     /*!
     * @brief      注册一类协程，其用reg_cmd对应，
     * @return     int
-    * @param      reg_cmd
+    * @param      create_cmd
     * @param      async_base
     * @param      init_clone_num
     */
-    int register_asyncobj(unsigned int reg_cmd,
+    int register_asyncobj(unsigned int create_cmd,
                           ZCE_Async_Object *async_base);
 
     /*!
@@ -226,11 +238,11 @@ public:
     /*!
     * @brief      创建一个异步对象
     * @return     int
-    * @param      outer_data
-    * @param      cmd
-    * @param      id
+    * @param      cmd         创建的命令，如果是注册命令，会创建一个异步对象进行处理
+    * @param      outer_data  外部数据，带给异步对象，给他处理
+    * @param      id          返回参数，内部创建异步对象的ID，
     */
-    int create_asyncobj(void *outer_data, unsigned int cmd, unsigned int *id);
+    int create_asyncobj(unsigned int cmd, void *outer_data, unsigned int *id);
 
 
     /*!
@@ -239,7 +251,7 @@ public:
     * @param      outer_data
     * @param      id
     */
-    int active_asyncobj(void *outer_data, unsigned int id);
+    int active_asyncobj(unsigned int id, void *outer_data );
 
     /*!
     * @brief      打印管理器的基本信息，运行状态

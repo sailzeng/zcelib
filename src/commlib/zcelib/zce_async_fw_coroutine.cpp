@@ -50,11 +50,14 @@ void ZCE_Async_Coroutine::finish()
 }
 
 //调用协程
-void ZCE_Async_Coroutine::on_run(bool &continue_run)
+void ZCE_Async_Coroutine::on_run(void *outer_data, bool &continue_run)
 {
+    outer_data_ = outer_data;
     continue_run = false;
 
     yeild_coroutine();
+
+    outer_data_ = NULL;
 
     //根据调用返回的函数记录的状态值得到当前的状态
     if (coroutine_state_ == COROUTINE_CONTINUE)

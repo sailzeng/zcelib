@@ -38,7 +38,7 @@
     { \
         return ;\
     }\
-    if (out_level_mask_ > outlevel ) \
+    if (permit_outlevel_ > outlevel ) \
     { \
         return; \
     } \

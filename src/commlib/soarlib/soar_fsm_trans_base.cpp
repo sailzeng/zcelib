@@ -10,28 +10,27 @@
 
 //构造函数
 Transaction_Base::Transaction_Base(Transaction_Manager *pmngr,
-                                   unsigned int reg_cmd,
-                                   bool trans_locker)
-    : ZCE_Async_FSM(pmngr, reg_cmd)
-    , trans_manager_(pmngr)
-    , trans_locker_(trans_locker)
-    , req_user_id_(0)
-    , trans_command_(0)
-    , req_snd_service_(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID)
-    , req_rcv_service_(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID)
-    , req_proxy_service_(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID)
-    , req_trans_id_(0)
-    , req_session_id_(0)
-    , req_game_app_id_(0)
-    , req_ip_address_(0)
-    , req_frame_option_(0)
-    , trans_timeout_id_(-1)
-    , active_auto_stop_(true)
-    , trans_touchtimer_id_(-1)
-    , wait_cmd_(CMD_INVALID_CMD)
-    , trans_create_time_(0)
-    , trace_log_pri_(RS_DEBUG)
-    , process_errno_(0)
+                                   unsigned int create_cmd,
+                                   bool trans_locker) :
+    ZCE_Async_FSM(pmngr, create_cmd),
+    trans_manager_(pmngr),
+    trans_create_(true),
+    trans_locker_(trans_locker),
+    req_user_id_(0),
+    req_command_(0),
+    req_snd_service_(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID),
+    req_rcv_service_(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID),
+    req_proxy_service_(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID),
+    req_trans_id_(0),
+    req_session_id_(0),
+    req_game_app_id_(0),
+    req_ip_address_(0),
+    req_frame_option_(0),
+    trans_timeout_id_(-1),
+    active_auto_stop_(true),
+    trans_touchtimer_id_(-1),
+    trans_create_time_(0),
+    trace_log_pri_(RS_DEBUG)
 {
 }
 
@@ -43,9 +42,10 @@ Transaction_Base::~Transaction_Base()
 //事务内存重置
 void Transaction_Base::on_start()
 {
+    trans_create_ = true;
 
     req_user_id_ = 0;
-    trans_command_ = 0;
+    req_command_ = 0;
     req_snd_service_.set_svcid(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID);
     req_rcv_service_.set_svcid(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID);
     req_proxy_service_.set_svcid(SERVICES_ID::INVALID_SERVICES_TYPE, SERVICES_ID::INVALID_SERVICES_ID);
@@ -57,7 +57,6 @@ void Transaction_Base::on_start()
     trans_timeout_id_ = -1;
     active_auto_stop_ = true;
     trans_touchtimer_id_ = -1;
-    wait_cmd_ = CMD_INVALID_CMD;
     trans_create_time_ = 0;
     trace_log_pri_ = RS_DEBUG;
     process_errno_ = 0;
@@ -65,23 +64,12 @@ void Transaction_Base::on_start()
 
 
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年3月29日
-Function        : Transaction_Base::initialize_trans
-Return          : int
-Parameter List  :
-  Param1: Zerg_App_Frame* proc_frame :初始化接收的FRAME数据,
-  Param2: unsigned int transid :事务ID,
-Description     : 初始化,你必须在在继承类重载这个函数,
-Calls           :
-Called By       : 根据Frame初始化得到对方发送的信息
-Other           : 在你重载函数的最后也请调用这个函数,注意此时如果你是发送你的命令,请组织好你的命令
-Modify Record   :
-******************************************************************************************/
-int Transaction_Base::initialize_trans(Zerg_App_Frame *proc_frame)
+
+//根据Frame初始化得到对方发送的信息
+void Transaction_Base::create_init(Zerg_App_Frame *proc_frame)
 {
 
-    trans_command_ = proc_frame->frame_command_;
+    req_command_ = proc_frame->frame_command_;
 
     //得到发送服务器的信息,这段代码只在请求的时候有用.
     req_snd_service_ = proc_frame->send_service_;
@@ -103,371 +91,180 @@ int Transaction_Base::initialize_trans(Zerg_App_Frame *proc_frame)
         trace_log_pri_ = RS_INFO;
     }
 
+    return;
+}
 
-    return 0;
+void Transaction_Base::on_run(void *outer_data, bool &continue_run)
+{
+    Zerg_App_Frame *recv_frame = (Zerg_App_Frame *)outer_data;
+
+    //如果是第一次创建事物的时候，
+    if (trans_create_)
+    {
+        create_init(recv_frame);
+        trans_create_ = false;
+
+        ZCE_LOG(trace_log_pri_, "%s::trans_run create,transaction id:[%u],trans stage:[%u],"
+                "request cmd [%u] trans id:[%u].",
+                typeid(*this).name(),
+                asyncobj_id_,
+                fsm_stage_,
+                req_command_,
+                req_trans_id_
+               );
+    }
+
+
+    ZCE_LOG(trace_log_pri_, "%s::trans_run start,transaction id:[%u],trans stage:[%u],"
+            "recv frame cmd [%u] trans id:[%u].",
+            typeid(*this).name(),
+            asyncobj_id_,
+            fsm_stage_,
+            recv_frame->frame_command_,
+            recv_frame->transaction_id_
+           );
+
+    trans_run(recv_frame, continue_run);
+
+    ZCE_LOG(trace_log_pri_, "%s::trans_run end,transaction id:[%u],trans stage:[%u],"
+            "recv frame cmd [%u] trans id:[%u],continue[%s] ,error [%d].",
+            typeid(*this).name(),
+            asyncobj_id_,
+            fsm_stage_,
+            recv_frame->frame_command_,
+            recv_frame->transaction_id_,
+            continue_run ? "TRUE" : "FALSE",
+            process_errno_
+           );
+
+    if (!continue_run)
+    {
+        if (process_errno_ == 0)
+        {
+            // 成功退出，修改监控数据
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
+                                                         req_game_app_id_,
+                                                         req_command_);
+        }
+        else
+        {
+            // 失败退出，修改监控数据
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
+                                                         req_game_app_id_,
+                                                         req_command_);
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
+                                                         req_game_app_id_,
+                                                         process_errno_);
+        }
+    }
 }
 
 
-
-/******************************************************************************************
-Author          : Sail(ZENGXING)  Date Of Creation: 2009年7月11日
-Function        : Transaction_Base::timer_timeout
-Return          : int
-Parameter List  :
-  Param1: const ZCE_Time_Value& // time 时间
-  Param2: const void* arg             参数
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Base::timer_timeout(const ZCE_Time_Value & /*time*/, const void *arg)
-//{
-//    int ret = 0;
-//#if defined DEBUG || defined _DEBUG
-//    ZCE_LOG(trace_log_pri_, "[framework] %s::Time Out touch off,Transprocess:%u,Transphase:%d.", typeid(*this).name(),
-//               asyncobj_id_,
-//               trans_phase_);
-//    output_trans_info("[Timeout]:");
-//#endif //DEBUG
-//    const int timeid = *(static_cast<const int *>(arg));
-//
-//    //超时触发
-//    if (TRANSACTION_TIME_ID[0] == timeid)
-//    {
-//        trans_run_state_ = TIMEOUT_RUN_STATE;
-//    }
-//
-//    //调用事务处理函数
-//    ret = process_trans_event();
-//
-//    //如果处理的已经结束或者发生什么错误，调用handle_close
-//    if (ret != 0)
-//    {
-//        //原来是return -1 底层会调用handle_close，但是发现这样调用的方式会先用指针取消定时器,
-//        //直接调用handle_close，追求性能
-//        handle_close();
-//    }
-//
-//    return 0;
-//}
-
-///******************************************************************************************
-//Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年11月11日
-//Function        : Transaction_Base::process_trans_event
-//Return          : int
-//Parameter List  : NULL
-//Description     : 处理事务事件
-//Calls           :
-//Called By       :
-//Other           :
-//Modify Record   :
-//******************************************************************************************/
-//int Transaction_Base::process_trans_event()
-//{
-//    int ret = 0;
-//    TRANSACTION_PROCESS txprocess = EXIT_PROCESS_SUCC;
-//
-//    //初始化
-//    if (trans_run_state_ == INIT_RUN_STATE )
-//    {
-//        ZCE_LOG(RS_DEBUG,"%s::on_init start ,requst trans id:%u .",
-//                   typeid(*this).name(),
-//                   req_trans_id_
-//                  );
-//
-//        txprocess = on_init();
-//
-//        ZCE_LOG(RS_DEBUG,"%s::on_init end,new transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
-//                   typeid(*this).name(),
-//                   asyncobj_id_,
-//                   req_trans_id_,
-//                   txprocess,
-//                   trans_phase_);
-//
-//        //升级他的运行状态
-//        if (txprocess != EXIT_PROCESS_SUCC && txprocess != EXIT_PROCESS_FAIL)
-//        {
-//            trans_run_state_ = RIGHT_RUN_STATE;
-//        }
-//    }
-//    //正常运行的状态,
-//    else if (trans_run_state_ == RIGHT_RUN_STATE )
-//    {
-//        ////取消原有的超时定时器,
-//        //if (trans_timeout_id_ != -1 && true == active_auto_stop_ )
-//        //{
-//        //    timer_queue()->cancel_timer(trans_timeout_id_);
-//        //    trans_timeout_id_ = -1;
-//        //}
-//
-//        //日志输出
-//        ZCE_LOG(RS_DEBUG,"%s::on_active start,transaction id:%u,requst trans id:%u,trans phase:%d.",
-//                   typeid(*this).name(),
-//                   asyncobj_id_,
-//                   req_trans_id_,
-//                   trans_phase_);
-//
-//        txprocess = on_active();
-//        ZCE_LOG(RS_DEBUG,"%s::on_active end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d,.",
-//                   typeid(*this).name(),
-//                   asyncobj_id_,
-//                   req_trans_id_,
-//                   txprocess,
-//                   trans_phase_);
-//
-//    }
-//    //超时的状态
-//    else if (trans_run_state_ == TIMEOUT_RUN_STATE)
-//    {
-//        //取消原有的超时定时器,
-//        //if (trans_timeout_id_ != -1 && true == active_auto_stop_ )
-//        //{
-//        //    timer_queue()->cancel_timer(trans_timeout_id_);
-//        //    trans_timeout_id_ = -1;
-//        //}
-//
-//        ZCE_LOG(RS_ERROR, "%s::on_timeout start,transaction id:%u,requst trans id:%u,trans phase:%d.",
-//                typeid(*this).name(),
-//                asyncobj_id_,
-//                req_trans_id_,
-//                trans_phase_);
-//        txprocess = on_timeout();
-//        ZCE_LOG(RS_DEBUG,"%s::on_timeout end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
-//                   typeid(*this).name(),
-//                   asyncobj_id_,
-//                   req_trans_id_,
-//                   txprocess,
-//                   trans_phase_);
-//
-//        // 事务处理超时，统计数据
-//        Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_TIMEOUT,
-//                                                     req_game_app_id_,
-//                                                     trans_command_);
-//
-//        // 如果没有退出, 则切换他的运行状态
-//        if (txprocess != EXIT_PROCESS_SUCC && txprocess != EXIT_PROCESS_FAIL)
-//        {
-//            trans_run_state_ = RIGHT_RUN_STATE;
-//        }
-//
-//    }
-//    //异常状态
-//    else if ( trans_run_state_ == EXCEPTION_RUN_STATE )
-//    {
-//        //取消原有的超时定时器,
-//        if (trans_timeout_id_ != -1 && true == active_auto_stop_ )
-//        {
-//            //timer_queue()->cancel_timer(trans_timeout_id_);
-//            trans_timeout_id_ = -1;
-//        }
-//
-//        ZCE_LOG(RS_ERROR, "%s::on_exception start,transaction id:%u,requst trans id:%u,trans phase:%d.", typeid(*this).name(),
-//                asyncobj_id_,
-//                req_trans_id_,
-//                trans_phase_);
-//        txprocess = on_exception();
-//        ZCE_LOG(RS_ERROR, "%s::on_exception end,transaction id:%u,requst trans id:%u,trans process:%u,new trans phase:%d.",
-//                typeid(*this).name(),
-//                asyncobj_id_,
-//                req_trans_id_,
-//                txprocess,
-//                trans_phase_);
-//    }
-//    else
-//    {
-//        ZCE_ASSERT(false);
-//    }
-//
-//    switch (txprocess)
-//    {
-//        case WAIT_PROCESS:
-//        {
-//            // trans未处理完，继续等待
-//            break;
-//        }
-//
-//        case NEXT_PROCESS:
-//        {
-//            //这儿相当于递归调用
-//            ret = process_trans_event();
-//
-//            if (ret != 0)
-//            {
-//                return ret;
-//            }
-//
-//            break;
-//        }
-//
-//        case EXIT_PROCESS_SUCC:
-//        {
-//            // 成功退出，修改监控数据
-//            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_SUCC,
-//                                                         req_game_app_id_,
-//                                                         trans_command_);
-//            return SOAR_RET::ERROR_TRANS_HAS_FINISHED;
-//        }
-//
-//        case EXIT_PROCESS_FAIL:
-//        {
-//            // 失败退出，修改监控数据
-//            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_FAIL,
-//                                                         req_game_app_id_,
-//                                                         trans_command_);
-//            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
-//                                                         req_game_app_id_,
-//                                                         process_errno_);
-//            return SOAR_RET::ERROR_TRANS_HAS_FINISHED;
-//        }
-//
-//        default:
-//        {
-//            // 不应该到这里来嘛
-//            ZCE_ASSERT(0);
-//            return SOAR_RET::ERROR_TRANS_HAS_FINISHED;
-//        }
-//    }
-//
-//    return 0;
-//}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月22日
-Function        : Transaction_Base::handle_close
-Return          : int
-Parameter List  :
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Base::handle_close ()
-//{
-//
-//    //注销掉自己在管理器的注册,不检查返回值，如果错误会有日志记录
-//    trans_manager_->unregiester_trans_id(asyncobj_id_,
-//                                         trans_command_,
-//                                         trans_run_state_,
-//                                         trans_create_time_);
-//
-//    return 0;
-//}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年11月11日
-Function        : Transaction_Base::set_timeout_timer
-Return          : int
-Parameter List  :
-  Param1: int sec
-  Param2: int suseconds
-Description     : 设置超时定时器
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Base::set_timeout_timer(int sec, int usec, bool active_auto_stop)
-//{
-//    //取消原来的定时器
-//    if (trans_timeout_id_ != -1)
-//    {
-//        timer_queue()->cancel_timer(trans_timeout_id_);
-//        trans_timeout_id_ = -1;
-//    }
-//
-//    //定时器.使用超时ID
-//    ZCE_Time_Value delay(sec, usec);
-//    trans_timeout_id_ = timer_queue()->schedule_timer (this,
-//                                                       &TRANSACTION_TIME_ID[0],
-//                                                       delay);
-//
-//    active_auto_stop_ = active_auto_stop;
-//
-//    return 0;
-//}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年11月11日
-Function        : Transaction_Base::set_timetouch_timer
-Return          : int
-Parameter List  :
-  Param1: int sec
-  Param2: int suseconds
-Description     : 设置时间触发的定时器
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Base::set_timetouch_timer(int sec, int usec)
-//{
-//    //取消原来的定时器
-//    if (trans_touchtimer_id_ != -1)
-//    {
-//        timer_queue()->cancel_timer(trans_touchtimer_id_);
-//        trans_touchtimer_id_ = -1;
-//    }
-//
-//    //定时器.使用超时ID
-//    ZCE_Time_Value delay(sec, usec);
-//    trans_touchtimer_id_ = timer_queue()->schedule_timer (this, &TRANSACTION_TIME_ID[1], delay);
-//
-//    return 0;
-//}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年11月11日
-Function        : Transaction_Base::close_request_service
-Return          : int
-Parameter List  : NULL
-Description     : 关闭请求的的Service的连接
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int Transaction_Base::close_request_service() const
+void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
+                                  bool &continue_run)
 {
+    ZCE_LOG(trace_log_pri_, "%s::trans_timeout start,transaction id:[%u],trans stage:[%u],",
+            typeid(*this).name(),
+            asyncobj_id_,
+            fsm_stage_
+           );
 
-    ZCE_LOG(RS_INFO, "[framework] close_request_service() at trans_command_=%u,fsm_stage_=%d,req_user_id_=%u.",
-            create_cmd_,
-            get_stage(),
-            req_user_id_);
+    trans_timeout(now_time, continue_run);
 
-    return trans_manager_->mgr_sendmsghead_to_service(INNER_RSP_CLOSE_SOCKET,
-                                                      req_user_id_,
-                                                      req_rcv_service_,
-                                                      req_proxy_service_);
+    ZCE_LOG(trace_log_pri_, "%s::trans_timeout end,transaction id:[%u],trans stage:[%u],"
+            "continue[%s] ,error [%d].",
+            typeid(*this).name(),
+            asyncobj_id_,
+            fsm_stage_,
+            continue_run ? "TRUE" : "FALSE",
+            process_errno_
+           );
+
+    if (!continue_run)
+    {
+        if (process_errno_ == 0)
+        {
+            // 成功退出，修改监控数据
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
+                                                         req_game_app_id_,
+                                                         req_command_);
+        }
+        else
+        {
+            // 失败退出，修改监控数据
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
+                                                         req_game_app_id_,
+                                                         req_command_);
+            Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
+                                                         req_game_app_id_,
+                                                         process_errno_);
+        }
+    }
 }
 
 
 //检查接受到的FRAME的数据和命令
-int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame)
+int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame, 
+                                          unsigned int wait_cmd)
 {
     //
-    if (wait_cmd_ != CMD_INVALID_CMD && recv_frame->frame_command_ != wait_cmd_)
+    if (wait_cmd != CMD_INVALID_CMD && recv_frame->frame_command_ != wait_cmd)
     {
-        ZCE_LOG(RS_ERROR, "[framework] check_receive_frame error,Transaction need Cmd error!Wait command[%u],Recieve command[%u] Transaction ID:[%u].",
-                wait_cmd_,
+        ZCE_LOG(RS_ERROR, "[framework] %s:check_receive_frame error,Transaction id [%u] Wait command[%u],"
+                "Recieve command[%u] transaction ID:[%u].",
+                typeid(*this).name(),
+                asyncobj_id_,
+                wait_cmd,
                 recv_frame->frame_command_,
                 recv_frame->transaction_id_
                );
         return SOAR_RET::ERROR_TRANSACTION_NEED_CMD_ERROR;
     }
 
-    //调用默认函数
-    set_wait_cmd();
     //
     return 0;
 }
 
+
+//用于检查请求的IP地址是否是内部IP地址,是返回0，不是返回非0
+int Transaction_Base::check_request_internal() const
+{
+    return (ZCE_LIB::is_internal(req_ip_address_)) ? 0 : -1;
+}
+
+//检测包头和包体的user_id以及发送的service_id是否一致,
+int Transaction_Base::check_req_userid(unsigned int user_id) const
+{
+    if (user_id != req_user_id_)
+    {
+        ZCE_LOG(RS_ERROR, "[framework] QQuin in header , body and snd_service is diffrent.body: %u| request appframe header: %u.",
+                user_id, req_user_id_);
+        return SOAR_RET::ERROR_QQUIN_INCERTITUDE;
+    }
+
+    return 0;
+}
+
+//关闭请求的的Service的连接
+int Transaction_Base::close_request_service() const
+{
+
+    ZCE_LOG(RS_INFO, "[framework] close_request_service() at req_command_=%u,fsm_stage_=%d,req_user_id_=%u.",
+        req_command_,
+        get_stage(),
+        req_user_id_);
+
+    return trans_manager_->mgr_sendmsghead_to_service(INNER_RSP_CLOSE_SOCKET,
+        req_user_id_,
+        req_rcv_service_,
+        req_proxy_service_);
+}
+
+
 //对当前用户的一个锁ID进行加锁
 int Transaction_Base::lock_qquin_key(unsigned int one_key)
 {
-    return trans_manager_->lock_qquin_trnas_cmd(req_user_id_, one_key, trans_command_);
+    return trans_manager_->lock_qquin_trnas_cmd(req_user_id_, one_key, req_command_);
 }
 //对当前用户的一个锁ID进行解锁
 void Transaction_Base::unlock_qquin_key(unsigned int one_key)
@@ -477,18 +274,18 @@ void Transaction_Base::unlock_qquin_key(unsigned int one_key)
 //对当前用户的，当前事务命令字进行加锁
 int Transaction_Base::lock_qquin_cmd()
 {
-    return trans_manager_->lock_qquin_trnas_cmd(req_user_id_, trans_command_, trans_command_);
+    return trans_manager_->lock_qquin_trnas_cmd(req_user_id_, req_command_, req_command_);
 }
 //对当前用户的，当前事务命令字进行解锁
 void Transaction_Base::unlock_qquin_cmd()
 {
-    return trans_manager_->unlock_qquin_trans_cmd(req_user_id_, trans_command_);
+    return trans_manager_->unlock_qquin_trans_cmd(req_user_id_, req_command_);
 }
 
 //DUMP所有的事物的信息
 void Transaction_Base::dump_transa_info(std::ostringstream &strstream) const
 {
-    strstream << "ID:" << asyncobj_id_ << " Uin:" << req_user_id_ << " Cmd:" << trans_command_ << " Stage:" << std::dec << fsm_stage_ << " ";
+    strstream << "ID:" << asyncobj_id_ << " Uin:" << req_user_id_ << " Cmd:" << req_command_ << " Stage:" << std::dec << fsm_stage_ << " ";
     strstream << "ReqSndSvr:" << req_snd_service_.services_type_ << "|" << req_snd_service_.services_id_ \
               << " ReqRcvSvr:" << req_rcv_service_.services_type_ << "|" << req_rcv_service_.services_id_ \
               << " Reqproxy:" << req_proxy_service_.services_type_  << "|" << req_proxy_service_.services_id_ << " ";

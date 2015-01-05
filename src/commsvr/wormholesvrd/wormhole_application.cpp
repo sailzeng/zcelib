@@ -54,7 +54,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"ArbiterAppliction::on_start end. ");
+    ZCE_LOG(RS_INFO,"ArbiterAppliction::app_start end. ");
 
     return 0;
 }

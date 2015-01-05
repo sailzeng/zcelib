@@ -70,29 +70,34 @@ public:
     //取得本地的地址信息
     int getsockname (ZCE_Sockaddr *addr)  const;
 
-    //发送和接收数据，会提前进行连接的。
-    template< class T1, class T2>
-    int send_recv_package(unsigned int snd_cmd,
-                          unsigned int qq_uin,
-                          const T1 &send_info,
-                          ZCE_Time_Value *time_wait,
-                          bool if_recv,
-                          unsigned int rcv_cmd,
-                          T2 &recv_info,
-                          bool error_continue = true,
-                          unsigned int app_id = 0,
-                          unsigned int backfill_trans_id = 0);
-
-    //发送数据
+    /*!
+    * @brief      发送数据
+    * @tparam     T1
+    * @return     int
+    * @param      user_id  USER ID
+    * @param      cmd      发送的命令
+    * @param      snd_info 处理的发送结构
+    * @param      time_out 发送的超时时间
+    * @param      app_id   应用ID
+    * @param      backfill_trans_id 回填的事物ID，默认为0，表示不会填
+    */
     template< class T1>
-    int send_svc_package(unsigned int qq_uin,
+    int send_svc_package(unsigned int user_id,
                          unsigned int cmd,
                          const T1 &snd_info,
                          ZCE_Time_Value *time_out = NULL,
                          unsigned int app_id = 0,
                          unsigned int backfill_trans_id = 0);
-
-    //接受数据
+    
+    /*!
+    * @brief      接受数据，阻塞的接收一个APPFRAME数据
+    * @tparam     T2        
+    * @return     int       OK
+    * @param      cmd       预计接受的的命令字
+    * @param      rcv_info  接收的信息数据
+    * @param      error_continue 如果收到的数据不是期望的，就继续等待，直到等待相应的命令
+    * @param      time_out  超时时长，如果要一直阻塞，就用NULL
+    */
     template< class T2>
     int receive_svc_package(unsigned int cmd,
                             T2 &rcv_info ,
@@ -103,23 +108,25 @@ public:
     int receive_svc_package(unsigned int &recv_cmd,
                             ZCE_Time_Value *time_out = NULL);
 
+
+    /*!
+    * @brief      发送和接收数据，会提前进行连接的。
+    * @note       参数请参考send_svc_package,receive_svc_package
+    */
+    template< class T1, class T2>
+    int send_recv_package(unsigned int snd_cmd,
+                          unsigned int user_id,
+                          const T1 &send_info,
+                          ZCE_Time_Value *time_wait,
+                          unsigned int rcv_cmd,
+                          T2 &recv_info,
+                          bool error_continue = true,
+                          unsigned int app_id = 0,
+                          unsigned int backfill_trans_id = 0);
+
 };
 
-/******************************************************************************************
-Author          : Sail (ZengXing)  Date Of Creation: 2006年9月8日
-Function        : receive_svc_package
-Return          : int
-Parameter List  :
-Param1: unsigned int cmd 发送的命令
-Param2: T& info 发送的信息数据
-Param3: bool error_continue 如果收到的数据不是期望的，就继续等待，直到等待相应的命令
-Param4: ZCE_Time_Value *time_wait 超时时长，如果要一直阻塞，就用NULL,
-Description     : 阻塞的接收一个APPFRAME数据
-Calls           :
-Called By       :
-Other           : cmd为预期命令，info为预期包结构
-Modify Record   :
-******************************************************************************************/
+//阻塞的接收一个APPFRAME数据
 template<class T2>
 int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
                                                T2 &info ,
@@ -148,7 +155,9 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
             }
             else
             {
-                ZCE_LOG(RS_ERROR, "[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.", cmd, tibetan_recv_appframe_->frame_command_);
+                ZCE_LOG(RS_ERROR, "[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.", 
+                    cmd, 
+                    tibetan_recv_appframe_->frame_command_);
                 ret =  SOAR_RET::ERROR_ZULU_RECEIVE_OTHERS_COMMAND;
                 break;
             }
@@ -182,24 +191,9 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sail (ZengXing)  Date Of Creation: 2006年9月8日
-Function        : send_svc_package
-Return          : int
-Parameter List  :
-Param1: qq_uin                    QQUIN
-Param3: unsigned int cmd          处理的发送命令
-Param4: const T1& info             处理的发送结构
-Param5: ZCE_Time_Value *time_wait 发送的超时时间
-Param6: unsigned int sndtrans_id  接收的超时时间
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//发送一个数据包
 template< class T1>
-int Zulu_SendRecv_Package::send_svc_package(unsigned int qq_uin,
+int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
                                             unsigned int cmd,
                                             const T1 &info,
                                             ZCE_Time_Value *time_wait ,
@@ -222,7 +216,7 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int qq_uin,
     tibetan_send_appframe_->frame_command_ = cmd;
     tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
     tibetan_send_appframe_->app_id_ = app_id;
-    tibetan_send_appframe_->frame_uid_ = qq_uin;
+    tibetan_send_appframe_->frame_uid_ = user_id;
 
     //编码
     ret = tibetan_send_appframe_->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
@@ -244,31 +238,12 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int qq_uin,
     return 0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年4月25日
-Function        : Zulu_SendRecv_Package::send_recv_package
-Return          : int
-Parameter List  :
-Param1: unsigned int snd_cmd      发送命令
-Param2: unsigned int qq_uin       QQUIN的效果
-Param3: const T1& send_info       发送的数据
-Param4: ZCE_Time_Value* time_wait 时间等待
-Param5: bool if_recv              是否接收
-Param6: unsigned int rcv_cmd      接收的命令
-Param7: T2& recv_info             接收的数据
-Param8: bool error_continue       错误下是否继续
-Description     : 发送和接收PACKAGE
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//发送一个数据包，并且接收一个数据包
 template< class T1, class T2>
 int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
-                                             unsigned int qq_uin,
+                                             unsigned int user_id,
                                              const T1 &send_info,
                                              ZCE_Time_Value *time_wait,
-                                             bool if_recv,
                                              unsigned int rcv_cmd,
                                              T2 &recv_info,
                                              bool error_continue,
@@ -278,7 +253,7 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
     int ret = 0;
 
     //发送数据
-    ret = send_svc_package(qq_uin,
+    ret = send_svc_package(user_id,
                            snd_cmd,
                            send_info,
                            time_wait,
@@ -288,12 +263,6 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
     if (ret != 0)
     {
         return ret;
-    }
-
-    //为什么要有这个参数…………，我已经想不起来了，晕
-    if (false == if_recv)
-    {
-        return 0;
     }
 
     //收取数据，

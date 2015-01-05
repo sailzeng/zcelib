@@ -49,58 +49,13 @@ class Soar_MMAP_BusPipe;
 class Transaction_Base;
 class Zerg_App_Frame;
 
-///******************************************************************************************
-//struct CREATE_TRANS_RECORD 事务的统计信息
-//******************************************************************************************/
-////注册的事务的池子
-//typedef ZCE_LIB::lordrings<Transaction_Base *>                     POOL_OF_REGISTERTRANS;
-//
-//struct CREATE_TRANS_RECORD
-//{
-//public:
-//    //
-//    CREATE_TRANS_RECORD(unsigned int trans_cmd = 0);
-//    ~CREATE_TRANS_RECORD();
-//
-//public:
-//
-//    //注册事务的命令
-//    unsigned int                 trans_command_;
-//    //注册事务的池子
-//    POOL_OF_REGISTERTRANS        crttrs_cmd_pool_;
-//
-//    //-------------------------------------------------
-//    //是否自动进行事务的锁
-//    bool                         if_auto_trans_lock_;
-//    //事务锁的ID,可以用事务命令,如果多个事务要一起加锁,
-//    //可以在命令列表上占位一个地方，用于加锁
-//    unsigned int                 trans_lock_cmd_;
-//
-//    //--------------------------------------------------------------
-//    //下面是统计信息
-//
-//    //创建的事务的数量
-//    uint64_t                     create_trans_num_;
-//
-//    //销毁时在正确状态的事务数量
-//    uint64_t                     destroy_right_num_;
-//    //销毁时超时状态的事务
-//    uint64_t                     destroy_timeout_num_;
-//    //销毁时状态异常的事务数量
-//    uint64_t                     destroy_exception_num_;
-//
-//    //事务的总消耗时间
-//    uint64_t                     trans_consume_time_;
-//
-//};
-
 /******************************************************************************************
 struct TRANS_LOCK_RECORD 加锁的记录单元
 ******************************************************************************************/
 struct SOARING_EXPORT TRANS_LOCK_RECORD
 {
 public:
-    //要加锁的QQUIN,
+    //要加锁的USER ID,
     unsigned int     lock_qq_uin_;
     //事务的加锁ID，如果就是一个命令对应一个锁，建议直接使用命令字
     //如果是多个命令对一个东东加锁，建议占位一个命令，然后对那个命令加锁，
@@ -160,21 +115,12 @@ public:
 
 protected:
 
-    //从池子中间根据命令得到一个Trans的克隆
-    int get_clone_from_pool(unsigned int frame_cmd,
-                            unsigned int qq_uin,
-                            Transaction_Base *&ptxbase);
-    //向池子中间根据命令归还一个Trans的克隆
-    int return_clone_to_pool(unsigned int frame_cmd, Transaction_Base *&ptxbase);
 
     //处理一个收到的命令，
     int process_appframe( Zerg_App_Frame *ppetappframe, bool &crttx );
 
 public:
 
-    //从池子中间回收多于的事务的克隆，如果克隆过多会占用过多的内存，一般的事务模型，
-    //克隆的事务应该不用太多
-    void recycle_clone_from_pool();
 
     //处理管道的数据
     int process_pipe_frame(size_t &proc_frame, size_t &create_trans);
@@ -182,11 +128,11 @@ public:
     int process_queue_frame(size_t &proc_frame, size_t &create_trans);
 
     //对某一个用户的一个命令的事务进行加锁
-    int lock_qquin_trnas_cmd(unsigned int qq_uin,
+    int lock_qquin_trnas_cmd(unsigned int user_id,
                              unsigned int trnas_lock_id,
                              unsigned int trans_cmd);
     //对某一个用户的一个命令的事务进行加锁
-    void unlock_qquin_trans_cmd(unsigned int qq_uin,
+    void unlock_qquin_trans_cmd(unsigned int user_id,
                                 unsigned int trnas_lock_id);
 
 
@@ -332,6 +278,7 @@ public:
 
     //发送一个数据到PIPE
     int push_back_sendpipe(Zerg_App_Frame *proc_frame);
+
 protected:
     //发送一消息头给一个服务器,内部函数
     int mgr_sendmsghead_to_service(unsigned int cmd,
@@ -378,8 +325,6 @@ protected:
     //QUEUE FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，
     //但是长度应该应该是按照APPFRAME的帧头计算的。这个数量级别的长度已经不小了
     static const size_t INNER_QUEUE_WATER_MARK = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD * 102400;
-
-
 
 protected:
 

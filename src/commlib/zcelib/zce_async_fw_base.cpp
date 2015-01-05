@@ -12,11 +12,12 @@ const int ZCE_Async_Object::ASYNCOBJ_ACTION_ID[] = { 10001, 20001 };
 
 //构造函数
 ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
-                                   unsigned int reg_cmd) :
+                                   unsigned int create_cmd) :
     asyncobj_id_(ZCE_Async_ObjectMgr::INVALID_IDENTITY),
     async_mgr_(async_mgr),
-    create_cmd_(reg_cmd),
-    timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID)
+    create_cmd_(create_cmd),
+    timeout_id_(ZCE_Timer_Queue::INVALID_TIMER_ID),
+    process_errno_(0)
 {
 }
 
@@ -78,6 +79,13 @@ void ZCE_Async_Object::on_start()
 void ZCE_Async_Object::on_end()
 {
     cancel_timeout();
+}
+
+
+//记录处理过程发生的错误
+void ZCE_Async_Object::set_errorno(int error_no)
+{
+    process_errno_ = error_no;
 }
 
 
@@ -325,7 +333,7 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 }
 
 //创建异步对象
-int ZCE_Async_ObjectMgr::create_asyncobj(void *outer_data, unsigned int cmd, unsigned int *id)
+int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, unsigned int *id)
 {
     int ret = 0;
     ZCE_Async_Object *crt_async = NULL;
@@ -345,12 +353,13 @@ int ZCE_Async_ObjectMgr::create_asyncobj(void *outer_data, unsigned int cmd, uns
     *id = id_builder_;
     crt_async->asyncobj_id_ = id_builder_;
 
-    //启动丫的
-    crt_async->on_start();
+    
     ++async_rec->create_num_;
+    crt_async->on_start();
 
+    //启动丫的
     bool continue_run = false;
-    crt_async->on_run(outer_data,continue_run);
+    crt_async->on_run(outer_data, continue_run);
 
     //如果运行一下就退出了,直接结束回收
     if (continue_run == false)
@@ -397,7 +406,7 @@ int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
 }
 
 //激活某个已经运行的异步对象
-int ZCE_Async_ObjectMgr::active_asyncobj(void *outer_data, unsigned int id)
+int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id, void *outer_data)
 {
     int ret = 0;
     ZCE_Async_Object *async_obj = NULL;
@@ -504,5 +513,4 @@ void ZCE_Async_ObjectMgr::dump_info(ZCE_LOG_PRIORITY log_priority) const
                 async_rec.timeout_num_);
     }
 }
-
 

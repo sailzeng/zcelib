@@ -1,56 +1,53 @@
-/******************************************************************************************
-Copyright           : 2000-2004, Fullsail Technology (Shenzhen) Company Limited.
-FileName            :
-Author              : 原作者Scottxu ，移植,Sailzeng
-Version             :
-Date Of Creation    : 2006年9月8日
-Description         :
+/*!
+* @copyright  2004-2015  Apache License, Version 2.0 FULLSAIL
+* @filename   soar_zerg_sndrcv_lolo.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version    
+* @date       2006年9月8日
+* @brief      
+*             
+*             
+* @details    
+*             
+*             
+*             
+* @note       倮倮这个词的意思其实是汉族人对少数民族的蔑称，当然我在这儿不敢有半点
+*             的民族倾向，只是为了纪念一个很老的歌手
+*             倮倮，云南彝族人，LOLO
+*             
+*             菩提树上的叮当
+*             倮倮
+*             请你带我去从前你住过的村庄
+*             让我敲一敲菩提树上的那个叮当
+*             踩一踩凤尾竹下老式的水车
+*             爬一爬只是听说过的那座高山
+*             请你带我去到从前你住过的村庄
+*             让我敲一敲菩提树上的那个叮当
+*             踩一踩凤尾竹下老式的水车
+*             爬一爬只是听说过的那座高山
+*             你说你的山会渐渐长高
+*             你说你的水会源远流长
+*             你说你的菩提响着叮当
+*             你说你的村庄没有悲伤
+*             让我跟你去到你不老的村庄
+*             一起享受不知不觉地那份孤单
+*             和你在菩提树下看往事流淌
+*             陪你在河塘边把少年的泪水喝干
+*             让我跟你住在你不老的村庄
+*             一起度过不言不语的那段时光
+*             和你在水车上面让月光旋转
+*             陪你在烛光里把那太阳露出山
+*             噢~你的村庄也有个叮当
+*             噢~你的村庄也没有悲伤
+*             噢~你的村庄也有个叮当
+*             噢~你的村庄也没有悲伤
+*/
 
-Others              :
-Function List       :
-1.  ......
-    Modification History:
-1.Date  :
-Author  :Sailzeng 将这段代码移动到COMM,模板化
-Modification  :
-******************************************************************************************/
 
 #ifndef COMM_SNDRCV_UDP_NET_LOLO_H_
 #define COMM_SNDRCV_UDP_NET_LOLO_H_
 
 #include "soar_zerg_sndrcv_base.h"
-
-//倮倮这个词的意思其实是汉族人对少数民族的蔑称，当然我在这儿不敢有半点的民族倾向，只是为了纪念一个很老的歌手
-//倮倮，云南彝族人，LOLO
-
-/*****************************************************************************
-菩提树上的叮当
-倮倮
-请你带我去从前你住过的村庄
-让我敲一敲菩提树上的那个叮当
-踩一踩凤尾竹下老式的水车
-爬一爬只是听说过的那座高山
-请你带我去到从前你住过的村庄
-让我敲一敲菩提树上的那个叮当
-踩一踩凤尾竹下老式的水车
-爬一爬只是听说过的那座高山
-你说你的山会渐渐长高
-你说你的水会源远流长
-你说你的菩提响着叮当
-你说你的村庄没有悲伤
-让我跟你去到你不老的村庄
-一起享受不知不觉地那份孤单
-和你在菩提树下看往事流淌
-陪你在河塘边把少年的泪水喝干
-让我跟你住在你不老的村庄
-一起度过不言不语的那段时光
-和你在水车上面让月光旋转
-陪你在烛光里把那太阳露出山
-噢~你的村庄也有个叮当
-噢~你的村庄也没有悲伤
-噢~你的村庄也有个叮当
-噢~你的村庄也没有悲伤
-*****************************************************************************/
 
 /******************************************************************************************
 class Lolo_SendRecv_Package
@@ -84,7 +81,7 @@ public:
 
     //发送数据
     template< class T1>
-    int send_svc_package(unsigned int qq_uin,
+    int send_svc_package(unsigned int user_id,
                          unsigned int cmd,
                          const T1 &snd_info,
                          unsigned int app_id = 0,
@@ -99,7 +96,7 @@ public:
     //发送和接收数据，一起一锅搞掂的方式
     template< class T1, class T2>
     int send_recv_package(unsigned int snd_cmd,
-                          unsigned int qq_uin,
+                          unsigned int user_id,
                           const T1 &send_info,
                           ZCE_Time_Value *time_wait,
                           bool if_recv,
@@ -195,7 +192,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
 
 //发送数据
 template< class T>
-int Lolo_SendRecv_Package::send_svc_package(unsigned int qq_uin,
+int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
                                             unsigned int cmd,
                                             const T &info,
                                             unsigned int app_id,
@@ -220,7 +217,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int qq_uin,
 
     //如果有回填数据
     tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
-    tibetan_send_appframe_->frame_uid_ = qq_uin;
+    tibetan_send_appframe_->frame_uid_ = user_id;
 
     //填写GAME ID
     tibetan_send_appframe_->app_id_ = app_id;
@@ -260,7 +257,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int qq_uin,
 //发送和接收数据，一起一锅搞掂的方式
 template< class T1, class T2>
 int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
-                                             unsigned int qq_uin,
+                                             unsigned int user_id,
                                              const T1 &send_info,
                                              ZCE_Time_Value *time_wait,
                                              bool if_recv,
@@ -272,7 +269,7 @@ int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
     int ret = 0;
 
     //发送数据
-    ret = send_svc_package(qq_uin,
+    ret = send_svc_package(user_id,
                            snd_cmd,
                            send_info,
                            app_id,

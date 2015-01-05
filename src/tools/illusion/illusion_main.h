@@ -15,7 +15,7 @@ public:
 
 
     /// app的开始运行
-    virtual int on_start(int argc, const char *argv[]);
+    virtual int app_start(int argc, const char *argv[]);
 
     /// app 运行
     virtual int on_run();

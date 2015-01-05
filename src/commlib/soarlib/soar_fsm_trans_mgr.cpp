@@ -133,149 +133,6 @@ void Transaction_Manager::finish()
 }
 
 
-////注册命令以及对应的事务处理的类
-//int Transaction_Manager::register_trans_cmd(unsigned int cmd,
-//                                            Transaction_Base *ptxbase,
-//                                            bool if_auto_lock_trans,
-//                                            unsigned int lock_trans_cmd)
-//{
-//    //检查是否有重复的注册事务命令
-//#if defined DEBUG || defined _DEBUG
-//    HASHMAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(cmd);
-//
-//    if (mapiter != regtrans_pool_map_.end())
-//    {
-//        ZCE_LOG(RS_ERROR,"[framework] Find Repeat Command ID:%u From MAP.", cmd);
-//        delete ptxbase;
-//        return SOAR_RET::ERROR_FIND_REPEAT_CMD_ID;
-//    }
-//
-//#endif
-//
-//    CREATE_TRANS_RECORD ctr_trans_rec;
-//    ctr_trans_rec.trans_command_ = cmd;
-//    ctr_trans_rec.if_auto_trans_lock_ = if_auto_lock_trans;
-//    ctr_trans_rec.trans_lock_cmd_ = lock_trans_cmd;
-//    regtrans_pool_map_[cmd] = ctr_trans_rec;
-//
-//    //初始化
-//    regtrans_pool_map_[cmd].crttrs_cmd_pool_.initialize(POOL_EXTEND_TRANSACTION_NUM);
-//
-//    for (size_t i = 0; i < POOL_EXTEND_TRANSACTION_NUM; ++i)
-//    {
-//        Transaction_Base *tmp_txbase = ptxbase->create_self( this);
-//        regtrans_pool_map_[cmd].crttrs_cmd_pool_.push_back(tmp_txbase);
-//    }
-//
-//    //这个地方违背了谁申请，谁删除的原则，不好，但是
-//    delete ptxbase;
-//
-//    return 0;
-//}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月3日
-Function        : Transaction_Manager::regiester_trans_id
-Return          : int ==0 表示成功,否则失败,可能是由于有重复的事务ID
-Parameter List  :
-  Param1: unsigned int transid    事务ID
-  Param2: Transaction_Base* ptxbase 事务对应处理的Handler
-Description     : 注册一个事务ID,以及事务ID对应处理的Handler
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Manager::regiester_trans_id(unsigned int transid,
-//                                            unsigned int trans_cmd,
-//                                            Transaction_Base *ptxbase)
-//{
-//    //检查是否有重复的事务ID,由于transid是累加的，所以基本不会出现下段
-//#if defined DEBUG || defined _DEBUG
-//    HASHMAP_OF_TRANSACTION::iterator mapiter = transc_map_.find(transid);
-//
-//    if (mapiter != transc_map_.end())
-//    {
-//        ZCE_LOG(RS_ERROR,"[framework] Find Repeat Transaction ID:%u From MAP.", transid);
-//        return SOAR_RET::ERROR_FIND_REPEAT_TRANSACTION_ID;
-//    }
-//
-//#endif
-//
-//    //
-//    if (statistics_clock_)
-//    {
-//        ptxbase->trans_create_time_ = statistics_clock_->sec();
-//        ++(regtrans_pool_map_[trans_cmd].create_trans_num_);
-//    }
-//
-//    transc_map_[transid] = ptxbase;
-//
-//    return 0;
-//}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月3日
-Function        : Transaction_Manager::unregiester_trans_id
-Return          : int 表示成功,否则失败,可能是由于有重复的事务ID
-Parameter List  :
-  Param1: unsigned int transid 事务ID
-Description     : 注销TransID.
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Manager::unregiester_trans_id(unsigned int transid,
-//                                              unsigned int trans_cmd,
-//                                              int run_state,
-//                                              time_t trans_start)
-//{
-//    //检查是否有能找到对应的事件ID
-//
-//    HASHMAP_OF_TRANSACTION::iterator mapiter = transc_map_.find(transid);
-//
-//    if (mapiter == transc_map_.end())
-//    {
-//        ZCE_LOG(RS_ERROR,"[framework] unregiester_trans_id,Can't Find Transaction ID:%u From MAP.", transid);
-//        return SOAR_RET::ERROR_CANNOT_FIND_TRANSACTION_ID;
-//    }
-//
-//    //如果要进行统计
-//    if (statistics_clock_)
-//    {
-//        switch (run_state)
-//        {
-//            case Transaction_Base::INIT_RUN_STATE:
-//            case Transaction_Base::RIGHT_RUN_STATE:
-//                ++(regtrans_pool_map_[trans_cmd].destroy_right_num_);
-//                break;
-//
-//            case Transaction_Base::TIMEOUT_RUN_STATE:
-//                ++(regtrans_pool_map_[trans_cmd].destroy_timeout_num_) ;
-//                break;
-//
-//            case Transaction_Base::EXCEPTION_RUN_STATE:
-//            default:
-//                ++(regtrans_pool_map_[trans_cmd].destroy_exception_num_);
-//                break;
-//        }
-//
-//        //统计耗费的时间
-//        (regtrans_pool_map_[trans_cmd].trans_consume_time_) += (statistics_clock_->sec() - trans_start);
-//    }
-//
-//    //在erase之前保存指针
-//    Transaction_Base *rt_tsbase = mapiter->second;
-//
-//    transc_map_.erase(transid);
-//
-//    //返回池子
-//    return_clone_to_pool(trans_cmd, rt_tsbase);
-//
-//    return 0;
-//}
-
 /******************************************************************************************
 Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年1月9日
 Function        : Transaction_Manager::process_pipe_frame
@@ -337,205 +194,16 @@ int Transaction_Manager::push_back_sendpipe(Zerg_App_Frame *proc_frame)
     return zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 }
 
-//
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年1月9日
-Function        : Transaction_Manager::get_clone_from_pool
-Return          : int
-Parameter List  :
-  Param1: unsigned int frame_cmd     克隆事务的命令字
-  Param2: unsigned int qq_uin,       使用的用户的QQ号码
-  Param3: Transaction_Base*& crt_trans 取走的事务的克隆
-Description     : 从池子中间根据命令得到一个Trans的克隆
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Manager::get_clone_from_pool(unsigned int frame_cmd,
-//                                             unsigned int qq_uin,
-//                                             Transaction_Base *&crt_trans)
-//{
-//    int ret = 0;
-//
-//    HASHMAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(frame_cmd);
-//
-//    if (mapiter == regtrans_pool_map_.end())
-//    {
-//        //如果是一个rsp包，找不到是正常的 我们一般用偶数做rsp的命令字，奇数做req的命令字
-//        //为什么在这儿不输出日志呢，因为有些REQ中间作为事务的应答,在后面进行统一的日志输出
-//
-//        return SOAR_RET::ERROR_TRANS_NO_CLONE_COMMAND;
-//    }
-//
-//    CREATE_TRANS_RECORD &reg_ctr_trans = regtrans_pool_map_[frame_cmd];
-//
-//    //如果这个命令要进行加锁
-//    if (reg_ctr_trans.if_auto_trans_lock_)
-//    {
-//        //进行加锁,
-//        ret = lock_qquin_trnas_cmd(qq_uin,
-//                                   reg_ctr_trans.trans_lock_cmd_,
-//                                   frame_cmd);
-//
-//        if (0 != ret )
-//        {
-//            return ret;
-//        }
-//    }
-//
-//    ZCE_LOG(RS_DEBUG,"Get clone frame command [%u],QQUin[%u],Pool size=[%u].",
-//               frame_cmd,
-//               qq_uin,
-//               reg_ctr_trans.crttrs_cmd_pool_.size());
-//
-//    //还有最后一个
-//    if (reg_ctr_trans.crttrs_cmd_pool_.size() == 1)
-//    {
-//        ZCE_LOG(RS_INFO,"[framework] Before extend trans.");
-//        //取一个模型
-//        Transaction_Base *model_trans = NULL;
-//        reg_ctr_trans.crttrs_cmd_pool_.pop_front(model_trans);
-//
-//        size_t capacity_of_pool = reg_ctr_trans.crttrs_cmd_pool_.capacity();
-//        reg_ctr_trans.crttrs_cmd_pool_.resize(capacity_of_pool + POOL_EXTEND_TRANSACTION_NUM);
-//
-//        ZCE_LOG(RS_INFO,"[framework] Pool Size=%u,  command %u, capacity = %u , resize =%u .",
-//                  reg_ctr_trans.crttrs_cmd_pool_.size(),
-//                  frame_cmd,
-//                  capacity_of_pool,
-//                  capacity_of_pool + POOL_EXTEND_TRANSACTION_NUM);
-//
-//        //用模型克隆N-1个Trans
-//        for (size_t i = 0; i < POOL_EXTEND_TRANSACTION_NUM; ++i)
-//        {
-//            Transaction_Base *cloned_txbase = model_trans->create_self(this);
-//            reg_ctr_trans.crttrs_cmd_pool_.push_back(cloned_txbase);
-//        }
-//
-//        //将模型放到第N个
-//        reg_ctr_trans.crttrs_cmd_pool_.push_back(model_trans);
-//        ZCE_LOG(RS_INFO,"[framework] After Extend trans.");
-//    }
-//
-//    //取得一个事务
-//    reg_ctr_trans.crttrs_cmd_pool_.pop_front(crt_trans);
-//    //初始化丫的
-//    crt_trans->re_init();
-//
-//    return 0;
-//}
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年1月21日
-Function        : Transaction_Manager::return_clone_to_pool
-Return          : int
-Parameter List  :
-  Param1: unsigned int frame_cmd     克隆事务的命令字
-  Param2: Transaction_Base*& rt_txbase 归还的克隆的事务
-Description     : 向池子中间根据命令归还一个Trans的克隆
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-//int Transaction_Manager::return_clone_to_pool(unsigned int frame_cmd, Transaction_Base *&rt_txbase)
-//{
-//#if defined DEBUG || defined _DEBUG
-//    HASHMAP_OF_POLLREGTRANS::iterator mapiter = regtrans_pool_map_.find(frame_cmd);
-//
-//    if (mapiter == regtrans_pool_map_.end())
-//    {
-//        return SOAR_RET::ERROR_TRANS_NO_CLONE_COMMAND;
-//    }
-//
-//#endif //defined DEBUG || defined _DEBUG
-//    //
-//    CREATE_TRANS_RECORD &reg_ctr_trans  = regtrans_pool_map_[frame_cmd];
-//    ZCE_LOG(RS_DEBUG,"[framework] Return clone frame command %u,Pool size=%u .",
-//               frame_cmd,
-//               reg_ctr_trans.crttrs_cmd_pool_.size());
-//
-//    //如果原来要求加锁，现在就解锁
-//    if (reg_ctr_trans.if_auto_trans_lock_)
-//    {
-//        unlock_qquin_trans_cmd(rt_txbase->req_qq_uin_,
-//                               reg_ctr_trans.trans_lock_cmd_);
-//    }
-//
-//    //用于资源的回收
-//    rt_txbase->finish();
-//
-//    //
-//    reg_ctr_trans.crttrs_cmd_pool_.push_back(rt_txbase);
-//    return 0;
-//}
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年1月21日
-Function        : Transaction_Manager::recycle_clone_from_pool
-Return          : void
-Parameter List  : NULL
-Description     : 从池子中间回收多于的事务的克隆，如果克隆过多会占用过多的内存，安装限制的事务模型，
-Calls           :
-Called By       :
-Other           : 克隆的事务应该不用太多
-Modify Record   :
-******************************************************************************************/
-//void Transaction_Manager::recycle_clone_from_pool()
-//{
-//    //
-//    HASHMAP_OF_POLLREGTRANS::iterator iter_tmp = regtrans_pool_map_.begin();
-//    HASHMAP_OF_POLLREGTRANS::iterator iter_end = regtrans_pool_map_.end();
-//    //因为比较关键，用了RS_INFO
-//    ZCE_LOG(RS_INFO,"[framework] Recycle trans,transaction manager are processing pool number [%d] . ",
-//              regtrans_pool_map_.size());
-//
-//    for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
-//    {
-//        unsigned int frame_command = iter_tmp->first;
-//        POOL_OF_REGISTERTRANS &pool_regtrans = (iter_tmp->second).crttrs_cmd_pool_;
-//        ZCE_LOG(RS_INFO,"[framework] %u.Pool porcess command:%u,capacity:%u,size:%u,use:%u.",
-//                  i,
-//                  frame_command,
-//                  pool_regtrans.capacity(),
-//                  pool_regtrans.size(),
-//                  pool_regtrans.capacity() - pool_regtrans.size()
-//                 );
-//
-//        //如果池子的空间 > RECYCLE_POOL_THRESHOLD_VALUE 并且正在使用的事务克隆很少
-//        //则调整池子，回收部分数据，减少浪费
-//        const size_t USE_TRANS_THRESHOLD = RECYCLE_POOL_THRESHOLD_VALUE / 8;
-//
-//        if (pool_regtrans.capacity() - pool_regtrans.size() < USE_TRANS_THRESHOLD &&
-//            pool_regtrans.size() > RECYCLE_POOL_THRESHOLD_VALUE )
-//        {
-//            const size_t RECYCLE_TRANS_NUM = RECYCLE_POOL_THRESHOLD_VALUE / 2;
-//            size_t pool_capacity = pool_regtrans.capacity();
-//
-//            //循环取得一个事务，删除掉
-//            for (size_t i = 0; i < RECYCLE_TRANS_NUM; ++i)
-//            {
-//                Transaction_Base *recycle_txbase = NULL;
-//                pool_regtrans.pop_front(recycle_txbase);
-//                delete recycle_txbase;
-//            }
-//
-//            //调整池子的容量
-//            pool_regtrans.resize(pool_capacity - RECYCLE_TRANS_NUM);
-//        }
-//    }
-//
-//    //
-//    return ;
-//}
+
 
 /******************************************************************************************
 Author          : Sail(ZENGXING)  Date Of Creation: 2009年3月16日
 Function        : Transaction_Manager::lock_qquin_trnas_cmd
 Return          : int
 Parameter List  :
-  Param1: unsigned int qq_uin        QQUIN
+  Param1: unsigned int user_id        USER ID
   Param2: unsigned int trnas_lock_id 加锁的ID,可以和命令字相同，或者不同
   Param3: unsigned int frame_cmd     事务的命令，仅仅用于日志输出
 Description     : 对某一个用户的一个命令的事务进行加锁
@@ -544,18 +212,18 @@ Called By       : 事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int qq_uin,
+int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int user_id,
                                               unsigned int trnas_lock_id,
                                               unsigned int frame_cmd)
 {
-    TRANS_LOCK_RECORD lock_rec(qq_uin, trnas_lock_id);
+    TRANS_LOCK_RECORD lock_rec(user_id, trnas_lock_id);
     std::pair <INNER_TRANS_LOCK_POOL::iterator, bool> iter_tmp = trans_lock_pool_.insert(lock_rec);
 
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second )
     {
         ZCE_LOG(RS_ERROR, "[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
-                qq_uin,
+                user_id,
                 trnas_lock_id,
                 frame_cmd);
         return -1;
@@ -565,9 +233,9 @@ int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int qq_uin,
 }
 
 //对某一个用户的一个命令的事务进行加锁
-void Transaction_Manager::unlock_qquin_trans_cmd(unsigned int qq_uin, unsigned int lock_trnas_id)
+void Transaction_Manager::unlock_qquin_trans_cmd(unsigned int user_id, unsigned int lock_trnas_id)
 {
-    TRANS_LOCK_RECORD lock_rec(qq_uin, lock_trnas_id);
+    TRANS_LOCK_RECORD lock_rec(user_id, lock_trnas_id);
     trans_lock_pool_.erase(lock_rec);
     return;
 }
@@ -604,7 +272,7 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
     {
 
         unsigned int id = 0;
-        ret = create_asyncobj(app_frame, app_frame->frame_command_, &id);
+        ret = create_asyncobj(app_frame->frame_command_, app_frame, &id);
 
         bcrttx = true;
 
@@ -618,7 +286,7 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
     else
     {
 
-        ret = active_asyncobj(app_frame, app_frame->backfill_trans_id_);
+        ret = active_asyncobj(app_frame->backfill_trans_id_, app_frame);
         if (ret != 0 )
         {
             DEBUGDUMP_FRAME_HEAD(RS_ERROR, "No use frame:", app_frame );
@@ -689,8 +357,8 @@ Modify Record   :
 //                  i,
 //                  (pbase)->req_qq_uin_,
 //                  (pbase)->req_qq_uin_,
-//                  (pbase)->trans_command_,
-//                  (pbase)->trans_phase_,
+//                  (pbase)->req_command_,
+//                  (pbase)->fsm_stage_,
 //                  (pbase)->transaction_id_ );
 //    }
 //
@@ -740,7 +408,7 @@ Modify Record   :
 //    {
 //        ZCE_LOG(RS_INFO,"[framework] [TRANS INFO]%u.Transaction command ID [%u],create [%llu], destroy right[%llu], destroy timeout[%llu],destroy exception[%llu],consume seconds[%llu]",
 //                  i,
-//                  (iter_tmp->second).trans_command_,
+//                  (iter_tmp->second).req_command_,
 //                  (iter_tmp->second).create_trans_num_,
 //                  (iter_tmp->second).destroy_right_num_,
 //                  (iter_tmp->second).destroy_timeout_num_,

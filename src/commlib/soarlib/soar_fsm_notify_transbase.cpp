@@ -9,8 +9,9 @@ class Notify_Trans_Base
 /******************************************************************************************
 class Notify_Trans_Abnormal_Base 在某些特殊时候(避免多次拷贝),时使用，除非对性能有强烈的爱好，否则不要用
 ******************************************************************************************/
-Notify_Trans_Abnormal_Base::Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr)
-    : Notify_Trans_Base<ZCE_MT_SYNCH>(trans_notify_mgr)
+Notify_Trans_Abnormal_Base::Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr,
+                                                       unsigned int create_cmd)
+    : Notify_Trans_Base<ZCE_MT_SYNCH>(trans_notify_mgr, create_cmd)
     , abnormal_frame_(NULL)
 {
     //必须要求trans_notify_mgr至少是trans_notify_mgr的子类，

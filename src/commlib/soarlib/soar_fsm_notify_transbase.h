@@ -23,8 +23,8 @@ public:
     //必须如此。
     //这儿是一个典型的设计两难，如果使用向下朔型DOWNCAST，无意是丑陋的。
     //但是我觉得那部分功能还是在NotifyTrans_Manger比较好。用virual函数也不是太好,甚至不可能，我用了模板函数。我。。。。
-    Notify_Trans_Base(Transaction_Manager *trans_notify_mgr)
-        : Transaction_Base(trans_notify_mgr)
+    Notify_Trans_Base(Transaction_Manager *trans_notify_mgr, unsigned int create_cmd)
+        : Transaction_Base(trans_notify_mgr, create_cmd)
         , trans_notify_mgr_(NULL)
     {
         //必须要求trans_notify_mgr至少是trans_notify_mgr的子类，
@@ -86,7 +86,7 @@ private:
 
 public:
     //构造函数
-    Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr);
+    Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr, unsigned int create_cmd);
 protected:
     //
     virtual ~Notify_Trans_Abnormal_Base();

@@ -909,27 +909,6 @@ struct ZDOUBLE_STRUCT
 #endif
 
 //==================================================================================================
-//Windows 下的自动链接
-#if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
-
-// 包含库的引用链接
-#  pragma comment(lib, "ws2_32.lib")
-#  pragma comment(lib, "mswsock.lib")
-#  pragma comment(lib, "psapi.lib")
-#  pragma comment(lib, "dbghelp.lib")
-#  if defined (ZCE_HAS_IPV6) && (ZCE_HAS_IPV6==1)
-#    pragma comment(lib, "iphlpapi.lib")
-#  endif
-#  if defined (ZCE_USE_MYSQL) && (ZCE_USE_MYSQL==1)
-#    pragma comment(lib, "libmysql.lib")
-#  endif
-
-//这个功能到2008才支持
-#if defined ZCE_SUPPORT_WINSVR2008
-#  pragma comment(lib, "dbghelp.lib")
-#endif
-
-
 
 #if defined ZCE_WIN32
 // vc71(2003):
@@ -978,10 +957,24 @@ struct ZDOUBLE_STRUCT
 #  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Release"
 #endif
 
+//Windows 下的自动链接
+#if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
+
+// 包含库的引用链接
+#  pragma comment(lib, "ws2_32.lib")
+#  pragma comment(lib, "mswsock.lib")
+#  pragma comment(lib, "psapi.lib")
+#  pragma comment(lib, "dbghelp.lib")
+#  if defined (ZCE_HAS_IPV6) && (ZCE_HAS_IPV6==1)
+#    pragma comment(lib, "iphlpapi.lib")
+#  endif
+
+//这个功能到2008才支持
+#if defined ZCE_SUPPORT_WINSVR2008
+#  pragma comment(lib, "dbghelp.lib")
+#endif
 
 
-//自动包含的包含连接，简化你的操作
-#pragma comment(lib, "zcelib.lib"  )
 
 //如果使用了LUA，自动链接LUA的库，
 #if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
@@ -995,6 +988,16 @@ struct ZDOUBLE_STRUCT
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 #pragma comment(lib, "sqlite3.lib" )
 #endif
+
+#if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
+#pragma comment(lib, "libmysql.lib" )
+#endif
+
+
+
+//自动包含的包含连接，简化你的操作
+#pragma comment(lib, "zcelib.lib"  )
+
 
 //编译动态库用的东西
 #if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
