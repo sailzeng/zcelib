@@ -9,13 +9,13 @@
 struct TRANS_LOCK_RECORD 加锁的记录单元
 ******************************************************************************************/
 TRANS_LOCK_RECORD::TRANS_LOCK_RECORD(unsigned int lock_qq_uin, unsigned int lock_trans_cmd):
-    lock_qq_uin_(lock_qq_uin),
+    lock_user_id_(lock_qq_uin),
     lock_trans_cmd_(lock_trans_cmd)
 {
 }
 
 TRANS_LOCK_RECORD::TRANS_LOCK_RECORD():
-    lock_qq_uin_(0),
+    lock_user_id_(0),
     lock_trans_cmd_(0)
 {
 }

@@ -56,7 +56,7 @@ struct SOARING_EXPORT TRANS_LOCK_RECORD
 {
 public:
     //要加锁的USER ID,
-    unsigned int     lock_qq_uin_;
+    unsigned int     lock_user_id_;
     //事务的加锁ID，如果就是一个命令对应一个锁，建议直接使用命令字
     //如果是多个命令对一个东东加锁，建议占位一个命令，然后对那个命令加锁，
     unsigned int     lock_trans_cmd_;
@@ -73,7 +73,7 @@ struct SOARING_EXPORT HASH_OF_TRANS_LOCK
 public:
     size_t operator()(const TRANS_LOCK_RECORD &lock_rec) const
     {
-        return (size_t (lock_rec.lock_qq_uin_) + lock_rec.lock_trans_cmd_);
+        return (size_t(lock_rec.lock_user_id_) + lock_rec.lock_trans_cmd_);
     }
 };
 
@@ -83,7 +83,7 @@ class SOARING_EXPORT EQUAL_OF_TRANS_LOCK
 public:
     bool operator()(const TRANS_LOCK_RECORD &right, const TRANS_LOCK_RECORD &left) const
     {
-        return (right.lock_qq_uin_ == left.lock_qq_uin_ && right.lock_trans_cmd_ == left.lock_trans_cmd_);
+        return (right.lock_user_id_ == left.lock_user_id_ && right.lock_trans_cmd_ == left.lock_trans_cmd_);
     }
 
 };

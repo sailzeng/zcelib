@@ -1,6 +1,6 @@
 #===================================================================================================================
-# Basic Makefile for Saillib 1.0
-# Saillib 1.0 的CPP文件的编译,
+# Basic Makefile for ZCELIB 1.0
+# ZCELIB 1.0 的CPP文件的编译,
 # Author : Sailzeng
 # 定义外部库，和内部库和内部COMM库的INCLUDE路径和LIB文件，
 # 

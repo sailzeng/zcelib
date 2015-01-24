@@ -53,7 +53,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     }
 
     // Õ∑≈ø’º‰
-    free(symbols_strings);
+    ::free(symbols_strings);
 
 #elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
 

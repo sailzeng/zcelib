@@ -113,3 +113,11 @@ gcc -E hello.c -o hello.i
 注意多线程库有时候需要最后-lrt，但要注意GCC 4.8以后，链接是有顺序的，
 你可以简单认为-lrt,-lpthread 要放到链接顺序的最后面。
 
+-rdynamic 
+-rdynamic选项新添加的是动态连接符号信息，用于动态连接功能，比如dlopen()系列函数、
+backtrace()系列函数使用，不能被strip掉，即强制strip将导致程序无法执行：
+-rdynamic却是一个连接选项，它将指示连接器把所有符号（而不仅仅只是程序已使用到的外部符号，
+但不包括静态符号，比如被static修饰的函数）都添加到动态符号表（即.dynsym表）里，
+以便那些通过dlopen()或backtrace()（这一系列函数使用.dynsym表内符号）这样的函数使用。
+http://www.lenky.info/archives/2013/01/2190
+
