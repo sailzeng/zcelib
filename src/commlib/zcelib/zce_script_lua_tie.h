@@ -232,18 +232,18 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 */
 template<typename val_type  >
 void push_stack(lua_State *state,
-                typename std::enable_if<std::is_reference<val_type>::value,val_type>::type ref)
+    typename std::enable_if< std::is_reference<val_type>::value, val_type>::type ref)
 {
     //
     new(lua_newuserdata(state,
                         sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(ref);
 
     //如果原类型（去掉引用）是一个object，
-    if (std::is_class<std::remove_reference<val_type>::type >::value)
+    if (std::is_class<typename std::remove_reference<val_type>::type >::value)
     {
         //根据类的名称，设置metatable，注意这儿去掉了引用，进行的查询，
-        lua_pushstring(state, class_name <
-                       std::remove_reference <
+        lua_pushstring(state, class_name < typename 
+                       std::remove_reference < typename
                        std::remove_cv<val_type>::type >::type >::name());
         lua_gettable(state, LUA_GLOBALSINDEX);
         if (!lua_istable(state, -1))
@@ -265,32 +265,21 @@ void push_stack(lua_State *state,
 }
 
 
-/*!
-* @brief      放入一个指针
-* @tparam     val_type 指针的类型
-* @param      state    Lua state
-* @param      ptr      放入的指针
-*/
-template<typename ptr_type  >
-void push_stack(lua_State *state,
-                typename std::enable_if<std::is_pointer<ptr_type>::value, ptr_type>::type ptr)
-{
-    return push_stack_ptr<std::remove_cv<ptr_type>::type >(state, ptr);
-}
+
 
 template<typename ptr_type >
-void push_stack_ptr(lua_State *state, typename ptr_type ptr)
+void push_stack_ptr(lua_State *state, ptr_type ptr)
 {
     if (ptr)
     {
         new(lua_newuserdata(state, sizeof(ptr_2_udat<ptr_type>))) ptr_2_udat<ptr_type>(ptr);
 
         //如果原类型（去掉指针）是一个object，
-        if (std::is_class<std::remove_pointer<ptr_type>::type >::value)
+        if (std::is_class<typename std::remove_pointer<ptr_type>::type >::value)
         {
             //根据类的名称，设置metatable，注意这儿去掉了指针，进行的查询，
             lua_pushstring(state, class_name <
-                           std::remove_pointer <ptr_type> ::type > ::name());
+                           typename std::remove_pointer <ptr_type> ::type > ::name());
             lua_gettable(state, LUA_GLOBALSINDEX);
             if (!lua_istable(state, -1))
             {
@@ -319,6 +308,56 @@ void push_stack_ptr(lua_State *state, typename ptr_type ptr)
 template<> void push_stack_ptr(lua_State *state, char *const val);
 template<> void push_stack_ptr(lua_State *state, const char *const val);
 
+
+/*!
+* @brief      放入一个指针
+* @tparam     val_type 指针的类型
+* @param      state    Lua state
+* @param      ptr      放入的指针
+*/
+template<typename ptr_type  >
+void push_stack(lua_State *state,
+    typename std::enable_if<std::is_pointer<ptr_type>::value, ptr_type>::type ptr)
+{
+    return push_stack_ptr<std::remove_cv<ptr_type>::type >(state, ptr);
+}
+
+//对于非object类型的数据，如果要放入引用和指针，如果希望Lua能使用，要先声明这些对象
+//这个请注意！！！
+template<typename val_type >
+void push_stack_val(lua_State *state, val_type val)
+{
+    //这儿只针对非object对象
+    if (!std::is_class<val_type>::value)
+    {
+        ZCE_LOG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
+        return;
+    }
+
+    new(lua_newuserdata(state,
+        sizeof(val_2_udat<val_type>)))
+        val_2_udat<typename std::remove_cv<val_type>::type >(val);
+
+    //根据类的名称，设置metatable
+    lua_pushstring(state, class_name<typename std::remove_cv<val_type>::type >::name());
+    lua_gettable(state, LUA_GLOBALSINDEX);
+    if (!lua_istable(state, -1))
+    {
+#if ZCE_CHECK_CLASS_NOMETA == 1
+        ZCE_LOG(RS_ERROR,
+            "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
+            "May be you don't register or name conflict? ",
+            __ZCE_FUNC__,
+            typeid(val).name(),
+            class_name<std::remove_cv<val_type>::type >::name());
+#endif
+        lua_remove(state, -1);
+        return;
+    }
+    lua_setmetatable(state, -2);
+    return;
+}
+
 //枚举
 template<typename val_type  >
 void push_stack(lua_State *state,
@@ -339,47 +378,14 @@ void push_stack(lua_State *state,
     return push_stack_val<std::remove_cv<val_type>::type >(state, val);
 }
 
-//对于非object类型的数据，如果要放入引用和指针，如果希望Lua能使用，要先声明这些对象
-//这个请注意！！！
 
-template<typename val_type >
-void push_stack_val(lua_State *state, typename val_type val)
-{
-    //这儿只针对非object对象
-    if (!std::is_class<val_type>::value)
-    {
-        ZCE_LOG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
-        return;
-    }
-
-    new(lua_newuserdata(state,
-                        sizeof(val_2_udat<val_type>)))
-    val_2_udat<std::remove_cv<val_type>::type >(val);
-
-    //根据类的名称，设置metatable
-    lua_pushstring(state, class_name<std::remove_cv<val_type>::type >::name());
-    lua_gettable(state, LUA_GLOBALSINDEX);
-    if (!lua_istable(state, -1))
-    {
-#if ZCE_CHECK_CLASS_NOMETA == 1
-        ZCE_LOG(RS_ERROR,
-                "[LUATIE][%s][%s] is not tie to lua,name[%s]? "
-                "May be you don't register or name conflict? ",
-                __ZCE_FUNC__,
-                typeid(val).name(),
-                class_name<std::remove_cv<val_type>::type >::name());
-#endif
-        lua_remove(state, -1);
-        return;
-    }
-    lua_setmetatable(state, -2);
-    return;
-}
+template<typename array_type> int array_meta_get(lua_State *state);
+template<typename array_type> int array_meta_set(lua_State *state);
 
 
 ///放入一个数组的引用
 template<typename array_type  >
-void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat)
+void push_stack(lua_State *state, arrayref_2_udat<array_type> & ary_dat)
 {
     new (lua_newuserdata(state, sizeof(arrayref_2_udat<array_type>)))
     arrayref_2_udat<array_type>(ary_dat);
@@ -454,7 +460,7 @@ template<typename ret_type>
 typename std::enable_if<std::is_reference<ret_type>::value, typename std::remove_cv<ret_type>::type>::type
 read_stack(lua_State *state, int index)
 {
-    return *((std::remove_cv< std::remove_reference<ret_type>::type >::type *)
+    return *((typename std::remove_cv<typename std::remove_reference<ret_type>::type >::type *)
              (((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_));
 }
 
@@ -474,7 +480,7 @@ typename std::enable_if < !(std::is_pointer<ret_type>::value ||
                            ), typename std::remove_cv<ret_type>::type >::type
 read_stack(lua_State *state, int index)
 {
-    return read_stack_val<std::remove_cv<ret_type>::type>(state, index);
+    return read_stack_val<typename std::remove_cv<ret_type>::type>(state, index);
 }
 
 
