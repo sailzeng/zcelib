@@ -16,8 +16,8 @@
 #  VERSIONTYPE       版本类型，debug，release，或者 neutral ，debug=1,VERSIONTYPE=debug,release=1 VERSIONTYPE=release debug=0 and release=0 VERSIONTYPE=neutral
 #  CFLAGS            C语言编译选项
 #  CCFLAGS           C++语言编译选项
-#  DEFFLAGS          C++ 预处理的DEFINE部分
-#  CPPFLAGS          C++语言编译的预标志，比如DEFINDE等. CPPFLAGS += $(DEFFLAGS) 
+#  DEFFLAGS          预处理的DEFINE部分
+#  CPPFLAGS          用于语言编译的预处理标志，比如DEFINDE等. CPPFLAGS += $(DEFFLAGS) 
 #  SOFLAGS           生成.so库时候的参数
 #  ARFLAGS           ar 的参数
 #  DCFLAGS           Debugging 程序的C语言编译选项,一般在有 debuginfo=1 变量时有效
@@ -124,8 +124,8 @@ CXX := ccache $(CXX)
 endif
 
 #编译选项
-CFLAGS += -W -Wall -Wpointer-arith 
-CCFLAGS += -std=c++11 -W -Wall -Wpointer-arith 
+CFLAGS += -W -Wall -Wpointer-arith -MMD
+CCFLAGS += -std=c++11 -W -Wall -Wpointer-arith -MMD
 
 #这个告警有胆量的可以考虑一下，我第一次挑战以失败告终
 ifeq ($(effcpp),1)
@@ -214,12 +214,26 @@ ifeq ($(release),1)
 endif
 endif
 
-VERSIONTYPE := neutral
+OS_BITS := $(shell getconf LONG_BIT)
+
+ifeq ($(OS_BITS),32)
+VERSIONTYPE := linux_x86_neutral
 ifeq ($(debug),1)
-  VERSIONTYPE := debug
+  VERSIONTYPE := linux_x86_debug
 endif
 ifeq ($(release),1)
-  VERSIONTYPE := release
+  VERSIONTYPE := linux_x86_release
+endif
+endif
+
+ifeq ($(OS_BITS),64)
+VERSIONTYPE := linux_x64_neutral
+ifeq ($(debug),1)
+  VERSIONTYPE := linux_x64_debug
+endif
+ifeq ($(release),1)
+  VERSIONTYPE := linux_x64_release
+endif
 endif
 
 ifeq ($(debug),1)
@@ -254,13 +268,15 @@ ifeq ($(threads),1)
   LIBARYS += -lpthread -lrt
 endif
 
+CPPFLAGS += $(DEFFLAGS) 
+
 #-Winvalid-pch是检查pch文件是否有效的。但因为我们使用了多个gch的方案，暂时不用这个参数了。
 #主要可以帮助你定位bug
-COMPILE.c       = $(CC)  $(CFLAGS)  $(DEFFLAGS) -MMD -c
-COMPILE.cc      = $(CXX) $(CCFLAGS) $(DEFFLAGS) -MMD -c
+COMPILE.c       = $(CC)  $(CFLAGS)  $(CPPFLAGS) -c
+COMPILE.cc      = $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
 
-PRECOMPILE.c    = $(CC)  $(CFLAGS) $(DEFFLAGS) -x c++-header -MMD -c
-PRECOMPILE.cc   = $(CXX) $(CCFLAGS) $(DEFFLAGS) -x c++-header -MMD -c 
+PRECOMPILE.c    = $(CC)  $(CFLAGS)  $(CPPFLAGS) -x c++-header -c
+PRECOMPILE.cc   = $(CXX) $(CCFLAGS) $(CPPFLAGS) -x c++-header -c 
 
 PRELINK  ?=
 PURELINK ?=
@@ -273,8 +289,8 @@ ifeq ($(static_link),1)
 endif
 
 
-LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(DEFFLAGS) $(LDFLAGS) 
-LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(DEFFLAGS) $(LDFLAGS) 
+LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) 
+LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(CPPFLAGS) $(LDFLAGS) 
 SOLINK.cc = $(PRELINK) $(DLD) $(SOFLAGS)
 
 

@@ -449,11 +449,19 @@ read_stack(lua_State *state, int index)
 template < typename ptr_type >
 ptr_type read_stack_ptr(lua_State *state, int index)
 {
-    return (ret_type)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
+    return (ptr_type)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
 }
 
 template<> char               *read_stack_ptr(lua_State *state, int index);
 template<> const char         *read_stack_ptr(lua_State *state, int index);
+
+
+///从堆栈中读取某个类型
+template < typename ret_type >
+ret_type read_stack_val(lua_State *state, int index)
+{
+    return *(ret_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
+}
 
 ///读取一个引用
 template<typename ret_type>
@@ -469,7 +477,7 @@ template<typename ret_type>
 typename std::enable_if<std::is_enum<ret_type>::value, ret_type>::type
 read_stack(lua_State *state, int index)
 {
-    return (val_type)lua_tonumber(state, index);
+    return (ret_type)lua_tonumber(state, index);
 }
 
 ///读取一个val
@@ -484,25 +492,7 @@ read_stack(lua_State *state, int index)
 }
 
 
-///从堆栈中读取某个类型
-template < typename ret_type >
-ret_type read_stack_val(lua_State *state, int index)
-{
-    return *(ret_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
-}
 
-template<> char                read_stack_val(lua_State *state, int index);
-template<> unsigned char       read_stack_val(lua_State *state, int index);
-template<> short               read_stack_val(lua_State *state, int index);
-template<> unsigned short      read_stack_val(lua_State *state, int index);
-template<> int                 read_stack_val(lua_State *state, int index);
-template<> unsigned int        read_stack_val(lua_State *state, int index);
-template<> float               read_stack_val(lua_State *state, int index);
-template<> double              read_stack_val(lua_State *state, int index);
-template<> bool                read_stack_val(lua_State *state, int index);
-template<> int64_t             read_stack_val(lua_State *state, int index);
-template<> uint64_t            read_stack_val(lua_State *state, int index);
-template<> std::string         read_stack_val(lua_State *state, int index);
 
 ///
 template<typename val_type>
@@ -844,7 +834,7 @@ class member_array : memvar_base
 public:
 
     //构造函数
-    member_array(typename ary_type (class_type::*mem_ary_ptr)[ary_size],
+    member_array(ary_type (class_type::*mem_ary_ptr)[ary_size],
                  bool read_only) :
         mem_ary_ptr_(mem_ary_ptr),
         read_only_(read_only)
@@ -879,85 +869,8 @@ public:
 
 };  //namespace ZCE_LUA
 
-class ZCE_Lua_Base;
 
 
-//=======================================================================================================
-
-/*!
-* @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法
-*             这样的语法，让代码书写更加简单一点。
-*             tie.reg_class<TA>("TA",false).mem_var(...).mem_var(...)
-*             当然缺点也会有，因为这样的操作没有返回值，所以即使有错误也无法反馈
-* @tparam     class_type 绑定的类的名称
-* @note       具体函数的解释请参考ZCE_Lua_Tie
-*/
-template <typename class_type>
-class Candy_Tie_Class
-{
-public:
-    ///构造函数
-    Candy_Tie_Class(ZCE_Lua_Base *lua_tie,
-                    bool read_only):
-        lua_tie_(lua_tie),
-        read_only_(read_only)
-    {
-    }
-
-    ////在类的meta table注册构造函数
-    template <typename construct_fun >
-    Candy_Tie_Class &construct(construct_fun func)
-    {
-        lua_tie_->class_constructor<class_type, construct_fun >(func);
-        return *this;
-    }
-
-    ///在类的meta table注册成员变量
-    template <typename var_type >
-    Candy_Tie_Class &mem_var(const char *name, var_type class_type::*val)
-    {
-        lua_tie_->class_mem_var<class_type, var_type >(name, val);
-        return *this;
-    }
-
-    ///在类的meta table注册成员数组
-    template <typename array_type , size_t array_size>
-    Candy_Tie_Class &mem_ary(const char *name, array_type (class_type::*ary)[array_size])
-    {
-        lua_tie_->class_mem_ary<class_type, array_type, array_size >(name, ary, read_only_);
-        return *this;
-    }
-
-    ///在类的meta table绑定函数
-    template<typename ret_type, typename... args_type>
-    Candy_Tie_Class &mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
-    {
-        lua_tie_->class_mem_fun<class_type, ret_type, args_type...>(name, func);
-        return *this;
-    }
-
-    template<typename ret_type, typename... args_type>
-    Candy_Tie_Class &mem_yield_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
-    {
-        lua_tie_->class_mem_yield_fun<class_type, ret_type, args_type...>(name, func);
-        return *this;
-    }
-
-    //从某个类继承
-    template<typename parent_type>
-    Candy_Tie_Class &inherit()
-    {
-        lua_tie_->class_inherit<class_type, parent_type>();
-        return *this;
-    }
-
-protected:
-    ///Lua的解释器的状态
-    ZCE_Lua_Base   *lua_tie_ = nullptr;
-
-    ///这个类是否是只读的方式
-    bool           read_only_ = false;
-};
 
 
 
@@ -1107,7 +1020,7 @@ public:
     * @param      val  放入的变量，注意如果要放入引用，需要set_gvar<var_type &>(ref)，这样写
     */
     template<typename var_type>
-    void set_gvar(const char *name, typename var_type var)
+    void set_gvar(const char *name, var_type var)
     {
         //名称对象，
         lua_pushstring(lua_state_, name);
@@ -1118,7 +1031,7 @@ public:
 
     ///根据名称，从LUA读取一个变量
     template<typename var_type>
-    typename var_type get_gvar(const char *name)
+    var_type get_gvar(const char *name)
     {
         lua_pushstring(lua_state_, name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
@@ -1136,7 +1049,7 @@ public:
     */
     template<typename array_type>
     void set_garray(const char *name,
-                    typename array_type ary_data[],
+                    array_type ary_data[],
                     size_t ary_size,
                     bool read_only = false)
     {
@@ -1150,7 +1063,7 @@ public:
     ///从LUA中获取一个全局的数组
     template<typename ary_type>
     int get_garray(const char *name,
-                   typename ary_type ary_data[],
+                   ary_type ary_data[],
                    size_t &ary_size)
     {
         //名称对象，
@@ -1163,8 +1076,8 @@ public:
             lua_remove(lua_state_, -1);
             return -1;
         }
-        ZCE_LIB::arrayref_2_udat<array_type> aux_ary =
-            *(aux_ary *)lua_touserdata(lua_state_, -1);
+        ZCE_LIB::arrayref_2_udat<ary_type> aux_ary =
+            *(ZCE_LIB::arrayref_2_udat<ary_type> *)lua_touserdata(lua_state_, -1);
         ary_size = aux_ary.ary_size_;
         for (size_t i = 0; i < ary_size; ++i)
         {
@@ -1225,7 +1138,7 @@ public:
     {
         return from_luatable(table_name,
                              container_dat,
-                             std::iterator_traits<container_type::iterator>::iterator_category());
+                             std::iterator_traits<typename container_type::iterator>::iterator_category());
     }
 
     //
@@ -1349,6 +1262,7 @@ public:
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
+    template <typename class_type> class Candy_Tie_Class;
 
     /*!
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
@@ -1584,7 +1498,7 @@ public:
 
     ///注册一个类的成员函数，名称是name，详细的函数说明，请参考class_mem_fun_all
     template<typename class_type, typename ret_type, typename... args_type>
-    int class_mem_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
+    int class_mem_fun(const char *name, ret_type(class_type::*func)(args_type...))
     {
         return class_mem_fun_all<false, class_type, ret_type, args_type...>(name, func);
     }
@@ -1592,7 +1506,7 @@ public:
     ///注册一个类的成员函数，和class_mem_fun的区别是函数最后的返回会调用lua_yield,函数名称是name，
     ///详细的函数说明，请参考class_mem_fun_all
     template<typename class_type, typename ret_type, typename... args_type>
-    int class_mem_yield_fun(const char *name, typename ret_type(class_type::*func)(args_type...))
+    int class_mem_yield_fun(const char *name, ret_type(class_type::*func)(args_type...))
     {
         return class_mem_fun_all<true, class_type, ret_type, args_type...>(name, func);
     }
@@ -1731,7 +1645,7 @@ protected:
             int index = ZCE_LIB::read_stack<int>(lua_state_, -2) - 1;
             container_dat[index] =
                 ZCE_LIB::read_stack
-                <std::iterator_traits<iter_type>::value_type>
+                <container_type::value_type>
                 (lua_state_, -1);
             // removes 'value'; keeps 'key' for next iteration
             lua_remove(lua_state_, -1);
@@ -1789,7 +1703,7 @@ protected:
         lua_pushstring(lua_state_, table_name);
         lua_createtable(lua_state_,
                         static_cast<int>(std::distance(first, last)), 0);
-        typename raiter_type iter_temp = first;
+        raiter_type iter_temp = first;
         for (int i = 0; iter_temp != last; iter_temp++, i++)
         {
             //Lua的使用习惯索引是从1开始
@@ -1823,14 +1737,14 @@ protected:
                         0,
                         static_cast<int>(std::distance(first, last)));
 
-        typename biiter_type iter_temp = first;
+        biiter_type iter_temp = first;
         for (; iter_temp != last; iter_temp++)
         {
             //将map的key作为table的key
-            ZCE_LIB::push_stack < std::remove_cv <
+            ZCE_LIB::push_stack <std::remove_cv < typename
             std::iterator_traits<biiter_type>::value_type::first_type
             >::type > (lua_state_, iter_temp->first);
-            ZCE_LIB::push_stack < std::remove_cv <
+            ZCE_LIB::push_stack <std::remove_cv < typename
             std::iterator_traits<biiter_type>::value_type::second_type
             >::type > (lua_state_, iter_temp->second);
             lua_settable(lua_state_, -3);
@@ -1879,7 +1793,7 @@ protected:
     * @param      func  成员函数指针
     */
     template<bool last_yield, typename class_type, typename ret_type, typename... args_type>
-    int class_mem_fun_all(const char *name, typename ret_type(class_type::*func)(args_type...))
+    int class_mem_fun_all(const char *name, ret_type(class_type::*func)(args_type...))
     {
         //根据类的名称，取得类的metatable的表，或者说原型。
         lua_pushstring(lua_state_, ZCE_LIB::class_name<class_type>::name());
@@ -1920,7 +1834,82 @@ protected:
     lua_State   *lua_state_;
 };
 
+//=======================================================================================================
 
+/*!
+* @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法
+*             这样的语法，让代码书写更加简单一点。
+*             tie.reg_class<TA>("TA",false).mem_var(...).mem_var(...)
+*             当然缺点也会有，因为这样的操作没有返回值，所以即使有错误也无法反馈
+* @tparam     class_type 绑定的类的名称
+* @note       具体函数的解释请参考ZCE_Lua_Tie
+*/
+template <typename class_type>
+class Candy_Tie_Class
+{
+public:
+    ///构造函数
+    Candy_Tie_Class(ZCE_Lua_Base *lua_tie,
+        bool read_only) :
+        lua_tie_(lua_tie),
+        read_only_(read_only)
+    {
+    }
+
+    ////在类的meta table注册构造函数
+    template <typename construct_fun >
+    Candy_Tie_Class &construct(construct_fun func)
+    {
+        lua_tie_->class_constructor<class_type, construct_fun >(func);
+        return *this;
+    }
+
+    ///在类的meta table注册成员变量
+    template <typename var_type >
+    Candy_Tie_Class &mem_var(const char *name, var_type class_type::*val)
+    {
+        lua_tie_->class_mem_var<class_type, var_type >(name, val);
+        return *this;
+    }
+
+    ///在类的meta table注册成员数组
+    template <typename array_type, size_t array_size>
+    Candy_Tie_Class &mem_ary(const char *name, array_type(class_type::*ary)[array_size])
+    {
+        lua_tie_->class_mem_ary<class_type, array_type, array_size >(name, ary, read_only_);
+        return *this;
+    }
+
+    ///在类的meta table绑定函数
+    template<typename ret_type, typename... args_type>
+    Candy_Tie_Class &mem_fun(const char *name, ret_type(class_type::*func)(args_type...))
+    {
+        lua_tie_->class_mem_fun<class_type, ret_type, args_type...>(name, func);
+        return *this;
+    }
+
+    template<typename ret_type, typename... args_type>
+    Candy_Tie_Class &mem_yield_fun(const char *name, ret_type(class_type::*func)(args_type...))
+    {
+        lua_tie_->class_mem_yield_fun<class_type, ret_type, args_type...>(name, func);
+        return *this;
+    }
+
+    //从某个类继承
+    template<typename parent_type>
+    Candy_Tie_Class &inherit()
+    {
+        lua_tie_->class_inherit<class_type, parent_type>();
+        return *this;
+    }
+
+protected:
+    ///Lua的解释器的状态
+    ZCE_Lua_Base   *lua_tie_ = nullptr;
+
+    ///这个类是否是只读的方式
+    bool           read_only_ = false;
+};
 
 //=======================================================================================================
 

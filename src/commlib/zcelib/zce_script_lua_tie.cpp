@@ -518,7 +518,7 @@ int ZCE_LIB::destroyer(lua_State *state)
 static int tostring_int64(lua_State *state)
 {
     char temp[64];
-    snprintf(temp, 63, "%lld", *(int64_t *)lua_touserdata(state, 1));
+    snprintf(temp, 63, "%" PRId64, *(int64_t *)lua_touserdata(state, 1));
     lua_pushstring(state, temp);
     return 1;
 }
@@ -604,7 +604,7 @@ static int sub_int64(lua_State *state)
 static int constructor_int64(lua_State *state)
 {
     int64_t data = 0;
-    sscanf(lua_tostring(state, 1), "%lld", &data);
+    sscanf(lua_tostring(state, 1), "%" PRId64, &data);
     ZCE_LIB::push_stack(state, data);
     return 1;
 }
@@ -686,7 +686,7 @@ void ZCE_Lua_Base::reg_int64()
 static int tostring_uint64(lua_State *state)
 {
     char temp[64];
-    snprintf(temp, 63, "%llu", *(uint64_t *)lua_touserdata(state, 1));
+    snprintf(temp, 63, "%" PRIu64, *(uint64_t *)lua_touserdata(state, 1));
     lua_pushstring(state, temp);
     return 1;
 }
@@ -771,7 +771,7 @@ static int sub_uint64(lua_State *state)
 static int constructor_uint64(lua_State *state)
 {
     uint64_t data = 0;
-    sscanf(lua_tostring(state, 1), "%llu", &data);
+    sscanf(lua_tostring(state, 1), "%" PRIu64, &data);
     ZCE_LIB::push_stack(state, data);
     return 1;
 }

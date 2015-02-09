@@ -318,11 +318,17 @@ using std::unordered_set;
 //所有的代码中,(除非用于兼容API)，不准出现long，longlong这种定义，不准，出现就弹小JJ . 注：弹到死
 
 //整数类型定义,推荐使用，特别是64位的uint64_t,
+//在Linux int64_t 被特殊定义了，在32位系统上是long long ,在64位系统是long，
+//造成的麻烦就是你如果你要printf打印int64_t在64系统上用%lld格式flag就会有告警。TNNNNNNNND，
+//所以你要在32系统用%lld,64位系统用%d，这完全是给自己找麻烦，
+//inttypes.h 中有PRId64 ，PRIu64的定义辅助解决类似（累死）问题，其在
+//如果实用了-std=c++11 or -std=c++0x,可以直接使用，或者使用宏__STDC_FORMAT_MACROS
 
 //LINUX下已经有相关的定义了，万幸
 #if defined(ZCE_OS_LINUX)
 #include <stdint.h>
 #include <inttypes.h>
+
 #endif //#if defined(ZCE_OS_LINUX)
 
 //WINDOWS下，各种不同，各种不一致，你只能自己来
@@ -338,9 +344,10 @@ typedef int ssize_t;
 //VC++ 2010，以及遵守这个标准了
 #if _MSC_VER >= 1500
 #include <stdint.h>
+#include <inttypes.h>
+
 //VC++ 2005
 #else
-
 //The stdint declaras
 typedef  signed char        int8_t;
 typedef  short              int16_t;
@@ -353,9 +360,21 @@ typedef  unsigned int       uint32_t;
 #if _MSC_VER >= 1300
 typedef unsigned long long  uint64_t;
 typedef long long           floatint64_t;
+#ifndef PRId64
+#define PRId64     "lld"
+#endif
+#ifndef PRIu64
+#define PRIu64     "llu" 
+#endif
 #else
 typedef unsigned __int64    uint64_t;
 typedef __int64             int64_t;
+#ifndef PRId64
+#define PRId64     "I64d" 
+#endif
+#ifndef PRIu64
+#define PRIu64     "I64u" 
+#endif
 #endif //#if _MSC_VER >= 1300
 
 #endif //#if _MSC_VER >= 1500

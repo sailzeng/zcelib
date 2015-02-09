@@ -49,8 +49,8 @@ CPP_FILE = $(wildcard ./*.cpp )
 SRC_FILE = $(C_FLIE) $(CPP_FILE)
 
 #通过.c,.cpp文件名称得到.O文件名称
-O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/%.o, $(C_FLIE))
-O_CPPFILE = $(patsubst ./%.cpp, $(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/%.o, $(CPP_FILE))
+O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o, $(C_FLIE))
+O_CPPFILE = $(patsubst ./%.cpp, $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o, $(CPP_FILE))
 O_FILE  = $(O_CFILE) $(O_CPPFILE)
 #通过.o文件，得到.d文件的名称
 DEP_FILE = $(patsubst %.o, %.d,$(O_FILE))
@@ -70,7 +70,7 @@ MISS_DEP = $(patsubst %.d,%.o, $(filter-out $(wildcard $(DEP_FILE)),$(DEP_FILE))
 ifneq ($(PREH_FILE),) 
 PREH_DIR = $(PREH_FILE).gch
 PREH_GCH = $(PREH_DIR)/$(PREH_FILE).$(VERSIONTYPE).gch
-PREH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/$(PREH_FILE).d
+PREH_DEP = $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/$(PREH_FILE).d
 endif
 
 all : $(OUTFILE) 
@@ -137,27 +137,26 @@ endif
 #一个告警，所以，分开存放了，虽然麻烦一点。
 
 #如果.预编译头文件的.d文件都存在，用.d判断依赖关系，是否需要重新生成，否则，重新生成gch文件。
-ifeq ($(PREH_DEP), $(wildcard $(PREH_DEP)))
+
 -include $(PREH_DEP)
-else
+
 $(PREH_GCH) : $(PREH_FILE)
-	$(PRECOMPILE.cc) $(INCLDIRS) -MF $(PREH_DEP) $< -o $@ ;
-	@echo "	$(PRECOMPILE.cc) $(INCLDIRS) -MF $(PREH_DEP) $< -o $@   " >> $(PREH_DEP)
+	$(PRECOMPILE.cc) $(INCLDIRS) -MF $(PREH_DEP) $< -o $@ 
 endif    
-endif  #ifneq ($(PREH_GCH),) 
 
 #=====================================================================================================================
 
-#如果没有.d文件，则同时删除它们的.o文件,这个感觉是为了保证某种程度上的安全,
-ifneq ($(MISS_DEP), ) 
-$(shell $(RM) $(MISS_DEP))	
-endif 
+
 
 #在这个地方浪费一点口舌解释一下，我自己曾经在这个地方疑惑过，希望这个解释让你明白的更快
 #如果.o,文件不存在,那么会根据你的.cpp生成.o和.d文件
 #如果.o文件存在，而.d文件不存在，那么会删除.o文件.后面会继续生产.o和.d文件
 #如果.o和.d文件都存在，这个脚本会根据.d文件的依赖关系查询.依赖关系，如果.h文件变化了。则重新生成.o文件和.d文件
 
+#如果没有.d文件，则同时删除它们的.o文件,这个感觉是为了保证某种程度上的安全,
+ifneq ($(MISS_DEP), ) 
+$(shell $(RM) $(MISS_DEP))	
+endif 
 
 #这个代码必须在下面.o依赖.cpp之前，因为如果没有.d文件，我们还有下面的默认规则生成.o
 #如果有.d文件后,cpp没有变化,.h变化的也破坏依赖关系
@@ -167,13 +166,13 @@ endif
 
 #我们将.o文件放到了另外一个目录
 #生成.o和.d文件,@echo让这个命令不显示,;表示前面的命令要执行完成后，后面的命令才执行
-$(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/%.o : ./%.c
-	$(COMPILE.cc) $(INCLDIRS) $< -o $@ ; 
-	@echo "	$(COMPILE.cc) $(INCLDIRS) $< -o $@  " >> $(patsubst %.o,%.d,$@)
-$(PATH_OBJ)/$(PRGNAME)/$(VERSIONTYPE)/%.o : ./%.cpp
-	$(COMPILE.cc) $(INCLDIRS) $< -o $@ ;	
-	@echo "	$(COMPILE.cc) $(INCLDIRS) $< -o $@  " >> $(patsubst %.o,%.d,$@)
+$(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.c
+	$(COMPILE.cc) $(INCLDIRS) $< -o $@  
 	
+$(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.cpp
+	$(COMPILE.cc) $(INCLDIRS) $< -o $@ 
+
+#@echo "	$(COMPILE.cc) $(INCLDIRS) $< -o $@  " >> $(patsubst %.o,%.d,$@)	
 #=====================================================================================================================
 
 #下面是几个假象了，不做解释了,这个都看不懂劝你还是先读上面的几本书，再来看这个,
@@ -194,9 +193,12 @@ mkdir:
 	if (test ! -d $(PATH_LIB)) ; then $(MKDIR) $(PATH_LIB) ; fi ;
 	if (test ! -d $(PATH_OBJ)) ; then $(MKDIR) $(PATH_OBJ) ; fi ;
 	if (test ! -d $(PATH_OBJ)/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/$(PRGNAME) ; fi ;
-	if (test ! -d $(PATH_OBJ)/$(PRGNAME)/debug ) ;   then $(MKDIR) $(PATH_OBJ)/$(PRGNAME)/debug ; fi ;
-	if (test ! -d $(PATH_OBJ)/$(PRGNAME)/release ) ;  then $(MKDIR) $(PATH_OBJ)/$(PRGNAME)/release ; fi ;
-	if (test ! -d $(PATH_OBJ)/$(PRGNAME)/neutral ) ; then $(MKDIR) $(PATH_OBJ)/$(PRGNAME)/neutral ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x64_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x64_debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x64_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x64_release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x64_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x64_neutral/$(PRGNAME) ; fi ;
 ifneq ($(PREH_FILE),) 
 	if (test ! -d $(PREH_DIR)) ; then $(MKDIR) $(PREH_DIR) ; fi ;
 endif    
