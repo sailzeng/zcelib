@@ -21,7 +21,7 @@
 @brief      MySQLµÄ×Ö¶Î·â×°
 
 */
-class ZCELIB_EXPORT ZCE_Mysql_Field
+class ZCE_Mysql_Field
 {
 
 public:

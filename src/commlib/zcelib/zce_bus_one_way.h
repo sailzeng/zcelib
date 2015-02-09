@@ -7,7 +7,7 @@ class dequechunk_node;
 class shm_dequechunk;
 
 //Ë«ÐÐµÀ
-class ZCELIB_EXPORT ZCE_BusPipe_OneWay : public ZCE_Bus_MMAPPipe
+class ZCE_BusPipe_OneWay : public ZCE_Bus_MMAPPipe
 {
 public:
 

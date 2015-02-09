@@ -10,7 +10,7 @@
 *
 * @note
 */
-class ZCELIB_EXPORT ZCE_Sockaddr_In : public ZCE_Sockaddr
+class ZCE_Sockaddr_In : public ZCE_Sockaddr
 {
 public:
 

@@ -21,7 +21,7 @@ class ZCE_Reactor;
 * @brief      IO反应器所使用的事件句柄，当IO事件触发后，相应的函数
 *             被调用
 */
-class ZCELIB_EXPORT ZCE_Event_Handler
+class ZCE_Event_Handler
 {
 public:
 

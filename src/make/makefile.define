@@ -4,8 +4,10 @@
 # Author : Sailzeng
 # 定义外部库，和内部库和内部COMM库的INCLUDE路径和LIB文件，
 # 
-# 必须定义好好ZCELIB_ROOT这个环境变量，内部代码是依据这个
-# 变量进行的路径查询
+# 必须定义好好ZCELIB_ROOT这个环境变量，内部代码是依据这个变量进行的路径查询
+#
+# ZCELIB_DEPEND 变量定义的是外部依赖库的目录，我做了一个简单的整理，如果你不希望这部分，
+# 请自己配置相应的变量也可以
 #
 #===================================================================================================================
 
@@ -25,23 +27,30 @@ PATH_LIB  :=$(PATH_DEV)/lib
 PATH_BIN  :=$(PATH_DEV)/bin
 
 #===================================================================================================================
+
+PATH_DEPENDINC  :=$(ZCELIB_DEPEND)/include
+
+INC_LUALIB   = -I$(PATH_DEPENDINC)/lualib-5.1.5
+INC_PROTOBUF = -I$(PATH_DEPENDINC)/protobuf-2.6.1/src
+INC_SQLITE   = -I$(PATH_DEPENDINC)/sqlite-3.8.8.1
+INC_MYSQL    = -I$(PATH_DEPENDINC)/mysql-linux-5.6.22
+INC_RAPIDXML = -I$(PATH_DEPENDINC)/rapidxml-1.13
+
+# 外部库的环境
+INC_DEV_OUTER :=  $(INC_MYSQL) $(INC_SQLITE)  $(INC_RAPIDXML)  $(INC_LUALIB)  $(INC_PROTOBUF)
+
+#===================================================================================================================
 #检查操作系统的位数
 OS_BITS := $(shell getconf LONG_BIT)
 
-#MYSQL 
-INC_MYSQL               = -I/usr/include/mysql
 ifeq ($(OS_BITS),32)
-LIB_MYSQL               = -L/usr/lib/x86_32-linux-gnu -lmysqlclient_r 
+PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x86_32
 endif
 ifeq ($(OS_BITS),64)
-LIB_MYSQL               = -L/usr/lib/x86_64-linux-gnu -lmysqlclient_r 
+PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x86_64
 endif
 
-
-
-# 外部库的环境
-INC_DEV_OUTER :=  $(INC_MYSQL) 
-LIB_DEV_OUTER :=  $(LIB_MYSQL) 
+LIB_DEV_OUTER=$(PATH_DEPENDLIB) -lmysql -lsqlite -llualib -lprotobuf-lite
 
 #===================================================================================================================
 

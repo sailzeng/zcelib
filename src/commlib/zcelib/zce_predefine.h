@@ -288,10 +288,12 @@
 #error " Please use stlport ,in Visual studio 2005, have not unordered_map and unordered_set ."
 #endif
 
-// 在VC++2008版本,VC++2005+STLport，GCC 4.6版本以及更早的版本，unordered_map的名字空间是std::tr1
-#if (defined ZCE_OS_LINUX && (_GCC_VER > 40600)) \
+//在VC++2008版本,VC++2005+STLport，GCC 4.6版本以及更早的版本，unordered_map的名字空间是std::tr1
+//在VC++2008版本以前(包括),必须实用STLport
+//在VC++2008版本后，可以考虑是否实用STLport,如果_STLP_CONFIX_H 被定义了，我认为你有使用
+#if (defined ZCE_OS_LINUX && (_GCC_VER <= 40600)) \
     || ( defined ZCE_OS_WINDOWS && (_MSC_VER <= 1400) ) \
-    || ( defined _STLP_CONFIX_H)
+    || ( defined ZCE_OS_WINDOWS && (_MSC_VER > 1400) && defined _STLP_CONFIX_H)
 #include <unordered_map>
 #include <unordered_set>
 using std::tr1::unordered_map;
@@ -376,9 +378,9 @@ typedef __int64             int64_t;
 #pragma warning ( disable : 4100)
 #endif
 
-#include <rapidxml/rapidxml.hpp>
-#include <rapidxml/rapidxml_utils.hpp>
-#include <rapidxml/rapidxml_print.hpp>
+#include <rapidxml.hpp>
+#include <rapidxml_utils.hpp>
+#include <rapidxml_print.hpp>
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
@@ -438,6 +440,9 @@ extern "C"
 #pragma warning ( push )
 #pragma warning ( disable : 4512)
 #pragma warning ( disable : 4100)
+#elif defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
 #endif
 
 #include <google/protobuf/descriptor.h>
@@ -448,6 +453,8 @@ extern "C"
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
+#elif defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic pop
 #endif
 #endif
 
@@ -495,7 +502,7 @@ extern "C"
 //我是抄ACE_UNUSED_ARG的呀。我承认呀。windows下也许也可以考虑定义成__noop呀，
 #if !defined (ZCE_UNUSED_ARG)
 #if defined ZCE_OS_LINUX
-#  if defined ( _GCC_VER >= 40200)
+#  if ( _GCC_VER >= 40200)
 #    define ZCE_UNUSED_ARG(a) (void) (a)
 #  else
 #    define ZCE_UNUSED_ARG(a) do {/* null */} while (&a == 0)

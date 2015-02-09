@@ -338,7 +338,7 @@ int ZCE_Server_Base::process_signal(void)
     ZCE_LIB::signal(SIGTERM, exit_signal);
 
     //重新加载部分配置,用了SIGUSR1 kill -10
-    ZCE_LIB::signal(SIGUSR1, reload_signal);
+    ZCE_LIB::signal(SIGUSR1, reload_cfg_signal);
 #endif
 
     //SIGUSR1,SIGUSR2你可以用来干点自己的活,
@@ -355,7 +355,7 @@ int ZCE_Server_Base::daemon_init()
 
     if (pid < 0)
     {
-        return SOAR_RET::ERROR_FORK_FAIL;
+        return -1;
     }
     else if (pid > 0)
     {
@@ -495,7 +495,7 @@ void ZCE_Server_Base::exit_signal(int)
 }
 
 // USER1信号处理函数
-void ZCE_Server_Base::reload_signal(int)
+void ZCE_Server_Base::reload_cfg_signal(int)
 {
     // 信号处理函数中不能有IO等不可重入的操作，否则容易死锁
     base_instance_->set_reload_sign(true);

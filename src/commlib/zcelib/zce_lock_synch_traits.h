@@ -26,7 +26,7 @@
 /*!
 * @brief      线程加锁环境的锁类型萃取器
 */
-class ZCELIB_EXPORT ZCE_MT_SYNCH
+class ZCE_MT_SYNCH
 {
 public:
     typedef ZCE_Thread_Light_Mutex                        MUTEX;
@@ -43,7 +43,7 @@ public:
 /*!
 * @brief      ZCE_NULL_SYNCH 不加锁环境的锁类型萃取器
 */
-class ZCELIB_EXPORT ZCE_NULL_SYNCH
+class ZCE_NULL_SYNCH
 {
 public:
     typedef ZCE_Null_Mutex               MUTEX;

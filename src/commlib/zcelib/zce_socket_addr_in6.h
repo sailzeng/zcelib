@@ -4,7 +4,7 @@
 //IPV6是一个
 
 //IPv6的物理结构
-class ZCELIB_EXPORT ZCE_Sockaddr_In6 : public ZCE_Sockaddr
+class ZCE_Sockaddr_In6 : public ZCE_Sockaddr
 {
 public:
 

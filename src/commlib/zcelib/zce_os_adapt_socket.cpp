@@ -408,7 +408,7 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
 }
 
 
-//如果使用打了的端口,select 是不合适的，需要使用EPOLL,此时
+//如果使用大量的端口,select 是不合适的，需要使用EPOLL,此时可以打开下面的注释
 #define HANDLEREADY_USE_EPOLL
 
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
@@ -520,32 +520,32 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 
     //用EPOLL 完成事件触发，优点是能处理的数据多，缺点是系统调用太多
     int ret = 0;
-
-    int epoll_fd = ::epoll_create(max_event_number_ + 64);
+    const int MAX_EVENT_NUMBER = 64;
+    int epoll_fd = ::epoll_create( MAX_EVENT_NUMBER);
 
     struct epoll_event ep_event;
     if (HANDLE_READY_READ == ready_todo)
     {
-        ep_event->events |= EPOLLIN;
+        ep_event.events |= EPOLLIN;
     }
     else if ( HANDLE_READY_WRITE == ready_todo)
     {
-        ep_event->events |= EPOLLOUT;
+        ep_event.events |= EPOLLOUT;
     }
     else if (HANDLE_READY_EXCEPTION == ready_todo)
     {
-        ep_event->events |= EPOLLERR;
+        ep_event.events |= EPOLLERR;
     }
     else if (HANDLE_READY_ACCEPT == ready_todo)
     {
         //accept事件是利用读取事件
-        ep_event->events |= EPOLLIN;
+        ep_event.events |= EPOLLIN;
     }
     else if (HANDLE_READY_CONNECTED == ready_todo)
     {
         //LINUX 无论阻塞，还是非阻塞，失败调用读写事件，成功调用写事件
-        ep_event->events |= EPOLLOUT;
-        ep_event->events |= EPOLLIN;
+        ep_event.events |= EPOLLOUT;
+        ep_event.events |= EPOLLIN;
     }
     else
     {

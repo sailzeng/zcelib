@@ -13,63 +13,67 @@ void ZCE_LIB::push_stack(lua_State * /*state*/)
 {
 }
 
-template<> void ZCE_LIB::push_stack_ptr(lua_State *state, char *const ptr)
+namespace ZCE_LIB
+{
+
+
+void push_stack_ptr(lua_State *state, char *const ptr)
 {
     lua_pushstring(state, ptr);
 }
 
-template<> void ZCE_LIB::push_stack_ptr(lua_State *state, const char *const ptr)
+void push_stack_ptr(lua_State *state, const char *const ptr)
 {
     lua_pushstring(state, ptr);
 }
 
 //read_stack从堆栈中读取一个数据
-template<> void ZCE_LIB::push_stack_val(lua_State *state, char val)
+void push_stack_val(lua_State *state, char val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, unsigned char val)
+void push_stack_val(lua_State *state, unsigned char val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, short val)
+void push_stack_val(lua_State *state, short val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, unsigned short val)
+void push_stack_val(lua_State *state, unsigned short val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, int val)
+void push_stack_val(lua_State *state, int val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, unsigned int val)
+void push_stack_val(lua_State *state, unsigned int val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, float val)
+void push_stack_val(lua_State *state, float val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, double val)
+void push_stack_val(lua_State *state, double val)
 {
     lua_pushnumber(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, bool val)
+void push_stack_val(lua_State *state, bool val)
 {
     lua_pushboolean(state, val);
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, int64_t val)
+void push_stack_val(lua_State *state, int64_t val)
 {
     *(int64_t *)lua_newuserdata(state, sizeof(int64_t)) = val;
     lua_pushstring(state, "int64_t");
@@ -90,7 +94,7 @@ template<> void ZCE_LIB::push_stack_val(lua_State *state, int64_t val)
     return;
 }
 
-template<> void ZCE_LIB::push_stack_val(lua_State *state, uint64_t val)
+void push_stack_val(lua_State *state, uint64_t val)
 {
     *(uint64_t *)lua_newuserdata(state, sizeof(uint64_t)) = val;
     lua_pushstring(state, "uint64_t");
@@ -115,58 +119,58 @@ template<> void ZCE_LIB::push_stack_val(lua_State *state, uint64_t val)
 //=======================================================================================================
 //read_stack从堆栈中读取一个数据
 
-template<> char *ZCE_LIB::read_stack_ptr(lua_State *state, int index)
+template<> char *read_stack_ptr(lua_State *state, int index)
 {
     return (char *)lua_tostring(state, index);
 }
 
-template<> const char *ZCE_LIB::read_stack_ptr(lua_State *state, int index)
+template<> const char *read_stack_ptr(lua_State *state, int index)
 {
     return (const char *)lua_tostring(state, index);
 }
 
 
-template<> char ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> char read_stack_val(lua_State *state, int index)
 {
     return (char)lua_tonumber(state, index);
 }
 
-template<> unsigned char ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> unsigned char read_stack_val(lua_State *state, int index)
 {
     return (unsigned char)lua_tonumber(state, index);
 }
 
-template<> short ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> short read_stack_val(lua_State *state, int index)
 {
     return (short)lua_tonumber(state, index);
 }
 
-template<> unsigned short ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> unsigned short read_stack_val(lua_State *state, int index)
 {
     return (unsigned short)lua_tonumber(state, index);
 }
 
-template<> int ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> int read_stack_val(lua_State *state, int index)
 {
     return (int)lua_tonumber(state, index);
 }
 
-template<> unsigned int ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> unsigned int read_stack_val(lua_State *state, int index)
 {
     return (unsigned int)lua_tonumber(state, index);
 }
 
-template<> float ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> float read_stack_val(lua_State *state, int index)
 {
     return (float)lua_tonumber(state, index);
 }
 
-template<> double ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> double read_stack_val(lua_State *state, int index)
 {
     return (double)lua_tonumber(state, index);
 }
 
-template<> bool ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> bool read_stack_val(lua_State *state, int index)
 {
     if (lua_isboolean(state, index))
     {
@@ -179,7 +183,7 @@ template<> bool ZCE_LIB::read_stack_val(lua_State *state, int index)
     }
 }
 
-template<> int64_t ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> int64_t read_stack_val(lua_State *state, int index)
 {
     if (lua_isnumber(state, index))
     {
@@ -198,7 +202,7 @@ template<> int64_t ZCE_LIB::read_stack_val(lua_State *state, int index)
     }
 }
 
-template<> uint64_t ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> uint64_t read_stack_val(lua_State *state, int index)
 {
     if (lua_isnumber(state, index))
     {
@@ -218,7 +222,7 @@ template<> uint64_t ZCE_LIB::read_stack_val(lua_State *state, int index)
     }
 }
 
-template<> std::string ZCE_LIB::read_stack_val(lua_State *state, int index)
+template<> std::string read_stack_val(lua_State *state, int index)
 {
     if (lua_isstring(state, index))
     {
@@ -238,7 +242,7 @@ template<> std::string ZCE_LIB::read_stack_val(lua_State *state, int index)
     }
 }
 
-
+};
 
 //=======================================================================================================
 //一些公用的特性的LUA注册函数，

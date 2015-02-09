@@ -23,7 +23,7 @@
 /*!
 * @brief      MYSQLµÄÁ¬½ÓÆ÷
 */
-class ZCELIB_EXPORT ZCE_Mysql_Connect : public ZCE_NON_Copyable
+class ZCE_Mysql_Connect : public ZCE_NON_Copyable
 {
 
 public:

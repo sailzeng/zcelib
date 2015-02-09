@@ -18,7 +18,7 @@
 #define ZCE_LIB_MML_COMMAND_H_
 
 //忽视大小写
-class ZCELIB_EXPORT LessofCaseString
+class LessofCaseString
 {
 public:
     bool operator()(const std::string &src, const std::string &dst) const
@@ -32,7 +32,7 @@ public:
 * @brief      MML 控制台命令
 *             用于一些文本交互场景，比如GM命令等
 */
-class ZCELIB_EXPORT MML_Console_Command
+class MML_Console_Command
 {
 
     ///命令的选项

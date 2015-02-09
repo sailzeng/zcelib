@@ -42,7 +42,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 *
 * @note
 */
-struct ZCELIB_EXPORT AI_IIJIMA_BINARY_DATA
+struct AI_IIJIMA_BINARY_DATA
 {
 
 
@@ -87,7 +87,7 @@ public:
     ///数据区长度
     int ai_data_length_ = 0;
     ///动态数据取
-    char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA];
+    char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA+1];
 
     ///最后修改时间
     unsigned int last_mod_time_ = 0;
@@ -104,7 +104,7 @@ struct BaobaoGeneralDBConf 一个很通用的从DB中间得到通用配置信息的方法
 ******************************************************************************************/
 
 //一个很通用的从DB中间得到通用配置信息的结构
-class ZCELIB_EXPORT ZCE_General_Config_Table
+class ZCE_General_Config_Table
 {
 
 public:

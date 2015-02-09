@@ -38,7 +38,7 @@ class ZCE_SQLite_Result;
 @brief      连接处理一个SQLite3数据库的，打开一个SQLite3数据库就得到Handler
             用Handler完成后面各种数据库操作。
 */
-class ZCELIB_EXPORT ZCE_SQLite_DB_Handler
+class ZCE_SQLite_DB_Handler
 {
 
 public:
@@ -177,11 +177,11 @@ public:
     * @param      column 字段的行号,从1开始
     * @note
     */
-    template <class value_type>
-    value_type field_data(int row, int column)
-    {
-        return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
-    }
+    //template <typename value_type>
+    //value_type field_data(int row, int column)
+    //{
+    //    return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
+    //}
 
     ///行的数量
     inline int row_number()

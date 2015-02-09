@@ -64,7 +64,7 @@
 /******************************************************************************************
 class ZCE_LogTrace_Plus 只是为C++爱好者准备的封装,暂时不提供了。
 ******************************************************************************************/
-class ZCELIB_EXPORT ZCE_LogTrace_Plus : public ZCE_LogTrace_Basic
+class ZCE_LogTrace_Plus : public ZCE_LogTrace_Basic
 {
 
 public:

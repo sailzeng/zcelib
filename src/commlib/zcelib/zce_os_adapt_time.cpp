@@ -511,13 +511,13 @@ void ZCE_LIB::str_to_tm(const char *strtm,
         char mon_str[4];
         mon_str[0] = strtm[4];
         mon_str[1] = strtm[5];
-        mon_str[3] = strtm[6];
-        mon_str[4] = '\0';
+        mon_str[2] = strtm[6];
+        mon_str[3] = '\0';
         ptr_tm->tm_mon = 0;
 
         for (int i = 0; i < 12; i++)
         {
-            if (strnicmp(mon_str, MONTH_NAME[i], 3) == 0)
+            if (strncasecmp(mon_str, MONTH_NAME[i], 3) == 0)
             {
                 ptr_tm->tm_mon = i;
             }
@@ -554,8 +554,8 @@ void ZCE_LIB::str_to_tm(const char *strtm,
         char mon_str[4];
         mon_str[0] = strtm[5];
         mon_str[1] = strtm[6];
-        mon_str[3] = strtm[7];
-        mon_str[4] = '\0';
+        mon_str[2] = strtm[7];
+        mon_str[3] = '\0';
         ptr_tm->tm_mon = 0;
 
         for (int i = 0; i < 12; i++)
@@ -584,8 +584,8 @@ void ZCE_LIB::str_to_tm(const char *strtm,
         char mon_str[4];
         mon_str[0] = strtm[5];
         mon_str[1] = strtm[6];
-        mon_str[3] = strtm[7];
-        mon_str[4] = '\0';
+        mon_str[2] = strtm[7];
+        mon_str[3] = '\0';
         ptr_tm->tm_mon = 0;
 
         for (int i = 0; i < 12; i++)

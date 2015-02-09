@@ -58,7 +58,7 @@ Class           : ZCE_UUID64
 *             ZCE_UUID64_16_48 用1个16bit的数值+48位的数值
 *             表示UUID64，可以用于一些特殊场合产生唯一表示，
 */
-struct ZCELIB_EXPORT ZCE_UUID64_16_48
+struct ZCE_UUID64_16_48
 {
     uint64_t       data1_: 16;
     uint64_t       data2_: 48;
@@ -71,7 +71,7 @@ struct ZCELIB_EXPORT ZCE_UUID64_16_48
 *             @li 2个32位的整数
 *
 */
-class ZCELIB_EXPORT ZCE_UUID64
+class ZCE_UUID64
 {
 public:
     ///构造函数
@@ -141,7 +141,7 @@ Class           : ZCE_UUID64_Generator
 *                 是什么服务器产生的数据
 *
 */
-class ZCELIB_EXPORT ZCE_UUID64_Generator
+class ZCE_UUID64_Generator
 {
     //UUID产生方法，
     enum UUID64_GENERATOR_TYPE
@@ -237,7 +237,7 @@ protected:
 Class           : ZCE_UUID128
 ************************************************************************************************************/
 ///32bit整数+32整数+64位整数的表示方法
-struct ZCELIB_EXPORT ZCE_UUID128_32_32_64
+struct ZCE_UUID128_32_32_64
 {
 
     //
@@ -247,7 +247,7 @@ struct ZCELIB_EXPORT ZCE_UUID128_32_32_64
 };
 
 ///标准的UUID的格式
-struct ZCELIB_EXPORT ZCE_UUID128_32_16_16_16_48
+struct ZCE_UUID128_32_16_16_16_48
 {
     uint64_t       data1_ : 32;
     uint64_t       data2_ : 16;
@@ -257,7 +257,7 @@ struct ZCELIB_EXPORT ZCE_UUID128_32_16_16_16_48
 };
 
 ///微软的GUID的格式
-struct ZCELIB_EXPORT ZCE_UUID128_32_16_16_64
+struct ZCE_UUID128_32_16_16_64
 {
     uint64_t       data1_ : 32;
     uint64_t       data2_ : 16;
@@ -276,7 +276,7 @@ struct ZCELIB_EXPORT ZCE_UUID128_32_16_16_64
 *             @li 32位整数+16位整数+16位整数+64位整数，微软的UUID表示方法，GUID，
 *
 */
-class ZCELIB_EXPORT ZCE_UUID128
+class ZCE_UUID128
 {
 public:
     ///构造函数
@@ -340,7 +340,7 @@ Class           : ZCE_UUID128_Generator UUID的发生器
 * @brief      ZCE_UUID128_Generator UUID的发生器
 *
 */
-class ZCELIB_EXPORT ZCE_UUID128_Generator
+class ZCE_UUID128_Generator
 {
     //
     enum UUID128_GENERATOR_TYPE

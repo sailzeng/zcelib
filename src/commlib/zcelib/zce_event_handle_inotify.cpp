@@ -78,7 +78,6 @@ int ZCE_Event_INotify::close()
 
 #if defined (ZCE_OS_LINUX)
 
-    int ret = 0;
     //由于是HASH MAP速度有点慢
     HDL_TO_EIN_MAP::iterator iter_temp =  watch_event_map_.begin();
     for (; iter_temp != watch_event_map_.end();)

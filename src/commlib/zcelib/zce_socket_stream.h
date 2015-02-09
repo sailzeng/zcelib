@@ -5,7 +5,7 @@ class ZCE_Time_Value;
 class ZCE_Sockaddr;
 class ZCE_Socket_Base;
 
-class ZCELIB_EXPORT ZCE_Socket_Stream : public ZCE_Socket_Base
+class ZCE_Socket_Stream : public ZCE_Socket_Base
 {
 
 public:

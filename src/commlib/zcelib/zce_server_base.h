@@ -28,7 +28,7 @@
 /*********************************************************************************
 class ZCE_Server_Toolkit
 *********************************************************************************/
-class ZCELIB_EXPORT ZCE_Server_Base : public ZCE_NON_Copyable
+class ZCE_Server_Base : public ZCE_NON_Copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,

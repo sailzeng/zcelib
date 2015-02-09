@@ -29,7 +29,7 @@ class ZCE_Sockaddr;
 *
 * @note
 */
-class ZCELIB_EXPORT ZCE_Socket_Connector
+class ZCE_Socket_Connector
 {
 public:
     //构造函数和析构函数

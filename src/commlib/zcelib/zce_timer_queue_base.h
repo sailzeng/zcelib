@@ -22,7 +22,7 @@ class ZCE_Timer_Handler;
 /******************************************************************************************
 ZCE_Timer_Queue
 ******************************************************************************************/
-class ZCELIB_EXPORT ZCE_Timer_Queue : public ZCE_NON_Copyable
+class ZCE_Timer_Queue : public ZCE_NON_Copyable
 {
 
 public:

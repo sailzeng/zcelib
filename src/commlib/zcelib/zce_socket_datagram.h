@@ -6,7 +6,7 @@ class ZCE_Sockaddr;
 class ZCE_Socket_Base;
 
 //UDP socket
-class ZCELIB_EXPORT ZCE_Socket_DataGram : public ZCE_Socket_Base
+class ZCE_Socket_DataGram : public ZCE_Socket_Base
 {
 
 public:

@@ -17,8 +17,8 @@ SQLite3_STMT_Handler
 ZCE_SQLite_STMTHdl::ZCE_SQLite_STMTHdl(ZCE_SQLite_DB_Handler *sqlite3_handler):
     sqlite_handler_(sqlite3_handler),
     sqlite3_stmt_handler_(NULL),
-    current_bind_(1),
-    current_col_(0)
+    current_col_(0),
+    current_bind_(1)
 {
     assert(sqlite3_handler != NULL && sqlite3_handler->get_sqlite_handler() != NULL);
 }

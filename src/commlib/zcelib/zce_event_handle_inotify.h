@@ -83,7 +83,7 @@ class ZCE_Reactor;
 作为反应器，
 被调用
 */
-class ZCELIB_EXPORT ZCE_Event_INotify : public ZCE_Event_Handler
+class ZCE_Event_INotify : public ZCE_Event_Handler
 {
 
 
@@ -125,7 +125,7 @@ public:
     {
 #if defined ZCE_OS_LINUX
         return inotify_handle_;
-#else if defined ZCE_OS_WINDOWS
+#elif defined ZCE_OS_WINDOWS
         return watch_handle_;
 #endif
     }

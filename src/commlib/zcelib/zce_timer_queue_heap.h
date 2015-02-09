@@ -34,7 +34,7 @@
 *           其各种操作的时间复杂度都基本是O(log(2N)) 这个级别。
 *
 */
-class ZCELIB_EXPORT ZCE_Timer_Heap : public ZCE_Timer_Queue
+class ZCE_Timer_Heap : public ZCE_Timer_Queue
 {
 
 public:

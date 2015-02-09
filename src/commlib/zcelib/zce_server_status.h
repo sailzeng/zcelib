@@ -68,7 +68,7 @@ enum ZCE_STATUS_STATICS_TYPE
 *
 * @note
 */
-struct ZCELIB_EXPORT ZCE_STATUS_ITEM_ID
+struct ZCE_STATUS_ITEM_ID
 {
 public:
 
@@ -95,7 +95,7 @@ public:
 * @brief      ZCE_STATUS_ITEM_ID得到HASH因子的函数，
 *
 */
-struct ZCELIB_EXPORT HASH_ZCE_STATUS_ITEM_ID
+struct HASH_ZCE_STATUS_ITEM_ID
 {
 public:
     //就把3个数值相+，这样冲突感觉还小一点，（左移反而感觉不好）
@@ -113,7 +113,7 @@ public:
 * @brief      状态计数器项,包括ID，统计方式，以及数值
 *
 */
-class ZCELIB_EXPORT ZCE_STATUS_ITEM
+class ZCE_STATUS_ITEM
 {
 public:
 
@@ -140,7 +140,7 @@ public:
 * @brief      状态计数器+名字，用于配置，DUMP输出等
 *
 */
-class ZCELIB_EXPORT ZCE_STATUS_ITEM_WITHNAME
+class ZCE_STATUS_ITEM_WITHNAME
 {
 public:
 
@@ -178,7 +178,7 @@ public:
 * @brief      存放统计信息的状态文件的头部。记录监控时间等时间戳
 *
 */
-struct ZCELIB_EXPORT ZCE_STATUS_HEAD
+struct ZCE_STATUS_HEAD
 {
     //监控开始时间
     uint32_t monitor_start_time_;
@@ -202,7 +202,7 @@ struct ZCELIB_EXPORT ZCE_STATUS_HEAD
 *
 * @note       本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
 */
-class ZCELIB_EXPORT ZCE_Server_Status : public ZCE_NON_Copyable
+class ZCE_Server_Status : public ZCE_NON_Copyable
 {
 protected:
 

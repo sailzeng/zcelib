@@ -33,7 +33,7 @@ class ZCE_Mysql_Connect;
 class ZCE_Mysql_STMT_Bind;
 class ZCE_Mysql_Result;
 
-class ZCELIB_EXPORT ZCE_Mysql_STMT_Command
+class ZCE_Mysql_STMT_Command
 {
 
 

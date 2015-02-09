@@ -24,6 +24,9 @@
 
 #include "zce_event_reactor_base.h"
 
+
+#if defined ZCE_OS_WINDOWS
+
 /*!
 * @brief      WaitforMu 的IO反应器，IO多路复用模型
 *
@@ -116,6 +119,8 @@ protected:
     ///WSAEventSelect 处理后的事件句柄，所以这儿在对应的数组下标位置保留SOCKET
     SOCKET          watch_socket_ary_[MAXIMUM_WAIT_OBJECTS];
 };
+
+#endif //#if defined ZCE_OS_WINDOWS
 
 #endif //ZCE_LIB_EVENT_REACTOR_WFMO_H_
 

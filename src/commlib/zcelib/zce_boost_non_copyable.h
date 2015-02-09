@@ -19,7 +19,7 @@
 /*!
 * @brief      不能复制的通过声明但不实现，拷贝构造函数和赋值函数，达到无法复制的目的
 */
-class ZCELIB_EXPORT ZCE_NON_Copyable
+class ZCE_NON_Copyable
 {
 protected:
     ///构造函数和析构函数，保护，保证可以继承

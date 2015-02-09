@@ -13,16 +13,17 @@ MAKERESULT="./makefile.result"
 
 
 all:
-	@echo "" > $(MAKERESULT)
-#编译所有的目录    
+	@echo "====================================================================" > $(MAKERESULT);
+	@echo "====================================================================";
+	#编译所有的目录    
 	@for one_dir in $(MAKEDIR); \
 	do \
-	$(MAKE) -C $(SAILLIB_ROOT)/src/$$one_dir; \
-	echo $(SAILLIB_ROOT)/src/$$one_dir "make done"; \
+	$(MAKE) -C $(ZCELIB_ROOT)/src/$$one_dir; \
+	echo $(ZCELIB_ROOT)/src/$$one_dir "make done"; \
 	done 2>> $(MAKERESULT)
+	@echo "====================================================================" > $(MAKERESULT);
 	@echo "====================================================================";
-	@echo "====================================================================";
-#打印输出告警，错误的结果        
+	#打印输出告警，错误的结果        
 	@echo "All source file compiled, statistics information is: " 
 	@warnings=`grep -c "[Ww]arning" $(MAKERESULT)`; \
 	if [ $$warnings -eq 0 ]; \
@@ -42,20 +43,20 @@ all:
 mkdir:  
 	@for one_dir in $(MAKEDIR); \
 	do \
-	$(MAKE) -C $(SAILLIB_ROOT)/src/$$one_dir mkdir; \
-	echo $(SAILLIB_ROOT)/src/$$one_dir "make done"; \
+	$(MAKE) -C $(ZCELIB_ROOT)/src/$$one_dir mkdir; \
+	echo $(ZCELIB_ROOT)/src/$$one_dir "make done"; \
 	done
     
 clean: 
 	@for one_dir in $(MAKEDIR); \
 	do \
-	$(MAKE) -C $(SAILLIB_ROOT)/src/$$one_dir clean; \
-	echo $(SAILLIB_ROOT)/src/$$one_dir "make done"; \
+	$(MAKE) -C $(ZCELIB_ROOT)/src/$$one_dir clean; \
+	echo $(ZCELIB_ROOT)/src/$$one_dir "make done"; \
 	done
     
 veryclean :
 	@for one_dir in $(MAKEDIR); \
 	do \
-	$(MAKE) -C $(SAILLIB_ROOT)/src/$$one_dir veryclean; \
-	echo $(SAILLIB_ROOT)/src/$$one_dir "make done"; \
+	$(MAKE) -C $(ZCELIB_ROOT)/src/$$one_dir veryclean; \
+	echo $(ZCELIB_ROOT)/src/$$one_dir "make done"; \
 	done

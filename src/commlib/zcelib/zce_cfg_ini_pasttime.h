@@ -23,7 +23,7 @@
 /*!
 * @brief      INI文件读写的处理，接口都模仿WIndows的API
 */
-class ZCELIB_EXPORT ZCE_INI_Pt
+class ZCE_INI_Pt
 {
 
 public:

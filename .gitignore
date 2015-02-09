@@ -4,6 +4,8 @@ obj
 *.lo
 *.o
 
+*.gch
+
 # Compiled Dynamic libraries
 *.so
 *.dylib

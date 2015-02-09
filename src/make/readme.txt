@@ -121,3 +121,6 @@ backtrace()系列函数使用，不能被strip掉，即强制strip将导致程序无法执行：
 以便那些通过dlopen()或backtrace()（这一系列函数使用.dynsym表内符号）这样的函数使用。
 http://www.lenky.info/archives/2013/01/2190
 
+
+32位版：加上 -m32 参数，生成32位的代码。
+64位版：加上 -m64 参数，生成64位的代码。

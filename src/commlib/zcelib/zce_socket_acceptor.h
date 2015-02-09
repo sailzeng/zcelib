@@ -16,7 +16,7 @@ Description     : Acceptor的工厂，用于产生ZCE_Socket_Stream
 Other           :
 Modify Record   :
 ************************************************************************************************************/
-class ZCELIB_EXPORT ZCE_Socket_Acceptor  : public ZCE_Socket_Base
+class ZCE_Socket_Acceptor  : public ZCE_Socket_Base
 {
 
 public:

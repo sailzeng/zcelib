@@ -17,7 +17,7 @@
 /*!
 @brief      线程的信号灯封装，使用的是无名的信号灯，
 */
-class ZCELIB_EXPORT ZCE_Thread_Semaphore  : public ZCE_Lock_Base
+class ZCE_Thread_Semaphore  : public ZCE_Lock_Base
 {
 
 public:

@@ -232,7 +232,7 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 */
 template<typename val_type  >
 void push_stack(lua_State *state,
-                typename std::enable_if<std::is_reference<val_type>::value, val_type>::type ref)
+                typename std::enable_if<std::is_reference<val_type>::value,val_type>::type ref)
 {
     //
     new(lua_newuserdata(state,
@@ -411,22 +411,23 @@ void push_stack(lua_State *state, typename arrayref_2_udat<array_type> & ary_dat
     return;
 }
 
+
 //各种重载的push_back函数
-template<> void push_stack_val(lua_State *state, char val);
-template<> void push_stack_val(lua_State *state, unsigned char val);
-template<> void push_stack_val(lua_State *state, short val);
-template<> void push_stack_val(lua_State *state, unsigned short val);
-template<> void push_stack_val(lua_State *state, int val);
-template<> void push_stack_val(lua_State *state, unsigned int val);
-template<> void push_stack_val(lua_State *state, float val);
-template<> void push_stack_val(lua_State *state, double val);
-template<> void push_stack_val(lua_State *state, bool val);
-template<> void push_stack_val(lua_State *state, int64_t val);
-template<> void push_stack_val(lua_State *state, uint64_t val);
+void push_stack_val(lua_State *state, char val);
+void push_stack_val(lua_State *state, unsigned char val);
+void push_stack_val(lua_State *state, short val);
+void push_stack_val(lua_State *state, unsigned short val);
+void push_stack_val(lua_State *state, int val);
+void push_stack_val(lua_State *state, unsigned int val);
+void push_stack_val(lua_State *state, float val);
+void push_stack_val(lua_State *state, double val);
+void push_stack_val(lua_State *state, bool val);
+void push_stack_val(lua_State *state, int64_t val);
+void push_stack_val(lua_State *state, uint64_t val);
 
 //不允许出现long的变量，因为long无法移植，所以只定义，不实现
-template<> void push_stack_val(lua_State *state, long val);
-template<> void push_stack_val(lua_State *state, unsigned long val);
+void push_stack_val(lua_State *state, long val);
+void push_stack_val(lua_State *state, unsigned long val);
 
 
 //=======================================================================================================

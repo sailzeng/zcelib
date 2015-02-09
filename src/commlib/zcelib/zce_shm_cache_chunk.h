@@ -30,7 +30,7 @@ namespace ZCE_LIB
             （后面的CHUNK会形成一条链）
             NODE的大小，（帮助我们知道数据的实际长度）
 */
-class ZCELIB_EXPORT cachechunk_node_index
+class cachechunk_node_index
 {
 public:
     ///NODE链表的起始桶索引
@@ -95,7 +95,7 @@ private:
 *             用最小的内存，存放最大的数据，空间浪费小。
 *
 */
-class ZCELIB_EXPORT shm_cachechunk : public _shm_memory_base
+class shm_cachechunk : public _shm_memory_base
 {
 
 protected:

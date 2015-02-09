@@ -8,7 +8,7 @@
 //整体参考ACE_INET_Addr ACE INET Addr实现的，当然也有一些变化，ACE没有直接使用sockaddr，不知道为啥
 
 //Socket地址的基类。
-class ZCELIB_EXPORT ZCE_Sockaddr
+class ZCE_Sockaddr
 {
 public:
 

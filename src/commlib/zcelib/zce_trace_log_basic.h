@@ -137,7 +137,7 @@ enum LOG_OUTPUT_WAY
             ZCE_LIB::zce_snprintf£¬
 
 */
-class ZCELIB_EXPORT ZCE_LogTrace_Basic : public ZCE_NON_Copyable
+class ZCE_LogTrace_Basic : public ZCE_NON_Copyable
 {
 protected:
 

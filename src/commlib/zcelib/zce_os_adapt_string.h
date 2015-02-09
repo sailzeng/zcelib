@@ -380,10 +380,10 @@ inline void str_split(const char_type *str, const char_type *separator, containe
     return;
 }
 
-
+template < typename container_type >
 inline void string_split(const std::string &source_str,
                          const std::string &separator,
-                         std::vector<std::string> &v)
+                         container_type &v)
 {
     _str_split(source_str.begin(),
                source_str.end(),
@@ -548,7 +548,7 @@ ret_type string_to_value(const std::string &stdstr)
 template<typename ptr_type>
 void string_to_ptr(const std::string &stdstr, ptr_type *ptr)
 {
-    str_to_ptr<ret_type>(stdstr.c_str(), ptr);
+    str_to_ptr<ptr_type>(stdstr.c_str(), ptr);
 }
 
 };

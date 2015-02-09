@@ -6,7 +6,7 @@
 #include "zce_event_reactor_wfmo.h"
 
 
-
+#if defined ZCE_OS_WINDOWS
 
 //构造函数
 ZCE_WFMO_Reactor::ZCE_WFMO_Reactor()
@@ -40,7 +40,6 @@ int ZCE_WFMO_Reactor::initialize()
     return ZCE_Reactor::initialize(MAXIMUM_WAIT_OBJECTS);
 }
 
-#if defined ZCE_OS_WINDOWS
 
 //注册一个句柄，以及他关心的事件
 int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,

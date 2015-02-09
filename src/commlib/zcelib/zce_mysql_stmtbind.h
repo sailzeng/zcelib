@@ -29,7 +29,7 @@
 * @note  ZCE_Mysql_STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
 *        外部的保存生命周期，请慎重处理。
 */
-class ZCELIB_EXPORT ZCE_Mysql_STMT_Bind
+class ZCE_Mysql_STMT_Bind
 {
 public:
 
@@ -247,10 +247,10 @@ public:
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param &val);
 
 
-    template <class bind_type>
+    template <typename bind_type>
     ZCE_Mysql_STMT_Bind &operator << (bind_type &val)
     {
-        bind<bind_type &>(current_bind_, val);
+        bind(current_bind_, val);
         ++current_bind_;
         return *this;
     }

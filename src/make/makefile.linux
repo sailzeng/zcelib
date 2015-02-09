@@ -85,8 +85,7 @@ ccache ?= 0
 
 #--------------------------------------------------------------------------------------------------------------------
 
-
-
+#:= 是可以向下级makefile传递的变量定义方式。
 #目前没有根据操作系统位数，编译版本(debug，release)进行区分，这样的麻烦是多版本编译时会有一些麻烦，也许以后会加入。
 ifeq ($(compile_object),staticlib) 
 OUTFILE := $(PATH_LIB)/lib$(PRGNAME).a
@@ -124,12 +123,13 @@ CC  := ccache $(CC)
 CXX := ccache $(CXX)
 endif
 
-
-FLAGS_C_CC += -std=c++0x -W -Wall -Wpointer-arith 
+#编译选项
+CFLAGS += -W -Wall -Wpointer-arith 
+CCFLAGS += -std=c++11 -W -Wall -Wpointer-arith 
 
 #这个告警有胆量的可以考虑一下，我第一次挑战以失败告终
 ifeq ($(effcpp),1)
-FLAGS_C_CC += -Weffc++
+CCFLAGS += -Weffc++
 endif
 
 
@@ -138,17 +138,22 @@ endif
 #-Werror 是告警为错误,我消灭了一半服务器的告警,所以我有权要求你也这样做,
 
 ifeq ($(rogue),1)
-FLAGS_C_CC +=
+CFLAGS +=
+CCFLAGS +=
 else
-FLAGS_C_CC += -Werror 
+CFLAGS += -Werror 
+CCFLAGS += -Werror 
 endif 
 
 ifeq ($(buildbits),32)
-FLAGS_C_CC += -m32
-LDFLAGS    += -m32
+CFLAGS += -m32
+CCFLAGS += -m32
+LDFLAGS  += -m32
 endif
 ifeq ($(buildbits),64)
-FLAGS_C_CC += -m64
+CFLAGS += -m64
+CCFLAGS += -m32
+LDFLAGS  += -m64
 endif
 
 #ARFLAGS好像外部有定义，诡异
@@ -158,12 +163,9 @@ ARFLAGS   = rsuv
 #-pipe用于加快编译速度，如果pipes被设置1打开-pipe,
 #我自己的测试-pipe加快不了多少速度
 ifeq ($(pipes), 1)
-FLAGS_C_CC += -pipe
+CFLAGS += -pipe
+CCFLAGS += -pipe
 endif # pipes
-
-#编译选项
-CFLAGS  += $(FLAGS_C_CC)
-CCFLAGS += $(FLAGS_C_CC) 
 
 
 #优化选项
@@ -240,9 +242,7 @@ endif # threads
 DEFFLAGS += -D_GNU_SOURCE
 
 
-CPPFLAGS   += $(DEFFLAGS) 
-
-SOFLAGS += $(CPPFLAGS) -shared  
+SOFLAGS += $(DEFFLAGS) -shared  
 
 ifeq ($(optimize),1)
   SOFLAGS += -Wl, $(OCCFLAGS)
@@ -256,11 +256,11 @@ endif
 
 #-Winvalid-pch是检查pch文件是否有效的。但因为我们使用了多个gch的方案，暂时不用这个参数了。
 #主要可以帮助你定位bug
-COMPILE.c       = $(CC)  $(CFLAGS)  $(CPPFLAGS) -MMD -c
-COMPILE.cc      = $(CXX) $(CCFLAGS) $(CPPFLAGS) -MMD -c
+COMPILE.c       = $(CC)  $(CFLAGS)  $(DEFFLAGS) -MMD -c
+COMPILE.cc      = $(CXX) $(CCFLAGS) $(DEFFLAGS) -MMD -c
 
-PRECOMPILE.c    = $(CC)  $(CFLAGS) $(CPPFLAGS) -x c++-header -MMD -c
-PRECOMPILE.cc   = $(CXX) $(CFLAGS) $(CPPFLAGS) -x c++-header -MMD -c 
+PRECOMPILE.c    = $(CC)  $(CFLAGS) $(DEFFLAGS) -x c++-header -MMD -c
+PRECOMPILE.cc   = $(CXX) $(CCFLAGS) $(DEFFLAGS) -x c++-header -MMD -c 
 
 PRELINK  ?=
 PURELINK ?=
@@ -273,9 +273,8 @@ ifeq ($(static_link),1)
 endif
 
 
-LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) 
-LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(CPPFLAGS) $(LDFLAGS) 
-
+LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(DEFFLAGS) $(LDFLAGS) 
+LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(DEFFLAGS) $(LDFLAGS) 
 SOLINK.cc = $(PRELINK) $(DLD) $(SOFLAGS)
 
 

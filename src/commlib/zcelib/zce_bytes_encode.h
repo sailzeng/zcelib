@@ -300,8 +300,11 @@ inline void ZCE_DR_Decode::set_bad()
 template<typename vector_type>
 bool ZCE_DR_Decode::read_vector(std::vector<vector_type> *vector_data, size_t *vector_size)
 {
-    unsigned int read_ary_size = 0
-                                 this->read<unsigned int>(read_ary_size);
+    unsigned int read_ary_size = 0;
+    if (!this->read<unsigned int>(&read_ary_size))
+    {
+        return false;
+    }
     if (read_ary_size > *vector_size)
     {
         is_good_ = false;
@@ -313,7 +316,7 @@ bool ZCE_DR_Decode::read_vector(std::vector<vector_type> *vector_data, size_t *v
     vector_type read_data;
     for (unsigned int i = 0; i < read_ary_size; ++i)
     {
-        this->read<ary_type>(read_data);
+        this->read<vector_type>(read_data);
         (*vector_data)[i] = read_data;
     }
     if (false == is_good_)

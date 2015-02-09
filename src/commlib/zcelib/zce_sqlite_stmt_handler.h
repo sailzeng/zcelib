@@ -8,7 +8,7 @@
 @brief      SQlite STMT的句柄
             用于SQL的处理等，STMT是个好东东，就是理解上麻烦一点。
 */
-class ZCELIB_EXPORT ZCE_SQLite_STMTHdl
+class ZCE_SQLite_STMTHdl
 {
 public:
 

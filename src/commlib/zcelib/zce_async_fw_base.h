@@ -25,6 +25,8 @@
 #include "zce_timer_handler_base.h"
 #include "zce_trace_log_debug.h"
 
+class ZCE_Async_ObjectMgr;
+
 /*!
 * @brief      异步对象的基类
 *
@@ -37,7 +39,7 @@ public:
     ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
                      unsigned int create_cmd);
 protected:
-    ~ZCE_Async_Object();
+    virtual ~ZCE_Async_Object();
 
 public:
 

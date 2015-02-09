@@ -31,7 +31,7 @@ class ZCE_Time_Value;
 *             但ZCE_Lock_Base内部的成员，都应该是private的，而ZCE_Null_Mutex的内部成员都应该是
 *             public，这个矛盾是不可调和的
 */
-class ZCELIB_EXPORT ZCE_Lock_Base : public ZCE_NON_Copyable
+class ZCE_Lock_Base : public ZCE_NON_Copyable
 {
 
 protected:
@@ -112,7 +112,7 @@ private:
 *             扩展应该都是从这个基类扩展
 *
 */
-class ZCELIB_EXPORT ZCE_Condition_Base : public ZCE_NON_Copyable
+class ZCE_Condition_Base : public ZCE_NON_Copyable
 {
 
 protected:

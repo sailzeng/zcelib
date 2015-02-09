@@ -144,7 +144,7 @@ int ZCE_LIB::make_coroutine(coroutine_t *coroutine_hdl,
     coroutine_hdl->coroutine_.uc_stack.ss_sp = new char[stack_size];
     coroutine_hdl->coroutine_.uc_stack.ss_size = stack_size;
 
-    ::makecontext(coroutine_hdl->coroutine_,
+    ::makecontext(&coroutine_hdl->coroutine_,
                   (void( *)(void)) fun_ptr,
                   ONLY_3_ARG_COUNT,
                   para1,
@@ -191,8 +191,8 @@ int ZCE_LIB::yeild_coroutine(coroutine_t *coroutine_hdl)
     return ret;
 
 #elif defined ZCE_OS_LINUX
-    return ::swapcontext(coroutine_hdl->main_,
-                         coroutine_hdl->coroutine_);
+    return ::swapcontext(&coroutine_hdl->main_,
+                         &coroutine_hdl->coroutine_);
 #endif
 }
 

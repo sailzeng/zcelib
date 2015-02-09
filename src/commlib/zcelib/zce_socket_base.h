@@ -6,7 +6,7 @@ class ZCE_Sockaddr;
 class ZCE_Time_Value;
 
 //SOCKETµÄ»ùÀà
-class ZCELIB_EXPORT ZCE_Socket_Base
+class ZCE_Socket_Base
 {
 protected:
 

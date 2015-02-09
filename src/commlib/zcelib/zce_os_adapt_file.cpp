@@ -538,14 +538,14 @@ int ZCE_LIB::read_file_data(const char *filename, char *buffer, size_t buf_len, 
     return 0;
 }
 
-template <> ZCE_LIB::close_assist<FILE *>::~close_assist()
-{
-    ::fclose(to_close_);
-}
-
-
-
-template <> ZCE_LIB::close_assist<ZCE_HANDLE>::~close_assist()
-{
-    ZCE_LIB::close(to_close_);
-}
+//template <> ZCE_LIB::close_assist<FILE *>::~close_assist()
+//{
+//    ::fclose(to_close_);
+//}
+//
+//
+//
+//template <> ZCE_LIB::close_assist<ZCE_HANDLE>::~close_assist()
+//{
+//    ZCE_LIB::close(to_close_);
+//}

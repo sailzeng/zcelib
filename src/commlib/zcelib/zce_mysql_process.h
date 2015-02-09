@@ -27,7 +27,7 @@
 @brief      读取MYSQL数据库的类,用于操作MySQL DB的访问
             这个类里面包装了connect,command,你可以通过ZCE_Mysql_Result获得结果
 */
-class ZCELIB_EXPORT ZCE_Mysql_Process : ZCE_NON_Copyable
+class ZCE_Mysql_Process : ZCE_NON_Copyable
 {
 
 protected:

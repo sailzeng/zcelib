@@ -10,7 +10,7 @@ class shm_dequechunk;
 };
 
 //Ë«ÐÐµÀ
-class ZCELIB_EXPORT ZCE_BusPipe_TwoWay : public ZCE_Bus_MMAPPipe
+class ZCE_BusPipe_TwoWay : public ZCE_Bus_MMAPPipe
 {
 public:
 

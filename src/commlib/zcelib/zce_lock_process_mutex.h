@@ -20,7 +20,7 @@
 *             在LINUX下，还是用pthread_mutex实现的，但是用共享内存存放，名字用于共享
 *             内存名字
 */
-class ZCELIB_EXPORT ZCE_Process_Mutex : public ZCE_Lock_Base
+class ZCE_Process_Mutex : public ZCE_Lock_Base
 {
 
 public:

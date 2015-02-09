@@ -40,7 +40,7 @@
 *             考虑一下，也让这个东东NO Copyable了，
 *
 */
-class ZCELIB_EXPORT ZCE_Mysql_Result : ZCE_NON_Copyable
+class ZCE_Mysql_Result : ZCE_NON_Copyable
 {
 public:
 
