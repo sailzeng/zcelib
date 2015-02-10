@@ -874,7 +874,6 @@ public:
 
 
 
-
 //=======================================================================================================
 
 
@@ -1262,7 +1261,8 @@ public:
         lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-    template <typename class_type> class Candy_Tie_Class;
+    template <typename class_type>
+    class Candy_Tie_Class;
 
     /*!
     * @brief      绑定类的给Lua使用，定义类的metatable的表，或者说原型的表。
@@ -1834,7 +1834,11 @@ protected:
     lua_State   *lua_state_;
 };
 
+
+
 //=======================================================================================================
+
+class ZCE_Lua_Base;
 
 /*!
 * @brief      给lua绑定类的语法糖，每个函数会返回*this的引用，主要是为了实现连续.操作语法

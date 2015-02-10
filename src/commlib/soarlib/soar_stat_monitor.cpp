@@ -115,7 +115,7 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
-    ret = sscanf(find_pos + 1, "%hu%.%u",
+    ret = sscanf(find_pos + 1, "%hu.%u",
                  &tmp_svc_id.services_type_,
                  &tmp_svc_id.services_id_);
     //!=2 表示没有得到两个数字

@@ -86,7 +86,7 @@ int test_lua_script2(int , char *[])
 
     for (size_t k = 0; k < 20; ++k)
     {
-        printf("g_array[%d]=%d\n", k, g_array[k]);
+        printf("g_array[%d]=%d\n", (int)k, g_array[k]);
     }
 
     lua_tie.close();
