@@ -58,15 +58,18 @@ LIB_DEV_OUTER=$(PATH_DEPENDLIB) -lmysql -lsqlite -llualib -lprotobuf-lite
 INC_ZCELIB =-I$(PATH_SRC)/commlib/zcelib
 LIB_ZCELIB =-L$(PATH_LIB) -lzcelib
 
-# 内部库的环境
-INC_DEV_INNER := $(INC_ZCELIB) 
-LIB_DEV_INNER := $(LIB_ZCELIB) 
 
+INC_SOARLIB =-I$(PATH_SRC)/commlib/soarlib
+LIB_SOARLIB = -lsoarlib
+
+
+INC_DEV_INNER := $(INC_ZCELIB) $(INC_SOARLIB)
+LIB_DEV_INNER := -L$(PATH_LIB) $(LIB_ZCELIB) $(LIB_SOARLIB) 
 
 #===================================================================================================================
 
-INCLDIRS += $(INC_DEV_OUTER) $(INC_DEV_INNER)
-LIBARYS  += $(LIB_DEV_OUTER) $(LIB_DEV_INNER)
+INCLDIRS ?= $(INC_DEV_OUTER) $(INC_DEV_INNER)
+LIBARYS  ?= $(LIB_DEV_OUTER) $(LIB_DEV_INNER)
 
 
 

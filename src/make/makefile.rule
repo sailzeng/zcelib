@@ -141,7 +141,7 @@ endif
 -include $(PREH_DEP)
 
 $(PREH_GCH) : $(PREH_FILE)
-	$(PRECOMPILE.cc) $(INCLDIRS) -MF $(PREH_DEP) $< -o $@ 
+	$(PRECOMPILE.cc) -MF $(PREH_DEP) $< -o $@ 
 endif    
 
 #=====================================================================================================================
@@ -167,12 +167,12 @@ endif
 #我们将.o文件放到了另外一个目录
 #生成.o和.d文件,@echo让这个命令不显示,;表示前面的命令要执行完成后，后面的命令才执行
 $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.c
-	$(COMPILE.cc) $(INCLDIRS) $< -o $@  
+	$(COMPILE.cc) $< -o $@  
 	
 $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.cpp
-	$(COMPILE.cc) $(INCLDIRS) $< -o $@ 
+	$(COMPILE.cc) $< -o $@ 
 
-#@echo "	$(COMPILE.cc) $(INCLDIRS) $< -o $@  " >> $(patsubst %.o,%.d,$@)	
+
 #=====================================================================================================================
 
 #下面是几个假象了，不做解释了,这个都看不懂劝你还是先读上面的几本书，再来看这个,

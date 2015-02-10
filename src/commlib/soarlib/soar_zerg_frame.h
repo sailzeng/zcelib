@@ -338,7 +338,7 @@ public:
     //重载New函数
     static void   *operator new (size_t , size_t lenframe = LEN_OF_APPFRAME_HEAD);
     //不重载delte与情理不通，但是其实没有什么问题,
-    static void operator delete(void *ptrframe, size_t );
+    static void operator delete(void *ptrframe);
 
 
     //输出APPFRAME的头部信息

@@ -121,7 +121,7 @@ void   *Zerg_App_Frame::operator new (size_t , size_t lenframe)
 
 //养成好习惯,写new,就写delete.
 //其实不写也不会有内存泄露,但是为了不得罪讨厌的编译器.
-void Zerg_App_Frame::operator delete(void *ptrframe, size_t )
+void Zerg_App_Frame::operator delete(void *ptrframe)
 {
     char *ptr = reinterpret_cast<char *>(ptrframe) ;
     delete []ptr;

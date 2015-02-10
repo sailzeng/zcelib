@@ -268,7 +268,7 @@ ifeq ($(threads),1)
   LIBARYS += -lpthread -lrt
 endif
 
-CPPFLAGS += $(DEFFLAGS) 
+CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
 #-Winvalid-pch是检查pch文件是否有效的。但因为我们使用了多个gch的方案，暂时不用这个参数了。
 #主要可以帮助你定位bug

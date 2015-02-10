@@ -47,9 +47,9 @@
 #endif
 
 #ifndef TSS_SERVER_VER_DECLARE
-#define TSS_SERVER_VER_DECLARE   "Server Version :"TSS_JION_VER_STRING"  .\n" \
+#define TSS_SERVER_VER_DECLARE   "Server Version :" TSS_JION_VER_STRING "  .\n" \
     TSS_COMPILE_VERSION_STRING \
-    "Compilation Timestamp :"__DATE__" "__TIME__" .\n" \
+    "Compilation Timestamp :" __DATE__ " " __TIME__ " .\n" \
     "Copyright :(C) 2008-2012 . Fullsail Team (We are best!). All rights reserved. \n"  \
     "Author :sailzeng and her firends.\n" \
     "Have fun. My brother.  You Can't Write Perfect Software !  Free as in Freedom .\n"
