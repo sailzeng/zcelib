@@ -922,7 +922,7 @@ int test_bytes_compress(int /*argc*/, char * /*argv*/[])
     char test_filename[PATH_MAX+1];
     for (size_t i = 0; i < 4168; ++i)
     {
-        snprintf(test_filename, PATH_MAX,"D:\\TestDir\\%06d.dat", i);
+        snprintf(test_filename, PATH_MAX,"D:\\TestDir\\%06d.dat", (int)i);
         test_compress_filedata(test_filename);
     }
 

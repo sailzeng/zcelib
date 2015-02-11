@@ -250,6 +250,8 @@ int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
     ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
     ret = mgr->active_asyncobj(fsm1_async_id2, NULL);
 
+    ZCE_ASSERT(ret == 0);
+
     return 0;
 }
 
@@ -270,7 +272,7 @@ return 0;
 */
 
 
-const unsigned int COROUTINE_LOOP_NUMBER = 3;
+const int COROUTINE_LOOP_NUMBER = 3;
 
 /* This is the iterator function. It is entered on the first call to
 * swapcontext, and loops from 0 to 9. Each value is saved in i_from_iterator,

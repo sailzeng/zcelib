@@ -202,7 +202,7 @@ int test_lua_script3(int, char *[])
     printf("---------------------------------------------------\n");
     for (size_t k = 0; k < 20; ++k)
     {
-        printf("tb_ptr_2->b_array_[%d]=%f\n", k, tb_ptr_2->b_array_[k]);
+        printf("tb_ptr_2->b_array_[%d]=%f\n", (int)k, tb_ptr_2->b_array_[k]);
     }
     printf("---------------------------------------------------\n");
 
