@@ -15,7 +15,7 @@ int main(int argc , char *argv[])
     
     test_container_performance(argc, argv);
   
-    system("pause");
+    //system("pause");
 
 #if 0
 
