@@ -17,12 +17,12 @@ namespace ZCE_LIB
 {
 
 
-void push_stack_ptr(lua_State *state, char *const ptr)
+void push_stack(lua_State *state, char *const ptr)
 {
     lua_pushstring(state, ptr);
 }
 
-void push_stack_ptr(lua_State *state, const char *const ptr)
+void push_stack(lua_State *state, const char *const ptr)
 {
     lua_pushstring(state, ptr);
 }

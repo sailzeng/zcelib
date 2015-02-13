@@ -1012,7 +1012,7 @@ struct ZDOUBLE_STRUCT
 #endif
 
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
-#pragma comment(lib, "sqlite3.lib" )
+#pragma comment(lib, "sqlite.lib" )
 #endif
 
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1

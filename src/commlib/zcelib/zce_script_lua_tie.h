@@ -308,9 +308,7 @@ void push_stack_ptr(lua_State *state, ptr_type ptr)
     return;
 }
 
-///指针的两种特化
-template<> void push_stack_ptr(lua_State *state, char *const val);
-template<> void push_stack_ptr(lua_State *state, const char *const val);
+
 
 
 /*!
@@ -381,6 +379,11 @@ void push_stack(lua_State *state,
 {
     return push_stack_val<typename std::remove_cv<val_type>::type >(state, val);
 }
+
+
+///指针的两种特化
+void push_stack(lua_State *state, char *const val);
+void push_stack(lua_State *state, const char *const val);
 
 
 template<typename array_type> int array_meta_get(lua_State *state);
@@ -462,6 +465,20 @@ ret_type read_stack_val(lua_State *state, int index)
 {
     return *(ret_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
 }
+
+template<> char read_stack_val(lua_State *state, int index);
+template<> unsigned char read_stack_val(lua_State *state, int index);
+template<> short read_stack_val(lua_State *state, int index);
+template<> unsigned short read_stack_val(lua_State *state, int index);
+template<> int read_stack_val(lua_State *state, int index);
+template<> unsigned int read_stack_val(lua_State *state, int index);
+template<> float read_stack_val(lua_State *state, int index);
+template<> double read_stack_val(lua_State *state, int index);
+template<> bool read_stack_val(lua_State *state, int index);
+template<> int64_t read_stack_val(lua_State *state, int index);
+template<> uint64_t read_stack_val(lua_State *state, int index);
+template<> std::string read_stack_val(lua_State *state, int index);
+
 
 ///读取一个引用
 template<typename ret_type>

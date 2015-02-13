@@ -42,20 +42,20 @@ struct has_def_type : has_def_type_impl < T >
 
 //==================================================================
 //试图萃取容器的迭代器类型
-//template <class container_type>
-//struct container_traits
-//{
-//    typedef typename container_type::iterator   iterator;
-//    typedef typename container_type::value_type   value_type;
-//};
-//
-////对数组容器进行特化
-//template <typename T>
-//struct container_traits
-//{
-//    typedef typename T*  iterator;
-//    typedef typename T   value_type;
-//};
+template <class container_type>
+struct container_traits
+{
+    typedef typename container_type::iterator   iterator;
+    typedef typename container_type::value_type   value_type;
+};
+
+//对数组容器进行特化
+template <typename T>
+struct container_traits<T*>
+{
+    typedef T*  iterator;
+    typedef T   value_type;
+};
 
 //==================================================================
 

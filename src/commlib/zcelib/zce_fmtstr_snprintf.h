@@ -42,7 +42,7 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 #if defined ZCE_SUPPORT_CPP11
 
 
-void foo_c11_outdata(char *&foo_buffer,
+inline void foo_c11_outdata(char *&foo_buffer,
     size_t &foo_max_len,
     size_t &foo_use_len,
     const char *&foo_fmt_spec)
