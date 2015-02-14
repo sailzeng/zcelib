@@ -1,0 +1,206 @@
+##=====================================================================================================================
+# Basic Makefile for FXL
+#默认用于C++.文件的编译,定义各种文件的编译规则
+#Author : Sail (ZENGXING) 
+#2009 06 12 纪念中国抗日战争武汉会战71年
+#定义MAKE规则,帮助其他makefile更加简单的文件
+#
+#你无需再修改这个makefile,把.c,.cpp.h文件摔在目录下就可以了.依赖关系我会自己处理,
+#这个Makefile已经对.h文件的依赖做了检查,是一个很酷的Makefile，你可以崇拜我.
+#其实Makefile对于我，一致是一个旁门左道.我每次用改都会很痛苦,但是我希望证明的一点是,
+#别人能做到的，我也可以.
+#也许每一次使用都是一次进步，哈哈.
+#所以鸣谢三篇Makefile文章的作者《GNU Make 指南》《跟我一起写 Makefile》《GNUMake 手册》,
+#也像大叔表示敬意Richard Stallman,Roland McGrath
+#Richard Stallman说：“云计算概念真的很愚蠢，而这种愚蠢观念的背后实质是：它不过是一场市场营
+#销的把戏而已。现在老有人站出来说，云计算代表着产业发展方向，
+#企业用户转向云计算平台已势在必行。说这些话的人其实都是在进行市场营销。”
+#我很认可这个观点,哈哈，拭目以待，又一个WEB2.0而已,
+#
+#另外，我没有使用GNUMake的默认依赖关系，我实在不喜欢那种方式，虽然ACE也用了这种关系,
+#(或者说我不理解)
+#
+#我恨inmore,本来我已经将.h文件的依赖放入makefile了。高兴的不行，准备准时下班，
+#在下班的时候他给我了一个挑战,他说这样每个makefile还是要改,我被迫写出一个很通用的make规则,
+#让大家以后都g更加难懂makefile,
+#但这样也好，让我对makefile的理解又前进了一步
+#这个Makfile很酷，但是你不花费一点心血是无法理解这个Makefile的，希望大家变得更强
+#
+#1.我没有使用Make的默认规则
+#2.ifeq等语句后面没有空格对其，主要是避免和tab冲突
+#3.对于其他目录的depends的处理，我简化成了对目录的依赖处理，
+#4.已经不在依赖其他第三方的定义，
+#5.可以使用$(warning "info" ) 函数帮忙调试makefile
+#
+#=====================================================================================================================
+
+
+
+#注意CPPFLAGS是有,-MMD选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
+
+.PHONY : all libbuild mkdir clean veryclean 
+
+
+
+#=====================================================================================================================
+#得到C,CPP文件的，这儿的.c文件我也会用g++编译
+C_FLIE   = $(wildcard ./*.c ) 
+CPP_FILE = $(wildcard ./*.cpp )
+SRC_FILE = $(C_FLIE) $(CPP_FILE)
+
+#通过.c,.cpp文件名称得到.O文件名称
+O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o, $(C_FLIE))
+O_CPPFILE = $(patsubst ./%.cpp, $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o, $(CPP_FILE))
+O_FILE  = $(O_CFILE) $(O_CPPFILE)
+#通过.o文件，得到.d文件的名称
+DEP_FILE = $(patsubst %.o, %.d,$(O_FILE))
+#这儿是找到缺失的.d文件对应的.o的文件名称
+MISS_DEP = $(patsubst %.d,%.o, $(filter-out $(wildcard $(DEP_FILE)),$(DEP_FILE)) ) 
+
+#=====================================================================================================================
+
+
+#这儿定义生成的最终文件规则,目前只考虑3种,EXE可执行的，LIB(.a)静态库文件,DLL(.so)动态库文件
+#你要定义输出文件,和PRGNAME的名称这两个变量
+#PRGNAME表示你的程序名称，一般就是你的目录名称，当然希望目录名称不要重复，
+#OUTFILE,最总输出的文件名称，为啥要定义这个呢，最后删除的时候可以统一
+
+#如果你使用预定头文件,请定义PREH_FILE
+#对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
+ifneq ($(PREH_FILE),) 
+PREH_DIR = $(PREH_FILE).gch
+PREH_GCH = $(PREH_DIR)/$(PREH_FILE).$(VERSIONTYPE).gch
+PREH_DEP = $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/$(PREH_FILE).d
+endif
+
+all : $(OUTFILE) 
+
+
+
+#如果你要编译LIB(.a)静态库，请在你的makefile定义 compile_object= staticlib
+#如果你要编译DLL(.so)动态库，请在你的makefile定义 compile_object= dynamiclib
+#如果你要编译EXECUTE文件，请在你的makefile定义 compile_object= executeprg
+
+#如果有 DEPENDS_DIR 的目录需要编译，会先去编译这写目录下的东东，这个是airfu 大大帮忙想的方法，
+$(OUTFILE): $(DEPENDS_LIB) $(O_FILE)
+ifeq ($(compile_object),staticlib) 
+	@echo $OUTFILE
+	$(AR) $(ARFLAGS) $(OUTFILE) $(O_FILE)
+endif
+ifeq ($(compile_object),dynamiclib) 
+	@echo $OUTFILE
+	$(SOLINK.cc) -o$(OUTFILE) $(O_FILE) $(LIBARYS)
+endif
+ifeq ($(compile_object),executeprg) 
+	@echo $OUTFILE
+	$(LINK.cc) -o$(OUTFILE) $(O_FILE)  $(LIBARYS)  
+endif
+
+#=====================================================================================================================
+
+$(DEPENDS_LIB): depbuild
+
+#depbuild也是一个假象，用于，
+#1.对依赖的目录都make 一下
+#2.检查依赖的库检查依赖的库是更新过了，如果更新过了，删除$(OUTFILE) 
+#注意这段对于如果你使用make -j4会会有问题，因为这儿是一个严格的依赖关系。如果有几个人并行会出现问题
+depbuild:
+ifneq ($(DEPENDS_DIR), ) 
+	@for dep_dir in $(DEPENDS_DIR); \
+	do \
+	$(MAKE) -C $$dep_dir; \
+	done  
+	@for dep_lib in $(DEPENDS_LIB); \
+	do \
+	if [ $$dep_lib -nt $(OUTFILE) ]; \
+	then  \
+	echo  [$$dep_lib] is newer than [$(OUTFILE)] , [$(OUTFILE)] will be deleted and renew create. ; \
+	$(RM)  $(OUTFILE) ;  \
+	fi \
+	done
+endif
+
+
+#=====================================================================================================================
+
+#如果你使用预定头文件,我帮你编译gch文件.gch 文件支持在当前目录下有一个 all.h  如果有一个all.h.gch的目录，如果多个gch文件
+#都在这个文件里面，GCC会根据编译参数选择一个更加合适的
+ifneq ($(PREH_GCH),) 
+$(O_FILE) : $(PREH_GCH) 
+
+#如果.d文件不存在，删除gch文件，重新建立之
+ifneq ($(PREH_DEP), $(wildcard $(PREH_DEP)))
+$(shell $(RM) $(PREH_GCH))
+endif
+
+#.gch文件的.d文件不放在gch目录下，因为如果放在下面，会被GCC误认为是GCH文件，造成他查询麻烦，如果打开-Winvalid-pch也会触发
+#一个告警，所以，分开存放了，虽然麻烦一点。
+
+#如果.预编译头文件的.d文件都存在，用.d判断依赖关系，是否需要重新生成，否则，重新生成gch文件。
+
+-include $(PREH_DEP)
+
+$(PREH_GCH) : $(PREH_FILE)
+	$(PRECOMPILE.cc) -MF $(PREH_DEP) $< -o $@ 
+endif    
+
+#=====================================================================================================================
+
+
+
+#在这个地方浪费一点口舌解释一下，我自己曾经在这个地方疑惑过，希望这个解释让你明白的更快
+#如果.o,文件不存在,那么会根据你的.cpp生成.o和.d文件
+#如果.o文件存在，而.d文件不存在，那么会删除.o文件.后面会继续生产.o和.d文件
+#如果.o和.d文件都存在，这个脚本会根据.d文件的依赖关系查询.依赖关系，如果.h文件变化了。则重新生成.o文件和.d文件
+
+#如果没有.d文件，则同时删除它们的.o文件,这个感觉是为了保证某种程度上的安全,
+ifneq ($(MISS_DEP), ) 
+$(shell $(RM) $(MISS_DEP))	
+endif 
+
+#这个代码必须在下面.o依赖.cpp之前，因为如果没有.d文件，我们还有下面的默认规则生成.o
+#如果有.d文件后,cpp没有变化,.h变化的也破坏依赖关系
+#-表示如果有就用，没有就忽视错误,所有.d我们就用依赖，没有.d我们就会删除.o,
+#-include 和include的区别是如果这个文件不存在，也会不会报错。
+-include $(DEP_FILE)
+
+#我们将.o文件放到了另外一个目录
+#生成.o和.d文件,@echo让这个命令不显示,;表示前面的命令要执行完成后，后面的命令才执行
+$(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.c
+	$(COMPILE.cc) $< -o $@  
+	
+$(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.cpp
+	$(COMPILE.cc) $< -o $@ 
+
+
+#=====================================================================================================================
+
+#下面是几个假象了，不做解释了,这个都看不懂劝你还是先读上面的几本书，再来看这个,
+
+#如果你认为gch不需要删除，在clean的时候不删除也应该可以，现在gch文件已经用了.d 保证一定是最新的
+clean:
+	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PREH_DEP) $(PREH_GCH) 
+
+#清理.gch文件，清理ccache的数据
+veryclean:
+	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PREH_DEP) $(PREH_GCH) ;
+ifeq ($(ccache),1 ) 
+	ccache  --cleanup
+endif    
+
+mkdir:
+	if (test ! -d $(PATH_BIN)) ; then $(MKDIR) $(PATH_BIN) ; fi ;
+	if (test ! -d $(PATH_LIB)) ; then $(MKDIR) $(PATH_LIB) ; fi ;
+	if (test ! -d $(PATH_OBJ)) ; then $(MKDIR) $(PATH_OBJ) ; fi ;
+	if (test ! -d $(PATH_OBJ)/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x64_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x64_debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x64_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x64_release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PATH_OBJ)/linux_x64_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x64_neutral/$(PRGNAME) ; fi ;
+ifneq ($(PREH_FILE),) 
+	if (test ! -d $(PREH_DIR)) ; then $(MKDIR) $(PREH_DIR) ; fi ;
+endif    
+    
+#=====================================================================================================================
