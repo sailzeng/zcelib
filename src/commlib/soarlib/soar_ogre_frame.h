@@ -69,8 +69,13 @@ public:
 public:
     //重载New函数
     static void   *operator new (size_t , size_t lenframe);
+
     //不重载delte与情理不通，但是其实没有什么问题,
+#if defined ZCE_OS_WINDOWS
     static void operator delete(void *ptrframe, size_t );
+#elif defined ZCE_OS_LINUX
+    static void operator delete(void *ptrframe);
+#endif
 
 public:
 

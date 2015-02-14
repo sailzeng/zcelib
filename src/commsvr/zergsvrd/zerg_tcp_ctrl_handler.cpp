@@ -740,7 +740,7 @@ int TCP_Svc_Handler::handle_close()
 //合并发送队列
 int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
 {
-    int ret = 0;
+
     //Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( rcv_buffer_->buffer_data_);
 
     //必须解码,否则后面的管道无法识别
@@ -808,7 +808,7 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
 
         //注册,如果原来有响应的链接,会返回原有的链接.replace_services_peerInfo,必然成功
         TCP_Svc_Handler *old_hdl = NULL;
-        ret = svr_peer_info_set_.replace_services_peerInfo(peer_svr_id_, this, old_hdl);
+        svr_peer_info_set_.replace_services_peerInfo(peer_svr_id_, this, old_hdl);
 
         //如果有原有的链接,则找到原来的那个踢下去.
         if (old_hdl != NULL)
@@ -1017,7 +1017,7 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
     if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= sizeof(unsigned int))
     {
         //如果有4个字节,检查帧的长度
-        whole_frame_len = *(reinterpret_cast<unsigned int *>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_));
+        ZRD_U32_FROM_BYTES(whole_frame_len,(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_));
         whole_frame_len = ntohl(whole_frame_len);
 
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
@@ -1833,7 +1833,7 @@ void TCP_Svc_Handler::dump_status_info(ZCE_LOG_PRIORITY out_lvl)
 {
     const size_t OUT_BUF_LEN = 64;
     char out_buf[OUT_BUF_LEN];
-    out_buf[OUT_BUF_LEN] = '\0';
+    out_buf[OUT_BUF_LEN-1] = '\0';
     ZCE_LOG(out_lvl, "my_svc_id_=[%hu.%u]", my_svc_id_.services_type_ , my_svc_id_.services_id_);
     ZCE_LOG(out_lvl, "peer_svr_id_=[%hu.%u]", peer_svr_id_.services_type_, peer_svr_id_.services_id_);
     ZCE_LOG(out_lvl, "peer_address_=%s", peer_address_.to_string(out_buf, OUT_BUF_LEN - 1));

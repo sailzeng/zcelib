@@ -192,7 +192,6 @@ mkdir:
 	if (test ! -d $(PATH_BIN)) ; then $(MKDIR) $(PATH_BIN) ; fi ;
 	if (test ! -d $(PATH_LIB)) ; then $(MKDIR) $(PATH_LIB) ; fi ;
 	if (test ! -d $(PATH_OBJ)) ; then $(MKDIR) $(PATH_OBJ) ; fi ;
-	if (test ! -d $(PATH_OBJ)/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/$(PRGNAME) ; fi ;
 	if (test ! -d $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ; fi ;
 	if (test ! -d $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ; fi ;
 	if (test ! -d $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME) ; fi ;

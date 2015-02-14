@@ -322,7 +322,7 @@ void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, comp
     std::back_insert_iterator<container_type> o = std::back_inserter(v);
     if (fo == lo)
     {
-        *o = container_type::value_type(fs, ls);
+        *o =typename container_type::value_type(fs, ls);
         return;
     }
 
@@ -333,7 +333,7 @@ void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, comp
     {
         if (fs < ls)
         {
-            *o = container_type::value_type(fs, ls);
+            *o = typename container_type::value_type(fs, ls);
         }
 
         return;
@@ -344,7 +344,7 @@ void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, comp
     for (; pos != ls;)
     {
         // append src string
-        *o = container_type::value_type(fs, pos);
+        *o = typename container_type::value_type(fs, pos);
         // ignore old_str
         fs = pos + old_size;
         // find next
@@ -353,7 +353,7 @@ void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, comp
 
     if (fs != ls)
     {
-        *o = container_type::value_type(fs, ls);
+        *o = typename container_type::value_type(fs, ls);
     }
 
     return;

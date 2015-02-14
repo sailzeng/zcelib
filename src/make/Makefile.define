@@ -64,7 +64,7 @@ LIB_SOARLIB = -lsoarlib
 
 
 INC_DEV_INNER := $(INC_ZCELIB) $(INC_SOARLIB)
-LIB_DEV_INNER := -L$(PATH_LIB) $(LIB_ZCELIB) $(LIB_SOARLIB) 
+LIB_DEV_INNER := -L$(PATH_LIB) $(LIB_SOARLIB) $(LIB_ZCELIB) 
 
 #===================================================================================================================
 
