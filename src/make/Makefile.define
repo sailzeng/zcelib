@@ -76,7 +76,7 @@ LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 #===================================================================================================================
 
 #这个是编译平台相关的宏，变量等
-include $(ZCELIB_ROOT)/src/make/makefile.linux
+include $(ZCELIB_ROOT)/src/make/Makefile.linux
 
 
 
