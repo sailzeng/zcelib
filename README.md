@@ -88,6 +88,8 @@ Linux下的编译先要定义两个环境变量。
     export  ZCELIB_ROOT="/home/share/zcelib/zcelib.git"
     export  ZCELIB_DEPEND="/home/share/zcelib/zcelib.depend"
 
+我使用的环境是Ubuntu的14.04，GCC 4.8.
+
 然后先编译外部库，在depend目录下面直接有Makefile，可以直接使用，编译后的文件会放入lib目录，
 其他ZCELiB的代码都提供Makefile，可以直接在各个目录下编译。工程的src目录下也提供Make所有代码的Makefile。可以直接使用。
 
@@ -145,6 +147,10 @@ Windows下的ZCE还是提供用VC++2013的工程，可以直接用来编译代�
 MySQL的头文件和库文件都来自MySQL的各种安装包提取出来的。
 MySQL的头文件在Windows 下和Linux略有区别，所以头文件分成了2个目录存放。而相应的Windows Library，MySQL的安装包里面有2套。一套是static 库，一套是动态库，但static库在Visual Studio 2013下无法实用，会提示链接错误，只能实用动态库的版本。
 Linux下，我们只使用相应的静态库。
+
+MySQL的库文件在链接的时候会需要libz，但这个包里面没有打，请自己安装一个。
+
+    sudo apt-get install libz-dev
 
 ###RepidXML
 版本1.13
