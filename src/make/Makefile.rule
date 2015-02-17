@@ -102,15 +102,15 @@ $(DEPENDS_LIB): depbuild
 
 #depbuild也是一个假象，用于，
 #1.对依赖的目录都make 一下
-#2.检查依赖的库检查依赖的库是更新过了，如果更新过了，删除$(OUTFILE) 
-#注意这段对于如果你使用make -j4会会有问题，因为这儿是一个严格的依赖关系。如果有几个人并行会出现问题
+#2.检查依赖的库检查依赖的库是更新过了，如果更新过了，删除$(OUTFILE) ,（比如依赖库的CPP改变了，这个在Makefile的规则里面无法依赖到）
+#注意这段,为什么所有的语句都都 用了; 而且都用了\ 衔接？ 因为不这样做，如果你使用make -j4会会有问题，这儿是一个严格的依赖关系。如果有几个人并行会出现问题
 depbuild:
 ifneq ($(DEPENDS_DIR), ) 
 	@for dep_dir in $(DEPENDS_DIR); \
 	do \
 	$(MAKE) -C $$dep_dir; \
-	done  
-	@for dep_lib in $(DEPENDS_LIB); \
+	done; \
+	for dep_lib in $(DEPENDS_LIB); \
 	do \
 	if [ $$dep_lib -nt $(OUTFILE) ]; \
 	then  \
