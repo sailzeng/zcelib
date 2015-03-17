@@ -67,6 +67,10 @@ int Wormhole_Proxy_App::app_exit()
 
     //最后调用通用的退出模块
     ret = Soar_Svrd_Appliction::app_exit();
+    if (ret != 0)
+    {
+        return ret;
+    }
 
     return 0;
 }

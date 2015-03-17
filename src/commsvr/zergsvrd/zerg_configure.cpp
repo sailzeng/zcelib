@@ -25,7 +25,7 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
 {
     SERVICES_INFO svc_ip_info;
     svc_ip_info.svc_id_ = svc_id;
-    SET_OF_SVCINFO::iterator iter = services_table_.find(svc_ip_info);
+    SET_OF_SVCINFO::const_iterator iter = services_table_.find(svc_ip_info);
 
     if (iter == services_table_.end())
     {
@@ -48,7 +48,7 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
                                       SERVICES_INFO &svc_info) const
 {
     svc_info.svc_id_ = svc_id;
-    SET_OF_SVCINFO::iterator iter = services_table_.find(svc_info);
+    SET_OF_SVCINFO::const_iterator iter = services_table_.find(svc_info);
 
     if (iter == services_table_.end())
     {
@@ -67,7 +67,7 @@ bool SERVICES_INFO_TABLE::hash_svcinfo(const SERVICES_ID &svrinfo) const
 {
     SERVICES_INFO svc_ip_info;
     svc_ip_info.svc_id_ = svrinfo;
-    SET_OF_SVCINFO::iterator iter = services_table_.find(svc_ip_info);
+    SET_OF_SVCINFO::const_iterator iter = services_table_.find(svc_ip_info);
 
     if (iter == services_table_.end())
     {

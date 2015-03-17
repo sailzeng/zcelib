@@ -210,7 +210,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         //如果是要跟踪的命令
         if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
         {
-            Zerg_App_Frame::dumpoutput_framehead(proc_frame, "[TRACK MONITOR][SEND]opt", RS_INFO);
+            proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]opt", RS_INFO);
         }
         else
         {
@@ -219,7 +219,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
                 if (monitor_cmd_[i] == proc_frame->frame_command_)
                 {
                     proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
-                    Zerg_App_Frame::dumpoutput_framehead(proc_frame, "[TRACK MONITOR][SEND]cmd", RS_INFO);
+                    proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]cmd", RS_INFO);
                 }
             }
         }
@@ -413,7 +413,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
     //为了提高效率，先检查标志位，
     if (recv_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
-        Zerg_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]opt", RS_INFO);
+        recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]opt", RS_INFO);
     }
     else
     {
@@ -424,7 +424,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
             if (monitor_cmd_[i] == recv_frame->frame_command_)
             {
                 recv_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
-                Zerg_App_Frame::dumpoutput_framehead(recv_frame, "[TRACK MONITOR][RECV]cmd", RS_INFO);
+                recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]cmd", RS_INFO);
             }
         }
     }

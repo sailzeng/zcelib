@@ -1,7 +1,7 @@
 #SAILLIB_ROOT必现提前定义，
 #所有的工程下面的代码，可以使用相同的编译选项和方法，
 #所有的预定义，编译方法，编译参数在src/make/makefile.define 
-# src/make/makefile.linux src/make/makefile.rule 3个文件中都已经进行了
+# src/make/Makefile.linux src/make/Makefile.rule 3个文件中都已经进行了
 #预定义，你可以直接使用。
 #如果你没有特殊需求，你就只用打开关闭下面定义就可以了。
 
@@ -32,10 +32,10 @@ INCLDIRS=$(INC_DEV_OUTER)
 
 
 #这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
-include $(ZCELIB_ROOT)/src/make/makefile.define
+include $(ZCELIB_ROOT)/src/make/Makefile.define
 
 #如果你想改变Mafile的规则，请在这个地方加入你自己的定义.
 
 #这个定义其他所有的规则,还是你自己看吧
-include $(ZCELIB_ROOT)/src/make/makefile.rule
+include $(ZCELIB_ROOT)/src/make/Makefile.rule
 

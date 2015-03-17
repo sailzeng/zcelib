@@ -156,6 +156,11 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
     std::vector<uint32_t> * ms_svcid_ary = NULL;
     ret = TCP_Svc_Handler::find_conf_ms_svcid_ary(services_type,
                                                   ms_svcid_ary);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
     size_t ary_size = ms_svcid_ary->size();
     for (size_t j = 0; j < ary_size; ++j)
     {

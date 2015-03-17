@@ -118,6 +118,8 @@
 #ifndef ZCE_LIB_BYTES_COMPRESS_H_
 #define ZCE_LIB_BYTES_COMPRESS_H_
 
+#include "zce_bytes_base.h"
+
 namespace ZCE_LIB
 {
 

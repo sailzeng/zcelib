@@ -50,13 +50,13 @@ ifeq ($(OS_BITS),64)
 PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x86_64
 endif
 
-LIB_DEV_OUTER=$(PATH_DEPENDLIB) -lmysql -lsqlite -llualib -lprotobuf-lite
+LIB_DEV_OUTER=-L$(PATH_DEPENDLIB) -lmysqlclient -lz -lsqlite -llua -lprotobuf-lite
 
 #===================================================================================================================
 
 #ZCELIB 
 INC_ZCELIB =-I$(PATH_SRC)/commlib/zcelib
-LIB_ZCELIB =-L$(PATH_LIB) -lzcelib
+LIB_ZCELIB = -lzcelib
 
 
 INC_SOARLIB =-I$(PATH_SRC)/commlib/soarlib
@@ -64,19 +64,19 @@ LIB_SOARLIB = -lsoarlib
 
 
 INC_DEV_INNER := $(INC_ZCELIB) $(INC_SOARLIB)
-LIB_DEV_INNER := -L$(PATH_LIB) $(LIB_ZCELIB) $(LIB_SOARLIB) 
+LIB_DEV_INNER := -L$(PATH_LIB) $(LIB_SOARLIB) $(LIB_ZCELIB) 
 
 #===================================================================================================================
 
-INCLDIRS ?= $(INC_DEV_OUTER) $(INC_DEV_INNER)
-LIBARYS  ?= $(LIB_DEV_OUTER) $(LIB_DEV_INNER)
+INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
+LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
 
 
 #===================================================================================================================
 
 #这个是编译平台相关的宏，变量等
-include $(ZCELIB_ROOT)/src/make/makefile.linux
+include $(ZCELIB_ROOT)/src/make/Makefile.linux
 
 
 

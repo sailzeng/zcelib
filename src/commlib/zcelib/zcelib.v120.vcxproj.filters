@@ -394,6 +394,9 @@
     <ClInclude Include="zce_sqlite_db_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_bytes_base.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">

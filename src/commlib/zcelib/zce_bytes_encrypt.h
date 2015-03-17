@@ -127,6 +127,7 @@
 #ifndef ZCE_LIB_BYTES_ENCRYPT_H_
 #define ZCE_LIB_BYTES_ENCRYPT_H_
 
+#include "zce_bytes_base.h"
 #include "zce_boost_random.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_string.h"

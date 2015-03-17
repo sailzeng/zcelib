@@ -32,10 +32,10 @@ DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib
 DEPENDS_LIB := $(ZCELIB_ROOT)/lib/libzcelib.a
 
 #这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
-include $(ZCELIB_ROOT)/src/make/makefile.define
+include $(ZCELIB_ROOT)/src/make/Makefile.define
 
 #如果你想改变Mafile的规则，请在这个地方加入你自己的定义.
 
 #这个定义其他所有的规则,还是你自己看吧
-include $(ZCELIB_ROOT)/src/make/makefile.rule
+include $(ZCELIB_ROOT)/src/make/Makefile.rule
 

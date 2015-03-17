@@ -48,10 +48,15 @@ log
 
 *.db3
 
+#
+*.tmp
+
 #微软的一些临时文件
 ~$*.*
 
 #这些目录都忽视
+bin
+lib
 log
 Debug
 Release

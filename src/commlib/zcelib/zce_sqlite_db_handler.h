@@ -30,6 +30,7 @@
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 
+#include "zce_os_adapt_string.h"
 
 //==============================================================================================
 class ZCE_SQLite_Result;
@@ -177,11 +178,11 @@ public:
     * @param      column 字段的行号,从1开始
     * @note
     */
-    //template <typename value_type>
-    //value_type field_data(int row, int column)
-    //{
-    //    return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
-    //}
+    template <typename value_type>
+    value_type field_data(int row, int column)
+    {
+        return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
+    }
 
     ///行的数量
     inline int row_number()

@@ -89,88 +89,7 @@ public:
         DESC_V2_VERSION          = 0x2000000,
     };
 
-    //内部选项描述的掩码,内部选项在网络间看不见，在通讯服务器和业务服务器前可见。
-    static const uint32_t INNER_OPTION_MASK = 0xFFFF;
-    //外部选项描述+版本号的掩码
-    static const uint32_t OUTER_OPTION_MASK = 0xFFFF0000;
 
-public:
-
-    //包头都尺寸,
-    static const size_t LEN_OF_APPFRAME_HEAD = 50;
-
-    //APPFAME版本V1
-    static const unsigned char TSS_APPFRAME_V1 = 1;
-
-    //---------------------------------------------------------------------------
-    //FRAME的一些长度参数,
-
-    //默认的最大长度是64K
-    //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
-    static const size_t MAX_LEN_OF_APPFRAME  = 64 * 1024;
-
-
-    //TEA加密后增加的长度,UPD的数据区麻烦自己搞掂长度限制等问题
-    static const size_t LEN_OF_TEA_REMAIN_ROOM = 17;
-
-    //FRAME的最大长度,根据各个地方的长度而得到
-    static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD - LEN_OF_TEA_REMAIN_ROOM;
-
-    //
-    static const size_t MAX_LEN_OF_TEA_APPDATA = MAX_LEN_OF_APPFRAME_DATA + LEN_OF_TEA_REMAIN_ROOM;
-
-public:
-
-    //整个通讯包长度,留足空间,包括帧头的长度.
-    uint32_t               frame_length_;
-
-    union
-    {
-        uint32_t           frame_option_;
-        //
-        _ZERG_FRAME_OPTION inner_option_;
-    };
-
-    //命令字 命令字还是放在包头比较好,
-    uint32_t               frame_command_;
-
-    //UID
-    uint32_t               frame_uid_;
-
-    //发送和接收的服务器应用也要填写
-
-    //发送服务,包括发送服务器类型，发送服务器编号,没有编号，或者不是服务填写0
-    SERVICES_ID            send_service_;
-    //接受服务器
-    SERVICES_ID            recv_service_;
-    //代理服务器
-    SERVICES_ID            proxy_service_;
-
-    //事务ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
-    uint32_t               transaction_id_;
-    //回填的请求者的事务ID,
-    uint32_t               backfill_trans_id_;
-
-    //业务ID，GAMEID，用于标识游戏内部ID
-    uint32_t               app_id_;
-
-    union
-    {
-        //发送序列号，计划只在通讯层用,暂时没用用
-        uint32_t           send_serial_number_;
-        //发送者的IP地址，内部使用
-        uint32_t           send_ip_address_;
-
-    };
-
-    //frame_appdata_ 是一个变长度的字符串序列标示,
-#ifdef ZCE_OS_WINDOWS
-#pragma warning ( disable : 4200)
-#endif
-    char                 frame_appdata_[];
-#ifdef ZCE_OS_WINDOWS
-#pragma warning ( default : 4200)
-#endif
 
 public:
     //构造函数，大家都可以用的.
@@ -335,13 +254,14 @@ public:
 public:
 
 
-    //重载New函数
+    ///重载New函数
     static void   *operator new (size_t , size_t lenframe = LEN_OF_APPFRAME_HEAD);
-#if defined ZCE_OS_LINUX
-    //不重载delte与情理不通，但是其实没有什么问题,
-    static void operator delete(void *ptrframe);
-#elif defined ZCE_OS_WINDOWS
+    ///不重载delte与情理不通，为什么要写2个。。。
+    //http://www.cnblogs.com/fullsail/p/4292214.html
+#if defined ZCE_OS_WINDOWS
     static void operator delete(void *ptrframe,size_t);
+#elif defined ZCE_OS_LINUX
+    static void operator delete(void *ptrframe);
 #endif
 
 
@@ -358,6 +278,92 @@ public:
     //FRAME的数据进行TEA算法加密解密的函数，STATIC函数，不知道Jovi当年为啥要写成STATIC的，呵呵
     //构造签名包
     static void signature_construct(Zerg_App_Frame *&proc_frame, uint32_t uin, const char *pSignature, size_t len);
+
+
+public:
+
+    //内部选项描述的掩码,内部选项在网络间看不见，在通讯服务器和业务服务器前可见。
+    static const uint32_t INNER_OPTION_MASK = 0xFFFF;
+    //外部选项描述+版本号的掩码
+    static const uint32_t OUTER_OPTION_MASK = 0xFFFF0000;
+
+public:
+
+    //包头都尺寸,
+    static const size_t LEN_OF_APPFRAME_HEAD = 50;
+
+    //APPFAME版本V1
+    static const unsigned char TSS_APPFRAME_V1 = 1;
+
+    //---------------------------------------------------------------------------
+    //FRAME的一些长度参数,
+
+    //默认的最大长度是64K
+    //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
+    static const size_t MAX_LEN_OF_APPFRAME = 64 * 1024;
+
+
+    //TEA加密后增加的长度,UPD的数据区麻烦自己搞掂长度限制等问题
+    static const size_t LEN_OF_TEA_REMAIN_ROOM = 17;
+
+    //FRAME的最大长度,根据各个地方的长度而得到
+    static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD - LEN_OF_TEA_REMAIN_ROOM;
+
+    //
+    static const size_t MAX_LEN_OF_TEA_APPDATA = MAX_LEN_OF_APPFRAME_DATA + LEN_OF_TEA_REMAIN_ROOM;
+
+public:
+
+    ///整个通讯包长度,留足空间,包括帧头的长度.
+    uint32_t               frame_length_;
+
+    union
+    {
+        uint32_t           frame_option_;
+        ///
+        _ZERG_FRAME_OPTION inner_option_;
+    };
+
+    ///命令字 命令字还是放在包头比较好,
+    uint32_t               frame_command_;
+
+    ///UID
+    uint32_t               frame_uid_;
+
+    ///发送和接收的服务器应用也要填写
+
+    ///发送服务,包括发送服务器类型，发送服务器编号,没有编号，或者不是服务填写0
+    SERVICES_ID            send_service_;
+    ///接受服务器
+    SERVICES_ID            recv_service_;
+    ///代理服务器
+    SERVICES_ID            proxy_service_;
+
+    ///事务ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
+    uint32_t               transaction_id_;
+    ///回填的请求者的事务ID,
+    uint32_t               backfill_trans_id_;
+
+    ///业务ID，GAMEID，用于标识游戏内部ID
+    uint32_t               app_id_;
+
+    union
+    {
+        ///发送序列号，计划只在通讯层用,暂时没用用
+        uint32_t           send_serial_number_;
+        ///发送者的IP地址，内部使用
+        uint32_t           send_ip_address_;
+
+    };
+
+    ///frame_appdata_ 是一个变长度的字符串序列标示,
+#ifdef ZCE_OS_WINDOWS
+#pragma warning ( disable : 4200)
+#endif
+    char                 frame_appdata_[];
+#ifdef ZCE_OS_WINDOWS
+#pragma warning ( default : 4200)
+#endif
 
 };
 

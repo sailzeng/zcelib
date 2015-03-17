@@ -67,7 +67,7 @@ public:
 struct HASH_OF_PEER_MODULE
 {
 public:
-    size_t operator()(const TCP_PEER_MODULE_INFO &peer_module)
+    size_t operator()(const TCP_PEER_MODULE_INFO &peer_module) const
     {
         return (size_t(peer_module.peer_id_.peer_port_) << 16) + peer_module.peer_id_.peer_ip_address_;
     }
@@ -77,7 +77,7 @@ struct EQUAL_OF_PEER_MODULE
 {
 public:
     //注意判断条件不是所有的变量
-    bool operator()(const TCP_PEER_MODULE_INFO &left, const TCP_PEER_MODULE_INFO &right)
+    bool operator()(const TCP_PEER_MODULE_INFO &left, const TCP_PEER_MODULE_INFO &right) const
     {
         //检查SVC INFO的相等,就认为相等
         if (right.peer_id_ == left.peer_id_)

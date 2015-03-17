@@ -289,8 +289,8 @@ ifeq ($(static_link),1)
 endif
 
 
-LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS) $(CPPFLAGS) $(LDFLAGS) 
-LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(CPPFLAGS) $(LDFLAGS) 
+LINK.c  = $(PURELINK) $(PRELINK) $(LD) $(CFLAGS)  $(LDFLAGS) 
+LINK.cc = $(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(LDFLAGS) 
 SOLINK.cc = $(PRELINK) $(DLD) $(SOFLAGS)
 
 
