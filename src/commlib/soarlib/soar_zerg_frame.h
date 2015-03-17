@@ -337,8 +337,12 @@ public:
 
     //重载New函数
     static void   *operator new (size_t , size_t lenframe = LEN_OF_APPFRAME_HEAD);
+#if defined ZCE_OS_LINUX
     //不重载delte与情理不通，但是其实没有什么问题,
     static void operator delete(void *ptrframe);
+#elif defined ZCE_OS_WINDOWS
+    static void operator delete(void *ptrframe,size_t);
+#endif
 
 
     //输出APPFRAME的头部信息

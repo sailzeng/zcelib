@@ -456,12 +456,18 @@ ptr_type read_stack_ptr(lua_State *state, int index)
     return (ptr_type)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
 }
 
+
+
+
 ///从堆栈中读取某个类型
 template < typename ret_type >
 ret_type read_stack_val(lua_State *state, int index)
 {
     return *(ret_type *)(((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_);
 }
+
+template<> double read_stack_val(lua_State *state, int index);
+template<> int read_stack_val(lua_State *state, int index);
 
 ///读取一个引用
 template<typename ret_type>
