@@ -34,7 +34,7 @@
 #include <zce_shm_array.h>
 #include <zce_shm_list.h>
 #include <zce_shm_cache_chunk.h>
-#include <zce_shm_lockfree_deque.h>
+#include <zce_lockfree_kfifo.h>
 #include <zce_shm_avltree.h>
 
 #include <zce_time_progress_timer.h>

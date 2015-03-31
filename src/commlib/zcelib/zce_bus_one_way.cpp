@@ -1,6 +1,6 @@
 
 #include "zce_predefine.h"
-#include "zce_shm_lockfree_deque.h"
+#include "zce_lockfree_kfifo.h"
 #include "zce_os_adapt_file.h"
 #include "zce_share_mem_mmap.h"
 #include "zce_trace_log_debug.h"
