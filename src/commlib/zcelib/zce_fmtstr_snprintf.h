@@ -42,7 +42,7 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 #if defined ZCE_SUPPORT_CPP11
 
 
-inline void foo_c11_outdata(char *&foo_buffer,
+inline void foo_c11_outlist(char *&foo_buffer,
     size_t &foo_max_len,
     size_t &foo_use_len,
     const char *&foo_fmt_spec)
@@ -60,7 +60,6 @@ inline void foo_c11_outdata(char *&foo_buffer,
         foo_use_len += len_of_str;
         memcpy(foo_buffer, foo_fmt_spec, len_of_str);
     }
-    
 }
 
 
@@ -119,7 +118,7 @@ void foo_c11_outdata(char *&foo_buffer,
 }
 
 template <typename out_type, typename... out_tlist >
-void foo_c11_outdata(char *&foo_buffer,
+void foo_c11_outlist(char *&foo_buffer,
     size_t &foo_max_len,
     size_t &foo_use_len,
     const char *&foo_fmt_spec,
@@ -127,7 +126,7 @@ void foo_c11_outdata(char *&foo_buffer,
     out_tlist ... out_datalist)
 {
     foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_data);
-    foo_c11_outdata(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
+    foo_c11_outlist(foo_buffer, foo_max_len, foo_use_len, foo_fmt_spec, out_datalist...);
 }
 
 
@@ -151,7 +150,7 @@ char *foo_snprintf(char *foo_buffer,
     const char *fmt_spec = foo_fmt_spec;
 
 
-    foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
+    foo_c11_outlist(buffer, max_len, foo_use_len, fmt_spec, out_data...);
 
     ZCE_LIB::fmt_str(buffer,
                      max_len,
