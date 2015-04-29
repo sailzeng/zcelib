@@ -1,22 +1,22 @@
-
+ï»¿
 #ifndef ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
 #define ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
 
 #include "zce_os_adapt_predefine.h"
 
 /*********************************************************************************
-class ZCE_ShareMem_SystemV ·â×°SystemV¹²ÏíÄÚ´æÓ³Éä´úÂë£¬ºÍPOSIXºÍMMAPµÄ×î´óÇø±ğÊÇ£¬Ã»ÓĞÓ³ÉäÎÄ¼ş
+class ZCE_ShareMem_SystemV å°è£…SystemVå…±äº«å†…å­˜æ˜ å°„ä»£ç ï¼Œå’ŒPOSIXå’ŒMMAPçš„æœ€å¤§åŒºåˆ«æ˜¯ï¼Œæ²¡æœ‰æ˜ å°„æ–‡ä»¶
 *********************************************************************************/
 class ZCE_ShareMem_SystemV : public ZCE_NON_Copyable
 {
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_ShareMem_SystemV();
     ~ZCE_ShareMem_SystemV();
 
 public:
-    //´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä
+    //æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„
     int open(key_t sysv_key,
              std::size_t shm_size ,
              int shmget_flg = IPC_CREAT | SHM_R | SHM_W,
@@ -24,7 +24,7 @@ public:
              const void *want_address = NULL
             );
 
-    //´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä, ¼òµ¥£¬ÍÆ¼öÊ¹ÓÃÕâ¸öº¯Êı
+    //æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„, ç®€å•ï¼Œæ¨èä½¿ç”¨è¿™ä¸ªå‡½æ•°
     int open(key_t sysv_key,
              std::size_t shm_size,
              bool fail_if_exist,
@@ -32,27 +32,27 @@ public:
              const void *want_address = NULL
             );
 
-    //¹Ø±ÕÓ³Éä(ÎÄ¼ş)
+    //å…³é—­æ˜ å°„(æ–‡ä»¶)
     int close();
 
-    //É¾³ıÓ³ÉäµÄÎÄ¼ş£¬µ±È»ÕıÔÚÓ³Éä(»òÕß»¹ÓĞÈËÔÚÓ³Éä)µÄÊ±ºò²»ÄÜÉ¾³ı
+    //åˆ é™¤æ˜ å°„çš„æ–‡ä»¶ï¼Œå½“ç„¶æ­£åœ¨æ˜ å°„(æˆ–è€…è¿˜æœ‰äººåœ¨æ˜ å°„)çš„æ—¶å€™ä¸èƒ½åˆ é™¤
     int remove();
 
-    //·µ»ØÓ³ÉäµÄÄÚ´æµØÖ·
+    //è¿”å›æ˜ å°„çš„å†…å­˜åœ°å€
     void *addr();
 
 protected:
 
-    //key_t£¬¹²ÏíÄÚ´æµÄÎ¨Ò»±êÊ¶¡£¿´×÷ÊÇ¸öÕûÊı°Ñ¡£
+    //key_tï¼Œå…±äº«å†…å­˜çš„å”¯ä¸€æ ‡è¯†ã€‚çœ‹ä½œæ˜¯ä¸ªæ•´æ•°æŠŠã€‚
     key_t               sysv_key_;
 
-    // Ó³ÉäµÄÎÄ¼ş¾ä±ú
+    // æ˜ å°„çš„æ–‡ä»¶å¥æŸ„
     ZCE_HANDLE          sysv_shmid_;
 
-    //Ó³ÉäµÄ¹²ÏíÄÚ´æ´óĞ¡
+    //æ˜ å°„çš„å…±äº«å†…å­˜å¤§å°
     std::size_t         shm_size_;
 
-    //Ó³ÉäµÄÄÚ´æµØÖ·
+    //æ˜ å°„çš„å†…å­˜åœ°å€
     void               *shm_addr_;
 };
 

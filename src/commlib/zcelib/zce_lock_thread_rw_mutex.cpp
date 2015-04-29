@@ -1,5 +1,5 @@
-
-//Ïß³ÌµÄ»¥³âÁ¿£¬ÓĞÇáÁ¿µÄËø£¬µİ¹éËø£¬·Çµİ¹éËø£¬¶ÁĞ´Ëø
+ï»¿
+//çº¿ç¨‹çš„äº’æ–¥é‡ï¼Œæœ‰è½»é‡çš„é”ï¼Œé€’å½’é”ï¼Œéé€’å½’é”ï¼Œè¯»å†™é”
 
 #include "zce_predefine.h"
 
@@ -15,10 +15,10 @@
 /************************************************************************************************************
 Class           : ZCE_Thread_RW_Mutex
 ************************************************************************************************************/
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Thread_RW_Mutex::ZCE_Thread_RW_Mutex()
 {
-    //pthread_rwlockattr_tÊôĞÔµÄ³õÊ¼»¯
+    //pthread_rwlockattr_tå±æ€§çš„åˆå§‹åŒ–
     int ret = 0;
 
     ret = ZCE_LIB::pthread_rwlock_initex(&rw_lock_, false);
@@ -43,7 +43,7 @@ ZCE_Thread_RW_Mutex::~ZCE_Thread_RW_Mutex()
     }
 }
 
-//¶ÁÈ¡Ëø
+//è¯»å–é”
 void ZCE_Thread_RW_Mutex::lock_read()
 {
     int ret = 0;
@@ -56,7 +56,7 @@ void ZCE_Thread_RW_Mutex::lock_read()
     }
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Thread_RW_Mutex::try_lock_read()
 {
     int ret = 0;
@@ -70,7 +70,7 @@ bool ZCE_Thread_RW_Mutex::try_lock_read()
     return true;
 }
 
-//¾ø¶ÔÊ±¼ä
+//ç»å¯¹æ—¶é—´
 bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
@@ -86,7 +86,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
 
     return true;
 }
-//Ïà¶ÔÊ±¼ä
+//ç›¸å¯¹æ—¶é—´
 bool ZCE_Thread_RW_Mutex::duration_lock_read(const ZCE_Time_Value &relative_time)
 {
     ZCE_Time_Value abs_time(ZCE_LIB::gettimeofday());
@@ -94,7 +94,7 @@ bool ZCE_Thread_RW_Mutex::duration_lock_read(const ZCE_Time_Value &relative_time
     return systime_lock_read(abs_time);
 }
 
-//Ğ´Ëø¶¨
+//å†™é”å®š
 void ZCE_Thread_RW_Mutex::lock_write()
 {
     int ret = 0;
@@ -107,7 +107,7 @@ void ZCE_Thread_RW_Mutex::lock_write()
     }
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Thread_RW_Mutex::try_lock_write()
 {
     int ret = 0;
@@ -121,7 +121,7 @@ bool ZCE_Thread_RW_Mutex::try_lock_write()
     return true;
 }
 
-//Ğ´Ëø¶¨³¬Ê±£¬¾ø¶ÔÊ±¼ä
+//å†™é”å®šè¶…æ—¶ï¼Œç»å¯¹æ—¶é—´
 bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
@@ -138,7 +138,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
     return true;
 }
 
-//Ğ´Ëø¶¨³¬Ê±£¬Ïà¶ÔÊ±¼ä
+//å†™é”å®šè¶…æ—¶ï¼Œç›¸å¯¹æ—¶é—´
 bool ZCE_Thread_RW_Mutex::duration_lock_write(const ZCE_Time_Value &relative_time)
 {
     ZCE_Time_Value abs_time(ZCE_LIB::gettimeofday());
@@ -146,10 +146,10 @@ bool ZCE_Thread_RW_Mutex::duration_lock_write(const ZCE_Time_Value &relative_tim
     return systime_lock_write(abs_time);
 }
 
-//½âËø,Èç¹ûÊÇ¶ÁĞ´ËøÒ²Ö»ĞèÒªÕâÒ»¸öº¯Êı
+//è§£é”,å¦‚æœæ˜¯è¯»å†™é”ä¹Ÿåªéœ€è¦è¿™ä¸€ä¸ªå‡½æ•°
 void ZCE_Thread_RW_Mutex::unlock()
 {
-    //½âËø
+    //è§£é”
     int ret = 0;
     ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
 
@@ -160,19 +160,19 @@ void ZCE_Thread_RW_Mutex::unlock()
     }
 }
 
-//È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
+//å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
 pthread_rwlock_t *ZCE_Thread_RW_Mutex::get_lock()
 {
     return &rw_lock_;
 }
 
 /************************************************************************************************************
-Class           : ZCE_Thread_Light_RW_Mutex ÇáÁ¿¼¶µÄ¶ÁĞ´Ëø£¬²»Ìá¹©³¬Ê±µÈº¯Êı
+Class           : ZCE_Thread_Light_RW_Mutex è½»é‡çº§çš„è¯»å†™é”ï¼Œä¸æä¾›è¶…æ—¶ç­‰å‡½æ•°
 ************************************************************************************************************/
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Thread_Light_RW_Mutex::ZCE_Thread_Light_RW_Mutex()
 {
-    //pthread_rwlockattr_tÊôĞÔµÄ³õÊ¼»¯
+    //pthread_rwlockattr_tå±æ€§çš„åˆå§‹åŒ–
     int ret = 0;
 
     bool use_win2008_rwlock = false;
@@ -203,7 +203,7 @@ ZCE_Thread_Light_RW_Mutex::~ZCE_Thread_Light_RW_Mutex()
     }
 }
 
-//¶ÁÈ¡Ëø
+//è¯»å–é”
 void ZCE_Thread_Light_RW_Mutex::lock_read()
 {
     int ret = 0;
@@ -216,7 +216,7 @@ void ZCE_Thread_Light_RW_Mutex::lock_read()
     }
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Thread_Light_RW_Mutex::try_lock_read()
 {
     int ret = 0;
@@ -230,7 +230,7 @@ bool ZCE_Thread_Light_RW_Mutex::try_lock_read()
     return true;
 }
 
-//Ğ´Ëø¶¨
+//å†™é”å®š
 void ZCE_Thread_Light_RW_Mutex::lock_write()
 {
     int ret = 0;
@@ -243,7 +243,7 @@ void ZCE_Thread_Light_RW_Mutex::lock_write()
     }
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Thread_Light_RW_Mutex::try_lock_write()
 {
     int ret = 0;
@@ -257,10 +257,10 @@ bool ZCE_Thread_Light_RW_Mutex::try_lock_write()
     return true;
 }
 
-//½âËø,Èç¹ûÊÇ¶ÁĞ´ËøÒ²Ö»ĞèÒªÕâÒ»¸öº¯Êı
+//è§£é”,å¦‚æœæ˜¯è¯»å†™é”ä¹Ÿåªéœ€è¦è¿™ä¸€ä¸ªå‡½æ•°
 void ZCE_Thread_Light_RW_Mutex::unlock()
 {
-    //½âËø
+    //è§£é”
     int ret = 0;
     ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
 
@@ -271,7 +271,7 @@ void ZCE_Thread_Light_RW_Mutex::unlock()
     }
 }
 
-//È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
+//å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
 pthread_rwlock_t *ZCE_Thread_Light_RW_Mutex::get_lock()
 {
     return &rw_lock_;

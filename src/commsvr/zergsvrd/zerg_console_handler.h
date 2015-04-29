@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef ZERG_SERVER_CONSOLE_HADNDLER_H_
 #define ZERG_SERVER_CONSOLE_HADNDLER_H_
 
@@ -17,17 +17,17 @@
 //    //
 //    virtual int process_mml_command(char *ret_string, size_t &str_len);
 //
-//    //´¦ÀíµÄÃüÁî×é
+//    //å¤„ç†çš„å‘½ä»¤ç»„
 //
-//    //²éÑ¯ZERG·şÎñÆ÷µÄ×´Ì¬
+//    //æŸ¥è¯¢ZERGæœåŠ¡å™¨çš„çŠ¶æ€
 //    int cmd_get_zergstats(char *ret_string, size_t &str_len);
-//    //²éÑ¯Áª½ÓµÄPeer×´Ì¬,²»Ò»¶¨ÄÜÈ«²¿·µ»Ø,¶øÇÒ±È½ÏºÄÊ±
+//    //æŸ¥è¯¢è”æ¥çš„PeerçŠ¶æ€,ä¸ä¸€å®šèƒ½å…¨éƒ¨è¿”å›,è€Œä¸”æ¯”è¾ƒè€—æ—¶
 //    int cmd_get_peer_stats(char *ret_string, size_t &str_len);
-//    //¹Ø±Õ·şÎñÆ÷
+//    //å…³é—­æœåŠ¡å™¨
 //    int cmd_close_services(char *ret_string, size_t &str_len);
-//    //¹Ø±ÕÏàÓ¦µÄ¶Ë¿Ú
+//    //å…³é—­ç›¸åº”çš„ç«¯å£
 //    int cmd_close_socketpeer(char *ret_string, size_t &str_len);
-//    //ĞŞ¸ÄÈÕÖ¾µÄÊä³ö¼¶±ğ
+//    //ä¿®æ”¹æ—¥å¿—çš„è¾“å‡ºçº§åˆ«
 //    int cmd_modify_logpriority(char *ret_string, size_t &str_len);
 //
 //};

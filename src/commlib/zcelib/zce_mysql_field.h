@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_mysql_field.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2004Äê7ÔÂ24ÈÕ
-* @brief      MySQLµÄ×Ö¶Î·â×°
+* @date       2004å¹´7æœˆ24æ—¥
+* @brief      MySQLçš„å­—æ®µå°è£…
 *
 * @details
 *
@@ -13,19 +13,19 @@
 #ifndef ZCE_LIB_MYSQL_DB_FIELD_H_
 #define ZCE_LIB_MYSQL_DB_FIELD_H_
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #if defined ZCE_USE_MYSQL
 
 
 /*!
-@brief      MySQLµÄ×Ö¶Î·â×°
+@brief      MySQLçš„å­—æ®µå°è£…
 
 */
 class ZCE_Mysql_Field
 {
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_Mysql_Field():
         field_data_(NULL),
         field_length_(0),
@@ -33,7 +33,7 @@ public:
     {
     };
 
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_Mysql_Field(const char *fdata, unsigned int flength, enum_field_types ftype):
         field_data_(fdata),
         field_length_(flength),
@@ -41,82 +41,82 @@ public:
     {
     };
 
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~ZCE_Mysql_Field()
     {
     };
 
     /*!
-    * @brief      ÉèÖÃ×Ö¶ÎÊı¾İ
-    * @param[in]  fdata    ×Ö¶ÎÊı¾İ
-    * @param[in]  flength  ×Ö¶Î³¤¶È
-    * @param[in]  ftype    ×Ö¶ÎÀàĞÍ
+    * @brief      è®¾ç½®å­—æ®µæ•°æ®
+    * @param[in]  fdata    å­—æ®µæ•°æ®
+    * @param[in]  flength  å­—æ®µé•¿åº¦
+    * @param[in]  ftype    å­—æ®µç±»å‹
     */
     inline void set_field(const char *fdata,
                           unsigned int flength,
                           enum_field_types ftype);
 
-    ///µÃµ½×Ö¶ÎÀàĞÍ
+    ///å¾—åˆ°å­—æ®µç±»å‹
     inline enum_field_types get_type() const;
-    ///µÃµ½×Ö¶ÎÊı¾İ,Char*
+    ///å¾—åˆ°å­—æ®µæ•°æ®,Char*
     inline const char *get_data() const;
-    ///µÃµ½×Ö¶ÎµÄ³¤¶È
+    ///å¾—åˆ°å­—æ®µçš„é•¿åº¦
     inline unsigned int get_length() const;
 
-    ///ÊÇ·ñÊı¾İÎª¿Õ
+    ///æ˜¯å¦æ•°æ®ä¸ºç©º
     inline bool is_null() const;
 
-    //²»Ìá¹©BOOLÀàĞÍµÄ×ª»»,ÒòÎªMYSQL±¾Éí²»Ìá¹©Õâ¸öÀàĞÍ£¬×ª»»µÄ¸Ğ¾õ×ÜÊÇ¹Ö¹ÖµÄ
-    //×ª»»ÎªBOOLÀàĞÍ,±ØĞëÊÇÊıÖµÀàĞÍ 0±íÊ¾false,·Ç0±íÊ¾Õæ
+    //ä¸æä¾›BOOLç±»å‹çš„è½¬æ¢,å› ä¸ºMYSQLæœ¬èº«ä¸æä¾›è¿™ä¸ªç±»å‹ï¼Œè½¬æ¢çš„æ„Ÿè§‰æ€»æ˜¯æ€ªæ€ªçš„
+    //è½¬æ¢ä¸ºBOOLç±»å‹,å¿…é¡»æ˜¯æ•°å€¼ç±»å‹ 0è¡¨ç¤ºfalse,é0è¡¨ç¤ºçœŸ
     //inline bool AsBool() const;
 
-    //¸ßËÙµÄµÃµ½×Ö·û´®,ÔÚ×Ö·û´®½ÏÎª³¤Ê±×îºÃÊ¹ÓÃÕâ¸öº¯Êı
+    //é«˜é€Ÿçš„å¾—åˆ°å­—ç¬¦ä¸²,åœ¨å­—ç¬¦ä¸²è¾ƒä¸ºé•¿æ—¶æœ€å¥½ä½¿ç”¨è¿™ä¸ªå‡½æ•°
     void get_string(std::string &) const;
 
-    //ÓÃÓÚ×ª»»µÄ²Ù×÷·ûºÅ
+    //ç”¨äºè½¬æ¢çš„æ“ä½œç¬¦å·
 
-    ///µÃµ½×Ö·û´®£¬
+    ///å¾—åˆ°å­—ç¬¦ä¸²ï¼Œ
     inline operator std::string () const;
 
-    //×ª»»Îª8Î»ÕûĞÍ
+    //è½¬æ¢ä¸º8ä½æ•´å‹
     inline operator char() const;
-    //×ª»»Îª16Î»µÄÕûĞÍ
+    //è½¬æ¢ä¸º16ä½çš„æ•´å‹
     inline operator short() const;
-    ///×ª»»Îª32ÎªÕûĞÎ
+    ///è½¬æ¢ä¸º32ä¸ºæ•´å½¢
     inline operator int() const;
-    ///×ª»»Îª³¤ÕûĞÍ
+    ///è½¬æ¢ä¸ºé•¿æ•´å‹
     inline operator long() const;
-    ///×ª»»Îª64Î»ÕûĞÍ
+    ///è½¬æ¢ä¸º64ä½æ•´å‹
     inline operator long long() const;
 
-    //×ª»»Îª8Î»ÎŞ·ûºÅÕûĞÍ
+    //è½¬æ¢ä¸º8ä½æ— ç¬¦å·æ•´å‹
     inline operator unsigned char() const;
-    //×ª»»Îª16Î»µÄÎŞ·ûºÅÕûĞÍ
+    //è½¬æ¢ä¸º16ä½çš„æ— ç¬¦å·æ•´å‹
     inline operator unsigned short() const;
-    ///×ª»»ÎªÎŞ·ûºÅ32ÎªÕûĞÎ
+    ///è½¬æ¢ä¸ºæ— ç¬¦å·32ä¸ºæ•´å½¢
     inline operator unsigned int() const;
-    ///×ª»»ÎªÎŞ·ûºÅ³¤ÕûĞÍ
+    ///è½¬æ¢ä¸ºæ— ç¬¦å·é•¿æ•´å‹
     inline operator unsigned long() const;
-    ///×ª»»Îª64Î»ÎŞ·ûºÅ³¤ÕûĞÍ
+    ///è½¬æ¢ä¸º64ä½æ— ç¬¦å·é•¿æ•´å‹
     inline operator unsigned long long() const;
 
-    ///×ª»»ÎªdoubleĞÍ
+    ///è½¬æ¢ä¸ºdoubleå‹
     inline operator double() const;
-    ///×ª»»ÎªfloatĞÍ
+    ///è½¬æ¢ä¸ºfloatå‹
     inline operator float() const;
 
 private:
 
-    ///×Ö¶ÎÊı¾İ,Ö¸Õë£¬Ö¸Ïò½á¹û¼¯µÄÊı¾İ£¬ËùÒÔ½á¹û¼¯±ØĞë´æÔÚ
+    ///å­—æ®µæ•°æ®,æŒ‡é’ˆï¼ŒæŒ‡å‘ç»“æœé›†çš„æ•°æ®ï¼Œæ‰€ä»¥ç»“æœé›†å¿…é¡»å­˜åœ¨
     const char      *field_data_;
-    ///×Ö¶Î³¤¶È
+    ///å­—æ®µé•¿åº¦
     unsigned int     field_length_;
-    ///×Ö¶ÎÀàĞÍ
+    ///å­—æ®µç±»å‹
     enum_field_types field_type_;
 
 };
 
-//ÉèÖÃÖµ
+//è®¾ç½®å€¼
 inline void ZCE_Mysql_Field::set_field(const char *fdata, unsigned int flength, enum_field_types ftype)
 {
     field_data_ = fdata;
@@ -124,13 +124,13 @@ inline void ZCE_Mysql_Field::set_field(const char *fdata, unsigned int flength, 
     field_type_ = ftype;
 };
 
-//µÃµ½Field ÀàĞÍ
+//å¾—åˆ°Field ç±»å‹
 inline enum_field_types ZCE_Mysql_Field::get_type() const
 {
     return field_type_;
 }
 
-//µÃµ½Field³¤¶È
+//å¾—åˆ°Fieldé•¿åº¦
 inline unsigned int ZCE_Mysql_Field::get_length() const
 {
     return field_length_;
@@ -142,7 +142,7 @@ inline const char *ZCE_Mysql_Field::get_data() const
     return field_data_;
 };
 
-//ÊÇ·ñÊı¾İÎª¿Õ
+//æ˜¯å¦æ•°æ®ä¸ºç©º
 inline bool ZCE_Mysql_Field::is_null() const
 {
     if (field_data_ == NULL)
@@ -153,7 +153,7 @@ inline bool ZCE_Mysql_Field::is_null() const
     return false;
 };
 
-//¸ßËÙµÄµÃµ½×Ö·û´®,ÔÚ×Ö·û´®½ÏÎª³¤Ê±×îºÃÊ¹ÓÃÕâ¸öº¯Êı
+//é«˜é€Ÿçš„å¾—åˆ°å­—ç¬¦ä¸²,åœ¨å­—ç¬¦ä¸²è¾ƒä¸ºé•¿æ—¶æœ€å¥½ä½¿ç”¨è¿™ä¸ªå‡½æ•°
 inline ZCE_Mysql_Field::operator std::string() const
 {
     std::string tmp_str;
@@ -162,132 +162,132 @@ inline ZCE_Mysql_Field::operator std::string() const
     return tmp_str;
 }
 
-//µÃµ½×Ö·ûĞÍ
+//å¾—åˆ°å­—ç¬¦å‹
 inline ZCE_Mysql_Field::operator char() const
 {
     char  tmp_tinyint = 0;
 
     short tmpshort = 0;
-    //µÃµ½¶ÌÕûĞÍ
+    //å¾—åˆ°çŸ­æ•´å‹
     sscanf(field_data_, "%hd", &tmpshort);
 
-    //Í¨¹ı²¢µÃµ½TINY INT ¾ÍÊÇchar
+    //é€šè¿‡å¹¶å¾—åˆ°TINY INT å°±æ˜¯char
     tmp_tinyint = static_cast<char >( tmpshort & 0xFF);
     return tmp_tinyint;
 }
 
-//µÃµ½¶ÌÕûĞÍ
+//å¾—åˆ°çŸ­æ•´å‹
 inline ZCE_Mysql_Field::operator short() const
 {
     short tmp_short = 0;
 
-    //µÃµ½¶ÌÕûĞÍ,·µ»ØÖµ=0 ,EOF±íÊ¾Ê§°Ü
+    //å¾—åˆ°çŸ­æ•´å‹,è¿”å›å€¼=0 ,EOFè¡¨ç¤ºå¤±è´¥
     sscanf(field_data_, "%hd", &tmp_short);
 
-    //×ª»»²»³É¹¦»òÕß
+    //è½¬æ¢ä¸æˆåŠŸæˆ–è€…
     return tmp_short;
 }
 
-//µÃµ½³¤ÕûĞÍ
+//å¾—åˆ°é•¿æ•´å‹
 inline ZCE_Mysql_Field::operator long() const
 {
     long tmp_long = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     sscanf(field_data_, "%ld", &tmp_long);
 
     return tmp_long;
 }
 
-//µÃµ½intÕûĞÍ
+//å¾—åˆ°intæ•´å‹
 inline ZCE_Mysql_Field::operator int() const
 {
     int tmp_int = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     sscanf(field_data_, "%d", &tmp_int);
     return tmp_int;
 }
 
-//µÃµ½intÕûĞÍ
+//å¾—åˆ°intæ•´å‹
 inline ZCE_Mysql_Field::operator unsigned int() const
 {
     unsigned int tmp_uint = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     sscanf(field_data_, "%u", &tmp_uint);
     return tmp_uint;
 }
 
-//×ª»»ÎªINT64ÀàĞÍ
+//è½¬æ¢ä¸ºINT64ç±»å‹
 inline ZCE_Mysql_Field::operator long long () const
 {
     long long tmp_longlong = 0;
 
-    //µÃµ½64Î»µÄÕûÊı
+    //å¾—åˆ°64ä½çš„æ•´æ•°
     sscanf(field_data_, "%lld", &tmp_longlong);
 
     return tmp_longlong;
 }
 
-//×ª»»Îª8Î»ÎŞ·ûºÅÕûĞÍ
+//è½¬æ¢ä¸º8ä½æ— ç¬¦å·æ•´å‹
 inline ZCE_Mysql_Field::operator unsigned char() const
 {
     unsigned char  tmp_utinyint = 0;
     unsigned short tmpshort = 0;
-    //µÃµ½¶ÌÕûĞÍ
+    //å¾—åˆ°çŸ­æ•´å‹
     sscanf(field_data_, "%hu", &tmpshort);
 
-    //Í¨¹ı²¢µÃµ½TINY INT ¾ÍÊÇchar
+    //é€šè¿‡å¹¶å¾—åˆ°TINY INT å°±æ˜¯char
     tmp_utinyint = static_cast<unsigned char>(tmpshort & 0xFF);
     return tmp_utinyint;
 }
 
-//×ª»»Îª16Î»µÄÎŞ·ûºÅÕûĞÍ
+//è½¬æ¢ä¸º16ä½çš„æ— ç¬¦å·æ•´å‹
 inline ZCE_Mysql_Field::operator unsigned short() const
 {
     unsigned short tmp_ushort = 0;
 
-    //µÃµ½¶ÌÕûĞÍ,·µ»ØÖµ=0 ,EOF±íÊ¾Ê§°Ü
+    //å¾—åˆ°çŸ­æ•´å‹,è¿”å›å€¼=0 ,EOFè¡¨ç¤ºå¤±è´¥
     sscanf(field_data_, "%hu", &tmp_ushort);
 
-    //×ª»»²»³É¹¦»òÕß
+    //è½¬æ¢ä¸æˆåŠŸæˆ–è€…
     return tmp_ushort;
 }
-//×ª»»Îª32Î»32ÎŞ·ûºÅ³¤ÕûĞÍ
+//è½¬æ¢ä¸º32ä½32æ— ç¬¦å·é•¿æ•´å‹
 inline ZCE_Mysql_Field::operator unsigned long() const
 {
     long tmp_ulong = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     sscanf(field_data_, "%lu", &tmp_ulong);
     return tmp_ulong;
 }
 
-//×ª»»Îª64Î»ÎŞ·ûºÅ³¤ÕûĞÍ
+//è½¬æ¢ä¸º64ä½æ— ç¬¦å·é•¿æ•´å‹
 inline ZCE_Mysql_Field::operator unsigned long long() const
 {
     unsigned long long tmp_ulonglong = 0;
 
-    //µÃµ½64Î»µÄÕûÊı
+    //å¾—åˆ°64ä½çš„æ•´æ•°
     sscanf(field_data_, "%llu", &tmp_ulonglong);
     return tmp_ulonglong;
 }
 
-//×ª»»ÎªFLOATÀàĞÍ
+//è½¬æ¢ä¸ºFLOATç±»å‹
 inline ZCE_Mysql_Field::operator float() const
 {
     float tmpfloat = 0.0;
-    //×ª»»µÃµ½FLOAT¸¡µãĞÍ
+    //è½¬æ¢å¾—åˆ°FLOATæµ®ç‚¹å‹
     sscanf(field_data_, "%f", &tmpfloat);
     return tmpfloat;
 }
 
-//×ª»»ÎªDOUBLEÀàĞÍ
+//è½¬æ¢ä¸ºDOUBLEç±»å‹
 inline ZCE_Mysql_Field::operator double() const
 {
     double tmpdouble = 0.0;
-    //×ª»»µÃµ½DOBULE¸¡µãĞÍ
+    //è½¬æ¢å¾—åˆ°DOBULEæµ®ç‚¹å‹
     sscanf(field_data_, "%lf", &tmpdouble);
     return tmpdouble;
 }

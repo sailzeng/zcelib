@@ -1,4 +1,4 @@
-
+ï»¿
 // illusion_main.h : main header file for the illusion application
 //
 #pragma once
@@ -14,13 +14,13 @@ public:
     virtual ~Illusion_Application();
 
 
-    /// appµÄ¿ªÊ¼ÔËĞĞ
+    /// appçš„å¼€å§‹è¿è¡Œ
     virtual int app_start(int argc, const char *argv[]);
 
-    /// app ÔËĞĞ
+    /// app è¿è¡Œ
     virtual int on_run();
 
-    /// appµÄÍË³ö
+    /// appçš„é€€å‡º
     virtual int on_exit();
 
 protected:

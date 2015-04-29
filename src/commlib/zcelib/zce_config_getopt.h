@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2014  Apache License, Version 2.0
 * @filename   zce_config_getopt.h
 * @author
 * @version
 * @date       Monday, August 25, 2014
-* @brief      Õâ¸ö´úÂëÊÇACEµÄACE_Get_OptionµÄ´úÂë£¬ÎÒÃ»ÓĞ°æÈ¨£¬
+* @brief      è¿™ä¸ªä»£ç æ˜¯ACEçš„ACE_Get_Optionçš„ä»£ç ï¼Œæˆ‘æ²¡æœ‰ç‰ˆæƒï¼Œ
 *
 *
 * @details

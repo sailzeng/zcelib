@@ -1,29 +1,29 @@
-#ifndef ZERG_SERVER_CONFIG_H_
+ï»¿#ifndef ZERG_SERVER_CONFIG_H_
 #define ZERG_SERVER_CONFIG_H_
 
 
 
 //===================================================================================
 
-//·þÎñÅäÖÃ
+//æœåŠ¡é…ç½®
 struct SERVICES_INFO_TABLE
 {
 
     typedef std::unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
 
 public:
-    //¹¹Ôìº¯Êý,
+    //æž„é€ å‡½æ•°,
     SERVICES_INFO_TABLE(size_t sz_table = INIT_NUM_OF_SVR_CONFG);
     ~SERVICES_INFO_TABLE();
 
 
     /*!
-    * @brief      ¸ù¾ÝSvrInfoÐÅÏ¢²éÑ¯IPÅäÖÃÐÅÏ¢
+    * @brief      æ ¹æ®SvrInfoä¿¡æ¯æŸ¥è¯¢IPé…ç½®ä¿¡æ¯
     * @return     int
-    * @param      svc_id      ´«Èë²ÎÊý,·þÎñÆ÷ÐÅÏ¢SVCINFO
-    * @param      ip_address  Êä³ö²ÎÊý,·þÎñÆ÷ÐÅÏ¢SVCINFO
-    * @param      idc_no      Êä³ö²ÎÊý,IDCÐÅÏ¢
-    * @param      business_id Êä³ö²ÎÊý,·þÎñÆ÷±àºÅ
+    * @param      svc_id      ä¼ å…¥å‚æ•°,æœåŠ¡å™¨ä¿¡æ¯SVCINFO
+    * @param      ip_address  è¾“å‡ºå‚æ•°,æœåŠ¡å™¨ä¿¡æ¯SVCINFO
+    * @param      idc_no      è¾“å‡ºå‚æ•°,IDCä¿¡æ¯
+    * @param      business_id è¾“å‡ºå‚æ•°,æœåŠ¡å™¨ç¼–å·
     * @note
     */
     int find_svcinfo(const SERVICES_ID &svc_id,
@@ -31,23 +31,23 @@ public:
                      unsigned int &idc_no,
                      unsigned int &business_id) const;
 
-    //¸ù¾ÝSvrInfoÐÅÏ¢²éÑ¯IPÅäÖÃÐÅÏ¢
+    //æ ¹æ®SvrInfoä¿¡æ¯æŸ¥è¯¢IPé…ç½®ä¿¡æ¯
     int find_svcinfo(const SERVICES_ID &svc_id,
                      SERVICES_INFO &svc_info) const;
 
-    //¼ì²éÊÇ·ñÓµÓÐÏàÓ¦µÄServices Info
+    //æ£€æŸ¥æ˜¯å¦æ‹¥æœ‰ç›¸åº”çš„Services Info
     bool hash_svcinfo(const SERVICES_ID &svc_id) const;
 
-    //ÉèÖÃÅäÖÃÐÅÏ¢
+    //è®¾ç½®é…ç½®ä¿¡æ¯
     int add_svcinfo(const SERVICES_INFO &svc_info);
 
 
-    //ÇåÀíSVRÅäÖÃÐÅÏ¢.
+    //æ¸…ç†SVRé…ç½®ä¿¡æ¯.
     void clear();
 
 
 protected:
-    //ÅäÖÃµÄ¸öÊý
+    //é…ç½®çš„ä¸ªæ•°
     static const int INIT_NUM_OF_SVR_CONFG = 2048;
 
 protected:
@@ -59,7 +59,7 @@ protected:
 //===================================================================================
 
 /*!
-* @brief     Ð¡³æµÄÅäÖÃÊý¾Ý
+* @brief     å°è™«çš„é…ç½®æ•°æ®
 *
 * @note
 */
@@ -68,30 +68,30 @@ struct ZERG_CONFIG_DATA
 
 public:
 
-    ///×î´óµÄµÄ°ó¶¨µÄSVC IDÊýÁ¿£¬Ò²¾ÍÊÇ¼àÌýÊýÁ¿
+    ///æœ€å¤§çš„çš„ç»‘å®šçš„SVC IDæ•°é‡ï¼Œä¹Ÿå°±æ˜¯ç›‘å¬æ•°é‡
     static const size_t MAX_BIND_SERVICES_ID = 4;
     ///
     static const size_t MAX_SLAVE_SERVICES_ID = MAX_BIND_SERVICES_ID - 1;
 
-    ///×î´óµÄ¼à¿ØµÄFRAMEµÄÊýÁ¿,²»Ï£ÍûÌ«¶à,¿ÉÄÜÑÏÖØÓ°ÏìÐ§ÂÊ
+    ///æœ€å¤§çš„ç›‘æŽ§çš„FRAMEçš„æ•°é‡,ä¸å¸Œæœ›å¤ªå¤š,å¯èƒ½ä¸¥é‡å½±å“æ•ˆçŽ‡
     static const size_t MAX_MONITOR_FRAME_NUMBER = 16;
 
-    ///×î´óµÄÖ÷¶¯Á´½Ó·þÎñÆ÷ÊýÁ¿
+    ///æœ€å¤§çš„ä¸»åŠ¨é“¾æŽ¥æœåŠ¡å™¨æ•°é‡
     static const size_t MAX_AUTO_CONNECT_SVRS = 512;
 
-    ///×î´óµÄ¸ú×Ù¼ÇÂ¼µÄ×î´ó·þÎñÆ÷ÀàÐÍ£¬ÓÃÓÚ×Ô¶¯Ñ¡ÔñÂ·ÓÉ£¬¹ã²¥µÈ
+    ///æœ€å¤§çš„è·Ÿè¸ªè®°å½•çš„æœ€å¤§æœåŠ¡å™¨ç±»åž‹ï¼Œç”¨äºŽè‡ªåŠ¨é€‰æ‹©è·¯ç”±ï¼Œå¹¿æ’­ç­‰
     static const size_t MAX_RECORD_SERVICES_TYPE = 16;
 
-    ///Ä¬ÈÏµÄACCEPT¶Ë¿ÚµÄbacklog£¬LightHTTPÕâ¸öÖµµÃÅäÖÃÊÇ1024£¬Èç¹ûÐèÒªÃÍÈ»¼äµÇÂ½ºÜ¶àÈË£¬¿ÉÒÔµ÷Õûµ½¸ü´ó
+    ///é»˜è®¤çš„ACCEPTç«¯å£çš„backlogï¼ŒLightHTTPè¿™ä¸ªå€¼å¾—é…ç½®æ˜¯1024ï¼Œå¦‚æžœéœ€è¦çŒ›ç„¶é—´ç™»é™†å¾ˆå¤šäººï¼Œå¯ä»¥è°ƒæ•´åˆ°æ›´å¤§
     static const int DEFUALT_ZERG_BACKLOG = 128;
 
 
 public:
 
-    /// #×î´óÁ¬½ÓµÄ·þÎñÆ÷¸öÊý ##Ç°¶Ë128000£¬ºó¶Ë1024
+    /// #æœ€å¤§è¿žæŽ¥çš„æœåŠ¡å™¨ä¸ªæ•° ##å‰ç«¯128000ï¼ŒåŽç«¯1024
     size_t max_accept_svr_ = 1024;
 
-    ///ZERGµÄ±£ÏÕÊÇ·ñÊ¹ÓÃ
+    ///ZERGçš„ä¿é™©æ˜¯å¦ä½¿ç”¨
     bool zerg_insurance_ = true;
 
     ///
@@ -99,45 +99,45 @@ public:
 
 
 
-    /// ±»¶¯Á¬½ÓµÄ·¢ËÍBUFFER¿ÉÈÝÄÉ×î´óFRAMEµÄ¸öÊý Á¬½ÓÊýÉÙ¶øÁ÷Á¿½Ï´óµÄºó¶Ë·þÎñÆ÷¿ÉÌîµÄ´óÒ»Ð©,
+    /// è¢«åŠ¨è¿žæŽ¥çš„å‘é€BUFFERå¯å®¹çº³æœ€å¤§FRAMEçš„ä¸ªæ•° è¿žæŽ¥æ•°å°‘è€Œæµé‡è¾ƒå¤§çš„åŽç«¯æœåŠ¡å™¨å¯å¡«çš„å¤§ä¸€äº›,
     uint32_t acpt_send_deque_size_ = 32;
-    /// Ã¿¸öconnect ³öÈ¥µÄ£¬tcpÁ¬½ÓµÄ·¢ËÍ¶ÓÁÐ³¤¶È
+    /// æ¯ä¸ªconnect å‡ºåŽ»çš„ï¼Œtcpè¿žæŽ¥çš„å‘é€é˜Ÿåˆ—é•¿åº¦
     uint32_t cnnt_send_deque_size_ = 128;
 
 
-    ///·þÎñÆ÷Ö§³ÖµÄSVC IDµÄÊýÁ¿£¬ÖÁÉÙ>=1
+    ///æœåŠ¡å™¨æ”¯æŒçš„SVC IDçš„æ•°é‡ï¼Œè‡³å°‘>=1
     size_t bind_svcid_num_ = 0;
-    ///·þÎñÆ÷Ö§³ÖµÄSVC ID£¬×¢Òâ£¬self_svc_id_ÓÀÔ¶ÅäÖÃÔÚµÚÒ»¸ö
+    ///æœåŠ¡å™¨æ”¯æŒçš„SVC IDï¼Œæ³¨æ„ï¼Œself_svc_id_æ°¸è¿œé…ç½®åœ¨ç¬¬ä¸€ä¸ª
     SERVICES_ID  bind_svcid_ary_[MAX_BIND_SERVICES_ID];
 
-    ///Ö÷¶¯Á´½ÓµÄ·þÎñÆ÷ÊáÀí
+    ///ä¸»åŠ¨é“¾æŽ¥çš„æœåŠ¡å™¨æ¢³ç†
     size_t auto_connect_num_ = 0;
-    ///Ö÷¶¯Á´½ÓµÄ·þÎñÆ÷Êý×é
+    ///ä¸»åŠ¨é“¾æŽ¥çš„æœåŠ¡å™¨æ•°ç»„
     SERVICES_ID  auto_connect_svrs_[MAX_AUTO_CONNECT_SVRS];
 
 
-    /// #´ÓCONNECTµ½ÊÕµ½Êý¾Ý,×îÐ¡Ê±³¤,0-50£¬½ÓÈë²ã±ØÐëÅäÖÃ>0,½¨Òé15-60ÃëÒÔÄÚ
+    /// #ä»ŽCONNECTåˆ°æ”¶åˆ°æ•°æ®,æœ€å°æ—¶é•¿,0-50ï¼ŒæŽ¥å…¥å±‚å¿…é¡»é…ç½®>0,å»ºè®®15-60ç§’ä»¥å†…
     uint32_t accepted_timeout_ = 60;
-    /// RECEIVEÒ»¸öÊý¾ÝµÄ³¬Ê±Ê±¼ä,Îª0±íÊ¾²»ÏÞÖÆ,½¨Òé¸ù¾ÝÒµÎñ²ãµÄÂß¼­ÅÐ¶ÏÒ»ÏÂ
+    /// RECEIVEä¸€ä¸ªæ•°æ®çš„è¶…æ—¶æ—¶é—´,ä¸º0è¡¨ç¤ºä¸é™åˆ¶,å»ºè®®æ ¹æ®ä¸šåŠ¡å±‚çš„é€»è¾‘åˆ¤æ–­ä¸€ä¸‹
     uint32_t receive_timeout_ = 0;
 
-    /// ÊÇ·ñ×öÎª´úÀí·þÎñÆ÷
+    /// æ˜¯å¦åšä¸ºä»£ç†æœåŠ¡å™¨
     bool is_proxy_ = false;
 
 
-    /// #¶ÔÒ»¸ö´íÎóÊý¾ÝÖØ¸´³¢ÊÔ·¢ËÍµÄ´ÎÊý,Ä¿Ç°Õâ¸öÖµÃ»ÓÃÓÃ´¦ÁË£¬
+    /// #å¯¹ä¸€ä¸ªé”™è¯¯æ•°æ®é‡å¤å°è¯•å‘é€çš„æ¬¡æ•°,ç›®å‰è¿™ä¸ªå€¼æ²¡ç”¨ç”¨å¤„äº†ï¼Œ
     uint32_t retry_error_ = 3;
 
 
 
-    ///¾Ü¾ø²»ÔÊÐíÁ´½ÓµÄIPµØÖ·ÁÐ±í£¬ÓÃ¿Õ¸ñ·Ö¿ª
+    ///æ‹’ç»ä¸å…è®¸é“¾æŽ¥çš„IPåœ°å€åˆ—è¡¨ï¼Œç”¨ç©ºæ ¼åˆ†å¼€
     std::string reject_ip_;
-    ///ÔÊÐíÁ´½ÓµÄIPµØÖ·ÁÐ±í£¬ÓÃ¿Õ¸ñ·Ö¿ª
+    ///å…è®¸é“¾æŽ¥çš„IPåœ°å€åˆ—è¡¨ï¼Œç”¨ç©ºæ ¼åˆ†å¼€
     std::string allow_ip_;
 
-    ///¼à¿ØµÄÃüÁîµÄ×ÜÊý
+    ///ç›‘æŽ§çš„å‘½ä»¤çš„æ€»æ•°
     size_t monitor_cmd_count_ = 0;
-    ///¼à¿ØµÄÃüÁî
+    ///ç›‘æŽ§çš„å‘½ä»¤
     uint32_t monitor_cmd_list_[MAX_MONITOR_FRAME_NUMBER];
 };
 
@@ -145,7 +145,7 @@ public:
 //===================================================================================
 
 /*!
-* @brief      Ð¡³æµÄÅäÖÃ´¦ÀíÀà
+* @brief      å°è™«çš„é…ç½®å¤„ç†ç±»
 *
 * @note
 */
@@ -160,37 +160,37 @@ public:
 public:
 
 
-    ///¶ÁÈ¡ÅäÖÃÎÄ¼þ£¬µÃµ½ÎÄ¼þÅäÖÃ²ÎÊý
+    ///è¯»å–é…ç½®æ–‡ä»¶ï¼Œå¾—åˆ°æ–‡ä»¶é…ç½®å‚æ•°
     virtual int read_cfgfile();
 
 
     /*!
-    * @brief      ¶ÁÈ¡£¬ÔÚÈÕÖ¾ÀïÃæÊä³öÒ»Ð©ÅäÖÃÐÅÏ¢£¬ÒÔ±ã¸ú×Ù»ØËÝ
-    * @param      out_lvl Êä³ö¼¶±ð£¬
+    * @brief      è¯»å–ï¼Œåœ¨æ—¥å¿—é‡Œé¢è¾“å‡ºä¸€äº›é…ç½®ä¿¡æ¯ï¼Œä»¥ä¾¿è·Ÿè¸ªå›žæº¯
+    * @param      out_lvl è¾“å‡ºçº§åˆ«ï¼Œ
     */
     virtual void dump_cfg_info(ZCE_LOG_PRIORITY out_lvl);
 
 
-    //¸ù¾ÝSVCIDµÃµ½SVC INFOµØÖ·ÐÅÏ¢
+    //æ ¹æ®SVCIDå¾—åˆ°SVC INFOåœ°å€ä¿¡æ¯
     int get_svcinfo_by_svcid(const SERVICES_ID &svc_id, SERVICES_INFO  &svc_info) const;
 
 
-    ///´ÓÅäÖÃÖÐ¶ÁÈ¡ZERGµÄÅäÖÃ
+    ///ä»Žé…ç½®ä¸­è¯»å–ZERGçš„é…ç½®
     int get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
-    ///µÃµ½Ä³¸öÅäÖÃÎÄ¼þµÄÅäÖÃÐÅÏ¢,ÅäÖÃÎÄ¼þÆäÖÐÓÐ[SERVICES_TABLE]×Ö¶Î
+    ///å¾—åˆ°æŸä¸ªé…ç½®æ–‡ä»¶çš„é…ç½®ä¿¡æ¯,é…ç½®æ–‡ä»¶å…¶ä¸­æœ‰[SERVICES_TABLE]å­—æ®µ
     int get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
 public:
-    ///ZERGµÄÅäÖÃÎÄ¼þ
+    ///ZERGçš„é…ç½®æ–‡ä»¶
     std::string zerg_cfg_file_;
 
-    ///ZERGµÄÅäÖÃÊý¾Ý
+    ///ZERGçš„é…ç½®æ•°æ®
     ZERG_CONFIG_DATA  zerg_cfg_data_;
 
-    ///·þÎñµÄÅäÖÃ¼¯ºÏ±ê
+    ///æœåŠ¡çš„é…ç½®é›†åˆæ ‡
     SERVICES_INFO_TABLE  services_info_table_;
 };
 

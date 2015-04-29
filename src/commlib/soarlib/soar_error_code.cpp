@@ -1,4 +1,4 @@
-#include "soar_predefine.h"
+﻿#include "soar_predefine.h"
 #include "soar_error_code.h"
 
 ///

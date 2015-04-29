@@ -1,4 +1,4 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_trace_log_msg.h
 * @author     Sailzeng <sailerzeng@gmail.com>
@@ -28,84 +28,84 @@ class ZCE_Trace_LogMsg : public ZCE_LogTrace_Basic
 
 public:
 
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     ZCE_Trace_LogMsg();
     virtual ~ZCE_Trace_LogMsg();
 
-    ///ÎªC°®ºÃÕß×¼±¸µÄ·â×°£¬ÇÒ¼Ç²»Òª»ìÓÃ,Êä³öÒ»Ìõ(ĞĞ)ÈÕÖ¾¼ÇÂ¼.
+    ///ä¸ºCçˆ±å¥½è€…å‡†å¤‡çš„å°è£…ï¼Œä¸”è®°ä¸è¦æ··ç”¨,è¾“å‡ºä¸€æ¡(è¡Œ)æ—¥å¿—è®°å½•.
     void write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ...);
 
 protected:
 
     /*!
-    @brief      Êµ¼ÊĞ´ÈëÈÕÖ¾µÄº¯Êı
-    @param      outlevel    Êä³öÈÕÖ¾¼¶±ğ
-    @param      lpszFormat  ÈÕÖ¾µÄ¸ñÊ½»¯×Ö·û´®
-    @param      args        ¶¯Ì¬µÄÈÕÖ¾²ÎÊıÁĞ±í×é³ÉµÄva_list
+    @brief      å®é™…å†™å…¥æ—¥å¿—çš„å‡½æ•°
+    @param      outlevel    è¾“å‡ºæ—¥å¿—çº§åˆ«
+    @param      lpszFormat  æ—¥å¿—çš„æ ¼å¼åŒ–å­—ç¬¦ä¸²
+    @param      args        åŠ¨æ€çš„æ—¥å¿—å‚æ•°åˆ—è¡¨ç»„æˆçš„va_list
     */
     void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format , va_list args);
 
 public:
 
-    //ÊµÀıµÄ¸³Öµ
+    //å®ä¾‹çš„èµ‹å€¼
     static void instance(ZCE_Trace_LogMsg *);
-    //ÊµÀıµÄ»ñµÃ
+    //å®ä¾‹çš„è·å¾—
     static ZCE_Trace_LogMsg *instance();
-    //Çå³ıÊµÀı
+    //æ¸…é™¤å®ä¾‹
     static void clean_instance();
 
-    //ÀûÓÃµ¥×Ó¶ÔÏó£¬Aseertµ÷ÊÔ
+    //åˆ©ç”¨å•å­å¯¹è±¡ï¼ŒAseertè°ƒè¯•
     static void debug_assert(const char *file_name,
                              const int file_line,
                              const char *fuction_name,
                              const char *expression_name);
 
-    ///ÀûÓÃµ¥×Ó¶ÔÏó£¬Êä³öAseertµ÷ÊÔĞÅÏ¢,ÔöÇ¿°æ±¾º¯Êı
+    ///åˆ©ç”¨å•å­å¯¹è±¡ï¼Œè¾“å‡ºAseertè°ƒè¯•ä¿¡æ¯,å¢å¼ºç‰ˆæœ¬å‡½æ•°
     static void debug_assert_ex(const char *file_name,
                                 const int file_line,
                                 const char *fuction_name,
                                 const char *expression_name,
                                 const char *out_string);
 
-    ///ÀûÓÃµ¥×Ó¶ÔÏó£¬´òÓ¡ÈÕÖ¾ĞÅÏ¢
+    ///åˆ©ç”¨å•å­å¯¹è±¡ï¼Œæ‰“å°æ—¥å¿—ä¿¡æ¯
     static void debug_output(ZCE_LOG_PRIORITY dbglevel,
                              const char *str_format ,
                              ... );
 
-    //ÎªÊ²Ã´ÒªÕâÑùÂé·³,ÎÊÌâÔÚÓÚ²»ÄÜÓÃºê(__VA_ARGS__)½â¾öÎÊÌâ(²¿·Ö±àÒëÆ÷²»Ö§³Ö,VS2003),
+    //ä¸ºä»€ä¹ˆè¦è¿™æ ·éº»çƒ¦,é—®é¢˜åœ¨äºä¸èƒ½ç”¨å®(__VA_ARGS__)è§£å†³é—®é¢˜(éƒ¨åˆ†ç¼–è¯‘å™¨ä¸æ”¯æŒ,VS2003),
 #if _MSC_VER <= 1300
 
-    //Ê¹ÓÃ RS_TRACE µ÷ÊÔ¼¶±ğÊä³ö
+    //ä½¿ç”¨ RS_TRACE è°ƒè¯•çº§åˆ«è¾“å‡º
     static void debug_traceex(const char * , ... );
-    //Ê¹ÓÃ RS_DEBUG µ÷ÊÔ¼¶±ğÊä³ö
+    //ä½¿ç”¨ RS_DEBUG è°ƒè¯•çº§åˆ«è¾“å‡º
     static void debug_debugex(const char *str_format, ... );
-    //Ê¹ÓÃ RS_INFO µ÷ÊÔ¼¶±ğÊä³ö
+    //ä½¿ç”¨ RS_INFO è°ƒè¯•çº§åˆ«è¾“å‡º
     static void debug_infoex(const char *str_format, ... );
-    //Ê¹ÓÃ RS_ERROR ´íÎó¼¶±ğÊä³ö
+    //ä½¿ç”¨ RS_ERROR é”™è¯¯çº§åˆ«è¾“å‡º
     static void debug_errorex(const char *str_format, ... );
-    //Ê¹ÓÃ RS_ALERT ÑÏÖØ´íÎó¼¶±ğÊä³ö
+    //ä½¿ç”¨ RS_ALERT ä¸¥é‡é”™è¯¯çº§åˆ«è¾“å‡º
     static void debug_alertex(const char *str_format, ... );
-    //Ê¹ÓÃ RS_FATAL ÖÂÃü´íÎó¼¶±ğÊä³ö
+    //ä½¿ç”¨ RS_FATAL è‡´å‘½é”™è¯¯çº§åˆ«è¾“å‡º
     static void debug_fatalex(const char *str_format, ... );
 
 #endif //#if _MSC_VER <= 1300
 
 protected:
 
-    ///¶àĞĞÊä³ö¶ÔÏóµÄ×î´ó³¤¶È
+    ///å¤šè¡Œè¾“å‡ºå¯¹è±¡çš„æœ€å¤§é•¿åº¦
     static const size_t SIZE_OF_MULTILINE_BUF = 512 * 1024 - 1;
 
 protected:
 
-    ///¶àĞĞÊõºó³öµÄ
+    ///å¤šè¡Œæœ¯åå‡ºçš„
     char                    *multiline_buf_;
 
-    ///Í¬²½Ëø
+    ///åŒæ­¥é”
     ZCE_Thread_Light_Mutex   multiline_lock_;
 
 protected:
 
-    ///µ¥×ÓÊµÀıÖ¸Õë
+    ///å•å­å®ä¾‹æŒ‡é’ˆ
     static ZCE_Trace_LogMsg *log_instance_;
 
 };

@@ -1,4 +1,4 @@
-
+ï»¿
 
 #include "ogre_predefine.h"
 #include "ogre_tcppeer_id_set.h"
@@ -12,9 +12,9 @@
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
-//CONNECTºóµÈ´ıÊı¾İµÄ³¬Ê±Ê±¼ä
+//CONNECTåç­‰å¾…æ•°æ®çš„è¶…æ—¶æ—¶é—´
 unsigned int   Ogre_TCP_Svc_Handler::accept_timeout_ = 3;
-//½ÓÊÜÊı¾İµÄ³¬Ê±Ê±¼ä
+//æ¥å—æ•°æ®çš„è¶…æ—¶æ—¶é—´
 unsigned int   Ogre_TCP_Svc_Handler::receive_timeout_ = 5;
 
 //TIME ID
@@ -32,18 +32,18 @@ size_t         Ogre_TCP_Svc_Handler::num_accept_peer_ = 0;
 //
 size_t         Ogre_TCP_Svc_Handler::num_connect_peer_ = 0;
 
-//×î´ó¿ÉÒÔ½ÓÊÜµÄ½ÓÊÜÊıÁ¿
+//æœ€å¤§å¯ä»¥æ¥å—çš„æ¥å—æ•°é‡
 size_t         Ogre_TCP_Svc_Handler::max_accept_svr_ = 0;
-//×î´ó¿ÉÒÔ½ÓÊÜµÄÁ¬½ÓÊıÁ¿
+//æœ€å¤§å¯ä»¥æ¥å—çš„è¿æ¥æ•°é‡
 size_t         Ogre_TCP_Svc_Handler::max_connect_svr_ = 0;
 
-//ACCEPT SVC handlerµÄ³Ø×Ó
+//ACCEPT SVC handlerçš„æ± å­
 Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_acpthdl_;
 
-//CONNECT svc handlerµÄ³Ø×Ó
+//CONNECT svc handlerçš„æ± å­
 Ogre_TCP_Svc_Handler::POOL_OF_TCP_HANDLER Ogre_TCP_Svc_Handler::pool_of_cnthdl_;
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode ):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     handler_mode_(hdl_mode),
@@ -70,14 +70,14 @@ Ogre_TCP_Svc_Handler::Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MO
     }
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 Ogre_TCP_Svc_Handler::~Ogre_TCP_Svc_Handler()
 {
 
 }
 
 
-//³õÊ¼»¯º¯Êı,ÓÃÓÚAcceptµÄ¶Ë¿ÚµÄ´¦ÀíEvent Handle¹¹Ôì.
+//åˆå§‹åŒ–å‡½æ•°,ç”¨äºAcceptçš„ç«¯å£çš„å¤„ç†Event Handleæ„é€ .
 void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
@@ -92,7 +92,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     if_force_close_ = false;
     fp_judge_whole_frame_ = fp_judge_whole;
 
-    ////µ÷ÕûSocket ÎªO_NONBLOCK
+    ////è°ƒæ•´Socket ä¸ºO_NONBLOCK
     int ret = socket_peer_.sock_enable(O_NONBLOCK);
     socket_peer_.getpeername(&remote_address_);
     socket_peer_.getsockname(&local_address_);
@@ -109,13 +109,13 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
            );
 
     ++num_accept_peer_;
-    //Í³¼Æ
+    //ç»Ÿè®¡
 
-    //¼ì²é×î´óÁ´½ÓÊıÁ¿,REACTOR×Ô¼ºÆäÊµÓĞ¿ØÖÆ,µ«ÊÇÎÒÓÖÒª¿ØÖÆACCEPTÓÖÒª¿ØÖÆCONNECT.
-    //ËùÒÔÖ»ºÃ,Í·XX´ó, ÁíÍâÕâ¸öÊÂÇéÆäÊµ´ÓÀíÂÛÉÏÀ´½²,¼¸ºõ²»»á·¢Éú,
+    //æ£€æŸ¥æœ€å¤§é“¾æ¥æ•°é‡,REACTORè‡ªå·±å…¶å®æœ‰æ§åˆ¶,ä½†æ˜¯æˆ‘åˆè¦æ§åˆ¶ACCEPTåˆè¦æ§åˆ¶CONNECT.
+    //æ‰€ä»¥åªå¥½,å¤´XXå¤§, å¦å¤–è¿™ä¸ªäº‹æƒ…å…¶å®ä»ç†è®ºä¸Šæ¥è®²,å‡ ä¹ä¸ä¼šå‘ç”Ÿ,
     if (num_accept_peer_ < max_accept_svr_)
     {
-        //×¢²á¶ÁĞ´ÊÂ¼ş
+        //æ³¨å†Œè¯»å†™äº‹ä»¶
         ret = reactor()->register_handler(this, ZCE_Event_Handler::READ_MASK | ZCE_Event_Handler::WRITE_MASK);
 
         //
@@ -131,7 +131,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
 
         reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
     }
-    //Òª²âÊÔ¼ì²éÒ»ÏÂ,
+    //è¦æµ‹è¯•æ£€æŸ¥ä¸€ä¸‹,
     else
     {
         ZCE_LOG(RS_ERROR, "Great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u \n",
@@ -141,7 +141,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         return;
     }
 
-    //Èç¹ûÅäÖÃÁË³¬Ê±³öÀ´,NÃë±ØĞëÊÕµ½Ò»¸ö°ü
+    //å¦‚æœé…ç½®äº†è¶…æ—¶å‡ºæ¥,Nç§’å¿…é¡»æ”¶åˆ°ä¸€ä¸ªåŒ…
     if ( accept_timeout_ > 0 || receive_timeout_ > 0)
     {
         ZCE_Time_Value delay(0, 0);
@@ -150,7 +150,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
         delay.sec(accept_timeout_);
         interval.sec(receive_timeout_);
 
-        //Èç¹ûÅäÖÃÁË½ÓÊÕÊı¾İ³¬Ê±£¬ÄÇÃ´ÎŞÂÛÈçºÎÁ¬½Ó²¿·Ö¶¼ÓĞ³¬Ê±
+        //å¦‚æœé…ç½®äº†æ¥æ”¶æ•°æ®è¶…æ—¶ï¼Œé‚£ä¹ˆæ— è®ºå¦‚ä½•è¿æ¥éƒ¨åˆ†éƒ½æœ‰è¶…æ—¶
         if (accept_timeout_ <= 0)
         {
             delay.sec(receive_timeout_);
@@ -160,10 +160,10 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     }
 
     OGRE_PEER_ID peer_svr_info(remote_address_);
-    //·ÅÈëÁ¬½Ó´¦ÀíµÄMAP
+    //æ”¾å…¥è¿æ¥å¤„ç†çš„MAP
     ret = svr_peer_hdl_set_.add_services_peerinfo(peer_svr_info, this);
 
-    //ÔÚÕâ¶ù×ÔÉ±ÊÇ²»ÊÇÎ£ÏÕÁËÒ»µã
+    //åœ¨è¿™å„¿è‡ªæ€æ˜¯ä¸æ˜¯å±é™©äº†ä¸€ç‚¹
     if (ret != 0)
     {
         handle_close();
@@ -174,7 +174,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
 }
 
 
-//³õÊ¼»¯º¯Êı,ÓÃÓÚConnect³öÈ¥µÄPEER ¶ÔÓ¦Event Handle¹¹Ôì.
+//åˆå§‹åŒ–å‡½æ•°,ç”¨äºConnectå‡ºå»çš„PEER å¯¹åº”Event Handleæ„é€ .
 void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
                                                 const ZCE_Sockaddr_In &socketaddr,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
@@ -191,15 +191,15 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     if_force_close_ = false;
     fp_judge_whole_frame_ = fp_judge_whole;
 
-    //µ÷ÕûSocket ÎªO_NONBLOCK
+    //è°ƒæ•´Socket ä¸ºO_NONBLOCK
     int ret = socket_peer_.sock_enable(O_NONBLOCK);
     //
     socket_peer_.getsockname(&local_address_);
 
-    //×¢²áµ½
+    //æ³¨å†Œåˆ°
     ret = reactor()->register_handler(this, ZCE_Event_Handler::CONNECT_MASK);
 
-    //ÎÒ¼¸ºõÃ»ÓĞ¼û¹ıregister_handlerÊ§°Ü,
+    //æˆ‘å‡ ä¹æ²¡æœ‰è§è¿‡register_handlerå¤±è´¥,
     if (ret != 0)
     {
 
@@ -212,10 +212,10 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     }
 
     OGRE_PEER_ID peer_svr_info(remote_address_);
-    //·ÅÈëÁ¬½Ó´¦ÀíµÄMAP
+    //æ”¾å…¥è¿æ¥å¤„ç†çš„MAP
     ret = svr_peer_hdl_set_.add_services_peerinfo(peer_svr_info, this);
 
-    //ÔÚÕâ¶ù×ÔÉ±ÊÇ²»ÊÇÎ£ÏÕÁËÒ»µã
+    //åœ¨è¿™å„¿è‡ªæ€æ˜¯ä¸æ˜¯å±é™©äº†ä¸€ç‚¹
     if (ret != 0)
     {
         handle_close();
@@ -226,7 +226,7 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
 
     socklen_t opval = 32 * 1024;
     int opvallen = sizeof(socklen_t);
-    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
+    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
     socket_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
     socket_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
     int keep_alive = 1;
@@ -234,23 +234,23 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     socket_peer_.setsockopt(SOL_SOCKET, SO_KEEPALIVE, reinterpret_cast<void *>(&keep_alive), opvallen);
 
 #ifndef WIN32
-    //±ÜÃâDELAY·¢ËÍÕâÖÖÇé¿ö
+    //é¿å…DELAYå‘é€è¿™ç§æƒ…å†µ
     int NODELAY = 1;
     opvallen = sizeof(int);
     socket_peer_.setsockopt(SOL_TCP, TCP_NODELAY, reinterpret_cast<void *>(&NODELAY), opvallen);
 #endif
 }
 
-//È¡µÃ¾ä±ú
+//å–å¾—å¥æŸ„
 ZCE_HANDLE Ogre_TCP_Svc_Handler::get_handle(void) const
 {
     return (ZCE_HANDLE)socket_peer_.get_handle();
 }
 
-//¶ÁÈ¡,¶ÏÁ¬µÄÊÂ¼ş´¥·¢´¦Àíº¯Êı
+//è¯»å–,æ–­è¿çš„äº‹ä»¶è§¦å‘å¤„ç†å‡½æ•°
 int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
 {
-    //¶ÁÈ¡Êı¾İ
+    //è¯»å–æ•°æ®
     size_t szrecv;
 
     int ret = read_data_from_peer(szrecv);
@@ -261,7 +261,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
                ret,
                szrecv);
 
-    //Õâ¶ùÈÎºÎ´íÎó¶¼¹Ø±Õ,
+    //è¿™å„¿ä»»ä½•é”™è¯¯éƒ½å…³é—­,
     if (ret != 0)
     {
         return -1;
@@ -272,7 +272,7 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
     {
         unsigned int size_frame = 0;
         bool if_recv_whole = false;
-        //µ÷ÓÃÄ£¿é´úÂë
+        //è°ƒç”¨æ¨¡å—ä»£ç 
         ret = fp_judge_whole_frame_(rcv_buffer_->frame_data_,
                                     rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
                                     static_cast<unsigned int>(Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN),
@@ -288,17 +288,17 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
             return -1;
         }
 
-        //Èç¹ûÒÑ¾­ÊÕ¼¯ÁËÒ»¸öÊı¾İ
+        //å¦‚æœå·²ç»æ”¶é›†äº†ä¸€ä¸ªæ•°æ®
         if (if_recv_whole == true)
         {
-            //½«Êı¾İ·ÅÈë½ÓÊÕµÄ¹ÜµÀ,²»¼ì²â´íÎó,ÒòÎª´íÎó»á¼ÇÂ¼ÈÕÖ¾,¶øÇÒÓĞ´íÎó£¬Ò²ÎŞ·¨´¦Àí
+            //å°†æ•°æ®æ”¾å…¥æ¥æ”¶çš„ç®¡é“,ä¸æ£€æµ‹é”™è¯¯,å› ä¸ºé”™è¯¯ä¼šè®°å½•æ—¥å¿—,è€Œä¸”æœ‰é”™è¯¯ï¼Œä¹Ÿæ— æ³•å¤„ç†
             ZCE_LOGMSG_DBG(RS_DEBUG, "Read a whole data [%s|%u] recv buffer len:%u, Frame len:%u.\n",
                            remote_address_.get_host_addr(),
                            remote_address_.get_port_number(),
                            rcv_buffer_->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD,
                            size_frame);
 
-            //¼ÇÂ¼½ÓÊÜÁË¶àÉÙ´ÎÊı¾İ
+            //è®°å½•æ¥å—äº†å¤šå°‘æ¬¡æ•°æ®
             receive_times_++;
 
             if (receive_times_ == 0)
@@ -320,15 +320,15 @@ int Ogre_TCP_Svc_Handler::handle_input(ZCE_HANDLE)
 }
 
 
-//Ğ´ÊÂ¼ş´¥·¢,Á´½Ó³É¹¦µÄÊÂ¼ş´¥·¢´¦Àíº¯Êı
+//å†™äº‹ä»¶è§¦å‘,é“¾æ¥æˆåŠŸçš„äº‹ä»¶è§¦å‘å¤„ç†å‡½æ•°
 int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
 {
 
-    //Èç¹ûNON BLOCK Connect³É¹¦,Ò²»áµ÷ÓÃhandle_output
+    //å¦‚æœNON BLOCK ConnectæˆåŠŸ,ä¹Ÿä¼šè°ƒç”¨handle_output
     if ( PEER_STATUS_NOACTIVE == peer_status_)
     {
 
-        //´¦ÀíÁ¬½ÓºóµÄÊÂÒË
+        //å¤„ç†è¿æ¥åçš„äº‹å®œ
         process_connect_register();
         return 0;
     }
@@ -336,11 +336,11 @@ int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
     //
     int ret =  write_all_aata_to_peer();
 
-    //³öÏÖ´íÎó,
+    //å‡ºç°é”™è¯¯,
     if (ret != 0)
     {
-        //ÎªÊ²Ã´ÎÒ²»´¦Àí´íÎóÄØ,²»return -1,ÒòÎªÈç¹û´íÎó»á¹Ø±ÕSocket,handle_input½«±»µ÷ÓÃ,Õâ¶ù²»ÖØ¸´´¦Àí
-        //Èç¹ûÊÇÖĞ¶ÏµÈ´íÎó,³ÌĞò¿ÉÒÔ¼ÌĞøµÄ.
+        //ä¸ºä»€ä¹ˆæˆ‘ä¸å¤„ç†é”™è¯¯å‘¢,ä¸return -1,å› ä¸ºå¦‚æœé”™è¯¯ä¼šå…³é—­Socket,handle_inputå°†è¢«è°ƒç”¨,è¿™å„¿ä¸é‡å¤å¤„ç†
+        //å¦‚æœæ˜¯ä¸­æ–­ç­‰é”™è¯¯,ç¨‹åºå¯ä»¥ç»§ç»­çš„.
         return -1;
     }
 
@@ -348,28 +348,28 @@ int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
 }
 
 
-//¶¨Ê±´¥·¢
+//å®šæ—¶è§¦å‘
 int Ogre_TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &/*time*/, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
 
-    //Á¬½ÓÉÏ3ÃëÃ»ÓĞ·´Ó¦
+    //è¿æ¥ä¸Š3ç§’æ²¡æœ‰ååº”
     if (TCPCTRL_TIME_ID[0] == timeid)
     {
-        //Èç¹ûÓĞÊÜµ½Êı¾İ£¬ÄÇÃ´Ê²Ã´Ò²²»×ö
+        //å¦‚æœæœ‰å—åˆ°æ•°æ®ï¼Œé‚£ä¹ˆä»€ä¹ˆä¹Ÿä¸åš
         if ( receive_times_ > 0)
         {
             receive_times_ = 0;
         }
-        //Èç¹ûÃ»ÓĞÊÕµ½Êı¾İ,ÌøÂ¥×ÔÉ±
+        //å¦‚æœæ²¡æœ‰æ”¶åˆ°æ•°æ®,è·³æ¥¼è‡ªæ€
         else
         {
             ZCE_LOG(RS_ERROR, "Timeout event,[%s|%u] connect or Recive expire,want to close handle. recieve_counter=%u\n",
                     remote_address_.get_host_addr(),
                     remote_address_.get_port_number(),
                     receive_times_);
-            //Ô­À´ÊÇÔÚÕâ¸öµØ·½reutrn -1,ÏÖÔÚ·¢ÏÖreturn -1ÊÇÒ»¸öºÜÏûºÄµÄÊÂÇé,(¶¨Ê±Æ÷µÄÈ¡Ïû»áÊ¹ÓÃÖ¸ÕëµÄ·½Ê½,»á±éÀúËùÓĞµÄÊı¾İ)
-            //ËùÒÔÔÚÕâ¶ùÖ±½Óµ÷ÓÃhandle_close
+            //åŸæ¥æ˜¯åœ¨è¿™ä¸ªåœ°æ–¹reutrn -1,ç°åœ¨å‘ç°return -1æ˜¯ä¸€ä¸ªå¾ˆæ¶ˆè€—çš„äº‹æƒ…,(å®šæ—¶å™¨çš„å–æ¶ˆä¼šä½¿ç”¨æŒ‡é’ˆçš„æ–¹å¼,ä¼šéå†æ‰€æœ‰çš„æ•°æ®)
+            //æ‰€ä»¥åœ¨è¿™å„¿ç›´æ¥è°ƒç”¨handle_close
             handle_close();
             return 0;
         }
@@ -382,64 +382,64 @@ int Ogre_TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &/*time*/, const vo
 }
 
 
-//PEER Event Handler¹Ø±ÕµÄ´¦Àí
+//PEER Event Handlerå…³é—­çš„å¤„ç†
 int Ogre_TCP_Svc_Handler::handle_close ()
 {
-    //²»ÒªÊ¹ÓÃcancel_timer(this),Æä·±Ëö,¶øÇÒÂı,ºÃÒªnew,¶øÇÒÓĞÒ»¸ö²»ÖªÃûµÄËÀ»ú
+    //ä¸è¦ä½¿ç”¨cancel_timer(this),å…¶ç¹ç,è€Œä¸”æ…¢,å¥½è¦new,è€Œä¸”æœ‰ä¸€ä¸ªä¸çŸ¥åçš„æ­»æœº
 
-    //È¡Ïû´ËEvent HandlerÏà¹ØµÄ¶¨Ê±Æ÷
+    //å–æ¶ˆæ­¤Event Handlerç›¸å…³çš„å®šæ—¶å™¨
     if ( -1 != timeout_time_id_  )
     {
         timer_queue()->cancel_timer(timeout_time_id_);
         timeout_time_id_ = -1;
     }
 
-    //È¡ÏûËùÓĞµÄMASK,×îºó½×¶Î,±ÜÃâµ÷ÓÃhandle_close,Ö»µ÷ÓÃÒ»´Î
+    //å–æ¶ˆæ‰€æœ‰çš„MASK,æœ€åé˜¶æ®µ,é¿å…è°ƒç”¨handle_close,åªè°ƒç”¨ä¸€æ¬¡
     reactor()->remove_handler(this, false);
 
-    //¹Ø±Õ¶Ë¿Ú,
+    //å…³é—­ç«¯å£,
     socket_peer_.close();
 
-    //ÊÍ·Å½ÓÊÕÊı¾İ»º³åÇø
+    //é‡Šæ”¾æ¥æ”¶æ•°æ®ç¼“å†²åŒº
     if (rcv_buffer_)
     {
         Ogre_Buffer_Storage::instance()->free_byte_buffer(rcv_buffer_);
         rcv_buffer_ = NULL;
     }
 
-    //´¦Àí·¢ËÍÊı¾İ»º³åÇø
+    //å¤„ç†å‘é€æ•°æ®ç¼“å†²åŒº
     size_t sz_of_deque = snd_buffer_deque_.size();
 
     for (size_t i = 0; i < sz_of_deque; i++)
     {
-        //´¦Àí·¢ËÍ´íÎó¶ÓÁĞ,Í¬Ê±½øĞĞ»ØÊÕ
+        //å¤„ç†å‘é€é”™è¯¯é˜Ÿåˆ—,åŒæ—¶è¿›è¡Œå›æ”¶
         process_senderror(snd_buffer_deque_[i]);
         snd_buffer_deque_[i] = NULL;
     }
 
     snd_buffer_deque_.clear();
 
-    //Èç¹û·şÎñÊÇ¼¤»î×´Ì¬£¬»òÕßÊÇÖ÷¶¯Á¬½ÓµÄ·şÎñ.
+    //å¦‚æœæœåŠ¡æ˜¯æ¿€æ´»çŠ¶æ€ï¼Œæˆ–è€…æ˜¯ä¸»åŠ¨è¿æ¥çš„æœåŠ¡.
     if (peer_status_ == PEER_STATUS_ACTIVE || handler_mode_ == HANDLER_MODE_CONNECT)
     {
         OGRE_PEER_ID peer_svr_info(remote_address_);
-        //×¢ÏúÕâĞ©ĞÅÏ¢
+        //æ³¨é”€è¿™äº›ä¿¡æ¯
         svr_peer_hdl_set_.del_services_peerinfo(peer_svr_info);
 
     }
 
     peer_status_ = PEER_STATUS_NOACTIVE;
 
-    //¸ù¾İ²»Í¬µÄÀàĞÍ¼ÆÊı,
+    //æ ¹æ®ä¸åŒçš„ç±»å‹è®¡æ•°,
 
-    //²»½øĞĞÖ÷¶¯ÖØĞÂÁ¬½Ó,Èç¹ûÓĞÒ»¸öĞÂµÄÊı¾İÒª·¢ËÍÊ±Ö÷¶¯ÖØĞÂÁ¬½Ó
+    //ä¸è¿›è¡Œä¸»åŠ¨é‡æ–°è¿æ¥,å¦‚æœæœ‰ä¸€ä¸ªæ–°çš„æ•°æ®è¦å‘é€æ—¶ä¸»åŠ¨é‡æ–°è¿æ¥
     if (handler_mode_ == HANDLER_MODE_CONNECT)
     {
         ZCE_LOG(RS_ERROR, "Close event,[%s|%u] connect peer socket close .\n",
                 remote_address_.get_host_addr(),
                 remote_address_.get_port_number());
 
-        //½«Ö¸Õë¹é»¹µ½³Ø×ÓÖĞ¼äÈ¥
+        //å°†æŒ‡é’ˆå½’è¿˜åˆ°æ± å­ä¸­é—´å»
         pool_of_cnthdl_.push_back(this);
         --num_connect_peer_ ;
     }
@@ -449,7 +449,7 @@ int Ogre_TCP_Svc_Handler::handle_close ()
                 remote_address_.get_host_addr(),
                 remote_address_.get_port_number());
 
-        //½«Ö¸Õë¹é»¹µ½³Ø×ÓÖĞ¼äÈ¥
+        //å°†æŒ‡é’ˆå½’è¿˜åˆ°æ± å­ä¸­é—´å»
         pool_of_acpthdl_.push_back(this);
         --num_accept_peer_;
     }
@@ -457,34 +457,34 @@ int Ogre_TCP_Svc_Handler::handle_close ()
     return 0;
 }
 
-//·µ»Ø¶Ë¿ÚµÄ×´Ì¬,
+//è¿”å›ç«¯å£çš„çŠ¶æ€,
 Ogre_TCP_Svc_Handler::PEER_STATUS  Ogre_TCP_Svc_Handler::get_peer_status()
 {
     return peer_status_;
 }
 
 
-//´¦Àí×¢²á·¢ËÍ
+//å¤„ç†æ³¨å†Œå‘é€
 int Ogre_TCP_Svc_Handler::process_connect_register()
 {
 
     peer_status_ = PEER_STATUS_ACTIVE;
 
-    //ÔÙÕÛÌÚÁËÎÒÖÁÉÙ3ÌìÒÔºó£¬ÖÕÓÚ·¢ÏÖÁËEPOLL·´¸´´¥·¢Ğ´ÊÂ¼şµÄÔ­ÒòÊÇÃ»ÓĞÈ¡ÏûCONNECT_MASK
+    //å†æŠ˜è…¾äº†æˆ‘è‡³å°‘3å¤©ä»¥åï¼Œç»ˆäºå‘ç°äº†EPOLLåå¤è§¦å‘å†™äº‹ä»¶çš„åŸå› æ˜¯æ²¡æœ‰å–æ¶ˆCONNECT_MASK
     reactor()->cancel_wakeup(this, ZCE_Event_Handler::CONNECT_MASK);
 
-    //Èç¹ûÓĞÊı¾İÒª·¢ËÍ
+    //å¦‚æœæœ‰æ•°æ®è¦å‘é€
     if (snd_buffer_deque_.empty() != true )
     {
         reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK | ZCE_Event_Handler::READ_MASK);
     }
-    //Ö»¶ÁÈ¡
+    //åªè¯»å–
     else
     {
         reactor()->schedule_wakeup(this, ZCE_Event_Handler::READ_MASK);
     }
 
-    //´òÓ¡ĞÅÏ¢
+    //æ‰“å°ä¿¡æ¯
     const size_t TMP_ADDR_LEN = 32;
     char local_addr[TMP_ADDR_LEN], remote_addr[TMP_ADDR_LEN];
     strncpy(local_addr, local_address_.get_host_addr(), TMP_ADDR_LEN);
@@ -499,14 +499,14 @@ int Ogre_TCP_Svc_Handler::process_connect_register()
 }
 
 
-//´ÓPEER¶ÁÈ¡Êı¾İ
+//ä»PEERè¯»å–æ•°æ®
 int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 {
     szrevc = 0;
 
     ssize_t recvret = 0;
 
-    //ÉêÇë·ÖÅäÒ»¸öÄÚ´æ
+    //ç”³è¯·åˆ†é…ä¸€ä¸ªå†…å­˜
     if (rcv_buffer_ == NULL)
     {
         rcv_buffer_ = Ogre_Buffer_Storage::instance()->allocate_byte_buffer();
@@ -526,7 +526,7 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
                                     Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN - rcv_buffer_->ogre_frame_len_,
                                     0);
     }
-    //ÔÚ×î´óµÄ°üÄÚ¶¼Ã»ÓĞ½ÓÊÜÍêÕûÊı¾İ
+    //åœ¨æœ€å¤§çš„åŒ…å†…éƒ½æ²¡æœ‰æ¥å—å®Œæ•´æ•°æ®
     else
     {
         ZCE_LOG(RS_ERROR, "Read error[%s|%u],Buffer size is not enought or this is a error (attack) data.\n",
@@ -536,21 +536,21 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
-    //±íÊ¾±»¹Ø±Õ»òÕß³öÏÖ´íÎó
+    //è¡¨ç¤ºè¢«å…³é—­æˆ–è€…å‡ºç°é”™è¯¯
     if (recvret < 0)
     {
-        //ÎÒÖ»Ê¹ÓÃEWOULDBLOCK µ«ÊÇÒª×¢ÒâEAGAIN, ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EAGAIN
+        //æˆ‘åªä½¿ç”¨EWOULDBLOCK ä½†æ˜¯è¦æ³¨æ„EAGAIN, ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EAGAIN
         if (ZCE_LIB::last_error() != EWOULDBLOCK )
         {
             szrevc = 0;
 
-            //Óöµ½ÖĞ¶Ï,µÈ´ıÖØÈë
+            //é‡åˆ°ä¸­æ–­,ç­‰å¾…é‡å…¥
             if (ZCE_LIB::last_error() == EINVAL)
             {
                 return 0;
             }
 
-            //¼ÇÂ¼´íÎó,·µ»Ø´íÎó
+            //è®°å½•é”™è¯¯,è¿”å›é”™è¯¯
             ZCE_LOG(RS_ERROR, "Read error,[%s|%u] receive data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
                     remote_address_.get_host_addr(),
                     remote_address_.get_port_number(),
@@ -561,20 +561,20 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
 
-        //Èç¹û´íÎóÊÇ×èÈû,Ê²Ã´¶¼²»×÷
+        //å¦‚æœé”™è¯¯æ˜¯é˜»å¡,ä»€ä¹ˆéƒ½ä¸ä½œ
         return 0;
     }
 
-    //Socket±»¹Ø±Õ£¬Ò²·µ»Ø´íÎó±êÊ¾
+    //Socketè¢«å…³é—­ï¼Œä¹Ÿè¿”å›é”™è¯¯æ ‡ç¤º
     if (recvret == 0)
     {
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
-    //´ËÊ±RETÓ¦¸Ã> 0
+    //æ­¤æ—¶RETåº”è¯¥> 0
     szrevc = recvret;
 
-    //½ÓÊÕÁËN¸ö×Ö·û
+    //æ¥æ”¶äº†Nä¸ªå­—ç¬¦
     rcv_buffer_->ogre_frame_len_ += static_cast<unsigned int>(szrevc) ;
     recieve_bytes_ +=  static_cast<size_t>(szrevc);
 
@@ -583,15 +583,15 @@ int Ogre_TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 }
 
 
-//ÏòPEERĞ´Êı¾İ
+//å‘PEERå†™æ•°æ®
 int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
 {
     if_full = false;
     szsend = 0;
 
-    //ÎªÊ²Ã´¼ÓÉÏÕâ¶ÎÄØ£¬Ô­ÒòÊÇÓĞĞ©Ê±ºò×¢ÏúĞ´±êÖ¾Î»»áÊ§°Ü£¬Õâ¸öÎªÊ²Ã´ºÜÄÑºâÁ¿
+    //ä¸ºä»€ä¹ˆåŠ ä¸Šè¿™æ®µå‘¢ï¼ŒåŸå› æ˜¯æœ‰äº›æ—¶å€™æ³¨é”€å†™æ ‡å¿—ä½ä¼šå¤±è´¥ï¼Œè¿™ä¸ªä¸ºä»€ä¹ˆå¾ˆéš¾è¡¡é‡
     //#if defined DEBUG || defined _DEBUG
-    //Èç¹ûÃ»ÓĞÊı¾İÒª·¢ËÍ, µ½Õâ¶ùÓ¦¸ÃÊÇÓĞÎÊÌâ
+    //å¦‚æœæ²¡æœ‰æ•°æ®è¦å‘é€, åˆ°è¿™å„¿åº”è¯¥æ˜¯æœ‰é—®é¢˜
     if (snd_buffer_deque_.empty() == true)
     {
         ZCE_LOG(RS_ERROR, "Write error,[%s|%u] goto handle_output|write_data_to_peer ,but not data to send. Please check you code.\n",
@@ -604,7 +604,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
 
     //#endif //#if defined DEBUG || defined _DEBUG
 
-    //Ç°ÃæÓĞ¼ì²é,²»»áÔ½½ç
+    //å‰é¢æœ‰æ£€æŸ¥,ä¸ä¼šè¶Šç•Œ
     Ogre4a_App_Frame *sndbuffer = snd_buffer_deque_[0];
 
     ssize_t sendret = socket_peer_.send(sndbuffer->frame_data_ + send_bytes_  ,
@@ -615,7 +615,7 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
         int last_error = ZCE_LIB::last_error();
 
         szsend = 0;
-        //ºóÃæÓ¦¸Ã»á´òÓ¡·½µÄIP£¬Õâ¶ù²»ÖØ¸´
+        //åé¢åº”è¯¥ä¼šæ‰“å°æ–¹çš„IPï¼Œè¿™å„¿ä¸é‡å¤
         ZCE_LOG(RS_ERROR, "Write error[%s|%u],send data error. peer:%d errno=%u|%s \n",
                 remote_address_.get_host_addr(),
                 remote_address_.get_port_number(),
@@ -623,21 +623,21 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
                 last_error,
                 strerror(last_error));
 
-        //EINVAL:Óöµ½ÖĞ¶Ï,µÈ´ıÖØÈëµÄÅĞ¶ÏÊÇif (ZCE_LIB::last_error() == EINVAL),µ«Õâ¶ù²»×ĞÏ¸¼ì²é´íÎó,Ò»ÊÓÍ¬ÈÊ,ÉÏ²ã»ØºöÊÓËùÓĞ´íÎó,Èç¹û´íÎóÖÂÃü,»¹»áÓĞhandle_input·´Éä
-        //EWOULDBLOCK:ÎÒÖ»Ê¹ÓÃEWOULDBLOCK µ«ÊÇÒª×¢ÒâEAGAIN ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EAGAIN
+        //EINVAL:é‡åˆ°ä¸­æ–­,ç­‰å¾…é‡å…¥çš„åˆ¤æ–­æ˜¯if (ZCE_LIB::last_error() == EINVAL),ä½†è¿™å„¿ä¸ä»”ç»†æ£€æŸ¥é”™è¯¯,ä¸€è§†åŒä»,ä¸Šå±‚å›å¿½è§†æ‰€æœ‰é”™è¯¯,å¦‚æœé”™è¯¯è‡´å‘½,è¿˜ä¼šæœ‰handle_inputåå°„
+        //EWOULDBLOCK:æˆ‘åªä½¿ç”¨EWOULDBLOCK ä½†æ˜¯è¦æ³¨æ„EAGAIN ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EAGAIN
         if (  EWOULDBLOCK  != last_error && EINVAL != last_error )
         {
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
 
-        //Èç¹û´íÎóÊÇ×èÈû,Ê²Ã´¶¼²»×÷
+        //å¦‚æœé”™è¯¯æ˜¯é˜»å¡,ä»€ä¹ˆéƒ½ä¸ä½œ
         return 0;
     }
 
     szsend  = sendret;
     send_bytes_ += static_cast<size_t>(szsend);
 
-    //Èç¹û½ÓÊÜµÄÊı¾İ
+    //å¦‚æœæ¥å—çš„æ•°æ®
     if (sndbuffer->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD == send_bytes_ )
     {
         if_full = true;
@@ -649,57 +649,57 @@ int Ogre_TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &if_full)
 }
 
 
-//¸øÁ¦µÄ·¢ËÍËùÓĞÒª·¢ËÍµÄÊı¾İ£¬¾¡×Ô¼º×î´óµÄÅ¬Á¦
+//ç»™åŠ›çš„å‘é€æ‰€æœ‰è¦å‘é€çš„æ•°æ®ï¼Œå°½è‡ªå·±æœ€å¤§çš„åŠªåŠ›
 int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
 {
     int ret = 0;
 
-    //ÔÚ¿ÉÒÔ·¢ËÍµÄÊÇºÜÒ»´Î½«ËùÓĞµÄÊı¾İÈ«²¿·¢ËÍÍê³É,
+    //åœ¨å¯ä»¥å‘é€çš„æ˜¯å¾ˆä¸€æ¬¡å°†æ‰€æœ‰çš„æ•°æ®å…¨éƒ¨å‘é€å®Œæˆ,
     for (;;)
     {
-        //·¢ËÍÒ»¸öÊı¾İ°ü
+        //å‘é€ä¸€ä¸ªæ•°æ®åŒ…
         size_t szsend ;
         bool   bfull = false;
         int ret =  write_data_to_peer(szsend, bfull);
 
-        //³öÏÖ´íÎó,
+        //å‡ºç°é”™è¯¯,
         if (ret != 0)
         {
             return ret;
         }
 
-        //Èç¹ûÊı¾İ±¨ÒÑ¾­ÍêÕû·¢ËÍ
+        //å¦‚æœæ•°æ®æŠ¥å·²ç»å®Œæ•´å‘é€
         if ( true == bfull )
         {
             Ogre_Buffer_Storage::instance()->free_byte_buffer(snd_buffer_deque_[0]);
             snd_buffer_deque_.pop_front();
         }
-        //Èç¹ûÃ»ÓĞÈ«²¿·¢ËÍ³öÈ¥£¬µÈ´ıÏÂÒ»´ÎĞ´Ê±¼äµÄ´¥·¢
+        //å¦‚æœæ²¡æœ‰å…¨éƒ¨å‘é€å‡ºå»ï¼Œç­‰å¾…ä¸‹ä¸€æ¬¡å†™æ—¶é—´çš„è§¦å‘
         else
         {
             break;
         }
 
-        //Èç¹ûÒÑ¾­Ã»ÓĞÊı¾İ¿ÉÒÔ·¢ËÍÁË
+        //å¦‚æœå·²ç»æ²¡æœ‰æ•°æ®å¯ä»¥å‘é€äº†
         if (snd_buffer_deque_.size() == 0)
         {
             break;
         }
     }
 
-    //È¡µÃµ±Ç°µÄMASKÖµ
+    //å–å¾—å½“å‰çš„MASKå€¼
     int handle_mask = get_mask();
 
-    //Èç¹û¶ÓÁĞÖĞÃ»ÓĞ¿ÉÒÔĞ´µÄÊı¾İ
+    //å¦‚æœé˜Ÿåˆ—ä¸­æ²¡æœ‰å¯ä»¥å†™çš„æ•°æ®
     if (snd_buffer_deque_.size() == 0)
     {
-        //Èç¹ûÓĞĞ´±êÖ¾£¬È¡ÏûÖ®
+        //å¦‚æœæœ‰å†™æ ‡å¿—ï¼Œå–æ¶ˆä¹‹
         if ( handle_mask & ZCE_Event_Handler::WRITE_MASK )
         {
-            //È¡Ïû¿ÉĞ´µÄMASKÖµ,
+            //å–æ¶ˆå¯å†™çš„MASKå€¼,
             ret = reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
-            //return -1±íÊ¾´íÎó£¬ÕıÈ··µ»ØµÄÊÇold maskÖµ
+            //return -1è¡¨ç¤ºé”™è¯¯ï¼Œæ­£ç¡®è¿”å›çš„æ˜¯old maskå€¼
             if ( -1  ==  ret )
             {
                 int last_err = ZCE_LIB::last_error();
@@ -707,31 +707,31 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
                         ret,
                         last_err,
                         strerror(last_err));
-                //ÈÏÎªÕâÖÖÇé¿öÊÇ³öÏÖÁËÎÊÌâ£¬¹Ø±ÕÖ®
+                //è®¤ä¸ºè¿™ç§æƒ…å†µæ˜¯å‡ºç°äº†é—®é¢˜ï¼Œå…³é—­ä¹‹
                 return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
             }
         }
 
-        //Èç¹û½«Òª¹Ø±Õ
+        //å¦‚æœå°†è¦å…³é—­
         if (true == if_force_close_ )
         {
             ZCE_LOG(RS_INFO, "Send to peer handle[%u] IP|Port :[%s|%u] complete ,want to close peer on account of frame option.\n",
                     socket_peer_.get_handle(),
                     remote_address_.get_host_addr(),
                     remote_address_.get_port_number());
-            //ÈÃÉÏ²ãÈ¥¹Ø±Õ£¬ÒªĞ¡ĞÄ£¬Ğ¡ĞÄ£¬ºÜÂé·³£¬ºÜ¶àÉúÃüÖÜÆÚµÄÎÊÌâ,ÒòÎªÓĞÁ½¸öµØ·½µ÷ÓÃÕâ¸öº¯Êı
+            //è®©ä¸Šå±‚å»å…³é—­ï¼Œè¦å°å¿ƒï¼Œå°å¿ƒï¼Œå¾ˆéº»çƒ¦ï¼Œå¾ˆå¤šç”Ÿå‘½å‘¨æœŸçš„é—®é¢˜,å› ä¸ºæœ‰ä¸¤ä¸ªåœ°æ–¹è°ƒç”¨è¿™ä¸ªå‡½æ•°
             return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
         }
     }
-    //Èç¹ıÃ»ÓĞ·¢ËÍ³É¹¦£¬È«²¿·¢ËÍ³öÈ¥£¬Ôò×¼±¸½øĞĞĞ´ÊÂ¼ş
+    //å¦‚è¿‡æ²¡æœ‰å‘é€æˆåŠŸï¼Œå…¨éƒ¨å‘é€å‡ºå»ï¼Œåˆ™å‡†å¤‡è¿›è¡Œå†™äº‹ä»¶
     else
     {
-        //Ã»ÓĞWRITE MASK£¬×¼±¸Ôö¼ÓĞ´±êÖ¾
+        //æ²¡æœ‰WRITE MASKï¼Œå‡†å¤‡å¢åŠ å†™æ ‡å¿—
         if (!(handle_mask & ZCE_Event_Handler::WRITE_MASK))
         {
             ret = reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
-            //schedule_wakeup ·µ»Øreturn -1±íÊ¾´íÎó£¬ÔÙ´ÎBS ACEÒ»´Î£¬ÕıÈ··µ»ØµÄÊÇold maskÖµ
+            //schedule_wakeup è¿”å›return -1è¡¨ç¤ºé”™è¯¯ï¼Œå†æ¬¡BS ACEä¸€æ¬¡ï¼Œæ­£ç¡®è¿”å›çš„æ˜¯old maskå€¼
             if ( -1 == ret)
             {
                 int last_err = ZCE_LIB::last_error();
@@ -739,7 +739,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
                         ret,
                         last_err,
                         strerror(last_err));
-                //ÈÏÎªÕâÖÖÇé¿öÊÇ³öÏÖÁËÎÊÌâ£¬¹Ø±ÕÖ®
+                //è®¤ä¸ºè¿™ç§æƒ…å†µæ˜¯å‡ºç°äº†é—®é¢˜ï¼Œå…³é—­ä¹‹
                 return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
             }
         }
@@ -748,16 +748,16 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
     return 0;
 }
 
-//´¦Àí·¢ËÍ´íÎó.
+//å¤„ç†å‘é€é”™è¯¯.
 int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
 {
     int ret = 0;
 
-    //Èç¹ûÃüÁîÖ¡Ã÷È·±íÊ¾Òª½øĞĞ´íÎóÖØÊÔ,
+    //å¦‚æœå‘½ä»¤å¸§æ˜ç¡®è¡¨ç¤ºè¦è¿›è¡Œé”™è¯¯é‡è¯•,
     if (inner_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_SEND_FAIL_RECORD  )
     {
-        ////Ô­À´Ò»Ö±¿¼ÂÇÊ¹ÓÃ´íÎó¹ÜµÀ½øĞĞÖØĞÂ·¢ËÍµÈ´¦Àí£¬ÏÖÔÚÏëÏë£¬ÊµÔÚ¶àÓà£¬ËãÁË
-        //// Èç¹û´íÎó¹ÜµÀ²»Îª¿Õ
+        ////åŸæ¥ä¸€ç›´è€ƒè™‘ä½¿ç”¨é”™è¯¯ç®¡é“è¿›è¡Œé‡æ–°å‘é€ç­‰å¤„ç†ï¼Œç°åœ¨æƒ³æƒ³ï¼Œå®åœ¨å¤šä½™ï¼Œç®—äº†
+        //// å¦‚æœé”™è¯¯ç®¡é“ä¸ä¸ºç©º
         //if(  Soar_MMAP_BusPipe::instance()->IsExistZergPipe(Soar_MMAP_BusPipe::ERROR_PIPE_ID) == true)
         //{
         //}
@@ -769,14 +769,14 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
                 peer_status_
                );
     }
-    //Èç¹û·¢ËÍÃüÁîÃ÷È·ÒªÍ¨ÖªºóÃæµÄ·şÎñ,ºÍRETRY»¥³â
+    //å¦‚æœå‘é€å‘½ä»¤æ˜ç¡®è¦é€šçŸ¥åé¢çš„æœåŠ¡,å’ŒRETRYäº’æ–¥
     else if (inner_frame->ogre_frame_option_  & Ogre4a_App_Frame::OGREDESC_SNDPRC_NOTIFY_APP)
     {
 
-        //±êÊ¾Õâ¸öÖ¡ÊÇ·¢ËÍ´íÎó,»Ø½»¸øºóÃæµÄÓ¦ÓÃ,
+        //æ ‡ç¤ºè¿™ä¸ªå¸§æ˜¯å‘é€é”™è¯¯,å›äº¤ç»™åé¢çš„åº”ç”¨,
         inner_frame->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_SEND_ERROR;
 
-        //ÈÕÖ¾ÔÚº¯ÊıÖĞÓĞÊä³ö,Õâ¶ùÂÔ.
+        //æ—¥å¿—åœ¨å‡½æ•°ä¸­æœ‰è¾“å‡º,è¿™å„¿ç•¥.
         ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
                                                            reinterpret_cast<const ZCE_LIB::dequechunk_node *>(inner_frame));
 
@@ -786,7 +786,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
         }
     }
 
-    //¹é»¹µ½POOLÖĞ¼ä¡£
+    //å½’è¿˜åˆ°POOLä¸­é—´ã€‚
     Ogre_Buffer_Storage::instance()->free_byte_buffer(inner_frame);
 
     return 0;
@@ -806,7 +806,7 @@ int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config *config)
     error_try_num_ = config->ogre_cfg_data_.retry_error_;
 
 
-    //×Ô¶¯Á´½Ó²¿·Ö¶ÁÈ¡ÅäÖÃ
+    //è‡ªåŠ¨é“¾æ¥éƒ¨åˆ†è¯»å–é…ç½®
     ret = zerg_auto_connect_.get_config(config);
     if (ret != 0)
     {
@@ -817,18 +817,18 @@ int Ogre_TCP_Svc_Handler::get_config(const Ogre_Server_Config *config)
 }
 
 
-//¸ù¾İÅäÖÃ²ÎÊı³õÊ¼»¯¾²Ì¬Êı¾İ
-//Ò»Ğ©²ÎÊı´ÓÅäÖÃÀà¶ÁÈ¡,±ÜÃâºóÃæµÄ²Ù×÷»¹Òª·ÃÎÊÅäÖÃÀà
+//æ ¹æ®é…ç½®å‚æ•°åˆå§‹åŒ–é™æ€æ•°æ®
+//ä¸€äº›å‚æ•°ä»é…ç½®ç±»è¯»å–,é¿å…åé¢çš„æ“ä½œè¿˜è¦è®¿é—®é…ç½®ç±»
 int Ogre_TCP_Svc_Handler::init_all_static_data()
 {
     int ret = 0;
 
-    //¶¼ÉèÖÃÒ»¸ö×îĞ¡Öµ
+    //éƒ½è®¾ç½®ä¸€ä¸ªæœ€å°å€¼
     max_accept_svr_ += 8;
     max_connect_svr_ += 8;
     ZCE_LOG(RS_INFO, "MaxAcceptSvr:%u MaxConnectSvr:%u.\n", max_accept_svr_, max_connect_svr_);
 
-    //ÎªCONNECTµÄHDLÔ¤ÏÈ·ÖÅäÄÚ´æ£¬³ÉÎªÒ»¸ö³Ø×Ó
+    //ä¸ºCONNECTçš„HDLé¢„å…ˆåˆ†é…å†…å­˜ï¼Œæˆä¸ºä¸€ä¸ªæ± å­
     ZCE_LOG(RS_INFO, "Connet Hanlder:size of Ogre_TCP_Svc_Handler [%u],one connect handler have deqeue length [%u],number of connect handler [%u]."
             "About need  memory [%u] bytes.\n",
             sizeof(Ogre_TCP_Svc_Handler),
@@ -844,7 +844,7 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
         pool_of_cnthdl_.push_back(p_handler);
     }
 
-    //ÎªACCEPTµÄHDLÔ¤ÏÈ·ÖÅäÄÚ´æ£¬³ÉÎªÒ»¸ö³Ø×Ó
+    //ä¸ºACCEPTçš„HDLé¢„å…ˆåˆ†é…å†…å­˜ï¼Œæˆä¸ºä¸€ä¸ªæ± å­
     ZCE_LOG(RS_INFO, "Accept Hanlder:size of Ogre_TCP_Svc_Handler [%u],one accept handler have deqeue length [%u],number of accept handler [%u]."
             "About need  memory [%u] bytes.\n",
             sizeof(Ogre_TCP_Svc_Handler),
@@ -860,10 +860,10 @@ int Ogre_TCP_Svc_Handler::init_all_static_data()
         pool_of_acpthdl_.push_back(p_handler);
     }
 
-    //³õÊ¼»¯ËùÓĞµÄ¶Ë¿Ú¶ÔÓ¦±í,
+    //åˆå§‹åŒ–æ‰€æœ‰çš„ç«¯å£å¯¹åº”è¡¨,
     svr_peer_hdl_set_.init_services_peerinfo(max_accept_svr_ + max_connect_svr_ + 64);
 
-    //Á¬½ÓËùÓĞµÄSERVER,Èç¹ûÓĞÑÏÖØ´íÎóÍË³ö
+    //è¿æ¥æ‰€æœ‰çš„SERVER,å¦‚æœæœ‰ä¸¥é‡é”™è¯¯é€€å‡º
     size_t num_vaild = 0, num_succ = 0, num_fail;
     ret = zerg_auto_connect_.connect_all_server(num_vaild, num_succ, num_fail);
     ZCE_LOG(RS_INFO, "Have %u server to auto connect ,success %u , fail %u,ret =%d.\n",
@@ -885,8 +885,8 @@ int Ogre_TCP_Svc_Handler::unInit_all_static_data()
 }
 
 
-//´Ó³Ø×ÓÀïÃæµÃµ½Ò»¸öHandler¸ø´ó¼ÒÊ¹ÓÃ
-//ConnectµÄ¶Ë¿ÚÓ¦¸ÃÓÀÔ¶²»·¢ÉúÈ¡²»µ½HanlerµÄÊÂÇé
+//ä»æ± å­é‡Œé¢å¾—åˆ°ä¸€ä¸ªHandlerç»™å¤§å®¶ä½¿ç”¨
+//Connectçš„ç«¯å£åº”è¯¥æ°¸è¿œä¸å‘ç”Ÿå–ä¸åˆ°Hanlerçš„äº‹æƒ…
 Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode)
 {
     //
@@ -905,7 +905,7 @@ Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
         pool_of_acpthdl_.pop_front(p_handler);
         return p_handler;
     }
-    //ConnectµÄ¶Ë¿ÚÓ¦¸ÃÓÀÔ¶²»·¢ÉúÈ¡²»µ½HanlerµÄÊÂÇé
+    //Connectçš„ç«¯å£åº”è¯¥æ°¸è¿œä¸å‘ç”Ÿå–ä¸åˆ°Hanlerçš„äº‹æƒ…
     else if ( HANDLER_MODE_CONNECT == handler_mode )
     {
         ZCE_ASSERT(pool_of_cnthdl_.size() > 0);
@@ -922,13 +922,13 @@ Ogre_TCP_Svc_Handler *Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(OGRE_HAND
 }
 
 
-//ÒªµÃµ½Êı¾İµÄZByteBuffer,ÒªÇó·ÖÅäºÃ,
+//è¦å¾—åˆ°æ•°æ®çš„ZByteBuffer,è¦æ±‚åˆ†é…å¥½,
 int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
 {
 
     int ret = 0;
 
-    //ÓÉÓÚ¾²Ì¬Êı×éµÄ¹ØÏµ£¬²»ÄÜ×öÁ½¸ö²ÎÊı
+    //ç”±äºé™æ€æ•°ç»„çš„å…³ç³»ï¼Œä¸èƒ½åšä¸¤ä¸ªå‚æ•°
     const size_t TMP_IP_ADDRESS_LEN = 32;
     char remote_ip_str[TMP_IP_ADDRESS_LEN], local_ip_str[TMP_IP_ADDRESS_LEN];
 
@@ -937,24 +937,24 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
     Ogre_TCP_Svc_Handler *svchanle = NULL;
     ret = svr_peer_hdl_set_.find_services_peerinfo(svrinfo, svchanle);
 
-    //Èç¹ûÊÇÒªÖØĞÂ½øĞĞÁ¬½ÓµÄ·şÎñÆ÷Ö÷¶¯Ö÷¶¯Á¬½Ó,
+    //å¦‚æœæ˜¯è¦é‡æ–°è¿›è¡Œè¿æ¥çš„æœåŠ¡å™¨ä¸»åŠ¨ä¸»åŠ¨è¿æ¥,
     if ( ret != 0 )
     {
-        //ÎªÊ²Ã´²»°ÑÒ»¸öOgre_TCP_Svc_Handler×÷Îª·µ»Ø,ÒòÎªÔÚ·¢ÆğConnect¹ı³ÌÖĞ,Ò²¿ÉÄÜhandle_close.
+        //ä¸ºä»€ä¹ˆä¸æŠŠä¸€ä¸ªOgre_TCP_Svc_Handlerä½œä¸ºè¿”å›,å› ä¸ºåœ¨å‘èµ·Connectè¿‡ç¨‹ä¸­,ä¹Ÿå¯èƒ½handle_close.
         ret = zerg_auto_connect_.connect_server_by_peerid(svrinfo);
 
-        //Õâ¸öµØ·½ÊÇÒ»¸öDouble Check,Èç¹û·¢ÆğÁ¬½Ó³É¹¦
+        //è¿™ä¸ªåœ°æ–¹æ˜¯ä¸€ä¸ªDouble Check,å¦‚æœå‘èµ·è¿æ¥æˆåŠŸ
         if (ret == 0)
         {
             ret = svr_peer_hdl_set_.find_services_peerinfo(svrinfo, svchanle);
         }
     }
 
-    //Èç¹ûSVCHANDLEÎª¿Õ,±íÊ¾Ã»ÓĞÏà¹ØµÄÁ¬½Ó,½øĞĞ´íÎó´¦Àí
+    //å¦‚æœSVCHANDLEä¸ºç©º,è¡¨ç¤ºæ²¡æœ‰ç›¸å…³çš„è¿æ¥,è¿›è¡Œé”™è¯¯å¤„ç†
     if (svchanle == NULL)
     {
 
-        //ÎŞ·¨·¢ËÍ
+        //æ— æ³•å‘é€
         ZCE_LOG(RS_INFO, "Can't find handle remote address[%s|%u],send fail ,local address [%s|%u],frame len[%u].\n",
                 ZCE_LIB::inet_ntoa(ogre_frame->rcv_peer_info_.peer_ip_address_, remote_ip_str, TMP_IP_ADDRESS_LEN),
                 ogre_frame->rcv_peer_info_.peer_port_,
@@ -965,20 +965,20 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
         return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
 
-    //Èç¹ûÊÇÍ¨Öª¹Ø±Õ¶Ë¿Ú
+    //å¦‚æœæ˜¯é€šçŸ¥å…³é—­ç«¯å£
     if (ogre_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_CLOSE_PEER )
     {
         ZCE_LOG(RS_INFO, "Recvice DESC_CLOSE_PEER,Svchanle will close, svrinfo [IP|Port:%s|%u ].\n",
                 ZCE_LIB::inet_ntoa(svrinfo.peer_ip_address_, local_ip_str, TMP_IP_ADDRESS_LEN),
                 svrinfo.peer_port_);
-        //Èç¹û²»ÊÇUDPµÄ´¦Àí,¹Ø±Õ¶Ë¿Ú,UDPµÄ¶«Î÷Ã»ÓĞÁ´½ÓµÄ¸ÅÄî,
+        //å¦‚æœä¸æ˜¯UDPçš„å¤„ç†,å…³é—­ç«¯å£,UDPçš„ä¸œè¥¿æ²¡æœ‰é“¾æ¥çš„æ¦‚å¿µ,
         svchanle->handle_close();
         return SOAR_RET::ERR_OGRE_SOCKET_CLOSE;
     }
 
-    //½«·¢ËÍµÄFRAME¸øHANDLE¶ÔÏó£¬µ±È»Õâ¸öµØ·½Î´±ØÒ»¶¨·ÅµÄ½øÈ¥£¬ÒòÎªÓĞ¼¸ÖÖÇé¿ö,
-    //1.¾ÍÊÇÒ»¸ö¹Ø±ÕÖ¸Áî,
-    //2.HANDLEÄÚ²¿µÄ¶ÓÁĞÂúÁË,
+    //å°†å‘é€çš„FRAMEç»™HANDLEå¯¹è±¡ï¼Œå½“ç„¶è¿™ä¸ªåœ°æ–¹æœªå¿…ä¸€å®šæ”¾çš„è¿›å»ï¼Œå› ä¸ºæœ‰å‡ ç§æƒ…å†µ,
+    //1.å°±æ˜¯ä¸€ä¸ªå…³é—­æŒ‡ä»¤,
+    //2.HANDLEå†…éƒ¨çš„é˜Ÿåˆ—æ»¡äº†,
 
     svchanle->put_frame_to_sendlist(ogre_frame);
 
@@ -986,23 +986,23 @@ int Ogre_TCP_Svc_Handler::process_send_data(Ogre4a_App_Frame *ogre_frame )
 }
 
 
-//½«·¢ËÍÊı¾İ·ÅÈë·¢ËÍ¶ÓÁĞÖĞ
-//Èç¹ûÒ»¸öPEERÃ»ÓĞÁ¬½ÓÉÏ,µÈ´ı·¢ËÍµÄÊı¾İ²»ÄÜ¶àÓÚPEER_STATUS_NOACTIVE¸ö
+//å°†å‘é€æ•°æ®æ”¾å…¥å‘é€é˜Ÿåˆ—ä¸­
+//å¦‚æœä¸€ä¸ªPEERæ²¡æœ‰è¿æ¥ä¸Š,ç­‰å¾…å‘é€çš„æ•°æ®ä¸èƒ½å¤šäºPEER_STATUS_NOACTIVEä¸ª
 int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame *ogre_frame)
 {
     int ret = 0;
 
-    //¶ÔÓÚÒ»¸öÃ»ÓĞÁ¬½ÓÉÏµÄPEER,µÈ´ıÁ¬½Ó¶ÓÁĞµÄÊı¾İ²»ÄÜ¹ı¶à,
+    //å¯¹äºä¸€ä¸ªæ²¡æœ‰è¿æ¥ä¸Šçš„PEER,ç­‰å¾…è¿æ¥é˜Ÿåˆ—çš„æ•°æ®ä¸èƒ½è¿‡å¤š,
     if (peer_status_ == PEER_STATUS_NOACTIVE &&
         snd_buffer_deque_.size() >= MAX_LEN_OF_SEND_LIST)
     {
-        //¶ªÆú»òÕß´íÎó´¦ÀíÄÇ¸öÊı¾İ±È½ÏºÃÄØ?Õâ¶ùÖµµÃÉÌÈ¶, ÎÒÕâ¶ù½øĞĞ´íÎó´¦Àí(¿ÉÄÜ¶ªÆú)µÄÊÇ×îĞÂµÄ.
-        //ÎÒµÄ¿¼ÂÇÊÇÈç¹ûÃüÁîÓĞÏÈºóĞÔ.¶øÇÒ¿ÉÒÔ±ÜÃâÄÚ´æ²Ù×÷.
+        //ä¸¢å¼ƒæˆ–è€…é”™è¯¯å¤„ç†é‚£ä¸ªæ•°æ®æ¯”è¾ƒå¥½å‘¢?è¿™å„¿å€¼å¾—å•†æ¦·, æˆ‘è¿™å„¿è¿›è¡Œé”™è¯¯å¤„ç†(å¯èƒ½ä¸¢å¼ƒ)çš„æ˜¯æœ€æ–°çš„.
+        //æˆ‘çš„è€ƒè™‘æ˜¯å¦‚æœå‘½ä»¤æœ‰å…ˆåæ€§.è€Œä¸”å¯ä»¥é¿å…å†…å­˜æ“ä½œ.
         process_senderror(ogre_frame);
         return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
 
-    //Èç¹û·¢ËÍÍê³É,²¢ÇÒºóÌ¨ÒµÎñÒªÇó¹Ø±Õ¶Ë¿Ú,×¢Òâ±ØĞë×ª»»ÍøÂçĞò
+    //å¦‚æœå‘é€å®Œæˆ,å¹¶ä¸”åå°ä¸šåŠ¡è¦æ±‚å…³é—­ç«¯å£,æ³¨æ„å¿…é¡»è½¬æ¢ç½‘ç»œåº
     if ( ogre_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_SNDPRC_CLOSE_PEER)
     {
         ZCE_LOG(RS_INFO, "This Peer handle[%u] IP|Port :[%s|%u] complete ,will close when all frame send complete ,because send frame has option Ogre4a_App_Frame::OGREDESC_SNDPRC_CLOSE_PEER.\n",
@@ -1012,56 +1012,56 @@ int Ogre_TCP_Svc_Handler::put_frame_to_sendlist(Ogre4a_App_Frame *ogre_frame)
         if_force_close_ = true;
     }
 
-    //·ÅÈë·¢ËÍ¶ÓÁĞ,
+    //æ”¾å…¥å‘é€é˜Ÿåˆ—,
     bool bret = snd_buffer_deque_.push_back(ogre_frame);
 
     if ( false == bret )
     {
-        //¶ªÆú»òÕß´íÎó´¦ÀíÄÇ¸öÊı¾İ±È½ÏºÃÄØ?Õâ¶ùÖµµÃÉÌÈ¶, ÎÒÕâ¶ù½øĞĞ´íÎó´¦Àí(¿ÉÄÜ¶ªÆú)µÄÊÇ×îĞÂµÄ.
-        //ÎÒµÄ¿¼ÂÇÊÇÈç¹ûÃüÁîÓĞÏÈºóĞÔ.¶øÇÒ¿ÉÒÔ±ÜÃâÄÚ´æ²Ù×÷.
+        //ä¸¢å¼ƒæˆ–è€…é”™è¯¯å¤„ç†é‚£ä¸ªæ•°æ®æ¯”è¾ƒå¥½å‘¢?è¿™å„¿å€¼å¾—å•†æ¦·, æˆ‘è¿™å„¿è¿›è¡Œé”™è¯¯å¤„ç†(å¯èƒ½ä¸¢å¼ƒ)çš„æ˜¯æœ€æ–°çš„.
+        //æˆ‘çš„è€ƒè™‘æ˜¯å¦‚æœå‘½ä»¤æœ‰å…ˆåæ€§.è€Œä¸”å¯ä»¥é¿å…å†…å­˜æ“ä½œ.
         ZCE_LOG(RS_ERROR, "Peer handle [%u] IP|Port[%s|%u] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.\n",
                 socket_peer_.get_handle(),
                 remote_address_.get_host_addr(),
                 remote_address_.get_port_number(),
                 snd_buffer_deque_.capacity());
 
-        //»ØÊÕÖ¡
+        //å›æ”¶å¸§
         process_senderror(ogre_frame);
-        //·µ»ØÒ»¸ö´íÎó
+        //è¿”å›ä¸€ä¸ªé”™è¯¯
         return SOAR_RET::ERR_OGRE_SEND_FRAME_FAIL;
     }
 
-    //³¢ÊÔ·¢ËÍÕâ¸öÊı¾İ°ü
+    //å°è¯•å‘é€è¿™ä¸ªæ•°æ®åŒ…
 
     if (peer_status_ != PEER_STATUS_NOACTIVE)
     {
 
         ret = write_all_aata_to_peer();
 
-        //³öÏÖ´íÎó,
+        //å‡ºç°é”™è¯¯,
         if (ret != 0)
         {
-            //Õâ¶ùÒÑ¾­½øĞĞÁËµ÷Õû£¬¼á¾ö¹Ø±ÕÖ®£¬¶ÔÓÚÖĞ¶Ï´íÎóÔÚÉÏ²ãÒÑ¾­×ª»¯ÁË´íÎó
+            //è¿™å„¿å·²ç»è¿›è¡Œäº†è°ƒæ•´ï¼Œåšå†³å…³é—­ä¹‹ï¼Œå¯¹äºä¸­æ–­é”™è¯¯åœ¨ä¸Šå±‚å·²ç»è½¬åŒ–äº†é”™è¯¯
             handle_close();
 
-            //·¢ËÍÊı¾İÒÑ¾­·ÅÈë¶ÓÁĞ£¬·µ»ØOK
+            //å‘é€æ•°æ®å·²ç»æ”¾å…¥é˜Ÿåˆ—ï¼Œè¿”å›OK
             return 0;
         }
     }
 
-    //ºÏ²¢,ºÏ²¢ÓĞÀûÓÚ¸ßĞ§´¦Àí£¬¶ÔÓÚ¶Ë¿Ú¶ÌÔİµÄ×èÈûÓĞºÃ´¦
+    //åˆå¹¶,åˆå¹¶æœ‰åˆ©äºé«˜æ•ˆå¤„ç†ï¼Œå¯¹äºç«¯å£çŸ­æš‚çš„é˜»å¡æœ‰å¥½å¤„
     unite_frame_sendlist();
 
-    //Ö»ÓĞ·ÅÈë·¢ËÍ¶ÓÁĞ²ÅËã³É¹¦.
+    //åªæœ‰æ”¾å…¥å‘é€é˜Ÿåˆ—æ‰ç®—æˆåŠŸ.
     return 0;
 }
 
 
-//ºÏ²¢·¢ËÍ¶ÓÁĞ
-//Èç¹ûÓĞ2¸öÒÔÉÏµÄµÄ·¢ËÍ¶ÓÁĞ£¬Ôò¿ÉÒÔ¿¼ÂÇºÏ²¢´¦Àí
+//åˆå¹¶å‘é€é˜Ÿåˆ—
+//å¦‚æœæœ‰2ä¸ªä»¥ä¸Šçš„çš„å‘é€é˜Ÿåˆ—ï¼Œåˆ™å¯ä»¥è€ƒè™‘åˆå¹¶å¤„ç†
 void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 {
-    //Èç¹ûÓĞ2¸öÒÔÉÏµÄµÄ·¢ËÍ¶ÓÁĞ£¬Ôò¿ÉÒÔ¿¼ÂÇºÏ²¢´¦Àí
+    //å¦‚æœæœ‰2ä¸ªä»¥ä¸Šçš„çš„å‘é€é˜Ÿåˆ—ï¼Œåˆ™å¯ä»¥è€ƒè™‘åˆå¹¶å¤„ç†
     size_t sz_deque = snd_buffer_deque_.size();
 
     if ( sz_deque <= 1)
@@ -1069,25 +1069,25 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
         return;
     }
 
-    //Èç¹ûµ¹ÊıµÚ2¸öÍ°ÓĞÄÜÁ¦·ÅÏÂµ¹ÊıµÚ1¸öÍ°µÄFRAMEÊı¾İ£¬Ôò½øĞĞºÏ²¢²Ù×÷¡£
+    //å¦‚æœå€’æ•°ç¬¬2ä¸ªæ¡¶æœ‰èƒ½åŠ›æ”¾ä¸‹å€’æ•°ç¬¬1ä¸ªæ¡¶çš„FRAMEæ•°æ®ï¼Œåˆ™è¿›è¡Œåˆå¹¶æ“ä½œã€‚
     if ( (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN - snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_) >  \
          (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD))
     {
-        //½«µ¹ÊıµÚ1¸ö½ÚµãµÄÊı¾İ·ÅÈëµ¹ÊıµÚ2¸ö½ÚµãÖĞ¼ä¡£ËùÒÔÊµ¼ÊµÄCacheÄÜÁ¦ÊÇ·Ç³£Ç¿µÄ£¬
-        //¿Õ¼äÀûÓÃÂÊÒ²ºÜ¸ß¡£Ô½·¢Åå·şÎÒ×Ô¼ºÁË¡£
+        //å°†å€’æ•°ç¬¬1ä¸ªèŠ‚ç‚¹çš„æ•°æ®æ”¾å…¥å€’æ•°ç¬¬2ä¸ªèŠ‚ç‚¹ä¸­é—´ã€‚æ‰€ä»¥å®é™…çš„Cacheèƒ½åŠ›æ˜¯éå¸¸å¼ºçš„ï¼Œ
+        //ç©ºé—´åˆ©ç”¨ç‡ä¹Ÿå¾ˆé«˜ã€‚è¶Šå‘ä½©æœæˆ‘è‡ªå·±äº†ã€‚
         memcpy((snd_buffer_deque_[sz_deque - 2]->frame_data_ + snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD),
                snd_buffer_deque_[sz_deque - 1]->frame_data_,
                (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD));
 
         snd_buffer_deque_[sz_deque - 2]->ogre_frame_len_ += (snd_buffer_deque_[sz_deque - 1]->ogre_frame_len_ - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD);
 
-        //½«µ¹ÊıµÚÒ»¸öÊ©·Åµô
+        //å°†å€’æ•°ç¬¬ä¸€ä¸ªæ–½æ”¾æ‰
         Ogre_Buffer_Storage::instance()->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
         snd_buffer_deque_[sz_deque - 1] = NULL;
         snd_buffer_deque_.pop_back();
     }
 
-    ////ÏÂÃæµÄ´úÂëÓÃÓÚºÏ²¢µÄ²âÊÔ£¬Æ½³£»á×¢ÊÍµô
+    ////ä¸‹é¢çš„ä»£ç ç”¨äºåˆå¹¶çš„æµ‹è¯•ï¼Œå¹³å¸¸ä¼šæ³¨é‡Šæ‰
     //else
     //{
     //    ZCE_DEBUGEX((RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN=%u,"
@@ -1108,32 +1108,32 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
                                                            reinterpret_cast<ZCE_LIB::dequechunk_node *>(rcv_buffer_));
 
-    //»¹ÊÕµ½ÁËºóÃæÒ»¸öÖ¡µÄÊı¾İ,
+    //è¿˜æ”¶åˆ°äº†åé¢ä¸€ä¸ªå¸§çš„æ•°æ®,
     if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD )
     {
         memmove(rcv_buffer_->frame_data_,
                 rcv_buffer_->frame_data_ + sz_data ,
                 rcv_buffer_->ogre_frame_len_ - sz_data - Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD );
 
-        //¸Ä±äbuffer³¤¶È
+        //æ”¹å˜bufferé•¿åº¦
         rcv_buffer_->ogre_frame_len_ = rcv_buffer_->ogre_frame_len_ - sz_data;
 
     }
     else if (rcv_buffer_->ogre_frame_len_ == sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD)
     {
-        //ÎŞÂÛ´¦ÀíÕıÈ·Óë·ñ,¶¼ÊÍ·Å»º³åÇøµÄ¿Õ¼ä
+        //æ— è®ºå¤„ç†æ­£ç¡®ä¸å¦,éƒ½é‡Šæ”¾ç¼“å†²åŒºçš„ç©ºé—´
         Ogre_Buffer_Storage::instance()->free_byte_buffer(rcv_buffer_);
         rcv_buffer_ = NULL;
     }
-    //´úÂë´íÎó
+    //ä»£ç é”™è¯¯
     else
     {
         ZCE_ASSERT(false);
     }
 
-    //ÎŞÂÛ´¦ÀíÕıÈ·Óë·ñ,¶¼ÊÍ·Å»º³åÇøµÄ¿Õ¼ä
+    //æ— è®ºå¤„ç†æ­£ç¡®ä¸å¦,éƒ½é‡Šæ”¾ç¼“å†²åŒºçš„ç©ºé—´
 
-    //ÈÕÖ¾ÔÚº¯ÊıÖĞÓĞÊä³ö,Õâ¶ùÂÔ.
+    //æ—¥å¿—åœ¨å‡½æ•°ä¸­æœ‰è¾“å‡º,è¿™å„¿ç•¥.
     if (ret != 0 )
     {
         return SOAR_RET::ERR_OGRE_RECEIVE_PIPE_IS_FULL;
@@ -1143,14 +1143,14 @@ int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 }
 
 
-//¸ù¾İÓĞµÄSVR INFO£¬²éÑ¯ÏàÓ¦µÄHDL
+//æ ¹æ®æœ‰çš„SVR INFOï¼ŒæŸ¥è¯¢ç›¸åº”çš„HDL
 int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID &peer_id,
                                              Ogre_TCP_Svc_Handler *&svchanle)
 {
     int ret = 0;
     ret = svr_peer_hdl_set_.find_services_peerinfo(peer_id, svchanle);
 
-    //Èç¹ûÊÇÒªÖØĞÂ½øĞĞÁ¬½ÓµÄ·şÎñÆ÷Ö÷¶¯Ö÷¶¯Á¬½Ó,
+    //å¦‚æœæ˜¯è¦é‡æ–°è¿›è¡Œè¿æ¥çš„æœåŠ¡å™¨ä¸»åŠ¨ä¸»åŠ¨è¿æ¥,
     if (ret != 0)
     {
         return ret;
@@ -1159,7 +1159,7 @@ int Ogre_TCP_Svc_Handler::find_services_peer(const OGRE_PEER_ID &peer_id,
     return 0;
 }
 
-//¶ÔÃ»ÓĞÁ´½ÓµÄµÄ·şÎñÆ÷½øĞĞÖØÁ¬
+//å¯¹æ²¡æœ‰é“¾æ¥çš„çš„æœåŠ¡å™¨è¿›è¡Œé‡è¿
 int Ogre_TCP_Svc_Handler::connect_all_server()
 {
     size_t num_vaild = 0, num_succ = 0, num_fail = 0;
@@ -1173,13 +1173,13 @@ void Ogre_TCP_Svc_Handler::get_maxpeer_num(size_t &maxaccept, size_t &maxconnect
     maxconnect = max_connect_svr_;
 }
 
-//µÃµ½Handle¶ÔÓ¦PEERµÄ¶Ë¿Ú
+//å¾—åˆ°Handleå¯¹åº”PEERçš„ç«¯å£
 unsigned short Ogre_TCP_Svc_Handler::get_peer_port()
 {
     return remote_address_.get_port_number();
 }
 
-//µÃµ½Handle¶ÔÓ¦PEERµÄIPµØÖ·
+//å¾—åˆ°Handleå¯¹åº”PEERçš„IPåœ°å€
 const char *Ogre_TCP_Svc_Handler::get_peer_address()
 {
     return remote_address_.get_host_addr();

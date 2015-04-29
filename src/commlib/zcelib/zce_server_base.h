@@ -1,13 +1,13 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_server_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2006Äê3ÔÂ7ÈÕ
-* @brief      ·şÎñÆ÷µÄĞ¡¹¤¾ß¼¯ºÏ,×÷Îª·şÎñÆ÷»ùÀàÊ¹ÓÃ
-*             ¹¦ÄÜ°üÀ¨£º
-*             1.Êä³öPID
-              2.¼à¿Ø·şÎñÆ÷µÄÄÚ´æ£¬CPUÕ¼ÓÃÂÊµÈ
+* @date       2006å¹´3æœˆ7æ—¥
+* @brief      æœåŠ¡å™¨çš„å°å·¥å…·é›†åˆ,ä½œä¸ºæœåŠ¡å™¨åŸºç±»ä½¿ç”¨
+*             åŠŸèƒ½åŒ…æ‹¬ï¼š
+*             1.è¾“å‡ºPID
+              2.ç›‘æ§æœåŠ¡å™¨çš„å†…å­˜ï¼ŒCPUå ç”¨ç‡ç­‰
 * @details
 *
 *
@@ -31,174 +31,174 @@ class ZCE_Server_Toolkit
 class ZCE_Server_Base : public ZCE_NON_Copyable
 {
 protected:
-    //¹¹Ôìº¯Êı,Ë½ÓĞ,Ê¹ÓÃµ¥×ÓÀàµÄÊµÀı,
+    //æ„é€ å‡½æ•°,ç§æœ‰,ä½¿ç”¨å•å­ç±»çš„å®ä¾‹,
     ZCE_Server_Base();
     ~ZCE_Server_Base();
 
 public:
 
-    //³õÊ¼»¯socket£¬WindowsÏÂµÄÂé·³
+    //åˆå§‹åŒ–socketï¼ŒWindowsä¸‹çš„éº»çƒ¦
     int socket_init();
 
     /*!
-    * @brief      ´òÓ¡Êä³öPID File
+    * @brief      æ‰“å°è¾“å‡ºPID File
     * @return     int
-    * @param      pragramname ½ø³ÌµÄÃû×Ö£¬¿ÉÒÔ½«argv[0]´«µİ¸øÎÒ,ÄÚ²¿»á´¦Àí,
-    * @param      lock_pid    ÊÇ·ñ¶ÔPIDÎÄ¼ş½øĞĞ¼ÓËø´¦Àí£¬
+    * @param      pragramname è¿›ç¨‹çš„åå­—ï¼Œå¯ä»¥å°†argv[0]ä¼ é€’ç»™æˆ‘,å†…éƒ¨ä¼šå¤„ç†,
+    * @param      lock_pid    æ˜¯å¦å¯¹PIDæ–‡ä»¶è¿›è¡ŒåŠ é”å¤„ç†ï¼Œ
     * @note
     */
     int out_pid_file(const char *pragramname);
 
-    ///¼à¿Ø½ø³ÌµÄÔËĞĞ×´Ì¬
+    ///ç›‘æ§è¿›ç¨‹çš„è¿è¡ŒçŠ¶æ€
     int watch_dog_status(bool first_record);
 
-    ///´¦ÀíĞÅºÅµÆ£¬¸ù¾İÆ½Ì¨ÓĞÒ»Ğ©ÌØÊâ´¦Àí
+    ///å¤„ç†ä¿¡å·ç¯ï¼Œæ ¹æ®å¹³å°æœ‰ä¸€äº›ç‰¹æ®Šå¤„ç†
     int process_signal(void);
 
-    ///¾«Áé»¯£¬
+    ///ç²¾çµåŒ–ï¼Œ
     int daemon_init();
 
 
-    ///ÉèÖÃ½ø³ÌÊÇ·ñÔËĞĞµÄ±êÖ¾
+    ///è®¾ç½®è¿›ç¨‹æ˜¯å¦è¿è¡Œçš„æ ‡å¿—
     void set_run_sign(bool app_run);
 
-    /// ÉèÖÃreload±êÖ¾
+    /// è®¾ç½®reloadæ ‡å¿—
     void set_reload_sign(bool app_reload);
 
-    ///Í¨¹ıÆô¶¯²ÎÊı0,µÃµ½app_base_name_£¬app_run_name_
+    ///é€šè¿‡å¯åŠ¨å‚æ•°0,å¾—åˆ°app_base_name_ï¼Œapp_run_name_
     int create_app_name(const char *argv_0);
 
 
-    ///µÃµ½ÔËĞĞĞÅÏ¢£¬¿ÉÄÜ°üÀ¨Â·¾¶ĞÅÏ¢
+    ///å¾—åˆ°è¿è¡Œä¿¡æ¯ï¼Œå¯èƒ½åŒ…æ‹¬è·¯å¾„ä¿¡æ¯
     const char *get_app_runname();
 
-    ///µÃµ½³ÌĞò½ø³ÌÃû³Æ£¬WINDOWSÏÂÈ¥µôÁËºó×º
+    ///å¾—åˆ°ç¨‹åºè¿›ç¨‹åç§°ï¼ŒWINDOWSä¸‹å»æ‰äº†åç¼€
     const char *get_app_basename();
 
 
     /*!
-    * @brief      windowsÏÂÉèÖÃ·şÎñĞÅÏ¢
-    * @param      svc_name ·şÎñÃû³Æ
-    * @param      svc_desc ·şÎñÃèÊö
+    * @brief      windowsä¸‹è®¾ç½®æœåŠ¡ä¿¡æ¯
+    * @param      svc_name æœåŠ¡åç§°
+    * @param      svc_desc æœåŠ¡æè¿°
     */
     void set_service_info(const char *svc_name, const char *svc_desc);
 
-    //ĞÅºÅ´¦Àí´úÂë£¬
+    //ä¿¡å·å¤„ç†ä»£ç ï¼Œ
 #ifdef ZCE_OS_WINDOWS
 
-    ///WIN ÏÂÃæµÄÍË³ö´¦Àí
+    ///WIN ä¸‹é¢çš„é€€å‡ºå¤„ç†
     static BOOL exit_signal(DWORD);
 
 #else
 
-    ///ÍË³öĞÅºÅ
+    ///é€€å‡ºä¿¡å·
     static void exit_signal(int);
 
-    ///ÖØĞÂ¼ÓÔØÅäÖÃ
+    ///é‡æ–°åŠ è½½é…ç½®
     static void reload_cfg_signal(int);
 #endif
 
-    //WIN ·şÎñµÄ´úÂë£¬ÓÃÓÚ·şÎñÆ÷µÄ×¢²á×¢ÏúµÈ
+    //WIN æœåŠ¡çš„ä»£ç ï¼Œç”¨äºæœåŠ¡å™¨çš„æ³¨å†Œæ³¨é”€ç­‰
 #ifdef ZCE_OS_WINDOWS
-    ///ÔËĞĞ·şÎñ
+    ///è¿è¡ŒæœåŠ¡
     int win_services_run();
 
-    ///°²×°·şÎñ
+    ///å®‰è£…æœåŠ¡
     int win_services_install();
-    ///Ğ¶ÔØ·şÎñ
+    ///å¸è½½æœåŠ¡
     int win_services_uninstall();
-    ///¼ì²é·şÎñÊÇ·ñ°²×°
+    ///æ£€æŸ¥æœåŠ¡æ˜¯å¦å®‰è£…
     bool win_services_isinstalled();
 
-    ///·şÎñÔËĞĞº¯Êı
+    ///æœåŠ¡è¿è¡Œå‡½æ•°
     static void WINAPI win_service_main();
-    ///·şÎñ¿ØÖÆÌ¨ËùĞèÒªµÄ¿ØÖÆº¯Êı
+    ///æœåŠ¡æ§åˆ¶å°æ‰€éœ€è¦çš„æ§åˆ¶å‡½æ•°
     static void WINAPI win_services_ctrl(DWORD op_code);
 
 #endif
 
 protected:
 
-    //PIDÎÄ¼ş³¤¶È£¬ÓÃÒ»¸ö×î´ó³¤¶È£¬±ÜÃâÒ»Ğ©³¤¶È±ä»¯µÄÂé·³£¬
+    //PIDæ–‡ä»¶é•¿åº¦ï¼Œç”¨ä¸€ä¸ªæœ€å¤§é•¿åº¦ï¼Œé¿å…ä¸€äº›é•¿åº¦å˜åŒ–çš„éº»çƒ¦ï¼Œ
     static const size_t   PID_FILE_LEN = 16;
 
-    //×î´óµÄ¼ÇÂ¼ÄÚ´æĞ¹Â©µÄ´ÎÊı
+    //æœ€å¤§çš„è®°å½•å†…å­˜æ³„æ¼çš„æ¬¡æ•°
     static const int      MAX_RECORD_MEMLEAK_NUMBER = 5;
 
-    //ÄÚ´æĞ¹Â©µÄãĞÖµ
+    //å†…å­˜æ³„æ¼çš„é˜ˆå€¼
     static const size_t   MEMORY_LEAK_THRESHOLD  = 128 * 1024 * 1024;
 
-    //½ø³ÌCPU±ÈÂÊ¹ı¸ß,ÆäÊµÎÒÃÇÒ»°ãµÄµ¥Ïß³ÌCPU´ï²»µ½Õâ¸öÖµ
+    //è¿›ç¨‹CPUæ¯”ç‡è¿‡é«˜,å…¶å®æˆ‘ä»¬ä¸€èˆ¬çš„å•çº¿ç¨‹CPUè¾¾ä¸åˆ°è¿™ä¸ªå€¼
     static const size_t   PROCESS_CPU_RATIO_THRESHOLD = 600;
-    //ÏµÍ³CPU±ÈÂÊ¹ı¸ß
+    //ç³»ç»ŸCPUæ¯”ç‡è¿‡é«˜
     static const size_t   SYSTEM_CPU_RATIO_THRESHOLD = 750;
 
 
 protected:
 
-    //µ¥×ÓÊµÀı
+    //å•å­å®ä¾‹
     static ZCE_Server_Base *base_instance_;
 
 protected:
 
-    ///PID ÎÄ¼ş¾ä±ú
+    ///PID æ–‡ä»¶å¥æŸ„
     ZCE_HANDLE            pid_handle_;
     ///
     zce_flock_t           pidfile_lock_;
 
-    ///selfµÄPID
+    ///selfçš„PID
     pid_t                 self_pid_;
 
 
-    ///ÔËĞĞ×´Ì¬,ÊÇ·ñ¼ÌĞøÔËĞĞ
+    ///è¿è¡ŒçŠ¶æ€,æ˜¯å¦ç»§ç»­è¿è¡Œ
     bool                  app_run_;
 
-    ///ÊÇ·ñ¼ÓÖØĞÂ¼ÓÔØÅäÖÃ
+    ///æ˜¯å¦åŠ é‡æ–°åŠ è½½é…ç½®
     bool                  app_reload_;
 
-    ///½ø³ÌÃû×Ö£¬Å×¿ªÔËĞĞÄ¿Â¼£¬ÎÄ¼şºó×ºµÄÃû×Ö£¬
+    ///è¿›ç¨‹åå­—ï¼ŒæŠ›å¼€è¿è¡Œç›®å½•ï¼Œæ–‡ä»¶åç¼€çš„åå­—ï¼Œ
     std::string           app_base_name_;
-    ///³ÌĞòÔËĞĞÃû³Æ,Èç¹û°üº¬Â·¾¶ÔËĞĞ£¬»áÓĞÂ·¾¶ĞÅÏ¢
+    ///ç¨‹åºè¿è¡Œåç§°,å¦‚æœåŒ…å«è·¯å¾„è¿è¡Œï¼Œä¼šæœ‰è·¯å¾„ä¿¡æ¯
     std::string           app_run_name_;
 
-    ///×÷ÕßÃû³Æ
+    ///ä½œè€…åç§°
     std::string           app_author_;
 
-    ///·şÎñÃû³Æ
+    ///æœåŠ¡åç§°
     std::string           service_name_;
 
-    ///·şÎñÃèÊö
+    ///æœåŠ¡æè¿°
     std::string           service_desc_;
 
 public:
 
-    ///ÒÑ¾­¼ì²éµ½µÄÄÚ´æĞ¹Â©µÄ´ÎÊı£¬Ö»¼ÇÂ¼5´Î
+    ///å·²ç»æ£€æŸ¥åˆ°çš„å†…å­˜æ³„æ¼çš„æ¬¡æ•°ï¼Œåªè®°å½•5æ¬¡
     int                    check_leak_times_;
 
 
-    ///¿ªÊ¼µÄÊ±ºò£¨»òÕß¼ì²éµãµÄÊ±ºò£©ÄÚ´æµÄ³ß´ç
+    ///å¼€å§‹çš„æ—¶å€™ï¼ˆæˆ–è€…æ£€æŸ¥ç‚¹çš„æ—¶å€™ï¼‰å†…å­˜çš„å°ºå¯¸
     size_t                 mem_checkpoint_size_;
-    ///µ±Ç°ÄÚ´æÊ¹ÓÃ
+    ///å½“å‰å†…å­˜ä½¿ç”¨
     size_t                 cur_mem_usesize_;
 
-    ///½ø³ÌµÄCPUÀûÓÃÂÊ,Ç§·ÖÂÊ
+    ///è¿›ç¨‹çš„CPUåˆ©ç”¨ç‡,åƒåˆ†ç‡
     uint32_t               process_cpu_ratio_;
-    ///ÏµÍ³µÄCPUÀûÓÃÂÊ,Ç§·ÖÂÊ
+    ///ç³»ç»Ÿçš„CPUåˆ©ç”¨ç‡,åƒåˆ†ç‡
     uint32_t               system_cpu_ratio_;
 
-    ///ÕæÕı¿ÉÒÔÀûÓÃµÄÄÚ´æµÄÄÚ´æ´óĞ¡
+    ///çœŸæ­£å¯ä»¥åˆ©ç”¨çš„å†…å­˜çš„å†…å­˜å¤§å°
     uint64_t               can_use_size_;
-    ///ÏµÍ³µÄÄÚ´æÊ¹ÓÃÂÊ,Ç§·ÖÂÊ
+    ///ç³»ç»Ÿçš„å†…å­˜ä½¿ç”¨ç‡,åƒåˆ†ç‡
     uint32_t               mem_use_ratio_;
 
-    ///ÉÏÒ»´ÎµÄ½ø³ÌĞÔÄÜÊı¾İ
+    ///ä¸Šä¸€æ¬¡çš„è¿›ç¨‹æ€§èƒ½æ•°æ®
     ZCE_PROCESS_PERFORM    last_process_perf_;
-    ///µ±Ç°ÕâÒ»´ÎµÄ½ø³ÌĞÔÄÜÊı¾İ
+    ///å½“å‰è¿™ä¸€æ¬¡çš„è¿›ç¨‹æ€§èƒ½æ•°æ®
     ZCE_PROCESS_PERFORM    now_process_perf_;
 
-    ///ÉÏÒ»´ÎµÄÏµÍ³µÄĞÔÄÜÊı¾İ
+    ///ä¸Šä¸€æ¬¡çš„ç³»ç»Ÿçš„æ€§èƒ½æ•°æ®
     ZCE_SYSTEM_PERFORMANCE last_system_perf_;
-    ///µ±Ç°ÕâÒ»´ÎµÄÏµÍ³ĞÔÄÜÊı¾İ
+    ///å½“å‰è¿™ä¸€æ¬¡çš„ç³»ç»Ÿæ€§èƒ½æ•°æ®
     ZCE_SYSTEM_PERFORMANCE now_system_perf_;
 
 

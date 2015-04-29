@@ -1,11 +1,11 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_async_fw_fsm.h"
 #include "zce_os_adapt_error.h"
 #include "zce_trace_log_debug.h"
 
 //=====================================================================================
-//×´Ì¬»úµÄÒì²½¶ÔÏó
+//çŠ¶æ€æœºçš„å¼‚æ­¥å¯¹è±¡
 ZCE_Async_FSM::ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
     ZCE_Async_Object(async_mgr, create_cmd)
 {
@@ -15,17 +15,17 @@ ZCE_Async_FSM::~ZCE_Async_FSM()
 {
 }
 
-//×´Ì¬»úÔËĞĞµÄ´úÂë£¬ÕâÖ»ÊÇÒ»¸ö²Î¿¼Ê¾Àı
+//çŠ¶æ€æœºè¿è¡Œçš„ä»£ç ï¼Œè¿™åªæ˜¯ä¸€ä¸ªå‚è€ƒç¤ºä¾‹
 void ZCE_Async_FSM::on_run(void *outer_data, bool &continue_run)
 {
     ZCE_UNUSED_ARG(outer_data);
     enum
     {
-        //¿ªÊ¼
+        //å¼€å§‹
         STAGE_1 = 1,
         STAGE_2 = 2,
         STAGE_3 = 3,
-        //½áÊø
+        //ç»“æŸ
         STAGE_4 = 4,
     };
     switch (get_stage())
@@ -50,14 +50,14 @@ void ZCE_Async_FSM::on_run(void *outer_data, bool &continue_run)
             continue_run = false;
             break;
         default:
-            //Ò»¸öÎŞ·¨Ê¶±ğµÄ×´Ì¬
+            //ä¸€ä¸ªæ— æ³•è¯†åˆ«çš„çŠ¶æ€
             ZCE_ASSERT(false);
             break;
     }
     return;
 }
 
-//³¬Ê±´¦Àí
+//è¶…æ—¶å¤„ç†
 void ZCE_Async_FSM::on_timeout(const ZCE_Time_Value &now_time,
                                bool &continue_run)
 {
@@ -69,14 +69,14 @@ void ZCE_Async_FSM::on_timeout(const ZCE_Time_Value &now_time,
     return;
 }
 
-//ÉèÖÃµÄ×´Ì¬»ú½×¶Î
+//è®¾ç½®çš„çŠ¶æ€æœºé˜¶æ®µ
 void ZCE_Async_FSM::set_stage(int stage)
 {
     fsm_stage_ = stage;
 }
 
 
-//È¡µÃµÄ×´Ì¬»ú½×¶Î
+//å–å¾—çš„çŠ¶æ€æœºé˜¶æ®µ
 int ZCE_Async_FSM::get_stage() const
 {
     return fsm_stage_;
@@ -84,7 +84,7 @@ int ZCE_Async_FSM::get_stage() const
 
 //=====================================================================================
 
-//×´Ì¬»úÖ÷¿Ø¹ÜÀíÀà
+//çŠ¶æ€æœºä¸»æ§ç®¡ç†ç±»
 ZCE_Async_FSMMgr::ZCE_Async_FSMMgr() :
     ZCE_Async_ObjectMgr()
 {

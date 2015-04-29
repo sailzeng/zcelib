@@ -1,11 +1,11 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_id_to_string.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2004Äê8ÔÂ2ÈÕ
-* @brief      ¶¨Òå¼¸×éIDToStringµÄºê,Ö÷ÒªÓÃÓÚ´íÎó¶¨ÒåµÈ¡£
-*             ÃüÁî¶¨ÒåµÈ£¬
+* @date       2004å¹´8æœˆ2æ—¥
+* @brief      å®šä¹‰å‡ ç»„IDToStringçš„å®,ä¸»è¦ç”¨äºŽé”™è¯¯å®šä¹‰ç­‰ã€‚
+*             å‘½ä»¤å®šä¹‰ç­‰ï¼Œ
 *
 * @details
 *
@@ -17,9 +17,9 @@
 #define ZCE_LIB_ID_TO_STRING_H_
 
 /********************************************************************************
-ÏÂÃæÕâ×éºêÓÃÓÚ¶¨ÒåÒ»×éIDToStringµÄSymbol ºÍString,
+ä¸‹é¢è¿™ç»„å®ç”¨äºŽå®šä¹‰ä¸€ç»„IDToStringçš„Symbol å’ŒString,
 DEFIDTOSTRING(ID_STR_001,0x01,"AAAA1111111111111");
-Ê¹ÓÃLOADSTRINGBYID(ID_STR_001)µÃµ½¶¨ÒåµÄ×Ö·û´®
+ä½¿ç”¨LOADSTRINGBYID(ID_STR_001)å¾—åˆ°å®šä¹‰çš„å­—ç¬¦ä¸²
 *********************************************************************************/
 #ifndef DEFSYMBOLTOSTRING
 #define DEFSYMBOLTOSTRING(symbol,smbid,tmpstr) static const unsigned int symbol = smbid;\
@@ -30,16 +30,16 @@ DEFIDTOSTRING(ID_STR_001,0x01,"AAAA1111111111111");
 #endif //LOADSTRINGBYID
 
 /**********************************************************************************************
-ÏÂÃæÕâ×éºêÓÃÓÚ¶¨ÒåÒ»×éenum enum ID,ºÍÒ»×éenum ID ¶ÔÓ¦µÄ×Ö·û´«.ÒÔ¼°Ò»¸ö´ÓÖÐµÃµ½×Ö·û´®µÄ¾²Ì¬º¯Êý
+ä¸‹é¢è¿™ç»„å®ç”¨äºŽå®šä¹‰ä¸€ç»„enum enum ID,å’Œä¸€ç»„enum ID å¯¹åº”çš„å­—ç¬¦ä¼ .ä»¥åŠä¸€ä¸ªä»Žä¸­å¾—åˆ°å­—ç¬¦ä¸²çš„é™æ€å‡½æ•°
 
-BEGINDEFSYMBOL(STTID,)                       ºêÓÃÓÚ¶¨ÒåSTRING TABLEÀàµÄÃû×Ö,ÆäÖÐÃ¶¾ÙÖµµÃÃû×Ö
-SYMBOLTOID(STR_ID_01,0x1)                    ºêÓÃÓÚ¶¨ÒåÃ¶¾ÙÃû³ÆºÍÃ¶¾ÙÊýÖµ
-ENDDEFSYMBOL                                 ½áÊøÀà¶¨Òå
-ÏÂÃæÕâ3¸öºê¿ÉÒÔ¶¨ÒåÔÚ.HÖÐ,µ«ÊÇ²¿·Ö±àÒëÆ÷²»Ö§³Ö,ËùÒÔ×îºÃ·ÅÈë.cpp
-BEGINDEFSTRINGTABLE(STT)                     ºê¶¨ÒåÀàº¯Êý
-IDTOSTRINGDEFINE(STR_ID_01,"0000000000")     ºê¶¨Òåº¯ÊýµÄ·µ»Ø²¿·Ö
-ENDDEFSTRINGTABLE(STT)                       ½áÊøº¯Êý¶¨Òå
-Ê¹ÓÃº¯Êý STTID::ZLoadString(STR_ID_01);µÃµ½×Ö·û.ÓÃZLoadStringµÄÔ­ÒòÊ¹ÓÃLoadStringºÍWin32³ÌÐò³åÍ»
+BEGINDEFSYMBOL(STTID,)                       å®ç”¨äºŽå®šä¹‰STRING TABLEç±»çš„åå­—,å…¶ä¸­æžšä¸¾å€¼å¾—åå­—
+SYMBOLTOID(STR_ID_01,0x1)                    å®ç”¨äºŽå®šä¹‰æžšä¸¾åç§°å’Œæžšä¸¾æ•°å€¼
+ENDDEFSYMBOL                                 ç»“æŸç±»å®šä¹‰
+ä¸‹é¢è¿™3ä¸ªå®å¯ä»¥å®šä¹‰åœ¨.Hä¸­,ä½†æ˜¯éƒ¨åˆ†ç¼–è¯‘å™¨ä¸æ”¯æŒ,æ‰€ä»¥æœ€å¥½æ”¾å…¥.cpp
+BEGINDEFSTRINGTABLE(STT)                     å®å®šä¹‰ç±»å‡½æ•°
+IDTOSTRINGDEFINE(STR_ID_01,"0000000000")     å®å®šä¹‰å‡½æ•°çš„è¿”å›žéƒ¨åˆ†
+ENDDEFSTRINGTABLE(STT)                       ç»“æŸå‡½æ•°å®šä¹‰
+ä½¿ç”¨å‡½æ•° STTID::ZLoadString(STR_ID_01);å¾—åˆ°å­—ç¬¦.ç”¨ZLoadStringçš„åŽŸå› ä½¿ç”¨LoadStringå’ŒWin32ç¨‹åºå†²çª
 ***********************************************************************************************/
 #ifndef BEGINDEFSYMBOL
 #define BEGINDEFSYMBOL(stringtable,idtable) class stringtable { \
@@ -85,20 +85,20 @@ return; \
 #endif //ENDDEFSTRTABLE
 
 /********************************************************************************
-Õâ×éºêºÍÉÏÃæÕâ×é¹¦ÄÜ¼¸ºõÒ»Ñù.
-¶øÇÒ²»ÊÇËùÓÐµÄ±àÒëÆ÷¶¼Ö§³Öconst char *ÔÚ.h¶¨Òå, ËãÁË·âÉ±°Ñ.
+è¿™ç»„å®å’Œä¸Šé¢è¿™ç»„åŠŸèƒ½å‡ ä¹Žä¸€æ ·.
+è€Œä¸”ä¸æ˜¯æ‰€æœ‰çš„ç¼–è¯‘å™¨éƒ½æ”¯æŒconst char *åœ¨.hå®šä¹‰, ç®—äº†å°æ€æŠŠ.
 
-ÏÂÃæÕâ×éºêÓÃÓÚ¶¨ÒåÒ»×éIDToStringµÄString Table. String Table´æ·ÅÔÚÒ»¸öÃû×Ö¿Õ¼äÄÚ.
-DEFSTRINGTABLE   ºêÓÃÓÚ¶¨ÒåÃû×Ö¿Õ¼äµÄÃû×Ö
-DEFSYMBOLTOID    ºêÓÃÓÚ¶¨Òå±êºÅºÍIDÖµµÄ¶ÔÓ¦¹ØÏµ
-DEFINEIDTOSTRING ºêÓÃÓÚ¶¨Òå±êºÅºÍSTRINGµÄ¶ÔÓ¦¹ØÏµ
-Àý×Ó:
+ä¸‹é¢è¿™ç»„å®ç”¨äºŽå®šä¹‰ä¸€ç»„IDToStringçš„String Table. String Tableå­˜æ”¾åœ¨ä¸€ä¸ªåå­—ç©ºé—´å†….
+DEFSTRINGTABLE   å®ç”¨äºŽå®šä¹‰åå­—ç©ºé—´çš„åå­—
+DEFSYMBOLTOID    å®ç”¨äºŽå®šä¹‰æ ‡å·å’ŒIDå€¼çš„å¯¹åº”å…³ç³»
+DEFINEIDTOSTRING å®ç”¨äºŽå®šä¹‰æ ‡å·å’ŒSTRINGçš„å¯¹åº”å…³ç³»
+ä¾‹å­:
 DEFSTRINGTABLE(STT)
 DEFSYMBOLTOID(STR_001,0x1)
 BEGINSTRINGTABLE
 DEFINEIDTOSTRING(STR_001,"1111111111")
 ENDSTRINGTABLE
-Ê¹ÓÃSTT::ZLoadString(ID) º¯ÊýµÃµ½×Ö·û´®,STTÎª¶¨ÒåµÄnamespace
+ä½¿ç”¨STT::ZLoadString(ID) å‡½æ•°å¾—åˆ°å­—ç¬¦ä¸²,STTä¸ºå®šä¹‰çš„namespace
 
 struct STRINGIDRECORD
 {

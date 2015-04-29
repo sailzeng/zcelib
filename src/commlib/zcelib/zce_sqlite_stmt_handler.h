@@ -1,24 +1,24 @@
-#ifndef ZCE_LIB_SQLITE_STMT_HANDLER_H_
+ï»¿#ifndef ZCE_LIB_SQLITE_STMT_HANDLER_H_
 #define ZCE_LIB_SQLITE_STMT_HANDLER_H_
 
-//Ä¿Ç°°æ±¾ÏŞÖÆÖ»¼ÓÕâÒ»¸ö
+//ç›®å‰ç‰ˆæœ¬é™åˆ¶åªåŠ è¿™ä¸€ä¸ª
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 /*!
-@brief      SQlite STMTµÄ¾ä±ú
-            ÓÃÓÚSQLµÄ´¦ÀíµÈ£¬STMTÊÇ¸öºÃ¶«¶«£¬¾ÍÊÇÀí½âÉÏÂé·³Ò»µã¡£
+@brief      SQlite STMTçš„å¥æŸ„
+            ç”¨äºSQLçš„å¤„ç†ç­‰ï¼ŒSTMTæ˜¯ä¸ªå¥½ä¸œä¸œï¼Œå°±æ˜¯ç†è§£ä¸Šéº»çƒ¦ä¸€ç‚¹ã€‚
 */
 class ZCE_SQLite_STMTHdl
 {
 public:
 
-    ///¶¨Òå¶ş½øÖÆÊı¾İ½á¹¹£¬ÓÃÓÚ¸¨Öú°ó¶¨BLOBÀàĞÍµÄ²ÎÊıÊı¾İ
+    ///å®šä¹‰äºŒè¿›åˆ¶æ•°æ®ç»“æ„ï¼Œç”¨äºè¾…åŠ©ç»‘å®šBLOBç±»å‹çš„å‚æ•°æ•°æ®
     struct BIN_Param
     {
         /*!
         * @brief      
-        * @param      binary_data ¶ş½øÖÆÊı¾İBUFFER
-        * @param      binary_len  Êı¾İ³¤¶È£¬
+        * @param      binary_data äºŒè¿›åˆ¶æ•°æ®BUFFER
+        * @param      binary_len  æ•°æ®é•¿åº¦ï¼Œ
         */
         BIN_Param(void *binary_data, int binary_len)
             : binary_data_(binary_data)
@@ -29,19 +29,19 @@ public:
         {
         }
 
-        ///2½øÖÆÊı¾İµÄÖ¸Õë
+        ///2è¿›åˆ¶æ•°æ®çš„æŒ‡é’ˆ
         void   *binary_data_;
-        ///¶ş½øÖÆÊı¾İµÄ³¤¶È,
+        ///äºŒè¿›åˆ¶æ•°æ®çš„é•¿åº¦,
         int    binary_len_;
     };
 
-    ///¶¨Òå¶ş½øÖÆÊı¾İ½á¹¹£¬ÓÃÓÚ¸¨Öú°ó¶¨BLOBÀàĞÍµÄÊı¾İ½á¹û
+    ///å®šä¹‰äºŒè¿›åˆ¶æ•°æ®ç»“æ„ï¼Œç”¨äºè¾…åŠ©ç»‘å®šBLOBç±»å‹çš„æ•°æ®ç»“æœ
     struct BIN_Result
     {
         /*!
         * @brief
-        * @param      binary_data ¶ş½øÖÆÊı¾İBUFFER
-        * @param      binary_len  Êı¾İ³¤¶È£¬³õÊ¼»¯ÎªÊı¾İ³¤¶È£¬Ê¹ÓÃºó¼ÇÂ¼Êı¾İ½á¹û³¤¶È
+        * @param      binary_data äºŒè¿›åˆ¶æ•°æ®BUFFER
+        * @param      binary_len  æ•°æ®é•¿åº¦ï¼Œåˆå§‹åŒ–ä¸ºæ•°æ®é•¿åº¦ï¼Œä½¿ç”¨åè®°å½•æ•°æ®ç»“æœé•¿åº¦
         */
         BIN_Result(void *binary_data, int *binary_len)
             : binary_data_(binary_data)
@@ -52,58 +52,58 @@ public:
         {
         }
 
-        ///2½øÖÆÊı¾İµÄÖ¸Õë
+        ///2è¿›åˆ¶æ•°æ®çš„æŒ‡é’ˆ
         void   *binary_data_;
-        ///¶ş½øÖÆÊı¾İµÄ³¤¶È,×¢Òâ°ó¶¨½á¹ûÊ±£¬Õâ¸öÊıÖµ×ùÎ»½á¹û°ó¶¨µÄÊ±ºò£¬»á¸¨Öú·µ»Ø³¤¶È
+        ///äºŒè¿›åˆ¶æ•°æ®çš„é•¿åº¦,æ³¨æ„ç»‘å®šç»“æœæ—¶ï¼Œè¿™ä¸ªæ•°å€¼åº§ä½ç»“æœç»‘å®šçš„æ—¶å€™ï¼Œä¼šè¾…åŠ©è¿”å›é•¿åº¦
         int    *binary_len_;
     };
 
 
 public:
     /*!
-    * @brief      ¹¹Ôìº¯Êı
-    * @param      sqlite3_handler  SQlite3µÄDB·â×°¾ä±ú¡£
+    * @brief      æ„é€ å‡½æ•°
+    * @param      sqlite3_handler  SQlite3çš„DBå°è£…å¥æŸ„ã€‚
     */
     ZCE_SQLite_STMTHdl(ZCE_SQLite_DB_Handler *sqlite3_handler);
     /*!
-    * @brief      Îö¹¹º¯Êı
+    * @brief      ææ„å‡½æ•°
     */
     ~ZCE_SQLite_STMTHdl();
 
 public:
 
     /*!
-    * @brief      Ô¤´¦ÀíSQLÓï¾ä
+    * @brief      é¢„å¤„ç†SQLè¯­å¥
     * @return     int
     * @param      sql_string
     */
     int prepare(const char *sql_string);
 
     /*!
-    * @brief      ÖØĞÂ³õÊ¼»¯STMTµÄHandler
+    * @brief      é‡æ–°åˆå§‹åŒ–STMTçš„Handler
     * @return     int
     */
     int reset();
 
     /*!
-    * @brief      Ïú»ÙSQLITE3µÄSTMT HANDLER,»Ö¸´³õÊ¼»¯ÖµµÈ¡£
+    * @brief      é”€æ¯SQLITE3çš„STMT HANDLER,æ¢å¤åˆå§‹åŒ–å€¼ç­‰ã€‚
     * @return     int
     */
     int finalize();
 
     /*!
-    * @brief      Ö´ĞĞSQL£¬µÚÒ»´ÎÊÇÖ´ĞĞSQL£¬ºóÃæÒÆ¶¯ÓÎ±ê
-    * @return     int         0³É¹¦£¬·ñÔòÊ§°Ü
-    * @param[out] hash_reuslt ·µ»ØÖµ,ÊÇ·ñÓĞ½á¹û
-    * note        ÒªÖ´ĞĞ¶à´Î£¬µÚÒ»´ÎµÃµ½½á¹û¼¯ºÏ£¬ºóÃæÒÆ¶¯ÓÎ±ê¡£
+    * @brief      æ‰§è¡ŒSQLï¼Œç¬¬ä¸€æ¬¡æ˜¯æ‰§è¡ŒSQLï¼Œåé¢ç§»åŠ¨æ¸¸æ ‡
+    * @return     int         0æˆåŠŸï¼Œå¦åˆ™å¤±è´¥
+    * @param[out] hash_reuslt è¿”å›å€¼,æ˜¯å¦æœ‰ç»“æœ
+    * note        è¦æ‰§è¡Œå¤šæ¬¡ï¼Œç¬¬ä¸€æ¬¡å¾—åˆ°ç»“æœé›†åˆï¼Œåé¢ç§»åŠ¨æ¸¸æ ‡ã€‚
     */
     int execute_stmt_sql(bool &hash_reuslt);
 
-    ///¿ªÊ¼Ò»¸öÊÂÎñ
+    ///å¼€å§‹ä¸€ä¸ªäº‹åŠ¡
     int begin_transaction();
-    ///Ìá½»Ò»¸öÊÂÎñ
+    ///æäº¤ä¸€ä¸ªäº‹åŠ¡
     int commit_transction();
-    ///½«Í¬²½Ñ¡Ïî¹Ø±Õ£¬½¨Òé²»ÒªÊ¹ÓÃ
+    ///å°†åŒæ­¥é€‰é¡¹å…³é—­ï¼Œå»ºè®®ä¸è¦ä½¿ç”¨
     int turn_off_synch();
 
     ///
@@ -112,20 +112,20 @@ public:
         return sqlite3_stmt_handler_;
     }
 
-    ///´íÎóÓï¾äStr
+    ///é”™è¯¯è¯­å¥Str
     inline const char *error_message()
     {
         return sqlite_handler_->error_message();
     }
-    ///DB·µ»ØµÄ´íÎóID
+    ///DBè¿”å›çš„é”™è¯¯ID
     inline  unsigned int error_code()
     {
         return sqlite_handler_->error_code();
     }
 
     /*!
-    * @brief      µÃµ½µ±Ç°·µ»ØÁĞµÄ³¤¶È
-    * @return     int ³¤¶È
+    * @brief      å¾—åˆ°å½“å‰è¿”å›åˆ—çš„é•¿åº¦
+    * @return     int é•¿åº¦
     * @param[in]  result_col
     * @note
     */
@@ -135,7 +135,7 @@ public:
     }
 
     /*!
-    * @brief      È¡µÃÁĞµÄÊıÁ¿
+    * @brief      å–å¾—åˆ—çš„æ•°é‡
     * @return     int
     * @param      num_col
     */
@@ -144,37 +144,37 @@ public:
         return ::sqlite3_column_count(sqlite3_stmt_handler_);
     }
 
-    ///µ±Ç°columnµÄÊı¾İ³¤¶È
+    ///å½“å‰columnçš„æ•°æ®é•¿åº¦
     inline int cur_column_bytes()
     {
         return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
     }
 
     /*!
-    * @brief      ¶ÔÓÚSQLÓï¾äµÄ?²ÎÊı£¬½øĞĞ°ó¶¨£¬
-    * @tparam     bind_type °ó¶¨µÄ²ÎÊıÀàĞÍ
-    * @return     int       ·µ»Ø 0 ±íÊ¾³É¹¦£¬
-    * @param      bind_index °ó¶¨µÄÏÂ±ê£¬´Ó1¿ªÊ¼
-    * @param      val       SQLÓï¾ä°ó¶¨µÄ²ÎÊı
-    * @note       SQLite STMTºÍMYSQLµÄAPIºÃÏñÓĞÒ»Ğ©±¾ÖÊÇø±ğ£¬¿´¿´ËûµÄº¯Êı,ÏÂÃæÃ»ÓĞÒıÓÃ,
-    *             SQLiteÔÚBindº¯Êıµ÷ÓÃµÄÊ±ºò¾ÍÈ¡µÃÁËÖµ£¿ÖÁÉÙ´Óº¯ÊıµÄ²ÎÊıÉÏ¿ÉÒÔÕâÑù·ÖÎö
-    *             ÈçĞèÒªbind blobÊı¾İ£¬Ê¹ÓÃBINARY
+    * @brief      å¯¹äºSQLè¯­å¥çš„?å‚æ•°ï¼Œè¿›è¡Œç»‘å®šï¼Œ
+    * @tparam     bind_type ç»‘å®šçš„å‚æ•°ç±»å‹
+    * @return     int       è¿”å› 0 è¡¨ç¤ºæˆåŠŸï¼Œ
+    * @param      bind_index ç»‘å®šçš„ä¸‹æ ‡ï¼Œä»1å¼€å§‹
+    * @param      val       SQLè¯­å¥ç»‘å®šçš„å‚æ•°
+    * @note       SQLite STMTå’ŒMYSQLçš„APIå¥½åƒæœ‰ä¸€äº›æœ¬è´¨åŒºåˆ«ï¼Œçœ‹çœ‹ä»–çš„å‡½æ•°,ä¸‹é¢æ²¡æœ‰å¼•ç”¨,
+    *             SQLiteåœ¨Bindå‡½æ•°è°ƒç”¨çš„æ—¶å€™å°±å–å¾—äº†å€¼ï¼Ÿè‡³å°‘ä»å‡½æ•°çš„å‚æ•°ä¸Šå¯ä»¥è¿™æ ·åˆ†æ
+    *             å¦‚éœ€è¦bind blobæ•°æ®ï¼Œä½¿ç”¨BINARY
     */
     template <class bind_type>
     int bind(int bind_col, bind_type val);
 
     /*!
-    * @brief      È¡µÃÁĞµÄ½á¹û
-    * @tparam     value_type ½á¹ûµÄÀàĞÍ
-    * @param      result_col ÁĞºÅ£¬´Ó0¿ªÊ¼
-    * @param      val È¡³öµÄ½á¹û
-    * @note       ¶ş½øÖÆµÄÊı¾İÒªÌØ±ğ¿¼ÂÇÒ»ÏÂ,×Ö·û´®¶¼ÌØ±ğ+1ÁË,¶ø¶ş½øÖÆÊı¾İ²»ÒªÕâÑù¿¼ÂÇ
+    * @brief      å–å¾—åˆ—çš„ç»“æœ
+    * @tparam     value_type ç»“æœçš„ç±»å‹
+    * @param      result_col åˆ—å·ï¼Œä»0å¼€å§‹
+    * @param      val å–å‡ºçš„ç»“æœ
+    * @note       äºŒè¿›åˆ¶çš„æ•°æ®è¦ç‰¹åˆ«è€ƒè™‘ä¸€ä¸‹,å­—ç¬¦ä¸²éƒ½ç‰¹åˆ«+1äº†,è€ŒäºŒè¿›åˆ¶æ•°æ®ä¸è¦è¿™æ ·è€ƒè™‘
     */
     template <class value_type>
     void column(int result_col, value_type val);
 
 
-    ///µ¼³ö½á¹û,ÁĞºÅ×Ô¶¯++
+    ///å¯¼å‡ºç»“æœ,åˆ—å·è‡ªåŠ¨++
     template <class value_type>
     ZCE_SQLite_STMTHdl &operator >> (value_type &val)
     {
@@ -185,7 +185,7 @@ public:
 
 
 
-    ///bind°ó¶¨²ÎÊı,ÁĞºÅ×Ô¶¯++
+    ///bindç»‘å®šå‚æ•°,åˆ—å·è‡ªåŠ¨++
     template <class bind_type>
     ZCE_SQLite_STMTHdl &operator << (bind_type val)
     {
@@ -194,23 +194,23 @@ public:
         return *this;
     }
 
-    //ÕâÁ½¸öÀàĞÍµÄ<<º¯ÊıÊ¹ÓÃµÄÊÇÒıÓÃ£¬ËùÒÔÖØÔØÒ»ÏÂ£¬
+    //è¿™ä¸¤ä¸ªç±»å‹çš„<<å‡½æ•°ä½¿ç”¨çš„æ˜¯å¼•ç”¨ï¼Œæ‰€ä»¥é‡è½½ä¸€ä¸‹ï¼Œ
     ZCE_SQLite_STMTHdl &operator << (const ZCE_SQLite_STMTHdl::BIN_Param &val);
     ZCE_SQLite_STMTHdl &operator << (const std::string &val);
 
 
 protected:
 
-    ///SQLiteµÄDB¾ä±ú
+    ///SQLiteçš„DBå¥æŸ„
     ZCE_SQLite_DB_Handler *sqlite_handler_;
 
-    ///SQLiteÔ­ÉùµÄSTMTµÄ¾ä±ú
+    ///SQLiteåŸå£°çš„STMTçš„å¥æŸ„
     sqlite3_stmt *sqlite3_stmt_handler_;
 
-    ///µ±Ç°È¡½á¹ûµÄÁĞ,ÓÃÓÚ>>º¯Êı,´Ó0¿ªÊ¼
+    ///å½“å‰å–ç»“æœçš„åˆ—,ç”¨äº>>å‡½æ•°,ä»0å¼€å§‹
     int current_col_;
 
-    ///µ±Ç°bind°ó¶¨SQLÓï¾ä²ÎÊıµÄÏÂ±ê£¬ÓÃÓÚ>>º¯Êı,,´Ó1¿ªÊ¼
+    ///å½“å‰bindç»‘å®šSQLè¯­å¥å‚æ•°çš„ä¸‹æ ‡ï¼Œç”¨äº>>å‡½æ•°,,ä»1å¼€å§‹
     int current_bind_;
 };
 

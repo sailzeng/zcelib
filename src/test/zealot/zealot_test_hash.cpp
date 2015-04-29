@@ -1,4 +1,4 @@
-
+ï»¿
 
 
 #include "zealot_predefine.h"
@@ -491,7 +491,7 @@ typedef ZCE_LIB::shm_hashtable<int, int> SMEM_HASH_TABLE_INT;
 int test_hash_match(int /*argc*/ , char * /*argv*/ [])
 {
 
-    //²âÊÔµÄÊıÁ¿
+    //æµ‹è¯•çš„æ•°é‡
     const size_t req_node_number = 50000000;
 
 
@@ -621,7 +621,7 @@ typedef ZCE_LIB::shm_hash_rehash<int, int> SMEM_HASH_SAFE_INT;
 
 int test_hash_safe(int /*argc*/ , char * /*argv*/ [])
 {
-    //¼ÆÊ±Æ÷£¬²»ÊÇ¶¨Ê±Æ÷Ñ½
+    //è®¡æ—¶å™¨ï¼Œä¸æ˜¯å®šæ—¶å™¨å‘€
     ZCE_Auto_Progress_Timer auto_timer;
 
     SMEM_HASH_SAFE_INT    *abc = NULL;

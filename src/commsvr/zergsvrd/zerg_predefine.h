@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef ZERG_SERVER_PRE_DEFINE_H_
 #define ZERG_SERVER_PRE_DEFINE_H_
 
@@ -59,14 +59,14 @@
 
 
 
-//ÄÇÌìÎŞ·¨µ÷ÊÔ£¬googleÕÒµ½µÄ½â¾ö·½°¸¡£
-//there is no source code available for the current location ½â¾ö·½°¸
+//é‚£å¤©æ— æ³•è°ƒè¯•ï¼Œgoogleæ‰¾åˆ°çš„è§£å†³æ–¹æ¡ˆã€‚
+//there is no source code available for the current location è§£å†³æ–¹æ¡ˆ
 //
-//1.Ê×ÏÈÊÔ×î³£¹æµÄ·½·¨£ºClean and then rebuild solution£¬µ«ÊÇÃ»ÓĞ½â¾ö
-//2.½øÈëTools>Options,Ñ¡ÔñDebugging>General È´µô Enable address-level debugging Ñ¡Ïî£¬ÔÚÈ¥µô Require source files to exactly match the original version.
-//Okay£¬½â¾öÎÊÌâ¡£
+//1.é¦–å…ˆè¯•æœ€å¸¸è§„çš„æ–¹æ³•ï¼šClean and then rebuild solutionï¼Œä½†æ˜¯æ²¡æœ‰è§£å†³
+//2.è¿›å…¥Tools>Options,é€‰æ‹©Debugging>General å´æ‰ Enable address-level debugging é€‰é¡¹ï¼Œåœ¨å»æ‰ Require source files to exactly match the original version.
+//Okayï¼Œè§£å†³é—®é¢˜ã€‚
 
-//ºÃ¼¸¸öµØ·½¶¼ÓÃÕâ¸ö³£Á¿£¬Í³Ò»ÉèÖÃ£¬ÒÔºóºÃ¸Ä
+//å¥½å‡ ä¸ªåœ°æ–¹éƒ½ç”¨è¿™ä¸ªå¸¸é‡ï¼Œç»Ÿä¸€è®¾ç½®ï¼Œä»¥åå¥½æ”¹
 static const socklen_t ZERG_SND_RCV_BUF_OPVAL = 320 * 1024;
 
 #endif //_ZERG_SERVER_PRE_DEFINE_H_

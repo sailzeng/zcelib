@@ -1,13 +1,13 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_semaphore.h"
 
-//ÎªÊ²Ã´²»ÈÃÎÒÓÃACE£¬ÎÀÉúÃŞ£¡£¬ÎÀÉúÃŞ£¡£¡£¡£¡£¡ÎÀÉúÃŞÎÀÉúÃŞÎÀÉúÃŞ£¡£¡£¡£¡£¡£¡£¡£¡
+//ä¸ºä»€ä¹ˆä¸è®©æˆ‘ç”¨ACEï¼Œå«ç”Ÿæ£‰ï¼ï¼Œå«ç”Ÿæ£‰ï¼ï¼ï¼ï¼ï¼å«ç”Ÿæ£‰å«ç”Ÿæ£‰å«ç”Ÿæ£‰ï¼ï¼ï¼ï¼ï¼ï¼ï¼ï¼
 
-//³õÊ¼»¯£¬´´½¨Ò»¸öÎŞÃû£¨ÄäÃû£©ĞÅºÅµÆ,¶ÔÓ¦µÄÏú»Ùº¯Êısem_destroy
+//åˆå§‹åŒ–ï¼Œåˆ›å»ºä¸€ä¸ªæ— åï¼ˆåŒ¿åï¼‰ä¿¡å·ç¯,å¯¹åº”çš„é”€æ¯å‡½æ•°sem_destroy
 int ZCE_LIB::sem_init(sem_t *sem,
                       int pshared,
                       unsigned int init_value,
@@ -16,7 +16,7 @@ int ZCE_LIB::sem_init(sem_t *sem,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //×Ö·û´®³¤¶ÈÎª0±íÊ¾ÊÇÄäÃûĞÅºÅµÆ
+    //å­—ç¬¦ä¸²é•¿åº¦ä¸º0è¡¨ç¤ºæ˜¯åŒ¿åä¿¡å·ç¯
     sem->sem_unnamed_ = true;
 
     ZCE_UNUSED_ARG (pshared);
@@ -40,7 +40,7 @@ int ZCE_LIB::sem_init(sem_t *sem,
 
 #elif defined (ZCE_OS_LINUX)
     //
-    //·Ç±ê×¼²ÎÊı
+    //éæ ‡å‡†å‚æ•°
     ZCE_UNUSED_ARG(max_val);
     return ::sem_init (sem,
                        pshared,
@@ -48,8 +48,8 @@ int ZCE_LIB::sem_init(sem_t *sem,
 #endif
 }
 
-//Ïú»ÙÎŞÃû(ÄäÃû)ĞÅºÅµÆ
-//sem_destroy²»»áÊÍ·Åsem£¬ÒòÎªÕâÊÇÄã·ÖÅäµÄÄÚ´æ
+//é”€æ¯æ— å(åŒ¿å)ä¿¡å·ç¯
+//sem_destroyä¸ä¼šé‡Šæ”¾semï¼Œå› ä¸ºè¿™æ˜¯ä½ åˆ†é…çš„å†…å­˜
 int ZCE_LIB::sem_destroy(sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -61,8 +61,8 @@ int ZCE_LIB::sem_destroy(sem_t *sem)
 #endif
 }
 
-//´ò¿ª(ÓĞÃû)ĞÅºÅµÆ,×î´óÖµ²»ÊÇ±ê×¼²ÎÊı£¬ËùÒÔÓÃÄ¬ÈÏÖ»ĞŞÊÎÁË£¬Õâ¸öÖ÷ÒªÓÃÓÚ´´½¨ÓĞÃûĞÅºÅµÆ,
-//´ò¿ªºó£¬ÒªÊ¹ÓÃsem_close£¬sem_unlink
+//æ‰“å¼€(æœ‰å)ä¿¡å·ç¯,æœ€å¤§å€¼ä¸æ˜¯æ ‡å‡†å‚æ•°ï¼Œæ‰€ä»¥ç”¨é»˜è®¤åªä¿®é¥°äº†ï¼Œè¿™ä¸ªä¸»è¦ç”¨äºåˆ›å»ºæœ‰åä¿¡å·ç¯,
+//æ‰“å¼€åï¼Œè¦ä½¿ç”¨sem_closeï¼Œsem_unlink
 sem_t *ZCE_LIB::sem_open(const char *name,
                          int oflag,
                          mode_t mode,
@@ -74,7 +74,7 @@ sem_t *ZCE_LIB::sem_open(const char *name,
     ZCE_UNUSED_ARG (oflag);
     ZCE_UNUSED_ARG (mode);
 
-    //ÎªÁË±£´æ±äÁ¿»¹ÊÇÏÈnew³öÀ´
+    //ä¸ºäº†ä¿å­˜å˜é‡è¿˜æ˜¯å…ˆnewå‡ºæ¥
     sem_t *ret_sem = new sem_t ();
     ret_sem->sem_unnamed_ = false;
 
@@ -99,7 +99,7 @@ sem_t *ZCE_LIB::sem_open(const char *name,
     }
 
 #elif defined (ZCE_OS_LINUX)
-    //·Ç±ê×¼²ÎÊı
+    //éæ ‡å‡†å‚æ•°
     ZCE_UNUSED_ARG(max_val);
 
     return ::sem_open (name,
@@ -109,7 +109,7 @@ sem_t *ZCE_LIB::sem_open(const char *name,
 #endif
 }
 
-//¹Ø±ÕĞÅºÅµÆ
+//å…³é—­ä¿¡å·ç¯
 int ZCE_LIB::sem_close(sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -122,7 +122,7 @@ int ZCE_LIB::sem_close(sem_t *sem)
 #endif
 }
 
-//É¾³ıĞÅºÅµÆ
+//åˆ é™¤ä¿¡å·ç¯
 int ZCE_LIB::sem_unlink(const char *name)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -191,7 +191,7 @@ int ZCE_LIB::sem_trywait (sem_t *sem)
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //µÈ´ı0s£¬Ïàµ±ÓÚÎŞ×èÈû£¬
+    //ç­‰å¾…0sï¼Œç›¸å½“äºæ— é˜»å¡ï¼Œ
     DWORD result = ::WaitForSingleObject (sem->sem_hanlde_, 0);
 
     if (result == WAIT_OBJECT_0)
@@ -202,7 +202,7 @@ int ZCE_LIB::sem_trywait (sem_t *sem)
     {
         if (result == WAIT_TIMEOUT)
         {
-            //PosixµÄ´íÎóÓ¦¸ÃÊÇÉèÖÃ³ÉEAGAINµÄ,Õâ¸öºÍMutexµÄ·µ»Ø»¹²»Ò»Ñù£¬MutexºÃÏñÊÇEBUSY
+            //Posixçš„é”™è¯¯åº”è¯¥æ˜¯è®¾ç½®æˆEAGAINçš„,è¿™ä¸ªå’ŒMutexçš„è¿”å›è¿˜ä¸ä¸€æ ·ï¼ŒMutexå¥½åƒæ˜¯EBUSY
             errno = EAGAIN;
         }
         else
@@ -221,12 +221,12 @@ int ZCE_LIB::sem_trywait (sem_t *sem)
 
 }
 
-//ĞÅºÅµÆËø¶¨
+//ä¿¡å·ç¯é”å®š
 int ZCE_LIB::sem_wait (sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //INFINITE±êÊ¶Ò»ÖÂµÈ´ı
+    //INFINITEæ ‡è¯†ä¸€è‡´ç­‰å¾…
     DWORD result = ::WaitForSingleObject (sem->sem_hanlde_, INFINITE);
 
     if (result == WAIT_OBJECT_0)
@@ -245,7 +245,7 @@ int ZCE_LIB::sem_wait (sem_t *sem)
 #endif
 }
 
-//ĞÅºÅµÆ³¬Ê±Ëø¶¨
+//ä¿¡å·ç¯è¶…æ—¶é”å®š
 int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 {
 
@@ -253,13 +253,13 @@ int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 
     assert(abs_timeout_spec);
 
-    //µÃµ½Ïà¶ÔÊ±¼ä£¬Õâ¸öÕÛÌÚ£¬
+    //å¾—åˆ°ç›¸å¯¹æ—¶é—´ï¼Œè¿™ä¸ªæŠ˜è…¾ï¼Œ
     timeval now_time = ZCE_LIB::gettimeofday();
     timeval abs_time = ZCE_LIB::make_timeval(abs_timeout_spec);
 
     timeval timeout_time = ZCE_LIB::timeval_sub(abs_time, now_time, true);
 
-    //µÈ´ıÊ±¼ä´¥·¢
+    //ç­‰å¾…æ—¶é—´è§¦å‘
     DWORD retsult = ::WaitForSingleObject (sem->sem_hanlde_,
                                            static_cast<DWORD>( ZCE_LIB::total_milliseconds(timeout_time)));
 
@@ -285,7 +285,7 @@ int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 
     int ret = ::sem_timedwait (sem, abs_timeout_spec);
 
-    //Ò»°ãµÄÏµÍ³ETIME ºÍ ETIMEDOUT µÄ´íÎóÖµ¶¼²»Ì«Ò»Ñù£¬°´LINUXÊÖ²á£¬·µ»ØµÄÓ¦¸ÃÊÇETIMEDOUT
+    //ä¸€èˆ¬çš„ç³»ç»ŸETIME å’Œ ETIMEDOUT çš„é”™è¯¯å€¼éƒ½ä¸å¤ªä¸€æ ·ï¼ŒæŒ‰LINUXæ‰‹å†Œï¼Œè¿”å›çš„åº”è¯¥æ˜¯ETIMEDOUT
     if (ret == -1 && errno == ETIME)
     {
         errno = ETIMEDOUT;
@@ -295,18 +295,18 @@ int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 #endif
 }
 
-//ĞÅºÅµÆ³¬Ê±Ëø¶¨,·Ç±ê×¼ÊµÏÖ,Ê¹ÓÃtimeval½á¹¹£¬
+//ä¿¡å·ç¯è¶…æ—¶é”å®š,éæ ‡å‡†å®ç°,ä½¿ç”¨timevalç»“æ„ï¼Œ
 int ZCE_LIB::sem_timedwait(sem_t *sem, const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
-    //Õâ¸öÊ±¼äÊÇ¾ø¶ÔÖµÊ±¼ä£¬Òªµ÷ÕûÎªÏà¶ÔÊ±¼ä
+    //è¿™ä¸ªæ—¶é—´æ˜¯ç»å¯¹å€¼æ—¶é—´ï¼Œè¦è°ƒæ•´ä¸ºç›¸å¯¹æ—¶é—´
     ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
     return ZCE_LIB::sem_timedwait(sem, &abs_timeout_spec);
 }
 
-//·µ»Øµ±Ç°ĞÅºÅµÆµÄµ±Ç°Öµ, ºÜÒÅº¶£¬WINDOWSÏÂ²»Ö§³Ö£¬ReleaseSemaphoreÓĞÀàËÆ¹¦ÄÜ£¬µ«ÊÇlReleaseCount²ÎÊı²»ÄÜÎª0
-//Èç¹ûÓÃReleaseSemaphoreºÍWaitForSingleObjectÆ´´ÕÒ»¸öÄÇÃ´¿ÉÄÜ¸ü³¬¼¶Ôã¸â£¬
-//Î¢ÈíµÄAPIÊµÏÖµÄÕæÀÃ¡£Visual studioÒ²³ĞÅµÔö¼ÓÕâ¸öÌØĞÔ£¬µ«ÊÇÔÚ2010°æ±¾ÊÇ²»Òª×öÖ¸ÍûÁË¡£
+//è¿”å›å½“å‰ä¿¡å·ç¯çš„å½“å‰å€¼, å¾ˆé—æ†¾ï¼ŒWINDOWSä¸‹ä¸æ”¯æŒï¼ŒReleaseSemaphoreæœ‰ç±»ä¼¼åŠŸèƒ½ï¼Œä½†æ˜¯lReleaseCountå‚æ•°ä¸èƒ½ä¸º0
+//å¦‚æœç”¨ReleaseSemaphoreå’ŒWaitForSingleObjectæ‹¼å‡‘ä¸€ä¸ªé‚£ä¹ˆå¯èƒ½æ›´è¶…çº§ç³Ÿç³•ï¼Œ
+//å¾®è½¯çš„APIå®ç°çš„çœŸçƒ‚ã€‚Visual studioä¹Ÿæ‰¿è¯ºå¢åŠ è¿™ä¸ªç‰¹æ€§ï¼Œä½†æ˜¯åœ¨2010ç‰ˆæœ¬æ˜¯ä¸è¦åšæŒ‡æœ›äº†ã€‚
 int ZCE_LIB::sem_getvalue(sem_t *sem, int *sval)
 {
 #if defined (ZCE_OS_WINDOWS)

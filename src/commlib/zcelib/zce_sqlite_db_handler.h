@@ -1,33 +1,33 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_sqlite3_process.h
-* @author     Viviliu£¬Sailzeng <sailerzeng@gmail.com>
+* @author     Viviliuï¼ŒSailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2008Äê3ÔÂ12ÈÕ
-* @brief      ÓÃÓÚSQLiteµÄÒ»Ğ©²Ù×÷´¦Àí£¬
-*             ÔÚÕâ¸öÄÚ²¿°ü×°µÄÊµÏÖÍêÈ«ÓÃUTF8µÄ¸ñÊ½º¯Êı£¬²»¿¼ÂÇUTF16
-* @details    Ô­À´ÎªÉ¶¼ÓÁËÒ»¸öºó×º3£¬ÒòÎªSQliteµ±Ê±»¹ÔÚ2µÄ°æ±¾
-*             ºÍ3µÄ°æ±¾¹ı¶ÉÆÚ¼ä£¬¶øÇÒSQlite²ĞÈÌµÄ²»¼æÈİÁË2£¨¸ÃºŞ¾ÍÒªºİ£¬ACEÕâµãÉÏ
-*             ÆÅÆÅÂèÂèµÄ£¬£©£¬
-*             SQLiteµÄ´¦ÀíÀà£¬08ÄêÂğ£¿¸Ğ¾õÓ¦¸Ã¸üÔçÒ»µã°Ñ£¬Ó¦¸ÃÊÇ07°Ñ£¬
-*             µ±Ê±´óÔ¼ÊÇÎÒÒªÑ°ÕÒÒ»ÖÖÊı¾İ¿âÀ´´æ·ÅÎÒÃÇµ±Ê±µÄÊı¾İ±í£¬±¾À´Ïë¸ãACCESSµÄ£¬
-*             µ«ÓÃACCESSÈ´²»ÄÜ°ÚÍÑÎ¢ÈíµÄÄ§Öä£¬
-*             ºóÀ´living´ó´ó¸æËßÎÒÃÇRTXÓÃÁËSQLite´æ·ÅÁÄÌìĞÅÏ¢£¬ÓÚÊÇÎÒÃÇÕÒÀ´¿´¿´¡£
-*             ·¢ÏÖµÄÈ·ºÜºÃ£¬ºóÀ´·¢ÏÖÕâ¸öÊı¾İ¿âÒ»·¢²»¿ÉÊÕÊ°£¬Öğ²½ÔÚÊÖ»úÉÏ³ÉÎªÁËÒÆ¶¯
-*             ÖÕ¶ËÊı¾İ¿â°ÔÖ÷¡£Ò²ËãÓĞÔµ£¬¿´¼ûÒ»¸ö¿ªÔ´ºÃ¶«¶«µÄ³É³¤¡£
+* @date       2008å¹´3æœˆ12æ—¥
+* @brief      ç”¨äºSQLiteçš„ä¸€äº›æ“ä½œå¤„ç†ï¼Œ
+*             åœ¨è¿™ä¸ªå†…éƒ¨åŒ…è£…çš„å®ç°å®Œå…¨ç”¨UTF8çš„æ ¼å¼å‡½æ•°ï¼Œä¸è€ƒè™‘UTF16
+* @details    åŸæ¥ä¸ºå•¥åŠ äº†ä¸€ä¸ªåç¼€3ï¼Œå› ä¸ºSQliteå½“æ—¶è¿˜åœ¨2çš„ç‰ˆæœ¬
+*             å’Œ3çš„ç‰ˆæœ¬è¿‡æ¸¡æœŸé—´ï¼Œè€Œä¸”SQliteæ®‹å¿çš„ä¸å…¼å®¹äº†2ï¼ˆè¯¥æ¨å°±è¦ç‹ ï¼ŒACEè¿™ç‚¹ä¸Š
+*             å©†å©†å¦ˆå¦ˆçš„ï¼Œï¼‰ï¼Œ
+*             SQLiteçš„å¤„ç†ç±»ï¼Œ08å¹´å—ï¼Ÿæ„Ÿè§‰åº”è¯¥æ›´æ—©ä¸€ç‚¹æŠŠï¼Œåº”è¯¥æ˜¯07æŠŠï¼Œ
+*             å½“æ—¶å¤§çº¦æ˜¯æˆ‘è¦å¯»æ‰¾ä¸€ç§æ•°æ®åº“æ¥å­˜æ”¾æˆ‘ä»¬å½“æ—¶çš„æ•°æ®è¡¨ï¼Œæœ¬æ¥æƒ³æACCESSçš„ï¼Œ
+*             ä½†ç”¨ACCESSå´ä¸èƒ½æ‘†è„±å¾®è½¯çš„é­”å’’ï¼Œ
+*             åæ¥livingå¤§å¤§å‘Šè¯‰æˆ‘ä»¬RTXç”¨äº†SQLiteå­˜æ”¾èŠå¤©ä¿¡æ¯ï¼Œäºæ˜¯æˆ‘ä»¬æ‰¾æ¥çœ‹çœ‹ã€‚
+*             å‘ç°çš„ç¡®å¾ˆå¥½ï¼Œåæ¥å‘ç°è¿™ä¸ªæ•°æ®åº“ä¸€å‘ä¸å¯æ”¶æ‹¾ï¼Œé€æ­¥åœ¨æ‰‹æœºä¸Šæˆä¸ºäº†ç§»åŠ¨
+*             ç»ˆç«¯æ•°æ®åº“éœ¸ä¸»ã€‚ä¹Ÿç®—æœ‰ç¼˜ï¼Œçœ‹è§ä¸€ä¸ªå¼€æºå¥½ä¸œä¸œçš„æˆé•¿ã€‚
 *
-*             6ÄêÒÔºó£¬ÖØĞÂÉÏÁËSQLiteµÄÍøÕ¾£¬·¢ÏÖÍøÕ¾½ø²½ÁË²»ÉÙ£¬´úÂë·ç¸ñÒ»Ñù£¬Ö±½Ó
-*             Ô´Âë£¬Ëæ±ãÄãÔõÃ´Íæ¡£
+*             6å¹´ä»¥åï¼Œé‡æ–°ä¸Šäº†SQLiteçš„ç½‘ç«™ï¼Œå‘ç°ç½‘ç«™è¿›æ­¥äº†ä¸å°‘ï¼Œä»£ç é£æ ¼ä¸€æ ·ï¼Œç›´æ¥
+*             æºç ï¼Œéšä¾¿ä½ æ€ä¹ˆç©ã€‚
 *
-*             ¹ØÓÚSqliteµÄËÙ¶È£¬Çë²Î¿¼http://www.sqlite.org/speed.html£¬
+*             å…³äºSqliteçš„é€Ÿåº¦ï¼Œè¯·å‚è€ƒhttp://www.sqlite.org/speed.htmlï¼Œ
 *
-*             ĞÒ¸£¾ÍÊÇ£¬¼á³ÖÁËÓ¦¸Ã¼á³ÖµÄ£¬·ÅÆúÁËÓ¦¸Ã·ÅÆúµÄ£¬ÕäÏ§ÏÖÔÚÓµÓĞµÄ£¬²»ºó»ÚÒÑ¾­¾ö¶¨µÄ
+*             å¹¸ç¦å°±æ˜¯ï¼ŒåšæŒäº†åº”è¯¥åšæŒçš„ï¼Œæ”¾å¼ƒäº†åº”è¯¥æ”¾å¼ƒçš„ï¼Œçæƒœç°åœ¨æ‹¥æœ‰çš„ï¼Œä¸åæ‚”å·²ç»å†³å®šçš„
 *
 */
 #ifndef ZCE_LIB_SQLITE_DBHANDLE_H_
 #define ZCE_LIB_SQLITE_DBHANDLE_H_
 
-//Ä¿Ç°°æ±¾ÏŞÖÆÖ»¼ÓÕâÒ»¸ö
+//ç›®å‰ç‰ˆæœ¬é™åˆ¶åªåŠ è¿™ä¸€ä¸ª
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 #include "zce_os_adapt_string.h"
@@ -36,27 +36,27 @@
 class ZCE_SQLite_Result;
 
 /*!
-@brief      Á¬½Ó´¦ÀíÒ»¸öSQLite3Êı¾İ¿âµÄ£¬´ò¿ªÒ»¸öSQLite3Êı¾İ¿â¾ÍµÃµ½Handler
-            ÓÃHandlerÍê³ÉºóÃæ¸÷ÖÖÊı¾İ¿â²Ù×÷¡£
+@brief      è¿æ¥å¤„ç†ä¸€ä¸ªSQLite3æ•°æ®åº“çš„ï¼Œæ‰“å¼€ä¸€ä¸ªSQLite3æ•°æ®åº“å°±å¾—åˆ°Handler
+            ç”¨Handlerå®Œæˆåé¢å„ç§æ•°æ®åº“æ“ä½œã€‚
 */
 class ZCE_SQLite_DB_Handler
 {
 
 public:
 
-    ///¹¹Ôìº¯Êı£¬
+    ///æ„é€ å‡½æ•°ï¼Œ
     ZCE_SQLite_DB_Handler();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~ZCE_SQLite_DB_Handler();
 
     /*!
-    @brief      ´ò¿ªÊı¾İ¿â£¬×¢ÒâÎÄ¼şÃû³ÆµÄÂ·¾¶ÒªÓÃUTF8±àÂë£¬ËùÒÔ×îºÃ²»ÒªÓÃÖĞÎÄ?
-    @return     int      ´ò¿ªÊı¾İ¿âÊÇ·ñ³É¹¦ 0 ³É¹¦£¬ÆäËûÊ§°Ü
-    @param      db_file  Êı¾İ¿âÎÄ¼şµÄÃû³Æ£¬
-                         ÓÉÓÚÕûÌå´úÂëµÄ¹ØÏµ£¬Õâ¶ù¼ÙÉèÔÚWINDOWSÄã´«ÈëµÄÊÇANSIµÄ
-                         ×Ö·û´®£¬ÔÚLINUX£¬Äã´«ÈëµÄÊÇUTF8
-    @param      read_only Ö»¶Á
-    @param      create_db ÊÇ·ñĞèÒª´´½¨Êı¾İ¿â£¬
+    @brief      æ‰“å¼€æ•°æ®åº“ï¼Œæ³¨æ„æ–‡ä»¶åç§°çš„è·¯å¾„è¦ç”¨UTF8ç¼–ç ï¼Œæ‰€ä»¥æœ€å¥½ä¸è¦ç”¨ä¸­æ–‡?
+    @return     int      æ‰“å¼€æ•°æ®åº“æ˜¯å¦æˆåŠŸ 0 æˆåŠŸï¼Œå…¶ä»–å¤±è´¥
+    @param      db_file  æ•°æ®åº“æ–‡ä»¶çš„åç§°ï¼Œ
+                         ç”±äºæ•´ä½“ä»£ç çš„å…³ç³»ï¼Œè¿™å„¿å‡è®¾åœ¨WINDOWSä½ ä¼ å…¥çš„æ˜¯ANSIçš„
+                         å­—ç¬¦ä¸²ï¼Œåœ¨LINUXï¼Œä½ ä¼ å…¥çš„æ˜¯UTF8
+    @param      read_only åªè¯»
+    @param      create_db æ˜¯å¦éœ€è¦åˆ›å»ºæ•°æ®åº“ï¼Œ
     */
     int open_database(const char *db_file,
                       bool read_only,
@@ -65,8 +65,8 @@ public:
 
 #if defined ZCE_OS_WINDOWS
     /*!
-    @brief      ÓÃMBCS(WindowsÏÂËµµÄ multibyte character set )µÄÂ·¾¶Ãû³Æ´ò¿ªÒ»¸öÄ¿Â¼,
-    *           ÒòÎªÎÒÄÚ²¿ÓÃµÄÈ«²¿ÊÇUTF8µÄº¯Êı£¬ËùÒÔÕâ»áÓĞÎÊÌâ£¬±ØĞëÓÃĞë×ª»»±àÂë£¬
+    @brief      ç”¨MBCS(Windowsä¸‹è¯´çš„ multibyte character set )çš„è·¯å¾„åç§°æ‰“å¼€ä¸€ä¸ªç›®å½•,
+    *           å› ä¸ºæˆ‘å†…éƒ¨ç”¨çš„å…¨éƒ¨æ˜¯UTF8çš„å‡½æ•°ï¼Œæ‰€ä»¥è¿™ä¼šæœ‰é—®é¢˜ï¼Œå¿…é¡»ç”¨é¡»è½¬æ¢ç¼–ç ï¼Œ
     */
     int open_mbcs_path_db(const char *utf16_db_path,
                           bool read_only,
@@ -76,47 +76,47 @@ public:
 #endif
 
 
-    ///¹Ø±ÕÊı¾İ¿â
+    ///å…³é—­æ•°æ®åº“
     void close_database();
 
-    ///È¡µÃ´íÎóÓï¾äStr
+    ///å–å¾—é”™è¯¯è¯­å¥Str
     const char *error_message();
-    ///È¡µÃDB·µ»ØµÄ´íÎóID
+    ///å–å¾—DBè¿”å›çš„é”™è¯¯ID
     int error_code();
 
-    ///È¡µÃSQLiteµÄ¾ä±ú
+    ///å–å¾—SQLiteçš„å¥æŸ„
     inline sqlite3 *get_sqlite_handler()
     {
         return sqlite3_handler_;
     };
 
-    ///¿ªÊ¼Ò»¸öÊÂÎñ
+    ///å¼€å§‹ä¸€ä¸ªäº‹åŠ¡
     int begin_transaction();
-    ///Ìá½»Ò»¸öÊÂÎñ£¬»òÕßËµ½áÊøÒ»¸öÊÂÎñ
+    ///æäº¤ä¸€ä¸ªäº‹åŠ¡ï¼Œæˆ–è€…è¯´ç»“æŸä¸€ä¸ªäº‹åŠ¡
     int commit_transction();
 
-    ///½«Í¬²½Ñ¡Ïî¹Ø±Õ£¬½¨Òé²»ÒªÊ¹ÓÃ
+    ///å°†åŒæ­¥é€‰é¡¹å…³é—­ï¼Œå»ºè®®ä¸è¦ä½¿ç”¨
     int turn_off_synch();
 
-    ///Ö´ĞĞDDLµÈ²»ĞèÒª½á¹ûµÄSQL
+    ///æ‰§è¡ŒDDLç­‰ä¸éœ€è¦ç»“æœçš„SQL
     int execute(const char *sql_string);
 
     /*!
-    * @brief      Ö´ĞĞSQL²éÏÂµÄ·â×°,£¨¶ş½øÖÆµÄ²»ĞĞ£©
-    * @return     int ·µ»Ø0±íÊ¾³É¹¦£¬
-    * @param      sql_string SQLÓï¾ä
-    * @param      Ö´ĞĞµÄ½á¹û£¬·µ»ØÖµ
-    * @note       ÄÚ²¿»áµ÷ÓÃsqlite3_get_table,sqlite3_free_table£¬
-    *             Õâ¸öº¯ÊıÔÚSQLiteÖĞ²»ÊÇ±»ÍÆ¼öµÄº¯Êı£¬½¨ÒéÊ¹ÓÃÊ±¿¼ÂÇÒ»ÏÂ£¬ËäÈ»Æä
-    *             Ö´ĞĞ²éÑ¯£¬È·Êµ±Èsqlite3_exec£¬·½±ã
-    *             ÁíÍâ£¬Õâ¸öº¯ÊıÓ¦¸Ã²»ÄÜ´¦Àí¶ş½øÖÆÊı¾İ£¬ÒòÎªÄãÎŞ·¨µÃÖª½á¹û³¤¶È
+    * @brief      æ‰§è¡ŒSQLæŸ¥ä¸‹çš„å°è£…,ï¼ˆäºŒè¿›åˆ¶çš„ä¸è¡Œï¼‰
+    * @return     int è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œ
+    * @param      sql_string SQLè¯­å¥
+    * @param      æ‰§è¡Œçš„ç»“æœï¼Œè¿”å›å€¼
+    * @note       å†…éƒ¨ä¼šè°ƒç”¨sqlite3_get_table,sqlite3_free_tableï¼Œ
+    *             è¿™ä¸ªå‡½æ•°åœ¨SQLiteä¸­ä¸æ˜¯è¢«æ¨èçš„å‡½æ•°ï¼Œå»ºè®®ä½¿ç”¨æ—¶è€ƒè™‘ä¸€ä¸‹ï¼Œè™½ç„¶å…¶
+    *             æ‰§è¡ŒæŸ¥è¯¢ï¼Œç¡®å®æ¯”sqlite3_execï¼Œæ–¹ä¾¿
+    *             å¦å¤–ï¼Œè¿™ä¸ªå‡½æ•°åº”è¯¥ä¸èƒ½å¤„ç†äºŒè¿›åˆ¶æ•°æ®ï¼Œå› ä¸ºä½ æ— æ³•å¾—çŸ¥ç»“æœé•¿åº¦
     */
     int get_table(const char *sql_string,
                   ZCE_SQLite_Result *result);
 
 protected:
 
-    ///sqlite3µÄ´¦ÀíHandler
+    ///sqlite3çš„å¤„ç†Handler
     sqlite3         *sqlite3_handler_;
 
 };
@@ -126,9 +126,9 @@ protected:
 //==============================================================================================
 
 /*!
-* @brief      get_table º¯Êı·µ»ØµÄ½á¹û²ÎÊı
-*             ÆäÊµ¾ÍÊÇsqlite3_get_table µÄ½á¹û²ÎÊıµÄ·â×°
-* @note       Çë×¢Òâ£¬sqlite3_get_table Ö»ÊÇÓ¦¸ÃÏòºó¼æÈİµÄº¯Êı
+* @brief      get_table å‡½æ•°è¿”å›çš„ç»“æœå‚æ•°
+*             å…¶å®å°±æ˜¯sqlite3_get_table çš„ç»“æœå‚æ•°çš„å°è£…
+* @note       è¯·æ³¨æ„ï¼Œsqlite3_get_table åªæ˜¯åº”è¯¥å‘åå…¼å®¹çš„å‡½æ•°
 */
 class ZCE_SQLite_Result
 {
@@ -139,20 +139,20 @@ public:
     ZCE_SQLite_Result();
     ~ZCE_SQLite_Result();
 
-    ///½á¹û¼¯ºÏÊÍ·ÅÎªNULL
+    ///ç»“æœé›†åˆé‡Šæ”¾ä¸ºNULL
     inline bool is_null()
     {
         return (result_ == NULL);
     }
 
 
-    ///ÊÍ·Å½á¹û¼¯ºÏ
+    ///é‡Šæ”¾ç»“æœé›†åˆ
     void free_result();
 
     /*!
-    * @brief      ·µ»ØÒ»¸ö×Ö¶ÎµÄÃû³Æ
-    * @return     const char* ×Ö¶ÎµÄÃû³Æ
-    * @param      column ×Ö¶ÎµÄÁĞºÅ,´Ó1¿ªÊ¼
+    * @brief      è¿”å›ä¸€ä¸ªå­—æ®µçš„åç§°
+    * @return     const char* å­—æ®µçš„åç§°
+    * @param      column å­—æ®µçš„åˆ—å·,ä»1å¼€å§‹
     */
     const char *field_name(int column)
     {
@@ -160,10 +160,10 @@ public:
     }
 
     /*!
-    * @brief      ·µ»ØÒ»¸ö×Ö¶ÎµÄÊı¾İ£¬
-    * @return     const char* ×Ö¶ÎµÄÊı¾İ
-    * @param      row    ×Ö¶ÎµÄÁĞºÅ,´Ó1¿ªÊ¼
-    * @param      column ×Ö¶ÎµÄĞĞºÅ,´Ó1¿ªÊ¼
+    * @brief      è¿”å›ä¸€ä¸ªå­—æ®µçš„æ•°æ®ï¼Œ
+    * @return     const char* å­—æ®µçš„æ•°æ®
+    * @param      row    å­—æ®µçš„åˆ—å·,ä»1å¼€å§‹
+    * @param      column å­—æ®µçš„è¡Œå·,ä»1å¼€å§‹
     */
     const char *field_cstr(int row, int column)
     {
@@ -171,11 +171,11 @@ public:
     }
 
     /*!
-    * @brief      ¸ù¾İÀàĞÍ£¬·µ»ØÒ»¸ö×Ö¶ÎµÄÊı¾İ£¬
+    * @brief      æ ¹æ®ç±»å‹ï¼Œè¿”å›ä¸€ä¸ªå­—æ®µçš„æ•°æ®ï¼Œ
     * @tparam     value_type
     * @return     value_type
-    * @param      row    ×Ö¶ÎµÄÁĞºÅ,´Ó1¿ªÊ¼
-    * @param      column ×Ö¶ÎµÄĞĞºÅ,´Ó1¿ªÊ¼
+    * @param      row    å­—æ®µçš„åˆ—å·,ä»1å¼€å§‹
+    * @param      column å­—æ®µçš„è¡Œå·,ä»1å¼€å§‹
     * @note
     */
     template <typename value_type>
@@ -184,13 +184,13 @@ public:
         return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
     }
 
-    ///ĞĞµÄÊıÁ¿
+    ///è¡Œçš„æ•°é‡
     inline int row_number()
     {
         return row_;
     }
 
-    ///ÁĞµÄÊıÁ¿
+    ///åˆ—çš„æ•°é‡
     inline int column_number()
     {
         return column_;
@@ -201,10 +201,10 @@ protected:
 
     /// Results of the query
     char **result_ = NULL;
-    /// Number of result rows written here £¬row_Ò²ÊÇ´Ó1¿ªÊ¼
+    /// Number of result rows written here ï¼Œrow_ä¹Ÿæ˜¯ä»1å¼€å§‹
     int row_ = 0;
 
-    /// Number of result columns written here ,column_ ´Ó1¿ªÊ¼
+    /// Number of result columns written here ,column_ ä»1å¼€å§‹
     int column_ = 0;
 
     /// Error msg written here

@@ -1,4 +1,4 @@
-#include "ogre_predefine.h"
+ï»¿#include "ogre_predefine.h"
 #include "ogre_comm_manager.h"
 
 #include "ogre_udp_ctrl_handler.h"
@@ -20,14 +20,14 @@ Ogre_Comm_Manger::~Ogre_Comm_Manger()
 
 }
 
-//¼ì²éÒ»¸ö¶Ë¿ÚÊÇ·ñ°²È«.È»ºó¸ù¾İÅäÖÃ½øĞĞ´¦Àí
+//æ£€æŸ¥ä¸€ä¸ªç«¯å£æ˜¯å¦å®‰å…¨.ç„¶åæ ¹æ®é…ç½®è¿›è¡Œå¤„ç†
 int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
 {
 
-    //Èç¹û´ò¿ªÁË±£ÏÕ¼ì²é,¼ì²éÅäÖÃµÄ¶Ë¿Ú
+    //å¦‚æœæ‰“å¼€äº†ä¿é™©æ£€æŸ¥,æ£€æŸ¥é…ç½®çš„ç«¯å£
     if ( false == inetadd.check_safeport() )
     {
-        //Èç¹ûÊ¹ÓÃ±£ÏÕ´ò¿ª(TRUE)
+        //å¦‚æœä½¿ç”¨ä¿é™©æ‰“å¼€(TRUE)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
             ZCE_LOG(RS_ERROR, "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
@@ -35,10 +35,10 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
                     inetadd.get_port_number());
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
-        //Èç¹û²»Ê¹ÓÃ±£ÏÕ(FALSE)
+        //å¦‚æœä¸ä½¿ç”¨ä¿é™©(FALSE)
         else
         {
-            //¸ø³ö¾¯¸æ
+            //ç»™å‡ºè­¦å‘Š
             ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s|%u] listen.Please notice! \n",
                     inetadd.get_host_addr(),
                     inetadd.get_port_number());
@@ -48,15 +48,15 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
     return 0;
 }
 
-//µÃµ½ÅäÖÃ
+//å¾—åˆ°é…ç½®
 int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
 
-    //ÉèÖÃ´¦ÀíµÄÖ¡µÄ×î´ó³¤¶È
+    //è®¾ç½®å¤„ç†çš„å¸§çš„æœ€å¤§é•¿åº¦
     Ogre4a_App_Frame::set_max_framedata_len(config ->ogre_cfg_data_.max_data_len_);
 
-    //IPÏŞÖÆ,
+    //IPé™åˆ¶,
     ret = Ogre_IPRestrict_Mgr::instance()->get_config(config);
 
     if (0 != ret )
@@ -64,7 +64,7 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
         return ret;
     }
 
-    //TCP ¶ÁÈ¡ÅäÖÃ
+    //TCP è¯»å–é…ç½®
     ret = Ogre_TCP_Svc_Handler::get_config(config);
     if (ret != 0)
     {
@@ -75,8 +75,8 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
 }
 
 
-//½«ËùÓĞµÄ¶ÓÁĞÖĞµÄÊı¾İ·¢ËÍ£¬´ÓSEND¹ÜµÀÕÒµ½ËùÓĞµÄÊı¾İÈ¥·¢ËÍ,
-//ÏëÁËÏë£¬»¹ÊÇ¼ÓÁËÒ»¸ö×î¶à·¢ËÍµÄÖ¡µÄÏŞ¶î
+//å°†æ‰€æœ‰çš„é˜Ÿåˆ—ä¸­çš„æ•°æ®å‘é€ï¼Œä»SENDç®¡é“æ‰¾åˆ°æ‰€æœ‰çš„æ•°æ®å»å‘é€,
+//æƒ³äº†æƒ³ï¼Œè¿˜æ˜¯åŠ äº†ä¸€ä¸ªæœ€å¤šå‘é€çš„å¸§çš„é™é¢
 int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 {
     int ret = 0;
@@ -94,12 +94,12 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 
         if (ret != 0)
         {
-            //¹é»¹»º´æ
+            //å½’è¿˜ç¼“å­˜
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
             continue;
         }
 
-        //Èç¹ûFRAMEµÄ³¤¶È
+        //å¦‚æœFRAMEçš„é•¿åº¦
         if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
         {
             ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
@@ -109,27 +109,27 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
             return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
         }
 
-        //Èç¹ûÊÇTCP
+        //å¦‚æœæ˜¯TCP
         if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_TCP )
         {
             ret = Ogre_TCP_Svc_Handler::process_send_data(send_frame);
 
             if (ret != 0)
             {
-                //¹é»¹»º´æ
+                //å½’è¿˜ç¼“å­˜
                 Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
                 continue;
             }
         }
 
-        //Èç¹ûÊÇUDP
+        //å¦‚æœæ˜¯UDP
         else if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_UDP )
         {
-            //²»¼ì²é´íÎó
+            //ä¸æ£€æŸ¥é”™è¯¯
             Ogre_UDPSvc_Hdl::send_alldata_to_udp(send_frame);
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
         }
-        //Äã¶¼²»ÌîĞ´£¬ÎÒÈçºÎ·¢ËÍ£¿
+        //ä½ éƒ½ä¸å¡«å†™ï¼Œæˆ‘å¦‚ä½•å‘é€ï¼Ÿ
         else
         {
             ZCE_LOG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
@@ -140,12 +140,12 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
     return 0;
 }
 
-//³õÊ¼»¯Í¨Ñ¶¹ÜÀíÆ÷
+//åˆå§‹åŒ–é€šè®¯ç®¡ç†å™¨
 int Ogre_Comm_Manger::init_comm_manger()
 {
     int ret = 0;
 
-    //³õÊ¼»¯ËùÓĞµÄ¼àÌı¶Ë¿Ú
+    //åˆå§‹åŒ–æ‰€æœ‰çš„ç›‘å¬ç«¯å£
 
     for (unsigned int i = 0; i < ogre_config_->ogre_cfg_data_.accept_peer_num_; ++i)
     {
@@ -172,7 +172,7 @@ int Ogre_Comm_Manger::init_comm_manger()
         }
     }
 
-    //³õÊ¼»¯¾²Ì¬Êı¾İ
+    //åˆå§‹åŒ–é™æ€æ•°æ®
     ret = Ogre_TCP_Svc_Handler::init_all_static_data();
 
     if (ret != 0)
@@ -183,7 +183,7 @@ int Ogre_Comm_Manger::init_comm_manger()
     return 0;
 }
 
-//×¢ÏúÍ¨Ñ¶¹ÜÀíÆ÷
+//æ³¨é”€é€šè®¯ç®¡ç†å™¨
 int Ogre_Comm_Manger::uninit_comm_manger()
 {
     //
@@ -194,7 +194,7 @@ int Ogre_Comm_Manger::uninit_comm_manger()
     return 0;
 }
 
-//µÃµ½µ¥×ÓµÄÊµÀı
+//å¾—åˆ°å•å­çš„å®ä¾‹
 Ogre_Comm_Manger *Ogre_Comm_Manger::instance()
 {
     if (instance_ == NULL)
@@ -205,7 +205,7 @@ Ogre_Comm_Manger *Ogre_Comm_Manger::instance()
     return instance_;
 }
 
-//ÇåÀíµ¥×ÓµÄÊµÀı
+//æ¸…ç†å•å­çš„å®ä¾‹
 void Ogre_Comm_Manger::clean_instance()
 {
     if (instance_)

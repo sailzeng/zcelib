@@ -1,46 +1,46 @@
-/*!
+ï»¿/*!
 * @filename   zce_boost_random.h
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012Äê10ÔÂ1ÈÕ
-* @brief      Èô¸É¸ö²úÉúËæ»úÊýµÄÀà£¬°üÀ¨Ëæ»úÊý·¢ÉúÆ÷µÈ
-*             ´Ë´úÂëÃûÎªboost£¬ÆäÊµºÍboost¼¸ºõÃ»ÓÐ¶à´ó¹ØÏµ£¬Ö»ÊÇboost
-*             ÓÐÀàËÆµÄ´úÂë¡£C++11ºóÀ´Ò²ÓÐÏà¹ØµÄµÄ¿âÁË£¬µ«ÎÒÖ÷ÒªÄ¿±êÊÇËÅºò
-*             ºÃÓÎÏ·¿ª·¢£¬ËùÒÔ»¹ÊÇ±£ÁôÁËÕâ¸ö´úÂë¡£
+* @date       2012å¹´10æœˆ1æ—¥
+* @brief      è‹¥å¹²ä¸ªäº§ç”Ÿéšæœºæ•°çš„ç±»ï¼ŒåŒ…æ‹¬éšæœºæ•°å‘ç”Ÿå™¨ç­‰
+*             æ­¤ä»£ç åä¸ºboostï¼Œå…¶å®žå’Œboostå‡ ä¹Žæ²¡æœ‰å¤šå¤§å…³ç³»ï¼Œåªæ˜¯boost
+*             æœ‰ç±»ä¼¼çš„ä»£ç ã€‚C++11åŽæ¥ä¹Ÿæœ‰ç›¸å…³çš„çš„åº“äº†ï¼Œä½†æˆ‘ä¸»è¦ç›®æ ‡æ˜¯ä¼ºå€™
+*             å¥½æ¸¸æˆå¼€å‘ï¼Œæ‰€ä»¥è¿˜æ˜¯ä¿ç•™äº†è¿™ä¸ªä»£ç ã€‚
 * @details
-* ÎªÊ²Ã´Òª×Ô¼ºÐ´randµÄ´úÂë£¬ÒòÎª2¸öÔ­Òò£¬
-* 1.ÏµÍ³µÄrand²»Ì«ºÃ£¬±ÈÈçËûÃÇµÄÑ­»·³¤¶È¼¶±ðÒ»°ãÊÇ2^32,¶øÇÒWINµÄrandomÖµ
-* ²úÉúÐ¡ÓÚ65535µÄÊýÖµ£¬ÎÒÉî¿Ì¼ÇµÃÒ»´Î²âÊÔÓÃËæ»úÊýÄ£Äâ´óÁ¿HASHµÄÖÖ×Ó£¬½á¹û³å
-* Í»µ½ËÀ¡£
-* 2.ÎÒÃÇËùÓÐµÄrand¶¼ÊÇÎ±Ëæ»ú£¬Î±Ëæ»úÊÇÊ²Ã´ÒâË¼£¿¾ÍÊÇÄãÓÃ²úÉúµÄÒ»¸öÊý¾Ý¿ÉÒÔÍÆËã
-* ºóÃæÒ»¸ö²úÉúµÄÊý¾Ý£¬ËùÒÔÎªÁË°²È«»¹ÊÇ²»ÓÃËûÃÇ°É¡£
-* £¨±ÈÈçÄãÓÃËæ»úÊý²úÉúÒ»¸öµç»°¿¨ÃÜÂë£¬Èç¹ûÄã²»×öÒ»Ð©±ä»¯£¬ÄÇÃ´ÂòÁËÒ»ÕÅ¿¨µÄÈË£¬
-* ¿ÉÒÔÍÆËãÄã²úÉúµÄËùÓÐµç»°¿¨ÃÜÂë£©
-*  ×ÛÉÏËùÊö£¬ÎÒ¾õµÃ»¹ÊÇ×Ô¼ºÊµÏÖÒ»¸ö±È½ÏºÃ£¬ÌØ±ðÊÇÓÎÏ·£¬ÐèÒªÓÐ´óÁ¿µÄËæ»úÊýµÄµØ·½
+* ä¸ºä»€ä¹ˆè¦è‡ªå·±å†™randçš„ä»£ç ï¼Œå› ä¸º2ä¸ªåŽŸå› ï¼Œ
+* 1.ç³»ç»Ÿçš„randä¸å¤ªå¥½ï¼Œæ¯”å¦‚ä»–ä»¬çš„å¾ªçŽ¯é•¿åº¦çº§åˆ«ä¸€èˆ¬æ˜¯2^32,è€Œä¸”WINçš„randomå€¼
+* äº§ç”Ÿå°äºŽ65535çš„æ•°å€¼ï¼Œæˆ‘æ·±åˆ»è®°å¾—ä¸€æ¬¡æµ‹è¯•ç”¨éšæœºæ•°æ¨¡æ‹Ÿå¤§é‡HASHçš„ç§å­ï¼Œç»“æžœå†²
+* çªåˆ°æ­»ã€‚
+* 2.æˆ‘ä»¬æ‰€æœ‰çš„randéƒ½æ˜¯ä¼ªéšæœºï¼Œä¼ªéšæœºæ˜¯ä»€ä¹ˆæ„æ€ï¼Ÿå°±æ˜¯ä½ ç”¨äº§ç”Ÿçš„ä¸€ä¸ªæ•°æ®å¯ä»¥æŽ¨ç®—
+* åŽé¢ä¸€ä¸ªäº§ç”Ÿçš„æ•°æ®ï¼Œæ‰€ä»¥ä¸ºäº†å®‰å…¨è¿˜æ˜¯ä¸ç”¨ä»–ä»¬å§ã€‚
+* ï¼ˆæ¯”å¦‚ä½ ç”¨éšæœºæ•°äº§ç”Ÿä¸€ä¸ªç”µè¯å¡å¯†ç ï¼Œå¦‚æžœä½ ä¸åšä¸€äº›å˜åŒ–ï¼Œé‚£ä¹ˆä¹°äº†ä¸€å¼ å¡çš„äººï¼Œ
+* å¯ä»¥æŽ¨ç®—ä½ äº§ç”Ÿçš„æ‰€æœ‰ç”µè¯å¡å¯†ç ï¼‰
+*  ç»¼ä¸Šæ‰€è¿°ï¼Œæˆ‘è§‰å¾—è¿˜æ˜¯è‡ªå·±å®žçŽ°ä¸€ä¸ªæ¯”è¾ƒå¥½ï¼Œç‰¹åˆ«æ˜¯æ¸¸æˆï¼Œéœ€è¦æœ‰å¤§é‡çš„éšæœºæ•°çš„åœ°æ–¹
 *
-* Ëæ»úÊýµÄËã·¨»ù±¾·Ö³É¼¸ÖÖ
-* @li ÏßÐÔÍ¬Óà Ð§¹ûÒ»°ã
-* @li Æ½·½È¡ÖÐ Ð§¹ûºÜÒ»°ã
-* @li ÊýÑ§Ìì²ÅÃÇÏë³öÀ´µÄËã·¨£¬ÏÂÃæ¾ÍÊÇÕâÐ©Ëã·¨µÄ¼¯ºÏ»ã×Ü£¬
+* éšæœºæ•°çš„ç®—æ³•åŸºæœ¬åˆ†æˆå‡ ç§
+* @li çº¿æ€§åŒä½™ æ•ˆæžœä¸€èˆ¬
+* @li å¹³æ–¹å–ä¸­ æ•ˆæžœå¾ˆä¸€èˆ¬
+* @li æ•°å­¦å¤©æ‰ä»¬æƒ³å‡ºæ¥çš„ç®—æ³•ï¼Œä¸‹é¢å°±æ˜¯è¿™äº›ç®—æ³•çš„é›†åˆæ±‡æ€»ï¼Œ
 *
-* ¹ØÓÚËæ»úÊýµÄËã·¨ÎÊÌâ£¬°³µÄÊýÑ§²»ºÃ£¬»ù±¾¶¼ÊÇ´ÓBOOSTÖÐ¼äÖªµÀµÄÃû×Ö£¬È»ºó´Ó
-* ÍøÉÏÅÀµÄËã·¨£¬
-* ±¾À´ÏëBOOSTµÄ´úÂëÏëÌáÈ¡³öÀ´£¬·¢ÏÖÒª·ÑÌ«´óµÄÁ¦Æø£¨Ä£°æÖÐ¶¾Ì«Éî£©£¬²»ºÏËã£¬
-* ËãÁË£¬£¨ÆäÊµÎÒµÄ´úÂë×îºóÎªÁË¼ò½àÒ²ÓÃÁË²¿·ÖÄ£°æ£©
+* å…³äºŽéšæœºæ•°çš„ç®—æ³•é—®é¢˜ï¼Œä¿ºçš„æ•°å­¦ä¸å¥½ï¼ŒåŸºæœ¬éƒ½æ˜¯ä»ŽBOOSTä¸­é—´çŸ¥é“çš„åå­—ï¼Œç„¶åŽä»Ž
+* ç½‘ä¸Šçˆ¬çš„ç®—æ³•ï¼Œ
+* æœ¬æ¥æƒ³BOOSTçš„ä»£ç æƒ³æå–å‡ºæ¥ï¼Œå‘çŽ°è¦è´¹å¤ªå¤§çš„åŠ›æ°”ï¼ˆæ¨¡ç‰ˆä¸­æ¯’å¤ªæ·±ï¼‰ï¼Œä¸åˆç®—ï¼Œ
+* ç®—äº†ï¼Œï¼ˆå…¶å®žæˆ‘çš„ä»£ç æœ€åŽä¸ºäº†ç®€æ´ä¹Ÿç”¨äº†éƒ¨åˆ†æ¨¡ç‰ˆï¼‰
 *
-* Ëæ»úÊýµÄÒ»Ð©²Î¿¼ÊµÏÖ´úÂë
-* GNU Scientific Library (GSL) ÀïÃæÒ²ÓÐºÜ¶àËæ»úÊýµÄº¯Êý£¬ÓÐÐËÈ¤¿ÉÒÔ¿´¿´£¬
-* ÎÒ¹À¼ÆBOOSTµÄ´øÀ´Ò²À´×ÔÕâ¶ù¡£GNUÕæÊÇºÃÈËÑ½
+* éšæœºæ•°çš„ä¸€äº›å‚è€ƒå®žçŽ°ä»£ç 
+* GNU Scientific Library (GSL) é‡Œé¢ä¹Ÿæœ‰å¾ˆå¤šéšæœºæ•°çš„å‡½æ•°ï¼Œæœ‰å…´è¶£å¯ä»¥çœ‹çœ‹ï¼Œ
+* æˆ‘ä¼°è®¡BOOSTçš„å¸¦æ¥ä¹Ÿæ¥è‡ªè¿™å„¿ã€‚GNUçœŸæ˜¯å¥½äººå‘€
 * http://www.koders.com/c/fid694A621D3301A5177FEF0181F19D64D75CDC9CCC.aspx?s=ranlux#L1
-* Õâ¶ùÒ²ÓÐÉÙÁ¿¼¸¸öÊµÏÖ
+* è¿™å„¿ä¹Ÿæœ‰å°‘é‡å‡ ä¸ªå®žçŽ°
 * http://www.koders.com/cpp/fid63AE02B1E8D46B18CBAC4338C47735991DBCBFC0.aspx?s=Chebyshev
 *
-* ÎÒÏëÊ¹ÓÃµÄ²úÉúËæ»úÊýµÄËã·¨°üÀ¨ÈçÏÂ¼¸¸ö£¬Í¬Ê±¸ø³öBOOST¸ø³öµÄËûÃÇµÄËã·¨µÄËÙ¶ÈÒÔ¼°Ñ­»·ÖÜÆÚ¶Ô±È
-* Ëã·¨                      Ñ­»·³¤¶È       Éú³ÉÊý×ÖµÄ·¶Î§         BOOST¸ø³öµÄËã·¨Ê±¼ä±È     ÎÒµÄÊµÏÖ¸ø³öµÄËã·¨Ê±¼ä±È
-*                   x                                          £¨100%×î¿ì£©£¬           ²úÉú1ÒÚÓÃÊ± Ã¿s²úÉúÊýÁ¿     ºÍbsdrand±È½Ï   ºÍ£¨µÚ¶þÃû£© mt19937±È½Ï
-* VC++Rand                               2^16                 ÎÞ                      2.304s    43402777.7    10.67%         18.57%
-* bsdrand                  2^31          (uint32)0 - 2^31     ÎÞ                      0.216s    462962962.6   100%           198.14%
+* æˆ‘æƒ³ä½¿ç”¨çš„äº§ç”Ÿéšæœºæ•°çš„ç®—æ³•åŒ…æ‹¬å¦‚ä¸‹å‡ ä¸ªï¼ŒåŒæ—¶ç»™å‡ºBOOSTç»™å‡ºçš„ä»–ä»¬çš„ç®—æ³•çš„é€Ÿåº¦ä»¥åŠå¾ªçŽ¯å‘¨æœŸå¯¹æ¯”
+* ç®—æ³•                      å¾ªçŽ¯é•¿åº¦       ç”Ÿæˆæ•°å­—çš„èŒƒå›´         BOOSTç»™å‡ºçš„ç®—æ³•æ—¶é—´æ¯”     æˆ‘çš„å®žçŽ°ç»™å‡ºçš„ç®—æ³•æ—¶é—´æ¯”
+*                   x                                          ï¼ˆ100%æœ€å¿«ï¼‰ï¼Œ           äº§ç”Ÿ1äº¿ç”¨æ—¶ æ¯säº§ç”Ÿæ•°é‡     å’Œbsdrandæ¯”è¾ƒ   å’Œï¼ˆç¬¬äºŒåï¼‰ mt19937æ¯”è¾ƒ
+* VC++Rand                               2^16                 æ—                       2.304s    43402777.7    10.67%         18.57%
+* bsdrand                  2^31          (uint32)0 - 2^31     æ—                       0.216s    462962962.6   100%           198.14%
 * rand48                   2^48          (uint32)0 - 2^32     59%                     0.681s    146842878.1   31.71%         62.84%
 * taus88                   ~2^88         (uint32)0 - 2^32     100%                    0.4610    216919739.6   46.85%         92.84
 * mt19937                  2^19937       (uint32)0 - 2^32     81%                     0.4280    233644859.8   50.46%         100%
@@ -49,26 +49,26 @@
 * ranlux223(ranlux3)       ~10^171       (uint32)0 - 2^24     6%                      8.8760    1126636.1     0.24%          0.48%
 * ranlux389(ranlux4)       ~10^171       (uint32)0 - 2^24     3%                      15.582    641761.4      0.13%          0.27%
 *
-* ¶ÔÓÚÑ­»·³¤¶ÈÎÒµÄÀí½âÊÇ£¬Èç¹ûËã·¨²úÉúÒ»¸ö0x1111µÄÊýÖµ£¬µÚ¶þ¸ö²úÉú0x2222,Èç¹ûÑ­»·³¤¶ÈÊÇ2^31£¬ÄÇÃ´2^31´ÎÖ®ºó
-* £¬¾Í»áÔÙ´Î³öÏÖ0x1111£¬0x2222ÕâÑùµÄÖµ¡£
+* å¯¹äºŽå¾ªçŽ¯é•¿åº¦æˆ‘çš„ç†è§£æ˜¯ï¼Œå¦‚æžœç®—æ³•äº§ç”Ÿä¸€ä¸ª0x1111çš„æ•°å€¼ï¼Œç¬¬äºŒä¸ªäº§ç”Ÿ0x2222,å¦‚æžœå¾ªçŽ¯é•¿åº¦æ˜¯2^31ï¼Œé‚£ä¹ˆ2^31æ¬¡ä¹‹åŽ
+* ï¼Œå°±ä¼šå†æ¬¡å‡ºçŽ°0x1111ï¼Œ0x2222è¿™æ ·çš„å€¼ã€‚
 *
-* ²¹³äËµÃ÷rand48ÔÚBOOSTÀïÃæµÄËã·¨ËµÃ÷Éú³ÉÊý×Ö·¶Î§ÊÇ0-2^31,µ«ÔÚGSLÀïÃæµÄËµÃ÷ÊÇ0-2^32,¶øÇÒÁ½ÕßËã·¨²»Ì«Ò»Ñù
-* ÎÒµÄ²âÊÔÊý¾ÝÊÇ²úÉú1ÒÚ¸öËæ»úÊý£¬¼ÆËãºÄÊ±£¬ÒÔ¼°Ã¿Ãë¿ÉÒÔ²úÉúµÄÊýÁ¿,²âÊÔ»·¾³i5,Win7 64 ,VC++2010,realse
+* è¡¥å……è¯´æ˜Žrand48åœ¨BOOSTé‡Œé¢çš„ç®—æ³•è¯´æ˜Žç”Ÿæˆæ•°å­—èŒƒå›´æ˜¯0-2^31,ä½†åœ¨GSLé‡Œé¢çš„è¯´æ˜Žæ˜¯0-2^32,è€Œä¸”ä¸¤è€…ç®—æ³•ä¸å¤ªä¸€æ ·
+* æˆ‘çš„æµ‹è¯•æ•°æ®æ˜¯äº§ç”Ÿ1äº¿ä¸ªéšæœºæ•°ï¼Œè®¡ç®—è€—æ—¶ï¼Œä»¥åŠæ¯ç§’å¯ä»¥äº§ç”Ÿçš„æ•°é‡,æµ‹è¯•çŽ¯å¢ƒi5,Win7 64 ,VC++2010,realse
 *
-* ²Î¿¼BOOSTµÄËµÃ÷ÔÚ
+* å‚è€ƒBOOSTçš„è¯´æ˜Žåœ¨
 * http://www.boost.org/doc/libs/1_48_0/doc/html/boost_random/performance.html
 *
-* ÁíÍâBOOSTµÄËæ»úÊý¿âÒÑ¾­½øÈëÁËtr1ºÍC++1xµÄ±ê×¼£¬ËùÒÔ²»¾ÃµÄ½«À´£¨Ò²Ðí5Äê£©£¬ÎÒÃÇ¾Í¿ÉÒÔÖ±½ÓÊ¹ÓÃÀà¿âÁË£¬
-* ÔÙÕß£¬BOOSTµÄËæ»úÊý¿âµÄÊµÏÖ¹ýÓÚ¡­¡­¡­¡­£¬¸Ð¾õÎ¥±³ÁË¾¡Á¿¼òµ¥µÄÔ­Ôò£¬Æä°üÀ¨3¸ö²¿·Ö£¬Ëæ»úÊý·¢ÉúÆ÷£¬·Ö²¼Æ÷£¨ÏÞÖÆËæ»úÊý²úÉúµÄ·¶Î§£©£¬
-* ±äÁ¿·¢ÉúÆ÷£¨°ü×°£©,µ±È»´ÓÉè¼ÆµÄ½Ç¶È£¬ÕâÑùµÄ·â×°ºÜÓÅÃÀ£¬µ«Ñ§Ï°³É±¾»áÏÞÖÆ´ó¼ÒµÄÊ¹ÓÃµÄ¡­¡­¡­¡­
+* å¦å¤–BOOSTçš„éšæœºæ•°åº“å·²ç»è¿›å…¥äº†tr1å’ŒC++1xçš„æ ‡å‡†ï¼Œæ‰€ä»¥ä¸ä¹…çš„å°†æ¥ï¼ˆä¹Ÿè®¸5å¹´ï¼‰ï¼Œæˆ‘ä»¬å°±å¯ä»¥ç›´æŽ¥ä½¿ç”¨ç±»åº“äº†ï¼Œ
+* å†è€…ï¼ŒBOOSTçš„éšæœºæ•°åº“çš„å®žçŽ°è¿‡äºŽâ€¦â€¦â€¦â€¦ï¼Œæ„Ÿè§‰è¿èƒŒäº†å°½é‡ç®€å•çš„åŽŸåˆ™ï¼Œå…¶åŒ…æ‹¬3ä¸ªéƒ¨åˆ†ï¼Œéšæœºæ•°å‘ç”Ÿå™¨ï¼Œåˆ†å¸ƒå™¨ï¼ˆé™åˆ¶éšæœºæ•°äº§ç”Ÿçš„èŒƒå›´ï¼‰ï¼Œ
+* å˜é‡å‘ç”Ÿå™¨ï¼ˆåŒ…è£…ï¼‰,å½“ç„¶ä»Žè®¾è®¡çš„è§’åº¦ï¼Œè¿™æ ·çš„å°è£…å¾ˆä¼˜ç¾Žï¼Œä½†å­¦ä¹ æˆæœ¬ä¼šé™åˆ¶å¤§å®¶çš„ä½¿ç”¨çš„â€¦â€¦â€¦â€¦
 *
-* Õâ¸ö´úÂëµÄÃû×ÖÊÇBOOST£¬Êµ¼ÊÉÏ¶ÔBOOSTÉè¼ÆÓÐ½è¼øºÍ¼ò»¯£¬ÎÒ²»´òËã¸ãµÄÌ«¸´ÔÓ£¬ÎÒÐèÒªµÄËæ»úÊý·Ö²¼´óÔ¼Ò²¾ÍÊÇuint16_t,uint32_t,double,01,µÄÆ½¾ù·Ö²¼
-* ÎÒ²»Ïë¸ãµÄÌ«¸´ÔÓ£¬ÎÒ´òËã¾ÍÓÃ2¸ö²¿·Ö£¬Ëæ»úÊý·¢ÉúÆ÷£¬Ëæ»úÊý·¢ÉúÆ÷²úÉúµÄÊý¾Ý¶¼ÊÇuint32_t
-* ±äÁ¿²úÉúÆ÷(ÀïÃæ°ü×°ÁË¸÷ÖÖÆ½¾ù·Ö²¼µÄº¯Êý),£¨Ä¬ÈÏ°ü×°Ò»¸öËæ»úÊý·¢ÉúÆ÷£©£¬ÄãÊ¹ÓÃ±äÁ¿²úÉúÆ÷µÄtypedef¾ÍOKÁË¡£
+* è¿™ä¸ªä»£ç çš„åå­—æ˜¯BOOSTï¼Œå®žé™…ä¸Šå¯¹BOOSTè®¾è®¡æœ‰å€Ÿé‰´å’Œç®€åŒ–ï¼Œæˆ‘ä¸æ‰“ç®—æžçš„å¤ªå¤æ‚ï¼Œæˆ‘éœ€è¦çš„éšæœºæ•°åˆ†å¸ƒå¤§çº¦ä¹Ÿå°±æ˜¯uint16_t,uint32_t,double,01,çš„å¹³å‡åˆ†å¸ƒ
+* æˆ‘ä¸æƒ³æžçš„å¤ªå¤æ‚ï¼Œæˆ‘æ‰“ç®—å°±ç”¨2ä¸ªéƒ¨åˆ†ï¼Œéšæœºæ•°å‘ç”Ÿå™¨ï¼Œéšæœºæ•°å‘ç”Ÿå™¨äº§ç”Ÿçš„æ•°æ®éƒ½æ˜¯uint32_t
+* å˜é‡äº§ç”Ÿå™¨(é‡Œé¢åŒ…è£…äº†å„ç§å¹³å‡åˆ†å¸ƒçš„å‡½æ•°),ï¼ˆé»˜è®¤åŒ…è£…ä¸€ä¸ªéšæœºæ•°å‘ç”Ÿå™¨ï¼‰ï¼Œä½ ä½¿ç”¨å˜é‡äº§ç”Ÿå™¨çš„typedefå°±OKäº†ã€‚
 *
 * @note
-* ´úÂëÀïÃæÓÐ´óÁ¿¶¼Ä§ÊõÊý×Ö£¬²»ÊÇÎÒÒª¸ãÕâÖÖ·ç¸ñ£¬ÊÇÎÒºÍÄãÃÇÒ»Ñù£¬¶ÔÕâÐ©Êý×ÖµÄº¬ÒåÊÇ°×³Õ
-* ÁíÍâºÃÆæÒ»ÏÂ£¬ÕâÐ©³£Á¿ÊÇ·¢Ã÷Ëã·¨Êµ¼ù³öÀ´µÄ£¬»¹ÊÇÓÐÒ»¶¨µÄ¿ÆÑ§±³¾°µÄ£¿
+* ä»£ç é‡Œé¢æœ‰å¤§é‡éƒ½é­”æœ¯æ•°å­—ï¼Œä¸æ˜¯æˆ‘è¦æžè¿™ç§é£Žæ ¼ï¼Œæ˜¯æˆ‘å’Œä½ ä»¬ä¸€æ ·ï¼Œå¯¹è¿™äº›æ•°å­—çš„å«ä¹‰æ˜¯ç™½ç—´
+* å¦å¤–å¥½å¥‡ä¸€ä¸‹ï¼Œè¿™äº›å¸¸é‡æ˜¯å‘æ˜Žç®—æ³•å®žè·µå‡ºæ¥çš„ï¼Œè¿˜æ˜¯æœ‰ä¸€å®šçš„ç§‘å­¦èƒŒæ™¯çš„ï¼Ÿ
 */
 #ifndef ZCE_LIB_BOOST_RANDOM_H_
 #define ZCE_LIB_BOOST_RANDOM_H_
@@ -82,37 +82,37 @@ namespace ZCE_LIB
 //==============================================================================================================
 
 /*!
-* @brief      Ëæ»úÊýµÄ»ùÀà£¬¶¨ÒåÒ»Ð©»ù±¾º¯Êý£¬Èç¹ûÃ»ÓÐÌØÊâÇé¿ö£¬Ò»Ð©º¯Êý¼Ì³ÐÕß¾Í²»ÓÃÖØÔØÁË
-* @note       ×¢ÒâÎÒÃÇµÄËæ»úÊýº¯ÊýrandÖ»¿¼ÂÇÊä³öµÄÀàÐÍÊÇuint32_t£¬
+* @brief      éšæœºæ•°çš„åŸºç±»ï¼Œå®šä¹‰ä¸€äº›åŸºæœ¬å‡½æ•°ï¼Œå¦‚æžœæ²¡æœ‰ç‰¹æ®Šæƒ…å†µï¼Œä¸€äº›å‡½æ•°ç»§æ‰¿è€…å°±ä¸ç”¨é‡è½½äº†
+* @note       æ³¨æ„æˆ‘ä»¬çš„éšæœºæ•°å‡½æ•°randåªè€ƒè™‘è¾“å‡ºçš„ç±»åž‹æ˜¯uint32_tï¼Œ
 */
 class random_base
 {
 public:
 
-    ///²úÉúµÄËæ»úÊýÀàÐÍ
+    ///äº§ç”Ÿçš„éšæœºæ•°ç±»åž‹
     enum RAND_STRING_TYPE
     {
-        ///²úÉúÊý×Ö×Ö·û´®£¬×Ö·û0-9
+        ///äº§ç”Ÿæ•°å­—å­—ç¬¦ä¸²ï¼Œå­—ç¬¦0-9
         RAND_STR_NUMBER,
-        ///²úÉúÐ¡Ð´×Ö·û´®£¬×Ö·ûa-z
+        ///äº§ç”Ÿå°å†™å­—ç¬¦ä¸²ï¼Œå­—ç¬¦a-z
         RAND_STR_LOWER,
-        ///²úÉú´óÐ´×Ö·û´®£¬×Ö·ûA-Z
+        ///äº§ç”Ÿå¤§å†™å­—ç¬¦ä¸²ï¼Œå­—ç¬¦A-Z
         RAND_STR_UPPER,
-        ///²úÉúÊý×Ö+Ð¡Ð´×Ö·û´®£¬×Ö·û0-9£¬a-z
+        ///äº§ç”Ÿæ•°å­—+å°å†™å­—ç¬¦ä¸²ï¼Œå­—ç¬¦0-9ï¼Œa-z
         RAND_STR_NUMBER_LOWER,
-        ///²úÉúÊý×Ö´óÐ´×Ö·û´®£¬×Ö·û0-9£¬A-Z
+        ///äº§ç”Ÿæ•°å­—å¤§å†™å­—ç¬¦ä¸²ï¼Œå­—ç¬¦0-9ï¼ŒA-Z
         RAND_STR_NUMBER_UPPER,
-        ///²úÉúÊý×Ö+Ð¡Ð´+´óÐ´×Ö·û´®£¬×Ö·û0-9£¬a-z,A-Z
+        ///äº§ç”Ÿæ•°å­—+å°å†™+å¤§å†™å­—ç¬¦ä¸²ï¼Œå­—ç¬¦0-9ï¼Œa-z,A-Z
         RAND_STR_NUMBER_LOWER_UPPER,
-        ///²úÉú0-127µÄASCII(·ÇÀ©Õ¹)×Ö·û´®
+        ///äº§ç”Ÿ0-127çš„ASCII(éžæ‰©å±•)å­—ç¬¦ä¸²
         RAND_STR_ASCII,
-        ///²úÉú0-255¶þ½øÖÆ×Ö·û´®
+        ///äº§ç”Ÿ0-255äºŒè¿›åˆ¶å­—ç¬¦ä¸²
         RAND_STR_BINARY,
     };
 
-    //¹¹Ôìº¯ÊýºÍÎö¹¹º¯Êý£¬±ÜÃâÄãÉùÃ÷µÄÐ´·¨
+    //æž„é€ å‡½æ•°å’Œæžæž„å‡½æ•°ï¼Œé¿å…ä½ å£°æ˜Žçš„å†™æ³•
 protected:
-    ///¹¹Ôìº¯Êý²»ÄÜ²úÉúÊµÀý£¬ÒòÎª²»Æð×÷ÓÃ£¬Ö»ÄÜÈÃ¸÷Î»¼Ì³Ðºó×öµãÊÂÇé
+    ///æž„é€ å‡½æ•°ä¸èƒ½äº§ç”Ÿå®žä¾‹ï¼Œå› ä¸ºä¸èµ·ä½œç”¨ï¼Œåªèƒ½è®©å„ä½ç»§æ‰¿åŽåšç‚¹äº‹æƒ…
     random_base()
     {
     }
@@ -124,8 +124,8 @@ public:
 public:
 
     /*!
-    @brief      ·ÅÆúÈô¸É¸öËæ»úÊý£¬µ±ÎªÁË·ÀÖ¹¶Ô·½²Â²âÊ±£¬¿ÉÒÔÊ¹ÓÃ
-    @param      discard_num ·ÅÆúµÄ´ÎÊý
+    @brief      æ”¾å¼ƒè‹¥å¹²ä¸ªéšæœºæ•°ï¼Œå½“ä¸ºäº†é˜²æ­¢å¯¹æ–¹çŒœæµ‹æ—¶ï¼Œå¯ä»¥ä½¿ç”¨
+    @param      discard_num æ”¾å¼ƒçš„æ¬¡æ•°
     */
     virtual void discard(size_t discard_num)
     {
@@ -135,22 +135,22 @@ public:
         }
     }
 
-    ///@brief  Äã±ØÐëÊµÏÖµÄº¯Êý,²úÉúËæ»úÊý,
-    ///@note   ×¢Òârand²úÉúµÄËæ»úÊýÊÇ32Î»µÄ£¬µÃµ½ÆäËûÊýÖµÀàÐÍµÄËæ»úÊýº¯Êý¶¼ÊÇ¸ù¾Ý32Î»È¥ÊÊÅä
+    ///@brief  ä½ å¿…é¡»å®žçŽ°çš„å‡½æ•°,äº§ç”Ÿéšæœºæ•°,
+    ///@note   æ³¨æ„randäº§ç”Ÿçš„éšæœºæ•°æ˜¯32ä½çš„ï¼Œå¾—åˆ°å…¶ä»–æ•°å€¼ç±»åž‹çš„éšæœºæ•°å‡½æ•°éƒ½æ˜¯æ ¹æ®32ä½åŽ»é€‚é…
     virtual uint32_t rand() = 0;
-    ///Äã±ØÐëÊµÏÖµÄº¯Êý,ÈçºÎ´¦ÀíËæ»úÊýÖÖ×Ó
+    ///ä½ å¿…é¡»å®žçŽ°çš„å‡½æ•°,å¦‚ä½•å¤„ç†éšæœºæ•°ç§å­
     virtual void srand(uint32_t seed) = 0;
 
-    ///²úÉúÒ»¸ö0~0xFFFFFFFFµÄËæ»úÊýÖµ£¬Ò»Ð©Ëæ»úÊýº¯Êý²úÉúµÄ·¶Î§¶¼²¢²»ÊÇÕûÊý·¶Î§£¬
-    ///Èç¹ûÊÇÕâÖÖÇé¿öÒª½øÐÐ×ª»»
+    ///äº§ç”Ÿä¸€ä¸ª0~0xFFFFFFFFçš„éšæœºæ•°å€¼ï¼Œä¸€äº›éšæœºæ•°å‡½æ•°äº§ç”Ÿçš„èŒƒå›´éƒ½å¹¶ä¸æ˜¯æ•´æ•°èŒƒå›´ï¼Œ
+    ///å¦‚æžœæ˜¯è¿™ç§æƒ…å†µè¦è¿›è¡Œè½¬æ¢
     inline virtual uint32_t get_uint32()
     {
         return rand();
     }
 
-    ///µÃµ½Ò»¸ö64bitµÄÊý×Ö,½«Á½¸öÊý×Öuin32_tºÏ²¢,
-    ///ÕâÐ©Ëã·¨Ð´µÄ±È½Ï¼òµ¥£¬Ïà¶Ô¶øÑÔ£¬BoostÔÚÕâ·½ÃæµÄ´¦ÀíÒª¸´ÔÓºÜ¶à£¬ËûÒ»·½ÃæÒª¿¼ÂÇÍ¨ÓÃÐÔ£¬Ò»·½Ãæ¡­¡­
-    ///ÎÒµÄÈÏÖªÊÇÕâÑùµÄ£¬Èç¹ûÕâ¸öËæ»úÊýµÄ·¢ÉúÆ÷µÄ²úÉúµÄÊý×ÖÊÇ×ã¹»Ëæ»úµÄ£¬ÄÇÃ´Ó¦¸ÃÂú×ãÎÒÃÇµÄÐèÇó£¬
+    ///å¾—åˆ°ä¸€ä¸ª64bitçš„æ•°å­—,å°†ä¸¤ä¸ªæ•°å­—uin32_tåˆå¹¶,
+    ///è¿™äº›ç®—æ³•å†™çš„æ¯”è¾ƒç®€å•ï¼Œç›¸å¯¹è€Œè¨€ï¼ŒBooståœ¨è¿™æ–¹é¢çš„å¤„ç†è¦å¤æ‚å¾ˆå¤šï¼Œä»–ä¸€æ–¹é¢è¦è€ƒè™‘é€šç”¨æ€§ï¼Œä¸€æ–¹é¢â€¦â€¦
+    ///æˆ‘çš„è®¤çŸ¥æ˜¯è¿™æ ·çš„ï¼Œå¦‚æžœè¿™ä¸ªéšæœºæ•°çš„å‘ç”Ÿå™¨çš„äº§ç”Ÿçš„æ•°å­—æ˜¯è¶³å¤Ÿéšæœºçš„ï¼Œé‚£ä¹ˆåº”è¯¥æ»¡è¶³æˆ‘ä»¬çš„éœ€æ±‚ï¼Œ
     inline virtual uint64_t get_uint64()
     {
         uint64_t x1 = get_uint32();
@@ -158,45 +158,45 @@ public:
         return (x1 << 32) + x2;
     }
 
-    ///µÃµ½Ò»¸ödoubleËæ»úÊý,ÆäÊµ¾ÍÊÇ¸ù¾Ý32bitÆ´½ÓÒ»¸ödouble£¨¾ø¶ÔCÓïÑÔÐ´·¨£©£¬BOOSTµÄÊµÏÖÏà¶Ô¸´ÔÓºÜ¶à
+    ///å¾—åˆ°ä¸€ä¸ªdoubleéšæœºæ•°,å…¶å®žå°±æ˜¯æ ¹æ®32bitæ‹¼æŽ¥ä¸€ä¸ªdoubleï¼ˆç»å¯¹Cè¯­è¨€å†™æ³•ï¼‰ï¼ŒBOOSTçš„å®žçŽ°ç›¸å¯¹å¤æ‚å¾ˆå¤š
     inline virtual double get_double()
     {
         double x = 0.0;
         uint64_t x_64 = get_uint64();
-        //ÕâTMD¾ø¶ÔÊÇ¸öCÓïÑÔµÄÐ´·¨¡£µ«¼ÙÈçÃ¿Ò»Î»¶¼ÊÇ×ã¹»Ëæ»úµÄ£¬ÄÇÃ´¡­¡­Õâ¸öºðºð
+        //è¿™TMDç»å¯¹æ˜¯ä¸ªCè¯­è¨€çš„å†™æ³•ã€‚ä½†å‡å¦‚æ¯ä¸€ä½éƒ½æ˜¯è¶³å¤Ÿéšæœºçš„ï¼Œé‚£ä¹ˆâ€¦â€¦è¿™ä¸ªå¼å¼
         memcpy(&x, &x_64, sizeof(double));
         return x;
     }
 
-    ///µÃµ½[0-1)Ö®¼ä¸¡µãÊý£¬ÓÃÓÚÄ³Ð©¸ÅÂÊ¿ØÖÆ
+    ///å¾—åˆ°[0-1)ä¹‹é—´æµ®ç‚¹æ•°ï¼Œç”¨äºŽæŸäº›æ¦‚çŽ‡æŽ§åˆ¶
     inline virtual double get_double01()
     {
         return double (get_uint32()) / (double( (std::numeric_limits<uint32_t>::max)() ) + 1);
     }
 
     /*!
-    * @brief      ¸ù¾ÝÒªÇó£¬Éú³ÉÒ»¸öËæ»úÊý×Ö·û´®£¬
-    * @param[in]  str_type  Ëæ»úÊý×Ö·û´®µÄÀàÐÍ£¬@ref random_base::RAND_STRING_TYPE
-    * @param[out] rand_str  ·µ»ØµÄÉú³ÉËæ»úÊý×Ö·û´®
-    * @param[in]  str_len   ÒªÇóÉú³ÉµÄ×Ö·û´®µÄ³¤¶È
+    * @brief      æ ¹æ®è¦æ±‚ï¼Œç”Ÿæˆä¸€ä¸ªéšæœºæ•°å­—ç¬¦ä¸²ï¼Œ
+    * @param[in]  str_type  éšæœºæ•°å­—ç¬¦ä¸²çš„ç±»åž‹ï¼Œ@ref random_base::RAND_STRING_TYPE
+    * @param[out] rand_str  è¿”å›žçš„ç”Ÿæˆéšæœºæ•°å­—ç¬¦ä¸²
+    * @param[in]  str_len   è¦æ±‚ç”Ÿæˆçš„å­—ç¬¦ä¸²çš„é•¿åº¦
     */
     virtual void get_string(RAND_STRING_TYPE str_type, char *rand_str, size_t str_len);
 
 protected:
 
-    ///Ä¬ÈÏµÄÖÖ×Ó,Äã¿´µÄÃ÷°×µÄ£¬Ð´ÔÚÕâ¶ù£¬²»ÊÇÎªÁË¼ÍÄîÕâ³¡ÔË¶¯£¬¶øÊÇÌá³öÒ»¸ö·´Ë¼£¬
-    ///Ëû¸øÖÐ¹ú´øÀ´ÁËÊ²Ã´£¿´ó¸Å³ýÁËÃñ×åÒâË¼µÄ¾õÐÑÒÔÍâ£¬Ê²Ã´¶¼Ã»ÓÐ¸Ä±ä£¬¶øÃñ×åÎÊÌâÈ´³ÉÎªÁË
-    ///Õâ¸ö¹ú¼ÒÂÅÊÔ²»Ë¬µÄ×³ÑôÒ©¡£
-    ///¶øÕâ¸öÔË¶¯ÖÐÌá³öµÄ¶ÔÓÚÕâ¸öÃñ×å¹ú¼Ò×îÓ¦¸Ã½â¾öµÄÁ½¸öÎÊÌâ£¬µÂÏÈÉú£¬ÈüÏÈÉúµÄÎÊÌâ£¬ÔÚ¿ì
-    ///100ÄêºóµÄ½ñÌìÈÔÈ»Ã»ÓÐ½â¾ö¡£
-    ///ÎÒÃÇ»ØÏëºÍ¼ÍÄî5.4£¬²»Ó¦¸ÃÖ»ÒòÎªËûÊÇÄ³Ð©ÊÂµÄ¿ª¶Ë£¬¶øÓ¦¸ÃË¼¿¼£¬Õâ½ü°ÙÄêµÄÇúÕÛ£¬¼èÐÁ¡£
+    ///é»˜è®¤çš„ç§å­,ä½ çœ‹çš„æ˜Žç™½çš„ï¼Œå†™åœ¨è¿™å„¿ï¼Œä¸æ˜¯ä¸ºäº†çºªå¿µè¿™åœºè¿åŠ¨ï¼Œè€Œæ˜¯æå‡ºä¸€ä¸ªåæ€ï¼Œ
+    ///ä»–ç»™ä¸­å›½å¸¦æ¥äº†ä»€ä¹ˆï¼Ÿå¤§æ¦‚é™¤äº†æ°‘æ—æ„æ€çš„è§‰é†’ä»¥å¤–ï¼Œä»€ä¹ˆéƒ½æ²¡æœ‰æ”¹å˜ï¼Œè€Œæ°‘æ—é—®é¢˜å´æˆä¸ºäº†
+    ///è¿™ä¸ªå›½å®¶å±¡è¯•ä¸çˆ½çš„å£®é˜³è¯ã€‚
+    ///è€Œè¿™ä¸ªè¿åŠ¨ä¸­æå‡ºçš„å¯¹äºŽè¿™ä¸ªæ°‘æ—å›½å®¶æœ€åº”è¯¥è§£å†³çš„ä¸¤ä¸ªé—®é¢˜ï¼Œå¾·å…ˆç”Ÿï¼Œèµ›å…ˆç”Ÿçš„é—®é¢˜ï¼Œåœ¨å¿«
+    ///100å¹´åŽçš„ä»Šå¤©ä»ç„¶æ²¡æœ‰è§£å†³ã€‚
+    ///æˆ‘ä»¬å›žæƒ³å’Œçºªå¿µ5.4ï¼Œä¸åº”è¯¥åªå› ä¸ºä»–æ˜¯æŸäº›äº‹çš„å¼€ç«¯ï¼Œè€Œåº”è¯¥æ€è€ƒï¼Œè¿™è¿‘ç™¾å¹´çš„æ›²æŠ˜ï¼Œè‰°è¾›ã€‚
     static const uint32_t DEFAULT_SEED = 19190504UL;
 };
 
 /*!
-* @brief      ÔÚËæ»úÊýµÄÀàÀïÃæ£¬¼ÇÂ¼×î´óÖµºÍ×îÐ¡Öµ£¬×¢Òâ²»Í¬µÄËæ»úÊýËã·¨²úÉúµÄËæ»úÊýÊÇÓÐ·¶Î§µÄ
-* @tparam     min_result randº¯Êý²úÉúµÄËæ»úÊýµÄ×îÐ¡Öµ
-* @tparam     max_result randº¯Êý²úÉúµÄËæ»úÊýµÄ×î´óÖµ
+* @brief      åœ¨éšæœºæ•°çš„ç±»é‡Œé¢ï¼Œè®°å½•æœ€å¤§å€¼å’Œæœ€å°å€¼ï¼Œæ³¨æ„ä¸åŒçš„éšæœºæ•°ç®—æ³•äº§ç”Ÿçš„éšæœºæ•°æ˜¯æœ‰èŒƒå›´çš„
+* @tparam     min_result randå‡½æ•°äº§ç”Ÿçš„éšæœºæ•°çš„æœ€å°å€¼
+* @tparam     max_result randå‡½æ•°äº§ç”Ÿçš„éšæœºæ•°çš„æœ€å¤§å€¼
 * @note
 */
 template <uint32_t min_result, uint32_t max_result >
@@ -216,7 +216,7 @@ public:
 
 public:
 
-    ///×î´óµÄ×îÐ¡µÄ£¬µÄ½á¹ûÖµ
+    ///æœ€å¤§çš„æœ€å°çš„ï¼Œçš„ç»“æžœå€¼
     static const uint32_t MIN_RESULT = min_result;
     static const uint32_t MAX_RESULT = max_result;
 };
@@ -224,36 +224,36 @@ public:
 //==============================================================================================================
 
 /*!
-* @brief      BSDµÄRAND´úÂë,Ëû100%ÊÇÏßÐÔÍ¬Óà
+* @brief      BSDçš„RANDä»£ç ,ä»–100%æ˜¯çº¿æ€§åŒä½™
 */
 class random_bsdrand : public t_random_base<0, 0x7FFFFFFF>
 {
 
 public:
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
     explicit random_bsdrand(uint32_t seed = DEFAULT_SEED):
         seed_x_(0)
     {
         srand(seed);
     }
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     virtual ~random_bsdrand()
     {
     }
-    ///¼ÆËãËæ»úÊý
+    ///è®¡ç®—éšæœºæ•°
     virtual uint32_t rand()
     {
         seed_x_ = (1103515245 * seed_x_ + 12345) & 0x7FFFFFFF;
         return seed_x_;
     }
 
-    ///µÃµ½ÖÖ×Ó
+    ///å¾—åˆ°ç§å­
     virtual void srand(uint32_t s)
     {
         seed_x_ = s;
     }
 
-    ///BSDµÄËã·¨×î¸ßÖµÊÇ0x7FFFFFFF,ËùÒÔ²¹³ä×î¸ßÎ»
+    ///BSDçš„ç®—æ³•æœ€é«˜å€¼æ˜¯0x7FFFFFFF,æ‰€ä»¥è¡¥å……æœ€é«˜ä½
     virtual uint32_t get_uint32()
     {
         uint32_t x = rand();
@@ -268,19 +268,19 @@ public:
     }
 
 protected:
-    ///¼ÇÂ¼µÄËæ»úÊýÖÖ×ÓÊý¾Ý£¬
+    ///è®°å½•çš„éšæœºæ•°ç§å­æ•°æ®ï¼Œ
     uint32_t seed_x_;
 };
 
 //==============================================================================================================
 
 /*!
-* @brief      rand48 Ëã·¨Ëæ»úÊý·¢ÉúÆ÷£¬ÆäµÄÑ­»·³¤¶ÈÊÇ2^48,¹Ê´ËÓÐ´ËÃû×Ö£¬
+* @brief      rand48 ç®—æ³•éšæœºæ•°å‘ç”Ÿå™¨ï¼Œå…¶çš„å¾ªçŽ¯é•¿åº¦æ˜¯2^48,æ•…æ­¤æœ‰æ­¤åå­—ï¼Œ
 */
 class random_rand48 : public t_random_base<0, 0xFFFFFFFF>
 {
 public:
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
     explicit random_rand48(uint32_t seed = DEFAULT_SEED):
         rand48_x0_(0),
         rand48_x1_(0),
@@ -288,12 +288,12 @@ public:
     {
         srand(seed);
     }
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     virtual ~random_rand48()
     {
     }
 
-    ///²úÉúËæ»úÊý
+    ///äº§ç”Ÿéšæœºæ•°
     virtual uint32_t rand()
     {
         rand48_advance () ;
@@ -303,7 +303,7 @@ public:
         return (x2 << 16) + x1;
     }
 
-    ///¼ÆËãµÃµ½ÖÖ×Ó
+    ///è®¡ç®—å¾—åˆ°ç§å­
     virtual void srand (uint32_t s)
     {
         if (s == 0)
@@ -348,35 +348,35 @@ protected:
     }
 
 protected:
-    //Ä§ÊõÊý×Ö´ó¼¯ºÏ
+    //é­”æœ¯æ•°å­—å¤§é›†åˆ
     static const uint16_t RAND48_A0 = 0xE66D ;
     static const uint16_t RAND48_A1 = 0xDEEC ;
     static const uint16_t RAND48_A2 = 0x0005 ;
     static const uint16_t RAND48_C0 = 0x000B ;
 
 protected:
-    ///¼ÆËãrand48µÄ¼¸¸öÊý¾Ý
+    ///è®¡ç®—rand48çš„å‡ ä¸ªæ•°æ®
     uint16_t rand48_x0_, rand48_x1_, rand48_x2_;
 
 };
 
 //==============================================================================================================
 
-//ÕâÒ»¸öÄÚ²¿ºê£¬Íâ²¿²»ÒªÊ¹ÓÃ£¬·ÅÔÚ.hÎÄ¼þÍêÈ«ÊÇÒòÎªÎÒ²»Ïë¸ã¸ö.cppÂé·³¡£
+//è¿™ä¸€ä¸ªå†…éƒ¨å®ï¼Œå¤–éƒ¨ä¸è¦ä½¿ç”¨ï¼Œæ”¾åœ¨.hæ–‡ä»¶å®Œå…¨æ˜¯å› ä¸ºæˆ‘ä¸æƒ³æžä¸ª.cppéº»çƒ¦ã€‚
 #ifndef __ZCE_TAUSWORTHE
 #define __ZCE_TAUSWORTHE(arg,stage1,stage2,stage3,limit) ((arg&limit)<<stage1) ^ (((arg <<stage2) ^ arg)>>stage3)
 #endif
 
 /*!
-@brief      taus88 ÍêÕûÃû³ÆÓ¦¸ÃÊÇTausworthe£¬ÒòÎªÆäÑ­»·³¤¶ÈÊÇ~2^88£¬ÓÐ´ËÃû×Ö£¬
-            Æä²Î¿¼ÎÄµµÊÇ
+@brief      taus88 å®Œæ•´åç§°åº”è¯¥æ˜¯Tauswortheï¼Œå› ä¸ºå…¶å¾ªçŽ¯é•¿åº¦æ˜¯~2^88ï¼Œæœ‰æ­¤åå­—ï¼Œ
+            å…¶å‚è€ƒæ–‡æ¡£æ˜¯
             "Maximally Equidistributed Combined Tausworthe Generators", Pierre L'Ecuyer, Mathematics of Computation, Volume 65, Number 213, January 1996, Pages 203-213
 */
 class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
 {
 
 public:
-    //¹¹Ôìº¯Êý»¹ÊÇ°ÑÄ¬ÈÏÖÖ×Ó¸ã³öÀ´°Ñ
+    //æž„é€ å‡½æ•°è¿˜æ˜¯æŠŠé»˜è®¤ç§å­æžå‡ºæ¥æŠŠ
     explicit random_taus88(uint32_t seed = DEFAULT_SEED)
     {
         srand(seed);
@@ -387,7 +387,7 @@ public:
 
 public:
 
-    ///´¦ÀíÖÖ×ÓµÄº¯Êý
+    ///å¤„ç†ç§å­çš„å‡½æ•°
     virtual void srand(uint32_t seed)
     {
         if (seed > 0)
@@ -399,7 +399,7 @@ public:
         seed_arg_[1] = 69069 * seed_arg_[0];
         seed_arg_[2] = 69069 * seed_arg_[1];
 
-        //Tausworthe¶Ô²ÎÊýÓÐÒªÇó
+        //Tauswortheå¯¹å‚æ•°æœ‰è¦æ±‚
         if (seed_arg_[0] < 2)
         {
             seed_arg_[0] += 2;
@@ -416,7 +416,7 @@ public:
         }
     }
 
-    ///µÃµ½Ëæ»úÊýº¯Êý
+    ///å¾—åˆ°éšæœºæ•°å‡½æ•°
     virtual inline uint32_t rand()
     {
         seed_arg_[0] = __ZCE_TAUSWORTHE(seed_arg_[0], 12, 13, 19, 4294967294UL);
@@ -427,7 +427,7 @@ public:
 
 protected:
 
-    //__RANDOM_TAUSWORTHEºêÏàµ±ÓÚ
+    //__RANDOM_TAUSWORTHEå®ç›¸å½“äºŽ
     uint32_t tausworthe(uint32_t arg, uint32_t stage1, uint32_t stage2, uint32_t stage3, uint32_t limit)
     {
         return ((arg & limit) << stage1) ^ (((arg << stage2) ^ arg) >> stage3);
@@ -435,7 +435,7 @@ protected:
 
 protected:
 
-    //taus88ËùÐèÒªµÄ3¸ö²ÎÊý,±ðÎÊÎÒÕâÐ©Ëã·¨ÎªÉ¶ÊÇÕâÑù£¬ÎÒ²»ÊÇÊýÑ§Ïµ³öÉú£¬
+    //taus88æ‰€éœ€è¦çš„3ä¸ªå‚æ•°,åˆ«é—®æˆ‘è¿™äº›ç®—æ³•ä¸ºå•¥æ˜¯è¿™æ ·ï¼Œæˆ‘ä¸æ˜¯æ•°å­¦ç³»å‡ºç”Ÿï¼Œ
     uint32_t seed_arg_[3];
 };
 
@@ -446,27 +446,27 @@ protected:
 #endif
 
 /*!
-* @brief      MTËã·¨µÄËæ»úÊý·¢ÉúÆ÷
-*             Mersenne TwisterÃ·É­Ðý×ªËã·¨£¬ÕâÕæ²»ÊÇÔÚ´ó¼Ò¶¼·´ÈÕµÄÊ±ºò¸ø´ó¼ÒÌíÂÒ£¬Õâ¸öËã·¨µÄÈ·ÊÇÈÕ±¾ÈË·¢Ã÷µÄ¡£
-*             ¶øÇÒ»¹ÊÇÄ¿Ç°¿ÉÒÔ¿´µ½×îºÃËæ»úÊýËã·¨£¬»¶Ó­°®¹úÇàÄêÃðÁËËû£¨ÕÒ³ö±ÈËû¸üºÃµÄËã·¨£©
-*             Makoto Matsumoto£¨ËÉ±¾Õæ£© ºÍTakuji Nishimura£¨Î÷´åÍØÊ¿£©ÔÚ1997Äê¿ª·¢µÄ£¬
-*             »ùÓÚÓÐÏÞ¶þ½øÖÆ×Ö¶ÎÉÏµÄ¾ØÕóÏßÐÔµÝ¹éfield F_{2}¡£ ¿ÉÒÔ¿ìËÙ²úÉú¸ßÖÊÁ¿µÄÎ±Ëæ»úÊý£¬ ÐÞÕýÁË¹ÅµäËæ»úÊý·¢ÉúËã·¨µÄºÜ¶àÈ±ÏÝ¡£
+* @brief      MTç®—æ³•çš„éšæœºæ•°å‘ç”Ÿå™¨
+*             Mersenne Twisteræ¢…æ£®æ—‹è½¬ç®—æ³•ï¼Œè¿™çœŸä¸æ˜¯åœ¨å¤§å®¶éƒ½åæ—¥çš„æ—¶å€™ç»™å¤§å®¶æ·»ä¹±ï¼Œè¿™ä¸ªç®—æ³•çš„ç¡®æ˜¯æ—¥æœ¬äººå‘æ˜Žçš„ã€‚
+*             è€Œä¸”è¿˜æ˜¯ç›®å‰å¯ä»¥çœ‹åˆ°æœ€å¥½éšæœºæ•°ç®—æ³•ï¼Œæ¬¢è¿Žçˆ±å›½é’å¹´ç­äº†ä»–ï¼ˆæ‰¾å‡ºæ¯”ä»–æ›´å¥½çš„ç®—æ³•ï¼‰
+*             Makoto Matsumotoï¼ˆæ¾æœ¬çœŸï¼‰ å’ŒTakuji Nishimuraï¼ˆè¥¿æ‘æ‹“å£«ï¼‰åœ¨1997å¹´å¼€å‘çš„ï¼Œ
+*             åŸºäºŽæœ‰é™äºŒè¿›åˆ¶å­—æ®µä¸Šçš„çŸ©é˜µçº¿æ€§é€’å½’field F_{2}ã€‚ å¯ä»¥å¿«é€Ÿäº§ç”Ÿé«˜è´¨é‡çš„ä¼ªéšæœºæ•°ï¼Œ ä¿®æ­£äº†å¤å…¸éšæœºæ•°å‘ç”Ÿç®—æ³•çš„å¾ˆå¤šç¼ºé™·ã€‚
 *             http://www.math.sci.hiroshima-u.ac.jp/~m-mat/MT/MT2002/emt19937ar.html
 *
-* @tparam     mt_n  ¶¼ÊÇÒ»Ð©Ëã·¨³£Á¿,¶àÉÙÂÖ¼ÆËãÒ»´Î£¬Ò²ÊÇ±£´æËæ»úÊýÊý×éµÄ³¤¶È£¬
-* @tparam     mt_m  ¶¼ÊÇÒ»Ð©Ëã·¨³£Á¿,²¿·ÖÑ­»·³£Á¿
-* @tparam     mt_a  ¶¼ÊÇÒ»Ð©Ëã·¨³£Á¿£¬¸ù¾ÝÕâÐ©³£Á¿×é³ÉÁËmt19937µÈËã·¨
-* @tparam     mt_b  Ëã·¨³£Á¿
-* @tparam     mt_c  Ëã·¨³£Á¿
-* @tparam     mt_o  Ëã·¨³£Á¿
-* @tparam     mt_p  Ëã·¨³£Á¿
-* @tparam     mt_q  Ëã·¨³£Á¿
-* @tparam     mt_r  Ëã·¨³£Á¿
-* @tparam     mt_s  Ëã·¨³£Á¿
-* @tparam     mt_t  »¹ÊÇÒ»Ð©Ëã·¨³£Á¿
-* @tparam     mt_u  ¶¼TNNDÊÇÒ»Ð©Ëã·¨³£Á¿
-* @note       ÖµµÃÒ»ÌáµÄÊÇÕâÐ©ÈÕ±¾ÈËÓÖ¸ãÁËÒ»¸öÌáËÙµÄ°æ±¾£¬SFMT SIMD-oriented Fast Mersenne Twister SFMT
-*             ÀûÓÃSSE2µÄ¹¦ÄÜÌá¹©ÁËËÙ¶È£¬ÎÒ¶ÔSSE2µÄ´úÂëµÄ¿ÉÒÆÖ²ÐÔÃ»ÓÐ°ÑÎÕ£¬ÔÝÊ±·ÅÆú
+* @tparam     mt_n  éƒ½æ˜¯ä¸€äº›ç®—æ³•å¸¸é‡,å¤šå°‘è½®è®¡ç®—ä¸€æ¬¡ï¼Œä¹Ÿæ˜¯ä¿å­˜éšæœºæ•°æ•°ç»„çš„é•¿åº¦ï¼Œ
+* @tparam     mt_m  éƒ½æ˜¯ä¸€äº›ç®—æ³•å¸¸é‡,éƒ¨åˆ†å¾ªçŽ¯å¸¸é‡
+* @tparam     mt_a  éƒ½æ˜¯ä¸€äº›ç®—æ³•å¸¸é‡ï¼Œæ ¹æ®è¿™äº›å¸¸é‡ç»„æˆäº†mt19937ç­‰ç®—æ³•
+* @tparam     mt_b  ç®—æ³•å¸¸é‡
+* @tparam     mt_c  ç®—æ³•å¸¸é‡
+* @tparam     mt_o  ç®—æ³•å¸¸é‡
+* @tparam     mt_p  ç®—æ³•å¸¸é‡
+* @tparam     mt_q  ç®—æ³•å¸¸é‡
+* @tparam     mt_r  ç®—æ³•å¸¸é‡
+* @tparam     mt_s  ç®—æ³•å¸¸é‡
+* @tparam     mt_t  è¿˜æ˜¯ä¸€äº›ç®—æ³•å¸¸é‡
+* @tparam     mt_u  éƒ½TNNDæ˜¯ä¸€äº›ç®—æ³•å¸¸é‡
+* @note       å€¼å¾—ä¸€æçš„æ˜¯è¿™äº›æ—¥æœ¬äººåˆæžäº†ä¸€ä¸ªæé€Ÿçš„ç‰ˆæœ¬ï¼ŒSFMT SIMD-oriented Fast Mersenne Twister SFMT
+*             åˆ©ç”¨SSE2çš„åŠŸèƒ½æä¾›äº†é€Ÿåº¦ï¼Œæˆ‘å¯¹SSE2çš„ä»£ç çš„å¯ç§»æ¤æ€§æ²¡æœ‰æŠŠæ¡ï¼Œæš‚æ—¶æ”¾å¼ƒ
 */
 template < size_t mt_n, size_t mt_m, uint32_t mt_a, uint32_t mt_b, uint32_t mt_c,
          uint32_t mt_o, uint32_t mt_p, uint32_t mt_q, uint32_t mt_r, uint32_t mt_s, uint32_t mt_t, uint32_t mt_u >
@@ -484,7 +484,7 @@ public:
     {
     }
 
-    ///µÃµ½Ëæ»úÊý
+    ///å¾—åˆ°éšæœºæ•°
     virtual void srand(uint32_t seed)
     {
 
@@ -495,11 +495,11 @@ public:
             state_[j] = (1812433253 * (state_[j - 1] ^ (state_[j - 1] >> 30)) + static_cast<uint32_t>(j));
         }
 
-        //ÎªÁËÔÚµÚÒ»´Î¾Í´¥·¢gen_state
+        //ä¸ºäº†åœ¨ç¬¬ä¸€æ¬¡å°±è§¦å‘gen_state
         postion_ = mt_n;
     }
 
-    ///µÃµ½Ëæ»úÊý£¬ÆäÊµMTµÄËã·¨·Ç³£·Ç³£¿ì,ËûÖ»ÔÚmt_nÂÖºó²Å¼ÆËãÒ»´Î£¬¼ÆËã½á¹¹±£´æÔÚÊý×éÀïÃæ
+    ///å¾—åˆ°éšæœºæ•°ï¼Œå…¶å®žMTçš„ç®—æ³•éžå¸¸éžå¸¸å¿«,ä»–åªåœ¨mt_nè½®åŽæ‰è®¡ç®—ä¸€æ¬¡ï¼Œè®¡ç®—ç»“æž„ä¿å­˜åœ¨æ•°ç»„é‡Œé¢
     inline virtual uint32_t rand()
     {
         // new state vector needed
@@ -545,38 +545,38 @@ protected:
 
 protected:
 
-    //stateÊý×é´æ·ÅÁËÃ¿´ÎÉú³ÉµÄËæ»úÊý
+    //stateæ•°ç»„å­˜æ”¾äº†æ¯æ¬¡ç”Ÿæˆçš„éšæœºæ•°
     uint32_t     state_[mt_n];
-    //¼ÇÂ¼Ã¿´ÎÈ¡µÃµÄËæ»úÊýµÄÎ»ÖÃ
+    //è®°å½•æ¯æ¬¡å–å¾—çš„éšæœºæ•°çš„ä½ç½®
     size_t       postion_;
 
 };
 
-//¿´²»¶®°É£¬ÆäÊµÎÒÒ²¿´²»¶®£¬mt[Êý×Ö]£¬ÀïÃæµÄÊý×ÖÆäÊµÊÇËµÑ­»·³¤¶ÈÊÇ2^Êý×Ö
-///ºó×ºÎªAÕâ¸öÀïÃæµÄÄ§ÊõÊý×ÖÊÇÎÒ´ÓÍøÉÏÅÀµ½µÄ http://www.quadibloc.com/crypto/co4814.htm
+//çœ‹ä¸æ‡‚å§ï¼Œå…¶å®žæˆ‘ä¹Ÿçœ‹ä¸æ‡‚ï¼Œmt[æ•°å­—]ï¼Œé‡Œé¢çš„æ•°å­—å…¶å®žæ˜¯è¯´å¾ªçŽ¯é•¿åº¦æ˜¯2^æ•°å­—
+///åŽç¼€ä¸ºAè¿™ä¸ªé‡Œé¢çš„é­”æœ¯æ•°å­—æ˜¯æˆ‘ä»Žç½‘ä¸Šçˆ¬åˆ°çš„ http://www.quadibloc.com/crypto/co4814.htm
 typedef random_mt<351, 175, 0xFFF80000, 0x0007FFFF, 0xE4BD75F5, 11, 0xFFFFFFFF, 7, 0x655E5280, 15, 0xFFD58000, 17>  random_mt11213a;
-///ÎªÉ¶Ãû×ÖÖÐÒªÒ»¸öBµÄºó×ºÄØ£¬ÒòÎª¶ÔÓ¦ÓÐÒ»¸öA£¬BOOSTÖ»Ñ¡ÔñÁËmt11213b.
+///ä¸ºå•¥åå­—ä¸­è¦ä¸€ä¸ªBçš„åŽç¼€å‘¢ï¼Œå› ä¸ºå¯¹åº”æœ‰ä¸€ä¸ªAï¼ŒBOOSTåªé€‰æ‹©äº†mt11213b.
 typedef random_mt<351, 175, 0xFFF80000, 0x0007FFFF, 0xCCAB8EE7, 11, 0xFFFFFFFF, 7, 0x31B6AB00, 15, 0xFFE50000, 17>  random_mt11213b;
-///@brief mt19937´ó¸ÅÊÇÏÖÔÚ´ó¼Ò×îÍÆ¼öµÄËã·¨
-///Õâ¶ùÒª½éÉÜÒ»ÏÂµÄÊÇÎÒÃÇÒ»°ãÄ¬ÈÏÊ¹ÓÃµÄËã·¨mt19937µÄËã·¨£¬
-///ÕâÖÖËã·¨ËÙ¶È¿ì£¬¶øÇÒÑ­»·ÖÜÆÚ³¤2^19937£¬ÔÚ²»ÄÇÃ´´ó£¨2^623,ÄãÓÐÐèÒª´´½¨±ÈÕâ¸ö´óµÄÊýÖµ£¿£©µÄÊýÖµÖÐÆ½¾ù·Ö²¼ÄÜÁ¦ºÃ£¬
-///ËùÒÔÊÇÈºÖÚÃÇµÄ×î°®£¬ËùÒÔ´ó¼ÒÄ¬ÈÏÑ¡ÔñÕâËã·¨£¬
+///@brief mt19937å¤§æ¦‚æ˜¯çŽ°åœ¨å¤§å®¶æœ€æŽ¨èçš„ç®—æ³•
+///è¿™å„¿è¦ä»‹ç»ä¸€ä¸‹çš„æ˜¯æˆ‘ä»¬ä¸€èˆ¬é»˜è®¤ä½¿ç”¨çš„ç®—æ³•mt19937çš„ç®—æ³•ï¼Œ
+///è¿™ç§ç®—æ³•é€Ÿåº¦å¿«ï¼Œè€Œä¸”å¾ªçŽ¯å‘¨æœŸé•¿2^19937ï¼Œåœ¨ä¸é‚£ä¹ˆå¤§ï¼ˆ2^623,ä½ æœ‰éœ€è¦åˆ›å»ºæ¯”è¿™ä¸ªå¤§çš„æ•°å€¼ï¼Ÿï¼‰çš„æ•°å€¼ä¸­å¹³å‡åˆ†å¸ƒèƒ½åŠ›å¥½ï¼Œ
+///æ‰€ä»¥æ˜¯ç¾¤ä¼—ä»¬çš„æœ€çˆ±ï¼Œæ‰€ä»¥å¤§å®¶é»˜è®¤é€‰æ‹©è¿™ç®—æ³•ï¼Œ
 typedef random_mt<624, 397, 0x80000000, 0x7FFFFFFF, 0x9908B0DF, 11, 0xFFFFFFFF, 7, 0x9D2C5680, 15, 0xEFC60000, 18>  random_mt19937;
 
 //==============================================================================================================
 //
 
 /*!
-* @brief      ranlux Ëã·¨ µÄËæ»úÊý·¢ÉúÆ÷ This is a lagged fibonacci(ì³²¨ÄÉÆõ) generator with skipping developed by Luescher.
-*             Æä²úÉúµÄÊýÖµµÄ·¶Î§ÊÇ0~2^24 ,ÆäÑ­»·³¤¶ÈÊÇ ~10^171
-* @tparam     Ò»¸öÑ­»·µÄ³£Á¿
+* @brief      ranlux ç®—æ³• çš„éšæœºæ•°å‘ç”Ÿå™¨ This is a lagged fibonacci(æ–æ³¢çº³å¥‘) generator with skipping developed by Luescher.
+*             å…¶äº§ç”Ÿçš„æ•°å€¼çš„èŒƒå›´æ˜¯0~2^24 ,å…¶å¾ªçŽ¯é•¿åº¦æ˜¯ ~10^171
+* @tparam     ä¸€ä¸ªå¾ªçŽ¯çš„å¸¸é‡
 */
 template <size_t luxury>
 class random_ranlux : public t_random_base<0, 0x00FFFFFF>
 {
 public:
 
-    ///¹¹Ôìº¯Êý
+    ///æž„é€ å‡½æ•°
     explicit random_ranlux(uint32_t seed = DEFAULT_SEED):
         ranlux_i_(0),
         ranlux_j_(0),
@@ -590,7 +590,7 @@ public:
     {
     }
 
-    ///ÖÖÏÂÖÖ×Ó
+    ///ç§ä¸‹ç§å­
     virtual void srand(uint32_t seed)
     {
         if (seed == 0)
@@ -627,8 +627,8 @@ public:
         }
     }
 
-    ///µÃµ½Ëæ»úÊý
-    ///ÄãÒª¿´Ëã·¨¾ÍÖªµÀranluxµÄËã·¨ÆäÊµ±ÈÇ°ÃæÄÇÐ©Ëã·¨Âý²»ÉÙ£¬ÒòÎªÃ¿24´Î¾Í»á¼ÆËãÒ»´Î,¶øÇÒ¼ÆËãÁ¿²»Ð¡
+    ///å¾—åˆ°éšæœºæ•°
+    ///ä½ è¦çœ‹ç®—æ³•å°±çŸ¥é“ranluxçš„ç®—æ³•å…¶å®žæ¯”å‰é¢é‚£äº›ç®—æ³•æ…¢ä¸å°‘ï¼Œå› ä¸ºæ¯24æ¬¡å°±ä¼šè®¡ç®—ä¸€æ¬¡,è€Œä¸”è®¡ç®—é‡ä¸å°
     virtual inline uint32_t rand()
     {
         const size_t  skip = luxury - 24;
@@ -649,7 +649,7 @@ public:
         return r;
     }
 
-    //²¹³ä×î¸ßÎ»
+    //è¡¥å……æœ€é«˜ä½
     virtual uint32_t get_uint32()
     {
         uint32_t x1 = rand();
@@ -665,7 +665,7 @@ protected:
 
         int32_t delta = u_[ranlux_j_] - u_[ranlux_i_] - carry_;
 
-        //Õâ¶ùÎÒ²»¶®£¬
+        //è¿™å„¿æˆ‘ä¸æ‡‚ï¼Œ
         if (delta & 0xFF000000)
         {
             carry_ = 1;
@@ -700,7 +700,7 @@ protected:
     }
 
 protected:
-    //·´ÕýÎÒ¶¼²»Ã÷°×
+    //åæ­£æˆ‘éƒ½ä¸æ˜Žç™½
     uint32_t ranlux_i_;
     uint32_t ranlux_j_;
     uint32_t ranlux_n_;
@@ -709,14 +709,14 @@ protected:
     uint32_t u_[24];
 };
 
-///ranlux223 ÔÚBOOSTÖÐ¼ä±»³ÆÎªranlux3
+///ranlux223 åœ¨BOOSTä¸­é—´è¢«ç§°ä¸ºranlux3
 typedef  random_ranlux<223>  random_ranlux223;
-///ranlux389 ÔÚBOOSTÖÐ¼ä±»³ÆÎªranlux4
+///ranlux389 åœ¨BOOSTä¸­é—´è¢«ç§°ä¸ºranlux4
 typedef  random_ranlux<389>  random_ranlux389;
 
 //=======================================================================================================
 
-///¶¨ÒåÁË²»Í¬Ëæ»úÊý·¢ÉúÆ÷µÄ±äÁ¿²úÉúÆ÷£¬Èç¹ûÃ»ÓÐ¶àÏß³ÌÒªÇó£¬¿ÉÒÔÖ±½ÓÊ¹ÓÃËûÃÇ
+///å®šä¹‰äº†ä¸åŒéšæœºæ•°å‘ç”Ÿå™¨çš„å˜é‡äº§ç”Ÿå™¨ï¼Œå¦‚æžœæ²¡æœ‰å¤šçº¿ç¨‹è¦æ±‚ï¼Œå¯ä»¥ç›´æŽ¥ä½¿ç”¨ä»–ä»¬
 
 typedef   ZCE_Singleton<random_bsdrand>      bsdrand_instance;
 typedef   ZCE_Singleton<random_rand48>       rand48_instance;
@@ -730,17 +730,17 @@ typedef   ZCE_Singleton<random_ranlux389>    ranlux389_instance;
 //=======================================================================================================
 
 /*!
-* @brief      ºÃ°É£¬¸ãÒ»¸öÕë¶Ô[Êä³öuint32_tµÄËæ»úÊý·¢ÉúÆ÷]±äÁ¿²úÉúÆ÷£¬ÀïÃæ°üÀ¨¸÷ÖÖ·Ö²¼º¯Êý¡£
-* @tparam     uin32_random Ëæ»úÊý·¢ÉúÆ÷
-* @note       Õâ¶ù»¹ÊÇÒªÌáÒ»ÏÂBOOSTµÄÊµÏÖ£¬BOOSTµÄÊµÏÖ·Ö³É£¬Ëæ»úÊý·¢ÉúÆ÷£¬·Ö²¼Æ÷£¬±äÁ¿·¢ÉúÆ÷3¸ö¶ÔÏó
-*             ´ÓÄ³ÖÖ½Ç¶ÈÉÏ½²ËûµÄÊµÏÖ¸ü¼Ó¾«ÇÉ£¬µ«ÓÐÒ»¸öÎÊÌâÊÇ£¬Èç¹û×îÖÕÊ¹ÓÃµÄÊÇ±äÁ¿·¢ÉúÆ÷£¬ÄÇÃ´ÄãÐèÒªÔÚ
-*             Ã¿¸öµØ·½ÐèÒªµÄµØ·½¶¼·ÅÖÃÒ»¸ö±äÁ¿·¢ÉúÆ÷
-*             ÎÒµÄ·½·¨ÊÇÔÚ±äÁ¿·¢ÉúÆ÷ÀïÃæÊ¹ÓÃÁËÒ»Ð©·Ö²¼º¯Êý¡£
-*             »¹ÓÐÒ»¸ö²»Í¬ÊÇBOOSTµÄ·Ö²¼Æ÷ÊÇ¸ù¾ÝËæ»úÊýËã·¨µÄ×î´óÖµ£¬×îÐ¡ÖµÍ¨¹ýÔËËãµÃµ½·Ö²¼£¬±ÈÈçËæ»úÊý·¢ÉúÆ÷
-*             ²úÉúµÄÊÇ32bitµÄÊýÖµ£¬×î´óÖµÊÇ0x00FFFFFF£¬Òª²úÉúÒ»¸ö64bitµÄÐ¡ÓÚ0xFFFFFFFFFFµÄÊýÖµ£¬BOOSTµÄ
-*             Ëã·¨´óÔ¼ÊÇ·¢ÏÖ×î´óÖµ0xFFFFFFFFFFÊÇËæ»úÊý·¢ÉúÆ÷×î´óÖµµÄN±¶£¬NÒ²ÓÃËæ»úÊý²úÉú£¬È»ºóºÍÒ»¸öËæ»úÊýÔË
-*             ËãÔÆÔÆ£¬´óÔ¼Èç´Ë
-*             ÎÒµÄ·½·¨ÊÇÔÚÃ¿¸öËæ»úÊý·¢ÉúÆ÷ÀïÃæ¶¼Ìá¹©Ò»¸ö²úÉúuint32µÄº¯Êýget_uint32£¬È»ºó¸ù¾ÝÕâ¸öÈ¥µÃµ½ÆäËû·Ö²¼£¬
+* @brief      å¥½å§ï¼Œæžä¸€ä¸ªé’ˆå¯¹[è¾“å‡ºuint32_tçš„éšæœºæ•°å‘ç”Ÿå™¨]å˜é‡äº§ç”Ÿå™¨ï¼Œé‡Œé¢åŒ…æ‹¬å„ç§åˆ†å¸ƒå‡½æ•°ã€‚
+* @tparam     uin32_random éšæœºæ•°å‘ç”Ÿå™¨
+* @note       è¿™å„¿è¿˜æ˜¯è¦æä¸€ä¸‹BOOSTçš„å®žçŽ°ï¼ŒBOOSTçš„å®žçŽ°åˆ†æˆï¼Œéšæœºæ•°å‘ç”Ÿå™¨ï¼Œåˆ†å¸ƒå™¨ï¼Œå˜é‡å‘ç”Ÿå™¨3ä¸ªå¯¹è±¡
+*             ä»ŽæŸç§è§’åº¦ä¸Šè®²ä»–çš„å®žçŽ°æ›´åŠ ç²¾å·§ï¼Œä½†æœ‰ä¸€ä¸ªé—®é¢˜æ˜¯ï¼Œå¦‚æžœæœ€ç»ˆä½¿ç”¨çš„æ˜¯å˜é‡å‘ç”Ÿå™¨ï¼Œé‚£ä¹ˆä½ éœ€è¦åœ¨
+*             æ¯ä¸ªåœ°æ–¹éœ€è¦çš„åœ°æ–¹éƒ½æ”¾ç½®ä¸€ä¸ªå˜é‡å‘ç”Ÿå™¨
+*             æˆ‘çš„æ–¹æ³•æ˜¯åœ¨å˜é‡å‘ç”Ÿå™¨é‡Œé¢ä½¿ç”¨äº†ä¸€äº›åˆ†å¸ƒå‡½æ•°ã€‚
+*             è¿˜æœ‰ä¸€ä¸ªä¸åŒæ˜¯BOOSTçš„åˆ†å¸ƒå™¨æ˜¯æ ¹æ®éšæœºæ•°ç®—æ³•çš„æœ€å¤§å€¼ï¼Œæœ€å°å€¼é€šè¿‡è¿ç®—å¾—åˆ°åˆ†å¸ƒï¼Œæ¯”å¦‚éšæœºæ•°å‘ç”Ÿå™¨
+*             äº§ç”Ÿçš„æ˜¯32bitçš„æ•°å€¼ï¼Œæœ€å¤§å€¼æ˜¯0x00FFFFFFï¼Œè¦äº§ç”Ÿä¸€ä¸ª64bitçš„å°äºŽ0xFFFFFFFFFFçš„æ•°å€¼ï¼ŒBOOSTçš„
+*             ç®—æ³•å¤§çº¦æ˜¯å‘çŽ°æœ€å¤§å€¼0xFFFFFFFFFFæ˜¯éšæœºæ•°å‘ç”Ÿå™¨æœ€å¤§å€¼çš„Nå€ï¼ŒNä¹Ÿç”¨éšæœºæ•°äº§ç”Ÿï¼Œç„¶åŽå’Œä¸€ä¸ªéšæœºæ•°è¿
+*             ç®—äº‘äº‘ï¼Œå¤§çº¦å¦‚æ­¤
+*             æˆ‘çš„æ–¹æ³•æ˜¯åœ¨æ¯ä¸ªéšæœºæ•°å‘ç”Ÿå™¨é‡Œé¢éƒ½æä¾›ä¸€ä¸ªäº§ç”Ÿuint32çš„å‡½æ•°get_uint32ï¼Œç„¶åŽæ ¹æ®è¿™ä¸ªåŽ»å¾—åˆ°å…¶ä»–åˆ†å¸ƒï¼Œ
 */
 template <typename uin32_random>
 class random_var_gen
@@ -748,23 +748,23 @@ class random_var_gen
 
 public:
 
-    ///¹¹Ôìº¯Êý£¬²¢²»ÍêÈ«ÈÃÄãÊ¹ÓÃµ¥×Ó£¬»¹ÊÇ¸øÄã»ú»áÄÜ´´½¨ÊµÀý
+    ///æž„é€ å‡½æ•°ï¼Œå¹¶ä¸å®Œå…¨è®©ä½ ä½¿ç”¨å•å­ï¼Œè¿˜æ˜¯ç»™ä½ æœºä¼šèƒ½åˆ›å»ºå®žä¾‹
     random_var_gen()
     {
     }
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     ~random_var_gen()
     {
     }
 
 public:
-    ///¸øËæ»úÊý·¢ÉúÆ÷µÄÖÖ×Ó
+    ///ç»™éšæœºæ•°å‘ç”Ÿå™¨çš„ç§å­
     void srand(uint32_t seed)
     {
         uin32_rand_gen_.srand(seed);
     }
 
-    ///ÔÚint32ÊýÖµ·¶Î§¸ø²úÉúÒ»¸öËæ»úÊý±äÁ¿
+    ///åœ¨int32æ•°å€¼èŒƒå›´ç»™äº§ç”Ÿä¸€ä¸ªéšæœºæ•°å˜é‡
     inline int32_t uniform_int32(int32_t min, int32_t max)
     {
         ZCE_ASSERT( max > min);
@@ -772,7 +772,7 @@ public:
         uint32_t u32_rand = uniform_uint32(0, u32_max);
         return min + u32_rand;
     }
-    ///ÔÚ uint32ÊýÖµ·¶Î§¸ø²úÉúÒ»¸öËæ»úÊý±äÁ¿
+    ///åœ¨ uint32æ•°å€¼èŒƒå›´ç»™äº§ç”Ÿä¸€ä¸ªéšæœºæ•°å˜é‡
     inline uint32_t uniform_uint32(int64_t min, int64_t max)
     {
         ZCE_ASSERT( max > min);
@@ -780,7 +780,7 @@ public:
         return (u32_rand + min ) % max;
     }
 
-    ///ÔÚ int64ÊýÖµ·¶Î§¸ø²úÉúÒ»¸öËæ»úÊý±äÁ¿
+    ///åœ¨ int64æ•°å€¼èŒƒå›´ç»™äº§ç”Ÿä¸€ä¸ªéšæœºæ•°å˜é‡
     inline int64_t uniform_int64(int64_t min, int64_t max)
     {
         ZCE_ASSERT( max > min);
@@ -788,7 +788,7 @@ public:
         uint64_t u64_rand = uniform_uint64(0, u64_max);
         return min + u64_rand;
     }
-    ///ÔÚ uint64ÊýÖµ·¶Î§¸ø²úÉúÒ»¸öËæ»úÊý±äÁ¿
+    ///åœ¨ uint64æ•°å€¼èŒƒå›´ç»™äº§ç”Ÿä¸€ä¸ªéšæœºæ•°å˜é‡
     inline uint64_t uniform_uint64(uint64_t min, uint64_t max)
     {
         ZCE_ASSERT( max > min);
@@ -804,13 +804,13 @@ public:
 
 protected:
 
-    ///Ëæ»ú·¢ÉúÆ÷
+    ///éšæœºå‘ç”Ÿå™¨
     uin32_random                         uin32_rand_gen_;
 
 };
 
-///¶¨ÒåÁË²»Í¬Ëæ»úÊý·¢ÉúÆ÷µÄ±äÁ¿²úÉúÆ÷£¬Èç¹ûÃ»ÓÐ¶àÏß³ÌÒªÇó£¬¿ÉÒÔÖ±½ÓÊ¹ÓÃËûÃÇ
-///ÍÆ¼ömt19937_var_gen
+///å®šä¹‰äº†ä¸åŒéšæœºæ•°å‘ç”Ÿå™¨çš„å˜é‡äº§ç”Ÿå™¨ï¼Œå¦‚æžœæ²¡æœ‰å¤šçº¿ç¨‹è¦æ±‚ï¼Œå¯ä»¥ç›´æŽ¥ä½¿ç”¨ä»–ä»¬
+///æŽ¨èmt19937_var_gen
 typedef   random_var_gen<random_bsdrand>      bsdrand_var_gen;
 typedef   random_var_gen<random_rand48>       rand48_var_gen;
 typedef   random_var_gen<random_taus88>       taus88_var_gen;

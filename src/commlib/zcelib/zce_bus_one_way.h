@@ -1,4 +1,4 @@
-#ifndef ZCE_LIB_BUS_ONE_WAY_H_
+ï»¿#ifndef ZCE_LIB_BUS_ONE_WAY_H_
 #define ZCE_LIB_BUS_ONE_WAY_H_
 
 #include "zce_bus_mmap_pipe.h"
@@ -6,31 +6,31 @@
 class dequechunk_node;
 class shm_dequechunk;
 
-//Ë«ĞĞµÀ
+//åŒè¡Œé“
 class ZCE_BusPipe_OneWay : public ZCE_Bus_MMAPPipe
 {
 public:
 
 protected:
-    //instanceº¯ÊıÊ¹ÓÃµÄ¶«Î÷
+    //instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
     static ZCE_BusPipe_OneWay *one_way_instance_;
 
 public:
 
-    //¹¹Ôìº¯Êı,
+    //æ„é€ å‡½æ•°,
     ZCE_BusPipe_OneWay();
-    //Îö¹ºº¯Êı
+    //æè´­å‡½æ•°
     ~ZCE_BusPipe_OneWay();
 
 public:
 
 public:
 
-    //ÊµÀıµÄ¸³Öµ
+    //å®ä¾‹çš„èµ‹å€¼
     static void instance(ZCE_BusPipe_OneWay *);
-    //ÊµÀıµÄ»ñµÃ
+    //å®ä¾‹çš„è·å¾—
     static ZCE_BusPipe_OneWay *instance();
-    //Çå³ıÊµÀı
+    //æ¸…é™¤å®ä¾‹
     static void clean_instance();
 
 };

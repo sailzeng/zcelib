@@ -1,4 +1,4 @@
-
+ï»¿
 #include "zerg_predefine.h"
 #include "zerg_buf_storage.h"
 #include "zerg_application.h"
@@ -11,10 +11,10 @@
 UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
 //
 Soar_Stat_Monitor  *UDP_Svc_Handler::server_status_ = NULL;
-//Í¨ĞÅ¹ÜÀíÆ÷
+//é€šä¿¡ç®¡ç†å™¨
 Zerg_Comm_Manager *UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
 
-//×Ô¼ºÊÇ·ñÊÇ´úÀí
+//è‡ªå·±æ˜¯å¦æ˜¯ä»£ç†
 bool           UDP_Svc_Handler::if_proxy_ = false;
 
 //
@@ -32,7 +32,7 @@ UDP_Svc_Handler::UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
     ary_udpsvc_handler_.push_back(this);
 }
 
-//Õâ¾ÍÒªÇóUDP_Svc_Handler±ÈInstOfZBufferStorageÏÈÊÍ·Å
+//è¿™å°±è¦æ±‚UDP_Svc_Handleræ¯”InstOfZBufferStorageå…ˆé‡Šæ”¾
 UDP_Svc_Handler::~UDP_Svc_Handler()
 {
     if (dgram_databuf_ != NULL)
@@ -43,7 +43,7 @@ UDP_Svc_Handler::~UDP_Svc_Handler()
 
 //
 /******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007Äê11ÔÂ17ÈÕ
+Author          : Sail ZENGXING  Date Of Creation: 2007å¹´11æœˆ17æ—¥
 Function        : UDP_Svc_Handler::init_udp_services
 Return          : int
 Parameter List  : NULL
@@ -70,12 +70,12 @@ int UDP_Svc_Handler::init_udp_services()
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
-    ////µ÷ÕûSocket ÎªACE_NONBLOCK
+    ////è°ƒæ•´Socket ä¸ºACE_NONBLOCK
     ret = dgram_peer_.sock_enable(O_NONBLOCK);
 
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;
     socklen_t opvallen = sizeof(socklen_t);
-    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
+    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
     dgram_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
     dgram_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void *>(&opval), opvallen);
 
@@ -98,7 +98,7 @@ int UDP_Svc_Handler::init_udp_services()
     return 0;
 }
 
-//È¡µÃ¾ä±ú
+//å–å¾—å¥æŸ„
 ZCE_HANDLE UDP_Svc_Handler::get_handle(void) const
 {
     return (ZCE_HANDLE)dgram_peer_.get_handle();
@@ -111,12 +111,12 @@ int UDP_Svc_Handler::handle_input()
 
     int ret = 0;
 
-    //¶à´Î¶ÁÈ¡UDPµÄÊı¾İ£¬±£Ö¤UDPµÄÏìÓ¦Ò²±È½Ï¼°Ê±¡£
+    //å¤šæ¬¡è¯»å–UDPçš„æ•°æ®ï¼Œä¿è¯UDPçš„å“åº”ä¹Ÿæ¯”è¾ƒåŠæ—¶ã€‚
     for (size_t i = 0; i < ONCE_MAX_READ_UDP_NUMBER; ++i)
     {
         size_t szrevc = 0;
 
-        //¶ÁÈ¡Êı¾İ
+        //è¯»å–æ•°æ®
         ret = read_data_from_udp(szrevc);
 
         ZCE_LOGMSG_DBG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
@@ -128,11 +128,11 @@ int UDP_Svc_Handler::handle_input()
                            szrevc,
                            ZCE_LIB::last_error(),
                            strerror(ZCE_LIB::last_error()));
-            //return -1Âğ£¬µ«ÊÇÎÒÕæ²»ÖªµÀÈçºÎ´¦Àí
+            //return -1å—ï¼Œä½†æ˜¯æˆ‘çœŸä¸çŸ¥é“å¦‚ä½•å¤„ç†
             break;
         }
 
-        //Èç¹û³öÀ´³É¹¦
+        //å¦‚æœå‡ºæ¥æˆåŠŸ
         if (szrevc > 0)
         {
             zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<Zerg_App_Frame *>(dgram_databuf_->buffer_data_));
@@ -150,12 +150,12 @@ int UDP_Svc_Handler::handle_close()
     //
     if (dgram_peer_.get_handle() != ZCE_INVALID_SOCKET)
     {
-        //ÄÚ²¿»á½øĞĞremove_handler
+        //å†…éƒ¨ä¼šè¿›è¡Œremove_handler
         ZCE_Event_Handler::handle_close();
         dgram_peer_.close();
     }
 
-    //É¾³ı×Ô¼º
+    //åˆ é™¤è‡ªå·±
     delete this;
 
     return 0;
@@ -183,13 +183,13 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         if (ZCE_LIB::last_error() != EWOULDBLOCK)
         {
 
-            //Óöµ½ÖĞ¶Ï,µÈ´ıÖØÈë
+            //é‡åˆ°ä¸­æ–­,ç­‰å¾…é‡å…¥
             if (ZCE_LIB::last_error() == EINVAL)
             {
                 return 0;
             }
 
-            //¼ÇÂ¼´íÎó,·µ»Ø´íÎó
+            //è®°å½•é”™è¯¯,è¿”å›é”™è¯¯
             ZCE_LOG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s|%u] peer:%u ZCE_LIB::last_error()=%d|%s.",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number(),
@@ -211,7 +211,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         return ret;
     }
 
-    //Socket±»¹Ø±Õ£¬Ò²·µ»Ø´íÎó±êÊ¾,µ«ÊÇÎÒ²»ÖªµÀ»á²»»á³öÏÖÕâ¸öÎÊÌâ...
+    //Socketè¢«å…³é—­ï¼Œä¹Ÿè¿”å›é”™è¯¯æ ‡ç¤º,ä½†æ˜¯æˆ‘ä¸çŸ¥é“ä¼šä¸ä¼šå‡ºç°è¿™ä¸ªé—®é¢˜...
     if (recvret == 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] UDP Peer IP [%s|%u] recv return 0, I don't know how to process.?",
@@ -220,14 +220,14 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         return 0;
     }
 
-    //Õâ¸öº¯Êı·ÅÔÚÕâ¶ùºÃ²»ºÃ£¬hoho£¬ÓĞµãºÄÊ±à¸£¬ºÇºÇ
+    //è¿™ä¸ªå‡½æ•°æ”¾åœ¨è¿™å„¿å¥½ä¸å¥½ï¼Œhohoï¼Œæœ‰ç‚¹è€—æ—¶å–”ï¼Œå‘µå‘µ
     server_status_->increase_by_statid(ZERG_UDP_RECV_COUNTER, 0, 0, 1);
     server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER, 0, 0 , recvret);
 
 
     proc_frame->framehead_decode();
 
-    //Èç¹ûÊÕµ½µÄÊÇAPPFRAMEµÄÊı¾İ£¬¼ì²é¶Ô·½Ö¡ÊÇ·ñÌîĞ´ÕıÈ·
+    //å¦‚æœæ”¶åˆ°çš„æ˜¯APPFRAMEçš„æ•°æ®ï¼Œæ£€æŸ¥å¯¹æ–¹å¸§æ˜¯å¦å¡«å†™æ­£ç¡®
     if (proc_frame->frame_length_ != static_cast<unsigned int>(recvret))
     {
         return SOAR_RET::ERR_ZERG_APPFRAME_ERROR;
@@ -247,7 +247,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         proc_frame->recv_service_ = my_svc_info_;
     }
 
-    //±ÜÃâ·¢ÉúÆäËûÈËÌîĞ´µÄÇé¿ö
+    //é¿å…å‘ç”Ÿå…¶ä»–äººå¡«å†™çš„æƒ…å†µ
     proc_frame->clear_inner_option();
     proc_frame->frame_option_ |= Zerg_App_Frame::DESC_UDP_FRAME;
 
@@ -267,7 +267,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 {
     ssize_t szsend = 0;
 
-    //ÕâÀïservice_id_ºÍservices_type_±£´æµÄÊÇ¶Ô·½µÄipºÍport£¬¶ø²»ÊÇÕæÕıµÄtypeºÍid
+    //è¿™é‡Œservice_id_å’Œservices_type_ä¿å­˜çš„æ˜¯å¯¹æ–¹çš„ipå’Œportï¼Œè€Œä¸æ˜¯çœŸæ­£çš„typeå’Œid
     ZCE_Sockaddr_In remote_addr(send_frame->recv_service_.services_id_,
                                 send_frame->recv_service_.services_type_);
     size_t send_len = send_frame->frame_length_;
@@ -276,7 +276,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
     send_frame->framehead_encode();
 
 
-    //·¢ËÍÊı¾İÓ¦¸Ã²»×èÈû
+    //å‘é€æ•°æ®åº”è¯¥ä¸é˜»å¡
     szsend = dgram_peer_.sendto(send_frame,
                                 send_len,
                                 0,
@@ -313,8 +313,8 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 
 int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
 {
-    //ÕÒµ½Ô­À´µÄÄÇ¸öUDP¶Ë¿Ú£¬Ê¹ÓÃÔ­À´µÄ¶Ë¿Ú·¢ËÍ£¬
-    //ÕâÑù¿ÉÒÔ±£Ö¤·À»ğÇ½µÄ´©Í¸ÎÊÌâ
+    //æ‰¾åˆ°åŸæ¥çš„é‚£ä¸ªUDPç«¯å£ï¼Œä½¿ç”¨åŸæ¥çš„ç«¯å£å‘é€ï¼Œ
+    //è¿™æ ·å¯ä»¥ä¿è¯é˜²ç«å¢™çš„ç©¿é€é—®é¢˜
     for (size_t i = 0; i < ary_udpsvc_handler_.size(); ++i)
     {
         //
@@ -334,14 +334,14 @@ int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
 }
 
 
-//³õÊ¼»¯¾²Ì¬²ÎÊı
+//åˆå§‹åŒ–é™æ€å‚æ•°
 int UDP_Svc_Handler::init_all_static_data()
 {
 
-    //·şÎñÆ÷µÄÍ³¼Æ²Ù×÷ÊµÀı
+    //æœåŠ¡å™¨çš„ç»Ÿè®¡æ“ä½œå®ä¾‹
     server_status_ = Soar_Stat_Monitor::instance();
 
-    //Í¨ĞÅ¹ÜÀíÆ÷
+    //é€šä¿¡ç®¡ç†å™¨
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
     return 0;

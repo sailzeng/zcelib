@@ -1,13 +1,13 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_string.h"
 #include "zce_os_adapt_file.h"
 #include "zce_bytes_hash.h"
 
 //================================================================================================
-//MD5µÄËã·¨
+//MD5çš„ç®—æ³•
 
-//³õÊ¼»¯MD5µÄcontext£¬ÄÚÈİ
+//åˆå§‹åŒ–MD5çš„contextï¼Œå†…å®¹
 void ZCE_Hash_MD5::initialize(context *ctx)
 {
     ctx->length_ = 0;
@@ -51,7 +51,7 @@ void ZCE_Hash_MD5::initialize(context *ctx)
         (a) += (b); \
     }
 
-//½«64¸ö×Ö½Ú£¬16¸öuint32_tµÄÊı×é½øĞĞÕªÒª£¨ÔÓ´Õ£©´¦Àí£¬´¦ÀíµÄÊı¾İ×Ô¼ºĞòÊÇĞ¡Í·Êı¾İ
+//å°†64ä¸ªå­—èŠ‚ï¼Œ16ä¸ªuint32_tçš„æ•°ç»„è¿›è¡Œæ‘˜è¦ï¼ˆæ‚å‡‘ï¼‰å¤„ç†ï¼Œå¤„ç†çš„æ•°æ®è‡ªå·±åºæ˜¯å°å¤´æ•°æ®
 void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                                  const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
@@ -62,13 +62,13 @@ void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
     c = state[2];
     d = state[3];
 
-    //MD5µÄ´úÂëÓÃµÄ»á±È½Ï¶à£¬×·Çó¼«ÖÂËÙ¶ÈÁË£¬
+    //MD5çš„ä»£ç ç”¨çš„ä¼šæ¯”è¾ƒå¤šï¼Œè¿½æ±‚æè‡´é€Ÿåº¦äº†ï¼Œ
 #if ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN
-    //Ğ¡Í·ĞòÏÂ,¼ÙÉèÊÇx86,x64£¬²»¿¼ÂÇ¶ÔÆëµÄÂé·³£¬Ö±½ÓÉÏ£¬
-    //µ±È»Èç¹û²»ÊÇ¶ÔÆä»·¾³,ÀíÂÛÉÏ×ª»»Ò»´Î¶ÔÆëÒ²Ğí¸ü¿ì
+    //å°å¤´åºä¸‹,å‡è®¾æ˜¯x86,x64ï¼Œä¸è€ƒè™‘å¯¹é½çš„éº»çƒ¦ï¼Œç›´æ¥ä¸Šï¼Œ
+    //å½“ç„¶å¦‚æœä¸æ˜¯å¯¹å…¶ç¯å¢ƒ,ç†è®ºä¸Šè½¬æ¢ä¸€æ¬¡å¯¹é½ä¹Ÿè®¸æ›´å¿«
     x = block;
 #else
-    //×¢ÒâÏÂÃæµÄ×ª»»Í¬Ê±Ò²±ÜÃâÁË¶ÔÆëÆ«ÒÆµÄ¿½±´ÎÊÌâ
+    //æ³¨æ„ä¸‹é¢çš„è½¬æ¢åŒæ—¶ä¹Ÿé¿å…äº†å¯¹é½åç§»çš„æ‹·è´é—®é¢˜
     uint32_t  wblock[PROCESS_BLOCK_SIZE / 4];
     endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
     x = wblock;
@@ -149,14 +149,14 @@ void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
 }
 
 //================================================================================================
-//SHA1µÄËã·¨
+//SHA1çš„ç®—æ³•
 
-//SHA1Ëã·¨µÄÉÏÏÂÎÄµÄ³õÊ¼»¯
+//SHA1ç®—æ³•çš„ä¸Šä¸‹æ–‡çš„åˆå§‹åŒ–
 void ZCE_Hash_SHA1::initialize(context *ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
-    // ³õÊ¼»¯Ëã·¨µÄ¼¸¸ö³£Á¿£¬Ä§ÊõÊı
+    // åˆå§‹åŒ–ç®—æ³•çš„å‡ ä¸ªå¸¸é‡ï¼Œé­”æœ¯æ•°
     ctx->hash_[0] = 0x67452301;
     ctx->hash_[1] = 0xefcdab89;
     ctx->hash_[2] = 0x98badcfe;
@@ -164,7 +164,7 @@ void ZCE_Hash_SHA1::initialize(context *ctx)
     ctx->hash_[4] = 0xc3d2e1f0;
 }
 
-//ÄÚ²¿º¯Êı£¬¶ÔÒ»¸ö64bitÄÚ´æ¿é½øĞĞÔÓ´Õ´¦Àí£¬
+//å†…éƒ¨å‡½æ•°ï¼Œå¯¹ä¸€ä¸ª64bitå†…å­˜å—è¿›è¡Œæ‚å‡‘å¤„ç†ï¼Œ
 void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
                                   const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
@@ -174,7 +174,7 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 
     endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
 
-    //´¦Àí
+    //å¤„ç†
     for (t = 16; t < 80; t++)
     {
         wblock[t] = ZCE_ROTL32(wblock[t - 3] ^ wblock[t - 8] ^ wblock[t - 14] ^ wblock[t - 16], 1);
@@ -237,7 +237,7 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 }
 
 //================================================================================================
-//SHA256µÄËã·¨
+//SHA256çš„ç®—æ³•
 
 #define SHR(x,n) ((x & 0xFFFFFFFF) >> n)
 
@@ -263,12 +263,12 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
         d += temp1; h = temp1 + temp2;              \
     }
 
-//SHA256Ëã·¨µÄÉÏÏÂÎÄµÄ³õÊ¼»¯
+//SHA256ç®—æ³•çš„ä¸Šä¸‹æ–‡çš„åˆå§‹åŒ–
 void ZCE_Hash_SHA256::initialize(context *ctx)
 {
     ctx->length_ = 0;
     ctx->unprocessed_ = 0;
-    // ³õÊ¼»¯Ëã·¨µÄ¼¸¸ö³£Á¿£¬Ä§ÊõÊı
+    // åˆå§‹åŒ–ç®—æ³•çš„å‡ ä¸ªå¸¸é‡ï¼Œé­”æœ¯æ•°
     ctx->hash_[0] = 0x6a09e667;
     ctx->hash_[1] = 0xbb67ae85;
     ctx->hash_[2] = 0x3c6ef372;
@@ -279,7 +279,7 @@ void ZCE_Hash_SHA256::initialize(context *ctx)
     ctx->hash_[7] = 0x5be0cd19;
 }
 
-//¶ÔÒ»¸ö64bitÄÚ´æ¿é½øĞĞÔÓ´Õ´¦Àí£¬
+//å¯¹ä¸€ä¸ª64bitå†…å­˜å—è¿›è¡Œæ‚å‡‘å¤„ç†ï¼Œ
 void ZCE_Hash_SHA256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
                                     const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
@@ -375,7 +375,7 @@ void ZCE_Hash_SHA256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 }
 
 //================================================================================================
-//CRC32Ëã·¨µÄº¯ÊıºÍ²ßÂÔÀà
+//CRC32ç®—æ³•çš„å‡½æ•°å’Œç­–ç•¥ç±»
 
 static const uint32_t ZCE_CRC32_TABLE[256] =
 {
@@ -442,28 +442,28 @@ void ZCE_Hash_CRC32::finalize(context *ctx,
     *((uint32_t *)result) = *(ctx);
 }
 
-//CRC32µÄº¯Êı£¬
+//CRC32çš„å‡½æ•°ï¼Œ
 
-//ÇóÒ»¸öbufferµÄCRC32Öµ£¬¿ÉÒÔÓÃÓÚÒ»Ğ©ÒªÇóËÙ¶ÈµÄ¼òµ¥Ğ£Ñé,
+//æ±‚ä¸€ä¸ªbufferçš„CRC32å€¼ï¼Œå¯ä»¥ç”¨äºä¸€äº›è¦æ±‚é€Ÿåº¦çš„ç®€å•æ ¡éªŒ,
 
 uint32_t ZCE_LIB::crc32(uint32_t crcinit, const unsigned char *buf, size_t buf_size)
 {
     const unsigned char *p = buf;
     uint32_t crc = crcinit;
 
-    //Ä¬ÈÏ²ÉÓÃÒ»ÖÖ¿ìËÙµÄ¶ÁÈ¡·½·¨£¬Ò»´ÎÈ¡16¸ö×Ö½Ú¶ÁÈ¡µÄ°æ±¾£¬
-    //ÔÚÎÒµÄ¼òµ¥Êı¾İ²âÊÔÖĞ£¬¿ìËÙ°æ±¾±ÈÂıËÙ°æ±¾¿ì15%×óÓÒ£¬¿ìËÙHashËã·¨À´×Ôrhashlib
+    //é»˜è®¤é‡‡ç”¨ä¸€ç§å¿«é€Ÿçš„è¯»å–æ–¹æ³•ï¼Œä¸€æ¬¡å–16ä¸ªå­—èŠ‚è¯»å–çš„ç‰ˆæœ¬ï¼Œ
+    //åœ¨æˆ‘çš„ç®€å•æ•°æ®æµ‹è¯•ä¸­ï¼Œå¿«é€Ÿç‰ˆæœ¬æ¯”æ…¢é€Ÿç‰ˆæœ¬å¿«15%å·¦å³ï¼Œå¿«é€ŸHashç®—æ³•æ¥è‡ªrhashlib
 #if 1
 
-    //ÎÒÀí½â¿ìËÙCRC32¼ÆËãÎªÊ²Ã´¿ì£¬µ«²»Àí½âÁ½ÕßÎªÉ¶º¬ÒåÏàÍ¬¡£ÌìÉú²»¾ß±¸Êı¾İ¼ÆËãµÄÄÔ×ÓÑ½¡£
+    //æˆ‘ç†è§£å¿«é€ŸCRC32è®¡ç®—ä¸ºä»€ä¹ˆå¿«ï¼Œä½†ä¸ç†è§£ä¸¤è€…ä¸ºå•¥å«ä¹‰ç›¸åŒã€‚å¤©ç”Ÿä¸å…·å¤‡æ•°æ®è®¡ç®—çš„è„‘å­å‘€ã€‚
 
-    //´¦Àí²»¶ÔÆëµÄÄÚ´æµØÖ·²¿·Ö£¬
+    //å¤„ç†ä¸å¯¹é½çš„å†…å­˜åœ°å€éƒ¨åˆ†ï¼Œ
     for (; (3 & (p - (unsigned char *)0)) && buf_size > 0; p++, buf_size--)
     {
         crc = ZCE_CRC32_TABLE[(crc ^ *p) & 0xFF] ^ (crc >> 8);
     }
 
-    // Ò»´Î´¦Àí16¸ö×Ö½ÚµÄÊı¾İ£¬µ±×÷4¸öDWORD¼ÆËã£¬
+    // ä¸€æ¬¡å¤„ç†16ä¸ªå­—èŠ‚çš„æ•°æ®ï¼Œå½“ä½œ4ä¸ªDWORDè®¡ç®—ï¼Œ
     for (const unsigned char *e = p + (buf_size & ~15); p < e; p += 16)
     {
         crc ^= ZINDEX_TO_LEUINT32(p, 0);
@@ -491,7 +491,7 @@ uint32_t ZCE_LIB::crc32(uint32_t crcinit, const unsigned char *buf, size_t buf_s
         crc = ZCE_CRC32_TABLE[crc & 0xFF] ^ (crc >> 8);
     }
 
-    // ´¦Àí·Ç¶ÔÆëµÄÎ²²¿ĞÅÏ¢¡£
+    // å¤„ç†éå¯¹é½çš„å°¾éƒ¨ä¿¡æ¯ã€‚
     for (const unsigned char *e = p + (buf_size & 15); p < e; p++)
     {
         crc = ZCE_CRC32_TABLE[(crc ^ *p) & 0xFF] ^ (crc >> 8);
@@ -506,7 +506,7 @@ uint32_t ZCE_LIB::crc32(uint32_t crcinit, const unsigned char *buf, size_t buf_s
 }
 
 //================================================================================================
-//CRC16Ëã·¨µÄº¯ÊıºÍ²ßÂÔÀà
+//CRC16ç®—æ³•çš„å‡½æ•°å’Œç­–ç•¥ç±»
 
 static const uint16_t ZCE_CRC16_TABLE[256] =
 {
@@ -544,7 +544,7 @@ static const uint16_t ZCE_CRC16_TABLE[256] =
     0x8201, 0x42C0, 0x4380, 0x8341, 0x4100, 0x81C1, 0x8081, 0x4040
 };
 
-//¼ÆËãCRC16µÄÖµ¡£
+//è®¡ç®—CRC16çš„å€¼ã€‚
 uint16_t ZCE_LIB::crc16(uint16_t crcinit,
                         const unsigned char *buf,
                         size_t buf_size)
