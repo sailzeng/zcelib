@@ -244,6 +244,9 @@
     <ClInclude Include="zce_shm_list.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_shm_lockfree_deque.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
     <ClInclude Include="zce_shm_predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -392,12 +395,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce_bytes_base.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_lockfree_ringbuffer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_lockfree_kfifo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -579,6 +576,9 @@
     <ClCompile Include="zce_shm_cache_chunk.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce_shm_lockfree_deque.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="zce_socket_acceptor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -697,12 +697,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_sqlite_db_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_lockfree_ringbuffer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_lockfree_kfifo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

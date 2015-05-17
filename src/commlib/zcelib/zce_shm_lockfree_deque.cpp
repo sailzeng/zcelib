@@ -3,7 +3,7 @@
 
 
 #include "zce_predefine.h"
-#include "zce_lockfree_kfifo.h"
+#include "zce_shm_lockfree_deque.h"
 
 
 namespace ZCE_LIB
