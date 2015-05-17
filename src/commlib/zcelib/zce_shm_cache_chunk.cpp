@@ -1,4 +1,4 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_shm_cache_chunk.h"
 
@@ -13,7 +13,7 @@ shm_cachechunk::~shm_cachechunk()
 {
 }
 
-//µÃµ½³õÊ¼»¯ËùĞèÄÚ´æµÄ´óĞ¡
+//å¾—åˆ°åˆå§‹åŒ–æ‰€éœ€å†…å­˜çš„å¤§å°
 size_t shm_cachechunk::getallocsize(const size_t numnode,
                                     const size_t numchunk,
                                     const size_t szchunk)
@@ -24,7 +24,7 @@ size_t shm_cachechunk::getallocsize(const size_t numnode,
             + numchunk * szchunk ;
 }
 
-//¸ù¾İ²ÎÊı³õÊ¼»¯
+//æ ¹æ®å‚æ•°åˆå§‹åŒ–
 shm_cachechunk *shm_cachechunk::initialize(const size_t numnode,
                                            const size_t numchunk,
                                            const size_t szchunk,
@@ -35,10 +35,10 @@ shm_cachechunk *shm_cachechunk::initialize(const size_t numnode,
     _shm_cachechunk_head *cachechunk_head = reinterpret_cast<_shm_cachechunk_head *>(pmmap);
     //
 
-    //Èç¹û²ÉÓÃ»Ö¸´µÄĞÎÊ½,
+    //å¦‚æœé‡‡ç”¨æ¢å¤çš„å½¢å¼,
     if (if_restore == true)
     {
-        //¼ì²éËùÓĞµÄ³ß´ç,Èç¹ûÓĞ²»¶ÔµÄµØ·½·µ»ØNULL,ÕâÑù¿ÉÒÔ±£Ö¤²»³öÏÖ´íÎó
+        //æ£€æŸ¥æ‰€æœ‰çš„å°ºå¯¸,å¦‚æœæœ‰ä¸å¯¹çš„åœ°æ–¹è¿”å›NULL,è¿™æ ·å¯ä»¥ä¿è¯ä¸å‡ºç°é”™è¯¯
         if (cachechunk_head->size_of_mmap_ != getallocsize(numnode, numchunk, szchunk) ||
             cachechunk_head->num_of_node_ != numnode ||
             cachechunk_head->num_of_chunk_ != numchunk ||
@@ -48,13 +48,13 @@ shm_cachechunk *shm_cachechunk::initialize(const size_t numnode,
         }
     }
 
-    //µÃµ½¿Õ¼ä´óĞ¡
+    //å¾—åˆ°ç©ºé—´å¤§å°
     cachechunk_head->size_of_mmap_ = getallocsize(numnode, numchunk, szchunk);
     cachechunk_head->num_of_node_ = numnode;
     cachechunk_head->num_of_chunk_ = numchunk;
     cachechunk_head->size_of_chunk_ = szchunk;
 
-    //´¦ÀíÒ»Ğ©Æ«ÒÆÁ¿µÄÖ¸Õë
+    //å¤„ç†ä¸€äº›åç§»é‡çš„æŒ‡é’ˆ
     shm_cachechunk *cachechunk = new shm_cachechunk();
     cachechunk->smem_base_ = pmmap;
     cachechunk->cachechunk_head_ = cachechunk_head;
@@ -62,7 +62,7 @@ shm_cachechunk *shm_cachechunk::initialize(const size_t numnode,
     cachechunk->chunkindex_base_ = reinterpret_cast<size_t *>(pmmap + sizeof(_shm_cachechunk_head) + numnode * sizeof(cachechunk_node_index));
     cachechunk->chunkdata_base_  =  pmmap + sizeof(_shm_cachechunk_head) + numnode * sizeof(cachechunk_node_index) +  numchunk * sizeof(size_t);
 
-    //³õÊ¼»¯ËùÓĞµÄÄÚ´æ
+    //åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜
     if ( false == if_restore )
     {
         cachechunk->clear();
@@ -74,7 +74,7 @@ shm_cachechunk *shm_cachechunk::initialize(const size_t numnode,
 //
 void shm_cachechunk::clear()
 {
-    //³õÊ¼»¯freeÊı¾İÇø
+    //åˆå§‹åŒ–freeæ•°æ®åŒº
     for (size_t i = 0; i < cachechunk_head_->num_of_node_ ; ++i )
     {
         cachenode_base_[i].chunk_index_ = i + 1;
@@ -88,7 +88,7 @@ void shm_cachechunk::clear()
 
     cachechunk_head_->free_node_head_ = 0;
 
-    //ÇåÀíFREELISTµÄµ¥ÏòNODE,
+    //æ¸…ç†FREELISTçš„å•å‘NODE,
     for (size_t i = 0; i < cachechunk_head_->num_of_chunk_ ; ++i )
     {
         chunkindex_base_[i] = i + 1;
@@ -102,16 +102,16 @@ void shm_cachechunk::clear()
     //
     cachechunk_head_->free_chunk_head_ = 0;
 
-    //½«¿ÉÓÃµÄÊıÁ¿½øĞĞÒ»ÏÂĞŞÕı
+    //å°†å¯ç”¨çš„æ•°é‡è¿›è¡Œä¸€ä¸‹ä¿®æ­£
     cachechunk_head_->usable_of_node_ = cachechunk_head_->num_of_node_;
     cachechunk_head_->usable_of_chunk_ = cachechunk_head_->num_of_chunk_;
 
 }
 
-//¸ù¾İÉêÇëµÄ¿Õ¼ä,·ÖÅäÒ»¸öNODE,
+//æ ¹æ®ç”³è¯·çš„ç©ºé—´,åˆ†é…ä¸€ä¸ªNODE,
 bool shm_cachechunk::create_node(const size_t szdata, size_t &nodeindex)
 {
-    //Èç¹ûÃ»ÓĞÁËNODE,»òÕßÃ»ÓĞÁËCHUNK
+    //å¦‚æœæ²¡æœ‰äº†NODE,æˆ–è€…æ²¡æœ‰äº†CHUNK
     bool bret = check_enough(szdata);
 
     if ( false == bret  )
@@ -119,20 +119,20 @@ bool shm_cachechunk::create_node(const size_t szdata, size_t &nodeindex)
         return false;
     }
 
-    //¼ì²éÊ£ÓàµÄ¿Õ¼äÊ®·Ö×ã¹»
+    //æ£€æŸ¥å‰©ä½™çš„ç©ºé—´ååˆ†è¶³å¤Ÿ
     size_t chunkinx = ( cachechunk_head_->free_chunk_head_);
     size_t tmpszdata = szdata;
 
-    //Ñ­»·¼ì²é¿Õ¼äÊÇ·ñ×ã¹»µÄ¿´ËÆÒ²ĞíÊÇµÍĞ§µÄ,µ«ÊÇÄã±ØĞëµÃµ½¶ÓÎ²,ËùÒÔ±ØĞëÓĞ¸öÑ­»·¹ı³Ì,
+    //å¾ªç¯æ£€æŸ¥ç©ºé—´æ˜¯å¦è¶³å¤Ÿçš„çœ‹ä¼¼ä¹Ÿè®¸æ˜¯ä½æ•ˆçš„,ä½†æ˜¯ä½ å¿…é¡»å¾—åˆ°é˜Ÿå°¾,æ‰€ä»¥å¿…é¡»æœ‰ä¸ªå¾ªç¯è¿‡ç¨‹,
 
-    //use_chunkÎªÊ¹ÓÃµÄCHUNKÊıÁ¿£¬
+    //use_chunkä¸ºä½¿ç”¨çš„CHUNKæ•°é‡ï¼Œ
     size_t use_chunk = 1;
 
     for (; tmpszdata > cachechunk_head_->size_of_chunk_; ++use_chunk)
     {
         tmpszdata -= cachechunk_head_->size_of_chunk_;
 
-        //¸ù¾İÇ°ÃæµÄÅĞ¶Ï£¬Õâ¸ö
+        //æ ¹æ®å‰é¢çš„åˆ¤æ–­ï¼Œè¿™ä¸ª
         if (chunkinx == _INVALID_POINT)
         {
             return false;
@@ -147,26 +147,26 @@ bool shm_cachechunk::create_node(const size_t szdata, size_t &nodeindex)
     (*(cachenode_base_ + nodeindex)).chunk_index_ =  cachechunk_head_->free_chunk_head_;
     (*(cachenode_base_ + nodeindex)).size_of_node_ =  szdata;
 
-    //½«FREEÁ´×ÓµÄÍ·½Úµã·ÅÈë
+    //å°†FREEé“¾å­çš„å¤´èŠ‚ç‚¹æ”¾å…¥
     cachechunk_head_->free_chunk_head_  = *(chunkindex_base_ + chunkinx);
 
     *(chunkindex_base_ + chunkinx) = _INVALID_POINT;
 
-    //¼ÇÂ¼Ê¹ÓÃµÄÊı¾İ½ÚµãÊıÁ¿
+    //è®°å½•ä½¿ç”¨çš„æ•°æ®èŠ‚ç‚¹æ•°é‡
     --(cachechunk_head_->usable_of_node_) ;
     cachechunk_head_->usable_of_chunk_ -= use_chunk;
 
     return true;
 }
 
-//ÊÍ·ÅÒ»¸öNODE,½«ÆäµÄÍ°¹é»¹¸øFREELIST
+//é‡Šæ”¾ä¸€ä¸ªNODE,å°†å…¶çš„æ¡¶å½’è¿˜ç»™FREELIST
 void shm_cachechunk::destroy_node(const size_t nodeindex)
 {
-    //¹é»¹CHUNK
+    //å½’è¿˜CHUNK
     size_t chunkinx = (*(cachenode_base_ + nodeindex)).chunk_index_;
     size_t fchunkinx = chunkinx;
-    //Ñ­»·ÊÍ·ÅCHUNK
-    //free_chunkÎªÊÍ·ÅµÄCHUNKÊıÁ¿£¬
+    //å¾ªç¯é‡Šæ”¾CHUNK
+    //free_chunkä¸ºé‡Šæ”¾çš„CHUNKæ•°é‡ï¼Œ
     size_t free_chunk = 1;
 
     for (; * (chunkindex_base_ + chunkinx) != _INVALID_POINT; ++free_chunk)
@@ -177,19 +177,19 @@ void shm_cachechunk::destroy_node(const size_t nodeindex)
     *(chunkindex_base_ + chunkinx) = cachechunk_head_->free_chunk_head_;
     cachechunk_head_->free_chunk_head_ = fchunkinx;
 
-    //¹é»¹NODE
+    //å½’è¿˜NODE
     (*(cachenode_base_ + nodeindex)).chunk_index_ = cachechunk_head_->free_node_head_;
     (*(cachenode_base_ + nodeindex)).size_of_node_    = 0;
 
     cachechunk_head_->free_node_head_ = nodeindex;
 
-    //×¢ÒâÏÂÃæ¸ÄµÄ¼¸¸öÄÚ²¿±äÁ¿ÊÇ¿ÉÓÃµÄÊıÁ¿£¬²»ÊÇÒÑ¾­ÓÃµÄ¡£
+    //æ³¨æ„ä¸‹é¢æ”¹çš„å‡ ä¸ªå†…éƒ¨å˜é‡æ˜¯å¯ç”¨çš„æ•°é‡ï¼Œä¸æ˜¯å·²ç»ç”¨çš„ã€‚
     ++(cachechunk_head_->usable_of_node_) ;
     cachechunk_head_->usable_of_chunk_ += free_chunk;
 
 }
 
-//È¡Ê£Óà¿Õ¼äµÄ´óĞ¡
+//å–å‰©ä½™ç©ºé—´çš„å¤§å°
 void shm_cachechunk::free_size(size_t &free_node, size_t &free_chunk, size_t &max_room)
 {
     free_node = cachechunk_head_->usable_of_node_;
@@ -197,7 +197,7 @@ void shm_cachechunk::free_size(size_t &free_node, size_t &free_chunk, size_t &ma
     max_room = cachechunk_head_->usable_of_chunk_ * cachechunk_head_->size_of_chunk_;
 }
 
-//¼ì²éÊÇ·ñ¿ÉÒÔ·ÅÈëÒ»¸öÕâÑù´óĞ¡µÄÊı¾İ
+//æ£€æŸ¥æ˜¯å¦å¯ä»¥æ”¾å…¥ä¸€ä¸ªè¿™æ ·å¤§å°çš„æ•°æ®
 bool shm_cachechunk::check_enough(size_t szdata)
 {
     if ( cachechunk_head_->usable_of_node_ == 0 ||
@@ -210,7 +210,7 @@ bool shm_cachechunk::check_enough(size_t szdata)
     return true;
 }
 
-//½«Ò»¸öNODE·ÅÈëCacheÖĞ£¬
+//å°†ä¸€ä¸ªNODEæ”¾å…¥Cacheä¸­ï¼Œ
 bool shm_cachechunk::set_node(const size_t szdata, const char *indata, size_t &nodeindex)
 {
     size_t tmpindex;
@@ -227,7 +227,7 @@ bool shm_cachechunk::set_node(const size_t szdata, const char *indata, size_t &n
     size_t szonce = 0, szcpy = 0;
     size_t tmpszdata = szdata;
 
-    //×îºótmpszdata ==0
+    //æœ€åtmpszdata ==0
     while (tmpszdata > 0)
     {
         szonce = (tmpszdata > cachechunk_head_->size_of_chunk_) ? cachechunk_head_->size_of_chunk_ : tmpszdata;
@@ -235,7 +235,7 @@ bool shm_cachechunk::set_node(const size_t szdata, const char *indata, size_t &n
         szcpy += szonce;
         tmpszdata -= szonce;
 
-        //×¼±¸ÏÂ¸öCHUNK
+        //å‡†å¤‡ä¸‹ä¸ªCHUNK
         if (tmpszdata > 0)
         {
             chunkinx = (*(chunkindex_base_ + chunkinx));
@@ -245,13 +245,13 @@ bool shm_cachechunk::set_node(const size_t szdata, const char *indata, size_t &n
     return true;
 }
 
-//µÃµ½NODEµÄ´óĞ¡
+//å¾—åˆ°NODEçš„å¤§å°
 size_t shm_cachechunk::nodesize(const size_t nodeindex)
 {
     return (*(cachenode_base_ + nodeindex)).size_of_node_;
 }
 
-//µÃµ½Ä³¸öNODEµÄ³ß´ç,ÒÔ¼°ÏàÓ¦µÄchunkµÄÊıÁ¿
+//å¾—åˆ°æŸä¸ªNODEçš„å°ºå¯¸,ä»¥åŠç›¸åº”çš„chunkçš„æ•°é‡
 void shm_cachechunk::nodesize(const size_t nodeindex, size_t &nodesize, size_t &chunknum)
 {
     nodesize = (*(cachenode_base_ + nodeindex)).size_of_node_;
@@ -266,13 +266,13 @@ void shm_cachechunk::nodesize(const size_t nodeindex, size_t &nodesize, size_t &
     }
 }
 
-//µÃµ½CHUNKµÄ´óĞ¡,×¢ÒâÕâÊÇCHUNKµÄÈİÁ¿²»ÊÇÀïÃæÊı¾İµÄ´óĞ¡
+//å¾—åˆ°CHUNKçš„å¤§å°,æ³¨æ„è¿™æ˜¯CHUNKçš„å®¹é‡ä¸æ˜¯é‡Œé¢æ•°æ®çš„å¤§å°
 size_t shm_cachechunk::chunksize()
 {
     return cachechunk_head_->size_of_chunk_;
 }
 
-//È¡»ØNODEµÄÊı¾İ£¬ÒÔ¼°´óĞ¡
+//å–å›NODEçš„æ•°æ®ï¼Œä»¥åŠå¤§å°
 void shm_cachechunk::get_node(const size_t nodeindex, size_t &szdata, char *outdata)
 {
     size_t chunkinx = (*(cachenode_base_ + nodeindex)).chunk_index_;
@@ -281,7 +281,7 @@ void shm_cachechunk::get_node(const size_t nodeindex, size_t &szdata, char *outd
 
     size_t szonce = 0, szcpy = 0;
 
-    //szdata ×îºó==0
+    //szdata æœ€å==0
     while (tmpszdata > 0)
     {
         szonce = (tmpszdata >= cachechunk_head_->size_of_chunk_) ? cachechunk_head_->size_of_chunk_ : tmpszdata;
@@ -296,13 +296,13 @@ void shm_cachechunk::get_node(const size_t nodeindex, size_t &szdata, char *outd
     }
 }
 
-//ÊÍ·ÅNODEµÄË÷Òı¶ÔÓ¦µÄËùÓĞCHUNK£¬
+//é‡Šæ”¾NODEçš„ç´¢å¼•å¯¹åº”çš„æ‰€æœ‰CHUNKï¼Œ
 void shm_cachechunk::freenode(const size_t nodeindex)
 {
     destroy_node(nodeindex);
 }
 
-//µ±ĞèÒªÒ»¸ö¸öCHUNKÈ¡³öÊı¾İÊ±£¬µÃµ½Ò»¸öNODEµÄµÚN¸öCHUNKµÄÊı¾İ
+//å½“éœ€è¦ä¸€ä¸ªä¸ªCHUNKå–å‡ºæ•°æ®æ—¶ï¼Œå¾—åˆ°ä¸€ä¸ªNODEçš„ç¬¬Nä¸ªCHUNKçš„æ•°æ®
 void shm_cachechunk::get_chunk(const size_t nodeindex, size_t chunk_no, size_t &szdata, char *outdata)
 {
     size_t chunk_num_of_node, size_of_node;
@@ -324,8 +324,8 @@ void shm_cachechunk::get_chunk(const size_t nodeindex, size_t chunk_no, size_t &
     memcpy(outdata, chunkdata_base_ + inxchunk * size_of_chunk, szdata);
 }
 
-//¸ù¾İÊı¾İµÄÆğÊ¼Î»ÖÃ£¬È¡µÃÕâ¸öÎ»ÖÃËùÔÚCHUNKµÄÊı¾İ,£¨×¢ÒâÖ»¿½±´Ò»¸öCHUNKµÄÊı¾İ£©
-//Èç¹û²»ÊÇÊı¾İµÄÆğÊ¼Î»ÖÃ¿ªÊ¼£¬¶øÊÇÔÚCHUNKÖĞ¼ä£¨²»ÊÇ0£©£¬¿½±´»ØÀ´µÄÊı¾İ´Ódata_start¿ªÊ¼
+//æ ¹æ®æ•°æ®çš„èµ·å§‹ä½ç½®ï¼Œå–å¾—è¿™ä¸ªä½ç½®æ‰€åœ¨CHUNKçš„æ•°æ®,ï¼ˆæ³¨æ„åªæ‹·è´ä¸€ä¸ªCHUNKçš„æ•°æ®ï¼‰
+//å¦‚æœä¸æ˜¯æ•°æ®çš„èµ·å§‹ä½ç½®å¼€å§‹ï¼Œè€Œæ˜¯åœ¨CHUNKä¸­é—´ï¼ˆä¸æ˜¯0ï¼‰ï¼Œæ‹·è´å›æ¥çš„æ•°æ®ä»data_startå¼€å§‹
 void shm_cachechunk::get_chunkdata(const size_t nodeindex,
                                    const size_t data_start,
                                    size_t &chunk_no,
@@ -342,7 +342,7 @@ void shm_cachechunk::get_chunkdata(const size_t nodeindex,
 
     size_t szonce = 0 ;
 
-    //tmpszdata ×îºó==0
+    //tmpszdata æœ€å==0
     while (tmpszdata >= cachechunk_head_->size_of_chunk_)
     {
         szonce = (tmpszdata > cachechunk_head_->size_of_chunk_) ? cachechunk_head_->size_of_chunk_ : tmpszdata;
@@ -356,8 +356,8 @@ void shm_cachechunk::get_chunkdata(const size_t nodeindex,
     memcpy(outdata , chunkdata_base_ +  chunkinx * (cachechunk_head_->size_of_chunk_) , szdata);
 }
 
-//ÓÃÓÚÃ¿´ÎÈ¡Ò»¸öCHUNKµÄÖ¸Õë²Ù×÷£¬¸ù¾İNODEË÷Òı£¬µÚ¼¸¸öCHUNK,·µ»Ø
-//  CHUNKµÄÖ¸ÕëÒÔ¼°ÏàÓ¦µÄ³¤¶È,×¢ÒâÖ¸ÕëµÄÉúÃüÖÜÆÚ,
+//ç”¨äºæ¯æ¬¡å–ä¸€ä¸ªCHUNKçš„æŒ‡é’ˆæ“ä½œï¼Œæ ¹æ®NODEç´¢å¼•ï¼Œç¬¬å‡ ä¸ªCHUNK,è¿”å›
+//  CHUNKçš„æŒ‡é’ˆä»¥åŠç›¸åº”çš„é•¿åº¦,æ³¨æ„æŒ‡é’ˆçš„ç”Ÿå‘½å‘¨æœŸ,
 void shm_cachechunk::get_chunk_point(const size_t nodeindex,
                                      size_t chunk_no,
                                      size_t &szdata,
@@ -382,8 +382,8 @@ void shm_cachechunk::get_chunk_point(const size_t nodeindex,
     chunk_point = chunkdata_base_ + inxchunk * size_of_chunk;
 }
 
-//ÓÃÓÚ¸ù¾İÊı¾İµÄÆğÊ¼Î»ÖÃ£¬È¡µÃÕâ¸öÎ»ÖÃËùÔÚCHUNKµÄÖ¸Õë,ÒÔ¼°È¡µÃ
-//ÔÚÕâ¸öCHUNKÀïÃæµÄÊ£ÓàµÄÊı¾İÊ±
+//ç”¨äºæ ¹æ®æ•°æ®çš„èµ·å§‹ä½ç½®ï¼Œå–å¾—è¿™ä¸ªä½ç½®æ‰€åœ¨CHUNKçš„æŒ‡é’ˆ,ä»¥åŠå–å¾—
+//åœ¨è¿™ä¸ªCHUNKé‡Œé¢çš„å‰©ä½™çš„æ•°æ®æ—¶
 void shm_cachechunk::get_chunkdata_point(const size_t nodeindex,
                                          const size_t data_start,
                                          size_t &chunk_no,
@@ -399,7 +399,7 @@ void shm_cachechunk::get_chunkdata_point(const size_t nodeindex,
     assert(data_start < size_of_node_);
 #endif
 
-    //²»ÊÇ×îºóÒ»¿é
+    //ä¸æ˜¯æœ€åä¸€å—
     if ( size_of_node_ / szofchunk != data_start / szofchunk )
     {
         szdata = szofchunk - (data_start % szofchunk);
@@ -412,7 +412,7 @@ void shm_cachechunk::get_chunkdata_point(const size_t nodeindex,
 
     chunk_no = data_start / szofchunk;
 
-    //ÕÒµ½CHUNKµÄË÷Òı±àºÅ
+    //æ‰¾åˆ°CHUNKçš„ç´¢å¼•ç¼–å·
     for (size_t i = 0; i < chunk_no; ++i)
     {
         chunkinx = (*(chunkindex_base_ + chunkinx));

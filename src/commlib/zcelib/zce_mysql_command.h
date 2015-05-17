@@ -1,23 +1,23 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_mysql_command.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2004Äê7ÔÂ24ÈÕ
-* @brief      MySQLµÄSQL´¦Àí¶ÔÏó£¬Command¶ÔÏó
-*             ×î¿ªÊ¼£¬ÎÒÏ£ÍûÍ¬Ê±±£ÓĞ¶ÏÑÔ£¬·µ»ØÖµ£¬ºÍÒì³£3ÖÖÄ£Ê½£¬
-*             ½á¹û¶àÄêÒÔÀ´£¬Ò»Ö±»¹ÊÇÊ¹ÓÃ·µ»ØÖµµÄ·½·¨£¬Òì³£ÓëÎÒÎŞ°®¡£
+* @date       2004å¹´7æœˆ24æ—¥
+* @brief      MySQLçš„SQLå¤„ç†å¯¹è±¡ï¼ŒCommandå¯¹è±¡
+*             æœ€å¼€å§‹ï¼Œæˆ‘å¸Œæœ›åŒæ—¶ä¿æœ‰æ–­è¨€ï¼Œè¿”å›å€¼ï¼Œå’Œå¼‚å¸¸3ç§æ¨¡å¼ï¼Œ
+*             ç»“æœå¤šå¹´ä»¥æ¥ï¼Œä¸€ç›´è¿˜æ˜¯ä½¿ç”¨è¿”å›å€¼çš„æ–¹æ³•ï¼Œå¼‚å¸¸ä¸æˆ‘æ— çˆ±ã€‚
 *
 *
-* @details    Õâ¾ÓÈ»ÊÇ¸ÕÀ´ÌÚÑ¶Ê±Ğ´µÄ´úÂë£¬ºÃÏñÄÇÊ±ºò´ó¼ÒÍÆ¼öÓÃµÄÊı¾İ¿â»¹ÊÇMYSQL 3.23£¬
-*             Ê±¼ä¹ıµÄ·É¿ì£¬ÄãµÄÖ´ĞĞĞ§ÂÊÔ¶Ô¶¸Ï²»ÉÏÊ±¼äµÄÁ÷ÊÅµÄËÙ¶È¡£
+* @details    è¿™å±…ç„¶æ˜¯åˆšæ¥è…¾è®¯æ—¶å†™çš„ä»£ç ï¼Œå¥½åƒé‚£æ—¶å€™å¤§å®¶æ¨èç”¨çš„æ•°æ®åº“è¿˜æ˜¯MYSQL 3.23ï¼Œ
+*             æ—¶é—´è¿‡çš„é£å¿«ï¼Œä½ çš„æ‰§è¡Œæ•ˆç‡è¿œè¿œèµ¶ä¸ä¸Šæ—¶é—´çš„æµé€çš„é€Ÿåº¦ã€‚
 *
 */
 
 #ifndef ZCE_LIB_MYSQL_DB_COMMAND_H_
 #define ZCE_LIB_MYSQL_DB_COMMAND_H_
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â£¬»á°üº¬MYSQLµÄÍ·ÎÄ¼ş
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“ï¼Œä¼šåŒ…å«MYSQLçš„å¤´æ–‡ä»¶
 #if defined ZCE_USE_MYSQL
 
 #include "zce_boost_non_copyable.h"
@@ -25,121 +25,121 @@
 #include "zce_mysql_result.h"
 
 /*!
-* @brief      MYSQLµÄÃüÁî¶ÔÏó£¬ÓÃÓÚ´¦ÀíSQLÓï¾äµÄÖ´ĞĞ£¬»ñµÃ½á¹û¼¯
+* @brief      MYSQLçš„å‘½ä»¤å¯¹è±¡ï¼Œç”¨äºå¤„ç†SQLè¯­å¥çš„æ‰§è¡Œï¼Œè·å¾—ç»“æœé›†
 *
 */
 class ZCE_Mysql_Command: public ZCE_NON_Copyable
 {
 
 public:
-    ///ÃüÁî¶ÔÏóµÄ¹¹Ôìº¯Êı
+    ///å‘½ä»¤å¯¹è±¡çš„æ„é€ å‡½æ•°
     ZCE_Mysql_Command();
-    ///ÃüÁî¶ÔÏóµÄ¹¹Ôìº¯Êı£¬Ö¸¶¨Ò»¸öconnect
+    ///å‘½ä»¤å¯¹è±¡çš„æ„é€ å‡½æ•°ï¼ŒæŒ‡å®šä¸€ä¸ªconnect
     ZCE_Mysql_Command(ZCE_Mysql_Connect *);
-    ///ÃüÁî¶ÔÏóµÄÎö¹¹º¯Êı
+    ///å‘½ä»¤å¯¹è±¡çš„ææ„å‡½æ•°
     ~ZCE_Mysql_Command();
 
     /*!
-    * @brief      ÉèÖÃCommandµÄZCE_Mysql_Connect
-    * @return     int  0³É¹¦£¬-1Ê§°Ü
-    * @param      conn Á´½Ó¶ÔÏó£¬±ØĞëÒÑ¾­Á´½Ó³É¹¦à¸
+    * @brief      è®¾ç½®Commandçš„ZCE_Mysql_Connect
+    * @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+    * @param      conn é“¾æ¥å¯¹è±¡ï¼Œå¿…é¡»å·²ç»é“¾æ¥æˆåŠŸå–”
     */
     int set_connection(ZCE_Mysql_Connect *conn);
 
     /*!
-    * @brief      µÃµ½´ËCommandµÄZCE_Mysql_Connect¶ÔÏó
+    * @brief      å¾—åˆ°æ­¤Commandçš„ZCE_Mysql_Connectå¯¹è±¡
     * @return     ZCE_Mysql_Connect*
     */
     inline ZCE_Mysql_Connect *get_connection();
 
     /*!
-    * @brief      ÉèÖÃSQL CommandÓï¾ä,ÎªBINĞÍµÄSQLÓï¾ä×¼±¸
-    * @param      sqlcmd SQLÓï¾ä
-    * @param      szsql  SQLÓï¾ä³¤¶È
+    * @brief      è®¾ç½®SQL Commandè¯­å¥,ä¸ºBINå‹çš„SQLè¯­å¥å‡†å¤‡
+    * @param      sqlcmd SQLè¯­å¥
+    * @param      szsql  SQLè¯­å¥é•¿åº¦
     */
     inline int set_sql_command(const char *sqlcmd, size_t szsql);
 
     /*!
-    * @brief      ÉèÖÃSQL CommandÓï¾ä,TXT,BINÓï¾ä¶¼¿ÉÒÔ
-    * @param      sqlcmd SQLÓï¾ä
+    * @brief      è®¾ç½®SQL Commandè¯­å¥,TXT,BINè¯­å¥éƒ½å¯ä»¥
+    * @param      sqlcmd SQLè¯­å¥
     */
     inline int set_sql_command(const std::string &sqlcmd);
 
     /*!
-    * @brief      ÉèÖÃSQL CommandÓï¾ä,¶¯Ì¬²ÎÊı°æ±¾
-    * @return     int  0³É¹¦£¬-1Ê§°Ü
-    * @param      sql_format    ¸ñÊ½»¯µÄSQLÓï¾ä£¬
-    * @param      ...           ¶¯Ì¬²ÎÊı
+    * @brief      è®¾ç½®SQL Commandè¯­å¥,åŠ¨æ€å‚æ•°ç‰ˆæœ¬
+    * @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+    * @param      sql_format    æ ¼å¼åŒ–çš„SQLè¯­å¥ï¼Œ
+    * @param      ...           åŠ¨æ€å‚æ•°
     */
     int set_sql_command( const char *sql_format, ...);
 
     /*!
-    * @brief      µÃµ½SQL CommandÓï¾ä,TXTĞÍ
+    * @brief      å¾—åˆ°SQL Commandè¯­å¥,TXTå‹
     * @return     const char*
     */
     const char *get_sql_command() const;
 
     /*!
-    * @brief      µÃµ½SQL CommandÓï¾ä,ÎªBINĞÍÓï¾ä
-    * @return     int  0³É¹¦£¬-1Ê§°Ü
-    * @param[out]    cmdbuf   ·µ»Ø×Ö·û´®
-    * @param[in,out] szbuf ×Ö·û´®bufferµÄ³¤¶È
+    * @brief      å¾—åˆ°SQL Commandè¯­å¥,ä¸ºBINå‹è¯­å¥
+    * @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+    * @param[out]    cmdbuf   è¿”å›å­—ç¬¦ä¸²
+    * @param[in,out] szbuf å­—ç¬¦ä¸²bufferçš„é•¿åº¦
     * @note
     */
     int get_sql_command(char *cmdbuf, size_t &szbuf) const;
 
     /*!
-    * @brief      µÃµ½SQL CommandÓï¾ä
-    * @param      std::string& ·µ»ØµÄSQLÓï¾ä
+    * @brief      å¾—åˆ°SQL Commandè¯­å¥
+    * @param      std::string& è¿”å›çš„SQLè¯­å¥
     */
     void get_sql_command(std::string &) const;
 
     /*!
-    * @brief      Ö´ĞĞSQLÓï¾ä,²»ÓÃÊä³ö½á¹û¼¯ºÏµÄÄÇÖÖ£¬INSERT,UPDATEÓï¾äµÈ
-    * @return     int         0³É¹¦£¬-1Ê§°Ü
-    * @param      num_affect  ²éÑ¯µÃµ½µÄÌõÊı
-    * @param      lastid      ²åÈëIDµÈ£¬¶ÔÓÚÓĞ×ÔÔö×Ö¶ÎµÄÊ±£¬(UINT32Ò²Ğí£¬»¹²»¹»ÓÃ£¬ºÇºÇ)
+    * @brief      æ‰§è¡ŒSQLè¯­å¥,ä¸ç”¨è¾“å‡ºç»“æœé›†åˆçš„é‚£ç§ï¼ŒINSERT,UPDATEè¯­å¥ç­‰
+    * @return     int         0æˆåŠŸï¼Œ-1å¤±è´¥
+    * @param      num_affect  æŸ¥è¯¢å¾—åˆ°çš„æ¡æ•°
+    * @param      lastid      æ’å…¥IDç­‰ï¼Œå¯¹äºæœ‰è‡ªå¢å­—æ®µçš„æ—¶ï¼Œ(UINT32ä¹Ÿè®¸ï¼Œè¿˜ä¸å¤Ÿç”¨ï¼Œå‘µå‘µ)
     */
     int execute(unsigned int &num_affect, unsigned int &lastid);
 
     /*!
-    * @brief      Ö´ĞĞSQLÓï¾ä,SELECTÓï¾ä,×ª´¢½á¹û¼¯ºÏµÄÄÇÖÖ,×¢ÒâÕâ¸öº¯ÊıÌõÓÃµÄÊÇmysql_store_result.
-    * @return     int         0³É¹¦£¬-1Ê§°Ü
-    * @param      num_affect  ²éÑ¯µÃµ½µÄÌõÊı
-    * @param      sqlresult   ·µ»ØµÄ½á¹û¼¯ºÏ
+    * @brief      æ‰§è¡ŒSQLè¯­å¥,SELECTè¯­å¥,è½¬å‚¨ç»“æœé›†åˆçš„é‚£ç§,æ³¨æ„è¿™ä¸ªå‡½æ•°æ¡ç”¨çš„æ˜¯mysql_store_result.
+    * @return     int         0æˆåŠŸï¼Œ-1å¤±è´¥
+    * @param      num_affect  æŸ¥è¯¢å¾—åˆ°çš„æ¡æ•°
+    * @param      sqlresult   è¿”å›çš„ç»“æœé›†åˆ
     */
     int execute(unsigned int &num_affect, ZCE_Mysql_Result &sqlresult);
 
     /*!
-    * @brief      Ö´ĞĞSQLÓï¾ä,SELECTÓï¾ä,USE½á¹û¼¯ºÏµÄÄÇÖÖ,×¢ÒâÆäµ÷ÓÃµÄÊÇmysql_use_result,num_affect¶ÔËüÎŞĞ§
-    *             ÓÃÓÚ½á¹û¼¯Ì«¶àµÄ´¦Àí,Ò»´Î´¦Àí»áÕ¼ÓÃÌ«¶àÄÚ´æµÄµÄ´¦Àí,²»ÍÆ¼öÊ¹ÓÃ,
+    * @brief      æ‰§è¡ŒSQLè¯­å¥,SELECTè¯­å¥,USEç»“æœé›†åˆçš„é‚£ç§,æ³¨æ„å…¶è°ƒç”¨çš„æ˜¯mysql_use_result,num_affectå¯¹å®ƒæ— æ•ˆ
+    *             ç”¨äºç»“æœé›†å¤ªå¤šçš„å¤„ç†,ä¸€æ¬¡å¤„ç†ä¼šå ç”¨å¤ªå¤šå†…å­˜çš„çš„å¤„ç†,ä¸æ¨èä½¿ç”¨,
     * @return     int
-    * @param      sqlresult ·µ»ØµÄ½á¹û¼¯ºÏ
+    * @param      sqlresult è¿”å›çš„ç»“æœé›†åˆ
     */
     int execute(ZCE_Mysql_Result &sqlresult);
 
 #if MYSQL_VERSION_ID > 40100
 
     /*!
-    * @brief      Èç¹ûÒ»´ÎÖ´ĞĞ¶àĞĞSQLÓï¾ä£¬Õâ¸ö·½·¨ÓÃÓÚÈ¡»Ø½á¹û¼¯ºÏ
-    * @return     int       0±íÊ¾³É¹¦£¬·ñÔò±êÊ¶Ê§°Ü
-    * @param[out] sqlresult ·µ»ØµÄMySQL½á¹û¼¯ºÏ
-    * @param[out] bstore    Ê¹ÓÃmysql_store_resultÈ¡»Ø½á¹û¼¯ºÏ£¬»¹ÊÇmysql_use_result
+    * @brief      å¦‚æœä¸€æ¬¡æ‰§è¡Œå¤šè¡ŒSQLè¯­å¥ï¼Œè¿™ä¸ªæ–¹æ³•ç”¨äºå–å›ç»“æœé›†åˆ
+    * @return     int       0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™æ ‡è¯†å¤±è´¥
+    * @param[out] sqlresult è¿”å›çš„MySQLç»“æœé›†åˆ
+    * @param[out] bstore    ä½¿ç”¨mysql_store_resultå–å›ç»“æœé›†åˆï¼Œè¿˜æ˜¯mysql_use_result
     */
     int fetch_next_multi_result(ZCE_Mysql_Result &sqlresult, bool bstore = true);
 
 #endif //MYSQL_VERSION_ID > 40100
 
-    ///C++ µÄÒ»Ğ©Ï°¹ßÓÃ·¨£¬ÎªÁËÖ´×ÅµÄC++°®ºÃÊ¹ÓÃÕß±àĞ´,ÔÚĞ´Õâ¶Î´úÂëµÄÊ±ºò£¬ºÃÏñ¶ÔC++µÄÁ÷ÆÄÓĞĞËÈ¤¡­¡­
-    /// =²Ù×÷·û,
+    ///C++ çš„ä¸€äº›ä¹ æƒ¯ç”¨æ³•ï¼Œä¸ºäº†æ‰§ç€çš„C++çˆ±å¥½ä½¿ç”¨è€…ç¼–å†™,åœ¨å†™è¿™æ®µä»£ç çš„æ—¶å€™ï¼Œå¥½åƒå¯¹C++çš„æµé¢‡æœ‰å…´è¶£â€¦â€¦
+    /// =æ“ä½œç¬¦,
     inline ZCE_Mysql_Command &operator =(const char *sqlcmd);
     inline ZCE_Mysql_Command &operator =(const std::string &sqlcmd);
 
-    ///+=²Ù×÷·ûºÅ,ÓÃÓÚÏòSQL Command ºó²¿Ìí¼ÓSTR
+    ///+=æ“ä½œç¬¦å·,ç”¨äºå‘SQL Command åéƒ¨æ·»åŠ STR
     inline ZCE_Mysql_Command &operator +=(const char *sqlcmd);
     inline ZCE_Mysql_Command &operator +=(const std::string &sqlcmd);
 
-    /// << ²Ù×÷·ûºÅ,ÓÃÓÚÏòSQL Command ºó²¿Ìí¼Ó
+    /// << æ“ä½œç¬¦å·,ç”¨äºå‘SQL Command åéƒ¨æ·»åŠ 
     ZCE_Mysql_Command &operator << (const char );
     ZCE_Mysql_Command &operator << (const short );
     ZCE_Mysql_Command &operator << (const long );
@@ -157,22 +157,22 @@ public:
     ZCE_Mysql_Command &operator << (const std::string &);
 
     /*!
-    * @brief      ·µ»Ø´íÎóÏûÏ¢
+    * @brief      è¿”å›é”™è¯¯æ¶ˆæ¯
     * @return     const char*
     */
     inline const char *get_error_message();
 
     /*!
-    * @brief      ·µ»Ø´íÎóID
+    * @brief      è¿”å›é”™è¯¯ID
     * @return     unsigned int
     */
     inline unsigned int get_error_no();
 
-    //ÕâĞ©º¯Êı¶¼ÊÇ4.1ºóµÄ°æ±¾¹¦ÄÜ
+    //è¿™äº›å‡½æ•°éƒ½æ˜¯4.1åçš„ç‰ˆæœ¬åŠŸèƒ½
 #if MYSQL_VERSION_ID > 40100
 
     /*!
-    * @brief      ÉèÖÃÊÇ·ñ×Ô¶¯Ìá½»
+    * @brief      è®¾ç½®æ˜¯å¦è‡ªåŠ¨æäº¤
     * @return     int
     * @param      bauto
     * @note
@@ -180,14 +180,14 @@ public:
     int set_auto_commit(bool bauto);
 
     /*!
-    * @brief      Ìá½»ÊÂÎñCommit Transaction
+    * @brief      æäº¤äº‹åŠ¡Commit Transaction
     * @return     int
     * @note
     */
     int trans_commit();
 
     /*!
-    * @brief      »Ø¹öÊÂÎñRollback Transaction
+    * @brief      å›æ»šäº‹åŠ¡Rollback Transaction
     * @return     int
     */
     int trans_rollback();
@@ -197,12 +197,12 @@ public:
 protected:
 
     /*!
-    * @brief      Ö´ĞĞSQLÓï¾ä,ÄÚ²¿µÄ»ù´¡º¯Êı,ÈÃ´ó¼Ò¹²Í¬µ÷ÓÃµÄ»ù´¡º¯Êı
-    * @return     int         int  0³É¹¦£¬-1Ê§°Ü
-    * @param[out] num_affect  Ó°ÏìµÄÊı¾İÌõÊı£¬»òÕß·µ»Ø½á¹ûµÄÌõÊı
-    * @param[out] lastid      ×îºóµÄ²åÈëIDÊÇÊ²Ã´£¬
-    * @param[out] sqlresult   SQLÖ´ĞĞºóµÄ½á¹û¼¯ºÏ
-    * @param[out] bstore      Ê¹ÓÃÊ²Ã´·½Ê½»ñµÃ½á¹û£¬tureÊÇÊ¹ÓÃmysql_store_result,falseÊÇÊ¹ÓÃmysql_use_result£¨ĞèÒª¶à´Î½»»¥£©,
+    * @brief      æ‰§è¡ŒSQLè¯­å¥,å†…éƒ¨çš„åŸºç¡€å‡½æ•°,è®©å¤§å®¶å…±åŒè°ƒç”¨çš„åŸºç¡€å‡½æ•°
+    * @return     int         int  0æˆåŠŸï¼Œ-1å¤±è´¥
+    * @param[out] num_affect  å½±å“çš„æ•°æ®æ¡æ•°ï¼Œæˆ–è€…è¿”å›ç»“æœçš„æ¡æ•°
+    * @param[out] lastid      æœ€åçš„æ’å…¥IDæ˜¯ä»€ä¹ˆï¼Œ
+    * @param[out] sqlresult   SQLæ‰§è¡Œåçš„ç»“æœé›†åˆ
+    * @param[out] bstore      ä½¿ç”¨ä»€ä¹ˆæ–¹å¼è·å¾—ç»“æœï¼Œtureæ˜¯ä½¿ç”¨mysql_store_result,falseæ˜¯ä½¿ç”¨mysql_use_resultï¼ˆéœ€è¦å¤šæ¬¡äº¤äº’ï¼‰,
     */
     int execute(unsigned int *num_affect ,
                 unsigned int *lastid,
@@ -210,34 +210,34 @@ protected:
                 bool bstore);
 
 protected:
-    //ÃüÁî»º³åbufµÄ´óĞ¡
+    //å‘½ä»¤ç¼“å†²bufçš„å¤§å°
     static const size_t INITBUFSIZE = 64 * 1024;
 
 protected:
 
-    ///Áª½Ó
+    ///è”æ¥
     ZCE_Mysql_Connect  *mysql_connect_;
     ///SQL
     std::string         mysql_command_;
 
 };
 
-//ÕâĞ©º¯Êı¶¼ÊÇ4.1ºóµÄ°æ±¾¹¦ÄÜ
+//è¿™äº›å‡½æ•°éƒ½æ˜¯4.1åçš„ç‰ˆæœ¬åŠŸèƒ½
 #if MYSQL_VERSION_ID > 40100
 
-//µÃµ½´íÎóĞÅÏ¢
+//å¾—åˆ°é”™è¯¯ä¿¡æ¯
 inline int ZCE_Mysql_Command::set_auto_commit(bool bauto)
 {
     return mysql_connect_->set_auto_commit(bauto);
 }
 
-//µÃµ½´íÎóĞÅÏ¢
+//å¾—åˆ°é”™è¯¯ä¿¡æ¯
 inline int ZCE_Mysql_Command::trans_commit()
 {
     return mysql_connect_->trans_commit();
 }
 
-//µÃµ½´íÎóĞÅÏ¢
+//å¾—åˆ°é”™è¯¯ä¿¡æ¯
 inline int ZCE_Mysql_Command::trans_rollback()
 {
     return mysql_connect_->trans_rollback();
@@ -245,28 +245,28 @@ inline int ZCE_Mysql_Command::trans_rollback()
 
 #endif //MYSQL_VERSION_ID > 40100
 
-//µÃµ½connect µÄ¾ä±ú
+//å¾—åˆ°connect çš„å¥æŸ„
 inline ZCE_Mysql_Connect *ZCE_Mysql_Command::get_connection()
 {
     return mysql_connect_;
 }
 
-//µÃµ½´íÎóĞÅÏ¢
+//å¾—åˆ°é”™è¯¯ä¿¡æ¯
 inline const char *ZCE_Mysql_Command::get_error_message()
 {
     return mysql_connect_->get_error_message();
 }
 
-//µÃµ½´íÎóµÄID
+//å¾—åˆ°é”™è¯¯çš„ID
 inline unsigned int ZCE_Mysql_Command::get_error_no()
 {
     return mysql_connect_->get_error_no();
 }
 
-//SQLÔ¤¼ÆµÄ¸³Öµ£¬
+//SQLé¢„è®¡çš„èµ‹å€¼ï¼Œ
 inline int ZCE_Mysql_Command::set_sql_command(const char *sqlcmd, size_t szsql)
 {
-    //Èç¹û´íÎó,·µ»Ø
+    //å¦‚æœé”™è¯¯,è¿”å›
     if (sqlcmd == NULL)
     {
         ZCE_ASSERT(false);
@@ -278,7 +278,7 @@ inline int ZCE_Mysql_Command::set_sql_command(const char *sqlcmd, size_t szsql)
     return 0;
 }
 
-//ÎªTXT,BIN¶ş½øÖÆµÄSQLÃüÁîÌá¹©µÄ¸³Öµ·½Ê½ ,
+//ä¸ºTXT,BINäºŒè¿›åˆ¶çš„SQLå‘½ä»¤æä¾›çš„èµ‹å€¼æ–¹å¼ ,
 inline int ZCE_Mysql_Command::set_sql_command(const std::string &sqlcmd)
 {
     mysql_command_ = sqlcmd;

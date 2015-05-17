@@ -1,4 +1,4 @@
-
+ï»¿
 
 #include "ogre_predefine.h"
 #include "ogre_application.h"
@@ -9,7 +9,7 @@
 
 int main(int argc, const char *argv[])
 {
-    //ÀûÓÃÄ£°å¿ªÊ¼Æô¶¯
+    //åˆ©ç”¨æ¨¡æ¿å¼€å§‹å¯åŠ¨
     return SOAR_LIB::soar_svrd_main < Ogre_Service_App,
            Ogre_Server_Config,
            Ogre_App_Timer_Handler > (argc, argv);

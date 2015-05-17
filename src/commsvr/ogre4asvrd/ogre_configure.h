@@ -1,4 +1,4 @@
-
+ï»¿
 
 #ifndef OGRE_SERVER_CONFIG_H_
 #define OGRE_SERVER_CONFIG_H_
@@ -15,12 +15,12 @@
 struct TCP_PEER_CONFIG_INFO
 {
 public:
-    ///´Ó×Ö·û´®ÖÐ×ª»»µÃµ½
+    ///ä»Žå­—ç¬¦ä¸²ä¸­è½¬æ¢å¾—åˆ°
     int from_str(const char *peer_info_str);
 
 public:
 
-    ///PEER µÄµØÖ·
+    ///PEER çš„åœ°å€
     ZCE_Sockaddr_In       peer_socketin_;
     ///
     std::string          module_file_;
@@ -41,10 +41,10 @@ public:
 
 public:
 
-    ///¼ÓÔØÄ£¿é
+    ///åŠ è½½æ¨¡å—
     int open_module();
 
-    ///¹Ø±ÕÄ£¿é
+    ///å…³é—­æ¨¡å—
     int close_module();
 
 public:
@@ -55,7 +55,7 @@ public:
     ///
     TCP_PEER_CONFIG_INFO peer_info_;
 
-    ///TCPÊÕÈ¡Êý¾ÝµÄÄ£¿éHANDLER
+    ///TCPæ”¶å–æ•°æ®çš„æ¨¡å—HANDLER
     ZCE_SHLIB_HANDLE     recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;
     ///
     FP_JudgeRecv_WholeFrame   fp_judge_whole_frame_ = NULL;
@@ -63,7 +63,7 @@ public:
 };
 
 
-//µÃµ½KEYµÄHASHº¯Êý
+//å¾—åˆ°KEYçš„HASHå‡½æ•°
 struct HASH_OF_PEER_MODULE
 {
 public:
@@ -76,10 +76,10 @@ public:
 struct EQUAL_OF_PEER_MODULE
 {
 public:
-    //×¢ÒâÅÐ¶ÏÌõ¼þ²»ÊÇËùÓÐµÄ±äÁ¿
+    //æ³¨æ„åˆ¤æ–­æ¡ä»¶ä¸æ˜¯æ‰€æœ‰çš„å˜é‡
     bool operator()(const TCP_PEER_MODULE_INFO &left, const TCP_PEER_MODULE_INFO &right) const
     {
-        //¼ì²éSVC INFOµÄÏàµÈ,¾ÍÈÏÎªÏàµÈ
+        //æ£€æŸ¥SVC INFOçš„ç›¸ç­‰,å°±è®¤ä¸ºç›¸ç­‰
         if (right.peer_id_ == left.peer_id_)
         {
             return true;
@@ -102,70 +102,70 @@ struct OGRE_CONFIG_DATA
 
 public:
 
-    ///×î´óµÄµÄ°ó¶¨µÄSVC IDÊýÁ¿£¬Ò²¾ÍÊÇ¼àÌýÊýÁ¿
+    ///æœ€å¤§çš„çš„ç»‘å®šçš„SVC IDæ•°é‡ï¼Œä¹Ÿå°±æ˜¯ç›‘å¬æ•°é‡
     static const size_t MAX_TCPACCEPT_PEERID_NUM = 4;
 
     static const size_t MAX_UDP_PEERID_NUM = 4;
 
-    ///×î´óµÄÖ÷¶¯Á´½Ó·þÎñÆ÷ÊýÁ¿
+    ///æœ€å¤§çš„ä¸»åŠ¨é“¾æŽ¥æœåŠ¡å™¨æ•°é‡
     static const size_t MAX_AUTO_CONNECT_PEER_NUM = 512;
 
-    ///×î´óµÄ¸ú×Ù¼ÇÂ¼µÄ×î´ó·þÎñÆ÷ÀàÐÍ£¬ÓÃÓÚ×Ô¶¯Ñ¡ÔñÂ·ÓÉ£¬¹ã²¥µÈ
+    ///æœ€å¤§çš„è·Ÿè¸ªè®°å½•çš„æœ€å¤§æœåŠ¡å™¨ç±»åž‹ï¼Œç”¨äºŽè‡ªåŠ¨é€‰æ‹©è·¯ç”±ï¼Œå¹¿æ’­ç­‰
     static const size_t MAX_RECORD_SERVICES_TYPE = 16;
 
-    ///Ä¬ÈÏµÄACCEPT¶Ë¿ÚµÄbacklog£¬LightHTTPÕâ¸öÖµµÃÅäÖÃÊÇ1024£¬Èç¹ûÐèÒªÃÍÈ»¼äµÇÂ½ºÜ¶àÈË£¬¿ÉÒÔµ÷Õûµ½¸ü´ó
+    ///é»˜è®¤çš„ACCEPTç«¯å£çš„backlogï¼ŒLightHTTPè¿™ä¸ªå€¼å¾—é…ç½®æ˜¯1024ï¼Œå¦‚æžœéœ€è¦çŒ›ç„¶é—´ç™»é™†å¾ˆå¤šäººï¼Œå¯ä»¥è°ƒæ•´åˆ°æ›´å¤§
     static const int DEFUALT_ZERG_BACKLOG = 128;
 
 public:
 
-    ///×î´óµÄÖ¡µÄ³¤¶È
+    ///æœ€å¤§çš„å¸§çš„é•¿åº¦
     unsigned int max_data_len_ = 32 * 1024;
 
-    /// #×î´óÁ¬½ÓµÄ·þÎñÆ÷¸öÊý ##Ç°¶Ë128000£¬ºó¶Ë1024
+    /// #æœ€å¤§è¿žæŽ¥çš„æœåŠ¡å™¨ä¸ªæ•° ##å‰ç«¯128000ï¼ŒåŽç«¯1024
     size_t max_accept_svr_ = 1024;
 
-    ///±£ÏÕÊÇ·ñÊ¹ÓÃ
+    ///ä¿é™©æ˜¯å¦ä½¿ç”¨
     bool ogre_insurance_ = true;
 
     ///
     int accept_backlog_ = DEFUALT_ZERG_BACKLOG;
 
 
-    /// ±»¶¯Á¬½ÓµÄ·¢ËÍBUFFER¿ÉÈÝÄÉ×î´óFRAMEµÄ¸öÊý Á¬½ÓÊýÉÙ¶øÁ÷Á¿½Ï´óµÄºó¶Ë·þÎñÆ÷¿ÉÌîµÄ´óÒ»Ð©,
+    /// è¢«åŠ¨è¿žæŽ¥çš„å‘é€BUFFERå¯å®¹çº³æœ€å¤§FRAMEçš„ä¸ªæ•° è¿žæŽ¥æ•°å°‘è€Œæµé‡è¾ƒå¤§çš„åŽç«¯æœåŠ¡å™¨å¯å¡«çš„å¤§ä¸€äº›,
     uint32_t acpt_send_deque_size_ = 32;
-    /// Ã¿¸öconnect ³öÈ¥µÄ£¬tcpÁ¬½ÓµÄ·¢ËÍ¶ÓÁÐ³¤¶È
+    /// æ¯ä¸ªconnect å‡ºåŽ»çš„ï¼Œtcpè¿žæŽ¥çš„å‘é€é˜Ÿåˆ—é•¿åº¦
     uint32_t cnnt_send_deque_size_ = 128;
 
-    /// #´ÓCONNECTµ½ÊÕµ½Êý¾Ý,×îÐ¡Ê±³¤,0-50£¬½ÓÈë²ã±ØÐëÅäÖÃ>0,½¨Òé15-60ÃëÒÔÄÚ
+    /// #ä»ŽCONNECTåˆ°æ”¶åˆ°æ•°æ®,æœ€å°æ—¶é•¿,0-50ï¼ŒæŽ¥å…¥å±‚å¿…é¡»é…ç½®>0,å»ºè®®15-60ç§’ä»¥å†…
     uint32_t accepted_timeout_ = 60;
-    /// RECEIVEÒ»¸öÊý¾ÝµÄ³¬Ê±Ê±¼ä,Îª0±íÊ¾²»ÏÞÖÆ,½¨Òé¸ù¾ÝÒµÎñ²ãµÄÂß¼­ÅÐ¶ÏÒ»ÏÂ
+    /// RECEIVEä¸€ä¸ªæ•°æ®çš„è¶…æ—¶æ—¶é—´,ä¸º0è¡¨ç¤ºä¸é™åˆ¶,å»ºè®®æ ¹æ®ä¸šåŠ¡å±‚çš„é€»è¾‘åˆ¤æ–­ä¸€ä¸‹
     uint32_t receive_timeout_ = 0;
 
 
-    /// #¶ÔÒ»¸ö´íÎóÊý¾ÝÖØ¸´³¢ÊÔ·¢ËÍµÄ´ÎÊý,Ä¿Ç°Õâ¸öÖµÃ»ÓÃÓÃ´¦ÁË£¬
+    /// #å¯¹ä¸€ä¸ªé”™è¯¯æ•°æ®é‡å¤å°è¯•å‘é€çš„æ¬¡æ•°,ç›®å‰è¿™ä¸ªå€¼æ²¡ç”¨ç”¨å¤„äº†ï¼Œ
     uint32_t retry_error_ = 3;
 
-    ///¾Ü¾ø²»ÔÊÐíÁ´½ÓµÄIPµØÖ·ÁÐ±í£¬ÓÃ¿Õ¸ñ·Ö¿ª
+    ///æ‹’ç»ä¸å…è®¸é“¾æŽ¥çš„IPåœ°å€åˆ—è¡¨ï¼Œç”¨ç©ºæ ¼åˆ†å¼€
     std::string reject_ip_;
-    ///ÔÊÐíÁ´½ÓµÄIPµØÖ·ÁÐ±í£¬ÓÃ¿Õ¸ñ·Ö¿ª
+    ///å…è®¸é“¾æŽ¥çš„IPåœ°å€åˆ—è¡¨ï¼Œç”¨ç©ºæ ¼åˆ†å¼€
     std::string allow_ip_;
 
 
 
-    ///·þÎñÆ÷Ö§³ÖµÄAccept TCP PEERµÄÊýÁ¿£¬
+    ///æœåŠ¡å™¨æ”¯æŒçš„Accept TCP PEERçš„æ•°é‡ï¼Œ
     size_t accept_peer_num_ = 0;
-    ///·þÎñÆ÷Ö§³ÖAccept TCP PEER
+    ///æœåŠ¡å™¨æ”¯æŒAccept TCP PEER
     TCP_PEER_CONFIG_INFO  accept_peer_ary_[MAX_TCPACCEPT_PEERID_NUM];
 
-    ///·þÎñÆ÷Ö§³ÖµÄConnect TCP PEERµÄÊýÁ¿£¬Ö÷¶¯Á¬½Ó³öÈ¥µÄÁ´½ÓÊýÁ¿
+    ///æœåŠ¡å™¨æ”¯æŒçš„Connect TCP PEERçš„æ•°é‡ï¼Œä¸»åŠ¨è¿žæŽ¥å‡ºåŽ»çš„é“¾æŽ¥æ•°é‡
     size_t auto_connect_num_ = 0;
-    ///Ö÷¶¯Á´½ÓµÄ·þÎñÆ÷Êý×é
+    ///ä¸»åŠ¨é“¾æŽ¥çš„æœåŠ¡å™¨æ•°ç»„
     TCP_PEER_CONFIG_INFO  auto_cnt_peer_ary_[MAX_AUTO_CONNECT_PEER_NUM];
 
 
-    ///·þÎñÆ÷Ö§³ÖµÄUDP PEERµÄÊýÁ¿£¬
+    ///æœåŠ¡å™¨æ”¯æŒçš„UDP PEERçš„æ•°é‡ï¼Œ
     size_t udp_peer_num_ = 0;
-    ///·þÎñÆ÷Ö§³ÖUDP PEER
+    ///æœåŠ¡å™¨æ”¯æŒUDP PEER
     ZCE_Sockaddr_In udp_peer_ary_[MAX_UDP_PEERID_NUM];
 
 };
@@ -184,23 +184,23 @@ public:
 
 public:
 
-    ///¶ÁÈ¡ÅäÖÃÎÄ¼þ£¬µÃµ½ÎÄ¼þÅäÖÃ²ÎÊý
+    ///è¯»å–é…ç½®æ–‡ä»¶ï¼Œå¾—åˆ°æ–‡ä»¶é…ç½®å‚æ•°
     virtual int read_cfgfile();
 
 
-    ///´ÓÅäÖÃÖÐ¶ÁÈ¡OGREµÄÅäÖÃ
+    ///ä»Žé…ç½®ä¸­è¯»å–OGREçš„é…ç½®
     int get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 public:
 
 
-    //OGREÅäÖÃÎÄ¼þµÄÂ·¾¶
+    //OGREé…ç½®æ–‡ä»¶çš„è·¯å¾„
     std::string             ogre_cfg_file_;
 
-    //OGREÅäÖÃÄ£¿éµÄÂ·¾¶
+    //OGREé…ç½®æ¨¡å—çš„è·¯å¾„
     std::string             ogre_mod_path_;
 
-    ///ZERGµÄÅäÖÃÊý¾Ý
+    ///ZERGçš„é…ç½®æ•°æ®
     OGRE_CONFIG_DATA        ogre_cfg_data_;
 
 

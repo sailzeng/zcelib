@@ -1,18 +1,18 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_event_reactor_wfmo.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Sunday, August 17, 2014
-* @brief      WFMO ÊÇWaitForMultipleObjectsµÄËõĞ´¡£Õâ¸öÊÂWindows×¨ÓĞµÄ¶«¶«¡£
-*             ÎªÊ²Ã´·ÇÒªÓĞÕâ¸ö¶«¶«£¬Ö÷ÒªÊÇÒòÎªWaitForMultipleObjects²ÅÊÇWindwos£¬
-*             ºËĞÄµÄÊÂ¼ş´¥·¢Æ÷£¬
+* @brief      WFMO æ˜¯WaitForMultipleObjectsçš„ç¼©å†™ã€‚è¿™ä¸ªäº‹Windowsä¸“æœ‰çš„ä¸œä¸œã€‚
+*             ä¸ºä»€ä¹ˆéè¦æœ‰è¿™ä¸ªä¸œä¸œï¼Œä¸»è¦æ˜¯å› ä¸ºWaitForMultipleObjectsæ‰æ˜¯Windwosï¼Œ
+*             æ ¸å¿ƒçš„äº‹ä»¶è§¦å‘å™¨ï¼Œ
 *
-* @details    WFMO µÄReactor ÊµÏÖ²»Ëã¸ßĞ§£¬ÍêÃÀ
-*             µÚÒ»£¬WaitForMultipleObjectsµÄÌØµã¾ö¶¨ÁË£¬ËûÖ»ÄÜµÈ´ı64¸ö¾ä±ú£¬
-*             µÚ¶ş£¬ÎÒÄ¿Ç°Ö»Éè¼ÆÁËSOCKETºÍINOTIFYÏà¹ØµÄ´úÂë¡£
-*             µÚÈı£¬WFMO¶ÔÓÚĞ´ÊÂ¼şµÄ´¦ÀíÊ±±ßÔµ´¥·¢£¬²»ÊÇË®Æ½´¥·¢£¬Ğ´´úÂëµÄÊ±ºòÒª×¢Òâ£¬
-*             µÚËÄ£¬ÔÚÒ»Ğ©¾ä±ú´¦ÀíÊ±£¬»áÓĞÒ»¸öÑ­»·¼ì²é´¦Àí
+* @details    WFMO çš„Reactor å®ç°ä¸ç®—é«˜æ•ˆï¼Œå®Œç¾
+*             ç¬¬ä¸€ï¼ŒWaitForMultipleObjectsçš„ç‰¹ç‚¹å†³å®šäº†ï¼Œä»–åªèƒ½ç­‰å¾…64ä¸ªå¥æŸ„ï¼Œ
+*             ç¬¬äºŒï¼Œæˆ‘ç›®å‰åªè®¾è®¡äº†SOCKETå’ŒINOTIFYç›¸å…³çš„ä»£ç ã€‚
+*             ç¬¬ä¸‰ï¼ŒWFMOå¯¹äºå†™äº‹ä»¶çš„å¤„ç†æ—¶è¾¹ç¼˜è§¦å‘ï¼Œä¸æ˜¯æ°´å¹³è§¦å‘ï¼Œå†™ä»£ç çš„æ—¶å€™è¦æ³¨æ„ï¼Œ
+*             ç¬¬å››ï¼Œåœ¨ä¸€äº›å¥æŸ„å¤„ç†æ—¶ï¼Œä¼šæœ‰ä¸€ä¸ªå¾ªç¯æ£€æŸ¥å¤„ç†
 *
 *
 * @note
@@ -28,7 +28,7 @@
 #if defined ZCE_OS_WINDOWS
 
 /*!
-* @brief      WaitforMu µÄIO·´Ó¦Æ÷£¬IO¶àÂ·¸´ÓÃÄ£ĞÍ
+* @brief      WaitforMu çš„IOååº”å™¨ï¼ŒIOå¤šè·¯å¤ç”¨æ¨¡å‹
 *
 */
 class ZCE_WFMO_Reactor : public ZCE_Reactor
@@ -37,73 +37,73 @@ class ZCE_WFMO_Reactor : public ZCE_Reactor
 public:
 
     /*!
-    * @brief    ¹¹Ôìº¯Êı
+    * @brief    æ„é€ å‡½æ•°
     */
     ZCE_WFMO_Reactor();
 
 
     /*!
-    * @brief      ºÍÎö¹¹º¯Êı virtualµÄà¸¡£
+    * @brief      å’Œææ„å‡½æ•° virtualçš„å–”ã€‚
     */
     virtual ~ZCE_WFMO_Reactor();
 
 public:
 
     /*!
-    * @brief      ³õÊ¼»¯
-    * @return     int              ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
+    * @brief      åˆå§‹åŒ–
+    * @return     int              è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
     */
     int initialize();
 
     /*!
-    * @brief      ×¢²áÒ»¸öZCE_Event_Handlerµ½·´Ó¦Æ÷,EPOLLÊÇÃ÷È·µÄ×¢²á²Ù×÷µÄ£¬ËùÒÔĞèÒªÖØÔØÕâ¸öº¯Êı
-    * @return     int             ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
-    * @param[in]  event_handler   ×¢²áµÄ¾ä±ú
-    * @param[in]  event_mask      ×¢²áºóÍ¬Ê±ÉèÖÃµÄMASK±êÖ¾£¬Çë²Î¿¼@ref EVENT_MASK ,¿ÉÒÔ¶à¸öÖµ|Ê¹ÓÃ¡£
+    * @brief      æ³¨å†Œä¸€ä¸ªZCE_Event_Handleråˆ°ååº”å™¨,EPOLLæ˜¯æ˜ç¡®çš„æ³¨å†Œæ“ä½œçš„ï¼Œæ‰€ä»¥éœ€è¦é‡è½½è¿™ä¸ªå‡½æ•°
+    * @return     int             è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
+    * @param[in]  event_handler   æ³¨å†Œçš„å¥æŸ„
+    * @param[in]  event_mask      æ³¨å†ŒååŒæ—¶è®¾ç½®çš„MASKæ ‡å¿—ï¼Œè¯·å‚è€ƒ@ref EVENT_MASK ,å¯ä»¥å¤šä¸ªå€¼|ä½¿ç”¨ã€‚
     */
     virtual int register_handler(ZCE_Event_Handler *event_handler, int event_mask);
 
     /*!
-    * @brief      ´Ó·´Ó¦Æ÷×¢ÏúÒ»¸öZCE_Event_Handler£¬Í¬Ê±È¡ÏûËûËùÓĞµÄmask
-    * @return     int               0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
-    * @param[in]  event_handler     ×¢ÏúµÄ¾ä±ú
-    * @param[in]  call_handle_close ×¢Ïúºó£¬ÊÇ·ñ×Ô¶¯µ÷ÓÃ¾ä±úµÄhandle_closeº¯Êı
+    * @brief      ä»ååº”å™¨æ³¨é”€ä¸€ä¸ªZCE_Event_Handlerï¼ŒåŒæ—¶å–æ¶ˆä»–æ‰€æœ‰çš„mask
+    * @return     int               0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
+    * @param[in]  event_handler     æ³¨é”€çš„å¥æŸ„
+    * @param[in]  call_handle_close æ³¨é”€åï¼Œæ˜¯å¦è‡ªåŠ¨è°ƒç”¨å¥æŸ„çš„handle_closeå‡½æ•°
     * */
     virtual int remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close);
 
     /*!
-    * @brief      È¡ÏûÄ³Ğ©mask±êÖ¾£¬
-    * @return     int           ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
-    * @param[in]  event_handler ²Ù×÷µÄ¾ä±ú
-    * @param[in]  cancel_mask   ÒªÈ¡ÏûµÄMASK±êÖ¾£¬Çë²Î¿¼@ref EVENT_MASK ,¿ÉÒÔ¶à¸öÖµ|Ê¹ÓÃ¡£
+    * @brief      å–æ¶ˆæŸäº›maskæ ‡å¿—ï¼Œ
+    * @return     int           è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
+    * @param[in]  event_handler æ“ä½œçš„å¥æŸ„
+    * @param[in]  cancel_mask   è¦å–æ¶ˆçš„MASKæ ‡å¿—ï¼Œè¯·å‚è€ƒ@ref EVENT_MASK ,å¯ä»¥å¤šä¸ªå€¼|ä½¿ç”¨ã€‚
     * */
     virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask);
 
     /*!
-    * @brief      ´ò¿ªÄ³Ğ©mask±êÖ¾£¬
-    * @return     int             ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
-    * @param[in]  event_handler   ²Ù×÷µÄ¾ä±ú
-    * @param[in]  event_mask      Òª´ò¿ªµÄ±êÖ¾£¬Çë²Î¿¼@ref EVENT_MASK ,¿ÉÒÔ¶à¸öÖµ|Ê¹ÓÃ¡£
+    * @brief      æ‰“å¼€æŸäº›maskæ ‡å¿—ï¼Œ
+    * @return     int             è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
+    * @param[in]  event_handler   æ“ä½œçš„å¥æŸ„
+    * @param[in]  event_mask      è¦æ‰“å¼€çš„æ ‡å¿—ï¼Œè¯·å‚è€ƒ@ref EVENT_MASK ,å¯ä»¥å¤šä¸ªå€¼|ä½¿ç”¨ã€‚
     * */
     virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask);
 
 
     /*!
-    * @brief      ½øĞĞIO´¥·¢²Ù×÷
-    * @return        int           ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
-    * @param[in,out] time_out      ³¬Ê±Ê±¼ä£¬Íê±Ïºó·µ»ØÊ£ÓàÊ±¼ä
-    * @param[out]    size_event    ´¥·¢µÄ¾ä±úÊıÁ¿
+    * @brief      è¿›è¡ŒIOè§¦å‘æ“ä½œ
+    * @return        int           è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
+    * @param[in,out] time_out      è¶…æ—¶æ—¶é—´ï¼Œå®Œæ¯•åè¿”å›å‰©ä½™æ—¶é—´
+    * @param[out]    size_event    è§¦å‘çš„å¥æŸ„æ•°é‡
     */
     virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event);
 
 
 
     /*!
-    * @brief      Windows ÏÂ ¶ÔSocket ¸ù¾İEVENT_MASKÉèÖÃÆä¶ÔÓ¦µÄÍøÂçÊÂ¼ş£¬²¢ÇÒ°ó¶¨µ½ÊÂ¼şÉÏ
-    * @return     int           ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
-    * @param      event_handler SOCKET¾ä±ú¶ÔÓ¦µÄEvent Handler
-    * @param      socket_event  SOCKET EVENT£¬ÓÃÓÚ¸øWaitForMultipleObjectsÊ¹ÓÃ
-    * @param      event_mask    Ï£ÍûÉèÖÃµÄEVENT_MASK
+    * @brief      Windows ä¸‹ å¯¹Socket æ ¹æ®EVENT_MASKè®¾ç½®å…¶å¯¹åº”çš„ç½‘ç»œäº‹ä»¶ï¼Œå¹¶ä¸”ç»‘å®šåˆ°äº‹ä»¶ä¸Š
+    * @return     int           è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
+    * @param      event_handler SOCKETå¥æŸ„å¯¹åº”çš„Event Handler
+    * @param      socket_event  SOCKET EVENTï¼Œç”¨äºç»™WaitForMultipleObjectsä½¿ç”¨
+    * @param      event_mask    å¸Œæœ›è®¾ç½®çš„EVENT_MASK
     */
     static int wfmo_socket_event(ZCE_Event_Handler *event_handler,
                                  WSAEVENT socket_event,
@@ -111,12 +111,12 @@ public:
 
 protected:
 
-    ///WaitForMultipleObjectsµÈ´ıµÄÄ¿Â¼¾ä±ú
-    ///ÎªÊ²Ã´ÒªÓĞÕâ¸öÖØ¸´µÄ½á¹¹£¬Ö÷ÒªÊÇÎªÁË·½±ãÊ¹ÓÃWaitForMultipleObjectsµÄËÙ¶È
+    ///WaitForMultipleObjectsç­‰å¾…çš„ç›®å½•å¥æŸ„
+    ///ä¸ºä»€ä¹ˆè¦æœ‰è¿™ä¸ªé‡å¤çš„ç»“æ„ï¼Œä¸»è¦æ˜¯ä¸ºäº†æ–¹ä¾¿ä½¿ç”¨WaitForMultipleObjectsçš„é€Ÿåº¦
     ZCE_HANDLE     watch_handle_ary_[MAXIMUM_WAIT_OBJECTS];
 
-    ///±£ÁôµÄSOCKET¾ä±ú£¬ÒòÎªWaitForMultipleObjects´¦ÀíSOCKETÊ±£¬ÎÒÃÇÊ¹ÓÃµÄÊÇ
-    ///WSAEventSelect ´¦ÀíºóµÄÊÂ¼ş¾ä±ú£¬ËùÒÔÕâ¶ùÔÚ¶ÔÓ¦µÄÊı×éÏÂ±êÎ»ÖÃ±£ÁôSOCKET
+    ///ä¿ç•™çš„SOCKETå¥æŸ„ï¼Œå› ä¸ºWaitForMultipleObjectså¤„ç†SOCKETæ—¶ï¼Œæˆ‘ä»¬ä½¿ç”¨çš„æ˜¯
+    ///WSAEventSelect å¤„ç†åçš„äº‹ä»¶å¥æŸ„ï¼Œæ‰€ä»¥è¿™å„¿åœ¨å¯¹åº”çš„æ•°ç»„ä¸‹æ ‡ä½ç½®ä¿ç•™SOCKET
     SOCKET          watch_socket_ary_[MAXIMUM_WAIT_OBJECTS];
 };
 

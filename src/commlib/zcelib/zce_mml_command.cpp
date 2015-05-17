@@ -1,11 +1,11 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_mml_command.h"
 
 /****************************************************************************************************
-class MML_Console_Command ¿ØÖÆÌ¨ÃüÁî
+class MML_Console_Command æ§åˆ¶å°å‘½ä»¤
 ****************************************************************************************************/
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 MML_Console_Command::MML_Console_Command(const char *mml_string,
                                          MML_Console_Command::MML_STRING_PATTERN pattern)
 {
@@ -21,7 +21,7 @@ MML_Console_Command::~MML_Console_Command()
 {
 }
 
-//È¡µÃMMLµÄÓï¾ä
+//å–å¾—MMLçš„è¯­å¥
 int MML_Console_Command::get_mml_string(std::string &mml_string) const
 {
     if (mml_string_.length() > 0)
@@ -56,7 +56,7 @@ const char *MML_Console_Command::get_mml_command() const
     return mml_command_.c_str();
 }
 
-//ÓµÓĞÄ³¸öÃüÁîÑ¡Ïî
+//æ‹¥æœ‰æŸä¸ªå‘½ä»¤é€‰é¡¹
 int MML_Console_Command::have_cmd_option(const std::string &mml_option) const
 {
     MMLCMD_OPTION::const_iterator option_iter =  mml_cmd_option_.find(mml_option);
@@ -69,7 +69,7 @@ int MML_Console_Command::have_cmd_option(const std::string &mml_option) const
     return 0;
 }
 
-//µÃµ½Ä³¸öÃüÁî²ÎÊı
+//å¾—åˆ°æŸä¸ªå‘½ä»¤å‚æ•°
 int MML_Console_Command::get_cmd_parameter(const std::string &para_key, std::string &para_value) const
 {
     MMLCMD_PARAMETER::const_iterator para_iter = mml_cmd_parameter_.find(para_key);
@@ -82,7 +82,7 @@ int MML_Console_Command::get_cmd_parameter(const std::string &para_key, std::str
     return 0;
 }
 
-//µÃµ½Ä³¸öÃüÁî²ÎÊı
+//å¾—åˆ°æŸä¸ªå‘½ä»¤å‚æ•°
 const char *MML_Console_Command::get_cmd_parameter(const std::string &para_key)  const
 {
     static const char NOT_FIND_RETURN[] = "";
@@ -96,7 +96,7 @@ const char *MML_Console_Command::get_cmd_parameter(const std::string &para_key) 
 }
 
 
-//MMLÓï¾ä·ÖÎö
+//MMLè¯­å¥åˆ†æ
 int MML_Console_Command::parse_mml_cnd_string(const char *mml_string,
                                               MML_Console_Command::MML_STRING_PATTERN pattern)
 {
@@ -118,43 +118,43 @@ int MML_Console_Command::parse_mml_cnd_string(const char *mml_string,
 
 
 
-//·ÖÎöÃüÁîĞĞ²ÎÊı
-//Ö§³ÖµÄ·ÖÎöµÄÃüÁî¸ñÊ½°üÀ¨ CMD_1 A=1 B=2 C=" i love c++!" D
+//åˆ†æå‘½ä»¤è¡Œå‚æ•°
+//æ”¯æŒçš„åˆ†æçš„å‘½ä»¤æ ¼å¼åŒ…æ‹¬ CMD_1 A=1 B=2 C=" i love c++!" D
 int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
 {
     mml_string_ = mml_string;
 
-    //ÇåÀíÒÅÁôµÄÏÖ³¡
+    //æ¸…ç†é—ç•™çš„ç°åœº
     mml_command_ = "";
     mml_cmd_option_.clear();
     mml_cmd_parameter_.clear();
 
     //
-    //¶ÁÈ¡×Ö¶ÎµÄÎ»ÖÃ±êÊ¾·ûºÅ
+    //è¯»å–å­—æ®µçš„ä½ç½®æ ‡ç¤ºç¬¦å·
     const char *part_tmp =  mml_string;
     const char *part_end = NULL;
     const char *part_start = NULL;
 
-    //Ìø¹ı¿Õ¸ñ
+    //è·³è¿‡ç©ºæ ¼
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp ; ++part_tmp);
 
     part_start = part_tmp;
 
-    //Ñ¡Ôñ¿Õ¸ñÇ°µÄÊı¾İ
+    //é€‰æ‹©ç©ºæ ¼å‰çš„æ•°æ®
     for (; (isspace(static_cast<unsigned char>(*part_tmp))  == false) && *part_tmp != '\0'; ++part_tmp);
 
     part_end = part_tmp;
 
-    //·ÖÎö´íÎó
+    //åˆ†æé”™è¯¯
     if (part_start >= part_end)
     {
         return -1;
     }
 
-    //µÃµ½ÃüÁî
+    //å¾—åˆ°å‘½ä»¤
     mml_command_.assign(part_start, part_end);
 
-    //ÌŞ³ıËùÓĞµÄ¿Õ¸ñ
+    //å‰”é™¤æ‰€æœ‰çš„ç©ºæ ¼
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp ; ++part_tmp);
 
     if ('\0' == *part_tmp)
@@ -164,20 +164,20 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
 
     std::string key , value;
 
-    //½âÎö²ÎÊı
+    //è§£æå‚æ•°
     while ('\0' != *part_tmp)
     {
-        //È¥³ı¿Õ¸ñµÄÓ°Ïì
+        //å»é™¤ç©ºæ ¼çš„å½±å“
         for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'; ++part_tmp);
 
         part_start = part_tmp;
 
-        //Ñ¡Ôñ¿Õ¸ñºÍ'='·ûºÅÇ°µÄÊı¾İ
+        //é€‰æ‹©ç©ºæ ¼å’Œ'='ç¬¦å·å‰çš„æ•°æ®
         for (; (isspace(static_cast<unsigned char>(*part_tmp))  == false) && *part_tmp != '=' && *part_tmp != '\0'; ++part_tmp);
 
         part_end = part_tmp;
 
-        //·ÖÎö´íÎó
+        //åˆ†æé”™è¯¯
         if ( part_start >= part_end)
         {
             return -1;
@@ -185,7 +185,7 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
 
         key.assign(part_start, part_end);
 
-        //È¥³ı¿Õ¸ñµÄÓ°Ïì
+        //å»é™¤ç©ºæ ¼çš„å½±å“
         for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'; ++part_tmp);
 
         if (*part_tmp !=  '=' )
@@ -197,7 +197,7 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
         {
             ++part_tmp;
 
-            //È¥³ı¿Õ¸ñµÄÓ°Ïì
+            //å»é™¤ç©ºæ ¼çš„å½±å“
             for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'; ++part_tmp);
 
             if (*part_tmp == '\"')
@@ -205,7 +205,7 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
                 ++part_tmp;
                 part_start = part_tmp;
 
-                //Ñ¡Ôñ'\"'·ûºÅÇ°µÄÊı¾İ
+                //é€‰æ‹©'\"'ç¬¦å·å‰çš„æ•°æ®
                 for (; *part_tmp != '\"' && *part_tmp != '\0'; ++part_tmp);
 
                 part_end = part_tmp;
@@ -214,13 +214,13 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
             {
                 part_start = part_tmp;
 
-                //Ñ¡Ôñ¿Õ¸ñÇ°µÄÊı¾İ
+                //é€‰æ‹©ç©ºæ ¼å‰çš„æ•°æ®
                 for (; (isspace(static_cast<unsigned char>(*part_tmp))  == false) && *part_tmp != '\0'; ++part_tmp);
 
                 part_end = part_tmp;
             }
 
-            //·ÖÎö´íÎó
+            //åˆ†æé”™è¯¯
             if (part_start >= part_end)
             {
                 return -1;
@@ -231,7 +231,7 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
 
         mml_cmd_parameter_[key] = value;
 
-        //È¥³ı¿Õ¸ñµÄÓ°Ïì
+        //å»é™¤ç©ºæ ¼çš„å½±å“
         for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'; ++part_tmp);
     }
 
@@ -239,40 +239,40 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
     return 0;
 }
 
-//·ÖÎöÃüÁîĞĞ²ÎÊı
-//Ö§³ÖµÄ·ÖÎöµÄÃüÁî¸ñÊ½°üÀ¨ CMD SVR :A=1,B=2,C=" i love c++!";
-//·ÖÎöµÄË¼Â·ÓĞµãÆæ¹Ö,»ù±¾ÊÇÒ»¸ö¸öÕÒµ½id
+//åˆ†æå‘½ä»¤è¡Œå‚æ•°
+//æ”¯æŒçš„åˆ†æçš„å‘½ä»¤æ ¼å¼åŒ…æ‹¬ CMD SVR :A=1,B=2,C=" i love c++!";
+//åˆ†æçš„æ€è·¯æœ‰ç‚¹å¥‡æ€ª,åŸºæœ¬æ˜¯ä¸€ä¸ªä¸ªæ‰¾åˆ°id
 int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
 {
     mml_string_ = mml_string;
-    //ÇåÀíÒÅÁôµÄÏÖ³¡
+    //æ¸…ç†é—ç•™çš„ç°åœº
     mml_command_ = "";
     mml_cmd_option_.clear();
     mml_cmd_parameter_.clear();
 
-    //·Ö¸î·ûºÅ,
+    //åˆ†å‰²ç¬¦å·,
     const char CMD_SEPARATOR = ':';
     const char END_SEPARATOR = ';';
     const char OPTION_SEPARATOR = ',';
     const char KEY_SEPARATOR = '=';
     const char STRING_SEPARATOR = '\"';
 
-    //¶ÁÈ¡×Ö¶ÎµÄÎ»ÖÃ±êÊ¾·ûºÅ
+    //è¯»å–å­—æ®µçš„ä½ç½®æ ‡ç¤ºç¬¦å·
     const char *part_tmp =  mml_string;
     const char *part_end = NULL;
     const char *part_start = NULL;
 
-    //¹ıÂËÇ°ÃæµÄ¿Õ¸ñ£¬Ã»ÓĞÓÃtrimº¯Êı£¬
+    //è¿‡æ»¤å‰é¢çš„ç©ºæ ¼ï¼Œæ²¡æœ‰ç”¨trimå‡½æ•°ï¼Œ
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp  && END_SEPARATOR != *part_tmp ; ++part_tmp);
 
     part_start = part_tmp;
 
-    //È¡ÃüÁî×Ö
+    //å–å‘½ä»¤å­—
     for (; CMD_SEPARATOR != *part_tmp &&  '\0' != *part_tmp && END_SEPARATOR != *part_tmp ; ++part_tmp);
 
     part_end = part_tmp;
 
-    //¹ıÂËºóÃæµÄ¿Õ¸ñ
+    //è¿‡æ»¤åé¢çš„ç©ºæ ¼
     for (; isspace(static_cast<unsigned char>(*part_end)) && part_end != part_start; --part_end);
 
     //
@@ -283,63 +283,63 @@ int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
 
     mml_command_.assign(part_start, part_end);
 
-    //Èç¹ûÒÑ¾­½áÊø£¬Ö»ÓĞÃüÁî×Ö
+    //å¦‚æœå·²ç»ç»“æŸï¼Œåªæœ‰å‘½ä»¤å­—
     if ('\0' == *part_tmp || END_SEPARATOR == *part_tmp)
     {
         return 0;
     }
 
-    //Ìø¹ıCMD_SEPARATOR
+    //è·³è¿‡CMD_SEPARATOR
     ++part_tmp;
 
-    //Ìø¹ı¿Õ¸ñ
+    //è·³è¿‡ç©ºæ ¼
     std::string key , value;
 
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'     && *part_tmp != END_SEPARATOR; ++part_tmp);
 
-    //½áÊøÌõ¼ş
+    //ç»“æŸæ¡ä»¶
     for (; *part_tmp !=  '\0' &&  *part_tmp != END_SEPARATOR; ++part_tmp)
     {
-        //Ìø¹ı¿Õ¸ñ
+        //è·³è¿‡ç©ºæ ¼
         for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp  && END_SEPARATOR != *part_tmp; ++part_tmp);
 
         part_start = part_tmp;
 
-        //µÃµ½option×Ö¶Î
+        //å¾—åˆ°optionå­—æ®µ
         for (; *part_tmp != OPTION_SEPARATOR && *part_tmp != KEY_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR ; ++part_tmp);
 
         part_end = part_tmp;
 
-        //È¥µôºóÃæµÄ¿Õ¸ñ
+        //å»æ‰åé¢çš„ç©ºæ ¼
         for (; isspace(static_cast<unsigned char>(*part_end)) && part_end != part_start; --part_end);
 
-        //·ÖÎö´íÎó
+        //åˆ†æé”™è¯¯
         if (part_end <= part_start )
         {
             return -1;
         }
 
-        //µÃµ½Key
+        //å¾—åˆ°Key
         key.assign(part_start, part_end);
 
-        //Èç¹ûÊÇÑ¡Ïî
+        //å¦‚æœæ˜¯é€‰é¡¹
         if (*part_tmp == OPTION_SEPARATOR || *part_tmp == END_SEPARATOR || *part_tmp == '\0' )
         {
             mml_cmd_option_.insert(key);
             continue;
         }
 
-        //Èç¹ûÊÇ²ÎÊı£¬·ÖÀë²ÎÊıµÄÃû³ÆºÍÖµ
+        //å¦‚æœæ˜¯å‚æ•°ï¼Œåˆ†ç¦»å‚æ•°çš„åç§°å’Œå€¼
         if (*part_tmp == KEY_SEPARATOR)
         {
-            //Ìø¹ıKEY_SEPARATOR
+            //è·³è¿‡KEY_SEPARATOR
             ++part_tmp;
 
             for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp  && END_SEPARATOR != *part_tmp ; ++part_tmp);
 
             part_start = part_tmp;
 
-            //Èç¹ûÊÇ×Ö·û´®,ÕâÑù´¦Àí
+            //å¦‚æœæ˜¯å­—ç¬¦ä¸²,è¿™æ ·å¤„ç†
             if (*part_tmp == STRING_SEPARATOR)
             {
                 ++part_tmp;
@@ -349,7 +349,7 @@ int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
 
                 part_end = part_tmp;
 
-                //Èç¹û½áÊø·Ö¸î·ûºÅÊÇ...
+                //å¦‚æœç»“æŸåˆ†å‰²ç¬¦å·æ˜¯...
                 if ( *part_end != STRING_SEPARATOR )
                 {
                     return -1;
@@ -360,12 +360,12 @@ int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
                 continue;
             }
 
-            //µÃµ½value
+            //å¾—åˆ°value
             for (; *part_tmp != OPTION_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR ; ++part_tmp);
 
             part_end = part_tmp;
 
-            //È¥µô¿Õ¸ñ
+            //å»æ‰ç©ºæ ¼
             for (; isspace(static_cast<unsigned char>(*part_end)) && part_end != part_start; --part_end);
 
             if (part_end <= part_start )
@@ -373,7 +373,7 @@ int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
                 return -1;
             }
 
-            //ÃüÁî²ÎÊı
+            //å‘½ä»¤å‚æ•°
             value.assign(part_start, part_end);
             mml_cmd_parameter_[key] = value;
             continue;

@@ -1,4 +1,4 @@
-#include "zealot_predefine.h"
+ï»¿#include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
 
@@ -7,11 +7,11 @@ class FSM_1 :public ZCE_Async_FSM
 private:
     enum
     {
-        //¿ªÊ¼
+        //å¼€å§‹
         FMS1_STAGE_1 = 1,
         FMS1_STAGE_2 = 2,
         FSM1_STAGE_3 = 3,
-        //½áÊø
+        //ç»“æŸ
         FSM1_STAGE_4 = 4,
     };
 public:
@@ -59,7 +59,7 @@ public:
             continue_run = false;
             break;
         default:
-            //Ò»¸öÎŞ·¨Ê¶±ğµÄ×´Ì¬
+            //ä¸€ä¸ªæ— æ³•è¯†åˆ«çš„çŠ¶æ€
             ZCE_ASSERT(false);
             break;
         }
@@ -74,11 +74,11 @@ class FSM_2 :public ZCE_Async_FSM
 private:
     enum
     {
-        //¿ªÊ¼
+        //å¼€å§‹
         FMS2_STAGE_1 = 1,
         FMS2_STAGE_2 = 2,
         FSM2_STAGE_3 = 3,
-        //½áÊø
+        //ç»“æŸ
         FSM2_STAGE_4 = 4,
     };
 
@@ -123,7 +123,7 @@ public:
             continue_run = false;
             break;
         default:
-            //Ò»¸öÎŞ·¨Ê¶±ğµÄ×´Ì¬
+            //ä¸€ä¸ªæ— æ³•è¯†åˆ«çš„çŠ¶æ€
             ZCE_ASSERT(false);
             break;
         }
@@ -186,7 +186,7 @@ public:
         return dynamic_cast<ZCE_Async_Object *>(new Coroutine_1(async_mgr, create_cmd));
     }
 
-    ///Ğ­³ÌÔËĞĞ,ÄãÒªÖØÔØµÄº¯Êı
+    ///åç¨‹è¿è¡Œ,ä½ è¦é‡è½½çš„å‡½æ•°
     virtual void coroutine_run()
     {
         std::cout << "Coroutine_1 start." << std::endl;
@@ -258,7 +258,7 @@ int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
 
 
 /*
-×¢Òâ£¬FiberÊÇÎŞ·¨´ïµ½Õâ¸öĞ§¹ûµÄ
+æ³¨æ„ï¼ŒFiberæ˜¯æ— æ³•è¾¾åˆ°è¿™ä¸ªæ•ˆæœçš„
 int test_coroutine1(int argc, char * argv[])
 {
 coroutine_t context;

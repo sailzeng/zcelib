@@ -1,11 +1,11 @@
-#ifndef ZCE_BYTES_BASE_H_
+﻿#ifndef ZCE_BYTES_BASE_H_
 #define ZCE_BYTES_BASE_H_
 
 #include "zce_predefine.h"
 
 //==================================================================================================
 
-//һЩ�ֽ��򽻻��ĺ�
+//一些字节序交换的宏
 //#if (_MSC_VER > 1300) && (defined(CPU_IA32) || defined(CPU_X64)) /* MS VC */
 //_MSC_VER > 1300  _byteswap_ushort,_byteswap_ulong,_byteswap_uint64
 //#if defined(__GNUC__) && (__GNUC__ >= 4) && (__GNUC__ > 4 || __GNUC_MINOR__ >= 3)
@@ -25,7 +25,7 @@
                               (((x) & 0x000000000000ff00ULL) << 40 ) | (((x) & 0x00000000000000ffULL) <<  56))
 #endif
 
-//����һ��ntol ntos,nothll�ȣ���Ҫ������64��ת������������ϵͳ���У�
+//定义一组ntol ntos,nothll等，主要问题是64的转换，不是所有系统都有，
 #if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN)
 # define ZCE_HTONS(x)  ZCE_SWAP_UINT16 (x)
 # define ZCE_NTOHS(x)  ZCE_SWAP_UINT16 (x)
@@ -43,18 +43,18 @@
 #endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
 
 
-//����д��Ϊ�˱���BUS ERROR���⣬�����Լ�Ҳ����100%�϶���������ܽ��BUS ERROR��
-//��Ϊ��û�л���������صĲ��ԡ�
-//ע��#pragma pack(push, 1) ��__attribute__ ((packed)) ��������ģ�
-//���²ο�֮ ����
-//ǰ�߸��߱������ṹ������ڲ��ĳ�Ա��������ڵ�һ�������ĵ�ַ��ƫ�����Ķ��뷽ʽ��
-//ȱʡ����£�������������Ȼ�߽���룬�������������Ȼ����߽��n�� ʱ������n���룬
-//��������Ȼ�߽���룻���߸��߱�����һ���ṹ�������������ϻ���һ�����͵ı���
-//(����)�����ַ�ռ�ʱ�ĵ�ַ���뷽ʽ��Ҳ�������������__attribute__((aligned(m)))
-//������һ�����ͣ���ô�����͵ı����ڷ����ַ�ռ�ʱ�����ŵĵ�ַһ������m�ֽڶ���
-//(m�� ����2���ݴη�)��������ռ�õĿռ䣬����С,Ҳ��m�����������Ա�֤�����������洢�ռ��ʱ��
-//ÿһ��Ԫ�صĵ�ַҲ�ǰ���m�ֽڶ��롣 __attribute__((aligned(m)))Ҳ����������һ�������ı�����
-//���Ͽ��Կ���__attribute__((aligned(m)))�Ĺ��ܸ�ȫ��
+//这样写是为了避免BUS ERROR问题，但我自己也不能100%肯定这个方法能解决BUS ERROR，
+//因为我没有环境进行相关的测试。
+//注意#pragma pack(push, 1) 和__attribute__ ((packed)) 是有区别的，
+//以下参考之 德问
+//前者告诉编译器结构体或类内部的成员变量相对于第一个变量的地址的偏移量的对齐方式，
+//缺省情况下，编译器按照自然边界对齐，当变量所需的自然对齐边界比n大 时，按照n对齐，
+//否则按照自然边界对齐；后者告诉编译器一个结构体或者类或者联合或者一个类型的变量
+//(对象)分配地址空间时的地址对齐方式。也就是所，如果将__attribute__((aligned(m)))
+//作用于一个类型，那么该类型的变量在分配地址空间时，其存放的地址一定按照m字节对齐
+//(m必 须是2的幂次方)。并且其占用的空间，即大小,也是m的整数倍，以保证在申请连续存储空间的时候，
+//每一个元素的地址也是按照m字节对齐。 __attribute__((aligned(m)))也可以作用于一个单独的变量。
+//由上可以看出__attribute__((aligned(m)))的功能更全。
 
 #if defined ZCE_OS_WINDOWS
 
@@ -84,7 +84,7 @@ struct ZDOUBLE_STRUCT
 #pragma pack(pop)
 
 #elif defined ZCE_OS_LINUX
-//__attribute__ ((packed)) �������Ŀ�������������Ա���BUS ERROR����
+//__attribute__ ((packed)) 在这儿的目的是利用其特性避免BUS ERROR错误
 struct ZU16_STRUCT
 {
     uint16_t value_;
@@ -109,34 +109,34 @@ struct ZDOUBLE_STRUCT
 
 
 
-///��GCC 4.8�Ĵ����У�д
+///在GCC 4.8的处理中，写
 //unsigned int a = *(unsigned int *)(char_ptr);
-//����ָ澯 dereferencing type-punned pointer will break strict-aliasing��
-//����ʹ�� ZBYTE_TO_UINT32 Ҳ�޷��ƿ�����ο�ZRD_U32_FROM_BYTES����������⡣
+//会出现告警 dereferencing type-punned pointer will break strict-aliasing。
+//而且使用 ZBYTE_TO_UINT32 也无法绕开，请参考ZRD_U32_FROM_BYTES解决类似问题。
 
-///��һ��(char *)ָ���ڶ�ȡ(Ҳ��������д��)һ��uint16_t,or uint32_t or uint64_t
+///从一个(char *)指针内读取(也可以用于写入)一个uint16_t,or uint32_t or uint64_t
 
 # define ZBYTE_TO_UINT16(ptr)  ((ZU16_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_UINT32(ptr)  ((ZU32_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_UINT64(ptr)  ((ZU64_STRUCT *)(ptr))->value_
 
-///��һ��(char *)ָ���ڶ�ȡuint16_t,or uint32_t or uint64_t �������ڵ�ary_index��Ԫ��ע�������±���ֵ�������ε��±꣬(������ptr���±�)
+///从一个(char *)指针内读取uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZINDEX_TO_UINT16(ptr,ary_index)  (((ZU16_STRUCT *)(ptr))+(ary_index))->value_
 # define ZINDEX_TO_UINT32(ptr,ary_index)  (((ZU32_STRUCT *)(ptr))+(ary_index))->value_
 # define ZINDEX_TO_UINT64(ptr,ary_index)  (((ZU64_STRUCT *)(ptr))+(ary_index))->value_
 
-///��һ��(char *)ָ����д��һ��uint16_t,or uint32_t or uint64_t
+///向一个(char *)指针内写入一个uint16_t,or uint32_t or uint64_t
 # define ZUINT16_TO_BYTE(ptr,wr_data)  ((ZU16_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZUINT32_TO_BYTE(ptr,wr_data)  ((ZU32_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZUINT64_TO_BYTE(ptr,wr_data)  ((ZU64_STRUCT *)(ptr))->value_ = (wr_data)
 
-//��һ��(char *)ָ����д��һ��uint16_t,or uint32_t or uint64_t�������ڲ���ary_index��Ԫ��ע�������±���ֵ�������ε��±꣬(������ptr���±�)
+//向一个(char *)指针内写入一个uint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZUINT16_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU16_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 # define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU32_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 # define ZUINT64_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU64_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 
 
-//FLOAT �� DOUBLE�Ĵ���
+//FLOAT 和 DOUBLE的处理
 # define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_DOUBLE(ptr)  ((ZDOUBLE_STRUCT *)(ptr))->value_
 
@@ -149,68 +149,68 @@ struct ZDOUBLE_STRUCT
 # define ZINDEX_TO_FLOAT(ptr,ary_index)  (((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_
 # define ZINDEX_TO_DOUBLE(ptr,ary_index)  (((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_
 
-//����Ĵ���ӹ����ϵ�ͬ����Ĵ��롣������Щд�ᵼ��BUS ERROR���⡣
+//上面的代码从功能上等同下面的代码。但是这些写会导致BUS ERROR问题。
 //# define ZBYTE_TO_UINT32(ptr)  (*(uint32_t *)(ptr))
 //# define ZINDEX_TO_UINT32(ptr,ary_index)  (*(((uint32_t *)(ptr))+(ary_index)))
 //# define ZUINT32_TO_BYTE(ptr,wr_data)  ((*(uint32_t *)(ptr)) = (wr_data))
 //# define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  ((*(((uint32_t *)(ptr))+(ary_index))) = (wr_data))
 
-//�����ֽ���Ķ�ȡ�����ͣ����Σ�64λ�����εķ�ʽ
-//������˼����ʹ��ˣ�����������е�������ˣ��м���д��ζ��������벻���׼��ܣ�MD5�ȴ�����ΪɶҪ��
-//���ֽ������أ�
-//��һ��Ϊ�˱����㷨��һ���ԣ�һ̨Сͷ�ֽ�������ϼ���ĵõ������ģ�������һ̨��ͷ��Ļ���Ҫ�ܽ⿪��
-//������˵��ͷ��Сͷ�Ļ�����ͬ����һ��buffer�����ܵõ�������Ӧ����һ�µģ�
-//���Ҫ���������ֽ�����ȡ��������������һ�µġ����Ծ�Ҫ�����ֽ��������ˡ�������ؼ������ء�
-//�ڶ�����Щ�㷨��Ϊ�˼ӿ촦���������������������ģ���ʵ�����棬�Ǳ��뿼���ֽ�˳��ģ��������ǵ�
-//CRC32�㷨������������⣬���������㷨������뿼���ֽ������⣬Сͷ�������������������Ҫ����ת��
-//��������Щ�㷨��ʵ��ȷҪ����������ô�ͷ�򣬻���Сͷ��������ͱ��뿼����Ļ�����
+//考虑字节序的读取短整型，整形，64位长整形的方式
+//不好意思，年纪大了，记忆力真的有点成问题了，有几次写这段东东就是想不明白加密，MD5等代码中为啥要考
+//虑字节序处理呢？
+//第一，为了保持算法的一致性，一台小头字节序机器上计算的得到的密文，在另外一台大头序的机器要能解开，
+//（或者说大头和小头的机器对同样的一段buffer，加密得到的密文应该是一致的）
+//这就要求计算机从字节流中取出的整数含义是一致的。所以就要求考虑字节序问题了。这是最关键的因素。
+//第二，有些算法是为了加快处理，表面是用整数处理的，但实际里面，是必须考虑字节顺序的，比如我们的
+//CRC32算法，就有这个问题，所以这种算法，你必须考虑字节序问题，小头在这种情况下往往不需要进行转，
+//第三，有些算法其实明确要求了里面采用大头序，还是小头序，这种你就必须考虑你的环境，
 //
-//��Ĭ�ϱ���������ϣ��һ���������Сͷ��һ�����ҵĴ������99.99%��������X86�ܹ�֮�£���һ����
-//Сͷ���Ǵӵ͵��ߣ����ֽ�˳��һ�£�������Ҳ����һ�㡣
+//在默认编码的问题上，我还是倾向了小头，一方面我的代码估计99.99%都是跑在X86架构之下，另一方面
+//小头的是从低到高，和字节顺序一致，处理上也方便一点。
 
 #if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN)
 
-///��һ��(char *)ָ���ڶ�ȡСͷ�ֽ����uint16_t,or uint32_t or uint64_t����Сͷ�ֽ���Ļ����ϲ������ı�
+///从一个(char *)指针内读取小头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上不发生改变
 # define ZBYTE_TO_LEUINT16(ptr)    ZBYTE_TO_UINT16(ptr)
 # define ZBYTE_TO_LEUINT32(ptr)    ZBYTE_TO_UINT32(ptr)
 # define ZBYTE_TO_LEUINT64(ptr)    ZBYTE_TO_UINT64(ptr)
 
-///��һ��(char *)ָ���ڶ�ȡСͷ�ֽ����uint16_t,or uint32_t or uint64_t �������ڵ�ary_index��Ԫ��ע�������±���ֵ�������ε��±꣬(������ptr���±�)
+///从一个(char *)指针内读取小头字节序的uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZINDEX_TO_LEUINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
 # define ZINDEX_TO_LEUINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
 # define ZINDEX_TO_LEUINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
 
-///��һ��(char *)ָ����д��һ��Сͷ�ֽ����uint16_t,or uint32_t or uint64_t����Сͷ�ֽ���Ļ����ϲ������ı�
+///向一个(char *)指针内写入一个小头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上不发生改变
 # define ZLEUINT16_TO_BYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
 # define ZLEUINT32_TO_BYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
 # define ZLEUINT64_TO_BYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
 
-//��һ��(char *)ָ����д��һ��Сͷ�ֽ����uuint16_t,or uint32_t or uint64_t�������ڲ���ary_index��Ԫ��ע�������±���ֵ�������ε��±꣬(������ptr���±�)
+//向一个(char *)指针内写入一个小头字节序的uuint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZLEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
 # define ZLEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
 # define ZLEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
 
-///��һ��(char *)ָ���ڶ�ȡ��ͷͷ�ֽ����uint16_t,or uint32_t or uint64_t����Сͷ�ֽ���Ļ����Ͻ���ת��
+///从一个(char *)指针内读取大头头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上进行转换
 # define ZBYTE_TO_BEUINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
 # define ZBYTE_TO_BEUINT32(ptr)  ZCE_SWAP_UINT32(((ZU32_STRUCT *)(ptr))->value_)
 # define ZBYTE_TO_BEUINT64(ptr)  ZCE_SWAP_UINT64(((ZU64_STRUCT *)(ptr))->value_)
 
-///��һ��(char *)ָ���ڶ�ȡ��ͷ�ֽ����uint16_t,or uint32_t or uint64_t �������ڵ�ary_index��Ԫ��ע�������±���ֵ�������ε��±꣬(������ptr���±�)
+///从一个(char *)指针内读取大头字节序的uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZINDEX_TO_BEUINT16(ptr,ary_index)  ZCE_SWAP_UINT16((((ZU16_STRUCT *)(ptr))+(ary_index))->value_)
 # define ZINDEX_TO_BEUINT32(ptr,ary_index)  ZCE_SWAP_UINT32((((ZU32_STRUCT *)(ptr))+(ary_index))->value_)
 # define ZINDEX_TO_BEUINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
 
-///��һ��(char *)ָ����д��һ����ͷ�ֽ����uint16_t,or uint32_t or uint64_t����Сͷ�ֽ���Ļ�����Ҫ����ת��
+///向一个(char *)指针内写入一个大头字节序的uint16_t,or uint32_t or uint64_t，在小头字节序的机器上要进行转换
 # define ZBEUINT16_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data)
 # define ZBEUINT32_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data)
 # define ZBEUINT64_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data)
 
-//��һ��(char *)ָ����д��һ����ͷ�ֽ����uuint16_t,or uint32_t or uint64_t�������ڲ���ary_index��Ԫ��ע�������±���ֵ�������ε��±꣬(������ptr���±�)
+//向一个(char *)指针内写入一个大头字节序的uuint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZBEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)
 # define ZBEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT32(ptr,ary_index) = ZCE_SWAP_UINT32(wr_data)
 # define ZBEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT64(ptr,ary_index) = ZCE_SWAP_UINT64(wr_data)
 
-//�Դ�ͷ�ֽ�����ж���
+//对大头字节序进行定义
 #else
 
 # define ZBYTE_TO_LEUINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
@@ -247,8 +247,8 @@ struct ZDOUBLE_STRUCT
 
 #endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
 
-//������ת����λ��������ͬλ����ʾ����Զ�����������64λ�����Ĳ�����
-//ע��n��Ҫ����һ���������ֵ������32λ��ZCE_ROTL32��nҪС��31������
+//带有旋转的移位操作，不同位数表示是针对短整，整数，64位长整的操作，
+//注意n不要传入一个无意义的值，比如32位的ZCE_ROTL32，n要小于31，否则
 #ifndef ZCE_ROTL16
 #define ZCE_ROTL16(word, n)  (((word) <<  ((n)&15))  | ((word) >>  (16 - ((n)&15))))
 #endif
@@ -285,7 +285,7 @@ struct ZDOUBLE_STRUCT
 #define ZUINT64_6BYTE(data)    (((data) >> 48) & 0xFF)
 #define ZUINT64_7BYTE(data)    ((data)  >> 56)
 
-///���ָ���Ƿ�32λ�������64λ����
+///检查指针是否32位对其或者64位对齐
 #ifndef ZCE_IS_ALIGNED_32
 #define ZCE_IS_ALIGNED_32(p) (0 == (0x3 & ((const char*)(p) - (const char*)0)))
 #endif
@@ -295,10 +295,10 @@ struct ZDOUBLE_STRUCT
 
 
 
-//GCC ���ڶ����ȡ��Ĭ����Ϊ���Ƕ���ķ�ʽ���룬����д
+//GCC 对于对其采取了默认认为不是对齐的方式编译，所以写
 //unsigned int a = *(unsigned int *)(char_ptr);
-//���и澯���󣬷����ǲ�������ĺ��ܣ�
-//����ʹ�ò��� -fstrict-aliasing �� -Wstrict-aliasing �������������warning�� 
+//还有告警错误，方法是采用下面的宏规避，
+//或者使用参数 -fstrict-aliasing 和 -Wstrict-aliasing 可以消除掉这个warning。 
 
 union ZU16_UNION
 {

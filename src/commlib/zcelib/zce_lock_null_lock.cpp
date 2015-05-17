@@ -1,11 +1,11 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_time_value.h"
 #include "zce_lock_null_lock.h"
 
 /************************************************************************************************************
 Class           : ZCE_Null_Mutex
 ************************************************************************************************************/
-//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
 ZCE_Null_Mutex::ZCE_Null_Mutex(const char * ):
     lock_(0)
 {
@@ -15,79 +15,79 @@ ZCE_Null_Mutex::~ZCE_Null_Mutex (void)
 {
 }
 
-//Ëø¶¨
+//é”å®š
 void ZCE_Null_Mutex::lock()
 {
     return;
 }
 
-//³¢ÊÔËø¶¨
+//å°è¯•é”å®š
 bool ZCE_Null_Mutex::try_lock()
 {
     return true;
 }
 
-//½âËø,
+//è§£é”,
 void ZCE_Null_Mutex::unlock()
 {
     return;
 }
 
-//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø£¬·µ»ØÊÇ·ñ³¬Ê±
+//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”ï¼Œè¿”å›æ˜¯å¦è¶…æ—¶
 bool ZCE_Null_Mutex::systime_lock(const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-//Ïà¶ÔÊ±¼ä£¬·µ»ØÊÇ·ñ³¬Ê±
+//ç›¸å¯¹æ—¶é—´ï¼Œè¿”å›æ˜¯å¦è¶…æ—¶
 bool ZCE_Null_Mutex::duration_lock(const ZCE_Time_Value & /*relative_time*/ )
 {
     return true;
 }
 
-//¶ÁÈ¡Ëø
+//è¯»å–é”
 void ZCE_Null_Mutex::lock_read()
 {
     return;
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Null_Mutex::try_lock_read()
 {
     return true;
 }
 
-//¾ø¶ÔÊ±¼ä
+//ç»å¯¹æ—¶é—´
 bool ZCE_Null_Mutex::timed_lock_read(const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-//Ïà¶ÔÊ±¼ä
+//ç›¸å¯¹æ—¶é—´
 bool ZCE_Null_Mutex::duration_lock_read(const ZCE_Time_Value & /*relative_time*/)
 {
     return true;
 }
 
-//Ğ´Ëø¶¨
+//å†™é”å®š
 void ZCE_Null_Mutex::lock_write()
 {
     return;
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Null_Mutex::try_lock_write()
 {
     return true;
 }
 
-//Ğ´Ëø¶¨³¬Ê±
+//å†™é”å®šè¶…æ—¶
 bool ZCE_Null_Mutex::timed_lock_write(const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-//Ïà¶ÔÊ±¼ä
+//ç›¸å¯¹æ—¶é—´
 bool ZCE_Null_Mutex::duration_lock_write(const ZCE_Time_Value & /*relative_time*/)
 {
     return true;
@@ -105,31 +105,31 @@ ZCE_Null_Condition::~ZCE_Null_Condition()
 {
 }
 
-///µÈ´ı
+///ç­‰å¾…
 void ZCE_Null_Condition::wait(ZCE_Null_Mutex * /*external_mutex*/ )
 {
     return ;
 }
 
-///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄµÈ´ı£¬³¬Ê±ºó½âËø
+///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„ç­‰å¾…ï¼Œè¶…æ—¶åè§£é”
 bool ZCE_Null_Condition::systime_wait(ZCE_Null_Mutex * /*external_mutex*/ , const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-///Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨µÈ´ı£¬³¬Ê±ºó£¬½âËø
+///ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šç­‰å¾…ï¼Œè¶…æ—¶åï¼Œè§£é”
 bool ZCE_Null_Condition::duration_wait(ZCE_Null_Mutex * /*external_mutex*/, const ZCE_Time_Value &/*relative_time*/)
 {
     return false;
 }
 
-/// ¸øÒ»¸öµÈ´ıÏß³Ì·¢ËÍĞÅºÅ Signal one waiting thread.
+/// ç»™ä¸€ä¸ªç­‰å¾…çº¿ç¨‹å‘é€ä¿¡å· Signal one waiting thread.
 void ZCE_Null_Condition::signal (void)
 {
     return;
 }
 
-///¸øËùÓĞµÄµÈ´ıÏß³Ì¹ã²¥ĞÅºÅ Signal *all* waiting threads.
+///ç»™æ‰€æœ‰çš„ç­‰å¾…çº¿ç¨‹å¹¿æ’­ä¿¡å· Signal *all* waiting threads.
 void ZCE_Null_Condition::broadcast (void)
 {
     return;

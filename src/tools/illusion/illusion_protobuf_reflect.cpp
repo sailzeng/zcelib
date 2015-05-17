@@ -1,11 +1,11 @@
-#include "stdafx.h"
+ï»¿#include "stdafx.h"
 #include "illusion_coding_convert.h"
 #include "illusion_protobuf_reflect.h"
 
 
 
 //======================================================================================
-//·ÖÎöµÄ´íÎóĞÅÏ¢ÊÕ¼¯×°ÖÃ£¬
+//åˆ†æçš„é”™è¯¯ä¿¡æ¯æ”¶é›†è£…ç½®ï¼Œ
 ZCE_Error_Collector::ZCE_Error_Collector()
 {
 }
@@ -35,7 +35,7 @@ void ZCE_Error_Collector::clear_error()
 }
 //======================================================================================
 
-//¹¹Ôì
+//æ„é€ 
 Illusion_Protobuf_Reflect::Illusion_Protobuf_Reflect():
     protobuf_importer_(NULL),
     source_tree_(NULL),
@@ -46,7 +46,7 @@ Illusion_Protobuf_Reflect::Illusion_Protobuf_Reflect():
 
 Illusion_Protobuf_Reflect::~Illusion_Protobuf_Reflect()
 {
-    //Õâ3¸öµÄÎö¹¹ÊÇÓĞË³ĞòµÄ£¬×¢Òâ
+    //è¿™3ä¸ªçš„ææ„æ˜¯æœ‰é¡ºåºçš„ï¼Œæ³¨æ„
     if (msg_factory_)
     {
         delete msg_factory_;
@@ -64,7 +64,7 @@ Illusion_Protobuf_Reflect::~Illusion_Protobuf_Reflect()
     }
 }
 
-//Ó³ÉäÂ·¾¶
+//æ˜ å°„è·¯å¾„
 void Illusion_Protobuf_Reflect::map_path(const std::string &path)
 {
     source_tree_ = new  google::protobuf::compiler::DiskSourceTree();
@@ -102,7 +102,7 @@ int Illusion_Protobuf_Reflect::new_mesage(const std::string &type_name,
                                           google::protobuf::Message *&new_msg)
 {
 
-    //¸ù¾İÃû³ÆµÃµ½½á¹¹ÃèÊö
+    //æ ¹æ®åç§°å¾—åˆ°ç»“æ„æè¿°
     const google::protobuf::Descriptor *proc_msg_desc =
         protobuf_importer_->pool()->FindMessageTypeByName(type_name);
     if (!proc_msg_desc)
@@ -142,7 +142,7 @@ int Illusion_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
 
     const google::protobuf::Reflection *reflection = msg->GetReflection();
 
-    //Èç¹ûÃ»ÓĞÉèÖÃÊı¾İ£¬¿´¿´ÊÇ·ñÊÇ±ØÒª×Ö¶Î£¬¶øÇÒÊÇ·ñÓĞÄ¬ÈÏÖµ
+    //å¦‚æœæ²¡æœ‰è®¾ç½®æ•°æ®ï¼Œçœ‹çœ‹æ˜¯å¦æ˜¯å¿…è¦å­—æ®µï¼Œè€Œä¸”æ˜¯å¦æœ‰é»˜è®¤å€¼
     if (set_data.length() == 0)
     {
         if (field->label() == google::protobuf::FieldDescriptor::Label::LABEL_REQUIRED)
@@ -256,7 +256,7 @@ int Illusion_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
         }
         else
         {
-            //²»Ö§³ÖµÄÀàĞÍ£¬Õâ¸öµØ·½Èç¹û³öÏÖTYPE_MESSAGE¡£Ò²ÊÇ²»Õı³£µÄ¡£
+            //ä¸æ”¯æŒçš„ç±»å‹ï¼Œè¿™ä¸ªåœ°æ–¹å¦‚æœå‡ºç°TYPE_MESSAGEã€‚ä¹Ÿæ˜¯ä¸æ­£å¸¸çš„ã€‚
             ZCE_LOG(RS_ERROR, "I don't field [%s] support this type.%d %s",
                     field->full_name().c_str(),
                     field->type(),
@@ -265,7 +265,7 @@ int Illusion_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
             return -1;
         }
     }
-    //Êı×é
+    //æ•°ç»„
     else if (field->label() == google::protobuf::FieldDescriptor::Label::LABEL_REPEATED)
     {
         // double, exactly eight bytes on the wire.
@@ -385,20 +385,20 @@ int Illusion_Protobuf_Reflect::set_fielddata(google::protobuf::Message *msg,
     return 0;
 }
 
-//¶¨Î»Ò»¸ö×Ó½á¹¹
+//å®šä½ä¸€ä¸ªå­ç»“æ„
 int Illusion_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
                                               const std::string &submsg_field_name,
                                               bool message_add,
                                               google::protobuf::Message *&sub_msg)
 {
-    //µÃµ½½á¹¹µÄÃèÊöºÍ·´Éä
+    //å¾—åˆ°ç»“æ„çš„æè¿°å’Œåå°„
     const google::protobuf::Reflection *reflection = msg->GetReflection();
     const google::protobuf::Descriptor *msg_desc = msg->GetDescriptor();
 
     const google::protobuf::FieldDescriptor *field = NULL;
     field = msg_desc->FindFieldByName(submsg_field_name);
 
-    //Ã»ÓĞÕÒµ½¶ÔÓ¦µÄ×Ö¶ÎÃèÊö
+    //æ²¡æœ‰æ‰¾åˆ°å¯¹åº”çš„å­—æ®µæè¿°
     if (!field)
     {
         return -1;
@@ -407,7 +407,7 @@ int Illusion_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
     if (field->label() == google::protobuf::FieldDescriptor::Label::LABEL_REQUIRED ||
         field->label() == google::protobuf::FieldDescriptor::Label::LABEL_OPTIONAL)
     {
-        //Èç¹ûÊÇÒ»¸ö×Ó½á¹¹
+        //å¦‚æœæ˜¯ä¸€ä¸ªå­ç»“æ„
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
         {
             sub_msg = reflection->MutableMessage(msg, field, 0);
@@ -422,7 +422,7 @@ int Illusion_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
         // Length-delimited message.
         if (field->type() == google::protobuf::FieldDescriptor::Type::TYPE_MESSAGE)
         {
-            //Èç¹ûÒªÔö¼ÓÒ»¸örepeatedµÄÊı¾İ
+            //å¦‚æœè¦å¢åŠ ä¸€ä¸ªrepeatedçš„æ•°æ®
             if (message_add)
             {
                 sub_msg = reflection->AddMessage(msg, field, NULL);
@@ -431,7 +431,7 @@ int Illusion_Protobuf_Reflect::locate_sub_msg(google::protobuf::Message *msg,
                     return -1;
                 }
             }
-            //Èç¹û²»ÓÃÔö¼Ó£¬Ê¹ÓÃrepeated Êı×éµÄ×îºóÒ»¸öÊı¾İ£¬
+            //å¦‚æœä¸ç”¨å¢åŠ ï¼Œä½¿ç”¨repeated æ•°ç»„çš„æœ€åä¸€ä¸ªæ•°æ®ï¼Œ
             else
             {
                 int ary_size = reflection->FieldSize(*msg, field);
@@ -494,7 +494,7 @@ int Illusion_Protobuf_Reflect::get_fielddesc(google::protobuf::Message *msg,
 
     field_desc = msg_desc->FindFieldByName(v[level_num - 1]);
 
-    //Ã»ÓĞÕÒµ½¶ÔÓ¦µÄ×Ö¶ÎÃèÊö
+    //æ²¡æœ‰æ‰¾åˆ°å¯¹åº”çš„å­—æ®µæè¿°
     if (!field_desc)
     {
         return -1;
@@ -502,7 +502,7 @@ int Illusion_Protobuf_Reflect::get_fielddesc(google::protobuf::Message *msg,
     return 0;
 }
 
-//¸ù¾İfullname£¬Ò²¾ÍÊÇ phone_book.number ÉèÖÃÒ»¸öMessageµÄfield
+//æ ¹æ®fullnameï¼Œä¹Ÿå°±æ˜¯ phone_book.number è®¾ç½®ä¸€ä¸ªMessageçš„field
 int Illusion_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
                                          const std::string &full_name,
                                          const std::string &set_data,
@@ -512,7 +512,7 @@ int Illusion_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
     const google::protobuf::FieldDescriptor *field = NULL;
     google::protobuf::Message *sub_msg = NULL;
 
-    //È¡µÃ×Ö¶ÎµÄÃèÊö
+    //å–å¾—å­—æ®µçš„æè¿°
     ret = Illusion_Protobuf_Reflect::get_fielddesc(msg,
                                                    full_name,
                                                    repeated_add,
@@ -523,7 +523,7 @@ int Illusion_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
         return ret;
     }
 
-    //¸ù¾İÃèÊö£¬ÉèÖÃ×Ö¶ÎµÄÊı¾İ
+    //æ ¹æ®æè¿°ï¼Œè®¾ç½®å­—æ®µçš„æ•°æ®
     ret = Illusion_Protobuf_Reflect::set_fielddata(sub_msg, field, set_data);
     if (0 != ret)
     {
@@ -533,7 +533,7 @@ int Illusion_Protobuf_Reflect::set_field(google::protobuf::Message *msg,
     return 0;
 }
 
-//ÓÃMBCS µÄcoding ±àÂë·½Ê½Êä³öÒ»¸öMESSAGEµÄĞÅÏ¢£¬·½±ã²é¿´¡£
+//ç”¨MBCS çš„coding ç¼–ç æ–¹å¼è¾“å‡ºä¸€ä¸ªMESSAGEçš„ä¿¡æ¯ï¼Œæ–¹ä¾¿æŸ¥çœ‹ã€‚
 void Illusion_Protobuf_Reflect::protobuf_output(const google::protobuf::Message *msg,
                                                 std::ostream *out)
 {

@@ -1,10 +1,10 @@
-
+ï»¿
 
 #ifndef OGRE_BUFFER_STORAGE_H_
 #define OGRE_BUFFER_STORAGE_H_
 
 /****************************************************************************************************
-class Ogre_Buffer_Storage BUFFER´æ´¢µÄ
+class Ogre_Buffer_Storage BUFFERå­˜å‚¨çš„
 ****************************************************************************************************/
 class Ogre_Buffer_Storage
 {
@@ -16,55 +16,55 @@ class Ogre_Buffer_Storage
 
 protected:
 
-    //Ö»ÉùÃ÷²»ÊµÏÖ,±ÜÃâ´íÎó
+    //åªå£°æ˜ä¸å®ç°,é¿å…é”™è¯¯
     Ogre_Buffer_Storage(const Ogre_Buffer_Storage &);
-    //Ö»ÉùÃ÷²»ÊµÏÖ,±ÜÃâ´íÎó
+    //åªå£°æ˜ä¸å®ç°,é¿å…é”™è¯¯
     Ogre_Buffer_Storage &operator =(const Ogre_Buffer_Storage &);
 
 public:
-    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
     Ogre_Buffer_Storage();
     ~Ogre_Buffer_Storage();
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void init_buffer_list(size_t szlist );
-    //·´³õÊ¼»¯,ÊÇ·ñËùÓĞµÄÉêÇë¿Õ¼ä,½áÊøºóÒ»¶¨Òªµ÷ÓÃ
+    //ååˆå§‹åŒ–,æ˜¯å¦æ‰€æœ‰çš„ç”³è¯·ç©ºé—´,ç»“æŸåä¸€å®šè¦è°ƒç”¨
     void uninit_buffer_list();
 
-    //·ÖÅäÒ»¸öBufferµ½ListÖĞ
+    //åˆ†é…ä¸€ä¸ªBufferåˆ°Listä¸­
     Ogre4a_App_Frame *allocate_byte_buffer();
-    //ÊÍ·ÅÒ»¸öBufferµ½ListÖĞ
+    //é‡Šæ”¾ä¸€ä¸ªBufferåˆ°Listä¸­
     void free_byte_buffer(Ogre4a_App_Frame *ptrbuf );
 
-    //À©Õ¹BufferList
+    //æ‰©å±•BufferList
     void extend_buffer_list(size_t szlist = EXTEND_NUM_OF_LIST);
 
 public:
 
-    //ÎªÁËSingleTonÀà×¼±¸
-    //ÊµÀıµÄ¸³Öµ
+    //ä¸ºäº†SingleTonç±»å‡†å¤‡
+    //å®ä¾‹çš„èµ‹å€¼
     static void instance(Ogre_Buffer_Storage *);
-    //ÊµÀıµÄ»ñµÃ
+    //å®ä¾‹çš„è·å¾—
     static Ogre_Buffer_Storage *instance();
-    //Çå³ıÊµÀı
+    //æ¸…é™¤å®ä¾‹
     static void clean_instance();
 
 protected:
 
-    //Ã¿´ÎÈç¹ûBufferStroge²»¹»ÓÃÁË£¬À©Õ¹µÄ¸öÊı
+    //æ¯æ¬¡å¦‚æœBufferStrogeä¸å¤Ÿç”¨äº†ï¼Œæ‰©å±•çš„ä¸ªæ•°
     static const size_t EXTEND_NUM_OF_LIST = 256;
 
 protected:
 
-    //ÎÒµ£ĞÄÄÚ´æĞ¹Â¶,ËùÒÔ¼Ó¸ö×ÜÊı¼ÆÊı
+    //æˆ‘æ‹…å¿ƒå†…å­˜æ³„éœ²,æ‰€ä»¥åŠ ä¸ªæ€»æ•°è®¡æ•°
     size_t                    size_buffer_alloc_;
 
-    //BUFFERµÄ³Ø×Ó
+    //BUFFERçš„æ± å­
     SAIL_FRAME_BUFFER_POOL    frame_buffer_ary_;
 
 protected:
 
-    //instanceº¯ÊıÊ¹ÓÃµÄ¶«Î÷
+    //instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
     static Ogre_Buffer_Storage *instance_;
 
 };

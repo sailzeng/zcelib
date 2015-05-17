@@ -1,4 +1,4 @@
-#include "soar_predefine.h"
+ï»¿#include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_services_info.h"
 #include "soar_server_ver_define.h"
@@ -16,7 +16,7 @@ Server_Config_FSM::~Server_Config_FSM()
 
 int Server_Config_FSM::read_cfgfile()
 {
-    // ¼ÓÔØzerg ÅäÖÃ
+    // åŠ è½½zerg é…ç½®
     int ret = 0;
 
 
@@ -26,7 +26,7 @@ int Server_Config_FSM::read_cfgfile()
         return ret;
     }
 
-    // ÅäÖÃ¼ÓÔØ³É¹¦
+    // é…ç½®åŠ è½½æˆåŠŸ
     ZCE_LOG(RS_INFO, "Comm_Svrd_Config load framework config succ.");
     return 0;
 }

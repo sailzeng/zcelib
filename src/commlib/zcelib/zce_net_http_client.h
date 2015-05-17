@@ -1,11 +1,11 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_net_http_client.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Monday, August 25, 2014
-* @brief      ´úÂëµÄµÚÒ»°æ±¾À´×Ôlibghttp£¬»¹Ã»ÓĞÈÎºÎ¸ÄĞ´£¬Ö»ÊÇ³¢ÊÔÒÆÖ²¡£
-*             ÓĞµãÎ¥·´ËûµÄ°æÈ¨£¨GNU£©£¬µ«ÎÒ¿Ï¶¨Òª¸ÄĞ´ÒÆÖ²µÄ¡£
+* @brief      ä»£ç çš„ç¬¬ä¸€ç‰ˆæœ¬æ¥è‡ªlibghttpï¼Œè¿˜æ²¡æœ‰ä»»ä½•æ”¹å†™ï¼Œåªæ˜¯å°è¯•ç§»æ¤ã€‚
+*             æœ‰ç‚¹è¿åä»–çš„ç‰ˆæƒï¼ˆGNUï¼‰ï¼Œä½†æˆ‘è‚¯å®šè¦æ”¹å†™ç§»æ¤çš„ã€‚
 *
 * @details
 *

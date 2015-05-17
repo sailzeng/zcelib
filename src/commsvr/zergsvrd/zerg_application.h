@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef ZERG_SERVER_APPLICATION_H_
 #define ZERG_SERVER_APPLICATION_H_
 
@@ -19,27 +19,27 @@ class Zerg_Service_App : public Soar_Svrd_Appliction
 
 
 public:
-    //ÎÒÓÖÒªÍµÍµ²Ø×Å
+    //æˆ‘åˆè¦å·å·è—ç€
     Zerg_Service_App();
     virtual ~Zerg_Service_App();
 
 public:
 
-    ///³õÊ¼»¯,¸ù¾İÆô¶¯²ÎÊıÆô¶¯
+    ///åˆå§‹åŒ–,æ ¹æ®å¯åŠ¨å‚æ•°å¯åŠ¨
     virtual int app_start(int argc, const char *argv[]);
 
-    ///´¦ÀíÍË³öµÄÇåÀí¹¤×÷
+    ///å¤„ç†é€€å‡ºçš„æ¸…ç†å·¥ä½œ
     virtual int app_exit();
 
-    ///ÔËĞĞ,ÔËĞĞº¯Êı,²»µ½Íò²»µÃÒÑ,²»»áÍË³ö,ÎªÁË¼Ó¿ì·¢ËÍµÄËÙ¶È£¬¶Ô¶àÖÖÇëÇó×öÁË²»Í¬µÄÎ¢µ÷¡£
+    ///è¿è¡Œ,è¿è¡Œå‡½æ•°,ä¸åˆ°ä¸‡ä¸å¾—å·²,ä¸ä¼šé€€å‡º,ä¸ºäº†åŠ å¿«å‘é€çš„é€Ÿåº¦ï¼Œå¯¹å¤šç§è¯·æ±‚åšäº†ä¸åŒçš„å¾®è°ƒã€‚
     virtual int app_run();
 
 public:
 
-    ///Í¨ĞÅ¹ÜÀíÆ÷
+    ///é€šä¿¡ç®¡ç†å™¨
     Zerg_Comm_Manager       *zerg_comm_mgr_;
 
-    ///OP KEYÎÄ¼şµÄÊ±¼ä´Á
+    ///OP KEYæ–‡ä»¶çš„æ—¶é—´æˆ³
     time_t                   conf_timestamp_;
 
 };

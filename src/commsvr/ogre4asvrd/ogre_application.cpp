@@ -1,4 +1,4 @@
-
+ï»¿
 
 #include "ogre_predefine.h"
 #include "ogre_app_timer.h"
@@ -13,7 +13,7 @@
 class  Ogre_Service_App
 ****************************************************************************************************/
 
-//ÎÒÓÖÒªÍµÍµ²Ø×Å
+//æˆ‘åˆè¦å·å·è—ç€
 Ogre_Service_App::Ogre_Service_App()
 {
 }
@@ -43,15 +43,15 @@ int Ogre_Service_App::app_start(int argc, const char *argv[])
             max_accept, max_connect);
     max_peer = max_accept + max_connect + 16;
 
-    //ÔÚÅäÖÃÎÄ¼şÃ»ÓĞ¶ÁÈ¡³öÀ´µÄÊ±ºò,Ö»ÏÔÊ¾µ÷ÊÔĞÅÏ¢
+    //åœ¨é…ç½®æ–‡ä»¶æ²¡æœ‰è¯»å–å‡ºæ¥çš„æ—¶å€™,åªæ˜¾ç¤ºè°ƒè¯•ä¿¡æ¯
 
-    //Ê¹ÓÃÈÕÖ¾²ßÂÔ,µÃµ½ÅäÖÃÎÄ¼ş,²ÅÄÜµÃµ½ÈÕÖ¾ÎÄ¼şÃû³Æ
+    //ä½¿ç”¨æ—¥å¿—ç­–ç•¥,å¾—åˆ°é…ç½®æ–‡ä»¶,æ‰èƒ½å¾—åˆ°æ—¥å¿—æ–‡ä»¶åç§°
 
-    //ÏÈ±ØĞë³õÊ¼»¯Buffer Storage,ÉèÖÃÎª×î´óÁ¬½ÓÊıµÄ1/5,×îÉÙ512¸ö
+    //å…ˆå¿…é¡»åˆå§‹åŒ–Buffer Storage,è®¾ç½®ä¸ºæœ€å¤§è¿æ¥æ•°çš„1/5,æœ€å°‘512ä¸ª
     size_t size_list = (max_peer / 32 < 512 ) ? 512 : max_peer / 32;
     Ogre_Buffer_Storage::instance()->init_buffer_list(size_list);
 
-    //Ogre_Comm_Manger ³õÊ¼»¯
+    //Ogre_Comm_Manger åˆå§‹åŒ–
     ret = Ogre_Comm_Manger::instance()->get_config(config);
     if (ret != 0 )
     {
@@ -63,7 +63,7 @@ int Ogre_Service_App::app_start(int argc, const char *argv[])
     return 0;
 }
 
-//´¦ÀíÍË³öµÄÇåÀí¹¤×÷
+//å¤„ç†é€€å‡ºçš„æ¸…ç†å·¥ä½œ
 int Ogre_Service_App::app_exit()
 {
     //
@@ -72,7 +72,7 @@ int Ogre_Service_App::app_exit()
 
     Ogre_Buffer_Storage::instance()->uninit_buffer_list();
 
-    //»ùÀàµÄÍË³ö
+    //åŸºç±»çš„é€€å‡º
     Soar_Svrd_Appliction::app_exit();
 
     //
@@ -82,11 +82,11 @@ int Ogre_Service_App::app_exit()
 }
 
 
-//ÔËĞĞº¯Êı,²»µ½Íò²»µÃÒÑ,²»»áÍË³ö.
-//×îÖØÒªµÄº¯Êı, µ«ÊÇÒ²×î¼òµ¥
+//è¿è¡Œå‡½æ•°,ä¸åˆ°ä¸‡ä¸å¾—å·²,ä¸ä¼šé€€å‡º.
+//æœ€é‡è¦çš„å‡½æ•°, ä½†æ˜¯ä¹Ÿæœ€ç®€å•
 int Ogre_Service_App::app_run()
 {
-    //¿ÕÏĞN´Îºó,SLEEPµÄÊ±¼ä¼ä¸ô
+    //ç©ºé—²Næ¬¡å,SLEEPçš„æ—¶é—´é—´éš”
     const unsigned int  IDLE_SLEEP_INTERVAL = 512;
 
     size_t numevent = 0;
@@ -101,15 +101,15 @@ int Ogre_Service_App::app_run()
 
     for (; app_run_;)
     {
-        //Ã¿´Î¶¼ÔÚÕâ¶ù³õÊ¼»¯ZCE_Time_Value²»ºÃ,ÆäÒªµ÷Õû.
+        //æ¯æ¬¡éƒ½åœ¨è¿™å„¿åˆå§‹åŒ–ZCE_Time_Valueä¸å¥½,å…¶è¦è°ƒæ•´.
         interval.usec(INTERVAL_MACRO_SECOND);
         ZCE_Reactor::instance()->handle_events(&interval, &numevent);
 
-        //È¡µÃ·¢ËÍÊı¾İÊı¾İ
+        //å–å¾—å‘é€æ•°æ®æ•°æ®
         Ogre_Comm_Manger::instance()->get_all_senddata_to_write(procframe);
-        //Ã»ÓĞ´¦ÀíÈÎºÎÊÂ¼ş
+        //æ²¡æœ‰å¤„ç†ä»»ä½•äº‹ä»¶
 
-        //Èç¹ûÓĞÊÂ¼ş´¦ÀíÁË¾Í¼ÌĞø
+        //å¦‚æœæœ‰äº‹ä»¶å¤„ç†äº†å°±ç»§ç»­
         if (numevent > 0 || procframe > 0)
         {
             idle = 0;
@@ -120,7 +120,7 @@ int Ogre_Service_App::app_run()
             ++idle;
         }
 
-        //Äã¿ÉÒÔ¸ù¾İ¿ÕÏĞ×´Ì¬´¦ÀíÒ»Ğ©×Ô¼ºµÄÊÂÇé,
+        //ä½ å¯ä»¥æ ¹æ®ç©ºé—²çŠ¶æ€å¤„ç†ä¸€äº›è‡ªå·±çš„äº‹æƒ…,
         if (idle > IDLE_SLEEP_INTERVAL )
         {
             ZCE_LIB::sleep(sleeptime);

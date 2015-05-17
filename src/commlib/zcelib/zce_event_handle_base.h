@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_event_handle_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê8ÔÂ29ÈÕ
-* @brief      IO·´Ó¦Æ÷ËùÊ¹ÓÃµÄÊÂ¼ş¾ä±ú·â×°
+* @date       2011å¹´8æœˆ29æ—¥
+* @brief      IOååº”å™¨æ‰€ä½¿ç”¨çš„äº‹ä»¶å¥æŸ„å°è£…
 *
 * @details
 *
@@ -18,152 +18,152 @@
 class ZCE_Reactor;
 
 /*!
-* @brief      IO·´Ó¦Æ÷ËùÊ¹ÓÃµÄÊÂ¼ş¾ä±ú£¬µ±IOÊÂ¼ş´¥·¢ºó£¬ÏàÓ¦µÄº¯Êı
-*             ±»µ÷ÓÃ
+* @brief      IOååº”å™¨æ‰€ä½¿ç”¨çš„äº‹ä»¶å¥æŸ„ï¼Œå½“IOäº‹ä»¶è§¦å‘åï¼Œç›¸åº”çš„å‡½æ•°
+*             è¢«è°ƒç”¨
 */
 class ZCE_Event_Handler
 {
 public:
 
-    ///IO´¥·¢ÊÂ¼ş
+    ///IOè§¦å‘äº‹ä»¶
     enum EVENT_MASK
     {
         NULL_MASK    = 0,
 
 
-        ///SOCKET¶ÁÈ¡ÊÂ¼ş£¬µ«¾ä±ú±äÎª¿É¶ÁÊÇ£¬µ÷ÓÃhandle_input
+        ///SOCKETè¯»å–äº‹ä»¶ï¼Œä½†å¥æŸ„å˜ä¸ºå¯è¯»æ˜¯ï¼Œè°ƒç”¨handle_input
         READ_MASK    = (1 << 1),
-        ///SOCKETĞ´ÊÂ¼ş£¬µ±¾ä±ú±äÎª¿ÉĞ´ÊÇ£¬handle_output
+        ///SOCKETå†™äº‹ä»¶ï¼Œå½“å¥æŸ„å˜ä¸ºå¯å†™æ˜¯ï¼Œhandle_output
         WRITE_MASK   = (1 << 2),
-        ///SOCKETÒì³£ÊÂ¼ş£¬´¥·¢ºóµ÷ÓÃhandle_exception
+        ///SOCKETå¼‚å¸¸äº‹ä»¶ï¼Œè§¦å‘åè°ƒç”¨handle_exception
         EXCEPT_MASK  = (1 << 3),
-        ///SOCKETÒì²½CONNECT³É¹¦ºó£¬µ÷ÓÃhandle_output£¬Òì²½CONNECTÊ§°Üºó£¬
-        ///»áµ÷ÓÃhandle_input£¬(¶àÏµÍ³²îÒì»áÍ³Ò»)
+        ///SOCKETå¼‚æ­¥CONNECTæˆåŠŸåï¼Œè°ƒç”¨handle_outputï¼Œå¼‚æ­¥CONNECTå¤±è´¥åï¼Œ
+        ///ä¼šè°ƒç”¨handle_inputï¼Œ(å¤šç³»ç»Ÿå·®å¼‚ä¼šç»Ÿä¸€)
         CONNECT_MASK = (1 << 4),
-        ///SOCKET ACCEPTÊÂ¼ş£¬µ±Ò»¸öACCEPT¶Ë¿Ú¿ÉÒÔÁ´½Óºó£¬µ÷ÓÃhandle_input£¬
+        ///SOCKET ACCEPTäº‹ä»¶ï¼Œå½“ä¸€ä¸ªACCEPTç«¯å£å¯ä»¥é“¾æ¥åï¼Œè°ƒç”¨handle_inputï¼Œ
         ACCEPT_MASK  = (1 << 5),
 
-        ///iNotifyÍ¨ÖªÊÂ¼ş£¬ÎÄ¼şÏµÍ³µÄ¸Ä±äÍ¨Öª,µ÷ÓÃhandle_input£¬
+        ///iNotifyé€šçŸ¥äº‹ä»¶ï¼Œæ–‡ä»¶ç³»ç»Ÿçš„æ”¹å˜é€šçŸ¥,è°ƒç”¨handle_inputï¼Œ
         INOTIFY_MASK = (1 << 9),
     };
 
 public:
 
     /*!
-    * @brief      ¹¹Ôìº¯Êı
+    * @brief      æ„é€ å‡½æ•°
     */
     ZCE_Event_Handler();
     /*!
-    * @brief      ¹¹Ôìº¯Êı£¬Í¬Ê±ÉèÖÃÏã¸ÛµÄ·´Ó¦Æ÷Ö¸Õë
-    * @param      reactor ¾ä±úÏà¹ØµÄ·´Ó¦Æ÷Ö¸Õë
+    * @brief      æ„é€ å‡½æ•°ï¼ŒåŒæ—¶è®¾ç½®é¦™æ¸¯çš„ååº”å™¨æŒ‡é’ˆ
+    * @param      reactor å¥æŸ„ç›¸å…³çš„ååº”å™¨æŒ‡é’ˆ
     */
     ZCE_Event_Handler(ZCE_Reactor *reactor);
     /*!
-    * @brief      Îö¹¹º¯Êı
+    * @brief      ææ„å‡½æ•°
     */
     virtual ~ZCE_Event_Handler();
 
 public:
 
     /*!
-    * @brief      È¡»Ø¶ÔÓ¦µÄZCE_HANDLE ¾ä±ú
-    * @return     ZCE_HANDLE ZCE_Event_Handler ¶ÔÓ¦µÄZCE_HANDLE ¾ä±ú
+    * @brief      å–å›å¯¹åº”çš„ZCE_HANDLE å¥æŸ„
+    * @return     ZCE_HANDLE ZCE_Event_Handler å¯¹åº”çš„ZCE_HANDLE å¥æŸ„
     */
     virtual ZCE_HANDLE get_handle (void) const = 0;
 
     /*!
-    * @brief      ¶ÁÈ¡ÊÂ¼ş´¥·¢µ÷ÓÃº¯Êı£¬ÓÃÓÚ¶ÁÈ¡Êı¾İ£¬accept³É¹¦£¬£¨connectÊ§°Ü£©´¦Àí£¬
-    * @return     int ·µ»Ø0±íÊ¾¾ä±ú´¦ÀíÕı³££¬return -1ºó£¬·´Ó¦Æ÷»áÖ÷¶¯handle_close£¬°ïÖú½áÊø¾ä±ú
-    * @note       return -1 ºó·´Ó¦Æ÷°ïÖúÖ÷¶¯µ÷ÓÃhandle_closeÕâ¸öÌØĞÔ£¬ÆäÊµÎÒ³Ö±£ÁôÒâ¼û£¬ÒòÎªÆäÊµ
-    *             ¿ÉÒÔÖ±½Óµ÷ÓÃhandle_close£¬¶øÕâÁ½ÖÖ·½Ê½²¢²»¼æÈİ£¬¶øÇÒÖ±½Óµ÷ÓÃ¿ÉÄÜ¸ü¼ÓÇåÎúÒ»ÏÂ£¬ÎÒ¸ö
-    *             ²»½¨ÒéÊ¹ÓÃÕâ¸öÌØĞÔ£¬±£ÁôÆäÖ÷ÒªÊÇÎªÁËºÍACE¼æÈİ
+    * @brief      è¯»å–äº‹ä»¶è§¦å‘è°ƒç”¨å‡½æ•°ï¼Œç”¨äºè¯»å–æ•°æ®ï¼ŒacceptæˆåŠŸï¼Œï¼ˆconnectå¤±è´¥ï¼‰å¤„ç†ï¼Œ
+    * @return     int è¿”å›0è¡¨ç¤ºå¥æŸ„å¤„ç†æ­£å¸¸ï¼Œreturn -1åï¼Œååº”å™¨ä¼šä¸»åŠ¨handle_closeï¼Œå¸®åŠ©ç»“æŸå¥æŸ„
+    * @note       return -1 åååº”å™¨å¸®åŠ©ä¸»åŠ¨è°ƒç”¨handle_closeè¿™ä¸ªç‰¹æ€§ï¼Œå…¶å®æˆ‘æŒä¿ç•™æ„è§ï¼Œå› ä¸ºå…¶å®
+    *             å¯ä»¥ç›´æ¥è°ƒç”¨handle_closeï¼Œè€Œè¿™ä¸¤ç§æ–¹å¼å¹¶ä¸å…¼å®¹ï¼Œè€Œä¸”ç›´æ¥è°ƒç”¨å¯èƒ½æ›´åŠ æ¸…æ™°ä¸€ä¸‹ï¼Œæˆ‘ä¸ª
+    *             ä¸å»ºè®®ä½¿ç”¨è¿™ä¸ªç‰¹æ€§ï¼Œä¿ç•™å…¶ä¸»è¦æ˜¯ä¸ºäº†å’ŒACEå…¼å®¹
     */
     virtual int handle_input ();
 
     /*!
-    * @brief      Ğ´ÈëÊÂ¼ş´¥·¢µ÷ÓÃº¯Êı£¬ÓÃÓÚĞ´Êı¾İ£¬connect³É¹¦£¬
-    * @return     int int ·µ»Ø0±íÊ¾¾ä±ú´¦ÀíÕı³££¬return -1ºó£¬·´Ó¦Æ÷»áÖ÷¶¯handle_close£¬°ïÖú½áÊø¾ä±ú
+    * @brief      å†™å…¥äº‹ä»¶è§¦å‘è°ƒç”¨å‡½æ•°ï¼Œç”¨äºå†™æ•°æ®ï¼ŒconnectæˆåŠŸï¼Œ
+    * @return     int int è¿”å›0è¡¨ç¤ºå¥æŸ„å¤„ç†æ­£å¸¸ï¼Œreturn -1åï¼Œååº”å™¨ä¼šä¸»åŠ¨handle_closeï¼Œå¸®åŠ©ç»“æŸå¥æŸ„
     */
     virtual int handle_output ();
 
     /*!
-    * @brief      µ÷ÓÃÒì³££¬return -1±íÊ¾µ÷ÓÃhandle_close
+    * @brief      è°ƒç”¨å¼‚å¸¸ï¼Œreturn -1è¡¨ç¤ºè°ƒç”¨handle_close
     * @return     int
     */
     virtual int handle_exception();
 
     /*!
-    * @brief      ¾ä±ú¹Ø±Õ´¦Àíº¯Êı£¬»ùÀàº¯Êıµ÷ÓÃÁËremove
+    * @brief      å¥æŸ„å…³é—­å¤„ç†å‡½æ•°ï¼ŒåŸºç±»å‡½æ•°è°ƒç”¨äº†remove
     * @return     int
     */
     virtual int handle_close ();
 
     /*!
-    * @brief      È¡µÃµ±Ç°µÄ±êÖ¾Î»
-    * @return     int ·µ»ØµÄµ±Ç°µÄMASKÖµ
+    * @brief      å–å¾—å½“å‰çš„æ ‡å¿—ä½
+    * @return     int è¿”å›çš„å½“å‰çš„MASKå€¼
     */
     inline int get_mask();
 
     /*!
-    * @brief      ÉèÖÃµ±Ç°±êÖ¾Î»
-    * @param      mask ÉèÖÃµÄMASKÖµ
+    * @brief      è®¾ç½®å½“å‰æ ‡å¿—ä½
+    * @param      mask è®¾ç½®çš„MASKå€¼
     */
     inline void set_mask(int mask);
 
     /*!
-    * @brief      enable maskËù´øµÄ±êÖ¾Î»
-    * @param      en_mask ´ò¿ªµÄMASKµÄÖµ
+    * @brief      enable maskæ‰€å¸¦çš„æ ‡å¿—ä½
+    * @param      en_mask æ‰“å¼€çš„MASKçš„å€¼
     */
     inline void enable_mask(int en_mask);
 
     /*!
-    * @brief      disable maskËù´øµÄ±êÖ¾Î»
-    * @param      dis_mask ¹Ø±ÕµÄMASKÖµ
+    * @brief      disable maskæ‰€å¸¦çš„æ ‡å¿—ä½
+    * @param      dis_mask å…³é—­çš„MASKå€¼
     */
     inline void disable_mask(int dis_mask);
 
     /*!
-    * @brief      ÉèÖÃ·´Ó¦Æ÷
+    * @brief      è®¾ç½®ååº”å™¨
     * @param      reactor
     */
     virtual void reactor (ZCE_Reactor *reactor);
 
     /*!
-    * @brief      È¡µÃ×Ô¼ºËùÊôµÄ·´Ó¦Æ÷
+    * @brief      å–å¾—è‡ªå·±æ‰€å±çš„ååº”å™¨
     * @return     ZCE_Reactor*
     */
     virtual ZCE_Reactor *reactor (void) const;
 
-    //³¬Ê±´¦Àí£¬×îºó¿¼ÂÇÔÙÈı£¬Ã»ÓĞÔÚ·´Ó¦Æ÷ÀïÃæ¼¯³É¶¨Ê±Æ÷µÄ´¦Àí
+    //è¶…æ—¶å¤„ç†ï¼Œæœ€åè€ƒè™‘å†ä¸‰ï¼Œæ²¡æœ‰åœ¨ååº”å™¨é‡Œé¢é›†æˆå®šæ—¶å™¨çš„å¤„ç†
     //virtual int timer_timeout (const ZCE_Time_Value &tv, const void *arg = 0);
 
 protected:
 
-    ///·´Ó¦Æ÷
+    ///ååº”å™¨
     ZCE_Reactor       *zce_reactor_;
 
-    ///Õâ¸ö¾ä±ú¶ÔÓ¦Òª´¦ÀíµÄÊÂ¼şMASK
+    ///è¿™ä¸ªå¥æŸ„å¯¹åº”è¦å¤„ç†çš„äº‹ä»¶MASK
     int                event_mask_;
 };
 
-//È¡µÃµ±Ç°µÄ±êÖ¾Î»
+//å–å¾—å½“å‰çš„æ ‡å¿—ä½
 inline int ZCE_Event_Handler::get_mask()
 {
     return event_mask_;
 }
 
-//ÉèÖÃµ±Ç°±êÖ¾Î»
+//è®¾ç½®å½“å‰æ ‡å¿—ä½
 inline void ZCE_Event_Handler::set_mask(int mask)
 {
     event_mask_ = mask;
 }
 
-//enable maskËù´øµÄ±êÖ¾Î»
+//enable maskæ‰€å¸¦çš„æ ‡å¿—ä½
 inline void ZCE_Event_Handler::enable_mask(int en_mask)
 {
     event_mask_ |= en_mask;
 }
-//disable maskËù´øµÄ±êÖ¾Î»
+//disable maskæ‰€å¸¦çš„æ ‡å¿—ä½
 inline void ZCE_Event_Handler::disable_mask(int dis_mask)
 {
     event_mask_ &= (~dis_mask);

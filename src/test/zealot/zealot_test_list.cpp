@@ -1,4 +1,4 @@
-
+ï»¿
 
 
 #include "zealot_predefine.h"
@@ -83,7 +83,7 @@ int test_list(int /*argc*/ , char * /*argv*/ [])
     std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
 
 
-    //ÉÙ´òÒ»¸öBegin
+    //å°‘æ‰“ä¸€ä¸ªBegin
     for (ZCE_LIB::smem_list<int>::iterator it = --pmmap->end(); it != pmmap->begin(); --it)
     {
         std::cout << " " << *it;

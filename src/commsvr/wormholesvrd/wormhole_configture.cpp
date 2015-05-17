@@ -1,4 +1,4 @@
-#include "wormhole_predefine.h"
+ï»¿#include "wormhole_predefine.h"
 #include "wormhole_application.h"
 #include "wormhole_configture.h"
 
@@ -57,7 +57,7 @@ int Wormhole_Server_Config::get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_t
     int ret = 0;
     std::string temp_value;
 
-    //×î´óAccept ÊýÁ¿
+    //æœ€å¤§Accept æ•°é‡
     ret = conf_tree->path_get_leaf("PROXY_CFG", "PROXY_TYPE",
                                    temp_value);
     if ( 0 != ret )

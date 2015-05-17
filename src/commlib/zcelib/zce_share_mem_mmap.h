@@ -1,21 +1,21 @@
-#ifndef ZCE_LIB_SHARE_MEMORY_MMAP_H_
+ï»¿#ifndef ZCE_LIB_SHARE_MEMORY_MMAP_H_
 #define ZCE_LIB_SHARE_MEMORY_MMAP_H_
 
 #include "zce_os_adapt_predefine.h"
 #include "zce_boost_non_copyable.h"
 
 /*********************************************************************************
-class ZCE_ShareMem_Mmap ·â×°MMAP¹²ÏíÄÚ´æÓ³ÉäÎÄ¼şº¯Êı
+class ZCE_ShareMem_Mmap å°è£…MMAPå…±äº«å†…å­˜æ˜ å°„æ–‡ä»¶å‡½æ•°
 *********************************************************************************/
 class ZCE_ShareMem_Mmap: public ZCE_NON_Copyable
 {
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_ShareMem_Mmap();
     ~ZCE_ShareMem_Mmap();
 
 public:
-    //´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä
+    //æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„
     int open(const char *file_name,
              std::size_t shm_size ,
              int file_open_mode = O_CREAT | O_RDWR,
@@ -26,7 +26,7 @@ public:
              std::size_t offset = 0
             );
 
-    //´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä, ¼òµ¥£¬ÍÆ¼öÊ¹ÓÃÕâ¸öº¯Êı
+    //æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„, ç®€å•ï¼Œæ¨èä½¿ç”¨è¿™ä¸ªå‡½æ•°
     int open(const char *file_name,
              std::size_t shm_size,
              bool if_restore,
@@ -36,30 +36,30 @@ public:
              std::size_t  offset = 0
             );
 
-    //¹Ø±ÕÎÄ¼ş
+    //å…³é—­æ–‡ä»¶
     int close();
 
-    //É¾³ıÓ³ÉäµÄÎÄ¼ş£¬µ±È»ÕıÔÚÓ³ÉäµÄÊ±ºò²»ÄÜÉ¾³ı
+    //åˆ é™¤æ˜ å°„çš„æ–‡ä»¶ï¼Œå½“ç„¶æ­£åœ¨æ˜ å°„çš„æ—¶å€™ä¸èƒ½åˆ é™¤
     int remove();
 
-    //Í¬²½ÎÄ¼ş
+    //åŒæ­¥æ–‡ä»¶
     int flush();
 
-    //·µ»ØÓ³ÉäµÄÄÚ´æµØÖ·
+    //è¿”å›æ˜ å°„çš„å†…å­˜åœ°å€
     void *addr();
 
 protected:
 
-    //Ó³ÉäÎÄ¼şµÄÃû³Æ
+    //æ˜ å°„æ–‡ä»¶çš„åç§°
     std::string         mmap_file_name_;
 
-    //Ó³ÉäµÄÄÚ´æµØÖ·
+    //æ˜ å°„çš„å†…å­˜åœ°å€
     void               *mmap_addr_;
 
-    // Ó³ÉäµÄÎÄ¼ş¾ä±ú
+    // æ˜ å°„çš„æ–‡ä»¶å¥æŸ„
     ZCE_HANDLE          mmap_handle_;
 
-    //Ó³ÉäµÄ¹²ÏíÄÚ´æ´óĞ¡
+    //æ˜ å°„çš„å…±äº«å†…å­˜å¤§å°
     std::size_t         shm_size_;
 };
 

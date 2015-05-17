@@ -1,4 +1,4 @@
-
+ï»¿
 
 #ifndef OGRE_SOCKETPEER_ID_SET_H_
 #define OGRE_SOCKETPEER_ID_SET_H_
@@ -12,18 +12,18 @@ class PeerID_To_TCPHdl_Map
 
 
 public:
-    ///¹¹Ôìº¯Êı,
+    ///æ„é€ å‡½æ•°,
     PeerID_To_TCPHdl_Map();
     ~PeerID_To_TCPHdl_Map();
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void init_services_peerinfo(size_t szpeer);
 
-    ///²éÑ¯ÅäÖÃĞÅÏ¢
+    ///æŸ¥è¯¢é…ç½®ä¿¡æ¯
     int find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler* &);
-    ///ÉèÖÃÅäÖÃĞÅÏ¢
+    ///è®¾ç½®é…ç½®ä¿¡æ¯
     int add_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *);
-    ///É¾³ıÅäÖÃĞÅÏ¢
+    ///åˆ é™¤é…ç½®ä¿¡æ¯
     size_t del_services_peerinfo(const OGRE_PEER_ID &svrinfo);
     //
     void clear_and_close();

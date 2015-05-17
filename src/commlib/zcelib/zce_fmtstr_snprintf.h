@@ -1,17 +1,17 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_fmtstr_snprintf.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê2ÔÂ6ÈÕ
-* @brief      ÊµÏÖÒ»¸öC++µÄsnprintf£¬ÀàĞÍÎŞ¹ØµÄ£¬ËÙ¶È¿ÉÒÔÊÇÆÕÍ¨snprintf¿ì30-50%£¬
-*             ¶øÇÒÊÇÀàĞÍ°²È«µÄ£¬
+* @date       2013å¹´2æœˆ6æ—¥
+* @brief      å®ç°ä¸€ä¸ªC++çš„snprintfï¼Œç±»å‹æ— å…³çš„ï¼Œé€Ÿåº¦å¯ä»¥æ˜¯æ™®é€šsnprintfå¿«30-50%ï¼Œ
+*             è€Œä¸”æ˜¯ç±»å‹å®‰å…¨çš„ï¼Œ
 *
-* @details    ÔÚ´ËÔÙ´Î¸ĞĞ»ÌÆÉù¸£Ğ¡»ï×Ó£¬fastformatµÄÃÅÊÇËû¸øÎÒ´ò¿ªµÄ£¬ÎÒÒ»Ö±ÈÏÎªC++
-*             µÄ¸ñÊ½»¯Êä³öµÄÊä³öÌìÉúÂı¹ıCµÄ¡£
-*             ÌÆÉù¸£¸æÖªÁËÎÒfastformtÕâ¸ö¿â£¬ÒÔ¼°ËûµÄ²¿·Ö´úÂë¡£´ò¿ªÃÅÕâÉÈÃÅºó£¬ÎÒ·¢ÏÖ
-*             ÎÒÔ­À´µÄÈÏÖªÆäÊµÓĞÎó¡£
-*             std::iostream C++µÄÂıÆäÊµÂıÔÚÊµÏÖ¡£
+* @details    åœ¨æ­¤å†æ¬¡æ„Ÿè°¢å”å£°ç¦å°ä¼™å­ï¼Œfastformatçš„é—¨æ˜¯ä»–ç»™æˆ‘æ‰“å¼€çš„ï¼Œæˆ‘ä¸€ç›´è®¤ä¸ºC++
+*             çš„æ ¼å¼åŒ–è¾“å‡ºçš„è¾“å‡ºå¤©ç”Ÿæ…¢è¿‡Cçš„ã€‚
+*             å”å£°ç¦å‘ŠçŸ¥äº†æˆ‘fastformtè¿™ä¸ªåº“ï¼Œä»¥åŠä»–çš„éƒ¨åˆ†ä»£ç ã€‚æ‰“å¼€é—¨è¿™æ‰‡é—¨åï¼Œæˆ‘å‘ç°
+*             æˆ‘åŸæ¥çš„è®¤çŸ¥å…¶å®æœ‰è¯¯ã€‚
+*             std::iostream C++çš„æ…¢å…¶å®æ…¢åœ¨å®ç°ã€‚
 *
 * @note
 *
@@ -25,20 +25,20 @@
 namespace ZCE_LIB
 {
 
-//¸ñÊ½»¯×Ö·û´®µÄ±êÊ¶£¬³öÏÖÒ»¸ö%?£¬±êÊ¶½øĞĞÒ»´Î²ÎÊıÊä³ö
+//æ ¼å¼åŒ–å­—ç¬¦ä¸²çš„æ ‡è¯†ï¼Œå‡ºç°ä¸€ä¸ª%?ï¼Œæ ‡è¯†è¿›è¡Œä¸€æ¬¡å‚æ•°è¾“å‡º
 static const char SNRPINTF_FMT_IDENTIFY[] = "%?";
-//¸ñÊ½»¯×Ö·û´®µÄ³¤¶È
+//æ ¼å¼åŒ–å­—ç¬¦ä¸²çš„é•¿åº¦
 static const size_t LEN_OF_FMT_IDENTIFY = 2;
 
-//×ªÒå×Ö·û´®
+//è½¬ä¹‰å­—ç¬¦ä¸²
 static const char SNRPINTF_ESCAPE_IDENTIFY[] = "%??";
-//×ªÒå×Ö·û´®³¤¶È
+//è½¬ä¹‰å­—ç¬¦ä¸²é•¿åº¦
 static const size_t LEN_OF_ESCAPE_IDENTIFY = 3;
-//×ªÒå×Ö·û£¬Èç¹ûÇ°Ãæ³öÏÖ%?ÔÙ³öÏÖ%£¬¾Í±êÊ¶×ªÒå
+//è½¬ä¹‰å­—ç¬¦ï¼Œå¦‚æœå‰é¢å‡ºç°%?å†å‡ºç°%ï¼Œå°±æ ‡è¯†è½¬ä¹‰
 static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 
 
-//ÓÃC++ 11µÄÌØĞÔÊµÏÖÒ»¸ö£¿
+//ç”¨C++ 11çš„ç‰¹æ€§å®ç°ä¸€ä¸ªï¼Ÿ
 #if defined ZCE_SUPPORT_CPP11
 
 
@@ -75,12 +75,12 @@ void foo_c11_outdata(char *&foo_buffer,
     size_t use_len = 0;
     const char *id_pos = NULL;
 
-    //´¦ÀíµÚÒ»¸öÊı¾İµÄÊä³ö£¬
+    //å¤„ç†ç¬¬ä¸€ä¸ªæ•°æ®çš„è¾“å‡ºï¼Œ
     while (foo_max_len > 0)
     {
-        //ÕÒµ½%?£¬
+        //æ‰¾åˆ°%?ï¼Œ
         id_pos = strstr(foo_fmt_spec, ZCE_LIB::SNRPINTF_FMT_IDENTIFY);
-        //½«%?Ç°ÃæµÄ×Ö·û´®Êä³ö
+        //å°†%?å‰é¢çš„å­—ç¬¦ä¸²è¾“å‡º
         ZCE_LIB::fmt_str(foo_buffer, foo_max_len, use_len, foo_fmt_spec, (id_pos == NULL) ? strlen(foo_fmt_spec) : (id_pos - foo_fmt_spec));
 
         foo_buffer += use_len;
@@ -94,7 +94,7 @@ void foo_c11_outdata(char *&foo_buffer,
             return;
         }
 
-        //¼ì²éºóÃæ×Ö·ûÊÇ·ñÊÇ?£¬ÓÃÓÚÅĞ¶ÏÊÇ·ñÊÇ×ªÒå
+        //æ£€æŸ¥åé¢å­—ç¬¦æ˜¯å¦æ˜¯?ï¼Œç”¨äºåˆ¤æ–­æ˜¯å¦æ˜¯è½¬ä¹‰
         if (*(id_pos + LEN_OF_FMT_IDENTIFY) != ZCE_LIB::SNRPINTF_FMT_ESCAPE_CHAR)
         {
             ZCE_LIB::output_helper(foo_buffer, foo_max_len, use_len, out_data);
@@ -104,7 +104,7 @@ void foo_c11_outdata(char *&foo_buffer,
             foo_fmt_spec += LEN_OF_FMT_IDENTIFY;
             break;
         }
-        //%??½«×ªÒåÎª%?Êä³ö
+        //%??å°†è½¬ä¹‰ä¸º%?è¾“å‡º
         else
         {
             ZCE_LIB::fmt_str(foo_buffer, foo_max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
@@ -160,7 +160,7 @@ char *foo_snprintf(char *foo_buffer,
                      strlen(fmt_spec));
     foo_use_len += use_len;
     buffer[use_len] = '\0';
-    //·µ»Ø
+    //è¿”å›
     return foo_buffer;
 }
 
@@ -171,7 +171,7 @@ char *foo_snprintf(char *foo_buffer,
 #endif
 
 
-//ÒòÎªÄ£°æº¯ÊıĞ´ÔÚ.hÎÄ¼şÖĞ£¬ËùÒÔºêÒ²Ğ¶ÔØÁË.hÎÄ¼şÀïÃæ£¬¹ıÄê»Ø¼Ò¿´¿´ÄÜ·ñÓÃexport,
+//å› ä¸ºæ¨¡ç‰ˆå‡½æ•°å†™åœ¨.hæ–‡ä»¶ä¸­ï¼Œæ‰€ä»¥å®ä¹Ÿå¸è½½äº†.hæ–‡ä»¶é‡Œé¢ï¼Œè¿‡å¹´å›å®¶çœ‹çœ‹èƒ½å¦ç”¨export,
 
 #define __ZCE_SNPRINTF_BEGIN   foo_use_len = 0; \
     if ( 0 == foo_max_len ) \
@@ -228,18 +228,18 @@ buffer[use_len] = '\0'; \
 return foo_buffer
 
 /*!
-@brief      Á½¸öÊä³ö²ÎÊıµÄsnprintfº¯Êı£¬
-            ÈÎºÎÊä³öµÄÎ»ÖÃ£¬¶¼ÓÃ%?Ìæ´ú£¬Õâ¸öº¯Êı²»ÓÃºê¶¨Òå£¬Ö÷Òª¾ÍÊÇÎªÁË°ïÖúÎÒÃÇµ÷ÊÔ£¬
-            µ÷ÊÔºêµÄ´úÂë£¬Äã²»ÒªËû¸ÃÓĞ×ÔĞÅ¡£
-@tparam     T1  out_data1 µÄÀàĞÍ
-@tparam     T2  out_data2 µÄÀàĞÍ
-@return     char*        ·µ»ØµÄBUFFERÖ¸Õë£¬·½±ãÄãÓÃÓÚÒ»Ğ©µ÷ÓÃ
-@param[out] foo_buffer   Êä³ö×Ö·û´®µÄbuffer
-@param[in]  foo_max_len  bufferµÄ×î´ó³¤¶È
-@param[out] foo_use_len  ·µ»Ø¸ñÊ½»¯ºóÊ¹ÓÃµÄ×Ö·û´®³¤¶È
-@param[in]  foo_fmt_spec ¸ñÊ½»¯×Ö·û´®µÄformatÓï¾ä£¬ÀïÃæÓÃ%?±êÊ¶Ò»¸öÌæ´úÎ»ÖÃ
-@param      out_data1    Êä³öµÄÊı¾İ1
-@param      out_data2    Êä³öµÄÊı¾İ2
+@brief      ä¸¤ä¸ªè¾“å‡ºå‚æ•°çš„snprintfå‡½æ•°ï¼Œ
+            ä»»ä½•è¾“å‡ºçš„ä½ç½®ï¼Œéƒ½ç”¨%?æ›¿ä»£ï¼Œè¿™ä¸ªå‡½æ•°ä¸ç”¨å®å®šä¹‰ï¼Œä¸»è¦å°±æ˜¯ä¸ºäº†å¸®åŠ©æˆ‘ä»¬è°ƒè¯•ï¼Œ
+            è°ƒè¯•å®çš„ä»£ç ï¼Œä½ ä¸è¦ä»–è¯¥æœ‰è‡ªä¿¡ã€‚
+@tparam     T1  out_data1 çš„ç±»å‹
+@tparam     T2  out_data2 çš„ç±»å‹
+@return     char*        è¿”å›çš„BUFFERæŒ‡é’ˆï¼Œæ–¹ä¾¿ä½ ç”¨äºä¸€äº›è°ƒç”¨
+@param[out] foo_buffer   è¾“å‡ºå­—ç¬¦ä¸²çš„buffer
+@param[in]  foo_max_len  bufferçš„æœ€å¤§é•¿åº¦
+@param[out] foo_use_len  è¿”å›æ ¼å¼åŒ–åä½¿ç”¨çš„å­—ç¬¦ä¸²é•¿åº¦
+@param[in]  foo_fmt_spec æ ¼å¼åŒ–å­—ç¬¦ä¸²çš„formatè¯­å¥ï¼Œé‡Œé¢ç”¨%?æ ‡è¯†ä¸€ä¸ªæ›¿ä»£ä½ç½®
+@param      out_data1    è¾“å‡ºçš„æ•°æ®1
+@param      out_data2    è¾“å‡ºçš„æ•°æ®2
 */
 template <class T1, class T2>
 char *zce_snprintf(char *foo_buffer,
@@ -264,12 +264,12 @@ char *zce_snprintf(char *foo_buffer,
 
     const char *id_pos = NULL;
 
-    //´¦ÀíµÚÒ»¸öÊı¾İµÄÊä³ö£¬
+    //å¤„ç†ç¬¬ä¸€ä¸ªæ•°æ®çš„è¾“å‡ºï¼Œ
     while ( max_len > 0)
     {
-        //ÕÒµ½%?£¬
+        //æ‰¾åˆ°%?ï¼Œ
         id_pos = strstr(fmt_spec, ZCE_LIB::SNRPINTF_FMT_IDENTIFY);
-        //½«%?Ç°ÃæµÄ×Ö·û´®Êä³ö
+        //å°†%?å‰é¢çš„å­—ç¬¦ä¸²è¾“å‡º
         ZCE_LIB::fmt_str(buffer, max_len, use_len, fmt_spec, (id_pos == NULL) ? strlen(fmt_spec) : (id_pos - fmt_spec));
 
         buffer += use_len;
@@ -283,7 +283,7 @@ char *zce_snprintf(char *foo_buffer,
             return foo_buffer;
         }
 
-        //¼ì²éºóÃæ×Ö·ûÊÇ·ñÊÇ?£¬ÓÃÓÚÅĞ¶ÏÊÇ·ñÊÇ×ªÒå
+        //æ£€æŸ¥åé¢å­—ç¬¦æ˜¯å¦æ˜¯?ï¼Œç”¨äºåˆ¤æ–­æ˜¯å¦æ˜¯è½¬ä¹‰
         if (* (id_pos + LEN_OF_FMT_IDENTIFY) != ZCE_LIB::SNRPINTF_FMT_ESCAPE_CHAR)
         {
             ZCE_LIB::output_helper(buffer, max_len, use_len, out_data1);
@@ -293,7 +293,7 @@ char *zce_snprintf(char *foo_buffer,
             fmt_spec += LEN_OF_FMT_IDENTIFY;
             break;
         }
-        //%??½«×ªÒåÎª%?Êä³ö
+        //%??å°†è½¬ä¹‰ä¸º%?è¾“å‡º
         else
         {
             ZCE_LIB::fmt_str(buffer, max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
@@ -305,12 +305,12 @@ char *zce_snprintf(char *foo_buffer,
         }
     }
 
-    //´¦ÀíµÚ¶ş¸öÊı¾İµÄÊä³ö£¬
+    //å¤„ç†ç¬¬äºŒä¸ªæ•°æ®çš„è¾“å‡ºï¼Œ
     while ( max_len > 0)
     {
-        //ÕÒµ½%?£¬
+        //æ‰¾åˆ°%?ï¼Œ
         id_pos = strstr(fmt_spec, ZCE_LIB::SNRPINTF_FMT_IDENTIFY);
-        //½«%?Ç°ÃæµÄ×Ö·û´®Êä³ö
+        //å°†%?å‰é¢çš„å­—ç¬¦ä¸²è¾“å‡º
         ZCE_LIB::fmt_str(buffer, max_len, use_len, fmt_spec, (id_pos == NULL) ? strlen(fmt_spec) : (id_pos - fmt_spec));
 
         buffer += use_len;
@@ -324,7 +324,7 @@ char *zce_snprintf(char *foo_buffer,
             return foo_buffer;
         }
 
-        //¼ì²éºóÃæ×Ö·ûÊÇ·ñÊÇ?£¬ÓÃÓÚÅĞ¶ÏÊÇ·ñÊÇ×ªÒå
+        //æ£€æŸ¥åé¢å­—ç¬¦æ˜¯å¦æ˜¯?ï¼Œç”¨äºåˆ¤æ–­æ˜¯å¦æ˜¯è½¬ä¹‰
         if (* (id_pos + LEN_OF_FMT_IDENTIFY) != ZCE_LIB::SNRPINTF_FMT_ESCAPE_CHAR)
         {
             ZCE_LIB::output_helper(buffer, max_len, use_len, out_data2);
@@ -334,7 +334,7 @@ char *zce_snprintf(char *foo_buffer,
             fmt_spec += LEN_OF_FMT_IDENTIFY;
             break;
         }
-        //%??½«×ªÒåÎª%?Êä³ö
+        //%??å°†è½¬ä¹‰ä¸º%?è¾“å‡º
         else
         {
             ZCE_LIB::fmt_str(buffer, max_len, use_len, SNRPINTF_FMT_IDENTIFY, LEN_OF_FMT_IDENTIFY);
@@ -353,7 +353,7 @@ char *zce_snprintf(char *foo_buffer,
                      strlen(fmt_spec));
     foo_use_len += use_len;
     buffer[use_len] = '\0';
-    //·µ»Ø
+    //è¿”å›
     return foo_buffer;
 }
 

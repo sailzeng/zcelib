@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef ZERG_SERVER_AUTO_CONNECT_H_
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
@@ -16,49 +16,49 @@ class Zerg_Auto_Connector
 
 public:
 
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     Zerg_Auto_Connector();
     ~Zerg_Auto_Connector();
 
-    ///¶ÁÈ¡ÅäÖÃ
+    ///è¯»å–é…ç½®
     int get_config(const Zerg_Server_Config *config);
 
-    // ÖØĞÂ¼ÓÔØÖ÷¶¯Á¬½ÓÅäÖÃ
+    // é‡æ–°åŠ è½½ä¸»åŠ¨è¿æ¥é…ç½®
     int reload_cfg(const Zerg_Server_Config *config);
 
 
     /*!
-    * @brief      Á´½ÓËùÓĞµÄ·şÎñÆ÷,Èç¹ûÒÑ¾­ÓĞÁ´½Ó£¬¾ÍÌø¹ı,
+    * @brief      é“¾æ¥æ‰€æœ‰çš„æœåŠ¡å™¨,å¦‚æœå·²ç»æœ‰é“¾æ¥ï¼Œå°±è·³è¿‡,
     * @return     void
-    * @param      szvalid  ÈÔÈ»ÓĞĞ§µÄµÄÁ´½Ó
-    * @param      sz_succ  ³É¹¦¿ªÊ¼Á¬½ÓµÄ·şÎñÆ÷¸öÊı
-    * @param      szfail   Á´½ÓÊ§°ÜµÄ·şÎñÆ÷ÊıÁ¿£¬µ«ÊÇÓÉÓÚÊÇÒì²½Á´½Ó£¬Õâ¸öµØ·½²¢²»Ò»¶¨ÕæÊÇ½øĞĞÁËÁ´½Ó
+    * @param      szvalid  ä»ç„¶æœ‰æ•ˆçš„çš„é“¾æ¥
+    * @param      sz_succ  æˆåŠŸå¼€å§‹è¿æ¥çš„æœåŠ¡å™¨ä¸ªæ•°
+    * @param      szfail   é“¾æ¥å¤±è´¥çš„æœåŠ¡å™¨æ•°é‡ï¼Œä½†æ˜¯ç”±äºæ˜¯å¼‚æ­¥é“¾æ¥ï¼Œè¿™ä¸ªåœ°æ–¹å¹¶ä¸ä¸€å®šçœŸæ˜¯è¿›è¡Œäº†é“¾æ¥
     * @note
     */
     void reconnect_allserver(size_t &szvalid, size_t &sz_succ, size_t &szfail);
 
 
     /*!
-    * @brief      ¸ù¾İSVC ID,¼ì²éÊÇ·ñÊÇÖ÷¶¯Á¬½ÓµÄ·şÎñ.,
+    * @brief      æ ¹æ®SVC ID,æ£€æŸ¥æ˜¯å¦æ˜¯ä¸»åŠ¨è¿æ¥çš„æœåŠ¡.,
     * @return     int
-    * @param      reconnect_svcid Òª½øĞĞÖØÁ¬µÄÖ÷Â·ÓÉĞÅÏ¢
-    * @note       ÎªÊ²Ã´²»°ÑÒ»¸öTCP_Svc_Handler×÷Îª²ÎÊı·µ»Ø,ÒòÎªÔÚ·¢ÆğConnect¹ı³ÌÖĞ,Ò²¿ÉÄÜhandle_close.
+    * @param      reconnect_svcid è¦è¿›è¡Œé‡è¿çš„ä¸»è·¯ç”±ä¿¡æ¯
+    * @note       ä¸ºä»€ä¹ˆä¸æŠŠä¸€ä¸ªTCP_Svc_Handlerä½œä¸ºå‚æ•°è¿”å›,å› ä¸ºåœ¨å‘èµ·Connectè¿‡ç¨‹ä¸­,ä¹Ÿå¯èƒ½handle_close.
     */
     int connect_server_bysvcid(const SERVICES_ID &reconnect_svcid);
 
 
     /*!
-    * @brief      ¸ù¾İservices_type²éÑ¯¶ÔÓ¦µÄÅäÖÃÖ÷±¸·şÎñÆ÷ÁĞ±íÊı×é MS£¨Ö÷±¸£©
-    * @return     int == 0 ±íÊ¾³É¹¦
+    * @brief      æ ¹æ®services_typeæŸ¥è¯¢å¯¹åº”çš„é…ç½®ä¸»å¤‡æœåŠ¡å™¨åˆ—è¡¨æ•°ç»„ MSï¼ˆä¸»å¤‡ï¼‰
+    * @return     int == 0 è¡¨ç¤ºæˆåŠŸ
     * @param[in]  services_type
-    * @param[out] ms_svcid_ary   ÅäÖÃµÄÖ÷±¸·şÎñÆ÷ÁĞ±íÊı×é
+    * @param[out] ms_svcid_ary   é…ç½®çš„ä¸»å¤‡æœåŠ¡å™¨åˆ—è¡¨æ•°ç»„
     */
     int find_conf_ms_svcid_ary(uint16_t services_type,
                                std::vector<uint32_t> *& ms_svcid_ary);
 
 
     /*!
-    * @brief      ¼ì²éÕâ¸öSVC IDÊÇ·ñÊÇÖ÷¶¯Á´½ÓµÄ·şÎñÆ÷
+    * @brief      æ£€æŸ¥è¿™ä¸ªSVC IDæ˜¯å¦æ˜¯ä¸»åŠ¨é“¾æ¥çš„æœåŠ¡å™¨
     * @return     bool
     * @param      svc_id SVC ID
     */
@@ -68,11 +68,11 @@ protected:
 
     //
     /*!
-    * @brief      ¸ù¾İSVC ID+IP,¼ì²éÊÇ·ñÊÇÖ÷¶¯Á¬½ÓµÄ·şÎñ.²¢½øĞĞÁ¬½Ó
+    * @brief      æ ¹æ®SVC ID+IP,æ£€æŸ¥æ˜¯å¦æ˜¯ä¸»åŠ¨è¿æ¥çš„æœåŠ¡.å¹¶è¿›è¡Œè¿æ¥
     * @return     int
-    * @param      svc_id       Òª½øĞĞÁ¬½ÓµÄSVC ID
-    * @param      inet_addr    µØÖ·
-    * @param      svc_handle , Èç¹ûÒÑ¾­ÓĞÏàÓ¦µÄÁ¬½Ó£¬ÔÚÕâ¸öµØ·½·µ»Ø¶ÔÓÃµÄHandle
+    * @param      svc_id       è¦è¿›è¡Œè¿æ¥çš„SVC ID
+    * @param      inet_addr    åœ°å€
+    * @param      svc_handle , å¦‚æœå·²ç»æœ‰ç›¸åº”çš„è¿æ¥ï¼Œåœ¨è¿™ä¸ªåœ°æ–¹è¿”å›å¯¹ç”¨çš„Handle
     */
     int connect_one_server(const SERVICES_ID &svc_id,
                            const ZCE_Sockaddr_In &inet_addr,
@@ -83,24 +83,24 @@ protected:
     //
     typedef std::unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
 
-    ///ÀàĞÍ¶ÔÓ¦µÄSERVICES ID Êı×éµÄMAPµÄÀàĞÍ,
+    ///ç±»å‹å¯¹åº”çš„SERVICES ID æ•°ç»„çš„MAPçš„ç±»å‹,
     typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
 
 protected:
 
-    //Á¬½ÓÆ÷
+    //è¿æ¥å™¨
     ZCE_Socket_Connector zerg_connector_;
 
-    //ÅäÖÃÊµÀıÖ¸Õë
+    //é…ç½®å®ä¾‹æŒ‡é’ˆ
     const Zerg_Server_Config *zerg_svr_cfg_ = NULL;
 
-    ///Ö÷¶¯Á´½ÓµÄ
+    ///ä¸»åŠ¨é“¾æ¥çš„
     size_t size_of_autoconnect_ = 0;
 
-    ///SVC ID ¶ÔÓ¦ary_auto_connect_µÄÊı×éÏÂ±ê£¬ÓÃÓÚÊ¹ÓÃSVCIDµÄ²éÑ¯£¬¼à¿Ø²éÑ¯ĞÔÄÜ
+    ///SVC ID å¯¹åº”ary_auto_connect_çš„æ•°ç»„ä¸‹æ ‡ï¼Œç”¨äºä½¿ç”¨SVCIDçš„æŸ¥è¯¢ï¼Œç›‘æ§æŸ¥è¯¢æ€§èƒ½
     SET_OF_SVC_INFO autocnt_svcinfo_set_;
 
-    //ÀàĞÍ¶ÔÓ¦µÄSERVICES ID Êı×é µÄMAP£¬Êı×éÀïÃæµÄidµÄË³ĞòÆäÊµÊÇÖ÷±¸Ë³Ğò
+    //ç±»å‹å¯¹åº”çš„SERVICES ID æ•°ç»„ çš„MAPï¼Œæ•°ç»„é‡Œé¢çš„idçš„é¡ºåºå…¶å®æ˜¯ä¸»å¤‡é¡ºåº
     MAP_OF_TYPE_TO_IDARY type_to_idary_map_;
 
 };
