@@ -1,16 +1,16 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_mysql_process.h"
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #if defined ZCE_USE_MYSQL
 
 //-----------------------------------------------------------------
-//ÊµÀı,ÎªÁËSingleTonÀà×¼±¸
+//å®ä¾‹,ä¸ºäº†SingleTonç±»å‡†å¤‡
 ZCE_Mysql_Process *ZCE_Mysql_Process::instance_ = NULL;
 
-//¹¹Ôìº¯Êı£¬ºÍÎö¹¹º¯Êı
+//æ„é€ å‡½æ•°ï¼Œå’Œææ„å‡½æ•°
 ZCE_Mysql_Process::ZCE_Mysql_Process():
     db_port_(MYSQL_PORT)
 {
@@ -18,10 +18,10 @@ ZCE_Mysql_Process::ZCE_Mysql_Process():
 }
 ZCE_Mysql_Process::~ZCE_Mysql_Process()
 {
-    //²»ÓÃ´¦ÀíÊ²Ã´£¬Ïà¹ØµÄ³ÉÔ±±äÁ¿µÄÎö¹¹¶¼½øĞĞÁË´¦Àí
+    //ä¸ç”¨å¤„ç†ä»€ä¹ˆï¼Œç›¸å…³çš„æˆå‘˜å˜é‡çš„ææ„éƒ½è¿›è¡Œäº†å¤„ç†
 }
 
-//³õÊ¼»¯·şÎñÆ÷,Ê¹ÓÃhostname½øĞĞÁ¬½Ó,¿ÉÒÔ²»Á¢¼´Á¬½ÓºÍÁ¢¼´Á¬½Ó£¬Äã×Ô¼º¿ØÖÆ¡£
+//åˆå§‹åŒ–æœåŠ¡å™¨,ä½¿ç”¨hostnameè¿›è¡Œè¿æ¥,å¯ä»¥ä¸ç«‹å³è¿æ¥å’Œç«‹å³è¿æ¥ï¼Œä½ è‡ªå·±æ§åˆ¶ã€‚
 int ZCE_Mysql_Process::init_mysql_server(const char *host_name,
                                          const char *user,
                                          const char *pwd,
@@ -42,7 +42,7 @@ int ZCE_Mysql_Process::init_mysql_server(const char *host_name,
     return 0;
 }
 
-//³õÊ¼»¯MYSQL£¬Ê¹ÓÃUNIX socket fileÁ¬½Ó(UNIXÏÂ)£¬»òÕßÃüÃû¹ÜµÀ(WindowsÏÂ),Ö»³õÊ¼»¯Ò²¿ÉÒÔÁË,Ö»ÄÜÓÃÓÚ±¾µØ
+//åˆå§‹åŒ–MYSQLï¼Œä½¿ç”¨UNIX socket fileè¿æ¥(UNIXä¸‹)ï¼Œæˆ–è€…å‘½åç®¡é“(Windowsä¸‹),åªåˆå§‹åŒ–ä¹Ÿå¯ä»¥äº†,åªèƒ½ç”¨äºæœ¬åœ°
 int ZCE_Mysql_Process::init_mysql_socketfile(const char *socket_file,
                                              const char *user,
                                              const char *pwd,
@@ -65,11 +65,11 @@ int ZCE_Mysql_Process::connect_mysql_server( )
 {
     int ret = 0;
 
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (db_connect_.is_connected() == false)
     {
 
-        //Èç¹ûÉèÖÃ¹ıHOST£¬ÓÃHOST NAME½øĞĞÁ¬½Ó
+        //å¦‚æœè®¾ç½®è¿‡HOSTï¼Œç”¨HOST NAMEè¿›è¡Œè¿æ¥
         if (db_hostname_.length() > 0)
         {
             ret = db_connect_.connect_by_host(db_hostname_.c_str(),
@@ -89,7 +89,7 @@ int ZCE_Mysql_Process::connect_mysql_server( )
             ZCE_ASSERT(false);
         }
 
-        //Èç¹û´íÎó
+        //å¦‚æœé”™è¯¯
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
@@ -106,7 +106,7 @@ int ZCE_Mysql_Process::connect_mysql_server( )
     return  0;
 }
 
-//¶Ï¿ªÁ´½Ó
+//æ–­å¼€é“¾æ¥
 void ZCE_Mysql_Process::disconnect_mysql_server()
 {
 
@@ -118,19 +118,19 @@ void ZCE_Mysql_Process::disconnect_mysql_server()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004Äê9ÔÂ22ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004å¹´9æœˆ22æ—¥
 Function        : ZCE_Mysql_Process::db_process_query
 Return          : int
 Parameter List  :
-Param1: const char* sql SQLÓï¾ä
-Param2: unsigned int& numaffect ·µ»ØµÄÊÕµ½Ó°ÏìµÄ¼ÇÂ¼ÌõÊı
-Param3: unsigned int& insertid  ·µ»ØµÄ²åÈëµÄLAST_INSERT_ID
-Param4: size_t sqllen           SQLÓï¾ä³¤¶È,ÓÃÓÚBINµÄSQLÓï¾ä,Ä¬ÈÏÎª0,±íÊ¾Ê¹ÓÃSTRµÄSQL
-Description     : Ö´ĞĞ¼Ò×åµÄSQLÓï¾ä,ÓÃÓÚ·ÇSELECTÓï¾ä(INSERT,UPDATE)
+Param1: const char* sql SQLè¯­å¥
+Param2: unsigned int& numaffect è¿”å›çš„æ”¶åˆ°å½±å“çš„è®°å½•æ¡æ•°
+Param3: unsigned int& insertid  è¿”å›çš„æ’å…¥çš„LAST_INSERT_ID
+Param4: size_t sqllen           SQLè¯­å¥é•¿åº¦,ç”¨äºBINçš„SQLè¯­å¥,é»˜è®¤ä¸º0,è¡¨ç¤ºä½¿ç”¨STRçš„SQL
+Description     : æ‰§è¡Œå®¶æ—çš„SQLè¯­å¥,ç”¨äºéSELECTè¯­å¥(INSERT,UPDATE)
 Calls           :
 Called By       :
-Other           : ×¢Òâ:¼¸¸ödb_process_queryº¯ÊıÁ¬½ÓÖÜÆÚ¾ÍÊÇ¶ÔÏóÉú´æÖÜÆÚ,ZCE_Mysql_Connect¶ÔÏóÔÙÎö¹¹Ê±¶ÏÁ´½Ó
-Modify Record   : ×Ô¶¯ÖØÁ¬¹¦ÄÜ¼ÓÈë
+Other           : æ³¨æ„:å‡ ä¸ªdb_process_queryå‡½æ•°è¿æ¥å‘¨æœŸå°±æ˜¯å¯¹è±¡ç”Ÿå­˜å‘¨æœŸ,ZCE_Mysql_Connectå¯¹è±¡å†ææ„æ—¶æ–­é“¾æ¥
+Modify Record   : è‡ªåŠ¨é‡è¿åŠŸèƒ½åŠ å…¥
 ******************************************************************************************/
 int ZCE_Mysql_Process::db_process_query(const char *sql,
                                         unsigned int &numaffect,
@@ -139,24 +139,24 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
 {
     int ret = 0;
 
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (db_connect_.is_connected() == false)
     {
         connect_mysql_server();
     }
-    //Èç¹ûÒÑ¾­Á¬½Ó¹ıÊı¾İ¿â,Ôò²»ÓÃÔÙ´ÎÁ¬½Ó,pingÒ»´Î¾ÍOKÁË,³É±¾µÍ
+    //å¦‚æœå·²ç»è¿æ¥è¿‡æ•°æ®åº“,åˆ™ä¸ç”¨å†æ¬¡è¿æ¥,pingä¸€æ¬¡å°±OKäº†,æˆæœ¬ä½
     else
     {
         db_connect_.ping();
     }
 
-    //TEXTÀàĞÍµÄSQL
+    //TEXTç±»å‹çš„SQL
     if (sqllen == 0)
     {
         ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%s].", sql);
         db_command_.set_sql_command(sql, strlen(sql));
     }
-    //BINÀàĞÍµÄSQL
+    //BINç±»å‹çš„SQL
     else
     {
         ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
@@ -165,7 +165,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
 
     ret = db_command_.execute(numaffect, insertid);
 
-    //Èç¹û´íÎó
+    //å¦‚æœé”™è¯¯
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
@@ -175,47 +175,47 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
         return -1;
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return  0;
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004Äê9ÔÂ22ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004å¹´9æœˆ22æ—¥
 Function        : ZCE_Mysql_Process::db_process_query
 Return          : int
 Parameter List  :
-Param1: const char* sql         SQLÓï¾ä
-Param2: unsigned int& numaffect ·µ»Ø²ÎÊı,·µ»ØµÄ²éÑ¯µÄ¼ÇÂ¼¸öÊı
-Param3: ZCE_Mysql_Result& dbresult ·µ»Ø²ÎÊı,²éÑ¯µÄ½á¹û¼¯ºÏ
-Param4: size_t sqllen           SQLÓï¾ä³¤¶È,ÓÃÓÚBINµÄSQLÓï¾ä,Ä¬ÈÏÎª0,±íÊ¾Ê¹ÓÃSTRµÄSQL
-Description     : Ö´ĞĞ¼Ò×åµÄSQLÓï¾ä,ÓÃÓÚSELECTÓï¾ä,Ö±½Ó×ª´¢½á¹û¼¯ºÏµÄ·½·¨
+Param1: const char* sql         SQLè¯­å¥
+Param2: unsigned int& numaffect è¿”å›å‚æ•°,è¿”å›çš„æŸ¥è¯¢çš„è®°å½•ä¸ªæ•°
+Param3: ZCE_Mysql_Result& dbresult è¿”å›å‚æ•°,æŸ¥è¯¢çš„ç»“æœé›†åˆ
+Param4: size_t sqllen           SQLè¯­å¥é•¿åº¦,ç”¨äºBINçš„SQLè¯­å¥,é»˜è®¤ä¸º0,è¡¨ç¤ºä½¿ç”¨STRçš„SQL
+Description     : æ‰§è¡Œå®¶æ—çš„SQLè¯­å¥,ç”¨äºSELECTè¯­å¥,ç›´æ¥è½¬å‚¨ç»“æœé›†åˆçš„æ–¹æ³•
 Calls           :
 Called By       :
-Other           : ×¢Òâ:¼¸¸ödb_process_queryº¯ÊıµÄÁ¬½ÓÖÜÆÚ¾ÍÊÇ¶ÔÏóÉú´æÖÜÆÚ,ZCE_Mysql_Connect¶ÔÏóÔÙÎö¹¹Ê±¶ÏÁ´½Ó
+Other           : æ³¨æ„:å‡ ä¸ªdb_process_queryå‡½æ•°çš„è¿æ¥å‘¨æœŸå°±æ˜¯å¯¹è±¡ç”Ÿå­˜å‘¨æœŸ,ZCE_Mysql_Connectå¯¹è±¡å†ææ„æ—¶æ–­é“¾æ¥
 Modify Record   :
 ******************************************************************************************/
 int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Result &dbresult, size_t sqllen)
 {
     int ret = 0;
 
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (db_connect_.is_connected() == false)
     {
         connect_mysql_server();
     }
-    //Èç¹ûÒÑ¾­Á¬½Ó¹ıÊı¾İ¿â,Ôò²»ÓÃÔÙ´ÎÁ¬½Ó,pingÒ»´Î¾ÍOKÁË,³É±¾µÍ
+    //å¦‚æœå·²ç»è¿æ¥è¿‡æ•°æ®åº“,åˆ™ä¸ç”¨å†æ¬¡è¿æ¥,pingä¸€æ¬¡å°±OKäº†,æˆæœ¬ä½
     else
     {
         db_connect_.ping();
     }
 
-    //TEXTÀàĞÍµÄSQL
+    //TEXTç±»å‹çš„SQL
     if (sqllen == 0)
     {
         ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%s]", sql);
         db_command_.set_sql_command(sql, strlen(sql));
     }
-    //BINÀàĞÍµÄSQL
+    //BINç±»å‹çš„SQL
     else
     {
         ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
@@ -224,7 +224,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
 
     ret = db_command_.execute(numaffect, dbresult);
 
-    //Èç¹û´íÎó
+    //å¦‚æœé”™è¯¯
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
@@ -234,45 +234,45 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
         return -1;
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return  0;
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004Äê9ÔÂ22ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004å¹´9æœˆ22æ—¥
 Function        : ZCE_Mysql_Process::db_process_query
 Return          : int
 Parameter List  :
-Param1: const char*             SQLÓï¾ä
-Param2: ZCE_Mysql_Result& dbresult ·µ»ØµÄ½á¹û½áºÏ
-Param3: size_t sqllen SQL       Óï¾ä³¤¶È
-Description     : ÓÃÓÚSELECTÓï¾ä,ÓÃÓÚuse_resultµÃµ½½á¹û¼¯ºÏµÄ·½·¨
+Param1: const char*             SQLè¯­å¥
+Param2: ZCE_Mysql_Result& dbresult è¿”å›çš„ç»“æœç»“åˆ
+Param3: size_t sqllen SQL       è¯­å¥é•¿åº¦
+Description     : ç”¨äºSELECTè¯­å¥,ç”¨äºuse_resultå¾—åˆ°ç»“æœé›†åˆçš„æ–¹æ³•
 Calls           :
 Called By       :
-Other           : ÓÃÓÚ½á¹û¼¯Ì«¶à,»áÕ¼ÓÃÌ«¶àÄÚ´æµÄµÄ´¦Àí,²»ÍÆ¼öÊ¹ÓÃ,
+Other           : ç”¨äºç»“æœé›†å¤ªå¤š,ä¼šå ç”¨å¤ªå¤šå†…å­˜çš„çš„å¤„ç†,ä¸æ¨èä½¿ç”¨,
 Modify Record   :
 ******************************************************************************************/
 int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbresult, size_t sqllen)
 {
     int ret = 0;
 
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (db_connect_.is_connected() == false)
     {
         connect_mysql_server();
     }
-    //Èç¹ûÒÑ¾­Á¬½Ó¹ıÊı¾İ¿â,Ôò²»ÓÃÔÙ´ÎÁ¬½Ó,pingÒ»´Î¾ÍOKÁË,³É±¾µÍ
+    //å¦‚æœå·²ç»è¿æ¥è¿‡æ•°æ®åº“,åˆ™ä¸ç”¨å†æ¬¡è¿æ¥,pingä¸€æ¬¡å°±OKäº†,æˆæœ¬ä½
     else
     {
         db_connect_.ping();
     }
 
-    //TEXTÀàĞÍµÄSQL
+    //TEXTç±»å‹çš„SQL
     if (sqllen == 0)
     {
         db_command_.set_sql_command(sql, strlen(sql));
     }
-    //BINÀàĞÍµÄSQL
+    //BINç±»å‹çš„SQL
     else
     {
         db_command_.set_sql_command(sql, sqllen);
@@ -280,7 +280,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbres
 
     ret = db_command_.execute(dbresult);
 
-    //Èç¹û´íÎó
+    //å¦‚æœé”™è¯¯
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
@@ -290,18 +290,18 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbres
         return -1;
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return  0;
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005Äê3ÔÂ9ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005å¹´3æœˆ9æ—¥
 Function        : ZCE_Mysql_Process::get_return_error
-Return          : unsigned int ·µ»ØµÄ´íÎóNumber
+Return          : unsigned int è¿”å›çš„é”™è¯¯Number
 Parameter List  :
-Param1: char* szerr   ·µ»ØµÄ´íÎóĞÅÏ¢
-Param2: size_t buflen BufµÄ³¤¶È
-Description     : ·µ»ØµÄµÄDB·ÃÎÊµÄ´íÎóĞÅÏ¢
+Param1: char* szerr   è¿”å›çš„é”™è¯¯ä¿¡æ¯
+Param2: size_t buflen Bufçš„é•¿åº¦
+Description     : è¿”å›çš„çš„DBè®¿é—®çš„é”™è¯¯ä¿¡æ¯
 Calls           :
 Called By       :
 Other           :
@@ -314,12 +314,12 @@ unsigned int ZCE_Mysql_Process::get_return_error(char *szerr, size_t buflen)
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005Äê8ÔÂ18ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005å¹´8æœˆ18æ—¥
 Function        : ZCE_Mysql_Process::get_query_sql
 Return          : static const char*
 Parameter List  :
 Param1: void
-Description     : µÃµ½DB·ÃÎÊµÄÓï¾ä
+Description     : å¾—åˆ°DBè®¿é—®çš„è¯­å¥
 Calls           :
 Called By       :
 Other           :
@@ -330,20 +330,20 @@ const char *ZCE_Mysql_Process::get_query_sql(void)
     return db_command_.get_sql_command();
 }
 
-//µÃµ½´íÎóĞÅÏ¢Óï¾ä
+//å¾—åˆ°é”™è¯¯ä¿¡æ¯è¯­å¥
 const char *ZCE_Mysql_Process::get_return_error_str()
 {
     return db_connect_.get_error_message();
 }
 
-//µÃµ½´íÎóĞÅÏ¢ID
+//å¾—åˆ°é”™è¯¯ä¿¡æ¯ID
 unsigned int ZCE_Mysql_Process::get_return_error_id()
 {
     return db_connect_.get_error_no();
 }
 
-//µÃµ½Real Escape String ,Real±íÊ¾¸ù¾İµ±Ç°µÄMYSQL ConnetµÄ×Ö·û¼¯,µÃµ½Escape String
-//Escape String Îª½«×Ö·û´«ÖĞµÄÏà¹Ø×Ö·û½øĞĞ×ªÒåºóµÄÓï¾ä,±ÈÈç',",\µÈ×Ö·û
+//å¾—åˆ°Real Escape String ,Realè¡¨ç¤ºæ ¹æ®å½“å‰çš„MYSQL Connetçš„å­—ç¬¦é›†,å¾—åˆ°Escape String
+//Escape String ä¸ºå°†å­—ç¬¦ä¼ ä¸­çš„ç›¸å…³å­—ç¬¦è¿›è¡Œè½¬ä¹‰åçš„è¯­å¥,æ¯”å¦‚',",\ç­‰å­—ç¬¦
 unsigned int ZCE_Mysql_Process::make_real_escape_string(char *tostr,
                                                         const char *fromstr,
                                                         unsigned int fromlen)
@@ -352,15 +352,15 @@ unsigned int ZCE_Mysql_Process::make_real_escape_string(char *tostr,
 }
 
 //-----------------------------------------------------------------
-//ÊµÀı,ÎªÁËSingleTonÀà×¼±¸
+//å®ä¾‹,ä¸ºäº†SingleTonç±»å‡†å¤‡
 
-//ÊµÀı¸³Öµ
+//å®ä¾‹èµ‹å€¼
 void ZCE_Mysql_Process::instance(ZCE_Mysql_Process *instance)
 {
     clean_instance();
     instance_ = instance;
 }
-//»ñµÃÊµÀı
+//è·å¾—å®ä¾‹
 ZCE_Mysql_Process *ZCE_Mysql_Process::instance()
 {
     if (instance_)
@@ -374,7 +374,7 @@ ZCE_Mysql_Process *ZCE_Mysql_Process::instance()
 
 }
 
-//Çå³ıÊµÀı
+//æ¸…é™¤å®ä¾‹
 void ZCE_Mysql_Process::clean_instance()
 {
     if (instance_)
@@ -384,6 +384,6 @@ void ZCE_Mysql_Process::clean_instance()
     }
 }
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #endif //#if defined ZCE_USE_MYSQL
 

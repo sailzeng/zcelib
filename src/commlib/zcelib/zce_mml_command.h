@@ -1,15 +1,15 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_mml_command.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Monday, December 30, 2013
-* @brief      ÈË»ú½»»¥ÓïÑÔ·â×°£¬ÓÃÓÚÒ»Ğ©Í¨ÓÃµÄ¿ØÖÆ·şÎñÆ÷µÄÃüÁî£¬ÎÄ±¾ÀàĞÍ
-*             MML Module Management Language,  ÕâÊÇÒ»¸öÍø¹ÜµÄÊõÓï.Ò²¿ÉÒÔ·­ÒëÎªÂıÂıÀ´
-*             Ò»°ãÎªÎÄ±¾µÄÃüÁîĞĞ·½Ê½,ÀàËÆUNIXµÄÃüÁîĞĞ,µ«ÊÇ·Ö¸î·ûºÅÒ»°ãÎª','µÈ
-              ÓÃÕâ¸öÃû³Æ¼ÍÄîÎÒÁ½ÄêÍø¹Ü¿ª·¢µÄÉú»î,ÈËÉúºÜ¶àÊÂÇé¾ÍÊÇÕâÑù,ÂıÂıÀ´
-* @details    Ö§³ÖÁË2ÖÖMMLÓï¾äµÄ·â×°
-*             Ö§³ÖµÄ·ÖÎöµÄÃüÁî¸ñÊ½,Çë²Î¿¼MML_STRING_PATTERNµÄËµÃ÷
+* @brief      äººæœºäº¤äº’è¯­è¨€å°è£…ï¼Œç”¨äºä¸€äº›é€šç”¨çš„æ§åˆ¶æœåŠ¡å™¨çš„å‘½ä»¤ï¼Œæ–‡æœ¬ç±»å‹
+*             MML Module Management Language,  è¿™æ˜¯ä¸€ä¸ªç½‘ç®¡çš„æœ¯è¯­.ä¹Ÿå¯ä»¥ç¿»è¯‘ä¸ºæ…¢æ…¢æ¥
+*             ä¸€èˆ¬ä¸ºæ–‡æœ¬çš„å‘½ä»¤è¡Œæ–¹å¼,ç±»ä¼¼UNIXçš„å‘½ä»¤è¡Œ,ä½†æ˜¯åˆ†å‰²ç¬¦å·ä¸€èˆ¬ä¸º','ç­‰
+              ç”¨è¿™ä¸ªåç§°çºªå¿µæˆ‘ä¸¤å¹´ç½‘ç®¡å¼€å‘çš„ç”Ÿæ´»,äººç”Ÿå¾ˆå¤šäº‹æƒ…å°±æ˜¯è¿™æ ·,æ…¢æ…¢æ¥
+* @details    æ”¯æŒäº†2ç§MMLè¯­å¥çš„å°è£…
+*             æ”¯æŒçš„åˆ†æçš„å‘½ä»¤æ ¼å¼,è¯·å‚è€ƒMML_STRING_PATTERNçš„è¯´æ˜
 * @note
 *
 */
@@ -17,7 +17,7 @@
 #ifndef ZCE_LIB_MML_COMMAND_H_
 #define ZCE_LIB_MML_COMMAND_H_
 
-//ºöÊÓ´óĞ¡Ğ´
+//å¿½è§†å¤§å°å†™
 class LessofCaseString
 {
 public:
@@ -29,54 +29,54 @@ public:
 
 
 /*!
-* @brief      MML ¿ØÖÆÌ¨ÃüÁî
-*             ÓÃÓÚÒ»Ğ©ÎÄ±¾½»»¥³¡¾°£¬±ÈÈçGMÃüÁîµÈ
+* @brief      MML æ§åˆ¶å°å‘½ä»¤
+*             ç”¨äºä¸€äº›æ–‡æœ¬äº¤äº’åœºæ™¯ï¼Œæ¯”å¦‚GMå‘½ä»¤ç­‰
 */
 class MML_Console_Command
 {
 
-    ///ÃüÁîµÄÑ¡Ïî
+    ///å‘½ä»¤çš„é€‰é¡¹
     typedef std::set <std::string , LessofCaseString>               MMLCMD_OPTION;
-    ///ÃüÁîµÄ²ÎÊı
+    ///å‘½ä»¤çš„å‚æ•°
     typedef std::map <std::string , std::string, LessofCaseString > MMLCMD_PARAMETER;
 
 public:
 
-    ///MMLÓï¾äµÄ¸ñÊ½£¬
+    ///MMLè¯­å¥çš„æ ¼å¼ï¼Œ
     enum MML_STRING_PATTERN
     {
-        ///µÚÒ»ÖÖ£¬¶ÔÓ¦º¯Êıparse_mml_cnd_string1
+        ///ç¬¬ä¸€ç§ï¼Œå¯¹åº”å‡½æ•°parse_mml_cnd_string1
         ///CMD SVR : A = 1, B = 2, C = " i love c++!", D;
-        ///:Ç°ÃæÊÇÃüÁî×Ö£¬ÃüÁî×Ö¿ÉÒÔÊÇÁ½¸öµ¥´Ê£¬ºóÃæÊÇ²ÎÊı£¬»òÕßÑ¡Ïî£¬Ö®¼äÓÃ,¸ô¿ª£¬×Ö·û´®¿ÉÒÔÓÃ""À©ÆğÀ´£¬ÓÃ;½áÎ²£¬
-        ///Ã»ÓĞ¿¼ÂÇ×ªÒâ£¬
+        ///:å‰é¢æ˜¯å‘½ä»¤å­—ï¼Œå‘½ä»¤å­—å¯ä»¥æ˜¯ä¸¤ä¸ªå•è¯ï¼Œåé¢æ˜¯å‚æ•°ï¼Œæˆ–è€…é€‰é¡¹ï¼Œä¹‹é—´ç”¨,éš”å¼€ï¼Œå­—ç¬¦ä¸²å¯ä»¥ç”¨""æ‰©èµ·æ¥ï¼Œç”¨;ç»“å°¾ï¼Œ
+        ///æ²¡æœ‰è€ƒè™‘è½¬æ„ï¼Œ
         MML_STRING_PATTERN_1,
-        ///µÚ¶şÖÖ£¬¶ÔÓ¦º¯Êıparse_mml_cnd_string1
+        ///ç¬¬äºŒç§ï¼Œå¯¹åº”å‡½æ•°parse_mml_cnd_string1
         ///CMD_1 A = 1 B = 2 C = " i love c++!" D
-        ///µÚÒ»¸öµ¥´ÊÊÇÃüÁî×Ö£¬ºóÃæÊÇÑ¡ÏîºÍ²ÎÊı£¬Ö®¼äÓÃ¿Õ¸ñ¸ô¿ª, Ò»ĞĞÖ»ÄÜÓĞÒ»¸öÃüÁî
+        ///ç¬¬ä¸€ä¸ªå•è¯æ˜¯å‘½ä»¤å­—ï¼Œåé¢æ˜¯é€‰é¡¹å’Œå‚æ•°ï¼Œä¹‹é—´ç”¨ç©ºæ ¼éš”å¼€, ä¸€è¡Œåªèƒ½æœ‰ä¸€ä¸ªå‘½ä»¤
         MML_STRING_PATTERN_2,
     };
 
 public:
 
     /*!
-    * @brief      ¹¹Ôìº¯Êı
-    * @param      mml_string MMLÃüÁîµÄ×Ö·û´®
-    * @param      pattern    MMLÃüÁî¸ñÊ½
+    * @brief      æ„é€ å‡½æ•°
+    * @param      mml_string MMLå‘½ä»¤çš„å­—ç¬¦ä¸²
+    * @param      pattern    MMLå‘½ä»¤æ ¼å¼
     */
     MML_Console_Command(const char *mml_string,
                         MML_Console_Command::MML_STRING_PATTERN pattern);
-    ///Ä¬ÈÏ¹¹Ôìº¯Êı
+    ///é»˜è®¤æ„é€ å‡½æ•°
     MML_Console_Command();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~MML_Console_Command();
 
 
 protected:
 
-    ///¸ñÊ½1µÄMMLÃüÁî·ÖÎöÓï¾ä
+    ///æ ¼å¼1çš„MMLå‘½ä»¤åˆ†æè¯­å¥
     int parse_mml_cnd_string1(const char *mml_string);
 
-    ///¸ñÊ½2µÄMMLÃüÁî·ÖÎöÓï¾ä
+    ///æ ¼å¼2çš„MMLå‘½ä»¤åˆ†æè¯­å¥
     int parse_mml_cnd_string2(const char *mml_string);
 
 public:
@@ -84,75 +84,75 @@ public:
 
 
     /*!
-    * @brief      ·ÖÎöÃüÁîĞĞ²ÎÊı,Ö§³ÖµÄ·ÖÎöµÄÃüÁî¸ñÊ½°üÀ¨ CMD SVR :A=1,B=2,C=" i love c++!",D;
-    * @return     int            ·ÖÎöÊÇ·ñ³É¹¦
-    * @param[in]  mml_string MMLÓï¾ä
-    * @param[in]  pattern    ÃüÁî¸ñÊ½
+    * @brief      åˆ†æå‘½ä»¤è¡Œå‚æ•°,æ”¯æŒçš„åˆ†æçš„å‘½ä»¤æ ¼å¼åŒ…æ‹¬ CMD SVR :A=1,B=2,C=" i love c++!",D;
+    * @return     int            åˆ†ææ˜¯å¦æˆåŠŸ
+    * @param[in]  mml_string MMLè¯­å¥
+    * @param[in]  pattern    å‘½ä»¤æ ¼å¼
     */
     int parse_mml_cnd_string(const char *mml_string,
                              MML_Console_Command::MML_STRING_PATTERN pattern);
 
     /*!
-    * @brief      È¡µÃ£¨·ÖÎö£©MMLµÄÓï¾ä
-    * @return     int Èç¹ûÓĞMMLÓï¾ä£¬·µ»Ø0£¬·ñÔò·µ»Ø-1
-    * @param[out] std::string& È¡³öµÄÃüÁî×Ö
+    * @brief      å–å¾—ï¼ˆåˆ†æï¼‰MMLçš„è¯­å¥
+    * @return     int å¦‚æœæœ‰MMLè¯­å¥ï¼Œè¿”å›0ï¼Œå¦åˆ™è¿”å›-1
+    * @param[out] std::string& å–å‡ºçš„å‘½ä»¤å­—
     */
     int get_mml_string(std::string &mml_string) const;
 
     /*!
-    * @brief      ·µ»Ø£¨·ÖÎö£©MMLµÄÓï¾ä
-    * @return     const char* ·µ»ØµÄMMLÓï¾ä£¬Èç¹ûÃ»ÓĞ·µ»Ø""
+    * @brief      è¿”å›ï¼ˆåˆ†æï¼‰MMLçš„è¯­å¥
+    * @return     const char* è¿”å›çš„MMLè¯­å¥ï¼Œå¦‚æœæ²¡æœ‰è¿”å›""
     */
     const char *get_mml_string() const;
 
     /*!
-    * @brief      µÃµ½MMLÃüÁî×Ö
-    * @return     int Èç¹ûÓĞMMLÃüÁî×Ö£¬·µ»Ø0£¬·ñÔò·µ»Ø-1
-    * @param      mml_cmd È¡³öµÄÃüÁî×Ö
+    * @brief      å¾—åˆ°MMLå‘½ä»¤å­—
+    * @return     int å¦‚æœæœ‰MMLå‘½ä»¤å­—ï¼Œè¿”å›0ï¼Œå¦åˆ™è¿”å›-1
+    * @param      mml_cmd å–å‡ºçš„å‘½ä»¤å­—
     */
     int get_mml_command(std::string &mml_cmd) const;
 
     /*!
-    * @brief      ·µ»ØMMLÃüÁî×Ö
-    * @return     const char* ·µ»ØµÄMMLÃüÁî×Ö£¬Èç¹ûÃ»ÓĞ·µ»Ø""
+    * @brief      è¿”å›MMLå‘½ä»¤å­—
+    * @return     const char* è¿”å›çš„MMLå‘½ä»¤å­—ï¼Œå¦‚æœæ²¡æœ‰è¿”å›""
     */
     const char *get_mml_command() const;
 
 
     /*!
-    * @brief      ÊÇ·ñÓĞÕâ¸öÃüÁîÑ¡Ïî
-    * @return     int Èç¹ûÓĞÕâ¸öÑ¡Ïî·µ»Ø0£¬Èç¹ûÃ»ÓĞÕâ¸öÑ¡Ïî·µ»Ø-1
-    * @param      mml_option ÃüÁîÑ¡Ïî
+    * @brief      æ˜¯å¦æœ‰è¿™ä¸ªå‘½ä»¤é€‰é¡¹
+    * @return     int å¦‚æœæœ‰è¿™ä¸ªé€‰é¡¹è¿”å›0ï¼Œå¦‚æœæ²¡æœ‰è¿™ä¸ªé€‰é¡¹è¿”å›-1
+    * @param      mml_option å‘½ä»¤é€‰é¡¹
     */
     int have_cmd_option(const std::string &mml_option) const;
 
 
     /*!
-    * @brief      ¸ù¾İ²ÎÊıÃû³Æ£¬µÃµ½ÃüÁîµÄ²ÎÊıµÄÖµ
-    * @return     int  Èç¹ûÓĞÕâ¸ö²ÎÊı·µ»Ø0£¬Èç¹ûÃ»ÓĞÕâ¸öÑ¡Ïî·µ»Ø-1
-    * @param      para_key   ²ÎÊıÃû³Æ
-    * @param      para_value ²ÎÊıµÄÖµ
+    * @brief      æ ¹æ®å‚æ•°åç§°ï¼Œå¾—åˆ°å‘½ä»¤çš„å‚æ•°çš„å€¼
+    * @return     int  å¦‚æœæœ‰è¿™ä¸ªå‚æ•°è¿”å›0ï¼Œå¦‚æœæ²¡æœ‰è¿™ä¸ªé€‰é¡¹è¿”å›-1
+    * @param      para_key   å‚æ•°åç§°
+    * @param      para_value å‚æ•°çš„å€¼
     */
     int get_cmd_parameter(const std::string &para_key, std::string &para_value)  const;
 
 
     /*!
-    * @brief      ¸ù¾İ²ÎÊıÃû³Æ£¬µÃµ½ÃüÁîµÄ²ÎÊıµÄÖµ
-    * @return     const char * ·µ»ØÈ¡µÃµÄÃüÁî²ÎÊıÖµ£¬Èç¹ûÃ»ÓĞ¶ÔÓ¦µÄ²ÎÊıÃû³Æ£¬·µ»Ø""
-    * @param      para_key   ²ÎÊıÃû³Æ
+    * @brief      æ ¹æ®å‚æ•°åç§°ï¼Œå¾—åˆ°å‘½ä»¤çš„å‚æ•°çš„å€¼
+    * @return     const char * è¿”å›å–å¾—çš„å‘½ä»¤å‚æ•°å€¼ï¼Œå¦‚æœæ²¡æœ‰å¯¹åº”çš„å‚æ•°åç§°ï¼Œè¿”å›""
+    * @param      para_key   å‚æ•°åç§°
     */
     const char *get_cmd_parameter(const std::string &para_key)  const;
 
 protected:
 
-    ///MML Óï¾ä
+    ///MML è¯­å¥
     std::string             mml_string_;
-    ///MMLÃüÁî
+    ///MMLå‘½ä»¤
     std::string             mml_command_;
 
-    ///MMLÃüÁîÑ¡Ïî
+    ///MMLå‘½ä»¤é€‰é¡¹
     MMLCMD_OPTION           mml_cmd_option_;
-    ///MMLÃüÁî²ÎÊı
+    ///MMLå‘½ä»¤å‚æ•°
     MMLCMD_PARAMETER        mml_cmd_parameter_;
 };
 

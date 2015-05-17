@@ -1,4 +1,4 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_error.h"
@@ -60,8 +60,8 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
     lock->overlapped_.Offset = large_start.LowPart;
     lock->overlapped_.OffsetHigh = large_start.HighPart;
 
-    //Èç¹û³¤¶ÈÎª0£¬±êÊ¶¶ÔÈ«ÎÄ¼ş½øĞĞ²Ù×÷£¬ÔÚWINDOWSÆ½Ì¨µ÷Õû³ÉÎÄ¼ş³¤¶È
-    //×¢ÒâÕâ¶ùµÄÊÊÅäÊÇÓĞÒ»Ğ©ÎÊÌâµÄ£¬ÒòÎªlinuxµÄÎÄ¼şËøÈç¹û³¤¶ÈÊÇ0£¬ÊÇËø¶¨´Ó¿ªÊ¼µ½ÎÄ¼şÆ«ÒÆµÄ×î´ó¿ÉÄÜÖµ¡£
+    //å¦‚æœé•¿åº¦ä¸º0ï¼Œæ ‡è¯†å¯¹å…¨æ–‡ä»¶è¿›è¡Œæ“ä½œï¼Œåœ¨WINDOWSå¹³å°è°ƒæ•´æˆæ–‡ä»¶é•¿åº¦
+    //æ³¨æ„è¿™å„¿çš„é€‚é…æ˜¯æœ‰ä¸€äº›é—®é¢˜çš„ï¼Œå› ä¸ºlinuxçš„æ–‡ä»¶é”å¦‚æœé•¿åº¦æ˜¯0ï¼Œæ˜¯é”å®šä»å¼€å§‹åˆ°æ–‡ä»¶åç§»çš„æœ€å¤§å¯èƒ½å€¼ã€‚
     if (len == 0)
     {
         size_t file_size = 0;
@@ -84,7 +84,7 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
 }
 
 
-//ÎÄ¼şËø³õÊ¼»¯zce_flock_t,Ö±½ÓÓÃfd
+//æ–‡ä»¶é”åˆå§‹åŒ–zce_flock_t,ç›´æ¥ç”¨fd
 int ZCE_LIB::flock_init (zce_flock_t *lock,
                          ZCE_HANDLE file_hadle)
 {
@@ -96,7 +96,7 @@ int ZCE_LIB::flock_init (zce_flock_t *lock,
     lock->overlapped_.InternalHigh = 0;
     lock->overlapped_.hEvent = 0;
 
-    //ºóÃæ»á½øĞĞµ÷Õû¡£
+    //åé¢ä¼šè¿›è¡Œè°ƒæ•´ã€‚
     lock->overlapped_.Offset = 0;
     lock->overlapped_.OffsetHigh = 0;
 
@@ -106,7 +106,7 @@ int ZCE_LIB::flock_init (zce_flock_t *lock,
     return 0;
 }
 
-//Ïú»ÙËø£¿ÕâÑù½âÊÍ²»ÊÇÌØ±ğºÏÀí£¬ÆäÊµÓ¦¸ÃËµ£¬Ïú»Ùzce_flock_tÕâ¸ö½á¹¹
+//é”€æ¯é”ï¼Ÿè¿™æ ·è§£é‡Šä¸æ˜¯ç‰¹åˆ«åˆç†ï¼Œå…¶å®åº”è¯¥è¯´ï¼Œé”€æ¯zce_flock_tè¿™ä¸ªç»“æ„
 void ZCE_LIB::flock_destroy (zce_flock_t * /*lock*/)
 {
     return;
@@ -125,7 +125,7 @@ int ZCE_LIB::flock_unlock (zce_flock_t *lock,
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
 
-    //½â³ıËø¶¨
+    //è§£é™¤é”å®š
     BOOL ret_bool = ::UnlockFileEx (lock->handle_,
                                     0,
                                     large_len.LowPart,
@@ -162,7 +162,7 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
-    //µÚ2¸ö²ÎÊıÎª0±íÊ¾ÊÇ¹²ÏíËø
+    //ç¬¬2ä¸ªå‚æ•°ä¸º0è¡¨ç¤ºæ˜¯å…±äº«é”
     BOOL ret_bool = ::LockFileEx (lock->handle_,
                                   0,
                                   0,
@@ -170,7 +170,7 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
                                   large_len.HighPart,
                                   &lock->overlapped_);
 
-    //³öÏÖ´íÎó
+    //å‡ºç°é”™è¯¯
     if (!ret_bool)
     {
         return -1;
@@ -183,7 +183,7 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
     ZCE_LIB::flock_adjust_params (lock, whence, start, len);
     // set read lock
     lock->lock_.l_type = F_RDLCK;
-    //block, if no access ×¢ÒâF_SETLKWºÍF_SETLKµÄÇø±ğ
+    //block, if no access æ³¨æ„F_SETLKWå’ŒF_SETLKçš„åŒºåˆ«
     return ::fcntl(lock->handle_,
                    F_SETLKW,
                    reinterpret_cast<long> (&lock->lock_));
@@ -191,7 +191,7 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
 #endif
 }
 
-//²âÊÔÊÇ·ñ¿ÉÒÔ¼ÓËø£¬Èç¹û²»ĞĞÁ¢¼´·µ»Ø
+//æµ‹è¯•æ˜¯å¦å¯ä»¥åŠ é”ï¼Œå¦‚æœä¸è¡Œç«‹å³è¿”å›
 int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
                               int  whence,
                               size_t start,
@@ -200,12 +200,12 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //µ÷Õû²ÎÊı£¬ÒòÎªWINDOWS²ÎÊıµÄÒ»Ğ©Âé·³
+    //è°ƒæ•´å‚æ•°ï¼Œå› ä¸ºWINDOWSå‚æ•°çš„ä¸€äº›éº»çƒ¦
     ZCE_LIB::flock_adjust_params (lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
-    //LOCKFILE_FAIL_IMMEDIATELY±íÊ¾Á¢¼´½øĞĞ²âÊÔ£¬Ê§°Ü²»×èÈû£¬Ò²¾ÍÊÇtryÁË
+    //LOCKFILE_FAIL_IMMEDIATELYè¡¨ç¤ºç«‹å³è¿›è¡Œæµ‹è¯•ï¼Œå¤±è´¥ä¸é˜»å¡ï¼Œä¹Ÿå°±æ˜¯tryäº†
     BOOL ret_bool = ::LockFileEx (lock->handle_,
                                   LOCKFILE_FAIL_IMMEDIATELY,
                                   0,
@@ -213,7 +213,7 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
                                   large_len.HighPart,
                                   &lock->overlapped_);
 
-    //³öÏÖ´íÎó
+    //å‡ºç°é”™è¯¯
     if (!ret_bool)
     {
         return -1;
@@ -227,7 +227,7 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
     lock->lock_.l_type = F_RDLCK;         // set read lock
 
     int result = 0;
-    // Does not block, if no access, returns -1 and set errno = EBUSY; ×¢ÒâF_SETLKWºÍF_SETLKµÄÇø±ğ
+    // Does not block, if no access, returns -1 and set errno = EBUSY; æ³¨æ„F_SETLKWå’ŒF_SETLKçš„åŒºåˆ«
     result = ::fcntl(lock->handle_,
                      F_SETLK,
                      reinterpret_cast<long> (&lock->lock_));
@@ -241,7 +241,7 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
 #endif
 }
 
-//³¢ÊÔ½øĞĞĞ´Ëø¶¨
+//å°è¯•è¿›è¡Œå†™é”å®š
 int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
                               int  whence,
                               size_t start,
@@ -262,7 +262,7 @@ int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
                                   large_len.HighPart,
                                   &lock->overlapped_);
 
-    //³öÏÖ´íÎó
+    //å‡ºç°é”™è¯¯
     if (!ret_bool)
     {
         return -1;
@@ -301,7 +301,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
-    //LOCKFILE_EXCLUSIVE_LOCK±íÊ¾¶ÀÕ¼Ëø£¬Ò²¾ÍÊÇĞ´Ëø
+    //LOCKFILE_EXCLUSIVE_LOCKè¡¨ç¤ºç‹¬å é”ï¼Œä¹Ÿå°±æ˜¯å†™é”
     BOOL ret_bool = ::LockFileEx (lock->handle_,
                                   LOCKFILE_EXCLUSIVE_LOCK,
                                   0,
@@ -309,7 +309,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
                                   large_len.HighPart,
                                   &lock->overlapped_);
 
-    //³öÏÖ´íÎó
+    //å‡ºç°é”™è¯¯
     if (!ret_bool)
     {
         return -1;
@@ -339,7 +339,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //LOCK_NB
 //A call to flock() may block if an incompatible lock is held by another process. To make a non-blocking request, include LOCK_NB (by ORing) with any of the above operations.
 
-//ÎÄ¼şËøº¯Êı£¬Ö»¶ÔÒ»¸öÎÄ¼ş½øĞĞ¼ÓËø
+//æ–‡ä»¶é”å‡½æ•°ï¼Œåªå¯¹ä¸€ä¸ªæ–‡ä»¶è¿›è¡ŒåŠ é”
 //int ZCE_LIB::flock(ZCE_HANDLE file_hadle, int operation)
 //{
 //#if defined (ZCE_OS_WINDOWS)
@@ -350,10 +350,10 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //    ret = ZCE_LIB::flock_init (&lock_handle,
 //                               file_hadle);
 //
-//    //¶ÁÈ¡Ëø£¬¹²ÏíËø
+//    //è¯»å–é”ï¼Œå…±äº«é”
 //    if (LOCK_SH & operation )
 //    {
-//        //Èç¹ûÊÇ²»×èÈûµÄ
+//        //å¦‚æœæ˜¯ä¸é˜»å¡çš„
 //        if ( LOCK_NB & operation)
 //        {
 //            ret = ZCE_LIB::flock_tryrdlock (&lock_handle,
@@ -361,7 +361,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //                                            0,
 //                                            0);
 //        }
-//        //Èç¹ûÊÇ×èÈûµ÷ÓÃ
+//        //å¦‚æœæ˜¯é˜»å¡è°ƒç”¨
 //        else
 //        {
 //            ret = ZCE_LIB::flock_rdlock (&lock_handle,
@@ -371,10 +371,10 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //        }
 //
 //    }
-//    //Ğ´Ëø
+//    //å†™é”
 //    else if (LOCK_EX & operation)
 //    {
-//        //Èç¹ûÊÇ²»×èÈûµÄ
+//        //å¦‚æœæ˜¯ä¸é˜»å¡çš„
 //        if ( LOCK_NB & operation)
 //        {
 //            ret = ZCE_LIB::flock_trywrlock (&lock_handle,
@@ -382,7 +382,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //                                            0,
 //                                            0);
 //        }
-//        //Èç¹ûÊÇ×èÈûµ÷ÓÃ
+//        //å¦‚æœæ˜¯é˜»å¡è°ƒç”¨
 //        else
 //        {
 //            ret = ZCE_LIB::flock_wrlock (&lock_handle,
@@ -391,7 +391,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //                                         0);
 //        }
 //    }
-//    //½â¿ªËø
+//    //è§£å¼€é”
 //    else if ( LOCK_UN & operation)
 //    {
 //        ret = ZCE_LIB::flock_unlock (&lock_handle,
@@ -410,7 +410,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_LIB::flock fail. operation =%d ret =%d", operation, ret);
 //    }
 //
-//    //ÆäÊµÍêÈ«¿ÉÒÔ²»µôÓÃÕâ¸öº¯Êı,µ÷ÓÃËûÊÇÎªÁËÈÃÄã¾õµÃ¹«Õı,
+//    //å…¶å®å®Œå…¨å¯ä»¥ä¸æ‰ç”¨è¿™ä¸ªå‡½æ•°,è°ƒç”¨ä»–æ˜¯ä¸ºäº†è®©ä½ è§‰å¾—å…¬æ­£,
 //    ZCE_LIB::flock_destroy(&lock_handle);
 //
 //    return ret;

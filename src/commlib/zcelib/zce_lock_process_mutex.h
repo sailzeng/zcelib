@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_lock_process_mutex.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê1ÔÂ15ÈÕ
-* @brief      ½ø³ÌµÄMUTEX£¬±ØĞëÓĞÃû×Ö£¬
+* @date       2013å¹´1æœˆ15æ—¥
+* @brief      è¿›ç¨‹çš„MUTEXï¼Œå¿…é¡»æœ‰åå­—ï¼Œ
 *
 */
 #ifndef ZCE_LIB_LOCK_PROCESS_MUTEX_H_
@@ -15,50 +15,50 @@
 #include "zce_share_mem_posix.h"
 
 /*!
-* @brief      ½ø³ÌMutexËø,ÓÃÓÚ¶à½ø³Ì¼äµÄ»¥³âÍ¬²½´¦Àí£¬
-*             ÔÚWINDOWSÏÂ£¬µİ¹éËøÊÇÓÃMUTEXÄ£ÄâµÄ£¨±ØĞëÓĞÃû×Ö£©£¬·Çµİ¹éËøÊÇÓÃĞÅºÅµÆÄ£Äâ£¬
-*             ÔÚLINUXÏÂ£¬»¹ÊÇÓÃpthread_mutexÊµÏÖµÄ£¬µ«ÊÇÓÃ¹²ÏíÄÚ´æ´æ·Å£¬Ãû×ÖÓÃÓÚ¹²Ïí
-*             ÄÚ´æÃû×Ö
+* @brief      è¿›ç¨‹Mutexé”,ç”¨äºå¤šè¿›ç¨‹é—´çš„äº’æ–¥åŒæ­¥å¤„ç†ï¼Œ
+*             åœ¨WINDOWSä¸‹ï¼Œé€’å½’é”æ˜¯ç”¨MUTEXæ¨¡æ‹Ÿçš„ï¼ˆå¿…é¡»æœ‰åå­—ï¼‰ï¼Œéé€’å½’é”æ˜¯ç”¨ä¿¡å·ç¯æ¨¡æ‹Ÿï¼Œ
+*             åœ¨LINUXä¸‹ï¼Œè¿˜æ˜¯ç”¨pthread_mutexå®ç°çš„ï¼Œä½†æ˜¯ç”¨å…±äº«å†…å­˜å­˜æ”¾ï¼Œåå­—ç”¨äºå…±äº«
+*             å†…å­˜åå­—
 */
 class ZCE_Process_Mutex : public ZCE_Lock_Base
 {
 
 public:
 
-    //½ø³ÌËøµÄGUARD
+    //è¿›ç¨‹é”çš„GUARD
     typedef ZCE_Lock_Guard<ZCE_Process_Mutex> LOCK_GUARD;
 
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     ZCE_Process_Mutex (const char *mutex_name, bool recursive = true);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~ZCE_Process_Mutex (void);
 
-    ///Ëø¶¨
+    ///é”å®š
     virtual void lock();
 
-    ///³¢ÊÔËø¶¨
+    ///å°è¯•é”å®š
     virtual bool try_lock();
 
-    ///½âËø,
+    ///è§£é”,
     virtual void unlock();
 
-    ///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+    ///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
     virtual bool systime_lock(const ZCE_Time_Value &abs_time);
 
-    ///Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+    ///ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
     virtual bool duration_lock(const ZCE_Time_Value &relative_time);
 
-    ///È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
+    ///å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
     pthread_mutex_t *get_lock();
 
 protected:
 
-    ///½ø³ÌËø£¬×¢Òâ£¬×¢Òâ£¬×¢Òâ£¬Õâ¸öµØ·½ÓÃµÄÊÇÒ»¸öÖ¸Õë£¬
+    ///è¿›ç¨‹é”ï¼Œæ³¨æ„ï¼Œæ³¨æ„ï¼Œæ³¨æ„ï¼Œè¿™ä¸ªåœ°æ–¹ç”¨çš„æ˜¯ä¸€ä¸ªæŒ‡é’ˆï¼Œ
     pthread_mutex_t    *lock_;
 
 #if defined ZCE_OS_LINUX
-    //¹²ÏíÄÚ´æ£¬LINUXĞèÒª¹²ÏíÄÚ´æ
+    //å…±äº«å†…å­˜ï¼ŒLINUXéœ€è¦å…±äº«å†…å­˜
     ZCE_ShareMem_Posix posix_sharemem_;
 #endif
 

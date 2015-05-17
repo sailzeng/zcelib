@@ -1,4 +1,4 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_readfile_cvs.h"
@@ -27,7 +27,7 @@ int ReadFile_CVS::readfile_cvs()
     std::istringstream  read_stream;
 
 
-    //ÏÈ¶ÁÈ¡ÎÄ¼ş£¬È«²¿¶ÁÈ¡
+    //å…ˆè¯»å–æ–‡ä»¶ï¼Œå…¨éƒ¨è¯»å–
     if (read_file)
     {
 
@@ -38,23 +38,23 @@ int ReadFile_CVS::readfile_cvs()
         std::streamsize size_of_file = read_file.tellg();
         read_file.seekg(0, std::ios::beg);
 
-        //¶Ô²»×¡Äú,°³²»´¦Àí´óÓÚ1GµÄÎÄ¼ş£¬ÒòÎª°³ÃÇ¶¼²»¸»Ô££¬
+        //å¯¹ä¸ä½æ‚¨,ä¿ºä¸å¤„ç†å¤§äº1Gçš„æ–‡ä»¶ï¼Œå› ä¸ºä¿ºä»¬éƒ½ä¸å¯Œè£•ï¼Œ
         ZCE_ASSERT (size_of_file < (0x40000000));
 
-        //½«ËùÓĞµÄÊı¾İ¶ÁÈë»º³å
+        //å°†æ‰€æœ‰çš„æ•°æ®è¯»å…¥ç¼“å†²
         char *outbuf = new char[static_cast<size_t>(size_of_file + 16)];
-        //¶ÁÈ¡ËùÓĞµÄÊı¾İ,ÎÄ¼şµÄ¶ÁÈ¡·½Ê½ÊÇ¶ş½øÖÆ¶ÁÈ¡·½Ê½
+        //è¯»å–æ‰€æœ‰çš„æ•°æ®,æ–‡ä»¶çš„è¯»å–æ–¹å¼æ˜¯äºŒè¿›åˆ¶è¯»å–æ–¹å¼
         read_file.read(outbuf, size_of_file);
         outbuf[size_of_file] = '\0';
 
-        //¹Ø±ÕÎÄ¼ş
+        //å…³é—­æ–‡ä»¶
         read_file.close();
 
         str_readbuf.assign(outbuf, static_cast<size_t>(size_of_file));
-        //Õâ¶ù×îºÃÊÍ·Åµô
+        //è¿™å„¿æœ€å¥½é‡Šæ”¾æ‰
         delete[] outbuf;
 
-        //+1ºÜÖØÒª,±£Ö¤×Ö·û´®µÄ½áÎ²ÊÇ'\0'
+        //+1å¾ˆé‡è¦,ä¿è¯å­—ç¬¦ä¸²çš„ç»“å°¾æ˜¯'\0'
         read_stream.str(str_readbuf);
 
         ZCE_LOG(RS_INFO, "[framework] Batch process file [%s] read success.file size [%u].",
@@ -72,7 +72,7 @@ int ReadFile_CVS::readfile_cvs()
     char outbufline[BUFF_LEN + 1];
     outbufline[BUFF_LEN] = '\0';
 
-    //Èç¹ûÎÄ¼ş×´Ì¬ÕıÈ·,
+    //å¦‚æœæ–‡ä»¶çŠ¶æ€æ­£ç¡®,
     while (read_stream)
     {
         //

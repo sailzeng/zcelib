@@ -1,16 +1,16 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_mysql_field.h"
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #if defined ZCE_USE_MYSQL
 
-//High Speed µÃµ½String
+//High Speed å¾—åˆ°String
 void ZCE_Mysql_Field::get_string(std::string &tmpstr) const
 {
     tmpstr.reserve(field_length_);
     tmpstr.assign(field_data_, field_length_);
 }
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #endif //#if defined ZCE_USE_MYSQL
 

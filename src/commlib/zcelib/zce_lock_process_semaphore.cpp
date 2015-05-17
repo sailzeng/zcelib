@@ -1,4 +1,4 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_os_adapt_semaphore.h"
 #include "zce_os_adapt_time.h"
@@ -6,7 +6,7 @@
 #include "zce_trace_log_debug.h"
 #include "zce_lock_process_semaphore.h"
 
-//¹¹Ôìº¯Êı,
+//æ„é€ å‡½æ•°,
 ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
                                              const char *sem_name):
     lock_(NULL)
@@ -19,7 +19,7 @@ ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
     sema_name_[0] = '\0';
     sema_name_[sizeof(sema_name_) - 1] = '\0';
 
-    //ÍæÓĞÃûµÄĞÅºÅµÆ,Ãû×Ö¿ÉÒÔ¿¼ÂÇÓÃunique_nameº¯Êı»ñµÃ
+    //ç©æœ‰åçš„ä¿¡å·ç¯,åå­—å¯ä»¥è€ƒè™‘ç”¨unique_nameå‡½æ•°è·å¾—
 
     strncpy(sema_name_, sem_name, PATH_MAX);
 
@@ -35,16 +35,16 @@ ZCE_Process_Semaphore::ZCE_Process_Semaphore(unsigned int init_value,
 
 ZCE_Process_Semaphore::~ZCE_Process_Semaphore()
 {
-    //Ã»ÓĞ³õÊ¼»¯¹ı
+    //æ²¡æœ‰åˆå§‹åŒ–è¿‡
     if (!lock_)
     {
         return;
     }
 
-    //Èç¹ûÃû×Ö³¤¶È²»ÊÇ0£¬±íÊ¾ÊÇÓĞÃû
+    //å¦‚æœåå­—é•¿åº¦ä¸æ˜¯0ï¼Œè¡¨ç¤ºæ˜¯æœ‰å
     if ( '\0' != sema_name_[0] )
     {
-        //ÊÍ·Å£¬¹Ø±ÕĞÅºÅµÆ¶ÔÏó£¬É¾³ıÃû×Ö¹ØÁªµÄÎÄ¼ş
+        //é‡Šæ”¾ï¼Œå…³é—­ä¿¡å·ç¯å¯¹è±¡ï¼Œåˆ é™¤åå­—å…³è”çš„æ–‡ä»¶
         ZCE_LIB::sem_close(lock_);
         ZCE_LIB::sem_unlink(sema_name_);
         lock_ = NULL;
@@ -53,17 +53,17 @@ ZCE_Process_Semaphore::~ZCE_Process_Semaphore()
     {
         ZCE_LIB::sem_destroy(lock_);
 
-        //sem_destroy²»»áÊÍ·Å£¬
+        //sem_destroyä¸ä¼šé‡Šæ”¾ï¼Œ
         delete lock_;
         lock_ = NULL;
     }
 
 }
 
-//Ëø¶¨
+//é”å®š
 void ZCE_Process_Semaphore::lock()
 {
-    //ĞÅºÅµÆËø¶¨
+    //ä¿¡å·ç¯é”å®š
     int ret =  ZCE_LIB::sem_wait (lock_);
 
     if (0 != ret)
@@ -73,10 +73,10 @@ void ZCE_Process_Semaphore::lock()
     }
 }
 
-//³¢ÊÔËø¶¨
+//å°è¯•é”å®š
 bool ZCE_Process_Semaphore::try_lock()
 {
-    //ĞÅºÅµÆËø¶¨
+    //ä¿¡å·ç¯é”å®š
     int ret =  ZCE_LIB::sem_trywait (lock_);
 
     if (0 != ret)
@@ -87,7 +87,7 @@ bool ZCE_Process_Semaphore::try_lock()
     return true;
 }
 
-//½âËø,
+//è§£é”,
 void ZCE_Process_Semaphore::unlock()
 {
     int ret = ZCE_LIB::sem_post (lock_);
@@ -99,7 +99,7 @@ void ZCE_Process_Semaphore::unlock()
     }
 }
 
-//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
 bool ZCE_Process_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
@@ -118,7 +118,7 @@ bool ZCE_Process_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
     return true;
 }
 
-//Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+//ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
 bool ZCE_Process_Semaphore::duration_lock(const ZCE_Time_Value &relative_time)
 {
     timeval abs_time = ZCE_LIB::gettimeofday();

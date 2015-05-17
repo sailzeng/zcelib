@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef SOARING_LIB_SVRD_APP_TRNAS_H_
 #define SOARING_LIB_SVRD_APP_TRNAS_H_
 
@@ -17,7 +17,7 @@
 
 
 /*!
-* @brief      ×´Ì¬»úµÄAPP
+* @brief      çŠ¶æ€æœºçš„APP
 *
 * @note
 */
@@ -26,19 +26,19 @@ class Comm_SvrdApp_FSM : public Soar_Svrd_Appliction
 
 protected:
 
-    //Ê¹ÓÃÊÂÎñ´¦ÀíµÄApplication
+    //ä½¿ç”¨äº‹åŠ¡å¤„ç†çš„Application
     Comm_SvrdApp_FSM();
     virtual ~Comm_SvrdApp_FSM();
 
 public:
 
-    //Ôö¼Óµ÷ÓÃregister_func_cmd
+    //å¢åŠ è°ƒç”¨register_func_cmd
     virtual int app_start(int argc, const char *argv[]);
 
-    //ÔËĞĞ´¦Àí,
+    //è¿è¡Œå¤„ç†,
     virtual int app_run();
 
-    //ÍË³ö´¦Àí
+    //é€€å‡ºå¤„ç†
     virtual int app_exit();
 
 protected:

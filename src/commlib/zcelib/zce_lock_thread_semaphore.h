@@ -1,10 +1,10 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_lock_thread_semaphore.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê1ÔÂ14ÈÕ
-* @brief      Ïß³ÌµÄĞÅºÅµÆ·â×°
+* @date       2013å¹´1æœˆ14æ—¥
+* @brief      çº¿ç¨‹çš„ä¿¡å·ç¯å°è£…
 */
 
 #ifndef ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
@@ -15,39 +15,39 @@
 #include "zce_time_value.h"
 
 /*!
-@brief      Ïß³ÌµÄĞÅºÅµÆ·â×°£¬Ê¹ÓÃµÄÊÇÎŞÃûµÄĞÅºÅµÆ£¬
+@brief      çº¿ç¨‹çš„ä¿¡å·ç¯å°è£…ï¼Œä½¿ç”¨çš„æ˜¯æ— åçš„ä¿¡å·ç¯ï¼Œ
 */
 class ZCE_Thread_Semaphore  : public ZCE_Lock_Base
 {
 
 public:
-    //Ïß³ÌËøµÄGUARD
+    //çº¿ç¨‹é”çš„GUARD
     typedef ZCE_Lock_Guard<ZCE_Thread_Semaphore> LOCK_GUARD;
 
 public:
 
-    //¹¹Ôìº¯Êı,Ä¬ÈÏ´´½¨ÄäÃûĞÅºÅµÆ£¬Ïß³ÌÏÂÒ»°ãÓÃÄäÃûĞÅºÅµÆ¾Í×ã¹»ÁË,sem_nameÒ»°ãÓÃNULL¾Í×ã¹»ÁË
-    //ÄäÃûĞÅºÅµÆ==ÎŞÃûĞÅºÅµÆ
+    //æ„é€ å‡½æ•°,é»˜è®¤åˆ›å»ºåŒ¿åä¿¡å·ç¯ï¼Œçº¿ç¨‹ä¸‹ä¸€èˆ¬ç”¨åŒ¿åä¿¡å·ç¯å°±è¶³å¤Ÿäº†,sem_nameä¸€èˆ¬ç”¨NULLå°±è¶³å¤Ÿäº†
+    //åŒ¿åä¿¡å·ç¯==æ— åä¿¡å·ç¯
     ZCE_Thread_Semaphore (unsigned int init_value);
     virtual ~ZCE_Thread_Semaphore (void);
 
-    //Ëø¶¨
+    //é”å®š
     virtual void lock();
 
-    //³¢ÊÔËø¶¨
+    //å°è¯•é”å®š
     virtual bool try_lock();
 
-    //½âËø,
+    //è§£é”,
     virtual void unlock();
 
-    //¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+    //ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
     virtual bool systime_lock(const ZCE_Time_Value &abs_time);
 
-    //Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+    //ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
     virtual bool duration_lock(const ZCE_Time_Value &relative_time);
 
 protected:
-    //Ïß³ÌËø
+    //çº¿ç¨‹é”
     sem_t            *lock_;
 
 };

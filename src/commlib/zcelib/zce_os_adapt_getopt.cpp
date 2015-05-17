@@ -1,4 +1,4 @@
-/******************************************************************************************
+﻿/******************************************************************************************
 Copyright           : 2002-2003, FXL Technology (Shenzhen) Company Limited.
 FileName            : zce_os_adapt_layer.h
 Author              : Sail (ZENGXING)/Author name here

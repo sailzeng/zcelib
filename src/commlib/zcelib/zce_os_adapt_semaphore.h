@@ -1,12 +1,12 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_os_adapt_semaphore.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê10ÔÂ6ÈÕ ½ñÌìJobs×ßÁË£¬·¢ÏÖ×Ô¼º¾ÓÈ»Ò²µ½ÁËµ½ÁË¿ªÊ¼Ãå»³Ç°±²Äê¼Í£¬
-* @brief      ĞÅºÅµÆµÄ¿çÆ½Ì¨·â×°£¬ÏòLINUXµÄPOSIXµÄ·â×°¿¿Æë
+* @date       2011å¹´10æœˆ6æ—¥ ä»Šå¤©Jobsèµ°äº†ï¼Œå‘ç°è‡ªå·±å±…ç„¶ä¹Ÿåˆ°äº†åˆ°äº†å¼€å§‹ç¼…æ€€å‰è¾ˆå¹´çºªï¼Œ
+* @brief      ä¿¡å·ç¯çš„è·¨å¹³å°å°è£…ï¼Œå‘LINUXçš„POSIXçš„å°è£…é é½
 *
-* @details    Windows ºÍ Linux ÔÚĞÅºÅµÆÉÏ±È½Ï½Ó½ü£¬
+* @details    Windows å’Œ Linux åœ¨ä¿¡å·ç¯ä¸Šæ¯”è¾ƒæ¥è¿‘ï¼Œ
 *
 * @note
 *
@@ -21,14 +21,14 @@ namespace ZCE_LIB
 {
 
 /*!
-* @brief      ³õÊ¼»¯£¬´´½¨Ò»¸öÎŞÃû£¨ÄäÃû£©ĞÅºÅµÆ£¬Ïß³ÌÏÂÒ»°ãÓÃÄäÃûĞÅºÅµÆ¾Í×ã¹»ÁË,
-*             WINDOWSÏÂµÄÄäÃûĞÅºÅµÆÊÇÎŞ·¨¶à½ø³Ì¹²ÏíµÄ£¬
-* @return     int         0³É¹¦£¬-1Ê§°Ü
-* @param[out] sem         ĞÅºÅµÆ¾ä±ú
-* @param[in]  pshared     ĞÅºÅµÆµÄSHARE·½Ê½£¬WINDOWSÏÂ´Ë²ÎÊıÎŞÓÃ
-* @param[in]  init_value  ĞÅºÅµÆ³õÊÔµÄÖµ
-* @param[in]  max_val     max_val²»ÊÇ±ê×¼²ÎÊı£¬ÓÃÄ¬ÈÏÖµĞŞÊÎÁË£¬WindowsÏÂÌØÓĞ£¬¿ÉÒÔÓÃÓÚÄ£ÄâMutex£¿
-* @note       ¶ÔÓ¦µÄÏú»Ùº¯ÊıÊÇ @ref sem_destroy
+* @brief      åˆå§‹åŒ–ï¼Œåˆ›å»ºä¸€ä¸ªæ— åï¼ˆåŒ¿åï¼‰ä¿¡å·ç¯ï¼Œçº¿ç¨‹ä¸‹ä¸€èˆ¬ç”¨åŒ¿åä¿¡å·ç¯å°±è¶³å¤Ÿäº†,
+*             WINDOWSä¸‹çš„åŒ¿åä¿¡å·ç¯æ˜¯æ— æ³•å¤šè¿›ç¨‹å…±äº«çš„ï¼Œ
+* @return     int         0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[out] sem         ä¿¡å·ç¯å¥æŸ„
+* @param[in]  pshared     ä¿¡å·ç¯çš„SHAREæ–¹å¼ï¼ŒWINDOWSä¸‹æ­¤å‚æ•°æ— ç”¨
+* @param[in]  init_value  ä¿¡å·ç¯åˆè¯•çš„å€¼
+* @param[in]  max_val     max_valä¸æ˜¯æ ‡å‡†å‚æ•°ï¼Œç”¨é»˜è®¤å€¼ä¿®é¥°äº†ï¼ŒWindowsä¸‹ç‰¹æœ‰ï¼Œå¯ä»¥ç”¨äºæ¨¡æ‹ŸMutexï¼Ÿ
+* @note       å¯¹åº”çš„é”€æ¯å‡½æ•°æ˜¯ @ref sem_destroy
 */
 int sem_init(sem_t *sem,
              int pshared,
@@ -36,22 +36,22 @@ int sem_init(sem_t *sem,
              unsigned int max_val = 0x7FFFFFFF);
 
 /*!
-* @brief      Ïú»ÙÎŞÃû(ÄäÃû)ĞÅºÅµÆ
-* @return     int      0³É¹¦£¬-1Ê§°Ü
-* @param      sem      ĞÅºÅµÆ¾ä±ú
+* @brief      é”€æ¯æ— å(åŒ¿å)ä¿¡å·ç¯
+* @return     int      0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      sem      ä¿¡å·ç¯å¥æŸ„
 */
 int sem_destroy(sem_t *sem);
 
 /*!
-* @brief      ´ò¿ª(ÓĞÃû)ĞÅºÅµÆ,max_val×î´óÖµ²»ÊÇ±ê×¼²ÎÊı£¬ËùÒÔÓÃÄ¬ÈÏÖ»ĞŞÊÎÁË£¬Õâ¸öÖ÷ÒªÓÃÓÚ´´½¨ÓĞÃûĞÅºÅµÆ,
-*             ÓĞÃûĞÅºÅµÆ£¬¿ÉÒÔ¿ç½ø³Ì·ÃÎÊ
-* @return     sem_t*     Èç¹û³É¹¦·µ»Ø£¬ĞÅºÅµÆ¾ä±ú ·ñÔò·µ»ØNULL
-* @param      name       ĞÅºÅµÆµÄÃû×Ö
-* @param      oflag      Í¬ÎÄ¼şopenµÄ´´½¨²ÎÊı£¬
-* @param      mode       Í¬ÎÄ¼şopenµÄ·ÃÎÊÈ¨ÏŞ²ÎÊı
-* @param      init_value ĞÅºÅµÆ³õÊ¼»¯µÄÖµ
-* @param      max_val    max_val²»ÊÇ±ê×¼²ÎÊı£¬ÓÃÄ¬ÈÏÖµĞŞÊÎÁË£¬WindowsÏÂÌØÓĞ£¬
-* @note       ´ò¿ªºó£¬ÒªÊ¹ÓÃ@ref sem_close£¬@ref sem_unlink
+* @brief      æ‰“å¼€(æœ‰å)ä¿¡å·ç¯,max_valæœ€å¤§å€¼ä¸æ˜¯æ ‡å‡†å‚æ•°ï¼Œæ‰€ä»¥ç”¨é»˜è®¤åªä¿®é¥°äº†ï¼Œè¿™ä¸ªä¸»è¦ç”¨äºåˆ›å»ºæœ‰åä¿¡å·ç¯,
+*             æœ‰åä¿¡å·ç¯ï¼Œå¯ä»¥è·¨è¿›ç¨‹è®¿é—®
+* @return     sem_t*     å¦‚æœæˆåŠŸè¿”å›ï¼Œä¿¡å·ç¯å¥æŸ„ å¦åˆ™è¿”å›NULL
+* @param      name       ä¿¡å·ç¯çš„åå­—
+* @param      oflag      åŒæ–‡ä»¶opençš„åˆ›å»ºå‚æ•°ï¼Œ
+* @param      mode       åŒæ–‡ä»¶opençš„è®¿é—®æƒé™å‚æ•°
+* @param      init_value ä¿¡å·ç¯åˆå§‹åŒ–çš„å€¼
+* @param      max_val    max_valä¸æ˜¯æ ‡å‡†å‚æ•°ï¼Œç”¨é»˜è®¤å€¼ä¿®é¥°äº†ï¼ŒWindowsä¸‹ç‰¹æœ‰ï¼Œ
+* @note       æ‰“å¼€åï¼Œè¦ä½¿ç”¨@ref sem_closeï¼Œ@ref sem_unlink
 */
 sem_t *sem_open(const char *name,
                 int oflag = O_CREAT,
@@ -60,22 +60,22 @@ sem_t *sem_open(const char *name,
                 unsigned int max_val = 0x7FFFFFFF);
 
 /*!
-* @brief      ¹Ø±ÕĞÅºÅµÆ
-* @return     int 0³É¹¦£¬-1Ê§°Ü
-* @param      sem ĞÅºÅµÆ¶ÔÏó
+* @brief      å…³é—­ä¿¡å·ç¯
+* @return     int 0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      sem ä¿¡å·ç¯å¯¹è±¡
 */
 int sem_close(sem_t *sem);
 
 /*!
-* @brief      É¾³ıĞÅºÅµÆ
-* @return     int  0³É¹¦£¬-1Ê§°Ü
-* @param      name ĞÅºÅµÆµÄÃû×Ö
+* @brief      åˆ é™¤ä¿¡å·ç¯
+* @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      name ä¿¡å·ç¯çš„åå­—
 * @note
 */
 int sem_unlink(const char *name);
 
 /*!
-* @brief      ĞÅºÅµÆµÄV²Ù×÷,
+* @brief      ä¿¡å·ç¯çš„Væ“ä½œ,
 * @return     int
 * @param      sem
 * @note
@@ -83,7 +83,7 @@ int sem_unlink(const char *name);
 int sem_post (sem_t *sem);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬ĞÅºÅµÆµÄrelease_count´ÎV²Ù×÷£¬
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œä¿¡å·ç¯çš„release_countæ¬¡Væ“ä½œï¼Œ
 * @return     int
 * @param      sem
 * @param      release_count
@@ -93,7 +93,7 @@ int sem_post (sem_t *sem,
               u_int release_count);
 
 /*!
-* @brief      ĞÅºÅµÆ,³¢ÊÔËø¶¨£¨P²Ù×÷£©,
+* @brief      ä¿¡å·ç¯,å°è¯•é”å®šï¼ˆPæ“ä½œï¼‰,
 * @return     int
 * @param      sem
 * @note
@@ -101,35 +101,35 @@ int sem_post (sem_t *sem,
 int sem_trywait (sem_t *sem);
 
 /*!
-* @brief      ĞÅºÅµÆËø¶¨£¨P²Ù×÷£©,Èç¹ûĞÅºÅµÆµÄÖµĞ¡ÓÚ0£¬
+* @brief      ä¿¡å·ç¯é”å®šï¼ˆPæ“ä½œï¼‰,å¦‚æœä¿¡å·ç¯çš„å€¼å°äº0ï¼Œ
 * @return     int
 * @param      sem
 */
 int sem_wait (sem_t *sem);
 
 /*!
-* @brief      ĞÅºÅµÆ´ø³¬Ê±µÈ´ıµÄËø¶¨²Ù×÷£¨P²Ù×÷£©£¬Ê±¼äÊÇ¾ø¶ÔÖµ
-* @return     int              0³É¹¦£¬-1Ê§°Ü£¬Èç¹ûÊÇ³¬Ê±Ê§°Ü£¬errnoÊÇETIMEDOUT
-* @param      sem              ĞÅºÅµÆ¶ÔÏó
-* @param      abs_timeout_spec µÈ´ıµÄÊ±¼äµã£¬¾ø¶ÔÊ±¼ä
+* @brief      ä¿¡å·ç¯å¸¦è¶…æ—¶ç­‰å¾…çš„é”å®šæ“ä½œï¼ˆPæ“ä½œï¼‰ï¼Œæ—¶é—´æ˜¯ç»å¯¹å€¼
+* @return     int              0æˆåŠŸï¼Œ-1å¤±è´¥ï¼Œå¦‚æœæ˜¯è¶…æ—¶å¤±è´¥ï¼Œerrnoæ˜¯ETIMEDOUT
+* @param      sem              ä¿¡å·ç¯å¯¹è±¡
+* @param      abs_timeout_spec ç­‰å¾…çš„æ—¶é—´ç‚¹ï¼Œç»å¯¹æ—¶é—´
 * @note
 */
 int sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec);
 
 /*!
-* @brief      ĞÅºÅµÆ´ø³¬Ê±µÈ´ıµÄËø¶¨²Ù×÷£¨P²Ù×÷£©,·Ç±ê×¼ÊµÏÖ,Ê¹ÓÃtimeval½á¹¹£¬Ê±¼äÊÇ¾ø¶ÔÖµ
-* @return     int              0³É¹¦£¬-1Ê§°Ü£¬Èç¹ûÊÇ³¬Ê±Ê§°Ü£¬errnoÊÇETIMEDOUT
-* @param      sem              ĞÅºÅµÆ¶ÔÏó
-* @param      abs_timeout_time µÈ´ıµÄÊ±¼äµã£¬¾ø¶ÔÊ±¼ä  timevalÊÇÎÒÄÚ²¿µÄÊ±³¤±êÊ¾Í¨ÓÃÀàĞÍ
+* @brief      ä¿¡å·ç¯å¸¦è¶…æ—¶ç­‰å¾…çš„é”å®šæ“ä½œï¼ˆPæ“ä½œï¼‰,éæ ‡å‡†å®ç°,ä½¿ç”¨timevalç»“æ„ï¼Œæ—¶é—´æ˜¯ç»å¯¹å€¼
+* @return     int              0æˆåŠŸï¼Œ-1å¤±è´¥ï¼Œå¦‚æœæ˜¯è¶…æ—¶å¤±è´¥ï¼Œerrnoæ˜¯ETIMEDOUT
+* @param      sem              ä¿¡å·ç¯å¯¹è±¡
+* @param      abs_timeout_time ç­‰å¾…çš„æ—¶é—´ç‚¹ï¼Œç»å¯¹æ—¶é—´  timevalæ˜¯æˆ‘å†…éƒ¨çš„æ—¶é•¿æ ‡ç¤ºé€šç”¨ç±»å‹
 */
 int sem_timedwait(sem_t *sem, const timeval *abs_timeout_time);
 
 /*!
-* @brief      ·µ»Øµ±Ç°ĞÅºÅµÆµÄµ±Ç°Öµ,É÷ÓÃ£¬WindowsÄ¿Ç°²»Ö§³Ö£¨Ä³ÖÖ³Ì¶ÈÉÏ·´Ó³³öÁËWINDOWS APIµÄÉè¼ÆµÄÎÊÌâ£©
-*             Î¢ÈíºÅ³ÆÒÔºó»á¸Ä½øÕâ¸öAPI,ReleaseSemaphore,µ«WIN8Ã»ÓĞ¿´¼û¸Ä±ä
-* @return     int   0³É¹¦£¬-1Ê§°Ü£¬
-* @param      sem   ĞÅºÅµÆ¶ÔÏó
-* @param      sval  ĞÅºÅµÆµÄÖµ
+* @brief      è¿”å›å½“å‰ä¿¡å·ç¯çš„å½“å‰å€¼,æ…ç”¨ï¼ŒWindowsç›®å‰ä¸æ”¯æŒï¼ˆæŸç§ç¨‹åº¦ä¸Šåæ˜ å‡ºäº†WINDOWS APIçš„è®¾è®¡çš„é—®é¢˜ï¼‰
+*             å¾®è½¯å·ç§°ä»¥åä¼šæ”¹è¿›è¿™ä¸ªAPI,ReleaseSemaphore,ä½†WIN8æ²¡æœ‰çœ‹è§æ”¹å˜
+* @return     int   0æˆåŠŸï¼Œ-1å¤±è´¥ï¼Œ
+* @param      sem   ä¿¡å·ç¯å¯¹è±¡
+* @param      sval  ä¿¡å·ç¯çš„å€¼
 */
 int sem_getvalue(sem_t *sem, int *sval);
 };

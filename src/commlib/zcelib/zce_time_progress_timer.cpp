@@ -1,11 +1,11 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_sysinfo.h"
 #include "zce_os_adapt_error.h"
 #include "zce_time_progress_timer.h"
 
 /************************************************************************************************************
-Class           : ZCE_Progress_Timer ÓÃÓÚ¼ÇÂ¼Ò»¸öÊÂ¼şÓÃÊ±µÄ¼ÆÊ±Æ÷
+Class           : ZCE_Progress_Timer ç”¨äºè®°å½•ä¸€ä¸ªäº‹ä»¶ç”¨æ—¶çš„è®¡æ—¶å™¨
 ************************************************************************************************************/
 
 ZCE_Progress_Timer::ZCE_Progress_Timer():
@@ -19,7 +19,7 @@ ZCE_Progress_Timer::~ZCE_Progress_Timer()
 {
 }
 
-//´ÓĞÂ¿ªÊ¼¼ÆÊ±
+//ä»æ–°å¼€å§‹è®¡æ—¶
 void ZCE_Progress_Timer::restart()
 {
     end_time_ = 0;
@@ -27,13 +27,13 @@ void ZCE_Progress_Timer::restart()
     start_time_ = std::clock();
 }
 
-//½áÊø¼ÆÊ±
+//ç»“æŸè®¡æ—¶
 void ZCE_Progress_Timer::end()
 {
     end_time_ = std::clock();
 }
 
-//ÀÛ¼Æ¼ÆÊ±¿ªÊ¼
+//ç´¯è®¡è®¡æ—¶å¼€å§‹
 void ZCE_Progress_Timer::addup_start()
 {
     if (end_time_ > start_time_)
@@ -45,10 +45,10 @@ void ZCE_Progress_Timer::addup_start()
     start_time_ = std::clock();
 }
 
-//¼ÆËãÏûºÄµÄÊ±¼ä
+//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´
 double ZCE_Progress_Timer::elapsed_sec() const
 {
-    //ÔİÊ±È¥µôÕâ¸ö¶ÏÑÔ£¬ÔÚWINDOWSÆ½Ì¨£¬¼´Ê¹ÄãÊ¹ÓÃÕıÈ·£¬Ò²¿ÉÄÜ³öÏÖÕâ¸ö¶ÏÑÔ,ÔÚÀàµÄËµÃ÷Ğ´Çå³şÁË£¬×Ô¼ºÔÄ¶Á
+    //æš‚æ—¶å»æ‰è¿™ä¸ªæ–­è¨€ï¼Œåœ¨WINDOWSå¹³å°ï¼Œå³ä½¿ä½ ä½¿ç”¨æ­£ç¡®ï¼Œä¹Ÿå¯èƒ½å‡ºç°è¿™ä¸ªæ–­è¨€,åœ¨ç±»çš„è¯´æ˜å†™æ¸…æ¥šäº†ï¼Œè‡ªå·±é˜…è¯»
     //ZCE_ASSERT(end_time_ > start_time_);
 
     ZCE_ASSERT(end_time_ > 0);
@@ -63,14 +63,14 @@ double ZCE_Progress_Timer::elapsed_sec() const
 
 }
 
-//·µ»Ø×îĞ¡µÄ¼ÆÊ±¾«¶Èµ¥Î»£¨s£©£¬¸÷¸öÆ½Ì¨²»Ì«Ò»ÖÂ£¬
+//è¿”å›æœ€å°çš„è®¡æ—¶ç²¾åº¦å•ä½ï¼ˆsï¼‰ï¼Œå„ä¸ªå¹³å°ä¸å¤ªä¸€è‡´ï¼Œ
 double ZCE_Progress_Timer::precision()
 {
     return double(1) / double(CLOCKS_PER_SEC);
 }
 
 /************************************************************************************************************
-Class           : ZCE_Auto_Progress_Timer ÀûÓÃÎö¹¹×Ô¶¯Í£Ö¹µÄµÄ¼ÆÊ±Æ÷
+Class           : ZCE_Auto_Progress_Timer åˆ©ç”¨ææ„è‡ªåŠ¨åœæ­¢çš„çš„è®¡æ—¶å™¨
 ************************************************************************************************************/
 
 ZCE_Auto_Progress_Timer::ZCE_Auto_Progress_Timer()
@@ -83,7 +83,7 @@ ZCE_Auto_Progress_Timer::~ZCE_Auto_Progress_Timer()
 }
 
 /************************************************************************************************************
-Class           : ZCE_HR_Progress_Timer ¸ßĞÔÄÜ¼ÆÊ±Æ÷
+Class           : ZCE_HR_Progress_Timer é«˜æ€§èƒ½è®¡æ—¶å™¨
 ************************************************************************************************************/
 ZCE_HR_Progress_Timer::ZCE_HR_Progress_Timer()
 {
@@ -116,11 +116,11 @@ ZCE_HR_Progress_Timer::~ZCE_HR_Progress_Timer()
 {
 }
 
-//´ÓĞÂ¿ªÊ¼¼ÆÊ±
+//ä»æ–°å¼€å§‹è®¡æ—¶
 void ZCE_HR_Progress_Timer::restart()
 {
 #if defined ZCE_OS_WINDOWS
-    //Èç¹ûÉèÖÃ²»³É¹¦£¬»á·µ»Ø0
+    //å¦‚æœè®¾ç½®ä¸æˆåŠŸï¼Œä¼šè¿”å›0
     old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //
     ::QueryPerformanceFrequency(&frequency_);
@@ -142,13 +142,13 @@ void ZCE_HR_Progress_Timer::restart()
 #endif
 }
 
-//ÀÛ¼Æ¼ÆÊ±¿ªÊ¼,ÓÃÓÚ¶à´Î¼ÆÊ±µÄ¹ı³Ì£¬
+//ç´¯è®¡è®¡æ—¶å¼€å§‹,ç”¨äºå¤šæ¬¡è®¡æ—¶çš„è¿‡ç¨‹ï¼Œ
 void ZCE_HR_Progress_Timer::addup_start()
 {
 #if defined ZCE_OS_WINDOWS
 
     addup_time_.QuadPart += end_time_.QuadPart - start_time_.QuadPart;
-    //Èç¹ûÉèÖÃ²»³É¹¦£¬»á·µ»Ø0
+    //å¦‚æœè®¾ç½®ä¸æˆåŠŸï¼Œä¼šè¿”å›0
     old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //
     ::QueryPerformanceFrequency(&frequency_);
@@ -174,13 +174,13 @@ void ZCE_HR_Progress_Timer::addup_start()
 #endif
 }
 
-//½áÊø¼ÆÊ±
+//ç»“æŸè®¡æ—¶
 void ZCE_HR_Progress_Timer::end()
 {
 #if defined ZCE_OS_WINDOWS
 
     ::QueryPerformanceCounter(&end_time_);
-    //»¹Ô­Ïß³ÌµÄ´¦ÀíÆ÷°ó¶¨¹ØÏµ
+    //è¿˜åŸçº¿ç¨‹çš„å¤„ç†å™¨ç»‘å®šå…³ç³»
     if (old_affinity_mask_ != 0)
     {
         ::SetThreadAffinityMask(GetCurrentThread(), old_affinity_mask_);
@@ -196,7 +196,7 @@ void ZCE_HR_Progress_Timer::end()
 #endif
 }
 
-//¼ÆËãÏûºÄµÄÊ±¼ä(us)
+//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´(us)
 double ZCE_HR_Progress_Timer::elapsed_usec() const
 {
 
@@ -218,7 +218,7 @@ double ZCE_HR_Progress_Timer::elapsed_usec() const
 #endif
 }
 
-//µÃµ½¼ÆÊ±Æ÷µÄ¾«¶È£¨usÎ¢Ãë-6£©
+//å¾—åˆ°è®¡æ—¶å™¨çš„ç²¾åº¦ï¼ˆuså¾®ç§’-6ï¼‰
 double ZCE_HR_Progress_Timer::precision_usec()
 {
 #if defined ZCE_OS_WINDOWS
@@ -232,11 +232,11 @@ double ZCE_HR_Progress_Timer::precision_usec()
 }
 
 /************************************************************************************************************
-Class           : ZCE_TSC_Progress_Timer TSC¼ÆÊ±Æ÷£¬
+Class           : ZCE_TSC_Progress_Timer TSCè®¡æ—¶å™¨ï¼Œ
 ************************************************************************************************************/
 uint64_t ZCE_TSC_Progress_Timer::cpu_hz_ = 0;
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_TSC_Progress_Timer::ZCE_TSC_Progress_Timer():
     start_time_(0),
     end_time_(0),
@@ -244,12 +244,12 @@ ZCE_TSC_Progress_Timer::ZCE_TSC_Progress_Timer():
 {
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 ZCE_TSC_Progress_Timer::~ZCE_TSC_Progress_Timer()
 {
 }
 
-///´ÓĞÂ¿ªÊ¼¼ÆÊ±
+///ä»æ–°å¼€å§‹è®¡æ—¶
 void ZCE_TSC_Progress_Timer::restart()
 {
     end_time_ = 0;
@@ -257,26 +257,26 @@ void ZCE_TSC_Progress_Timer::restart()
     start_time_ = ZCE_LIB::rdtsc();
 }
 
-//½áÊø¼ÆÊ±
+//ç»“æŸè®¡æ—¶
 void ZCE_TSC_Progress_Timer::end()
 {
     end_time_ = ZCE_LIB::rdtsc();
 }
 
-///ÀÛ¼Æ¼ÆÊ±¿ªÊ¼,ÓÃÓÚ¶à´Î¼ÆÊ±µÄ¹ı³Ì£¬
+///ç´¯è®¡è®¡æ—¶å¼€å§‹,ç”¨äºå¤šæ¬¡è®¡æ—¶çš„è¿‡ç¨‹ï¼Œ
 void ZCE_TSC_Progress_Timer::addup_start()
 {
     if (end_time_ > start_time_)
     {
         addup_time_ += end_time_ - start_time_;
     }
-    //»áÓĞÒ»Ğ©ÌØÊâÇé¿ö£¬µ¼ÖÂ start_time_ > end_time_,×î´ó¿ÉÄÜÊÇÔÚ²»Í¬µÄCPUÉÏ¼ÆÊ±ÁË,
+    //ä¼šæœ‰ä¸€äº›ç‰¹æ®Šæƒ…å†µï¼Œå¯¼è‡´ start_time_ > end_time_,æœ€å¤§å¯èƒ½æ˜¯åœ¨ä¸åŒçš„CPUä¸Šè®¡æ—¶äº†,
 
     end_time_ = 0;
     start_time_ = ZCE_LIB::rdtsc();
 }
 
-//¼ÆËãÏûºÄµÄTICK£¨CPUÖÜÆÚ£©ÊıÁ¿£¬×¢ÒâÕâ¸öÖµ£¬Ö»ÄÜÔÚ×Ô¼ºµÄ»úÆ÷ÉÏ×ö¶Ô±È²ÅÓĞÒâÒå£¬
+//è®¡ç®—æ¶ˆè€—çš„TICKï¼ˆCPUå‘¨æœŸï¼‰æ•°é‡ï¼Œæ³¨æ„è¿™ä¸ªå€¼ï¼Œåªèƒ½åœ¨è‡ªå·±çš„æœºå™¨ä¸Šåšå¯¹æ¯”æ‰æœ‰æ„ä¹‰ï¼Œ
 uint64_t ZCE_TSC_Progress_Timer::elapsed_tick() const
 {
     if (end_time_ > start_time_)
@@ -286,12 +286,12 @@ uint64_t ZCE_TSC_Progress_Timer::elapsed_tick() const
     return addup_time_;
 }
 
-//¼ÆËãÏûºÄµÄÊ±¼ä(us),×¢ÒâÕâ¸öÊıÖµ²»»áÌ«×¼È·
+//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´(us),æ³¨æ„è¿™ä¸ªæ•°å€¼ä¸ä¼šå¤ªå‡†ç¡®
 double ZCE_TSC_Progress_Timer::elapsed_usec() const
 {
     const uint64_t DEFAULT_CPU_HZ = 1024 * 1024 * 1024;
     int ret = 0;
-    //Èç¹û¾²Ì¬±äÁ¿Ã»ÓĞ³õÊ¼»¯
+    //å¦‚æœé™æ€å˜é‡æ²¡æœ‰åˆå§‹åŒ–
     if ( 0 == cpu_hz_ )
     {
         ZCE_SYSTEM_INFO system_info;
@@ -303,7 +303,7 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
         else
         {
             ZCE_LOG(RS_ERROR, "ZCE_LIB::get_system_info return fail. cpu use default 1G.");
-            //ÓÃ1G×÷Îª×÷ÎªÄ¬ÈÏÖµ
+            //ç”¨1Gä½œä¸ºä½œä¸ºé»˜è®¤å€¼
             cpu_hz_ = DEFAULT_CPU_HZ;
         }
     }

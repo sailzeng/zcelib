@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef OGRE4A_IP_RESTRICT_H_
 #define OGRE4A_IP_RESTRICT_H_
 
@@ -17,27 +17,27 @@ protected:
 
 public:
 
-    ///´ÓÅäÖÃÎÄ¼şÖĞµÃµ½Ïà¹ØµÄÅäÖÃ
+    ///ä»é…ç½®æ–‡ä»¶ä¸­å¾—åˆ°ç›¸å…³çš„é…ç½®
     int get_config(const Ogre_Server_Config *config);
-    //¼ì²éIPÏŞÖÆ
+    //æ£€æŸ¥IPé™åˆ¶
     int check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress);
 
 public:
 
-    //µ¥×ÓÊµÀıº¯Êı
+    //å•å­å®ä¾‹å‡½æ•°
     static Ogre_IPRestrict_Mgr *instance();
-    //ÇåÀíµ¥×ÓÊµÀı
+    //æ¸…ç†å•å­å®ä¾‹
     static void clean_instance();
 
 protected:
 
-    //ÔÊĞí½øĞĞÁ¬½ÓµÄIPµØÖ·
+    //å…è®¸è¿›è¡Œè¿æ¥çš„IPåœ°å€
     SET_OF_IPADDRESS                  allow_ip_set_;
-    //¾Ü¾ø½øĞĞÁ¬½ÓµÄIPµØÖ·
+    //æ‹’ç»è¿›è¡Œè¿æ¥çš„IPåœ°å€
     SET_OF_IPADDRESS                  reject_ip_set_;
 
 protected:
-    //µ¥×ÓÊµÀı
+    //å•å­å®ä¾‹
     static Ogre_IPRestrict_Mgr     *instance_;
 };
 

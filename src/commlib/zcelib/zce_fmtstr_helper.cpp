@@ -1,10 +1,10 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_fmtstr_helper.h"
 
 //-----------------------------------------------------------------------------------------------------
 
-//INTÊä³ö¸¨ÖúÀàµÄ¹¹Ôìº¯Êı
+//INTè¾“å‡ºè¾…åŠ©ç±»çš„æ„é€ å‡½æ•°
 ZCE_LIB::Int_Out_Helper::Int_Out_Helper(int64_t out_data,
                                         BASE_NUMBER_SYSTEM base,
                                         size_t width,
@@ -22,7 +22,7 @@ ZCE_LIB::Int_Out_Helper::~Int_Out_Helper()
 {
 }
 
-//DOUBLE¸ñÊ½»¯Êä³ö¸¨Öú
+//DOUBLEæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©
 ZCE_LIB::Double_Out_Helper::Double_Out_Helper(double out_data,
                                               size_t width,
                                               size_t precision,
@@ -38,7 +38,7 @@ ZCE_LIB::Double_Out_Helper::~Double_Out_Helper()
 {
 }
 
-//String¸ñÊ½»¯Êä³ö¸¨ÖúÀà
+//Stringæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©ç±»
 ZCE_LIB::String_Out_Helper::String_Out_Helper(const char *out_str_ptr,
                                               size_t out_str_len,
                                               size_t width,

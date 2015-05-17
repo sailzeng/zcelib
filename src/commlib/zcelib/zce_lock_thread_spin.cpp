@@ -1,19 +1,4 @@
-/************************************************************************************************************
-Copyright           : 2004-2011  Fullsail Technology (Shenzhen) Company Limited.
-FileName            : zce_lock_thread_mutex.cpp
-Author              : Sailzeng ZENGXING
-Version             :
-Date Of Creation    : 2011Äê9ÔÂ13ÈÕ
-Description         : Ïß³ÌµÄ»¥³âÁ¿£¬ÓĞÇáÁ¿µÄËø£¬µİ¹éËø£¬·Çµİ¹éËø£¬¶ÁĞ´Ëø
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-************************************************************************************************************/
+ï»¿
 
 #include "zce_predefine.h"
 #include "zce_os_adapt_spin.h"
@@ -29,7 +14,7 @@ Modification History:
 Class           : ZCE_Thread_Spin_Mutex
 ************************************************************************************************************/
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
 {
     int ret = 0;
@@ -46,7 +31,7 @@ ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
 
 }
 
-//Ïú»Ù»¥³âÁ¿
+//é”€æ¯äº’æ–¥é‡
 ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex (void)
 {
     int ret = 0;
@@ -59,7 +44,7 @@ ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex (void)
     }
 }
 
-//Ëø¶¨
+//é”å®š
 void ZCE_Thread_Spin_Mutex::lock()
 {
     int ret = 0;
@@ -72,7 +57,7 @@ void ZCE_Thread_Spin_Mutex::lock()
     }
 }
 
-//³¢ÊÔËø¶¨
+//å°è¯•é”å®š
 bool ZCE_Thread_Spin_Mutex::try_lock()
 {
     int ret = 0;
@@ -86,7 +71,7 @@ bool ZCE_Thread_Spin_Mutex::try_lock()
     return true;
 }
 
-//½âËø,
+//è§£é”,
 void ZCE_Thread_Spin_Mutex::unlock()
 {
     int ret = 0;
@@ -99,7 +84,7 @@ void ZCE_Thread_Spin_Mutex::unlock()
     }
 }
 
-//È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
+//å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
 pthread_spinlock_t *ZCE_Thread_Spin_Mutex::get_lock()
 {
     return &lock_;

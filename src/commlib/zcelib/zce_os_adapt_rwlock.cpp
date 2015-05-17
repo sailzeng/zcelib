@@ -1,4 +1,4 @@
-
+ï»¿
 #include "zce_predefine.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_mutex.h"
@@ -8,15 +8,15 @@
 #include "zce_os_adapt_rwlock.h"
 #include "zce_trace_log_debug.h"
 
-//¶ÁÐ´ËøµÄ¶ÔÏóµÄ³õÊ¼»¯
+//è¯»å†™é”çš„å¯¹è±¡çš„åˆå§‹åŒ–
 int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
                                  const pthread_rwlockattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //¿¼ÂÇÔÙÈý£¬ÎÒ°ÑÖØ¸´³õÊ¼»¯£¬ÊÇ·ñ³õÊ¼»¯µÄ¸÷ÖÖÅÐ¶¨É¾³ýÁË£¬¸Ð¾õ¡­¡­¡­¡­£¬Ã»±ØÒª
+    //è€ƒè™‘å†ä¸‰ï¼Œæˆ‘æŠŠé‡å¤åˆå§‹åŒ–ï¼Œæ˜¯å¦åˆå§‹åŒ–çš„å„ç§åˆ¤å®šåˆ é™¤äº†ï¼Œæ„Ÿè§‰â€¦â€¦â€¦â€¦ï¼Œæ²¡å¿…è¦
 
-    //WIN SVR 2008ÒÔºó£¬ÓÃÌØÊâµÄÖ§³Ö
+    //WIN SVR 2008ä»¥åŽï¼Œç”¨ç‰¹æ®Šçš„æ”¯æŒ
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
     if (rwlock->use_win_slim_)
@@ -26,7 +26,7 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
     }
 
 #endif
-    //ÆäËûµ¹Ã¹µ°Ö»ÄÜÄ£Äâ
+    //å…¶ä»–å€’éœ‰è›‹åªèƒ½æ¨¡æ‹Ÿ
 
     int result = 0;
 
@@ -43,15 +43,15 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
     mutex_attr.lock_shared_ = PTHREAD_PROCESS_PRIVATE;
     mutex_attr.lock_type_ = PTHREAD_MUTEX_RECURSIVE;
 
-    //³õÊ¼»¯¼¸¸öÍ¬²½¶ÔÏó
+    //åˆå§‹åŒ–å‡ ä¸ªåŒæ­¥å¯¹è±¡
 
-    //Ò»Ð©Êý¾ÝÇø¸ÄÐ´µÄ±£»¤
+    //ä¸€äº›æ•°æ®åŒºæ”¹å†™çš„ä¿æŠ¤
     if ( (result = ZCE_LIB::pthread_mutex_init(&rwlock->simulate_rw_.rw_mutex_, &mutex_attr)) != 0)
     {
         return EINVAL;
     }
 
-    //µÈ´ý¶ÁÈ¡µÄÌõ¼þ±äÁ¿³õÊ¼»¯
+    //ç­‰å¾…è¯»å–çš„æ¡ä»¶å˜é‡åˆå§‹åŒ–
     if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->simulate_rw_.rw_condreaders_,
                                                 false )) != 0)
     {
@@ -59,7 +59,7 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
         return EINVAL;
     }
 
-    //µÈ´ýÐ´ÈëµÄÌõ¼þ±äÁ¿³õÊ¼»¯
+    //ç­‰å¾…å†™å…¥çš„æ¡ä»¶å˜é‡åˆå§‹åŒ–
     if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->simulate_rw_.rw_condwriters_,
                                                 false)) != 0)
     {
@@ -81,7 +81,7 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
 }
 
-//³õÊ¼»¯¶ÁÐ´Ëø¶ÔÏó
+//åˆå§‹åŒ–è¯»å†™é”å¯¹è±¡
 int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
                                    bool  use_win_slim,
                                    bool  priority_to_write)
@@ -91,7 +91,7 @@ int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
 
 #if defined ZCE_OS_WINDOWS
     attr.priority_to_write_ = priority_to_write;
-    //Èç¹ûÖ§³Ö2008²ÅÄÜÉèÖÃÕâ¸ö±äÁ¿
+    //å¦‚æžœæ”¯æŒ2008æ‰èƒ½è®¾ç½®è¿™ä¸ªå˜é‡
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
     rwlock->use_win_slim_ = use_win_slim;
 #else
@@ -104,7 +104,7 @@ int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
     ZCE_UNUSED_ARG(use_win_slim);
     ZCE_UNUSED_ARG(priority_to_write);
 
-    //ÆäÊµÎÒÔÚÏë£¬²»Èç¸ã¸öNULL£¬ÆäÊµ¶¼Ò»Ñù
+    //å…¶å®žæˆ‘åœ¨æƒ³ï¼Œä¸å¦‚æžä¸ªNULLï¼Œå…¶å®žéƒ½ä¸€æ ·
     result = ::pthread_rwlockattr_init(&attr);
 
     if (result != 0)
@@ -131,12 +131,12 @@ int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
     return 0;
 }
 
-//¶ÁÐ´ËøµÄ¶ÔÏóµÄÏú»Ù
+//è¯»å†™é”çš„å¯¹è±¡çš„é”€æ¯
 int ZCE_LIB::pthread_rwlock_destroy(pthread_rwlock_t *rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //WIN SVR 2008ÒÔºó£¬ÓÃÌØÊâµÄÖ§³Ö
+    //WIN SVR 2008ä»¥åŽï¼Œç”¨ç‰¹æ®Šçš„æ”¯æŒ
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
     if (rwlock->use_win_slim_)
@@ -147,7 +147,7 @@ int ZCE_LIB::pthread_rwlock_destroy(pthread_rwlock_t *rwlock)
 
 #endif
 
-    //»¹ÓÐµÈ´ýµÄ£¬²»ÄÜÏú»Ù
+    //è¿˜æœ‰ç­‰å¾…çš„ï¼Œä¸èƒ½é”€æ¯
     if (rwlock->simulate_rw_.rw_refcount_ != 0
         || rwlock->simulate_rw_.rw_nwaitreaders_ != 0
         || rwlock->simulate_rw_.rw_nwaitwriters_ != 0)
@@ -166,7 +166,7 @@ int ZCE_LIB::pthread_rwlock_destroy(pthread_rwlock_t *rwlock)
 #endif
 }
 
-//»ñµÃ¶ÁÈ¡µÄËø
+//èŽ·å¾—è¯»å–çš„é”
 int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 {
 
@@ -174,7 +174,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         ::AcquireSRWLockShared(&(rwlock->rwlock_slim_));
@@ -184,7 +184,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 
 #endif  //WIN SERVER 2008
 
-    //¼ÓÉÏ±£»¤Ëø
+    //åŠ ä¸Šä¿æŠ¤é”
     int  result = ZCE_LIB::pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
 
     if ( 0 != result  )
@@ -192,15 +192,15 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
         return(result);
     }
 
-    //PTHREAD WIN32µÄÊµÏÖÔÚÕâ¸öµØ·½Ã»ÓÐÓÃÌõ¼þ±äÁ¿µÈ´ý£¬Ô­ÒòÎ»ÖÃ£¬¸öÈËÈÏÎªÕâÊÇÓÐè¦´ÃµÄ£¬
-    //¿ÉÄÜ»áµ¼ÖÂ½øÈë¸ßCPUÑ­»·
+    //PTHREAD WIN32çš„å®žçŽ°åœ¨è¿™ä¸ªåœ°æ–¹æ²¡æœ‰ç”¨æ¡ä»¶å˜é‡ç­‰å¾…ï¼ŒåŽŸå› ä½ç½®ï¼Œä¸ªäººè®¤ä¸ºè¿™æ˜¯æœ‰ç‘•ç–µçš„ï¼Œ
+    //å¯èƒ½ä¼šå¯¼è‡´è¿›å…¥é«˜CPUå¾ªçŽ¯
 
-    //µÈ´ý»ñµÃ¶ÁÐ´Ëø£¬Èç¹ûÓÐÈËÔÚÐ´£¬»òÕßÓÐÒªÐ´ÈëµÄÈËÔÚµÈ´ý£¬Æ«ÏòÐ´ÓÅÏÈ
+    //ç­‰å¾…èŽ·å¾—è¯»å†™é”ï¼Œå¦‚æžœæœ‰äººåœ¨å†™ï¼Œæˆ–è€…æœ‰è¦å†™å…¥çš„äººåœ¨ç­‰å¾…ï¼Œåå‘å†™ä¼˜å…ˆ
     while (  (rwlock->simulate_rw_.rw_refcount_ < 0)
              || ( true == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitwriters_ > 0 ) )
     {
         rwlock->simulate_rw_.rw_nwaitreaders_++;
-        //½øÈëwaitº¯Êý£¬simulate_rw_.rw_mutex_»á±»´ò¿ª£¬ÈÃÆäËûÈË»î¶¯£¬³öÀ´µÄÊ±ºò»á»ñµÃ
+        //è¿›å…¥waitå‡½æ•°ï¼Œsimulate_rw_.rw_mutex_ä¼šè¢«æ‰“å¼€ï¼Œè®©å…¶ä»–äººæ´»åŠ¨ï¼Œå‡ºæ¥çš„æ—¶å€™ä¼šèŽ·å¾—
         result = ZCE_LIB::pthread_cond_wait(&rwlock->simulate_rw_.rw_condreaders_,
                                             &(rwlock->simulate_rw_.rw_mutex_));
         rwlock->simulate_rw_.rw_nwaitreaders_--;
@@ -211,7 +211,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
         }
     }
 
-    //»ñµÃµÄÁË¶ÁµÄËø¿ØÖÆ
+    //èŽ·å¾—çš„äº†è¯»çš„é”æŽ§åˆ¶
     if (result == 0)
     {
         rwlock->simulate_rw_.rw_refcount_++;
@@ -227,7 +227,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 
 }
 
-//³¢ÊÔ»ñÈ¡¶ÁÈ¡Ëø
+//å°è¯•èŽ·å–è¯»å–é”
 int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 {
 
@@ -235,7 +235,7 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         BOOL bret = ::TryAcquireSRWLockShared(&(rwlock->rwlock_slim_));
@@ -256,7 +256,7 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
         return(result);
     }
 
-    //Èç¹ûÓÐÈËÔÚÐ´£¬»òÕßÓÐÒªÐ´ÈëµÄÈËÔÚµÈ´ý,ÄÇÃ´¾Í²»ÄÜget¶ÁÈ¡Ëø
+    //å¦‚æžœæœ‰äººåœ¨å†™ï¼Œæˆ–è€…æœ‰è¦å†™å…¥çš„äººåœ¨ç­‰å¾…,é‚£ä¹ˆå°±ä¸èƒ½getè¯»å–é”
     if ((rwlock->simulate_rw_.rw_refcount_ < 0)
         || ( true == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitwriters_ > 0 ))
     {
@@ -275,7 +275,7 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 #endif
 }
 
-//¶ÁÈ¡ËøµÄ³¬Ê±Ëø¶¨£¬Õâ¸ö´úÂëUNP V2²¢Ã»ÓÐ¸ø³ö£¬
+//è¯»å–é”çš„è¶…æ—¶é”å®šï¼Œè¿™ä¸ªä»£ç UNP V2å¹¶æ²¡æœ‰ç»™å‡ºï¼Œ
 int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
                                         const ::timespec *abs_timeout_spec)
 {
@@ -283,7 +283,7 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         return EINVAL;
@@ -294,18 +294,18 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
     int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->simulate_rw_.rw_mutex_,
                                                   abs_timeout_spec);
 
-    //ÎÒÓÐµãÀí½âÎªÉ¶phtreadµÄºÜ¶àº¯ÊýÓÃ¾ø¶ÔÊ±¼äÁË£¬abs_timeout_spec
+    //æˆ‘æœ‰ç‚¹ç†è§£ä¸ºå•¥phtreadçš„å¾ˆå¤šå‡½æ•°ç”¨ç»å¯¹æ—¶é—´äº†ï¼Œabs_timeout_spec
     if ( result != 0)
     {
         return(result);
     }
 
-    //µÈ´ý»ñµÃ¶ÁÐ´Ëø£¬Èç¹ûÓÐÈËÔÚÐ´£¬»òÕßÓÐÒªÐ´ÈëµÄÈËÔÚµÈ´ý£¬Æ«ÏòÐ´ÓÅÏÈ
+    //ç­‰å¾…èŽ·å¾—è¯»å†™é”ï¼Œå¦‚æžœæœ‰äººåœ¨å†™ï¼Œæˆ–è€…æœ‰è¦å†™å…¥çš„äººåœ¨ç­‰å¾…ï¼Œåå‘å†™ä¼˜å…ˆ
     while ( (rwlock->simulate_rw_.rw_refcount_ < 0)
             || (true == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitwriters_ > 0) )
     {
         rwlock->simulate_rw_.rw_nwaitreaders_++;
-        //½øÈëwaitº¯Êý£¬simulate_rw_.rw_mutex_»á±»´ò¿ª£¬ÈÃÆäËûÈË»î¶¯£¬³öÀ´µÄÊ±ºò»á»ñµÃ
+        //è¿›å…¥waitå‡½æ•°ï¼Œsimulate_rw_.rw_mutex_ä¼šè¢«æ‰“å¼€ï¼Œè®©å…¶ä»–äººæ´»åŠ¨ï¼Œå‡ºæ¥çš„æ—¶å€™ä¼šèŽ·å¾—
         result = ZCE_LIB::pthread_cond_timedwait(&rwlock->simulate_rw_.rw_condreaders_,
                                                  &(rwlock->simulate_rw_.rw_mutex_),
                                                  abs_timeout_spec);
@@ -317,7 +317,7 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
         }
     }
 
-    //»ñµÃµÄÁË¶ÁµÄËø¿ØÖÆ
+    //èŽ·å¾—çš„äº†è¯»çš„é”æŽ§åˆ¶
     if (result == 0)
     {
         rwlock->simulate_rw_.rw_refcount_++;
@@ -331,23 +331,23 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 #endif
 }
 
-//·Ç±ê×¼£¬¶ÁÈ¡ËøµÄ³¬Ê±Ëø¶¨£¬Ê±¼ä²ÎÊýµ÷Õû³Étimeval£¬
+//éžæ ‡å‡†ï¼Œè¯»å–é”çš„è¶…æ—¶é”å®šï¼Œæ—¶é—´å‚æ•°è°ƒæ•´æˆtimevalï¼Œ
 int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
                                         const timeval *abs_timeout_val)
 {
-    //Õâ¸öÊ±¼äÊÇ¾ø¶ÔÖµÊ±¼ä£¬Òªµ÷ÕûÎªÏà¶ÔÊ±¼ä
+    //è¿™ä¸ªæ—¶é—´æ˜¯ç»å¯¹å€¼æ—¶é—´ï¼Œè¦è°ƒæ•´ä¸ºç›¸å¯¹æ—¶é—´
     ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
     return ZCE_LIB::pthread_rwlock_timedrdlock(rwlock, &abs_timeout_spec);
 }
 
-//»ñÈ¡Ð´Ëø
+//èŽ·å–å†™é”
 int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         ::AcquireSRWLockExclusive(&(rwlock->rwlock_slim_));
@@ -364,7 +364,7 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
         return(result);
     }
 
-    //Èç¹ûÓÐÈËÔÚÊ¹ÓÃËø£¬ÎÞÂÛ¶ÁÐ´£¬¾ÍÒªµÈ´ý£¬Èç¹û¶ÁÈ¡ÓÅÏÈ£¬Èç¹ûÓÐÈË»¹ÔÚµÈ´ý¶Á£¬Ò²µÈ´ý
+    //å¦‚æžœæœ‰äººåœ¨ä½¿ç”¨é”ï¼Œæ— è®ºè¯»å†™ï¼Œå°±è¦ç­‰å¾…ï¼Œå¦‚æžœè¯»å–ä¼˜å…ˆï¼Œå¦‚æžœæœ‰äººè¿˜åœ¨ç­‰å¾…è¯»ï¼Œä¹Ÿç­‰å¾…
     while ( (rwlock->simulate_rw_.rw_refcount_ != 0)
             || (false == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitreaders_ > 0) )
     {
@@ -379,7 +379,7 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
         }
     }
 
-    //±êÊ¶Ëø±»Ð´Õß»ñµÃ
+    //æ ‡è¯†é”è¢«å†™è€…èŽ·å¾—
     if (result == 0)
     {
         rwlock->simulate_rw_.rw_refcount_ = -1;
@@ -393,7 +393,7 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
 #endif
 }
 
-//³¢ÊÔÄÜ·ñÓµÓÐÐ´Ëø£¬·Ç×èÈû·½Ê½
+//å°è¯•èƒ½å¦æ‹¥æœ‰å†™é”ï¼Œéžé˜»å¡žæ–¹å¼
 int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
 {
 
@@ -401,7 +401,7 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         BOOL bret = ::TryAcquireSRWLockExclusive(&(rwlock->rwlock_slim_));
@@ -422,13 +422,13 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
         return(result);
     }
 
-    //Èç¹ûÓÐ¶Á£¬Ð´Õß´æÔÚ£¬¾Í²»ÄÜÓµÓÐÐ´Ëø
+    //å¦‚æžœæœ‰è¯»ï¼Œå†™è€…å­˜åœ¨ï¼Œå°±ä¸èƒ½æ‹¥æœ‰å†™é”
     if ( (rwlock->simulate_rw_.rw_refcount_ != 0)
          || (false == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitreaders_ > 0) )
     {
         result = EBUSY;
     }
-    //·ñÔò¾ÍÓµÓÐÐ´Ëø
+    //å¦åˆ™å°±æ‹¥æœ‰å†™é”
     else
     {
         rwlock->simulate_rw_.rw_refcount_ = -1;
@@ -442,7 +442,7 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
 #endif
 }
 
-//»ñÈ¡Ð´Ëø£¬²¢ÇÒµÈ´ýµ½³¬Ê±ÎªÖ¹£¬
+//èŽ·å–å†™é”ï¼Œå¹¶ä¸”ç­‰å¾…åˆ°è¶…æ—¶ä¸ºæ­¢ï¼Œ
 int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
                                         const ::timespec *abs_timeout_spec)
 {
@@ -450,7 +450,7 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         return EINVAL;
@@ -465,7 +465,7 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
         return(result);
     }
 
-    //Èç¹ûÓÐÈËÔÚÊ¹ÓÃËø£¬ÎÞÂÛ¶ÁÐ´£¬¾ÍÒªµÈ´ý£¬Èç¹û¶ÁÈ¡ÓÅÏÈ£¬Èç¹ûÓÐÈË»¹ÔÚµÈ´ý¶Á£¬Ò²µÈ´ý
+    //å¦‚æžœæœ‰äººåœ¨ä½¿ç”¨é”ï¼Œæ— è®ºè¯»å†™ï¼Œå°±è¦ç­‰å¾…ï¼Œå¦‚æžœè¯»å–ä¼˜å…ˆï¼Œå¦‚æžœæœ‰äººè¿˜åœ¨ç­‰å¾…è¯»ï¼Œä¹Ÿç­‰å¾…
     while ((rwlock->simulate_rw_.rw_refcount_ != 0)
            || (false == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitreaders_ > 0) )
     {
@@ -494,23 +494,23 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 #endif
 }
 
-//·Ç±ê×¼£¬¶ÁÈ¡ËøµÄ³¬Ê±Ëø¶¨£¬Ê±¼ä²ÎÊýµ÷Õû³Étimeval£¬
+//éžæ ‡å‡†ï¼Œè¯»å–é”çš„è¶…æ—¶é”å®šï¼Œæ—¶é—´å‚æ•°è°ƒæ•´æˆtimevalï¼Œ
 int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
                                         const timeval *abs_timeout_val)
 {
-    //Õâ¸öÊ±¼äÊÇ¾ø¶ÔÖµÊ±¼ä£¬Òªµ÷ÕûÎªÏà¶ÔÊ±¼ä
+    //è¿™ä¸ªæ—¶é—´æ˜¯ç»å¯¹å€¼æ—¶é—´ï¼Œè¦è°ƒæ•´ä¸ºç›¸å¯¹æ—¶é—´
     ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
     return ZCE_LIB::pthread_rwlock_timedwrlock(rwlock, &abs_timeout_spec);
 }
 
-//½â³ýËø¶¨£¬Õâ¸öº¯Êý¿ÉÒÔ½â³ý¶ÁÈ¡Ëø¶¨ºÍÐ´ÈëËø¶¨£¬²»ÐèÒªÌØ±ðÖ¸Ã÷
+//è§£é™¤é”å®šï¼Œè¿™ä¸ªå‡½æ•°å¯ä»¥è§£é™¤è¯»å–é”å®šå’Œå†™å…¥é”å®šï¼Œä¸éœ€è¦ç‰¹åˆ«æŒ‡æ˜Ž
 int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //Èç¹ûÓÃWIN×Ô´øµÄ¶ÁÐ´Ëø
+    //å¦‚æžœç”¨WINè‡ªå¸¦çš„è¯»å†™é”
     if (rwlock->use_win_slim_)
     {
         if (ZCE_SLIM_USE_SHARED_LOCK == __zce_tls_read_or_write)
@@ -528,7 +528,7 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
 
 #endif
 
-    //ÉÏËø£¬
+    //ä¸Šé”ï¼Œ
     int result = ZCE_LIB::pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
 
     if ( result != 0)
@@ -536,27 +536,27 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
         return(result);
     }
 
-    //Èç¹ûÊÇ¶ÁÕßÕ¼ÓÃÁËËø£¬
+    //å¦‚æžœæ˜¯è¯»è€…å ç”¨äº†é”ï¼Œ
     if (rwlock->simulate_rw_.rw_refcount_ > 0)
     {
         rwlock->simulate_rw_.rw_refcount_--;
     }
-    //Èç¹ûÊÇ×÷¼Ò£¨Ð´Õß£©Õ¼ÓÃÁËËø£¬
+    //å¦‚æžœæ˜¯ä½œå®¶ï¼ˆå†™è€…ï¼‰å ç”¨äº†é”ï¼Œ
     else if (rwlock->simulate_rw_.rw_refcount_ == -1)
     {
         rwlock->simulate_rw_.rw_refcount_ = 0;
     }
-    //ÀíÂÛÉÏ²»»áµ½Õâ¶ù
+    //ç†è®ºä¸Šä¸ä¼šåˆ°è¿™å„¿
     else
     {
-        //µ½Õâ¶ù£¬Ó¦¸ÃÊÇÄã´úÂëÐ´´íÁË£¬Ã»ÓÐ¼ÓËø£¬µ«ÊÇÄãµ÷ÓÃÁË½âËøº¯Êý
+        //åˆ°è¿™å„¿ï¼Œåº”è¯¥æ˜¯ä½ ä»£ç å†™é”™äº†ï¼Œæ²¡æœ‰åŠ é”ï¼Œä½†æ˜¯ä½ è°ƒç”¨äº†è§£é”å‡½æ•°
     }
 
-    //¸ù¾Ý¶ÁÓÅÏÈ»¹ÊÇÐ´ÈëÓÅÏÈ£¬½øÐÐ´¦Àí
-    //Èç¹ûÐ´ÓÅÏÈ
+    //æ ¹æ®è¯»ä¼˜å…ˆè¿˜æ˜¯å†™å…¥ä¼˜å…ˆï¼Œè¿›è¡Œå¤„ç†
+    //å¦‚æžœå†™ä¼˜å…ˆ
     if (rwlock->simulate_rw_.priority_to_write_)
     {
-        //Èç¹ûÕâÊ±ºò£¬ÓÐÐ´ÈëµÄÈËµÈ´ý£¬ÓÅÏÈ¸ø×÷¼Ò·¢¸öÐÅºÅ
+        //å¦‚æžœè¿™æ—¶å€™ï¼Œæœ‰å†™å…¥çš„äººç­‰å¾…ï¼Œä¼˜å…ˆç»™ä½œå®¶å‘ä¸ªä¿¡å·
         if (rwlock->simulate_rw_.rw_nwaitwriters_ > 0)
         {
             if (rwlock->simulate_rw_.rw_refcount_ == 0)
@@ -564,20 +564,20 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
                 result = ZCE_LIB::pthread_cond_signal(&rwlock->simulate_rw_.rw_condwriters_);
             }
         }
-        //Èç¹ûÕâÊ±ºò£¬ÓÐ¶ÁÕßµÄÔÚµÈ´ý£¬¸ø¶ÁÕß×ö¸ö¹ã²¥
+        //å¦‚æžœè¿™æ—¶å€™ï¼Œæœ‰è¯»è€…çš„åœ¨ç­‰å¾…ï¼Œç»™è¯»è€…åšä¸ªå¹¿æ’­
         else if (rwlock->simulate_rw_.rw_nwaitreaders_ > 0)
         {
             result = ZCE_LIB::pthread_cond_broadcast(&rwlock->simulate_rw_.rw_condreaders_);
         }
     }
-    //Èç¹ûÊÇ¶ÁÈ¡ÓÅÏÈ
+    //å¦‚æžœæ˜¯è¯»å–ä¼˜å…ˆ
     else
     {
         if (rwlock->simulate_rw_.rw_nwaitreaders_ > 0)
         {
             result = ZCE_LIB::pthread_cond_broadcast(&rwlock->simulate_rw_.rw_condreaders_);
         }
-        //Èç¹ûÕâÊ±ºò£¬ÓÐÐ´ÈëµÄÈËµÈ´ý£¬ÓÅÏÈ¸ø×÷¼Ò·¢¸öÐÅºÅ
+        //å¦‚æžœè¿™æ—¶å€™ï¼Œæœ‰å†™å…¥çš„äººç­‰å¾…ï¼Œä¼˜å…ˆç»™ä½œå®¶å‘ä¸ªä¿¡å·
         else if (rwlock->simulate_rw_.rw_nwaitwriters_ > 0)
         {
             if (rwlock->simulate_rw_.rw_refcount_ == 0)
@@ -586,7 +586,7 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
             }
         }
 
-        //Èç¹ûÕâÊ±ºò£¬ÓÐ¶ÁÕßµÄÔÚµÈ´ý£¬¸ø¶ÁÕß×ö¸ö¹ã²¥
+        //å¦‚æžœè¿™æ—¶å€™ï¼Œæœ‰è¯»è€…çš„åœ¨ç­‰å¾…ï¼Œç»™è¯»è€…åšä¸ªå¹¿æ’­
     }
 
     ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);

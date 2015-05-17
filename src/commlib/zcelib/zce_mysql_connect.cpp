@@ -1,8 +1,8 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_mysql_connect.h"
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æžœä½ è¦ç”¨MYSQLçš„åº“
 #if defined ZCE_USE_MYSQL
 
 /*********************************************************************************
@@ -11,10 +11,10 @@ class ZCE_Mysql_Connect
 
 ZCE_Mysql_Connect::ZCE_Mysql_Connect()
 {
-    //ÏÖÔÚ¶¼ÔÚconectµÄÊ±ºò½øÐÐ³õÊ¼»¯ÁË¡£¶ÔÓ¦ÔÚdisconnect µÄÊ±ºòclose
+    //çŽ°åœ¨éƒ½åœ¨conectçš„æ—¶å€™è¿›è¡Œåˆå§‹åŒ–äº†ã€‚å¯¹åº”åœ¨disconnect çš„æ—¶å€™close
     //::mysql_init(&mysql_handle_);
 
-    //ÖÃ¿ªÊ¼×´Ì¬
+    //ç½®å¼€å§‹çŠ¶æ€
     if_connected_ = false;
 }
 
@@ -25,23 +25,23 @@ ZCE_Mysql_Connect::~ZCE_Mysql_Connect()
 }
 
 
-//Èç¹ûÊ¹ÓÃÑ¡ÏîÎÄ¼þ½øÐÐÁ¬½Ó
+//å¦‚æžœä½¿ç”¨é€‰é¡¹æ–‡ä»¶è¿›è¡Œè¿žæŽ¥
 int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *group)
 {
-    //Èç¹ûÒÑ¾­Á¬½Ó,¹Ø±ÕÔ­À´µÄÁ¬½Ó
+    //å¦‚æžœå·²ç»è¿žæŽ¥,å…³é—­åŽŸæ¥çš„è¿žæŽ¥
     if (if_connected_ == true)
     {
         disconnect();
     }
 
-    //³õÊ¼»¯MYSQL¾ä±ú
+    //åˆå§‹åŒ–MYSQLå¥æŸ„
     ::mysql_init(&mysql_handle_);
 
     if (optfile != NULL)
     {
         int opret = mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
 
-        //Èç¹ûÊ¹group==NULL,½«¶ÁÐ´optfileµÄ[client]ÅäÖÃ,·ñÔò¶ÁÐ´groupÏÂµÄÅäÖÃ
+        //å¦‚æžœä½¿group==NULL,å°†è¯»å†™optfileçš„[client]é…ç½®,å¦åˆ™è¯»å†™groupä¸‹çš„é…ç½®
         if (group != NULL)
         {
             opret = mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
@@ -53,7 +53,7 @@ int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *gr
         }
     }
 
-    //Á¬½ÓÊý¾Ý¿â
+    //è¿žæŽ¥æ•°æ®åº“
     MYSQL *ret = mysql_real_connect(&mysql_handle_, NULL, NULL, NULL, NULL, 0, NULL, 0);
     if (ret == NULL)
     {
@@ -61,12 +61,12 @@ int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *gr
     }
 
     if_connected_ = true;
-    //·µ»Ø³É¹¦ 0=0
+    //è¿”å›žæˆåŠŸ 0=0
     return 0;
 }
 
 
-//Á¬½ÓÊý¾Ý·þÎñÆ÷
+//è¿žæŽ¥æ•°æ®æœåŠ¡å™¨
 int ZCE_Mysql_Connect::connect_i(const char *host_name,
                                  const char *socket_file,
                                  const char *user,
@@ -77,22 +77,22 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
                                  bool if_multi_sql)
 {
 
-    //Èç¹ûÒÑ¾­Á¬½Ó,¹Ø±ÕÔ­À´µÄÁ¬½Ó
+    //å¦‚æžœå·²ç»è¿žæŽ¥,å…³é—­åŽŸæ¥çš„è¿žæŽ¥
     if (if_connected_ == true)
     {
         disconnect();
     }
 
-    //³õÊ¼»¯MYSQL¾ä±ú
+    //åˆå§‹åŒ–MYSQLå¥æŸ„
     mysql_init(&mysql_handle_);
 
-    //ÉèÖÃÁ¬½ÓµÄtimeout
+    //è®¾ç½®è¿žæŽ¥çš„timeout
     if (timeout != 0)
     {
         mysql_options(&mysql_handle_, MYSQL_OPT_CONNECT_TIMEOUT, (char *)(&timeout));
     }
 
-    //50013,°æ±¾ºó£¬Ìá¹©ÁËÕâ¸öÑ¡Ïî£¬¶øÔ­À´µÄ°æ±¾£¬Õâ¸öÑ¡ÏîÊÇÄ¬ÈÏ´ò¿ªµÄ¡£
+    //50013,ç‰ˆæœ¬åŽï¼Œæä¾›äº†è¿™ä¸ªé€‰é¡¹ï¼Œè€ŒåŽŸæ¥çš„ç‰ˆæœ¬ï¼Œè¿™ä¸ªé€‰é¡¹æ˜¯é»˜è®¤æ‰“å¼€çš„ã€‚
 #if MYSQL_VERSION_ID >= 50013
     mysql_options(&mysql_handle_, MYSQL_OPT_RECONNECT, "1");
 #endif
@@ -108,10 +108,10 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
 
 #endif
 
-    //Á¬½ÓÊý¾Ý¿â
+    //è¿žæŽ¥æ•°æ®åº“
     MYSQL *ret = NULL;
 
-    //Èç¹ûÊ¹ÓÃÓòÃû»òÕßIPµØÖ·½øÐÐÁ¬½Ó
+    //å¦‚æžœä½¿ç”¨åŸŸåæˆ–è€…IPåœ°å€è¿›è¡Œè¿žæŽ¥
     if (host_name)
     {
         ret = ::mysql_real_connect(&mysql_handle_,
@@ -123,11 +123,11 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
                                    NULL,
                                    client_flag);
     }
-    //Èç¹ûÊ¹ÓÃUNIXSOCKET»òÕßÃüÃû¹ÜµÀ½øÐÐ±¾µØÁ¬½Ó
+    //å¦‚æžœä½¿ç”¨UNIXSOCKETæˆ–è€…å‘½åç®¡é“è¿›è¡Œæœ¬åœ°è¿žæŽ¥
     else if (socket_file)
     {
-        //Õâ¸öµØ·½±ØÐë×¢ÒâÒ»ÏÂ£¬WINDOWSÏÂ£¬¶ÔÓÚmysql_real_connectº¯ÊýÈç¹ûhost_name²ÎÊýÎªNULL£¬ÊÇÏÈ½øÐÐÃüÃû¹ÜµÀÁ¬½Ó£¬Èç¹û²»ÐÐÓÃTCP/IPÁ¬½Ó±¾µØ
-        //Èç¹ûÒª²»±£Ö¤¾ø¶ÔÊ¹ÓÃÃüÃû¹ÜµÀ£¬Ôò²ÎÊýhost_name=".",
+        //è¿™ä¸ªåœ°æ–¹å¿…é¡»æ³¨æ„ä¸€ä¸‹ï¼ŒWINDOWSä¸‹ï¼Œå¯¹äºŽmysql_real_connectå‡½æ•°å¦‚æžœhost_nameå‚æ•°ä¸ºNULLï¼Œæ˜¯å…ˆè¿›è¡Œå‘½åç®¡é“è¿žæŽ¥ï¼Œå¦‚æžœä¸è¡Œç”¨TCP/IPè¿žæŽ¥æœ¬åœ°
+        //å¦‚æžœè¦ä¸ä¿è¯ç»å¯¹ä½¿ç”¨å‘½åç®¡é“ï¼Œåˆ™å‚æ•°host_name=".",
         ret =  ::mysql_real_connect(&mysql_handle_,
                                     NULL,
                                     user,
@@ -137,24 +137,24 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
                                     socket_file,
                                     client_flag);
     }
-    //²ÎÊýÊ¹ÓÃ´íÎó£¬²»ÄÜhostºÍunixsocket¶¼ÎªNULL
+    //å‚æ•°ä½¿ç”¨é”™è¯¯ï¼Œä¸èƒ½hostå’Œunixsocketéƒ½ä¸ºNULL
     else
     {
         ZCE_ASSERT(false);
     }
 
-    //¼ì²é½á¹û,
+    //æ£€æŸ¥ç»“æžœ,
     if (ret != 0)
     {
         return -1;
     }
 
     if_connected_ = true;
-    //·µ»Ø³É¹¦ 0=0
+    //è¿”å›žæˆåŠŸ 0=0
     return 0;
 }
 
-//Á¬½ÓÊý¾Ý·þÎñÆ÷,Í¨¹ýIPµØÖ·£¬Ö÷»úÃû³Æ
+//è¿žæŽ¥æ•°æ®æœåŠ¡å™¨,é€šè¿‡IPåœ°å€ï¼Œä¸»æœºåç§°
 int ZCE_Mysql_Connect::connect_by_host(const char *host_name,
                                        const char *user,
                                        const char *pwd,
@@ -166,7 +166,7 @@ int ZCE_Mysql_Connect::connect_by_host(const char *host_name,
     return connect_i(host_name, NULL, user, pwd, db, port, timeout, if_multi_sql);
 }
 
-//Á¬½ÓÊý¾Ý¿â·þÎñÆ÷£¬Í¨¹ýUNIXSOCKETÎÄ¼þ£¨UNIXÏÂ£©»òÕßÃüÃû¹ÜµÀ£¨WINDOWSÏÂ£©½øÐÐÍ¨ÐÅ£¬Ö»ÄÜÓÃÓÚ±¾»ú
+//è¿žæŽ¥æ•°æ®åº“æœåŠ¡å™¨ï¼Œé€šè¿‡UNIXSOCKETæ–‡ä»¶ï¼ˆUNIXä¸‹ï¼‰æˆ–è€…å‘½åç®¡é“ï¼ˆWINDOWSä¸‹ï¼‰è¿›è¡Œé€šä¿¡ï¼Œåªèƒ½ç”¨äºŽæœ¬æœº
 int ZCE_Mysql_Connect::connect_by_socketfile(const char *socket_file,
                                              const char *user,
                                              const char *pwd,
@@ -177,10 +177,10 @@ int ZCE_Mysql_Connect::connect_by_socketfile(const char *socket_file,
     return connect_i(NULL, socket_file, user, pwd, db, 0, timeout, if_multi_sql);
 }
 
-//¶Ï¿ªÊý¾Ý¿â·þÎñÆ÷Á¬½Ó
+//æ–­å¼€æ•°æ®åº“æœåŠ¡å™¨è¿žæŽ¥
 void ZCE_Mysql_Connect::disconnect()
 {
-    //Ã»ÓÐÁ¬½Ó
+    //æ²¡æœ‰è¿žæŽ¥
     if (if_connected_ == false)
     {
         return;
@@ -190,12 +190,12 @@ void ZCE_Mysql_Connect::disconnect()
     if_connected_ = false;
 }
 
-//Ñ¡ÔñÒ»¸öÄ¬ÈÏÊý¾Ý¿â,²ÎÊýÊÇÊý¾Ý¿âµÄÃû³Æ
+//é€‰æ‹©ä¸€ä¸ªé»˜è®¤æ•°æ®åº“,å‚æ•°æ˜¯æ•°æ®åº“çš„åç§°
 int ZCE_Mysql_Connect::select_database(const char *db)
 {
     int ret = mysql_select_db(&mysql_handle_, db);
 
-    //¼ì²é½á¹û,
+    //æ£€æŸ¥ç»“æžœ,
     if (0 != ret)
     {
         return ret;
@@ -204,12 +204,12 @@ int ZCE_Mysql_Connect::select_database(const char *db)
     return 0;
 }
 
-//Èç¹ûÁ¬½Ó¶Ï¿ª£¬ÖØÐÂÁ¬½Ó£¬µÍ³É±¾µÄºÃ·½·¨,·ñÔòÊ²Ã´¶¼²»×ö£¬
+//å¦‚æžœè¿žæŽ¥æ–­å¼€ï¼Œé‡æ–°è¿žæŽ¥ï¼Œä½Žæˆæœ¬çš„å¥½æ–¹æ³•,å¦åˆ™ä»€ä¹ˆéƒ½ä¸åšï¼Œ
 int ZCE_Mysql_Connect::ping()
 {
     int ret = mysql_ping(&mysql_handle_);
 
-    //¼ì²é½á¹û,
+    //æ£€æŸ¥ç»“æžœ,
     if (0 != ret)
     {
         return ret;
@@ -218,13 +218,13 @@ int ZCE_Mysql_Connect::ping()
     return 0;
 }
 
-//µÃµ½µ±Ç°Êý¾Ý·þÎñÆ÷µÄ×´Ì¬
+//å¾—åˆ°å½“å‰æ•°æ®æœåŠ¡å™¨çš„çŠ¶æ€
 const char *ZCE_Mysql_Connect::get_mysql_status()
 {
     return mysql_stat(&mysql_handle_);
 }
 
-//µÃµ½×ªÒâºóµÄEscaple String ,Ã»ÓÐ¸ù¾Ýµ±Ç°µÄ×Ö·û¼¯ºÏ½øÐÐ²Ù×÷,
+//å¾—åˆ°è½¬æ„åŽçš„Escaple String ,æ²¡æœ‰æ ¹æ®å½“å‰çš„å­—ç¬¦é›†åˆè¿›è¡Œæ“ä½œ,
 unsigned int ZCE_Mysql_Connect::make_escape_string(char *tostr, const char *fromstr, unsigned int fromlen)
 {
     return mysql_escape_string(tostr, fromstr, fromlen);
@@ -241,18 +241,18 @@ unsigned int ZCE_Mysql_Connect::make_real_escape_string(char *tostr,
                                     fromlen);
 }
 
-//ÕâÐ©º¯Êý¶¼ÊÇ4.1ºóµÄ°æ±¾¹¦ÄÜ
+//è¿™äº›å‡½æ•°éƒ½æ˜¯4.1åŽçš„ç‰ˆæœ¬åŠŸèƒ½
 #if MYSQL_VERSION_ID > 40100
 
-//ÉèÖÃÊÇ·ñ×Ô¶¯Ìá½»
+//è®¾ç½®æ˜¯å¦è‡ªåŠ¨æäº¤
 int ZCE_Mysql_Connect::set_auto_commit(bool bauto)
 {
-    //my_boolÆäÊµÊÇchar
+    //my_boolå…¶å®žæ˜¯char
     my_bool mode =  (bauto == true ) ? 1 : 0;
 
     int ret = mysql_autocommit(&mysql_handle_, mode);
 
-    //¼ì²é½á¹û,
+    //æ£€æŸ¥ç»“æžœ,
     if (0 != ret)
     {
         return ret;
@@ -261,13 +261,13 @@ int ZCE_Mysql_Connect::set_auto_commit(bool bauto)
     return 0;
 }
 
-//Ìá½»ÊÂÎñCommit Transaction
+//æäº¤äº‹åŠ¡Commit Transaction
 int ZCE_Mysql_Connect::trans_commit()
 {
 
     int ret = mysql_commit(&mysql_handle_);
 
-    //¼ì²é½á¹û,
+    //æ£€æŸ¥ç»“æžœ,
     if (0 != ret)
     {
         return ret;
@@ -276,12 +276,12 @@ int ZCE_Mysql_Connect::trans_commit()
     return 0;
 }
 
-//»Ø¹öÊÂÎñRollback Transaction
+//å›žæ»šäº‹åŠ¡Rollback Transaction
 int ZCE_Mysql_Connect::trans_rollback()
 {
     int ret = mysql_rollback(&mysql_handle_);
 
-    //¼ì²é½á¹û,
+    //æ£€æŸ¥ç»“æžœ,
     if (0 != ret)
     {
         return ret;
@@ -292,6 +292,6 @@ int ZCE_Mysql_Connect::trans_rollback()
 
 #endif // MYSQL_VERSION_ID > 40100
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æžœä½ è¦ç”¨MYSQLçš„åº“
 #endif //#if defined ZCE_USE_MYSQL
 

@@ -1,16 +1,16 @@
-/*!
+ï»¿/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_lock_thread_mutex.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê9ÔÂ12ÈÕ
-* @brief      Ïß³ÌµÄ»¥³âÁ¿·â×°£¬·Ö³É3ÖÖ·½Ê½
-*             Ïß³ÌµÄ»¥³âÁ¿£¬ÓĞÇáÁ¿µÄËø£¬µİ¹éËø£¬·Çµİ¹éËø£¬¶ÁĞ´Ëø
-*             ZCE_Thread_Light_Mutex  ÇáÁ¿¼¶µÄÏß³ÌËø£¬WINDODOWSÏÂÓÃÁÙ½çÇøÄ£Äâ£¬LINUXÓÃpthread_mutex, ¿Éµİ¹é£¬µ«ÊÇÃ»ÓĞ³¬Ê±´¦Àí
-*             ZCE_Thread_Recursive_Mutex µİ¹éµÄÏß³ÌËø WINDODOWSÏÂÓÃMUTEXÄ£Äâ£¬¿Éµİ¹é£¬ÓĞ³¬Ê±´¦Àí
-*             ZCE_Thread_NONR_Mutex ²»¿ÉÒÔµİ¹éµÄÏß³ÌËø WINDODOWSÓÃĞÅºÅµÆÄ£ÄâµÄMUTEX£¬²»¿ÉÒÔµİ¹é£¬ÓĞ³¬Ê±´¦Àí
+* @date       2011å¹´9æœˆ12æ—¥
+* @brief      çº¿ç¨‹çš„äº’æ–¥é‡å°è£…ï¼Œåˆ†æˆ3ç§æ–¹å¼
+*             çº¿ç¨‹çš„äº’æ–¥é‡ï¼Œæœ‰è½»é‡çš„é”ï¼Œé€’å½’é”ï¼Œéé€’å½’é”ï¼Œè¯»å†™é”
+*             ZCE_Thread_Light_Mutex  è½»é‡çº§çš„çº¿ç¨‹é”ï¼ŒWINDODOWSä¸‹ç”¨ä¸´ç•ŒåŒºæ¨¡æ‹Ÿï¼ŒLINUXç”¨pthread_mutex, å¯é€’å½’ï¼Œä½†æ˜¯æ²¡æœ‰è¶…æ—¶å¤„ç†
+*             ZCE_Thread_Recursive_Mutex é€’å½’çš„çº¿ç¨‹é” WINDODOWSä¸‹ç”¨MUTEXæ¨¡æ‹Ÿï¼Œå¯é€’å½’ï¼Œæœ‰è¶…æ—¶å¤„ç†
+*             ZCE_Thread_NONR_Mutex ä¸å¯ä»¥é€’å½’çš„çº¿ç¨‹é” WINDODOWSç”¨ä¿¡å·ç¯æ¨¡æ‹Ÿçš„MUTEXï¼Œä¸å¯ä»¥é€’å½’ï¼Œæœ‰è¶…æ—¶å¤„ç†
 *
-*             Èç¹ûÊÇÀàËÆÁÙ½çÇøµÄĞèÇó£¬¶øÇÒÏ£Íû¸ü¿ì£¬¿ÉÒÔ¿¼ÂÇSPIN LOCK£¬
+*             å¦‚æœæ˜¯ç±»ä¼¼ä¸´ç•ŒåŒºçš„éœ€æ±‚ï¼Œè€Œä¸”å¸Œæœ›æ›´å¿«ï¼Œå¯ä»¥è€ƒè™‘SPIN LOCKï¼Œ
 */
 
 #ifndef ZCE_LIB_LOCK_THREAD_MUTEX_H_
@@ -25,38 +25,38 @@ class ZCE_Time_Value;
 
 
 /*!
-* @brief      ÇáÁ¿¼¶µÄÏß³Ì»¥³âËø£¬Ò»°ãÇé¿öÏÂÍÆ¼öÊ¹ÓÃ£¬ÇáÖ÷ÒªÌåÏÖÔÚWindowsÆ½Ì¨ÏÂÓÃÁÙ½çÇø
-*             WindowsÏÂÊÇÓÃÁÙ½çÇøÊµÏÖµÄ£¬ËùÒÔÂï£¬Í¬Ê±×¢ÒâÁÙ½çÇøÊÇ¿Éµİ¹éµÄ
-*             ÒòÎªÁÙ½çÇøÃ»ÓĞ³¬Ê±´¦ÀíÄÜÂ¼£¬Õâ¸ö·â×°Ò²¾Í²»Ìá¹©ÁË¡££¨ÁÙ½çÇø±¾À´Ò²²»Ó¦¸ÃÓĞ³¬Ê±£©
+* @brief      è½»é‡çº§çš„çº¿ç¨‹äº’æ–¥é”ï¼Œä¸€èˆ¬æƒ…å†µä¸‹æ¨èä½¿ç”¨ï¼Œè½»ä¸»è¦ä½“ç°åœ¨Windowså¹³å°ä¸‹ç”¨ä¸´ç•ŒåŒº
+*             Windowsä¸‹æ˜¯ç”¨ä¸´ç•ŒåŒºå®ç°çš„ï¼Œæ‰€ä»¥å˜›ï¼ŒåŒæ—¶æ³¨æ„ä¸´ç•ŒåŒºæ˜¯å¯é€’å½’çš„
+*             å› ä¸ºä¸´ç•ŒåŒºæ²¡æœ‰è¶…æ—¶å¤„ç†èƒ½å½•ï¼Œè¿™ä¸ªå°è£…ä¹Ÿå°±ä¸æä¾›äº†ã€‚ï¼ˆä¸´ç•ŒåŒºæœ¬æ¥ä¹Ÿä¸åº”è¯¥æœ‰è¶…æ—¶ï¼‰
 */
 class ZCE_Thread_Light_Mutex : public ZCE_Lock_Base
 {
 
 public:
-    ///Ïß³ÌËøµÄGUARD
+    ///çº¿ç¨‹é”çš„GUARD
     typedef ZCE_Lock_Guard<ZCE_Thread_Light_Mutex> LOCK_GUARD;
 
 public:
 
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     ZCE_Thread_Light_Mutex ();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~ZCE_Thread_Light_Mutex (void);
 
-    ///Ëø¶¨
+    ///é”å®š
     virtual void lock();
 
-    ///³¢ÊÔËø¶¨
+    ///å°è¯•é”å®š
     virtual bool try_lock();
 
-    ///½âËø,
+    ///è§£é”,
     virtual void unlock();
 
-    ///È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
+    ///å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
     pthread_mutex_t *get_lock();
 
 protected:
-    //Ïß³ÌËø
+    //çº¿ç¨‹é”
     pthread_mutex_t  lock_;
 
 
@@ -65,43 +65,43 @@ protected:
 
 
 /*!
-* @brief      Ïß³Ìµİ¹éËø£¬WindowsÏÂÓÃMutex£¬LinuxÓÃpthread_mutex
-*             Ïà¶Ô¶øÑÔ£¬ÍÆ¼öÊ¹ÓÃµİ¹éËø,
+* @brief      çº¿ç¨‹é€’å½’é”ï¼ŒWindowsä¸‹ç”¨Mutexï¼ŒLinuxç”¨pthread_mutex
+*             ç›¸å¯¹è€Œè¨€ï¼Œæ¨èä½¿ç”¨é€’å½’é”,
 */
 class ZCE_Thread_Recursive_Mutex : public ZCE_Lock_Base
 {
 public:
 
-    ///µİ¹éËøµÄGUARD
+    ///é€’å½’é”çš„GUARD
     typedef ZCE_Lock_Guard<ZCE_Thread_Recursive_Mutex> LOCK_GUARD;
 
 public:
 
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     ZCE_Thread_Recursive_Mutex ();
     virtual ~ZCE_Thread_Recursive_Mutex (void);
 
-    ///Ëø¶¨
+    ///é”å®š
     virtual void lock();
 
-    ///³¢ÊÔËø¶¨
+    ///å°è¯•é”å®š
     virtual bool try_lock();
 
-    ///½âËø,
+    ///è§£é”,
     virtual void unlock();
 
 
-    ///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+    ///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
     virtual bool systime_lock(const ZCE_Time_Value &abs_time);
 
-    ///Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+    ///ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
     virtual bool duration_lock(const ZCE_Time_Value &relative_time);
 
-    ///È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
+    ///å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
     pthread_mutex_t *get_lock();
 
 protected:
-    ///Ïß³ÌËø
+    ///çº¿ç¨‹é”
     pthread_mutex_t  lock_;
 
 
@@ -109,9 +109,9 @@ protected:
 
 
 /*!
-* @brief      Ïß³ÌµÄ·Çµİ¹éËø£¬Ìá¹©Õâ¸öÍêÈ«ÊÇÎªÁËÂú×ãÒ»Ğ©°®ºÃ£¬ÒòÎªµİ¹éËø±¾ÖÊÉÏÂú×ã·Çµİ¹éµÄĞèÇó¡£
-*             WindowsÏÂµÄ»¥³âÁ¿ºÍÁÙ½çÇøÆäÊµÊÇ¿ÉÒÔµİ¹éµÄ£¬ËùÒÔÖ»ÓÃĞÅºÅµÆÁËÄ£Äâ·Çµİ¹éËø
-*             201209 pthread_mutexÄÚ²¿ÎÒÒÑ¾­ºÏÈëÁË·Çµİ¹éËø¹¦ÄÜ£¬ÓÃĞÅºÅµÆÄ£Äâ
+* @brief      çº¿ç¨‹çš„éé€’å½’é”ï¼Œæä¾›è¿™ä¸ªå®Œå…¨æ˜¯ä¸ºäº†æ»¡è¶³ä¸€äº›çˆ±å¥½ï¼Œå› ä¸ºé€’å½’é”æœ¬è´¨ä¸Šæ»¡è¶³éé€’å½’çš„éœ€æ±‚ã€‚
+*             Windowsä¸‹çš„äº’æ–¥é‡å’Œä¸´ç•ŒåŒºå…¶å®æ˜¯å¯ä»¥é€’å½’çš„ï¼Œæ‰€ä»¥åªç”¨ä¿¡å·ç¯äº†æ¨¡æ‹Ÿéé€’å½’é”
+*             201209 pthread_mutexå†…éƒ¨æˆ‘å·²ç»åˆå…¥äº†éé€’å½’é”åŠŸèƒ½ï¼Œç”¨ä¿¡å·ç¯æ¨¡æ‹Ÿ
 */
 class ZCE_Thread_NONR_Mutex : public ZCE_Lock_Base
 {
@@ -119,36 +119,36 @@ class ZCE_Thread_NONR_Mutex : public ZCE_Lock_Base
 
 
 public:
-    ///ËøµÄGUARD
+    ///é”çš„GUARD
     typedef ZCE_Lock_Guard<ZCE_Thread_NONR_Mutex> LOCK_GUARD;
 
 public:
 
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     ZCE_Thread_NONR_Mutex ();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~ZCE_Thread_NONR_Mutex (void);
 public:
-    ///Ëø¶¨
+    ///é”å®š
     virtual void lock();
 
-    ///³¢ÊÔËø¶¨
+    ///å°è¯•é”å®š
     virtual bool try_lock();
 
-    ///½âËø
+    ///è§£é”
     virtual void unlock();
 
 
-    ///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+    ///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
     virtual bool systime_lock(const ZCE_Time_Value &abs_time);
 
-    ///Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+    ///ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
     virtual bool duration_lock(const ZCE_Time_Value &relative_time);
 
 protected:
 
 
-    ///Ïß³ÌËø,ÔÚWindowsÏÂÎÒÒ²ÒÑ¾­Ä£ÄâµÄ·Çµİ¹éµÄËø
+    ///çº¿ç¨‹é”,åœ¨Windowsä¸‹æˆ‘ä¹Ÿå·²ç»æ¨¡æ‹Ÿçš„éé€’å½’çš„é”
     pthread_mutex_t  lock_;
 
 

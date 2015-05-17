@@ -1,8 +1,8 @@
-
+ï»¿
 #ifndef SOARING_LIB_SVRD_APP_MAIN_H_
 #define SOARING_LIB_SVRD_APP_MAIN_H_
 
-//±¾À´ÓÃºêÊµÏÖÁË£¬µ«ÊÇĞ´ÍêÁË£¬ÉÔÎ¢Ïë¸Ä¼¸ĞĞ£¬¾Í·¢ÏÖ¾çÁÒÍ´¿à¡£»¹ÊÇÓÃÄ£°æ°Ñ¡£
+//æœ¬æ¥ç”¨å®å®ç°äº†ï¼Œä½†æ˜¯å†™å®Œäº†ï¼Œç¨å¾®æƒ³æ”¹å‡ è¡Œï¼Œå°±å‘ç°å‰§çƒˆç—›è‹¦ã€‚è¿˜æ˜¯ç”¨æ¨¡ç‰ˆæŠŠã€‚
 
 namespace SOAR_LIB
 {
@@ -10,7 +10,7 @@ namespace SOAR_LIB
 template <class application_class, class  config_class , class timer_class >
 int soar_svrd_main(int argc, const char *argv[])
 {
-    //²»´¦ÀíÒì³££¬ÒòÎª´¦ÀíÁË²»ºÃµ÷ÊÔ,ÌØ±ğÊÇÔÚWin32ÏÂµ÷ÊÔ¡£
+    //ä¸å¤„ç†å¼‚å¸¸ï¼Œå› ä¸ºå¤„ç†äº†ä¸å¥½è°ƒè¯•,ç‰¹åˆ«æ˜¯åœ¨Win32ä¸‹è°ƒè¯•ã€‚
 
     application_class::set_instance(new application_class());
 
@@ -18,10 +18,10 @@ int soar_svrd_main(int argc, const char *argv[])
                                               new timer_class );
 
 
-    //¿ªÊ¼ÈÕÖ¾ÊÇÎŞ·¨Êä³ö£¬
+    //å¼€å§‹æ—¥å¿—æ˜¯æ— æ³•è¾“å‡ºï¼Œ
     //ZCE_LOG(RS_INFO,"[framework] App init_instance start");
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     int ret = application_class::instance()->app_start(argc, argv);
 
     if (ret != 0)
@@ -42,10 +42,10 @@ int soar_svrd_main(int argc, const char *argv[])
     ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] run_instance start.",
             application_class::instance()->get_app_runname(),
             typeid(*application_class::instance()).name());
-    //ÔËĞĞ
+    //è¿è¡Œ
     ret = application_class::instance()->app_run();
 
-    //±êÊ¾ÔËĞĞÊ§°Ü
+    //æ ‡ç¤ºè¿è¡Œå¤±è´¥
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[framework] App name [%s] class [%s] run_instance fail:%d|%s .",
@@ -53,7 +53,7 @@ int soar_svrd_main(int argc, const char *argv[])
                 typeid(*application_class::instance()).name(),
                 ret,
                 SOAR_RET::error_string(ret));
-        //Õâ¶ùÊÇÍË³ö,»¹ÊÇ½øĞĞexit_instance,ÕâÊÇÒ»¸öÎÊÌâ£¬¹ş¹ş
+        //è¿™å„¿æ˜¯é€€å‡º,è¿˜æ˜¯è¿›è¡Œexit_instance,è¿™æ˜¯ä¸€ä¸ªé—®é¢˜ï¼Œå“ˆå“ˆ
         //return ret;
     }
     else
@@ -66,7 +66,7 @@ int soar_svrd_main(int argc, const char *argv[])
     ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] exit_instance start.",
             application_class::instance()->get_app_runname(),
             typeid(*application_class::instance()).name());
-    //ÍË³ö´¦Àí
+    //é€€å‡ºå¤„ç†
     application_class::instance()->app_exit();
 
     ZCE_LOG(RS_INFO, "[framework] App name [%s] class [%s] exit_instance start.",
@@ -75,7 +75,7 @@ int soar_svrd_main(int argc, const char *argv[])
 
     //
     application_class::clean_instance();
-    //¹Ø±ÕÈÕÖ¾
+    //å…³é—­æ—¥å¿—
     ZCE_Trace_LogMsg::clean_instance();
 
     return 0;

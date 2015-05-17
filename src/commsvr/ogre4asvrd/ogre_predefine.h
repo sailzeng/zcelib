@@ -1,4 +1,4 @@
-
+ï»¿
 #ifndef OGRE_SERVER_PRE_DEFINE_H_
 #define OGRE_SERVER_PRE_DEFINE_H_
 
@@ -59,19 +59,19 @@
 //--------------------------------------------------------------------
 typedef std::unordered_set<unsigned int> SetOfIPAddress;
 
-////Í³¼Æ¼ÆÊýÆ÷,·½±ã²éÑ¯SVRµÄ×´Ì¬
+////ç»Ÿè®¡è®¡æ•°å™¨,æ–¹ä¾¿æŸ¥è¯¢SVRçš„çŠ¶æ€
 
-//·þÎñÍ³¼Æ¼ÆÊýÆ÷
+//æœåŠ¡ç»Ÿè®¡è®¡æ•°å™¨
 //enum ZERGLING_STAT
 //{
-//    ACCEPT_PEER_NUMBER,                  //ÕýÔÚAcceptµÄPEERÊýÁ¿
-//    ACCEPT_PEER_COUNTER,                 //ÒÑ¾­AcceptµÄPEER¼ÆÊý
-//    CONNECT_PEER_NUMBER,                 //ÕýÔÚConnectµÄPEERÊýÁ¿
-//    CONNECT_PEER_COUNTER,                //ÒÑ¾­ConnectµÄPEER¼ÆÊý
-//    SEND_ERROR_COUNTER,                  //´íÎó·¢ËÍµÄ¼ÆÊýÆ÷
-//    RETRY_SEND_COUNTER,                  //ÖØÐÂ·¢ËÍµÄ¼ÆÊýÆ÷
-//    RETRY_SEND_SUCCESS,                  //ÖØÐÂ·¢ËÍ³É¹¦µÄ¼ÆÊýÆ÷
-//    BUFFER_STORAGE_NUMBER,               //BUFFER»º³åÇøµÄCHUNK¸öÊý,
+//    ACCEPT_PEER_NUMBER,                  //æ­£åœ¨Acceptçš„PEERæ•°é‡
+//    ACCEPT_PEER_COUNTER,                 //å·²ç»Acceptçš„PEERè®¡æ•°
+//    CONNECT_PEER_NUMBER,                 //æ­£åœ¨Connectçš„PEERæ•°é‡
+//    CONNECT_PEER_COUNTER,                //å·²ç»Connectçš„PEERè®¡æ•°
+//    SEND_ERROR_COUNTER,                  //é”™è¯¯å‘é€çš„è®¡æ•°å™¨
+//    RETRY_SEND_COUNTER,                  //é‡æ–°å‘é€çš„è®¡æ•°å™¨
+//    RETRY_SEND_SUCCESS,                  //é‡æ–°å‘é€æˆåŠŸçš„è®¡æ•°å™¨
+//    BUFFER_STORAGE_NUMBER,               //BUFFERç¼“å†²åŒºçš„CHUNKä¸ªæ•°,
 //    NUMBER_OF_COUNTER,                   //
 //};
 

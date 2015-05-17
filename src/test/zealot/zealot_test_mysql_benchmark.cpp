@@ -1,4 +1,4 @@
-/*
+ï»¿/*
 DROP TABLE IF EXISTS benchmark.test1;
 CREATE TABLE IF NOT EXISTS benchmark.test1
 (
@@ -27,17 +27,17 @@ PRIMARY KEY (F1)
 const static int  RETURN_SUCC     = 0;
 const static int  RETURN_DB_ERROR = -1;
 
-//ÉçÍÅÊı¾İ¿â
+//ç¤¾å›¢æ•°æ®åº“
 const char *DB_BENCHMARK_IP       = "172.16.55.40";
-//ÉçÍÅÊı¾İ¿âÓÃ»§
+//ç¤¾å›¢æ•°æ®åº“ç”¨æˆ·
 const char *DB_BENCHMARK_USER     = "root";
-////ÉçÍÅÊı¾İ¿âÓÃ»§ÃÜÂë
+////ç¤¾å›¢æ•°æ®åº“ç”¨æˆ·å¯†ç 
 const char *DB_BENCHMARK_PASSWORD = "";
 
-//MYSQLÊı¾İ¿âÁ¬½Ó¶ÔÏó
+//MYSQLæ•°æ®åº“è¿æ¥å¯¹è±¡
 static ZCE_Mysql_Connect g_db_connect;
 
-//MYSQLÃüÁîÖ´ĞĞ¶ÔÏó
+//MYSQLå‘½ä»¤æ‰§è¡Œå¯¹è±¡
 static ZCE_Mysql_Command g_db_command;
 
 
@@ -45,12 +45,12 @@ static ZCE_Mysql_Command g_db_command;
 int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &insertid, char *szErr)
 {
     int ret = 0;
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
 
-        //Èç¹û´íÎó
+        //å¦‚æœé”™è¯¯
         if (ret != 0)
         {
             sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
@@ -59,7 +59,7 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &i
         //
         g_db_command.set_connection(&g_db_connect);
     }
-    //Èç¹ûÒÑ¾­Á¬½Ó¹ıÊı¾İ¿â,Ôò²»ÓÃÔÙ´ÎÁ¬½Ó,pingÒ»´Î¾ÍOKÁË,³É±¾µÍ
+    //å¦‚æœå·²ç»è¿æ¥è¿‡æ•°æ®åº“,åˆ™ä¸ç”¨å†æ¬¡è¿æ¥,pingä¸€æ¬¡å°±OKäº†,æˆæœ¬ä½
     else
     {
         g_db_connect.ping();
@@ -67,14 +67,14 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &i
 
     g_db_command.set_sql_command(sql, strlen(sql));
     ret = g_db_command.execute(numaffect, insertid);
-    //Èç¹û´íÎó
+    //å¦‚æœé”™è¯¯
     if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return  RETURN_SUCC;
 }
 
@@ -82,12 +82,12 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &i
 int benchmark_db_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Result &dbresult, char *szErr)
 {
     int ret = 0;
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
 
-        //Èç¹û´íÎó
+        //å¦‚æœé”™è¯¯
         if (ret != 0)
         {
             sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
@@ -96,33 +96,33 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Resul
         //
         g_db_command.set_connection(&g_db_connect);
     }
-    //Èç¹ûÒÑ¾­Á¬½Ó¹ıÊı¾İ¿â,Ôò²»ÓÃÔÙ´ÎÁ¬½Ó,pingÒ»´Î¾ÍOKÁË,³É±¾µÍ
+    //å¦‚æœå·²ç»è¿æ¥è¿‡æ•°æ®åº“,åˆ™ä¸ç”¨å†æ¬¡è¿æ¥,pingä¸€æ¬¡å°±OKäº†,æˆæœ¬ä½
     else
     {
         g_db_connect.ping();
     }
     g_db_command.set_sql_command(sql, strlen(sql));
     ret = g_db_command.execute(numaffect, dbresult);
-    //Èç¹û´íÎó
+    //å¦‚æœé”™è¯¯
     if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return  RETURN_SUCC;
 }
 
 int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
 {
     int ret = 0;
-    //Á¬½ÓÊı¾İ¿â
+    //è¿æ¥æ•°æ®åº“
     if (g_db_connect.is_connected() == false)
     {
         ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
 
-        //Èç¹û´íÎó
+        //å¦‚æœé”™è¯¯
         if (ret != 0)
         {
             sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
@@ -131,7 +131,7 @@ int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
         //
         g_db_command.set_connection(&g_db_connect);
     }
-    //Èç¹ûÒÑ¾­Á¬½Ó¹ıÊı¾İ¿â,Ôò²»ÓÃÔÙ´ÎÁ¬½Ó,pingÒ»´Î¾ÍOKÁË,³É±¾µÍ
+    //å¦‚æœå·²ç»è¿æ¥è¿‡æ•°æ®åº“,åˆ™ä¸ç”¨å†æ¬¡è¿æ¥,pingä¸€æ¬¡å°±OKäº†,æˆæœ¬ä½
     else
     {
         g_db_connect.ping();
@@ -139,14 +139,14 @@ int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
 
     g_db_command.set_sql_command(sql, strlen(sql));
     ret = g_db_command.execute(dbresult);
-    //Èç¹û´íÎó
+    //å¦‚æœé”™è¯¯
     if (ret != 0)
     {
         sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return  RETURN_SUCC;
 }
 
@@ -179,7 +179,7 @@ int benchmark_insert_record(int table_id, int id, bool bexcutesql, char *szErr)
             id,
             id
            );
-    //ÊÇ·ñÖ´ĞĞSQL,Æ´
+    //æ˜¯å¦æ‰§è¡ŒSQL,æ‹¼
     if (bexcutesql)
     {
         unsigned int numaffect, insertid;
@@ -201,7 +201,7 @@ int benchmark_delete_record(int table_id, int id, bool bexcutesql, char *szErr)
             table_id,
             id
            );
-    //ÊÇ·ñÖ´ĞĞSQL,Æ´
+    //æ˜¯å¦æ‰§è¡ŒSQL,æ‹¼
     if (bexcutesql)
     {
         unsigned int numaffect, insertid;
@@ -228,13 +228,13 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char *szErr)
     {
         ZCE_Mysql_Result dbresult;
         unsigned int numaffect;
-        //½øĞĞ²éÑ¯,
+        //è¿›è¡ŒæŸ¥è¯¢,
         int ret = benchmark_db_query(tmpsql, numaffect, dbresult, szErr);
         if (ret != RETURN_SUCC )
         {
             return ret;
         }
-        //Ò»¸öÒ²Ã»ÓĞ²éÑ¯µ½
+        //ä¸€ä¸ªä¹Ÿæ²¡æœ‰æŸ¥è¯¢åˆ°
         if (numaffect == 0)
         {
         }

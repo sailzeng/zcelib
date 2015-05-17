@@ -1,43 +1,43 @@
-#ifndef SOARING_LIB_SERVICES_PEER_H_
+ï»¿#ifndef SOARING_LIB_SERVICES_PEER_H_
 #define SOARING_LIB_SERVICES_PEER_H_
 
 #pragma pack (1)
 /****************************************************************************************************
-class  OGRE_PEER_ID ¡¡SOCKET PEERĞÅÏ¢,ÊÊÓ¦IPV4µÄ´úÂë¡£
+class  OGRE_PEER_ID ã€€SOCKET PEERä¿¡æ¯,é€‚åº”IPV4çš„ä»£ç ã€‚
 ****************************************************************************************************/
 class SOARING_EXPORT OGRE_PEER_ID
 {
 public:
-    //ÎŞĞ§µÄSERVICE ÀàĞÍ
+    //æ— æ•ˆçš„SERVICE ç±»å‹
     static const unsigned short  INVALID_PERR_IP_ADDRESS = 0;
-    //ÎŞĞ§µÄSERVICE ID
+    //æ— æ•ˆçš„SERVICE ID
     static const unsigned int   INVALID_PERR_PORT   = 0;
 
 public:
 
-    //IPµØÖ·
+    //IPåœ°å€
     unsigned int            peer_ip_address_;
-    //¶Ë¿ÚºÅÂë
+    //ç«¯å£å·ç 
     unsigned short          peer_port_;
 
 public:
-    //¹¹Ôì,Îö¹¹º¯Êı,Ä¬ÈÏÎª0
+    //æ„é€ ,ææ„å‡½æ•°,é»˜è®¤ä¸º0
     explicit OGRE_PEER_ID(unsigned int peer_ip_address = INVALID_PERR_IP_ADDRESS,
                           unsigned short peer_port = INVALID_PERR_PORT);
     explicit OGRE_PEER_ID(const ZCE_Sockaddr_In &);
     //
     ~OGRE_PEER_ID();
 
-    //ÉèÖÃ
+    //è®¾ç½®
     void set(unsigned int peer_ip_address, unsigned short peer_port );
-    //¸ù¾İZCE_Sockaddr_InµÄIPµØÖ·ÉèÖÃ
+    //æ ¹æ®ZCE_Sockaddr_Inçš„IPåœ°å€è®¾ç½®
     void set(const ZCE_Sockaddr_In &);
 
-    //±È½Ïº¯Êı,services_type_,services_id_
+    //æ¯”è¾ƒå‡½æ•°,services_type_,services_id_
     bool operator ==(const OGRE_PEER_ID &others) const;
-    //±È½Ï²»Í¬º¯Êı,
+    //æ¯”è¾ƒä¸åŒå‡½æ•°,
     bool operator !=(const OGRE_PEER_ID &others) const;
-    //ÓĞ¸öÅÅĞòĞèÇó,
+    //æœ‰ä¸ªæ’åºéœ€æ±‚,
     bool operator <(const OGRE_PEER_ID &others) const;
 };
 

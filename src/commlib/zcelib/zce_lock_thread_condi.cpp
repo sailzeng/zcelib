@@ -1,4 +1,4 @@
-#include "zce_predefine.h"
+ï»¿#include "zce_predefine.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_condi.h"
 #include "zce_os_adapt_time.h"
@@ -7,8 +7,8 @@
 #include "zce_lock_thread_condi.h"
 
 //---------------------------------------------------------------------------------------
-//ÎªZCE_Thread_Light_Mutex×öµÄÌØ»¯
-//µÈ´ı
+//ä¸ºZCE_Thread_Light_Mutexåšçš„ç‰¹åŒ–
+//ç­‰å¾…
 template <>
 void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait (ZCE_Thread_Light_Mutex *external_mutex)
 {
@@ -22,9 +22,9 @@ void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait (ZCE_Thread_Light_Mutex 
     }
 }
 
-//ÎÒ¸ù¾İZCE_Thread_Light_Mutex£¬ZCE_Thread_Recursive_Mutex¸øÁËÌØ»¯ÊµÏÖ
+//æˆ‘æ ¹æ®ZCE_Thread_Light_Mutexï¼ŒZCE_Thread_Recursive_Mutexç»™äº†ç‰¹åŒ–å®ç°
 
-//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄµÈ´ı£¬³¬Ê±ºó½âËø
+//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„ç­‰å¾…ï¼Œè¶…æ—¶åè§£é”
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light_Mutex *external_mutex,
                                                                 const ZCE_Time_Value &abs_time)
@@ -42,7 +42,7 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
     return true;
 }
 
-//Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨µÈ´ı£¬³¬Ê±ºó£¬½âËø
+//ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šç­‰å¾…ï¼Œè¶…æ—¶åï¼Œè§£é”
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex *external_mutex, const ZCE_Time_Value &relative_time)
 {
@@ -52,8 +52,8 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Ligh
 }
 
 //---------------------------------------------------------------------------------------
-//ÎªZCE_Thread_Light_Mutex×öµÄÌØ»¯
-//µÈ´ı
+//ä¸ºZCE_Thread_Light_Mutexåšçš„ç‰¹åŒ–
+//ç­‰å¾…
 template <>
 void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait (ZCE_Thread_Recursive_Mutex *external_mutex)
 {
@@ -67,9 +67,9 @@ void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait (ZCE_Thread_Recursiv
     }
 }
 
-//ÎÒ¸ù¾İZCE_Thread_Light_Mutex£¬ZCE_Thread_Recursive_Mutex¸øÁËÌØ»¯ÊµÏÖ
+//æˆ‘æ ¹æ®ZCE_Thread_Light_Mutexï¼ŒZCE_Thread_Recursive_Mutexç»™äº†ç‰¹åŒ–å®ç°
 
-//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄµÈ´ı£¬³¬Ê±ºó½âËø
+//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„ç­‰å¾…ï¼Œè¶…æ—¶åè§£é”
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
                                                                     const ZCE_Time_Value &abs_time)
@@ -87,7 +87,7 @@ bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_R
     return true;
 }
 
-//Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨µÈ´ı£¬³¬Ê±ºó£¬½âËø
+//ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šç­‰å¾…ï¼Œè¶…æ—¶åï¼Œè§£é”
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::duration_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
                                                                      const ZCE_Time_Value &relative_time)

@@ -1,10 +1,10 @@
-/******************************************************************************************
+ï»¿/******************************************************************************************
 Copyright           : 2000-2004, Fullsail Technology Shenzhen, Company Limited.
 FileName            : comm_error_code.h
 Author              : Sail(ZENGXING,//Author name here
 Version             :
-Date Of Creation    : 2007Äê01ÔÂ10ÈÕ
-Description         : frameworkËùÓÐµÄ´íÎó¶¨Òå.
+Date Of Creation    : 2007å¹´01æœˆ10æ—¥
+Description         : frameworkæ‰€æœ‰çš„é”™è¯¯å®šä¹‰.
 
 Others              :
 Function List       :
@@ -15,19 +15,19 @@ Author  :
 Modification  :
 
 README:
-¼¯ÖÐ¹ÜÀí´íÎóÐÅÏ¢µÄÔ­ÒòÊÇ:
-1.¿Í»§¶Ë¿ÉÄÜÒ²»áÍ¬ÒâÊ¹ÓÃ´íÎó¶¨Òå
-2.´íÎó¶¨Òå¿ÉÄÜ»á¸´ÓÃ
+é›†ä¸­ç®¡ç†é”™è¯¯ä¿¡æ¯çš„åŽŸå› æ˜¯:
+1.å®¢æˆ·ç«¯å¯èƒ½ä¹Ÿä¼šåŒæ„ä½¿ç”¨é”™è¯¯å®šä¹‰
+2.é”™è¯¯å®šä¹‰å¯èƒ½ä¼šå¤ç”¨
 
-°ÝÍÐÔÚ¸Ä´íÎó¶¨ÒåµÄÊ±ºòÏÈ°ÑÄ¿¹âÍ¶Éä¹ýÀ´
-1.¶¨Òå´íÎó·µ»ØÖµ=COMMLIBÀûÓÃ5000-9999µÄÊý¾Ý£¬Èç¹ûÒªÉÏ±¨£¬Í¨¹ý·þÎñÆ÷+Õâ¸ö´íÎóÖµÉÏ±¨£¬
-2.ÉÏ±¨´íÎó¶¨Òå¸øÆäËû·þÎñÆ÷µÄÊ±ºò£¬¿ÉÒÔÍ¨¹ýTRANS_SEND_ERROR_CODE½«´íÎó¶¨ÒåºÍ·þÎñÆ÷ÀàÐÍºÍCOMMLIBµÄ´íÎóÒ»Æð´«µÝ³öÈ¥¡£
-3.ÆäËû·þÎñÆ÷Ã¿¸ö·þÎñÆ÷Ê¹ÓÃ×Ô¼ºµÄ·þÎñÆ÷µÄID*10000+´íÎóIDµÄÐòºÅ
-4.ÎªÊ²Ã´Êý×Ö²»Ö±½ÓÐ´ *SERVER_ERROR_CODE_INTERVAL +IDÕâÑùµÄ·½Ê½£¬ÒòÎªÄÇÑù²éÑ¯Âé·³.ÎÒÃÇÊµÑé¹ýÁË¡£
-5.ÔÚÊ¹ÓÃ´íÎó¶¨ÒåµÄÊ±ºò£¬Èç¹û¶Ô¿Í»§¶Ë±íÏÖ²»Í¬£¬¾¡Á¿·Ö¿ª´íÎó¶¨Òå¡£Èç¹ûÒ»¸öÒªÌßÈË£¬Ò»¸ö²»ÒªÌß£¬¾¡Á¿·Ö¿ª¡£
-6.Èç¹ûÒ»¸öÃüÁîÒªÌßÈË£¬ÔòÓ¦¸ÃÖ÷¶¯±êÊ¾Çå³þ¡£
-7.Èç¹ûÊÇÒ»¸öÄÚ²¿´íÎó=²»»áÓ°Ïìµ½ÆäËûÈË=±êÃ÷=
-8.SOAR_RET_SUCC±íÊ¾³É¹¦=ÄÚ²¿Í³Ò»Ê¹ÓÃ
+æ‹œæ‰˜åœ¨æ”¹é”™è¯¯å®šä¹‰çš„æ—¶å€™å…ˆæŠŠç›®å…‰æŠ•å°„è¿‡æ¥
+1.å®šä¹‰é”™è¯¯è¿”å›žå€¼=COMMLIBåˆ©ç”¨5000-9999çš„æ•°æ®ï¼Œå¦‚æžœè¦ä¸ŠæŠ¥ï¼Œé€šè¿‡æœåŠ¡å™¨+è¿™ä¸ªé”™è¯¯å€¼ä¸ŠæŠ¥ï¼Œ
+2.ä¸ŠæŠ¥é”™è¯¯å®šä¹‰ç»™å…¶ä»–æœåŠ¡å™¨çš„æ—¶å€™ï¼Œå¯ä»¥é€šè¿‡TRANS_SEND_ERROR_CODEå°†é”™è¯¯å®šä¹‰å’ŒæœåŠ¡å™¨ç±»åž‹å’ŒCOMMLIBçš„é”™è¯¯ä¸€èµ·ä¼ é€’å‡ºåŽ»ã€‚
+3.å…¶ä»–æœåŠ¡å™¨æ¯ä¸ªæœåŠ¡å™¨ä½¿ç”¨è‡ªå·±çš„æœåŠ¡å™¨çš„ID*10000+é”™è¯¯IDçš„åºå·
+4.ä¸ºä»€ä¹ˆæ•°å­—ä¸ç›´æŽ¥å†™ *SERVER_ERROR_CODE_INTERVAL +IDè¿™æ ·çš„æ–¹å¼ï¼Œå› ä¸ºé‚£æ ·æŸ¥è¯¢éº»çƒ¦.æˆ‘ä»¬å®žéªŒè¿‡äº†ã€‚
+5.åœ¨ä½¿ç”¨é”™è¯¯å®šä¹‰çš„æ—¶å€™ï¼Œå¦‚æžœå¯¹å®¢æˆ·ç«¯è¡¨çŽ°ä¸åŒï¼Œå°½é‡åˆ†å¼€é”™è¯¯å®šä¹‰ã€‚å¦‚æžœä¸€ä¸ªè¦è¸¢äººï¼Œä¸€ä¸ªä¸è¦è¸¢ï¼Œå°½é‡åˆ†å¼€ã€‚
+6.å¦‚æžœä¸€ä¸ªå‘½ä»¤è¦è¸¢äººï¼Œåˆ™åº”è¯¥ä¸»åŠ¨æ ‡ç¤ºæ¸…æ¥šã€‚
+7.å¦‚æžœæ˜¯ä¸€ä¸ªå†…éƒ¨é”™è¯¯=ä¸ä¼šå½±å“åˆ°å…¶ä»–äºº=æ ‡æ˜Ž=
+8.SOAR_RET_SUCCè¡¨ç¤ºæˆåŠŸ=å†…éƒ¨ç»Ÿä¸€ä½¿ç”¨
 
 ******************************************************************************************/
 
@@ -36,11 +36,11 @@ README:
 
 //---------------------------------------------------------------------------------------
 
-//¶¨Òå´íÎó·µ»ØÖµ=COMMLIBÀûÓÃ500-999µÄÊý¾Ý£¬Èç¹ûÒªÉÏ±¨£¬Í¨¹ý·þÎñÆ÷+Õâ¸ö´íÎóÖµÉÏ±¨£¬
-//ÆäËû·þÎñÆ÷Ã¿¸ö·þÎñÆ÷Ê¹ÓÃ×Ô¼ºµÄ·þÎñÆ÷µÄID*1000+´íÎóIDµÄÐòºÅ
+//å®šä¹‰é”™è¯¯è¿”å›žå€¼=COMMLIBåˆ©ç”¨500-999çš„æ•°æ®ï¼Œå¦‚æžœè¦ä¸ŠæŠ¥ï¼Œé€šè¿‡æœåŠ¡å™¨+è¿™ä¸ªé”™è¯¯å€¼ä¸ŠæŠ¥ï¼Œ
+//å…¶ä»–æœåŠ¡å™¨æ¯ä¸ªæœåŠ¡å™¨ä½¿ç”¨è‡ªå·±çš„æœåŠ¡å™¨çš„ID*1000+é”™è¯¯IDçš„åºå·
 
-//ÎªÊ²Ã´Êý×Ö²»Ö±½ÓÐ´ *SERVER_ERROR_CODE_INTERVAL +IDÕâÑùµÄ·½Ê½£¬ÒòÎªÄÇÑù²éÑ¯Âé·³
-//ÎÒÃÇÊµÑé¹ýÁË¡£
+//ä¸ºä»€ä¹ˆæ•°å­—ä¸ç›´æŽ¥å†™ *SERVER_ERROR_CODE_INTERVAL +IDè¿™æ ·çš„æ–¹å¼ï¼Œå› ä¸ºé‚£æ ·æŸ¥è¯¢éº»çƒ¦
+//æˆ‘ä»¬å®žéªŒè¿‡äº†ã€‚
 
 
 class SOAR_RET
@@ -73,7 +73,7 @@ public:
         ERROR_CDR_DECODE_FAIL = 5025,
         ERROR_INVALID_DATA_ID = 5026,
         ERROR_SERVICES_INFO_CONFIG = 5027,
-        ERROR_MML_ERROR = 5035,         //MMLÃüÁî´íÎó
+        ERROR_MML_ERROR = 5035,         //MMLå‘½ä»¤é”™è¯¯
         ERROR_MML_STRING_PARSE_FAIL = 5036,         //
         ERROR_CONSOLE_IS_CLOSED = 5037,
         ERROR_CONSOLE_START_FAIL = 5038,
@@ -137,22 +137,22 @@ public:
         ERROR_STRING_TO_SVCID_FAIL = 5096,
         ERROR_SERVICES_ID_INVALID = 5097,
         ERROR_STRING_TO_PEERINFO_FAIL = 5098,
-        ERROR_MML_COMMAND_INVALID = 5099,                 //MMLÃüÁî×ÖÎÞ·¨Ê¶±ð
-        ERROR_LOTTERY_RATIO_TOTAL = 5100,                 //²©²ÊÅäÖÃratio×ÜºÍ´íÎó
-        ERROR_TRANSACTION_NEED_CMD_ERROR = 5111,                 //ÊÂÎñËùÆÚ´ýµÄÃüÁî´íÎó
-        ERROR_SQLITE3_SQL_SYNTAX_ERROR = 5113,                 //sqlite3 SQLÓï·¨´íÎó
-        ERROR_SQLITE3_OPEN_DATABASE = 5114,                 //sqlite3 SQLÓï·¨´íÎó
-        ERROR_BOOL_EXPRESSION_ERROR = 5122,                 //BOOL±í´ïÊ½´íÎó
-        ERROR_BOOL_EXPRESSION_HAVE_ERR_CHAR = 5123,                 //BOOL±í´ïÊ½ÓÐ´íÎó×Ö·û
-        ERROR_TASKID_PHASEID_NOT_MATCHING = 5124,                 //ÊäÈëµÄ½×¶ÎIDºÍÈÎÎñIDÎÞ·¨Æ¥Åä
-        ERROR_SINGLE_SELECT_USER_INPUT_ERROR = 5125,                 //ÓÃ»§µ¥Ñ¡µÄµÄÎïÆ·ID´íÎó
-        ERROR_TASK_ID_EQUAL_ZERO = 5126,                 //TASKID ==0£¬
-        ERROR_CHECK_CONDITION_ERROR = 5127,                 //¼ì²éÈ¡µÃÈÎÎñÌõ¼þ´íÎó
-        ERROR_GETTASK_CONDITION_RRROR = 5128,                 //È¡µÃÈÎÎñÌõ¼þ´ÖÅ·ÎÄ
-        ERROR_ILLUSION_STRING_TO_ID_FAIL = 5129,                 //ÌîÐ´µÄ×Ö·û´®ÎÞ·¨×ª»»Î»ID
-        ERROR_ILLUSION_CFG_COULD_HAVE_MODIFY = 5130,                 //ÃÎÏëµÄÅäÖÃ·¢Éú¸Ä±ä£¬ÅäÖÃ¶ÁÈ¡ÎÄ¼þ»³ÒÉÅäÖÃ±í·¢ÉúÁË¸Ä±ä
-        ERROR_ILLUSION_EXCEL_FILE_ERROR = 5133,                 //ExcelÎÄ¼þ´íÎó
-        ERROR_ZULU_LINK_DISCONNECT = 5154,                 //Á´½Ó¶Ï¿ª
+        ERROR_MML_COMMAND_INVALID = 5099,                 //MMLå‘½ä»¤å­—æ— æ³•è¯†åˆ«
+        ERROR_LOTTERY_RATIO_TOTAL = 5100,                 //åšå½©é…ç½®ratioæ€»å’Œé”™è¯¯
+        ERROR_TRANSACTION_NEED_CMD_ERROR = 5111,                 //äº‹åŠ¡æ‰€æœŸå¾…çš„å‘½ä»¤é”™è¯¯
+        ERROR_SQLITE3_SQL_SYNTAX_ERROR = 5113,                 //sqlite3 SQLè¯­æ³•é”™è¯¯
+        ERROR_SQLITE3_OPEN_DATABASE = 5114,                 //sqlite3 SQLè¯­æ³•é”™è¯¯
+        ERROR_BOOL_EXPRESSION_ERROR = 5122,                 //BOOLè¡¨è¾¾å¼é”™è¯¯
+        ERROR_BOOL_EXPRESSION_HAVE_ERR_CHAR = 5123,                 //BOOLè¡¨è¾¾å¼æœ‰é”™è¯¯å­—ç¬¦
+        ERROR_TASKID_PHASEID_NOT_MATCHING = 5124,                 //è¾“å…¥çš„é˜¶æ®µIDå’Œä»»åŠ¡IDæ— æ³•åŒ¹é…
+        ERROR_SINGLE_SELECT_USER_INPUT_ERROR = 5125,                 //ç”¨æˆ·å•é€‰çš„çš„ç‰©å“IDé”™è¯¯
+        ERROR_TASK_ID_EQUAL_ZERO = 5126,                 //TASKID ==0ï¼Œ
+        ERROR_CHECK_CONDITION_ERROR = 5127,                 //æ£€æŸ¥å–å¾—ä»»åŠ¡æ¡ä»¶é”™è¯¯
+        ERROR_GETTASK_CONDITION_RRROR = 5128,                 //å–å¾—ä»»åŠ¡æ¡ä»¶ç²—æ¬§æ–‡
+        ERROR_ILLUSION_STRING_TO_ID_FAIL = 5129,                 //å¡«å†™çš„å­—ç¬¦ä¸²æ— æ³•è½¬æ¢ä½ID
+        ERROR_ILLUSION_CFG_COULD_HAVE_MODIFY = 5130,                 //æ¢¦æƒ³çš„é…ç½®å‘ç”Ÿæ”¹å˜ï¼Œé…ç½®è¯»å–æ–‡ä»¶æ€€ç–‘é…ç½®è¡¨å‘ç”Ÿäº†æ”¹å˜
+        ERROR_ILLUSION_EXCEL_FILE_ERROR = 5133,                 //Excelæ–‡ä»¶é”™è¯¯
+        ERROR_ZULU_LINK_DISCONNECT = 5154,                 //é“¾æŽ¥æ–­å¼€
         ERROR_FRAMEWORK_READ_ZERG_CFG_FAIL = 5155,
         ERROR_FRAMEWORK_READ_SELF_CFG_FAIL = 5156,
         ERROR_FRAMEWORK_READ_SVCID_CFG_FAIL = 5157,
@@ -164,15 +164,15 @@ public:
         ERROR_GET_SLAVE_CFGSVR_INFO = 5163,
         ERROR_GET_CFGSVR_INVALID_START_ARGS = 5164,
         ERROR_INVALID_SERVICE_TYPE = 5165,
-        ERROR_BAD_STAT_FILE_NAME = 5166,                  // ´íÎóµÄstatÎÄ¼þÃû
-        ERROR_STAT_MONITOR_NOT_INIT = 5167,                  // Soar_Stat_MonitorÎ´³õÊ¼»¯
-        ERROR_SOCKET_CHANNEL_SEND_NO_INFO = 5168,                  // Ê¹ÓÃsocket channel·¢ËÍÊý¾ÝÃ»ÓÐ¶ÔÓ¦ÒµÎñµÄinfo
-        ERROR_SOCKET_CHANNEL_SEND_BUS_FULL = 5169,                  // Ê¹ÓÃsocket channel·¢ËÍÊý¾Ý·¢ËÍ¹ÜµÀÂú
-        ERROR_SOCKET_CHANNEL_RECV_NO_INFO = 5170,                  // Ê¹ÓÃsocket channel½ÓÊÕÊý¾ÝÃ»ÓÐ¶ÔÓ¦ÒµÎñµÄinfo
-        ERROR_SOCKET_CHANNEL_RECV_BUS_EMPTY = 5171,                  // Ê¹ÓÃsocket channel½ÓÊÕÊý¾Ý¹ÜµÀÎª¿Õ
-        ERROR_SOCKET_CHANNEL_INVALID_ARGS = 5172,                  // Ê¹ÓÃsocket channel×é¼þ²ÎÊý´íÎó
-        ERROR_LOLO_SEND_RECV_CONN_NOT_SAME = 5173,                  // loloÊÕµ½µÄÊý¾Ý°ü·þÎñÆ÷Á¬½ÓÐÅÏ¢ºÍ·¢ËÍµÄ·þÎñÆ÷²»Ò»ÖÂ
-        ERROR_COMMLIB_END = 9999,                  // framework´íÎóÂë½áÊø
+        ERROR_BAD_STAT_FILE_NAME = 5166,                  // é”™è¯¯çš„statæ–‡ä»¶å
+        ERROR_STAT_MONITOR_NOT_INIT = 5167,                  // Soar_Stat_Monitoræœªåˆå§‹åŒ–
+        ERROR_SOCKET_CHANNEL_SEND_NO_INFO = 5168,                  // ä½¿ç”¨socket channelå‘é€æ•°æ®æ²¡æœ‰å¯¹åº”ä¸šåŠ¡çš„info
+        ERROR_SOCKET_CHANNEL_SEND_BUS_FULL = 5169,                  // ä½¿ç”¨socket channelå‘é€æ•°æ®å‘é€ç®¡é“æ»¡
+        ERROR_SOCKET_CHANNEL_RECV_NO_INFO = 5170,                  // ä½¿ç”¨socket channelæŽ¥æ”¶æ•°æ®æ²¡æœ‰å¯¹åº”ä¸šåŠ¡çš„info
+        ERROR_SOCKET_CHANNEL_RECV_BUS_EMPTY = 5171,                  // ä½¿ç”¨socket channelæŽ¥æ”¶æ•°æ®ç®¡é“ä¸ºç©º
+        ERROR_SOCKET_CHANNEL_INVALID_ARGS = 5172,                  // ä½¿ç”¨socket channelç»„ä»¶å‚æ•°é”™è¯¯
+        ERROR_LOLO_SEND_RECV_CONN_NOT_SAME = 5173,                  // loloæ”¶åˆ°çš„æ•°æ®åŒ…æœåŠ¡å™¨è¿žæŽ¥ä¿¡æ¯å’Œå‘é€çš„æœåŠ¡å™¨ä¸ä¸€è‡´
+        ERROR_COMMLIB_END = 9999,                  // frameworké”™è¯¯ç ç»“æŸ
 
 
         //ZERG
@@ -242,7 +242,7 @@ public:
         ERR_OGRE_ALREADY_CONNECTED = 21019,
         ERR_OGRE_END = 21999,
 
-        // cfgsvr´íÎóÂë£¬Ê¹ÓÃÐÂtype
+        // cfgsvré”™è¯¯ç ï¼Œä½¿ç”¨æ–°type
         ERR_CFG_BEGIN = 50000,
         ERR_CFG_CONFIG_MD5_NOT_FOUND = 50001,
         ERR_CFG_CONFIG_INFO_NOT_FOUND = 50002,

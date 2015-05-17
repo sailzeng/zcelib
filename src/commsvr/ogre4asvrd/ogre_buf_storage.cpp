@@ -1,9 +1,9 @@
-
+ï»¿
 #include "ogre_predefine.h"
 #include "ogre_buf_storage.h"
 #include "ogre_configure.h"
 
-//instanceº¯ÊıÊ¹ÓÃµÄ¶«Î÷
+//instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
 Ogre_Buffer_Storage *Ogre_Buffer_Storage::instance_ = NULL;
 
 /****************************************************************************************************
@@ -31,7 +31,7 @@ void Ogre_Buffer_Storage::init_buffer_list(size_t szlist)
 void Ogre_Buffer_Storage::uninit_buffer_list()
 {
 
-    //ÉÙÊ¹ÓÃº¯Êı£¬ÀÁµÃ×¢ÒâĞ§ÂÊ
+    //å°‘ä½¿ç”¨å‡½æ•°ï¼Œæ‡’å¾—æ³¨æ„æ•ˆç‡
     size_t sz_of_buffer = frame_buffer_ary_.size();
 
     for (size_t i = 0; i < sz_of_buffer; ++i)
@@ -45,7 +45,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
 }
 
 /******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005Äê11ÔÂ27ÈÕ
+Author          : Sail ZENGXING  Date Of Creation: 2005å¹´11æœˆ27æ—¥
 Function        : Ogre_Buffer_Storage::allocate_byte_buffer
 Return          : Ogre4a_App_Frame*
 Parameter List  : NULL
@@ -58,7 +58,7 @@ Modify Record   :
 Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
 {
 
-    //»º³åÇøÊ¹ÓÃÍêÁË,À©Õ¹
+    //ç¼“å†²åŒºä½¿ç”¨å®Œäº†,æ‰©å±•
     if (true == frame_buffer_ary_.empty() )
     {
         extend_buffer_list();
@@ -79,12 +79,12 @@ void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
 
 //
 /******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005Äê11ÔÂ27ÈÕ
+Author          : Sail ZENGXING  Date Of Creation: 2005å¹´11æœˆ27æ—¥
 Function        : Ogre_Buffer_Storage::extend_buffer_list
 Return          : void
 Parameter List  :
   Param1: size_t szlist
-Description     : À©Õ¹ÁË»º³åÇøÊıÁ¿£¬
+Description     : æ‰©å±•äº†ç¼“å†²åŒºæ•°é‡ï¼Œ
 Calls           :
 Called By       :
 Other           :
@@ -100,10 +100,10 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
             size_buffer_alloc_ * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
            );
 
-    //ÖØĞÂÀ©Õ¹Ò»ÏÂ¿Õ¼ä
+    //é‡æ–°æ‰©å±•ä¸€ä¸‹ç©ºé—´
     frame_buffer_ary_.resize(size_buffer_alloc_ + szlist);
 
-    //½«ĞÂµÄNEWÊı¾İ×°ÔØ½øÈ¥
+    //å°†æ–°çš„NEWæ•°æ®è£…è½½è¿›å»
     for (size_t i = 0; i < szlist; ++i)
     {
         Ogre4a_App_Frame *tmppr = new(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN) Ogre4a_App_Frame();
@@ -116,14 +116,14 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 
 }
 
-//ÎªÁËSingleTonÀà×¼±¸
-//ÊµÀıµÄ¸³Öµ
+//ä¸ºäº†SingleTonç±»å‡†å¤‡
+//å®ä¾‹çš„èµ‹å€¼
 void Ogre_Buffer_Storage::instance(Ogre_Buffer_Storage *instance)
 {
     clean_instance();
     instance_ = instance;
 }
-//ÊµÀıµÄ»ñµÃ
+//å®ä¾‹çš„è·å¾—
 Ogre_Buffer_Storage *Ogre_Buffer_Storage::instance()
 {
     if (NULL == instance_)
@@ -134,7 +134,7 @@ Ogre_Buffer_Storage *Ogre_Buffer_Storage::instance()
 
     return instance_;
 }
-//Çå³ıÊµÀı
+//æ¸…é™¤å®ä¾‹
 void Ogre_Buffer_Storage::clean_instance()
 {
     if (instance_)
