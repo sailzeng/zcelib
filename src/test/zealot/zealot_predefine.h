@@ -1,9 +1,9 @@
-ï»¿#ifndef ZEALOT_PRE_DEFINE_H_
+#ifndef ZEALOT_PRE_DEFINE_H_
 #define ZEALOT_PRE_DEFINE_H_
 
 
 
-//ZCELIBçš„ä»£ç 
+//ZCELIBµÄ´úÂë
 
 #include <zce_predefine.h>
 #include <zce_trace_log_debug.h>
@@ -94,7 +94,7 @@
 #include <zce_config_getopt.h>
 
 
-//BOOSTçš„ä»£ç ï¼Œç”¨äºä¸€äº›å¯¹æ¯”æµ‹è¯•
+//BOOSTµÄ´úÂë£¬ÓÃÓÚÒ»Ğ©¶Ô±È²âÊÔ
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)
 #endif

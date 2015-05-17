@@ -1,12 +1,12 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_lock_ptr_guard.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012å¹´9æœˆ21æ—¥
-* @brief      åˆ©ç”¨å¤šæ€å®ç°çš„é”GUARDï¼Œ
+* @date       2012Äê9ÔÂ21ÈÕ
+* @brief      ÀûÓÃ¶àÌ¬ÊµÏÖµÄËøGUARD£¬
 *
-*             å¦‚æœä½ è¿˜èƒ½è¢«äººå™ç€ï¼Œå°±è¡¨ç¤ºä½ è¿˜ä¸å¤Ÿå¼ºå¤§ï¼Œ
+*             Èç¹ûÄã»¹ÄÜ±»ÈËÒ­×Å£¬¾Í±íÊ¾Äã»¹²»¹»Ç¿´ó£¬
 *
 */
 
@@ -17,22 +17,22 @@
 #include "zce_lock_base.h"
 
 /*!
-* @brief      é”GUARDï¼Œåˆ©ç”¨æ„é€ å’Œä¿®æ”¹è¿›è¡ŒåŠ é”è§£é”æ“ä½œæ–¹æ³•ï¼Œ
-*             åªè¦æ˜¯ä»ZCE_Lock_Baseç»§æ‰¿çš„å®¶ä¼™ï¼Œåº”è¯¥éƒ½å¯ä»¥ä½¿ç”¨è¿™ä¸ªï¼Œ
-*             ZCE_LockPtr_Guardæ˜¯åˆ©ç”¨å¤šæ€ç‰¹æ€§å®ç°çš„ï¼Œè€Œä¸æ˜¯æ¨¡ç‰ˆç‰¹æ€§
+* @brief      ËøGUARD£¬ÀûÓÃ¹¹ÔìºÍĞŞ¸Ä½øĞĞ¼ÓËø½âËø²Ù×÷·½·¨£¬
+*             Ö»ÒªÊÇ´ÓZCE_Lock_Base¼Ì³ĞµÄ¼Ò»ï£¬Ó¦¸Ã¶¼¿ÉÒÔÊ¹ÓÃÕâ¸ö£¬
+*             ZCE_LockPtr_GuardÊÇÀûÓÃ¶àÌ¬ÌØĞÔÊµÏÖµÄ£¬¶ø²»ÊÇÄ£°æÌØĞÔ
 */
 class ZCE_Lock_Ptr_Guard : public ZCE_NON_Copyable
 {
 public:
 
-    //æ„é€ ï¼Œå¾—åˆ°é”ï¼Œè¿›è¡Œé”å®š
+    //¹¹Ôì£¬µÃµ½Ëø£¬½øĞĞËø¶¨
     ZCE_Lock_Ptr_Guard (ZCE_Lock_Base *lock_ptr):
         lock_ptr_(lock_ptr)
     {
         lock_ptr_->lock();
     }
 
-    ///æ„é€ ï¼Œå¾—åˆ°é”ï¼Œæ ¹æ®è¦æ±‚å†³å®šæ˜¯å¦è¿›è¡Œé”å®šæ“ä½œ
+    ///¹¹Ôì£¬µÃµ½Ëø£¬¸ù¾İÒªÇó¾ö¶¨ÊÇ·ñ½øĞĞËø¶¨²Ù×÷
     ZCE_Lock_Ptr_Guard (ZCE_Lock_Base *lock_ptr, bool block):
         lock_ptr_(lock_ptr)
     {
@@ -42,25 +42,25 @@ public:
         }
     }
 
-    ///ææ„ï¼ŒåŒæ—¶å¯¹é”è¿›è¡Œé‡Šæ”¾æ“ä½œ
+    ///Îö¹¹£¬Í¬Ê±¶ÔËø½øĞĞÊÍ·Å²Ù×÷
     ~ZCE_Lock_Ptr_Guard (void)
     {
         lock_ptr_->unlock();
     };
 
-    ///é”å®šæ“ä½œ
+    ///Ëø¶¨²Ù×÷
     void lock (void)
     {
         return lock_ptr_->lock();
     }
 
-    ///å°è¯•é”å®šæ“ä½œ
+    ///³¢ÊÔËø¶¨²Ù×÷
     bool try_lock (void)
     {
         return lock_ptr_->try_lock();
     }
 
-    ///è§£é”æ“ä½œ
+    ///½âËø²Ù×÷
     void unlock (void)
     {
         return lock_ptr_->unlock();
@@ -68,7 +68,7 @@ public:
 
 protected:
 
-    ///ç”¨æ¥GUARDä¿æŠ¤çš„é”,åˆ©ç”¨C++ç‰¹æ€§å®ç°é”å·®å¼‚
+    ///ÓÃÀ´GUARD±£»¤µÄËø,ÀûÓÃC++ÌØĞÔÊµÏÖËø²îÒì
     ZCE_Lock_Base    *lock_ptr_;
 
 };

@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_server_status.h"
 #include "zce_lock_thread_mutex.h"
@@ -45,7 +45,7 @@ bool ZCE_STATUS_ITEM_ID::operator == (const ZCE_STATUS_ITEM_ID &others) const
 }
 
 /******************************************************************************************
-struct ZCE_STATUS_ITEM çŠ¶æ€è®¡æ•°å™¨é¡¹
+struct ZCE_STATUS_ITEM ×´Ì¬¼ÆÊıÆ÷Ïî
 ******************************************************************************************/
 ZCE_STATUS_ITEM::ZCE_STATUS_ITEM():
     statics_type_(STATICS_PER_FIVE_MINTUES),
@@ -66,7 +66,7 @@ ZCE_STATUS_ITEM::~ZCE_STATUS_ITEM()
 }
 
 /******************************************************************************************
-class ZCE_STATUS_ITEM_WITHNAME çŠ¶æ€è®¡æ•°å™¨+åå­—ï¼Œç”¨äºé…ç½®ï¼ŒDUMPè¾“å‡ºç­‰
+class ZCE_STATUS_ITEM_WITHNAME ×´Ì¬¼ÆÊıÆ÷+Ãû×Ö£¬ÓÃÓÚÅäÖÃ£¬DUMPÊä³öµÈ
 ******************************************************************************************/
 ZCE_STATUS_ITEM_WITHNAME::ZCE_STATUS_ITEM_WITHNAME(unsigned int statics_id,
                                                    ZCE_STATUS_STATICS_TYPE statics_type,
@@ -91,7 +91,7 @@ ZCE_STATUS_ITEM_WITHNAME::~ZCE_STATUS_ITEM_WITHNAME()
 ZCE_Server_Status
 ******************************************************************************************/
 
-//æ„é€ å‡½æ•°,ä¹Ÿç»™ä½ å•ç‹¬ä½¿ç”¨çš„æœºä¼šï¼Œæ‰€ä»¥ä¸ç”¨protected
+//¹¹Ôìº¯Êı,Ò²¸øÄãµ¥¶ÀÊ¹ÓÃµÄ»ú»á£¬ËùÒÔ²»ÓÃprotected
 ZCE_Server_Status::ZCE_Server_Status():
     stat_lock_(NULL),
     clear_time_(0),
@@ -106,7 +106,7 @@ ZCE_Server_Status::ZCE_Server_Status():
 //
 ZCE_Server_Status::~ZCE_Server_Status()
 {
-    //æ¸…ç†æ‰å„ç§æŒ‡é’ˆ
+    //ÇåÀíµô¸÷ÖÖÖ¸Õë
     if (stat_lock_)
     {
         delete stat_lock_;
@@ -127,26 +127,26 @@ ZCE_Server_Status::~ZCE_Server_Status()
 
 }
 
-//åˆå§‹åŒ–çš„æ–¹æ³•,é€šç”¨çš„åº•å±‚ï¼Œ
-//Param1: char* statfilename MMAPå½±å°„çš„çŠ¶æ€æ–‡ä»¶åç§°
-//Param2: bool restore_mmap æ˜¯å¦ç”¨äºæ¢å¤MMAPï¼Œå¦‚æœæ˜¯æ¢å¤ï¼Œæ–‡ä»¶å¿…é¡»æ˜¯å­˜åœ¨çš„,
+//³õÊ¼»¯µÄ·½·¨,Í¨ÓÃµÄµ×²ã£¬
+//Param1: char* statfilename MMAPÓ°ÉäµÄ×´Ì¬ÎÄ¼şÃû³Æ
+//Param2: bool restore_mmap ÊÇ·ñÓÃÓÚ»Ö¸´MMAP£¬Èç¹ûÊÇ»Ö¸´£¬ÎÄ¼ş±ØĞëÊÇ´æÔÚµÄ,
 int ZCE_Server_Status::initialize(const char *stat_filename,
                                   bool restore_mmap,
                                   bool multi_thread)
 {
-    //æ˜ å°„æ–‡ä»¶åç§°ä¸èƒ½ä¸ºNULLï¼Œç»Ÿè®¡æ•°é‡ä¸èƒ½ä¸º0ï¼Œç»Ÿè®¡åˆå§‹åŒ–æ•°ç»„ä¸èƒ½ä¸ºNULL
+    //Ó³ÉäÎÄ¼şÃû³Æ²»ÄÜÎªNULL£¬Í³¼ÆÊıÁ¿²»ÄÜÎª0£¬Í³¼Æ³õÊ¼»¯Êı×é²»ÄÜÎªNULL
     int ret = 0;
 
-    //è®¡ç®—æ‰€éœ€çš„ç©ºé—´
+    //¼ÆËãËùĞèµÄ¿Õ¼ä
     size_t size_alloc = ARRYA_OF_SHM_STATUS::getallocsize(MAX_MONITOR_STAT_ITEM);
 
-    //æ­£å¸¸è®²å¯åŠ¨éƒ½ä¼šé‡æ–°å»ºç«‹ä¸€ä¸ªçŠ¶æ€æ–‡ä»¶ï¼Œ
-    //åŸæ¥åœ¨restore_mmap == falseæ˜¯ï¼Œä¼šåœ¨open_modeåé¢å¹¶ä¸Šä¸€ä¸ªO_TRUNC,ä½†æ²¡æœ‰è€ƒè™‘åˆ°çš„æ˜¯ä¸ŠæŠ¥ç¨‹åºå¯èƒ½
-    //ä¸€ç›´æ‰“å¼€äº†è¿™ä¸ªå…±äº«å†…å­˜æ–‡ä»¶,
-    //å»æ‰è¿™ä¸ªæ­¥éª¤ï¼Œé‡å»ºæ•°æ®ä¾é åé¢çš„MMAPæ•°ç»„éƒ¨åˆ†ï¼Œè€Œä¸ä¾èµ–é‡å»ºæ–‡ä»¶
+    //Õı³£½²Æô¶¯¶¼»áÖØĞÂ½¨Á¢Ò»¸ö×´Ì¬ÎÄ¼ş£¬
+    //Ô­À´ÔÚrestore_mmap == falseÊÇ£¬»áÔÚopen_modeºóÃæ²¢ÉÏÒ»¸öO_TRUNC,µ«Ã»ÓĞ¿¼ÂÇµ½µÄÊÇÉÏ±¨³ÌĞò¿ÉÄÜ
+    //Ò»Ö±´ò¿ªÁËÕâ¸ö¹²ÏíÄÚ´æÎÄ¼ş,
+    //È¥µôÕâ¸ö²½Öè£¬ÖØ½¨Êı¾İÒÀ¿¿ºóÃæµÄMMAPÊı×é²¿·Ö£¬¶ø²»ÒÀÀµÖØ½¨ÎÄ¼ş
     int open_mode = O_CREAT | O_RDWR;
 
-    //éœ€è¦æœ‰ä¸€ä¸ªæ‹·è´çš„æ•°æ®å»ï¼Œæ‰€ä»¥*2ï¼Œè¿˜éœ€è¦ä¸€ä¸ªå¤´
+    //ĞèÒªÓĞÒ»¸ö¿½±´µÄÊı¾İÈ¥£¬ËùÒÔ*2£¬»¹ĞèÒªÒ»¸öÍ·
     ret = stat_file_.open(stat_filename,
                           sizeof(ZCE_STATUS_HEAD) + size_alloc * 2,
                           open_mode);
@@ -158,12 +158,12 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
 
     stat_file_head_ = static_cast<ZCE_STATUS_HEAD *>(stat_file_.addr());
 
-    //å¦‚æœåœ¨è¿™å„¿å‡ºç°æ–­è¨€ï¼Œå°±æ˜¯ä½ ä»£ç ä½¿ç”¨é”™è¯¯äº†.
+    //Èç¹ûÔÚÕâ¶ù³öÏÖ¶ÏÑÔ£¬¾ÍÊÇÄã´úÂëÊ¹ÓÃ´íÎóÁË.
     ZCE_ASSERT(NULL == status_stat_sandy_
                && NULL == status_copy_mandy_
                && NULL == stat_lock_ );
 
-    // ç»Ÿè®¡æ•°æ®åŒºåˆå§‹åŒ–
+    // Í³¼ÆÊı¾İÇø³õÊ¼»¯
     char *stat_ptr = static_cast<char *>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD);
     status_stat_sandy_ = ARRYA_OF_SHM_STATUS::initialize(MAX_MONITOR_STAT_ITEM,
                                                          stat_ptr,
@@ -174,7 +174,7 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
         return -1;
     }
 
-    // æ‹·è´æ•°æ®åŒºåˆå§‹åŒ–
+    // ¿½±´Êı¾İÇø³õÊ¼»¯
     char *copy_ptr = static_cast<char *>(stat_file_.addr()) + sizeof(ZCE_STATUS_HEAD) + size_alloc;
     status_copy_mandy_ = ARRYA_OF_SHM_STATUS::initialize(MAX_MONITOR_STAT_ITEM,
                                                          copy_ptr,
@@ -185,24 +185,24 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
         return -1;
     }
 
-    //ä¿®æ”¹çº¿ç¨‹é”ä¿æŠ¤çš„è¡Œä¸º
+    //ĞŞ¸ÄÏß³ÌËø±£»¤µÄĞĞÎª
     modify_multi_thread_guard(multi_thread);
 
     //
     return 0;
 }
 
-//å¢åŠ ä¸€äº›ç›‘æ§é¡¹ç›®ï¼Œæœ‰æ—¶å€™æ¡†æ¶ä¼šæœ‰ä¸€éƒ¨åˆ†ç›‘æ§é¡¹ç›®ï¼Œå„è‡ªé¡¹ç›®æœ‰æœ‰ä¸€äº›ç›‘æ§é¡¹ç›®
+//Ôö¼ÓÒ»Ğ©¼à¿ØÏîÄ¿£¬ÓĞÊ±ºò¿ò¼Ü»áÓĞÒ»²¿·Ö¼à¿ØÏîÄ¿£¬¸÷×ÔÏîÄ¿ÓĞÓĞÒ»Ğ©¼à¿ØÏîÄ¿
 void ZCE_Server_Status::add_status_item(size_t num_add_stat_item,
                                         const ZCE_STATUS_ITEM_WITHNAME item_ary[])
 {
-    // æ‰©å¤§æ•°ç»„çš„ç©ºé—´, å¤šæ‰©å¤§å‡ ä¸ªç©ºé—´ä¹Ÿæ²¡æœ‰å…³ç³»
+    // À©´óÊı×éµÄ¿Õ¼ä, ¶àÀ©´ó¼¸¸ö¿Õ¼äÒ²Ã»ÓĞ¹ØÏµ
     size_t num_old_stat_item = conf_stat_map_.size();
     conf_stat_map_.rehash(num_old_stat_item + num_add_stat_item + 128);
 
     for (size_t i = 0; i < num_add_stat_item; ++ i)
     {
-        //èƒ½å†™autoæ­£å¥½
+        //ÄÜĞ´autoÕıºÃ
         STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(item_ary[i].statics_item_.item_id_.statics_id_);
 
         if (iter == conf_stat_map_.end())
@@ -222,11 +222,11 @@ void ZCE_Server_Status::add_status_item(size_t num_add_stat_item,
 
 
 
-//ä¿®æ”¹æ˜¯å¦éœ€è¦å¤šçº¿ç¨‹ä¿æŠ¤
+//ĞŞ¸ÄÊÇ·ñĞèÒª¶àÏß³Ì±£»¤
 void ZCE_Server_Status::modify_multi_thread_guard(bool multi_thread)
 {
 
-    //å¦‚æœæ—§æœ‰çš„é”ä»ç„¶å­˜åœ¨ï¼Œå…ˆåˆ é™¤
+    //Èç¹û¾ÉÓĞµÄËøÈÔÈ»´æÔÚ£¬ÏÈÉ¾³ı
     if (stat_lock_)
     {
         delete stat_lock_;
@@ -235,7 +235,7 @@ void ZCE_Server_Status::modify_multi_thread_guard(bool multi_thread)
 
     multi_thread_guard_ = multi_thread;
 
-    //åˆ©ç”¨å¤šæ€å†³å®šé”çš„è¡Œä¸º
+    //ÀûÓÃ¶àÌ¬¾ö¶¨ËøµÄĞĞÎª
     if (multi_thread)
     {
         stat_lock_ = new ZCE_Thread_Light_Mutex();
@@ -246,8 +246,8 @@ void ZCE_Server_Status::modify_multi_thread_guard(bool multi_thread)
     }
 }
 
-//åœ¨sandyæ•°æ®åŒºé‡Œé¢ï¼Œæ‰¾æ•°æ®é¡¹ç›®
-//è¿™ä¸ªå‡½æ•°é‡Œé¢ä¸è¦åŠ é”ï¼ˆåœ¨ä¸Šå±‚åŠ ï¼‰ï¼Œå› ä¸ºè¿™ä¸ªå‡½æ•°æ˜¯ä¸€ä¸ªå…¬ç”¨å‡½æ•°ï¼Œå¯èƒ½ä¼šâ€¦â€¦
+//ÔÚsandyÊı¾İÇøÀïÃæ£¬ÕÒÊı¾İÏîÄ¿
+//Õâ¸öº¯ÊıÀïÃæ²»Òª¼ÓËø£¨ÔÚÉÏ²ã¼Ó£©£¬ÒòÎªÕâ¸öº¯ÊıÊÇÒ»¸ö¹«ÓÃº¯Êı£¬¿ÉÄÜ»á¡­¡­
 int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
                                        unsigned int classify_id,
                                        unsigned int subclassing_id,
@@ -264,7 +264,7 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
         return 0;
     }
 
-    //å¦‚æœåŸæ¥æ²¡è¿™ä¸ªç»Ÿè®¡é¡¹ç›®,çœ‹çœ‹æ˜¯å¦éœ€è¦è¦æ·»åŠ ï¼Œæ£€æŸ¥statics_id_
+    //Èç¹ûÔ­À´Ã»Õâ¸öÍ³¼ÆÏîÄ¿,¿´¿´ÊÇ·ñĞèÒªÒªÌí¼Ó£¬¼ì²éstatics_id_
     STATUS_WITHNAME_MAP::iterator iter = conf_stat_map_.find(statics_id);
     if (iter == conf_stat_map_.end())
     {
@@ -274,7 +274,7 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     }
 
 
-    //å¦‚æœå·²ç»æ»¡äº†ï¼Œä¹Ÿç®—äº†
+    //Èç¹ûÒÑ¾­ÂúÁË£¬Ò²ËãÁË
     if (status_stat_sandy_->full())
     {
         ZCE_LOG(RS_ERROR, "Statics array is full,please extend in start. ary size is [%lu]",
@@ -288,17 +288,17 @@ int ZCE_Server_Status::find_insert_idx(unsigned int statics_id,
     status_item.item_id_ = stat_item_id;
     status_item.counter_ = 0;
 
-    //å®šä¹‰è¿‡è¿™ä¸ªç»Ÿè®¡é¡¹ç›®ï¼Œåªæ˜¯æ²¡æœ‰æ²¡æœ‰æ·»åŠ 
+    //¶¨Òå¹ıÕâ¸öÍ³¼ÆÏîÄ¿£¬Ö»ÊÇÃ»ÓĞÃ»ÓĞÌí¼Ó
     status_stat_sandy_->push_back(status_item);
 
-    //åœ¨MAPä¸­é—´å¢åŠ è¿™ä¸ªç´¢å¼•
+    //ÔÚMAPÖĞ¼äÔö¼ÓÕâ¸öË÷Òı
     statid_to_index_[stat_item_id] = idx;
 
     *sandy_idx = idx;
     return 0;
 }
 
-//æ ¹æ®ä¸€ä¸ªå·²ç»å­˜åœ¨çš„æ–‡ä»¶è¿›è¡Œåˆå§‹åŒ–,ç”¨äºæ¢å¤æ•°æ®åŒº,æ–‡ä»¶å¿…é¡»å·²ç»å­˜åœ¨ï¼Œ
+//¸ù¾İÒ»¸öÒÑ¾­´æÔÚµÄÎÄ¼ş½øĞĞ³õÊ¼»¯,ÓÃÓÚ»Ö¸´Êı¾İÇø,ÎÄ¼ş±ØĞëÒÑ¾­´æÔÚ£¬
 int ZCE_Server_Status::initialize(const char *stat_filename, bool multi_thread)
 {
     ZCE_ASSERT(stat_filename != NULL );
@@ -315,17 +315,17 @@ int ZCE_Server_Status::initialize(const char *stat_filename, bool multi_thread)
     return 0;
 }
 
-//åˆ›å»ºä¸€ä¸ªå·²ç»å­˜åœ¨çš„æ–‡ä»¶è¿›è¡Œåˆå§‹åŒ–,ç”¨äºæ¢å¤æ•°æ®åŒº,å¦‚æœæ–‡ä»¶å¿…é¡»å·²ç»å­˜åœ¨ï¼Œä¼šé‡æ–°åˆ›å»º
-//Param1: char* statfilename MMAPå½±å°„çš„çŠ¶æ€æ–‡ä»¶åç§°
-//Param2: size_t num_stat_ary     çŠ¶æ€è®¡æ•°å™¨çš„ä¸ªæ•°,
-//Param3: ZCE_STATUS_ITEM item_ary[] çŠ¶æ€æŠ€æœ¯å™¨çš„
-//Param4: multi_thread å¤šçº¿ç¨‹ç¯å¢ƒ
+//´´½¨Ò»¸öÒÑ¾­´æÔÚµÄÎÄ¼ş½øĞĞ³õÊ¼»¯,ÓÃÓÚ»Ö¸´Êı¾İÇø,Èç¹ûÎÄ¼ş±ØĞëÒÑ¾­´æÔÚ£¬»áÖØĞÂ´´½¨
+//Param1: char* statfilename MMAPÓ°ÉäµÄ×´Ì¬ÎÄ¼şÃû³Æ
+//Param2: size_t num_stat_ary     ×´Ì¬¼ÆÊıÆ÷µÄ¸öÊı,
+//Param3: ZCE_STATUS_ITEM item_ary[] ×´Ì¬¼¼ÊõÆ÷µÄ
+//Param4: multi_thread ¶àÏß³Ì»·¾³
 int ZCE_Server_Status::initialize(const char *stat_filename,
                                   size_t num_stat_item,
                                   const ZCE_STATUS_ITEM_WITHNAME item_ary[],
                                   bool multi_thread)
 {
-    // å…è®¸å‚æ•°num_stat_item == 0, å› ä¸ºæœ‰äº›appæ˜¯ä¸éœ€è¦appå±‚çš„ç›‘æ§çš„
+    // ÔÊĞí²ÎÊınum_stat_item == 0, ÒòÎªÓĞĞ©appÊÇ²»ĞèÒªapp²ãµÄ¼à¿ØµÄ
     ZCE_ASSERT(stat_filename != NULL);
     //
     int ret = 0;
@@ -338,7 +338,7 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
 
     add_status_item(num_stat_item, item_ary);
 
-    //å¤šå¢åŠ ä¸€äº›ç©ºé—´ï¼Œç›®æ ‡æ˜¯å‡å°å†²çªï¼Œç©ºé—´æ¢æ—¶é—´
+    //¶àÔö¼ÓÒ»Ğ©¿Õ¼ä£¬Ä¿±êÊÇ¼õĞ¡³åÍ»£¬¿Õ¼ä»»Ê±¼ä
     statid_to_index_.rehash( static_cast<size_t>(MAX_MONITOR_STAT_ITEM * 1.5 ));
 
     //
@@ -351,7 +351,7 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
     return 0;
 }
 
-//ç›¸å¯¹å€¼ä¿®æ”¹mandyæˆ–è€…sandyç»Ÿè®¡è®¡æ•°ï¼Œä½¿ç”¨ç»Ÿè®¡IDå’Œåˆ†ç±»IDä½œä¸ºkey,æ¥å£ä½¿ç”¨æ–¹ä¾¿ä¸€ç‚¹ï¼Œä½ ä¸ç”¨è®°å½•å¾ˆå¤šå¯¹åº”å…³ç³»,ä½†é€Ÿåº¦æ…¢ä¸€ç‚¹,
+//Ïà¶ÔÖµĞŞ¸Ämandy»òÕßsandyÍ³¼Æ¼ÆÊı£¬Ê¹ÓÃÍ³¼ÆIDºÍ·ÖÀàID×÷Îªkey,½Ó¿ÚÊ¹ÓÃ·½±ãÒ»µã£¬Äã²»ÓÃ¼ÇÂ¼ºÜ¶à¶ÔÓ¦¹ØÏµ,µ«ËÙ¶ÈÂıÒ»µã,
 int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
                                           unsigned int classify_id,
                                           unsigned int subclassing_id,
@@ -359,7 +359,7 @@ int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
 {
     if (!initialized_)
     {
-        // æœªåˆå§‹åŒ–
+        // Î´³õÊ¼»¯
         ZCE_ASSERT(0);
         return -1;
     }
@@ -376,12 +376,12 @@ int ZCE_Server_Status::increase_by_statid(unsigned int statics_id,
         return ret;
     }
 
-    //å¢åŠ ç»Ÿè®¡æ•°å€¼
+    //Ôö¼ÓÍ³¼ÆÊıÖµ
     (status_stat_sandy_->begin() + sandy_idx)->counter_ += incre_value;
     return 0;
 }
 
-//ç»å¯¹å€¼ä¿®æ”¹ç›‘æ§ç»Ÿè®¡é¡¹ç›®ï¼Œ
+//¾ø¶ÔÖµĞŞ¸Ä¼à¿ØÍ³¼ÆÏîÄ¿£¬
 int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
                                      unsigned int classify_id,
                                      unsigned int subclassing_id,
@@ -389,7 +389,7 @@ int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
 {
     if (!initialized_)
     {
-        // æœªåˆå§‹åŒ–
+        // Î´³õÊ¼»¯
         ZCE_ASSERT(0);
         return -1;
     }
@@ -406,12 +406,12 @@ int ZCE_Server_Status::set_by_statid(unsigned int statics_id,
         return ret;
     }
 
-    //è®¾ç½®ç»Ÿè®¡æ•°å€¼
+    //ÉèÖÃÍ³¼ÆÊıÖµ
     (status_stat_sandy_->begin() + sandy_idx)->counter_ = set_value;
     return 0;
 }
 
-//æ ¹æ®ç»Ÿè®¡IDå’Œåˆ†ç±»IDä½œä¸ºkeyï¼Œå¾—åˆ°ç»Ÿè®¡æ•°å€¼
+//¸ù¾İÍ³¼ÆIDºÍ·ÖÀàID×÷Îªkey£¬µÃµ½Í³¼ÆÊıÖµ
 uint64_t ZCE_Server_Status::get_counter(unsigned int statics_id,
                                         unsigned int classify_id,
                                         unsigned int subclassing_id)
@@ -431,21 +431,21 @@ uint64_t ZCE_Server_Status::get_counter(unsigned int statics_id,
     }
 }
 
-//å–å¾—è®¡æ•°å™¨çš„ä¸ªæ•°
+//È¡µÃ¼ÆÊıÆ÷µÄ¸öÊı
 size_t ZCE_Server_Status::num_of_counter()
 {
-    //ä¸ä¼šæ”¹å˜çš„æ•°å€¼ï¼Œä¸åŠ é”
+    //²»»á¸Ä±äµÄÊıÖµ£¬²»¼ÓËø
     return status_stat_sandy_->size();
 }
 
-//è·å–copy_time
+//»ñÈ¡copy_time
 uint32_t ZCE_Server_Status::get_copy_time()
 {
     return stat_file_head_->copy_time_;
 }
 
-//æ¸…ç†è¿‡æœŸçš„æ•°æ®ï¼Œåœ¨ä½ çš„å®šæ—¶å™¨è§¦å‘æ—¶è°ƒç”¨ï¼ˆå½“ç„¶å‰é¢æœ€å¥½åº”è¯¥ä¸ŠæŠ¥ï¼‰ï¼Œç”¨äºå°†ä¸€äº›æ•°æ®æ¸…0ï¼Œ
-//ç†è®ºä¸Šæ¯5åˆ†é’Ÿè°ƒç”¨ä¸€æ¬¡å°±OK
+//ÇåÀí¹ıÆÚµÄÊı¾İ£¬ÔÚÄãµÄ¶¨Ê±Æ÷´¥·¢Ê±µ÷ÓÃ£¨µ±È»Ç°Ãæ×îºÃÓ¦¸ÃÉÏ±¨£©£¬ÓÃÓÚ½«Ò»Ğ©Êı¾İÇå0£¬
+//ÀíÂÛÉÏÃ¿5·ÖÖÓµ÷ÓÃÒ»´Î¾ÍOK
 void ZCE_Server_Status::check_overtime(time_t now_time)
 {
     ZCE_ASSERT(initialized_);
@@ -453,17 +453,17 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
     //
     int clear_type = STATICS_INVALID_TYPE;
 
-    //çœ‹æ—¶é—´å‘¨æœŸå‘ç”Ÿäº†ä»€ä¹ˆå˜åŒ–æ²¡æœ‰
+    //¿´Ê±¼äÖÜÆÚ·¢ÉúÁËÊ²Ã´±ä»¯Ã»ÓĞ
     if (clear_time_ / FIVE_MINTUE_SECONDS != now_time / FIVE_MINTUE_SECONDS)
     {
         clear_type = STATICS_PER_FIVE_MINTUES;
 
-        //å¦‚æœ5åˆ†é’Ÿéƒ½æ²¡æœ‰å˜åŒ–ï¼Œå°æ—¶ä¸ä¼šå˜åŒ–
+        //Èç¹û5·ÖÖÓ¶¼Ã»ÓĞ±ä»¯£¬Ğ¡Ê±²»»á±ä»¯
         if (clear_time_ / ONE_HOUR_SECONDS != now_time / ONE_HOUR_SECONDS)
         {
             clear_type = STATICS_PER_HOUR;
 
-            //å¦‚æœå°æ—¶éƒ½æ²¡æœ‰å˜åŒ–ï¼Œå¤©ä¸ä¼šå˜åŒ–
+            //Èç¹ûĞ¡Ê±¶¼Ã»ÓĞ±ä»¯£¬Ìì²»»á±ä»¯
             if (clear_time_ / ONE_DAY_SECONDS != now_time / ONE_DAY_SECONDS)
             {
                 clear_type = STATICS_PER_DAYS;
@@ -473,16 +473,16 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
 
     size_t num_of_counter = status_stat_sandy_->size();
 
-    //å¦‚æœæ²¡æœ‰å¤„ç†
+    //Èç¹ûÃ»ÓĞ´¦Àí
     if (clear_type == STATICS_INVALID_TYPE)
     {
         return;
     }
 
-    //å…ˆå¤åˆ¶åˆ°å¤‡ä»½å†…å­˜
+    //ÏÈ¸´ÖÆµ½±¸·İÄÚ´æ
     copy_stat_counter();
 
-    //æ¸…ç†è¿‡æœŸçš„ç»Ÿè®¡æ•°æ®
+    //ÇåÀí¹ıÆÚµÄÍ³¼ÆÊı¾İ
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
     for (size_t i = 0; i < num_of_counter; ++i)
@@ -491,24 +491,24 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
 
         if (clear_type >= cur_item->statics_type_)
         {
-            //ç”±äºzergsvrä¸èƒ½æŒ‰ç…§è¿™ç§æ–¹å¼ä¸ŠæŠ¥è‡ªå·±çš„ç›‘æ§æ•°æ®
-            //æ‰€ä»¥å–æ¶ˆä¸‹é¢çš„ä¸ŠæŠ¥åŠŸèƒ½ï¼Œç»Ÿä¸€ç”±å¤–éƒ¨å·¥å…·æ¥ä¸ŠæŠ¥copyå†…å­˜åŒºçš„æ•°æ®
+            //ÓÉÓÚzergsvr²»ÄÜ°´ÕÕÕâÖÖ·½Ê½ÉÏ±¨×Ô¼ºµÄ¼à¿ØÊı¾İ
+            //ËùÒÔÈ¡ÏûÏÂÃæµÄÉÏ±¨¹¦ÄÜ£¬Í³Ò»ÓÉÍâ²¿¹¤¾ßÀ´ÉÏ±¨copyÄÚ´æÇøµÄÊı¾İ
             cur_item->counter_ = 0;
         }
     }
 
-    //è®°å½•æ¸…ç†æ—¶é—´
+    //¼ÇÂ¼ÇåÀíÊ±¼ä
     clear_time_ = now_time;
 }
 
-//ç”±äºå°†å†…éƒ¨æ•°æ®å…¨éƒ¨å–å‡ºï¼Œç”¨äºä½ å¤–éƒ¨æ‰“åŒ…ä¹‹ç±»
-//ç”±äºæ˜¯ä¸€ä¸ªè¾ƒå°‘è°ƒç”¨çš„å‡½æ•°ï¼Œæˆ‘é™ä½äº†ä»–çš„æ€§èƒ½ï¼Œä¿è¯è®°å½•ä½¿ç”¨çš„å†…å­˜ç©ºé—´æ›´å°
+//ÓÉÓÚ½«ÄÚ²¿Êı¾İÈ«²¿È¡³ö£¬ÓÃÓÚÄãÍâ²¿´ò°üÖ®Àà
+//ÓÉÓÚÊÇÒ»¸ö½ÏÉÙµ÷ÓÃµÄº¯Êı£¬ÎÒ½µµÍÁËËûµÄĞÔÄÜ£¬±£Ö¤¼ÇÂ¼Ê¹ÓÃµÄÄÚ´æ¿Õ¼ä¸üĞ¡
 void ZCE_Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME &array_status, bool dump_copy)
 {
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
 
-    //ä¸¤ä¸ªæ•°æ®åŒºå¤§å°åº”è¯¥ä¸€æ ·
+    //Á½¸öÊı¾İÇø´óĞ¡Ó¦¸ÃÒ»Ñù
     size_t num_of_counter = status_stat_sandy_->size();
     array_status.resize(num_of_counter);
 
@@ -535,29 +535,29 @@ void ZCE_Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME &array_status, bool du
         }
         else
         {
-            //å› ä¸ºå‰é¢çš„ä»£ç éƒ½åšè¿‡æ£€æŸ¥ï¼Œæ‰€ä»¥ï¼Œè¿™å„¿ç†è®ºä¸ä¼šå‡ºç°æ‰¾ä¸åˆ°çš„å¯èƒ½ï¼Œé™¤éä»£ç é”™è¯¯ã€‚
+            //ÒòÎªÇ°ÃæµÄ´úÂë¶¼×ö¹ı¼ì²é£¬ËùÒÔ£¬Õâ¶ùÀíÂÛ²»»á³öÏÖÕÒ²»µ½µÄ¿ÉÄÜ£¬³ı·Ç´úÂë´íÎó¡£
             ZCE_ASSERT(false);
         }
 
     }
 }
 
-//å¤‡ä»½è®¡æ•°å™¨ä¿¡æ¯
+//±¸·İ¼ÆÊıÆ÷ĞÅÏ¢
 void ZCE_Server_Status::copy_stat_counter()
 {
-    //å°†å¤‡ä»½æ•°æ®æ•°æ®å»èµ‹å€¼
+    //½«±¸·İÊı¾İÊı¾İÈ¥¸³Öµ
     size_t num_of_counter = status_stat_sandy_->size();
     status_copy_mandy_->resize(num_of_counter);
     ZCE_STATUS_ITEM *stat_sandy_begin = status_stat_sandy_->begin();
     ZCE_STATUS_ITEM *stat_mandy_begin = status_copy_mandy_->begin();
     memcpy(stat_mandy_begin, stat_sandy_begin, sizeof(ZCE_STATUS_ITEM) * num_of_counter);
 
-    //åˆ·æ–°å¤‡ä»½æ—¶é—´
+    //Ë¢ĞÂ±¸·İÊ±¼ä
     ZCE_ASSERT(stat_file_head_ != NULL);
     stat_file_head_->copy_time_ = static_cast<uint32_t>(time(NULL));
 }
 
-//Dumpæ‰€æœ‰çš„æ•°æ®
+//DumpËùÓĞµÄÊı¾İ
 void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dump_copy)
 {
     size_t num_of_counter = 0;
@@ -565,7 +565,7 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
 
     ZCE_STATUS_ITEM *stat_process_iter = NULL;
 
-    //æ ¹æ®ç¡®å®šæ˜¯ä»å“ªä¸ªæ•°æ®åŒºè¯»å–æ•°æ®
+    //¸ù¾İÈ·¶¨ÊÇ´ÓÄÄ¸öÊı¾İÇø¶ÁÈ¡Êı¾İ
     if (dump_copy)
     {
         num_of_counter = status_stat_sandy_->size();
@@ -577,7 +577,7 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
         stat_process_iter = status_copy_mandy_->begin();
     }
 
-    //è®°å½•ç›‘æ§é…ç½®çš„åå­—çš„å˜é‡
+    //¼ÇÂ¼¼à¿ØÅäÖÃµÄÃû×ÖµÄ±äÁ¿
     char statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN + 1];
     statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN] = '\0';
 
@@ -597,7 +597,7 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
         }
         else
         {
-            //å› ä¸ºå‰é¢çš„ä»£ç éƒ½åšè¿‡æ£€æŸ¥ï¼Œæ‰€ä»¥ï¼Œè¿™å„¿ç†è®ºä¸ä¼šå‡ºç°æ‰¾ä¸åˆ°çš„å¯èƒ½ï¼Œé™¤éä»£ç é”™è¯¯ã€‚
+            //ÒòÎªÇ°ÃæµÄ´úÂë¶¼×ö¹ı¼ì²é£¬ËùÒÔ£¬Õâ¶ùÀíÂÛ²»»á³öÏÖÕÒ²»µ½µÄ¿ÉÄÜ£¬³ı·Ç´úÂë´íÎó¡£
             ZCE_ASSERT(false);
         }
 
@@ -609,18 +609,18 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
     }
 }
 
-//Dumpæ‰€æœ‰çš„æ•°æ®
+//DumpËùÓĞµÄÊı¾İ
 void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dump_copy)
 {
     size_t num_of_counter = 0;
     ZCE_STATUS_ITEM *stat_process_iter = NULL;
 
 
-    //è®°å½•ç›‘æ§é…ç½®çš„åå­—çš„å˜é‡
+    //¼ÇÂ¼¼à¿ØÅäÖÃµÄÃû×ÖµÄ±äÁ¿
     char statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN + 1];
     statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN] = '\0';
 
-    //æ ¹æ®ç¡®å®šæ˜¯ä»å“ªä¸ªæ•°æ®åŒºè¯»å–æ•°æ®
+    //¸ù¾İÈ·¶¨ÊÇ´ÓÄÄ¸öÊı¾İÇø¶ÁÈ¡Êı¾İ
     if (dump_copy)
     {
         num_of_counter = status_stat_sandy_->size();
@@ -650,7 +650,7 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
         }
         else
         {
-            //å› ä¸ºå‰é¢çš„ä»£ç éƒ½åšè¿‡æ£€æŸ¥ï¼Œæ‰€ä»¥ï¼Œè¿™å„¿ç†è®ºä¸ä¼šå‡ºç°æ‰¾ä¸åˆ°çš„å¯èƒ½ï¼Œé™¤éä»£ç é”™è¯¯ã€‚
+            //ÒòÎªÇ°ÃæµÄ´úÂë¶¼×ö¹ı¼ì²é£¬ËùÒÔ£¬Õâ¶ùÀíÂÛ²»»á³öÏÖÕÒ²»µ½µÄ¿ÉÄÜ£¬³ı·Ç´úÂë´íÎó¡£
             ZCE_ASSERT(false);
         }
 
@@ -665,19 +665,19 @@ void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dum
     }
 }
 
-//å¾—åˆ°æ–‡ä»¶çš„å¤´éƒ¨ä¿¡æ¯
+//µÃµ½ÎÄ¼şµÄÍ·²¿ĞÅÏ¢
 void ZCE_Server_Status::get_stat_head(ZCE_STATUS_HEAD *stat_head )
 {
     *stat_head = *stat_file_head_;
 }
 
-//è®°å½•ç›‘æ§çš„ä¸ŠæŠ¥æ—¶é—´
+//¼ÇÂ¼¼à¿ØµÄÉÏ±¨Ê±¼ä
 void ZCE_Server_Status::report_monitor_time(uint32_t report_time)
 {
     stat_file_head_->report_monitor_time_ = report_time;
 }
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_Server_Status *ZCE_Server_Status::instance()
 {
     if (instance_ == NULL)
@@ -688,7 +688,7 @@ ZCE_Server_Status *ZCE_Server_Status::instance()
     return instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
 void ZCE_Server_Status::instance(ZCE_Server_Status *pinstatnce)
 {
     clean_instance();
@@ -696,7 +696,7 @@ void ZCE_Server_Status::instance(ZCE_Server_Status *pinstatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_Server_Status::clean_instance()
 {
     if (instance_)

@@ -1,4 +1,4 @@
-ï»¿#include "zealot_predefine.h"
+#include "zealot_predefine.h"
 
 ZCE_Thread_Light_RW_Mutex light_rw;
 
@@ -60,7 +60,7 @@ int test_rw_lock1 (int /*argc*/, char * /*argv*/ [])
 {
     //InitializeSRWLock(&srw_lock);
 
-    //è®¡æ—¶å™¨ï¼Œä¸æ˜¯å®šæ—¶å™¨å‘€
+    //¼ÆÊ±Æ÷£¬²»ÊÇ¶¨Ê±Æ÷Ñ½
     ZCE_Auto_Progress_Timer auto_timer;
 
     Task_Read a1;
@@ -141,7 +141,7 @@ int test_rw_lock2 (int /*argc*/, char * /*argv*/ [])
 {
     //InitializeSRWLock(&srw_lock);
 
-    //è®¡æ—¶å™¨ï¼Œä¸æ˜¯å®šæ—¶å™¨å‘€
+    //¼ÆÊ±Æ÷£¬²»ÊÇ¶¨Ê±Æ÷Ñ½
     ZCE_Auto_Progress_Timer auto_timer;
 
     Task_Read_1 a1;

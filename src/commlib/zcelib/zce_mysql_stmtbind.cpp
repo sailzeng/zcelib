@@ -1,11 +1,11 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_mysql_stmtbind.h"
 
-//è¿™äº›å‡½æ•°éƒ½æ˜¯4.1.2åçš„ç‰ˆæœ¬åŠŸèƒ½
+//ÕâĞ©º¯Êı¶¼ÊÇ4.1.2ºóµÄ°æ±¾¹¦ÄÜ
 #if MYSQL_VERSION_ID >= 40100
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Mysql_STMT_Bind::ZCE_Mysql_STMT_Bind(size_t numbind):
     num_bind_(numbind),
     current_bind_(0),
@@ -16,7 +16,7 @@ ZCE_Mysql_STMT_Bind::ZCE_Mysql_STMT_Bind(size_t numbind):
 
 }
 
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 ZCE_Mysql_STMT_Bind::~ZCE_Mysql_STMT_Bind()
 {
     if (stmt_bind_)
@@ -26,14 +26,14 @@ ZCE_Mysql_STMT_Bind::~ZCE_Mysql_STMT_Bind()
 
 }
 
-//é‡æ–°è®¾ç½®
+//ÖØĞÂÉèÖÃ
 void ZCE_Mysql_STMT_Bind::reset()
 {
     memset(stmt_bind_, 0, sizeof(MYSQL_BIND)* num_bind_);
     current_bind_ = 0;
 }
 
-//ç»‘å®šä¸€ä¸ªå‚æ•°
+//°ó¶¨Ò»¸ö²ÎÊı
 int ZCE_Mysql_STMT_Bind::bind_one_param(size_t paramno,
                                         ::enum_field_types paramtype,
                                         my_bool *is_null,
@@ -70,14 +70,14 @@ int ZCE_Mysql_STMT_Bind::bind_one_result(size_t result_no,
     stmt_bind_[result_no].buffer = paramdata;
 
     stmt_bind_[result_no].buffer_length = *szparam;
-    //é•¿åº¦æŒ‡é’ˆä¿å­˜è¿”å›å€¼
+    //³¤¶ÈÖ¸Õë±£´æ·µ»ØÖµ
     stmt_bind_[result_no].length = szparam;
     return 0;
 }
 
 
 
-//ç»‘å®šä¸€ä¸ªchar
+//°ó¶¨Ò»¸öchar
 void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, char &val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_TINY;
@@ -128,7 +128,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, unsigned char &val)
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_TINY;
     stmt_bind_[bind_col].buffer = (void *)(&val);
 
-    //æ— ç¬¦å·,ç»‘å®šç»“æœæ—¶åº”è¯¥ä¸ç”¨
+    //ÎŞ·ûºÅ,°ó¶¨½á¹ûÊ±Ó¦¸Ã²»ÓÃ
     stmt_bind_[bind_col].is_unsigned = 1;
 
     return;
@@ -140,7 +140,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, unsigned short &val)
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_SHORT;
     stmt_bind_[bind_col].buffer = (void *)(&val);
 
-    //æ— ç¬¦å·,ç»‘å®šç»“æœæ—¶åº”è¯¥ä¸ç”¨
+    //ÎŞ·ûºÅ,°ó¶¨½á¹ûÊ±Ó¦¸Ã²»ÓÃ
     stmt_bind_[bind_col].is_unsigned = 1;
 
     return;
@@ -151,7 +151,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, unsigned int &val)
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[bind_col].buffer = (void *)(&val);
 
-    //æ— ç¬¦å·,ç»‘å®šç»“æœæ—¶åº”è¯¥ä¸ç”¨
+    //ÎŞ·ûºÅ,°ó¶¨½á¹ûÊ±Ó¦¸Ã²»ÓÃ
     stmt_bind_[bind_col].is_unsigned = 1;
 
     return;
@@ -162,7 +162,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, unsigned long &val)
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONG;
     stmt_bind_[bind_col].buffer = (void *)(&val);
     stmt_bind_[bind_col].buffer_length = sizeof(unsigned long);
-    //æ— ç¬¦å·,ç»‘å®šç»“æœæ—¶åº”è¯¥ä¸ç”¨
+    //ÎŞ·ûºÅ,°ó¶¨½á¹ûÊ±Ó¦¸Ã²»ÓÃ
     stmt_bind_[bind_col].is_unsigned = 1;
 
     return;
@@ -173,7 +173,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, unsigned long long &val)
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_LONGLONG;
     stmt_bind_[bind_col].buffer = reinterpret_cast<void *>(&val);
     stmt_bind_[bind_col].buffer_length = sizeof(unsigned long long);
-    //æ— ç¬¦å·,ç»‘å®šç»“æœæ—¶åº”è¯¥ä¸ç”¨
+    //ÎŞ·ûºÅ,°ó¶¨½á¹ûÊ±Ó¦¸Ã²»ÓÃ
     stmt_bind_[bind_col].is_unsigned = 1;
 
     return;
@@ -202,20 +202,20 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Par
     stmt_bind_[bind_col].buffer_type = bin_data.stmt_data_type_;
     stmt_bind_[bind_col].buffer = bin_data.stmt_pdata_;
 
-    //è¿™ä¸ªå¯èƒ½æ—¢æ˜¯ç»‘å®šå‚æ•°,ä¹Ÿæ˜¯ç»‘å®šç»“æœ
+    //Õâ¸ö¿ÉÄÜ¼ÈÊÇ°ó¶¨²ÎÊı,Ò²ÊÇ°ó¶¨½á¹û
     stmt_bind_[bind_col].buffer_length = bin_data.stmt_data_length_;
     stmt_bind_[bind_col].length = NULL;
 
     return;
 }
 
-//ç»‘å®šäºŒè¿›åˆ¶ç»“æœçš„é€‚é…å™¨
+//°ó¶¨¶ş½øÖÆ½á¹ûµÄÊÊÅäÆ÷
 void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result &val)
 {
     stmt_bind_[bind_col].buffer_type = val.stmt_data_type_;
     stmt_bind_[bind_col].buffer = val.stmt_pdata_;
 
-    //è¿™ä¸ªå¯èƒ½æ—¢æ˜¯ç»‘å®šå‚æ•°,ä¹Ÿæ˜¯ç»‘å®šç»“æœ
+    //Õâ¸ö¿ÉÄÜ¼ÈÊÇ°ó¶¨²ÎÊı,Ò²ÊÇ°ó¶¨½á¹û
     stmt_bind_[bind_col].buffer_length = *val.stmt_data_length_;
     stmt_bind_[bind_col].length = val.stmt_data_length_;
 
@@ -235,7 +235,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData &v
 }
 
 
-//ç»‘å®šä¸€ä¸ªç©ºå‚æ•°
+//°ó¶¨Ò»¸ö¿Õ²ÎÊı
 void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param & val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_NULL;

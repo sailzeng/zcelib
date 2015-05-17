@@ -1,20 +1,20 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_os_adapt_string.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2002å¹´06æœˆ22æ—¥
-* @brief      ç”¨äºASNI stringå‡½æ•°çš„è¡¥å……
+* @date       2002Äê06ÔÂ22ÈÕ
+* @brief      ÓÃÓÚASNI stringº¯ÊıµÄ²¹³ä
 *
 *
-* @details    å®šä¹‰åŸºæœ¬LIBå‡½æ•°ï¼Œä¾›å¤§å®¶ä¸€èµ·ä½¿ç”¨
+* @details    ¶¨Òå»ù±¾LIBº¯Êı£¬¹©´ó¼ÒÒ»ÆğÊ¹ÓÃ
 *
 *
 *
-* @note       è¿™é‡Œé¢æœ‰éƒ¨åˆ†åº”è¯¥æ˜¯ZCELIB(ZENLIB)æœ€æ—©çš„ä»£ç ã€‚
-*             å¤šå¹´åæ•´ç†è¿™æ®µä»£ç ï¼Œå‘ç°æœ‰è‡ªå·±çš„å·¥å·ä¿¡æ¯ï¼Œå“ˆå“ˆï¼Œ
-*             2002å¹´ï¼Œæˆ‘åº”è¯¥åœ¨åŒ—äº¬å‡ºå·®å›æ¥ï¼ŒHWçš„å•†ä¸šç½‘ç»œéƒ¨é—¨åˆšåˆšæˆç«‹çš„æ—¶å€™
-*             å½“ç„¶åæ¥ï¼Œè¿™é‡Œé¢çš„ç›¸å½“éƒ¨åˆ†ä»£ç è¿˜æ˜¯é‡å†™äº†ï¼Œ
+* @note       ÕâÀïÃæÓĞ²¿·ÖÓ¦¸ÃÊÇZCELIB(ZENLIB)×îÔçµÄ´úÂë¡£
+*             ¶àÄêºóÕûÀíÕâ¶Î´úÂë£¬·¢ÏÖÓĞ×Ô¼ºµÄ¹¤ºÅĞÅÏ¢£¬¹ş¹ş£¬
+*             2002Äê£¬ÎÒÓ¦¸ÃÔÚ±±¾©³ö²î»ØÀ´£¬HWµÄÉÌÒµÍøÂç²¿ÃÅ¸Õ¸Õ³ÉÁ¢µÄÊ±ºò
+*             µ±È»ºóÀ´£¬ÕâÀïÃæµÄÏàµ±²¿·Ö´úÂë»¹ÊÇÖØĞ´ÁË£¬
 *
 */
 
@@ -35,10 +35,10 @@ namespace ZCE_LIB
 
 
 /*!
-* @brief      å­—ç¬¦çš„åŠŸèƒ½çš„èƒå–ç±»ï¼Œç”¨åœ¨å…¼å®¹charï¼Œwchar_tå­—ç¬¦ä¸²å¤„ç†çš„æ—¶å€™è¿˜æ˜¯æŒºæœ‰ç”¨çš„
-*             yunfeiyang GGæå¾—ä¸€å¥—ä¸œè¥¿ï¼Œ
-* @tparam     char_type å­—ç¬¦ç±»å‹ï¼Œchar æˆ–è€… wchar_t
-* @note       char_traitsé‡Œé¢è¿˜æœ‰ length,moveç­‰å‡½æ•°
+* @brief      ×Ö·ûµÄ¹¦ÄÜµÄİÍÈ¡Àà£¬ÓÃÔÚ¼æÈİchar£¬wchar_t×Ö·û´®´¦ÀíµÄÊ±ºò»¹ÊÇÍ¦ÓĞÓÃµÄ
+*             yunfeiyang GG¸ãµÃÒ»Ì×¶«Î÷£¬
+* @tparam     char_type ×Ö·ûÀàĞÍ£¬char »òÕß wchar_t
+* @note       char_traitsÀïÃæ»¹ÓĞ length,moveµÈº¯Êı
 */
 template <typename char_type>
 struct yun_char_traits : public std::char_traits < char_type >
@@ -50,7 +50,7 @@ struct yun_char_traits < char > : public std::char_traits < char >
 {
     typedef std::string string_type;
 
-    //æ³¨æ„ int_type å°±æ˜¯std::char_traits<wchar_t>::int_type
+    //×¢Òâ int_type ¾ÍÊÇstd::char_traits<wchar_t>::int_type
     static int tolower(int_type c)
     {
         return ::tolower(c);
@@ -81,7 +81,7 @@ struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
 {
     typedef std::wstring    string_type;
 
-    //æ³¨æ„ int_type å°±æ˜¯std::char_traits<wchar_t>::int_type
+    //×¢Òâ int_type ¾ÍÊÇstd::char_traits<wchar_t>::int_type
     static int tolower(int_type c)
     {
         return ::towlower(c);
@@ -111,12 +111,12 @@ struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
 
 
 //==========================================================================================================
-//åŸæ¥çš„ä»£ç ä¸­æœ‰äººå¯¹ASCII 255çš„å­—ç¬¦è¿›è¡Œäº†åˆ¤å®šå¤„ç†ï¼ŒASCII255æ˜¯Non-breaking spaceï¼Œ
-//æˆ‘æš‚æ—¶å»æ‰äº†ã€‚æ„Ÿè§‰å¥½åƒå‡ºç°è¿™ç§æƒ…å†µå¾ˆç‰¹ä¾‹ã€‚å› ä¸ºå½“æ—¶æ²¡æœ‰å†™æ³¨é‡Šï¼Œæ‰€ä»¥å®Œå…¨ä¸è®°å¾—åœºæ™¯äº†ã€‚
+//Ô­À´µÄ´úÂëÖĞÓĞÈË¶ÔASCII 255µÄ×Ö·û½øĞĞÁËÅĞ¶¨´¦Àí£¬ASCII255ÊÇNon-breaking space£¬
+//ÎÒÔİÊ±È¥µôÁË¡£¸Ğ¾õºÃÏñ³öÏÖÕâÖÖÇé¿öºÜÌØÀı¡£ÒòÎªµ±Ê±Ã»ÓĞĞ´×¢ÊÍ£¬ËùÒÔÍêÈ«²»¼ÇµÃ³¡¾°ÁË¡£
 
 /*!
-* @brief      å·¦è§„æ•´å­—ç¬¦ä¸²ï¼Œå»æ‰å­—ç¬¦ä¸²å·¦è¾¹çš„ç©ºæ ¼ï¼Œæ¢è¡Œï¼Œå›è½¦ï¼ŒTab
-* @tparam     char_type å­—ç¬¦ç±»å‹ï¼Œchar or wchar_t
+* @brief      ×ó¹æÕû×Ö·û´®£¬È¥µô×Ö·û´®×ó±ßµÄ¿Õ¸ñ£¬»»ĞĞ£¬»Ø³µ£¬Tab
+* @tparam     char_type ×Ö·ûÀàĞÍ£¬char or wchar_t
 * @return     char_type *
 * @param      str
 */
@@ -128,7 +128,7 @@ char_type *strtrimleft(char_type *str)
     char_type *lstr = str;
     for (; *lstr != '\0'; lstr++)
     {
-        //æ³¨æ„isspaceçš„å‚æ•°æ˜¯int,ï¼ˆWINä¸‹ï¼‰è¦æ±‚å­—ç¬¦æ˜¯0~255,
+        //×¢ÒâisspaceµÄ²ÎÊıÊÇint,£¨WINÏÂ£©ÒªÇó×Ö·ûÊÇ0~255,
         if (yun_char_traits<char_type>::isspace(*lstr) != 0)
         {
             continue;
@@ -150,7 +150,7 @@ char_type *strtrimleft(char_type *str)
 
 
 /*!
-* @brief      å³è§„æ•´å­—ç¬¦ä¸²ï¼Œå»æ‰å­—ç¬¦ä¸²å³è¾¹çš„ç©ºæ ¼ï¼Œæ¢è¡Œï¼Œå›è½¦ï¼ŒTab
+* @brief      ÓÒ¹æÕû×Ö·û´®£¬È¥µô×Ö·û´®ÓÒ±ßµÄ¿Õ¸ñ£¬»»ĞĞ£¬»Ø³µ£¬Tab
 * @return     char*
 * @param      str
 */
@@ -162,7 +162,7 @@ char *strtrimright(char_type *str)
 
     for (; lstr >= str; lstr--)
     {
-        //æ³¨æ„isspaceçš„å‚æ•°æ˜¯int,ï¼ˆWINä¸‹ï¼‰è¦æ±‚å­—ç¬¦æ˜¯0~255,
+        //×¢ÒâisspaceµÄ²ÎÊıÊÇint,£¨WINÏÂ£©ÒªÇó×Ö·ûÊÇ0~255,
         if (yun_char_traits<char_type>::isspace(*lstr) != 0)
         {
             continue;
@@ -183,7 +183,7 @@ char *strtrimright(char_type *str)
 
 
 /*!
-* @brief      è§„æ•´å­—ç¬¦ä¸²ï¼Œå»æ‰å­—ç¬¦ä¸²ä¸¤è¾¹çš„ç©ºæ ¼ï¼Œæ¢è¡Œï¼Œå›è½¦ï¼ŒTab
+* @brief      ¹æÕû×Ö·û´®£¬È¥µô×Ö·û´®Á½±ßµÄ¿Õ¸ñ£¬»»ĞĞ£¬»Ø³µ£¬Tab
 * @return     char*
 * @param      str
 */
@@ -235,24 +235,24 @@ inline void trim_stdstr(std::basic_string<char_type, char_traits_type, allocator
 }
 
 //==========================================================================================================
-//ä¸‹é¢è¿™å‡ ä¸ªå‡½æ•°ç›®å‰çš„å¹³å°å¯èƒ½æœ‰ï¼Œä½†å½“æ—¶çš„æŸä¸ªå¹³å°å¯èƒ½ç¼ºå¤±ï¼Œæ˜¯HPï¼Ÿè¿˜æ˜¯IBMï¼ŸSUNï¼Ÿæ— æ³•ç¡®è®¤äº†ï¼Œ
-//æš‚æ—¶ä¿ç•™äº†ã€‚
+//ÏÂÃæÕâ¼¸¸öº¯ÊıÄ¿Ç°µÄÆ½Ì¨¿ÉÄÜÓĞ£¬µ«µ±Ê±µÄÄ³¸öÆ½Ì¨¿ÉÄÜÈ±Ê§£¬ÊÇHP£¿»¹ÊÇIBM£¿SUN£¿ÎŞ·¨È·ÈÏÁË£¬
+//ÔİÊ±±£ÁôÁË¡£
 
 
 /*!
-* @brief      å°†å­—ç¬¦ä¸²å…¨éƒ¨è½¬æ¢ä¸ºå¤§å†™å­—ç¬¦
+* @brief      ½«×Ö·û´®È«²¿×ª»»Îª´óĞ´×Ö·û
 */
 char *strupr(char *str);
 
 
 /*!
-* @brief      å°†å­—ç¬¦ä¸²å…¨éƒ¨è½¬æ¢ä¸ºå°å†™å­—ç¬¦
+* @brief      ½«×Ö·û´®È«²¿×ª»»ÎªĞ¡Ğ´×Ö·û
 */
 char *strlwr(char *str);
 
 
 /*!
-* @brief      å­—ç¬¦ä¸²æ¯”è¾ƒï¼Œå¿½è§†å¤§å°å†™
+* @brief      ×Ö·û´®±È½Ï£¬ºöÊÓ´óĞ¡Ğ´
 * @return     int
 * @param      string1
 * @param      string2
@@ -260,7 +260,7 @@ char *strlwr(char *str);
 int strcasecmp(const char *string1, const char *string2);
 
 /*!
-* @brief      å­—ç¬¦ä¸²å®šé•¿æ¯”è¾ƒï¼Œå¿½è§†å¤§å°å†™
+* @brief      ×Ö·û´®¶¨³¤±È½Ï£¬ºöÊÓ´óĞ¡Ğ´
 * @return     int
 * @param      string1
 * @param      string2
@@ -273,15 +273,15 @@ int strncasecmp(const char *string1, const char *string2, size_t maxlen);
 
 
 //==========================================================================================================
-//äº§ç”Ÿå”¯ä¸€åå­—çš„ä¸€äº›å‡½æ•°
+//²úÉúÎ¨Ò»Ãû×ÖµÄÒ»Ğ©º¯Êı
 
 
 /*!
-* @brief      é€šè¿‡å¯¹è±¡æŒ‡é’ˆï¼Œå–å¾—ä¸€ä¸ªå”¯ä¸€çš„åç§°,ç”¨äºä¸€äº›éœ€è¦åå­—çš„åœ°æ–¹,ä¿è¯ä¼ å…¥çš„ç©ºé—´æœ‰48ä¸ªå­—èŠ‚ï¼Œ
-* @return     char*           è¿”å›çš„åå­—
-* @param[in]  object_ptr  å¯¹è±¡æŒ‡é’ˆï¼ŒæŸä¸ªå¯¹è±¡çš„æŒ‡é’ˆåœ°å€ï¼Œé€šè¿‡è¿™ä¸ªæŒ‡é’ˆåœ°å€è½¬æ¢å¾—åˆ°å”¯ä¸€åå­—
-* @param[out] name        åå­—çš„buffer
-* @param[in]  length      bufferçš„é•¿åº¦
+* @brief      Í¨¹ı¶ÔÏóÖ¸Õë£¬È¡µÃÒ»¸öÎ¨Ò»µÄÃû³Æ,ÓÃÓÚÒ»Ğ©ĞèÒªÃû×ÖµÄµØ·½,±£Ö¤´«ÈëµÄ¿Õ¼äÓĞ48¸ö×Ö½Ú£¬
+* @return     char*           ·µ»ØµÄÃû×Ö
+* @param[in]  object_ptr  ¶ÔÏóÖ¸Õë£¬Ä³¸ö¶ÔÏóµÄÖ¸ÕëµØÖ·£¬Í¨¹ıÕâ¸öÖ¸ÕëµØÖ·×ª»»µÃµ½Î¨Ò»Ãû×Ö
+* @param[out] name        Ãû×ÖµÄbuffer
+* @param[in]  length      bufferµÄ³¤¶È
 */
 char *object_unique_name (const void *object_ptr,
                           char *name,
@@ -289,11 +289,11 @@ char *object_unique_name (const void *object_ptr,
 
 
 /*!
-* @brief      é€šè¿‡å‰ç¼€å¼ï¼Œå¾—åˆ°ä¸€ä¸ªå”¯ä¸€çš„åç§°,å”¯ä¸€åç§°åŒ…æ‹¬ï¼Œå‰ç¼€+è¿›ç¨‹ID+å†…éƒ¨è®¡æ•°å™¨
-* @return     char*        è¿”å›çš„åå­—
-* @param[in]  prefix_name  å‰ç¼€çš„å­—ç¬¦ä¸²
-* @param[out] name         åå­—çš„buffer
-* @param[in]  length       bufferçš„é•¿åº¦
+* @brief      Í¨¹ıÇ°×ºÊ½£¬µÃµ½Ò»¸öÎ¨Ò»µÄÃû³Æ,Î¨Ò»Ãû³Æ°üÀ¨£¬Ç°×º+½ø³ÌID+ÄÚ²¿¼ÆÊıÆ÷
+* @return     char*        ·µ»ØµÄÃû×Ö
+* @param[in]  prefix_name  Ç°×ºµÄ×Ö·û´®
+* @param[out] name         Ãû×ÖµÄbuffer
+* @param[in]  length       bufferµÄ³¤¶È
 */
 char *prefix_unique_name(const char *prefix_name,
                          char *name,
@@ -302,23 +302,23 @@ char *prefix_unique_name(const char *prefix_name,
 //==========================================================================================================
 
 /*!
-* @brief      åˆ†å‰²å­—ç¬¦ä¸²ï¼Œ
-* @tparam     iter_type1  è¢«åˆ†å‰²æ•°æ®çš„è¿­ä»£å™¨ç±»å‹
-* @tparam     iter_type2  åˆ†å‰²æ ‡ç¤ºçš„è¿­ä»£å™¨ç±»å‹
-* @tparam     compare_type æ¯”è¾ƒæ–¹å¼
-* @tparam     container_type å®¹å™¨ç±»å‹
-* @param[in]  fs è¢«åˆ†å‰²æ•°æ®å¼€å§‹ä½ç½®çš„è¿­ä»£å™¨
-* @param[in]  ls è¢«åˆ†å‰²æ•°æ®ç»“æŸä½ç½®çš„è¿­ä»£å™¨
-* @param[in]  fo åˆ†å‰²æ ‡ç¤ºçš„å¼€å§‹ä½ç½®è¿­ä»£å™¨
-* @param[in]  lo åˆ†å‰²æ ‡ç¤ºçš„ç»“æŸä½ç½®è¿­ä»£å™¨
-* @param[in]  pr æ¯”è¾ƒæ–¹å¼
-* @param[out] v  è¾“å‡ºçš„å®¹å™¨ï¼Œä¸€èˆ¬æ˜¯vector<string>
+* @brief      ·Ö¸î×Ö·û´®£¬
+* @tparam     iter_type1  ±»·Ö¸îÊı¾İµÄµü´úÆ÷ÀàĞÍ
+* @tparam     iter_type2  ·Ö¸î±êÊ¾µÄµü´úÆ÷ÀàĞÍ
+* @tparam     compare_type ±È½Ï·½Ê½
+* @tparam     container_type ÈİÆ÷ÀàĞÍ
+* @param[in]  fs ±»·Ö¸îÊı¾İ¿ªÊ¼Î»ÖÃµÄµü´úÆ÷
+* @param[in]  ls ±»·Ö¸îÊı¾İ½áÊøÎ»ÖÃµÄµü´úÆ÷
+* @param[in]  fo ·Ö¸î±êÊ¾µÄ¿ªÊ¼Î»ÖÃµü´úÆ÷
+* @param[in]  lo ·Ö¸î±êÊ¾µÄ½áÊøÎ»ÖÃµü´úÆ÷
+* @param[in]  pr ±È½Ï·½Ê½
+* @param[out] v  Êä³öµÄÈİÆ÷£¬Ò»°ãÊÇvector<string>
 */
 template < typename iter_type1, typename iter_type2, typename compare_type, typename container_type>
 void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, compare_type pr, container_type &v)
 {
 
-    //ä½¿ç”¨å°¾éƒ¨æ’å…¥çš„è¿­ä»£å™¨
+    //Ê¹ÓÃÎ²²¿²åÈëµÄµü´úÆ÷
     std::back_insert_iterator<container_type> o = std::back_inserter(v);
     if (fo == lo)
     {
@@ -361,12 +361,12 @@ void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, comp
 
 
 /*!
-* @brief      æ ¹æ®åˆ†å‰²ç¬¦ï¼Œå°†ä¸€ä¸ªå­—ç¬¦ä¸²ï¼Œåˆ†å‰²æˆè‹¥å¹²ä¸ªå­—ç¬¦ä¸²ï¼Œæ”¾å…¥å®¹å™¨v
-* @tparam     char_type      å­—ç¬¦ç±»å‹
-* @tparam     container_type å®¹å™¨ç±»å‹ï¼Œ
-* @param[in]  str            å¤„ç†çš„å­—ç¬¦ä¸²ï¼Œ
-* @param[in]  separator      åˆ†å‰²å­—ç¬¦ä¸²ï¼Œæ³¨æ„å¦‚æœæ˜¯å•ä¸ªå­—ç¬¦ï¼Œä¹Ÿè¦ç”¨""æ‹¬èµ·æ¥
-* @param[out] v              å®¹å™¨ï¼Œç”¨äºå­˜æ”¾åˆ†éš”çš„ç»“æœ,ä¸€èˆ¬æ˜¯vector<string>
+* @brief      ¸ù¾İ·Ö¸î·û£¬½«Ò»¸ö×Ö·û´®£¬·Ö¸î³ÉÈô¸É¸ö×Ö·û´®£¬·ÅÈëÈİÆ÷v
+* @tparam     char_type      ×Ö·ûÀàĞÍ
+* @tparam     container_type ÈİÆ÷ÀàĞÍ£¬
+* @param[in]  str            ´¦ÀíµÄ×Ö·û´®£¬
+* @param[in]  separator      ·Ö¸î×Ö·û´®£¬×¢ÒâÈç¹ûÊÇµ¥¸ö×Ö·û£¬Ò²ÒªÓÃ""À¨ÆğÀ´
+* @param[out] v              ÈİÆ÷£¬ÓÃÓÚ´æ·Å·Ö¸ôµÄ½á¹û,Ò»°ãÊÇvector<string>
 */
 template < typename char_type, typename container_type >
 inline void str_split(const char_type *str, const char_type *separator, container_type &v)
@@ -396,11 +396,11 @@ inline void string_split(const std::string &source_str,
 
 
 /*!
-* @brief      å°†ä¸€ä¸ªå­—ç¬¦ä¸²æ ¹æ®åˆ†å‰²ç¬¦ï¼ˆä¹Ÿå¯ä»¥æ˜¯ä¸€ä¸ªå­—ç¬¦ä¸²ï¼‰åˆ†æˆ2ä¸ªå­—ç¬¦ä¸²ã€‚
-* @param      src_str åŸå­—ç¬¦ä¸²
-* @param      search_str åˆ†å‰²çš„å­—ç¬¦ä¸²
-* @param      str_1 åˆ†å‰²çš„ç¬¬ä¸€ä¸ªå­—ç¬¦ä¸²
-* @param      str_2 åˆ†å‰²å¾—åˆ°çš„ç¬¬äºŒä¸ªå­—ç¬¦ä¸²
+* @brief      ½«Ò»¸ö×Ö·û´®¸ù¾İ·Ö¸î·û£¨Ò²¿ÉÒÔÊÇÒ»¸ö×Ö·û´®£©·Ö³É2¸ö×Ö·û´®¡£
+* @param      src_str Ô­×Ö·û´®
+* @param      search_str ·Ö¸îµÄ×Ö·û´®
+* @param      str_1 ·Ö¸îµÄµÚÒ»¸ö×Ö·û´®
+* @param      str_2 ·Ö¸îµÃµ½µÄµÚ¶ş¸ö×Ö·û´®
 */
 void str_split_into2(const std::string &src_str,
                      const char *search_str,
@@ -422,39 +422,39 @@ const char *str_replace(const char *src,
                         const char *replace);
 
 //==========================================================================================================
-//ç”¨äºä¸€äº›è¡¨æ ¼å­—ç¬¦ä¸²åˆ†æå‡½æ•°
+//ÓÃÓÚÒ»Ğ©±í¸ñ×Ö·û´®·ÖÎöº¯Êı
 
 /*!
-* @brief      è·¨è¶Šç©ºç™½ç¬¦ï¼ŒæŒ‡ç©ºæ ¼ã€æ°´å¹³åˆ¶è¡¨ã€å‚ç›´åˆ¶è¡¨ã€æ¢é¡µã€å›è½¦å’Œæ¢è¡Œç¬¦ï¼Œè¿™ç±»å­—ç¬¦éƒ½è·¨è¶Šï¼Œ
-* @return     const char* è·³è¿‡åçš„åœ°å€
-* @param      str         å‚æ•°å­—ç¬¦ä¸²
-* @note       ä¸ºäº†åˆ†æä¸€äº›è¡¨æ ¼ä¿¡æ¯ï¼Œå¢åŠ çš„ä¸€ç»„å‡½æ•°ï¼Œä¸€è‡´ä¸€äº›ç±»topçš„ä»£ç æ—¶ç¿»è¯‘çš„
+* @brief      ¿çÔ½¿Õ°×·û£¬Ö¸¿Õ¸ñ¡¢Ë®Æ½ÖÆ±í¡¢´¹Ö±ÖÆ±í¡¢»»Ò³¡¢»Ø³µºÍ»»ĞĞ·û£¬ÕâÀà×Ö·û¶¼¿çÔ½£¬
+* @return     const char* Ìø¹ıºóµÄµØÖ·
+* @param      str         ²ÎÊı×Ö·û´®
+* @note       ÎªÁË·ÖÎöÒ»Ğ©±í¸ñĞÅÏ¢£¬Ôö¼ÓµÄÒ»×éº¯Êı£¬Ò»ÖÂÒ»Ğ©ÀàtopµÄ´úÂëÊ±·­ÒëµÄ
 */
 const char *skip_whitespace(const char *str);
 
 //
 /*!
-* @brief      è·¨è¶ŠæŸä¸ªtokenï¼Œè·³è¿‡æŸä¸ªå•è¯
-* @return     const char* è·³è¿‡åçš„åœ°å€
-* @param      str         å‚æ•°å­—ç¬¦ä¸²
+* @brief      ¿çÔ½Ä³¸ötoken£¬Ìø¹ıÄ³¸öµ¥´Ê
+* @return     const char* Ìø¹ıºóµÄµØÖ·
+* @param      str         ²ÎÊı×Ö·û´®
 */
 const char *skip_token(const char *str);
 
 
 /*!
-* @brief      è·³è¿‡ä¸€è¡Œ
-* @return     const char* è·³è¿‡åçš„åœ°å€
-* @param[in]  str         å‚æ•°å­—ç¬¦ä¸²
+* @brief      Ìø¹ıÒ»ĞĞ
+* @return     const char* Ìø¹ıºóµÄµØÖ·
+* @param[in]  str         ²ÎÊı×Ö·û´®
 * @note
 */
 const char *skip_line(const char *str);
 
 
 /*!
-* @brief      è·¨è¶ŠæŸä¸ªtoken,ç›´åˆ°åˆ†éš”ç¬¦åï¼ˆæˆ–è€…ç»“æŸï¼‰
-* @return     const char*    è·³è¿‡åçš„åœ°å€
-* @param[in]  str            å‚æ•°å­—ç¬¦ä¸²
-* @param[in]  separator_char åˆ†å‰²å­—ç¬¦ï¼Œè¦æ‰¾åˆ°è¿™ä¸ªå­—ç¬¦ä¸ºæ­¢ï¼Œï¼ˆè·³åˆ°è¿™ä¸ªå­—ç¬¦åé¢ï¼‰
+* @brief      ¿çÔ½Ä³¸ötoken,Ö±µ½·Ö¸ô·ûºó£¨»òÕß½áÊø£©
+* @return     const char*    Ìø¹ıºóµÄµØÖ·
+* @param[in]  str            ²ÎÊı×Ö·û´®
+* @param[in]  separator_char ·Ö¸î×Ö·û£¬ÒªÕÒµ½Õâ¸ö×Ö·ûÎªÖ¹£¬£¨Ìøµ½Õâ¸ö×Ö·ûºóÃæ£©
 */
 const char *skip_separator(const char *str, char separator_char);
 
@@ -464,22 +464,22 @@ const char *skip_separator(const char *str, char separator_char);
 
 
 /*!
-* @brief      ä¸€ä¸ªç®€å•çš„æ‰“å°è¾“å‡ºæŸä¸ªå†…å­˜åœ°å€ä¿¡æ¯çš„å‡½æ•°ï¼Œå°±æ˜¯ç®€å•çš„å†…å­˜ç¿»è¯‘ä¸º16è¿›åˆ¶å­—ç¬¦ä¸²
-* @param      stream  æ–‡ä»¶æµå¯¹è±¡ï¼Œstdout,stderrä¹Ÿéƒ½å¯ä»¥
-* @param      mem     è°ƒè¯•çš„å†…å­˜æŒ‡é’ˆ
-* @param      mem_len æŒ‡é’ˆé•¿åº¦ï¼Œ
-* @note       å¦‚æœæ˜¯æ—¥å¿—è¾“å‡ºæä¾›äº†æ–¹ä¾¿çš„è¾…åŠ©ç±»ï¼Œè¿™ä»…ä»…ç”¨äºä¸éœ€è¦ä½¿ç”¨æ—¥å¿—çš„åœ°æ–¹
+* @brief      Ò»¸ö¼òµ¥µÄ´òÓ¡Êä³öÄ³¸öÄÚ´æµØÖ·ĞÅÏ¢µÄº¯Êı£¬¾ÍÊÇ¼òµ¥µÄÄÚ´æ·­ÒëÎª16½øÖÆ×Ö·û´®
+* @param      stream  ÎÄ¼şÁ÷¶ÔÏó£¬stdout,stderrÒ²¶¼¿ÉÒÔ
+* @param      mem     µ÷ÊÔµÄÄÚ´æÖ¸Õë
+* @param      mem_len Ö¸Õë³¤¶È£¬
+* @note       Èç¹ûÊÇÈÕÖ¾Êä³öÌá¹©ÁË·½±ãµÄ¸¨ÖúÀà£¬Õâ½ö½öÓÃÓÚ²»ĞèÒªÊ¹ÓÃÈÕÖ¾µÄµØ·½
 */
 void memory_debug(FILE *stream, const unsigned char *mem, size_t mem_len);
 
 
 
 /*!
-* @brief      ç”¨ 11 02 03 0E E0         ..... æ ¼å¼çš„è¾“å‡ºï¼ŒæŒ‡é’ˆä¿¡æ¯ã€‚è°ƒè¯•æ‰“å°å†…å­˜ä¿¡æ¯
-*             æ ¼å¼ä¿¡æ¯æ›´åŠ ä¸°å¯Œï¼Œå’Œæ¸…æ™°ï¼Œå½“ç„¶æ‰“å°ä¹Ÿæ›´åŠ æ…¢
-* @param      stream  æ–‡ä»¶æµå¯¹è±¡ï¼Œstdout,stderrä¹Ÿéƒ½å¯ä»¥
-* @param      mem     è°ƒè¯•çš„å†…å­˜æŒ‡é’ˆ
-* @param      mem_len æŒ‡é’ˆé•¿åº¦
+* @brief      ÓÃ 11 02 03 0E E0         ..... ¸ñÊ½µÄÊä³ö£¬Ö¸ÕëĞÅÏ¢¡£µ÷ÊÔ´òÓ¡ÄÚ´æĞÅÏ¢
+*             ¸ñÊ½ĞÅÏ¢¸ü¼Ó·á¸»£¬ºÍÇåÎú£¬µ±È»´òÓ¡Ò²¸ü¼ÓÂı
+* @param      stream  ÎÄ¼şÁ÷¶ÔÏó£¬stdout,stderrÒ²¶¼¿ÉÒÔ
+* @param      mem     µ÷ÊÔµÄÄÚ´æÖ¸Õë
+* @param      mem_len Ö¸Õë³¤¶È
 */
 void memory_debug_ex(FILE *stream, const unsigned char *mem, size_t mem_len);
 
@@ -487,17 +487,17 @@ void memory_debug_ex(FILE *stream, const unsigned char *mem, size_t mem_len);
 //==========================================================================================================
 
 /*!
-* @brief      å¿«é€Ÿå†…å­˜æ‹·è´å‡½æ•°ï¼Œä¸»è¦å°±æ˜¯åˆ©ç”¨å­—èŠ‚å¯¹é½ï¼Œ8å­—èŠ‚çš„æ‹·è´å¿«è¿‡å•å­—èŠ‚è¿›è¡Œï¼Œ
-*             ä¸»è¦æ˜¯å—åˆ°æ–‡ç«   http://blog.chinaunix.net/uid-20043340-id-154852.html çš„å½±å“
-*             ä½†å…¶å®è¿™æ–‡ç« å¯ä¿¡åº¦ä¸å¤§ï¼Œæˆ‘è‡ªå·±å®é™…æµ‹è¯•ä»ç„¶æ˜¯memcpyæ›´å¿«ï¼Œä½œè€…å¯èƒ½æ˜¯åœ¨éä¼˜åŒ–æ¡ä»¶ä¸‹çš„æµ‹è¯•ã€‚
-*             æœ‰å…´è¶£çš„å‚è€ƒé˜…è¯»ã€‚
+* @brief      ¿ìËÙÄÚ´æ¿½±´º¯Êı£¬Ö÷Òª¾ÍÊÇÀûÓÃ×Ö½Ú¶ÔÆë£¬8×Ö½ÚµÄ¿½±´¿ì¹ıµ¥×Ö½Ú½øĞĞ£¬
+*             Ö÷ÒªÊÇÊÜµ½ÎÄÕÂ  http://blog.chinaunix.net/uid-20043340-id-154852.html µÄÓ°Ïì
+*             µ«ÆäÊµÕâÎÄÕÂ¿ÉĞÅ¶È²»´ó£¬ÎÒ×Ô¼ºÊµ¼Ê²âÊÔÈÔÈ»ÊÇmemcpy¸ü¿ì£¬×÷Õß¿ÉÄÜÊÇÔÚ·ÇÓÅ»¯Ìõ¼şÏÂµÄ²âÊÔ¡£
+*             ÓĞĞËÈ¤µÄ²Î¿¼ÔÄ¶Á¡£
 *             http://www.cnblogs.com/fullsail/p/3160098.html
-*             é‡Œé¢å‚è€ƒçš„é˜…è¯»çš„éƒ¨åˆ†ä¹Ÿéƒ½å¯ä»¥è¯»ä¸€ä¸‹ã€‚
-* @return     void*  è¿”å›dst
-* @param      dst    ç›®æ ‡åœ°å€
-* @param      src    æºæ•°æ®åœ°å€
-* @param      sz     æ‹·è´çš„é•¿åº¦
-* @note       ä»»ä½•æ—¶å€™éƒ½ï¼Œéƒ½è¯·ä¼˜å…ˆé€‰æ‹© Cè¿è¡Œåº“çš„ memcpy,
+*             ÀïÃæ²Î¿¼µÄÔÄ¶ÁµÄ²¿·ÖÒ²¶¼¿ÉÒÔ¶ÁÒ»ÏÂ¡£
+* @return     void*  ·µ»Ødst
+* @param      dst    Ä¿±êµØÖ·
+* @param      src    Ô´Êı¾İµØÖ·
+* @param      sz     ¿½±´µÄ³¤¶È
+* @note       ÈÎºÎÊ±ºò¶¼£¬¶¼ÇëÓÅÏÈÑ¡Ôñ CÔËĞĞ¿âµÄ memcpy,
 */
 void *fast_memcpy(void *dst, const void *src, size_t sz);
 
@@ -508,30 +508,30 @@ void *fast_memcpy2(void *dst, const void *src, size_t sz);
 
 
 /*!
-* @brief      å°†c str è½¬æ¢ä¸ºå¾ˆå¤šæ•°å€¼ç±»å‹ï¼Œä½œä¸ºè¿”å›å€¼è¿”å›
-* @tparam     ret_type è¿”å›å€¼ç±»å‹
+* @brief      ½«c str ×ª»»ÎªºÜ¶àÊıÖµÀàĞÍ£¬×÷Îª·µ»ØÖµ·µ»Ø
+* @tparam     ret_type ·µ»ØÖµÀàĞÍ
 * @return     ret_type
-* @param[in]  str  c string å­—ç¬¦ä¸²å‚æ•°
+* @param[in]  str  c string ×Ö·û´®²ÎÊı
 */
 template<typename ret_type>
 ret_type str_to_value(const char *str);
 
 
 /*!
-* @brief      å°†c string è½¬æ¢ä¸ºå¾ˆå¤šæ•°å€¼ç±»å‹ï¼Œä½œä¸ºæŒ‡é’ˆå‚æ•°è¿”å›
-* @tparam     ptr_type æŒ‡é’ˆå‚æ•°ç±»å‹
-* @param[in]  str c string å­—ç¬¦ä¸²å‚æ•°
-* @param[out] ptr æŒ‡é’ˆå‚æ•°
+* @brief      ½«c string ×ª»»ÎªºÜ¶àÊıÖµÀàĞÍ£¬×÷ÎªÖ¸Õë²ÎÊı·µ»Ø
+* @tparam     ptr_type Ö¸Õë²ÎÊıÀàĞÍ
+* @param[in]  str c string ×Ö·û´®²ÎÊı
+* @param[out] ptr Ö¸Õë²ÎÊı
 */
 template<typename ptr_type>
 void str_to_ptr(const char *str, ptr_type *ptr);
 
 
 /*!
-* @brief      ä»std stringå­—ç¬¦ä¸²è½¬æ¢å¾—åˆ°æ•°æ®ç±»å‹
-* @tparam     ret_type  è¿”å›çš„ç±»å‹
-* @return     ret_type  è¿”å›çš„æ•°æ®ç±»å‹
-* @param[in]  str       å­—ç¬¦ä¸²
+* @brief      ´Óstd string×Ö·û´®×ª»»µÃµ½Êı¾İÀàĞÍ
+* @tparam     ret_type  ·µ»ØµÄÀàĞÍ
+* @return     ret_type  ·µ»ØµÄÊı¾İÀàĞÍ
+* @param[in]  str       ×Ö·û´®
 */
 template<typename ret_type>
 ret_type string_to_value(const std::string &stdstr)
@@ -540,8 +540,8 @@ ret_type string_to_value(const std::string &stdstr)
 }
 
 /*!
-* @brief      å°†std string è½¬æ¢ä¸ºå¾ˆå¤šæ•°å€¼ç±»å‹ï¼Œä½œä¸ºæŒ‡é’ˆå‚æ•°è¿”å›
-* @tparam     ptr_type  æŒ‡é’ˆå‚æ•°ç±»å‹
+* @brief      ½«std string ×ª»»ÎªºÜ¶àÊıÖµÀàĞÍ£¬×÷ÎªÖ¸Õë²ÎÊı·µ»Ø
+* @tparam     ptr_type  Ö¸Õë²ÎÊıÀàĞÍ
 * @param      stdstr
 * @param      ptr
 */

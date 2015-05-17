@@ -1,10 +1,10 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_sndrcv_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´11æœˆ30æ—¥
-* @brief      ç”¨äºå°†TCPï¼ŒUDPçš„å‘é€ä»£ç éƒ¨åˆ†åšä¸€ä¸ªæ•´åˆï¼Œæå‡ºä¸€ä¸ªbaseç±»ï¼Œå¤„ç†ä¸€äº›å…±æœ‰äº‹æƒ…
+* @date       2011Äê11ÔÂ30ÈÕ
+* @brief      ÓÃÓÚ½«TCP£¬UDPµÄ·¢ËÍ´úÂë²¿·Ö×öÒ»¸öÕûºÏ£¬¸ã³öÒ»¸öbaseÀà£¬´¦ÀíÒ»Ğ©¹²ÓĞÊÂÇé
 *
 *
 * @details
@@ -20,38 +20,38 @@
 #define SOARING_LIB_SND_RCV_BASE_H_
 
 /******************************************************************************************
-class Tibetan_SendRecv_Package base ç±» Tibetan è—æ—
+class Tibetan_SendRecv_Package base Àà Tibetan ²Ø×å
 ******************************************************************************************/
 class Tibetan_SendRecv_Package
 {
 
 protected:
 
-    //æ¥å—è€…çš„SERVICES_ID
+    //½ÓÊÜÕßµÄSERVICES_ID
     SERVICES_ID              tibetan_recv_service_;
-    //å‘é€è€…çš„tibetan_send_service_ï¼Œ
+    //·¢ËÍÕßµÄtibetan_send_service_£¬
     SERVICES_ID              tibetan_send_service_;
-    //ä»£ç†æœåŠ¡å™¨çš„ä¿¡æ¯
+    //´úÀí·şÎñÆ÷µÄĞÅÏ¢
     SERVICES_ID              tibetan_proxy_service_;
 
-    //ç¼“å†²åŒºçš„å¸§çš„é•¿åº¦,ä½ å¯ä»¥è®¾ç½®æ¥å—æ•°æ®çš„å¤§å°ï¼Œå¦‚æœéƒ½æ˜¯64K,å¤ªå¤šå¯èƒ½å½±å“ä½ æœ€åçš„æ€»å®¹é‡,ä½†ç›®å‰æ„Ÿè§‰é—®é¢˜ä¸å¤§
+    //»º³åÇøµÄÖ¡µÄ³¤¶È,Äã¿ÉÒÔÉèÖÃ½ÓÊÜÊı¾İµÄ´óĞ¡£¬Èç¹û¶¼ÊÇ64K,Ì«¶à¿ÉÄÜÓ°ÏìÄã×îºóµÄ×ÜÈİÁ¿,µ«Ä¿Ç°¸Ğ¾õÎÊÌâ²»´ó
     size_t                    test_frame_len_;
 
-    //äº‹åŠ¡IDå‘ç”Ÿå™¨ï¼Œå°±æ˜¯ä¸€ä¸ªè®¡æ•°å™¨
+    //ÊÂÎñID·¢ÉúÆ÷£¬¾ÍÊÇÒ»¸ö¼ÆÊıÆ÷
     unsigned int              trans_id_builder_;
 
-    //ä¸ºäº†å¤šçº¿ç¨‹å°†åŸæ¥çš„test_appframe_æ”¹ä¸ºäº†2ä¸ªï¼Œä¸€ä¸ªæ¥å—ä¸€ä¸ªå‘é€ï¼Œè¿™æ ·åœ¨å¤šçº¿ç¨‹å¤„ç†çš„æƒ…å†µä¸‹ï¼Œ
-    //å°±ä¸ä¼šå‡ºç°å…±ç”¨ä¸€ä¸ªBUFFERçš„äº‹æƒ…
+    //ÎªÁË¶àÏß³Ì½«Ô­À´µÄtest_appframe_¸ÄÎªÁË2¸ö£¬Ò»¸ö½ÓÊÜÒ»¸ö·¢ËÍ£¬ÕâÑùÔÚ¶àÏß³Ì´¦ÀíµÄÇé¿öÏÂ£¬
+    //¾Í²»»á³öÏÖ¹²ÓÃÒ»¸öBUFFERµÄÊÂÇé
 
-    //å‘é€ç¼“å†²åŒºçš„å¸§
+    //·¢ËÍ»º³åÇøµÄÖ¡
     Zerg_App_Frame           *tibetan_send_appframe_;
-    //æ¥æ”¶ç¼“å†²åŒº
+    //½ÓÊÕ»º³åÇø
     Zerg_App_Frame           *tibetan_recv_appframe_;
 
-    //æ”¶åˆ°çš„äº‹åŠ¡ID
+    //ÊÕµ½µÄÊÂÎñID
     unsigned int              recv_trans_id_;
 
-    //å›å¡«çš„äº‹åŠ¡ID
+    //»ØÌîµÄÊÂÎñID
     unsigned int              backfill_trans_id_;
 
 public:
@@ -61,21 +61,21 @@ public:
 
 public:
 
-    //è®¾ç½®ç›¸åº”çš„SVC INFO,
+    //ÉèÖÃÏàÓ¦µÄSVC INFO,
     void set_services_id(const SERVICES_ID &recv_service,
                          const SERVICES_ID &send_service,
                          const SERVICES_ID &proxy_service,
                          size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
 
-    //å–å¾—æ”¶åˆ°çš„äº‹åŠ¡ID
+    //È¡µÃÊÕµ½µÄÊÂÎñID
     void get_recv_transid(unsigned int &trans_id);
 
     unsigned int get_send_transid();
     unsigned int get_backfill_transid();
 
-    //å–å¾—æµ‹è¯•çš„APPFRAME
+    //È¡µÃ²âÊÔµÄAPPFRAME
     Zerg_App_Frame *get_send_appframe();
-    //å–å¾—æ¥æ”¶çš„APPFRAME
+    //È¡µÃ½ÓÊÕµÄAPPFRAME
     Zerg_App_Frame *get_recv_appframe();
 
 };

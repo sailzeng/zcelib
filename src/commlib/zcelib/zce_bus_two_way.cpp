@@ -1,7 +1,7 @@
-ï»¿
+
 
 #include "zce_predefine.h"
-#include "zce_shm_lockfree_deque.h"
+#include "zce_lockfree_kfifo.h"
 #include "zce_os_adapt_file.h"
 #include "zce_share_mem_mmap.h"
 #include "zce_trace_log_debug.h"
@@ -17,7 +17,7 @@ const char  ZCE_BusPipe_TwoWay::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
     "SEND_PIPE",
 };
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_BusPipe_TwoWay::ZCE_BusPipe_TwoWay()
 {
 }
@@ -30,7 +30,7 @@ ZCE_BusPipe_TwoWay::~ZCE_BusPipe_TwoWay()
 
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006å¹´4æœˆ23æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006Äê4ÔÂ23ÈÕ
 Function        : ZCE_BusPipe_TwoWay::initialize
 Return          : int
 Parameter List  :
@@ -38,8 +38,8 @@ Parameter List  :
   Param2: size_t size_recv_pipe
   Param3: size_t size_send_pipe
   Param3: size_t max_frame_len
-  Param5: bool if_restore æ˜¯å¦è¿›è¡Œæ¢å¤
-Description     : åˆå§‹åŒ–,åªåˆå§‹åŒ–ä¸¤ä¸ªç®¡é“ï¼Œ1æ”¶1å‘
+  Param5: bool if_restore ÊÇ·ñ½øĞĞ»Ö¸´
+Description     : ³õÊ¼»¯,Ö»³õÊ¼»¯Á½¸ö¹ÜµÀ£¬1ÊÕ1·¢
 Calls           :
 Called By       :
 Other           :
@@ -72,7 +72,7 @@ int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
 
 
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::instance()
 {
     if (two_way_instance_ == NULL)
@@ -83,7 +83,7 @@ ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::instance()
     return two_way_instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
 void ZCE_BusPipe_TwoWay::instance(ZCE_BusPipe_TwoWay *pinstatnce)
 {
     clean_instance();
@@ -91,7 +91,7 @@ void ZCE_BusPipe_TwoWay::instance(ZCE_BusPipe_TwoWay *pinstatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_BusPipe_TwoWay::clean_instance()
 {
     if (two_way_instance_)

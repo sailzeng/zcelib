@@ -1,9 +1,9 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_fmtstr_strnsplice.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013å¹´2æœˆ6æ—¥
+* @date       2013Äê2ÔÂ6ÈÕ
 * @brief
 *
 * @details
@@ -20,7 +20,7 @@
 namespace ZCE_LIB
 {
 
-//é»˜è®¤çš„åˆ†éš”ç¬¦å·æ˜¯'\0',è¡¨ç¤ºä¸éœ€è¦åˆ†éš”ç¬¦ï¼Œä½ å¯ä»¥é€šè¿‡å‡½æ•°è®¾ç½®åˆ†å‰²ç¬¦å·
+//Ä¬ÈÏµÄ·Ö¸ô·ûºÅÊÇ'\0',±íÊ¾²»ÐèÒª·Ö¸ô·û£¬Äã¿ÉÒÔÍ¨¹ýº¯ÊýÉèÖÃ·Ö¸î·ûºÅ
 static char STRNCPY_SEPARATOR_CHAR = '\0';
 
 #define __ZCE_STRNSPLICE_BEGIN   foo_use_len = 0; \
@@ -69,7 +69,7 @@ char *zce_strnsplice(char *foo_buffer,
     char *buffer = foo_buffer;
     buffer[max_len] = '\0';
 
-    //å¦‚æžœè¿˜æœ‰ç©ºé—´å®¹çº³å­—ç¬¦
+    //Èç¹û»¹ÓÐ¿Õ¼äÈÝÄÉ×Ö·û
     if (max_len > 0)
     {
         ZCE_LIB::output_helper(buffer, max_len, use_len, out_data1);
@@ -78,7 +78,7 @@ char *zce_strnsplice(char *foo_buffer,
         max_len -= use_len;
         foo_use_len += use_len;
     }
-    //å¦‚æžœéœ€è¦åˆ†éš”ç¬¦ï¼Œæ·»åŠ åˆ†å‰²ç¬¦å·
+    //Èç¹ûÐèÒª·Ö¸ô·û£¬Ìí¼Ó·Ö¸î·ûºÅ
     if (STRNCPY_SEPARATOR_CHAR != '\0' && max_len > 0 )
     {
         *buffer = STRNCPY_SEPARATOR_CHAR;
@@ -96,7 +96,7 @@ char *zce_strnsplice(char *foo_buffer,
         foo_use_len += use_len;
     }
 
-    //å¦‚æžœéœ€è¦åˆ†éš”ç¬¦ï¼Œæ·»åŠ åˆ†å‰²ç¬¦å·
+    //Èç¹ûÐèÒª·Ö¸ô·û£¬Ìí¼Ó·Ö¸î·ûºÅ
     if (STRNCPY_SEPARATOR_CHAR != '\0' && max_len > 0 )
     {
         *buffer = STRNCPY_SEPARATOR_CHAR;
@@ -106,7 +106,7 @@ char *zce_strnsplice(char *foo_buffer,
     }
 
     foo_buffer[foo_use_len] = '\0';
-    //è¿”å›ž
+    //·µ»Ø
     return foo_buffer;
 }
 

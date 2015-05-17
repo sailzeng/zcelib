@@ -1,8 +1,8 @@
-ï»¿#include "soar_predefine.h"
+#include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_zerg_frame.h"
 
-//ZERGæœåŠ¡å™¨é—´ä¼ é€’æ¶ˆæ¯çš„é€šç”¨å¸§å¤´
+//ZERG·şÎñÆ÷¼ä´«µİÏûÏ¢µÄÍ¨ÓÃÖ¡Í·
 Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
                                uint32_t lenframe,
                                uint32_t frameoption):
@@ -19,7 +19,7 @@ Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
 {
 }
 
-//æ„é€ å‡½æ•°,ç”¨äº,å®¢æˆ·ç«¯åˆå§‹åŒ–,
+//¹¹Ôìº¯Êı,ÓÃÓÚ,¿Í»§¶Ë³õÊ¼»¯,
 Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
                                uint32_t lenframe,
                                uint32_t uin,
@@ -39,7 +39,7 @@ Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
     send_ip_address_(0)
 {
 }
-//æ„é€ å‡½æ•°,ç”¨äºå‘é€ç»™ä¸€ä¸ªéä»£ç†æœåŠ¡å™¨
+//¹¹Ôìº¯Êı,ÓÃÓÚ·¢ËÍ¸øÒ»¸ö·Ç´úÀí·şÎñÆ÷
 Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
                                uint32_t lenframe,
                                uint32_t uin,
@@ -60,7 +60,7 @@ Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
 {
 }
 
-//æ„é€ å‡½æ•°,ç”¨äºå‘é€ç»™ä¸€ä¸ªä»£ç†æœåŠ¡å™¨
+//¹¹Ôìº¯Êı,ÓÃÓÚ·¢ËÍ¸øÒ»¸ö´úÀí·şÎñÆ÷
 Zerg_App_Frame::Zerg_App_Frame(uint32_t cmd,
                                uint32_t lenframe,
                                uint32_t uin,
@@ -86,7 +86,7 @@ Zerg_App_Frame::~Zerg_App_Frame()
 {
 }
 
-// Assign =è¿ç®—ç¬¦å·
+// Assign =ÔËËã·ûºÅ
 Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
 {
     if (this != &other )
@@ -97,7 +97,7 @@ Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
     return *this;
 }
 
-//é‡è½½Newå‡½æ•°
+//ÖØÔØNewº¯Êı
 void   *Zerg_App_Frame::operator new (size_t , size_t lenframe)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
@@ -106,12 +106,12 @@ void   *Zerg_App_Frame::operator new (size_t , size_t lenframe)
         lenframe = sizeof(Zerg_App_Frame);
     }
 
-    //è®¡ç®—æ•°æ®åŠ å¯†åçš„é•¿åº¦
+    //¼ÆËãÊı¾İ¼ÓÃÜºóµÄ³¤¶È
 
     void *ptr = ::new unsigned char[lenframe];
 
 #if defined(DEBUG) || defined(_DEBUG)
-    //æ£€æŸ¥å¸§çš„å“ªä¸ªåœ°æ–¹å‡ºç°é—®é¢˜ï¼Œè¿˜æ˜¯è¿™æ ·å¥½ä¸€ç‚¹
+    //¼ì²éÖ¡µÄÄÄ¸öµØ·½³öÏÖÎÊÌâ£¬»¹ÊÇÕâÑùºÃÒ»µã
     memset(ptr, 0, lenframe);
 #endif //DEBUG
 
@@ -119,8 +119,8 @@ void   *Zerg_App_Frame::operator new (size_t , size_t lenframe)
     return ptr;
 }
 
-//å…»æˆå¥½ä¹ æƒ¯,å†™new,å°±å†™delete.
-//å…¶å®ä¸å†™ä¹Ÿä¸ä¼šæœ‰å†…å­˜æ³„éœ²,ä½†æ˜¯ä¸ºäº†ä¸å¾—ç½ªè®¨åŒçš„ç¼–è¯‘å™¨.
+//Ñø³ÉºÃÏ°¹ß,Ğ´new,¾ÍĞ´delete.
+//ÆäÊµ²»Ğ´Ò²²»»áÓĞÄÚ´æĞ¹Â¶,µ«ÊÇÎªÁË²»µÃ×ïÌÖÑáµÄ±àÒëÆ÷.
 #if defined ZCE_OS_WINDOWS
 void Zerg_App_Frame::operator delete(void *ptrframe, size_t)
 #elif defined ZCE_OS_LINUX
@@ -133,22 +133,22 @@ void Zerg_App_Frame::operator delete(void *ptrframe)
 
 
 
-//å¡«å……AppDataæ•°æ®åˆ°APPFrame
+//Ìî³äAppDataÊı¾İµ½APPFrame
 int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
 {
-    // åˆ¤æ–­é•¿åº¦æ˜¯å¦è¶³å¤Ÿ
+    // ÅĞ¶Ï³¤¶ÈÊÇ·ñ×ã¹»
     if (szdata > MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
 
-    //å¡«å†™æ•°æ®åŒºçš„é•¿åº¦
+    //ÌîĞ´Êı¾İÇøµÄ³¤¶È
     memcpy(frame_appdata_, vardata, szdata);
     frame_length_ = static_cast<uint32_t>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
     return 0;
 }
 
-//å°†æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºç½‘ç»œåº
+//½«ËùÓĞµÄuint16_t,uint32_t×ª»»ÎªÍøÂçĞò
 void Zerg_App_Frame::framehead_encode()
 {
     frame_length_ = htonl(frame_length_);
@@ -176,11 +176,11 @@ void Zerg_App_Frame::framehead_encode()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005å¹´11æœˆ3æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005Äê11ÔÂ3ÈÕ
 Function        : Zerg_App_Frame::framehead_decode
 Return          : void
 Parameter List  : NULL
-Description     : å°†æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºæœ¬åœ°åº
+Description     : ½«ËùÓĞµÄuint16_t,uint32_t×ª»»Îª±¾µØĞò
 Calls           :
 Called By       :
 Other           :
@@ -210,7 +210,7 @@ void Zerg_App_Frame::framehead_decode()
     send_serial_number_ = ntohl(send_serial_number_);
 }
 
-//åˆå§‹åŒ–åŒ…å¤´çš„æ•°æ®
+//³õÊ¼»¯°üÍ·µÄÊı¾İ
 void Zerg_App_Frame::init_framehead(uint32_t lenframe, uint32_t option, uint32_t cmd)
 {
     frame_length_ = static_cast<uint32_t>(lenframe);
@@ -229,7 +229,7 @@ void Zerg_App_Frame::init_framehead(uint32_t lenframe, uint32_t option, uint32_t
     app_id_ = 0;
 }
 
-//å¡«å†™å‘é€è€…æœåŠ¡ä¿¡æ¯
+//ÌîĞ´·¢ËÍÕß·şÎñĞÅÏ¢
 void Zerg_App_Frame::set_send_svcid(uint16_t svrtype, uint32_t svrid)
 {
     send_service_.services_type_ = svrtype;
@@ -256,12 +256,12 @@ void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo, const SERVICES_ID
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005å¹´11æœˆ29æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005Äê11ÔÂ29ÈÕ
 Function        : Zerg_App_Frame::exchange_rcvsnd_svcid
 Return          : void
 Parameter List  :
   Param1: void
-Description     : äº¤æ¢æ¥å—è€…å’Œå‘é€è€…,ç”±äºè¦å›é€æ•°æ®æ—¶
+Description     : ½»»»½ÓÊÜÕßºÍ·¢ËÍÕß,ÓÉÓÚÒª»ØËÍÊı¾İÊ±
 Calls           :
 Called By       :
 Other           :
@@ -292,22 +292,22 @@ void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
     send_service_ = exframe.recv_service_;
     proxy_service_ = exframe.proxy_service_;
     transaction_id_ = exframe.backfill_trans_id_;
-    //å›å»çš„äº‹åŠ¡idåº”å½“æ˜¯è¯·æ±‚çš„äº‹åŠ¡id
+    //»ØÈ¥µÄÊÂÎñidÓ¦µ±ÊÇÇëÇóµÄÊÂÎñid
     backfill_trans_id_ = exframe.transaction_id_;
     app_id_ = exframe.app_id_;
     frame_uid_ = exframe.frame_uid_;
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005å¹´11æœˆ29æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005Äê11ÔÂ29ÈÕ
 Function        : Zerg_App_Frame::dump_appframe_info
 Return          : void
 Parameter List  :
-  Param1: std::ostringstream& strstream è°ƒè¯•çš„è¾“å‡ºç»“æœ,
-Description     : è°ƒè¯•AppFrame,è½¬åŒ–æ‰€æœ‰çš„æ•°æ®ä¿¡æ¯ä¸ºä¸€ä¸ªä½ å¯ä»¥è¯»æ‡‚çš„çŠ¶æ€
+  Param1: std::ostringstream& strstream µ÷ÊÔµÄÊä³ö½á¹û,
+Description     : µ÷ÊÔAppFrame,×ª»¯ËùÓĞµÄÊı¾İĞÅÏ¢ÎªÒ»¸öÄã¿ÉÒÔ¶Á¶®µÄ×´Ì¬
 Calls           :
 Called By       :
-Other           : è¿™ä¸ªè°ƒè¯•æ˜¯ä¸€ä¸ªéå¸¸,éå¸¸æ¶ˆè€—æ—¶çš„æ“ä½œ,é™¤é,å‘å¸ƒç‰ˆæœ¬åƒä¸‡ä¸è¦ä½¿ç”¨
+Other           : Õâ¸öµ÷ÊÔÊÇÒ»¸ö·Ç³£,·Ç³£ÏûºÄÊ±µÄ²Ù×÷,³ı·Ç,·¢²¼°æ±¾Ç§Íò²»ÒªÊ¹ÓÃ
 Modify Record   :
 ******************************************************************************************/
 void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
@@ -317,7 +317,7 @@ void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
     return;
 }
 
-//Dumpæ‰€æœ‰çš„æ•°æ®ä¿¡æ¯,ä¸€ä¸ªå­—èŠ‚å­—èŠ‚çš„å‘Šè¯‰ä½ ,
+//DumpËùÓĞµÄÊı¾İĞÅÏ¢,Ò»¸ö×Ö½Ú×Ö½ÚµÄ¸æËßÄã,
 void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 {
     //
@@ -332,12 +332,12 @@ void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005å¹´12æœˆ1æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005Äê12ÔÂ1ÈÕ
 Function        : dump_appframe_head
 Return          : void
 Parameter List  :
-  Param1: std::ostringstream& strstream è¾“å‡ºçš„Str String
-Description     : è¾“å‡ºåŒ…å¤´ä¿¡æ¯
+  Param1: std::ostringstream& strstream Êä³öµÄStr String
+Description     : Êä³ö°üÍ·ĞÅÏ¢
 Calls           :
 Called By       :
 Other           :
@@ -362,14 +362,14 @@ void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
     return;
 }
 
-//è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
+//Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
 void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
     ZCE_LOG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
 }
-//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
+//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
 void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
 {
 
@@ -378,14 +378,14 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
     ZCE_LOG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
 }
 
-//è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
+//Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
 void Zerg_App_Frame::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
                                           const Zerg_App_Frame *proc_frame )
 {
     proc_frame->dumpoutput_framehead(outstr, log_priority);
 }
-//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
+//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
 void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
                                           const Zerg_App_Frame *proc_frame)
@@ -393,7 +393,7 @@ void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
     proc_frame->dumpoutput_frameinfo(outstr, log_priority);
 }
 
-//Cloneä¸€ä¸ªAPP FRAME
+//CloneÒ»¸öAPP FRAME
 Zerg_App_Frame *Zerg_App_Frame::clone() const
 {
     Zerg_App_Frame *proc_frame = new(frame_length_) Zerg_App_Frame();
@@ -401,14 +401,14 @@ Zerg_App_Frame *Zerg_App_Frame::clone() const
     return proc_frame;
 }
 
-//Cloneä¸€ä¸ªAPP FRAME
+//CloneÒ»¸öAPP FRAME
 void Zerg_App_Frame::clone(Zerg_App_Frame *clone_frame) const
 {
     memcpy(clone_frame, this, frame_length_);
     return ;
 }
 
-//Cloneä¸€ä¸ªAPP FRAME çš„å¤´éƒ¨
+//CloneÒ»¸öAPP FRAME µÄÍ·²¿
 void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 {
     memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);

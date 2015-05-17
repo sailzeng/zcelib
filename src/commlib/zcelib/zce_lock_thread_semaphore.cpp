@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_os_adapt_semaphore.h"
 #include "zce_os_adapt_time.h"
@@ -6,7 +6,7 @@
 #include "zce_trace_log_debug.h"
 #include "zce_lock_thread_semaphore.h"
 
-//æ„é€ å‡½æ•°,é»˜è®¤åˆ›å»ºåŒ¿åä¿¡å·ç¯ï¼Œçº¿ç¨‹ä¸‹ä¸€èˆ¬ç”¨åŒ¿åä¿¡å·ç¯å°±è¶³å¤Ÿäº†,
+//¹¹Ôìº¯Êı,Ä¬ÈÏ´´½¨ÄäÃûĞÅºÅµÆ£¬Ïß³ÌÏÂÒ»°ãÓÃÄäÃûĞÅºÅµÆ¾Í×ã¹»ÁË,
 ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value):
     lock_(NULL)
 {
@@ -23,7 +23,7 @@ ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value):
 
 ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
 {
-    //æ²¡æœ‰åˆå§‹åŒ–è¿‡
+    //Ã»ÓĞ³õÊ¼»¯¹ı
     if (!lock_)
     {
         return;
@@ -31,15 +31,15 @@ ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
 
     ZCE_LIB::sem_destroy(lock_);
 
-    //sem_destroyä¸ä¼šé‡Šæ”¾ï¼Œ
+    //sem_destroy²»»áÊÍ·Å£¬
     delete lock_;
     lock_ = NULL;
 }
 
-//é”å®š
+//Ëø¶¨
 void ZCE_Thread_Semaphore::lock()
 {
-    //ä¿¡å·ç¯é”å®š
+    //ĞÅºÅµÆËø¶¨
     int ret =  ZCE_LIB::sem_wait (lock_);
 
     if (0 != ret)
@@ -49,10 +49,10 @@ void ZCE_Thread_Semaphore::lock()
     }
 }
 
-//å°è¯•é”å®š
+//³¢ÊÔËø¶¨
 bool ZCE_Thread_Semaphore::try_lock()
 {
-    //ä¿¡å·ç¯é”å®š
+    //ĞÅºÅµÆËø¶¨
     int ret =  ZCE_LIB::sem_trywait (lock_);
 
     if (0 != ret)
@@ -63,7 +63,7 @@ bool ZCE_Thread_Semaphore::try_lock()
     return true;
 }
 
-//è§£é”,
+//½âËø,
 void ZCE_Thread_Semaphore::unlock()
 {
     int ret = ZCE_LIB::sem_post (lock_);
@@ -75,7 +75,7 @@ void ZCE_Thread_Semaphore::unlock()
     }
 }
 
-//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
+//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
 bool ZCE_Thread_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
@@ -94,7 +94,7 @@ bool ZCE_Thread_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
     return true;
 }
 
-//ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
+//Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
 bool ZCE_Thread_Semaphore::duration_lock(const ZCE_Time_Value &relative_time)
 {
     timeval abs_time = ZCE_LIB::gettimeofday();

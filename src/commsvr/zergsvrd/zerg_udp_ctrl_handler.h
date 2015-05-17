@@ -1,4 +1,4 @@
-ï»¿#ifndef ZERG_UDP_CONTROL_SERVICE_H_
+#ifndef ZERG_UDP_CONTROL_SERVICE_H_
 #define ZERG_UDP_CONTROL_SERVICE_H_
 
 
@@ -16,7 +16,7 @@ class UDP_Svc_Handler : public ZCE_Event_Handler
 {
 protected:
 
-    //é¿å…åœ¨å †ä¸­é—´åˆ†é…,æ‰€ä»¥ææ„å‡½æ•°ä¸è¦
+    //±ÜÃâÔÚ¶ÑÖĞ¼ä·ÖÅä,ËùÒÔÎö¹¹º¯Êı²»Òª
 public:
     //
     UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
@@ -27,7 +27,7 @@ protected:
 
 
 public:
-    //å–å¾—å¥æŸ„
+    //È¡µÃ¾ä±ú
     virtual ZCE_HANDLE get_handle(void) const;
     //
     virtual int handle_input();
@@ -36,30 +36,30 @@ public:
 
 public:
 
-    //åˆå§‹åŒ–UPDç«¯å£
+    //³õÊ¼»¯UPD¶Ë¿Ú
     int init_udp_services();
 
 protected:
 
-    //ä»PEERè¯»å–æ•°æ®
+    //´ÓPEER¶ÁÈ¡Êı¾İ
     int read_data_from_udp(size_t &szrevc);
 
-    //å‘é€UDPçš„æ•°æ®
+    //·¢ËÍUDPµÄÊı¾İ
     int write_data_to_udp(Zerg_App_Frame *send_frame);
 
 public:
-    //åˆå§‹åŒ–é™æ€å‚æ•°
+    //³õÊ¼»¯¾²Ì¬²ÎÊı
     static int init_all_static_data();
 
     //
     static int send_all_to_udp(Zerg_App_Frame *send_frame);
 
-    ///è¯»å–é…ç½®
+    ///¶ÁÈ¡ÅäÖÃ
     static int get_config(const Zerg_Server_Config *config);
 
 protected:
 
-    //ä¸€æ¬¡ä»UDPçš„ç«¯å£è¯»å–çš„æ•°æ®æ•°é‡ï¼Œ
+    //Ò»´Î´ÓUDPµÄ¶Ë¿Ú¶ÁÈ¡µÄÊı¾İÊıÁ¿£¬
     static const size_t ONCE_MAX_READ_UDP_NUMBER = 256;
 
 protected:
@@ -67,34 +67,34 @@ protected:
     ///
     typedef std::vector< UDP_Svc_Handler *>  ARY_OF_UDPSVC_HANDLER;
 
-    ///UPDçš„æ•°ç»„ï¼Œå¯ä»¥æœ‰å¤šä¸ªUDP
+    ///UPDµÄÊı×é£¬¿ÉÒÔÓĞ¶à¸öUDP
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
-    ///ç»Ÿè®¡ï¼Œä½¿ç”¨å•å­ç±»çš„æŒ‡é’ˆ
+    ///Í³¼Æ£¬Ê¹ÓÃµ¥×ÓÀàµÄÖ¸Õë
     static Soar_Stat_Monitor       *server_status_;
 
-    ///é€šè®¯ç®¡ç†å™¨,ä¿å­˜æ˜¯ä¸ºäº†åŠ å¿«é€Ÿåº¦
+    ///Í¨Ñ¶¹ÜÀíÆ÷,±£´æÊÇÎªÁË¼Ó¿ìËÙ¶È
     static Zerg_Comm_Manager       *zerg_comm_mgr_;
 
-    ///æ˜¯å¦æ˜¯ä»£ç†æœåŠ¡å™¨
+    ///ÊÇ·ñÊÇ´úÀí·şÎñÆ÷
     static bool                     if_proxy_;
 
 
 protected:
 
-    ///æ•°æ®åŒ…UDPå‘é€çš„Socket
+    ///Êı¾İ°üUDP·¢ËÍµÄSocket
     ZCE_Socket_DataGram      dgram_peer_;
 
-    ///é‚¦å®šçš„åœ°å€
+    ///°î¶¨µÄµØÖ·
     ZCE_Sockaddr_In          udp_bind_addr_;
 
     ///
     SERVICES_ID              my_svc_info_;
-    ///æ˜¯å¦è¿›è¡ŒSESSIONæ ¡éªŒ
+    ///ÊÇ·ñ½øĞĞSESSIONĞ£Ñé
     bool                     sessionkey_verify_;
-    ///æ•°æ®ç¼“å†²åŒºï¼ŒUDPåªæœ‰ä¸€ä¸ª
+    ///Êı¾İ»º³åÇø£¬UDPÖ»ÓĞÒ»¸ö
     Zerg_Buffer             *dgram_databuf_;
-    ///IPé™åˆ¶ç®¡ç†å™¨
+    ///IPÏŞÖÆ¹ÜÀíÆ÷
     Zerg_IPRestrict_Mgr      *ip_restrict_;
 
 

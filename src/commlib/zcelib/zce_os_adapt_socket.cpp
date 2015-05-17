@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_error.h"
@@ -57,7 +57,7 @@ ssize_t ZCE_LIB::readv (ZCE_SOCKET handle,
     // Winsock 2 has WSARecv and can do this directly, but Winsock 1 needs
     // to do the recvs piece-by-piece.
 
-    //IOV_MAXæ ¹æ®å„ä¸ªå¹³å°ä¸å¤ªä¸€æ ·
+    //IOV_MAX¸ù¾İ¸÷¸öÆ½Ì¨²»Ì«Ò»Ñù
     assert(iovcnt <= IOV_MAX);
 
     WSABUF wsa_buf[IOV_MAX];
@@ -224,7 +224,7 @@ int ZCE_LIB::socket_fini (void)
 }
 
 //--------------------------------------------------------------------------------------------
-//å°½é‡æ”¶å–lenä¸ªæ•°æ®ï¼Œç›´åˆ°å‡ºç°é”™è¯¯
+//¾¡Á¿ÊÕÈ¡len¸öÊı¾İ£¬Ö±µ½³öÏÖ´íÎó
 ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
                         void *buf,
                         size_t len,
@@ -235,11 +235,11 @@ ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
 
     ssize_t onetime_recv = 0, bytes_recv = 0;
 
-    //ä¸€å®šå‡†å¤‡ç¡®ä¿æ”¶åˆ°è¿™ä¹ˆå¤šå­—èŠ‚
+    //Ò»¶¨×¼±¸È·±£ÊÕµ½ÕâÃ´¶à×Ö½Ú
     for (bytes_recv = 0; static_cast<size_t>(bytes_recv) < len; bytes_recv += onetime_recv)
     {
 
-        //ä½¿ç”¨ç«¯å£è¿›è¡Œæ¥æ”¶
+        //Ê¹ÓÃ¶Ë¿Ú½øĞĞ½ÓÊÕ
         onetime_recv = ZCE_LIB::recv (handle,
                                       static_cast <char *> (buf) + bytes_recv,
                                       len - bytes_recv,
@@ -249,17 +249,17 @@ ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
         {
             continue;
         }
-        //å¦‚æœå‡ºç°é”™è¯¯,é€€å‡ºå¾ªç¯
+        //Èç¹û³öÏÖ´íÎó,ÍË³öÑ­»·
         else
         {
-            //å‡ºç°é”™è¯¯ï¼Œè¿›è¡Œå¤„ç†
+            //³öÏÖ´íÎó£¬½øĞĞ´¦Àí
             error_occur = true;
             result = onetime_recv;
             break;
         }
     }
 
-    //å¦‚æœå‘ç”Ÿé”™è¯¯
+    //Èç¹û·¢Éú´íÎó
     if (error_occur)
     {
         return result;
@@ -268,7 +268,7 @@ ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
     return bytes_recv;
 }
 
-//å°½é‡å‘é€Nä¸ªæ•°æ®ï¼Œç›´åˆ°å‡ºç°é”™è¯¯
+//¾¡Á¿·¢ËÍN¸öÊı¾İ£¬Ö±µ½³öÏÖ´íÎó
 ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
                         const void *buf,
                         size_t len,
@@ -277,10 +277,10 @@ ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
     bool error_occur = false;
     ssize_t result = 0, bytes_send = 0, onetime_send = 0;
 
-    //ä¸€å®šå‡†å¤‡ç¡®ä¿æ”¶åˆ°è¿™ä¹ˆå¤šå­—èŠ‚ï¼Œä½†æ˜¯ä¸€æ—¦å‡ºç°é”™è¯¯ï¼Œå°±é€€å‡º
+    //Ò»¶¨×¼±¸È·±£ÊÕµ½ÕâÃ´¶à×Ö½Ú£¬µ«ÊÇÒ»µ©³öÏÖ´íÎó£¬¾ÍÍË³ö
     for (bytes_send = 0; static_cast<size_t>(bytes_send) < len; bytes_send += onetime_send)
     {
-        //å‘é€æ•°æ®ï¼Œï¼Œ
+        //·¢ËÍÊı¾İ£¬£¬
         onetime_send = ZCE_LIB::send (handle,
                                       static_cast <const char *> (buf) + bytes_send,
                                       len - bytes_send,
@@ -290,17 +290,17 @@ ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
         {
             continue;
         }
-        //å¦‚æœå‡ºç°é”™è¯¯,== 0ä¸€èˆ¬æ˜¯æ˜¯ç«¯å£æ–­å¼€ï¼Œ==-1è¡¨ç¤ºé”™è¯¯
+        //Èç¹û³öÏÖ´íÎó,== 0Ò»°ãÊÇÊÇ¶Ë¿Ú¶Ï¿ª£¬==-1±íÊ¾´íÎó
         else
         {
-            //å‡ºç°é”™è¯¯ï¼Œè¿›è¡Œå¤„ç†
+            //³öÏÖ´íÎó£¬½øĞĞ´¦Àí
             error_occur = true;
             result = onetime_send;
             break;
         }
     }
 
-    //å‘é€äº†é”™è¯¯ï¼Œè¿”å›é”™è¯¯è¿”å›å€¼
+    //·¢ËÍÁË´íÎó£¬·µ»Ø´íÎó·µ»ØÖµ
     if (error_occur)
     {
         return result;
@@ -309,7 +309,7 @@ ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
     return bytes_send;
 }
 
-//æ‰“å¼€æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
+//´ò¿ªÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
 int ZCE_LIB::sock_enable (ZCE_SOCKET handle, int flags)
 {
 
@@ -324,7 +324,7 @@ int ZCE_LIB::sock_enable (ZCE_SOCKET handle, int flags)
             u_long nonblock = 1;
             int zce_result = ::ioctlsocket (handle, FIONBIO, &nonblock);
 
-            //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢ZCE_LIBåå­—ç©ºé—´åé¢çš„è§£é‡Š
+            //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæZCE_LIBÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
             if ( SOCKET_ERROR == zce_result)
             {
                 errno = ::WSAGetLastError ();
@@ -360,7 +360,7 @@ int ZCE_LIB::sock_enable (ZCE_SOCKET handle, int flags)
 #endif
 }
 
-//å…³é—­æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
+//¹Ø±ÕÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
 int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -374,7 +374,7 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
             u_long nonblock = 0;
             int zce_result =  ::ioctlsocket (handle, FIONBIO, &nonblock);
 
-            //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢ZCE_LIBåå­—ç©ºé—´åé¢çš„è§£é‡Š
+            //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæZCE_LIBÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
             if ( SOCKET_ERROR == zce_result)
             {
                 errno = ::WSAGetLastError ();
@@ -408,10 +408,10 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
 }
 
 
-//å¦‚æœä½¿ç”¨å¤§é‡çš„ç«¯å£,select æ˜¯ä¸åˆé€‚çš„ï¼Œéœ€è¦ä½¿ç”¨EPOLL,æ­¤æ—¶å¯ä»¥æ‰“å¼€ä¸‹é¢çš„æ³¨é‡Š
+//Èç¹ûÊ¹ÓÃ´óÁ¿µÄ¶Ë¿Ú,select ÊÇ²»ºÏÊÊµÄ£¬ĞèÒªÊ¹ÓÃEPOLL,´ËÊ±¿ÉÒÔ´ò¿ªÏÂÃæµÄ×¢ÊÍ
 #define HANDLEREADY_USE_EPOLL
 
-//æ£€æŸ¥åœ¨ï¼ˆä¸€å®šæ—¶é—´å†…ï¼‰ï¼ŒæŸä¸ªSOCKETå¥æŸ„å…³æ³¨çš„å•ä¸ªäº‹ä»¶æ˜¯å¦è§¦å‘ï¼Œå¦‚æœè§¦å‘ï¼Œè¿”å›è§¦å‘äº‹ä»¶ä¸ªæ•°ï¼Œå¦‚æœæˆåŠŸï¼Œä¸€èˆ¬è§¦å‘è¿”å›å€¼éƒ½æ˜¯1
+//¼ì²éÔÚ£¨Ò»¶¨Ê±¼äÄÚ£©£¬Ä³¸öSOCKET¾ä±ú¹Ø×¢µÄµ¥¸öÊÂ¼şÊÇ·ñ´¥·¢£¬Èç¹û´¥·¢£¬·µ»Ø´¥·¢ÊÂ¼ş¸öÊı£¬Èç¹û³É¹¦£¬Ò»°ã´¥·¢·µ»ØÖµ¶¼ÊÇ1
 int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
                           ZCE_Time_Value *timeout_tv,
                           HANDLE_READY_TODO ready_todo)
@@ -425,7 +425,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     FD_ZERO(&handle_set_exeception);
 
 
-    //FD_SET é‡Œé¢çš„ whlie(0)ä¼šäº§ç”Ÿä¸€ä¸ªå‘Šè­¦ï¼Œè¿™ä¸ªåº”è¯¥æ˜¯windowså†…éƒ¨è‡ªå·±æ²¡æœ‰å¤„ç†å¥½ã€‚å¾®è½¯è¯´VS2005SP1å°±ä¿®å¤äº†ï¼Œè§é¬¼ã€‚
+    //FD_SET ÀïÃæµÄ whlie(0)»á²úÉúÒ»¸ö¸æ¾¯£¬Õâ¸öÓ¦¸ÃÊÇwindowsÄÚ²¿×Ô¼ºÃ»ÓĞ´¦ÀíºÃ¡£Î¢ÈíËµVS2005SP1¾ÍĞŞ¸´ÁË£¬¼û¹í¡£
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning(disable : 4127)
 #endif
@@ -447,18 +447,18 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     }
     else if (HANDLE_READY_ACCEPT == ready_todo)
     {
-        //acceptäº‹ä»¶æ˜¯åˆ©ç”¨è¯»å–äº‹ä»¶
+        //acceptÊÂ¼şÊÇÀûÓÃ¶ÁÈ¡ÊÂ¼ş
         FD_SET(handle, &handle_set_read);
         p_set_read = &handle_set_read;
     }
     else if (HANDLE_READY_CONNECTED == ready_todo)
     {
-        //ä¸ºä»€ä¹ˆå‰é¢å†™çš„è¿™ä¹ˆéº»çƒ¦ï¼Œå…¶å®å°±æ˜¯å› ä¸ºè¿™ä¸ªCONNECTEDçš„å€’éœ‰å­©å­
-        //é¦–å…ˆï¼ŒCONNECTçš„å¤„ç†ï¼Œè¦åŒºåˆ†æˆåŠŸå’Œå¤±è´¥äº‹ä»¶
-        //Windows éé˜»å¡CONNECT, å¤±è´¥è°ƒç”¨å¼‚å¸¸ï¼ŒæˆåŠŸè°ƒç”¨å†™äº‹ä»¶
-        //Windows é˜»å¡CONNECT, å¤±è´¥è°ƒç”¨è¯»å†™äº‹ä»¶ï¼ŒæˆåŠŸè°ƒç”¨å†™äº‹ä»¶
-        //LINUX æ— è®ºé˜»å¡ï¼Œè¿˜æ˜¯éé˜»å¡ï¼Œå¤±è´¥è°ƒç”¨è¯»å†™äº‹ä»¶ï¼ŒæˆåŠŸè°ƒç”¨å†™äº‹ä»¶
-        //æ‰€ä»¥â€¦â€¦ï¼Œä½ æœ‰æ²¡æœ‰æ„Ÿè§‰åˆ°è›‹è›‹çš„å¿§ä¼¤
+        //ÎªÊ²Ã´Ç°ÃæĞ´µÄÕâÃ´Âé·³£¬ÆäÊµ¾ÍÊÇÒòÎªÕâ¸öCONNECTEDµÄµ¹Ã¹º¢×Ó
+        //Ê×ÏÈ£¬CONNECTµÄ´¦Àí£¬ÒªÇø·Ö³É¹¦ºÍÊ§°ÜÊÂ¼ş
+        //Windows ·Ç×èÈûCONNECT, Ê§°Üµ÷ÓÃÒì³££¬³É¹¦µ÷ÓÃĞ´ÊÂ¼ş
+        //Windows ×èÈûCONNECT, Ê§°Üµ÷ÓÃ¶ÁĞ´ÊÂ¼ş£¬³É¹¦µ÷ÓÃĞ´ÊÂ¼ş
+        //LINUX ÎŞÂÛ×èÈû£¬»¹ÊÇ·Ç×èÈû£¬Ê§°Üµ÷ÓÃ¶ÁĞ´ÊÂ¼ş£¬³É¹¦µ÷ÓÃĞ´ÊÂ¼ş
+        //ËùÒÔ¡­¡­£¬ÄãÓĞÃ»ÓĞ¸Ğ¾õµ½µ°µ°µÄÓÇÉË
         FD_SET(handle, &handle_set_read);
         p_set_read = &handle_set_read;
         FD_SET(handle, &handle_set_write);
@@ -479,7 +479,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     int select_width = 0;
 
 #if defined (ZCE_OS_WINDOWS)
-    //å¦‚æœä¸æ˜¯0Windowsä¸‹VC++ä¼šæœ‰å‘Šè­¦
+    //Èç¹û²»ÊÇ0WindowsÏÂVC++»áÓĞ¸æ¾¯
     select_width = 0;
 #elif defined (ZCE_OS_LINUX)
     select_width = int (handle) + 1;
@@ -497,16 +497,16 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
         return 0;
     }
 
-    //å‡ºç°é”™è¯¯ï¼Œ
+    //³öÏÖ´íÎó£¬
     if (0 > result )
     {
         return result;
     }
 
-    //æˆ‘ä»¬å¤„ç†çš„æ˜¯CONNECTEDæˆåŠŸï¼Œ
+    //ÎÒÃÇ´¦ÀíµÄÊÇCONNECTED³É¹¦£¬
     if (HANDLE_READY_CONNECTED == ready_todo)
     {
-        //å¦‚æœæ˜¯CONNECTEDï¼Œè¯»è¿”å›æˆ–è€…å¼‚å¸¸è¿”å›éƒ½è¢«è®¤ä¸ºæ˜¯é”™è¯¯
+        //Èç¹ûÊÇCONNECTED£¬¶Á·µ»Ø»òÕßÒì³£·µ»Ø¶¼±»ÈÏÎªÊÇ´íÎó
         if (FD_ISSET(handle, p_set_read)
             || FD_ISSET(handle, p_set_exception))
         {
@@ -518,7 +518,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 
 #else
 
-    //ç”¨EPOLL å®Œæˆäº‹ä»¶è§¦å‘ï¼Œä¼˜ç‚¹æ˜¯èƒ½å¤„ç†çš„æ•°æ®å¤šï¼Œç¼ºç‚¹æ˜¯ç³»ç»Ÿè°ƒç”¨å¤ªå¤š
+    //ÓÃEPOLL Íê³ÉÊÂ¼ş´¥·¢£¬ÓÅµãÊÇÄÜ´¦ÀíµÄÊı¾İ¶à£¬È±µãÊÇÏµÍ³µ÷ÓÃÌ«¶à
     int ret = 0;
     const int MAX_EVENT_NUMBER = 64;
     int epoll_fd = ::epoll_create( MAX_EVENT_NUMBER);
@@ -538,12 +538,12 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     }
     else if (HANDLE_READY_ACCEPT == ready_todo)
     {
-        //acceptäº‹ä»¶æ˜¯åˆ©ç”¨è¯»å–äº‹ä»¶
+        //acceptÊÂ¼şÊÇÀûÓÃ¶ÁÈ¡ÊÂ¼ş
         ep_event.events |= EPOLLIN;
     }
     else if (HANDLE_READY_CONNECTED == ready_todo)
     {
-        //LINUX æ— è®ºé˜»å¡ï¼Œè¿˜æ˜¯éé˜»å¡ï¼Œå¤±è´¥è°ƒç”¨è¯»å†™äº‹ä»¶ï¼ŒæˆåŠŸè°ƒç”¨å†™äº‹ä»¶
+        //LINUX ÎŞÂÛ×èÈû£¬»¹ÊÇ·Ç×èÈû£¬Ê§°Üµ÷ÓÃ¶ÁĞ´ÊÂ¼ş£¬³É¹¦µ÷ÓÃĞ´ÊÂ¼ş
         ep_event.events |= EPOLLOUT;
         ep_event.events |= EPOLLIN;
     }
@@ -558,21 +558,21 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
         return ret;
     }
 
-    //é»˜è®¤ä¸€ç›´é˜»å¡
+    //Ä¬ÈÏÒ»Ö±×èÈû
     int msec_timeout = -1;
 
     if (timeout_tv)
     {
-        //æ ¹æ®bluehu æé†’ä¿®æ”¹äº†ä¸‹é¢è¿™æ®µï¼Œï¼ˆä¸è¿‡å°ä¼™å­ä»¬ï¼Œä½ ä»¬æ”¹ä»£ç è¦è®¤çœŸä¸€ç‚¹å–”ï¼‰
-        //ç”±äºselectçš„è¶…æ—¶å‚æ•°å¯ä»¥ç²¾ç¡®åˆ°å¾®ç§’ï¼Œè€Œepoll_waitçš„å‚æ•°åªç²¾ç¡®åˆ°æ¯«ç§’
-        //å½“è¶…æ—¶æ—¶é—´å°äº1000å¾®ç§’æ—¶ï¼Œæ¯”å¦‚20å¾®ç§’ï¼Œå°†æ—¶é—´è½¬æ¢æˆæ¯«ç§’ä¼šå˜æˆ0æ¯«ç§’
-        //æ‰€ä»¥å¦‚æœç”¨epoll_waitçš„è¯ï¼Œè¶…æ—¶æ—¶é—´å¤§äº0å¹¶ä¸”å°äº1æ¯«ç§’çš„æƒ…å†µä¸‹ç»Ÿä¸€æ”¹ä¸º1æ¯«ç§’
+        //¸ù¾İbluehu ÌáĞÑĞŞ¸ÄÁËÏÂÃæÕâ¶Î£¬£¨²»¹ıĞ¡»ï×ÓÃÇ£¬ÄãÃÇ¸Ä´úÂëÒªÈÏÕæÒ»µãà¸£©
+        //ÓÉÓÚselectµÄ³¬Ê±²ÎÊı¿ÉÒÔ¾«È·µ½Î¢Ãë£¬¶øepoll_waitµÄ²ÎÊıÖ»¾«È·µ½ºÁÃë
+        //µ±³¬Ê±Ê±¼äĞ¡ÓÚ1000Î¢ÃëÊ±£¬±ÈÈç20Î¢Ãë£¬½«Ê±¼ä×ª»»³ÉºÁÃë»á±ä³É0ºÁÃë
+        //ËùÒÔÈç¹ûÓÃepoll_waitµÄ»°£¬³¬Ê±Ê±¼ä´óÓÚ0²¢ÇÒĞ¡ÓÚ1ºÁÃëµÄÇé¿öÏÂÍ³Ò»¸ÄÎª1ºÁÃë
 
         msec_timeout = static_cast<int>( timeout_tv->total_msec_round());
     }
 
     int event_happen = 0;
-    //EPOLLç­‰å¾…äº‹ä»¶è§¦å‘ï¼Œ
+    //EPOLLµÈ´ıÊÂ¼ş´¥·¢£¬
     const int ONCE_MAX_EVENTS = 10;
     struct epoll_event once_events_ary[ONCE_MAX_EVENTS];
 
@@ -581,7 +581,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 
 
 
-    //å®Œæˆæ¸…ç†å·¥ç¨‹ï¼Œè°ƒç”¨epoll_ctl EPOLL_CTL_DEL åˆ é™¤æ³¨å†Œå¯¹è±¡,
+    //Íê³ÉÇåÀí¹¤³Ì£¬µ÷ÓÃepoll_ctl EPOLL_CTL_DEL É¾³ı×¢²á¶ÔÏó,
     struct epoll_event event_del;
     event_del.events = 0;
     ::epoll_ctl(epoll_fd, EPOLL_CTL_DEL, handle, &event_del);
@@ -593,7 +593,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
         return 0;
     }
 
-    //å‡ºç°é”™è¯¯ï¼Œ
+    //³öÏÖ´íÎó£¬
     if (0 > event_happen )
     {
         return event_happen;
@@ -611,8 +611,8 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 }
 
 //--------------------------------------------------------------------------------------------
-//å› ä¸ºWINdows ä¸æ”¯æŒå–å¾—socket æ˜¯å¦æ˜¯é˜»å¡çš„æ¨¡å¼ï¼Œæ‰€ä»¥Windows ä¸‹æˆ‘æ— æ³•å…ˆå–å¾—socketçš„é€‰é¡¹ï¼Œç„¶ååˆ¤æ–­æ˜¯å¦å–æ¶ˆé˜»å¡æ¨¡å¼
-//æ‰€ä»¥è¯·ä½ åŠ¡å¿…ä¿è¯ä½ çš„Socket æ˜¯é˜»å¡æ¨¡å¼çš„ï¼Œå¦åˆ™æœ‰é—®é¢˜
+//ÒòÎªWINdows ²»Ö§³ÖÈ¡µÃsocket ÊÇ·ñÊÇ×èÈûµÄÄ£Ê½£¬ËùÒÔWindows ÏÂÎÒÎŞ·¨ÏÈÈ¡µÃsocketµÄÑ¡Ïî£¬È»ºóÅĞ¶ÏÊÇ·ñÈ¡Ïû×èÈûÄ£Ê½
+//ËùÒÔÇëÄãÎñ±Ø±£Ö¤ÄãµÄSocket ÊÇ×èÈûÄ£Ê½µÄ£¬·ñÔòÓĞÎÊÌâ
 
 
 int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
@@ -622,7 +622,7 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
 {
 
     int ret = 0;
-    //ä¸èƒ½å¯¹éé˜»å¡çš„å¥æŸ„è¿›è¡Œè¶…æ—¶å¤„ç†
+    //²»ÄÜ¶Ô·Ç×èÈûµÄ¾ä±ú½øĞĞ³¬Ê±´¦Àí
     ret = ZCE_LIB::sock_enable(handle, O_NONBLOCK);
     if (ret != 0)
     {
@@ -634,7 +634,7 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
     //
     if (ret != 0)
     {
-        //WINDOWSä¸‹è¿”å›EWOULDBLOCKï¼ŒLINUXä¸‹è¿”å›EINPROGRESS
+        //WINDOWSÏÂ·µ»ØEWOULDBLOCK£¬LINUXÏÂ·µ»ØEINPROGRESS
         int last_err = ZCE_LIB::last_error();
 
         if (EINPROGRESS != last_err &&  EWOULDBLOCK != last_err)
@@ -644,7 +644,7 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
         }
     }
 
-    //è¿›è¡Œè¶…æ—¶å¤„ç†
+    //½øĞĞ³¬Ê±´¦Àí
     ret = ZCE_LIB::handle_ready(handle,
                                 &timeout_tv,
                                 ZCE_LIB::HANDLE_READY_CONNECTED);
@@ -678,27 +678,27 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
     ssize_t result = 0;
     bool error_occur = false;
 
-    //å¦‚æœåªç­‰å¾…æœ‰é™æ—¶é—´
+    //Èç¹ûÖ»µÈ´ıÓĞÏŞÊ±¼ä
 #if defined  (ZCE_OS_WINDOWS)
 
-    //WIN32ä¸‹åªèƒ½ç®€å•çš„æ‰“å¼€éé˜»å¡äº†
+    //WIN32ÏÂÖ»ÄÜ¼òµ¥µÄ´ò¿ª·Ç×èÈûÁË
     ZCE_LIB::sock_enable (handle, O_NONBLOCK);
 
 #elif defined  (ZCE_OS_LINUX)
-    //Linuxç®€å•å¾ˆå¤šï¼Œåªéœ€è¦å¯¹è¿™ä¸€æ¬¡å‘é€åšä¸€äº›æ— é˜»å¡é™å®šå°±OKã€‚
-    //MSG_DONTWAITé€‰çº¿ï¼ŒWIN32ä¸æ”¯æŒ
+    //Linux¼òµ¥ºÜ¶à£¬Ö»ĞèÒª¶ÔÕâÒ»´Î·¢ËÍ×öÒ»Ğ©ÎŞ×èÈûÏŞ¶¨¾ÍOK¡£
+    //MSG_DONTWAITÑ¡Ïß£¬WIN32²»Ö§³Ö
     flags |= MSG_DONTWAIT;
 #endif
 
     int ret = 0;
     ssize_t onetime_recv = 0, bytes_recv = 0;
 
-    //ä¸€å®šå‡†å¤‡ç¡®ä¿æ”¶åˆ°è¿™ä¹ˆå¤šå­—èŠ‚
+    //Ò»¶¨×¼±¸È·±£ÊÕµ½ÕâÃ´¶à×Ö½Ú
     for (bytes_recv = 0; static_cast<size_t>(bytes_recv) < len; bytes_recv += onetime_recv)
     {
 
-        //ç­‰å¾…ç«¯å£å‡†å¤‡å¥½äº†å¤„ç½šæ¥æ”¶äº‹ä»¶ï¼Œè¿™å„¿å…¶å®ä¸ä¸¥è°¨ï¼Œç†è®ºï¼Œè¿™å„¿timeout_tv åº”è¯¥å‡å»æ¶ˆè€—çš„æ—¶é—´
-        //LINUXçš„SELECTä¼šåšè¿™ä»¶äº‹æƒ…ï¼Œä½†WINDOWSçš„ä¸ä¼š
+        //µÈ´ı¶Ë¿Ú×¼±¸ºÃÁË´¦·£½ÓÊÕÊÂ¼ş£¬Õâ¶ùÆäÊµ²»ÑÏ½÷£¬ÀíÂÛ£¬Õâ¶ùtimeout_tv Ó¦¸Ã¼õÈ¥ÏûºÄµÄÊ±¼ä
+        //LINUXµÄSELECT»á×öÕâ¼şÊÂÇé£¬µ«WINDOWSµÄ²»»á
         ret = ZCE_LIB::handle_ready (handle,
                                      &timeout_tv,
                                      HANDLE_READY_READ);
@@ -719,7 +719,7 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
             break;
         }
 
-        //ä½¿ç”¨éé˜»å¡ç«¯å£è¿›è¡Œæ¥æ”¶
+        //Ê¹ÓÃ·Ç×èÈû¶Ë¿Ú½øĞĞ½ÓÊÕ
         onetime_recv = ZCE_LIB::recv (handle,
                                       static_cast <char *> (buf) + bytes_recv,
                                       len - bytes_recv,
@@ -729,10 +729,10 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
         {
             continue;
         }
-        //å¦‚æœå‡ºç°é”™è¯¯,== 0ä¸€èˆ¬æ˜¯æ˜¯ç«¯å£æ–­å¼€ï¼Œ==-1è¡¨ç¤º
+        //Èç¹û³öÏÖ´íÎó,== 0Ò»°ãÊÇÊÇ¶Ë¿Ú¶Ï¿ª£¬==-1±íÊ¾
         else
         {
-            //==-1ï¼Œä½†æ˜¯è¡¨ç¤ºé˜»å¡é”™è¯¯ï¼Œè¿›è¡Œå¾ªç¯å¤„ç†
+            //==-1£¬µ«ÊÇ±íÊ¾×èÈû´íÎó£¬½øĞĞÑ­»·´¦Àí
             if (onetime_recv < 0 && errno == EWOULDBLOCK)
             {
                 // Did select() succeed?
@@ -740,14 +740,14 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
                 continue;
             }
 
-            //å‡ºç°é”™è¯¯ï¼Œè¿›è¡Œå¤„ç†
+            //³öÏÖ´íÎó£¬½øĞĞ´¦Àí
             error_occur = true;
             result = onetime_recv;
             break;
         }
     }
 
-    //å¦‚æœåªç­‰å¾…æœ‰é™æ—¶é—´ï¼Œæ¢å¤åŸæœ‰é˜»å¡æ¨¡å¼
+    //Èç¹ûÖ»µÈ´ıÓĞÏŞÊ±¼ä£¬»Ö¸´Ô­ÓĞ×èÈûÄ£Ê½
 #if defined  (ZCE_OS_WINDOWS)
     ZCE_LIB::sock_disable (handle, O_NONBLOCK);
 #endif
@@ -760,7 +760,7 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
     return bytes_recv;
 }
 
-//è¯·ä½ åŠ¡å¿…åœ¨WIN32ç¯å¢ƒä¿è¯ä½ çš„Socket æ˜¯é˜»å¡æ¨¡å¼çš„ï¼Œå¦åˆ™æœ‰é—®é¢˜
+//ÇëÄãÎñ±ØÔÚWIN32»·¾³±£Ö¤ÄãµÄSocket ÊÇ×èÈûÄ£Ê½µÄ£¬·ñÔòÓĞÎÊÌâ
 ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
                                const void *buf,
                                size_t len,
@@ -771,26 +771,26 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
     bool error_occur = false;
     ssize_t result = 0, bytes_send = 0, onetime_send = 0;
 
-    //å¦‚æœåªç­‰å¾…æœ‰é™æ—¶é—´
+    //Èç¹ûÖ»µÈ´ıÓĞÏŞÊ±¼ä
 #if defined  (ZCE_OS_WINDOWS)
 
-    //ç­‰å¾…ä¸€æ®µæ—¶é—´è¦è¿›è¡Œç‰¹æ®Šå¤„ç†
-    //WIN32ä¸‹åªèƒ½ç®€å•çš„æ‰“å¼€éé˜»å¡äº†
+    //µÈ´ıÒ»¶ÎÊ±¼äÒª½øĞĞÌØÊâ´¦Àí
+    //WIN32ÏÂÖ»ÄÜ¼òµ¥µÄ´ò¿ª·Ç×èÈûÁË
     ZCE_LIB::sock_enable (handle, O_NONBLOCK);
 
 #elif defined  (ZCE_OS_LINUX)
-    //Linuxç®€å•å¾ˆå¤šï¼Œåªéœ€è¦å¯¹è¿™ä¸€æ¬¡å‘é€åšä¸€äº›æ— é˜»å¡é™å®šå°±OKã€‚
-    //MSG_DONTWAITæ ‡å¿—ï¼ŒWIN32ä¸æ”¯æŒ
+    //Linux¼òµ¥ºÜ¶à£¬Ö»ĞèÒª¶ÔÕâÒ»´Î·¢ËÍ×öÒ»Ğ©ÎŞ×èÈûÏŞ¶¨¾ÍOK¡£
+    //MSG_DONTWAIT±êÖ¾£¬WIN32²»Ö§³Ö
     flags |= MSG_DONTWAIT;
 #endif
 
     int ret = 0;
 
-    //ä¸€å®šå‡†å¤‡ç¡®ä¿æ”¶åˆ°è¿™ä¹ˆå¤šå­—èŠ‚
+    //Ò»¶¨×¼±¸È·±£ÊÕµ½ÕâÃ´¶à×Ö½Ú
     for (bytes_send = 0; static_cast<size_t>(bytes_send) < len; bytes_send += onetime_send)
     {
-        //å‘é€åœ¨å¤„ç†æµç¨‹ä¸Šå’Œrecvä¸ä¸€æ ·ï¼Œå› ä¸ºsendå¾€å¾€ä¸éœ€è¦ç­‰å¾…å¤„ç†ï¼Œè¿›å…¥selectæµªè´¹
-        //ä½¿ç”¨éé˜»å¡ç«¯å£è¿›è¡Œæ¥æ”¶ï¼Œ
+        //·¢ËÍÔÚ´¦ÀíÁ÷³ÌÉÏºÍrecv²»Ò»Ñù£¬ÒòÎªsendÍùÍù²»ĞèÒªµÈ´ı´¦Àí£¬½øÈëselectÀË·Ñ
+        //Ê¹ÓÃ·Ç×èÈû¶Ë¿Ú½øĞĞ½ÓÊÕ£¬
         onetime_send = ZCE_LIB::send (handle,
                                       static_cast <const char *> (buf) + bytes_send,
                                       len - bytes_send,
@@ -800,16 +800,16 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
         {
             continue;
         }
-        //å¦‚æœå‡ºç°é”™è¯¯,== 0ä¸€èˆ¬æ˜¯æ˜¯ç«¯å£æ–­å¼€ï¼Œ==-1è¡¨ç¤ºé”™è¯¯
+        //Èç¹û³öÏÖ´íÎó,== 0Ò»°ãÊÇÊÇ¶Ë¿Ú¶Ï¿ª£¬==-1±íÊ¾´íÎó
         else
         {
-            //==-1ï¼Œä½†æ˜¯è¡¨ç¤ºé˜»å¡é”™è¯¯ï¼Œè¿›è¡Œå¾ªç¯å¤„ç†
+            //==-1£¬µ«ÊÇ±íÊ¾×èÈû´íÎó£¬½øĞĞÑ­»·´¦Àí
             if ( onetime_send < 0 && errno == EWOULDBLOCK)
             {
-                //å‡†å¤‡è¿›å…¥select
+                //×¼±¸½øÈëselect
                 onetime_send = 0;
 
-                //ç­‰å¾…ç«¯å£å‡†å¤‡å¥½äº†å¤„ç†å‘é€äº‹ä»¶ï¼Œè¿™å„¿å…¶å®ä¸ä¸¥è°¨ï¼Œè¿™å„¿timeout_tv åº”è¯¥å‡å»æ¶ˆè€—çš„æ—¶é—´
+                //µÈ´ı¶Ë¿Ú×¼±¸ºÃÁË´¦Àí·¢ËÍÊÂ¼ş£¬Õâ¶ùÆäÊµ²»ÑÏ½÷£¬Õâ¶ùtimeout_tv Ó¦¸Ã¼õÈ¥ÏûºÄµÄÊ±¼ä
                 ret = ZCE_LIB::handle_ready (handle,
                                              &timeout_tv,
                                              HANDLE_READY_WRITE);
@@ -835,7 +835,7 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
                 }
             }
 
-            //å‡ºç°é”™è¯¯ï¼Œè¿›è¡Œå¤„ç†
+            //³öÏÖ´íÎó£¬½øĞĞ´¦Àí
             error_occur = true;
             result = onetime_send;
             break;
@@ -843,11 +843,11 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
     }
 
 #if defined  ZCE_OS_WINDOWS
-    //å…³é—­éé˜»å¡çŠ¶æ€
+    //¹Ø±Õ·Ç×èÈû×´Ì¬
     ZCE_LIB::sock_disable (handle, O_NONBLOCK);
 #endif
 
-    //å‘é€äº†é”™è¯¯ï¼Œè¿”å›é”™è¯¯è¿”å›å€¼
+    //·¢ËÍÁË´íÎó£¬·µ»Ø´íÎó·µ»ØÖµ
     if (error_occur)
     {
         return result;
@@ -856,7 +856,7 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
     return bytes_send;
 }
 
-//æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨selectå®ç°
+//ÊÕUDPµÄÊı¾İ,Ò²´øÓĞ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊı¾İ¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃselectÊµÏÖ
 ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
                                    void *buf,
                                    size_t len,
@@ -865,16 +865,16 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
                                    ZCE_Time_Value &timeout_tv,
                                    int flags)
 {
-    //å¦‚æœåªç­‰å¾…æœ‰é™æ—¶é—´
+    //Èç¹ûÖ»µÈ´ıÓĞÏŞÊ±¼ä
 #if defined  (ZCE_OS_WINDOWS)
 
-    //ç­‰å¾…ä¸€æ®µæ—¶é—´è¦è¿›è¡Œç‰¹æ®Šå¤„ç†
-    //WIN32ä¸‹åªèƒ½ç®€å•çš„æ‰“å¼€éé˜»å¡äº†
+    //µÈ´ıÒ»¶ÎÊ±¼äÒª½øĞĞÌØÊâ´¦Àí
+    //WIN32ÏÂÖ»ÄÜ¼òµ¥µÄ´ò¿ª·Ç×èÈûÁË
     ZCE_LIB::sock_enable (handle, O_NONBLOCK);
 
 #elif defined  (ZCE_OS_LINUX)
-    //Linuxç®€å•å¾ˆå¤šï¼Œåªéœ€è¦å¯¹è¿™ä¸€æ¬¡å‘é€åšä¸€äº›æ— é˜»å¡é™å®šå°±OKã€‚
-    //MSG_DONTWAITæ ‡å¿—ï¼ŒWIN32ä¸æ”¯æŒ
+    //Linux¼òµ¥ºÜ¶à£¬Ö»ĞèÒª¶ÔÕâÒ»´Î·¢ËÍ×öÒ»Ğ©ÎŞ×èÈûÏŞ¶¨¾ÍOK¡£
+    //MSG_DONTWAIT±êÖ¾£¬WIN32²»Ö§³Ö
     flags |= MSG_DONTWAIT;
 #endif
 
@@ -887,7 +887,7 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
 
     if (ret == HANDLE_READY_ONE)
     {
-        //ä½¿ç”¨éé˜»å¡ç«¯å£è¿›è¡Œæ¥æ”¶
+        //Ê¹ÓÃ·Ç×èÈû¶Ë¿Ú½øĞĞ½ÓÊÕ
         recv_result = ZCE_LIB::recvfrom (handle,
                                          static_cast <char *> (buf) ,
                                          len,
@@ -906,7 +906,7 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
         recv_result = -1;
     }
 
-    //å¦‚æœåªç­‰å¾…æœ‰é™æ—¶é—´ï¼Œæ¢å¤åŸæœ‰çš„çŠ¶æ€
+    //Èç¹ûÖ»µÈ´ıÓĞÏŞÊ±¼ä£¬»Ö¸´Ô­ÓĞµÄ×´Ì¬
 #if defined  ZCE_OS_WINDOWS
     ZCE_LIB::sock_disable (handle, O_NONBLOCK);
 #endif
@@ -914,8 +914,8 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
     return recv_result;
 }
 
-//UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
-//å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†
+//UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
+//·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí
 ssize_t ZCE_LIB::sendto_timeout (ZCE_SOCKET handle,
                                  const void *buf,
                                  size_t len,
@@ -934,10 +934,10 @@ ssize_t ZCE_LIB::sendto_timeout (ZCE_SOCKET handle,
 }
 
 //--------------------------------------------------------------------------------------------
-//è¿™ç»„å‡½æ•°æä¾›ä»…ä»…ä¸ºäº†ä»£ç æµ‹è¯•ï¼Œæš‚æ—¶ä¸å¯¹å¤–æä¾›
-//ä½¿ç”¨SO_RCVTIMEOï¼ŒSO_SNDTIMEOå¾—åˆ°ä¸€ç»„è¶…æ—¶å¤„ç†å‡½æ•°
+//Õâ×éº¯ÊıÌá¹©½ö½öÎªÁË´úÂë²âÊÔ£¬ÔİÊ±²»¶ÔÍâÌá¹©
+//Ê¹ÓÃSO_RCVTIMEO£¬SO_SNDTIMEOµÃµ½Ò»×é³¬Ê±´¦Àíº¯Êı
 
-//æ³¨æ„SO_RCVTIMEO,SO_SNDTIMEO,åªåœ¨WIN socket 2åæ”¯æŒ
+//×¢ÒâSO_RCVTIMEO,SO_SNDTIMEO,Ö»ÔÚWIN socket 2ºóÖ§³Ö
 ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
                                  void *buf,
                                  size_t len,
@@ -946,9 +946,9 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
 {
     int ret = 0;
 
-    //è™½ç„¶ä½ åšäº†ä¸€æ ·çš„å¤–å±‚å°è£…ï¼Œä½†æ˜¯ç”±äºå†…éƒ¨å®ç°ä¸ä¸€æ ·ï¼Œä½ è¿˜æ˜¯è¦åè¡€ã€‚
+    //ËäÈ»Äã×öÁËÒ»ÑùµÄÍâ²ã·â×°£¬µ«ÊÇÓÉÓÚÄÚ²¿ÊµÏÖ²»Ò»Ñù£¬Äã»¹ÊÇÒªÍÂÑª¡£
 #if defined  ZCE_OS_WINDOWS
-    //è¶…æ—¶çš„æ¯«ç§’
+    //³¬Ê±µÄºÁÃë
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
     ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
@@ -965,10 +965,10 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
     ssize_t result = 0, bytes_recv = 0, onetime_recv = 0;
     bool error_occur = false;
 
-    //ä¸€å®šè¦æ”¶åˆ°lené•¿åº¦çš„å­—èŠ‚
+    //Ò»¶¨ÒªÊÕµ½len³¤¶ÈµÄ×Ö½Ú
     for (bytes_recv = 0; static_cast<size_t>(bytes_recv) < len; bytes_recv += onetime_recv)
     {
-        //ä½¿ç”¨éé˜»å¡ç«¯å£è¿›è¡Œæ¥æ”¶
+        //Ê¹ÓÃ·Ç×èÈû¶Ë¿Ú½øĞĞ½ÓÊÕ
         onetime_recv = ZCE_LIB::recv (handle,
                                       static_cast <char *> (buf) + bytes_recv,
                                       len - bytes_recv,
@@ -978,10 +978,10 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
         {
             continue;
         }
-        //å¦‚æœå‡ºç°é”™è¯¯,== 0ä¸€èˆ¬æ˜¯æ˜¯ç«¯å£æ–­å¼€ï¼Œ==-1è¡¨ç¤º
+        //Èç¹û³öÏÖ´íÎó,== 0Ò»°ãÊÇÊÇ¶Ë¿Ú¶Ï¿ª£¬==-1±íÊ¾
         else
         {
-            //å‡ºç°é”™è¯¯ï¼Œè¿›è¡Œå¤„ç†
+            //³öÏÖ´íÎó£¬½øĞĞ´¦Àí
             error_occur = true;
             result = onetime_recv;
             break;
@@ -994,7 +994,7 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
         return result;
     }
 
-    //è¦ä¸è¦è¿˜åŸåŸæ¥çš„SO_RCVTIMEO?ç®—äº†ï¼Œç”¨é˜»å¡è¶…æ—¶è°ƒç”¨åœ°æ–¹åº”è¯¥ä¼šä¸€ç›´ä½¿ç”¨
+    //Òª²»Òª»¹Ô­Ô­À´µÄSO_RCVTIMEO?ËãÁË£¬ÓÃ×èÈû³¬Ê±µ÷ÓÃµØ·½Ó¦¸Ã»áÒ»Ö±Ê¹ÓÃ
 
     return bytes_recv;
 }
@@ -1009,7 +1009,7 @@ ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
 
     int ret = 0;
 
-    //è™½ç„¶ä½ åšäº†ä¸€æ ·çš„å¤–å±‚å°è£…ï¼Œä½†æ˜¯ç”±äºå†…éƒ¨å®ç°ä¸ä¸€æ ·ï¼Œä½ è¿˜æ˜¯è¦åè¡€ã€‚
+    //ËäÈ»Äã×öÁËÒ»ÑùµÄÍâ²ã·â×°£¬µ«ÊÇÓÉÓÚÄÚ²¿ÊµÏÖ²»Ò»Ñù£¬Äã»¹ÊÇÒªÍÂÑª¡£
 #if defined  ZCE_OS_WINDOWS
 
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
@@ -1029,24 +1029,24 @@ ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
     ssize_t result = 0, bytes_send = 0, onetime_send = 0;
     bool error_occur = false;
 
-    //ä¸€å®šè¦å‘é€åˆ°lené•¿åº¦çš„å­—èŠ‚
+    //Ò»¶¨Òª·¢ËÍµ½len³¤¶ÈµÄ×Ö½Ú
     for (bytes_send = 0; static_cast<size_t>(bytes_send) < len; bytes_send += onetime_send)
     {
-        //ä½¿ç”¨éé˜»å¡ç«¯å£è¿›è¡Œæ¥æ”¶
+        //Ê¹ÓÃ·Ç×èÈû¶Ë¿Ú½øĞĞ½ÓÊÕ
         onetime_send = ZCE_LIB::send (handle,
                                       static_cast <char *> (buf) + bytes_send,
                                       len - bytes_send,
                                       flags);
 
-        //å…¶å®è¿™å„¿åº”è¯¥è°ƒæ•´è¶…æ—¶æ—¶é—´ï¼Œå‘µå‘µï¼Œå·æ‡’äº†
+        //ÆäÊµÕâ¶ùÓ¦¸Ãµ÷Õû³¬Ê±Ê±¼ä£¬ºÇºÇ£¬ÍµÀÁÁË
         if (onetime_send > 0)
         {
             continue;
         }
-        //å¦‚æœå‡ºç°é”™è¯¯,== 0ä¸€èˆ¬æ˜¯æ˜¯ç«¯å£æ–­å¼€ï¼Œ==-1è¡¨ç¤º
+        //Èç¹û³öÏÖ´íÎó,== 0Ò»°ãÊÇÊÇ¶Ë¿Ú¶Ï¿ª£¬==-1±íÊ¾
         else
         {
-            //å‡ºç°é”™è¯¯ï¼Œè¿›è¡Œå¤„ç†
+            //³öÏÖ´íÎó£¬½øĞĞ´¦Àí
             error_occur = true;
             result = onetime_send;
             break;
@@ -1062,7 +1062,7 @@ ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
     return bytes_send;
 }
 
-//æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨SO_RCVTIMEOå®ç°
+//ÊÕUDPµÄÊı¾İ,Ò²´øÓĞ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊı¾İ¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃSO_RCVTIMEOÊµÏÖ
 ssize_t ZCE_LIB::recvfrom_timeout2 (ZCE_SOCKET handle,
                                     void *buf,
                                     size_t len,
@@ -1072,7 +1072,7 @@ ssize_t ZCE_LIB::recvfrom_timeout2 (ZCE_SOCKET handle,
                                     int flags)
 {
     int ret = 0;
-    //è™½ç„¶ä½ åšäº†ä¸€æ ·çš„å¤–å±‚å°è£…ï¼Œä½†æ˜¯ç”±äºå†…éƒ¨å®ç°ä¸ä¸€æ ·ï¼Œä½ è¿˜æ˜¯è¦åè¡€ã€‚
+    //ËäÈ»Äã×öÁËÒ»ÑùµÄÍâ²ã·â×°£¬µ«ÊÇÓÉÓÚÄÚ²¿ÊµÏÖ²»Ò»Ñù£¬Äã»¹ÊÇÒªÍÂÑª¡£
 #if defined (ZCE_OS_WINDOWS)
 
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
@@ -1083,13 +1083,13 @@ ssize_t ZCE_LIB::recvfrom_timeout2 (ZCE_SOCKET handle,
     ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
 #endif
 
-    //æŒ‰ç…§socketç±»ä¼¼å‡½æ•°çš„å°è£…ï¼Œè¿”å›-1æ ‡è¯†å¤±è´¥ã€‚
+    //°´ÕÕsocketÀàËÆº¯ÊıµÄ·â×°£¬·µ»Ø-1±êÊ¶Ê§°Ü¡£
     if (0 != ret)
     {
         return -1;
     }
 
-    //ä½¿ç”¨éé˜»å¡ç«¯å£è¿›è¡Œæ¥æ”¶
+    //Ê¹ÓÃ·Ç×èÈû¶Ë¿Ú½øĞĞ½ÓÊÕ
     ssize_t recv_result = ZCE_LIB::recvfrom (handle,
                                              static_cast <char *> (buf) ,
                                              len,
@@ -1100,8 +1100,8 @@ ssize_t ZCE_LIB::recvfrom_timeout2 (ZCE_SOCKET handle,
     return recv_result;
 }
 
-//UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
-//å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†
+//UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
+//·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí
 ssize_t ZCE_LIB::sendto_timeout2 (ZCE_SOCKET handle,
                                   const void *buf,
                                   size_t len,
@@ -1121,28 +1121,28 @@ ssize_t ZCE_LIB::sendto_timeout2 (ZCE_SOCKET handle,
 
 //--------------------------------------------------------------------------------------------
 
-//è½¬æ¢å­—ç¬¦ä¸²åˆ°ç½‘ç»œåœ°å€ï¼Œç¬¬ä¸€ä¸ªå‚æ•°afæ˜¯åœ°å€æ—ï¼Œè½¬æ¢åå­˜åœ¨dstä¸­ï¼Œ
-//æ³¨æ„è¿™ä¸ªå‡½æ•°return 1æ ‡è¯†æˆåŠŸï¼Œreturn è´Ÿæ•°æ ‡è¯†é”™è¯¯ï¼Œreturn 0æ ‡è¯†æ ¼å¼åŒ¹é…é”™è¯¯
+//×ª»»×Ö·û´®µ½ÍøÂçµØÖ·£¬µÚÒ»¸ö²ÎÊıafÊÇµØÖ·×å£¬×ª»»ºó´æÔÚdstÖĞ£¬
+//×¢ÒâÕâ¸öº¯Êıreturn 1±êÊ¶³É¹¦£¬return ¸ºÊı±êÊ¶´íÎó£¬return 0±êÊ¶¸ñÊ½Æ¥Åä´íÎó
 int ZCE_LIB::inet_pton (int family,
                         const char *strptr,
                         void *addrptr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //ä¸ºä»€ä¹ˆä¸è®©æˆ‘ç”¨inet_pton ,(Vistaæ‰æ”¯æŒ),ä¸æ‰“å¼€ä¸‹é¢æ³¨é‡Šçš„åŸå› æ˜¯ï¼Œç¼–è¯‘ä¼šé€šè¿‡äº†ï¼Œä½†ä½ ä¹Ÿæ²¡æ³•ç”¨,XPå’ŒWINSERVER2003éƒ½æ— æ³•ä½¿ç”¨ï¼Œ
-    //VISTA,WINSERVER2008çš„_WIN32_WINNTéƒ½æ˜¯0x0600
+    //ÎªÊ²Ã´²»ÈÃÎÒÓÃinet_pton ,(Vista²ÅÖ§³Ö),²»´ò¿ªÏÂÃæ×¢ÊÍµÄÔ­ÒòÊÇ£¬±àÒë»áÍ¨¹ıÁË£¬µ«ÄãÒ²Ã»·¨ÓÃ,XPºÍWINSERVER2003¶¼ÎŞ·¨Ê¹ÓÃ£¬
+    //VISTA,WINSERVER2008µÄ_WIN32_WINNT¶¼ÊÇ0x0600
 #if defined ZCE_SUPPORT_WINSVR2008
     return ::inet_pton(family, strptr, addrptr);
 #else
 
-    //sscanfå–å¾—çš„åŸŸçš„ä¸ªæ•°
+    //sscanfÈ¡µÃµÄÓòµÄ¸öÊı
     int get_fields_num = 0;
 
     if (  AF_INET == family )
     {
         struct in_addr *in_val = reinterpret_cast<in_addr *>(addrptr);
 
-        //ä¸ºä»€ä¹ˆä¸ç›´æ¥ç”¨in_val->S_un.S_un_b.s_b1ï¼Ÿä½ çŒœ
+        //ÎªÊ²Ã´²»Ö±½ÓÓÃin_val->S_un.S_un_b.s_b1£¿Äã²Â
         const int NUM_FIELDS_AF_INET = 4;
         uint32_t u[NUM_FIELDS_AF_INET] = {0};
         get_fields_num = sscanf(strptr,
@@ -1153,7 +1153,7 @@ int ZCE_LIB::inet_pton (int family,
                                 &(u[3])
                                );
 
-        //è¾“å…¥çš„å­—ç¬¦ä¸²ä¸åˆä¹æ ‡å‡†
+        //ÊäÈëµÄ×Ö·û´®²»ºÏºõ±ê×¼
 
         if ( NUM_FIELDS_AF_INET != get_fields_num || u[0] > 0xFF || u[1] > 0xFF || u[2] > 0xFF || u[3] > 0xFF )
         {
@@ -1164,29 +1164,29 @@ int ZCE_LIB::inet_pton (int family,
         in_val->S_un.S_addr = htonl(u32_addr);
 
 
-        //æ³¨æ„ï¼Œè¿”å›1æ ‡è¯†æˆåŠŸ
+        //×¢Òâ£¬·µ»Ø1±êÊ¶³É¹¦
         return (1);
     }
     else if ( AF_INET6 == family )
     {
-        //fucnking åˆ›é€ RFC1884çš„å“¥ä»¬ï¼Œä½ å°±è€ƒè™‘ç®€åŒ–ï¼Œä¹Ÿè€ƒè™‘ä¸€ä¸‹å†™ä»£ç çš„äººå¦‚ä½•è¿›è¡Œè½¬æ¢æŠŠã€‚é€ä½ ä¸€åªè‰æ³¥é©¬
-        //RFC1884 å¯¹ä¸èµ·ï¼Œæˆ‘ä¸æ”¯æŒIPV6çš„ç¼©ç•¥æ ¼å¼å’ŒIPV4æ˜ å°„æ ¼å¼ï¼Œé‚£ä¸ªå¤ªå¤ªéº»çƒ¦äº†ã€‚
-        //IPV6çš„0ç¼©ç•¥æ ¼å¼åŒ…æ‹¬ '::'åœ¨å¼€å¤´çš„::FFFF:A:B  '::'åœ¨ä¸­é—´çš„ A:B:::C(ä½ ä¸çŸ¥é“æœ‰å‡ ä¸ª0è¢«çœç•¥äº†)ï¼Œ'::'åœ¨å°¾å·´ä¸Šçš„
-        //IPV4æ˜ å°„æˆIPV6çš„æ ¼å¼å¯ä»¥æ ‡è¯†æˆ::FFFF:A.B.C.D
+        //fucnking ´´ÔìRFC1884µÄ¸çÃÇ£¬Äã¾Í¿¼ÂÇ¼ò»¯£¬Ò²¿¼ÂÇÒ»ÏÂĞ´´úÂëµÄÈËÈçºÎ½øĞĞ×ª»»°Ñ¡£ËÍÄãÒ»Ö»²İÄàÂí
+        //RFC1884 ¶Ô²»Æğ£¬ÎÒ²»Ö§³ÖIPV6µÄËõÂÔ¸ñÊ½ºÍIPV4Ó³Éä¸ñÊ½£¬ÄÇ¸öÌ«Ì«Âé·³ÁË¡£
+        //IPV6µÄ0ËõÂÔ¸ñÊ½°üÀ¨ '::'ÔÚ¿ªÍ·µÄ::FFFF:A:B  '::'ÔÚÖĞ¼äµÄ A:B:::C(Äã²»ÖªµÀÓĞ¼¸¸ö0±»Ê¡ÂÔÁË)£¬'::'ÔÚÎ²°ÍÉÏµÄ
+        //IPV4Ó³Éä³ÉIPV6µÄ¸ñÊ½¿ÉÒÔ±êÊ¶³É::FFFF:A.B.C.D
 
-        //è¾“å…¥çš„å­—ç¬¦ä¸²ä¸åˆä¹æ ‡å‡†
+        //ÊäÈëµÄ×Ö·û´®²»ºÏºõ±ê×¼
         const int NUM_FIELDS_AF_INET6 = 8;
 
         const char INET6_STR_UP_CHAR[] = {"1234567890ABCDEF"};
 
-        //å…ˆè¯·0
+        //ÏÈÇë0
         memset(addrptr, 0, sizeof(in_addr6));
         struct in_addr6 *in_val6 = reinterpret_cast<in_addr6 *>(addrptr);
 
         size_t in_str_len = strlen(strptr);
-        //å‰ä¸€ä¸ªå­—ç¬¦æ˜¯å¦æ˜¯å†’å·
+        //Ç°Ò»¸ö×Ö·ûÊÇ·ñÊÇÃ°ºÅ
         bool pre_char_colon = false;
-        //å­—ç¬¦ä¸²æ˜¯å¦
+        //×Ö·û´®ÊÇ·ñ
         bool str_abbreviate = false;
         //
         int havedot_ipv4_mapped = 0;
@@ -1204,15 +1204,15 @@ int ZCE_LIB::inet_pton (int family,
             //
             if (':' == strptr [i] )
             {
-                //å¦‚æœåé¢çš„å­—ç¬¦ä¹Ÿæ˜¯ï¼šï¼Œæ ‡è¯†æ˜¯ç¼©å†™æ ¼å¼
+                //Èç¹ûºóÃæµÄ×Ö·ûÒ²ÊÇ£º£¬±êÊ¶ÊÇËõĞ´¸ñÊ½
                 if ( pre_char_colon == true  )
                 {
-                    //å¦‚æœæ²¡æœ‰å‘ç”Ÿè¿‡ç¼©å†™
+                    //Èç¹ûÃ»ÓĞ·¢Éú¹ıËõĞ´
                     if (false == str_abbreviate)
                     {
                         str_abbreviate = true;
                     }
-                    //ä¸å¯èƒ½å‘é€ä¸¤æ¬¡ç¼©å†™ï¼Œ
+                    //²»¿ÉÄÜ·¢ËÍÁ½´ÎËõĞ´£¬
                     else
                     {
                         return 0;
@@ -1221,19 +1221,19 @@ int ZCE_LIB::inet_pton (int family,
                     continue;
                 }
 
-                //.å‡ºç°åï¼Œä¸å¯èƒ½å‡ºç°ï¼šï¼Œæ ¼å¼é”™è¯¯
+                //.³öÏÖºó£¬²»¿ÉÄÜ³öÏÖ£º£¬¸ñÊ½´íÎó
                 if (havedot_ipv4_mapped > 0)
                 {
                     return 0;
                 }
 
-                //ä¸å¯èƒ½å‡ºç°8ä¸ªå†’å·
+                //²»¿ÉÄÜ³öÏÖ8¸öÃ°ºÅ
                 if (backword_num + forword_num >= NUM_FIELDS_AF_INET6)
                 {
                     return 0;
                 }
 
-                //å¦‚æœå·²ç»æœ‰ç¼©å†™ï¼Œé‚£ä¹ˆè®°å½•åˆ°åå‘æ•°æ®é˜Ÿåˆ—ä¸­
+                //Èç¹ûÒÑ¾­ÓĞËõĞ´£¬ÄÇÃ´¼ÇÂ¼µ½ºóÏòÊı¾İ¶ÓÁĞÖĞ
                 if (str_abbreviate)
                 {
                     get_fields_num = sscanf(strptr + word_start_pos, "%hx:",  &(back_word[backword_num]));
@@ -1248,10 +1248,10 @@ int ZCE_LIB::inet_pton (int family,
                 pre_char_colon = true;
                 continue;
             }
-            //IPV4æ˜ å°„IPV6çš„å†™æ³•
+            //IPV4Ó³ÉäIPV6µÄĞ´·¨
             else if ( '.' == strptr [i] )
             {
-                //å¦‚æœå‰é¢æ˜¯:,é”™è¯¯
+                //Èç¹ûÇ°ÃæÊÇ:,´íÎó
                 if (pre_char_colon)
                 {
                     return 0;
@@ -1261,13 +1261,13 @@ int ZCE_LIB::inet_pton (int family,
             }
             else
             {
-                //å‡ºç°å…¶ä»–å­—ç¬¦ï¼Œè®¤ä¸ºé”™è¯¯ï¼Œæ»šè›‹ï¼Œ
+                //³öÏÖÆäËû×Ö·û£¬ÈÏÎª´íÎó£¬¹öµ°£¬
                 if ( NULL == strchr(INET6_STR_UP_CHAR, toupper(strptr [i])) )
                 {
                     return 0;
                 }
 
-                //å¦‚æœå‰é¢ä¸€ä¸ªæ˜¯:
+                //Èç¹ûÇ°ÃæÒ»¸öÊÇ:
                 if (pre_char_colon)
                 {
                     pre_char_colon = false;
@@ -1278,9 +1278,9 @@ int ZCE_LIB::inet_pton (int family,
             }
         }
 
-        //å¯¹æœ€åä¸€ä¸ªWORDæˆ–è€…2ä¸ªWORDè¿›è¡Œå¤„ç†
+        //¶Ô×îºóÒ»¸öWORD»òÕß2¸öWORD½øĞĞ´¦Àí
 
-        //å‡ºç°äº†.ï¼Œå¹¶ä¸”å‡ºç°äº†äº†3æ¬¡ï¼Œhavedot_ipv4_mapped ï¼Œ
+        //³öÏÖÁË.£¬²¢ÇÒ³öÏÖÁËÁË3´Î£¬havedot_ipv4_mapped £¬
         if (havedot_ipv4_mapped > 0)
         {
             const int NUM_FIELDS_AF_INET = 4;
@@ -1293,7 +1293,7 @@ int ZCE_LIB::inet_pton (int family,
                                     &(u[3])
                                    );
 
-            //è¾“å…¥çš„å­—ç¬¦ä¸²ä¸åˆä¹æ ‡å‡†
+            //ÊäÈëµÄ×Ö·û´®²»ºÏºõ±ê×¼
             if ( NUM_FIELDS_AF_INET != get_fields_num || u[0] > 0xFF || u[1] > 0xFF || u[2] > 0xFF || u[3] > 0xFF )
             {
                 return 0;
@@ -1313,8 +1313,8 @@ int ZCE_LIB::inet_pton (int family,
             }
         }
 
-        //å¯¹æ¯ä¸€ä¸ªWORDè¿›è¡Œèµ‹å€¼ï¼Œå‰èµ‹å€¼å‰å‘çš„ï¼Œå†èµ‹å€¼åå‘çš„,ä¸­é—´çš„å¦‚æœè¢«çœç•¥å°±æ˜¯0äº†ã€‚ä¸ç®¡äº†
-        //è¿™ä¸ªè½¬æ¢åªèƒ½åœ¨WINDOWSä¸‹ç”¨ï¼ˆè¿™äº›unionåªæœ‰WINDOWSä¸‹æœ‰å®šä¹‰ï¼‰ï¼Œå¦‚æœè¦é€šç”¨ï¼Œè¦æ”¹ä»£ç ã€‚
+        //¶ÔÃ¿Ò»¸öWORD½øĞĞ¸³Öµ£¬Ç°¸³ÖµÇ°ÏòµÄ£¬ÔÙ¸³ÖµºóÏòµÄ,ÖĞ¼äµÄÈç¹û±»Ê¡ÂÔ¾ÍÊÇ0ÁË¡£²»¹ÜÁË
+        //Õâ¸ö×ª»»Ö»ÄÜÔÚWINDOWSÏÂÓÃ£¨ÕâĞ©unionÖ»ÓĞWINDOWSÏÂÓĞ¶¨Òå£©£¬Èç¹ûÒªÍ¨ÓÃ£¬Òª¸Ä´úÂë¡£
         for (size_t k = 0; k < forword_num; ++k)
         {
             in_val6->u.Word[k] = htons( for_word[k]);
@@ -1325,10 +1325,10 @@ int ZCE_LIB::inet_pton (int family,
             in_val6->u.Word[NUM_FIELDS_AF_INET6 - backword_num + k] = htons( back_word[k]);
         }
 
-        //è¿”å›1æ ‡è¯†æˆåŠŸ
+        //·µ»Ø1±êÊ¶³É¹¦
         return (1);
     }
-    //ä¸æ”¯æŒ
+    //²»Ö§³Ö
     else
     {
         errno = EAFNOSUPPORT;
@@ -1337,12 +1337,12 @@ int ZCE_LIB::inet_pton (int family,
 #endif
 
 #elif defined (ZCE_OS_LINUX)
-    //LINuXä¸‹æœ‰è¿™ä¸ªå‡½æ•°
+    //LINuXÏÂÓĞÕâ¸öº¯Êı
     return ::inet_pton(family, strptr, addrptr);
 #endif
 }
 
-//å‡½æ•°åŸå‹å¦‚ä¸‹[å°†â€œç‚¹åˆ†åè¿›åˆ¶â€ ï¼> â€œæ•´æ•°â€],IPV6å°†ï¼Œ:åˆ†å‰²16è¿›åˆ¶è½¬æ¢æˆ128ä½æ•°å­—
+//º¯ÊıÔ­ĞÍÈçÏÂ[½«¡°µã·ÖÊ®½øÖÆ¡± £­> ¡°ÕûÊı¡±],IPV6½«£¬:·Ö¸î16½øÖÆ×ª»»³É128Î»Êı×Ö
 const char *ZCE_LIB::inet_ntop(int family,
                                const void *addrptr,
                                char *strptr,
@@ -1351,7 +1351,7 @@ const char *ZCE_LIB::inet_ntop(int family,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //æ ¹æ®ä¸åŒçš„åè®®ç°‡è¿›è¡Œä¸åŒçš„å¤„ç†
+    //¸ù¾İ²»Í¬µÄĞ­Òé´Ø½øĞĞ²»Í¬µÄ´¦Àí
     if (  AF_INET == family )
     {
         const struct in_addr *in_val = reinterpret_cast<const in_addr *>(addrptr);
@@ -1363,7 +1363,7 @@ const char *ZCE_LIB::inet_ntop(int family,
                                in_val->S_un.S_un_b.s_b3,
                                in_val->S_un.S_un_b.s_b4);
 
-        //æ ¼å¼åŒ–å­—ç¬¦ä¸²å¤±è´¥
+        //¸ñÊ½»¯×Ö·û´®Ê§°Ü
         if (ret_len > static_cast<int>(len) || ret_len <= 0 )
         {
             errno = ENOSPC;
@@ -1374,14 +1374,14 @@ const char *ZCE_LIB::inet_ntop(int family,
     }
     else if ( AF_INET6 == family )
     {
-        //å¯¹ä¸èµ·ï¼Œæˆ‘åªæ”¯æŒè½¬æ¢æˆIPV6çš„æ ‡å‡†æ ¼å¼ï¼Œä¸æ”¯æŒè½¬æ¢æˆIPV6çš„ç¼©ç•¥æ ¼å¼å’ŒIPV4æ˜ å°„æ ¼å¼ï¼Œ
+        //¶Ô²»Æğ£¬ÎÒÖ»Ö§³Ö×ª»»³ÉIPV6µÄ±ê×¼¸ñÊ½£¬²»Ö§³Ö×ª»»³ÉIPV6µÄËõÂÔ¸ñÊ½ºÍIPV4Ó³Éä¸ñÊ½£¬
 
         const struct in_addr6 *in_val6 = reinterpret_cast<const in_addr6 *>(addrptr);
 
         const int NUM_FIELDS_AF_INET6 = 8;
         uint16_t u[NUM_FIELDS_AF_INET6];
 
-        //å› ä¸ºæ˜¯shortï¼Œè¿˜æ˜¯è¦è½¬æ¢æˆæœ¬åœ°åºåˆ—
+        //ÒòÎªÊÇshort£¬»¹ÊÇÒª×ª»»³É±¾µØĞòÁĞ
         u[0] = ::ntohs(in_val6->u.Word[0]);
         u[1] = ::ntohs(in_val6->u.Word[1]);
         u[2] = ::ntohs(in_val6->u.Word[2]);
@@ -1419,17 +1419,17 @@ const char *ZCE_LIB::inet_ntop(int family,
     }
 
 #elif defined (ZCE_OS_LINUX)
-    //LINuXä¸‹æœ‰è¿™ä¸ªå‡½æ•°
+    //LINuXÏÂÓĞÕâ¸öº¯Êı
     return ::inet_ntop(family, addrptr, strptr, len);
 #endif
 }
 
-//è¾“å‡ºIPåœ°å€ä¿¡æ¯ï¼Œå†…éƒ¨æ˜¯ä¸ä½¿ç”¨é™æ€å˜é‡ï¼Œçº¿ç¨‹å®‰å…¨ï¼ŒBUFé•¿åº¦IPV4è‡³å°‘é•¿åº¦>15.IPV6è‡³å°‘é•¿åº¦>39
+//Êä³öIPµØÖ·ĞÅÏ¢£¬ÄÚ²¿ÊÇ²»Ê¹ÓÃ¾²Ì¬±äÁ¿£¬Ïß³Ì°²È«£¬BUF³¤¶ÈIPV4ÖÁÉÙ³¤¶È>15.IPV6ÖÁÉÙ³¤¶È>39
 const char *ZCE_LIB::socketaddr_ntop(const sockaddr *sock_addr,
                                      char *str_ptr,
                                      size_t str_len)
 {
-    //æ ¹æ®ä¸åŒçš„åœ°å€åè®®æ—ï¼Œè¿›è¡Œè½¬æ¢
+    //¸ù¾İ²»Í¬µÄµØÖ·Ğ­Òé×å£¬½øĞĞ×ª»»
     if (sock_addr->sa_family == AF_INET)
     {
         const sockaddr_in *sockadd_ipv4 = reinterpret_cast<const sockaddr_in *>(sock_addr);
@@ -1452,7 +1452,7 @@ const char *ZCE_LIB::socketaddr_ntop(const sockaddr *sock_addr,
     }
 }
 
-//è¾“å‡ºIPåœ°å€ä¿¡æ¯ä»¥åŠç«¯å£ä¿¡æ¯ï¼Œå†…éƒ¨æ˜¯ä¸ä½¿ç”¨é™æ€å˜é‡ï¼Œçº¿ç¨‹å®‰å…¨ï¼ŒBUFé•¿åº¦IPV4è‡³å°‘é•¿åº¦>21.IPV6è‡³å°‘é•¿åº¦>45
+//Êä³öIPµØÖ·ĞÅÏ¢ÒÔ¼°¶Ë¿ÚĞÅÏ¢£¬ÄÚ²¿ÊÇ²»Ê¹ÓÃ¾²Ì¬±äÁ¿£¬Ïß³Ì°²È«£¬BUF³¤¶ÈIPV4ÖÁÉÙ³¤¶È>21.IPV6ÖÁÉÙ³¤¶È>45
 const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
                                         char *str_ptr,
                                         size_t str_len)
@@ -1460,7 +1460,7 @@ const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
     uint16_t addr_port = 0;
     const char *ret_str = NULL;
 
-    //æ ¹æ®ä¸åŒçš„åœ°å€åè®®æ—ï¼Œè¿›è¡Œè½¬æ¢ï¼Œä¸ä½¿ç”¨ä¸Šé¢é‚£ä¸ªå‡½æ•°çš„åŸå› æ˜¯å› ä¸ºï¼Œæˆ‘åŒæ—¶è¦è¿›è¡Œè¯»å–portçš„æ“ä½œ
+    //¸ù¾İ²»Í¬µÄµØÖ·Ğ­Òé×å£¬½øĞĞ×ª»»£¬²»Ê¹ÓÃÉÏÃæÄÇ¸öº¯ÊıµÄÔ­ÒòÊÇÒòÎª£¬ÎÒÍ¬Ê±Òª½øĞĞ¶ÁÈ¡portµÄ²Ù×÷
     if (sock_addr->sa_family == AF_INET)
     {
         const sockaddr_in *sockadd_ipv4 = reinterpret_cast<const sockaddr_in *>(sock_addr);
@@ -1484,7 +1484,7 @@ const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
         return NULL;
     }
 
-    //å¦‚æœè¿”å›é”™è¯¯
+    //Èç¹û·µ»Ø´íÎó
     if ( NULL == ret_str )
     {
         return NULL;
@@ -1492,7 +1492,7 @@ const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
 
     size_t add_str_len = strlen(str_ptr);
 
-    //5ä¸ªæ•°å­—ï¼Œä¸€ä¸ªè¿æ¥ç¬¦ï¼Œä¸€ä¸ªç©ºå­—ç¬¦æ ‡å¿—
+    //5¸öÊı×Ö£¬Ò»¸öÁ¬½Ó·û£¬Ò»¸ö¿Õ×Ö·û±êÖ¾
     const size_t PORT_LEN = 7;
 
     if (str_len < add_str_len + PORT_LEN)
@@ -1500,25 +1500,25 @@ const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
         return NULL;
     }
 
-    //å‰é¢å·²ç»æ£€æŸ¥è¿‡äº†ï¼Œè¿™å„¿ä¸åˆ¤æ–­è¿”å›äº†
+    //Ç°ÃæÒÑ¾­¼ì²é¹ıÁË£¬Õâ¶ù²»ÅĞ¶Ï·µ»ØÁË
     snprintf(str_ptr + add_str_len, str_len - add_str_len, "#%u", addr_port);
 
     return str_ptr;
 }
 
 /*
-æˆ‘ä»¬å¯¹ä¼ä¸šç½‘çš„IPåˆ†é…ä¸€èˆ¬ä»¥RFC1918ä¸­å®šä¹‰çš„éInternetè¿æ¥çš„ç½‘ç»œåœ°å€ï¼Œ
-ä¹Ÿç§°ä¸ºç§æœ‰åœ°å€ã€‚ç”±Internetåœ°å€æˆæƒæœºæ„ï¼ˆIANAï¼‰æ§åˆ¶çš„IPåœ°å€åˆ†é…æ–¹æ¡ˆä¸­ï¼Œ
-ç•™å‡ºäº†ä¸‰ç±»ç½‘ç»œåœ°å€ï¼Œç»™ä¸è¿åˆ°Internetä¸Šçš„ä¸“ç”¨ç½‘ä½¿ç”¨ã€‚å®ƒåˆ†åˆ«æ˜¯ï¼š
-Aç±»ï¼š10.0.0.0 ~ 10.255.255.255ï¼›
-Bç±»ï¼š172.16.0.0 ~ 172.31.255.255ï¼›
-Cç±»ï¼š192.168.0.0 ~ 192.168.255.255ã€‚
-å…¶ä¸­çš„ä¸€ä¸ªç§æœ‰åœ°å€ç½‘æ®µæ˜¯ï¼š192.168.0.0æ˜¯æˆ‘ä»¬åœ¨å†…ç½‘IPåˆ†é…ä¸­æœ€å¸¸ç”¨çš„ç½‘æ®µã€‚
-IANAä¿è¯è¿™äº›ç½‘ç»œå·ä¸ä¼šåˆ†é…ç»™è¿åˆ°Internetä¸Šçš„ä»»ä½•ç½‘ç»œï¼Œ
-å› æ­¤ä»»ä½•äººéƒ½å¯ä»¥è‡ªç”±åœ°é€‰æ‹©è¿™äº›ç½‘ç»œåœ°å€ä½œä¸ºè‡ªå·±çš„ç§æœ‰ç½‘ç»œåœ°å€ã€‚
-åœ¨ç”³è¯·çš„åˆæ³•IPä¸è¶³çš„æƒ…å†µä¸‹ï¼Œä¼ä¸šç½‘å†…ç½‘å¯ä»¥é‡‡ç”¨ç§æœ‰IPåœ°å€çš„ç½‘ç»œåœ°å€åˆ†é…æ–¹æ¡ˆï¼›
-ä¼ä¸šç½‘å¤–ç½‘æ¥å…¥ã€DMZåŒºä½¿ç”¨åˆæ³•IPåœ°å€ã€‚
-å¦‚æœæ˜¯å…¨0ï¼Œä¹Ÿæ˜¯è‡ªå·±å†…éƒ¨ip <==== è¿™ä¸ªæ˜¯é‚£ä¸ªåŒå­¦åŠ çš„ï¼Œè¿™ä¸ªåœ¨æŸç§ç¨‹åº¦ä¸Šæ˜¯å¯¹çš„ï¼Œå› ä¸º0åªä¼šå‡ºç°åœ¨æœ¬æœºçš„åˆ¤å®šä¸Š
+ÎÒÃÇ¶ÔÆóÒµÍøµÄIP·ÖÅäÒ»°ãÒÔRFC1918ÖĞ¶¨ÒåµÄ·ÇInternetÁ¬½ÓµÄÍøÂçµØÖ·£¬
+Ò²³ÆÎªË½ÓĞµØÖ·¡£ÓÉInternetµØÖ·ÊÚÈ¨»ú¹¹£¨IANA£©¿ØÖÆµÄIPµØÖ··ÖÅä·½°¸ÖĞ£¬
+Áô³öÁËÈıÀàÍøÂçµØÖ·£¬¸ø²»Á¬µ½InternetÉÏµÄ×¨ÓÃÍøÊ¹ÓÃ¡£Ëü·Ö±ğÊÇ£º
+AÀà£º10.0.0.0 ~ 10.255.255.255£»
+BÀà£º172.16.0.0 ~ 172.31.255.255£»
+CÀà£º192.168.0.0 ~ 192.168.255.255¡£
+ÆäÖĞµÄÒ»¸öË½ÓĞµØÖ·Íø¶ÎÊÇ£º192.168.0.0ÊÇÎÒÃÇÔÚÄÚÍøIP·ÖÅäÖĞ×î³£ÓÃµÄÍø¶Î¡£
+IANA±£Ö¤ÕâĞ©ÍøÂçºÅ²»»á·ÖÅä¸øÁ¬µ½InternetÉÏµÄÈÎºÎÍøÂç£¬
+Òò´ËÈÎºÎÈË¶¼¿ÉÒÔ×ÔÓÉµØÑ¡ÔñÕâĞ©ÍøÂçµØÖ·×÷Îª×Ô¼ºµÄË½ÓĞÍøÂçµØÖ·¡£
+ÔÚÉêÇëµÄºÏ·¨IP²»×ãµÄÇé¿öÏÂ£¬ÆóÒµÍøÄÚÍø¿ÉÒÔ²ÉÓÃË½ÓĞIPµØÖ·µÄÍøÂçµØÖ··ÖÅä·½°¸£»
+ÆóÒµÍøÍâÍø½ÓÈë¡¢DMZÇøÊ¹ÓÃºÏ·¨IPµØÖ·¡£
+Èç¹ûÊÇÈ«0£¬Ò²ÊÇ×Ô¼ºÄÚ²¿ip <==== Õâ¸öÊÇÄÇ¸öÍ¬Ñ§¼ÓµÄ£¬Õâ¸öÔÚÄ³ÖÖ³Ì¶ÈÉÏÊÇ¶ÔµÄ£¬ÒòÎª0Ö»»á³öÏÖÔÚ±¾»úµÄÅĞ¶¨ÉÏ
 */
 
 #if !defined ZCE_IS_INTERNAL
@@ -1528,12 +1528,12 @@ IANAä¿è¯è¿™äº›ç½‘ç»œå·ä¸ä¼šåˆ†é…ç»™è¿åˆ°Internetä¸Šçš„ä»»ä½•ç½‘ç»œï¼Œ
                                     (ip_addr == INADDR_ANY))
 #endif
 
-//æ£€æµ‹ä¸€ä¸ªåœ°å€æ˜¯å¦æ˜¯å†…ç½‘åœ°å€
+//¼ì²âÒ»¸öµØÖ·ÊÇ·ñÊÇÄÚÍøµØÖ·
 bool ZCE_LIB::is_internal(const sockaddr_in *sock_addr_ipv4)
 {
     uint32_t ip_addr = ZCE_LIB::get_ip_address(sock_addr_ipv4);
 
-    //æ£€æŸ¥3ç±»åœ°å€
+    //¼ì²é3ÀàµØÖ·
     if (ZCE_IS_INTERNAL(ip_addr))
     {
         return true;
@@ -1543,7 +1543,7 @@ bool ZCE_LIB::is_internal(const sockaddr_in *sock_addr_ipv4)
 
 bool ZCE_LIB::is_internal(uint32_t ipv4_addr_val)
 {
-    //æ£€æŸ¥3ç±»åœ°å€
+    //¼ì²é3ÀàµØÖ·
     if (ZCE_IS_INTERNAL(ipv4_addr_val))
     {
         return true;
@@ -1554,9 +1554,9 @@ bool ZCE_LIB::is_internal(uint32_t ipv4_addr_val)
 
 
 //-------------------------------------------------------------------------------------
-//åŸŸåè§£æï¼Œè½¬æ¢IPåœ°å€çš„å‡ ä¸ªå‡½æ•°
+//ÓòÃû½âÎö£¬×ª»»IPµØÖ·µÄ¼¸¸öº¯Êı
 
-//é€šè¿‡åŸŸåå¾—åˆ°ç›¸å…³çš„IPåœ°å€
+//Í¨¹ıÓòÃûµÃµ½Ïà¹ØµÄIPµØÖ·
 hostent *ZCE_LIB::gethostbyname(const char *hostname)
 {
     return ::gethostbyname(hostname);
@@ -1583,17 +1583,17 @@ hostent *ZCE_LIB::gethostbyname2(const char *hostname,
 #endif
 }
 
-//éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV4çš„åœ°å€ä¿¡æ¯ï¼Œä½†æ˜¯ä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿
-//name åŸŸå
-//uint16_t service_port ç«¯å£å·ï¼Œæœ¬åœ°åº
-//ary_addr_num  ,è¾“å…¥è¾“å‡ºå‚æ•°ï¼Œè¾“å…¥æ ‡è¯†ary_sock_addrçš„ä¸ªæ•°ï¼Œè¾“å‡ºæ—¶æ ‡è¯†è¿”å›çš„é˜Ÿåˆ—æ•°é‡
-//ary_sock_addr ,è¾“å‡ºå‚æ•°ï¼Œè¿”å›çš„åœ°å€é˜Ÿåˆ—
+//·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV4µÄµØÖ·ĞÅÏ¢£¬µ«ÊÇÊ¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã
+//name ÓòÃû
+//uint16_t service_port ¶Ë¿ÚºÅ£¬±¾µØĞò
+//ary_addr_num  ,ÊäÈëÊä³ö²ÎÊı£¬ÊäÈë±êÊ¶ary_sock_addrµÄ¸öÊı£¬Êä³öÊ±±êÊ¶·µ»ØµÄ¶ÓÁĞÊıÁ¿
+//ary_sock_addr ,Êä³ö²ÎÊı£¬·µ»ØµÄµØÖ·¶ÓÁĞ
 int ZCE_LIB::gethostbyname_inary(const char *hostname,
                                  uint16_t service_port,
                                  size_t *ary_addr_num,
                                  sockaddr_in ary_sock_addr[])
 {
-    //å…¶å®è¿™ä¸ªå‡½æ•°æ²¡æ³•é‡å…¥
+    //ÆäÊµÕâ¸öº¯ÊıÃ»·¨ÖØÈë
     struct hostent *hostent_ptr = ::gethostbyname(hostname);
 
     if (!hostent_ptr)
@@ -1607,35 +1607,35 @@ int ZCE_LIB::gethostbyname_inary(const char *hostname,
         return -1;
     }
 
-    //æ£€æŸ¥è¿”å›
+    //¼ì²é·µ»Ø
     ZCE_ASSERT(hostent_ptr->h_length == sizeof(in_addr));
 
-    //å¾ªç¯å¾—åˆ°æ‰€æœ‰çš„IPåœ°å€ä¿¡æ¯
+    //Ñ­»·µÃµ½ËùÓĞµÄIPµØÖ·ĞÅÏ¢
     size_t i = 0;
     char **addr_pptr = hostent_ptr->h_addr_list;
 
     for (; (i < *ary_addr_num) && (*addr_pptr != NULL); addr_pptr++, ++i)
     {
         ary_sock_addr[i].sin_family = AF_INET;
-        //æœ¬æ¥å°±æ˜¯ç½‘ç»œåº
+        //±¾À´¾ÍÊÇÍøÂçĞò
         memcpy(&(ary_sock_addr[i].sin_addr), addr_pptr, hostent_ptr->h_length);
-        //ç«¯å£è½¬æ¢æˆç½‘ç»œåº
+        //¶Ë¿Ú×ª»»³ÉÍøÂçĞò
         ary_sock_addr[i].sin_port = htons(service_port);
     }
 
-    //è®°å½•æ•°é‡
+    //¼ÇÂ¼ÊıÁ¿
     *ary_addr_num = i;
 
     return 0;
 }
 
-//éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV6çš„åœ°å€ä¿¡æ¯ï¼Œä½†æ˜¯ä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿
+//·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV6µÄµØÖ·ĞÅÏ¢£¬µ«ÊÇÊ¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã
 int ZCE_LIB::gethostbyname_in6ary(const char *hostname,
                                   uint16_t service_port,
                                   size_t *ary_addr6_num,
                                   sockaddr_in6 ary_sock_addr6[])
 {
-    //å…¶å®è¿™ä¸ªå‡½æ•°æ²¡æ³•é‡å…¥
+    //ÆäÊµÕâ¸öº¯ÊıÃ»·¨ÖØÈë
     struct hostent *hostent_ptr = ::gethostbyname(hostname);
 
     if (!hostent_ptr)
@@ -1649,29 +1649,29 @@ int ZCE_LIB::gethostbyname_in6ary(const char *hostname,
         return -1;
     }
 
-    //æ£€æŸ¥è¿”å›çš„åœ°å€å®ä¹ æ˜¯ä¸æ˜¯IPV6çš„
+    //¼ì²é·µ»ØµÄµØÖ·ÊµÏ°ÊÇ²»ÊÇIPV6µÄ
     ZCE_ASSERT(hostent_ptr->h_length == sizeof(in6_addr));
 
-    //å¾ªç¯å¾—åˆ°æ‰€æœ‰çš„IPåœ°å€ä¿¡æ¯
+    //Ñ­»·µÃµ½ËùÓĞµÄIPµØÖ·ĞÅÏ¢
     size_t i = 0;
     char **addr_pptr = hostent_ptr->h_addr_list;
 
     for (; (i < *ary_addr6_num) && (*addr_pptr != NULL); addr_pptr++, ++i)
     {
         ary_sock_addr6[i].sin6_family = AF_INET6;
-        //æœ¬æ¥å°±æ˜¯ç½‘ç»œåº
+        //±¾À´¾ÍÊÇÍøÂçĞò
         memcpy(&(ary_sock_addr6[i].sin6_addr), addr_pptr, hostent_ptr->h_length);
-        //ç«¯å£è½¬æ¢æˆç½‘ç»œåº
+        //¶Ë¿Ú×ª»»³ÉÍøÂçĞò
         ary_sock_addr6[i].sin6_port = htons(service_port);
     }
 
-    //è®°å½•æ•°é‡
+    //¼ÇÂ¼ÊıÁ¿
     *ary_addr6_num = i;
 
     return 0;
 }
 
-//æ ¹æ®åœ°å€å¾—åˆ°åŸŸåçš„å‡½æ•°,æ¨èä½¿ç”¨æ›¿ä»£å‡½æ•°getnameinfo ,
+//¸ù¾İµØÖ·µÃµ½ÓòÃûµÄº¯Êı,ÍÆ¼öÊ¹ÓÃÌæ´úº¯Êıgetnameinfo ,
 hostent *ZCE_LIB::gethostbyaddr(const void *addr,
                                 socklen_t len,
                                 int family)
@@ -1679,7 +1679,7 @@ hostent *ZCE_LIB::gethostbyaddr(const void *addr,
     return ::gethostbyaddr((const char *)addr, len, family);
 };
 
-//éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV4åœ°å€å–å¾—åŸŸå
+//·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV4µØÖ·È¡µÃÓòÃû
 int ZCE_LIB::gethostbyaddr_in(const sockaddr_in *sock_addr,
                               char *host_name,
                               size_t name_len)
@@ -1689,7 +1689,7 @@ int ZCE_LIB::gethostbyaddr_in(const sockaddr_in *sock_addr,
                                                          sock_addr->sin_family
                                                         );
 
-    //å¦‚æœè¿”å›å¤±è´¥
+    //Èç¹û·µ»ØÊ§°Ü
     if (!hostent_ptr )
     {
         return -1;
@@ -1700,7 +1700,7 @@ int ZCE_LIB::gethostbyaddr_in(const sockaddr_in *sock_addr,
     return 0;
 }
 
-//éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV6åœ°å€å–å¾—åŸŸå
+//·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV6µØÖ·È¡µÃÓòÃû
 int ZCE_LIB::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
                                char *host_name,
                                size_t name_len)
@@ -1711,7 +1711,7 @@ int ZCE_LIB::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
                                                          sock_addr6->sin6_family
                                                         );
 
-    //å¦‚æœè¿”å›å¤±è´¥
+    //Èç¹û·µ»ØÊ§°Ü
     if (!hostent_ptr )
     {
         return -1;
@@ -1722,12 +1722,12 @@ int ZCE_LIB::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
     return 0;
 }
 
-//é€šè¿‡åŸŸåå¾—åˆ°æœåŠ¡å™¨åœ°å€ä¿¡æ¯ï¼Œå¯ä»¥åŒæ—¶å¾—åˆ°IPV4ï¼Œå’ŒIPV6çš„åœ°å€
-//hints å‚æ•°è¯´æ˜ï¼Œ
-//å¦‚æœè¦åŒæ—¶å¾—åˆ°IPV4ï¼ŒIPV6çš„åœ°å€ï¼Œé‚£ä¹ˆhints.ai_family =  AF_UNSPEC
-//ai_socktypeå‚æ•°æœ€å¥½è¿˜æ˜¯å¡«å†™ä¸€ä¸ªå€¼ï¼Œå¦åˆ™å¯èƒ½è¿”å›SOCK_DGRAM,SOCK_STREAMå„ä¸€ä¸ªï¼Œ
-//ai_flags å¡«0ä¸€èˆ¬å°±OKï¼ŒAI_CANONNAMEè¡¨ç¤ºè¿”å›çš„resultçš„ç¬¬ä¸€ä¸ªèŠ‚ç‚¹ä¼šæœ‰ai_canonameå‚æ•°ï¼ŒAI_PASSIVEåœ¨å‚æ•°hostnameä¸ºNULLæ—¶ï¼Œè®©IPåœ°å€ä¿¡æ¯è¿”å›0ï¼Œï¼ˆè›‹ç–¼çš„ä¸€ä¸ªå‚æ•°ï¼‰
-//ai_protocolï¼Œå¡«0æŠŠ
+//Í¨¹ıÓòÃûµÃµ½·şÎñÆ÷µØÖ·ĞÅÏ¢£¬¿ÉÒÔÍ¬Ê±µÃµ½IPV4£¬ºÍIPV6µÄµØÖ·
+//hints ²ÎÊıËµÃ÷£¬
+//Èç¹ûÒªÍ¬Ê±µÃµ½IPV4£¬IPV6µÄµØÖ·£¬ÄÇÃ´hints.ai_family =  AF_UNSPEC
+//ai_socktype²ÎÊı×îºÃ»¹ÊÇÌîĞ´Ò»¸öÖµ£¬·ñÔò¿ÉÄÜ·µ»ØSOCK_DGRAM,SOCK_STREAM¸÷Ò»¸ö£¬
+//ai_flags Ìî0Ò»°ã¾ÍOK£¬AI_CANONNAME±íÊ¾·µ»ØµÄresultµÄµÚÒ»¸ö½Úµã»áÓĞai_canoname²ÎÊı£¬AI_PASSIVEÔÚ²ÎÊıhostnameÎªNULLÊ±£¬ÈÃIPµØÖ·ĞÅÏ¢·µ»Ø0£¬£¨µ°ÌÛµÄÒ»¸ö²ÎÊı£©
+//ai_protocol£¬Ìî0°Ñ
 int ZCE_LIB::getaddrinfo( const char *hostname,
                           const char *service,
                           const addrinfo *hints,
@@ -1736,13 +1736,13 @@ int ZCE_LIB::getaddrinfo( const char *hostname,
     return ::getaddrinfo(hostname, service, hints, result);
 }
 
-//é‡Šæ”¾getaddrinfoå¾—åˆ°çš„ç»“æœ
+//ÊÍ·ÅgetaddrinfoµÃµ½µÄ½á¹û
 void ZCE_LIB::freeaddrinfo(struct addrinfo *result)
 {
     return ::freeaddrinfo(result);
 }
 
-//éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV4çš„åœ°å€æ•°ç»„ï¼Œä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿
+//·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV4µÄµØÖ·Êı×é£¬Ê¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã
 int ZCE_LIB::getaddrinfo_inary(const char *hostname,
                                uint16_t service_port,
                                size_t *ary_addr_num,
@@ -1772,30 +1772,30 @@ int ZCE_LIB::getaddrinfo_inary(const char *hostname,
         return -1;
     }
 
-    //æ£€æŸ¥è¿”å›çš„åœ°å€å®ä¹ æ˜¯ä¸æ˜¯IPV4çš„
+    //¼ì²é·µ»ØµÄµØÖ·ÊµÏ°ÊÇ²»ÊÇIPV4µÄ
     ZCE_ASSERT(result->ai_addrlen == sizeof(sockaddr_in));
 
-    //å¾ªç¯å¾—åˆ°æ‰€æœ‰çš„IPåœ°å€ä¿¡æ¯
+    //Ñ­»·µÃµ½ËùÓĞµÄIPµØÖ·ĞÅÏ¢
     size_t i = 0;
     addrinfo *prc_node = result;
 
     for (; (i < *ary_addr_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
     {
         memcpy(&(ary_sock_addr[i]), prc_node->ai_addr, prc_node->ai_addrlen);
-        //ç«¯å£è½¬æ¢æˆç½‘ç»œåº
+        //¶Ë¿Ú×ª»»³ÉÍøÂçĞò
         ary_sock_addr[i].sin_port = htons(service_port);
     }
 
-    //è®°å½•æ•°é‡
+    //¼ÇÂ¼ÊıÁ¿
     *ary_addr_num = i;
 
-    //é‡Šæ”¾ç©ºé—´
+    //ÊÍ·Å¿Õ¼ä
     ZCE_LIB::freeaddrinfo(result);
 
     return 0;
 }
 
-//éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV6çš„åœ°å€æ•°ç»„ï¼Œä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿
+//·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV6µÄµØÖ·Êı×é£¬Ê¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã
 int ZCE_LIB::getaddrinfo_in6ary(const char *hostname,
                                 uint16_t service_port,
                                 size_t *ary_addr6_num,
@@ -1824,30 +1824,30 @@ int ZCE_LIB::getaddrinfo_in6ary(const char *hostname,
         return -1;
     }
 
-    //æ£€æŸ¥è¿”å›çš„åœ°å€å®ä¹ æ˜¯ä¸æ˜¯IPV4çš„
+    //¼ì²é·µ»ØµÄµØÖ·ÊµÏ°ÊÇ²»ÊÇIPV4µÄ
     ZCE_ASSERT(result->ai_addrlen == sizeof(sockaddr_in6));
 
-    //å¾ªç¯å¾—åˆ°æ‰€æœ‰çš„IPåœ°å€ä¿¡æ¯
+    //Ñ­»·µÃµ½ËùÓĞµÄIPµØÖ·ĞÅÏ¢
     size_t i = 0;
     addrinfo *prc_node = result;
 
     for (; (i < *ary_addr6_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
     {
         memcpy(&(ary_sock_addr6[i]), prc_node->ai_addr, prc_node->ai_addrlen);
-        //ç«¯å£è½¬æ¢æˆç½‘ç»œåº
+        //¶Ë¿Ú×ª»»³ÉÍøÂçĞò
         ary_sock_addr6[i].sin6_port = htons(service_port);
     }
 
-    //è®°å½•æ•°é‡
+    //¼ÇÂ¼ÊıÁ¿
     *ary_addr6_num = i;
 
-    //é‡Šæ”¾ç©ºé—´
+    //ÊÍ·Å¿Õ¼ä
     ZCE_LIB::freeaddrinfo(result);
 
     return 0;
 }
 
-//é€šè¿‡IPåœ°å€ä¿¡æ¯ï¼ŒåæŸ¥åŸŸå.æœåŠ¡åï¼Œå¯ä»¥é‡å…¥å‡½æ•°
+//Í¨¹ıIPµØÖ·ĞÅÏ¢£¬·´²éÓòÃû.·şÎñÃû£¬¿ÉÒÔÖØÈëº¯Êı
 int ZCE_LIB::getnameinfo(const struct sockaddr *sa,
                          socklen_t salen,
                          char *host,
@@ -1863,7 +1863,7 @@ int ZCE_LIB::getnameinfo(const struct sockaddr *sa,
 #endif
 }
 
-//éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV4åœ°å€å–å¾—åŸŸå
+//·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV4µØÖ·È¡µÃÓòÃû
 int ZCE_LIB::getnameinfo_in(const sockaddr_in *sock_addr,
                             char *host_name,
                             size_t name_len)
@@ -1877,7 +1877,7 @@ int ZCE_LIB::getnameinfo_in(const sockaddr_in *sock_addr,
                                 NI_NAMEREQD);
 }
 
-//éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV6åœ°å€å–å¾—åŸŸå
+//·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV6µØÖ·È¡µÃÓòÃû
 int ZCE_LIB::getnameinfo_in6(const sockaddr_in6 *sock_addr6,
                              char *host_name,
                              size_t name_len)
@@ -1892,12 +1892,12 @@ int ZCE_LIB::getnameinfo_in6(const sockaddr_in6 *sock_addr6,
 }
 
 //-------------------------------------------------------------------------------------
-//IPV4å’ŒIPV6ä¹‹é—´ç›¸äº’è½¬æ¢çš„å‡½æ•°ï¼Œéƒ½æ˜¯éæ ‡å‡†å‡½æ•°ï¼Œ
+//IPV4ºÍIPV6Ö®¼äÏà»¥×ª»»µÄº¯Êı£¬¶¼ÊÇ·Ç±ê×¼º¯Êı£¬
 
-//å°†ä¸€ä¸ªIPV4çš„åœ°å€æ˜ å°„ä¸ºIPV6çš„åœ°å€
+//½«Ò»¸öIPV4µÄµØÖ·Ó³ÉäÎªIPV6µÄµØÖ·
 int ZCE_LIB::inaddr_map_inaddr6(const in_addr *src, in6_addr *dst)
 {
-    //æ¸…0
+    //Çå0
     memset(dst, 0, sizeof(in6_addr));
 
     //
@@ -1905,24 +1905,24 @@ int ZCE_LIB::inaddr_map_inaddr6(const in_addr *src, in6_addr *dst)
            reinterpret_cast<const char *>(src),
            sizeof(in_addr));
 
-    //æ˜ å°„åœ°å€çš„å€’æ•°ç¬¬3ä¸ªWORDä¸º0xFFFF
+    //Ó³ÉäµØÖ·µÄµ¹ÊıµÚ3¸öWORDÎª0xFFFF
     dst->s6_addr[10] = 0xFF;
     dst->s6_addr[11] = 0xFF;
 
     return 0;
 }
 
-//å°†ä¸€ä¸ªIPV4çš„Sockåœ°å€æ˜ å°„ä¸ºIPV6çš„åœ°å€
+//½«Ò»¸öIPV4µÄSockµØÖ·Ó³ÉäÎªIPV6µÄµØÖ·
 int ZCE_LIB::sockin_map_sockin6(const sockaddr_in *src, sockaddr_in6 *dst)
 {
     return ZCE_LIB::inaddr_map_inaddr6(&(src->sin_addr),
                                        &(dst->sin6_addr));
 }
 
-//åˆ¤æ–­ä¸€ä¸ªåœ°å€æ˜¯å¦æ˜¯IPV4æ˜ å°„çš„åœ°å€
+//ÅĞ¶ÏÒ»¸öµØÖ·ÊÇ·ñÊÇIPV4Ó³ÉäµÄµØÖ·
 bool ZCE_LIB::is_in6_addr_v4mapped(const in6_addr *in6)
 {
-    //è¿™æ ·æŠŠæ˜ å°„åœ°å€å’Œå…¼å®¹åœ°å€éƒ½åˆ¤æ–­äº†ã€‚æ®è¯´å…¼å®¹åœ°å€ä»¥åä¼šè¢«æ·˜æ±°
+    //ÕâÑù°ÑÓ³ÉäµØÖ·ºÍ¼æÈİµØÖ·¶¼ÅĞ¶ÏÁË¡£¾İËµ¼æÈİµØÖ·ÒÔºó»á±»ÌÔÌ­
     if (in6->s6_addr[0] == 0
         && in6->s6_addr[1] == 0
         && in6->s6_addr[2] == 0
@@ -1942,10 +1942,10 @@ bool ZCE_LIB::is_in6_addr_v4mapped(const in6_addr *in6)
     return false;
 }
 
-//å¦‚æœä¸€ä¸ªIPV6çš„åœ°å€ä»IPV4æ˜ å°„è¿‡æ¥çš„ï¼Œè½¬æ¢å›IPV4çš„åœ°å€
+//Èç¹ûÒ»¸öIPV6µÄµØÖ·´ÓIPV4Ó³Éä¹ıÀ´µÄ£¬×ª»»»ØIPV4µÄµØÖ·
 int ZCE_LIB::mapped_in6_to_in(const in6_addr *src, in_addr *dst)
 {
-    //å…ˆæ£€æŸ¥æ˜¯å¦æ˜¯æ˜ å°„çš„åœ°å€
+    //ÏÈ¼ì²éÊÇ·ñÊÇÓ³ÉäµÄµØÖ·
     if ( false == ZCE_LIB::is_in6_addr_v4mapped(src) )
     {
         errno = EINVAL;
@@ -1957,24 +1957,24 @@ int ZCE_LIB::mapped_in6_to_in(const in6_addr *src, in_addr *dst)
            sizeof(in_addr));
     return 0;
 }
-//å¦‚æœä¸€ä¸ªIPV6çš„socketaddr_in6åœ°å€ä»IPV4æ˜ å°„è¿‡æ¥çš„ï¼Œè½¬æ¢å›IPV4çš„socketaddr_inåœ°å€
+//Èç¹ûÒ»¸öIPV6µÄsocketaddr_in6µØÖ·´ÓIPV4Ó³Éä¹ıÀ´µÄ£¬×ª»»»ØIPV4µÄsocketaddr_inµØÖ·
 int ZCE_LIB::mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst)
 {
     return ZCE_LIB::mapped_in6_to_in(&(src->sin6_addr),
                                      &(dst->sin_addr));
 }
 
-//å¯¹ç«¯å£è¿›è¡Œæ£€æŸ¥ï¼Œä¸€äº›ç«¯å£æ˜¯é»‘å®¢é‡ç‚¹æ‰«æçš„ç«¯å£ï¼Œ
+//¶Ô¶Ë¿Ú½øĞĞ¼ì²é£¬Ò»Ğ©¶Ë¿ÚÊÇºÚ¿ÍÖØµãÉ¨ÃèµÄ¶Ë¿Ú£¬
 bool ZCE_LIB::check_safeport(uint16_t check_port)
 {
-    //é«˜å±ç«¯å£æ£€æŸ¥å¸¸é‡
+    //¸ßÎ£¶Ë¿Ú¼ì²é³£Á¿
     const unsigned short UNSAFE_PORT1 = 1024;
     const unsigned short UNSAFE_PORT2 = 3306;
     const unsigned short UNSAFE_PORT3 = 36000;
     const unsigned short UNSAFE_PORT4 = 56000;
     const unsigned short SAFE_PORT1 = 80;
 
-    //å¦‚æœæ‰“å¼€äº†ä¿é™©æ£€æŸ¥,æ£€æŸ¥é…ç½®çš„ç«¯å£
+    //Èç¹û´ò¿ªÁË±£ÏÕ¼ì²é,¼ì²éÅäÖÃµÄ¶Ë¿Ú
     if ((check_port <= UNSAFE_PORT1 && check_port != SAFE_PORT1) ||
         check_port == UNSAFE_PORT2 ||
         check_port == UNSAFE_PORT3 ||

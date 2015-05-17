@@ -1,6 +1,6 @@
-ï»¿
+
 #include "zce_predefine.h"
-#include "zce_shm_lockfree_deque.h"
+#include "zce_lockfree_kfifo.h"
 #include "zce_os_adapt_file.h"
 #include "zce_share_mem_mmap.h"
 #include "zce_trace_log_debug.h"
@@ -9,7 +9,7 @@
 
 ZCE_BusPipe_OneWay *ZCE_BusPipe_OneWay::one_way_instance_ = NULL;
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_BusPipe_OneWay::ZCE_BusPipe_OneWay()
 {
 }
@@ -18,7 +18,7 @@ ZCE_BusPipe_OneWay::~ZCE_BusPipe_OneWay()
 {
 }
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_BusPipe_OneWay *ZCE_BusPipe_OneWay::instance()
 {
     if (one_way_instance_ == NULL)
@@ -29,7 +29,7 @@ ZCE_BusPipe_OneWay *ZCE_BusPipe_OneWay::instance()
     return one_way_instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
 void ZCE_BusPipe_OneWay::instance(ZCE_BusPipe_OneWay *pinstatnce)
 {
     clean_instance();
@@ -37,7 +37,7 @@ void ZCE_BusPipe_OneWay::instance(ZCE_BusPipe_OneWay *pinstatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_BusPipe_OneWay::clean_instance()
 {
     if (one_way_instance_)

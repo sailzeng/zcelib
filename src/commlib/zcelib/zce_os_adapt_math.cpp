@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_math.h"
@@ -16,7 +16,7 @@ uint32_t ZCE_LIB::gcd (uint32_t x, uint32_t y)
     return x;
 }
 
-//æ‰¾åˆ°è¾“å…¥å‚æ•°næœ€è¿‘(å¤§äº)çš„ä¸€ä¸ªè´¨æ•°ï¼Œ
+//ÕÒµ½ÊäÈë²ÎÊın×î½ü(´óÓÚ)µÄÒ»¸öÖÊÊı£¬
 size_t ZCE_LIB::nearest_prime(const size_t n)
 {
     size_t test_num = n;

@@ -1,17 +1,17 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_time.h"
 #include "zce_trace_log_debug.h"
 #include "zce_timer_handler_base.h"
 #include "zce_timer_queue_base.h"
 
-//ä½¿ç”¨è¾ƒé«˜çš„å®šæ—¶å™¨ç²¾åº¦ï¼Œå¤šæ¶ˆè€—CPUä¸€ç‚¹ï¼Œä½†å®šæ—¶å™¨çš„ç²¾åº¦ä¼šå¥½ä¸€äº›
+//Ê¹ÓÃ½Ï¸ßµÄ¶¨Ê±Æ÷¾«¶È£¬¶àÏûºÄCPUÒ»µã£¬µ«¶¨Ê±Æ÷µÄ¾«¶È»áºÃÒ»Ğ©
 //#define MORE_HIGH_TIMER_PRECISION 1
 
 ZCE_Timer_Queue *ZCE_Timer_Queue::instance_ = NULL;
 /******************************************************************************************
-ZCE_Timer_Queue ï¼Œå®šæ—¶å™¨çš„åŸºç±»
+ZCE_Timer_Queue £¬¶¨Ê±Æ÷µÄ»ùÀà
 ******************************************************************************************/
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Timer_Queue::ZCE_Timer_Queue(size_t num_timer_node,
                                  unsigned int timer_precision_mesc,
                                  TRIGGER_MODE trigger_mode,
@@ -41,22 +41,22 @@ ZCE_Timer_Queue::ZCE_Timer_Queue() :
 {
 }
 
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 ZCE_Timer_Queue::~ZCE_Timer_Queue()
 {
-    //ä½¿ç”¨vectorçš„å¥½å¤„å°±æ˜¯è‡ªå·±ä¸ç”¨ç®¡ç†å†…å­˜äº†
+    //Ê¹ÓÃvectorµÄºÃ´¦¾ÍÊÇ×Ô¼º²»ÓÃ¹ÜÀíÄÚ´æÁË
 }
 
-//åˆå§‹åŒ–
+//³õÊ¼»¯
 int ZCE_Timer_Queue::initialize(size_t num_timer_node,
                                 unsigned int timer_precision_mesc,
                                 TRIGGER_MODE trigger_mode ,
                                 bool dynamic_expand_node)
 {
 
-    //æ—¶é—´ç²¾åº¦é—®é¢˜
+    //Ê±¼ä¾«¶ÈÎÊÌâ
     timer_precision_mesc_ = timer_precision_mesc;
-    //ç›®å‰çš„NODEæ•°é‡è¿˜æ˜¯0
+    //Ä¿Ç°µÄNODEÊıÁ¿»¹ÊÇ0
     num_timer_node_ = 0;
 
     num_use_node_ = 0;
@@ -68,19 +68,19 @@ int ZCE_Timer_Queue::initialize(size_t num_timer_node,
     size_t old_num_node = 0;
     extend_node(num_timer_node, old_num_node);
 
-    //è§¦å‘æ¨¡å¼
+    //´¥·¢Ä£Ê½
     if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
     {
-        //å¾—åˆ°ä¸€ä¸ªæ—¶é—´é•¿åº¦ï¼Œç”¨äºæ¯”è¾ƒè¡¡é‡
+        //µÃµ½Ò»¸öÊ±¼ä³¤¶È£¬ÓÃÓÚ±È½ÏºâÁ¿
         ZCE_Time_Value  now_time(ZCE_LIB::gettimeofday());
 
-        //å–å¾—æ¯«ç§’
+        //È¡µÃºÁÃë
         prev_trigger_msec_ = now_time.total_msec();
     }
     //
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
-        //å…¶å®è¿™ä¸æ˜¯çœŸæ­£çš„CPU Tick
+        //ÆäÊµÕâ²»ÊÇÕæÕıµÄCPU Tick
         ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         prev_trigger_msec_ = cpu_tick.total_msec();
     }
@@ -95,16 +95,16 @@ int ZCE_Timer_Queue::initialize(size_t num_timer_node,
 }
 
 
-//å…³é—­
+//¹Ø±Õ
 int ZCE_Timer_Queue::close()
 {
-    //å°†æ‰€æœ‰å®šæ—¶å™¨çš„TIME IDå¤„ç†
+    //½«ËùÓĞ¶¨Ê±Æ÷µÄTIME ID´¦Àí
     for (size_t i = 0; i < num_timer_node_; ++i)
     {
-        //æé†’ä¸€ä¸‹è‡ªå·±ï¼Œtime_node_ary_æ˜¯è®°å½•æ‰€æœ‰NODEçš„é˜Ÿåˆ—ï¼ŒåŒ…æ‹¬ä½¿ç”¨çš„ï¼ŒFREEçš„ï¼Œ
+        //ÌáĞÑÒ»ÏÂ×Ô¼º£¬time_node_ary_ÊÇ¼ÇÂ¼ËùÓĞNODEµÄ¶ÓÁĞ£¬°üÀ¨Ê¹ÓÃµÄ£¬FREEµÄ£¬
         if (time_node_ary_[i].timer_handle_)
         {
-            //ä¸ºä»€ä¹ˆè¦èµ‹å€¼å†ä½¿ç”¨å‘¢ï¼Œæˆ‘æ‹…å¿ƒtimer_closeä¼šè¢«ä½ è°ƒç”¨æ¥æ¸…ç†
+            //ÎªÊ²Ã´Òª¸³ÖµÔÙÊ¹ÓÃÄØ£¬ÎÒµ£ĞÄtimer_close»á±»Äãµ÷ÓÃÀ´ÇåÀí
             ZCE_Timer_Handler *time_hdl = time_node_ary_[i].timer_handle_;
             time_hdl->timer_close();
         }
@@ -113,17 +113,17 @@ int ZCE_Timer_Queue::close()
     return 0;
 }
 
-//æ‰©å¼ çš„NODEçš„æ•°é‡ï¼Œ
+//À©ÕÅµÄNODEµÄÊıÁ¿£¬
 int ZCE_Timer_Queue::extend_node(size_t num_timer_node,
                                  size_t &old_num_node)
 {
-    //æ€»ä¸èƒ½æ¯”åŸæ¥è¿˜å°å§
+    //×Ü²»ÄÜ±ÈÔ­À´»¹Ğ¡°É
     assert(num_timer_node > num_timer_node_);
 
     old_num_node = num_timer_node_;
     num_timer_node_ = num_timer_node;
 
-    //æˆ‘æ²¡æ‰“ç®—è®©ä½ ç©20äº¿ä¸ªå®šæ—¶å™¨ï¼Œè°¢è°¢ï¼Œæˆ‘è›‹ç–¼
+    //ÎÒÃ»´òËãÈÃÄãÍæ20ÒÚ¸ö¶¨Ê±Æ÷£¬Ğ»Ğ»£¬ÎÒµ°ÌÛ
     ZCE_ASSERT(num_timer_node_ > 0 && num_timer_node_ < 0x7FFFFFFF);
 
     //
@@ -136,21 +136,21 @@ int ZCE_Timer_Queue::extend_node(size_t num_timer_node,
     time_node_ary_.resize(num_timer_node_);
     free_node_id_list_.resize(num_timer_node_);
 
-    //å°†æ‰€æœ‰å®šæ—¶å™¨çš„TIME IDå¤„ç†
+    //½«ËùÓĞ¶¨Ê±Æ÷µÄTIME ID´¦Àí
     for (size_t i = old_num_node; i < num_timer_node_; ++i)
     {
         time_node_ary_[i].time_id_ = static_cast<int>(i);
     }
 
-    //ç”Ÿæˆç©ºé—²é˜Ÿåˆ—çš„æ•°å€¼ï¼ˆå±çŒªï¼‰
+    //Éú³É¿ÕÏĞ¶ÓÁĞµÄÊıÖµ£¨ÊôÖí£©
 
-    //åˆå§‹åŒ–é˜Ÿåˆ—,å½¢æˆä¸€ä¸ªç©ºé—²NODEçš„å¯¹è±¡
+    //³õÊ¼»¯¶ÓÁĞ,ĞÎ³ÉÒ»¸ö¿ÕÏĞNODEµÄ¶ÔÏó
     for (size_t i = old_num_node; i < num_timer_node_ - 1; ++i)
     {
         free_node_id_list_[i] = static_cast<int>(i + 1);
     }
 
-    //æœ€åä¸€ä¸ªè¡¨ç¤ºæ— æ•ˆæ•°æ®,
+    //×îºóÒ»¸ö±íÊ¾ÎŞĞ§Êı¾İ,
     free_node_id_list_[num_timer_node_ - 1] = INVALID_TIMER_ID;
 
     free_node_id_head_ = static_cast<int>(old_num_node);
@@ -158,19 +158,19 @@ int ZCE_Timer_Queue::extend_node(size_t num_timer_node,
     return 0;
 }
 
-//å–æ¶ˆå®šæ—¶å™¨ï¼Œ
+//È¡Ïû¶¨Ê±Æ÷£¬
 int ZCE_Timer_Queue::cancel_timer(int timer_id)
 {
     return free_timernode(timer_id);
 }
 
-//å–æ¶ˆå®šæ—¶å™¨ï¼Œè¶…çº§è¶…çº§ï¼Œè¶…çº§æ…¢çš„å‡½æ•°ï¼Œå¹³å‡æ—¶é—´å¤æ‚åº¦O(N),Næ˜¯é˜Ÿåˆ—çš„é•¿åº¦
+//È¡Ïû¶¨Ê±Æ÷£¬³¬¼¶³¬¼¶£¬³¬¼¶ÂıµÄº¯Êı£¬Æ½¾ùÊ±¼ä¸´ÔÓ¶ÈO(N),NÊÇ¶ÓÁĞµÄ³¤¶È
 int ZCE_Timer_Queue::cancel_timer(const ZCE_Timer_Handler *timer_hdl)
 {
     assert(timer_hdl);
 
-    //å¦‚æœåé¢å¯ä»¥ä¼˜åŒ–ä¸€ä¸‹ï¼Œç”¨ä¸€ä¸ªä½¿ç”¨çš„HANDLEé˜Ÿåˆ—ä¿å­˜ä½¿ç”¨è¿‡çš„é˜Ÿåˆ—ï¼Œå¤„ç†è¿™ä¸ªäº‹æƒ…,
-    //æˆ‘è€ƒè™‘äº†ä¸€ä¸‹éè¦ç”¨åŒå‘é“¾è¡¨ï¼Œæˆ‘æ”¾å¼ƒäº†
+    //Èç¹ûºóÃæ¿ÉÒÔÓÅ»¯Ò»ÏÂ£¬ÓÃÒ»¸öÊ¹ÓÃµÄHANDLE¶ÓÁĞ±£´æÊ¹ÓÃ¹ıµÄ¶ÓÁĞ£¬´¦ÀíÕâ¸öÊÂÇé,
+    //ÎÒ¿¼ÂÇÁËÒ»ÏÂ·ÇÒªÓÃË«ÏòÁ´±í£¬ÎÒ·ÅÆúÁË
 
     bool cancel_time = false;
 
@@ -182,21 +182,21 @@ int ZCE_Timer_Queue::cancel_timer(const ZCE_Timer_Handler *timer_hdl)
             cancel_timer(time_id);
             cancel_time = false;
 
-            //ä¸èƒ½break,å› ä¸ºHANDLEè¿˜æœ‰å¯¹åº”å¤šä¸ªNODE,
+            //²»ÄÜbreak,ÒòÎªHANDLE»¹ÓĞ¶ÔÓ¦¶à¸öNODE,
         }
     }
 
-    //å¦‚æœå–æ¶ˆå®šæ—¶å™¨
+    //Èç¹ûÈ¡Ïû¶¨Ê±Æ÷
     if (!cancel_time)
     {
         return -1;
     }
 
-    //æˆåŠŸ
+    //³É¹¦
     return 0;
 }
 
-//åˆ†é…Timer Node
+//·ÖÅäTimer Node
 int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
                                      const void *action,
                                      const ZCE_Time_Value &delay_time,
@@ -204,25 +204,25 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
                                      int &time_node_id,
                                      ZCE_TIMER_NODE *&alloc_time_node)
 {
-    //TIME HANDLEä¸èƒ½ä¸ºNULL
+    //TIME HANDLE²»ÄÜÎªNULL
     assert(timer_hdl != NULL);
 
     int ret = 0;
-    //é»˜è®¤æ²¡æœ‰åˆ†é…åˆ°ï¼Œé¿å…ä½ æé”™æƒ…å†µ
+    //Ä¬ÈÏÃ»ÓĞ·ÖÅäµ½£¬±ÜÃâÄã¸ã´íÇé¿ö
     time_node_id = INVALID_TIMER_ID;
     alloc_time_node = NULL;
 
-    //å¦‚æœå·²ç»æ²¡æœ‰äº†NODE
+    //Èç¹ûÒÑ¾­Ã»ÓĞÁËNODE
     if (free_node_id_head_ == INVALID_TIMER_ID)
     {
-        //å¦‚æœä¸æ”¯æŒåŠ¨æ€æ‰©å¼ ï¼Œè¿”å›é”™è¯¯
+        //Èç¹û²»Ö§³Ö¶¯Ì¬À©ÕÅ£¬·µ»Ø´íÎó
         if (!dynamic_expand_node_)
         {
             return -1;
         }
         else
         {
-            //å¦‚æœå¸Œæœ›åŠ¨æ€æ‰©å¼ ï¼Œæˆ‘å¸®ä½ æ‰©å¼ 
+            //Èç¹ûÏ£Íû¶¯Ì¬À©ÕÅ£¬ÎÒ°ïÄãÀ©ÕÅ
             size_t old_num_node = 0;
             ret = extend_node(num_timer_node_ + ONCE_EXTEND_NODE_NUMBER, old_num_node);
 
@@ -233,22 +233,22 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
         }
     }
 
-    //å¾—åˆ°æ—¶é—´NODE
+    //µÃµ½Ê±¼äNODE
     time_node_id = free_node_id_head_;
     free_node_id_head_ = free_node_id_list_[free_node_id_head_];
     alloc_time_node = &(time_node_ary_[time_node_id]);
 
-    //å¯¹æ—¶é—´NODEè¿›è¡Œèµ‹å€¼
+    //¶ÔÊ±¼äNODE½øĞĞ¸³Öµ
     alloc_time_node->timer_handle_ =  timer_hdl;
     alloc_time_node->interval_time_ =  interval_time;
     alloc_time_node->action_ =  action;
 
-    //å¦‚æœä½ è¿½æ±‚é«˜è¿›åº¦ï¼Œå®šä¹‰è¿™ä¸ªå®ï¼Œé»˜è®¤æˆ‘å…³é—­äº†
+    //Èç¹ûÄã×·Çó¸ß½ø¶È£¬¶¨ÒåÕâ¸öºê£¬Ä¬ÈÏÎÒ¹Ø±ÕÁË
 #if defined(MORE_HIGH_TIMER_PRECISION)
 
     uint64_t now_point = 0;
 
-    //é»˜è®¤ä½ çš„è°ƒç”¨æ¬¡æ•°ä¸é¢‘ç¹ï¼Œæä¾›æ›´åŠ å®‰å…¨çš„æ—¶é—´ç»™ä½ 
+    //Ä¬ÈÏÄãµÄµ÷ÓÃ´ÎÊı²»Æµ·±£¬Ìá¹©¸ü¼Ó°²È«µÄÊ±¼ä¸øÄã
     if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
     {
         ZCE_Time_Value now_trigger_time;
@@ -257,7 +257,7 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
     }
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
-        //å…¶å®è¿™ä¸æ˜¯çœŸæ­£çš„CPU Tick
+        //ÆäÊµÕâ²»ÊÇÕæÕıµÄCPU Tick
         ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         now_point = cpu_tick.total_msec();
     }
@@ -265,18 +265,18 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
     alloc_time_node->next_trigger_point_ = now_point + delay_time.total_msec();
 
 #else
-    //éœ€è¦æ³¨æ„çš„ï¼Œè¿™ä¸ªåœ°æ–¹ä¸æ˜¯éå¸¸ç²¾ç¡®ï¼Œæˆ‘ä¸ºäº†åŠ å¿«æ‰§è¡Œé€Ÿåº¦å·æ‡’äº†ï¼Œ
-    //å½“ç„¶é—®é¢˜æ˜¯ï¼Œä½ è°ƒç”¨çš„dispatch_timerç²¾åº¦æœ‰å¤šå¤§ï¼Œè°ƒç”¨çš„è¶Šå¤šï¼Œtimer_refer_pointer_å°±è¶Šå‡†ç¡®ï¼Œ
-    //å¦‚æœä½ è°ƒç”¨é¢‘åº¦ä½çš„å“äººï¼ˆ<1sï¼‰,æˆ‘ï¼Œæˆ‘ï¼Œ
+    //ĞèÒª×¢ÒâµÄ£¬Õâ¸öµØ·½²»ÊÇ·Ç³£¾«È·£¬ÎÒÎªÁË¼Ó¿ìÖ´ĞĞËÙ¶ÈÍµÀÁÁË£¬
+    //µ±È»ÎÊÌâÊÇ£¬Äãµ÷ÓÃµÄdispatch_timer¾«¶ÈÓĞ¶à´ó£¬µ÷ÓÃµÄÔ½¶à£¬timer_refer_pointer_¾ÍÔ½×¼È·£¬
+    //Èç¹ûÄãµ÷ÓÃÆµ¶ÈµÍµÄÏÅÈË£¨<1s£©,ÎÒ£¬ÎÒ£¬
 
-    //å¾—åˆ°è¦è§¦å‘çš„é‚£ä¸ªTICKç‚¹ï¼Œ
+    //µÃµ½Òª´¥·¢µÄÄÇ¸öTICKµã£¬
     alloc_time_node->next_trigger_point_ = timer_refer_pointer_ + delay_time.total_msec();
 
 #endif
 
     ++num_use_node_;
 
-    //è°ƒè¯•ä»£ç ï¼Œæµ‹è¯•æ—¶æ‰“å¼€
+    //µ÷ÊÔ´úÂë£¬²âÊÔÊ±´ò¿ª
     //ZCE_LOG(RS_DEBUG,"[zcelib] ZCE_Timer_Queue alloc_timernode.time_node_id[%d] "
     //  "next_trigger_point_[%llu], prev_trigger_msec_[%llu],timer_refer_pointer_[%llu].",
     //  time_node_id,
@@ -288,7 +288,7 @@ int ZCE_Timer_Queue::alloc_timernode(ZCE_Timer_Handler *timer_hdl,
     return 0;
 }
 
-//è®¡ç®—ä¸‹ä¸€ä¸ªè§¦å‘ç‚¹ï¼Œ
+//¼ÆËãÏÂÒ»¸ö´¥·¢µã£¬
 void ZCE_Timer_Queue::calc_next_trigger(int time_node_id,
                                         uint64_t now_trigger_msec,
                                         bool &continue_trigger)
@@ -297,7 +297,7 @@ void ZCE_Timer_Queue::calc_next_trigger(int time_node_id,
 
     ZCE_TIMER_NODE *prc_time_node = &(time_node_ary_[time_node_id]);
 
-    //å¦‚æœé—´éš”æ—¶é—´ä¸º0ï¼Œä¸”è¿™ä¸ªå®šæ—¶å™¨è¿˜æ²¡æœ‰è§¦å‘è¿‡ï¼Œalready_trigger_ åˆ¤å®šå…¶å®æ˜¯æ£€æŸ¥å®šæ—¶å™¨æ˜¯å¦è¢«é‡æ–°è®¾ç½®è¿‡
+    //Èç¹û¼ä¸ôÊ±¼äÎª0£¬ÇÒÕâ¸ö¶¨Ê±Æ÷»¹Ã»ÓĞ´¥·¢¹ı£¬already_trigger_ ÅĞ¶¨ÆäÊµÊÇ¼ì²é¶¨Ê±Æ÷ÊÇ·ñ±»ÖØĞÂÉèÖÃ¹ı
     if (prc_time_node->interval_time_  == ZCE_Time_Value::ZERO_TIME_VALUE )
     {
         //
@@ -305,46 +305,46 @@ void ZCE_Timer_Queue::calc_next_trigger(int time_node_id,
         return;
     }
 
-    //è¿™å„¿è¦ä¸è¦ç”¨å½“å‰çœŸå®æ—¶é—´ï¼Œè¿˜æ˜¯ç”¨è‡ªå·±è®°å½•çš„è§¦å‘ç‚¹ä½œä¸ºè®¡ç®—ç‚¹ï¼Œè¿™ä¸ªçš„ç¡®æ˜¯ä¸€ä¸ªé—®é¢˜
-    //æˆ‘ç›®å‰è¿˜æ˜¯ç”¨è‡ªå·±è®°å½•çš„è§¦å‘ç‚¹ä½œä¸ºè®¡ç®—ç‚¹ï¼Œè¿™æ ·ç²¾åº¦ä¸å¥½ï¼Œä½†ä¸ä¼šä¸¢è§¦å‘ç‚¹
+    //Õâ¶ùÒª²»ÒªÓÃµ±Ç°ÕæÊµÊ±¼ä£¬»¹ÊÇÓÃ×Ô¼º¼ÇÂ¼µÄ´¥·¢µã×÷Îª¼ÆËãµã£¬Õâ¸öµÄÈ·ÊÇÒ»¸öÎÊÌâ
+    //ÎÒÄ¿Ç°»¹ÊÇÓÃ×Ô¼º¼ÇÂ¼µÄ´¥·¢µã×÷Îª¼ÆËãµã£¬ÕâÑù¾«¶È²»ºÃ£¬µ«²»»á¶ª´¥·¢µã
     continue_trigger = true;
 
-    //è®¡ç®—ä¸‹ä¸€ä¸ªè§¦å‘ç‚¹ï¼Œï¼Œ
+    //¼ÆËãÏÂÒ»¸ö´¥·¢µã£¬£¬
     prc_time_node->next_trigger_point_ = now_trigger_msec + prc_time_node->interval_time_.total_msec();
 
     return;
 }
 
-//é‡Šæ”¾Timer Node
+//ÊÍ·ÅTimer Node
 int ZCE_Timer_Queue::free_timernode(int time_node_id)
 {
-    //è€ƒè™‘äº†ä¸€ä¸‹è¿˜æ˜¯ç”¨æ–­è¨€äº†ï¼Œé¿å…ä½ å†™é”™ä»£ç ç¥¸å›½æ®ƒæ°‘
+    //¿¼ÂÇÁËÒ»ÏÂ»¹ÊÇÓÃ¶ÏÑÔÁË£¬±ÜÃâÄãĞ´´í´úÂë»ö¹úÑêÃñ
     ZCE_ASSERT(time_node_ary_[time_node_id].timer_handle_ != NULL &&
                static_cast<size_t>( time_node_id) < num_timer_node_);
 
-    //å¦‚æœNODEå†…éƒ¨çš„æŒ‡é’ˆä¸ºNULL,è¡¨ç¤ºè¿™ä¸ªNODEæ²¡æœ‰ä½¿ç”¨
+    //Èç¹ûNODEÄÚ²¿µÄÖ¸ÕëÎªNULL,±íÊ¾Õâ¸öNODEÃ»ÓĞÊ¹ÓÃ
     if (!time_node_ary_[time_node_id].timer_handle_)
     {
         return -1;
     }
 
-    //ä¸å¯èƒ½è¶…è¿‡NODEçš„æ•°é‡
+    //²»¿ÉÄÜ³¬¹ıNODEµÄÊıÁ¿
     if (static_cast<size_t>(time_node_id) >= num_timer_node_)
     {
         return -1;
     }
 
-    //å½’è¿˜åˆ°FREEé˜Ÿåˆ—ä¸­
+    //¹é»¹µ½FREE¶ÓÁĞÖĞ
     free_node_id_list_[ time_node_id ] = free_node_id_head_;
     free_node_id_head_ = time_node_id;
-    //æ¸…ç†æ•°æ®å»
+    //ÇåÀíÊı¾İÈ¥
     time_node_ary_[time_node_id].clear();
     --num_use_node_;
 
     return 0;
 }
 
-//å¾—åˆ°æœ€å¿«å°†åœ¨å¤šå°‘æ—¶é—´åè§¦å‘
+//µÃµ½×î¿ì½«ÔÚ¶àÉÙÊ±¼äºó´¥·¢
 int ZCE_Timer_Queue::get_first_timeout(ZCE_Time_Value *first_timeout)
 {
     int ret = 0;
@@ -359,16 +359,16 @@ int ZCE_Timer_Queue::get_first_timeout(ZCE_Time_Value *first_timeout)
     ZCE_Time_Value now_time(ZCE_LIB::gettimeofday());
     uint64_t now_trigger_msec = 0;
 
-    //è§¦å‘æ¨¡å¼
+    //´¥·¢Ä£Ê½
     if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
     {
-        //å–å¾—æ¯«ç§’
+        //È¡µÃºÁÃë
         now_trigger_msec = now_time.total_msec();
     }
     //
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
-        //å…¶å®è¿™ä¸æ˜¯çœŸæ­£çš„CPU Tick
+        //ÆäÊµÕâ²»ÊÇÕæÕıµÄCPU Tick
         ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         now_trigger_msec = cpu_tick.total_msec();
     }
@@ -396,16 +396,16 @@ size_t ZCE_Timer_Queue::expire()
 
     uint64_t now_trigger_msec = 0;
 
-    //è§¦å‘æ¨¡å¼
+    //´¥·¢Ä£Ê½
     if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
     {
-        //å–å¾—æ¯«ç§’
+        //È¡µÃºÁÃë
         now_trigger_msec = now_time.total_msec();
     }
     //
     else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
     {
-        //å…¶å®è¿™ä¸æ˜¯çœŸæ­£çš„CPU Tick
+        //ÆäÊµÕâ²»ÊÇÕæÕıµÄCPU Tick
         ZCE_Time_Value cpu_tick(ZCE_LIB::get_uptime());
         now_trigger_msec = cpu_tick.total_msec();
     }
@@ -417,13 +417,13 @@ size_t ZCE_Timer_Queue::expire()
     return dispatch_timer(now_time, now_trigger_msec);
 }
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_Timer_Queue *ZCE_Timer_Queue::instance()
 {
     return instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
 void ZCE_Timer_Queue::instance(ZCE_Timer_Queue *pinstatnce)
 {
     clean_instance();
@@ -431,7 +431,7 @@ void ZCE_Timer_Queue::instance(ZCE_Timer_Queue *pinstatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_Timer_Queue::clean_instance()
 {
     if (instance_)

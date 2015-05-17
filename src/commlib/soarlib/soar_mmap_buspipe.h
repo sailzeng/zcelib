@@ -1,4 +1,4 @@
-ï»¿
+
 #ifndef SOARING_LIB_ZERG_MMAP_PIPE_H_
 #define SOARING_LIB_ZERG_MMAP_PIPE_H_
 
@@ -14,14 +14,14 @@ class SOARING_EXPORT Soar_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
 {
 
 public:
-    //æ„é€ å‡½æ•°,
+    //¹¹Ôìº¯Êı,
     Soar_MMAP_BusPipe();
-    //æè´­å‡½æ•°
+    //Îö¹ºº¯Êı
     ~Soar_MMAP_BusPipe();
 
 public:
 
-    //åˆå§‹åŒ–éƒ¨åˆ†å‚æ•°,
+    //³õÊ¼»¯²¿·Ö²ÎÊı,
     int initialize(SERVICES_ID &svrinfo,
                    size_t size_recv_pipe,
                    size_t size_send_pipe,
@@ -30,19 +30,19 @@ public:
 
 
 
-    //ç”ŸæˆMMAPçš„é…ç½®æ–‡ä»¶åç§°
+    //Éú³ÉMMAPµÄÅäÖÃÎÄ¼şÃû³Æ
     void get_mmapfile_name(char *mmapfile, size_t buflen);
 
     //-----------------------------------------------------------------
-    //ä»RECVç®¡é“è¯»å–å¸§
+    //´ÓRECV¹ÜµÀ¶ÁÈ¡Ö¡
     inline int pop_front_recvpipe(Zerg_App_Frame *&proc_frame);
-    //å‘SENDç®¡é“å†™å…¥å¸§
+    //ÏòSEND¹ÜµÀĞ´ÈëÖ¡
     inline int push_back_sendpipe(Zerg_App_Frame *proc_frame);
 
-    //åŸæ¥çš„åå­—éƒ½æ˜¯send_msg_toï¼Œä¸€å¼€å§‹è®¤ä¸ºè¿™æ ·æŒºå¥½çš„ï¼Œä½†æ˜¯é€æ­¥é€æ­¥çš„æ„Ÿè§‰å‘ç°ä¿®æ”¹æ›¿æ¢çš„æ—¶å€™ç—›è‹¦ä¸å°‘ã€‚
-    //ä¸ç¡®è®¤æ”¹ä¸ºpipe_sendmsg_to_serviceæ˜¯ä¸æ˜¯ä¸€ä¸ªå¥½ä¸»æ„ï¼Œä½†æ˜¯è¯•éªŒä¸€ä¸‹?
+    //Ô­À´µÄÃû×Ö¶¼ÊÇsend_msg_to£¬Ò»¿ªÊ¼ÈÏÎªÕâÑùÍ¦ºÃµÄ£¬µ«ÊÇÖğ²½Öğ²½µÄ¸Ğ¾õ·¢ÏÖĞŞ¸ÄÌæ»»µÄÊ±ºòÍ´¿à²»ÉÙ¡£
+    //²»È·ÈÏ¸ÄÎªpipe_sendmsg_to_serviceÊÇ²»ÊÇÒ»¸öºÃÖ÷Òâ£¬µ«ÊÇÊÔÑéÒ»ÏÂ?
 
-    //å‘é€ä¸€ä¸ªä¿¡æ¯ç»™æœåŠ¡ï¼Œæ— éœ€æŒ‡å®šä»£ç†æœåŠ¡å™¨é‚£ç§æ–¹å¼
+    //·¢ËÍÒ»¸öĞÅÏ¢¸ø·şÎñ£¬ÎŞĞèÖ¸¶¨´úÀí·şÎñÆ÷ÄÇÖÖ·½Ê½
     template< class T>
     int pipe_sendmsg_to_service(unsigned int cmd,
                                 unsigned int qquin,
@@ -54,7 +54,7 @@ public:
                                 unsigned int app_id = 0,
                                 unsigned int option = 0);
 
-    //å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,æŒ‡å®šä»£ç†æœåŠ¡å™¨ï¼Œä»¥åŠæ¥å—çš„æœåŠ¡å™¨ç±»å‹
+    //·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,Ö¸¶¨´úÀí·şÎñÆ÷£¬ÒÔ¼°½ÓÊÜµÄ·şÎñÆ÷ÀàĞÍ
     template< class T>
     int pipe_sendmsg_to_proxy(unsigned int cmd,
                               unsigned int qquin,
@@ -67,7 +67,7 @@ public:
                               unsigned int app_id = 0,
                               unsigned int option = 0);
 
-    //å‘é€æ•°æ®åˆ°æœåŠ¡å™¨,å¯ä»¥æŒ‡å®šå…·ä½“çš„ä»£ç†æœåŠ¡å™¨ï¼Œä»¥åŠæ¥å—çš„æœåŠ¡å™¨ID
+    //·¢ËÍÊı¾İµ½·şÎñÆ÷,¿ÉÒÔÖ¸¶¨¾ßÌåµÄ´úÀí·şÎñÆ÷£¬ÒÔ¼°½ÓÊÜµÄ·şÎñÆ÷ID
     template< class T>
     int pipe_sendmsg_to_service(unsigned int cmd,
                                 unsigned int qquin,
@@ -80,7 +80,7 @@ public:
                                 unsigned int app_id = 0,
                                 unsigned int option = 0);
 
-    // å‘é€ä¸€æ®µbufç»™æŒ‡å®šçš„æœåŠ¡å™¨
+    // ·¢ËÍÒ»¶Îbuf¸øÖ¸¶¨µÄ·şÎñÆ÷
     int pipe_sendbuf_to_service(unsigned int cmd,
                                 unsigned int qquin,
                                 unsigned int transaction_id,
@@ -96,41 +96,41 @@ public:
     //-----------------------------------------------------------------
 public:
 
-    //ä¸ºäº†SingleTonç±»å‡†å¤‡
-    //å®ä¾‹çš„èµ‹å€¼
+    //ÎªÁËSingleTonÀà×¼±¸
+    //ÊµÀıµÄ¸³Öµ
     static void instance(Soar_MMAP_BusPipe *);
-    //å®ä¾‹çš„è·å¾—
+    //ÊµÀıµÄ»ñµÃ
     static Soar_MMAP_BusPipe *instance();
-    //æ¸…é™¤å®ä¾‹
+    //Çå³ıÊµÀı
     static void clean_instance();
 
 protected:
 
-    //ZERGç®¡é“çš„åç§°,æ”¾åœ¨è¿™å„¿ï¼Œå› ä¸ºå¤§å®¶éƒ½ç”¨
+    //ZERG¹ÜµÀµÄÃû³Æ,·ÅÔÚÕâ¶ù£¬ÒòÎª´ó¼Ò¶¼ÓÃ
     static const char    ZERG_PIPENAME[NUM_OF_PIPE][16];
 
 protected:
-    //instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
+    //instanceº¯ÊıÊ¹ÓÃµÄ¶«Î÷
     static Soar_MMAP_BusPipe *zerg_bus_instance_;
 
 protected:
 
-    ///è¿™ä¸ªæœåŠ¡å™¨çš„é…ç½®ä¿¡æ¯.
+    ///Õâ¸ö·şÎñÆ÷µÄÅäÖÃĞÅÏ¢.
     SERVICES_ID         zerg_svr_info_ = SERVICES_ID(0, 0);
-    ///å‘é€çš„ç¼“å†²åŒº
+    ///·¢ËÍµÄ»º³åÇø
     static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
 
-    ///ç›‘æ§å¯¹è±¡
+    ///¼à¿Ø¶ÔÏó
     Soar_Stat_Monitor   *monitor_ = NULL;
 
 };
 
-//ä»RECVç®¡é“è¯»å–å¸§ï¼Œ
+//´ÓRECV¹ÜµÀ¶ÁÈ¡Ö¡£¬
 inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<ZCE_LIB::dequechunk_node* &>(proc_frame));
 
-    // åŠ ç›‘æ§æ•°æ®
+    // ¼Ó¼à¿ØÊı¾İ
     if (ret == 0)
     {
         monitor_->increase_once(COMM_STAT_RECV_PKG_COUNT,
@@ -142,7 +142,7 @@ inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
                                      proc_frame->frame_length_);
 
 
-        //å¦‚æœæ˜¯è·Ÿè¸ªå‘½ä»¤ï¼ŒæŠŠæ•°æ®åŒ…æ‰“å°å‡ºæ¥ï¼Œä¼šéå¸¸è€—æ—¶ï¼Œå°‘ç”¨
+        //Èç¹ûÊÇ¸ú×ÙÃüÁî£¬°ÑÊı¾İ°ü´òÓ¡³öÀ´£¬»á·Ç³£ºÄÊ±£¬ÉÙÓÃ
         if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
         {
             Zerg_App_Frame::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Recv]", proc_frame);
@@ -152,7 +152,7 @@ inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
     return ret;
 }
 
-//å‘SENDç®¡é“å†™å…¥å¸§ï¼Œ
+//ÏòSEND¹ÜµÀĞ´ÈëÖ¡£¬
 inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 {
     DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO SEND PIPE FRAME:", proc_frame);
@@ -164,7 +164,7 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
 
-    //å¦‚æœæ˜¯è·Ÿè¸ªå‘½ä»¤ï¼ŒæŠŠæ•°æ®åŒ…æ‰“å°å‡ºæ¥ï¼Œä¼šéå¸¸è€—æ—¶ï¼Œå°‘ç”¨
+    //Èç¹ûÊÇ¸ú×ÙÃüÁî£¬°ÑÊı¾İ°ü´òÓ¡³öÀ´£¬»á·Ç³£ºÄÊ±£¬ÉÙÓÃ
     if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
         Zerg_App_Frame::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Send]", proc_frame);
@@ -175,7 +175,7 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 
     if (ret != 0)
     {
-        // å‘é€å¤±è´¥, ç®¡é“æ»¡äº†
+        // ·¢ËÍÊ§°Ü, ¹ÜµÀÂúÁË
         monitor_->increase_once(COMM_STAT_SEND_PKG_FAIL,
                                 proc_frame->app_id_,
                                 proc_frame->frame_command_);
@@ -192,24 +192,24 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
                                      proc_frame->frame_length_);
     }
 
-    // è¿”å›æˆåŠŸ
+    // ·µ»Ø³É¹¦
     return 0;
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007å¹´3æœˆ24æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007Äê3ÔÂ24ÈÕ
 Function        : PipeRequstMsgToService
 Return          : int
 Parameter List  :
-  Param1: unsigned int cmd  å‘é€çš„å‘½ä»¤
-  Param2: unsigned int qquin å‘é€çš„UIN
-  Param3: unsigned int transaction_id,äº‹åŠ¡ID
-  Param4: unsigned int backfill_trans_id,å›å¡«çš„äº‹åŠ¡ID
-  Param5: const SERVICES_ID& rcvsvc  æ¥å—è€…æ˜¯è°
-  Param6: const SERVICES_ID& sendsvc å‘é€è€…æ˜¯è°
-  Param7: const T& info å‘é€çš„æ•°æ®
-  Param8: unsigned int option=0 å‘é€çš„é€‰é¡¹
-Description     : åˆ¶å®šä¸€ä¸ªæ¥å—æœåŠ¡å™¨å‘é€æ•°æ®,ä¸ç»è¿‡PROXYæœåŠ¡å™¨
+  Param1: unsigned int cmd  ·¢ËÍµÄÃüÁî
+  Param2: unsigned int qquin ·¢ËÍµÄUIN
+  Param3: unsigned int transaction_id,ÊÂÎñID
+  Param4: unsigned int backfill_trans_id,»ØÌîµÄÊÂÎñID
+  Param5: const SERVICES_ID& rcvsvc  ½ÓÊÜÕßÊÇË­
+  Param6: const SERVICES_ID& sendsvc ·¢ËÍÕßÊÇË­
+  Param7: const T& info ·¢ËÍµÄÊı¾İ
+  Param8: unsigned int option=0 ·¢ËÍµÄÑ¡Ïî
+Description     : ÖÆ¶¨Ò»¸ö½ÓÊÜ·şÎñÆ÷·¢ËÍÊı¾İ,²»¾­¹ıPROXY·şÎñÆ÷
 Calls           :
 Called By       :
 Other           :
@@ -240,20 +240,20 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007å¹´3æœˆ24æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007Äê3ÔÂ24ÈÕ
 Function        : pipe_sendmsg_to_proxy
 Return          : template< class T> int
 Parameter List  :
-  Param1: unsigned int cmd   å‘é€çš„å‘½ä»¤
-  Param2: unsigned int qquin å‘é€çš„UIN
-  Param3: unsigned int transaction_id,äº‹åŠ¡ID
-  Param4: unsigned int backfill_trans_id,å›å¡«çš„äº‹åŠ¡ID
-  Param5: unsigned short rcvtype æœ€ç»ˆçš„æ¥å—è€…çš„ç±»å‹æ˜¯ä»€ä¹ˆ
-  Param7: const SERVICES_ID& proxysvc PROXYæœåŠ¡å™¨æ˜¯è°
-  Param6: const SERVICES_ID& sendsvc  å‘é€è€…æ˜¯è°
-  Param8: const T& info å‘é€çš„æ•°æ®
-  Param9: unsigned int option=0 å‘é€çš„é€‰é¡¹
-Description     : åˆ¶å®šä¸€ä¸ªPROXYæœåŠ¡å™¨è¿›è¡Œæ¥æ”¶æ•°æ®
+  Param1: unsigned int cmd   ·¢ËÍµÄÃüÁî
+  Param2: unsigned int qquin ·¢ËÍµÄUIN
+  Param3: unsigned int transaction_id,ÊÂÎñID
+  Param4: unsigned int backfill_trans_id,»ØÌîµÄÊÂÎñID
+  Param5: unsigned short rcvtype ×îÖÕµÄ½ÓÊÜÕßµÄÀàĞÍÊÇÊ²Ã´
+  Param7: const SERVICES_ID& proxysvc PROXY·şÎñÆ÷ÊÇË­
+  Param6: const SERVICES_ID& sendsvc  ·¢ËÍÕßÊÇË­
+  Param8: const T& info ·¢ËÍµÄÊı¾İ
+  Param9: unsigned int option=0 ·¢ËÍµÄÑ¡Ïî
+Description     : ÖÆ¶¨Ò»¸öPROXY·şÎñÆ÷½øĞĞ½ÓÊÕÊı¾İ
 Calls           :
 Called By       :
 Other           :
@@ -285,20 +285,20 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(unsigned int cmd,
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007å¹´3æœˆ24æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007Äê3ÔÂ24ÈÕ
 Function        : pipe_sendmsg_to_service
 Return          : template< class T>
 Parameter List  :
-  Param1: unsigned int cmd   å‘é€çš„å‘½ä»¤
-  Param2: unsigned int qquin å‘é€çš„UIN
-  Param3: unsigned int transaction_id,äº‹åŠ¡ID,æ²¡æœ‰è¦æ±‚å¯¹æ–¹è¿”å›å°±ä¸ç”¨å¡«å†™ï¼Œå¡«å†™0
-  Param4: unsigned int backfill_trans_id,å›å¡«çš„äº‹åŠ¡ID,æ²¡æœ‰è¦æ±‚å¯¹æ–¹è¿”å›å°±ä¸ç”¨å¡«å†™ï¼Œå¡«å†™0
-  Param5: const SERVICES_ID& rcvsvc æœ€ç»ˆçš„æ¥å—è€…çš„ç±»å‹æ˜¯è°
-  Param6: const SERVICES_ID& proxysvc PROXYæœåŠ¡å™¨æ˜¯è°
-  Param7: const SERVICES_ID& sendsvc å‘é€è€…æ˜¯è°
-  Param8: const T& info å‘é€çš„æ•°æ®
-  Param9: unsigned int option=0 å‘é€çš„é€‰é¡¹
-Description     : æœ€å¤æ‚å‚æ•°çš„å‘é€å‡½æ•°ï¼Œ
+  Param1: unsigned int cmd   ·¢ËÍµÄÃüÁî
+  Param2: unsigned int qquin ·¢ËÍµÄUIN
+  Param3: unsigned int transaction_id,ÊÂÎñID,Ã»ÓĞÒªÇó¶Ô·½·µ»Ø¾Í²»ÓÃÌîĞ´£¬ÌîĞ´0
+  Param4: unsigned int backfill_trans_id,»ØÌîµÄÊÂÎñID,Ã»ÓĞÒªÇó¶Ô·½·µ»Ø¾Í²»ÓÃÌîĞ´£¬ÌîĞ´0
+  Param5: const SERVICES_ID& rcvsvc ×îÖÕµÄ½ÓÊÜÕßµÄÀàĞÍÊÇË­
+  Param6: const SERVICES_ID& proxysvc PROXY·şÎñÆ÷ÊÇË­
+  Param7: const SERVICES_ID& sendsvc ·¢ËÍÕßÊÇË­
+  Param8: const T& info ·¢ËÍµÄÊı¾İ
+  Param9: unsigned int option=0 ·¢ËÍµÄÑ¡Ïî
+Description     : ×î¸´ÔÓ²ÎÊıµÄ·¢ËÍº¯Êı£¬
 Calls           :
 Called By       :
 Other           :
@@ -328,7 +328,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
     send_frame->proxy_service_ = proxysvc;
     send_frame->recv_service_ = rcvsvc;
 
-    //å¡«å†™äº‹åŠ¡IDå’Œå›å¡«äº‹åŠ¡ID
+    //ÌîĞ´ÊÂÎñIDºÍ»ØÌîÊÂÎñID
     send_frame->transaction_id_ = transaction_id;
     send_frame->backfill_trans_id_ = backfill_trans_id;
 

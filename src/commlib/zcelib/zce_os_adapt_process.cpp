@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_file.h"
@@ -7,7 +7,7 @@
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_process.h"
 
-//å¾—åˆ°å½“å‰çš„è¿›ç¨‹ID
+//µÃµ½µ±Ç°µÄ½ø³ÌID
 pid_t ZCE_LIB::getpid()
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -17,14 +17,14 @@ pid_t ZCE_LIB::getpid()
 #endif
 }
 
-//å¾—åˆ°å½“å‰çš„è¿›ç¨‹çš„çˆ¶è¿›ç¨‹ID
+//µÃµ½µ±Ç°µÄ½ø³ÌµÄ¸¸½ø³ÌID
 pid_t ZCE_LIB::getppid (void)
 {
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //å…¶å®žå¾®è½¯æ²¡æœ‰æ˜Žç¡®è¯´æ˜Žæœ‰è¿™ä¸ªæ–¹æ³•ï¼Œè¿™æ®µä»£ç å®Œå…¨æ”¹äºŽç½‘ä¸Š
-    //å‚è€ƒé“¾æŽ¥ http://hi.baidu.com/woaiwlaopo/blog/item/ecaf5760b42495db8cb10d4b.html
+    //ÆäÊµÎ¢ÈíÃ»ÓÐÃ÷È·ËµÃ÷ÓÐÕâ¸ö·½·¨£¬Õâ¶Î´úÂëÍêÈ«¸ÄÓÚÍøÉÏ
+    //²Î¿¼Á´½Ó http://hi.baidu.com/woaiwlaopo/blog/item/ecaf5760b42495db8cb10d4b.html
 
     typedef struct
     {
@@ -47,7 +47,7 @@ pid_t ZCE_LIB::getppid (void)
 
     PROCNTQSIP NtQueryInformationProcess;
 
-    //è¿™ä¸ªå‡½æ•°æ˜¯ä¸å…¬å¼€çš„
+    //Õâ¸öº¯ÊýÊÇ²»¹«¿ªµÄ
     NtQueryInformationProcess = (PROCNTQSIP)GetProcAddress(
                                     GetModuleHandleA("ntdll"),
                                     "NtQueryInformationProcess"
@@ -93,8 +93,8 @@ pid_t ZCE_LIB::getppid (void)
 pid_t ZCE_LIB::fork (void)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //ä¸æ”¯æŒäº†ï¼Œå‘µå‘µï¼Œå¥½åƒACEæœ‰æ®µæ—¶é—´è¹©è„šçš„æ”¯æŒè¿‡ï¼ŒåŽæ¥ä¹Ÿä¸æžäº†ï¼Œ
-    //çš„ç¡®æ²¡æœ‰æ³•å­æ”¯æŒçš„æ¯”è¾ƒå¥½ã€‚
+    //²»Ö§³ÖÁË£¬ºÇºÇ£¬ºÃÏñACEÓÐ¶ÎÊ±¼äõ¿½ÅµÄÖ§³Ö¹ý£¬ºóÀ´Ò²²»¸ãÁË£¬
+    //µÄÈ·Ã»ÓÐ·¨×ÓÖ§³ÖµÄ±È½ÏºÃ¡£
     return (pid_t (-1));
 #elif defined (ZCE_OS_LINUX)
     return ::fork ();
@@ -105,17 +105,17 @@ pid_t ZCE_LIB::fork (void)
 pid_t ZCE_LIB::setsid (void)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //ä¸æ”¯æŒäº†ï¼Œ
+    //²»Ö§³ÖÁË£¬
     return (pid_t (-1));
 #elif defined (ZCE_OS_LINUX)
     return ::setsid ();
 #endif
 }
 
-//å–å¾—æŸä¸ªçŽ¯å¢ƒå˜é‡
+//È¡µÃÄ³¸ö»·¾³±äÁ¿
 char *ZCE_LIB::getenv(const char *name)
 {
-    //ä¸¤ä¸ªçŽ¯å¢ƒéƒ½æœ‰ï¼Œè¿™ä¸ªå°è£…æœ‰ç‚¹å¤šä½™
+    //Á½¸ö»·¾³¶¼ÓÐ£¬Õâ¸ö·â×°ÓÐµã¶àÓà
     return ::getenv(name);
 }
 
@@ -123,7 +123,7 @@ sighandler_t ZCE_LIB::signal (int signum,
                               sighandler_t  func )
 {
 
-    //å¦‚æžœè¿™ä¸ªä¿¡å·ï¼Œåœ¨è¿™ä¸ªå¹³å°ä¸æ”¯æŒï¼Œå°±æ”¾å¼ƒæŠŠ
+    //Èç¹ûÕâ¸öÐÅºÅ£¬ÔÚÕâ¸öÆ½Ì¨²»Ö§³Ö£¬¾Í·ÅÆú°Ñ
     if (signum == 0)
     {
         return 0;
@@ -147,7 +147,7 @@ namespace ZCE_LIB
 //
 static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_perf_info)
 {
-    //å¾—åˆ°è¿›ç¨‹çš„æ–‡ä»¶åç§°
+    //µÃµ½½ø³ÌµÄÎÄ¼þÃû³Æ
     const char *PROC_PROCESS_STAT = "/proc/%u/stat";
     char file_name[PATH_MAX + 1];
     file_name[PATH_MAX] = '\0';
@@ -156,7 +156,7 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_pe
     char buffer[4096];
     size_t read_len = 0;
     uint64_t read_data = 0;
-    //è¯»å–/procä¸‹çš„æ–‡ä»¶
+    //¶ÁÈ¡/procÏÂµÄÎÄ¼þ
     int ret = ZCE_LIB::read_file_data(file_name, buffer, sizeof(buffer), &read_len);
 
     if ( 0 != ret )
@@ -182,7 +182,7 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_pe
     in_para = ZCE_LIB::skip_token(in_para);              /* skip cmaj flt */
 
 #if defined ZCE_OS_LINUX
-    // tlinux64(2.6.32.43)ä¸‹è¿™ä¸ªå€¼æ˜¯100
+    // tlinux64(2.6.32.43)ÏÂÕâ¸öÖµÊÇ100
     long cpu_tick_precision = ::sysconf(_SC_CLK_TCK);
 #else
     long cpu_tick_precision = 1000;
@@ -215,16 +215,16 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_pe
     in_para = skip_token(in_para);              /* skip number_threads */
     in_para = skip_token(in_para);              /* skip it_real_value */
 
-    // èŽ·å–è¿›ç¨‹çš„å¯åŠ¨æ—¶é—´start_time(unitï¼šjiffies)
+    // »ñÈ¡½ø³ÌµÄÆô¶¯Ê±¼ästart_time(unit£ºjiffies)
     read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
     prc_perf_info->start_time_.tv_sec =  static_cast<time_t>( read_data / cpu_tick_precision);
     prc_perf_info->start_time_.tv_usec =  static_cast<time_t>((read_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
-    // è®¡ç®—running_timeï¼Œuptimeå¯ä»¥è¯»å–/proc/uptimeå¾—åˆ°, è¿™é‡Œä½¿ç”¨ç³»ç»Ÿzcelibè‡ªå¸¦çš„ZCE_LIB::get_uptime()
+    // ¼ÆËãrunning_time£¬uptime¿ÉÒÔ¶ÁÈ¡/proc/uptimeµÃµ½, ÕâÀïÊ¹ÓÃÏµÍ³zcelib×Ô´øµÄZCE_LIB::get_uptime()
     prc_perf_info->running_time_ = ZCE_LIB::timeval_sub(ZCE_LIB::get_uptime(), prc_perf_info->start_time_);
 
-    //å†…å­˜ä¿¡æ¯æˆ‘ä»Žå¦å¤–ä¸€ä¸ªæ–‡ä»¶è¯»å–
+    //ÄÚ´æÐÅÏ¢ÎÒ´ÓÁíÍâÒ»¸öÎÄ¼þ¶ÁÈ¡
 
     return 0;
 }
@@ -239,7 +239,7 @@ static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_per
 
     char buffer[4096];
     size_t read_len = 0;
-    //è¯»å–/procä¸‹çš„æ–‡ä»¶
+    //¶ÁÈ¡/procÏÂµÄÎÄ¼þ
     int ret = ZCE_LIB::read_file_data(file_name, buffer, sizeof(buffer), &read_len);
 
     if ( 0 != ret )
@@ -250,7 +250,7 @@ static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_per
     const char *in_para = buffer;
     char *out_para = NULL;
 
-    //64ä½ä¸‹åº”è¯¥æ˜¯8096
+    //64Î»ÏÂÓ¦¸ÃÊÇ8096
     long page_size = 4096;
 #if defined ZCE_OS_LINUX
     page_size = ::sysconf(_SC_PAGESIZE);
@@ -281,7 +281,7 @@ static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_per
 
 #endif //#if defined ZCE_OS_LINUX
 
-//å¾—åˆ°è¿›ç¨‹å…è®¸çš„æ€§èƒ½ä¿¡æ¯ï¼ŒåŒ…æ‹¬CPUæ—¶é—´ï¼Œå†…å­˜ä½¿ç”¨æƒ…å†µç­‰ä¿¡æ¯
+//µÃµ½½ø³ÌÔÊÐíµÄÐÔÄÜÐÅÏ¢£¬°üÀ¨CPUÊ±¼ä£¬ÄÚ´æÊ¹ÓÃÇé¿öµÈÐÅÏ¢
 int ZCE_LIB::get_self_perf(ZCE_PROCESS_PERFORM *prc_perf_info)
 {
     pid_t process_id = ZCE_LIB::getpid();
@@ -289,7 +289,7 @@ int ZCE_LIB::get_self_perf(ZCE_PROCESS_PERFORM *prc_perf_info)
     return ZCE_LIB::get_process_perf(process_id, prc_perf_info);
 }
 
-//å–å¾—è°‹ä¸ªè¿›ç¨‹çš„æ€§èƒ½ä¿¡æ¯
+//È¡µÃÄ±¸ö½ø³ÌµÄÐÔÄÜÐÅÏ¢
 int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_info)
 {
 
@@ -297,10 +297,10 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //å¾—åˆ°è‡ªå·±çš„è¿›ç¨‹å¥æŸ„ï¼Œ
+    //µÃµ½×Ô¼ºµÄ½ø³Ì¾ä±ú£¬
     //HANDLE process_handle = ::GetCurrentProcess();
 
-    //æ ¹æ®è¿›ç¨‹IDå¾—åˆ°è¿›ç¨‹å¥æŸ„
+    //¸ù¾Ý½ø³ÌIDµÃµ½½ø³Ì¾ä±ú
     HANDLE process_handle = ::OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ,
                                           false,
                                           process_id);
@@ -318,11 +318,11 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
 
     BOOL bret =::GetProcessTimes (process_handle,
                                   &ft_start_time,   // start
-                                  &ft_end_time,     // exited,å¦‚æžœè¿›ç¨‹æ²¡æœ‰ç»“æŸï¼Œç»“æžœæœªå®šä¹‰
+                                  &ft_end_time,     // exited,Èç¹û½ø³ÌÃ»ÓÐ½áÊø£¬½á¹ûÎ´¶¨Òå
                                   &ru_stime,
                                   &ru_utime);
 
-    //å¦‚æžœè¿”å›žæˆåŠŸ
+    //Èç¹û·µ»Ø³É¹¦
     if (bret == FALSE)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] GetProcessTimes error, reson is:%u.", ::GetLastError());
@@ -336,7 +336,7 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
     prc_perf_info->run_stime_ = ZCE_LIB::make_timeval2(&ru_stime);
     prc_perf_info->run_utime_ = ZCE_LIB::make_timeval2(&ru_utime);
 
-    //WiN32ä¸‹çš„å¾—åˆ°å†…å­˜ä¿¡æ¯çš„æ–¹æ³•
+    //WiN32ÏÂµÄµÃµ½ÄÚ´æÐÅÏ¢µÄ·½·¨
     PROCESS_MEMORY_COUNTERS psmem_counters;
     //psmem_counters.cb = sizeof(PROCESS_MEMORY_COUNTERS);
     bret = ::GetProcessMemoryInfo(process_handle,
@@ -366,9 +366,9 @@ int ZCE_LIB::get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_in
     prc_perf_info->nice_ = 0;
 
     prc_perf_info->vm_size_ = psmem_counters.WorkingSetSize;
-    //è¿™ä¸ªå€¼å…¶å®žä¸å‡†ç¡®
+    //Õâ¸öÖµÆäÊµ²»×¼È·
     prc_perf_info->resident_set_ =  psmem_counters.WorkingSetSize;
-    //è¿™äº›å€¼Windowså¹³å°ä¸å¤ªå‡†ç¡®
+    //ÕâÐ©ÖµWindowsÆ½Ì¨²»Ì«×¼È·
     prc_perf_info->shared_size_ = 0;
     prc_perf_info->text_size_ = 0;
     prc_perf_info->data_size_ = 0;

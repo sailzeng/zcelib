@@ -1,4 +1,4 @@
-ï»¿
+
 
 #include "ogre_predefine.h"
 #include "ogre_auto_connect.h"
@@ -17,13 +17,13 @@ Ogre_Connect_Server::~Ogre_Connect_Server()
     SET_OF_TCP_PEER_MODULE::iterator iter_end = autocnt_module_set_.end();
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
-        //ç”±äºè¿­ä»£å™¨æ˜¯é»˜è®¤const çš„ï¼Œåªèƒ½è¿™æ ·å†™ï¼Œè¿™ä¸ªé—®é¢˜è¿èƒŒæˆ‘å¯¹MAPä½¿ç”¨SETå®ç°éƒ¨åˆ†è®¤çŸ¥ï¼Œ
+        //ÓÉÓÚµü´úÆ÷ÊÇÄ¬ÈÏconst µÄ£¬Ö»ÄÜÕâÑùĞ´£¬Õâ¸öÎÊÌâÎ¥±³ÎÒ¶ÔMAPÊ¹ÓÃSETÊµÏÖ²¿·ÖÈÏÖª£¬
         TCP_PEER_MODULE_INFO peer_module =  *iter_tmp;
         peer_module.close_module();
     }
 }
 
-//å–å¾—é…ç½®
+//È¡µÃÅäÖÃ
 int Ogre_Connect_Server::get_config(const Ogre_Server_Config *config)
 {
     int ret = 0;
@@ -60,8 +60,8 @@ int Ogre_Connect_Server::get_config(const Ogre_Server_Config *config)
 }
 
 
-//é“¾æ¥æ‰€æœ‰çš„æœåŠ¡å™¨
-//è¦é“¾æ¥çš„æœåŠ¡å™¨æ€»æ•°,æˆåŠŸå¼€å§‹è¿æ¥çš„æœåŠ¡å™¨ä¸ªæ•°,
+//Á´½ÓËùÓĞµÄ·şÎñÆ÷
+//ÒªÁ´½ÓµÄ·şÎñÆ÷×ÜÊı,³É¹¦¿ªÊ¼Á¬½ÓµÄ·şÎñÆ÷¸öÊı,
 int Ogre_Connect_Server::connect_all_server(size_t &num_vaild, size_t &num_succ, size_t &num_fail)
 {
     int ret = 0;
@@ -96,7 +96,7 @@ int Ogre_Connect_Server::connect_all_server(size_t &num_vaild, size_t &num_succ,
             num_vaild,
             num_succ,
             num_fail);
-    //è¿”å›å¼€å§‹è¿æ¥çš„æœåŠ¡å™¨æ•°é‡
+    //·µ»Ø¿ªÊ¼Á¬½ÓµÄ·şÎñÆ÷ÊıÁ¿
     return 0;
 }
 
@@ -124,7 +124,7 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
 {
     int ret = 0;
 
-    //å¦‚æœå·²ç»è¿æ¥ä¸Šäº†ï¼Œä¸è¿›è¡Œè¿æ¥
+    //Èç¹ûÒÑ¾­Á¬½ÓÉÏÁË£¬²»½øĞĞÁ¬½Ó
     Ogre_TCP_Svc_Handler *tcp_hdl = NULL;
     ret = Ogre_TCP_Svc_Handler::find_services_peer(peer_module.peer_id_, tcp_hdl);
     if (ret == 0)
@@ -142,28 +142,28 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
             inetaddr.get_host_addr(),
             inetaddr.get_port_number());
 
-    //è®°ä½,æ˜¯è¿™ä¸ªæ—¶é—´æ ‡å¿—ä½¿SOCKETå¼‚æ­¥è¿æ¥,
+    //¼Ç×¡,ÊÇÕâ¸öÊ±¼ä±êÖ¾Ê¹SOCKETÒì²½Á¬½Ó,
     ret = ogre_connector_.connect(tcpscoket, &inetaddr, true);
 
-    //å¿…ç„¶å¤±è´¥!?
+    //±ØÈ»Ê§°Ü!?
     if (ret < 0)
     {
-        //æŒ‰ç…§UNIXç½‘ç»œç¼–ç¨‹ V1çš„è¯´æ³•æ˜¯ EINPROGRESS,ä½†ACEçš„ä»‹ç»è¯´æ˜¯ EWOULDBLOCK,
+        //°´ÕÕUNIXÍøÂç±à³Ì V1µÄËµ·¨ÊÇ EINPROGRESS,µ«ACEµÄ½éÉÜËµÊÇ EWOULDBLOCK,
         if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS)
         {
             tcpscoket.close();
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
 
-        //ä»æ± å­ä¸­å–å¾—HDLï¼Œåˆå§‹åŒ–ä¹‹ï¼ŒCONNECThdlçš„æ•°é‡ä¸å¯èƒ½å°äº0
+        //´Ó³Ø×ÓÖĞÈ¡µÃHDL£¬³õÊ¼»¯Ö®£¬CONNECThdlµÄÊıÁ¿²»¿ÉÄÜĞ¡ÓÚ0
         Ogre_TCP_Svc_Handler *connect_hdl = Ogre_TCP_Svc_Handler::alloc_svchandler_from_pool(
                                                 Ogre_TCP_Svc_Handler::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(connect_hdl);
         connect_hdl->init_tcp_svc_handler(tcpscoket, inetaddr, peer_module.fp_judge_whole_frame_);
 
     }
-    //tmpret == 0 é‚£å°±æ˜¯è®©æˆ‘å»è·³æ¥¼,ä½†æŒ‰ç…§ UNIXç½‘ç»œç¼–ç¨‹ è¯´åº”è¯¥æ˜¯æœ‰æœ¬åœ°è¿æ¥æ—¶å¯èƒ½çš„.(æˆ‘çš„æµ‹è¯•è¿˜æ˜¯è¿”å›é”™è¯¯)
-    //è€ŒACEçš„è¯´æ˜æ˜¯ç«‹å³è¿”å›é”™è¯¯,æˆ‘æš‚æ—¶ä¸å¤„ç†è¿™ç§æƒ…å†µ,å®åœ¨ä¸è¡Œåˆåªæœ‰æ ¹æ®ç±»å‹å†™æ™¦æ¶©çš„æœ¦èƒ§è¯—äº†
+    //tmpret == 0 ÄÇ¾ÍÊÇÈÃÎÒÈ¥ÌøÂ¥,µ«°´ÕÕ UNIXÍøÂç±à³Ì ËµÓ¦¸ÃÊÇÓĞ±¾µØÁ¬½ÓÊ±¿ÉÄÜµÄ.(ÎÒµÄ²âÊÔ»¹ÊÇ·µ»Ø´íÎó)
+    //¶øACEµÄËµÃ÷ÊÇÁ¢¼´·µ»Ø´íÎó,ÎÒÔİÊ±²»´¦ÀíÕâÖÖÇé¿ö,ÊµÔÚ²»ĞĞÓÖÖ»ÓĞ¸ù¾İÀàĞÍĞ´»ŞÉ¬µÄëüëÊÊ«ÁË
     else
     {
         ZCE_LOG(RS_ERROR, "My God! NonBlock Socket Connect Success , ACE is a cheat.\n");

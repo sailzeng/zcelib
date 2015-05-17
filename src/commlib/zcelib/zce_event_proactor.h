@@ -1,12 +1,12 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_event_proactor.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Thursday, August 21, 2014
-* @brief      å‰æ‘„å™¨ï¼Œè¿™ä¸ªåå­—æ˜¯ä¸æ˜¯æœ‰ç‚¹æ€ªæ€ªçš„ï¼Œ
-*             å…¶å®žåº”è¯¥æ¥è‡ªè¿™æ¥è‡ª å‰æ‘„è¡Œä¸ºï¼Œé­é‡å›°å¢ƒæ™‚ï¼ŒåéŽä¾†æŽ§åˆ¶å±€é¢ï¼Œè€Œä¸è¢«å±€é¢æ‰€ç‰½åˆ¶ã€‚
-*             ç”¨äºŽä¸ºå¼‚æ­¥äº‹ä»¶å¤šè·¯åˆ†ç¦»å’Œåˆ†æ´¾å¤„ç†å™¨çš„å¯¹è±¡è¡Œä¸ºæ¨¡å¼
+* @brief      Ç°ÉãÆ÷£¬Õâ¸öÃû×ÖÊÇ²»ÊÇÓÐµã¹Ö¹ÖµÄ£¬
+*             ÆäÊµÓ¦¸ÃÀ´×ÔÕâÀ´×Ô Ç°ÉãÐÐÎª£¬ÔâÓöÀ§¾³•r£¬·´ß^í¿ØÖÆ¾ÖÃæ£¬¶ø²»±»¾ÖÃæËù ¿ÖÆ¡£
+*             ÓÃÓÚÎªÒì²½ÊÂ¼þ¶àÂ··ÖÀëºÍ·ÖÅÉ´¦ÀíÆ÷µÄ¶ÔÏóÐÐÎªÄ£Ê½
 * @details
 *
 *

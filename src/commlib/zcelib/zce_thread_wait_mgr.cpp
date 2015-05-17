@@ -1,12 +1,12 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_thread.h"
 #include "zce_thread_task.h"
 #include "zce_thread_wait_mgr.h"
 
-//å•å­å®ä¾‹
+//µ¥×ÓÊµÀı
 ZCE_Thread_Wait_Manager *ZCE_Thread_Wait_Manager::instance_ = NULL;
 
-//æ„é€ å‡½æ•°ç­‰
+//¹¹Ôìº¯ÊıµÈ
 ZCE_Thread_Wait_Manager::ZCE_Thread_Wait_Manager()
 {
 }
@@ -16,7 +16,7 @@ ZCE_Thread_Wait_Manager::~ZCE_Thread_Wait_Manager()
 {
 }
 
-//å¦‚æœéœ€è¦ç®¡ç†å¤„ç†ï¼Œè¦è‡ªå·±ç™»è®°ï¼Œ
+//Èç¹ûĞèÒª¹ÜÀí´¦Àí£¬Òª×Ô¼ºµÇ¼Ç£¬
 void ZCE_Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id )
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_id, wait_group_id);
@@ -24,31 +24,31 @@ void ZCE_Thread_Wait_Manager::record_wait_thread(ZCE_THREAD_ID wait_thr_id, int 
     wait_thread_list_.push_back(wait_thread);
 }
 
-//ç™»è®°ä¸€ä¸ªè¦è¿›è¡Œç­‰å¾…å¤„ç†ç­‰å¾…çº¿ç¨‹
+//µÇ¼ÇÒ»¸öÒª½øĞĞµÈ´ı´¦ÀíµÈ´ıÏß³Ì
 void ZCE_Thread_Wait_Manager::record_wait_thread(const ZCE_Thread_Task *wait_thr_task)
 {
     MANAGE_WAIT_INFO wait_thread(wait_thr_task->thread_id(), wait_thr_task->group_id());
     wait_thread_list_.push_back(wait_thread);
 }
 
-//ç­‰æ‰€æœ‰çš„çº¿ç¨‹é€€å‡º
+//µÈËùÓĞµÄÏß³ÌÍË³ö
 void ZCE_Thread_Wait_Manager::wait_all()
 {
-    //æ³¨æ„ä¸‹é¢æ¯æ¬¡éƒ½æ˜¯å¹²begin
+    //×¢ÒâÏÂÃæÃ¿´Î¶¼ÊÇ¸Ébegin
     while (wait_thread_list_.size() > 0)
     {
         MANAGE_WAIT_INFO wait_thread = *wait_thread_list_.begin();
-        //ç­‰å¾…è¿™ä¸ªçº¿ç¨‹é€€å‡º
+        //µÈ´ıÕâ¸öÏß³ÌÍË³ö
         ZCE_LIB::pthread_join(wait_thread.wait_thr_id_);
         //
         wait_thread_list_.pop_front();
     }
 }
 
-//ç­‰å¾…ä¸€ä¸ªGROUPçš„çº¿ç¨‹é€€å‡º
+//µÈ´ıÒ»¸öGROUPµÄÏß³ÌÍË³ö
 void ZCE_Thread_Wait_Manager::wait_group(int group_id)
 {
-    //æ³¨æ„ä¸‹é¢æ¯æ¬¡éƒ½æ˜¯å¹²begin
+    //×¢ÒâÏÂÃæÃ¿´Î¶¼ÊÇ¸Ébegin
     MANAGE_WAIT_THREAD_LIST::iterator iter_temp = wait_thread_list_.begin();
 
     while (wait_thread_list_.end() != iter_temp)
@@ -56,10 +56,10 @@ void ZCE_Thread_Wait_Manager::wait_group(int group_id)
         if (iter_temp->wait_group_id_ == group_id)
         {
             MANAGE_WAIT_INFO wait_thread = *iter_temp;
-            //ç­‰å¾…è¿™ä¸ªçº¿ç¨‹é€€å‡º
+            //µÈ´ıÕâ¸öÏß³ÌÍË³ö
             ZCE_LIB::pthread_join(wait_thread.wait_thr_id_);
 
-            //å…ˆä¿å­˜åŸæ¥çš„è¿­ä»£å™¨ä½œä¸ºè¦åˆ é™¤çš„è¿­ä»£å™¨
+            //ÏÈ±£´æÔ­À´µÄµü´úÆ÷×÷ÎªÒªÉ¾³ıµÄµü´úÆ÷
             MANAGE_WAIT_THREAD_LIST::iterator del_iter = iter_temp;
             ++iter_temp;
 
@@ -73,7 +73,7 @@ void ZCE_Thread_Wait_Manager::wait_group(int group_id)
     }
 }
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_Thread_Wait_Manager *ZCE_Thread_Wait_Manager::instance()
 {
     if (instance_ == NULL)
@@ -84,7 +84,7 @@ ZCE_Thread_Wait_Manager *ZCE_Thread_Wait_Manager::instance()
     return instance_;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_Thread_Wait_Manager::clean_instance()
 {
     if (instance_)

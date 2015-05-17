@@ -1,4 +1,4 @@
-ï»¿
+
 //Jovi(HuangHao),Sail(ZENGXING)
 
 #ifndef OGRE_SERVER_AUTO_CONNECT_H_
@@ -11,7 +11,7 @@ class Ogre_TCP_Svc_Handler;
 
 
 /*!
-* @brief      ä¸»åŠ¨é“¾æŽ¥å…¶ä»–æœåŠ¡å™¨çš„ç®¡ç†ç±»
+* @brief      Ö÷¶¯Á´½ÓÆäËû·þÎñÆ÷µÄ¹ÜÀíÀà
 *
 * @note
 */
@@ -19,34 +19,34 @@ class Ogre_Connect_Server
 {
 public:
 
-    //æž„é€ å‡½æ•°
+    //¹¹Ôìº¯Êý
     Ogre_Connect_Server();
     ~Ogre_Connect_Server();
 
-    ///è¯»å–é…ç½®
+    ///¶ÁÈ¡ÅäÖÃ
     int get_config(const Ogre_Server_Config *config);
 
     /*!
-    * @brief      å¯¹æ‰€æœ‰çš„æœåŠ¡å™¨è¿›è¡Œé‡æ–°é“¾æŽ¥
-    * @return     int == 0è¡¨ç¤ºæˆåŠŸ
-    * @param      num_vaild   ä»ç„¶æœ‰æ•ˆï¼Œæ— éœ€è¿žæŽ¥çš„æœåŠ¡å™¨æ¢³ç†
-    * @param      num_succ    æˆåŠŸè¿›è¡Œé“¾æŽ¥çš„æœåŠ¡å™¨æ•°é‡ï¼Œ
-    * @param      num_fail    å¤±è´¥çš„æ•°é‡
+    * @brief      ¶ÔËùÓÐµÄ·þÎñÆ÷½øÐÐÖØÐÂÁ´½Ó
+    * @return     int == 0±íÊ¾³É¹¦
+    * @param      num_vaild   ÈÔÈ»ÓÐÐ§£¬ÎÞÐèÁ¬½ÓµÄ·þÎñÆ÷ÊáÀí
+    * @param      num_succ    ³É¹¦½øÐÐÁ´½ÓµÄ·þÎñÆ÷ÊýÁ¿£¬
+    * @param      num_fail    Ê§°ÜµÄÊýÁ¿
     */
     int connect_all_server(size_t &num_vaild, size_t &num_succ, size_t &num_fail);
 
     /*!
-    * @brief      æ ¹æ®SVRINFO,æ£€æŸ¥æ˜¯å¦æ˜¯ä¸»åŠ¨è¿žæŽ¥çš„æœåŠ¡.å¹¶è¿›è¡Œè¿žæŽ¥
-    * @return     int  == 0è¡¨ç¤ºæˆåŠŸ
-    * @param      peer_id è¦é“¾æŽ¥æœåŠ¡å™¨çš„PEER ID
+    * @brief      ¸ù¾ÝSVRINFO,¼ì²éÊÇ·ñÊÇÖ÷¶¯Á¬½ÓµÄ·þÎñ.²¢½øÐÐÁ¬½Ó
+    * @return     int  == 0±íÊ¾³É¹¦
+    * @param      peer_id ÒªÁ´½Ó·þÎñÆ÷µÄPEER ID
     */
     int connect_server_by_peerid(const OGRE_PEER_ID &peer_id);
 
 protected:
     /*!
-    * @brief      é‡é“¾æŸä¸ªæœåŠ¡å™¨
-    * @return     int == 0è¡¨ç¤ºæˆåŠŸ
-    * @param      peer_module æœåŠ¡å™¨çš„é…ç½®ä¿¡æ¯
+    * @brief      ÖØÁ´Ä³¸ö·þÎñÆ÷
+    * @return     int == 0±íÊ¾³É¹¦
+    * @param      peer_module ·þÎñÆ÷µÄÅäÖÃÐÅÏ¢
     */
     int connect_one_server(const TCP_PEER_MODULE_INFO &peer_module);
 
@@ -56,12 +56,12 @@ protected:
             HASH_OF_PEER_MODULE,
             EQUAL_OF_PEER_MODULE > SET_OF_TCP_PEER_MODULE;
 
-    ///è¿žæŽ¥å™¨
+    ///Á¬½ÓÆ÷
     ZCE_Socket_Connector ogre_connector_;
 
     ///
     size_t auto_connect_num_ = 0;
-    ///è¦ä¸»åŠ¨é“¾æŽ¥çš„PEERçš„SETï¼Œç”¨SETæ˜¯æŸ¥è¯¢æ–¹ä¾¿
+    ///ÒªÖ÷¶¯Á´½ÓµÄPEERµÄSET£¬ÓÃSETÊÇ²éÑ¯·½±ã
     SET_OF_TCP_PEER_MODULE     autocnt_module_set_;
 
 };

@@ -1,4 +1,4 @@
-ï»¿#ifndef ZCE_LIB_THREAD_WAIT_MANAGER_H_
+#ifndef ZCE_LIB_THREAD_WAIT_MANAGER_H_
 #define ZCE_LIB_THREAD_WAIT_MANAGER_H_
 
 #include "zce_boost_non_copyable.h"
@@ -6,16 +6,16 @@
 
 
 /*!
-* @brief      çº¿ç¨‹çš„ç­‰å¾…ç®¡ç†å™¨
+* @brief      Ïß³ÌµÄµÈ´ı¹ÜÀíÆ÷
 *
-* @note       æœ¬æ¥æ˜¯åœ¨çº¿ç¨‹ZCE_Thread_Base å†…éƒ¨å¤„ç†çš„ï¼Œä½†æ˜¯åµŒå…¥è¿‡å¤šï¼Œè€Œä¸”ç”¨å¤§é‡çš„static å˜é‡ï¼Œ
-*             ä¹Ÿå½±å“ZCE_Thread_Baseçš„æ€§èƒ½
+* @note       ±¾À´ÊÇÔÚÏß³ÌZCE_Thread_Base ÄÚ²¿´¦ÀíµÄ£¬µ«ÊÇÇ¶Èë¹ı¶à£¬¶øÇÒÓÃ´óÁ¿µÄstatic ±äÁ¿£¬
+*             Ò²Ó°ÏìZCE_Thread_BaseµÄĞÔÄÜ
 */
 class ZCE_Thread_Wait_Manager : public ZCE_NON_Copyable
 {
 protected:
 
-    //è®°å½•éœ€è¦ç­‰å¾…çš„çº¿ç¨‹ä¿¡æ¯ï¼Œé€šè¿‡å¼€å…³ä½¿ç”¨
+    //¼ÇÂ¼ĞèÒªµÈ´ıµÄÏß³ÌĞÅÏ¢£¬Í¨¹ı¿ª¹ØÊ¹ÓÃ
     struct MANAGE_WAIT_INFO
     {
     public:
@@ -29,35 +29,35 @@ protected:
         {
         }
     public:
-        //çº¿ç¨‹çš„ID
+        //Ïß³ÌµÄID
         ZCE_THREAD_ID     wait_thr_id_;
-        //åˆ†ç»„ID
+        //·Ö×éID
         int               wait_group_id_;
     };
 
 protected:
-    //ç”¨listç®¡ç†ï¼Œæ€§èƒ½ä¸æ˜¯ç‰¹åˆ«å¥½ï¼Œä½†è€ƒè™‘åˆ°è¦ä¸­é—´åˆ é™¤å› ç´ ç­‰ç­‰ï¼Œå¿äº†
+    //ÓÃlist¹ÜÀí£¬ĞÔÄÜ²»ÊÇÌØ±ğºÃ£¬µ«¿¼ÂÇµ½ÒªÖĞ¼äÉ¾³ıÒòËØµÈµÈ£¬ÈÌÁË
     typedef std::list <MANAGE_WAIT_INFO>   MANAGE_WAIT_THREAD_LIST;
 
-    //å•å­å®ä¾‹
+    //µ¥×ÓÊµÀı
     static ZCE_Thread_Wait_Manager *instance_;
 
 protected:
 
-    //æ‰€æœ‰å¸Œæœ›ç­‰å¾…çš„çº¿ç¨‹è®°å½•
+    //ËùÓĞÏ£ÍûµÈ´ıµÄÏß³Ì¼ÇÂ¼
     MANAGE_WAIT_THREAD_LIST   wait_thread_list_;
 
 public:
-    //æ„é€ å‡½æ•°ï¼Œå…è®¸ä½ æ‹¥æœ‰å®ä¾‹ï¼Œä½†æ¨èä½ ç”¨å•ä»¶å¤„ç†
+    //¹¹Ôìº¯Êı£¬ÔÊĞíÄãÓµÓĞÊµÀı£¬µ«ÍÆ¼öÄãÓÃµ¥¼ş´¦Àí
     ZCE_Thread_Wait_Manager();
     ~ZCE_Thread_Wait_Manager();
 
-    //å¦‚æœéœ€è¦ç®¡ç†å¤„ç†ï¼Œè¦è‡ªå·±ç™»è®°ï¼Œ
+    //Èç¹ûĞèÒª¹ÜÀí´¦Àí£¬Òª×Ô¼ºµÇ¼Ç£¬
     void record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id = 0 );
-    //ç™»è®°ä¸€ä¸ªè¦è¿›è¡Œç­‰å¾…å¤„ç†ç­‰å¾…çº¿ç¨‹
+    //µÇ¼ÇÒ»¸öÒª½øĞĞµÈ´ı´¦ÀíµÈ´ıÏß³Ì
     void record_wait_thread(const ZCE_Thread_Task *wait_thr_task);
 
-    //ç­‰æ‰€æœ‰çš„çº¿ç¨‹é€€å‡º
+    //µÈËùÓĞµÄÏß³ÌÍË³ö
     void wait_all();
 
     //
@@ -65,9 +65,9 @@ public:
 
 public:
 
-    //å•å­å‡½æ•°
+    //µ¥×Óº¯Êı
     static ZCE_Thread_Wait_Manager *instance();
-    //æ¸…ç†å•å­çš„å‡½æ•°
+    //ÇåÀíµ¥×ÓµÄº¯Êı
     static void clean_instance();
 };
 

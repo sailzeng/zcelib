@@ -1,4 +1,4 @@
-ï»¿#include "zerg_predefine.h"
+#include "zerg_predefine.h"
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_comm_manager.h"
 #include "zerg_application.h"
@@ -9,7 +9,7 @@
 class  Zerg_App_Timer_Handler
 ****************************************************************************************************/
 
-///ZERGæœåŠ¡å™¨å®šæ—¶å™¨ID,
+///ZERG·şÎñÆ÷¶¨Ê±Æ÷ID,
 const int Zerg_App_Timer_Handler::ZERG_TIMER_ID[] =
 {
     0x101,
@@ -21,14 +21,14 @@ Zerg_App_Timer_Handler::Zerg_App_Timer_Handler():
     Server_Timer_Base()
 {
 
-    //reloadä¸»åŠ¨è¿æ¥çš„é—´éš”æ—¶é—´, 300s
+    //reloadÖ÷¶¯Á¬½ÓµÄ¼ä¸ôÊ±¼ä, 300s
     const  int     AUTOCONNECT_RELOAD_INTERVAL = 300000;
 
 
     srand(static_cast<unsigned int>(ZCE_LIB::pthread_self()));
     random_reload_point_ = rand() % AUTOCONNECT_RELOAD_INTERVAL;
 
-    //ä¸»åŠ¨é‡ç°é“¾æ¥çš„é—´éš”æ—¶é—´
+    //Ö÷¶¯ÖØÏÖÁ´½ÓµÄ¼ä¸ôÊ±¼ä
     const time_t AUTOCONNECT_RETRY_SEC = 5;
     ZCE_Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
 
@@ -43,10 +43,10 @@ Zerg_App_Timer_Handler::~Zerg_App_Timer_Handler()
 //
 int Zerg_App_Timer_Handler::timer_timeout(const ZCE_Time_Value &time_now, const void *act)
 {
-    //ç­‰åˆ°å½“å‰çš„æ—¶é—´
+    //µÈµ½µ±Ç°µÄÊ±¼ä
     Server_Timer_Base::timer_timeout(time_now, act);
 
-    //å¿ƒè·³æ•°æ®
+    //ĞÄÌøÊı¾İ
     const int zerg_timeid = *(static_cast<const int *>(act));
     if (ZERG_TIMER_ID[0] == zerg_timeid)
     {

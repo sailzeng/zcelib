@@ -1,4 +1,4 @@
-ï»¿#include "soar_predefine.h"
+#include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_zerg_frame_malloc.h"
 #include "soar_svrd_cfg_fsm.h"
@@ -17,7 +17,7 @@ Comm_SvrdApp_FSM_Notify::~Comm_SvrdApp_FSM_Notify()
 
 };
 
-//å¢åŠ è°ƒç”¨register_func_cmd
+//Ôö¼Óµ÷ÓÃregister_func_cmd
 int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
 {
     int ret = 0;
@@ -36,7 +36,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
     ZCE_Time_Value enqueue_timeout;
     enqueue_timeout.sec(svd_config->framework_config_.task_info_.enqueue_timeout_sec_);
     enqueue_timeout.usec(svd_config->framework_config_.task_info_.enqueue_timeout_usec_);
-    //äº‹åŠ¡ç®¡ç†å™¨çš„åˆå§‹åŒ–
+    //ÊÂÎñ¹ÜÀíÆ÷µÄ³õÊ¼»¯
     trans_mgr->initialize(
         svd_config->framework_config_.trans_info_.trans_cmd_num_,
         svd_config->framework_config_.trans_info_.trans_num_,
@@ -57,15 +57,15 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
     size_t task_num = 0;
     size_t task_stack_size = 0;
 
-    // task_num task_stack_sizeè¿™é‡Œä¸å†ä½¿ç”¨ï¼ŒåŸå› è§ä¸‹æ®µæ–‡å­—
+    // task_num task_stack_sizeÕâÀï²»ÔÙÊ¹ÓÃ£¬Ô­Òò¼ûÏÂ¶ÎÎÄ×Ö
     ret = register_notify_task(clone_task,
                                task_num,
                                task_stack_size);
 
-    // ç”±äºappé…ç½®çš„åˆå§‹åŒ–æ˜¯åœ¨æ¡†æ¶åˆå§‹åŒ–åï¼Œæ‰€ä»¥è¿™é‡Œè°ƒç”¨register_notify_taskæ—¶ï¼Œ
-    // appå®é™…ä¸Šè¿˜æ²¡æœ‰åŠ è½½é…ç½®ï¼Œè€ƒè™‘åˆ°taskçš„é…ç½®å±äºæ¡†æ¶æ›´åˆç†ä¸€äº›ï¼Œ
-    // è¿™é‡Œå°†Taskçš„é…ç½®ç§»åˆ°äº†framework.xmlé…ç½®ä¸­
-    // åˆå§‹åŒ–DBçº¿ç¨‹ï¼Œ
+    // ÓÉÓÚappÅäÖÃµÄ³õÊ¼»¯ÊÇÔÚ¿ò¼Ü³õÊ¼»¯ºó£¬ËùÒÔÕâÀïµ÷ÓÃregister_notify_taskÊ±£¬
+    // appÊµ¼ÊÉÏ»¹Ã»ÓĞ¼ÓÔØÅäÖÃ£¬¿¼ÂÇµ½taskµÄÅäÖÃÊôÓÚ¿ò¼Ü¸üºÏÀíÒ»Ğ©£¬
+    // ÕâÀï½«TaskµÄÅäÖÃÒÆµ½ÁËframework.xmlÅäÖÃÖĞ
+    // ³õÊ¼»¯DBÏß³Ì£¬
     ret = trans_mgr->active_notify_task(
               clone_task,
               svd_config->framework_config_.task_info_.task_thread_num_,
@@ -80,7 +80,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
     return 0;
 }
 
-//è¿è¡Œå¤„ç†,
+//ÔËĞĞ´¦Àí,
 int Comm_SvrdApp_FSM_Notify::app_run()
 {
     // fix me add log
@@ -89,13 +89,13 @@ int Comm_SvrdApp_FSM_Notify::app_run()
             get_app_basename(),
             typeid(*this).name());
 
-    //ç©ºé—²Næ¬¡å,è°ƒæ•´SELECTçš„ç­‰å¾…æ—¶é—´é—´éš”
+    //¿ÕÏĞN´Îºó,µ÷ÕûSELECTµÄµÈ´ıÊ±¼ä¼ä¸ô
     const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
-    //ç©ºé—²Næ¬¡å,SLEEPçš„æ—¶é—´é—´éš”
+    //¿ÕÏĞN´Îºó,SLEEPµÄÊ±¼ä¼ä¸ô
     const unsigned int HEAVY_IDLE_SLEEP_INTERVAL = 10240;
 
     //microsecond
-    // 64ä½tlinuxä¸‹idleçš„æ—¶é—´å¦‚æœå¤ªçŸ­ä¼šå¯¼è‡´cpuè¿‡é«˜
+    // 64Î»tlinuxÏÂidleµÄÊ±¼äÈç¹ûÌ«¶Ì»áµ¼ÖÂcpu¹ı¸ß
     const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
@@ -112,20 +112,20 @@ int Comm_SvrdApp_FSM_Notify::app_run()
 
     for (; app_run_;)
     {
-        // æ£€æŸ¥æ˜¯å¦éœ€è¦é‡æ–°åŠ è½½é…ç½®
+        // ¼ì²éÊÇ·ñĞèÒªÖØĞÂ¼ÓÔØÅäÖÃ
 
 
-        //ä»PIPEå¤„ç†æ”¶åˆ°çš„å‘½ä»¤
+        //´ÓPIPE´¦ÀíÊÕµ½µÄÃüÁî
         notify_trans_mgr->process_pipe_frame(all_proc_frame, all_gen_trans);
-        //ä»RECV QUEUEå¤„ç†å‘½ä»¤
+        //´ÓRECV QUEUE´¦ÀíÃüÁî
         notify_trans_mgr->process_recvqueue_frame(prcframe_queue, gentrans_queue);
         all_proc_frame += prcframe_queue;
         all_gen_trans += gentrans_queue;
 
-        //è¶…æ—¶
+        //³¬Ê±
         num_timer_expire = time_queue->expire();
 
-        // å¤„ç†ç½‘ç»œåŒ…
+        // ´¦ÀíÍøÂç°ü
         reactor->handle_events(&select_interval, &num_io_event);
 
         if ((all_proc_frame + num_timer_expire + num_io_event) <= 0)
@@ -137,18 +137,18 @@ int Comm_SvrdApp_FSM_Notify::app_run()
             idle = 0;
         }
 
-        //å¦‚æœå¿™ï¼Œç»§ç»­å¹²æ´»
+        //Èç¹ûÃ¦£¬¼ÌĞø¸É»î
         if (idle < LIGHT_IDLE_SELECT_INTERVAL)
         {
             select_interval.usec(0);
             continue;
         }
-        //å¦‚æœç©ºé—²å¾ˆå¤š,ä¼‘æ¯ä¸€ä¸‹,å¦‚æœä½ æ¯”è¾ƒç©ºé—²ï¼Œåœ¨è¿™å„¿SELECTç›¸å½“äºSleepï¼Œ
+        //Èç¹û¿ÕÏĞºÜ¶à,ĞİÏ¢Ò»ÏÂ,Èç¹ûÄã±È½Ï¿ÕÏĞ£¬ÔÚÕâ¶ùSELECTÏàµ±ÓÚSleep£¬
         else if (idle >= HEAVY_IDLE_SLEEP_INTERVAL)
         {
             select_interval.usec(HEAVY_IDLE_INTERVAL_MICROSECOND );
         }
-        //else ç›¸å½“äº else if (idle >= LIGHT_IDLE_SELECT_INTERVAL)
+        //else Ïàµ±ÓÚ else if (idle >= LIGHT_IDLE_SELECT_INTERVAL)
         else
         {
             select_interval.usec(LIGHT_IDLE_INTERVAL_MICROSECOND );
@@ -159,17 +159,17 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     return 0;
 }
 
-//é€€å‡ºå¤„ç†
+//ÍË³ö´¦Àí
 int Comm_SvrdApp_FSM_Notify::app_exit()
 {
-    //é€šçŸ¥æ‰€æœ‰çš„çº¿ç¨‹é€€å‡º
+    //Í¨ÖªËùÓĞµÄÏß³ÌÍË³ö
     MT_NOTIFY_TRANS_MANGER *notify_trans_mgr = static_cast<MT_NOTIFY_TRANS_MANGER *>(Transaction_Manager::instance());
     notify_trans_mgr->stop_notify_task();
 
     int ret = 0;
     Transaction_Manager::clean_instance();
 
-    //ç­‰å¾…æ‰€æœ‰çš„Joinçš„çº¿ç¨‹é€€å‡º
+    //µÈ´ıËùÓĞµÄJoinµÄÏß³ÌÍË³ö
     //ACE_Thread_Manager::instance()->wait();
 
     ret = Soar_Svrd_Appliction::app_exit();

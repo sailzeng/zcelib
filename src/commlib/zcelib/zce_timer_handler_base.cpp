@@ -1,8 +1,8 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_time.h"
 #include "zce_timer_handler_base.h"
 
-//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
 ZCE_Timer_Handler::ZCE_Timer_Handler(ZCE_Timer_Queue *timer_queue):
     timer_queue_(timer_queue)
 {
@@ -16,19 +16,19 @@ ZCE_Timer_Handler::~ZCE_Timer_Handler()
 {
 }
 
-//å¾—åˆ°Timer Queue
+//µÃµ½Timer Queue
 ZCE_Timer_Queue *ZCE_Timer_Handler::timer_queue()
 {
     return timer_queue_;
 }
 
-//å¾—åˆ°Timer Queue
+//µÃµ½Timer Queue
 void ZCE_Timer_Handler::timer_queue(ZCE_Timer_Queue *set_timer_queue)
 {
     timer_queue_ = set_timer_queue;
 }
 
-//å®šæ—¶å™¨å…³é—­
+//¶¨Ê±Æ÷¹Ø±Õ
 int ZCE_Timer_Handler::timer_close()
 {
     return 0;

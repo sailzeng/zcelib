@@ -1,10 +1,10 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_msgque_sema.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´6æœˆ17æ—¥
-* @brief      ç”¨ä¿¡å·ç¯+å®¹å™¨å®ç°çš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œå¯¹äºæˆ‘ä¸ªäººæ¥è¯´ï¼Œè¿˜æ˜¯ä¿¡å·ç¯å¥½ç†è§£ä¸€äº›
+* @date       2011Äê6ÔÂ17ÈÕ
+* @brief      ÓÃĞÅºÅµÆ+ÈİÆ÷ÊµÏÖµÄÏûÏ¢¶ÓÁĞ£¬¶ÔÓÚÎÒ¸öÈËÀ´Ëµ£¬»¹ÊÇĞÅºÅµÆºÃÀí½âÒ»Ğ©
 *
 *
 * @details
@@ -29,10 +29,10 @@
 
 
 /*!
-* @brief      ç”¨ä¿¡å·ç¯+å®¹å™¨å®ç°çš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œå¯¹äºæˆ‘ä¸ªäººæ¥è¯´ï¼Œè¿˜æ˜¯ä¿¡å·ç¯å¥½ç†è§£ä¸€äº›
+* @brief      ÓÃĞÅºÅµÆ+ÈİÆ÷ÊµÏÖµÄÏûÏ¢¶ÓÁĞ£¬¶ÔÓÚÎÒ¸öÈËÀ´Ëµ£¬»¹ÊÇĞÅºÅµÆºÃÀí½âÒ»Ğ©
 *
-* @tparam     _value_type      æ¶ˆæ¯é˜Ÿåˆ—æ”¾å…¥çš„æ•°æ®ç±»å‹
-* @tparam     _container_type  æ¶ˆæ¯é˜Ÿåˆ—å†…éƒ¨å®¹å™¨ç±»å‹
+* @tparam     _value_type      ÏûÏ¢¶ÓÁĞ·ÅÈëµÄÊı¾İÀàĞÍ
+* @tparam     _container_type  ÏûÏ¢¶ÓÁĞÄÚ²¿ÈİÆ÷ÀàĞÍ
 */
 template < typename _value_type,
          typename _container_type >
@@ -40,22 +40,22 @@ class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public ZCE
 {
 protected:
 
-    //QUEUEçš„æœ€å¤§å°ºå¯¸
+    //QUEUEµÄ×î´ó³ß´ç
     size_t                                         queue_max_size_;
 
-    //ç”±äºLISTçš„size()å‡½æ•°æ¯”è¾ƒè€—æ—¶ï¼Œæ‰€ä»¥è¿™å„¿è¿˜æ˜¯ç”¨äº†ä¸ªè®¡æ•°å™¨ï¼Œè€Œä¸ç›´æ¥ä½¿ç”¨_container_type.size()
+    //ÓÉÓÚLISTµÄsize()º¯Êı±È½ÏºÄÊ±£¬ËùÒÔÕâ¶ù»¹ÊÇÓÃÁË¸ö¼ÆÊıÆ÷£¬¶ø²»Ö±½ÓÊ¹ÓÃ_container_type.size()
     size_t                                         queue_cur_size_;
 
-    //é˜Ÿåˆ—çš„LOCK,ç”¨äºè¯»å†™æ“ä½œçš„åŒæ­¥æ§åˆ¶
+    //¶ÓÁĞµÄLOCK,ÓÃÓÚ¶ÁĞ´²Ù×÷µÄÍ¬²½¿ØÖÆ
     ZCE_MT_SYNCH::MUTEX                            queue_lock_;
 
-    //ä¿¡å·ç¯ï¼Œæ»¡çš„ä¿¡å·ç¯
+    //ĞÅºÅµÆ£¬ÂúµÄĞÅºÅµÆ
     ZCE_MT_SYNCH::SEMAPHORE                        sem_full_;
 
-    //ä¿¡å·ç¯ï¼Œç©ºçš„ä¿¡å·ç¯ï¼Œå½“æ•°æ®
+    //ĞÅºÅµÆ£¬¿ÕµÄĞÅºÅµÆ£¬µ±Êı¾İ
     ZCE_MT_SYNCH::SEMAPHORE                        sem_empty_;
 
-    //å®¹å™¨ç±»å‹ï¼Œå¯ä»¥æ˜¯list,dequeue,
+    //ÈİÆ÷ÀàĞÍ£¬¿ÉÒÔÊÇlist,dequeue,
     _container_type                                message_queue_;
 
 public:
@@ -73,7 +73,7 @@ public:
     {
     }
 
-    //QUEUEæ˜¯å¦ä¸ºNULL
+    //QUEUEÊÇ·ñÎªNULL
     inline bool empty()
     {
         ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
@@ -86,7 +86,7 @@ public:
         return false;
     }
 
-    //QUEUEæ˜¯å¦ä¸ºæ»¡
+    //QUEUEÊÇ·ñÎªÂú
     inline bool full()
     {
         ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
@@ -99,12 +99,12 @@ public:
         return false;
     }
 
-    //æ”¾å…¥æ•°æ®ï¼Œä¸€ç›´ç­‰å¾…
+    //·ÅÈëÊı¾İ£¬Ò»Ö±µÈ´ı
     int enqueue(const _value_type &value_data)
     {
         sem_full_.lock();
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD lock_guard(queue_lock_);
 
@@ -116,20 +116,20 @@ public:
         return 0;
     }
 
-    //æ”¾å…¥ä¸€ä¸ªæ•°æ®ï¼Œè¿›è¡Œè¶…æ—¶ç­‰å¾…
+    //·ÅÈëÒ»¸öÊı¾İ£¬½øĞĞ³¬Ê±µÈ´ı
     int enqueue(const _value_type &value_data,
                 const ZCE_Time_Value  &wait_time )
     {
         bool bret = false;
         bret = sem_full_.duration_lock(wait_time);
 
-        //å¦‚æœè¶…æ—¶äº†ï¼Œè¿”å›false
+        //Èç¹û³¬Ê±ÁË£¬·µ»Øfalse
         if (!bret)
         {
             return -1;
         }
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD lock_guard(queue_lock_);
 
@@ -141,20 +141,20 @@ public:
         return 0;
     }
 
-    //è¯•ç€æ”¾å…¥æ–°çš„æ•°æ®è¿›å…¥é˜Ÿåˆ—ï¼Œå¦‚æœæ²¡æœ‰æˆåŠŸï¼Œç«‹å³è¿”å›
+    //ÊÔ×Å·ÅÈëĞÂµÄÊı¾İ½øÈë¶ÓÁĞ£¬Èç¹ûÃ»ÓĞ³É¹¦£¬Á¢¼´·µ»Ø
     int try_enqueue(const _value_type &value_data)
     {
         bool bret = false;
         bret = sem_full_.try_lock();
 
-        //å¦‚æœè¶…æ—¶äº†ï¼Œè¿”å›false
+        //Èç¹û³¬Ê±ÁË£¬·µ»Øfalse
         if (!bret)
         {
             //error = EAGAIN;
             return -1;
         }
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD lock_guard(queue_lock_);
 
@@ -166,20 +166,20 @@ public:
         return 0;
     }
 
-    //å–å‡ºä¸€ä¸ªæ•°æ®ï¼Œæ ¹æ®å‚æ•°ç¡®å®šæ˜¯å¦ç­‰å¾…ä¸€ä¸ªç›¸å¯¹æ—¶é—´
+    //È¡³öÒ»¸öÊı¾İ£¬¸ù¾İ²ÎÊıÈ·¶¨ÊÇ·ñµÈ´ıÒ»¸öÏà¶ÔÊ±¼ä
     int dequeue(_value_type &value_data,
                 const ZCE_Time_Value  &wait_time )
     {
         bool bret = false;
         bret = sem_empty_.duration_lock(wait_time);
 
-        //å¦‚æœè¶…æ—¶äº†ï¼Œè¿”å›false
+        //Èç¹û³¬Ê±ÁË£¬·µ»Øfalse
         if (!bret)
         {
             return -1;
         }
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
             //
@@ -192,12 +192,12 @@ public:
         return 0;
     }
 
-    //å–å‡ºä¸€ä¸ªæ•°æ®ï¼Œä¸€ç›´ç­‰å¾…
+    //È¡³öÒ»¸öÊı¾İ£¬Ò»Ö±µÈ´ı
     int dequeue(_value_type &value_data)
     {
         sem_empty_.lock();
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
             //
@@ -210,20 +210,20 @@ public:
         return 0;
     }
 
-    //å–å‡ºä¸€ä¸ªæ•°æ®ï¼Œæ ¹æ®å‚æ•°ç¡®å®šæ˜¯å¦ç­‰å¾…ä¸€ä¸ªç›¸å¯¹æ—¶é—´
+    //È¡³öÒ»¸öÊı¾İ£¬¸ù¾İ²ÎÊıÈ·¶¨ÊÇ·ñµÈ´ıÒ»¸öÏà¶ÔÊ±¼ä
     int try_dequeue(_value_type &value_data)
     {
         bool bret = false;
         bret = sem_empty_.try_lock();
 
-        //å¦‚æœè¶…æ—¶äº†ï¼Œè¿”å›false
+        //Èç¹û³¬Ê±ÁË£¬·µ»Øfalse
         if (!bret)
         {
             //error = EAGAIN;
             return -1;
         }
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
             //
@@ -236,7 +236,7 @@ public:
         return 0;
     }
 
-    //æ¸…ç†æ¶ˆæ¯é˜Ÿåˆ—
+    //ÇåÀíÏûÏ¢¶ÓÁĞ
     void clear()
     {
         ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
@@ -244,7 +244,7 @@ public:
         queue_cur_size_ = 0;
     }
 
-    //è¿”å›æ¶ˆæ¯å¯¹è±¡çš„å°ºå¯¸
+    //·µ»ØÏûÏ¢¶ÔÏóµÄ³ß´ç
     size_t size()
     {
         ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
@@ -253,19 +253,19 @@ public:
 
 protected:
 
-    //å–å‡ºä¸€ä¸ªæ•°æ®ï¼Œæ ¹æ®å‚æ•°ç¡®å®šæ˜¯å¦ç­‰å¾…ä¸€ä¸ªç›¸å¯¹æ—¶é—´
+    //È¡³öÒ»¸öÊı¾İ£¬¸ù¾İ²ÎÊıÈ·¶¨ÊÇ·ñµÈ´ıÒ»¸öÏà¶ÔÊ±¼ä
     int dequeue(_value_type &value_data,
                 bool if_wait_timeout,
                 const ZCE_Time_Value  &wait_time )
     {
 
-        //è¿›è¡Œè¶…æ—¶ç­‰å¾…
+        //½øĞĞ³¬Ê±µÈ´ı
         if (if_wait_timeout)
         {
             bool bret = false;
             bret = sem_empty_.duration_lock(wait_time);
 
-            //å¦‚æœè¶…æ—¶äº†ï¼Œè¿”å›false
+            //Èç¹û³¬Ê±ÁË£¬·µ»Øfalse
             if (!bret)
             {
                 return -1;
@@ -276,7 +276,7 @@ protected:
             sem_empty_.lock();
         }
 
-        //æ³¨æ„è¿™æ®µä»£ç å¿…é¡»ç”¨{}ä¿æŠ¤ï¼Œå› ä¸ºä½ å¿…é¡»å…ˆä¿è¯æ•°æ®å–å‡º
+        //×¢ÒâÕâ¶Î´úÂë±ØĞëÓÃ{}±£»¤£¬ÒòÎªÄã±ØĞëÏÈ±£Ö¤Êı¾İÈ¡³ö
         {
             ZCE_Thread_Light_Mutex::LOCK_GUARD guard(queue_lock_);
             //
@@ -292,10 +292,10 @@ protected:
 
 
 /*!
-* @brief      å†…éƒ¨ç”¨LISTå®ç°çš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œæ€§èƒ½ä½,è¾¹ç•Œä¿æŠ¤ç”¨çš„æ¡ä»¶å˜é‡ã€‚ä½†ä¸€å¼€å§‹å ç”¨å†…å­˜ä¸å¤š
-*             ZCE_Message_Queue_List<ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH å‚æ•°ç‰¹åŒ–
-* @tparam     _value_type  æ¶ˆæ¯é˜Ÿåˆ—ä¿å­˜çš„æ•°æ®ç±»å‹
-* @note       ä¸»è¦å°±æ˜¯ä¸ºäº†ç»™ä½ ä¸€äº›è¯­æ³•ç³–
+* @brief      ÄÚ²¿ÓÃLISTÊµÏÖµÄÏûÏ¢¶ÓÁĞ£¬ĞÔÄÜµÍ,±ß½ç±£»¤ÓÃµÄÌõ¼ş±äÁ¿¡£µ«Ò»¿ªÊ¼Õ¼ÓÃÄÚ´æ²»¶à
+*             ZCE_Message_Queue_List<ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH ²ÎÊıÌØ»¯
+* @tparam     _value_type  ÏûÏ¢¶ÓÁĞ±£´æµÄÊı¾İÀàĞÍ
+* @note       Ö÷Òª¾ÍÊÇÎªÁË¸øÄãÒ»Ğ©Óï·¨ÌÇ
 */
 template <typename _value_type >
 class ZCE_Message_Queue_List <ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::list<_value_type> >
@@ -313,13 +313,13 @@ public:
 };
 
 ///************************************************************************************************************
-//Author          : Sailzeng ZENGXING  Date Of Creation: 2011å¹´6æœˆ17æ—¥
+//Author          : Sailzeng ZENGXING  Date Of Creation: 2011Äê6ÔÂ17ÈÕ
 //Template Param  :
-//  Param1: typename _value_type æ¶ˆæ¯é˜Ÿåˆ—ä¿å­˜çš„æ•°æ®ç±»å‹
+//  Param1: typename _value_type ÏûÏ¢¶ÓÁĞ±£´æµÄÊı¾İÀàĞÍ
 //Class           : ZCE_Msgqueue_Semaphore_Deque
 //Inherit         : public ZCE_Message_Queue_Semaphore<_value_type,std::deque<_value_type> >
-//Description     : å†…éƒ¨ç”¨DQUEUEå®ç°çš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œæ€§èƒ½è¾ƒå¥½,è¾¹ç•Œä¿æŠ¤ç”¨çš„æ¡ä»¶å˜é‡ã€‚
-//Other           : å°è£…çš„ä¸»è¦å°±æ˜¯ä¸ºäº†ç»™ä½ ä¸€äº›è¯­æ³•ç³–
+//Description     : ÄÚ²¿ÓÃDQUEUEÊµÏÖµÄÏûÏ¢¶ÓÁĞ£¬ĞÔÄÜ½ÏºÃ,±ß½ç±£»¤ÓÃµÄÌõ¼ş±äÁ¿¡£
+//Other           : ·â×°µÄÖ÷Òª¾ÍÊÇÎªÁË¸øÄãÒ»Ğ©Óï·¨ÌÇ
 //Modify Record   :
 //************************************************************************************************************/
 template <typename _value_type >
@@ -338,13 +338,13 @@ public:
 };
 
 /************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation: 2011å¹´6æœˆ17æ—¥
+Author          : Sailzeng ZENGXING  Date Of Creation: 2011Äê6ÔÂ17ÈÕ
 Template Param  :
-  Param1: typename _value_type æ¶ˆæ¯é˜Ÿåˆ—ä¿å­˜çš„æ•°æ®ç±»å‹
+  Param1: typename _value_type ÏûÏ¢¶ÓÁĞ±£´æµÄÊı¾İÀàĞÍ
 Class           : ZCE_Message_Queue_Rings
 Inherit         : public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,ZCE_LIB::lordrings<_value_type> >
-Description     : å†…éƒ¨ç”¨circular_bufferå®ç°çš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œæ€§èƒ½éå¸¸å¥½,è¾¹ç•Œä¿æŠ¤ç”¨ä¿¡å·ç¯ï¼Œçš„æ¶ˆæ¯é˜Ÿåˆ—ï¼Œä½†ç©ºé—´æ¯”è¾ƒè´¹
-Other           : è¿™ä¸ªå°è£…çš„ä¸»è¦ä¸å…‰æ˜¯äº†ä¸ºäº†ç»™ä½ è¯­æ³•ç³–ï¼Œè€Œä¸”æ˜¯ä¸ºäº†æé™æ€§èƒ½
+Description     : ÄÚ²¿ÓÃcircular_bufferÊµÏÖµÄÏûÏ¢¶ÓÁĞ£¬ĞÔÄÜ·Ç³£ºÃ,±ß½ç±£»¤ÓÃĞÅºÅµÆ£¬µÄÏûÏ¢¶ÓÁĞ£¬µ«¿Õ¼ä±È½Ï·Ñ
+Other           : Õâ¸ö·â×°µÄÖ÷Òª²»¹âÊÇÁËÎªÁË¸øÄãÓï·¨ÌÇ£¬¶øÇÒÊÇÎªÁË¼«ÏŞĞÔÄÜ
 Modify Record   :
 ************************************************************************************************************/
 template <typename _value_type >

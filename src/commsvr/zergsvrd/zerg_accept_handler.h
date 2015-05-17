@@ -1,4 +1,4 @@
-ï»¿
+
 #ifndef ZERG_TCP_ACCEPT_HANDLER_H_
 #define ZERG_TCP_ACCEPT_HANDLER_H_
 
@@ -7,7 +7,7 @@ class Zerg_IPRestrict_Mgr;
 
 
 /*!
-* @brief      TCP Accept å¤„ç†çš„EventHandler,
+* @brief      TCP Accept ´¦ÀíµÄEventHandler,
 *
 * @note
 */
@@ -16,32 +16,32 @@ class TCP_Accept_Handler : public ZCE_Event_Handler
 public:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°
-    * @param      svcid  ç›¸åº”çš„svc id
-    * @param      addr   ç›¸åº”çš„IPåœ°å€
+    * @brief      ¹¹Ôìº¯Êı
+    * @param      svcid  ÏàÓ¦µÄsvc id
+    * @param      addr   ÏàÓ¦µÄIPµØÖ·
     */
     TCP_Accept_Handler(const SERVICES_ID &svcid,
                        const ZCE_Sockaddr_In &addr);
 
 protected:
-    ///ç›‘å¬ç«¯å£
+    ///¼àÌı¶Ë¿Ú
     ~TCP_Accept_Handler();
 
 public:
 
-    ///åˆ›å»ºç›‘å¬çš„ç«¯å£
+    ///´´½¨¼àÌıµÄ¶Ë¿Ú
     int create_listen();
 
     /*!
-    * @brief      äº‹ä»¶è§¦å‘çš„æ¯æ‰å¤„ç†ï¼Œè¡¨ç¤ºæœ‰ä¸€ä¸ªaccept çš„æ•°æ®
+    * @brief      ÊÂ¼ş´¥·¢µÄ»Ùµô´¦Àí£¬±íÊ¾ÓĞÒ»¸öaccept µÄÊı¾İ
     * @return     int
     */
     virtual int handle_input();
 
-    ///å…³é—­å¤„ç†
+    ///¹Ø±Õ´¦Àí
     virtual int handle_close ();
 
-    ///å¾—åˆ°Acceptorçš„å¥æŸ„
+    ///µÃµ½AcceptorµÄ¾ä±ú
     virtual ZCE_HANDLE get_handle(void) const;
 
 
@@ -51,14 +51,14 @@ protected:
     ///ACCPET PEER
     ZCE_Socket_Acceptor      peer_acceptor_;
 
-    ///è‡ªå·±çš„ SVC INFO
+    ///×Ô¼ºµÄ SVC INFO
     SERVICES_ID              my_svc_info_;
 
-    ///é‚¦å®šçš„åœ°å€
+    ///°î¶¨µÄµØÖ·
     ZCE_Sockaddr_In          accept_bind_addr_;
 
 
-    ///IPé™åˆ¶ç®¡ç†å™¨
+    ///IPÏŞÖÆ¹ÜÀíÆ÷
     Zerg_IPRestrict_Mgr      *ip_restrict_;
 
 

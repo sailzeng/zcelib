@@ -1,15 +1,15 @@
-ï»¿#ifndef ZCE_LIB_BOOST_MPL_H_
+#ifndef ZCE_LIB_BOOST_MPL_H_
 #define ZCE_LIB_BOOST_MPL_H_
 
-//ä»Šå¤©çœ‹åˆ°ä¸€æ®µï¼Œç™½å‘ä¸‰åƒä¸ˆï¼Œä»£ç å†™ä¸‡è¡Œï¼Œä¸çŸ¥ç¨‹åºé‡Œï¼Œä½•å¤„è¯å‡„å‡‰ï¼Œ
+//½ñÌì¿´µ½Ò»¶Î£¬°×·¢ÈıÇ§ÕÉ£¬´úÂëĞ´ÍòĞĞ£¬²»Öª³ÌĞòÀï£¬ºÎ´¦»°ÆàÁ¹£¬
 
 namespace ZCE_LIB
 {
 
 //==================================================================
 
-//è¿™ä¸ªæ–¹æ³•æ¥è‡ªboost ï¼Œ
-//JiangweiSun  åœ¨å…¶ä¸ªäººblog ä¸Š http://www.suninf.net/SFINAE-and-enable_if/ å¾ˆå¥½çš„æ–‡ç« 
+//Õâ¸ö·½·¨À´×Ôboost £¬
+//JiangweiSun  ÔÚÆä¸öÈËblog ÉÏ http://www.suninf.net/SFINAE-and-enable_if/ ºÜºÃµÄÎÄÕÂ
 template<typename T>
 struct helper
 {
@@ -17,23 +17,23 @@ struct helper
 };
 
 
-// æ£€æµ‹ç±»å‹Tæ˜¯å¦å…·æœ‰å†…éƒ¨çš„åä¸ºtypeçš„typedef
+// ¼ì²âÀàĞÍTÊÇ·ñ¾ßÓĞÄÚ²¿µÄÃûÎªtypeµÄtypedef
 
-// ç”¨é»˜è®¤æ¨¡æ¿å‚æ•°æŒ‡ç¤ºé»˜è®¤æƒ…å†µ
+// ÓÃÄ¬ÈÏÄ£°å²ÎÊıÖ¸Ê¾Ä¬ÈÏÇé¿ö
 template<typename T, typename U = void>
 struct has_def_type_impl
 {
     static const bool value = false;
 };
 
-//åç‰¹åŒ–ï¼Œä¼˜å…ˆå»é€‚é…ä»Tèƒå–ç±»å‹ï¼Œ Tæœ‰å†…ç½®çš„typeæ—¶é€‰æ‹©
+//Æ«ÌØ»¯£¬ÓÅÏÈÈ¥ÊÊÅä´ÓTİÍÈ¡ÀàĞÍ£¬ TÓĞÄÚÖÃµÄtypeÊ±Ñ¡Ôñ
 template<typename T>
 struct has_def_type_impl < T, typename helper<typename T::type>::type >
 {
     static const bool value = true;
 };
 
-// æ£€æµ‹ç±»å‹Tæ˜¯å¦å…·æœ‰å†…éƒ¨çš„åä¸ºtypeçš„typedef
+// ¼ì²âÀàĞÍTÊÇ·ñ¾ßÓĞÄÚ²¿µÄÃûÎªtypeµÄtypedef
 template<typename T>
 struct has_def_type : has_def_type_impl < T >
 {
@@ -41,7 +41,7 @@ struct has_def_type : has_def_type_impl < T >
 
 
 //==================================================================
-//è¯•å›¾èƒå–å®¹å™¨çš„è¿­ä»£å™¨ç±»å‹
+//ÊÔÍ¼İÍÈ¡ÈİÆ÷µÄµü´úÆ÷ÀàĞÍ
 template <class container_type>
 struct container_traits
 {
@@ -49,7 +49,7 @@ struct container_traits
     typedef typename container_type::value_type   value_type;
 };
 
-//å¯¹æ•°ç»„å®¹å™¨è¿›è¡Œç‰¹åŒ–
+//¶ÔÊı×éÈİÆ÷½øĞĞÌØ»¯
 template <typename T>
 struct container_traits<T*>
 {

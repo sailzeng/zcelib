@@ -1,9 +1,9 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_mysql_stmtbind.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2005å¹´10æœˆ17æ—¥
+* @date       2005Äê10ÔÂ17ÈÕ
 * @brief
 *
 * @details
@@ -15,27 +15,27 @@
 #ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
 #define ZCE_LIB_MYSQL_STMT_RESULT_H_
 
-//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
+//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
 #if defined ZCE_USE_MYSQL
 
-//è¿™äº›å‡½æ•°éƒ½æ˜¯4.1.2åçš„ç‰ˆæœ¬åŠŸèƒ½
+//ÕâĞ©º¯Êı¶¼ÊÇ4.1.2ºóµÄ°æ±¾¹¦ÄÜ
 
 #include "zce_trace_log_debug.h"
 
 
 /*!
-* @brief MYSQL_BIND çš„åŒ…è£…å°è£…ç´¯ï¼Œ
+* @brief MYSQL_BIND µÄ°ü×°·â×°ÀÛ£¬
 *
-* @note  ZCE_Mysql_STMT_Bindé‡Œé¢bindçš„å˜é‡æ•°æ®ï¼Œæ˜¯å¦ä¸ºNULLï¼Œè¿”å›é•¿åº¦ï¼Œéƒ½æ˜¯æŒ‡é’ˆï¼Œ
-*        å¤–éƒ¨çš„ä¿å­˜ç”Ÿå‘½å‘¨æœŸï¼Œè¯·æ…é‡å¤„ç†ã€‚
+* @note  ZCE_Mysql_STMT_BindÀïÃæbindµÄ±äÁ¿Êı¾İ£¬ÊÇ·ñÎªNULL£¬·µ»Ø³¤¶È£¬¶¼ÊÇÖ¸Õë£¬
+*        Íâ²¿µÄ±£´æÉúÃüÖÜÆÚ£¬ÇëÉ÷ÖØ´¦Àí¡£
 */
 class ZCE_Mysql_STMT_Bind
 {
 public:
 
     /*!
-    * @brief      ä»…ä»…æ˜¯ä¸ºäº†é€‚é… ZCE_Mysql_STMT_Bind << çš„æ“ä½œç¬¦å·
-    *             ç»‘å®š2è¿›åˆ¶å‚æ•°æ•°æ®ï¼Œç”¨äº mysql_stmt_bind_param
+    * @brief      ½ö½öÊÇÎªÁËÊÊÅä ZCE_Mysql_STMT_Bind << µÄ²Ù×÷·ûºÅ
+    *             °ó¶¨2½øÖÆ²ÎÊıÊı¾İ£¬ÓÃÓÚ mysql_stmt_bind_param
     */
     class BinData_Param
     {
@@ -45,9 +45,9 @@ public:
 
         /*!
         * @brief
-        * @param[in] data_type æ•°æ®ç±»å‹ï¼Œåªèƒ½æ˜¯MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
-        * @param[in] pdata æ•°æ®æŒ‡é’ˆï¼Œå°±æ˜¯æ˜¯å†™å…¥çš„å­˜æ”¾çš„åœ°æ–¹æ•°æ®ï¼Œ
-        * @param[in] data_len æ•°æ®é•¿åº¦çš„æŒ‡é’ˆï¼Œä¼ å…¥å‚æ•°è¡¨ç¤ºæ•°æ®é•¿åº¦ï¼Œä½¿ç”¨åä¿å­˜æ˜¯è¡¨ç¤ºå†™å…¥çš„æ•°æ®é•¿åº¦
+        * @param[in] data_type Êı¾İÀàĞÍ£¬Ö»ÄÜÊÇMYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
+        * @param[in] pdata Êı¾İÖ¸Õë£¬¾ÍÊÇÊÇĞ´ÈëµÄ´æ·ÅµÄµØ·½Êı¾İ£¬
+        * @param[in] data_len Êı¾İ³¤¶ÈµÄÖ¸Õë£¬´«Èë²ÎÊı±íÊ¾Êı¾İ³¤¶È£¬Ê¹ÓÃºó±£´æÊÇ±íÊ¾Ğ´ÈëµÄÊı¾İ³¤¶È
         */
         BinData_Param(enum_field_types data_type, void *pdata, unsigned long data_len) :
             stmt_data_type_(data_type),
@@ -72,8 +72,8 @@ public:
 
 
     /*!
-    * @brief      ä»…ä»…æ˜¯ä¸ºäº†é€‚é… ZCE_Mysql_STMT_Bind << çš„æ“ä½œç¬¦å·
-    *             ç»‘å®š2è¿›åˆ¶ç»“æœæ•°æ®ï¼Œç”¨äº mysql_stmt_bind_result
+    * @brief      ½ö½öÊÇÎªÁËÊÊÅä ZCE_Mysql_STMT_Bind << µÄ²Ù×÷·ûºÅ
+    *             °ó¶¨2½øÖÆ½á¹ûÊı¾İ£¬ÓÃÓÚ mysql_stmt_bind_result
     */
     class BinData_Result
     {
@@ -83,9 +83,9 @@ public:
 
         /*!
         * @brief
-        * @param[in] data_type æ•°æ®ç±»å‹ï¼Œåªèƒ½æ˜¯MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
-        * @param[in] pdata æ•°æ®æŒ‡é’ˆï¼Œå°±æ˜¯æ˜¯å†™å…¥çš„å­˜æ”¾çš„åœ°æ–¹æ•°æ®ï¼Œ
-        * @param[in] data_len æ•°æ®é•¿åº¦çš„æŒ‡é’ˆï¼Œä¼ å…¥å‚æ•°è¡¨ç¤ºæ•°æ®é•¿åº¦ï¼Œä½¿ç”¨åä¿å­˜æ˜¯è¡¨ç¤ºå†™å…¥çš„æ•°æ®é•¿åº¦
+        * @param[in] data_type Êı¾İÀàĞÍ£¬Ö»ÄÜÊÇMYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
+        * @param[in] pdata Êı¾İÖ¸Õë£¬¾ÍÊÇÊÇĞ´ÈëµÄ´æ·ÅµÄµØ·½Êı¾İ£¬
+        * @param[in] data_len Êı¾İ³¤¶ÈµÄÖ¸Õë£¬´«Èë²ÎÊı±íÊ¾Êı¾İ³¤¶È£¬Ê¹ÓÃºó±£´æÊÇ±íÊ¾Ğ´ÈëµÄÊı¾İ³¤¶È
         */
         BinData_Result(enum_field_types data_type, void *pdata, unsigned long *data_len) :
             stmt_data_type_(data_type),
@@ -109,7 +109,7 @@ public:
     };
 
     /*!
-    @brief      ä»…ä»…æ˜¯ä¸ºäº†é€‚é… ZCE_Mysql_STMT_Bind << çš„æ“ä½œç¬¦å·
+    @brief      ½ö½öÊÇÎªÁËÊÊÅä ZCE_Mysql_STMT_Bind << µÄ²Ù×÷·ûºÅ
 
     */
     class TimeData
@@ -140,8 +140,8 @@ public:
     };
 
     /*!
-    * @brief      ä»…ä»…æ˜¯ä¸ºäº†é€‚é… ZCE_Mysql_STMT_Bind << çš„æ“ä½œç¬¦å·
-    *             ç»‘å®šä¸€ä¸ªç©ºå‚æ•°
+    * @brief      ½ö½öÊÇÎªÁËÊÊÅä ZCE_Mysql_STMT_Bind << µÄ²Ù×÷·ûºÅ
+    *             °ó¶¨Ò»¸ö¿Õ²ÎÊı
     * @note
     */
     class NULL_Param
@@ -162,27 +162,27 @@ public:
 
 protected:
 
-    //å®šä¹‰å‡ºæ¥ä¸å®ç°,è®©ä½ æ— æ³•ç”¨,æœ‰å¾ˆå¤šåœ°æ–¹æœ‰æˆ‘åˆ†é…çš„æŒ‡é’ˆ,ä¸èƒ½ç»™ä½ æµ…åº¦å¤åˆ¶
+    //¶¨Òå³öÀ´²»ÊµÏÖ,ÈÃÄãÎŞ·¨ÓÃ,ÓĞºÜ¶àµØ·½ÓĞÎÒ·ÖÅäµÄÖ¸Õë,²»ÄÜ¸øÄãÇ³¶È¸´ÖÆ
     ZCE_Mysql_STMT_Bind &operator=(const ZCE_Mysql_STMT_Bind &others);
 
 public:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°
-    * @param      numbind  è¦ç»‘å®šå˜é‡,ç»“æœçš„ä¸ªæ•°
+    * @brief      ¹¹Ôìº¯Êı
+    * @param      numbind  Òª°ó¶¨±äÁ¿,½á¹ûµÄ¸öÊı
     */
     ZCE_Mysql_STMT_Bind(size_t numbind);
     //
     ~ZCE_Mysql_STMT_Bind();
 
     /*!
-    * @brief      ç»‘å®šä¸€ä¸ªå‚æ•°
+    * @brief      °ó¶¨Ò»¸ö²ÎÊı
     * @return     int
-    * @param      paramno   å‚æ•°çš„ç¼–å·
-    * @param      paramtype å‚æ•°ç±»å‹
-    * @param      bisnull   æ˜¯å¦ä¸ºNULL,
-    * @param      paramdata å‚æ•°çš„æ•°æ®çš„æŒ‡é’ˆ
-    * @param      szparam   å‚æ•°çš„é•¿åº¦
+    * @param      paramno   ²ÎÊıµÄ±àºÅ
+    * @param      paramtype ²ÎÊıÀàĞÍ
+    * @param      bisnull   ÊÇ·ñÎªNULL,
+    * @param      paramdata ²ÎÊıµÄÊı¾İµÄÖ¸Õë
+    * @param      szparam   ²ÎÊıµÄ³¤¶È
     */
     int bind_one_param(size_t paramno,
                        ::enum_field_types paramtype,
@@ -204,7 +204,7 @@ public:
                         void *paramdata,
                         unsigned long *szparam);
 
-    ///å¾—åˆ°STMT HANDLE
+    ///µÃµ½STMT HANDLE
     inline MYSQL_BIND *get_stmt_bind_handle()
     {
         return stmt_bind_;
@@ -215,10 +215,10 @@ public:
         return &stmt_bind_[paramno];
     }
 
-    ///é‡æ–°è®¾ç½®
+    ///ÖØĞÂÉèÖÃ
     void reset();
 
-    ///å°†å˜é‡ç»‘å®š
+    ///½«±äÁ¿°ó¶¨
     void bind(size_t bind_col, char val);
     void bind(size_t bind_col, char &val);
     void bind(size_t bind_col, short &val);
@@ -236,14 +236,14 @@ public:
     void bind(size_t bind_col, float &val);
     void bind(size_t bind_col, double &val);
 
-    ///ä¸ºäº†ä½¿ç”¨å‡ ä¸ªç±»å‹çš„é€‚é…å™¨
-    ///ç»‘å®šäºŒè¿›åˆ¶æ•°æ®ï¼Œçš„é€‚é…å™¨
+    ///ÎªÁËÊ¹ÓÃ¼¸¸öÀàĞÍµÄÊÊÅäÆ÷
+    ///°ó¶¨¶ş½øÖÆÊı¾İ£¬µÄÊÊÅäÆ÷
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Param &val);
-    ///ç»‘å®šäºŒè¿›åˆ¶ç»“æœçš„é€‚é…å™¨
+    ///°ó¶¨¶ş½øÖÆ½á¹ûµÄÊÊÅäÆ÷
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result &val);
-    ///ç»‘å®šæ—¶é—´çš„é€‚é…å™¨
+    ///°ó¶¨Ê±¼äµÄÊÊÅäÆ÷
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData &val);
-    ///ç»‘å®šç©ºçš„é€‚é…å™¨
+    ///°ó¶¨¿ÕµÄÊÊÅäÆ÷
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param &val);
 
 
@@ -257,13 +257,13 @@ public:
 
 protected:
 
-    ///ç»‘å®šçš„å˜é‡ä¸ªæ•°
+    ///°ó¶¨µÄ±äÁ¿¸öÊı
     size_t           num_bind_;
 
-    ///å½“å‰ä½¿ç”¨çš„ç»‘å®šå‚æ•°åºå·,ç”¨äº<<
+    ///µ±Ç°Ê¹ÓÃµÄ°ó¶¨²ÎÊıĞòºÅ,ÓÃÓÚ<<
     size_t            current_bind_;
 
-    ///BIND MySQLçš„å°è£…æ–¹å¼è®©æˆ‘ä¸èƒ½ç”¨vector,
+    ///BIND MySQLµÄ·â×°·½Ê½ÈÃÎÒ²»ÄÜÓÃvector,
     MYSQL_BIND       *stmt_bind_;
 
 };

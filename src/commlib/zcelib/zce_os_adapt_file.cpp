@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_trace_log_debug.h"
 #include "zce_os_adapt_predefine.h"
@@ -6,10 +6,10 @@
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_file.h"
 
-//è¯»å–æ–‡ä»¶
+//¶ÁÈ¡ÎÄ¼ş
 ssize_t ZCE_LIB::read(ZCE_HANDLE file_handle, void *buf, size_t count)
 {
-    //WINDOWSä¸‹ï¼Œé•¿åº¦æ— æ³•çªç ´32ä½çš„ï¼Œå‚æ•°é™åˆ¶äº†ReadFileExä¹Ÿä¸€æ ·ï¼Œå¤§æ¦‚WINDOWSè®¤ä¸ºæ²¡äººè¿™æ ·è¯»å–æ–‡ä»¶
+    //WINDOWSÏÂ£¬³¤¶ÈÎŞ·¨Í»ÆÆ32Î»µÄ£¬²ÎÊıÏŞÖÆÁËReadFileExÒ²Ò»Ñù£¬´ó¸ÅWINDOWSÈÏÎªÃ»ÈËÕâÑù¶ÁÈ¡ÎÄ¼ş
 #if defined (ZCE_OS_WINDOWS)
     DWORD ok_len;
     BOOL ret_bool = ::ReadFile (file_handle,
@@ -32,8 +32,8 @@ ssize_t ZCE_LIB::read(ZCE_HANDLE file_handle, void *buf, size_t count)
 #endif
 }
 
-//å†™å¦‚æ–‡ä»¶ï¼ŒWINDOWSä¸‹ï¼Œé•¿åº¦æ— æ³•çªç ´32ä½çš„,å½“ç„¶æœ‰äººéœ€è¦å†™å…¥4Gæ•°æ®å—ï¼Ÿ
-//Windowsä¸‹å°½é‡å‘POSIX é æ‹¢äº†
+//Ğ´ÈçÎÄ¼ş£¬WINDOWSÏÂ£¬³¤¶ÈÎŞ·¨Í»ÆÆ32Î»µÄ,µ±È»ÓĞÈËĞèÒªĞ´Èë4GÊı¾İÂğ£¿
+//WindowsÏÂ¾¡Á¿ÏòPOSIX ¿¿Â£ÁË
 ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -47,10 +47,10 @@ ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 
     if (ret_bool)
     {
-        //æ³¨æ„ZCE_LIB Windows ä¸‹çš„writeæ˜¯æœ‰ç¼“å†²çš„ï¼Œè¿™ä¸ªå’ŒLinuxä¸‹çš„ç•¥æœ‰åŒºåˆ«ï¼Œ
-        //å¦‚æœéœ€è¦ç«‹å³çœ‹åˆ°ï¼Œå¯ä»¥ç”¨FlushFileBuffers,æˆ‘æš‚æ—¶çœ‹ä¸å‡ºä¸€å®šè¦è¿™æ ·åšçš„å¿…è¦ï¼Œ
-        //è¿™ä¸ªåœ°æ–¹ä¸ºäº†å’ŒPOSIXç»Ÿä¸€ï¼Œè¿˜æ˜¯è°ƒç”¨äº†è¿™ä¸ªå‡½æ•°
-        //å¦å¤–ä¸€ä¸ªæ–¹æ³•æ˜¯åœ¨CreateFile æ—¶å¢åŠ å±æ€§ FILE_FLAG_NO_BUFFERING and FILE_FLAG_WRITE_THROUGH
+        //×¢ÒâZCE_LIB Windows ÏÂµÄwriteÊÇÓĞ»º³åµÄ£¬Õâ¸öºÍLinuxÏÂµÄÂÔÓĞÇø±ğ£¬
+        //Èç¹ûĞèÒªÁ¢¼´¿´µ½£¬¿ÉÒÔÓÃFlushFileBuffers,ÎÒÔİÊ±¿´²»³öÒ»¶¨ÒªÕâÑù×öµÄ±ØÒª£¬
+        //Õâ¸öµØ·½ÎªÁËºÍPOSIXÍ³Ò»£¬»¹ÊÇµ÷ÓÃÁËÕâ¸öº¯Êı
+        //ÁíÍâÒ»¸ö·½·¨ÊÇÔÚCreateFile Ê±Ôö¼ÓÊôĞÔ FILE_FLAG_NO_BUFFERING and FILE_FLAG_WRITE_THROUGH
         ::FlushFileBuffers(file_handle);
         return (ssize_t) ok_len;
     }
@@ -66,13 +66,13 @@ ssize_t ZCE_LIB::write(ZCE_HANDLE file_handle, const void *buf, size_t count)
 #endif
 }
 
-//æˆªæ–­æ–‡ä»¶
+//½Ø¶ÏÎÄ¼ş
 int ZCE_LIB::truncate(const char *filename, size_t offset)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int ret = 0;
-    //æ‰“å¼€æ–‡ä»¶ï¼Œå¹¶ä¸”æˆªæ–­ï¼Œæœ€åå…³é—­
+    //´ò¿ªÎÄ¼ş£¬²¢ÇÒ½Ø¶Ï£¬×îºó¹Ø±Õ
     ZCE_HANDLE file_handle = ZCE_LIB::open(filename, (O_CREAT | O_RDWR));
 
     if ( ZCE_INVALID_HANDLE == file_handle)
@@ -96,12 +96,12 @@ int ZCE_LIB::truncate(const char *filename, size_t offset)
 #endif
 }
 
-//æˆªæ–­æ–‡ä»¶ï¼Œå€’éœ‰çš„æ˜¯WINDOWSä¸‹åˆTMD æ²¡æœ‰ï¼Œç”¨BOOSTçš„åˆéè¦éµå®ˆä»–çš„å‚æ•°è§„èŒƒï¼Œæˆ‘è›‹ç–¼
-//å…¶å®å¯ä»¥å˜é•¿ï¼Œå‘µå‘µã€‚
-//æ³¨æ„è¿™å„¿çš„fdæ˜¯WIN32 API OpenFileå¾—åˆ°çš„å‡½æ•°ï¼Œä¸æ˜¯ä½ ç”¨ISOå‡½æ•°æ‰“å¼€çš„é‚£ä¸ªfdï¼Œ
+//½Ø¶ÏÎÄ¼ş£¬µ¹Ã¹µÄÊÇWINDOWSÏÂÓÖTMD Ã»ÓĞ£¬ÓÃBOOSTµÄÓÖ·ÇÒª×ñÊØËûµÄ²ÎÊı¹æ·¶£¬ÎÒµ°ÌÛ
+//ÆäÊµ¿ÉÒÔ±ä³¤£¬ºÇºÇ¡£
+//×¢ÒâÕâ¶ùµÄfdÊÇWIN32 API OpenFileµÃµ½µÄº¯Êı£¬²»ÊÇÄãÓÃISOº¯Êı´ò¿ªµÄÄÇ¸öfd£¬
 int ZCE_LIB::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
 {
-    //Windows2000ä»¥å‰æ²¡æœ‰ SetFilePointerExï¼Œæˆ‘ä¸æ˜¯ACEï¼Œæˆ‘ä¸æ”¯æŒé‚£ä¹ˆå¤šå±äº‹
+    //Windows2000ÒÔÇ°Ã»ÓĞ SetFilePointerEx£¬ÎÒ²»ÊÇACE£¬ÎÒ²»Ö§³ÖÄÇÃ´¶àÆ¨ÊÂ
 #if defined (ZCE_OS_WINDOWS)
 
     LARGE_INTEGER loff;
@@ -116,7 +116,7 @@ int ZCE_LIB::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
         return  -1;
     }
 
-    //linux ftruncateï¼Œåï¼Œå§æŒ‡é’ˆæ”¾åˆ°äº†æœ«å°¾
+    //linux ftruncate£¬ºó£¬°ÉÖ¸Õë·Åµ½ÁËÄ©Î²
     bret = ::SetEndOfFile (file_handle);
 
     if (bret == FALSE)
@@ -132,12 +132,12 @@ int ZCE_LIB::ftruncate(ZCE_HANDLE file_handle, size_t  offset)
 
 }
 
-//åœ¨æ–‡ä»¶å†…è¿›è¡Œåç§»
+//ÔÚÎÄ¼şÄÚ½øĞĞÆ«ÒÆ
 ssize_t ZCE_LIB::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //WINDOWSçš„lseekæ˜¯ä¸æ”¯æŒ64ä½çš„ï¼Œæ‰€ä»¥ç›´æ¥ç”¨APIï¼Œå®Œæˆå·¥ä½œï¼Œ
+    //WINDOWSµÄlseekÊÇ²»Ö§³Ö64Î»µÄ£¬ËùÒÔÖ±½ÓÓÃAPI£¬Íê³É¹¤×÷£¬
     DWORD dwmovemethod = FILE_BEGIN;
 
     if (whence == SEEK_SET)
@@ -182,7 +182,7 @@ ssize_t ZCE_LIB::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
 
 }
 
-//æ ¹æ®æ–‡ä»¶åç§°ï¼Œåˆ¤æ–­æ–‡ä»¶çš„å°ºå¯¸,å¦‚æœæ–‡ä»¶ä¸å­˜åœ¨ï¼Œæ‰“ä¸å¼€ç­‰ï¼Œè¿”å›-1
+//¸ù¾İÎÄ¼şÃû³Æ£¬ÅĞ¶ÏÎÄ¼şµÄ³ß´ç,Èç¹ûÎÄ¼ş²»´æÔÚ£¬´ò²»¿ªµÈ£¬·µ»Ø-1
 int ZCE_LIB::filelen(const char *filename, size_t *file_size)
 {
     int ret = 0;
@@ -210,7 +210,7 @@ int ZCE_LIB::filesize (ZCE_HANDLE file_handle, size_t *file_size)
         return -1;
     }
 
-    //32ä½å¹³å°ä¸Šå¯èƒ½ä¸¢é•¿åº¦ï¼Œä½†æ˜¯æˆ‘å°±è€ƒè™‘64ä½ç³»ç»Ÿï¼Œä½ æ‰ä¼šçªç ´4GæŠŠ
+    //32Î»Æ½Ì¨ÉÏ¿ÉÄÜ¶ª³¤¶È£¬µ«ÊÇÎÒ¾Í¿¼ÂÇ64Î»ÏµÍ³£¬Äã²Å»áÍ»ÆÆ4G°Ñ
     *file_size = static_cast<size_t> (size.QuadPart);
     return 0;
     //
@@ -229,27 +229,27 @@ int ZCE_LIB::filesize (ZCE_HANDLE file_handle, size_t *file_size)
 #endif
 }
 
-//æˆ‘æ›¾ç»å¾ˆè‡ªä»¥ä¸ºæ˜¯çš„è®¤ä¸ºACEå¾ˆåœŸé³–ï¼Œä¸ºä»€ä¹ˆä¸ç›´æ¥ç”¨openå‡½æ•°ï¼Œç„¶åç”¨_get_osfhandleè½¬æ¢æˆHANDLEå°±å¯ä»¥äº†ã€‚
-//å…³é—­çš„æ—¶å€™ç”¨_open_osfhandleè½¬æ¢å›æ¥å°±OKäº†ï¼Œä½†å…¶å®å‘ç°åœŸé³–çš„æ˜¯æˆ‘ï¼Œ
-//æˆ‘å®Œå…¨é”™è¯¯ç†è§£äº†_open_osfhandleå‡½æ•°ï¼Œè¿™ä¹Ÿå¯èƒ½è§£é‡Šäº†åŸæ¥pascalåŸæ¥é‡åˆ°çš„é—®é¢˜closeè§¦å‘æ–­è¨€çš„é—®é¢˜ã€‚
-//ä¸€åˆ‡éƒ½ä¸æ˜¯RPé—®é¢˜ï¼Œè¿˜æ˜¯å†™é”™äº†ä»£ç ã€‚æ„Ÿè°¢derrickhuå’Œsasukeliuä¸¤ä½ï¼Œä¸€ä¸ªéšè—çš„æ¯”è¾ƒæ·±åˆ»çš„bug
+//ÎÒÔø¾­ºÜ×ÔÒÔÎªÊÇµÄÈÏÎªACEºÜÍÁ±î£¬ÎªÊ²Ã´²»Ö±½ÓÓÃopenº¯Êı£¬È»ºóÓÃ_get_osfhandle×ª»»³ÉHANDLE¾Í¿ÉÒÔÁË¡£
+//¹Ø±ÕµÄÊ±ºòÓÃ_open_osfhandle×ª»»»ØÀ´¾ÍOKÁË£¬µ«ÆäÊµ·¢ÏÖÍÁ±îµÄÊÇÎÒ£¬
+//ÎÒÍêÈ«´íÎóÀí½âÁË_open_osfhandleº¯Êı£¬ÕâÒ²¿ÉÄÜ½âÊÍÁËÔ­À´pascalÔ­À´Óöµ½µÄÎÊÌâclose´¥·¢¶ÏÑÔµÄÎÊÌâ¡£
+//Ò»ÇĞ¶¼²»ÊÇRPÎÊÌâ£¬»¹ÊÇĞ´´íÁË´úÂë¡£¸ĞĞ»derrickhuºÍsasukeliuÁ½Î»£¬Ò»¸öÒş²ØµÄ±È½ÏÉî¿ÌµÄbug
 
-//ä¸ºä»€ä¹ˆè¦æä¾›è¿™ä¸ªAPIå‘¢ï¼Œå› ä¸ºWINDOWSå¹³å°å¤§éƒ¨åˆ†éƒ½æ˜¯é‡‡ç”¨HANDLEå¤„ç†çš„
+//ÎªÊ²Ã´ÒªÌá¹©Õâ¸öAPIÄØ£¬ÒòÎªWINDOWSÆ½Ì¨´ó²¿·Ö¶¼ÊÇ²ÉÓÃHANDLE´¦ÀíµÄ
 
 ZCE_HANDLE ZCE_LIB::open (const char *filename,
                           int open_mode,
                           mode_t perms)
 {
-    //Windowså¹³å°
+    //WindowsÆ½Ì¨
 #if defined (ZCE_OS_WINDOWS)
 
-    //å°†å„ç§LINUXçš„å‚æ•°è½¬æ¢æˆWindows APIçš„å‚æ•°
+    //½«¸÷ÖÖLINUXµÄ²ÎÊı×ª»»³ÉWindows APIµÄ²ÎÊı
 
     DWORD access = GENERIC_READ;
 
     if (ZCE_BIT_IS_SET (open_mode, O_WRONLY))
     {
-        //å¦‚æœä»…ä»…åªèƒ½å†™
+        //Èç¹û½ö½öÖ»ÄÜĞ´
         access = GENERIC_WRITE;
     }
     else if (ZCE_BIT_IS_SET (open_mode, O_RDWR))
@@ -295,12 +295,12 @@ ZCE_HANDLE ZCE_LIB::open (const char *filename,
 
     ZCE_HANDLE openfile_handle = ZCE_INVALID_HANDLE;
 
-    //ACEçš„ä»£ç åœ¨è¿™æ®µç”¨ä¸€ä¸ªå¤šçº¿ç¨‹çš„äº’æ–¥ä¿æŠ¤ï¼Œ
-    //å› ä¸ºCreateFileAå¹¶ä¸èƒ½åŒæ—¶å°†æ–‡ä»¶çš„æŒ‡é’ˆç§»åŠ¨åˆ°æœ«å°¾ï¼Œæ‰€ä»¥(O_APPEND)è¿™æ˜¯ä¸€ä¸ªä¸¤æ­¥æ“ä½œ(å…ˆCreateFileAï¼ŒåSetFilePointerEx)ï¼Œ
-    //ACEæ‹…å¿ƒæœ‰ç‰¹æ®Šæƒ…å†µï¼Ÿå¤šçº¿ç¨‹åˆ›å»ºè¿˜æ˜¯ï¼Ÿä»–çš„æ²¡æœ‰æ³¨é‡Šè¯´æ˜è¿™ä¸ªé—®é¢˜,æˆ‘æš‚æ—¶ä¸å»åšä¿æŠ¤ï¼Œ
+    //ACEµÄ´úÂëÔÚÕâ¶ÎÓÃÒ»¸ö¶àÏß³ÌµÄ»¥³â±£»¤£¬
+    //ÒòÎªCreateFileA²¢²»ÄÜÍ¬Ê±½«ÎÄ¼şµÄÖ¸ÕëÒÆ¶¯µ½Ä©Î²£¬ËùÒÔ(O_APPEND)ÕâÊÇÒ»¸öÁ½²½²Ù×÷(ÏÈCreateFileA£¬ºóSetFilePointerEx)£¬
+    //ACEµ£ĞÄÓĞÌØÊâÇé¿ö£¿¶àÏß³Ì´´½¨»¹ÊÇ£¿ËûµÄÃ»ÓĞ×¢ÊÍËµÃ÷Õâ¸öÎÊÌâ,ÎÒÔİÊ±²»È¥×ö±£»¤£¬
 
     //CRITICAL_SECTION fileopen_mutex;
-    ////VISTATåæ²¡æœ‰è¿™ä¸ªå¼‚å¸¸äº†
+    ////VISTATºóÃ»ÓĞÕâ¸öÒì³£ÁË
     //__try
     //{
     //    ::InitializeCriticalSection (&fileopen_mutex);
@@ -319,7 +319,7 @@ ZCE_HANDLE ZCE_LIB::open (const char *filename,
                                      FILE_ATTRIBUTE_NORMAL,
                                      0);
 
-    //å¦‚æœæ‰“å¼€çš„æ–‡ä»¶å¥æŸ„æ˜¯æ— æ•ˆçš„
+    //Èç¹û´ò¿ªµÄÎÄ¼ş¾ä±úÊÇÎŞĞ§µÄ
 
     if (openfile_handle != ZCE_INVALID_HANDLE  && ZCE_BIT_IS_SET (open_mode, O_APPEND))
     {
@@ -339,7 +339,7 @@ ZCE_HANDLE ZCE_LIB::open (const char *filename,
         }
     }
 
-    //å¯¹åº”ä¸Šé¢çš„ä¸´ç•ŒåŒºä¿æŠ¤
+    //¶ÔÓ¦ÉÏÃæµÄÁÙ½çÇø±£»¤
     //::DeleteCriticalSection (&fileopen_mutex);
 
     return openfile_handle;
@@ -349,7 +349,7 @@ ZCE_HANDLE ZCE_LIB::open (const char *filename,
 #endif
 }
 
-//å…³é—­ä¸€ä¸ªæ–‡ä»¶
+//¹Ø±ÕÒ»¸öÎÄ¼ş
 int ZCE_LIB::close (ZCE_HANDLE handle)
 {
     //
@@ -370,7 +370,7 @@ int ZCE_LIB::close (ZCE_HANDLE handle)
 #endif
 }
 
-//ç”¨æ¨¡ç‰ˆåç§°å»ºç«‹å¹¶ä¸”æ‰“å¼€ä¸€ä¸ªä¸´æ—¶æ–‡ä»¶ï¼Œ
+//ÓÃÄ£°æÃû³Æ½¨Á¢²¢ÇÒ´ò¿ªÒ»¸öÁÙÊ±ÎÄ¼ş£¬
 ZCE_HANDLE ZCE_LIB::mkstemp(char *template_name)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -381,7 +381,7 @@ ZCE_HANDLE ZCE_LIB::mkstemp(char *template_name)
 #endif
 }
 
-//é€šè¿‡æ–‡ä»¶åç§°å¾—åˆ°æ–‡ä»¶çš„statä¿¡æ¯ï¼Œä½ å¯ä»¥è®¤ä¸ºzce_os_statå°±æ˜¯statï¼Œåªæ˜¯åœ¨WINDOWSä¸‹stat64,ä¸»è¦æ˜¯ä¸ºäº†é•¿æ–‡ä»¶è€ƒè™‘çš„
+//Í¨¹ıÎÄ¼şÃû³ÆµÃµ½ÎÄ¼şµÄstatĞÅÏ¢£¬Äã¿ÉÒÔÈÏÎªzce_os_stat¾ÍÊÇstat£¬Ö»ÊÇÔÚWINDOWSÏÂstat64,Ö÷ÒªÊÇÎªÁË³¤ÎÄ¼ş¿¼ÂÇµÄ
 int ZCE_LIB::stat(const char *path, zce_os_stat *file_stat)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -391,12 +391,12 @@ int ZCE_LIB::stat(const char *path, zce_os_stat *file_stat)
 #endif
 }
 
-//é€šè¿‡æ–‡ä»¶çš„å¥æŸ„å¾—åˆ°æ–‡ä»¶çš„statä¿¡æ¯
+//Í¨¹ıÎÄ¼şµÄ¾ä±úµÃµ½ÎÄ¼şµÄstatĞÅÏ¢
 int ZCE_LIB::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //è¿™ä¸ªå®ç°æ¯”è¾ƒç—›è‹¦ï¼Œä½†ä¹Ÿæ²¡æœ‰åŠæ³•ï¼Œå…¶ä»–æ–¹æ³•ï¼ˆæ¯”å¦‚ç”¨_open_osfhandleï¼‰éƒ½ä¼šå·é¸¡ä¸æˆï¼Œåèˆä¸€æŠŠç±³
+    //Õâ¸öÊµÏÖ±È½ÏÍ´¿à£¬µ«Ò²Ã»ÓĞ°ì·¨£¬ÆäËû·½·¨£¨±ÈÈçÓÃ_open_osfhandle£©¶¼»áÍµ¼¦²»³É£¬·´ÉáÒ»°ÑÃ×
 
     BOOL ret_bool = FALSE;
     BY_HANDLE_FILE_INFORMATION file_info;
@@ -408,7 +408,7 @@ int ZCE_LIB::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
         return -1;
     }
 
-    //è½¬æ¢æ—¶é—´
+    //×ª»»Ê±¼ä
     timeval tv_ct_time = ZCE_LIB::make_timeval(&file_info.ftCreationTime);
     timeval tv_ac_time = ZCE_LIB::make_timeval(&file_info.ftLastAccessTime);
     timeval tv_wt_time = ZCE_LIB::make_timeval(&file_info.ftLastWriteTime);
@@ -424,13 +424,13 @@ int ZCE_LIB::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
     file_stat->st_gid = 0;
     file_stat->st_size = file_size.QuadPart;
 
-    //å¾—åˆ°å‡ ä¸ªæ—¶é—´
-    //æ³¨æ„st_ctimeè¿™å„¿å‘€ï¼Œè¿™å„¿çš„LINUXä¸‹å’ŒWindowsæ˜¯æœ‰äº›ä¸ä¸€æ ·çš„ï¼Œst_ctimeåœ¨LINUXä¸‹æ˜¯çŠ¶æ€æœ€åæ”¹å˜æ—¶é—´ï¼Œè€Œåœ¨WINDOWSä¸‹æ˜¯åˆ›å»ºæ—¶é—´
+    //µÃµ½¼¸¸öÊ±¼ä
+    //×¢Òâst_ctimeÕâ¶ùÑ½£¬Õâ¶ùµÄLINUXÏÂºÍWindowsÊÇÓĞĞ©²»Ò»ÑùµÄ£¬st_ctimeÔÚLINUXÏÂÊÇ×´Ì¬×îºó¸Ä±äÊ±¼ä£¬¶øÔÚWINDOWSÏÂÊÇ´´½¨Ê±¼ä
     file_stat->st_ctime = tv_ct_time.tv_sec;
     file_stat->st_mtime = tv_wt_time.tv_sec;
     file_stat->st_atime = tv_ac_time.tv_sec;
 
-    //æ£€æŸ¥æ˜¯æ–‡ä»¶è¿˜æ˜¯ç›®å½•
+    //¼ì²éÊÇÎÄ¼ş»¹ÊÇÄ¿Â¼
     file_stat->st_mode = 0;
 
     if (file_info.dwFileAttributes & FILE_ATTRIBUTE_ARCHIVE )
@@ -452,7 +452,7 @@ int ZCE_LIB::fstat(ZCE_HANDLE file_handle, zce_os_stat *file_stat)
 
 
 
-//è·¯å¾„æ˜¯å¦æ˜¯ä¸€ä¸ªç›®å½•ï¼Œå¦‚æœæ˜¯è¿”å›TRUEï¼Œå¦‚æœä¸æ˜¯è¿”å›FALSE
+//Â·¾¶ÊÇ·ñÊÇÒ»¸öÄ¿Â¼£¬Èç¹ûÊÇ·µ»ØTRUE£¬Èç¹û²»ÊÇ·µ»ØFALSE
 bool ZCE_LIB::is_directory(const char *path_name)
 {
     int ret = 0;
@@ -462,7 +462,7 @@ bool ZCE_LIB::is_directory(const char *path_name)
     {
         return false;
     }
-    //å¦‚æœæœ‰ç›®å½•å±æ€§ï¼Œåˆ™true
+    //Èç¹ûÓĞÄ¿Â¼ÊôĞÔ£¬Ôòtrue
     if (file_stat.st_mode & S_IFDIR )
     {
         return true;
@@ -474,7 +474,7 @@ bool ZCE_LIB::is_directory(const char *path_name)
 }
 
 
-//åˆ é™¤æ–‡ä»¶
+//É¾³ıÎÄ¼ş
 int ZCE_LIB::unlink(const char *filename )
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -494,8 +494,8 @@ mode_t ZCE_LIB::umask (mode_t cmask)
 #endif
 }
 
-//æ£€æŸ¥æ–‡ä»¶æ˜¯å¦OKï¼Œå¼å¼
-//mode ä¸¤ä¸ªå¹³å°éƒ½æ”¯æŒF_OK,R_OK,W_OK,R_OK|W_OKï¼ŒX_OKå‚æ•°LINUXæ”¯æŒ,WINä¸æ”¯æŒ
+//¼ì²éÎÄ¼şÊÇ·ñOK£¬ºğºğ
+//mode Á½¸öÆ½Ì¨¶¼Ö§³ÖF_OK,R_OK,W_OK,R_OK|W_OK£¬X_OK²ÎÊıLINUXÖ§³Ö,WIN²»Ö§³Ö
 int ZCE_LIB::access(const char *pathname, int mode)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -506,14 +506,14 @@ int ZCE_LIB::access(const char *pathname, int mode)
 }
 
 //--------------------------------------------------------------------------------------------------
-//éæ ‡å‡†å‡½æ•°
-//ç”¨åªè¯»æ–¹å¼è¯»å–ä¸€ä¸ªæ–‡ä»¶çš„å†…å®¹ï¼Œè¿”å›çš„bufferæœ€åå¡«å……'\0',buf_len >= 2
+//·Ç±ê×¼º¯Êı
+//ÓÃÖ»¶Á·½Ê½¶ÁÈ¡Ò»¸öÎÄ¼şµÄÄÚÈİ£¬·µ»ØµÄbuffer×îºóÌî³ä'\0',buf_len >= 2
 int ZCE_LIB::read_file_data(const char *filename, char *buffer, size_t buf_len, size_t *read_len)
 {
-    //å‚æ•°æ£€æŸ¥
+    //²ÎÊı¼ì²é
     ZCE_ASSERT(filename && buffer && buf_len >= 2);
 
-    //æ‰“å¼€æ–‡ä»¶
+    //´ò¿ªÎÄ¼ş
     ZCE_HANDLE  fd = ZCE_LIB::open(filename, O_RDONLY);
 
     if (ZCE_INVALID_HANDLE == fd)
@@ -522,7 +522,7 @@ int ZCE_LIB::read_file_data(const char *filename, char *buffer, size_t buf_len, 
         return -1;
     }
 
-    //è¯»å–å†…å®¹
+    //¶ÁÈ¡ÄÚÈİ
     ssize_t len = ZCE_LIB::read(fd, buffer, buf_len - 1);
     ZCE_LIB::close(fd);
 

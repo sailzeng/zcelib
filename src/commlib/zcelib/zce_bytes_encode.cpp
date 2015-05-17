@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_bytes_encode.h"
 #include "zce_trace_log_debug.h"
 
@@ -13,7 +13,7 @@ static const unsigned char BASE64_ENC_MAP[64] =
     '8', '9', '+', '/'
 };
 
-//å¯¹ä¸€ä¸ªå†…å­˜å—è¿›è¡ŒBASE64ç¼–ç ï¼Œ
+//¶ÔÒ»¸öÄÚ´æ¿é½øĞĞBASE64±àÂë£¬
 int ZCE_LIB::base64_encode(const unsigned char *in,
                            size_t in_len,
                            unsigned char *out,
@@ -24,7 +24,7 @@ int ZCE_LIB::base64_encode(const unsigned char *in,
 
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
 
-    //å¦‚æœè¾“å…¥çš„ç©ºé—´ä¸å¤Ÿï¼Œè¿”å›é”™è¯¯ï¼ŒåŒæ—¶å‘Šè¯‰ä½ éœ€è¦çš„é•¿åº¦
+    //Èç¹ûÊäÈëµÄ¿Õ¼ä²»¹»£¬·µ»Ø´íÎó£¬Í¬Ê±¸æËßÄãĞèÒªµÄ³¤¶È
     size_t output_len = 4 * ((in_len + 2) / 3) ;
     if (*out_len < output_len + 1)
     {
@@ -43,7 +43,7 @@ int ZCE_LIB::base64_encode(const unsigned char *in,
         *p++ = BASE64_ENC_MAP[in[2] & 0x3F];
         in += 3;
     }
-    //è¡¥=
+    //²¹=
     if (i < in_len)
     {
         unsigned a = in[0];
@@ -87,7 +87,7 @@ static const unsigned char BASE64_DECODE_MAP[256] =
     255, 255, 255, 255
 };
 
-//å¯¹ä¸€ä¸ªå†…å­˜å—è¿›è¡Œbase64çš„è§£ç 
+//¶ÔÒ»¸öÄÚ´æ¿é½øĞĞbase64µÄ½âÂë
 int ZCE_LIB::base64_decode(const unsigned char *in,
                            size_t in_len,
                            unsigned char *out,
@@ -160,7 +160,7 @@ static const char BASE16_ENC_LOWER_MAP[] = "0123456789abcdef";
 //
 static const char BASE16_ENC_UPPER_MAP[] = "0123456789ABCDEF";
 
-//BASE16çš„ç¼–ç 
+//BASE16µÄ±àÂë
 int ZCE_LIB::base16_encode(const unsigned char *in,
                            size_t in_len,
                            unsigned char *out,
@@ -190,7 +190,7 @@ int ZCE_LIB::base16_encode(const unsigned char *in,
     return 0;
 }
 
-//BASE64çš„è§£ç 
+//BASE64µÄ½âÂë
 int ZCE_LIB::base16_decode(const unsigned char *in,
                            size_t in_len,
                            unsigned char *out,
@@ -257,7 +257,7 @@ int ZCE_LIB::base16_decode(const unsigned char *in,
 
 //========================================================================================
 
-///æ„é€ å‡½æ•°
+///¹¹Ôìº¯Êı
 ZCE_DR_Encode::ZCE_DR_Encode(char *write_buf, size_t buf_len) :
     is_good_(true),
     write_buf_(write_buf),
@@ -271,7 +271,7 @@ ZCE_DR_Encode::~ZCE_DR_Encode()
 {
 }
 
-//é‡ç½®å¼€å§‹ä½ç½®å’Œgoodæ ‡å¿—ä½
+//ÖØÖÃ¿ªÊ¼Î»ÖÃºÍgood±êÖ¾Î»
 void ZCE_DR_Encode::reset()
 {
     write_pos_ = write_buf_;
@@ -630,7 +630,7 @@ bool ZCE_DR_Encode::write_array(const bool *ary, size_t ary_size)
     return is_good_;
 }
 
-//è¿™ä¸‹é¢ä¸¤ä¸ªå‡½æ•°ç”¨äº†write_arrayå‡½æ•°ï¼Œæ‰€ä»¥å¿…é¡»æ”¾åœ¨ä»–ä»¬ä¸‹é¢
+//ÕâÏÂÃæÁ½¸öº¯ÊıÓÃÁËwrite_arrayº¯Êı£¬ËùÒÔ±ØĞë·ÅÔÚËûÃÇÏÂÃæ
 template<>
 bool ZCE_DR_Encode::write(const char *val)
 {
@@ -645,7 +645,7 @@ bool ZCE_DR_Encode::write(const std::string &val)
 
 //========================================================================================
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_DR_Decode::ZCE_DR_Decode(const char *read_buf, size_t buf_len) :
     is_good_(true),
     read_buf_(read_buf),
@@ -659,7 +659,7 @@ ZCE_DR_Decode::~ZCE_DR_Decode()
 {
 }
 
-//é‡ç½®å¼€å§‹ä½ç½®å’Œgoodæ ‡å¿—ä½
+//ÖØÖÃ¿ªÊ¼Î»ÖÃºÍgood±êÖ¾Î»
 void ZCE_DR_Decode::reset()
 {
     read_pos_ = read_buf_;

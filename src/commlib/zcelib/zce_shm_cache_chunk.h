@@ -1,20 +1,20 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_shm_cache_chunk.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2005å¹´12æœˆ16æ—¥
-* @brief      ä¸€ä¸ªç®€å•çš„å­˜æ”¾å˜é•¿æ•°æ®çš„Cacheï¼Œç”¨äºå¤§å°ä¸å¤ªå›ºå®šçš„æ•°æ®çš„ç¼“å†²ï¼Œ
-*             ç”¨æœ€å°çš„å†…å­˜ï¼Œå­˜æ”¾æœ€å¤§çš„æ•°æ®ï¼Œç©ºé—´æµªè´¹å°ã€‚
-*             å°†å†…å­˜åˆ†å‰²æˆè‹¥å¹²ä¸ªå¤§å°çš„æ¡¶ï¼Œ æ¯ä¸ªæ•°æ®ç”¨N(N>=1)ä¸ªæ¡¶å­˜æ”¾ï¼Œ
+* @date       2005Äê12ÔÂ16ÈÕ
+* @brief      Ò»¸ö¼òµ¥µÄ´æ·Å±ä³¤Êı¾İµÄCache£¬ÓÃÓÚ´óĞ¡²»Ì«¹Ì¶¨µÄÊı¾İµÄ»º³å£¬
+*             ÓÃ×îĞ¡µÄÄÚ´æ£¬´æ·Å×î´óµÄÊı¾İ£¬¿Õ¼äÀË·ÑĞ¡¡£
+*             ½«ÄÚ´æ·Ö¸î³ÉÈô¸É¸ö´óĞ¡µÄÍ°£¬ Ã¿¸öÊı¾İÓÃN(N>=1)¸öÍ°´æ·Å£¬
 *
-* @details    æ¡¶çš„å¤§å°è®¾è®¡æ¯•ç«Ÿæ¯”è¾ƒæœ‰è®²ç©¶ï¼Œå¤ªå¤§ä¸å¥½ï¼Œè¿˜æ˜¯ä¼šé€ æˆä¾ç¨€æµªè´¹ï¼Œ
-*             å¤ªå°ä¹Ÿä¸å¥½ï¼Œä¼šå¯¼è‡´ä¸€ä¸ªæ•°æ®å­˜æ”¾åœ¨å¤ªå¤šçš„æ¡¶å†…ã€‚
-*             è´Ÿè½½æ¯”ï¼Œå¹³å‡æ•°æ®å¤§å°å’Œæ¡¶çš„å…³ç³»ï¼Œä¸€èˆ¬æƒ…å†µå¤§è‡´åœ¨2-4æ¯”è¾ƒå¥½ï¼Œ
+* @details    Í°µÄ´óĞ¡Éè¼Æ±Ï¾¹±È½ÏÓĞ½²¾¿£¬Ì«´ó²»ºÃ£¬»¹ÊÇ»áÔì³ÉÒÀÏ¡ÀË·Ñ£¬
+*             Ì«Ğ¡Ò²²»ºÃ£¬»áµ¼ÖÂÒ»¸öÊı¾İ´æ·ÅÔÚÌ«¶àµÄÍ°ÄÚ¡£
+*             ¸ºÔØ±È£¬Æ½¾ùÊı¾İ´óĞ¡ºÍÍ°µÄ¹ØÏµ£¬Ò»°ãÇé¿ö´óÖÂÔÚ2-4±È½ÏºÃ£¬
 *
-* @note       æ•´ä½“è®¾è®¡æ€è·¯å…¶å®å’ŒFATåŸºæœ¬ä¸€è‡´ï¼Œæœ‰å…´è¶£çš„å»æ€€å¤ä¸€ä¸‹ï¼Œ
-*             è¿™ä¸ªå·¥å…·åœ¨å½“å¹´å°ç†Šçš„ä¸‹è½½å™¨é‡Œé¢è¢«ç¬¬ä¸€æ¬¡å°è¯•ä½¿ç”¨ï¼Œå½“æ—¶çš„jovi
-*             åº”è¯¥å¸®è¿‡ä¸å°‘å¿™ï¼Œ
+* @note       ÕûÌåÉè¼ÆË¼Â·ÆäÊµºÍFAT»ù±¾Ò»ÖÂ£¬ÓĞĞËÈ¤µÄÈ¥»³¹ÅÒ»ÏÂ£¬
+*             Õâ¸ö¹¤¾ßÔÚµ±ÄêĞ¡ĞÜµÄÏÂÔØÆ÷ÀïÃæ±»µÚÒ»´Î³¢ÊÔÊ¹ÓÃ£¬µ±Ê±µÄjovi
+*             Ó¦¸Ã°ï¹ı²»ÉÙÃ¦£¬
 *
 */
 #ifndef ZCE_LIB_SHM_CACHE_CHUNK_H_
@@ -26,30 +26,30 @@ namespace ZCE_LIB
 {
 
 /*!
-@brief      NODEçš„ä¿¡æ¯ï¼ŒNODEå°±æ˜¯ä¸€ä¸ªæ•°æ®ï¼ŒNODEå†…éƒ¨ä¼šå­˜æ”¾æœ€å¼€å§‹çš„CHUNKï¼Œ
-            ï¼ˆåé¢çš„CHUNKä¼šå½¢æˆä¸€æ¡é“¾ï¼‰
-            NODEçš„å¤§å°ï¼Œï¼ˆå¸®åŠ©æˆ‘ä»¬çŸ¥é“æ•°æ®çš„å®é™…é•¿åº¦ï¼‰
+@brief      NODEµÄĞÅÏ¢£¬NODE¾ÍÊÇÒ»¸öÊı¾İ£¬NODEÄÚ²¿»á´æ·Å×î¿ªÊ¼µÄCHUNK£¬
+            £¨ºóÃæµÄCHUNK»áĞÎ³ÉÒ»ÌõÁ´£©
+            NODEµÄ´óĞ¡£¬£¨°ïÖúÎÒÃÇÖªµÀÊı¾İµÄÊµ¼Ê³¤¶È£©
 */
 class cachechunk_node_index
 {
 public:
-    ///NODEé“¾è¡¨çš„èµ·å§‹æ¡¶ç´¢å¼•
+    ///NODEÁ´±íµÄÆğÊ¼Í°Ë÷Òı
     size_t     chunk_index_;
-    ///NODEçš„å®é™…å°ºå¯¸
+    ///NODEµÄÊµ¼Ê³ß´ç
     size_t     size_of_node_;
 };
 
 /*!
-@brief      æ”¾åœ¨å†…å­˜çš„å¤´éƒ¨æ•°æ®åŒºï¼Œç”¨äºæ ‡è¯†è¿˜æœ‰å¤šå°‘ç©ºé—²çš„NODEï¼ŒCHUNKç­‰
-            ä¿¡æ¯ï¼Œä¹Ÿä¼šè®°å½•FREENODEï¼ŒFREECHUNKçš„èµ·å§‹èŠ‚ç‚¹ç­‰ã€‚
-            å†…éƒ¨ç»“æ„ï¼Œå¤–éƒ¨ä¸è¦ä½¿ç”¨
+@brief      ·ÅÔÚÄÚ´æµÄÍ·²¿Êı¾İÇø£¬ÓÃÓÚ±êÊ¶»¹ÓĞ¶àÉÙ¿ÕÏĞµÄNODE£¬CHUNKµÈ
+            ĞÅÏ¢£¬Ò²»á¼ÇÂ¼FREENODE£¬FREECHUNKµÄÆğÊ¼½ÚµãµÈ¡£
+            ÄÚ²¿½á¹¹£¬Íâ²¿²»ÒªÊ¹ÓÃ
 */
 class _shm_cachechunk_head
 {
-    ///é€šè¿‡å‹å…ƒè®©å…¶ä»–äººä½¿ç”¨
+    ///Í¨¹ıÓÑÔªÈÃÆäËûÈËÊ¹ÓÃ
     friend class shm_cachechunk;
 private:
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     _shm_cachechunk_head():
         size_of_mmap_(0),
         num_of_node_(0),
@@ -61,132 +61,132 @@ private:
         free_chunk_head_(0)
     {
     }
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     ~_shm_cachechunk_head()
     {
     }
 
 private:
-    ///å†…å­˜åŒºçš„é•¿åº¦
+    ///ÄÚ´æÇøµÄ³¤¶È
     size_t               size_of_mmap_;
 
-    ///NODEçš„æ•°é‡
+    ///NODEµÄÊıÁ¿
     size_t               num_of_node_;
-    ///è¿˜å¯ä»¥ä½¿ç”¨çš„NODEçš„æ•°é‡ï¼Œæ³¨æ„æ˜¯å¯ç”¨ï¼Œä¸æ˜¯å·²ç»ä½¿ç”¨
+    ///»¹¿ÉÒÔÊ¹ÓÃµÄNODEµÄÊıÁ¿£¬×¢ÒâÊÇ¿ÉÓÃ£¬²»ÊÇÒÑ¾­Ê¹ÓÃ
     size_t               usable_of_node_;
 
-    ///Chunkçš„æ•°é‡
+    ///ChunkµÄÊıÁ¿
     size_t               num_of_chunk_;
-    ///è¿˜å¯ä»¥ä½¿ç”¨çš„CHUNKçš„æ•°é‡
+    ///»¹¿ÉÒÔÊ¹ÓÃµÄCHUNKµÄÊıÁ¿
     size_t               usable_of_chunk_;
 
-    ///chunkå°ºå¯¸
+    ///chunk³ß´ç
     size_t               size_of_chunk_;
 
-    ///FREE NODEçš„èµ·å§‹èŠ‚ç‚¹
+    ///FREE NODEµÄÆğÊ¼½Úµã
     size_t               free_node_head_;
-    ///FREE CHUNKçš„èµ·å§‹èŠ‚ç‚¹
+    ///FREE CHUNKµÄÆğÊ¼½Úµã
     size_t               free_chunk_head_;
 
 };
 
 /*!
-* @brief      ä¸€ä¸ªç®€å•çš„å­˜æ”¾å˜é•¿æ•°æ®çš„Cacheï¼Œç”¨äºå¤§å°ä¸å¤ªå›ºå®šçš„æ•°æ®çš„ç¼“å†²ï¼Œ
-*             ç”¨æœ€å°çš„å†…å­˜ï¼Œå­˜æ”¾æœ€å¤§çš„æ•°æ®ï¼Œç©ºé—´æµªè´¹å°ã€‚
+* @brief      Ò»¸ö¼òµ¥µÄ´æ·Å±ä³¤Êı¾İµÄCache£¬ÓÃÓÚ´óĞ¡²»Ì«¹Ì¶¨µÄÊı¾İµÄ»º³å£¬
+*             ÓÃ×îĞ¡µÄÄÚ´æ£¬´æ·Å×î´óµÄÊı¾İ£¬¿Õ¼äÀË·ÑĞ¡¡£
 *
 */
 class shm_cachechunk : public _shm_memory_base
 {
 
 protected:
-    //æ„é€ å‡½æ•°,
+    //¹¹Ôìº¯Êı,
     shm_cachechunk();
-    //ææ„å‡½æ•°,
+    //Îö¹¹º¯Êı,
     ~shm_cachechunk();
 
 protected:
 
     /*!
-    * @brief      æ ¹æ®ç”³è¯·çš„ç©ºé—´,åˆ†é…ä¸€ä¸ªNODE,
-    * @return     bool    æ˜¯å¦æˆåŠŸç”³è¯·
-    * @param[in]  size_t    å¸Œæœ›ç”³è¯·æ”¾å…¥çš„NODEçš„é•¿åº¦
-    * @param[out] nodeindex è¿”å›å‚æ•°ï¼Œç”³è¯·åˆ°çš„NODEçš„ç´¢å¼•
+    * @brief      ¸ù¾İÉêÇëµÄ¿Õ¼ä,·ÖÅäÒ»¸öNODE,
+    * @return     bool    ÊÇ·ñ³É¹¦ÉêÇë
+    * @param[in]  size_t    Ï£ÍûÉêÇë·ÅÈëµÄNODEµÄ³¤¶È
+    * @param[out] nodeindex ·µ»Ø²ÎÊı£¬ÉêÇëµ½µÄNODEµÄË÷Òı
     */
     bool create_node(size_t , size_t &nodeindex);
 
     /*!
-    * @brief      é‡Šæ”¾ä¸€ä¸ªNODE,å°†å…¶å½’è¿˜ç»™FREELIST
-    * @param      nodeindex é‡Šæ”¾çš„NODEç´¢å¼•
+    * @brief      ÊÍ·ÅÒ»¸öNODE,½«Æä¹é»¹¸øFREELIST
+    * @param      nodeindex ÊÍ·ÅµÄNODEË÷Òı
     */
     void destroy_node(const size_t nodeindex);
 
 public:
 
-    ///@brief      æ¸…ç†æ‰€æœ‰çš„æ•°æ®,å°†Cacheè¿˜åŸæˆåˆå§‹åŒ–ï¼Œæ²¡æœ‰ä»»ä½•æ•°æ®çš„æ ·å­
+    ///@brief      ÇåÀíËùÓĞµÄÊı¾İ,½«Cache»¹Ô­³É³õÊ¼»¯£¬Ã»ÓĞÈÎºÎÊı¾İµÄÑù×Ó
     void clear();
 
     /*!
-    * @brief      å–å‰©ä½™ç©ºé—´çš„å¤§å°
-    * @param[out] free_node    å‰©ä½™çš„NODEæ•°é‡ï¼Œè¿˜å¯ä»¥æ”¾å¤šå°‘ä¸ªæ•°æ®
-    * @param[out] free_chunk   å‰©ä½™çš„æ¡¶çš„æ•°é‡ï¼Œ
-    * @param[out] max_room     å‰©ä½™çš„ç©ºé—´ï¼Œæœ€å¤§å¯ä»¥æ”¾å¤šå¤§çš„æ•°æ®
+    * @brief      È¡Ê£Óà¿Õ¼äµÄ´óĞ¡
+    * @param[out] free_node    Ê£ÓàµÄNODEÊıÁ¿£¬»¹¿ÉÒÔ·Å¶àÉÙ¸öÊı¾İ
+    * @param[out] free_chunk   Ê£ÓàµÄÍ°µÄÊıÁ¿£¬
+    * @param[out] max_room     Ê£ÓàµÄ¿Õ¼ä£¬×î´ó¿ÉÒÔ·Å¶à´óµÄÊı¾İ
     */
     void free_size(size_t &free_node,
                    size_t &free_chunk,
                    size_t &max_room);
 
     /*!
-    * @brief      æ£€æŸ¥æ˜¯å¦æœ‰è¶³å¤Ÿç©ºé—´å­˜æ”¾ä¸€ä¸ªæ•°æ®
-    * @return     bool   è¿”å›å€¼ï¼Œæ˜¯å¦å¯ä»¥æ”¾å…¥ï¼Œ
-    * @param[in]  szdata è¦æ”¾å…¥çš„æ•°æ®å¤§å°
+    * @brief      ¼ì²éÊÇ·ñÓĞ×ã¹»¿Õ¼ä´æ·ÅÒ»¸öÊı¾İ
+    * @return     bool   ·µ»ØÖµ£¬ÊÇ·ñ¿ÉÒÔ·ÅÈë£¬
+    * @param[in]  szdata Òª·ÅÈëµÄÊı¾İ´óĞ¡
     */
     bool check_enough(size_t szdata);
 
     /*!
-    * @brief      æ”¾å…¥ä¸€ä¸ªNODEæ•°æ®ï¼Œ
-    * @return     bool       æ˜¯å¦æˆåŠŸæ”¾å…¥
-    * @param[in]  szdata     æ•°æ®çš„å¤§å°
-    * @param[in]  indata     æ•°æ®æŒ‡é’ˆ
-    * @param[out] nodeindex  NODEæ”¾å…¥çš„NODEçš„ç´¢å¼•ï¼Œæ ¹æ®è¿™ä¸ªå¯ä»¥æ‰¾åˆ°è¿™ä¸ªNODE
+    * @brief      ·ÅÈëÒ»¸öNODEÊı¾İ£¬
+    * @return     bool       ÊÇ·ñ³É¹¦·ÅÈë
+    * @param[in]  szdata     Êı¾İµÄ´óĞ¡
+    * @param[in]  indata     Êı¾İÖ¸Õë
+    * @param[out] nodeindex  NODE·ÅÈëµÄNODEµÄË÷Òı£¬¸ù¾İÕâ¸ö¿ÉÒÔÕÒµ½Õâ¸öNODE
     */
     bool set_node(const size_t szdata,
                   const char *indata,
                   size_t &nodeindex);
 
     /*!
-    * @brief      å¾—åˆ°æŸä¸ªNODEçš„å°ºå¯¸
-    * @return     size_t    è¿”å›NODEçš„å°ºå¯¸
-    * @param[in]  nodeindex NODEçš„ç´¢å¼•ï¼Œæ‹œæ‰˜ä½ ä¼ é€’ä¸€ä¸ªæ­£ç¡®çš„å‚æ•°ï¼Œå¦åˆ™è¡Œä¸ºæœªå®šä¹‰
+    * @brief      µÃµ½Ä³¸öNODEµÄ³ß´ç
+    * @return     size_t    ·µ»ØNODEµÄ³ß´ç
+    * @param[in]  nodeindex NODEµÄË÷Òı£¬°İÍĞÄã´«µİÒ»¸öÕıÈ·µÄ²ÎÊı£¬·ñÔòĞĞÎªÎ´¶¨Òå
     */
     size_t nodesize(const size_t nodeindex);
 
     /*!
-    * @brief      å¾—åˆ°æŸä¸ªNODEçš„å°ºå¯¸,æ¡¶æ•°é‡ï¼Œæœ¬æ¥æ‰“ç®—ç”¨ä¸€ä¸ªè¿”å›å€¼è¡¨ç¤ºæ˜¯å¦å–å€¼æˆåŠŸçš„ï¼Œ
-    *             ä½†åæ¥æƒ³æƒ³æˆ‘æ˜¯æ•°ç»„ä¸‹æ ‡æ“ä½œï¼Œè¿˜æ˜¯ä½ æ¥ä¿è¯å‚æ•°å§ã€‚
-    * @param[in]  nodeindex  NODEçš„ç´¢å¼•ï¼Œæ‹œæ‰˜ä½ ä¼ é€’ä¸€ä¸ªæ­£ç¡®çš„å‚æ•°ï¼Œå¦åˆ™è¡Œä¸ºæœªå®šä¹‰
-    * @param[out] nodesize   è¿”å›å‚æ•°ï¼ŒNODEçš„å°ºå¯¸
-    * @param[out] chunknum   è¿”å›å‚æ•°ï¼Œå­˜æ”¾æ‰€ç”¨çš„CHUNKçš„æ•°é‡
+    * @brief      µÃµ½Ä³¸öNODEµÄ³ß´ç,Í°ÊıÁ¿£¬±¾À´´òËãÓÃÒ»¸ö·µ»ØÖµ±íÊ¾ÊÇ·ñÈ¡Öµ³É¹¦µÄ£¬
+    *             µ«ºóÀ´ÏëÏëÎÒÊÇÊı×éÏÂ±ê²Ù×÷£¬»¹ÊÇÄãÀ´±£Ö¤²ÎÊı°É¡£
+    * @param[in]  nodeindex  NODEµÄË÷Òı£¬°İÍĞÄã´«µİÒ»¸öÕıÈ·µÄ²ÎÊı£¬·ñÔòĞĞÎªÎ´¶¨Òå
+    * @param[out] nodesize   ·µ»Ø²ÎÊı£¬NODEµÄ³ß´ç
+    * @param[out] chunknum   ·µ»Ø²ÎÊı£¬´æ·ÅËùÓÃµÄCHUNKµÄÊıÁ¿
     */
     void nodesize(const size_t nodeindex,
                   size_t &nodesize,
                   size_t &chunknum);
 
     /*!
-    * @brief      å–å¾—ä¸€ä¸ªèŠ‚ç‚¹çš„æ•°æ®
-    * @param[in]  nodeindex  å­˜æ”¾NODEçš„ç´¢å¼•
-    * @param[out] szdata     è¿”å›NODEçš„å¤§å°
-    * @param[out] outdata    è¿”å›çš„NODEæ•°æ®æ•°æ®ç©ºé—´çš„å°ºå¯¸ä½ è¦è‡ªå·±ä¿è¯å–”ï¼Œ
+    * @brief      È¡µÃÒ»¸ö½ÚµãµÄÊı¾İ
+    * @param[in]  nodeindex  ´æ·ÅNODEµÄË÷Òı
+    * @param[out] szdata     ·µ»ØNODEµÄ´óĞ¡
+    * @param[out] outdata    ·µ»ØµÄNODEÊı¾İÊı¾İ¿Õ¼äµÄ³ß´çÄãÒª×Ô¼º±£Ö¤à¸£¬
     */
     void get_node(const size_t nodeindex,
                   size_t &szdata,
                   char *outdata);
 
     /*!
-    * @brief      å½“éœ€è¦ä¸€ä¸ªä¸ªCHUNKå–å‡ºæ•°æ®æ—¶ï¼Œå¾—åˆ°ä¸€ä¸ªNODEçš„ç¬¬Nä¸ªCHUNKçš„æ•°æ®
-    * @param[in]  nodeindex  NODEçš„ç´¢å¼•
-    * @param[in]  chunk_no   ç¬¬å‡ ä¸ªCHUNKï¼Œä»0å¼€å§‹å‘€ï¼Œï¼ˆæ³¨æ„è¿™ä¸æ˜¯ä¸‹æ ‡ï¼Œè€Œæ˜¯ç¬¬å‡ ä¸ªæ¡¶ï¼‰
-    * @param[out] szdata     è¿”å›å‚æ•°ï¼Œè¿”å›çš„æ•°æ®é•¿åº¦ï¼Œï¼ˆå°äºç­‰äºæ¡¶é•¿åº¦ï¼‰
-    * @param[out] outdata    è¿”å›å‚æ•°ï¼Œè¿™ä¸ªæ¡¶çš„æ•°æ®ï¼Œæ•°æ®ç©ºé—´è¦å¤§äºæ¡¶çš„å®¹é‡
+    * @brief      µ±ĞèÒªÒ»¸ö¸öCHUNKÈ¡³öÊı¾İÊ±£¬µÃµ½Ò»¸öNODEµÄµÚN¸öCHUNKµÄÊı¾İ
+    * @param[in]  nodeindex  NODEµÄË÷Òı
+    * @param[in]  chunk_no   µÚ¼¸¸öCHUNK£¬´Ó0¿ªÊ¼Ñ½£¬£¨×¢ÒâÕâ²»ÊÇÏÂ±ê£¬¶øÊÇµÚ¼¸¸öÍ°£©
+    * @param[out] szdata     ·µ»Ø²ÎÊı£¬·µ»ØµÄÊı¾İ³¤¶È£¬£¨Ğ¡ÓÚµÈÓÚÍ°³¤¶È£©
+    * @param[out] outdata    ·µ»Ø²ÎÊı£¬Õâ¸öÍ°µÄÊı¾İ£¬Êı¾İ¿Õ¼äÒª´óÓÚÍ°µÄÈİÁ¿
     */
     void get_chunk(const size_t nodeindex,
                    size_t chunk_no,
@@ -194,14 +194,14 @@ public:
                    char *outdata);
 
     /*!
-    * @brief      æ ¹æ®æ•°æ®çš„èµ·å§‹ä½ç½®ï¼Œå–å¾—è¿™ä¸ªä½ç½®æ‰€åœ¨CHUNKçš„æ•°æ®,ï¼ˆæ³¨æ„åªæ‹·è´ä¸€ä¸ªCHUNKçš„æ•°æ®ï¼‰
-    *             å¦‚æœä¸æ˜¯æ•°æ®çš„èµ·å§‹ä½ç½®å¼€å§‹ï¼Œè€Œæ˜¯åœ¨CHUNKä¸­é—´ï¼ˆä¸æ˜¯0ï¼‰ï¼Œæ‹·è´å›æ¥çš„æ•°æ®ä»data_start
-    *             å¼€å§‹
-    * @param[in]  nodeindex   NODEçš„ç´¢å¼•
-    * @param[in]  data_start  æ•°æ®çš„èµ·å§‹ä½ç½®
-    * @param[out] chunk_no    è¿”å›å‚æ•°ï¼Œè¿™ä¸ªèµ·å§‹ä½ç½®ï¼Œä½äºç¬¬å‡ ä¸ªæ¡¶ä¸Š
-    * @param[out] szdata      è¿”å›å‚æ•°ï¼Œè¿”å›çš„æ•°æ®é•¿åº¦
-    * @param[out] outdata     è¿”å›å‚æ•°ï¼Œè¿™ä¸ªæ¡¶çš„ä»data_startå¼€å§‹åˆ°æ¡¶ç»“æŸä½ç½®çš„æ•°æ®ï¼Œ
+    * @brief      ¸ù¾İÊı¾İµÄÆğÊ¼Î»ÖÃ£¬È¡µÃÕâ¸öÎ»ÖÃËùÔÚCHUNKµÄÊı¾İ,£¨×¢ÒâÖ»¿½±´Ò»¸öCHUNKµÄÊı¾İ£©
+    *             Èç¹û²»ÊÇÊı¾İµÄÆğÊ¼Î»ÖÃ¿ªÊ¼£¬¶øÊÇÔÚCHUNKÖĞ¼ä£¨²»ÊÇ0£©£¬¿½±´»ØÀ´µÄÊı¾İ´Ódata_start
+    *             ¿ªÊ¼
+    * @param[in]  nodeindex   NODEµÄË÷Òı
+    * @param[in]  data_start  Êı¾İµÄÆğÊ¼Î»ÖÃ
+    * @param[out] chunk_no    ·µ»Ø²ÎÊı£¬Õâ¸öÆğÊ¼Î»ÖÃ£¬Î»ÓÚµÚ¼¸¸öÍ°ÉÏ
+    * @param[out] szdata      ·µ»Ø²ÎÊı£¬·µ»ØµÄÊı¾İ³¤¶È
+    * @param[out] outdata     ·µ»Ø²ÎÊı£¬Õâ¸öÍ°µÄ´Ódata_start¿ªÊ¼µ½Í°½áÊøÎ»ÖÃµÄÊı¾İ£¬
     */
     void get_chunkdata(const size_t nodeindex,
                        const size_t data_start,
@@ -210,25 +210,25 @@ public:
                        char *outdata);
 
     /*!
-    * @brief      é‡Šæ”¾æŸä¸ªNODEèŠ‚ç‚¹
-    * @param[in]  nodeindex  é‡Šæ”¾çš„NODEçš„ç´¢å¼•
+    * @brief      ÊÍ·ÅÄ³¸öNODE½Úµã
+    * @param[in]  nodeindex  ÊÍ·ÅµÄNODEµÄË÷Òı
     */
     void freenode(const size_t nodeindex);
 
     /*!
-    * @brief      å¾—åˆ°CHUNKçš„å®šä¹‰å¤§å°,æ³¨æ„è¿™æ˜¯CHUNKçš„å®¹é‡ä¸æ˜¯é‡Œé¢æ•°æ®çš„å¤§å°
-    * @return     size_t CHUNKçš„å®šä¹‰å¤§å°
+    * @brief      µÃµ½CHUNKµÄ¶¨Òå´óĞ¡,×¢ÒâÕâÊÇCHUNKµÄÈİÁ¿²»ÊÇÀïÃæÊı¾İµÄ´óĞ¡
+    * @return     size_t CHUNKµÄ¶¨Òå´óĞ¡
     */
     size_t chunksize();
 
     /*!
-    * @brief      ç”¨äºæ¯æ¬¡å–ä¸€ä¸ªCHUNKçš„æŒ‡é’ˆæ“ä½œï¼Œæ ¹æ®NODEç´¢å¼•ï¼Œç¬¬å‡ ä¸ªCHUNK,è¿”å›
-    *             CHUNKçš„æŒ‡é’ˆä»¥åŠç›¸åº”çš„é•¿åº¦,æ³¨æ„æŒ‡é’ˆçš„ç”Ÿå‘½å‘¨æœŸ,å¤šçº¿ç¨‹æƒ…å†µä¸‹è¯·æ³¨æ„åŠ é”
-    *             å¤šç”¨äºä¸€äº›ä¸ºäº†è¿½æ±‚æè‡´é€Ÿåº¦ï¼Œä¸å¸Œæœ›æ‹·è´æ•°æ®çš„åœ°æ–¹
-    * @param[in]  nodeindex   NODEç´¢å¼•
-    * @param[in]  chunk_no    ç¬¬å‡ ä¸ªCHUNKï¼Œ
-    * @param[out] szdata      è¿™ä¸ªCHUNKä¸­æ•°æ®çš„é•¿åº¦
-    * @param[out] chunk_point è¿™ä¸ªCHUNKå¼€å§‹çš„æŒ‡é’ˆ
+    * @brief      ÓÃÓÚÃ¿´ÎÈ¡Ò»¸öCHUNKµÄÖ¸Õë²Ù×÷£¬¸ù¾İNODEË÷Òı£¬µÚ¼¸¸öCHUNK,·µ»Ø
+    *             CHUNKµÄÖ¸ÕëÒÔ¼°ÏàÓ¦µÄ³¤¶È,×¢ÒâÖ¸ÕëµÄÉúÃüÖÜÆÚ,¶àÏß³ÌÇé¿öÏÂÇë×¢Òâ¼ÓËø
+    *             ¶àÓÃÓÚÒ»Ğ©ÎªÁË×·Çó¼«ÖÂËÙ¶È£¬²»Ï£Íû¿½±´Êı¾İµÄµØ·½
+    * @param[in]  nodeindex   NODEË÷Òı
+    * @param[in]  chunk_no    µÚ¼¸¸öCHUNK£¬
+    * @param[out] szdata      Õâ¸öCHUNKÖĞÊı¾İµÄ³¤¶È
+    * @param[out] chunk_point Õâ¸öCHUNK¿ªÊ¼µÄÖ¸Õë
     */
     void get_chunk_point(const size_t nodeindex,
                          size_t chunk_no,
@@ -236,15 +236,15 @@ public:
                          char *&chunk_point);
 
     /*!
-    * @brief      ç”¨äºæ ¹æ®æ•°æ®çš„èµ·å§‹ä½ç½®ï¼Œå–å¾—è¿™ä¸ªä½ç½®æ‰€åœ¨CHUNKçš„æŒ‡é’ˆ,ä»¥åŠå–å¾—
-    *             åœ¨è¿™ä¸ªCHUNKé‡Œé¢çš„å‰©ä½™çš„æ•°æ®æ—¶
-    *             å¤šç”¨äºä¸€äº›ä¸ºäº†è¿½æ±‚æè‡´é€Ÿåº¦ï¼Œä¸å¸Œæœ›æ‹·è´æ•°æ®çš„åœ°æ–¹
-    * @param[in]  nodeindex        NODEç´¢å¼•
-    * @param[in]  data_start       æŸ¥è¯¢çš„æ•°æ®çš„èµ·å§‹ä½ç½®
-    * @param[out] chunk_no         è¿”å›å‚æ•°ï¼Œè¿™ä¸ªèµ·å§‹ä½ç½®ï¼Œä½äºç¬¬å‡ ä¸ªæ¡¶ä¸Š
-    * @param[out] szdata           è¿”å›å‚æ•°ï¼Œè¿”å›çš„æ•°æ®é•¿åº¦ï¼Œä»data_startä½ç½®å¼€å§‹ï¼Œåˆ°è¿™ä¸ªCHUNKç»“æŸï¼Œçš„æ•°æ®é•¿åº¦
-    * @param[out] chunk_data_point è¿”å›å‚æ•°ï¼Œè¿™ä¸ªdata_startä½ç½®åœ¨CHUNKä¸­çš„ä½ç½®æŒ‡é’ˆ
-    * @note       æ³¨æ„æŒ‡é’ˆçš„ç”Ÿå‘½å‘¨æœŸï¼Œå½“å¹´joviç”¨è¿™ä¸ªå¥½åƒæäº†ä¸€å¥—å¼•ç”¨æŠ€æœ¯ï¼Œå‘µå‘µ
+    * @brief      ÓÃÓÚ¸ù¾İÊı¾İµÄÆğÊ¼Î»ÖÃ£¬È¡µÃÕâ¸öÎ»ÖÃËùÔÚCHUNKµÄÖ¸Õë,ÒÔ¼°È¡µÃ
+    *             ÔÚÕâ¸öCHUNKÀïÃæµÄÊ£ÓàµÄÊı¾İÊ±
+    *             ¶àÓÃÓÚÒ»Ğ©ÎªÁË×·Çó¼«ÖÂËÙ¶È£¬²»Ï£Íû¿½±´Êı¾İµÄµØ·½
+    * @param[in]  nodeindex        NODEË÷Òı
+    * @param[in]  data_start       ²éÑ¯µÄÊı¾İµÄÆğÊ¼Î»ÖÃ
+    * @param[out] chunk_no         ·µ»Ø²ÎÊı£¬Õâ¸öÆğÊ¼Î»ÖÃ£¬Î»ÓÚµÚ¼¸¸öÍ°ÉÏ
+    * @param[out] szdata           ·µ»Ø²ÎÊı£¬·µ»ØµÄÊı¾İ³¤¶È£¬´Ódata_startÎ»ÖÃ¿ªÊ¼£¬µ½Õâ¸öCHUNK½áÊø£¬µÄÊı¾İ³¤¶È
+    * @param[out] chunk_data_point ·µ»Ø²ÎÊı£¬Õâ¸ödata_startÎ»ÖÃÔÚCHUNKÖĞµÄÎ»ÖÃÖ¸Õë
+    * @note       ×¢ÒâÖ¸ÕëµÄÉúÃüÖÜÆÚ£¬µ±ÄêjoviÓÃÕâ¸öºÃÏñ¸ãÁËÒ»Ì×ÒıÓÃ¼¼Êõ£¬ºÇºÇ
     */
     void get_chunkdata_point(const size_t nodeindex,
                              const size_t data_start,
@@ -254,24 +254,24 @@ public:
 
 public:
     /*!
-    * @brief      å¾—åˆ°åˆå§‹åŒ–æ‰€éœ€çš„å†…å­˜å°ºå¯¸ï¼Œå•ä½å­—èŠ‚ï¼Œä½ åº”è¯¥æ ¹æ®è¿™ä¸ªé•¿åº¦å»ç”³è¯·å†…å­˜
-    * @return     size_t     æ‰€éœ€çš„å†…å­˜å¤§å°ï¼Œ
-    * @param[in]  numnode    NODEèŠ‚ç‚¹çš„ä¸ªæ•°
-    * @param[in]  numchunk   CHUNKèŠ‚ç‚¹çš„ä¸ªæ•°ï¼Œå¤šä¸ªæ¡¶å­˜æ”¾ä¸€ä¸ªNODE
-    * @param[in]  szchunk    CHUNKçš„å°ºå¯¸å¤§å°
+    * @brief      µÃµ½³õÊ¼»¯ËùĞèµÄÄÚ´æ³ß´ç£¬µ¥Î»×Ö½Ú£¬ÄãÓ¦¸Ã¸ù¾İÕâ¸ö³¤¶ÈÈ¥ÉêÇëÄÚ´æ
+    * @return     size_t     ËùĞèµÄÄÚ´æ´óĞ¡£¬
+    * @param[in]  numnode    NODE½ÚµãµÄ¸öÊı
+    * @param[in]  numchunk   CHUNK½ÚµãµÄ¸öÊı£¬¶à¸öÍ°´æ·ÅÒ»¸öNODE
+    * @param[in]  szchunk    CHUNKµÄ³ß´ç´óĞ¡
     */
     static size_t getallocsize(const size_t numnode,
                                const size_t numchunk,
                                const size_t szchunk);
 
     /*!
-    * @brief      æ ¹æ®å‚æ•°åˆå§‹åŒ–ç›¸åº”çš„å†…å­˜ï¼Œ
-    * @return     shm_cachechunk* å¦‚æœåˆå§‹åŒ–æˆåŠŸï¼Œè¿”å›æŒ‡é’ˆè®©ä½ ä½¿ç”¨
-    * @param[in]  numnode     NODEèŠ‚ç‚¹çš„ä¸ªæ•°
-    * @param[in]  numchunk    CHUNKèŠ‚ç‚¹çš„ä¸ªæ•°
-    * @param[in]  szchunk     CHUNKçš„å°ºå¯¸å¤§å°
-    * @param[in]  pmmap       è¾“å…¥çš„å†…å­˜æŒ‡é’ˆ
-    * @param[in]  if_restore  æ˜¯å¦æ¢å¤åŸæœ‰å†…å­˜ä¸­æ•°æ®
+    * @brief      ¸ù¾İ²ÎÊı³õÊ¼»¯ÏàÓ¦µÄÄÚ´æ£¬
+    * @return     shm_cachechunk* Èç¹û³õÊ¼»¯³É¹¦£¬·µ»ØÖ¸ÕëÈÃÄãÊ¹ÓÃ
+    * @param[in]  numnode     NODE½ÚµãµÄ¸öÊı
+    * @param[in]  numchunk    CHUNK½ÚµãµÄ¸öÊı
+    * @param[in]  szchunk     CHUNKµÄ³ß´ç´óĞ¡
+    * @param[in]  pmmap       ÊäÈëµÄÄÚ´æÖ¸Õë
+    * @param[in]  if_restore  ÊÇ·ñ»Ö¸´Ô­ÓĞÄÚ´æÖĞÊı¾İ
     */
     static shm_cachechunk *initialize(const size_t numnode,
                                       const size_t numchunk,
@@ -281,16 +281,16 @@ public:
 
 protected:
 
-    ///CACHEçš„å¤´éƒ¨ï¼Œ
+    ///CACHEµÄÍ·²¿£¬
     _shm_cachechunk_head     *cachechunk_head_;
 
-    ///Cache NODE çš„BASEæŒ‡é’ˆ,NODEè¡¨ç¤ºä½¿ç”¨çš„
+    ///Cache NODE µÄBASEÖ¸Õë,NODE±íÊ¾Ê¹ÓÃµÄ
     cachechunk_node_index    *cachenode_base_;
 
-    ///CHUNK INDEXçš„BASEæŒ‡é’ˆ,
+    ///CHUNK INDEXµÄBASEÖ¸Õë,
     size_t                   *chunkindex_base_;
 
-    ///CHUNK DATAæ•°æ®åŒºçš„BASEæŒ‡é’ˆ
+    ///CHUNK DATAÊı¾İÇøµÄBASEÖ¸Õë
     char                     *chunkdata_base_;
 };
 

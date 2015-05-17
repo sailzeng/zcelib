@@ -1,50 +1,50 @@
-﻿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_predefine.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2003-5-14
-* @brief      所有预定义信息描述，包括所有的外部头文件，全局使用的宏，
-*             个个平台兼容性的一些小东东，数值的typedef，
+* @brief      ����Ԥ������Ϣ�������������е��ⲿͷ�ļ���ȫ��ʹ�õĺ꣬
+*             ����ƽ̨�����Ե�һЩС��������ֵ��typedef��
 *
 *
-*  @details   在yunfei改进后的再改进一下，发现每个人看问题的思路还是不一样的。
-*             也吸取教训，写注释，免得大家不理解为啥要这样
-*             请大家仔细看一下每段的分割线和说明，我认为我的划分是很清晰的，不要
-*             一看就认为代码宏定义混乱，
-*             请各位大神动之前放慢你奔腾野马式样的思维，仔细阅读一下注释头文
-*             件分成几个个部分，操作系统定义，头文件包含，数值定义，一些常用宏，
+*  @details   ��yunfei�Ľ�����ٸĽ�һ�£�����ÿ���˿������˼·���ǲ�һ���ġ�
+*             Ҳ��ȡ��ѵ��дע�ͣ���ô�Ҳ�����ΪɶҪ����
+*             ������ϸ��һ��ÿ�εķָ��ߺ�˵��������Ϊ�ҵĻ����Ǻ������ģ���Ҫ
+*             һ������Ϊ����궨����ң�
+*             ���λ����֮ǰ�����㱼��Ұ��ʽ����˼ά����ϸ�Ķ�һ��ע��ͷ��
+*             ���ֳɼ��������֣�����ϵͳ���壬ͷ�ļ���������ֵ���壬һЩ���ú꣬
 *
-*             头文件包含情况如下
-*             1.WINDOWS特有部分的，主要是WINDOWS兼容东西多，容易冲突，甚至
-*               Windows那排文件的定义顺序也是有讲究的
-*             2.LINUX特有部分的，
-*             3.C头文件
-*             4.C++特有部分的，
-*             5.依赖的第3方的库的,请务必不要搞乱，（大部分都是可以打开关闭的）
+*             ͷ�ļ������������
+*             1.WINDOWS���в��ֵģ���Ҫ��WINDOWS���ݶ����࣬���׳�ͻ������
+*               Windows�����ļ��Ķ���˳��Ҳ���н�����
+*             2.LINUX���в��ֵģ�
+*             3.Cͷ�ļ�
+*             4.C++���в��ֵģ�
+*             5.�����ĵ�3���Ŀ��,����ز�Ҫ���ң����󲿷ֶ��ǿ��Դ򿪹رյģ�
 *
-*             数值定义typedef部分代码，以及相关的头文件信息,
-*             宏的定义以宏为核心，不按照操作系统分开，免得找起来痛苦，不要试图
-*             归类，而改变顺序，反而让人难以理解，
+*             ��ֵ����typedef���ִ��룬�Լ���ص�ͷ�ļ���Ϣ,
+*             ��Ķ����Ժ�Ϊ���ģ������ղ���ϵͳ�ֿ������������ʹ�࣬��Ҫ��ͼ
+*             ���࣬���ı�˳�򣬷��������������⣬
 *
-*             记录一点纯属YY，的东东，
-*             一个得道修仙老前辈送的一段话，记录下来：
-*             侠者，性情也，意气也。故不文，不饰，不求，不争，合则留，不合则去。
-*             故卫青，将也；周亚夫，侠也；徐达，将也；常遇春，侠也。真侠近乎道。
-*             我回复：
-*             神，请赐予我平静， 去接受我无法改变的。
-*             给予我勇气，去改变我能改变的，
-*             赐我智慧，分辨这两者的区别。
+*             ��¼һ�㴿��YY���Ķ�����
+*             һ���õ�������ǰ���͵�һ�λ�����¼������
+*             ���ߣ�����Ҳ������Ҳ���ʲ��ģ����Σ����󣬲�������������������ȥ��
+*             �����࣬��Ҳ�����Ƿ���Ҳ������Ҳ������������Ҳ��������������
+*             �һظ���
+*             ���������ƽ���� ȥ�������޷��ı�ġ�
+*             ������������ȥ�ı����ܸı�ģ�
+*             �����ǻۣ��ֱ������ߵ�����
 */
 
 #ifndef ZCE_LIB_PREDEFINE_H_
 #define ZCE_LIB_PREDEFINE_H_
 
 //==================================================================================================
-//根据操作系统，编译器，给出不同的定义，因为这些定义会影响全局，所以在最开始的部分
-//我的库只打算适应两个环境，Windows(MSVC)和Linux(GCC)，
+//���ݲ���ϵͳ����������������ͬ�Ķ��壬��Ϊ��Щ�����Ӱ��ȫ�֣��������ʼ�Ĳ���
+//�ҵĿ�ֻ������Ӧ����������Windows(MSVC)��Linux(GCC)��
 
-//WINDOWS平台(MSVC)
+//WINDOWSƽ̨(MSVC)
 #if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
 
 #define ZCE_OS_WINDOWS 1
@@ -59,7 +59,7 @@
 
 #endif //#if defined(WIN32) || defined(WIN64) || defined(_WIN32) || defined(_WIN64)
 
-// LINUX平台(GCC)我只打算支持GCC，不好意思
+// LINUXƽ̨(GCC)��ֻ����֧��GCC��������˼
 #if defined(__linux__) && defined (__GNUC__)
 #define ZCE_OS_LINUX 1
 #ifndef _GCC_VER
@@ -84,7 +84,7 @@
 #  define ZCE_OS32 1
 #endif
 
-//如果你啥都不是或者啥都是，我不活了。
+//�����ɶ�����ǻ���ɶ���ǣ��Ҳ����ˡ�
 #if (!defined (ZCE_OS_WINDOWS) && !defined (ZCE_OS_LINUX)) \
     || (defined (ZCE_OS_WINDOWS) && defined (ZCE_OS_LINUX))
 #error "[Error]ZCE_OS_WINDOWS and ZCE_OS_LINUX all defined or all undefined.  error."
@@ -92,20 +92,20 @@
 
 
 //==================================================================================================
-//关于C++11的特性使用问题，C++11的很多特效如此的诱人，但想真心爱他还是有一些门槛的。
-//我曾经安装C++98的推广速度认为，我们到2015年可以开始使用C++11特性，2018年才能推广，
-//但这一次编译机的厂商感觉都比较努力，到2013年，VC++和GCC 已经大部分完成任务，但要在现
-//有的代码里面使用C++11容易，兼容之就比较蛋疼了。
-//如果有兴趣看看这两篇文档
+//����C++11������ʹ�����⣬C++11�ĺܶ���Ч��˵����ˣ��������İ���������һЩ�ż��ġ�
+//��������װC++98���ƹ��ٶ���Ϊ�����ǵ�2015����Կ�ʼʹ��C++11���ԣ�2018������ƹ㣬
+//����һ�α�����ĳ��̸о����Ƚ�Ŭ������2013�꣬VC++��GCC �Ѿ��󲿷�������񣬵�Ҫ����
+//�еĴ�������ʹ��C++11���ף�����֮�ͱȽϵ����ˡ�
+//�������Ȥ��������ƪ�ĵ�
 //http://gcc.gnu.org/projects/cxx0x.html
 //http://msdn.microsoft.com/en-us/library/hh567368.aspx
-//随便列举几个
-//auto-typed variables                               GCC 4.4 VC++从2010开始逐步支持
+//����оټ���
+//auto-typed variables                               GCC 4.4 VC++��2010��ʼ��֧��
 //Non-static data member initializers                GCC 4.7 VC++2013
 //Variadic templates                                 GCC 4.3 VC++2013
 //Default template arguments for function templates  GCC 4.3 VC++2013
-//如果抛开上面的繁杂的特效可以认为，VC++，从2010版本开始支持，在2013版本支持特效比较完整，
-//GCC 从4.3版本开始到.到4.8版本支持比较晚上，GCC4.8的支持特性数量程度都远好于VC++2013
+//����׿�����ķ��ӵ���Ч������Ϊ��VC++����2010�汾��ʼ֧�֣���2013�汾֧����Ч�Ƚ�������
+//GCC ��4.3�汾��ʼ��.��4.8�汾֧�ֱȽ����ϣ�GCC4.8��֧�����������̶ȶ�Զ����VC++2013
 #if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1800)) \
     || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 40800))
 #define ZCE_SUPPORT_CPP11 1
@@ -113,32 +113,29 @@
 #define ZCE_SUPPORT_CPP11 0
 #endif
 
-//我懒了，我不想倒退回去支持非C11的编译器了，我努力拥抱C11，如果你要向更低的VS编译器靠近，要修改
-//一些auto或者默认非静态成员初始化，
+//�����ˣ��Ҳ��뵹�˻�ȥ֧�ַ�C11�ı������ˣ���Ŭ��ӵ��C11�������Ҫ����͵�VS������������Ҫ�޸�
+//һЩauto����Ĭ�ϷǾ�̬��Ա��ʼ����
 #if ZCE_SUPPORT_CPP11 == 0
 #error "[Error]Only support C11 compiler, include Visual Studio 2013 and "\
 "upper version, or GCC 4.8 and upper version."
 #endif
 
 //==================================================================================================
-//LINUX GCC下的告警屏蔽功能，其必须在GCC 4.2以后才有，而且push,pop的功能，必须在GCC，4.6以后才有，
-//这两个屏蔽告警的东东要等待GCC4.6以后才有。命苦的人。
+//LINUX GCC�µĸ澯���ι��ܣ��������GCC 4.2�Ժ���У�����push,pop�Ĺ��ܣ�������GCC��4.6�Ժ���У�
+//���������θ澯�Ķ���Ҫ�ȴ�GCC4.6�Ժ���С�������ˡ�
 //#pragma GCC diagnostic push
 //#pragma GCC diagnostic pop
 
 //==================================================================================================
 
 
-//WINDOWS的特有头文件部分，
+//WINDOWS������ͷ�ļ����֣�
 
 #if defined(ZCE_OS_WINDOWS)
 
-<<<<<<< HEAD
+
 // ��WINDOWS�º�POSIX��׼���ݵĺ꣬VS2003���°汾��Σ���û�в��ԣ�2003�Ժ�Windows���ںܶ������ʹ��"_"ǰ׺��
 #ifndef _CRT_NONSTDC_NO_DEPRECATE 
-=======
-// 在WINDOWS下和POSIX标准兼容的宏，VS2003以下版本如何，我没有测试，2003以后，Windows对于很多代码宏会使用"_"前缀，
->>>>>>> f8bef4096ed9cc82b6eaf9c8dcbfbb41375481ad
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #endif
 #ifndef _CRT_NONSTDC_NO_WARNINGS
@@ -148,12 +145,8 @@
 #define _WINSOCK_DEPRECATED_NO_WARNINGS 1
 #endif
 
-<<<<<<< HEAD
 // ���ڸ���VC++���Ҳ�ǿ��ʹ��_s���͵�API��_CRT_SECURE_NO_DEPRECATE��_CRT_SECURE_NO_WARNINGS���ϰ汾
 #ifndef _CRT_SECURE_NO_WARNINGS
-=======
-// 用于告诉VC++，我不强迫使用_s类型的API，_CRT_SECURE_NO_DEPRECATE是_CRT_SECURE_NO_WARNINGS的老版本
->>>>>>> f8bef4096ed9cc82b6eaf9c8dcbfbb41375481ad
 #define _CRT_SECURE_NO_WARNINGS   1
 #endif
 #ifndef _CRT_SECURE_NO_DEPRECATE
@@ -163,12 +156,12 @@
 
 //==================================================================================================
 
-//为什么Windows头文件必须放在前面，因为里面有大量的定义，如果步不按照这个规矩来，很容易形成冲突，
+//ΪʲôWindowsͷ�ļ��������ǰ�棬��Ϊ�����д����Ķ��壬����������������������������γɳ�ͻ��
 
-//支持WINSERVER2008,VISTA 将下面调整成1，如果不支持下面调整成0
+//֧��WINSERVER2008,VISTA �����������1�������֧�����������0
 #define ZCE_SUPPORT_WINSVR2008 1
 
-//Windows 的Vista和WinServer2008以后，支持了很多新的API,如果需要支持，需要打开支持开关
+//Windows ��Vista��WinServer2008�Ժ�֧���˺ܶ��µ�API,�����Ҫ֧�֣���Ҫ��֧�ֿ���
 #ifndef ZCE_SUPPORT_WINSVR2008
 #if (defined _WIN32_WINNT) && (_WIN32_WINNT >=  0x0600) && defined (_MSC_VER) && (_MSC_VER >= 1400)
 #define ZCE_SUPPORT_WINSVR2008 1
@@ -177,8 +170,8 @@
 #endif
 #endif
 
-//很多头文件以及数值定义本来可以放到各个OS的配置文件里面去的，但是感觉比较重要，还是放到这个地方了
-// pretend it's at least Windows XP or Win2003，如果不定义这个，有时候会有一些API无法使用的问题
+//�ܶ�ͷ�ļ��Լ���ֵ���屾�����Էŵ�����OS�������ļ�����ȥ�ģ����Ǹо��Ƚ���Ҫ�����Ƿŵ�����ط���
+// pretend it's at least Windows XP or Win2003������������������ʱ�����һЩAPI�޷�ʹ�õ�����
 #if !defined (_WIN32_WINNT)
 #if (defined ZCE_SUPPORT_WINSVR2008) && (ZCE_SUPPORT_WINSVR2008 == 1)
 # define _WIN32_WINNT 0x0600
@@ -187,12 +180,12 @@
 #endif
 #endif
 
-// 重新定义FD_SETSIZE来，要在winsock2.h前面，也请其他人注意
+// ���¶���FD_SETSIZE����Ҫ��winsock2.hǰ�棬Ҳ��������ע��
 #ifndef FD_SETSIZE
 #define FD_SETSIZE   1024
 #endif
 
-//有些文件前缀是大写的，看起来怪怪的，但Windows下他就真是大写的。
+//��Щ�ļ�ǰ׺�Ǵ�д�ģ��������ֵֹģ���Windows���������Ǵ�д�ġ�
 
 #include <winsock2.h>
 #include <MSWSock.h>
@@ -215,10 +208,10 @@
 #endif //#ifdef ZCE_OS_WINDOWS
 
 //==================================================================================================
-//LINUX 下特有的部分头文件
+//LINUX �����еĲ���ͷ�ļ�
 #if defined(ZCE_OS_LINUX)
 
-// 为了使用
+// Ϊ��ʹ��
 #define _BSD_SOURCE
 
 #include <errno.h>
@@ -258,7 +251,7 @@
 
 //==================================================================================================
 
-// C 头文件
+// C ͷ�ļ�
 #include <string.h>
 #include <time.h>
 #include <stdio.h>
@@ -278,7 +271,7 @@
 #pragma warning ( disable : 4267)
 #endif
 
-// c++头文件
+// c++ͷ�ļ�
 #include <vector>
 #include <list>
 #include <set>
@@ -299,17 +292,17 @@
 #include <memory>
 #include <limits>
 
-//hash_map,hash_set的头文件包含处理要麻烦一点
+//hash_map,hash_set��ͷ�ļ���������Ҫ�鷳һ��
 
-//在VS2008以后，才有unordered_map和unordered_set，所以在这之前，你必须用stlport，
-//当然由于stlport的性能强过微软自带的容器，其他版本也建议大家用stlport
+//��VS2008�Ժ󣬲���unordered_map��unordered_set����������֮ǰ���������stlport��
+//��Ȼ����stlport������ǿ��΢���Դ��������������汾Ҳ��������stlport
 #if defined ZCE_OS_WINDOWS && !defined _STLP_CONFIX_H && defined (_MSC_VER) && (_MSC_VER <= 1400)
 #error " Please use stlport ,in Visual studio 2005, have not unordered_map and unordered_set ."
 #endif
 
-//在VC++2008版本,VC++2005+STLport，GCC 4.6版本以及更早的版本，unordered_map的名字空间是std::tr1
-//在VC++2008版本以前(包括),必须实用STLport
-//在VC++2008版本后，可以考虑是否实用STLport,如果_STLP_CONFIX_H 被定义了，我认为你有使用
+//��VC++2008�汾,VC++2005+STLport��GCC 4.6�汾�Լ�����İ汾��unordered_map�����ֿռ���std::tr1
+//��VC++2008�汾��ǰ(����),����ʵ��STLport
+//��VC++2008�汾�󣬿��Կ����Ƿ�ʵ��STLport,���_STLP_CONFIX_H �������ˣ�����Ϊ����ʹ��
 #if (defined ZCE_OS_LINUX && (_GCC_VER <= 40600)) \
     || ( defined ZCE_OS_WINDOWS && (_MSC_VER <= 1400) ) \
     || ( defined ZCE_OS_WINDOWS && (_MSC_VER > 1400) && defined _STLP_CONFIX_H)
@@ -318,14 +311,14 @@
 using std::tr1::unordered_map;
 using std::tr1::unordered_set;
 
-//后面的版本都是直接用了std的名字空间
+//����İ汾����ֱ������std�����ֿռ�
 #else
 #include <unordered_set>
 #include <unordered_map>
 using std::unordered_map;
 using std::unordered_set;
 #endif
-//更早的版本其实是支持hash_map和hash_set的头文件的，先我放弃支持了,那个要改一点代码。
+//����İ汾��ʵ��֧��hash_map��hash_set��ͷ�ļ��ģ����ҷ���֧����,�Ǹ�Ҫ��һ����롣
 
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( pop )
@@ -333,34 +326,34 @@ using std::unordered_set;
 
 //==================================================================================================
 
-//标准整数数值定义部分，由于VS2010前的库没有按照C99的标准执行，所以下面这两个库没有。
-//所有的代码中,(除非用于兼容API)，不准出现long，longlong这种定义，不准，出现就弹小JJ . 注：弹到死
+//��׼������ֵ���岿�֣�����VS2010ǰ�Ŀ�û�а���C99�ı�׼ִ�У�����������������û�С�
+//���еĴ�����,(�������ڼ���API)����׼����long��longlong���ֶ��壬��׼�����־͵�СJJ . ע��������
 
-//整数类型定义,推荐使用，特别是64位的uint64_t,
-//在Linux int64_t 被特殊定义了，在32位系统上是long long ,在64位系统是long，
-//造成的麻烦就是你如果你要printf打印int64_t在64系统上用%lld格式flag就会有告警。TNNNNNNNND，
-//所以你要在32系统用%lld,64位系统用%d，这完全是给自己找麻烦，
-//inttypes.h 中有PRId64 ，PRIu64的定义辅助解决类似（累死）问题，其在
-//如果实用了-std=c++11 or -std=c++0x,可以直接使用，或者使用宏__STDC_FORMAT_MACROS
+//�������Ͷ���,�Ƽ�ʹ�ã��ر���64λ��uint64_t,
+//��Linux int64_t �����ⶨ���ˣ���32λϵͳ����long long ,��64λϵͳ��long��
+//��ɵ��鷳�����������Ҫprintf��ӡint64_t��64ϵͳ����%lld��ʽflag�ͻ��и澯��TNNNNNNNND��
+//������Ҫ��32ϵͳ��%lld,64λϵͳ��%d������ȫ�Ǹ��Լ����鷳��
+//inttypes.h ����PRId64 ��PRIu64�Ķ��帨��������ƣ����������⣬����
+//���ʵ����-std=c++11 or -std=c++0x,����ֱ��ʹ�ã�����ʹ�ú�__STDC_FORMAT_MACROS
 
-//LINUX下已经有相关的定义了，万幸
+//LINUX���Ѿ�����صĶ����ˣ�����
 #if defined(ZCE_OS_LINUX)
 #include <stdint.h>
 #include <inttypes.h>
 
 #endif //#if defined(ZCE_OS_LINUX)
 
-//WINDOWS下，各种不同，各种不一致，你只能自己来
+//WINDOWS�£����ֲ�ͬ�����ֲ�һ�£���ֻ���Լ���
 #if defined(ZCE_OS_WINDOWS)
 
-//到VS2010为止，ssize_t还没有被支持
+//��VS2010Ϊֹ��ssize_t��û�б�֧��
 #if defined (ZCE_WIN64)
 typedef SSIZE_T ssize_t;
 #else
 typedef int ssize_t;
 #endif
 
-//VC++ 2010，以及遵守这个标准了
+//VC++ 2010���Լ����������׼��
 #if _MSC_VER >= 1500
 #include <stdint.h>
 #include <inttypes.h>
@@ -402,9 +395,9 @@ typedef __int64             int64_t;
 
 
 //==================================================================================================
-//我们引入的外部库，目前包括,rapidxml,MYSQL,SQLite,
+//����������ⲿ�⣬Ŀǰ����,rapidxml,MYSQL,SQLite,
 
-//rapidxml XML文件的头文件以及开关，我们引入的库是rapidxml 库，他的优势是只有头文件，
+//rapidxml XML�ļ���ͷ�ļ��Լ����أ���������Ŀ���rapidxml �⣬����������ֻ��ͷ�ļ���
 #ifndef ZCE_USE_RAPIDXML
 #define ZCE_USE_RAPIDXML 1
 #endif
@@ -425,7 +418,7 @@ typedef __int64             int64_t;
 #endif
 #endif
 
-// mysql开关以及头文件包含
+// mysql�����Լ�ͷ�ļ�����
 #ifndef ZCE_USE_MYSQL
 #define ZCE_USE_MYSQL 1
 #endif
@@ -434,7 +427,7 @@ typedef __int64             int64_t;
 #include <mysql.h>
 #endif
 
-//是否使用SQLITE3
+//�Ƿ�ʹ��SQLITE3
 #ifndef ZCE_USE_SQLITE
 #define ZCE_USE_SQLITE 1
 #endif
@@ -444,7 +437,7 @@ typedef __int64             int64_t;
 #endif
 
 
-//是否使用LUA
+//�Ƿ�ʹ��LUA
 #ifndef ZCE_USE_LUA
 #define ZCE_USE_LUA 1
 #endif
@@ -461,14 +454,14 @@ extern "C"
 
 
 
-//IPV6的宏，暂时不打开
+//IPV6�ĺ꣬��ʱ����
 //#if !defined ZCE_HAS_IPV6    1
 //#define ZCE_HAS_IPV6
 //#endif
 
 //==================================================================================================
 
-//是否使用Google Protobuf,如果你仅仅使用Protobuf - Lite，也请关闭这儿，
+//�Ƿ�ʹ��Google Protobuf,��������ʹ��Protobuf - Lite��Ҳ��ر������
 #ifndef ZCE_USE_PROTOBUF
 #define ZCE_USE_PROTOBUF 1
 #endif
@@ -497,12 +490,12 @@ extern "C"
 #endif
 
 //==================================================================================================
-//字节序的小头和大头的问题
+//�ֽ����Сͷ�ʹ�ͷ������
 #define ZCE_LITTLE_ENDIAN  0x1234
 #define ZCE_BIG_ENDIAN     0x4321
 
-//目前部分代码是考虑了小头党和大头党的问题，不知道有生之年这套代码是否还会为大头党服务一次？
-//主要是hash和加密部分的代码，是考虑过字节序兼容性问题的。
+//Ŀǰ���ִ����ǿ�����Сͷ���ʹ�ͷ�������⣬��֪������֮�����״����Ƿ񻹻�Ϊ��ͷ������һ�Σ�
+//��Ҫ��hash�ͼ��ܲ��ֵĴ��룬�ǿ��ǹ��ֽ������������ġ�
 // Little Endian or Big Endian ?
 // Overwrite the #define below if you know your architecture endianess
 #if defined (__GLIBC__)
@@ -519,17 +512,17 @@ extern "C"
 #  define  ZCE_BYTES_ORDER ZCE_BIG_ENDIAN
 #else
 // Little Endian assumed. PDP Endian and other very rare endian format are unsupported.
-//其实除了大头党和小头党以外，还有其他派别，人类真复杂。
+//��ʵ���˴�ͷ����Сͷ�����⣬���������ɱ������渴�ӡ�
 #define ZCE_BYTES_ORDER    ZCE_LITTLE_ENDIAN
 #endif
 #endif  //#ifndef ZCE_BYTES_ORDER
 
 
 //==================================================================================================
-//各种宏定义，编译定义，一些比较常用的宏，帮助你节省一些代码
+//���ֺ궨�壬���붨�壬һЩ�Ƚϳ��õĺ꣬�������ʡһЩ����
 
-//外部头文件，都放在这前面呀，否则预编译头文件就不起作用了
-//这个红用于定义告诉编译器，后面的代码就不做预处理了，主要用于加快代码编译，但LINUX目前还不支持
+//�ⲿͷ�ļ�����������ǰ��ѽ������Ԥ����ͷ�ļ��Ͳ���������
+//��������ڶ�����߱�����������Ĵ���Ͳ���Ԥ�����ˣ���Ҫ���ڼӿ������룬��LINUXĿǰ����֧��
 
 #if defined ZCE_OS_WINDOWS
 #pragma hdrstop
@@ -537,7 +530,7 @@ extern "C"
 
 
 
-//我是抄ACE_UNUSED_ARG的呀。我承认呀。windows下也许也可以考虑定义成__noop呀，
+//���ǳ�ACE_UNUSED_ARG��ѽ���ҳ���ѽ��windows��Ҳ��Ҳ���Կ��Ƕ����__noopѽ��
 #if !defined (ZCE_UNUSED_ARG)
 #if defined ZCE_OS_LINUX
 #  if ( _GCC_VER >= 40200)
@@ -550,7 +543,7 @@ extern "C"
 #  endif
 #endif //#if !defined (ZCE_UNUSED_ARG)
 
-//BOOL变量
+//BOOL����
 #ifndef FALSE
 #  define FALSE               0
 #endif
@@ -567,8 +560,8 @@ extern "C"
 #  endif
 #endif
 
-//__FUNCTION__定义的替换，尽最大可能帮你输出更加详细的函数名称信息
-//Windows 下你可以用__FUNCSIG__，其优点是会有参数信息，但缺点也是有参数信息，一些带有模板的信息很长很长，反而影响你的感觉
+//__FUNCTION__������滻���������ܰ������������ϸ�ĺ���������Ϣ
+//Windows ���������__FUNCSIG__�����ŵ��ǻ��в�����Ϣ����ȱ��Ҳ���в�����Ϣ��һЩ����ģ�����Ϣ�ܳ��ܳ�������Ӱ����ĸо�
 #if defined ZCE_OS_WINDOWS
 #define __ZCE_FUNC__   __FUNCTION__
 #elif defined ZCE_OS_LINUX
@@ -586,10 +579,10 @@ extern "C"
 #define ZCE_UNLIKELY(x)    (x)
 #endif
 
-//BIT位的一些操作定义宏
+//BITλ��һЩ���������
 
-//设置或者清理数值某个位置上的bit位
-//_value 没有用()保护是有理由的，请好好想想，呵呵
+//���û���������ֵĳ��λ���ϵ�bitλ
+//_value û����()�����������ɵģ���ú����룬�Ǻ�
 #if !defined(ZCE_SET_BITS)
 #  define ZCE_SET_BITS(set_value, bits) (set_value |= (bits))
 #endif
@@ -597,7 +590,7 @@ extern "C"
 #  define ZCE_CLR_BITS(clr_value, bits) (clr_value &= ~(bits))
 #endif
 
-//检查某个bit位是否设置了
+//���ĳ��bitλ�Ƿ�������
 #if !defined(ZCE_BIT_IS_SET)
 #  define ZCE_BIT_IS_SET(compare_value, bits) (((compare_value) & (bits)) != 0)
 #endif
@@ -605,26 +598,26 @@ extern "C"
 #  define ZCE_BIT_ISNOT_SET(compare_value, bits) (((compare_value) & (bits)) == 0)
 #endif
 
-///计算数组个数,注意传递的型别喔
+///�����������,ע�⴫�ݵ��ͱ��
 #ifndef ZCE_ARRAY_SIZE
 #define ZCE_ARRAY_SIZE(ary) (sizeof(ary)/sizeof((ary)[0]))
 #endif
 
 
-// 取大小值, min max在linux下没有定义
+// ȡ��Сֵ, min max��linux��û�ж���
 #define ZCE_MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define ZCE_MIN(a,b) (((a) < (b)) ? (a) : (b))
 
 //==================================================================================================
 
-// 一些C函数的重命名，保持兼容，避免费力折腾
+// һЩC�����������������ּ��ݣ������������
 #if defined ZCE_OS_WINDOWS
 
 #if _MSC_VER <= 1300
 #define snprintf     _snprintf
 #define vsnprintf    _vsnprintf
 #else
-//在VS2005以后，使用安全API,保证WINDOWS下更加接近于LINUX，保证末尾会添加'\0'
+//��VS2005�Ժ�ʹ�ð�ȫAPI,��֤WINDOWS�¸��ӽӽ���LINUX����֤ĩβ������'\0'
 #define snprintf(buffer,buf_count,fmt,...) _snprintf_s((buffer),(buf_count),((buf_count)-1),(fmt),__VA_ARGS__)
 #define vsnprintf(buffer,buf_count,fmt,argptr_list)  _vsnprintf_s((buffer),((buf_count)),(buf_count-1),(fmt),(argptr_list))
 #endif
@@ -637,7 +630,7 @@ extern "C"
 
 
 //==================================================================================================
-// 名称的最大长度
+// ���Ƶ���󳤶�
 #if !defined (NAME_MAX)
 #  if defined (FILENAME_MAX)
 #    define NAME_MAX FILENAME_MAX
@@ -648,13 +641,13 @@ extern "C"
 #  endif /* MAXNAMLEN */
 #endif /* !NAME_MAX */
 
-// 主机名称的最大长度
+// �������Ƶ���󳤶�
 #if !defined (HOST_NAME_MAX)
 #  define HOST_NAME_MAX 256
 #endif /* !HOST_NAME_MAX */
 
-//路径的最大长度，
-//普及一下小知识，注意一下其实MAX_PATH未必真正够用，MS一般的定义是260，但是，其实你可以超过,
+//·������󳤶ȣ�
+//�ռ�һ��С֪ʶ��ע��һ����ʵMAX_PATHδ���������ã�MSһ��Ķ�����260�����ǣ���ʵ����Գ���,
 #ifndef MAX_PATH
 #  define MAX_PATH 512
 #endif
@@ -714,17 +707,17 @@ extern "C"
 #endif
 #endif
 
-//工程内部可以统一使用ZCE_PLAT_TOOLSET_CONF这个宏，简化大家的编译工程设置
+//�����ڲ�����ͳһʹ��ZCE_PLAT_TOOLSET_CONF����꣬�򻯴�ҵı��빤������
 #if defined _DEBUG || defined DEBUG
 #  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Debug"
 #else
 #  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Release"
 #endif
 
-//Windows 下的自动链接
+//Windows �µ��Զ�����
 #if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)
 
-// 包含库的引用链接
+// ���������������
 #  pragma comment(lib, "ws2_32.lib")
 #  pragma comment(lib, "mswsock.lib")
 #  pragma comment(lib, "psapi.lib")
@@ -733,14 +726,14 @@ extern "C"
 #    pragma comment(lib, "iphlpapi.lib")
 #  endif
 
-//这个功能到2008才支持
+//������ܵ�2008��֧��
 #if defined ZCE_SUPPORT_WINSVR2008
 #  pragma comment(lib, "dbghelp.lib")
 #endif
 
 
 
-//如果使用了LUA，自动链接LUA的库，
+//���ʹ����LUA���Զ�����LUA�Ŀ⣬
 #if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
 #pragma comment(lib, "lualib.lib" )
 #endif
@@ -759,11 +752,11 @@ extern "C"
 
 
 
-//自动包含的包含连接，简化你的操作
+//�Զ������İ������ӣ�����Ĳ���
 #pragma comment(lib, "zcelib.lib"  )
 
 
-//编译动态库用的东西
+//���붯̬���õĶ���
 #if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
 #  ifdef BUILD_ZCELIB_DLL
 #    define ZCELIB_EXPORT __declspec (dllexport)

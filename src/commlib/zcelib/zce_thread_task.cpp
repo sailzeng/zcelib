@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_thread.h"
 #include "zce_thread_task.h"
 
@@ -24,7 +24,7 @@ void ZCE_Thread_Task::svc_run (void *args)
 
     // Call the Task's svc() hook method.
     int const svc_status = t->svc ();
-    //ä¿å­˜è¿”å›çš„ç»“æœ
+    //±£´æ·µ»ØµÄ½á¹û
     t->thread_return_ = svc_status;
 
     ZCE_LIB::pthread_exit();
@@ -32,7 +32,7 @@ void ZCE_Thread_Task::svc_run (void *args)
     return;
 }
 
-//åˆ›å»ºä¸€ä¸ªçº¿ç¨‹
+//´´½¨Ò»¸öÏß³Ì
 int ZCE_Thread_Task::activate(int group_id,
                               ZCE_THREAD_ID *threadid,
                               int detachstate,
@@ -40,7 +40,7 @@ int ZCE_Thread_Task::activate(int group_id,
                               int threadpriority)
 {
     int ret = 0;
-    //åˆ›å»ºçº¿ç¨‹
+    //´´½¨Ïß³Ì
     ret = ZCE_LIB::pthread_createex(ZCE_Thread_Task::svc_run,
                                     static_cast<void *> (this),
                                     threadid,
@@ -59,13 +59,13 @@ int ZCE_Thread_Task::activate(int group_id,
     return 0;
 }
 
-//çº¿ç¨‹ç»“æŸåçš„è¿”å›å€¼int ç±»å‹
+//Ïß³Ì½áÊøºóµÄ·µ»ØÖµint ÀàĞÍ
 int ZCE_Thread_Task::thread_return()
 {
     return thread_return_;
 }
 
-//å¾—åˆ°group id
+//µÃµ½group id
 int ZCE_Thread_Task::group_id() const
 {
     return group_id_;
@@ -76,7 +76,7 @@ ZCE_THREAD_ID ZCE_Thread_Task::thread_id() const
     return thread_id_;
 }
 
-//è„±ç¦»ç»‘å®šå…³ç³»
+//ÍÑÀë°ó¶¨¹ØÏµ
 int ZCE_Thread_Task::detach()
 {
     return ZCE_LIB::pthread_detach(thread_id_);
@@ -88,13 +88,13 @@ int ZCE_Thread_Task::wait_join()
     return ZCE_LIB::pthread_join(thread_id_);
 }
 
-//éœ€è¦ç»§æ‰¿çš„å¤„ç†çš„å‡½æ•°,ç†è®ºä¸Šé‡è½½è¿™ä¸€ä¸ªå‡½æ•°å°±OK
+//ĞèÒª¼Ì³ĞµÄ´¦ÀíµÄº¯Êı,ÀíÂÛÉÏÖØÔØÕâÒ»¸öº¯Êı¾ÍOK
 int ZCE_Thread_Task::svc (void)
 {
     return 0;
 }
 
-//è®©å‡ºCPUæ—¶é—´
+//ÈÃ³öCPUÊ±¼ä
 int ZCE_Thread_Task::yield()
 {
     return ZCE_LIB::pthread_yield();

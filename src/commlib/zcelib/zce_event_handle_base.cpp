@@ -1,10 +1,10 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_socket.h"
 #include "zce_event_handle_base.h"
 #include "zce_event_reactor_base.h"
 
-//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
 ZCE_Event_Handler::ZCE_Event_Handler():
     zce_reactor_(NULL),
     event_mask_(NULL_MASK)
@@ -41,7 +41,7 @@ int ZCE_Event_Handler::handle_exception()
 
 int ZCE_Event_Handler::handle_close ()
 {
-    //ç§»é™¤è‡ªå·±ï¼Œä½†æ˜¯ä¸åˆ¤æ–­è¿”å›ï¼Œå› ä¸ºå¦‚æœä»£ç è€ƒè™‘çš„ä¸ç»†è‡´ï¼Œå¯èƒ½å‡ºç°ä¸¤æ¬¡remove_handler
+    //ÒÆ³ı×Ô¼º£¬µ«ÊÇ²»ÅĞ¶Ï·µ»Ø£¬ÒòÎªÈç¹û´úÂë¿¼ÂÇµÄ²»Ï¸ÖÂ£¬¿ÉÄÜ³öÏÖÁ½´Îremove_handler
     reactor()->remove_handler(this, false);
     return 0;
 }

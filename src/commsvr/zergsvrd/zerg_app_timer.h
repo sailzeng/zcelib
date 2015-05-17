@@ -1,11 +1,11 @@
-ï»¿
+
 #ifndef ZERG_APPLICATION_TIMER_H_
 #define ZERG_APPLICATION_TIMER_H_
 
 
 
 /*!
-* @brief      ZERGæœåŠ¡çš„å®šæ—¶å™¨ï¼Œå®šæ—¶å™¨ç”¨äºå„ç§å¤„ç†
+* @brief      ZERG·şÎñµÄ¶¨Ê±Æ÷£¬¶¨Ê±Æ÷ÓÃÓÚ¸÷ÖÖ´¦Àí
 *
 * @note
 */
@@ -16,23 +16,23 @@ public:
     //
     Zerg_App_Timer_Handler();
 protected:
-    //è‡ªå·±ç®¡ç†è‡ªå·±çš„æ¸…ç†
+    //×Ô¼º¹ÜÀí×Ô¼ºµÄÇåÀí
     ~Zerg_App_Timer_Handler();
 
-    ///å®šæ—¶å™¨è§¦å‘
+    ///¶¨Ê±Æ÷´¥·¢
     virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
 
 public:
 
-    ///ZERGæœåŠ¡å™¨å®šæ—¶å™¨ID,
+    ///ZERG·şÎñÆ÷¶¨Ê±Æ÷ID,
     static const  int  ZERG_TIMER_ID[];
 
 protected:
 
 
 
-    //å®šæ—¶å™¨è§¦å‘çš„éšæœºåç§», é¿å…æ‰€æœ‰æœåŠ¡å™¨åŒæ—¶è§¦å‘
+    //¶¨Ê±Æ÷´¥·¢µÄËæ»úÆ«ÒÆ, ±ÜÃâËùÓĞ·şÎñÆ÷Í¬Ê±´¥·¢
     unsigned int random_reload_point_;
 
 

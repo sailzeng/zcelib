@@ -1,9 +1,9 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_frame_malloc.cpp
 * @author     Sailzeng <sailerzeng@gmail.com>,Scottxu,
 * @version
-* @date       2008å¹´2æœˆ20æ—¥
+* @date       2008Äê2ÔÂ20ÈÕ
 * @brief
 *
 *
@@ -27,17 +27,17 @@ class AppFrame_Mallocor_Mgr
 
 public:
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     AppFrame_Mallocor_Mgr();
-    //ææ„å‡½æ•°
+    //Îö¹¹º¯Êı
     ~AppFrame_Mallocor_Mgr();
 
 public:
 
     /*!
-    * @brief      åˆå§‹åŒ–
-    * @param      init_num   æ¯ä¸ªPOOLå†…éƒ¨çš„FRAMEæ•°é‡
-    * @param      max_frame_len æœ€å¤§çš„FRAMEçš„é•¿åº¦ï¼Œè·Ÿè¿›è¿™ä¸ªåˆ†é…åé¢çš„
+    * @brief      ³õÊ¼»¯
+    * @param      init_num   Ã¿¸öPOOLÄÚ²¿µÄFRAMEÊıÁ¿
+    * @param      max_frame_len ×î´óµÄFRAMEµÄ³¤¶È£¬¸ú½øÕâ¸ö·ÖÅäºóÃæµÄ
     * @note
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
@@ -45,69 +45,69 @@ public:
 
 
     /*!
-    * @brief      æ ¹æ®è¦æ±‚çš„çš„FRAMEå°ºå¯¸å¤§å°ï¼Œåˆ†é…ä¸€ä¸ªFRAME
+    * @brief      ¸ù¾İÒªÇóµÄµÄFRAME³ß´ç´óĞ¡£¬·ÖÅäÒ»¸öFRAME
     * @return     Zerg_App_Frame*
     * @param      frame_len
     */
     Zerg_App_Frame *alloc_appframe(size_t frame_len);
 
     /*!
-    * @brief      é‡Šæ”¾ä¸€ä¸ªAPPFRAMEåˆ°æ± å­
-    * @param      proc_frame å¤„ç†çš„frame
+    * @brief      ÊÍ·ÅÒ»¸öAPPFRAMEµ½³Ø×Ó
+    * @param      proc_frame ´¦ÀíµÄframe
     */
     void free_appframe(Zerg_App_Frame *proc_frame);
 
     /*!
-    * @brief      å¤åˆ¶ä¸€ä¸ªAPPFRAME
-    * @param      model_freame  æ¨¡æ¿FRAME
-    * @param      cloned_frame  è¢«å…‹éš†çš„FRAME
+    * @brief      ¸´ÖÆÒ»¸öAPPFRAME
+    * @param      model_freame  Ä£°åFRAME
+    * @param      cloned_frame  ±»¿ËÂ¡µÄFRAME
     * @note
     */
     void clone_appframe(const Zerg_App_Frame *model_freame, Zerg_App_Frame *&cloned_frame);
 
     /*!
-    * @brief      è¿”å›æœ€å¤§å¯ä»¥åˆ†é…çš„FRAMEçš„é•¿åº¦
+    * @brief      ·µ»Ø×î´ó¿ÉÒÔ·ÖÅäµÄFRAMEµÄ³¤¶È
     * @return     size_t
     */
     size_t get_max_framelen();
 
-    //è°ƒæ•´æ± å­çš„å®¹é‡,ä¼šé€‚å½“è£å‰ªå›æ”¶
+    //µ÷Õû³Ø×ÓµÄÈİÁ¿,»áÊÊµ±²Ã¼ô»ØÊÕ
     void adjust_pool_capacity();
 
 protected:
 
 
     /*!
-    * @brief      æ‰©å±•POOLä¸­æŸä¸ªLISTçš„å®¹é‡
-    * @param      list_no  LiSTçš„ä¸‹æ ‡
-    * @param      extend_num æ‰©å±•çš„æ•°é‡
+    * @brief      À©Õ¹POOLÖĞÄ³¸öLISTµÄÈİÁ¿
+    * @param      list_no  LiSTµÄÏÂ±ê
+    * @param      extend_num À©Õ¹µÄÊıÁ¿
     */
     void extend_list_capacity(size_t list_no, size_t extend_num);
 
 
     /*!
     * @brief
-    * @return     size_t   è¿”å›ç›¸å…³çš„LiSTçš„ä¸‹æ ‡ç¼–å·
-    * @param      sz_frame éœ€è¦åˆ†é…çš„frameçš„é•¿åº¦
+    * @return     size_t   ·µ»ØÏà¹ØµÄLiSTµÄÏÂ±ê±àºÅ
+    * @param      sz_frame ĞèÒª·ÖÅäµÄframeµÄ³¤¶È
     */
     inline size_t get_roundup(size_t sz_frame);
 
 public:
 
-    //å¾—åˆ°SINGLETONçš„å®ä¾‹
+    //µÃµ½SINGLETONµÄÊµÀı
     static AppFrame_Mallocor_Mgr *instance();
-    //æ¸…ç†SINGLETONçš„å®ä¾‹
+    //ÇåÀíSINGLETONµÄÊµÀı
     static void clean_instance();
 
 
 protected:
-    //æ¡¶é˜Ÿåˆ—çš„ä¸ªæ•°
+    //Í°¶ÓÁĞµÄ¸öÊı
     static const size_t  NUM_OF_FRAMELIST = 10;
 
-    //æ¯ä¸ªæ¡¶åˆå§‹åŒ–çš„FRAMEçš„ä¸ªæ•°
+    //Ã¿¸öÍ°³õÊ¼»¯µÄFRAMEµÄ¸öÊı
     static const size_t NUM_OF_ONCE_INIT_FRAME = 512;
 
-    //å…è®¸ç©ºé—²çš„NUM_OF_ALLOW_LIST_IDLE_FRAME
+    //ÔÊĞí¿ÕÏĞµÄNUM_OF_ALLOW_LIST_IDLE_FRAME
     static const size_t NUM_OF_ALLOW_LIST_IDLE_FRAME = 1024;
 
     //
@@ -117,24 +117,24 @@ protected:
 
 protected:
 
-    //GCCçš„ç‰ˆæœ¬å¦‚æœå°äº4ï¼Œä¼šä¸æ”¯æŒæ¨¡æ¿ä¸­çš„staticæ•°ç»„æˆå‘˜çš„é•¿åº¦ç”¨const staticæˆå‘˜å®šä¹‰ã€‚
-    //ç†è®ºä¸Šå¯ä»¥ç”¨#if (__GNUC__ < 4)å±è”½ï¼Œä½†æ˜¯å®åœ¨å¤ªå¿™æ³•ã€‚ä¸‹é¢çš„æ•°ç»„é•¿åº¦NUM_OF_FRAMELIST
-    //å¦‚æœä½ æ›´æ”¹æ˜¯è¦å®šä¹‰ã€‚
+    //GCCµÄ°æ±¾Èç¹ûĞ¡ÓÚ4£¬»á²»Ö§³ÖÄ£°åÖĞµÄstaticÊı×é³ÉÔ±µÄ³¤¶ÈÓÃconst static³ÉÔ±¶¨Òå¡£
+    //ÀíÂÛÉÏ¿ÉÒÔÓÃ#if (__GNUC__ < 4)ÆÁ±Î£¬µ«ÊÇÊµÔÚÌ«Ã¦·¨¡£ÏÂÃæµÄÊı×é³¤¶ÈNUM_OF_FRAMELIST
+    //Èç¹ûÄã¸ü¸ÄÊÇÒª¶¨Òå¡£
     size_t                  size_appframe_[NUM_OF_FRAMELIST];
 
-    //FRAMEçš„å†…å­˜æ± å­
+    //FRAMEµÄÄÚ´æ³Ø×Ó
     APPFRAME_MEMORY_POOL    frame_pool_;
-    //æ± å­çš„é”
+    //³Ø×ÓµÄËø
     ZCE_LOCK                zce_lock_;
 
 protected:
 
-    //å•å­å®ä¾‹
+    //µ¥×ÓÊµÀı
     static AppFrame_Mallocor_Mgr    *instance_;
 
 };
 
-//åˆå§‹åŒ–
+//³õÊ¼»¯
 template <typename ZCE_LOCK >
 void AppFrame_Mallocor_Mgr<ZCE_LOCK>::initialize(size_t init_num,
                                                  size_t max_frame_len)
@@ -145,7 +145,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::initialize(size_t init_num,
             init_num,
             max_frame_len);
 
-    //å¾—åˆ°åˆ†é…
+    //µÃµ½·ÖÅä
     size_t sz_frame = max_frame_len;
 
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
@@ -163,7 +163,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::initialize(size_t init_num,
 
 }
 
-//æœ€å¤§å¯ä»¥åˆ†é…çš„FRAMEçš„é•¿åº¦
+//×î´ó¿ÉÒÔ·ÖÅäµÄFRAMEµÄ³¤¶È
 template <typename ZCE_LOCK >
 size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_max_framelen()
 {
@@ -171,11 +171,11 @@ size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_max_framelen()
 }
 
 
-//æ ¹æ®è¦æ±‚çš„çš„FRAMEå°ºå¯¸å¤§å°ï¼Œåˆ†é…ä¸€ä¸ªFRAME
+//¸ù¾İÒªÇóµÄµÄFRAME³ß´ç´óĞ¡£¬·ÖÅäÒ»¸öFRAME
 template <typename ZCE_LOCK >
 inline size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_roundup(size_t sz_frame)
 {
-    //ä¹Ÿè®¸å¾ªç¯æ‰¾è¿˜å¿«
+    //Ò²ĞíÑ­»·ÕÒ»¹¿ì
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {
         if (sz_frame <= size_appframe_[i])
@@ -184,19 +184,19 @@ inline size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_roundup(size_t sz_frame)
         }
     }
 
-    //æ­»äº†å¥½
+    //ËÀÁËºÃ
     ZCE_ASSERT(false);
     return static_cast<size_t>(-1);
 }
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 template <typename ZCE_LOCK >
 AppFrame_Mallocor_Mgr<ZCE_LOCK>::AppFrame_Mallocor_Mgr()
 {
     memset(size_appframe_, 0, sizeof(size_appframe_));
 }
 
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 template <typename ZCE_LOCK >
 AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 {
@@ -204,10 +204,10 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
     //
     ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
 
-    //æœ€ååº”è¯¥size == capacity , freesize==0
+    //×îºóÓ¦¸Ãsize == capacity , freesize==0
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {
-        //å¦‚æœå†…å­˜å…¨éƒ¨å½’è¿˜
+        //Èç¹ûÄÚ´æÈ«²¿¹é»¹
         if (frame_pool_[i].freesize() == 0)
         {
             //
@@ -218,7 +218,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
                     frame_pool_[i].capacity(),
                     frame_pool_[i].size());
         }
-        //å¦‚æœä»–åœ¨å†…å­˜
+        //Èç¹ûËûÔÚÄÚ´æ
         else
         {
             //
@@ -230,7 +230,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
                     frame_pool_[i].size());
         }
 
-        //é‡Šæ”¾æ‰åˆ†é…çš„ç©ºé—´
+        //ÊÍ·Åµô·ÖÅäµÄ¿Õ¼ä
         size_t frame_pool_len = frame_pool_[i].size();
 
         for (size_t j = 0; j < frame_pool_len; ++j)
@@ -243,7 +243,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 }
 
 
-//æ ¹æ®éœ€è¦é•¿åº¦ï¼Œä»æ± å­åˆ†é…ä¸€ä¸ªAPPFRAME
+//¸ù¾İĞèÒª³¤¶È£¬´Ó³Ø×Ó·ÖÅäÒ»¸öAPPFRAME
 template <typename ZCE_LOCK >
 Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len)
 {
@@ -266,8 +266,8 @@ Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len
 }
 
 
-//å…‹éš†ä¸€ä¸ªAPPFAME
-//è¿™ä¸ªå‡½æ•°æ²¡æœ‰åŠ é”ï¼Œå› ä¸ºæ„Ÿè§‰ä¸å¿…è¦ï¼Œalloc_appframeé‡Œé¢æœ‰é”ï¼Œå¦åˆ™ä¼šé€ æˆé‡å¤åŠ é”
+//¿ËÂ¡Ò»¸öAPPFAME
+//Õâ¸öº¯ÊıÃ»ÓĞ¼ÓËø£¬ÒòÎª¸Ğ¾õ²»±ØÒª£¬alloc_appframeÀïÃæÓĞËø£¬·ñÔò»áÔì³ÉÖØ¸´¼ÓËø
 template <typename ZCE_LOCK >
 void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model_freame, Zerg_App_Frame *&cloned_frame)
 {
@@ -278,7 +278,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model
 }
 
 
-//é‡Šæ”¾ä¸€ä¸ªAPPFRAMEåˆ°æ± å­
+//ÊÍ·ÅÒ»¸öAPPFRAMEµ½³Ø×Ó
 template <typename ZCE_LOCK >
 void AppFrame_Mallocor_Mgr<ZCE_LOCK>::free_appframe(Zerg_App_Frame *proc_frame)
 {
@@ -288,7 +288,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::free_appframe(Zerg_App_Frame *proc_frame)
     frame_pool_[hk].push_back(proc_frame);
 }
 
-//è°ƒæ•´æ± å­çš„å®¹é‡
+//µ÷Õû³Ø×ÓµÄÈİÁ¿
 template <typename ZCE_LOCK >
 void AppFrame_Mallocor_Mgr<ZCE_LOCK>::adjust_pool_capacity()
 {
@@ -296,7 +296,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::adjust_pool_capacity()
 
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {
-        //å¦‚æœå‰©ä½™çš„å®¹é‡
+        //Èç¹ûÊ£ÓàµÄÈİÁ¿
         if (frame_pool_[i].size() > 2 * NUM_OF_ALLOW_LIST_IDLE_FRAME)
         {
             size_t free_sz = frame_pool_[i].size() - 2 * NUM_OF_ALLOW_LIST_IDLE_FRAME;
@@ -311,7 +311,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::adjust_pool_capacity()
     }
 }
 
-//æ‰©å±•LISTçš„å®¹é‡
+//À©Õ¹LISTµÄÈİÁ¿
 template <typename ZCE_LOCK >
 void AppFrame_Mallocor_Mgr<ZCE_LOCK>::extend_list_capacity(size_t list_no, size_t extend_num)
 {
@@ -325,7 +325,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::extend_list_capacity(size_t list_no, size_
     }
 }
 
-//å¾—åˆ°SINGLETONçš„å®ä¾‹
+//µÃµ½SINGLETONµÄÊµÀı
 template <typename ZCE_LOCK >
 AppFrame_Mallocor_Mgr<ZCE_LOCK> *AppFrame_Mallocor_Mgr<ZCE_LOCK>::instance()
 {
@@ -337,7 +337,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK> *AppFrame_Mallocor_Mgr<ZCE_LOCK>::instance()
     return instance_;
 }
 
-//æ¸…ç†SINGLETONçš„å®ä¾‹
+//ÇåÀíSINGLETONµÄÊµÀı
 template <typename ZCE_LOCK >
 void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clean_instance()
 {

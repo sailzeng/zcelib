@@ -1,10 +1,10 @@
-ï»¿
+
 
 
 #include "soar_predefine.h"
 #include "soar_zerg_frame_malloc.h"
 
-//æ”¾å…¥CPP?è¿˜æ˜¯?
+//·ÅÈëCPP?»¹ÊÇ?
 template <> AppFrame_Mallocor_Mgr<ZCE_Thread_Light_Mutex> *
 AppFrame_Mallocor_Mgr<ZCE_Thread_Light_Mutex>::instance_ = NULL;
 

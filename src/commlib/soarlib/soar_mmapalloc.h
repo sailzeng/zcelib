@@ -1,4 +1,4 @@
-﻿#ifndef SOARING_LIB_MMAPALLOC_H_
+#ifndef SOARING_LIB_MMAPALLOC_H_
 #define SOARING_LIB_MMAPALLOC_H_
 
 template <typename  T>

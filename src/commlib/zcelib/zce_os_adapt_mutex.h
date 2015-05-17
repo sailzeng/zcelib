@@ -1,28 +1,28 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_os_adapt_mutex.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´8æœˆ13æ—¥
-* @brief      è·¨å¹³å°äº’æ–¥é‡éƒ¨åˆ†çš„ä»£ç ï¼Œæ¥å£åŸºæœ¬æ¨¡æ‹Ÿäº†pthreadçš„å‡½æ•°ï¼Œ
+* @date       2011Äê8ÔÂ13ÈÕ
+* @brief      ¿çÆ½Ì¨»¥³âÁ¿²¿·ÖµÄ´úÂë£¬½Ó¿Ú»ù±¾Ä£ÄâÁËpthreadµÄº¯Êı£¬
 *
-* @details    åœ¨Windowsä¸‹æˆ‘ä»¬åˆ†æˆå‡ ç§æ¨¡å¼,ä¸ç”¨TIMEOUTçš„é”ï¼Œé€’å½’é”ï¼Œéé€’å½’é”
-*             ä¸ç”¨TIMEOUTçš„MUTEXï¼Œæˆ‘ä»¬ç”¨ä¸´ç•ŒåŒºæ¨¡æ‹Ÿå®ç°çš„ï¼Œï¼ˆä¸´ç•ŒåŒºæ˜¯é€’å½’çš„å‘€ï¼‰
-*             é€’å½’é”ï¼ŒWINDOWSè‡ªå·±çš„MUTEXæ˜¯é€’å½’çš„ï¼Œ
-*             éé€’å½’é”ï¼Œå–”å–”å–”ï¼Œè¿™ä¸ªæ˜¯ç”¨ä¿¡å·ç¯æ¨¡æ‹Ÿ
-*             è¿™äº›ä¸œä¸œéƒ½æœ‰å®Œæ•´çš„å°è£…ï¼Œåœ¨@ref zce_lock_thread_mutex.h
+* @details    ÔÚWindowsÏÂÎÒÃÇ·Ö³É¼¸ÖÖÄ£Ê½,²»ÓÃTIMEOUTµÄËø£¬µİ¹éËø£¬·Çµİ¹éËø
+*             ²»ÓÃTIMEOUTµÄMUTEX£¬ÎÒÃÇÓÃÁÙ½çÇøÄ£ÄâÊµÏÖµÄ£¬£¨ÁÙ½çÇøÊÇµİ¹éµÄÑ½£©
+*             µİ¹éËø£¬WINDOWS×Ô¼ºµÄMUTEXÊÇµİ¹éµÄ£¬
+*             ·Çµİ¹éËø£¬à¸à¸à¸£¬Õâ¸öÊÇÓÃĞÅºÅµÆÄ£Äâ
+*             ÕâĞ©¶«¶«¶¼ÓĞÍêÕûµÄ·â×°£¬ÔÚ@ref zce_lock_thread_mutex.h
 *             @ref zce_lock_process_mutex.h,
-*             æ‰€ä»¥è¿™å„¿çš„ä¸œä¸œçœ‹çœ‹å°±è¡Œäº†ï¼Œå†™ä»£ç å¯ä»¥å¿…ç”¨ã€‚é™¤éä½ æ˜¯Cçˆ±å¥½ç‹‚ï¼Œ
-*             pthread_mutexå†…éƒ¨æˆ‘å·²ç»åˆå…¥äº†éé€’å½’é”åŠŸèƒ½ï¼Œç”¨ä¿¡å·ç¯æ¨¡æ‹Ÿ
+*             ËùÒÔÕâ¶ùµÄ¶«¶«¿´¿´¾ÍĞĞÁË£¬Ğ´´úÂë¿ÉÒÔ±ØÓÃ¡£³ı·ÇÄãÊÇC°®ºÃ¿ñ£¬
+*             pthread_mutexÄÚ²¿ÎÒÒÑ¾­ºÏÈëÁË·Çµİ¹éËø¹¦ÄÜ£¬ÓÃĞÅºÅµÆÄ£Äâ
 *
-* @note       pthread_mutex_XXXå‡½æ•°çš„è¿”å›å€¼å¤§éƒ½æ˜¯è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™æ˜¯é”™è¯¯ID
-*             è¿™ä¸ªå’ŒPOSIXå¤§éƒ¨åˆ†å‡½æ•°ä¸å¤ªä¸€æ ·ï¼Œå¤§éƒ¨åˆ†å…¶ä»–å‡½æ•°æ˜¯return -1;ç„¶åé”™è¯¯
-*             ä¿å­˜åœ¨errnoä¸­ï¼Œ
-*             æˆ‘å°å°çš„æ£æµ‹ï¼Œå¤§æ¦‚æ˜¯å› ä¸ºè¿™å¯èƒ½å› ä¸ºæ˜¯åœ¨å¤šçº¿ç¨‹ç¯å¢ƒï¼Œè¿”å›å€¼æ¯”ä¿å­˜åœ¨errno
-*             åè€Œå®¹æ˜“å¤„ç†ã€‚
-*             è¿™ä¸ªåœ°æ–¹ï¼Œæˆ‘å‘pthread_mutex_XXXå‡½æ•°é é½ï¼Œreturnçš„æ•°å€¼é‡Œé¢ä¿å­˜é”™è¯¯
-*             IDï¼Œ
-*             è¯·ä½ æ³¨æ„è¿”å›å€¼çš„å¤„ç†ï¼Œ
+* @note       pthread_mutex_XXXº¯ÊıµÄ·µ»ØÖµ´ó¶¼ÊÇ·µ»Ø0±íÊ¾³É¹¦£¬·ñÔòÊÇ´íÎóID
+*             Õâ¸öºÍPOSIX´ó²¿·Öº¯Êı²»Ì«Ò»Ñù£¬´ó²¿·ÖÆäËûº¯ÊıÊÇreturn -1;È»ºó´íÎó
+*             ±£´æÔÚerrnoÖĞ£¬
+*             ÎÒĞ¡Ğ¡µÄ´§²â£¬´ó¸ÅÊÇÒòÎªÕâ¿ÉÄÜÒòÎªÊÇÔÚ¶àÏß³Ì»·¾³£¬·µ»ØÖµ±È±£´æÔÚerrno
+*             ·´¶øÈİÒ×´¦Àí¡£
+*             Õâ¸öµØ·½£¬ÎÒÏòpthread_mutex_XXXº¯Êı¿¿Æë£¬returnµÄÊıÖµÀïÃæ±£´æ´íÎó
+*             ID£¬
+*             ÇëÄã×¢Òâ·µ»ØÖµµÄ´¦Àí£¬
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_MUTEX_H_
@@ -33,77 +33,77 @@
 namespace ZCE_LIB
 {
 
-//Pthread Mutexçš„å±æ€§éƒ¨åˆ†æ“ä½œâ€¦â€¦ï¼Œæœ‰ç‚¹è£¹è„šå¸ƒçš„æ„Ÿè§‰
+//Pthread MutexµÄÊôĞÔ²¿·Ö²Ù×÷¡­¡­£¬ÓĞµã¹ü½Å²¼µÄ¸Ğ¾õ
 
 /*!
-* @brief      åˆå§‹åŒ–MUTEXçš„å±æ€§å‚æ•°
-* @return     int  ç­‰äº0æ ‡è¯†æˆåŠŸï¼Œå…¶å®æˆ‘å®åœ¨çœ‹ä¸å‡ºè¿™ç§å‡½æ•°æ€ä¹ˆå¯èƒ½å¤±è´¥ï¼Œ
-* @param      attr åˆå§‹åŒ–çš„å±æ€§
+* @brief      ³õÊ¼»¯MUTEXµÄÊôĞÔ²ÎÊı
+* @return     int  µÈÓÚ0±êÊ¶³É¹¦£¬ÆäÊµÎÒÊµÔÚ¿´²»³öÕâÖÖº¯ÊıÔõÃ´¿ÉÄÜÊ§°Ü£¬
+* @param      attr ³õÊ¼»¯µÄÊôĞÔ
 */
 int pthread_mutexattr_init (pthread_mutexattr_t *attr);
 
 /*!
-* @brief      äº’æ–¥é‡å±æ€§é”€æ¯
-* @return     int  ç­‰äº0æ ‡è¯†æˆåŠŸ
-* @param      attr é”€æ¯çš„å±æ€§
+* @brief      »¥³âÁ¿ÊôĞÔÏú»Ù
+* @return     int  µÈÓÚ0±êÊ¶³É¹¦
+* @param      attr Ïú»ÙµÄÊôĞÔ
 */
 int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
 
 /*!
-* @brief      äº’æ–¥é‡å±æ€§è®¾ç½®å…±äº«å±æ€§
-* @return     int      ç­‰äº0æ ‡è¯†æˆåŠŸ
-* @param      attr     æ“ä½œçš„å±æ€§
-* @param      pshared  å…±äº«ç‰¹æ•ˆï¼ŒPTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATEï¼Œå¦‚æœæƒ³å¤šè¿›ç¨‹é—´å…±äº«ï¼Œè¦è®¾ç½®PTHREAD_PROCESS_SHARED
+* @brief      »¥³âÁ¿ÊôĞÔÉèÖÃ¹²ÏíÊôĞÔ
+* @return     int      µÈÓÚ0±êÊ¶³É¹¦
+* @param      attr     ²Ù×÷µÄÊôĞÔ
+* @param      pshared  ¹²ÏíÌØĞ§£¬PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE£¬Èç¹ûÏë¶à½ø³Ì¼ä¹²Ïí£¬ÒªÉèÖÃPTHREAD_PROCESS_SHARED
 */
 int pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
                                   int pshared);
 //
 /*!
-* @brief      å–å¾—çº¿ç¨‹çš„å…±äº«å±æ€§
-* @return     int      ç­‰äº0æ ‡è¯†æˆåŠŸ
+* @brief      È¡µÃÏß³ÌµÄ¹²ÏíÊôĞÔ
+* @return     int      µÈÓÚ0±êÊ¶³É¹¦
 * @param[in]  attr
-* @param[out] pshared è¿”å›å…±äº«å±æ€§
+* @param[out] pshared ·µ»Ø¹²ÏíÊôĞÔ
 */
 int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr,
                                  int *pshared);
 
 /*!
-* @brief      è®¾ç½®çº¿ç¨‹çš„å±æ€§
-* @return     int    ç­‰äº0æ ‡è¯†æˆåŠŸ
-* @param      attr   è®¾ç½®çš„å±æ€§
-* @param      type   PTHREAD_MUTEX_XXXXçš„å‡ ä¸ªå€¼ï¼Œå¯ä»¥ç”¨|ä¸€æ¬¡è®¾ç½®å¤šä¸ªå±æ€§
+* @brief      ÉèÖÃÏß³ÌµÄÊôĞÔ
+* @return     int    µÈÓÚ0±êÊ¶³É¹¦
+* @param      attr   ÉèÖÃµÄÊôĞÔ
+* @param      type   PTHREAD_MUTEX_XXXXµÄ¼¸¸öÖµ£¬¿ÉÒÔÓÃ|Ò»´ÎÉèÖÃ¶à¸öÊôĞÔ
 */
 int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
 
 /*!
-* @brief      å–å¾—çº¿ç¨‹çš„å±æ€§
-* @return     int    ç­‰äº0æ ‡è¯†æˆåŠŸ
-* @param      attr   å–çš„ç†Ÿæ‚‰
-* @param      type   è¿”å›çš„type
+* @brief      È¡µÃÏß³ÌµÄÊôĞÔ
+* @return     int    µÈÓÚ0±êÊ¶³É¹¦
+* @param      attr   È¡µÄÊìÏ¤
+* @param      type   ·µ»ØµÄtype
 * @note
 */
 int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
                               int *type);
 
 /*!
-* @brief      pthread mutex åˆå§‹åŒ–
-* @return     int    ç­‰äº0è¡¨ç¤ºæˆåŠŸ,å¦åˆ™è¿”å›é”™è¯¯ID
-* @param      mutex  MUTEXå¯¹è±¡
-* @param      attr   MUTEXçš„å±æ€§
+* @brief      pthread mutex ³õÊ¼»¯
+* @return     int    µÈÓÚ0±íÊ¾³É¹¦,·ñÔò·µ»Ø´íÎóID
+* @param      mutex  MUTEX¶ÔÏó
+* @param      attr   MUTEXµÄÊôĞÔ
 */
 int pthread_mutex_init (pthread_mutex_t *mutex,
                         const pthread_mutexattr_t *attr);
 
 #if defined (ZCE_OS_WINDOWS)
 /*!
-* @brief      åˆå§‹åŒ–è®¾ç½®çº¿ç¨‹çš„å±æ€§ï¼Œä¸åŒçš„å¹³å°ç»™ä¸åŒçš„é»˜è®¤å®šä¹‰ï¼Œ
-* @return     int             ç­‰äº0è¡¨ç¤ºæˆåŠŸ
-* @param      mutex           PTHREAD MUTEX å¯¹è±¡
-* @param      process_share   æ˜¯å¦éœ€è¦è¿›ç¨‹é—´å…±äº«ï¼Œé»˜è®¤éƒ½FALSE
-* @param      recursive       æ˜¯å¦éœ€è¦é€’å½’ï¼Œé»˜è®¤WINï¼ŒLINUXéƒ½TURE
-* @param      need_timeout    æ˜¯å¦éœ€è¦è¶…æ—¶å¤„ç†ï¼ŒWINä¸‹é»˜è®¤ä¸ºFALSEï¼Œå› ä¸ºè¿™æ ·å¯ä»¥ç”¨æˆæœ¬æ›´ä½çš„ä¸´ç•ŒåŒºï¼Œ
-* @param      mutex_name      äº’æ–¥é‡çš„åå­—ï¼ŒWINä¸‹å¦‚æœè¦å¤šè¿›ç¨‹å…±äº«ï¼Œå°±å¿…é¡»æœ‰ä¸ªåå­—ï¼Œå¦‚æœè¦å¤šè¿›ç¨‹å…±äº«ï¼Œéº»çƒ¦ä½ è€ç»™ä¸ªåå­—ï¼Œå¦åˆ™æ²¡æ³•æ
-* @note       éæ ‡å‡†ï¼Œä½†æ˜¯å»ºè®®ä½ ä½¿ç”¨ï¼Œç®€å•å¤šäº†,
+* @brief      ³õÊ¼»¯ÉèÖÃÏß³ÌµÄÊôĞÔ£¬²»Í¬µÄÆ½Ì¨¸ø²»Í¬µÄÄ¬ÈÏ¶¨Òå£¬
+* @return     int             µÈÓÚ0±íÊ¾³É¹¦
+* @param      mutex           PTHREAD MUTEX ¶ÔÏó
+* @param      process_share   ÊÇ·ñĞèÒª½ø³Ì¼ä¹²Ïí£¬Ä¬ÈÏ¶¼FALSE
+* @param      recursive       ÊÇ·ñĞèÒªµİ¹é£¬Ä¬ÈÏWIN£¬LINUX¶¼TURE
+* @param      need_timeout    ÊÇ·ñĞèÒª³¬Ê±´¦Àí£¬WINÏÂÄ¬ÈÏÎªFALSE£¬ÒòÎªÕâÑù¿ÉÒÔÓÃ³É±¾¸üµÍµÄÁÙ½çÇø£¬
+* @param      mutex_name      »¥³âÁ¿µÄÃû×Ö£¬WINÏÂÈç¹ûÒª¶à½ø³Ì¹²Ïí£¬¾Í±ØĞëÓĞ¸öÃû×Ö£¬Èç¹ûÒª¶à½ø³Ì¹²Ïí£¬Âé·³ÄãÀÏ¸ø¸öÃû×Ö£¬·ñÔòÃ»·¨¸ã
+* @note       ·Ç±ê×¼£¬µ«ÊÇ½¨ÒéÄãÊ¹ÓÃ£¬¼òµ¥¶àÁË,
 */
 int pthread_mutex_initex(pthread_mutex_t *mutex,
                          bool process_share = false,
@@ -119,50 +119,50 @@ int pthread_mutex_initex(pthread_mutex_t *mutex,
 #endif
 
 /*!
-* @brief      pthread mutex é”€æ¯
-* @return     int   ç­‰äº0è¡¨ç¤ºæˆåŠŸ
-* @param      mutex MUTEXå¯¹è±¡
+* @brief      pthread mutex Ïú»Ù
+* @return     int   µÈÓÚ0±íÊ¾³É¹¦
+* @param      mutex MUTEX¶ÔÏó
 */
 int pthread_mutex_destroy (pthread_mutex_t *mutex);
 
 /*!
-* @brief      pthread mutex é”å®š
-* @return     int     ç­‰äº0è¡¨ç¤ºæˆåŠŸ
-* @param      mutex   MUTEXå¯¹è±¡
+* @brief      pthread mutex Ëø¶¨
+* @return     int     µÈÓÚ0±íÊ¾³É¹¦
+* @param      mutex   MUTEX¶ÔÏó
 */
 int pthread_mutex_lock (pthread_mutex_t *mutex);
 
 /*!
-* @brief      pthread mutex è¶…æ—¶é”å®šï¼Œ
-* @return     int              ç­‰äº0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™è¿”å›é”™è¯¯ID
-* @param      mutex            MUTEXå¯¹è±¡
-* @param      abs_timeout_spec è¶…æ—¶çš„æ—¶é—´ï¼Œä¸ºtimespecç±»å‹ï¼Œè€Œä¸”æ˜¯ç»å¯¹æ—¶é—´ï¼Œ
+* @brief      pthread mutex ³¬Ê±Ëø¶¨£¬
+* @return     int              µÈÓÚ0±íÊ¾³É¹¦£¬·ñÔò·µ»Ø´íÎóID
+* @param      mutex            MUTEX¶ÔÏó
+* @param      abs_timeout_spec ³¬Ê±µÄÊ±¼ä£¬ÎªtimespecÀàĞÍ£¬¶øÇÒÊÇ¾ø¶ÔÊ±¼ä£¬
 */
 int pthread_mutex_timedlock (pthread_mutex_t *mutex,
                              const ::timespec *abs_timeout_spec);
 
 /*!
-* @brief      pthread mutex è¶…æ—¶é”å®šï¼Œéæ ‡å‡†å®ç°,æ˜¯ç”¨å†…éƒ¨æ¯”è¾ƒé€šç”¨çš„æ—¶é—´å˜é‡timeval
-* @return     int             ç­‰äº0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™è¿”å›é”™è¯¯ID
-* @param      mutex           MUTEXå¯¹è±¡
-* @param      abs_timeout_val è¶…æ—¶çš„æ—¶é—´ï¼Œtimevalç±»å‹ï¼Œç»å¯¹æ—¶é—´ï¼Œ
-*                             å¦‚æœå¸Œæœ›è¿™ä¸ªå€¼å¡«å†™NULLï¼Œè¿™ä¸ªå‡½æ•°å¯èƒ½å’Œä¸Šé¢çš„å‡½æ•°å†²çªï¼Œ
-*                             è¯·è¿™æ ·æ“ä½œ timeval*time_out =NULL,å°†è¿™ä¸ªtime_outä½œä¸ºå‚æ•°ï¼Œ
+* @brief      pthread mutex ³¬Ê±Ëø¶¨£¬·Ç±ê×¼ÊµÏÖ,ÊÇÓÃÄÚ²¿±È½ÏÍ¨ÓÃµÄÊ±¼ä±äÁ¿timeval
+* @return     int             µÈÓÚ0±íÊ¾³É¹¦£¬·ñÔò·µ»Ø´íÎóID
+* @param      mutex           MUTEX¶ÔÏó
+* @param      abs_timeout_val ³¬Ê±µÄÊ±¼ä£¬timevalÀàĞÍ£¬¾ø¶ÔÊ±¼ä£¬
+*                             Èç¹ûÏ£ÍûÕâ¸öÖµÌîĞ´NULL£¬Õâ¸öº¯Êı¿ÉÄÜºÍÉÏÃæµÄº¯Êı³åÍ»£¬
+*                             ÇëÕâÑù²Ù×÷ timeval*time_out =NULL,½«Õâ¸ötime_out×÷Îª²ÎÊı£¬
 */
 int pthread_mutex_timedlock (pthread_mutex_t *mutex,
                              const timeval *abs_timeout_val);
 
 /*!
-* @brief      pthread mutex å°è¯•åŠ é”
+* @brief      pthread mutex ³¢ÊÔ¼ÓËø
 * @return     int
 * @param      mutex
 */
 int pthread_mutex_trylock (pthread_mutex_t *mutex);
 
 /*!
-* @brief      pthread mutex è§£é”
-* @return     int    ç­‰äº0è¡¨ç¤ºæˆåŠŸ
-* @param      mutex  MUTEXå¯¹è±¡
+* @brief      pthread mutex ½âËø
+* @return     int    µÈÓÚ0±íÊ¾³É¹¦
+* @param      mutex  MUTEX¶ÔÏó
 */
 int pthread_mutex_unlock (pthread_mutex_t *mutex);
 

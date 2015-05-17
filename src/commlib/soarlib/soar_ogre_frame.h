@@ -1,11 +1,11 @@
-ï»¿
+
 #ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 #define SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 
 #include "soar_ogre_peer_id.h"
 
 /******************************************************************************************
-struct  Ogre4a_App_Frame OGRE æœåŠ¡å™¨çš„å†…éƒ¨å‘½ä»¤å¸§å¤´
+struct  Ogre4a_App_Frame OGRE ·şÎñÆ÷µÄÄÚ²¿ÃüÁîÖ¡Í·
 ******************************************************************************************/
 #pragma pack (1)
 
@@ -15,27 +15,27 @@ class Ogre4a_App_Frame
 
 public:
 
-    //å¸§çš„æè¿°,åœ¨m_Optionå­—æ®µä½¿ç”¨
+    //Ö¡µÄÃèÊö,ÔÚm_Option×Ö¶ÎÊ¹ÓÃ
     enum OGRE_APPFRAME_OPTION
     {
 
-        //æè¿°PEERä¸ºUDP
+        //ÃèÊöPEERÎªUDP
         OGREDESC_PEER_UDP = 0x1,
-        //æè¿°PEERä¸ºTCP
+        //ÃèÊöPEERÎªTCP
         OGREDESC_PEER_TCP = 0x2,
 
-        //PEERè¢«å…³é—­
+        //PEER±»¹Ø±Õ
         OGREDESC_PEER_CLOSED = 0x4,
-        //å¼ºåˆ¶å…³é—­PEER,ä¸ç®¡å‘é€é˜Ÿåˆ—ä¸­é—´æ˜¯å¦æœ‰æ•°æ®,æ³¨æ„å’ŒDESC_SNDPRC_CLOSE_PEERçš„åŒºåˆ«
+        //Ç¿ÖÆ¹Ø±ÕPEER,²»¹Ü·¢ËÍ¶ÓÁĞÖĞ¼äÊÇ·ñÓĞÊı¾İ,×¢ÒâºÍDESC_SNDPRC_CLOSE_PEERµÄÇø±ğ
         OGREDESC_CLOSE_PEER = 0x8,
 
-        //æŸä¸ªå‘½ä»¤å¸§å‘é€å¤±è´¥,é€šçŸ¥åé¢çš„æœåŠ¡
+        //Ä³¸öÃüÁîÖ¡·¢ËÍÊ§°Ü,Í¨ÖªºóÃæµÄ·şÎñ
         OGREDESC_SEND_ERROR = 0x10,
-        //å¦‚æœå‘é€å¤±è´¥,è®°å½•å‘é€å¤±è´¥çš„äº‹æƒ…
+        //Èç¹û·¢ËÍÊ§°Ü,¼ÇÂ¼·¢ËÍÊ§°ÜµÄÊÂÇé
         OGREDESC_SEND_FAIL_RECORD = 0x20,
-        //å¦‚æœå‘é€å¤±è´¥,é€šçŸ¥åé¢çš„åº”ç”¨è¿›ç¨‹
+        //Èç¹û·¢ËÍÊ§°Ü,Í¨ÖªºóÃæµÄÓ¦ÓÃ½ø³Ì
         OGREDESC_SNDPRC_NOTIFY_APP = 0x40,
-        //å¦‚æœå‘é€æˆåŠŸå,ç›´æ¥æ–­å¼€è¿æ¥ï¼Œç”¨äºéƒ¨åˆ†TCPçš„çŸ­è¿æ¥
+        //Èç¹û·¢ËÍ³É¹¦ºó,Ö±½Ó¶Ï¿ªÁ¬½Ó£¬ÓÃÓÚ²¿·ÖTCPµÄ¶ÌÁ¬½Ó
         OGREDESC_SNDPRC_CLOSE_PEER = 0x80,
     };
 
@@ -47,30 +47,30 @@ public:
     ~Ogre4a_App_Frame();
 
 public:
-    //é‡ç½®FRAME DATAçš„æ•°æ®
+    //ÖØÖÃFRAME DATAµÄÊı¾İ
     inline void reset_framehead();
-    //å¡«å……æ•°æ®
+    //Ìî³äÊı¾İ
     inline void fill_write_data(const unsigned int size_data, const char *src_data);
-    //è¯»å–æ•°æ®
+    //¶ÁÈ¡Êı¾İ
     inline void get_data(unsigned int &size_data, char *dest_data) const;
 
-    //å¢åŠ DATAæ•°æ®
+    //Ôö¼ÓDATAÊı¾İ
     int add_data(unsigned int add_size, char *add_data);
 
-    //äº¤æ¢è‡ªå·±Rcv ,Snd Peer Info
+    //½»»»×Ô¼ºRcv ,Snd Peer Info
     void exchange_rcvsnd_peerInfo();
-    //å’Œå…¶ä»–äººäº¤æ¢Rcv ,Snd Peer Info,
+    //ºÍÆäËûÈË½»»»Rcv ,Snd Peer Info,
     void exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe );
 
-    //DUMP OGRE FRAMEçš„å¤´éƒ¨ä¿¡æ¯
+    //DUMP OGRE FRAMEµÄÍ·²¿ĞÅÏ¢
     void dump_ogre_framehead(const char *outstr,
                              ZCE_LOG_PRIORITY log_priority) const;
 
 public:
-    //é‡è½½Newå‡½æ•°
+    //ÖØÔØNewº¯Êı
     static void   *operator new (size_t , size_t lenframe);
 
-    //ä¸é‡è½½delteä¸æƒ…ç†ä¸é€šï¼Œä½†æ˜¯å…¶å®æ²¡æœ‰ä»€ä¹ˆé—®é¢˜,
+    //²»ÖØÔØdelteÓëÇéÀí²»Í¨£¬µ«ÊÇÆäÊµÃ»ÓĞÊ²Ã´ÎÊÌâ,
 #if defined ZCE_OS_WINDOWS
     static void operator delete(void *ptrframe, size_t );
 #elif defined ZCE_OS_LINUX
@@ -79,41 +79,41 @@ public:
 
 public:
 
-    //é…ç½®æœ€å¤§çš„DATAæ•°æ®åŒºé•¿åº¦,
+    //ÅäÖÃ×î´óµÄDATAÊı¾İÇø³¤¶È,
     static void set_max_framedata_len(unsigned int  max_framedata);
 
-    //DUMP OGRE FRAMEçš„å¤´éƒ¨ä¿¡æ¯
+    //DUMP OGRE FRAMEµÄÍ·²¿ĞÅÏ¢
     static void dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
                                     const char *outstr,
                                     ZCE_LOG_PRIORITY log_priority);
 
 
 public:
-    //FRAMEåŒ…å¤´éƒ½å°ºå¯¸,
+    //FRAME°üÍ·¶¼³ß´ç,
     static const size_t  LEN_OF_OGRE_FRAME_HEAD = 20;
 
-    //æœ€å¤§çš„DATAæ•°æ®åŒºé•¿åº¦,å¯ä»¥é…ç½®
+    //×î´óµÄDATAÊı¾İÇø³¤¶È,¿ÉÒÔÅäÖÃ
     static size_t        MAX_OF_OGRE_DATA_LEN;
-    //æœ€å¤§çš„FRAMEçš„é•¿åº¦,ä¸ºMAX_OF_OGRE_DATA_LEN ï¼‹ LEN_OF_OGRE_FRAME_HEAD
+    //×î´óµÄFRAMEµÄ³¤¶È,ÎªMAX_OF_OGRE_DATA_LEN £« LEN_OF_OGRE_FRAME_HEAD
     static size_t        MAX_OF_OGRE_FRAME_LEN;
 
 
 
 public:
-    //å¸§çš„é•¿åº¦ï¼ŒåŒ…æ‹¬å¸§å¤´çš„ç»“æ„
+    //Ö¡µÄ³¤¶È£¬°üÀ¨Ö¡Í·µÄ½á¹¹
     unsigned int ogre_frame_len_;
 
-    //å¯¹ç«¯ä¿¡æ¯
+    //¶Ô¶ËĞÅÏ¢
     OGRE_PEER_ID snd_peer_info_;
-    //å¯¹ç«¯ä¿¡æ¯
+    //¶Ô¶ËĞÅÏ¢
     OGRE_PEER_ID rcv_peer_info_;
 
-    //å¸§çš„é€‰é¡¹ï¼Œè§
+    //Ö¡µÄÑ¡Ïî£¬¼û
     unsigned int ogre_frame_option_ : 28;
-    //å†å4BITä½œä¸ºå‘é€é”™è¯¯è®¡æ•°
+    //ÔÙºó4BIT×÷Îª·¢ËÍ´íÎó¼ÆÊı
     unsigned int ogre_send_errnum_ : 4;
 
-    //Appdata æ˜¯ä¸€ä¸ªå˜é•¿åº¦çš„å­—ç¬¦ä¸²åºåˆ—æ ‡ç¤º,
+    //Appdata ÊÇÒ»¸ö±ä³¤¶ÈµÄ×Ö·û´®ĞòÁĞ±êÊ¾,
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( disable : 4200)
 #endif
@@ -127,7 +127,7 @@ public:
 #pragma pack ()
 
 //---------------------------------------------------------------------------------------------
-//æ‰“å°è¾“å‡ºå¤´éƒ¨ä¿¡æ¯çš„æ§åˆ¶å®
+//´òÓ¡Êä³öÍ·²¿ĞÅÏ¢µÄ¿ØÖÆºê
 #if defined _DEBUG || defined DEBUG
 #define DEBUGDUMP_OGRE_HEAD(x,y,z)      Ogre4a_App_Frame::dump_ogre_framehead(x,y,z);
 #else
@@ -135,9 +135,9 @@ public:
 #endif
 
 //---------------------------------------------------------------------------------------------
-//å†…è”å‡½æ•°
+//ÄÚÁªº¯Êı
 
-//é‡ç½®FRAME DATAçš„æ•°æ®
+//ÖØÖÃFRAME DATAµÄÊı¾İ
 inline void Ogre4a_App_Frame::reset_framehead()
 {
     ogre_frame_len_ = LEN_OF_OGRE_FRAME_HEAD;
@@ -145,14 +145,14 @@ inline void Ogre4a_App_Frame::reset_framehead()
     ogre_send_errnum_ = 0;
 }
 
-//å¡«å……æ•°æ®
+//Ìî³äÊı¾İ
 inline void Ogre4a_App_Frame::fill_write_data(const unsigned int size_data, const char *src_data)
 {
     memcpy(frame_data_ + ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD, src_data, size_data);
     ogre_frame_len_ += size_data;
 }
 
-//è¯»å–æ•°æ®
+//¶ÁÈ¡Êı¾İ
 inline void Ogre4a_App_Frame::get_data(unsigned int &size_data, char *dest_data) const
 {
     size_data = ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD;
@@ -163,10 +163,10 @@ inline void Ogre4a_App_Frame::get_data(unsigned int &size_data, char *dest_data)
 
 
 /******************************************************************************************
-æ¥å£å®šä¹‰
+½Ó¿Ú¶¨Òå
 ******************************************************************************************/
 //
-//ä».soåŠ è½½å‡½æ•°åç§°
+//´Ó.so¼ÓÔØº¯ÊıÃû³Æ
 static const char STR_JUDGE_RECV_WHOLEFRAME[] = "JudgeRecvWholeFrame";
 //
 typedef int ( *FP_JudgeRecv_WholeFrame)(const char *recv_buf,

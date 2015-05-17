@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zerg_predefine.h"
 #include "zerg_auto_connect.h"
 #include "zerg_application.h"
@@ -17,7 +17,7 @@ Zerg_Auto_Connector::~Zerg_Auto_Connector()
 {
 }
 
-//å–å¾—é…ç½®ä¿¡æ¯
+//È¡µÃÅäÖÃĞÅÏ¢
 int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
@@ -25,21 +25,21 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
     zerg_svr_cfg_ = config;
 
     size_of_autoconnect_ = config->zerg_cfg_data_.auto_connect_num_;
-    //ä¸é¢„åˆ†é…è¿‡å¤§
+    //²»Ô¤·ÖÅä¹ı´ó
     autocnt_svcinfo_set_.rehash(size_of_autoconnect_ + 16);
 
-    //å¾ªç¯å¤„ç†æ‰€æœ‰çš„æ•°æ®
+    //Ñ­»·´¦ÀíËùÓĞµÄÊı¾İ
     SERVICES_INFO svc_route;
     for (size_t i = 0; i < size_of_autoconnect_; ++i)
     {
 
         svc_route.svc_id_ = config->zerg_cfg_data_.auto_connect_svrs_[i];
 
-        //æ‰¾åˆ°ç›¸å…³çš„IPé…ç½®
+        //ÕÒµ½Ïà¹ØµÄIPÅäÖÃ
         ret = config->get_svcinfo_by_svcid(svc_route.svc_id_,
                                            svc_route);
 
-        //å¦‚æœæŸ¥è¯¢ä¸åˆ°
+        //Èç¹û²éÑ¯²»µ½
         if (ret != 0)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Can't find Auto connect services ID %u.%u .Please check config file. ",
@@ -59,7 +59,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
         }
 
 
-        //ç”±äºè¯¥æ­»çš„C/C++çš„è¿”å›é™æ€æŒ‡é’ˆçš„é—®é¢˜ï¼Œè¿™å„¿è¦è¾“å‡ºä¸¤ä¸ªåœ°å€ï¼Œæ‰€ä»¥åªèƒ½å…ˆæ‰“å°åˆ°å…¶ä»–åœ°æ–¹
+        //ÓÉÓÚ¸ÃËÀµÄC/C++µÄ·µ»Ø¾²Ì¬Ö¸ÕëµÄÎÊÌâ£¬Õâ¶ùÒªÊä³öÁ½¸öµØÖ·£¬ËùÒÔÖ»ÄÜÏÈ´òÓ¡µ½ÆäËûµØ·½
         const size_t TMP_ADDR_LEN = 32;
         char mainroute_addr[TMP_ADDR_LEN + 1];
 
@@ -76,7 +76,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
             std::vector<uint32_t> id_ary;
             auto insert_iter = type_to_idary_map_.insert(
                                    std::make_pair(svc_route.svc_id_.services_type_, id_ary));
-            //ç†è®ºä¸Šé™¤éç©ºé—´ä¸è¶³ï¼Œä¸å¯èƒ½å¤±è´¥
+            //ÀíÂÛÉÏ³ı·Ç¿Õ¼ä²»×ã£¬²»¿ÉÄÜÊ§°Ü
             ZCE_ASSERT(false == insert_iter.second);
 
             map_iter = insert_iter.first;
@@ -93,26 +93,26 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 }
 
 
-//é“¾æ¥æ‰€æœ‰çš„æœåŠ¡å™¨,å¦‚æœå·²ç»æœ‰é“¾æ¥ï¼Œå°±è·³è¿‡,
+//Á´½ÓËùÓĞµÄ·şÎñÆ÷,Èç¹ûÒÑ¾­ÓĞÁ´½Ó£¬¾ÍÌø¹ı,
 void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, size_t &szfail)
 {
     int ret = 0;
     szvalid = szsucc = szfail = 0;
-    //å¾ªç¯å°†æ‰€æœ‰çš„SERVERé“¾æ¥ä¸€æ¬¡,ä»£ç å†™çš„å¾ˆç»•å£
+    //Ñ­»·½«ËùÓĞµÄSERVERÁ´½ÓÒ»´Î,´úÂëĞ´µÄºÜÈÆ¿Ú
 
     auto iter_end = autocnt_svcinfo_set_.end();
     auto iter_tmp = autocnt_svcinfo_set_.begin();
     for (; iter_tmp != iter_end; ++iter_tmp)
     {
         TCP_Svc_Handler *svc_handle = NULL;
-        //è¿›è¡Œè¿æ¥,
+        //½øĞĞÁ¬½Ó,
         ret = connect_one_server(iter_tmp->svc_id_, iter_tmp->ip_address_, svc_handle);
         if (0 != ret)
         {
             if (ret == SOAR_RET::ERR_ZERG_SVCID_ALREADY_CONNECTED)
             {
                 ++szvalid;
-                //å¦‚æœæ˜¯æ¿€æ´»çŠ¶æ€æ‰è¿›è¡Œå¿ƒè·³åŒ…å‘é€
+                //Èç¹ûÊÇ¼¤»î×´Ì¬²Å½øĞĞĞÄÌø°ü·¢ËÍ
                 if (svc_handle->get_peer_status() == TCP_Svc_Handler::PEER_STATUS_ACTIVE)
                 {
                     svc_handle->send_zergheatbeat_reg();
@@ -137,16 +137,16 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
 }
 
 
-//æ ¹æ®SVC ID,æ£€æŸ¥æ˜¯å¦æ˜¯ä¸»åŠ¨è¿æ¥çš„æœåŠ¡.,
+//¸ù¾İSVC ID,¼ì²éÊÇ·ñÊÇÖ÷¶¯Á¬½ÓµÄ·şÎñ.,
 int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &reconnect_svcid)
 {
 
-    //å¦‚æœåœ¨SETé‡Œé¢æ‰¾ä¸åˆ°
+    //Èç¹ûÔÚSETÀïÃæÕÒ²»µ½
     SERVICES_INFO svc_info;
     svc_info.svc_id_ = reconnect_svcid;
     auto iter = autocnt_svcinfo_set_.find(svc_info);
 
-    //è¿™ä¸ªé”™è¯¯æ— éœ€è®°å½•,å¯èƒ½æ˜¯è¿™ä¸ªSVCIDæ ¹æœ¬ä¸æ˜¯è¦ä¸»åŠ¨è¿æ¥çš„æœåŠ¡å™¨
+    //Õâ¸ö´íÎóÎŞĞè¼ÇÂ¼,¿ÉÄÜÊÇÕâ¸öSVCID¸ù±¾²»ÊÇÒªÖ÷¶¯Á¬½ÓµÄ·şÎñÆ÷
     if (iter == autocnt_svcinfo_set_.end())
     {
         return SOAR_RET::ERR_ZERG_ISNOT_CONNECT_SERVICES;
@@ -157,13 +157,13 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &reconnect_svc
 }
 
 
-//æ ¹æ®SVRINFO+IP,æ£€æŸ¥æ˜¯å¦æ˜¯ä¸»åŠ¨è¿æ¥çš„æœåŠ¡.å¹¶è¿›è¡Œè¿æ¥
+//¸ù¾İSVRINFO+IP,¼ì²éÊÇ·ñÊÇÖ÷¶¯Á¬½ÓµÄ·şÎñ.²¢½øĞĞÁ¬½Ó
 int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
                                             const ZCE_Sockaddr_In &inetaddr,
                                             TCP_Svc_Handler *&svc_handle)
 {
     int ret = 0;
-    //å¦‚æœå·²ç»æœ‰ç›¸åº”çš„é“¾æ¥äº†ï¼Œè·³è¿‡
+    //Èç¹ûÒÑ¾­ÓĞÏàÓ¦µÄÁ´½ÓÁË£¬Ìø¹ı
     ret = TCP_Svc_Handler::find_services_peer(svc_id, svc_handle);
     if (ret == 0)
     {
@@ -182,19 +182,19 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
 
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;
     socklen_t opvallen = sizeof(socklen_t);
-    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
+    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
     sockstream.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
     sockstream.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void *>(&opval), opvallen);
 
     //tcpscoket.sock_enable (O_NONBLOCK);
 
-    //è®°ä½,æ˜¯è¿™ä¸ªæ—¶é—´æ ‡å¿—ä½¿SOCKETå¼‚æ­¥è¿æ¥,ç¬¬3ä¸ªå‚æ•°trueè¡¨ç¤ºæ˜¯éé˜»å¡
+    //¼Ç×¡,ÊÇÕâ¸öÊ±¼ä±êÖ¾Ê¹SOCKETÒì²½Á¬½Ó,µÚ3¸ö²ÎÊıtrue±íÊ¾ÊÇ·Ç×èÈû
     ret = zerg_connector_.connect(sockstream, &inetaddr, true);
 
-    //å¿…ç„¶å¤±è´¥!?
+    //±ØÈ»Ê§°Ü!?
     if (ret < 0)
     {
-        //æŒ‰ç…§UNIXç½‘ç»œç¼–ç¨‹ V1çš„è¯´æ³•æ˜¯ EINPROGRESS,ä½†ACEçš„ä»‹ç»è¯´æ˜¯ EWOULDBLOCK,
+        //°´ÕÕUNIXÍøÂç±à³Ì V1µÄËµ·¨ÊÇ EINPROGRESS,µ«ACEµÄ½éÉÜËµÊÇ EWOULDBLOCK,
         if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS)
         {
             sockstream.close();
@@ -202,21 +202,21 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
         }
 
 
-        //HANDLER_MODE_CONNECTæ¨¡å¼ç†è®ºä¸ä¼šå¤±è´¥
+        //HANDLER_MODE_CONNECTÄ£Ê½ÀíÂÛ²»»áÊ§°Ü
         TCP_Svc_Handler *p_handler = TCP_Svc_Handler::alloce_hdl_from_pool(
                                          TCP_Svc_Handler::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(p_handler);
-        //ä»¥self_svc_infoå‡ºå»é“¾æ¥å…¶ä»–æœåŠ¡å™¨.
+        //ÒÔself_svc_info³öÈ¥Á´½ÓÆäËû·şÎñÆ÷.
         p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_id_,
                                        svc_id,
                                        sockstream,
                                        inetaddr);
 
-        //é¿å…ææ„çš„æ—¶å€™closeå¥æŸ„
+        //±ÜÃâÎö¹¹µÄÊ±ºòclose¾ä±ú
         sockstream.release_noclose();
     }
-    //tmpret == 0 é‚£å°±æ˜¯è®©æˆ‘å»è·³æ¥¼,ä½†æŒ‰ç…§ UNIXç½‘ç»œç¼–ç¨‹ è¯´åº”è¯¥æ˜¯æœ‰æœ¬åœ°è¿æ¥æ—¶å¯èƒ½çš„.(æˆ‘çš„æµ‹è¯•è¿˜æ˜¯è¿”å›é”™è¯¯)
-    //è€ŒACEçš„è¯´æ˜æ˜¯ç«‹å³è¿”å›é”™è¯¯,æˆ‘æš‚æ—¶ä¸å¤„ç†è¿™ç§æƒ…å†µ,å®åœ¨ä¸è¡Œåˆåªæœ‰æ ¹æ®ç±»å‹å†™æ™¦æ¶©çš„æœ¦èƒ§è¯—äº†
+    //tmpret == 0 ÄÇ¾ÍÊÇÈÃÎÒÈ¥ÌøÂ¥,µ«°´ÕÕ UNIXÍøÂç±à³Ì ËµÓ¦¸ÃÊÇÓĞ±¾µØÁ¬½ÓÊ±¿ÉÄÜµÄ.(ÎÒµÄ²âÊÔ»¹ÊÇ·µ»Ø´íÎó)
+    //¶øACEµÄËµÃ÷ÊÇÁ¢¼´·µ»Ø´íÎó,ÎÒÔİÊ±²»´¦ÀíÕâÖÖÇé¿ö,ÊµÔÚ²»ĞĞÓÖÖ»ÓĞ¸ù¾İÀàĞÍĞ´»ŞÉ¬µÄëüëÊÊ«ÁË
     else
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] My God! NonBlock Socket Connect Success , ACE is a cheat.");
@@ -225,7 +225,7 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
     return 0;
 }
 
-//æ ¹æ®services_typeæŸ¥è¯¢å¯¹åº”çš„é…ç½®ä¸»å¤‡æœåŠ¡å™¨åˆ—è¡¨æ•°ç»„ MSï¼ˆä¸»å¤‡ï¼‰
+//¸ù¾İservices_type²éÑ¯¶ÔÓ¦µÄÅäÖÃÖ÷±¸·şÎñÆ÷ÁĞ±íÊı×é MS£¨Ö÷±¸£©
 int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
                                                 std::vector<uint32_t> *& ms_svcid_ary)
 {
@@ -238,10 +238,10 @@ int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
     return 0;
 }
 
-//æ£€æŸ¥è¿™ä¸ªSVC IDæ˜¯å¦æ˜¯ä¸»åŠ¨é“¾æ¥çš„æœåŠ¡å™¨
+//¼ì²éÕâ¸öSVC IDÊÇ·ñÊÇÖ÷¶¯Á´½ÓµÄ·şÎñÆ÷
 bool Zerg_Auto_Connector::is_auto_connect_svcid(const SERVICES_ID &svc_id)
 {
-    //å¦‚æœåœ¨SETé‡Œé¢æ‰¾ä¸åˆ°
+    //Èç¹ûÔÚSETÀïÃæÕÒ²»µ½
     SERVICES_INFO svc_info;
     svc_info.svc_id_ = svc_id;
     if (autocnt_svcinfo_set_.find(svc_info) == autocnt_svcinfo_set_.end())

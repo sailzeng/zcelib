@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_mutex.h"
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_rwlock.h"
@@ -8,11 +8,11 @@
 
 #include "zce_lock_process_mutex.h"
 
-//æ„é€ å‡½æ•°,
-//mutex_name äº’æ–¥é‡çš„åç§°ï¼Œå¿…é€‰å‚æ•°ï¼Œåœ¨WINä¸‹æ˜¯äº’æ–¥é‡çš„åç§°ï¼Œåœ¨LINUXï¼Œæ˜¯å…±äº«å†…å­˜çš„æ–‡ä»¶åç§°ï¼Œ
-//ï¼ˆå¦‚æœæ˜¯WINä¸‹çš„éé€’å½’é”ï¼Œæ˜¯ä¸ªä¿¡å·ç¯çš„åç§°ï¼‰
-//WINDOWSçš„æ ¸å¿ƒå¯¹è±¡çš„åç§°è¢«ç”¨äºæ ‡è¯†ä¸€ä¸ªæ ¸å¿ƒå¯¹è±¡ï¼ˆäº’æ–¥é‡ï¼Œä¿¡å·ç¯ï¼‰ï¼Œè€ŒLINUXä¸‹çš„pthread_xxxåŒæ­¥å¯¹è±¡ï¼Œå¦‚æœå¯¹è±¡åœ¨å…±äº«å†…å­˜é‡Œé¢ï¼Œ
-//é‚£ä¹ˆå°±æ˜¯è¿›ç¨‹é—´åŒæ­¥å¯¹è±¡ï¼Œå½“ç„¶è¿˜è¦æ³¨æ„å±æ€§PTHREAD_PROCESS_SHAREDçš„è®¾ç½®
+//¹¹Ôìº¯Êı,
+//mutex_name »¥³âÁ¿µÄÃû³Æ£¬±ØÑ¡²ÎÊı£¬ÔÚWINÏÂÊÇ»¥³âÁ¿µÄÃû³Æ£¬ÔÚLINUX£¬ÊÇ¹²ÏíÄÚ´æµÄÎÄ¼şÃû³Æ£¬
+//£¨Èç¹ûÊÇWINÏÂµÄ·Çµİ¹éËø£¬ÊÇ¸öĞÅºÅµÆµÄÃû³Æ£©
+//WINDOWSµÄºËĞÄ¶ÔÏóµÄÃû³Æ±»ÓÃÓÚ±êÊ¶Ò»¸öºËĞÄ¶ÔÏó£¨»¥³âÁ¿£¬ĞÅºÅµÆ£©£¬¶øLINUXÏÂµÄpthread_xxxÍ¬²½¶ÔÏó£¬Èç¹û¶ÔÏóÔÚ¹²ÏíÄÚ´æÀïÃæ£¬
+//ÄÇÃ´¾ÍÊÇ½ø³Ì¼äÍ¬²½¶ÔÏó£¬µ±È»»¹Òª×¢ÒâÊôĞÔPTHREAD_PROCESS_SHAREDµÄÉèÖÃ
 ZCE_Process_Mutex::ZCE_Process_Mutex (const char *mutex_name, bool recursive):
     lock_(NULL)
 {
@@ -21,7 +21,7 @@ ZCE_Process_Mutex::ZCE_Process_Mutex (const char *mutex_name, bool recursive):
     int ret = 0;
 
 #if defined ZCE_OS_WINDOWS
-    //ç¬¬ä¸€æ¬¡å‘ç°Windows ä¸‹å±…ç„¶è¿˜ç®€å•ä¸€ç‚¹
+    //µÚÒ»´Î·¢ÏÖWindows ÏÂ¾ÓÈ»»¹¼òµ¥Ò»µã
     lock_ = new pthread_mutex_t();
 
 #elif defined ZCE_OS_LINUX
@@ -52,7 +52,7 @@ ZCE_Process_Mutex::ZCE_Process_Mutex (const char *mutex_name, bool recursive):
 
 }
 
-//ææ„å‡½æ•°ï¼Œ
+//Îö¹¹º¯Êı£¬
 ZCE_Process_Mutex::~ZCE_Process_Mutex (void)
 {
     int ret = 0;
@@ -79,7 +79,7 @@ ZCE_Process_Mutex::~ZCE_Process_Mutex (void)
 #endif
 }
 
-//é”å®š
+//Ëø¶¨
 void ZCE_Process_Mutex::lock()
 {
     int ret = 0;
@@ -92,7 +92,7 @@ void ZCE_Process_Mutex::lock()
     }
 }
 
-//å°è¯•é”å®š
+//³¢ÊÔËø¶¨
 bool ZCE_Process_Mutex::try_lock()
 {
     int ret = 0;
@@ -106,7 +106,7 @@ bool ZCE_Process_Mutex::try_lock()
     return true;
 }
 
-//è§£é”,
+//½âËø,
 void ZCE_Process_Mutex::unlock()
 {
     int ret = 0;
@@ -119,7 +119,7 @@ void ZCE_Process_Mutex::unlock()
     }
 }
 
-//ç»å¯¹æ—¶é—´
+//¾ø¶ÔÊ±¼ä
 bool ZCE_Process_Mutex::systime_lock(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
@@ -134,7 +134,7 @@ bool ZCE_Process_Mutex::systime_lock(const ZCE_Time_Value &abs_time)
     return true;
 }
 
-//ç›¸å¯¹æ—¶é—´
+//Ïà¶ÔÊ±¼ä
 bool ZCE_Process_Mutex::duration_lock(const ZCE_Time_Value &relative_time)
 {
     timeval abs_time = ZCE_LIB::gettimeofday();
@@ -142,7 +142,7 @@ bool ZCE_Process_Mutex::duration_lock(const ZCE_Time_Value &relative_time)
     return systime_lock(abs_time);
 }
 
-//å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
+//È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
 pthread_mutex_t *ZCE_Process_Mutex::get_lock()
 {
     return lock_;

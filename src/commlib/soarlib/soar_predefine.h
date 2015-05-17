@@ -1,60 +1,60 @@
-﻿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_predefine.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2006年6月22日
-* @brief      大规模工程文件的基础头文件真的是一件讨厌的事情.
+* @date       2006��6��22��
+* @brief      ���ģ�����ļ��Ļ���ͷ�ļ������һ�����������.
 *
 *
 * @details
 *
 *
 *
-* @note       为了避免一些保持部分代码的纯洁，
+* @note       Ϊ�˱���һЩ���ֲ��ִ���Ĵ��࣬
 *
-*  最后一枪
-*  崔建
-*  一颗流弹打入我胸膛
-*  刹那间往事涌在我心上
-*  哦
-*  只有泪水
-*  哦
-*  没有悲伤
-*  如果这是最后的一枪
-*  我愿接受这莫大的荣光
-*  哦
-*  最后一枪
-*  哦
-*  最后一枪
-*  不知道有多少 有多少话还没讲
-*  不知道有多少 有多少欢乐没享
-*  不知道有多少 多少人和我一样
-*  不知道有多少 多少个最后一枪
-*  安睡在这温暖的土地上
-*  朝露夕阳花木自芬芳
-*  哦哦 只有一句话 留在世界上
-*  不知道有多少 有多少话还没讲
-*  不知道有多少 有多少欢乐没享
-*  不知道有多少 多少人和我一样
-*  不知道有多少 多少个最后一枪
-*  一颗流弹打入我的胸膛
-*  刹那间往事涌在我的心上
-*  哦哦 最后一枪
-*  哦哦 最后一枪
-*  哦哦 最后一枪
-*  哦哦 最后一枪
-*  哦哦 最后一枪
-*  哦哦 最后一枪
-*  哦哦 最后一枪
-*  哦哦 最后一枪
+*  ���һǹ
+*  �޽�
+*  һ����������������
+*  ɲ�Ǽ�����ӿ��������
+*  Ŷ
+*  ֻ����ˮ
+*  Ŷ
+*  û�б���
+*  �����������һǹ
+*  ��Ը������Ī����ٹ�
+*  Ŷ
+*  ���һǹ
+*  Ŷ
+*  ���һǹ
+*  ��֪���ж��� �ж��ٻ���û��
+*  ��֪���ж��� �ж��ٻ���û��
+*  ��֪���ж��� �����˺���һ��
+*  ��֪���ж��� ���ٸ����һǹ
+*  ��˯������ů��������
+*  ��¶Ϧ����ľ�Էҷ�
+*  ŶŶ ֻ��һ�仰 ����������
+*  ��֪���ж��� �ж��ٻ���û��
+*  ��֪���ж��� �ж��ٻ���û��
+*  ��֪���ж��� �����˺���һ��
+*  ��֪���ж��� ���ٸ����һǹ
+*  һ�����������ҵ�����
+*  ɲ�Ǽ�����ӿ���ҵ�����
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
+*  ŶŶ ���һǹ
 */
 
 
 #ifndef SOARING_LIB_PER_DEFINE_H_
 #define SOARING_LIB_PER_DEFINE_H_
 
-//在WINDOWS下和POSIX标准兼容的宏，2003以下如何，我没有测试
+//��WINDOWS�º�POSIX��׼���ݵĺ꣬2003������Σ���û�в���
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_SECURE_NO_WARNINGS   1
 
@@ -62,7 +62,7 @@
 
 //---------------------------------------------------------------------------------------------
 
-//ZCElib的库文件
+//ZCElib�Ŀ��ļ�
 #include <zce_predefine.h>
 #include <zce_id_to_string.h>
 #include <zce_time_value.h>
@@ -128,14 +128,14 @@
 #define SOAR_LIB_LIBARY_NAME   "soarlib.lib"
 #endif
 
-//自动包含的包含连接，简化你的操作
+//�Զ������İ������ӣ�����Ĳ���
 #pragma comment(lib, SOAR_LIB_LIBARY_NAME  )
 
 #endif
 
 
 //------------------------------------------------------------------------------------
-//客户端服务器公用的头文件,服务器的头文件定义在下面
+//�ͻ��˷��������õ�ͷ�ļ�,��������ͷ�ļ�����������
 
 #if defined ZCE_OS_WINDOWS && defined TSSCOMM_HASDLL
 #ifdef BUILD_SOARING_MODULE_DLL

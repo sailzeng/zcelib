@@ -1,9 +1,9 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_lock_thread_condi.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013å¹´2æœˆ1æ—¥
+* @date       2013Äê2ÔÂ1ÈÕ
 * @brief
 *
 * @details
@@ -19,13 +19,13 @@
 #include "zce_lock_base.h"
 #include "zce_os_adapt_condi.h"
 
-//çº¿ç¨‹çš„æ¡ä»¶å˜é‡ç±»,ä¸ºäº†æ–¹ä¾¿ç”¨äº†æ¨¡ç‰ˆç±»ï¼Œä½†è¯·ä½ ç›´æ¥ç”¨ä¸¤ä¸ªtypedef
+//Ïß³ÌµÄÌõ¼ş±äÁ¿Àà,ÎªÁË·½±ãÓÃÁËÄ£°æÀà£¬µ«ÇëÄãÖ±½ÓÓÃÁ½¸ötypedef
 template <class MUTEX>
 class ZCE_Thread_Condition  : public ZCE_Condition_Base
 {
 public:
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     ZCE_Thread_Condition ()
     {
         int ret = 0;
@@ -40,10 +40,10 @@ public:
 
     }
 
-    //ææ„å‡½æ•°
+    //Îö¹¹º¯Êı
     virtual ~ZCE_Thread_Condition (void)
     {
-        //é”€æ¯æ¡ä»¶å˜é‡
+        //Ïú»ÙÌõ¼ş±äÁ¿
         int ret =  ZCE_LIB::pthread_cond_destroy(&lock_);
 
         if (0 != ret)
@@ -53,18 +53,18 @@ public:
         }
     }
 
-    //æˆ‘æ ¹æ®ZCE_Thread_Light_Mutexï¼ŒZCE_Thread_Recursive_Mutexç»™äº†ç‰¹åŒ–å®ç°
+    //ÎÒ¸ù¾İZCE_Thread_Light_Mutex£¬ZCE_Thread_Recursive_Mutex¸øÁËÌØ»¯ÊµÏÖ
 
-    //ç­‰å¾…
+    //µÈ´ı
     virtual void wait (MUTEX *external_mutex);
 
-    //ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„ç­‰å¾…ï¼Œè¶…æ—¶åè§£é”
+    //¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄµÈ´ı£¬³¬Ê±ºó½âËø
     virtual bool systime_wait(MUTEX *external_mutex, const ZCE_Time_Value &abs_time);
 
-    //ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šç­‰å¾…ï¼Œè¶…æ—¶åï¼Œè§£é”
+    //Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨µÈ´ı£¬³¬Ê±ºó£¬½âËø
     virtual bool duration_wait(MUTEX *external_mutex, const ZCE_Time_Value &relative_time);
 
-    // ç»™ä¸€ä¸ªç­‰å¾…çº¿ç¨‹å‘é€ä¿¡å· Signal one waiting thread.
+    // ¸øÒ»¸öµÈ´ıÏß³Ì·¢ËÍĞÅºÅ Signal one waiting thread.
     virtual void signal (void)
     {
         //
@@ -77,7 +77,7 @@ public:
         }
     }
 
-    ///ç»™æ‰€æœ‰çš„ç­‰å¾…çº¿ç¨‹å¹¿æ’­ä¿¡å· Signal *all* waiting threads.
+    ///¸øËùÓĞµÄµÈ´ıÏß³Ì¹ã²¥ĞÅºÅ Signal *all* waiting threads.
     virtual void broadcast (void)
     {
         //
@@ -92,16 +92,16 @@ public:
 
 protected:
 
-    ///æ¡ä»¶å˜é‡å¯¹è±¡
+    ///Ìõ¼ş±äÁ¿¶ÔÏó
     pthread_cond_t    lock_;
 
 };
 
-//ä½ å¯ä»¥ç›´æ¥ç”¨è¿™ä¸¤ä¸ªç‰¹åŒ–çš„ç±»
+//Äã¿ÉÒÔÖ±½ÓÓÃÕâÁ½¸öÌØ»¯µÄÀà
 
-///ä½¿ç”¨çº¿ç¨‹MUTEX
+///Ê¹ÓÃÏß³ÌMUTEX
 typedef ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>        ZCE_Thread_Condition_Mutex;
-///ä½¿ç”¨å¯é€’å½’çš„MUTEXçš„ç±»
+///Ê¹ÓÃ¿Éµİ¹éµÄMUTEXµÄÀà
 typedef ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>    ZCE_Thread_Condition_Recursive_Mutex;
 
 #endif //ZCE_LIB_LOCK_THREAD_CONDI_H_

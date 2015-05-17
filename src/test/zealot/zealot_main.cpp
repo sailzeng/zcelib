@@ -1,4 +1,4 @@
-﻿
+
 //#define _STLP_USE_STATIC_LIB
 
 

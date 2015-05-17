@@ -1,4 +1,4 @@
-ï»¿#include "soar_predefine.h"
+#include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_services_info.h"
 #include "soar_zerg_frame.h"
@@ -15,7 +15,7 @@ Lolo_SendRecv_Package::~Lolo_SendRecv_Package()
 }
 
 
-//è®¾ç½®ç›¸åº”çš„SVC INFO,
+//ÉèÖÃÏàÓ¦µÄSVC INFO,
 int Lolo_SendRecv_Package::set_lolo_svcinfo(const char *svc_ip,
                                             unsigned short svc_port,
                                             const SERVICES_ID &recv_service,

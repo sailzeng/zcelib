@@ -1,9 +1,9 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2015  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_zerg_sndrcv_lolo.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version    
-* @date       2006å¹´9æœˆ8æ—¥
+* @date       2006Äê9ÔÂ8ÈÕ
 * @brief      
 *             
 *             
@@ -11,36 +11,36 @@
 *             
 *             
 *             
-* @note       å€®å€®è¿™ä¸ªè¯çš„æ„æ€å…¶å®æ˜¯æ±‰æ—äººå¯¹å°‘æ•°æ°‘æ—çš„è”‘ç§°ï¼Œå½“ç„¶æˆ‘åœ¨è¿™å„¿ä¸æ•¢æœ‰åŠç‚¹
-*             çš„æ°‘æ—å€¾å‘ï¼Œåªæ˜¯ä¸ºäº†çºªå¿µä¸€ä¸ªå¾ˆè€çš„æ­Œæ‰‹
-*             å€®å€®ï¼Œäº‘å—å½æ—äººï¼ŒLOLO
+* @note       ÙÀÙÀÕâ¸ö´ÊµÄÒâË¼ÆäÊµÊÇºº×åÈË¶ÔÉÙÊıÃñ×åµÄÃï³Æ£¬µ±È»ÎÒÔÚÕâ¶ù²»¸ÒÓĞ°ëµã
+*             µÄÃñ×åÇãÏò£¬Ö»ÊÇÎªÁË¼ÍÄîÒ»¸öºÜÀÏµÄ¸èÊÖ
+*             ÙÀÙÀ£¬ÔÆÄÏÒÍ×åÈË£¬LOLO
 *             
-*             è©ææ ‘ä¸Šçš„å®å½“
-*             å€®å€®
-*             è¯·ä½ å¸¦æˆ‘å»ä»å‰ä½ ä½è¿‡çš„æ‘åº„
-*             è®©æˆ‘æ•²ä¸€æ•²è©ææ ‘ä¸Šçš„é‚£ä¸ªå®å½“
-*             è¸©ä¸€è¸©å‡¤å°¾ç«¹ä¸‹è€å¼çš„æ°´è½¦
-*             çˆ¬ä¸€çˆ¬åªæ˜¯å¬è¯´è¿‡çš„é‚£åº§é«˜å±±
-*             è¯·ä½ å¸¦æˆ‘å»åˆ°ä»å‰ä½ ä½è¿‡çš„æ‘åº„
-*             è®©æˆ‘æ•²ä¸€æ•²è©ææ ‘ä¸Šçš„é‚£ä¸ªå®å½“
-*             è¸©ä¸€è¸©å‡¤å°¾ç«¹ä¸‹è€å¼çš„æ°´è½¦
-*             çˆ¬ä¸€çˆ¬åªæ˜¯å¬è¯´è¿‡çš„é‚£åº§é«˜å±±
-*             ä½ è¯´ä½ çš„å±±ä¼šæ¸æ¸é•¿é«˜
-*             ä½ è¯´ä½ çš„æ°´ä¼šæºè¿œæµé•¿
-*             ä½ è¯´ä½ çš„è©æå“ç€å®å½“
-*             ä½ è¯´ä½ çš„æ‘åº„æ²¡æœ‰æ‚²ä¼¤
-*             è®©æˆ‘è·Ÿä½ å»åˆ°ä½ ä¸è€çš„æ‘åº„
-*             ä¸€èµ·äº«å—ä¸çŸ¥ä¸è§‰åœ°é‚£ä»½å­¤å•
-*             å’Œä½ åœ¨è©ææ ‘ä¸‹çœ‹å¾€äº‹æµæ·Œ
-*             é™ªä½ åœ¨æ²³å¡˜è¾¹æŠŠå°‘å¹´çš„æ³ªæ°´å–å¹²
-*             è®©æˆ‘è·Ÿä½ ä½åœ¨ä½ ä¸è€çš„æ‘åº„
-*             ä¸€èµ·åº¦è¿‡ä¸è¨€ä¸è¯­çš„é‚£æ®µæ—¶å…‰
-*             å’Œä½ åœ¨æ°´è½¦ä¸Šé¢è®©æœˆå…‰æ—‹è½¬
-*             é™ªä½ åœ¨çƒ›å…‰é‡ŒæŠŠé‚£å¤ªé˜³éœ²å‡ºå±±
-*             å™¢~ä½ çš„æ‘åº„ä¹Ÿæœ‰ä¸ªå®å½“
-*             å™¢~ä½ çš„æ‘åº„ä¹Ÿæ²¡æœ‰æ‚²ä¼¤
-*             å™¢~ä½ çš„æ‘åº„ä¹Ÿæœ‰ä¸ªå®å½“
-*             å™¢~ä½ çš„æ‘åº„ä¹Ÿæ²¡æœ‰æ‚²ä¼¤
+*             ÆĞÌáÊ÷ÉÏµÄ¶£µ±
+*             ÙÀÙÀ
+*             ÇëÄã´øÎÒÈ¥´ÓÇ°Äã×¡¹ıµÄ´å×¯
+*             ÈÃÎÒÇÃÒ»ÇÃÆĞÌáÊ÷ÉÏµÄÄÇ¸ö¶£µ±
+*             ²ÈÒ»²È·ïÎ²ÖñÏÂÀÏÊ½µÄË®³µ
+*             ÅÀÒ»ÅÀÖ»ÊÇÌıËµ¹ıµÄÄÇ×ù¸ßÉ½
+*             ÇëÄã´øÎÒÈ¥µ½´ÓÇ°Äã×¡¹ıµÄ´å×¯
+*             ÈÃÎÒÇÃÒ»ÇÃÆĞÌáÊ÷ÉÏµÄÄÇ¸ö¶£µ±
+*             ²ÈÒ»²È·ïÎ²ÖñÏÂÀÏÊ½µÄË®³µ
+*             ÅÀÒ»ÅÀÖ»ÊÇÌıËµ¹ıµÄÄÇ×ù¸ßÉ½
+*             ÄãËµÄãµÄÉ½»á½¥½¥³¤¸ß
+*             ÄãËµÄãµÄË®»áÔ´Ô¶Á÷³¤
+*             ÄãËµÄãµÄÆĞÌáÏì×Å¶£µ±
+*             ÄãËµÄãµÄ´å×¯Ã»ÓĞ±¯ÉË
+*             ÈÃÎÒ¸úÄãÈ¥µ½Äã²»ÀÏµÄ´å×¯
+*             Ò»ÆğÏíÊÜ²»Öª²»¾õµØÄÇ·İ¹Âµ¥
+*             ºÍÄãÔÚÆĞÌáÊ÷ÏÂ¿´ÍùÊÂÁ÷ÌÊ
+*             ÅãÄãÔÚºÓÌÁ±ß°ÑÉÙÄêµÄÀáË®ºÈ¸É
+*             ÈÃÎÒ¸úÄã×¡ÔÚÄã²»ÀÏµÄ´å×¯
+*             Ò»Æğ¶È¹ı²»ÑÔ²»ÓïµÄÄÇ¶ÎÊ±¹â
+*             ºÍÄãÔÚË®³µÉÏÃæÈÃÔÂ¹âĞı×ª
+*             ÅãÄãÔÚÖò¹âÀï°ÑÄÇÌ«ÑôÂ¶³öÉ½
+*             àŞ~ÄãµÄ´å×¯Ò²ÓĞ¸ö¶£µ±
+*             àŞ~ÄãµÄ´å×¯Ò²Ã»ÓĞ±¯ÉË
+*             àŞ~ÄãµÄ´å×¯Ò²ÓĞ¸ö¶£µ±
+*             àŞ~ÄãµÄ´å×¯Ò²Ã»ÓĞ±¯ÉË
 */
 
 
@@ -56,13 +56,13 @@ class Lolo_SendRecv_Package  : public Tibetan_SendRecv_Package
 {
 protected:
 
-    //ZULUé“¾æ¥çš„IPåœ°å€
+    //ZULUÁ´½ÓµÄIPµØÖ·
     ZCE_Sockaddr_In          lolo_svc_ip_;
 
-    //æ”¶åˆ°æ•°æ®çš„å¯¹ç«¯åœ°å€ï¼Œ99.99999çš„æƒ…å†µå’Œä¸Šé¢ä¸€æ ·
+    //ÊÕµ½Êı¾İµÄ¶Ô¶ËµØÖ·£¬99.99999µÄÇé¿öºÍÉÏÃæÒ»Ñù
     ZCE_Sockaddr_In          lolo_recvdata_ip_;
 
-    //ä½¿ç”¨çš„SOCKETåŒ…è£…
+    //Ê¹ÓÃµÄSOCKET°ü×°
     ZCE_Socket_DataGram      lolo_datagram_;
 
 public:
@@ -70,7 +70,7 @@ public:
     Lolo_SendRecv_Package();
     virtual ~Lolo_SendRecv_Package();
 
-    //è®¾ç½®ç›¸åº”çš„SVC INFO,
+    //ÉèÖÃÏàÓ¦µÄSVC INFO,
     int set_lolo_svcinfo(const char *svc_ip,
                          unsigned short svc_port,
                          const SERVICES_ID &recv_service,
@@ -79,7 +79,7 @@ public:
                          size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
                          bool is_check_conn_info = false);
 
-    //å‘é€æ•°æ®
+    //·¢ËÍÊı¾İ
     template< class T1>
     int send_svc_package(unsigned int user_id,
                          unsigned int cmd,
@@ -87,13 +87,13 @@ public:
                          unsigned int app_id = 0,
                          unsigned int backfill_trans_id = 0);
 
-    //æ¥å—æ•°æ®
+    //½ÓÊÜÊı¾İ
     template< class T2>
     int receive_svc_package(unsigned int cmd,
                             T2 &rcv_info ,
                             ZCE_Time_Value *time_out = NULL);
 
-    //å‘é€å’Œæ¥æ”¶æ•°æ®ï¼Œä¸€èµ·ä¸€é”…ææ‚çš„æ–¹å¼
+    //·¢ËÍºÍ½ÓÊÕÊı¾İ£¬Ò»ÆğÒ»¹ø¸ãµàµÄ·½Ê½
     template< class T1, class T2>
     int send_recv_package(unsigned int snd_cmd,
                           unsigned int user_id,
@@ -107,7 +107,7 @@ public:
 
 };
 
-//æ”¶æ•°æ®
+//ÊÕÊı¾İ
 template<class T>
 int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
                                                T &info ,
@@ -117,7 +117,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     ssize_t socket_ret  = 0;
     int data_len = 0;
 
-    // æ¥æ”¶æ•°æ®
+    // ½ÓÊÕÊı¾İ
     socket_ret = lolo_datagram_.recvfrom((void *)(tibetan_recv_appframe_),
                                          test_frame_len_,
                                          &lolo_recvdata_ip_,
@@ -140,10 +140,10 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
                 strerror(ZCE_LIB::last_error()));
         return SOAR_RET::ERROR_ZULU_LINK_DISCONNECT;
     }
-    //å°äº0ä¸€èˆ¬è¡¨ç¤ºé”™è¯¯,å¯¹äºé˜»å¡ï¼Œè¿™å„¿ä¹Ÿè¡¨ç¤ºä¸€ä¸ªé”™è¯¯,æˆ‘ç»™äº†ä½ ç­‰å¾…æ—¶é—´ä½œä¸ºé€‰æ‹©
+    //Ğ¡ÓÚ0Ò»°ã±íÊ¾´íÎó,¶ÔÓÚ×èÈû£¬Õâ¶ùÒ²±íÊ¾Ò»¸ö´íÎó,ÎÒ¸øÁËÄãµÈ´ıÊ±¼ä×÷ÎªÑ¡Ôñ
     else if (socket_ret < 0)
     {
-        //å¦‚æœé”™è¯¯æ˜¯ä¿¡å·å¯¼è‡´çš„é‡å…¥
+        //Èç¹û´íÎóÊÇĞÅºÅµ¼ÖÂµÄÖØÈë
         int last_error =  ZCE_LIB::last_error();
 
         ZCE_LOG(RS_ERROR, "[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
@@ -154,9 +154,9 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
     }
 
-    //ä¿å­˜æ¥æ”¶åˆ°çš„äº‹åŠ¡ID
+    //±£´æ½ÓÊÕµ½µÄÊÂÎñID
     recv_trans_id_ = tibetan_recv_appframe_->transaction_id_;
-    //æ•°æ®åŒ…çš„é•¿åº¦
+    //Êı¾İ°üµÄ³¤¶È
     data_len = tibetan_recv_appframe_->frame_length_ - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
 
     if (data_len < 0)
@@ -168,7 +168,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
     }
 
-    //åªå¤„ç†åŒ…å¤´ä¿¡æ¯
+    //Ö»´¦Àí°üÍ·ĞÅÏ¢
     if (data_len == 0)
     {
         return 0;
@@ -178,7 +178,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
 
     if (data_len > 0)
     {
-        //è§£ç 
+        //½âÂë
         ret = tibetan_recv_appframe_->appdata_decode(info);
 
         if (ret != 0)
@@ -190,7 +190,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     return 0;
 }
 
-//å‘é€æ•°æ®
+//·¢ËÍÊı¾İ
 template< class T>
 int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
                                             unsigned int cmd,
@@ -205,7 +205,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
     tibetan_send_appframe_->recv_service_ = tibetan_recv_service_;
     tibetan_send_appframe_->proxy_service_ = tibetan_proxy_service_;
 
-    //ä¿è¯äº‹åŠ¡IDä¸æ˜¯0
+    //±£Ö¤ÊÂÎñID²»ÊÇ0
     ++trans_id_builder_;
 
     if (++trans_id_builder_ == 0)
@@ -215,11 +215,11 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
 
     tibetan_send_appframe_->transaction_id_ = trans_id_builder_;
 
-    //å¦‚æœæœ‰å›å¡«æ•°æ®
+    //Èç¹ûÓĞ»ØÌîÊı¾İ
     tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
     tibetan_send_appframe_->frame_uid_ = user_id;
 
-    //å¡«å†™GAME ID
+    //ÌîĞ´GAME ID
     tibetan_send_appframe_->app_id_ = app_id;
 
     ret = tibetan_send_appframe_->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
@@ -231,7 +231,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
 
     int len = tibetan_send_appframe_->frame_length_;
 
-    //é˜»å¡å‘é€æ‰€æœ‰çš„æ•°æ®
+    //×èÈû·¢ËÍËùÓĞµÄÊı¾İ
     tibetan_send_appframe_->framehead_encode();
 
     //
@@ -254,7 +254,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
     return 0;
 }
 
-//å‘é€å’Œæ¥æ”¶æ•°æ®ï¼Œä¸€èµ·ä¸€é”…ææ‚çš„æ–¹å¼
+//·¢ËÍºÍ½ÓÊÕÊı¾İ£¬Ò»ÆğÒ»¹ø¸ãµàµÄ·½Ê½
 template< class T1, class T2>
 int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
                                              unsigned int user_id,
@@ -268,7 +268,7 @@ int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
 {
     int ret = 0;
 
-    //å‘é€æ•°æ®
+    //·¢ËÍÊı¾İ
     ret = send_svc_package(user_id,
                            snd_cmd,
                            send_info,
@@ -285,7 +285,7 @@ int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
         return 0;
     }
 
-    //æ”¶å–æ•°æ®ï¼Œ
+    //ÊÕÈ¡Êı¾İ£¬
     ret = receive_svc_package(rcv_cmd,
                               recv_info,
                               time_wait

@@ -1,53 +1,53 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_boost_lord_rings.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2006å¹´3æœˆ11æ—¥
-* @brief      é­”æˆ’ï¼Œä¸€ä¸ªå¾ªç¯å­˜æ”¾æ•°æ®çš„é˜Ÿåˆ—,ç”¨äºå„ç§ç¼“å†²åŒºï¼Œé˜Ÿåˆ—ï¼Œå¯ä»¥å®šé•¿ï¼Œä¹Ÿå¯ä»¥æ‰©å±•é•¿åº¦
-*             å’ŒLISTæ¯”æœ€å¤§å¥½å¤„æ˜¯ç©ºé—´æ˜¯ä¸€å¼€å§‹åˆ†é…å¥½çš„ï¼Œä¸éœ€è¦å¤šæ¬¡newï¼Œé€Ÿåº¦é£å¿«ï¼Œæ€§èƒ½åˆ©å™¨
+* @date       2006Äê3ÔÂ11ÈÕ
+* @brief      Ä§½ä£¬Ò»¸öÑ­»·´æ·ÅÊı¾İµÄ¶ÓÁĞ,ÓÃÓÚ¸÷ÖÖ»º³åÇø£¬¶ÓÁĞ£¬¿ÉÒÔ¶¨³¤£¬Ò²¿ÉÒÔÀ©Õ¹³¤¶È
+*             ºÍLIST±È×î´óºÃ´¦ÊÇ¿Õ¼äÊÇÒ»¿ªÊ¼·ÖÅäºÃµÄ£¬²»ĞèÒª¶à´Înew£¬ËÙ¶È·É¿ì£¬ĞÔÄÜÀûÆ÷
 *
-* @details    å…ˆè¯´æ˜è¿™ä¸ªä»£ç å…¶å®å’ŒBOOSTæ²¡æœ‰åŠæ¯›é’±å…³ç³»ã€‚
-*             BOOSTä¹Ÿæœ‰ç±»ä¼¼çš„å®ç° circular_bufferï¼Œæˆ‘è¿™ä¸ªåœ°æ–¹æ²¡æœ‰å·å¸ˆï¼Œæ®Šé€”åŒå½’è€Œå·²ï¼Œ
-*             å¯ä»¥æ§åˆ¶åœ¨æ•°æ®æ»¡çš„æƒ…å†µä¸‹ï¼Œæ˜¯å¦è¦†ç›–,ä¸¾ä¸€ä¸ªåº”ç”¨çš„åœºæ™¯çš„ä¾‹å­ï¼Œæ¸¸æˆæœåŠ¡å™¨çš„ç”¨æˆ·
-*             çš„1sèŠå¤©é˜Ÿåˆ—ï¼Œç„¶åå¹¿æ’­ï¼Œä½ å¯ä»¥è®¾ç½®æœ€å¤§é•¿åº¦200ï¼Œå¦‚æœè¶…å‡ºï¼Œåé¢çš„è¦†ç›–å‰é¢çš„ï¼Œ
-*             è¿™æ ·æ— è®ºå¦‚ä½•ä¸ä¼šæº¢å‡ºã€‚å‘µå‘µ
+* @details    ÏÈËµÃ÷Õâ¸ö´úÂëÆäÊµºÍBOOSTÃ»ÓĞ°ëÃ«Ç®¹ØÏµ¡£
+*             BOOSTÒ²ÓĞÀàËÆµÄÊµÏÖ circular_buffer£¬ÎÒÕâ¸öµØ·½Ã»ÓĞÍµÊ¦£¬ÊâÍ¾Í¬¹é¶øÒÑ£¬
+*             ¿ÉÒÔ¿ØÖÆÔÚÊı¾İÂúµÄÇé¿öÏÂ£¬ÊÇ·ñ¸²¸Ç,¾ÙÒ»¸öÓ¦ÓÃµÄ³¡¾°µÄÀı×Ó£¬ÓÎÏ··şÎñÆ÷µÄÓÃ»§
+*             µÄ1sÁÄÌì¶ÓÁĞ£¬È»ºó¹ã²¥£¬Äã¿ÉÒÔÉèÖÃ×î´ó³¤¶È200£¬Èç¹û³¬³ö£¬ºóÃæµÄ¸²¸ÇÇ°ÃæµÄ£¬
+*             ÕâÑùÎŞÂÛÈçºÎ²»»áÒç³ö¡£ºÇºÇ
 *
-* @note       åŸæ¥å–åcyc_dequeï¼Œä½†æ˜¯ä¸€å¤©å’ŒLinkerèŠå¤©ä»–è¯´è¯´ä»–å†™çš„ç±»ä¼¼çš„ç±»åå­—æ˜¯ringsï¼Œ
-*             æˆ‘è§‰å¾—è¿™ä¸ªåå­—æ¯”è¾ƒé…·ï¼Œæ‰€ä»¥é€‰æ‹©è¿™ä¸ªåå­—ï¼Œè¶Šæ¥è¶Šè§‰å¾—è¿™ä¸ªç±»å¥½ç”¨ã€‚
-*             2011å¹´10æœˆ7æ—¥ åšäº†ä¸€æ¬¡ä¿®æ­£ï¼ŒåŸæ¥çš„å®ç°æ˜¯ç”¨ç©ºé—´+1æ ‡è¯†å‰é—­åå¼€çš„ç©ºé—´ï¼Œåæ¥è¿˜
-*             æ˜¯åŠ å…¥äº†sizeè®°å½•ï¼Œä¸éœ€è¦å†å¢åŠ 1ä¸ªç©ºé—´æ ‡è¯†åå¼€ç©ºé—´äº†ã€‚åŒæ—¶å¢åŠ äº†è¿­ä»£å™¨ã€‚
+* @note       Ô­À´È¡Ãûcyc_deque£¬µ«ÊÇÒ»ÌìºÍLinkerÁÄÌìËûËµËµËûĞ´µÄÀàËÆµÄÀàÃû×ÖÊÇrings£¬
+*             ÎÒ¾õµÃÕâ¸öÃû×Ö±È½Ï¿á£¬ËùÒÔÑ¡ÔñÕâ¸öÃû×Ö£¬Ô½À´Ô½¾õµÃÕâ¸öÀàºÃÓÃ¡£
+*             2011Äê10ÔÂ7ÈÕ ×öÁËÒ»´ÎĞŞÕı£¬Ô­À´µÄÊµÏÖÊÇÓÃ¿Õ¼ä+1±êÊ¶Ç°±Õºó¿ªµÄ¿Õ¼ä£¬ºóÀ´»¹
+*             ÊÇ¼ÓÈëÁËsize¼ÇÂ¼£¬²»ĞèÒªÔÙÔö¼Ó1¸ö¿Õ¼ä±êÊ¶ºó¿ª¿Õ¼äÁË¡£Í¬Ê±Ôö¼ÓÁËµü´úÆ÷¡£
 *
-*             å–”å§å§ï¼Œæˆ‘æƒ³å›å®¶ï¼Œç‰µç€æˆ‘çš„æ‰‹ï¼Œæˆ‘æœ‰äº›å›°äº†
+*             à¸½ã½ã£¬ÎÒÏë»Ø¼Ò£¬Ç£×ÅÎÒµÄÊÖ£¬ÎÒÓĞĞ©À§ÁË
 */
 
 #ifndef ZCE_LIB_BOOST_LORD_RINGS_H_
 #define ZCE_LIB_BOOST_LORD_RINGS_H_
 
 /*!
-* @namespace ZCE_LIB ä¸»è¦ç”¨äºæ¨¡ç‰ˆç±»çš„åå­—ç©ºé—´ï¼Œä¸ºäº†å’Œstdç»Ÿä¸€ï¼Œæ¨¡ç‰ˆç±»ä¸€èˆ¬ç”¨äº†å°å†™
+* @namespace ZCE_LIB Ö÷ÒªÓÃÓÚÄ£°æÀàµÄÃû×Ö¿Õ¼ä£¬ÎªÁËºÍstdÍ³Ò»£¬Ä£°æÀàÒ»°ãÓÃÁËĞ¡Ğ´
 */
 
 namespace ZCE_LIB
 {
 
 /*!
-* @tparam    _value_type æ•°æ®ç±»å‹
-* @brief     é­”æˆ’çš„çš„è¿­ä»£å™¨ï¼Œåœ¨é­”æˆ’ç±»é‡Œé¢æœ‰typedefæˆä¸ºiteratorï¼Œ
-* @note      è®°ä½lordringsçš„è¿­ä»£å™¨æ¯”vectoræ›´åŠ å±é™©ï¼Œå› ä¸ºä»–çš„ç©ºé—´æ˜¯å¾ªç¯åˆ©ç”¨çš„ï¼Œä»»ä½•ä¸€æ¬¡push,popæ“ä½œéƒ½ä¼šè®©è¿­ä»£å™¨å¤±æ•ˆã€‚
-*            æ‰€ä»¥ä½¿ç”¨çš„æ—¶å€™å½“å¿ƒï¼Œ
-*            ä¸ªäººè§‰å¾—è¿­ä»£å™¨çš„ä½œç”¨ä¸å¤§ï¼Œå› ä¸ºé­”æˆ’çš„ä½¿ç”¨ä¸»è¦å¤´å°¾ï¼Œå‡ ä¹ä¸ç”¨éå†ä½¿ç”¨ã€‚
+* @tparam    _value_type Êı¾İÀàĞÍ
+* @brief     Ä§½äµÄµÄµü´úÆ÷£¬ÔÚÄ§½äÀàÀïÃæÓĞtypedef³ÉÎªiterator£¬
+* @note      ¼Ç×¡lordringsµÄµü´úÆ÷±Èvector¸ü¼ÓÎ£ÏÕ£¬ÒòÎªËûµÄ¿Õ¼äÊÇÑ­»·ÀûÓÃµÄ£¬ÈÎºÎÒ»´Îpush,pop²Ù×÷¶¼»áÈÃµü´úÆ÷Ê§Ğ§¡£
+*            ËùÒÔÊ¹ÓÃµÄÊ±ºòµ±ĞÄ£¬
+*            ¸öÈË¾õµÃµü´úÆ÷µÄ×÷ÓÃ²»´ó£¬ÒòÎªÄ§½äµÄÊ¹ÓÃÖ÷ÒªÍ·Î²£¬¼¸ºõ²»ÓÃ±éÀúÊ¹ÓÃ¡£
 */
 template <class _value_type >
 class _lordrings_iterator
 {
 protected:
 
-    //å®šä¹‰è¿­ä»£å™¨
+    //¶¨Òåµü´úÆ÷
     typedef _lordrings_iterator<_value_type > iterator;
 
 
-    //è¿­ä»£å™¨èƒå–å™¨æ‰€æœ‰çš„ä¸œä¸œ
+    //µü´úÆ÷İÍÈ¡Æ÷ËùÓĞµÄ¶«¶«
     typedef ptrdiff_t difference_type;
     typedef _value_type *pointer;
     typedef _value_type &reference;
@@ -55,7 +55,7 @@ protected:
     typedef std::random_access_iterator_tag iterator_category;
 
 public:
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     _lordrings_iterator():
         rings_start_(0),
         rings_capacity_(0),
@@ -63,7 +63,7 @@ public:
         serial_(0)
     {
     }
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     _lordrings_iterator(size_t rings_start,
                         size_t rings_capacity,
                         _value_type *rings_value_base,
@@ -75,31 +75,31 @@ public:
         serial_(serial)
     {
     }
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     ~_lordrings_iterator()
     {
     }
 
-    ///*æé¢†æ“ä½œï¼Œ
+    ///*ÌáÁì²Ù×÷£¬
     _value_type &operator*() const
     {
         return *(rings_value_base_ + (rings_start_ +  serial_) % rings_capacity_);
     }
 
-    ///->æ“ä½œ
+    ///->²Ù×÷
     _value_type *operator->() const
     {
         return rings_value_base_ + (rings_start_ +  serial_) % rings_capacity_;
     }
 
-    ///å‰å‘è¿­ä»£å™¨
+    ///Ç°Ïòµü´úÆ÷
     iterator &operator++()
     {
         serial_++;
         return *this;
     }
 
-    ///å‰å‘è¿­ä»£å™¨
+    ///Ç°Ïòµü´úÆ÷
     iterator operator++(int)
     {
         iterator tmp = *this;
@@ -108,14 +108,14 @@ public:
     }
 
 
-    ///å‰å‘è¿­ä»£å™¨
+    ///Ç°Ïòµü´úÆ÷
     iterator &operator--()
     {
         serial_--;
         return *this;
     }
 
-    ///å‰å‘è¿­ä»£å™¨
+    ///Ç°Ïòµü´úÆ÷
     iterator operator--(int)
     {
         iterator tmp = *this;
@@ -123,7 +123,7 @@ public:
         return tmp;
     }
 
-    ///è¿­ä»£å™¨åˆ¤å®šç›¸ç­‰
+    ///µü´úÆ÷ÅĞ¶¨ÏàµÈ
     bool operator==(const iterator &it) const
     {
         if (rings_value_base_ == it.rings_value_base_
@@ -137,43 +137,43 @@ public:
         return false;
     }
 
-    ///è¿­ä»£å™¨åˆ¤å®šä¸ç›¸ç­‰
+    ///µü´úÆ÷ÅĞ¶¨²»ÏàµÈ
     bool operator!=(const iterator &it) const
     {
         return !(*this == it);
     }
 
-    ///ä¿ç•™åºå·å°±å¯ä»¥å†æ ¹æ®æ¨¡ç‰ˆå®ä¾‹åŒ–å¯¹è±¡æ‰¾åˆ°ç›¸åº”æ•°æ®,ä¸ç”¨ä½¿ç”¨æŒ‡é’ˆ
+    ///±£ÁôĞòºÅ¾Í¿ÉÒÔÔÙ¸ù¾İÄ£°æÊµÀı»¯¶ÔÏóÕÒµ½ÏàÓ¦Êı¾İ,²»ÓÃÊ¹ÓÃÖ¸Õë
     size_t getserial() const
     {
         return serial_;
     }
 
 protected:
-    ///é­”æˆ’ç›®å‰å¼€å§‹çš„ä½ç½®ï¼Œ
+    ///Ä§½äÄ¿Ç°¿ªÊ¼µÄÎ»ÖÃ£¬
     size_t                 rings_start_;
-    ///é­”æˆ’çš„å®¹é‡
+    ///Ä§½äµÄÈİÁ¿
     size_t                 rings_capacity_;
-    ///æ•°æ®çš„æŒ‡é’ˆï¼Œ
+    ///Êı¾İµÄÖ¸Õë£¬
     _value_type           *rings_value_base_;
 
-    //åºåˆ—å·,è¿­ä»£å™¨å‰è¿›ï¼Œå¢åŠ çš„å°±æ˜¯è¿™ä¸ªå€¼
+    //ĞòÁĞºÅ,µü´úÆ÷Ç°½ø£¬Ôö¼ÓµÄ¾ÍÊÇÕâ¸öÖµ
     size_t                 serial_;
 };
 
 /*!
-* @tparam    _value_type æ•°æ®ç±»å‹
-* @brief     é­”æˆ’.å¾ªç¯é“¾è¡¨ï¼Œå¯ä»¥è‡ªåŠ¨æ‰©å±•ï¼Œå¯ä»¥æœ€åçš„è¦†ç›–ç¬¬ä¸€ä¸ªï¼Œ
+* @tparam    _value_type Êı¾İÀàĞÍ
+* @brief     Ä§½ä.Ñ­»·Á´±í£¬¿ÉÒÔ×Ô¶¯À©Õ¹£¬¿ÉÒÔ×îºóµÄ¸²¸ÇµÚÒ»¸ö£¬
 */
 template<class _value_type >
 class lordrings
 {
 public:
-    //å®šä¹‰è¿­ä»£å™¨
+    //¶¨Òåµü´úÆ÷
     typedef _lordrings_iterator<_value_type > iterator;
 
 public:
-    ///æ„é€ å‡½æ•°ï¼Œåé¢å¿…é¡»è°ƒç”¨,initialize
+    ///¹¹Ôìº¯Êı£¬ºóÃæ±ØĞëµ÷ÓÃ,initialize
     lordrings():
         cycdeque_start_(0),
         cycdeque_size_(0),
@@ -182,7 +182,7 @@ public:
     {
     }
 
-    ///æ„é€ å‡½æ•°ï¼ŒåŒæ—¶å®Œæˆåˆå§‹åŒ–,åé¢å®Œå…¨ æ²¡æœ‰å¿…è¦è°ƒç”¨,initialize
+    ///¹¹Ôìº¯Êı£¬Í¬Ê±Íê³É³õÊ¼»¯,ºóÃæÍêÈ« Ã»ÓĞ±ØÒªµ÷ÓÃ,initialize
     lordrings(size_t max_len):
         cycdeque_start_(0),
         cycdeque_size_(0),
@@ -193,7 +193,7 @@ public:
         value_ptr_ = new _value_type[cycdeque_capacity_];
     }
 
-    ///ææ„å‡½æ•°ï¼Œé‡Šæ”¾ç©ºé—´
+    ///Îö¹¹º¯Êı£¬ÊÍ·Å¿Õ¼ä
     ~lordrings()
     {
         if (value_ptr_)
@@ -203,7 +203,7 @@ public:
         }
     }
 
-    ///åˆå§‹åŒ–æ•°æ®åŒºï¼Œå’Œæ„é€ å‡½æ•°å¹²çš„äº‹æƒ…åŸºæœ¬ä¸€æ ·ï¼Œåªæ˜¯å¤šäº†ä¸€æ­¥åŸæ¥æœ‰æ•°æ®å°±æ¸…ç†æ‰
+    ///³õÊ¼»¯Êı¾İÇø£¬ºÍ¹¹Ôìº¯Êı¸ÉµÄÊÂÇé»ù±¾Ò»Ñù£¬Ö»ÊÇ¶àÁËÒ»²½Ô­À´ÓĞÊı¾İ¾ÍÇåÀíµô
     void initialize(size_t max_len)
     {
         assert(max_len > 0);
@@ -212,7 +212,7 @@ public:
         cycdeque_size_ = 0;
         cycdeque_capacity_ = max_len;
 
-        //æ¸…ç†ç°åœº
+        //ÇåÀíÏÖ³¡
         if (value_ptr_)
         {
             delete[] value_ptr_;
@@ -222,14 +222,14 @@ public:
         value_ptr_ = new _value_type[cycdeque_capacity_];
     }
 
-    ///ç»“æŸï¼Œå®Œæˆï¼Œé”€æ¯ï¼Œæ±‚é—®finiæ˜¯ä»€ä¹ˆçš„ç¼©å†™ï¼Œ
+    ///½áÊø£¬Íê³É£¬Ïú»Ù£¬ÇóÎÊfiniÊÇÊ²Ã´µÄËõĞ´£¬
     void finish()
     {
         cycdeque_start_ = 0;
         cycdeque_size_ = 0;
         cycdeque_capacity_ = 0;
 
-        //æ¸…ç†ç°åœº
+        //ÇåÀíÏÖ³¡
         if (value_ptr_)
         {
             delete[] value_ptr_;
@@ -237,34 +237,34 @@ public:
         }
     }
 
-    ///æ¸…ç†ç®¡é“ï¼Œ
+    ///ÇåÀí¹ÜµÀ£¬
     void clear()
     {
         cycdeque_start_ = 0;
         cycdeque_size_ = 0;
     }
 
-    ///å°ºå¯¸ç©ºé—´
+    ///³ß´ç¿Õ¼ä
     inline size_t size() const
     {
         return cycdeque_size_;
     }
-    ///è¿”å›ç©ºé—²ç©ºé—´çš„å¤§å°
+    ///·µ»Ø¿ÕÏĞ¿Õ¼äµÄ´óĞ¡
     inline size_t freesize() const
     {
         return cycdeque_capacity_ - cycdeque_size_ ;
     }
 
-    ///è¿”å›é˜Ÿåˆ—çš„å®¹é‡
+    ///·µ»Ø¶ÓÁĞµÄÈİÁ¿
     inline size_t capacity() const
     {
         return cycdeque_capacity_;
     }
 
-    ////æ£€æŸ¥æ˜¯å¦å·²ç»æ»¡äº†
+    ////¼ì²éÊÇ·ñÒÑ¾­ÂúÁË
     inline bool full() const
     {
-        //å·²ç»ç”¨çš„ç©ºé—´ç­‰äºå®¹é‡
+        //ÒÑ¾­ÓÃµÄ¿Õ¼äµÈÓÚÈİÁ¿
         if (cycdeque_size_  == cycdeque_capacity_ )
         {
             return true;
@@ -273,10 +273,10 @@ public:
         return false;
     }
 
-    ///åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦ä¸ºç©º
+    ///ÅĞ¶Ï¶ÓÁĞÊÇ·ñÎª¿Õ
     inline bool empty() const
     {
-        //ç©ºé—´ç­‰äº0
+        //¿Õ¼äµÈÓÚ0
         if (cycdeque_size_ == 0)
         {
             return true;
@@ -285,14 +285,14 @@ public:
         return false;
     }
 
-    ///é‡æ–°åˆ†é…ä¸€ä¸ªç©ºé—´,
+    ///ÖØĞÂ·ÖÅäÒ»¸ö¿Õ¼ä,
     bool resize(size_t new_max_size)
     {
         assert(new_max_size > 0);
 
         size_t deque_size = size();
 
-        //å¦‚æœåŸæ¥çš„å°ºå¯¸å¤§äºæ–°çš„å°ºå¯¸ï¼Œæ— æ³•æ‰©å±•
+        //Èç¹ûÔ­À´µÄ³ß´ç´óÓÚĞÂµÄ³ß´ç£¬ÎŞ·¨À©Õ¹
         if ( deque_size > new_max_size )
         {
             return false;
@@ -300,7 +300,7 @@ public:
 
         _value_type *new_value_ptr = new _value_type[new_max_size];
 
-        //å¦‚æœåŸæ¥æœ‰æ•°æ®
+        //Èç¹ûÔ­À´ÓĞÊı¾İ
         if (value_ptr_ != NULL)
         {
             for (size_t i = 0; i < deque_size; ++i)
@@ -312,31 +312,31 @@ public:
             value_ptr_ = NULL;
         }
 
-        //è°ƒæ•´å‡ ä¸ªå†…éƒ¨å‚æ•°
+        //µ÷Õû¼¸¸öÄÚ²¿²ÎÊı
         cycdeque_start_ = 0;
         cycdeque_capacity_ = new_max_size ;
-        //cycdeque_size_ ä¸å˜
+        //cycdeque_size_ ²»±ä
 
         value_ptr_ = new_value_ptr;
 
         return true;
     }
 
-    ///å°†ä¸€ä¸ªæ•°æ®æ”¾å…¥é˜Ÿåˆ—çš„å°¾éƒ¨,å¦‚æœé˜Ÿåˆ—å·²ç»æ»¡äº†,ä½ å¯ä»¥å°†lay_overå‚æ•°ç½®ä½true,è¦†ç›–åŸæœ‰çš„æ•°æ®
+    ///½«Ò»¸öÊı¾İ·ÅÈë¶ÓÁĞµÄÎ²²¿,Èç¹û¶ÓÁĞÒÑ¾­ÂúÁË,Äã¿ÉÒÔ½«lay_over²ÎÊıÖÃÎ»true,¸²¸ÇÔ­ÓĞµÄÊı¾İ
     bool push_back(const _value_type &value_data, bool lay_over = false)
     {
-        //å¦‚æœå·²ç»æ»¡äº†
+        //Èç¹ûÒÑ¾­ÂúÁË
         if ( full() )
         {
-            //å¦‚æœä¸è¦è¦†ç›–ï¼Œè¿”å›é”™è¯¯
+            //Èç¹û²»Òª¸²¸Ç£¬·µ»Ø´íÎó
             if (lay_over == false)
             {
                 return false;
             }
-            //å¦‚æœè¦è¦†ç›–
+            //Èç¹ûÒª¸²¸Ç
             else
             {
-                //å°†æœ€åä¸€ä¸ªä½ç½®è¦†ç›–ï¼Œå¹¶ä¸”è°ƒæ•´èµ·å§‹å’Œç»“æŸä½ç½®
+                //½«×îºóÒ»¸öÎ»ÖÃ¸²¸Ç£¬²¢ÇÒµ÷ÕûÆğÊ¼ºÍ½áÊøÎ»ÖÃ
                 value_ptr_[ (cycdeque_start_ + cycdeque_size_ ) % cycdeque_capacity_] = value_data;
                 cycdeque_start_ = (cycdeque_start_ + 1 ) % cycdeque_capacity_;
 
@@ -344,7 +344,7 @@ public:
             }
         }
 
-        //ç›´æ¥æ”¾åœ¨é˜Ÿå°¾
+        //Ö±½Ó·ÅÔÚ¶ÓÎ²
 
         value_ptr_[(cycdeque_start_ + cycdeque_size_ ) % cycdeque_capacity_] = value_data;
         ++cycdeque_size_;
@@ -352,31 +352,31 @@ public:
         return true;
     }
 
-    ///å°†ä¸€ä¸ªæ•°æ®æ”¾å…¥é˜Ÿåˆ—çš„å°¾éƒ¨,å¦‚æœé˜Ÿåˆ—å·²ç»æ»¡äº†,ä½ å¯ä»¥å°†lay_overå‚æ•°ç½®ä½true,è¦†ç›–åŸæœ‰çš„æ•°æ®
+    ///½«Ò»¸öÊı¾İ·ÅÈë¶ÓÁĞµÄÎ²²¿,Èç¹û¶ÓÁĞÒÑ¾­ÂúÁË,Äã¿ÉÒÔ½«lay_over²ÎÊıÖÃÎ»true,¸²¸ÇÔ­ÓĞµÄÊı¾İ
     bool push_front(const _value_type &value_data, bool lay_over = false)
     {
-        //å¦‚æœå·²ç»æ»¡äº†
+        //Èç¹ûÒÑ¾­ÂúÁË
         if ( full() )
         {
-            //å¦‚æœä¸è¦è¦†ç›–ï¼Œè¿”å›é”™è¯¯
+            //Èç¹û²»Òª¸²¸Ç£¬·µ»Ø´íÎó
             if (lay_over == false)
             {
                 return false;
             }
-            //å¦‚æœè¦è¦†ç›–
+            //Èç¹ûÒª¸²¸Ç
             else
             {
-                //å°†ç¬¬ä¸€ä¸ªä½ç½®è°ƒæ•´è¦†ç›–ï¼Œå¹¶ä¸”è°ƒæ•´èµ·å§‹å’Œç»“æŸä½ç½®
+                //½«µÚÒ»¸öÎ»ÖÃµ÷Õû¸²¸Ç£¬²¢ÇÒµ÷ÕûÆğÊ¼ºÍ½áÊøÎ»ÖÃ
                 cycdeque_start_ = (cycdeque_start_ > 0) ? cycdeque_start_ - 1 : cycdeque_capacity_ - 1;
                 value_ptr_[cycdeque_start_] = value_data;
 
-                //è¦†ç›–ï¼Œå°ºå¯¸ä¹Ÿä¸ç”¨è°ƒæ•´
+                //¸²¸Ç£¬³ß´çÒ²²»ÓÃµ÷Õû
 
                 return true;
             }
         }
 
-        //ç›´æ¥æ”¾åœ¨é˜Ÿå°¾
+        //Ö±½Ó·ÅÔÚ¶ÓÎ²
         cycdeque_start_ = (cycdeque_start_ > 0) ? cycdeque_start_ - 1 : cycdeque_capacity_ - 1;
         value_ptr_[cycdeque_start_] = value_data;
 
@@ -385,10 +385,10 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—çš„å‰é¢popå¹¶ä¸”å¾—åˆ°ä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞµÄÇ°Ãæpop²¢ÇÒµÃµ½Ò»¸öÊı¾İ
     bool pop_front(_value_type &value_data)
     {
-        //å¦‚æœæ˜¯ç©ºçš„è¿”å›é”™è¯¯
+        //Èç¹ûÊÇ¿ÕµÄ·µ»Ø´íÎó
         if ( empty() )
         {
             return false;
@@ -402,10 +402,10 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—å‰é¢popä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞÇ°ÃæpopÒ»¸öÊı¾İ
     bool pop_front()
     {
-        //å¦‚æœæ˜¯ç©ºçš„è¿”å›é”™è¯¯
+        //Èç¹ûÊÇ¿ÕµÄ·µ»Ø´íÎó
         if (empty())
         {
             return false;
@@ -417,10 +417,10 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—çš„å°¾éƒ¨popå¹¶ä¸”å¾—åˆ°ä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞµÄÎ²²¿pop²¢ÇÒµÃµ½Ò»¸öÊı¾İ
     bool pop_back(_value_type &value_data)
     {
-        //å¦‚æœæ˜¯ç©ºçš„è¿”å›é”™è¯¯
+        //Èç¹ûÊÇ¿ÕµÄ·µ»Ø´íÎó
         if ( empty())
         {
             return false;
@@ -431,7 +431,7 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—çš„å°¾éƒ¨popä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞµÄÎ²²¿popÒ»¸öÊı¾İ
     bool pop_back()
     {
         //
@@ -445,25 +445,25 @@ public:
         return true;
     }
 
-    ///[]æ•°ç»„ä¸‹æ ‡å®šä½,IDä¸è¦è¶Šç•Œï¼Œè‡ªå·±ä¿è¯ï¼Œæˆ‘æ²¡å…´è¶£ä¸ºä½ å¹²ä»€ä¹ˆ
+    ///[]Êı×éÏÂ±ê¶¨Î»,ID²»ÒªÔ½½ç£¬×Ô¼º±£Ö¤£¬ÎÒÃ»ĞËÈ¤ÎªÄã¸ÉÊ²Ã´
     _value_type &operator[](size_t id)
     {
         return value_ptr_[(cycdeque_start_ + id) % cycdeque_capacity_];
     }
 
-    ///[]æ•°ç»„ä¸‹æ ‡å®šä½,IDä¸è¦è¶Šç•Œï¼Œè‡ªå·±ä¿è¯ï¼Œæˆ‘æ²¡å…´è¶£ä¸ºä½ å¹²ä»€ä¹ˆ
+    ///[]Êı×éÏÂ±ê¶¨Î»,ID²»ÒªÔ½½ç£¬×Ô¼º±£Ö¤£¬ÎÒÃ»ĞËÈ¤ÎªÄã¸ÉÊ²Ã´
     const _value_type &operator[](size_t id) const
     {
         return value_ptr_[(cycdeque_start_ + id) % cycdeque_capacity_];
     }
 
-    ///è¿”å›startçš„è¿­ä»£å™¨ï¼Œå¼€å§‹å°±æ˜¯åºåˆ—å·ä¸º0çš„ä½ç½®
+    ///·µ»ØstartµÄµü´úÆ÷£¬¿ªÊ¼¾ÍÊÇĞòÁĞºÅÎª0µÄÎ»ÖÃ
     iterator begin()
     {
         return iterator(cycdeque_start_, cycdeque_capacity_, value_ptr_, 0);
     }
 
-    ///è¿”å›endçš„è¿­ä»£å™¨ï¼Œå¼€å§‹å°±æ˜¯åºåˆ—å·ä¸ºcycdeque_size_çš„ä½ç½®
+    ///·µ»ØendµÄµü´úÆ÷£¬¿ªÊ¼¾ÍÊÇĞòÁĞºÅÎªcycdeque_size_µÄÎ»ÖÃ
     iterator end()
     {
         return iterator(cycdeque_start_, cycdeque_capacity_, value_ptr_, cycdeque_size_);
@@ -471,14 +471,14 @@ public:
 
 protected:
 
-    ///å¾ªç¯é˜Ÿåˆ—çš„èµ·å§‹ä½ç½®
+    ///Ñ­»·¶ÓÁĞµÄÆğÊ¼Î»ÖÃ
     size_t                 cycdeque_start_;
 
-    ///å¾ªç¯é˜Ÿåˆ—çš„é•¿åº¦ï¼Œç»“æŸä½ç½®é€šè¿‡cycdeque_start_+cycdeque_size_%cycdeque_capacity_å¾—åˆ°ï¼Œæ€è·¯ä»ç„¶æ˜¯å‰å¼€åé—­
+    ///Ñ­»·¶ÓÁĞµÄ³¤¶È£¬½áÊøÎ»ÖÃÍ¨¹ıcycdeque_start_+cycdeque_size_%cycdeque_capacity_µÃµ½£¬Ë¼Â·ÈÔÈ»ÊÇÇ°¿ªºó±Õ
     size_t                 cycdeque_size_;
-    ///é˜Ÿåˆ—çš„é•¿åº¦ï¼Œ
+    ///¶ÓÁĞµÄ³¤¶È£¬
     size_t                 cycdeque_capacity_;
-    ///å­˜æ”¾æ•°æ®çš„æŒ‡é’ˆ
+    ///´æ·ÅÊı¾İµÄÖ¸Õë
     _value_type           *value_ptr_;
 
 };

@@ -1,4 +1,4 @@
-ï»¿
+
 
 #include "stdafx.h"
 
@@ -8,7 +8,7 @@
 #define new DEBUG_NEW
 #endif
 
-//å¤„ç†çš„å•å­å®ä¾‹
+//´¦ÀíµÄµ¥×ÓÊµÀı
 Coding_Convert *Coding_Convert::instance_ = NULL;
 
 //
@@ -62,14 +62,14 @@ void Coding_Convert::clean_instance()
     }
 }
 
-///è®¾ç½®
+///ÉèÖÃ
 void Coding_Convert::set_bytes_coding(CVT_CODING cvt_coding)
 {
     cur_cvt_coding_ = cvt_coding;
 }
 
 
-//æ ¹æ®å½“å‰é»˜è®¤çš„å­—ç¬¦ç¼–ç æ–¹å¼ï¼Œè½¬æ¢ä¸ºUTF8
+//¸ù¾İµ±Ç°Ä¬ÈÏµÄ×Ö·û±àÂë·½Ê½£¬×ª»»ÎªUTF8
 int Coding_Convert::default_to_utf8(const CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
@@ -93,7 +93,7 @@ int Coding_Convert::default_to_utf8(const CString &src, std::string &dst)
 #else
     // MBCS ===> UTF16 ===> UTF8
 
-    // ç¬¬ä¸€æ¬¡å…ˆæŠŠMBCSç è½¬æ¢æˆUTF-16
+    // µÚÒ»´ÎÏÈ°ÑMBCSÂë×ª»»³ÉUTF-16
     DWORD ret = 0;
     ret = ::MultiByteToWideChar(CP_ACP,
                                 0,
@@ -106,7 +106,7 @@ int Coding_Convert::default_to_utf8(const CString &src, std::string &dst)
         return -1;
     }
     int u16_buf_len = ret;
-    // ç¬¬äºŒæ¬¡å†æŠŠUTF-16ç¼–ç è½¬æ¢ä¸ºUTF-8ç¼–ç 
+    // µÚ¶ş´ÎÔÙ°ÑUTF-16±àÂë×ª»»ÎªUTF-8±àÂë
     ret = ::WideCharToMultiByte(CP_UTF8,
                                 NULL,
                                 cvt_utf16_buf_,
@@ -125,7 +125,7 @@ int Coding_Convert::default_to_utf8(const CString &src, std::string &dst)
 #endif
 }
 
-//æ ¹æ®å½“å‰é»˜è®¤çš„å­—ç¬¦ç¼–ç æ–¹å¼ï¼Œè½¬æ¢ä¸ºUTF16(UNICODE)
+//¸ù¾İµ±Ç°Ä¬ÈÏµÄ×Ö·û±àÂë·½Ê½£¬×ª»»ÎªUTF16(UNICODE)
 int Coding_Convert::default_to_utf16(const CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
@@ -154,7 +154,7 @@ int Coding_Convert::default_to_utf16(const CString &src, std::string &dst)
 #endif
 }
 
-//æ ¹æ®å½“å‰é»˜è®¤çš„å­—ç¬¦ç¼–ç æ–¹å¼ï¼Œè½¬æ¢ä¸ºMBCS
+//¸ù¾İµ±Ç°Ä¬ÈÏµÄ×Ö·û±àÂë·½Ê½£¬×ª»»ÎªMBCS
 int Coding_Convert::default_to_mbcs(const CString &src, std::string &dst)
 {
 #if defined UNICODE || defined _UNICODE
@@ -189,7 +189,7 @@ int Coding_Convert::default_to_mbcs(const CString &src, std::string &dst)
 ///
 int Coding_Convert::utf8_to_mbcs(const std::string &src, std::string &dst)
 {
-    // ç¬¬ä¸€æ¬¡å…ˆæŠŠUTF8ç è½¬æ¢æˆUTF-16
+    // µÚÒ»´ÎÏÈ°ÑUTF8Âë×ª»»³ÉUTF-16
     DWORD ret = 0;
     ret = ::MultiByteToWideChar(CP_UTF8,
                                 0,
@@ -202,7 +202,7 @@ int Coding_Convert::utf8_to_mbcs(const std::string &src, std::string &dst)
         return -1;
     }
     int u16_buf_len = ret;
-    // ç¬¬äºŒæ¬¡å†æŠŠUTF-16ç¼–ç è½¬æ¢ä¸ºMBCSç¼–ç 
+    // µÚ¶ş´ÎÔÙ°ÑUTF-16±àÂë×ª»»ÎªMBCS±àÂë
     ret = ::WideCharToMultiByte(CP_ACP,
                                 NULL,
                                 cvt_utf16_buf_,

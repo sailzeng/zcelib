@@ -1,12 +1,12 @@
-﻿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_trace_log_debug.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2004年7月11日
-* @brief      跟踪调试信息函数类ZCE_Trace_LogMsg描述
-*             调试管理工具，可以在STDOUT,STDERR,Windos的调试窗口输出，
-*             调试文件输出，根据不同宏定义保证跨平台允许，
+* @date       2004��7��11��
+* @brief      ���ٵ�����Ϣ������ZCE_Trace_LogMsg����
+*             ���Թ������ߣ�������STDOUT,STDERR,Windos�ĵ��Դ��������
+*             �����ļ���������ݲ�ͬ�궨�屣֤��ƽ̨������
 * @details
 *
 *
@@ -28,22 +28,22 @@
 
 
 
-//打开输出
+//�����
 #define ZLOG_ENABLE           ZCE_Trace_LogMsg::enable_output_logmsg
-//关闭输出
+//�ر����
 #define ZLOG_DISABLE          ZCE_Trace_LogMsg::disable_output_logmsg
-//输出MASK级别,小于这个级别的日志信息不予输出
+//���MASK����,С������������־��Ϣ�������
 #define ZLOG_SET_OUTLEVEL     ZCE_Trace_LogMsg::set_log_priority
 
-//ZCE_LOG为什么要你用双括号，GCC2.9惹得祸,土死了，但是我无能为力,
-//我不打算兼容那么多版本，我懒
+//ZCE_LOGΪʲôҪ����˫���ţ�GCC2.9�ǵû�,�����ˣ�����������Ϊ��,
+//�Ҳ����������ô��汾������
 
-//使用调试级别输出日志
+//ʹ�õ��Լ��������־
 #define ZCE_LOG               ZCE_Trace_LogMsg::debug_output
 
 #if _MSC_VER <= 1300
 
-//提供一些简写的方式，虽然我也觉得不是特别好
+//�ṩһЩ��д�ķ�ʽ����Ȼ��Ҳ���ò����ر��
 #define ZLOG_TRACE            ZCE_Trace_LogMsg::debug_traceex
 #define ZLOG_DEBUG            ZCE_Trace_LogMsg::debug_debugex
 #define ZLOG_INFO             ZCE_Trace_LogMsg::debug_infoex
@@ -63,24 +63,24 @@
 #endif
 
 //==========================================================================================================
-//利用一个结构的构造和析构函数进行函数跟踪
+//����һ���ṹ�Ĺ���������������к�������
 class ZCE_Trace_Function
 {
 public:
-    ///函数名称
+    ///��������
     const char        *func_name_;
-    ///文件名称
+    ///�ļ�����
     const char        *codefile_name_;
-    ///文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
+    ///�ļ����кţ��к��Ǻ������ڲ���λ�ã����Ǻ�����������ʼλ�ã������ֺη�
     int                code_line_;
-    ///输出的日志级别
+    ///�������־����
     ZCE_LOG_PRIORITY   log_priority_;
 
-    ///如果需要跟踪返回值，把返回值的变量的指针作为一个参数
+    ///�����Ҫ���ٷ���ֵ���ѷ���ֵ�ı�����ָ����Ϊһ������
     int               *ret_ptr_ = NULL;
 
 public:
-    //利用构造函数显示进入函数的输出
+    //���ù��캯����ʾ���뺯�������
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
@@ -94,7 +94,7 @@ public:
         ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ", func_name_, codefile_name_, code_line_);
     }
 
-    //利用构造函数显示进入函数的输出
+    //���ù��캯����ʾ���뺯�������
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
@@ -113,13 +113,13 @@ public:
                 *ret_ptr_);
     }
 
-    //利用析构函数显示进入函数的输出
+    //��������������ʾ���뺯�������
     ~ZCE_Trace_Function()
     {
-        //根据是否关注返回值进行不同的输出
+        //�����Ƿ��ע����ֵ���в�ͬ�����
         if (ret_ptr_)
         {
-            //这个地方输出的成功失败文字只有相对参考意义。
+            //����ط�����ĳɹ�ʧ������ֻ����Բο����塣
             ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
                     "ret = [%d],return %s.",
                     func_name_,
@@ -139,8 +139,8 @@ public:
 
 };
 
-//ZCE_FUNCTION_TRACE(RS_DEBUG)宏用于跟踪函数的进出
-//请在函数的开始使用ZCE_FUNCTION_TRACE(RS_DEBUG)这个宏，后面必须加分号
+//ZCE_FUNCTION_TRACE(RS_DEBUG)�����ڸ��ٺ����Ľ���
+//���ں����Ŀ�ʼʹ��ZCE_FUNCTION_TRACE(RS_DEBUG)����꣬�������ӷֺ�
 #ifndef ZCE_TRACE_FUNCTION
 #define ZCE_TRACE_FUNCTION(x) ZCE_Trace_Function  ____tmp_func_trace_(__ZCE_FUNC__,__FILE__,__LINE__,(x))
 #endif
@@ -158,17 +158,17 @@ public:
 
 //==========================================================================================================
 
-///辅助打印一个指针内部数据的函数，用16进制的方式打印
+///������ӡһ��ָ���ڲ����ݵĺ�������16���Ƶķ�ʽ��ӡ
 namespace ZCE_LIB
 {
 
-///输出代码的堆栈信息，用于调试
+///�������Ķ�ջ��Ϣ�����ڵ���
 int backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
                     const char *dbg_info);
 
-///日志打印堆栈信息
-///调试打印的指针
-///指针数据的长度
+///��־��ӡ��ջ��Ϣ
+///���Դ�ӡ��ָ��
+///ָ�����ݵĳ���
 void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
                    const char *dbg_info,
                    const unsigned char  *debug_ptr,
@@ -176,12 +176,12 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 };
 
-//日志打印堆栈信息的宏，x是日志的输出级别
+//��־��ӡ��ջ��Ϣ�ĺ꣬x����־���������
 #ifndef ZCE_BACKTRACE_STACK
 #define ZCE_BACKTRACE_STACK(x)            ZCE_LIB::backtrace_stack(x,__ZCE_FUNC__)
 #endif
 
-//日志打印堆栈信息的宏，x是日志的输出级别,y是指针，z是指针长度
+//��־��ӡ��ջ��Ϣ�ĺ꣬x����־���������,y��ָ�룬z��ָ�볤��
 #ifndef ZCE_TRACE_POINTER_DATA
 #define ZCE_TRACE_POINTER_DATA(x,y,z)     ZCE_LIB::debug_pointer((x),__ZCE_FUNC__,(y),(z))
 #endif
@@ -190,7 +190,7 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 
 
-///用于程序运行到的地方。
+///���ڳ������е��ĵط���
 #ifndef ZCE_TRACE_FILELINE
 #define ZCE_TRACE_FILELINE(x)        ZCE_LOG(x,"[FILELINE TRACE]goto File %s|%d,function:%s.",__FILE__,__LINE__,__ZCE_FUNC__)
 #endif
@@ -205,11 +205,11 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 #endif
 
 
-//TRACE调试部分的宏定义
+//TRACE���Բ��ֵĺ궨��
 
 //----------------------------------------------------------------------------------
-//DEBUG 版本特有的一些宏
-//ZCE_ASSERT原来的写法是 while(!(f)){ do something,后来发现WINDOWS下会对这个进行告警，被迫改了
+//DEBUG �汾���е�һЩ��
+//ZCE_ASSERTԭ����д���� while(!(f)){ do something,��������WINDOWS�»��������и澯�����ȸ���
 
 #if defined DEBUG || defined _DEBUG
 
@@ -236,10 +236,10 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 
 
-//非调试版本的宏定义，
+//�ǵ��԰汾�ĺ궨�壬
 #else //DEBUG
 
-//如果不是调试编译,将这些宏置为空
+//������ǵ��Ա���,����Щ����Ϊ��
 
 
 #ifndef ZCE_LOGMSG_DBG
@@ -271,7 +271,7 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 //------------------------------------------------------------------------------------------------------
 
-//因为Window和LINUX断言中实际使用的函数，其实在非DEBUG版本其实都没有暴漏出来，所以必现有下面这些定义才能使用。
+//��ΪWindow��LINUX������ʵ��ʹ�õĺ�������ʵ�ڷ�DEBUG�汾��ʵ��û�б�©���������Ա�����������Щ�������ʹ�á�
 
 #if defined (ZCE_OS_WINDOWS)
 _CRTIMP int __cdecl _CrtDbgReport(
@@ -284,13 +284,13 @@ _CRTIMP int __cdecl _CrtDbgReport(
 #endif
 
 #if defined (ZCE_OS_LINUX)
-//__assert_fail这个函数是extern的，必须在这儿extern引用，linux自己只在非NDEBUG版本下才有extern引用
+//__assert_fail���������extern�ģ����������extern���ã�linux�Լ�ֻ�ڷ�NDEBUG�汾�²���extern����
 extern "C"  void __assert_fail (__const char *__assertion, __const char *__file,
                                 unsigned int __line, __const char *__function)
 __THROW __attribute__ ((__noreturn__));
 #endif //#if defined (ZCE_OS_LINUX)
 
-//非REALSE版本的一些宏
+//��REALSE�汾��һЩ��
 #if !defined NDEBUG
 
 #ifndef ZCE_ASSERT
@@ -330,7 +330,7 @@ __THROW __attribute__ ((__noreturn__));
 //#if !defined NDEBUG
 #else
 
-//注意区别ZCE_ASSERT和VERIFYZCE_VERIFY的区别,VERIFY内部的表达式式仍然保留的
+//ע������ZCE_ASSERT��VERIFYZCE_VERIFY������,VERIFY�ڲ��ı���ʽʽ��Ȼ������
 #ifndef ZCE_ASSERT
 #define ZCE_ASSERT(...)             ((void)0)
 #endif
@@ -348,8 +348,8 @@ __THROW __attribute__ ((__noreturn__));
 
 
 //----------------------------------------------------------------------------------
-//无论，DEBUG版本，REALSE版本也起作用的一些断言，这些宏在所有版本都起作用，用于一些在运行时期也要判断的东东
-//ALL，任何时候，
+//���ۣ�DEBUG�汾��REALSE�汾Ҳ�����õ�һЩ���ԣ���Щ�������а汾�������ã�����һЩ������ʱ��ҲҪ�жϵĶ���
+//ALL���κ�ʱ��
 
 #ifndef ZCE_ASSERT_ALL
 #if defined (ZCE_OS_WINDOWS)

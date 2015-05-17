@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_bytes_encrypt.h"
 
 //=====================================================================================================================
@@ -273,7 +273,7 @@ void  DES_ECB::des_crypt_ecb(const SUBKEY_STRUCT *sk,
     uint32_t t = 0;
     const uint32_t *sk_p = sk->sub_key_;
 
-    //æ³¨æ„DES å†…éƒ¨æ•°æ®ç”¨å¤§å¤´è¡¨ç¤ºçš„
+    //×¢ÒâDES ÄÚ²¿Êý¾ÝÓÃ´óÍ·±íÊ¾µÄ
     uint32_t x = ZINDEX_TO_LEUINT32(input, 0);
     uint32_t y = ZINDEX_TO_LEUINT32(input, 1);
 
@@ -330,7 +330,7 @@ void DES3_ECB::key_setup(const unsigned char *key,
 }
 
 
-//DES çš„åŠ å¯†è§£å¯†æ˜¯ä¸€ä¸ªå‡½æ•°ï¼Œï¼ˆä½†SUB Key ä¸åŒï¼‰
+//DES µÄ¼ÓÃÜ½âÃÜÊÇÒ»¸öº¯Êý£¬£¨µ«SUB Key ²»Í¬£©
 void  DES3_ECB::des3_crypt_ecb(const SUBKEY_STRUCT *subkey,
                                const unsigned char input[BLOCK_SIZE],
                                unsigned char output[BLOCK_SIZE])
@@ -404,7 +404,7 @@ const unsigned char GOST_ECB::GOST_WZ_SP[8][16] =
                 | GOST_WZ_SP[1][(temp_data>>4)&0xf]<< 4   |  GOST_WZ_SP[0][temp_data&0xf]; \
     (y) ^= (temp_data <<11 | temp_data>>21);
 
-//åŠ å¯†å‡½æ•°
+//¼ÓÃÜº¯Êý
 void GOST_ECB::ecb_encrypt(const SUBKEY_STRUCT *sub_key,
                            const unsigned char *src_block,
                            unsigned char *cipher_block)
@@ -424,7 +424,7 @@ void GOST_ECB::ecb_encrypt(const SUBKEY_STRUCT *sub_key,
     ZLEUINT32_TO_INDEX(cipher_block, 0, a);
     ZLEUINT32_TO_INDEX(cipher_block, 1, b);
 }
-//è§£å¯†å‡½æ•°
+//½âÃÜº¯Êý
 void GOST_ECB::ecb_decrypt(const SUBKEY_STRUCT *sub_key,
                            const unsigned char *cipher_block,
                            unsigned char *src_block)

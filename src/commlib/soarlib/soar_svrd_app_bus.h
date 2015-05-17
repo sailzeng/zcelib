@@ -1,4 +1,4 @@
-ï»¿
+
 #ifndef SOARING_LIB_SVRD_APP_NONCTRL_H_
 #define SOARING_LIB_SVRD_APP_NONCTRL_H_
 
@@ -6,12 +6,12 @@
 
 class Zerg_App_Frame;
 
-//å•ä¸ªå‡½æ•°å¤„ç†APP FRAME
+//µ¥¸öº¯Êı´¦ÀíAPP FRAME
 class Soar_SvrdApp_ZergBus : public Soar_Svrd_Appliction
 {
 protected:
 
-    //æ¥å—çš„æ•°æ®åŒº
+    //½ÓÊÜµÄÊı¾İÇø
     Zerg_App_Frame          *nonctrl_recv_buffer_;
 
 protected:
@@ -21,15 +21,15 @@ protected:
 
 public:
 
-    //è¿è¡Œå¤„ç†,
+    //ÔËĞĞ´¦Àí,
     virtual int app_run();
 
 protected:
 
-    //å¤„ç†æ¥æ”¶åˆ°çš„Frame,
+    //´¦Àí½ÓÊÕµ½µÄFrame,
     virtual int popfront_recvpipe(size_t max_prc, size_t &proc_frame);
 
-    //å¤„ç†æ”¶åˆ°çš„APPFRAMEï¼Œä¸ä½¿ç”¨constçš„åŸå› æ˜¯å› ä¸ºä¸ºäº†åŠ å¿«é€Ÿåº¦ï¼Œå¾ˆå¤šåœ°æ–¹æ˜¯ç›´æ¥å°†recv_frameä¿®æ”¹
+    //´¦ÀíÊÕµ½µÄAPPFRAME£¬²»Ê¹ÓÃconstµÄÔ­ÒòÊÇÒòÎªÎªÁË¼Ó¿ìËÙ¶È£¬ºÜ¶àµØ·½ÊÇÖ±½Ó½«recv_frameĞŞ¸Ä
     virtual int process_recv_frame(Zerg_App_Frame *recv_frame) = 0;
 
 

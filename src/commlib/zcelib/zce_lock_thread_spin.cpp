@@ -1,4 +1,4 @@
-ï»¿
+
 
 #include "zce_predefine.h"
 #include "zce_os_adapt_spin.h"
@@ -14,7 +14,7 @@
 Class           : ZCE_Thread_Spin_Mutex
 ************************************************************************************************************/
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
 {
     int ret = 0;
@@ -31,7 +31,7 @@ ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
 
 }
 
-//é”€æ¯äº’æ–¥é‡
+//Ïú»Ù»¥³âÁ¿
 ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex (void)
 {
     int ret = 0;
@@ -44,7 +44,7 @@ ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex (void)
     }
 }
 
-//é”å®š
+//Ëø¶¨
 void ZCE_Thread_Spin_Mutex::lock()
 {
     int ret = 0;
@@ -57,7 +57,7 @@ void ZCE_Thread_Spin_Mutex::lock()
     }
 }
 
-//å°è¯•é”å®š
+//³¢ÊÔËø¶¨
 bool ZCE_Thread_Spin_Mutex::try_lock()
 {
     int ret = 0;
@@ -71,7 +71,7 @@ bool ZCE_Thread_Spin_Mutex::try_lock()
     return true;
 }
 
-//è§£é”,
+//½âËø,
 void ZCE_Thread_Spin_Mutex::unlock()
 {
     int ret = 0;
@@ -84,7 +84,7 @@ void ZCE_Thread_Spin_Mutex::unlock()
     }
 }
 
-//å–å‡ºå†…éƒ¨çš„é”çš„æŒ‡é’ˆ
+//È¡³öÄÚ²¿µÄËøµÄÖ¸Õë
 pthread_spinlock_t *ZCE_Thread_Spin_Mutex::get_lock()
 {
     return &lock_;

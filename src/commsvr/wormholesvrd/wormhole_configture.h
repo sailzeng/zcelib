@@ -1,4 +1,4 @@
-ï»¿#ifndef WORMHOLE_SERVER_CONFIGTURE_H_
+#ifndef WORMHOLE_SERVER_CONFIGTURE_H_
 #define WORMHOLE_SERVER_CONFIGTURE_H_
 
 #include "wormhole_proxyprocess.h"
@@ -16,19 +16,19 @@ public:
 
 public:
 
-    ///è¯»å–é…ç½®æ–‡ä»¶ï¼Œå¾—åˆ°æ–‡ä»¶é…ç½®å‚æ•°
+    ///¶ÁÈ¡ÅäÖÃÎÄ¼ş£¬µÃµ½ÎÄ¼şÅäÖÃ²ÎÊı
     virtual int read_cfgfile();
 
 
-    ///ä»é…ç½®ä¸­è¯»å–Wormhole svrdçš„é…ç½®
+    ///´ÓÅäÖÃÖĞ¶ÁÈ¡Wormhole svrdµÄÅäÖÃ
     int get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 public:
 
-    ///ä»£ç†ç±»å‹
+    ///´úÀíÀàĞÍ
     Interface_WH_Proxy::PROXY_TYPE  proxy_type_ = Interface_WH_Proxy::INVALID_PROXY_TYPE;
 
-    ///ä»£ç†çš„é…ç½®æ•°æ®è¦
+    ///´úÀíµÄÅäÖÃÊı¾İÒª
     ZCE_Conf_PropertyTree proxy_conf_tree_;
 
 };

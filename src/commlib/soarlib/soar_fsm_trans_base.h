@@ -1,9 +1,9 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_fsm_trans_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2006å¹´3æœˆ29æ—¥
+* @date       2006Äê3ÔÂ29ÈÕ
 * @brief
 *
 *
@@ -11,10 +11,10 @@
 *
 *
 *
-* @note       ä¸ºäº†è®©TRANSACTIONè‡ªåŠ¨æ³¨å†Œ,è‡ªåŠ¨é”€æ¯,è®©TRANSACTIONä¿ç•™äº†MANAGERçš„æŒ‡é’ˆ
-*             è€Œä¸”æ˜¯é™æ€çš„,è¿™ä¸ªæƒ³æ³•å…¶å®é™åˆ¶äº†éƒ¨åˆ†è¡Œä¸º.å¥½ä¸å¥½?
-*             2010å¹´3æœˆ22æ—¥
-*             è¿™ä¸ªç±»ä¹Ÿå†™äº†4å¹´äº†,èƒ½åšæŒ4å¹´ï¼Œä¸å®¹æ˜“ï¼Œè€Œä¸”ä»Šå¤©æ˜¯Googleç¦»å¼€ä¸­å›½çš„ç¬¬3å¤©ï¼Œæ— å¥ˆï¼Œæ— è¯­ä¸­
+* @note       ÎªÁËÈÃTRANSACTION×Ô¶¯×¢²á,×Ô¶¯Ïú»Ù,ÈÃTRANSACTION±£ÁôÁËMANAGERµÄÖ¸Õë
+*             ¶øÇÒÊÇ¾²Ì¬µÄ,Õâ¸öÏë·¨ÆäÊµÏŞÖÆÁË²¿·ÖĞĞÎª.ºÃ²»ºÃ?
+*             2010Äê3ÔÂ22ÈÕ
+*             Õâ¸öÀàÒ²Ğ´ÁË4ÄêÁË,ÄÜ¼á³Ö4Äê£¬²»ÈİÒ×£¬¶øÇÒ½ñÌìÊÇGoogleÀë¿ªÖĞ¹úµÄµÚ3Ìì£¬ÎŞÄÎ£¬ÎŞÓïÖĞ
 */
 
 #ifndef SOARING_LIB_TRANSACTION_BASE_H_
@@ -27,7 +27,7 @@
 class Zerg_App_Frame;
 class Soar_MMAP_BusPipe;
 
-//æœ¬æ¥æ‰“ç®—å°è£…å‡ ä¸ªé™æ€å˜é‡ä¸ºSTATICçš„,ä½†æ˜¯å¦‚æœè¿™æ ·å…¶å®é™åˆ¶äº†æ•´ä½“
+//±¾À´´òËã·â×°¼¸¸ö¾²Ì¬±äÁ¿ÎªSTATICµÄ,µ«ÊÇÈç¹ûÕâÑùÆäÊµÏŞÖÆÁËÕûÌå
 
 class SOARING_EXPORT Transaction_Base : public ZCE_Async_FSM
 {
@@ -49,34 +49,34 @@ protected:
 
 protected:
 
-    //ç§æœ‰çš„æ„é€ å‡½æ•°,ä½ å¿…é¡»ä½¿ç”¨NEWå¾—åˆ°
+    //Ë½ÓĞµÄ¹¹Ôìº¯Êı,Äã±ØĞëÊ¹ÓÃNEWµÃµ½
     virtual ~Transaction_Base();
 
 public:
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     Transaction_Base(Transaction_Manager *pmngr,
                      unsigned int create_cmd,
                      bool trans_locker = false);
 
 
 
-    //å¾—åˆ°ç®¡ç†å™¨
+    //µÃµ½¹ÜÀíÆ÷
     inline  Transaction_Manager *get_trans_mgr() const;
 
 
-    ///æ¯æ¬¡é‡æ–°è¿›è¡Œåˆå§‹åŒ–æ—¶å€™çš„äº‹æƒ…ï¼Œç­‰ç­‰ï¼Œå°½é‡ä¿è¯åŸºç±»çš„è¿™ä¸ªå‡½æ•°ä¼˜å…ˆè°ƒç”¨ï¼Œç±»ä¼¼æ„é€ å‡½æ•°
-    ///è¿™ä¸ªåœ°æ–¹ç”¨äºæ¢å¤å¾ˆå¤šåˆå§‹å€¼
+    ///Ã¿´ÎÖØĞÂ½øĞĞ³õÊ¼»¯Ê±ºòµÄÊÂÇé£¬µÈµÈ£¬¾¡Á¿±£Ö¤»ùÀàµÄÕâ¸öº¯ÊıÓÅÏÈµ÷ÓÃ£¬ÀàËÆ¹¹Ôìº¯Êı
+    ///Õâ¸öµØ·½ÓÃÓÚ»Ö¸´ºÜ¶à³õÊ¼Öµ
     virtual void on_start();
 
-    ///äº‹ç‰©çš„on_runå‡½æ•°ï¼Œé‡è½½çš„FSMçš„ï¼ŒæŠŠè°ƒç”¨è½¬å‘åˆ°trans_run
+    ///ÊÂÎïµÄon_runº¯Êı£¬ÖØÔØµÄFSMµÄ£¬°Ñµ÷ÓÃ×ªÏòµ½trans_run
     virtual void on_run(void *outer_data, bool &continue_run);
 
-    ///çŠ¶æ€æœºå¯¹è±¡è¶…æ—¶å¤„ç†ï¼Œé‡è½½çš„FSMçš„ï¼ˆå¼‚æ­¥å¯¹è±¡çš„ï¼‰ï¼ŒæŠŠè°ƒç”¨è½¬å‘åˆ°trans_timeout
+    ///×´Ì¬»ú¶ÔÏó³¬Ê±´¦Àí£¬ÖØÔØµÄFSMµÄ£¨Òì²½¶ÔÏóµÄ£©£¬°Ñµ÷ÓÃ×ªÏòµ½trans_timeout
     virtual void on_timeout(const ZCE_Time_Value &now_time,
         bool &continue_run);
    
     /*!
-    * @brief      äº‹ç‰©è¿è¡Œï¼Œå¿…é¡»é‡è½½çš„å‡½æ•°
+    * @brief      ÊÂÎïÔËĞĞ£¬±ØĞëÖØÔØµÄº¯Êı
     * @return     virtual void
     * @param      recv_frame
     * @param      continue_run
@@ -85,9 +85,9 @@ public:
         bool &continue_run) = 0;
 
     /*!
-    * @brief      ï¼Œé»˜è®¤continue_runè¿”å›falseï¼Œè®©ç³»ç»Ÿå›æ”¶ï¼Œ
-    * @param[in]  now_time  å‘ç”Ÿè¶…æ—¶çš„æ—¶é—´ï¼Œ
-    * @param[out] continue_run å¼‚æ­¥å¯¹è±¡æ˜¯å¦ç»§ç»­è¿è¡Œ,
+    * @brief      £¬Ä¬ÈÏcontinue_run·µ»Øfalse£¬ÈÃÏµÍ³»ØÊÕ£¬
+    * @param[in]  now_time  ·¢Éú³¬Ê±µÄÊ±¼ä£¬
+    * @param[out] continue_run Òì²½¶ÔÏóÊÇ·ñ¼ÌĞøÔËĞĞ,
     */
     virtual void trans_timeout(const ZCE_Time_Value &now_time, 
         bool &continue_run);
@@ -96,8 +96,8 @@ protected:
 
 
     /*!
-    * @brief      æ ¹æ®Frameåˆå§‹åŒ–å¾—åˆ°å¯¹æ–¹å‘é€çš„ä¿¡æ¯
-    * @param      recv_frame åˆå§‹åŒ–æ¥æ”¶çš„FRAMEæ•°æ®,
+    * @brief      ¸ù¾İFrame³õÊ¼»¯µÃµ½¶Ô·½·¢ËÍµÄĞÅÏ¢
+    * @param      recv_frame ³õÊ¼»¯½ÓÊÕµÄFRAMEÊı¾İ,
     */
     void create_init(Zerg_App_Frame *recv_frame);
 
@@ -105,41 +105,41 @@ protected:
 
 
 
-    //lockå…¶å®ä¸æ˜¯çœŸæ­£çš„é”ï¼Œç›®çš„æ˜¯ä¿è¯åœ¨åŒä¸€æ—¶åˆ»ï¼Œåªå¤„ç†ä¸€ä¸ªç”¨æˆ·çš„ä¸€ä¸ªè¯·æ±‚ã€‚
-    //å¯¹å½“å‰ç”¨æˆ·çš„ï¼Œå½“å‰äº‹åŠ¡å‘½ä»¤å­—è¿›è¡ŒåŠ é”
+    //lockÆäÊµ²»ÊÇÕæÕıµÄËø£¬Ä¿µÄÊÇ±£Ö¤ÔÚÍ¬Ò»Ê±¿Ì£¬Ö»´¦ÀíÒ»¸öÓÃ»§µÄÒ»¸öÇëÇó¡£
+    //¶Ôµ±Ç°ÓÃ»§µÄ£¬µ±Ç°ÊÂÎñÃüÁî×Ö½øĞĞ¼ÓËø
     int lock_qquin_cmd();
-    //å¯¹å½“å‰ç”¨æˆ·çš„ï¼Œå½“å‰äº‹åŠ¡å‘½ä»¤å­—è¿›è¡Œè§£é”
+    //¶Ôµ±Ç°ÓÃ»§µÄ£¬µ±Ç°ÊÂÎñÃüÁî×Ö½øĞĞ½âËø
     void unlock_qquin_cmd();
 
-    //å¯¹å½“å‰ç”¨æˆ·çš„ä¸€ä¸ªé”IDè¿›è¡ŒåŠ é”
+    //¶Ôµ±Ç°ÓÃ»§µÄÒ»¸öËøID½øĞĞ¼ÓËø
     int lock_qquin_key(unsigned int trnas_lock_id);
-    //å¯¹å½“å‰ç”¨æˆ·çš„ä¸€ä¸ªé”IDè¿›è¡Œè§£é”
+    //¶Ôµ±Ç°ÓÃ»§µÄÒ»¸öËøID½øĞĞ½âËø
     void unlock_qquin_key(unsigned int trnas_lock_id);
 
-    //å…³é—­è¯·æ±‚çš„çš„Service
+    //¹Ø±ÕÇëÇóµÄµÄService
     int close_request_service() const;
 
-    ///æ£€æŸ¥ç”¨æˆ·çš„æ•°æ®å¸§å¤´éƒ¨çš„UINå’Œæ•°æ®ä½“çš„UINæ˜¯å¦ä¸€è‡´,é¿å…ç”¨æˆ·ä½œå¼Š
+    ///¼ì²éÓÃ»§µÄÊı¾İÖ¡Í·²¿µÄUINºÍÊı¾İÌåµÄUINÊÇ·ñÒ»ÖÂ,±ÜÃâÓÃ»§×÷±×
     int check_req_userid(unsigned int user_id) const;
-    ///ç”¨äºæ£€æŸ¥è¯·æ±‚çš„IPåœ°å€æ˜¯å¦æ˜¯å†…éƒ¨IPåœ°å€
+    ///ÓÃÓÚ¼ì²éÇëÇóµÄIPµØÖ·ÊÇ·ñÊÇÄÚ²¿IPµØÖ·
     int check_request_internal() const;
-    ///æ£€æŸ¥æ¥å—åˆ°çš„FRAMEçš„æ•°æ®å’Œå‘½ä»¤
+    ///¼ì²é½ÓÊÜµ½µÄFRAMEµÄÊı¾İºÍÃüÁî
     int check_receive_frame(const Zerg_App_Frame *recv_frame,
         unsigned int wait_cmd);
 
 
 
-    //DUMPæ‰€æœ‰çš„äº‹ç‰©çš„ä¿¡æ¯
+    //DUMPËùÓĞµÄÊÂÎïµÄĞÅÏ¢
     void dump_transa_info(std::ostringstream &strstream) const;
-    //DUMPè¾“å‡ºäº‹åŠ¡çš„æ‰€æœ‰ä¿¡æ¯
+    //DUMPÊä³öÊÂÎñµÄËùÓĞĞÅÏ¢
     void output_trans_info(const char *outstr = "Output Transaction Info") const;
     
 protected:
 
     //--------------------------------------------------------------------
-    //ä¸‹é¢è¿™ç»„å‡½æ•°åŠ¡å¿…ä¸è¦æ··åˆä½¿ç”¨,å›é€å°±æ˜¯ç”¨äºå›é€,å‘é€ç»™å…¶ä»–æœåŠ¡å™¨å°±ç”¨send_msg_to,request_send_to_proxy
+    //ÏÂÃæÕâ×éº¯ÊıÎñ±Ø²»Òª»ìºÏÊ¹ÓÃ,»ØËÍ¾ÍÊÇÓÃÓÚ»ØËÍ,·¢ËÍ¸øÆäËû·şÎñÆ÷¾ÍÓÃsend_msg_to,request_send_to_proxy
 
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°SERVICES_IDæœåŠ¡å™¨(ä¸èƒ½æ˜¯Proxy),ä½¿ç”¨è¯·æ±‚çš„UINï¼Œ
+    //ÇëÇó·¢ËÍÊı¾İµ½SERVICES_ID·şÎñÆ÷(²»ÄÜÊÇProxy),Ê¹ÓÃÇëÇóµÄUIN£¬
     template< class T>
     int  request_send_to_peer(unsigned int cmd,
                               const SERVICES_ID &rcv_svc,
@@ -147,7 +147,7 @@ protected:
                               unsigned int app_id = 0,
                               unsigned int option = 0);
 
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°SERVICES_IDæœåŠ¡å™¨(ä¸èƒ½æ˜¯Proxy),æŒ‡å®šç‰¹å®šUIN,èµ é€è¿™äº›å‘½ä»¤ä½¿ç”¨
+    //ÇëÇó·¢ËÍÊı¾İµ½SERVICES_ID·şÎñÆ÷(²»ÄÜÊÇProxy),Ö¸¶¨ÌØ¶¨UIN,ÔùËÍÕâĞ©ÃüÁîÊ¹ÓÃ
     template< class T>
     int request_send_to_peer(unsigned int cmd,
                              unsigned int qquin,
@@ -156,7 +156,7 @@ protected:
                              unsigned int app_id = 0,
                              unsigned int option = 0 );
 
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°SERVICES_IDæœåŠ¡å™¨,å¯ä»¥æŒ‡å®šUINå’Œï¼Œå›å¡«çš„äº‹åŠ¡ID
+    //ÇëÇó·¢ËÍÊı¾İµ½SERVICES_ID·şÎñÆ÷,¿ÉÒÔÖ¸¶¨UINºÍ£¬»ØÌîµÄÊÂÎñID
     template <class T>
     int request_send_to_peer(unsigned int cmd,
                              unsigned int qquin,
@@ -167,7 +167,7 @@ protected:
                              unsigned int option = 0
                             );
 
-    // è¯·æ±‚å‘é€æ•°æ®åˆ°SERVICES_IDæœåŠ¡å™¨(ä¸èƒ½æ˜¯Proxy),æŒ‡å®šç‰¹å®šUIN,èµ é€è¿™äº›å‘½ä»¤ä½¿ç”¨
+    // ÇëÇó·¢ËÍÊı¾İµ½SERVICES_ID·şÎñÆ÷(²»ÄÜÊÇProxy),Ö¸¶¨ÌØ¶¨UIN,ÔùËÍÕâĞ©ÃüÁîÊ¹ÓÃ
     int request_send_buf_to_peer(unsigned int cmd,
                                  unsigned int qquin,
                                  const SERVICES_ID &rcv_svc,
@@ -177,7 +177,7 @@ protected:
                                  unsigned int option = 0
                                 );
 
-    // è¯·æ±‚å‘é€æ•°æ®åˆ°proxyæœåŠ¡å™¨, æŒ‡å®šç‰¹å®šUIN,å‘½ä»¤å­—
+    // ÇëÇó·¢ËÍÊı¾İµ½proxy·şÎñÆ÷, Ö¸¶¨ÌØ¶¨UIN,ÃüÁî×Ö
     int request_send_buf_to_proxy(unsigned int cmd,
                                   unsigned int qquin,
                                   const SERVICES_ID &proxy_svc,
@@ -189,7 +189,7 @@ protected:
                                  );
 
     //--------------------------------------------------------------------------------------
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,ç”¨è¯·æ±‚çš„USER IDå‘é€
+    //ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,ÓÃÇëÇóµÄUSER ID·¢ËÍ
     template< class T>
     int request_send_to_proxy(unsigned int cmd,
                               const SERVICES_ID &proxy_svc,
@@ -198,7 +198,7 @@ protected:
                               unsigned int app_id = 0,
                               unsigned int option = 0 );
 
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,ç”¨æŒ‡å®šUINå‘é€
+    //ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,ÓÃÖ¸¶¨UIN·¢ËÍ
     template< class T>
     int request_send_to_proxy(unsigned int cmd,
                               unsigned int qquin,
@@ -208,7 +208,7 @@ protected:
                               unsigned int app_id = 0,
                               unsigned int option = 0);
 
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,,ä½¿ç”¨è¯·æ±‚çš„USER ID,RCV SERVICESID(æ¯”å¦‚ç”¨ä»£ç†ä¸­è½¬åˆ°æŒ‡å®šæœåŠ¡å™¨),
+    //ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,,Ê¹ÓÃÇëÇóµÄUSER ID,RCV SERVICESID(±ÈÈçÓÃ´úÀíÖĞ×ªµ½Ö¸¶¨·şÎñÆ÷),
     template< class T>
     int request_send_to_proxy(unsigned int cmd,
                               unsigned int qquin,
@@ -218,7 +218,7 @@ protected:
                               unsigned int app_id = 0,
                               unsigned int option = 0);
 
-    //è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,,ä½¿ç”¨è¯·æ±‚çš„USER ID,,RCV SERVICESID(æ¯”å¦‚ç”¨ä»£ç†ä¸­è½¬åˆ°æŒ‡å®šæœåŠ¡å™¨),å›å¡«çš„äº‹åŠ¡ID
+    //ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,,Ê¹ÓÃÇëÇóµÄUSER ID,,RCV SERVICESID(±ÈÈçÓÃ´úÀíÖĞ×ªµ½Ö¸¶¨·şÎñÆ÷),»ØÌîµÄÊÂÎñID
     template< class T>
     int request_send_to_proxy(unsigned int cmd,
                               unsigned int qquin,
@@ -230,24 +230,24 @@ protected:
                               unsigned int option = 0);
 
     //--------------------------------------------------------------------------------------
-    //åº”ç­”ï¼Œå‘å›å‘é€æ•°æ®,åªèƒ½æ˜¯é™¤äº†æ¥å—å‘½ä»¤çš„æ—¶å€™æ‰å¯ä»¥è°ƒç”¨è¿™ä¸ªå‡½æ•°,å¦åˆ™....
+    //Ó¦´ğ£¬Ïò»Ø·¢ËÍÊı¾İ,Ö»ÄÜÊÇ³ıÁË½ÓÊÜÃüÁîµÄÊ±ºò²Å¿ÉÒÔµ÷ÓÃÕâ¸öº¯Êı,·ñÔò....
     template< class T>
     int response_sendback(unsigned int cmd,
                           const T &info,
                           unsigned int option = 0);
 
-    //å›é€ä¿¡æ¯,åº”ç­”ä¸€ä¸ªè¯·æ±‚,ä½†æ˜¯å¯ä»¥æŒ‡å®šå›åº”çš„USER ID,åªèƒ½æ˜¯é™¤äº†æ¥å—å‘½ä»¤çš„æ—¶å€™æ‰å¯ä»¥è°ƒç”¨è¿™ä¸ªå‡½æ•°,å¦åˆ™....
-    //æ¯”å¦‚å‘é€é‚®ä»¶ï¼ŒFRAMEä¸­çš„ä¸»äººæ˜¯æ”¶ä»¶äºº,ä½†æ˜¯è¿”å›å‘½ä»¤åº”è¯¥æ˜¯å‘ä»¶äºº
-    //ä¸ºå•¥è¦ç”¨2ä½œä¸ºå‡½æ•°åç§°è€Œä¸é‡è½½å‘¢ï¼Œä½ å¯ä»¥è€ƒè™‘ä¸€ä¸‹,æˆ‘ä¸ä½œç­”
+    //»ØËÍĞÅÏ¢,Ó¦´ğÒ»¸öÇëÇó,µ«ÊÇ¿ÉÒÔÖ¸¶¨»ØÓ¦µÄUSER ID,Ö»ÄÜÊÇ³ıÁË½ÓÊÜÃüÁîµÄÊ±ºò²Å¿ÉÒÔµ÷ÓÃÕâ¸öº¯Êı,·ñÔò....
+    //±ÈÈç·¢ËÍÓÊ¼ş£¬FRAMEÖĞµÄÖ÷ÈËÊÇÊÕ¼şÈË,µ«ÊÇ·µ»ØÃüÁîÓ¦¸ÃÊÇ·¢¼şÈË
+    //ÎªÉ¶ÒªÓÃ2×÷Îªº¯ÊıÃû³Æ¶ø²»ÖØÔØÄØ£¬Äã¿ÉÒÔ¿¼ÂÇÒ»ÏÂ,ÎÒ²»×÷´ğ
     template< class T>
     int response_sendback2(unsigned int cmd,
                            unsigned int qquin,
                            const T &info,
                            unsigned int option = 0);
 
-    //åº”ç­”ï¼Œå‘å›å‘é€æ•°æ®,æ•°æ®æ˜¯ä¸€æ®µbuf,è¿™æ®µbufé¡»æ˜¯ä¸€ä¸ªå®Œæ•´çš„æ¡†æ¶åè®®åŒ…
-    // è¿™ä¸ªå‡½æ•°ä¸response_sendback2çš„åŒºåˆ«æ˜¯infoè¢«æ‰“åŒ…æˆäº†buf,
-    // ä¸€èˆ¬åªåœ¨ä½ è¦å›çš„è¿™ä¸ªbuf,ä½ è‡ªå·±è§£ä¸å‡ºæ¥æ—¶æ‰ä½¿ç”¨ï¼Œæ…ç”¨
+    //Ó¦´ğ£¬Ïò»Ø·¢ËÍÊı¾İ,Êı¾İÊÇÒ»¶Îbuf,Õâ¶ÎbufĞëÊÇÒ»¸öÍêÕûµÄ¿ò¼ÜĞ­Òé°ü
+    // Õâ¸öº¯ÊıÓëresponse_sendback2µÄÇø±ğÊÇinfo±»´ò°ü³ÉÁËbuf,
+    // Ò»°ãÖ»ÔÚÄãÒª»ØµÄÕâ¸öbuf,Äã×Ô¼º½â²»³öÀ´Ê±²ÅÊ¹ÓÃ£¬É÷ÓÃ
     int response_buf_sendback(unsigned int cmd,
                               unsigned int uin,
                               const unsigned char *buf,
@@ -255,7 +255,7 @@ protected:
                               unsigned int option = 0);
 
     //--------------------------------------------------------------------------------------
-    //å¥‰åŠå¤§å®¶ä¸è¦ç”¨è¿™ä¸ªï¼Œæœ€å¤§é›†åˆ,
+    //·îÈ°´ó¼Ò²»ÒªÓÃÕâ¸ö£¬×î´ó¼¯ºÏ,
     template< class T>
     int sendmsg_to_service(unsigned int cmd,
                            unsigned int qquin,
@@ -268,7 +268,7 @@ protected:
                            unsigned int app_id,
                            unsigned int option );
 
-    // å‘é€æ•°æ®åˆ°SERVICES_IDæœåŠ¡å™¨,æœ€å¤§é›†åˆ, ä¸€èˆ¬ç”¨å°è£…è¿‡çš„å‡½æ•°
+    // ·¢ËÍÊı¾İµ½SERVICES_ID·şÎñÆ÷,×î´ó¼¯ºÏ, Ò»°ãÓÃ·â×°¹ıµÄº¯Êı
     int sendbuf_to_service(unsigned int cmd,
                            unsigned int qquin,
                            unsigned int transaction_id,
@@ -285,54 +285,54 @@ protected:
 
 public:
 
-    //è¿™å„¿å¯¹å°è£…è¦æ±‚å¾ˆä¸¥æ ¼ï¼Œä½†æ˜¯æˆ‘æ„Ÿè§‰å¯¹å¤–æš´éœ²çš„æ¥å£è¶³å¤Ÿäº†ã€‚
+    //Õâ¶ù¶Ô·â×°ÒªÇóºÜÑÏ¸ñ£¬µ«ÊÇÎÒ¸Ğ¾õ¶ÔÍâ±©Â¶µÄ½Ó¿Ú×ã¹»ÁË¡£
 protected:
 
-    //äº‹ä»¶ç®¡ç†å™¨
+    //ÊÂ¼ş¹ÜÀíÆ÷
     Transaction_Manager     *trans_manager_;
 
-    //æ˜¯å¦åŠ äº‹åŠ¡é”
+    //ÊÇ·ñ¼ÓÊÂÎñËø
     bool                    trans_locker_;
 
-    //äº‹ç‰©è¢«åˆ›å»ºèµ·æ¥
+    //ÊÂÎï±»´´½¨ÆğÀ´
     bool                    trans_create_;
 
-    //è¯·æ±‚çš„äº‹åŠ¡UID
+    //ÇëÇóµÄÊÂÎñUID
     unsigned int            req_user_id_;
-    //è¿™ä¸ªäº‹åŠ¡çš„å‘½ä»¤å­—
+    //Õâ¸öÊÂÎñµÄÃüÁî×Ö
     unsigned int            req_command_;
 
 
-    //è¯·æ±‚äº‹åŠ¡çš„å‘é€è€…
+    //ÇëÇóÊÂÎñµÄ·¢ËÍÕß
     SERVICES_ID             req_snd_service_;
-    //è¯·æ±‚äº‹åŠ¡çš„ä»£ç†
+    //ÇëÇóÊÂÎñµÄ´úÀí
     SERVICES_ID             req_rcv_service_;
-    //è¯·æ±‚äº‹åŠ¡çš„ä»£ç†
+    //ÇëÇóÊÂÎñµÄ´úÀí
     SERVICES_ID             req_proxy_service_;
 
-    //è¯·æ±‚çš„äº‹åŠ¡ID
+    //ÇëÇóµÄÊÂÎñID
     unsigned int            req_trans_id_;
-    //è¯·æ±‚çš„çš„ä¼šè¯ID:è¿™é‡Œæ˜¯å›å¡«äº‹åŠ¡idï¼Œæ„æ€å˜äº†,å…¶å®æ²¡æ€ä¹ˆä½¿ç”¨
+    //ÇëÇóµÄµÄ»á»°ID:ÕâÀïÊÇ»ØÌîÊÂÎñid£¬ÒâË¼±äÁË,ÆäÊµÃ»ÔõÃ´Ê¹ÓÃ
     unsigned int            req_session_id_;
-    //è¯·æ±‚çš„app_id
+    //ÇëÇóµÄapp_id
     unsigned int            req_game_app_id_;
 
-    //è¯·æ±‚çš„IPåœ°å€æ˜¯ä»€ä¹ˆ.
+    //ÇëÇóµÄIPµØÖ·ÊÇÊ²Ã´.
     unsigned int            req_ip_address_;
-    //è¯·æ±‚çš„FRAMEçš„çš„é€‰é¡¹
+    //ÇëÇóµÄFRAMEµÄµÄÑ¡Ïî
     unsigned int            req_frame_option_;
 
-    //äº‹åŠ¡è¶…æ—¶çš„å®šæ—¶å™¨ID
+    //ÊÂÎñ³¬Ê±µÄ¶¨Ê±Æ÷ID
     int                     trans_timeout_id_;
-    //å‘ç”Ÿactiveåï¼Œæ˜¯å¦è‡ªåŠ¨åœæ­¢time outå®šæ—¶å™¨
+    //·¢Éúactiveºó£¬ÊÇ·ñ×Ô¶¯Í£Ö¹time out¶¨Ê±Æ÷
     bool                    active_auto_stop_;
-    //äº‹åŠ¡çš„å®šæ—¶å™¨ID
+    //ÊÂÎñµÄ¶¨Ê±Æ÷ID
     int                     trans_touchtimer_id_;
 
-    //äº‹åŠ¡çš„åˆ›å»ºæ—¶é—´
+    //ÊÂÎñµÄ´´½¨Ê±¼ä
     time_t                  trans_create_time_;
 
-    ///æ—¥å¿—è·Ÿè¸ªçš„ä¼˜å…ˆçº§
+    ///ÈÕÖ¾¸ú×ÙµÄÓÅÏÈ¼¶
     ZCE_LOG_PRIORITY        trace_log_pri_;
 
 };
@@ -343,7 +343,7 @@ protected:
 
 
 
-//è¯·æ±‚å‘é€æ¶ˆæ¯çš„Service,
+//ÇëÇó·¢ËÍÏûÏ¢µÄService,
 template <class T>
 int Transaction_Base::request_send_to_peer(unsigned int cmd,
                                            const SERVICES_ID &rcv_svc,
@@ -364,7 +364,7 @@ int Transaction_Base::request_send_to_peer(unsigned int cmd,
                               option);
 }
 
-//è¯·æ±‚å‘é€æ¶ˆæ¯çš„Service,
+//ÇëÇó·¢ËÍÏûÏ¢µÄService,
 template <class T>
 int Transaction_Base::request_send_to_peer(unsigned int cmd,
                                            unsigned int qquin,
@@ -387,7 +387,7 @@ int Transaction_Base::request_send_to_peer(unsigned int cmd,
                               option);
 }
 
-//å‘æŸä¸ªServiceå‘é€æ•°æ®,åŒæ—¶ä½¿ç”¨UIN
+//ÏòÄ³¸öService·¢ËÍÊı¾İ,Í¬Ê±Ê¹ÓÃUIN
 template< class T>
 int Transaction_Base::request_send_to_peer(unsigned int cmd,
                                            unsigned int qquin,
@@ -411,7 +411,7 @@ int Transaction_Base::request_send_to_peer(unsigned int cmd,
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-//è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,ç”¨è¯·æ±‚çš„USER IDå‘é€
+//ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,ÓÃÇëÇóµÄUSER ID·¢ËÍ
 template< class T>
 int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                                             const SERVICES_ID &proxy_svc,
@@ -433,7 +433,7 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                               option);
 }
 
-//è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,ç”¨å‚æ•°æŒ‡å®šUSER IDå‘é€
+//ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,ÓÃ²ÎÊıÖ¸¶¨USER ID·¢ËÍ
 template< class T>
 int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                                             unsigned int qquin,
@@ -456,8 +456,8 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                               option);
 }
 
-//è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,,ä½¿ç”¨è¯·æ±‚çš„USER ID,RCV SERVICESID(æ¯”å¦‚ç”¨ä»£ç†ä¸­è½¬åˆ°æŒ‡å®šæœåŠ¡å™¨),
-//æ³¨æ„RECV SVC å’ŒPROXY SVCå‚æ•°çš„é¡ºåº,ä¸»è¦äº‹åŠ¡å’Œ
+//ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,,Ê¹ÓÃÇëÇóµÄUSER ID,RCV SERVICESID(±ÈÈçÓÃ´úÀíÖĞ×ªµ½Ö¸¶¨·şÎñÆ÷),
+//×¢ÒâRECV SVC ºÍPROXY SVC²ÎÊıµÄË³Ğò,Ö÷ÒªÊÂÎñºÍ
 template< class T>
 int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                                             unsigned int qquin,
@@ -479,8 +479,8 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                               option);
 }
 
-//è¯·æ±‚å‘é€æ•°æ®åˆ°ä»£ç†æœåŠ¡å™¨,ä½¿ç”¨è¯·æ±‚çš„USER ID,,RCV SERVICESID(æ¯”å¦‚ç”¨ä»£ç†ä¸­è½¬åˆ°æŒ‡å®šæœåŠ¡å™¨),å›å¡«çš„äº‹åŠ¡ID
-//æ³¨æ„RECV SVC å’ŒPROXY SVCå‚æ•°çš„é¡ºåº
+//ÇëÇó·¢ËÍÊı¾İµ½´úÀí·şÎñÆ÷,Ê¹ÓÃÇëÇóµÄUSER ID,,RCV SERVICESID(±ÈÈçÓÃ´úÀíÖĞ×ªµ½Ö¸¶¨·şÎñÆ÷),»ØÌîµÄÊÂÎñID
+//×¢ÒâRECV SVC ºÍPROXY SVC²ÎÊıµÄË³Ğò
 template< class T>
 int Transaction_Base::request_send_to_proxy(unsigned int cmd,
                                             unsigned int qquin,
@@ -504,14 +504,14 @@ int Transaction_Base::request_send_to_proxy(unsigned int cmd,
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-//å›é€ä¿¡æ¯,åº”ç­”ä¸€ä¸ªè¯·æ±‚,åªèƒ½æ˜¯é™¤äº†æ¥å—å‘½ä»¤çš„æ—¶å€™æ‰å¯ä»¥è°ƒç”¨è¿™ä¸ªå‡½æ•°,å¦åˆ™....
+//»ØËÍĞÅÏ¢,Ó¦´ğÒ»¸öÇëÇó,Ö»ÄÜÊÇ³ıÁË½ÓÊÜÃüÁîµÄÊ±ºò²Å¿ÉÒÔµ÷ÓÃÕâ¸öº¯Êı,·ñÔò....
 template< class T>
 int Transaction_Base::response_sendback(unsigned int cmd,
                                         const T &info,
                                         unsigned int option)
 {
 
-    //åŠ å…¥UDPè¿”å›çš„ä»£ç éƒ¨åˆ†
+    //¼ÓÈëUDP·µ»ØµÄ´úÂë²¿·Ö
     if (req_frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
     {
         option |= Zerg_App_Frame::DESC_UDP_FRAME;
@@ -530,16 +530,16 @@ int Transaction_Base::response_sendback(unsigned int cmd,
                               option);
 }
 
-//å›é€ä¿¡æ¯,åº”ç­”ä¸€ä¸ªè¯·æ±‚,ä½†æ˜¯å¯ä»¥æŒ‡å®šå›åº”çš„USER ID,åªèƒ½æ˜¯é™¤äº†æ¥å—å‘½ä»¤çš„æ—¶å€™æ‰å¯ä»¥è°ƒç”¨è¿™ä¸ªå‡½æ•°,å¦åˆ™....
-//æ¯”å¦‚å‘é€é‚®ä»¶ï¼ŒFRAMEä¸­çš„ä¸»äººæ˜¯æ”¶ä»¶äºº,ä½†æ˜¯è¿”å›å‘½ä»¤åº”è¯¥æ˜¯å‘ä»¶äºº
-//ä¸ºå•¥è¦ç”¨2ä½œä¸ºå‡½æ•°åç§°è€Œä¸é‡è½½å‘¢ï¼Œä½ å¯ä»¥è€ƒè™‘ä¸€ä¸‹,æˆ‘ä¸ä½œç­”
+//»ØËÍĞÅÏ¢,Ó¦´ğÒ»¸öÇëÇó,µ«ÊÇ¿ÉÒÔÖ¸¶¨»ØÓ¦µÄUSER ID,Ö»ÄÜÊÇ³ıÁË½ÓÊÜÃüÁîµÄÊ±ºò²Å¿ÉÒÔµ÷ÓÃÕâ¸öº¯Êı,·ñÔò....
+//±ÈÈç·¢ËÍÓÊ¼ş£¬FRAMEÖĞµÄÖ÷ÈËÊÇÊÕ¼şÈË,µ«ÊÇ·µ»ØÃüÁîÓ¦¸ÃÊÇ·¢¼şÈË
+//ÎªÉ¶ÒªÓÃ2×÷Îªº¯ÊıÃû³Æ¶ø²»ÖØÔØÄØ£¬Äã¿ÉÒÔ¿¼ÂÇÒ»ÏÂ,ÎÒ²»×÷´ğ
 template< class T>
 int Transaction_Base::response_sendback2(unsigned int cmd,
                                          unsigned int qquin,
                                          const T &info,
                                          unsigned int option)
 {
-    //åŠ å…¥UDPè¿”å›çš„ä»£ç éƒ¨åˆ†
+    //¼ÓÈëUDP·µ»ØµÄ´úÂë²¿·Ö
     if (req_frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
     {
         option |= Zerg_App_Frame::DESC_UDP_FRAME;
@@ -559,7 +559,7 @@ int Transaction_Base::response_sendback2(unsigned int cmd,
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
-//æœ€å®Œæ•´çš„å¡«å†™å‘é€æ¶ˆæ¯å‡½æ•°ï¼Œ
+//×îÍêÕûµÄÌîĞ´·¢ËÍÏûÏ¢º¯Êı£¬
 template< class T>
 int Transaction_Base::sendmsg_to_service(unsigned int cmd,
                                          unsigned int qquin,
@@ -572,19 +572,19 @@ int Transaction_Base::sendmsg_to_service(unsigned int cmd,
                                          unsigned int app_id,
                                          unsigned int option)
 {
-    //å¦‚æœè¯·æ±‚çš„å‘½ä»¤è¦æ±‚è¦ç›‘æ§ï¼Œåé¢çš„å¤„ç†è¿›è¡Œç›‘æ§
+    //Èç¹ûÇëÇóµÄÃüÁîÒªÇóÒª¼à¿Ø£¬ºóÃæµÄ´¦Àí½øĞĞ¼à¿Ø
     if (req_frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
         option |= Zerg_App_Frame::DESC_MONITOR_TRACK;
     }
 
-    //å¦‚æœå‘é€çš„
+    //Èç¹û·¢ËÍµÄ
     if (app_id == 0)
     {
         app_id = req_game_app_id_;
     }
 
-    //æ¡ç”¨ç®¡ç†å™¨çš„å‘é€å‡½æ•°
+    //ÌõÓÃ¹ÜÀíÆ÷µÄ·¢ËÍº¯Êı
     return trans_manager_->mgr_sendmsg_to_service(cmd,
                                                   qquin,
                                                   transaction_id,

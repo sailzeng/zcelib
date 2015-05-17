@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_trace_log_basic.h"
 #include "zce_trace_log_msg.h"
@@ -15,12 +15,12 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
                              const char *dbg_info)
 {
 
-    //è·Ÿè¸ªå‡½æ•°çš„å±‚æ•°
+    //¸ú×Ùº¯ÊıµÄ²ãÊı
     const size_t SIZE_OF_BACKTRACE_FUNC = 100;
 
 #if defined(ZCE_OS_LINUX)
     ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Linux GCC. %s", dbg_info);
-    //Windows ä¸‹å¿…é¡»æ˜¯2008æˆ–è€…VISTAä¹‹åçš„SDKæ‰æ”¯æŒï¼Œ
+    //Windows ÏÂ±ØĞëÊÇ2008»òÕßVISTAÖ®ºóµÄSDK²ÅÖ§³Ö£¬
 #elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
     ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Windows Visual studio .%s", dbg_info);
 #else
@@ -29,7 +29,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 #endif
 
 
-    //è¿™ä¸ªæ–¹æ³•æ˜¯æä¾›ç»™Linux ä¸‹çš„GCCä½¿ç”¨çš„
+    //Õâ¸ö·½·¨ÊÇÌá¹©¸øLinux ÏÂµÄGCCÊ¹ÓÃµÄ
 #if defined(ZCE_OS_LINUX)
 
 
@@ -46,18 +46,18 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
         ZCE_LOG(dbg_lvl, "%s", "[BACKTRACE] backtrace_symbols return fail.");
     }
 
-    //æ‰“å°æ‰€æœ‰çš„å †æ ˆä¿¡æ¯,æœ‰äº›æ—¶å€™ä¿¡æ¯æ— æ³•æ˜¾ç¤ºç¬¦å·è¡¨ï¼Œå»ºè®®ä½¿ç”¨
+    //´òÓ¡ËùÓĞµÄ¶ÑÕ»ĞÅÏ¢,ÓĞĞ©Ê±ºòĞÅÏ¢ÎŞ·¨ÏÔÊ¾·ûºÅ±í£¬½¨ÒéÊ¹ÓÃ
     for (int j = 0; j < sz_of_stack; j++)
     {
         ZCE_LOG(dbg_lvl, "[BACKTRACE] %u, %s.", j + 1, symbols_strings[j]);
     }
 
-    //é‡Šæ”¾ç©ºé—´
+    //ÊÍ·Å¿Õ¼ä
     ::free(symbols_strings);
 
 #elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //æˆ‘è¿˜æ²¡æœ‰æ—¶é—´çœ‹å®Œdbghelpæ‰€æœ‰çš„ä¸œè¥¿,ç›®å‰çš„ä»£ç å‚è€ƒåä¸€ä¸ªç‰ˆæœ¬å±…å¤š,ç›®å‰è¿™ä¸ªä¸œä¸œå¿…é¡»æœ‰pdbæ–‡ä»¶ï¼Œ
+    //ÎÒ»¹Ã»ÓĞÊ±¼ä¿´ÍêdbghelpËùÓĞµÄ¶«Î÷,Ä¿Ç°µÄ´úÂë²Î¿¼ºóÒ»¸ö°æ±¾¾Ó¶à,Ä¿Ç°Õâ¸ö¶«¶«±ØĞëÓĞpdbÎÄ¼ş£¬
     //http://blog.csdn.net/skies457/article/details/7201185
 
     // Max length of symbols' name.
@@ -118,7 +118,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
         return -1;
     }
 
-    //è¿™äº›ç©ºé—´æ˜¯ç»å¯¹è¶³å¤Ÿçš„ï¼Œæˆ‘ä¹Ÿä¸åšè¯¦ç»†çš„æ£€æŸ¥äº†
+    //ÕâĞ©¿Õ¼äÊÇ¾ø¶Ô×ã¹»µÄ£¬ÎÒÒ²²»×öÏêÏ¸µÄ¼ì²éÁË
     const size_t LINE_OUTLEN = 1024;
     char line_out[LINE_OUTLEN];
     int use_len = 0;
@@ -183,18 +183,18 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 
 
 //=====================================================================================================================
-//è¾…åŠ©æ‰“å°ä¸€ä¸ªæŒ‡é’ˆå†…éƒ¨æ•°æ®çš„å‡½æ•°ï¼Œç”¨16è¿›åˆ¶çš„æ–¹å¼æ‰“å°
-//ç”¨ 11 02 03 0E E0         ..... æ ¼å¼çš„è¾“å‡ºï¼ŒæŒ‡é’ˆä¿¡æ¯ã€‚
+//¸¨Öú´òÓ¡Ò»¸öÖ¸ÕëÄÚ²¿Êı¾İµÄº¯Êı£¬ÓÃ16½øÖÆµÄ·½Ê½´òÓ¡
+//ÓÃ 11 02 03 0E E0         ..... ¸ñÊ½µÄÊä³ö£¬Ö¸ÕëĞÅÏ¢¡£
 void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
                             const char *dbg_info,
                             const unsigned char  *debug_ptr,
                             size_t data_len)
 {
     ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] out pointer address[%p] [%s].", dbg_info, dbg_info);
-    //60ä¸ªå­—ç¬¦æ¢è¡Œ
+    //60¸ö×Ö·û»»ĞĞ
     const unsigned int LINE_OUT_NUM = 60;
 
-    //è¿™äº›ç©ºé—´æ˜¯ç»å¯¹è¶³å¤Ÿçš„ï¼Œæˆ‘ä¹Ÿä¸åšè¯¦ç»†çš„æ£€æŸ¥äº†
+    //ÕâĞ©¿Õ¼äÊÇ¾ø¶Ô×ã¹»µÄ£¬ÎÒÒ²²»×öÏêÏ¸µÄ¼ì²éÁË
     const size_t LINE_OUTLEN = 1024;
     char line_out[LINE_OUTLEN];
     int use_len = 0;
@@ -206,22 +206,22 @@ void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
     for (size_t i = 0; i < data_len ; ++i, ++j)
     {
 
-        //æ¢è¡Œ
+        //»»ĞĞ
         if (i % LINE_OUT_NUM == 0 && i != 0  )
         {
             use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "  %s", ascii_str);
 
             ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] %s.", line_out);
-            //ä»å¤´å¼€å§‹è®°å½•
+            //´ÓÍ·¿ªÊ¼¼ÇÂ¼
             j = 0;
             use_len = 0;
 
         }
-        //è¿™ä¸ªåœ°æ–¹æ•ˆç‡æœ‰ç‚¹ä½ï¼Œåé¢å¯ä»¥è€ƒè™‘ä¼˜åŒ–ä¸€ä¸‹
+        //Õâ¸öµØ·½Ğ§ÂÊÓĞµãµÍ£¬ºóÃæ¿ÉÒÔ¿¼ÂÇÓÅ»¯Ò»ÏÂ
         unsigned char bytmp = *(debug_ptr + i);
         use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, " %02X ", bytmp);
 
-        //åªè€ƒè™‘èƒ½æ˜¾ç¤ºçš„å­—ç¬¦ï¼Œç‰¹æ®Šå­—ç¬¦æ›´æ¢ä¸º'.'
+        //Ö»¿¼ÂÇÄÜÏÔÊ¾µÄ×Ö·û£¬ÌØÊâ×Ö·û¸ü»»Îª'.'
         if (bytmp <= 0x20 || bytmp >= 0xFA )
         {
             bytmp = '.';
@@ -229,10 +229,10 @@ void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
         ascii_str [j] = bytmp;
     }
 
-    //å¦‚æœä¸æ˜¯LINE_OUT_NUM é•¿åº¦æ•´é™¤ï¼Œè¦å¯¹é½ï¼Œè¾“å‡ºæœ€åçš„å­—ç¬¦ä¸²
+    //Èç¹û²»ÊÇLINE_OUT_NUM ³¤¶ÈÕû³ı£¬Òª¶ÔÆë£¬Êä³ö×îºóµÄ×Ö·û´®
     if (data_len % LINE_OUT_NUM != 0 )
     {
-        //ä¸ºäº†å¯¹é½ï¼Œæ‰“å°ç©ºæ ¼
+        //ÎªÁË¶ÔÆë£¬´òÓ¡¿Õ¸ñ
         for (size_t k = 0; k < LINE_OUT_NUM - data_len % LINE_OUT_NUM; k++)
         {
             use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "%s", "    ");

@@ -269,7 +269,7 @@
     <ClInclude Include="zce_shm_hash_rehash.h" />
     <ClInclude Include="zce_shm_hash_table.h" />
     <ClInclude Include="zce_shm_list.h" />
-    <ClInclude Include="zce_shm_lockfree_deque.h" />
+    <ClInclude Include="zce_lockfree_kfifo.h" />
     <ClInclude Include="zce_shm_predefine.h" />
     <ClInclude Include="zce_shm_rbtree.h" />
     <ClInclude Include="zce_shm_array.h" />
@@ -382,7 +382,7 @@
     <ClCompile Include="zce_share_mem_posix.cpp" />
     <ClCompile Include="zce_share_mem_systemv.cpp" />
     <ClCompile Include="zce_shm_cache_chunk.cpp" />
-    <ClCompile Include="zce_shm_lockfree_deque.cpp" />
+    <ClCompile Include="zce_lockfree_kfifo.cpp" />
     <ClCompile Include="zce_shm_predefine.cpp" />
     <ClCompile Include="zce_socket_acceptor.cpp" />
     <ClCompile Include="zce_socket_addr_base.cpp" />

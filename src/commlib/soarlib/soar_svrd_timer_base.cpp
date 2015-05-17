@@ -1,4 +1,4 @@
-ï»¿
+
 #include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_stat_define.h"
@@ -9,10 +9,10 @@
 
 ZCE_Time_Value Server_Timer_Base::now_time_ = ZCE_LIB::gettimeofday();
 
-//å®šæ—¶å™¨ID,é¿å…Newä¼ é€’,å›æ”¶
+//¶¨Ê±Æ÷ID,±ÜÃâNew´«µİ,»ØÊÕ
 const int Server_Timer_Base::SERVER_TIMER_ID[] =
 {
-    0x201208,                      //å¿ƒè·³ID
+    0x201208,                      //ĞÄÌøID
 };
 
 
@@ -28,7 +28,7 @@ Server_Timer_Base::~Server_Timer_Base()
 }
 
 
-//åˆå§‹åŒ–ï¼Œå¦‚æœå¸Œæœ›å¢åŠ APPçš„å®šæ—¶å™¨æˆ–è€…è°ƒæ•´å¿ƒè·³è¿›åº¦ï¼Œè¯·åœ¨è°ƒç”¨è¿™ä¸ªå‡½æ•°å‰å®Œæˆ
+//³õÊ¼»¯£¬Èç¹ûÏ£ÍûÔö¼ÓAPPµÄ¶¨Ê±Æ÷»òÕßµ÷ÕûĞÄÌø½ø¶È£¬ÇëÔÚµ÷ÓÃÕâ¸öº¯ÊıÇ°Íê³É
 int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
 {
     stat_monitor_ = Soar_Stat_Monitor::instance();
@@ -43,7 +43,7 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
                                   ZCE_Time_Value::ZERO_TIME_VALUE,
                                   heart_precision_);
 
-    //æ ¹æ®è®¾ç½®æŠŠè¿™äº›å®šæ—¶å™¨ä¹Ÿå¼€å¯
+    //¸ù¾İÉèÖÃ°ÑÕâĞ©¶¨Ê±Æ÷Ò²¿ªÆô
     for (size_t i = 0; i < zan_timer_num_; ++i)
     {
         timer_queue()->schedule_timer(this,
@@ -54,13 +54,13 @@ int Server_Timer_Base::initialize(ZCE_Timer_Queue *queue)
     return 0;
 }
 
-//è¶…æ—¶å¤„ç†
+//³¬Ê±´¦Àí
 int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
                                      const void *act )
 {
     ZCE_UNUSED_ARG(act);
 
-    //è®°å½•å½“å‰æ—¶é—´ï¼Œ
+    //¼ÇÂ¼µ±Ç°Ê±¼ä£¬
     now_time_ = now_time;
 
 
@@ -70,7 +70,7 @@ int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
         ++heartbeat_counter_;
         heart_total_mesc_ = heartbeat_counter_ * heart_precision_.total_msec();
 
-        // å¤„ç†ç›‘æ§
+        // ´¦Àí¼à¿Ø
         check_monitor(now_time);
     }
 
@@ -78,25 +78,25 @@ int Server_Timer_Base::timer_timeout(const ZCE_Time_Value &now_time,
 }
 
 
-//å®šæ—¶å™¨å…³é—­
+//¶¨Ê±Æ÷¹Ø±Õ
 int Server_Timer_Base::timer_close()
 {
-    //å–æ¶ˆæ­¤Event Handlerç›¸å…³çš„å®šæ—¶å™¨
+    //È¡Ïû´ËEvent HandlerÏà¹ØµÄ¶¨Ê±Æ÷
     timer_queue()->cancel_timer(this);
 
     return 0;
 }
 
 
-// æ£€æŸ¥ç›‘æ§æ˜¯å¦è¶…æ—¶
+// ¼ì²é¼à¿ØÊÇ·ñ³¬Ê±
 void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
 {
     time_t now_sec = now_time.sec();
 
-    // æ£€æŸ¥æ˜¯å¦åœ¨åŒä¸€ä¸ªå‘¨æœŸå†…
+    // ¼ì²éÊÇ·ñÔÚÍ¬Ò»¸öÖÜÆÚÄÚ
     if (now_sec / FIVE_MINUTE_SECONDS != last_check_ / FIVE_MINUTE_SECONDS)
     {
-        // æ·»åŠ è¿›ç¨‹å­˜æ´»ç›‘æ§
+        // Ìí¼Ó½ø³Ì´æ»î¼à¿Ø
         report_status();
         stat_monitor_->check_overtime(now_sec);
 
@@ -106,21 +106,21 @@ void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
                     now_sec - last_check_, now_sec % FIVE_MINUTE_SECONDS);
         }
 
-        // è¿™é‡Œæ˜¯ä¸ºäº†ä¿è¯æ¯æ¬¡æ£€æŸ¥åœ¨5åˆ†é’Ÿæ•´
+        // ÕâÀïÊÇÎªÁË±£Ö¤Ã¿´Î¼ì²éÔÚ5·ÖÖÓÕû
         last_check_ = now_sec - (now_sec % FIVE_MINUTE_SECONDS);
     }
 }
 
 
-// ç³»ç»ŸåŠè¿›ç¨‹çŠ¶æ€é‡‡æ ·
+// ÏµÍ³¼°½ø³Ì×´Ì¬²ÉÑù
 void Server_Timer_Base::report_status()
 {
-    // ä¸ŠæŠ¥è¿›ç¨‹å­˜æ´»çŠ¶æ€
+    // ÉÏ±¨½ø³Ì´æ»î×´Ì¬
     stat_monitor_->increase_once(COMM_STAT_APP_ALIVE, 0, 0);
     Soar_Svrd_Appliction *svrd_app = Soar_Svrd_Appliction::instance();
 
     {
-        // è·å–æœåŠ¡å™¨çŠ¶æ€ä¿¡æ¯
+        // »ñÈ¡·şÎñÆ÷×´Ì¬ĞÅÏ¢
         int ret = svrd_app->watch_dog_status(false);
 
         if (ret != 0)
@@ -129,7 +129,7 @@ void Server_Timer_Base::report_status()
         }
         else
         {
-            // ä¸ŠæŠ¥ç›‘æ§æ•°æ®
+            // ÉÏ±¨¼à¿ØÊı¾İ
             stat_monitor_->set_by_statid(COMM_STAT_SYS_CPU_RATIO,
                                          0,
                                          0,
@@ -155,7 +155,7 @@ void Server_Timer_Base::report_status()
 }
 
 
-//è®¾ç½®å¿ƒè·³å®šæ—¶å™¨çš„è¿›åº¦ï¼Œé»˜è®¤æ˜¯0.5sä¸€æ¬¡ï¼Œå¦‚æœè§‰å¾—ä¸å¤Ÿï¼Œåœ¨initializeå‰é‡æ–°è®¾ç½®
+//ÉèÖÃĞÄÌø¶¨Ê±Æ÷µÄ½ø¶È£¬Ä¬ÈÏÊÇ0.5sÒ»´Î£¬Èç¹û¾õµÃ²»¹»£¬ÔÚinitializeÇ°ÖØĞÂÉèÖÃ
 void Server_Timer_Base::set_heart_precision(const ZCE_Time_Value &precision)
 {
     heart_precision_ = precision;
@@ -163,7 +163,7 @@ void Server_Timer_Base::set_heart_precision(const ZCE_Time_Value &precision)
 
 
 
-//å¢åŠ ä¸€ä¸ªAPPçš„å®šæ—¶å™¨
+//Ôö¼ÓÒ»¸öAPPµÄ¶¨Ê±Æ÷
 void Server_Timer_Base::add_app_timer(const ZCE_Time_Value &interval, const void *act)
 {
     ZCE_ASSERT(zan_timer_num_ + 1 >= MAX_APP_TIMER_NUMBER);

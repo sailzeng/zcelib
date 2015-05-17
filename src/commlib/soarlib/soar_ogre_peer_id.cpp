@@ -1,8 +1,8 @@
-ï»¿#include "soar_predefine.h"
+#include "soar_predefine.h"
 #include "soar_ogre_peer_id.h"
 
 /****************************************************************************************************
-class  Socket_Peer_Info ã€€æœåŠ¡ä¿¡æ¯,ä¸ºäº†åŒæ—¶è¡¨ç¤ºIP+ç«¯å£çš„æ¨¡å¼é‡‡ç”¨äº†UNIONæ–¹å¼
+class  Socket_Peer_Info ¡¡·şÎñĞÅÏ¢,ÎªÁËÍ¬Ê±±íÊ¾IP+¶Ë¿ÚµÄÄ£Ê½²ÉÓÃÁËUNION·½Ê½
 ****************************************************************************************************/
 
 OGRE_PEER_ID::OGRE_PEER_ID(unsigned int peer_ip_address, unsigned short peer_port):
@@ -28,14 +28,14 @@ void OGRE_PEER_ID::set(unsigned int peer_ip_address, unsigned short peer_port )
     peer_port_ = peer_port;
 }
 
-//æ ¹æ®ACEçš„IPåœ°å€è®¾ç½®
+//¸ù¾İACEµÄIPµØÖ·ÉèÖÃ
 void OGRE_PEER_ID::set(const ZCE_Sockaddr_In &inet_addr)
 {
     peer_ip_address_ = inet_addr.get_ip_address();
     peer_port_ = inet_addr.get_port_number();
 }
 
-//æ¯”è¾ƒå‡½æ•°,
+//±È½Ïº¯Êı,
 bool OGRE_PEER_ID::operator ==(const OGRE_PEER_ID &others) const
 {
     if (others.peer_ip_address_ == peer_ip_address_ && others.peer_port_ == peer_port_)
@@ -45,12 +45,12 @@ bool OGRE_PEER_ID::operator ==(const OGRE_PEER_ID &others) const
 
     return false;
 }
-//æ¯”è¾ƒä¸åŒå‡½æ•°,
+//±È½Ï²»Í¬º¯Êı,
 bool OGRE_PEER_ID::operator !=(const OGRE_PEER_ID &others) const
 {
     return !(*this == others);
 }
-//æœ‰ä¸ªæ’åºéœ€æ±‚,
+//ÓĞ¸öÅÅĞòĞèÇó,
 bool OGRE_PEER_ID::operator <(const OGRE_PEER_ID &others) const
 {
     if (peer_ip_address_ + peer_port_ < others.peer_ip_address_ + others.peer_port_ )

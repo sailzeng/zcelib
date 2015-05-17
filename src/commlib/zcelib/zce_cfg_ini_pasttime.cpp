@@ -1,4 +1,4 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_os_adapt_string.h"
 #include "zce_cfg_ini_pasttime.h"
@@ -14,14 +14,14 @@ ZCE_INI_Pt::~ZCE_INI_Pt()
 
 }
 
-//å¾—åˆ°keyå€¼çš„String
+//µÃµ½keyÖµµÄString
 size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
                                    const char *key_name,
                                    const char *default_str,
                                    char *return_str,
                                    const size_t size_ret_str)
 {
-    //è°ƒç”¨static get_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic get_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     return get_privateprofile_string(sec_name,
                                      key_name,
                                      default_str,
@@ -29,11 +29,11 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
                                      size_ret_str, file_name_.c_str());
 }
 
-//å¾—åˆ°æ‰€æœ‰çš„section,ç”¨'\0'åˆ†éš”ï¼Œä»¥'\0\0'ç»“æŸ
+//µÃµ½ËùÓĞµÄsection,ÓÃ'\0'·Ö¸ô£¬ÒÔ'\0\0'½áÊø
 size_t ZCE_INI_Pt::get_private_allsection(char *return_str,
                                           const size_t size_ret_str)
 {
-    //è°ƒç”¨static get_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic get_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     return get_privateprofile_string(NULL,
                                      NULL,
                                      NULL,
@@ -41,20 +41,20 @@ size_t ZCE_INI_Pt::get_private_allsection(char *return_str,
                                      size_ret_str, file_name_.c_str());
 }
 
-//å¾—åˆ°æŸä¸ªSectionä¸‹æ‰€æœ‰çš„Key = stringå€¼ ç”¨'\0'åˆ†éš”ï¼Œä»¥'\0\0'ç»“æŸ
+//µÃµ½Ä³¸öSectionÏÂËùÓĞµÄKey = stringÖµ ÓÃ'\0'·Ö¸ô£¬ÒÔ'\0\0'½áÊø
 size_t ZCE_INI_Pt::getprivate_allkey(const char *sec_name,
                                      char *return_str, const size_t size_ret_str)
 {
-    //è°ƒç”¨static get_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic get_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     return get_privateprofile_string(sec_name, NULL, NULL, return_str, size_ret_str, file_name_.c_str());
 }
 
-//å¾—åˆ°Intçš„ Keyå€¼
+//µÃµ½IntµÄ KeyÖµ
 int ZCE_INI_Pt::get_private_int(const char *sec_name,
                                 const char *key_name,
                                 const int default_int)
 {
-    //è°ƒç”¨static get_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic get_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     const size_t TMP_BUFFER_LEN = 64;
     char default_str[TMP_BUFFER_LEN], return_str[TMP_BUFFER_LEN];
     snprintf(default_str, TMP_BUFFER_LEN, "%d", default_int);
@@ -67,12 +67,12 @@ int ZCE_INI_Pt::get_private_int(const char *sec_name,
     return atoi(return_str);
 }
 
-//å¾—åˆ°boolçš„ Keyå€¼
+//µÃµ½boolµÄ KeyÖµ
 bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
                                   const char *key_name,
                                   bool bDefault)
 {
-    //è°ƒç”¨static get_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic get_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     const size_t TMP_BUFFER_LEN = 64;
     char default_str[TMP_BUFFER_LEN + 1], return_str[TMP_BUFFER_LEN + 1];
 
@@ -97,29 +97,29 @@ bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
     }
 }
 
-//å†™å…¥String
+//Ğ´ÈëString
 bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                                       const char *key_name,
                                       const char *write_string)
 {
-    //è°ƒç”¨static WritePrivateProfileStringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic WritePrivateProfileStringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     return write_privateprofile_string(sec_name, key_name, write_string, file_name_.c_str());
 }
 
-//ä¿®æ”¹Section
+//ĞŞ¸ÄSection
 bool ZCE_INI_Pt::write_private_section(const char *sec_name,
                                        const char *write_string)
 {
-    //è°ƒç”¨static WritePrivateProfileSectionå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic WritePrivateProfileSectionº¯ÊıÍê³É,×¢Òâ²ÎÊı
     return   write_privateprofile_section(sec_name, write_string, file_name_.c_str());
 }
 
-//å†™å…¥Int
+//Ğ´ÈëInt
 bool ZCE_INI_Pt::write_private_int(const char *sec_name,
                                    const char *key_name,
                                    const int nvalue)
 {
-    //è°ƒç”¨static write_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic write_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     const size_t TMP_BUFFER_LEN = 64;
     char write_string[TMP_BUFFER_LEN + 1];
     snprintf(write_string, TMP_BUFFER_LEN, "%d", nvalue);
@@ -129,12 +129,12 @@ bool ZCE_INI_Pt::write_private_int(const char *sec_name,
                                        file_name_.c_str());
 }
 
-//å†™å…¥Boolå˜é‡
+//Ğ´ÈëBool±äÁ¿
 bool ZCE_INI_Pt::write_private_bool(const char *sec_name,
                                     const char *key_name,
                                     const bool bvalue)
 {
-    //è°ƒç”¨static write_privateprofile_stringå‡½æ•°å®Œæˆ,æ³¨æ„å‚æ•°
+    //µ÷ÓÃstatic write_privateprofile_stringº¯ÊıÍê³É,×¢Òâ²ÎÊı
     const size_t TMP_BUFFER_LEN = 64;
     char  write_string[TMP_BUFFER_LEN + 1];
 
@@ -150,14 +150,14 @@ bool ZCE_INI_Pt::write_private_bool(const char *sec_name,
     return write_privateprofile_string(sec_name, key_name, write_string, file_name_.c_str());
 }
 
-//åˆ é™¤Key
+//É¾³ıKey
 bool ZCE_INI_Pt::del_private_key(const char *sec_name, const char *key_name)
 {
 
     return write_privateprofile_string(sec_name, key_name, NULL, file_name_.c_str());
 }
 
-//åˆ é™¤Section
+//É¾³ıSection
 bool ZCE_INI_Pt::del_private_section(const char *sec_name)
 {
 
@@ -175,7 +175,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
     const size_t size_ret_str,
     const char  *file_name)
 {
-    //è¿”å›å­—ç¬¦ä¸²çš„æŒ‡é’ˆä¸ºç©º,è¿”å›é”™è¯¯
+    //·µ»Ø×Ö·û´®µÄÖ¸ÕëÎª¿Õ,·µ»Ø´íÎó
     if (return_str == NULL || file_name == NULL)
     {
         assert(0);
@@ -183,7 +183,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
     *return_str = '\0';
 
-    //è¿”å›å­—ç¬¦ä¸²çš„å°ºå¯¸å°äº1,
+    //·µ»Ø×Ö·û´®µÄ³ß´çĞ¡ÓÚ1,
     if (size_ret_str <= 1)
     {
         *return_str = '\0';
@@ -192,25 +192,25 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
     int operate = 0;
 
-    //å¦‚æœAppå’ŒKeyå…¨éƒ¨ä¸ºç©ºï¼Œåˆ™è¿”å›æ‰€æœ‰çš„Sectionï¼Œç”¨'\0'åˆ†éš”ï¼Œæœ€åä¸€ä¸ªç”¨ä¸¤ä¸ª'\0'æ ‡è¯†
+    //Èç¹ûAppºÍKeyÈ«²¿Îª¿Õ£¬Ôò·µ»ØËùÓĞµÄSection£¬ÓÃ'\0'·Ö¸ô£¬×îºóÒ»¸öÓÃÁ½¸ö'\0'±êÊ¶
     if (sec_name == NULL && key_name == NULL)
     {
         operate = 1;
     }
 
-    //å¦‚æœKeyä¸ºç©ºï¼ŒAppä¸ç©ºï¼Œåˆ™è¿”å›æ‰€æœ‰çš„Sectionä¸‹çš„Keyå€¼ï¼Œç”¨'\0'åˆ†éš”ï¼Œæœ€åä¸€ä¸ªç”¨ä¸¤ä¸ª'\0'æ ‡è¯†
+    //Èç¹ûKeyÎª¿Õ£¬App²»¿Õ£¬Ôò·µ»ØËùÓĞµÄSectionÏÂµÄKeyÖµ£¬ÓÃ'\0'·Ö¸ô£¬×îºóÒ»¸öÓÃÁ½¸ö'\0'±êÊ¶
     if (sec_name != NULL && key_name == NULL)
     {
         operate = 2;
     }
 
-    //Appä¸ºç©ºï¼ŒKeyä¸ä¸ºç©º,åˆ™æ£€æŸ¥æ‰€æœ‰çš„Keyï¼Œå°†ç¬¬ä¸€ä¸ªåŒ¹é…çš„é”®å€¼è¿”å›
+    //AppÎª¿Õ£¬Key²»Îª¿Õ,Ôò¼ì²éËùÓĞµÄKey£¬½«µÚÒ»¸öÆ¥ÅäµÄ¼üÖµ·µ»Ø
     if (sec_name == NULL && key_name != NULL)
     {
         operate = 3;
     }
 
-    //Appï¼ŒKeyéƒ¨ä¸ä¸ºç©ºï¼Œè¿™è¿”å›Appï¼ŒKeyéƒ½åŒ¹é…çš„é”®å€¼
+    //App£¬Key²¿²»Îª¿Õ£¬Õâ·µ»ØApp£¬Key¶¼Æ¥ÅäµÄ¼üÖµ
     if (sec_name != NULL && key_name != NULL)
     {
         operate = 4;
@@ -218,7 +218,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
     std::ifstream cfgfile(file_name);
 
-    //æ–‡ä»¶æ‰“ä¸å¼€ï¼Œè¿”å›é»˜è®¤å€¼
+    //ÎÄ¼ş´ò²»¿ª£¬·µ»ØÄ¬ÈÏÖµ
     if (!cfgfile)
     {
         strncpy(return_str, default_str, size_ret_str - 1);
@@ -226,7 +226,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         return strlen(return_str);
     }
 
-    //8*1024,1è¡Œçš„æœ€å¤§å€¼
+    //8*1024,1ĞĞµÄ×î´óÖµ
     char choneline[LINE_BUFFER_LEN + 1], chkey[LINE_BUFFER_LEN + 1], chstring[LINE_BUFFER_LEN + 1];
     choneline[LINE_BUFFER_LEN] = '\0';
     chkey[LINE_BUFFER_LEN] = '\0';
@@ -236,10 +236,10 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
     size_t ntmp;
     bool if_app;
 
-    //å¦‚æœAppå’ŒKeyå…¨éƒ¨ä¸ºç©ºï¼Œåˆ™è¿”å›æ‰€æœ‰çš„Sectionï¼Œç”¨'\0'åˆ†éš”ï¼Œæœ€åä¸€ä¸ªç”¨ä¸¤ä¸ª'\0'æ ‡è¯†
+    //Èç¹ûAppºÍKeyÈ«²¿Îª¿Õ£¬Ôò·µ»ØËùÓĞµÄSection£¬ÓÃ'\0'·Ö¸ô£¬×îºóÒ»¸öÓÃÁ½¸ö'\0'±êÊ¶
     if (operate == 1)
     {
-        //å¦‚æœè¿”å›å­—ç¬¦ä¸²é•¿åº¦å°äº2,å…¨éƒ¨è¿”å›ç©ºå­—ç¬¦
+        //Èç¹û·µ»Ø×Ö·û´®³¤¶ÈĞ¡ÓÚ2,È«²¿·µ»Ø¿Õ×Ö·û
         if (size_ret_str <= 2)
         {
             *return_str = '\0';
@@ -255,10 +255,10 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         {
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
             //fgets(choneline,LINE_BUFFER_LEN,pfile);
-            //æ•´ç†ï¼Œ
+            //ÕûÀí£¬
             ZCE_LIB::strtrim(choneline);
 
-            //æ³¨é‡Šè¡Œ
+            //×¢ÊÍĞĞ
             if (choneline[0] == ';' || choneline[0] == '#')
             {
                 continue;
@@ -266,7 +266,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
             if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
             {
-                //å»æ‰'[',']'
+                //È¥µô'[',']'
                 memmove(choneline, choneline + 1, strlen(choneline) - 1);
                 choneline[strlen(choneline) - 2] = '\0';
 
@@ -275,17 +275,17 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
                 ntmp = ntmp - strlen(pstrtmp) - 1;
 
-                //åŒæ—¶è€ƒè™‘ç»“æŸå­—ç¬¦ç”¨ä¸¤ä¸ª'\0'
+                //Í¬Ê±¿¼ÂÇ½áÊø×Ö·ûÓÃÁ½¸ö'\0'
                 if (ntmp > 1)
                 {
-                    //è·³åˆ°ä¸‹ä¸€ä¸ªå†™çš„åœ°æ–¹ã€é•¿åº¦åŒ…æ‹¬ä¸€ä¸ª'\0',
+                    //Ìøµ½ÏÂÒ»¸öĞ´µÄµØ·½¡¢³¤¶È°üÀ¨Ò»¸ö'\0',
                     pstrtmp += strlen(pstrtmp) + 1;
                 }
                 //
                 else
                 {
                     *(pstrtmp + strlen(pstrtmp)) = '\0';
-                    //ç»“æŸçš„å­—ç¬¦è¦ç”¨åŒ'\0'
+                    //½áÊøµÄ×Ö·ûÒªÓÃË«'\0'
                     *(return_str + strlen(pstrtmp) + 1) = '\0';
                     return size_ret_str - ntmp - 2;
                 }
@@ -300,7 +300,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         }
         else
         {
-            //è¿”å›é»˜è®¤å€¼
+            //·µ»ØÄ¬ÈÏÖµ
             if (default_str == NULL)
             {
                 return_str[0] = '\0';
@@ -317,10 +317,10 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
     }
 
-    //å¦‚æœKeyä¸ºç©ºï¼ŒAppä¸ç©ºï¼Œåˆ™è¿”å›æ‰€æœ‰çš„Sectionä¸‹çš„Keyå€¼ï¼Œç”¨'\0'åˆ†éš”ï¼Œæœ€åä¸€ä¸ªç”¨ä¸¤ä¸ª'\0'æ ‡è¯†
+    //Èç¹ûKeyÎª¿Õ£¬App²»¿Õ£¬Ôò·µ»ØËùÓĞµÄSectionÏÂµÄKeyÖµ£¬ÓÃ'\0'·Ö¸ô£¬×îºóÒ»¸öÓÃÁ½¸ö'\0'±êÊ¶
     if (operate == 2)
     {
-        //å¦‚æœè¿”å›å­—ç¬¦ä¸²é•¿åº¦å°äº2,å…¨éƒ¨è¿”å›ç©ºå­—ç¬¦
+        //Èç¹û·µ»Ø×Ö·û´®³¤¶ÈĞ¡ÓÚ2,È«²¿·µ»Ø¿Õ×Ö·û
         if (size_ret_str <= 2)
         {
             *return_str = '\0';
@@ -336,29 +336,29 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         {
 
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
-            //æ•´ç†ï¼Œ
+            //ÕûÀí£¬
             ZCE_LIB::strtrim(choneline);
 
-            //æ³¨é‡Šè¡Œ
+            //×¢ÊÍĞĞ
             if (choneline[0] == ';' || choneline[0] == '#')
             {
                 continue;
             }
 
-            //æ‰¾åŒ¹é…çš„Section
+            //ÕÒÆ¥ÅäµÄSection
             if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
             {
-                //å·²ç»æ‰¾åˆ°ä¸‹ä¸€ä¸ªSection,æ²¡æœ‰å‘ç°ç›¸å…³çš„Keyï¼Œè¿”å›æŸ¥è¯¢çš„æ‰€æœ‰Keyå€¼
+                //ÒÑ¾­ÕÒµ½ÏÂÒ»¸öSection,Ã»ÓĞ·¢ÏÖÏà¹ØµÄKey£¬·µ»Ø²éÑ¯µÄËùÓĞKeyÖµ
                 if (if_app == true)
                 {
                     *pstrtmp = '\0';
                     return size_ret_str - ntmp - 2;
                 }
 
-                //å»æ‰'[',']'
+                //È¥µô'[',']'
                 memmove(choneline, choneline + 1, strlen(choneline) - 1);
                 choneline[strlen(choneline) - 2] = '\0';
-                //æ•´ç†ï¼Œ
+                //ÕûÀí£¬
                 ZCE_LIB::strtrim(choneline);
 
                 if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
@@ -370,7 +370,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                 }
             }
 
-            //æ‰¾key
+            //ÕÒkey
             if (if_app == true)
             {
                 char *str = strstr(choneline, "=");
@@ -379,22 +379,22 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                 {
 
                     strncpy(pstrtmp, choneline, ntmp - 1);
-                    //æ·»åŠ ç»“æŸç¬¦
+                    //Ìí¼Ó½áÊø·û
                     *(pstrtmp + strlen(pstrtmp)) = '\0';
-                    //é•¿åº¦åŒ…æ‹¬ä¸€ä¸ª'\0'ï¼Œ
+                    //³¤¶È°üÀ¨Ò»¸ö'\0'£¬
                     ntmp = ntmp - strlen(pstrtmp) - 1;
 
-                    //åŒæ—¶è€ƒè™‘ç»“æŸå­—ç¬¦ç”¨ä¸¤ä¸ª'\0'
+                    //Í¬Ê±¿¼ÂÇ½áÊø×Ö·ûÓÃÁ½¸ö'\0'
                     if (ntmp > 1)
                     {
-                        //è·³åˆ°ä¸‹ä¸€ä¸ªå†™çš„åœ°æ–¹ã€é•¿åº¦åŒ…æ‹¬ä¸€ä¸ª'\0',
+                        //Ìøµ½ÏÂÒ»¸öĞ´µÄµØ·½¡¢³¤¶È°üÀ¨Ò»¸ö'\0',
                         pstrtmp += strlen(pstrtmp) + 1;
                     }
                     //
                     else
                     {
                         *(pstrtmp + strlen(pstrtmp)) = '\0';
-                        //ç»“æŸçš„å­—ç¬¦è¦ç”¨åŒ'\0'
+                        //½áÊøµÄ×Ö·ûÒªÓÃË«'\0'
                         *(return_str + strlen(pstrtmp) + 1) = '\0';
                         return size_ret_str - ntmp - 2;
                     }
@@ -410,7 +410,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         }
         else
         {
-            //è¿”å›é»˜è®¤å€¼
+            //·µ»ØÄ¬ÈÏÖµ
             if (default_str == NULL)
             {
                 return_str[0] = '\0';
@@ -427,16 +427,16 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
     }
 
-    //Appä¸ºç©ºï¼ŒKeyä¸ä¸ºç©º,åˆ™æ£€æŸ¥æ‰€æœ‰çš„Keyï¼Œå°†ç¬¬ä¸€ä¸ªåŒ¹é…çš„é”®å€¼è¿”å›
+    //AppÎª¿Õ£¬Key²»Îª¿Õ,Ôò¼ì²éËùÓĞµÄKey£¬½«µÚÒ»¸öÆ¥ÅäµÄ¼üÖµ·µ»Ø
     if (operate == 3)
     {
         while (cfgfile)
         {
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
-            //æ•´ç†
+            //ÕûÀí
             ZCE_LIB::strtrim(choneline);
 
-            //æ³¨é‡Šè¡Œ
+            //×¢ÊÍĞĞ
             if (choneline[0] == ';' || choneline[0] == '#')
             {
                 continue;
@@ -452,7 +452,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                 strncpy(chstring, snext, LINE_BUFFER_LEN);
 
                 ////
-                //æ‰¾åˆ°è¿”å›ã€‚
+                //ÕÒµ½·µ»Ø¡£
                 if (ZCE_LIB::strcasecmp(chkey, key_name) == 0)
                 {
                     strncpy(return_str, chstring, size_ret_str - 1);
@@ -462,7 +462,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
             }
         }
 
-        //è¿”å›é»˜è®¤å€¼
+        //·µ»ØÄ¬ÈÏÖµ
         if (default_str == NULL)
         {
             return_str = '\0';
@@ -476,7 +476,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         }
     }
 
-    //Appï¼ŒKeyéƒ¨ä¸ä¸ºç©ºï¼Œè¿™è¿”å›Appï¼ŒKeyéƒ½åŒ¹é…çš„é”®å€¼
+    //App£¬Key²¿²»Îª¿Õ£¬Õâ·µ»ØApp£¬Key¶¼Æ¥ÅäµÄ¼üÖµ
     if (operate == 4)
     {
         if_app = false;
@@ -485,10 +485,10 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
         {
 
             cfgfile.getline(choneline, LINE_BUFFER_LEN);
-            //æ•´ç†
+            //ÕûÀí
             ZCE_LIB::strtrim(choneline);
 
-            //æ³¨é‡Šè¡Œ
+            //×¢ÊÍĞĞ
             if (choneline[0] == ';' || choneline[0] == '#')
             {
                 continue;
@@ -496,10 +496,10 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
 
             if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
             {
-                //å·²ç»æ‰¾åˆ°ä¸‹ä¸€ä¸ªSection,æ²¡æœ‰å‘ç°ç›¸å…³çš„Keyï¼Œè¿”å›é»˜è®¤å€¼
+                //ÒÑ¾­ÕÒµ½ÏÂÒ»¸öSection,Ã»ÓĞ·¢ÏÖÏà¹ØµÄKey£¬·µ»ØÄ¬ÈÏÖµ
                 if (if_app == true)
                 {
-                    //è¿”å›é»˜è®¤å€¼
+                    //·µ»ØÄ¬ÈÏÖµ
                     if (default_str == NULL)
                     {
                         return_str = '\0';
@@ -513,7 +513,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                     }
                 }
 
-                //å»æ‰'[',']'
+                //È¥µô'[',']'
                 memmove(choneline, choneline + 1, strlen(choneline) - 1);
                 choneline[strlen(choneline) - 2] = '\0';
                 //
@@ -541,7 +541,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
                     ZCE_LIB::strtrim(chkey);
                     ZCE_LIB::strtrim(chstring);
 
-                    //æ‰¾åˆ°è¿”å›ã€‚
+                    //ÕÒµ½·µ»Ø¡£
                     if (ZCE_LIB::strcasecmp(chkey, key_name) == 0)
                     {
                         strncpy(return_str, chstring, size_ret_str - 1);
@@ -570,7 +570,7 @@ size_t ZCE_INI_Pt::get_privateprofile_string(
     return 0;
 }
 
-//è¯»å–INIæ–‡ä»¶çš„è°‹ä¸ªå­—æ®µä½œä¸ºæ•´æ•°è¿”å›
+//¶ÁÈ¡INIÎÄ¼şµÄÄ±¸ö×Ö¶Î×÷ÎªÕûÊı·µ»Ø
 int ZCE_INI_Pt::get_privateprofile_int(
     const char *sec_name,
     const char *key_name,
@@ -584,7 +584,7 @@ int ZCE_INI_Pt::get_privateprofile_int(
     return atoi(return_str);
 }
 
-//å†™INIæ–‡ä»¶çš„è°‹ä¸ªå­—æ®µï¼Œ
+//Ğ´INIÎÄ¼şµÄÄ±¸ö×Ö¶Î£¬
 bool ZCE_INI_Pt::write_privateprofile_string(
     const char *sec_name,
     const char *key_name,
@@ -611,7 +611,7 @@ bool ZCE_INI_Pt::write_privateprofile_string(
     FILE *pfile;
     pfile = fopen(file_name, "r+t");
 
-    //æ–‡ä»¶æ‰“ä¸å¼€ï¼Œ
+    //ÎÄ¼ş´ò²»¿ª£¬
     if (pfile == NULL)
     {
         pfile = fopen(file_name, "w+t");
@@ -631,12 +631,12 @@ bool ZCE_INI_Pt::write_privateprofile_string(
         return true;
     }
 
-    //1è¡Œçš„æœ€å¤§å€¼
+    //1ĞĞµÄ×î´óÖµ
     char choneline[LINE_BUFFER_LEN + 1], line[LINE_BUFFER_LEN + 1], chkey[LINE_BUFFER_LEN + 1], chstring[LINE_BUFFER_LEN + 1];
 
     if (operate == 1)
     {
-        //å¦‚æœæ²¡æœ‰ç›¸å…³çš„Appï¼Œå°†section=string å†™åœ¨æœ«å°¾
+        //Èç¹ûÃ»ÓĞÏà¹ØµÄApp£¬½«section=string Ğ´ÔÚÄ©Î²
         fseek(pfile, 0, SEEK_END);
         fprintf(pfile, "%s", "\n");
         fprintf(pfile, "%s=%s", key_name, write_string);
@@ -645,16 +645,16 @@ bool ZCE_INI_Pt::write_privateprofile_string(
 
     if (operate == 2)
     {
-        //æ–°æ–‡ä»¶ä¿å­˜æ•°æ®åŒº
+        //ĞÂÎÄ¼ş±£´æÊı¾İÇø
         std::vector<std::string> strarytmp;
         std::string strtmp;
         line[0] = '\0';
-        //è¡¨ç¤ºæ˜¯å¦æ‰¾åˆ°App,key
+        //±íÊ¾ÊÇ·ñÕÒµ½App,key
         bool bApp = false, bkey = false;
 
         while (!feof(pfile))
         {
-            //å¡«å†™åˆ°ä¸´æ—¶æ–‡ä»¶
+            //ÌîĞ´µ½ÁÙÊ±ÎÄ¼ş
             if (line[0] != '\0')
             {
                 std::string strtmp(line);
@@ -667,10 +667,10 @@ bool ZCE_INI_Pt::write_privateprofile_string(
             }
 
             memmove(line, choneline, strlen(choneline) + 1);
-            //æ•´ç†
+            //ÕûÀí
             ZCE_LIB::strtrim(choneline);
 
-            //æ³¨é‡Šè¡Œ,ç©ºè¡Œ
+            //×¢ÊÍĞĞ,¿ÕĞĞ
             if (choneline[0] == ';' || choneline[0] == '#' || choneline[0] == '\0')
             {
                 continue;
@@ -679,7 +679,7 @@ bool ZCE_INI_Pt::write_privateprofile_string(
             //[Section]
             if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
             {
-                //å·²ç»æ‰¾åˆ°ä¸‹ä¸€ä¸ªSection,æ²¡æœ‰å‘ç°ç›¸å…³çš„Keyï¼Œè¿”å›é»˜è®¤å€¼
+                //ÒÑ¾­ÕÒµ½ÏÂÒ»¸öSection,Ã»ÓĞ·¢ÏÖÏà¹ØµÄKey£¬·µ»ØÄ¬ÈÏÖµ
                 if (bApp == true)
                 {
                     if (key_name != NULL && write_string != NULL)
@@ -694,18 +694,18 @@ bool ZCE_INI_Pt::write_privateprofile_string(
                 }
 
                 choneline[strlen(choneline) - 1] = '\0';
-                //è§„æ•´
+                //¹æÕû
                 ZCE_LIB::strtrimleft(choneline);
-                //å»æ‰'[',']'
+                //È¥µô'[',']'
                 memmove(choneline, choneline + 1, strlen(choneline));
                 ZCE_LIB::strtrimright(choneline);
 
-                //æ¯”è¾ƒSectionéƒ¨åˆ†
+                //±È½ÏSection²¿·Ö
                 if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
                 {
                     bApp = true;
 
-                    //è¦åˆ é™¤è¿™ä¸ªApp
+                    //ÒªÉ¾³ıÕâ¸öApp
                     if (key_name == NULL)
                     {
                         line[0] = '\0';
@@ -715,37 +715,37 @@ bool ZCE_INI_Pt::write_privateprofile_string(
                 }
             }
 
-            //å¦‚æœ[Section] å·²ç»æ‰¾åˆ°
+            //Èç¹û[Section] ÒÑ¾­ÕÒµ½
             if (bApp == true)
             {
-                //å¦‚æœKey==NULL,ä¸ç”¨æŸ¥è¯¢ï¼Œç»§ç»­
+                //Èç¹ûKey==NULL,²»ÓÃ²éÑ¯£¬¼ÌĞø
                 if (key_name == NULL)
                 {
                     line[0] = '\0';
                     continue;
                 }
 
-                //æ‰¾åˆ°ç¬¬ä¸€ä¸ª'='
+                //ÕÒµ½µÚÒ»¸ö'='
                 char *str = strstr(choneline, "=");
 
-                //å¦‚æœæ‰¾åˆ°
+                //Èç¹ûÕÒµ½
                 if (str != NULL)
                 {
                     char *snext = str + 1;
                     *str = '\0';
                     strncpy(chkey, choneline, LINE_BUFFER_LEN);
                     strncpy(chstring, snext, LINE_BUFFER_LEN);
-                    //è§„æ•´
+                    //¹æÕû
                     ZCE_LIB::strtrim(chkey);
                     ZCE_LIB::strtrim(chstring);
 
-                    //æ‰¾åˆ°å¯¹åº”çš„Key
+                    //ÕÒµ½¶ÔÓ¦µÄKey
                     if (ZCE_LIB::strcasecmp(chkey, key_name) == 0)
                     {
-                        //è¡¨ç¤ºæ‰¾åˆ°é”®å€¼
+                        //±íÊ¾ÕÒµ½¼üÖµ
                         bkey = true;
 
-                        //å¦‚æœKeystring==NULLåˆ™åˆ é™¤Keyï¼Œå¦‚æœKeystring!=NULL,åˆ™å†™å…¥ã€‚
+                        //Èç¹ûKeystring==NULLÔòÉ¾³ıKey£¬Èç¹ûKeystring!=NULL,ÔòĞ´Èë¡£
                         if (write_string != NULL)
                         {
                             snprintf(line, LINE_BUFFER_LEN, "%s=%s\n", key_name, write_string);
@@ -768,7 +768,7 @@ bool ZCE_INI_Pt::write_privateprofile_string(
             strarytmp.push_back(line);
         }
 
-        //å¦‚æœæ‰¾åˆ°App ,å¹¶ä¸”æ‰¾åˆ°Keyæˆ–è€…key == NUL ,è¡¨ç¤ºå·¥ä½œå·²ç»å®Œæˆ,
+        //Èç¹ûÕÒµ½App ,²¢ÇÒÕÒµ½Key»òÕßkey == NUL ,±íÊ¾¹¤×÷ÒÑ¾­Íê³É,
         if (bApp == true)
         {
 
@@ -793,7 +793,7 @@ bool ZCE_INI_Pt::write_privateprofile_string(
             }
 
             fclose(pfile);
-            //å°†ä¿¡æ¯å†™ä¼šæ–‡ä»¶
+            //½«ĞÅÏ¢Ğ´»áÎÄ¼ş
             pfile = fopen(file_name, "w+t");
 
             for (size_t j = 0; j < strarytmp.size(); ++j)
@@ -801,13 +801,13 @@ bool ZCE_INI_Pt::write_privateprofile_string(
                 fputs(strarytmp[j].c_str(), pfile);
             }
 
-            //å…³é—­æ–‡ä»¶
+            //¹Ø±ÕÎÄ¼ş
             fclose(pfile);
             return true;
         }
         else if (bApp == false)
         {
-            //å°†Appï¼ŒKey Stringå…¨éƒ¨å†™å…¥
+            //½«App£¬Key StringÈ«²¿Ğ´Èë
             if (bkey == false && key_name != NULL && write_string != NULL)
             {
                 fseek(pfile, 0, SEEK_END);
@@ -844,26 +844,26 @@ bool ZCE_INI_Pt::write_privateprofile_section(
 
     FILE *pfile = fopen(file_name, "r+t");
 
-    //æ–‡ä»¶æ‰“ä¸å¼€ï¼Œ
+    //ÎÄ¼ş´ò²»¿ª£¬
     if (pfile == NULL)
     {
         return false;
     }
 
-    //8*1024,1è¡Œçš„æœ€å¤§å€¼
+    //8*1024,1ĞĞµÄ×î´óÖµ
     char choneline[LINE_BUFFER_LEN + 1], line[LINE_BUFFER_LEN + 1], *read_ret = NULL;
 
-    //æ–°æ–‡ä»¶ä¿å­˜æ•°æ®åŒº
+    //ĞÂÎÄ¼ş±£´æÊı¾İÇø
     std::vector<std::string> strarytmp;
     std::string strtmp;
     line[0] = '\0';
 
-    //è¡¨ç¤ºæ˜¯å¦æ‰¾åˆ°App,key
+    //±íÊ¾ÊÇ·ñÕÒµ½App,key
     bool bApp = false;
 
     while (!feof(pfile))
     {
-        //å¡«å†™åˆ°ä¸´æ—¶æ•°æ®åŒº
+        //ÌîĞ´µ½ÁÙÊ±Êı¾İÇø
         if (line[0] != '\0')
         {
             std::string strtmp(line);
@@ -876,10 +876,10 @@ bool ZCE_INI_Pt::write_privateprofile_section(
             return false;
         }
         memmove(line, choneline, strlen(choneline) + 1);
-        //æ•´ç†
+        //ÕûÀí
         ZCE_LIB::strtrim(choneline);
 
-        //æ³¨é‡Šè¡Œ,ç©ºè¡Œ
+        //×¢ÊÍĞĞ,¿ÕĞĞ
         if (choneline[0] == ';' || choneline[0] == '#' || choneline[0] == '\0')
         {
             continue;
@@ -888,17 +888,17 @@ bool ZCE_INI_Pt::write_privateprofile_section(
         //[Section]
         if (choneline[0] == '[' && choneline[strlen(choneline) - 1] == ']')
         {
-            //å»æ‰'[',']'
+            //È¥µô'[',']'
             memmove(choneline, choneline + 1, strlen(choneline) - 1);
             choneline[strlen(choneline) - 2] = '\0';
-            //è§„æ•´
+            //¹æÕû
             ZCE_LIB::strtrim(choneline);
 
-            //æ¯”è¾ƒSectionéƒ¨åˆ†
+            //±È½ÏSection²¿·Ö
             if (ZCE_LIB::strcasecmp(choneline, sec_name) == 0)
             {
                 bApp = true;
-                //è¦ä¿®æ”¹è¿™ä¸ªApp
+                //ÒªĞŞ¸ÄÕâ¸öApp
                 snprintf(line, LINE_BUFFER_LEN, "[%s]\n", write_string);
                 break;
             }
@@ -912,7 +912,7 @@ bool ZCE_INI_Pt::write_privateprofile_section(
         strarytmp.push_back(line);
     }
 
-    //å¦‚æœæ‰¾åˆ°App ,å¹¶ä¸”æ‰¾åˆ°Keyæˆ–è€…key == NUL ,è¡¨ç¤ºå·¥ä½œå·²ç»å®Œæˆ,
+    //Èç¹ûÕÒµ½App ,²¢ÇÒÕÒµ½Key»òÕßkey == NUL ,±íÊ¾¹¤×÷ÒÑ¾­Íê³É,
     if (bApp == true)
     {
 
@@ -928,7 +928,7 @@ bool ZCE_INI_Pt::write_privateprofile_section(
         }
 
         fclose(pfile);
-        //å°†ä¿¡æ¯å†™ä¼šæ–‡ä»¶
+        //½«ĞÅÏ¢Ğ´»áÎÄ¼ş
         pfile = fopen(file_name, "w+t");
 
         for (size_t j = 0; j < strarytmp.size(); ++j)
@@ -936,7 +936,7 @@ bool ZCE_INI_Pt::write_privateprofile_section(
             fputs(strarytmp[j].c_str(), pfile);
         }
 
-        //å…³é—­æ–‡ä»¶
+        //¹Ø±ÕÎÄ¼ş
         fclose(pfile);
         return true;
     }

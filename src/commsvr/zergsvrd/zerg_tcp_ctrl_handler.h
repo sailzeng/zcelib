@@ -1,4 +1,4 @@
-ï»¿#ifndef ZERG_TCP_CONTROL_SERVICE_H_
+#ifndef ZERG_TCP_CONTROL_SERVICE_H_
 #define ZERG_TCP_CONTROL_SERVICE_H_
 
 #include "zerg_buf_storage.h"
@@ -18,57 +18,57 @@ class TCP_Svc_Handler : public ZCE_Event_Handler,
 {
 public:
 
-    ///æœåŠ¡çš„æ¨¡å¼
+    ///·şÎñµÄÄ£Ê½
     enum HANDLER_MODE
     {
-        ///æ— æ•ˆçš„é“¾æ¥
+        ///ÎŞĞ§µÄÁ´½Ó
         HANDLER_MODE_INVALID,
-        ///ä¸»åŠ¨è¿æ¥çš„Handler
+        ///Ö÷¶¯Á¬½ÓµÄHandler
         HANDLER_MODE_CONNECT,
-        ///è¢«åŠ¨æ¥å—æŸä¸ªç«¯å£çš„Handler
+        ///±»¶¯½ÓÊÜÄ³¸ö¶Ë¿ÚµÄHandler
         HANDLER_MODE_ACCEPTED,
     };
 
     //
     enum PEER_STATUS
     {
-        ///PEER æ²¡æœ‰è¿æ¥ä¸Š
+        ///PEER Ã»ÓĞÁ¬½ÓÉÏ
         PEER_STATUS_NOACTIVE,
-        ///PEER åˆšåˆšACCEPTä¸Š,ä½†æ˜¯æ²¡æœ‰å‘é€æˆ–è€…å—åˆ°ä»»ä½•æ•°æ®
+        ///PEER ¸Õ¸ÕACCEPTÉÏ,µ«ÊÇÃ»ÓĞ·¢ËÍ»òÕßÊÜµ½ÈÎºÎÊı¾İ
         PEER_STATUS_JUST_ACCEPT,
-        ///PEER åˆšåˆšCONNECTä¸Š,ä½†æ˜¯æ²¡æœ‰æ”¶åˆ°ä»»ä½•æ•°æ®
+        ///PEER ¸Õ¸ÕCONNECTÉÏ,µ«ÊÇÃ»ÓĞÊÕµ½ÈÎºÎÊı¾İ
         PEER_STATUS_JUST_CONNECT,
-        ///PEER å·²ç»å¤„äºæ¿€æ´»çŠ¶æ€,
+        ///PEER ÒÑ¾­´¦ÓÚ¼¤»î×´Ì¬,
         PEER_STATUS_ACTIVE,
     };
 
 
 protected:
 
-    ///å¥æŸ„çš„æ± å­ï¼Œé¿å…æ¯æ¬¡éƒ½newå¤„ç†
+    ///¾ä±úµÄ³Ø×Ó£¬±ÜÃâÃ¿´Î¶¼new´¦Àí
     typedef ZCE_LIB::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
-    //ä¸ºäº†è®©ä½ æ— æ³•åœ¨å †ä»¥å¤–ä½¿ç”¨TCP_Svc_Handler
+    //ÎªÁËÈÃÄãÎŞ·¨ÔÚ¶ÑÒÔÍâÊ¹ÓÃTCP_Svc_Handler
 protected:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°
-    * @param      hdl_mode æ¨¡å¼ï¼Œå‚è€ƒ@enum HANDLER_MODE,æ ¹æ®æ¨¡å¼çš„ä¸åŒå†…éƒ¨å‘é€é˜Ÿåˆ—å¤§å°ä¸ä¸€è‡´
+    * @brief      ¹¹Ôìº¯Êı
+    * @param      hdl_mode Ä£Ê½£¬²Î¿¼@enum HANDLER_MODE,¸ù¾İÄ£Ê½µÄ²»Í¬ÄÚ²¿·¢ËÍ¶ÓÁĞ´óĞ¡²»Ò»ÖÂ
     */
     TCP_Svc_Handler(HANDLER_MODE hdl_mode);
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     virtual ~TCP_Svc_Handler();
 
 public:
 
 
     /*!
-    * @brief      ç”¨äºAcceptçš„ç«¯å£çš„å¤„ç†Event Handleåˆå§‹åŒ–å¤„ç†.
+    * @brief      ÓÃÓÚAcceptµÄ¶Ë¿ÚµÄ´¦ÀíEvent Handle³õÊ¼»¯´¦Àí.
     * @return     void
-    * @param      my_svcinfo  æ­¤å¥æŸ„å¯¹åº”çš„æœ¬ç«¯çš„SVC ID
-    * @param      sockstream  SOCKET å¥æŸ„
-    * @param      socketaddr  å¯¹ç«¯çš„åœ°å€ï¼Œå…¶å®å¯ä»¥ä»sockstreamä¸­å¾—åˆ°ï¼Œä½†ä¸ºäº†æ•ˆç‡å’Œæ–¹ä¾¿.
-    * @note       å¯¹ç«¯åˆšåˆšè¢«acceptï¼Œæ‰€ä»¥å…¶å®æ­¤æ—¶æ— æ³•ç¡®å®šå¯¹ç«¯çš„SVC ID
+    * @param      my_svcinfo  ´Ë¾ä±ú¶ÔÓ¦µÄ±¾¶ËµÄSVC ID
+    * @param      sockstream  SOCKET ¾ä±ú
+    * @param      socketaddr  ¶Ô¶ËµÄµØÖ·£¬ÆäÊµ¿ÉÒÔ´ÓsockstreamÖĞµÃµ½£¬µ«ÎªÁËĞ§ÂÊºÍ·½±ã.
+    * @note       ¶Ô¶Ë¸Õ¸Õ±»accept£¬ËùÒÔÆäÊµ´ËÊ±ÎŞ·¨È·¶¨¶Ô¶ËµÄSVC ID
     */
     void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
                              const ZCE_Socket_Stream &sockstream,
@@ -76,12 +76,12 @@ public:
 
 
     /*!
-    * @brief      ä¸»åŠ¨CONNETé“¾æ¥å‡ºå»çš„HANDLERï¼Œå¯¹åº”Event Handleçš„åˆå§‹åŒ–.
+    * @brief      Ö÷¶¯CONNETÁ´½Ó³öÈ¥µÄHANDLER£¬¶ÔÓ¦Event HandleµÄ³õÊ¼»¯.
     * @return     void
-    * @param      my_svcinfo  æ­¤å¥æŸ„å¯¹åº”çš„æœ¬ç«¯SVC ID
-    * @param      svrinfo     å¯¹ç«¯çš„SVC ID
-    * @param      sockstream  SOCKET å¥æŸ„
-    * @param      socketaddr  å¯¹åº”è¿æ¥çš„å¯¹ç«¯åœ°å€ä¿¡æ¯
+    * @param      my_svcinfo  ´Ë¾ä±ú¶ÔÓ¦µÄ±¾¶ËSVC ID
+    * @param      svrinfo     ¶Ô¶ËµÄSVC ID
+    * @param      sockstream  SOCKET ¾ä±ú
+    * @param      socketaddr  ¶ÔÓ¦Á¬½ÓµÄ¶Ô¶ËµØÖ·ĞÅÏ¢
     * @note
     */
     void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
@@ -89,190 +89,190 @@ public:
                              const ZCE_Socket_Stream &sockstream,
                              const ZCE_Sockaddr_In     &socketaddr);
 
-    //ZENçš„ä¸€ç»„è¦æ±‚è‡ªå·±ç»§æ‰¿çš„å‡½æ•°.
-    //ZCE_Event_Handlerå¿…é¡»é‡è½½çš„å‡½æ•°ï¼Œå–å¾—SOCKETå¥æŸ„
+    //ZENµÄÒ»×éÒªÇó×Ô¼º¼Ì³ĞµÄº¯Êı.
+    //ZCE_Event_Handler±ØĞëÖØÔØµÄº¯Êı£¬È¡µÃSOCKET¾ä±ú
     virtual ZCE_HANDLE get_handle(void) const;
 
 
     /*!
-    * @brief      è¯»äº‹ä»¶è§¦å‘ ï¼Œå¼‚æ­¥é“¾æ¥å¤±è´¥è§¦å‘
-    * @return     int è¿”å›0ï¼Œç»§ç»­
+    * @brief      ¶ÁÊÂ¼ş´¥·¢ £¬Òì²½Á´½ÓÊ§°Ü´¥·¢
+    * @return     int ·µ»Ø0£¬¼ÌĞø
     */
     virtual int handle_input();
 
-    ///å†™äº‹ä»¶è§¦å‘
+    ///Ğ´ÊÂ¼ş´¥·¢
     /*!
-    * @brief      è¯»äº‹ä»¶è§¦å‘ ï¼Œå¼‚æ­¥é“¾æ¥æˆåŠŸè§¦å‘
-    * @return     int è¿”å›0ï¼Œç»§ç»­
+    * @brief      ¶ÁÊÂ¼ş´¥·¢ £¬Òì²½Á´½Ó³É¹¦´¥·¢
+    * @return     int ·µ»Ø0£¬¼ÌĞø
     */
     virtual int handle_output();
 
-    ///å…³é—­äº‹ä»¶è§¦å‘
+    ///¹Ø±ÕÊÂ¼ş´¥·¢
     virtual int handle_close();
 
     /*!
-    * @brief      è¶…æ—¶äº‹ä»¶è§¦å‘
+    * @brief      ³¬Ê±ÊÂ¼ş´¥·¢
     * @return     virtual int
-    * @param      time  æ—¶é—´
-    * @param      arg   å”¯ä¸€æ ‡ç¤ºå‚æ•°
+    * @param      time  Ê±¼ä
+    * @param      arg   Î¨Ò»±êÊ¾²ÎÊı
     */
     virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
 
 
-    ///å¾—åˆ°Handleå¯¹åº”PEERçš„ç«¯å£
+    ///µÃµ½Handle¶ÔÓ¦PEERµÄ¶Ë¿Ú
     unsigned short get_peer_port();
 
-    ///å¾—åˆ°Handleå¯¹åº”PEERçš„IPåœ°å€
+    ///µÃµ½Handle¶ÔÓ¦PEERµÄIPµØÖ·
     const char *get_peer_address(char *addr_buf, int buf_size);
 
-    //å¾—åˆ°æ¯ä¸ªPEERçŠ¶æ€ä¿¡æ¯
+    //µÃµ½Ã¿¸öPEER×´Ì¬ĞÅÏ¢
     void dump_status_info(ZCE_LOG_PRIORITY out_lvl);
 
-    //å‘é€ç®€å•çš„ZERGå‘½ä»¤ç»™å¯¹æ–¹
+    //·¢ËÍ¼òµ¥µÄZERGÃüÁî¸ø¶Ô·½
     int send_simple_zerg_cmd(unsigned int cmd,
                              const SERVICES_ID &recv_services_info,
                              unsigned int option = 0);
 
-    ///å‘é€å¿ƒè·³
+    ///·¢ËÍĞÄÌø
     int send_zergheatbeat_reg();
 
-    ///å¾—åˆ°ä¸€ä¸ªPEERçš„çŠ¶æ€
+    ///µÃµ½Ò»¸öPEERµÄ×´Ì¬
     PEER_STATUS  get_peer_status();
 
-    ///è·å¾—ä¸€ä¸ªæ•´å‹çš„handle
+    ///»ñµÃÒ»¸öÕûĞÍµÄhandle
     unsigned int get_handle_id();
 
-    ///å¾—åˆ°å¯¹ç«¯çš„IPåœ°å€ä¿¡æ¯
+    ///µÃµ½¶Ô¶ËµÄIPµØÖ·ĞÅÏ¢
     const ZCE_Sockaddr_In &get_peer_sockaddr() const;
 
-    ///å–å¾—tptoid_table_id_
+    ///È¡µÃtptoid_table_id_
     size_t get_tptoid_table_id();
-    ///è®¾ç½®tptoid_table_id_
+    ///ÉèÖÃtptoid_table_id_
     void set_tptoid_table_id(size_t ary_id);
 
 protected:
 
     /*!
-    * @brief      ä»PEERè¯»å–æ•°æ®
+    * @brief      ´ÓPEER¶ÁÈ¡Êı¾İ
     * @return     int
-    * @param      szrevc è¯»å–çš„å­—èŠ‚æ•°é‡
+    * @param      szrevc ¶ÁÈ¡µÄ×Ö½ÚÊıÁ¿
     */
     int read_data_from_peer(size_t &szrevc);
 
-    //æ£€æŸ¥æ”¶åˆ°çš„æ•°æ®æ˜¯å¦å«æœ‰ä¸€ä¸ªå®Œæ•´çš„æ•°æ®åŒ….
+    //¼ì²éÊÕµ½µÄÊı¾İÊÇ·ñº¬ÓĞÒ»¸öÍêÕûµÄÊı¾İ°ü.
     int check_recv_full_frame(bool &bfull, unsigned int &whole_frame_len);
 
     /*!
-    * @brief      å°†æ•°æ®å†™å…¥PEER
-    * @return     int æˆåŠŸ ==0
-    * @param      szsend å‘é€çš„å­—èŠ‚æ•°é‡
-    * @param      bfull  æ˜¯å¦å®Œæ•´çš„å‘é€å‡ºå»äº†ï¼Œ
+    * @brief      ½«Êı¾İĞ´ÈëPEER
+    * @return     int ³É¹¦ ==0
+    * @param      szsend ·¢ËÍµÄ×Ö½ÚÊıÁ¿
+    * @param      bfull  ÊÇ·ñÍêÕûµÄ·¢ËÍ³öÈ¥ÁË£¬
     */
     int write_data_to_peer(size_t &szsend, bool &bfull);
 
 
     /*!
-    * @brief      å°†æ•°æ®å†™å…¥PEERï¼ŒåŒæ—¶å¤„ç†å‘¨è¾¹çš„äº‹æƒ…ï¼ŒåŒ…æ‹¬å†™äº‹ä»¶æ³¨å†Œ,å¦‚æœå‘é€é˜Ÿåˆ—è¿˜æœ‰æ•°æ®ï¼Œç»§ç»­å‘é€ç­‰
-    * @return     int ==0 è¡¨ç¤ºæˆåŠŸ
-    * @note       å¦‚æœå‘é€é˜Ÿåˆ—è¿˜æœ‰æ•°æ®ï¼Œä¼šç»§ç»­å°è¯•å‘é€
+    * @brief      ½«Êı¾İĞ´ÈëPEER£¬Í¬Ê±´¦ÀíÖÜ±ßµÄÊÂÇé£¬°üÀ¨Ğ´ÊÂ¼ş×¢²á,Èç¹û·¢ËÍ¶ÓÁĞ»¹ÓĞÊı¾İ£¬¼ÌĞø·¢ËÍµÈ
+    * @return     int ==0 ±íÊ¾³É¹¦
+    * @note       Èç¹û·¢ËÍ¶ÓÁĞ»¹ÓĞÊı¾İ£¬»á¼ÌĞø³¢ÊÔ·¢ËÍ
     */
     int write_all_data_to_peer();
 
 
-    //é¢„å¤„ç†,æ£€æŸ¥æ•°æ®,æ¥æ”¶çš„REGISTERæ•°æ®,æ ¹æ®ç¬¬ä¸€ä¸ªæŠ¥å†³å®šå¯¹åº”å…³ç³»
+    //Ô¤´¦Àí,¼ì²éÊı¾İ,½ÓÊÕµÄREGISTERÊı¾İ,¸ù¾İµÚÒ»¸ö±¨¾ö¶¨¶ÔÓ¦¹ØÏµ
     int  preprocess_recvframe(Zerg_App_Frame *proc_frame);
 
-    //å¤„ç†å‘é€çš„REGISTERæ•°æ®,è¿æ¥åå‘é€ç¬¬ä¸€ä¸ªæ•°æ®
+    //´¦Àí·¢ËÍµÄREGISTERÊı¾İ,Á¬½Óºó·¢ËÍµÚÒ»¸öÊı¾İ
     int  process_connect_register();
 
 
     /*!
-    * @brief      å°†æ•°æ®å¸§äº¤ç»™é€šä¿¡ç®¡ç†å™¨ï¼Œæ”¾å…¥ç®¡é“
+    * @brief      ½«Êı¾İÖ¡½»¸øÍ¨ĞÅ¹ÜÀíÆ÷£¬·ÅÈë¹ÜµÀ
     * @return     int
-    * @note       åˆ°è¿™ä¸ªå‡½æ•°æ˜¯ Zerg_App_Frameå·²ç»ç»è¿‡è§£ç äº†.è¯·æ³¨æ„.
+    * @note       µ½Õâ¸öº¯ÊıÊÇ Zerg_App_FrameÒÑ¾­¾­¹ı½âÂëÁË.Çë×¢Òâ.
     */
     int push_frame_to_comm_mgr();
 
-    //å°†ä¸€ä¸ªå‘é€çš„å¸§æ”¾å…¥ç­‰å¾…å‘é€é˜Ÿåˆ—
+    //½«Ò»¸ö·¢ËÍµÄÖ¡·ÅÈëµÈ´ı·¢ËÍ¶ÓÁĞ
     int put_frame_to_sendlist(Zerg_Buffer *tmpbuf);
 
     /*!
-    * @brief      åˆå¹¶å‘é€é˜Ÿåˆ—
-    * @note       å¦‚æœæœ‰2ä¸ªä»¥ä¸Šçš„çš„å‘é€é˜Ÿåˆ—ï¼Œåˆ™å¯ä»¥è€ƒè™‘åˆå¹¶å¤„ç†
+    * @brief      ºÏ²¢·¢ËÍ¶ÓÁĞ
+    * @note       Èç¹ûÓĞ2¸öÒÔÉÏµÄµÄ·¢ËÍ¶ÓÁĞ£¬Ôò¿ÉÒÔ¿¼ÂÇºÏ²¢´¦Àí
     */
     void unite_frame_sendlist();
 
 
-    //å¤„ç†å‘é€é”™è¯¯
+    //´¦Àí·¢ËÍ´íÎó
     int process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode);
 
 public:
-    //åˆå§‹åŒ–é™æ€å‚æ•°
+    //³õÊ¼»¯¾²Ì¬²ÎÊı
     static int init_all_static_data();
 
-    ///è¯»å–é…ç½®æ–‡ä»¶
+    ///¶ÁÈ¡ÅäÖÃÎÄ¼ş
     static int get_config(const Zerg_Server_Config *config);
 
-    //æ³¨é”€é™æ€å‚æ•°
+    //×¢Ïú¾²Ì¬²ÎÊı
     static int uninit_all_staticdata();
 
-    //ä»SENDç®¡é“æ‰¾åˆ°æ‰€æœ‰çš„æ•°æ®å»å‘é€,
+    //´ÓSEND¹ÜµÀÕÒµ½ËùÓĞµÄÊı¾İÈ¥·¢ËÍ,
     static int popall_sendpipe_write(size_t &procframe);
 
-    //å¾—åˆ°æœ€å¤§çš„
+    //µÃµ½×î´óµÄ
     static void get_max_peer_num(size_t &maxaccept, size_t &maxconnect);
 
-    //å…³é—­svr_infoç›¸åº”çš„PEER
+    //¹Ø±Õsvr_infoÏàÓ¦µÄPEER
     static int close_services_peer(const SERVICES_ID &svr_info);
 
-    //æ ¹æ®æœ‰çš„SVR IDï¼ŒæŸ¥è¯¢ç›¸åº”çš„HDL
+    //¸ù¾İÓĞµÄSVR ID£¬²éÑ¯ÏàÓ¦µÄHDL
     static int find_services_peer(const SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle);
 
-    ///é“¾æ¥æ‰€æœ‰çš„è¦è‡ªåŠ¨é“¾æ¥çš„æœåŠ¡å™¨,è¿™ä¸ªäº‹é¿å…æœåŠ¡å™¨çš„é“¾æ¥æ–­å£å
+    ///Á´½ÓËùÓĞµÄÒª×Ô¶¯Á´½ÓµÄ·şÎñÆ÷,Õâ¸öÊÂ±ÜÃâ·şÎñÆ÷µÄÁ´½Ó¶Ï¿Úºó
     static void reconnect_allserver();
 
 
     /*!
-    * @brief      ä»æ± å­é‡Œé¢å¾—åˆ°ä¸€ä¸ªHandlerç»™å¤§å®¶ä½¿ç”¨
-    * @return     TCP_Svc_Handler* è¿”å›çš„åˆ†é…çš„å¥æŸ„
-    * @param      handler_mode     æ‰€éœ€çš„å¥æŸ„çš„æ¨¡å¼ï¼Œæ˜¯accept è¿˜æ˜¯connectçš„
-    & @note       Connectçš„ç«¯å£åº”è¯¥æ°¸è¿œä¸å‘ç”Ÿå–ä¸åˆ°Hanlerçš„äº‹æƒ…
+    * @brief      ´Ó³Ø×ÓÀïÃæµÃµ½Ò»¸öHandler¸ø´ó¼ÒÊ¹ÓÃ
+    * @return     TCP_Svc_Handler* ·µ»ØµÄ·ÖÅäµÄ¾ä±ú
+    * @param      handler_mode     ËùĞèµÄ¾ä±úµÄÄ£Ê½£¬ÊÇaccept »¹ÊÇconnectµÄ
+    & @note       ConnectµÄ¶Ë¿ÚÓ¦¸ÃÓÀÔ¶²»·¢ÉúÈ¡²»µ½HanlerµÄÊÂÇé
     */
     static TCP_Svc_Handler *alloce_hdl_from_pool(HANDLER_MODE handler_mode);
 
-    ///Dumpæ‰€æœ‰çš„STATICå˜é‡çš„ä¿¡æ¯
+    ///DumpËùÓĞµÄSTATIC±äÁ¿µÄĞÅÏ¢
     static void dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl);
 
-    ///Dump æ‰€æœ‰çš„PEERä¿¡æ¯
+    ///Dump ËùÓĞµÄPEERĞÅÏ¢
     static void dump_svcpeer_info(ZCE_LOG_PRIORITY out_lvl);
 
-    ///å¤„ç†å‘é€ä¸€ä¸ªæ•°æ®
+    ///´¦Àí·¢ËÍÒ»¸öÊı¾İ
     static int process_send_data(Zerg_Buffer *tmpbuf);
 
-    ///æ ¹æ®services_typeæŸ¥è¯¢å¯¹åº”çš„é…ç½®ä¸»å¤‡æœåŠ¡å™¨åˆ—è¡¨æ•°ç»„ MSï¼ˆä¸»å¤‡ï¼‰,
-    ///è¯·å‚è€ƒ @ref Zerg_Auto_Connector
+    ///¸ù¾İservices_type²éÑ¯¶ÔÓ¦µÄÅäÖÃÖ÷±¸·şÎñÆ÷ÁĞ±íÊı×é MS£¨Ö÷±¸£©,
+    ///Çë²Î¿¼ @ref Zerg_Auto_Connector
     static int find_conf_ms_svcid_ary(uint16_t services_type,
                                       std::vector<uint32_t> *& ms_svcid_ary);
 protected:
 
-    //å®šæ—¶å™¨ID,é¿å…Newä¼ é€’,å›æ”¶,æˆ‘è®¨åŒè¿™ä¸ªæƒ³æ³•,ACE timer_timeoutä¸ºä»€ä¹ˆä¸ç›´æ¥ä½¿ç”¨TIMEID
+    //¶¨Ê±Æ÷ID,±ÜÃâNew´«µİ,»ØÊÕ,ÎÒÌÖÑáÕâ¸öÏë·¨,ACE timer_timeoutÎªÊ²Ã´²»Ö±½ÓÊ¹ÓÃTIMEID
     static const  int         TCPCTRL_TIME_ID[];
 
 
-    //ACCEPT PEERæœ€å¤§å¯ä»¥ç­‰å¾…å‘é€çš„FRAMEæ•°é‡
+    //ACCEPT PEER×î´ó¿ÉÒÔµÈ´ı·¢ËÍµÄFRAMEÊıÁ¿
     static const size_t       MAX_OF_ACCEPT_PEER_SEND_DEQUE = 32;
-    //CONNECT PEERæœ€å¤§å¯ä»¥ç­‰å¾…å‘é€çš„FRAMEæ•°é‡,
+    //CONNECT PEER×î´ó¿ÉÒÔµÈ´ı·¢ËÍµÄFRAMEÊıÁ¿,
     static const size_t       MAX_OF_CONNECT_PEER_SEND_DEQUE = 256;
 
-    //ç‰¹æ®Šå¤„ç†çš„æœ€å¤§çš„ä¸ç”¨åŠ å¯†å¤„ç†çš„å‘½ä»¤çš„æ•°é‡
+    //ÌØÊâ´¦ÀíµÄ×î´óµÄ²»ÓÃ¼ÓÃÜ´¦ÀíµÄÃüÁîµÄÊıÁ¿
     static const size_t       MAX_OF_SPEC_NO_ENCRYPT_CMD = 32;
 
-    //é»˜è®¤å¥æŸ„å¤„ç†çš„è¶…æ—¶æ—¶é—´
+    //Ä¬ÈÏ¾ä±ú´¦ÀíµÄ³¬Ê±Ê±¼ä
     static const unsigned int DEFAULT_TIME_OUT_SEC = 8 * 60;
 
-    // å®šæ—¶ä¸ŠæŠ¥ç»Ÿè®¡æ•°æ®çš„æ—¶é—´, æ¯30ç§’ä¸ŠæŠ¥ä¸€æ¬¡æ•°æ®ï¼Œ
-    // é—´éš”è®¾ç½®çŸ­ç‚¹å¯ä»¥é¿å…ä¸¤ä¸ª5åˆ†é’Ÿç»Ÿè®¡çš„æ•°æ®ä¸å®é™…æ•°æ®çš„è¯¯å·®å¤ªå¤§
+    // ¶¨Ê±ÉÏ±¨Í³¼ÆÊı¾İµÄÊ±¼ä, Ã¿30ÃëÉÏ±¨Ò»´ÎÊı¾İ£¬
+    // ¼ä¸ôÉèÖÃ¶Ìµã¿ÉÒÔ±ÜÃâÁ½¸ö5·ÖÖÓÍ³¼ÆµÄÊı¾İÓëÊµ¼ÊÊı¾İµÄÎó²îÌ«´ó
     static const unsigned int STAT_TIMER_INTERVAL_SEC = 60;
 
     //SessionKey
@@ -283,123 +283,123 @@ protected:
 
 protected:
 
-    ///é€šè®¯ç®¡ç†å™¨,ä¿å­˜æ˜¯ä¸ºäº†åŠ å¿«é€Ÿåº¦
+    ///Í¨Ñ¶¹ÜÀíÆ÷,±£´æÊÇÎªÁË¼Ó¿ìËÙ¶È
     static  Zerg_Comm_Manager *zerg_comm_mgr_;
 
-    ///å­˜å‚¨ç¼“å­˜,å…¨å±€å”¯ä¸€,ä¿å­˜æ˜¯ä¸ºäº†åŠ å¿«é€Ÿåº¦
+    ///´æ´¢»º´æ,È«¾ÖÎ¨Ò»,±£´æÊÇÎªÁË¼Ó¿ìËÙ¶È
     static ZBuffer_Storage *zbuffer_storage_;
 
-    ///ç»Ÿè®¡ï¼Œä½¿ç”¨å•å­ç±»çš„æŒ‡é’ˆ
+    ///Í³¼Æ£¬Ê¹ÓÃµ¥×ÓÀàµÄÖ¸Õë
     static Soar_Stat_Monitor *server_status_;
 
-    ///æœ€å¤§èƒ½å¤ŸAcceptçš„PEERæ•°é‡,
+    ///×î´óÄÜ¹»AcceptµÄPEERÊıÁ¿,
     static size_t max_accept_svr_;
-    ///æœ€å¤§èƒ½å¤ŸConnectçš„PEERæ•°é‡
+    ///×î´óÄÜ¹»ConnectµÄPEERÊıÁ¿
     static size_t max_connect_svr_;
 
-    ///å®¹é‡å‘Šè­¦é˜ˆå€¼,
+    ///ÈİÁ¿¸æ¾¯ãĞÖµ,
     static size_t accpet_threshold_warn_;
-    ///å·²ç»è¶…è¿‡å‘Šè­¦é˜ˆå€¼çš„æ¬¡æ•°
+    ///ÒÑ¾­³¬¹ı¸æ¾¯ãĞÖµµÄ´ÎÊı
     static size_t threshold_warn_number_;
 
-    ///æœåŠ¡ç¤ºæ˜¯ä»£ç†æœåŠ¡å™¨
+    ///·şÎñÊ¾ÊÇ´úÀí·şÎñÆ÷
     static bool if_proxy_;
 
-    ///ACCEPTç«¯å£çš„åç­‰å¾…åŠ¨ä½œçš„æ—¶é•¿,å¦‚æœä¹‹åä¸€æ®µæ—¶é—´æ²¡æœ‰åŠ¨ä½œï¼Œåˆ¤ä¸ºåƒµæ­»ï¼ŒKO
+    ///ACCEPT¶Ë¿ÚµÄºóµÈ´ı¶¯×÷µÄÊ±³¤,Èç¹ûÖ®ºóÒ»¶ÎÊ±¼äÃ»ÓĞ¶¯×÷£¬ÅĞÎª½©ËÀ£¬KO
     static unsigned int accepted_timeout_;
 
-    ///ç­‰å¾…æ¥å—ä¸€ä¸ªå®Œæ•´æ•°æ®çš„è¶…æ—¶æ—¶é—´,ä¸º0è¡¨ç¤ºä¸é™åˆ¶,åˆ¤ä¸ºåƒµæ­»ï¼ŒKO
+    ///µÈ´ı½ÓÊÜÒ»¸öÍêÕûÊı¾İµÄ³¬Ê±Ê±¼ä,Îª0±íÊ¾²»ÏŞÖÆ,ÅĞÎª½©ËÀ£¬KO
     static unsigned int receive_timeout_;
 
 
 
-    ///è¦è‡ªåŠ¨é“¾æ¥çš„æœåŠ¡å™¨
+    ///Òª×Ô¶¯Á´½ÓµÄ·şÎñÆ÷
     static Zerg_Auto_Connector zerg_auto_connect_;
 
-    ///SVRINFOå¯¹åº”çš„PEERçš„HASHMAP
+    ///SVRINFO¶ÔÓ¦µÄPEERµÄHASHMAP
     static Active_SvcHandle_Set svr_peer_info_set_;
 
 
-    ///å·²ç»Acceptçš„PEERæ•°é‡
+    ///ÒÑ¾­AcceptµÄPEERÊıÁ¿
     static size_t num_accept_peer_;
-    ///å·²ç»Connectçš„PEERæ•°é‡
+    ///ÒÑ¾­ConnectµÄPEERÊıÁ¿
     static size_t num_connect_peer_;
 
 
-    ///ACCEPT SVC handlerçš„æ± å­
+    ///ACCEPT SVC handlerµÄ³Ø×Ó
     static POOL_OF_TCP_HANDLER  pool_of_acpthdl_;
 
-    ///CONNECT svc handlerçš„æ± å­
+    ///CONNECT svc handlerµÄ³Ø×Ó
     static POOL_OF_TCP_HANDLER  pool_of_cnthdl_;
 
 
-    ///å‘é€ç¼“å†²åŒºçš„æœ€å¤§frameæ•°
+    ///·¢ËÍ»º³åÇøµÄ×î´óframeÊı
     static size_t accept_send_deque_size_;
 
-    ///ä¸»åŠ¨è¿æ¥çš„å‘é€é˜Ÿåˆ—é•¿åº¦
+    ///Ö÷¶¯Á¬½ÓµÄ·¢ËÍ¶ÓÁĞ³¤¶È
     static size_t connect_send_deque_size_;
 
-    ///Handle IDç”Ÿæˆå™¨ï¼Œè¿™ä¸ªä¸œä¸œä¸»è¦ç”¨äºéœ€è¦æœåŠ¡å™¨ä¸»åŠ¨åˆ†é…SERVICES IDçš„åœ°æ–¹
+    ///Handle IDÉú³ÉÆ÷£¬Õâ¸ö¶«¶«Ö÷ÒªÓÃÓÚĞèÒª·şÎñÆ÷Ö÷¶¯·ÖÅäSERVICES IDµÄµØ·½
     static unsigned int         handler_id_builder_;
 
 protected:
-    ///æœåŠ¡æ¨¡å¼
+    ///·şÎñÄ£Ê½
     HANDLER_MODE               handler_mode_;
 
-    ///è‡ªå·±çš„æœåŠ¡çš„æ ‡ç¤º
+    ///×Ô¼ºµÄ·şÎñµÄ±êÊ¾
     SERVICES_ID                my_svc_id_;
 
-    ///PEERçš„ServiceInfo
+    ///PEERµÄServiceInfo
     SERVICES_ID                peer_svr_id_;
 
 
-    ///æ¥æ”¶æ•°æ®çš„ç¼“å†²
+    ///½ÓÊÕÊı¾İµÄ»º³å
     Zerg_Buffer               *rcv_buffer_;
 
-    ///å‘é€é˜Ÿåˆ—çš„å¤§å°ï¼Œå¦‚æœä¸€ä¸ªç«¯å£æ¥å—æ•°æ®æ¯”è¾ƒç¼“æ…¢ï¼Œåˆ™å¯èƒ½ä¼šå…ˆæ”¾å…¥å‘é€é˜Ÿåˆ—ï¼Œç­‰ç«¯å£å˜ä¸ºå¯å†™æ‰èƒ½å‘é€è¿‡å»ï¼Œ
-    ///é‚£ä¹ˆå‘é€é˜Ÿåˆ—å°±è¦è´Ÿæ‹…ç¼“å†²è¿™ç§å±æœºçš„ä»»åŠ¡ï¼Œå‘é€æ€»ç¼“å†²é•¿åº¦å®é™…ç­‰äº = å‘é€é˜Ÿåˆ—çš„é•¿åº¦*æ¯ä¸ªé˜Ÿåˆ—æˆå‘˜BUFFERçš„å¤§å°(64K)ï¼Œ
-    ///å¦‚æœæ˜¯ä¸€ä¸ªéœ€è¦å¾ˆå¤šäººè¯·æ±‚çš„ï¼Œæˆ–è€…é¢å‘å¤–ç½‘çš„å®¢æˆ·ç«¯æœåŠ¡å™¨ï¼ŒACPT_SEND_DEQUE_SIZE ä¸è¦è®¾ç½®è¿‡å¤§ï¼Œå»ºè®®32ï¼Œ
-    ///å¦‚æœæ˜¯å†…ç½‘ï¼Œè¯·æ±‚æ•°é‡æœ‰é™ï¼Œé‚£ä¹ˆè®¾ç½®æˆ128, 256ä¹Ÿæ˜¯å¯ä»¥æ¥å—çš„ï¼Œä½†å…¶å®é™…æ„ä¹‰æœ‰å¾…è§‚å¯Ÿ
+    ///·¢ËÍ¶ÓÁĞµÄ´óĞ¡£¬Èç¹ûÒ»¸ö¶Ë¿Ú½ÓÊÜÊı¾İ±È½Ï»ºÂı£¬Ôò¿ÉÄÜ»áÏÈ·ÅÈë·¢ËÍ¶ÓÁĞ£¬µÈ¶Ë¿Ú±äÎª¿ÉĞ´²ÅÄÜ·¢ËÍ¹ıÈ¥£¬
+    ///ÄÇÃ´·¢ËÍ¶ÓÁĞ¾ÍÒª¸ºµ£»º³åÕâÖÖÎ£»úµÄÈÎÎñ£¬·¢ËÍ×Ü»º³å³¤¶ÈÊµ¼ÊµÈÓÚ = ·¢ËÍ¶ÓÁĞµÄ³¤¶È*Ã¿¸ö¶ÓÁĞ³ÉÔ±BUFFERµÄ´óĞ¡(64K)£¬
+    ///Èç¹ûÊÇÒ»¸öĞèÒªºÜ¶àÈËÇëÇóµÄ£¬»òÕßÃæÏòÍâÍøµÄ¿Í»§¶Ë·şÎñÆ÷£¬ACPT_SEND_DEQUE_SIZE ²»ÒªÉèÖÃ¹ı´ó£¬½¨Òé32£¬
+    ///Èç¹ûÊÇÄÚÍø£¬ÇëÇóÊıÁ¿ÓĞÏŞ£¬ÄÇÃ´ÉèÖÃ³É128, 256Ò²ÊÇ¿ÉÒÔ½ÓÊÜµÄ£¬µ«ÆäÊµ¼ÊÒâÒåÓĞ´ı¹Û²ì
 
-    ///å‘é€çš„æ•°æ®å¯èƒ½è¦æ’é˜Ÿ
+    ///·¢ËÍµÄÊı¾İ¿ÉÄÜÒªÅÅ¶Ó
     ZCE_LIB::lordrings<Zerg_Buffer *>  snd_buffer_deque_;
 
 
 
-    ///ä¸‹é¢è¿™4ä¸ªå­—æ®µå…¶å®æ˜¯è®°å½•ä¸€ä¸ªæ—¶é—´æ®µå†…çš„æ¥å—å’Œå‘é€çš„æ•°æ®æ€»æ•°
-    ///æ¥æ”¶çš„æ¬¡æ•°è®¡æ•°å™¨
+    ///ÏÂÃæÕâ4¸ö×Ö¶ÎÆäÊµÊÇ¼ÇÂ¼Ò»¸öÊ±¼ä¶ÎÄÚµÄ½ÓÊÜºÍ·¢ËÍµÄÊı¾İ×ÜÊı
+    ///½ÓÊÕµÄ´ÎÊı¼ÆÊıÆ÷
     size_t                    recieve_counter_;
-    ///å‘é€çš„æ¬¡æ•°è®¡æ•°å™¨
+    ///·¢ËÍµÄ´ÎÊı¼ÆÊıÆ÷
     size_t                    send_counter_;
 
-    ///è¿™ä¸ªPEERæ¥å—æ•°æ®
+    ///Õâ¸öPEER½ÓÊÜÊı¾İ
     size_t                    recieve_bytes_;
-    ///è¿™ä¸ªPEERå‘é€æ•°æ®
+    ///Õâ¸öPEER·¢ËÍÊı¾İ
     size_t                    send_bytes_;
 
 
     //ZCE Socket Stream,
     ZCE_Socket_Stream         socket_peer_;
 
-    //PEERè¿æ¥çš„IPåœ°å€ä¿¡æ¯
+    //PEERÁ¬½ÓµÄIPµØÖ·ĞÅÏ¢
     ZCE_Sockaddr_In           peer_address_;
 
-    //æ˜¯å¦å¤„äºæ´»åŠ¨çŠ¶æ€
+    //ÊÇ·ñ´¦ÓÚ»î¶¯×´Ì¬
     PEER_STATUS               peer_status_;
 
-    //è¿æ¥åæ— ååº”è¶…æ—¶çš„TimeID,
+    //Á¬½ÓºóÎŞ·´Ó¦³¬Ê±µÄTimeID,
     int                       timeout_time_id_;
-    //ä¸€ä¸ªæ—¶é—´é—´éš”å†…æ¥å—æ•°æ®çš„æ¬¡æ•°
+    //Ò»¸öÊ±¼ä¼ä¸ôÄÚ½ÓÊÜÊı¾İµÄ´ÎÊı
     unsigned int              receive_times_;
 
-    //æ˜¯å¦æ˜¯åç«¯æœåŠ¡å™¨å¼ºåˆ¶å…³é—­è¿™ä¸ªPEER
+    //ÊÇ·ñÊÇºó¶Ë·şÎñÆ÷Ç¿ÖÆ¹Ø±ÕÕâ¸öPEER
     bool                      if_force_close_;
 
-    //å¼€å§‹çš„äº‹ä»¶ï¼Œå…¶å®æ˜¯ç¬¬ä¸€æ¬¡è¿›å…¥å®šæ—¶å™¨çš„äº‹ä»¶,
+    //¿ªÊ¼µÄÊÂ¼ş£¬ÆäÊµÊÇµÚÒ»´Î½øÈë¶¨Ê±Æ÷µÄÊÂ¼ş,
     time_t                    start_live_time_;
 
-    ///è®°å½•my_svc_id_ä¸­çš„services_id_åœ¨Active_SvcHandle_Setä¸­çš„
-    ///type_to_idtable_ä¸­æ•°ç»„ä¸‹æ ‡ID
+    ///¼ÇÂ¼my_svc_id_ÖĞµÄservices_id_ÔÚActive_SvcHandle_SetÖĞµÄ
+    ///type_to_idtable_ÖĞÊı×éÏÂ±êID
     size_t                    tptoid_table_id_;
 
 };

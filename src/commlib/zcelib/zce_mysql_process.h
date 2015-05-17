@@ -1,12 +1,12 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_mysql_process.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2005å¹´05æœˆ18æ—¥
-* @brief      è¯»å–MYSQLæ•°æ®åº“çš„ç±»,ç”¨äºè¯»å–DBçš„é…ç½®ä¿¡æ¯
+* @date       2005Äê05ÔÂ18ÈÕ
+* @brief      ¶ÁÈ¡MYSQLÊı¾İ¿âµÄÀà,ÓÃÓÚ¶ÁÈ¡DBµÄÅäÖÃĞÅÏ¢
 *
-* @details    å†…éƒ¨æœ‰ä¿è¯è‡ªåŠ¨é‡è¿çš„æœºåˆ¶ï¼Œä½ ä¸ç”¨æ“å¿ƒè¿™ä¸ªé—®é¢˜
+* @details    ÄÚ²¿ÓĞ±£Ö¤×Ô¶¯ÖØÁ¬µÄ»úÖÆ£¬Äã²»ÓÃ²ÙĞÄÕâ¸öÎÊÌâ
 *
 * @note
 *
@@ -17,38 +17,38 @@
 
 #include "zce_boost_non_copyable.h"
 
-//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
+//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
 #if defined ZCE_USE_MYSQL
 
 #include "zce_mysql_connect.h"
 #include "zce_mysql_command.h"
 
 /*!
-@brief      è¯»å–MYSQLæ•°æ®åº“çš„ç±»,ç”¨äºæ“ä½œMySQL DBçš„è®¿é—®
-            è¿™ä¸ªç±»é‡Œé¢åŒ…è£…äº†connect,command,ä½ å¯ä»¥é€šè¿‡ZCE_Mysql_Resultè·å¾—ç»“æœ
+@brief      ¶ÁÈ¡MYSQLÊı¾İ¿âµÄÀà,ÓÃÓÚ²Ù×÷MySQL DBµÄ·ÃÎÊ
+            Õâ¸öÀàÀïÃæ°ü×°ÁËconnect,command,Äã¿ÉÒÔÍ¨¹ıZCE_Mysql_Result»ñµÃ½á¹û
 */
 class ZCE_Mysql_Process : ZCE_NON_Copyable
 {
 
 protected:
-    //å®ä¾‹å­
+    //ÊµÀı×Ó
     static ZCE_Mysql_Process   *instance_;
 
 public:
 
-    ///æ„é€ å‡½æ•°ï¼Œ
+    ///¹¹Ôìº¯Êı£¬
     ZCE_Mysql_Process();
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     ~ZCE_Mysql_Process();
 
     /*!
-    * @brief      åˆå§‹åŒ–æœåŠ¡å™¨,ä½¿ç”¨hostnameè¿›è¡Œè¿æ¥,å¯ä»¥ä¸ç«‹å³è¿æ¥å’Œç«‹å³è¿æ¥ï¼Œä½ è‡ªå·±æ§åˆ¶ã€‚
-    * @return     int             0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      host_name       DB HOSTåç§°,IPåœ°å€
-    * @param      user            DB USERåç§°
-    * @param      pwd             DB PWDå¯†ç 
-    * @param      port            ç«¯å£
-    * @param      connect_atonce  æ˜¯å¦ç«‹å³è¿æ¥æœåŠ¡å™¨
+    * @brief      ³õÊ¼»¯·şÎñÆ÷,Ê¹ÓÃhostname½øĞĞÁ¬½Ó,¿ÉÒÔ²»Á¢¼´Á¬½ÓºÍÁ¢¼´Á¬½Ó£¬Äã×Ô¼º¿ØÖÆ¡£
+    * @return     int             0³É¹¦£¬-1Ê§°Ü
+    * @param      host_name       DB HOSTÃû³Æ,IPµØÖ·
+    * @param      user            DB USERÃû³Æ
+    * @param      pwd             DB PWDÃÜÂë
+    * @param      port            ¶Ë¿Ú
+    * @param      connect_atonce  ÊÇ·ñÁ¢¼´Á¬½Ó·şÎñÆ÷
     */
     int init_mysql_server(const char *host_name,
                           const char *user,
@@ -57,26 +57,26 @@ public:
                           bool connect_atonce = false);
 
     /*!
-    * @brief      åˆå§‹åŒ–MYSQLï¼Œä½¿ç”¨UNIX socket fileè¿æ¥(UNIXä¸‹)ï¼Œæˆ–è€…å‘½åç®¡é“(Windowsä¸‹),
-    *             åªåˆå§‹åŒ–ä¹Ÿå¯ä»¥äº†,åªèƒ½ç”¨äºæœ¬åœ°
-    * @return     int              0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      unix_socket_file SOCKET FILEåç§°æˆ–è€…å‘½åç®¡é“åç§°
-    * @param      user             DB USERåç§°
-    * @param      pwd              DB PWDå¯†ç 
-    * @param      connect_atonce   æ˜¯å¦ç«‹å³è¿æ¥æœåŠ¡å™¨
+    * @brief      ³õÊ¼»¯MYSQL£¬Ê¹ÓÃUNIX socket fileÁ¬½Ó(UNIXÏÂ)£¬»òÕßÃüÃû¹ÜµÀ(WindowsÏÂ),
+    *             Ö»³õÊ¼»¯Ò²¿ÉÒÔÁË,Ö»ÄÜÓÃÓÚ±¾µØ
+    * @return     int              0³É¹¦£¬-1Ê§°Ü
+    * @param      unix_socket_file SOCKET FILEÃû³Æ»òÕßÃüÃû¹ÜµÀÃû³Æ
+    * @param      user             DB USERÃû³Æ
+    * @param      pwd              DB PWDÃÜÂë
+    * @param      connect_atonce   ÊÇ·ñÁ¢¼´Á¬½Ó·şÎñÆ÷
     */
     int init_mysql_socketfile(const char *unix_socket_file,
                               const char *user,
                               const char *pwd,
                               bool connect_atonce = false);
 
-    ///è¿æ¥Query æœåŠ¡å™¨,å¦‚æœå¸Œæœ›åˆå§‹åŒ–åè¿›è¡Œè¿æ¥,ä½¿ç”¨è¿™ä¸ªå‡½æ•°
+    ///Á¬½ÓQuery ·şÎñÆ÷,Èç¹ûÏ£Íû³õÊ¼»¯ºó½øĞĞÁ¬½Ó,Ê¹ÓÃÕâ¸öº¯Êı
     int connect_mysql_server();
-    ///æ–­å¼€è¿æ¥
+    ///¶Ï¿ªÁ¬½Ó
     void disconnect_mysql_server();
 
     /*!
-    * @brief      ç”¨äºéSELECTè¯­å¥(INSERT,UPDATE)
+    * @brief      ÓÃÓÚ·ÇSELECTÓï¾ä(INSERT,UPDATE)
     * @return     int
     * @param      sql
     * @param      numaffect
@@ -89,7 +89,7 @@ public:
                          size_t sqllen = 0);
 
     /*!
-    * @brief      ç”¨äºSELECTè¯­å¥,ç›´æ¥è½¬å‚¨ç»“æœé›†åˆçš„æ–¹æ³•
+    * @brief      ÓÃÓÚSELECTÓï¾ä,Ö±½Ó×ª´¢½á¹û¼¯ºÏµÄ·½·¨
     * @return     int
     * @param      sql
     * @param      numaffect
@@ -102,7 +102,7 @@ public:
                          size_t sqllen = 0);
 
     /*!
-    * @brief      ç”¨äºSELECTè¯­å¥,ç”¨äºuse_resultå¾—åˆ°ç»“æœé›†åˆçš„æ–¹æ³•
+    * @brief      ÓÃÓÚSELECTÓï¾ä,ÓÃÓÚuse_resultµÃµ½½á¹û¼¯ºÏµÄ·½·¨
     * @return     int
     * @param      sql
     * @param      dbresult
@@ -113,51 +113,51 @@ public:
                          ZCE_Mysql_Result &dbresult,
                          size_t sqllen = 0);
 
-    ///å¾—åˆ°MYSQLå®šä¹‰çš„é”™è¯¯è¿”å›
+    ///µÃµ½MYSQL¶¨ÒåµÄ´íÎó·µ»Ø
     unsigned int get_return_error(char *szerr, size_t buflen);
 
-    ///é”™è¯¯è¯­å¥Str
+    ///´íÎóÓï¾äStr
     const char *get_return_error_str();
-    ///DBè¿”å›çš„é”™è¯¯ID
+    ///DB·µ»ØµÄ´íÎóID
     unsigned int get_return_error_id();
 
-    ///å¾—åˆ°DBè®¿é—®çš„è¯­å¥
+    ///µÃµ½DB·ÃÎÊµÄÓï¾ä
     const char *get_query_sql(void);
 
-    ///å¾—åˆ°Real Escape String ,Realè¡¨ç¤ºæ ¹æ®å½“å‰çš„MYSQL Connetçš„å­—ç¬¦é›†,å¾—åˆ°Escape String
-    ///Escape String ä¸ºå°†å­—ç¬¦ä¼ ä¸­çš„ç›¸å…³å­—ç¬¦è¿›è¡Œè½¬ä¹‰åçš„è¯­å¥,æ¯”å¦‚',",\ç­‰å­—ç¬¦
+    ///µÃµ½Real Escape String ,Real±íÊ¾¸ù¾İµ±Ç°µÄMYSQL ConnetµÄ×Ö·û¼¯,µÃµ½Escape String
+    ///Escape String Îª½«×Ö·û´«ÖĞµÄÏà¹Ø×Ö·û½øĞĞ×ªÒåºóµÄÓï¾ä,±ÈÈç',",\µÈ×Ö·û
     unsigned int make_real_escape_string(char *tostr,
                                          const char *fromstr,
                                          unsigned int fromlen);
 
 public:
-    ///ä¸ºäº†SingleTonç±»å‡†å¤‡
-    ///å®ä¾‹èµ‹å€¼
+    ///ÎªÁËSingleTonÀà×¼±¸
+    ///ÊµÀı¸³Öµ
     static void instance(ZCE_Mysql_Process *);
-    ///è·å¾—å®ä¾‹
+    ///»ñµÃÊµÀı
     static ZCE_Mysql_Process *instance();
-    ///æ¸…é™¤å®ä¾‹
+    ///Çå³ıÊµÀı
     static void clean_instance();
 
 protected:
 
-    ///æ•°æ®åº“IPåœ°å€
+    ///Êı¾İ¿âIPµØÖ·
     std::string       db_hostname_;
-    ///DBæ•°æ®åº“çš„ç«¯å£å·ç 
+    ///DBÊı¾İ¿âµÄ¶Ë¿ÚºÅÂë
     unsigned int      db_port_;
 
-    ///UNIX soket fileåç§°ï¼Œæˆ–è€…å‘½åç®¡é“åç§°
+    ///UNIX soket fileÃû³Æ£¬»òÕßÃüÃû¹ÜµÀÃû³Æ
     std::string       db_socket_file_;
 
-    ///æ•°æ®åº“ç”¨æˆ·åç§°
+    ///Êı¾İ¿âÓÃ»§Ãû³Æ
     std::string       db_user_name_;
-    ///DBæ•°æ®åº“å¯†ç ID
+    ///DBÊı¾İ¿âÃÜÂëID
     std::string       db_password_;
 
-    ///MYSQLæ•°æ®åº“è¿æ¥å¯¹è±¡
+    ///MYSQLÊı¾İ¿âÁ¬½Ó¶ÔÏó
     ZCE_Mysql_Connect db_connect_;
 
-    ///MYSQLå‘½ä»¤æ‰§è¡Œå¯¹è±¡
+    ///MYSQLÃüÁîÖ´ĞĞ¶ÔÏó
     ZCE_Mysql_Command db_command_;
 };
 

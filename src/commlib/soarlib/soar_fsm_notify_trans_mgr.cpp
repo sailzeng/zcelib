@@ -1,13 +1,13 @@
-ï»¿#include "soar_predefine.h"
+#include "soar_predefine.h"
 #include "soar_error_code.h"
 #include "soar_fsm_notify_taskbase.h"
 #include "soar_fsm_notify_trans_mgr.h"
 
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 template <>
 NotifyTrans_Manger<ZCE_NULL_SYNCH>::~NotifyTrans_Manger()
 {
-    //åˆ é™¤MSG QUEUE
+    //É¾³ıMSG QUEUE
     if (send_msg_queue_)
     {
         delete send_msg_queue_;
@@ -22,11 +22,11 @@ NotifyTrans_Manger<ZCE_NULL_SYNCH>::~NotifyTrans_Manger()
     }
 }
 
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 template <>
 NotifyTrans_Manger<ZCE_MT_SYNCH>::~NotifyTrans_Manger()
 {
-    //åˆ é™¤MSG QUEUE
+    //É¾³ıMSG QUEUE
     if (send_msg_queue_)
     {
         delete send_msg_queue_;
@@ -46,7 +46,7 @@ NotifyTrans_Manger<ZCE_MT_SYNCH>::~NotifyTrans_Manger()
         frame_mallocor_ = NULL;
     }
 
-    //åˆ é™¤TASKå¯¹è±¡
+    //É¾³ıTASK¶ÔÏó
     if (task_list_)
     {
         for (size_t i = 0; i < task_number_; ++i)
@@ -61,16 +61,16 @@ NotifyTrans_Manger<ZCE_MT_SYNCH>::~NotifyTrans_Manger()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´3æœˆ5æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê3ÔÂ5ÈÕ
 Function        : NotifyTrans_Manger<ACE_NULL_SYNCH>::active_notify_task
 Return          : int
 Parameter List  :
   Param1: NotifyTrans_TaskBase*
   Param2: size_t
-Description     : å•çº¿ç¨‹ç‰ˆæœ¬ï¼Œä¸æ”¯æŒè¿™ä¸ªå‡½æ•°ï¼Œç›´æ¥æ–­è¨€è®©ä½ å®Œè›‹ï¼Œå®Œè›‹
+Description     : µ¥Ïß³Ì°æ±¾£¬²»Ö§³ÖÕâ¸öº¯Êı£¬Ö±½Ó¶ÏÑÔÈÃÄãÍêµ°£¬Íêµ°
 Calls           :
 Called By       :
-Other           : æˆ‘(æ˜¯æŒ‡è¿™ä¸ªå‡½æ•°)ä¼šè‡ªæ€çš„ã€‚æ‚¼å¿µHWçš„ä¸¤ä¸ªå…„å¼Ÿï¼Œå½“ç å†œä¸å®¹æ˜“å‘€
+Other           : ÎÒ(ÊÇÖ¸Õâ¸öº¯Êı)»á×ÔÉ±µÄ¡£µ¿ÄîHWµÄÁ½¸öĞÖµÜ£¬µ±ÂëÅ©²»ÈİÒ×Ñ½
 Modify Record   :
 ******************************************************************************************/
 template <>
@@ -83,13 +83,13 @@ int NotifyTrans_Manger<ZCE_NULL_SYNCH>::active_notify_task(NotifyTrans_TaskBase 
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´3æœˆ5æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê3ÔÂ5ÈÕ
 Function        : NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task
 Return          : int
 Parameter List  :
-  Param1: NotifyTrans_TaskBase* clone_task CLONEçš„çº¿ç¨‹çš„å®ä¾‹ï¼Œä½ æœ€å¥½newè¿›å»ï¼Œ
-  Param2: size_t task_num                 çº¿ç¨‹çš„æ•°é‡
-Description     : æ¿€æ´»Nä¸ªçº¿ç¨‹ï¼Œ
+  Param1: NotifyTrans_TaskBase* clone_task CLONEµÄÏß³ÌµÄÊµÀı£¬Äã×îºÃnew½øÈ¥£¬
+  Param2: size_t task_num                 Ïß³ÌµÄÊıÁ¿
+Description     : ¼¤»îN¸öÏß³Ì£¬
 Calls           :
 Called By       :
 Other           :
@@ -101,7 +101,7 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
                                                          size_t task_stack_size)
 {
     int ret = 0;
-    //è¿™ä¸ªå‡½æ•°åªç”¨è¿›æ¥ä¸€æ¬¡
+    //Õâ¸öº¯ÊıÖ»ÓÃ½øÀ´Ò»´Î
     ZCE_ASSERT(task_list_ == NULL);
 
     task_number_ = task_num;
@@ -109,26 +109,26 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
 
     task_list_ = new NotifyTrans_TaskBase*[task_number_];
 
-    //åˆå§‹åŒ–
+    //³õÊ¼»¯
     for (size_t i = 0; i < task_number_; ++i)
     {
         task_list_[i] = clone_task_->task_clone();
         ret = task_list_[i]->initialize(this);
 
-        //ä»»ä½•ä¸€ä¸ªä¸æˆåŠŸï¼Œéƒ½è¿”å›é”™è¯¯
+        //ÈÎºÎÒ»¸ö²»³É¹¦£¬¶¼·µ»Ø´íÎó
         if (ret != 0)
         {
             return ret;
         }
     }
 
-    //æ¯ä¸ªå¯¹è±¡å¯åŠ¨ä¸€ä¸ªçº¿ç¨‹å®ä¾‹ï¼Œè¿™æ ·æ˜¯å·æ‡’ä½†æ˜¯ï¼Œå¯ä»¥å¾ˆå®¹æ˜“å®ç°çº¿ç¨‹æ± å­
+    //Ã¿¸ö¶ÔÏóÆô¶¯Ò»¸öÏß³ÌÊµÀı£¬ÕâÑùÊÇÍµÀÁµ«ÊÇ£¬¿ÉÒÔºÜÈİÒ×ÊµÏÖÏß³Ì³Ø×Ó
     for (size_t i = 0; i < task_number_; ++i)
     {
-        //ä½¿ç”¨ä¸€ä¸ªç‰¹æ®Šçš„æ—¥æœŸåšå®ŒGROUP ID
+        //Ê¹ÓÃÒ»¸öÌØÊâµÄÈÕÆÚ×öÍêGROUP ID
         const size_t ACTIVATE_TASK_GROUP = 2011105;
 
-        //æ³¨æ„ä¸‹é¢çš„å‚æ•°1active
+        //×¢ÒâÏÂÃæµÄ²ÎÊı1active
         ZCE_THREAD_ID threadid;
         ret = task_list_[i]->activate(ACTIVATE_TASK_GROUP,
                                       &threadid,
@@ -148,11 +148,11 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´3æœˆ17æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê3ÔÂ17ÈÕ
 Function        : NotifyTrans_Manger<ACE_NULL_SYNCH>::stop_notify_task
 Return          : int
 Parameter List  : NULL
-Description     : é€šçŸ¥TASKåœä¸‹æ¥
+Description     : Í¨ÖªTASKÍ£ÏÂÀ´
 Calls           :
 Called By       :
 Other           :
@@ -167,11 +167,11 @@ int NotifyTrans_Manger<ZCE_NULL_SYNCH>::stop_notify_task()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´3æœˆ17æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê3ÔÂ17ÈÕ
 Function        : NotifyTrans_Manger<ZCE_MT_SYNCH>::stop_notify_task
 Return          : int
 Parameter List  : NULL
-Description     : é€šçŸ¥æ‰€æœ‰çš„çº¿ç¨‹åœæ­¢è¿è¡Œ
+Description     : Í¨ÖªËùÓĞµÄÏß³ÌÍ£Ö¹ÔËĞĞ
 Calls           :
 Called By       :
 Other           :
@@ -181,19 +181,19 @@ template <>
 int NotifyTrans_Manger<ZCE_MT_SYNCH>::stop_notify_task()
 {
 
-    //é€šçŸ¥æ‰€æœ‰çš„çº¿ç¨‹åœæ­¢è¿è¡Œ
+    //Í¨ÖªËùÓĞµÄÏß³ÌÍ£Ö¹ÔËĞĞ
     for (size_t i = 0; i < task_number_; ++i)
     {
         task_list_[i]->stop_task_run();
     }
 
-    //ç­‰å¾…æ‰€æœ‰çš„çº¿ç¨‹é€€å‡º
+    //µÈ´ıËùÓĞµÄÏß³ÌÍË³ö
     for (size_t i = 0; i < task_number_; ++i)
     {
         task_list_[i]->wait_join();
     }
 
-    //é€šçŸ¥é€€å‡ºçº¿ç¨‹çš„TASKï¼Œè¿›è¡Œç»“æŸå¤„ç†
+    //Í¨ÖªÍË³öÏß³ÌµÄTASK£¬½øĞĞ½áÊø´¦Àí
     for (size_t i = 0; i < task_number_; ++i)
     {
         task_list_[i]->task_finish();

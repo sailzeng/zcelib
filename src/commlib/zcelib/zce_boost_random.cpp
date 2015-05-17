@@ -1,10 +1,10 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_boost_random.h"
 
 namespace ZCE_LIB
 {
 
-//æ ¹æ®è¦æ±‚ï¼Œç”Ÿæˆä¸€ä¸ªéšæœºæ•°å­—ç¬¦ä¸²ï¼Œ
+//¸ù¾İÒªÇó£¬Éú³ÉÒ»¸öËæ»úÊı×Ö·û´®£¬
 void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
                              char *rand_str,
                              size_t str_len)
@@ -16,7 +16,7 @@ void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
     for (size_t i = 0; i < str_len ; ++i )
     {
 
-        //ä¸€ä¸ªéšæœºæ•°å­—ç”Ÿæˆ2ä¸ªå­—ç¬¦
+        //Ò»¸öËæ»úÊı×ÖÉú³É2¸ö×Ö·û
         if (0 == i % 2 )
         {
             rand_number = get_uint32();
@@ -26,22 +26,22 @@ void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
         {
             rand_data = (rand_number & 0xFFFF0000) >> 16 ;
         }
-        //æ ¹æ®ç±»å‹ç”Ÿæˆå­—ç¬¦ä¸²ï¼Œæœ‰ä¸€äº›å¸¸é‡ï¼Œä½†æ‡’å¾—å®šä¹‰äº†ï¼Œä½ ä¸€çœ‹å°±æ˜ç™½çš„
+        //¸ù¾İÀàĞÍÉú³É×Ö·û´®£¬ÓĞÒ»Ğ©³£Á¿£¬µ«ÀÁµÃ¶¨ÒåÁË£¬ÄãÒ»¿´¾ÍÃ÷°×µÄ
         switch (str_type)
         {
-                //æ•°å­—
+                //Êı×Ö
             case random_base::RAND_STR_NUMBER:
                 rand_str [i] = static_cast<char>('0' + (rand_data % 10));
                 break;
-                //å°å†™
+                //Ğ¡Ğ´
             case random_base::RAND_STR_LOWER:
                 rand_str [i] = static_cast<char>('a' + (rand_data % 26));
                 break;
-                //å¤§å†™
+                //´óĞ´
             case random_base::RAND_STR_UPPER:
                 rand_str [i] = static_cast<char>('A' + (rand_data % 26));
                 break;
-                //æ•°å­—+å°å†™å­—ç¬¦
+                //Êı×Ö+Ğ¡Ğ´×Ö·û
             case random_base::RAND_STR_NUMBER_LOWER:
                 rand_data = rand_data % 36;
                 if (rand_data < 10)
@@ -53,7 +53,7 @@ void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
                     rand_str [i] = 'a' + static_cast<char>( rand_data ) ;
                 }
                 break;
-                //æ•°å­—+å¤§å†™å­—ç¬¦
+                //Êı×Ö+´óĞ´×Ö·û
             case random_base::RAND_STR_NUMBER_UPPER:
                 rand_data = rand_data % 36;
                 if (rand_data < 10)
@@ -65,7 +65,7 @@ void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
                     rand_str [i] = 'A' + static_cast<char>( rand_data ) ;
                 }
                 break;
-                //æ•°å­—ï¼Œå¤§å†™ï¼Œå°å†™ï¼Œ
+                //Êı×Ö£¬´óĞ´£¬Ğ¡Ğ´£¬
             case random_base::RAND_STR_NUMBER_LOWER_UPPER:
                 rand_data = rand_data % 62;
                 if (rand_data < 10)
@@ -82,11 +82,11 @@ void random_base::get_string(random_base::RAND_STRING_TYPE str_type,
                 }
                 break;
 
-                ///äº§ç”Ÿ0-127çš„ASCII(éæ‰©å±•)å­—ç¬¦ä¸²
+                ///²úÉú0-127µÄASCII(·ÇÀ©Õ¹)×Ö·û´®
             case random_base::RAND_STR_ASCII:
                 rand_str [i] = static_cast<char>( rand_data & 0x7F ) ;
                 break;
-                ///äº§ç”Ÿ0-255äºŒè¿›åˆ¶å­—ç¬¦ä¸²
+                ///²úÉú0-255¶ş½øÖÆ×Ö·û´®
             case random_base::RAND_STR_BINARY:
                 rand_str [i] = static_cast<char>( rand_data & 0xFF ) ;
                 break;

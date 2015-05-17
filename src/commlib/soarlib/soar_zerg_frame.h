@@ -1,4 +1,4 @@
-ï»¿
+
 #ifndef SOARING_LIB_SERVER_APP_FRAME_H_
 #define SOARING_LIB_SERVER_APP_FRAME_H_
 
@@ -11,93 +11,93 @@
 
 
 /*!
-* @brief      FRAMEçš„é€‰é¡¹å­—èŠ‚çš„UNIONç»“æ„
+* @brief      FRAMEµÄÑ¡Ïî×Ö½ÚµÄUNION½á¹¹
 *
 */
 struct _ZERG_FRAME_OPTION
 {
 public:
 
-    //frame_option_çš„å¤´24ä¸ªBITä½œä¸ºé€‰é¡¹å­—æ®µ,,
+    //frame_option_µÄÍ·24¸öBIT×÷ÎªÑ¡Ïî×Ö¶Î,,
     uint32_t     inner_option_ : 24;
 
-    //å4BITä½œä¸ºç‰ˆæœ¬æ ‡è¯†
+    //ºó4BIT×÷Îª°æ±¾±êÊ¶
     uint32_t     frame_version_ : 8;
 };
 
 
 
 /*!
-* @brief      ZergæœåŠ¡å™¨é—´ä¼ é€’æ¶ˆæ¯çš„é€šç”¨å¸§å¤´
+* @brief      Zerg·şÎñÆ÷¼ä´«µİÏûÏ¢µÄÍ¨ÓÃÖ¡Í·
 *
 */
 class SOARING_EXPORT Zerg_App_Frame
 {
 public:
 
-    //å¸§çš„æè¿°,åœ¨frame_option_å­—æ®µä½¿ç”¨
+    //Ö¡µÄÃèÊö,ÔÚframe_option_×Ö¶ÎÊ¹ÓÃ
     enum PET_APPFRAME_OPTION
     {
         //-----------------------------------------------------------------
-        //ä½16ä½ç”¨äºå†…éƒ¨çš„æè¿°
+        //µÍ16Î»ÓÃÓÚÄÚ²¿µÄÃèÊö
 
         //
         DESC_DEFUALT             = 0x0,
 
-        //é«˜ä¼˜å…ˆçº§åˆ«ï¼Œæ²¡æœ‰ä½¿ç”¨ï¼Œ
+        //¸ßÓÅÏÈ¼¶±ğ£¬Ã»ÓĞÊ¹ÓÃ£¬
         DESC_HIGH_PRIORITY       = 0x1,
 
-        //æŸä¸ªå‘½ä»¤å¸§å‘é€å¤±è´¥,é€šçŸ¥åé¢çš„æœåŠ¡
+        //Ä³¸öÃüÁîÖ¡·¢ËÍÊ§°Ü,Í¨ÖªºóÃæµÄ·şÎñ
         DESC_SEND_ERROR          = 0x2,
 
-        //å¦‚æœå‘é€å¤±è´¥,é‡å¤å°è¯•å‘é€
+        //Èç¹û·¢ËÍÊ§°Ü,ÖØ¸´³¢ÊÔ·¢ËÍ
         DESC_SEND_FAIL_RECORD    = 0x4,
-        //å¦‚æœå‘é€å¤±è´¥,é€šçŸ¥åé¢çš„åº”ç”¨è¿›ç¨‹
+        //Èç¹û·¢ËÍÊ§°Ü,Í¨ÖªºóÃæµÄÓ¦ÓÃ½ø³Ì
         DESC_SNDPRC_NOTIFY_APP   = 0x8,
 
-        //å¦‚æœå‘é€æˆåŠŸå,ç›´æ¥æ–­å¼€è¿æ¥ï¼Œç”¨äºéƒ¨åˆ†TCPçš„çŸ­è¿æ¥
+        //Èç¹û·¢ËÍ³É¹¦ºó,Ö±½Ó¶Ï¿ªÁ¬½Ó£¬ÓÃÓÚ²¿·ÖTCPµÄ¶ÌÁ¬½Ó
         DESC_SNDPRC_CLOSE_PEER   = 0x10,
 
-        //åœ¨åŒ…ä½“è¿½åŠ ç™»å½•KEY
+        //ÔÚ°üÌå×·¼ÓµÇÂ¼KEY
         DESC_APPEND_SESSION_KEY  = 0x20,
 
-        //åœ¨åŒ…ä½“è¿½åŠ ç™»å½•ip
+        //ÔÚ°üÌå×·¼ÓµÇÂ¼ip
         DESC_APPEND_LOGIN_IP     = 0x40,
 
-        //é»˜è®¤çš„é€šè®¯å¸§éƒ½æ˜¯TCPçš„ï¼Œè¿™ä¸ªæè¿°å­—è¡¨ç¤ºè¿™ä¸ªå¸§æ˜¯UDPçš„
+        //Ä¬ÈÏµÄÍ¨Ñ¶Ö¡¶¼ÊÇTCPµÄ£¬Õâ¸öÃèÊö×Ö±íÊ¾Õâ¸öÖ¡ÊÇUDPµÄ
         DESC_UDP_FRAME           = 0x80,
 
-        //å¦‚æœæ˜¯TCPçš„å¸§,å…¶å®é»˜è®¤æ˜¯TCPçš„å¸§,æ‰€ä»¥å…¶å®æ²¡æœ‰ä½¿ç”¨
+        //Èç¹ûÊÇTCPµÄÖ¡,ÆäÊµÄ¬ÈÏÊÇTCPµÄÖ¡,ËùÒÔÆäÊµÃ»ÓĞÊ¹ÓÃ
         DESC_TCP_FRAME           = 0x100,
 
         //-----------------------------------------------------------------
-        //é«˜16ä½ç”¨äºå¤–éƒ¨çš„æè¿°,8ä½æè¿°ï¼Œ
+        //¸ß16Î»ÓÃÓÚÍâ²¿µÄÃèÊö,8Î»ÃèÊö£¬
         DESC_MONITOR_TRACK       = 0x10000,
 
-        //FRAMEæ•°æ®åŒºçš„æœ‰ç”¨æˆ·ç­¾å
+        //FRAMEÊı¾İÇøµÄÓĞÓÃ»§Ç©Ãû
         DESC_HEAD_WITH_SIGNATURE = 0x20000,
 
-        //å¸§çš„æ•°æ®é‡‡ç”¨åŠ å¯†
+        //Ö¡µÄÊı¾İ²ÉÓÃ¼ÓÃÜ
         DESC_SESSION_ENCRYPT     = 0x40000,
 
-        //ç‰¹æ®Šçš„æŸäº›å‘½ä»¤ä¸ç”¨åŠ å¯†è¿›è¡Œå¤„ç†ï¼Œç”¨äºåŠ å¯†æƒ…å†µæŸäº›å‘½ä»¤æ— é¡»åŠ å¯†çš„ç‰¹æ®Šæƒ…å†µ
+        //ÌØÊâµÄÄ³Ğ©ÃüÁî²»ÓÃ¼ÓÃÜ½øĞĞ´¦Àí£¬ÓÃÓÚ¼ÓÃÜÇé¿öÄ³Ğ©ÃüÁîÎŞĞë¼ÓÃÜµÄÌØÊâÇé¿ö
         DESC_SPECIAL_NO_ENCRYPT  = 0x80000,
 
-        //APPFramçš„ç‰ˆæœ¬V1
+        //APPFramµÄ°æ±¾V1
         DESC_V1_VERSION          = 0x1000000,
-        //APPFramçš„ç‰ˆæœ¬V2ï¼Œç»ˆäºè¿˜æ˜¯å‡çº§äº†ä¸€æ¬¡
+        //APPFramµÄ°æ±¾V2£¬ÖÕÓÚ»¹ÊÇÉı¼¶ÁËÒ»´Î
         DESC_V2_VERSION          = 0x2000000,
     };
 
 
 
 public:
-    //æ„é€ å‡½æ•°ï¼Œå¤§å®¶éƒ½å¯ä»¥ç”¨çš„.
+    //¹¹Ôìº¯Êı£¬´ó¼Ò¶¼¿ÉÒÔÓÃµÄ.
     Zerg_App_Frame(uint32_t cmd = CMD_INVALID_CMD,
                    uint32_t lenframe = LEN_OF_APPFRAME_HEAD,
                    uint32_t frameoption = DESC_V1_VERSION);
 
-    //æ„é€ å‡½æ•°,ç”¨äº,å®¢æˆ·ç«¯åˆå§‹åŒ–,
+    //¹¹Ôìº¯Êı,ÓÃÓÚ,¿Í»§¶Ë³õÊ¼»¯,
     Zerg_App_Frame(uint32_t cmd,
                    uint32_t lenframe,
                    uint32_t uin,
@@ -105,7 +105,7 @@ public:
                    uint16_t rcvsvctype,
                    uint32_t frameoption = DESC_V1_VERSION);
 
-    //æ„é€ å‡½æ•°,ç”¨äºå‘é€ç»™ä¸€ä¸ªéä»£ç†æœåŠ¡å™¨
+    //¹¹Ôìº¯Êı,ÓÃÓÚ·¢ËÍ¸øÒ»¸ö·Ç´úÀí·şÎñÆ÷
     Zerg_App_Frame(uint32_t cmd,
                    uint32_t lenframe,
                    uint32_t uin,
@@ -113,7 +113,7 @@ public:
                    const SERVICES_ID &rcvsvc,
                    uint32_t frameoption = DESC_V1_VERSION);
 
-    //æ„é€ å‡½æ•°,ç”¨äºå‘é€ç»™ä¸€ä¸ªä»£ç†æœåŠ¡å™¨
+    //¹¹Ôìº¯Êı,ÓÃÓÚ·¢ËÍ¸øÒ»¸ö´úÀí·şÎñÆ÷
     Zerg_App_Frame(uint32_t cmd,
                    uint32_t lenframe,
                    uint32_t uin,
@@ -122,86 +122,86 @@ public:
                    uint16_t rcvsvc,
                    uint32_t frameoption = DESC_V1_VERSION);
 
-    //ææ„å‡½æ•°
+    //Îö¹¹º¯Êı
     ~Zerg_App_Frame();
 
-    //Assign =è¿ç®—ç¬¦å·
+    //Assign =ÔËËã·ûºÅ
     Zerg_App_Frame &operator = (const Zerg_App_Frame &other);
 
-    //æ˜¯å¦æ˜¯å†…éƒ¨å¤„ç†çš„å‘½ä»¤
+    //ÊÇ·ñÊÇÄÚ²¿´¦ÀíµÄÃüÁî
     inline bool is_internal_process(bool &bsenderr);
-    //æ˜¯å¦äº‹é€šä¿¡æœåŠ¡å™¨å¤„ç†çš„å‘½ç†
+    //ÊÇ·ñÊÂÍ¨ĞÅ·şÎñÆ÷´¦ÀíµÄÃüÀí
     inline bool is_zerg_processcmd();
 
-    //æ¸…ç†å†…éƒ¨çš„é€‰é¡¹ä¿¡æ¯
+    //ÇåÀíÄÚ²¿µÄÑ¡ÏîĞÅÏ¢
     inline void clear_inner_option();
-    //æ¸…ç†æ‰€æœ‰çš„é€‰é¡¹å¿ƒæƒ³
+    //ÇåÀíËùÓĞµÄÑ¡ÏîĞÄÏë
     inline void clear_all_option();
 
-    //å°†å¸§å¤´çš„æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºç½‘ç»œåº
+    //½«Ö¡Í·µÄËùÓĞµÄuint16_t,uint32_t×ª»»ÎªÍøÂçĞò
     void framehead_encode();
-    //å°†å¸§å¤´çš„æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºæœ¬åœ°åº
+    //½«Ö¡Í·µÄËùÓĞµÄuint16_t,uint32_t×ª»»Îª±¾µØĞò
     void framehead_decode();
 
-    //åˆå§‹åŒ–V1ç‰ˆæœ¬çš„åŒ…å¤´,æ‰€æœ‰æ•°æ®æ¸…0
+    //³õÊ¼»¯V1°æ±¾µÄ°üÍ·,ËùÓĞÊı¾İÇå0
     void init_framehead(uint32_t lenframe,
                         uint32_t option = 0,
                         uint32_t cmd = 0);
 
-    //å¡«å……å‘é€SVRä¿¡æ¯
+    //Ìî³ä·¢ËÍSVRĞÅÏ¢
     void set_send_svcid(uint16_t svrtype, uint32_t svrid);
-    //å¡«å……å‘é€SVRä¿¡æ¯
+    //Ìî³ä·¢ËÍSVRĞÅÏ¢
     void set_recv_svcid(uint16_t svrtype, uint32_t svrid);
-    //å¡«å……ä»£ç†SVRä¿¡æ¯
+    //Ìî³ä´úÀíSVRĞÅÏ¢
     void set_proxy_svcid(uint16_t svrtype, uint32_t svrid);
 
-    //å¡«å†™æ‰€æœ‰çš„æœåŠ¡ä¿¡æ¯,
+    //ÌîĞ´ËùÓĞµÄ·şÎñĞÅÏ¢,
     void set_all_svcid(const SERVICES_ID &rcvinfo, const SERVICES_ID &sndinfo, const SERVICES_ID &proxyinfo);
 
-    //å¡«å……AppDataæ•°æ®åˆ°APPFrame
+    //Ìî³äAppDataÊı¾İµ½APPFrame
     int fill_appdata(const size_t szdata, const char *vardata);
 
-    //äº¤æ¢Rcv ,Snd SvrInfo
+    //½»»»Rcv ,Snd SvrInfo
     void exchange_rcvsnd_svcid();
-    //äº¤æ¢Rcv ,Snd SvrInfo,prochandle
+    //½»»»Rcv ,Snd SvrInfo,prochandle
     void exchange_rcvsnd_svcid(Zerg_App_Frame &exframe );
-    //å›å¡«è¿”å›åŒ…å¤´
+    //»ØÌî·µ»Ø°üÍ·
     void fillback_appframe_head(Zerg_App_Frame &exframe );
 
-    //Cloneä¸€ä¸ªAPP FRAME
+    //CloneÒ»¸öAPP FRAME
     Zerg_App_Frame *clone() const;
     //
     void clone(Zerg_App_Frame *clone_frame) const;
     //
     void clone_head(Zerg_App_Frame *clone_frame) const;
 
-    //Dumpå¤´éƒ¨å’ŒDATAåŒºçš„æ•°æ®
+    //DumpÍ·²¿ºÍDATAÇøµÄÊı¾İ
     void dump_appframe_info(std::ostringstream &strstream) const;
-    //Dumpæ‰€æœ‰çš„æ•°æ®ä¿¡æ¯,ä¸€ä¸ªå­—èŠ‚å­—èŠ‚çš„å‘Šè¯‰ä½ ,
+    //DumpËùÓĞµÄÊı¾İĞÅÏ¢,Ò»¸ö×Ö½Ú×Ö½ÚµÄ¸æËßÄã,
     void dump_appframe_data(std::ostringstream &strstream) const;
-    //Dumpæ•°æ®åŒ…å¤´ä¸­çš„é‡è¦ä¿¡æ¯ç»™ä½ ,
+    //DumpÊı¾İ°üÍ·ÖĞµÄÖØÒªĞÅÏ¢¸øÄã,
     void dump_appframe_head(std::ostringstream &strstream) const;
 
-    //è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
+    //Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
     void dumpoutput_framehead(const char *outstr,
                               ZCE_LOG_PRIORITY log_priority) const;
-    //è¾“å‡ºAPPFRAMEçš„å°¾éƒ¨ä¿¡æ¯
+    //Êä³öAPPFRAMEµÄÎ²²¿ĞÅÏ¢
     void dumpoutput_frameinfo(const char *outstr,
                               ZCE_LOG_PRIORITY log_priority)  const;
 
-    //å–å¾—å¸§çš„é•¿åº¦
+    //È¡µÃÖ¡µÄ³¤¶È
     inline size_t get_appframe_len() const;
-    //å–å¾—å¸§æ•°æ®çš„é•¿åº¦
+    //È¡µÃÖ¡Êı¾İµÄ³¤¶È
     inline size_t get_frame_datalen() const;
 
-    //TDR AppCodeç¼–ç ,szframe_appdataä¸ºframe_appdata_çš„bufferé•¿åº¦,å¦‚æœframe_appdata_ä¸ºä¸€ä¸ªç¼“å†²,ä½¿ç”¨æ­¤å‡½æ•°
+    //TDR AppCode±àÂë,szframe_appdataÎªframe_appdata_µÄbuffer³¤¶È,Èç¹ûframe_appdata_ÎªÒ»¸ö»º³å,Ê¹ÓÃ´Ëº¯Êı
     template<class T> int appdata_encode(
         size_t szframe_appdata,
         const T &info,
         size_t data_start = 0,
         size_t *sz_code = NULL);
 
-    //TDR AppCodeè§£ç ,
+    //TDR AppCode½âÂë,
     template<class T> int appdata_decode(
         T &info,
         size_t data_start = 0,
@@ -210,14 +210,14 @@ public:
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
-    ///å°†ä¸€ä¸ªç»“æ„è¿›è¡Œç¼–ç 
+    ///½«Ò»¸ö½á¹¹½øĞĞ±àÂë
     int protobuf_encode(size_t szframe_appdata,
                         const google::protobuf::MessageLite *msg,
                         size_t data_start = 0,
                         size_t *sz_code = NULL
                        );
 
-    ///å°†ä¸€ä¸ªç»“æ„è¿›è¡Œè§£ç 
+    ///½«Ò»¸ö½á¹¹½øĞĞ½âÂë
     int protobuf_decode(google::protobuf::MessageLite *msg,
                         size_t data_start = 0,
                         size_t *sz_code = NULL);
@@ -225,28 +225,28 @@ public:
 #endif
 
 
-    //æ‹·è´Output CDRä¸­çš„Msg,Blockæ•°æ®,szframe_appdataä¸ºframe_appdata_çš„bufferé•¿åº¦,å¦‚æœframe_appdata_ä¸ºä¸€ä¸ªç¼“å†²,ä½¿ç”¨æ­¤å‡½æ•°
+    //¿½±´Output CDRÖĞµÄMsg,BlockÊı¾İ,szframe_appdataÎªframe_appdata_µÄbuffer³¤¶È,Èç¹ûframe_appdata_ÎªÒ»¸ö»º³å,Ê¹ÓÃ´Ëº¯Êı
     //ssize_t CopyCDRMsgBlock(size_t szframe_appdata,const ACE_OutputCDR& outcdr );
-    //å¦‚æœAppFrameä¸ºä¸€ä¸ªæ°å¥½é•¿åº¦çš„Frame,é•¿åº¦å·²ç»å¡«å†™,ä½¿ç”¨æ­¤å‡½æ•°,
+    //Èç¹ûAppFrameÎªÒ»¸öÇ¡ºÃ³¤¶ÈµÄFrame,³¤¶ÈÒÑ¾­ÌîĞ´,Ê¹ÓÃ´Ëº¯Êı,
     //ssize_t CopyCDRMsgBlock(const ACE_OutputCDR& outcdr);
 
-    //å–å¾—IPåœ°å€ä¿¡æ¯
+    //È¡µÃIPµØÖ·ĞÅÏ¢
     uint32_t get_send_ip() const;
 
     //-----------------------------------------------------------------------------------
-    //FRAMEçš„æ•°æ®è¿›è¡ŒTEAç®—æ³•åŠ å¯†è§£å¯†çš„å‡½æ•°ï¼Œä¸çŸ¥é“Joviå½“å¹´ä¸ºå•¥è¦å†™æˆSTATICçš„ï¼Œå‘µå‘µ
-    //APPDATAåŠ å¯†æ•°æ®
+    //FRAMEµÄÊı¾İ½øĞĞTEAËã·¨¼ÓÃÜ½âÃÜµÄº¯Êı£¬²»ÖªµÀJoviµ±ÄêÎªÉ¶ÒªĞ´³ÉSTATICµÄ£¬ºÇºÇ
+    //APPDATA¼ÓÃÜÊı¾İ
     int appframe_encrypt(const char *session_key,
                          size_t data_start = 0);
-    //APPDATAæ•°æ®è§£å¯†,
+    //APPDATAÊı¾İ½âÃÜ,
     int appframe_decrypt(const char *session_key,
                          size_t data_start = 0);
 
-    //å°†APPDATAåŠ å¯†æ•°æ®,åŠ å¯†æ•°æ®ä¿å­˜åˆ°å¦å¤–Zerg_App_Frameï¼Œ
+    //½«APPDATA¼ÓÃÜÊı¾İ,¼ÓÃÜÊı¾İ±£´æµ½ÁíÍâZerg_App_Frame£¬
     int appframe_encrypt(const char *session_key,
                          Zerg_App_Frame *dest_frame,
                          size_t data_start = 0);
-    //å°†APPDATAæ•°æ®è§£å¯†,è§£å¯†æ•°æ®ä¿å­˜åœ¨å¦å¤–ä¸€ä¸ªZerg_App_Frameï¼Œ
+    //½«APPDATAÊı¾İ½âÃÜ,½âÃÜÊı¾İ±£´æÔÚÁíÍâÒ»¸öZerg_App_Frame£¬
     int appframe_decrypt(const char *session_key,
                          Zerg_App_Frame *dest_frame,
                          size_t data_start = 0);
@@ -254,9 +254,9 @@ public:
 public:
 
 
-    ///é‡è½½Newå‡½æ•°
+    ///ÖØÔØNewº¯Êı
     static void   *operator new (size_t , size_t lenframe = LEN_OF_APPFRAME_HEAD);
-    ///ä¸é‡è½½delteä¸æƒ…ç†ä¸é€šï¼Œä¸ºä»€ä¹ˆè¦å†™2ä¸ªã€‚ã€‚ã€‚
+    ///²»ÖØÔØdelteÓëÇéÀí²»Í¨£¬ÎªÊ²Ã´ÒªĞ´2¸ö¡£¡£¡£
     //http://www.cnblogs.com/fullsail/p/4292214.html
 #if defined ZCE_OS_WINDOWS
     static void operator delete(void *ptrframe,size_t);
@@ -265,48 +265,48 @@ public:
 #endif
 
 
-    //è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
+    //Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
     static void dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);
-    //è¾“å‡ºAPPFRAMEçš„å°¾éƒ¨ä¿¡æ¯
+    //Êä³öAPPFRAMEµÄÎ²²¿ĞÅÏ¢
     static void dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);
 
     //--------------------------------------------------------------------------
-    //FRAMEçš„æ•°æ®è¿›è¡ŒTEAç®—æ³•åŠ å¯†è§£å¯†çš„å‡½æ•°ï¼ŒSTATICå‡½æ•°ï¼Œä¸çŸ¥é“Joviå½“å¹´ä¸ºå•¥è¦å†™æˆSTATICçš„ï¼Œå‘µå‘µ
-    //æ„é€ ç­¾ååŒ…
+    //FRAMEµÄÊı¾İ½øĞĞTEAËã·¨¼ÓÃÜ½âÃÜµÄº¯Êı£¬STATICº¯Êı£¬²»ÖªµÀJoviµ±ÄêÎªÉ¶ÒªĞ´³ÉSTATICµÄ£¬ºÇºÇ
+    //¹¹ÔìÇ©Ãû°ü
     static void signature_construct(Zerg_App_Frame *&proc_frame, uint32_t uin, const char *pSignature, size_t len);
 
 
 public:
 
-    //å†…éƒ¨é€‰é¡¹æè¿°çš„æ©ç ,å†…éƒ¨é€‰é¡¹åœ¨ç½‘ç»œé—´çœ‹ä¸è§ï¼Œåœ¨é€šè®¯æœåŠ¡å™¨å’Œä¸šåŠ¡æœåŠ¡å™¨å‰å¯è§ã€‚
+    //ÄÚ²¿Ñ¡ÏîÃèÊöµÄÑÚÂë,ÄÚ²¿Ñ¡ÏîÔÚÍøÂç¼ä¿´²»¼û£¬ÔÚÍ¨Ñ¶·şÎñÆ÷ºÍÒµÎñ·şÎñÆ÷Ç°¿É¼û¡£
     static const uint32_t INNER_OPTION_MASK = 0xFFFF;
-    //å¤–éƒ¨é€‰é¡¹æè¿°+ç‰ˆæœ¬å·çš„æ©ç 
+    //Íâ²¿Ñ¡ÏîÃèÊö+°æ±¾ºÅµÄÑÚÂë
     static const uint32_t OUTER_OPTION_MASK = 0xFFFF0000;
 
 public:
 
-    //åŒ…å¤´éƒ½å°ºå¯¸,
+    //°üÍ·¶¼³ß´ç,
     static const size_t LEN_OF_APPFRAME_HEAD = 50;
 
-    //APPFAMEç‰ˆæœ¬V1
+    //APPFAME°æ±¾V1
     static const unsigned char TSS_APPFRAME_V1 = 1;
 
     //---------------------------------------------------------------------------
-    //FRAMEçš„ä¸€äº›é•¿åº¦å‚æ•°,
+    //FRAMEµÄÒ»Ğ©³¤¶È²ÎÊı,
 
-    //é»˜è®¤çš„æœ€å¤§é•¿åº¦æ˜¯64K
-    //ä¸ºä»€ä¹ˆé‡‡ç”¨64Kçš„åŸå› æ˜¯æˆ‘ä»¬çš„UPDçš„æœ€å¤§é•¿åº¦æ˜¯è¿™ä¸ªï¼Œè€Œä¸”è¿™ä¸ªç¼“å†²åŒºçš„é•¿åº¦æ¯”è¾ƒé€‚ä¸­.
+    //Ä¬ÈÏµÄ×î´ó³¤¶ÈÊÇ64K
+    //ÎªÊ²Ã´²ÉÓÃ64KµÄÔ­ÒòÊÇÎÒÃÇµÄUPDµÄ×î´ó³¤¶ÈÊÇÕâ¸ö£¬¶øÇÒÕâ¸ö»º³åÇøµÄ³¤¶È±È½ÏÊÊÖĞ.
     static const size_t MAX_LEN_OF_APPFRAME = 64 * 1024;
 
 
-    //TEAåŠ å¯†åå¢åŠ çš„é•¿åº¦,UPDçš„æ•°æ®åŒºéº»çƒ¦è‡ªå·±ææ‚é•¿åº¦é™åˆ¶ç­‰é—®é¢˜
+    //TEA¼ÓÃÜºóÔö¼ÓµÄ³¤¶È,UPDµÄÊı¾İÇøÂé·³×Ô¼º¸ãµà³¤¶ÈÏŞÖÆµÈÎÊÌâ
     static const size_t LEN_OF_TEA_REMAIN_ROOM = 17;
 
-    //FRAMEçš„æœ€å¤§é•¿åº¦,æ ¹æ®å„ä¸ªåœ°æ–¹çš„é•¿åº¦è€Œå¾—åˆ°
+    //FRAMEµÄ×î´ó³¤¶È,¸ù¾İ¸÷¸öµØ·½µÄ³¤¶È¶øµÃµ½
     static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD - LEN_OF_TEA_REMAIN_ROOM;
 
     //
@@ -314,7 +314,7 @@ public:
 
 public:
 
-    ///æ•´ä¸ªé€šè®¯åŒ…é•¿åº¦,ç•™è¶³ç©ºé—´,åŒ…æ‹¬å¸§å¤´çš„é•¿åº¦.
+    ///Õû¸öÍ¨Ñ¶°ü³¤¶È,Áô×ã¿Õ¼ä,°üÀ¨Ö¡Í·µÄ³¤¶È.
     uint32_t               frame_length_;
 
     union
@@ -324,39 +324,39 @@ public:
         _ZERG_FRAME_OPTION inner_option_;
     };
 
-    ///å‘½ä»¤å­— å‘½ä»¤å­—è¿˜æ˜¯æ”¾åœ¨åŒ…å¤´æ¯”è¾ƒå¥½,
+    ///ÃüÁî×Ö ÃüÁî×Ö»¹ÊÇ·ÅÔÚ°üÍ·±È½ÏºÃ,
     uint32_t               frame_command_;
 
     ///UID
     uint32_t               frame_uid_;
 
-    ///å‘é€å’Œæ¥æ”¶çš„æœåŠ¡å™¨åº”ç”¨ä¹Ÿè¦å¡«å†™
+    ///·¢ËÍºÍ½ÓÊÕµÄ·şÎñÆ÷Ó¦ÓÃÒ²ÒªÌîĞ´
 
-    ///å‘é€æœåŠ¡,åŒ…æ‹¬å‘é€æœåŠ¡å™¨ç±»å‹ï¼Œå‘é€æœåŠ¡å™¨ç¼–å·,æ²¡æœ‰ç¼–å·ï¼Œæˆ–è€…ä¸æ˜¯æœåŠ¡å¡«å†™0
+    ///·¢ËÍ·şÎñ,°üÀ¨·¢ËÍ·şÎñÆ÷ÀàĞÍ£¬·¢ËÍ·şÎñÆ÷±àºÅ,Ã»ÓĞ±àºÅ£¬»òÕß²»ÊÇ·şÎñÌîĞ´0
     SERVICES_ID            send_service_;
-    ///æ¥å—æœåŠ¡å™¨
+    ///½ÓÊÜ·şÎñÆ÷
     SERVICES_ID            recv_service_;
-    ///ä»£ç†æœåŠ¡å™¨
+    ///´úÀí·şÎñÆ÷
     SERVICES_ID            proxy_service_;
 
-    ///äº‹åŠ¡ID,å¯ä»¥ç”¨ä½œæœåŠ¡å‘èµ·ç«¯ä½œä¸ºä¸€ä¸ªæ ‡ç¤ºï¼Œåé¢çš„æœåŠ¡å™¨å›å¡«backfill_trans_id_å­—æ®µè¿”å›,
+    ///ÊÂÎñID,¿ÉÒÔÓÃ×÷·şÎñ·¢Æğ¶Ë×÷ÎªÒ»¸ö±êÊ¾£¬ºóÃæµÄ·şÎñÆ÷»ØÌîbackfill_trans_id_×Ö¶Î·µ»Ø,
     uint32_t               transaction_id_;
-    ///å›å¡«çš„è¯·æ±‚è€…çš„äº‹åŠ¡ID,
+    ///»ØÌîµÄÇëÇóÕßµÄÊÂÎñID,
     uint32_t               backfill_trans_id_;
 
-    ///ä¸šåŠ¡IDï¼ŒGAMEIDï¼Œç”¨äºæ ‡è¯†æ¸¸æˆå†…éƒ¨ID
+    ///ÒµÎñID£¬GAMEID£¬ÓÃÓÚ±êÊ¶ÓÎÏ·ÄÚ²¿ID
     uint32_t               app_id_;
 
     union
     {
-        ///å‘é€åºåˆ—å·ï¼Œè®¡åˆ’åªåœ¨é€šè®¯å±‚ç”¨,æš‚æ—¶æ²¡ç”¨ç”¨
+        ///·¢ËÍĞòÁĞºÅ£¬¼Æ»®Ö»ÔÚÍ¨Ñ¶²ãÓÃ,ÔİÊ±Ã»ÓÃÓÃ
         uint32_t           send_serial_number_;
-        ///å‘é€è€…çš„IPåœ°å€ï¼Œå†…éƒ¨ä½¿ç”¨
+        ///·¢ËÍÕßµÄIPµØÖ·£¬ÄÚ²¿Ê¹ÓÃ
         uint32_t           send_ip_address_;
 
     };
 
-    ///frame_appdata_ æ˜¯ä¸€ä¸ªå˜é•¿åº¦çš„å­—ç¬¦ä¸²åºåˆ—æ ‡ç¤º,
+    ///frame_appdata_ ÊÇÒ»¸ö±ä³¤¶ÈµÄ×Ö·û´®ĞòÁĞ±êÊ¾,
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( disable : 4200)
 #endif
@@ -369,35 +369,35 @@ public:
 
 #pragma pack ()
 
-//æ¸…ç†å†…éƒ¨çš„é€‰é¡¹ä¿¡æ¯
+//ÇåÀíÄÚ²¿µÄÑ¡ÏîĞÅÏ¢
 inline void Zerg_App_Frame::clear_inner_option()
 {
     frame_option_ &=  OUTER_OPTION_MASK;
 }
-//æ¸…ç†æ‰€æœ‰çš„é€‰é¡¹å¿ƒæƒ³
+//ÇåÀíËùÓĞµÄÑ¡ÏîĞÄÏë
 inline void Zerg_App_Frame::clear_all_option()
 {
     frame_option_ = 0;
 }
 
-//å¾—åˆ°å¸§çš„æ€»é•¿åº¦
+//µÃµ½Ö¡µÄ×Ü³¤¶È
 inline size_t Zerg_App_Frame::get_appframe_len() const
 {
     return frame_length_;
 }
-//å¾—åˆ°å¸§å¤´æ€»é•¿åº¦
+//µÃµ½Ö¡Í·×Ü³¤¶È
 inline  size_t Zerg_App_Frame::get_frame_datalen() const
 {
     return frame_length_ - LEN_OF_APPFRAME_HEAD;
 }
 
-//å¾—åˆ°å‘é€è€…çš„IPåœ°å€,ç½‘ç»œå­—èŠ‚åºçš„ï¼Œ
+//µÃµ½·¢ËÍÕßµÄIPµØÖ·,ÍøÂç×Ö½ÚĞòµÄ£¬
 inline uint32_t Zerg_App_Frame::get_send_ip() const
 {
     return send_ip_address_;
 }
 
-//æ˜¯å¦äº‹é€šä¿¡æœåŠ¡å™¨å¤„ç†çš„å‘½ç†
+//ÊÇ·ñÊÂÍ¨ĞÅ·şÎñÆ÷´¦ÀíµÄÃüÀí
 inline bool Zerg_App_Frame::is_zerg_processcmd()
 {
     if (frame_command_ >= ZERG_COMMAND_BEGIN && frame_command_ <= ZERG_COMMAND_END)
@@ -408,7 +408,7 @@ inline bool Zerg_App_Frame::is_zerg_processcmd()
     return false;
 }
 
-//æ£€æŸ¥å‘½ä»¤æ˜¯å¦æ˜¯å†…éƒ¨å¤„ç†å‘½ä»¤
+//¼ì²éÃüÁîÊÇ·ñÊÇÄÚ²¿´¦ÀíÃüÁî
 inline bool  Zerg_App_Frame::is_internal_process(bool &bsenderr)
 {
     bsenderr = false;
@@ -428,15 +428,15 @@ inline bool  Zerg_App_Frame::is_internal_process(bool &bsenderr)
 }
 
 /******************************************************************************************
-Author          : Yunfeiyang  Date Of Creation: 2007å¹´3æœˆ12æ—¥
+Author          : Yunfeiyang  Date Of Creation: 2007Äê3ÔÂ12ÈÕ
 Function        : Zerg_App_Frame::appdata_decode
 Return          : template<class T> int
 Parameter List  :
-  Param1: size_t szframe_appdata FRAMEçš„APPDATAçš„æ•°æ®é•¿åº¦ï¼Œæ³¨æ„ä¸æ˜¯æ•´ä¸ªAPPFRMAEçš„é•¿åº¦
-  Param2: const T& info          ç¼–ç çš„æ•°æ®
-  Param3: size_t data_start      ä»DATAåŒºçš„ç¬¬å‡ ä¸ªä½ç½®å¼€å§‹å¡«å……æ•°æ®ï¼Œé»˜è®¤ä¸º0
-  Param4: size_t *sz_code        å¦‚æœå…³ç³»ç¼–ç çš„æ•°æ®é•¿åº¦ï¼Œä¼ é€’ä¸€ä¸ªæŒ‡é’ˆå¾—åˆ°é•¿åº¦ï¼Œé»˜è®¤ä¸ºNULL,è¡¨ç¤ºä¸å…³å¿ƒ
-Description     : frame_appdata_çš„ç¼–ç å‡½æ•°
+  Param1: size_t szframe_appdata FRAMEµÄAPPDATAµÄÊı¾İ³¤¶È£¬×¢Òâ²»ÊÇÕû¸öAPPFRMAEµÄ³¤¶È
+  Param2: const T& info          ±àÂëµÄÊı¾İ
+  Param3: size_t data_start      ´ÓDATAÇøµÄµÚ¼¸¸öÎ»ÖÃ¿ªÊ¼Ìî³äÊı¾İ£¬Ä¬ÈÏÎª0
+  Param4: size_t *sz_code        Èç¹û¹ØÏµ±àÂëµÄÊı¾İ³¤¶È£¬´«µİÒ»¸öÖ¸ÕëµÃµ½³¤¶È£¬Ä¬ÈÏÎªNULL,±íÊ¾²»¹ØĞÄ
+Description     : frame_appdata_µÄ±àÂëº¯Êı
 Calls           :
 Called By       :
 Other           :
@@ -462,21 +462,21 @@ int Zerg_App_Frame::appdata_encode(size_t szframe_appdata,
         return SOAR_RET::ERROR_CDR_ENCODE_FAIL;
     }
 
-    // è°ƒæ•´frameçš„é•¿åº¦
+    // µ÷ÕûframeµÄ³¤¶È
     frame_length_
         = (uint32_t)(data_start + use_len + LEN_OF_APPFRAME_HEAD);
     return 0;
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007å¹´3æœˆ12æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007Äê3ÔÂ12ÈÕ
 Function        : Zerg_App_Frame::appdata_decode
 Return          : template<class T> int
 Parameter List  :
-  Param1: T& info           è§£ç è½¬æ¢çš„ç»“æ„
-  Param2: size_t data_start ä»DATAåŒºçš„ç¬¬å‡ ä¸ªä½ç½®å¼€å§‹è§£ç æ•°æ®ï¼Œé»˜è®¤ä¸º0
-  Param3: size_t *sz_code   å¦‚æœå…³ç³»ç¼–ç çš„æ•°æ®é•¿åº¦ï¼Œä¼ é€’ä¸€ä¸ªæŒ‡é’ˆå¾—åˆ°é•¿åº¦ï¼Œé»˜è®¤ä¸ºNULL,è¡¨ç¤ºä¸å…³å¿ƒ
-Description     : frame_appdata_çš„è§£ç å‡½æ•°
+  Param1: T& info           ½âÂë×ª»»µÄ½á¹¹
+  Param2: size_t data_start ´ÓDATAÇøµÄµÚ¼¸¸öÎ»ÖÃ¿ªÊ¼½âÂëÊı¾İ£¬Ä¬ÈÏÎª0
+  Param3: size_t *sz_code   Èç¹û¹ØÏµ±àÂëµÄÊı¾İ³¤¶È£¬´«µİÒ»¸öÖ¸ÕëµÃµ½³¤¶È£¬Ä¬ÈÏÎªNULL,±íÊ¾²»¹ØĞÄ
+Description     : frame_appdata_µÄ½âÂëº¯Êı
 Calls           :
 Called By       :
 Other           :
@@ -489,13 +489,13 @@ int Zerg_App_Frame::appdata_decode(  T &info,
 {
     size_t use_len = 0;
 
-    // frame_length_åŒ…å«äº†frameå¤´éƒ¨æ•°æ®çš„ï¼Œæ‰€ä»¥è¦è·³è¿‡
+    // frame_length_°üº¬ÁËframeÍ·²¿Êı¾İµÄ£¬ËùÒÔÒªÌø¹ı
     int ret = info.unpack(frame_appdata_ + data_start,
                           frame_length_ - data_start - LEN_OF_APPFRAME_HEAD, &use_len);
 
     if (ret == 0 && sz_code != NULL)
     {
-        //å¦‚æœè¦å¾—åˆ°ç¼–ç æ•°æ®çš„é•¿åº¦
+        //Èç¹ûÒªµÃµ½±àÂëÊı¾İµÄ³¤¶È
         *sz_code = use_len;
     }
 
@@ -508,12 +508,12 @@ int Zerg_App_Frame::appdata_decode(  T &info,
 }
 
 
-//å¾ˆè€—æ—¶çš„æ“ä½œï¼Œæ³¨æ„ä½¿ç”¨é¢‘åº¦
+//ºÜºÄÊ±µÄ²Ù×÷£¬×¢ÒâÊ¹ÓÃÆµ¶È
 #define DEBUGDUMP_FRAME_HEAD(x,y,z)    Zerg_App_Frame::dumpoutput_framehead(x,y,z);
 #define DEBUGDUMP_FRAME_INFO(x,y,z)    Zerg_App_Frame::dumpoutput_frameinfo(x,y,z);
 
 
-//éDEBUGç‰ˆæœ¬ä¼šä¼˜åŒ–æ‰çš„å®
+//·ÇDEBUG°æ±¾»áÓÅ»¯µôµÄºê
 #if defined _DEBUG || defined DEBUG
 #define DEBUGDUMP_FRAME_HEAD_DBG(x,y,z)      Zerg_App_Frame::dumpoutput_framehead(x,y,z);
 #define DEBUGDUMP_FRAME_INFO_DBG(x,y,z)      Zerg_App_Frame::dumpoutput_frameinfo(x,y,z)

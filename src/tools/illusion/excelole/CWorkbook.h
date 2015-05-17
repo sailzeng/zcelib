@@ -1,4 +1,4 @@
-﻿// Machine generated IDispatch wrapper class(es) created with Add Class from Typelib Wizard
+// Machine generated IDispatch wrapper class(es) created with Add Class from Typelib Wizard
 
 //#import "C:\\Program Files\\Microsoft Office 15\\Root\\Office15\\EXCEL.EXE" no_namespace
 // CWorkbook wrapper class

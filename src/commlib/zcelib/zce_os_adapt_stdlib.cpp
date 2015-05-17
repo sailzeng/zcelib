@@ -1,10 +1,10 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_stdlib.h"
 
-//ecvtçš„çº¿ç¨‹å®‰å…¨ç‰ˆæœ¬ï¼Œç”¨äºŽå°†ä¸€ä¸ªdoubleè½¬æ¢æˆä¸€ä¸ª10è¿›åˆ¶æŒ‡æ•°æ–¹å¼çš„å­—ç¬¦ä¸²ï¼Œ
-//æ³¨æ„è¿™ä¸ªå­—ç¬¦ä¸²æ˜¯ä¸€ä¸ªçº¯ç²¹çš„æ•°å­—å­—ç¬¦ä¸²ï¼Œ
-//ndigitsä¸ºè¦æ±‚è¿”å›žæ•°å­—çš„é•¿åº¦ï¼Œæ˜¯æ‰€æœ‰æ•°å­—ï¼Œè¿™ä¸ªå‚æ•°fcvt_ræœ‰åŒºåˆ«ï¼Œå°¾æ•°å³ä½¿æ˜¯0ä¹Ÿä¼šè¾“å‡º
-//è¿”å›žå‚æ•°ï¼Œdecptè¿”å›žæŒ‡æ•°ï¼Œsignè¿”å›žç¬¦å·
+//ecvtµÄÏß³Ì°²È«°æ±¾£¬ÓÃÓÚ½«Ò»¸ödouble×ª»»³ÉÒ»¸ö10½øÖÆÖ¸Êý·½Ê½µÄ×Ö·û´®£¬
+//×¢ÒâÕâ¸ö×Ö·û´®ÊÇÒ»¸ö´¿´âµÄÊý×Ö×Ö·û´®£¬
+//ndigitsÎªÒªÇó·µ»ØÊý×ÖµÄ³¤¶È£¬ÊÇËùÓÐÊý×Ö£¬Õâ¸ö²ÎÊýfcvt_rÓÐÇø±ð£¬Î²Êý¼´Ê¹ÊÇ0Ò²»áÊä³ö
+//·µ»Ø²ÎÊý£¬decpt·µ»ØÖ¸Êý£¬sign·µ»Ø·ûºÅ
 int ZCE_LIB::ecvt_r(double number,
                     int ndigits,
                     int *decpt,
@@ -31,10 +31,10 @@ int ZCE_LIB::ecvt_r(double number,
 #endif
 }
 
-//fcvtçš„çº¿ç¨‹å®‰å…¨ç‰ˆæœ¬ï¼Œç”¨äºŽå°†ä¸€ä¸ªdoubleè½¬æ¢æˆä¸€ä¸ª10è¿›åˆ¶æ•°å­—çš„å­—ç¬¦ä¸²ï¼Œ
-//æ³¨æ„è¿™ä¸ªå­—ç¬¦ä¸²æ˜¯ä¸€ä¸ªçº¯ç²¹çš„æ•°å­—å­—ç¬¦ä¸²ï¼Œ
-//ndigitsä¸ºè¦æ±‚è¿”å›žå°æ•°ä¸ªæ•°çš„é•¿åº¦ï¼Œè¿™ä¸ªå’Œecvt_ræœ‰åŒºåˆ«ï¼Œæ³¨æ„æ˜¯å°æ•°ï¼Œå°æ•°å³ä½¿æ˜¯0ä¹Ÿä¼šè¾“å‡º
-//è¿”å›žå‚æ•°ï¼Œdecptè¿”å›žæŒ‡æ•°ï¼Œsignè¿”å›žç¬¦å·
+//fcvtµÄÏß³Ì°²È«°æ±¾£¬ÓÃÓÚ½«Ò»¸ödouble×ª»»³ÉÒ»¸ö10½øÖÆÊý×ÖµÄ×Ö·û´®£¬
+//×¢ÒâÕâ¸ö×Ö·û´®ÊÇÒ»¸ö´¿´âµÄÊý×Ö×Ö·û´®£¬
+//ndigitsÎªÒªÇó·µ»ØÐ¡Êý¸öÊýµÄ³¤¶È£¬Õâ¸öºÍecvt_rÓÐÇø±ð£¬×¢ÒâÊÇÐ¡Êý£¬Ð¡Êý¼´Ê¹ÊÇ0Ò²»áÊä³ö
+//·µ»Ø²ÎÊý£¬decpt·µ»ØÖ¸Êý£¬sign·µ»Ø·ûºÅ
 int ZCE_LIB::fcvt_r(double number,
                     int ndigits,
                     int *decpt,

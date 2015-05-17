@@ -1,4 +1,4 @@
-ï»¿#include "zce_predefine.h"
+#include "zce_predefine.h"
 #include "zce_os_adapt_time.h"
 #include "zce_trace_log_basic.h"
 #include "zce_trace_log_msg.h"
@@ -11,13 +11,13 @@ ZCE_Trace_LogMsg *ZCE_Trace_LogMsg::log_instance_ = NULL;
 /******************************************************************************************
 class ZCE_Trace_LogMsg
 ******************************************************************************************/
-//æžæž„å‡½æ•°
+//Îö¹¹º¯Êý
 ZCE_Trace_LogMsg::ZCE_Trace_LogMsg():
     multiline_buf_(NULL)
 {
 }
 
-//æžæž„å‡½æ•°
+//Îö¹¹º¯Êý
 ZCE_Trace_LogMsg::~ZCE_Trace_LogMsg()
 {
     if (multiline_buf_)
@@ -26,35 +26,35 @@ ZCE_Trace_LogMsg::~ZCE_Trace_LogMsg()
     }
 }
 
-//è¾“å‡ºva_listçš„å‚æ•°ä¿¡æ¯
+//Êä³öva_listµÄ²ÎÊýÐÅÏ¢
 void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
                                      const char *str_format ,
                                      va_list args)
 {
-    //å¦‚æžœæ—¥å¿—è¾“å‡ºå¼€å…³å…³é—­
+    //Èç¹ûÈÕÖ¾Êä³ö¿ª¹Ø¹Ø±Õ
     if (if_output_log_ == false)
     {
         return ;
     }
 
-    //å¦‚æžœè¾“å‡ºçš„æ—¥å¿—çº§åˆ«ä½ŽäºŽMaskå€¼
+    //Èç¹ûÊä³öµÄÈÕÖ¾¼¶±ðµÍÓÚMaskÖµ
     if (permit_outlevel_ > outlevel )
     {
         return;
     }
 
-    //å¾—åˆ°å½“å‰æ—¶é—´
+    //µÃµ½µ±Ç°Ê±¼ä
     timeval now_time_val (ZCE_LIB::gettimeofday());
 
-    //æˆ‘è¦ä¿ç•™ä¸€ä¸ªä½ç½®æ”¾'\0'
+    //ÎÒÒª±£ÁôÒ»¸öÎ»ÖÃ·Å'\0'
     char log_tmp_buffer[LOG_TMP_BUFFER_SIZE +1];
     log_tmp_buffer[LOG_TMP_BUFFER_SIZE] = '\0';
 
-    //è¿˜æ˜¯ä¸º\nè€ƒè™‘ç•™ä¸€ä¸ªç©ºé—´
+    //»¹ÊÇÎª\n¿¼ÂÇÁôÒ»¸ö¿Õ¼ä
     size_t sz_buf_len = LOG_TMP_BUFFER_SIZE ;
     size_t sz_use_len = 0;
 
-    //è¾“å‡ºå¤´éƒ¨ä¿¡æ¯
+    //Êä³öÍ·²¿ÐÅÏ¢
     stringbuf_loghead(outlevel,
                       now_time_val,
                       log_tmp_buffer,
@@ -62,10 +62,10 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
                       sz_use_len);
     sz_buf_len -= sz_use_len;
 
-    //å¾—åˆ°æ‰“å°ä¿¡æ¯,_vsnprintfä¸ºç‰¹æ®Šå‡½æ•°
+    //µÃµ½´òÓ¡ÐÅÏ¢,_vsnprintfÎªÌØÊâº¯Êý
     int len_of_out = vsnprintf(log_tmp_buffer + sz_use_len, sz_buf_len, str_format, args);
 
-    //å¦‚æžœè¾“å‡ºçš„å­—ç¬¦ä¸²æ¯”æƒ³æƒ³çš„é•¿
+    //Èç¹ûÊä³öµÄ×Ö·û´®±ÈÏëÏëµÄ³¤
     if (len_of_out >= static_cast<int>( sz_buf_len) || len_of_out < 0)
     {
         sz_use_len = LOG_TMP_BUFFER_SIZE;
@@ -77,14 +77,14 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
         sz_buf_len -= len_of_out;
     }
 
-    //å¦‚æžœè¦è‡ªåŠ¨å¢žåŠ æ¢è¡Œç¬¦å·ï¼Œ
+    //Èç¹ûÒª×Ô¶¯Ôö¼Ó»»ÐÐ·ûºÅ£¬
     if (auto_new_line_)
     {
         log_tmp_buffer[sz_use_len] = '\n';
         ++sz_use_len;
 
-        //æ³¨æ„sz_buf_lenåœ¨è¿™å„¿æ²¡æœ‰è°ƒæ•´ï¼Œå› ä¸º'\n'çš„ä½ç½®æˆ‘å‰é¢ä¸ºäº†å®‰å…¨æ‰£é™¤äº†
-        //ä¹Ÿä¸èƒ½ç›´æŽ¥ç”¨--sz_buf_len;å› ä¸ºsz_buf_lenå¯èƒ½==0
+        //×¢Òâsz_buf_lenÔÚÕâ¶ùÃ»ÓÐµ÷Õû£¬ÒòÎª'\n'µÄÎ»ÖÃÎÒÇ°ÃæÎªÁË°²È«¿Û³ýÁË
+        //Ò²²»ÄÜÖ±½ÓÓÃ--sz_buf_len;ÒòÎªsz_buf_len¿ÉÄÜ==0
     }
 
     output_log_info(now_time_val,
@@ -93,7 +93,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
 
 }
 
-//å†™æ—¥å¿—
+//Ð´ÈÕÖ¾
 void ZCE_Trace_LogMsg::write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format , ... )
 {
     va_list args;
@@ -103,7 +103,7 @@ void ZCE_Trace_LogMsg::write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_f
 
 }
 
-//ZASSERTçš„æ‰©å±•å®šä¹‰ï¼Œ
+//ZASSERTµÄÀ©Õ¹¶¨Òå£¬
 void ZCE_Trace_LogMsg::debug_assert(const char *file_name,
                                     const int file_line,
                                     const char *function_name,
@@ -116,7 +116,7 @@ void ZCE_Trace_LogMsg::debug_assert(const char *file_name,
                  expression_name);
 }
 
-//Aseertè°ƒè¯•,å¢žå¼ºç‰ˆæœ¬å‡½æ•°
+//Aseertµ÷ÊÔ,ÔöÇ¿°æ±¾º¯Êý
 void ZCE_Trace_LogMsg::debug_assert_ex(const char *file_name,
                                        const int file_line,
                                        const char *function_name,
@@ -131,7 +131,7 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char *file_name,
                  out_string);
 }
 
-//è°ƒç”¨vwrite_logmsgå®Œæˆå®žé™…è¾“å‡º
+//µ÷ÓÃvwrite_logmsgÍê³ÉÊµ¼ÊÊä³ö
 void ZCE_Trace_LogMsg::debug_output(ZCE_LOG_PRIORITY dbglevel,
                                     const char *str_format , ... )
 {
@@ -147,7 +147,7 @@ void ZCE_Trace_LogMsg::debug_output(ZCE_LOG_PRIORITY dbglevel,
     va_end(args);
 }
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®žä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀý
 ZCE_Trace_LogMsg *ZCE_Trace_LogMsg::instance()
 {
     if (log_instance_ == NULL)
@@ -158,7 +158,7 @@ ZCE_Trace_LogMsg *ZCE_Trace_LogMsg::instance()
     return log_instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®žä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀý
 void ZCE_Trace_LogMsg::instance(ZCE_Trace_LogMsg *instatnce)
 {
     clean_instance();
@@ -166,7 +166,7 @@ void ZCE_Trace_LogMsg::instance(ZCE_Trace_LogMsg *instatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®žä¾‹
+//Çå³ýµ¥×ÓÊµÀý
 void ZCE_Trace_LogMsg::clean_instance()
 {
     if (log_instance_)
@@ -178,10 +178,10 @@ void ZCE_Trace_LogMsg::clean_instance()
     return;
 }
 
-//ä¸ºä»€ä¹ˆè¦è¿™æ ·éº»çƒ¦,é—®é¢˜åœ¨äºŽä¸èƒ½ç”¨å®(__VA_ARGS__)è§£å†³é—®é¢˜(éƒ¨åˆ†ç¼–è¯‘å™¨ä¸æ”¯æŒ,VS2003),
+//ÎªÊ²Ã´ÒªÕâÑùÂé·³,ÎÊÌâÔÚÓÚ²»ÄÜÓÃºê(__VA_ARGS__)½â¾öÎÊÌâ(²¿·Ö±àÒëÆ÷²»Ö§³Ö,VS2003),
 #if _MSC_VER <= 1300
 
-//ç”¨ä¸ç”¨çš„æ—¥å¿—çº§åˆ«è¾“å‡º
+//ÓÃ²»ÓÃµÄÈÕÖ¾¼¶±ðÊä³ö
 void ZCE_Trace_LogMsg::debug_traceex(const char *str_format , ... )
 {
     va_list args;

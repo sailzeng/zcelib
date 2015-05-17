@@ -1,10 +1,10 @@
-ï»¿
+
 
 #ifndef OGRE_APPLICATION_HANDLER_H_
 #define OGRE_APPLICATION_HANDLER_H_
 
 /****************************************************************************************************
-class  Ogre_App_Timer_Handler APPçš„å®šæ—¶å™¨Handlerå¤„ç†ç±»
+class  Ogre_App_Timer_Handler APPµÄ¶¨Ê±Æ÷Handler´¦ÀíÀà
 ****************************************************************************************************/
 class  Ogre_App_Timer_Handler : public  Server_Timer_Base
 {
@@ -19,7 +19,7 @@ protected:
     virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
 public:
-    //å®šæ—¶å™¨ID,é¿å…Newä¼ é€’,å›æ”¶
+    //¶¨Ê±Æ÷ID,±ÜÃâNew´«µİ,»ØÊÕ
     static const  int      OGRE_APP_TIME_ID[];
 
 };

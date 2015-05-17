@@ -1,15 +1,15 @@
-ï»¿
+
 #include "zce_predefine.h"
 #include "zce_mysql_result.h"
 
-//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
+//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
 #if defined ZCE_USE_MYSQL
 
 /*********************************************************************************
 class ZCE_Mysql_Result
 *********************************************************************************/
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Mysql_Result::ZCE_Mysql_Result():
     mysql_result_(NULL),
     current_row_(NULL),
@@ -21,7 +21,7 @@ ZCE_Mysql_Result::ZCE_Mysql_Result():
 {
 }
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Mysql_Result::ZCE_Mysql_Result(MYSQL_RES *sqlresult):
     mysql_result_(NULL),
     current_row_(NULL),
@@ -34,60 +34,60 @@ ZCE_Mysql_Result::ZCE_Mysql_Result(MYSQL_RES *sqlresult):
     set_mysql_result(sqlresult);
 }
 
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 ZCE_Mysql_Result::~ZCE_Mysql_Result()
 {
-    // é‡Šæ”¾ç»“æœé›†åˆçš„å†…å­˜èµ„æº
+    // ÊÍ·Å½á¹û¼¯ºÏµÄÄÚ´æ×ÊÔ´
     if (mysql_result_ != NULL)
     {
         mysql_free_result(mysql_result_);
     }
 }
 
-//æ”¾å…¥ç»“æœé›†åˆ
+//·ÅÈë½á¹û¼¯ºÏ
 void ZCE_Mysql_Result::set_mysql_result(MYSQL_RES *sqlresult)
 {
     ZCE_ASSERT(sqlresult);
 
-    //å¦‚æœå·²ç»æœ‰ç»“æœé›†, é‡Šæ”¾åŸæœ‰çš„ç»“æœé›†,
+    //Èç¹ûÒÑ¾­ÓĞ½á¹û¼¯, ÊÍ·ÅÔ­ÓĞµÄ½á¹û¼¯,
     if (NULL != mysql_result_)
     {
         mysql_free_result(mysql_result_);
         mysql_result_  = NULL;
     }
 
-    //æ¸…0å½“å‰è¡Œ,åˆ—ä»¥åŠå½“å‰è¡Œé•¿åº¦æ•°ç»„æŒ‡é’ˆ
+    //Çå0µ±Ç°ĞĞ,ÁĞÒÔ¼°µ±Ç°ĞĞ³¤¶ÈÊı×éÖ¸Õë
     fields_length_ = NULL;
     current_row_   = NULL;
     current_field_ = 0;
 
-    //è¡Œæ•°ç›®ï¼Œåˆ—æ•°ç›®æ¸…0
+    //ĞĞÊıÄ¿£¬ÁĞÊıÄ¿Çå0
     num_result_row_   = 0;
     num_result_field_ = 0;
 
-    //åˆ—å±æ€§æŒ‡é’ˆæ¸…0
+    //ÁĞÊôĞÔÖ¸ÕëÇå0
     mysql_fields_        = 0;
 
     mysql_result_ = sqlresult;
 
-    //å¦‚æœä¸æ˜¯ä¸€ä¸ªç©ºçš„ç»“æœé›†åˆ
+    //Èç¹û²»ÊÇÒ»¸ö¿ÕµÄ½á¹û¼¯ºÏ
     if (mysql_result_)
     {
-        //å¾—åˆ°è¡Œæ•°,åˆ—æ•°
+        //µÃµ½ĞĞÊı,ÁĞÊı
         num_result_row_   = (unsigned int)  mysql_num_rows(mysql_result_);
         num_result_field_ = mysql_num_fields(mysql_result_);
 
-        //åˆ—å±æ€§æŒ‡é’ˆ,å…¶å®å°±æ˜¯è¿”å›ä¸€ä¸ªæ•°ç»„çš„æŒ‡é’ˆ,æ•ˆç‡åº”è¯¥æ˜¯æœ‰ä¿éšœçš„
+        //ÁĞÊôĞÔÖ¸Õë,ÆäÊµ¾ÍÊÇ·µ»ØÒ»¸öÊı×éµÄÖ¸Õë,Ğ§ÂÊÓ¦¸ÃÊÇÓĞ±£ÕÏµÄ
         mysql_fields_      = mysql_fetch_fields(mysql_result_);
     }
 
     return;
 }
 
-//å¦‚æœå·²ç»æœ‰ç»“æœé›†, é‡Šæ”¾åŸæœ‰çš„ç»“æœé›†,
+//Èç¹ûÒÑ¾­ÓĞ½á¹û¼¯, ÊÍ·ÅÔ­ÓĞµÄ½á¹û¼¯,
 void ZCE_Mysql_Result::free_result()
 {
-    //å¦‚æœå·²ç»æœ‰ç»“æœé›†, é‡Šæ”¾åŸæœ‰çš„ç»“æœé›†,
+    //Èç¹ûÒÑ¾­ÓĞ½á¹û¼¯, ÊÍ·ÅÔ­ÓĞµÄ½á¹û¼¯,
     if (NULL != mysql_result_)
     {
         mysql_free_result(mysql_result_);
@@ -95,7 +95,7 @@ void ZCE_Mysql_Result::free_result()
     }
 }
 
-//æ£€ç´¢ä¸€ä¸ªç»“æœé›†åˆçš„ä¸‹ä¸€è¡Œ,æœ€å¼€å§‹ä»0è¡Œå¼€å§‹
+//¼ìË÷Ò»¸ö½á¹û¼¯ºÏµÄÏÂÒ»ĞĞ,×î¿ªÊ¼´Ó0ĞĞ¿ªÊ¼
 bool ZCE_Mysql_Result::fetch_row_next()
 {
     if (mysql_result_ == NULL)
@@ -103,26 +103,26 @@ bool ZCE_Mysql_Result::fetch_row_next()
         return false;
     }
 
-    //æ£€ç´¢ä¸€ä¸ªç»“æœé›†åˆçš„ä¸‹ä¸€è¡Œ
+    //¼ìË÷Ò»¸ö½á¹û¼¯ºÏµÄÏÂÒ»ĞĞ
     current_row_ = ::mysql_fetch_row(mysql_result_);
 
-    //å¦‚æœNEXTè¡Œä¸ºç©º,ç»“æŸè®¿é—®
+    //Èç¹ûNEXTĞĞÎª¿Õ,½áÊø·ÃÎÊ
     if (current_row_ == NULL )
     {
         return false;
     }
 
-    //å¾—åˆ°æ­¤è¡Œæ‰€æœ‰åˆ—çš„é•¿åº¦
+    //µÃµ½´ËĞĞËùÓĞÁĞµÄ³¤¶È
     fields_length_ = ::mysql_fetch_lengths(mysql_result_);
 
     current_field_ = 0;
     return true;
 }
 
-//æ£€ç´¢åˆ°row_id è¡Œ,
+//¼ìË÷µ½row_id ĞĞ,
 int ZCE_Mysql_Result::seek_row(unsigned int row_id)
 {
-    //æ£€æŸ¥ç»“æœé›†åˆä¸ºç©º,æˆ–è€…å‚æ•°rowé”™è¯¯
+    //¼ì²é½á¹û¼¯ºÏÎª¿Õ,»òÕß²ÎÊırow´íÎó
     if (mysql_result_ == NULL || row_id >= num_result_row_)
     {
         ZCE_ASSERT(false);
@@ -136,10 +136,10 @@ int ZCE_Mysql_Result::seek_row(unsigned int row_id)
     return 0;
 }
 
-//æ ¹æ®åˆ—åºå·IDå¾—åˆ°å­—æ®µå€¼,dataä½œä¸ºè¿”å›å€¼
+//¸ù¾İÁĞĞòºÅIDµÃµ½×Ö¶ÎÖµ,data×÷Îª·µ»ØÖµ
 const char *ZCE_Mysql_Result::field_data(const char *fname) const
 {
-    //æ ¹æ®åˆ—çš„åå­—å¾—åˆ°Field ID
+    //¸ù¾İÁĞµÄÃû×ÖµÃµ½Field ID
     unsigned int fid = 0;
     int ret = field_index(fname, fid);
 
@@ -152,14 +152,14 @@ const char *ZCE_Mysql_Result::field_data(const char *fname) const
     return current_row_[fid];
 }
 
-//æ ¹æ®å­—æ®µåˆ—ID,å¾—åˆ°å­—æ®µå€¼
+//¸ù¾İ×Ö¶ÎÁĞID,µÃµ½×Ö¶ÎÖµ
 int ZCE_Mysql_Result::field_data(const char *fname, char *pfdata) const
 {
-    //æ ¹æ®åˆ—çš„åå­—å¾—åˆ°Field ID
+    //¸ù¾İÁĞµÄÃû×ÖµÃµ½Field ID
     unsigned int fid = 0;
     int ret = field_index(fname, fid);
 
-    //å¦‚æœç»“æœé›†ä¸ºç©º,æˆ–è€…æ²¡æœ‰æ‰¾åˆ°ç›¸å…³çš„åˆ—ID
+    //Èç¹û½á¹û¼¯Îª¿Õ,»òÕßÃ»ÓĞÕÒµ½Ïà¹ØµÄÁĞID
     if (ret == -1 || current_row_ == NULL || pfdata == NULL)
     {
         ZCE_ASSERT(false);
@@ -175,11 +175,11 @@ int ZCE_Mysql_Result::field_data(const char *fname, char *pfdata) const
 //
 int ZCE_Mysql_Result::get_field(const char *fname, ZCE_Mysql_Field &ffield) const
 {
-    //å¾ªç¯æ¯”è¾ƒæ‰€æœ‰çš„åˆ—å,æ•ˆç‡æ¯”è¾ƒä½ä¸‹
+    //Ñ­»·±È½ÏËùÓĞµÄÁĞÃû,Ğ§ÂÊ±È½ÏµÍÏÂ
     unsigned int fid = 0;
     int ret = field_index(fname, fid);
 
-    //å¦‚æœç»“æœé›†ä¸ºç©º,æˆ–è€…æ²¡æœ‰æ‰¾åˆ°ç›¸å…³çš„åˆ—ID
+    //Èç¹û½á¹û¼¯Îª¿Õ,»òÕßÃ»ÓĞÕÒµ½Ïà¹ØµÄÁĞID
     if (ret == -1 || current_row_ == NULL)
     {
         ZCE_ASSERT(false);
@@ -190,16 +190,16 @@ int ZCE_Mysql_Result::get_field(const char *fname, ZCE_Mysql_Field &ffield) cons
     return 0;
 }
 
-//æ ¹æ®å­—æ®µåç§°å¾—åˆ°å­—æ®µè¡¨ç»“æ„å®šä¹‰çš„ç±»å‹,æ•ˆç‡è¾ƒä½,
-//è¿”å›-1 è¡¨ç¤ºé”™è¯¯
+//¸ù¾İ×Ö¶ÎÃû³ÆµÃµ½×Ö¶Î±í½á¹¹¶¨ÒåµÄÀàĞÍ,Ğ§ÂÊ½ÏµÍ,
+//·µ»Ø-1 ±íÊ¾´íÎó
 int ZCE_Mysql_Result::field_type(const char *fname, enum_field_types &ftype) const
 {
 
-    //å¾ªç¯æ¯”è¾ƒæ‰€æœ‰çš„åˆ—å,æ•ˆç‡æ¯”è¾ƒä½ä¸‹
+    //Ñ­»·±È½ÏËùÓĞµÄÁĞÃû,Ğ§ÂÊ±È½ÏµÍÏÂ
     unsigned int fid = 0;
     int ret = field_index(fname, fid);
 
-    //å¦‚æœç»“æœé›†ä¸ºç©º,æˆ–è€…æ²¡æœ‰æ‰¾åˆ°ç›¸å…³çš„åˆ—ID
+    //Èç¹û½á¹û¼¯Îª¿Õ,»òÕßÃ»ÓĞÕÒµ½Ïà¹ØµÄÁĞID
     if (ret == -1 || current_row_ == NULL)
     {
         ZCE_ASSERT(false);
@@ -210,14 +210,14 @@ int ZCE_Mysql_Result::field_type(const char *fname, enum_field_types &ftype) con
     return 0;
 }
 
-//æ ¹æ®Field Name å¾—åˆ°æ­¤åˆ—å€¼çš„å®é™…é•¿åº¦
+//¸ù¾İField Name µÃµ½´ËÁĞÖµµÄÊµ¼Ê³¤¶È
 int ZCE_Mysql_Result::field_length(const char *fname, unsigned int &flength ) const
 {
-    //æ ¹æ®åˆ—çš„åå­—å¾—åˆ°Field ID
+    //¸ù¾İÁĞµÄÃû×ÖµÃµ½Field ID
     unsigned int fid = 0;
     int ret = field_index(fname, fid);
 
-    //å¦‚æœç»“æœé›†ä¸ºç©º,æˆ–è€…æ²¡æœ‰æ‰¾åˆ°ç›¸å…³çš„åˆ—ID
+    //Èç¹û½á¹û¼¯Îª¿Õ,»òÕßÃ»ÓĞÕÒµ½Ïà¹ØµÄÁĞID
     if (ret == -1 || current_row_ == NULL)
     {
         ZCE_ASSERT(false);
@@ -228,11 +228,11 @@ int ZCE_Mysql_Result::field_length(const char *fname, unsigned int &flength ) co
     return 0;
 }
 
-//æ ¹æ®å­—æ®µé¡ºåºID,å¾—åˆ°è¡¨ç»“æ„å®šä¹‰çš„å­—æ®µé•¿åº¦
+//¸ù¾İ×Ö¶ÎË³ĞòID,µÃµ½±í½á¹¹¶¨ÒåµÄ×Ö¶Î³¤¶È
 int ZCE_Mysql_Result::field_define_size(unsigned int fieldid, unsigned int &flength) const
 {
 
-    //æ£€æŸ¥ç»“æœé›†åˆä¸ºç©º,æˆ–è€…å‚æ•°fieldidé”™è¯¯
+    //¼ì²é½á¹û¼¯ºÏÎª¿Õ,»òÕß²ÎÊıfieldid´íÎó
     if ( mysql_result_ == NULL && fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
@@ -243,15 +243,15 @@ int ZCE_Mysql_Result::field_define_size(unsigned int fieldid, unsigned int &flen
     return 0;
 }
 
-//æ ¹æ®å­—æ®µåç§°å¾—åˆ°è¡¨ç»“æ„å®šä¹‰çš„å­—æ®µé•¿åº¦,æ•ˆç‡è¾ƒä½
+//¸ù¾İ×Ö¶ÎÃû³ÆµÃµ½±í½á¹¹¶¨ÒåµÄ×Ö¶Î³¤¶È,Ğ§ÂÊ½ÏµÍ
 int ZCE_Mysql_Result::field_define_size(const char *fname, unsigned int &fdefsz) const
 {
 
-    //å¾ªç¯æ¯”è¾ƒæ‰€æœ‰çš„åˆ—å,æ•ˆç‡æ¯”è¾ƒä½ä¸‹
+    //Ñ­»·±È½ÏËùÓĞµÄÁĞÃû,Ğ§ÂÊ±È½ÏµÍÏÂ
     unsigned int fid = 0;
     int ret = field_index(fname, fid);
 
-    //å¦‚æœç»“æœé›†ä¸ºç©º
+    //Èç¹û½á¹û¼¯Îª¿Õ
     if (ret == -1 || mysql_result_ != NULL)
     {
         ZCE_ASSERT(false);
@@ -262,8 +262,8 @@ int ZCE_Mysql_Result::field_define_size(const char *fname, unsigned int &fdefsz)
     return 0;
 }
 
-//>>æ“ä½œæ˜¯ç»™C++çš„çˆ±å¥½è€…å‡†å¤‡çš„ï¼Œä½†æ˜¯å…¶åœ¨å‘ç”Ÿé—®é¢˜æ˜¯æ— æ³•æŠ¥é”™(å‚æ•°é™åˆ¶),é™¤éä½ ç”¨å¼‚å¸¸
-//ç”¨äºç»“æœé›†åˆä¸­çš„å½“å‰è¡Œï¼Œå½“å‰åˆ—æ•°æ®è¾“å‡ºï¼Œè¾“å‡ºæ™šååˆ—å€¼åŠ +1
+//>>²Ù×÷ÊÇ¸øC++µÄ°®ºÃÕß×¼±¸µÄ£¬µ«ÊÇÆäÔÚ·¢ÉúÎÊÌâÊÇÎŞ·¨±¨´í(²ÎÊıÏŞÖÆ),³ı·ÇÄãÓÃÒì³£
+//ÓÃÓÚ½á¹û¼¯ºÏÖĞµÄµ±Ç°ĞĞ£¬µ±Ç°ÁĞÊı¾İÊä³ö£¬Êä³öÍíºóÁĞÖµ¼Ó+1
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (char &val)
 {
     val = 0;
@@ -294,7 +294,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (int &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (long &val)
 {
     val = 0;
-    //å¦‚æœç»“æœé›†ä¸ºç©º
+    //Èç¹û½á¹û¼¯Îª¿Õ
     sscanf(current_row_[current_field_], "%ld", &val);
     ++current_field_;
     return *this;
@@ -303,7 +303,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (long &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (long long &val)
 {
     val = 0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%lld", &val);
     ++current_field_;
     return *this;
@@ -312,7 +312,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (long long &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char &val)
 {
     val = 0;
-    //å¦‚æœç»“æœé›†ä¸ºç©º
+    //Èç¹û½á¹û¼¯Îª¿Õ
     sscanf(current_row_[current_field_], "%c", &val);
     ++current_field_;
     return *this;
@@ -321,7 +321,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned short &val)
 {
     val = 0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%hu", &val);
     ++current_field_;
     return *this;
@@ -330,7 +330,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned short &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned long &val)
 {
     val = 0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%lu", &val);
     ++current_field_;
     return *this;
@@ -339,7 +339,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned long &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned int &val)
 {
     val = 0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%u", &val);
     ++current_field_;
     return *this;
@@ -348,7 +348,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned int &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned long long &val)
 {
     val = 0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%llu", &val);
     ++current_field_;
     return *this;
@@ -357,7 +357,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned long long &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (float &val)
 {
     val = 0.0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%f", &val);
     ++current_field_;
     return *this;
@@ -366,18 +366,18 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (float &val)
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (double &val)
 {
     val = 0.0;
-    //è½¬æ¢ä»¥åŠæ£€æŸ¥
+    //×ª»»ÒÔ¼°¼ì²é
     sscanf(current_row_[current_field_], "%lf", &val);
     ++current_field_;
     return *this;
 }
 
-//å¯¹äºchar *,é»˜è®¤å½“ä½œæ˜¯ä¸€ä¸ªå­—ç¬¦ä¸²,æ‰€ä»¥æœ«å°¾å¢åŠ ä¸€ä¸ª'\0'
+//¶ÔÓÚchar *,Ä¬ÈÏµ±×÷ÊÇÒ»¸ö×Ö·û´®,ËùÒÔÄ©Î²Ôö¼ÓÒ»¸ö'\0'
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (char *val)
 {
     ZCE_ASSERT((NULL != val) &&  (NULL != current_row_[current_field_] ));
 
-    //é•¿åº¦ä¸åŒ…æ‹¬ç»“æŸç¬¦å·
+    //³¤¶È²»°üÀ¨½áÊø·ûºÅ
     memcpy(val , current_row_[current_field_], fields_length_[current_field_]);
     val[fields_length_[current_field_]] = '\0';
 
@@ -385,13 +385,13 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (char *val)
     return *this;
 }
 
-//å¯¹äºchar *,é»˜è®¤å½“ä½œæ˜¯ä¸€ä¸ªå­—ç¬¦ä¸²,æ‰€ä»¥æœ«å°¾å¢åŠ ä¸€ä¸ª'\0'
-//è€ƒè™‘è¿‡å¯¹äºunsigned char *åšä¸€äº›ç‰¹åˆ«å¤„ç†ï¼Œåæ¥è¿˜æ˜¯ç®—äº†,ç”¨BINARYå»è€ƒè™‘äº†
+//¶ÔÓÚchar *,Ä¬ÈÏµ±×÷ÊÇÒ»¸ö×Ö·û´®,ËùÒÔÄ©Î²Ôö¼ÓÒ»¸ö'\0'
+//¿¼ÂÇ¹ı¶ÔÓÚunsigned char *×öÒ»Ğ©ÌØ±ğ´¦Àí£¬ºóÀ´»¹ÊÇËãÁË,ÓÃBINARYÈ¥¿¼ÂÇÁË
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char *val)
 {
     ZCE_ASSERT((NULL != val) &&  (NULL != current_row_[current_field_] ));
 
-    //é•¿åº¦ä¸åŒ…æ‹¬ç»“æŸç¬¦å·
+    //³¤¶È²»°üÀ¨½áÊø·ûºÅ
     memcpy(val , current_row_[current_field_], fields_length_[current_field_] );
     val[fields_length_[current_field_]] = '\0';
 
@@ -399,12 +399,12 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char *val)
     return *this;
 }
 
-//äºŒè¿›åˆ¶çš„æ•°æ®è¦ç‰¹åˆ«è€ƒè™‘ä¸€ä¸‹,å­—ç¬¦ä¸²éƒ½ç‰¹åˆ«+1äº†,è€ŒäºŒè¿›åˆ¶æ•°æ®ä¸è¦è¿™æ ·è€ƒè™‘
+//¶ş½øÖÆµÄÊı¾İÒªÌØ±ğ¿¼ÂÇÒ»ÏÂ,×Ö·û´®¶¼ÌØ±ğ+1ÁË,¶ø¶ş½øÖÆÊı¾İ²»ÒªÕâÑù¿¼ÂÇ
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (ZCE_Mysql_Result::BINARY *val)
 {
     ZCE_ASSERT((NULL != val) &&  (NULL != current_row_[current_field_] ));
 
-    //é•¿åº¦ä¸åŒ…æ‹¬ç»“æŸç¬¦å·
+    //³¤¶È²»°üÀ¨½áÊø·ûºÅ
     memcpy(val , current_row_[current_field_], fields_length_[current_field_]);
 
     ++current_field_;
@@ -426,6 +426,6 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (std::string &val)
     return *this;
 }
 
-//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
+//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
 #endif //#if defined MYSQL_VERSION_ID
 

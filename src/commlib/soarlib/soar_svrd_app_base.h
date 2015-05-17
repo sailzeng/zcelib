@@ -1,4 +1,4 @@
-ï»¿
+
 #ifndef SOARING_LIB_SERVER_APPLICATION_H_
 #define SOARING_LIB_SERVER_APPLICATION_H_
 
@@ -12,7 +12,7 @@ class Server_Timer_Base;
 
 
 /*!
-* @brief      å•çº¿ç¨‹è‡ªåŠ¨æœºæ¨¡å‹çš„ç¨‹åºæ¡†æ¶åŸºç±»
+* @brief      µ¥Ïß³Ì×Ô¶¯»úÄ£ĞÍµÄ³ÌĞò¿ò¼Ü»ùÀà
 *
 * @note
 */
@@ -20,95 +20,95 @@ class Soar_Svrd_Appliction : public ZCE_Server_Base
 {
 protected:
 
-    ///æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    ///¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
     Soar_Svrd_Appliction();
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     virtual ~Soar_Svrd_Appliction();
 
 public:
 
-    ///è®¾ç½®æ—¥å¿—çš„ä¼˜å…ˆçº§
+    ///ÉèÖÃÈÕÖ¾µÄÓÅÏÈ¼¶
     void set_log_priority(ZCE_LOG_PRIORITY new_log_prio);
 
-    ///è·å¾—æ—¥å¿—çš„ä¼˜å…ˆçº§
+    ///»ñµÃÈÕÖ¾µÄÓÅÏÈ¼¶
     ZCE_LOG_PRIORITY get_log_priority();
 
-    ///å¾—åˆ°APPçš„ç‰ˆæœ¬ä¿¡æ¯
+    ///µÃµ½APPµÄ°æ±¾ĞÅÏ¢
     const char *get_app_version();
 
 
     /*!
-    * @brief      åˆå§‹åŒ–ï¼Œæ”¾å…¥ä¸€äº›åŸºç±»çš„æŒ‡é’ˆï¼Œ
+    * @brief      ³õÊ¼»¯£¬·ÅÈëÒ»Ğ©»ùÀàµÄÖ¸Õë£¬
     * @return     int
-    * @param      config_base é…ç½®ç±»æŒ‡é’ˆï¼Œæ³¨æ„newäº†æ”¾è¿›æ¥
-    * @param      timer_base  å®šæ—¶å™¨è§¦å‘å¥æŸ„çš„æŒ‡é’ˆï¼Œæ³¨æ„newäº†æ”¾è¿›æ¥
+    * @param      config_base ÅäÖÃÀàÖ¸Õë£¬×¢ÒânewÁË·Å½øÀ´
+    * @param      timer_base  ¶¨Ê±Æ÷´¥·¢¾ä±úµÄÖ¸Õë£¬×¢ÒânewÁË·Å½øÀ´
     */
     int initialize(Server_Config_Base *config_base,
                    Server_Timer_Base *timer_base);
 
 
     /*!
-    * @brief      è¿”å›APPçš„é…ç½®ç±»æŒ‡é’ˆ
-    * @return     Server_Config_Base*é…ç½®ç±»çš„æŒ‡é’ˆ
+    * @brief      ·µ»ØAPPµÄÅäÖÃÀàÖ¸Õë
+    * @return     Server_Config_Base*ÅäÖÃÀàµÄÖ¸Õë
     */
     Server_Config_Base  *config_instance();
 
 public:
 
-    /// appçš„å¼€å§‹è¿è¡Œ
+    /// appµÄ¿ªÊ¼ÔËĞĞ
     virtual int app_start(int argc, const char *argv[]);
 
-    /// app è¿è¡Œ
+    /// app ÔËĞĞ
     virtual int app_run() = 0;
 
-    /// appçš„é€€å‡º
+    /// appµÄÍË³ö
     virtual int app_exit();
 
 protected:
 
-    ///é‡æ–°åŠ è½½é…ç½®
+    ///ÖØĞÂ¼ÓÔØÅäÖÃ
     virtual int reload_config();
 
-    ///åˆå§‹åŒ–æ—¥å¿—æ¨¡å—
+    ///³õÊ¼»¯ÈÕÖ¾Ä£¿é
     int init_log();
 
 public:
 
-    ///æ³¨å†Œå®ä¾‹æŒ‡é’ˆ
+    ///×¢²áÊµÀıÖ¸Õë
     static void set_instance(Soar_Svrd_Appliction *inst);
 
-    ///å¾—åˆ°å®ä¾‹æŒ‡é’ˆ
+    ///µÃµ½ÊµÀıÖ¸Õë
     static Soar_Svrd_Appliction *instance();
 
-    ///æ¸…ç†å®ä¾‹å®ä¾‹æŒ‡é’ˆ
+    ///ÇåÀíÊµÀıÊµÀıÖ¸Õë
     static void clean_instance();
 
 protected:
 
-    //å®ä¾‹æŒ‡é’ˆ
+    //ÊµÀıÖ¸Õë
     static Soar_Svrd_Appliction *instance_;
 
 protected:
 
-    //ä¸šåŠ¡ID
+    //ÒµÎñID
     unsigned int         business_id_;
-    //è‡ªå·±çš„æœåŠ¡å™¨ID
+    //×Ô¼ºµÄ·şÎñÆ÷ID
     SERVICES_ID          self_svc_id_;
 
-    //ä»¥windowsçš„æœåŠ¡æ–¹å¼è¿è¡Œï¼Œ
+    //ÒÔwindowsµÄ·şÎñ·½Ê½ÔËĞĞ£¬
     bool                 run_as_win_serivces_;
 
-    //æœ€å¤§æ¶ˆæ¯ä¸ªæ•°
+    //×î´óÏûÏ¢¸öÊı
     size_t               max_msg_num_;
 
-    ///ä¸zergçš„ç®¡é“
+    ///ÓëzergµÄ¹ÜµÀ
     Soar_MMAP_BusPipe   *zerg_mmap_pipe_;
 
 
-    ///æ¡†æ¶å®šæ—¶å™¨å¤„ç†ç±»
+    ///¿ò¼Ü¶¨Ê±Æ÷´¦ÀíÀà
     Server_Timer_Base   *timer_base_;
 
-    ///é…ç½®çš„å¤„ç†çš„åŸºç±»
+    ///ÅäÖÃµÄ´¦ÀíµÄ»ùÀà
     Server_Config_Base  *config_base_;
 
 };

@@ -1,29 +1,29 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_fmtstr_format.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012å¹´4æœˆ30æ—¥
-* @brief      æ ¼å¼åŒ–æŸäº›è¾“å‡ºï¼ŒåŒ…æ‹¬int64ï¼Œdoubleï¼Œstrï¼Œ
-*             æžå®Œäº†ï¼Œå‘çŽ°ä¹Ÿå°±è¿™3ä¸ªæœ‰æ ¼å¼åŒ–ï¼Œ
+* @date       2012Äê4ÔÂ30ÈÕ
+* @brief      ¸ñÊ½»¯Ä³Ð©Êä³ö£¬°üÀ¨int64£¬double£¬str£¬
+*             ¸ãÍêÁË£¬·¢ÏÖÒ²¾ÍÕâ3¸öÓÐ¸ñÊ½»¯£¬
 *
-* @details    éƒ¨åˆ†ä»£ç æœ€æ—©æ¥è‡ªopenssh,ä¸­é—´çš„bsd-snprintf.cä»£ç ï¼ŒåŽŸæ¥çš„ä»£ç åº”è¯¥æ˜¯æ”¯æŒBSDåè®®çš„,
-*             æˆ‘å°†3ä¸ªå‡½æ•°æ•´ç†äº†å‡ºæ¥ï¼Œæ‰“ç®—ç”¨äºŽè‡ªå·±çš„æ—¥å¿—è¾“å‡ºï¼Œä¹Ÿåšè¿‡ä¸€äº›ä¿®æ­£
-*             bsd-snprintf.cæ˜¯æˆ‘è§è¿‡çš„å¯¹äºŽsnprintfå®žçŽ°æ¯”è¾ƒå¹²å‡€çš„ä»£ç ï¼Œä½†æœ‰äº›åœ°æ–¹å·æ‡’ä¸å°‘ï¼Œ
-*             ç”šè‡³æœ‰ä¸å°‘çš„bugï¼Œæ¯”å¦‚ä»–çš„doubleè¾“å‡ºåŸºæœ¬ä¸å¯ç”¨,
-*             åŽŸæ¥çš„fmtsträ¹Ÿæœ‰é—®é¢˜ï¼Œæ„Ÿè§‰ä½œè€…å¯¹äºŽç²¾åº¦å’Œå®½åº¦çš„å®šä¹‰æ­£å¥½ç›¸åï¼Ÿ
-*             ç†è®ºä¸Šæˆ‘ä»¬çš„ä»£ç ä¹Ÿåº”è¯¥éµå¾ªBSDåè®®ï¼Œä½†æ¯•ç«Ÿä»£ç æ˜¯ä¸ºäº†æ—¥å¿—åº“æ‰“ç®—çš„ï¼Œæˆ‘å¯¹ä»£ç åšäº†ä¿®æ­£ï¼Œ
-*             è€Œæ•´ä½“çš„ä»£ç æˆ‘æ‰“ç®—ä½¿ç”¨Apacheçš„åè®®å¼€æºï¼ŒApache 2.0çš„åè®®å’ŒBSDåè®®éžå¸¸æŽ¥è¿‘
-*             åŒæ—¶æˆ‘ä¹Ÿæœ‰ç‚¹æ€€ç–‘ä»–æ˜¯ä»ŽGPLçš„ä»£ç æ”¹è¿‡æ¥çš„ï¼Œå‘µå‘µï¼Œ
-*             å¾®è½¯å’ŒGLIBCçš„è¿™éƒ¨åˆ†ä»£ç åŸºæœ¬ä¸å¯è¯»ï¼Œè™½ç„¶ä»–ä»¬è€ƒè™‘çš„æƒ…å†µçš„ç¡®è¦å¤æ‚å¾ˆå¤š
-*             fmt_doubleå‡½æ•°æ˜¯æˆ‘è‡ªå·±è´¹åŠ›æ”¹å‡ºæ¥çš„ï¼ŒåŽŸæ¥çš„å‡½æ•°fmtfpæ˜¯æœ‰é—®é¢˜çš„ï¼Œåªèƒ½åœ¨æ•´æ•°èŒƒå›´å†…ä½¿ç”¨ï¼Œ
-*             æˆ‘å‚è€ƒäº†libc-5.4.29.tar.gz/libc/cvt/cvt_r.çš„å‡½æ•°ecvt_r å’Œ fcvt_r,è¿›è¡Œäº†ä¿®æ­£
-*             ecvt_rå’Œfcvt_rä¸¤ä¸ªå‡½æ•°æˆ‘æžäº†åŠå¤©æ‰æ¯”è¾ƒæ˜Žç™½ä»–ä»¬çš„æ„å›¾ï¼Œä»–ä»¬è®¾è®¡çš„åˆè¡·ï¼Œå¯èƒ½å°±æ˜¯æ–¹ä¾¿æˆ‘
-*             ä»¬è¿›è¡Œæ ¼å¼åŒ–è½¬æ¢è¾“å‡ºçš„
+* @details    ²¿·Ö´úÂë×îÔçÀ´×Ôopenssh,ÖÐ¼äµÄbsd-snprintf.c´úÂë£¬Ô­À´µÄ´úÂëÓ¦¸ÃÊÇÖ§³ÖBSDÐ­ÒéµÄ,
+*             ÎÒ½«3¸öº¯ÊýÕûÀíÁË³öÀ´£¬´òËãÓÃÓÚ×Ô¼ºµÄÈÕÖ¾Êä³ö£¬Ò²×ö¹ýÒ»Ð©ÐÞÕý
+*             bsd-snprintf.cÊÇÎÒ¼û¹ýµÄ¶ÔÓÚsnprintfÊµÏÖ±È½Ï¸É¾»µÄ´úÂë£¬µ«ÓÐÐ©µØ·½ÍµÀÁ²»ÉÙ£¬
+*             ÉõÖÁÓÐ²»ÉÙµÄbug£¬±ÈÈçËûµÄdoubleÊä³ö»ù±¾²»¿ÉÓÃ,
+*             Ô­À´µÄfmtstrÒ²ÓÐÎÊÌâ£¬¸Ð¾õ×÷Õß¶ÔÓÚ¾«¶ÈºÍ¿í¶ÈµÄ¶¨ÒåÕýºÃÏà·´£¿
+*             ÀíÂÛÉÏÎÒÃÇµÄ´úÂëÒ²Ó¦¸Ã×ñÑ­BSDÐ­Òé£¬µ«±Ï¾¹´úÂëÊÇÎªÁËÈÕÖ¾¿â´òËãµÄ£¬ÎÒ¶Ô´úÂë×öÁËÐÞÕý£¬
+*             ¶øÕûÌåµÄ´úÂëÎÒ´òËãÊ¹ÓÃApacheµÄÐ­Òé¿ªÔ´£¬Apache 2.0µÄÐ­ÒéºÍBSDÐ­Òé·Ç³£½Ó½ü
+*             Í¬Ê±ÎÒÒ²ÓÐµã»³ÒÉËûÊÇ´ÓGPLµÄ´úÂë¸Ä¹ýÀ´µÄ£¬ºÇºÇ£¬
+*             Î¢ÈíºÍGLIBCµÄÕâ²¿·Ö´úÂë»ù±¾²»¿É¶Á£¬ËäÈ»ËûÃÇ¿¼ÂÇµÄÇé¿öµÄÈ·Òª¸´ÔÓºÜ¶à
+*             fmt_doubleº¯ÊýÊÇÎÒ×Ô¼º·ÑÁ¦¸Ä³öÀ´µÄ£¬Ô­À´µÄº¯ÊýfmtfpÊÇÓÐÎÊÌâµÄ£¬Ö»ÄÜÔÚÕûÊý·¶Î§ÄÚÊ¹ÓÃ£¬
+*             ÎÒ²Î¿¼ÁËlibc-5.4.29.tar.gz/libc/cvt/cvt_r.µÄº¯Êýecvt_r ºÍ fcvt_r,½øÐÐÁËÐÞÕý
+*             ecvt_rºÍfcvt_rÁ½¸öº¯ÊýÎÒ¸ãÁË°ëÌì²Å±È½ÏÃ÷°×ËûÃÇµÄÒâÍ¼£¬ËûÃÇÉè¼ÆµÄ³õÖÔ£¬¿ÉÄÜ¾ÍÊÇ·½±ãÎÒ
+*             ÃÇ½øÐÐ¸ñÊ½»¯×ª»»Êä³öµÄ
 *
-*             è¿™é‡Œé¢çš„å¤§éƒ¨åˆ†ä»£ç æ˜¯ç”¨äºŽæˆ‘ä»¬è‡ªå·±çš„fmtstrå†…éƒ¨ä½¿ç”¨ï¼Œå¤–éƒ¨éžè¯·è¯¯å…¥ã€‚
+*             ÕâÀïÃæµÄ´ó²¿·Ö´úÂëÊÇÓÃÓÚÎÒÃÇ×Ô¼ºµÄfmtstrÄÚ²¿Ê¹ÓÃ£¬Íâ²¿·ÇÇëÎóÈë¡£
 *
-*             åŽæ¥ï¼ŒåŽæ¥ï¼Œgoogleçš„ä»£ç æœç´¢å±…ç„¶åœæ­¢æœåŠ¡äº†ï¼Œä¼¤å¿ƒã€‚
+*             ºóÀ´£¬ºóÀ´£¬googleµÄ´úÂëËÑË÷¾ÓÈ»Í£Ö¹·þÎñÁË£¬ÉËÐÄ¡£
 *
 */
 
@@ -33,56 +33,56 @@
 namespace ZCE_LIB
 {
 
-///æ ¼å¼åŒ–å­—ç¬¦ä¸²è¾“å‡ºçš„æŽ§åˆ¶å®ï¼Œå¯ä»¥&ä¸€èµ·è¯•ç”¨
+///¸ñÊ½»¯×Ö·û´®Êä³öµÄ¿ØÖÆºê£¬¿ÉÒÔ&Ò»ÆðÊÔÓÃ
 enum FORMAT_STRING_FLAG
 {
-    ///å·¦å¯¹é½ï¼Œç›¸å½“äºŽFormat specifications ä¸­ flag çš„"-",
+    ///×ó¶ÔÆë£¬Ïàµ±ÓÚFormat specifications ÖÐ flag µÄ"-",
     FMT_MINUS           = (1 << 0),
     FMT_LEFT_ALIGN      = (1 << 0),
 
-    ///å¢žåŠ ç¬¦å·ä½ï¼Œç›¸å½“äºŽFormat specifications ä¸­ flag çš„"+"
+    ///Ôö¼Ó·ûºÅÎ»£¬Ïàµ±ÓÚFormat specifications ÖÐ flag µÄ"+"
     FMT_PLUS            = (1 << 1),
-    ///ç¬¦å·ä½å¦‚æžœä¸æ˜¯-,ç”¨ç©ºæ ¼æ›¿ä»£,ç›¸å½“äºŽFormat specifications ä¸­ flag çš„" "
+    ///·ûºÅÎ»Èç¹û²»ÊÇ-,ÓÃ¿Õ¸ñÌæ´ú,Ïàµ±ÓÚFormat specifications ÖÐ flag µÄ" "
     FMT_SPACE           = (1 << 2),
-    ///å¢žåŠ å‰ç¼€0,0x,0Xï¼Œç›¸å½“äºŽFormat specifications ä¸­ flag çš„"#"
+    ///Ôö¼ÓÇ°×º0,0x,0X£¬Ïàµ±ÓÚFormat specifications ÖÐ flag µÄ"#"
     FMT_NUM             = (1 << 3),
-    ///å³å¯¹é½ï¼Œå·¦è¾¹å¤šå‡ºçš„éƒ¨åˆ†ç”¨0å¡«å……ï¼Œç›¸å½“äºŽFormat specifications ä¸­ flag çš„"0"
+    ///ÓÒ¶ÔÆë£¬×ó±ß¶à³öµÄ²¿·ÖÓÃ0Ìî³ä£¬Ïàµ±ÓÚFormat specifications ÖÐ flag µÄ"0"
     FMT_ZERO            = (1 << 4),
-    ///å¤§å†™ï¼Œx==>X,e==>E
+    ///´óÐ´£¬x==>X,e==>E
     FMT_UP              = (1 << 5),
-    ///å½“ä½œæ— ç¬¦å·æ•°æ®è¾“å‡º
+    ///µ±×÷ÎÞ·ûºÅÊý¾ÝÊä³ö
     FMT_UNSIGNED        = (1 << 6),
-    ///è¾“å‡ºæŒ‡æ•°ï¼Œç›¸å½“äºŽ"e",å¦‚æžœåŒæ—¶ç”¨FMT_UPï¼Œç›¸å½“äºŽ"E"
+    ///Êä³öÖ¸Êý£¬Ïàµ±ÓÚ"e",Èç¹ûÍ¬Ê±ÓÃFMT_UP£¬Ïàµ±ÓÚ"E"
     FMT_EXPONENT        = (1 << 7),
 
 };
 
-///è¾“å‡ºçš„è¿›åˆ¶ç³»ç»Ÿï¼Œé»˜è®¤æ˜¯10è¿›åˆ¶
+///Êä³öµÄ½øÖÆÏµÍ³£¬Ä¬ÈÏÊÇ10½øÖÆ
 enum BASE_NUMBER_SYSTEM
 {
-    ///äºŒè¿›åˆ¶
+    ///¶þ½øÖÆ
     BASE_BINARY        = 2,
-    ///å…«è¿›åˆ¶
+    ///°Ë½øÖÆ
     BASE_OCTAL         = 8,
-    ///åè¿›åˆ¶
+    ///Ê®½øÖÆ
     BASE_DECIMAL       = 10,
-    ///åå…­è¿›åˆ¶
+    ///Ê®Áù½øÖÆ
     BASE_HEXADECIMAL   = 16,
 };
 
-///é»˜è®¤çš„æµ®ç‚¹ç²¾åº¦é•¿åº¦
+///Ä¬ÈÏµÄ¸¡µã¾«¶È³¤¶È
 static const size_t DEFAULT_DOUBLE_PRECISION = 6;
 
 /*!
-* @brief      ç”¨äºŽå­—ç¬¦ä¸²çš„æ ¼å¼åŒ–è¾“å‡ºï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°åœ¨BUFFERæœ«å°¾ä¸æ·»åŠ \0,
-* @param[out] buffer    è¾“å‡ºçš„å­—ç¬¦ä¸²BUFFER
-* @param[in]  max_len   BUFFERçš„æœ€å¤§å¯ç”¨é•¿åº¦ï¼Œ
-* @param[out] use_len   è¿”å›žå‚æ•°ï¼Œæ ¼å¼åŒ–åŽä½¿ç”¨äº†BUFFERçš„é•¿åº¦
-* @param[in]  value     è¦è¿›è¡Œæ ¼å¼åŒ–å¤„ç†çš„æºå­—ç¬¦ä¸²
-* @param[in]  str_len   è¦è¿›è¡Œå¤„ç†çš„æºå­—ç¬¦ä¸²é•¿åº¦
-* @param[in]  width     è¾“å‡ºå­—ç¬¦ä¸²çš„å®½åº¦ï¼Œä¸º0è¡¨ç¤ºä¸å¤„ç†å®½åº¦ï¼Œç›¸å½“äºŽprintfå‡½æ•°æ ¼å¼åŒ–å‚æ•°%32.16sä¸­é—´çš„32ã€‚
-* @param[in]  precision ç²¾åº¦ï¼Œå°±æ˜¯è¾“å‡ºå‡ ä¸ªå­—ç¬¦ï¼Œç›¸å½“äºŽprintfå‡½æ•°æ ¼å¼åŒ–å‚æ•°%32.16sä¸­é—´çš„16ã€‚
-* @param[in]  flags     å‚è€ƒ @ref ZCE_LIB::FORMAT_STRING_FLAG
+* @brief      ÓÃÓÚ×Ö·û´®µÄ¸ñÊ½»¯Êä³ö£¬×¢ÒâÕâ¸öº¯ÊýÔÚBUFFERÄ©Î²²»Ìí¼Ó\0,
+* @param[out] buffer    Êä³öµÄ×Ö·û´®BUFFER
+* @param[in]  max_len   BUFFERµÄ×î´ó¿ÉÓÃ³¤¶È£¬
+* @param[out] use_len   ·µ»Ø²ÎÊý£¬¸ñÊ½»¯ºóÊ¹ÓÃÁËBUFFERµÄ³¤¶È
+* @param[in]  value     Òª½øÐÐ¸ñÊ½»¯´¦ÀíµÄÔ´×Ö·û´®
+* @param[in]  str_len   Òª½øÐÐ´¦ÀíµÄÔ´×Ö·û´®³¤¶È
+* @param[in]  width     Êä³ö×Ö·û´®µÄ¿í¶È£¬Îª0±íÊ¾²»´¦Àí¿í¶È£¬Ïàµ±ÓÚprintfº¯Êý¸ñÊ½»¯²ÎÊý%32.16sÖÐ¼äµÄ32¡£
+* @param[in]  precision ¾«¶È£¬¾ÍÊÇÊä³ö¼¸¸ö×Ö·û£¬Ïàµ±ÓÚprintfº¯Êý¸ñÊ½»¯²ÎÊý%32.16sÖÐ¼äµÄ16¡£
+* @param[in]  flags     ²Î¿¼ @ref ZCE_LIB::FORMAT_STRING_FLAG
 */
 void fmt_str(char *buffer,
              size_t max_len,
@@ -94,18 +94,18 @@ void fmt_str(char *buffer,
              int flags = 0);
 
 /*!
-* @brief      ç”¨äºŽint64çš„æ ¼å¼åŒ–è¾“å‡ºï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°åœ¨BUFFERæœ«å°¾ä¸æ·»åŠ \0,ä»ŽBSDçš„openssh snprintfä»£ç ç§»æ¤
-*             æˆ‘çš„å›°æ‰°ï¼Œæœ¬æ¥æˆ‘è¿˜æžäº†ä¸€ä¸ªint32çš„ä»£ç ï¼Œä½†ä»–å’Œint64å¦‚æ­¤çš„ç›¸åƒï¼Œå®Œå…¨çš„å†—ä½™ï¼Œ
-*             å¦‚æžœæˆ‘è¦ä¿ç•™int32ï¼Œå”¯ä¸€çš„ç›®çš„å°±æ˜¯åœ¨32ä½æœºå™¨ä¸Šçš„é€Ÿåº¦å¯ä»¥æ›´åŠ å¿«ä¸€ç‚¹ï¼Œä½†æœ‰é‚£ä¹ˆå¤§å¿…è¦å—ï¼ŸæœåŠ¡å™¨çš„ä»£ç å¤§éƒ¨åˆ†éƒ½ä¼šåœ¨64ä½æœºå™¨ä¸Šè¿è¡Œ
-*             è€ƒè™‘äº†ä¸€ä¸‹ï¼Œæˆ‘åˆ é™¤äº†int32çš„ä»£ç ï¼Œ
-* @param      buffer      è¾“å‡ºè¿”å›žçš„å­—ç¬¦ä¸²BUFFER
-* @param      max_len     BUFFERçš„æœ€å¤§å¯ç”¨é•¿åº¦ï¼Œ
-* @param      use_len     è¿”å›žå‚æ•°ï¼Œæ ¼å¼åŒ–åŽä½¿ç”¨äº†BUFFERçš„é•¿åº¦
-* @param      value       è¦è¿›è¡Œè¾“å‡ºçš„int64å€¼
-* @param      base        è¾“å‡ºçš„è¿›åˆ¶ å‚è€ƒï¼Œ @ref ZCE_LIB::BASE_NUMBER_SYSTEM
-* @param      width       è¾“å‡ºçš„å®½åº¦ï¼Œä¸º0è¡¨ç¤ºä¸å¤„ç†å®½åº¦ï¼Œç›¸å½“äºŽprintfå‡½æ•°æ ¼å¼åŒ–å‚æ•°%32.16dä¸­é—´çš„32ã€‚
-* @param      precision   ç²¾åº¦ï¼Œå°±æ˜¯è¾“å‡ºå‡ ä¸ªå­—ç¬¦ï¼Œç›¸å½“äºŽprintfå‡½æ•°æ ¼å¼åŒ–å‚æ•°%32.16dä¸­é—´çš„16ã€‚
-* @param      flags       å‚è€ƒ @ref ZCE_LIB::FORMAT_STRING_FLAG
+* @brief      ÓÃÓÚint64µÄ¸ñÊ½»¯Êä³ö£¬×¢ÒâÕâ¸öº¯ÊýÔÚBUFFERÄ©Î²²»Ìí¼Ó\0,´ÓBSDµÄopenssh snprintf´úÂëÒÆÖ²
+*             ÎÒµÄÀ§ÈÅ£¬±¾À´ÎÒ»¹¸ãÁËÒ»¸öint32µÄ´úÂë£¬µ«ËûºÍint64Èç´ËµÄÏàÏñ£¬ÍêÈ«µÄÈßÓà£¬
+*             Èç¹ûÎÒÒª±£Áôint32£¬Î¨Ò»µÄÄ¿µÄ¾ÍÊÇÔÚ32Î»»úÆ÷ÉÏµÄËÙ¶È¿ÉÒÔ¸ü¼Ó¿ìÒ»µã£¬µ«ÓÐÄÇÃ´´ó±ØÒªÂð£¿·þÎñÆ÷µÄ´úÂë´ó²¿·Ö¶¼»áÔÚ64Î»»úÆ÷ÉÏÔËÐÐ
+*             ¿¼ÂÇÁËÒ»ÏÂ£¬ÎÒÉ¾³ýÁËint32µÄ´úÂë£¬
+* @param      buffer      Êä³ö·µ»ØµÄ×Ö·û´®BUFFER
+* @param      max_len     BUFFERµÄ×î´ó¿ÉÓÃ³¤¶È£¬
+* @param      use_len     ·µ»Ø²ÎÊý£¬¸ñÊ½»¯ºóÊ¹ÓÃÁËBUFFERµÄ³¤¶È
+* @param      value       Òª½øÐÐÊä³öµÄint64Öµ
+* @param      base        Êä³öµÄ½øÖÆ ²Î¿¼£¬ @ref ZCE_LIB::BASE_NUMBER_SYSTEM
+* @param      width       Êä³öµÄ¿í¶È£¬Îª0±íÊ¾²»´¦Àí¿í¶È£¬Ïàµ±ÓÚprintfº¯Êý¸ñÊ½»¯²ÎÊý%32.16dÖÐ¼äµÄ32¡£
+* @param      precision   ¾«¶È£¬¾ÍÊÇÊä³ö¼¸¸ö×Ö·û£¬Ïàµ±ÓÚprintfº¯Êý¸ñÊ½»¯²ÎÊý%32.16dÖÐ¼äµÄ16¡£
+* @param      flags       ²Î¿¼ @ref ZCE_LIB::FORMAT_STRING_FLAG
 */
 void fmt_int64(char *buffer,
                size_t max_len,
@@ -117,14 +117,14 @@ void fmt_int64(char *buffer,
                int flags = 0);
 
 /*!
-* @brief      æµ®ç‚¹æ•°å­—çš„è¾“å‡º,é»˜è®¤ç”¨æŒ‡æ•°æ–¹å¼è¾“å‡ºï¼ŒèŠ‚çº¦ç©ºé—´,æµ®ç‚¹çš„è¾“å‡ºæ˜¯ä¸ªå¾ˆæœ‰æ„æ€çš„ä¸œä¸œï¼Œ
-* @param      buffer     è¾“å‡ºè¿”å›žçš„å­—ç¬¦ä¸²BUFFER
-* @param      max_len    BUFFERçš„æœ€å¤§å¯ç”¨é•¿åº¦ï¼Œ
-* @param      use_len    è¿”å›žå‚æ•°ï¼Œæ ¼å¼åŒ–åŽä½¿ç”¨äº†BUFFERçš„é•¿åº¦
-* @param      fvalue     è¦è¿›è¡Œè¾“å‡ºçš„doubleå€¼
-* @param      width      è¾“å‡ºçš„å®½åº¦ï¼Œä¸º0è¡¨ç¤ºä¸å¤„ç†å®½åº¦ï¼Œç›¸å½“äºŽprintfå‡½æ•°æ ¼å¼åŒ–å‚æ•°%32.16dä¸­é—´çš„32ã€‚
-* @param      precision  ç²¾åº¦ï¼Œè¾“å‡ºå°æ•°ç‚¹åŽé¢å‡ ä½
-* @param      flags      å‚è€ƒ @ref ZCE_LIB::FORMAT_STRING_FLAG
+* @brief      ¸¡µãÊý×ÖµÄÊä³ö,Ä¬ÈÏÓÃÖ¸Êý·½Ê½Êä³ö£¬½ÚÔ¼¿Õ¼ä,¸¡µãµÄÊä³öÊÇ¸öºÜÓÐÒâË¼µÄ¶«¶«£¬
+* @param      buffer     Êä³ö·µ»ØµÄ×Ö·û´®BUFFER
+* @param      max_len    BUFFERµÄ×î´ó¿ÉÓÃ³¤¶È£¬
+* @param      use_len    ·µ»Ø²ÎÊý£¬¸ñÊ½»¯ºóÊ¹ÓÃÁËBUFFERµÄ³¤¶È
+* @param      fvalue     Òª½øÐÐÊä³öµÄdoubleÖµ
+* @param      width      Êä³öµÄ¿í¶È£¬Îª0±íÊ¾²»´¦Àí¿í¶È£¬Ïàµ±ÓÚprintfº¯Êý¸ñÊ½»¯²ÎÊý%32.16dÖÐ¼äµÄ32¡£
+* @param      precision  ¾«¶È£¬Êä³öÐ¡ÊýµãºóÃæ¼¸Î»
+* @param      flags      ²Î¿¼ @ref ZCE_LIB::FORMAT_STRING_FLAG
 * @note
 */
 void fmt_double(char *buffer,

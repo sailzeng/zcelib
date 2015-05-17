@@ -1,11 +1,11 @@
-ï»¿#include "zerg_predefine.h"
+#include "zerg_predefine.h"
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_active_svchdl_set.h"
 
 
 /****************************************************************************************************
 class  Service_Info_Set ,
-ï¼Œ
+£¬
 
 
 ****************************************************************************************************/
@@ -26,7 +26,7 @@ void Active_SvcHandle_Set::initialize(size_t sz_peer)
     type_to_idtable_.rehash(MAX_TYPE_KIND);
 }
 
-//æ ¹æ®SERVICEINFOæŸ¥è¯¢PEERä¿¡æ¯
+//¸ù¾İSERVICEINFO²éÑ¯PEERĞÅÏ¢
 int Active_SvcHandle_Set::find_handle_by_svcid(const SERVICES_ID &svc_id,
                                                TCP_Svc_Handler *&svc_handle)
 {
@@ -46,13 +46,13 @@ int Active_SvcHandle_Set::find_handle_by_svcid(const SERVICES_ID &svc_id,
 
 
 
-//ä»¥è´Ÿè½½å‡è¡¡çš„æ–¹å¼ï¼Œæ ¹æ®services typeæŸ¥è¯¢ä¸€ä¸ªçš„SVCï¼ŒæŒ‰ç…§æ•°ç»„é¡ºåºè½®è¯¢çš„è¿”å›ï¼Œ
-//è¿™æ ·æŸ¥è¯¢ä¿è¯å‘é€çš„æ•°æ®å°½é‡è´Ÿè½½å‡è¡¡
+//ÒÔ¸ºÔØ¾ùºâµÄ·½Ê½£¬¸ù¾İservices type²éÑ¯Ò»¸öµÄSVC£¬°´ÕÕÊı×éË³ĞòÂÖÑ¯µÄ·µ»Ø£¬
+//ÕâÑù²éÑ¯±£Ö¤·¢ËÍµÄÊı¾İ¾¡Á¿¸ºÔØ¾ùºâ
 int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
                                                 uint32_t &find_services_id,
                                                 TCP_Svc_Handler *& svc_handle)
 {
-    //çœ‹typeç±»å‹çš„MAPé‡Œé¢æ˜¯å¦æœ‰è¿™ç§ç±»å‹çš„æ•°æ®äº†
+    //¿´typeÀàĞÍµÄMAPÀïÃæÊÇ·ñÓĞÕâÖÖÀàĞÍµÄÊı¾İÁË
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
@@ -65,7 +65,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
     SERVICES_ID_TABLE *id_table = &(table_iter->second);
     size_t ary_size = id_table->services_id_ary_.size();
 
-    //orderid_use_id_æ˜¯ä¸€ä¸ªè‡ªå¢å€¼ï¼Œç”¨äºè´Ÿè½½å‡è¡¡
+    //orderid_use_id_ÊÇÒ»¸ö×ÔÔöÖµ£¬ÓÃÓÚ¸ºÔØ¾ùºâ
     for (size_t j = 0; j < ary_size; ++j)
     {
         size_t ary_id = (id_table->orderid_use_id_) % ary_size;
@@ -75,7 +75,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
         SERVICES_ID lb_svcid(services_type, find_services_id);
         auto iter = svr_info_set_.find(lb_svcid);
 
-        //åˆ°è¿™å„¿å°±æ˜¯ä½ ä»£ç å†™é”™äº†ï¼Œ
+        //µ½Õâ¶ù¾ÍÊÇÄã´úÂëĞ´´íÁË£¬
         ZCE_ASSERT(iter != svr_info_set_.end());
         if (iter == svr_info_set_.end())
         {
@@ -87,7 +87,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
 
         svc_handle = (*(iter)).second;
 
-        //ä¼šå°½é‡é€‰æ‹©ä¸€ä¸ªæ¿€æ´»çŠ¶æ€çš„å‘é€
+        //»á¾¡Á¿Ñ¡ÔñÒ»¸ö¼¤»î×´Ì¬µÄ·¢ËÍ
         if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
         {
             break;
@@ -102,7 +102,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
                                                    uint32_t &find_services_id,
                                                    TCP_Svc_Handler*& svc_handle)
 {
-    //çœ‹typeç±»å‹çš„MAPé‡Œé¢æ˜¯å¦æœ‰è¿™ç§ç±»å‹çš„æ•°æ®äº†
+    //¿´typeÀàĞÍµÄMAPÀïÃæÊÇ·ñÓĞÕâÖÖÀàĞÍµÄÊı¾İÁË
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
@@ -124,7 +124,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         SERVICES_ID lb_svcid(services_type, find_services_id);
         auto iter = svr_info_set_.find(lb_svcid);
 
-        //åˆ°è¿™å„¿å°±æ˜¯ä½ ä»£ç å†™é”™äº†ï¼Œ
+        //µ½Õâ¶ù¾ÍÊÇÄã´úÂëĞ´´íÁË£¬
         ZCE_ASSERT(iter != svr_info_set_.end());
         if (iter == svr_info_set_.end())
         {
@@ -136,7 +136,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
 
         svc_handle = (*(iter)).second;
 
-        //ä¼šå°½é‡é€‰æ‹©ä¸€ä¸ªæ¿€æ´»çŠ¶æ€çš„å‘é€
+        //»á¾¡Á¿Ñ¡ÔñÒ»¸ö¼¤»î×´Ì¬µÄ·¢ËÍ
         if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
         {
             break;
@@ -146,8 +146,8 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
 }
 
 
-//ä»¥ä¸»å¤‡çš„æ–¹å¼ï¼Œæ ¹æ®services typeå°½é‡æŸ¥è¯¢å¾—åˆ°ä¸€ä¸ªçš„SVC IDä»¥åŠå¯¹åº”çš„Handleï¼Œ
-//ä¸»å¤‡çš„é¡ºåºæŒ‰ç…§Auto é‚£å„¿çš„é…ç½®é¡ºåºæ¥å¤„ç†ã€‚å¯ä»¥ä¸æ˜¯2ä¸ª
+//ÒÔÖ÷±¸µÄ·½Ê½£¬¸ù¾İservices type¾¡Á¿²éÑ¯µÃµ½Ò»¸öµÄSVC IDÒÔ¼°¶ÔÓ¦µÄHandle£¬
+//Ö÷±¸µÄË³Ğò°´ÕÕAuto ÄÇ¶ùµÄÅäÖÃË³ĞòÀ´´¦Àí¡£¿ÉÒÔ²»ÊÇ2¸ö
 int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
                                              uint32_t &find_services_id,
                                              TCP_Svc_Handler*& svc_handle)
@@ -168,7 +168,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
         SERVICES_ID ms_svcid(services_type, find_services_id);
 
         auto iter = svr_info_set_.find(ms_svcid);
-        //å¦‚æœæ²¡æœ‰æ‰¾åˆ°
+        //Èç¹ûÃ»ÓĞÕÒµ½
         if (iter == svr_info_set_.end())
         {
             continue;
@@ -176,7 +176,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
 
         svc_handle = (*(iter)).second;
 
-        //ä¼šå°½é‡é€‰æ‹©ä¸€ä¸ªæ¿€æ´»çŠ¶æ€çš„å‘é€
+        //»á¾¡Á¿Ñ¡ÔñÒ»¸ö¼¤»î×´Ì¬µÄ·¢ËÍ
         if (TCP_Svc_Handler::PEER_STATUS_ACTIVE == svc_handle->get_peer_status())
         {
             break;
@@ -186,7 +186,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
 }
 
 
-//æŸ¥è¯¢ç±»å‹å¯¹åº”çš„æ‰€æœ‰activeçš„SVC IDæ•°ç»„ï¼Œç”¨äºå¹¿æ’­ç­‰
+//²éÑ¯ÀàĞÍ¶ÔÓ¦µÄËùÓĞactiveµÄSVC IDÊı×é£¬ÓÃÓÚ¹ã²¥µÈ
 int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *& id_ary)
 {
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
@@ -203,18 +203,18 @@ int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vecto
     return 0;
 }
 
-//å¢åŠ è®¾ç½®é…ç½®ä¿¡æ¯
+//Ôö¼ÓÉèÖÃÅäÖÃĞÅÏ¢
 int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svc_id,
                                                 TCP_Svc_Handler *new_svchdl)
 {
     MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.find(svc_id);
 
-    //å·²ç»æœ‰ç›¸å…³çš„è®°å½•äº†
+    //ÒÑ¾­ÓĞÏà¹ØµÄ¼ÇÂ¼ÁË
     if (iter != svr_info_set_.end())
     {
         TCP_Svc_Handler *old_svchdl = (*iter).second;
 
-        //ä¸€ä¸ªå¾ˆæœ‰æ„æ€çš„é—®é¢˜å¯¼è‡´äº†ä»£ç å¿…é¡»è¿™æ ·å†™ã€‚å¦‚æœä½ èƒ½ç›´æ¥çŸ¥é“ä¸ºä»€ä¹ˆï¼Œå¯ä»¥ç›´æ¥æ‰¾Scottxuè¦æ±‚è¯·å®¢
+        //Ò»¸öºÜÓĞÒâË¼µÄÎÊÌâµ¼ÖÂÁË´úÂë±ØĞëÕâÑùĞ´¡£Èç¹ûÄãÄÜÖ±½ÓÖªµÀÎªÊ²Ã´£¬¿ÉÒÔÖ±½ÓÕÒScottxuÒªÇóÇë¿Í
         const size_t TMP_ADDR_LEN = 32;
         char new_addr[TMP_ADDR_LEN], old_addr[TMP_ADDR_LEN];
 
@@ -229,7 +229,7 @@ int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svc_id,
 
     svr_info_set_[svc_id] = new_svchdl;
 
-    //åœ¨Type to id çš„tableé‡Œé¢å¢åŠ è¿™ä¸ªIDï¼Œ
+    //ÔÚType to id µÄtableÀïÃæÔö¼ÓÕâ¸öID£¬
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(svc_id.services_type_);
     if (table_iter == type_to_idtable_.end())
@@ -251,7 +251,7 @@ int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svc_id,
     return 0;
 }
 
-//æ›´æ–°è®¾ç½®é…ç½®ä¿¡æ¯
+//¸üĞÂÉèÖÃÅäÖÃĞÅÏ¢
 int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svc_id,
                                                     TCP_Svc_Handler *new_svchdl,
                                                     TCP_Svc_Handler *&old_svchdl)
@@ -259,7 +259,7 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svc_id,
     old_svchdl = NULL;
     MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.find(svc_id);
 
-    //å·²ç»æœ‰ç›¸å…³çš„è®°å½•äº†
+    //ÒÑ¾­ÓĞÏà¹ØµÄ¼ÇÂ¼ÁË
     if (iter != svr_info_set_.end())
     {
         old_svchdl = (*iter).second;
@@ -285,12 +285,12 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svc_id,
 }
 
 
-//æ ¹æ®SERVICES_ID,åˆ é™¤PEERä¿¡æ¯,
+//¸ù¾İSERVICES_ID,É¾³ıPEERĞÅÏ¢,
 int Active_SvcHandle_Set::del_services_peerInfo(const SERVICES_ID &svc_id)
 {
     MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.find(svc_id);
 
-    //å¦‚æœæ²¡æœ‰æ‰¾åˆ°,99.99%ç†è®ºä¸Šåº”è¯¥æ˜¯ä»£ç å†™çš„æœ‰é—®é¢˜,é™¤éæ’å…¥æ²¡æœ‰æˆåŠŸçš„æƒ…å†µ.è°ƒç”¨äº†handle_close.
+    //Èç¹ûÃ»ÓĞÕÒµ½,99.99%ÀíÂÛÉÏÓ¦¸ÃÊÇ´úÂëĞ´µÄÓĞÎÊÌâ,³ı·Ç²åÈëÃ»ÓĞ³É¹¦µÄÇé¿ö.µ÷ÓÃÁËhandle_close.
     if (iter == svr_info_set_.end())
     {
         ZCE_LOG(RS_INFO, "[zergsvr][%s] Can't  svr_info_set_ size:%u: svc_id:%u.%u .",
@@ -316,20 +316,20 @@ int Active_SvcHandle_Set::del_services_peerInfo(const SERVICES_ID &svc_id)
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
     }
 
-    //ç§»åŠ¨æœ€åä¸€ä¸ªä½ç½®çš„æ•°æ®åˆ°åˆ é™¤çš„ä½ç½®ï¼Œåˆ é™¤æœ€åä¸€ä¸ª
+    //ÒÆ¶¯×îºóÒ»¸öÎ»ÖÃµÄÊı¾İµ½É¾³ıµÄÎ»ÖÃ£¬É¾³ı×îºóÒ»¸ö
     size_t del_id = svrhandle->get_tptoid_table_id();
     SERVICES_ID_TABLE *id_table = &(table_iter->second);
     size_t ary_size = id_table->services_id_ary_.size();
     id_table->services_id_ary_[del_id] = id_table->services_id_ary_[ary_size - 1];
     id_table->services_id_ary_.pop_back();
 
-    //å­˜åœ¨æ•°ç»„é‡Œé¢åŸæ¥å°±åªæœ‰ä¸€ä¸ªæ•°æ®çš„å¯èƒ½ï¼Œ
+    //´æÔÚÊı×éÀïÃæÔ­À´¾ÍÖ»ÓĞÒ»¸öÊı¾İµÄ¿ÉÄÜ£¬
     if (id_table->services_id_ary_.size() == 0)
     {
         return 0;
     }
 
-    //æ‰¾åˆ°ç§»åŠ¨ä½ç½®IDå¯¹åº”çš„Handleï¼Œè°ƒæ•´å…¶ä¿å­˜çš„ID
+    //ÕÒµ½ÒÆ¶¯Î»ÖÃID¶ÔÓ¦µÄHandle£¬µ÷ÕûÆä±£´æµÄID
     SERVICES_ID move_svc_id(svc_id.services_type_,
                             id_table->services_id_ary_[del_id]);
     iter = svr_info_set_.find(move_svc_id);
@@ -360,7 +360,7 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(ZCE_LOG_PRIORITY out_lvl)
     MAP_OF_SVCPEERINFO::iterator iter_tmp = svr_info_set_.begin();
     MAP_OF_SVCPEERINFO::iterator iter_end = svr_info_set_.end();
 
-    //å¦‚æœè¿æ¥ä¸Šæ¥çš„æœåŠ¡å™¨å¤šï¼Œè¿™æ˜¯ä¸€ä¸ªéå¸¸éå¸¸è€—æ—¶çš„æ“ä½œ.
+    //Èç¹ûÁ¬½ÓÉÏÀ´µÄ·şÎñÆ÷¶à£¬ÕâÊÇÒ»¸ö·Ç³£·Ç³£ºÄÊ±µÄ²Ù×÷.
     for (size_t i = 0; iter_tmp != iter_end; ++iter_tmp, ++i)
     {
         SERVICES_ID svr_info = (*(iter_tmp)).first;
@@ -371,7 +371,7 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(ZCE_LOG_PRIORITY out_lvl)
     return;
 }
 
-//å…³é—­æ‰€æœ‰çš„PEER
+//¹Ø±ÕËùÓĞµÄPEER
 void Active_SvcHandle_Set::clear_and_closeall()
 {
     const size_t SHOWINFO_NUMBER = 500;
@@ -379,7 +379,7 @@ void Active_SvcHandle_Set::clear_and_closeall()
     ZCE_LOG(RS_INFO, "[zergsvr] Has %u peer want to close. Please wait. ACE that is accursed.",
             svr_info_set_.size());
 
-    //è¿™ä¸ªå‡½æ•°å¯èƒ½æ˜¯ç»å¯¹çš„æ…¢
+    //Õâ¸öº¯Êı¿ÉÄÜÊÇ¾ø¶ÔµÄÂı
     while (svr_info_set_.size() > 0)
     {
         if (svr_info_set_.size() % SHOWINFO_NUMBER == 0)
@@ -391,7 +391,7 @@ void Active_SvcHandle_Set::clear_and_closeall()
         MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.begin();
         TCP_Svc_Handler *svrhandle = (*(iter)).second;
 
-        //TCP_Svc_Handler::handle_closeè°ƒç”¨äº†del_services_peerInfo
+        //TCP_Svc_Handler::handle_closeµ÷ÓÃÁËdel_services_peerInfo
         svrhandle->handle_close();
     }
 }

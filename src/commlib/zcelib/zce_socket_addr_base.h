@@ -1,23 +1,23 @@
-ï»¿#ifndef ZCE_LIB_SOCKET_ADDR_BASE_
+#ifndef ZCE_LIB_SOCKET_ADDR_BASE_
 #define ZCE_LIB_SOCKET_ADDR_BASE_
 
 #include "zce_os_adapt_socket.h"
 
-//åœ¨æ”¹å†™å‘ç”Ÿ3ä¸ªæœˆå·¦å³ï¼Œæˆ‘éƒ½ä¸€è‡´ä½¿ç”¨sockaddr sockaddr_inä½œä¸ºåœ°å€å‚æ•°ï¼Œä¸ºä»€ä¹ˆè¦å˜åŒ–å‘¢ï¼Œ
-//å› ä¸ºåœ¨æœ‰ä¸€å¤©æ”¹å†™åŸæ¥ä»£ç æ—¶ï¼Œçªç„¶è§‰å¾—ä¸ºä»€ä¹ˆä¸ºä»€ä¹ˆå½»åº•OOä¸€ç‚¹ç‚¹ï¼Ÿ
-//æ•´ä½“å‚è€ƒACE_INET_Addr ACE INET Addrå®ç°çš„ï¼Œå½“ç„¶ä¹Ÿæœ‰ä¸€äº›å˜åŒ–ï¼ŒACEæ²¡æœ‰ç›´æ¥ä½¿ç”¨sockaddrï¼Œä¸çŸ¥é“ä¸ºå•¥
+//ÔÚ¸ÄĞ´·¢Éú3¸öÔÂ×óÓÒ£¬ÎÒ¶¼Ò»ÖÂÊ¹ÓÃsockaddr sockaddr_in×÷ÎªµØÖ·²ÎÊı£¬ÎªÊ²Ã´Òª±ä»¯ÄØ£¬
+//ÒòÎªÔÚÓĞÒ»Ìì¸ÄĞ´Ô­À´´úÂëÊ±£¬Í»È»¾õµÃÎªÊ²Ã´ÎªÊ²Ã´³¹µ×OOÒ»µãµã£¿
+//ÕûÌå²Î¿¼ACE_INET_Addr ACE INET AddrÊµÏÖµÄ£¬µ±È»Ò²ÓĞÒ»Ğ©±ä»¯£¬ACEÃ»ÓĞÖ±½ÓÊ¹ÓÃsockaddr£¬²»ÖªµÀÎªÉ¶
 
-//Socketåœ°å€çš„åŸºç±»ã€‚
+//SocketµØÖ·µÄ»ùÀà¡£
 class ZCE_Sockaddr
 {
 public:
 
-    //æ„é€ å‡½æ•°ï¼Œ
+    //¹¹Ôìº¯Êı£¬
     ZCE_Sockaddr (sockaddr *sockaddr_ptr = NULL, int sockaddr_size = -1);
-    //ææ„å‡½æ•°,å†…éƒ¨æœ‰virtualå‡½æ•°
+    //Îö¹¹º¯Êı,ÄÚ²¿ÓĞvirtualº¯Êı
     virtual ~ZCE_Sockaddr (void);
 
-    //è®¾ç½®sockaddråœ°å€ä¿¡æ¯,è®¾ç½®æˆçº¯è™šå‡½æ•°çš„åŸå› ä¸æƒ³è®©ä½ ä½¿ç”¨ZCE_Sockaddr
+    //ÉèÖÃsockaddrµØÖ·ĞÅÏ¢,ÉèÖÃ³É´¿Ğéº¯ÊıµÄÔ­Òò²»ÏëÈÃÄãÊ¹ÓÃZCE_Sockaddr
     virtual  void set_sockaddr (sockaddr *sockaddr_ptr, socklen_t sockaddr_size) = 0;
 
     //Get/set the size of the address.
@@ -25,23 +25,23 @@ public:
     //
     inline void  set_size (int sockaddr_size);
 
-    //è®¾ç½®åœ°å€ä¿¡æ¯
+    //ÉèÖÃµØÖ·ĞÅÏ¢
     inline void set_addr (sockaddr *sockaddr_ptr);
-    //å–å¾—åœ°å€ä¿¡æ¯
+    //È¡µÃµØÖ·ĞÅÏ¢
     inline sockaddr *get_addr (void) const;
 
-    // æ£€æŸ¥åœ°å€æ˜¯å¦ç›¸ç­‰
+    // ¼ì²éµØÖ·ÊÇ·ñÏàµÈ
     bool operator == (const ZCE_Sockaddr &others_sockaddr) const;
-    // æ£€æŸ¥åœ°å€æ˜¯å¦ä¸ç›¸ç­‰
+    // ¼ì²éµØÖ·ÊÇ·ñ²»ÏàµÈ
     bool operator != (const ZCE_Sockaddr &others_sockaddr) const;
 
-    //è½¬æ¢æˆå­—ç¬¦ä¸²,
+    //×ª»»³É×Ö·û´®,
     inline const char *to_string(char *buffer, size_t buf_len) const
     {
         return ZCE_LIB::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len);
     }
 
-    //è½¬æ¢æˆå­—ç¬¦ä¸²,åŒæ—¶è¾“å‡ºå­—ç¬¦ä¸²çš„é•¿åº¦
+    //×ª»»³É×Ö·û´®,Í¬Ê±Êä³ö×Ö·û´®µÄ³¤¶È
     inline const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const
     {
 
@@ -59,10 +59,10 @@ public:
 
 public:
 
-    // åœ°å€ç±»å‹çš„æŒ‡é’ˆ,
+    // µØÖ·ÀàĞÍµÄÖ¸Õë,
     sockaddr *sockaddr_ptr_;
 
-    // åœ°å€ç»“æ„çš„é•¿åº¦ Number of bytes in the address.
+    // µØÖ·½á¹¹µÄ³¤¶È Number of bytes in the address.
     socklen_t sockaddr_size_;
 };
 
@@ -77,12 +77,12 @@ inline void ZCE_Sockaddr::set_size (int sockaddr_size)
     sockaddr_size_ = sockaddr_size;
 }
 
-//è®¾ç½®åœ°å€ä¿¡æ¯
+//ÉèÖÃµØÖ·ĞÅÏ¢
 inline void ZCE_Sockaddr::set_addr (sockaddr *sockaddr_ptr)
 {
     sockaddr_ptr_ = sockaddr_ptr;
 }
-//å–å¾—åœ°å€ä¿¡æ¯
+//È¡µÃµØÖ·ĞÅÏ¢
 inline sockaddr *ZCE_Sockaddr::get_addr (void) const
 {
     return sockaddr_ptr_;

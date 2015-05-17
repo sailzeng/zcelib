@@ -1,4 +1,4 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_protobuf_reflect.h
 * @author     Sailzeng <sailerzeng@gmail.com>
@@ -12,20 +12,20 @@
 *
 *
 * @note
-* ã€Šå…³äºéƒ‘å·çš„è®°å¿†ã€‹ æå¿—
-* å…³äºéƒ‘å·æˆ‘çŸ¥é“çš„ä¸å¤šï¼Œä¸ºäº†çˆ±æƒ…æ›¾ç»å»è¿‡é‚£é‡Œ
-* å¤šå°‘æ¬¡åœ¨ç«è½¦ä¸Šè·¯è¿‡è¿™åŸå¸‚ï¼Œä¸€ä¸ªäººæ‚„æ‚„åœ°æƒ³èµ·å¥¹
-* å¥¹è¯´å¥¹å–œæ¬¢éƒ‘å·å†¬å¤©çš„é˜³å…‰ï¼Œå··å­é‡Œé£˜æ»¡ç…¤ç‚‰çš„å‘³é“
-* é›¾æ°”ç©¿è¿‡å¥¹å¹´è½»çš„è„–å­ï¼Œç›´åˆ°ä»Šå¤©éƒ½æ²¡æœ‰æ•£å»
-* å…³äºéƒ‘å·æˆ‘æƒ³çš„å…¨æ˜¯ä½ ï¼Œæƒ³æ¥æƒ³å»éƒ½æ˜¯å¿æ‚”å’Œå§”å±ˆ
-* å…³äºéƒ‘å·æˆ‘çˆ±çš„å…¨æ˜¯ä½ ï¼Œçˆ±æ¥çˆ±å»ä¸æ˜ç™½çˆ±çš„æ„ä¹‰
-* å…³äºéƒ‘å·åªæ˜¯å¶å°”æƒ³èµ·ï¼Œå¥¹çš„å‘³é“éƒ½åœ¨å›å¿†é‡Œ
-* æ¯æ¬¡å’Œæœ‹å‹è¯´èµ·è¿‡å»çš„æ—…è¡Œï¼Œæˆ‘ä¸æ•¢è¯´æˆ‘æ›¾å»è¿‡é‚£é‡Œ
-* å…³äºéƒ‘å·æˆ‘æƒ³çš„å…¨æ˜¯ä½ ï¼Œæƒ³æ¥ç”Ÿæ´»æ— éæ˜¯ç—›è‹¦å’Œç¾ä¸½
-* å…³äºéƒ‘å·æˆ‘çˆ±çš„å…¨æ˜¯ä½ ï¼Œçˆ±åˆ°æœ€åæˆ‘ä»¬éƒ½æ— è·¯å¯å»
-* ä¼¼æ˜¯è€Œéæˆ–æ˜¯ä¸–äº‹å¯ç•ï¼Œæœ‰æƒ…æœ‰ä¹‰åˆæ˜¯æœ‰ç±³æ— ç‚Š
-* æ—¶é—´æ”¹å˜äº†å¾ˆå¤šåˆä»€ä¹ˆéƒ½æ²¡æœ‰
-* è®©æˆ‘å†æ¬¡æ‹¥æŠ±ä½ ï¼Œéƒ‘å·
+* ¡¶¹ØÓÚÖ£ÖİµÄ¼ÇÒä¡· ÀîÖ¾
+* ¹ØÓÚÖ£ÖİÎÒÖªµÀµÄ²»¶à£¬ÎªÁË°®ÇéÔø¾­È¥¹ıÄÇÀï
+* ¶àÉÙ´ÎÔÚ»ğ³µÉÏÂ·¹ıÕâ³ÇÊĞ£¬Ò»¸öÈËÇÄÇÄµØÏëÆğËı
+* ËıËµËıÏ²»¶Ö£Öİ¶¬ÌìµÄÑô¹â£¬Ïï×ÓÀïÆ®ÂúÃºÂ¯µÄÎ¶µÀ
+* ÎíÆø´©¹ıËıÄêÇáµÄ²±×Ó£¬Ö±µ½½ñÌì¶¼Ã»ÓĞÉ¢È¥
+* ¹ØÓÚÖ£ÖİÎÒÏëµÄÈ«ÊÇÄã£¬ÏëÀ´ÏëÈ¥¶¼ÊÇâã»ÚºÍÎ¯Çü
+* ¹ØÓÚÖ£ÖİÎÒ°®µÄÈ«ÊÇÄã£¬°®À´°®È¥²»Ã÷°×°®µÄÒâÒå
+* ¹ØÓÚÖ£ÖİÖ»ÊÇÅ¼¶ûÏëÆğ£¬ËıµÄÎ¶µÀ¶¼ÔÚ»ØÒäÀï
+* Ã¿´ÎºÍÅóÓÑËµÆğ¹ıÈ¥µÄÂÃĞĞ£¬ÎÒ²»¸ÒËµÎÒÔøÈ¥¹ıÄÇÀï
+* ¹ØÓÚÖ£ÖİÎÒÏëµÄÈ«ÊÇÄã£¬ÏëÀ´Éú»îÎŞ·ÇÊÇÍ´¿àºÍÃÀÀö
+* ¹ØÓÚÖ£ÖİÎÒ°®µÄÈ«ÊÇÄã£¬°®µ½×îºóÎÒÃÇ¶¼ÎŞÂ·¿ÉÈ¥
+* ËÆÊÇ¶ø·Ç»òÊÇÊÀÊÂ¿ÉÎ·£¬ÓĞÇéÓĞÒåÓÖÊÇÓĞÃ×ÎŞ´¶
+* Ê±¼ä¸Ä±äÁËºÜ¶àÓÖÊ²Ã´¶¼Ã»ÓĞ
+* ÈÃÎÒÔÙ´ÎÓµ±§Äã£¬Ö£Öİ
 */
 
 #ifndef _ILLUSION_PROTOBUF_REFLECT_H_
@@ -46,7 +46,7 @@ struct ZCE_PROTO_ERROR
 typedef std::vector<ZCE_PROTO_ERROR> PROTO_ERROR_ARRAY;
 
 
-//é”™è¯¯æ”¶é›†
+//´íÎóÊÕ¼¯
 class ZCE_Error_Collector : public google::protobuf::compiler::MultiFileErrorCollector
 {
 public:
@@ -85,16 +85,16 @@ public:
 
 public:
 
-    ///æ˜ å°„ä¸€ä¸ªè·¯å¾„
+    ///Ó³ÉäÒ»¸öÂ·¾¶
     void map_path(const std::string &path);
 
-    ///å¯¼å…¥ä¸€ä¸ªproto æ–‡ä»¶
+    ///µ¼ÈëÒ»¸öproto ÎÄ¼ş
     int import_file(const std::string &file_name);
 
-    //è¿”å›é”™è¯¯ä¿¡æ¯
+    //·µ»Ø´íÎóĞÅÏ¢
     void error_info(PROTO_ERROR_ARRAY &error_ary);
 
-    //æ ¹æ®åç§°åˆ›å»ºMessage,new çš„message ä¼šä¿å­˜åšå‡ºå½“å‰å¤„ç†çš„messageå¯¹è±¡
+    //¸ù¾İÃû³Æ´´½¨Message,new µÄmessage »á±£´æ×ö³öµ±Ç°´¦ÀíµÄmessage¶ÔÏó
     int new_mesage(const std::string &type_name,
                    google::protobuf::Message *&new_msg);
 
@@ -108,38 +108,38 @@ public:
     //
 public:
 
-    ///æ ¹æ®fullnameï¼Œä¹Ÿå°±æ˜¯ phone_book.number è®¾ç½®ä¸€ä¸ªMessageçš„field
+    ///¸ù¾İfullname£¬Ò²¾ÍÊÇ phone_book.number ÉèÖÃÒ»¸öMessageµÄfield
     static int set_field(google::protobuf::Message *msg,
                          const std::string &full_name,
                          const std::string &set_data,
                          bool message_add);
 
-    ///æ ¹æ®fullname,å¾—åˆ°æŸä¸ªå­—æ®µçš„æè¿°ä¿¡æ¯
+    ///¸ù¾İfullname,µÃµ½Ä³¸ö×Ö¶ÎµÄÃèÊöĞÅÏ¢
     static int get_fielddesc(google::protobuf::Message *msg,
                              const std::string &full_name,
                              bool message_add,
                              google::protobuf::Message *&field_msg,
                              const google::protobuf::FieldDescriptor *&field_desc);
 
-    ///è®¾ç½®ä¸€ä¸ªMessageçš„field
+    ///ÉèÖÃÒ»¸öMessageµÄfield
     static int set_fielddata(google::protobuf::Message *msg,
                              const google::protobuf::FieldDescriptor *field,
                              const std::string &set_data);
 
 
-    ///å®šä½ä¸€ä¸ªå­ç»“æ„
+    ///¶¨Î»Ò»¸ö×Ó½á¹¹
     static int locate_sub_msg(google::protobuf::Message *msg,
                               const std::string &submsg_field_name,
                               bool message_add,
                               google::protobuf::Message *&sub_msg);
 
-    ///æ‰“å°è¾“å‡ºä¸€ä¸ªMessageçš„ä¿¡æ¯åˆ°ostreamé‡Œé¢ï¼Œ
+    ///´òÓ¡Êä³öÒ»¸öMessageµÄĞÅÏ¢µ½ostreamÀïÃæ£¬
     static void protobuf_output(const google::protobuf::Message *msg,
                                 std::ostream *out);
 
-    ///å°†messageé‡Œé¢æ‰€æœ‰çš„å­—æ®µè®¾ç½®ä¸ºé»˜è®¤å€¼ï¼Œ
-    ///æ³¨æ„è¿™å„¿ä¸ç›´æ¥ç”¨Clearå‡½æ•°çš„åŸå› æ˜¯ï¼Œæˆ‘åœ¨è¯»å–é…ç½®çš„è¿‡ç¨‹å·²ç»æŠŠMessageç»“æ„æ„é€ å¥½äº†
-    ///å¯¹åº”çš„Fieldçš„æŒ‡é’ˆä¹Ÿä¿å­˜äº†ï¼Œå¦‚æœClearè¿™ä¸€åˆ‡éƒ½å¤±æ•ˆäº†ï¼ˆå¯¹repeatedé‡Œé¢æ–°å¢çš„Mesageï¼‰ã€‚
+    ///½«messageÀïÃæËùÓĞµÄ×Ö¶ÎÉèÖÃÎªÄ¬ÈÏÖµ£¬
+    ///×¢ÒâÕâ¶ù²»Ö±½ÓÓÃClearº¯ÊıµÄÔ­ÒòÊÇ£¬ÎÒÔÚ¶ÁÈ¡ÅäÖÃµÄ¹ı³ÌÒÑ¾­°ÑMessage½á¹¹¹¹ÔìºÃÁË
+    ///¶ÔÓ¦µÄFieldµÄÖ¸ÕëÒ²±£´æÁË£¬Èç¹ûClearÕâÒ»ÇĞ¶¼Ê§Ğ§ÁË£¨¶ÔrepeatedÀïÃæĞÂÔöµÄMesage£©¡£
     static void message_set_default(google::protobuf::Message *msg);
 
 protected:

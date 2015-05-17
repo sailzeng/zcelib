@@ -1,11 +1,11 @@
-ï»¿#include "ogre_predefine.h"
+#include "ogre_predefine.h"
 #include "ogre_tcp_ctrl_handler.h"
 #include "ogre_configure.h"
 #include "ogre_ip_restrict.h"
 #include "ogre_accept_handler.h"
 
 /****************************************************************************************************
-class  OgreTCPAcceptHandler TCP Accept å¤„ç†çš„EventHandler,
+class  OgreTCPAcceptHandler TCP Accept ´¦ÀíµÄEventHandler,
 ****************************************************************************************************/
 Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
                                        ZCE_Reactor *reactor):
@@ -16,7 +16,7 @@ Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
     ZCE_ASSERT(peer_module_info_.fp_judge_whole_frame_);
 }
 
-//è‡ªå·±æ¸…ç†çš„ç±»å‹ï¼Œç»Ÿä¸€å…³é—­åœ¨handle_close,è¿™ä¸ªåœ°æ–¹ä¸ç”¨å…³é—­
+//×Ô¼ºÇåÀíµÄÀàĞÍ£¬Í³Ò»¹Ø±ÕÔÚhandle_close,Õâ¸öµØ·½²»ÓÃ¹Ø±Õ
 Ogre_TCPAccept_Hdl::~Ogre_TCPAccept_Hdl()
 {
     peer_module_info_.close_module();
@@ -43,7 +43,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
     ZCE_LOG(RS_INFO, "Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
-    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
+    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
 
@@ -53,7 +53,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 
     ret = peer_acceptor_.open(&peer_module_info_.peer_info_.peer_socketin_);
 
-    //å¦‚æœä¸èƒ½Bindç›¸åº”çš„ç«¯å£
+    //Èç¹û²»ÄÜBindÏàÓ¦µÄ¶Ë¿Ú
     if (ret != 0)
     {
         int last_err = ZCE_LIB::last_error();
@@ -73,7 +73,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
     ZCE_LOG(RS_INFO, "Get listen peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
-    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
+    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
 
@@ -82,7 +82,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     ZCE_LOG(RS_INFO, "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
 #ifndef WIN32
-    //é¿å…DELAYå‘é€è¿™ç§æƒ…å†µ
+    //±ÜÃâDELAY·¢ËÍÕâÖÖÇé¿ö
     int NODELAY = 1;
     opvallen = sizeof(int);
     peer_acceptor_.setsockopt(SOL_TCP, TCP_NODELAY, reinterpret_cast<void *>(&NODELAY), opvallen);
@@ -102,13 +102,13 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
     int ret = 0;
     ret = peer_acceptor_.accept(sockstream, &remoteaddress);
 
-    //å¦‚æœå‡ºç°é”™è¯¯,å¦‚ä½•å¤„ç†? return -1?
+    //Èç¹û³öÏÖ´íÎó,ÈçºÎ´¦Àí? return -1?
     if (ret != 0)
     {
 
         sockstream.close();
 
-        //è®°å½•é”™è¯¯
+        //¼ÇÂ¼´íÎó
         int accept_error =  ZCE_LIB::last_error();
         ZCE_LOG(RS_ERROR, "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
                 remoteaddress.get_host_addr(),
@@ -117,20 +117,20 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
                 accept_error,
                 strerror(accept_error));
 
-        //å¦‚æœæ˜¯è¿™äº›é”™è¯¯ç»§ç»­ã€‚
+        //Èç¹ûÊÇÕâĞ©´íÎó¼ÌĞø¡£
         if ( accept_error == EWOULDBLOCK || accept_error == EINVAL
              || accept_error == ECONNABORTED || accept_error == EPROTOTYPE )
         {
             return 0;
         }
 
-        //è¿™å„¿åº”è¯¥é€€å‡ºè¿›ç¨‹
+        //Õâ¶ùÓ¦¸ÃÍË³ö½ø³Ì
         //return -1;
         return 0;
 
     }
 
-    //å¦‚æœå…è®¸çš„è¿æ¥çš„æœåŠ¡å™¨åœ°å€ä¸­é—´æ²¡æœ‰.æˆ–è€…åœ¨æ‹’ç»çš„æœåŠ¡åˆ—è¡¨ä¸­... kill
+    //Èç¹ûÔÊĞíµÄÁ¬½ÓµÄ·şÎñÆ÷µØÖ·ÖĞ¼äÃ»ÓĞ.»òÕßÔÚ¾Ü¾øµÄ·şÎñÁĞ±íÖĞ... kill
     ret =  ip_restrict_->check_ip_restrict(remoteaddress) ;
 
     if (ret != 0)
@@ -169,7 +169,7 @@ int Ogre_TCPAccept_Hdl::handle_close ()
         peer_acceptor_.close ();
     }
 
-    //åˆ é™¤è‡ªå·±
+    //É¾³ı×Ô¼º
     delete this;
 
     return 0;

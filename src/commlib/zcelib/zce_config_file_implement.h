@@ -1,4 +1,4 @@
-ï»¿
+
 #ifndef ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
 #define ZCE_LIB_CONFIG_FILE_IMPLEMENTION_H_
 
@@ -8,7 +8,7 @@
 
 
 /*!
-* @brief      INIæ–‡ä»¶çš„é…ç½®è¯»å–ï¼Œå†™å…¥å®ç°å™¨
+* @brief      INIÎÄ¼şµÄÅäÖÃ¶ÁÈ¡£¬Ğ´ÈëÊµÏÖÆ÷
 *
 * @note
 */
@@ -17,14 +17,14 @@ class ZCE_INI_Implement : public ZCE_NON_Copyable
 public:
 
 
-    //è¯»å–ï¼Œå°†ç»“æœä¿å­˜åœ¨ZCE_INI_PropertyTreeæ•°æ®ç»“æ„é‡Œé¢
+    //¶ÁÈ¡£¬½«½á¹û±£´æÔÚZCE_INI_PropertyTreeÊı¾İ½á¹¹ÀïÃæ
     static int read(const char *file_name, ZCE_Conf_PropertyTree *propertytree);
 
-    //å†™å…¥ï¼Œæš‚æ—¶æ²¡æœ‰å®ç°ï¼Œå®åœ¨æ˜¯æ¼çš„å¤ªå¤šï¼Œ10.1æœŸé—´æœ‰ç‚¹è´ªå¤šï¼Œ
+    //Ğ´Èë£¬ÔİÊ±Ã»ÓĞÊµÏÖ£¬ÊµÔÚÊÇÂ©µÄÌ«¶à£¬10.1ÆÚ¼äÓĞµãÌ°¶à£¬
     static int write(const char *file_name, const ZCE_Conf_PropertyTree *propertytree);
 
 protected:
-    //æ¯è¡Œçš„æœ€å¤§é•¿åº¦
+    //Ã¿ĞĞµÄ×î´ó³¤¶È
     static const size_t LINE_BUFFER_LEN = 8192;
 
 };
@@ -33,7 +33,7 @@ protected:
 
 
 /*!
-* @brief      XMLæ–‡ä»¶çš„é…ç½®è¯»å–ï¼Œå†™å…¥å®ç°å™¨
+* @brief      XMLÎÄ¼şµÄÅäÖÃ¶ÁÈ¡£¬Ğ´ÈëÊµÏÖÆ÷
 *
 * @note
 */
@@ -43,10 +43,10 @@ public:
     ZCE_XML_Implement();
     ~ZCE_XML_Implement();
 
-    //è¯»å–ï¼Œå°†ç»“æœä¿å­˜åœ¨ZCE_INI_PropertyTreeæ•°æ®ç»“æ„é‡Œé¢
+    //¶ÁÈ¡£¬½«½á¹û±£´æÔÚZCE_INI_PropertyTreeÊı¾İ½á¹¹ÀïÃæ
     static int read(const char *file_name, ZCE_Conf_PropertyTree *propertytree);
 
-    //å†™å…¥ï¼Œæš‚æ—¶æ²¡æœ‰å®ç°ï¼Œå®åœ¨æ˜¯æ¼çš„å¤ªå¤šï¼Œ10.1æœŸé—´æœ‰ç‚¹è´ªå¤šï¼Œ
+    //Ğ´Èë£¬ÔİÊ±Ã»ÓĞÊµÏÖ£¬ÊµÔÚÊÇÂ©µÄÌ«¶à£¬10.1ÆÚ¼äÓĞµãÌ°¶à£¬
     static int write(const char *file_name, const ZCE_Conf_PropertyTree *propertytree);
 
 protected:

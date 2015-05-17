@@ -1,17 +1,17 @@
-ï»¿/*!
+/*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_zerg_sndrcv_zulu.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Friday, September 05, 2014
-* @brief      2006å¹´9æœˆ8æ—¥,åŸä½œè€…Scottxu ï¼Œç§»æ¤,Sailzeng
+* @brief      2006Äê9ÔÂ8ÈÕ,Ô­×÷ÕßScottxu £¬ÒÆÖ²,Sailzeng
 *
 *
 * @details
 *
 *
 *
-* @note       å°†è¿™æ®µä»£ç ç§»åŠ¨åˆ°COMM,æ¨¡æ¿åŒ–
+* @note       ½«Õâ¶Î´úÂëÒÆ¶¯µ½COMM,Ä£°å»¯
 *
 */
 
@@ -28,32 +28,32 @@ class Zulu_SendRecv_Package : public Tibetan_SendRecv_Package
 
 protected:
 
-    //ZULU æ˜¯å¦é“¾æ¥
+    //ZULU ÊÇ·ñÁ´½Ó
     bool                   zulu_connected_;
 
-    //ZULUé“¾æ¥çš„IPåœ°å€
+    //ZULUÁ´½ÓµÄIPµØÖ·
     ZCE_Sockaddr_In        zulu_svc_ip_;
 
-    //ä½¿ç”¨çš„SOCKETåŒ…è£…
+    //Ê¹ÓÃµÄSOCKET°ü×°
     ZCE_Socket_Stream      zulu_stream_;
 
 public:
 
-    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
     Zulu_SendRecv_Package();
     ~Zulu_SendRecv_Package();
 
 protected:
 
-    //æ¥æ”¶ä¸€ä¸ªAPPFRAMEï¼Œæ”¾å…¥å†…éƒ¨çš„tibetan_recv_appframe_
+    //½ÓÊÕÒ»¸öAPPFRAME£¬·ÅÈëÄÚ²¿µÄtibetan_recv_appframe_
     int receive_svc_package(ZCE_Time_Value *time_wait = NULL);
 
-    //å°†å†…éƒ¨çš„tibetan_send_appframe_å‘é€å‡ºå»
+    //½«ÄÚ²¿µÄtibetan_send_appframe_·¢ËÍ³öÈ¥
     int send_svc_package(ZCE_Time_Value *time_wait = NULL);
 
 public:
 
-    //è®¾ç½®ç›¸åº”çš„SVC INFO,
+    //ÉèÖÃÏàÓ¦µÄSVC INFO,
     int set_zulu_svcinfo(const char *svc_ip,
                          unsigned short svc_port,
                          const SERVICES_ID &recv_service,
@@ -61,25 +61,25 @@ public:
                          const SERVICES_ID &proxy_service,
                          size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
 
-    //é“¾æ¥æœåŠ¡å™¨,time_waitä¸èƒ½ç”¨constæ˜¯æœ‰åŸå› çš„ï¼Œå› ä¸ºéƒ¨åˆ†selectçš„ZCE_Time_Valueæ˜¯è¿”å›å‰©ä½™æ—¶é—´çš„
+    //Á´½Ó·şÎñÆ÷,time_wait²»ÄÜÓÃconstÊÇÓĞÔ­ÒòµÄ£¬ÒòÎª²¿·ÖselectµÄZCE_Time_ValueÊÇ·µ»ØÊ£ÓàÊ±¼äµÄ
     int connect_zulu_server(ZCE_Time_Value *time_wait);
 
-    //å…³é—­å†…éƒ¨çš„è¿æ¥ã€‚
+    //¹Ø±ÕÄÚ²¿µÄÁ¬½Ó¡£
     void close();
 
-    //å–å¾—æœ¬åœ°çš„åœ°å€ä¿¡æ¯
+    //È¡µÃ±¾µØµÄµØÖ·ĞÅÏ¢
     int getsockname (ZCE_Sockaddr *addr)  const;
 
     /*!
-    * @brief      å‘é€æ•°æ®
+    * @brief      ·¢ËÍÊı¾İ
     * @tparam     T1
     * @return     int
     * @param      user_id  USER ID
-    * @param      cmd      å‘é€çš„å‘½ä»¤
-    * @param      snd_info å¤„ç†çš„å‘é€ç»“æ„
-    * @param      time_out å‘é€çš„è¶…æ—¶æ—¶é—´
-    * @param      app_id   åº”ç”¨ID
-    * @param      backfill_trans_id å›å¡«çš„äº‹ç‰©IDï¼Œé»˜è®¤ä¸º0ï¼Œè¡¨ç¤ºä¸ä¼šå¡«
+    * @param      cmd      ·¢ËÍµÄÃüÁî
+    * @param      snd_info ´¦ÀíµÄ·¢ËÍ½á¹¹
+    * @param      time_out ·¢ËÍµÄ³¬Ê±Ê±¼ä
+    * @param      app_id   Ó¦ÓÃID
+    * @param      backfill_trans_id »ØÌîµÄÊÂÎïID£¬Ä¬ÈÏÎª0£¬±íÊ¾²»»áÌî
     */
     template< class T1>
     int send_svc_package(unsigned int user_id,
@@ -90,13 +90,13 @@ public:
                          unsigned int backfill_trans_id = 0);
     
     /*!
-    * @brief      æ¥å—æ•°æ®ï¼Œé˜»å¡çš„æ¥æ”¶ä¸€ä¸ªAPPFRAMEæ•°æ®
+    * @brief      ½ÓÊÜÊı¾İ£¬×èÈûµÄ½ÓÊÕÒ»¸öAPPFRAMEÊı¾İ
     * @tparam     T2        
     * @return     int       OK
-    * @param      cmd       é¢„è®¡æ¥å—çš„çš„å‘½ä»¤å­—
-    * @param      rcv_info  æ¥æ”¶çš„ä¿¡æ¯æ•°æ®
-    * @param      error_continue å¦‚æœæ”¶åˆ°çš„æ•°æ®ä¸æ˜¯æœŸæœ›çš„ï¼Œå°±ç»§ç»­ç­‰å¾…ï¼Œç›´åˆ°ç­‰å¾…ç›¸åº”çš„å‘½ä»¤
-    * @param      time_out  è¶…æ—¶æ—¶é•¿ï¼Œå¦‚æœè¦ä¸€ç›´é˜»å¡ï¼Œå°±ç”¨NULL
+    * @param      cmd       Ô¤¼Æ½ÓÊÜµÄµÄÃüÁî×Ö
+    * @param      rcv_info  ½ÓÊÕµÄĞÅÏ¢Êı¾İ
+    * @param      error_continue Èç¹ûÊÕµ½µÄÊı¾İ²»ÊÇÆÚÍûµÄ£¬¾Í¼ÌĞøµÈ´ı£¬Ö±µ½µÈ´ıÏàÓ¦µÄÃüÁî
+    * @param      time_out  ³¬Ê±Ê±³¤£¬Èç¹ûÒªÒ»Ö±×èÈû£¬¾ÍÓÃNULL
     */
     template< class T2>
     int receive_svc_package(unsigned int cmd,
@@ -104,14 +104,14 @@ public:
                             bool error_continue = true,
                             ZCE_Time_Value *time_out = NULL);
 
-    //æ¥æ”¶ä¸€ä¸ªæ•°æ®åŒ…ï¼Œå¾—åˆ°å‘½ä»¤å­—ï¼Œä½ å¯ä»¥è°ƒç”¨get_recv_appframeè¿›è¡Œåç»­çš„å¤„ç†ï¼Œ
+    //½ÓÊÕÒ»¸öÊı¾İ°ü£¬µÃµ½ÃüÁî×Ö£¬Äã¿ÉÒÔµ÷ÓÃget_recv_appframe½øĞĞºóĞøµÄ´¦Àí£¬
     int receive_svc_package(unsigned int &recv_cmd,
                             ZCE_Time_Value *time_out = NULL);
 
 
     /*!
-    * @brief      å‘é€å’Œæ¥æ”¶æ•°æ®ï¼Œä¼šæå‰è¿›è¡Œè¿æ¥çš„ã€‚
-    * @note       å‚æ•°è¯·å‚è€ƒsend_svc_package,receive_svc_package
+    * @brief      ·¢ËÍºÍ½ÓÊÕÊı¾İ£¬»áÌáÇ°½øĞĞÁ¬½ÓµÄ¡£
+    * @note       ²ÎÊıÇë²Î¿¼send_svc_package,receive_svc_package
     */
     template< class T1, class T2>
     int send_recv_package(unsigned int snd_cmd,
@@ -126,7 +126,7 @@ public:
 
 };
 
-//é˜»å¡çš„æ¥æ”¶ä¸€ä¸ªAPPFRAMEæ•°æ®
+//×èÈûµÄ½ÓÊÕÒ»¸öAPPFRAMEÊı¾İ
 template<class T2>
 int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
                                                T2 &info ,
@@ -135,7 +135,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
 {
     int ret = 0;
 
-    //ç”¨æ­»å¾ªç¯ä¿è¯é”™è¯¯ç»§ç»­å¤„ç†å’Œèµ„æºç»Ÿä¸€é‡Šæ”¾
+    //ÓÃËÀÑ­»·±£Ö¤´íÎó¼ÌĞø´¦ÀíºÍ×ÊÔ´Í³Ò»ÊÍ·Å
     for (;;)
     {
         ret = receive_svc_package(time_wait);
@@ -145,10 +145,10 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
             break;
         }
 
-        //å¦‚æœæ”¶åˆ°çš„æ•°æ®å¸§ä¸æ˜¯ä¿ºæœŸå¾…çš„
+        //Èç¹ûÊÕµ½µÄÊı¾İÖ¡²»ÊÇ°³ÆÚ´ıµÄ
         if (cmd != tibetan_recv_appframe_->frame_command_ )
         {
-            //å¦‚æœå‘ç”Ÿé”™è¯¯,ç»§ç»­å¤„ç†,åˆ™ç»§ç»­æ¥å—
+            //Èç¹û·¢Éú´íÎó,¼ÌĞø´¦Àí,Ôò¼ÌĞø½ÓÊÜ
             if (error_continue )
             {
                 continue;
@@ -164,7 +164,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
         }
         else
         {
-            //å¦‚æœè¿˜æœ‰dataçš„æ•°æ®ï¼Œè¿›è¡Œè§£ç 
+            //Èç¹û»¹ÓĞdataµÄÊı¾İ£¬½øĞĞ½âÂë
             if (tibetan_recv_appframe_->frame_length_ > Zerg_App_Frame::LEN_OF_APPFRAME_HEAD )
             {
                 ret = tibetan_recv_appframe_->appdata_decode(info);
@@ -176,11 +176,11 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
             }
         }
 
-        //è·³å‡ºå¾ªç¯
+        //Ìø³öÑ­»·
         break;
     }
 
-    //æ¥æ”¶æœ‰é”™è¯¯ï¼Œè¿›è¡Œç‰¹æ®Šå¤„ç†
+    //½ÓÊÕÓĞ´íÎó£¬½øĞĞÌØÊâ´¦Àí
     if (ret != 0)
     {
         zulu_stream_.close();
@@ -191,7 +191,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
     return 0;
 }
 
-//å‘é€ä¸€ä¸ªæ•°æ®åŒ…
+//·¢ËÍÒ»¸öÊı¾İ°ü
 template< class T1>
 int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
                                             unsigned int cmd,
@@ -202,7 +202,7 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
 {
     int ret = 0;
 
-    //åœ¨æ²¡æœ‰é“¾æ¥çš„æƒ…å†µä¸‹é“¾æ¥æœåŠ¡å™¨
+    //ÔÚÃ»ÓĞÁ´½ÓµÄÇé¿öÏÂÁ´½Ó·şÎñÆ÷
     if ( false == zulu_connected_ )
     {
         ret = connect_zulu_server(time_wait);
@@ -218,7 +218,7 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
     tibetan_send_appframe_->app_id_ = app_id;
     tibetan_send_appframe_->frame_uid_ = user_id;
 
-    //ç¼–ç 
+    //±àÂë
     ret = tibetan_send_appframe_->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
@@ -238,7 +238,7 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
     return 0;
 }
 
-//å‘é€ä¸€ä¸ªæ•°æ®åŒ…ï¼Œå¹¶ä¸”æ¥æ”¶ä¸€ä¸ªæ•°æ®åŒ…
+//·¢ËÍÒ»¸öÊı¾İ°ü£¬²¢ÇÒ½ÓÊÕÒ»¸öÊı¾İ°ü
 template< class T1, class T2>
 int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
                                              unsigned int user_id,
@@ -252,7 +252,7 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
 {
     int ret = 0;
 
-    //å‘é€æ•°æ®
+    //·¢ËÍÊı¾İ
     ret = send_svc_package(user_id,
                            snd_cmd,
                            send_info,
@@ -265,7 +265,7 @@ int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
         return ret;
     }
 
-    //æ”¶å–æ•°æ®ï¼Œ
+    //ÊÕÈ¡Êı¾İ£¬
     ret = receive_svc_package(rcv_cmd,
                               recv_info,
                               error_continue,
