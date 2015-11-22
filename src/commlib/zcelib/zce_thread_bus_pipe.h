@@ -5,7 +5,7 @@
 //2012年9月18日晚上，中国人民抗日81周年纪念日，81年来，我们哪一天不在抗“日”
 
 #include "zce_boost_non_copyable.h"
-#include "zce_lockfree_kfifo.h"
+#include "zce_shm_lockfree_deque.h"
 #include "zce_os_adapt_file.h"
 #include "zce_os_adapt_error.h"
 #include "zce_share_mem_mmap.h"
