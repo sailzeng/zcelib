@@ -13,7 +13,7 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
-    test_container_performance(argc, argv);
+    test_bytes_data_represent(argc, argv);
   
     //system("pause");
 

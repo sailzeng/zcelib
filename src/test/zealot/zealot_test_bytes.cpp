@@ -1136,22 +1136,27 @@ struct DR_DATA_2
 
     unsigned int d_num_ = 0;
     unsigned short d_ary_[ARY_SIZE];
+
+
+    std::vector<int> e_vector_;
 };
 
-ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode, const DR_DATA_2 &val)
+void save_data2(ZCE_Serialized_Save &dr_encode, const DR_DATA_2 &val)
 {
-    dr_encode.write(val.a1_);
-    dr_encode.write(val.b1_);
-    dr_encode.write(val.b2_);
+    dr_encode.save(val.a1_);
+    dr_encode.save(val.b1_);
+    dr_encode.save(val.b2_);
 
     dr_encode.save_array(val.c1_, DR_DATA_2::ARY_SIZE);
     dr_encode.save_array(val.c2_, DR_DATA_2::ARY_SIZE);
     dr_encode.save_array(val.c3_, DR_DATA_2::ARY_SIZE);
 
-    dr_encode.write(val.d_num_);
+    dr_encode.save(val.d_num_);
     dr_encode.save_array(val.d_ary_, val.d_num_);
 
-    return dr_encode;
+    dr_encode.save(val.e_vector_);
+
+    return;
 }
 
 ZCE_Serialized_Load& operator >>(ZCE_Serialized_Load &dr_decode, DR_DATA_2 *val)
@@ -1190,6 +1195,9 @@ int test_bytes_data_represent(int /*argc*/ , char * /*argv */ [])
 
     ZCE_Serialized_Load dr_decode(buffer_1, BUFFER_LEN_1);
     dr_decode >> &data_1.a1_ >> &data_1.b1_ >> &data_1.b2_;
+
+    DR_DATA_2 data_2;
+    save_data2(dr_encode,data_2);
 
     return 0;
 }

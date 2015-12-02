@@ -339,35 +339,13 @@ bool ZCE_Serialized_Save::save(unsigned short val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Save::save(int val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(int);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    ZBEUINT32_TO_BYTE(write_pos_, val);
-    write_pos_ += SIZE_OF_VALUE;
+//template<>
+//bool ZCE_Serialized_Save::save(int val)
 
-    return is_good_;
-}
 
-template<>
-bool ZCE_Serialized_Save::save(unsigned int val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    ZBEUINT32_TO_BYTE(write_pos_, val);
-    write_pos_ += SIZE_OF_VALUE;
+//template<>
+//bool ZCE_Serialized_Save::save(unsigned int val)
 
-    return is_good_;
-}
 
 template<>
 bool ZCE_Serialized_Save::save(int64_t val)
@@ -403,36 +381,6 @@ template<>
 bool ZCE_Serialized_Save::save(bool val)
 {
     return this->save<char>(val ? (char)1 : (char)0);
-}
-
-template<>
-bool ZCE_Serialized_Save::save(float val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(float);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    ZFLOAT_TO_BYTE(write_pos_, val);
-    write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save(double val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(double);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    ZDOUBLE_TO_BYTE(write_pos_, val);
-    write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
 }
 
 template<>

@@ -140,15 +140,84 @@ public:
     ///重置
     void reset();
 
+
+
     ///写入一个数据,只有特化处理函数，
     template<typename val_type>
-    bool save(const val_type val);
+    bool save(const val_type /*val*/)
+    {
+        return false;
+    }
 
+    ///写入一个vector,注意，只支持到32位的个数的vector
+    template<typename  vector_type>
+    bool save(std::vector<vector_type> &val)
+    {
+        size_t v_size = vector_data.size();
+        this->save<unsigned int>(v_size);
+        for (size_t i = 0; i < v_size; ++i)
+        {
+            this->save<vector_type>(vector_data[i]);
+        }
+        if (false == is_good_)
+        {
+            return false;
+        }
+        return true;
+    }
 
-    template<typename  ary_type>
-    bool save(std::vector<ary_type> &val);
+    template<> bool save(int val)
+    {
+        const size_t SIZE_OF_VALUE = sizeof(int);
+        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+        {
+            is_good_ = false;
+            return is_good_;
+        }
+        ZBEUINT32_TO_BYTE(write_pos_, val);
+        write_pos_ += SIZE_OF_VALUE;
 
+        return is_good_;
+    }
+    template<> bool save(unsigned int val)
+    {
+        const size_t SIZE_OF_VALUE = sizeof(unsigned int);
+        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+        {
+            is_good_ = false;
+            return is_good_;
+        }
+        ZBEUINT32_TO_BYTE(write_pos_, val);
+        write_pos_ += SIZE_OF_VALUE;
 
+        return is_good_;
+    }
+    template<> bool save(float val)
+    {
+        const size_t SIZE_OF_VALUE = sizeof(float);
+        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+        {
+            is_good_ = false;
+            return is_good_;
+        }
+        ZFLOAT_TO_BYTE(write_pos_, val);
+        write_pos_ += SIZE_OF_VALUE;
+
+        return is_good_;
+    }
+    template<> bool save(double val)
+    {
+        const size_t SIZE_OF_VALUE = sizeof(double);
+        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+        {
+            is_good_ = false;
+            return is_good_;
+        }
+        ZDOUBLE_TO_BYTE(write_pos_, val);
+        write_pos_ += SIZE_OF_VALUE;
+
+        return is_good_;
+    }
 
     ///使用<<操作符号写入数据，主要是便于外部数据统一使用<<操作符.外部可以用这样的函数
     ///ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
@@ -160,7 +229,7 @@ public:
     template<typename ary_type>
     bool save_array(const ary_type *ary, size_t ary_size);
 
-    ///写入一个vector,注意，只支持到32位的个数的vector
+    
     template<typename vector_type>
     bool save_vector(const std::vector<vector_type> &vector_data);
 
@@ -191,6 +260,7 @@ inline void ZCE_Serialized_Save::set_bad()
 {
     is_good_ = false;
 }
+
 
 template<typename vector_type>
 bool ZCE_Serialized_Save::save_vector(const std::vector<vector_type> &vector_data)
