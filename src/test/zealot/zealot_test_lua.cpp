@@ -279,6 +279,13 @@ int test_lua_script5(int, char *[])
     map_a[30.4] = std::string("Miaomiao");
     lua_tie.to_luatable("map_a", map_a.begin(), map_a.end());
 
+
+    /*std::list<int> list_a;
+    list_a.push_back(1);
+    list_a.push_back(2);
+    list_a.push_back(3);
+    lua_tie.to_luatable("list_a", list_a.begin(), list_a.end());*/
+
     std::map<const char *, std::string> map_b;
     const char *KEY_1 = "B_KEY_1";
     const char *KEY_2 = "B_KEY_2";

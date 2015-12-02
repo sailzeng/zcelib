@@ -120,14 +120,14 @@ int base16_decode(const unsigned char *in,
 * @note       没有考虑对齐等问题，
 *             BTW：对于写入，我们不在溢出保护上做过多努力，那是你负责的事情
 */
-class ZCE_DR_Encode
+class ZCE_Serialized_Save  
 {
 public:
 
     ///构造函数
-    ZCE_DR_Encode(char *write_buf, size_t buf_len);
+    ZCE_Serialized_Save(char *write_buf, size_t buf_len);
 
-    ~ZCE_DR_Encode();
+    ~ZCE_Serialized_Save();
 
 public:
 
@@ -142,21 +142,27 @@ public:
 
     ///写入一个数据,只有特化处理函数，
     template<typename val_type>
-    bool write(val_type val);
+    bool save(const val_type val);
+
+
+    template<typename  ary_type>
+    bool save(std::vector<ary_type> &val);
+
+
 
     ///使用<<操作符号写入数据，主要是便于外部数据统一使用<<操作符.外部可以用这样的函数
-    ///ZCE_DR_Encode& operator <<(ZCE_DR_Encode &dr_encode,const val_type &val);
-    ///bool operator <<(ZCE_DR_Encode &dr_encode,const val_type &val);
+    ///ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
+    ///bool operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
     template<typename val_type>
-    ZCE_DR_Encode &operator <<(val_type val);
+    ZCE_Serialized_Save &operator <<(val_type val);
 
     ///写入一个数组
     template<typename ary_type>
-    bool write_array(const ary_type *ary, size_t ary_size);
+    bool save_array(const ary_type *ary, size_t ary_size);
 
-    ///写入一个vector
+    ///写入一个vector,注意，只支持到32位的个数的vector
     template<typename vector_type>
-    bool write_vector(const std::vector<vector_type> &vector_data);
+    bool save_vector(const std::vector<vector_type> &vector_data);
 
 protected:
 
@@ -176,24 +182,24 @@ protected:
 
 
 //返回当前类是否正常，
-inline bool ZCE_DR_Encode::is_good()
+inline bool ZCE_Serialized_Save::is_good()
 {
     return is_good_;
 }
 
-inline void ZCE_DR_Encode::set_bad()
+inline void ZCE_Serialized_Save::set_bad()
 {
     is_good_ = false;
 }
 
 template<typename vector_type>
-bool ZCE_DR_Encode::write_vector(const std::vector<vector_type> &vector_data)
+bool ZCE_Serialized_Save::save_vector(const std::vector<vector_type> &vector_data)
 {
     size_t v_size = vector_data.size();
-    this->write<unsigned int>(v_size);
+    this->save<unsigned int>(v_size);
     for (size_t i = 0; i < v_size; ++i)
     {
-        this->write<vector_type>(vector_data[i]);
+        this->save<vector_type>(vector_data[i]);
     }
     if (false == is_good_)
     {
@@ -204,9 +210,9 @@ bool ZCE_DR_Encode::write_vector(const std::vector<vector_type> &vector_data)
 
 //
 template<typename val_type>
-ZCE_DR_Encode &ZCE_DR_Encode::operator << (val_type val)
+ZCE_Serialized_Save &ZCE_Serialized_Save::operator << (val_type val)
 {
-    this->write<val_type>(val);
+    this->save<val_type>(val);
     return *this;
 }
 
@@ -216,7 +222,7 @@ ZCE_DR_Encode &ZCE_DR_Encode::operator << (val_type val)
 *
 * @note       读取对于边界有有一些安全处理，避免输入数据就有问题的情况
 */
-class ZCE_DR_Decode
+class ZCE_Serialized_Load
 {
 public:
 
@@ -226,10 +232,10 @@ public:
     * @param      read_buf 输入的数据，不会对数据进行改动
     * @param      buf_len  数据的长度
     */
-    ZCE_DR_Decode(const char *read_buf, size_t buf_len);
+    ZCE_Serialized_Load(const char *read_buf, size_t buf_len);
 
     ///析构函数
-    ~ZCE_DR_Decode();
+    ~ZCE_Serialized_Load();
 
 public:
     ///返回当前类是否正常，BTW：我们不在溢出保护上做努力，那是你负责的事情
@@ -246,15 +252,15 @@ public:
     bool read(val_type *val);
 
     ///使用>>操作符号写入数据，主要是便于外部数据统一使用<<操作符,外部可以用这样的函数
-    ///ZCE_DR_Decode& operator >>(ZCE_DR_Decode &dr_encode,val_type *val);
-    ///bool operator >>(ZCE_DR_Decode &dr_encode,val_type *val);
+    ///ZCE_Serialized_Load& operator >>(ZCE_Serialized_Load &dr_encode,val_type *val);
+    ///bool operator >>(ZCE_Serialized_Load &dr_encode,val_type *val);
     template<typename val_type>
-    ZCE_DR_Decode &operator >>(val_type *val);
+    ZCE_Serialized_Load &operator >>(val_type *val);
 
     /*!
     * @brief      读取一个数组
     * @tparam        ary_type 数组数据类型
-    * @return        ZCE_DR_Encode& 返回自己的引用
+    * @return        ZCE_Serialized_Save& 返回自己的引用
     * @param[out]    ary       数组类型
     * @param[in,out] ary_size  数组长度,输入输出参数，输入表示ary的长度，输出表示实际读取的长度
     */
@@ -265,7 +271,7 @@ public:
     /*!
     * @brief      读出一个vector
     * @tparam     vector_type vector数据类型
-    * @return     ZCE_DR_Decode& 返回自己的引用
+    * @return     ZCE_Serialized_Load& 返回自己的引用
     * @param[out]    vector_data  读取返回的vector
     * @param[in,out] ary_size     输入表示预期的最大vector size，输出表示实际尺寸
     */
@@ -289,18 +295,18 @@ protected:
 
 };
 
-inline bool ZCE_DR_Decode::is_good()
+inline bool ZCE_Serialized_Load::is_good()
 {
     return is_good_;
 }
 
-inline void ZCE_DR_Decode::set_bad()
+inline void ZCE_Serialized_Load::set_bad()
 {
     is_good_ = false;
 }
 
 template<typename vector_type>
-bool ZCE_DR_Decode::read_vector(std::vector<vector_type> *vector_data, size_t *vector_size)
+bool ZCE_Serialized_Load::read_vector(std::vector<vector_type> *vector_data, size_t *vector_size)
 {
     unsigned int read_ary_size = 0;
     if (!this->read<unsigned int>(&read_ary_size))
@@ -330,7 +336,7 @@ bool ZCE_DR_Decode::read_vector(std::vector<vector_type> *vector_data, size_t *v
 
 
 template<typename val_type>
-ZCE_DR_Decode &ZCE_DR_Decode::operator >> (val_type *val)
+ZCE_Serialized_Load &ZCE_Serialized_Load::operator >> (val_type *val)
 {
     this->read<val_type>(val);
     return *this;

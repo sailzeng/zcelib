@@ -11,7 +11,7 @@ static size_t zoomin_nodenum(size_t node_num)
 {
     size_t zoomin_num = 0;
     //根据输入的数据，做适当的放大，再进行处理
-    //如果大于10亿，增加1亿，再开始计算最靠近的质数
+    //如果大于10亿，增加1亿，其他以此类推,再开始计算最靠近的质数
     if (node_num > 1000000000ul)
     {
         zoomin_num = node_num + 100000000ul;

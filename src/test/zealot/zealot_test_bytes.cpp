@@ -1138,23 +1138,23 @@ struct DR_DATA_2
     unsigned short d_ary_[ARY_SIZE];
 };
 
-ZCE_DR_Encode& operator <<(ZCE_DR_Encode &dr_encode, const DR_DATA_2 &val)
+ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode, const DR_DATA_2 &val)
 {
     dr_encode.write(val.a1_);
     dr_encode.write(val.b1_);
     dr_encode.write(val.b2_);
 
-    dr_encode.write_array(val.c1_, DR_DATA_2::ARY_SIZE);
-    dr_encode.write_array(val.c2_, DR_DATA_2::ARY_SIZE);
-    dr_encode.write_array(val.c3_, DR_DATA_2::ARY_SIZE);
+    dr_encode.save_array(val.c1_, DR_DATA_2::ARY_SIZE);
+    dr_encode.save_array(val.c2_, DR_DATA_2::ARY_SIZE);
+    dr_encode.save_array(val.c3_, DR_DATA_2::ARY_SIZE);
 
     dr_encode.write(val.d_num_);
-    dr_encode.write_array(val.d_ary_, val.d_num_);
+    dr_encode.save_array(val.d_ary_, val.d_num_);
 
     return dr_encode;
 }
 
-ZCE_DR_Decode& operator >>(ZCE_DR_Decode &dr_decode, DR_DATA_2 *val)
+ZCE_Serialized_Load& operator >>(ZCE_Serialized_Load &dr_decode, DR_DATA_2 *val)
 {
     dr_decode.read(&val->a1_);
     dr_decode.read(&val->b1_);
@@ -1182,13 +1182,13 @@ int test_bytes_data_represent(int /*argc*/ , char * /*argv */ [])
     const size_t BUFFER_LEN_1 = 10 * 1024;
     char buffer_1[BUFFER_LEN_1];
 
-    ZCE_DR_Encode dr_encode(buffer_1, BUFFER_LEN_1);
+    ZCE_Serialized_Save dr_encode(buffer_1, BUFFER_LEN_1);
 
     DR_DATA_1 data_1;
     dr_encode << data_1.a1_ << data_1.b1_ << data_1.b2_;
 
 
-    ZCE_DR_Decode dr_decode(buffer_1, BUFFER_LEN_1);
+    ZCE_Serialized_Load dr_decode(buffer_1, BUFFER_LEN_1);
     dr_decode >> &data_1.a1_ >> &data_1.b1_ >> &data_1.b2_;
 
     return 0;

@@ -258,7 +258,7 @@ int ZCE_LIB::base16_decode(const unsigned char *in,
 //========================================================================================
 
 ///构造函数
-ZCE_DR_Encode::ZCE_DR_Encode(char *write_buf, size_t buf_len) :
+ZCE_Serialized_Save::ZCE_Serialized_Save(char *write_buf, size_t buf_len) :
     is_good_(true),
     write_buf_(write_buf),
     buf_len_(buf_len),
@@ -267,12 +267,12 @@ ZCE_DR_Encode::ZCE_DR_Encode(char *write_buf, size_t buf_len) :
 {
 }
 
-ZCE_DR_Encode::~ZCE_DR_Encode()
+ZCE_Serialized_Save::~ZCE_Serialized_Save()
 {
 }
 
 //重置开始位置和good标志位
-void ZCE_DR_Encode::reset()
+void ZCE_Serialized_Save::reset()
 {
     write_pos_ = write_buf_;
     is_good_ = true;
@@ -280,7 +280,7 @@ void ZCE_DR_Encode::reset()
 
 
 template<>
-bool ZCE_DR_Encode::write(char val)
+bool ZCE_Serialized_Save::save(char val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -296,7 +296,7 @@ bool ZCE_DR_Encode::write(char val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(unsigned char val)
+bool ZCE_Serialized_Save::save(unsigned char val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -310,7 +310,7 @@ bool ZCE_DR_Encode::write(unsigned char val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(short val)
+bool ZCE_Serialized_Save::save(short val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -325,7 +325,7 @@ bool ZCE_DR_Encode::write(short val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(unsigned short val)
+bool ZCE_Serialized_Save::save(unsigned short val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -340,7 +340,7 @@ bool ZCE_DR_Encode::write(unsigned short val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(int val)
+bool ZCE_Serialized_Save::save(int val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -355,7 +355,7 @@ bool ZCE_DR_Encode::write(int val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(unsigned int val)
+bool ZCE_Serialized_Save::save(unsigned int val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -370,7 +370,7 @@ bool ZCE_DR_Encode::write(unsigned int val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(int64_t val)
+bool ZCE_Serialized_Save::save(int64_t val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int64_t);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -385,7 +385,7 @@ bool ZCE_DR_Encode::write(int64_t val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(uint64_t val)
+bool ZCE_Serialized_Save::save(uint64_t val)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -400,13 +400,13 @@ bool ZCE_DR_Encode::write(uint64_t val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(bool val)
+bool ZCE_Serialized_Save::save(bool val)
 {
-    return this->write<char>(val ? (char)1 : (char)0);
+    return this->save<char>(val ? (char)1 : (char)0);
 }
 
 template<>
-bool ZCE_DR_Encode::write(float val)
+bool ZCE_Serialized_Save::save(float val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -421,7 +421,7 @@ bool ZCE_DR_Encode::write(float val)
 }
 
 template<>
-bool ZCE_DR_Encode::write(double val)
+bool ZCE_Serialized_Save::save(double val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -436,9 +436,9 @@ bool ZCE_DR_Encode::write(double val)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const char *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const char *ary, size_t ary_size)
 {
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size > end_pos_)
     {
         is_good_ = false;
@@ -450,9 +450,9 @@ bool ZCE_DR_Encode::write_array(const char *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const unsigned char *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const unsigned char *ary, size_t ary_size)
 {
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size > end_pos_)
     {
         is_good_ = false;
@@ -465,10 +465,10 @@ bool ZCE_DR_Encode::write_array(const unsigned char *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const short *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const short *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
@@ -484,10 +484,10 @@ bool ZCE_DR_Encode::write_array(const short *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const unsigned short *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const unsigned short *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -503,10 +503,10 @@ bool ZCE_DR_Encode::write_array(const unsigned short *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const int *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const int *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -521,10 +521,10 @@ bool ZCE_DR_Encode::write_array(const int *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const unsigned int *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const unsigned int *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -540,10 +540,10 @@ bool ZCE_DR_Encode::write_array(const unsigned int *ary, size_t ary_size)
 }
 
 template<>
-bool  ZCE_DR_Encode::write_array(const int64_t *ary, size_t ary_size)
+bool  ZCE_Serialized_Save::save_array(const int64_t *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(int64_t);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -558,10 +558,10 @@ bool  ZCE_DR_Encode::write_array(const int64_t *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const uint64_t *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const uint64_t *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -577,10 +577,10 @@ bool ZCE_DR_Encode::write_array(const uint64_t *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const float *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const float *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -595,10 +595,10 @@ bool ZCE_DR_Encode::write_array(const float *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const double *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const double *ary, size_t ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
     {
         is_good_ = false;
@@ -614,9 +614,9 @@ bool ZCE_DR_Encode::write_array(const double *ary, size_t ary_size)
 }
 
 template<>
-bool ZCE_DR_Encode::write_array(const bool *ary, size_t ary_size)
+bool ZCE_Serialized_Save::save_array(const bool *ary, size_t ary_size)
 {
-    this->write<unsigned int>(static_cast<unsigned int>(ary_size));
+    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
     if (write_pos_ + ary_size > end_pos_)
     {
         is_good_ = false;
@@ -632,21 +632,21 @@ bool ZCE_DR_Encode::write_array(const bool *ary, size_t ary_size)
 
 //这下面两个函数用了write_array函数，所以必须放在他们下面
 template<>
-bool ZCE_DR_Encode::write(const char *val)
+bool ZCE_Serialized_Save::save(const char *val)
 {
-    return this->write_array<char>(val, strlen(val));
+    return this->save_array<char>(val, strlen(val));
 }
 
 template<>
-bool ZCE_DR_Encode::write(const std::string &val)
+bool ZCE_Serialized_Save::save(const std::string &val)
 {
-    return this->write_array<char>(val.c_str(), val.length());
+    return this->save_array<char>(val.c_str(), val.length());
 }
 
 //========================================================================================
 
 //构造函数
-ZCE_DR_Decode::ZCE_DR_Decode(const char *read_buf, size_t buf_len) :
+ZCE_Serialized_Load::ZCE_Serialized_Load(const char *read_buf, size_t buf_len) :
     is_good_(true),
     read_buf_(read_buf),
     buf_len_(buf_len),
@@ -655,12 +655,12 @@ ZCE_DR_Decode::ZCE_DR_Decode(const char *read_buf, size_t buf_len) :
 {
 }
 
-ZCE_DR_Decode::~ZCE_DR_Decode()
+ZCE_Serialized_Load::~ZCE_Serialized_Load()
 {
 }
 
 //重置开始位置和good标志位
-void ZCE_DR_Decode::reset()
+void ZCE_Serialized_Load::reset()
 {
     read_pos_ = read_buf_;
     is_good_ = true;
@@ -668,7 +668,7 @@ void ZCE_DR_Decode::reset()
 
 
 template<>
-bool ZCE_DR_Decode::read(char *val)
+bool ZCE_Serialized_Load::read(char *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -683,7 +683,7 @@ bool ZCE_DR_Decode::read(char *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(short *val)
+bool ZCE_Serialized_Load::read(short *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -698,7 +698,7 @@ bool ZCE_DR_Decode::read(short *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(int *val)
+bool ZCE_Serialized_Load::read(int *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -713,7 +713,7 @@ bool ZCE_DR_Decode::read(int *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(unsigned char *val)
+bool ZCE_Serialized_Load::read(unsigned char *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -728,7 +728,7 @@ bool ZCE_DR_Decode::read(unsigned char *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(unsigned short *val)
+bool ZCE_Serialized_Load::read(unsigned short *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -743,7 +743,7 @@ bool ZCE_DR_Decode::read(unsigned short *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(unsigned int *val)
+bool ZCE_Serialized_Load::read(unsigned int *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -758,7 +758,7 @@ bool ZCE_DR_Decode::read(unsigned int *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(float *val)
+bool ZCE_Serialized_Load::read(float *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -773,7 +773,7 @@ bool ZCE_DR_Decode::read(float *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(double *val)
+bool ZCE_Serialized_Load::read(double *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -788,7 +788,7 @@ bool ZCE_DR_Decode::read(double *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read(bool *val)
+bool ZCE_Serialized_Load::read(bool *val)
 {
     char bool_data = 0;
     read<char>(&bool_data);
@@ -797,7 +797,7 @@ bool ZCE_DR_Decode::read(bool *val)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(char *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(char *ary, size_t *ary_size)
 {
     unsigned int read_arysize = 0;
     this->read<unsigned int>(&read_arysize);
@@ -813,7 +813,7 @@ bool ZCE_DR_Decode::read_array(char *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(unsigned char *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(unsigned char *ary, size_t *ary_size)
 {
     unsigned int read_arysize = 0;
     this->read<unsigned int>(&read_arysize);
@@ -829,7 +829,7 @@ bool ZCE_DR_Decode::read_array(unsigned char *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(short *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(short *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     unsigned int read_arysize = 0;
@@ -849,7 +849,7 @@ bool ZCE_DR_Decode::read_array(short *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(unsigned short *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(unsigned short *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     unsigned int read_arysize = 0;
@@ -869,7 +869,7 @@ bool ZCE_DR_Decode::read_array(unsigned short *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(int *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(int *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
     unsigned int read_arysize = 0;
@@ -889,7 +889,7 @@ bool ZCE_DR_Decode::read_array(int *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(unsigned int *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(unsigned int *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
     unsigned int read_arysize = 0;
@@ -909,7 +909,7 @@ bool ZCE_DR_Decode::read_array(unsigned int *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(int64_t *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(int64_t *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(int64_t);
     unsigned int read_arysize = 0;
@@ -929,7 +929,7 @@ bool ZCE_DR_Decode::read_array(int64_t *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(uint64_t *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(uint64_t *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
     unsigned int read_arysize = 0;
@@ -949,7 +949,7 @@ bool ZCE_DR_Decode::read_array(uint64_t *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(bool *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(bool *ary, size_t *ary_size)
 {
     unsigned int read_arysize = 0;
     this->read<unsigned int>(&read_arysize);
@@ -969,7 +969,7 @@ bool ZCE_DR_Decode::read_array(bool *ary, size_t *ary_size)
 
 
 template<>
-bool ZCE_DR_Decode::read_array(float *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(float *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
     unsigned int read_arysize = 0;
@@ -989,7 +989,7 @@ bool ZCE_DR_Decode::read_array(float *ary, size_t *ary_size)
 }
 
 template<>
-bool ZCE_DR_Decode::read_array(double *ary, size_t *ary_size)
+bool ZCE_Serialized_Load::read_array(double *ary, size_t *ary_size)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
     unsigned int read_arysize = 0;
