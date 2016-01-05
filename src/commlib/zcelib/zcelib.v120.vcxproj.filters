@@ -400,6 +400,9 @@
     <ClInclude Include="zce_serialization.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_bytes_serialization.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -703,6 +706,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_serialization.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_bytes_serialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
