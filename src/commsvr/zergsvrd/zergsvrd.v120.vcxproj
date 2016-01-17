@@ -131,7 +131,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;$(SolutionDir)../external/include/rapidxml;$(SolutionDir)../external/include/;$(SolutionDir)../external/include/google/protobuf;$(SolutionDir)../external/include/sqlite;$(SolutionDir)../external/include/mysqlclient;$(SolutionDir)../external/include/lua</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
       <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
@@ -151,8 +151,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
-      <TreatWarningAsError>true</TreatWarningAsError>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;$(SolutionDir)../external/include/rapidxml;$(SolutionDir)../external/include/;$(SolutionDir)../external/include/google/protobuf;$(SolutionDir)../external/include/sqlite;$(SolutionDir)../external/include/mysql;$(SolutionDir)../external/include/lua</AdditionalIncludeDirectories>
+      <TreatWarningAsError>false</TreatWarningAsError>
       <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
     </ClCompile>
     <Link>
@@ -160,7 +160,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/;$(SolutionDir)../external/lib/$(PlatformName)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

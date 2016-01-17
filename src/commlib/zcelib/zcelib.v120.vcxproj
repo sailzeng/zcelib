@@ -107,6 +107,7 @@
       <AssemblerOutput>NoListing</AssemblerOutput>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>../../../include/rapidxml;../../../include/;../../../include/google/protobuf;../../../include/sqlite;../../../include/mysqlclient;../../../include/lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -125,6 +126,7 @@
       <AssemblerOutput>NoListing</AssemblerOutput>
       <MultiProcessorCompilation>false</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
+      <AdditionalIncludeDirectories>../../../include/rapidxml;../../../include/google/protobuf;../../../include/sqlite;../../../include/mysqlclient;../../../include/lua;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -142,6 +144,8 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <PrecompiledHeaderFile>zce_predefine.h</PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;$(SolutionDir)../external/include/rapidxml;$(SolutionDir)../external/include/;$(SolutionDir)../external/include/google/protobuf;$(SolutionDir)../external/include/sqlite;$(SolutionDir)../external/include/mysqlclient;$(SolutionDir)../external/include/lua</AdditionalIncludeDirectories>
+      <MultiProcessorCompilation> </MultiProcessorCompilation>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -161,7 +165,9 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <PrecompiledHeaderFile>zce_predefine.h</PrecompiledHeaderFile>
       <ProgramDataBaseFileName>$(OutDir)$(TargetName).pdb</ProgramDataBaseFileName>
-      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <MultiProcessorCompilation> </MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;$(SolutionDir)../external/include/rapidxml;$(SolutionDir)../external/include/;$(SolutionDir)../external/include/google/protobuf;$(SolutionDir)../external/include/sqlite;$(SolutionDir)../external/include/mysql;$(SolutionDir)../external/include/lua</AdditionalIncludeDirectories>
+      <AdditionalUsingDirectories> </AdditionalUsingDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
