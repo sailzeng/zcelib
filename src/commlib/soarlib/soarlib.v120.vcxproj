@@ -129,7 +129,7 @@
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib;$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;$(SolutionDir)../external/include/rapidxml;$(SolutionDir)../external/include/;$(SolutionDir)../external/include/google/protobuf;$(SolutionDir)../external/include/sqlite;$(SolutionDir)../external/include/mysqlclient;$(SolutionDir)../external/include/lua</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN32;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -150,7 +150,7 @@
       <TargetEnvironment>X64</TargetEnvironment>
     </Midl>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)..\zcelib;$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib;$(SolutionDir)../external/include/rapidxml;$(SolutionDir)../external/include/;$(SolutionDir)../external/include/google/protobuf;$(SolutionDir)../external/include/sqlite;$(SolutionDir)../external/include/mysql;$(SolutionDir)../external/include/lua</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>WIN64;NDEBUG;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
