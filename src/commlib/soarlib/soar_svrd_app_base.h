@@ -16,14 +16,14 @@ class Server_Timer_Base;
 *
 * @note
 */
-class Soar_Svrd_Appliction : public ZCE_Server_Base
+class Soar_Svrd_Application : public ZCE_Server_Base
 {
 protected:
 
     ///构造函数和析构函数
-    Soar_Svrd_Appliction();
+    Soar_Svrd_Application();
     ///析构函数
-    virtual ~Soar_Svrd_Appliction();
+    virtual ~Soar_Svrd_Application();
 
 public:
 
@@ -75,10 +75,10 @@ protected:
 public:
 
     ///注册实例指针
-    static void set_instance(Soar_Svrd_Appliction *inst);
+    static void set_instance(Soar_Svrd_Application *inst);
 
     ///得到实例指针
-    static Soar_Svrd_Appliction *instance();
+    static Soar_Svrd_Application *instance();
 
     ///清理实例实例指针
     static void clean_instance();
@@ -86,7 +86,7 @@ public:
 protected:
 
     //实例指针
-    static Soar_Svrd_Appliction *instance_;
+    static Soar_Svrd_Application *instance_;
 
 protected:
 

@@ -31,7 +31,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Soar_Svrd_Appliction::app_start(argc, argv);
+    ret = Soar_Svrd_Application::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -133,7 +133,7 @@ int Zerg_Service_App::app_exit()
     Zerg_IPRestrict_Mgr::clean_instance();
 
     //最后调用基类的退出函数
-    Soar_Svrd_Appliction::app_exit();
+    Soar_Svrd_Application::app_exit();
 
     return 0;
 }

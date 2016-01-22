@@ -8,7 +8,7 @@
 #include "soar_svrd_app_fsm_notify.h"
 
 Comm_SvrdApp_FSM_Notify::Comm_SvrdApp_FSM_Notify():
-    Soar_Svrd_Appliction()
+    Soar_Svrd_Application()
 {
 };
 
@@ -22,7 +22,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Soar_Svrd_Appliction::app_start(argc, argv);
+    ret = Soar_Svrd_Application::app_start(argc, argv);
     if (0 != ret)
     {
         return ret;
@@ -172,7 +172,7 @@ int Comm_SvrdApp_FSM_Notify::app_exit()
     //等待所有的Join的线程退出
     //ACE_Thread_Manager::instance()->wait();
 
-    ret = Soar_Svrd_Appliction::app_exit();
+    ret = Soar_Svrd_Application::app_exit();
 
     if ( 0 != ret )
     {

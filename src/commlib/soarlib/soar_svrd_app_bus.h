@@ -7,7 +7,7 @@
 class Zerg_App_Frame;
 
 //单个函数处理APP FRAME
-class Soar_SvrdApp_ZergBus : public Soar_Svrd_Appliction
+class Soar_SvrdApp_ZergBus : public Soar_Svrd_Application
 {
 protected:
 

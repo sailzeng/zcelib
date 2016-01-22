@@ -7,7 +7,7 @@
 
 //
 Comm_SvrdApp_FSM::Comm_SvrdApp_FSM() :
-    Soar_Svrd_Appliction()
+    Soar_Svrd_Application()
 {
 }
 
@@ -20,7 +20,7 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 int Comm_SvrdApp_FSM::app_start(int argc, const char *argv[])
 {
     int ret = 0;
-    ret = Soar_Svrd_Appliction::app_start(argc, argv);
+    ret = Soar_Svrd_Application::app_start(argc, argv);
 
     if (0 != ret)
     {
@@ -133,7 +133,7 @@ int Comm_SvrdApp_FSM::app_exit()
     int ret = 0;
     Transaction_Manager::clean_instance();
 
-    ret = Soar_Svrd_Appliction::app_exit();
+    ret = Soar_Svrd_Application::app_exit();
 
     if ( 0 != ret )
     {
