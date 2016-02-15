@@ -1,5 +1,5 @@
 #include "zce_predefine.h"
-#include "zce_bytes_serialization.h"
+#include "zce_bytes_serialize.h"
 #include "zce_trace_log_debug.h"
 
 
@@ -20,14 +20,6 @@ ZCE_Serialized_Save::ZCE_Serialized_Save(char *write_buf, size_t buf_len) :
 ZCE_Serialized_Save::~ZCE_Serialized_Save()
 {
 }
-
-//重置开始位置和good标志位
-void ZCE_Serialized_Save::reset()
-{
-    write_pos_ = write_buf_;
-    is_good_ = true;
-}
-
 
 void ZCE_Serialized_Save::save_arithmetic(const char &val)
 {
@@ -180,16 +172,7 @@ ZCE_Serialized_Load::~ZCE_Serialized_Load()
 {
 }
 
-//重置开始位置和good标志位
-void ZCE_Serialized_Load::reset()
-{
-    read_pos_ = read_buf_;
-    is_good_ = true;
-}
-
-
-template<>
-bool ZCE_Serialized_Load::read(char *val)
+void ZCE_Serialized_Load::load_arithmetic(char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -203,8 +186,7 @@ bool ZCE_Serialized_Load::read(char *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(short *val)
+bool ZCE_Serialized_Load::load_arithmetic(short &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -218,8 +200,7 @@ bool ZCE_Serialized_Load::read(short *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(int *val)
+bool ZCE_Serialized_Load::load_arithmetic(int *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -233,8 +214,7 @@ bool ZCE_Serialized_Load::read(int *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(unsigned char *val)
+bool ZCE_Serialized_Load::load_arithmetic(unsigned char *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -248,8 +228,7 @@ bool ZCE_Serialized_Load::read(unsigned char *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(unsigned short *val)
+bool ZCE_Serialized_Load::load_arithmetic(unsigned short *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -263,8 +242,7 @@ bool ZCE_Serialized_Load::read(unsigned short *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(unsigned int *val)
+bool ZCE_Serialized_Load::load_arithmetic(unsigned int *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -278,8 +256,7 @@ bool ZCE_Serialized_Load::read(unsigned int *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(float *val)
+bool ZCE_Serialized_Load::load_arithmetic(float *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -293,8 +270,7 @@ bool ZCE_Serialized_Load::read(float *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(double *val)
+bool ZCE_Serialized_Load::load_arithmetic(double *val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
     if (read_pos_ + SIZE_OF_VALUE > end_pos_)
@@ -308,8 +284,7 @@ bool ZCE_Serialized_Load::read(double *val)
     return is_good_;
 }
 
-template<>
-bool ZCE_Serialized_Load::read(bool *val)
+bool ZCE_Serialized_Load::load_arithmetic(bool *val)
 {
     char bool_data = 0;
     read<char>(&bool_data);

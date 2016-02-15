@@ -13,21 +13,36 @@ class ZCE_Serialized_Save;
 template<typename val_type >
 class ZCE_ClassSave_Help
 {
-    ZCE_ClassSave_Help(ZCE_Serialized_Save *save,const val_type &val)
-    {
-    }
+public:
+    void save_help(ZCE_Serialized_Save *ssave, const val_type &val);
 };
 
 template<>
 class ZCE_ClassSave_Help<std::string>
 {
-
+public:
+    void save_help(ZCE_Serialized_Save *ssave, const std::string &val);
 };
 
-template<typename val_type >
-class ZCE_ClassSave_Help
+template<typename vector_type >
+class ZCE_ClassSave_Help<std::vector<vector_type> >
 {
+public:
+    void save_help(ZCE_Serialized_Save *ssave, const std::vector<vector_type> &val);
+};
 
+template<typename list_type >
+class ZCE_ClassSave_Help<std::list<list_type> >
+{
+public:
+    void save_help(ZCE_Serialized_Save *ssave, const std::list<list_type> &val);
+};
+
+template<typename key_type,typename data_type >
+class ZCE_ClassSave_Help<std::map<key_type,data_type> >
+{
+public:
+    void save_help(ZCE_Serialized_Save *ssave, const std::map<key_type, data_type> &val);
 };
 
 
@@ -49,10 +64,16 @@ public:
 public:
 
     ///返回当前类是否正常，
-    inline bool is_good();
+    inline bool is_good()
+    {
+        return is_good_;
+    }
 
     ///设置错误标志
-    inline void set_bad();
+    inline void set_bad()
+    {
+        is_good_ = false;
+    }
 
     ///重置
     void reset();
@@ -114,8 +135,8 @@ public:
         for (size_t i = 0; i < count && is_good_;++i)
         {
             this->save(*(ary+i));
-            return;
         }
+        return;
     }
     ///特化，对字符串进行加速
     template<>
@@ -155,36 +176,20 @@ public:
     template<typename val_type >
     void save(const typename std::enable_if<std::is_class<val_type>::value, val_type>::type &val)
     {
-        save_class_help<val_type>(this,val);
+        ZCE_ClassSave_Help<val_type> ssave;
+        ssave.save_help<val_type>(this, val);
         return;
-    }
-
-    ///写入一个vector,注意，只支持到32位的个数的vector
-    template<typename  vector_type>
-    bool save(std::vector<vector_type> &val)
-    {
-        size_t v_size = vector_data.size();
-        this->save<unsigned int>(v_size);
-        for (size_t i = 0; i < v_size; ++i)
-        {
-            this->save<vector_type>(vector_data[i]);
-        }
-        if (false == is_good_)
-        {
-            return false;
-        }
-        return true;
     }
 
     ///使用<<操作符号写入数据，主要是便于外部数据统一使用<<操作符.外部可以用这样的函数
     ///ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
     ///bool operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
     template<typename val_type>
-    ZCE_Serialized_Save &operator <<(val_type val);
-
-  
-    template<typename vector_type>
-    bool save_vector(const std::vector<vector_type> &vector_data);
+    ZCE_Serialized_Save & operator &(val_type val)
+    {
+        this->save<val_type>(val);
+        return *this;
+    }
 
 protected:
 
@@ -202,43 +207,62 @@ protected:
     char *write_pos_;
 };
 
-
-//返回当前类是否正常，
-inline bool ZCE_Serialized_Save::is_good()
+//辅助类，save_help 函数
+//这个类必须写了虚化
+template<typename val_type>
+void ZCE_ClassSave_Help<val_type>::save_help(ZCE_Serialized_Save *ssave,
+    const val_type &val)
 {
-    return is_good_;
+    val.serialize(ssave);
 }
 
-inline void ZCE_Serialized_Save::set_bad()
+void ZCE_ClassSave_Help<std::string>::save_help(ZCE_Serialized_Save *ssave, 
+    const std::string &val)
 {
-    is_good_ = false;
+    ssave->save_array(val.c_str(), val.length());
 }
-
 
 template<typename vector_type>
-bool ZCE_Serialized_Save::save_vector(const std::vector<vector_type> &vector_data)
+void ZCE_ClassSave_Help<std::vector<vector_type> >::save_help(ZCE_Serialized_Save *ssave, 
+    const std::vector<vector_type> &val)
 {
-    size_t v_size = vector_data.size();
-    this->save<unsigned int>(v_size);
-    for (size_t i = 0; i < v_size; ++i)
+    size_t v_size = val.size();
+    this->save_arithmetic<unsigned int>(v_size);
+    for (size_t i = 0; i < v_size && is_good_; ++i)
     {
-        this->save<vector_type>(vector_data[i]);
+        this->save<vector_type>(val[i]);
     }
-    if (false == is_good_)
-    {
-        return false;
-    }
-    return true;
+    return;
 }
 
-//
-template<typename val_type>
-ZCE_Serialized_Save &ZCE_Serialized_Save::operator << (val_type val)
+template<typename list_type>
+void ZCE_ClassSave_Help<std::list<list_type> >::save_help(ZCE_Serialized_Save *ssave,
+    const std::list<list_type> &val)
 {
-    this->save<val_type>(val);
-    return *this;
+    size_t v_size = val.size();
+    this->save_arithmetic<unsigned int>(v_size);
+    for (size_t i = 0; i < v_size && is_good_; ++i)
+    {
+        this->save<list_type>(val[i]);
+    }
+    return;
 }
 
+
+template<typename key_type, typename data_type >
+void ZCE_ClassSave_Help<std::map<key_type, data_type> >::save_help(ZCE_Serialized_Save *ssave,
+    const std::map<key_type, data_type> &val)
+{
+    size_t v_size = val.size();
+    this->save_arithmetic<unsigned int>(v_size);
+    for (size_t i = 0; i < v_size && is_good_; ++i)
+    {
+        this->save<list_type>(val[i]);
+    }
+    return;
+}
+
+//===========================================================================================================
 
 /*!
 * @brief      对数据进行解码码处理的类，将流变成数据，
