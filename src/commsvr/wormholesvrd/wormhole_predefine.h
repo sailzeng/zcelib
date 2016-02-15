@@ -9,7 +9,7 @@
 #include <zce_mysql_command.h>
 #include <zce_mysql_process.h>
 #include <zce_shm_cache_chunk.h>
-#include <zce_shm_lockfree_deque.h>
+#include <zce_lockfree_kfifo.h>
 #include <zce_server_base.h>
 #include <zce_shm_hash_table.h>
 #include <zce_boost_non_copyable.h>

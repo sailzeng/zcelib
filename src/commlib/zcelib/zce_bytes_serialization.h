@@ -2,9 +2,34 @@
 #define ZCE_LIB_BYTES_SERIALIZATION_H_
 
 #include "zce_bytes_base.h"
+#include "zce_trace_log_debug.h"
 
 //===========================================================================================================
 //流编码处理的类
+
+class ZCE_Serialized_Save;
+
+//辅助处理保存数据的一些类
+template<typename val_type >
+class ZCE_ClassSave_Help
+{
+    ZCE_ClassSave_Help(ZCE_Serialized_Save *save,const val_type &val)
+    {
+    }
+};
+
+template<>
+class ZCE_ClassSave_Help<std::string>
+{
+
+};
+
+template<typename val_type >
+class ZCE_ClassSave_Help
+{
+
+};
+
 
 /*!
 * @brief      对数据进行编码处理的类，将数据变成流，
@@ -32,13 +57,106 @@ public:
     ///重置
     void reset();
 
-
-
     ///写入一个数据,只有特化处理函数，
     template<typename val_type>
-    bool save(const val_type /*val*/)
+    bool save(const val_type &/*val*/)
     {
         return false;
+    }
+
+    ///保存枚举值
+    template<typename val_type  >
+    void save(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
+    {
+        return save_enum(val);
+    }
+    template<typename enum_type >
+    void save_enum(const enum_type &val)
+    {
+        save_arithmetic(static_cast<const int &>(val));
+    }
+
+    ///保存数值类型
+    template<typename val_type >
+    void save(const typename std::enable_if<std::is_arithmetic<val_type>::value, val_type>::type &val)
+    {
+        return save_arithmetic(val);
+    }
+    void save_arithmetic(const bool &val);
+    void save_arithmetic(const char &val);
+    void save_arithmetic(const unsigned char &val);
+    void save_arithmetic(const short &val);
+    void save_arithmetic(const unsigned short &val);
+    void save_arithmetic(const int &val);
+    void save_arithmetic(const unsigned int &val);
+    void save_arithmetic(const int64_t &val);
+    void save_arithmetic(const uint64_t &val);
+    void save_arithmetic(const float &val);
+    void save_arithmetic(const double &val);
+
+    ///保存数组
+    template<typename val_type >
+    void save(const typename std::enable_if<std::is_array<val_type>::value, val_type>::type &val)
+    {
+        // consider alignment
+        std::size_t count = sizeof(val) / (
+            static_cast<const char *>(static_cast<const void *>(&val[1]))
+            - static_cast<const char *>(static_cast<const void *>(&val[0]))
+            );
+        return save_array(val, count);
+    }
+    template<typename array_type >
+    void save_array(const array_type *ary, size_t count)
+    {
+        //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
+        ZCE_ASSERT(count < 0xFFFFFFFFll);
+        this->save_arithmetic(static_cast<unsigned int>(count));
+        for (size_t i = 0; i < count && is_good_;++i)
+        {
+            this->save(*(ary+i));
+            return;
+        }
+    }
+    ///特化，对字符串进行加速
+    template<>
+    void save_array(const char *ary, size_t count)
+    {
+        ZCE_ASSERT(count < 0xFFFFFFFFll);
+        this->save_arithmetic(static_cast<unsigned int>(count));
+        if (is_good_)
+        {
+            if (write_pos_ + count < end_pos_)
+            {
+                is_good_ = false;
+                return;
+            }
+            memcpy(write_pos_, ary, count);
+            write_pos_ += count;
+        }
+    }
+    template<>
+    void save_array(const unsigned char *ary, size_t count)
+    {
+        ZCE_ASSERT(count < 0xFFFFFFFFll);
+        this->save_arithmetic(static_cast<unsigned int>(count));
+        if (is_good_)
+        {
+            if (write_pos_ + count < end_pos_)
+            {
+                is_good_ = false;
+                return;
+            }
+            memcpy(write_pos_, ary, count);
+            write_pos_ += count;
+        }
+    }
+
+    ///保存类，这儿要用一些偏特化的能力
+    template<typename val_type >
+    void save(const typename std::enable_if<std::is_class<val_type>::value, val_type>::type &val)
+    {
+        save_class_help<val_type>(this,val);
+        return;
     }
 
     ///写入一个vector,注意，只支持到32位的个数的vector
@@ -58,70 +176,13 @@ public:
         return true;
     }
 
-    template<> bool save(int val)
-    {
-        const size_t SIZE_OF_VALUE = sizeof(int);
-        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-        {
-            is_good_ = false;
-            return is_good_;
-        }
-        ZBEUINT32_TO_BYTE(write_pos_, val);
-        write_pos_ += SIZE_OF_VALUE;
-
-        return is_good_;
-    }
-    template<> bool save(unsigned int val)
-    {
-        const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-        {
-            is_good_ = false;
-            return is_good_;
-        }
-        ZBEUINT32_TO_BYTE(write_pos_, val);
-        write_pos_ += SIZE_OF_VALUE;
-
-        return is_good_;
-    }
-    template<> bool save(float val)
-    {
-        const size_t SIZE_OF_VALUE = sizeof(float);
-        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-        {
-            is_good_ = false;
-            return is_good_;
-        }
-        ZFLOAT_TO_BYTE(write_pos_, val);
-        write_pos_ += SIZE_OF_VALUE;
-
-        return is_good_;
-    }
-    template<> bool save(double val)
-    {
-        const size_t SIZE_OF_VALUE = sizeof(double);
-        if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-        {
-            is_good_ = false;
-            return is_good_;
-        }
-        ZDOUBLE_TO_BYTE(write_pos_, val);
-        write_pos_ += SIZE_OF_VALUE;
-
-        return is_good_;
-    }
-
     ///使用<<操作符号写入数据，主要是便于外部数据统一使用<<操作符.外部可以用这样的函数
     ///ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
     ///bool operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
     template<typename val_type>
     ZCE_Serialized_Save &operator <<(val_type val);
 
-    ///写入一个数组
-    template<typename ary_type>
-    bool save_array(const ary_type *ary, size_t ary_size);
-
-    
+  
     template<typename vector_type>
     bool save_vector(const std::vector<vector_type> &vector_data);
 

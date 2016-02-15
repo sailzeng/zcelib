@@ -29,316 +29,139 @@ void ZCE_Serialized_Save::reset()
 }
 
 
-template<>
-bool ZCE_Serialized_Save::save(char val)
+void ZCE_Serialized_Save::save_arithmetic(const char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
 
     *write_pos_ = val;
     write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Save::save(unsigned char val)
+void ZCE_Serialized_Save::save_arithmetic(const unsigned char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
     *write_pos_ = val;
     write_pos_ += SIZE_OF_VALUE;
-    return is_good_;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Save::save(short val)
+void ZCE_Serialized_Save::save_arithmetic(const short &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
     ZBEUINT16_TO_BYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Save::save(unsigned short val)
+void ZCE_Serialized_Save::save_arithmetic(const unsigned short &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
     if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
     ZBEUINT16_TO_BYTE(write_pos_, val);
     write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
+    return;
 }
 
-//template<>
-//bool ZCE_Serialized_Save::save(int val)
-
-
-//template<>
-//bool ZCE_Serialized_Save::save(unsigned int val)
-
-
-template<>
-bool ZCE_Serialized_Save::save(int64_t val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(int64_t);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    ZBEUINT64_TO_BYTE(write_pos_, val);
-    write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save(uint64_t val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    ZBEUINT64_TO_BYTE(write_pos_, val);
-    write_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save(bool val)
-{
-    return this->save<char>(val ? (char)1 : (char)0);
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const char *ary, size_t ary_size)
-{
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    memcpy(write_pos_, ary, ary_size);
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const unsigned char *ary, size_t ary_size)
-{
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    memcpy(write_pos_, ary, ary_size);
-    write_pos_ += ary_size;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const short *ary, size_t ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(short);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZBEUINT16_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const unsigned short *ary, size_t ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(unsigned short);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZBEUINT16_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const int *ary, size_t ary_size)
+void ZCE_Serialized_Save::save_arithmetic(const int &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
+    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZBEUINT32_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-    return is_good_;
+    ZBEUINT32_TO_BYTE(write_pos_, val);
+    write_pos_ += SIZE_OF_VALUE;
+    return;
 }
-
-template<>
-bool ZCE_Serialized_Save::save_array(const unsigned int *ary, size_t ary_size)
+void ZCE_Serialized_Save::save_arithmetic(const unsigned int &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
+    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZBEUINT32_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-
-    return is_good_;
+    ZBEUINT32_TO_BYTE(write_pos_, val);
+    write_pos_ += SIZE_OF_VALUE;
+    return;
 }
-
-template<>
-bool  ZCE_Serialized_Save::save_array(const int64_t *ary, size_t ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(int64_t);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZBEUINT32_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const uint64_t *ary, size_t ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZBEUINT32_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Save::save_array(const float *ary, size_t ary_size)
+void ZCE_Serialized_Save::save_arithmetic(const float &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
+    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    for (size_t i = 0; i < ary_size; ++i)
+    ZFLOAT_TO_BYTE(write_pos_, val);
+    write_pos_ += SIZE_OF_VALUE;
+
+    return;
+}
+void ZCE_Serialized_Save::save_arithmetic(const double &val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(double);
+    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
-        ZFLOAT_TO_INDEX(write_pos_, i, ary[i]);
+        is_good_ = false;
+        return;
     }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-    return is_good_;
+    ZDOUBLE_TO_BYTE(write_pos_, val);
+    write_pos_ += SIZE_OF_VALUE;
+    return ;
 }
 
-template<>
-bool ZCE_Serialized_Save::save_array(const double *ary, size_t ary_size)
+
+void ZCE_Serialized_Save::save_arithmetic(const int64_t &val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(int64_t);
+    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+    ZBEUINT64_TO_BYTE(write_pos_, val);
+    write_pos_ += SIZE_OF_VALUE;
+    return;
+}
+
+void ZCE_Serialized_Save::save_arithmetic(const uint64_t &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size * SIZE_OF_VALUE  > end_pos_)
+    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        ZDOUBLE_TO_INDEX(write_pos_, i, ary[i]);
-    }
-    write_pos_ += ary_size * SIZE_OF_VALUE;
-
-    return is_good_;
+    ZBEUINT64_TO_BYTE(write_pos_, val);
+    write_pos_ += SIZE_OF_VALUE;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Save::save_array(const bool *ary, size_t ary_size)
+void ZCE_Serialized_Save::save_arithmetic(const bool &val)
 {
-    this->save<unsigned int>(static_cast<unsigned int>(ary_size));
-    if (write_pos_ + ary_size > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    for (size_t i = 0; i < ary_size; ++i)
-    {
-        write_pos_[i] = ary[i] ? 1 : 0;
-    }
-    write_pos_ += ary_size;
-    return is_good_;
-}
-
-//这下面两个函数用了write_array函数，所以必须放在他们下面
-template<>
-bool ZCE_Serialized_Save::save(const char *val)
-{
-    return this->save_array<char>(val, strlen(val));
-}
-
-template<>
-bool ZCE_Serialized_Save::save(const std::string &val)
-{
-    return this->save_array<char>(val.c_str(), val.length());
+    return this->save_arithmetic(val ? (char)1 : (char)0);
 }
 
 //========================================================================================
