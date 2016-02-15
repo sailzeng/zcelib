@@ -24,7 +24,7 @@ ZCE_Serialized_Save::~ZCE_Serialized_Save()
 void ZCE_Serialized_Save::save_arithmetic(const char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -38,7 +38,7 @@ void ZCE_Serialized_Save::save_arithmetic(const char &val)
 void ZCE_Serialized_Save::save_arithmetic(const unsigned char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -51,7 +51,7 @@ void ZCE_Serialized_Save::save_arithmetic(const unsigned char &val)
 void ZCE_Serialized_Save::save_arithmetic(const short &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -64,7 +64,7 @@ void ZCE_Serialized_Save::save_arithmetic(const short &val)
 void ZCE_Serialized_Save::save_arithmetic(const unsigned short &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned short);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -77,7 +77,7 @@ void ZCE_Serialized_Save::save_arithmetic(const unsigned short &val)
 void ZCE_Serialized_Save::save_arithmetic(const int &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -89,7 +89,7 @@ void ZCE_Serialized_Save::save_arithmetic(const int &val)
 void ZCE_Serialized_Save::save_arithmetic(const unsigned int &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -101,7 +101,7 @@ void ZCE_Serialized_Save::save_arithmetic(const unsigned int &val)
 void ZCE_Serialized_Save::save_arithmetic(const float &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -114,7 +114,7 @@ void ZCE_Serialized_Save::save_arithmetic(const float &val)
 void ZCE_Serialized_Save::save_arithmetic(const double &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -128,7 +128,7 @@ void ZCE_Serialized_Save::save_arithmetic(const double &val)
 void ZCE_Serialized_Save::save_arithmetic(const int64_t &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int64_t);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -141,7 +141,7 @@ void ZCE_Serialized_Save::save_arithmetic(const int64_t &val)
 void ZCE_Serialized_Save::save_arithmetic(const uint64_t &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    if (write_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || write_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
         return;
@@ -172,335 +172,116 @@ ZCE_Serialized_Load::~ZCE_Serialized_Load()
 {
 }
 
+void ZCE_Serialized_Load::load_arithmetic(bool &val)
+{
+    char bool_data = 0;
+    load_arithmetic(bool_data);
+    val = bool_data == 0 ? false : true;
+    return;
+}
+
 void ZCE_Serialized_Load::load_arithmetic(char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(char);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *val = *read_pos_;
+    val = *read_pos_;
     read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
+    return;
 }
 
-bool ZCE_Serialized_Load::load_arithmetic(short &val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(short);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *val = ZBYTE_TO_BEUINT16(read_pos_);
-    read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-bool ZCE_Serialized_Load::load_arithmetic(int *val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(int);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *val = ZBYTE_TO_BEUINT32(read_pos_);
-    read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-bool ZCE_Serialized_Load::load_arithmetic(unsigned char *val)
+void ZCE_Serialized_Load::load_arithmetic(unsigned char &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned char);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *val = *read_pos_;
+    val = *read_pos_;
     read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
+    return;
 }
 
-bool ZCE_Serialized_Load::load_arithmetic(unsigned short *val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(unsigned short);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *val = ZBYTE_TO_BEUINT16(read_pos_);
-    read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-bool ZCE_Serialized_Load::load_arithmetic(unsigned int *val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *val = ZBYTE_TO_BEUINT32(read_pos_);
-    read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-bool ZCE_Serialized_Load::load_arithmetic(float *val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(float);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *val = ZBYTE_TO_FLOAT(read_pos_);
-    read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-bool ZCE_Serialized_Load::load_arithmetic(double *val)
-{
-    const size_t SIZE_OF_VALUE = sizeof(double);
-    if (read_pos_ + SIZE_OF_VALUE > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *val = ZBYTE_TO_DOUBLE(read_pos_);
-    read_pos_ += SIZE_OF_VALUE;
-
-    return is_good_;
-}
-
-bool ZCE_Serialized_Load::load_arithmetic(bool *val)
-{
-    char bool_data = 0;
-    read<char>(&bool_data);
-    *val = bool_data == 0 ? false : true;
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Load::read_array(char *ary, size_t *ary_size)
-{
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + read_arysize > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *ary_size = read_arysize;
-    memcpy(ary, read_pos_, read_arysize);
-    read_pos_ += read_arysize;
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Load::read_array(unsigned char *ary, size_t *ary_size)
-{
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + read_arysize > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *ary_size = read_arysize;
-    memcpy(ary, read_pos_, read_arysize);
-    read_pos_ += read_arysize;
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Load::read_array(short *ary, size_t *ary_size)
+void ZCE_Serialized_Load::load_arithmetic(short &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(short);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + read_arysize * SIZE_OF_VALUE > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_BEUINT16(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
+    val = ZBYTE_TO_BEUINT16(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Load::read_array(unsigned short *ary, size_t *ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(unsigned short);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_BEUINT16(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Load::read_array(int *ary, size_t *ary_size)
+void ZCE_Serialized_Load::load_arithmetic(int &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(int);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_BEUINT32(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
+    val = ZBYTE_TO_BEUINT32(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Load::read_array(unsigned int *ary, size_t *ary_size)
+void ZCE_Serialized_Load::load_arithmetic(unsigned short &val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(unsigned short);
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+    val = ZBYTE_TO_BEUINT16(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
+}
+
+void ZCE_Serialized_Load::load_arithmetic(unsigned int &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(unsigned int);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_BEUINT32(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
+    val = ZBYTE_TO_BEUINT32(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Load::read_array(int64_t *ary, size_t *ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(int64_t);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_BEUINT64(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Load::read_array(uint64_t *ary, size_t *ary_size)
-{
-    const size_t SIZE_OF_VALUE = sizeof(uint64_t);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_BEUINT64(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
-}
-
-template<>
-bool ZCE_Serialized_Load::read_array(bool *ary, size_t *ary_size)
-{
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + read_arysize > end_pos_)
-    {
-        is_good_ = false;
-        return is_good_;
-    }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = *(read_pos_ + i) == 0 ? false : true;
-    }
-    read_pos_ += read_arysize;
-    return is_good_;
-}
-
-
-template<>
-bool ZCE_Serialized_Load::read_array(float *ary, size_t *ary_size)
+void ZCE_Serialized_Load::load_arithmetic(float &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_FLOAT(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
+    val = ZBYTE_TO_FLOAT(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
 }
 
-template<>
-bool ZCE_Serialized_Load::read_array(double *ary, size_t *ary_size)
+void ZCE_Serialized_Load::load_arithmetic(double &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(double);
-    unsigned int read_arysize = 0;
-    this->read<unsigned int>(&read_arysize);
-    if (read_arysize > *ary_size || read_pos_ + (read_arysize * SIZE_OF_VALUE) > end_pos_)
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
     {
         is_good_ = false;
-        return is_good_;
+        return;
     }
-    *ary_size = read_arysize;
-    for (unsigned int i = 0; i < read_arysize; ++i)
-    {
-        ary[i] = ZINDEX_TO_DOUBLE(read_pos_, i);
-    }
-    read_pos_ += (read_arysize * SIZE_OF_VALUE);
-    return is_good_;
+    val = ZBYTE_TO_DOUBLE(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
 }
+
 

@@ -75,14 +75,19 @@ public:
         is_good_ = false;
     }
 
-    ///重置
-    void reset();
+    ///重置,重置开始位置和good标志位
+    inline void reset()
+    {
+        write_pos_ = write_buf_;
+        is_good_ = true;
+    }
 
     ///写入一个数据,只有特化处理函数，
     template<typename val_type>
-    bool save(const val_type &/*val*/)
+    void save(const val_type &/*val*/)
     {
-        return false;
+        ZCE_ASSERT(false);
+        return;
     }
 
     ///保存枚举值
@@ -172,7 +177,7 @@ public:
         }
     }
 
-    ///保存类，这儿要用一些偏特化的能力
+    ///保存类，这儿要用辅助类实现一些偏特化的能力
     template<typename val_type >
     void save(const typename std::enable_if<std::is_class<val_type>::value, val_type>::type &val)
     {
@@ -181,9 +186,7 @@ public:
         return;
     }
 
-    ///使用<<操作符号写入数据，主要是便于外部数据统一使用<<操作符.外部可以用这样的函数
-    ///ZCE_Serialized_Save& operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
-    ///bool operator <<(ZCE_Serialized_Save &dr_encode,const val_type &val);
+    ///使用& 操作符号写入数据，
     template<typename val_type>
     ZCE_Serialized_Save & operator &(val_type val)
     {
@@ -208,7 +211,6 @@ protected:
 };
 
 //辅助类，save_help 函数
-//这个类必须写了虚化
 template<typename val_type>
 void ZCE_ClassSave_Help<val_type>::save_help(ZCE_Serialized_Save *ssave,
     const val_type &val)
@@ -227,7 +229,7 @@ void ZCE_ClassSave_Help<std::vector<vector_type> >::save_help(ZCE_Serialized_Sav
     const std::vector<vector_type> &val)
 {
     size_t v_size = val.size();
-    this->save_arithmetic<unsigned int>(v_size);
+    ssave->save_arithmetic<unsigned int>(v_size);
     for (size_t i = 0; i < v_size && is_good_; ++i)
     {
         this->save<vector_type>(val[i]);
@@ -240,10 +242,11 @@ void ZCE_ClassSave_Help<std::list<list_type> >::save_help(ZCE_Serialized_Save *s
     const std::list<list_type> &val)
 {
     size_t v_size = val.size();
-    this->save_arithmetic<unsigned int>(v_size);
-    for (size_t i = 0; i < v_size && is_good_; ++i)
+    ssave->save_arithmetic<unsigned int>(v_size);
+    std::list<list_type>::iterator iter= val.begin();
+    for (size_t i = 0; i < v_size && is_good_; ++i, ++iter)
     {
-        this->save<list_type>(val[i]);
+        this->save<list_type>(*iter);
     }
     return;
 }
@@ -254,15 +257,54 @@ void ZCE_ClassSave_Help<std::map<key_type, data_type> >::save_help(ZCE_Serialize
     const std::map<key_type, data_type> &val)
 {
     size_t v_size = val.size();
-    this->save_arithmetic<unsigned int>(v_size);
-    for (size_t i = 0; i < v_size && is_good_; ++i)
+    ssave->save_arithmetic<unsigned int>(v_size);
+    std::map<key_type, data_type>::iterator iter = val.begin();
+    for (size_t i = 0; i < v_size && is_good_; ++i, ++iter)
     {
-        this->save<list_type>(val[i]);
+        this->save<key_type>(iter->frist);
+        this->save<data_type>(iter->sencond);
     }
     return;
 }
 
 //===========================================================================================================
+
+class ZCE_Serialized_Load;
+//辅助处理读取数据的一些类
+template<typename val_type >
+class ZCE_ClassLoad_Help
+{
+public:
+    void load_help(ZCE_Serialized_Load *sload, val_type &val);
+};
+
+template<>
+class ZCE_ClassLoad_Help<std::string>
+{
+public:
+    void load_help(ZCE_Serialized_Load *sload, std::string &val);
+};
+
+template<typename vector_type >
+class ZCE_ClassLoad_Help<std::vector<vector_type> >
+{
+public:
+    void load_help(ZCE_Serialized_Load *sload, std::vector<vector_type> &val);
+};
+
+template<typename list_type >
+class ZCE_ClassLoad_Help<std::list<list_type> >
+{
+public:
+    void load_help(ZCE_Serialized_Load *sload, std::list<list_type> &val);
+};
+
+template<typename key_type, typename data_type >
+class ZCE_ClassLoad_Help<std::map<key_type, data_type> >
+{
+public:
+    void load_help(ZCE_Serialized_Load *sload, std::map<key_type, data_type> &val);
+};
 
 /*!
 * @brief      对数据进行解码码处理的类，将流变成数据，
@@ -272,7 +314,6 @@ void ZCE_ClassSave_Help<std::map<key_type, data_type> >::save_help(ZCE_Serialize
 class ZCE_Serialized_Load
 {
 public:
-
 
     /*!
     * @brief      构造函数
@@ -286,46 +327,146 @@ public:
 
 public:
     ///返回当前类是否正常，BTW：我们不在溢出保护上做努力，那是你负责的事情
-    inline bool is_good();
+    inline bool is_good()
+    {
+        return is_good_;
+    }
 
     ///设置错误标志
-    inline void set_bad();
+    inline void set_bad()
+    {
+        is_good_ = false;
+    }
 
-    ///重置开始位置和good标志位
-    void reset();
+    ///重置，重置开始位置和good标志位
+    inline void reset()
+    {
+        read_pos_ = read_buf_;
+        is_good_ = true;
+    }
 
     ///写入一个数据,只有特化处理函数，
     template<typename val_type>
-    bool read(val_type *val);
+    void load(val_type & /*val*/)
+    {
+        ZCE_ASSERT(false);
+    }
 
-    ///使用>>操作符号写入数据，主要是便于外部数据统一使用<<操作符,外部可以用这样的函数
-    ///ZCE_Serialized_Load& operator >>(ZCE_Serialized_Load &dr_encode,val_type *val);
-    ///bool operator >>(ZCE_Serialized_Load &dr_encode,val_type *val);
+    ///保存枚举值
+    template<typename val_type  >
+    void load(typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
+    {
+        return load_enum(val);
+    }
+    template<typename enum_type >
+    void load_enum(const enum_type &val)
+    {
+        load_arithmetic(static_cast<int &>(val));
+    }
+
+    ///保存数值类型
+    template<typename val_type >
+    void load(typename std::enable_if<std::is_arithmetic<val_type>::value, val_type>::type &val)
+    {
+        return load_arithmetic(val);
+    }
+    void load_arithmetic(bool &val);
+    void load_arithmetic(char &val);
+    void load_arithmetic(unsigned char &val);
+    void load_arithmetic(short &val);
+    void load_arithmetic(unsigned short &val);
+    void load_arithmetic(int &val);
+    void load_arithmetic(unsigned int &val);
+    void load_arithmetic(int64_t &val);
+    void load_arithmetic(uint64_t &val);
+    void load_arithmetic(float &val);
+    void load_arithmetic(double &val);
+
+
+    ///写入数组
+    template<typename val_type >
+    void load(typename std::enable_if<std::is_array<val_type>::value, val_type>::type &val)
+    {
+        // consider alignment
+        std::size_t ary_count = sizeof(val) / (
+            static_cast<const char *>(static_cast<const void *>(&val[1]))
+            - static_cast<const char *>(static_cast<const void *>(&val[0]))
+            );
+        size_t load_count;
+        return load_array(val, ary_count, load_count);
+    }
+    template<typename array_type >
+    void load_array(array_type ary, size_t ary_count,size_t &load_count)
+    {
+        //读取数组长度
+        unsigned int ui_load_count;
+        this->load_arithmetic(ui_load_count);
+        load_count = ui_load_count;
+        //
+        if (!is_good_ || load_count > ary_count || read_pos_ + load_count * sizeof(ary[0]) > end_pos_)
+        {
+            is_good_ = false;
+            return;
+        }
+        for (size_t i = 0; i < load_count && is_good_; ++i)
+        {
+            this->load(*(ary + i));
+        }
+        return;
+    }
+    ///特化，对字符串进行加速
+    template<>
+    void load_array(char *ary, size_t ary_count, size_t &load_count)
+    {
+        unsigned int ui_load_count;
+        this->load_arithmetic(ui_load_count);
+        load_count = ui_load_count;
+
+        if (!is_good_ || load_count > ary_count || read_pos_ + load_count > end_pos_)
+        {
+            is_good_ = false;
+            return;
+        }
+
+        memcpy(ary, read_pos_, load_count);
+        read_pos_ += load_count;
+    }
+
+    template<>
+    void load_array(unsigned char *ary, size_t ary_count, size_t &load_count)
+    {
+        unsigned int ui_load_count;
+        this->load_arithmetic(ui_load_count);
+        load_count = ui_load_count;
+
+        if (!is_good_ || load_count > ary_count || read_pos_ + load_count > end_pos_)
+        {
+            is_good_ = false;
+            return;
+        }
+
+        memcpy(ary, read_pos_, load_count);
+        read_pos_ += load_count;
+    }
+
+    ///加载类，这儿要用辅助类实现一些偏特化的能力
+    template<typename val_type >
+    void load(typename std::enable_if<std::is_class<val_type>::value, val_type>::type &val)
+    {
+        ZCE_ClassLoad_Help<val_type> sload;
+        sload.load_help<val_type>(this, val);
+        return;
+    }
+
+    ///使用&操作符号写入数据，
     template<typename val_type>
-    ZCE_Serialized_Load &operator >>(val_type *val);
+    ZCE_Serialized_Load &operator &(val_type *val)
+    {
+        this->load<val_type>(val);
+        return *this;
+    }
 
-    /*!
-    * @brief      读取一个数组
-    * @tparam        ary_type 数组数据类型
-    * @return        ZCE_Serialized_Save& 返回自己的引用
-    * @param[out]    ary       数组类型
-    * @param[in,out] ary_size  数组长度,输入输出参数，输入表示ary的长度，输出表示实际读取的长度
-    */
-    template<typename ary_type>
-    bool read_array(ary_type *ary, size_t *ary_size);
-
-
-    /*!
-    * @brief      读出一个vector
-    * @tparam     vector_type vector数据类型
-    * @return     ZCE_Serialized_Load& 返回自己的引用
-    * @param[out]    vector_data  读取返回的vector
-    * @param[in,out] ary_size     输入表示预期的最大vector size，输出表示实际尺寸
-    */
-    template<typename vector_type>
-    bool read_vector(std::vector<vector_type> *vector_data, size_t *ary_size);
-
-protected:
+public:
 
     ///状态是否正确，如果写入位置超出缓冲区的结尾，会置为false
     bool is_good_;
@@ -342,53 +483,68 @@ protected:
 
 };
 
-inline bool ZCE_Serialized_Load::is_good()
+//辅助类，save_help 函数
+template<typename val_type>
+void ZCE_ClassLoad_Help<val_type>::load_help(ZCE_Serialized_Load *sload,
+    val_type &val)
 {
-    return is_good_;
+    val.serialize(sload);
 }
 
-inline void ZCE_Serialized_Load::set_bad()
+
+void ZCE_ClassLoad_Help<std::string>::load_help(ZCE_Serialized_Load *sload,
+    std::string &val)
 {
-    is_good_ = false;
+    unsigned int v_size = 0;
+    sload->load_arithmetic(v_size);
+
+    val.assign(sload->read_pos_, v_size);
+    sload->read_pos_ += v_size;
 }
+
 
 template<typename vector_type>
-bool ZCE_Serialized_Load::read_vector(std::vector<vector_type> *vector_data, size_t *vector_size)
+void ZCE_ClassLoad_Help<std::vector<vector_type> >::load_help(ZCE_Serialized_Load *sload,
+    std::vector<vector_type> &val)
 {
-    unsigned int read_ary_size = 0;
-    if (!this->read<unsigned int>(&read_ary_size))
+    unsigned int v_size = 0;
+    sload->load_arithmetic(v_size);
+    for (size_t i = 0; i < v_size && is_good_; ++i)
     {
-        return false;
+        sload->load<vector_type>(val[i]);
     }
-    if (read_ary_size > *vector_size)
+    return;
+}
+/*
+template<typename list_type>
+void ZCE_ClassLoad_Help<std::list<list_type> >::load_help(ZCE_Serialized_Load *sload,
+    std::list<list_type> &val)
+{
+    size_t v_size = val.size();
+    sload->save_arithmetic<unsigned int>(v_size);
+    std::list<list_type>::iterator iter = val.begin();
+    for (size_t i = 0; i < v_size && is_good_; ++i, ++iter)
     {
-        is_good_ = false;
-        return false;
+        sload->save<list_type>(*iter);
     }
-    vector_size = read_ary_size;
-    vector_data->resize(read_ary_size);
-
-    vector_type read_data;
-    for (unsigned int i = 0; i < read_ary_size; ++i)
-    {
-        this->read<vector_type>(read_data);
-        (*vector_data)[i] = read_data;
-    }
-    if (false == is_good_)
-    {
-        return false;
-    }
-    return true;
+    return;
 }
 
 
-template<typename val_type>
-ZCE_Serialized_Load &ZCE_Serialized_Load::operator >> (val_type *val)
+template<typename key_type, typename data_type >
+void ZCE_ClassLoad_Help<std::map<key_type, data_type> >::load_help(ZCE_Serialized_Load *sload,
+    std::map<key_type, data_type> &val)
 {
-    this->read<val_type>(val);
-    return *this;
-}
-
+    size_t v_size = val.size();
+    this->save_arithmetic<unsigned int>(v_size);
+    std::map<key_type, data_type>::iterator iter = val.begin();
+    for (size_t i = 0; i < v_size && is_good_; ++i, ++iter)
+    {
+        this->load<key_type>(iter->frist);
+        this->load<data_type>(iter->sencond);
+    }
+    return;
+}*/
 
 #endif //ZCE_LIB_BYTES_SERIALIZATION_H_
 

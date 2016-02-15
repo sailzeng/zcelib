@@ -72,7 +72,7 @@
 #include <zce_bytes_encode.h>
 #include <zce_bytes_encrypt.h>
 #include <zce_bytes_compress.h>
-#include <zce_bytes_serialization.h>
+#include <zce_bytes_serialize.h>
 
 
 #include <zce_event_handle_base.h>
