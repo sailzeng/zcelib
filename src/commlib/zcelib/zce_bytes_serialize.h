@@ -82,14 +82,6 @@ public:
         is_good_ = true;
     }
 
-    ///写入一个数据,只有特化处理函数，
-    template<typename val_type>
-    void save(const val_type &/*val*/)
-    {
-        ZCE_ASSERT(false);
-        return;
-    }
-
     ///保存枚举值
     template<typename val_type  >
     void save(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
@@ -186,13 +178,23 @@ public:
         return;
     }
 
+    ///写入一个数据,只有特化处理函数，
+    template<typename val_type>
+    void save(const val_type &/*val*/)
+    {
+        ZCE_ASSERT(false);
+        return;
+    }
+
     ///使用& 操作符号写入数据，
     template<typename val_type>
-    ZCE_Serialized_Save & operator &(val_type val)
+    ZCE_Serialized_Save & operator &(const val_type &val)
     {
-        this->save<val_type>(val);
+        this->save<const val_type &>(val);
         return *this;
     }
+
+
 
 protected:
 
@@ -218,11 +220,7 @@ void ZCE_ClassSave_Help<val_type>::save_help(ZCE_Serialized_Save *ssave,
     val.serialize(ssave);
 }
 
-void ZCE_ClassSave_Help<std::string>::save_help(ZCE_Serialized_Save *ssave, 
-    const std::string &val)
-{
-    ssave->save_array(val.c_str(), val.length());
-}
+
 
 template<typename vector_type>
 void ZCE_ClassSave_Help<std::vector<vector_type> >::save_help(ZCE_Serialized_Save *ssave, 
@@ -490,18 +488,6 @@ void ZCE_ClassLoad_Help<val_type>::load_help(ZCE_Serialized_Load *sload,
 {
     val.serialize(sload);
 }
-
-
-void ZCE_ClassLoad_Help<std::string>::load_help(ZCE_Serialized_Load *sload,
-    std::string &val)
-{
-    unsigned int v_size = 0;
-    sload->load_arithmetic(v_size);
-
-    val.assign(sload->read_pos_, v_size);
-    sload->read_pos_ += v_size;
-}
-
 
 template<typename vector_type>
 void ZCE_ClassLoad_Help<std::vector<vector_type> >::load_help(ZCE_Serialized_Load *sload,

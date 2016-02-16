@@ -1117,17 +1117,30 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
 
 struct DR_DATA_1
 {
-    int a1_ = 1;
-    float b1_ = 2.0;
-    double b2_ = 3.001;
+    int d1_a1_ = 1;
+    float d1_b1_ = 2.0;
+    double d1_b2_ = 3.001;
 
+    std::string d1_c1_;
+    std::string d1_c2_;
+
+    
+    std::vector<int> d1_d1_;
+
+    std::list<int> d1_e1_;
 
     template<typename serialize_type>
-    void serialize(typename serialize_type &ss, DR_DATA_1 data)
+    void serialize(typename serialize_type &ss, unsigned int /*version*/ = 0)
     {
-        ss & a1_;
-        ss & b1_;
-        ss & b2_;
+        ss & d1_a1_;
+        ss & d1_b1_;
+        ss & d1_b2_;
+
+        ss & d1_c1_;
+        ss & d1_c2_;
+
+        ss & d1_d1_;
+        ss & d1_e1_;
     }
 };
 
@@ -1192,24 +1205,16 @@ ZCE_Serialized_Load& operator >>(ZCE_Serialized_Load &dr_decode, DR_DATA_2 *val)
     return dr_decode;
 }
 
-int test_bytes_data_represent(int /*argc*/ , char * /*argv */ [])
+
+
+int test_bytes_data_represent(int /*argc*/, char * /*argv */[])
 {
-    const size_t BUFFER_LEN_1 = 10 * 1024;
-    char buffer_1[BUFFER_LEN_1];
-
-    ZCE_Serialized_Save dr_encode(buffer_1, BUFFER_LEN_1);
-
-    /*
-    DR_DATA_1 data_1;
-    dr_encode << data_1.a1_ << data_1.b1_ << data_1.b2_;
-
-
-    ZCE_Serialized_Load dr_decode(buffer_1, BUFFER_LEN_1);
-    dr_decode >> &data_1.a1_ >> &data_1.b1_ >> &data_1.b2_;
-
-    DR_DATA_2 data_2;
-    save_data2(dr_encode,data_2);
-    */
+    const size_t SIZE_OF_BUFFER = 1024;
+    char buffer_data1[SIZE_OF_BUFFER];
+    
+    ZCE_Serialized_Save ssave(buffer_data1, SIZE_OF_BUFFER);
+    DR_DATA_1 data1;
+    data1.serialize(ssave);
 
     return 0;
 }

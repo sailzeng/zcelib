@@ -156,6 +156,13 @@ void ZCE_Serialized_Save::save_arithmetic(const bool &val)
     return this->save_arithmetic(val ? (char)1 : (char)0);
 }
 
+//
+void ZCE_ClassSave_Help<std::string>::save_help(ZCE_Serialized_Save *ssave,
+    const std::string &val)
+{
+    ssave->save_array(val.c_str(), val.length());
+}
+
 //========================================================================================
 
 //¹¹Ôìº¯Êý
@@ -284,4 +291,12 @@ void ZCE_Serialized_Load::load_arithmetic(double &val)
     return;
 }
 
+void ZCE_ClassLoad_Help<std::string>::load_help(ZCE_Serialized_Load *sload,
+    std::string &val)
+{
+    unsigned int v_size = 0;
+    sload->load_arithmetic(v_size);
 
+    val.assign(sload->read_pos_, v_size);
+    sload->read_pos_ += v_size;
+}
