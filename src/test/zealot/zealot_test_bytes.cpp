@@ -1129,6 +1129,8 @@ struct DR_DATA_1
 
     std::list<int> d1_e1_;
 
+    std::map<int, int> d1_f1_;
+
     template<typename serialize_type>
     void serialize(typename serialize_type &ss, unsigned int /*version*/ = 0)
     {
@@ -1141,6 +1143,7 @@ struct DR_DATA_1
 
         ss & d1_d1_;
         ss & d1_e1_;
+        ss & d1_f1_;
     }
 };
 
@@ -1163,47 +1166,7 @@ struct DR_DATA_2
     std::vector<int> e_vector_;
 };
 
-void save_data2(ZCE_Serialized_Save &dr_encode, const DR_DATA_2 &val)
-{
-    dr_encode.save(val.a1_);
-    dr_encode.save(val.b1_);
-    dr_encode.save(val.b2_);
 
-    dr_encode.save_array(val.c1_, DR_DATA_2::ARY_SIZE);
-    dr_encode.save_array(val.c2_, DR_DATA_2::ARY_SIZE);
-    dr_encode.save_array(val.c3_, DR_DATA_2::ARY_SIZE);
-
-    dr_encode.save(val.d_num_);
-    dr_encode.save_array(val.d_ary_, val.d_num_);
-
-    dr_encode.save(val.e_vector_);
-
-    return;
-}
-
-ZCE_Serialized_Load& operator >>(ZCE_Serialized_Load &dr_decode, DR_DATA_2 *val)
-{
-    dr_decode.load(val->a1_);
-    dr_decode.load(val->b1_);
-    dr_decode.load(val->b2_);
-
-    size_t ary_size = DR_DATA_2::ARY_SIZE;
-    size_t load_size;
-    dr_decode.load_array(val->c1_, ary_size, load_size);
-    dr_decode.load_array(val->c2_, ary_size, load_size);
-    dr_decode.load_array(val->c3_, ary_size, load_size);
-
-    dr_decode.load(val->d_num_);
-    if (val->d_num_ > DR_DATA_2::ARY_SIZE)
-    {
-        dr_decode.set_bad();
-        return dr_decode;
-    }
-    size_t read_ary = val->d_num_;
-    dr_decode.load_array(val->d_ary_, read_ary, load_size);
-
-    return dr_decode;
-}
 
 
 
@@ -1212,9 +1175,12 @@ int test_bytes_data_represent(int /*argc*/, char * /*argv */[])
     const size_t SIZE_OF_BUFFER = 1024;
     char buffer_data1[SIZE_OF_BUFFER];
     
-    ZCE_Serialized_Save ssave(buffer_data1, SIZE_OF_BUFFER);
+    ZCE_Serialize_Write ssave(buffer_data1, SIZE_OF_BUFFER);
     DR_DATA_1 data1;
     data1.serialize(ssave);
+
+    ZCE_Serialize_Read sload(buffer_data1, SIZE_OF_BUFFER);
+    data1.serialize(sload);
 
     return 0;
 }
