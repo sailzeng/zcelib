@@ -1121,6 +1121,9 @@ struct DR_DATA_1
     float d1_b1_ = 2.0;
     double d1_b2_ = 3.001;
 
+    char d1_b3_[6];
+    int d1_b4_[8];
+
     std::string d1_c1_;
     std::string d1_c2_;
 
@@ -1137,6 +1140,9 @@ struct DR_DATA_1
         ss & d1_a1_;
         ss & d1_b1_;
         ss & d1_b2_;
+
+        ss & d1_b3_;
+        ss & d1_b4_;
 
         ss & d1_c1_;
         ss & d1_c2_;
@@ -1174,10 +1180,13 @@ int test_bytes_data_represent(int /*argc*/, char * /*argv */[])
 {
     const size_t SIZE_OF_BUFFER = 1024;
     char buffer_data1[SIZE_OF_BUFFER];
-    
-    ZCE_Serialize_Write ssave(buffer_data1, SIZE_OF_BUFFER);
+
     DR_DATA_1 data1;
+
+    ZCE_Serialize_Write ssave(buffer_data1, SIZE_OF_BUFFER);
     data1.serialize(ssave);
+
+
 
     ZCE_Serialize_Read sload(buffer_data1, SIZE_OF_BUFFER);
     data1.serialize(sload);

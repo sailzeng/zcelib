@@ -82,6 +82,12 @@ public:
         is_good_ = true;
     }
 
+    ///已经写入的长度
+    inline size_t write_len()
+    {
+        return write_pos_ - write_buf_;
+    }
+        
     ///保存枚举值,利用SFINA的原则，进行重载
     template<typename val_type  >
     void write(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
@@ -341,6 +347,12 @@ public:
     {
         read_pos_ = read_buf_;
         is_good_ = true;
+    }
+
+    ///已经读取的长度
+    inline size_t read_len()
+    {
+        return read_pos_ - read_buf_;
     }
 
     ///保存枚举值
