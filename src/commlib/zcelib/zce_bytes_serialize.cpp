@@ -265,6 +265,31 @@ void ZCE_Serialize_Read::read_arithmetic(unsigned int &val)
     return;
 }
 
+void ZCE_Serialize_Read::read_arithmetic(int64_t &val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(int64_t);
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+    val = ZBYTE_TO_BEUINT64(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
+}
+void ZCE_Serialize_Read::read_arithmetic(uint64_t &val)
+{
+    const size_t SIZE_OF_VALUE = sizeof(uint64_t);
+    if (!is_good_ || read_pos_ + SIZE_OF_VALUE > end_pos_)
+    {
+        is_good_ = false;
+        return;
+    }
+    val = ZBYTE_TO_BEUINT64(read_pos_);
+    read_pos_ += SIZE_OF_VALUE;
+    return;
+}
+
 void ZCE_Serialize_Read::read_arithmetic(float &val)
 {
     const size_t SIZE_OF_VALUE = sizeof(float);

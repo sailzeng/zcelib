@@ -150,7 +150,7 @@ public:
         this->write_arithmetic(static_cast<unsigned int>(count));
         if (is_good_)
         {
-            if (write_pos_ + count < end_pos_)
+            if (write_pos_ + count > end_pos_)
             {
                 is_good_ = false;
                 return;
@@ -166,7 +166,7 @@ public:
         this->write_arithmetic(static_cast<unsigned int>(count));
         if (is_good_)
         {
-            if (write_pos_ + count < end_pos_)
+            if (write_pos_ + count > end_pos_)
             {
                 is_good_ = false;
                 return;

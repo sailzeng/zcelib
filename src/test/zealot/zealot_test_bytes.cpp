@@ -1117,15 +1117,24 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
 
 struct DR_DATA_1
 {
-    int d1_a1_ = 1;
-    float d1_b1_ = 2.0;
-    double d1_b2_ = 3.001;
 
-    char d1_b3_[6];
-    int d1_b4_[8];
+    int d1_a1_ = 1;
+    short d1_a2_ = 2;
+
+    int64_t d1_a3_ = 3;
+    uint64_t d1_a4_=4;
+    
+    float d1_b1_ = 3.0;
+    double d1_b2_ = 4.001;
 
     std::string d1_c1_;
     std::string d1_c2_;
+
+    static const size_t D1_C3_LEN = 6;
+    static const size_t D1_C4_LEN = 8;
+
+    char d1_c3_[D1_C3_LEN];
+    int d1_c4_[D1_C4_LEN];
 
     
     std::vector<int> d1_d1_;
@@ -1138,14 +1147,17 @@ struct DR_DATA_1
     void serialize(typename serialize_type &ss, unsigned int /*version*/ = 0)
     {
         ss & d1_a1_;
+        ss & d1_a2_;
+        ss & d1_a3_;
+        ss & d1_a4_;
+
         ss & d1_b1_;
         ss & d1_b2_;
 
-        ss & d1_b3_;
-        ss & d1_b4_;
-
         ss & d1_c1_;
         ss & d1_c2_;
+        ss & d1_c3_;
+        ss & d1_c4_;
 
         ss & d1_d1_;
         ss & d1_e1_;
@@ -1156,7 +1168,7 @@ struct DR_DATA_1
 
 struct DR_DATA_2
 {
-    static const size_t ARY_SIZE = 256;
+    static const size_t ARY_SIZE = 2048;
     int a1_ = 1;
     float b1_ = 2.0;
     double b2_ = 3.001;
@@ -1167,7 +1179,6 @@ struct DR_DATA_2
 
     unsigned int d_num_ = 0;
     unsigned short d_ary_[ARY_SIZE];
-
 
     std::vector<int> e_vector_;
 };
@@ -1182,14 +1193,50 @@ int test_bytes_data_represent(int /*argc*/, char * /*argv */[])
     char buffer_data1[SIZE_OF_BUFFER];
 
     DR_DATA_1 data1;
+    data1.d1_a1_ = 1;
+    data1.d1_a1_ = 2;
+
+    data1.d1_b1_ = 2.02f;
+    data1.d1_b2_ = 3.03;
+
+    data1.d1_c1_ = "I love beijing tiananmen.";
+    data1.d1_c2_ = "I'll stand before the lord of song With nothing on my tongue but Hallelujah";
+    for (size_t i = 0; i < DR_DATA_1::D1_C3_LEN; ++i)
+    {
+        data1.d1_c3_[i] = static_cast<char>('A' + i);
+    }
+
+    for (size_t i = 0; i < DR_DATA_1::D1_C4_LEN; ++i)
+    {
+        data1.d1_c4_[i] = 100000 + i;
+    }
+
+    data1.d1_d1_.push_back(888);
+    data1.d1_d1_.push_back(8888);
+    data1.d1_d1_.push_back(88888);
+
+    data1.d1_e1_.push_back(66);
+    data1.d1_e1_.push_back(666);
+    data1.d1_e1_.push_back(6666);
+
+    data1.d1_f1_[3] = 555;
+    data1.d1_f1_[33] = 5555;
+    data1.d1_f1_[333] = 55555;
 
     ZCE_Serialize_Write ssave(buffer_data1, SIZE_OF_BUFFER);
     data1.serialize(ssave);
+    if (ssave.is_good())
+    {
+        std::cout << "Use len " << ssave.write_len() <<std::endl;
+    }
+    else
+    {
+        return -1;
+    }
 
-
-
+    DR_DATA_1 data2;
     ZCE_Serialize_Read sload(buffer_data1, SIZE_OF_BUFFER);
-    data1.serialize(sload);
+    data2.serialize(sload);
 
     return 0;
 }
