@@ -25,14 +25,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "cfgfile", "cfgfile", "{4DEE
 		..\run\cfg\zergsvrd.cfg = ..\run\cfg\zergsvrd.cfg
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soarlib", "commlib\soarlib\soarlib.v120.vcxproj", "{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "soarlib", "commlib\soarlib\soarlib.vcxproj", "{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zcelib", "commlib\zcelib\zcelib.v120.vcxproj", "{C2D23FE7-03ED-4516-9603-604BA4617FDB}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zcelib", "commlib\zcelib\zcelib.vcxproj", "{C2D23FE7-03ED-4516-9603-604BA4617FDB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogre4asvrd", "commsvr\ogre4asvrd\ogre4asvrd.v120.vcxproj", "{505A176A-146F-4254-95D4-689D0B93A803}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogre4asvrd", "commsvr\ogre4asvrd\ogre4asvrd.vcxproj", "{505A176A-146F-4254-95D4-689D0B93A803}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7} = {C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}
 		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
@@ -40,7 +40,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogre4asvrd", "commsvr\ogre4
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "wormholesvrd", "commsvr\wormholesvrd\wormholesvrd.vcxproj", "{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zergsvrd", "commsvr\zergsvrd\zergsvrd.v120.vcxproj", "{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zergsvrd", "commsvr\zergsvrd\zergsvrd.vcxproj", "{3B4E2D8B-B679-4571-9D5A-D5F504EDD8F2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C1A3C107-5C21-4549-91A1-4DF51A2A3AA7} = {C1A3C107-5C21-4549-91A1-4DF51A2A3AA7}
 	EndProjectSection
@@ -59,7 +59,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "illusion", "tools\illusion\
 		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
 	EndProjectSection
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zealot", "test\zealot\zealot.vc120.vcxproj", "{0FA45C38-5F6C-4715-8726-6D32A2069743}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zealot", "test\zealot\zealot.vcxproj", "{0FA45C38-5F6C-4715-8726-6D32A2069743}"
 	ProjectSection(ProjectDependencies) = postProject
 		{C2D23FE7-03ED-4516-9603-604BA4617FDB} = {C2D23FE7-03ED-4516-9603-604BA4617FDB}
 	EndProjectSection

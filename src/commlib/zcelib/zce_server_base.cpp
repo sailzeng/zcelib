@@ -106,7 +106,6 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     ZCE_LIB::flock_init(&pidfile_lock_, pid_handle_);
 
-    const size_t PID_FILE_LEN = 16;
     char tmpbuff[PID_FILE_LEN + 1];
 
     snprintf(tmpbuff, PID_FILE_LEN + 1, "%*.u", (int)PID_FILE_LEN * (-1), self_pid_);

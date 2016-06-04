@@ -249,7 +249,6 @@ ZCE_Get_Option::long_option_i (void)
     size_t size = this->long_opts_.size ();
     u_int option_index = 0;
 
-    ZCE_GETOPT_LONG_OPTION p;
     ZCE_GETOPT_LONG_OPTION *pfound = 0;
 
     for (option_index = 0; option_index < size ; option_index++)

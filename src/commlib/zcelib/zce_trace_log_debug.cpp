@@ -154,7 +154,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
                                  &source_info))
         {
             // Get source information.
-            use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "\t[ %s: %d] at addr 0x % 08LX",
+            use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, "\t[ %s: %d] at addr 0x %08llX",
                                 source_info.FileName,
                                 source_info.LineNumber,
                                 stackframe.AddrPC.Offset);

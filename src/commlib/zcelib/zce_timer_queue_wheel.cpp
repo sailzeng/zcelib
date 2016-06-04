@@ -280,7 +280,7 @@ int ZCE_Timer_Wheel::get_frist_nodeid(int &first_node_id)
     {
         //检查这个WHEEL NODE后面是否还有TIMER NODE的链表
         size_t wheel_node_id = (proc_wheel_start_ + i)  % num_wheel_point_;
-        int timer_node_id = timer_wheel_point_[wheel_node_id];
+        timer_node_id = timer_wheel_point_[wheel_node_id];
 
         if ( INVALID_TIMER_ID != timer_node_id)
         {
