@@ -22,7 +22,7 @@
 #include "zce_os_adapt_process.h"
 #include "zce_os_adapt_sysinfo.h"
 #include "zce_os_adapt_flock.h"
-
+#include "zce_boost_non_copyable.h"
 
 
 /*********************************************************************************

@@ -23,7 +23,7 @@
 #include "zce_boost_lord_rings.h"
 #include "zce_os_adapt_coroutine.h"
 #include "zce_timer_handler_base.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 
 class ZCE_Async_ObjectMgr;
 

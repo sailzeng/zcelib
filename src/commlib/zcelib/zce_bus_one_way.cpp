@@ -3,7 +3,7 @@
 #include "zce_lockfree_kfifo.h"
 #include "zce_os_adapt_file.h"
 #include "zce_share_mem_mmap.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_bus_mmap_pipe.h"
 #include "zce_bus_one_way.h"
 

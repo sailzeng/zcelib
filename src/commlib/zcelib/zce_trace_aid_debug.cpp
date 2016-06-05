@@ -1,15 +1,14 @@
 
 #include "zce_predefine.h"
-#include "zce_trace_log_basic.h"
-#include "zce_trace_log_msg.h"
-#include "zce_trace_log_debug.h"
-
-
+#include "zce_trace_debugging.h"
+#include "zce_trace_aid_debug.h"
 
 
 //=====================================================================================================================
 
 
+
+//=====================================================================================================================
 
 int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
                              const char *dbg_info)
@@ -182,7 +181,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 }
 
 
-//=====================================================================================================================
+
 //辅助打印一个指针内部数据的函数，用16进制的方式打印
 //用 11 02 03 0E E0         ..... 格式的输出，指针信息。
 void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,

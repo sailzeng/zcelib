@@ -4,7 +4,7 @@
 //对于SQLITE的最低版本限制
 #if SQLITE_VERSION_NUMBER >= 3005000
 
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_sqlite_db_handler.h"
 #include "zce_sqlite_stmt_handler.h"
 

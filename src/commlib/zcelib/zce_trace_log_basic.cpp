@@ -266,15 +266,11 @@ void ZCE_LogTrace_Basic::make_configure(void)
 }
 
 //打开日志输出开关
-void ZCE_LogTrace_Basic::enable_output_logmsg(void)
+void ZCE_LogTrace_Basic::enable_output(bool enable_out)
 {
-    if_output_log_ = true;
+    if_output_log_ = enable_out;
 }
-//关闭日志输出开关
-void ZCE_LogTrace_Basic::disable_output_logmsg(void)
-{
-    if_output_log_ = false;
-}
+
 
 //设置日志输出Level
 ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::set_log_priority( ZCE_LOG_PRIORITY outlevel )

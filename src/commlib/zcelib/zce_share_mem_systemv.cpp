@@ -6,7 +6,7 @@
 #include "zce_os_adapt_file.h"
 #include "zce_os_adapt_dirent.h"
 #include "zce_os_adapt_error.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_share_mem_systemv.h"
 
 //我现在有点理解大家为什么喜欢用System V的贡献内存了，简单。因为没有文件映射，所以其实他少了很多参数

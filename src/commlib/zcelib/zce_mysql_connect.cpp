@@ -1,5 +1,5 @@
 #include "zce_predefine.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_mysql_connect.h"
 
 //如果你要用MYSQL的库
