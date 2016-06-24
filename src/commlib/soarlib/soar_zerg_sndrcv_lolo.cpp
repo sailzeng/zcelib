@@ -28,8 +28,7 @@ int Lolo_SendRecv_Package::set_lolo_svcinfo(const char *svc_ip,
 
     set_services_id(recv_service, send_service, proxy_service, frame_len);
 
-    lolo_svc_ip_.set(svc_ip, svc_port);
-
+    ret = lolo_svc_ip_.set(svc_ip, svc_port);
     if ( ret != 0)
     {
         return SOAR_RET::ERROR_ZULU_INPUT_IPADDRESS_ERROR;

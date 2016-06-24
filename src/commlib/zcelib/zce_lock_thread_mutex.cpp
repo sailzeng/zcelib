@@ -284,7 +284,7 @@ bool ZCE_Thread_NONR_Mutex::systime_lock(const ZCE_Time_Value &abs_time)
 
     if (0 != ret)
     {
-        //在ETIME==>ETIMEOUT调整后没有注意修改这个问题，derrickhu帮忙发现了这个问题，特此修改。
+        //在ETIME==>ETIMEDOUT调整后没有注意修改这个问题，derrickhu帮忙发现了这个问题，特此修改。
         if (errno != ETIMEDOUT)
         {
             ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_timedlock", ret);
