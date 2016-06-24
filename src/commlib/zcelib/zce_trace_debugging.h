@@ -143,6 +143,7 @@ public:
 
         //得到打印信息,_vsnprintf为特殊函数
         vfprintf(stderr, str_format, args);
+		fprintf(stderr, "\n");
     }
 
     //写日志
@@ -169,56 +170,34 @@ public:
         return oldlevel;
     }
 
-    ///利用单子对象，打印日志信息
+    //!利用单子对象，打印日志信息
     static void debug_output(ZCE_LOG_PRIORITY dbglevel,
         const char *str_format,
         ...)
     {
         va_list args;
         va_start(args, str_format);
-        if (log_instance_)
-        {
-            log_instance_->vwrite_logmsg(dbglevel, str_format, args);
-        }
+        
+		ZCE_Trace_Printf::instance()->vwrite_logmsg(dbglevel, str_format, args);
+        
         va_end(args);
     }
 
     //实例的获得
     static ZCE_Trace_Printf *instance()
     {
-        if (log_instance_ == NULL)
-        {
-            log_instance_ = new ZCE_Trace_Printf();
-        }
-
-        return log_instance_;
-    }
-
-    //清除实例
-    static void clean_instance()
-    {
-        if (log_instance_)
-        {
-            delete log_instance_;
-        }
-        log_instance_ = NULL;
-        return;
+		static ZCE_Trace_Printf log_instance;
+        return &log_instance;
     }
 
     //
 protected:
 
-    ///输出日志信息的Mask值,小于这个信息的信息不予以输出
-    ZCE_LOG_PRIORITY      permit_outlevel_;
+    //!输出日志信息的Mask值,小于这个信息的信息不予以输出
+    ZCE_LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
-    ///是否输出日志信息,可以用于暂时屏蔽
-    bool                  if_output_log_;
-
-
-protected:
-
-    ///单子实例指针
-    static ZCE_Trace_Printf *log_instance_;
+    //!是否输出日志信息,可以用于暂时屏蔽
+    bool                  if_output_log_ = true;
 
 };
 
@@ -288,16 +267,16 @@ protected:
 class ZCE_Trace_Function
 {
 public:
-    ///函数名称
+    //!函数名称
     const char        *func_name_;
-    ///文件名称
+    //!文件名称
     const char        *codefile_name_;
-    ///文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
+    //!文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
     int                code_line_;
-    ///输出的日志级别
+    //!输出的日志级别
     ZCE_LOG_PRIORITY   log_priority_;
 
-    ///如果需要跟踪返回值，把返回值的变量的指针作为一个参数
+    //!如果需要跟踪返回值，把返回值的变量的指针作为一个参数
     int               *ret_ptr_ = NULL;
 
 public:
@@ -372,13 +351,13 @@ public:
 #endif
 
 
-///用于程序运行到的地方。
+//!用于程序运行到的地方。
 #ifndef ZCE_TRACE_FILELINE
 #define ZCE_TRACE_FILELINE(log_priority)        ZCE_LOG((log_priority),"[FILELINE TRACE]goto File %s|%d,function:%s.",\
     __FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 
-///
+//!
 #ifndef ZCE_TRACE_FAIL_RETURN
 #define ZCE_TRACE_FAIL_RETURN(log_priority,fail_str,ret_int) ZCE_LOG((log_priority),"[FAIL RETRUN]Fail in file [%s|%d],function:%s," \
     "fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),(ret_int),ZCE_LIB::last_error())

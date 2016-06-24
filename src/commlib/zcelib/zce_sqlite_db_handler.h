@@ -30,7 +30,6 @@
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 
-#include "zce_os_adapt_string.h"
 
 //==============================================================================================
 class ZCE_SQLite_Result;
@@ -44,9 +43,9 @@ class ZCE_SQLite_DB_Handler
 
 public:
 
-    ///构造函数，
+    //!构造函数，
     ZCE_SQLite_DB_Handler();
-    ///析构函数
+    //!析构函数
     ~ZCE_SQLite_DB_Handler();
 
     /*!
@@ -76,29 +75,29 @@ public:
 #endif
 
 
-    ///关闭数据库
+    //!关闭数据库
     void close_database();
 
-    ///取得错误语句Str
+    //!取得错误语句Str
     const char *error_message();
-    ///取得DB返回的错误ID
+    //!取得DB返回的错误ID
     int error_code();
 
-    ///取得SQLite的句柄
+    //!取得SQLite的句柄
     inline sqlite3 *get_sqlite_handler()
     {
         return sqlite3_handler_;
     };
 
-    ///开始一个事务
+    //!开始一个事务
     int begin_transaction();
-    ///提交一个事务，或者说结束一个事务
+    //!提交一个事务，或者说结束一个事务
     int commit_transction();
 
-    ///将同步选项关闭，建议不要使用
+    //!将同步选项关闭，建议不要使用
     int turn_off_synch();
 
-    ///执行DDL等不需要结果的SQL
+    //!执行DDL等不需要结果的SQL
     int execute(const char *sql_string);
 
     /*!
@@ -116,7 +115,7 @@ public:
 
 protected:
 
-    ///sqlite3的处理Handler
+    //!sqlite3的处理Handler
     sqlite3         *sqlite3_handler_;
 
 };
@@ -139,14 +138,14 @@ public:
     ZCE_SQLite_Result();
     ~ZCE_SQLite_Result();
 
-    ///结果集合释放为NULL
+    //!结果集合释放为NULL
     inline bool is_null()
     {
         return (result_ == NULL);
     }
 
 
-    ///释放结果集合
+    //!释放结果集合
     void free_result();
 
     /*!
@@ -184,13 +183,13 @@ public:
         return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
     }
 
-    ///行的数量
+    //!行的数量
     inline int row_number()
     {
         return row_;
     }
 
-    ///列的数量
+    //!列的数量
     inline int column_number()
     {
         return column_;
@@ -199,15 +198,15 @@ public:
 
 protected:
 
-    /// Results of the query
+    //! Results of the query
     char **result_ = NULL;
-    /// Number of result rows written here ，row_也是从1开始
+    //! Number of result rows written here ，row_也是从1开始
     int row_ = 0;
 
-    /// Number of result columns written here ,column_ 从1开始
+    //! Number of result columns written here ,column_ 从1开始
     int column_ = 0;
 
-    /// Error msg written here
+    //! Error msg written here
     char *err_msg_ = NULL;
 };
 

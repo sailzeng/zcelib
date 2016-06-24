@@ -587,7 +587,7 @@ extern "C"
 #  define ZCE_BIT_ISNOT_SET(compare_value, bits) (((compare_value) & (bits)) == 0)
 #endif
 
-///计算数组个数,注意传递的型别喔
+//!计算数组个数,注意传递的型别喔
 #ifndef ZCE_ARRAY_SIZE
 #define ZCE_ARRAY_SIZE(ary) (sizeof(ary)/sizeof((ary)[0]))
 #endif

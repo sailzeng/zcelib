@@ -12,7 +12,7 @@ class ZCE_SQLite_STMTHdl
 {
 public:
 
-    ///定义二进制数据结构，用于辅助绑定BLOB类型的参数数据
+    //!定义二进制数据结构，用于辅助绑定BLOB类型的参数数据
     struct BIN_Param
     {
         /*!
@@ -29,13 +29,13 @@ public:
         {
         }
 
-        ///2进制数据的指针
+        //!2进制数据的指针
         void   *binary_data_;
-        ///二进制数据的长度,
+        //!二进制数据的长度,
         int    binary_len_;
     };
 
-    ///定义二进制数据结构，用于辅助绑定BLOB类型的数据结果
+    //!定义二进制数据结构，用于辅助绑定BLOB类型的数据结果
     struct BIN_Result
     {
         /*!
@@ -52,9 +52,9 @@ public:
         {
         }
 
-        ///2进制数据的指针
+        //!2进制数据的指针
         void   *binary_data_;
-        ///二进制数据的长度,注意绑定结果时，这个数值座位结果绑定的时候，会辅助返回长度
+        //!二进制数据的长度,注意绑定结果时，这个数值座位结果绑定的时候，会辅助返回长度
         int    *binary_len_;
     };
 
@@ -99,25 +99,25 @@ public:
     */
     int execute_stmt_sql(bool &hash_reuslt);
 
-    ///开始一个事务
+    //!开始一个事务
     int begin_transaction();
-    ///提交一个事务
+    //!提交一个事务
     int commit_transction();
-    ///将同步选项关闭，建议不要使用
+    //!将同步选项关闭，建议不要使用
     int turn_off_synch();
 
-    ///
+    //!
     sqlite3_stmt *get_sqlite3_stmt_handler()
     {
         return sqlite3_stmt_handler_;
     }
 
-    ///错误语句Str
+    //!错误语句Str
     inline const char *error_message()
     {
         return sqlite_handler_->error_message();
     }
-    ///DB返回的错误ID
+    //!DB返回的错误ID
     inline  unsigned int error_code()
     {
         return sqlite_handler_->error_code();
@@ -144,7 +144,7 @@ public:
         return ::sqlite3_column_count(sqlite3_stmt_handler_);
     }
 
-    ///当前column的数据长度
+    //!当前column的数据长度
     inline int cur_column_bytes()
     {
         return ::sqlite3_column_bytes(sqlite3_stmt_handler_, current_col_);
@@ -174,7 +174,7 @@ public:
     void column(int result_col, value_type val);
 
 
-    ///导出结果,列号自动++
+    //!导出结果,列号自动++
     template <class value_type>
     ZCE_SQLite_STMTHdl &operator >> (value_type &val)
     {
@@ -185,7 +185,7 @@ public:
 
 
 
-    ///bind绑定参数,列号自动++
+    //!bind绑定参数,列号自动++
     template <class bind_type>
     ZCE_SQLite_STMTHdl &operator << (bind_type val)
     {
@@ -201,16 +201,16 @@ public:
 
 protected:
 
-    ///SQLite的DB句柄
+    //!SQLite的DB句柄
     ZCE_SQLite_DB_Handler *sqlite_handler_;
 
-    ///SQLite原声的STMT的句柄
+    //!SQLite原声的STMT的句柄
     sqlite3_stmt *sqlite3_stmt_handler_;
 
-    ///当前取结果的列,用于>>函数,从0开始
+    //!当前取结果的列,用于>>函数,从0开始
     int current_col_;
 
-    ///当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
+    //!当前bind绑定SQL语句参数的下标，用于>>函数,,从1开始
     int current_bind_;
 };
 

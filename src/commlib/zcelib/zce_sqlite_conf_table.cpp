@@ -1,5 +1,4 @@
 #include "zce_predefine.h"
-#include "zce_bytes_encode.h"
 #include "zce_trace_debugging.h"
 #include "zce_sqlite_db_handler.h"
 #include "zce_sqlite_stmt_handler.h"
@@ -214,12 +213,13 @@ void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id)
 }
 
 
-///改写的SQL,文本格式，用x
+//!改写的SQL,文本格式，用x
+//!此函数保留主要是用于文件比较，产生更新SQL，因为是更新SQL，所以全部用的x
 void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
                                                unsigned int index_1,
                                                unsigned int index_2,
                                                size_t blob_len,
-                                               const char *blob_data,
+                                               const char * blob_data,
                                                unsigned int last_mod_time)
 {
     //构造后面的SQL
@@ -227,6 +227,7 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //对于空间，我们是预留了足够的空间的，就不检查边界了
+	//对于x,x的作用是说明里面的数据''用base 16的编码处理，视作二进制
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(%u,%u,x'",
@@ -238,10 +239,10 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
     buflen -= len;
 
     size_t out_len = buflen;
-    ZCE_LIB::base16_encode((const unsigned char *)blob_data,
-                           blob_len,
-                           (unsigned char *)ptmppoint,
-                           &out_len);
+    base16_encode(blob_data,
+                  blob_len,
+                  ptmppoint,
+                  &out_len);
     ptmppoint += out_len;
     buflen -= out_len;
 
@@ -249,6 +250,40 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
     ptmppoint += out_len;
     buflen -= out_len;
 
+}
+
+
+//BASE16的编码
+int ZCE_General_Config_Table::base16_encode(const char *in,
+											size_t in_len,
+											char *out,
+											size_t *out_len)
+{
+	//
+	static const char BASE16_ENC_MAP[] = "0123456789abcdef";
+
+	ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
+
+	size_t output_len = in_len * 2;
+	if (*out_len < output_len + 1)
+	{
+		*out_len = output_len + 1;
+		errno = ENOMEM;
+		return -1;
+	}
+
+	const char *p = in;
+	char *q = out;
+
+	for (size_t i = 0; i < in_len; i++)
+	{
+		char c = p[i] & 0xff;
+		*q++ = BASE16_ENC_MAP[(c >> 4) & 0xf];
+		*q++ = BASE16_ENC_MAP[c & 0xf];
+	}
+	out[output_len] = '\0';
+	*out_len = output_len;
+	return 0;
 }
 
 
@@ -336,7 +371,7 @@ void ZCE_General_Config_Table::sql_select_array(unsigned int table_id,
     }
 }
 
-///创建数据表
+//!创建数据表
 int ZCE_General_Config_Table::create_table(unsigned int table_id)
 {
 
@@ -414,7 +449,7 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
     const size_t ary_size = ary_ai_iijma->size();
     for (size_t i = 0; i < ary_size; ++i)
     {
-        //感觉SQLite3的 STMT欠火候，第二次使用还要
+        //感觉SQLite3的 STMT欠火候，第二次使用还要prepare
         ret = stmt_handler.prepare(sql_string_);
         if (ret != 0)
         {
@@ -647,7 +682,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
     std::sort(old_ai_iijma.begin(), old_ai_iijma.end());
     std::sort(new_ai_iijma.begin(), new_ai_iijma.end());
 
-    update_sql->reserve(MAX_SQLSTRING_LEN);
+    update_sql->reserve(1024*1024*8);
 
     //两个都有序，找出差异的元素
     size_t p = 0, q = 0;
