@@ -1,6 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_time_value.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_event_handle_base.h"
 #include "zce_event_reactor_base.h"
 

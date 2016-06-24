@@ -1,5 +1,5 @@
 #include "zce_predefine.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_os_adapt_string.h"
 #include "zce_bytes_compress.h"
 
@@ -830,7 +830,7 @@ lz4_token_process:
         }
 
         //写入偏移长度,即使是0，在LZ4的压缩算法也会写入
-        size_t match_offset = read_pos - ref_offset ;
+        match_offset = read_pos - ref_offset ;
 
         //前面已经保证了read_pos和ref_offset 相差小于0xFFFF，2个字节足够
         ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(match_offset )));

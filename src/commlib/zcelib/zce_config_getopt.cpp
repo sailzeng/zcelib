@@ -1,7 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_math.h"
 #include "zce_os_adapt_process.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_config_getopt.h"
 
 /*
@@ -249,7 +249,6 @@ ZCE_Get_Option::long_option_i (void)
     size_t size = this->long_opts_.size ();
     u_int option_index = 0;
 
-    ZCE_GETOPT_LONG_OPTION p;
     ZCE_GETOPT_LONG_OPTION *pfound = 0;
 
     for (option_index = 0; option_index < size ; option_index++)

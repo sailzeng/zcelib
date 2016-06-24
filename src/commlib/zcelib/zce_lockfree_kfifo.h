@@ -46,6 +46,12 @@ public:
     */
     void *operator new (size_t , size_t nodelen);
 
+    //养成好习惯,写new,就写delete.
+    //void operator delete(void *ptrframe, size_t);
+    void operator delete(void *ptrframe);
+
+
+
 public:
     ///
     static void fillin(dequechunk_node *, size_t , char *);

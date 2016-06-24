@@ -215,7 +215,7 @@ public:
                     ZCE_LIB::TIME_STR_FORMAT_TYPE fromat_type = ZCE_LIB::TIME_STRFMT_ISO_USEC);
 
     ///返回一个timespec的对象
-    operator ::timespec () const;
+    //operator ::timespec () const;
 
     ///返回一个timeval的对象，Returns the value of the object as a timeval.
     operator timeval () const;

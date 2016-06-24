@@ -647,7 +647,6 @@ bool ZCE_INI_Pt::write_privateprofile_string(
     {
         //新文件保存数据区
         std::vector<std::string> strarytmp;
-        std::string strtmp;
         line[0] = '\0';
         //表示是否找到App,key
         bool bApp = false, bkey = false;
@@ -855,7 +854,6 @@ bool ZCE_INI_Pt::write_privateprofile_section(
 
     //新文件保存数据区
     std::vector<std::string> strarytmp;
-    std::string strtmp;
     line[0] = '\0';
 
     //表示是否找到App,key

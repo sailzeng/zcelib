@@ -1,6 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_bytes_encode.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 
 static const unsigned char BASE64_ENC_MAP[64] =
 {

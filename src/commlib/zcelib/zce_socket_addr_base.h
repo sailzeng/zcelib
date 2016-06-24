@@ -13,7 +13,7 @@ class ZCE_Sockaddr
 public:
 
     //构造函数，
-    ZCE_Sockaddr (sockaddr *sockaddr_ptr = NULL, int sockaddr_size = -1);
+    ZCE_Sockaddr (sockaddr *sockaddr_ptr = NULL, int sa_size = -1);
     //析构函数,内部有virtual函数
     virtual ~ZCE_Sockaddr (void);
 
@@ -23,7 +23,7 @@ public:
     //Get/set the size of the address.
     inline socklen_t get_size (void) const;
     //
-    inline void  set_size (int sockaddr_size);
+    inline void  set_size (int sa_size);
 
     //设置地址信息
     inline void set_addr (sockaddr *sockaddr_ptr);
@@ -72,9 +72,9 @@ inline socklen_t ZCE_Sockaddr::get_size (void) const
     return sockaddr_size_;
 }
 //
-inline void ZCE_Sockaddr::set_size (int sockaddr_size)
+inline void ZCE_Sockaddr::set_size (int sa_size)
 {
-    sockaddr_size_ = sockaddr_size;
+    sockaddr_size_ = sa_size;
 }
 
 //设置地址信息

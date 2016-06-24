@@ -15,7 +15,7 @@
 #ifndef ZCE_LIB_LOCK_THREAD_CONDI_H_
 #define ZCE_LIB_LOCK_THREAD_CONDI_H_
 
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_lock_base.h"
 #include "zce_os_adapt_condi.h"
 

@@ -2,6 +2,7 @@
 #ifndef ZCE_LIB_SHARE_MEMORY_POSIX_H_
 #define ZCE_LIB_SHARE_MEMORY_POSIX_H_
 
+#include "zce_boost_non_copyable.h"
 #include "zce_os_adapt_predefine.h"
 
 /*********************************************************************************

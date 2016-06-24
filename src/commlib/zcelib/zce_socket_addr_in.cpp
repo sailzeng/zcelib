@@ -1,7 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_socket.h"
 #include "zce_socket_addr_base.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_socket_addr_in.h"
 
 //默认构造函数

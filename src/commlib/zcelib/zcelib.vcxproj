@@ -179,7 +179,8 @@
     <ClInclude Include="zce_async_fw_coroutine.h" />
     <ClInclude Include="zce_async_fw_fsm.h" />
     <ClInclude Include="zce_bytes_base.h" />
-    <ClInclude Include="zce_bytes_serialization.h" />
+    <ClInclude Include="zce_bytes_serialize.h" />
+    <ClInclude Include="zce_config.h" />
     <ClInclude Include="zce_event_proactor.h" />
     <ClInclude Include="zce_event_reactor_wfmo.h" />
     <ClInclude Include="zce_lockfree_kfifo.h" />
@@ -298,17 +299,19 @@
     <ClInclude Include="zce_timer_queue_wheel.h" />
     <ClInclude Include="zce_time_progress_timer.h" />
     <ClInclude Include="zce_time_value.h" />
+    <ClInclude Include="zce_trace_debugging.h" />
     <ClInclude Include="zce_trace_log_basic.h" />
-    <ClInclude Include="zce_trace_log_debug.h" />
+    <ClInclude Include="zce_trace_aid_debug.h" />
     <ClInclude Include="zce_trace_log_msg.h" />
     <ClInclude Include="zce_trace_log_plus.h" />
+    <ClInclude Include="zce_trace_log_priority.h" />
     <ClInclude Include="zce_uuid_generator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_async_fw_base.cpp" />
     <ClCompile Include="zce_async_fw_coroutine.cpp" />
     <ClCompile Include="zce_async_fw_fsm.cpp" />
-    <ClCompile Include="zce_bytes_serialization.cpp" />
+    <ClCompile Include="zce_bytes_serialize.cpp" />
     <ClCompile Include="zce_event_proactor.cpp" />
     <ClCompile Include="zce_event_reactor_wfmo.cpp" />
     <ClCompile Include="zce_lockfree_kfifo.cpp" />
@@ -408,7 +411,7 @@
     <ClCompile Include="zce_time_progress_timer.cpp" />
     <ClCompile Include="zce_time_value.cpp" />
     <ClCompile Include="zce_trace_log_basic.cpp" />
-    <ClCompile Include="zce_trace_log_debug.cpp" />
+    <ClCompile Include="zce_trace_aid_debug.cpp" />
     <ClCompile Include="zce_trace_log_msg.cpp" />
     <ClCompile Include="zce_trace_log_plus.cpp" />
     <ClCompile Include="zce_uuid_generator.cpp" />

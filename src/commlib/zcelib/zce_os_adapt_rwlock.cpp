@@ -6,7 +6,7 @@
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_rwlock.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 
 //读写锁的对象的初始化
 int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,

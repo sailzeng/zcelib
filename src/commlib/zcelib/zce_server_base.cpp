@@ -6,7 +6,7 @@
 #include "zce_os_adapt_socket.h"
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_dirent.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_server_base.h"
 
 
@@ -106,7 +106,6 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     ZCE_LIB::flock_init(&pidfile_lock_, pid_handle_);
 
-    const size_t PID_FILE_LEN = 16;
     char tmpbuff[PID_FILE_LEN + 1];
 
     snprintf(tmpbuff, PID_FILE_LEN + 1, "%*.u", (int)PID_FILE_LEN * (-1), self_pid_);

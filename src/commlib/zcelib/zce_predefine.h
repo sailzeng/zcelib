@@ -40,6 +40,7 @@
 #ifndef ZCE_LIB_PREDEFINE_H_
 #define ZCE_LIB_PREDEFINE_H_
 
+
 //==================================================================================================
 //根据操作系统，编译器，给出不同的定义，因为这些定义会影响全局，所以在最开始的部分
 //我的库只打算适应两个环境，Windows(MSVC)和Linux(GCC)，
@@ -179,6 +180,9 @@
 #endif
 #endif
 
+#pragma warning ( push )
+#pragma warning ( disable : 4091)
+
 // 重新定义FD_SETSIZE来，要在winsock2.h前面，也请其他人注意
 #ifndef FD_SETSIZE
 #define FD_SETSIZE   1024
@@ -203,6 +207,8 @@
 #include <share.h>
 #include <DbgHelp.h>
 #include <intrin.h>
+
+#pragma warning ( pop )
 
 #endif //#ifdef ZCE_OS_WINDOWS
 
@@ -395,11 +401,11 @@ typedef __int64             int64_t;
 
 //==================================================================================================
 //我们引入的外部库，目前包括,rapidxml,MYSQL,SQLite,
+//外部文件头文件包含，控制开关一般放在zce_config.h文件
+
+#include "zce_config.h"
 
 //rapidxml XML文件的头文件以及开关，我们引入的库是rapidxml 库，他的优势是只有头文件，
-#ifndef ZCE_USE_RAPIDXML
-#define ZCE_USE_RAPIDXML 1
-#endif
 
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
 #if defined (ZCE_OS_WINDOWS)
@@ -417,31 +423,17 @@ typedef __int64             int64_t;
 #endif
 #endif
 
-// mysql开关以及头文件包含
-#ifndef ZCE_USE_MYSQL
-#define ZCE_USE_MYSQL 1
-#endif
-
+//MySQL
 #if defined ZCE_USE_MYSQL && ZCE_USE_MYSQL == 1
 #include <mysql.h>
 #endif
 
-//是否使用SQLITE3
-#ifndef ZCE_USE_SQLITE
-#define ZCE_USE_SQLITE 1
-#endif
-
+//SQLite
 #if defined ZCE_USE_SQLITE && ZCE_USE_SQLITE == 1
 #include <sqlite3.h>
 #endif
 
-
-//是否使用LUA
-#ifndef ZCE_USE_LUA
-#define ZCE_USE_LUA 1
-#endif
-
-
+//Lua
 #if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
 extern "C"
 {
@@ -460,10 +452,8 @@ extern "C"
 
 //==================================================================================================
 
-//是否使用Google Protobuf,如果你仅仅使用Protobuf - Lite，也请关闭这儿，
-#ifndef ZCE_USE_PROTOBUF
-#define ZCE_USE_PROTOBUF 1
-#endif
+//是否使用Google Protobuf,
+//ZCE_USE_PROTOBUF 宏在zce_config.h文件里面控制
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 #if defined (ZCE_OS_WINDOWS)

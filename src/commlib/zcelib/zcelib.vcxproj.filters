@@ -313,9 +313,6 @@
     <ClInclude Include="zce_trace_log_basic.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_trace_log_debug.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_trace_log_msg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -400,7 +397,19 @@
     <ClInclude Include="zce_serialization.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_bytes_serialization.h">
+    <ClInclude Include="zce_bytes_serialize.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_config.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_trace_aid_debug.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_trace_debugging.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_trace_log_priority.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -633,9 +642,6 @@
     <ClCompile Include="zce_trace_log_basic.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_trace_log_debug.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce_trace_log_msg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -708,7 +714,10 @@
     <ClCompile Include="zce_serialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce_bytes_serialization.cpp">
+    <ClCompile Include="zce_bytes_serialize.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_trace_aid_debug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

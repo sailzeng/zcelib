@@ -19,7 +19,7 @@
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_mutex.h"
 #include "zce_lock_thread_mutex.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_time.h"
 
@@ -376,7 +376,7 @@ const char *ZCE_LIB::timeval_to_str(const timeval *timeval,
         }
 
         //注意timezone理论上需要tzset()函数初始化
-        int tz = timezone;
+        int tz = ZCE_LIB::gettimezone();
         snprintf(str_date_time,
                  str_len,
                  "%3s, %2d %3s %04d %02d:%02d:%02d %+05d",

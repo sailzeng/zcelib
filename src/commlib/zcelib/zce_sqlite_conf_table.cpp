@@ -1,6 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_bytes_encode.h"
-#include "zce_trace_log_debug.h"
+#include "zce_trace_debugging.h"
 #include "zce_sqlite_db_handler.h"
 #include "zce_sqlite_stmt_handler.h"
 #include "zce_sqlite_conf_table.h"

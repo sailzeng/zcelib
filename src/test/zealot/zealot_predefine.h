@@ -6,7 +6,7 @@
 //ZCELIBµÄ´úÂë
 
 #include <zce_predefine.h>
-#include <zce_trace_log_debug.h>
+#include <zce_trace_debugging.h>
 #include <zce_trace_log_plus.h>
 
 #include <zce_os_adapt_predefine.h>
@@ -72,7 +72,7 @@
 #include <zce_bytes_encode.h>
 #include <zce_bytes_encrypt.h>
 #include <zce_bytes_compress.h>
-#include <zce_bytes_serialization.h>
+#include <zce_bytes_serialize.h>
 
 
 #include <zce_event_handle_base.h>

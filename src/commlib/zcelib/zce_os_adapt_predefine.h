@@ -614,6 +614,8 @@ typedef int clockid_t;
 #endif
 
 
+#if _MSC_VER <= 1800
+
 //POSIX的时间，
 typedef struct
 {
@@ -622,6 +624,8 @@ typedef struct
     /// Nanoseconds
     long      tv_nsec;
 } timespec;
+
+#endif
 
 //flock函数用的的4个参数,
 // shared lock
