@@ -199,7 +199,6 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
     {
 
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-        //
         Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
@@ -366,7 +365,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
         //记录下来处理
         if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD )
         {
-            ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uin[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
+            ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                     proc_frame->frame_length_,
                     proc_frame->frame_command_,
                     proc_frame->frame_command_,

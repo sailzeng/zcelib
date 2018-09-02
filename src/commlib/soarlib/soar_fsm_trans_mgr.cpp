@@ -74,9 +74,12 @@ int Transaction_Manager::initialize(ZCE_Timer_Queue *timer_queue,
     self_svc_id_ = selfsvr;
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
-    trans_send_buffer_ = new (max_frame_len + 32) Zerg_App_Frame(CMD_INVALID_CMD, max_frame_len);
-    trans_recv_buffer_ = new (max_frame_len + 32) Zerg_App_Frame(CMD_INVALID_CMD, max_frame_len);
-    fake_recv_buffer_ = new (max_frame_len + 32) Zerg_App_Frame(CMD_INVALID_CMD, max_frame_len);
+    trans_send_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
+    trans_send_buffer_->init_framehead(max_frame_len,CMD_INVALID_CMD);
+    trans_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
+    trans_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
+    fake_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
+    fake_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
     if (init_inner_queue)
@@ -114,17 +117,17 @@ void Transaction_Manager::finish()
     }
     if (trans_send_buffer_)
     {
-        delete trans_send_buffer_;
+        Zerg_App_Frame::delete_frame(trans_send_buffer_);
         trans_send_buffer_ = NULL;
     }
     if (trans_recv_buffer_)
     {
-        delete trans_recv_buffer_;
+        Zerg_App_Frame::delete_frame(trans_recv_buffer_);
         trans_recv_buffer_ = NULL;
     }
     if (fake_recv_buffer_)
     {
-        delete fake_recv_buffer_;
+        Zerg_App_Frame::delete_frame(fake_recv_buffer_);
         fake_recv_buffer_ = NULL;
     }
     ZCE_Async_FSMMgr::finish();

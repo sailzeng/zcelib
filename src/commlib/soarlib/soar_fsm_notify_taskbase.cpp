@@ -9,7 +9,7 @@ NotifyTrans_TaskBase::NotifyTrans_TaskBase():
     task_run_(false),
     task_frame_buf_(NULL)
 {
-    task_frame_buf_ = new(Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16) Zerg_App_Frame();
+    task_frame_buf_ = Zerg_App_Frame::new_frame(Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16);
     task_frame_buf_->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
 }
 
@@ -18,7 +18,7 @@ NotifyTrans_TaskBase::~NotifyTrans_TaskBase()
 {
     if (task_frame_buf_ )
     {
-        delete task_frame_buf_;
+        Zerg_App_Frame::delete_frame(task_frame_buf_);
         task_frame_buf_ = NULL;
     }
 }

@@ -285,7 +285,7 @@ void Transaction_Base::unlock_qquin_cmd()
 //DUMP所有的事物的信息
 void Transaction_Base::dump_transa_info(std::ostringstream &strstream) const
 {
-    strstream << "ID:" << asyncobj_id_ << " Uin:" << req_user_id_ << " Cmd:" << req_command_ << " Stage:" << std::dec << fsm_stage_ << " ";
+    strstream << "ID:" << asyncobj_id_ << " uid:" << req_user_id_ << " Cmd:" << req_command_ << " Stage:" << std::dec << fsm_stage_ << " ";
     strstream << "ReqSndSvr:" << req_snd_service_.services_type_ << "|" << req_snd_service_.services_id_ \
               << " ReqRcvSvr:" << req_rcv_service_.services_type_ << "|" << req_rcv_service_.services_id_ \
               << " Reqproxy:" << req_proxy_service_.services_type_  << "|" << req_proxy_service_.services_id_ << " ";
@@ -302,7 +302,7 @@ void Transaction_Base::output_trans_info(const char *outstr ) const
 }
 
 int Transaction_Base::request_send_buf_to_peer(unsigned int cmd,
-                                               unsigned int qquin,
+                                               unsigned int uid,
                                                const SERVICES_ID &rcv_svc,
                                                const unsigned char *buf,
                                                unsigned int buf_len,
@@ -311,7 +311,7 @@ int Transaction_Base::request_send_buf_to_peer(unsigned int cmd,
 {
     SERVICES_ID proxy_svc(0, 0);
     return sendbuf_to_service(cmd,
-                              qquin,
+                              uid,
                               this->asyncobj_id_,
                               0,
                               rcv_svc,
@@ -324,7 +324,7 @@ int Transaction_Base::request_send_buf_to_peer(unsigned int cmd,
 }
 
 int Transaction_Base::request_send_buf_to_proxy(unsigned int cmd,
-                                                unsigned int qquin,
+                                                unsigned int uid,
                                                 const SERVICES_ID &proxy_svc,
                                                 const SERVICES_ID &recv_svc,
                                                 const unsigned char *buf,
@@ -334,7 +334,7 @@ int Transaction_Base::request_send_buf_to_proxy(unsigned int cmd,
 {
 
     return sendbuf_to_service(cmd,
-                              qquin,
+                              uid,
                               this->asyncobj_id_,
                               0,
                               recv_svc,
@@ -347,7 +347,7 @@ int Transaction_Base::request_send_buf_to_proxy(unsigned int cmd,
 }
 
 int Transaction_Base::sendbuf_to_service(unsigned int cmd,
-                                         unsigned int qquin,
+                                         unsigned int uid,
                                          unsigned int transaction_id,
                                          unsigned int backfill_trans_id,
                                          const SERVICES_ID &rcv_svc,
@@ -366,7 +366,7 @@ int Transaction_Base::sendbuf_to_service(unsigned int cmd,
 
     //条用管理器的发送函数
     return trans_manager_->mgr_sendbuf_to_service(cmd,
-                                                  qquin,
+                                                  uid,
                                                   transaction_id,
                                                   backfill_trans_id,
                                                   rcv_svc,
@@ -379,7 +379,7 @@ int Transaction_Base::sendbuf_to_service(unsigned int cmd,
 }
 
 int Transaction_Base::response_buf_sendback(unsigned int cmd,
-                                            unsigned int uin,
+                                            unsigned int uid,
                                             const unsigned char *buf,
                                             unsigned int buf_len,
                                             unsigned int option )
@@ -394,7 +394,7 @@ int Transaction_Base::response_buf_sendback(unsigned int cmd,
 
     //
     return sendbuf_to_service(cmd,
-                              uin,
+                              uid,
                               this->asyncobj_id_,
                               this->req_trans_id_,
                               this->req_snd_service_,

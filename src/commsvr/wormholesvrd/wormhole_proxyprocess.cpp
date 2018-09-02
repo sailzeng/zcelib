@@ -532,7 +532,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 
 
 
-//const DBModalMGRouteItem *DBModalMGProxyInfo::find_route(unsigned int uin)
+//const DBModalMGRouteItem *DBModalMGProxyInfo::find_route(unsigned int uid)
 //{
 //    if (route_cfg_.size() == 0)
 //    {
@@ -542,8 +542,8 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //    }
 //
 //    DBModalMGRouteItem tmp;
-//    // 取uin的低16位作为hash值,应该够随机的
-//    tmp.hash_ = (uin & 0xFFFF);
+//    // 取uid的低16位作为hash值,应该够随机的
+//    tmp.hash_ = (uid & 0xFFFF);
 //
 //    std::vector<DBModalMGRouteItem>::iterator iter
 //        = std::upper_bound(route_cfg_.begin(), route_cfg_.end(), tmp);
@@ -641,7 +641,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //    ZCE_LOG(RS_DEBUG,"Receive a dbmode frame to process,"
 //               "send svr:[%u|%u], "
 //               "recv svr:[%u|%u], "
-//               "frame_uin:%u, "
+//               "frame_uid:%u, "
 //               "frame_cmd:%u, "
 //               "frame_len:%u. ",
 //               proc_frame->send_service_.services_type_,
@@ -672,10 +672,10 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        DBModalProxyInfo *dbmodal_proxy_info = iter->second;
 //
 //        //------------------------------------------------------------------
-//        unsigned int uin = proc_frame->frame_uid_;
+//        unsigned int uid = proc_frame->frame_uid_;
 //
-//        // 过滤掉uin为0的数据
-//        if (uin == 0 )
+//        // 过滤掉uid为0的数据
+//        if (uid == 0 )
 //        {
 //
 //            proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_ERROR);
@@ -687,7 +687,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //        // 关键代码处
 //        unsigned int mod =
-//            (uin >> dbmodal_proxy_info->distribute_offset_) % dbmodal_proxy_info->distribute_module_;
+//            (uid >> dbmodal_proxy_info->distribute_offset_) % dbmodal_proxy_info->distribute_module_;
 //
 //        // ------------------------------------------------------------------
 //        proc_frame->recv_service_.services_type_ = dbmodal_proxy_info->router_svr_type_;

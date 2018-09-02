@@ -241,7 +241,7 @@ protected:
     //为啥要用2作为函数名称而不重载呢，你可以考虑一下,我不作答
     template< class T>
     int response_sendback2(unsigned int cmd,
-                           unsigned int qquin,
+                           unsigned int uid,
                            const T &info,
                            unsigned int option = 0);
 
@@ -249,7 +249,7 @@ protected:
     // 这个函数与response_sendback2的区别是info被打包成了buf,
     // 一般只在你要回的这个buf,你自己解不出来时才使用，慎用
     int response_buf_sendback(unsigned int cmd,
-                              unsigned int uin,
+                              unsigned int uid,
                               const unsigned char *buf,
                               unsigned int buf_len,
                               unsigned int option = 0);
@@ -258,7 +258,7 @@ protected:
     //奉劝大家不要用这个，最大集合,
     template< class T>
     int sendmsg_to_service(unsigned int cmd,
-                           unsigned int qquin,
+                           unsigned int uid,
                            unsigned int transaction_id,
                            unsigned int backfill_trans_id,
                            const SERVICES_ID &rcv_svc,
@@ -270,7 +270,7 @@ protected:
 
     // 发送数据到SERVICES_ID服务器,最大集合, 一般用封装过的函数
     int sendbuf_to_service(unsigned int cmd,
-                           unsigned int qquin,
+                           unsigned int uid,
                            unsigned int transaction_id,
                            unsigned int backfill_trans_id,
                            const SERVICES_ID &rcv_svc,

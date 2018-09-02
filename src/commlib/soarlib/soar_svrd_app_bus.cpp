@@ -8,7 +8,7 @@ Soar_SvrdApp_ZergBus::Soar_SvrdApp_ZergBus() :
     Soar_Svrd_Appliction(),
     nonctrl_recv_buffer_(NULL)
 {
-    nonctrl_recv_buffer_ = new (Zerg_App_Frame::MAX_LEN_OF_APPFRAME) Zerg_App_Frame();
+    nonctrl_recv_buffer_ = Zerg_App_Frame::new_frame(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
 }
 
 Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
@@ -16,7 +16,7 @@ Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
     //ÊÍ·Å×ÊÔ´
     if (nonctrl_recv_buffer_)
     {
-        delete nonctrl_recv_buffer_;
+        Zerg_App_Frame::delete_frame(nonctrl_recv_buffer_);
         nonctrl_recv_buffer_ = NULL;
     }
 }

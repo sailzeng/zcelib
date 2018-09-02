@@ -413,7 +413,7 @@ public:
         //返回值小于0表示失败
         if (ret < 0)
         {
-            ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uin=%u cmd=%u",
+            ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
                     ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
 
             // 加个监控

@@ -200,7 +200,6 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::AppFrame_Mallocor_Mgr()
 template <typename ZCE_LOCK >
 AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 {
-
     //
     ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
 
@@ -237,7 +236,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
         {
             Zerg_App_Frame *proc_frame = NULL;
             frame_pool_[i].pop_front(proc_frame);
-            delete proc_frame;
+            Zerg_App_Frame::delete_frame(proc_frame);
         }
     }
 }
@@ -320,7 +319,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::extend_list_capacity(size_t list_no, size_
 
     for (size_t j = 0; j < extend_num; ++j)
     {
-        Zerg_App_Frame *proc_frame = new(size_appframe_[list_no] + 1) Zerg_App_Frame();
+        Zerg_App_Frame *proc_frame =  Zerg_App_Frame::new_frame(size_appframe_[list_no] + 1);
         frame_pool_[list_no].push_back(proc_frame);
     }
 }

@@ -669,18 +669,14 @@ int TCP_Svc_Handler::handle_close()
         if (false == if_force_close_)
         {
             //通知后面的服务器
-#ifdef ZCE_OS_WINDOWS
-#pragma warning ( disable : 4815)
-#endif
-            //数据区的长度
-            Zerg_App_Frame appframe;
-#ifdef ZCE_OS_WINDOWS
-#pragma warning ( default : 4815)
-#endif
-            appframe.init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
-            appframe.send_service_ = peer_svr_id_;
 
-            zerg_comm_mgr_->pushback_recvpipe(&appframe);
+            Zerg_Buffer *close_buf = zbuffer_storage_->allocate_buffer();
+            Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(close_buf->buffer_data_);
+
+            proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
+            proc_frame->send_service_ = peer_svr_id_;
+            zerg_comm_mgr_->pushback_recvpipe(proc_frame);
+            zbuffer_storage_->free_byte_buffer(close_buf);
         }
     }
 
@@ -1068,7 +1064,7 @@ int TCP_Svc_Handler::write_all_data_to_peer()
         //发送一个数据包
         size_t szsend;
         bool   bfull = false;
-        int ret = write_data_to_peer(szsend, bfull);
+        ret = write_data_to_peer(szsend, bfull);
 
         //出现错误,
         if (ret != 0)
@@ -1261,7 +1257,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
             //如果是要记录的命令，记录下来，可以帮忙回溯一些问题
             if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD)
             {
-                ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame uin[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s|%u],peer status[%u]. ",
+                ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s|%u],peer status[%u]. ",
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
                         proc_frame->frame_uid_,
@@ -1470,7 +1466,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         {
             //这儿还没有编码
             ZCE_LOG(RS_ERROR, "[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
-                    "have been existed. frame command[%u]. uin[%u] frame length[%u].",
+                    "have been existed. frame command[%u]. uid[%u] frame length[%u].",
                     p_sendto_svrinfo->services_type_,
                     p_sendto_svrinfo->services_id_,
                     proc_frame->frame_command_,

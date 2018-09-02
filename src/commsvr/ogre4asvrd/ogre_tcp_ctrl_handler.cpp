@@ -660,7 +660,7 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
         //发送一个数据包
         size_t szsend ;
         bool   bfull = false;
-        int ret =  write_data_to_peer(szsend, bfull);
+        ret =  write_data_to_peer(szsend, bfull);
 
         //出现错误,
         if (ret != 0)
@@ -761,7 +761,7 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
         //if(  Soar_MMAP_BusPipe::instance()->IsExistZergPipe(Soar_MMAP_BusPipe::ERROR_PIPE_ID) == true)
         //{
         //}
-        ZCE_LOG(RS_ERROR, " Peer handle [%u] ,send frame fail.frame len[%u] frame command[%u] frame uin[%u] address[%s|%u],peer status[%u]. \n",
+        ZCE_LOG(RS_ERROR, " Peer handle [%u] ,send frame fail.frame len[%u] frame command[%u] frame uid[%u] address[%s|%u],peer status[%u]. \n",
                 socket_peer_.get_handle(),
                 inner_frame->ogre_frame_len_,
                 remote_address_.get_host_addr(),

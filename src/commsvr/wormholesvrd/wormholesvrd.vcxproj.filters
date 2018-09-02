@@ -11,90 +11,36 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="zerg_accept_handler.cpp">
+    <ClCompile Include="wormhole_application.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_application.cpp">
+    <ClCompile Include="wormhole_configture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_auto_connect.cpp">
+    <ClCompile Include="wormhole_main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_buf_storage.cpp">
+    <ClCompile Include="wormhole_predefine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zerg_comm_manager.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_configure.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_console_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_ip_restrict.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_predefine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_tcp_ctrl_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_udp_ctrl_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_app_timer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zerg_active_svchdl_set.cpp">
+    <ClCompile Include="wormhole_proxyprocess.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="zerg_accept_handler.h">
+    <ClInclude Include="wormhole_application.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zerg_application.h">
+    <ClInclude Include="wormhole_configture.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zerg_auto_connect.h">
+    <ClInclude Include="wormhole_predefine.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zerg_buf_storage.h">
+    <ClInclude Include="wormhole_proxyprocess.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zerg_comm_manager.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_configure.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_console_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_ip_restrict.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_predefine.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_stat_define.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_tcp_ctrl_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_udp_ctrl_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_app_timer.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zerg_active_svchdl_set.h">
+    <ClInclude Include="wormhole_stat_define.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

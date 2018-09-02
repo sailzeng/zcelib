@@ -24,13 +24,13 @@ Tibetan_SendRecv_Package::~Tibetan_SendRecv_Package()
     //清理已经分配的缓冲区
     if (tibetan_send_appframe_)
     {
-        delete tibetan_send_appframe_;
+        Zerg_App_Frame::delete_frame(tibetan_send_appframe_);
         tibetan_send_appframe_ = NULL;
     }
 
     if (tibetan_recv_appframe_)
     {
-        delete tibetan_recv_appframe_;
+        Zerg_App_Frame::delete_frame(tibetan_recv_appframe_);
         tibetan_recv_appframe_ = NULL;
     }
 }
@@ -62,10 +62,10 @@ void Tibetan_SendRecv_Package::set_services_id(const SERVICES_ID &recv_service,
     test_frame_len_ = frame_len;
 
     //new一个APPFRAME,
-    tibetan_send_appframe_ = new(test_frame_len_) Zerg_App_Frame();
+    tibetan_send_appframe_ = Zerg_App_Frame::new_frame(test_frame_len_);
     tibetan_send_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
 
-    tibetan_recv_appframe_ = new(test_frame_len_) Zerg_App_Frame();
+    tibetan_recv_appframe_ = Zerg_App_Frame::new_frame(test_frame_len_);
     tibetan_recv_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
 
 }

@@ -90,43 +90,23 @@ public:
     };
 
 
-
+protected:
+    //构造函数，禁止大家都可以用的.
+    Zerg_App_Frame();
 public:
-    //构造函数，大家都可以用的.
-    Zerg_App_Frame(uint32_t cmd = CMD_INVALID_CMD,
-                   uint32_t lenframe = LEN_OF_APPFRAME_HEAD,
-                   uint32_t frameoption = DESC_V1_VERSION);
-
-    //构造函数,用于,客户端初始化,
-    Zerg_App_Frame(uint32_t cmd,
-                   uint32_t lenframe,
-                   uint32_t uin,
-                   uint16_t sndsvrtype,
-                   uint16_t rcvsvctype,
-                   uint32_t frameoption = DESC_V1_VERSION);
-
-    //构造函数,用于发送给一个非代理服务器
-    Zerg_App_Frame(uint32_t cmd,
-                   uint32_t lenframe,
-                   uint32_t uin,
-                   const SERVICES_ID &sndsvr,
-                   const SERVICES_ID &rcvsvc,
-                   uint32_t frameoption = DESC_V1_VERSION);
-
-    //构造函数,用于发送给一个代理服务器
-    Zerg_App_Frame(uint32_t cmd,
-                   uint32_t lenframe,
-                   uint32_t uin,
-                   const SERVICES_ID &sndsvr,
-                   const SERVICES_ID &proxy,
-                   uint16_t rcvsvc,
-                   uint32_t frameoption = DESC_V1_VERSION);
-
     //析构函数
     ~Zerg_App_Frame();
 
     //Assign =运算符号
     Zerg_App_Frame &operator = (const Zerg_App_Frame &other);
+
+    ///初始化V1版本的包头,所有数据清0
+    void init_framehead(uint32_t lenframe = LEN_OF_APPFRAME_HEAD,
+                        uint32_t cmd = CMD_INVALID_CMD,
+                        uint32_t frameoption = DESC_V1_VERSION);
+
+    //
+    inline void clear();
 
     //是否是内部处理的命令
     inline bool is_internal_process(bool &bsenderr);
@@ -143,10 +123,6 @@ public:
     //将帧头的所有的uint16_t,uint32_t转换为本地序
     void framehead_decode();
 
-    //初始化V1版本的包头,所有数据清0
-    void init_framehead(uint32_t lenframe,
-                        uint32_t option = 0,
-                        uint32_t cmd = 0);
 
     //填充发送SVR信息
     void set_send_svcid(uint16_t svrtype, uint32_t svrid);
@@ -194,20 +170,6 @@ public:
     //取得帧数据的长度
     inline size_t get_frame_datalen() const;
 
-    //TDR AppCode编码,szframe_appdata为frame_appdata_的buffer长度,如果frame_appdata_为一个缓冲,使用此函数
-    template<class T> int appdata_encode(
-        size_t szframe_appdata,
-        const T &info,
-        size_t data_start = 0,
-        size_t *sz_code = NULL);
-
-    //TDR AppCode解码,
-    template<class T> int appdata_decode(
-        T &info,
-        size_t data_start = 0,
-        size_t *sz_code = NULL) const;
-
-
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
     ///将一个结构进行编码
@@ -224,45 +186,32 @@ public:
 
 #endif
 
-
-    //拷贝Output CDR中的Msg,Block数据,szframe_appdata为frame_appdata_的buffer长度,如果frame_appdata_为一个缓冲,使用此函数
-    //ssize_t CopyCDRMsgBlock(size_t szframe_appdata,const ACE_OutputCDR& outcdr );
-    //如果AppFrame为一个恰好长度的Frame,长度已经填写,使用此函数,
-    //ssize_t CopyCDRMsgBlock(const ACE_OutputCDR& outcdr);
-
     //取得IP地址信息
     uint32_t get_send_ip() const;
 
-    //-----------------------------------------------------------------------------------
-    //FRAME的数据进行TEA算法加密解密的函数，不知道Jovi当年为啥要写成STATIC的，呵呵
-    //APPDATA加密数据
-    int appframe_encrypt(const char *session_key,
-                         size_t data_start = 0);
-    //APPDATA数据解密,
-    int appframe_decrypt(const char *session_key,
-                         size_t data_start = 0);
 
-    //将APPDATA加密数据,加密数据保存到另外Zerg_App_Frame，
-    int appframe_encrypt(const char *session_key,
-                         Zerg_App_Frame *dest_frame,
-                         size_t data_start = 0);
-    //将APPDATA数据解密,解密数据保存在另外一个Zerg_App_Frame，
-    int appframe_decrypt(const char *session_key,
-                         Zerg_App_Frame *dest_frame,
-                         size_t data_start = 0);
+	
+protected:
+
+	// explicit is better than implicit
+	//经过很多次和VC编译器反复的摧残，我决定不再对外暴漏这个函数，外部请使用new_frame and delete_frame
+	//为什么呢，其实本来我认为只使用类内部的Placement new and delete 也算是explicit的，
+	//但被VC这么反复折腾，我前面先也用 ifdef对付过去了。但升级到VS2017发现左也不是，右也不是。不如不把new暴漏出去
+	//http://www.cnblogs.com/fullsail/p/4292214.html
+
+    ///重载New函数
+    static void   *operator new (size_t , std::size_t lenframe = LEN_OF_APPFRAME_HEAD);
+
+	static void operator delete(void *ptrframe) noexcept;
+
+//#endif
 
 public:
 
-
-    ///重载New函数
-    static void   *operator new (size_t , size_t lenframe = LEN_OF_APPFRAME_HEAD);
-    ///不重载delte与情理不通，为什么要写2个。。。
-    //http://www.cnblogs.com/fullsail/p/4292214.html
-#if defined ZCE_OS_WINDOWS
-    static void operator delete(void *ptrframe,size_t);
-#elif defined ZCE_OS_LINUX
-    static void operator delete(void *ptrframe);
-#endif
+	///创建一个Frame
+	static Zerg_App_Frame *new_frame(std::size_t lenframe);
+	///销毁一个frame
+	static void delete_frame(Zerg_App_Frame *frame);
 
 
     //输出APPFRAME的头部信息
@@ -273,12 +222,6 @@ public:
     static void dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);
-
-    //--------------------------------------------------------------------------
-    //FRAME的数据进行TEA算法加密解密的函数，STATIC函数，不知道Jovi当年为啥要写成STATIC的，呵呵
-    //构造签名包
-    static void signature_construct(Zerg_App_Frame *&proc_frame, uint32_t uin, const char *pSignature, size_t len);
-
 
 public:
 
@@ -329,6 +272,8 @@ public:
 
     ///UID
     uint32_t               frame_uid_;
+    ///业务ID，GAMEID，用于标识游戏内部ID
+    uint32_t               app_id_;
 
     ///发送和接收的服务器应用也要填写
 
@@ -344,8 +289,7 @@ public:
     ///回填的请求者的事务ID,
     uint32_t               backfill_trans_id_;
 
-    ///业务ID，GAMEID，用于标识游戏内部ID
-    uint32_t               app_id_;
+
 
     union
     {
@@ -368,6 +312,47 @@ public:
 };
 
 #pragma pack ()
+
+
+//初始化，ZERG服务器间传递消息的通用帧头
+inline void Zerg_App_Frame::init_framehead(uint32_t lenframe,
+                                           uint32_t cmd,
+                                           uint32_t frameoption)
+{
+    frame_length_ = lenframe;
+    frame_option_ = frameoption;
+    frame_command_ = cmd;
+
+    frame_uid_ = 0;
+    app_id_ = 0;
+
+    send_service_.set_svcid(0, 0);
+    recv_service_.set_svcid(0, 0);
+    proxy_service_.set_svcid(0, 0);
+    send_serial_number_ = 0;
+    transaction_id_ = 0;
+    backfill_trans_id_ = 0;
+    
+}
+
+//清理
+inline void Zerg_App_Frame::clear()
+{
+    frame_length_ = CMD_INVALID_CMD;
+    frame_option_ = DESC_V1_VERSION;
+    frame_command_ = LEN_OF_APPFRAME_HEAD;
+    frame_uid_ = 0;
+    app_id_ = 0;
+    send_service_.services_type_ = 0;
+    send_service_.services_id_ = 0;
+    recv_service_.services_type_ = 0;
+    recv_service_.services_id_ = 0;
+    proxy_service_.services_type_ = 0;
+    proxy_service_.services_id_ = 0;
+    transaction_id_ = 0;
+    backfill_trans_id_ = 0;
+    send_ip_address_ = 0;
+}
 
 //清理内部的选项信息
 inline void Zerg_App_Frame::clear_inner_option()
@@ -425,86 +410,6 @@ inline bool  Zerg_App_Frame::is_internal_process(bool &bsenderr)
     }
 
     return false;
-}
-
-/******************************************************************************************
-Author          : Yunfeiyang  Date Of Creation: 2007年3月12日
-Function        : Zerg_App_Frame::appdata_decode
-Return          : template<class T> int
-Parameter List  :
-  Param1: size_t szframe_appdata FRAME的APPDATA的数据长度，注意不是整个APPFRMAE的长度
-  Param2: const T& info          编码的数据
-  Param3: size_t data_start      从DATA区的第几个位置开始填充数据，默认为0
-  Param4: size_t *sz_code        如果关系编码的数据长度，传递一个指针得到长度，默认为NULL,表示不关心
-Description     : frame_appdata_的编码函数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-template<class T>
-int Zerg_App_Frame::appdata_encode(size_t szframe_appdata,
-                                   const T &info,
-                                   size_t data_start,
-                                   size_t *sz_code)
-{
-    size_t use_len = 0;
-    int ret = info.pack(frame_appdata_ + data_start,
-                        szframe_appdata - data_start, &use_len);
-
-    if (ret == 0 && sz_code != NULL)
-    {
-        *sz_code = use_len;
-    }
-
-    if (ret != 0)
-    {
-        return SOAR_RET::ERROR_CDR_ENCODE_FAIL;
-    }
-
-    // 调整frame的长度
-    frame_length_
-        = (uint32_t)(data_start + use_len + LEN_OF_APPFRAME_HEAD);
-    return 0;
-}
-
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007年3月12日
-Function        : Zerg_App_Frame::appdata_decode
-Return          : template<class T> int
-Parameter List  :
-  Param1: T& info           解码转换的结构
-  Param2: size_t data_start 从DATA区的第几个位置开始解码数据，默认为0
-  Param3: size_t *sz_code   如果关系编码的数据长度，传递一个指针得到长度，默认为NULL,表示不关心
-Description     : frame_appdata_的解码函数
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-template<class T>
-int Zerg_App_Frame::appdata_decode(  T &info,
-                                     size_t data_start,
-                                     size_t *sz_code) const
-{
-    size_t use_len = 0;
-
-    // frame_length_包含了frame头部数据的，所以要跳过
-    int ret = info.unpack(frame_appdata_ + data_start,
-                          frame_length_ - data_start - LEN_OF_APPFRAME_HEAD, &use_len);
-
-    if (ret == 0 && sz_code != NULL)
-    {
-        //如果要得到编码数据的长度
-        *sz_code = use_len;
-    }
-
-    if (ret != 0)
-    {
-        return SOAR_RET::ERROR_CDR_ENCODE_FAIL;
-    }
-
-    return 0;
 }
 
 

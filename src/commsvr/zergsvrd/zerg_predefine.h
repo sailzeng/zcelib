@@ -43,7 +43,7 @@
 #include <zce_socket_connector.h>
 #include <zce_socket_stream.h>
 #include <zce_mml_command.h>
-
+#include <zce_trace_aid_debug.h>
 
 #include <soar_predefine.h>
 #include <soar_error_code.h>

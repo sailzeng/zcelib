@@ -303,12 +303,12 @@ protected:
 //    // 路由表
 //    std::vector<DBModalMGRouteItem> route_cfg_;
 //
-//    const DBModalMGRouteItem *find_route(unsigned int uin);
+//    const DBModalMGRouteItem *find_route(unsigned int uid);
 //};
 //
 //
 ///****************************************************************************************************
-//class  DBModalProxyMGProcess 手游类按照APPID和UIN进行数据转发的处理方式
+//class  DBModalProxyMGProcess 手游类按照APPID和uid进行数据转发的处理方式
 //****************************************************************************************************/
 //class DBModalMGProxyProcess : public Interface_WH_Proxy
 //{
@@ -332,7 +332,7 @@ protected:
 //    //
 //    int add_entry(uint32_t app_id, uint32_t service_type, DBModalMGProxyInfo *proxy_info);
 //    //
-//    const DBModalMGRouteItem *find_proxy(uint32_t app_id, uint32_t service_type, uint32_t uin, uint32_t &recv_service);
+//    const DBModalMGRouteItem *find_proxy(uint32_t app_id, uint32_t service_type, uint32_t uid, uint32_t &recv_service);
 //    //
 //    void clear_all_entrys();
 //};
