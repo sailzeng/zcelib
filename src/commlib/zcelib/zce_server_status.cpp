@@ -454,17 +454,20 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
     int clear_type = STATICS_INVALID_TYPE;
 
     //看时间周期发生了什么变化没有
-    if (clear_time_ / FIVE_MINTUE_SECONDS != now_time / FIVE_MINTUE_SECONDS)
+    if (clear_time_ / FIVE_MINTUE_SECONDS != 
+        now_time / FIVE_MINTUE_SECONDS)
     {
         clear_type = STATICS_PER_FIVE_MINTUES;
 
         //如果5分钟都没有变化，小时不会变化
-        if (clear_time_ / ONE_HOUR_SECONDS != now_time / ONE_HOUR_SECONDS)
+        if (clear_time_ / ZCE_LIB::ONE_HOUR_SECONDS != 
+            now_time / ZCE_LIB::ONE_HOUR_SECONDS)
         {
             clear_type = STATICS_PER_HOUR;
 
             //如果小时都没有变化，天不会变化
-            if (clear_time_ / ONE_DAY_SECONDS != now_time / ONE_DAY_SECONDS)
+            if (clear_time_ / ZCE_LIB::ONE_DAY_SECONDS != 
+                now_time / ZCE_LIB::ONE_DAY_SECONDS)
             {
                 clear_type = STATICS_PER_DAYS;
             }

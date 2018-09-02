@@ -17,17 +17,8 @@
 
 #include "zce_os_adapt_predefine.h"
 
-//为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
 
-//一个小时的时间
-static const time_t ONE_HOUR_SECONDS      = 3600;
-//
-static const time_t ONE_QUARTER_SECONDS   = 15 * 60;
 
-static const time_t FIVE_MINUTE_SECONDS   = 5 * 60;
-
-//一天的秒数
-static const time_t ONE_DAY_SECONDS       = 86400;
 
 #if defined ZCE_OS_WINDOWS
 
@@ -43,8 +34,43 @@ struct timezone
 
 namespace ZCE_LIB
 {
+    //一个小时的时间
+    static const time_t ONE_HOUR_SECONDS = 3600;
+    //一分钟的秒数
+    static const time_t ONE_MINUTE_SECONDS = 60;
+    //
+    static const time_t ONE_QUARTER_SECONDS = 15 * 60;
 
+    static const time_t FIVE_MINUTE_SECONDS = 5 * 60;
+    //一天的秒数86400
+    static const time_t ONE_DAY_SECONDS = 86400;
+    //各种关于时间的定义
+    static const time_t ONE_WEEK_DAYS = 7;
+    //一周的秒数
+    static const time_t ONE_WEEK_SECONDS = 604800;
 
+#if defined ZCE_OS_WINDOWS
+    static const time_t TIMEZONE_SECONDS = _timezone;
+#else
+    static const time_t TIMEZONE_SECONDS = timezone;
+#endif
+
+//在时区的角度，从1970.1.1到现在多少秒
+#ifndef HOW_MANY_SECONDS_TZ
+#define HOW_MANY_SECONDS_TZ(x)  (x + ZCE_LIB::TIMEZONE_SECONDS)
+#endif
+//在时区的角度，取从1970.1.1到现在的天数量,用于判断是不是同一天之类的问题
+#ifndef HOW_MANY_DAYS_TZ
+#define HOW_MANY_DAYS_TZ(x)  (HOW_MANY_SECONDS_TZ(x)/ZCE_LIB::ONE_DAY_SECONDS)
+#endif
+//在时区的角度，取从1970.1.1到现在的小时数量
+#ifndef HOW_MANY_HOURS_TZ 
+#define HOW_MANY_HOURS_TZ(x) (HOW_MANY_SECONDS_TZ(x) / ZCE_LIB::ONE_HOUR_SECONDS)
+#endif
+//在时区的角度，取从1970.1.1到现在的小时数量 这里为啥要+3，因为19700101是礼拜四。还是注释清楚吧，从周一到现在
+#ifndef HOW_MANY_WEEKS_TZ
+#define HOW_MANY_WEEKS_TZ(x)  (( HOW_MANY_SECONDS_TZ(x) + ZCE_LIB::ONE_DAY_SECONDS * 3)/ZCE_LIB::ONE_WEEK_SECONDS)
+#endif
 
 /*!
 * @brief      非标准函数，得到服务器启动到现在的时间，这个时间是个绝对递增的值，不会调整

@@ -235,7 +235,7 @@ void ZCE_LogTrace_Basic::make_configure(void)
         case LOGDEVIDE_BY_MONTH:
         case LOGDEVIDE_BY_YEAR:
             cur_time = time(NULL);
-            current_click_ = cur_time / ONE_HOUR_SECONDS;
+            current_click_ = cur_time / ZCE_LIB::ONE_HOUR_SECONDS;
             create_time_logname(cur_time, log_file_name_);
             break;
 
@@ -344,11 +344,11 @@ void ZCE_LogTrace_Basic::make_new_logfile(time_t cur_time, bool init)
             break;
 
         case LOGDEVIDE_BY_FIVEMINUTE:
-            cur_click = cur_time / FIVE_MINUTE_SECONDS;
+            cur_click = cur_time / ZCE_LIB::FIVE_MINUTE_SECONDS;
             break;
 
         case LOGDEVIDE_BY_QUARTER:
-            cur_click = cur_time / ONE_QUARTER_SECONDS;
+            cur_click = cur_time / ZCE_LIB::ONE_QUARTER_SECONDS;
             break;
 
         case LOGDEVIDE_BY_HOUR:
@@ -357,7 +357,7 @@ void ZCE_LogTrace_Basic::make_new_logfile(time_t cur_time, bool init)
         case LOGDEVIDE_BY_MONTH:
         case LOGDEVIDE_BY_YEAR:
             //得到小时精度的时间记录,
-            cur_click = cur_time / ONE_HOUR_SECONDS;
+            cur_click = cur_time / ZCE_LIB::ONE_HOUR_SECONDS;
 
             //每小时检查一次,对按年月日分割好像不公平,但这样可以节省大量代码,而且也没有什么效率问题
             //另外这样可以避免时区的判断
@@ -451,33 +451,33 @@ void ZCE_LogTrace_Basic::del_old_time_logfile(time_t cur_time, bool init)
             break;
 
         case LOGDEVIDE_BY_FIVEMINUTE:
-            del_file_time = cur_time - reserve_file_num_ * FIVE_MINUTE_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * ZCE_LIB::FIVE_MINUTE_SECONDS;
             break;
 
         case LOGDEVIDE_BY_QUARTER:
-            del_file_time = cur_time - reserve_file_num_ * ONE_QUARTER_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * ZCE_LIB::ONE_QUARTER_SECONDS;
             break;
 
         case LOGDEVIDE_BY_HOUR:
-            del_file_time = cur_time - reserve_file_num_ * ONE_HOUR_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * ZCE_LIB::ONE_HOUR_SECONDS;
             break;
 
         case LOGDEVIDE_BY_SIXHOUR:
-            del_file_time = cur_time - reserve_file_num_ * 6 * ONE_HOUR_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * 6 * ZCE_LIB::ONE_HOUR_SECONDS;
             break;
 
         case LOGDEVIDE_BY_DAY:
-            del_file_time = cur_time - reserve_file_num_ * 24 * ONE_HOUR_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * 24 * ZCE_LIB::ONE_HOUR_SECONDS;
             break;
 
             //使用最大一个月的时间进行判断，
         case LOGDEVIDE_BY_MONTH:
-            del_file_time = cur_time - reserve_file_num_ * 31 * ONE_DAY_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * 31 * ZCE_LIB::ONE_DAY_SECONDS;
             break;
 
             //使用最大一年闰年的时间进行判断
         case LOGDEVIDE_BY_YEAR:
-            del_file_time = cur_time - reserve_file_num_ * 366 * ONE_DAY_SECONDS;
+            del_file_time = cur_time - reserve_file_num_ * 366 * ZCE_LIB::ONE_DAY_SECONDS;
             break;
 
         default:
