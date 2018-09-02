@@ -60,10 +60,7 @@ void ZCE_Thread_Wait_Manager::wait_group(int group_id)
             ZCE_LIB::pthread_join(wait_thread.wait_thr_id_);
 
             //先保存原来的迭代器作为要删除的迭代器
-            MANAGE_WAIT_THREAD_LIST::iterator del_iter = iter_temp;
-            ++iter_temp;
-
-            wait_thread_list_.erase(del_iter);
+			iter_temp = wait_thread_list_.erase(iter_temp);
         }
         else
         {

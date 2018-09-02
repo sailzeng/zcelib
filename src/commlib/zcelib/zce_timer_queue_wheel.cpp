@@ -141,8 +141,6 @@ void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id)
         wheel_node_list_[old_node_id].list_prev_ = time_node_id;
         wheel_node_list_[time_node_id].list_next_ = old_node_id;
     }
-
-
 }
 
 

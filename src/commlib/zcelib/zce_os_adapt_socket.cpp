@@ -822,11 +822,11 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
                 }
                 else
                 {
-                    //
+                    //yunfeiyang:用coverity扫描发现的，发现了好几个框架的bug.棋子包括下面的这个地方，我原来写的是 result = -1
                     if ( 0 == ret)
                     {
                         errno = ETIMEDOUT;
-                        result = -1;
+                        ret = -1;
                     }
 
                     error_occur = true;

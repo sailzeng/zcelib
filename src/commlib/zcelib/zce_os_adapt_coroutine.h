@@ -27,7 +27,7 @@
 *             所以只能实现一个COROUTINE的封装，我的设计希望是这样的
 *             在main里面，在里面用make_coroutine生成协程，
 *             在main里面，switch_to_coroutine切换到协程，
-*             在coroutine里面，使用switch_to_main切换到协程，
+*             在coroutine里面，使用switch_to_main切换到主协程，
 *
 * @note       关于Fibers函数的说明，清参考如下文档，作者写的非常清楚。
 *             ConvertFiberToThread

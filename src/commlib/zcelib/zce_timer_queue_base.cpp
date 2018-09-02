@@ -180,7 +180,7 @@ int ZCE_Timer_Queue::cancel_timer(const ZCE_Timer_Handler *timer_hdl)
         {
             uint32_t time_id = static_cast<uint32_t > (i);
             cancel_timer(time_id);
-            cancel_time = false;
+            cancel_time = true;
 
             //不能break,因为HANDLE还有对应多个NODE,
         }

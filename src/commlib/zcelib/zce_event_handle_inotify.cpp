@@ -377,35 +377,35 @@ int ZCE_Event_INotify::handle_input ()
                                         node_ptr->watch_path_,
                                         active_path);
         }
-        else if (event_mask | IN_OPEN)
+        else if (event_mask & IN_OPEN)
         {
             detect_ret = inotify_open(node_ptr->watch_handle_,
                                       event_mask,
                                       node_ptr->watch_path_,
                                       active_path);
         }
-        else if (event_mask | IN_CLOSE_WRITE || event_mask | IN_CLOSE_NOWRITE)
+        else if (event_mask & IN_CLOSE_WRITE || event_mask | IN_CLOSE_NOWRITE)
         {
             detect_ret = inotify_close(node_ptr->watch_handle_,
                                        event_mask,
                                        node_ptr->watch_path_,
                                        active_path);
         }
-        else if (event_mask | IN_ATTRIB)
+        else if (event_mask & IN_ATTRIB)
         {
             detect_ret = inotify_attrib(node_ptr->watch_handle_,
                                         event_mask,
                                         node_ptr->watch_path_,
                                         active_path);
         }
-        else if (event_mask | IN_MOVE_SELF)
+        else if (event_mask & IN_MOVE_SELF)
         {
             detect_ret = inotify_move_slef(node_ptr->watch_handle_,
                                            event_mask,
                                            node_ptr->watch_path_,
                                            active_path);
         }
-        else if (event_mask | IN_DELETE_SELF)
+        else if (event_mask & IN_DELETE_SELF)
         {
             detect_ret = inotify_delete_slef(node_ptr->watch_handle_,
                                              event_mask,
