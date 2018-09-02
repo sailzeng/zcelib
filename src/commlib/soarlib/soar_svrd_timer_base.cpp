@@ -94,20 +94,20 @@ void Server_Timer_Base::check_monitor(const ZCE_Time_Value &now_time)
     time_t now_sec = now_time.sec();
 
     // 检查是否在同一个周期内
-    if (now_sec / FIVE_MINUTE_SECONDS != last_check_ / FIVE_MINUTE_SECONDS)
+    if (now_sec / ZCE_LIB::FIVE_MINUTE_SECONDS != last_check_ / ZCE_LIB::FIVE_MINUTE_SECONDS)
     {
         // 添加进程存活监控
         report_status();
         stat_monitor_->check_overtime(now_sec);
 
-        if (now_sec - last_check_ > FIVE_MINUTE_SECONDS)
+        if (now_sec - last_check_ > ZCE_LIB::FIVE_MINUTE_SECONDS)
         {
             ZCE_LOG(RS_ERROR, "check monitor more than five minutes:real_second=%d %d",
-                    now_sec - last_check_, now_sec % FIVE_MINUTE_SECONDS);
+                    now_sec - last_check_, now_sec % ZCE_LIB::FIVE_MINUTE_SECONDS);
         }
 
         // 这里是为了保证每次检查在5分钟整
-        last_check_ = now_sec - (now_sec % FIVE_MINUTE_SECONDS);
+        last_check_ = now_sec - (now_sec % ZCE_LIB::FIVE_MINUTE_SECONDS);
     }
 }
 
