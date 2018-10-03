@@ -196,12 +196,13 @@ int ZCE_LIB::socket_init (int version_high, int version_low)
                    "ZCE_LIB::socket_init; WSAStartup failed, "
                    "WSAGetLastError returned %d\n",
                    errno);
+        WSACleanup();
     }
 
-# else
+#else
     ZCE_UNUSED_ARG (version_high);
     ZCE_UNUSED_ARG (version_low);
-# endif
+#endif
     return 0;
 }
 
@@ -1904,7 +1905,7 @@ int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
 
     memset(&hints, 0, sizeof(addrinfo));
     //同时返回IPV4.和IPV6，如果只需要IPV4填写AF_INET，如果只需要IPV6填写AF_INET6
-    hints.ai_family = AF_UNSPEC;
+    hints.ai_family = addr->sa_family;
     //优先分析nodename是否是数值地址
     hints.ai_flags = AI_PASSIVE;
     ret = ZCE_LIB::getaddrinfo(nodename,

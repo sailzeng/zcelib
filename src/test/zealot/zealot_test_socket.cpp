@@ -62,6 +62,8 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
 
     ZCE_LIB::socket_init();
 
+    const char *TEST_HOST_NAME = "ipv6.google.com";
+
     const size_t ARRAY_NUM = 50;
     size_t ary_addr_num = ARRAY_NUM;
     sockaddr_in ary_addr[ARRAY_NUM];
@@ -74,8 +76,8 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
 
     addrinfo *result = nullptr;
     hints.ai_family = AF_INET;
-    hints.ai_flags = 0;
-    ret = ZCE_LIB::getaddrinfo("ipv6.google.com",
+    hints.ai_flags = AI_CANONNAME;
+    ret = ZCE_LIB::getaddrinfo(TEST_HOST_NAME,
                                NULL,
                                &hints,
                                &result);
@@ -90,8 +92,8 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
     std::cout << "ary_addr_num=" << ary_addr_num << " ary_addr6_num=" << ary_addr6_num << std::endl;
 
     hints.ai_family = AF_INET6;
-    hints.ai_flags = AI_ALL;
-    ret = ZCE_LIB::getaddrinfo("ipv6.google.com",
+    hints.ai_flags = AI_CANONNAME;
+    ret = ZCE_LIB::getaddrinfo(TEST_HOST_NAME,
                                NULL,
                                &hints,
                                &result);
@@ -107,7 +109,7 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
 
     hints.ai_family = AF_UNSPEC;
     hints.ai_flags = 0;
-    ret = ZCE_LIB::getaddrinfo("ipv6.google.com",
+    ret = ZCE_LIB::getaddrinfo(TEST_HOST_NAME,
                                NULL,
                                &hints,
                                &result);
@@ -140,7 +142,7 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
 
     hints.ai_family = AF_UNSPEC;
     hints.ai_flags = AI_ALL;
-    ret = ZCE_LIB::getaddrinfo("ipv6.google.com",
+    ret = ZCE_LIB::getaddrinfo(TEST_HOST_NAME,
                                NULL,
                                &hints,
                                &result);
@@ -153,6 +155,44 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
                                            ary_addr6);
     ZCE_LIB::freeaddrinfo(result);
     std::cout << "ary_addr_num=" << ary_addr_num << " ary_addr6_num=" << ary_addr6_num << std::endl;
+
+
+    const char *TEST_HOST_NAME1 = "203.98.7.65";
+    const char *TEST_HOST_NAME2 = "2404:6800:4008:800::200e";
+    const char *TEST_HOST_NAME3 = "www.qq.com";
+
+    sockaddr_in addr_in;
+    addr_in.sin_family = AF_INET;
+    sockaddr_in6 addr_in6;
+    addr_in6.sin6_family = AF_INET6;
+    char ip_str[256];
+    ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME1,
+                               (sockaddr *)(&addr_in));
+    inet_ntop(addr_in.sin_family, (void *)&(addr_in.sin_addr), ip_str, 256);
+    std::cout << TEST_HOST_NAME1 << "to sockaddr_in ret = " << ret << " ip str:"<< ip_str <<std::endl;
+    ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME1,
+        (sockaddr *)(&addr_in6));
+    inet_ntop(addr_in6.sin6_family, (void *)&(addr_in6.sin6_addr), ip_str, 256);
+    std::cout << TEST_HOST_NAME1 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
+
+    ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME2,
+        (sockaddr *)(&addr_in6));
+    inet_ntop(addr_in6.sin6_family, (void *)&(addr_in6.sin6_addr), ip_str, 256);
+    std::cout << TEST_HOST_NAME2 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
+    ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME2,
+        (sockaddr *)(&addr_in));
+    inet_ntop(addr_in.sin_family, (void *)&(addr_in.sin_addr), ip_str, 256);
+    std::cout << TEST_HOST_NAME2 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
+
+
+    ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME3,
+        (sockaddr *)(&addr_in));
+    inet_ntop(addr_in.sin_family, (void *)&(addr_in.sin_addr), ip_str, 256);
+    std::cout << TEST_HOST_NAME3 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
+    ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME3,
+        (sockaddr *)(&addr_in6));
+    inet_ntop(addr_in6.sin6_family, (void *)&(addr_in6.sin6_addr), ip_str, 256);
+    std::cout << TEST_HOST_NAME3 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
 
     return 0;
 }
