@@ -3,7 +3,7 @@
 * @filename   zce_shm_list.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013年1月18日
+* @date       2008年1月18日
 * @brief      可以放在共享内存里面的容器，不可以放，而且可以用来恢复。甚至共享
 *             STL因为做不到这点的。哈哈。
 *
@@ -279,8 +279,8 @@ protected:
         //从链上取1个下来
         size_t node = freenode_->idx_next_;
 
+        //从FREE链表上摘下来
         freenode_->idx_next_ = (index_base_ + node)->idx_next_;
-        //
         (index_base_ + freenode_->idx_next_)->idx_prev_ = (index_base_ + node)->idx_prev_;
 
         //用placement new生产对象

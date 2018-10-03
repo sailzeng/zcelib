@@ -18,19 +18,19 @@ int test_osadapt_file(int  /*argc*/, char * /*argv*/[])
     HANDLE fh_2 = (HANDLE)_get_osfhandle(file_desc);
 
 
-    std::cout << (int) fh_1 << std::endl;
-    std::cout << (int) fh_2 << std::endl;
+    std::cout << (int)fh_1 << std::endl;
+    std::cout << (int)fh_2 << std::endl;
 
     //file_desc != filedesc_1 != filedesc_2,3个文件描述符不一样
     int filedesc_1 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
     int filedesc_2 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
 
-    std::cout << (int) filedesc_1 << std::endl;
-    std::cout << (int) filedesc_2 << std::endl;
+    std::cout << (int)filedesc_1 << std::endl;
+    std::cout << (int)filedesc_2 << std::endl;
 
     //fh_1 == fh_2 == fh_3,内核句柄一致一致
     HANDLE fh_3 = (HANDLE)_get_osfhandle(filedesc_1);
-    std::cout << (int) fh_3 << std::endl;
+    std::cout << (int)fh_3 << std::endl;
 
 #endif
 
@@ -57,7 +57,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
     }
 
     ZCE_SYSTEM_PERFORMANCE zce_system_perf;
-    ret =  ZCE_LIB::get_system_perf(&zce_system_perf);
+    ret = ZCE_LIB::get_system_perf(&zce_system_perf);
 
     if (ret != 0)
     {
@@ -77,7 +77,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
 //选取所有的.h文件
 int hfile_selector(const struct dirent *dir_info)
 {
-    size_t name_len = strlen (dir_info->d_name);
+    size_t name_len = strlen(dir_info->d_name);
     if (name_len <= 2)
     {
         return 0;
@@ -94,7 +94,7 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
 {
     ZCE_LIB::clear_last_error();
     struct  dirent  **namelist = NULL;
-    int number_file =  ZCE_LIB::scandir("E:\\Courage\\readline-5.2",
+    int number_file = ZCE_LIB::scandir("E:\\Courage\\readline-5.2",
                                        &namelist,
                                        hfile_selector,
                                        ZCE_LIB::scandir_namesort);
@@ -163,7 +163,7 @@ void test_findwith_container(size_t container_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
 
-        int find_number =(int) i%container_len;
+        int find_number = (int)i%container_len;
         //
         for (size_t j = 0; j < container_len; j++)
         {
@@ -176,7 +176,7 @@ void test_findwith_container(size_t container_len)
     }
 
     test_timer.end();
-   
+
 
     std::cout << "test vector gettimeofday :" << test_timer.elapsed_usec() << " " << std::endl;
 
@@ -242,3 +242,4 @@ int test_container_performance(int  /*argc*/, char * /*argv*/[])
 
     return 0;
 }
+

@@ -351,11 +351,13 @@ protected:
 };
 
 //-----------------------------------------------------------------------------
-//放到这儿是因为HASH—EXPIRE和LIST都用了这个结构,
+///放到这儿是因为HASH—EXPIRE和LIST都用了这个结构,
 class _shm_list_index
 {
 public:
+    ///LiST后驱索引，
     size_t  idx_next_;
+    ///LiST的前驱索引，
     size_t  idx_prev_;
 
     _shm_list_index():

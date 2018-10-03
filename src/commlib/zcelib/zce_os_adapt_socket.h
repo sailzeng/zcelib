@@ -121,6 +121,7 @@ inline int connect (ZCE_SOCKET handle,
                     const sockaddr *addr,
                     socklen_t addrlen);
 
+
 /*!
 * @brief      (TCP)取得对端的地址信息
 * @return     int     0成功，-1失败
@@ -437,14 +438,42 @@ inline ssize_t sendto (ZCE_SOCKET handle,
 ///因为WINdows 不支持取得socket 是否是阻塞的模式，所以Windows 下我无法先取得socket的选项，
 ///然后判断是否取消阻塞模式所以请你务必保证你的Socket 是阻塞模式的，否则有问题
 ///一组带有超时的SOCKET处理函数，内部使用使用select作为超时函数处理
-//超时的时间参数必须填写
+///超时的时间参数必须填写
 
 
 
+/*!
+* @brief      在一个限定时间内链接某个服务器。
+* @return     int 0成功，非0表示失败，以及错误ID
+* @param      handle      操作的句柄
+* @param      addr        地址
+* @param      addrlen     地址长度
+* @param      timeout_tv  超时时间
+* @note       
+*/
 int connect_timeout(ZCE_SOCKET handle,
                     const sockaddr *addr,
                     socklen_t addrlen,
                     ZCE_Time_Value &timeout_tv);
+
+
+
+/*!
+* @brief      连接某个HOSTNAME，可以是域名，也可以是数值地址格式
+* @return     int 0成功，非0表示失败，以及错误ID
+* @param      handle      操作的句柄
+* @param      ai_family
+* @param      hostname    可以是域名，也可以是数值地址格式，会优先尝试用数值地址格式解析
+* @param      port
+* @param      timeout_tv
+* @note       
+*/
+int connect_timeout(ZCE_SOCKET handle,
+                    int ai_family,
+                    const char *hostname,
+                    uint16_t port,
+                    ZCE_Time_Value &timeout_tv);
+
 
 
 /*!
@@ -760,7 +789,16 @@ int gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
 * @return     int        0成功，非0表示失败，以及错误ID
 * @param[in]  hostname   域名信息
 * @param[in]  service    服务的名称，比如"http","ftp"等，用于决定服务的端口号
-* @param[in]  hints      调用者所需要的地址的信息
+* @param[in]  hints      调用者所需要的地址的信息，相应的参数说明：
+*                        如果要同时得到IPV4，IPV6的地址，那么hints.ai_family =  AF_UNSPEC
+*                        ai_socktype参数最好还是填写一个值，否则可能返回SOCK_DGRAM,SOCK_STREAM各一个，
+*                        ai_flags 填0一般就OK，（蛋疼的一个参数）
+*                          AI_CANONNAME表示返回的addrinfo结果的第一个节点会有ai_canoname参数（见addrinfo 结构），
+*                          AI_PASSIVE表示返回的地址用于bind（hostname为NULL时，让IP地址信息返回0，）否则用于connect
+*                          AI_NUMERICHOST 阻止域名解析，认为hostname是数值格式地址
+*                          AI_ALL 新选项，返回IPV4和IPV6地址，IPV4的地址也会MAP成IPV6返回（也返回IPV4的地址）。
+*                          AI_V4MAPPED 如果没有IPV6的地址返回，用IPV4的地址MAPIPV6的地址返回。
+*                        ai_protocol，填0把
 * @param[out] result     返回的结果数组
 */
 int getaddrinfo( const char *hostname,
@@ -775,30 +813,54 @@ int getaddrinfo( const char *hostname,
 void freeaddrinfo(struct addrinfo *result);
 
 /*!
-* @brief         非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便,底层使用getaddrinfo
-* @return        int           0成功，-1失败
-* @param[in]     hostname      域名
-* @param[in]     service_port  端口号，会和查询到的地址信息一起设置到sockaddr_in
-* @param[in,out] ary_addr_num  输入时数组的长度，输出返回实际获得的数组长度
-* @param[out]    ary_sock_addr 域名+端口对应的sockaddr_in 数组信息
+* @brief      辅助函数，从getaddrinfo的结果中提取一个sockaddr结果,
+* @return     int
+* @param[in]  result getaddrinfo返回的结果
+* @param[out] addr   根据你输入的sockaddr的 sa_family 确定返回的是sockaddr_in,还是sockaddr_in6
 */
-int getaddrinfo_inary(const char *hostname,
-                      uint16_t service_port,
-                      size_t *ary_addr_num,
-                      sockaddr_in ary_sock_addr[]);
+int getaddrinfo_result_to_addr(addrinfo * result, sockaddr *addr);
+
 
 /*!
-* @brief      非标准函数,得到某个域名的IPV6的地址数组，使用起来比较容易和方便,底层使用getaddrinfo
-* @return        int            0成功，-1失败
-* @param[in]     hostname       域名
-* @param[in]     service_port   端口号，会和查询到的地址信息一起设置到sockaddr_in
-* @param[in,out] ary_addr6_num  输入时数组的长度，输出返回实际获得的地址个数
-* @param[out]    ary_sock_addr6 域名+端口对应的sockaddr_in6 数组
+* @brief         辅助函数，将getaddrinfo的结果进行加工处理，处理成数组
+* @param[in]     result
+* @param[in,out] ary_addr_num   ary_addr的数组数量，转换后，返回数量
+* @param[out]    ary_addr 
+* @param[in,out] ary_addr6_num  ary_addr6的数组数量，转换后，返回数量
+* @param[out]    ary_addr6
 */
-int getaddrinfo_in6ary(const char *hostname,
-                       uint16_t service_port,
-                       size_t *ary_addr6_num,
-                       sockaddr_in6 ary_sock_addr6[]);
+void getaddrinfo_result_to_addrary(addrinfo *result,
+                                   size_t *ary_addr_num,
+                                   sockaddr_in ary_addr[],
+                                   size_t *ary_addr6_num,
+                                   sockaddr_in6 ary_addr6[]);
+
+/*!
+* @brief         非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便,底层使用getaddrinfo
+* @return        int            0成功，其他失败
+* @param[in]     notename       域名
+* @param[in,out] ary_addr_num   输入时数组的长度，输出返回实际获得的数组长度
+* @param[out]    ary_sock_addr  域名对应的sockaddr_in 数组信息
+* @param[in,out] ary_addr6_num  输入时数组的长度，输出返回实际获得的地址个数
+* @param[out]    ary_sock_addr6 域名对应的sockaddr_in6 数组
+*/
+int getaddrinfo_to_addrary(const char *notename,
+                           size_t *ary_addr_num,
+                           sockaddr_in ary_addr[],
+                           size_t *ary_addr6_num,
+                           sockaddr_in6 ary_addr6[]);
+
+
+
+/*!
+* @brief      
+* @return     int      0成功，其他失败
+* @param[in]  notename 域名OR数值地址格式，内部会先进行数值地址转换。避免耗时，不成功再进行域名解析
+* @param[out] addr     返回的地址
+* @note       
+*/
+int getaddrinfo_to_addr(const char *notename,
+                        sockaddr *addr);
 
 /*!
 * @brief      通过IP地址信息，反查域名.服务名，（可能）可以重入函数（要看底层实现），
@@ -827,24 +889,14 @@ int getnameinfo(const struct sockaddr *sa,
 /*!
 * @brief      非标准函数，通过IPV4地址取得域名
 * @return     int  0成功，非0表示失败，以及错误ID
-* @param[in]  sock_addr  IPV4的sockaddr
+* @param[in]  sock_addr  sockaddr的地址
 * @param[out] host_name  返回的域名信息
 * @param[int] name_len   域名buffer的长度
 */
-int getnameinfo_in(const sockaddr_in *sock_addr,
-                   char *host_name,
-                   size_t name_len);
+int getnameinfo_sockaddr(const sockaddr *sock_addr,
+                         char *host_name,
+                         size_t name_len);
 
-/*!
-* @brief      非标准函数，通过IPV6地址取得域名
-* @return     int  0成功，非0表示失败，以及错误ID
-* @param[in]  sock_addr6 IPV6的sockaddr
-* @param[out] host_name  返回的域名信息
-* @param[int] name_len   域名buffer的长度
-*/
-int getnameinfo_in6(const sockaddr_in6 *sock_addr6,
-                    char *host_name,
-                    size_t name_len);
 
 /*!
 * @brief      返回当前机器的主机名称,2个平台应该都支持这个函数
@@ -893,7 +945,6 @@ inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            uint16_t ipv4_port );
 
 
-
 /*!
 * @brief      设置一个IPV6的地址,
 * @return     int 错误返回-1， 正确返回0
@@ -929,15 +980,15 @@ inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
 //下面一些是针对IPV4的函数
 
 //返回端口号,用指针作为参数主要是希望统一
-inline uint16_t get_port_number(const sockaddr_in *sock_addr_ipv4);
+inline uint16_t get_port_number(const sockaddr *addr);
 
 //返回地址信息
-inline const char *get_host_addr(const sockaddr_in *sock_addr_ipv4,
+inline const char *get_host_addr(const sockaddr *addr,
                                  char *addr_buf,
                                  size_t addr_size);
 
 //得到IP地址和端口信息的字符串描述
-inline const char *get_host_addr_port(const sockaddr_in *sock_addr_ipv4,
+inline const char *get_host_addr_port(const sockaddr *addr,
                                       char *addr_buf,
                                       size_t addr_size);
 
@@ -1018,7 +1069,45 @@ int mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst);
 bool check_safeport(uint16_t check_port);
 
 
-}
+//-------------------------------------------------------------------------------------
+//socks 代理部分
+
+
+/*!
+* @brief      SOCKS5代理初始化，进行用户验证等
+* @return     int 返回0标识成功
+* @param      handle      已经连接SOCKS5服务器的句柄，必须先连接 connect
+* @param      username    验证模式下的用户名称，如果不需要验证用填写NULL
+* @param      password    验证模式下的密码，如果不需要验证用填写NULL
+* @param      timeout_tv  超时时间
+* @note       handle 必须先连接
+*/
+int socks5_proxy_initialize(ZCE_SOCKET handle,
+                            const char *username,
+                            const char *password,
+                            ZCE_Time_Value &timeout_tv);
+
+
+/*!
+* @brief      SOCKS5代理初始化，进行用户验证等
+* @return     int  返回0标识成功
+* @param      handle     已经连接SOCKS5服务器的句柄，必须先连接 connect
+* @param      host_name  跳转的域名，域名和地址只选一个，优先域名，为NULL
+* @param      port       跳转的端口
+* @param      addr       跳转的地址
+* @param      addrlen    跳转的地址的长度
+* @param      timeout_tv 超时时间
+*/
+int sock5_proxy_connect(ZCE_SOCKET handle,
+                        const char *host_name,
+                        uint16_t port,
+                        const sockaddr *addr,
+                        int addrlen,
+                        ZCE_Time_Value &timeout_tv);
+
+
+
+};
 
 //-----------------------------------------------------------------------------------------
 
@@ -1751,21 +1840,55 @@ inline bool ZCE_LIB::is_ready_fds(int no_fds,
 }
 
 //返回端口号
-inline uint16_t ZCE_LIB::get_port_number(const sockaddr_in *sock_addr_ipv4)
+inline uint16_t ZCE_LIB::get_port_number(const sockaddr *addr)
 {
-    return ntohs(sock_addr_ipv4->sin_port);
+    if (AF_INET == addr->sa_family)
+    {
+        return ntohs(((sockaddr_in *)(addr))->sin_port );
+    }
+    else if (AF_INET6 == addr->sa_family)
+    {
+        return ntohs(((sockaddr_in6 *)(addr))->sin6_port);
+    }
+    else
+    {
+    }
+
 }
 
 //返回地址信息
-inline const char *ZCE_LIB::get_host_addr(const sockaddr_in *sock_addr_ipv4,
+inline const char *ZCE_LIB::get_host_addr(const sockaddr *addr,
                                           char *addr_buf,
                                           size_t addr_size)
 {
-    return ZCE_LIB::inet_ntop(AF_INET,
-                              (void *)(sock_addr_ipv4),
+    return ZCE_LIB::inet_ntop(addr->sa_family,
+                              (void *)(addr),
                               addr_buf,
                               addr_size);
 }
+
+inline const char * ZCE_LIB::get_host_addr_port(const sockaddr * addr, 
+                                                char * addr_buf, 
+                                                size_t addr_size)
+{
+    uint16_t port = 0;
+    if (AF_INET == addr->sa_family)
+    {
+        port = ntohs(((sockaddr_in *)(addr))->sin_port);
+    }
+    else if (AF_INET6 == addr->sa_family)
+    {
+        port = ntohs(((sockaddr_in6 *)(addr))->sin6_port);
+    }
+    else
+    {
+    }
+    ZCE_LIB::inet_ntop(addr->sa_family, (void *)(addr), addr_buf, addr_size);
+    size_t str_len = strlen(addr_buf);
+    snprintf(addr_buf + str_len, addr_size - str_len, "#%u", port);
+    return addr_buf;
+}
+
 
 //非标准函数，但是重入安全
 //将地址信息打印出来，地址不使用网络序

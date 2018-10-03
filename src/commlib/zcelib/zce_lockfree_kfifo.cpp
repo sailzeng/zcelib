@@ -38,6 +38,12 @@ void   *dequechunk_node::operator new   (size_t , size_t nodelen)
 };
 
 
+void dequechunk_node::operator delete(void *ptrframe)
+{
+    unsigned char *ptr = (unsigned char *)ptrframe;
+    delete[] ptr;
+}
+
 /*********************************************************************************
 class shm_dequechunk
 *********************************************************************************/

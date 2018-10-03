@@ -8,6 +8,8 @@
 #include <zce_predefine.h>
 #include <zce_trace_debugging.h>
 #include <zce_trace_log_plus.h>
+#include <zce_trace_log_msg.h>
+#include <zce_trace_aid_debug.h>
 
 #include <zce_os_adapt_predefine.h>
 #include <zce_os_adapt_file.h>

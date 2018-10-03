@@ -16,7 +16,7 @@ int test_bytes_ntoh(int /*argc*/, char * /*argv*/[])
     uint64_t a_64 = 0x1122334455667788ULL;
     uint64_t b_64 = ZCE_HTONLL(a_64);
 
-    printf("%x %x  %lx", b_16, b_32, b_64);
+    printf("%x %x  %llx", b_16, b_32, b_64);
 
     return 0;
 }

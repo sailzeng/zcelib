@@ -13,11 +13,13 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
-    test_bytes_data_represent(argc, argv);
+    test_net_getaddrinfo(argc, argv);
   
     //system("pause");
 
 #if 0
+
+    test_bytes_data_represent(argc, argv);
 
     test_inotify_reactor(argc, argv);
     test_conf_ini(argc, argv);

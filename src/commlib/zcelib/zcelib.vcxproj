@@ -276,6 +276,7 @@
     <ClInclude Include="zce_shm_predefine.h" />
     <ClInclude Include="zce_shm_rbtree.h" />
     <ClInclude Include="zce_shm_array.h" />
+    <ClInclude Include="zce_shm_trie_tree.h" />
     <ClInclude Include="zce_socket_acceptor.h" />
     <ClInclude Include="zce_socket_addr_base.h" />
     <ClInclude Include="zce_socket_addr_in.h" />

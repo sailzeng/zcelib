@@ -33,6 +33,7 @@
 #define ZCE_LIB_TRACE_LOG_PLUS_H_
 
 #include "zce_fmtstr_snprintf.h"
+#include "zce_trace_log_basic.h"
 
 #define __ZCE_LOGPP_WRITE_BEGIN        if (if_output_log_ == false)\
     { \

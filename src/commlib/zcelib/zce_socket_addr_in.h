@@ -106,8 +106,8 @@ public:
     ///取得IP地址相关的域名信息,调用函数是getnameinfo
     int get_name_info(char *host_name, size_t name_len) const;
 
-    ///取得域名相关的IP地址信息，调用函数是getaddrinfo
-    int get_addr_info(const char *hostname, uint16_t service_port = 0);
+    ///取得域名相关的IP地址信息，调用函数是getaddrinfo，notename可以是数值地址，或者域名
+    int getaddrinfo_to_addr(const char *nodename);
 
     ///各种操作符号转换函数，方便各种使用，让ZCE_Sockaddr_In的行为和sockaddr_in基本一致
     ///返回sockaddr_in

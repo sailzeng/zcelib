@@ -2337,7 +2337,7 @@ public:
         {
             rk[k] =  ZINDEX_TO_LEUINT32(key, k);
         }
-        size_t i = 0;
+        size_t p = 0;
         switch (key_size)
         {
             case 16:
@@ -2349,11 +2349,11 @@ public:
                             (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
                             (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
                             (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                            AES_RCON[i];
+                            AES_RCON[p];
                     rk[5] = rk[1] ^ rk[4];
                     rk[6] = rk[2] ^ rk[5];
                     rk[7] = rk[3] ^ rk[6];
-                    if (++i == 10)
+                    if (++p == 10)
                     {
                         break;
                     }
@@ -2370,11 +2370,11 @@ public:
                              (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
                              (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
                              (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                             AES_RCON[i];
+                             AES_RCON[p];
                     rk[ 7] = rk[ 1] ^ rk[ 6];
                     rk[ 8] = rk[ 2] ^ rk[ 7];
                     rk[ 9] = rk[ 3] ^ rk[ 8];
-                    if (++i == 8)
+                    if (++p == 8)
                     {
                         break;
                     }
@@ -2393,11 +2393,11 @@ public:
                              (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
                              (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
                              (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                             AES_RCON[i];
+                             AES_RCON[p];
                     rk[ 9] = rk[ 1] ^ rk[ 8];
                     rk[10] = rk[ 2] ^ rk[ 9];
                     rk[11] = rk[ 3] ^ rk[10];
-                    if (++i == 7)
+                    if (++p == 7)
                     {
                         break;
                     }

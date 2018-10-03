@@ -171,14 +171,11 @@ int ZCE_Sockaddr_In::get_name_info(char *host_name, size_t name_len) const
                                 NI_NAMEREQD);
 }
 
-//取得域名相关的IP地址信息，调用函数是getaddrinfo
-int ZCE_Sockaddr_In::get_addr_info(const char *hostname, uint16_t service_port)
+//取得域名相关的IP地址信息，调用函数是getaddrinfo_to_addr
+int ZCE_Sockaddr_In::getaddrinfo_to_addr(const char *nodename)
 {
-    size_t only_one_addr = 1;
-    return ZCE_LIB::getaddrinfo_inary(hostname,
-                                      service_port,
-                                      &only_one_addr,
-                                      &in4_addr_);
+    return ZCE_LIB::getaddrinfo_to_addr(nodename,
+                                        sockaddr_ptr_);
 }
 
 //返回sockaddr_in

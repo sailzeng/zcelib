@@ -48,7 +48,7 @@ public:
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_init", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_destroy", ret);
             return;
         }
     }

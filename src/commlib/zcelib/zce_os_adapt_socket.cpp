@@ -578,9 +578,6 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 
     event_happen = ::epoll_wait(epoll_fd, once_events_ary, ONCE_MAX_EVENTS, msec_timeout);
 
-
-
-
     //完成清理工程，调用epoll_ctl EPOLL_CTL_DEL 删除注册对象,
     struct epoll_event event_del;
     event_del.events = 0;
@@ -665,6 +662,69 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
     }
 
     return 0;
+}
+
+
+int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
+                             int ai_family,
+                             const char *hostname,
+                             uint16_t port,
+                             ZCE_Time_Value &timeout_tv)
+{
+    //只能是IPV4，IPV6或者两个兼而有之
+    ZCE_ASSERT(ai_family == AF_INET || ai_family == AF_INET6 || ai_family == AF_UNSPEC );
+    int ret = 0;
+    addrinfo hints, *result = NULL;
+
+    memset(&hints, 0, sizeof(addrinfo));
+    hints.ai_family = ai_family;
+    hints.ai_socktype = SOCK_STREAM;
+    hints.ai_flags = 0;
+    ret = ZCE_LIB::getaddrinfo(hostname,
+                               NULL,
+                               &hints,
+                               &result);
+
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    if (!result)
+    {
+        errno = EINVAL;
+        return -1;
+    }
+
+    sockaddr_in addr4;
+    sockaddr_in6 addr6;
+    sockaddr *addr = NULL;
+    socklen_t addrlen = result->ai_addrlen;
+    if (addrlen  == sizeof(sockaddr_in))
+    {
+        memcpy(&addr4, result->ai_addr, addrlen);
+        addr4.sin_port = port;
+        addr = reinterpret_cast<sockaddr *>(&addr4);
+    }
+    else if (addrlen == sizeof(sockaddr_in6))
+    {
+        memcpy(&addr6, result->ai_addr, addrlen);
+        addr6.sin6_port = port;
+        addr = reinterpret_cast<sockaddr *>(&addr6);
+    }
+    else
+    {
+        
+        ZCE_ASSERT(false);
+    }
+
+    //释放空间
+    ZCE_LIB::freeaddrinfo(result);
+
+    return ZCE_LIB::connect_timeout(handle,
+                                    addr,
+                                    addrlen,
+                                    timeout_tv);
 }
 
 
@@ -1723,17 +1783,12 @@ int ZCE_LIB::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
 }
 
 //通过域名得到服务器地址信息，可以同时得到IPV4，和IPV6的地址
-//hints 参数说明，
-//如果要同时得到IPV4，IPV6的地址，那么hints.ai_family =  AF_UNSPEC
-//ai_socktype参数最好还是填写一个值，否则可能返回SOCK_DGRAM,SOCK_STREAM各一个，
-//ai_flags 填0一般就OK，AI_CANONNAME表示返回的result的第一个节点会有ai_canoname参数，AI_PASSIVE在参数hostname为NULL时，让IP地址信息返回0，（蛋疼的一个参数）
-//ai_protocol，填0把
-int ZCE_LIB::getaddrinfo( const char *hostname,
+int ZCE_LIB::getaddrinfo( const char *nodename,
                           const char *service,
                           const addrinfo *hints,
                           addrinfo **result )
 {
-    return ::getaddrinfo(hostname, service, hints, result);
+    return ::getaddrinfo(nodename, service, hints, result);
 }
 
 //释放getaddrinfo得到的结果
@@ -1742,25 +1797,81 @@ void ZCE_LIB::freeaddrinfo(struct addrinfo *result)
     return ::freeaddrinfo(result);
 }
 
+//
+int ZCE_LIB::getaddrinfo_result_to_addr(addrinfo *result,
+                                        sockaddr *addr)
+{
+    addrinfo *prc_node = result;
+    for (; (prc_node != NULL); prc_node = prc_node->ai_next)
+    {
+        //只取相应的地址
+        if (addr->sa_family == prc_node->ai_family)
+        {
+            memcpy(addr, prc_node->ai_addr, prc_node->ai_addrlen);
+        }
+    }
+    if (nullptr == prc_node)
+    {
+        return -1;
+    }
+    return 0;
+}
+
+
+//将getaddrinfo的结果进行加工处理，处理成数组
+void ZCE_LIB::getaddrinfo_result_to_addrary(addrinfo *result,
+                                            size_t *ary_addr_num,
+                                            sockaddr_in ary_addr[],
+                                            size_t *ary_addr6_num,
+                                            sockaddr_in6 ary_addr6[])
+{
+    
+    addrinfo *prc_node = result;
+    size_t num_addr = 0,num_addr6 = 0;
+    for (size_t i = 0; (i < *ary_addr_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
+    {
+        //只取相应的地址
+        if (AF_INET == prc_node->ai_family)
+        {
+            memcpy(&(ary_addr[i]), prc_node->ai_addr, prc_node->ai_addrlen);
+            ++num_addr;
+        }
+    }
+    //记录数量
+    *ary_addr_num = num_addr;
+   
+    prc_node = result;
+    for (size_t j = 0; (j < *ary_addr6_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++j)
+    {
+        if (AF_INET6 == prc_node->ai_family)
+        {
+            memcpy(&(ary_addr6[j]), prc_node->ai_addr, prc_node->ai_addrlen);
+            ++num_addr6;
+        }
+    }
+    *ary_addr6_num = num_addr6;
+}
+
 //非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便
-int ZCE_LIB::getaddrinfo_inary(const char *hostname,
-                               uint16_t service_port,
-                               size_t *ary_addr_num,
-                               sockaddr_in ary_sock_addr[])
+int ZCE_LIB::getaddrinfo_to_addrary(const char *nodename,
+                                    size_t *ary_addr_num,
+                                    sockaddr_in ary_addr[],
+                                    size_t *ary_addr6_num,
+                                    sockaddr_in6 ary_addr6[])
 {
 
     int ret = 0;
     addrinfo hints, *result = NULL;
 
     memset(&hints, 0, sizeof(addrinfo));
-    hints.ai_family = AF_INET;
-    hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_flags = AI_CANONNAME;
-    ret = ZCE_LIB::getaddrinfo(hostname,
+    //同时返回IPV4.和IPV6，如果只需要IPV4填写AF_INET，如果只需要IPV6填写AF_INET6
+    hints.ai_family = AF_UNSPEC; 
+    //hints.ai_socktype = 0; 返回所有类型
+    //hints.ai_flags = 0;
+    ret = ZCE_LIB::getaddrinfo(nodename,
                                NULL,
                                &hints,
                                &result);
-
     if (ret != 0)
     {
         return ret;
@@ -1772,50 +1883,46 @@ int ZCE_LIB::getaddrinfo_inary(const char *hostname,
         return -1;
     }
 
-    //检查返回的地址实习是不是IPV4的
-    ZCE_ASSERT(result->ai_addrlen == sizeof(sockaddr_in));
-
-    //循环得到所有的IP地址信息
-    size_t i = 0;
-    addrinfo *prc_node = result;
-
-    for (; (i < *ary_addr_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
-    {
-        memcpy(&(ary_sock_addr[i]), prc_node->ai_addr, prc_node->ai_addrlen);
-        //端口转换成网络序
-        ary_sock_addr[i].sin_port = htons(service_port);
-    }
-
-    //记录数量
-    *ary_addr_num = i;
-
+    //取回结果
+    getaddrinfo_result_to_addrary(result, 
+                                  ary_addr_num,
+                                  ary_addr,
+                                  ary_addr6_num, 
+                                  ary_addr6);
     //释放空间
     ZCE_LIB::freeaddrinfo(result);
 
     return 0;
 }
 
-//非标准函数,得到某个域名的IPV6的地址数组，使用起来比较容易和方便
-int ZCE_LIB::getaddrinfo_in6ary(const char *hostname,
-                                uint16_t service_port,
-                                size_t *ary_addr6_num,
-                                sockaddr_in6 ary_sock_addr6[])
+
+int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
+                                 sockaddr * addr)
 {
     int ret = 0;
     addrinfo hints, *result = NULL;
 
     memset(&hints, 0, sizeof(addrinfo));
-    hints.ai_family = AF_INET6;
-    hints.ai_socktype = SOCK_DGRAM;
-    hints.ai_flags = AI_CANONNAME;
-    ret = ZCE_LIB::getaddrinfo(hostname,
+    //同时返回IPV4.和IPV6，如果只需要IPV4填写AF_INET，如果只需要IPV6填写AF_INET6
+    hints.ai_family = AF_UNSPEC;
+    //优先分析nodename是否是数值地址
+    hints.ai_flags = AI_PASSIVE;
+    ret = ZCE_LIB::getaddrinfo(nodename,
                                NULL,
                                &hints,
                                &result);
-
     if (ret != 0)
     {
-        return ret;
+        //进行域名解析
+        hints.ai_flags = 0;
+        ret = ZCE_LIB::getaddrinfo(nodename,
+                                   NULL,
+                                   &hints,
+                                   &result);
+        if (ret != 0)
+        {
+            return ret;
+        }
     }
 
     if (!result)
@@ -1824,23 +1931,8 @@ int ZCE_LIB::getaddrinfo_in6ary(const char *hostname,
         return -1;
     }
 
-    //检查返回的地址实习是不是IPV4的
-    ZCE_ASSERT(result->ai_addrlen == sizeof(sockaddr_in6));
-
-    //循环得到所有的IP地址信息
-    size_t i = 0;
-    addrinfo *prc_node = result;
-
-    for (; (i < *ary_addr6_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
-    {
-        memcpy(&(ary_sock_addr6[i]), prc_node->ai_addr, prc_node->ai_addrlen);
-        //端口转换成网络序
-        ary_sock_addr6[i].sin6_port = htons(service_port);
-    }
-
-    //记录数量
-    *ary_addr6_num = i;
-
+    getaddrinfo_result_to_addr(result, addr);
+    
     //释放空间
     ZCE_LIB::freeaddrinfo(result);
 
@@ -1864,32 +1956,38 @@ int ZCE_LIB::getnameinfo(const struct sockaddr *sa,
 }
 
 //非标准函数，通过IPV4地址取得域名
-int ZCE_LIB::getnameinfo_in(const sockaddr_in *sock_addr,
-                            char *host_name,
-                            size_t name_len)
+int ZCE_LIB::getnameinfo_sockaddr(const sockaddr *sock_addr,
+                                  char *host_name,
+                                  size_t name_len)
 {
-    return ZCE_LIB::getnameinfo(reinterpret_cast<const sockaddr *>(sock_addr),
-                                sizeof(sockaddr_in),
-                                host_name,
-                                name_len,
-                                NULL,
-                                0,
-                                NI_NAMEREQD);
+    if (sock_addr->sa_family == AF_INET)
+    {
+        return ZCE_LIB::getnameinfo(sock_addr,
+                                    sizeof(sockaddr_in),
+                                    host_name,
+                                    name_len,
+                                    NULL,
+                                    0,
+                                    NI_NAMEREQD);
+    }
+    else if (sock_addr->sa_family == AF_INET)
+    {
+        return ZCE_LIB::getnameinfo(sock_addr,
+                                    sizeof(sockaddr_in6),
+                                    host_name,
+                                    name_len,
+                                    NULL,
+                                    0,
+                                    NI_NAMEREQD);
+    }
+    else
+    {
+        ZCE_ASSERT(false);
+        return -1;
+    }
 }
 
-//非标准函数，通过IPV6地址取得域名
-int ZCE_LIB::getnameinfo_in6(const sockaddr_in6 *sock_addr6,
-                             char *host_name,
-                             size_t name_len)
-{
-    return ZCE_LIB::getnameinfo(reinterpret_cast<const sockaddr *>(sock_addr6),
-                                sizeof(sockaddr_in6),
-                                host_name,
-                                name_len,
-                                NULL,
-                                0,
-                                NI_NAMEREQD);
-}
+
 
 //-------------------------------------------------------------------------------------
 //IPV4和IPV6之间相互转换的函数，都是非标准函数，
@@ -1985,4 +2083,189 @@ bool ZCE_LIB::check_safeport(uint16_t check_port)
     //
     return true;
 }
+
+//==============================================================================================
+
+const unsigned char SOCKS5_VER = 0x5;
+const unsigned char SOCKS5_SUCCESS = 0x0;
+const unsigned char SOCKS5_METHODS_NOAUTH = 0x0;
+const unsigned char SOCKS5_METHODS_AUTH_PASSWORD = 0x2;
+const unsigned char SOCKS5_CMD_CONNECT = 0x1;
+const unsigned char SOCKS5_CMD_BIND = 0x2;
+const unsigned char SOCKS5_CMD_UDP = 0x3;
+const unsigned char SOCKS5_ATYP_IPV4 = 0x1;
+const unsigned char SOCKS5_ATYP_HOSTNAME = 0x3;
+const unsigned char SOCKS5_ATYP_IPV6 = 0x4;
+
+//
+int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
+                                     const char *username,
+                                     const char *password,
+                                     ZCE_Time_Value &timeout_tv)
+{
+    const size_t BUFFER_LEN = 1024;
+    unsigned char buffer[BUFFER_LEN] = { "" };
+    int send_len = 0, recv_len = 0, ret = -1;
+
+    buffer[0] = SOCKS5_VER;
+    //支持不验证和验证两种方式
+    buffer[1] = 2;
+    buffer[2] = 0x0; //不需要验证
+    buffer[3] = 0x2; //需要验证
+    send_len = 4;
+
+    ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    //协议规定返回两个字节,第一个是版本号5,第二个是方式
+    recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
+    if (recv_len != 2)
+    {
+        return ret;
+    }
+    bool need_auth = false;
+    if (SOCKS5_VER == buffer[0])
+    {
+        return -1;
+    }
+    if (SOCKS5_METHODS_NOAUTH == buffer[1] )
+    {
+        need_auth = false;
+    }
+    else if (SOCKS5_METHODS_AUTH_PASSWORD == buffer[1] )
+    {
+        need_auth = true;
+    }
+    else
+    {
+        return -1;
+    }
+
+    //验证
+    if (need_auth)
+    {
+        const size_t MAX_STRING_LEN = 255;
+        if (!username || !password)
+        {
+            return EINVAL;
+        }
+        size_t user_len = strlen(username);
+        size_t pass_len = strlen(password);
+        if (pass_len > MAX_STRING_LEN || user_len > MAX_STRING_LEN)
+        {
+            return EINVAL;
+        }
+
+        //组织验证协议
+        buffer[0] = SOCKS5_VER;
+        buffer[1] = static_cast<unsigned char>(user_len);
+        memcpy(buffer + 2, username, user_len);
+        buffer[2 + user_len] = static_cast<unsigned char>(pass_len);
+        memcpy(buffer + 3 + user_len, password, pass_len);
+        send_len = 3 + user_len + pass_len;
+        ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+        if (ret != 0)
+        {
+            return ret;
+        }
+        recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
+        if (recv_len != 2)
+        {
+            return ret;
+        }
+        //验证失败
+        if (buffer[0] == SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
+        {
+            return -1;
+        }
+    }
+    return 0;
+}
+
+
+//链接服务器
+int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
+                                 const char *host_name,
+                                 uint16_t port,
+                                 const sockaddr *addr,
+                                 int addrlen,
+                                 ZCE_Time_Value &timeout_tv)
+{
+    ZCE_ASSERT(host_name || addr);
+    const size_t BUFFER_LEN = 1024;
+    unsigned char buffer[BUFFER_LEN] = { "" };
+    int send_len = 0, recv_len = 0, ret = -1;
+
+    const size_t MAX_STRING_LEN = 255;
+    if (!host_name)
+    {
+        return EINVAL;
+    }
+
+    buffer[0] = SOCKS5_VER;
+    //支持不验证和验证两种方式
+    buffer[1] = SOCKS5_CMD_CONNECT; //命令
+    buffer[2] = 0x00; //保留
+    if (host_name)
+    {
+        size_t host_len = strlen(host_name);
+        if (host_len > MAX_STRING_LEN)
+        {
+            return EINVAL;
+        }
+        buffer[3] = SOCKS5_ATYP_HOSTNAME;
+        buffer[4] = static_cast<unsigned char>(host_len);
+        memcpy(buffer + 5, host_name, host_len);
+        uint16_t n_port = htons(port);
+        memcpy(buffer + 5 + host_len, &n_port, 2);
+        send_len = 6 + host_len;
+    }
+    else if (addr)
+    {
+        if (sizeof(sockaddr_in) == addrlen)
+        {
+            buffer[3] = SOCKS5_ATYP_IPV4;
+            const sockaddr_in *addr_in = reinterpret_cast<const sockaddr_in *>(addr);
+            memcpy(buffer + 4, &(addr_in->sin_addr),4);
+            uint16_t n_port = addr_in->sin_port;
+            memcpy(buffer + 8, &n_port, 2);
+            send_len = 10;
+        }
+        else if(sizeof(sockaddr_in6) == addrlen)
+        {
+            buffer[3] = SOCKS5_ATYP_IPV6;
+            const sockaddr_in6 *addr_in6 = reinterpret_cast<const sockaddr_in6 *>(addr);
+            memcpy(buffer + 4, &(addr_in6->sin6_addr), 16);
+            uint16_t n_port = addr_in6->sin6_port;
+            memcpy(buffer + 20, &n_port, 2);
+            send_len = 22;
+        }
+        else
+        {
+            return EINVAL;
+        }
+    }
+
+    ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
+    if (recv_len != 2)
+    {
+        return ret;
+    }
+    //验证失败
+    if (buffer[0] == SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
+    {
+        return -1;
+    }
+
+    return 0;
+}
+
+
 

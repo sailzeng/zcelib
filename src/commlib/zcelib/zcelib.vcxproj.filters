@@ -412,6 +412,9 @@
     <ClInclude Include="zce_trace_log_priority.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_shm_trie_tree.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
