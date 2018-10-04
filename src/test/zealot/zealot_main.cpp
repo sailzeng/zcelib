@@ -15,7 +15,7 @@ int main(int argc , char *argv[])
     
     test_net_getaddrinfo(argc, argv);
   
-    //system("pause");
+    return 0;
 
 #if 0
 
@@ -62,9 +62,6 @@ int main(int argc , char *argv[])
     //test_rw_lock1(argc, argv);
 #endif
 
-    
-
-    return 0;
 }
 
 

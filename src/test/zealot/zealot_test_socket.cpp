@@ -62,7 +62,7 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
 
     ZCE_LIB::socket_init();
 
-    const char *TEST_HOST_NAME = "ipv6.google.com";
+    const char *TEST_HOST_NAME = "www.qq.com";
 
     const size_t ARRAY_NUM = 50;
     size_t ary_addr_num = ARRAY_NUM;
