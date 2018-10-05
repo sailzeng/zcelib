@@ -9,14 +9,14 @@
 *
 *             最后发现这2个函数大概是这几年来写的最累的代码了，也真算的上颠沛流离。前前后后，加上看2个算法，
 *             大概用了一半个月的零散时间。最后调试，特别是上JPG文件的用例的时候，还是发现问题不少。
-*             慢的和蜗牛一样，其实总计也就不到1000行代码。
+*             写代码慢的和蜗牛一样，其实总计也就不到1000行代码。
 *             到7月10，基本OK，大体达到了我想要的目标，把自己的2个实现做一下包装，收工
 *
 * @details    几种内存数据的压缩算法，主要用于数据压缩，
 *             希望参考过的压缩算法包括，
 *             快速压缩算法的  LZ4   QuickLZ   Zippy/Snappy  LZO等，
 *             高压缩比的函数  LZMA    GZIP(zlib)
-*             目前我的目标也就是实现一个内存的告诉压缩算法，
+*             目前我的目标也就是实现一个内存的高速压缩算法，
 *
 *             最后还是要说一下LZ4的算法，我的2个算法都参考过这个算法，
 *
@@ -42,7 +42,7 @@
 *             ZCE ZLZ [   2297174] compress use us[   16014259.992]us [        136.221]Mb/s decompress use [    6448855.066]us [        338.273]Mb/s.
 *             ZCE LZ4 [   2314403] compress use us[   16264991.011]us [        134.121]Mb/s decompress use [    5559644.472]us [        392.377]Mb/s.
 *
-*             64为下，解压速度还是落后LZ4 10%，但我个人感觉LZ4的解压安全检查做的并不够，
+*             64位下，解压速度还是落后LZ4 10%，但我个人感觉LZ4的解压安全检查做的并不够，
 *
 *             改进算法最后几天，耳机边一直回想的曲调。真的从时不我与变成了时不予我了
 *
@@ -128,7 +128,7 @@ class ZCE_Compress
 {
 public:
     /*!
-    * @brief      得到加密所需的内存BUFFER大小
+    * @brief      得到压缩所需的内存BUFFER大小
     * @return     int  ==0表示成功，否则失败，一般原因是原文长度过长
     * @param      original_size      原文的长度
     * @param      need_cmpbuf_size   所需的压缩buffer的长度，一般会比原文长，但内部会尽力保证用最短的尺寸。
@@ -175,11 +175,11 @@ public:
     /*!
     * @brief      实时压缩一个数据区
     * @return     int              ==0表示成功，否则失败，失败原因一般是内存不够，或者原文过长
-    * @param      original_buf     原文，
-    * @param      original_size    原文的长度
-    * @param      compressed_buf   压缩的内存，
-    * @param      compressed_size  压缩的尺寸，传入传出参数，传入时表示compressed_buf长度，必须need_compressdbuf_size的返回值，返回时，
-    *                              返回使用的compressed_buf的长度
+    * @param[in]     original_buf     原文，
+    * @param[in]     original_size    原文的长度
+    * @param[out]    compressed_buf   压缩的内存，
+    * @param[in,out] compressed_size  压缩的尺寸，传入传出参数，传入时表示compressed_buf长度，必须need_compressdbuf_size的返回值
+    *                                 ，返回时，返回使用的compressed_buf的长度
     */
     static int compress(const unsigned char *original_buf,
                         size_t original_size,
@@ -339,8 +339,39 @@ public:
 };
 
 //=====================================================================================================
+
+class LZ4_Compress_Base
+{
+protected:
+
+    LZ4_Compress_Base()
+    {
+        hash_lz_offset_ = new uint32_t[];
+    }
+    ~LZ4_Compress_Base()
+    {
+        if (hash_lz_offset_)
+        {
+            delete[] hash_lz_offset_;
+        }
+    }
+
+protected:
+
+    //长度等于2多少次方
+    const uint32_t HASH_TABLE_LEN_2_POWER = 13;
+    //HASHTABLE的长度
+    const size_t HASH_TABLE_LEN = 0x1 << (HASH_TABLE_LEN_2_POWER);
+
+protected:
+
+    //HASH TABLE的指针
+    uint32_t *hash_lz_offset_ = nullptr;
+};
+
+//=====================================================================================================
 //ZCE LZ4算法是部分模拟LZ4的代码，但有一些格式变化。
-class ZLZ_Compress_Format
+class ZLZ_Compress_Format : public LZ4_Compress_Base
 {
 public:
 
@@ -380,7 +411,7 @@ typedef ZCE_Compress<ZLZ_Compress_Format> ZLZ_Compress;
 //=====================================================================================================
 
 //ZEN ZLZ 是法改进得到的算法，
-class LZ4_Compress_Format
+class LZ4_Compress_Format : public LZ4_Compress_Base
 {
 public:
     //压缩核心代码

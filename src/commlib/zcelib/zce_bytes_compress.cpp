@@ -11,6 +11,8 @@
 //打开下面宏定义，会增加调试信息，对每次压缩结果进行记录
 #define  ZCE_LZ_DEBUG 0
 
+//使用HASH函数，只保留低位13位的信息，所以右移动19位
+//解释一下((4*8)-13)，缓冲的大小是 8192，所以是2^13，
 #define ZCE_LZ_HASH(ptr)       (((*(uint32_t *)(ptr)) *2654435761U)  >> ((4*8)-13))
 
 //你要包装dst有足够的空间，都是8字节补齐的。
@@ -39,7 +41,7 @@
 //可以记录的最大偏移长度，偏移长度不可能记录的更大
 const size_t  ZCE_LZ_MAX_OFFSET  = 0xFFFF;
 
-//步进长度的幂，1<<6,128次
+//步进长度的幂，1<<6,64次
 const size_t ZCE_LZ_STEP_LEN_POW  = 6;
 //最大的步进长度，
 //LZ4的步进长度是不处理的，所以他最后可能非常快，但也有可能是他对某些极端情况无法压缩
@@ -107,11 +109,13 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
         for (;;)
         {
             //这个地方说明一下，如果table_old_offset == -1(0xFFFFFFFF)，那么也认为是没有匹配
+            //每4个字节都区一次HASH值，然后查询是否有重复的数据
             uint32_t hash_value = ZCE_LZ_HASH(read_pos);
-
-
+            //取出偏移量
             uint32_t table_old_offset = hash_lz_offset[hash_value];
+            //找到这个东西第一次出现的位置，
             ref_offset = original_buf + table_old_offset;
+            //更新HASHTABLE
             hash_lz_offset[hash_value] = (uint32_t)(read_pos - original_buf);
             match_offset = (size_t)( read_pos - ref_offset );
 
@@ -127,7 +131,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
                 //打开if对速度的提升2%，压缩比降低1% ?
                 if ( ZCE_UNLIKELY( step_len > 1 ) )
                 {
-                    //由于前面步进的速度是提速过的，如果步进长度不是1，那么回头看看是否前面还有相等的，
+                    //由于前面步进的速度是提速过的，如果步进长度不是1，那么回头看看是否前面真正相等的的位置
                     for (; read_pos > nomatch_achor && ref_offset > original_buf && ref_offset[-1] ==  read_pos[-1] ; )
                     {
                         --ref_offset ;
@@ -168,7 +172,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 
                     //如果是LINUX平台，用__builtin_ctzll,__builtin_clzll 指令得到最开始为1的位置，从而判定有多少个想同，
                     //同时根据大头和小头平台使用不同的函数，小头用LBE to MBE ,大头用 MBE to LBE,
-                    //本来我对这个问题有点异或，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
+                    //本来我对这个问题有点疑惑，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
                     //这儿为了速度，我们取出64bit的数值作为longlong比较的时候，没有考虑字节序
 #if defined ZCE_LINUX64
 
