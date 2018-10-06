@@ -189,7 +189,7 @@ int test_bytes_crc32(int /*argc*/, char * /*argv*/[])
             abc = ZCE_LIB::bkdr_hash(buffer, str_len);
         }
     }
-    printf("bkdr_hash = %lu\n" , abc);
+    printf("bkdr_hash = %zu\n" , abc);
 
     uint32_t uincrc = 0;
     memcpy(buffer, test_string, str_len + 1);
@@ -598,7 +598,7 @@ int perf_fast_memcpy(size_t test_len)
 
 
 
-    printf("Memcpy copy mem len [%10lu] LibC [%12.2f/us] Marco1 [%12.2f/us] Marco2 [%12.2f/us] Fast 1 [%12.2f/us]  Fast2 [%12.2f/us] . \n",
+    printf("Memcpy copy mem len [%10zu] LibC [%12.2f/us] Marco1 [%12.2f/us] Marco2 [%12.2f/us] Fast 1 [%12.2f/us]  Fast2 [%12.2f/us] . \n",
            test_len,
            libc_use,
            marco1_use,
@@ -697,7 +697,7 @@ int perf_nonalign_memcpy(size_t test_len)
 
 
 
-    printf("Memcpy copy mem len [%10lu] LibC [%12.2f/us] Marco1 [%12.2f/us] Marco2 [%12.2f/us] Fast 1 [%12.2f/us]  Fast2 [%12.2f/us] . \n",
+    printf("Memcpy copy mem len [%10zu] LibC [%12.2f/us] Marco1 [%12.2f/us] Marco2 [%12.2f/us] Fast 1 [%12.2f/us]  Fast2 [%12.2f/us] . \n",
            test_len,
            libc_use,
            marco1_use,
@@ -746,21 +746,22 @@ int test_compress_fun(unsigned char *source_buf, size_t source_len)
     compressbuf_len = 1024;
     decompress_len = 1024;
 
-    ret = ZCE_LIB::ZLZ_Compress::compress(source_buf, source_len, compress_buf, &compressbuf_len);
+    ZCE_LIB::ZLZ_Compress zlz_fmt;
+    ret = zlz_fmt.compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
         printf("%s\n", "ZLZ compress fail.\n");
         return ret;
     }
 
-    ret = ZCE_LIB::ZLZ_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = zlz_fmt.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
         printf("%s\n", "ZLZ decompress fail.\n");
         return ret;
     }
 
-    printf("source len %lu,compressed len %lu.\n", source_len, compressbuf_len);
+    printf("source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
     printf("%s\n", source_buf);
     printf("%s\n", decompress_buf);
     ret = memcmp(source_buf, decompress_buf, source_len);
@@ -771,21 +772,22 @@ int test_compress_fun(unsigned char *source_buf, size_t source_len)
 
     compressbuf_len = 1024;
     decompress_len = 1024;
-    ret = ZCE_LIB::LZ4_Compress::compress(source_buf, source_len, compress_buf, &compressbuf_len);
+    ZCE_LIB::LZ4_Compress lz4_fmt;
+    ret = lz4_fmt.compress(source_buf, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
         printf("%s\n", "LZ4 compress fail.\n");
         return ret;
     }
 
-    ret = ZCE_LIB::LZ4_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = lz4_fmt.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
         printf("%s\n", "LZ4 decompress fail.\n");
         return ret;
     }
 
-    printf("source len %lu,compressed len %lu.\n", source_len, compressbuf_len);
+    printf("source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
     printf("%s\n", source_buf);
     printf("%s\n", decompress_buf);
     ret = memcmp(source_buf, decompress_buf, source_len);
@@ -822,7 +824,8 @@ int test_compress_filedata(const char *file_name)
 
     decompress_len = 40 * 1024 * 1024;
     printf("---------------------------------------------------------\n");
-    ret = ZCE_LIB::LZ4_Compress::compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ZCE_LIB::LZ4_Compress lz4;
+    ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
         printf("%s\n", "ZCE Lz4 compress fail.\n");
@@ -832,7 +835,7 @@ int test_compress_filedata(const char *file_name)
         return ret;
     }
 
-    ret = ZCE_LIB::LZ4_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
         printf("%s\n", "ZCE Lz4 decompress fail.\n");
@@ -841,7 +844,7 @@ int test_compress_filedata(const char *file_name)
         delete []file_buffer;
         return ret;
     }
-    printf("ZCE ZL4 source len %lu,compressed len %lu.\n", source_len, compressbuf_len);
+    printf("ZCE ZL4 source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
 
 
     //printf("%s\n",decompress_buf);
@@ -853,7 +856,7 @@ int test_compress_filedata(const char *file_name)
         {
             if (file_buffer[i] != decompress_buf[i])
             {
-                printf("bytes [%lu] not eaqual\n.", i);
+                printf("bytes [%zu] not eaqual\n.", i);
             }
         }
         printf("%s\n", "Compress data and  decompress data is not equal.\n");
@@ -865,7 +868,8 @@ int test_compress_filedata(const char *file_name)
 
     ret = ZCE_LIB::ZLZ_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
     decompress_len = 40 * 1024 * 1024;
-    ret = ZCE_LIB::ZLZ_Compress::compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ZCE_LIB::ZLZ_Compress zlz;
+    ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
     if (ret != 0)
     {
         printf("%s\n", "ZCE ZLZ compress fail.\n");
@@ -875,7 +879,7 @@ int test_compress_filedata(const char *file_name)
         return ret;
     }
 
-    ret = ZCE_LIB::ZLZ_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     if (ret != 0)
     {
         printf("%s\n", "ZCE ZLZ decompress fail.\n");
@@ -884,7 +888,7 @@ int test_compress_filedata(const char *file_name)
         delete[] file_buffer;
         return ret;
     }
-    printf("ZCE ZLZ source len %lu,compressed len %lu.\n", source_len, compressbuf_len);
+    printf("ZCE ZLZ source len %zu,compressed len %zu.\n", source_len, compressbuf_len);
 
     printf("---------------------------------------------------------\n");
 
@@ -897,7 +901,7 @@ int test_compress_filedata(const char *file_name)
         {
             if (file_buffer[i] != decompress_buf[i])
             {
-                printf("bytes [%lu] not eaqual\n.", i);
+                printf("bytes [%zu] not eaqual\n.", i);
             }
         }
         printf("%s\n", "Compress data and  decompress data is not equal.\n");
@@ -980,12 +984,12 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
 
     ZCE_HR_Progress_Timer hr_timer;
 
-    const size_t TEST_NUMBER = 512;
-
-    unsigned char *file_buffer = new unsigned char [40 * 1024 * 1024];
+    const size_t TEST_NUMBER = 32;
+    const size_t COMPRESS_TEXT_LEN = 120 * 1024 * 1024;
+    auto *file_buffer = new unsigned char [COMPRESS_TEXT_LEN];
     size_t file_len;
     int ret = 0;
-    ret = ZCE_LIB::read_file_data("D:\\TestDir\\compress\\5.txt", (char *)file_buffer, 40 * 1024 * 1024, &file_len);
+    ret = ZCE_LIB::read_file_data("D:\\TestDir\\compress\\05.txt", (char *)file_buffer, COMPRESS_TEXT_LEN, &file_len);
     if (ret != 0)
     {
         delete []file_buffer;
@@ -995,12 +999,12 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
     size_t source_len = file_len;
 
     ret = ZCE_LIB::LZ4_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
-    ZCE_ASSERT(compressbuf_len <40 * 1024 * 1024 );
+    ZCE_ASSERT(compressbuf_len < COMPRESS_TEXT_LEN);
     ret = ZCE_LIB::ZLZ_Compress::need_compressed_bufsize(file_len, &compressbuf_len);
-    ZCE_ASSERT(compressbuf_len <40 * 1024 * 1024 );
+    ZCE_ASSERT(compressbuf_len < COMPRESS_TEXT_LEN);
 
-    unsigned char *compress_buf = new unsigned char [40 * 1024 * 1024];
-    unsigned char *decompress_buf = new unsigned char [40 * 1024 * 1024];
+    auto *compress_buf = new unsigned char [COMPRESS_TEXT_LEN];
+    auto *decompress_buf = new unsigned char [COMPRESS_TEXT_LEN];
 
     ZCE_LIB::sleep(1);
 
@@ -1038,60 +1042,66 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
             double (file_len)*TEST_NUMBER * 1000000.0 / (1024 * 1024 * decompress_use) );
     */
     compress_use = 0.0 , decompress_use = 0.0;
+    ZCE_LIB::LZ4_Compress zlz;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;
-        compressbuf_len = 40 * 1024 * 1024;
+        compressbuf_len = COMPRESS_TEXT_LEN;
 
         hr_timer.restart();
-
-        ret = ZCE_LIB::ZLZ_Compress::compress(file_buffer, source_len, compress_buf, &compressbuf_len);
-
+        ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
-        decompress_len = 40 * 1024 * 1024;
+        decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        ret = ZCE_LIB::ZLZ_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
-
+        ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
     }
 
-    printf ("ZCE ZLZ [%10lu] compress use us[%15.3f]us [%15.3f]Mb/s decompress use [%15.3f]us [%15.3f]Mb/s.\n",
+    printf ("ZCE ZLZ source len[%10zu] compress len[%10zu] compress radio [%15.3f]"
+            "compress use us[%15.3f]us [%15.3f]Mb/s decompress use [%15.3f]us [%15.3f]Mb/s.\n",
+            source_len,
             compressbuf_len,
+            double(source_len) / compressbuf_len,
             compress_use,
-            double (file_len)*TEST_NUMBER * 1000000.0 / (1024 * 1024 * compress_use),
+            (double(file_len)*TEST_NUMBER * 1000000.0) / (compress_use *1024 * 1024 ),
             decompress_use,
-            double (file_len)*TEST_NUMBER * 1000000.0 / (1024 * 1024 * decompress_use) );
+            (double (file_len)*TEST_NUMBER * 1000000.0) / (decompress_use *1024 * 1024 ));
 
     compress_use = 0.0 , decompress_use = 0.0;
+
+    ZCE_LIB::LZ4_Compress lz4;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;
-        compressbuf_len = 40 * 1024 * 1024;
+        compressbuf_len = COMPRESS_TEXT_LEN;
 
         hr_timer.restart();
 
-        ret = ZCE_LIB::LZ4_Compress::compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+        ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
 
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
-        decompress_len = 40 * 1024 * 1024;
+        decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        ret = ZCE_LIB::LZ4_Compress::decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+        ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
 
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
     }
 
-    printf ("ZCE LZ4 [%10lu] compress use us[%15.3f]us [%15.3f]Mb/s decompress use [%15.3f]us [%15.3f]Mb/s.\n",
-        compressbuf_len,
-        compress_use,
-        double (file_len)*TEST_NUMBER * 1000000.0 / (1024 * 1024 * compress_use),
-        decompress_use,
-        double (file_len)*TEST_NUMBER * 1000000.0 / (1024 * 1024 * decompress_use) );
+    printf("ZCE LZ4 source len[%10zu] compress len[%10zu] compress radio [%15.3f]"
+           "compress use us[%15.3f]us [%15.3f]Mb/s decompress use [%15.3f]us [%15.3f]Mb/s.\n",
+           source_len,
+           compressbuf_len,
+           double(source_len) / compressbuf_len,
+           compress_use,
+           (double(file_len)*TEST_NUMBER * 1000000.0) / (compress_use * 1024 * 1024),
+           decompress_use,
+           (double(file_len)*TEST_NUMBER * 1000000.0) / (decompress_use * 1024 * 1024));
 
     hr_timer.restart();
     for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -1102,15 +1112,15 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
     hr_timer.end();
     double memcpy_use = hr_timer.elapsed_usec();
 
-    printf ("MEMCPY [%10lu] memcpy use us[%15.3f]us [%15.3f]Mb/s .\n",
+    printf ("MEMCPY [%10zu] memcpy use us[%15.3f]us [%15.3f]Mb/s .\n",
             file_len,
             memcpy_use,
-            double (file_len)*TEST_NUMBER * 1000000.0 / (1024 * 1024 * memcpy_use)
+            double (file_len)*TEST_NUMBER * 1000000.0 / (memcpy_use *1024 * 1024)
            );
 
     delete[] compress_buf;
     delete[] decompress_buf;
-    delete []file_buffer;
+    delete[] file_buffer;
 
     return 0;
 }
@@ -1208,7 +1218,7 @@ int test_bytes_data_represent(int /*argc*/, char * /*argv */[])
 
     for (size_t i = 0; i < DR_DATA_1::D1_C4_LEN; ++i)
     {
-        data1.d1_c4_[i] = 100000 + i;
+        data1.d1_c4_[i] = 100000 + (int) i;
     }
 
     data1.d1_d1_.push_back(888);

@@ -13,11 +13,12 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
-    test_net_getaddrinfo(argc, argv);
+    benchmark_compress(argc, argv);
   
     return 0;
 
 #if 0
+     test_net_getaddrinfo(argc, argv);
 
     test_bytes_data_represent(argc, argv);
 

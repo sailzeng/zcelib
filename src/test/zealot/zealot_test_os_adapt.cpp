@@ -18,8 +18,8 @@ int test_osadapt_file(int  /*argc*/, char * /*argv*/[])
     HANDLE fh_2 = (HANDLE)_get_osfhandle(file_desc);
 
 
-    std::cout << (int)fh_1 << std::endl;
-    std::cout << (int)fh_2 << std::endl;
+    std::cout << fh_1 << std::endl;
+    std::cout << fh_2 << std::endl;
 
     //file_desc != filedesc_1 != filedesc_2,3个文件描述符不一样
     int filedesc_1 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
@@ -30,7 +30,7 @@ int test_osadapt_file(int  /*argc*/, char * /*argv*/[])
 
     //fh_1 == fh_2 == fh_3,内核句柄一致一致
     HANDLE fh_3 = (HANDLE)_get_osfhandle(filedesc_1);
-    std::cout << (int)fh_3 << std::endl;
+    std::cout << fh_3 << std::endl;
 
 #endif
 

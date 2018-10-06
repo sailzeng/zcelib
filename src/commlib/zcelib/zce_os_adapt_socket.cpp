@@ -700,7 +700,7 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
     sockaddr_in addr4;
     sockaddr_in6 addr6;
     sockaddr *addr = NULL;
-    socklen_t addrlen = result->ai_addrlen;
+    socklen_t addrlen = static_cast<socklen_t>(result->ai_addrlen);
     if (addrlen  == sizeof(sockaddr_in))
     {
         memcpy(&addr4, result->ai_addr, addrlen);
@@ -2106,7 +2106,8 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
-    int send_len = 0, recv_len = 0, ret = -1;
+    ssize_t send_len = 0, recv_len = 0;
+    ssize_t snd_ret = 0;
 
     buffer[0] = SOCKS5_VER;
     //支持不验证和验证两种方式
@@ -2115,16 +2116,16 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
     buffer[3] = 0x2; //需要验证
     send_len = 4;
 
-    ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
-    if (ret != 0)
+    send_len = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    if (snd_ret <= 0)
     {
-        return ret;
+        return -1;
     }
     //协议规定返回两个字节,第一个是版本号5,第二个是方式
     recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
     if (recv_len != 2)
     {
-        return ret;
+        return -1;
     }
     bool need_auth = false;
     if (SOCKS5_VER == buffer[0])
@@ -2166,15 +2167,15 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
         buffer[2 + user_len] = static_cast<unsigned char>(pass_len);
         memcpy(buffer + 3 + user_len, password, pass_len);
         send_len = 3 + user_len + pass_len;
-        ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
-        if (ret != 0)
+        snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+        if (snd_ret <= 0)
         {
-            return ret;
+            return -1;
         }
         recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
         if (recv_len != 2)
         {
-            return ret;
+            return -1;
         }
         //验证失败
         if (buffer[0] == SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
@@ -2197,7 +2198,7 @@ int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
     ZCE_ASSERT(host_name || addr);
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
-    int send_len = 0, recv_len = 0, ret = -1;
+    ssize_t send_len = 0, recv_len = 0;
 
     const size_t MAX_STRING_LEN = 255;
     if (!host_name)
@@ -2221,7 +2222,7 @@ int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
         memcpy(buffer + 5, host_name, host_len);
         uint16_t n_port = htons(port);
         memcpy(buffer + 5 + host_len, &n_port, 2);
-        send_len = 6 + host_len;
+        send_len =  host_len + 6;
     }
     else if (addr)
     {
@@ -2249,15 +2250,15 @@ int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
         }
     }
 
-    ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
-    if (ret != 0)
+    ssize_t snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    if (snd_ret <= 0)
     {
-        return ret;
+        return -1;
     }
     recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
     if (recv_len != 2)
     {
-        return ret;
+        return -1;
     }
     //验证失败
     if (buffer[0] == SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)

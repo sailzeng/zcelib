@@ -50,13 +50,33 @@ const size_t ZCE_LZ_STEP_MAX_LEN  = 32;
 //尾部不处理的模块，
 const size_t ZCE_LZ_NOPROCESS_TAIL = sizeof(uint64_t) * 2;
 
+//HASHTABLE长度等于2多少次方
+const uint32_t HASH_TABLE_LEN_2_POWER = 13;
+//HASHTABLE的长度
+const size_t HASH_TABLE_LEN = 0x1LL << (HASH_TABLE_LEN_2_POWER);
+
+
+//===============================================================================================================
+
+ZCE_LIB::ZLZ_Compress_Format::ZLZ_Compress_Format()
+{
+    hash_lz_offset_ = new uint32_t[HASH_TABLE_LEN];
+}
+
+ZCE_LIB::ZLZ_Compress_Format::~ZLZ_Compress_Format()
+{
+    if (hash_lz_offset_)
+    {
+        delete[] hash_lz_offset_;
+    }
+}
+
 
 //压缩的关键函数，内部函数，不对对外暴漏
 void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
                                                  size_t original_size,
                                                  unsigned char *compressed_buf,
-                                                 size_t *compressed_size,
-                                                 bool *if_compress)
+                                                 size_t *compressed_size)
 {
     //初始化各种初始值
     const unsigned char *read_pos = original_buf;
@@ -64,14 +84,11 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
     unsigned char *write_pos = compressed_buf;
     unsigned char *write_stop = NULL;
 
-    *if_compress = true;
-
     //因为快速拷贝，一次处理8个字节，用16个字节保证不溢出，
     const unsigned char *match_end = read_end - ZCE_LZ_NOPROCESS_TAIL;
 
     //0xFFFFFFFF(-1)是一个不可能存在的值
-    uint32_t hash_lz_offset[8192];
-    memset(hash_lz_offset, -1, sizeof(hash_lz_offset));
+    memset(hash_lz_offset_, -1, sizeof(uint32_t)*HASH_TABLE_LEN);
 
     const unsigned char *ref_offset = NULL;
     const unsigned char *nomatch_achor =  NULL;
@@ -112,11 +129,11 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
             //每4个字节都区一次HASH值，然后查询是否有重复的数据
             uint32_t hash_value = ZCE_LZ_HASH(read_pos);
             //取出偏移量
-            uint32_t table_old_offset = hash_lz_offset[hash_value];
+            uint32_t table_old_offset = hash_lz_offset_[hash_value];
             //找到这个东西第一次出现的位置，
             ref_offset = original_buf + table_old_offset;
             //更新HASHTABLE
-            hash_lz_offset[hash_value] = (uint32_t)(read_pos - original_buf);
+            hash_lz_offset_[hash_value] = (uint32_t)(read_pos - original_buf);
             match_offset = (size_t)( read_pos - ref_offset );
 
             //如果发现匹配,而且两者间的间距不大，（间距要2个字节表述，如果更长需要更多字节，那么就完全起不到压缩的效果了）
@@ -127,41 +144,43 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
             {
                 nomatch_count += (step_len - 1);
 
-                //因为其实前面做过HASH检查，所以其实如果step_len 等于0的时候，前面还有相等的情况是很少的
-                //打开if对速度的提升2%，压缩比降低1% ?
-                if ( ZCE_UNLIKELY( step_len > 1 ) )
+                //由于前面步进的速度是提速过的，如果步进长度>1，那么回头看看是否前面是否还有相等的
+                //step_len > 1表示前面有跳动
+                if (step_len > 1)
                 {
-                    //由于前面步进的速度是提速过的，如果步进长度不是1，那么回头看看是否前面真正相等的的位置
-                    for (; read_pos > nomatch_achor && ref_offset > original_buf && ref_offset[-1] ==  read_pos[-1] ; )
+                    for (; read_pos > nomatch_achor && ref_offset > original_buf && ref_offset[-1] == read_pos[-1]; )
                     {
-                        --ref_offset ;
-                        --read_pos ;
-                        --nomatch_count ;
+                        --ref_offset;
+                        --read_pos;
+                        --nomatch_count;
                     }
                 }
+                
 
-
-                //到这儿来了就是发现有(至少)4字节的匹配了，
+                //步进4位，（前面发现了至少4个字节相等）
                 read_pos += 4;
                 ref_offset += 4;
                 match_count = 4;
-                //0xFFF7是避免溢出
+
+                //持续的需找相等
                 for (;;)
                 {
+                    //0xFFF7是避免溢出
                     if (ZCE_UNLIKELY((read_pos > match_end) || (match_count > 0xFFF7)) )
                     {
                         goto zlz_token_process;
                     }
 
-                    //如果不等，用指令函数迅速得到有多少字节相等.
                     //-----------------------------------------------------------------------------
-                    //下面这几段比较复杂，本来打算写个宏，但感觉宏一样没法让人理解，认真写写注释把。
-                    //为了加速，代码分64位，32位处理，（曾经尝试过在32位平台下用64位处理，速度差不多把）
+                    //下面这几段实现在不同的OS下快速的查询相等的数据，为了加速，代码分64位，32位处理，
+                    //（曾经尝试过在32位平台下用64位处理，速度差不多把）
+                    //理解比较复杂，本来打算写个宏，但感觉宏一样没法让人理解，认真写写注释把。
                     uint32_t match_bytes = 0;
+
 #if defined ZCE_OS64
                     //64位平台，每次比较64bits
                     uint64_t diff = ZBYTE_TO_UINT64(ref_offset) ^ ZBYTE_TO_UINT64(read_pos);
-
+                    //如果不等，用指令函数迅速得到有多少字节相等.
                     if (!diff)
                     {
                         read_pos += sizeof(uint64_t);
@@ -174,6 +193,8 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
                     //同时根据大头和小头平台使用不同的函数，小头用LBE to MBE ,大头用 MBE to LBE,
                     //本来我对这个问题有点疑惑，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
                     //这儿为了速度，我们取出64bit的数值作为longlong比较的时候，没有考虑字节序
+
+                    //右移3位是为了找到第几个字节不同
 #if defined ZCE_LINUX64
 
 #if defined ZCE_LITTLE_ENDIAN
@@ -236,8 +257,6 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
                     goto zlz_token_process;
                 }
                 //Never goto heer.
-                //goto label_token_process;
-
             }
             //如果不匹配
             else
@@ -252,7 +271,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
                     goto zlz_token_process;
                 }
                 //step_attempts++的目的是在长期发现无法压缩的情况下，
-                //简单说，相当于，128次后，步进长度2,再128次后，步进变为3
+                //简单说，相当于，2^ZCE_LZ_STEP_LEN_POW次后，步进长度2,再2^ZCE_LZ_STEP_LEN_POW次后，步进变为3
                 //当步进长度达到一定程度后，停止步进增加，
                 step_len = ((step_attempts++) >> ZCE_LZ_STEP_LEN_POW);
                 if ( ZCE_UNLIKELY(step_len  > ZCE_LZ_STEP_MAX_LEN))
@@ -291,14 +310,6 @@ zlz_token_process:
             }
             else
             {
-                //如果没有压缩价值，算了，不压缩了
-                //多出48个字节，理论可以表述 48 * 256 - 12* 65535 的无法压缩数据了。
-                if ( (write_pos + 2 + nomatch_count - compressed_buf ) > (read_pos - original_buf + 48 ) )
-                {
-                    *if_compress = false;
-                    return;
-                }
-
                 //offset_token 填写为0xF,标识用扩展2字节字段标识长度
                 *offset_token = 0xF;
                 ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(nomatch_count)));
@@ -309,7 +320,7 @@ zlz_token_process:
         if (match_count)
         {
             //保存
-            hash_lz_offset[ZCE_LZ_HASH(read_pos - 2)] = (uint32_t)(read_pos - original_buf - 2);
+            hash_lz_offset_[ZCE_LZ_HASH(read_pos - 2)] = (uint32_t)(read_pos - original_buf - 2);
 
             //相同的情况下，最小长度是4，所以0表示0，1表示4
             if (match_count <  0xE + 0x3)
@@ -583,15 +594,27 @@ int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compresse
     return 0;
 }
 
+//===============================================================================================================
 
+ZCE_LIB::LZ4_Compress_Format::LZ4_Compress_Format()
+{
+    hash_lz_offset_ = new uint32_t[HASH_TABLE_LEN];
+}
+
+ZCE_LIB::LZ4_Compress_Format::~LZ4_Compress_Format()
+{
+    if (hash_lz_offset_)
+    {
+        delete[] hash_lz_offset_;
+    }
+}
 
 //压缩的关键函数，内部函数，
 //模仿LZ4的算法的格式进行的函数，
 void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
                                                  size_t original_size,
                                                  unsigned char *compressed_buf,
-                                                 size_t *compressed_size,
-                                                 bool *if_compress)
+                                                 size_t *compressed_size)
 {
     //初始化各种初始值
     const unsigned char *read_pos = original_buf;
@@ -599,14 +622,11 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
     unsigned char *write_pos = compressed_buf;
     unsigned char *write_stop = NULL;
 
-    *if_compress = true;
-
     //因为快速拷贝，一次处理8个字节，用16个字节保证不溢出，
     const unsigned char *match_end = read_end - ZCE_LZ_NOPROCESS_TAIL;
 
     //0xFFFFFFFF(-1)是一个不可能存在的值
-    uint32_t hash_lz_offset[8192];
-    memset(hash_lz_offset, -1, sizeof(hash_lz_offset));
+    memset(hash_lz_offset_, -1, sizeof(uint32_t)*HASH_TABLE_LEN);
 
     const unsigned char *ref_offset = NULL;
     const unsigned char *nomatch_achor =  NULL, *match_achor = NULL;
@@ -644,9 +664,9 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
             //这个地方说明一下，如果table_old_offset == -1(0xFFFFFFFF)，那么也认为是没有匹配
             uint32_t hash_value = ZCE_LZ_HASH(read_pos);
 
-            uint32_t table_old_offset = hash_lz_offset[hash_value];
+            uint32_t table_old_offset = hash_lz_offset_[hash_value];
             ref_offset = original_buf + table_old_offset;
-            hash_lz_offset[hash_value] = (uint32_t)(read_pos - original_buf);
+            hash_lz_offset_[hash_value] = (uint32_t)(read_pos - original_buf);
             match_offset = (size_t)( read_pos - ref_offset );
 
             //如果发现匹配,而且两者间的间距不大，（间距要2个字节表述，如果更长需要更多字节，那么就完全起不到压缩的效果了）
@@ -783,7 +803,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                     goto lz4_end_process;
                 }
                 //step_attempts++的目的是在长期发现无法压缩的情况下，
-                //简单说，相当于，128次后，步进长度2,再128次后，步进变为3
+                //相当于，2^ZCE_LZ_STEP_LEN_POW次后，步进长度2,再2^ZCE_LZ_STEP_LEN_POW次后，步进变为3
                 //当步进长度达到一定程度后，停止步进增加，
                 step_len = ((step_attempts++) >> ZCE_LZ_STEP_LEN_POW);
                 if ( ZCE_UNLIKELY(step_len  > ZCE_LZ_STEP_MAX_LEN))

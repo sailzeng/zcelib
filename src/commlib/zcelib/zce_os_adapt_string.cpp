@@ -263,7 +263,8 @@ const char *ZCE_LIB::skip_separator(const char *str, char separator_char)
 //调试打印内存信息，就是简单的内存翻译为16进制字符串
 void ZCE_LIB::memory_debug(FILE *stream, const unsigned char *mem, size_t mem_len)
 {
-    fprintf(stream, "DEBUG memory[%p][%lu]", mem, mem_len);
+    //%zu不知道VC从什么年代支持的
+    fprintf(stream, "DEBUG memory[%p][%zu]", mem, mem_len);
     for (size_t i = 0; i < mem_len; ++i)
     {
         fprintf(stream, "%02x", mem[i]);
