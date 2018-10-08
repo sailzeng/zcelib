@@ -736,12 +736,10 @@ int test_compress_fun(unsigned char *source_buf, size_t source_len)
 {
     int ret = 0;
 
-
     size_t compressbuf_len = 0, decompress_len = 0;
 
     unsigned char compress_buf[1024];
     unsigned char decompress_buf[1024];
-
 
     compressbuf_len = 1024;
     decompress_len = 1024;
@@ -937,10 +935,18 @@ int test_bytes_compress(int /*argc*/, char * /*argv*/[])
 {
     
     uint8_t source_buf[1024];
+
+#if 0
     strcpy((char *)source_buf, "123");
     test_compress_fun(source_buf, strlen((char *)source_buf) + 1);
+
+    strcpy((char *)source_buf, "111111111111111111111");
+    test_compress_fun(source_buf, strlen((char *)source_buf) + 1);
+
     strcpy((char *)source_buf,"11122221112211122222211211111111222112");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
+#endif
+
     strcpy((char *)source_buf,"1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
     strcpy((char *)source_buf,"111");
@@ -996,6 +1002,43 @@ int test_bytes_compress(int /*argc*/, char * /*argv*/[])
 #include "lz4.h"
 
 #  pragma comment(lib, "lz4.lib")
+
+int test_compress_fun3(unsigned char *source_buf, size_t source_len)
+{
+    int ret = 0;
+    size_t compressbuf_len1 = 0, compressbuf_len2= 0,decompress_len = 0;
+
+    unsigned char compress_buf1[1024];
+    unsigned char compress_buf2[1024];
+    //unsigned char decompress_buf[1024];
+
+
+    compressbuf_len1 = 1024;
+    compressbuf_len2 = 1024;
+    decompress_len = 1024;
+
+    ZCE_LIB::LZ4_Compress_Format zlz;
+    zlz.compress_core(source_buf, source_len, compress_buf1, &compressbuf_len1);
+    if (ret != 0)
+    {
+        printf("%s\n", "ZLZ compress fail.\n");
+        return ret;
+    }
+    compressbuf_len2 = LZ4_compress((const char *)source_buf, (char *)compress_buf2, (int)source_len);
+    return 0;
+}
+
+int test_bytes_compress3(int /*argc*/, char * /*argv*/[])
+{
+    uint8_t source_buf[1024];
+    strcpy((char *)source_buf, "12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678");
+
+    test_compress_fun3(source_buf, strlen((char *)source_buf) + 1);
+
+    return 0;
+}
+
+
 
 int benchmark_compress(int /*argc*/, char * /*argv*/[])
 {
@@ -1062,7 +1105,7 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
            (double(file_len)*TEST_NUMBER * 1000000.0) / (compress_use * 1024 * 1024),
            decompress_use,
            (double(file_len)*TEST_NUMBER * 1000000.0) / (decompress_use * 1024 * 1024));
-#if 0
+
     compress_use = 0.0 , decompress_use = 0.0;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -1136,7 +1179,6 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
             memcpy_use,
             double (file_len)*TEST_NUMBER * 1000000.0 / (memcpy_use *1024 * 1024)
            );
-#endif
 
     delete[] compress_buf;
     delete[] decompress_buf;

@@ -49,6 +49,7 @@ int test_bytes_encode(int argc, char *argv[]);
 int test_bytes_crc32(int argc, char *argv[]);
 int test_bytes_compress(int argc, char *argv[]);
 int test_bytes_compress2(int argc, char *argv[]);
+int test_bytes_compress3(int argc, char *argv[]);
 int test_bytes_data_represent(int argc, char *argv[]);
 
 int bytes_encrypt_right(int argc, char *argv[]);
