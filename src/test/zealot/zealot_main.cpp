@@ -13,6 +13,9 @@ int main(int argc , char *argv[])
 
     ZCE_Trace_LogMsg::instance()->init_stdout();
     
+
+    //test_bytes_compress(argc, argv);
+
     benchmark_compress(argc, argv);
   
     return 0;

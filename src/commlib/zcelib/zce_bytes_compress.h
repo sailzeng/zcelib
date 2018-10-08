@@ -169,6 +169,7 @@ public:
         {
             return -1;
         }
+        *original_size = need_srclen;
         return 0;
     }
 
@@ -241,12 +242,12 @@ public:
                                         original_size,
                                         compressed_buf + head_size,
                                         &compressed_data_len);
-        }
 
-        //真正进行了压缩
-        if (compressed_data_len < original_size)
-        {
-            if_compress = true;
+            //真正进行了压缩
+            if (compressed_data_len < original_size)
+            {
+                if_compress = true;
+            }
         }
 
         //保存是否进行了压缩，如果没有压缩，源数据全部拷贝过滤

@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2036
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commlib", "commlib", "{E3E63F9D-ADF2-451D-82DE-E89530D142F7}"
 EndProject
@@ -54,6 +54,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "zealot", "test\zealot\zealo
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ogre4asvrd", "commsvr\ogre4asvrd\ogre4asvrd.vcxproj", "{505A176A-146F-4254-95D4-689D0B93A803}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lz4", "..\..\zcelib.depend\include\lz4\lz4.vcxproj", "{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -111,6 +113,14 @@ Global
 		{505A176A-146F-4254-95D4-689D0B93A803}.Release|Win32.Build.0 = Release|Win32
 		{505A176A-146F-4254-95D4-689D0B93A803}.Release|x64.ActiveCfg = Release|x64
 		{505A176A-146F-4254-95D4-689D0B93A803}.Release|x64.Build.0 = Release|x64
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Debug|Win32.Build.0 = Debug|Win32
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Debug|x64.ActiveCfg = Debug|x64
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Debug|x64.Build.0 = Debug|x64
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Release|Win32.ActiveCfg = Release|Win32
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Release|Win32.Build.0 = Release|Win32
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Release|x64.ActiveCfg = Release|x64
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -123,5 +133,9 @@ Global
 		{4339808F-E2E2-4949-8C3F-56F76E69B866} = {77938720-9F15-4AED-AA59-D74E375244B6}
 		{0FA45C38-5F6C-4715-8726-6D32A2069743} = {D3352ACF-CC1E-456E-AEA2-79CAF505FA9B}
 		{505A176A-146F-4254-95D4-689D0B93A803} = {77938720-9F15-4AED-AA59-D74E375244B6}
+		{068E2F30-2F72-4ED7-A47B-B6EE3EA18DF1} = {E3E63F9D-ADF2-451D-82DE-E89530D142F7}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CA5639EC-1328-41CC-AFC4-49D75EFB0BE2}
 	EndGlobalSection
 EndGlobal
