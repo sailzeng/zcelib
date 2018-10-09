@@ -622,11 +622,12 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 
     const unsigned char *ref_offset = NULL;
     const unsigned char *nomatch_achor =  NULL, *match_achor = NULL;
-
     unsigned char *offset_token = NULL;
 
     size_t match_offset , nomatch_count = 0, match_count = 0;
-
+    nomatch_achor = read_pos;
+    hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
+    ++read_pos;
     //处理每一个要压缩的字节
     for (;;)
     {
@@ -644,10 +645,10 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 
         //你可以认为ZLZ算法的多个块组成，一个块中间有一个不能压缩字段（可选），一个可以压缩字段组成（可选），
 
-        nomatch_achor = read_pos;
+        //nomatch_achor = read_pos;
 
         //等于(1 << ZCE_LZ_STEP_LEN_POW)+1
-        size_t step_attempts = 65;
+        size_t step_attempts = 67;
 
         //找到一个Token（包括可以压缩的数据和不可以压缩的数据）
         next_read_pos = read_pos;
@@ -679,8 +680,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
             //如果发现匹配,而且两者间的间距不大，（间距要2个字节表述，如果更长需要更多字节，那么就完全起不到压缩的效果了）
             //间距长度ZCE_LZ_MAX_OFFSET,用2个字节（或者一个字节）表述，
         } while (ZBYTE_TO_UINT32(ref_offset) != ZBYTE_TO_UINT32(read_pos)
-                 || (match_offset) >= ZCE_LZ_MAX_OFFSET
-                 || match_offset == 0);
+                 || (match_offset) >= ZCE_LZ_MAX_OFFSET);
 
 
         //因为其实前面做过HASH检查，所以其实如果step_len 等于1的时候，前面还有相等的情况是很少的，但确实存在
@@ -693,7 +693,6 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 
         //块的最开始是一个字节的offset_token，TOKEN的高4bit表示非压缩长度，低四位表示压缩长度
         offset_token = (write_pos++);
-        *offset_token = 0;
 
         //
         if (ZCE_LIKELY(nomatch_count < 0xF))
@@ -721,10 +720,11 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
         ZCE_LZ_FAST_COPY_STOP(write_pos, nomatch_achor, write_stop);
         write_pos = write_stop;
 
+lz4_match_process:
         //到这儿来了就是发现有(至少)4字节的匹配了，
         match_achor = read_pos;
-        //read_pos += 4;
-        //ref_offset += 4;
+        read_pos += 4;
+        ref_offset += 4;
 
         //快速的找出有多少数据是相同的，
         for (;;)
@@ -734,11 +734,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                 break;
             }
 
-            //如果不等，用指令函数迅速得到有多少字节相等.
-            //-----------------------------------------------------------------------------
-            //下面这几段比较复杂，本来打算写个宏，但感觉宏一样没法让人理解，认真写写注释把。
-            //为了加速，代码分64位，32位处理，（曾经尝试过在32位平台下用64位处理，速度差不多把）
-            uint32_t tail_match = 0;
+
 #if defined ZCE_OS64
             //64位平台，每次比较64bits
             uint64_t diff = ZBYTE_TO_UINT64(ref_offset) ^ ZBYTE_TO_UINT64(read_pos);
@@ -748,7 +744,11 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
                 ref_offset += 8;
                 continue;
             }
-
+            //如果不等，用指令函数迅速得到有多少字节相等.
+            //-----------------------------------------------------------------------------
+            //下面这几段比较复杂，本来打算写个宏，但感觉宏一样没法让人理解，认真写写注释把。
+            //为了加速，代码分64位，32位处理，（曾经尝试过在32位平台下用64位处理，速度差不多把）
+            uint32_t tail_match = 0;
             //如果是LINUX平台，用__builtin_ctzll,__builtin_clzll 指令得到最开始为1的位置，从而判定有多少个想同，
             //同时根据大头和小头平台使用不同的函数，小头用LBE to MBE ,大头用 MBE to LBE,
             //本来我对这个问题有点异或，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
@@ -811,9 +811,6 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
             read_pos += tail_match;
             ref_offset += tail_match;
             match_count = read_pos - match_achor;
-
-            //hash_lz_offset_[ZCE_LZ_HASH(read_pos - 2)] = (uint32_t)(read_pos - 2 - original_buf);
-
             break;
         }
 
@@ -840,6 +837,27 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
         //前面已经保证了read_pos和ref_offset 相差小于0xFFFF，2个字节足够
         ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(match_offset )));
         write_pos += 2;
+
+        if (ZCE_UNLIKELY((read_pos > match_end) ) )
+        {
+            nomatch_achor = read_pos;
+            break;
+        }
+
+        // Fill table
+        hash_lz_offset_[ZCE_LZ_HASH((read_pos - 2))] = 
+            (uint32_t)(read_pos - 2 - original_buf);
+        // Test next position
+        ref_offset = original_buf + hash_lz_offset_[ZCE_LZ_HASH(read_pos)];
+        hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
+
+        if ((ref_offset -read_pos >= ZCE_LZ_MAX_OFFSET) && (ZBYTE_TO_UINT32(ref_offset) == ZBYTE_TO_UINT32(read_pos)))
+        {
+            offset_token =  write_pos ++;
+            *offset_token = 0;
+            goto lz4_match_process;
+        }
+        nomatch_achor = read_pos++;
     }
 
 lz4_end_process:
