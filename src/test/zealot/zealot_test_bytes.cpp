@@ -1040,17 +1040,17 @@ int test_bytes_compress3(int /*argc*/, char * /*argv*/[])
 
 
 
-int benchmark_compress(int /*argc*/, char * /*argv*/[])
+int benchmark_compress(const char *file_name)
 {
 
     ZCE_HR_Progress_Timer hr_timer;
 
-    const size_t TEST_NUMBER = 64;
+    const size_t TEST_NUMBER = 5;
     const size_t COMPRESS_TEXT_LEN = 120 * 1024 * 1024;
     auto *file_buffer = new unsigned char [COMPRESS_TEXT_LEN];
     size_t file_len;
     int ret = 0;
-    ret = ZCE_LIB::read_file_data("D:\\TestDir\\compress\\txt\\05.txt", (char *)file_buffer, COMPRESS_TEXT_LEN, &file_len);
+    ret = ZCE_LIB::read_file_data(file_name, (char *)file_buffer, COMPRESS_TEXT_LEN, &file_len);
     if (ret != 0)
     {
         delete []file_buffer;
@@ -1076,6 +1076,15 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
 
     compress_use = 0.0, decompress_use = 0.0;
     ZCE_LIB::LZ4_Compress lz4;
+    ZCE_LIB::ZLZ_Compress zlz;
+
+    ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
+    if (ret != 0)
+    {
+        abort();
+    }
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;
@@ -1106,6 +1115,15 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
            decompress_use,
            (double(file_len)*TEST_NUMBER * 1000000.0) / (decompress_use * 1024 * 1024));
 
+    compressbuf_len = COMPRESS_TEXT_LEN;
+    decompress_len = COMPRESS_TEXT_LEN;
+    compressbuf_len = LZ4_compress((const char *)file_buffer, (char *)compress_buf, (int)source_len);
+    LZ4_decompress_safe((const char *)compress_buf, (char *)decompress_buf, (int)compressbuf_len, COMPRESS_TEXT_LEN);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
+    if (ret != 0)
+    {
+        abort();
+    }
     compress_use = 0.0 , decompress_use = 0.0;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -1135,9 +1153,17 @@ int benchmark_compress(int /*argc*/, char * /*argv*/[])
            (double(file_len)*TEST_NUMBER * 1000000.0) / (compress_use * 1024 * 1024),
            decompress_use,
            (double(file_len)*TEST_NUMBER * 1000000.0) / (decompress_use * 1024 * 1024));
-    
+
+    compressbuf_len = COMPRESS_TEXT_LEN;
+    decompress_len = COMPRESS_TEXT_LEN;
+    ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = memcmp(file_buffer, decompress_buf, source_len);
+    if (ret != 0)
+    {
+        abort();
+    }
     compress_use = 0.0 , decompress_use = 0.0;
-    ZCE_LIB::ZLZ_Compress zlz;
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         file_buffer[0] += (unsigned char)i;

@@ -121,6 +121,8 @@ ZCE_HR_Progress_Timer::~ZCE_HR_Progress_Timer()
 void ZCE_HR_Progress_Timer::restart()
 {
 #if defined ZCE_OS_WINDOWS
+    //如果更讲究一点你可以用GetProcessAffinityMask替换ONLY_YOU_PROCESSOR
+
     //如果设置不成功，会返回0
     old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //

@@ -10,13 +10,18 @@ int main(int argc , char *argv[])
 {
 
 
-
-    ZCE_Trace_LogMsg::instance()->init_stdout();
+#define ZCE_USE_LOGMSG 1
+    ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DAY,
+                                                "E:\\TEST_1",
+                                                false,
+                                                true,
+                                                0,
+                                                LOG_OUTPUT_FILE,
+                                                LOG_HEAD_RECORD_NONE);
     
-
     test_bytes_compress(argc, argv);
 
-    benchmark_compress(argc, argv);
+    benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
   
     return 0;
 

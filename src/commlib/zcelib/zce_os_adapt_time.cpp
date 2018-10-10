@@ -1032,7 +1032,7 @@ uint64_t ZCE_LIB::rdtsc()
         mov loword , eax
     }
     tsc_value = (uint64_t( hiword ) << 32) + loword ;
-
+    tsc_value = __rdtsc();
 #elif defined (ZCE_WIN64)
 
     int registers[4];

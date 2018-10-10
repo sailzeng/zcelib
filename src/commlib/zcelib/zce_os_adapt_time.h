@@ -466,7 +466,7 @@ inline char *asctime_r(const struct tm *tm, char *buf);
 
 /*!
 * @brief      打印time_t所表示的时间信息
-* @return     inline char* 返回的时间字符串
+* @return     inline char*  返回的时间字符串
 * @param      timep        时间
 * @param      buf          输出的字符串长度，长度你自己保证至少26个
 * @note       输出字符串的格式是Wed Jan 02 02:03:55 1980\n\0.强烈不建议使用,
@@ -491,8 +491,9 @@ inline time_t timelocal(struct tm *tm);
 inline time_t timegm(struct tm *tm);
 
 /*!
-* @brief      读取TSC，Read Time-Stamp Counter
+* @brief      读取TSC，Read TSC(Time-Stamp Counter),CPU的时钟周期
 * @return     uint64_t TSC值
+* @note       这个在多核时代已经作用大大下降，因为两个核心间不一致，CPU的动态频率等问题
 */
 uint64_t rdtsc();
 

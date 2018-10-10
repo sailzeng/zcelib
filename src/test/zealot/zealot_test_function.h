@@ -71,7 +71,7 @@ int test_random_var_obj_speed(int argc, char *argv[]);
 int test_perf_memcpy(int argc, char *argv[]);
 int test_perf_nonalignmemcpy(int argc, char *argv[]);
 
-int benchmark_compress(int /*argc*/, char * /*argv*/[]);
+int benchmark_compress(const char *file_name);
 
 int test_out_buffer(int argc, char *argv[]);
 int test_log_debug(int /*argc*/, char * /*argv*/[]);

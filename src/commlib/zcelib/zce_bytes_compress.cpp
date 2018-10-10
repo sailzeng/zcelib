@@ -648,7 +648,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
         //nomatch_achor = read_pos;
 
         //等于(1 << ZCE_LZ_STEP_LEN_POW)+1
-        size_t step_attempts = 67;
+        size_t step_attempts = 65;
 
         //找到一个Token（包括可以压缩的数据和不可以压缩的数据）
         next_read_pos = read_pos;
@@ -734,7 +734,7 @@ lz4_match_process:
                 break;
             }
 
-
+            uint32_t tail_match = 0;
 #if defined ZCE_OS64
             //64位平台，每次比较64bits
             uint64_t diff = ZBYTE_TO_UINT64(ref_offset) ^ ZBYTE_TO_UINT64(read_pos);
@@ -748,7 +748,6 @@ lz4_match_process:
             //-----------------------------------------------------------------------------
             //下面这几段比较复杂，本来打算写个宏，但感觉宏一样没法让人理解，认真写写注释把。
             //为了加速，代码分64位，32位处理，（曾经尝试过在32位平台下用64位处理，速度差不多把）
-            uint32_t tail_match = 0;
             //如果是LINUX平台，用__builtin_ctzll,__builtin_clzll 指令得到最开始为1的位置，从而判定有多少个想同，
             //同时根据大头和小头平台使用不同的函数，小头用LBE to MBE ,大头用 MBE to LBE,
             //本来我对这个问题有点异或，其他压缩库代码处理MBE to LBE，后面LZ4的作者回复了我，（开源的都是好人），
@@ -838,26 +837,42 @@ lz4_match_process:
         ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(match_offset )));
         write_pos += 2;
 
+        //下面这段我任务是LZ4的神来之笔，你可以把#if 1调整成0测试一下，代码功能是一样的。但
+        //他就是比我快15%
+#if 1
         if (ZCE_UNLIKELY((read_pos > match_end) ) )
         {
             nomatch_achor = read_pos;
             break;
         }
-
-        // Fill table
+        //
         hash_lz_offset_[ZCE_LZ_HASH((read_pos - 2))] = 
             (uint32_t)(read_pos - 2 - original_buf);
         // Test next position
         ref_offset = original_buf + hash_lz_offset_[ZCE_LZ_HASH(read_pos)];
         hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
 
-        if ((ref_offset -read_pos >= ZCE_LZ_MAX_OFFSET) && (ZBYTE_TO_UINT32(ref_offset) == ZBYTE_TO_UINT32(read_pos)))
+        if ((ref_offset -read_pos <= ZCE_LZ_MAX_OFFSET) && (ZBYTE_TO_UINT32(ref_offset) == ZBYTE_TO_UINT32(read_pos)))
         {
             offset_token =  write_pos ++;
             *offset_token = 0;
             goto lz4_match_process;
         }
         nomatch_achor = read_pos++;
+#else
+        nomatch_achor = read_pos;
+#endif 
+
+#if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
+        ZCE_LOG(RS_DEBUG,
+                "lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
+                nomatch_count ,
+                match_count ,
+                read_pos - original_buf,
+                write_pos - compressed_buf,
+                original_size - (read_pos - original_buf)
+        );
+#endif
     }
 
 lz4_end_process:
@@ -865,17 +880,6 @@ lz4_end_process:
     //把最后几个字节(作为非压缩数据)拷贝到压缩数据里面
     nomatch_count = read_end - nomatch_achor;
     match_count = 0;
-
-#if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
-    ZCE_LOG(RS_DEBUG,
-            "lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
-            nomatch_count ,
-            match_count ,
-            read_pos - original_buf,
-            write_pos - compressed_buf,
-            original_size - (read_pos - original_buf)
-           );
-#endif
 
     offset_token = (write_pos++);
     if (ZCE_LIKELY(nomatch_count < 0xF))
