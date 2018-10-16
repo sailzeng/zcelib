@@ -945,14 +945,13 @@ int test_bytes_compress(int /*argc*/, char * /*argv*/[])
 
     strcpy((char *)source_buf,"11122221112211122222211211111111222112");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
-#endif
-
     strcpy((char *)source_buf,"1111111111111111111111111111111111111111111111111111111111111111111111111111111111111");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
     strcpy((char *)source_buf,"111");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
     strcpy((char *)source_buf,"11111111111111111");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
+#endif
     strcpy((char *)source_buf,"12345678123456781234567812345678123456781234567812345678123456781234567812345678123456781234567812345678");
     test_compress_fun(source_buf,strlen((char *)source_buf) + 1);
     strcpy((char *)source_buf,"123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789123456789");
@@ -1045,7 +1044,7 @@ int benchmark_compress(const char *file_name)
 
     ZCE_HR_Progress_Timer hr_timer;
 
-    const size_t TEST_NUMBER = 5;
+    const size_t TEST_NUMBER = 32;
     const size_t COMPRESS_TEXT_LEN = 120 * 1024 * 1024;
     auto *file_buffer = new unsigned char [COMPRESS_TEXT_LEN];
     size_t file_len;
@@ -1078,11 +1077,19 @@ int benchmark_compress(const char *file_name)
     ZCE_LIB::LZ4_Compress lz4;
     ZCE_LIB::ZLZ_Compress zlz;
 
-    ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
-    ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
+        for (size_t j = 0; j < source_len; j++)
+        {
+            if (file_buffer[j] != decompress_buf[j])
+            {
+                std::cout << "No " << j << std::endl;
+                break;
+            }
+        }
         abort();
     }
     for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -1092,14 +1099,14 @@ int benchmark_compress(const char *file_name)
 
         hr_timer.restart();
 
-        ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+        ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
 
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
         decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+        ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
 
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
@@ -1156,8 +1163,8 @@ int benchmark_compress(const char *file_name)
 
     compressbuf_len = COMPRESS_TEXT_LEN;
     decompress_len = COMPRESS_TEXT_LEN;
-    ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
-    ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+    ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+    ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
     ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
@@ -1170,13 +1177,13 @@ int benchmark_compress(const char *file_name)
         compressbuf_len = COMPRESS_TEXT_LEN;
 
         hr_timer.restart();
-        ret = zlz.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
+        ret = lz4.compress(file_buffer, source_len, compress_buf, &compressbuf_len);
         hr_timer.end();
         compress_use += hr_timer.elapsed_usec();
 
         decompress_len = COMPRESS_TEXT_LEN;
         hr_timer.restart();
-        ret = zlz.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
+        ret = lz4.decompress(compress_buf, compressbuf_len, decompress_buf, &decompress_len);
         hr_timer.end();
         decompress_use += hr_timer.elapsed_usec();
     }

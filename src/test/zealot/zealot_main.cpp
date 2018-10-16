@@ -6,9 +6,10 @@
 #include "zealot_test_function.h"
 
 
-int main(int argc , char *argv[])
+int main(int argc , char * argv[])
 {
-
+    ZCE_UNUSED_ARG(argc);
+    ZCE_UNUSED_ARG(argv);
 
 #define ZCE_USE_LOGMSG 1
     ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DAY,
@@ -19,14 +20,14 @@ int main(int argc , char *argv[])
                                                 LOG_OUTPUT_FILE,
                                                 LOG_HEAD_RECORD_NONE);
     
-    test_bytes_compress(argc, argv);
+    //test_bytes_compress(argc, argv);
 
     benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
   
     return 0;
 
 #if 0
-     test_net_getaddrinfo(argc, argv);
+    test_net_getaddrinfo(argc, argv);
 
     test_bytes_data_represent(argc, argv);
 
