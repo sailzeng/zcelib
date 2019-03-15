@@ -1,6 +1,6 @@
 /*!
 * @copyright  2002-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_config_ini_file.h
+* @filename   zce_config_ini_pasttime.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2002Äê1ÔÂ3ÈÕ

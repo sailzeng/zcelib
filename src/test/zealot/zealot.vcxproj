@@ -23,7 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>zeolot</RootNamespace>
     <ProjectName>zealot</ProjectName>
-    <WindowsTargetPlatformVersion>10.0.17134.0</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -235,9 +235,6 @@
     </Xml>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\zcelib.depend\include\lz4\lz4.vcxproj">
-      <Project>{068e2f30-2f72-4ed7-a47b-b6ee3ea18df1}</Project>
-    </ProjectReference>
     <ProjectReference Include="..\..\commlib\zcelib\zcelib.vcxproj">
       <Project>{c2d23fe7-03ed-4516-9603-604ba4617fdb}</Project>
     </ProjectReference>
