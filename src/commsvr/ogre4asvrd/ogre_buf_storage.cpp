@@ -36,7 +36,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
 
     for (size_t i = 0; i < sz_of_buffer; ++i)
     {
-        delete frame_buffer_ary_[i];
+		Ogre4a_App_Frame::delete_ogre(frame_buffer_ary_[i]);
         frame_buffer_ary_[i] = NULL;
     }
 
@@ -44,17 +44,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
     size_buffer_alloc_ = 0;
 }
 
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : Ogre_Buffer_Storage::allocate_byte_buffer
-Return          : Ogre4a_App_Frame*
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
 Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
 {
 
@@ -77,19 +67,8 @@ void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
     frame_buffer_ary_.push_back(ptrbuf);
 }
 
-//
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005年11月27日
-Function        : Ogre_Buffer_Storage::extend_buffer_list
-Return          : void
-Parameter List  :
-  Param1: size_t szlist
-Description     : 扩展了缓冲区数量，
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//扩展了缓冲区数量
 void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 {
     //
@@ -106,7 +85,7 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
     //将新的NEW数据装载进去
     for (size_t i = 0; i < szlist; ++i)
     {
-        Ogre4a_App_Frame *tmppr = new(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN) Ogre4a_App_Frame();
+        Ogre4a_App_Frame *tmppr = Ogre4a_App_Frame::new_ogre(Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN);
         tmppr->reset_framehead();
         frame_buffer_ary_.push_back(tmppr);
     }

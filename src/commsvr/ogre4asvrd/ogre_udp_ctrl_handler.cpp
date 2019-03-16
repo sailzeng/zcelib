@@ -173,7 +173,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_a
 
     dgram_databuf_->snd_peer_info_.set(remote_addr);
     dgram_databuf_->rcv_peer_info_ = this->peer_svc_info_;
-    dgram_databuf_->ogre_frame_len_ = Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD + recvret;
+    dgram_databuf_->ogre_frame_len_ =static_cast<unsigned int>(Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
     //避免发生其他人填写的情况
     dgram_databuf_->ogre_frame_option_ = 0;
     dgram_databuf_->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_PEER_UDP;

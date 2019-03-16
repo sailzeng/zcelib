@@ -37,6 +37,14 @@
     <ClInclude Include="wormhole_proxyprocess.h" />
     <ClInclude Include="wormhole_stat_define.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\commlib\soarlib\soarlib.vcxproj">
+      <Project>{c1a3c107-5c21-4549-91a1-4df51a2a3aa7}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\..\commlib\zcelib\zcelib.vcxproj">
+      <Project>{c2d23fe7-03ed-4516-9603-604ba4617fdb}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{60B5D1BB-BD85-4B9A-AB34-417B1779A6E7}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>

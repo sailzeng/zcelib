@@ -2178,7 +2178,7 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
             return -1;
         }
         //验证失败
-        if (buffer[0] == SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
+        if (buffer[0] != SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
         {
             return -1;
         }
@@ -2187,7 +2187,7 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
 }
 
 
-//链接服务器
+//链接socks5服务器
 int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
                                  const char *host_name,
                                  uint16_t port,
@@ -2261,7 +2261,7 @@ int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
         return -1;
     }
     //验证失败
-    if (buffer[0] == SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
+    if (buffer[0] != SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
     {
         return -1;
     }

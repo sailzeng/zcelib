@@ -33,58 +33,34 @@ Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
     return *this;
 }
 
-//重载New函数
-void   *Zerg_App_Frame::operator new (size_t , std::size_t lenframe)
+//创建一个Frame
+Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
 {
-    //assert( FrameLength <= MAX_FRAME_SIZE );
-    if (lenframe < sizeof(Zerg_App_Frame))
-    {
-        lenframe = sizeof(Zerg_App_Frame);
-    }
+	//assert( FrameLength <= MAX_FRAME_SIZE );
+	if (frame_len < sizeof(Zerg_App_Frame))
+	{
+		frame_len = sizeof(Zerg_App_Frame);
+	}
 
-    //计算数据加密后的长度
+	//计算数据加密后的长度
 
-    void *ptr = ::new unsigned char[lenframe];
+	void *ptr = ::new unsigned char[frame_len];
 
 #if defined(DEBUG) || defined(_DEBUG)
-    //检查帧的哪个地方出现问题，还是这样好一点
-    memset(ptr, 0, lenframe);
+	//检查帧的哪个地方出现问题，还是这样好一点
+	memset(ptr, 0, frame_len);
 #endif //DEBUG
 
 	//没有必要加下面这句，因为实际长度要根据使用决定
-    //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
-    return ptr;
+	//reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
+	return static_cast<Zerg_App_Frame *>(ptr);
 }
-
-//养成好习惯,写new,就写delete.
-//其实不写也不会有内存泄露,但是为了不得罪讨厌的编译器.
-void Zerg_App_Frame::operator delete(void *ptrframe) noexcept
-{
-    char *ptr = reinterpret_cast<char *>(ptrframe) ;
-    delete []ptr;
-}
-
-#if defined ZCE_OS_WINDOWS
-#pragma warning ( push )
-#pragma warning ( disable : 4291)
-#endif
-
-//创建一个Frame
-Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_length_)
-{
-    Zerg_App_Frame *proc_frame = new (frame_length_) Zerg_App_Frame();
-    return proc_frame;
-}
-
-#if defined ZCE_OS_WINDOWS
-#pragma warning ( pop )
-#endif
-
 
 //
 void Zerg_App_Frame::delete_frame(Zerg_App_Frame *frame)
 {
-	delete frame;
+	char *ptr = reinterpret_cast<char *>(frame);
+	delete[]ptr;
 }
 
 //填充AppData数据到APPFrame

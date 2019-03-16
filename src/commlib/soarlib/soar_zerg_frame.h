@@ -193,20 +193,15 @@ public:
 	
 protected:
 
+
+
+public:
 	// explicit is better than implicit
 	//经过很多次和VC编译器反复的摧残，我决定不再对外暴漏这个函数，外部请使用new_frame and delete_frame
 	//为什么呢，其实本来我认为只使用类内部的Placement new and delete 也算是explicit的，
 	//但被VC这么反复折腾，我前面先也用 ifdef对付过去了。但升级到VS2017发现左也不是，右也不是。不如不把new暴漏出去
 	//http://www.cnblogs.com/fullsail/p/4292214.html
-
-    ///重载New函数
-    static void   *operator new (size_t , std::size_t lenframe = LEN_OF_APPFRAME_HEAD);
-
-	static void operator delete(void *ptrframe) noexcept;
-
-//#endif
-
-public:
+	//不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
 	///创建一个Frame
 	static Zerg_App_Frame *new_frame(std::size_t lenframe);
@@ -214,11 +209,11 @@ public:
 	static void delete_frame(Zerg_App_Frame *frame);
 
 
-    //输出APPFRAME的头部信息
+    ///输出APPFRAME的头部信息
     static void dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);
-    //输出APPFRAME的尾部信息
+    ///输出APPFRAME的尾部信息
     static void dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);

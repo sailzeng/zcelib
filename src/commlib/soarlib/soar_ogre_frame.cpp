@@ -23,8 +23,8 @@ Ogre4a_App_Frame::~Ogre4a_App_Frame()
 }
 
 
-//重载New函数
-void   *Ogre4a_App_Frame::operator new (size_t , size_t lenframe)
+
+Ogre4a_App_Frame *Ogre4a_App_Frame::new_ogre(size_t lenframe)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
     if (lenframe < sizeof(Ogre4a_App_Frame))
@@ -41,17 +41,12 @@ void   *Ogre4a_App_Frame::operator new (size_t , size_t lenframe)
 #endif //DEBUG
 
     //reinterpret_cast<Zerg_App_Frame*>(ptr)->m_Length = static_cast<unsigned int>(lenframe);
-    return ptr;
+    return static_cast<Ogre4a_App_Frame *>(ptr);
 }
 
 
-//养成好习惯,写new,就写delete.
-//其实不写也不会有内存泄露,但是为了不得罪讨厌的编译器.
-#if defined ZCE_OS_WINDOWS
-void Ogre4a_App_Frame::operator delete(void *ptrframe, size_t )
-#elif defined ZCE_OS_LINUX
-void Ogre4a_App_Frame::operator delete(void *ptrframe)
-#endif
+
+void Ogre4a_App_Frame::delete_ogre(Ogre4a_App_Frame *ptrframe) noexcept
 {
     char *ptr = reinterpret_cast<char *>(ptrframe) ;
     delete []ptr;

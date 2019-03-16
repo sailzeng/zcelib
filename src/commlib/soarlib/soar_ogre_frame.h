@@ -43,6 +43,7 @@ public:
 
     //
     Ogre4a_App_Frame();
+protected:
     //
     ~Ogre4a_App_Frame();
 
@@ -67,15 +68,13 @@ public:
                              ZCE_LOG_PRIORITY log_priority) const;
 
 public:
-    //重载New函数
-    static void   *operator new (size_t , size_t lenframe);
 
-    //不重载delte与情理不通，但是其实没有什么问题,
-#if defined ZCE_OS_WINDOWS
-    static void operator delete(void *ptrframe, size_t );
-#elif defined ZCE_OS_LINUX
-    static void operator delete(void *ptrframe);
-#endif
+	//不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
+
+	///创建一个Frame
+	static Ogre4a_App_Frame *new_ogre(std::size_t lenframe);
+	///销毁一个frame
+	static void delete_ogre(Ogre4a_App_Frame *frame) noexcept;
 
 public:
 
