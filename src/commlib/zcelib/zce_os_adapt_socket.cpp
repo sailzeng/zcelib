@@ -615,7 +615,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 
 int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
                              const sockaddr *addr,
-                             socklen_t addrlen,
+                             socklen_t addr_len,
                              ZCE_Time_Value &timeout_tv)
 {
 
@@ -628,7 +628,7 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
         return -1;
     }
 
-    ret = ZCE_LIB::connect(handle, addr, addrlen);
+    ret = ZCE_LIB::connect(handle, addr, addr_len);
     //
     if (ret != 0)
     {
@@ -667,64 +667,46 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
 
 
 int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
-                             int ai_family,
-                             const char *hostname,
+                             const char *host_name,
                              uint16_t port,
+                             sockaddr *host_addr,
+                             socklen_t addr_len,
                              ZCE_Time_Value &timeout_tv)
 {
     //只能是IPV4，IPV6或者两个兼而有之
-    ZCE_ASSERT(ai_family == AF_INET || ai_family == AF_INET6 || ai_family == AF_UNSPEC );
     int ret = 0;
-    addrinfo hints, *result = NULL;
 
-    memset(&hints, 0, sizeof(addrinfo));
-    hints.ai_family = ai_family;
-    hints.ai_socktype = SOCK_STREAM;
-    hints.ai_flags = 0;
-    ret = ZCE_LIB::getaddrinfo(hostname,
-                               NULL,
-                               &hints,
-                               &result);
-
-    if (ret != 0)
+    //如果有Hostname，会进行DNS解析，得到连接的IP地址
+    if (host_name)
     {
-        return ret;
-    }
+        ret = ZCE_LIB::getaddrinfo_to_addr(host_name,
+                                           host_addr,
+                                           addr_len);
+        if (ret != 0)
+        {
+            return ret;
+        }
 
-    if (!result)
-    {
-        errno = EINVAL;
-        return -1;
+        //设置端口
+        if (sizeof(sockaddr_in) == addr_len)
+        {
+            sockaddr_in *addr4 = reinterpret_cast<sockaddr_in *>(host_addr);
+            addr4->sin_port = htons(port);
+        }
+        else if (sizeof(sockaddr_in6) == addr_len)
+        {
+            sockaddr_in6 *addr6 = reinterpret_cast<sockaddr_in6 *>(host_addr);
+            addr6->sin6_port = htons(port);
+        }
+        else
+        {
+            ZCE_ASSERT(false);
+        }
     }
-
-    sockaddr_in addr4;
-    sockaddr_in6 addr6;
-    sockaddr *addr = NULL;
-    socklen_t addrlen = static_cast<socklen_t>(result->ai_addrlen);
-    if (addrlen  == sizeof(sockaddr_in))
-    {
-        memcpy(&addr4, result->ai_addr, addrlen);
-        addr4.sin_port = port;
-        addr = reinterpret_cast<sockaddr *>(&addr4);
-    }
-    else if (addrlen == sizeof(sockaddr_in6))
-    {
-        memcpy(&addr6, result->ai_addr, addrlen);
-        addr6.sin6_port = port;
-        addr = reinterpret_cast<sockaddr *>(&addr6);
-    }
-    else
-    {
-        
-        ZCE_ASSERT(false);
-    }
-
-    //释放空间
-    ZCE_LIB::freeaddrinfo(result);
-
+    
     return ZCE_LIB::connect_timeout(handle,
-                                    addr,
-                                    addrlen,
+                                    host_addr,
+                                    addr_len,
                                     timeout_tv);
 }
 
@@ -733,7 +715,8 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
                                 void *buf,
                                 size_t len,
                                 ZCE_Time_Value &timeout_tv,
-                                int flags)
+                                int flags,
+                                bool only_once)
 {
 
     ssize_t result = 0;
@@ -788,6 +771,12 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
 
         if (onetime_recv > 0)
         {
+            //如果只收取一次数据
+            if (only_once)
+            {
+                bytes_recv += onetime_recv;
+                break;
+            }
             continue;
         }
         //如果出现错误,== 0一般是是端口断开，==-1表示
@@ -820,6 +809,7 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
 
     return bytes_recv;
 }
+
 
 //请你务必在WIN32环境保证你的Socket 是阻塞模式的，否则有问题
 ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
@@ -981,7 +971,7 @@ ssize_t ZCE_LIB::sendto_timeout (ZCE_SOCKET handle,
                                  const void *buf,
                                  size_t len,
                                  const sockaddr *addr,
-                                 int addrlen,
+                                 socklen_t addrlen,
                                  ZCE_Time_Value & /*timeout_tv*/,
                                  int flags)
 {
@@ -1167,7 +1157,7 @@ ssize_t ZCE_LIB::sendto_timeout2 (ZCE_SOCKET handle,
                                   const void *buf,
                                   size_t len,
                                   const sockaddr *addr,
-                                  int addrlen,
+                                  socklen_t addrlen,
                                   ZCE_Time_Value & /*timeout_tv*/,
                                   int flags)
 {
@@ -1800,13 +1790,14 @@ void ZCE_LIB::freeaddrinfo(struct addrinfo *result)
 
 //
 int ZCE_LIB::getaddrinfo_result_to_addr(addrinfo *result,
-                                        sockaddr *addr)
+                                        sockaddr *addr,
+                                        socklen_t addr_len)
 {
     addrinfo *prc_node = result;
     for (; (prc_node != NULL); prc_node = prc_node->ai_next)
     {
         //只取相应的地址
-        if (addr->sa_family == prc_node->ai_family)
+        if (addr_len == prc_node->ai_addrlen)
         {
             memcpy(addr, prc_node->ai_addr, prc_node->ai_addrlen);
         }
@@ -1898,7 +1889,8 @@ int ZCE_LIB::getaddrinfo_to_addrary(const char *nodename,
 
 
 int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
-                                 sockaddr * addr)
+                                 sockaddr * addr,
+                                 socklen_t addr_len)
 {
     int ret = 0;
     addrinfo hints, *result = NULL;
@@ -1932,7 +1924,7 @@ int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
         return -1;
     }
 
-    getaddrinfo_result_to_addr(result, addr);
+    getaddrinfo_result_to_addr(result, addr, addr_len);
     
     //释放空间
     ZCE_LIB::freeaddrinfo(result);
@@ -2086,10 +2078,12 @@ bool ZCE_LIB::check_safeport(uint16_t check_port)
 }
 
 //==============================================================================================
+//SOCKS5支持UDP穿透和TCP代理，比较全面
 
 const unsigned char SOCKS5_VER = 0x5;
 const unsigned char SOCKS5_SUCCESS = 0x0;
 const unsigned char SOCKS5_METHODS_NOAUTH = 0x0;
+const unsigned char SOCKS5_METHODS_AUTH_GSSAPI = 0x1; //不支持
 const unsigned char SOCKS5_METHODS_AUTH_PASSWORD = 0x2;
 const unsigned char SOCKS5_CMD_CONNECT = 0x1;
 const unsigned char SOCKS5_CMD_BIND = 0x2;
@@ -2098,12 +2092,13 @@ const unsigned char SOCKS5_ATYP_IPV4 = 0x1;
 const unsigned char SOCKS5_ATYP_HOSTNAME = 0x3;
 const unsigned char SOCKS5_ATYP_IPV6 = 0x4;
 
-//
-int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
-                                     const char *username,
-                                     const char *password,
-                                     ZCE_Time_Value &timeout_tv)
+//socks5代理初始化，handle 要先connect，可以使用connect_timeout
+int ZCE_LIB::socks5_initialize(ZCE_SOCKET handle,
+                               const char *username,
+                               const char *password,
+                               ZCE_Time_Value &timeout_tv)
 {
+    
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
@@ -2128,10 +2123,12 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
         return -1;
     }
     bool need_auth = false;
-    if (SOCKS5_VER == buffer[0])
+    if (SOCKS5_VER != buffer[0])
     {
         return -1;
     }
+
+    //支持不验证和验证两种方式
     if (SOCKS5_METHODS_NOAUTH == buffer[1] )
     {
         need_auth = false;
@@ -2145,7 +2142,7 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
         return -1;
     }
 
-    //验证
+    //如果需要验证
     if (need_auth)
     {
         const size_t MAX_STRING_LEN = 255;
@@ -2187,29 +2184,27 @@ int ZCE_LIB::socks5_proxy_initialize(ZCE_SOCKET handle,
 }
 
 
-//链接socks5服务器
-int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
+//通过socks5代理，TCP连接服务器
+int ZCE_LIB::socks5_connect_host(ZCE_SOCKET handle,
                                  const char *host_name,
-                                 uint16_t port,
-                                 const sockaddr *addr,
-                                 int addrlen,
+                                 const sockaddr *host_addr,
+                                 int addr_len,
+                                 uint16_t host_port,
                                  ZCE_Time_Value &timeout_tv)
 {
-    ZCE_ASSERT(host_name || addr);
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
-
     const size_t MAX_STRING_LEN = 255;
-    if (!host_name)
-    {
-        return EINVAL;
-    }
+
+    ZCE_ASSERT(host_name || host_addr);
 
     buffer[0] = SOCKS5_VER;
-    //支持不验证和验证两种方式
-    buffer[1] = SOCKS5_CMD_CONNECT; //命令
-    buffer[2] = 0x00; //保留
+    
+    //命令
+    buffer[1] = SOCKS5_CMD_CONNECT; 
+    //保留
+    buffer[2] = 0x00; 
     if (host_name)
     {
         size_t host_len = strlen(host_name);
@@ -2220,25 +2215,25 @@ int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
         buffer[3] = SOCKS5_ATYP_HOSTNAME;
         buffer[4] = static_cast<unsigned char>(host_len);
         memcpy(buffer + 5, host_name, host_len);
-        uint16_t n_port = htons(port);
+        uint16_t n_port = htons(host_port);
         memcpy(buffer + 5 + host_len, &n_port, 2);
         send_len =  host_len + 6;
     }
-    else if (addr)
+    else if (host_addr)
     {
-        if (sizeof(sockaddr_in) == addrlen)
+        if (sizeof(sockaddr_in) == addr_len)
         {
             buffer[3] = SOCKS5_ATYP_IPV4;
-            const sockaddr_in *addr_in = reinterpret_cast<const sockaddr_in *>(addr);
+            const sockaddr_in *addr_in = reinterpret_cast<const sockaddr_in *>(host_addr);
             memcpy(buffer + 4, &(addr_in->sin_addr),4);
             uint16_t n_port = addr_in->sin_port;
             memcpy(buffer + 8, &n_port, 2);
             send_len = 10;
         }
-        else if(sizeof(sockaddr_in6) == addrlen)
+        else if(sizeof(sockaddr_in6) == addr_len)
         {
             buffer[3] = SOCKS5_ATYP_IPV6;
-            const sockaddr_in6 *addr_in6 = reinterpret_cast<const sockaddr_in6 *>(addr);
+            const sockaddr_in6 *addr_in6 = reinterpret_cast<const sockaddr_in6 *>(host_addr);
             memcpy(buffer + 4, &(addr_in6->sin6_addr), 16);
             uint16_t n_port = addr_in6->sin6_port;
             memcpy(buffer + 20, &n_port, 2);
@@ -2249,21 +2244,126 @@ int ZCE_LIB::sock5_proxy_connect(ZCE_SOCKET handle,
             return EINVAL;
         }
     }
+	else
+	{
+		return EINVAL;
+	}
 
     ssize_t snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
     if (snd_ret <= 0)
     {
+		ZCE_LOG(RS_ERROR, "Socks 5 proxy send to socks5 proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
     }
     recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
     if (recv_len != 2)
     {
+        ZCE_LOG(RS_ERROR, "Socks 5 recv send to socks5 proxy fail, recv_len =%zd!", recv_len);
         return -1;
     }
-    //验证失败
-    if (buffer[0] != SOCKS5_VER || buffer[1] != SOCKS5_SUCCESS)
+    //验证结果
+	int reponse_code = buffer[1];
+    if (buffer[0] != SOCKS5_VER || reponse_code != SOCKS5_SUCCESS)
     {
+		ZCE_LOG(RS_ERROR, "Socks 5 proxy connect host fail, reponse code [%d] !", reponse_code);
+        return reponse_code;
+    }
+	ZCE_LOG(RS_DEBUG, "Socks 5 Connected!");
+    return 0;
+}
+
+//socks5代理，UDP穿透
+int ZCE_LIB::socks5_udp_associate(ZCE_SOCKET handle, 
+                                  const sockaddr * bind_addr, 
+                                  int addr_len, 
+                                  sockaddr * udp_addr, 
+                                  ZCE_Time_Value & timeout_tv)
+{
+    const size_t BUFFER_LEN = 1024;
+    unsigned char buffer[BUFFER_LEN] = { "" };
+    ssize_t send_len = 0, recv_len = 0;
+    const size_t MAX_STRING_LEN = 255;
+
+    ZCE_ASSERT(bind_addr && udp_addr);
+
+    buffer[0] = SOCKS5_VER;
+
+    //命令
+    buffer[1] = SOCKS5_CMD_UDP;
+    //保留
+    buffer[2] = 0x00;
+
+    if (sizeof(sockaddr_in) == addr_len)
+    {
+        buffer[3] = SOCKS5_ATYP_IPV4;
+        const sockaddr_in *addr_in = reinterpret_cast<const sockaddr_in *>(bind_addr);
+        //无效，填写0
+        memset(buffer + 4,0,4);
+        //不转码，两边都要网络序
+        uint16_t n_port = addr_in->sin_port;
+        memcpy(buffer + 8, &n_port, 2);
+        send_len = 10;
+    }
+    else if (sizeof(sockaddr_in6) == addr_len)
+    {
+        buffer[3] = SOCKS5_ATYP_IPV6;
+        const sockaddr_in6 *addr_in6 = reinterpret_cast<const sockaddr_in6 *>(bind_addr);
+        memset(buffer + 4, 0, 16);
+        uint16_t n_port = addr_in6->sin6_port;
+        memcpy(buffer + 20, &n_port, 2);
+        send_len = 22;
+    }
+    else
+    {
+        return EINVAL;
+    }
+
+    ssize_t snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    if (snd_ret <= 0)
+    {
+        ZCE_LOG(RS_ERROR, "Socks 5 proxy send to socks5 proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
+    }
+    recv_len = ZCE_LIB::recvn_timeout(handle, buffer, BUFFER_LEN, timeout_tv,0,true);
+    //至少会接受5个字节
+    if (recv_len <= 4)
+    {
+        ZCE_LOG(RS_ERROR, "Socks 5 recv send to socks5 proxy fail, recv_len =%zd!", recv_len);
+        return -1;
+    }
+    //验证结果
+    int reponse_code = buffer[1];
+    if (buffer[0] != SOCKS5_VER || reponse_code != SOCKS5_SUCCESS)
+    {
+        ZCE_LOG(RS_ERROR, "Socks 5 proxy connect host fail, reponse code [%d] !", reponse_code);
+        return reponse_code;
+    }
+
+    if ( SOCKS5_ATYP_IPV4 == buffer[3])
+    {
+        //牛头不对马嘴，收到的数据长度和期待的不一样
+        if (sizeof(sockaddr_in) != addr_len || recv_len < 10)
+        {
+            return -1;
+        }
+        sockaddr_in *addr_in = reinterpret_cast< sockaddr_in *>(udp_addr);
+        memcpy(&(addr_in->sin_addr), buffer + 4, 4);
+        //不转码，两边都要网络序
+        memcpy(&(addr_in->sin_port), buffer + 8, 2);
+    }
+    else if ( SOCKS5_ATYP_IPV6 == buffer[3])
+    {
+        if (sizeof(sockaddr_in6) != addr_len || recv_len < 22)
+        {
+            return -1;
+        }
+        sockaddr_in6 *addr_in6 = reinterpret_cast<sockaddr_in6 *>(udp_addr);
+        memcpy(&(addr_in6->sin6_addr), buffer + 4,  16);
+        memcpy(&(addr_in6->sin6_port), buffer + 20, 2);
+    }
+    else
+    {
+        return EINVAL;
     }
 
     return 0;

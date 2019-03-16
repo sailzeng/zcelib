@@ -150,7 +150,8 @@ int ZCE_Sockaddr_In6::get_name_info(char *host_name, size_t name_len) const
 int ZCE_Sockaddr_In6::getaddrinfo_to_addr(const char *nodename)
 {
     return ZCE_LIB::getaddrinfo_to_addr(nodename,
-                                        sockaddr_ptr_);
+                                        sockaddr_ptr_,
+                                        sizeof(sockaddr_in6));
 }
 
 //这个IPV6的地址是否是IPV4的地址映射的

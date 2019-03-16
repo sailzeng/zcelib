@@ -175,7 +175,8 @@ int ZCE_Sockaddr_In::get_name_info(char *host_name, size_t name_len) const
 int ZCE_Sockaddr_In::getaddrinfo_to_addr(const char *nodename)
 {
     return ZCE_LIB::getaddrinfo_to_addr(nodename,
-                                        sockaddr_ptr_);
+                                        sockaddr_ptr_,
+                                        sizeof(sockaddr_in));
 }
 
 //·µ»Øsockaddr_in

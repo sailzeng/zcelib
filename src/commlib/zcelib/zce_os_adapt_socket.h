@@ -360,7 +360,7 @@ int handle_ready (ZCE_SOCKET handle,
 
 
 /*!
-* @brief         接收数据，接收len长的数据或者超时后返回，(也或者一致等待，或者立即返回)
+* @brief         接收数据，接收len长的数据或者超时后返回，(也或者一直等待，或者立即返回)
 * @return        ssize_t    -1表示失败（失败原因从errno获得），0表示端口被断开，>0表示接收到的数据 数据长度
 * @param[in]     handle     操作的句柄，WINDOWS下要求句柄是阻塞状态的
 * @param[out]    buf        接收数据的buffer
@@ -462,34 +462,38 @@ int connect_timeout(ZCE_SOCKET handle,
 * @brief      连接某个HOSTNAME，可以是域名，也可以是数值地址格式
 * @return     int 0成功，非0表示失败，以及错误ID
 * @param      handle      操作的句柄
-* @param      ai_family
 * @param      hostname    可以是域名，也可以是数值地址格式，会优先尝试用数值地址格式解析
-* @param      port
-* @param      timeout_tv
+* @param      port        端口号
+* @param      host_addr   输入输出参数，如果不输入hostname，可以作为直连地址，如果输入了hostname，返回解析的地址
+* @param      addr_len    地址长度
+* @param      timeout_tv  超时时间
 * @note       
 */
 int connect_timeout(ZCE_SOCKET handle,
-                    int ai_family,
-                    const char *hostname,
+                    const char *host_name,
                     uint16_t port,
+                    sockaddr *host_addr,
+                    socklen_t addr_len,
                     ZCE_Time_Value &timeout_tv);
 
 
 
 /*!
-* @brief      接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n
+* @brief      TCP接收数据，接收len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref recv_n
 *             recvn_timeout 和 recvn_n 的区别是recvn_n 如果超时参数为NULL，可能立即返回或者一致阻塞等待
 *             内部超时用select 实现
 * @param      timeout_tv 等待的时间参数，引用值，你必须填写一个数值
+* @param      only_once  只收取一次数据，收取后就返回，不等待一定要收取到len的数据
 */
 ssize_t recvn_timeout (ZCE_SOCKET handle,
                        void *buf,
                        size_t len,
                        ZCE_Time_Value &timeout_tv,
-                       int flags = 0);
+                       int flags = 0,
+                       bool only_once = false);
 
 /*!
-* @brief      发送数据，发送len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref sendv_n
+* @brief      TCP发送数据，发送len长的数据或者超时后返回，除了timeout_tv参数，清参考@ref sendv_n
 *             sendn_timeout 和 sendv_n 的区别是recvn_n 如果超时参数为NULL，可能立即返回或者一致阻塞等待
 *             而sendn_timeout 的超时参数必须填写
 *             内部超时用select 实现
@@ -500,6 +504,7 @@ ssize_t sendn_timeout(ZCE_SOCKET handle,
                       size_t len,
                       ZCE_Time_Value &timeout_tv,
                       int flags = 0);
+
 
 /*!
 * @brief      接收UDP数据，接收到一个的数据包或者超时后返回，请参考@ref recvfrom
@@ -521,9 +526,12 @@ ssize_t sendto_timeout (ZCE_SOCKET handle,
                         const void *buf,
                         size_t len,
                         const sockaddr *addr,
-                        int addrlen,
+                        socklen_t addrlen,
                         ZCE_Time_Value & /*timeout_tv*/,
                         int flags = 0);
+
+
+
 
 //==================================================================================================
 //这组函数提供仅仅为了代码测试，暂时不对外提供
@@ -574,7 +582,7 @@ ssize_t sendto_timeout2 (ZCE_SOCKET handle,
                          const void *buf,
                          size_t len,
                          const sockaddr *addr,
-                         int addrlen,
+                         socklen_t addrlen,
                          ZCE_Time_Value & /*timeout_tv*/,
                          int flags = 0);
 
@@ -816,9 +824,12 @@ void freeaddrinfo(struct addrinfo *result);
 * @brief      辅助函数，从getaddrinfo的结果中提取一个sockaddr结果,
 * @return     int
 * @param[in]  result getaddrinfo返回的结果
-* @param[out] addr   根据你输入的sockaddr的 sa_family 确定返回的是sockaddr_in,还是sockaddr_in6
+* @param[out] addr   根据你输入的addr_len的 确定是sockaddr_in,还是sockaddr_in6
+* @param[in]  addr_len 地址的长度
 */
-int getaddrinfo_result_to_addr(addrinfo * result, sockaddr *addr);
+int getaddrinfo_result_to_addr(addrinfo * result, 
+                               sockaddr *addr,
+                               socklen_t addr_len);
 
 
 /*!
@@ -857,10 +868,11 @@ int getaddrinfo_to_addrary(const char *notename,
 * @return     int      0成功，其他失败
 * @param[in]  notename 域名OR数值地址格式，内部会先进行数值地址转换。避免耗时，不成功再进行域名解析
 * @param[out] addr     返回的地址
-* @note       
+* @param[in]  addr_len 地址的长度
 */
-int getaddrinfo_to_addr(const char *notename,
-                        sockaddr *addr);
+int getaddrinfo_to_addr(const char *host_name,
+                        sockaddr *addr,
+                        socklen_t addr_len);
 
 /*!
 * @brief      通过IP地址信息，反查域名.服务名，（可能）可以重入函数（要看底层实现），
@@ -1070,22 +1082,21 @@ bool check_safeport(uint16_t check_port);
 
 
 //-------------------------------------------------------------------------------------
-//socks 代理部分
-
+//socks 5 代理部分
 
 /*!
 * @brief      SOCKS5代理初始化，进行用户验证等
 * @return     int 返回0标识成功
-* @param      handle      已经连接SOCKS5服务器的句柄，必须先连接 connect
+* @param      handle      已经连接SOCKS5服务器的句柄，必须先连接 connect,可以使用connect_timeout函数
 * @param      username    验证模式下的用户名称，如果不需要验证用填写NULL
 * @param      password    验证模式下的密码，如果不需要验证用填写NULL
 * @param      timeout_tv  超时时间
 * @note       handle 必须先连接
 */
-int socks5_proxy_initialize(ZCE_SOCKET handle,
-                            const char *username,
-                            const char *password,
-                            ZCE_Time_Value &timeout_tv);
+int socks5_initialize(ZCE_SOCKET handle,
+                      const char *username,
+                      const char *password,
+                      ZCE_Time_Value &timeout_tv);
 
 
 /*!
@@ -1098,14 +1109,19 @@ int socks5_proxy_initialize(ZCE_SOCKET handle,
 * @param      addrlen    跳转的地址的长度
 * @param      timeout_tv 超时时间
 */
-int sock5_proxy_connect(ZCE_SOCKET handle,
+int socks5_connect_host(ZCE_SOCKET handle,
                         const char *host_name,
-                        uint16_t port,
-                        const sockaddr *addr,
+                        const sockaddr *host_addr,
                         int addrlen,
+                        uint16_t host_port,
                         ZCE_Time_Value &timeout_tv);
 
-
+//socks5代理，UDP穿透
+int socks5_udp_associate(ZCE_SOCKET handle,
+                         const sockaddr *bind_addr,
+                         int addr_len,
+                         sockaddr *udp_addr,
+                         ZCE_Time_Value &timeout_tv);
 
 };
 
