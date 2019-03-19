@@ -157,12 +157,11 @@ int ZCE_LogTrace_Basic::initialize(ZCE_LOGFILE_DEVIDE div_log_file,
 
     //
     make_configure();
-
-    set_reserve_file_num((unsigned int)reserve_file_num);
     //如果需要日志文件输出，输出一个文件
     if (output_way_ & LOG_OUTPUT_FILE )
     {
-        make_new_logfile(time(NULL), true);
+        timeval now_time(ZCE_LIB::gettimeofday());
+        open_new_logfile(true, now_time);
     }
 
     return 0;
@@ -189,9 +188,7 @@ void ZCE_LogTrace_Basic::finalize()
 //配置日志文件
 void ZCE_LogTrace_Basic::make_configure(void)
 {
-    int ret = 0;
-
-    //检查max_size_log_file_的大小范围
+    //检查max_size_log_file_等参数的大小范围
     if (max_size_log_file_ < MIN_LOG_SIZE)
     {
         max_size_log_file_ = MIN_LOG_SIZE;
@@ -201,6 +198,15 @@ void ZCE_LogTrace_Basic::make_configure(void)
     {
         max_size_log_file_ = MAX_LOG_SIZE;
     }
+    //
+    if (reserve_file_num_ < MIN_RESERVE_FILENUM)
+    {
+        reserve_file_num_ = MIN_RESERVE_FILENUM;
+    }
+    if (reserve_file_num_ > MAX_RESERVE_FILENUM)
+    {
+        reserve_file_num_ = MAX_RESERVE_FILENUM;
+    }
 
     //得到目录的名称
     char dir_name[PATH_MAX + 16];
@@ -209,59 +215,11 @@ void ZCE_LogTrace_Basic::make_configure(void)
     ZCE_LIB::dirname(log_file_prefix_.c_str(), dir_name, PATH_MAX + 1);
     log_file_dir_ = dir_name;
 
-    time_t cur_time = 0;
-
     // 如果目录不存在，则创建
     if (ZCE_LIB::mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
         // 创建失败，
         printf("mkdir %s fail. err=%s\n", log_file_dir_.c_str(), strerror(errno));
-    }
-
-    //根据分割文件的方法进行预处理
-    switch (div_log_file_)
-    {
-            //
-        case LOGDEVIDE_NONE:
-            log_file_name_ = log_file_prefix_ + STR_LOG_POSTFIX;
-            break;
-
-            //得到日期和月份分割的文件名称
-        case LOGDEVIDE_BY_FIVEMINUTE:
-        case LOGDEVIDE_BY_QUARTER:
-        case LOGDEVIDE_BY_HOUR:
-        case LOGDEVIDE_BY_SIXHOUR:
-        case LOGDEVIDE_BY_DAY:
-        case LOGDEVIDE_BY_MONTH:
-        case LOGDEVIDE_BY_YEAR:
-            cur_time = time(NULL);
-            current_click_ = cur_time / ZCE_LIB::ONE_HOUR_SECONDS;
-            create_time_logname(cur_time, log_file_name_);
-            break;
-
-            //使用ID区分分隔日志有一个问题.就是每次初始化时要得到ID,否则要覆盖原有
-            //日志文件,所以要查询原有最后一个日志文件,还要得到其的记录个数以及文件尺寸
-            //确定日志文件的序号已经到了几
-        case LOGDEVIDE_BY_SIZE:
-
-            //记录日志文件的文件名称
-            create_id_logname(0, log_file_name_);
-
-            //如果要按照SIZE划分日志,得到记录日志文件的尺寸
-            if (LOGDEVIDE_BY_SIZE == div_log_file_)
-            {
-                ret = ZCE_LIB::filelen(log_file_name_.c_str(), &size_log_file_);
-
-                if ( 0 != ret  )
-                {
-                    size_log_file_ = 0;
-                }
-            }
-
-            break;
-
-        default:
-            break;
     }
 }
 
@@ -330,67 +288,66 @@ bool ZCE_LogTrace_Basic::get_thread_synchro(void)
 }
 
 //得到新的日志文件文件名称
-void ZCE_LogTrace_Basic::make_new_logfile(time_t cur_time, bool init)
+void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_time)
 {
     //是否要生成新的文件名称
     bool to_new_file = false;
+    if (initiate)
+    {
+        to_new_file = true;
+    }
 
     time_t cur_click = 0;
-
-    switch (div_log_file_)
+    if (LOGDEVIDE_BY_SIZE == div_log_file_)
     {
-        case LOGDEVIDE_NONE:
-            log_file_name_ = log_file_prefix_ + STR_LOG_POSTFIX;
-            break;
+        //如果日志文件的尺寸已经超出
+        if (size_log_file_ > max_size_log_file_)
+        {
+            to_new_file = true;
+        }
+    }
+    else if (LOGDEVIDE_NONE == div_log_file_)
+    {
+        log_file_name_ = log_file_prefix_ + STR_LOG_POSTFIX;
+    }
+    else
+    {
+        if (LOGDEVIDE_BY_FIVEMINUTE == div_log_file_)
+        {
+            cur_click = current_time.tv_sec / ZCE_LIB::FIVE_MINUTE_SECONDS;
+        }
+        else if (LOGDEVIDE_BY_QUARTER == div_log_file_)
+        {
+            cur_click = current_time.tv_sec / ZCE_LIB::ONE_QUARTER_SECONDS;
+        }
+        else if (LOGDEVIDE_BY_HOUR == div_log_file_ ||
+                 LOGDEVIDE_BY_SIXHOUR == div_log_file_ ||
+                 LOGDEVIDE_BY_DAY == div_log_file_ ||
+                 LOGDEVIDE_BY_MONTH == div_log_file_ ||
+                 LOGDEVIDE_BY_YEAR == div_log_file_)
+        {
+            cur_click = current_time.tv_sec / ZCE_LIB::ONE_HOUR_SECONDS;
+        }
+        else
+        {
+        }
 
-        case LOGDEVIDE_BY_FIVEMINUTE:
-            cur_click = cur_time / ZCE_LIB::FIVE_MINUTE_SECONDS;
-            break;
+        //降低比较频率
+        if (current_click_ != cur_click)
+        {
+            current_click_ = cur_click;
+            std::string new_file_name;
+            new_file_name.reserve(512);
+            create_time_logname(current_time.tv_sec, new_file_name);
 
-        case LOGDEVIDE_BY_QUARTER:
-            cur_click = cur_time / ZCE_LIB::ONE_QUARTER_SECONDS;
-            break;
-
-        case LOGDEVIDE_BY_HOUR:
-        case LOGDEVIDE_BY_SIXHOUR:
-        case LOGDEVIDE_BY_DAY:
-        case LOGDEVIDE_BY_MONTH:
-        case LOGDEVIDE_BY_YEAR:
-            //得到小时精度的时间记录,
-            cur_click = cur_time / ZCE_LIB::ONE_HOUR_SECONDS;
-
-            //每小时检查一次,对按年月日分割好像不公平,但这样可以节省大量代码,而且也没有什么效率问题
-            //另外这样可以避免时区的判断
-            if (current_click_ !=  cur_click)
-            {
-                current_click_ = cur_click;
-                std::string new_file_name;
-                new_file_name.reserve(512);
-                create_time_logname(cur_time, new_file_name);
-
-                //如果日志文件名称已经更新,表示要产生一个新文件,
-                //String的比较是比较耗时的,但前面的限定保证1天最多比较24次,小case
-                if (log_file_name_ != new_file_name)
-                {
-                    to_new_file = true;
-                    log_file_name_ = new_file_name;
-                }
-            }
-
-            break;
-
-        case LOGDEVIDE_BY_SIZE:
-
-            //如果日志文件的尺寸已经超出
-            if (size_log_file_ > max_size_log_file_)
+            //如果日志文件名称已经更新,表示要产生一个新文件,
+            //String的比较是比较耗时的,但前面的限定保证1天最多比较24次,小case
+            if (log_file_name_ != new_file_name)
             {
                 to_new_file = true;
+                log_file_name_ = new_file_name;
             }
-
-            break;
-
-        default:
-            break;
+        }
     }
 
     //如果文件是打开状态,但文件句柄不正常，重新打开一个
@@ -399,16 +356,6 @@ void ZCE_LogTrace_Basic::make_new_logfile(time_t cur_time, bool init)
         if (log_file_handle_.good() == false)
         {
             to_new_file = true;
-        }
-    }
-    //如果文件没有打开
-    else
-    {
-        //不是新打开文件，打开旧有的文件，保持尺寸
-        if (to_new_file == false)
-        {
-            log_file_handle_.clear();
-            log_file_handle_.open(log_file_name_.c_str(), std::ios::out | std::ios::app);
         }
     }
 
@@ -421,14 +368,16 @@ void ZCE_LogTrace_Basic::make_new_logfile(time_t cur_time, bool init)
             log_file_handle_.close();
         }
 
-        //如果保留所有日志，或者分割日志的时间为 月 或者 年
-        del_old_logfile(cur_time, init);
-
         log_file_handle_.clear();
-        //如果是新文件,打开之,并清零
-        log_file_handle_.open(log_file_name_.c_str(), std::ios::out);
+        //打开之,
+        log_file_handle_.open(log_file_name_.c_str(), std::ios::out | std::ios::app);
 
-        size_log_file_ = 0;
+        size_log_file_ = static_cast<size_t>(log_file_handle_.tellp());
+
+        if (reserve_file_num_ > 0)
+        {
+            del_old_time_logfile(current_time.tv_sec, initiate);
+        }
     }
 }
 
@@ -575,7 +524,26 @@ void ZCE_LogTrace_Basic::del_old_id_logfile()
     }
 }
 
+void ZCE_LogTrace_Basic::del_old_logfile(time_t cur_time, bool init)
+{
+    //如果保留所有日志，或者分割日志的时间为 月 或者 年
+    if (reserve_file_num_ > 0)
+    {
+        //如果是按照时间进行分割文件的
+        if (div_log_file_ > LOGDEVIDE_BY_TIMEBEGIN && div_log_file_ < LOGDEVIDE_BY_TIMEEND)
+        {
+            del_old_time_logfile(cur_time, init);
+        }
 
+        //如果是安装尺寸风格文件的
+        if (LOGDEVIDE_BY_SIZE == div_log_file_)
+        {
+            del_old_id_logfile();
+        }
+
+        ZCE_LIB::clear_last_error();
+    }
+}
 
 
 //根据日期得到文件名称
@@ -738,7 +706,7 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
     if ((output_way_ & LOG_OUTPUT_FILE) )
     {
         //得到新的文件名字
-        make_new_logfile(now_time.tv_sec);
+        open_new_logfile(false,now_time);
 
         //如果文件状态OK
         if (log_file_handle_)
@@ -746,11 +714,11 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
             log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
 
             //必须调用flush进行输出,因为如果有缓冲你就不能立即看到日志输出了，
-            //这儿必须明白，不实用缓冲会让日志的速度下降很多很多,很多很多,
+            //这儿必须明白，不使用缓冲会让日志的速度下降很多很多,很多很多,
             //是否可以优化呢，这是一个两难问题
             log_file_handle_.flush();
 
-            //size_log_file_ = static_cast<unsigned long>( log_file_handle_.tellp());
+            //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
             size_log_file_ += sz_use_len;
         }
     }
@@ -770,7 +738,6 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
 
     //WIN32 下的调试输出,向调试窗口输出
 #ifdef ZCE_OS_WINDOWS
-
     if (output_way_ & LOG_OUTPUT_WINDBG)
     {
         ::OutputDebugStringA(log_tmp_buffer);
@@ -816,9 +783,6 @@ ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::log_priorities(const char *str_priority)
     {
         return RS_DEBUG;
     }
-
-    //Never Goto Here.
-    //return RS_DEBUG;
 }
 
 
@@ -861,42 +825,19 @@ ZCE_LOGFILE_DEVIDE ZCE_LogTrace_Basic::log_file_devide(const char *str_devide)
     {
         return LOGDEVIDE_BY_DAY;
     }
-
-    //Never Goto Here.
-    //return RS_DEBUG;
 }
 
-size_t  ZCE_LogTrace_Basic::set_reserve_file_num(size_t file_num)
+size_t ZCE_LogTrace_Basic::set_reserve_file_num(size_t file_num)
 {
     size_t old_reserve = reserve_file_num_;
     reserve_file_num_ = file_num;
-    // 重新计算需要清除的旧文件
-    del_old_logfile(time(NULL), true);
+    //不需要在这个地方重新计算需要清除的旧文件，会在下一次需要清理的时候清理。
     return old_reserve;
 }
 
-unsigned int ZCE_LogTrace_Basic::get_reserve_file_num() const
+size_t ZCE_LogTrace_Basic::get_reserve_file_num() const
 {
-    return (unsigned int)reserve_file_num_;
+    return reserve_file_num_;
 }
 
-void ZCE_LogTrace_Basic::del_old_logfile(time_t cur_time, bool init)
-{
-    //如果保留所有日志，或者分割日志的时间为 月 或者 年
-    if ( reserve_file_num_ > 0 )
-    {
-        //如果是按照时间进行分割文件的
-        if ( div_log_file_ > LOGDEVIDE_BY_TIMEBEGIN && div_log_file_ < LOGDEVIDE_BY_TIMEEND)
-        {
-            del_old_time_logfile(cur_time, init);
-        }
 
-        //如果是安装尺寸风格文件的
-        if (LOGDEVIDE_BY_SIZE == div_log_file_ )
-        {
-            del_old_id_logfile();
-        }
-
-        ZCE_LIB::clear_last_error();
-    }
-}

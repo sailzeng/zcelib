@@ -132,7 +132,7 @@ void foo_c11_outdata(char *&foo_buffer,
 
 
 template <typename... out_type >
-char *foo_snprintf(char *foo_buffer,
+char *zce_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -166,9 +166,6 @@ char *foo_snprintf(char *foo_buffer,
 
 
 #else
-
-
-#endif
 
 
 //因为模版函数写在.h文件中，所以宏也卸载了.h文件里面，过年回家看看能否用export,
@@ -1718,6 +1715,8 @@ char *zce_snprintf(char *foo_buffer,
     __ZCE_SNPRINTF_REPEAT(32);
     __ZCE_SNPRINTF_END;
 }
+
+#endif
 
 };
 

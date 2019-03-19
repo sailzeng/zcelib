@@ -185,7 +185,7 @@ int Server_Config_Base::read_cfgfile()
     app_cfg_file_ += ".cfg";
 
     // 未指定svcid配置文件
-    svc_table_file_ = app_run_dir_ + "/cfg/svctabe.cfg";
+    svc_table_file_ = app_run_dir_ + "/cfg/svctable.cfg";
 
     // 框架的配置是不会变的
     common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";

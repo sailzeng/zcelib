@@ -2282,7 +2282,6 @@ int ZCE_LIB::socks5_udp_associate(ZCE_SOCKET handle,
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
-    const size_t MAX_STRING_LEN = 255;
 
     ZCE_ASSERT(bind_addr && udp_addr);
 
@@ -2324,6 +2323,7 @@ int ZCE_LIB::socks5_udp_associate(ZCE_SOCKET handle,
         ZCE_LOG(RS_ERROR, "Socks 5 proxy send to socks5 proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
     }
+    //只收取一次数据，不多次收取
     recv_len = ZCE_LIB::recvn_timeout(handle, buffer, BUFFER_LEN, timeout_tv,0,true);
     //至少会接受5个字节
     if (recv_len <= 4)

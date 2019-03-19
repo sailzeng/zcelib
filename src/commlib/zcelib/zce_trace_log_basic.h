@@ -70,7 +70,11 @@ enum ZCE_LOGFILE_DEVIDE
     ///按照年分割日志,
     LOGDEVIDE_BY_YEAR       = 207,
 
+    LOGDEVIDE_BY_TIME_SIZE  = 208,
+
     LOGDEVIDE_BY_TIMEEND,
+
+    
 
 };
 //本来有意图实现这个类别，但是感觉总不完善，放弃，设计就是一种取舍
@@ -273,15 +277,16 @@ public:
 
     /*!
     @brief      设置log保留文件个数
-    @return     unsigned int  旧（原）有的保留文件个数值
+    @return     size_t  旧（原）有的保留文件个数值
     @param      file_num      设置的保留文件个数值
     */
     size_t set_reserve_file_num(size_t file_num);
+
     /*!
     @brief      取得log保留文件个数值
-    @return     unsigned int 当前的保留文件个数值
+    @return     size_t 当前的保留文件个数值
     */
-    unsigned int get_reserve_file_num() const;
+    size_t get_reserve_file_num() const;
 
 
     /*!
@@ -356,11 +361,10 @@ protected:
 
     /*!
     @brief      （如果有必要，）得到新的日志文件，
-    @param      cur_tmt  当前时间
     @param      init     是否是初始化阶段
+    @param      current_time  当前时间
     */
-    void make_new_logfile(time_t cur_tmt,
-                          bool init = false);
+    void open_new_logfile(bool initiate,const timeval &current_time);
 
 public:
 
@@ -379,8 +383,12 @@ protected:
 
     ///默认的保留的文件的数量
     static const size_t DEFAULT_RESERVE_FILENUM = 100;
+    ///最大的保留的文件的数量
+    static const size_t MAX_RESERVE_FILENUM = 9999;
+    ///最小的保留的文件的数量
+    static const size_t MIN_RESERVE_FILENUM = 3;
 
-    ///日志文件的最小允许尺寸是4M
+    ///日志文件的最小允许尺寸是8M
     static const size_t MIN_LOG_SIZE            = 4096000UL;
     ///日志文件的最大允许尺寸是4G
     static const size_t MAX_LOG_SIZE            = 4096000000UL;
