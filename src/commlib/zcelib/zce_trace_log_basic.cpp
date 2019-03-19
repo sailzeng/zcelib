@@ -135,7 +135,6 @@ int ZCE_LogTrace_Basic::initialize(ZCE_LOGFILE_DEVIDE div_log_file,
     auto_new_line_ = auto_new_line;
 
     max_size_log_file_ = max_size_log_file;
-
     reserve_file_num_ = reserve_file_num;
     record_info_ = head_record;
     current_click_ = 1;
@@ -827,17 +826,5 @@ ZCE_LOGFILE_DEVIDE ZCE_LogTrace_Basic::log_file_devide(const char *str_devide)
     }
 }
 
-size_t ZCE_LogTrace_Basic::set_reserve_file_num(size_t file_num)
-{
-    size_t old_reserve = reserve_file_num_;
-    reserve_file_num_ = file_num;
-    //不需要在这个地方重新计算需要清除的旧文件，会在下一次需要清理的时候清理。
-    return old_reserve;
-}
-
-size_t ZCE_LogTrace_Basic::get_reserve_file_num() const
-{
-    return reserve_file_num_;
-}
 
 

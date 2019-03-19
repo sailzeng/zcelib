@@ -275,19 +275,6 @@ public:
     */
     bool get_thread_synchro(void);
 
-    /*!
-    @brief      设置log保留文件个数
-    @return     size_t  旧（原）有的保留文件个数值
-    @param      file_num      设置的保留文件个数值
-    */
-    size_t set_reserve_file_num(size_t file_num);
-
-    /*!
-    @brief      取得log保留文件个数值
-    @return     size_t 当前的保留文件个数值
-    */
-    size_t get_reserve_file_num() const;
-
 
     /*!
     @brief      输出文件日志信息
