@@ -317,7 +317,7 @@ inline void output_helper(char *buffer,
     }
 }
 
-///IPV6的socket地址
+///IPV4的socket地址
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
