@@ -23,7 +23,7 @@ Server_Config_Base::Server_Config_Base() :
     const size_t DEF_MAX_LOG_FILE_SIZE = 16 * 1024 * 1024;
 
     log_config_.log_level_ = RS_DEBUG;
-    log_config_.log_div_type_ = LOGDEVIDE_BY_DAY;
+    log_config_.log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
     log_config_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
 
     log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;

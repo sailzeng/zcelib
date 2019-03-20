@@ -252,11 +252,18 @@ int ZCE_LIB::readdir_nameary(const char *dirname,
         //比较后缀文件
         if (ext_name)
         {
+
             if (name_len <= ext_len ||
+                //在windows 下自动忽视大小写的后缀？
+#ifdef ZCE_OS_WINDOWS
                 0 != ::strcmp(dir_tmp.d_name + name_len - ext_len, ext_name))
+#else
+                0 != ::strcasecmp(dir_tmp.d_name + name_len - ext_len, ext_name))
+#endif
             {
                 continue;
             }
+
         }
         file_name_ary.push_back(dir_tmp.d_name);
     }

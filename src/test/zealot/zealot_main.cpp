@@ -12,7 +12,7 @@ int main(int argc , char * argv[])
     ZCE_UNUSED_ARG(argv);
 
 #define ZCE_USE_LOGMSG 1
-    ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DAY,
+    ZCE_Trace_LogMsg::instance()->init_time_log(NAME_TIME_DAY_DEVIDE_TIME,
                                                 "E:\\TEST_1",
                                                 false,
                                                 true,

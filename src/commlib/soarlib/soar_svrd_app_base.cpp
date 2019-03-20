@@ -338,13 +338,13 @@ int Soar_Svrd_Appliction::init_log()
     ZCE_Trace_LogMsg::instance()->finalize();
 
     // 初始化日志
-    ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_div_type_,
+    ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_output_, 
+                                                   config_base_->log_config_.log_div_type_,
                                                    config_base_->log_file_prefix_.c_str(),
                                                    false,
                                                    true,
                                                    config_base_->log_config_.max_log_file_size_,
                                                    config_base_->log_config_.reserve_file_num_,
-                                                   config_base_->log_config_.log_output_,
                                                    LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
     if (0 != ret)
     {

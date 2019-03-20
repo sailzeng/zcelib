@@ -125,7 +125,7 @@ const char *basename (const char *pathname, char *filename, size_t buf_len);
 * @param[in]  path_name  路径字符串
 * @param[out] dir_name  存放目录字符串的BUFFER
 * @param[in]  buf_len    dir_name参数BUFFER的长度
-* @note
+* @note       目录名称的末尾没有带分隔符
 */
 const char *dirname (const char *path_name, char *dir_name, size_t buf_len);
 
@@ -170,7 +170,7 @@ int rmdir(const char *pathname);
 
 
 /*!
-* @brief
+* @brief      路径拼接
 * @return     const char*
 * @param      dst
 * @param      src

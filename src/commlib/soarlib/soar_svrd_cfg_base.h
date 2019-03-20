@@ -46,7 +46,7 @@ public:
     uint32_t log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
 
     // 日志分割方式:101按大小 201按小时 205按天
-    ZCE_LOGFILE_DEVIDE log_div_type_ = LOGDEVIDE_BY_DAY;
+    ZCE_LOGFILE_NAME_DEVIDE log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
 
     // 日志文件保留个数，多出的日志文件将会被删除
     uint32_t reserve_file_num_ = DEF_RESERVE_FILE_NUM;

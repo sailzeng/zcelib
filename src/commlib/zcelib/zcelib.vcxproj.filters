@@ -394,9 +394,6 @@
     <ClInclude Include="zce_lockfree_kfifo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_serialization.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_bytes_serialize.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -712,9 +709,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_lockfree_kfifo.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_serialization.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_bytes_serialize.cpp">

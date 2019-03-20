@@ -34,12 +34,12 @@
 #include "zce_trace_log_priority.h"
 
 
-///日志文件的分割方法
+///日志文件的分割方法,以及对应的名称关系
 ///默认的分割方法是按照时间.分割就是按照每天一个文件,文件名称中记录时间
 ///如果按照文件SIZE,或者日志的行数分割文件,用一个ID标识文件日志文件
 ///使用ID区分分隔日志有一个问题.就是每次初始化时要得到ID,否则要覆盖原有
 ///日志文件,所以要查询原有最后一个日志文件,还要得到其的记录个数以及文件尺寸
-enum ZCE_LOGFILE_DEVIDE
+enum ZCE_LOGFILE_NAME_DEVIDE
 {
     ///记录单个个日志文件,不分割
     LOGDEVIDE_NONE          = 1,
@@ -49,32 +49,24 @@ enum ZCE_LOGFILE_DEVIDE
     ///写满后，删除第N个文件，其他文件依次改名，当前文件改名为log.1,然后新生成一个
     ///文件作为当前写入的日志文件。这种方式好处是大小绝对固定，好处是文件名称总在变
     ///化，并不利于维护和管理
-    //在32位的机器，分割日志的大小不要超过4G，64位理论无限制,代码内部限制是16G
-    LOGDEVIDE_BY_SIZE       = 101,
-
-    //
-    LOGDEVIDE_BY_TIMEBEGIN  = 200,
-
-    ///按5分钟生成一个文件
-    LOGDEVIDE_BY_FIVEMINUTE = 201,
-    ///按一刻钟生成一个文件
-    LOGDEVIDE_BY_QUARTER    = 202,
-    ///按照小时分割日志,
-    LOGDEVIDE_BY_HOUR       = 203,
-    ///按照6个小时分割日志,1天分割为4个
-    LOGDEVIDE_BY_SIXHOUR    = 204,
-    ///按照日期分割日志,
-    LOGDEVIDE_BY_DAY        = 205,
-    ///按照月份分割日志,
-    LOGDEVIDE_BY_MONTH      = 206,
-    ///按照年分割日志,
-    LOGDEVIDE_BY_YEAR       = 207,
-
-    LOGDEVIDE_BY_TIME_SIZE  = 208,
-
-    LOGDEVIDE_BY_TIMEEND,
+    ///在32位的机器，分割日志的大小不要超过4G，64位理论无限制,代码内部限制是16G
+    NAME_ID_DEVIDE_SIZE       = 101,
 
     
+    ///按照小时分割日志,
+    NAME_TIME_HOUR_DEVIDE_TIME       = 201,
+    ///按照6个小时分割日志,1天分割为4个
+    NAME_SIXHOUR_DEVIDE_TIME    = 202,
+    ///按照日期分割日志,文件按天记录
+    NAME_TIME_DAY_DEVIDE_TIME  = 203,
+    ///按照月份分割日志,
+    NAME_TIME_MONTH_DEVIDE_TIME = 204,
+    ///按照时间分割日志,文件按年记录
+    NAME_TIME_YEAR_DEVIDE_TIME  = 205,
+
+    //文件名称按毫秒记录,日志按大小分割，
+    NAME_TIME_MILLISECOND_DEVIDE_SIZE = 301,
+
 
 };
 //本来有意图实现这个类别，但是感觉总不完善，放弃，设计就是一种取舍
@@ -109,9 +101,12 @@ enum LOG_OUTPUT_WAY
     LOG_OUTPUT_STDOUT   = 2,
     ///同步向标准错误输出.
     LOG_OUTPUT_ERROUT   = 4,
+    ///向共享内存文件里面输出
+    LOG_OUTPUT_MMAP_FILE = 8,
     ///同步向WINDOWS的调试窗口输出,仅仅在WIN32环境起作用
-    LOG_OUTPUT_WINDBG   = 8
+    LOG_OUTPUT_WINDBG   = 32
 };
+
 
 
 /*!
@@ -151,7 +146,7 @@ public:
     @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT_WAY
     @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int init_time_log(ZCE_LOGFILE_DEVIDE div_log_file,
+    int init_time_log(ZCE_LOGFILE_NAME_DEVIDE div_log_file,
                       const char *log_file_prefix,
                       bool if_thread_synchro = false,
                       bool auto_new_line = true,
@@ -161,7 +156,7 @@ public:
                      );
 
     /*!
-    @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE = LOGDEVIDE_BY_SIZE
+    @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
     @return     int                返回0标识初始化成功
     @param[in]  log_file_prefix    日志的前缀
     @param[in]  if_thread_synchro  是否进行线程同步
@@ -196,22 +191,22 @@ public:
     /*!
     @brief      初始化函数，超级大集合型号,根据各种参数组合选择,
     @return     int                返回0标识初始化成功
+    @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT_WAY
     @param[in]  div_log_file
     @param[in]  log_file_prefix
     @param[in]  if_thread_synchro
     @param[in]  auto_new_line
     @param[in]  max_size_log_file 日志文件的最大尺寸
     @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
-    @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT_WAY
     @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
-    int initialize(ZCE_LOGFILE_DEVIDE div_log_file,
+    int initialize(unsigned int output_way,
+                   ZCE_LOGFILE_NAME_DEVIDE div_log_file,
                    const char *log_file_prefix,
                    bool if_thread_synchro,
                    bool auto_new_line,
                    size_t max_size_log_file,
                    size_t reserve_file_num,
-                   unsigned int output_way,
                    unsigned int head_record);
 
 
@@ -293,36 +288,23 @@ protected:
     @param      logfileid     日志的ID
     @param      idlogfilename 生成的日志文件名称
     */
-    void create_id_logname(size_t logfileid, std::string &idlogfilename);
+    void create_id_logname(size_t logfileid,
+                           std::string &idlogfilename);
 
     /*!
     @brief      根据日期得到文件名称
     @param      tmt         用于生成日志文件名称的时间戳
     @param      logfilename 生成的日志文件名称
-    @note
     */
-    void create_time_logname(time_t tmt, std::string &logfilename);
+    void create_time_logname(const timeval &cur_time,
+                             std::string &logfilename);
 
-    /*!
-    @brief      处理旧的（过期）日志文件，日志文件有一个保留数量，超过保留数量，会删除
-                删除文件有一个小问题，就是当文件过大的是时候，
-    @param      curtmt  当前的时间
-    @param      init    是否是在初始化阶段，初始化阶段，会删除N个文件
-    */
-    void del_old_logfile(time_t curtmt, bool init);
 
 
     /*!
-    @brief      处理超期的时间日志文件
-    @param      curtmt   当前的时间
-    @param      init     是否是在初始化阶段，
+    @brief      处理超期的日志文件，
     */
-    void del_old_time_logfile(time_t curtmt, bool init);
-
-    /*!
-    @brief      处理超期的ID日志文件，ID滚动的文件理论上只会有一个多余的，
-    */
-    void del_old_id_logfile();
+    void del_old_logfile();
 
 
     /*!
@@ -359,7 +341,7 @@ public:
     static ZCE_LOG_PRIORITY log_priorities(const char *str_priority);
 
     ///根据字符串,得到日志分割方式的枚举
-    static ZCE_LOGFILE_DEVIDE log_file_devide(const char *str_devide);
+    static ZCE_LOGFILE_NAME_DEVIDE log_file_devide(const char *str_devide);
 
 protected:
 
@@ -390,19 +372,19 @@ protected:
 protected:
 
     ///日志分片的处理方式
-    ZCE_LOGFILE_DEVIDE div_log_file_;
+    ZCE_LOGFILE_NAME_DEVIDE div_log_file_;
 
     ///日志文件名的前缀,包括路径
-    std::string        log_file_prefix_;
+    std::string log_file_prefix_;
 
     ///日志的文件名称,当前是输出的日志文件名称
-    std::string        log_file_name_;
+    std::string log_file_name_;
 
     ///日志文件的当前目录信息
-    std::string        log_file_dir_;
+    std::string log_file_dir_;
 
     ///输出的方式，LOG_OUTPUT_WAY的枚举值组合 @ref LOG_OUTPUT_WAY
-    unsigned int       output_way_;
+    unsigned int output_way_;
 
     ///对于线程安全,我的考虑如下,多进程模型,无需加锁,只用对多线程模型加锁,
     //多进程模型共用一个文件描述符,而且不共享文件缓冲区,所以不用考虑同步,
@@ -412,7 +394,7 @@ protected:
 
 
     ///是否进行多线程的同步
-    bool                   if_thread_synchro_;
+    bool if_thread_synchro_;
 
     ///同步锁
     ZCE_Thread_Light_Mutex protect_lock_;
@@ -448,6 +430,9 @@ protected:
 
     ///日志的文件句柄
     std::ofstream         log_file_handle_;
+
+    //r
+    std::list<std::string> time_logfile_list_;
 
 };
 
