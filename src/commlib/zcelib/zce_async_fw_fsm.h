@@ -43,7 +43,7 @@ protected:
     * @param[out] continue_run 异步对象是否继续运行,
     */
     virtual void on_timeout(const ZCE_Time_Value &now_time,
-                            bool &continue_run);
+                            bool &continue_run) override;
 
     /*!
     * @brief      设置的状态机阶段，

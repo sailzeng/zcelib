@@ -1797,7 +1797,7 @@ int ZCE_LIB::getaddrinfo_result_to_addr(addrinfo *result,
     for (; (prc_node != NULL); prc_node = prc_node->ai_next)
     {
         //只取相应的地址
-        if (addr_len == prc_node->ai_addrlen)
+        if (addr_len == static_cast<socklen_t>( prc_node->ai_addrlen))
         {
             memcpy(addr, prc_node->ai_addr, prc_node->ai_addrlen);
         }

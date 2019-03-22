@@ -75,21 +75,21 @@ public:
     virtual int schedule_timer(ZCE_Timer_Handler *timer_hdl,
                                const void *action,
                                const ZCE_Time_Value &delay_time,
-                               const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) ;
+                               const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) override;
 
     /*!
     * @brief      取消定时器，你继承后必须实现这个接口
     * @return     int      0标识成功，否则失败
     * @param[in]  timer_id 定时器ID
     */
-    virtual int cancel_timer(int timer_id);
+    virtual int cancel_timer(int timer_id) override;
 
     //dump数据
     void dump();
 
     //扩张相关十字链表的NODE的数量，也调用底层的extend_node函数
     virtual int extend_node(size_t num_timer_node,
-                            size_t &old_num_node);
+                            size_t &old_num_node) override;
 
 protected:
 
@@ -99,7 +99,7 @@ protected:
     * @param      timer_id         定时器ID
     * @param      now_trigger_msec 当前的触发点的毫秒数，不同模式下表达不太一样
     */
-    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec);
+    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) override;
 
     /*!
     * @brief      分发定时器
@@ -108,14 +108,14 @@ protected:
     * @param      now_trigger_msec  当前触发的点的毫秒数，根据触发模式，表达意义不一样
     */
     virtual size_t dispatch_timer(const ZCE_Time_Value &now_time,
-                                  uint64_t now_trigger_msec);
+                                  uint64_t now_trigger_msec) override;
 
     /*!
     * @brief      取得第一个要触发的定时器NODE，也就是，最近的触发定时器，你继承后必须实现这个接口
     * @return     int   0标识成功，否则失败
     * @param[out] timer_node_id
     */
-    virtual int get_frist_nodeid(int &timer_node_id);
+    virtual int get_frist_nodeid(int &timer_node_id) override;
 
     //下面是堆处理的函数----------------------------------------------------------
 
