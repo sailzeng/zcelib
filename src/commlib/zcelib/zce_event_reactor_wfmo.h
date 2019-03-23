@@ -61,7 +61,7 @@ public:
     * @param[in]  event_handler   注册的句柄
     * @param[in]  event_mask      注册后同时设置的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     */
-    virtual int register_handler(ZCE_Event_Handler *event_handler, int event_mask);
+    virtual int register_handler(ZCE_Event_Handler *event_handler, int event_mask) override;
 
     /*!
     * @brief      从反应器注销一个ZCE_Event_Handler，同时取消他所有的mask
@@ -69,7 +69,7 @@ public:
     * @param[in]  event_handler     注销的句柄
     * @param[in]  call_handle_close 注销后，是否自动调用句柄的handle_close函数
     * */
-    virtual int remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close);
+    virtual int remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close) override;
 
     /*!
     * @brief      取消某些mask标志，
@@ -77,7 +77,7 @@ public:
     * @param[in]  event_handler 操作的句柄
     * @param[in]  cancel_mask   要取消的MASK标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     * */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask);
+    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) override;
 
     /*!
     * @brief      打开某些mask标志，
@@ -85,7 +85,7 @@ public:
     * @param[in]  event_handler   操作的句柄
     * @param[in]  event_mask      要打开的标志，请参考@ref EVENT_MASK ,可以多个值|使用。
     * */
-    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask);
+    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) override;
 
 
     /*!
@@ -94,7 +94,7 @@ public:
     * @param[in,out] time_out      超时时间，完毕后返回剩余时间
     * @param[out]    size_event    触发的句柄数量
     */
-    virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event);
+    virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) override;
 
 
 

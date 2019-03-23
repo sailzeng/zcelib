@@ -66,7 +66,7 @@ public:
     * @param      event_handler  操作的句柄
     * @param      cancel_mask    要取消的MASK值
     */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask);
+    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) override;
 
 
     /*!
@@ -75,7 +75,7 @@ public:
     * @param      event_handler  操作的句柄
     * @param      event_mask     要增加的MASK值
     */
-    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask);
+    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) override;
 
     /*!
     * @brief      事件触发
@@ -83,7 +83,7 @@ public:
     * @param      time_out      超时时长
     * @param      size_event    触发的句柄数量
     */
-    virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event);
+    virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) override;
 
 protected:
 

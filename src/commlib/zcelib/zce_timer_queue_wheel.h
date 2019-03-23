@@ -133,14 +133,14 @@ public:
     virtual int schedule_timer(ZCE_Timer_Handler *timer_hdl,
                                const void *action,
                                const ZCE_Time_Value &delay_time,
-                               const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) ;
+                               const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) override;
 
     /*!
     * @brief      取消定时器
     * @return     int      0标识成功，否则失败
     * @param      timer_id 定时器ID
     */
-    virtual int cancel_timer(int timer_id);
+    virtual int cancel_timer(int timer_id) override;
 
     /*!
     * @brief      扩张相关定时器的NODE的数量，也调用底层的extend_node函数
@@ -149,12 +149,12 @@ public:
     * @param[out] old_num_node   返回原来的定时器NODE数量
     */
     virtual int extend_node(size_t num_timer_node,
-                            size_t &old_num_node);
+                            size_t &old_num_node) override;
 
 protected:
 
     ///在触发一次后，要对定时器进行重新计算
-    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec);
+    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) override;
 
     ///取得第一个元素，也就是，最小的时间
     virtual int get_frist_nodeid(int &first_node_id);

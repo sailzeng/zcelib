@@ -46,13 +46,13 @@ public:
     virtual ~ZCE_Thread_Spin_Mutex (void);
 
     ///锁定
-    virtual void lock();
+    virtual void lock() override;
 
     ///尝试锁定
-    virtual bool try_lock();
+    virtual bool try_lock() override;
 
     ///解锁,
-    virtual void unlock();
+    virtual void unlock() override;
 
     ///取出内部的锁的指针
     pthread_spinlock_t *get_lock();
