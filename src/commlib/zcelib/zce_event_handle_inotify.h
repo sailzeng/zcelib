@@ -71,7 +71,6 @@
 #ifndef ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 #define ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 
-//此代码只能在LINUX环境下跑
 
 
 #include "zce_event_handle_base.h"
@@ -79,9 +78,9 @@
 class ZCE_Reactor;
 
 /*!
-@brief      INotify 事件处理的句柄，只能在Linux下使用，可以使用ZCE_Select_Reactor，ZCE_Epoll_Reactor
-作为反应器，
-被调用
+@brief      INotify 事件处理的句柄，在Linux下使用，可以使用ZCE_Select_Reactor，ZCE_Epoll_Reactor
+            作为反应器，被调用
+            在Windows 下，要用ZCE_WFMO_Reactor，
 */
 class ZCE_Event_INotify : public ZCE_Event_Handler
 {
@@ -318,7 +317,7 @@ protected:
 
 #if defined ZCE_OS_LINUX
     ///EINN是Event，Inotify Node的缩写
-    typedef unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
+    typedef std::unordered_map<ZCE_HANDLE, EVENT_INOTIFY_NODE >  HDL_TO_EIN_MAP;
     ///反应器管理的目录节点信息的MAP,
     HDL_TO_EIN_MAP     watch_event_map_;
 

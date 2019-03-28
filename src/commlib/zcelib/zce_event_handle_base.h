@@ -20,6 +20,7 @@ class ZCE_Reactor;
 /*!
 * @brief      IO反应器所使用的事件句柄，当IO事件触发后，相应的函数
 *             被调用
+*             最后考虑再三，没有在反应器里面集成定时器的处理 
 */
 class ZCE_Event_Handler
 {

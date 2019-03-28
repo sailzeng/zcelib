@@ -158,7 +158,7 @@ public:
     int create_self(Transaction_Base *ptxbase);
 
     //初始化,住一个几个默认参数
-    int initialize(ZCE_Timer_Queue *timer_queue,
+    int initialize(ZCE_Timer_Queue_Base *timer_queue,
                    size_t szregtrans,
                    size_t sztransmap,
                    const SERVICES_ID &selfsvr,

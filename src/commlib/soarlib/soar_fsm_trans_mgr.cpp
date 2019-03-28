@@ -49,7 +49,7 @@ Transaction_Manager::~Transaction_Manager()
 {
 }
 
-int Transaction_Manager::initialize(ZCE_Timer_Queue *timer_queue,
+int Transaction_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
                                     size_t  szregtrans,
                                     size_t sztransmap,
                                     const SERVICES_ID &selfsvr,

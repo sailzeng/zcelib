@@ -38,25 +38,7 @@ template < typename _value_type,
          typename _container_type >
 class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
 {
-protected:
 
-    //QUEUE的最大尺寸
-    size_t                                         queue_max_size_;
-
-    //由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
-    size_t                                         queue_cur_size_;
-
-    //队列的LOCK,用于读写操作的同步控制
-    ZCE_MT_SYNCH::MUTEX                            queue_lock_;
-
-    //信号灯，满的信号灯
-    ZCE_MT_SYNCH::SEMAPHORE                        sem_full_;
-
-    //信号灯，空的信号灯，当数据
-    ZCE_MT_SYNCH::SEMAPHORE                        sem_empty_;
-
-    //容器类型，可以是list,dequeue,
-    _container_type                                message_queue_;
 
 public:
 
@@ -150,7 +132,7 @@ public:
         //如果超时了，返回false
         if (!bret)
         {
-            //error = EAGAIN;
+            error = EWOULDBLOCK;
             return -1;
         }
 
@@ -219,7 +201,7 @@ public:
         //如果超时了，返回false
         if (!bret)
         {
-            //error = EAGAIN;
+            error = EWOULDBLOCK;
             return -1;
         }
 
@@ -288,14 +270,34 @@ protected:
 
         return 0;
     }
+
+protected:
+
+    //QUEUE的最大尺寸
+    size_t                                         queue_max_size_;
+
+    //由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
+    size_t                                         queue_cur_size_;
+
+    //队列的LOCK,用于读写操作的同步控制
+    ZCE_MT_SYNCH::MUTEX                            queue_lock_;
+
+    //信号灯，满的信号灯
+    ZCE_MT_SYNCH::SEMAPHORE                        sem_full_;
+
+    //信号灯，空的信号灯，当数据
+    ZCE_MT_SYNCH::SEMAPHORE                        sem_empty_;
+
+    //容器类型，可以是list,dequeue,
+    _container_type                                message_queue_;
 };
 
 
 /*!
 * @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
-*             ZCE_Message_Queue_List<ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
-* @tparam     _value_type  消息队列保存的数据类型
-* @note       主要就是为了给你一些语法糖
+*             ZCE_Message_Queue_List <ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
+* @tparam     _value_type 消息队列保存的数据类型
+* note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
 class ZCE_Message_Queue_List <ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::list<_value_type> >
@@ -312,16 +314,12 @@ public:
     }
 };
 
-///************************************************************************************************************
-//Author          : Sailzeng ZENGXING  Date Of Creation: 2011年6月17日
-//Template Param  :
-//  Param1: typename _value_type 消息队列保存的数据类型
-//Class           : ZCE_Msgqueue_Semaphore_Deque
-//Inherit         : public ZCE_Message_Queue_Semaphore<_value_type,std::deque<_value_type> >
-//Description     : 内部用DQUEUE实现的消息队列，性能较好,边界保护用的条件变量。
-//Other           : 封装的主要就是为了给你一些语法糖
-//Modify Record   :
-//************************************************************************************************************/
+/*!
+* @brief      内部用DQUEUE实现的消息队列，性能较好,边界保护用的条件变量。
+*             边界保护用信号灯
+* @tparam     _value_type 消息队列保存的数据类型
+* note       封装的主要就是为了给你一些语法糖
+*/
 template <typename _value_type >
 class ZCE_Message_Queue_Deque <ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::deque<_value_type> >
 {
@@ -337,16 +335,15 @@ public:
     }
 };
 
-/************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation: 2011年6月17日
-Template Param  :
-  Param1: typename _value_type 消息队列保存的数据类型
-Class           : ZCE_Message_Queue_Rings
-Inherit         : public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,ZCE_LIB::lordrings<_value_type> >
-Description     : 内部用circular_buffer实现的消息队列，性能非常好,边界保护用信号灯，的消息队列，但空间比较费
-Other           : 这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
-Modify Record   :
-************************************************************************************************************/
+
+
+   
+/*!
+* @brief      内部用circular_buffer实现的消息队列，性能非常好,边界保护用信号灯，的消息队列，
+*             但空间比较费
+* @tparam     _value_type 消息队列保存的数据类型 
+* note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
+*/
 template <typename _value_type >
 class ZCE_Message_Queue_Rings<ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >
 {

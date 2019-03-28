@@ -96,7 +96,7 @@ protected:
     * @return     virtual int
     * @param      queue
     */
-    virtual int initialize(ZCE_Timer_Queue *queue);
+    virtual int initialize(ZCE_Timer_Queue_Base *queue);
 
 
     /// 定时处理监控数据

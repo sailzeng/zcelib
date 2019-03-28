@@ -171,7 +171,7 @@ int Zerg_Service_App::app_run()
 
     //microsecond
     ZCE_Reactor *preactor = ZCE_Reactor::instance();
-    ZCE_Timer_Queue *p_timer_queue = ZCE_Timer_Queue::instance();
+    ZCE_Timer_Queue_Base *p_timer_queue = ZCE_Timer_Queue_Base::instance();
 
     ZCE_Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
 

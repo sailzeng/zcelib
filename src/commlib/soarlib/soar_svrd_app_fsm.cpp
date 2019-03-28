@@ -31,7 +31,7 @@ int Comm_SvrdApp_FSM::app_start(int argc, const char *argv[])
 
     //事务管理器的初始化, 自动机不使用notify
     Transaction_Manager *p_trans_mgr_ = new Transaction_Manager();
-    p_trans_mgr_->initialize(ZCE_Timer_Queue::instance(),
+    p_trans_mgr_->initialize(ZCE_Timer_Queue_Base::instance(),
                              svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_id_,
@@ -77,7 +77,7 @@ int Comm_SvrdApp_FSM::app_run()
 
     ZCE_Time_Value select_interval(0, 0);
 
-    ZCE_Timer_Queue *time_queue = ZCE_Timer_Queue::instance();
+    ZCE_Timer_Queue_Base *time_queue = ZCE_Timer_Queue_Base::instance();
     ZCE_Reactor *reactor = ZCE_Reactor::instance();
 
     for (; app_run_;)

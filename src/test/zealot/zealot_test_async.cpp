@@ -141,7 +141,7 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
     const unsigned int CMD_2 = 10002;
     const unsigned int CMD_3 = 10003;
 
-    ZCE_Timer_Queue *time_queue = new ZCE_Timer_Wheel();
+    ZCE_Timer_Queue_Base *time_queue = new ZCE_Timer_Wheel();
     ZCE_Async_FSMMgr *mgr = new ZCE_Async_FSMMgr();
     mgr->initialize(time_queue,100,200);
     mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
@@ -234,7 +234,7 @@ int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
     const unsigned int CMD_2 = 10002;
     //const unsigned int CMD_3 = 10003;
 
-    ZCE_Timer_Queue *time_queue = new ZCE_Timer_Wheel();
+    ZCE_Timer_Queue_Base *time_queue = new ZCE_Timer_Wheel();
     ZCE_Async_CoroutineMgr *mgr = new ZCE_Async_CoroutineMgr();
     mgr->initialize(time_queue, 100, 2000);
     mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));

@@ -89,7 +89,7 @@ public:
     NotifyTrans_Manger(size_t szregtrans,
                        size_t sztransmap,
                        SERVICES_ID selfsvr,
-                       ZCE_Timer_Queue *timer_queue,
+                       ZCE_Timer_Queue_Base *timer_queue,
                        Soar_MMAP_BusPipe *zerg_mmap_pipe,
                        AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX> *frame_mallocor
                       ):
@@ -124,7 +124,7 @@ public:
                     size_t sztransmap,
                     const SERVICES_ID &selfsvr,
                     const ZCE_Time_Value &enqueue_timeout,
-                    ZCE_Timer_Queue *timer_queue,
+                    ZCE_Timer_Queue_Base *timer_queue,
                     Soar_MMAP_BusPipe *zerg_mmap_pipe,
                     APPFRAME_MALLOCOR *frame_mallocor)
     {

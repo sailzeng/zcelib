@@ -34,16 +34,7 @@ template < typename _zce_synch,
          typename _container_type = std::deque<_value_type> >
 class ZCE_Message_Queue : public ZCE_NON_Copyable
 {
-protected:
 
-    //QUEUE的最大尺寸
-    size_t                                queue_max_size_;
-
-    //由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
-    size_t                                queue_cur_size_;
-
-    //容器类型，可以是list,dequeue,
-    _container_type                       message_queue_;
 
 public:
 
@@ -95,59 +86,19 @@ public:
     //返回消息对象的尺寸
     size_t size();
 
+protected:
+
+    //QUEUE的最大尺寸
+    size_t                                queue_max_size_;
+
+    //由于LIST的size()函数比较耗时，所以这儿还是用了个计数器，而不直接使用_container_type.size()
+    size_t                                queue_cur_size_;
+
+    //容器类型，可以是list,dequeue,
+    _container_type                       message_queue_;
+
 };
 
-template < typename _zce_synch,
-         typename _value_type >
-class ZCE_Message_Queue_List : public ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >
-{
-public:
-    //
-    ZCE_Message_Queue_List(size_t queue_max_size):
-        ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >(queue_max_size)
-    {
-    }
-
-    ~ZCE_Message_Queue_List()
-    {
-    }
-};
-
-template < typename _zce_synch,
-         typename _value_type >
-class ZCE_Message_Queue_Deque : public ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >
-{
-public:
-    //
-    ZCE_Message_Queue_Deque(size_t queue_max_size):
-        ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >(queue_max_size)
-    {
-    }
-
-    ZCE_Message_Queue_Deque():
-        ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >(1024)
-    {
-    }
-
-    ~ZCE_Message_Queue_Deque()
-    {
-    }
-};
-
-template < typename _zce_synch,
-         typename _value_type >
-class ZCE_Message_Queue_Rings : public ZCE_Message_Queue<_zce_synch, _value_type, ZCE_LIB::lordrings<_value_type> >
-{
-public:
-    //
-    ZCE_Message_Queue_Rings(size_t queue_max_size):
-        ZCE_Message_Queue<_zce_synch, _value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
-    {
-    }
-    ~ZCE_Message_Queue_Rings()
-    {
-    }
-};
 
 #endif //ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 
