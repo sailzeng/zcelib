@@ -100,5 +100,58 @@ protected:
 };
 
 
+template < typename _zce_synch,
+    typename _value_type >
+    class ZCE_Message_Queue_List : public ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >
+{
+public:
+    //
+    ZCE_Message_Queue_List(size_t queue_max_size) :
+        ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >(queue_max_size)
+    {
+    }
+
+    ~ZCE_Message_Queue_List()
+    {
+    }
+};
+
+template < typename _zce_synch,
+    typename _value_type >
+    class ZCE_Message_Queue_Deque : public ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >
+{
+public:
+    //
+    ZCE_Message_Queue_Deque(size_t queue_max_size) :
+        ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >(queue_max_size)
+    {
+    }
+
+    ZCE_Message_Queue_Deque() :
+        ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >(1024)
+    {
+    }
+
+    ~ZCE_Message_Queue_Deque()
+    {
+    }
+};
+
+template < typename _zce_synch,
+    typename _value_type >
+    class ZCE_Message_Queue_Rings : public ZCE_Message_Queue<_zce_synch, _value_type, ZCE_LIB::lordrings<_value_type> >
+{
+public:
+    //
+    ZCE_Message_Queue_Rings(size_t queue_max_size) :
+        ZCE_Message_Queue<_zce_synch, _value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
+    {
+    }
+    ~ZCE_Message_Queue_Rings()
+    {
+    }
+};
+
+
 #endif //ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 

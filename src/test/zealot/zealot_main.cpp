@@ -20,9 +20,9 @@ int main(int argc , char * argv[])
                                                 LOG_OUTPUT_FILE,
                                                 LOG_HEAD_RECORD_NONE);
     
-    //test_bytes_compress(argc, argv);
+    test_bytes_hash(argc, argv);
 
-    benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
+    //benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
   
     return 0;
 

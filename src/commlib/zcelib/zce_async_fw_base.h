@@ -145,7 +145,7 @@ protected:
 
 //=======================================================================================
 
-class ZCE_Timer_Queue;
+class ZCE_Timer_Queue_Base;
 
 /*!
 * @brief      异步对象的管理器基类
@@ -208,7 +208,7 @@ public:
     * @param      crtn_type_num
     * @param      running_number
     */
-    int initialize(ZCE_Timer_Queue *tq,
+    int initialize(ZCE_Timer_Queue_Base *tq,
                    size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
                    size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
 

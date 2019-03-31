@@ -291,7 +291,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        ZCE_LIB::zce_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
             int_data,
             bool_data,
             double_data,
@@ -302,7 +302,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "foo_snprintf use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "zce_snprintf use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -361,7 +361,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        ZCE_LIB::zce_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
             ZCE_LIB::Int_Out_Helper(int_data, ZCE_LIB::BASE_HEXADECIMAL, 32, 0, ZCE_LIB::FMT_ZERO),
             bool_data,
             ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
@@ -372,7 +372,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     }
     progress_timer.end();
     std::cout << "out string:[" << out_buffer << "]" << std::endl;
-    std::cout << "foo_snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "zce_snprintf format use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)

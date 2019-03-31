@@ -131,71 +131,7 @@ public:
 };
 
 
-/*!
-* @brief      
-*             
-* @tparam     _value_type
-* note       
-*/
-template <typename _value_type >
-class ZCE_Message_Queue_List <ZCE_NULL_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, std::list<_value_type> >
-{
-public:
-    //
-    ZCE_Message_Queue_List(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, std::list<_value_type> >(queue_max_size)
-    {
-    }
 
-    ~ZCE_Message_Queue_List()
-    {
-    }
-};
-
-
-/*!
-* @brief      
-*             
-* @tparam     _value_type
-* note       
-*/
-template <typename _value_type >
-class ZCE_Message_Queue_Deque <ZCE_NULL_SYNCH, _value_type>: public ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, std::deque<_value_type> >
-{
-public:
-    //
-    ZCE_Message_Queue_Deque(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, std::deque<_value_type> >(queue_max_size)
-    {
-    }
-
-    ~ZCE_Message_Queue_Deque()
-    {
-    }
-};
-
-
-/*!
-* @brief      内部用circular_buffer实现的消息队列，性能非常好,边界保护用信号灯，的消息队列，但空间比较费
-*             
-* @tparam     _value_type 消息队列保存的数据类型
-* note       这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
-*/
-template <typename _value_type >
-class ZCE_Message_Queue_Rings<ZCE_NULL_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >
-{
-public:
-    //
-    ZCE_Message_Queue_Rings(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
-    {
-        ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
-    }
-
-    ~ZCE_Message_Queue_Rings()
-    {
-    }
-};
 
 #endif // ZCE_LIB_THREAD_MESSAGE_QUEUE_NONLOCK_H_
 

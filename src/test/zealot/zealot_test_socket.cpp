@@ -167,30 +167,36 @@ int test_net_getaddrinfo(int /*argc*/, char * /*argv*/[])
     addr_in6.sin6_family = AF_INET6;
     char ip_str[256];
     ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME1,
-                               (sockaddr *)(&addr_in));
+                                       (sockaddr *)(&addr_in),
+                                       sizeof(addr_in));
     inet_ntop(addr_in.sin_family, (void *)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME1 << "to sockaddr_in ret = " << ret << " ip str:"<< ip_str <<std::endl;
     ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME1,
-        (sockaddr *)(&addr_in6));
+        (sockaddr *)(&addr_in6),
+                                       sizeof(addr_in6));
     inet_ntop(addr_in6.sin6_family, (void *)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME1 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
 
     ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME2,
-        (sockaddr *)(&addr_in6));
+        (sockaddr *)(&addr_in6),
+                                       sizeof(addr_in6));
     inet_ntop(addr_in6.sin6_family, (void *)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME2 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME2,
-        (sockaddr *)(&addr_in));
+        (sockaddr *)(&addr_in),
+                                       sizeof(addr_in));
     inet_ntop(addr_in.sin_family, (void *)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME2 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
 
 
     ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME3,
-        (sockaddr *)(&addr_in));
+        (sockaddr *)(&addr_in),
+                                       sizeof(addr_in));
     inet_ntop(addr_in.sin_family, (void *)&(addr_in.sin_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME3 << "to sockaddr_in ret = " << ret << " ip str:" << ip_str << std::endl;
     ret = ZCE_LIB::getaddrinfo_to_addr(TEST_HOST_NAME3,
-        (sockaddr *)(&addr_in6));
+        (sockaddr *)(&addr_in6),
+                                       sizeof(addr_in6));
     inet_ntop(addr_in6.sin6_family, (void *)&(addr_in6.sin6_addr), ip_str, 256);
     std::cout << TEST_HOST_NAME3 << "to sockaddr_in6 ret = " << ret << " ip str:" << ip_str << std::endl;
 

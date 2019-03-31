@@ -21,7 +21,7 @@
 #include "zce_boost_non_copyable.h"
 #include "zce_time_value.h"
 
-class ZCE_Timer_Queue;
+class ZCE_Timer_Queue_Base;
 
 /******************************************************************************************
 class ZCE_Timer_Handler
@@ -32,13 +32,13 @@ class ZCE_Timer_Handler
 protected:
 
     //构造函数和析构函数
-    ZCE_Timer_Handler(ZCE_Timer_Queue *timer_queue);
+    ZCE_Timer_Handler(ZCE_Timer_Queue_Base *timer_queue);
     ZCE_Timer_Handler();
     virtual ~ZCE_Timer_Handler();
 
 protected:
     //
-    ZCE_Timer_Queue    *timer_queue_;
+    ZCE_Timer_Queue_Base    *timer_queue_;
     //
 
 public:
@@ -50,10 +50,10 @@ public:
     virtual int timer_close();
 
     //
-    ZCE_Timer_Queue *timer_queue();
+    ZCE_Timer_Queue_Base *timer_queue();
 
     //
-    void timer_queue(ZCE_Timer_Queue *set_timer_queue);
+    void timer_queue(ZCE_Timer_Queue_Base *set_timer_queue);
 
     //考虑的半天，我觉得对于Timer的处理还是不用考虑实现一个handle_close了。
     //handle_close

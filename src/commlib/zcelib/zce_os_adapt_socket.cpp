@@ -4,6 +4,93 @@
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_socket.h"
 
+//初始化Socket，
+int ZCE_LIB::socket_init(int version_high, int version_low)
+{
+#if defined (ZCE_OS_WINDOWS)
+
+    WORD version_requested = MAKEWORD(version_high, version_low);
+    WSADATA wsa_data;
+    ::WSASetLastError(0);
+    int error = ::WSAStartup(version_requested, &wsa_data);
+
+    if (error != 0)
+    {
+        errno = ::WSAGetLastError();
+        ::fprintf(stderr,
+                  "ZCE_LIB::socket_init; WSAStartup failed, "
+                  "WSAGetLastError returned %d\n",
+                  errno);
+        WSACleanup();
+        return -1;
+    }
+
+    SOCKET no_use = INVALID_SOCKET;
+    GUID guid_acceptex = WSAID_ACCEPTEX;
+    DWORD dw_bytes = 0;
+
+    int result = 0;
+    result = ::WSAIoctl(no_use,
+                        SIO_GET_EXTENSION_FUNCTION_POINTER,
+                        &guid_acceptex,
+                        sizeof(guid_acceptex),
+                        &WSAAcceptEx,
+                        sizeof(WSAAcceptEx),
+                        &dw_bytes,
+                        NULL,
+                        NULL);
+
+    if (result == SOCKET_ERROR) {
+        ::fprintf(stderr, "WSAIoctl get WSAAcceptEx function failed with error: %u\n", 
+                  WSAGetLastError());
+        WSACleanup();
+        return -1;
+    }
+
+    GUID guid_connectex = WSAID_CONNECTEX;
+    result = ::WSAIoctl(no_use,
+                        SIO_GET_EXTENSION_FUNCTION_POINTER,
+                        &guid_connectex,
+                        sizeof(guid_connectex),
+                        &WSAConnectEx,
+                        sizeof(WSAConnectEx),
+                        &dw_bytes,
+                        NULL,
+                        NULL);
+
+    if (result == SOCKET_ERROR) {
+        ::fprintf(stderr, "WSAIoctl get WSAConnectEx function failed with error: %u\n",
+                  WSAGetLastError());
+        WSACleanup();
+        return -1;
+    }
+    return 0;
+
+#else
+    ZCE_UNUSED_ARG(version_high);
+    ZCE_UNUSED_ARG(version_low);
+    return 0;
+#endif
+}
+
+int ZCE_LIB::socket_fini(void)
+{
+#if defined (ZCE_OS_WINDOWS)
+
+    if (::WSACleanup() != 0)
+    {
+        errno = ::WSAGetLastError();
+
+        ::fprintf(stderr,
+                  "ZCE_LIB::socket_fini; WSACleanup failed, "
+                  "WSAGetLastError returned %d\n",
+                  errno);
+    }
+
+# endif
+    return 0;
+}
+
 //
 ssize_t ZCE_LIB::writev (ZCE_SOCKET handle,
                          const iovec *buffers,
@@ -180,49 +267,7 @@ ssize_t ZCE_LIB::sendmsg (ZCE_SOCKET handle,
 
 }
 
-int ZCE_LIB::socket_init (int version_high, int version_low)
-{
-#if defined (ZCE_OS_WINDOWS)
 
-    WORD version_requested = MAKEWORD (version_high, version_low);
-    WSADATA wsa_data;
-    ::WSASetLastError(0);
-    int error = ::WSAStartup (version_requested, &wsa_data);
-
-    if (error != 0)
-    {
-        errno = ::WSAGetLastError ();
-        ::fprintf (stderr,
-                   "ZCE_LIB::socket_init; WSAStartup failed, "
-                   "WSAGetLastError returned %d\n",
-                   errno);
-        WSACleanup();
-    }
-
-#else
-    ZCE_UNUSED_ARG (version_high);
-    ZCE_UNUSED_ARG (version_low);
-#endif
-    return 0;
-}
-
-int ZCE_LIB::socket_fini (void)
-{
-#if defined (ZCE_OS_WINDOWS)
-
-    if (WSACleanup () != 0)
-    {
-        errno = ::WSAGetLastError ();
-
-        ::fprintf (stderr,
-                   "ZCE_LIB::socket_fini; WSACleanup failed, "
-                   "WSAGetLastError returned %d\n",
-                   errno);
-    }
-
-# endif
-    return 0;
-}
 
 //--------------------------------------------------------------------------------------------
 //尽量收取len个数据，直到出现错误

@@ -22,7 +22,7 @@ class ZCE_Timer_Handler;
 /******************************************************************************************
 ZCE_Timer_Queue
 ******************************************************************************************/
-class ZCE_Timer_Queue : public ZCE_NON_Copyable
+class ZCE_Timer_Queue_Base : public ZCE_NON_Copyable
 {
 
 public:
@@ -111,13 +111,13 @@ protected:
 
 protected:
     //构造函数
-    ZCE_Timer_Queue(size_t num_timer_node,
+    ZCE_Timer_Queue_Base(size_t num_timer_node,
                     unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                     TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
                     bool dynamic_expand_node = true);
-    ZCE_Timer_Queue();
+    ZCE_Timer_Queue_Base();
 public:
-    virtual ~ZCE_Timer_Queue();
+    virtual ~ZCE_Timer_Queue_Base();
 
 public:
 
@@ -269,9 +269,9 @@ public:
     //这个地方的单子使用，和其他地方略有不同，要先调用赋值的函数，将子类指针付给这个函数
 
     //
-    static ZCE_Timer_Queue *instance();
+    static ZCE_Timer_Queue_Base *instance();
     //
-    static void instance(ZCE_Timer_Queue *pinstatnce);
+    static void instance(ZCE_Timer_Queue_Base *pinstatnce);
     //
     static void clean_instance();
 
@@ -316,7 +316,7 @@ protected:
 protected:
 
     ///单子实例指针
-    static ZCE_Timer_Queue     *instance_;
+    static ZCE_Timer_Queue_Base     *instance_;
 };
 
 #endif //# ZCE_LIB_TIMER_QUEUE_BASE_H_

@@ -21,7 +21,9 @@
 
 #include "zce_boost_non_copyable.h"
 #include "zce_lock_thread_mutex.h"
+#include "zce_boost_lord_rings.h"
 #include "zce_lock_thread_condi.h"
+
 
 
 /*!
@@ -37,11 +39,11 @@ class ZCE_Message_Queue_Condi : public ZCE_NON_Copyable
 
 protected:
 
-    enum WAIT_MODEL
+    enum MQW_WAIT_MODEL
     {
-        NO_WAIT,
-        WAIT_FOREVER,
-        WAIT_TIMEOUT,
+        MQW_NO_WAIT,
+        MQW_WAIT_FOREVER,
+        MQW_WAIT_TIMEOUT,
     };
 
 public:
@@ -90,7 +92,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
-                                WAIT_FOREVER,
+                                MQW_WAIT_FOREVER,
                                 nouse_timeout);
     }
 
@@ -99,7 +101,7 @@ public:
                 const ZCE_Time_Value  &wait_time)
     {
         return enqueue_interior(value_data,
-                                WAIT_FOREVER,
+                                MQW_WAIT_FOREVER,
                                 wait_time);
     }
 
@@ -108,7 +110,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
-                                WAIT_FOREVER,
+                                MQW_WAIT_FOREVER,
                                 nouse_timeout);
     }
 
@@ -117,7 +119,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
-                                WAIT_TIMEOUT,
+                                MQW_WAIT_TIMEOUT,
                                 nouse_timeout);
     }
 
@@ -126,7 +128,7 @@ public:
                 const ZCE_Time_Value  &wait_time)
     {
         return dequeue_interior(value_data,
-                                WAIT_TIMEOUT,
+                                MQW_WAIT_TIMEOUT,
                                 wait_time);
     }
 
@@ -135,7 +137,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
-                                WAIT_TIMEOUT,
+                                MQW_WAIT_TIMEOUT,
                                 nouse_timeout);
     }
 
@@ -156,7 +158,7 @@ protected:
 
     //放入一个数据，根据参数确定是否等待一个相对时间
     int enqueue_interior(const _value_type &value_data,
-                         WAIT_MODEL wait_model,
+                         MQW_WAIT_MODEL wait_model,
                          const timeval &wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据放入，再触发条件，
@@ -169,7 +171,7 @@ protected:
             //详细见pthread_condi的说明，
             while (queue_cur_size_ == queue_max_size_)
             {
-                if (wait_model == WAIT_TIMEOUT)
+                if (wait_model == MQW_WAIT_TIMEOUT)
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混,WINDOWS下的实现应该是用信号灯模拟的
@@ -178,17 +180,17 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        error = ETIMEDOUT;
+                        ZCE_LIB::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
-                else if (wait_model == WAIT_FOREVER)
+                else if (wait_model == MQW_WAIT_FOREVER)
                 {
                     cond_enqueue_.wait(&queue_lock_);
                 }
-                else if (wait_model == NO_WAIT)
+                else if (wait_model == MQW_NO_WAIT)
                 {
-                    error = EWOULDBLOCK;
+                    ZCE_LIB::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }
@@ -206,7 +208,7 @@ protected:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue_interior(_value_type &value_data,
-                         WAIT_MODEL wait_model,
+                         MQW_WAIT_MODEL wait_model,
                          const ZCE_Time_Value  &wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
@@ -219,7 +221,7 @@ protected:
             while (queue_cur_size_ == 0)
             {
                 //判断是否要进行超时等待
-                if (wait_model == WAIT_TIMEOUT)
+                if (wait_model == MQW_WAIT_TIMEOUT)
                 {
                     //timed_wait里面放入锁的目的是为了解开（退出的时候加上），不是加锁，
                     //所以含义很含混
@@ -228,17 +230,17 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        error = ETIMEDOUT;
+                        ZCE_LIB::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
-                else if (wait_model == WAIT_FOREVER)
+                else if (wait_model == MQW_WAIT_FOREVER)
                 {
                     cond_dequeue_.wait(&queue_lock_);
                 }
-                else if (wait_model == NO_WAIT)
+                else if (wait_model == MQW_NO_WAIT)
                 {
-                    error = EWOULDBLOCK;
+                    ZCE_LIB::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }

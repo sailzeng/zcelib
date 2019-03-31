@@ -28,6 +28,27 @@ class ZCE_Time_Value;
 namespace ZCE_LIB
 {
 
+//WINSocket没有暴露的两个函数
+static LPFN_CONNECTEX WSAConnectEx = NULL;
+static LPFN_ACCEPTEX  WSAAcceptEx = NULL;
+
+
+/*!
+* @brief      WINDOWS 的SOCKET必须调用一下初始化WSAStartup
+* @return     int 0成功，
+* @param[in]  version_high  版本的高位
+* @param[in]  version_low   版本的低位
+* @note       在NT SP4以后，就支持2.2的版本了，我实在想不出理由，你要用更低的版本。
+*/
+int socket_init(int version_high = 2,
+                int version_low = 2);
+
+/*!
+* @brief      程序退出，DLL鞋砸时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
+* @return     int 0成功，-1失败
+*/
+int socket_fini(void);
+
 /*!
 * @brief      创建一个SOCKET对象
 * @return     ZCE_SOCKET 返回SOCKET句柄
@@ -93,21 +114,9 @@ int sock_enable (ZCE_SOCKET handle, int value);
 */
 int sock_disable(ZCE_SOCKET handle, int value);
 
-/*!
-* @brief      WINDOWS 的SOCKET必须调用一下初始化WSAStartup
-* @return     int 0成功，
-* @param[in]  version_high  版本的高位
-* @param[in]  version_low   版本的低位
-* @note       在NT SP4以后，就支持2.2的版本了，我实在想不出理由，你要用更低的版本。
-*/
-int socket_init (int version_high = 2,
-                 int version_low = 2);
 
-/*!
-* @brief      程序退出，DLL鞋砸时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
-* @return     int 0成功，-1失败
-*/
-int socket_fini (void);
+
+
 
 /*!
 * @brief      连接某个地址

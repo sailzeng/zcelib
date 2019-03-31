@@ -58,7 +58,7 @@ int ZCE_Timer_Wheel::initialize(size_t num_timer_node,
     //记录最大能接受的毫秒数量
     timer_length_mesc_ = timer_length_mesc;
 
-    ret = ZCE_Timer_Queue::initialize(num_timer_node,
+    ret = ZCE_Timer_Queue_Base::initialize(num_timer_node,
                                       timer_precision_mesc,
                                       trigger_mode,
                                       dynamic_expand_node);
@@ -88,7 +88,7 @@ int ZCE_Timer_Wheel::extend_node(size_t num_timer_node,
                                  size_t &old_num_node)
 {
     int ret = 0;
-    ret = ZCE_Timer_Queue::extend_node(num_timer_node, old_num_node);
+    ret = ZCE_Timer_Queue_Base::extend_node(num_timer_node, old_num_node);
 
     if (ret != 0)
     {
@@ -222,7 +222,7 @@ int ZCE_Timer_Wheel::cancel_timer(int timer_id)
     unbind_wheel_listnode(timer_id);
 
     //回收这个TIMER NODE
-    ret = ZCE_Timer_Queue::cancel_timer(timer_id);
+    ret = ZCE_Timer_Queue_Base::cancel_timer(timer_id);
 
     if (ret != 0)
     {

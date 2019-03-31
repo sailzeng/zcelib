@@ -39,7 +39,6 @@ template < typename _value_type,
 class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
 {
 
-
 public:
 
     //
@@ -290,6 +289,7 @@ protected:
 
     //容器类型，可以是list,dequeue,
     _container_type                                message_queue_;
+
 };
 
 
