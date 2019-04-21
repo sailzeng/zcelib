@@ -101,9 +101,9 @@ public:
     //就把3个数值相+，这样冲突感觉还小一点，（左移反而感觉不好）
     size_t operator()(const ZCE_STATUS_ITEM_ID &stat_item) const
     {
-        return (size_t (stat_item.statics_id_
-                        + (stat_item.classify_id_ << 8)
-                        + stat_item.subclassing_id_));
+        return static_cast<size_t>(stat_item.statics_id_)
+                        + static_cast<size_t>(stat_item.classify_id_)
+                        + static_cast<size_t>(stat_item.subclassing_id_);
     }
 };
 

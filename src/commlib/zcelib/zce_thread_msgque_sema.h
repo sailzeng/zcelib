@@ -200,7 +200,7 @@ public:
         //如果超时了，返回false
         if (!bret)
         {
-            error = EWOULDBLOCK;
+			errno = EWOULDBLOCK;
             return -1;
         }
 

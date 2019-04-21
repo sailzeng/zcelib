@@ -100,7 +100,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
     */
-    int execute(unsigned int &num_affect, unsigned int &lastid);
+    int execute(uint64_t &num_affect, uint64_t &last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -108,7 +108,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      sqlresult   返回的结果集合
     */
-    int execute(unsigned int &num_affect, ZCE_Mysql_Result &sqlresult);
+    int execute(uint64_t &num_affect, ZCE_Mysql_Result &sql_result);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
@@ -138,23 +138,6 @@ public:
     ///+=操作符号,用于向SQL Command 后部添加STR
     inline ZCE_Mysql_Command &operator +=(const char *sqlcmd);
     inline ZCE_Mysql_Command &operator +=(const std::string &sqlcmd);
-
-    /// << 操作符号,用于向SQL Command 后部添加
-    ZCE_Mysql_Command &operator << (const char );
-    ZCE_Mysql_Command &operator << (const short );
-    ZCE_Mysql_Command &operator << (const long );
-    ZCE_Mysql_Command &operator << (const long long );
-
-    ZCE_Mysql_Command &operator << (const unsigned char );
-    ZCE_Mysql_Command &operator << (unsigned short );
-    ZCE_Mysql_Command &operator << (unsigned long );
-    ZCE_Mysql_Command &operator << (const unsigned long long );
-
-    ZCE_Mysql_Command &operator << (const float );
-    ZCE_Mysql_Command &operator << (const double );
-
-    ZCE_Mysql_Command &operator << (const char *);
-    ZCE_Mysql_Command &operator << (const std::string &);
 
     /*!
     * @brief      返回错误消息
@@ -204,8 +187,8 @@ protected:
     * @param[out] sqlresult   SQL执行后的结果集合
     * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
     */
-    int execute(unsigned int *num_affect ,
-                unsigned int *lastid,
+    int execute(uint64_t *num_affect ,
+                uint64_t *last_id,
                 ZCE_Mysql_Result *sqlresult,
                 bool bstore);
 

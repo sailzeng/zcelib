@@ -4,7 +4,7 @@
 #include "zce_script_lua_tie.h"
 
 
-#if ZCE_USE_LUA == 1 && defined ZCE_SUPPORT_CPP11
+#if ZCE_USE_LUA == 1 &&  ZCE_SUPPORT_CPP11 == 1
 
 
 //=======================================================================================================
@@ -1192,5 +1192,5 @@ int ZCE_Lua_Tie::resume_thread(ZCE_Lua_Thread *lua_thread, int narg)
 }
 
 
-#endif //#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
+#endif //#if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 == 1
 

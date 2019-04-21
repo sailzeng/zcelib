@@ -39,7 +39,7 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 
 
 //用C++ 11的特性实现一个？
-#if defined ZCE_SUPPORT_CPP11
+#if ZCE_SUPPORT_CPP11 == 1
 
 
 inline void foo_c11_outdata(char *&foo_buffer,
@@ -132,7 +132,7 @@ void foo_c11_outdata(char *&foo_buffer,
 
 
 template <typename... out_type >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -239,7 +239,7 @@ return foo_buffer
 @param      out_data2    输出的数据2
 */
 template <class T1, class T2>
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -355,7 +355,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -367,7 +367,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -383,7 +383,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -401,7 +401,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -421,7 +421,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -443,7 +443,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -467,7 +467,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -493,7 +493,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -521,7 +521,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -551,7 +551,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -583,7 +583,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -617,7 +617,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -653,7 +653,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -691,7 +691,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -731,7 +731,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -773,7 +773,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -817,7 +817,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -863,7 +863,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -911,7 +911,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -961,7 +961,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1013,7 +1013,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1067,7 +1067,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1123,7 +1123,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1181,7 +1181,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1241,7 +1241,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1303,7 +1303,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1367,7 +1367,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1433,7 +1433,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1501,7 +1501,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1571,7 +1571,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,
@@ -1643,7 +1643,7 @@ char *zce_snprintf(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31, class T32 >
-char *zce_snprintf(char *foo_buffer,
+char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
                    size_t &foo_use_len,
                    const char *foo_fmt_spec,

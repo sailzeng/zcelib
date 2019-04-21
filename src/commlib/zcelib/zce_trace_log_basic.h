@@ -117,7 +117,7 @@ enum LOG_OUTPUT_WAY
             内部和其他封装都是依据这个类来的，
             LOG_PLUS CPP ，一种依靠C++模版的输出方式，某种程度上提高了字符串格
             式化的性能，（注意性能瓶颈大头在文件输出那块），内部用的函数
-            ZCE_LIB::zce_snprintf，
+            ZCE_LIB::foo_snprintf，
 
 */
 class ZCE_LogTrace_Basic : public ZCE_NON_Copyable

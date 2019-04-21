@@ -377,7 +377,7 @@ class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
 
 public:
     //构造函数还是把默认种子搞出来把
-    explicit random_taus88(uint32_t seed = DEFAULT_SEED)
+    explicit random_taus88(uint32_t seed)
     {
         srand(seed);
     }
@@ -390,7 +390,7 @@ public:
     ///处理种子的函数
     virtual void srand(uint32_t seed)
     {
-        if (seed > 0)
+        if (seed == 0)
         {
             seed = static_cast< uint32_t >( time(NULL) );
         }

@@ -31,16 +31,18 @@
 */
 struct zce_flock_t
 {
+public:
+
     //构造函数和析构函数
     zce_flock_t():
         handle_(ZCE_INVALID_HANDLE)
     {
+
     }
     ~zce_flock_t()
     {
     }
 
-public:
 
 # if defined (ZCE_OS_WINDOWS)
 

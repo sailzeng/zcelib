@@ -76,42 +76,43 @@ public:
     void disconnect_mysql_server();
 
     /*!
-    * @brief      用于非SELECT语句(INSERT,UPDATE)
+    * @brief      用于非SELECT语句(INSERT,UPDATE)，
     * @return     int
     * @param      sql
-    * @param      numaffect
-    * @param      insertid
-    * @param      sqllen
+    * @param      sqllen SQL语句长度
+    * @param      numaffect 返回的收到影响的记录条数
+    * @param      insertid  返回的插入的LAST_INSERT_ID
     */
     int db_process_query(const char *sql,
-                         unsigned int &numaffect,
-                         unsigned int &insertid,
-                         size_t sqllen = 0);
+                         size_t sqllen,
+                         uint64_t &numaffect,
+                         uint64_t &insertid);
 
     /*!
-    * @brief      用于SELECT语句,直接转储结果集合的方法
+    * @brief      执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
     * @return     int
-    * @param      sql
-    * @param      numaffect
-    * @param      dbresult
+    * @param      sql  SQL语句
     * @param      sqllen
+    * @param      numaffect  返回参数,返回的查询的记录个数
+    * @param      dbresult  返回参数,查询的结果集合
+    * @note       几个db_process_query函数连接周期不会关闭链接,ZCE_Mysql_Connect对象再析构时断链接
     */
     int db_process_query(const char *sql,
-                         unsigned int &numaffect,
-                         ZCE_Mysql_Result &dbresult,
-                         size_t sqllen = 0);
+                         size_t sqllen,
+                         uint64_t &numaffect,
+                         ZCE_Mysql_Result &dbresult);
 
     /*!
     * @brief      用于SELECT语句,用于use_result得到结果集合的方法
     * @return     int
-    * @param      sql
-    * @param      dbresult
-    * @param      sqllen
-    * @note
+    * @param      sql SQL语句
+    * @param      sqllen SQL语句长度
+    * @param      dbresult 返回的结果结合
+    * @note       用于结果集太多,会占用太多内存的的处理,需要一个个取结果,不推荐使用,
     */
     int db_process_query(const char *sql,
-                         ZCE_Mysql_Result &dbresult,
-                         size_t sqllen = 0);
+                         size_t sqllen,
+                         ZCE_Mysql_Result &dbresult);
 
     ///得到MYSQL定义的错误返回
     unsigned int get_return_error(char *szerr, size_t buflen);

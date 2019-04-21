@@ -117,25 +117,11 @@ void ZCE_Mysql_Process::disconnect_mysql_server()
 
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004年9月22日
-Function        : ZCE_Mysql_Process::db_process_query
-Return          : int
-Parameter List  :
-Param1: const char* sql SQL语句
-Param2: unsigned int& numaffect 返回的收到影响的记录条数
-Param3: unsigned int& insertid  返回的插入的LAST_INSERT_ID
-Param4: size_t sqllen           SQL语句长度,用于BIN的SQL语句,默认为0,表示使用STR的SQL
-Description     : 执行家族的SQL语句,用于非SELECT语句(INSERT,UPDATE)
-Calls           :
-Called By       :
-Other           : 注意:几个db_process_query函数连接周期就是对象生存周期,ZCE_Mysql_Connect对象再析构时断链接
-Modify Record   : 自动重连功能加入
-******************************************************************************************/
+//用于非SELECT语句(INSERT,UPDATE)，
 int ZCE_Mysql_Process::db_process_query(const char *sql,
-                                        unsigned int &numaffect,
-                                        unsigned int &insertid,
-                                        size_t sqllen)
+                                        size_t sqllen,
+                                        uint64_t &numaffect,
+                                        uint64_t &insertid)
 {
     int ret = 0;
 
@@ -150,18 +136,10 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
         db_connect_.ping();
     }
 
-    //TEXT类型的SQL
-    if (sqllen == 0)
-    {
-        ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%s].", sql);
-        db_command_.set_sql_command(sql, strlen(sql));
-    }
-    //BIN类型的SQL
-    else
-    {
-        ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
-        db_command_.set_sql_command(sql, sqllen);
-    }
+    //
+    ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
+    db_command_.set_sql_command(sql, sqllen);
+
 
     ret = db_command_.execute(numaffect, insertid);
 
@@ -179,22 +157,11 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
     return  0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004年9月22日
-Function        : ZCE_Mysql_Process::db_process_query
-Return          : int
-Parameter List  :
-Param1: const char* sql         SQL语句
-Param2: unsigned int& numaffect 返回参数,返回的查询的记录个数
-Param3: ZCE_Mysql_Result& dbresult 返回参数,查询的结果集合
-Param4: size_t sqllen           SQL语句长度,用于BIN的SQL语句,默认为0,表示使用STR的SQL
-Description     : 执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
-Calls           :
-Called By       :
-Other           : 注意:几个db_process_query函数的连接周期就是对象生存周期,ZCE_Mysql_Connect对象再析构时断链接
-Modify Record   :
-******************************************************************************************/
-int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Result &dbresult, size_t sqllen)
+
+//执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
+int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, 
+                                        uint64_t &numaffect, 
+                                        ZCE_Mysql_Result &dbresult)
 {
     int ret = 0;
 
@@ -209,18 +176,10 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
         db_connect_.ping();
     }
 
-    //TEXT类型的SQL
-    if (sqllen == 0)
-    {
-        ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%s]", sql);
-        db_command_.set_sql_command(sql, strlen(sql));
-    }
-    //BIN类型的SQL
-    else
-    {
-        ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
-        db_command_.set_sql_command(sql, sqllen);
-    }
+
+    ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
+    db_command_.set_sql_command(sql, sqllen);
+    
 
     ret = db_command_.execute(numaffect, dbresult);
 
@@ -238,21 +197,9 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, unsigned int &numaffect
     return  0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004年9月22日
-Function        : ZCE_Mysql_Process::db_process_query
-Return          : int
-Parameter List  :
-Param1: const char*             SQL语句
-Param2: ZCE_Mysql_Result& dbresult 返回的结果结合
-Param3: size_t sqllen SQL       语句长度
-Description     : 用于SELECT语句,用于use_result得到结果集合的方法
-Calls           :
-Called By       :
-Other           : 用于结果集太多,会占用太多内存的的处理,不推荐使用,
-Modify Record   :
-******************************************************************************************/
-int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbresult, size_t sqllen)
+
+//
+int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, ZCE_Mysql_Result &dbresult)
 {
     int ret = 0;
 
@@ -267,16 +214,9 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbres
         db_connect_.ping();
     }
 
-    //TEXT类型的SQL
-    if (sqllen == 0)
-    {
-        db_command_.set_sql_command(sql, strlen(sql));
-    }
-    //BIN类型的SQL
-    else
-    {
-        db_command_.set_sql_command(sql, sqllen);
-    }
+    ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
+    db_command_.set_sql_command(sql, sqllen);
+    
 
     ret = db_command_.execute(dbresult);
 
@@ -294,37 +234,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, ZCE_Mysql_Result &dbres
     return  0;
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年3月9日
-Function        : ZCE_Mysql_Process::get_return_error
-Return          : unsigned int 返回的错误Number
-Parameter List  :
-Param1: char* szerr   返回的错误信息
-Param2: size_t buflen Buf的长度
-Description     : 返回的的DB访问的错误信息
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+//返回的的DB访问的错误信息
 unsigned int ZCE_Mysql_Process::get_return_error(char *szerr, size_t buflen)
 {
     snprintf(szerr, buflen, "[%d]:%s ", db_connect_.get_error_no(), db_connect_.get_error_message());
     return db_connect_.get_error_no();
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2005年8月18日
-Function        : ZCE_Mysql_Process::get_query_sql
-Return          : static const char*
-Parameter List  :
-Param1: void
-Description     : 得到DB访问的语句
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
+//得到DB访问的语句
 const char *ZCE_Mysql_Process::get_query_sql(void)
 {
     return db_command_.get_sql_command();

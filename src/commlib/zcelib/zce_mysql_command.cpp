@@ -5,9 +5,7 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
-/*********************************************************************************
-class ZCE_Mysql_Command Database mysql_result_ implementation
-*********************************************************************************/
+
 ZCE_Mysql_Command::ZCE_Mysql_Command():
     mysql_connect_(NULL)
 {
@@ -106,7 +104,10 @@ void ZCE_Mysql_Command::get_sql_command(std::string &strcmd) const
 
 //int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
 //执行SQL语句，功能全集，不对外使用
-int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, ZCE_Mysql_Result *sqlresult, bool bstore)
+int ZCE_Mysql_Command::execute(uint64_t *num_affect ,
+                               uint64_t *last_id,
+                               ZCE_Mysql_Result *sql_result,
+                               bool bstore)
 {
     //如果没有设置连接或者没有设置命令
     if (mysql_connect_ == NULL || mysql_command_.empty())
@@ -124,7 +125,7 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
     }
 
     //如果用户要求转储结果集
-    if (sqlresult)
+    if (sql_result)
     {
         MYSQL_RES *tmp_res = NULL;
 
@@ -149,18 +150,18 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
         }
 
         //得到结果集,查询结果集信息
-        sqlresult->set_mysql_result(tmp_res);
+        sql_result->set_mysql_result(tmp_res);
     }
 
     //执行SQL命令影响了多少行,mysql_affected_rows 必须在转储结果集后,所以你要注意输入的参数
     if (num_affect)
     {
-        *num_affect = (unsigned int) ::mysql_affected_rows(mysql_connect_->get_mysql_handle());
+        *num_affect = (uint64_t) ::mysql_affected_rows(mysql_connect_->get_mysql_handle());
     }
 
-    if (lastid)
+    if (last_id)
     {
-        *lastid = (unsigned int) ::mysql_insert_id(mysql_connect_->get_mysql_handle());
+        *last_id = (uint64_t) ::mysql_insert_id(mysql_connect_->get_mysql_handle());
     }
 
     //成功
@@ -169,118 +170,26 @@ int ZCE_Mysql_Command::execute(unsigned int *num_affect , unsigned int *lastid, 
 
 //执行SQL语句,不用输出结果集合的那种,非SELECT语句
 //num_affect 为返回参数,告诉你修改了几行
-int ZCE_Mysql_Command::execute(unsigned int &num_affect, unsigned int &lastid)
+int ZCE_Mysql_Command::execute(uint64_t &num_affect, uint64_t &last_id)
 {
-    return execute(&num_affect, &lastid, NULL, false);
+    return execute(&num_affect, &last_id, NULL, false);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
 //num_affect 为返回参数,告诉你修改了几行,SELECT了几行
-int ZCE_Mysql_Command::execute(unsigned int &num_affect, ZCE_Mysql_Result &sqlresult)
+int ZCE_Mysql_Command::execute(uint64_t &num_affect, ZCE_Mysql_Result &sql_result)
 {
-    return execute(&num_affect, NULL, &sqlresult, true);
+    return execute(&num_affect, NULL, &sql_result, true);
 }
 
 //执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
 //用于结果集太多的处理,如果一次转储结果集会占用太多内存的处理,可以考虑用它,
 //但不推荐使用,一次取一行,交互太多
-int ZCE_Mysql_Command::execute(ZCE_Mysql_Result &sqlresult)
+int ZCE_Mysql_Command::execute(ZCE_Mysql_Result &sql_result)
 {
-    return execute(NULL, NULL, &sqlresult, false);
+    return execute(NULL, NULL, &sql_result, false);
 }
 
-//<< 操作符号,用于向SQL Command 后部添加数据
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const short tmpshort)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%hd", tmpshort);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const long tmplong)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%ld", tmplong);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const long long tmplonglong)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%lld", tmplonglong);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const unsigned short ushort)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%hu", ushort);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const unsigned long ulong)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%lu", ulong);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const unsigned long long ulonglong)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%llu", ulonglong);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const float tmpfloat)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%f", tmpfloat);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const double tmpdouble)
-{
-    const size_t TEMP_BUFFER_LEN = 64;
-    char tmpbuf[TEMP_BUFFER_LEN + 1];
-    snprintf(tmpbuf, TEMP_BUFFER_LEN, "%f", tmpdouble);
-
-    mysql_command_.append(tmpbuf);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const char *tmpstr)
-{
-    mysql_command_.append(tmpstr);
-    return *this;
-}
-
-ZCE_Mysql_Command &ZCE_Mysql_Command::operator << (const std::string &tmpstr)
-{
-    mysql_command_.append(tmpstr);
-    return *this;
-}
 
 #if MYSQL_VERSION_ID > 40100
 

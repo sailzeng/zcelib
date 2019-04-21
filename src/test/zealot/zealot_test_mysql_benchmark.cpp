@@ -42,7 +42,7 @@ static ZCE_Mysql_Command g_db_command;
 
 
 
-int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &insertid, char *szErr)
+int benchmark_db_query(const char *sql, uint64_t &numaffect, uint64_t &insertid, char *szErr)
 {
     int ret = 0;
     //连接数据库
@@ -79,7 +79,7 @@ int benchmark_db_query(const char *sql, unsigned int &numaffect, unsigned int &i
 }
 
 
-int benchmark_db_query(const char *sql, unsigned int &numaffect, ZCE_Mysql_Result &dbresult, char *szErr)
+int benchmark_db_query(const char *sql, uint64_t &numaffect, ZCE_Mysql_Result &dbresult, char *szErr)
 {
     int ret = 0;
     //连接数据库
@@ -182,7 +182,7 @@ int benchmark_insert_record(int table_id, int id, bool bexcutesql, char *szErr)
     //是否执行SQL,拼
     if (bexcutesql)
     {
-        unsigned int numaffect, insertid;
+        uint64_t numaffect, insertid;
         int ret = benchmark_db_query(tmpsql, numaffect, insertid, szErr);
         if (ret != RETURN_SUCC)
         {
@@ -204,7 +204,7 @@ int benchmark_delete_record(int table_id, int id, bool bexcutesql, char *szErr)
     //是否执行SQL,拼
     if (bexcutesql)
     {
-        unsigned int numaffect, insertid;
+        uint64_t numaffect, insertid;
         int ret = benchmark_db_query(tmpsql, numaffect, insertid, szErr);
         if (ret != RETURN_SUCC)
         {
@@ -227,7 +227,7 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char *szErr)
     if (bexcutesql)
     {
         ZCE_Mysql_Result dbresult;
-        unsigned int numaffect;
+        uint64_t numaffect;
         //进行查询,
         int ret = benchmark_db_query(tmpsql, numaffect, dbresult, szErr);
         if (ret != RETURN_SUCC )

@@ -106,13 +106,17 @@
 //Variadic templates                                 GCC 4.3 VC++2013
 //Default template arguments for function templates  GCC 4.3 VC++2013
 //如果抛开上面的繁杂的特效可以认为，VC++，从2010版本开始支持，在2013版本支持特效比较完整，
-//GCC 从4.3版本开始到.到4.8版本支持比较晚上，GCC4.8的支持特性数量程度都远好于VC++2013
+//GCC 从4.3版本开始到.到4.8版本支持比较完整，GCC4.8的支持特性数量程度都远好于VC++2013
 #if (defined (ZCE_OS_WINDOWS) && defined (_MSC_VER) &&  (_MSC_VER >= 1800)) \
     || (defined (ZCE_OS_LINUX) && defined (_GCC_VER) &&  (_GCC_VER >= 40800))
 #define ZCE_SUPPORT_CPP11 1
 #else
 #define ZCE_SUPPORT_CPP11 0
 #endif
+
+//#if __cplusplus < 201103L
+//#error "Should use --std=c++11 option for compile."
+//#endif
 
 //我懒了，我不想倒退回去支持非C11的编译器了，我努力拥抱C11，如果你要向更低的VS编译器靠近，要修改
 //一些auto或者默认非静态成员初始化，
@@ -460,6 +464,7 @@ extern "C"
 #pragma warning ( push )
 #pragma warning ( disable : 4512)
 #pragma warning ( disable : 4100)
+#pragma warning ( disable : 26495)
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -655,53 +660,8 @@ extern "C"
 
 
 //==================================================================================================
-
-#if defined ZCE_WIN32
-// vc71(2003):
-#if defined(_MSC_VER) && (_MSC_VER == 1310)
-#  define ZCE_PLATFORM_TOOLSET "win32-v71"
-// vc80(2005):
-#elif defined(_MSC_VER) && (_MSC_VER == 1400)
-#  define ZCE_PLATFORM_TOOLSET "win32-v80"
-// vc90(VS2008):
-#elif defined(_MSC_VER) && (_MSC_VER == 1500)
-#  define ZCE_PLATFORM_TOOLSET "win32-v90"
-// vc10(VS2010):
-#elif defined(_MSC_VER) && (_MSC_VER == 1600)
-#  define ZCE_PLATFORM_TOOLSET "win32-v100"
-// vc11(VS2012):
-#elif defined(_MSC_VER) && (_MSC_VER == 1700)
-#  define ZCE_PLATFORM_TOOLSET "win32-v110"
-#elif defined(_MSC_VER) && (_MSC_VER == 1800)
-#  define ZCE_PLATFORM_TOOLSET "win32-v120"
-#endif
-#elif defined ZCE_WIN64
-// vc71(2003):
-#if defined(_MSC_VER) && (_MSC_VER == 1310)
-#  define ZCE_PLATFORM_TOOLSET "x64-v71"
-// vc80(2005):
-#elif defined(_MSC_VER) && (_MSC_VER == 1400)
-#  define ZCE_PLATFORM_TOOLSET "x64-v80"
-// vc90(VS2008):
-#elif defined(_MSC_VER) && (_MSC_VER == 1500)
-#  define ZCE_PLATFORM_TOOLSET "x64-v90"
-// vc10(VS2010):
-#elif defined(_MSC_VER) && (_MSC_VER == 1600)
-#  define ZCE_PLATFORM_TOOLSET "x64-v100"
-// vc11(VS2012):
-#elif defined(_MSC_VER) && (_MSC_VER == 1700)
-#  define ZCE_PLATFORM_TOOLSET "x64-v110"
-#elif defined(_MSC_VER) && (_MSC_VER == 1800)
-#  define ZCE_PLATFORM_TOOLSET "x64-v120"
-#endif
-#endif
-
-//工程内部可以统一使用ZCE_PLAT_TOOLSET_CONF这个宏，简化大家的编译工程设置
-#if defined _DEBUG || defined DEBUG
-#  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Debug"
-#else
-#  define ZCE_PLAT_TOOLSET_CONF ZCE_PLATFORM_TOOLSET"-Release"
-#endif
+//工程内部统一用这个宏保作为目录
+//$(PlatformName)-$(PlatformToolset)-$(Configuration)
 
 //Windows 下的自动链接
 #if defined (ZCE_OS_WINDOWS) && defined (_MSC_VER)

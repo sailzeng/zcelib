@@ -40,7 +40,7 @@
 
 
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
-#if ZCE_USE_LUA == 1 && defined ZCE_SUPPORT_CPP11
+#if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 == 1
 
 //LUA 5.02版本目前而言，大部分组件都还不支持，所以……
 #if LUA_VERSION_NUM != 501
@@ -2000,7 +2000,7 @@ public:
 #pragma GCC diagnostic pop
 #endif
 
-#endif //#if defined  ZCE_USE_LUA && defined ZCE_SUPPORT_CPP11
+#endif //#if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 ==1
 
 #endif // ZCE_LIB_SCRIPT_LUA_H_
 

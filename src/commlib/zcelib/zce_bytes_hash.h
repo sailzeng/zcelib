@@ -243,9 +243,10 @@ public:
                          size_t buf_size,
                          unsigned char result[HASH_RESULT_SIZE])
     {
-        uint32_t message[PROCESS_BLOCK_SIZE / 4];
+		uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
 
         //保存剩余的数据，我们要拼出最后1个（或者两个）要处理的块，前面的算法保证了，最后一个块肯定小于64个字节
+		memset(message, 0, PROCESS_BLOCK_SIZE);
         if (ctx->unprocessed_)
         {
             memcpy(message, buf + buf_size - ctx->unprocessed_, static_cast<size_t>( ctx->unprocessed_));
@@ -254,8 +255,8 @@ public:
         //每个处理的块都是64字节
 
         //得到0x80要添加在的位置（在uint32_t 数组中），
-        uint32_t index = ((uint32_t)ctx->length_ & 63) >> 2;
-        uint32_t shift = ((uint32_t)ctx->length_ & 3) * 8;
+        uint32_t index = (uint32_t)((ctx->length_ & 63) >> 2);
+        uint32_t shift = (uint32_t)((ctx->length_ & 3) * 8);
 
         //添加0x80进去，并且把余下的空间补充0
         message[index]   &= ~(0xFFFFFFFF << shift);
