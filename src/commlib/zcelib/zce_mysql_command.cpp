@@ -11,6 +11,7 @@ ZCE_Mysql_Command::ZCE_Mysql_Command():
 {
     //保留INITBUFSIZE的空间
     mysql_command_.reserve(INITBUFSIZE);
+	sql_buffer_ = new char[INITBUFSIZE];
 }
 
 ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect *conn):
@@ -24,10 +25,16 @@ ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect *conn):
 
     //保留INITBUFSIZE的空间
     mysql_command_.reserve(INITBUFSIZE);
+	sql_buffer_ = new char[INITBUFSIZE];
 }
 
 ZCE_Mysql_Command::~ZCE_Mysql_Command()
 {
+	if (sql_buffer_)
+	{
+		delete sql_buffer_;
+		sql_buffer_ = NULL;
+	}
 }
 
 //为ZCE_Mysql_Command设置相关的连接对象，而且是必须已经成功连接上数据的
@@ -45,12 +52,11 @@ int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect *conn)
 ///设置SQL Command语句,动态参数版本
 int ZCE_Mysql_Command::set_sql_command(const char *sql_format, ...)
 {
-    char  tmpBuf[INITBUFSIZE];
     va_list args;
     va_start(args, sql_format);
 
     //_vsnprintf不是ANSI C标准函数,但是大部分函数库应该实现了它,毕竟vsprintf缺乏基本的安全感
-    int ret = vsnprintf(tmpBuf, INITBUFSIZE, sql_format, args);
+    int ret = vsnprintf(sql_buffer_, INITBUFSIZE, sql_format, args);
 
     va_end(args);
 
@@ -61,7 +67,7 @@ int ZCE_Mysql_Command::set_sql_command(const char *sql_format, ...)
     }
 
     //设置
-    mysql_command_.assign(tmpBuf);
+    mysql_command_.assign(sql_buffer_);
 
     //成功
     return 0;

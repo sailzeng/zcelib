@@ -56,9 +56,9 @@ ZCE_STATUS_ITEM::ZCE_STATUS_ITEM():
 ZCE_STATUS_ITEM::ZCE_STATUS_ITEM(unsigned int statics_id,
                                  ZCE_STATUS_STATICS_TYPE statics_type):
     item_id_(statics_id, 0, 0),
-    statics_type_(statics_type)
+    statics_type_(statics_type),
+	counter_(0)
 {
-
 }
 
 ZCE_STATUS_ITEM::~ZCE_STATUS_ITEM()

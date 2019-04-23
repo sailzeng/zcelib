@@ -20,6 +20,8 @@ class ZCE_Async_Coroutine : public ZCE_Async_Object
     //
     enum COROUTINE_STATE
     {
+		//
+		COROUTINE_INVALID = 0x0,
         //携程传递给管理器的状态值，
         COROUTINE_CONTINUE = 0x10001,
         COROUTINE_EXIT = 0x10002,

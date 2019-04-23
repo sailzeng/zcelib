@@ -377,7 +377,8 @@ class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
 
 public:
     //构造函数还是把默认种子搞出来把
-    explicit random_taus88(uint32_t seed)
+    explicit random_taus88(uint32_t seed):
+		seed_arg_{0}
     {
         srand(seed);
     }
@@ -476,6 +477,7 @@ class random_mt : public t_random_base<0, 0xFFFFFFFF>
 public:
 
     explicit random_mt(uint32_t seed = DEFAULT_SEED):
+		state_{0},
         postion_(0)
     {
         srand(seed);

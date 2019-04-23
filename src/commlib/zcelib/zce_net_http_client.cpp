@@ -317,6 +317,10 @@ ghttp_request *ghttp_request_new(void)
 
     /* create everything */
     l_return = (_ghttp_request *)malloc(sizeof(struct _ghttp_request));
+	if (!l_return)
+	{
+		return NULL;
+	}
     memset(l_return, 0, sizeof(struct _ghttp_request));
     l_return->uri = http_uri_new();
     l_return->proxy = http_uri_new();

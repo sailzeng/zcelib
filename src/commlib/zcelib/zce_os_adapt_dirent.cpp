@@ -83,7 +83,7 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
     if (!dir_handle->started_reading_)
     {
         char scan_dirname[PATH_MAX + 16];
-        scan_dirname[PATH_MAX] = '\0';
+        scan_dirname[PATH_MAX+1] = '\0';
 
         //前面验证过是目录，正确使用不会溢出
         strncpy(scan_dirname, dir_handle->directory_name_, PATH_MAX);

@@ -123,19 +123,19 @@ protected:
 protected:
 
     ///异步对象ID
-    unsigned int asyncobj_id_;
+	unsigned int asyncobj_id_;
 
     ///管理者
-    ZCE_Async_ObjectMgr *async_mgr_;
+	ZCE_Async_ObjectMgr* async_mgr_ = NULL;
 
     ///对应激活的处理的命令
-    unsigned int  create_cmd_;
+	unsigned int  create_cmd_ = 0;
 
     ///超时的定时器ID
-    int timeout_id_;
+	int timeout_id_;
 
     /// 异步对象处理的错误码，统计事物错误的时候使用
-    int process_errno_;
+    int process_errno_ = 0;
 
 
     ///日志跟踪的优先级

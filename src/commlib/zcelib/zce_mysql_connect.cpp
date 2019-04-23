@@ -12,8 +12,7 @@ class ZCE_Mysql_Connect
 ZCE_Mysql_Connect::ZCE_Mysql_Connect()
 {
     //现在都在conect的时候进行初始化了。对应在disconnect 的时候close
-    //::mysql_init(&mysql_handle_);
-
+    ::mysql_init(&mysql_handle_);
     //置开始状态
     if_connected_ = false;
 }

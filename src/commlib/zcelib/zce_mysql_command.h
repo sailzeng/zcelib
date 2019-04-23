@@ -199,9 +199,12 @@ protected:
 protected:
 
     ///Áª½Ó
-    ZCE_Mysql_Connect  *mysql_connect_;
+    ZCE_Mysql_Connect  *mysql_connect_ = NULL;
     ///SQL
-    std::string         mysql_command_;
+    std::string mysql_command_;
+
+	//
+	char* sql_buffer_ = NULL;
 
 };
 

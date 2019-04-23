@@ -17,6 +17,7 @@
     <None Include="makefile">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="zcelib.ruleset" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce_boost_lord_rings.h">

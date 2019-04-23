@@ -292,7 +292,7 @@ protected:
     size_t                      num_use_node_;
 
     ///触发模式
-    TRIGGER_MODE                trigger_mode_;
+    TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE_SYSTEM_CLOCK;
 
     ///是否支持动态扩张NODE
     bool                        dynamic_expand_node_;

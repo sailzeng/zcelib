@@ -14,8 +14,10 @@ class ZCE_INI_Implement INI文件的配置读取，写入实现器
 int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *propertytree)
 {
     //1行的最大值
-    char one_line[LINE_BUFFER_LEN + 1], str_key[LINE_BUFFER_LEN + 1], str_value[LINE_BUFFER_LEN + 1];
-
+	std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
+	std::unique_ptr<char[]> str_key(new char[LINE_BUFFER_LEN + 1]);
+	std::unique_ptr<char[]> str_value(new char[LINE_BUFFER_LEN + 1]);
+    
     one_line[LINE_BUFFER_LEN] = '\0';
     str_key[LINE_BUFFER_LEN] = '\0';
     str_value[LINE_BUFFER_LEN] = '\0';
@@ -36,9 +38,9 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     while (cfgfile)
     {
 
-        cfgfile.getline(one_line, LINE_BUFFER_LEN);
+        cfgfile.getline(one_line.get(), LINE_BUFFER_LEN);
         //整理
-        ZCE_LIB::strtrim(one_line);
+        ZCE_LIB::strtrim(one_line.get());
 
         //注释行
         if (one_line[0] == ';' || one_line[0] == '#')
@@ -48,38 +50,39 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
         //找到一个section
 
-        if (one_line[0] == '[' && one_line[strlen(one_line) - 1] == ']')
+        if (one_line[0] == '[' && one_line[strlen(one_line.get()) - 1] == ']')
         {
             //已经找到下一个Section,没有发现相关的Key，返回默认值
 
             //去掉'[',']'
-            memmove(one_line, one_line + 1, strlen(one_line) - 1);
-            one_line[strlen(one_line) - 2] = '\0';
+            memmove(one_line.get(), one_line.get() + 1, strlen(one_line.get()) - 1);
+            one_line[strlen(one_line.get()) - 2] = '\0';
 
             //消灭空格
-            ZCE_LIB::strtrim(one_line);
+            ZCE_LIB::strtrim(one_line.get());
 
             ZCE_Conf_PropertyTree *tree_node = NULL;
-            propertytree->add_child(one_line, tree_node);
+            propertytree->add_child(one_line.get(), tree_node);
             cur_node = tree_node;
 
             continue;
         }
 
-        char *str = strstr(one_line, "=");
+        char *str = strstr(one_line.get(), "=");
         if (str != NULL && cur_node)
         {
             char *snext = str + 1;
             *str = '\0';
-            strncpy(str_key, one_line, LINE_BUFFER_LEN);
-            strncpy(str_value, snext, LINE_BUFFER_LEN);
+            strncpy(str_key.get(), one_line.get(), LINE_BUFFER_LEN);
+            strncpy(str_value.get(), snext, LINE_BUFFER_LEN);
             ////
-            ZCE_LIB::strtrim(str_key);
-            ZCE_LIB::strtrim(str_value);
+            ZCE_LIB::strtrim(str_key.get());
+            ZCE_LIB::strtrim(str_value.get());
 
             //找到返回。
-            std::string val(str_value);
-            cur_node->set_leaf<std::string &>(str_key, val);
+            std::string val(str_value.get());
+			std::string key(str_key.get());
+            cur_node->set_leaf<std::string &>(key, val);
         }
     }
 

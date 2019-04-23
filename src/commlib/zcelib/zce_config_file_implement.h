@@ -25,7 +25,7 @@ public:
 
 protected:
     //每行的最大长度
-    static const size_t LINE_BUFFER_LEN = 8192;
+    static const size_t LINE_BUFFER_LEN = 8191;
 
 };
 

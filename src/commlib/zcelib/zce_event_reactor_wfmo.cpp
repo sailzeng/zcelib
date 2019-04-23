@@ -9,7 +9,8 @@
 #if defined ZCE_OS_WINDOWS
 
 //¹¹Ôìº¯Êý
-ZCE_WFMO_Reactor::ZCE_WFMO_Reactor()
+ZCE_WFMO_Reactor::ZCE_WFMO_Reactor():
+	watch_handle_ary_{ ZCE_INVALID_HANDLE }
 {
     initialize();
 

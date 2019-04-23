@@ -17,7 +17,8 @@ ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
     async_mgr_(async_mgr),
     create_cmd_(create_cmd),
     timeout_id_(ZCE_Timer_Queue_Base::INVALID_TIMER_ID),
-    process_errno_(0)
+    process_errno_(0),
+	trace_log_pri_(RS_INFO)
 {
 }
 
