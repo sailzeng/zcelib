@@ -414,8 +414,7 @@ typedef __int64             int64_t;
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
-#pragma warning ( disable : 4244)
-#pragma warning ( disable : 4100)
+#pragma warning ( disable : 4244 4100 26495)
 #endif
 
 #include <rapidxml.hpp>
@@ -462,9 +461,7 @@ extern "C"
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
-#pragma warning ( disable : 4512)
-#pragma warning ( disable : 4100)
-#pragma warning ( disable : 26495)
+#pragma warning ( disable : 4512 4100 26495)
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"

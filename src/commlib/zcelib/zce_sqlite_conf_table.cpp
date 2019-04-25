@@ -30,7 +30,7 @@ void AI_IIJIMA_BINARY_DATA::clear()
 }
 
 //±È½Ïº¯Êý
-bool AI_IIJIMA_BINARY_DATA::operator < (const AI_IIJIMA_BINARY_DATA right) const
+bool AI_IIJIMA_BINARY_DATA::operator < (const AI_IIJIMA_BINARY_DATA &right) const
 {
     if (this->index_1_ < right.index_1_)
     {

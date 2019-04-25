@@ -16,13 +16,8 @@ ZCE_Timer_Queue_Base::ZCE_Timer_Queue_Base(size_t num_timer_node,
                                  unsigned int timer_precision_mesc,
                                  TRIGGER_MODE trigger_mode,
                                  bool dynamic_expand_node):
-    num_timer_node_(0),
-    timer_precision_mesc_(DEFAULT_TIMER_PRECISION_MSEC),
-    num_use_node_(0),
     dynamic_expand_node_(dynamic_expand_node),
-    free_node_id_head_(INVALID_TIMER_ID),
-    prev_trigger_msec_(0),
-    timer_refer_pointer_(0)
+    free_node_id_head_(INVALID_TIMER_ID)
 {
     int ret = initialize(num_timer_node,
                          timer_precision_mesc,
@@ -32,12 +27,7 @@ ZCE_Timer_Queue_Base::ZCE_Timer_Queue_Base(size_t num_timer_node,
     ZCE_UNUSED_ARG(ret);
 }
 
-ZCE_Timer_Queue_Base::ZCE_Timer_Queue_Base() :
-    num_timer_node_(0),
-    timer_precision_mesc_(DEFAULT_TIMER_PRECISION_MSEC),
-    num_use_node_(0),
-    dynamic_expand_node_(false),
-    free_node_id_head_(INVALID_TIMER_ID)
+ZCE_Timer_Queue_Base::ZCE_Timer_Queue_Base() 
 {
 }
 

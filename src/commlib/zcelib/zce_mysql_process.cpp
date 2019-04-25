@@ -137,7 +137,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
     }
 
     //
-    ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
     db_command_.set_sql_command(sql, sqllen);
 
 
@@ -177,7 +177,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen,
     }
 
 
-    ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
     db_command_.set_sql_command(sql, sqllen);
     
 
@@ -214,7 +214,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, ZCE_Mysq
         db_connect_.ping();
     }
 
-    ZCE_LOGMSG_DBG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
     db_command_.set_sql_command(sql, sqllen);
     
 

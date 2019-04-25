@@ -100,12 +100,20 @@ protected:
     ///最大文件句柄+1的数值,倒霉的SELECT，非要搞呀。
     int          max_fd_plus_one_;
 
-    ///SELECT 使用的Read FD SET
+    ///保存使用的Read FD SET
     fd_set       read_fd_set_;
-    ///SELECT 使用的Write FD SET
+    ///保存使用的Write FD SET
     fd_set       write_fd_set_;
-    ///SELECT 使用的Exception FD SET
+    ///保存使用的Exception FD SET
     fd_set       exception_fd_set_;
+
+	///每次做作为SELECT 函数的参数
+	///
+	fd_set       para_read_fd_set_;
+	///
+	fd_set       para_write_fd_set_;
+	///
+	fd_set       para_exception_fd_set_;
 };
 
 #endif //ZCE_LIB_EVENT_REACTOR_EPOLL_H_

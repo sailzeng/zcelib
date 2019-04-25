@@ -34,7 +34,7 @@ void *ZCE_LIB::mmap (void *addr,
     }
 
     //匿名使用，必须文件句柄是无效值
-    if (ZCE_BIT_IS_SET(flags, MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle)
+    if (ZCE_BIT_IS_SET(flags, MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
     {
         errno = ENOTSUP;
         return MAP_FAILED;

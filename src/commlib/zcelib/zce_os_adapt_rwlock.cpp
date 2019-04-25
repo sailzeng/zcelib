@@ -113,7 +113,6 @@ int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
     }
 
     result = ::pthread_rwlockattr_setpshared(&attr, PTHREAD_PROCESS_PRIVATE);
-
     if (result != 0)
     {
         return result;
@@ -178,7 +177,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
     if (rwlock->use_win_slim_)
     {
         ::AcquireSRWLockShared(&(rwlock->rwlock_slim_));
-        __zce_tls_read_or_write = ZCE_SLIM_USE_SHARED_LOCK;
+		rwlock->slim_mode_ = ZCE_SLIM_USE_SHARED_LOCK;
         return 0;
     }
 
@@ -243,7 +242,7 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
         {
             return EBUSY;
         }
-        __zce_tls_read_or_write = ZCE_SLIM_USE_SHARED_LOCK;
+		rwlock->slim_mode_ = ZCE_SLIM_USE_SHARED_LOCK;
         return 0;
     }
 
@@ -351,14 +350,13 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
     if (rwlock->use_win_slim_)
     {
         ::AcquireSRWLockExclusive(&(rwlock->rwlock_slim_));
-        __zce_tls_read_or_write = ZCE_SLIM_USE_EXCLUSIVE_LOCK;
+		rwlock->slim_mode_ = ZCE_SLIM_USE_EXCLUSIVE_LOCK;
         return 0;
     }
 
 #endif
 
     int result = pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
-
     if ( result != 0)
     {
         return(result);
@@ -409,7 +407,7 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
         {
             return EBUSY;
         }
-        __zce_tls_read_or_write = ZCE_SLIM_USE_EXCLUSIVE_LOCK;
+		rwlock->slim_mode_ = ZCE_SLIM_USE_EXCLUSIVE_LOCK;
         return 0;
     }
 
@@ -458,7 +456,7 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 
 #endif
 
-    int result = pthread_mutex_timedlock(&rwlock->simulate_rw_.rw_mutex_, abs_timeout_spec);
+    int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->simulate_rw_.rw_mutex_, abs_timeout_spec);
 
     if ( result != 0)
     {
@@ -513,7 +511,7 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
     //如果用WIN自带的读写锁
     if (rwlock->use_win_slim_)
     {
-        if (ZCE_SLIM_USE_SHARED_LOCK == __zce_tls_read_or_write)
+        if (ZCE_SLIM_USE_SHARED_LOCK == rwlock->slim_mode_)
         {
             ::ReleaseSRWLockShared(&(rwlock->rwlock_slim_));
         }
@@ -521,9 +519,7 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
         {
             ::ReleaseSRWLockExclusive(&(rwlock->rwlock_slim_));
         }
-
         return 0;
-
     }
 
 #endif

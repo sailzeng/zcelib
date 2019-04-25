@@ -282,16 +282,16 @@ public:
 protected:
 
     ///CACHE的头部，
-    _shm_cachechunk_head     *cachechunk_head_;
+    _shm_cachechunk_head     *cachechunk_head_ = nullptr;
 
     ///Cache NODE 的BASE指针,NODE表示使用的
-    cachechunk_node_index    *cachenode_base_;
+    cachechunk_node_index    *cachenode_base_ = nullptr;
 
     ///CHUNK INDEX的BASE指针,
-    size_t                   *chunkindex_base_;
+    size_t                   *chunkindex_base_ = nullptr;
 
     ///CHUNK DATA数据区的BASE指针
-    char                     *chunkdata_base_;
+    char                     *chunkdata_base_ = nullptr;
 };
 
 };

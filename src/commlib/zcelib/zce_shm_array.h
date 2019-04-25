@@ -266,9 +266,9 @@ public:
 
 protected:
     ///
-    _shm_array_head   *array_head_;
+    _shm_array_head   *array_head_ = nullptr;
     ///数据区起始指针,
-    _value_type       *data_base_;
+    _value_type       *data_base_ = nullptr;
 
 };
 

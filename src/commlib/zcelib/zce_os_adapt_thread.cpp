@@ -210,7 +210,8 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
                                                     0,
                                                     threadid);
 
-    if (ZCE_INVALID_HANDLE == thread_handle)
+	//注意_beginthreadex的返回值0表示错误，和_beginthread不一样
+    if (NULL == thread_handle)
     {
         delete adapt_object;
         return -1;
@@ -367,8 +368,8 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
                                                     &adapt_object,
                                                     0,
                                                     threadid);
-
-    if (ZCE_INVALID_HANDLE == thread_handle)
+	//注意_beginthreadex的返回值0表示错误，和_beginthread不一样
+    if (NULL == thread_handle)
     {
         return -1;
     }
@@ -420,7 +421,10 @@ int ZCE_LIB::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
                                              FALSE,
                                              threadid
                                             );
-
+	if (thr_handle == NULL)
+	{
+		return -1;
+	}
     DWORD thread_ret;
 
     if (::WaitForSingleObject (thr_handle, INFINITE) == WAIT_OBJECT_0
@@ -457,14 +461,21 @@ ZCE_THREAD_ID ZCE_LIB::pthread_self(void)
 int ZCE_LIB::pthread_cancel(ZCE_THREAD_ID threadid)
 {
 #if defined (ZCE_OS_WINDOWS)
+
+#pragma warning (push)
+#pragma warning (disable:6258)
     //OpenThread是一个WIN SERVER 2000后才有的函数 VC6应该没有
     HANDLE thr_handle = (HANDLE)::OpenThread(THREAD_ALL_ACCESS,
                                              FALSE,
                                              threadid
                                             );
+	if (thr_handle == NULL)
+	{
+		errno = GetLastError();
+		return -1;
+	}
     //强制退出
     BOOL bret = ::TerminateThread(thr_handle, 0);
-
     if (!bret)
     {
         return -1;
@@ -472,6 +483,8 @@ int ZCE_LIB::pthread_cancel(ZCE_THREAD_ID threadid)
 
     ::CloseHandle(thr_handle);
     return 0;
+
+#pragma warning (pop)
 
 #endif //#if defined (ZCE_OS_WINDOWS)
 

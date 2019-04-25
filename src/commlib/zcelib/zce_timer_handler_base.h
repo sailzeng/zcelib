@@ -38,7 +38,7 @@ protected:
 
 protected:
     //
-    ZCE_Timer_Queue_Base    *timer_queue_;
+    ZCE_Timer_Queue_Base    *timer_queue_ = nullptr;
     //
 
 public:

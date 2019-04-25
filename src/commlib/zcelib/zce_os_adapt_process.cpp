@@ -47,13 +47,17 @@ pid_t ZCE_LIB::getppid (void)
 
     PROCNTQSIP NtQueryInformationProcess;
 
+	HMODULE module_hdl = GetModuleHandleA("ntdll");
+	if (!module_hdl)
+	{
+		return DWORD(-1);
+	}
     //这个函数是不公开的
-    NtQueryInformationProcess = (PROCNTQSIP)GetProcAddress(
-                                    GetModuleHandleA("ntdll"),
-                                    "NtQueryInformationProcess"
-                                );
+	NtQueryInformationProcess = (PROCNTQSIP)GetProcAddress(
+		module_hdl,
+		"NtQueryInformationProcess");
 
-    if (NtQueryInformationProcess)
+    if (!NtQueryInformationProcess)
     {
         return DWORD (-1);
     }

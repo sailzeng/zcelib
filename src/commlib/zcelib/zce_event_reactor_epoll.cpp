@@ -21,6 +21,7 @@ ZCE_Epoll_Reactor::ZCE_Epoll_Reactor(size_t max_event_number,
                                      bool edge_triggered,
                                      int once_max_events):
     ZCE_Reactor(max_event_number),
+	epoll_fd_(-1),
     edge_triggered_(edge_triggered),
     once_max_events_(once_max_events),
     once_events_ary_(NULL)

@@ -3,7 +3,7 @@
 #include "zce_net_http_client.h"
 
 
-
+#if 0
 
 //================================================================================================
 
@@ -525,3 +525,5 @@ int ghttp_prepare(ghttp_request *a_request)
     http_req_prepare(a_request->req);
     return 0;
 }
+
+#endif

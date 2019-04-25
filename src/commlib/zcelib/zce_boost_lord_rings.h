@@ -300,10 +300,10 @@ public:
 
         _value_type *new_value_ptr = new _value_type[new_max_size];
 
-        //如果原来有数据
+        //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
         {
-            for (size_t i = 0; i < deque_size; ++i)
+            for (size_t i = 0; i < deque_size && i< new_max_size; ++i)
             {
                 new_value_ptr[i] = value_ptr_[(cycdeque_start_ + i) % cycdeque_capacity_];
             }

@@ -457,6 +457,12 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
 //如果使用大量的端口,select 是不合适的，需要使用EPOLL,此时可以打开下面的注释
 #define HANDLEREADY_USE_EPOLL
 
+	//FD_SET 里面的 whlie(0)会产生一个告警，这个应该是windows内部自己没有处理好。微软说VS2005SP1就修复了，见鬼。
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning(disable : 4127)
+#pragma warning(disable : 6262)
+#endif
+
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
 int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
                           ZCE_Time_Value *timeout_tv,
@@ -471,10 +477,7 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     FD_ZERO(&handle_set_exeception);
 
 
-    //FD_SET 里面的 whlie(0)会产生一个告警，这个应该是windows内部自己没有处理好。微软说VS2005SP1就修复了，见鬼。
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(disable : 4127)
-#endif
+
 
     if (HANDLE_READY_READ == ready_todo)
     {
@@ -516,10 +519,6 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     {
         ZCE_ASSERT(false);
     }
-
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning(default : 4127)
-#endif
 
     // Wait for data or for the timeout_tv to elapse.
     int select_width = 0;
@@ -652,6 +651,11 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     return event_happen;
 #endif
 }
+
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning(default : 4127)
+#pragma warning(default : 6262)
+#endif
 
 //--------------------------------------------------------------------------------------------
 //因为WINdows 不支持取得socket 是否是阻塞的模式，所以Windows 下我无法先取得socket的选项，然后判断是否取消阻塞模式

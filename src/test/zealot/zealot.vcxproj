@@ -79,8 +79,8 @@
     <OutDir>$(SolutionDir)../bin/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
     <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
-    <CodeAnalysisRuleSet>CppCoreCheckRawPointerRules.ruleset</CodeAnalysisRuleSet>
-    <RunCodeAnalysis>true</RunCodeAnalysis>
+    <CodeAnalysisRuleSet>MixedRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <RunCodeAnalysis>false</RunCodeAnalysis>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -127,7 +127,7 @@
       <PrecompiledHeaderFile>zealot_predefine.h</PrecompiledHeaderFile>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <MinimalRebuild>false</MinimalRebuild>
-      <EnablePREfast>true</EnablePREfast>
+      <EnablePREfast>false</EnablePREfast>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

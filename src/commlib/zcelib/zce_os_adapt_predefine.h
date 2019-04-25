@@ -186,7 +186,7 @@ typedef struct
 ///Windows下的模拟读写锁的对象结构
 typedef struct
 {
-    ///是否是写入优先，（是就是写入优先，否则读取优先）这是一个问题，我把抉择权利给你
+    ///是否是唤醒写入优先，（是就是写入优先，否则读取优先）这是一个问题，我把抉择权利给你
     bool            priority_to_write_;
 
     ///保护这个结构在多线程中读写的互斥量，主要下面那些整数的修改
@@ -207,23 +207,38 @@ typedef struct
 
 } win_simulate_rwlock_t;
 
+
+//TLS数据，用于记录签名调用的到底是写锁还是读锁，以便在后面解锁的时，保持处理上的正确
+
+enum ZCE_SLIM_SHARE_EXCLUSIVE
+{
+	ZCE_SLIM_USE_SHARED_LOCK = 1,
+	ZCE_SLIM_USE_EXCLUSIVE_LOCK = 2,
+};
+
+
 ///读写锁的对象结构，利用互斥量，条件变量实现的读写锁
 struct  pthread_rwlock_t
 {
     //是否需要超时处理，
     //WIN SVR 2008以后的读写锁并不支持超时处理，所以并不能完美模拟pthread rwlock,
     //所以有这个选项，
-    bool                       use_win_slim_;
+    bool                       use_win_slim_ = true;
+
+#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+	//
+	ZCE_SLIM_SHARE_EXCLUSIVE   slim_mode_ = ZCE_SLIM_USE_SHARED_LOCK;
 
     union
     {
+		///WINSVR 2008以后，WINDOWS自己实现的读写锁
+		SRWLOCK                rwlock_slim_;
+
+#endif
         ///模拟的
         win_simulate_rwlock_t  simulate_rw_;
 
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
-        ///WINSVR 2008以后，WINDOWS自己实现的读写锁
-        SRWLOCK                rwlock_slim_;
-#endif
+
     };
 
 public:

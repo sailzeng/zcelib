@@ -916,9 +916,11 @@ static int add_stdstring(lua_State *state)
                        );
         lua_error(state);
     }
-
-    std::string c = *ptr_a + *ptr_b;
-    ZCE_LIB::push_stack(state, c);
+	else
+	{
+		std::string c = *ptr_a + *ptr_b;
+		ZCE_LIB::push_stack(state, c);
+	}
     return 1;
 }
 

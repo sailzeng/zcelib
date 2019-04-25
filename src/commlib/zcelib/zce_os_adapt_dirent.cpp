@@ -83,10 +83,9 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
     if (!dir_handle->started_reading_)
     {
         char scan_dirname[PATH_MAX + 16];
-        scan_dirname[PATH_MAX+1] = '\0';
-
         //前面验证过是目录，正确使用不会溢出
         strncpy(scan_dirname, dir_handle->directory_name_, PATH_MAX);
+		scan_dirname[PATH_MAX + 1] = '\0';
         size_t const lastchar = ::strlen (scan_dirname);
         //前面已经保证了是目录,用断言保护之
         assert(lastchar > 0);
@@ -295,7 +294,6 @@ int ZCE_LIB::scandir (const char *dirname,
     int retval = 0;
 
     DIR *dir_handle = ZCE_LIB::opendir (dirname);
-
     if (dir_handle == 0)
     {
         return -1;
@@ -359,6 +357,10 @@ int ZCE_LIB::scandir (const char *dirname,
     if (once_nfiles > 0)
     {
         vector_dir = (dirent **)::malloc (once_nfiles * sizeof(dirent *));
+		if (!vector_dir)
+		{
+			return -1;
+		}
     }
 
     //两次操作好处是代码清晰，不用写realloc这类函数，坏处是第二次和第一次可能结果不一致
@@ -388,7 +390,14 @@ int ZCE_LIB::scandir (const char *dirname,
         }
 
         vector_dir[twice_nfiles] = (dirent *)::malloc (sizeof (dirent));
-        ::memcpy (vector_dir[twice_nfiles] , &dir_tmp, sizeof(dirent));
+		if (vector_dir[twice_nfiles])
+		{
+			::memcpy(vector_dir[twice_nfiles], &dir_tmp, sizeof(dirent));
+		}
+		else
+		{
+			return -1;
+		}
         ++twice_nfiles;
     }
 

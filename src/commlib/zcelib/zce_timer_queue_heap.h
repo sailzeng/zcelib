@@ -151,7 +151,7 @@ protected:
 protected:
 
     ///堆的大小，和TIMER NODE的大小应该一样
-    size_t               size_heap_;
+    size_t               size_heap_ = 0;
 
     ///本质是一个最小堆，里面存放Timer NODE的ID
     std::vector <int>    timer_node_heap_;

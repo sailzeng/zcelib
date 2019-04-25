@@ -424,6 +424,7 @@ void ZCE_LIB::str_to_tm(const char *strtm,
         ("Nov"),
         ("Dec")
     };
+	static const time_t CHARATER_ZERO_TIME_T = '0';
 
     ZCE_ASSERT(strtm && ptr_tm);
     if (usec != NULL)
@@ -496,12 +497,13 @@ void ZCE_LIB::str_to_tm(const char *strtm,
         if (ZCE_LIB::TIME_STRFMT_ISO_USEC == fmt &&
             usec != NULL)
         {
-            *usec = (*(strtm + 20) - '0') * 100000
-                    + (*(strtm + 21) - '0') * 10000
-                    + (*(strtm + 22) - '0') * 1000
-                    + (*(strtm + 23) - '0') * 100
-                    + (*(strtm + 24) - '0') * 10
-                    + (*(strtm + 25) - '0');
+			*usec = ((*(strtm + 20)) - CHARATER_ZERO_TIME_T) * 100000
+				+ ((*(strtm + 21) - CHARATER_ZERO_TIME_T)) * 10000
+				+ ((*(strtm + 22) - CHARATER_ZERO_TIME_T)) * 1000
+				+ ((*(strtm + 23) - CHARATER_ZERO_TIME_T)) * 100
+				+ ((*(strtm + 24) - CHARATER_ZERO_TIME_T)) * 10
+				+ ((*(strtm + 25) - CHARATER_ZERO_TIME_T));
+			
         }
     }
     else if (ZCE_LIB::TIME_STRFMT_US_SEC == fmt ||
@@ -539,12 +541,12 @@ void ZCE_LIB::str_to_tm(const char *strtm,
         if (ZCE_LIB::TIME_STRFMT_US_USEC == fmt &&
             usec != NULL)
         {
-            *usec = (*(strtm + 25) - '0') * 100000
-                    + (*(strtm + 26) - '0') * 10000
-                    + (*(strtm + 27) - '0') * 1000
-                    + (*(strtm + 28) - '0') * 100
-                    + (*(strtm + 29) - '0') * 10
-                    + (*(strtm + 30) - '0');
+            *usec = (*(strtm + 25) - CHARATER_ZERO_TIME_T) * 100000
+                    + (*(strtm + 26) - CHARATER_ZERO_TIME_T) * 10000
+                    + (*(strtm + 27) - CHARATER_ZERO_TIME_T) * 1000
+                    + (*(strtm + 28) - CHARATER_ZERO_TIME_T) * 100
+                    + (*(strtm + 29) - CHARATER_ZERO_TIME_T) * 10
+                    + (*(strtm + 30) - CHARATER_ZERO_TIME_T);
         }
     }
     //Thu, 26 Nov 2009 13:05:19 GMT
@@ -782,8 +784,8 @@ const  timeval ZCE_LIB::timeval_sub(const timeval &left, const  timeval &right, 
 {
     const uint32_t SEC_PER_USEC = 1000000;
 
-    int64_t left_usec_val = left.tv_sec * SEC_PER_USEC + left.tv_usec;
-    int64_t right_usec_val = right.tv_sec * SEC_PER_USEC + right.tv_usec;
+    int64_t left_usec_val = (int64_t)left.tv_sec * SEC_PER_USEC + left.tv_usec;
+    int64_t right_usec_val = (int64_t)right.tv_sec * SEC_PER_USEC + right.tv_usec;
 
     //用64位作为基准去减
     int64_t minus_usec_val = left_usec_val - right_usec_val;
@@ -812,7 +814,7 @@ const timeval timeval_safe_sub(const timeval &left, const timeval &right);
 void ZCE_LIB::timeval_adjust(timeval &tv)
 {
     const uint32_t SEC_PER_USEC = 1000000;
-    int64_t tv_usec_val = tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
+    int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
 
     tv.tv_sec = static_cast<long>( tv_usec_val / SEC_PER_USEC );
     tv.tv_usec = static_cast<long>( tv_usec_val % SEC_PER_USEC);
@@ -822,7 +824,7 @@ void ZCE_LIB::timeval_adjust(timeval &tv)
 bool ZCE_LIB::timeval_havetime(const timeval &tv)
 {
     const uint32_t SEC_PER_USEC = 1000000;
-    int64_t tv_usec_val = tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
+    int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
 
     if (tv_usec_val > 0)
     {

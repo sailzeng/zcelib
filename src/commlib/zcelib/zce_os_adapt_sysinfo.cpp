@@ -446,7 +446,7 @@ int ZCE_LIB::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
         return -1;
     }
     ::RegCloseKey(hdl_key);
-    zce_system_info->cpu_hz_ = dw_mhz * 1024 * 1024;
+    zce_system_info->cpu_hz_ = dw_mhz * 1024ll * 1024;
 
     return 0;
 

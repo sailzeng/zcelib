@@ -67,13 +67,14 @@
 //因为Window和LINUX断言中实际使用的函数，其实在非DEBUG版本其实都没有暴漏出来，所以必现有下面这些定义才能使用。
 
 #if defined (ZCE_OS_WINDOWS)
-_CRTIMP int __cdecl _CrtDbgReport(
-    int _ReportType,
-    const char *_Filename,
-    int _Linenumber,
-    const char *_ModuleName,
-    const char *_Format,
-    ...);
+
+_ACRTIMP int __cdecl _CrtDbgReport(
+	_In_       int         _ReportType,
+	_In_opt_z_ char const* _FileName,
+	_In_       int         _Linenumber,
+	_In_opt_z_ char const* _ModuleName,
+	_In_opt_z_ char const* _Format,
+	...);
 #endif
 
 #if defined (ZCE_OS_LINUX)
@@ -353,7 +354,7 @@ public:
 
 //!用于程序运行到的地方。
 #ifndef ZCE_TRACE_FILELINE
-#define ZCE_TRACE_FILELINE(log_priority)        ZCE_LOG((log_priority),"[FILELINE TRACE]goto File %s|%d,function:%s.",\
+#define ZCE_TRACE_FILELINE(log_priority)   ZCE_LOG((log_priority),"[FILELINE TRACE]goto File %s|%d,function:%s.",\
     __FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 
@@ -364,7 +365,9 @@ public:
 #endif
 
 #ifndef ZCE_RECORD_FAIL_API
-#define ZCE_RECORD_FAIL_API(log_priority,fail_str)     ZCE_LOG((log_priority),"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),ZCE_LIB::last_error())
+#define ZCE_RECORD_FAIL_API(log_priority,fail_str)     ZCE_LOG((log_priority),\
+	"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",\
+	__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),ZCE_LIB::last_error())
 #endif
 
 
@@ -374,21 +377,20 @@ public:
 
 #if defined DEBUG || defined _DEBUG
 
-#ifndef ZCE_LOGMSG_DBG
-#define ZCE_LOGMSG_DBG        ZCE_LOG
+#ifndef ZCE_LOGMSG_DEBUG
+#define ZCE_LOGMSG_DEBUG        ZCE_LOG
 #endif
 
-#ifndef ZCE_ASSERT_DGB
-#define ZCE_ASSERT_DGB         ZCE_ASSERT
+#ifndef ZCE_ASSERT_DEBUG
+#define ZCE_ASSERT_DEBUG         ZCE_ASSERT
 #endif
 
-#ifndef ZCE_FUNCTION_TRACE_DBG
-#define ZCE_FUNCTION_TRACE_DBG   ZCE_TRACE_FUNCTION
+#ifndef ZCE_FUNCTION_TRACE_DEBUG
+#define ZCE_FUNCTION_TRACE_DEBUG   ZCE_TRACE_FUNCTION
 #endif
 
-
-#ifndef ZCE_FILELINE_TRACE_DBG
-#define ZCE_FILELINE_TRACE_DBG   ZCE_TRACE_FILELINE
+#ifndef ZCE_FILELINE_TRACE_DEBUG
+#define ZCE_FILELINE_TRACE_DEBUG   ZCE_TRACE_FILELINE
 #endif
 
 
@@ -398,25 +400,25 @@ public:
 //如果不是调试编译,将这些宏置为空
 
 
-#ifndef ZCE_LOGMSG_DBG
+#ifndef ZCE_LOGMSG_DEBUG
 #if defined ZCE_OS_WINDOWS
-#define ZCE_LOGMSG_DBG             __noop
+#define ZCE_LOGMSG_DEBUG             __noop
 #else
-#define ZCE_LOGMSG_DBG(...)          do  {} while (0)
+#define ZCE_LOGMSG_DEBUG(...)          do  {} while (0)
 #endif
 #endif
 
-#ifndef ZCE_ASSERT_DGB
-#define ZCE_ASSERT_DGB(...)       ((void)0)
+#ifndef ZCE_ASSERT_DEBUG
+#define ZCE_ASSERT_DEBUG(...)       ((void)0)
 #endif
 
-#ifndef ZCE_FUNCTION_TRACE_DBG
-#define ZCE_FUNCTION_TRACE_DBG(...) ((void)0)
+#ifndef ZCE_FUNCTION_TRACE_DEBUG
+#define ZCE_FUNCTION_TRACE_DEBUG(...) ((void)0)
 #endif
 
 
-#ifndef ZCE_FILELINE_TRACE_DBG
-#define ZCE_FILELINE_TRACE_DBG(...) ((void)0)
+#ifndef ZCE_FILELINE_TRACE_DEBUG
+#define ZCE_FILELINE_TRACE_DEBUG(...) ((void)0)
 #endif
 
 

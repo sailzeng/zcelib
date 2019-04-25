@@ -12,12 +12,18 @@
 
 //
 ZCE_Select_Reactor::ZCE_Select_Reactor():
+	read_fd_set_{0},
+	write_fd_set_{0},
+	exception_fd_set_{0},
     max_fd_plus_one_(0)
 {
     initialize(FD_SETSIZE);
 }
 
 ZCE_Select_Reactor::ZCE_Select_Reactor(size_t max_event_number):
+	read_fd_set_{0},
+	write_fd_set_{0},
+	exception_fd_set_{0},
     max_fd_plus_one_(0)
 {
     initialize(max_event_number);
@@ -205,15 +211,15 @@ int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
     *size_event = 0;
 
     //保留句柄，因为select函数是输入输出参数，所以必须保留了，费时的麻烦呀
-    fd_set read_fd_set = read_fd_set_;
-    fd_set write_fd_set = write_fd_set_;
-    fd_set exception_fd_set = exception_fd_set_;
+    para_read_fd_set_ = read_fd_set_;
+    para_write_fd_set_ = write_fd_set_;
+    para_exception_fd_set_ = exception_fd_set_;
 
     //
     int const nfds = ZCE_LIB::select (max_fd_plus_one_,
-                                      &read_fd_set,
-                                      &write_fd_set,
-                                      &exception_fd_set,
+                                      &para_read_fd_set_,
+                                      &para_write_fd_set_,
+                                      &para_exception_fd_set_,
                                       max_wait_time);
 
     if (nfds == 0)
@@ -230,13 +236,13 @@ int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
     //严格遵守调用顺序，读取，写，异常处理3个步骤完成，
 
     //处理读事件
-    process_ready(&read_fd_set, ZCE_Event_Handler::READ_MASK);
+    process_ready(&para_read_fd_set_, ZCE_Event_Handler::READ_MASK);
 
     //处理写事件
-    process_ready(&write_fd_set, ZCE_Event_Handler::WRITE_MASK);
+    process_ready(&para_write_fd_set_, ZCE_Event_Handler::WRITE_MASK);
 
     //处理异常事件
-    process_ready(&exception_fd_set, ZCE_Event_Handler::EXCEPT_MASK);
+    process_ready(&para_exception_fd_set_, ZCE_Event_Handler::EXCEPT_MASK);
 
     *size_event = nfds;
 

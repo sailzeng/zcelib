@@ -279,39 +279,39 @@ public:
 protected:
 
     ///TIMER NODE(也就是HANDLER)的数量，
-    size_t                      num_timer_node_;
+    size_t                      num_timer_node_ = 0;
 
     ///时间精度,以毫秒为单位，想要微秒得定时器，你在做梦呢，
     ///你给出时间进度后，必须在这个精度内调用dispatch_timer 函数
     ///普通服务器我建议你用s的级别，也就是1000ms
     ///要求精度比较高的服务器，我建议你用100ms
     ///要求不高的服务器，建议你用Ns，N小于10s
-    unsigned int                timer_precision_mesc_;
+    unsigned int                timer_precision_mesc_ = DEFAULT_TIMER_PRECISION_MSEC;
 
     ///已经使用的节点的数量，也就是分配了多少个定时器
-    size_t                      num_use_node_;
+    size_t                      num_use_node_ = 0;
 
     ///触发模式
     TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE_SYSTEM_CLOCK;
 
     ///是否支持动态扩张NODE
-    bool                        dynamic_expand_node_;
+    bool                        dynamic_expand_node_ = true;
 
     ///TIMER NODE的队列,本来用指针自己管理的，但是考虑再三，扩张的代码我要写好不如用resize
     ///算了，不要自己造这种轮子
     std::vector<ZCE_TIMER_NODE> time_node_ary_;
 
     ///空闲TIMER NODE队列的头下标，单向链表
-    int                         free_node_id_head_;
+    int                         free_node_id_head_ = INVALID_TIMER_ID;
     ///空闲队列的下标列表的数组
     std::vector<int>            free_node_id_list_;
     ///本来想蛋疼的写一个使用列表，后来发现如果要用，就必须用双向列表，我蛋疼，饶了我
 
     ///上一次的CPU TICK的触发点，
-    uint64_t                    prev_trigger_msec_;
+    uint64_t                    prev_trigger_msec_ = 0;
 
     ///定时器计算的参考时间点，每次定时器触发的时候改变
-    uint64_t                    timer_refer_pointer_;
+    uint64_t                    timer_refer_pointer_ = 0;
 
 protected:
 

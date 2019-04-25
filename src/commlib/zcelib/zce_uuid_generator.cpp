@@ -107,7 +107,7 @@ void ZCE_UUID64_Generator::time_radix(uint16_t identity, uint32_t radix )
     generator_type_ = UUID64_GENERATOR_TIME;
 
     time_radix_seed_.u_16_48_.data1_ = identity;
-    time_radix_seed_.u_16_48_.data2_ = radix * 0x10;
+    time_radix_seed_.u_16_48_.data2_ =static_cast<uint64_t>(radix) * 0x10;
 }
 
 //以时间为基数产生UUID64

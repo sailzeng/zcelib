@@ -469,7 +469,7 @@ void ZCE_SQLite_STMTHdl::column(int result_col, char *val)
     strncpy(val,
             reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_,
                                                                result_col)),
-            sqlite3_column_bytes(sqlite3_stmt_handler_, result_col) + 1);
+            static_cast<size_t>(sqlite3_column_bytes(sqlite3_stmt_handler_, result_col)) + 1);
 
     return;
 }

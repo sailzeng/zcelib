@@ -38,17 +38,7 @@
 #include "zce_os_adapt_mutex.h"
 #include "zce_os_adapt_condi.h"
 
-//TLS数据，用于记录签名调用的到底是写锁还是读锁，以便在后面解锁的时，保持处理上的正确
-#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
-enum
-{
-    ZCE_SLIM_USE_SHARED_LOCK = 1,
-    ZCE_SLIM_USE_EXCLUSIVE_LOCK = 2,
-};
 
-__declspec(thread) static int __zce_tls_read_or_write = ZCE_SLIM_USE_SHARED_LOCK;
-
-#endif
 
 namespace ZCE_LIB
 {

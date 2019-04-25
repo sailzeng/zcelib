@@ -61,7 +61,7 @@ public:
     void clear();
 
     //!±È½Ïº¯Êý
-    bool operator < (const AI_IIJIMA_BINARY_DATA right) const;
+    bool operator < (const AI_IIJIMA_BINARY_DATA &right) const;
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 

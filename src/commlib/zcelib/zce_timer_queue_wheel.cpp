@@ -69,7 +69,7 @@ int ZCE_Timer_Wheel::initialize(size_t num_timer_node,
     }
 
     //需要处理多少个时间点
-    num_wheel_point_ = timer_length_mesc / timer_precision_mesc + 1;
+    num_wheel_point_ = static_cast<size_t>(timer_length_mesc) / timer_precision_mesc + 1;
     timer_wheel_point_.resize(num_wheel_point_);
 
     //将QUEUE上的所点处理成无效，表示没有挂NODE

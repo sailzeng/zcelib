@@ -79,8 +79,12 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     // Initialize PSYMBOL_INFO structure.
     // Allocate a properly-sized block.
     symbol = (PSYMBOL_INFO)malloc(sizeof(SYMBOL_INFO) + (MAX_NAME_LENGTH) * sizeof(char));
+	if (!symbol)
+	{
+		return -1;
+	}
     memset(symbol, 0, sizeof(SYMBOL_INFO) + (MAX_NAME_LENGTH) * sizeof(TCHAR));
-    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);  // SizeOfStruct *MUST BE* set to sizeof(SYMBOL_INFO).
+    symbol->SizeOfStruct = sizeof(SYMBOL_INFO); 
     symbol->MaxNameLen = MAX_NAME_LENGTH;
 
     // Initialize IMAGEHLP_LINE64 structure.

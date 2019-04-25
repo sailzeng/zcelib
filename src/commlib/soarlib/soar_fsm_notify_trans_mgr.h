@@ -424,7 +424,7 @@ public:
         }
 
         //测试时打开，
-        //ZCE_LOGMSG_DBG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
+        //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
         //    send_msg_queue_->size(),
         //    send_msg_queue_->size() * sizeof(Zerg_App_Frame *));
         return 0;
@@ -458,7 +458,7 @@ public:
         }
 
         //测试时打开，
-        //ZCE_LOGMSG_DBG(RS_DEBUG,"[framework] Recv queue message_count:%u message_bytes:%u. ",
+        //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Recv queue message_count:%u message_bytes:%u. ",
         //  recv_msg_queue_->size(),
         //  recv_msg_queue_->size() * sizeof(Zerg_App_Frame *));
 

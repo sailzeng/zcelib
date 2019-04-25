@@ -126,11 +126,11 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     try
     {
         // character type defaults to char
-        rapidxml::xml_document<char> doc;
+        std::unique_ptr<rapidxml::xml_document<char> > doc(new rapidxml::xml_document<char>);
         //parse_non_destructive
-        doc.parse<rapidxml::parse_default>(file_data.get());
+        doc->parse<rapidxml::parse_default>(file_data.get());
 
-        const rapidxml::xml_node<char> *root = doc.first_node();
+        const rapidxml::xml_node<char> *root = doc->first_node();
         //¹ã¶È±éÀúdom tree
         read_dfs(root, propertytree);
     }
