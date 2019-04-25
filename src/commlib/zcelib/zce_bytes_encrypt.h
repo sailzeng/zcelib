@@ -391,8 +391,8 @@ public:
         *cipher_len = cphbuf_need_len;
 
         //用于记录异或结果的数据区，+4是因为尾巴补0的时候，可能溢出一个BLOCK，免得写一堆判断代码。
-        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE];
-        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)];
+		unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
+        unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = {0};
 
         //用随机数算法生成IV.填补进入密文数据区
         unsigned char *write_ptr = cipher_buf;
