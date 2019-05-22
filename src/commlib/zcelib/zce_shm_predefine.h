@@ -111,8 +111,7 @@
 *
 */
 
-#ifndef ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
-#define ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 #include "zce_os_adapt_math.h"
@@ -379,5 +378,4 @@ public:
 
 
 
-#endif //ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
 

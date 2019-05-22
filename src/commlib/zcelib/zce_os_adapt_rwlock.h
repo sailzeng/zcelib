@@ -31,8 +31,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_RWLOCK_H_
-#define ZCE_LIB_OS_ADAPT_RWLOCK_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_mutex.h"
@@ -43,12 +42,7 @@
 namespace ZCE_LIB
 {
 
-/*!
-* @brief      销毁读写锁的对象
-* @return     int
-* @param      rwlock
-*/
-int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);
+
 
 /*!
 * @brief      读写锁的对象的初始化
@@ -60,6 +54,14 @@ int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);
 int pthread_rwlock_init(pthread_rwlock_t *rwlock,
                         const pthread_rwlockattr_t *attr);
 
+
+/*!
+* @brief      销毁读写锁的对象
+* @return     int
+* @param      rwlock
+*/
+int pthread_rwlock_destroy(pthread_rwlock_t* rwlock);
+
 /*!
 * @brief      读写锁的对象的的初始化，非标准，但建议，使用
 * @return     int               返回0标识成功，
@@ -69,7 +71,6 @@ int pthread_rwlock_init(pthread_rwlock_t *rwlock,
 * @param      priority_to_write 写入优先还是读取优先，（只对Windows的模拟有用，完全是为了自己好玩,不会快什么，MS一个类似测试）
 */
 int pthread_rwlock_initex(pthread_rwlock_t *rwlock,
-                          bool  use_win_slim,
                           bool  priority_to_write = true);
 
 /*!
@@ -146,7 +147,10 @@ int pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 */
 int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);
 
+
+#if defined (ZCE_USE_WIN_SLIM)
+#endif
+
 };
 
-#endif //ZCE_LIB_OS_ADAPT_RWLOCK_H_
 

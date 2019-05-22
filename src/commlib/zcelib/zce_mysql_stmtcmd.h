@@ -14,8 +14,7 @@
 
 
 
-#ifndef ZCE_LIB_MYSQL_STMT_COMMAND_H_
-#define ZCE_LIB_MYSQL_STMT_COMMAND_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -200,5 +199,4 @@ inline unsigned int ZCE_Mysql_STMT_Command::get_num_of_result_fields() const
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
 
-#endif //ZCE_LIB_MYSQL_STMT_COMMAND_H_
 

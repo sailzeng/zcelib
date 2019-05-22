@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_CONDI_H_
-#define ZCE_LIB_LOCK_THREAD_CONDI_H_
+#pragma once
 
 #include "zce_trace_debugging.h"
 #include "zce_lock_base.h"
@@ -104,5 +103,4 @@ typedef ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>        ZCE_Thread_Condition
 ///使用可递归的MUTEX的类
 typedef ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>    ZCE_Thread_Condition_Recursive_Mutex;
 
-#endif //ZCE_LIB_LOCK_THREAD_CONDI_H_
 

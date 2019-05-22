@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_SQLITE_STMT_HANDLER_H_
-#define ZCE_LIB_SQLITE_STMT_HANDLER_H_
+#pragma once
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -216,5 +215,5 @@ protected:
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
 
-#endif //ZCE_LIB_SQLITE3_STMT_HANDLER_H_
+
 

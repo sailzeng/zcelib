@@ -7,8 +7,7 @@
 * @brief      线程的信号灯封装
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
-#define ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
+#pragma once
 
 #include "zce_lock_base.h"
 #include "zce_lock_guard.h"
@@ -52,5 +51,5 @@ protected:
 
 };
 
-#endif //ZCE_LIB_LOCK_THREAD_SEMAPHORE_H_
+
 

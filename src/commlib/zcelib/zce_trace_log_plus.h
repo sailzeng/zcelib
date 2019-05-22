@@ -29,8 +29,8 @@
 *
 */
 
-#ifndef ZCE_LIB_TRACE_LOG_PLUS_H_
-#define ZCE_LIB_TRACE_LOG_PLUS_H_
+#pragma once
+
 
 #include "zce_fmtstr_snprintf.h"
 #include "zce_trace_log_basic.h"
@@ -1020,5 +1020,6 @@ protected:
 
 };
 
-#endif //ZCE_LIB_TRACE_LOG_PLUS_H_
+#pragma once
+
 

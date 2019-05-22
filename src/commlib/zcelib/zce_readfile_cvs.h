@@ -1,7 +1,6 @@
 
 
-#ifndef ZCE_LIB_READFILE_CVS_H_
-#define ZCE_LIB_READFILE_CVS_H_
+#pragma once
 
 
 class ReadFile_CVS
@@ -38,5 +37,5 @@ protected:
 
 };
 
-#endif //#ifndef ZCE_LIB_READFILE_CVS_H_
+
 

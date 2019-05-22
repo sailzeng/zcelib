@@ -18,8 +18,7 @@
 
 
 
-#ifndef ZCE_LIB_SHM_LOCKFREE_DEQUE_H_
-#define ZCE_LIB_SHM_LOCKFREE_DEQUE_H_
+#pragma once
 
 #include "zce_shm_predefine.h"
 
@@ -328,7 +327,7 @@ inline size_t shm_dequechunk::get_front_len()
 
 };
 
-#endif //ZCE_LIB_SHM_LOCKFREE_DEQUE_H_
+
 
 
 

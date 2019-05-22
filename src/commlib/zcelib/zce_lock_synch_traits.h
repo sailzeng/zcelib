@@ -12,8 +12,7 @@
 *             单线程环境
 */
 
-#ifndef ZCE_LIB_LOCK_SYNCH_TRAITS_H_
-#define ZCE_LIB_LOCK_SYNCH_TRAITS_H_
+#pragma once
 
 //用于某些策略处理的类
 #include "zce_lock_process_mutex.h"
@@ -57,5 +56,5 @@ public:
     typedef ZCE_Null_Mutex               NULL_SEMAPHORE;
 };
 
-#endif //ZCE_LIB_LOCK_SYNCH_TRAITS_H_
+
 

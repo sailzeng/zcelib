@@ -14,8 +14,8 @@
 *             封装过double作为时间值，但无法确认了。
 *
 */
-#ifndef ZCE_LIB_TIME_VALUE_H_
-#define ZCE_LIB_TIME_VALUE_H_
+
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_time.h"
@@ -275,5 +275,5 @@ public:
     static const ZCE_Time_Value    MAX_TIME_VALUE;
 };
 
-#endif //# ZCE_LIB_TIME_VALUE_H_
+
 

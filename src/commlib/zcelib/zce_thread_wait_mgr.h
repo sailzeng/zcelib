@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_THREAD_WAIT_MANAGER_H_
-#define ZCE_LIB_THREAD_WAIT_MANAGER_H_
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 
@@ -71,5 +70,5 @@ public:
     static void clean_instance();
 };
 
-#endif //#ifndef ZCE_LIB_THREAD_WAIT_MANAGER_H_
+
 

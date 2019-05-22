@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_DIRENT_H_
-#define ZCE_LIB_OS_ADAPT_DIRENT_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -219,5 +218,5 @@ inline std::string &path_string_cat(std::string &dst,
 };
 
 
-#endif //ZCE_LIB_OS_ADAPT_DIRENT_H_
+
 

@@ -37,8 +37,7 @@
 *             赐我智慧，分辨这两者的区别。
 */
 
-#ifndef ZCE_LIB_PREDEFINE_H_
-#define ZCE_LIB_PREDEFINE_H_
+#pragma once
 
 
 //==================================================================================================
@@ -716,4 +715,4 @@ extern "C"
 #endif
 
 
-#endif //ZCE_LIB_PREDEFINE_H_
+

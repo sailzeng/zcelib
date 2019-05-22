@@ -32,8 +32,7 @@
 
 
 
-#ifndef ZCE_LIB_SCRIPT_LUA_H_
-#define ZCE_LIB_SCRIPT_LUA_H_
+#pragma once
 
 #include "zce_predefine.h"
 #include "zce_boost_mpl.h"
@@ -2002,5 +2001,5 @@ public:
 
 #endif //#if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 ==1
 
-#endif // ZCE_LIB_SCRIPT_LUA_H_
+
 

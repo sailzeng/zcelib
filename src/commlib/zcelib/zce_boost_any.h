@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_boost_any.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     这事chrislin的作品把
 * @version
 * @date       2014年5月30日
 * @brief      和Boost 的any的一样实现，用于一些对类型要求不太严格，但又需要数据
@@ -14,10 +14,10 @@
 *             漫长，走得很辛苦。今天我们在台湾追思“二.二八”，我相信有一天民
 *             主的中国也会用同样慎重的心情来追思那个日子。台湾能，大陆没有理
 *             由不能！
+*             BTW：我不喜欢小英。
 */
 
-#ifndef ZCE_LIB_BOOST_ANY_H_
-#define ZCE_LIB_BOOST_ANY_H_
+#pragma once
 
 //不建议你使用using namespace;
 namespace ZCE_LIB
@@ -246,4 +246,4 @@ inline const value_type *unsafe_any_cast(const any *operand)
 }
 };
 
-#endif //ZCE_LIB_BOOST_ANY_H_
+

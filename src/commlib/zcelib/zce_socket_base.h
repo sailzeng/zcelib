@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_SOCKET_BASE_H_
-#define ZCE_LIB_SOCKET_BASE_H_
+#pragma once
 
 //SOCKET地址的基类
 class ZCE_Sockaddr;
@@ -117,5 +116,5 @@ public:
 
 };
 
-#endif //#ifndef ZCE_LIB_SOCKET_BASE_H_
+
 

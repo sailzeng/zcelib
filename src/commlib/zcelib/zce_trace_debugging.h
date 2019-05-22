@@ -14,8 +14,8 @@
 *
 */
 
-#ifndef ZCE_LIB_LOGGING_H_
-#define ZCE_LIB_LOGGING_H_
+#pragma once
+
 
 //==========================================================================================================
 
@@ -427,4 +427,3 @@ public:
 
 
 
-#endif //ZCE_LIB_LOGGING_H_

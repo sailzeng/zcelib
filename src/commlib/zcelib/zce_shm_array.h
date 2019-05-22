@@ -13,8 +13,7 @@
 *
 */
 
-#ifndef ZCE_LIB_SHM_ARRAY_H_
-#define ZCE_LIB_SHM_ARRAY_H_
+#pragma once
 
 #include "zce_shm_predefine.h"
 
@@ -274,5 +273,4 @@ protected:
 
 };
 
-#endif //ZCE_LIB_SHM_ARRAY_H_
 

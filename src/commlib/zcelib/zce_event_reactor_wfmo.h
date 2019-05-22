@@ -19,8 +19,7 @@
 *
 */
 
-#ifndef ZCE_LIB_EVENT_REACTOR_WFMO_H_
-#define ZCE_LIB_EVENT_REACTOR_WFMO_H_
+#pragma once
 
 #include "zce_event_reactor_base.h"
 
@@ -122,5 +121,5 @@ protected:
 
 #endif //#if defined ZCE_OS_WINDOWS
 
-#endif //ZCE_LIB_EVENT_REACTOR_WFMO_H_
+
 

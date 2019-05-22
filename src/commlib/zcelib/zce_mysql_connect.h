@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_DB_CONNECT_H_
-#define ZCE_LIB_MYSQL_DB_CONNECT_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -240,5 +239,5 @@ inline unsigned int ZCE_Mysql_Connect::get_error_no()
 
 #endif //#if defined ZCE_USE_MYSQL
 
-#endif //ZCE_LIB_MYSQL_DB_CONNECT_H_
+
 

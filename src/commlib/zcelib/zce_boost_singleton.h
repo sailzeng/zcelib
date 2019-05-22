@@ -25,8 +25,8 @@
 *             http://www.cnblogs.com/fullsail/archive/2013/01/03/2842618.html
 */
 
-#ifndef ZCE_LIB_BOOST_SINGLETON_H_
-#define ZCE_LIB_BOOST_SINGLETON_H_
+#pragma once
+
 
 //========================================================================================================
 //
@@ -109,5 +109,5 @@ template <typename T>  typename ZCE_Boost_Singleton<T>::object_creator ZCE_Boost
 
 //========================================================================================================
 
-#endif
+
 

@@ -12,8 +12,7 @@
 *             可能是因为最后写代码时，timeval的很多操作不封装写起来还是繁琐。
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_TIME_H_
-#define ZCE_LIB_OS_ADAPT_TIME_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -725,5 +724,5 @@ inline time_t ZCE_LIB::timegm(struct tm *tm)
 #endif
 }
 
-#endif //ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
+
 

@@ -16,8 +16,7 @@
 *
 */
 
-#ifndef ZCE_LIB_THREAD_TASK_H_
-#define ZCE_LIB_THREAD_TASK_H_
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 
@@ -100,5 +99,5 @@ protected:
 
 };
 
-#endif //#ifndef ZCE_LIB_THREAD_TASK_H_
+
 

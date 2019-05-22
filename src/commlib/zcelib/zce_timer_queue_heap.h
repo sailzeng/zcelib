@@ -20,8 +20,9 @@
 * @note
 *
 */
-#ifndef ZCE_LIB_TIMER_QUEUE_HEAP_H_
-#define ZCE_LIB_TIMER_QUEUE_HEAP_H_
+
+#pragma once
+
 
 #include "zce_timer_queue_base.h"
 #include "zce_time_value.h"
@@ -162,5 +163,5 @@ protected:
 
 };
 
-#endif //#ifndef ZCE_LIB_TIMER_QUEUE_HEAP_H_
+
 

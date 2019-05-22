@@ -1,7 +1,6 @@
 
 
-#ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
-#define ZCE_LIB_ASYNC_FRAMEWORK_FSM_
+#pragma once
 
 
 #include "zce_async_fw_base.h"
@@ -90,5 +89,5 @@ protected:
 
 
 
-#endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
+
 

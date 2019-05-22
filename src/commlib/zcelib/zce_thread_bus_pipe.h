@@ -1,7 +1,5 @@
 
-#ifndef ZCE_LIB_THREAD_BUS_PIPE_H_
-#define ZCE_LIB_THREAD_BUS_PIPE_H_
-
+#pragma once
 //2012年9月18日晚上，中国人民抗日81周年纪念日，81年来，我们哪一天不在抗“日”
 
 #include "zce_boost_non_copyable.h"
@@ -239,10 +237,6 @@ typedef ZCE_Thread_Bus_Pipe<ZCE_Thread_Light_Mutex> ZCE_Thread_MT_Bus_Pipe;
 
 
 
-
-
-
-#endif //ZCE_LIB_THREAD_BUS_PIPE_H_
 
 
 

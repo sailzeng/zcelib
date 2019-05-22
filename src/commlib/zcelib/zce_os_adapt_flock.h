@@ -21,8 +21,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_FLOCK_H_
-#define ZCE_LIB_OS_ADAPT_FLOCK_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -33,21 +32,11 @@ struct zce_flock_t
 {
 public:
 
-    //构造函数和析构函数
-    zce_flock_t():
-        handle_(ZCE_INVALID_HANDLE)
-    {
-
-    }
-    ~zce_flock_t()
-    {
-    }
-
 
 # if defined (ZCE_OS_WINDOWS)
 
     //OVERLAPPED 主要包括一些文件偏移信息
-    OVERLAPPED   overlapped_;
+	OVERLAPPED   overlapped_ = {0};
 
 # elif defined (ZCE_OS_LINUX)
     //文件锁flock对象
@@ -55,7 +44,7 @@ public:
 # endif
 
     ///处理的文件句柄 Handle to the underlying file.
-    ZCE_HANDLE   handle_;
+    ZCE_HANDLE   handle_ = ZCE_INVALID_HANDLE;
 
 };
 
@@ -165,5 +154,4 @@ int flock_unlock (zce_flock_t *lock,
 
 };
 
-#endif //ZCE_LIB_OS_ADAPT_FLOCK_H_
 

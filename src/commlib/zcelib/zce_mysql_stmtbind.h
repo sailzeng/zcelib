@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
-#define ZCE_LIB_MYSQL_STMT_RESULT_H_
+#pragma once
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -272,5 +271,5 @@ protected:
 
 #endif //#if defined ZCE_USE_MYSQL
 
-#endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
+
 

@@ -16,8 +16,7 @@
 *
 */
 
-#ifndef ZCE_LIB_SERVER_TOOLKIT_H_
-#define ZCE_LIB_SERVER_TOOLKIT_H_
+#pragma once
 
 #include "zce_os_adapt_process.h"
 #include "zce_os_adapt_sysinfo.h"
@@ -207,12 +206,5 @@ public:
 
 
 
-
-
-
-
-
-
-#endif //_ZCE_LIB_SERVER_TOOLKIT_H_
 
 

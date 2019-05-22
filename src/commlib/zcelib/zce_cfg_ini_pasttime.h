@@ -16,8 +16,7 @@
 *             整理注释发现里面还有WIN95的提示，呵呵
 */
 
-#ifndef ZCE_LIB_CONFIG_INI_PASTTIME_H_
-#define ZCE_LIB_CONFIG_INI_PASTTIME_H_
+#pragma once
 
 
 /*!
@@ -235,6 +234,6 @@ protected:
 
 };
 
-#endif //ZCE_LIB_CONFIG_INI_PASTTIME_H_
+
 
 

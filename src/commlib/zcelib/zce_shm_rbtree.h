@@ -16,8 +16,7 @@
 */
 
 
-#ifndef ZCE_LIB_SHM_RB_TREE_H_
-#define ZCE_LIB_SHM_RB_TREE_H_
+#pragma once
 
 #include "zce_shm_predefine.h"
 

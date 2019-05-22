@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_SEMAPHORE_H_
-#define ZCE_LIB_OS_ADAPT_SEMAPHORE_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -134,5 +133,5 @@ int sem_timedwait(sem_t *sem, const timeval *abs_timeout_time);
 int sem_getvalue(sem_t *sem, int *sval);
 };
 
-#endif //ZCE_LIB_OS_ADAPT_SEMAPHORE_H_
+
 

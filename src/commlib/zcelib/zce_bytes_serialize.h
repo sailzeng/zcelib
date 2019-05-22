@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_BYTES_SERIALIZATION_H_
-#define ZCE_LIB_BYTES_SERIALIZATION_H_
+#pragma once
 
 #include "zce_bytes_base.h"
 #include "zce_trace_debugging.h"
@@ -556,5 +555,5 @@ void ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >::read_help(ZCE_
     return;
 }
 
-#endif //ZCE_LIB_BYTES_SERIALIZATION_H_
+
 

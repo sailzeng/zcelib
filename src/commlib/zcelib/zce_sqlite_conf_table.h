@@ -34,8 +34,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 
 */
 
-#ifndef ZCE_LIB_SQLITE_CONF_TABLE_H_
-#define ZCE_LIB_SQLITE_CONF_TABLE_H_
+#pragma once
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -244,4 +243,4 @@ public:
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
 
-#endif //ZCE_LIB_SQLITE_CONF_TABLE_H_
+

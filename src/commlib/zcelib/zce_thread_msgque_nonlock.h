@@ -15,8 +15,7 @@
 *
 */
 
-#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_NONLOCK_H_
-#define ZCE_LIB_THREAD_MESSAGE_QUEUE_NONLOCK_H_
+#pragma once
 
 #include "zce_lock_synch_traits.h"
 #include "zce_thread_msgque_template.h"
@@ -130,8 +129,4 @@ public:
     }
 };
 
-
-
-
-#endif // ZCE_LIB_THREAD_MESSAGE_QUEUE_NONLOCK_H_
 

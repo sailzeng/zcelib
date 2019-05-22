@@ -146,18 +146,34 @@ bool ZCE_Thread_RW_Mutex::duration_lock_write(const ZCE_Time_Value &relative_tim
     return systime_lock_write(abs_time);
 }
 
-//解锁,如果是读写锁也只需要这一个函数
-void ZCE_Thread_RW_Mutex::unlock()
-{
-    //解锁
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
 
-    if (0 != ret)
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_unlock", ret);
-        return;
-    }
+
+//解写锁
+void ZCE_Thread_RW_Mutex::unlock_write()
+{
+	//解锁
+	int ret = 0;
+	ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
+
+	if (0 != ret)
+	{
+		ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_unlock", ret);
+		return;
+	}
+}
+
+//解读锁
+void ZCE_Thread_RW_Mutex::unlock_read()
+{
+	//解锁
+	int ret = 0;
+	ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
+
+	if (0 != ret)
+	{
+		ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_unlock", ret);
+		return;
+	}
 }
 
 //取出内部的锁的指针
@@ -166,114 +182,81 @@ pthread_rwlock_t *ZCE_Thread_RW_Mutex::get_lock()
     return &rw_lock_;
 }
 
-/************************************************************************************************************
-Class           : ZCE_Thread_Light_RW_Mutex 轻量级的读写锁，不提供超时等函数
-************************************************************************************************************/
-//构造函数
-ZCE_Thread_Light_RW_Mutex::ZCE_Thread_Light_RW_Mutex()
-{
-    //pthread_rwlockattr_t属性的初始化
-    int ret = 0;
 
-    bool use_win2008_rwlock = false;
+/************************************************************************************************************
+Class           : ZCE_Thread_Win_RW_Mutex 轻量级的读写锁，不提供超时等函数
+************************************************************************************************************/
+
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
-    use_win2008_rwlock = true;
-#endif
 
-    ret = ZCE_LIB::pthread_rwlock_initex(&rw_lock_, use_win2008_rwlock);
+//如果用WIN自带的读写锁
 
-    if (0 != ret )
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_init", ret);
-        return;
-    }
-
+//构造函数
+ZCE_Thread_Win_RW_Mutex::ZCE_Thread_Win_RW_Mutex()
+{
+	::InitializeSRWLock(&(rwlock_slim_));
 }
 
-ZCE_Thread_Light_RW_Mutex::~ZCE_Thread_Light_RW_Mutex()
+ZCE_Thread_Win_RW_Mutex::~ZCE_Thread_Win_RW_Mutex()
 {
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_destroy (&rw_lock_);
-
-    if (0 != ret)
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_destroy", ret);
-        return;
-    }
 }
 
 //读取锁
-void ZCE_Thread_Light_RW_Mutex::lock_read()
+void ZCE_Thread_Win_RW_Mutex::lock_read()
 {
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_rdlock(&rw_lock_);
-
-    if (0 != ret)
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_rdlock", ret);
-        return;
-    }
+	::AcquireSRWLockShared(&(rwlock_slim_));
+	return;
 }
 
 //尝试读取锁
-bool ZCE_Thread_Light_RW_Mutex::try_lock_read()
+bool ZCE_Thread_Win_RW_Mutex::try_lock_read()
 {
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_trywrlock(&rw_lock_);
-
-    if (0 != ret)
-    {
-        return false;
-    }
-
-    return true;
+	//如果用WIN自带的读写锁
+	BOOL bret = ::TryAcquireSRWLockShared(&(rwlock_slim_));
+	if (FALSE == bret)
+	{
+		errno = EBUSY;
+		return false;
+	}
+	return true;
 }
 
 //写锁定
-void ZCE_Thread_Light_RW_Mutex::lock_write()
+void ZCE_Thread_Win_RW_Mutex::lock_write()
 {
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_wrlock(&rw_lock_);
-
-    if (0 != ret)
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_wrlock", ret);
-        return;
-    }
+    ::AcquireSRWLockExclusive(&rwlock_slim_);
+	return;
 }
 
 //尝试读取锁
-bool ZCE_Thread_Light_RW_Mutex::try_lock_write()
+bool ZCE_Thread_Win_RW_Mutex::try_lock_write()
 {
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_trywrlock(&rw_lock_);
-
-    if (0 != ret)
-    {
-        return false;
-    }
-
+	//如果用WIN自带的读写锁
+	BOOL bret = ::TryAcquireSRWLockExclusive(&(rwlock_slim_));
+	if (FALSE == bret)
+	{
+		errno = EBUSY;
+		return false;
+	}
     return true;
 }
 
 //解锁,如果是读写锁也只需要这一个函数
-void ZCE_Thread_Light_RW_Mutex::unlock()
+void ZCE_Thread_Win_RW_Mutex::unlock_read()
 {
-    //解锁
-    int ret = 0;
-    ret = ZCE_LIB::pthread_rwlock_unlock(&rw_lock_);
+	::ReleaseSRWLockShared(&(rwlock_slim_));
+}
 
-    if (0 != ret)
-    {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_rwlock_unlock", ret);
-        return;
-    }
+void ZCE_Thread_Win_RW_Mutex::unlock_write()
+{
+	::ReleaseSRWLockExclusive(&(rwlock_slim_));
 }
 
 //取出内部的锁的指针
-pthread_rwlock_t *ZCE_Thread_Light_RW_Mutex::get_lock()
+SRWLOCK *ZCE_Thread_Win_RW_Mutex::get_lock()
 {
-    return &rw_lock_;
+    return &rwlock_slim_;
 }
 
+#endif

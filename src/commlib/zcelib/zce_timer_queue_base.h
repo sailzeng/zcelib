@@ -12,8 +12,8 @@
 *
 */
 
-#ifndef ZCE_TIMER_QUEUE_BASE_H_
-#define ZCE_TIMER_QUEUE_BASE_H_
+#pragma once
+
 
 #include "zce_boost_non_copyable.h"
 #include "zce_time_value.h"
@@ -318,6 +318,4 @@ protected:
     ///单子实例指针
     static ZCE_Timer_Queue_Base     *instance_;
 };
-
-#endif //# ZCE_LIB_TIMER_QUEUE_BASE_H_
 

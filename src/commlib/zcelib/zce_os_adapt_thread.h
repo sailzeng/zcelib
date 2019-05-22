@@ -15,8 +15,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_THREAD_H_
-#define ZCE_LIB_OS_ADAPT_THREAD_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -234,5 +233,5 @@ int pthread_setspecific(pthread_key_t key, const void *value);
 
 };
 
-#endif //ZCE_LIB_OS_ADAPT_THREAD_H_
+
 

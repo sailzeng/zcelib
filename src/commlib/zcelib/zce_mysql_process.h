@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
-#define ZCE_LIB_MYSQL_STMT_RESULT_H_
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 
@@ -164,5 +163,5 @@ protected:
 
 #endif //#if defined ZCE_USE_MYSQL
 
-#endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
+
 

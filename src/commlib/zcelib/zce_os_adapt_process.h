@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_PROCESS_H_
-#define ZCE_LIB_OS_ADAPT_PROCESS_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -84,5 +83,5 @@ int get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_info);
 
 };
 
-#endif //ZCE_LIB_OS_ADAPT_TIME_H_
+
 

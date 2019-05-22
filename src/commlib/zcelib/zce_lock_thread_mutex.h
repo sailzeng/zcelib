@@ -13,8 +13,7 @@
 *             如果是类似临界区的需求，而且希望更快，可以考虑SPIN LOCK，
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_MUTEX_H_
-#define ZCE_LIB_LOCK_THREAD_MUTEX_H_
+#pragma once
 
 #include "zce_lock_base.h"
 #include "zce_lock_guard.h"
@@ -157,5 +156,5 @@ protected:
 
 
 
-#endif //ZCE_LIB_LOCK_THREAD_MUTEX_H_
+
 

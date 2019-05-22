@@ -42,8 +42,9 @@
 * 幸运的是，这可是一次，真正没有尽头的旅程啊！”
 *
 */
-#ifndef _ZCE_LIB_UUID_GENERATOR_H_
-#define _ZCE_LIB_UUID_GENERATOR_H_
+
+#pragma once
+
 
 #include "zce_boost_random.h"
 
@@ -414,5 +415,5 @@ protected:
 
 };
 
-#endif //# ZCE_LIB_UUID_64_GENERATOR_H_
+
 

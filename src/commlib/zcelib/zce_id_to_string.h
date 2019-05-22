@@ -13,8 +13,7 @@
 *
 */
 
-#ifndef ZCE_LIB_ID_TO_STRING_H_
-#define ZCE_LIB_ID_TO_STRING_H_
+#pragma once
 
 /********************************************************************************
 下面这组宏用于定义一组IDToString的Symbol 和String,
@@ -141,5 +140,5 @@ return NULL; \
 
 *********************************************************************************/
 
-#endif //ZCE_LIB_ID_TO_STRING_H_
+
 

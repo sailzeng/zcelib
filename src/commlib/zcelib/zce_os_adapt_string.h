@@ -19,9 +19,7 @@
 */
 
 
-#ifndef ZCE_LIB_OS_ADAPT_STRING_H_
-#define ZCE_LIB_OS_ADAPT_STRING_H_
-
+#pragma once
 
 #include "zce_trace_debugging.h"
 
@@ -554,17 +552,4 @@ void string_to_ptr(const std::string &stdstr, ptr_type *ptr)
 };
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-#endif //ZCE_LIB_STRING_EX_H_
 

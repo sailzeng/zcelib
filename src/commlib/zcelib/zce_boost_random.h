@@ -70,8 +70,8 @@
 * 代码里面有大量都魔术数字，不是我要搞这种风格，是我和你们一样，对这些数字的含义是白痴
 * 另外好奇一下，这些常量是发明算法实践出来的，还是有一定的科学背景的？
 */
-#ifndef ZCE_LIB_BOOST_RANDOM_H_
-#define ZCE_LIB_BOOST_RANDOM_H_
+
+#pragma once
 
 #include "zce_trace_debugging.h"
 #include "zce_boost_singleton.h"
@@ -833,5 +833,5 @@ typedef   ZCE_Singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
 
 };// end of namespace    ZCE_LIB
 
-#endif
+
 

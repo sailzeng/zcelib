@@ -24,8 +24,8 @@
 *             幸福就是，坚持了应该坚持的，放弃了应该放弃的，珍惜现在拥有的，不后悔已经决定的
 *
 */
-#ifndef ZCE_LIB_SQLITE_DBHANDLE_H_
-#define ZCE_LIB_SQLITE_DBHANDLE_H_
+
+#pragma once
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -212,5 +212,5 @@ protected:
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
 
-#endif //ZCE_LIB_SQLITE_DBHANDLE_H_
+
 

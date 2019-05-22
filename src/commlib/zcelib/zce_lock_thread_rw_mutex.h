@@ -21,8 +21,7 @@
 *             怀念我的朋友。——《肖申克的救赎》
 */
 
-#ifndef ZCE_LIB_LOCK_THREAD_RW_MUTEX_H_
-#define ZCE_LIB_LOCK_THREAD_RW_MUTEX_H_
+#pragma once
 
 #include "zce_lock_base.h"
 #include "zce_lock_guard.h"
@@ -67,7 +66,13 @@ public:
     virtual bool duration_lock_write(const ZCE_Time_Value &relative_time);
 
     ///解锁,如果是读写锁也只需要这一个函数
-    virtual void unlock();
+    virtual void unlock() = delete;
+
+	///
+	virtual void unlock_write();
+
+	///
+	virtual void unlock_read();
 
     ///取出内部的锁的指针
     pthread_rwlock_t *get_lock();
@@ -79,24 +84,27 @@ protected:
 
 };
 
+
+#if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
+
 /*!
 @brief      轻量级的线程的读写锁，没有超时处理，
             主要是为了适配Windows SVR 2008以后的读写锁实现，
             如果环境允许，推荐使用这个，速度比模拟的估计快很多，
 */
-class ZCE_Thread_Light_RW_Mutex : public ZCE_Lock_Base
+class ZCE_Thread_Win_RW_Mutex : public ZCE_Lock_Base
 {
 
 public:
     ///读锁的GUARD
-    typedef ZCE_Read_Guard<ZCE_Thread_Light_RW_Mutex>  LOCK_READ_GUARD;
+    typedef ZCE_Read_Guard<ZCE_Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
     ///写锁的GUARD
-    typedef ZCE_Write_Guard<ZCE_Thread_Light_RW_Mutex> LOCK_WRITE_GUARD;
+    typedef ZCE_Write_Guard<ZCE_Thread_Win_RW_Mutex> LOCK_WRITE_GUARD;
 
 public:
     //构造函数
-    ZCE_Thread_Light_RW_Mutex();
-    virtual ~ZCE_Thread_Light_RW_Mutex();
+    ZCE_Thread_Win_RW_Mutex();
+    virtual ~ZCE_Thread_Win_RW_Mutex();
 
 public:
     //读取锁
@@ -109,18 +117,21 @@ public:
     //尝试读取锁
     virtual bool try_lock_write();
 
-    ///解锁,如果是读写锁也只需要这一个函数
-    virtual void unlock();
+    ///解锁读
+    virtual void unlock_read();
+
+	//解锁写
+	virtual void unlock_write();
 
     ///取出内部的锁的指针
-    pthread_rwlock_t *get_lock();
+	SRWLOCK *get_lock();
 
 protected:
 
-    //线程锁
-    pthread_rwlock_t  rw_lock_;
+	///WINSVR 2008以后，WINDOWS自己实现的读写锁
+	SRWLOCK                rwlock_slim_;
 
 };
 
-#endif //ZCE_LIB_LOCK_THREAD_MUTEX_H_
+#endif 
 

@@ -33,6 +33,18 @@ void ZCE_Lock_Base::unlock()
     return;
 }
 
+///解锁读
+void ZCE_Lock_Base::unlock_read()
+{
+	return;
+}
+
+///解锁写
+void ZCE_Lock_Base::unlock_write()
+{
+	return;
+}
+
 //绝对时间超时的的锁定，超时后解锁，返回是否超时
 bool ZCE_Lock_Base::systime_lock(const ZCE_Time_Value & /*abs_time*/)
 {

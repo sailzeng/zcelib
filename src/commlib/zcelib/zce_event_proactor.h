@@ -22,9 +22,8 @@
 */
 
 
-#ifndef ZCE_LIB_EVENT_PROACTOR_H_
-#define ZCE_LIB_EVENT_PROACTOR_H_
+#pragma once
 
 
-#endif //ZCE_LIB_EVENT_PROACTOR_H_
+
 

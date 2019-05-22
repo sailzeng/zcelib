@@ -25,8 +25,7 @@
 *
 */
 
-#ifndef ZCE_TIMER_QUEUE_WHEEL_H_
-#define ZCE_TIMER_QUEUE_WHEEL_H_
+#pragma once
 
 #include "zce_timer_queue_base.h"
 #include "zce_time_value.h"
@@ -190,5 +189,5 @@ protected:
     std::vector<int>        future_trigger_tid_;
 };
 
-#endif //#ifndef ZCE_LIB_TIMER_QUEUE_WHEEL_H_
+
 

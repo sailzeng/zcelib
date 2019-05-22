@@ -62,8 +62,8 @@
 *
 */
 
-#ifndef ZCE_LIB_BYTES_COMPRESS_H_
-#define ZCE_LIB_BYTES_COMPRESS_H_
+#pragma once
+
 
 #include "zce_bytes_base.h"
 
@@ -402,5 +402,4 @@ typedef ZCE_Compress<LZ4_Compress_Format> LZ4_Compress;
 
 };//end of ZCE_LIB
 
-#endif
 

@@ -13,8 +13,8 @@
 *             到文件偏移的最大值，所以，所以如果文件大小变化，会出现部分区域没有锁定
 *
 */
-#ifndef ZCE_LIB_LOCK_RECORD_LOCK_H_
-#define ZCE_LIB_LOCK_RECORD_LOCK_H_
+
+#pragma once
 
 #include "zce_lock_base.h"
 #include "zce_os_adapt_flock.h"
@@ -105,4 +105,4 @@ protected:
 
 };
 
-#endif //ZCE_LIB_LOCK_RECORD_LOCK_H_
+

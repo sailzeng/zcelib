@@ -25,8 +25,7 @@
 *             请你注意返回值的处理，
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_MUTEX_H_
-#define ZCE_LIB_OS_ADAPT_MUTEX_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 
@@ -168,5 +167,5 @@ int pthread_mutex_unlock (pthread_mutex_t *mutex);
 
 };
 
-#endif //ZCE_LIB_OS_ADAPT_TIME_H_
+
 

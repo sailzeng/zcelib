@@ -19,8 +19,7 @@
 */
 
 
-#ifndef ZCE_LIB_CONFIG_PROPERTY_TREE_H_
-#define ZCE_LIB_CONFIG_PROPERTY_TREE_H_
+#pragma once
 
 //
 //
@@ -187,5 +186,5 @@ protected:
 
 };
 
-#endif //ZCE_LIB_CONFIG_PROPERTY_H_
+
 

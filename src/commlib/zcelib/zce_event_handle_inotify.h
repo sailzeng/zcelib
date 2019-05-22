@@ -68,8 +68,7 @@
 *
 */
 
-#ifndef ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
-#define ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
+#pragma once
 
 
 
@@ -342,11 +341,8 @@ protected:
     ///¶ÁÈ¡µÄBuffer£¬
     char              *read_buffer_;
 
-
-
-
 };
 
 
-#endif //ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
+
 

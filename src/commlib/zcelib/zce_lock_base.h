@@ -16,8 +16,7 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCK_BASE_H_
-#define ZCE_LIB_LOCK_BASE_H_
+#pragma once
 
 #include "zce_lock_guard.h"
 #include "zce_boost_non_copyable.h"
@@ -54,6 +53,12 @@ private:
 
     ///解锁,
     virtual void unlock();
+
+	///解锁读
+	virtual void unlock_read();
+
+	///解锁写
+	virtual void unlock_write();
 
     /*!
     * @brief      绝对时间超时的的锁定，超时后解锁，返回是否超时
@@ -142,5 +147,5 @@ private:
 
 };
 
-#endif //ZCE_LIB_LOCK_BASE_H_
+
 

@@ -14,8 +14,8 @@
 * @note
 *
 */
-#ifndef ZCE_LIB_GET_OPTION_H_
-#define ZCE_LIB_GET_OPTION_H_
+
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 
@@ -425,5 +425,4 @@ private:
 
 };
 
-#endif //ZCE_LIB_GET_OPTION_H_
 

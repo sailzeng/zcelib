@@ -1,6 +1,4 @@
-
-#ifndef ZCE_LIB_SHARE_MEMORY_POSIX_H_
-#define ZCE_LIB_SHARE_MEMORY_POSIX_H_
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 #include "zce_os_adapt_predefine.h"
@@ -65,5 +63,5 @@ protected:
     std::size_t         shm_size_;
 };
 
-#endif //ZCE_LIB_SHARE_MEMORY_POSIX_H_
+
 

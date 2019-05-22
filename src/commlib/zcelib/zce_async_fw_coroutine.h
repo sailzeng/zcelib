@@ -1,7 +1,6 @@
 
 
-#ifndef ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
-#define ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
+#pragma once
 
 
 #include "zce_async_fw_base.h"
@@ -163,5 +162,4 @@ protected:
 };
 
 
-#endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
 

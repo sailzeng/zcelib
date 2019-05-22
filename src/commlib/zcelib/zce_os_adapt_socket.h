@@ -15,8 +15,7 @@
 *             将所有的注释doxygen化，
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_SOCKET_H_
-#define ZCE_LIB_OS_ADAPT_SOCKET_H_
+#pragma once
 
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_time.h"
@@ -2089,5 +2088,5 @@ inline int ZCE_LIB::gethostname(char *name, size_t name_len)
 
 }
 
-#endif //ZCE_LIB_OS_ADAPT_SOCKET_H_
+
 

@@ -13,8 +13,7 @@
 *
 */
 
-#ifndef ZCE_LIB_LOCK_FILE_LOCK_H_
-#define ZCE_LIB_LOCK_FILE_LOCK_H_
+#pragma once
 
 #include "zce_boost_non_copyable.h"
 #include "zce_lock_guard.h"
@@ -84,5 +83,4 @@ protected:
 
 };
 
-#endif //ZCE_LIB_LOCK_FILE_LOCK_H_
 

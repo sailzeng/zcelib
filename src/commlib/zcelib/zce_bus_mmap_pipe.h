@@ -1,6 +1,6 @@
 
-#ifndef ZCE_LIB_BUS_MMAP_PIPE_H_
-#define ZCE_LIB_BUS_MMAP_PIPE_H_
+#pragma once
+
 
 //美国著名计算机专家、C语言及Unix之父、图灵奖获得者丹尼斯·里奇（Dennis Ritchie）于2011年10日12日于家中去世，享年70岁。
 
@@ -249,18 +249,6 @@ inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id)
     bus_pipe_pointer_[pipe_id]->discard_frond();
     return 0;
 }
-
-
-
-
-
-
-
-
-
-#endif //ZCE_LIB_BUS_MMAP_PIPE_H_
-
-
 
 
 

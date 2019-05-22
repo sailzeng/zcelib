@@ -17,8 +17,8 @@
 *             应该帮过不少忙，
 *
 */
-#ifndef ZCE_LIB_SHM_CACHE_CHUNK_H_
-#define ZCE_LIB_SHM_CACHE_CHUNK_H_
+
+#pragma once
 
 #include "zce_shm_predefine.h"
 
@@ -296,5 +296,5 @@ protected:
 
 };
 
-#endif //ZCE_LIB_SHM_CACHE_CHUNK_H_
+
 

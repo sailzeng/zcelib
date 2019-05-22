@@ -17,8 +17,7 @@
 *             大部分情况我用ssize_t替换off_t
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_PREDEFINE_H_
-#define ZCE_LIB_OS_ADAPT_PREDEFINE_H_
+#pragma once
 
 //因为我我用预编译头文件的缘故，所以这儿不用包括这个文件
 
@@ -66,13 +65,18 @@
 #define PTHREAD_MUTEX_TIMEOUT           0x100000
 #endif
 
+
+#ifdef ZCE_OS_WINDOWS
+#pragma warning ( disable : 26495)
+#endif
+
 typedef struct
 {
     //信号量的句柄
-    HANDLE  sem_hanlde_;
+    HANDLE  sem_hanlde_ = INVALID_HANDLE_VALUE;
 
     //信号量是否是一个无名的信号灯
-    bool    sem_unnamed_;
+    bool    sem_unnamed_ = false;
 
 } sem_t;
 
@@ -93,7 +97,7 @@ typedef struct
 } pthread_mutexattr_t;
 
 ///
-typedef struct
+struct pthread_mutex_t
 {
     /// Either PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
     int lock_shared_;
@@ -113,13 +117,13 @@ typedef struct
         sem_t           *non_recursive_mutex_;
     };
 
-} pthread_mutex_t;
+} ;
 
 //在WINDOWS下用临界区（进程内）+SPIN 或者Mutex（进程间）模拟SPIN lock
 //注意这个临界区的行为我加入了SPIN功能，
 typedef pthread_mutex_t  pthread_spinlock_t;
 
-typedef struct
+struct pthread_condattr_t
 {
     // 外部锁定类型，如果需要timeout,增加这个 PTHREAD_MUTEX_TIMEOUT，否则会使用临界区
     int outer_lock_type_;
@@ -127,51 +131,51 @@ typedef struct
     //互斥量的名字，如果是多进程的互斥量，就必须有名字
     char cv_name_[PATH_MAX + 1];
 
-} pthread_condattr_t;
+} ;
 
 struct win_simulate_cv_t
 {
 
     /// 等待者的数量
-    int                  waiters_;
+    int                  waiters_ = 0;
 
     /// 保存进行的解锁操作是broadcast进行的还是signal进行
-    bool                 was_broadcast_;
+    bool                 was_broadcast_ = false;
 
     /// waiters 的计数的保护锁
     pthread_mutex_t      waiters_lock_;
 
     /// 信号灯，阻塞排队等待的线程直到 signaled.
-    sem_t               *block_sema_;
+    sem_t               *block_sema_ =NULL;
 
     ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
     ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
-    sem_t               *finish_broadcast_;
+    sem_t               *finish_broadcast_ = NULL;
 
 } ;
 
-typedef struct
+struct pthread_cond_t
 {
 
     ///外部锁定类型，是否需要TIMEOUT，等，PTHREAD_MUTEX_TIMEOUT
-    int                      outer_lock_type_;
+    int                      outer_lock_type_ = 0;
 
     //两个架构，实际起作用的只有一个
-    union
-    {
-        ///采用两个信号灯和一个互斥量模拟的条件变量，同时支持signal和broadcast操作，
-        ///也支持外部互斥量是多进程共享，也支持外部互斥量是MUTEX（信号灯），临界区模拟
-        ///的，pthread_mutex_t
-        win_simulate_cv_t     simulate_cv_;
+	//union
+	//{
+		///采用两个信号灯和一个互斥量模拟的条件变量，同时支持signal和broadcast操作，
+		///也支持外部互斥量是多进程共享，也支持外部互斥量是MUTEX（信号灯），临界区模拟
+		///的，pthread_mutex_t
+		win_simulate_cv_t     simulate_cv_;
 
-        ///WINDOWS的条件变量在WINSERVER2008，VISTA后才支持
-        ///这个条件变量只能单进程内部使用，其外部互斥量，只支持临界区
+		///WINDOWS的条件变量在WINSERVER2008，VISTA后才支持
+		///这个条件变量只能单进程内部使用，其外部互斥量，只支持临界区
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
-        CONDITION_VARIABLE   cv_object_;
+		CONDITION_VARIABLE   cv_object_;
 #endif
 
-    };
-} pthread_cond_t;
+	//};
+} ;
 
 //读写锁的代码来自UNP V2
 
@@ -184,10 +188,10 @@ typedef struct
 } pthread_rwlockattr_t;
 
 ///Windows下的模拟读写锁的对象结构
-typedef struct
+struct win_simulate_rwlock_t
 {
     ///是否是唤醒写入优先，（是就是写入优先，否则读取优先）这是一个问题，我把抉择权利给你
-    bool            priority_to_write_;
+    bool            priority_to_write_ = true;
 
     ///保护这个结构在多线程中读写的互斥量，主要下面那些整数的修改
     pthread_mutex_t rw_mutex_;
@@ -198,18 +202,17 @@ typedef struct
     pthread_cond_t  rw_condwriters_;
 
     ///等待读的线程数量
-    int             rw_nwaitreaders_;
+    int             rw_nwaitreaders_ = 0;
     ///等待写的线程数量
-    int             rw_nwaitwriters_;
+    int             rw_nwaitwriters_ = 0;
 
     ///锁的持有状态，如果有一个写者持有锁-1 如果>0表示多少个读者持有这个锁
-    int             rw_refcount_;
+    int             rw_refcount_ = 0;
 
-} win_simulate_rwlock_t;
+} ;
 
 
-//TLS数据，用于记录签名调用的到底是写锁还是读锁，以便在后面解锁的时，保持处理上的正确
-
+//用于记录签名调用的到底是写锁还是读锁，以便在后面解锁的时，保持处理上的正确
 enum ZCE_SLIM_SHARE_EXCLUSIVE
 {
 	ZCE_SLIM_USE_SHARED_LOCK = 1,
@@ -218,39 +221,31 @@ enum ZCE_SLIM_SHARE_EXCLUSIVE
 
 
 ///读写锁的对象结构，利用互斥量，条件变量实现的读写锁
-struct  pthread_rwlock_t
+struct pthread_rwlock_t
 {
     //是否需要超时处理，
     //WIN SVR 2008以后的读写锁并不支持超时处理，所以并不能完美模拟pthread rwlock,
     //所以有这个选项，
-    bool                       use_win_slim_ = true;
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 	//
-	ZCE_SLIM_SHARE_EXCLUSIVE   slim_mode_ = ZCE_SLIM_USE_SHARED_LOCK;
+	ZCE_SLIM_SHARE_EXCLUSIVE  slim_mode_ ;
 
-    union
-    {
-		///WINSVR 2008以后，WINDOWS自己实现的读写锁
-		SRWLOCK                rwlock_slim_;
+
+	///WINSVR 2008以后，WINDOWS自己实现的读写锁
+	SRWLOCK                rwlock_slim_;
 
 #endif
-        ///模拟的
-        win_simulate_rwlock_t  simulate_rw_;
+
+    ///模拟的
+    win_simulate_rwlock_t  simulate_rw_;
+
+} ;
 
 
-    };
-
-public:
-    pthread_rwlock_t():
-        use_win_slim_(false)
-    {
-    }
-
-    ~pthread_rwlock_t()
-    {
-    }
-};
+#ifdef ZCE_OS_WINDOWS
+#pragma warning ( default : 26495)
+#endif
 
 typedef unsigned int          mode_t;
 
@@ -918,5 +913,5 @@ typedef void     *ZCE_SHLIB_HANDLE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //ZCE_LIB_OS_ADAPT_PREDEFINE_H_
+
 
