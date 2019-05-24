@@ -84,18 +84,6 @@ protected:
 
 };
 
-/*!
-* @brief      利用析构自动停止的的计时器
-*             BOOST内部有一个这样的类，BTW，我不觉得这东东有什么特别大的用处。
-*/
-class ZCE_Auto_Progress_Timer : public ZCE_Progress_Timer , ZCE_NON_Copyable
-{
-public:
-    ///构造函数，同时开始计时
-    ZCE_Auto_Progress_Timer();
-    ///析构函数把耗时打印出来
-    ~ZCE_Auto_Progress_Timer();
-};
 
 //====================================================================================================
 
@@ -208,11 +196,11 @@ public:
 protected:
 
     ///开始时间
-    uint64_t            start_time_;
+    uint64_t            start_time_ = 0;
     ///结束时间
-    uint64_t            end_time_;
+    uint64_t            end_time_ = 0;
     ///累计时间
-    uint64_t            addup_time_;
+    uint64_t            addup_time_ = 0;
 
 protected:
 
@@ -221,4 +209,72 @@ protected:
 };
 
 
+//====================================================================================================
+
+/*!
+* @brief      利用CPP 11的std::chrono::high_resolution_clock高精度计时器做的计时器，
+*             
+*/
+class ZCE_Chrono_HR_Timer
+{
+
+public:
+
+	///构造函数
+	ZCE_Chrono_HR_Timer();
+	///析构函数
+	~ZCE_Chrono_HR_Timer() = default;
+
+	///从新开始计时
+	void restart();
+	///结束计时
+	void end();
+	///累计计时开始,用于多次计时的过程，
+	void addup_start();
+
+	///计算消耗的时间(us,微妙 -6)
+	double elapsed_usec() const;
+
+	///精度
+	static double precision_usec();
+
+protected:
+
+	///开始的时间
+	std::chrono::high_resolution_clock::time_point start_time_;
+	///结束的时间
+	std::chrono::high_resolution_clock::time_point end_time_;
+
+	///累计时间
+	std::chrono::high_resolution_clock::duration addup_time_;
+};
+
+//=======================================================================================================
+/*!
+* @brief      利用析构自动停止的的计时器
+*             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
+*/
+template<typename PROGRESS_TIMER>
+class ZCE_Auto_Progress_Timer : public ZCE_NON_Copyable
+{
+public:
+	///构造函数，同时开始计时
+	ZCE_Auto_Progress_Timer()
+	{
+		progress_timer_.restart();
+	};
+
+	///析构函数把耗时打印出来
+	~ZCE_Auto_Progress_Timer()
+	{
+		progress_timer_.end();
+		ZCE_LOG(RS_INFO,"This operation in function[%s] use time :%.6f microseconds(usec).", 
+				__ZCE_FUNC__,
+				progress_timer_.elapsed_usec());
+	};
+
+protected:
+
+	PROGRESS_TIMER progress_timer_;
+};
 

@@ -65,13 +65,9 @@ public:
     //写锁定超时，相对时间
     virtual bool duration_lock_write(const ZCE_Time_Value &relative_time);
 
-    ///解锁,如果是读写锁也只需要这一个函数
-    virtual void unlock() = delete;
-
-	///
+	///解写锁
 	virtual void unlock_write();
-
-	///
+	///解读锁
 	virtual void unlock_read();
 
     ///取出内部的锁的指针
@@ -117,10 +113,10 @@ public:
     //尝试读取锁
     virtual bool try_lock_write();
 
-    ///解锁读
+    ///解读锁
     virtual void unlock_read();
 
-	//解锁写
+	///解写锁
 	virtual void unlock_write();
 
     ///取出内部的锁的指针

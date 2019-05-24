@@ -123,6 +123,7 @@ int test_pid_file(int /*argc*/, char * /*argv*/[]);
 
 int test_container_performance(int  /*argc*/, char * /*argv*/[]);
 
+int test_progress_timer(int  /*argc*/, char* /*argv*/[]);
 
 int test_net_getaddrinfo(int argc, char *argv[]);
 

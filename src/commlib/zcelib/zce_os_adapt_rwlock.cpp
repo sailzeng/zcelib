@@ -21,11 +21,11 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
 
     if (attr)
     {
-        rwlock->simulate_rw_.priority_to_write_ = attr->priority_to_write_;
+        rwlock->priority_to_write_ = attr->priority_to_write_;
     }
     else
     {
-        rwlock->simulate_rw_.priority_to_write_ = false;
+        rwlock->priority_to_write_ = false;
     }
     pthread_mutexattr_t mutex_attr;
     ZCE_LIB::pthread_mutexattr_init(&mutex_attr);
@@ -35,31 +35,31 @@ int ZCE_LIB::pthread_rwlock_init(pthread_rwlock_t *rwlock,
     //初始化几个同步对象
 
     //一些数据区改写的保护
-    if ( (result = ZCE_LIB::pthread_mutex_init(&rwlock->simulate_rw_.rw_mutex_, &mutex_attr)) != 0)
+    if ( (result = ZCE_LIB::pthread_mutex_init(&rwlock->rw_mutex_, &mutex_attr)) != 0)
     {
         return EINVAL;
     }
 
     //等待读取的条件变量初始化
-    if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->simulate_rw_.rw_condreaders_,
+    if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->rw_condreaders_,
                                                 false )) != 0)
     {
-        ZCE_LIB::pthread_mutex_destroy(&rwlock->simulate_rw_.rw_mutex_);
+        ZCE_LIB::pthread_mutex_destroy(&rwlock->rw_mutex_);
         return EINVAL;
     }
 
     //等待写入的条件变量初始化
-    if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->simulate_rw_.rw_condwriters_,
+    if ( (result = ZCE_LIB::pthread_cond_initex(&rwlock->rw_condwriters_,
                                                 false)) != 0)
     {
-        ZCE_LIB::pthread_cond_destroy(&rwlock->simulate_rw_.rw_condreaders_);
-        ZCE_LIB::pthread_mutex_destroy(&rwlock->simulate_rw_.rw_mutex_);
+        ZCE_LIB::pthread_cond_destroy(&rwlock->rw_condreaders_);
+        ZCE_LIB::pthread_mutex_destroy(&rwlock->rw_mutex_);
         return EINVAL;
     }
 
-    rwlock->simulate_rw_.rw_nwaitreaders_ = 0;
-    rwlock->simulate_rw_.rw_nwaitwriters_ = 0;
-    rwlock->simulate_rw_.rw_refcount_ = 0;
+    rwlock->rw_nwaitreaders_ = 0;
+    rwlock->rw_nwaitwriters_ = 0;
+    rwlock->rw_refcount_ = 0;
 
     return 0;
 
@@ -80,10 +80,8 @@ int ZCE_LIB::pthread_rwlock_initex(pthread_rwlock_t *rwlock,
 #if defined ZCE_OS_WINDOWS
     attr.priority_to_write_ = priority_to_write;
 
-
 #elif defined ZCE_OS_LINUX
 
-    ZCE_UNUSED_ARG(use_win_slim);
     ZCE_UNUSED_ARG(priority_to_write);
 
     //其实我在想，不如搞个NULL，其实都一样
@@ -126,16 +124,16 @@ int ZCE_LIB::pthread_rwlock_destroy(pthread_rwlock_t *rwlock)
 #else
 
     //还有等待的，不能销毁
-    if (rwlock->simulate_rw_.rw_refcount_ != 0
-        || rwlock->simulate_rw_.rw_nwaitreaders_ != 0
-        || rwlock->simulate_rw_.rw_nwaitwriters_ != 0)
+    if (rwlock->rw_refcount_ != 0
+        || rwlock->rw_nwaitreaders_ != 0
+        || rwlock->rw_nwaitwriters_ != 0)
     {
         return EBUSY;
     }
 
-    ZCE_LIB::pthread_mutex_destroy(&rwlock->simulate_rw_.rw_mutex_);
-    ZCE_LIB::pthread_cond_destroy(&rwlock->simulate_rw_.rw_condreaders_);
-    ZCE_LIB::pthread_cond_destroy(&rwlock->simulate_rw_.rw_condwriters_);
+    ZCE_LIB::pthread_mutex_destroy(&rwlock->rw_mutex_);
+    ZCE_LIB::pthread_cond_destroy(&rwlock->rw_condreaders_);
+    ZCE_LIB::pthread_cond_destroy(&rwlock->rw_condwriters_);
 
     return 0;
 #endif
@@ -152,7 +150,7 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 #if defined (ZCE_OS_WINDOWS)
 
 	//加上保护锁
-	int  result = ZCE_LIB::pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
+	int  result = ZCE_LIB::pthread_mutex_lock(&rwlock->rw_mutex_);
 
 	if (0 != result)
 	{
@@ -163,14 +161,14 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 	//可能会导致进入高CPU循环
 
 	//等待获得读写锁，如果有人在写，或者有要写入的人在等待，偏向写优先
-	while ((rwlock->simulate_rw_.rw_refcount_ < 0)
-		   || (true == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitwriters_ > 0))
+	while ((rwlock->rw_refcount_ < 0)
+		   || (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
 	{
-		rwlock->simulate_rw_.rw_nwaitreaders_++;
-		//进入wait函数，simulate_rw_.rw_mutex_会被打开，让其他人活动，出来的时候会获得
-		result = ZCE_LIB::pthread_cond_wait(&rwlock->simulate_rw_.rw_condreaders_,
-											&(rwlock->simulate_rw_.rw_mutex_));
-		rwlock->simulate_rw_.rw_nwaitreaders_--;
+		rwlock->rw_nwaitreaders_++;
+		//进入wait函数，rw_mutex_会被打开，让其他人活动，出来的时候会获得
+		result = ZCE_LIB::pthread_cond_wait(&rwlock->rw_condreaders_,
+											&(rwlock->rw_mutex_));
+		rwlock->rw_nwaitreaders_--;
 
 		if (result != 0)
 		{
@@ -181,10 +179,10 @@ int ZCE_LIB::pthread_rwlock_rdlock(pthread_rwlock_t *rwlock)
 	//获得的了读的锁控制
 	if (result == 0)
 	{
-		rwlock->simulate_rw_.rw_refcount_++;
+		rwlock->rw_refcount_++;
 	}
 
-	ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+	ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
 	return (result);
 
 #elif defined (ZCE_OS_LINUX)
@@ -200,7 +198,7 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 
 #if defined (ZCE_OS_WINDOWS)
 
-	int result = ZCE_LIB::pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
+	int result = ZCE_LIB::pthread_mutex_lock(&rwlock->rw_mutex_);
 
 	if (result != 0)
 	{
@@ -208,17 +206,17 @@ int ZCE_LIB::pthread_rwlock_tryrdlock(pthread_rwlock_t *rwlock)
 	}
 
 	//如果有人在写，或者有要写入的人在等待,那么就不能get读取锁
-	if ((rwlock->simulate_rw_.rw_refcount_ < 0)
-		|| (true == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitwriters_ > 0))
+	if ((rwlock->rw_refcount_ < 0)
+		|| (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
 	{
 		result = EBUSY;
 	}
 	else
 	{
-		rwlock->simulate_rw_.rw_refcount_++;
+		rwlock->rw_refcount_++;
 	}
 
-	ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+	ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
 	return(result);
 
 #elif defined (ZCE_OS_LINUX)
@@ -232,7 +230,7 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-	int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->simulate_rw_.rw_mutex_,
+	int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->rw_mutex_,
 												  abs_timeout_spec);
 
 	//我有点理解为啥phtread的很多函数用绝对时间了，abs_timeout_spec
@@ -242,15 +240,15 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 	}
 
 	//等待获得读写锁，如果有人在写，或者有要写入的人在等待，偏向写优先
-	while ((rwlock->simulate_rw_.rw_refcount_ < 0)
-		   || (true == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitwriters_ > 0))
+	while ((rwlock->rw_refcount_ < 0)
+		   || (true == rwlock->priority_to_write_ && rwlock->rw_nwaitwriters_ > 0))
 	{
-		rwlock->simulate_rw_.rw_nwaitreaders_++;
-		//进入wait函数，simulate_rw_.rw_mutex_会被打开，让其他人活动，出来的时候会获得
-		result = ZCE_LIB::pthread_cond_timedwait(&rwlock->simulate_rw_.rw_condreaders_,
-												 &(rwlock->simulate_rw_.rw_mutex_),
+		rwlock->rw_nwaitreaders_++;
+		//进入wait函数，rw_mutex_会被打开，让其他人活动，出来的时候会获得
+		result = ZCE_LIB::pthread_cond_timedwait(&rwlock->rw_condreaders_,
+												 &(rwlock->rw_mutex_),
 												 abs_timeout_spec);
-		rwlock->simulate_rw_.rw_nwaitreaders_--;
+		rwlock->rw_nwaitreaders_--;
 
 		if (result != 0)
 		{
@@ -261,10 +259,10 @@ int ZCE_LIB::pthread_rwlock_timedrdlock(pthread_rwlock_t *rwlock,
 	//获得的了读的锁控制
 	if (result == 0)
 	{
-		rwlock->simulate_rw_.rw_refcount_++;
+		rwlock->rw_refcount_++;
 	}
 
-	ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+	ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
 	return(result);
 
 #elif defined (ZCE_OS_LINUX)
@@ -286,20 +284,20 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-	int result = pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
+	int result = pthread_mutex_lock(&rwlock->rw_mutex_);
 	if (result != 0)
 	{
 		return(result);
 	}
 
 	//如果有人在使用锁，无论读写，就要等待，如果读取优先，如果有人还在等待读，也等待
-	while ((rwlock->simulate_rw_.rw_refcount_ != 0)
-		   || (false == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitreaders_ > 0))
+	while ((rwlock->rw_refcount_ != 0)
+		   || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0))
 	{
-		rwlock->simulate_rw_.rw_nwaitwriters_++;
-		result = ZCE_LIB::pthread_cond_wait(&rwlock->simulate_rw_.rw_condwriters_,
-											&(rwlock->simulate_rw_.rw_mutex_));
-		rwlock->simulate_rw_.rw_nwaitwriters_--;
+		rwlock->rw_nwaitwriters_++;
+		result = ZCE_LIB::pthread_cond_wait(&rwlock->rw_condwriters_,
+											&(rwlock->rw_mutex_));
+		rwlock->rw_nwaitwriters_--;
 
 		if (result != 0)
 		{
@@ -310,10 +308,10 @@ int ZCE_LIB::pthread_rwlock_wrlock(pthread_rwlock_t *rwlock)
 	//标识锁被写者获得
 	if (result == 0)
 	{
-		rwlock->simulate_rw_.rw_refcount_ = -1;
+		rwlock->rw_refcount_ = -1;
 	}
 
-	ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+	ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
 	return(result);
 
 #elif defined (ZCE_OS_LINUX)
@@ -327,7 +325,7 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
 
 #if defined (ZCE_OS_WINDOWS)
 
-    int result = ZCE_LIB::pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
+    int result = ZCE_LIB::pthread_mutex_lock(&rwlock->rw_mutex_);
 
     if ( result != 0)
     {
@@ -335,18 +333,18 @@ int ZCE_LIB::pthread_rwlock_trywrlock(pthread_rwlock_t *rwlock)
     }
 
     //如果有读，写者存在，就不能拥有写锁
-    if ( (rwlock->simulate_rw_.rw_refcount_ != 0)
-         || (false == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitreaders_ > 0) )
+    if ( (rwlock->rw_refcount_ != 0)
+         || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0) )
     {
         result = EBUSY;
     }
     //否则就拥有写锁
     else
     {
-        rwlock->simulate_rw_.rw_refcount_ = -1;
+        rwlock->rw_refcount_ = -1;
     }
 
-    ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+    ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
     return(result);
 
 #elif defined (ZCE_OS_LINUX)
@@ -360,21 +358,21 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->simulate_rw_.rw_mutex_, abs_timeout_spec);
+    int result = ZCE_LIB::pthread_mutex_timedlock(&rwlock->rw_mutex_, abs_timeout_spec);
     if ( result != 0)
     {
         return(result);
     }
 
     //如果有人在使用锁，无论读写，就要等待，如果读取优先，如果有人还在等待读，也等待
-    while ((rwlock->simulate_rw_.rw_refcount_ != 0)
-           || (false == rwlock->simulate_rw_.priority_to_write_ && rwlock->simulate_rw_.rw_nwaitreaders_ > 0) )
+    while ((rwlock->rw_refcount_ != 0)
+           || (false == rwlock->priority_to_write_ && rwlock->rw_nwaitreaders_ > 0) )
     {
-        rwlock->simulate_rw_.rw_nwaitwriters_++;
-        result = ZCE_LIB::pthread_cond_timedwait(&rwlock->simulate_rw_.rw_condwriters_,
-                                                 &(rwlock->simulate_rw_.rw_mutex_),
+        rwlock->rw_nwaitwriters_++;
+        result = ZCE_LIB::pthread_cond_timedwait(&rwlock->rw_condwriters_,
+                                                 &(rwlock->rw_mutex_),
                                                  abs_timeout_spec);
-        rwlock->simulate_rw_.rw_nwaitwriters_--;
+        rwlock->rw_nwaitwriters_--;
 
         if (result != 0)
         {
@@ -384,10 +382,10 @@ int ZCE_LIB::pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 
     if (result == 0)
     {
-        rwlock->simulate_rw_.rw_refcount_ = -1;
+        rwlock->rw_refcount_ = -1;
     }
 
-    ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+    ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
     return(result);
 
 #elif defined (ZCE_OS_LINUX)
@@ -409,14 +407,8 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-#if defined (ZCE_USE_WIN_SLIM)
-
-
-
-#else
-
     //上锁，
-    int result = ZCE_LIB::pthread_mutex_lock(&rwlock->simulate_rw_.rw_mutex_);
+    int result = ZCE_LIB::pthread_mutex_lock(&rwlock->rw_mutex_);
 
     if ( result != 0)
     {
@@ -424,14 +416,14 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
     }
 
     //如果是读者占用了锁，
-    if (rwlock->simulate_rw_.rw_refcount_ > 0)
+    if (rwlock->rw_refcount_ > 0)
     {
-        rwlock->simulate_rw_.rw_refcount_--;
+        rwlock->rw_refcount_--;
     }
     //如果是作家（写者）占用了锁，
-    else if (rwlock->simulate_rw_.rw_refcount_ == -1)
+    else if (rwlock->rw_refcount_ == -1)
     {
-        rwlock->simulate_rw_.rw_refcount_ = 0;
+        rwlock->rw_refcount_ = 0;
     }
     //理论上不会到这儿
     else
@@ -441,44 +433,43 @@ int ZCE_LIB::pthread_rwlock_unlock(pthread_rwlock_t *rwlock)
 
     //根据读优先还是写入优先，进行处理
     //如果写优先
-    if (rwlock->simulate_rw_.priority_to_write_)
+    if (rwlock->priority_to_write_)
     {
         //如果这时候，有写入的人等待，优先给作家发个信号
-        if (rwlock->simulate_rw_.rw_nwaitwriters_ > 0)
+        if (rwlock->rw_nwaitwriters_ > 0)
         {
-            if (rwlock->simulate_rw_.rw_refcount_ == 0)
+            if (rwlock->rw_refcount_ == 0)
             {
-                result = ZCE_LIB::pthread_cond_signal(&rwlock->simulate_rw_.rw_condwriters_);
+                result = ZCE_LIB::pthread_cond_signal(&rwlock->rw_condwriters_);
             }
         }
         //如果这时候，有读者的在等待，给读者做个广播
-        else if (rwlock->simulate_rw_.rw_nwaitreaders_ > 0)
+        else if (rwlock->rw_nwaitreaders_ > 0)
         {
-            result = ZCE_LIB::pthread_cond_broadcast(&rwlock->simulate_rw_.rw_condreaders_);
+            result = ZCE_LIB::pthread_cond_broadcast(&rwlock->rw_condreaders_);
         }
     }
     //如果是读取优先
     else
     {
-        if (rwlock->simulate_rw_.rw_nwaitreaders_ > 0)
+        if (rwlock->rw_nwaitreaders_ > 0)
         {
-            result = ZCE_LIB::pthread_cond_broadcast(&rwlock->simulate_rw_.rw_condreaders_);
+            result = ZCE_LIB::pthread_cond_broadcast(&rwlock->rw_condreaders_);
         }
         //如果这时候，有写入的人等待，优先给作家发个信号
-        else if (rwlock->simulate_rw_.rw_nwaitwriters_ > 0)
+        else if (rwlock->rw_nwaitwriters_ > 0)
         {
-            if (rwlock->simulate_rw_.rw_refcount_ == 0)
+            if (rwlock->rw_refcount_ == 0)
             {
-                result = ZCE_LIB::pthread_cond_signal(&rwlock->simulate_rw_.rw_condwriters_);
+                result = ZCE_LIB::pthread_cond_signal(&rwlock->rw_condwriters_);
             }
         }
 
         //如果这时候，有读者的在等待，给读者做个广播
     }
 
-    ZCE_LIB::pthread_mutex_unlock(&rwlock->simulate_rw_.rw_mutex_);
+    ZCE_LIB::pthread_mutex_unlock(&rwlock->rw_mutex_);
     return(result);
-#endif
 
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_rwlock_unlock(rwlock);

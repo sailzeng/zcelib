@@ -1570,7 +1570,3 @@ public:
 
 
 
-
-
-#endif //ZCE_LIB_SHM_AVL_TREE_H_
-

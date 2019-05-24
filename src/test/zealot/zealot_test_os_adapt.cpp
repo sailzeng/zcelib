@@ -243,3 +243,16 @@ int test_container_performance(int  /*argc*/, char * /*argv*/[])
     return 0;
 }
 
+
+int test_progress_timer(int  /*argc*/, char* /*argv*/[])
+{
+	ZCE_Chrono_HR_Timer hr_timer;
+	ZCE_Time_Value sleep_len(2, 5000);
+
+	hr_timer.restart();
+	ZCE_LIB::sleep(sleep_len);
+	hr_timer.end();
+	std::cout << "ZCE_Chrono_HR_Timer :" << hr_timer.elapsed_usec() << " " << std::endl;
+
+	return 0;
+}

@@ -604,7 +604,11 @@ static int sub_int64(lua_State *state)
 static int constructor_int64(lua_State *state)
 {
     int64_t data = 0;
-    sscanf(lua_tostring(state, 1), "%" PRId64, &data);
+	int fields = sscanf(lua_tostring(state, 1), "%" PRId64, &data);
+	if (fields != 1)
+	{
+		ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+	}
     ZCE_LIB::push_stack(state, data);
     return 1;
 }
@@ -771,7 +775,11 @@ static int sub_uint64(lua_State *state)
 static int constructor_uint64(lua_State *state)
 {
     uint64_t data = 0;
-    sscanf(lua_tostring(state, 1), "%" PRIu64, &data);
+	int fields = sscanf(lua_tostring(state, 1), "%" PRIu64, &data);
+	if (fields != 1)
+	{
+		ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+	}
     ZCE_LIB::push_stack(state, data);
     return 1;
 }

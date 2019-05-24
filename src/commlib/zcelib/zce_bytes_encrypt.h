@@ -124,6 +124,7 @@
 *             L O V E  L O V E   L O V E GO GO GO
 */
 
+#pragma once
 
 #include "zce_bytes_base.h"
 #include "zce_boost_random.h"
@@ -2048,14 +2049,14 @@ public:
         uint32_t *ll_key = sub_key->ll_key_;
 
         uint32_t key_word_num = key_size / sizeof(uint32_t);
-        for (size_t i = 0; i < key_word_num; ++i)
+        for (uint32_t i = 0; i < key_word_num; ++i)
         {
             t_key[i] = ZINDEX_TO_LEUINT32(key, i);
         }
         //ÌîÐ´KEY³¤¶È
         t_key[key_word_num] = key_word_num;
         //ÌîÐ´0
-        for (size_t i = key_word_num + 1; i < 15; ++i)
+        for (uint32_t i = key_word_num + 1; i < 15; ++i)
         {
             t_key[i] = 0;
         }

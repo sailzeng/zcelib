@@ -458,7 +458,14 @@ void ZCE_LogTrace_Basic::del_old_logfile()
             {
                 create_id_logname(i - 1, oldlogfilename);
                 create_id_logname(i, renamefilename);
-                ::rename(oldlogfilename.c_str(), renamefilename.c_str());
+                int ret = ::rename(oldlogfilename.c_str(), renamefilename.c_str());
+				if (ret != 0)
+				{
+					fprintf(stderr, "Log file rename fail,errno = %d. old file[%s] new file [%s] ",
+							errno,
+							oldlogfilename.c_str(),
+							renamefilename.c_str());
+				}
             }
         }
 

@@ -632,5 +632,4 @@ protected:
 
 };
 
-#endif //ZCE_LIB_SHARE_MEM_LIST_H_
 

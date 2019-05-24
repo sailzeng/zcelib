@@ -116,9 +116,9 @@ public:
     }
 
     ///解锁,如果是读写锁也只需要这一个函数
-    void unlock()
+    void unlock_read()
     {
-        return lock_->unlock();
+        return lock_->unlock_read();
     }
 
 protected:
@@ -171,9 +171,9 @@ public:
     }
 
     ///解锁,如果是读写锁也只需要这一个函数
-    void unlock()
+    void unlock_write()
     {
-        return lock_->unlock();
+        return lock_->unlock_write();
     }
 
 protected:

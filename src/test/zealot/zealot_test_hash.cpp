@@ -622,7 +622,7 @@ typedef ZCE_LIB::shm_hash_rehash<int, int> SMEM_HASH_SAFE_INT;
 int test_hash_safe(int /*argc*/ , char * /*argv*/ [])
 {
     //计时器，不是定时器呀
-    ZCE_Auto_Progress_Timer auto_timer;
+    ZCE_HR_Progress_Timer auto_timer;
 
     SMEM_HASH_SAFE_INT    *abc = NULL;
 

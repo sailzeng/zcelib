@@ -20,7 +20,9 @@
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_error.h"
+#include "zce_trace_debugging.h"
 #include "zce_time_value.h"
+
 
 class ZCE_Time_Value;
 
@@ -1990,7 +1992,11 @@ inline int ZCE_LIB::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     {
         //注意到这儿pos已经++了。
         uint16_t read_port = 0;
-        sscanf(port_pos, "%hu", &read_port);
+		int fields = sscanf(port_pos, "%hu", &read_port);
+		if (fields != 1)
+		{
+			ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+		}
         sock_addr_ipv4->sin_port = htons(read_port);
     }
 
@@ -2055,7 +2061,11 @@ inline int ZCE_LIB::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
     {
         //注意到这儿pos已经++了。
         uint16_t read_port = 0;
-        sscanf(port_pos, "%hu", &read_port);
+        int fields = sscanf(port_pos, "%hu", &read_port);
+		if (fields != 1)
+		{
+			ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+		}
         sock_addr_ipv6->sin6_port = htons(read_port);
     }
     return 0;

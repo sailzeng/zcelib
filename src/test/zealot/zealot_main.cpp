@@ -20,6 +20,8 @@ int main(int argc , char * argv[])
                                                 LOG_OUTPUT_FILE,
                                                 LOG_HEAD_RECORD_NONE);
     
+
+	test_progress_timer(argc,argv);
     test_bytes_hash(argc, argv);
 
     //benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");

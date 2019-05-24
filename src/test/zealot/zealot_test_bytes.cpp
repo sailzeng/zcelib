@@ -196,7 +196,7 @@ int test_bytes_crc32(int /*argc*/, char * /*argv*/[])
 
     size_t abc = 0;
     {
-        ZCE_Auto_Progress_Timer auto_timer;
+		ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
 
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -210,7 +210,7 @@ int test_bytes_crc32(int /*argc*/, char * /*argv*/[])
     memcpy(buffer, test_string, str_len + 1);
 
     {
-        ZCE_Auto_Progress_Timer auto_timer;
+		ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
         //uint32_t uincrc =0;
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -222,7 +222,7 @@ int test_bytes_crc32(int /*argc*/, char * /*argv*/[])
     memcpy(buffer, test_string, str_len + 1);
     uincrc = 0;
     {
-        ZCE_Auto_Progress_Timer auto_timer;
+		ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
         //uint32_t uincrc =0;
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -234,7 +234,7 @@ int test_bytes_crc32(int /*argc*/, char * /*argv*/[])
     printf("uincrc = %u\n" , uincrc);
     memcpy(buffer, test_string, str_len + 1);
     {
-        ZCE_Auto_Progress_Timer auto_timer;
+		ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
         unsigned char result[32] = {0};
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -1253,8 +1253,8 @@ struct DR_DATA_1
     static const size_t D1_C3_LEN = 6;
     static const size_t D1_C4_LEN = 8;
 
-    char d1_c3_[D1_C3_LEN];
-    int d1_c4_[D1_C4_LEN];
+	char d1_c3_[D1_C3_LEN] = {0};
+    int d1_c4_[D1_C4_LEN] = {0};
 
     
     std::vector<int> d1_d1_;

@@ -128,7 +128,6 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
 
     ret = ZCE_LIB::pthread_rwlock_timedwrlock(&rw_lock_,
                                               abs_time);
-
     if (0 != ret)
     {
         ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_timedlock", ret);
@@ -195,7 +194,7 @@ Class           : ZCE_Thread_Win_RW_Mutex 轻量级的读写锁，不提供超时等函数
 //构造函数
 ZCE_Thread_Win_RW_Mutex::ZCE_Thread_Win_RW_Mutex()
 {
-	::InitializeSRWLock(&(rwlock_slim_));
+	::InitializeSRWLock(&(this->rwlock_slim_));
 }
 
 ZCE_Thread_Win_RW_Mutex::~ZCE_Thread_Win_RW_Mutex()
@@ -205,7 +204,7 @@ ZCE_Thread_Win_RW_Mutex::~ZCE_Thread_Win_RW_Mutex()
 //读取锁
 void ZCE_Thread_Win_RW_Mutex::lock_read()
 {
-	::AcquireSRWLockShared(&(rwlock_slim_));
+	::AcquireSRWLockShared(&(this->rwlock_slim_));
 	return;
 }
 
@@ -213,7 +212,7 @@ void ZCE_Thread_Win_RW_Mutex::lock_read()
 bool ZCE_Thread_Win_RW_Mutex::try_lock_read()
 {
 	//如果用WIN自带的读写锁
-	BOOL bret = ::TryAcquireSRWLockShared(&(rwlock_slim_));
+	BOOL bret = ::TryAcquireSRWLockShared(&(this->rwlock_slim_));
 	if (FALSE == bret)
 	{
 		errno = EBUSY;
@@ -225,7 +224,7 @@ bool ZCE_Thread_Win_RW_Mutex::try_lock_read()
 //写锁定
 void ZCE_Thread_Win_RW_Mutex::lock_write()
 {
-    ::AcquireSRWLockExclusive(&rwlock_slim_);
+    ::AcquireSRWLockExclusive(&(this->rwlock_slim_));
 	return;
 }
 
@@ -233,7 +232,7 @@ void ZCE_Thread_Win_RW_Mutex::lock_write()
 bool ZCE_Thread_Win_RW_Mutex::try_lock_write()
 {
 	//如果用WIN自带的读写锁
-	BOOL bret = ::TryAcquireSRWLockExclusive(&(rwlock_slim_));
+	BOOL bret = ::TryAcquireSRWLockExclusive(&(this->rwlock_slim_));
 	if (FALSE == bret)
 	{
 		errno = EBUSY;
@@ -245,13 +244,18 @@ bool ZCE_Thread_Win_RW_Mutex::try_lock_write()
 //解锁,如果是读写锁也只需要这一个函数
 void ZCE_Thread_Win_RW_Mutex::unlock_read()
 {
-	::ReleaseSRWLockShared(&(rwlock_slim_));
+	::ReleaseSRWLockShared(&(this->rwlock_slim_));
 }
+
+//这肯定是VS2019的一个BUG。理论上不应该有这个告警
+#pragma warning (disable:26110)
 
 void ZCE_Thread_Win_RW_Mutex::unlock_write()
 {
-	::ReleaseSRWLockExclusive(&(rwlock_slim_));
+	::ReleaseSRWLockExclusive(&(this->rwlock_slim_));
 }
+
+#pragma warning (default:26110)
 
 //取出内部的锁的指针
 SRWLOCK *ZCE_Thread_Win_RW_Mutex::get_lock()

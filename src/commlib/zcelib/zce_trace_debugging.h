@@ -20,6 +20,7 @@
 //==========================================================================================================
 
 #include "zce_config.h"
+#include "zce_os_adapt_error.h"
 
 //定义日志输出,则实用内部的函数作为输出定义
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
@@ -361,11 +362,11 @@ public:
 //!
 #ifndef ZCE_TRACE_FAIL_RETURN
 #define ZCE_TRACE_FAIL_RETURN(log_priority,fail_str,ret_int) ZCE_LOG((log_priority),"[FAIL RETRUN]Fail in file [%s|%d],function:%s," \
-    "fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),(ret_int),ZCE_LIB::last_error())
+    "api fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),(ret_int),ZCE_LIB::last_error())
 #endif
 
-#ifndef ZCE_RECORD_FAIL_API
-#define ZCE_RECORD_FAIL_API(log_priority,fail_str)     ZCE_LOG((log_priority),\
+#ifndef ZCE_TRACE_FAIL_INFO
+#define ZCE_TRACE_FAIL_INFO(log_priority,fail_str)     ZCE_LOG((log_priority),\
 	"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",\
 	__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),ZCE_LIB::last_error())
 #endif

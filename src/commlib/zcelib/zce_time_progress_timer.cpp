@@ -5,6 +5,8 @@
 #include "zce_os_adapt_time.h"
 #include "zce_time_progress_timer.h"
 
+
+
 /************************************************************************************************************
 Class           : ZCE_Progress_Timer 用于记录一个事件用时的计时器
 ************************************************************************************************************/
@@ -70,18 +72,6 @@ double ZCE_Progress_Timer::precision()
     return double(1) / double(CLOCKS_PER_SEC);
 }
 
-/************************************************************************************************************
-Class           : ZCE_Auto_Progress_Timer 利用析构自动停止的的计时器
-************************************************************************************************************/
-
-ZCE_Auto_Progress_Timer::ZCE_Auto_Progress_Timer()
-{
-}
-ZCE_Auto_Progress_Timer::~ZCE_Auto_Progress_Timer()
-{
-    end();
-    std::cout << "This operation use time " << std::setprecision(6) << elapsed_sec() << " second." << std::endl;
-}
 
 /************************************************************************************************************
 Class           : ZCE_HR_Progress_Timer 高性能计时器
@@ -313,4 +303,59 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
     const uint64_t USEC_PER_SEC = 1000 * 1000;
     return double (end_time_ - start_time_ + addup_time_) / double(cpu_hz_ * USEC_PER_SEC );
 }
+
+
+/************************************************************************************************************
+Class           : ZCE_Chrono_HR_Timer C++ 11 chrono的定时器，
+************************************************************************************************************/
+ZCE_Chrono_HR_Timer::ZCE_Chrono_HR_Timer():
+	addup_time_(std::chrono::high_resolution_clock::duration::zero())
+{
+}
+//从新开始计时
+void ZCE_Chrono_HR_Timer::restart()
+{
+	start_time_ = std::chrono::high_resolution_clock::now();
+	addup_time_ = std::chrono::high_resolution_clock::duration::zero();
+}
+//结束计时
+void ZCE_Chrono_HR_Timer::end()
+{
+	end_time_ = std::chrono::high_resolution_clock::now();
+}
+//累计计时开始,用于多次计时的过程，之前要先调用restart
+void ZCE_Chrono_HR_Timer::addup_start()
+{
+	if (end_time_ > start_time_)
+	{
+		addup_time_ += end_time_ - start_time_;
+	}
+
+	start_time_ = std::chrono::high_resolution_clock::now();
+}
+
+
+//计算消耗的时间(us,微妙 -6)
+double ZCE_Chrono_HR_Timer::elapsed_usec() const
+{
+	const double NSEC_PER_USEC = 1000.0;
+	if (end_time_ > start_time_)
+	{
+		return std::chrono::duration_cast<std::chrono::nanoseconds>((end_time_ - start_time_) + addup_time_).count()/
+			NSEC_PER_USEC;
+	}
+	else
+	{
+		return  0.0f;
+	}
+}
+
+//精度
+double ZCE_Chrono_HR_Timer::precision_usec()
+{
+	const double USEC_PER_SEC = 1000000.0;
+	return double(std::chrono::high_resolution_clock::time_point::duration::period::num * USEC_PER_SEC) /
+		double(std::chrono::high_resolution_clock::time_point::duration::period::den);
+}
+
 
