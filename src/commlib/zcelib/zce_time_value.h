@@ -62,6 +62,24 @@ public:
     */
     ZCE_Time_Value(time_t sec);
 
+	/*!
+	* @brief      构造函数，用CPP 11的一些duration的值
+	* @param      val CPP11的duration时间
+	*/
+	ZCE_Time_Value(const std::chrono::hours &val);
+	ZCE_Time_Value(const std::chrono::minutes& val);
+	ZCE_Time_Value(const std::chrono::seconds& val);
+	ZCE_Time_Value(const std::chrono::milliseconds& val);
+	ZCE_Time_Value(const std::chrono::microseconds& val);
+	ZCE_Time_Value(const std::chrono::nanoseconds& val);
+
+	/*!
+	* @brief      构造函数，用CPP 11的一些time_point的值
+	* @param      val CPP11的duration时间
+	*/
+	ZCE_Time_Value(const std::chrono::system_clock::time_point& val);
+	ZCE_Time_Value(const std::chrono::steady_clock::time_point& val);
+
 #ifdef ZCE_OS_WINDOWS
 
     /*!
@@ -78,6 +96,7 @@ public:
 
 #endif
 
+public:
     /*!
     * @brief      设置ZCE_Time_Value,用timeval
     * @param      time_data
@@ -108,6 +127,14 @@ public:
     * @param      time 设置的clock_t
     */
     void set_by_clock_t(clock_t time);
+
+
+	void set(const std::chrono::hours& val);
+	void set(const std::chrono::minutes& val);
+	void set(const std::chrono::seconds& val);
+	void set(const std::chrono::milliseconds& val);
+	void set(const std::chrono::microseconds& val);
+	void set(const std::chrono::nanoseconds& val);
 
 #ifdef ZCE_OS_WINDOWS
 

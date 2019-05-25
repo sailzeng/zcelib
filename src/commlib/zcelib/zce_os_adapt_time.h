@@ -48,6 +48,15 @@ namespace ZCE_LIB
     //一周的秒数
     static const time_t ONE_WEEK_SECONDS = 604800;
 
+
+	static const time_t SEC_PER_MSEC  = 1000;
+	static const time_t USEC_PER_NSEC = 1000;
+	static const time_t MSEC_PER_USEC = 1000;
+	static const time_t SEC_PER_USEC  = 1000000;
+	static const time_t SEC_PER_NSEC  = 1000000000;
+	static const time_t MSEC_PER_NSEC = 1000000;
+	
+
 #if defined ZCE_OS_WINDOWS
     static const time_t TIMEZONE_SECONDS = _timezone;
 #else
@@ -353,9 +362,29 @@ const timeval make_timeval(std::clock_t clock_value);
 */
 const timeval make_timeval(const ::timespec *timespec_val);
 
+/*!
+* @brief      将CPP11的duration的数据结构转换得到timeval结构
+* @return     const timeval 转换后的timeval结果
+* @param      val  进行转换的参数
+*/
+const timeval make_timeval(const std::chrono::hours& val);
+const timeval make_timeval(const std::chrono::minutes& val);
+const timeval make_timeval(const std::chrono::seconds& val);
+const timeval make_timeval(const std::chrono::milliseconds& val);
+const timeval make_timeval(const std::chrono::microseconds& val);
+const timeval make_timeval(const std::chrono::nanoseconds& val);
+
+/*!
+* @brief      将CPP11的time_point的数据结构转换得到timeval结构
+* @return     const timeval 转换后的timeval结果
+* @param      val  进行转换的参数
+*/
+const timeval make_timeval(const std::chrono::system_clock::time_point& val);
+const timeval make_timeval(const std::chrono::steady_clock::time_point& val);
+
+
 //WINDOWS API常用的几个参数
 #if defined (ZCE_OS_WINDOWS)
-
 /*!
 * @brief      将FILETIME的参数视为一个时间（绝对时间 如2013-01-01 01:53:29），转换得到timeval
 * @return     const timeval

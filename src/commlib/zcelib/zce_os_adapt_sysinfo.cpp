@@ -279,8 +279,6 @@ int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE *info)
     double uptime = ::strtod(in_para, &out_para);
     in_para = out_para;
 
-    const uint32_t SEC_PER_USEC = 1000000;
-
     info->up_time_.tv_sec = static_cast<time_t>(::floor(uptime));
     info->up_time_.tv_usec = static_cast<time_t>((uptime - ::floor(uptime)) * SEC_PER_USEC);
 
@@ -393,9 +391,6 @@ int ZCE_LIB::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
     {
         return -1;
     }
-
-
-
 
     //得到CPU的个数
     zce_system_info->nprocs_conf_ = system_info.dwNumberOfProcessors;

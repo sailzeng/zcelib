@@ -196,18 +196,15 @@ double ZCE_HR_Progress_Timer::elapsed_usec() const
 #if defined ZCE_OS_WINDOWS
 
     ZCE_ASSERT(end_time_.QuadPart >= start_time_.QuadPart);
-    const double USEC_PER_SEC = 1000000.0;
-    return double(end_time_.QuadPart - start_time_.QuadPart + addup_time_.QuadPart ) * USEC_PER_SEC / frequency_.QuadPart;
+    return double(end_time_.QuadPart - start_time_.QuadPart + addup_time_.QuadPart ) * 
+		ZCE_LIB::SEC_PER_USEC / frequency_.QuadPart;
 #elif defined ZCE_OS_LINUX
 
-    const uint64_t NSEC_PER_SEC = 1000000000ULL;
+    ZCE_ASSERT((end_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + end_time_.tv_nsec ) >
+               (start_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + start_time_.tv_nsec ));
 
-    ZCE_ASSERT((end_time_.tv_sec * NSEC_PER_SEC  + end_time_.tv_nsec ) >
-               (start_time_.tv_sec * NSEC_PER_SEC + start_time_.tv_nsec ));
-    const double NSEC_PER_USEC = 1000.0;
-
-    return ((end_time_.tv_sec * NSEC_PER_SEC  + end_time_.tv_nsec ) -
-            (start_time_.tv_sec * NSEC_PER_SEC + start_time_.tv_nsec ) + addup_time_) / NSEC_PER_USEC ;
+    return ((end_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + end_time_.tv_nsec ) -
+            (start_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + start_time_.tv_nsec ) + addup_time_) / ZCE_LIB::USEC_PER_NSEC;
 #endif
 }
 
@@ -215,12 +212,9 @@ double ZCE_HR_Progress_Timer::elapsed_usec() const
 double ZCE_HR_Progress_Timer::precision_usec()
 {
 #if defined ZCE_OS_WINDOWS
-    const double USEC_PER_SEC = 1000000.0;
-    return USEC_PER_SEC / ((uint64_t)( frequency_.QuadPart));
+    return (double)(ZCE_LIB::SEC_PER_USEC) / ((uint64_t)( frequency_.QuadPart));
 #elif defined ZCE_OS_LINUX
-    const double NSEC_PER_USEC = 1000.0;
-    const uint64_t NSEC_PER_SEC = 1000000000LL;
-    return (precision_.tv_sec * NSEC_PER_SEC  + precision_.tv_nsec ) * NSEC_PER_USEC ;
+    return (precision_.tv_sec * ZCE_LIB::SEC_PER_NSEC  + precision_.tv_nsec ) * ZCE_LIB::USEC_PER_NSEC;
 #endif
 }
 

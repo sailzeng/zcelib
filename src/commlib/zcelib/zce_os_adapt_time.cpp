@@ -37,8 +37,6 @@ const timeval ZCE_LIB::get_uptime()
 #if defined (ZCE_OS_WINDOWS)
 
     //注意GetTickCount64和GetTickCount返回的都是milliseconds，不是CPU Tick
-    const uint64_t SEC_PER_MSEC = 1000LL;
-    const uint64_t MSEC_PER_USEC = 1000LL;
 
     timeval up_time;
     uint64_t now_cpu_tick = 0;
@@ -734,16 +732,13 @@ void ZCE_LIB::timeval_clear(timeval &tv)
 uint64_t ZCE_LIB::total_milliseconds(const timeval &tv)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
-    const uint32_t SEC_PER_MSEC = 1000;
-    const uint32_t MSEC_PER_USEC = 1000;
     return static_cast<uint64_t>(tv.tv_sec) * SEC_PER_MSEC + tv.tv_usec / MSEC_PER_USEC;
 }
 
-//计算timeval内部总计是多少微秒
+//计算timeval内部总计是多少微秒10-6
 uint64_t ZCE_LIB::total_microseconds(const timeval &tv)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
-    const uint32_t SEC_PER_USEC = 1000;
     return static_cast<uint64_t>(tv.tv_sec) * SEC_PER_USEC + tv.tv_usec ;
 }
 
@@ -763,7 +758,6 @@ int ZCE_LIB::timeval_compare(const  timeval &left, const timeval &right)
 //对两个时间进行想减,没有做复杂的溢出检查
 const timeval ZCE_LIB::timeval_add(const timeval &left, const timeval &right)
 {
-    const int32_t SEC_PER_USEC = 1000000;
     timeval plus_time_val;
     plus_time_val.tv_sec = left.tv_sec + right.tv_sec;
     plus_time_val.tv_usec = left.tv_usec + right.tv_usec;
@@ -782,8 +776,6 @@ const timeval ZCE_LIB::timeval_add(const timeval &left, const timeval &right)
 //safe == true保证返回值>=0,
 const  timeval ZCE_LIB::timeval_sub(const timeval &left, const  timeval &right, bool safe)
 {
-    const uint32_t SEC_PER_USEC = 1000000;
-
     int64_t left_usec_val = (int64_t)left.tv_sec * SEC_PER_USEC + left.tv_usec;
     int64_t right_usec_val = (int64_t)right.tv_sec * SEC_PER_USEC + right.tv_usec;
 
@@ -807,13 +799,10 @@ const  timeval ZCE_LIB::timeval_sub(const timeval &left, const  timeval &right, 
     return minus_time_val;
 }
 
-//对两个时间进行想减,如果小于0，返回0
-const timeval timeval_safe_sub(const timeval &left, const timeval &right);
 
 //检查这个TIMEVALUE是否还有剩余的时间
 void ZCE_LIB::timeval_adjust(timeval &tv)
 {
-    const uint32_t SEC_PER_USEC = 1000000;
     int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
 
     tv.tv_sec = static_cast<long>( tv_usec_val / SEC_PER_USEC );
@@ -823,7 +812,6 @@ void ZCE_LIB::timeval_adjust(timeval &tv)
 //检查这个TIMEVALUE是否还有剩余的时间
 bool ZCE_LIB::timeval_havetime(const timeval &tv)
 {
-    const uint32_t SEC_PER_USEC = 1000000;
     int64_t tv_usec_val = (int64_t)tv.tv_sec * SEC_PER_USEC + tv.tv_usec;
 
     if (tv_usec_val > 0)
@@ -852,19 +840,14 @@ const timeval ZCE_LIB::make_timeval(time_t sec, time_t usec)
 //转换得到timeval这个结构
 const timeval ZCE_LIB::make_timeval(std::clock_t clock_value)
 {
-    const uint32_t SEC_PER_USEC = 1000000;
-
     timeval to_timeval;
 
     to_timeval.tv_sec = clock_value /  CLOCKS_PER_SEC;
     clock_t remain_val = clock_value %  CLOCKS_PER_SEC;
 
-    //
-#if defined (ZCE_OS_WINDOWS)
-    to_timeval.tv_usec = static_cast<long>( static_cast<double>(remain_val  * SEC_PER_USEC / CLOCKS_PER_SEC)) ;
-#elif defined (ZCE_OS_LINUX)
-    to_timeval.tv_usec = static_cast<suseconds_t >( static_cast<double>(remain_val  * SEC_PER_USEC / CLOCKS_PER_SEC)) ;
-#endif
+	// Windows平台下tv_sec被定义成long,所以需要转换
+    to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>(
+		(remain_val  * SEC_PER_USEC / CLOCKS_PER_SEC)) ;
 
     return to_timeval;
 }
@@ -875,18 +858,68 @@ const timeval ZCE_LIB::make_timeval(const ::timespec *timespec_val)
     //每次我自己看见这段代码都会疑惑好半天，实际我没有错，好吧，写点注释把，
     //NSEC 纳秒 10-9s
     //USEC 微秒 10-6s
-    const uint32_t USEC_PER_NSEC = 1000;
     timeval to_timeval;
 
-    // Windows平台下tv_sec被定义成long
-#if defined (ZCE_OS_WINDOWS)
-    to_timeval.tv_sec = static_cast<long>( timespec_val->tv_sec);
-#elif defined (ZCE_OS_LINUX)
-    to_timeval.tv_sec =  timespec_val->tv_sec;
-#endif
-
+    to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>( timespec_val->tv_sec);
     to_timeval.tv_usec = timespec_val->tv_nsec / USEC_PER_NSEC;
     return to_timeval;
+}
+
+const timeval ZCE_LIB::make_timeval(const std::chrono::hours& val)
+{
+	timeval to_timeval;
+	to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * ZCE_LIB::ONE_HOUR_SECONDS);
+	to_timeval.tv_usec = 0;
+	return to_timeval;
+}
+const timeval ZCE_LIB::make_timeval(const std::chrono::minutes& val)
+{
+	timeval to_timeval;
+	to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() * ZCE_LIB::ONE_MINUTE_SECONDS);
+	to_timeval.tv_usec = 0;
+	return to_timeval;
+}
+const timeval ZCE_LIB::make_timeval(const std::chrono::seconds& val)
+{
+	timeval to_timeval;
+	to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count());
+	to_timeval.tv_usec = 0;
+	return to_timeval;
+}
+const timeval ZCE_LIB::make_timeval(const std::chrono::milliseconds& val)
+{
+	timeval to_timeval;
+	to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_MSEC);
+	to_timeval.tv_usec = (val.count() % SEC_PER_MSEC) *1000;
+	return to_timeval;
+}
+const timeval ZCE_LIB::make_timeval(const std::chrono::microseconds& val)
+{
+	timeval to_timeval;
+	to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>( val.count() / SEC_PER_USEC);
+	to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>((val.count() % SEC_PER_USEC));
+	return to_timeval;
+}
+const timeval ZCE_LIB::make_timeval(const std::chrono::nanoseconds& val)
+{
+	timeval to_timeval;
+	to_timeval.tv_sec = static_cast<decltype(to_timeval.tv_sec)>(val.count() / SEC_PER_NSEC);
+	to_timeval.tv_usec = static_cast<decltype(to_timeval.tv_usec)>((val.count() % SEC_PER_NSEC)/1000);
+	return to_timeval;
+}
+
+//将CPP11的time_point的数据结构转换得到timeval结构
+const timeval ZCE_LIB::make_timeval(const std::chrono::system_clock::time_point& val)
+{
+	std::chrono::nanoseconds tval = 
+		std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
+	return ZCE_LIB::make_timeval(tval);
+}
+const timeval ZCE_LIB::make_timeval(const std::chrono::steady_clock::time_point& val)
+{
+	std::chrono::nanoseconds tval = 
+		std::chrono::duration_cast<std::chrono::nanoseconds>(val.time_since_epoch());
+	return ZCE_LIB::make_timeval(tval);
 }
 
 #if defined (ZCE_OS_WINDOWS)
@@ -944,7 +977,6 @@ const ::timespec ZCE_LIB::make_timespec(const ::timeval *timeval_val)
     //每次我自己看见这段代码都会疑惑好半天，实际我没有错，好吧，写点注释把，
     //NSEC 纳秒 10-9s
     //USEC 微秒 10-6s
-    const uint32_t USEC_PER_NSEC = 1000;
     ::timespec to_timespec;
 
     to_timespec.tv_sec =  timeval_val->tv_sec;
@@ -957,8 +989,6 @@ const ::timespec ZCE_LIB::make_timespec(const ::timeval *timeval_val)
 uint64_t ZCE_LIB::total_milliseconds(const ::timespec &ts)
 {
     //这里的参数就是因为需要转换到毫秒所折腾的。
-    const uint32_t SEC_PER_MSEC = 1000;
-    const uint32_t MSEC_PER_NSEC = 1000000000;
     return static_cast<uint64_t>(ts.tv_sec) * SEC_PER_MSEC + ts.tv_nsec / MSEC_PER_NSEC;
 }
 
@@ -968,8 +998,7 @@ uint64_t ZCE_LIB::total_milliseconds(const ::timespec &ts)
 int ZCE_LIB::sleep (uint32_t seconds)
 {
 #if defined (ZCE_OS_WINDOWS)
-    const int ONE_SECOND_IN_MSECS = 1000;
-    ::Sleep (seconds * ONE_SECOND_IN_MSECS);
+    ::Sleep (seconds * SEC_PER_MSEC);
     return 0;
 #endif //#if defined (ZCE_OS_WINDOWS)
 
@@ -983,15 +1012,12 @@ int ZCE_LIB::sleep (const timeval &tv)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
-    const int ONE_SECOND_IN_MSECS = 1000;
-    const int ONE_MSECS_IN_USECS = 1000;
-    ::Sleep (tv.tv_sec * ONE_SECOND_IN_MSECS + tv.tv_usec / ONE_MSECS_IN_USECS );
+    ::Sleep (tv.tv_sec * SEC_PER_MSEC + tv.tv_usec / MSEC_PER_USEC );
     return 0;
 #endif //
 
 #if defined (ZCE_OS_LINUX)
-    const int ONE_SECOND_IN_USECS = 1000 * 1000;
-    return ::usleep (tv.tv_sec * ONE_SECOND_IN_USECS + tv.tv_usec );
+    return ::usleep (tv.tv_sec * SEC_PER_USEC + tv.tv_usec );
 #endif //
 }
 
@@ -999,8 +1025,7 @@ int ZCE_LIB::sleep (const timeval &tv)
 int ZCE_LIB::usleep (unsigned long usec)
 {
 #if defined (ZCE_OS_WINDOWS)
-    const int ONE_MSECS_IN_USECS = 1000;
-    ::Sleep (usec / ONE_MSECS_IN_USECS);
+    ::Sleep (usec / MSEC_PER_USEC);
     return 0;
 #endif //#if defined (ZCE_OS_WINDOWS)
 

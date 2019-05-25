@@ -54,17 +54,53 @@ ZCE_Time_Value::ZCE_Time_Value(time_t sec)
     zce_time_value_.tv_usec = 0;
 }
 
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::hours& val):
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+}
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::minutes& val):
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+}
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::seconds& val):
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+}
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::milliseconds& val):
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+
+}
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::microseconds& val):
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+
+}
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::nanoseconds& val):
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+}
+
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::system_clock::time_point& val) :
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+}
+ZCE_Time_Value::ZCE_Time_Value(const std::chrono::steady_clock::time_point& val) :
+	zce_time_value_(ZCE_LIB::make_timeval(val))
+{
+}
+
 #ifdef ZCE_OS_WINDOWS
 //构造函数，用LPFILETIME,FILETIME
-ZCE_Time_Value::ZCE_Time_Value(LPFILETIME file_time)
+ZCE_Time_Value::ZCE_Time_Value(LPFILETIME file_time) :
+	zce_time_value_(ZCE_LIB::make_timeval(file_time))
 {
-    zce_time_value_ = ZCE_LIB::make_timeval(file_time);
 }
 
 //构造函数，用LPSYSTEMTIME,SYSTEMTIME
-ZCE_Time_Value::ZCE_Time_Value(LPSYSTEMTIME system_time)
+ZCE_Time_Value::ZCE_Time_Value(LPSYSTEMTIME system_time) :
+	zce_time_value_(ZCE_LIB::make_timeval(system_time))
 {
-    zce_time_value_ = ZCE_LIB::make_timeval(system_time);
 }
 
 #endif
@@ -99,8 +135,42 @@ void ZCE_Time_Value::set(time_t sec)
 #elif defined ZCE_OS_LINUX
     zce_time_value_.tv_sec = sec;
 #endif
-
     zce_time_value_.tv_usec = 0;
+}
+
+void ZCE_Time_Value::set(const std::chrono::hours& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+void ZCE_Time_Value::set(const std::chrono::minutes& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+void ZCE_Time_Value::set(const std::chrono::seconds& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+void ZCE_Time_Value::set(const std::chrono::milliseconds& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+void ZCE_Time_Value::set(const std::chrono::microseconds& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+void ZCE_Time_Value::set(const std::chrono::nanoseconds& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+
+
+void ZCE_Time_Value::set(const std::chrono::system_clock::time_point& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
+}
+void ZCE_Time_Value::set(const std::chrono::steady_clock::time_point& val)
+{
+	zce_time_value_ = ZCE_LIB::make_timeval(val);
 }
 
 #ifdef ZCE_OS_WINDOWS
@@ -126,10 +196,8 @@ void ZCE_Time_Value::set_by_clock_t(clock_t time)
 //得到总共多少毫秒
 uint64_t ZCE_Time_Value::total_msec() const
 {
-    const long SEC_PER_MSEC = 1000;
-    const long MSEC_PER_USEC = 1000;
-    return static_cast<uint64_t>(this->zce_time_value_.tv_sec) * SEC_PER_MSEC
-           + this->zce_time_value_.tv_usec / MSEC_PER_USEC;
+    return static_cast<uint64_t>(this->zce_time_value_.tv_sec) * ZCE_LIB::SEC_PER_MSEC
+           + this->zce_time_value_.tv_usec / ZCE_LIB::MSEC_PER_USEC;
 }
 
 //四舍五入得到总共多少毫秒，其实不是真正的四舍五入，而是如果微秒有数据，就返回1毫秒，
@@ -147,23 +215,19 @@ uint64_t ZCE_Time_Value::total_msec_round() const
 //用毫秒作为单位设置TimeValue
 void ZCE_Time_Value::total_msec(uint64_t set_msec)
 {
-    const int SEC_PER_MESC = 1000;
-    const long MSEC_PER_USEC = 1000;
-
 #if defined ZCE_OS_WINDOWS
-    zce_time_value_.tv_sec = static_cast<long>(set_msec / SEC_PER_MESC);
-    zce_time_value_.tv_usec = static_cast<long>((set_msec % SEC_PER_MESC) * MSEC_PER_USEC);
+    zce_time_value_.tv_sec = static_cast<long>(set_msec / ZCE_LIB::SEC_PER_MSEC);
+    zce_time_value_.tv_usec = static_cast<long>((set_msec % ZCE_LIB::SEC_PER_MSEC) * ZCE_LIB::MSEC_PER_USEC);
 #elif defined ZCE_OS_LINUX
-    zce_time_value_.tv_sec = static_cast<time_t>(set_msec / SEC_PER_MESC);
-    zce_time_value_.tv_usec = static_cast<time_t>((set_msec % SEC_PER_MESC) * MSEC_PER_USEC);
+    zce_time_value_.tv_sec = static_cast<time_t>(set_msec / ZCE_LIB::SEC_PER_MSEC);
+    zce_time_value_.tv_usec = static_cast<time_t>((set_msec % ZCE_LIB::SEC_PER_MSEC) * ZCE_LIB::MSEC_PER_USEC);
 #endif
 }
 
 //得到总共多少微秒
 uint64_t ZCE_Time_Value::total_usec() const
 {
-    const long SEC_PER_USEC = 1000000;
-    return static_cast<uint64_t>(zce_time_value_.tv_sec) * SEC_PER_USEC + zce_time_value_.tv_usec;
+    return static_cast<uint64_t>(zce_time_value_.tv_sec) * ZCE_LIB::SEC_PER_USEC + zce_time_value_.tv_usec;
 }
 
 //用微秒作为单位，设置TimeValue，注意这个函数和usec函数的区别，usec函数是设置timeval的usec部分，
