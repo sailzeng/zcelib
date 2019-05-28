@@ -281,11 +281,11 @@ protected:
     ///TIMER NODE(也就是HANDLER)的数量，
     size_t                      num_timer_node_ = 0;
 
-    ///时间精度,以毫秒为单位，想要微秒得定时器，你在做梦呢，
+    ///时间精度,以毫秒为单位，想要微秒得定时器，你在做梦呢，也不现实
     ///你给出时间进度后，必须在这个精度内调用dispatch_timer 函数
     ///普通服务器我建议你用s的级别，也就是1000ms
     ///要求精度比较高的服务器，我建议你用100ms
-    ///要求不高的服务器，建议你用Ns，N小于10s
+    ///要求不高的服务器，建议你用若干N s，N小于10s
     unsigned int                timer_precision_mesc_ = DEFAULT_TIMER_PRECISION_MSEC;
 
     ///已经使用的节点的数量，也就是分配了多少个定时器

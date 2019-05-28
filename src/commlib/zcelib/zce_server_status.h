@@ -20,10 +20,10 @@
 *     Modification  :在N次反复，以及吐血的改了2次后，我开始倾向用一个最简单的方式解决问题，
 *     3.Date  :2012年5月10日
 *     Author  :Sailzeng
-*     Modification  :很多啊同事还是吐槽需要设置classify，我想还是改了把。告别sandy和mandy
+*     Modification  :很多啊同事还是吐槽需要设置classify，我想还是改了把。部分告别sandy和mandy
 *     4.Date  :2013年10月1日
 *     Author  :Sailzeng
-*     Modification  :有一个防止统计ID重复的需求，将原来的ARRAY改造成了一个MAP，
+*     Modification  :有一个防止统计ID重复的需求，将原来的ARRAY改造成了一个MAP映射，
 *
 */
 
@@ -61,6 +61,9 @@ enum ZCE_STATUS_STATICS_TYPE
 
 };
 
+//保证数据文件的一致性
+#pragma pack(8)
+
 //===========================================================================================
 /*!
 * @brief      统计项目ID,
@@ -72,17 +75,17 @@ struct ZCE_STATUS_ITEM_ID
 public:
 
     ///统计ID
-    unsigned int              statics_id_;
+	uint32_t              statics_id_;
     ///分类ID，目前好像主要是业务ID,这个是可以变化的
-    unsigned int              classify_id_;
+	uint32_t              classify_id_;
     ///子分类ID，这个也是可以变化的，
-    unsigned int              subclassing_id_;
+	uint32_t              subclassing_id_;
 
 public:
 
-    ZCE_STATUS_ITEM_ID(unsigned int statics_id,
-                       unsigned int classify_id,
-                       unsigned int subclassing_id);
+    ZCE_STATUS_ITEM_ID(uint32_t statics_id,
+					   uint32_t classify_id,
+					   uint32_t subclassing_id);
     ZCE_STATUS_ITEM_ID();
     ~ZCE_STATUS_ITEM_ID();
 
@@ -179,19 +182,21 @@ public:
 */
 struct ZCE_STATUS_HEAD
 {
-    //监控开始时间
-    uint32_t monitor_start_time_;
+	//监控开始时间
+    uint64_t monitor_start_time_;
 
     //监控数据复制的时间戳
-    uint32_t copy_time_;
+	uint64_t copy_time_;
 
     //向monitor上报的时间
-    uint32_t report_monitor_time_;
+    uint64_t report_monitor_time_;
 
-    //激活时间
-    uint32_t active_time_;
+	//激活时间长度，目前没有记录
+	uint64_t active_time_;
+
 };
 
+#pragma pack()
 
 //===========================================================================================
 
@@ -210,7 +215,7 @@ protected:
     ///统计ID到数组的下标的hash map
     typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<unsigned int , ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+    typedef unordered_map<uint32_t , ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
@@ -246,9 +251,9 @@ protected:
     * @param[in]  subclassing_id 子分类ID
     * @param[out] idx 查询到数据项目存放索引
     */
-    int find_insert_idx(unsigned int statics_id,
-                        unsigned int classify_id,
-                        unsigned int subclassing_id,
+    int find_insert_idx(uint32_t statics_id,
+						uint32_t classify_id,
+						uint32_t subclassing_id,
                         size_t *idx);
 
 public:
@@ -256,6 +261,7 @@ public:
 
     /*!
     * @brief      根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
+	*             一般查询状态工具使用这个函数。
     * @return     int
     * @param[in]  stat_filename MMAP影射的状态文件名称
     * @param[in]  multi_thread  是否多线程
@@ -266,6 +272,7 @@ public:
 
     /*!
     * @brief      创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
+	*             需要记录状态的服务器使用这个函数
     * @return     int
     * @param[in]  stat_filename MMAP影射的状态文件名称
     * @param[in]  num_stat_item item_ary的数量，
@@ -287,8 +294,13 @@ public:
     void add_status_item(size_t num_stat_item,
                          const ZCE_STATUS_ITEM_WITHNAME item_ary[]);
 
+
+	///监控项是否已经存在
+	bool is_exist_stat_id(unsigned int stat_id,
+						  ZCE_STATUS_ITEM_WITHNAME * status_item_withname) const;
+
     ///初始化以后，修改是否需要多线程保护
-    void modify_multi_thread_guard(bool multi_thread);
+    void multi_thread_guard(bool multi_thread);
 
 
     /*!
@@ -298,9 +310,9 @@ public:
     * @param[in]  classify_id 分类ID
     * @param[in]  subclassing_id 子分类ID
     */
-    inline int increase_once(unsigned int statics_id,
-                             unsigned int classify_id,
-                             unsigned int subclassing_id)
+    inline int increase_once(uint32_t statics_id,
+							 uint32_t classify_id,
+							 uint32_t subclassing_id)
     {
         return increase_by_statid(statics_id, classify_id, subclassing_id, 1);
     }
@@ -314,9 +326,9 @@ public:
     * @param[in]  subclassing_id 子分类ID
     * @param[in]  set_value 修改的统计值
     */
-    int set_by_statid(unsigned int statics_id,
-                      unsigned int classify_id,
-                      unsigned int subclassing_id,
+    int set_by_statid(uint32_t statics_id,
+                      uint32_t classify_id,
+					  uint32_t subclassing_id,
                       uint64_t set_value);
 
     /*!
@@ -327,9 +339,9 @@ public:
     * @param[in]  subclassing_id 子分类ID
     * @param[in]  incre_value 修改的相对值，符号整数，可加可减
     */
-    int increase_by_statid(unsigned int statics_id,
-                           unsigned int classify_id,
-                           unsigned int subclassing_id,
+    int increase_by_statid(uint32_t statics_id,
+						   uint32_t classify_id,
+						   uint32_t subclassing_id,
                            int64_t incre_value);
 
 
@@ -343,15 +355,15 @@ public:
     * @param[in]  classify_id 分类ID
     * @param[in]  subclassing_id 子分类ID
     */
-    uint64_t get_counter(unsigned int statics_id,
-                         unsigned int classify_id,
-                         unsigned int subclassing_id);
+    uint64_t get_counter(uint32_t statics_id,
+						 uint32_t classify_id,
+						 uint32_t subclassing_id);
 
     //取得计数器的个数
     size_t num_of_counter();
 
     //获取copy_time
-    uint32_t get_copy_time();
+    uint64_t get_copy_time();
 
     //清理过期的数据，在你的定时器触发时调用（当然前面最好应该上报），用于将一些数据清0，
     //理论上每5分钟调用一次就OK
@@ -376,18 +388,10 @@ public:
     void get_stat_head(ZCE_STATUS_HEAD *stat_head );
 
     ///记录监控的上报时间
-    void report_monitor_time(uint32_t report_time = static_cast<uint32_t>(time(NULL)));
+    void report_monitor_time(uint64_t report_time = static_cast<uint64_t>(time(NULL)));
 
     //单子的函数群，不是我不知道可以用BOOST的模板使用单子，是这样更加直接清爽，容易扩张修改一些
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
-
-protected:
-
-    ///需要新增的监控项是否已经存在
-    bool is_stat_id_exist(unsigned int stat_id);
-
-    ///新增监控项
-    int add_stat_id(unsigned int stat_id);
 
 public:
 
@@ -417,9 +421,6 @@ protected:
 
     //多态的锁,
     ZCE_Lock_Base            *stat_lock_;
-
-    //上一次清理的时间
-    time_t                    clear_time_;
 
     //MMAP内存影射的数据文件
     ZCE_ShareMem_Posix        stat_file_;
