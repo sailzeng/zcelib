@@ -99,7 +99,7 @@ protected:
 protected:
 
     ///最大文件句柄+1的数值,倒霉的SELECT，非要搞呀。
-    int          max_fd_plus_one_;
+    int          max_fd_plus_one_ = 0;
 
     ///保存使用的Read FD SET
     fd_set       read_fd_set_;

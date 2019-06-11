@@ -27,6 +27,8 @@
 
 #pragma once
 
+#include "zce_os_adapt_string.h"
+
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 

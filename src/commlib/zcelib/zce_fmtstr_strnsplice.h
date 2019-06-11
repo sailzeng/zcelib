@@ -4,7 +4,7 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2013年2月6日
-* @brief
+* @brief      字符串拼接函数
 *
 * @details
 *
@@ -19,6 +19,11 @@
 
 namespace ZCE_LIB
 {
+
+//用C++ 11的特性实现一个？
+#if ZCE_SUPPORT_CPP11 == 1
+
+#else
 
 //默认的分隔符号是'\0',表示不需要分隔符，你可以通过函数设置分割符号
 static char STRNCPY_SEPARATOR_CHAR = '\0';
@@ -1453,6 +1458,8 @@ void zce_strnsplice(char *foo_buffer,
     __ZCE_STRNSPLICE_REPEAT(32);
     __ZCE_STRNSPLICE_END;
 }
+
+#endif
 
 };
 

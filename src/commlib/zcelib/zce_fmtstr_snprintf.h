@@ -60,7 +60,6 @@ inline void foo_c11_outdata(char *&foo_buffer,
         foo_use_len += len_of_str;
         memcpy(foo_buffer, foo_fmt_spec, len_of_str);
     }
-    
 }
 
 

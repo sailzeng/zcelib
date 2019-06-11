@@ -37,7 +37,11 @@
 *             赐我智慧，分辨这两者的区别。
 */
 
-#pragma once
+//#pragma once这个地方不能用这个，只能用卫哨的方式
+//因为我把这个文件做过预编译头文件，做过一次编译对象，但
+//GCC认为C，CPP里面应该没有#pragma once，头大。
+#ifndef ZCE_PREDEFINE_H_
+#define ZCE_PREDEFINE_H_
 
 
 //==================================================================================================
@@ -222,7 +226,8 @@
 #if defined(ZCE_OS_LINUX)
 
 // 为了使用
-#define _BSD_SOURCE
+//#define _BSD_SOURCE
+#define _DEFAULT_SOURCE
 
 #include <errno.h>
 #include <getopt.h>
@@ -234,6 +239,7 @@
 #include <sys/mman.h>
 #include <sys/types.h>
 #include <sys/socket.h>
+#include <sys/uio.h>
 #include <netinet/in.h>
 #include <sys/io.h>
 #include <sys/socket.h>
@@ -719,3 +725,4 @@ extern "C"
 
 
 
+#endif //once

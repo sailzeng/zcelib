@@ -129,10 +129,10 @@ protected:
     coroutine_t   handle_;
 
     ///协程的堆栈大小，
-    size_t           stack_size_;
+    size_t           stack_size_= DEF_STACK_SIZE;
 
     ///协程的状态
-    COROUTINE_STATE  coroutine_state_;
+    COROUTINE_STATE  coroutine_state_ = COROUTINE_INVALID;
 
     ///传递的外部数据，
     void *outer_data_=NULL;

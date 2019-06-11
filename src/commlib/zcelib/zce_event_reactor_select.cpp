@@ -14,8 +14,7 @@
 ZCE_Select_Reactor::ZCE_Select_Reactor():
 	read_fd_set_{0},
 	write_fd_set_{0},
-	exception_fd_set_{0},
-    max_fd_plus_one_(0)
+	exception_fd_set_{0}
 {
     initialize(FD_SETSIZE);
 }
@@ -23,8 +22,7 @@ ZCE_Select_Reactor::ZCE_Select_Reactor():
 ZCE_Select_Reactor::ZCE_Select_Reactor(size_t max_event_number):
 	read_fd_set_{0},
 	write_fd_set_{0},
-	exception_fd_set_{0},
-    max_fd_plus_one_(0)
+	exception_fd_set_{0}
 {
     initialize(max_event_number);
 }

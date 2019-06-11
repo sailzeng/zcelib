@@ -9,9 +9,7 @@
 //========================================================================================
 
 ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr,unsigned int reg_cmd) :
-    ZCE_Async_Object(async_mgr, reg_cmd),
-	coroutine_state_(COROUTINE_INVALID),
-    stack_size_(MIN_STACK_SIZE)
+    ZCE_Async_Object(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
 }

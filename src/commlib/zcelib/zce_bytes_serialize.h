@@ -101,7 +101,7 @@ public:
 
     ///保存数值类型
     template<typename val_type >
-    typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const typename val_type &val)
+    typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const val_type &val)
     {
         return write_arithmetic(val);
     }
@@ -141,8 +141,8 @@ public:
         }
         return;
     }
+
     ///特化，对字符串进行加速
-    template<>
     void write_array(const char *ary, size_t count)
     {
         ZCE_ASSERT(count < 0xFFFFFFFFll);
@@ -158,7 +158,8 @@ public:
             write_pos_ += count;
         }
     }
-    template<>
+
+    ///字符串特化
     void write_array(const unsigned char *ary, size_t count)
     {
         ZCE_ASSERT(count < 0xFFFFFFFFll);
@@ -240,7 +241,7 @@ void ZCE_ClassSerialize_WriteHelp<std::list<list_type> >::write_help(ZCE_Seriali
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
-    std::list<list_type>::const_iterator iter = val.begin();
+    typename std::list<list_type>::const_iterator iter = val.begin();
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
     {
         ssave->write(*iter);
@@ -255,7 +256,7 @@ void ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >::write_help(ZC
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
-    std::map<key_type, data_type>::const_iterator iter = val.begin();
+    typename std::map<key_type, data_type>::const_iterator iter = val.begin();
     for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
     {
         ssave->write(iter->first);
@@ -416,7 +417,6 @@ public:
         return;
     }
     ///特化，对字符串进行加速
-    template<>
     void read_array(char *ary, size_t ary_count, size_t &load_count)
     {
         unsigned int ui_load_count;
@@ -433,7 +433,7 @@ public:
         read_pos_ += load_count;
     }
 
-    template<>
+    ///特化
     void read_array(unsigned char *ary, size_t ary_count, size_t &load_count)
     {
         unsigned int ui_load_count;

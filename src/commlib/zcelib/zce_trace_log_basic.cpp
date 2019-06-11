@@ -218,7 +218,10 @@ void ZCE_LogTrace_Basic::make_configure(void)
     if (ZCE_LIB::mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
         // ´´½¨Ê§°Ü£¬
-        printf("mkdir %s fail. err=%s\n", log_file_dir_.c_str(), strerror(errno));
+        fprintf(stderr,"mkdir %s fail. err=%d|%s\n", 
+                log_file_dir_.c_str(), 
+                errno,
+                strerror(errno));
     }
 }
 
@@ -311,6 +314,15 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
                                            false,
                                            true,
                                            file_name_ary);
+            if (ret != 0)
+            {
+                fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n", 
+                        log_file_dir_.c_str(),
+                        log_file_prefix_.c_str(), 
+                        errno,
+                        strerror(errno));
+            }
+
             std::sort(file_name_ary.begin(), file_name_ary.end());
 
             for (auto file_name : file_name_ary)
@@ -517,7 +529,7 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval &cur_time,
         case NAME_TIME_MILLISECOND_DEVIDE_SIZE:
             char mill_sec_str[16];
             ::strftime(tmpbuf, buflen, "_%Y%m%d_%H%M%s_", &curtm);
-            snprintf(mill_sec_str,15,"%03d", cur_time.tv_usec /1000);
+            snprintf(mill_sec_str,15,"%03d", static_cast<int>(cur_time.tv_usec /1000));
             ::strcat(tmpbuf, mill_sec_str);
             ::strcat(tmpbuf, STR_LOG_POSTFIX);
             break;
