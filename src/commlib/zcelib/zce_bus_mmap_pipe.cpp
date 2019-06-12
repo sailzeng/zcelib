@@ -30,9 +30,6 @@ ZCE_Bus_MMAPPipe *ZCE_Bus_MMAPPipe::instance_ = NULL;
 //构造函数
 ZCE_Bus_MMAPPipe::ZCE_Bus_MMAPPipe()
 {
-    bus_mmap_name_[0] = '\0';
-    bus_mmap_name_[PATH_MAX] = '\0';
-
     memset(bus_pipe_pointer_, 0, sizeof(bus_pipe_pointer_));
 }
 
@@ -55,7 +52,7 @@ ZCE_Bus_MMAPPipe::~ZCE_Bus_MMAPPipe()
 
 //初始化
 int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
-                                 size_t number_of_pipe,
+                                 uint32_t number_of_pipe,
                                  size_t size_of_pipe[],
                                  size_t max_frame_len,
                                  bool if_restore)
@@ -70,7 +67,6 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         return -1;
     }
 
-    strncpy(bus_mmap_name_, bus_mmap_name, PATH_MAX);
     bus_head_.number_of_pipe_ = number_of_pipe;
 
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
@@ -86,14 +82,14 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     //如果不恢复,干脆删除原有的MMAP文件,避免使用的时候出现问题.
     if ( if_restore == false )
     {
-        ZCE_LIB::unlink(bus_mmap_name_);
+        ZCE_LIB::unlink(bus_mmap_name);
     }
     //如果没有这个文件,那么只能重建
     else
     {
         zce_os_stat mmapfile_stat;
-        ret = ZCE_LIB::stat(bus_mmap_name_, &mmapfile_stat);
-
+        ret = ZCE_LIB::stat(bus_mmap_name, &mmapfile_stat);
+        //不存在，恢复个毛线
         if (ret != 0 )
         {
             if_restore = false;
@@ -114,21 +110,19 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     //处理共享内存的操作方式
 
     //MAP一个文件
-    ret = mmap_file_.open(bus_mmap_name_,
+    ret = mmap_file_.open(bus_mmap_name,
                           sz_malloc,
                           if_restore);
 
     if (0  != ret)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
-                bus_mmap_name_,
+                bus_mmap_name,
                 ret,
                 ZCE_LIB::last_error(),
                 strerror(ZCE_LIB::last_error()) );
         return -1;
     }
-
-
 
     if (if_restore)
     {
@@ -162,6 +156,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         }
     }
 
+    //把头部放入映射文件的头部
     memcpy(mmap_file_.addr(), &bus_head_, sizeof(ZCE_BUS_PIPE_HEAD));
 
     //初始化所有的管道
@@ -183,10 +178,8 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
 {
     int ret = 0;
 
-    strncpy(bus_mmap_name_, bus_mmap_name, PATH_MAX);
-
     zce_os_stat mmapfile_stat;
-    ret = ZCE_LIB::stat(bus_mmap_name_, &mmapfile_stat);
+    ret = ZCE_LIB::stat(bus_mmap_name, &mmapfile_stat);
 
     if (ret != 0 )
     {
@@ -199,14 +192,14 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     }
 
     //MAP一个文件
-    ret = mmap_file_.open(bus_mmap_name_,
+    ret = mmap_file_.open(bus_mmap_name,
                           static_cast<size_t>(mmapfile_stat.st_size),
                           true);
 
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
-                bus_mmap_name_,
+                bus_mmap_name,
                 ret,
                 ZCE_LIB::last_error(),
                 strerror(ZCE_LIB::last_error()) );
@@ -264,6 +257,12 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
     }
 
     return 0;
+}
+
+//MMAP隐射文件名称
+const char* ZCE_Bus_MMAPPipe::mmap_file_name()
+{
+    return mmap_file_.file_name();
 }
 
 //得到唯一的单子实例

@@ -38,9 +38,9 @@ const char *SOAR_RET::error_string(int error_id)
             return  "Commlib: Can't Find Transaction ID.";
         case ERROR_APPFRAME_BUFFER_SHORT:
             return  "Commlib: APPFRAME buffer too short.";
-        case ERROR_CDR_ENCODE_FAIL:
+        case ERROR_DR_ENCODE_FAIL:
             return  "Commlib: CDR encode fail.";
-        case ERROR_CDR_DECODE_FAIL:
+        case ERROR_DR_DECODE_FAIL:
             return  "Commlib: CDR decode fail.";
         case ERROR_INVALID_DATA_ID:
             return  "Commlib: Invalid data id.";

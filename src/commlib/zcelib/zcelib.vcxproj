@@ -202,7 +202,6 @@
     <ClInclude Include="zce_boost_signal.h" />
     <ClInclude Include="zce_boost_singleton.h" />
     <ClInclude Include="zce_bus_mmap_pipe.h" />
-    <ClInclude Include="zce_bus_one_way.h" />
     <ClInclude Include="zce_bus_two_way.h" />
     <ClInclude Include="zce_bytes_compress.h" />
     <ClInclude Include="zce_bytes_encode.h" />
@@ -327,7 +326,6 @@
     <ClCompile Include="zce_readfile_cvs.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />
     <ClCompile Include="zce_bus_mmap_pipe.cpp" />
-    <ClCompile Include="zce_bus_one_way.cpp" />
     <ClCompile Include="zce_bus_two_way.cpp" />
     <ClCompile Include="zce_bytes_compress.cpp" />
     <ClCompile Include="zce_bytes_encode.cpp" />

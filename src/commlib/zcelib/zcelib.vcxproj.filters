@@ -35,9 +35,6 @@
     <ClInclude Include="zce_bus_mmap_pipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_bus_one_way.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_bus_two_way.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -419,9 +416,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_bus_mmap_pipe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_bus_one_way.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_bus_two_way.cpp">

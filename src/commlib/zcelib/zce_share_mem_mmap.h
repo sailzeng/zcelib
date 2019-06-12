@@ -44,9 +44,17 @@ public:
     //同步文件
     int flush();
 
-    //返回映射的内存地址
-    void *addr();
+    ///返回映射的内存地址
+    inline void* addr()
+    {
+        return mmap_addr_;
+    }
 
+    ///返回文件名称
+    inline const char* file_name()
+    {
+        return mmap_file_name_.c_str();
+    }
 protected:
 
     //映射文件的名称

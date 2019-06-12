@@ -230,9 +230,5 @@ int ZCE_ShareMem_Mmap::flush()
     return ZCE_LIB::msync(mmap_addr_, shm_size_, MS_SYNC);
 }
 
-//返回映射的内存地址
-void *ZCE_ShareMem_Mmap::addr()
-{
-    return mmap_addr_;
-}
+
 

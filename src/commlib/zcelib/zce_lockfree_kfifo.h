@@ -66,7 +66,7 @@ public:
 
     /// 整个Node的长度,包括size_of_node_ + chunkdata,
     /// 这里使用size_t,long在64位下会有问题
-    unsigned int    size_of_node_;
+    uint32_t    size_of_node_;
 
 
 #if defined(ZCE_OS_WINDOWS)
@@ -304,7 +304,7 @@ inline size_t shm_dequechunk::get_front_len()
     if ( tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_ )
     {
         //一个个字节读取长度
-        for (size_t i = 0; i < sizeof (unsigned int); ++i)
+        for (size_t i = 0; i < sizeof (uint32_t); ++i)
         {
             if ( tmp1 >= dequechunk_database_ + dequechunk_head_->size_of_deque_ )
             {

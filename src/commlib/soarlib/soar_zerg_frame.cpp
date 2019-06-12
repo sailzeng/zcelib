@@ -151,7 +151,9 @@ void Zerg_App_Frame::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
     proxy_service_.services_id_ = svrid;
 }
 
-void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo, const SERVICES_ID &sndinfo, const SERVICES_ID &proxyinfo)
+void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo, 
+                                   const SERVICES_ID &sndinfo, 
+                                   const SERVICES_ID &proxyinfo)
 {
     recv_service_ = rcvinfo;
     send_service_ = sndinfo;
@@ -288,19 +290,53 @@ void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 
 ///将一个结构进行编码
 int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
-    const google::protobuf::MessageLite* msg,
-    size_t data_start = 0,
-    size_t * sz_code = NULL)
+                                    const google::protobuf::MessageLite* msg,
+                                    size_t data_start,
+                                    size_t * sz_code)
 {
-
+    if (!msg->IsInitialized())
+    {
+        ZCE_LOG(RS_ERROR, "");
+        return SOAR_RET::ERROR_DR_ENCODE_FAIL;
+    }
+    size_t need_size = msg->ByteSize();
+    if (data_start + need_size > szframe_appdata)
+    {
+        ZCE_LOG(RS_ERROR, "");
+        return SOAR_RET::ERROR_DR_ENCODE_FAIL;
+    }
+    bool bret = msg->SerializePartialToArray(frame_appdata_ + data_start, 
+                                             static_cast<int>(szframe_appdata - data_start));
+    if (bret == false)
+    {
+        ZCE_LOG(RS_ERROR, "");
+        return SOAR_RET::ERROR_DR_ENCODE_FAIL;
+    }
+    if (sz_code)
+    {
+        *sz_code = need_size;
+    }
+    return 0;
 }
 
 ///将一个结构进行解码
 int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite* msg,
-    size_t data_start,
-    size_t* sz_code)
+                                    size_t data_start,
+                                    size_t* sz_code)
 {
-
+    size_t szframe_appdata = frame_length_;
+    bool bret = msg->ParseFromArray(frame_appdata_ + data_start, 
+                                    static_cast<int>(szframe_appdata - data_start));
+    if (bret == false)
+    {
+        ZCE_LOG(RS_ERROR, "");
+        return SOAR_RET::ERROR_DR_DECODE_FAIL;
+    }
+    if (sz_code)
+    {
+        *sz_code = msg->ByteSize();
+    }
+    return 0;
 }
 
 #endif

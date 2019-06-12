@@ -52,10 +52,11 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
                                    const size_t size_ret_str)
 {
 	//·µ»Ø×Ö·û´®µÄÖ¸ÕëÎª¿Õ,·µ»Ø´íÎó
-	if (return_str == NULL )
-	{
-		assert(0);
-	}
+    assert(return_str);
+    if (!return_str)
+    {
+        return 0;
+    }
 
 	*return_str = '\0';
 
@@ -101,8 +102,6 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 		return_str[size_ret_str - 1] = '\0';
 		return strlen(return_str);
 	}
-
-	
 
 	char* pstrtmp;
 	size_t ntmp;

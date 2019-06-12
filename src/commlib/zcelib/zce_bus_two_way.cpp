@@ -29,22 +29,7 @@ ZCE_BusPipe_TwoWay::~ZCE_BusPipe_TwoWay()
 
 
 
-/******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月23日
-Function        : ZCE_BusPipe_TwoWay::initialize
-Return          : int
-Parameter List  :
-  Param1: const char *bus_mmap_name
-  Param2: size_t size_recv_pipe
-  Param3: size_t size_send_pipe
-  Param3: size_t max_frame_len
-  Param5: bool if_restore 是否进行恢复
-Description     : 初始化,只初始化两个管道，1收1发
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
+
 int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
                                    size_t size_recv_pipe,
                                    size_t size_send_pipe,

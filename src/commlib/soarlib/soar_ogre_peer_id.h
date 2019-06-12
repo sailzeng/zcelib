@@ -5,20 +5,9 @@
 /****************************************************************************************************
 class  OGRE_PEER_ID 　SOCKET PEER信息,适应IPV4的代码。
 ****************************************************************************************************/
-class SOARING_EXPORT OGRE_PEER_ID
+class OGRE_PEER_ID
 {
-public:
-    //无效的SERVICE 类型
-    static const unsigned short  INVALID_PERR_IP_ADDRESS = 0;
-    //无效的SERVICE ID
-    static const unsigned int   INVALID_PERR_PORT   = 0;
 
-public:
-
-    //IP地址
-    unsigned int            peer_ip_address_;
-    //端口号码
-    unsigned short          peer_port_;
 
 public:
     //构造,析构函数,默认为0
@@ -39,11 +28,24 @@ public:
     bool operator !=(const OGRE_PEER_ID &others) const;
     //有个排序需求,
     bool operator <(const OGRE_PEER_ID &others) const;
+
+public:
+    //无效的SERVICE 类型
+    static const uint16_t  INVALID_PERR_IP_ADDRESS = 0;
+    //无效的SERVICE ID
+    static const uint32_t  INVALID_PERR_PORT = 0;
+
+public:
+
+    //IP地址
+    uint32_t          peer_ip_address_ = INVALID_PERR_IP_ADDRESS;
+    //端口号码
+    uint16_t          peer_port_ = INVALID_PERR_PORT;
 };
 
 #pragma pack ()
 
-class SOARING_EXPORT HASH_OF_OGREPEERID
+class HASH_OF_OGREPEERID
 {
 public:
     size_t operator()(const OGRE_PEER_ID &peer_info) const

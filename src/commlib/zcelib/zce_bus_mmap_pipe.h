@@ -16,29 +16,7 @@ class shm_dequechunk;
 class ZCE_Bus_MMAPPipe : public ZCE_NON_Copyable
 {
 
-public:
 
-    //最大的PIPE的数量，暂时写完512条,感觉大部分时候比较浪费，呵呵，不过算了，也就几K空间
-    static const size_t MAX_NUMBER_OF_PIPE = 512;
-
-protected:
-
-    //
-    struct ZCE_BUS_PIPE_HEAD
-    {
-        ZCE_BUS_PIPE_HEAD();
-        ~ZCE_BUS_PIPE_HEAD();
-
-        //机器字长
-        uint32_t            size_of_sizet_;
-        //
-        //管道数量
-        size_t              number_of_pipe_;
-        //管道配置长度,2个管道的配置长度,
-        size_t              size_of_pipe_[MAX_NUMBER_OF_PIPE];
-        //
-        size_t              size_of_room_[MAX_NUMBER_OF_PIPE];
-    };
 
 public:
 
@@ -48,7 +26,6 @@ public:
     ~ZCE_Bus_MMAPPipe();
 
 public:
-
 
     /*!
     * @brief      初始化，根据参数，
@@ -61,12 +38,12 @@ public:
     * @note
     */
     int initialize(const char *bus_mmap_name,
-                   size_t number_of_pipe,
+                   uint32_t number_of_pipe,
                    size_t size_of_pipe[],
                    size_t max_frame_len,
                    bool if_restore);
 
-    //初始化，只根据文件进行初始化，用于某些工具对MMAP文件进行处理的时候
+    ///初始化，只根据文件进行初始化，用于某些工具对MMAP文件进行处理的时候
     int initialize(const char *bus_mmap_name,
                    size_t max_frame_len);
 
@@ -74,6 +51,10 @@ public:
     //-----------------------------------------------------------------
     //怀疑TMD我有强迫症倾向，提供这么多接口干嘛，下面一组足够用了。
     bool is_exist_bus(size_t pipe_id);
+
+    //MMAP隐射文件名称
+    const char *mmap_file_name();
+
     //向管道写入帧
     inline int push_back_bus(size_t pipe_id, const ZCE_LIB::dequechunk_node *node);
 
@@ -124,12 +105,30 @@ public:
     ///清除实例
     static void clean_instance();
 
+public:
 
+    //最大的PIPE的数量，暂时写完512条,感觉大部分时候比较浪费，呵呵，不过算了，也就几K空间
+    static const size_t MAX_NUMBER_OF_PIPE = 512;
 
 protected:
+    //
+    struct ZCE_BUS_PIPE_HEAD
+    {
+        ZCE_BUS_PIPE_HEAD();
+        ~ZCE_BUS_PIPE_HEAD();
 
-    ///BUS的名字，也就是MMAP映射文件名称
-    char                       bus_mmap_name_[PATH_MAX + 1];
+        //机器字长
+        uint32_t            size_of_sizet_;
+        //
+        //管道数量
+        uint32_t            number_of_pipe_;
+        //管道配置长度,2个管道的配置长度,
+        size_t              size_of_pipe_[MAX_NUMBER_OF_PIPE];
+        //
+        size_t              size_of_room_[MAX_NUMBER_OF_PIPE];
+    };
+
+protected:
 
     ///BUS文件的头部信息
     ZCE_BUS_PIPE_HEAD          bus_head_;
@@ -138,7 +137,7 @@ protected:
     ZCE_LIB::shm_dequechunk  *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
 
     ///MMAP内存文件，
-    ZCE_ShareMem_Mmap          mmap_file_;
+    ZCE_ShareMem_Mmap         mmap_file_;
 
 
 protected:

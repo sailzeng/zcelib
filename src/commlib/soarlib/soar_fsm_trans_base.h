@@ -44,7 +44,7 @@ protected:
         LONG_SOARING_LIB_TIME_OUT              = 60,
         LONG_LONG_SOARING_LIB_TIME_OUT         = 120,
         TOO_LONG_SOARING_LIB_TIME_OUT          = 240,
-        TOO_TOO_LONG_TIME_OUT               = 480,
+        TOO_TOO_LONG_TIME_OUT                  = 480,
     };
 
 protected:

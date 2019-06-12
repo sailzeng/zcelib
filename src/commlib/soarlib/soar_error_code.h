@@ -29,7 +29,7 @@ README:
 7.如果是一个内部错误=不会影响到其他人=标明=
 8.SOAR_RET_SUCC表示成功=内部统一使用
 
-******************************************************************************************/
+*/
 
 #ifndef SOARING_LIB_ERROR_CODE_H_
 #define SOARING_LIB_ERROR_CODE_H_
@@ -69,8 +69,8 @@ public:
         ERROR_FIND_REPEAT_TRANSACTION_ID = 5021,
         ERROR_CANNOT_FIND_TRANSACTION_ID = 5022,
         ERROR_APPFRAME_BUFFER_SHORT = 5023,
-        ERROR_CDR_ENCODE_FAIL = 5024,
-        ERROR_CDR_DECODE_FAIL = 5025,
+        ERROR_DR_ENCODE_FAIL = 5024,
+        ERROR_DR_DECODE_FAIL = 5025,
         ERROR_INVALID_DATA_ID = 5026,
         ERROR_SERVICES_INFO_CONFIG = 5027,
         ERROR_MML_ERROR = 5035,         //MML命令错误

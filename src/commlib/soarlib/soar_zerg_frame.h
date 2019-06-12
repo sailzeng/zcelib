@@ -291,7 +291,6 @@ public:
     uint32_t               backfill_trans_id_;
 
 
-
     union
     {
         ///发送序列号，计划只在通讯层用,暂时没用用
