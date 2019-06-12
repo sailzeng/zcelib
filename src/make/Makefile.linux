@@ -123,27 +123,27 @@ CC  := ccache $(CC)
 CXX := ccache $(CXX)
 endif
 
-#编译选项
-CFLAGS += -W -Wall -Wpointer-arith -MMD
-CCFLAGS += -std=c++11 -W -Wall -Wpointer-arith -MMD
+#告警标志
+WARNFLAGS += -W -Wall -Wpointer-arith -Winline -Wunreachable-code -Wshadow -Wcast-align
 
 #这个告警有胆量的可以考虑一下，我第一次挑战以失败告终
 ifeq ($(effcpp),1)
-CCFLAGS += -Weffc++
+WARNFLAGS += -Weffc++
 endif
 
 
-#注意这个地方,-MMD是这样一个选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
-#其他的东西都是用于屏蔽ACE的一些告警
 #-Werror 是告警为错误,我消灭了一半服务器的告警,所以我有权要求你也这样做,
-
 ifeq ($(rogue),1)
-CFLAGS +=
-CCFLAGS +=
+WARNFLAGS +=
 else
-CFLAGS += -Werror 
-CCFLAGS += -Werror 
+WARNFLAGS += -Werror 
 endif 
+
+#编译选项
+CFLAGS += $(WARNFLAGS) -MMD 
+CCFLAGS += $(WARNFLAGS) -std=c++11 -MMD
+
+#注意这个地方,-MMD是这样一个选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
 
 ifeq ($(buildbits),32)
 CFLAGS += -m32
@@ -255,7 +255,7 @@ endif # threads
 # for you): _SVID_SOURCE _BSD_SOURCE _POSIX_SOURCE _POSIX_C_SOURCE=199506L, ...
 DEFFLAGS += -D_GNU_SOURCE
 
-
+#-shared包括了-fpic选项，该选项用于生成位置无关代码
 SOFLAGS += $(DEFFLAGS) -shared  
 
 ifeq ($(optimize),1)

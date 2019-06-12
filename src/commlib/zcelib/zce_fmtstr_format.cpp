@@ -79,9 +79,7 @@ void ZCE_LIB::fmt_double(char *buffer,
                         tmp_out_buf,
                         LEN_OF_TMP_OUT_BUF);
     }
-
-    int cvt_str_len = static_cast<int>( strlen(tmp_out_buf));
-
+    int cvt_str_len = static_cast<int>(strlen(tmp_out_buf));
     if (cvt_str_len <= 0)
     {
         return;

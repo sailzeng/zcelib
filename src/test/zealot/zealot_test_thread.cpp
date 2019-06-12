@@ -61,7 +61,7 @@ public:
 
     virtual int svc()
     {
-        int x;
+        int x=0;
         ZCE_LIB::sleep(1);
 
         for (size_t i = 0; i < number_prc_; ++i)

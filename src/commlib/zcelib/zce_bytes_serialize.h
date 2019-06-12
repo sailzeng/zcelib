@@ -63,26 +63,26 @@ public:
 public:
 
     ///返回当前类是否正常，
-    inline bool is_good()
+    bool is_good()
     {
         return is_good_;
     }
 
     ///设置错误标志
-    inline void set_bad()
+    void set_bad()
     {
         is_good_ = false;
     }
 
     ///重置,重置开始位置和good标志位
-    inline void reset()
+    void reset()
     {
         write_pos_ = write_buf_;
         is_good_ = true;
     }
 
     ///已经写入的长度
-    inline size_t write_len()
+    size_t write_len()
     {
         return write_pos_ - write_buf_;
     }
@@ -326,31 +326,31 @@ public:
 
 public:
     ///返回当前类是否正常，BTW：我们不在溢出保护上做努力，那是你负责的事情
-    inline bool is_good()
+    bool is_good()
     {
         return is_good_;
     }
 
-    inline const char *read_pos()
+    const char *read_pos()
     {
         return read_pos_;
     }
 
     ///设置错误标志
-    inline void set_bad()
+    void set_bad()
     {
         is_good_ = false;
     }
 
     ///重置，重置开始位置和good标志位
-    inline void reset()
+    void reset()
     {
         read_pos_ = read_buf_;
         is_good_ = true;
     }
 
     ///已经读取的长度
-    inline size_t read_len()
+    size_t read_len()
     {
         return read_pos_ - read_buf_;
     }

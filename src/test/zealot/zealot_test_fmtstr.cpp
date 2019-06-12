@@ -58,7 +58,7 @@ int test_printf_int()
     char out_buffer[1024 + 1];
     size_t cur_len = 0;
     size_t buf_max_len = 1024;
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data*-1, ZCE_LIB::BASE_DECIMAL, 0, size_t(-1));
+    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 0, size_t(-1));
     printf("[%.*s]\n", (int)cur_len, out_buffer);
     ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 0, size_t(-1), ZCE_LIB::FMT_PLUS);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
@@ -85,13 +85,23 @@ int test_printf_int()
     return 0;
 }
 
-int test_fmt_strncpy(int /*argc*/, char * /*argv*/[])
+int test_fmt_splice(int /*argc*/, char * /*argv*/[])
 {
     const size_t BUFFER_LEN = 1024;
     size_t use_len = 0;
-    char buffer [BUFFER_LEN + 1];
-    ZCE_LIB::zce_strnsplice(buffer, BUFFER_LEN, use_len, "ABC", "efghi");
+    char buffer[BUFFER_LEN + 1] = {0};
+    ZCE_LIB::foo_strnsplice(buffer, BUFFER_LEN, use_len,'|', "ABC", "efghi");
     std::cout << buffer << std::endl;
+    double double_data = 123.45678;
+    std::string str_data="I love hongkong.";
+    ZCE_LIB::foo_strnsplice(buffer, BUFFER_LEN, use_len,
+        ' ', 
+        ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
+        "ABC", 
+        "efghi",
+        str_data);
+    std::cout << buffer << std::endl;
+
     return 0;
 }
 
@@ -273,6 +283,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
 
     ZCE_Progress_Timer progress_timer;
     progress_timer.restart();
+    ZCE_TRACE_FILELINE(RS_DEBUG);
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
         ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
@@ -366,7 +377,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
             bool_data,
             ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
             ZCE_LIB::String_Out_Helper(cstr_data, 30),
-            ZCE_LIB::String_Out_Helper(stdstr_data.c_str(), stdstr_data.length())
+            ZCE_LIB::String_Out_Helper(stdstr_data.c_str(), 28)
             );
 
     }
@@ -398,7 +409,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
                     << int_data
                     << " bool_data="
                     << (bool_data ? "TRUE" : "FALSE")
-                    << " double_data= "
+                    << " double_data="
                     << std::fixed << std::setw(16) << std::setprecision(3) << std::setfill(' ')
                     << double_data
                     << " cstr_data="
@@ -463,7 +474,7 @@ int test_out_file()
                   << int_data
                   << " bool_data="
                   << (bool_data ? "TRUE" : "FALSE")
-                  << " double_data= "
+                  << " double_data="
                   << double_data
                   << " cstr_data="
                   << cstr_data

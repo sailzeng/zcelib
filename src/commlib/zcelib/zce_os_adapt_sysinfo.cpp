@@ -200,7 +200,6 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
     cpu_config_num = ::sysconf(_SC_NPROCESSORS_CONF);
 #endif
 
-    const uint64_t SEC_PER_USEC = 1000000LL;
     //user
     uint64_t time_data  = 0;
     time_data = ::strtoull(in_para, &out_para, 10);

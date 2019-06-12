@@ -40,7 +40,7 @@ int test_rw_lock1 (int argc, char *argv[]);
 int test_rw_lock2 (int argc, char *argv[]);
 
 
-int test_fmt_strncpy(int argc, char *argv[]);
+int test_fmt_splice(int argc, char *argv[]);
 int test_cpp_log_out(int argc, char *argv[]);
 
 

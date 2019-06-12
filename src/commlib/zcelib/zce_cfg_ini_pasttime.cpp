@@ -340,7 +340,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 		//返回默认值
 		if (default_str == NULL)
 		{
-			return_str = '\0';
+			*return_str = '\0';
 			return 0;
 		}
 		else
@@ -377,7 +377,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 					//返回默认值
 					if (default_str == NULL)
 					{
-						return_str = '\0';
+						*return_str = '\0';
 						return 0;
 					}
 					else
@@ -430,7 +430,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 		//
 		if (default_str == NULL)
 		{
-			return_str = '\0';
+			*return_str = '\0';
 			return 0;
 		}
 		else

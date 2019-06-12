@@ -417,21 +417,25 @@ typedef __int64             int64_t;
 
 #include "zce_config.h"
 
+
+//外部库的告警，在这个地方屏蔽了。
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( push )
+#pragma warning ( disable : 4244 4100 4512 4100 26495)
+#elif defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#pragma GCC diagnostic ignored "-Wshadow"
+#endif
+
 //rapidxml XML文件的头文件以及开关，我们引入的库是rapidxml 库，他的优势是只有头文件，
 
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning ( push )
-#pragma warning ( disable : 4244 4100 26495)
-#endif
 
 #include <rapidxml.hpp>
 #include <rapidxml_utils.hpp>
 #include <rapidxml_print.hpp>
 
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning ( pop )
-#endif
 #endif
 
 //MySQL
@@ -467,13 +471,7 @@ extern "C"
 //ZCE_USE_PROTOBUF 宏在zce_config.h文件里面控制
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
-#if defined (ZCE_OS_WINDOWS)
-#pragma warning ( push )
-#pragma warning ( disable : 4512 4100 26495)
-#elif defined (ZCE_OS_LINUX)
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wunused-parameter"
-#endif
+
 
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>
@@ -481,11 +479,12 @@ extern "C"
 #include <google/protobuf/compiler/importer.h>
 #include <google/protobuf/text_format.h>
 
+#endif
+
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic pop
-#endif
 #endif
 
 //==================================================================================================

@@ -16,7 +16,7 @@ int test_bytes_ntoh(int /*argc*/, char * /*argv*/[])
     uint64_t a_64 = 0x1122334455667788ULL;
     uint64_t b_64 = ZCE_HTONLL(a_64);
 
-    printf("%x %x  %llx", b_16, b_32, b_64);
+    printf("%x %x  %" PRIx64 , b_16, b_32, b_64);
 
     return 0;
 }
@@ -1012,10 +1012,10 @@ int test_bytes_compress(int /*argc*/, char * /*argv*/[])
     return 0;
 }
 
+#if defined TEST_LZ4 ==1
 
 #include "lz4.h"
-
-#  pragma comment(lib, "lz4.lib")
+#pragma comment(lib, "lz4.lib")
 
 int test_compress_fun3(unsigned char *source_buf, size_t source_len)
 {
@@ -1041,6 +1041,8 @@ int test_compress_fun3(unsigned char *source_buf, size_t source_len)
     compressbuf_len2 = LZ4_compress((const char *)source_buf, (char *)compress_buf2, (int)source_len);
     return 0;
 }
+
+
 
 int test_bytes_compress3(int /*argc*/, char * /*argv*/[])
 {
@@ -1235,8 +1237,16 @@ int benchmark_compress(const char *file_name)
     return 0;
 }
 
+#endif
+
 struct DR_DATA_1
 {
+    DR_DATA_1()
+    {
+    }
+    ~DR_DATA_1()
+    {
+    }
 
     int d1_a1_ = 1;
     short d1_a2_ = 2;
@@ -1264,7 +1274,7 @@ struct DR_DATA_1
     std::map<int, int> d1_f1_;
 
     template<typename serialize_type>
-    void serialize(typename serialize_type &ss, unsigned int /*version*/ = 0)
+    void serialize(serialize_type &ss, unsigned int /*version*/ = 0)
     {
         ss & d1_a1_;
         ss & d1_a2_;

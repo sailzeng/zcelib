@@ -176,7 +176,12 @@ int ZCE_LIB::readdir_r (DIR *dir_handle,
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
+    //readdir_r并不被推荐
+    //https://blog.csdn.net/gqtcgq/article/details/50359124
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
     return ::readdir_r(dir_handle, entry, result);
+#pragma GCC diagnostic pop
 #endif
 
 }
@@ -438,7 +443,7 @@ int ZCE_LIB::scandir (const char *dirname,
                      (int ( *)(const void *, const void *))comparator);
 
     //其实我不是特别确定GCC什么版本改进了这个地方，能肯定4.4的版本发生了变化
-#elif (__GNUC__ == 4 && __GNUC_MINOR__ > 1)
+#else
     return ::scandir(dirname,
                      namelist,
                      selector,

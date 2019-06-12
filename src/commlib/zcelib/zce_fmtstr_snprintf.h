@@ -13,7 +13,22 @@
 *             我原来的认知其实有误。
 *             std::iostream C++的慢其实慢在实现。
 *
-* @note
+* @note       我这儿有两套实现。一套是用重载，多个函数，内部用宏，
+*             一套是用variadic 变参实现的。必须有C++ 11以上的支持才能使用
+*             用FOO_FMT_STRING_USE_VARIADIC
+*             速度测试比较（都是是REALSE版本）
+*             Windows 下：
+*             variadic版本foo_snprintf : 0.509 sec .
+*             重载版本foo_snprintf      : 0.448 sec .
+*             snprintf                 : 1.705 sec .
+*             iostream                 : 2.477 sec .
+*             Linux 下：(同一台机器，但是是虚拟机,VirtualBox)
+*             variadic版本foo_snprintf : 0.882927 sec .
+*             重载版本foo_snprintf      : 0.820313 sec .
+*             snprintf                 : 0.711378 sec .
+*             iostream                 : 0.949645 sec .
+*
+*
 *
 */
 
@@ -37,10 +52,18 @@ static const size_t LEN_OF_ESCAPE_IDENTIFY = 3;
 //转义字符，如果前面出现%?再出现%，就标识转义
 static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 
+#ifndef FOO_FMT_STRING_USE_VARIADIC 
+#define FOO_FMT_STRING_USE_VARIADIC  1
+#endif
 
-//用C++ 11的特性实现一个？
-#if ZCE_SUPPORT_CPP11 == 1
 
+//没有C++ 11的特性，没有任何用处
+#if ZCE_SUPPORT_CPP11 == 0
+#define FOO_FMT_STRING_USE_VARIADIC 0
+#endif 
+
+
+#if defined FOO_FMT_STRING_USE_VARIADIC && FOO_FMT_STRING_USE_VARIADIC ==1
 
 inline void foo_c11_outdata(char *&foo_buffer,
     size_t &foo_max_len,
@@ -114,7 +137,6 @@ void foo_c11_outdata(char *&foo_buffer,
             continue;
         }
     }
-
 }
 
 template <typename out_type, typename... out_tlist >
@@ -148,7 +170,6 @@ char *foo_snprintf(char *foo_buffer,
     char *buffer = foo_buffer;
     buffer[max_len] = '\0';
     const char *fmt_spec = foo_fmt_spec;
-
 
     foo_c11_outdata(buffer, max_len, foo_use_len, fmt_spec, out_data...);
 

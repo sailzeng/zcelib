@@ -1,6 +1,6 @@
 #include "zealot_predefine.h"
 
-ZCE_Thread_Win_RW_Mutex light_rw;
+ZCE_Thread_RW_Mutex light_rw;
 
 int g_daomei_foo = 0;
 

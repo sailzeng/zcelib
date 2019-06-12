@@ -408,7 +408,7 @@ namespace ZCE_LIB
 * @param[out] result 返回的结果数据指针
 */
 template<typename HASH_STRATEGY>
-inline unsigned char *hash_fun(const unsigned char *buf,
+unsigned char *hash_fun(const unsigned char *buf,
                                size_t buf_size,
                                unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
@@ -432,7 +432,7 @@ inline unsigned char *hash_fun(const unsigned char *buf,
 * @note
 */
 template<typename HASH_STRATEGY, size_t BUFFER_MULTIPLE>
-inline  int hash_file(const char *file_name,
+int hash_file(const char *file_name,
                       unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
 

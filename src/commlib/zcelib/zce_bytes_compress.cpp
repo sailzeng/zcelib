@@ -823,7 +823,8 @@ lz4_match_process:
         ref_offset = original_buf + hash_lz_offset_[ZCE_LZ_HASH(read_pos)];
         hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
 
-        if ((read_pos -ref_offset <= ZCE_LZ_MAX_OFFSET) && (ZBYTE_TO_UINT32(ref_offset) == ZBYTE_TO_UINT32(read_pos)))
+        if ((static_cast<size_t>(read_pos -ref_offset) <= ZCE_LZ_MAX_OFFSET) && 
+            (ZBYTE_TO_UINT32(ref_offset) == ZBYTE_TO_UINT32(read_pos)))
         {
             nomatch_count = 0;
             offset_token =  write_pos ++;

@@ -336,7 +336,7 @@ class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, ZCE
 public:
     //
     explicit ZCE_Msgqueue_Rings_Condi(size_t queue_max_size) :
-        ZCE_Msgqueue_Rings_Condi<_value_type, std::deque<_value_type> >(queue_max_size)
+        ZCE_Message_Queue_Condi<_value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
     {
         ZCE_Message_Queue_Condi<_value_type, ZCE_LIB::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
     }

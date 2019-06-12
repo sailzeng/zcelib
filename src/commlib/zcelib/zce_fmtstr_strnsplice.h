@@ -20,13 +20,87 @@
 namespace ZCE_LIB
 {
 
-//用C++ 11的特性实现一个？
-#if ZCE_SUPPORT_CPP11 == 1
+
+#ifndef FOO_FMT_STRING_USE_VARIADIC 
+#define FOO_FMT_STRING_USE_VARIADIC  1
+#endif
+
+
+//没有C++ 11的特性，没有任何用处
+#if ZCE_SUPPORT_CPP11 == 0
+#define FOO_FMT_STRING_USE_VARIADIC 0
+#endif 
+
+
+#if FOO_FMT_STRING_USE_VARIADIC == 1
+
+
+template <typename out_type >
+void foo_c11_splice(char*& foo_buffer,
+    size_t foo_max_len,
+    size_t& foo_use_len,
+    char separator_char,
+    const out_type& out_data)
+{
+    size_t max_len = foo_max_len - 1;
+    size_t use_len = 0;
+    //如果还有空间容纳字符
+    if (foo_max_len > 0)
+    {
+        ZCE_LIB::output_helper(foo_buffer, foo_max_len, use_len, out_data);
+        foo_buffer += use_len;
+        foo_max_len -= use_len;
+        foo_use_len += use_len;
+    }
+    //如果需要分隔符，添加分割符号
+    if (separator_char != '\0' && max_len > 0)
+    {
+        *foo_buffer = separator_char;
+        foo_buffer += 1;
+        max_len -= 1;
+        foo_use_len += 1;
+    }
+}
+
+template <typename out_type, typename... out_tlist >
+void foo_c11_splice(char*& foo_buffer,
+    size_t foo_max_len,
+    size_t& foo_use_len,
+    char separator_char,
+    const out_type& out_data,
+    out_tlist ... out_datalist)
+{
+    foo_c11_splice(foo_buffer, foo_max_len, foo_use_len, separator_char, out_data);
+    foo_c11_splice(foo_buffer, foo_max_len, foo_use_len, separator_char, out_datalist...);
+}
+
+template <typename... out_type >
+char* foo_strnsplice(char* foo_buffer,
+                     size_t foo_max_len,
+                     size_t& foo_use_len,
+                     char separator_char,
+                     const out_type & ...out_data)
+{
+    foo_use_len = 0;
+    if (0 == foo_max_len)
+    {
+        return foo_buffer;
+    }
+
+    size_t max_len = foo_max_len - 1;
+    char* buffer = foo_buffer;
+    buffer[max_len] = '\0';
+
+    foo_c11_splice(buffer, max_len, foo_use_len, separator_char, out_data...);
+
+    foo_buffer[foo_use_len] = '\0';
+    //返回
+    return foo_buffer;
+}
 
 #else
 
 //默认的分隔符号是'\0',表示不需要分隔符，你可以通过函数设置分割符号
-static char STRNCPY_SEPARATOR_CHAR = '\0';
 
 #define __ZCE_STRNSPLICE_BEGIN   foo_use_len = 0; \
     if ( 0 == foo_max_len ) \
@@ -45,9 +119,9 @@ static char STRNCPY_SEPARATOR_CHAR = '\0';
         max_len -= use_len; \
         foo_use_len += use_len; \
     } \
-    if (STRNCPY_SEPARATOR_CHAR != '\0' && max_len > 0 ) \
+    if (separator_char != '\0' && max_len > 0 ) \
     {  \
-        *buffer = STRNCPY_SEPARATOR_CHAR;  \
+        *buffer = separator_char;  \
         buffer += 1;   \
         max_len -= 1;  \
         foo_use_len += 1;  \
@@ -57,9 +131,10 @@ static char STRNCPY_SEPARATOR_CHAR = '\0';
     return foo_buffer
 
 template <class T1, class T2>
-char *zce_strnsplice(char *foo_buffer,
+char *foo_strnsplice(char *foo_buffer,
                      size_t foo_max_len,
                      size_t &foo_use_len,
+                     char separator_char,
                      const T1 &out_data1,
                      const T2 &out_data2)
 {
@@ -84,9 +159,9 @@ char *zce_strnsplice(char *foo_buffer,
         foo_use_len += use_len;
     }
     //如果需要分隔符，添加分割符号
-    if (STRNCPY_SEPARATOR_CHAR != '\0' && max_len > 0 )
+    if (separator_char != '\0' && max_len > 0 )
     {
-        *buffer = STRNCPY_SEPARATOR_CHAR;
+        *buffer = separator_char;
         buffer += 1;
         max_len -= 1;
         foo_use_len += 1;
@@ -102,9 +177,9 @@ char *zce_strnsplice(char *foo_buffer,
     }
 
     //如果需要分隔符，添加分割符号
-    if (STRNCPY_SEPARATOR_CHAR != '\0' && max_len > 0 )
+    if (separator_char != '\0' && max_len > 0 )
     {
-        *buffer = STRNCPY_SEPARATOR_CHAR;
+        *buffer = separator_char;
         buffer += 1;
         max_len -= 1;
         foo_use_len += 1;
@@ -116,9 +191,10 @@ char *zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1 )
 {
     __ZCE_STRNSPLICE_BEGIN;
@@ -127,7 +203,7 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 //template < class T1,class T2 >
-//void zce_strnsplice(char *foo_buffer,
+//void foo_strnsplice(char *foo_buffer,
 //    size_t foo_max_len,
 //    size_t &foo_use_len,
 //    const T1 &out_data1,
@@ -140,9 +216,10 @@ void zce_strnsplice(char *foo_buffer,
 //}
 
 template < class T1, class T2, class T3 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3 )
@@ -155,9 +232,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -172,9 +250,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -191,9 +270,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -212,9 +292,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -235,9 +316,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -260,9 +342,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -287,9 +370,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -316,9 +400,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -347,9 +432,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -380,9 +466,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -415,9 +502,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -452,9 +540,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -491,9 +580,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -532,9 +622,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -575,9 +666,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -620,9 +712,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -667,9 +760,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -716,9 +810,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -767,9 +862,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -820,9 +916,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -875,9 +972,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -932,9 +1030,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -991,9 +1090,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -1052,9 +1152,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -1115,9 +1216,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -1180,9 +1282,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -1247,9 +1350,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -1316,9 +1420,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,
@@ -1387,9 +1492,10 @@ void zce_strnsplice(char *foo_buffer,
 }
 
 template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31, class T32 >
-void zce_strnsplice(char *foo_buffer,
+void foo_strnsplice(char *foo_buffer,
                     size_t foo_max_len,
                     size_t &foo_use_len,
+                    char separator_char,
                     const T1 &out_data1,
                     const T2 &out_data2,
                     const T3 &out_data3,

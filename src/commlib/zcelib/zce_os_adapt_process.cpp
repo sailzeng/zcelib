@@ -192,8 +192,6 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_pe
     long cpu_tick_precision = 1000;
 #endif
 
-    const uint64_t SEC_PER_USEC = 1000000LL;
-
     // utime
     read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;

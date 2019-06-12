@@ -170,6 +170,12 @@ public:
     //取得帧数据的长度
     inline size_t get_frame_datalen() const;
 
+    template<typename info_type>
+    int appdata_encode(size_t szframe_appdata, const info_type &info);
+
+    template<typename info_type>
+    int appdata_decode(size_t szframe_appdata, info_type& info);
+
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
     ///将一个结构进行编码

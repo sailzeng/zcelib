@@ -13,7 +13,7 @@ int ZCE_LIB::ecvt_r(double number,
                     size_t len)
 {
 #ifdef ZCE_OS_WINDOWS
-    return _ecvt_s(buf,
+    return ::_ecvt_s(buf,
                    len,
                    number,
                    ndigits,
@@ -22,7 +22,7 @@ int ZCE_LIB::ecvt_r(double number,
 #endif
 
 #ifdef ZCE_OS_LINUX
-    return ecvt_r(number,
+    return ::ecvt_r(number,
                   ndigits,
                   decpt,
                   sign,
@@ -52,7 +52,7 @@ int ZCE_LIB::fcvt_r(double number,
 #endif
 
 #ifdef ZCE_OS_LINUX
-    return fcvt_r(number,
+    return ::fcvt_r(number,
                   ndigits,
                   decpt,
                   sign,

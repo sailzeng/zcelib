@@ -17,12 +17,13 @@ int main(int argc , char * argv[])
                                                 false,
                                                 true,
                                                 0,
-                                                LOG_OUTPUT_FILE,
+                                                LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT,
                                                 LOG_HEAD_RECORD_NONE);
-    
-
-	test_progress_timer(argc,argv);
-    test_bytes_hash(argc, argv);
+    ZCE_TRACE_FILELINE(RS_DEBUG);
+    test_fmt_splice(argc, argv);
+    //test_out_buffer(argc, argv);
+	//test_progress_timer(argc,argv);
+    //test_bytes_hash(argc, argv);
 
     //benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
   
