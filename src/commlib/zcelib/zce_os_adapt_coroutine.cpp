@@ -74,7 +74,7 @@ int ZCE_LIB::make_coroutine(coroutine_t *coroutine_hdl,
     //如果当前还不是纤程，进行转换，同时也到当前的纤程标识
     if (FALSE == ::IsThreadAFiber())
     {
-        //FIBER_FLAG_FLOAT_SWITCH XP不支持，
+        //FIBER_FLAG_FLOAT_SWITCH XP不支持，浮点环境切换应该会耗时，有一些简化去掉了
         coroutine_hdl->main_ = ::ConvertThreadToFiberEx(NULL,
                                                         FIBER_FLAG_FLOAT_SWITCH);
         if (NULL == coroutine_hdl->main_)
@@ -119,7 +119,7 @@ int ZCE_LIB::make_coroutine(coroutine_t *coroutine_hdl,
     return 0;
 #elif defined ZCE_OS_LINUX
 
-    //
+    //必须先getcontext才能makecontext
     int ret = ::getcontext(&(coroutine_hdl->main_));
     if (0 != ret)
     {
@@ -191,6 +191,8 @@ int ZCE_LIB::yeild_coroutine(coroutine_t *coroutine_hdl)
     return ret;
 
 #elif defined ZCE_OS_LINUX
+    //注意呀，swapcontext给你一个错觉，会让你怀疑，没有getcontext怎么跳回来？
+    //其实swapcontext是保存了参数1的context，然后才跳入参数2的context的，
     return ::swapcontext(&coroutine_hdl->main_,
                          &coroutine_hdl->coroutine_);
 #endif
@@ -213,6 +215,7 @@ int ZCE_LIB::yeild_main(coroutine_t *coroutine_hdl)
     return ret;
 
 #elif defined ZCE_OS_LINUX
+
     return ::swapcontext(&coroutine_hdl->coroutine_,
                          &coroutine_hdl->main_);
 #endif

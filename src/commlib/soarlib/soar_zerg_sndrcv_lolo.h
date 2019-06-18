@@ -52,7 +52,7 @@
 /******************************************************************************************
 class Lolo_SendRecv_Package
 ******************************************************************************************/
-class Lolo_SendRecv_Package  : public Tibetan_SendRecv_Package
+class Lolo_SendRecv_Package  : public SendRecv_Package_Base
 {
 protected:
 

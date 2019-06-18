@@ -4,8 +4,8 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2011年11月30日
-* @brief      用于将TCP，UDP的发送代码部分做一个整合，搞出一个base类，处理一些共有事情
-*
+* @brief      对应ZERG的，测试，或者客户端接口，
+*             用于将TCP，UDP的发送代码部分做一个整合，搞出一个base类，处理一些共有事情
 *
 * @details
 *
@@ -20,10 +20,34 @@
 #define SOARING_LIB_SND_RCV_BASE_H_
 
 /******************************************************************************************
-class Tibetan_SendRecv_Package base 类 Tibetan 藏族
+class SendRecv_Package_Base base 类 
 ******************************************************************************************/
-class Tibetan_SendRecv_Package
+class SendRecv_Package_Base
 {
+
+public:
+    //
+    SendRecv_Package_Base();
+    virtual ~SendRecv_Package_Base();
+
+public:
+
+    //设置相应的SVC INFO,
+    void set_services_id(const SERVICES_ID &recv_service,
+                         const SERVICES_ID &send_service,
+                         const SERVICES_ID &proxy_service,
+                         size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
+
+    //取得收到的事务ID
+    void get_recv_transid(unsigned int &trans_id);
+
+    unsigned int get_send_transid();
+    unsigned int get_backfill_transid();
+
+    //取得测试的APPFRAME
+    Zerg_App_Frame *get_send_appframe();
+    //取得接收的APPFRAME
+    Zerg_App_Frame *get_recv_appframe();
 
 protected:
 
@@ -44,39 +68,15 @@ protected:
     //就不会出现共用一个BUFFER的事情
 
     //发送缓冲区的帧
-    Zerg_App_Frame           *tibetan_send_appframe_;
+    Zerg_App_Frame* tibetan_send_appframe_;
     //接收缓冲区
-    Zerg_App_Frame           *tibetan_recv_appframe_;
+    Zerg_App_Frame* tibetan_recv_appframe_;
 
     //收到的事务ID
     unsigned int              recv_trans_id_;
 
     //回填的事务ID
     unsigned int              backfill_trans_id_;
-
-public:
-    //
-    Tibetan_SendRecv_Package();
-    virtual ~Tibetan_SendRecv_Package();
-
-public:
-
-    //设置相应的SVC INFO,
-    void set_services_id(const SERVICES_ID &recv_service,
-                         const SERVICES_ID &send_service,
-                         const SERVICES_ID &proxy_service,
-                         size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
-
-    //取得收到的事务ID
-    void get_recv_transid(unsigned int &trans_id);
-
-    unsigned int get_send_transid();
-    unsigned int get_backfill_transid();
-
-    //取得测试的APPFRAME
-    Zerg_App_Frame *get_send_appframe();
-    //取得接收的APPFRAME
-    Zerg_App_Frame *get_recv_appframe();
 
 };
 

@@ -85,19 +85,7 @@ ccache ?= 0
 
 #--------------------------------------------------------------------------------------------------------------------
 
-#:= 是可以向下级makefile传递的变量定义方式。
-#目前没有根据操作系统位数，编译版本(debug，release)进行区分，这样的麻烦是多版本编译时会有一些麻烦，也许以后会加入。
-ifeq ($(compile_object),staticlib) 
-OUTFILE := $(PATH_LIB)/lib$(PRGNAME).a
-endif
 
-ifeq ($(compile_object),dynamiclib) 
-OUTFILE := $(PATH_LIB)/lib$(PRGNAME).so
-endif
-
-ifeq ($(compile_object),executeprg) 
-OUTFILE := $(PATH_BIN)/$(PRGNAME)
-endif
 
 
 # 这个赋值?=是表示没有定义就赋值
@@ -217,22 +205,22 @@ endif
 OS_BITS := $(shell getconf LONG_BIT)
 
 ifeq ($(OS_BITS),32)
-VERSIONTYPE := linux_x86_neutral
+VERSIONTYPE := x86_neutral
 ifeq ($(debug),1)
-  VERSIONTYPE := linux_x86_debug
+  VERSIONTYPE := x86_debug
 endif
 ifeq ($(release),1)
-  VERSIONTYPE := linux_x86_release
+  VERSIONTYPE := x86_release
 endif
 endif
 
 ifeq ($(OS_BITS),64)
-VERSIONTYPE := linux_x64_neutral
+VERSIONTYPE := x64_neutral
 ifeq ($(debug),1)
-  VERSIONTYPE := linux_x64_debug
+  VERSIONTYPE := x64_debug
 endif
 ifeq ($(release),1)
-  VERSIONTYPE := linux_x64_release
+  VERSIONTYPE := x64_release
 endif
 endif
 

@@ -69,37 +69,45 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>zcelib.ruleset</CodeAnalysisRuleSet>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>MixedRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>true</RunCodeAnalysis>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <OutDir>$(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/</OutDir>
+    <OutDir>$(SolutionDir)../lib/win/$(Platform)-$(Configuration)/</OutDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>zcelib.ruleset</CodeAnalysisRuleSet>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <IntDir>$(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/</IntDir>
+    <IntDir>$(SolutionDir)../obj/win/$(Platform)-$(Configuration)/$(ProjectName)/</IntDir>
     <TargetName>$(ProjectName)</TargetName>
     <CodeAnalysisRuleSet>zcelib.ruleset</CodeAnalysisRuleSet>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
+    <IncludePath>$(SolutionDir)../third_party/include/lualib-5.1.5;$(SolutionDir)../third_party/include/mysql-win-5.6.22;$(SolutionDir)../third_party/include/protobuf-2.6.1/src;$(SolutionDir)../third_party/include/rapidxml-1.13;$(SolutionDir)../third_party/include/sqlite-3.8.8.1;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -184,9 +192,9 @@
     <None Include="zcelib.ruleset" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="zce_async_fw_base.h" />
-    <ClInclude Include="zce_async_fw_coroutine.h" />
-    <ClInclude Include="zce_async_fw_fsm.h" />
+    <ClInclude Include="zce_async_base.h" />
+    <ClInclude Include="zce_async_coroutine.h" />
+    <ClInclude Include="zce_async_fsm.h" />
     <ClInclude Include="zce_bytes_base.h" />
     <ClInclude Include="zce_bytes_serialize.h" />
     <ClInclude Include="zce_config.h" />
@@ -316,8 +324,8 @@
     <ClInclude Include="zce_uuid_generator.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="zce_async_fw_base.cpp" />
-    <ClCompile Include="zce_async_fw_coroutine.cpp" />
+    <ClCompile Include="zce_async_base.cpp" />
+    <ClCompile Include="zce_async_coroutine.cpp" />
     <ClCompile Include="zce_async_fw_fsm.cpp" />
     <ClCompile Include="zce_bytes_serialize.cpp" />
     <ClCompile Include="zce_event_proactor.cpp" />

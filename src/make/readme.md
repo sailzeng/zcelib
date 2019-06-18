@@ -1,7 +1,6 @@
-#Makefile说明#
+# Makefile说明
 
-
-##酷极了的Makefile
+## 酷极了的Makefile
 先举一个Makefile的例子，使用GNUMake编译，这样会编译一个名字为zergsvrd的可执行程序。他的预编译头文件是zerg\_predefine.h。他会使用目录下的所有的CPP文件生成这个文件。他的外部依赖的目录和库文件也在DEPENDS\_DIR，DEPENDS\_LIB下有定义。当这些目录更新的时候，zergsvrd也会重新编译。
 
     #你要定义输出文件,和PRGNAME的名称这两个变量
@@ -20,8 +19,9 @@
     #对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
     #如果你不适用预定头文件，可以屏蔽下面这个定义
     PREH_FILE = zerg_predefine.h
-    
-    
+
+
+​    
     #DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
     #如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
     DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib  $(ZCELIB_ROOT)/src/commlib/soarlib 
@@ -35,30 +35,28 @@
     
     #这个定义其他所有的规则,还是你自己看吧
     include $(ZCELIB_ROOT)/src/make/Makefile.rule
-    
+
 
 
 如果你看了ZCELIB的代码目录下的Makefile，你会发现，简直是太酷了。就这几行。一个包括内部文件依赖关系处理，预编译头文件处理，如果希望实用ccache，这类工具也只需要处理时加个选项，而且更酷的是外部文件的依赖这儿也搞点了。
 
 编译从此变得快捷，安全，爽！
 
-
-##Makefile头文件
+## Makefile头文件
 对的，ZCELIB的Makefile爽歪歪所依靠的都是，这个目录下的， 3个Makefile的头文件。这个3个文件内部都有非常非常详细的注释，我不再这儿费太多的口舌了。
 
 - Makefile.define 定义ZCELIB 内部的各种变量，工程目录,需要链接的各种外部库，内部库等。头文件目录，包括外部和COMMLIB的各种目录。如果你有特殊的Make需求，可以修改这个文件。
 
-- Makefile.linux 定义Linux环境下的各种环境变量，编译选项，很多选项在这个地方都有定义，不如你想编译debug版本，就make debug=1就可以了。
+- Makefile.linux 定义Linux环境下的各种环境变量，编译选项，很多选项在这个地方都有定义，比如你想编译debug版本，就make debug=1就可以了。
 
 - Makefile.rule 所有编译规则的核心定义，非常重要的一个地方。包括内部的预编译头文件，SO，STATIC Library，EXE，的编译规则，内部依赖关系的.d文件的实用，甚至包括外部依赖关系的处理。都在这儿了。
 
-##隐含的规则
+## 隐含的规则
 
-
-##为什么我不选择CMake
+### 为什么我不选择CMake
 其实你仔细看过我前面的例子就会明白了，我为啥不用CMake。因为，用不着。
 
-##GCC 的编译选项
+### GCC 的编译选项
 
 Makefile中间用了gcc,g++的很多选项，做一些说明
 
@@ -167,12 +165,12 @@ gcc -E hello.c -o hello.i
 -MMD 
 　　和-MM相同，但是输出将导入到.d的文件里面 
 
-
 -pthread，-pthread等同与-D_REENTRANT 连接时等同于-lpthread
 注意多线程库有时候需要最后-lrt，但要注意GCC 4.8以后，链接是有顺序的，
 你可以简单认为-lrt,-lpthread 要放到链接顺序的最后面。
 
-### -rdynamic 
+-rdynamic 
+
 -rdynamic选项新添加的是动态连接符号信息，用于动态连接功能，比如dlopen()系列函数、
 backtrace()系列函数使用，不能被strip掉，即强制strip将导致程序无法执行：
 -rdynamic却是一个连接选项，它将指示连接器把所有符号（而不仅仅只是程序已使用到的外部符号，
@@ -180,7 +178,8 @@ backtrace()系列函数使用，不能被strip掉，即强制strip将导致程�
 以便那些通过dlopen()或backtrace()（这一系列函数使用.dynsym表内符号）这样的函数使用。
 http://www.lenky.info/archives/2013/01/2190
 
-###交叉编译 -m32 -m64
+交叉编译 -m32 -m64
+
 32位版：加上 -m32 参数，生成32位的代码。
 
 64位版：加上 -m64 参数，生成64位的代码。

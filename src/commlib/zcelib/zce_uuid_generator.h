@@ -198,6 +198,11 @@ public:
 
 protected:
 
+    ///发生器实例指针
+    static ZCE_UUID64_Generator* instance_;
+
+protected:
+
     /*!
     * @brief      单子函数
     * @return     ZCE_UUID64_Generator* 返回的实例指针
@@ -221,10 +226,6 @@ protected:
     ///随机数的种子
     ZCE_UUID64                    time_radix_seed_;
 
-protected:
-
-    ///发生器实例指针
-    static ZCE_UUID64_Generator  *instance_;
 
 };
 

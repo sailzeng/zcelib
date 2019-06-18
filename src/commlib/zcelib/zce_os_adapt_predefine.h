@@ -116,7 +116,6 @@ struct pthread_mutex_t
         //非递归锁，用信号灯模拟，
         sem_t           *non_recursive_mutex_;
     };
-
 } ;
 
 //在WINDOWS下用临界区（进程内）+SPIN 或者Mutex（进程间）模拟SPIN lock
@@ -183,22 +182,6 @@ typedef struct
     bool            priority_to_write_;
 
 } pthread_rwlockattr_t;
-
-///Windows下的模拟读写锁的对象结构
-struct win_simulate_rwlock_t
-{
-
-
-} ;
-
-
-//用于记录签名调用的到底是写锁还是读锁，以便在后面解锁的时，保持处理上的正确
-enum ZCE_SLIM_SHARE_EXCLUSIVE
-{
-	ZCE_SLIM_USE_SHARED_LOCK = 1,
-	ZCE_SLIM_USE_EXCLUSIVE_LOCK = 2,
-};
-
 
 ///读写锁的对象结构，利用互斥量，条件变量实现的读写锁
 struct pthread_rwlock_t
@@ -347,42 +330,8 @@ typedef struct __stat64       zce_os_stat;
 
 
 
-///
-struct dirent
-{
-    /// inode number,WIN32下没用
-    ino_t          d_ino;
-    /// offset to the next dirent,WIN32下没用
-    off_t          d_off;
 
-    //长度记录
-    unsigned short d_reclen;
 
-    ///文件类型,LINUX在2.6.XX后面的版本才支持这个选项
-    unsigned char  d_type;
-
-    //文件名称
-    char           d_name[PATH_MAX + 1];
-};
-
-///readdir等函数操作的句柄
-struct DIR
-{
-    ///目录的名字
-    char              directory_name_[PATH_MAX + 1];
-
-    ///当前处理的句柄
-    HANDLE            current_handle_;
-
-    ///返回的dirent_结果
-    dirent           *dirent_;
-
-    /// The struct for intermediate results.
-    WIN32_FIND_DATAA  fdata_;
-
-    ///是否已经就开始找的标志
-    int               started_reading_;
-};
 
 // If we are using winsock2 then the SO_REUSEADDR feature is broken
 // SO_REUSEADDR=1 behaves like SO_REUSEPORT=1. (SO_REUSEPORT is an

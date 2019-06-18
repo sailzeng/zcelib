@@ -51,12 +51,12 @@ public:
     //重置FRAME DATA的数据
     inline void reset_framehead();
     //填充数据
-    inline void fill_write_data(const unsigned int size_data, const char *src_data);
+    inline void fill_write_data(const uint32_t size_data, const char *src_data);
     //读取数据
-    inline void get_data(unsigned int &size_data, char *dest_data) const;
+    inline void get_data(uint32_t& size_data, char *dest_data) const;
 
     //增加DATA数据
-    int add_data(unsigned int add_size, char *add_data);
+    int add_data(uint32_t add_size, char *add_data);
 
     //交换自己Rcv ,Snd Peer Info
     void exchange_rcvsnd_peerInfo();
@@ -88,6 +88,7 @@ public:
 
 
 public:
+
     //FRAME包头都尺寸,
     static const size_t  LEN_OF_OGRE_FRAME_HEAD = 20;
 
@@ -100,7 +101,7 @@ public:
 
 public:
     //帧的长度，包括帧头的结构
-    unsigned int ogre_frame_len_;
+    uint32_t ogre_frame_len_;
 
     //对端信息
     OGRE_PEER_ID snd_peer_info_;

@@ -47,7 +47,6 @@ const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len) const
     }
 
     int ret = snprintf(buffer, buf_len, "%08x-%08x", this->u_2uint32_[1], this->u_2uint32_[0]);
-
     if (ret < 0 || ret > static_cast<int>( buf_len) )
     {
         return NULL;

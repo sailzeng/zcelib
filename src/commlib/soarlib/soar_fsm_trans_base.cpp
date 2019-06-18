@@ -59,7 +59,7 @@ void Transaction_Base::on_start()
     trans_touchtimer_id_ = -1;
     trans_create_time_ = 0;
     trace_log_pri_ = RS_DEBUG;
-    process_errno_ = 0;
+    running_errno_ = 0;
 }
 
 
@@ -134,12 +134,12 @@ void Transaction_Base::on_run(void *outer_data, bool &continue_run)
             recv_frame->frame_command_,
             recv_frame->transaction_id_,
             continue_run ? "TRUE" : "FALSE",
-            process_errno_
+            running_errno_
            );
 
     if (!continue_run)
     {
-        if (process_errno_ == 0)
+        if (running_errno_ == 0)
         {
             // 成功退出，修改监控数据
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
@@ -154,7 +154,7 @@ void Transaction_Base::on_run(void *outer_data, bool &continue_run)
                                                          req_command_);
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
                                                          req_game_app_id_,
-                                                         process_errno_);
+                                                         running_errno_);
         }
     }
 }
@@ -177,12 +177,12 @@ void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
             asyncobj_id_,
             fsm_stage_,
             continue_run ? "TRUE" : "FALSE",
-            process_errno_
+            running_errno_
            );
 
     if (!continue_run)
     {
-        if (process_errno_ == 0)
+        if (running_errno_ == 0)
         {
             // 成功退出，修改监控数据
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
@@ -197,7 +197,7 @@ void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
                                                          req_command_);
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
                                                          req_game_app_id_,
-                                                         process_errno_);
+                                                         running_errno_);
         }
     }
 }

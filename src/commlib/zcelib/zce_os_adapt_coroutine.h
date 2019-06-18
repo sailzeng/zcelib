@@ -9,17 +9,21 @@
 *             最开始参考的文章是这个，
 *             http://www.codeproject.com/Articles/4225/Unix-ucontext_t-Operations-on-Windows-Platforms
 *             但发现其实他并不正确，
-*             1.CONTEXT是更加CPU结构所不同的，
+*             1.CONTEXT根据CPU结构所不同的，
 *             2.Windows 下的API GetThreadContext,SetThreadContext ，在64位的环境
-*               下是没法用的。
-*             3.GetThreadContext对当前线程是无效的，
+*               下是没法用的。后面Windows 增加了Wow64GetThreadContext ，
+*             3.GetThreadContext对当前运行线程是无效的，因为当前线程是在运行的。
+*             这点最讨厌，你就不能切换会主线程了，
+*
 *             第二次，我希望用Windows 的Fibers来模拟Linux下的getcontext等函数，但发现
 *             其实Fibers和Context是有本质不同的，Fibers更像线程的对象（过程），Context
-*             更新一个堆栈（点），比如
+*             更像一个堆栈（点），比如
+*             0.context API实现起来更像goto，Fibers的API更像是线程。注意：context的
+*             swapcontext会给你错觉。但其实swapcontext是先保存当前的context到第一个参数，
 *             1.Fibers是无法实现类似SwitchToFiber( GetCurrentFiber() );的调用，其
 *               只能跳入另外一个Fibers，
 *             2.Fibers除了启动阶段和SwitchToFiber 点，不存在一个类似getcontext的点能
-*               切换过去，
+*               切换过去，（getcontext和GetCurrentFiber不是一个东东）
 *             3.无法完全融合的差异的，比如CreateFiber 是自己构造堆栈的，而makecontext
 *               不处理这些事情，要你自己在参数里面决定。
 *             所以……
@@ -28,6 +32,8 @@
 *             在main里面，在里面用make_coroutine生成协程，
 *             在main里面，switch_to_coroutine切换到协程，
 *             在coroutine里面，使用switch_to_main切换到主协程，
+*                    
+*             我在等待C++ 20的协程，最后我干掉这些代码。
 *
 * @note       关于Fibers函数的说明，清参考如下文档，作者写的非常清楚。
 *             ConvertFiberToThread
@@ -96,13 +102,13 @@ namespace ZCE_LIB
 *             http://pubs.opengroup.org/onlinepubs/009695399/functions/makecontext.html
 *             另外，为了包装参数传递，在Windows下，这个函数会new一个结构
 * @return     int 返回0标识成功，
-* @param      uctt         ucontext_t，生成的CONTEXT句柄，
-* @param      stack_size   栈大小
-* @param      back_main
-* @param      fun_ptr      函数指针，接受3个指针参数
-* @param      para1        指针参数1
-* @param      para2        指针参数2
-* @param      para3        指针参数3
+* @param      coroutine_hdl ucontext_t，生成的CONTEXT句柄，
+* @param      stack_size    栈大小
+* @param      back_main     携程最后是否返回main函数
+* @param      fun_ptr       函数指针，接受3个指针参数
+* @param      para1         指针参数1
+* @param      para2         指针参数2
+* @param      para3         指针参数3
 */
 int make_coroutine(coroutine_t *coroutine_hdl,
                    size_t stack_size,

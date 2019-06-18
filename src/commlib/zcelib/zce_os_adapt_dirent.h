@@ -16,6 +16,48 @@
 
 #include "zce_os_adapt_predefine.h"
 
+
+#if defined (ZCE_OS_WINDOWS)
+
+///
+struct dirent
+{
+    /// inode number,WIN32下没用
+    ino_t          d_ino;
+    /// offset to the next dirent,WIN32下没用
+    off_t          d_off;
+
+    //长度记录
+    unsigned short d_reclen;
+
+    ///文件类型,LINUX在2.6.XX后面的版本才支持这个选项
+    unsigned char  d_type;
+
+    //文件名称
+    char           d_name[PATH_MAX + 1];
+};
+
+///readdir等函数操作的句柄
+struct DIR
+{
+    ///目录的名字
+    char              directory_name_[PATH_MAX + 1];
+
+    ///当前处理的句柄
+    HANDLE            current_handle_;
+
+    ///返回的dirent_结果
+    dirent* dirent_;
+
+    /// The struct for intermediate results.
+    WIN32_FIND_DATAA  fdata_;
+
+    ///是否已经就开始找的标志
+    int               started_reading_;
+};
+
+#endif
+
 namespace ZCE_LIB
 {
 

@@ -1,5 +1,6 @@
 # Compiled Object files
 obj
+*.obj
 *.slo
 *.lo
 *.o
@@ -34,10 +35,10 @@ obj
 log
 *.log
 
+
 *.tlog
 *.pch
 *.ipch
-
 *.gch
 *~
 
@@ -46,17 +47,18 @@ log
 
 *.aps
 
-*.db3
-
 #
-*.tmp
 
 #微软的一些临时文件
 ~$*.*
+*.tmp
 
 #这些目录都忽视
+.vs
 bin
 lib
 log
-Debug
-Release
+Win32-Debug
+Win32-Release
+x64-Debug
+x64-Release

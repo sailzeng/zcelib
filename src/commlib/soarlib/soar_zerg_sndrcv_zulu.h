@@ -23,7 +23,7 @@
 /******************************************************************************************
 class Zulu_SendRecv_Package
 ******************************************************************************************/
-class Zulu_SendRecv_Package : public Tibetan_SendRecv_Package
+class Zulu_SendRecv_Package : public SendRecv_Package_Base
 {
 
 protected:

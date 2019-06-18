@@ -11,20 +11,42 @@
 #
 #===================================================================================================================
 
+#===================================================================================================================
+
+#这个是编译平台相关的宏，变量等
+include $(ZCELIB_ROOT)/src/make/Makefile.linux
+
+#检查操作系统的位数
+OS_BITS := $(shell getconf LONG_BIT)
 
 PATH_DEV  :=$(ZCELIB_ROOT)
 
+
 #源代码的根目录，也就是makefile的共用文件放置的目录
 PATH_SRC  :=$(PATH_DEV)/src
-
 #编译的obj文件放置的目录
-PATH_OBJ  :=$(PATH_DEV)/obj
-
+PATH_OBJ  :=$(PATH_DEV)/obj/linux/$(VERSIONTYPE)
 #生成的lib放置的目录，
-PATH_LIB  :=$(PATH_DEV)/lib
-
+PATH_LIB  :=$(PATH_DEV)/lib/linux/$(VERSIONTYPE)
 #生成dll，bin文件放置的目录
-PATH_BIN  :=$(PATH_DEV)/bin
+PATH_BIN  :=$(PATH_DEV)/bin/linux/$(VERSIONTYPE)
+
+
+#===================================================================================================================
+
+#:= 是可以向下级makefile传递的变量定义方式。
+#目前没有根据操作系统位数，编译版本(debug，release)进行区分，这样的麻烦是多版本编译时会有一些麻烦，也许以后会加入。
+ifeq ($(compile_object),staticlib) 
+OUTFILE := $(PATH_LIB)/lib$(PRGNAME).a
+endif
+
+ifeq ($(compile_object),dynamiclib) 
+OUTFILE := $(PATH_LIB)/lib$(PRGNAME).so
+endif
+
+ifeq ($(compile_object),executeprg) 
+OUTFILE := $(PATH_BIN)/$(PRGNAME)
+endif
 
 #===================================================================================================================
 
@@ -40,14 +62,13 @@ INC_RAPIDXML = -I$(PATH_DEPENDINC)/rapidxml-1.13
 INC_DEV_OUTER :=  $(INC_MYSQL) $(INC_SQLITE)  $(INC_RAPIDXML)  $(INC_LUALIB)  $(INC_PROTOBUF)
 
 #===================================================================================================================
-#检查操作系统的位数
-OS_BITS := $(shell getconf LONG_BIT)
+#外部头文件
 
 ifeq ($(OS_BITS),32)
-PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x86_32
+PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x86
 endif
 ifeq ($(OS_BITS),64)
-PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x86_64
+PATH_DEPENDLIB= $(ZCELIB_DEPEND)/lib/linux/x64
 endif
 
 LIB_DEV_OUTER=-L$(PATH_DEPENDLIB) -lmysqlclient -lz -lsqlite -llua -lprotobuf-lite
@@ -73,10 +94,7 @@ LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
 
 
-#===================================================================================================================
 
-#这个是编译平台相关的宏，变量等
-include $(ZCELIB_ROOT)/src/make/Makefile.linux
 
 
 

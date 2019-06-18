@@ -7,7 +7,7 @@
 /******************************************************************************************
 class Tibetan_SendRecv_Package
 ******************************************************************************************/
-Tibetan_SendRecv_Package::Tibetan_SendRecv_Package():
+SendRecv_Package_Base::SendRecv_Package_Base():
     tibetan_recv_service_(0, 0),
     tibetan_send_service_(0, 0),
     tibetan_proxy_service_(0, 0),
@@ -19,7 +19,7 @@ Tibetan_SendRecv_Package::Tibetan_SendRecv_Package():
 {
 }
 
-Tibetan_SendRecv_Package::~Tibetan_SendRecv_Package()
+SendRecv_Package_Base::~SendRecv_Package_Base()
 {
     //清理已经分配的缓冲区
     if (tibetan_send_appframe_)
@@ -50,7 +50,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-void Tibetan_SendRecv_Package::set_services_id(const SERVICES_ID &recv_service,
+void SendRecv_Package_Base::set_services_id(const SERVICES_ID &recv_service,
                                                const SERVICES_ID &send_service,
                                                const SERVICES_ID &proxy_service,
                                                size_t frame_len)
@@ -71,30 +71,30 @@ void Tibetan_SendRecv_Package::set_services_id(const SERVICES_ID &recv_service,
 }
 
 //取得收到的事务ID
-void Tibetan_SendRecv_Package::get_recv_transid(unsigned int &trans_id)
+void SendRecv_Package_Base::get_recv_transid(unsigned int &trans_id)
 {
     trans_id = recv_trans_id_;
 }
 
-unsigned int Tibetan_SendRecv_Package::get_send_transid()
+unsigned int SendRecv_Package_Base::get_send_transid()
 {
     return trans_id_builder_;
 
 }
 
-unsigned int Tibetan_SendRecv_Package::get_backfill_transid()
+unsigned int SendRecv_Package_Base::get_backfill_transid()
 {
     return backfill_trans_id_;
 }
 
 //取得测试的APPFRAME
-Zerg_App_Frame *Tibetan_SendRecv_Package::get_send_appframe()
+Zerg_App_Frame *SendRecv_Package_Base::get_send_appframe()
 {
     return tibetan_send_appframe_;
 }
 
 //取得接收的APPFRAME
-Zerg_App_Frame *Tibetan_SendRecv_Package::get_recv_appframe()
+Zerg_App_Frame *SendRecv_Package_Base::get_recv_appframe()
 {
     return tibetan_recv_appframe_;
 }

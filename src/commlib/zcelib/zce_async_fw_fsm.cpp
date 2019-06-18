@@ -1,6 +1,6 @@
 
 #include "zce_predefine.h"
-#include "zce_async_fw_fsm.h"
+#include "zce_async_fsm.h"
 #include "zce_os_adapt_error.h"
 #include "zce_trace_debugging.h"
 
@@ -17,7 +17,7 @@ ZCE_Async_FSM::~ZCE_Async_FSM()
 }
 
 //状态机运行的代码，这只是一个参考示例
-void ZCE_Async_FSM::on_run(void *outer_data, bool &continue_run)
+void ZCE_Async_FSM::on_run(const void *outer_data, bool &continue_run)
 {
     ZCE_UNUSED_ARG(outer_data);
     enum

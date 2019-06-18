@@ -20,7 +20,7 @@ int main(int argc , char * argv[])
                                                 LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT,
                                                 LOG_HEAD_RECORD_NONE);
     ZCE_TRACE_FILELINE(RS_DEBUG);
-    test_fmt_splice(argc, argv);
+    test_coroutine2(argc, argv);
     //test_out_buffer(argc, argv);
 	//test_progress_timer(argc,argv);
     //test_bytes_hash(argc, argv);
