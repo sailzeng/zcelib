@@ -1,15 +1,15 @@
 # ZCELIB
 
-**ZCELIB**（ZEN Communication Environment Libary）是我课余开发的一个轮子（类库），轮子里面的很多代码都是若干年前的了。代码的开发大部分利用的一些闲暇时间，当时就希望以后他能开源。很多年后，代码逐渐丰满。
+**ZCELIB**（ZEN Communication Environment Libary）是我课余开发的一个轮子（类库），主要用于**加速后台C++跨平台开发**。里面的很多代码都是若干年前的了。代码的开发大部分利用的一些闲暇时间，当时就希望以后他能开源。很多年后，代码逐渐丰满。
 为什么会有这个库呢，因为痒痒。痒了就要挠。其实很多代码可以用其他的库代替,但是他们有些不是太大太笨重，就是不具备可读性。一个轻巧的功能何必用数十万行代码实现?
 
 ZCELIB运用的场景主要是后台开发。特别是游戏后台开发。
 
-代码只考虑两个平台的通用,Windows(x86,x64)下的Visual C++, 和Linux下的GCC.虽然我相信跨越其他平台也不是难事,但是那不是我写这套代码的目的.
+**跨平台代码只考虑两个平台,Windows(x86,x64)下的Visual C++, 和Linux下的GCC**。虽然我相信跨越其他平台也不是难事,但是那不是我写这套代码的目的.
 
-## 为什么取名ZCE LIB？
+## 为什么取名ZCELIB？
 
-全程是**ZEN Communication Environment**，而为啥要有一个ZEN，这个问题其实很难回答，
+全称是**ZEN Communication Environment**，而为啥要有一个ZEN，这个问题其实很难回答，
 
 大家如果有兴趣看过3D版本肉蒲团的英文名称就知道了，ZEN & SEX，其实如果说完全和自己无关那是骗人，但主要原因仍然是ZEN是禅的意思。TAO是道，期望自己的库名字酷一点。
 
@@ -19,44 +19,44 @@ ZCELIB是一个网络开放的基本类库，可以跨平台在Windows,Linux下�
 
 已经比较齐全的功能
 
-- OS适配层，为了适应WINDOWS和LINUX两个环境的代码增加的一层，同时都有一些扩展，基本可以替代ACE了。这部分其实用不少有趣的代码，主要思路是在Windows下模拟Posix的代码。让我的代码可以在Windows下直接调试。这部分代码都是以 zce\_os\_adapt\_XXX 开头命名的。代码都是在ZCE_LIB名字空间下，后面的函数名称和POSIX函数名称基本移植。。比较大块的功能包括，网络，时间，文件系统，GETOPT，C STRING的一些函数，线程，各种同步锁，共享内存的处理，进程和线程的监控。
+- **OS适配层**，为了适应WINDOWS和LINUX两个环境的代码增加的一层，同时都有一些扩展，基本可以替代ACE了。这部分其实用不少有趣的代码，主要思路是在Windows下模拟Posix的代码。让我的代码可以在Windows下直接调试。这部分代码都是以 zce\_os\_adapt\_XXX 开头命名的。代码都是在ZCE_LIB名字空间下，后面的函数名称和POSIX函数名称基本移植。。比较大块的功能包括，网络，时间，文件系统，GETOPT，C STRING的一些函数，线程，各种同步锁，共享内存的处理，进程和线程的监控。
 
-- LOG日志库和调试库，以及一些调试的宏的封装,用于记录日志,可以定义分割日志的方式等(大小,日期),日志可以定级输出，输出点包括文件，stdout，stderr,Windows下的TRACE, 调试库,提供完善的调试方法,VC在这方面很强,偷学了一些.调试还可以输出当前的堆栈信息等。早起的日志类其实是对ACE日志的封装，但自己的代码要独立成行的时候还是把原来的那个改造了拿出来用了。另外提供一个完全模版化的日志输出接口
+- **LOG日志库和调试库**，以及一些调试的宏的封装,用于记录日志,可以定义分割日志的方式等(大小,日期),日志可以定级输出，输出点包括文件，stdout，stderr,Windows下的TRACE, 调试库,提供完善的调试方法,VC在这方面很强,偷学了一些.调试还可以输出当前的堆栈信息等。早起的日志类其实是对ACE日志的封装，但自己的代码要独立成行的时候还是把原来的那个改造了拿出来用了。另外提供一个完全模版化的日志输出接口。
 
-- TIME 时间和定时器，原来打算只用 timeval，结果发现Time在网络编程中无处不在，还是有一个自己的封装比较容易控制，结果就有了ZCE\_Time\_Value这个非常底层的类，他内部就是 timeval，好在他在Visual C++也有，在OS适配曾，就封装了各种系统的时间到timeval的转换，有了Time当然就要有定时器，我们的定时器是有2种封装，一种是比较常见的TimerHeap 定时器堆，一种是 TimerWheel 定时器时间轮，相对而言，TimerWheel具有更加强大的性能。
+- **TIME 时间和定时器**，原来打算只用 timeval，结果发现Time在网络编程中无处不在，还是有一个自己的封装比较容易控制，结果就有了ZCE\_Time\_Value这个非常底层的类，他内部就是 timeval，好在他在Visual C++也有，在OS适配层，就封装了各种系统的时间到timeval的转换。没有使用C++ 11的chrono的原因是在后台，C++和C的混用程度很高。所以timeval具有更大的可移植性。有了Time当然就要有定时器，我们的定时器是有2种封装，一种是比较常见的TimerHeap 定时器堆，一种是 TimerWheel 定时器时间轮，相对而言，TimerWheel具有更加强大的性能。
 
-- NET网络封装，包括网络函数，OO的封装包括网络地址，UDP，TCP的封装，包括阻塞和非阻塞的发送，接收接口。连接器Connector和接收器Acceptor。可以大大方便你的开发。（本来这部分完全是使用ACE的，但最后还是去掉了ACE的部分代码，所以还是被迫自己实现了一个网络层。）
+- **NET网络封装**，包括网络函数，OO的封装包括网络地址，UDP，TCP的封装，包括阻塞和非阻塞的发送，接收接口。连接器Connector和接收器Acceptor。可以大大方便你的开发。（本来这部分完全是使用ACE的，但最后还是去掉了ACE的部分代码，所以还是被迫自己实现了一个网络层。）
 
-- Reactor反应器，包括select 的反应器，在Windows下和Linux下都可以使用，epoll的反应器，
+- **Reactor反应器**，包括select 的反应器，在Windows下和Linux下都可以使用，SELECT的反应器，epoll的反应器。
 
-- Thread线程封装，线程包括OS层的封装，OO的封装包括线程对象，线程的管理器，
+- **Thread线程封装**，线程包括OS层的封装，OO的封装包括线程对象，线程的管理器，线程之间的管道封装等。
 
-- MMAP STL   一套在共享内存里面实用的STL（大部分接口类似，但实现还是完全不一样的。）对于MMAP STL的一些代码,我封装他们纯属无奈,其实我不认为使用MMAP有多大好处.我喜欢线程和普通内存,但是如果使用多进程的模型,而且要有一个持久存储时,你就必须用共享内存.而几乎所有的容器模板(包括ACE的)都使用了指针,而指针这种东西对于共享内存又是天敌.不过也好,可以通过写这些东西,彻底理解STL.(虽然我认定多线程的代码可以美丽优雅,决不逊色于多进程的各种模型,但是持久存储那是一堵墙)，而持久存储也许是一个好看但并不太实用的东西,恢复现场可能会有无数的问题.小心。
+- **MMAP STL**   游戏服务器GameServer，很多时候需要进行内存管理，同时希望崩溃后能立即恢复。所以就有了这套在共享内存里面实用的STL。（大部分接口类似，但实现还是完全不一样的。）对于MMAP STL的一些代码,我封装他们纯属无奈,其实我不认为使用MMAP有多大好处.我喜欢线程和普通内存,但是如果使用多进程的模型,而且要有一个持久存储时,你就必须用共享内存.而几乎所有的容器模板(包括ACE的)都使用了指针,而指针这种东西对于共享内存又是天敌.不过也好,可以通过写这些东西,彻底理解STL.(虽然我认定多线程的代码可以美丽优雅,决不逊色于多进程的各种模型,但是持久存储那是一堵墙)，而持久存储也许是一个好看但并不太实用的东西,恢复现场可能会有无数的问题.小心。
 
-- MySQL接口封装,完整和方便是这个库最大的好处。我在2005年甚至封装了STMT.前卫把。封装接口和原生接口类似,原生API是还不错，但还是有很多细节没有屏蔽。OO封装分成connect，cmd，result几个部分封装，封装包装了重连，自动释放等功能。同时也有STMT的一组实用封装。但MySQL的STMT在多表的情况下实用并不方便，必须每个表保存一个STMT对象。（不如Oracle）所以原意实用的人不多。
+- **MySQL接口封装**，完整和方便是这个库最大的好处。我在2005年甚至封装了STMT。前卫把。封装接口和原生接口类似,原生API是还不错，但还是有很多细节没有屏蔽。OO封装分成connect，cmd，result几个部分封装，封装包装了重连，自动释放等功能。同时也有STMT的一组实用封装。但MySQL的STMT在多表的情况下实用并不方便，必须每个表保存一个STMT对象。（不如Oracle）所以原意实用的人不多。
 
-- SQLite  SQLite 是一个好数据库。
+- **SQLite**  SQLite 是一个好嵌入式数据库，做简单的配置管理是非常好的。
 
-- 加解密
+- **加解密**，字节处理封装，可以对数据量进行加密和解密。封装的加密算法很多。包括TEA，DES，DES3，XTEA，XXTEA，GOST，RC5，RC6，CAST5，CAST6，MARS，AES，在加上不同的块大小，KEY长度，轮数的定义，这些算法一起搞个协议栈对抗外挂不是什么难事把。，另外，对于流，提供了CRC的交织算法。
 
 - Hash算法，包括MD5，SHA-1等。
 
-- 快速压缩算法
+- **快速压缩算法**，主要是对标LZ4进行了一个开发。LZ4的速度真TMD的快。我尝试努力逼近他。失败了。但我的代码的优势在于我在一些保护上做的更加完整一些。比较快速压缩如果用于协议。防止问题更加重要。
 
 - INI XML    INI和XML配置文件读取，会将配置读取到一个配置树上，另外，还有一个和Win32的API类似INI文件的读写,（不过也就是因为想和他的API类似,把代码搞复杂了），这块代码估计是这儿最老的代码，原来里面还有我当年的工号，9527，这是你的终生编号.
 
-- iNotify    这个有一个简单的封装，甚至可以在Windows和Linux两个平台下使用。
+- **iNotify**   iNotify 机制是对于目录，文件发生变化是产生的事件进行回调处理（比如日志发生了改变）。对这个反应器进行了简单封装，目前甚至可以在Windows和Linux两个平台下使用，（当然底层反应器不一样，没辙）。
 
 
-- MMAP       操作库,包括一些类似STL的模版,
+- MMAP  操作库,包括一些类似STL的模版。
 
 - SERVERKIT  服务器的工具类，目前提供了一个使用MMAP的状态统计类。
 
 - PIDFILE    防止服务器多次启动的PID文件类，很有意思，发现UNIX通信卷2也讲过这些东西。土呀，还是土呀。
 
-- RADOM 随机数的封装,这个代码其实和BOOST没有啥关系。是从GNU的数学课中慢慢扣出来的，而且我增加了一个薄薄的模板封装。从而让实用更加方便。
+- RADOM 随机数的封装,这个代码其实和BOOST没有啥关系。是从GNU的数学库中慢慢扣出来的，而且我增加了一个薄薄的模板封装。从而让实用更加方便。
 
-- Lua接口的封装，
+- Lua接口的封装，游戏中常见
 
 ### 未来可能会进一步完善的功能
 
@@ -67,26 +67,16 @@ ZCELIB是一个网络开放的基本类库，可以跨平台在Windows,Linux下�
 
 
 
-## 代码目录的说明
-
 ## 如何编译
-
-### 外部库的下载地址和编译
-
-ZCE依赖有一些一下外部库，详细请见后面的外部库说明。虽然我也推荐你自己下载各个库自己编译，但为了方便起见，我还是提供了一个外部库的包装下载地址。
-
-外部依赖的库包，里面的对于Windows的代码，我都提供了VC++ 2013的工程，你可以自己用VC++2013编译，会自动把文件放到lib目录下面。你可以任意编译X86，X64的版本。目录上都有区分。
-
-而对于Linux，请选择GCC 4.8以上的版本作为编译器，在include目录下，有一个Makefile，直接make就会把几个依赖库的文件编译放到lib目录下，因为Linux系统的特点，我没有直接提供交叉编译的方法，比如在X64下没有提供编译x86的库的方式。
 
 ### Linux下的编译
 
 Linux下的编译先要定义两个环境变量。
 
     export  ZCELIB_ROOT="/home/share/zcelib/zcelib.git"
-    export  ZCELIB_DEPEND="/home/share/zcelib/zcelib.depend"
+    export  ZCELIB_DEPEND="/home/share/zcelib.git/third_party"
 
-我使用的环境是Ubuntu的14.04，GCC 4.8.
+我使用的环境是Ubuntu的14.04，GCC 4.8 以上版本，我自己最近使用的是Ubuntu 18.04 ,GCC 7.8。
 
 然后先编译外部库，在depend目录下面直接有Makefile，可以直接使用，编译后的文件会放入lib目录，
 其他ZCELiB的代码都提供Makefile，可以直接在各个目录下编译。工程的src目录下也提供Make所有代码的Makefile。可以直接使用。
@@ -106,8 +96,17 @@ Windows下的ZCE还是提供用VC++2013的工程，可以直接用来编译代�
 
 代码部分功能裁剪的调整在zce\_predefine.h这个预编译头文件里面。
 
+### 外部库的下载地址和编译
 
-##ZCELIB使用的外部库说明：
+ZCE依赖有一些一下外部库，详细请见后面的外部库说明。虽然我也推荐你自己下载各个库自己编译，但为了方便起见，我还是打包了外部库到目录里面。避免你们折腾。
+
+外部依赖的库包，里面的对于Windows的代码，我都提供了VC++ 2019的工程，你可以自己用VC++2019编译，会自动把文件放到lib目录下面。你可以任意编译X86，X64的版本。目录上都有区分。
+
+而对于Linux，请选择GCC 4.8以上的版本作为编译器，在include目录下，有一个Makefile，直接make就会把几个依赖库的文件编译放到lib目录下，因为Linux系统的特点，我没有直接提供交叉编译的方法，比如在X64下没有提供编译x86的库的方式。
+
+### ZCELIB使用的第三方库说明：
+
+第三方代码都放在third_party目录下：
 
 1. MySQL
 2. RapidXML
@@ -115,13 +114,13 @@ Windows下的ZCE还是提供用VC++2013的工程，可以直接用来编译代�
 4. Protobuf
 5. Lualib
 
-你可以在zce_predefine.h文件里面找到相应的开关关闭实用这些外部库，当然如果关闭了，对应的封装你也就无法实用了。
+你可以在zce_predefine.h文件里面找到相应的**编译开关**关闭实用这些外部库，当然如果关闭了，对应的封装你也就无法实用了。
 相应外部库包括头文件部分和库文件部分。头文件部分放在include目录下，库文件放在lib目录下，库文件目录安装Linux和Windows的做了细分。package目录用于存放各种安装包。
 
 大致目录结构是：
 
 
-    ├─package
+    ├─install
     ├─include
     │  ├─lualib-5.1.5
     │  ├─mysql-linux-5.6.22
@@ -131,30 +130,33 @@ Windows下的ZCE还是提供用VC++2013的工程，可以直接用来编译代�
     │  └─sqlite-3.8.8.1
     ├─lib
     │   ├─linux
-    │   │  ├─x86_32
-    │   │  └─x86_64
+    │   │  ├─x86
+    │   │  └─x64
     │   ├─win
-    │   │  ├─Win32-v120-Debug
-    │   │  ├─Win32-v120-Release
-    │   │  ├─x64-v120-Debug
-    │   │  └─x64-v120-Release
+    │   │  ├─Win32-Debug
+    │   │  ├─Win32-Release
+    │   │  ├─x64-Debug
+    │   │  └─x64-Release
 
-### MySQL
+#### MySQL
+
 版本5.6.22
 MySQL的头文件和库文件都来自MySQL的各种安装包提取出来的。
 MySQL的头文件在Windows 下和Linux略有区别，所以头文件分成了2个目录存放。而相应的Windows Library，MySQL的安装包里面有2套。一套是static 库，一套是动态库，但static库在Visual Studio 2013下无法实用，会提示链接错误，只能实用动态库的版本。
 Linux下，我们只使用相应的静态库。
 
-MySQL的库文件在链接的时候会需要libz，但这个包里面没有打，请自己安装一个。
+MySQL的库文件在链接的时候会需要libz，如果不想使用这个版本，请自己安装一个。
 
     sudo apt-get install libz-dev
 
-### RepidXML
+#### RepidXML
+
 版本1.13
 RepidXML的源码全部来自源安装包。
 这个库用于解析XML文件，在配置读取等代码有实用。据说这个库的速度比tinyXML还要快，而且其只有头文件，不需要编译。这是我们选择他的原因。
 
-### SQLite
+#### SQLite
+
 版本3.8.8.1
 SQLite的源码全部来自源安装包。里面的shell.c是命令行工具的去掉了。
 在include的目录下包括SQLite的所有源码，以及我增加相应的Visual Studio 2013的工程文件。编译后相应的static库文件会放入lib目录下对应的子目录。
@@ -169,7 +171,8 @@ Linux下，Protobuf也有相应的AutoMakefile，编译会产生动态库和静�
 
 未来是否支持PB 3.0 ，估计要看看心情。PB3.0 在很多游戏领域支持并不是特别好。
 
-### Lualib
+#### Lualib
+
 版本5.1.5
 在include的目录下包括Lualib的所有源码，以及我增加相应的Visual Studio 2013的工程文件。编译后相应的static库文件会放入lib目录下对应的子目录。
 Linux下提供了Lualib相应的Makefile，Linux下，我们只使用相应的静态库。
@@ -188,18 +191,18 @@ Visual Studio的版本库管理其实挺麻烦的，（其实Linux下也不容�
 
 工程文件内部的设置如下,对于各种Configuration 和 Platform（填写时，Configuration 可以选择 All Configurations Platform 可以选择 All Platforms ），我们的配置都是一致的，参考如下：
 
-- Output Directory  即 $(OutDir) 填写  $(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/
-- Intermediate Directory 填写  $(SolutionDir)../obj/$(PlatformName)-$(PlatformToolset)-$(Configuration)/$(ProjectName)/
+- Output Directory  即 $(OutDir) 填写  $(SolutionDir)../lib/$(Platform)-$(Configuration)/
+- Intermediate Directory 填写  $(SolutionDir)../obj/$(Platform)-$(Configuration)/$(ProjectName)/
 - Character Set 填写  Not Set
 - TargetName 选择  $(ProjectName)
 - Output File 填写  $(OutDir)$(TargetName)$(TargetExt)
 
 如果外部需要包含我们的库，目录配置上这样写，，引入库的文件名称也可以填写成一样。省事很多，也容易找到问题。
--Additional Libary Directories可以填写为 $(SolutionDir)../lib/$(PlatformName)-$(PlatformToolset)-$(Configuration)/
+-Additional Libary Directories可以填写为 $(SolutionDir)../lib/$(PlatformName)-$(Configuration)/
 
 解释一下一些关键字。
-- $(PlatformName)是Win32或者x64
-- $(PlatformToolset)是v120，也就是Visual Studio 2013的版本号。大致是v110是2012，v100是2010，v90是2008，v80是2005，v71是2003，v70是是2002，v60是大名鼎鼎的Visaul Studio 6.0。为啥我这么熟悉？我都用过。
+- $(Platform)是Win32或者x64
+- $(PlatformToolset)，如果需要多个VS版本同时存在（这种倒霉项目不少），请在前面的目录里面增加$(PlatformToolset)。目前VS2019是v142，也就是Visual Studio 2019的版本号。大致是v140是2017，v130是2015，v120是2014，v110是2012，v100是2010，v90是2008，v80是2005，v71是2003，v70是是2002，v60是大名鼎鼎的Visaul Studio 6.0。为啥我这么熟悉？我都用过。
 - $(Configuration) 是Debug或者Release。
 
 
@@ -224,7 +227,7 @@ STL(SGI)那是世界上最聪明的几个脑瓜程序员实现的东西,诬蔑�
 
 - scottxu, 很早贡献过一套共享内存红黑树代码
 - inmoreliu,linkerlin，帮助打过酱油，
-- sonicmao，rong，他们的很多代码我都参考过。
+- sonicmao，rong，他们的部分代码我都参考过。
 - chrislin，贡献过很多类似boost的代码
 - chweiling，errayzhao，djiang，liangfeng，sasukeliu，stefzhou，yunfeiyang，pascalshen平台开发组的兄弟们，2011年的版本他们贡献良多，这套代码能在几万台机器上一起跑。感谢他们。
 - yunfeiyang 在2011-2012一段时间一直在帮忙增加代码和帮忙改写我这个流氓种下的bug，
