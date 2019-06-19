@@ -42,6 +42,7 @@ log
 *.gch
 *~
 
+
 *.pid
 *.MMAP
 
@@ -62,3 +63,7 @@ Win32-Debug
 Win32-Release
 x64-Debug
 x64-Release
+
+#VS的一些文件，
+*.user
+*.suo
