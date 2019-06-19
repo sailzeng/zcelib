@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2036
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29009.5
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "commlib", "commlib", "{E3E63F9D-ADF2-451D-82DE-E89530D142F7}"
 EndProject
@@ -10,7 +10,6 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "makefile", "makefile", "{A927BDE9-D270-48DC-8DEA-B8D636877EAC}"
 	ProjectSection(SolutionItems) = preProject
 		make\makefile.define = make\makefile.define
-		make\makefile.linux = make\makefile.linux
 		make\makefile.rule = make\makefile.rule
 	EndProjectSection
 EndProject

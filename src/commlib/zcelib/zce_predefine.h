@@ -5,7 +5,7 @@
 * @version
 * @date       2003-5-14
 * @brief      所有预定义信息描述，包括所有的外部头文件，全局使用的宏，
-*             个个平台兼容性的一些小东东，数值的typedef，
+*             各个平台兼容性的一些小东东，数值的typedef，
 *
 *
 *  @details   在yunfei改进后的再改进一下，发现每个人看问题的思路还是不一样的。
@@ -471,7 +471,6 @@ extern "C"
 //ZCE_USE_PROTOBUF 宏在zce_config.h文件里面控制
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
-
 
 #include <google/protobuf/descriptor.h>
 #include <google/protobuf/descriptor.pb.h>

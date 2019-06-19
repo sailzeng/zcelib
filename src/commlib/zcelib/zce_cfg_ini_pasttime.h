@@ -131,7 +131,7 @@ public:
     ///修改Section
     bool   write_private_section(const char *sec_name,
                                  const char *write_string);
-    //写入Int
+    ///写入Int
     bool   write_private_int(const char *sec_name,
                              const char *key_name,
                              const int nvalue);
@@ -146,71 +146,6 @@ public:
     ///删除Section
     bool   del_private_section(const char *sec_name);
 
-public:
-
-
-
-
-
-	bool   write_privateprofile_string(const char* sec_name,
-									   const char* key_name,
-									   const char* write_string,
-									   const char* file_name);
-
-    /*！
-    * @brief   静态函数，从字段中间取得某个INT的配置，参考WINDOWS API GetPrivateProfileInt
-    * @param   sec_name
-    *          Points to a null-terminated string containing the section name in the
-    *           initialization file.
-    * @param   key_name
-    *          Points to the null-terminated string containing the key name whose
-    *          value is to be retrieved. This value is in the form of a string;
-    *          the GetPrivateProfileInt function converts the string into an integer
-    *          and returns the integer.
-    * @param   default_int
-    *          Specifies the default value to return if the key name cannot be found
-    *          in the initialization file.
-    * @param   file_name
-    *          Points to a null-terminated string that names the initialization file.
-    *          If this parameter does not contain a full path to the file, Windows
-    *          searches for the file in the Windows directory.
-    * @return  bool
-    *          If the function succeeds, the return value is the integer equivalent
-    *          of the string following the specified key name in the specified
-    *          initialization file. If the key is not found, the return value is the
-    *          specified default value. If the value of the key is less than zero,
-    *          the return value is zero.
-    * Remarks
-    *          The function searches the file for a key that matches the name specified
-    *          by the key_name parameter under the section name specified by the sec_name
-    *          parameter. A section in the initialization file must have the following
-    *           form:
-    *          [section]
-    *          key=value
-    *          .
-    *          The GetPrivateProfileInt function is not case-sensitive; the strings in
-    *          sec_name and key_name can be a combination of uppercase and lowercase letters.
-    */
-
-    /*!
-    * @brief   静态函数，写某个段落，模仿WIN32接口WritePrivateProfileSection
-    * @param   sec_name
-    *          Points to a null-terminated string containing the name of the section in
-    *          which data is written. This section name is typically the name of the
-    *          calling application.
-    * @param   write_string
-    *          Points to a buffer containing the new key names and associated values
-    *           that are written to the named section.
-    * @param   file_name
-    *          Points to a null-terminated string containing the name of the initialization
-    *          file. If this parameter does not contain a full path for the file, the
-    *          function searches the Windows directory for the file. If the file does not exist
-    *          and file_name does not contain a full path, the function creates the file in
-    *          the Windows directory. The function does not create a file if file_name contains
-    *          the full path and filename of a file that does not exist.
-    * @return  bool
-    *          If the function succeeds, the return value is nonzero.
-    */
 
 
 
