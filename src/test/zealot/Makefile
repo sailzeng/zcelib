@@ -24,12 +24,15 @@ compile_object = executeprg
 #如果你不适用预定头文件，可以屏蔽下面这个定义
 PREH_FILE = zealot_predefine.h
 
+#zealot只测试ZCELIB
+INCLDIRS = $(INC_ZCELIB) $(INC_DEV_OUTER)
+LIBARYS  = $(LIB_ZCELIB) $(LIB_DEV_OUTER)
 
 #DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
 #如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
-DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib   
+DEPENDS_DIR = $(PATH_SRC)/commlib/zcelib   
 
-DEPENDS_LIB := $(ZCELIB_ROOT)/lib/libzcelib.a
+DEPENDS_LIB = $(PATH_LIB)/libzcelib.a
 
 #这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
 include $(ZCELIB_ROOT)/src/make/Makefile.define

@@ -49,8 +49,8 @@ CPP_FILE = $(wildcard ./*.cpp )
 SRC_FILE = $(C_FLIE) $(CPP_FILE)
 
 #通过.c,.cpp文件名称得到.O文件名称
-O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o, $(C_FLIE))
-O_CPPFILE = $(patsubst ./%.cpp, $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o, $(CPP_FILE))
+O_CFILE   = $(patsubst ./%.c, $(PATH_OBJ)/$(PRGNAME)/%.o, $(C_FLIE))
+O_CPPFILE = $(patsubst ./%.cpp, $(PATH_OBJ)/$(PRGNAME)/%.o, $(CPP_FILE))
 O_FILE  = $(O_CFILE) $(O_CPPFILE)
 #通过.o文件，得到.d文件的名称
 DEP_FILE = $(patsubst %.o, %.d,$(O_FILE))
@@ -70,7 +70,7 @@ MISS_DEP = $(patsubst %.d,%.o, $(filter-out $(wildcard $(DEP_FILE)),$(DEP_FILE))
 ifneq ($(PREH_FILE),) 
 PREH_DIR = $(PREH_FILE).gch
 PREH_GCH = $(PREH_DIR)/$(PREH_FILE).$(VERSIONTYPE).gch
-PREH_DEP = $(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/$(PREH_FILE).d
+PREH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(PREH_FILE).d
 endif
 
 all : $(OUTFILE) 
@@ -166,10 +166,10 @@ endif
 
 #我们将.o文件放到了另外一个目录
 #生成.o和.d文件,@echo让这个命令不显示,;表示前面的命令要执行完成后，后面的命令才执行
-$(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.c
+$(PATH_OBJ)/$(PRGNAME)/%.o : ./%.c
 	$(COMPILE.cc) $< -o $@  
 	
-$(PATH_OBJ)/$(VERSIONTYPE)/$(PRGNAME)/%.o : ./%.cpp
+$(PATH_OBJ)/$(PRGNAME)/%.o : ./%.cpp
 	$(COMPILE.cc) $< -o $@ 
 
 
@@ -189,15 +189,19 @@ ifeq ($(ccache),1 )
 endif    
 
 mkdir:
-	if (test ! -d $(PATH_BIN)) ; then $(MKDIR) $(PATH_BIN) ; fi ;
-	if (test ! -d $(PATH_LIB)) ; then $(MKDIR) $(PATH_LIB) ; fi ;
-	if (test ! -d $(PATH_OBJ)) ; then $(MKDIR) $(PATH_OBJ) ; fi ;
-	if (test ! -d $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x86_debug/$(PRGNAME) ; fi ;
-	if (test ! -d $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_release/$(PRGNAME) ; fi ;
-	if (test ! -d $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x86_neutral/$(PRGNAME) ; fi ;
-	if (test ! -d $(PATH_OBJ)/linux_x64_debug/$(PRGNAME) ) ;   then $(MKDIR) $(PATH_OBJ)/linux_x64_debug/$(PRGNAME) ; fi ;
-	if (test ! -d $(PATH_OBJ)/linux_x64_release/$(PRGNAME) ) ; then $(MKDIR) $(PATH_OBJ)/linux_x64_release/$(PRGNAME) ; fi ;
-	if (test ! -d $(PATH_OBJ)/linux_x64_neutral/$(PRGNAME)l ) ; then $(MKDIR) $(PATH_OBJ)/linux_x64_neutral/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_BIN)) ; then $(MKDIR) $(PARENT_PATH_BIN) ; fi ;
+	if (test ! -d $(PARENT_PATH_BIN)/x86);   then $(MKDIR) $(PARENT_PATH_BIN)/x86 ; fi ;
+	if (test ! -d $(PARENT_PATH_BIN)/x64);   then $(MKDIR) $(PARENT_PATH_BIN)/x64 ; fi ;
+	if (test ! -d $(PARENT_PATH_LIB)) ; then $(MKDIR) $(PARENT_PATH_LIB) ; fi ;
+	if (test ! -d $(PARENT_PATH_LIB)/x86);   then $(MKDIR) $(PARENT_PATH_LIB)/x86 ; fi ;
+	if (test ! -d $(PARENT_PATH_LIB)/x64);   then $(MKDIR) $(PARENT_PATH_LIB)/x64 ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)) ; then $(MKDIR) $(PARENT_PATH_OBJ) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/x86_debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/x86_debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/x86_release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x86_release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/x86_neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x86_neutral/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME) ; fi ;
+	if (test ! -d $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME) ; fi ;
 ifneq ($(PREH_FILE),) 
 	if (test ! -d $(PREH_DIR)) ; then $(MKDIR) $(PREH_DIR) ; fi ;
 endif    

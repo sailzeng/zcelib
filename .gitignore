@@ -5,7 +5,11 @@ obj
 *.lo
 *.o
 
+*.tlog
+*.pch
+*.ipch
 *.gch
+*~
 
 # Compiled Dynamic libraries
 *.so
@@ -19,51 +23,46 @@ obj
 *.lib
 *.exe
 *.dll
-
 *.idb
 *.pdb
 *.ilk
 *.lastbuildstate
 
+#VS的一些文件，目录
+.vs
 *.sdf
 *.opensdf
 
 *.suo
 *.obj
 *.ncb
+*.user
 
+
+#执行后的一些文件。
+*.pid
+*.MMAP
+*.aps
 log
 *.log
 
-
-*.tlog
-*.pch
-*.ipch
-*.gch
-*~
-
-
-*.pid
-*.MMAP
-
-*.aps
-
-#
 
 #微软的一些临时文件
 ~$*.*
 *.tmp
 
-#这些目录都忽视
-.vs
+#这些目录都忽视，需要时手动添加
 bin
 lib
 log
+Debug
+Release
 Win32-Debug
 Win32-Release
 x64-Debug
 x64-Release
+third_party
 
-#VS的一些文件，
-*.user
-*.suo
+
+
+
