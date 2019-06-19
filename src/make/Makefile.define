@@ -365,6 +365,8 @@ COMPILE.cc      := $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
 PRECOMPILE.c    := $(CC)  $(CFLAGS)  $(CPPFLAGS) -x c++-header -c
 PRECOMPILE.cc   := $(CXX) $(CCFLAGS) $(CPPFLAGS) -x c++-header -c 
 
+#-rdynamic方便使用backtrace_symbols函数跟踪堆栈
+
 PRELINK  ?=
 PURELINK ?=
 LDFLAGS  ?= -rdynamic

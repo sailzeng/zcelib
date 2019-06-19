@@ -112,11 +112,11 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 #else
 #endif
     // Get current process & thread.
-    process = GetCurrentProcess();
-    cur_thread = GetCurrentThread();
+    process = ::GetCurrentProcess();
+    cur_thread = ::GetCurrentThread();
 
     // Initialize dbghelp library.
-    if (!SymInitialize(process, NULL, TRUE))
+    if (!::SymInitialize(process, NULL, TRUE))
     {
         return -1;
     }
@@ -128,15 +128,15 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 
     uint32_t k = 0;
     // Enumerate call stack frame.
-    while (StackWalk64(IMAGE_FILE_MACHINE_I386,
-                       process,
-                       cur_thread,
-                       &stackframe,
-                       &context,
-                       NULL,
-                       SymFunctionTableAccess64,
-                       SymGetModuleBase64,
-                       NULL))
+    while (::StackWalk64(IMAGE_FILE_MACHINE_I386,
+           process,
+           cur_thread,
+           &stackframe,
+           &context,
+           NULL,
+           SymFunctionTableAccess64,
+           SymGetModuleBase64,
+           NULL))
     {
         use_len = 0;
         // End reaches.
@@ -146,7 +146,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
         }
 
         // Get symbol.
-        if (SymFromAddr(process, stackframe.AddrPC.Offset, NULL, symbol))
+        if (::SymFromAddr(process, stackframe.AddrPC.Offset, NULL, symbol))
         {
             use_len += snprintf(line_out + use_len, LINE_OUTLEN - use_len, " %s", symbol->Name);
 
@@ -173,8 +173,8 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
         ZCE_LOG(dbg_lvl, "[BACKTRACE] %u, %s.", k + 1, line_out);
         ++k;
     }
-
-    SymCleanup(process);    // Clean up and exit.
+    // Clean up and exit.
+    SymCleanup(process);    
     free(symbol);
 
 #endif

@@ -640,10 +640,9 @@ bool ZCE_INI_Pt::write_private_int(const char *sec_name,
     const size_t TMP_BUFFER_LEN = 64;
     char write_string[TMP_BUFFER_LEN + 1];
     snprintf(write_string, TMP_BUFFER_LEN, "%d", nvalue);
-    return write_privateprofile_string(sec_name,
-                                       key_name,
-                                       write_string,
-                                       file_name_.c_str());
+    return write_private_string(sec_name,
+                                key_name,
+                                write_string);
 }
 
 //写入Bool变量
@@ -664,32 +663,30 @@ bool ZCE_INI_Pt::write_private_bool(const char *sec_name,
         strncpy(write_string, "FASLE", TMP_BUFFER_LEN);
     }
 
-    return write_privateprofile_string(sec_name, key_name, write_string, file_name_.c_str());
+    return write_private_string(sec_name, key_name, write_string);
 }
 
 //删除Key
 bool ZCE_INI_Pt::del_private_key(const char *sec_name, const char *key_name)
 {
 
-    return write_privateprofile_string(sec_name, key_name, NULL, file_name_.c_str());
+    return write_private_string(sec_name, key_name, NULL);
 }
 
 //删除Section
 bool ZCE_INI_Pt::del_private_section(const char *sec_name)
 {
 
-    return write_privateprofile_string(sec_name,
-                                       NULL,
-                                       NULL,
-                                       file_name_.c_str());
+    return write_private_string(sec_name,
+                                NULL,
+                                NULL);
 }
 
 
 //写INI文件的谋个字段，
-bool ZCE_INI_Pt::write_private_string(
-    const char *sec_name,
-    const char *key_name,
-    const char *write_string)
+bool ZCE_INI_Pt::write_private_string(const char* sec_name,
+                                      const char* key_name,
+                                      const char* write_string)
 {
 
     int operate(0);
