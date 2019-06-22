@@ -18,7 +18,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_LOCK_NULL_LOCK_H_
+#define ZCE_LIB_LOCK_NULL_LOCK_H_
 
 #include "zce_lock_guard.h"
 #include "zce_lock_base.h"
@@ -121,4 +122,6 @@ protected:
     int    lock_;
 
 };
+
+#endif //ZCE_LIB_LOCK_NULL_LOCK_H_
 

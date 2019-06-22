@@ -27,8 +27,8 @@
 *             用于概要性的，多次进行的，每次操作时间不长的计时（累计）。
 *
 */
-
-#pragma once
+#ifndef ZCE_LIB_TIME_PROGRESS_COUNTER_H_
+#define ZCE_LIB_TIME_PROGRESS_COUNTER_H_
 
 #include "zce_boost_non_copyable.h"
 
@@ -277,4 +277,6 @@ protected:
 
 	PROGRESS_TIMER progress_timer_;
 };
+
+#endif //# ZCE_LIB_TIME_PROGRESS_COUNTER_H_
 

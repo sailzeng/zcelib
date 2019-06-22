@@ -1,5 +1,5 @@
-
-#pragma once
+#ifndef ZCE_LIB_SOCKET_ACCEPTOR_CONNECTOR_H_
+#define ZCE_LIB_SOCKET_ACCEPTOR_CONNECTOR_H_
 
 #include "zce_boost_non_copyable.h"
 #include "zce_os_adapt_socket.h"
@@ -43,5 +43,5 @@ public:
 
 };
 
-
+#endif //#ifndef ZCE_LIB_SOCKET_ACCEPTOR_CONNECTOR_H_
 

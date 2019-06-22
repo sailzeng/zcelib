@@ -14,7 +14,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_MML_COMMAND_H_
+#define ZCE_LIB_MML_COMMAND_H_
 
 //∫ˆ ”¥Û–°–¥
 class LessofCaseString
@@ -155,5 +156,5 @@ protected:
     MMLCMD_PARAMETER        mml_cmd_parameter_;
 };
 
-
+#endif //_COMM_LIB_MML_COMMAND_H_
 

@@ -58,7 +58,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 
     //我还没有时间看完dbghelp所有的东西,目前的代码参考后一个版本居多,目前这个东东必须有pdb文件，
     //http://blog.csdn.net/skies457/article/details/7201185
-
+    //https://github.com/adobe/chromium/blob/master/base/debug/stack_trace_win.cc
     // Max length of symbols' name.
     const size_t MAX_NAME_LENGTH = 256;
 
@@ -139,7 +139,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
            NULL))
     {
         use_len = 0;
-        // End reaches.
+        // 结束处理
         if (stackframe.AddrFrame.Offset == 0 || k > SIZE_OF_BACKTRACE_FUNC)
         {
             break;

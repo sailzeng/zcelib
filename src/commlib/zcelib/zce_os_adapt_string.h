@@ -19,7 +19,9 @@
 */
 
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_STRING_H_
+#define ZCE_LIB_OS_ADAPT_STRING_H_
+
 
 #include "zce_trace_debugging.h"
 
@@ -104,7 +106,6 @@ struct yun_char_traits < wchar_t > : public std::char_traits < wchar_t >
     {
         return ::wcschr(s, 0);
     }
-
 };
 
 
@@ -419,7 +420,7 @@ const char *str_replace(const char *src,
                         const char *sub,
                         const char *replace);
 
-//==========================================================================================================
+//----------------------------------------------------------------------------------------------------------
 //用于一些表格字符串分析函数
 
 /*!
@@ -458,31 +459,34 @@ const char *skip_separator(const char *str, char separator_char);
 
 
 
-//==========================================================================================================
+//----------------------------------------------------------------------------------------------------------
 
 
-/*!
-* @brief      一个简单的打印输出某个内存地址信息的函数，就是简单的内存翻译为16进制字符串
-* @param      stream  文件流对象，stdout,stderr也都可以
-* @param      mem     调试的内存指针
-* @param      mem_len 指针长度，
-* @note       如果是日志输出提供了方便的辅助类，这仅仅用于不需要使用日志的地方
-*/
-void memory_debug(FILE *stream, const unsigned char *mem, size_t mem_len);
+
 
 
 
 /*!
 * @brief      用 11 02 03 0E E0         ..... 格式的输出，指针信息。调试打印内存信息
 *             格式信息更加丰富，和清晰，当然打印也更加慢
-* @param      stream  文件流对象，stdout,stderr也都可以
 * @param      mem     调试的内存指针
 * @param      mem_len 指针长度
+* @param      stream  文件流对象，stdout,stderr也都可以
 */
-void memory_debug_ex(FILE *stream, const unsigned char *mem, size_t mem_len);
+void memory_debug(const unsigned char *mem, 
+                  size_t mem_len,
+                  std::vector<std::string> &str_ary);
 
 
-//==========================================================================================================
+/*!
+* @brief      将调试信息输出到stream
+* @param      mem     调试的内存指针
+* @param      mem_len 指针长度，
+* @param      stream  文件流对象，stdout,stderr也都可以
+*/
+void memory_debug(const unsigned char* mem, size_t mem_len, FILE* stream);
+
+//----------------------------------------------------------------------------------------------------------
 
 /*!
 * @brief      快速内存拷贝函数，主要就是利用字节对齐，8字节的拷贝快过单字节进行，
@@ -502,7 +506,7 @@ void *fast_memcpy(void *dst, const void *src, size_t sz);
 
 void *fast_memcpy2(void *dst, const void *src, size_t sz);
 
-//==========================================================================================================
+//----------------------------------------------------------------------------------------------------------
 
 
 /*!
@@ -551,5 +555,5 @@ void string_to_ptr(const std::string &stdstr, ptr_type *ptr)
 
 };
 
-
+#endif //ZCE_LIB_STRING_EX_H_
 

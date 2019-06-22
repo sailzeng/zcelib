@@ -15,7 +15,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_TIMER_HANDLER_BASE_H_
+#define ZCE_LIB_TIMER_HANDLER_BASE_H_
 
 #include "zce_boost_non_copyable.h"
 #include "zce_time_value.h"
@@ -58,4 +59,4 @@ public:
     //handle_close
 };
 
-
+#endif //# ZCE_LIB_TIMER_HANDLER_BASE_H_

@@ -27,7 +27,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_SERVER_STATUS_H_
+#define ZCE_LIB_SERVER_STATUS_H_
 
 #include "zce_share_mem_posix.h"
 #include "zce_shm_array.h"
@@ -458,4 +459,5 @@ protected:
 
 
 
+#endif //_ZCE_LIB_SERVER_STATUS_H_
 

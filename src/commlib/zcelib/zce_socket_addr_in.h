@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZCE_LIB_SOCKET_ADDR_IN_
+#define ZCE_LIB_SOCKET_ADDR_IN_
 
 #include "zce_socket_addr_base.h"
 
@@ -167,5 +168,5 @@ inline const char *ZCE_Sockaddr_In::get_host_addr_port(char *addr_buf, size_t bu
                                        buf_size);
 }
 
-
+#endif  //ZCE_LIB_SOCKET_ADDR_IN_
 

@@ -7,8 +7,8 @@
 * @brief      进程的MUTEX，必须有名字，
 *
 */
-
-#pragma once
+#ifndef ZCE_LIB_LOCK_PROCESS_MUTEX_H_
+#define ZCE_LIB_LOCK_PROCESS_MUTEX_H_
 
 #include "zce_lock_base.h"
 #include "zce_lock_guard.h"
@@ -64,5 +64,5 @@ protected:
 
 };
 
-
+#endif //ZCE_LIB_LOCK_PROCESS_MUTEX_H_
 

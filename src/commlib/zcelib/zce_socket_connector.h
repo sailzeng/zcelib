@@ -14,7 +14,8 @@
 * @note
 *
 */
-#pragma once
+#ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
+#define ZCE_LIB_SOCKET_CONNECTOR_H_
 
 #include "zce_boost_non_copyable.h"
 
@@ -72,5 +73,5 @@ public:
 
 };
 
-
+#endif //#ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
 

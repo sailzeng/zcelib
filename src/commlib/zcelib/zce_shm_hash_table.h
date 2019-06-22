@@ -17,7 +17,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_SMEM_HASH_TABLE_H_
+#define ZCE_LIB_SMEM_HASH_TABLE_H_
 
 #include "zce_shm_predefine.h"
 
@@ -893,5 +894,5 @@ public:
 
 };
 
-
+#endif //ZCE_LIB_SMEM_HASH_TABLE_H_
 

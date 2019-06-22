@@ -10,7 +10,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_MYSQL_DB_FIELD_H_
+#define ZCE_LIB_MYSQL_DB_FIELD_H_
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
@@ -165,5 +166,5 @@ inline ZCE_Mysql_Field::operator std::string() const
 
 #endif //#if defined MYSQL_VERSION_ID
 
-
+#endif //ZCE_LIB_MYSQL_DB_FIELD_H_
 

@@ -124,8 +124,8 @@
 *             Ŷ~~
 */
 
-#pragma once
-
+#ifndef ZCE_LIB_BYTES_HASH_H_
+#define ZCE_LIB_BYTES_HASH_H_
 
 #include "zce_bytes_base.h"
 
@@ -640,4 +640,5 @@ size_t djb_hash(const unsigned char *str, size_t str_len);
 
 };
 
+#endif //ZCE_LIB_BYTES_HASH_H_
 

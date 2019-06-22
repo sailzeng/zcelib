@@ -12,7 +12,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_EVENT_REACTOR_BASE_H_
+#define ZCE_LIB_EVENT_REACTOR_BASE_H_
 
 #include "zce_boost_non_copyable.h"
 #include "zce_trace_debugging.h"
@@ -197,5 +198,5 @@ inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle,
     return 0;
 }
 
-
+#endif //ZCE_LIB_EVENT_REACTOR_BASE_H_
 

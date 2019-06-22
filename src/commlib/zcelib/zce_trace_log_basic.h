@@ -26,8 +26,8 @@
 *
 */
 
-#pragma once
-
+#ifndef ZCE_LIB_TRACE_LOG_BASE_H_
+#define ZCE_LIB_TRACE_LOG_BASE_H_
 
 #include "zce_boost_non_copyable.h"
 #include "zce_lock_thread_mutex.h"
@@ -435,4 +435,10 @@ protected:
     std::list<std::string> time_logfile_list_;
 
 };
+
+
+
+
+
+#endif //ZCE_LIB_TRACE_LOG_BASE_H_
 

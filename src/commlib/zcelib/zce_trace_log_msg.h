@@ -15,8 +15,8 @@
 *
 */
 
-#pragma once
-
+#ifndef ZCE_LIB_TRACE_LOG_MESSAGE_H_
+#define ZCE_LIB_TRACE_LOG_MESSAGE_H_
 
 #include "zce_trace_log_basic.h"
 
@@ -110,5 +110,5 @@ protected:
 
 };
 
-
+#endif //ZCE_LIB_TRACE_LOG_MESSAGE_H_
 

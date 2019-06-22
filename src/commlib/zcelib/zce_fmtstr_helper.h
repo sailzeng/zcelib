@@ -20,7 +20,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_FMTSTR_HELPER_H_
+#define ZCE_FMTSTR_HELPER_H_
 
 #include "zce_fmtstr_format.h"
 #include "zce_os_adapt_time.h"
@@ -751,3 +752,4 @@ inline void output_helper(char *buffer,
 
 };//ZCE_LIB
 
+#endif

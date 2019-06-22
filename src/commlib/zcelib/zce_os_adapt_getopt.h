@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_GET_OPT_H_
+#define ZCE_LIB_OS_ADAPT_GET_OPT_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -67,4 +68,4 @@ int getopt_long_only(int argc,
                      int *longindex);
 }; // end of namespace ZCE_LIB
 
-
+#endif //ZCE_LIB_OS_ADAPT_GET_OPT_H_

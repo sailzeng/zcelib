@@ -14,7 +14,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_MYSQL_DB_COMMAND_H_
+#define ZCE_LIB_MYSQL_DB_COMMAND_H_
 
 //如果你要用MYSQL的库，会包含MYSQL的头文件
 #if defined ZCE_USE_MYSQL
@@ -298,5 +299,5 @@ inline ZCE_Mysql_Command &ZCE_Mysql_Command::operator +=(const std::string &sqlc
 
 #endif //#if defined ZCE_USE_MYSQL
 
-
+#endif //ZCE_LIB_MYSQL_DB_COMMAND_H_
 

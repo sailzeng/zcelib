@@ -27,8 +27,8 @@
 *
 */
 
-#pragma once
-
+#ifndef _ZCE_FORMAT_OUT_STRING_H_
+#define _ZCE_FORMAT_OUT_STRING_H_
 
 namespace ZCE_LIB
 {
@@ -137,4 +137,4 @@ void fmt_double(char *buffer,
 
 }
 
-
+#endif

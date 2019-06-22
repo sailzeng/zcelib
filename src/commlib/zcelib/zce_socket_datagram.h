@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZCE_LIB_SOCKET_DATAGRAM_H_
+#define ZCE_LIB_SOCKET_DATAGRAM_H_
 
 class ZCE_Time_Value;
 class ZCE_Sockaddr;
@@ -133,5 +134,5 @@ inline ssize_t ZCE_Socket_DataGram::sendto (const void *buf,
                             flags);
 }
 
-
+#endif //#ifndef ZCE_LIB_SOCKET_DATAGRAM_H_
 

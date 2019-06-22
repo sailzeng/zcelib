@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZCE_LIB_SOCKET_STREAM_H_
+#define ZCE_LIB_SOCKET_STREAM_H_
 
 class ZCE_Time_Value;
 class ZCE_Sockaddr;
@@ -57,5 +58,5 @@ public:
 
 };
 
-
+#endif //#ifndef ZCE_LIB_SOCKET_STREAM_H_
 

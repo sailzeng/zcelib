@@ -261,46 +261,63 @@ const char *ZCE_LIB::skip_separator(const char *str, char separator_char)
 //==========================================================================================================
 
 //调试打印内存信息，就是简单的内存翻译为16进制字符串
-void ZCE_LIB::memory_debug(FILE *stream, const unsigned char *mem, size_t mem_len)
+void ZCE_LIB::memory_debug( const unsigned char *mem, size_t mem_len, FILE* stream)
 {
     //%zu不知道VC从什么年代支持的
-    fprintf(stream, "DEBUG memory[%p][%zu]", mem, mem_len);
-    for (size_t i = 0; i < mem_len; ++i)
+    fprintf(stream, "DEBUG memory[%p][%zu] \n", mem, mem_len);
+    std::vector<std::string> str_ary;
+    ZCE_LIB::memory_debug(mem, mem_len, str_ary);
+    for (std::string& out : str_ary)
     {
-        fprintf(stream, "%02x", mem[i]);
+        fprintf(stream, "%s\n", out.c_str());
     }
-    fprintf(stream, "\n");
+    
 }
 
 
 //用 11 02 03 0E E0         ..... 格式的输出，指针信息。调试打印内存信息
-void ZCE_LIB::memory_debug_ex(FILE *stream, const unsigned char *mem, size_t mem_len)
+void ZCE_LIB::memory_debug(const unsigned char* mem,
+                           size_t mem_len,
+                           std::vector<std::string> &str_ary)
 {
     //60个字符换行
-    const unsigned int LINE_OUT_NUM = 60;
-
-    unsigned char ascii_str[LINE_OUT_NUM + 1];
+    const size_t LINE_OUT_NUM = 60;
+    const size_t SPEARATOR_LEN = 2;
+    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN +1] = {0};
     ascii_str[LINE_OUT_NUM] = '\0';
+    const size_t HEX_STR_LEN = 4;
+    char hex_str[HEX_STR_LEN] = {0};
+
+    //头部用4个空格作为分割富豪
+    
+    ascii_str[0] = ' ';
+    ascii_str[1] = ' ';
+    
+    std::string line_string;
+    line_string.reserve(LINE_OUT_NUM * 4 + 8);
+    str_ary.reserve(mem_len / LINE_OUT_NUM + 1);
+
     size_t j = 0;
     for (size_t i = 0; i < mem_len ; ++i, ++j)
     {
         //换行
         if (i % LINE_OUT_NUM == 0 && i != 0  )
         {
-            fprintf(stream, "  %s\n", ascii_str);
+            line_string += ascii_str;
+            str_ary.push_back(line_string);
             //从头开始记录
             j = 0;
         }
         unsigned char bytmp = *(mem + i);
-        fprintf(stream, "%02X ", bytmp);
+        snprintf(hex_str,HEX_STR_LEN,"%02X ", bytmp);
+        line_string += hex_str;
 
-
-        //只考虑能显示的字符，特殊字符更换为'.'
-        if (bytmp <= 0x20 || bytmp >= 0xFA )
+        //只考虑能显示的字符，特殊字符更换为'.',扩展ASICII码就不考虑了
+        if (bytmp <= 0x20 || bytmp >= 0x7F )
         {
             bytmp = '.';
         }
-        ascii_str [j] = bytmp;
+        ascii_str [SPEARATOR_LEN +j] = bytmp;
     }
 
     //如果不是LINE_OUT_NUM 长度整除，要对齐，输出最后的字符串
@@ -309,11 +326,12 @@ void ZCE_LIB::memory_debug_ex(FILE *stream, const unsigned char *mem, size_t mem
         //为了对齐，打印空格
         for (size_t k = 0; k < LINE_OUT_NUM - mem_len % LINE_OUT_NUM; k++)
         {
-            fprintf(stream, "%s", "   ");
+            snprintf(hex_str,HEX_STR_LEN,"   ");
+            line_string += hex_str;
         }
-
-        ascii_str[j] = '\0';
-        fprintf(stream, "  %s\n", ascii_str);
+        ascii_str[SPEARATOR_LEN+j] = '\0';
+        line_string += ascii_str;
+        str_ary.push_back(line_string);
     }
 }
 

@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef ZCE_LIB_BUS_ONE_WAY_H_
+#define ZCE_LIB_BUS_ONE_WAY_H_
 
 #include "zce_bus_mmap_pipe.h"
 
@@ -35,5 +35,5 @@ public:
 
 };
 
-
+#endif //ZCE_LIB_BUS_ONE_WAY_H_
 

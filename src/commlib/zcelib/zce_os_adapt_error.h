@@ -15,7 +15,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_ERROR_H_
+#define ZCE_LIB_OS_ADAPT_ERROR_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -488,5 +489,5 @@ inline void clear_last_error()
 }
 };
 
-
+#endif //ZCE_LIB_OS_ADAPT_ERROR_H_
 

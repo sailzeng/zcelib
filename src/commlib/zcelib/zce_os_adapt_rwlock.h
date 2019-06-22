@@ -31,7 +31,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_RWLOCK_H_
+#define ZCE_LIB_OS_ADAPT_RWLOCK_H_
 
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_mutex.h"
@@ -148,9 +149,8 @@ int pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);
 
 
-#if defined (ZCE_USE_WIN_SLIM)
-#endif
-
 };
+
+#endif //ZCE_LIB_OS_ADAPT_RWLOCK_H_
 
 

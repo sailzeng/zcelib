@@ -42,9 +42,8 @@
 * 幸运的是，这可是一次，真正没有尽头的旅程啊！”
 *
 */
-
-#pragma once
-
+#ifndef _ZCE_LIB_UUID_GENERATOR_H_
+#define _ZCE_LIB_UUID_GENERATOR_H_
 
 #include "zce_boost_random.h"
 
@@ -391,13 +390,6 @@ public:
 
 protected:
 
-    ///
-    static ZCE_UUID128_Generator *instance();
-    ///
-    static void clean_instance();
-
-protected:
-
     ///发生器使用什么发生方式
     UUID128_GENERATOR_TYPE        generator_type_;
 
@@ -416,5 +408,5 @@ protected:
 
 };
 
-
+#endif //# ZCE_LIB_UUID_64_GENERATOR_H_
 

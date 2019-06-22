@@ -17,7 +17,8 @@
 *             BTW：我不喜欢小英。
 */
 
-#pragma once
+#ifndef ZCE_LIB_BOOST_ANY_H_
+#define ZCE_LIB_BOOST_ANY_H_
 
 //不建议你使用using namespace;
 namespace ZCE_LIB
@@ -246,4 +247,4 @@ inline const value_type *unsafe_any_cast(const any *operand)
 }
 };
 
-
+#endif //ZCE_LIB_BOOST_ANY_H_

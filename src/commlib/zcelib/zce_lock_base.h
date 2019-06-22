@@ -16,7 +16,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_LOCK_BASE_H_
+#define ZCE_LIB_LOCK_BASE_H_
 
 #include "zce_lock_guard.h"
 #include "zce_boost_non_copyable.h"
@@ -147,5 +148,5 @@ private:
 
 };
 
-
+#endif //ZCE_LIB_LOCK_BASE_H_
 

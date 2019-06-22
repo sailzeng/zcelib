@@ -10,7 +10,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_LOCK_GUARD_H_
+#define ZCE_LIB_LOCK_GUARD_H_
 
 #include "zce_boost_non_copyable.h"
 
@@ -183,5 +184,5 @@ protected:
 
 };
 
-
+#endif //ZCE_LIB_LOCK_GUARD_H_
 

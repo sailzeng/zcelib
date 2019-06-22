@@ -16,7 +16,8 @@
 */
 
 
-#pragma once
+#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
+#define ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
 
 #include "zce_lock_synch_traits.h"
 #include "zce_thread_msgque_template.h"
@@ -360,5 +361,5 @@ public:
 
 };
 
-
+#endif //#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
 

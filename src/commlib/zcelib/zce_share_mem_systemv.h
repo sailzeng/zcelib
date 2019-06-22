@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
+#define ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -55,5 +56,5 @@ protected:
     void               *shm_addr_;
 };
 
-
+#endif //ZCE_LIB_SHARE_MEMORY_SYSTEM_V_H_
 

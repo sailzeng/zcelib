@@ -10,7 +10,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_DLFCN_H_
+#define ZCE_LIB_OS_ADAPT_DLFCN_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -51,5 +52,5 @@ const char *dlerror (void);
 
 };
 
-
+#endif //ZCE_LIB_OS_ADAPT_DLFCN_H_
 

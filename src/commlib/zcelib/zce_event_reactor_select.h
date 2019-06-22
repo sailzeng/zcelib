@@ -21,9 +21,8 @@
 * @note
 *
 */
-
-#pragma once
-
+#ifndef ZCE_LIB_EVENT_REACTOR_SELECT_H_
+#define ZCE_LIB_EVENT_REACTOR_SELECT_H_
 
 #include "zce_event_reactor_base.h"
 
@@ -117,4 +116,5 @@ protected:
 	fd_set       para_exception_fd_set_;
 };
 
+#endif //ZCE_LIB_EVENT_REACTOR_EPOLL_H_
 

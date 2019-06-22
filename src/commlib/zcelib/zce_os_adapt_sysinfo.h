@@ -26,7 +26,8 @@
 *             听了一首有趣的歌，《流川枫和苍井空》黑撒的，莫名的想抽烟，。
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_SYSINFO_H_
+#define ZCE_LIB_OS_ADAPT_SYSINFO_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -144,5 +145,5 @@ int read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info);
 
 };
 
-
+#endif //ZCE_LIB_OS_ADAPT_SYSCONF_H_
 

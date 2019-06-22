@@ -16,7 +16,8 @@
 */
 
 
-#pragma once
+#ifndef ZCE_LIB_SHM_RB_TREE_H_
+#define ZCE_LIB_SHM_RB_TREE_H_
 
 #include "zce_shm_predefine.h"
 
@@ -1271,4 +1272,4 @@ public:
 
 };
 
-
+#endif //ZCE_LIB_SHM_RB_TREE_H_

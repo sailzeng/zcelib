@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZCE_LIB_SHARE_MEMORY_MMAP_H_
+#define ZCE_LIB_SHARE_MEMORY_MMAP_H_
 
 #include "zce_os_adapt_predefine.h"
 #include "zce_boost_non_copyable.h"
@@ -70,4 +71,5 @@ protected:
     std::size_t         shm_size_;
 };
 
+#endif //ZCE_LIB_SHARE_MEMORY_MMAP_H_
 

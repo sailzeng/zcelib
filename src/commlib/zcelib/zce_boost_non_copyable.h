@@ -13,7 +13,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_BOOST_NON_COPYABLE_H_
+#define ZCE_LIB_BOOST_NON_COPYABLE_H_
 
 /*!
 * @brief      不能复制的通过声明但不实现，拷贝构造函数和赋值函数，达到无法复制的目的
@@ -38,4 +39,5 @@ private:
     const ZCE_NON_Copyable &operator=( const ZCE_NON_Copyable & );
 };
 
+#endif //ZCE_LIB_BOOST_NON_COPYABLE_H_
 

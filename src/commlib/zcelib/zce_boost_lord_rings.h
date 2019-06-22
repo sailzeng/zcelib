@@ -21,7 +21,8 @@
 *             喔姐姐，我想回家，牵着我的手，我有些困了
 */
 
-#pragma once
+#ifndef ZCE_LIB_BOOST_LORD_RINGS_H_
+#define ZCE_LIB_BOOST_LORD_RINGS_H_
 
 /*!
 * @namespace ZCE_LIB 主要用于模版类的名字空间，为了和std统一，模版类一般用了小写
@@ -484,5 +485,5 @@ protected:
 
 };
 
-
+#endif //#ifndef ZCE_LIB_BOOST_LORD_RINGS_H_
 

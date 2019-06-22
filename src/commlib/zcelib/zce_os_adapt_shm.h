@@ -1,5 +1,6 @@
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_
+#define ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_
 
 
 
@@ -102,6 +103,6 @@ int shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf);
 
 
 
-
+#endif //ZCE_LIB_OS_ADAPT_SHARE_MEMORY_H_
 
 

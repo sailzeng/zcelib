@@ -1,5 +1,5 @@
-#pragma once
-
+#ifndef ZCE_LIB_BUS_TWO_WAY_H_
+#define ZCE_LIB_BUS_TWO_WAY_H_
 
 #include "zce_bus_mmap_pipe.h"
 
@@ -122,4 +122,5 @@ inline int ZCE_BusPipe_TwoWay::push_back_recvpipe(const ZCE_LIB::dequechunk_node
 }
 
 
+#endif //ZCE_LIB_BUS_TWO_WAY_H_
 

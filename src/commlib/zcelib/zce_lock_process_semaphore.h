@@ -7,7 +7,8 @@
 * @brief      进程间同步用的信号灯，
 *
 */
-#pragma once
+#ifndef ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
+#define ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
 
 #include "zce_lock_base.h"
 #include "zce_lock_guard.h"
@@ -70,5 +71,5 @@ protected:
 
 };
 
-
+#endif //ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
 

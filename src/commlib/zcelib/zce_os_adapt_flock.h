@@ -21,7 +21,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_FLOCK_H_
+#define ZCE_LIB_OS_ADAPT_FLOCK_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -154,4 +155,5 @@ int flock_unlock (zce_flock_t *lock,
 
 };
 
+#endif //ZCE_LIB_OS_ADAPT_FLOCK_H_
 

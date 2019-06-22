@@ -41,7 +41,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_CORROUTINE_H_
+#define ZCE_LIB_OS_ADAPT_CORROUTINE_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -152,5 +153,5 @@ int exchage_coroutine(coroutine_t *save_hdl,
                       coroutine_t *goto_hdl);
 };
 
-
+#endif //ZCE_LIB_OS_ADAPT_CORROUTINE_H_
 

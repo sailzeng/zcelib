@@ -11,7 +11,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_EVENT_REACTOR_EPOLL_H_
+#define ZCE_LIB_EVENT_REACTOR_EPOLL_H_
 
 #include "zce_event_reactor_base.h"
 
@@ -180,5 +181,5 @@ inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZC
     }
 }
 
-
+#endif //ZCE_LIB_EVENT_REACTOR_EPOLL_H_
 

@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZCE_LIB_SOCKET_ADDR_IN6_
+#define ZCE_LIB_SOCKET_ADDR_IN6_
 
 //IPV6ÊÇÒ»¸ö
 
@@ -149,4 +150,4 @@ inline const char *ZCE_Sockaddr_In6::get_host_addr_port(char *addr_buf, int addr
                                        addr_size);
 }
 
-
+#endif  //ZCE_LIB_SOCKET_ADDR_IN6_

@@ -25,7 +25,8 @@
 *             http://www.cnblogs.com/fullsail/archive/2012/10/21/2732873.html
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_FILE_H_
+#define ZCE_LIB_OS_ADAPT_FILE_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -190,12 +191,8 @@ protected:
 };
 
 
-
-
 };
 
 
-
-
-
+#endif //ZCE_LIB_OS_ADAPT_FILE_H_
 

@@ -68,7 +68,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
+#define ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 
 
 
@@ -344,5 +345,5 @@ protected:
 };
 
 
-
+#endif //ZCE_LIB_EVENT_HANDLE_INOTIFY_H_
 

@@ -14,8 +14,8 @@
 * @note
 *
 */
-
-#pragma once
+#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
+#define ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 
 #include "zce_boost_lord_rings.h"
 
@@ -153,5 +153,5 @@ public:
 };
 
 
-
+#endif //ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 

@@ -81,7 +81,8 @@
 *
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_CONDITION_H_
+#define ZCE_LIB_OS_ADAPT_CONDITION_H_
 
 #include "zce_os_adapt_predefine.h"
 
@@ -184,5 +185,5 @@ int pthread_cond_signal(pthread_cond_t *cond);
 
 };
 
-
+#endif //ZCE_LIB_OS_ADAPT_CONDITION_H_
 

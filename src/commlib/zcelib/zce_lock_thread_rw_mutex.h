@@ -21,7 +21,8 @@
 *             怀念我的朋友。——《肖申克的救赎》
 */
 
-#pragma once
+#ifndef ZCE_LIB_LOCK_THREAD_RW_MUTEX_H_
+#define ZCE_LIB_LOCK_THREAD_RW_MUTEX_H_
 
 #include "zce_lock_base.h"
 #include "zce_lock_guard.h"
@@ -129,5 +130,7 @@ protected:
 
 };
 
-#endif 
+#endif
+
+#endif //ZCE_LIB_LOCK_THREAD_MUTEX_H_
 

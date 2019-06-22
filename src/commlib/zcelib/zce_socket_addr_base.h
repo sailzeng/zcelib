@@ -1,4 +1,5 @@
-#pragma once
+#ifndef ZCE_LIB_SOCKET_ADDR_BASE_
+#define ZCE_LIB_SOCKET_ADDR_BASE_
 
 #include "zce_os_adapt_socket.h"
 
@@ -87,4 +88,4 @@ inline sockaddr *ZCE_Sockaddr::get_addr (void) const
     return sockaddr_ptr_;
 }
 
-
+#endif  //ZCE_LIB_SOCKET_ADDR_BASE_

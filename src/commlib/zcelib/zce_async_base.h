@@ -16,7 +16,8 @@
 */
 
 
-#pragma once
+#ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_
+#define ZCE_LIB_ASYNC_FRAMEWORK_BASE_
 
 
 #include "zce_boost_lord_rings.h"
@@ -344,5 +345,5 @@ protected:
     size_t  pool_extend_size_;
 };
 
-
+#endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_
 

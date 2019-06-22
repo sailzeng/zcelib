@@ -17,7 +17,8 @@
 *             大部分情况我用ssize_t替换off_t
 */
 
-#pragma once
+#ifndef ZCE_LIB_OS_ADAPT_PREDEFINE_H_
+#define ZCE_LIB_OS_ADAPT_PREDEFINE_H_
 
 //因为我我用预编译头文件的缘故，所以这儿不用包括这个文件
 
@@ -845,5 +846,5 @@ typedef void     *ZCE_SHLIB_HANDLE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-
+#endif //ZCE_LIB_OS_ADAPT_PREDEFINE_H_
 

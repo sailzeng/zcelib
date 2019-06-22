@@ -16,7 +16,8 @@
 */
 
 
-#pragma once
+#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_CONDITION_H_
+#define ZCE_LIB_THREAD_MESSAGE_QUEUE_CONDITION_H_
 
 #include "zce_boost_non_copyable.h"
 #include "zce_lock_thread_mutex.h"
@@ -346,5 +347,5 @@ public:
     }
 };
 
-
+#endif //#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_CONDITION_H_
 
