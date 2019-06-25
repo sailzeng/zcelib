@@ -201,6 +201,7 @@
     <ClInclude Include="zce_event_proactor.h" />
     <ClInclude Include="zce_event_reactor_wfmo.h" />
     <ClInclude Include="zce_lockfree_kfifo.h" />
+    <ClInclude Include="zce_os_adapt_backtrace.h" />
     <ClInclude Include="zce_readfile_cvs.h" />
     <ClInclude Include="zce_boost_any.h" />
     <ClInclude Include="zce_boost_lord_rings.h" />
@@ -224,10 +225,9 @@
     <ClInclude Include="zce_event_reactor_base.h" />
     <ClInclude Include="zce_event_reactor_epoll.h" />
     <ClInclude Include="zce_event_reactor_select.h" />
-    <ClInclude Include="zce_fmtstr_format.h" />
-    <ClInclude Include="zce_fmtstr_helper.h" />
-    <ClInclude Include="zce_fmtstr_snprintf.h" />
-    <ClInclude Include="zce_fmtstr_strnsplice.h" />
+    <ClInclude Include="zce_string_format.h" />
+    <ClInclude Include="zce_string_helper.h" />
+    <ClInclude Include="zce_string_extend.h" />
     <ClInclude Include="zce_id_to_string.h" />
     <ClInclude Include="zce_lock_base.h" />
     <ClInclude Include="zce_lock_file_lock.h" />
@@ -331,6 +331,7 @@
     <ClCompile Include="zce_event_proactor.cpp" />
     <ClCompile Include="zce_event_reactor_wfmo.cpp" />
     <ClCompile Include="zce_lockfree_kfifo.cpp" />
+    <ClCompile Include="zce_os_adapt_backtrace.cpp" />
     <ClCompile Include="zce_readfile_cvs.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />
     <ClCompile Include="zce_bus_mmap_pipe.cpp" />
@@ -348,8 +349,8 @@
     <ClCompile Include="zce_event_reactor_base.cpp" />
     <ClCompile Include="zce_event_reactor_epoll.cpp" />
     <ClCompile Include="zce_event_reactor_select.cpp" />
-    <ClCompile Include="zce_fmtstr_format.cpp" />
-    <ClCompile Include="zce_fmtstr_helper.cpp" />
+    <ClCompile Include="zce_string_format.cpp" />
+    <ClCompile Include="zce_string_helper.cpp" />
     <ClCompile Include="zce_lock_base.cpp" />
     <ClCompile Include="zce_lock_file_lock.cpp" />
     <ClCompile Include="zce_lock_null_lock.cpp" />

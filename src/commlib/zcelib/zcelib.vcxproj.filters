@@ -68,18 +68,6 @@
     <ClInclude Include="zce_event_reactor_select.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_fmtstr_format.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_fmtstr_helper.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_fmtstr_snprintf.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce_fmtstr_strnsplice.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_id_to_string.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -410,6 +398,18 @@
     <ClInclude Include="zce_async_fsm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="zce_os_adapt_backtrace.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_string_format.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_string_helper.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_string_extend.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="zce_boost_random.cpp">
@@ -449,12 +449,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_event_reactor_select.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_fmtstr_format.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce_fmtstr_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_lock_base.cpp">
@@ -710,6 +704,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce_async_coroutine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_os_adapt_backtrace.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_string_format.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce_string_helper.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

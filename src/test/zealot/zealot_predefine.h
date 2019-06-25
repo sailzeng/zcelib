@@ -56,10 +56,9 @@
 #include <zce_timer_queue_wheel.h>
 
 
-#include <zce_fmtstr_helper.h>
-#include <zce_fmtstr_format.h>
-#include <zce_fmtstr_snprintf.h>
-#include <zce_fmtstr_strnsplice.h>
+#include <zce_string_helper.h>
+#include <zce_string_format.h>
+#include <zce_string_extend.h>
 
 
 #include <zce_mysql_connect.h>

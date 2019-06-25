@@ -212,8 +212,8 @@ static const size_t TIMESTR_HTTP_GMT_LEN = 29;
 ///GMT 时间格式字符串的长度，精度到秒
 static const size_t TIMESTR_EMAIL_DATE_LEN = 31;
 
-
-
+///最大格式化长度
+static const size_t MAX_TIMEVAL_STRING_LEN = TIMESTR_EMAIL_DATE_LEN;
 
 
 

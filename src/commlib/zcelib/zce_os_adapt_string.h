@@ -395,19 +395,6 @@ inline void string_split(const std::string &source_str,
 
 
 /*!
-* @brief      将一个字符串根据分割符（也可以是一个字符串）分成2个字符串。
-* @param      src_str 原字符串
-* @param      search_str 分割的字符串
-* @param      str_1 分割的第一个字符串
-* @param      str_2 分割得到的第二个字符串
-*/
-void str_split_into2(const std::string &src_str,
-                     const char *search_str,
-                     std::string &str_1,
-                     std::string &str_2);
-
-
-/*!
 * @brief
 * @return     const char*
 * @param      src
@@ -471,7 +458,7 @@ const char *skip_separator(const char *str, char separator_char);
 *             格式信息更加丰富，和清晰，当然打印也更加慢
 * @param      mem     调试的内存指针
 * @param      mem_len 指针长度
-* @param      stream  文件流对象，stdout,stderr也都可以
+* @param      str_ary 字符串的数组，为什么不用std::ostream呢，因为我可能会要重新格式输出
 */
 void memory_debug(const unsigned char *mem, 
                   size_t mem_len,

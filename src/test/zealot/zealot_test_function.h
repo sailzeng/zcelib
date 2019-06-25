@@ -127,6 +127,10 @@ int test_progress_timer(int  /*argc*/, char* /*argv*/[]);
 
 int test_net_getaddrinfo(int argc, char *argv[]);
 
+
+int test_memory_debug(int /*argc*/, char* /*argv */[]);
+
+
 #endif //
 
 

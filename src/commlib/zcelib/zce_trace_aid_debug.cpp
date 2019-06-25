@@ -18,10 +18,10 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     const size_t SIZE_OF_BACKTRACE_FUNC = 100;
 
 #if defined(ZCE_OS_LINUX)
-    ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Linux GCC. %s", dbg_info);
+    ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Linux GCC with -rdynamic. %s", dbg_info);
     //Windows 下必须是2008或者VISTA之后的SDK才支持，
 #elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
-    ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Windows Visual studio .%s", dbg_info);
+    ZCE_LOG(dbg_lvl, "[BACKTRACE]This program compiled by Windows Visual studio. PDB file is need. %s", dbg_info);
 #else
     ZCE_UNUSED_ARG(SIZE_OF_BACKTRACE_FUNC);
     ZCE_LOG(dbg_lvl, "[BACKTRACE]back_trace_stack don't support this system.%s", dbg_info);

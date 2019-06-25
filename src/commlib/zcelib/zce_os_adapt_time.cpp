@@ -214,7 +214,6 @@ const char *ZCE_LIB::timeval_to_str(const timeval *timeval,
     {
         //参数保护和检查
         ZCE_ASSERT(str_len > ZCE_LIB::TIMESTR_COMPACT_SEC_LEN);
-
         if (str_len <= ZCE_LIB::TIMESTR_COMPACT_SEC_LEN)
         {
             return NULL;

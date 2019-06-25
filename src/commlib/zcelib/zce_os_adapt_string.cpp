@@ -1,5 +1,3 @@
-//
-//Author:ZengXing
 //用于ASNI string函数的补充
 //始于2002-06-22，当然内部反复改写过
 //
@@ -294,7 +292,7 @@ void ZCE_LIB::memory_debug(const unsigned char* mem,
     ascii_str[1] = ' ';
     
     std::string line_string;
-    line_string.reserve(LINE_OUT_NUM * 4 + 8);
+    line_string.reserve(LINE_OUT_NUM * 4 + 12);
     str_ary.reserve(mem_len / LINE_OUT_NUM + 1);
 
     size_t j = 0;
@@ -305,6 +303,7 @@ void ZCE_LIB::memory_debug(const unsigned char* mem,
         {
             line_string += ascii_str;
             str_ary.push_back(line_string);
+            line_string.clear();
             //从头开始记录
             j = 0;
         }

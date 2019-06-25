@@ -10,6 +10,9 @@ int test_foo_snprintf()
     size_t cur_len = 0;
     size_t buf_max_len = 1024;
 
+    ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=## bool_data=## Haha!\n");
+    printf("%s", out_buffer);
+
     int int_data = 123456;
     bool bool_data = false;
     ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? Haha!\n", int_data, bool_data);

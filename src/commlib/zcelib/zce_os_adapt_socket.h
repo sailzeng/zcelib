@@ -697,6 +697,9 @@ inline const char *inet_ntoa(struct in_addr in);
 */
 inline uint32_t inet_addr(const char *cp);
 
+
+
+static const size_t MAX_SOCKETADDR_STRING_LEN = 45;
 /*!
 * @brief      输出IP地址信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>15.IPV6至少长度>39
 * @return     const char*  得到的地址字符串

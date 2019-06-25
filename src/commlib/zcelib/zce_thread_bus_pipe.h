@@ -1,8 +1,43 @@
 
+/*!
+* @copyright  2004-2019  Apache License, Version 2.0 FULLSAIL
+* @filename   zce_thread_bus_pipe.h
+* @author     Sailzeng <sailerzeng@gmail.com>
+* @version    
+* @date       2012年9月18日晚上，中国人民抗日81周年纪念日，81年
+* @brief      
+*             
+*             
+* @details    
+*             
+*             
+*             
+* @note       
+* 
+* 喔　你我霎眼抗战二十年　世界怎变　我答应你那一点　不会变
+*
+* 当天空手空臂我们就上街　没什么声势浩大
+* 但被不安养大　不足养大　哪里怕表态
+* 当中一起经过了时代瓦解　十大执位再十大
+* 路上风急雨大　一起吓大　听惯了警戒
+*
+* 应该珍惜的　即使牺牲了　激起的火花　仍然照耀
+
+* 几响枪火敲破了沉默领土　剩下烧焦了味道
+* 现在少点愤怒　多些厚道　偶尔也很躁
+* 不管这种争拗有型或老套　未做好的继续做
+* 活着必须革命　心高气傲　哪里去不到
+
+* 他虽走得早　他青春不老　灰色的轨迹　磨成血路
+
+* 喔　你我霎眼抗战二十年　世界怎变　永远企你这一边
+* 喔　哪怕再去抗战二十年　去到多远　我也铭记我起点　不会变
+*/
+
 #ifndef ZCE_LIB_THREAD_BUS_PIPE_H_
 #define ZCE_LIB_THREAD_BUS_PIPE_H_
 
-//2012年9月18日晚上，中国人民抗日81周年纪念日，81年来，我们哪一天不在抗“日”
+
 
 #include "zce_boost_non_copyable.h"
 #include "zce_lockfree_kfifo.h"
