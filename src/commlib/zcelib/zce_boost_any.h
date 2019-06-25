@@ -21,7 +21,7 @@
 #define ZCE_LIB_BOOST_ANY_H_
 
 //不建议你使用using namespace;
-namespace ZCE_LIB
+namespace zce
 {
 
 

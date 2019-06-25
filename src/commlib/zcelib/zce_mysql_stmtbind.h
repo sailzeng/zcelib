@@ -187,7 +187,7 @@ public:
     int bind_one_param(size_t paramno,
                        ::enum_field_types paramtype,
                        my_bool *is_null,
-                       void *paramdata ,
+                       void *paramdata,
                        unsigned long szparam = 0);
 
 
@@ -226,7 +226,7 @@ public:
     void bind(size_t bind_col, long &val);
     void bind(size_t bind_col, long long &val);
 
-    
+
     void bind(size_t bind_col, unsigned char &val);
     void bind(size_t bind_col, unsigned short &val);
     void bind(size_t bind_col, unsigned int &val);

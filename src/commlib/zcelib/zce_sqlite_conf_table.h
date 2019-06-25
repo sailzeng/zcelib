@@ -92,7 +92,7 @@ public:
     //!数据区长度
     int ai_data_length_ = 0;
     //!动态数据取
-    char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA+1];
+    char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA + 1];
 
     //!最后修改时间
     unsigned int last_mod_time_ = 0;
@@ -157,21 +157,21 @@ protected:
                           unsigned int startno,
                           unsigned int numquery);
 
-	//!
+    //!
 
-	/*!
-	* @brief      base16的算法，
-	* @return     int
-	* @param      in
-	* @param      in_len
-	* @param      out
-	* @param[in/out] out_len 收入时标识outbuf的长度，输出时标识最后生成的字符串长度
-	* @note       这儿是为了避免引入太多文件，而且base16实现较为简单，所以没有用ZCE_LIB的encode代码
-	*/
-	int base16_encode(const char *in,
-					  size_t in_len,
-					  char *out,
-					  size_t *out_len);
+    /*!
+    * @brief      base16的算法，
+    * @return     int
+    * @param      in
+    * @param      in_len
+    * @param      out
+    * @param[in/out] out_len 收入时标识outbuf的长度，输出时标识最后生成的字符串长度
+    * @note       这儿是为了避免引入太多文件，而且base16实现较为简单，所以没有用zce的encode代码
+    */
+    int base16_encode(const char *in,
+                      size_t in_len,
+                      char *out,
+                      size_t *out_len);
 public:
 
     //!打开一个通用的数据库
@@ -221,7 +221,7 @@ public:
     * @param      new_db   比较数据库new文件名称
     * @param      table_id 比较的table id
     * @param[out] update_sql 返回的更新SQL语句
-    * @note       
+    * @note
     */
     int compare_table(const char *old_db,
                       const char *new_db,

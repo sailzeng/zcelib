@@ -5,7 +5,7 @@
 * @version
 * @date       2004年7月11日
 * @brief      跟踪调试的辅助条数函数，类等。
-*             
+*
 *             调试文件输出，根据不同宏定义保证跨平台允许，
 * @details
 *
@@ -22,7 +22,7 @@
 //==========================================================================================================
 
 ///辅助打印一个指针内部数据的函数，用16进制的方式打印
-namespace ZCE_LIB
+namespace zce
 {
 
 ///输出代码的堆栈信息，用于调试
@@ -41,12 +41,12 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 
 //日志打印堆栈信息的宏，x是日志的输出级别
 #ifndef ZCE_BACKTRACE_STACK
-#define ZCE_BACKTRACE_STACK(x)            ZCE_LIB::backtrace_stack(x,__ZCE_FUNC__)
+#define ZCE_BACKTRACE_STACK(x)            zce::backtrace_stack(x,__ZCE_FUNC__)
 #endif
 
 //日志打印堆栈信息的宏，x是日志的输出级别,y是指针，z是指针长度
 #ifndef ZCE_TRACE_POINTER_DATA
-#define ZCE_TRACE_POINTER_DATA(x,y,z)     ZCE_LIB::debug_pointer((x),__ZCE_FUNC__,(y),(z))
+#define ZCE_TRACE_POINTER_DATA(x,y,z)     zce::debug_pointer((x),__ZCE_FUNC__,(y),(z))
 #endif
 
 
@@ -56,7 +56,7 @@ void debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
 #define ZCE_BACKTRACE_STACK_DBG    ZCE_BACKTRACE_STACK
 #endif
 
-#else 
+#else
 
 #ifndef ZCE_BACKTRACE_STACK_DBG
 #define ZCE_BACKTRACE_STACK_DBG(...) ((void)0)

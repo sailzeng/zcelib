@@ -18,7 +18,7 @@
 
 #include "zce_shm_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 ///共享内存vector头部数据区
@@ -65,7 +65,7 @@ public:
 protected:
 
     //只定义,不实现,
-    const shm_array<_value_type> & operator=(const shm_array<_value_type> &others);
+    const shm_array<_value_type> &operator=(const shm_array<_value_type> &others);
 
     ///默认构造函数,就是不给你用
     shm_array():
@@ -102,7 +102,7 @@ public:
     }
 
     ///初始化
-    static shm_array<_value_type>* initialize(const size_t numnode, char *pmmap, bool if_restore = false)
+    static shm_array<_value_type> *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
 
         _shm_array_head *aryhead  = reinterpret_cast<_shm_array_head *>(pmmap);
@@ -122,7 +122,7 @@ public:
         aryhead->size_of_mmap_ = getallocsize(numnode);
         aryhead->num_of_node_ = numnode;
 
-        shm_array<_value_type>* instance = new shm_array<_value_type>();
+        shm_array<_value_type> *instance = new shm_array<_value_type>();
 
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;

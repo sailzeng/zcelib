@@ -144,7 +144,7 @@
 #if defined(ZCE_OS_WINDOWS)
 
 // 在WINDOWS下和POSIX标准兼容的宏，VS2003以下版本如何，我没有测试，2003以后，Windows对于很多代码宏会使用"_"前缀，
-#ifndef _CRT_NONSTDC_NO_DEPRECATE 
+#ifndef _CRT_NONSTDC_NO_DEPRECATE
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #endif
 #ifndef _CRT_NONSTDC_NO_WARNINGS
@@ -393,16 +393,16 @@ typedef long long           floatint64_t;
 #define PRId64     "lld"
 #endif
 #ifndef PRIu64
-#define PRIu64     "llu" 
+#define PRIu64     "llu"
 #endif
 #else
 typedef unsigned __int64    uint64_t;
 typedef __int64             int64_t;
 #ifndef PRId64
-#define PRId64     "I64d" 
+#define PRId64     "I64d"
 #endif
 #ifndef PRIu64
-#define PRIu64     "I64u" 
+#define PRIu64     "I64u"
 #endif
 #endif //#if _MSC_VER >= 1300
 

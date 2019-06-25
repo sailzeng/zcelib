@@ -62,23 +62,23 @@ public:
     */
     ZCE_Time_Value(time_t sec);
 
-	/*!
-	* @brief      构造函数，用CPP 11的一些duration的值
-	* @param      val CPP11的duration时间
-	*/
-	ZCE_Time_Value(const std::chrono::hours &val);
-	ZCE_Time_Value(const std::chrono::minutes& val);
-	ZCE_Time_Value(const std::chrono::seconds& val);
-	ZCE_Time_Value(const std::chrono::milliseconds& val);
-	ZCE_Time_Value(const std::chrono::microseconds& val);
-	ZCE_Time_Value(const std::chrono::nanoseconds& val);
+    /*!
+    * @brief      构造函数，用CPP 11的一些duration的值
+    * @param      val CPP11的duration时间
+    */
+    ZCE_Time_Value(const std::chrono::hours &val);
+    ZCE_Time_Value(const std::chrono::minutes &val);
+    ZCE_Time_Value(const std::chrono::seconds &val);
+    ZCE_Time_Value(const std::chrono::milliseconds &val);
+    ZCE_Time_Value(const std::chrono::microseconds &val);
+    ZCE_Time_Value(const std::chrono::nanoseconds &val);
 
-	/*!
-	* @brief      构造函数，用CPP 11的一些time_point的值
-	* @param      val CPP11的duration时间
-	*/
-	ZCE_Time_Value(const std::chrono::system_clock::time_point& val);
-	ZCE_Time_Value(const std::chrono::steady_clock::time_point& val);
+    /*!
+    * @brief      构造函数，用CPP 11的一些time_point的值
+    * @param      val CPP11的duration时间
+    */
+    ZCE_Time_Value(const std::chrono::system_clock::time_point &val);
+    ZCE_Time_Value(const std::chrono::steady_clock::time_point &val);
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -129,16 +129,16 @@ public:
     void set_by_clock_t(clock_t time);
 
 
-	void set(const std::chrono::hours& val);
-	void set(const std::chrono::minutes& val);
-	void set(const std::chrono::seconds& val);
-	void set(const std::chrono::milliseconds& val);
-	void set(const std::chrono::microseconds& val);
-	void set(const std::chrono::nanoseconds& val);
+    void set(const std::chrono::hours &val);
+    void set(const std::chrono::minutes &val);
+    void set(const std::chrono::seconds &val);
+    void set(const std::chrono::milliseconds &val);
+    void set(const std::chrono::microseconds &val);
+    void set(const std::chrono::nanoseconds &val);
 
 
-	void set(const std::chrono::system_clock::time_point& val);
-	void set(const std::chrono::steady_clock::time_point& val);
+    void set(const std::chrono::system_clock::time_point &val);
+    void set(const std::chrono::steady_clock::time_point &val);
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -231,7 +231,7 @@ public:
     const char *to_string(char *str_date_time,
                           size_t datetime_strlen,
                           bool uct_time = false,
-                          ZCE_LIB::TIME_STR_FORMAT_TYPE fromat_type = ZCE_LIB::TIME_STRFMT_ISO_USEC
+                          zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC
                          )  const;
 
     /*!
@@ -243,7 +243,7 @@ public:
     */
     int from_string(const char *strtm,
                     bool uct_time = false,
-                    ZCE_LIB::TIME_STR_FORMAT_TYPE fromat_type = ZCE_LIB::TIME_STRFMT_ISO_USEC);
+                    zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC);
 
     ///返回一个timespec的对象
     //operator ::timespec () const;

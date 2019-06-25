@@ -19,7 +19,7 @@ public:
 public:
     //打开文件，进行映射
     int open(const char *file_name,
-             std::size_t shm_size ,
+             std::size_t shm_size,
              int file_open_mode = O_CREAT | O_RDWR,
              int file_perms_mode = ZCE_SHARE_FILE_PERMS,
              const void *want_address = NULL,

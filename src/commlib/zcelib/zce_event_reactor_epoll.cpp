@@ -21,7 +21,7 @@ ZCE_Epoll_Reactor::ZCE_Epoll_Reactor(size_t max_event_number,
                                      bool edge_triggered,
                                      int once_max_events):
     ZCE_Reactor(max_event_number),
-	epoll_fd_(-1),
+    epoll_fd_(-1),
     edge_triggered_(edge_triggered),
     once_max_events_(once_max_events),
     once_events_ary_(NULL)
@@ -69,8 +69,8 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
     if (epoll_fd_ < 0)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] Epoll reactor ::epoll_create fail.please check code. error = [%u|%u]",
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return -1;
     }
 
@@ -112,8 +112,8 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
                 ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return -1;
     }
 
@@ -138,8 +138,8 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
                 ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         //这个不返回好还是返回好呢？这真是一个问题
         //return -1;
     }
@@ -177,7 +177,7 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
 
 #if defined (ZCE_OS_LINUX)
     //EPOLL_CTL_MOD用于修改
-    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD , event_handler->get_handle(), &ep_event);
+    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event_handler->get_handle(), &ep_event);
 
 #endif
 
@@ -188,8 +188,8 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
                 ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return -1;
     }
 
@@ -214,7 +214,7 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
 
 #if defined (ZCE_OS_LINUX)
     //EPOLL_CTL_MOD用于修改
-    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD , event_handler->get_handle(), &ep_event);
+    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event_handler->get_handle(), &ep_event);
 
 #endif
 
@@ -225,8 +225,8 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
                 __ZCE_FUNC__,
                 ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return -1;
     }
 

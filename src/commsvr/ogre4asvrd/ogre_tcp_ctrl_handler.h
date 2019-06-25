@@ -152,7 +152,7 @@ public:
 protected:
 
     ///
-    typedef ZCE_LIB::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
+    typedef zce::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
     ///定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
     static const  int      TCPCTRL_TIME_ID[];
@@ -208,7 +208,7 @@ protected:
 
 
     ///发送的数据可能要排队
-    ZCE_LIB::lordrings<Ogre4a_App_Frame *>  \
+    zce::lordrings<Ogre4a_App_Frame *>  \
     snd_buffer_deque_;
 
     ///这个PEER接受数据

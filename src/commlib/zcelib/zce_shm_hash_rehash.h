@@ -57,25 +57,25 @@
 
 #include "zce_shm_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //为了方便编译，预先定义一下
 template < class _value_type,
-         class _key_type,
-         class _hash_fun,
-         class _extract_key,
-         class _equal_key,
-         class _washout_fun > class shm_hash_rehash;
+           class _key_type,
+           class _hash_fun,
+           class _extract_key,
+           class _equal_key,
+           class _washout_fun > class shm_hash_rehash;
 
 //SAFE HASH 迭代器，注意这儿是SAFE HASH，不是SAFE iterator，我吧HASH放前面纯粹是方便几个文件
 //放在一起
 template < class _value_type,
-         class _key_type,
-         class _hashfun,
-         class _extract_key,
-         class _equal_key,
-         class _washout_fun >
+           class _key_type,
+           class _hashfun,
+           class _extract_key,
+           class _equal_key,
+           class _washout_fun >
 class _hash_rehash_iterator
 {
 protected:
@@ -85,7 +85,7 @@ protected:
             _key_type,
             _hashfun,
             _extract_key,
-            _equal_key ,
+            _equal_key,
             _washout_fun > _hashtable_rehash;
 
     //定义迭代器
@@ -249,11 +249,11 @@ public:
 
 
 template < class _value_type,
-         class _key_type,
-         class _hash_fun = smem_hash<_key_type>,
-         class _extract_key = smem_identity<_value_type>,
-         class _equal_key = std::equal_to<_key_type>,
-         class _washout_fun = _default_washout_fun<_value_type> >
+           class _key_type,
+           class _hash_fun = smem_hash<_key_type>,
+           class _extract_key = smem_identity<_value_type>,
+           class _equal_key = std::equal_to<_key_type>,
+           class _washout_fun = _default_washout_fun<_value_type> >
 class shm_hash_rehash : public  _shm_memory_base
 {
 public:
@@ -276,11 +276,11 @@ public:
 
     //声明迭代器是友元
     friend class _hash_rehash_iterator < _value_type,
-        _key_type,
-        _hash_fun,
-        _extract_key,
-        _equal_key ,
-            _washout_fun >;
+               _key_type,
+               _hash_fun,
+               _extract_key,
+               _equal_key,
+               _washout_fun >;
 
 protected:
 
@@ -347,7 +347,7 @@ protected:
     {
 
         self *instance = new shm_hash_rehash < _value_type,
-        _key_type ,
+        _key_type,
         _hash_fun,
         _extract_key,
         _equal_key > ();
@@ -424,7 +424,7 @@ public:
     {
         ZCE_ASSERT(row_prime_ary >= MIN_PRIMES_LIST_NUM && row_prime_ary <= MAX_PRIMES_LIST_NUM);
 
-        ZCE_LIB::hash_prime_ary(req_num, real_num, row_prime_ary, prime_ary);
+        zce::hash_prime_ary(req_num, real_num, row_prime_ary, prime_ary);
 
         size_t sz_alloc =  0;
         //

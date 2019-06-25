@@ -76,17 +76,17 @@ struct ZCE_STATUS_ITEM_ID
 public:
 
     ///统计ID
-	uint32_t              statics_id_;
+    uint32_t              statics_id_;
     ///分类ID，目前好像主要是业务ID,这个是可以变化的
-	uint32_t              classify_id_;
+    uint32_t              classify_id_;
     ///子分类ID，这个也是可以变化的，
-	uint32_t              subclassing_id_;
+    uint32_t              subclassing_id_;
 
 public:
 
     ZCE_STATUS_ITEM_ID(uint32_t statics_id,
-					   uint32_t classify_id,
-					   uint32_t subclassing_id);
+                       uint32_t classify_id,
+                       uint32_t subclassing_id);
     ZCE_STATUS_ITEM_ID();
     ~ZCE_STATUS_ITEM_ID();
 
@@ -105,8 +105,8 @@ public:
     size_t operator()(const ZCE_STATUS_ITEM_ID &stat_item) const
     {
         return static_cast<size_t>(stat_item.statics_id_)
-                        + static_cast<size_t>(stat_item.classify_id_)
-                        + static_cast<size_t>(stat_item.subclassing_id_);
+               + static_cast<size_t>(stat_item.classify_id_)
+               + static_cast<size_t>(stat_item.subclassing_id_);
     }
 };
 
@@ -148,8 +148,8 @@ class ZCE_STATUS_ITEM_WITHNAME
 public:
 
     //
-    ZCE_STATUS_ITEM_WITHNAME(unsigned int ,
-                             ZCE_STATUS_STATICS_TYPE ,
+    ZCE_STATUS_ITEM_WITHNAME(unsigned int,
+                             ZCE_STATUS_STATICS_TYPE,
                              const char *);
     ZCE_STATUS_ITEM_WITHNAME();
     ~ZCE_STATUS_ITEM_WITHNAME();
@@ -183,17 +183,17 @@ public:
 */
 struct ZCE_STATUS_HEAD
 {
-	//监控开始时间
+    //监控开始时间
     uint64_t monitor_start_time_;
 
     //监控数据复制的时间戳
-	uint64_t copy_time_;
+    uint64_t copy_time_;
 
     //向monitor上报的时间
     uint64_t report_monitor_time_;
 
-	//激活时间长度，目前没有记录
-	uint64_t active_time_;
+    //激活时间长度，目前没有记录
+    uint64_t active_time_;
 
 };
 
@@ -212,11 +212,11 @@ class ZCE_Server_Status : public ZCE_NON_Copyable
 protected:
 
     ///存放统计数据的共享内存数组，
-    typedef ZCE_LIB::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
+    typedef zce::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
     ///统计ID到数组的下标的hash map
     typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<uint32_t , ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+    typedef unordered_map<uint32_t, ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
@@ -253,8 +253,8 @@ protected:
     * @param[out] idx 查询到数据项目存放索引
     */
     int find_insert_idx(uint32_t statics_id,
-						uint32_t classify_id,
-						uint32_t subclassing_id,
+                        uint32_t classify_id,
+                        uint32_t subclassing_id,
                         size_t *idx);
 
 public:
@@ -262,7 +262,7 @@ public:
 
     /*!
     * @brief      根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
-	*             一般查询状态工具使用这个函数。
+    *             一般查询状态工具使用这个函数。
     * @return     int
     * @param[in]  stat_filename MMAP影射的状态文件名称
     * @param[in]  multi_thread  是否多线程
@@ -273,7 +273,7 @@ public:
 
     /*!
     * @brief      创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
-	*             需要记录状态的服务器使用这个函数
+    *             需要记录状态的服务器使用这个函数
     * @return     int
     * @param[in]  stat_filename MMAP影射的状态文件名称
     * @param[in]  num_stat_item item_ary的数量，
@@ -296,9 +296,9 @@ public:
                          const ZCE_STATUS_ITEM_WITHNAME item_ary[]);
 
 
-	///监控项是否已经存在
-	bool is_exist_stat_id(unsigned int stat_id,
-						  ZCE_STATUS_ITEM_WITHNAME * status_item_withname) const;
+    ///监控项是否已经存在
+    bool is_exist_stat_id(unsigned int stat_id,
+                          ZCE_STATUS_ITEM_WITHNAME *status_item_withname) const;
 
     ///初始化以后，修改是否需要多线程保护
     void multi_thread_guard(bool multi_thread);
@@ -312,8 +312,8 @@ public:
     * @param[in]  subclassing_id 子分类ID
     */
     inline int increase_once(uint32_t statics_id,
-							 uint32_t classify_id,
-							 uint32_t subclassing_id)
+                             uint32_t classify_id,
+                             uint32_t subclassing_id)
     {
         return increase_by_statid(statics_id, classify_id, subclassing_id, 1);
     }
@@ -329,7 +329,7 @@ public:
     */
     int set_by_statid(uint32_t statics_id,
                       uint32_t classify_id,
-					  uint32_t subclassing_id,
+                      uint32_t subclassing_id,
                       uint64_t set_value);
 
     /*!
@@ -341,8 +341,8 @@ public:
     * @param[in]  incre_value 修改的相对值，符号整数，可加可减
     */
     int increase_by_statid(uint32_t statics_id,
-						   uint32_t classify_id,
-						   uint32_t subclassing_id,
+                           uint32_t classify_id,
+                           uint32_t subclassing_id,
                            int64_t incre_value);
 
 
@@ -357,8 +357,8 @@ public:
     * @param[in]  subclassing_id 子分类ID
     */
     uint64_t get_counter(uint32_t statics_id,
-						 uint32_t classify_id,
-						 uint32_t subclassing_id);
+                         uint32_t classify_id,
+                         uint32_t subclassing_id);
 
     //取得计数器的个数
     size_t num_of_counter();

@@ -185,7 +185,7 @@ const char *SOAR_RET::error_string(int error_id)
         case ERROR_COMMLIB_END:
             return  "";
 
-            // proxy
+        // proxy
         case ERR_PROXY_BEGIN:
             return  "";
         case ERR_PROXY_APPFRAME_CMD_ERROR:
@@ -197,7 +197,7 @@ const char *SOAR_RET::error_string(int error_id)
         case ERR_PROXY_END:
             return  "";
 
-            // zergsvr
+        // zergsvr
         case ERR_ZERG_FAIL_SOCKET_OP_ERROR:
             return  "Socket return a error.";
         case ERR_ZERG_GREATER_MAX_LEN_FRAME:

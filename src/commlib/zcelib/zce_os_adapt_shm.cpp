@@ -8,12 +8,12 @@
 
 
 //
-void *ZCE_LIB::mmap (void *addr,
-                     size_t len,
-                     int prot,
-                     int flags,
-                     ZCE_HANDLE file_handle,
-                     size_t off)
+void *zce::mmap (void *addr,
+                 size_t len,
+                 int prot,
+                 int flags,
+                 ZCE_HANDLE file_handle,
+                 size_t off)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -137,7 +137,7 @@ void *ZCE_LIB::mmap (void *addr,
 }
 
 
-int ZCE_LIB::mprotect (const void *addr, size_t len, int prot)
+int zce::mprotect (const void *addr, size_t len, int prot)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -191,7 +191,7 @@ int ZCE_LIB::mprotect (const void *addr, size_t len, int prot)
 }
 
 
-int ZCE_LIB::msync (void *addr, size_t len, int sync)
+int zce::msync (void *addr, size_t len, int sync)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG (sync);
@@ -212,7 +212,7 @@ int ZCE_LIB::msync (void *addr, size_t len, int sync)
 
 
 
-int ZCE_LIB::munmap (void *addr, size_t len)
+int zce::munmap (void *addr, size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG (len);
@@ -231,28 +231,28 @@ int ZCE_LIB::munmap (void *addr, size_t len)
 }
 
 
-ZCE_HANDLE ZCE_LIB::shm_open (const char *file_path,
-                              int mode,
-                              mode_t perms)
+ZCE_HANDLE zce::shm_open (const char *file_path,
+                          int mode,
+                          mode_t perms)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
 
     //先建立一下这个目录,模拟/dev/shm/
-    ZCE_LIB::mkdir(ZCE_POSIX_MMAP_DIRECTORY);
+    zce::mkdir(ZCE_POSIX_MMAP_DIRECTORY);
 
     char shm_file_name[PATH_MAX + 1];
     shm_file_name[PATH_MAX] = '\0';
     snprintf(shm_file_name, PATH_MAX, "%s%s", ZCE_POSIX_MMAP_DIRECTORY, file_path);
 
-    return ZCE_LIB::open (shm_file_name, mode, perms);
+    return zce::open (shm_file_name, mode, perms);
 
 #elif defined (ZCE_OS_LINUX)
     return ::shm_open (file_path, mode, perms);
 #endif
 }
 
-int ZCE_LIB::shm_unlink (const char *file_path)
+int zce::shm_unlink (const char *file_path)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -274,7 +274,7 @@ int ZCE_LIB::shm_unlink (const char *file_path)
 //我个人对System V的IPC没有爱，一方面毕竟不如POSIX IPC在标准上站住了脚，System V的IPC这方面要弱一点，另一方面System V IPC 的接口设计也不如POSIX那么优雅，
 
 //创建或者访问一个共享内存区
-ZCE_HANDLE ZCE_LIB::shmget(key_t sysv_key, size_t size, int oflag)
+ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -332,7 +332,7 @@ ZCE_HANDLE ZCE_LIB::shmget(key_t sysv_key, size_t size, int oflag)
 }
 
 //打开已经shmget的共享内存区
-void *ZCE_LIB::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
+void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -387,7 +387,7 @@ void *ZCE_LIB::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 }
 
 //短接这个内存区
-int ZCE_LIB::shmdt(const void *shmaddr)
+int zce::shmdt(const void *shmaddr)
 {
 #if defined (ZCE_OS_WINDOWS)
     BOOL ret_bool = ::UnmapViewOfFile (shmaddr);
@@ -405,7 +405,7 @@ int ZCE_LIB::shmdt(const void *shmaddr)
 }
 
 //对共享内存区提供多种操作
-int ZCE_LIB::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf)
+int zce::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 

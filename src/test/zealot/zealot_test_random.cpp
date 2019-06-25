@@ -7,7 +7,7 @@
 
 
 //仅仅用于测试，不实现完全了
-class random_libc : public ZCE_LIB::t_random_base<0, 0x00007FFF>
+class random_libc : public zce::t_random_base<0, 0x00007FFF>
 {
 public:
 
@@ -33,7 +33,7 @@ public:
 
 
 //仅仅用于测试，不实现完全了
-class random_pet2 : public ZCE_LIB::t_random_base<0, 0xFFFFFFFF>
+class random_pet2 : public zce::t_random_base<0, 0xFFFFFFFF>
 {
 public:
 
@@ -83,18 +83,18 @@ protected:
 int test_random_example(int /*argc*/, char * /*argv*/[])
 {
     const uint32_t TEST_SEED = 1010123;
-    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
-    ZCE_LIB::random_mt19937   mt19937_gen(TEST_SEED);
-    ZCE_LIB::random_rand48   rand48_gen(TEST_SEED);
-    ZCE_LIB::random_taus88   taus88_gen(TEST_SEED);
+    zce::random_mt11213b  mt11231b_gen(TEST_SEED);
+    zce::random_mt19937   mt19937_gen(TEST_SEED);
+    zce::random_rand48   rand48_gen(TEST_SEED);
+    zce::random_taus88   taus88_gen(TEST_SEED);
 
     const size_t TEST_NUM = 1024;
     for (size_t i = 0; i < TEST_NUM; ++i)
     {
         std::cout << mt11231b_gen.rand() << " "
-            << mt19937_gen.rand() << " "
-            << rand48_gen.rand() << " "
-            << taus88_gen.rand() << " " << std::endl;
+                  << mt19937_gen.rand() << " "
+                  << rand48_gen.rand() << " "
+                  << taus88_gen.rand() << " " << std::endl;
     }
 
     return 0;
@@ -106,8 +106,8 @@ int test_random_example(int /*argc*/, char * /*argv*/[])
 //
 //    const uint32_t TEST_SEED = 1010123;
 //
-//    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
-//    ZCE_LIB::random_mt19937   mt19937_gen(TEST_SEED);
+//    zce::random_mt11213b  mt11231b_gen(TEST_SEED);
+//    zce::random_mt19937   mt19937_gen(TEST_SEED);
 //
 //    boost::mt11213b boost_mt11213_rng(TEST_SEED);
 //    boost::mt19937  boost_mt19937_rng(TEST_SEED);
@@ -157,8 +157,8 @@ int test_random_example(int /*argc*/, char * /*argv*/[])
 //        std::cout << std::endl;
 //    }
 //
-//    ZCE_LIB::random_rand48   rand48_gen(TEST_SEED);
-//    ZCE_LIB::random_taus88   taus88_gen(TEST_SEED);
+//    zce::random_rand48   rand48_gen(TEST_SEED);
+//    zce::random_taus88   taus88_gen(TEST_SEED);
 //
 //    boost::rand48  boost_rand48_rng(TEST_SEED);
 //    boost::taus88  boost_taus88_rng(TEST_SEED);
@@ -208,8 +208,8 @@ int test_random_example(int /*argc*/, char * /*argv*/[])
 //        std::cout << std::endl;
 //    }
 //
-//    ZCE_LIB::random_ranlux223   ranlux223_gen(TEST_SEED);
-//    ZCE_LIB::random_ranlux389   ranlux389_gen(TEST_SEED);
+//    zce::random_ranlux223   ranlux223_gen(TEST_SEED);
+//    zce::random_ranlux389   ranlux389_gen(TEST_SEED);
 //
 //    boost::ranlux3  boost_ranlux3_rng(TEST_SEED);
 //    boost::ranlux4  boost_ranlux4_rng(TEST_SEED);
@@ -266,7 +266,7 @@ int test_random_example(int /*argc*/, char * /*argv*/[])
 
 
 //随机分布能力测试
-int test_random_distribution(ZCE_LIB::random_base *rand_gen)
+int test_random_distribution(zce::random_base *rand_gen)
 {
     const size_t TEST_SIZE = 0xFFFFF; //10*1000*1000;
     const size_t TEST_NUMBER = TEST_SIZE;
@@ -399,7 +399,7 @@ int test_random_elapsed_t()
 }
 
 int test_random_variance(const char *rand_fun_name,
-                         ZCE_LIB::random_base *rand_gen)
+                         zce::random_base *rand_gen)
 {
 
     const size_t TEST_SIZE = 1000 * 1000; //10*1000*1000;
@@ -428,7 +428,7 @@ int test_random_variance(const char *rand_fun_name,
             max_caizhi = (uint32_t) ::abs(double(coverage_chart [j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart [j]) - TEST_LUN , 2);
+        fangcai += pow(double(coverage_chart [j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -474,7 +474,7 @@ int test_random_variance_t()
             max_caizhi = (uint32_t) ::abs(double(coverage_chart [j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart [j]) - TEST_LUN , 2);
+        fangcai += pow(double(coverage_chart [j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -522,7 +522,7 @@ int test_die_variance_t()
             max_caizhi = (uint32_t) ::abs(double(coverage_chart [j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart [j]) - TEST_LUN , 2);
+        fangcai += pow(double(coverage_chart [j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -547,7 +547,7 @@ int test_die_variance_t()
             max_caizhi = (uint32_t) ::abs(double(coverage_chart [j]) - TEST_LUN);
         }
 
-        fangcai += pow(double(coverage_chart [j]) - TEST_LUN , 2);
+        fangcai += pow(double(coverage_chart [j]) - TEST_LUN, 2);
     }
 
     std::cout << std::endl;
@@ -563,22 +563,22 @@ int test_die_variance_t()
 }
 
 //计算几个随机数函数的耗时情况
-int test_random_elapsed_time(int /*argc*/ , char * /*argv*/ [])
+int test_random_elapsed_time(int /*argc*/, char * /*argv*/ [])
 {
 
     test_random_elapsed_t<random_libc>();
     test_random_elapsed_t<random_pet2>();
 
-    test_random_elapsed_t<ZCE_LIB::random_bsdrand>();
-    test_random_elapsed_t<ZCE_LIB::random_rand48>();
-    test_random_elapsed_t<ZCE_LIB::random_taus88>();
+    test_random_elapsed_t<zce::random_bsdrand>();
+    test_random_elapsed_t<zce::random_rand48>();
+    test_random_elapsed_t<zce::random_taus88>();
 
-    test_random_elapsed_t<ZCE_LIB::random_mt11213a>();
-    test_random_elapsed_t<ZCE_LIB::random_mt11213b>();
-    test_random_elapsed_t<ZCE_LIB::random_mt19937>();
+    test_random_elapsed_t<zce::random_mt11213a>();
+    test_random_elapsed_t<zce::random_mt11213b>();
+    test_random_elapsed_t<zce::random_mt19937>();
 
-    test_random_elapsed_t<ZCE_LIB::random_ranlux223>();
-    test_random_elapsed_t<ZCE_LIB::random_ranlux389>();
+    test_random_elapsed_t<zce::random_ranlux223>();
+    test_random_elapsed_t<zce::random_ranlux389>();
 
     ::srand(1010123);
     ZCE_Progress_Timer rand_timer;
@@ -598,53 +598,53 @@ int test_random_elapsed_time(int /*argc*/ , char * /*argv*/ [])
     return 0;
 }
 
-int test_random_variance(int /*argc*/ , char * /*argv*/ [])
+int test_random_variance(int /*argc*/, char * /*argv*/ [])
 {
-    test_random_vargen<ZCE_LIB::random_bsdrand>();
-    test_random_vargen<ZCE_LIB::random_rand48>();
-    test_random_vargen<ZCE_LIB::random_taus88>();
+    test_random_vargen<zce::random_bsdrand>();
+    test_random_vargen<zce::random_rand48>();
+    test_random_vargen<zce::random_taus88>();
 
-    test_random_vargen<ZCE_LIB::random_mt11213a>();
-    test_random_vargen<ZCE_LIB::random_mt11213b>();
-    test_random_vargen<ZCE_LIB::random_mt19937>();
+    test_random_vargen<zce::random_mt11213a>();
+    test_random_vargen<zce::random_mt11213b>();
+    test_random_vargen<zce::random_mt19937>();
 
-    test_random_vargen<ZCE_LIB::random_ranlux223>();
-    test_random_vargen<ZCE_LIB::random_ranlux389>();
+    test_random_vargen<zce::random_ranlux223>();
+    test_random_vargen<zce::random_ranlux389>();
 
     //
     test_random_variance_t<random_libc>();
     test_random_variance_t<random_pet2>();
-    test_random_variance_t<ZCE_LIB::random_bsdrand>();
-    test_random_variance_t<ZCE_LIB::random_rand48>();
-    test_random_variance_t<ZCE_LIB::random_taus88>();
+    test_random_variance_t<zce::random_bsdrand>();
+    test_random_variance_t<zce::random_rand48>();
+    test_random_variance_t<zce::random_taus88>();
 
-    test_random_variance_t<ZCE_LIB::random_mt11213a>();
-    test_random_variance_t<ZCE_LIB::random_mt11213b>();
-    test_random_variance_t<ZCE_LIB::random_mt19937>();
+    test_random_variance_t<zce::random_mt11213a>();
+    test_random_variance_t<zce::random_mt11213b>();
+    test_random_variance_t<zce::random_mt19937>();
 
-    test_random_variance_t<ZCE_LIB::random_ranlux223>();
-    test_random_variance_t<ZCE_LIB::random_ranlux389>();
+    test_random_variance_t<zce::random_ranlux223>();
+    test_random_variance_t<zce::random_ranlux389>();
 
     return 0;
 }
 
 
 //使用模版函数的测试
-int test_template_random(int /*argc*/ , char * /*argv*/ [])
+int test_template_random(int /*argc*/, char * /*argv*/ [])
 {
 
     test_die_variance_t<random_libc>();
     test_die_variance_t<random_pet2>();
-    test_die_variance_t<ZCE_LIB::random_bsdrand>();
-    test_die_variance_t<ZCE_LIB::random_rand48>();
-    test_die_variance_t<ZCE_LIB::random_taus88>();
+    test_die_variance_t<zce::random_bsdrand>();
+    test_die_variance_t<zce::random_rand48>();
+    test_die_variance_t<zce::random_taus88>();
 
-    test_die_variance_t<ZCE_LIB::random_mt11213a>();
-    test_die_variance_t<ZCE_LIB::random_mt11213b>();
-    test_die_variance_t<ZCE_LIB::random_mt19937>();
+    test_die_variance_t<zce::random_mt11213a>();
+    test_die_variance_t<zce::random_mt11213b>();
+    test_die_variance_t<zce::random_mt19937>();
 
-    test_die_variance_t<ZCE_LIB::random_ranlux223>();
-    test_die_variance_t<ZCE_LIB::random_ranlux389>();
+    test_die_variance_t<zce::random_ranlux223>();
+    test_die_variance_t<zce::random_ranlux389>();
 
 
 
@@ -655,20 +655,20 @@ int test_template_random(int /*argc*/ , char * /*argv*/ [])
 
 
 //使用OO方法的测试
-int test_oo_random(int /*argc*/ , char * /*argv*/ [])
+int test_oo_random(int /*argc*/, char * /*argv*/ [])
 {
     const uint32_t TEST_SEED = (uint32_t) time(NULL);
 
-    ZCE_LIB::random_bsdrand  randbsd_gen(TEST_SEED);
-    ZCE_LIB::random_rand48   rand48_gen(TEST_SEED);
-    ZCE_LIB::random_taus88   taus88_gen(TEST_SEED);
+    zce::random_bsdrand  randbsd_gen(TEST_SEED);
+    zce::random_rand48   rand48_gen(TEST_SEED);
+    zce::random_taus88   taus88_gen(TEST_SEED);
 
-    ZCE_LIB::random_mt11213a  mt11213a_gen(TEST_SEED);
-    ZCE_LIB::random_mt11213b  mt11213b_gen(TEST_SEED);
-    ZCE_LIB::random_mt19937   mt19937_gen(TEST_SEED);
+    zce::random_mt11213a  mt11213a_gen(TEST_SEED);
+    zce::random_mt11213b  mt11213b_gen(TEST_SEED);
+    zce::random_mt19937   mt19937_gen(TEST_SEED);
 
-    ZCE_LIB::random_ranlux223   ranlux223_gen(TEST_SEED);
-    ZCE_LIB::random_ranlux389   ranlux389_gen(TEST_SEED);
+    zce::random_ranlux223   ranlux223_gen(TEST_SEED);
+    zce::random_ranlux389   ranlux389_gen(TEST_SEED);
 
 
     test_random_variance(typeid(&randbsd_gen).name(), &randbsd_gen);
@@ -720,32 +720,32 @@ int test_random_repeat_t()
 }
 
 //计算几个随机数函数的重复情况
-int test_random_repeat_number(int /*argc*/ , char * /*argv*/ [])
+int test_random_repeat_number(int /*argc*/, char * /*argv*/ [])
 {
 
     test_random_repeat_t<random_libc>();
     test_random_repeat_t<random_pet2>();
 
-    test_random_repeat_t<ZCE_LIB::random_bsdrand>();
-    test_random_repeat_t<ZCE_LIB::random_rand48>();
-    test_random_repeat_t<ZCE_LIB::random_taus88>();
+    test_random_repeat_t<zce::random_bsdrand>();
+    test_random_repeat_t<zce::random_rand48>();
+    test_random_repeat_t<zce::random_taus88>();
 
-    test_random_repeat_t<ZCE_LIB::random_mt11213a>();
-    test_random_repeat_t<ZCE_LIB::random_mt11213b>();
-    test_random_repeat_t<ZCE_LIB::random_mt19937>();
+    test_random_repeat_t<zce::random_mt11213a>();
+    test_random_repeat_t<zce::random_mt11213b>();
+    test_random_repeat_t<zce::random_mt19937>();
 
     return 0;
 }
 
 
 //计算几个随机数函数的重复情况
-int test_random_var_obj_speed(int /*argc*/ , char * /*argv*/ [])
+int test_random_var_obj_speed(int /*argc*/, char * /*argv*/ [])
 {
     ZCE_Progress_Timer rand_timer;
     const size_t TEST_SIZE = 10000 * 10000;
     uint32_t u32_data = 0;
 
-    ZCE_LIB::random_mt19937 test1;
+    zce::random_mt19937 test1;
     rand_timer.restart();
     for (size_t i = 0 ; i < TEST_SIZE; ++i)
     {
@@ -759,7 +759,7 @@ int test_random_var_obj_speed(int /*argc*/ , char * /*argv*/ [])
     rand_timer.restart();
     for (size_t i = 0 ; i < TEST_SIZE; ++i)
     {
-        u32_data += ZCE_LIB::mt19937_instance::instance()->get_uint32();
+        u32_data += zce::mt19937_instance::instance()->get_uint32();
     }
     rand_timer.end();
     std::cout << " Test rand:" << rand_timer.elapsed_sec() << std::endl;

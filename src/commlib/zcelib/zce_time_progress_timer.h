@@ -213,40 +213,40 @@ protected:
 
 /*!
 * @brief      利用CPP 11的std::chrono::high_resolution_clock高精度计时器做的计时器，
-*             
+*
 */
 class ZCE_Chrono_HR_Timer
 {
 
 public:
 
-	///构造函数
-	ZCE_Chrono_HR_Timer();
-	///析构函数
-	~ZCE_Chrono_HR_Timer() = default;
+    ///构造函数
+    ZCE_Chrono_HR_Timer();
+    ///析构函数
+    ~ZCE_Chrono_HR_Timer() = default;
 
-	///从新开始计时
-	void restart();
-	///结束计时
-	void end();
-	///累计计时开始,用于多次计时的过程，
-	void addup_start();
+    ///从新开始计时
+    void restart();
+    ///结束计时
+    void end();
+    ///累计计时开始,用于多次计时的过程，
+    void addup_start();
 
-	///计算消耗的时间(us,微妙 -6)
-	double elapsed_usec() const;
+    ///计算消耗的时间(us,微妙 -6)
+    double elapsed_usec() const;
 
-	///精度
-	static double precision_usec();
+    ///精度
+    static double precision_usec();
 
 protected:
 
-	///开始的时间
-	std::chrono::high_resolution_clock::time_point start_time_;
-	///结束的时间
-	std::chrono::high_resolution_clock::time_point end_time_;
+    ///开始的时间
+    std::chrono::high_resolution_clock::time_point start_time_;
+    ///结束的时间
+    std::chrono::high_resolution_clock::time_point end_time_;
 
-	///累计时间
-	std::chrono::high_resolution_clock::duration addup_time_;
+    ///累计时间
+    std::chrono::high_resolution_clock::duration addup_time_;
 };
 
 //=======================================================================================================
@@ -258,24 +258,24 @@ template<typename PROGRESS_TIMER>
 class ZCE_Auto_Progress_Timer : public ZCE_NON_Copyable
 {
 public:
-	///构造函数，同时开始计时
-	ZCE_Auto_Progress_Timer()
-	{
-		progress_timer_.restart();
-	};
+    ///构造函数，同时开始计时
+    ZCE_Auto_Progress_Timer()
+    {
+        progress_timer_.restart();
+    };
 
-	///析构函数把耗时打印出来
-	~ZCE_Auto_Progress_Timer()
-	{
-		progress_timer_.end();
-		ZCE_LOG(RS_INFO,"This operation in function[%s] use time :%.6f microseconds(usec).", 
-				__ZCE_FUNC__,
-				progress_timer_.elapsed_usec());
-	};
+    ///析构函数把耗时打印出来
+    ~ZCE_Auto_Progress_Timer()
+    {
+        progress_timer_.end();
+        ZCE_LOG(RS_INFO, "This operation in function[%s] use time :%.6f microseconds(usec).",
+                __ZCE_FUNC__,
+                progress_timer_.elapsed_usec());
+    };
 
 protected:
 
-	PROGRESS_TIMER progress_timer_;
+    PROGRESS_TIMER progress_timer_;
 };
 
 #endif //# ZCE_LIB_TIME_PROGRESS_COUNTER_H_

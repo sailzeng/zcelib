@@ -30,7 +30,7 @@
 
 #include "zce_shm_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 
@@ -104,9 +104,9 @@ public:
 
 //AVL tree的迭代器
 template < class _value_type,
-         class _key_type,
-         class _extract_key,
-         class _compare_key >
+           class _key_type,
+           class _extract_key,
+           class _compare_key >
 class _shm_avl_tree_iterator
 {
     typedef _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
@@ -284,9 +284,9 @@ protected:
 * @tparam     _compare_key  比较方法
 */
 template < class _value_type,
-         class _key_type,
-         class _extract_key = smem_identity<_value_type>,
-         class _compare_key = std::less<_key_type> >
+           class _key_type,
+           class _extract_key = smem_identity<_value_type>,
+           class _compare_key = std::less<_key_type> >
 class shm_avl_tree : public _shm_memory_base
 {
 public:
@@ -1432,7 +1432,7 @@ public:
     }
 
     //调试代码，如果_value_type是整数 的时候生效，否则无效
-    void debug_note(size_t x, typename std::enable_if<std::is_integral<_value_type>::value >::type* = 0)
+    void debug_note(size_t x, typename std::enable_if<std::is_integral<_value_type>::value >::type * = 0)
     {
         std::cout << "Note :" << std::setw(6) << x
                   << " Data:" << std::setw(8) << data_base_[x]
@@ -1495,7 +1495,7 @@ protected:
 
 //用AVL Tree实现SET，不区分multiset和set，通过不通的insert自己区分
 template < class _value_type,
-         class _compare_key = std::less<_value_type> >
+           class _compare_key = std::less<_value_type> >
 class mmap_avl_set :
     public shm_avl_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
@@ -1514,7 +1514,7 @@ protected:
 
 public:
 
-    static mmap_avl_set< _value_type, _compare_key  >*
+    static mmap_avl_set< _value_type, _compare_key  > *
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_set< _value_type, _compare_key  >*>(
@@ -1527,9 +1527,9 @@ public:
 
 //用AVL Tree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template < class _key_type,
-         class _value_type,
-         class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
-         class _compare_key = std::less<_value_type>  >
+           class _value_type,
+           class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
+           class _compare_key = std::less<_value_type>  >
 class mmap_avl_map :
     public shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
@@ -1546,7 +1546,7 @@ protected:
     {
     }
 public:
-    static mmap_avl_map< _key_type, _value_type, _extract_key, _compare_key  >*
+    static mmap_avl_map< _key_type, _value_type, _extract_key, _compare_key  > *
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast < mmap_avl_map < _key_type,
@@ -1554,7 +1554,7 @@ public:
                _extract_key,
                _compare_key  > * > (
                    shm_avl_tree < std::pair < _key_type,
-                   _value_type > ,
+                   _value_type >,
                    _key_type,
                    _extract_key,
                    _compare_key >::initialize(numnode, pmmap, if_restore));

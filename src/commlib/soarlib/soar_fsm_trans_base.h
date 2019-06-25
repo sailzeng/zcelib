@@ -73,24 +73,24 @@ public:
 
     ///状态机对象超时处理，重载的FSM的（异步对象的），把调用转向到trans_timeout
     virtual void on_timeout(const ZCE_Time_Value &now_time,
-        bool &continue_run);
-   
+                            bool &continue_run);
+
     /*!
     * @brief      事物运行，必须重载的函数
     * @return     virtual void
     * @param      recv_frame
     * @param      continue_run
     */
-    virtual void trans_run(Zerg_App_Frame *recv_frame, 
-        bool &continue_run) = 0;
+    virtual void trans_run(Zerg_App_Frame *recv_frame,
+                           bool &continue_run) = 0;
 
     /*!
     * @brief      ，默认continue_run返回false，让系统回收，
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void trans_timeout(const ZCE_Time_Value &now_time, 
-        bool &continue_run);
+    virtual void trans_timeout(const ZCE_Time_Value &now_time,
+                               bool &continue_run);
 
 protected:
 
@@ -125,7 +125,7 @@ protected:
     int check_request_internal() const;
     ///检查接受到的FRAME的数据和命令
     int check_receive_frame(const Zerg_App_Frame *recv_frame,
-        unsigned int wait_cmd);
+                            unsigned int wait_cmd);
 
 
 
@@ -133,7 +133,7 @@ protected:
     void dump_transa_info(std::ostringstream &strstream) const;
     //DUMP输出事务的所有信息
     void output_trans_info(const char *outstr = "Output Transaction Info") const;
-    
+
 protected:
 
     //--------------------------------------------------------------------

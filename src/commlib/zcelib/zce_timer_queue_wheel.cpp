@@ -59,9 +59,9 @@ int ZCE_Timer_Wheel::initialize(size_t num_timer_node,
     timer_length_mesc_ = timer_length_mesc;
 
     ret = ZCE_Timer_Queue_Base::initialize(num_timer_node,
-                                      timer_precision_mesc,
-                                      trigger_mode,
-                                      dynamic_expand_node);
+                                           timer_precision_mesc,
+                                           trigger_mode,
+                                           dynamic_expand_node);
 
     if (ret != 0)
     {

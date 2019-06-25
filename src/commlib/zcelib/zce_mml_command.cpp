@@ -162,7 +162,7 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
         return 0;
     }
 
-    std::string key , value;
+    std::string key, value;
 
     //解析参数
     while ('\0' != *part_tmp)
@@ -293,7 +293,7 @@ int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
     ++part_tmp;
 
     //跳过空格
-    std::string key , value;
+    std::string key, value;
 
     for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'     && *part_tmp != END_SEPARATOR; ++part_tmp);
 

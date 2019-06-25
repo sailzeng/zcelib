@@ -28,7 +28,7 @@ ZCE_Trace_LogMsg::~ZCE_Trace_LogMsg()
 
 //输出va_list的参数信息
 void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
-                                     const char *str_format ,
+                                     const char *str_format,
                                      va_list args)
 {
     //如果日志输出开关关闭
@@ -44,10 +44,10 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
     }
 
     //得到当前时间
-    timeval now_time_val (ZCE_LIB::gettimeofday());
+    timeval now_time_val (zce::gettimeofday());
 
     //我要保留一个位置放'\0'
-    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE +1];
+    char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];
     log_tmp_buffer[LOG_TMP_BUFFER_SIZE] = '\0';
 
     //还是为\n考虑留一个空间
@@ -94,7 +94,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
 }
 
 //写日志
-void ZCE_Trace_LogMsg::write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format , ... )
+void ZCE_Trace_LogMsg::write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ... )
 {
     va_list args;
     va_start(args, str_format);
@@ -133,7 +133,7 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char *file_name,
 
 //调用vwrite_logmsg完成实际输出
 void ZCE_Trace_LogMsg::debug_output(ZCE_LOG_PRIORITY dbglevel,
-                                    const char *str_format , ... )
+                                    const char *str_format, ... )
 {
     va_list args;
 
@@ -182,7 +182,7 @@ void ZCE_Trace_LogMsg::clean_instance()
 #if _MSC_VER <= 1300
 
 //用不用的日志级别输出
-void ZCE_Trace_LogMsg::debug_traceex(const char *str_format , ... )
+void ZCE_Trace_LogMsg::debug_traceex(const char *str_format, ... )
 {
     va_list args;
     va_start(args, str_format);
@@ -195,7 +195,7 @@ void ZCE_Trace_LogMsg::debug_traceex(const char *str_format , ... )
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_debugex(const char *str_format , ... )
+void ZCE_Trace_LogMsg::debug_debugex(const char *str_format, ... )
 {
     va_list args;
     va_start(args, str_format);
@@ -208,7 +208,7 @@ void ZCE_Trace_LogMsg::debug_debugex(const char *str_format , ... )
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_infoex(const char *str_format , ... )
+void ZCE_Trace_LogMsg::debug_infoex(const char *str_format, ... )
 {
     va_list args;
     va_start(args, str_format);
@@ -221,7 +221,7 @@ void ZCE_Trace_LogMsg::debug_infoex(const char *str_format , ... )
     va_end(args);
 }
 
-void ZCE_Trace_LogMsg::debug_errorex(const char *str_format , ... )
+void ZCE_Trace_LogMsg::debug_errorex(const char *str_format, ... )
 {
     va_list args;
     va_start(args, str_format);

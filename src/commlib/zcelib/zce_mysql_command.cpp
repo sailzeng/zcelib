@@ -11,7 +11,7 @@ ZCE_Mysql_Command::ZCE_Mysql_Command():
 {
     //保留INITBUFSIZE的空间
     mysql_command_.reserve(INITBUFSIZE);
-	sql_buffer_ = new char[INITBUFSIZE];
+    sql_buffer_ = new char[INITBUFSIZE];
 }
 
 ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect *conn):
@@ -25,16 +25,16 @@ ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect *conn):
 
     //保留INITBUFSIZE的空间
     mysql_command_.reserve(INITBUFSIZE);
-	sql_buffer_ = new char[INITBUFSIZE];
+    sql_buffer_ = new char[INITBUFSIZE];
 }
 
 ZCE_Mysql_Command::~ZCE_Mysql_Command()
 {
-	if (sql_buffer_)
-	{
-		delete sql_buffer_;
-		sql_buffer_ = NULL;
-	}
+    if (sql_buffer_)
+    {
+        delete sql_buffer_;
+        sql_buffer_ = NULL;
+    }
 }
 
 //为ZCE_Mysql_Command设置相关的连接对象，而且是必须已经成功连接上数据的
@@ -110,7 +110,7 @@ void ZCE_Mysql_Command::get_sql_command(std::string &strcmd) const
 
 //int 返回是否成功还是失败 MYSQL_RETURN_FAIL表示失败
 //执行SQL语句，功能全集，不对外使用
-int ZCE_Mysql_Command::execute(uint64_t *num_affect ,
+int ZCE_Mysql_Command::execute(uint64_t *num_affect,
                                uint64_t *last_id,
                                ZCE_Mysql_Result *sql_result,
                                bool bstore)

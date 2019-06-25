@@ -26,8 +26,8 @@ ZCE_Socket_Acceptor::~ZCE_Socket_Acceptor()
 //打开一个监听地址，目前只支持AF_INET,和AFINET6
 int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
                               bool reuse_addr,
-                              int protocol_family ,
-                              int backlog ,
+                              int protocol_family,
+                              int backlog,
                               int protocol)
 {
 
@@ -107,7 +107,7 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
 
     //
     ZCE_SOCKET sock_handle = ZCE_LIB::accept(socket_handle_,
-                                             remote_addr->sockaddr_ptr_,
+                                             zce         remote_addr->sockaddr_ptr_,
                                              &remote_addr->sockaddr_size_);
 
     if (sock_handle == ZCE_INVALID_SOCKET)

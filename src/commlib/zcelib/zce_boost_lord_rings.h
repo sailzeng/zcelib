@@ -25,10 +25,10 @@
 #define ZCE_LIB_BOOST_LORD_RINGS_H_
 
 /*!
-* @namespace ZCE_LIB 主要用于模版类的名字空间，为了和std统一，模版类一般用了小写
+* @namespace zce 主要用于模版类的名字空间，为了和std统一，模版类一般用了小写
 */
 
-namespace ZCE_LIB
+namespace zce
 {
 
 /*!
@@ -303,7 +303,7 @@ public:
         //如果原来有数据,拷贝到新的数据区
         if (value_ptr_ != NULL)
         {
-            for (size_t i = 0; i < deque_size && i< new_max_size; ++i)
+            for (size_t i = 0; i < deque_size && i < new_max_size; ++i)
             {
                 new_value_ptr[i] = value_ptr_[(cycdeque_start_ + i) % cycdeque_capacity_];
             }

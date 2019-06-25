@@ -5,16 +5,16 @@
 #include "zce_os_adapt_spin.h"
 
 //SPIN 锁的初始化
-int ZCE_LIB::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
+int zce::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int ret = 0;
 
     //进行初始化，多线程下用临界区模拟
-    ret = ZCE_LIB::pthread_spin_initex(lock,
-                                       (pshared == PTHREAD_PROCESS_SHARED) ? true : false,
-                                       NULL);
+    ret = zce::pthread_spin_initex(lock,
+                                   (pshared == PTHREAD_PROCESS_SHARED) ? true : false,
+                                   NULL);
 
     if (0 != ret)
     {
@@ -30,9 +30,9 @@ int ZCE_LIB::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 }
 
 //SPIN 锁的初始化扩展版本
-int ZCE_LIB::pthread_spin_initex(pthread_spinlock_t *lock,
-                                 bool process_share,
-                                 const char *spin_name)
+int zce::pthread_spin_initex(pthread_spinlock_t *lock,
+                             bool process_share,
+                             const char *spin_name)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -40,11 +40,11 @@ int ZCE_LIB::pthread_spin_initex(pthread_spinlock_t *lock,
     int ret = 0;
 
     //进行初始化，多线程下用临界区模拟
-    ret = ZCE_LIB::pthread_mutex_initex(lock,
-                                        process_share,
-                                        true,
-                                        false,
-                                        spin_name);
+    ret = zce::pthread_mutex_initex(lock,
+                                    process_share,
+                                    true,
+                                    false,
+                                    spin_name);
 
     if (0 != ret)
     {
@@ -70,33 +70,33 @@ int ZCE_LIB::pthread_spin_initex(pthread_spinlock_t *lock,
 }
 
 //SPIN 锁的销毁
-int ZCE_LIB::pthread_spin_destroy(pthread_spinlock_t *lock)
+int zce::pthread_spin_destroy(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
-    return ZCE_LIB::pthread_mutex_destroy(lock);
+    return zce::pthread_mutex_destroy(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_destroy (lock);
 #endif
 }
 
 //SPIN 锁的加锁
-int ZCE_LIB::pthread_spin_lock(pthread_spinlock_t *lock)
+int zce::pthread_spin_lock(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
-    return ZCE_LIB::pthread_mutex_lock(lock);
+    return zce::pthread_mutex_lock(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_lock (lock);
 #endif
 }
 
 //SPIN 锁的尝试加锁
-int ZCE_LIB::pthread_spin_trylock(pthread_spinlock_t *lock)
+int zce::pthread_spin_trylock(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
-    return ZCE_LIB::pthread_mutex_trylock(lock);
+    return zce::pthread_mutex_trylock(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_trylock (lock);
 #endif
@@ -104,11 +104,11 @@ int ZCE_LIB::pthread_spin_trylock(pthread_spinlock_t *lock)
 }
 
 //SPIN 锁的解锁
-int ZCE_LIB::pthread_spin_unlock(pthread_spinlock_t *lock)
+int zce::pthread_spin_unlock(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows下用临界区或者互斥量模拟
-    return ZCE_LIB::pthread_mutex_unlock(lock);
+    return zce::pthread_mutex_unlock(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_unlock (lock);
 #endif

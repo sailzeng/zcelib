@@ -6,7 +6,7 @@
 #include "zce_lockfree_kfifo.h"
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 /*********************************************************************************
@@ -16,7 +16,7 @@ class dequechunk_node
 
 //nodelen 结点的长度,包括sizeofnode的长度
 //重载new运算符,得到一个变长的数据
-void   *dequechunk_node::operator new   (size_t , size_t nodelen)
+void   *dequechunk_node::operator new   (size_t, size_t nodelen)
 {
     //assert(nodelen > sizeof (dequechunk_node));
     if (nodelen < sizeof (dequechunk_node))
@@ -38,7 +38,7 @@ void   *dequechunk_node::operator new   (size_t , size_t nodelen)
 };
 
 
-void dequechunk_node::operator delete(void *ptrframe)
+void dequechunk_node::operator delete (void *ptrframe)
 {
     unsigned char *ptr = (unsigned char *)ptrframe;
     delete[] ptr;
@@ -238,7 +238,7 @@ bool shm_dequechunk::pop_front_new(dequechunk_node *&new_node)
     }
 
     size_t tmplen = get_front_len();
-    new_node = new(tmplen) dequechunk_node;
+    new_node = new (tmplen) dequechunk_node;
 
     //这样写会有一些重复调用，但是我觉得这个地方性能不会是问题。
     return pop_front(new_node);
@@ -291,7 +291,7 @@ bool shm_dequechunk::read_front_new(dequechunk_node *&new_node)
     }
 
     size_t tmplen = get_front_len();
-    new_node = new(tmplen) dequechunk_node;
+    new_node = new (tmplen) dequechunk_node;
 
     return read_front(new_node);
 }
@@ -318,7 +318,7 @@ bool shm_dequechunk::read_front_ptr(const dequechunk_node *&node_ptr)
         //如果line_wrap_nodeptr_没有空间，现分配
         if (line_wrap_nodeptr_ == NULL)
         {
-            line_wrap_nodeptr_ = new(dequechunk_head_->max_len_node_) dequechunk_node;
+            line_wrap_nodeptr_ = new (dequechunk_head_->max_len_node_) dequechunk_node;
         }
 
         //将两截数据保存到line_wrap_nodeptr_中，给上层调用者用，让上层仍然使用一个连续的空间
@@ -415,6 +415,6 @@ bool shm_dequechunk::full()
 
 
 
-}; //namespace ZCE_LIB
+}; //namespace zce
 
 

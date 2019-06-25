@@ -79,12 +79,12 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     // Initialize PSYMBOL_INFO structure.
     // Allocate a properly-sized block.
     symbol = (PSYMBOL_INFO)malloc(sizeof(SYMBOL_INFO) + (MAX_NAME_LENGTH) * sizeof(char));
-	if (!symbol)
-	{
-		return -1;
-	}
+    if (!symbol)
+    {
+        return -1;
+    }
     memset(symbol, 0, sizeof(SYMBOL_INFO) + (MAX_NAME_LENGTH) * sizeof(TCHAR));
-    symbol->SizeOfStruct = sizeof(SYMBOL_INFO); 
+    symbol->SizeOfStruct = sizeof(SYMBOL_INFO);
     symbol->MaxNameLen = MAX_NAME_LENGTH;
 
     // Initialize IMAGEHLP_LINE64 structure.
@@ -129,14 +129,14 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     uint32_t k = 0;
     // Enumerate call stack frame.
     while (::StackWalk64(IMAGE_FILE_MACHINE_I386,
-           process,
-           cur_thread,
-           &stackframe,
-           &context,
-           NULL,
-           SymFunctionTableAccess64,
-           SymGetModuleBase64,
-           NULL))
+                         process,
+                         cur_thread,
+                         &stackframe,
+                         &context,
+                         NULL,
+                         SymFunctionTableAccess64,
+                         SymGetModuleBase64,
+                         NULL))
     {
         use_len = 0;
         // 结束处理
@@ -174,7 +174,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
         ++k;
     }
     // Clean up and exit.
-    SymCleanup(process);    
+    SymCleanup(process);
     free(symbol);
 
 #endif
@@ -187,7 +187,7 @@ int ZCE_LIB::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
 
 
 //辅助打印一个指针内部数据的函数，用16进制的方式打印
-//用 11 02 03 0E E0         ..... 格式的输出，指针信息。
+//用 1zce 0E E0         ..... 格式的输出，指针信息。
 void ZCE_LIB::debug_pointer(ZCE_LOG_PRIORITY dbg_lvl,
                             const char *dbg_info,
                             const unsigned char  *debug_ptr,

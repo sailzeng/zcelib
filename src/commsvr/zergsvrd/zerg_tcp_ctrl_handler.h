@@ -46,7 +46,7 @@ public:
 protected:
 
     ///句柄的池子，避免每次都new处理
-    typedef ZCE_LIB::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
+    typedef zce::lordrings<TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
     //为了让你无法在堆以外使用TCP_Svc_Handler
 protected:
@@ -253,7 +253,7 @@ public:
     ///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
     ///请参考 @ref Zerg_Auto_Connector
     static int find_conf_ms_svcid_ary(uint16_t services_type,
-                                      std::vector<uint32_t> *& ms_svcid_ary);
+                                      std::vector<uint32_t> *&ms_svcid_ary);
 protected:
 
     //定时器ID,避免New传递,回收,我讨厌这个想法,ACE timer_timeout为什么不直接使用TIMEID
@@ -362,7 +362,7 @@ protected:
     ///如果是内网，请求数量有限，那么设置成128, 256也是可以接受的，但其实际意义有待观察
 
     ///发送的数据可能要排队
-    ZCE_LIB::lordrings<Zerg_Buffer *>  snd_buffer_deque_;
+    zce::lordrings<Zerg_Buffer *>  snd_buffer_deque_;
 
 
 

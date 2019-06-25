@@ -51,7 +51,7 @@ struct ZCE_PROCESS_PERFORM
 
 };
 
-namespace ZCE_LIB
+namespace zce
 {
 
 ///得到当前的进程ID

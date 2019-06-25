@@ -23,24 +23,24 @@
 #include "zce_shm_predefine.h"
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 
 template < class _value_type,
-         class _key_type,
-         class _hash_fun,
-         class _extract_key,
-         class _equal_key,
-         class _washout_fun > class shm_hashtable_expire;
+           class _key_type,
+           class _hash_fun,
+           class _extract_key,
+           class _equal_key,
+           class _washout_fun > class shm_hashtable_expire;
 
 //LRU HASH 迭代器
 template < class _value_type,
-         class _key_type,
-         class _hashfun,
-         class _extract_key,
-         class _equal_key ,
-         class _washout_fun >
+           class _key_type,
+           class _hashfun,
+           class _extract_key,
+           class _equal_key,
+           class _washout_fun >
 class _hashtable_expire_iterator
 {
 protected:
@@ -229,11 +229,11 @@ public:
 @note
 */
 template < class _value_type,
-         class _key_type,
-         class _hash_fun = smem_hash<_key_type>,
-         class _extract_key = smem_identity<_value_type>,
-         class _equal_key = std::equal_to<_key_type> ,
-         class _washout_fun = _default_washout_fun<_value_type> >
+           class _key_type,
+           class _hash_fun = smem_hash<_key_type>,
+           class _extract_key = smem_identity<_value_type>,
+           class _equal_key = std::equal_to<_key_type>,
+           class _washout_fun = _default_washout_fun<_value_type> >
 class shm_hashtable_expire : public  _shm_memory_base
 {
 public:
@@ -246,11 +246,11 @@ public:
             _washout_fun > iterator;
 
     friend class _hashtable_expire_iterator < _value_type,
-        _key_type,
-        _hash_fun,
-        _extract_key,
-        _equal_key,
-            _washout_fun >;
+               _key_type,
+               _hash_fun,
+               _extract_key,
+               _equal_key,
+               _washout_fun >;
 
 protected:
     //
@@ -316,7 +316,7 @@ public:
     static size_t getallocsize(size_t req_num, size_t &real_num)
     {
         //取得一个比这个数字做一定放大的质数，
-        ZCE_LIB::hash_prime(req_num, real_num);
+        zce::hash_prime(req_num, real_num);
         size_t sz_alloc =  0;
         //
         sz_alloc += sizeof(_hashtable_expire_head);
@@ -375,8 +375,8 @@ public:
         }
 
 
-        shm_hashtable_expire< _value_type, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun >* instance
-            = new shm_hashtable_expire< _value_type, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun>();
+        shm_hashtable_expire< _value_type, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun > *instance
+            = new shm_hashtable_expire< _value_type, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun>();
 
         instance->smem_base_ = pmmap;
         char *tmp_base = instance->smem_base_;
@@ -1236,12 +1236,12 @@ public:
 template           : shm_hashset_expire
 ************************************************************************************************************/
 template < class _value_type,
-         class _hash_fun = smem_hash<_value_type>,
-         class _equal_key = std::equal_to<_value_type>,
-         class _washout_fun = _default_washout_fun<_value_type> >
+           class _hash_fun = smem_hash<_value_type>,
+           class _equal_key = std::equal_to<_value_type>,
+           class _washout_fun = _default_washout_fun<_value_type> >
 class shm_hashset_expire :
     public shm_hashtable_expire < _value_type,
-    _value_type ,
+    _value_type,
     _hash_fun,
     smem_identity<_value_type>,
     _equal_key,
@@ -1253,7 +1253,7 @@ protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun >(size_t numnode, void *pmmap, bool if_restore):
-        shm_hashtable_expire<_value_type, _value_type , _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>(numnode, pmmap, if_restore)
+        shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
@@ -1263,11 +1263,11 @@ protected:
     }
 
 public:
-    static shm_hashset_expire< _value_type, _hash_fun, _equal_key , _washout_fun >*
+    static shm_hashset_expire< _value_type, _hash_fun, _equal_key, _washout_fun > *
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
-        return reinterpret_cast<shm_hashset_expire< _value_type, _hash_fun, _equal_key , _washout_fun >*>(
-                   shm_hashtable_expire<_value_type, _value_type , _hash_fun, smem_identity<_value_type>, _equal_key , _washout_fun>::initialize(numnode, pmmap, if_restore));
+        return reinterpret_cast<shm_hashset_expire< _value_type, _hash_fun, _equal_key, _washout_fun >*>(
+                   shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>::initialize(numnode, pmmap, if_restore));
     }
 };
 
@@ -1277,17 +1277,17 @@ public:
 template           : smem_hashmap_expire
 ************************************************************************************************************/
 template < class _key_type,
-         class _value_type,
-         class _hash_fun = smem_hash<_key_type>,
-         class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
-         class _equal_key = std::equal_to<_key_type>,
-         class _washout_fun = _default_washout_fun<_value_type> >
+           class _value_type,
+           class _hash_fun = smem_hash<_key_type>,
+           class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
+           class _equal_key = std::equal_to<_key_type>,
+           class _washout_fun = _default_washout_fun<_value_type> >
 class smem_hashmap_expire :
-    public shm_hashtable_expire < std::pair <_key_type, _value_type> ,
+    public shm_hashtable_expire < std::pair <_key_type, _value_type>,
     _key_type,
-    _hash_fun ,
+    _hash_fun,
     _extract_key,
-    _equal_key ,
+    _equal_key,
     _washout_fun >
 {
 
@@ -1297,7 +1297,7 @@ protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     smem_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >(size_t numnode, void *pmmap, bool if_restore):
-        shm_hashtable_expire< std::pair <_key_type, _value_type> , _key_type, _extract_key, _equal_key, _washout_fun >(numnode, pmmap, if_restore)
+        shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _extract_key, _equal_key, _washout_fun >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
@@ -1307,11 +1307,11 @@ protected:
     }
 
 public:
-    static smem_hashmap_expire< _key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun  >*
+    static smem_hashmap_expire< _key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun  > *
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast<smem_hashmap_expire< _key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >*>(
-                   shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type , _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(numnode, pmmap, if_restore));
+                   shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(numnode, pmmap, if_restore));
     }
     //[]操作符号有优点和缺点，
     _value_type &operator[](const _key_type &key)

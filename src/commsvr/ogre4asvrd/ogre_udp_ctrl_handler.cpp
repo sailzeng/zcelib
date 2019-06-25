@@ -79,11 +79,11 @@ int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
     //读取数据
     ret = read_data_fromudp(szrevc, remote_addr);
 
-	ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Read Event[%s|%u].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
-					 remote_addr.get_host_addr(),
-					 remote_addr.get_port_number(),
-					 ret,
-					 szrevc);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Read Event[%s|%u].UPD Handle input event triggered. ret:%d,szrecv:%u.\n",
+                     remote_addr.get_host_addr(),
+                     remote_addr.get_port_number(),
+                     ret,
+                     szrevc);
 
     if (ret != 0)
     {
@@ -131,21 +131,21 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_a
     if (recvret < 0)
     {
 
-        if (ZCE_LIB::last_error() != EWOULDBLOCK )
+        if (zce::last_error() != EWOULDBLOCK )
         {
             //遇到中断,等待重入
-            if (ZCE_LIB::last_error() == EINVAL)
+            if (zce::last_error() == EINVAL)
             {
                 return 0;
             }
 
             //记录错误,返回错误
-            ZCE_LOG(RS_ERROR, "UDP Read error [%s|%u],receive data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
+            ZCE_LOG(RS_ERROR, "UDP Read error [%s|%u],receive data error peer:%u zce::last_error()=%d|%s.\n",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number(),
                     dgram_peer_.get_handle(),
-                    ZCE_LIB::last_error(),
-                    strerror(ZCE_LIB::last_error()));
+                    zce::last_error(),
+                    strerror(zce::last_error()));
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
         }
         else
@@ -173,7 +173,7 @@ int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_a
 
     dgram_databuf_->snd_peer_info_.set(remote_addr);
     dgram_databuf_->rcv_peer_info_ = this->peer_svc_info_;
-    dgram_databuf_->ogre_frame_len_ =static_cast<unsigned int>(Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
+    dgram_databuf_->ogre_frame_len_ = static_cast<unsigned int>(Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD + recvret);
     //避免发生其他人填写的情况
     dgram_databuf_->ogre_frame_option_ = 0;
     dgram_databuf_->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_PEER_UDP;
@@ -187,7 +187,7 @@ int Ogre_UDPSvc_Hdl::pushdata_to_recvpipe()
 {
 
     int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
-                                                           reinterpret_cast<ZCE_LIB::dequechunk_node *>(dgram_databuf_));
+                                                           reinterpret_cast<zce::dequechunk_node *>(dgram_databuf_));
 
     //无论处理正确与否,都释放缓冲区的空间
 
@@ -232,7 +232,7 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     if (i == ary_upd_peer_.size())
     {
         ZCE_LOG(RS_ERROR, "Can't find send peer[%s|%u].Please check code.\n",
-                ZCE_LIB::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
+                zce::inet_ntoa(send_frame->snd_peer_info_.peer_ip_address_, buffer, BUFFER_LEN),
                 send_frame->snd_peer_info_.peer_port_);
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
@@ -240,18 +240,18 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     //发送失败
     if (szsend <= 0)
     {
-        ZCE_LOG(RS_ERROR, "UDP send error[%s|%u]. Send data error peer:%u ZCE_LIB::last_error()=%d|%s.\n",
+        ZCE_LOG(RS_ERROR, "UDP send error[%s|%u]. Send data error peer:%u zce::last_error()=%d|%s.\n",
                 remote_addr.get_host_addr(),
                 remote_addr.get_port_number(),
                 ary_upd_peer_[i]->get_handle(),
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;
     }
 
-	ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s|%u]  Socket %u bytes data Succ.\n",
-					 remote_addr.get_host_addr(),
-					 remote_addr.get_port_number(),
-					 szsend);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "UDP Send data to peer [%s|%u]  Socket %u bytes data Succ.\n",
+                     remote_addr.get_host_addr(),
+                     remote_addr.get_port_number(),
+                     szsend);
     return 0;
 }

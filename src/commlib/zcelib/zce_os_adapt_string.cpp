@@ -15,14 +15,14 @@
 
 //==========================================================================================================
 //取得一个唯一的名称,用于一些需要取唯一名字的地方，object一般选取一些指针考虑
-char *ZCE_LIB::object_unique_name (const void *object_ptr,
-                                   char *name,
-                                   size_t length)
+char *zce::object_unique_name (const void *object_ptr,
+                               char *name,
+                               size_t length)
 {
     snprintf (name,
               length,
               "%u.%p",
-              static_cast <int> (ZCE_LIB::getpid ()),
+              static_cast <int> (zce::getpid ()),
               object_ptr
              );
 
@@ -31,9 +31,9 @@ char *ZCE_LIB::object_unique_name (const void *object_ptr,
 
 
 //通过前缀式，得到一个唯一的名称,
-char *ZCE_LIB::prefix_unique_name(const char *prefix_name,
-                                  char *name,
-                                  size_t length)
+char *zce::prefix_unique_name(const char *prefix_name,
+                              char *name,
+                              size_t length)
 {
 
 
@@ -47,7 +47,7 @@ char *ZCE_LIB::prefix_unique_name(const char *prefix_name,
               length,
               "%s.%u.%x",
               prefix_name,
-              static_cast <int> (ZCE_LIB::getpid ()),
+              static_cast <int> (zce::getpid ()),
               uniqueid_builder
              );
 
@@ -58,7 +58,7 @@ char *ZCE_LIB::prefix_unique_name(const char *prefix_name,
 
 //==========================================================================================================
 //将字符串全部转换为大写字符
-char *ZCE_LIB::strupr(char *str)
+char *zce::strupr(char *str)
 {
 
     assert(str);
@@ -74,7 +74,7 @@ char *ZCE_LIB::strupr(char *str)
 }
 
 //将字符串全部转换为小写字符
-char *ZCE_LIB::strlwr(char *str)
+char *zce::strlwr(char *str)
 {
 
     assert(str);
@@ -90,7 +90,7 @@ char *ZCE_LIB::strlwr(char *str)
 
 //字符串比较，忽视大小写
 //高效版本
-int ZCE_LIB::strcasecmp(const char *string1, const char *string2)
+int zce::strcasecmp(const char *string1, const char *string2)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::strcasecmp(string1, string2);
@@ -102,7 +102,7 @@ int ZCE_LIB::strcasecmp(const char *string1, const char *string2)
 
 //字符串定长比较，忽视大小写
 //高效版本
-int ZCE_LIB::strncasecmp(const char *string1, const char *string2, size_t maxlen)
+int zce::strncasecmp(const char *string1, const char *string2, size_t maxlen)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::strncasecmp(string1, string2, maxlen);
@@ -114,7 +114,7 @@ int ZCE_LIB::strncasecmp(const char *string1, const char *string2, size_t maxlen
 
 
 //替换src字符串中的sub字符串为replace，保存到dst字符串中
-const char *ZCE_LIB::str_replace(const char *src, char *dst, const char *sub, const char *replace)
+const char *zce::str_replace(const char *src, char *dst, const char *sub, const char *replace)
 {
     ZCE_ASSERT(src && dst && sub && replace);
 
@@ -186,7 +186,7 @@ void str_split_into2(const std::string &src_str,
 
 //-------------------------------------------------------------------------------------------------------------------
 //跨越空白符，指空格、水平制表、垂直制表、换页、回车和换行符，这类字符都跨越，
-const char *ZCE_LIB::skip_whitespace (const char *str)
+const char *zce::skip_whitespace (const char *str)
 {
     while (::isspace(static_cast<unsigned char>(*str)))
     {
@@ -197,7 +197,7 @@ const char *ZCE_LIB::skip_whitespace (const char *str)
 }
 
 //跨越某个token
-const  char *ZCE_LIB::skip_token(const char *str)
+const  char *zce::skip_token(const char *str)
 {
     while (::isspace(static_cast<unsigned char>(*str)))
     {
@@ -218,7 +218,7 @@ const  char *ZCE_LIB::skip_token(const char *str)
 }
 
 //跨越一行
-const char *ZCE_LIB::skip_line(const char *str)
+const char *zce::skip_line(const char *str)
 {
     while ( ('\n' != (*str)) && ('\0' != (*str)) )
     {
@@ -237,7 +237,7 @@ const char *ZCE_LIB::skip_line(const char *str)
 
 
 //跨越谋个分隔符号
-const char *ZCE_LIB::skip_separator(const char *str, char separator_char)
+const char *zce::skip_separator(const char *str, char separator_char)
 {
     while ( (separator_char != (*str)) && ('\0' != (*str)) )
     {
@@ -259,38 +259,38 @@ const char *ZCE_LIB::skip_separator(const char *str, char separator_char)
 //==========================================================================================================
 
 //调试打印内存信息，就是简单的内存翻译为16进制字符串
-void ZCE_LIB::memory_debug( const unsigned char *mem, size_t mem_len, FILE* stream)
+void zce::memory_debug( const unsigned char *mem, size_t mem_len, FILE *stream)
 {
     //%zu不知道VC从什么年代支持的
     fprintf(stream, "DEBUG memory[%p][%zu] \n", mem, mem_len);
     std::vector<std::string> str_ary;
-    ZCE_LIB::memory_debug(mem, mem_len, str_ary);
-    for (std::string& out : str_ary)
+    zce::memory_debug(mem, mem_len, str_ary);
+    for (std::string &out : str_ary)
     {
         fprintf(stream, "%s\n", out.c_str());
     }
-    
+
 }
 
 
 //用 11 02 03 0E E0         ..... 格式的输出，指针信息。调试打印内存信息
-void ZCE_LIB::memory_debug(const unsigned char* mem,
-                           size_t mem_len,
-                           std::vector<std::string> &str_ary)
+void zce::memory_debug(const unsigned char *mem,
+                       size_t mem_len,
+                       std::vector<std::string> &str_ary)
 {
     //60个字符换行
     const size_t LINE_OUT_NUM = 60;
     const size_t SPEARATOR_LEN = 2;
-    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN +1] = {0};
+    char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = {0};
     ascii_str[LINE_OUT_NUM] = '\0';
     const size_t HEX_STR_LEN = 4;
     char hex_str[HEX_STR_LEN] = {0};
 
     //头部用4个空格作为分割富豪
-    
+
     ascii_str[0] = ' ';
     ascii_str[1] = ' ';
-    
+
     std::string line_string;
     line_string.reserve(LINE_OUT_NUM * 4 + 12);
     str_ary.reserve(mem_len / LINE_OUT_NUM + 1);
@@ -308,7 +308,7 @@ void ZCE_LIB::memory_debug(const unsigned char* mem,
             j = 0;
         }
         unsigned char bytmp = *(mem + i);
-        snprintf(hex_str,HEX_STR_LEN,"%02X ", bytmp);
+        snprintf(hex_str, HEX_STR_LEN, "%02X ", bytmp);
         line_string += hex_str;
 
         //只考虑能显示的字符，特殊字符更换为'.',扩展ASICII码就不考虑了
@@ -316,7 +316,7 @@ void ZCE_LIB::memory_debug(const unsigned char* mem,
         {
             bytmp = '.';
         }
-        ascii_str [SPEARATOR_LEN +j] = bytmp;
+        ascii_str [SPEARATOR_LEN + j] = bytmp;
     }
 
     //如果不是LINE_OUT_NUM 长度整除，要对齐，输出最后的字符串
@@ -325,10 +325,10 @@ void ZCE_LIB::memory_debug(const unsigned char* mem,
         //为了对齐，打印空格
         for (size_t k = 0; k < LINE_OUT_NUM - mem_len % LINE_OUT_NUM; k++)
         {
-            snprintf(hex_str,HEX_STR_LEN,"   ");
+            snprintf(hex_str, HEX_STR_LEN, "   ");
             line_string += hex_str;
         }
-        ascii_str[SPEARATOR_LEN+j] = '\0';
+        ascii_str[SPEARATOR_LEN + j] = '\0';
         line_string += ascii_str;
         str_ary.push_back(line_string);
     }
@@ -339,7 +339,7 @@ void ZCE_LIB::memory_debug(const unsigned char* mem,
 
 //快速内存拷贝，当然其实他并不算块，
 //这个纯属好玩的，经过测试，他其实并没有memcpy快，所以不建议使用
-void *ZCE_LIB::fast_memcpy(void *dst, const void *src, size_t sz)
+void *zce::fast_memcpy(void *dst, const void *src, size_t sz)
 {
     void *r = dst;
 
@@ -368,7 +368,7 @@ void *ZCE_LIB::fast_memcpy(void *dst, const void *src, size_t sz)
 
 //快速内存拷贝的第二个版本，其实就是在复制的时候增加了一次复制，更加优化一点
 //这个也没有memcpy快
-void *ZCE_LIB::fast_memcpy2(void *dst, const void *src, size_t sz)
+void *zce::fast_memcpy2(void *dst, const void *src, size_t sz)
 {
     void *r = dst;
 
@@ -397,10 +397,10 @@ void *ZCE_LIB::fast_memcpy2(void *dst, const void *src, size_t sz)
 
 //==========================================================================================================
 
-//GCC 编译的时候不能处理template<> int8_t ZCE_LIB::str_to_value(const char *str)
+//GCC 编译的时候不能处理template<> int8_t zce::str_to_value(const char *str)
 //的写法，只能把名字空间放到外面来了，估计是和class容易混淆
-namespace ZCE_LIB
-{ 
+namespace zce
+{
 
 //将c str 转换为很多数值类型，作为返回值返回
 template<>
@@ -515,7 +515,7 @@ template<>
 ZCE_Time_Value str_to_value(const char *str)
 {
     ZCE_Time_Value val;
-    val.from_string(str, false, ZCE_LIB::TIME_STRFMT_US_SEC);
+    val.from_string(str, false, zce::TIME_STRFMT_US_SEC);
     return val;
 }
 
@@ -626,7 +626,7 @@ void str_to_ptr(const char *str, ZCE_Sockaddr_In6 *ptr)
 template<>
 void str_to_ptr(const char *str, ZCE_Time_Value *ptr)
 {
-    ptr->from_string(str, false, ZCE_LIB::TIME_STRFMT_US_SEC);
+    ptr->from_string(str, false, zce::TIME_STRFMT_US_SEC);
 }
 
 };

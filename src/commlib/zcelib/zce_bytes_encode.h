@@ -41,7 +41,7 @@
 
 #include "zce_bytes_base.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 #ifndef ZCE_BASE64_ENCODE_BUFFER

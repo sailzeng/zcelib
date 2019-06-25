@@ -20,8 +20,8 @@ class ZCE_Async_Coroutine : public ZCE_Async_Object
     //
     enum COROUTINE_STATE
     {
-		//
-		COROUTINE_INVALID = 0x0,
+        //
+        COROUTINE_INVALID = 0x0,
         //携程传递给管理器的状态值，
         COROUTINE_CONTINUE = 0x10001,
         COROUTINE_EXIT = 0x10002,
@@ -36,7 +36,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr,unsigned int reg_cmd);
+    ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr, unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -89,7 +89,7 @@ protected:
     * @brief      继承ZCE_Async_Object的函数，
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(const void* outer_data,bool &continue_run) override;
+    virtual void on_run(const void *outer_data, bool &continue_run) override;
 
     /*!
     * @brief      异步对象超时处理
@@ -120,7 +120,7 @@ protected:
     coroutine_t   handle_;
 
     ///协程的堆栈大小，
-    size_t           stack_size_= DEF_STACK_SIZE;
+    size_t           stack_size_ = DEF_STACK_SIZE;
 
     ///协程的状态
     COROUTINE_STATE  coroutine_state_ = COROUTINE_INVALID;

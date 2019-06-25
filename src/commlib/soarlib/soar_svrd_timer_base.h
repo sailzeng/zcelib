@@ -153,7 +153,7 @@ protected:
     ///
     ZCE_Time_Value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
     ///
-	const void* zan_timer_act_[MAX_APP_TIMER_NUMBER] = {0};
+    const void *zan_timer_act_[MAX_APP_TIMER_NUMBER] = {0};
 
 
 public:

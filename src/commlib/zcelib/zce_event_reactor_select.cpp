@@ -12,17 +12,17 @@
 
 //
 ZCE_Select_Reactor::ZCE_Select_Reactor():
-	read_fd_set_{0},
-	write_fd_set_{0},
-	exception_fd_set_{0}
+    read_fd_set_{0},
+    write_fd_set_{0},
+    exception_fd_set_{0}
 {
     initialize(FD_SETSIZE);
 }
 
 ZCE_Select_Reactor::ZCE_Select_Reactor(size_t max_event_number):
-	read_fd_set_{0},
-	write_fd_set_{0},
-	exception_fd_set_{0}
+    read_fd_set_{0},
+    write_fd_set_{0},
+    exception_fd_set_{0}
 {
     initialize(max_event_number);
 }
@@ -214,11 +214,11 @@ int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
     para_exception_fd_set_ = exception_fd_set_;
 
     //
-    int const nfds = ZCE_LIB::select (max_fd_plus_one_,
-                                      &para_read_fd_set_,
-                                      &para_write_fd_set_,
-                                      &para_exception_fd_set_,
-                                      max_wait_time);
+    int const nfds = zce::select (max_fd_plus_one_,
+                                  &para_read_fd_set_,
+                                  &para_write_fd_set_,
+                                  &para_exception_fd_set_,
+                                  max_wait_time);
 
     if (nfds == 0)
     {
@@ -266,7 +266,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
     for (int i = 0; i < max_process; i++)
     {
         ZCE_SOCKET socket_handle;
-        bool hd_ready = ZCE_LIB::is_ready_fds(i, out_fds, &socket_handle);
+        bool hd_ready = zce::is_ready_fds(i, out_fds, &socket_handle);
 
         if (!hd_ready)
         {

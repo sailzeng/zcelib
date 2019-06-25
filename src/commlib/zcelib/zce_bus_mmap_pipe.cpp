@@ -82,13 +82,13 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     //如果不恢复,干脆删除原有的MMAP文件,避免使用的时候出现问题.
     if ( if_restore == false )
     {
-        ZCE_LIB::unlink(bus_mmap_name);
+        zce::unlink(bus_mmap_name);
     }
     //如果没有这个文件,那么只能重建
     else
     {
         zce_os_stat mmapfile_stat;
-        ret = ZCE_LIB::stat(bus_mmap_name, &mmapfile_stat);
+        ret = zce::stat(bus_mmap_name, &mmapfile_stat);
         //不存在，恢复个毛线
         if (ret != 0 )
         {
@@ -101,7 +101,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
 
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        size_t sz_room = ZCE_LIB::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = zce::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
         bus_head_.size_of_room_[i] = sz_room;
         sz_malloc += sz_room;
     }
@@ -119,8 +119,8 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
                 bus_mmap_name,
                 ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()) );
+                zce::last_error(),
+                strerror(zce::last_error()) );
         return -1;
     }
 
@@ -179,7 +179,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
     int ret = 0;
 
     zce_os_stat mmapfile_stat;
-    ret = ZCE_LIB::stat(bus_mmap_name, &mmapfile_stat);
+    ret = zce::stat(bus_mmap_name, &mmapfile_stat);
 
     if (ret != 0 )
     {
@@ -201,8 +201,8 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
         ZCE_LOG(RS_ERROR, "[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
                 bus_mmap_name,
                 ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()) );
+                zce::last_error(),
+                strerror(zce::last_error()) );
         return -1;
     }
 
@@ -234,11 +234,11 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
         char *pt_pipe = static_cast<char *>( mmap_file_.addr() ) + file_offset ;
 
         //初始化内存
-        bus_pipe_pointer_[i] = ZCE_LIB::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
-                                                                   max_frame_len,
-                                                                   pt_pipe,
-                                                                   if_restore
-                                                                  );
+        bus_pipe_pointer_[i] = zce::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
+                                                               max_frame_len,
+                                                               pt_pipe,
+                                                               if_restore
+                                                              );
 
         //管道创建自己也会检查是否能恢复
         if (bus_pipe_pointer_[i] == NULL)
@@ -252,7 +252,7 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
 
         ZCE_ASSERT( bus_pipe_pointer_[i] != NULL );
 
-        size_t sz_room = ZCE_LIB::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = zce::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;
     }
 
@@ -260,7 +260,7 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
 }
 
 //MMAP隐射文件名称
-const char* ZCE_Bus_MMAPPipe::mmap_file_name()
+const char *ZCE_Bus_MMAPPipe::mmap_file_name()
 {
     return mmap_file_.file_name();
 }

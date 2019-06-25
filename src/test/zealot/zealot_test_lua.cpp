@@ -50,7 +50,7 @@ int g_b = 2222;
 int g_array[20];
 
 //测试全局变量在两边的使用
-int test_lua_script2(int , char *[])
+int test_lua_script2(int, char *[])
 {
 
     for (size_t k = 0; k < 20; ++k)
@@ -148,7 +148,7 @@ int test_lua_script3(int, char *[])
     lua_tie.reg_class<T3A>("T3A", false);
     lua_tie.class_mem_var<T3A>("a_", &T3A::a_);
     lua_tie.class_mem_fun("set_a", &T3A::set_a);
-    lua_tie.class_constructor<T3A>(ZCE_LIB::constructor<T3A, int> );
+    lua_tie.class_constructor<T3A>(zce::constructor<T3A, int> );
 
     T3A ta_val(100);
     T3A *ta_ptr = new T3A(200);
@@ -161,7 +161,7 @@ int test_lua_script3(int, char *[])
 
 
     lua_tie.reg_class<T3B>("T3B", false)
-    .construct(ZCE_LIB::constructor<T3B, int, int, int>)
+    .construct(zce::constructor<T3B, int, int, int>)
     .inherit<T3A>()
     .mem_var("b1_", &T3B::b1_)
     .mem_var("b2_", &T3B::b2_)
@@ -485,7 +485,7 @@ int test_lua_script7(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
-    Woo_Struct obj_x , obj_y;
+    Woo_Struct obj_x, obj_y;
 
     obj_x.a_ = 1;
     obj_x.b_ = 2;
@@ -532,7 +532,7 @@ int test_lua_script7(int, char *[])
 
     //做一下性能测试。
     const uint32_t TEST_SEED = 120825;
-    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+    zce::random_mt11213b  mt11231b_gen(TEST_SEED);
 
     ZCE_Progress_Timer timer;
     timer.restart();
@@ -626,7 +626,7 @@ int test_lua_script8(int, char *[])
 
     //做一下性能测试。
     const uint32_t TEST_SEED = 120825;
-    ZCE_LIB::random_mt11213b  mt11231b_gen(TEST_SEED);
+    zce::random_mt11213b  mt11231b_gen(TEST_SEED);
 
     ZCE_Progress_Timer timer;
 
@@ -765,14 +765,14 @@ int test_lua_script9(int, char *[])
     lua_tie.open(true, true);
     //注册T9B
     lua_tie.reg_class<T9B>("T9B").
-    construct(ZCE_LIB::constructor<T9B>).
+    construct(zce::constructor<T9B>).
     mem_var("t9b_val_", &T9B::t9b_val_);
 
     lua_tie.reg_class<T9C_base>("T9C_base").
     mem_fun("is_base", &T9C_base::is_base);
 
     lua_tie.reg_class<T9C>("T9C").
-    construct(ZCE_LIB::constructor<T9C, int >).
+    construct(zce::constructor<T9C, int >).
     inherit<T9C_base>().
     mem_fun("is_t9c", &T9C::is_t9c).
     mem_fun("ret_int", &T9C::ret_int).

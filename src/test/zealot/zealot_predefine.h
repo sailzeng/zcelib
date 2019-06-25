@@ -43,7 +43,7 @@
 
 
 #include <zce_boost_random.h>
-#include <zce_lock_thread_mutex.h> 
+#include <zce_lock_thread_mutex.h>
 #include <zce_lock_thread_rw_mutex.h>
 #include <zce_lock_guard.h>
 #include <zce_thread_msgque_condi.h>

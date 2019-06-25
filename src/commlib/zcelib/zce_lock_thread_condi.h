@@ -30,11 +30,11 @@ public:
     {
         int ret = 0;
 
-        ret = ZCE_LIB::pthread_cond_initex(&lock_, false);
+        ret = zce::pthread_cond_initex(&lock_, false);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_initex", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_initex", ret);
             return;
         }
 
@@ -44,11 +44,11 @@ public:
     virtual ~ZCE_Thread_Condition (void)
     {
         //销毁条件变量
-        int ret =  ZCE_LIB::pthread_cond_destroy(&lock_);
+        int ret =  zce::pthread_cond_destroy(&lock_);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_destroy", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_destroy", ret);
             return;
         }
     }
@@ -68,11 +68,11 @@ public:
     virtual void signal (void)
     {
         //
-        int ret = ZCE_LIB::pthread_cond_signal(&lock_);
+        int ret = zce::pthread_cond_signal(&lock_);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_signal", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_signal", ret);
             return ;
         }
     }
@@ -81,11 +81,11 @@ public:
     virtual void broadcast (void)
     {
         //
-        int ret = ZCE_LIB::pthread_cond_broadcast(&lock_);
+        int ret = zce::pthread_cond_broadcast(&lock_);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_cond_broadcast", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_broadcast", ret);
             return;
         }
     }

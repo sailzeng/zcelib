@@ -53,7 +53,7 @@ public:
     //填充数据
     inline void fill_write_data(const uint32_t size_data, const char *src_data);
     //读取数据
-    inline void get_data(uint32_t& size_data, char *dest_data) const;
+    inline void get_data(uint32_t &size_data, char *dest_data) const;
 
     //增加DATA数据
     int add_data(uint32_t add_size, char *add_data);
@@ -69,12 +69,12 @@ public:
 
 public:
 
-	//不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
+    //不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
-	///创建一个Frame
-	static Ogre4a_App_Frame *new_ogre(std::size_t lenframe);
-	///销毁一个frame
-	static void delete_ogre(Ogre4a_App_Frame *frame) noexcept;
+    ///创建一个Frame
+    static Ogre4a_App_Frame *new_ogre(std::size_t lenframe);
+    ///销毁一个frame
+    static void delete_ogre(Ogre4a_App_Frame *frame) noexcept;
 
 public:
 

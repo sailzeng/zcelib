@@ -293,7 +293,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
     str_ary.clear();
-    ZCE_LIB::str_split(temp_value.c_str(), "|", str_ary);
+    zce::str_split(temp_value.c_str(), "|", str_ary);
     if (str_ary.size() > ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER)
     {
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;

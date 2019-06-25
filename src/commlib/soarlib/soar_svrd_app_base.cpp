@@ -105,7 +105,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     }
 
     // 切换运行目录
-    ret = ZCE_LIB::chdir(config_base_->app_run_dir_.c_str());
+    ret = zce::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
         printf("[framework] change run directory to %s fail. error=%d",
@@ -153,7 +153,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     ZCE_LOG(RS_INFO, "[framework] %s start init", app_base_name_.c_str());
 
     // 切换运行目录
-    ret = ZCE_LIB::chdir(config_base_->app_run_dir_.c_str());
+    ret = zce::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[framework] change run directory to %s fail. err=%d",
@@ -173,8 +173,8 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     {
         //如果有错误显示错误，如果错误==16，表示可能是PID文件被锁定,
         ZCE_LOG(RS_ERROR, "[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
-                app_path.c_str(), ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                app_path.c_str(), zce::last_error(),
+                strerror(zce::last_error()));
 
         ZCE_LOG(RS_ERROR, "[framework] If last error == 16, could has a same process already run in this directory."
                 "Please check PID file or system processes.");
@@ -229,7 +229,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 
     //使用WHEEL型的定时器队列
     ZCE_Timer_Queue_Base::instance(new ZCE_Timer_Wheel(
-                                  config_base_->max_timer_nuamber_));
+                                       config_base_->max_timer_nuamber_));
 
     //注册定时器
     timer_base_->initialize(ZCE_Timer_Queue_Base::instance());
@@ -338,7 +338,7 @@ int Soar_Svrd_Appliction::init_log()
     ZCE_Trace_LogMsg::instance()->finalize();
 
     // 初始化日志
-    ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_output_, 
+    ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_output_,
                                                    config_base_->log_config_.log_div_type_,
                                                    config_base_->log_file_prefix_.c_str(),
                                                    false,

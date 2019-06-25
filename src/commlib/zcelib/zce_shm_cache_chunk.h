@@ -22,7 +22,7 @@
 
 #include "zce_shm_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 /*!
@@ -112,7 +112,7 @@ protected:
     * @param[in]  size_t    希望申请放入的NODE的长度
     * @param[out] nodeindex 返回参数，申请到的NODE的索引
     */
-    bool create_node(size_t , size_t &nodeindex);
+    bool create_node(size_t, size_t &nodeindex);
 
     /*!
     * @brief      释放一个NODE,将其归还给FREELIST

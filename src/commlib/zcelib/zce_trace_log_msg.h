@@ -43,7 +43,7 @@ protected:
     @param      lpszFormat  日志的格式化字符串
     @param      args        动态的日志参数列表组成的va_list
     */
-    void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format , va_list args);
+    void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, va_list args);
 
 public:
 
@@ -69,14 +69,14 @@ public:
 
     ///利用单子对象，打印日志信息
     static void debug_output(ZCE_LOG_PRIORITY dbglevel,
-                             const char *str_format ,
+                             const char *str_format,
                              ... );
 
     //为什么要这样麻烦,问题在于不能用宏(__VA_ARGS__)解决问题(部分编译器不支持,VS2003),
 #if _MSC_VER <= 1300
 
     //使用 RS_TRACE 调试级别输出
-    static void debug_traceex(const char * , ... );
+    static void debug_traceex(const char *, ... );
     //使用 RS_DEBUG 调试级别输出
     static void debug_debugex(const char *str_format, ... );
     //使用 RS_INFO 调试级别输出

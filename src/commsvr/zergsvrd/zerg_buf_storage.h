@@ -127,7 +127,7 @@ protected:
 protected:
 
     ///存放BUFF 的队列类型
-    typedef ZCE_LIB::lordrings <Zerg_Buffer *> ZBUFFER_RINGS;
+    typedef zce::lordrings <Zerg_Buffer *> ZBUFFER_RINGS;
 
     ///我担心内存泄露,所以加个总数计数
     size_t                size_of_bufferalloc_;

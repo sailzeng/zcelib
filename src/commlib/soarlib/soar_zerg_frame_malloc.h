@@ -111,7 +111,7 @@ protected:
     static const size_t NUM_OF_ALLOW_LIST_IDLE_FRAME = 1024;
 
     //
-    typedef ZCE_LIB::lordrings <Zerg_App_Frame *>     LIST_OF_APPFRAME;
+    typedef zce::lordrings <Zerg_App_Frame *>     LIST_OF_APPFRAME;
     //
     typedef std::vector< LIST_OF_APPFRAME > APPFRAME_MEMORY_POOL;
 

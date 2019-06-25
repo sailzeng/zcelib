@@ -52,7 +52,7 @@ enum ZCE_LOGFILE_NAME_DEVIDE
     ///在32位的机器，分割日志的大小不要超过4G，64位理论无限制,代码内部限制是16G
     NAME_ID_DEVIDE_SIZE       = 101,
 
-    
+
     ///按照小时分割日志,
     NAME_TIME_HOUR_DEVIDE_TIME       = 201,
     ///按照6个小时分割日志,1天分割为4个
@@ -117,7 +117,7 @@ enum LOG_OUTPUT_WAY
             内部和其他封装都是依据这个类来的，
             LOG_PLUS CPP ，一种依靠C++模版的输出方式，某种程度上提高了字符串格
             式化的性能，（注意性能瓶颈大头在文件输出那块），内部用的函数
-            ZCE_LIB::foo_snprintf，
+            zce::foo_snprintf，
 
 */
 class ZCE_LogTrace_Basic : public ZCE_NON_Copyable
@@ -333,7 +333,7 @@ protected:
     @param      init     是否是初始化阶段
     @param      current_time  当前时间
     */
-    void open_new_logfile(bool initiate,const timeval &current_time);
+    void open_new_logfile(bool initiate, const timeval &current_time);
 
 public:
 

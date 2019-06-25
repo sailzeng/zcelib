@@ -27,7 +27,7 @@
 
 
 
-namespace ZCE_LIB
+namespace zce
 {
 //==========================================================================================================
 
@@ -189,8 +189,8 @@ char *strtrimright(char_type *str)
 template <typename char_type>
 inline char *strtrim(char_type *str)
 {
-    ZCE_LIB::strtrimleft<char_type>(str);
-    ZCE_LIB::strtrimright<char_type>(str);
+    zce::strtrimleft<char_type>(str);
+    zce::strtrimright<char_type>(str);
     return str;
 }
 
@@ -321,7 +321,7 @@ void _str_split(iter_type1 fs, iter_type1 ls, iter_type2 fo, iter_type2 lo, comp
     std::back_insert_iterator<container_type> o = std::back_inserter(v);
     if (fo == lo)
     {
-        *o =typename container_type::value_type(fs, ls);
+        *o = typename container_type::value_type(fs, ls);
         return;
     }
 
@@ -460,7 +460,7 @@ const char *skip_separator(const char *str, char separator_char);
 * @param      mem_len 指针长度
 * @param      str_ary 字符串的数组，为什么不用std::ostream呢，因为我可能会要重新格式输出
 */
-void memory_debug(const unsigned char *mem, 
+void memory_debug(const unsigned char *mem,
                   size_t mem_len,
                   std::vector<std::string> &str_ary);
 
@@ -471,7 +471,7 @@ void memory_debug(const unsigned char *mem,
 * @param      mem_len 指针长度，
 * @param      stream  文件流对象，stdout,stderr也都可以
 */
-void memory_debug(const unsigned char* mem, size_t mem_len, FILE* stream);
+void memory_debug(const unsigned char *mem, size_t mem_len, FILE *stream);
 
 //----------------------------------------------------------------------------------------------------------
 

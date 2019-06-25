@@ -11,8 +11,8 @@ class ZCE_STATUS_ITEM_ID
 ******************************************************************************************/
 
 ZCE_STATUS_ITEM_ID::ZCE_STATUS_ITEM_ID(uint32_t statics_id,
-									   uint32_t classify_id,
-									   uint32_t subclassing_id) :
+                                       uint32_t classify_id,
+                                       uint32_t subclassing_id) :
     statics_id_(statics_id),
     classify_id_(classify_id),
     subclassing_id_(subclassing_id)
@@ -57,7 +57,7 @@ ZCE_STATUS_ITEM::ZCE_STATUS_ITEM(unsigned int statics_id,
                                  ZCE_STATUS_STATICS_TYPE statics_type):
     item_id_(statics_id, 0, 0),
     statics_type_(statics_type),
-	counter_(0)
+    counter_(0)
 {
 }
 
@@ -219,16 +219,16 @@ void ZCE_Server_Status::add_status_item(size_t num_add_stat_item,
 }
 
 bool ZCE_Server_Status::is_exist_stat_id(unsigned int stat_id,
-									     ZCE_STATUS_ITEM_WITHNAME* status_item_withname) const
+                                         ZCE_STATUS_ITEM_WITHNAME *status_item_withname) const
 {
-	//能写auto正好
-	STATUS_WITHNAME_MAP::const_iterator iter = conf_stat_map_.find(stat_id);
-	if (iter == conf_stat_map_.end())
-	{
-		return false;
-	}
-	*status_item_withname = iter->second;
-	return true;
+    //能写auto正好
+    STATUS_WITHNAME_MAP::const_iterator iter = conf_stat_map_.find(stat_id);
+    if (iter == conf_stat_map_.end())
+    {
+        return false;
+    }
+    *status_item_withname = iter->second;
+    return true;
 }
 
 //修改是否需要多线程保护
@@ -258,8 +258,8 @@ void ZCE_Server_Status::multi_thread_guard(bool multi_thread)
 //在sandy数据区里面，找数据项目
 //这个函数里面不要加锁（在上层加），因为这个函数是一个公用函数，可能会……
 int ZCE_Server_Status::find_insert_idx(uint32_t statics_id,
-									   uint32_t classify_id,
-									   uint32_t subclassing_id,
+                                       uint32_t classify_id,
+                                       uint32_t subclassing_id,
                                        size_t *sandy_idx)
 {
     *sandy_idx = static_cast<size_t>(-1);
@@ -353,7 +353,7 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
     //
     stat_file_head_->monitor_start_time_ = static_cast<uint64_t>(time(NULL));
     stat_file_head_->copy_time_ = static_cast<uint64_t>(time(NULL));
-	stat_file_head_->active_time_ = static_cast<uint64_t>(time(NULL));
+    stat_file_head_->active_time_ = static_cast<uint64_t>(time(NULL));
 
     initialized_ = true;
 
@@ -362,8 +362,8 @@ int ZCE_Server_Status::initialize(const char *stat_filename,
 
 //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
 int ZCE_Server_Status::increase_by_statid(uint32_t statics_id,
-										  uint32_t classify_id,
-										  uint32_t subclassing_id,
+                                          uint32_t classify_id,
+                                          uint32_t subclassing_id,
                                           int64_t incre_value)
 {
     if (!initialized_)
@@ -392,8 +392,8 @@ int ZCE_Server_Status::increase_by_statid(uint32_t statics_id,
 
 //绝对值修改监控统计项目，
 int ZCE_Server_Status::set_by_statid(uint32_t statics_id,
-									 uint32_t classify_id,
-									 uint32_t subclassing_id,
+                                     uint32_t classify_id,
+                                     uint32_t subclassing_id,
                                      uint64_t set_value)
 {
     if (!initialized_)
@@ -408,7 +408,7 @@ int ZCE_Server_Status::set_by_statid(uint32_t statics_id,
 
     ZCE_Lock_Ptr_Guard guard(stat_lock_);
 
-    ret = find_insert_idx(statics_id, classify_id, subclassing_id , &sandy_idx);
+    ret = find_insert_idx(statics_id, classify_id, subclassing_id, &sandy_idx);
 
     if ( 0 != ret )
     {
@@ -422,8 +422,8 @@ int ZCE_Server_Status::set_by_statid(uint32_t statics_id,
 
 //根据统计ID和分类ID作为key，得到统计数值
 uint64_t ZCE_Server_Status::get_counter(uint32_t statics_id,
-										uint32_t classify_id,
-										uint32_t subclassing_id)
+                                        uint32_t classify_id,
+                                        uint32_t subclassing_id)
 {
     ZCE_STATUS_ITEM_ID stat_item_id(statics_id, classify_id, subclassing_id);
     STATID_TO_INDEX_MAP::iterator iter_tmp = statid_to_index_.find(stat_item_id);
@@ -461,7 +461,7 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
 
     //
     int clear_type = STATICS_INVALID_TYPE;
-	time_t last_clear_time = static_cast<time_t>(stat_file_head_->active_time_);
+    time_t last_clear_time = static_cast<time_t>(stat_file_head_->active_time_);
 
     //看时间周期发生了什么变化没有
     if (last_clear_time / FIVE_MINTUE_SECONDS !=
@@ -470,14 +470,14 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
         clear_type = STATICS_PER_FIVE_MINTUES;
 
         //如果5分钟都没有变化，小时不会变化
-        if (last_clear_time / ZCE_LIB::ONE_HOUR_SECONDS !=
-            now_time / ZCE_LIB::ONE_HOUR_SECONDS)
+        if (last_clear_time / zce::ONE_HOUR_SECONDS !=
+            now_time / zce::ONE_HOUR_SECONDS)
         {
             clear_type = STATICS_PER_HOUR;
 
             //如果小时都没有变化，天不会变化
-            if (last_clear_time / ZCE_LIB::ONE_DAY_SECONDS !=
-                now_time / ZCE_LIB::ONE_DAY_SECONDS)
+            if (last_clear_time / zce::ONE_DAY_SECONDS !=
+                now_time / zce::ONE_DAY_SECONDS)
             {
                 clear_type = STATICS_PER_DAYS;
             }
@@ -511,7 +511,7 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
     }
 
     //记录清理时间
-	stat_file_head_->active_time_ = static_cast<uint64_t>(now_time);
+    stat_file_head_->active_time_ = static_cast<uint64_t>(now_time);
 }
 
 //由于将内部数据全部取出，用于你外部打包之类

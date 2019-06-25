@@ -8,10 +8,10 @@
 //为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
 
 //初始化，创建一个无名（匿名）信号灯,对应的销毁函数sem_destroy
-int ZCE_LIB::sem_init(sem_t *sem,
-                      int pshared,
-                      unsigned int init_value,
-                      unsigned int max_val)
+int zce::sem_init(sem_t *sem,
+                  int pshared,
+                  unsigned int init_value,
+                  unsigned int max_val)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -50,7 +50,7 @@ int ZCE_LIB::sem_init(sem_t *sem,
 
 //销毁无名(匿名)信号灯
 //sem_destroy不会释放sem，因为这是你分配的内存
-int ZCE_LIB::sem_destroy(sem_t *sem)
+int zce::sem_destroy(sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -63,11 +63,11 @@ int ZCE_LIB::sem_destroy(sem_t *sem)
 
 //打开(有名)信号灯,最大值不是标准参数，所以用默认只修饰了，这个主要用于创建有名信号灯,
 //打开后，要使用sem_close，sem_unlink
-sem_t *ZCE_LIB::sem_open(const char *name,
-                         int oflag,
-                         mode_t mode,
-                         unsigned int init_value,
-                         unsigned int max_val)
+sem_t *zce::sem_open(const char *name,
+                     int oflag,
+                     mode_t mode,
+                     unsigned int init_value,
+                     unsigned int max_val)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -110,7 +110,7 @@ sem_t *ZCE_LIB::sem_open(const char *name,
 }
 
 //关闭信号灯
-int ZCE_LIB::sem_close(sem_t *sem)
+int zce::sem_close(sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
     ::CloseHandle(sem->sem_hanlde_);
@@ -123,7 +123,7 @@ int ZCE_LIB::sem_close(sem_t *sem)
 }
 
 //删除信号灯
-int ZCE_LIB::sem_unlink(const char *name)
+int zce::sem_unlink(const char *name)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG (name);
@@ -133,7 +133,7 @@ int ZCE_LIB::sem_unlink(const char *name)
 #endif
 }
 
-int ZCE_LIB::sem_post (sem_t *sem)
+int zce::sem_post (sem_t *sem)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -156,7 +156,7 @@ int ZCE_LIB::sem_post (sem_t *sem)
 
 }
 
-int ZCE_LIB::sem_post (sem_t *sem, u_int release_count)
+int zce::sem_post (sem_t *sem, u_int release_count)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -186,7 +186,7 @@ int ZCE_LIB::sem_post (sem_t *sem, u_int release_count)
 #endif
 }
 
-int ZCE_LIB::sem_trywait (sem_t *sem)
+int zce::sem_trywait (sem_t *sem)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -222,7 +222,7 @@ int ZCE_LIB::sem_trywait (sem_t *sem)
 }
 
 //信号灯锁定
-int ZCE_LIB::sem_wait (sem_t *sem)
+int zce::sem_wait (sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -246,7 +246,7 @@ int ZCE_LIB::sem_wait (sem_t *sem)
 }
 
 //信号灯超时锁定
-int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
+int zce::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -254,14 +254,14 @@ int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
     assert(abs_timeout_spec);
 
     //得到相对时间，这个折腾，
-    timeval now_time = ZCE_LIB::gettimeofday();
-    timeval abs_time = ZCE_LIB::make_timeval(abs_timeout_spec);
+    timeval now_time = zce::gettimeofday();
+    timeval abs_time = zce::make_timeval(abs_timeout_spec);
 
-    timeval timeout_time = ZCE_LIB::timeval_sub(abs_time, now_time, true);
+    timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
 
     //等待时间触发
     DWORD retsult = ::WaitForSingleObject (sem->sem_hanlde_,
-                                           static_cast<DWORD>( ZCE_LIB::total_milliseconds(timeout_time)));
+                                           static_cast<DWORD>( zce::total_milliseconds(timeout_time)));
 
     if (WAIT_OBJECT_0 == retsult || WAIT_ABANDONED == retsult)
     {
@@ -296,18 +296,18 @@ int ZCE_LIB::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 }
 
 //信号灯超时锁定,非标准实现,使用timeval结构，
-int ZCE_LIB::sem_timedwait(sem_t *sem, const timeval *abs_timeout_val)
+int zce::sem_timedwait(sem_t *sem, const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
-    ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
-    return ZCE_LIB::sem_timedwait(sem, &abs_timeout_spec);
+    ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
+    return zce::sem_timedwait(sem, &abs_timeout_spec);
 }
 
 //返回当前信号灯的当前值, 很遗憾，WINDOWS下不支持，ReleaseSemaphore有类似功能，但是lReleaseCount参数不能为0
 //如果用ReleaseSemaphore和WaitForSingleObject拼凑一个那么可能更超级糟糕，
 //微软的API实现的真烂。Visual studio也承诺增加这个特性，但是在2010版本是不要做指望了。
-int ZCE_LIB::sem_getvalue(sem_t *sem, int *sval)
+int zce::sem_getvalue(sem_t *sem, int *sval)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(sem);

@@ -76,7 +76,7 @@
 #include "zce_trace_debugging.h"
 #include "zce_boost_singleton.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //==============================================================================================================
@@ -378,7 +378,7 @@ class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
 public:
     //构造函数还是把默认种子搞出来把
     explicit random_taus88(uint32_t seed):
-		seed_arg_{0}
+        seed_arg_{0}
     {
         srand(seed);
     }
@@ -470,14 +470,14 @@ protected:
 *             利用SSE2的功能提供了速度，我对SSE2的代码的可移植性没有把握，暂时放弃
 */
 template < size_t mt_n, size_t mt_m, uint32_t mt_a, uint32_t mt_b, uint32_t mt_c,
-         uint32_t mt_o, uint32_t mt_p, uint32_t mt_q, uint32_t mt_r, uint32_t mt_s, uint32_t mt_t, uint32_t mt_u >
+           uint32_t mt_o, uint32_t mt_p, uint32_t mt_q, uint32_t mt_r, uint32_t mt_s, uint32_t mt_t, uint32_t mt_u >
 class random_mt : public t_random_base<0, 0xFFFFFFFF>
 {
 
 public:
 
     explicit random_mt(uint32_t seed = DEFAULT_SEED):
-		state_{0},
+        state_{0},
         postion_(0)
     {
         srand(seed);
@@ -831,7 +831,7 @@ typedef   ZCE_Singleton<mt19937_var_gen>      mt19937_vargen_inst;
 typedef   ZCE_Singleton<ranlux223_var_gen>    ranlux223_vargen_inst;
 typedef   ZCE_Singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
 
-};// end of namespace    ZCE_LIB
+};// end of namespace    zce
 
 #endif
 

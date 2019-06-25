@@ -159,8 +159,8 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
 
 
 //执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
-int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, 
-                                        uint64_t &numaffect, 
+int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen,
+                                        uint64_t &numaffect,
                                         ZCE_Mysql_Result &dbresult)
 {
     int ret = 0;
@@ -179,7 +179,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen,
 
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
     db_command_.set_sql_command(sql, sqllen);
-    
+
 
     ret = db_command_.execute(numaffect, dbresult);
 
@@ -216,7 +216,7 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, ZCE_Mysq
 
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
     db_command_.set_sql_command(sql, sqllen);
-    
+
 
     ret = db_command_.execute(dbresult);
 

@@ -25,7 +25,7 @@ Zerg_App_Timer_Handler::Zerg_App_Timer_Handler():
     const  int     AUTOCONNECT_RELOAD_INTERVAL = 300000;
 
 
-    srand(static_cast<unsigned int>(ZCE_LIB::pthread_self()));
+    srand(static_cast<unsigned int>(zce::pthread_self()));
     random_reload_point_ = rand() % AUTOCONNECT_RELOAD_INTERVAL;
 
     //主动重现链接的间隔时间

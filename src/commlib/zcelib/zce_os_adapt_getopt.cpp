@@ -68,7 +68,7 @@ static void permute_args(int panonopt_start,
     // compute lengths of blocks and number and size of cycles
     nnonopts = panonopt_end - panonopt_start;
     nopts = opt_end - panonopt_end;
-    ncycle = ZCE_LIB::gcd(nnonopts, nopts);
+    ncycle = zce::gcd(nnonopts, nopts);
     cyclelen = (opt_end - panonopt_start) / ncycle;
 
     for (i = 0; i < ncycle; i++)
@@ -269,7 +269,7 @@ static int parse_long_options(char *const *nargv,
  * getopt_internal --
  *      Parse argc/argv argument vector.  Called by user level routines.
  */
-static int getopt_internal(int nargc, char*
+static int getopt_internal(int nargc, char *
                            const *nargv,
                            const char *options,
                            const struct option *long_options,
@@ -584,7 +584,7 @@ start:
  *
  * [eventually this will replace the BSD getopt]
  */
-int ZCE_LIB::getopt(int nargc, char *const *nargv, const char *options)
+int zce::getopt(int nargc, char *const *nargv, const char *options)
 {
 #if defined (ZCE_OS_WINDOWS)
     /*
@@ -608,11 +608,11 @@ int ZCE_LIB::getopt(int nargc, char *const *nargv, const char *options)
  *      Parse argc/argv argument vector.
  */
 int
-ZCE_LIB::getopt_long(int nargc,
-                     char *const *nargv,
-                     const char *options,
-                     const struct option *long_options,
-                     int *idx)
+zce::getopt_long(int nargc,
+                 char *const *nargv,
+                 const char *options,
+                 const struct option *long_options,
+                 int *idx)
 {
 #if defined (ZCE_OS_WINDOWS)
     return (getopt_internal(nargc,
@@ -636,11 +636,11 @@ ZCE_LIB::getopt_long(int nargc,
  *      Parse argc/argv argument vector.
  */
 int
-ZCE_LIB::getopt_long_only(int nargc,
-                          char *const *nargv,
-                          const char *options,
-                          const struct option *long_options,
-                          int *idx)
+zce::getopt_long_only(int nargc,
+                      char *const *nargv,
+                      const char *options,
+                      const struct option *long_options,
+                      int *idx)
 {
 
 #if defined (ZCE_OS_WINDOWS)

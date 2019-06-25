@@ -21,7 +21,7 @@
 
 #include "zce_shm_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 enum RB_TREE_COLOR
@@ -279,9 +279,9 @@ protected:
 * @note
 */
 template < class _value_type,
-         class _key_type,
-         class _extract_key = smem_identity<_value_type>,
-         class _compare_key = std::less<_key_type> >
+           class _key_type,
+           class _extract_key = smem_identity<_value_type>,
+           class _compare_key = std::less<_key_type> >
 class shm_rb_tree : public _shm_memory_base
 {
 public:
@@ -1231,24 +1231,24 @@ protected:
     }
 
 public:
-    static mmap_set< _value_type, _compare_key  >*
+    static mmap_set< _value_type, _compare_key  > *
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_set< _value_type, _compare_key  >*>(
-                   shm_rb_tree<_value_type, _value_type , smem_identity<_value_type>, _compare_key>::initialize(numnode, pmmap, if_restore));
+                   shm_rb_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
 };
 
 //用RBTree实现MAP，不区分multiset和set，通过不通的insert自己区分
 template<class _key_type, class _value_type, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _compare_key = std::less<_value_type>  >
 class mmap_map :
-    public shm_rb_tree< std::pair <_key_type, _value_type> , _key_type, _extract_key, _compare_key  >
+    public shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     mmap_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore):
-        shm_rb_tree< std::pair <_key_type, _value_type> , _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
+        shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
@@ -1257,7 +1257,7 @@ protected:
     {
     }
 public:
-    static mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*
+    static mmap_map< _key_type, _value_type, _extract_key, _compare_key  > *
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*>(

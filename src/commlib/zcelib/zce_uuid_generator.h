@@ -198,7 +198,7 @@ public:
 protected:
 
     ///发生器实例指针
-    static ZCE_UUID64_Generator* instance_;
+    static ZCE_UUID64_Generator *instance_;
 
 protected:
 
@@ -218,9 +218,9 @@ protected:
     UUID64_GENERATOR_TYPE         generator_type_;
 
     ///随机发生器1
-    ZCE_LIB::random_mt19937       mt_19937_random_;
+    zce::random_mt19937       mt_19937_random_;
     ///随机发生器2
-    ZCE_LIB::random_mt11213b      mt_11213b_random_;
+    zce::random_mt11213b      mt_11213b_random_;
 
     ///随机数的种子
     ZCE_UUID64                    time_radix_seed_;
@@ -394,9 +394,9 @@ protected:
     UUID128_GENERATOR_TYPE        generator_type_;
 
     ///随机发生器1
-    ZCE_LIB::random_mt19937       mt_19937_random_;
+    zce::random_mt19937       mt_19937_random_;
     ///随机发生器2
-    ZCE_LIB::random_mt11213b      mt_11213b_random_;
+    zce::random_mt11213b      mt_11213b_random_;
 
     ///
     ZCE_UUID128                   time_radix_seed_;

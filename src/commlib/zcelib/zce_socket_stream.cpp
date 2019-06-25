@@ -72,7 +72,7 @@ ssize_t ZCE_Socket_Stream::recv_n (void *buf,
                                    int flags)  const
 {
     return ZCE_LIB::recv_n(socket_handle_,
-                           buf,
+                           zce         buf,
                            len,
                            timeout_tv,
                            flags);
@@ -85,7 +85,7 @@ ssize_t ZCE_Socket_Stream::send_n (const void *buf,
                                    int flags)  const
 {
     return ZCE_LIB::send_n(socket_handle_,
-                           buf,
+                           zce         buf,
                            len,
                            timeout_tv,
                            flags);
@@ -98,7 +98,7 @@ ssize_t ZCE_Socket_Stream::recvn_timeout (void *buf,
                                           int flags)  const
 {
     return ZCE_LIB::recvn_timeout(socket_handle_,
-                                  buf,
+                                  zce                buf,
                                   len,
                                   timeout_tv,
                                   flags);
@@ -111,7 +111,7 @@ ssize_t ZCE_Socket_Stream::sendn_timeout (void *buf,
                                           int flags)
 {
     return ZCE_LIB::sendn_timeout(socket_handle_,
-                                  buf,
+                                  zce                buf,
                                   len,
                                   timeout_tv,
                                   flags);

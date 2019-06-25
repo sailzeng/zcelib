@@ -1,7 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_socket_addr_base.h"
 
-ZCE_Sockaddr::ZCE_Sockaddr(sockaddr *sockaddr_ptr , int sa_size ):
+ZCE_Sockaddr::ZCE_Sockaddr(sockaddr *sockaddr_ptr, int sa_size ):
     sockaddr_ptr_(sockaddr_ptr),
     sockaddr_size_(sa_size)
 {

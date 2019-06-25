@@ -298,7 +298,7 @@ struct ZDOUBLE_STRUCT
 //GCC 对于对其采取了默认认为不是对齐的方式编译，所以写
 //unsigned int a = *(unsigned int *)(char_ptr);
 //还有告警错误，方法是采用下面的宏规避，
-//或者使用参数 -fstrict-aliasing 和 -Wstrict-aliasing 可以消除掉这个warning。 
+//或者使用参数 -fstrict-aliasing 和 -Wstrict-aliasing 可以消除掉这个warning。
 
 union ZU16_UNION
 {
@@ -328,63 +328,63 @@ union ZDOUBLE_UNION
 
 
 # define ZRD_U16_FROM_BYTES(rd_data,bytes_ptr)  \
-{\
-    ZU16_UNION __tmp_var_; \
-    __tmp_var_.char_data_[0] = bytes_ptr[0];\
-    __tmp_var_.char_data_[1] = bytes_ptr[1];\
-    rd_data = __tmp_var_.value_; \
-}
+    {\
+        ZU16_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        rd_data = __tmp_var_.value_; \
+    }
 
 # define ZRD_U32_FROM_BYTES(rd_data,bytes_ptr)  \
-{\
-    ZU32_UNION __tmp_var_; \
-    __tmp_var_.char_data_[0] = bytes_ptr[0];\
-    __tmp_var_.char_data_[1] = bytes_ptr[1];\
-    __tmp_var_.char_data_[2] = bytes_ptr[2];\
-    __tmp_var_.char_data_[3] = bytes_ptr[3];\
-    rd_data = __tmp_var_.value_; \
-}
+    {\
+        ZU32_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        rd_data = __tmp_var_.value_; \
+    }
 
 
 # define ZRD_U64_FROM_BYTES(rd_data,bytes_ptr)  \
-{\
-    ZU64_UNION __tmp_var_; \
-    __tmp_var_.char_data_[0] = bytes_ptr[0];\
-    __tmp_var_.char_data_[1] = bytes_ptr[1];\
-    __tmp_var_.char_data_[2] = bytes_ptr[2];\
-    __tmp_var_.char_data_[3] = bytes_ptr[3];\
-    __tmp_var_.char_data_[4] = bytes_ptr[4];\
-    __tmp_var_.char_data_[5] = bytes_ptr[5];\
-    __tmp_var_.char_data_[6] = bytes_ptr[6];\
-    __tmp_var_.char_data_[7] = bytes_ptr[7];\
-    rd_data = __tmp_var_.value_; \
-}
+    {\
+        ZU64_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        __tmp_var_.char_data_[4] = bytes_ptr[4];\
+        __tmp_var_.char_data_[5] = bytes_ptr[5];\
+        __tmp_var_.char_data_[6] = bytes_ptr[6];\
+        __tmp_var_.char_data_[7] = bytes_ptr[7];\
+        rd_data = __tmp_var_.value_; \
+    }
 
 # define ZRD_FLOAT_FROM_BYTES(rd_data,bytes_ptr)  \
-{\
-    ZFLOAT_UNION __tmp_var_; \
-    __tmp_var_.char_data_[0] = bytes_ptr[0];\
-    __tmp_var_.char_data_[1] = bytes_ptr[1];\
-    __tmp_var_.char_data_[2] = bytes_ptr[2];\
-    __tmp_var_.char_data_[3] = bytes_ptr[3];\
-    rd_data = __tmp_var_.value_; \
-}
+    {\
+        ZFLOAT_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        rd_data = __tmp_var_.value_; \
+    }
 
 
 # define ZRD_DOUBLE_FROM_BYTES(rd_data,bytes_ptr)  \
-{\
-    ZDOUBLE_UNION __tmp_var_; \
-    __tmp_var_.char_data_[0] = bytes_ptr[0];\
-    __tmp_var_.char_data_[1] = bytes_ptr[1];\
-    __tmp_var_.char_data_[2] = bytes_ptr[2];\
-    __tmp_var_.char_data_[3] = bytes_ptr[3];\
-    __tmp_var_.char_data_[4] = bytes_ptr[4];\
-    __tmp_var_.char_data_[5] = bytes_ptr[5];\
-    __tmp_var_.char_data_[6] = bytes_ptr[6];\
-    __tmp_var_.char_data_[7] = bytes_ptr[7];\
-    rd_data = __tmp_var_.value_; \
-}
+    {\
+        ZDOUBLE_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        __tmp_var_.char_data_[4] = bytes_ptr[4];\
+        __tmp_var_.char_data_[5] = bytes_ptr[5];\
+        __tmp_var_.char_data_[6] = bytes_ptr[6];\
+        __tmp_var_.char_data_[7] = bytes_ptr[7];\
+        rd_data = __tmp_var_.value_; \
+    }
 
 
-#endif 
+#endif
 

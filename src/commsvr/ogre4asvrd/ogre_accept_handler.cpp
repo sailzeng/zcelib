@@ -56,7 +56,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     //如果不能Bind相应的端口
     if (ret != 0)
     {
-        int last_err = ZCE_LIB::last_error();
+        int last_err = zce::last_error();
         ZCE_LOG(RS_ERROR, "Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
                 peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
                 peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
@@ -109,7 +109,7 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
         sockstream.close();
 
         //记录错误
-        int accept_error =  ZCE_LIB::last_error();
+        int accept_error =  zce::last_error();
         ZCE_LOG(RS_ERROR, "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
                 remoteaddress.get_host_addr(),
                 remoteaddress.get_port_number(),

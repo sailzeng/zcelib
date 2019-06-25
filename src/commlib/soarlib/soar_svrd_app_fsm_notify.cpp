@@ -100,8 +100,8 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
 
-    size_t all_proc_frame = 0 , all_gen_trans = 0;
-    size_t prcframe_queue = 0 , gentrans_queue = 0, num_timer_expire = 0, num_io_event = 0;
+    size_t all_proc_frame = 0, all_gen_trans = 0;
+    size_t prcframe_queue = 0, gentrans_queue = 0, num_timer_expire = 0, num_io_event = 0;
     size_t idle = 0;
 
     MT_NOTIFY_TRANS_MANGER *notify_trans_mgr = static_cast<MT_NOTIFY_TRANS_MANGER *>(Transaction_Manager::instance());

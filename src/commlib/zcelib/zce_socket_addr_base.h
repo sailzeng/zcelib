@@ -48,11 +48,11 @@ public:
         const char *ret_str = ZCE_LIB::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len);
         if (ret_str)
         {
-			use_buf = ::strlen(ret_str);
+            use_buf = ::strlen(ret_str);
         }
         else
         {
-			use_buf = 0;
+            use_buf = 0;
         }
         return ret_str;
     }

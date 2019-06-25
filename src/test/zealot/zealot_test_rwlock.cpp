@@ -30,7 +30,7 @@ public:
     }
 
 protected:
-    size_t number_prc_ =0;
+    size_t number_prc_ = 0;
 };
 
 

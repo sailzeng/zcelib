@@ -195,7 +195,7 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
     if (ret < 0)
     {
         //按照UNIX网络编程 V1的说法是 EINPROGRESS,但ACE的介绍说是 EWOULDBLOCK,
-        if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS)
+        if (zce::last_error() != EWOULDBLOCK && zce::last_error() != EINPROGRESS)
         {
             sockstream.close();
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
@@ -227,7 +227,7 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
 
 //根据services_type查询对应的配置主备服务器列表数组 MS（主备）
 int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
-                                                std::vector<uint32_t> *& ms_svcid_ary)
+                                                std::vector<uint32_t> *&ms_svcid_ary)
 {
     auto map_iter = type_to_idary_map_.find(services_type);
     if (type_to_idary_map_.end() == map_iter)

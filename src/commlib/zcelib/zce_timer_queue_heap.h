@@ -58,7 +58,7 @@ public:
     * @param[in]  trigger_mode          触发模式是用墙上时钟还是CPU TICK，参考 @ref ZCE_Timer_Queue::TRIGGER_MODE
     * @param[in]  dynamic_expand_node   如果初始化的NODE节点数量不够，是否自动扩展
     */
-    int initialize(size_t num_timer_node ,
+    int initialize(size_t num_timer_node,
                    unsigned int timer_precision_mesc = 1000,
                    TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
                    bool dynamic_expand_node = true );

@@ -9,7 +9,7 @@ class Test_Timer_Handler : public ZCE_Timer_Handler
 {
 public:
     virtual int timer_timeout(const ZCE_Time_Value &now_timenow_time,
-                               const void *act)
+                              const void *act)
     {
         char time_str[128];
         int timer_action = *(int *)act;
@@ -20,9 +20,9 @@ public:
         ZCE_Time_Value interval_time(0, 0);
 
         int time_id = ZCE_Timer_Queue_Base::instance()->schedule_timer(this,
-            &TEST_TIMER_ACT[timer_action-1],
-            delay_time,
-            interval_time);
+                                                                       &TEST_TIMER_ACT[timer_action - 1],
+                                                                       delay_time,
+                                                                       interval_time);
         std::cout << now_timenow_time.timestamp(time_str, 128) << " " << "Timer id =" << time_id << std::endl;
 
         return 0;
@@ -42,15 +42,15 @@ int test_timer_expire(int /*argc*/, char * /*argv*/ [])
     {
         delay_time.sec(i);
         timer_id[i] = ZCE_Timer_Queue_Base::instance()->schedule_timer(&test_timer[i],
-                                                                  &TEST_TIMER_ACT[i],
-                                                                  delay_time,
-                                                                  interval_time);
+                                                                       &TEST_TIMER_ACT[i],
+                                                                       delay_time,
+                                                                       interval_time);
     }
 
     for (size_t j = 0; j < 100000; j++)
     {
         ZCE_Timer_Queue_Base::instance()->expire();
-        ZCE_LIB::usleep(100000);
+        zce::usleep(100000);
     }
     ZCE_UNUSED_ARG(timer_id);
     return 0;
@@ -69,17 +69,17 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
     {
         delay_time.sec(i);
         timer_id[i] = ZCE_Timer_Queue_Base::instance()->schedule_timer(&test_timer[i],
-            &TEST_TIMER_ACT[i],
-            delay_time,
-            interval_time);
+                                                                       &TEST_TIMER_ACT[i],
+                                                                       delay_time,
+                                                                       interval_time);
     }
 
     //一些特殊情况下，定时器很长时间无法触发，导致的问题
     for (size_t j = 0; j < 100000; j++)
     {
-        ZCE_LIB::sleep(60);
+        zce::sleep(60);
         ZCE_Timer_Queue_Base::instance()->expire();
-        
+
     }
     ZCE_UNUSED_ARG(timer_id);
     return 0;
@@ -87,9 +87,9 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
 
 int test_os_time(int /*argc*/, char * /*argv*/[])
 {
-    int tz = ZCE_LIB::gettimezone();
+    int tz = zce::gettimezone();
     std::cout << "Time zone :" << tz << std::endl;
-    tz = ZCE_LIB::gettimezone();
+    tz = zce::gettimezone();
     std::cout << "Time zone :" << tz << std::endl;
     return 0;
 }

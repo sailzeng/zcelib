@@ -18,7 +18,7 @@
 //都是WIN SERVER 2008后，WINDOWS自己的条件变量的封装，
 
 //
-int ZCE_LIB::pthread_condattr_init(pthread_condattr_t *attr)
+int zce::pthread_condattr_init(pthread_condattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -34,7 +34,7 @@ int ZCE_LIB::pthread_condattr_init(pthread_condattr_t *attr)
 }
 
 //
-int ZCE_LIB::pthread_condattr_destroy(pthread_condattr_t *attr)
+int zce::pthread_condattr_destroy(pthread_condattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(attr);
@@ -45,8 +45,8 @@ int ZCE_LIB::pthread_condattr_destroy(pthread_condattr_t *attr)
 }
 
 //条件变量对象的初始化
-int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
-                               const pthread_condattr_t *attr)
+int zce::pthread_cond_init(pthread_cond_t *cond,
+                           const pthread_condattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -83,44 +83,44 @@ int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
 
     //这段代码只在WIN32下用，我简化了
     pthread_mutexattr_t waiters_lock_attr;
-    ZCE_LIB::pthread_mutexattr_init(&waiters_lock_attr);
+    zce::pthread_mutexattr_init(&waiters_lock_attr);
     waiters_lock_attr.lock_shared_ = PTHREAD_PROCESS_PRIVATE;
     waiters_lock_attr.lock_type_ = PTHREAD_MUTEX_RECURSIVE;
 
     //初始化线程的互斥量
     int result = 0;
-    result = ZCE_LIB::pthread_mutex_init(&cond->simulate_cv_.waiters_lock_,
-                                         &waiters_lock_attr);
+    result = zce::pthread_mutex_init(&cond->simulate_cv_.waiters_lock_,
+                                     &waiters_lock_attr);
 
     if (result != 0)
     {
         return result;
     }
 
-    cond->simulate_cv_.block_sema_ = ZCE_LIB::sem_open(sem_block_ptr,
-                                                       O_CREAT,
-                                                       ZCE_DEFAULT_FILE_PERMS,
-                                                       0);
+    cond->simulate_cv_.block_sema_ = zce::sem_open(sem_block_ptr,
+                                                   O_CREAT,
+                                                   ZCE_DEFAULT_FILE_PERMS,
+                                                   0);
 
     //如果失败了，要回收前面获得的资源
     if (!cond->simulate_cv_.block_sema_)
     {
-        ZCE_LIB::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
+        zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
         return -1;
     }
 
-    cond->simulate_cv_.finish_broadcast_ = ZCE_LIB::sem_open(sem_finish_ptr,
-                                                             O_CREAT,
-                                                             ZCE_DEFAULT_FILE_PERMS,
-                                                             0);
+    cond->simulate_cv_.finish_broadcast_ = zce::sem_open(sem_finish_ptr,
+                                                         O_CREAT,
+                                                         ZCE_DEFAULT_FILE_PERMS,
+                                                         0);
 
     //如果失败了，要回收前面获得的资源,这种分段申请资源最麻烦
     if (!cond->simulate_cv_.finish_broadcast_)
     {
-        ZCE_LIB::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
-        ZCE_LIB::sem_close(cond->simulate_cv_.block_sema_);
+        zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
+        zce::sem_close(cond->simulate_cv_.block_sema_);
         //其实没用
-        //ZCE_LIB::sem_unlink(sem_block_name);
+        //zce::sem_unlink(sem_block_name);
         return EINVAL;
     }
 
@@ -134,15 +134,15 @@ int ZCE_LIB::pthread_cond_init(pthread_cond_t *cond,
 //初始化条件变量对象，不同的平台给不同的默认定义
 //非标准，但是建议你使用，简单多了,
 //如果要多进程共享，麻烦你老给个名字，同时在LINUX平台下，你必须pthread_condattr_t放入共享内存
-int ZCE_LIB::pthread_cond_initex(pthread_cond_t *cond,
-                                 bool win_mutex_or_sema)
+int zce::pthread_cond_initex(pthread_cond_t *cond,
+                             bool win_mutex_or_sema)
 {
 
     //前面有错误返回，
     int result = 0;
 
     pthread_condattr_t attr;
-    result = ZCE_LIB::pthread_condattr_init (&attr);
+    result = zce::pthread_condattr_init (&attr);
     if (0 != result)
     {
         return result;
@@ -168,8 +168,8 @@ int ZCE_LIB::pthread_cond_initex(pthread_cond_t *cond,
     }
 #endif
 
-    result = ZCE_LIB::pthread_cond_init(cond, &attr);
-    ZCE_LIB::pthread_condattr_destroy (&attr);
+    result = zce::pthread_cond_init(cond, &attr);
+    zce::pthread_condattr_destroy (&attr);
 
     if (0 != result)
     {
@@ -180,7 +180,7 @@ int ZCE_LIB::pthread_cond_initex(pthread_cond_t *cond,
 }
 
 //条件变量对象的销毁
-int ZCE_LIB::pthread_cond_destroy(pthread_cond_t *cond)
+int zce::pthread_cond_destroy(pthread_cond_t *cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -195,13 +195,13 @@ int ZCE_LIB::pthread_cond_destroy(pthread_cond_t *cond)
 
 #endif
 
-    ZCE_LIB::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
 
-    ZCE_LIB::sem_close(cond->simulate_cv_.block_sema_);
-    ZCE_LIB::sem_close(cond->simulate_cv_.finish_broadcast_);
+    zce::sem_close(cond->simulate_cv_.block_sema_);
+    zce::sem_close(cond->simulate_cv_.finish_broadcast_);
 
     //WIN平台下，无须调用这个函数，偷懒
-    //ZCE_LIB::sem_unlink(sem_name);
+    //zce::sem_unlink(sem_name);
 
     cond->simulate_cv_.block_sema_ = NULL;
     cond->simulate_cv_.finish_broadcast_ = NULL;
@@ -216,9 +216,9 @@ int ZCE_LIB::pthread_cond_destroy(pthread_cond_t *cond)
 }
 
 //条件变量等待一段时间，超时后继续
-int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
-                                    pthread_mutex_t *external_mutex,
-                                    const ::timespec *abs_timespec_out)
+int zce::pthread_cond_timedwait(pthread_cond_t *cond,
+                                pthread_mutex_t *external_mutex,
+                                const ::timespec *abs_timespec_out)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -241,11 +241,11 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
         if (abs_timespec_out)
         {
             //得到相对时间，这个折腾，
-            timeval now_time = ZCE_LIB::gettimeofday();
-            timeval abs_time = ZCE_LIB::make_timeval(abs_timespec_out);
+            timeval now_time = zce::gettimeofday();
+            timeval abs_time = zce::make_timeval(abs_timespec_out);
 
-            timeval timeout_time = ZCE_LIB::timeval_sub(abs_time, now_time, true);
-            wait_msec = static_cast<DWORD>( ZCE_LIB::total_milliseconds(timeout_time));
+            timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
+            wait_msec = static_cast<DWORD>( zce::total_milliseconds(timeout_time));
         }
 
         //WINDOWS的条件变量没有释放
@@ -274,15 +274,15 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
 #endif  //使用WINDOWS2008的条件变量
 
     // Prevent race conditions on the <waiters_> count.
-    ZCE_LIB::pthread_mutex_lock (&(cond->simulate_cv_.waiters_lock_));
+    zce::pthread_mutex_lock (&(cond->simulate_cv_.waiters_lock_));
     ++(cond->simulate_cv_.waiters_);
-    ZCE_LIB::pthread_mutex_unlock (&(cond->simulate_cv_.waiters_lock_));
+    zce::pthread_mutex_unlock (&(cond->simulate_cv_.waiters_lock_));
 
     int result = 0;
 
     //对外部的锁重新解锁，
     //不对释放资源进行错误处理，如果释放失败，我能如何呢
-    ZCE_LIB::pthread_mutex_unlock (external_mutex);
+    zce::pthread_mutex_unlock (external_mutex);
 
     ///@note这个地方存在某种争议，也就是上面这步和下面这步是否要
     ///形成原子操作，这个问题在Douglas C. Schmidt and Irfan Pyarali的论文中有过描述，
@@ -293,28 +293,28 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
     //如果是超时等待，就进行等待
     if (abs_timespec_out)
     {
-        result = ZCE_LIB::sem_timedwait(cond->simulate_cv_.block_sema_,
-                                        abs_timespec_out);
+        result = zce::sem_timedwait(cond->simulate_cv_.block_sema_,
+                                    abs_timespec_out);
 
     }
     else
     {
-        result = ZCE_LIB::sem_wait (cond->simulate_cv_.block_sema_);
+        result = zce::sem_wait (cond->simulate_cv_.block_sema_);
     }
 
     //记录错误
     if (result != 0)
     {
-        result = ZCE_LIB::last_error_with_default(EINVAL);
+        result = zce::last_error_with_default(EINVAL);
     }
 
     //同步，避免竞争
-    ZCE_LIB::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
     //信号灯已经退出，减少等待的总数
     --(cond->simulate_cv_.waiters_);
     bool const last_waiter = (cond->simulate_cv_.was_broadcast_
                               && cond->simulate_cv_.waiters_ == 0);
-    ZCE_LIB::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);
 
     if (result == 0)
     {
@@ -325,12 +325,12 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
         if (last_waiter)
         {
             // Release the signaler/broadcaster if we're the last waiter.
-            ZCE_LIB::sem_post (cond->simulate_cv_.finish_broadcast_);
+            zce::sem_post (cond->simulate_cv_.finish_broadcast_);
         }
     }
 
     //对外部的锁重新加上
-    ZCE_LIB::pthread_mutex_lock (external_mutex);
+    zce::pthread_mutex_lock (external_mutex);
 
     return result;
 
@@ -344,28 +344,28 @@ int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
 }
 
 //条件变量等待一段时间，超时后继续,时间变量用我内部统一的timeval
-int ZCE_LIB::pthread_cond_timedwait(pthread_cond_t *cond,
-                                    pthread_mutex_t *external_mutex,
-                                    const timeval *abs_timeout_val)
+int zce::pthread_cond_timedwait(pthread_cond_t *cond,
+                                pthread_mutex_t *external_mutex,
+                                const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
-    ::timespec abs_timeout_spec = ZCE_LIB::make_timespec(abs_timeout_val);
-    return ZCE_LIB::pthread_cond_timedwait(cond,
-                                           external_mutex,
-                                           &abs_timeout_spec);
+    ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
+    return zce::pthread_cond_timedwait(cond,
+                                       external_mutex,
+                                       &abs_timeout_spec);
 }
 
 //条件变量等待
-int ZCE_LIB::pthread_cond_wait(pthread_cond_t *cond,
-                               pthread_mutex_t *external_mutex)
+int zce::pthread_cond_wait(pthread_cond_t *cond,
+                           pthread_mutex_t *external_mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
     //这样写是为了避免函数冲突告警，
     const ::timespec *abs_timespec_out = NULL;
-    return ZCE_LIB::pthread_cond_timedwait(cond,
-                                           external_mutex,
-                                           abs_timespec_out);
+    return zce::pthread_cond_timedwait(cond,
+                                       external_mutex,
+                                       abs_timespec_out);
 #elif defined (ZCE_OS_LINUX)
     //
     return ::pthread_cond_wait(cond,
@@ -374,7 +374,7 @@ int ZCE_LIB::pthread_cond_wait(pthread_cond_t *cond,
 }
 
 //
-int ZCE_LIB::pthread_cond_broadcast(pthread_cond_t *cond)
+int zce::pthread_cond_broadcast(pthread_cond_t *cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -394,7 +394,7 @@ int ZCE_LIB::pthread_cond_broadcast(pthread_cond_t *cond)
 
     // This is needed to ensure that <waiters_> and <was_broadcast_> are
     // consistent relative to each other.
-    ZCE_LIB::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
     bool have_waiters = false;
 
     if (cond->simulate_cv_.waiters_ > 0)
@@ -407,14 +407,14 @@ int ZCE_LIB::pthread_cond_broadcast(pthread_cond_t *cond)
         have_waiters = true;
     }
 
-    ZCE_LIB::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);
     int result = 0;
 
     if (have_waiters)
     {
         //ACE比较喜欢这种if的方式，我不是特别习惯，但在多层处理的过程中这个方法也还凑合
         //唤醒所有的等待者,
-        if ( ZCE_LIB::sem_post (cond->simulate_cv_.block_sema_, cond->simulate_cv_.waiters_) != 0)
+        if ( zce::sem_post (cond->simulate_cv_.block_sema_, cond->simulate_cv_.waiters_) != 0)
         {
             result = EINVAL;
         }
@@ -425,7 +425,7 @@ int ZCE_LIB::pthread_cond_broadcast(pthread_cond_t *cond)
         //但ACE的实现也要求大家调用broadcast是，外部锁是加上的，所以吧
         // Wait for all the awakened threads to acquire their part of
         // the counting semaphore.
-        else if (ZCE_LIB::sem_wait (cond->simulate_cv_.finish_broadcast_) != 0 )
+        else if (zce::sem_wait (cond->simulate_cv_.finish_broadcast_) != 0 )
         {
             result = EINVAL;
         }
@@ -444,7 +444,7 @@ int ZCE_LIB::pthread_cond_broadcast(pthread_cond_t *cond)
 }
 
 //发信号
-int ZCE_LIB::pthread_cond_signal(pthread_cond_t *cond)
+int zce::pthread_cond_signal(pthread_cond_t *cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -462,13 +462,13 @@ int ZCE_LIB::pthread_cond_signal(pthread_cond_t *cond)
 
     int result = 0;
     //是否有人在等待
-    ZCE_LIB::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
     bool const have_waiters = cond->simulate_cv_.waiters_ > 0;
-    ZCE_LIB::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);
+    zce::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);
 
     if (have_waiters)
     {
-        result = ZCE_LIB::sem_post (cond->simulate_cv_.block_sema_);
+        result = zce::sem_post (cond->simulate_cv_.block_sema_);
 
         if (0 != result )
         {

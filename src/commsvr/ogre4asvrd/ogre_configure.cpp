@@ -18,7 +18,7 @@ int TCP_PEER_CONFIG_INFO::from_str(const char *peer_info_str)
 
     //去掉里面所有的空格，避免污染sscanf, 格式化字符串为"%u.%u.%u.%u%#%hu|%u|%u",
     //char pure_str[SVC_INFO_STR_LEN];
-    //ZCE_LIB::str_replace(svc_info_str, pure_str," ","");
+    //zce::str_replace(svc_info_str, pure_str," ","");
     char mod_file_name[MAX_PATH];
     uint32_t u[4] = { 0 };
     uint16_t port = 0;
@@ -59,7 +59,7 @@ TCP_PEER_MODULE_INFO::~TCP_PEER_MODULE_INFO()
 ///加载模块
 int TCP_PEER_MODULE_INFO::open_module()
 {
-    recv_mod_handler_ = ZCE_LIB::dlopen(peer_info_.module_file_.c_str());
+    recv_mod_handler_ = zce::dlopen(peer_info_.module_file_.c_str());
 
     if (ZCE_SHLIB_INVALID_HANDLE == recv_mod_handler_)
     {
@@ -69,8 +69,8 @@ int TCP_PEER_MODULE_INFO::open_module()
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
     }
 
-    fp_judge_whole_frame_ = (FP_JudgeRecv_WholeFrame)ZCE_LIB::dlsym(recv_mod_handler_,
-                                                                    STR_JUDGE_RECV_WHOLEFRAME);
+    fp_judge_whole_frame_ = (FP_JudgeRecv_WholeFrame)zce::dlsym(recv_mod_handler_,
+                                                                STR_JUDGE_RECV_WHOLEFRAME);
 
     if (NULL == fp_judge_whole_frame_)
     {
@@ -89,7 +89,7 @@ int TCP_PEER_MODULE_INFO::close_module()
 {
     if (ZCE_SHLIB_INVALID_HANDLE != recv_mod_handler_)
     {
-        ZCE_LIB::dlclose(recv_mod_handler_);
+        zce::dlclose(recv_mod_handler_);
         recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;
     }
 

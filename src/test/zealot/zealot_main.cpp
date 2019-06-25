@@ -6,7 +6,7 @@
 #include "zealot_test_function.h"
 
 
-int main(int argc , char * argv[])
+int main(int argc, char *argv[])
 {
     ZCE_UNUSED_ARG(argc);
     ZCE_UNUSED_ARG(argv);
@@ -22,11 +22,11 @@ int main(int argc , char * argv[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
     test_memory_debug(argc, argv);
     //test_out_buffer(argc, argv);
-	//test_progress_timer(argc,argv);
+    //test_progress_timer(argc,argv);
     //test_bytes_hash(argc, argv);
 
     //benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
-  
+
     return 0;
 
 #if 0
@@ -57,13 +57,13 @@ int main(int argc , char * argv[])
     printf("%s", "----------------------------------------------------------------------------\n");
     test_mmap_rbtree1(argc, argv);
     test_mmap_rbtree2(argc, argv);
-    
+
     printf("%s", "----------------------------------------------------------------------------\n");
 
     test_mmap_avltree5(argc, argv);
     //test_mmap_avltree2(argc, argv);
 
-    
+
     //std::cin.ignore().get();
 
     //rc_stab();

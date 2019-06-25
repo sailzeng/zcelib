@@ -119,7 +119,7 @@
 //    size_t tmp_size = 0;
 //
 //    char day_and_time[35];
-//    ZCE_LIB::timestamp (day_and_time, sizeof(day_and_time));
+//    zce::timestamp (day_and_time, sizeof(day_and_time));
 //
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Console Get Zerg(Tcpsvrd) services info.");
 //    tmp_size += snprintf(ret_string + tmp_size, str_len - tmp_size, "Server Time %s.", day_and_time);

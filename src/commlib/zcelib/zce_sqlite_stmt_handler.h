@@ -16,7 +16,7 @@ public:
     struct BIN_Param
     {
         /*!
-        * @brief      
+        * @brief
         * @param      binary_data 二进制数据BUFFER
         * @param      binary_len  数据长度，
         */

@@ -119,15 +119,15 @@ int UDP_Svc_Handler::handle_input()
         //读取数据
         ret = read_data_from_udp(szrevc);
 
-		ZCE_LOGMSG_DEBUG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
+        ZCE_LOGMSG_DEBUG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
 
         if (ret != 0)
         {
-			ZCE_LOGMSG_DEBUG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,ZCE_LIB::last_error()=%d|%s",
-							 ret,
-							 szrevc,
-							 ZCE_LIB::last_error(),
-							 strerror(ZCE_LIB::last_error()));
+            ZCE_LOGMSG_DEBUG(RS_ERROR, "UPD Handle input event triggered error. ret:%d,szrecv:%u,zce::last_error()=%d|%s",
+                             ret,
+                             szrevc,
+                             zce::last_error(),
+                             strerror(zce::last_error()));
             //return -1吗，但是我真不知道如何处理
             break;
         }
@@ -180,22 +180,22 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     if (recvret < 0)
     {
-        if (ZCE_LIB::last_error() != EWOULDBLOCK)
+        if (zce::last_error() != EWOULDBLOCK)
         {
 
             //遇到中断,等待重入
-            if (ZCE_LIB::last_error() == EINVAL)
+            if (zce::last_error() == EINVAL)
             {
                 return 0;
             }
 
             //记录错误,返回错误
-            ZCE_LOG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s|%u] peer:%u ZCE_LIB::last_error()=%d|%s.",
+            ZCE_LOG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s|%u] peer:%u zce::last_error()=%d|%s.",
                     remote_addr.get_host_addr(),
                     remote_addr.get_port_number(),
                     dgram_peer_.get_handle(),
-                    ZCE_LIB::last_error(),
-                    strerror(ZCE_LIB::last_error()));
+                    zce::last_error(),
+                    strerror(zce::last_error()));
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
         else
@@ -222,7 +222,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     //这个函数放在这儿好不好，hoho，有点耗时喔，呵呵
     server_status_->increase_by_statid(ZERG_UDP_RECV_COUNTER, 0, 0, 1);
-    server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER, 0, 0 , recvret);
+    server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER, 0, 0, recvret);
 
 
     proc_frame->framehead_decode();
@@ -285,12 +285,12 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
     //
     if (szsend <= 0)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u ZCE_LIB::last_error()=%d|%s.",
+        ZCE_LOG(RS_ERROR, "[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u zce::last_error()=%d|%s.",
                 remote_addr.get_host_addr(),
                 remote_addr.get_port_number(),
                 dgram_peer_.get_handle(),
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
     }
 

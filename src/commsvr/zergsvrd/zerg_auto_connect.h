@@ -54,7 +54,7 @@ public:
     * @param[out] ms_svcid_ary   配置的主备服务器列表数组
     */
     int find_conf_ms_svcid_ary(uint16_t services_type,
-                               std::vector<uint32_t> *& ms_svcid_ary);
+                               std::vector<uint32_t> *&ms_svcid_ary);
 
 
     /*!

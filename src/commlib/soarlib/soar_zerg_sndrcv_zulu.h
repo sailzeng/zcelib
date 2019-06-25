@@ -88,10 +88,10 @@ public:
                          ZCE_Time_Value *time_out = NULL,
                          unsigned int app_id = 0,
                          unsigned int backfill_trans_id = 0);
-    
+
     /*!
     * @brief      接受数据，阻塞的接收一个APPFRAME数据
-    * @tparam     T2        
+    * @tparam     T2
     * @return     int       OK
     * @param      cmd       预计接受的的命令字
     * @param      rcv_info  接收的信息数据
@@ -100,7 +100,7 @@ public:
     */
     template< class T2>
     int receive_svc_package(unsigned int cmd,
-                            T2 &rcv_info ,
+                            T2 &rcv_info,
                             bool error_continue = true,
                             ZCE_Time_Value *time_out = NULL);
 
@@ -129,8 +129,8 @@ public:
 //阻塞的接收一个APPFRAME数据
 template<class T2>
 int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
-                                               T2 &info ,
-                                               bool error_continue ,
+                                               T2 &info,
+                                               bool error_continue,
                                                ZCE_Time_Value *time_wait)
 {
     int ret = 0;
@@ -155,9 +155,9 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
             }
             else
             {
-                ZCE_LOG(RS_ERROR, "[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.", 
-                    cmd, 
-                    tibetan_recv_appframe_->frame_command_);
+                ZCE_LOG(RS_ERROR, "[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.",
+                        cmd,
+                        tibetan_recv_appframe_->frame_command_);
                 ret =  SOAR_RET::ERROR_ZULU_RECEIVE_OTHERS_COMMAND;
                 break;
             }
@@ -196,7 +196,7 @@ template< class T1>
 int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
                                             unsigned int cmd,
                                             const T1 &info,
-                                            ZCE_Time_Value *time_wait ,
+                                            ZCE_Time_Value *time_wait,
                                             unsigned int app_id,
                                             unsigned int backfill_trans_id)
 {

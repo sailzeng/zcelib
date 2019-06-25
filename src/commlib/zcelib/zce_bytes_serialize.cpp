@@ -158,7 +158,7 @@ void ZCE_Serialize_Write::write_arithmetic(const bool &val)
 
 //
 void ZCE_ClassSerialize_WriteHelp<std::string>::write_help(ZCE_Serialize_Write *ssave,
-    const std::string &val)
+                                                           const std::string &val)
 {
     ssave->write_array(val.c_str(), val.length());
 }
@@ -317,7 +317,7 @@ void ZCE_Serialize_Read::read_arithmetic(double &val)
 }
 
 void ZCE_ClassSerialize_ReadHelp<std::string>::read_help(ZCE_Serialize_Read *sload,
-    std::string &val)
+                                                         std::string &val)
 {
     unsigned int v_size = 0;
     sload->read_arithmetic(v_size);

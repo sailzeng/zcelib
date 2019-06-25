@@ -32,7 +32,7 @@
 *             在main里面，在里面用make_coroutine生成协程，
 *             在main里面，switch_to_coroutine切换到协程，
 *             在coroutine里面，使用switch_to_main切换到主协程，
-*                    
+*
 *             我在等待C++ 20的协程，最后我干掉这些代码。
 *
 * @note       关于Fibers函数的说明，清参考如下文档，作者写的非常清楚。
@@ -77,7 +77,7 @@ typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
                                       void *para3);
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 

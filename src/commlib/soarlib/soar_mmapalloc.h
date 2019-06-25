@@ -63,7 +63,7 @@ public:
 
     void construct(pointer p, const value_type &x)
     {
-        new(p) value_type(x);
+        new (p) value_type(x);
     }
 
     void destroy(pointer p)

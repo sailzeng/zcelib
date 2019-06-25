@@ -236,7 +236,7 @@ void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData &v
 
 
 //绑定一个空参数
-void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param & val)
+void ZCE_Mysql_STMT_Bind::bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param &val)
 {
     stmt_bind_[bind_col].buffer_type = MYSQL_TYPE_NULL;
     stmt_bind_[bind_col].is_null = val.is_null_;

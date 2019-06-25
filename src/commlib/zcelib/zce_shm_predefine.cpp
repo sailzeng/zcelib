@@ -3,7 +3,7 @@
 #include "zce_shm_predefine.h"
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //做适当的放大处理，
@@ -63,7 +63,7 @@ static size_t zoomin_nodenum(size_t node_num)
 
 
 //
-void ZCE_LIB::hash_prime(const size_t node_num, size_t &real_num)
+void zce::hash_prime(const size_t node_num, size_t &real_num)
 {
     real_num = 0;
 #if SUPPORT_BIGBIG_WORLD == 0
@@ -77,23 +77,23 @@ void ZCE_LIB::hash_prime(const size_t node_num, size_t &real_num)
 #endif
 
     //做一定的放大处理
-    size_t zoomin_num = ZCE_LIB::zoomin_nodenum(node_num);
-    real_num = ZCE_LIB::nearest_prime(zoomin_num);
+    size_t zoomin_num = zce::zoomin_nodenum(node_num);
+    real_num = zce::nearest_prime(zoomin_num);
     return;
 }
 
 //
-void ZCE_LIB::hash_prime_ary(const size_t num_node, size_t &real_num, size_t row, size_t prime_ary[])
+void zce::hash_prime_ary(const size_t num_node, size_t &real_num, size_t row, size_t prime_ary[])
 {
     //做一定的放大处理
-    size_t zoomin_num = ZCE_LIB::zoomin_nodenum(num_node);
+    size_t zoomin_num = zce::zoomin_nodenum(num_node);
     size_t per_row_num = zoomin_num / row + 1;
 
     //制造一个质数队列，
     size_t test_num = per_row_num;
     for (size_t i = 0; i < row; ++i)
     {
-        prime_ary[i] = ZCE_LIB::nearest_prime(test_num);
+        prime_ary[i] = zce::nearest_prime(test_num);
         test_num = prime_ary[i];
     }
 

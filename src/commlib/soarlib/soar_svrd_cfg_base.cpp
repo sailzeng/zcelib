@@ -141,7 +141,7 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
     {
         char cur_dir[PATH_MAX + 1];
         cur_dir[PATH_MAX] = 0;
-        ZCE_LIB::getcwd(cur_dir, sizeof(cur_dir) - 1);
+        zce::getcwd(cur_dir, sizeof(cur_dir) - 1);
 
         app_run_dir_ = cur_dir;
     }

@@ -36,7 +36,7 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
 
     for (size_t i = 0; i < sz_of_buffer; ++i)
     {
-		Ogre4a_App_Frame::delete_ogre(frame_buffer_ary_[i]);
+        Ogre4a_App_Frame::delete_ogre(frame_buffer_ary_[i]);
         frame_buffer_ary_[i] = NULL;
     }
 

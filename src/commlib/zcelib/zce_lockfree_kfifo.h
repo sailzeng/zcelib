@@ -24,7 +24,7 @@
 #include "zce_shm_predefine.h"
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 /*!
@@ -44,17 +44,17 @@ public:
     @param      size_t    new的默认参数
     @param      nodelen   node节点的长度
     */
-    void *operator new (size_t , size_t nodelen);
+    void *operator new (size_t, size_t nodelen);
 
     //养成好习惯,写new,就写delete.
     //void operator delete(void *ptrframe, size_t);
-    void operator delete(void *ptrframe);
+    void operator delete (void *ptrframe);
 
 
 
 public:
     ///
-    static void fillin(dequechunk_node *, size_t , char *);
+    static void fillin(dequechunk_node *, size_t, char *);
 
 public:
 
@@ -239,7 +239,7 @@ public:
     @return     bool      true表示成功读取
     @param      new_node
     */
-    bool read_front_new(dequechunk_node *& new_node);
+    bool read_front_new(dequechunk_node *&new_node);
 
     /*!
     @brief      读取队列的第一个NODE（指针）地址，，如果是折行的数据会特殊处理

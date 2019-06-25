@@ -19,7 +19,7 @@
 *             所以当要彻底重构的时候，我决定测定抛弃steam的代码，特别是当我发现
 *             fast format这些函数库在字符串格式化上已经超越C的snprintf，无疑
 *             极大的振奋了我。我决定自己实现一下，当然C的log函数迅速整理完毕，
-*             C++的版本却仍然等待了很长一段时间，即使我的ZCE_LIB::foo_snprintf
+*             C++的版本却仍然等待了很长一段时间，即使我的zce::foo_snprintf
 *             已经完成后，因为我发现，如果没有变餐的模版，每一次用模版实现字符串格式
 *             化都是一次煎熬，你只能用宏完成代码替换。
 *
@@ -70,10 +70,10 @@ public:
         }
 
         //得到当前时间
-        timeval now_time_val(ZCE_LIB::gettimeofday());
+        timeval now_time_val(zce::gettimeofday());
 
         //我要保留一个位置放'\0'
-        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE+1];
+        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE + 1];
         log_tmp_buffer[LOG_TMP_BUFFER_SIZE] = '\0';
 
         //还是为\n考虑留一个空间
@@ -90,7 +90,7 @@ public:
 
         //得到打印信息,_vsnprintf为特殊函数
         size_t sprt_use_len = 0;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data...);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data...);
         sz_use_len += sprt_use_len;
         sz_buf_len -= sprt_use_len;
 
@@ -119,7 +119,7 @@ public:
     { \
         return; \
     } \
-    timeval now_time_val (ZCE_LIB::gettimeofday()); \
+    timeval now_time_val (zce::gettimeofday()); \
     char log_tmp_buffer[LOG_TMP_BUFFER_SIZE +1 ]; \
     log_tmp_buffer[LOG_TMP_BUFFER_SIZE ] = '\0'; \
     size_t sz_buf_len = LOG_TMP_BUFFER_SIZE; \
@@ -158,11 +158,11 @@ public:
         }
 
         //得到当前时间
-        timeval now_time_val (ZCE_LIB::gettimeofday());
+        timeval now_time_val (zce::gettimeofday());
 
         //我要保留一个位置放'\0'
         char log_tmp_buffer[LOG_TMP_BUFFER_SIZE ];
-        log_tmp_buffer[LOG_TMP_BUFFER_SIZE -1] = '\0';
+        log_tmp_buffer[LOG_TMP_BUFFER_SIZE - 1] = '\0';
 
         //还是为\n考虑留一个空间
         size_t sz_buf_len = LOG_TMP_BUFFER_SIZE - 2;
@@ -178,7 +178,7 @@ public:
 
         //得到打印信息,_vsnprintf为特殊函数
         size_t sprt_use_len = 0;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2);
         sz_use_len += sprt_use_len;
         sz_buf_len -= sprt_use_len;
 
@@ -204,7 +204,7 @@ public:
                       const T1 &out_data1 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -216,7 +216,7 @@ public:
                       const T3 &out_data3 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -229,7 +229,7 @@ public:
                       const T4 &out_data4 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -243,7 +243,7 @@ public:
                       const T5 &out_data5 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -258,7 +258,7 @@ public:
                       const T6 &out_data6 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -274,7 +274,7 @@ public:
                       const T7 &out_data7 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -291,7 +291,7 @@ public:
                       const T8 &out_data8 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -309,7 +309,7 @@ public:
                       const T9 &out_data9 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -328,7 +328,7 @@ public:
                       const T10 &out_data10 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -348,7 +348,7 @@ public:
                       const T11 &out_data11 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -369,7 +369,7 @@ public:
                       const T12 &out_data12 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -391,7 +391,7 @@ public:
                       const T13 &out_data13 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -414,7 +414,7 @@ public:
                       const T14 &out_data14 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -438,7 +438,7 @@ public:
                       const T15 &out_data15 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -463,7 +463,7 @@ public:
                       const T16 &out_data16 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -489,7 +489,7 @@ public:
                       const T17 &out_data17 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -516,7 +516,7 @@ public:
                       const T18 &out_data18 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -544,7 +544,7 @@ public:
                       const T19 &out_data19 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -573,7 +573,7 @@ public:
                       const T20 &out_data20 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -603,7 +603,7 @@ public:
                       const T21 &out_data21 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -634,7 +634,7 @@ public:
                       const T22 &out_data22 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -666,7 +666,7 @@ public:
                       const T23 &out_data23 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -699,7 +699,7 @@ public:
                       const T24 &out_data24 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -733,7 +733,7 @@ public:
                       const T25 &out_data25 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -768,7 +768,7 @@ public:
                       const T26 &out_data26 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -804,7 +804,7 @@ public:
                       const T27 &out_data27 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -841,7 +841,7 @@ public:
                       const T28 &out_data28 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -879,7 +879,7 @@ public:
                       const T29 &out_data29 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -918,7 +918,7 @@ public:
                       const T30 &out_data30 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -958,7 +958,7 @@ public:
                       const T31 &out_data31 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30, out_data31);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30, out_data31);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -999,7 +999,7 @@ public:
                       const T32 &out_data32 )
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        ZCE_LIB::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30, out_data31, out_data32);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30, out_data31, out_data32);
         __ZCE_LOGPP_WRITE_END;
     }
 

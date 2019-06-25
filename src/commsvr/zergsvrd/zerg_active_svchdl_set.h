@@ -36,7 +36,7 @@ public:
     * @param[out] svc_handle 返回的对应的handle
     */
     int find_handle_by_svcid(const SERVICES_ID &svc_id,
-                             TCP_Svc_Handler *& svc_handle);
+                             TCP_Svc_Handler *&svc_handle);
 
     /*!
     * @brief      以负载均衡的方式，根据services type查询一个的SVC，按照序列数组顺序轮询的返回，
@@ -49,7 +49,7 @@ public:
     */
     int find_lbseqhdl_by_type(uint16_t services_type,
                               uint32_t &services_id,
-                              TCP_Svc_Handler*& svc_handle);
+                              TCP_Svc_Handler *&svc_handle);
 
 
     /*!
@@ -63,7 +63,7 @@ public:
     int find_lbfactorhdl_by_type(uint16_t services_type,
                                  uint32_t lb_factor,
                                  uint32_t &services_id,
-                                 TCP_Svc_Handler*& svc_handle);
+                                 TCP_Svc_Handler *&svc_handle);
 
 
     /*!
@@ -79,7 +79,7 @@ public:
     */
     int find_mshdl_by_type(uint16_t services_type,
                            uint32_t &find_services_id,
-                           TCP_Svc_Handler*& svc_handle);
+                           TCP_Svc_Handler *&svc_handle);
 
 
     /*!
@@ -89,7 +89,7 @@ public:
     * @param      id_ary    这个类型对应的所有active的SVC ID的services_id数值
     * @note       可以对某个类型进行广播
     */
-    int find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *& id_ary);
+    int find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *&id_ary);
 
     /*!
     * @brief      增加设置配置信息

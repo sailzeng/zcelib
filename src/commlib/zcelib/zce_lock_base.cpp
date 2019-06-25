@@ -36,13 +36,13 @@ void ZCE_Lock_Base::unlock()
 ///解锁读
 void ZCE_Lock_Base::unlock_read()
 {
-	return;
+    return;
 }
 
 ///解锁写
 void ZCE_Lock_Base::unlock_write()
 {
-	return;
+    return;
 }
 
 //绝对时间超时的的锁定，超时后解锁，返回是否超时
@@ -123,7 +123,7 @@ void ZCE_Condition_Base::wait(ZCE_Lock_Base * /*external_mutex*/ )
 }
 
 ///绝对时间超时的的等待，超时后解锁
-bool ZCE_Condition_Base::systime_wait(ZCE_Lock_Base * /*external_mutex*/ , const ZCE_Time_Value & /*abs_time*/)
+bool ZCE_Condition_Base::systime_wait(ZCE_Lock_Base * /*external_mutex*/, const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }

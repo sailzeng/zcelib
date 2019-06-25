@@ -14,10 +14,10 @@ static const unsigned char BASE64_ENC_MAP[64] =
 };
 
 //对一个内存块进行BASE64编码，
-int ZCE_LIB::base64_encode(const unsigned char *in,
-                           size_t in_len,
-                           unsigned char *out,
-                           size_t *out_len)
+int zce::base64_encode(const unsigned char *in,
+                       size_t in_len,
+                       unsigned char *out,
+                       size_t *out_len)
 {
     size_t i, leven;
     unsigned char *p;
@@ -88,10 +88,10 @@ static const unsigned char BASE64_DECODE_MAP[256] =
 };
 
 //对一个内存块进行base64的解码
-int ZCE_LIB::base64_decode(const unsigned char *in,
-                           size_t in_len,
-                           unsigned char *out,
-                           size_t *out_len)
+int zce::base64_decode(const unsigned char *in,
+                       size_t in_len,
+                       unsigned char *out,
+                       size_t *out_len)
 {
     size_t t, x, y, z;
     unsigned char c;
@@ -161,10 +161,10 @@ static const char BASE16_ENC_LOWER_MAP[] = "0123456789abcdef";
 static const char BASE16_ENC_UPPER_MAP[] = "0123456789ABCDEF";
 
 //BASE16的编码
-int ZCE_LIB::base16_encode(const unsigned char *in,
-                           size_t in_len,
-                           unsigned char *out,
-                           size_t *out_len)
+int zce::base16_encode(const unsigned char *in,
+                       size_t in_len,
+                       unsigned char *out,
+                       size_t *out_len)
 {
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL );
 
@@ -191,10 +191,10 @@ int ZCE_LIB::base16_encode(const unsigned char *in,
 }
 
 //BASE64的解码
-int ZCE_LIB::base16_decode(const unsigned char *in,
-                           size_t in_len,
-                           unsigned char *out,
-                           size_t *out_len)
+int zce::base16_decode(const unsigned char *in,
+                       size_t in_len,
+                       unsigned char *out,
+                       size_t *out_len)
 {
     ZCE_ASSERT(in  != NULL  && out != NULL && out_len != NULL && in_len % 2 == 0 );
     size_t need_len = in_len / 2;

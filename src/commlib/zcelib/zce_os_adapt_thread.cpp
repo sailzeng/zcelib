@@ -6,7 +6,7 @@
 
 //----------------------------------------------------------------------------------------
 //
-int ZCE_LIB::pthread_attr_init(pthread_attr_t *attr)
+int zce::pthread_attr_init(pthread_attr_t *attr)
 {
     //我暂时只关注这几个变量
 #if defined (ZCE_OS_WINDOWS)
@@ -24,7 +24,7 @@ int ZCE_LIB::pthread_attr_init(pthread_attr_t *attr)
 }
 
 //
-int ZCE_LIB::pthread_attr_destroy(pthread_attr_t *attr )
+int zce::pthread_attr_destroy(pthread_attr_t *attr )
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(attr);
@@ -38,11 +38,11 @@ int ZCE_LIB::pthread_attr_destroy(pthread_attr_t *attr )
 
 //设置，或者获得线程属性变量属性
 //你可以设置，线程的的分离，JOIN属性，堆栈大小，线程的调度优先级
-int ZCE_LIB::pthread_attr_getex(const pthread_attr_t *attr,
-                                int *detachstate,
-                                size_t *stacksize,
-                                int *threadpriority
-                               )
+int zce::pthread_attr_getex(const pthread_attr_t *attr,
+                            int *detachstate,
+                            size_t *stacksize,
+                            int *threadpriority
+                           )
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -80,11 +80,11 @@ int ZCE_LIB::pthread_attr_getex(const pthread_attr_t *attr,
 #endif
 }
 
-int ZCE_LIB::pthread_attr_setex(pthread_attr_t *attr,
-                                int detachstate,
-                                size_t stacksize,
-                                int threadpriority
-                               )
+int zce::pthread_attr_setex(pthread_attr_t *attr,
+                            int detachstate,
+                            size_t stacksize,
+                            int threadpriority
+                           )
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -192,10 +192,10 @@ public:
 //而我选择谁也不去迁就，不提供返回值给你，如果你需要返回值，请用线程类的封装，而不是API
 //因为WIN32下返回unsigned int，LINUX下返回void *，我要考虑平台兼容性，将谁转换给谁都不合适,所以我放弃
 //所以统一没有返回值，给你出错的可能，反而害死自己
-int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
-                            const pthread_attr_t *attr,
-                            void (*start_routine)(void *),
-                            void *arg)
+int zce::pthread_create(ZCE_THREAD_ID *threadid,
+                        const pthread_attr_t *attr,
+                        void (*start_routine)(void *),
+                        void *arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -210,7 +210,7 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
                                                     0,
                                                     threadid);
 
-	//注意_beginthreadex的返回值0表示错误，和_beginthread不一样
+    //注意_beginthreadex的返回值0表示错误，和_beginthread不一样
     if (NULL == thread_handle)
     {
         delete adapt_object;
@@ -245,17 +245,17 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
 
 //这个不是POSIX的封装，但推荐使用
 //还是提供一个简单一点的封装吧，这个不用处理pthread_attr_t
-int ZCE_LIB::pthread_createex(void (*start_routine)(void *),
-                              void *arg,
-                              ZCE_THREAD_ID *threadid,
-                              int detachstate,
-                              size_t stacksize,
-                              int threadpriority
-                             )
+int zce::pthread_createex(void (*start_routine)(void *),
+                          void *arg,
+                          ZCE_THREAD_ID *threadid,
+                          int detachstate,
+                          size_t stacksize,
+                          int threadpriority
+                         )
 {
     int ret = 0;
     pthread_attr_t attr;
-    ret = ZCE_LIB::pthread_attr_init(&attr);
+    ret = zce::pthread_attr_init(&attr);
 
     if (0 != ret)
     {
@@ -263,27 +263,27 @@ int ZCE_LIB::pthread_createex(void (*start_routine)(void *),
     }
 
     //设置线程参数
-    ret = ZCE_LIB::pthread_attr_setex(&attr,
-                                      detachstate,
-                                      stacksize,
-                                      threadpriority
-                                     );
+    ret = zce::pthread_attr_setex(&attr,
+                                  detachstate,
+                                  stacksize,
+                                  threadpriority
+                                 );
 
     if (0 != ret)
     {
-        ZCE_LIB::pthread_attr_destroy(&attr);
+        zce::pthread_attr_destroy(&attr);
         return ret;
     }
 
     //创建线程
-    ret = ZCE_LIB::pthread_create(threadid,
-                                  &attr,
-                                  start_routine,
-                                  arg);
+    ret = zce::pthread_create(threadid,
+                              &attr,
+                              start_routine,
+                              arg);
 
     if (0 != ret)
     {
-        ZCE_LIB::pthread_attr_destroy(&attr);
+        zce::pthread_attr_destroy(&attr);
         return ret;
     }
 
@@ -291,7 +291,7 @@ int ZCE_LIB::pthread_createex(void (*start_routine)(void *),
 }
 
 //退出，传递void，各个平台不兼容，所以干脆什么都不传递出来
-void ZCE_LIB::pthread_exit( void )
+void zce::pthread_exit( void )
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -306,10 +306,10 @@ void ZCE_LIB::pthread_exit( void )
 }
 
 //等待某个JOIN的线程结束,但不理会返回值
-int ZCE_LIB::pthread_join(ZCE_THREAD_ID threadid)
+int zce::pthread_join(ZCE_THREAD_ID threadid)
 {
     ZCE_THR_FUNC_RETURN ret_val;
-    return ZCE_LIB::pthread_join (threadid, &ret_val);
+    return zce::pthread_join (threadid, &ret_val);
 }
 
 //==========================================================================================
@@ -353,10 +353,10 @@ public:
 #endif //
 
 //创建一个线程,调用线程函数向各个平台兼容模式靠齐，有返回值
-int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
-                            const pthread_attr_t *attr,
-                            ZCE_THR_FUNC_RETURN (* start_routine)(void *),
-                            void *arg)
+int zce::pthread_create(ZCE_THREAD_ID *threadid,
+                        const pthread_attr_t *attr,
+                        ZCE_THR_FUNC_RETURN (* start_routine)(void *),
+                        void *arg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -368,7 +368,7 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
                                                     &adapt_object,
                                                     0,
                                                     threadid);
-	//注意_beginthreadex的返回值0表示错误，和_beginthread不一样
+    //注意_beginthreadex的返回值0表示错误，和_beginthread不一样
     if (NULL == thread_handle)
     {
         return -1;
@@ -400,7 +400,7 @@ int ZCE_LIB::pthread_create(ZCE_THREAD_ID *threadid,
 }
 
 //退出一个线程，可以得到返回值
-void ZCE_LIB::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
+void zce::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
 {
 #if defined (ZCE_OS_WINDOWS)
     return _endthreadex(thr_ret);
@@ -411,7 +411,7 @@ void ZCE_LIB::pthread_exit(ZCE_THR_FUNC_RETURN thr_ret)
 }
 
 //等待某个JOIN的线程结束,并且得到线程回调函数的返回值
-int ZCE_LIB::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
+int zce::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -421,10 +421,10 @@ int ZCE_LIB::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
                                              FALSE,
                                              threadid
                                             );
-	if (thr_handle == NULL)
-	{
-		return -1;
-	}
+    if (thr_handle == NULL)
+    {
+        return -1;
+    }
     DWORD thread_ret;
 
     if (::WaitForSingleObject (thr_handle, INFINITE) == WAIT_OBJECT_0
@@ -444,7 +444,7 @@ int ZCE_LIB::pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val)
 }
 
 //得到线程ID
-ZCE_THREAD_ID ZCE_LIB::pthread_self(void)
+ZCE_THREAD_ID zce::pthread_self(void)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::GetCurrentThreadId();
@@ -458,7 +458,7 @@ ZCE_THREAD_ID ZCE_LIB::pthread_self(void)
 //取消一个线程
 //这个函数放在这儿，完全是为了满足我的一点点封装意愿，因为在LINUX平台，你未必能取消一个线程
 //在外WINDOWS，调用TerminateThread，这个函数也是不被推荐的
-int ZCE_LIB::pthread_cancel(ZCE_THREAD_ID threadid)
+int zce::pthread_cancel(ZCE_THREAD_ID threadid)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -469,11 +469,11 @@ int ZCE_LIB::pthread_cancel(ZCE_THREAD_ID threadid)
                                              FALSE,
                                              threadid
                                             );
-	if (thr_handle == NULL)
-	{
-		errno = GetLastError();
-		return -1;
-	}
+    if (thr_handle == NULL)
+    {
+        errno = GetLastError();
+        return -1;
+    }
     //强制退出
     BOOL bret = ::TerminateThread(thr_handle, 0);
     if (!bret)
@@ -494,7 +494,7 @@ int ZCE_LIB::pthread_cancel(ZCE_THREAD_ID threadid)
 }
 
 //对一个线程进行松绑
-int ZCE_LIB::pthread_detach(ZCE_THREAD_ID threadid)
+int zce::pthread_detach(ZCE_THREAD_ID threadid)
 {
 #if defined (ZCE_OS_WINDOWS)
     //Windows线程本来就是detach的，呵呵
@@ -521,7 +521,7 @@ ZCE_THREAD_HANDLE pthread_id2handle(ZCE_THREAD_ID threadid)
 }
 #endif //
 
-int ZCE_LIB::pthread_yield(void)
+int zce::pthread_yield(void)
 {
 #if defined (ZCE_OS_WINDOWS)
     ::Sleep(0);
@@ -537,7 +537,7 @@ int ZCE_LIB::pthread_yield(void)
 
 //destructor 参数对于WIN32平台没有用，建议不用。
 //
-int ZCE_LIB::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
+int zce::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -561,7 +561,7 @@ int ZCE_LIB::pthread_key_create(pthread_key_t *key, void (*destructor)(void *))
 }
 
 //
-int ZCE_LIB::pthread_key_delete(pthread_key_t key)
+int zce::pthread_key_delete(pthread_key_t key)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -583,7 +583,7 @@ int ZCE_LIB::pthread_key_delete(pthread_key_t key)
 #endif
 }
 
-int ZCE_LIB::pthread_setspecific(pthread_key_t key, const void *data)
+int zce::pthread_setspecific(pthread_key_t key, const void *data)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -605,7 +605,7 @@ int ZCE_LIB::pthread_setspecific(pthread_key_t key, const void *data)
 #endif
 }
 
-void *ZCE_LIB::pthread_getspecific (pthread_key_t key)
+void *zce::pthread_getspecific (pthread_key_t key)
 {
 #if defined (ZCE_OS_WINDOWS)
 

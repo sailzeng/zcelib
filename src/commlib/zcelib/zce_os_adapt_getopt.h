@@ -38,7 +38,7 @@ extern int     optreset;
 
 #endif // #if defined (ZCE_OS_WINDOWS)
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //optstring stringËµÃ÷
@@ -66,6 +66,6 @@ int getopt_long_only(int argc,
                      const char *optstring,
                      const struct option *longopts,
                      int *longindex);
-}; // end of namespace ZCE_LIB
+}; // end of namespace zce
 
 #endif //ZCE_LIB_OS_ADAPT_GET_OPT_H_

@@ -118,7 +118,7 @@
 #include "zce_os_adapt_math.h"
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 

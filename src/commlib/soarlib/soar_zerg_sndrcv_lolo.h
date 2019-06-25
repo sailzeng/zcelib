@@ -2,19 +2,19 @@
 * @copyright  2004-2015  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_zerg_sndrcv_lolo.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2006年9月8日
-* @brief      
-*             
-*             
-* @details    
-*             
-*             
-*             
+* @brief
+*
+*
+* @details
+*
+*
+*
 * @note       倮倮这个词的意思其实是汉族人对少数民族的蔑称，当然我在这儿不敢有半点
 *             的民族倾向，只是为了纪念一个很老的歌手
 *             倮倮，云南彝族人，LOLO
-*             
+*
 *             菩提树上的叮当
 *             倮倮
 *             请你带我去从前你住过的村庄
@@ -90,7 +90,7 @@ public:
     //接受数据
     template< class T2>
     int receive_svc_package(unsigned int cmd,
-                            T2 &rcv_info ,
+                            T2 &rcv_info,
                             ZCE_Time_Value *time_out = NULL);
 
     //发送和接收数据，一起一锅搞掂的方式
@@ -110,7 +110,7 @@ public:
 //收数据
 template<class T>
 int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
-                                               T &info ,
+                                               T &info,
                                                ZCE_Time_Value *time_wait)
 {
     int ret = 0;
@@ -136,15 +136,15 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     {
         ZCE_LOG(RS_INFO, "[framework] Link is disconnect recv ret =%d, error[%u|%s].",
                 socket_ret,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
         return SOAR_RET::ERROR_ZULU_LINK_DISCONNECT;
     }
     //小于0一般表示错误,对于阻塞，这儿也表示一个错误,我给了你等待时间作为选择
     else if (socket_ret < 0)
     {
         //如果错误是信号导致的重入
-        int last_error =  ZCE_LIB::last_error();
+        int last_error =  zce::last_error();
 
         ZCE_LOG(RS_ERROR, "[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
                 socket_ret,
@@ -163,8 +163,8 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     {
         ZCE_LOG(RS_ERROR, "[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                 tibetan_recv_appframe_->frame_length_,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()) );
+                zce::last_error(),
+                strerror(zce::last_error()) );
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
     }
 
@@ -246,8 +246,8 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
     {
         ZCE_LOG(RS_ERROR, "[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
                 tibetan_recv_appframe_->frame_length_,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()) );
+                zce::last_error(),
+                strerror(zce::last_error()) );
         return SOAR_RET::ERROR_ZULU_SEND_PACKAGE_FAIL;
     }
 

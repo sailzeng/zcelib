@@ -67,7 +67,7 @@
 
 #include "zce_bytes_base.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 template < typename COMPRESS_STRATEGY >
@@ -329,7 +329,7 @@ public:
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFFF7 + 1) * 3 + 64);
+        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFFF7 + 1) * 3 + 64);
         return 0;
     }
 
@@ -346,8 +346,8 @@ protected:
     uint32_t *hash_lz_offset_ = nullptr;
 };
 
-//直接的ZLZ的typedef，使用ZCE_LIB::ZLZ_Compress::compress ,decompress函数就可以完成功能
-typedef ZCE_Compress<ZCE_LIB::ZLZ_Compress_Format> ZLZ_Compress;
+//直接的ZLZ的typedef，使用zce::ZLZ_Compress::compress ,decompress函数就可以完成功能
+typedef ZCE_Compress<zce::ZLZ_Compress_Format> ZLZ_Compress;
 
 
 
@@ -381,7 +381,7 @@ public:
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFF + 1) + 64);
+        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFF + 1) + 64);
         return 0;
     }
 
@@ -400,7 +400,7 @@ typedef ZCE_Compress<LZ4_Compress_Format> LZ4_Compress;
 
 //=====================================================================================================
 
-};//end of ZCE_LIB
+};//end of zce
 
 #endif
 

@@ -180,7 +180,7 @@ int ZCE_Mysql_STMT_Command::_execute(unsigned int *num_affect,
 //执行SQL语句,不用输出结果集合的那种
 int ZCE_Mysql_STMT_Command::execute(unsigned int &num_affect, unsigned int &lastid)
 {
-    return _execute(&num_affect , &lastid);
+    return _execute(&num_affect, &lastid);
 }
 
 //执行SQL语句,SELECT语句,转储结果集合的那种,

@@ -41,8 +41,8 @@ enum PET_APPFRAME_CMD
     //ZERG服务器和业务服务器通信内部的命令 内部命令，用于通讯服务器和业务进程间的处理。
     //------------------------------------------------------------------------------------------------
     INTERNAL_COMMAND_BEGIN                     = 1,            //开始
-    INNER_REG_SOCKET_CLOSED                    = 3 ,           //内部处理,通知后面应用,某个Socket关闭
-    INNER_RSP_SOCKET_CLOSED                    = 4 ,           //占位
+    INNER_REG_SOCKET_CLOSED                    = 3,            //内部处理,通知后面应用,某个Socket关闭
+    INNER_RSP_SOCKET_CLOSED                    = 4,            //占位
     INNER_REQ_CLOSE_SOCKET                     = 5,            //占位
     INNER_RSP_CLOSE_SOCKET                     = 6,            //内部处理,后面的服务器通知接入服务器,关闭端口
     INNER_REQ_ERROR_SEND_SOCKET                = 7,            //内部处理,某个服务未能连接,发送错误同志后端服务，原来用过

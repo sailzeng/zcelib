@@ -243,10 +243,10 @@ public:
                          size_t buf_size,
                          unsigned char result[HASH_RESULT_SIZE])
     {
-		uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
+        uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
 
         //保存剩余的数据，我们要拼出最后1个（或者两个）要处理的块，前面的算法保证了，最后一个块肯定小于64个字节
-		memset(message, 0, PROCESS_BLOCK_SIZE);
+        memset(message, 0, PROCESS_BLOCK_SIZE);
         if (ctx->unprocessed_)
         {
             memcpy(message, buf + buf_size - ctx->unprocessed_, static_cast<size_t>( ctx->unprocessed_));
@@ -393,7 +393,7 @@ public:
 
 //=====================================================================================================
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //=====================================================================================================
@@ -409,8 +409,8 @@ namespace ZCE_LIB
 */
 template<typename HASH_STRATEGY>
 unsigned char *hash_fun(const unsigned char *buf,
-                               size_t buf_size,
-                               unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
+                        size_t buf_size,
+                        unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
     ZCE_ASSERT(result != NULL);
 
@@ -433,11 +433,11 @@ unsigned char *hash_fun(const unsigned char *buf,
 */
 template<typename HASH_STRATEGY, size_t BUFFER_MULTIPLE>
 int hash_file(const char *file_name,
-                      unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
+              unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
 
     //打开文件
-    ZCE_HANDLE  fd = ZCE_LIB::open(file_name, O_RDONLY);
+    ZCE_HANDLE  fd = zce::open(file_name, O_RDONLY);
     if (ZCE_INVALID_HANDLE == fd)
     {
         return -1;
@@ -445,7 +445,7 @@ int hash_file(const char *file_name,
 
     //获取文件尺寸，有长度可以避免有时候如果读取的文件长度和缓冲相等，要读取一次的麻烦，
     size_t file_size = 0;
-    int ret = ZCE_LIB::filesize(fd, &file_size);
+    int ret = zce::filesize(fd, &file_size);
     if ( 0 != ret)
     {
         return -1;
@@ -463,11 +463,11 @@ int hash_file(const char *file_name,
     do
     {
         //读取内容
-        read_len = ZCE_LIB::read(fd, read_buf, READ_LEN);
+        read_len = zce::read(fd, read_buf, READ_LEN);
         if (read_len < 0)
         {
             delete [] read_buf;
-            ZCE_LIB::close(fd);
+            zce::close(fd);
             return -1;
         }
         HASH_STRATEGY::process(&ctx, (unsigned char *) read_buf, read_len);
@@ -475,9 +475,9 @@ int hash_file(const char *file_name,
     }
     while ( (file_size -= read_len) > 0 );
 
-    HASH_STRATEGY::finalize(&ctx, (unsigned char *) read_buf, read_len , result);
+    HASH_STRATEGY::finalize(&ctx, (unsigned char *) read_buf, read_len, result);
     delete [] read_buf;
-    ZCE_LIB::close(fd);
+    zce::close(fd);
 
     return 0;
 }
@@ -493,7 +493,7 @@ inline unsigned char *md5(const unsigned char *buf,
                           size_t buf_size,
                           unsigned char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
 {
-    return ZCE_LIB::hash_fun<ZCE_Hash_MD5>(buf, buf_size, result);
+    return zce::hash_fun<ZCE_Hash_MD5>(buf, buf_size, result);
 }
 
 /*!
@@ -506,7 +506,7 @@ inline unsigned char *md5(const unsigned char *buf,
 inline int md5_file(const char *file_name,
                     unsigned char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
 {
-    return ZCE_LIB::hash_file<ZCE_Hash_MD5, 10240>(file_name, result);
+    return zce::hash_file<ZCE_Hash_MD5, 10240>(file_name, result);
 }
 
 /*!
@@ -520,7 +520,7 @@ inline unsigned char *sha1(const unsigned char *buf,
                            size_t buf_size,
                            unsigned char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
 {
-    return ZCE_LIB::hash_fun<ZCE_Hash_SHA1>(buf, buf_size, result);
+    return zce::hash_fun<ZCE_Hash_SHA1>(buf, buf_size, result);
 }
 
 /*!
@@ -533,7 +533,7 @@ inline unsigned char *sha1(const unsigned char *buf,
 inline int sha1_file(const char *file_name,
                      unsigned char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
 {
-    return ZCE_LIB::hash_file<ZCE_Hash_SHA1, 10240>(file_name, result);
+    return zce::hash_file<ZCE_Hash_SHA1, 10240>(file_name, result);
 }
 
 /*!
@@ -547,7 +547,7 @@ inline unsigned char *sha256(const unsigned char *buf,
                              size_t buf_size,
                              unsigned char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
 {
-    return ZCE_LIB::hash_fun<ZCE_Hash_SHA256>(buf, buf_size, result);
+    return zce::hash_fun<ZCE_Hash_SHA256>(buf, buf_size, result);
 }
 
 /*!
@@ -560,7 +560,7 @@ inline unsigned char *sha256(const unsigned char *buf,
 inline int sha256_file(const char *file_name,
                        unsigned char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
 {
-    return ZCE_LIB::hash_file<ZCE_Hash_SHA256, 10240>(file_name, result);
+    return zce::hash_file<ZCE_Hash_SHA256, 10240>(file_name, result);
 }
 
 /*!
@@ -595,7 +595,7 @@ inline uint32_t crc32(const unsigned char *buf,
 inline  int crc32_file(const char *file_name,
                        uint32_t *result)
 {
-    return ZCE_LIB::hash_file<ZCE_Hash_CRC32, 10240>(file_name, (unsigned char *)result);
+    return zce::hash_file<ZCE_Hash_CRC32, 10240>(file_name, (unsigned char *)result);
 }
 
 uint16_t crc16(uint16_t crcinit,

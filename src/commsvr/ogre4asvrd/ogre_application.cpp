@@ -123,7 +123,7 @@ int Ogre_Service_App::app_run()
         //你可以根据空闲状态处理一些自己的事情,
         if (idle > IDLE_SLEEP_INTERVAL )
         {
-            ZCE_LIB::sleep(sleeptime);
+            zce::sleep(sleeptime);
         }
     }
 

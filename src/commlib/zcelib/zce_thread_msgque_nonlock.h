@@ -22,7 +22,7 @@
 
 //使用偏特化得到一个ZCE_Message_Queue
 template < typename _value_type,
-         typename _container_type >
+           typename _container_type >
 class ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
 {
 protected:

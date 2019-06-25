@@ -23,7 +23,7 @@
 //因为我我用预编译头文件的缘故，所以这儿不用包括这个文件
 
 /*!
-* @namespace ZCE_LIB 跨平台的函数的名字空间定义，其中的函数主要向LINUX，POSIX看起，也有少量
+* @namespace zce 跨平台的函数的名字空间定义，其中的函数主要向LINUX，POSIX看起，也有少量
 *                    自己写的函数，
 *                    主要覆盖面，包括网络，文件，目录，动态库，同步对象，线程，共享内存，时间
 *                    字符串，机器性能等。
@@ -146,7 +146,7 @@ struct win_simulate_cv_t
     pthread_mutex_t      waiters_lock_;
 
     /// 信号灯，阻塞排队等待的线程直到 signaled.
-    sem_t               *block_sema_ =NULL;
+    sem_t               *block_sema_ = NULL;
 
     ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
     ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
@@ -162,15 +162,15 @@ struct pthread_cond_t
 
     //两个架构，实际起作用的只有一个
 
-	///WINDOWS的条件变量在WINSERVER2008，VISTA后才支持
-	///这个条件变量只能单进程内部使用，其外部互斥量，只支持临界区
+    ///WINDOWS的条件变量在WINSERVER2008，VISTA后才支持
+    ///这个条件变量只能单进程内部使用，其外部互斥量，只支持临界区
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
-	CONDITION_VARIABLE   cv_object_;
+    CONDITION_VARIABLE   cv_object_;
 #endif
-	///采用两个信号灯和一个互斥量模拟的条件变量，同时支持signal和broadcast操作，
-	///也支持外部互斥量是多进程共享，也支持外部互斥量是MUTEX（信号灯），临界区模拟
-	///的，pthread_mutex_t
-	win_simulate_cv_t     simulate_cv_;
+    ///采用两个信号灯和一个互斥量模拟的条件变量，同时支持signal和broadcast操作，
+    ///也支持外部互斥量是多进程共享，也支持外部互斥量是MUTEX（信号灯），临界区模拟
+    ///的，pthread_mutex_t
+    win_simulate_cv_t     simulate_cv_;
 
 } ;
 
@@ -188,24 +188,24 @@ typedef struct
 struct pthread_rwlock_t
 {
     ///模拟的
-	///是否是唤醒写入优先，（是就是写入优先，否则读取优先）这是一个问题，我把抉择权利给你
-	bool            priority_to_write_ = true;
+    ///是否是唤醒写入优先，（是就是写入优先，否则读取优先）这是一个问题，我把抉择权利给你
+    bool            priority_to_write_ = true;
 
-	///保护这个结构在多线程中读写的互斥量，主要下面那些整数的修改
-	pthread_mutex_t rw_mutex_;
+    ///保护这个结构在多线程中读写的互斥量，主要下面那些整数的修改
+    pthread_mutex_t rw_mutex_;
 
-	/// 读者等待的条件变量
-	pthread_cond_t  rw_condreaders_;
-	/// 写入等待的条件变量
-	pthread_cond_t  rw_condwriters_;
+    /// 读者等待的条件变量
+    pthread_cond_t  rw_condreaders_;
+    /// 写入等待的条件变量
+    pthread_cond_t  rw_condwriters_;
 
-	///等待读的线程数量
-	int             rw_nwaitreaders_ = 0;
-	///等待写的线程数量
-	int             rw_nwaitwriters_ = 0;
+    ///等待读的线程数量
+    int             rw_nwaitreaders_ = 0;
+    ///等待写的线程数量
+    int             rw_nwaitwriters_ = 0;
 
-	///锁的持有状态，如果有一个写者持有锁-1 如果>0表示多少个读者持有这个锁
-	int             rw_refcount_ = 0;
+    ///锁的持有状态，如果有一个写者持有锁-1 如果>0表示多少个读者持有这个锁
+    int             rw_refcount_ = 0;
 
 } ;
 
@@ -337,7 +337,7 @@ typedef struct __stat64       zce_os_stat;
 // If we are using winsock2 then the SO_REUSEADDR feature is broken
 // SO_REUSEADDR=1 behaves like SO_REUSEPORT=1. (SO_REUSEPORT is an
 // extension to sockets on some platforms)
-// We define SO_REUSEPORT here so that ZCE_LIB::setsockopt() can still
+// We define SO_REUSEPORT here so that zce::setsockopt() can still
 // allow the user to specify that a socketaddr can *always* be reused.
 #if ! defined(SO_REUSEPORT)
 #define SO_REUSEPORT 0x0400  // We just have to pick a value that won't conflict

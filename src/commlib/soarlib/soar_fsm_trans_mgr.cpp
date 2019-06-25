@@ -75,7 +75,7 @@ int Transaction_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
     trans_send_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
-    trans_send_buffer_->init_framehead(max_frame_len,CMD_INVALID_CMD);
+    trans_send_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
     trans_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
     trans_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
     fake_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);

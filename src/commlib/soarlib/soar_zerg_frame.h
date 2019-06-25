@@ -174,7 +174,7 @@ public:
     int appdata_encode(size_t szframe_appdata, const info_type &info);
 
     template<typename info_type>
-    int appdata_decode(size_t szframe_appdata, info_type& info);
+    int appdata_decode(size_t szframe_appdata, info_type &info);
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
@@ -196,23 +196,23 @@ public:
     uint32_t get_send_ip() const;
 
 
-	
+
 protected:
 
 
 
 public:
-	// explicit is better than implicit
-	//经过很多次和VC编译器反复的摧残，我决定不再对外暴漏这个函数，外部请使用new_frame and delete_frame
-	//为什么呢，其实本来我认为只使用类内部的Placement new and delete 也算是explicit的，
-	//但被VC这么反复折腾，我前面先也用 ifdef对付过去了。但升级到VS2017发现左也不是，右也不是。不如不把new暴漏出去
-	//http://www.cnblogs.com/fullsail/p/4292214.html
-	//不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
+    // explicit is better than implicit
+    //经过很多次和VC编译器反复的摧残，我决定不再对外暴漏这个函数，外部请使用new_frame and delete_frame
+    //为什么呢，其实本来我认为只使用类内部的Placement new and delete 也算是explicit的，
+    //但被VC这么反复折腾，我前面先也用 ifdef对付过去了。但升级到VS2017发现左也不是，右也不是。不如不把new暴漏出去
+    //http://www.cnblogs.com/fullsail/p/4292214.html
+    //不placement new和delete了。听人劝吃饱饭。VS总是变化。搞的总是要折腾
 
-	///创建一个Frame
-	static Zerg_App_Frame *new_frame(std::size_t lenframe);
-	///销毁一个frame
-	static void delete_frame(Zerg_App_Frame *frame);
+    ///创建一个Frame
+    static Zerg_App_Frame *new_frame(std::size_t lenframe);
+    ///销毁一个frame
+    static void delete_frame(Zerg_App_Frame *frame);
 
 
     ///输出APPFRAME的头部信息
@@ -332,7 +332,7 @@ inline void Zerg_App_Frame::init_framehead(uint32_t lenframe,
     send_serial_number_ = 0;
     transaction_id_ = 0;
     backfill_trans_id_ = 0;
-    
+
 }
 
 //清理

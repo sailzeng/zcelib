@@ -138,7 +138,7 @@
 #pragma warning ( disable : 4127)
 #endif
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //=================================================================================================================
@@ -391,14 +391,14 @@ public:
         *cipher_len = cphbuf_need_len;
 
         //用于记录异或结果的数据区，+4是因为尾巴补0的时候，可能溢出一个BLOCK，免得写一堆判断代码。
-		unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
+        unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
         unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = {0};
 
         //用随机数算法生成IV.填补进入密文数据区
         unsigned char *write_ptr = cipher_buf;
         for (size_t i = 0; i < ENCRYPT_STRATEGY::BLOCK_SIZE / sizeof(uint32_t); ++i)
         {
-            ZUINT32_TO_INDEX(write_ptr, i, ZCE_LIB::mt19937_instance::instance()->rand());
+            ZUINT32_TO_INDEX(write_ptr, i, zce::mt19937_instance::instance()->rand());
         }
         const unsigned char *xor_ptr = write_ptr;
         write_ptr += ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -1095,7 +1095,7 @@ typedef ZCE_Crypt<XTEA_ECB<64 > > XTEA_Crypt_64_128_64;
 @tparam     round_size  round_size = 6 + 52/(block_size/4)
 
 */
-template <size_t block_size , size_t round_size>
+template <size_t block_size, size_t round_size>
 class XXTEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
@@ -1114,7 +1114,7 @@ public:
 
         const uint32_t *k = sub_key->skey_;
 
-        uint32_t  sum = 0, y, z , e , p;
+        uint32_t  sum = 0, y, z, e, p;
 
         size_t rounds = round_size;
         size_t num_uint32 = block_size / sizeof(uint32_t);
@@ -1165,7 +1165,7 @@ public:
         {
             v[i] = ZINDEX_TO_LEUINT32(cipher_block, i);
         }
-        uint32_t y, z , e , p;
+        uint32_t y, z, e, p;
         y = v[0];
         do
         {
@@ -1291,7 +1291,7 @@ public:
     static const size_t SBOX_SIZE = sbox_size;
 
     //
-    static void key_setup(const unsigned char *key ,
+    static void key_setup(const unsigned char *key,
                           RC_SUBKEY *subkey,
                           bool  /*if_encrypt*/ )
     {
@@ -1327,7 +1327,7 @@ public:
 @tparam     round_size 加密的轮数，
 @tparam     sbox_size  SBOX的大小
 */
-template <size_t key_size, size_t round_size , size_t sbox_size >
+template <size_t key_size, size_t round_size, size_t sbox_size >
 class RC5_ECB : public RC_ECB_Base< key_size, round_size, sbox_size >
 {
 public:
@@ -1385,7 +1385,7 @@ typedef ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > > RC5_Crypt_64_128_20;
             http://en.wikipedia.org/wiki/RC6
             RC6 一般情况下，推荐128bit密钥，128bitBLOCK，轮数20.
 */
-template <size_t key_size, size_t round_size , size_t sbox_size >
+template <size_t key_size, size_t round_size, size_t sbox_size >
 class RC6_ECB : public RC_ECB_Base<key_size, round_size, sbox_size >
 {
 public:

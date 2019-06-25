@@ -2,7 +2,7 @@
 #include "zce_predefine.h"
 #include "zce_shm_cache_chunk.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 shm_cachechunk::shm_cachechunk()
@@ -231,7 +231,7 @@ bool shm_cachechunk::set_node(const size_t szdata, const char *indata, size_t &n
     while (tmpszdata > 0)
     {
         szonce = (tmpszdata > cachechunk_head_->size_of_chunk_) ? cachechunk_head_->size_of_chunk_ : tmpszdata;
-        memcpy(chunkdata_base_ +  chunkinx * cachechunk_head_->size_of_chunk_ , indata + szcpy , szonce);
+        memcpy(chunkdata_base_ +  chunkinx * cachechunk_head_->size_of_chunk_, indata + szcpy, szonce);
         szcpy += szonce;
         tmpszdata -= szonce;
 
@@ -285,7 +285,7 @@ void shm_cachechunk::get_node(const size_t nodeindex, size_t &szdata, char *outd
     while (tmpszdata > 0)
     {
         szonce = (tmpszdata >= cachechunk_head_->size_of_chunk_) ? cachechunk_head_->size_of_chunk_ : tmpszdata;
-        memcpy(outdata + szcpy , chunkdata_base_ +  chunkinx * (cachechunk_head_->size_of_chunk_) , szonce);
+        memcpy(outdata + szcpy, chunkdata_base_ +  chunkinx * (cachechunk_head_->size_of_chunk_), szonce);
         szcpy += szonce;
         tmpszdata -= szonce;
 
@@ -353,7 +353,7 @@ void shm_cachechunk::get_chunkdata(const size_t nodeindex,
 
     //
     szdata = cachechunk_head_->size_of_chunk_ - tmpszdata;
-    memcpy(outdata , chunkdata_base_ +  chunkinx * (cachechunk_head_->size_of_chunk_) , szdata);
+    memcpy(outdata, chunkdata_base_ +  chunkinx * (cachechunk_head_->size_of_chunk_), szdata);
 }
 
 //用于每次取一个CHUNK的指针操作，根据NODE索引，第几个CHUNK,返回

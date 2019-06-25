@@ -8,7 +8,7 @@
 
 //========================================================================================
 
-ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr,unsigned int reg_cmd) :
+ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr, unsigned int reg_cmd) :
     ZCE_Async_Object(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
@@ -24,17 +24,17 @@ int ZCE_Async_Coroutine::initialize()
 {
     ZCE_Async_Object::initialize();
     int ret = 0;
-    ret = ZCE_LIB::make_coroutine(&handle_,
-                                  stack_size_,
-                                  true,
-                                  (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
-                                  (void *)this,
-                                  NULL,
-                                  NULL
-                                 );
+    ret = zce::make_coroutine(&handle_,
+                              stack_size_,
+                              true,
+                              (ZCE_COROUTINE_3PARA)ZCE_Async_Coroutine::static_do,
+                              (void *)this,
+                              NULL,
+                              NULL
+                             );
     if (ret != 0)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::make_coroutine return fail.", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::make_coroutine return fail.", ret);
         return ret;
     }
     return 0;
@@ -44,7 +44,7 @@ int ZCE_Async_Coroutine::initialize()
 void ZCE_Async_Coroutine::finish()
 {
     ZCE_Async_Object::finish();
-    ZCE_LIB::delete_coroutine(&handle_);
+    zce::delete_coroutine(&handle_);
     return;
 }
 
@@ -75,7 +75,7 @@ void ZCE_Async_Coroutine::on_run(const void *outer_data, bool &continue_run)
 
 
 //调用协程
-void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/ ,
+void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
                                      bool &continue_run)
 {
     continue_run = false;
@@ -101,21 +101,21 @@ void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/ ,
 void ZCE_Async_Coroutine::yeild_main_continue()
 {
     coroutine_state_ = COROUTINE_CONTINUE;
-    ZCE_LIB::yeild_main(&handle_);
+    zce::yeild_main(&handle_);
 }
 
 //切换回Main,协程退出
 void ZCE_Async_Coroutine::yeild_main_exit()
 {
     coroutine_state_ = COROUTINE_EXIT;
-    ZCE_LIB::yeild_main(&handle_);
+    zce::yeild_main(&handle_);
 }
 
 
 //切换回协程，也就是切换到他自己运行
 void ZCE_Async_Coroutine::yeild_coroutine()
 {
-    ZCE_LIB::yeild_coroutine(&handle_);
+    zce::yeild_coroutine(&handle_);
 }
 
 

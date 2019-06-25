@@ -5,7 +5,7 @@
 #include "zce_os_adapt_socket.h"
 
 //初始化Socket，
-int ZCE_LIB::socket_init(int version_high, int version_low)
+int zce::socket_init(int version_high, int version_low)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -18,7 +18,7 @@ int ZCE_LIB::socket_init(int version_high, int version_low)
     {
         errno = ::WSAGetLastError();
         ::fprintf(stderr,
-                  "ZCE_LIB::socket_init; WSAStartup failed, "
+                  "zce::socket_init; WSAStartup failed, "
                   "WSAGetLastError returned %d\n",
                   errno);
         WSACleanup();
@@ -40,8 +40,9 @@ int ZCE_LIB::socket_init(int version_high, int version_low)
                         NULL,
                         NULL);
 
-    if (result == SOCKET_ERROR) {
-        ::fprintf(stderr, "WSAIoctl get WSAAcceptEx function failed with error: %u\n", 
+    if (result == SOCKET_ERROR)
+    {
+        ::fprintf(stderr, "WSAIoctl get WSAAcceptEx function failed with error: %u\n",
                   WSAGetLastError());
         WSACleanup();
         return -1;
@@ -58,7 +59,8 @@ int ZCE_LIB::socket_init(int version_high, int version_low)
                         NULL,
                         NULL);
 
-    if (result == SOCKET_ERROR) {
+    if (result == SOCKET_ERROR)
+    {
         ::fprintf(stderr, "WSAIoctl get WSAConnectEx function failed with error: %u\n",
                   WSAGetLastError());
         WSACleanup();
@@ -73,7 +75,7 @@ int ZCE_LIB::socket_init(int version_high, int version_low)
 #endif
 }
 
-int ZCE_LIB::socket_fini(void)
+int zce::socket_fini(void)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -82,7 +84,7 @@ int ZCE_LIB::socket_fini(void)
         errno = ::WSAGetLastError();
 
         ::fprintf(stderr,
-                  "ZCE_LIB::socket_fini; WSACleanup failed, "
+                  "zce::socket_fini; WSACleanup failed, "
                   "WSAGetLastError returned %d\n",
                   errno);
     }
@@ -92,9 +94,9 @@ int ZCE_LIB::socket_fini(void)
 }
 
 //
-ssize_t ZCE_LIB::writev (ZCE_SOCKET handle,
-                         const iovec *buffers,
-                         int iovcnt)
+ssize_t zce::writev (ZCE_SOCKET handle,
+                     const iovec *buffers,
+                     int iovcnt)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -132,9 +134,9 @@ ssize_t ZCE_LIB::writev (ZCE_SOCKET handle,
 }
 
 //
-ssize_t ZCE_LIB::readv (ZCE_SOCKET handle,
-                        iovec *buffers,
-                        int iovcnt)
+ssize_t zce::readv (ZCE_SOCKET handle,
+                    iovec *buffers,
+                    int iovcnt)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -180,9 +182,9 @@ ssize_t ZCE_LIB::readv (ZCE_SOCKET handle,
 }
 
 //
-ssize_t ZCE_LIB::recvmsg (ZCE_SOCKET handle,
-                          msghdr *msg,
-                          int flags)
+ssize_t zce::recvmsg (ZCE_SOCKET handle,
+                      msghdr *msg,
+                      int flags)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -224,9 +226,9 @@ ssize_t ZCE_LIB::recvmsg (ZCE_SOCKET handle,
 #endif
 }
 
-ssize_t ZCE_LIB::sendmsg (ZCE_SOCKET handle,
-                          const struct msghdr *msg,
-                          int flags)
+ssize_t zce::sendmsg (ZCE_SOCKET handle,
+                      const struct msghdr *msg,
+                      int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -271,10 +273,10 @@ ssize_t ZCE_LIB::sendmsg (ZCE_SOCKET handle,
 
 //--------------------------------------------------------------------------------------------
 //尽量收取len个数据，直到出现错误
-ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
-                        void *buf,
-                        size_t len,
-                        int flags )
+ssize_t zce::recvn (ZCE_SOCKET handle,
+                    void *buf,
+                    size_t len,
+                    int flags )
 {
     ssize_t result = 0;
     bool error_occur = false;
@@ -286,10 +288,10 @@ ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
     {
 
         //使用端口进行接收
-        onetime_recv = ZCE_LIB::recv (handle,
-                                      static_cast <char *> (buf) + bytes_recv,
-                                      len - bytes_recv,
-                                      flags);
+        onetime_recv = zce::recv (handle,
+                                  static_cast <char *> (buf) + bytes_recv,
+                                  len - bytes_recv,
+                                  flags);
 
         if (onetime_recv > 0)
         {
@@ -315,10 +317,10 @@ ssize_t ZCE_LIB::recvn (ZCE_SOCKET handle,
 }
 
 //尽量发送N个数据，直到出现错误
-ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
-                        const void *buf,
-                        size_t len,
-                        int flags)
+ssize_t zce::sendn (ZCE_SOCKET handle,
+                    const void *buf,
+                    size_t len,
+                    int flags)
 {
     bool error_occur = false;
     ssize_t result = 0, bytes_send = 0, onetime_send = 0;
@@ -327,10 +329,10 @@ ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
     for (bytes_send = 0; static_cast<size_t>(bytes_send) < len; bytes_send += onetime_send)
     {
         //发送数据，，
-        onetime_send = ZCE_LIB::send (handle,
-                                      static_cast <const char *> (buf) + bytes_send,
-                                      len - bytes_send,
-                                      flags);
+        onetime_send = zce::send (handle,
+                                  static_cast <const char *> (buf) + bytes_send,
+                                  len - bytes_send,
+                                  flags);
 
         if (onetime_send > 0)
         {
@@ -356,7 +358,7 @@ ssize_t ZCE_LIB::sendn (ZCE_SOCKET handle,
 }
 
 //打开某些选项，WIN32目前只支持O_NONBLOCK
-int ZCE_LIB::sock_enable (ZCE_SOCKET handle, int flags)
+int zce::sock_enable (ZCE_SOCKET handle, int flags)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -370,7 +372,7 @@ int ZCE_LIB::sock_enable (ZCE_SOCKET handle, int flags)
             u_long nonblock = 1;
             int zce_result = ::ioctlsocket (handle, FIONBIO, &nonblock);
 
-            //将错误信息设置到errno，详细请参考上面ZCE_LIB名字空间后面的解释
+            //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
             if ( SOCKET_ERROR == zce_result)
             {
                 errno = ::WSAGetLastError ();
@@ -407,7 +409,7 @@ int ZCE_LIB::sock_enable (ZCE_SOCKET handle, int flags)
 }
 
 //关闭某些选项，WIN32目前只支持O_NONBLOCK
-int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
+int zce::sock_disable(ZCE_SOCKET handle, int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -420,7 +422,7 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
             u_long nonblock = 0;
             int zce_result =  ::ioctlsocket (handle, FIONBIO, &nonblock);
 
-            //将错误信息设置到errno，详细请参考上面ZCE_LIB名字空间后面的解释
+            //将错误信息设置到errno，详细请参考上面zce名字空间后面的解释
             if ( SOCKET_ERROR == zce_result)
             {
                 errno = ::WSAGetLastError ();
@@ -457,16 +459,16 @@ int ZCE_LIB::sock_disable(ZCE_SOCKET handle, int flags)
 //如果使用大量的端口,select 是不合适的，需要使用EPOLL,此时可以打开下面的注释
 #define HANDLEREADY_USE_EPOLL
 
-	//FD_SET 里面的 whlie(0)会产生一个告警，这个应该是windows内部自己没有处理好。微软说VS2005SP1就修复了，见鬼。
+//FD_SET 里面的 whlie(0)会产生一个告警，这个应该是windows内部自己没有处理好。微软说VS2005SP1就修复了，见鬼。
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning(disable : 4127)
 #pragma warning(disable : 6262)
 #endif
 
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
-int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
-                          ZCE_Time_Value *timeout_tv,
-                          HANDLE_READY_TODO ready_todo)
+int zce::handle_ready(ZCE_SOCKET handle,
+                      ZCE_Time_Value *timeout_tv,
+                      HANDLE_READY_TODO ready_todo)
 {
 #if defined ZCE_OS_WINDOWS || (defined ZCE_OS_LINUX && !defined HANDLEREADY_USE_EPOLL)
 
@@ -530,11 +532,11 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
     select_width = int (handle) + 1;
 #endif
 
-    int result = ZCE_LIB::select (select_width,
-                                  p_set_read,
-                                  p_set_write,
-                                  p_set_exception,
-                                  timeout_tv);
+    int result = zce::select (select_width,
+                              p_set_read,
+                              p_set_write,
+                              p_set_exception,
+                              timeout_tv);
 
     if (0 == result )
     {
@@ -662,52 +664,52 @@ int ZCE_LIB::handle_ready(ZCE_SOCKET handle,
 //所以请你务必保证你的Socket 是阻塞模式的，否则有问题
 
 
-int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
-                             const sockaddr *addr,
-                             socklen_t addr_len,
-                             ZCE_Time_Value &timeout_tv)
+int zce::connect_timeout(ZCE_SOCKET handle,
+                         const sockaddr *addr,
+                         socklen_t addr_len,
+                         ZCE_Time_Value &timeout_tv)
 {
 
     int ret = 0;
     //不能对非阻塞的句柄进行超时处理
-    ret = ZCE_LIB::sock_enable(handle, O_NONBLOCK);
+    ret = zce::sock_enable(handle, O_NONBLOCK);
     if (ret != 0)
     {
-        ZCE_LIB::closesocket(handle);
+        zce::closesocket(handle);
         return -1;
     }
 
-    ret = ZCE_LIB::connect(handle, addr, addr_len);
+    ret = zce::connect(handle, addr, addr_len);
     //
     if (ret != 0)
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
-        int last_err = ZCE_LIB::last_error();
+        int last_err = zce::last_error();
 
         if (EINPROGRESS != last_err &&  EWOULDBLOCK != last_err)
         {
-            ZCE_LIB::closesocket(handle);
+            zce::closesocket(handle);
             return ret;
         }
     }
 
     //进行超时处理
-    ret = ZCE_LIB::handle_ready(handle,
-                                &timeout_tv,
-                                ZCE_LIB::HANDLE_READY_CONNECTED);
+    ret = zce::handle_ready(handle,
+                            &timeout_tv,
+                            zce::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
     if (ret != HANDLE_READY_ONE)
     {
-        ZCE_LIB::closesocket(handle);
+        zce::closesocket(handle);
         return -1;
     }
 
-    ret = ZCE_LIB::sock_disable(handle, O_NONBLOCK);
+    ret = zce::sock_disable(handle, O_NONBLOCK);
     if (ret != 0)
     {
-        ZCE_LIB::closesocket(handle);
+        zce::closesocket(handle);
         return -1;
     }
 
@@ -715,12 +717,12 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
 }
 
 
-int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
-                             const char *host_name,
-                             uint16_t port,
-                             sockaddr *host_addr,
-                             socklen_t addr_len,
-                             ZCE_Time_Value &timeout_tv)
+int zce::connect_timeout(ZCE_SOCKET handle,
+                         const char *host_name,
+                         uint16_t port,
+                         sockaddr *host_addr,
+                         socklen_t addr_len,
+                         ZCE_Time_Value &timeout_tv)
 {
     //只能是IPV4，IPV6或者两个兼而有之
     int ret = 0;
@@ -728,9 +730,9 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
     //如果有Hostname，会进行DNS解析，得到连接的IP地址
     if (host_name)
     {
-        ret = ZCE_LIB::getaddrinfo_to_addr(host_name,
-                                           host_addr,
-                                           addr_len);
+        ret = zce::getaddrinfo_to_addr(host_name,
+                                       host_addr,
+                                       addr_len);
         if (ret != 0)
         {
             return ret;
@@ -752,20 +754,20 @@ int ZCE_LIB::connect_timeout(ZCE_SOCKET handle,
             ZCE_ASSERT(false);
         }
     }
-    
-    return ZCE_LIB::connect_timeout(handle,
-                                    host_addr,
-                                    addr_len,
-                                    timeout_tv);
+
+    return zce::connect_timeout(handle,
+                                host_addr,
+                                addr_len,
+                                timeout_tv);
 }
 
 
-ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
-                                void *buf,
-                                size_t len,
-                                ZCE_Time_Value &timeout_tv,
-                                int flags,
-                                bool only_once)
+ssize_t zce::recvn_timeout (ZCE_SOCKET handle,
+                            void *buf,
+                            size_t len,
+                            ZCE_Time_Value &timeout_tv,
+                            int flags,
+                            bool only_once)
 {
 
     ssize_t result = 0;
@@ -775,7 +777,7 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
 #if defined  (ZCE_OS_WINDOWS)
 
     //WIN32下只能简单的打开非阻塞了
-    ZCE_LIB::sock_enable (handle, O_NONBLOCK);
+    zce::sock_enable (handle, O_NONBLOCK);
 
 #elif defined  (ZCE_OS_LINUX)
     //Linux简单很多，只需要对这一次发送做一些无阻塞限定就OK。
@@ -792,9 +794,9 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
 
         //等待端口准备好了处罚接收事件，这儿其实不严谨，理论，这儿timeout_tv 应该减去消耗的时间
         //LINUX的SELECT会做这件事情，但WINDOWS的不会
-        ret = ZCE_LIB::handle_ready (handle,
-                                     &timeout_tv,
-                                     HANDLE_READY_READ);
+        ret = zce::handle_ready (handle,
+                                 &timeout_tv,
+                                 HANDLE_READY_READ);
 
         const int HANDLE_READY_ONE = 1;
 
@@ -813,10 +815,10 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
         }
 
         //使用非阻塞端口进行接收
-        onetime_recv = ZCE_LIB::recv (handle,
-                                      static_cast <char *> (buf) + bytes_recv,
-                                      len - bytes_recv,
-                                      flags);
+        onetime_recv = zce::recv (handle,
+                                  static_cast <char *> (buf) + bytes_recv,
+                                  len - bytes_recv,
+                                  flags);
 
         if (onetime_recv > 0)
         {
@@ -848,7 +850,7 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
 
     //如果只等待有限时间，恢复原有阻塞模式
 #if defined  (ZCE_OS_WINDOWS)
-    ZCE_LIB::sock_disable (handle, O_NONBLOCK);
+    zce::sock_disable (handle, O_NONBLOCK);
 #endif
 
     if (error_occur)
@@ -861,11 +863,11 @@ ssize_t ZCE_LIB::recvn_timeout (ZCE_SOCKET handle,
 
 
 //请你务必在WIN32环境保证你的Socket 是阻塞模式的，否则有问题
-ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
-                               const void *buf,
-                               size_t len,
-                               ZCE_Time_Value &timeout_tv,
-                               int flags )
+ssize_t zce::sendn_timeout(ZCE_SOCKET handle,
+                           const void *buf,
+                           size_t len,
+                           ZCE_Time_Value &timeout_tv,
+                           int flags )
 {
 
     bool error_occur = false;
@@ -876,7 +878,7 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
 
     //等待一段时间要进行特殊处理
     //WIN32下只能简单的打开非阻塞了
-    ZCE_LIB::sock_enable (handle, O_NONBLOCK);
+    zce::sock_enable (handle, O_NONBLOCK);
 
 #elif defined  (ZCE_OS_LINUX)
     //Linux简单很多，只需要对这一次发送做一些无阻塞限定就OK。
@@ -891,10 +893,10 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
     {
         //发送在处理流程上和recv不一样，因为send往往不需要等待处理，进入select浪费
         //使用非阻塞端口进行接收，
-        onetime_send = ZCE_LIB::send (handle,
-                                      static_cast <const char *> (buf) + bytes_send,
-                                      len - bytes_send,
-                                      flags);
+        onetime_send = zce::send (handle,
+                                  static_cast <const char *> (buf) + bytes_send,
+                                  len - bytes_send,
+                                  flags);
 
         if (onetime_send > 0)
         {
@@ -910,9 +912,9 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
                 onetime_send = 0;
 
                 //等待端口准备好了处理发送事件，这儿其实不严谨，这儿timeout_tv 应该减去消耗的时间
-                ret = ZCE_LIB::handle_ready (handle,
-                                             &timeout_tv,
-                                             HANDLE_READY_WRITE);
+                ret = zce::handle_ready (handle,
+                                         &timeout_tv,
+                                         HANDLE_READY_WRITE);
 
                 const int HANDLE_READY_ONE = 1;
 
@@ -944,7 +946,7 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
 
 #if defined  ZCE_OS_WINDOWS
     //关闭非阻塞状态
-    ZCE_LIB::sock_disable (handle, O_NONBLOCK);
+    zce::sock_disable (handle, O_NONBLOCK);
 #endif
 
     //发送了错误，返回错误返回值
@@ -957,20 +959,20 @@ ssize_t ZCE_LIB::sendn_timeout(ZCE_SOCKET handle,
 }
 
 //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用select实现
-ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
-                                   void *buf,
-                                   size_t len,
-                                   sockaddr *from,
-                                   socklen_t *from_len,
-                                   ZCE_Time_Value &timeout_tv,
-                                   int flags)
+ssize_t zce::recvfrom_timeout (ZCE_SOCKET handle,
+                               void *buf,
+                               size_t len,
+                               sockaddr *from,
+                               socklen_t *from_len,
+                               ZCE_Time_Value &timeout_tv,
+                               int flags)
 {
     //如果只等待有限时间
 #if defined  (ZCE_OS_WINDOWS)
 
     //等待一段时间要进行特殊处理
     //WIN32下只能简单的打开非阻塞了
-    ZCE_LIB::sock_enable (handle, O_NONBLOCK);
+    zce::sock_enable (handle, O_NONBLOCK);
 
 #elif defined  (ZCE_OS_LINUX)
     //Linux简单很多，只需要对这一次发送做一些无阻塞限定就OK。
@@ -979,21 +981,21 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
 #endif
 
     ssize_t recv_result = 0;
-    int ret = ZCE_LIB::handle_ready (handle,
-                                     &timeout_tv,
-                                     HANDLE_READY_READ);
+    int ret = zce::handle_ready (handle,
+                                 &timeout_tv,
+                                 HANDLE_READY_READ);
 
     const int HANDLE_READY_ONE = 1;
 
     if (ret == HANDLE_READY_ONE)
     {
         //使用非阻塞端口进行接收
-        recv_result = ZCE_LIB::recvfrom (handle,
-                                         static_cast <char *> (buf) ,
-                                         len,
-                                         flags,
-                                         from,
-                                         from_len);
+        recv_result = zce::recvfrom (handle,
+                                     static_cast <char *> (buf),
+                                     len,
+                                     flags,
+                                     from,
+                                     from_len);
     }
     else
     {
@@ -1008,7 +1010,7 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
 
     //如果只等待有限时间，恢复原有的状态
 #if defined  ZCE_OS_WINDOWS
-    ZCE_LIB::sock_disable (handle, O_NONBLOCK);
+    zce::sock_disable (handle, O_NONBLOCK);
 #endif
 
     return recv_result;
@@ -1016,21 +1018,21 @@ ssize_t ZCE_LIB::recvfrom_timeout (ZCE_SOCKET handle,
 
 //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
 //发送UDP的数据,带超时处理参数，但是实际上进行没有超时处理
-ssize_t ZCE_LIB::sendto_timeout (ZCE_SOCKET handle,
-                                 const void *buf,
-                                 size_t len,
-                                 const sockaddr *addr,
-                                 socklen_t addrlen,
-                                 ZCE_Time_Value & /*timeout_tv*/,
-                                 int flags)
+ssize_t zce::sendto_timeout (ZCE_SOCKET handle,
+                             const void *buf,
+                             size_t len,
+                             const sockaddr *addr,
+                             socklen_t addrlen,
+                             ZCE_Time_Value & /*timeout_tv*/,
+                             int flags)
 {
-    return ZCE_LIB::sendto(handle,
-                           buf,
-                           len,
-                           flags,
-                           addr,
-                           addrlen
-                          );
+    return zce::sendto(handle,
+                       buf,
+                       len,
+                       flags,
+                       addr,
+                       addrlen
+                      );
 }
 
 //--------------------------------------------------------------------------------------------
@@ -1038,11 +1040,11 @@ ssize_t ZCE_LIB::sendto_timeout (ZCE_SOCKET handle,
 //使用SO_RCVTIMEO，SO_SNDTIMEO得到一组超时处理函数
 
 //注意SO_RCVTIMEO,SO_SNDTIMEO,只在WIN socket 2后支持
-ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
-                                 void *buf,
-                                 size_t len,
-                                 ZCE_Time_Value &timeout_tv,
-                                 int flags)
+ssize_t zce::recvn_timeout2 (ZCE_SOCKET handle,
+                             void *buf,
+                             size_t len,
+                             ZCE_Time_Value &timeout_tv,
+                             int flags)
 {
     int ret = 0;
 
@@ -1050,11 +1052,11 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
 #if defined  ZCE_OS_WINDOWS
     //超时的毫秒
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
-    ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
 #elif defined  ZCE_OS_LINUX
     timeval sockopt_tv = timeout_tv;
-    ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
 #endif
 
     if (0 != ret )
@@ -1069,10 +1071,10 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
     for (bytes_recv = 0; static_cast<size_t>(bytes_recv) < len; bytes_recv += onetime_recv)
     {
         //使用非阻塞端口进行接收
-        onetime_recv = ZCE_LIB::recv (handle,
-                                      static_cast <char *> (buf) + bytes_recv,
-                                      len - bytes_recv,
-                                      flags);
+        onetime_recv = zce::recv (handle,
+                                  static_cast <char *> (buf) + bytes_recv,
+                                  len - bytes_recv,
+                                  flags);
 
         if (onetime_recv > 0)
         {
@@ -1100,11 +1102,11 @@ ssize_t ZCE_LIB::recvn_timeout2 (ZCE_SOCKET handle,
 }
 
 //
-ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
-                                 void *buf,
-                                 size_t len,
-                                 ZCE_Time_Value &timeout_tv,
-                                 int flags)
+ssize_t zce::sendn_timeout2 (ZCE_SOCKET handle,
+                             void *buf,
+                             size_t len,
+                             ZCE_Time_Value &timeout_tv,
+                             int flags)
 {
 
     int ret = 0;
@@ -1113,11 +1115,11 @@ ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
 #if defined  ZCE_OS_WINDOWS
 
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
-    ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_SNDTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_SNDTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
 #elif defined  ZCE_OS_LINUX
     timeval sockopt_tv = timeout_tv;
-    ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_SNDTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_SNDTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
 
 #endif
 
@@ -1133,10 +1135,10 @@ ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
     for (bytes_send = 0; static_cast<size_t>(bytes_send) < len; bytes_send += onetime_send)
     {
         //使用非阻塞端口进行接收
-        onetime_send = ZCE_LIB::send (handle,
-                                      static_cast <char *> (buf) + bytes_send,
-                                      len - bytes_send,
-                                      flags);
+        onetime_send = zce::send (handle,
+                                  static_cast <char *> (buf) + bytes_send,
+                                  len - bytes_send,
+                                  flags);
 
         //其实这儿应该调整超时时间，呵呵，偷懒了
         if (onetime_send > 0)
@@ -1163,24 +1165,24 @@ ssize_t ZCE_LIB::sendn_timeout2 (ZCE_SOCKET handle,
 }
 
 //收UDP的数据,也带有超时处理，但是是收到多少数据就是多少了，超时用SO_RCVTIMEO实现
-ssize_t ZCE_LIB::recvfrom_timeout2 (ZCE_SOCKET handle,
-                                    void *buf,
-                                    size_t len,
-                                    sockaddr *addr,
-                                    socklen_t *addrlen,
-                                    ZCE_Time_Value &timeout_tv,
-                                    int flags)
+ssize_t zce::recvfrom_timeout2 (ZCE_SOCKET handle,
+                                void *buf,
+                                size_t len,
+                                sockaddr *addr,
+                                socklen_t *addrlen,
+                                ZCE_Time_Value &timeout_tv,
+                                int flags)
 {
     int ret = 0;
     //虽然你做了一样的外层封装，但是由于内部实现不一样，你还是要吐血。
 #if defined (ZCE_OS_WINDOWS)
 
     DWORD  msec_timeout = static_cast<DWORD>(timeout_tv.total_msec());
-    ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&msec_timeout), sizeof(DWORD));
 
 #elif defined (ZCE_OS_LINUX)
     timeval sockopt_tv = timeout_tv;
-    ret = ZCE_LIB::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
+    ret = zce::setsockopt(handle, SOL_SOCKET, SO_RCVTIMEO, (const void *)(&sockopt_tv), sizeof(timeval));
 #endif
 
     //按照socket类似函数的封装，返回-1标识失败。
@@ -1190,42 +1192,42 @@ ssize_t ZCE_LIB::recvfrom_timeout2 (ZCE_SOCKET handle,
     }
 
     //使用非阻塞端口进行接收
-    ssize_t recv_result = ZCE_LIB::recvfrom (handle,
-                                             static_cast <char *> (buf) ,
-                                             len,
-                                             flags,
-                                             addr,
-                                             addrlen);
+    ssize_t recv_result = zce::recvfrom (handle,
+                                         static_cast <char *> (buf),
+                                         len,
+                                         flags,
+                                         addr,
+                                         addrlen);
 
     return recv_result;
 }
 
 //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
 //发送UDP的数据,带超时处理参数，但是实际上进行没有超时处理
-ssize_t ZCE_LIB::sendto_timeout2 (ZCE_SOCKET handle,
-                                  const void *buf,
-                                  size_t len,
-                                  const sockaddr *addr,
-                                  socklen_t addrlen,
-                                  ZCE_Time_Value & /*timeout_tv*/,
-                                  int flags)
+ssize_t zce::sendto_timeout2 (ZCE_SOCKET handle,
+                              const void *buf,
+                              size_t len,
+                              const sockaddr *addr,
+                              socklen_t addrlen,
+                              ZCE_Time_Value & /*timeout_tv*/,
+                              int flags)
 {
-    return ZCE_LIB::sendto(handle,
-                           buf,
-                           len,
-                           flags,
-                           addr,
-                           addrlen
-                          );
+    return zce::sendto(handle,
+                       buf,
+                       len,
+                       flags,
+                       addr,
+                       addrlen
+                      );
 }
 
 //--------------------------------------------------------------------------------------------
 
 //转换字符串到网络地址，第一个参数af是地址族，转换后存在dst中，
 //注意这个函数return 1标识成功，return 负数标识错误，return 0标识格式匹配错误
-int ZCE_LIB::inet_pton (int family,
-                        const char *strptr,
-                        void *addrptr)
+int zce::inet_pton (int family,
+                    const char *strptr,
+                    void *addrptr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -1408,7 +1410,7 @@ int ZCE_LIB::inet_pton (int family,
         {
             if (false == pre_char_colon)
             {
-                sscanf(strptr + word_start_pos , "%hx",  &(back_word[backword_num]));
+                sscanf(strptr + word_start_pos, "%hx",  &(back_word[backword_num]));
                 ++backword_num;
             }
         }
@@ -1443,10 +1445,10 @@ int ZCE_LIB::inet_pton (int family,
 }
 
 //函数原型如下[将“点分十进制” －> “整数”],IPV6将，:分割16进制转换成128位数字
-const char *ZCE_LIB::inet_ntop(int family,
-                               const void *addrptr,
-                               char *strptr,
-                               size_t len)
+const char *zce::inet_ntop(int family,
+                           const void *addrptr,
+                           char *strptr,
+                           size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -1525,25 +1527,25 @@ const char *ZCE_LIB::inet_ntop(int family,
 }
 
 //输出IP地址信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>15.IPV6至少长度>39
-const char *ZCE_LIB::socketaddr_ntop(const sockaddr *sock_addr,
-                                     char *str_ptr,
-                                     size_t str_len)
+const char *zce::socketaddr_ntop(const sockaddr *sock_addr,
+                                 char *str_ptr,
+                                 size_t str_len)
 {
     //根据不同的地址协议族，进行转换
     if (sock_addr->sa_family == AF_INET)
     {
         const sockaddr_in *sockadd_ipv4 = reinterpret_cast<const sockaddr_in *>(sock_addr);
-        return ZCE_LIB::inet_ntop(AF_INET,
-                                  (void *)(&(sockadd_ipv4->sin_addr)),
-                                  str_ptr,
-                                  str_len);
+        return zce::inet_ntop(AF_INET,
+                              (void *)(&(sockadd_ipv4->sin_addr)),
+                              str_ptr,
+                              str_len);
     }
     else if (sock_addr->sa_family == AF_INET6)
     {
         const sockaddr_in6 *sockadd_ipv6 = reinterpret_cast<const sockaddr_in6 *>(sock_addr);
-        return ZCE_LIB::inet_ntop(AF_INET6,
-                                  (void *)(&(sockadd_ipv6->sin6_addr)),
-                                  str_ptr, str_len);
+        return zce::inet_ntop(AF_INET6,
+                              (void *)(&(sockadd_ipv6->sin6_addr)),
+                              str_ptr, str_len);
     }
     else
     {
@@ -1553,9 +1555,9 @@ const char *ZCE_LIB::socketaddr_ntop(const sockaddr *sock_addr,
 }
 
 //输出IP地址信息以及端口信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>21.IPV6至少长度>45
-const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
-                                        char *str_ptr,
-                                        size_t str_len)
+const char *zce::socketaddr_ntop_ex(const sockaddr *sock_addr,
+                                    char *str_ptr,
+                                    size_t str_len)
 {
     uint16_t addr_port = 0;
     const char *ret_str = NULL;
@@ -1565,18 +1567,18 @@ const char *ZCE_LIB::socketaddr_ntop_ex(const sockaddr *sock_addr,
     {
         const sockaddr_in *sockadd_ipv4 = reinterpret_cast<const sockaddr_in *>(sock_addr);
         addr_port = ntohs(sockadd_ipv4->sin_port);
-        ret_str = ZCE_LIB::inet_ntop(AF_INET,
-                                     (void *)(&(sockadd_ipv4->sin_addr)),
-                                     str_ptr,
-                                     str_len);
+        ret_str = zce::inet_ntop(AF_INET,
+                                 (void *)(&(sockadd_ipv4->sin_addr)),
+                                 str_ptr,
+                                 str_len);
     }
     else if (sock_addr->sa_family == AF_INET6)
     {
         const sockaddr_in6 *sockadd_ipv6 = reinterpret_cast<const sockaddr_in6 *>(sock_addr);
         addr_port = ntohs(sockadd_ipv6->sin6_port);
-        ret_str = ZCE_LIB::inet_ntop(AF_INET6,
-                                     (void *)(&(sockadd_ipv6->sin6_addr)),
-                                     str_ptr, str_len);
+        ret_str = zce::inet_ntop(AF_INET6,
+                                 (void *)(&(sockadd_ipv6->sin6_addr)),
+                                 str_ptr, str_len);
     }
     else
     {
@@ -1629,9 +1631,9 @@ IANA保证这些网络号不会分配给连到Internet上的任何网络，
 #endif
 
 //检测一个地址是否是内网地址
-bool ZCE_LIB::is_internal(const sockaddr_in *sock_addr_ipv4)
+bool zce::is_internal(const sockaddr_in *sock_addr_ipv4)
 {
-    uint32_t ip_addr = ZCE_LIB::get_ip_address(sock_addr_ipv4);
+    uint32_t ip_addr = zce::get_ip_address(sock_addr_ipv4);
 
     //检查3类地址
     if (ZCE_IS_INTERNAL(ip_addr))
@@ -1641,7 +1643,7 @@ bool ZCE_LIB::is_internal(const sockaddr_in *sock_addr_ipv4)
     return false;
 }
 
-bool ZCE_LIB::is_internal(uint32_t ipv4_addr_val)
+bool zce::is_internal(uint32_t ipv4_addr_val)
 {
     //检查3类地址
     if (ZCE_IS_INTERNAL(ipv4_addr_val))
@@ -1657,14 +1659,14 @@ bool ZCE_LIB::is_internal(uint32_t ipv4_addr_val)
 //域名解析，转换IP地址的几个函数
 
 //通过域名得到相关的IP地址
-hostent *ZCE_LIB::gethostbyname(const char *hostname)
+hostent *zce::gethostbyname(const char *hostname)
 {
     return ::gethostbyname(hostname);
 }
 
 // GNU extensions
-hostent *ZCE_LIB::gethostbyname2(const char *hostname,
-                                 int af)
+hostent *zce::gethostbyname2(const char *hostname,
+                             int af)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -1688,10 +1690,10 @@ hostent *ZCE_LIB::gethostbyname2(const char *hostname,
 //uint16_t service_port 端口号，本地序
 //ary_addr_num  ,输入输出参数，输入标识ary_sock_addr的个数，输出时标识返回的队列数量
 //ary_sock_addr ,输出参数，返回的地址队列
-int ZCE_LIB::gethostbyname_inary(const char *hostname,
-                                 uint16_t service_port,
-                                 size_t *ary_addr_num,
-                                 sockaddr_in ary_sock_addr[])
+int zce::gethostbyname_inary(const char *hostname,
+                             uint16_t service_port,
+                             size_t *ary_addr_num,
+                             sockaddr_in ary_sock_addr[])
 {
     //其实这个函数没法重入
     struct hostent *hostent_ptr = ::gethostbyname(hostname);
@@ -1730,10 +1732,10 @@ int ZCE_LIB::gethostbyname_inary(const char *hostname,
 }
 
 //非标准函数,得到某个域名的IPV6的地址信息，但是使用起来比较容易和方便
-int ZCE_LIB::gethostbyname_in6ary(const char *hostname,
-                                  uint16_t service_port,
-                                  size_t *ary_addr6_num,
-                                  sockaddr_in6 ary_sock_addr6[])
+int zce::gethostbyname_in6ary(const char *hostname,
+                              uint16_t service_port,
+                              size_t *ary_addr6_num,
+                              sockaddr_in6 ary_sock_addr6[])
 {
     //其实这个函数没法重入
     struct hostent *hostent_ptr = ::gethostbyname(hostname);
@@ -1772,22 +1774,22 @@ int ZCE_LIB::gethostbyname_in6ary(const char *hostname,
 }
 
 //根据地址得到域名的函数,推荐使用替代函数getnameinfo ,
-hostent *ZCE_LIB::gethostbyaddr(const void *addr,
-                                socklen_t len,
-                                int family)
+hostent *zce::gethostbyaddr(const void *addr,
+                            socklen_t len,
+                            int family)
 {
     return ::gethostbyaddr((const char *)addr, len, family);
 };
 
 //非标准函数，通过IPV4地址取得域名
-int ZCE_LIB::gethostbyaddr_in(const sockaddr_in *sock_addr,
-                              char *host_name,
-                              size_t name_len)
+int zce::gethostbyaddr_in(const sockaddr_in *sock_addr,
+                          char *host_name,
+                          size_t name_len)
 {
-    struct hostent *hostent_ptr = ZCE_LIB::gethostbyaddr(sock_addr,
-                                                         sizeof(sockaddr_in),
-                                                         sock_addr->sin_family
-                                                        );
+    struct hostent *hostent_ptr = zce::gethostbyaddr(sock_addr,
+                                                     sizeof(sockaddr_in),
+                                                     sock_addr->sin_family
+                                                    );
 
     //如果返回失败
     if (!hostent_ptr )
@@ -1801,15 +1803,15 @@ int ZCE_LIB::gethostbyaddr_in(const sockaddr_in *sock_addr,
 }
 
 //非标准函数，通过IPV6地址取得域名
-int ZCE_LIB::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
-                               char *host_name,
-                               size_t name_len)
+int zce::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
+                           char *host_name,
+                           size_t name_len)
 {
 
-    struct hostent *hostent_ptr = ZCE_LIB::gethostbyaddr(sock_addr6,
-                                                         sizeof(sockaddr_in6),
-                                                         sock_addr6->sin6_family
-                                                        );
+    struct hostent *hostent_ptr = zce::gethostbyaddr(sock_addr6,
+                                                     sizeof(sockaddr_in6),
+                                                     sock_addr6->sin6_family
+                                                    );
 
     //如果返回失败
     if (!hostent_ptr )
@@ -1823,24 +1825,24 @@ int ZCE_LIB::gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
 }
 
 //通过域名得到服务器地址信息，可以同时得到IPV4，和IPV6的地址
-int ZCE_LIB::getaddrinfo( const char *nodename,
-                          const char *service,
-                          const addrinfo *hints,
-                          addrinfo **result )
+int zce::getaddrinfo( const char *nodename,
+                      const char *service,
+                      const addrinfo *hints,
+                      addrinfo **result )
 {
     return ::getaddrinfo(nodename, service, hints, result);
 }
 
 //释放getaddrinfo得到的结果
-void ZCE_LIB::freeaddrinfo(struct addrinfo *result)
+void zce::freeaddrinfo(struct addrinfo *result)
 {
     return ::freeaddrinfo(result);
 }
 
 //
-int ZCE_LIB::getaddrinfo_result_to_addr(addrinfo *result,
-                                        sockaddr *addr,
-                                        socklen_t addr_len)
+int zce::getaddrinfo_result_to_addr(addrinfo *result,
+                                    sockaddr *addr,
+                                    socklen_t addr_len)
 {
     addrinfo *prc_node = result;
     for (; (prc_node != NULL); prc_node = prc_node->ai_next)
@@ -1860,15 +1862,15 @@ int ZCE_LIB::getaddrinfo_result_to_addr(addrinfo *result,
 
 
 //将getaddrinfo的结果进行加工处理，处理成数组
-void ZCE_LIB::getaddrinfo_result_to_addrary(addrinfo *result,
-                                            size_t *ary_addr_num,
-                                            sockaddr_in ary_addr[],
-                                            size_t *ary_addr6_num,
-                                            sockaddr_in6 ary_addr6[])
+void zce::getaddrinfo_result_to_addrary(addrinfo *result,
+                                        size_t *ary_addr_num,
+                                        sockaddr_in ary_addr[],
+                                        size_t *ary_addr6_num,
+                                        sockaddr_in6 ary_addr6[])
 {
-    
+
     addrinfo *prc_node = result;
-    size_t num_addr = 0,num_addr6 = 0;
+    size_t num_addr = 0, num_addr6 = 0;
     for (size_t i = 0; (i < *ary_addr_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++i)
     {
         //只取相应的地址
@@ -1880,7 +1882,7 @@ void ZCE_LIB::getaddrinfo_result_to_addrary(addrinfo *result,
     }
     //记录数量
     *ary_addr_num = num_addr;
-   
+
     prc_node = result;
     for (size_t j = 0; (j < *ary_addr6_num) && (prc_node != NULL); prc_node = prc_node->ai_next, ++j)
     {
@@ -1894,11 +1896,11 @@ void ZCE_LIB::getaddrinfo_result_to_addrary(addrinfo *result,
 }
 
 //非标准函数,得到某个域名的IPV4的地址数组，使用起来比较容易和方便
-int ZCE_LIB::getaddrinfo_to_addrary(const char *nodename,
-                                    size_t *ary_addr_num,
-                                    sockaddr_in ary_addr[],
-                                    size_t *ary_addr6_num,
-                                    sockaddr_in6 ary_addr6[])
+int zce::getaddrinfo_to_addrary(const char *nodename,
+                                size_t *ary_addr_num,
+                                sockaddr_in ary_addr[],
+                                size_t *ary_addr6_num,
+                                sockaddr_in6 ary_addr6[])
 {
 
     int ret = 0;
@@ -1906,13 +1908,13 @@ int ZCE_LIB::getaddrinfo_to_addrary(const char *nodename,
 
     memset(&hints, 0, sizeof(addrinfo));
     //同时返回IPV4.和IPV6，如果只需要IPV4填写AF_INET，如果只需要IPV6填写AF_INET6
-    hints.ai_family = AF_UNSPEC; 
+    hints.ai_family = AF_UNSPEC;
     //hints.ai_socktype = 0; 返回所有类型
     //hints.ai_flags = 0;
-    ret = ZCE_LIB::getaddrinfo(nodename,
-                               NULL,
-                               &hints,
-                               &result);
+    ret = zce::getaddrinfo(nodename,
+                           NULL,
+                           &hints,
+                           &result);
     if (ret != 0)
     {
         return ret;
@@ -1925,21 +1927,21 @@ int ZCE_LIB::getaddrinfo_to_addrary(const char *nodename,
     }
 
     //取回结果
-    getaddrinfo_result_to_addrary(result, 
+    getaddrinfo_result_to_addrary(result,
                                   ary_addr_num,
                                   ary_addr,
-                                  ary_addr6_num, 
+                                  ary_addr6_num,
                                   ary_addr6);
     //释放空间
-    ZCE_LIB::freeaddrinfo(result);
+    zce::freeaddrinfo(result);
 
     return 0;
 }
 
 
-int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
-                                 sockaddr * addr,
-                                 socklen_t addr_len)
+int zce::getaddrinfo_to_addr(const char *nodename,
+                             sockaddr *addr,
+                             socklen_t addr_len)
 {
     int ret = 0;
     addrinfo hints, *result = NULL;
@@ -1949,18 +1951,18 @@ int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
     hints.ai_family = addr->sa_family;
     //优先分析nodename是否是数值地址
     hints.ai_flags = AI_PASSIVE;
-    ret = ZCE_LIB::getaddrinfo(nodename,
-                               NULL,
-                               &hints,
-                               &result);
+    ret = zce::getaddrinfo(nodename,
+                           NULL,
+                           &hints,
+                           &result);
     if (ret != 0)
     {
         //进行域名解析
         hints.ai_flags = 0;
-        ret = ZCE_LIB::getaddrinfo(nodename,
-                                   NULL,
-                                   &hints,
-                                   &result);
+        ret = zce::getaddrinfo(nodename,
+                               NULL,
+                               &hints,
+                               &result);
         if (ret != 0)
         {
             return ret;
@@ -1974,21 +1976,21 @@ int ZCE_LIB::getaddrinfo_to_addr(const char *nodename,
     }
 
     getaddrinfo_result_to_addr(result, addr, addr_len);
-    
+
     //释放空间
-    ZCE_LIB::freeaddrinfo(result);
+    zce::freeaddrinfo(result);
 
     return 0;
 }
 
 //通过IP地址信息，反查域名.服务名，可以重入函数
-int ZCE_LIB::getnameinfo(const struct sockaddr *sa,
-                         socklen_t salen,
-                         char *host,
-                         size_t hostlen,
-                         char *serv,
-                         size_t servlen,
-                         int flags)
+int zce::getnameinfo(const struct sockaddr *sa,
+                     socklen_t salen,
+                     char *host,
+                     size_t hostlen,
+                     char *serv,
+                     size_t servlen,
+                     int flags)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::getnameinfo(sa, salen, host, static_cast<DWORD>(hostlen), serv, static_cast<DWORD>(servlen), flags);
@@ -1998,29 +2000,29 @@ int ZCE_LIB::getnameinfo(const struct sockaddr *sa,
 }
 
 //非标准函数，通过IPV4地址取得域名
-int ZCE_LIB::getnameinfo_sockaddr(const sockaddr *sock_addr,
-                                  char *host_name,
-                                  size_t name_len)
+int zce::getnameinfo_sockaddr(const sockaddr *sock_addr,
+                              char *host_name,
+                              size_t name_len)
 {
     if (sock_addr->sa_family == AF_INET)
     {
-        return ZCE_LIB::getnameinfo(sock_addr,
-                                    sizeof(sockaddr_in),
-                                    host_name,
-                                    name_len,
-                                    NULL,
-                                    0,
-                                    NI_NAMEREQD);
+        return zce::getnameinfo(sock_addr,
+                                sizeof(sockaddr_in),
+                                host_name,
+                                name_len,
+                                NULL,
+                                0,
+                                NI_NAMEREQD);
     }
     else if (sock_addr->sa_family == AF_INET)
     {
-        return ZCE_LIB::getnameinfo(sock_addr,
-                                    sizeof(sockaddr_in6),
-                                    host_name,
-                                    name_len,
-                                    NULL,
-                                    0,
-                                    NI_NAMEREQD);
+        return zce::getnameinfo(sock_addr,
+                                sizeof(sockaddr_in6),
+                                host_name,
+                                name_len,
+                                NULL,
+                                0,
+                                NI_NAMEREQD);
     }
     else
     {
@@ -2035,7 +2037,7 @@ int ZCE_LIB::getnameinfo_sockaddr(const sockaddr *sock_addr,
 //IPV4和IPV6之间相互转换的函数，都是非标准函数，
 
 //将一个IPV4的地址映射为IPV6的地址
-int ZCE_LIB::inaddr_map_inaddr6(const in_addr *src, in6_addr *dst)
+int zce::inaddr_map_inaddr6(const in_addr *src, in6_addr *dst)
 {
     //清0
     memset(dst, 0, sizeof(in6_addr));
@@ -2053,14 +2055,14 @@ int ZCE_LIB::inaddr_map_inaddr6(const in_addr *src, in6_addr *dst)
 }
 
 //将一个IPV4的Sock地址映射为IPV6的地址
-int ZCE_LIB::sockin_map_sockin6(const sockaddr_in *src, sockaddr_in6 *dst)
+int zce::sockin_map_sockin6(const sockaddr_in *src, sockaddr_in6 *dst)
 {
-    return ZCE_LIB::inaddr_map_inaddr6(&(src->sin_addr),
-                                       &(dst->sin6_addr));
+    return zce::inaddr_map_inaddr6(&(src->sin_addr),
+                                   &(dst->sin6_addr));
 }
 
 //判断一个地址是否是IPV4映射的地址
-bool ZCE_LIB::is_in6_addr_v4mapped(const in6_addr *in6)
+bool zce::is_in6_addr_v4mapped(const in6_addr *in6)
 {
     //这样把映射地址和兼容地址都判断了。据说兼容地址以后会被淘汰
     if (in6->s6_addr[0] == 0
@@ -2083,29 +2085,29 @@ bool ZCE_LIB::is_in6_addr_v4mapped(const in6_addr *in6)
 }
 
 //如果一个IPV6的地址从IPV4映射过来的，转换回IPV4的地址
-int ZCE_LIB::mapped_in6_to_in(const in6_addr *src, in_addr *dst)
+int zce::mapped_in6_to_in(const in6_addr *src, in_addr *dst)
 {
     //先检查是否是映射的地址
-    if ( false == ZCE_LIB::is_in6_addr_v4mapped(src) )
+    if ( false == zce::is_in6_addr_v4mapped(src) )
     {
         errno = EINVAL;
         return -1;
     }
 
-    memcpy(reinterpret_cast<char *>(dst) ,
+    memcpy(reinterpret_cast<char *>(dst),
            reinterpret_cast<const char *>(src) + sizeof(in6_addr) - sizeof(in_addr),
            sizeof(in_addr));
     return 0;
 }
 //如果一个IPV6的socketaddr_in6地址从IPV4映射过来的，转换回IPV4的socketaddr_in地址
-int ZCE_LIB::mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst)
+int zce::mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst)
 {
-    return ZCE_LIB::mapped_in6_to_in(&(src->sin6_addr),
-                                     &(dst->sin_addr));
+    return zce::mapped_in6_to_in(&(src->sin6_addr),
+                                 &(dst->sin_addr));
 }
 
 //对端口进行检查，一些端口是黑客重点扫描的端口，
-bool ZCE_LIB::check_safeport(uint16_t check_port)
+bool zce::check_safeport(uint16_t check_port)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -2142,12 +2144,12 @@ const unsigned char SOCKS5_ATYP_HOSTNAME = 0x3;
 const unsigned char SOCKS5_ATYP_IPV6 = 0x4;
 
 //socks5代理初始化，handle 要先connect，可以使用connect_timeout
-int ZCE_LIB::socks5_initialize(ZCE_SOCKET handle,
-                               const char *username,
-                               const char *password,
-                               ZCE_Time_Value &timeout_tv)
+int zce::socks5_initialize(ZCE_SOCKET handle,
+                           const char *username,
+                           const char *password,
+                           ZCE_Time_Value &timeout_tv)
 {
-    
+
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
     ssize_t send_len = 0, recv_len = 0;
@@ -2160,13 +2162,13 @@ int ZCE_LIB::socks5_initialize(ZCE_SOCKET handle,
     buffer[3] = 0x2; //需要验证
     send_len = 4;
 
-    send_len = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    send_len = zce::sendn_timeout(handle, buffer, send_len, timeout_tv);
     if (snd_ret <= 0)
     {
         return -1;
     }
     //协议规定返回两个字节,第一个是版本号5,第二个是方式
-    recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
+    recv_len = zce::recvn_timeout(handle, buffer, 2, timeout_tv);
     if (recv_len != 2)
     {
         return -1;
@@ -2213,12 +2215,12 @@ int ZCE_LIB::socks5_initialize(ZCE_SOCKET handle,
         buffer[2 + user_len] = static_cast<unsigned char>(pass_len);
         memcpy(buffer + 3 + user_len, password, pass_len);
         send_len = 3 + user_len + pass_len;
-        snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+        snd_ret = zce::sendn_timeout(handle, buffer, send_len, timeout_tv);
         if (snd_ret <= 0)
         {
             return -1;
         }
-        recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
+        recv_len = zce::recvn_timeout(handle, buffer, 2, timeout_tv);
         if (recv_len != 2)
         {
             return -1;
@@ -2234,12 +2236,12 @@ int ZCE_LIB::socks5_initialize(ZCE_SOCKET handle,
 
 
 //通过socks5代理，TCP连接服务器
-int ZCE_LIB::socks5_connect_host(ZCE_SOCKET handle,
-                                 const char *host_name,
-                                 const sockaddr *host_addr,
-                                 int addr_len,
-                                 uint16_t host_port,
-                                 ZCE_Time_Value &timeout_tv)
+int zce::socks5_connect_host(ZCE_SOCKET handle,
+                             const char *host_name,
+                             const sockaddr *host_addr,
+                             int addr_len,
+                             uint16_t host_port,
+                             ZCE_Time_Value &timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
@@ -2249,11 +2251,11 @@ int ZCE_LIB::socks5_connect_host(ZCE_SOCKET handle,
     ZCE_ASSERT(host_name || host_addr);
 
     buffer[0] = SOCKS5_VER;
-    
+
     //命令
-    buffer[1] = SOCKS5_CMD_CONNECT; 
+    buffer[1] = SOCKS5_CMD_CONNECT;
     //保留
-    buffer[2] = 0x00; 
+    buffer[2] = 0x00;
     if (host_name)
     {
         size_t host_len = strlen(host_name);
@@ -2274,12 +2276,12 @@ int ZCE_LIB::socks5_connect_host(ZCE_SOCKET handle,
         {
             buffer[3] = SOCKS5_ATYP_IPV4;
             const sockaddr_in *addr_in = reinterpret_cast<const sockaddr_in *>(host_addr);
-            memcpy(buffer + 4, &(addr_in->sin_addr),4);
+            memcpy(buffer + 4, &(addr_in->sin_addr), 4);
             uint16_t n_port = addr_in->sin_port;
             memcpy(buffer + 8, &n_port, 2);
             send_len = 10;
         }
-        else if(sizeof(sockaddr_in6) == addr_len)
+        else if (sizeof(sockaddr_in6) == addr_len)
         {
             buffer[3] = SOCKS5_ATYP_IPV6;
             const sockaddr_in6 *addr_in6 = reinterpret_cast<const sockaddr_in6 *>(host_addr);
@@ -2293,40 +2295,40 @@ int ZCE_LIB::socks5_connect_host(ZCE_SOCKET handle,
             return EINVAL;
         }
     }
-	else
-	{
-		return EINVAL;
-	}
+    else
+    {
+        return EINVAL;
+    }
 
-    ssize_t snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    ssize_t snd_ret = zce::sendn_timeout(handle, buffer, send_len, timeout_tv);
     if (snd_ret <= 0)
     {
-		ZCE_LOG(RS_ERROR, "Socks 5 proxy send to socks5 proxy fail, snd_ret =%zd!", snd_ret);
+        ZCE_LOG(RS_ERROR, "Socks 5 proxy send to socks5 proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
     }
-    recv_len = ZCE_LIB::recvn_timeout(handle, buffer, 2, timeout_tv);
+    recv_len = zce::recvn_timeout(handle, buffer, 2, timeout_tv);
     if (recv_len != 2)
     {
         ZCE_LOG(RS_ERROR, "Socks 5 recv send to socks5 proxy fail, recv_len =%zd!", recv_len);
         return -1;
     }
     //验证结果
-	int reponse_code = buffer[1];
+    int reponse_code = buffer[1];
     if (buffer[0] != SOCKS5_VER || reponse_code != SOCKS5_SUCCESS)
     {
-		ZCE_LOG(RS_ERROR, "Socks 5 proxy connect host fail, reponse code [%d] !", reponse_code);
+        ZCE_LOG(RS_ERROR, "Socks 5 proxy connect host fail, reponse code [%d] !", reponse_code);
         return reponse_code;
     }
-	ZCE_LOG(RS_DEBUG, "Socks 5 Connected!");
+    ZCE_LOG(RS_DEBUG, "Socks 5 Connected!");
     return 0;
 }
 
 //socks5代理，UDP穿透
-int ZCE_LIB::socks5_udp_associate(ZCE_SOCKET handle, 
-                                  const sockaddr * bind_addr, 
-                                  int addr_len, 
-                                  sockaddr * udp_addr, 
-                                  ZCE_Time_Value & timeout_tv)
+int zce::socks5_udp_associate(ZCE_SOCKET handle,
+                              const sockaddr *bind_addr,
+                              int addr_len,
+                              sockaddr *udp_addr,
+                              ZCE_Time_Value &timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
@@ -2346,7 +2348,7 @@ int ZCE_LIB::socks5_udp_associate(ZCE_SOCKET handle,
         buffer[3] = SOCKS5_ATYP_IPV4;
         const sockaddr_in *addr_in = reinterpret_cast<const sockaddr_in *>(bind_addr);
         //无效，填写0
-        memset(buffer + 4,0,4);
+        memset(buffer + 4, 0, 4);
         //不转码，两边都要网络序
         uint16_t n_port = addr_in->sin_port;
         memcpy(buffer + 8, &n_port, 2);
@@ -2366,14 +2368,14 @@ int ZCE_LIB::socks5_udp_associate(ZCE_SOCKET handle,
         return EINVAL;
     }
 
-    ssize_t snd_ret = ZCE_LIB::sendn_timeout(handle, buffer, send_len, timeout_tv);
+    ssize_t snd_ret = zce::sendn_timeout(handle, buffer, send_len, timeout_tv);
     if (snd_ret <= 0)
     {
         ZCE_LOG(RS_ERROR, "Socks 5 proxy send to socks5 proxy fail, snd_ret =%zd!", snd_ret);
         return -1;
     }
     //只收取一次数据，不多次收取
-    recv_len = ZCE_LIB::recvn_timeout(handle, buffer, BUFFER_LEN, timeout_tv,0,true);
+    recv_len = zce::recvn_timeout(handle, buffer, BUFFER_LEN, timeout_tv, 0, true);
     //至少会接受5个字节
     if (recv_len <= 4)
     {

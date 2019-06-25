@@ -92,7 +92,7 @@ int ZCE_LogTrace_Basic::init_size_log(
 }
 
 //初始化函数，用于标准输出
-int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro ,
+int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro,
                                     bool use_err_out,
                                     bool auto_new_line,
                                     unsigned int head_record)
@@ -110,12 +110,12 @@ int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro ,
 
     return initialize(output_way,
                       LOGDEVIDE_NONE,
-                       "",
-                       if_thread_synchro,
-                       auto_new_line,
-                       0,
-                       0,
-                       head_record);
+                      "",
+                      if_thread_synchro,
+                      auto_new_line,
+                      0,
+                      0,
+                      head_record);
 }
 
 //初始化函数,参数最齐全的一个
@@ -218,8 +218,8 @@ void ZCE_LogTrace_Basic::make_configure(void)
     if (ZCE_LIB::mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
         // 创建失败，
-        fprintf(stderr,"mkdir %s fail. err=%d|%s\n", 
-                log_file_dir_.c_str(), 
+        fprintf(stderr, "mkdir %s fail. err=%d|%s\n",
+                log_file_dir_.c_str(),
                 errno,
                 strerror(errno));
     }
@@ -316,9 +316,9 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
                                            file_name_ary);
             if (ret != 0)
             {
-                fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n", 
+                fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n",
                         log_file_dir_.c_str(),
-                        log_file_prefix_.c_str(), 
+                        log_file_prefix_.c_str(),
                         errno,
                         strerror(errno));
             }
@@ -348,7 +348,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
         {
             current_click_ = cur_click;
             std::string new_file_name;
-            new_file_name.reserve(PATH_MAX+32);
+            new_file_name.reserve(PATH_MAX + 32);
             create_time_logname(current_time, new_file_name);
 
             //如果日志文件名称已经更新,表示要产生一个新文件,
@@ -458,7 +458,7 @@ void ZCE_LogTrace_Basic::del_old_logfile()
         {
             std::string dellogfname;
             dellogfname.reserve(PATH_MAX + 16);
-            create_id_logname(reserve_file_num_ , dellogfname);
+            create_id_logname(reserve_file_num_, dellogfname);
             ::remove(dellogfname.c_str());
 
             std::string oldlogfilename, renamefilename;
@@ -471,13 +471,13 @@ void ZCE_LogTrace_Basic::del_old_logfile()
                 create_id_logname(i - 1, oldlogfilename);
                 create_id_logname(i, renamefilename);
                 int ret = ::rename(oldlogfilename.c_str(), renamefilename.c_str());
-				if (ret != 0)
-				{
-					fprintf(stderr, "Log file rename fail,errno = %d. old file[%s] new file [%s] ",
-							errno,
-							oldlogfilename.c_str(),
-							renamefilename.c_str());
-				}
+                if (ret != 0)
+                {
+                    fprintf(stderr, "Log file rename fail,errno = %d. old file[%s] new file [%s] ",
+                            errno,
+                            oldlogfilename.c_str(),
+                            renamefilename.c_str());
+                }
             }
         }
 
@@ -515,7 +515,7 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval &cur_time,
             ::strcat(tmpbuf, STR_LOG_POSTFIX);
             break;
 
-            //
+        //
         case NAME_TIME_MONTH_DEVIDE_TIME:
             ::strftime( tmpbuf, buflen, "_%Y%m", &curtm);
             ::strcat(tmpbuf, STR_LOG_POSTFIX);
@@ -529,11 +529,11 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval &cur_time,
         case NAME_TIME_MILLISECOND_DEVIDE_SIZE:
             char mill_sec_str[16];
             ::strftime(tmpbuf, buflen, "_%Y%m%d_%H%M%s_", &curtm);
-            snprintf(mill_sec_str,15,"%03d", static_cast<int>(cur_time.tv_usec /1000));
+            snprintf(mill_sec_str, 15, "%03d", static_cast<int>(cur_time.tv_usec / 1000));
             ::strcat(tmpbuf, mill_sec_str);
             ::strcat(tmpbuf, STR_LOG_POSTFIX);
             break;
-            //Never goto here.
+        //Never goto here.
         default:
             ::strcat(tmpbuf, STR_LOG_POSTFIX);
             break;
@@ -651,7 +651,7 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
     if ((output_way_ & LOG_OUTPUT_FILE) )
     {
         //得到新的文件名字
-        open_new_logfile(false,now_time);
+        open_new_logfile(false, now_time);
 
         //如果文件状态OK
         if (log_file_handle_)

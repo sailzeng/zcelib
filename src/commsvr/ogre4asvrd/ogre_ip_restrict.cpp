@@ -27,7 +27,7 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config *config)
     reject_ip_set_.clear();
 
     std::vector<std::string> v;
-    ZCE_LIB::str_split(config->ogre_cfg_data_.allow_ip_.c_str(), "|", v);
+    zce::str_split(config->ogre_cfg_data_.allow_ip_.c_str(), "|", v);
     allow_ip_set_.rehash(v.size());
 
     //读取运行连接的服务器IP地址
@@ -46,7 +46,7 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config *config)
 
     //读取拒绝连接的服务器IP地址
     v.clear();
-    ZCE_LIB::str_split(config->ogre_cfg_data_.reject_ip_.c_str(), "|", v);
+    zce::str_split(config->ogre_cfg_data_.reject_ip_.c_str(), "|", v);
     reject_ip_set_.rehash(v.size());
 
     for (unsigned int i = 0; i < v.size(); ++i)

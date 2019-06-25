@@ -38,15 +38,15 @@ ZCE_Process_Mutex::ZCE_Process_Mutex (const char *mutex_name, bool recursive):
 
 #endif
 
-    ret = ZCE_LIB::pthread_mutex_initex(lock_,
-                                        true,
-                                        recursive,
-                                        true,
-                                        mutex_name);
+    ret = zce::pthread_mutex_initex(lock_,
+                                    true,
+                                    recursive,
+                                    true,
+                                    mutex_name);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_initex", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_initex", ret);
         return;
     }
 
@@ -56,11 +56,11 @@ ZCE_Process_Mutex::ZCE_Process_Mutex (const char *mutex_name, bool recursive):
 ZCE_Process_Mutex::~ZCE_Process_Mutex (void)
 {
     int ret = 0;
-    ret = ZCE_LIB::pthread_mutex_destroy (lock_);
+    ret = zce::pthread_mutex_destroy (lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_destroy", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
         return;
     }
 
@@ -83,11 +83,11 @@ ZCE_Process_Mutex::~ZCE_Process_Mutex (void)
 void ZCE_Process_Mutex::lock()
 {
     int ret = 0;
-    ret = ZCE_LIB::pthread_mutex_lock(lock_);
+    ret = zce::pthread_mutex_lock(lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_lock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
         return;
     }
 }
@@ -96,7 +96,7 @@ void ZCE_Process_Mutex::lock()
 bool ZCE_Process_Mutex::try_lock()
 {
     int ret = 0;
-    ret = ZCE_LIB::pthread_mutex_trylock(lock_);
+    ret = zce::pthread_mutex_trylock(lock_);
 
     if (0 != ret)
     {
@@ -110,11 +110,11 @@ bool ZCE_Process_Mutex::try_lock()
 void ZCE_Process_Mutex::unlock()
 {
     int ret = 0;
-    ret = ZCE_LIB::pthread_mutex_unlock(lock_);
+    ret = zce::pthread_mutex_unlock(lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);
         return;
     }
 }
@@ -123,11 +123,11 @@ void ZCE_Process_Mutex::unlock()
 bool ZCE_Process_Mutex::systime_lock(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
-    ret = ZCE_LIB::pthread_mutex_timedlock(lock_, abs_time);
+    ret = zce::pthread_mutex_timedlock(lock_, abs_time);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::pthread_mutex_timedlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);
         return false;
     }
 
@@ -137,8 +137,8 @@ bool ZCE_Process_Mutex::systime_lock(const ZCE_Time_Value &abs_time)
 //相对时间
 bool ZCE_Process_Mutex::duration_lock(const ZCE_Time_Value &relative_time)
 {
-    timeval abs_time = ZCE_LIB::gettimeofday();
-    abs_time = ZCE_LIB::timeval_add(abs_time, relative_time);
+    timeval abs_time = zce::gettimeofday();
+    abs_time = zce::timeval_add(abs_time, relative_time);
     return systime_lock(abs_time);
 }
 

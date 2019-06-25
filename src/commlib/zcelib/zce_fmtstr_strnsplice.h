@@ -21,7 +21,7 @@ namespace ZCE_LIB
 {
 
 
-#ifndef FOO_FMT_STRING_USE_VARIADIC 
+#ifndef FOO_FMT_STRING_USE_VARIADIC
 #define FOO_FMT_STRING_USE_VARIADIC  1
 #endif
 
@@ -29,7 +29,7 @@ namespace ZCE_LIB
 //没有C++ 11的特性，没有任何用处
 #if ZCE_SUPPORT_CPP11 == 0
 #define FOO_FMT_STRING_USE_VARIADIC 0
-#endif 
+#endif
 
 
 #if FOO_FMT_STRING_USE_VARIADIC == 1

@@ -32,53 +32,53 @@ struct timezone
 
 #endif
 
-namespace ZCE_LIB
+namespace zce
 {
-    //一个小时的时间
-    static const time_t ONE_HOUR_SECONDS = 3600;
-    //一分钟的秒数
-    static const time_t ONE_MINUTE_SECONDS = 60;
-    //
-    static const time_t ONE_QUARTER_SECONDS = 15 * 60;
+//一个小时的时间
+static const time_t ONE_HOUR_SECONDS = 3600;
+//一分钟的秒数
+static const time_t ONE_MINUTE_SECONDS = 60;
+//
+static const time_t ONE_QUARTER_SECONDS = 15 * 60;
 
-    static const time_t FIVE_MINUTE_SECONDS = 5 * 60;
-    //一天的秒数86400
-    static const time_t ONE_DAY_SECONDS = 86400;
-    //各种关于时间的定义
-    static const time_t ONE_WEEK_DAYS = 7;
-    //一周的秒数
-    static const time_t ONE_WEEK_SECONDS = 604800;
+static const time_t FIVE_MINUTE_SECONDS = 5 * 60;
+//一天的秒数86400
+static const time_t ONE_DAY_SECONDS = 86400;
+//各种关于时间的定义
+static const time_t ONE_WEEK_DAYS = 7;
+//一周的秒数
+static const time_t ONE_WEEK_SECONDS = 604800;
 
 
-	static const time_t SEC_PER_MSEC  = 1000;
-	static const time_t USEC_PER_NSEC = 1000;
-	static const time_t MSEC_PER_USEC = 1000;
-	static const time_t SEC_PER_USEC  = 1000000;
-	static const time_t SEC_PER_NSEC  = 1000000000;
-	static const time_t MSEC_PER_NSEC = 1000000;
-	
+static const time_t SEC_PER_MSEC  = 1000;
+static const time_t USEC_PER_NSEC = 1000;
+static const time_t MSEC_PER_USEC = 1000;
+static const time_t SEC_PER_USEC  = 1000000;
+static const time_t SEC_PER_NSEC  = 1000000000;
+static const time_t MSEC_PER_NSEC = 1000000;
+
 
 #if defined ZCE_OS_WINDOWS
-    static const time_t TIMEZONE_SECONDS = _timezone;
+static const time_t TIMEZONE_SECONDS = _timezone;
 #else
-    static const time_t TIMEZONE_SECONDS = timezone;
+static const time_t TIMEZONE_SECONDS = timezone;
 #endif
 
 //在时区的角度，从1970.1.1到现在多少秒
 #ifndef HOW_MANY_SECONDS_TZ
-#define HOW_MANY_SECONDS_TZ(x)  (x + ZCE_LIB::TIMEZONE_SECONDS)
+#define HOW_MANY_SECONDS_TZ(x)  (x + zce::TIMEZONE_SECONDS)
 #endif
 //在时区的角度，取从1970.1.1到现在的天数量,用于判断是不是同一天之类的问题
 #ifndef HOW_MANY_DAYS_TZ
-#define HOW_MANY_DAYS_TZ(x)  (HOW_MANY_SECONDS_TZ(x)/ZCE_LIB::ONE_DAY_SECONDS)
+#define HOW_MANY_DAYS_TZ(x)  (HOW_MANY_SECONDS_TZ(x)/zce::ONE_DAY_SECONDS)
 #endif
 //在时区的角度，取从1970.1.1到现在的小时数量
-#ifndef HOW_MANY_HOURS_TZ 
-#define HOW_MANY_HOURS_TZ(x) (HOW_MANY_SECONDS_TZ(x) / ZCE_LIB::ONE_HOUR_SECONDS)
+#ifndef HOW_MANY_HOURS_TZ
+#define HOW_MANY_HOURS_TZ(x) (HOW_MANY_SECONDS_TZ(x) / zce::ONE_HOUR_SECONDS)
 #endif
 //在时区的角度，取从1970.1.1到现在的小时数量 这里为啥要+3，因为19700101是礼拜四。还是注释清楚吧，从周一到现在
 #ifndef HOW_MANY_WEEKS_TZ
-#define HOW_MANY_WEEKS_TZ(x)  (( HOW_MANY_SECONDS_TZ(x) + ZCE_LIB::ONE_DAY_SECONDS * 3)/ZCE_LIB::ONE_WEEK_SECONDS)
+#define HOW_MANY_WEEKS_TZ(x)  (( HOW_MANY_SECONDS_TZ(x) + zce::ONE_DAY_SECONDS * 3)/zce::ONE_WEEK_SECONDS)
 #endif
 
 /*!
@@ -232,7 +232,7 @@ const char *timeval_to_str(const timeval *timeval,
                            char *str_date_time,
                            size_t str_len,
                            bool uct_time = false,
-                           TIME_STR_FORMAT_TYPE fmt = ZCE_LIB::TIME_STRFMT_ISO_USEC
+                           TIME_STR_FORMAT_TYPE fmt = zce::TIME_STRFMT_ISO_USEC
                           );
 
 /*!
@@ -368,20 +368,20 @@ const timeval make_timeval(const ::timespec *timespec_val);
 * @return     const timeval 转换后的timeval结果
 * @param      val  进行转换的参数
 */
-const timeval make_timeval(const std::chrono::hours& val);
-const timeval make_timeval(const std::chrono::minutes& val);
-const timeval make_timeval(const std::chrono::seconds& val);
-const timeval make_timeval(const std::chrono::milliseconds& val);
-const timeval make_timeval(const std::chrono::microseconds& val);
-const timeval make_timeval(const std::chrono::nanoseconds& val);
+const timeval make_timeval(const std::chrono::hours &val);
+const timeval make_timeval(const std::chrono::minutes &val);
+const timeval make_timeval(const std::chrono::seconds &val);
+const timeval make_timeval(const std::chrono::milliseconds &val);
+const timeval make_timeval(const std::chrono::microseconds &val);
+const timeval make_timeval(const std::chrono::nanoseconds &val);
 
 /*!
 * @brief      将CPP11的time_point的数据结构转换得到timeval结构
 * @return     const timeval 转换后的timeval结果
 * @param      val  进行转换的参数
 */
-const timeval make_timeval(const std::chrono::system_clock::time_point& val);
-const timeval make_timeval(const std::chrono::steady_clock::time_point& val);
+const timeval make_timeval(const std::chrono::system_clock::time_point &val);
+const timeval make_timeval(const std::chrono::steady_clock::time_point &val);
 
 
 //WINDOWS API常用的几个参数
@@ -532,7 +532,7 @@ uint64_t rdtsc();
 //-------------------------------------------------------------------------------
 
 //兼容LINUX下的gettimeofday
-inline int ZCE_LIB::gettimeofday(struct timeval *tv, struct timezone *tz)
+inline int zce::gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     //
 #if defined ZCE_OS_WINDOWS
@@ -594,17 +594,17 @@ inline int ZCE_LIB::gettimeofday(struct timeval *tv, struct timezone *tz)
 
 
 //得到时间各种时间
-inline int ZCE_LIB::clock_gettime(clockid_t clk_id, timespec *ts)
+inline int zce::clock_gettime(clockid_t clk_id, timespec *ts)
 {
 #if defined ZCE_OS_WINDOWS
     timeval tv;
     if (CLOCK_REALTIME  == clk_id)
     {
-        ZCE_LIB::gettimeofday(&tv);
+        zce::gettimeofday(&tv);
     }
     else if (CLOCK_MONOTONIC  == clk_id)
     {
-        tv = ZCE_LIB::get_uptime();
+        tv = zce::get_uptime();
     }
     else
     {
@@ -619,15 +619,15 @@ inline int ZCE_LIB::clock_gettime(clockid_t clk_id, timespec *ts)
 }
 
 
-inline const timeval ZCE_LIB::gettimeofday()
+inline const timeval zce::gettimeofday()
 {
     timeval now_time;
-    ZCE_LIB::gettimeofday(&now_time);
+    zce::gettimeofday(&now_time);
     return now_time;
 }
 
 //得到本地时间
-inline struct tm *ZCE_LIB::localtime_r(const time_t *timep, struct tm *result)
+inline struct tm *zce::localtime_r(const time_t *timep, struct tm *result)
 {
 #if defined (ZCE_OS_WINDOWS)
     //WINDOWS下使用默认的_s 系列的API
@@ -650,7 +650,7 @@ inline struct tm *ZCE_LIB::localtime_r(const time_t *timep, struct tm *result)
 }
 
 //GM时间
-inline struct tm *ZCE_LIB::gmtime_r(const time_t *timep, struct tm *result)
+inline struct tm *zce::gmtime_r(const time_t *timep, struct tm *result)
 {
 #if defined (ZCE_OS_WINDOWS)
     //WINDOWS下使用默认的_s 系列的API
@@ -673,7 +673,7 @@ inline struct tm *ZCE_LIB::gmtime_r(const time_t *timep, struct tm *result)
 }
 
 //打印TM内部的时间信息
-inline char *ZCE_LIB::asctime_r(const struct tm *tm_data, char *buf)
+inline char *zce::asctime_r(const struct tm *tm_data, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -701,7 +701,7 @@ inline char *ZCE_LIB::asctime_r(const struct tm *tm_data, char *buf)
 }
 
 //打印time_t锁标识的时间信息
-inline char *ZCE_LIB::ctime_r(const time_t *timep, char *buf)
+inline char *zce::ctime_r(const time_t *timep, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -730,7 +730,7 @@ inline char *ZCE_LIB::ctime_r(const time_t *timep, char *buf)
 
 
 //等同于mktime,将tm视为本地时间，转换为世界时间time_t
-inline time_t ZCE_LIB::timelocal(struct tm *tm)
+inline time_t zce::timelocal(struct tm *tm)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::mktime(tm);
@@ -743,7 +743,7 @@ inline time_t ZCE_LIB::timelocal(struct tm *tm)
 
 
 //类似mktime，但是是把tm视为GMT时间，转换为世界时间time_t
-inline time_t ZCE_LIB::timegm(struct tm *tm)
+inline time_t zce::timegm(struct tm *tm)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_mkgmtime(tm);

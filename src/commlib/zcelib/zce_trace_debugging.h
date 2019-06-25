@@ -5,7 +5,7 @@
 * @version
 * @date       2010年7月11日
 * @brief      定义各种调试的日志，断言，宏，用于调试日志输出
-*             
+*
 * @details
 *
 *
@@ -70,19 +70,19 @@
 #if defined (ZCE_OS_WINDOWS)
 
 _ACRTIMP int __cdecl _CrtDbgReport(
-	_In_       int         _ReportType,
-	_In_opt_z_ char const* _FileName,
-	_In_       int         _Linenumber,
-	_In_opt_z_ char const* _ModuleName,
-	_In_opt_z_ char const* _Format,
-	...);
+    _In_       int         _ReportType,
+    _In_opt_z_ char const *_FileName,
+    _In_       int         _Linenumber,
+    _In_opt_z_ char const *_ModuleName,
+    _In_opt_z_ char const *_Format,
+    ...);
 #endif
 
 #if defined (ZCE_OS_LINUX)
 //__assert_fail这个函数是extern的，必须在这儿extern引用，linux自己只在非NDEBUG版本下才有extern引用
 extern "C"  void __assert_fail(__const char *__assertion, __const char *__file,
-    unsigned int __line, __const char *__function)
-    __THROW __attribute__((__noreturn__));
+                               unsigned int __line, __const char *__function)
+__THROW __attribute__((__noreturn__));
 #endif //#if defined (ZCE_OS_LINUX)
 
 
@@ -128,8 +128,8 @@ public:
 
     //输出va_list的参数信息
     void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
-        const char *str_format,
-        va_list args)
+                       const char *str_format,
+                       va_list args)
     {
         //如果日志输出开关关闭
         if (if_output_log_ == false)
@@ -145,7 +145,7 @@ public:
 
         //得到打印信息,_vsnprintf为特殊函数
         vfprintf(stderr, str_format, args);
-		fprintf(stderr, "\n");
+        fprintf(stderr, "\n");
     }
 
     //写日志
@@ -174,21 +174,21 @@ public:
 
     //!利用单子对象，打印日志信息
     static void debug_output(ZCE_LOG_PRIORITY dbglevel,
-        const char *str_format,
-        ...)
+                             const char *str_format,
+                             ...)
     {
         va_list args;
         va_start(args, str_format);
-        
-		ZCE_Trace_Printf::instance()->vwrite_logmsg(dbglevel, str_format, args);
-        
+
+        ZCE_Trace_Printf::instance()->vwrite_logmsg(dbglevel, str_format, args);
+
         va_end(args);
     }
 
     //实例的获得
     static ZCE_Trace_Printf *instance()
     {
-		static ZCE_Trace_Printf log_instance;
+        static ZCE_Trace_Printf log_instance;
         return &log_instance;
     }
 
@@ -217,11 +217,11 @@ protected:
 
 #ifndef ZCE_ASSERT_ALL
 #define ZCE_ASSERT_ALL(expr) assert(expr)
-#endif 
+#endif
 
 #ifndef ZCE_ASSERT_ALL_EX
 #define ZCE_ASSERT_ALL_EX(expr,str) assert(expr)
-#endif 
+#endif
 
 #endif //#if !defined ZCE_USE_LOGMSG 
 
@@ -237,7 +237,7 @@ protected:
 #endif
 
 #ifndef ZCE_ASSERT_EX
-#define ZCE_ASSERT_EX(expr,str)   ZCE_ASSERT_ALL_EX(expr,str) 
+#define ZCE_ASSERT_EX(expr,str)   ZCE_ASSERT_ALL_EX(expr,str)
 #endif
 
 #ifndef ZCE_VERIFY
@@ -284,9 +284,9 @@ public:
 public:
     //利用构造函数显示进入函数的输出
     ZCE_Trace_Function(const char *func_name,
-        const char *file_name,
-        int file_line,
-        ZCE_LOG_PRIORITY   log_priority) :
+                       const char *file_name,
+                       int file_line,
+                       ZCE_LOG_PRIORITY   log_priority) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
@@ -298,10 +298,10 @@ public:
 
     //利用构造函数显示进入函数的输出
     ZCE_Trace_Function(const char *func_name,
-        const char *file_name,
-        int file_line,
-        ZCE_LOG_PRIORITY   log_priority,
-        int *ret_ptr) :
+                       const char *file_name,
+                       int file_line,
+                       ZCE_LOG_PRIORITY   log_priority,
+                       int *ret_ptr) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
@@ -309,10 +309,10 @@ public:
         ret_ptr_(ret_ptr)
     {
         ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] entry,code file [%s|%u] default ret = [%d].",
-            func_name_,
-            codefile_name_,
-            code_line_,
-            *ret_ptr_);
+                func_name_,
+                codefile_name_,
+                code_line_,
+                *ret_ptr_);
     }
 
     //利用析构函数显示进入函数的输出
@@ -323,19 +323,19 @@ public:
         {
             //这个地方输出的成功失败文字只有相对参考意义。
             ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
-                "ret = [%d],return %s.",
-                func_name_,
-                codefile_name_,
-                code_line_,
-                *ret_ptr_,
-                (*ret_ptr_ == 0) ? "success" : "fail");
+                    "ret = [%d],return %s.",
+                    func_name_,
+                    codefile_name_,
+                    code_line_,
+                    *ret_ptr_,
+                    (*ret_ptr_ == 0) ? "success" : "fail");
         }
         else
         {
             ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] .",
-                func_name_,
-                codefile_name_,
-                code_line_);
+                    func_name_,
+                    codefile_name_,
+                    code_line_);
         }
     }
 
@@ -356,19 +356,19 @@ public:
 //!用于程序运行到的地方。
 #ifndef ZCE_TRACE_FILELINE
 #define ZCE_TRACE_FILELINE(log_priority)   ZCE_LOG((log_priority),"[FILELINE TRACE]goto File %s|%d,function:%s.",\
-    __FILE__,__LINE__,__ZCE_FUNC__)
+                                                   __FILE__,__LINE__,__ZCE_FUNC__)
 #endif
 
 //!
 #ifndef ZCE_TRACE_FAIL_RETURN
 #define ZCE_TRACE_FAIL_RETURN(log_priority,fail_str,ret_int) ZCE_LOG((log_priority),"[FAIL RETRUN]Fail in file [%s|%d],function:%s," \
-    "api fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),(ret_int),ZCE_LIB::last_error())
+                                                                     "api fail info:%s,return %d,last error %d.",__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),(ret_int),zce::last_error())
 #endif
 
 #ifndef ZCE_TRACE_FAIL_INFO
 #define ZCE_TRACE_FAIL_INFO(log_priority,fail_str)     ZCE_LOG((log_priority),\
-	"[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",\
-	__FILE__,__LINE__,__ZCE_FUNC__,(fail_str),ZCE_LIB::last_error())
+                                                               "[API FAIL ]API fail in file [%s|%d],function:%s,fail api:%s,last error %d.",\
+                                                               __FILE__,__LINE__,__ZCE_FUNC__,(fail_str),zce::last_error())
 #endif
 
 

@@ -47,7 +47,7 @@ public:
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
     int connect (ZCE_Socket_Stream &new_stream,
-                 const ZCE_Sockaddr *remote_addr ,
+                 const ZCE_Sockaddr *remote_addr,
                  ZCE_Time_Value  &timeout,
                  bool reuse_addr = false,
                  int protocol = 0,
@@ -65,7 +65,7 @@ public:
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
     int connect (ZCE_Socket_Stream &new_stream,
-                 const ZCE_Sockaddr *remote_addr ,
+                 const ZCE_Sockaddr *remote_addr,
                  bool non_blocing,
                  bool reuse_addr = false,
                  int protocol = 0,

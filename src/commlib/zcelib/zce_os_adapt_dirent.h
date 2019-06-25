@@ -48,7 +48,7 @@ struct DIR
     HANDLE            current_handle_;
 
     ///返回的dirent_结果
-    dirent* dirent_;
+    dirent *dirent_;
 
     /// The struct for intermediate results.
     WIN32_FIND_DATAA  fdata_;
@@ -59,7 +59,7 @@ struct DIR
 
 #endif
 
-namespace ZCE_LIB
+namespace zce
 {
 
 /*!

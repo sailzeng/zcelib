@@ -36,9 +36,9 @@ class MML_Console_Command
 {
 
     ///命令的选项
-    typedef std::set <std::string , LessofCaseString>               MMLCMD_OPTION;
+    typedef std::set <std::string, LessofCaseString>               MMLCMD_OPTION;
     ///命令的参数
-    typedef std::map <std::string , std::string, LessofCaseString > MMLCMD_PARAMETER;
+    typedef std::map <std::string, std::string, LessofCaseString > MMLCMD_PARAMETER;
 
 public:
 

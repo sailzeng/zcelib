@@ -6,7 +6,7 @@
 
 #include "zce_os_adapt_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 //-------------------------------------------------------------------------------------------------
 //POSIXµÄ¹²ÏíÄÚ´æ

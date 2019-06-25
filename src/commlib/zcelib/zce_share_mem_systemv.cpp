@@ -30,7 +30,7 @@ ZCE_ShareMem_SystemV::~ZCE_ShareMem_SystemV()
 
 //打开文件，进行映射
 int ZCE_ShareMem_SystemV::open(key_t sysv_key,
-                               std::size_t shm_size ,
+                               std::size_t shm_size,
                                int shmget_flg,
                                int shmat_flg,
                                const void *want_address)
@@ -39,19 +39,19 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
     ZCE_ASSERT(NULL == shm_addr_);
     ZCE_ASSERT(ZCE_INVALID_HANDLE == sysv_shmid_);
 
-    sysv_shmid_ = ZCE_LIB::shmget(sysv_key, shm_size, shmget_flg);
+    sysv_shmid_ = zce::shmget(sysv_key, shm_size, shmget_flg);
 
     if (ZCE_INVALID_HANDLE == sysv_shmid_ )
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmget fail ,sysv key = %d,last error =%d. ", sysv_key, ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmget fail ,sysv key = %d,last error =%d. ", sysv_key, zce::last_error());
         return -1;
     }
 
-    shm_addr_ = ZCE_LIB::shmat(sysv_shmid_, want_address, shmat_flg);
+    shm_addr_ = zce::shmat(sysv_shmid_, want_address, shmat_flg);
 
     if (shm_addr_ == MAP_FAILED)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmat fail ,last error =%d. ", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmat fail ,last error =%d. ", zce::last_error());
         return -1;
     }
 
@@ -114,7 +114,7 @@ int ZCE_ShareMem_SystemV::close()
     ZCE_ASSERT(sysv_shmid_ != ZCE_INVALID_HANDLE);
 
     int ret = 0;
-    ret = ZCE_LIB::shmdt(shm_addr_);
+    ret = zce::shmdt(shm_addr_);
     shm_addr_ = NULL;
     shm_size_ = 0;
     sysv_shmid_ = ZCE_INVALID_HANDLE;
@@ -130,7 +130,7 @@ int ZCE_ShareMem_SystemV::close()
 //删除映射的文件，当然正在映射的时候不能删除
 int ZCE_ShareMem_SystemV::remove()
 {
-    return ZCE_LIB::shmctl(sysv_shmid_, IPC_RMID, NULL);
+    return zce::shmctl(sysv_shmid_, IPC_RMID, NULL);
 }
 
 //返回映射的内存地址

@@ -6,7 +6,7 @@
 * @date       2011年6月17日
 * @brief      多线程使用的Message Queue，内部的同步对象使用了条件变量
 *             这个类暂时不要使用，他和整个体系是脱节的，完全是为了测试条件变量写的类
-*             同时支持list，deque,和自己的一个容器ZCE_LIB::lordrings 环形队列
+*             同时支持list，deque,和自己的一个容器zce::lordrings 环形队列
 * @details
 *
 *
@@ -28,10 +28,10 @@
 
 /*!
 * @brief      用条件变量+容器实现的消息队列，对于我个人来说，条件变量有点怪，装B？请问condi传入Mutex的目的是？
-*             
+*
 * @tparam     _value_type 消息队列放入的数据类型
 * @tparam     _container_type 消息队列内部容器类型
-* note       
+* note
 */
 template <typename _value_type, typename _container_type = std::deque<_value_type> >
 class ZCE_Message_Queue_Condi : public ZCE_NON_Copyable
@@ -180,7 +180,7 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        ZCE_LIB::last_error(ETIMEDOUT);
+                        zce::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
@@ -190,7 +190,7 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    ZCE_LIB::last_error(EWOULDBLOCK);
+                    zce::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }
@@ -230,7 +230,7 @@ protected:
                     //如果超时了，返回false
                     if (!bret)
                     {
-                        ZCE_LIB::last_error(ETIMEDOUT);
+                        zce::last_error(ETIMEDOUT);
                         return -1;
                     }
                 }
@@ -240,7 +240,7 @@ protected:
                 }
                 else if (wait_model == MQW_NO_WAIT)
                 {
-                    ZCE_LIB::last_error(EWOULDBLOCK);
+                    zce::last_error(EWOULDBLOCK);
                     return -1;
                 }
             }
@@ -283,7 +283,7 @@ protected:
 
 /*!
 * @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
-*             
+*
 * @tparam     _value_type 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
@@ -305,9 +305,9 @@ public:
 
 /*!
 * @brief      内部用DQUEUE实现的消息队列，性能较好,边界保护用的条件变量。
-*             
+*
 * @tparam     _value_type 消息队列保存的数据类型
-* note        
+* note
 */
 template <class _value_type >
 class ZCE_Msgqueue_Deque_Condi : public ZCE_Message_Queue_Condi<_value_type, std::deque<_value_type> >
@@ -327,19 +327,19 @@ public:
 
 /*!
 * @brief      内部用circular_buffer实现的消息队列，性能非常好,边界保护用的条件变量。
-*             
+*
 * @tparam     _value_type 消息队列保存的数据类型
 * note       封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <class _value_type >
-class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, ZCE_LIB::lordrings<_value_type> >
+class ZCE_Msgqueue_Rings_Condi : public ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >
 {
 public:
     //
     explicit ZCE_Msgqueue_Rings_Condi(size_t queue_max_size) :
-        ZCE_Message_Queue_Condi<_value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
+        ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >(queue_max_size)
     {
-        ZCE_Message_Queue_Condi<_value_type, ZCE_LIB::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        ZCE_Message_Queue_Condi<_value_type, zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
     ~ZCE_Msgqueue_Rings_Condi()

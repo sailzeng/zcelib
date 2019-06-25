@@ -3,7 +3,7 @@
 
 //今天看到一段，白发三千丈，代码写万行，不知程序里，何处话凄凉，
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //==================================================================
@@ -51,9 +51,9 @@ struct container_traits
 
 //对数组容器进行特化
 template <typename T>
-struct container_traits<T*>
+struct container_traits<T *>
 {
-    typedef T*  iterator;
+    typedef T  *iterator;
     typedef T   value_type;
 };
 

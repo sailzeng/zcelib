@@ -34,7 +34,7 @@ int test_nonr_thread_mutex(int argc, char *argv[]);
 int test_msgqueue_condi(int argc, char *argv[]);
 
 
-int test_host_name_fun(int, char * []);
+int test_host_name_fun(int, char *[]);
 
 int test_rw_lock1 (int argc, char *argv[]);
 int test_rw_lock2 (int argc, char *argv[]);
@@ -123,12 +123,12 @@ int test_pid_file(int /*argc*/, char * /*argv*/[]);
 
 int test_container_performance(int  /*argc*/, char * /*argv*/[]);
 
-int test_progress_timer(int  /*argc*/, char* /*argv*/[]);
+int test_progress_timer(int  /*argc*/, char * /*argv*/[]);
 
 int test_net_getaddrinfo(int argc, char *argv[]);
 
 
-int test_memory_debug(int /*argc*/, char* /*argv */[]);
+int test_memory_debug(int /*argc*/, char * /*argv */[]);
 
 
 #endif //

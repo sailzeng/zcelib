@@ -48,9 +48,9 @@ int ZCE_Timer_Heap::initialize(size_t num_timer_node,
     //在基类进行初始化
     int ret = 0;
     ret = ZCE_Timer_Queue_Base::initialize(num_timer_node,
-                                      timer_precision_mesc,
-                                      trigger_mode,
-                                      dynamic_expand_node);
+                                           timer_precision_mesc,
+                                           trigger_mode,
+                                           dynamic_expand_node);
 
     if (ret != 0)
     {

@@ -187,7 +187,7 @@ protected:
     * @param[out] sqlresult   SQL执行后的结果集合
     * @param[out] bstore      使用什么方式获得结果，ture是使用mysql_store_result,false是使用mysql_use_result（需要多次交互）,
     */
-    int execute(uint64_t *num_affect ,
+    int execute(uint64_t *num_affect,
                 uint64_t *last_id,
                 ZCE_Mysql_Result *sqlresult,
                 bool bstore);
@@ -203,8 +203,8 @@ protected:
     ///SQL
     std::string mysql_command_;
 
-	//
-	char* sql_buffer_ = NULL;
+    //
+    char *sql_buffer_ = NULL;
 
 };
 

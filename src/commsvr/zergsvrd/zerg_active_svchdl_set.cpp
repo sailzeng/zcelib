@@ -50,7 +50,7 @@ int Active_SvcHandle_Set::find_handle_by_svcid(const SERVICES_ID &svc_id,
 //这样查询保证发送的数据尽量负载均衡
 int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
                                                 uint32_t &find_services_id,
-                                                TCP_Svc_Handler *& svc_handle)
+                                                TCP_Svc_Handler *&svc_handle)
 {
     //看type类型的MAP里面是否有这种类型的数据了
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
@@ -100,7 +100,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
 int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
                                                    uint32_t lb_factor,
                                                    uint32_t &find_services_id,
-                                                   TCP_Svc_Handler*& svc_handle)
+                                                   TCP_Svc_Handler *&svc_handle)
 {
     //看type类型的MAP里面是否有这种类型的数据了
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
@@ -150,10 +150,10 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
 //主备的顺序按照Auto 那儿的配置顺序来处理。可以不是2个
 int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
                                              uint32_t &find_services_id,
-                                             TCP_Svc_Handler*& svc_handle)
+                                             TCP_Svc_Handler *&svc_handle)
 {
     int ret = 0;
-    std::vector<uint32_t> * ms_svcid_ary = NULL;
+    std::vector<uint32_t> *ms_svcid_ary = NULL;
     ret = TCP_Svc_Handler::find_conf_ms_svcid_ary(services_type,
                                                   ms_svcid_ary);
     if (ret != 0)
@@ -187,7 +187,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
 
 
 //查询类型对应的所有active的SVC ID数组，用于广播等
-int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *& id_ary)
+int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *&id_ary)
 {
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(services_type);

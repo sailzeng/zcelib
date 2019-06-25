@@ -106,7 +106,7 @@ private:
     virtual void wait (ZCE_Null_Mutex * /*external_mutex*/ );
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(ZCE_Null_Mutex * /*external_mutex*/ , const ZCE_Time_Value & /*abs_time*/);
+    virtual bool systime_wait(ZCE_Null_Mutex * /*external_mutex*/, const ZCE_Time_Value & /*abs_time*/);
 
     ///相对时间的超时锁定等待，超时后，解锁
     virtual bool duration_wait(ZCE_Null_Mutex * /*external_mutex*/, const ZCE_Time_Value & /*relative_time*/);

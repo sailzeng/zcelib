@@ -41,7 +41,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
 {
     int ret = 0;
     ZCE_PROCESS_PERFORM prc_perf_info;
-    ret = ZCE_LIB::get_self_perf(&prc_perf_info);
+    ret = zce::get_self_perf(&prc_perf_info);
 
     if (ret != 0)
     {
@@ -49,7 +49,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
     }
 
     ZCE_SYSTEM_INFO zce_system_info;
-    ret = ZCE_LIB::get_system_info(&zce_system_info);
+    ret = zce::get_system_info(&zce_system_info);
 
     if (ret != 0)
     {
@@ -57,7 +57,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
     }
 
     ZCE_SYSTEM_PERFORMANCE zce_system_perf;
-    ret = ZCE_LIB::get_system_perf(&zce_system_perf);
+    ret = zce::get_system_perf(&zce_system_perf);
 
     if (ret != 0)
     {
@@ -92,12 +92,12 @@ int hfile_selector(const struct dirent *dir_info)
 
 int test_scandir(int /*argc*/, char /*argv*/ *[])
 {
-    ZCE_LIB::clear_last_error();
+    zce::clear_last_error();
     struct  dirent  **namelist = NULL;
-    int number_file = ZCE_LIB::scandir("E:\\Courage\\readline-5.2",
-                                       &namelist,
-                                       hfile_selector,
-                                       ZCE_LIB::scandir_namesort);
+    int number_file = zce::scandir("E:\\Courage\\readline-5.2",
+                                   &namelist,
+                                   hfile_selector,
+                                   zce::scandir_namesort);
 
     if (number_file <= 0)
     {
@@ -111,7 +111,7 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
     }
 
 
-    ZCE_LIB::free_scandir_result(number_file, namelist);
+    zce::free_scandir_result(number_file, namelist);
 
     //for (int i = 0; i < number_file; ++i)
     //{
@@ -123,7 +123,7 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
 }
 
 
-struct Zealot_SVC :public ZCE_Server_Base
+struct Zealot_SVC : public ZCE_Server_Base
 {
 
 };
@@ -163,7 +163,7 @@ void test_findwith_container(size_t container_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
 
-        int find_number = (int)i%container_len;
+        int find_number = (int)i % container_len;
         //
         for (size_t j = 0; j < container_len; j++)
         {
@@ -184,7 +184,7 @@ void test_findwith_container(size_t container_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
 
-        int find_number = (int)i%container_len;
+        int find_number = (int)i % container_len;
         int_map.find(find_number);
     }
 
@@ -196,7 +196,7 @@ void test_findwith_container(size_t container_len)
     test_timer.restart();
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
-        int find_number = (int)i%container_len;
+        int find_number = (int)i % container_len;
         int_hash.find(find_number);
     }
 
@@ -244,15 +244,15 @@ int test_container_performance(int  /*argc*/, char * /*argv*/[])
 }
 
 
-int test_progress_timer(int  /*argc*/, char* /*argv*/[])
+int test_progress_timer(int  /*argc*/, char * /*argv*/[])
 {
-	ZCE_Chrono_HR_Timer hr_timer;
-	ZCE_Time_Value sleep_len(2, 5000);
+    ZCE_Chrono_HR_Timer hr_timer;
+    ZCE_Time_Value sleep_len(2, 5000);
 
-	hr_timer.restart();
-	ZCE_LIB::sleep(sleep_len);
-	hr_timer.end();
-	std::cout << "ZCE_Chrono_HR_Timer :" << hr_timer.elapsed_usec() << " " << std::endl;
+    hr_timer.restart();
+    zce::sleep(sleep_len);
+    hr_timer.end();
+    std::cout << "ZCE_Chrono_HR_Timer :" << hr_timer.elapsed_usec() << " " << std::endl;
 
-	return 0;
+    return 0;
 }

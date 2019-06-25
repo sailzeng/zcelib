@@ -112,9 +112,9 @@ protected:
 protected:
     //¹¹Ôìº¯Êý
     ZCE_Timer_Queue_Base(size_t num_timer_node,
-                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                    TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
-                    bool dynamic_expand_node = true);
+                         unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
+                         TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                         bool dynamic_expand_node = true);
     ZCE_Timer_Queue_Base();
 public:
     virtual ~ZCE_Timer_Queue_Base();

@@ -29,22 +29,22 @@ int ZCE_File_Lock::open(const char *file_name,
     ZCE_ASSERT(lock_file_hadle_ == ZCE_INVALID_HANDLE);
 
     //打开这个文件
-    lock_file_hadle_ = ZCE_LIB::open (file_name,
-                                      open_mode,
-                                      perms);
+    lock_file_hadle_ = zce::open (file_name,
+                                  open_mode,
+                                  perms);
 
     if (lock_file_hadle_ == ZCE_INVALID_HANDLE)
     {
         return -1;
     }
 
-    ret = ZCE_LIB::filesize(lock_file_hadle_, &file_len_);
+    ret = zce::filesize(lock_file_hadle_, &file_len_);
     if (0 != ret)
     {
         return ret;
     }
 
-    ZCE_LIB::flock_init(&file_lock_hdl_, lock_file_hadle_);
+    zce::flock_init(&file_lock_hdl_, lock_file_hadle_);
 
     //标识是自己打开的
     open_by_self_ = true;
@@ -57,13 +57,13 @@ int ZCE_File_Lock::open(ZCE_HANDLE file_handle)
 {
     int ret = 0;
     lock_file_hadle_ = file_handle;
-    ret = ZCE_LIB::filesize(lock_file_hadle_, &file_len_);
+    ret = zce::filesize(lock_file_hadle_, &file_len_);
     if (0 != ret)
     {
         return ret;
     }
 
-    ZCE_LIB::flock_init(&file_lock_hdl_, lock_file_hadle_);
+    zce::flock_init(&file_lock_hdl_, lock_file_hadle_);
 
     return 0;
 }
@@ -76,9 +76,9 @@ int ZCE_File_Lock::close()
     //如果是自己打开的，关闭之
     if (open_by_self_)
     {
-        ZCE_LIB::close(lock_file_hadle_);
+        zce::close(lock_file_hadle_);
     }
-    ZCE_LIB::flock_destroy(&file_lock_hdl_);
+    zce::flock_destroy(&file_lock_hdl_);
     return 0;
 }
 
@@ -92,11 +92,11 @@ ZCE_HANDLE ZCE_File_Lock::get_file_handle()
 void ZCE_File_Lock::lock_read()
 {
     int ret = 0;
-    ret = ZCE_LIB::flock_rdlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
+    ret = zce::flock_rdlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::flock LOCK_SH", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::flock LOCK_SH", ret);
         return;
     }
 
@@ -107,10 +107,10 @@ bool ZCE_File_Lock::try_lock_read()
 {
     int ret = 0;
 
-    ret = ZCE_LIB::flock_tryrdlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
+    ret = zce::flock_tryrdlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::flock LOCK_SH|LOCK_NB", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::flock LOCK_SH|LOCK_NB", ret);
         return false;
     }
 
@@ -121,10 +121,10 @@ bool ZCE_File_Lock::try_lock_read()
 void ZCE_File_Lock::lock_write()
 {
     int ret = 0;
-    ret = ZCE_LIB::flock_wrlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
+    ret = zce::flock_wrlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::flock LOCK_EX", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::flock LOCK_EX", ret);
         return;
     }
 }
@@ -133,10 +133,10 @@ bool ZCE_File_Lock::try_lock_write()
 {
     int ret = 0;
 
-    ret = ZCE_LIB::flock_trywrlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
+    ret = zce::flock_trywrlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::flock LOCK_EX|LOCK_NB", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::flock LOCK_EX|LOCK_NB", ret);
         return false;
     }
 
@@ -148,10 +148,10 @@ void ZCE_File_Lock::unlock()
 {
     int ret = 0;
 
-    ret = ZCE_LIB::flock_unlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
+    ret = zce::flock_unlock(&file_lock_hdl_, SEEK_SET, 0, file_len_);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "ZCE_LIB::flock LOCK_UN", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::flock LOCK_UN", ret);
         return;
     }
 }

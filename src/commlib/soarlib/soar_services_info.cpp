@@ -107,7 +107,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
 
     //去掉里面所有的空格，避免污染sscanf, 格式化字符串为"%hu.%u|%u.%u.%u.%u#%hu|%u|%u",
     //char pure_str[SVC_INFO_STR_LEN];
-    //ZCE_LIB::str_replace(svc_info_str, pure_str," ","");
+    //zce::str_replace(svc_info_str, pure_str," ","");
 
     uint32_t u[4] = {0};
     uint16_t port = 0;

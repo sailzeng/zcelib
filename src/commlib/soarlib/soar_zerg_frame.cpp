@@ -36,31 +36,31 @@ Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
 //创建一个Frame
 Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
 {
-	//assert( FrameLength <= MAX_FRAME_SIZE );
-	if (frame_len < sizeof(Zerg_App_Frame))
-	{
-		frame_len = sizeof(Zerg_App_Frame);
-	}
+    //assert( FrameLength <= MAX_FRAME_SIZE );
+    if (frame_len < sizeof(Zerg_App_Frame))
+    {
+        frame_len = sizeof(Zerg_App_Frame);
+    }
 
-	//计算数据加密后的长度
+    //计算数据加密后的长度
 
-	void *ptr = ::new unsigned char[frame_len];
+    void *ptr = ::new unsigned char[frame_len];
 
 #if defined(DEBUG) || defined(_DEBUG)
-	//检查帧的哪个地方出现问题，还是这样好一点
-	memset(ptr, 0, frame_len);
+    //检查帧的哪个地方出现问题，还是这样好一点
+    memset(ptr, 0, frame_len);
 #endif //DEBUG
 
-	//没有必要加下面这句，因为实际长度要根据使用决定
-	//reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
-	return static_cast<Zerg_App_Frame *>(ptr);
+    //没有必要加下面这句，因为实际长度要根据使用决定
+    //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
+    return static_cast<Zerg_App_Frame *>(ptr);
 }
 
 //
 void Zerg_App_Frame::delete_frame(Zerg_App_Frame *frame)
 {
-	char *ptr = reinterpret_cast<char *>(frame);
-	delete[]ptr;
+    char *ptr = reinterpret_cast<char *>(frame);
+    delete[]ptr;
 }
 
 //填充AppData数据到APPFrame
@@ -151,8 +151,8 @@ void Zerg_App_Frame::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
     proxy_service_.services_id_ = svrid;
 }
 
-void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo, 
-                                   const SERVICES_ID &sndinfo, 
+void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo,
+                                   const SERVICES_ID &sndinfo,
                                    const SERVICES_ID &proxyinfo)
 {
     recv_service_ = rcvinfo;
@@ -211,7 +211,7 @@ void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
     size_t datalen = frame_length_ - LEN_OF_APPFRAME_HEAD;
     size_t out_len = MAX_LEN_OF_APPFRAME * 2 + 1;
 
-    ZCE_LIB::base16_encode((unsigned char *)frame_appdata_, datalen, (unsigned char *)tmpstr, &out_len);
+    zce::base16_encode((unsigned char *)frame_appdata_, datalen, (unsigned char *)tmpstr, &out_len);
 
     strstream << " data:" <<  tmpstr << std::endl;
 
@@ -243,7 +243,7 @@ void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY l
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
-    ZCE_LOG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
+    ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
 //输出APPFRAME的全部部信息
 void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
@@ -251,7 +251,7 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
 
     std::ostringstream strstream;
     dump_appframe_info(strstream);
-    ZCE_LOG(log_priority, "[framework] [%s]%s" , outstr, strstream.str().c_str());
+    ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
 
 //输出APPFRAME的头部信息
@@ -290,9 +290,9 @@ void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 
 ///将一个结构进行编码
 int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
-                                    const google::protobuf::MessageLite* msg,
+                                    const google::protobuf::MessageLite *msg,
                                     size_t data_start,
-                                    size_t * sz_code)
+                                    size_t *sz_code)
 {
     if (!msg->IsInitialized())
     {
@@ -305,7 +305,7 @@ int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
         ZCE_LOG(RS_ERROR, "");
         return SOAR_RET::ERROR_DR_ENCODE_FAIL;
     }
-    bool bret = msg->SerializePartialToArray(frame_appdata_ + data_start, 
+    bool bret = msg->SerializePartialToArray(frame_appdata_ + data_start,
                                              static_cast<int>(szframe_appdata - data_start));
     if (bret == false)
     {
@@ -320,12 +320,12 @@ int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
 }
 
 ///将一个结构进行解码
-int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite* msg,
+int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
                                     size_t data_start,
-                                    size_t* sz_code)
+                                    size_t *sz_code)
 {
     size_t szframe_appdata = frame_length_;
-    bool bret = msg->ParseFromArray(frame_appdata_ + data_start, 
+    bool bret = msg->ParseFromArray(frame_appdata_ + data_start,
                                     static_cast<int>(szframe_appdata - data_start));
     if (bret == false)
     {

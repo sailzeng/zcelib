@@ -30,7 +30,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"ArbiterAppliction::initon_start begin. ");
+    ZCE_LOG(RS_INFO, "ArbiterAppliction::initon_start begin. ");
 
 
     Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
@@ -54,7 +54,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO,"ArbiterAppliction::app_start end. ");
+    ZCE_LOG(RS_INFO, "ArbiterAppliction::app_start end. ");
 
     return 0;
 }
@@ -62,7 +62,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
 //
 int Wormhole_Proxy_App::app_exit()
 {
-    ZCE_LOG(RS_INFO,"Wormhole_Proxy_App::exit. ");
+    ZCE_LOG(RS_INFO, "Wormhole_Proxy_App::exit. ");
     int ret = 0;
 
     //最后调用通用的退出模块

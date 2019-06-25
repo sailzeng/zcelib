@@ -149,7 +149,7 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
     if (ret < 0)
     {
         //按照UNIX网络编程 V1的说法是 EINPROGRESS,但ACE的介绍说是 EWOULDBLOCK,
-        if (ZCE_LIB::last_error() != EWOULDBLOCK && ZCE_LIB::last_error() != EINPROGRESS)
+        if (zce::last_error() != EWOULDBLOCK && zce::last_error() != EINPROGRESS)
         {
             tcpscoket.close();
             return SOAR_RET::ERR_OGRE_SOCKET_OP_ERROR;

@@ -3,17 +3,17 @@
 * @copyright  2004-2019  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_bus_pipe.h
 * @author     Sailzeng <sailerzeng@gmail.com>
-* @version    
+* @version
 * @date       2012年9月18日晚上，中国人民抗日81周年纪念日，81年
-* @brief      
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-* 
+* @brief
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 * 喔　你我霎眼抗战二十年　世界怎变　我答应你那一点　不会变
 *
 * 当天空手空臂我们就上街　没什么声势浩大
@@ -48,7 +48,7 @@
 #include "zce_lock_null_lock.h"
 #include "zce_lock_thread_mutex.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 class dequechunk_node;
 class shm_dequechunk;
@@ -83,7 +83,7 @@ protected:
     size_t                     size_room_[THR_NUM_OF_PIPE];
 
     //N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    ZCE_LIB::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
+    zce::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
 
     //锁
     ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
@@ -125,8 +125,8 @@ public:
         size_pipe_[THR_RECV_PIPE_ID] = size_recv_pipe;
         size_pipe_[THR_SEND_PIPE_ID] = size_send_pipe;
 
-        size_room_[THR_RECV_PIPE_ID] = ZCE_LIB::shm_dequechunk::getallocsize(size_pipe_[THR_RECV_PIPE_ID]);
-        size_room_[THR_SEND_PIPE_ID] = ZCE_LIB::shm_dequechunk::getallocsize(size_pipe_[THR_SEND_PIPE_ID]);
+        size_room_[THR_RECV_PIPE_ID] = zce::shm_dequechunk::getallocsize(size_pipe_[THR_RECV_PIPE_ID]);
+        size_room_[THR_SEND_PIPE_ID] = zce::shm_dequechunk::getallocsize(size_pipe_[THR_SEND_PIPE_ID]);
 
         //
         const size_t FIXED_INTERVALS = 16;
@@ -135,15 +135,15 @@ public:
         pipe_buffer_ = new char [sz_malloc ];
 
         //初始化内存
-        bus_pipe_[THR_RECV_PIPE_ID] = ZCE_LIB::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
-                                                                          max_frame_len,
-                                                                          pipe_buffer_,
-                                                                          false);
+        bus_pipe_[THR_RECV_PIPE_ID] = zce::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
+                                                                      max_frame_len,
+                                                                      pipe_buffer_,
+                                                                      false);
 
-        bus_pipe_[THR_SEND_PIPE_ID] = ZCE_LIB::shm_dequechunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
-                                                                          max_frame_len,
-                                                                          pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
-                                                                          false);
+        bus_pipe_[THR_SEND_PIPE_ID] = zce::shm_dequechunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
+                                                                      max_frame_len,
+                                                                      pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
+                                                                      false);
 
         //管道创建自己也会检查是否能恢复
         if ( NULL == bus_pipe_[THR_RECV_PIPE_ID]  || NULL == bus_pipe_[THR_SEND_PIPE_ID])
@@ -166,14 +166,14 @@ public:
     //注意
 
     //从RECV管道读取数据，
-    inline bool pop_front_recvpipe(ZCE_LIB::dequechunk_node * &node)
+    inline bool pop_front_recvpipe(zce::dequechunk_node*&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
     }
 
     //向RECV管道写入数据
-    inline bool push_back_recvpipe(const ZCE_LIB::dequechunk_node *node)
+    inline bool push_back_recvpipe(const zce::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->push_end(node);
@@ -181,14 +181,14 @@ public:
 
 
     //从SEND管道读取数据，
-    inline bool pop_front_sendpipe(ZCE_LIB::dequechunk_node * &node)
+    inline bool pop_front_sendpipe(zce::dequechunk_node*&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
     }
 
     //向SEND管道写入数据
-    inline bool push_back_sendpipe(const ZCE_LIB::dequechunk_node *node)
+    inline bool push_back_sendpipe(const zce::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->push_end(node);

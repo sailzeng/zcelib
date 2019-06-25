@@ -90,7 +90,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 
         //
         ret = Soar_MMAP_BusPipe::instance()->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                                           reinterpret_cast< ZCE_LIB::dequechunk_node* &>(send_frame));
+                                                           reinterpret_cast< zce::dequechunk_node *&>(send_frame));
 
         if (ret != 0)
         {

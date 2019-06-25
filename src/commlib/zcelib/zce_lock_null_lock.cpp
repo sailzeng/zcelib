@@ -112,7 +112,7 @@ void ZCE_Null_Condition::wait(ZCE_Null_Mutex * /*external_mutex*/ )
 }
 
 ///绝对时间超时的的等待，超时后解锁
-bool ZCE_Null_Condition::systime_wait(ZCE_Null_Mutex * /*external_mutex*/ , const ZCE_Time_Value & /*abs_time*/)
+bool ZCE_Null_Condition::systime_wait(ZCE_Null_Mutex * /*external_mutex*/, const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }

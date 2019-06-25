@@ -132,16 +132,16 @@ protected:
 protected:
 
     ///异步对象ID
-	unsigned int asyncobj_id_ = 0;
+    unsigned int asyncobj_id_ = 0;
 
     ///管理者
-	ZCE_Async_ObjectMgr* async_mgr_ = NULL;
+    ZCE_Async_ObjectMgr *async_mgr_ = NULL;
 
     ///对应激活的处理的命令
-	unsigned int  create_cmd_ = 0;
+    unsigned int  create_cmd_ = 0;
 
     ///超时的定时器ID
-	int timeout_id_ = ZCE_Timer_Queue_Base::INVALID_TIMER_ID;
+    int timeout_id_ = ZCE_Timer_Queue_Base::INVALID_TIMER_ID;
 
     /// 异步对象处理的错误码，统计事物错误的时候使用
     int running_errno_ = 0;
@@ -150,7 +150,7 @@ protected:
     ZCE_LOG_PRIORITY trace_log_pri_ = RS_INFO;
 
     ///传递的外部数据，
-    const void* receive_data_ = NULL;
+    const void *receive_data_ = NULL;
 };
 
 
@@ -168,7 +168,7 @@ class ZCE_Async_ObjectMgr : public ZCE_Timer_Handler
 protected:
 
     ///异步对象池子，
-    typedef ZCE_LIB::lordrings<ZCE_Async_Object *>  ASYNC_OBJECT_POOL;
+    typedef zce::lordrings<ZCE_Async_Object *>  ASYNC_OBJECT_POOL;
 
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD

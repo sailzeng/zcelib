@@ -20,7 +20,7 @@
 #define SOARING_LIB_SND_RCV_BASE_H_
 
 /******************************************************************************************
-class SendRecv_Package_Base base 类 
+class SendRecv_Package_Base base 类
 ******************************************************************************************/
 class SendRecv_Package_Base
 {
@@ -68,9 +68,9 @@ protected:
     //就不会出现共用一个BUFFER的事情
 
     //发送缓冲区的帧
-    Zerg_App_Frame* tibetan_send_appframe_;
+    Zerg_App_Frame *tibetan_send_appframe_;
     //接收缓冲区
-    Zerg_App_Frame* tibetan_recv_appframe_;
+    Zerg_App_Frame *tibetan_recv_appframe_;
 
     //收到的事务ID
     unsigned int              recv_trans_id_;

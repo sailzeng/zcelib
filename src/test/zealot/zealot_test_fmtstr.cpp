@@ -10,34 +10,34 @@ int test_foo_snprintf()
     size_t cur_len = 0;
     size_t buf_max_len = 1024;
 
-    ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=## bool_data=## Haha!\n");
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=## bool_data=## Haha!\n");
     printf("%s", out_buffer);
 
     int int_data = 123456;
     bool bool_data = false;
-    ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? Haha!\n", int_data, bool_data);
-    printf("%s",out_buffer);
-
-    ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? Haha!\n", int_data, bool_data);
     printf("%s", out_buffer);
 
-    ZCE_LIB::foo_snprintf(out_buffer, 10, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= Haha!\n", int_data, bool_data);
+    printf("%s", out_buffer);
+
+    zce::foo_snprintf(out_buffer, 10, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    ZCE_LIB::foo_snprintf(out_buffer, 15, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 15, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    ZCE_LIB::foo_snprintf(out_buffer, 20, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 20, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    ZCE_LIB::foo_snprintf(out_buffer, 30, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 30, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
     double double_data = 123456789012.1234f;
-    ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= %? double_data = %?Haha!\n",
-                          int_data,
-                          bool_data,
-                          double_data);
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= %? double_data = %?Haha!\n",
+                      int_data,
+                      bool_data,
+                      double_data);
     std::cout << (out_buffer) << std::endl;
     return 0;
 }
@@ -61,27 +61,27 @@ int test_printf_int()
     char out_buffer[1024 + 1];
     size_t cur_len = 0;
     size_t buf_max_len = 1024;
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 0, size_t(-1));
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, size_t(-1));
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 0, size_t(-1), ZCE_LIB::FMT_PLUS);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, size_t(-1), zce::FMT_PLUS);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 25, 8, ZCE_LIB::FMT_UNSIGNED);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 8, zce::FMT_UNSIGNED);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 25, 8, ZCE_LIB::FMT_PLUS);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 8, zce::FMT_PLUS);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 25, 8, ZCE_LIB::FMT_PLUS | ZCE_LIB::FMT_UNSIGNED);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 8, zce::FMT_PLUS | zce::FMT_UNSIGNED);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 25, 0, ZCE_LIB::FMT_PLUS | ZCE_LIB::FMT_UNSIGNED);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 0, zce::FMT_PLUS | zce::FMT_UNSIGNED);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_HEXADECIMAL, 25, 0, ZCE_LIB::FMT_NUM);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_HEXADECIMAL, 25, 0, zce::FMT_PREFIX);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_HEXADECIMAL, 25, 0, ZCE_LIB::FMT_NUM | ZCE_LIB::FMT_ZERO);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_HEXADECIMAL, 25, 0, zce::FMT_PREFIX | zce::FMT_ZERO);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_HEXADECIMAL, 25, 8, ZCE_LIB::FMT_ZERO);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_HEXADECIMAL, 25, 8, zce::FMT_ZERO);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 0, 8, 0);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, 8, 0);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    ZCE_LIB::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, ZCE_LIB::BASE_DECIMAL, 0, 0, 0);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, 0, 0);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
 
     printf("+-----------------------------------------------------------+\n");
@@ -93,16 +93,16 @@ int test_fmt_splice(int /*argc*/, char * /*argv*/[])
     const size_t BUFFER_LEN = 1024;
     size_t use_len = 0;
     char buffer[BUFFER_LEN + 1] = {0};
-    ZCE_LIB::foo_strnsplice(buffer, BUFFER_LEN, use_len,'|', "ABC", "efghi");
+    zce::foo_strnsplice(buffer, BUFFER_LEN, use_len, '|', "ABC", "efghi");
     std::cout << buffer << std::endl;
     double double_data = 123.45678;
-    std::string str_data="I love hongkong.";
-    ZCE_LIB::foo_strnsplice(buffer, BUFFER_LEN, use_len,
-        ' ', 
-        ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
-        "ABC", 
-        "efghi",
-        str_data);
+    std::string str_data = "I love hongkong.";
+    zce::foo_strnsplice(buffer, BUFFER_LEN, use_len,
+                        ' ',
+                        zce::Double_Out_Helper(double_data, 16, 3),
+                        "ABC",
+                        "efghi",
+                        str_data);
     std::cout << buffer << std::endl;
 
     return 0;
@@ -121,15 +121,15 @@ int printf_double()
 
     int dec, sign;
     test_double = 1.000000000;
-    ZCE_LIB::fcvt_r(test_double,
-                   5,
-                   &dec,
-                   &sign,
-                   out_buffer,
-                   1024
-                  );
+    zce::fcvt_r(test_double,
+                5,
+                &dec,
+                &sign,
+                out_buffer,
+                1024
+               );
     test_double = 0.000000000;
-    ZCE_LIB::ecvt_r(
+    zce::ecvt_r(
         test_double,
         5,
         &dec,
@@ -148,7 +148,7 @@ int printf_double()
 #endif
 
     test_double = 0.000000012345678912;
-    ZCE_LIB::fcvt_r(
+    zce::fcvt_r(
         test_double,
         10,
         &dec,
@@ -157,7 +157,7 @@ int printf_double()
         1024
     );
 
-    ZCE_LIB::ecvt_r(
+    zce::ecvt_r(
         test_double,
         5,
         &dec,
@@ -177,62 +177,62 @@ int printf_double()
 
     cur_len = 0;
     test_double = -1.12345678e+100;
-    ZCE_LIB::fmt_double(out_buffer,
-                        buf_max_len,
-                        cur_len,
-                        test_double,
-                        10,
-                        5,
-                        0);
+    zce::fmt_double(out_buffer,
+                    buf_max_len,
+                    cur_len,
+                    test_double,
+                    10,
+                    5,
+                    0);
 
-    ZCE_LIB::fmt_double(out_buffer,
-                        buf_max_len,
-                        cur_len,
-                        test_double,
-                        20,
-                        5,
-                        ZCE_LIB::FMT_EXPONENT | ZCE_LIB::FMT_MINUS);
+    zce::fmt_double(out_buffer,
+                    buf_max_len,
+                    cur_len,
+                    test_double,
+                    20,
+                    5,
+                    zce::FMT_EXPONENT | zce::FMT_MINUS);
 
     test_double = 1.0000000;
-    ZCE_LIB::fmt_double(out_buffer,
-                        buf_max_len,
-                        cur_len,
-                        test_double,
-                        10,
-                        5,
-                        0);
+    zce::fmt_double(out_buffer,
+                    buf_max_len,
+                    cur_len,
+                    test_double,
+                    10,
+                    5,
+                    0);
 
     printf ("%s\n", out_buffer);
     printf ("%10.5f\n", test_double);
-    ZCE_LIB::fmt_double(out_buffer,
-                        buf_max_len,
-                        cur_len,
-                        test_double,
-                        20,
-                        5,
-                        ZCE_LIB::FMT_EXPONENT | ZCE_LIB::FMT_LEFT_ALIGN | ZCE_LIB::FMT_UP | ZCE_LIB::FMT_PLUS);
+    zce::fmt_double(out_buffer,
+                    buf_max_len,
+                    cur_len,
+                    test_double,
+                    20,
+                    5,
+                    zce::FMT_EXPONENT | zce::FMT_LEFT_ALIGN | zce::FMT_UP | zce::FMT_PLUS);
     printf ("%s\n", out_buffer);
     printf ("%-+20.5E\n", test_double);
 
     printf ("-------------------------------------------------------------\n");
 
     test_double = -0.0000000123456;
-    ZCE_LIB::fmt_double(out_buffer,
-                        buf_max_len,
-                        cur_len,
-                        test_double,
-                        20,
-                        9,
-                        0);
+    zce::fmt_double(out_buffer,
+                    buf_max_len,
+                    cur_len,
+                    test_double,
+                    20,
+                    9,
+                    0);
     printf ("%s\n", out_buffer);
     printf ("%20.9f\n", test_double);
-    ZCE_LIB::fmt_double(out_buffer,
-                        buf_max_len,
-                        cur_len,
-                        test_double,
-                        20,
-                        5,
-                        ZCE_LIB::FMT_EXPONENT | ZCE_LIB::FMT_LEFT_ALIGN | ZCE_LIB::FMT_UP | ZCE_LIB::FMT_PLUS);
+    zce::fmt_double(out_buffer,
+                    buf_max_len,
+                    cur_len,
+                    test_double,
+                    20,
+                    5,
+                    zce::FMT_EXPONENT | zce::FMT_LEFT_ALIGN | zce::FMT_UP | zce::FMT_PLUS);
     printf ("%s\n", out_buffer);
     printf ("%-+20.5E\n", test_double);
 
@@ -251,9 +251,9 @@ int test_cpp_log_out(int /*argc*/, char * /*argv*/[])
     ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love=%? you love=%?", "ABCDEFG", 1234567890);
 
     ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "one love=%? two love= %? three love=%?",
-                                                   "ABCDEFG",
-                                                   1.1,
-                                                   12345);
+                                                    "ABCDEFG",
+                                                    1.1,
+                                                    12345);
 
     return 0;
 }
@@ -279,23 +279,23 @@ const char cstr_data[] = "I love you.";
 std::string stdstr_data = "You love me.";
 
 
-int test_out_buffer(int /*argc*/,char * /*argv*/[])
+int test_out_buffer(int /*argc*/, char * /*argv*/[])
 {
     const std::string def("You love me.");
-    ZCE_LIB::String_Out_Helper abc(def);
+    zce::String_Out_Helper abc(def);
 
     ZCE_Progress_Timer progress_timer;
     progress_timer.restart();
     ZCE_TRACE_FILELINE(RS_DEBUG);
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                              int_data,
-                              bool_data,
-                              double_data,
-                              cstr_data,
-                              stdstr_data
-                             );
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          int_data,
+                          bool_data,
+                          double_data,
+                          cstr_data,
+                          stdstr_data
+                         );
 
     }
     progress_timer.end();
@@ -305,13 +305,13 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-            int_data,
-            bool_data,
-            double_data,
-            cstr_data,
-            stdstr_data
-            );
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          int_data,
+                          bool_data,
+                          double_data,
+                          cstr_data,
+                          stdstr_data
+                         );
 
     }
     progress_timer.end();
@@ -358,13 +358,13 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                              ZCE_LIB::Int_Out_Helper(int_data, ZCE_LIB::BASE_HEXADECIMAL, 32, 0, ZCE_LIB::FMT_ZERO),
-                              bool_data,
-                              ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
-                              ZCE_LIB::String_Out_Helper(cstr_data, 30),
-                              ZCE_LIB::String_Out_Helper(stdstr_data.c_str(), stdstr_data.length())
-                             );
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_HEXADECIMAL),
+                          bool_data,
+                          zce::Double_Out_Helper(double_data, 16, 3),
+                          zce::String_Out_Helper(cstr_data, 30),
+                          zce::String_Out_Helper(stdstr_data.c_str(), stdstr_data.length())
+                         );
 
     }
     progress_timer.end();
@@ -375,13 +375,13 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-            ZCE_LIB::Int_Out_Helper(int_data, ZCE_LIB::BASE_HEXADECIMAL, 32, 0, ZCE_LIB::FMT_ZERO),
-            bool_data,
-            ZCE_LIB::Double_Out_Helper(double_data, 16, 3),
-            ZCE_LIB::String_Out_Helper(cstr_data, 30),
-            ZCE_LIB::String_Out_Helper(stdstr_data.c_str(), 28)
-            );
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_HEXADECIMAL),
+                          bool_data,
+                          zce::Double_Out_Helper(double_data, 16, 3),
+                          zce::String_Out_Helper(cstr_data, 30),
+                          zce::String_Out_Helper(stdstr_data.c_str(), 28)
+                         );
 
     }
     progress_timer.end();
@@ -438,13 +438,13 @@ int test_out_file()
     std::ofstream of_stream_1("FILE_A1.txt", std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                              int_data,
-                              bool_data,
-                              double_data,
-                              cstr_data,
-                              stdstr_data
-                             );
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          int_data,
+                          bool_data,
+                          double_data,
+                          cstr_data,
+                          stdstr_data
+                         );
         of_stream_1.write(out_buffer, cur_len);
     }
     of_stream_1.close();
@@ -501,13 +501,13 @@ int test_out_file_stream()
     std::ofstream of_stream_1("FILE_B1.txt", std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                              int_data,
-                              bool_data,
-                              double_data,
-                              cstr_data,
-                              stdstr_data
-                             );
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          int_data,
+                          bool_data,
+                          double_data,
+                          cstr_data,
+                          stdstr_data
+                         );
         of_stream_1.write(out_buffer, cur_len);
     }
     of_stream_1.close();
@@ -517,21 +517,21 @@ int test_out_file_stream()
     std::cout << "foo_snprintf with ofstream use " << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
     progress_timer.restart();
-    ZCE_HANDLE file_handle = ZCE_LIB::open("FILE_B2.txt", O_CREAT | O_TRUNC | O_RDWR | O_APPEND, S_IWRITE | S_IREAD);
+    ZCE_HANDLE file_handle = zce::open("FILE_B2.txt", O_CREAT | O_TRUNC | O_RDWR | O_APPEND, S_IWRITE | S_IREAD);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        ZCE_LIB::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                              int_data,
-                              bool_data,
-                              double_data,
-                              cstr_data,
-                              stdstr_data
-                             );
-        ZCE_LIB::write(file_handle, out_buffer, cur_len);
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+                          int_data,
+                          bool_data,
+                          double_data,
+                          cstr_data,
+                          stdstr_data
+                         );
+        zce::write(file_handle, out_buffer, cur_len);
     }
-    ZCE_LIB::close(file_handle);
+    zce::close(file_handle);
     progress_timer.end();
-    std::cout << "foo_snprintf  with  ZCE_LIB::write use" << progress_timer.elapsed_sec() << " sec ." << std::endl;
+    std::cout << "foo_snprintf  with  zce::write use" << progress_timer.elapsed_sec() << " sec ." << std::endl;
 
 
     progress_timer.restart();
@@ -559,12 +559,12 @@ int test_out_file_stream()
 }
 
 
-int test_log_debug(int , char * [])
+int test_log_debug(int, char *[])
 {
     ZCE_BACKTRACE_STACK(RS_DEBUG);
     char dbg_ptr[916];
-    memset(dbg_ptr,0x68,916);
-    ZCE_TRACE_POINTER_DATA(RS_DEBUG,(const unsigned char *)dbg_ptr,916);
+    memset(dbg_ptr, 0x68, 916);
+    ZCE_TRACE_POINTER_DATA(RS_DEBUG, (const unsigned char *)dbg_ptr, 916);
     return 0;
 }
 

@@ -23,7 +23,7 @@ ZCE_Sockaddr_In::ZCE_Sockaddr_In (const char *ip_addr_str,
                                   uint16_t port_number):
     ZCE_Sockaddr(reinterpret_cast<sockaddr *>(&in4_addr_), sizeof(sockaddr_in))
 {
-    int ret = ZCE_LIB::set_sockaddr_in(&in4_addr_, ip_addr_str, port_number);
+    int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr_str, port_number);
 
     if (ret != 0)
     {
@@ -36,7 +36,7 @@ ZCE_Sockaddr_In::ZCE_Sockaddr_In (uint32_t ip_addr,
                                   uint16_t port_number):
     ZCE_Sockaddr(reinterpret_cast<sockaddr *>(&in4_addr_), sizeof(sockaddr_in))
 {
-    int ret = ZCE_LIB::set_sockaddr_in(&in4_addr_, ip_addr, port_number);
+    int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr, port_number);
 
     if (ret != 0)
     {
@@ -59,13 +59,13 @@ ZCE_Sockaddr_In::~ZCE_Sockaddr_In()
 //检查地址是否是一个内网地址
 bool ZCE_Sockaddr_In::is_internal()
 {
-    return ZCE_LIB::is_internal(&in4_addr_);
+    return zce::is_internal(&in4_addr_);
 }
 
 //检查地址是否是一个外网地址，其实我就简单认为不是外网地址就是内网地址
 bool ZCE_Sockaddr_In::is_internet()
 {
-    return !(ZCE_LIB::is_internal(&in4_addr_));
+    return !(zce::is_internal(&in4_addr_));
 }
 
 //设置地址信息
@@ -79,7 +79,7 @@ void ZCE_Sockaddr_In::set_sockaddr (sockaddr *addr, socklen_t len)
 int ZCE_Sockaddr_In::set(const char ip_addr_str[16],
                          uint16_t port_number)
 {
-    int ret = ZCE_LIB::set_sockaddr_in(&in4_addr_, ip_addr_str, port_number);
+    int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr_str, port_number);
 
     if (ret != 0)
     {
@@ -93,7 +93,7 @@ int ZCE_Sockaddr_In::set(const char ip_addr_str[16],
 int ZCE_Sockaddr_In::set(uint32_t ip_addr,
                          uint16_t port_number)
 {
-    int ret = ZCE_LIB::set_sockaddr_in(&in4_addr_, ip_addr, port_number);
+    int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr, port_number);
 
     if (ret != 0)
     {
@@ -107,7 +107,7 @@ int ZCE_Sockaddr_In::set(uint32_t ip_addr,
 //根据字符串设置IP地址，如果有#会提取端口号
 int ZCE_Sockaddr_In::set(const char *ip_addr_str)
 {
-    int ret = ZCE_LIB::set_sockaddr_in(&in4_addr_, ip_addr_str);
+    int ret = zce::set_sockaddr_in(&in4_addr_, ip_addr_str);
 
     if (ret != 0)
     {
@@ -121,7 +121,7 @@ int ZCE_Sockaddr_In::set(const char *ip_addr_str)
 ///检查端口号是否是一个安全端口
 bool ZCE_Sockaddr_In::check_safeport()
 {
-    return ZCE_LIB::check_safeport(this->get_port_number());
+    return zce::check_safeport(this->get_port_number());
 }
 
 //比较两个地址是否相等
@@ -162,21 +162,21 @@ bool ZCE_Sockaddr_In::is_ip_equal (const ZCE_Sockaddr_In &others) const
 //取得IP地址相关的域名信息,调用函数是getnameinfo
 int ZCE_Sockaddr_In::get_name_info(char *host_name, size_t name_len) const
 {
-    return ZCE_LIB::getnameinfo(reinterpret_cast<const sockaddr *>(&in4_addr_),
-                                sizeof(sockaddr_in),
-                                host_name,
-                                name_len,
-                                NULL,
-                                0,
-                                NI_NAMEREQD);
+    return zce::getnameinfo(reinterpret_cast<const sockaddr *>(&in4_addr_),
+                            sizeof(sockaddr_in),
+                            host_name,
+                            name_len,
+                            NULL,
+                            0,
+                            NI_NAMEREQD);
 }
 
 //取得域名相关的IP地址信息，调用函数是getaddrinfo_to_addr
 int ZCE_Sockaddr_In::getaddrinfo_to_addr(const char *nodename)
 {
-    return ZCE_LIB::getaddrinfo_to_addr(nodename,
-                                        sockaddr_ptr_,
-                                        sizeof(sockaddr_in));
+    return zce::getaddrinfo_to_addr(nodename,
+                                    sockaddr_ptr_,
+                                    sizeof(sockaddr_in));
 }
 
 //返回sockaddr_in

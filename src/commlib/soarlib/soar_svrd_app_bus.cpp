@@ -43,7 +43,7 @@ int Soar_SvrdApp_ZergBus::app_run()
     static const size_t MAX_ONCE_PROCESS_FRAME = 2048;
 
     //
-    size_t size_io_event = 0 , size_timer_expire  = 0;
+    size_t size_io_event = 0, size_timer_expire  = 0;
 
     size_t prc_frame = 0, idle = 0, proc_data_num = 0;
 

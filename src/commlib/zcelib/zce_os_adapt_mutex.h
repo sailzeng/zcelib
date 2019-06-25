@@ -30,7 +30,7 @@
 
 #include "zce_os_adapt_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //Pthread Mutex的属性部分操作……，有点裹脚布的感觉

@@ -38,8 +38,8 @@ public:
     void write_help(ZCE_Serialize_Write *ssave, const std::list<list_type> &val);
 };
 
-template<typename key_type,typename data_type >
-class ZCE_ClassSerialize_WriteHelp<std::map<key_type,data_type> >
+template<typename key_type, typename data_type >
+class ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >
 {
 public:
     void write_help(ZCE_Serialize_Write *ssave, const std::map<key_type, data_type> &val);
@@ -52,7 +52,7 @@ public:
 * @note       没有考虑对齐等问题，
 *             BTW：对于写入，我们不在溢出保护上做过多努力，那是你负责的事情
 */
-class ZCE_Serialize_Write  
+class ZCE_Serialize_Write
 {
 public:
 
@@ -87,7 +87,7 @@ public:
     {
         return write_pos_ - write_buf_;
     }
-        
+
     ///保存枚举值,利用SFINA的原则，进行重载
     template<typename val_type  >
     void write(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
@@ -124,9 +124,9 @@ public:
     {
         // consider alignment
         std::size_t count = sizeof(val) / (
-            static_cast<const char *>(static_cast<const void *>(&val[1]))
-            - static_cast<const char *>(static_cast<const void *>(&val[0]))
-            );
+                                static_cast<const char *>(static_cast<const void *>(&val[1]))
+                                - static_cast<const char *>(static_cast<const void *>(&val[0]))
+                            );
         return write_array(val, count);
     }
     template<typename array_type >
@@ -136,9 +136,9 @@ public:
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
         ZCE_ASSERT(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
-        for (size_t i = 0; i < count && is_good_;++i)
+        for (size_t i = 0; i < count && is_good_; ++i)
         {
-            this->write(*(ary+i));
+            this->write(*(ary + i));
         }
         return;
     }
@@ -188,7 +188,7 @@ public:
 
     ///使用& 操作符号写入数据，
     template<typename val_type>
-    ZCE_Serialize_Write & operator &(const val_type &val)
+    ZCE_Serialize_Write &operator &(const val_type &val)
     {
         this->write(val);
         return *this;
@@ -215,15 +215,15 @@ protected:
 //用保存class辅助处理的 base templates 实现
 template<typename val_type>
 void ZCE_ClassSerialize_WriteHelp<val_type>::write_help(ZCE_Serialize_Write *ssave,
-    const val_type &val)
+                                                        const val_type &val)
 {
     val.serialize(ssave);
 }
 
 //用于保存vector 辅助处理的特化
 template<typename vector_type>
-void ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >::write_help(ZCE_Serialize_Write *ssave, 
-    const std::vector<vector_type> &val)
+void ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >::write_help(ZCE_Serialize_Write *ssave,
+                                                                         const std::vector<vector_type> &val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
@@ -237,7 +237,7 @@ void ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >::write_help(ZCE_Ser
 
 template<typename list_type>
 void ZCE_ClassSerialize_WriteHelp<std::list<list_type> >::write_help(ZCE_Serialize_Write *ssave,
-    const std::list<list_type> &val)
+                                                                     const std::list<list_type> &val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
@@ -252,7 +252,7 @@ void ZCE_ClassSerialize_WriteHelp<std::list<list_type> >::write_help(ZCE_Seriali
 
 template<typename key_type, typename data_type >
 void ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >::write_help(ZCE_Serialize_Write *ssave,
-    const std::map<key_type, data_type> &val)
+                                                                              const std::map<key_type, data_type> &val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
@@ -392,9 +392,9 @@ public:
     {
         // consider alignment
         std::size_t ary_count = sizeof(val) / (
-            static_cast<const char *>(static_cast<const void *>(&val[1]))
-            - static_cast<const char *>(static_cast<const void *>(&val[0]))
-            );
+                                    static_cast<const char *>(static_cast<const void *>(&val[1]))
+                                    - static_cast<const char *>(static_cast<const void *>(&val[0]))
+                                );
         size_t load_count;
         return read_array(val, ary_count, load_count);
     }
@@ -488,14 +488,14 @@ protected:
 //辅助类，save_help 函数
 template<typename val_type>
 void ZCE_ClassSerialize_ReadHelp<val_type>::read_help(ZCE_Serialize_Read *sload,
-    val_type &val)
+                                                      val_type &val)
 {
     val.serialize(sload);
 }
 
 template<typename vector_type>
 void ZCE_ClassSerialize_ReadHelp<std::vector<vector_type> >::read_help(ZCE_Serialize_Read *sload,
-    std::vector<vector_type> &val)
+                                                                       std::vector<vector_type> &val)
 {
     unsigned int v_size = 0;
     sload->read_arithmetic(v_size);
@@ -515,7 +515,7 @@ void ZCE_ClassSerialize_ReadHelp<std::vector<vector_type> >::read_help(ZCE_Seria
 
 template<typename list_type>
 void ZCE_ClassSerialize_ReadHelp<std::list<list_type> >::read_help(ZCE_Serialize_Read *sload,
-    std::list<list_type> &val)
+                                                                   std::list<list_type> &val)
 {
     size_t v_size = val.size();
     sload->read_arithmetic(v_size);
@@ -536,7 +536,7 @@ void ZCE_ClassSerialize_ReadHelp<std::list<list_type> >::read_help(ZCE_Serialize
 
 template<typename key_type, typename data_type >
 void ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >::read_help(ZCE_Serialize_Read *sload,
-    std::map<key_type, data_type> &val)
+                                                                            std::map<key_type, data_type> &val)
 {
     size_t v_size = val.size();
     sload->read_arithmetic(v_size);

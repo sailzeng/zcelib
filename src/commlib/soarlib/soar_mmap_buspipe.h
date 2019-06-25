@@ -128,7 +128,7 @@ protected:
 //从RECV管道读取帧，
 inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 {
-    int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<ZCE_LIB::dequechunk_node* &>(proc_frame));
+    int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<zce::dequechunk_node *&>(proc_frame));
 
     // 加监控数据
     if (ret == 0)
@@ -171,7 +171,7 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
     }
 
     int ret = push_back_bus(SEND_PIPE_ID,
-                            reinterpret_cast<const ZCE_LIB::dequechunk_node *>(proc_frame));
+                            reinterpret_cast<const zce::dequechunk_node *>(proc_frame));
 
     if (ret != 0)
     {

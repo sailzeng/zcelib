@@ -4,13 +4,13 @@
 #include "zealot_predefine.h"
 
 
-int test_nonr_thread_mutex(int, char * [])
+int test_nonr_thread_mutex(int, char *[])
 {
     ZCE_Thread_NONR_Mutex  abc;
     abc.lock();
-    int last_error = ZCE_LIB::last_error();
+    int last_error = zce::last_error();
     abc.lock();
-    last_error = ZCE_LIB::last_error();
+    last_error = zce::last_error();
 
     ZCE_UNUSED_ARG(last_error);
     return 0;
@@ -61,8 +61,8 @@ public:
 
     virtual int svc()
     {
-        int x=0;
-        ZCE_LIB::sleep(1);
+        int x = 0;
+        zce::sleep(1);
 
         for (size_t i = 0; i < number_prc_; ++i)
         {

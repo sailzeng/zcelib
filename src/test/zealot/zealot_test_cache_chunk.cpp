@@ -7,16 +7,16 @@
 
 
 
-int test_cachechunk(int /*argc*/ , char * /*argv*/ [])
+int test_cachechunk(int /*argc*/, char * /*argv*/ [])
 {
-    size_t szalloc = ZCE_LIB::shm_cachechunk::getallocsize(4, 32, 32);
+    size_t szalloc = zce::shm_cachechunk::getallocsize(4, 32, 32);
     bool bret = false;
     std::cout << "need mem: " << (int)szalloc << std::endl;
-    std::cout << "sizeof(smem_cachechunk)" << sizeof(ZCE_LIB::shm_cachechunk) << std::endl;
+    std::cout << "sizeof(smem_cachechunk)" << sizeof(zce::shm_cachechunk) << std::endl;
     char *tmproom = new char [szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    ZCE_LIB::shm_cachechunk *pmmap = ZCE_LIB::shm_cachechunk::initialize(4, 32, 32, tmproom, false);
+    zce::shm_cachechunk *pmmap = zce::shm_cachechunk::initialize(4, 32, 32, tmproom, false);
     char tmpbuf[512];
     char tmpbuf1[68] = {"1234567890123456789012345678901234567890"};
     tmpbuf1[67] = '\0';
@@ -57,9 +57,9 @@ int test_cache_chunk2()
     char cachebuf[2000];
 
     char testdata[] = "12345678";
-    ZCE_LIB::shm_cachechunk *testchunk = NULL;
+    zce::shm_cachechunk *testchunk = NULL;
     size_t testindex, testfreenode, testfreechunk, testfreeroom;
-    testchunk = ZCE_LIB::shm_cachechunk::initialize(10, 100, 10, cachebuf);
+    testchunk = zce::shm_cachechunk::initialize(10, 100, 10, cachebuf);
     testchunk->free_size(testfreenode, testfreechunk, testfreeroom);
     std::cout << "free chunk:" << testfreechunk << std::endl;
 

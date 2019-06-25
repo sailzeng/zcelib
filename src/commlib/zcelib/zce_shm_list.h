@@ -41,7 +41,7 @@
 
 #include "zce_shm_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //============================================================================================
@@ -72,7 +72,7 @@ public:
     @param      instance LIST的实例
     @note
     */
-    _shm_list_iterator<_value_type>(size_t seq, smem_list<_value_type>* instance):
+    _shm_list_iterator<_value_type>(size_t seq, smem_list<_value_type> *instance):
         serial_(seq),
         list_instance_(instance)
     {
@@ -90,7 +90,7 @@ public:
     }
 
     ///初始化，
-    void initialize(size_t seq, smem_list<_value_type>* instance)
+    void initialize(size_t seq, smem_list<_value_type> *instance)
     {
         serial_ = seq;
         list_instance_ = instance;
@@ -161,7 +161,7 @@ protected:
     //序列号，相对于数组下标
     size_t                  serial_;
     //对应的list对象指针
-    smem_list<_value_type>* list_instance_;
+    smem_list<_value_type> *list_instance_;
 };
 
 //============================================================================================
@@ -252,7 +252,7 @@ public:
     }
 
     //只定义,不实现,
-    const smem_list<_value_type> & operator=(const smem_list<_value_type> &others);
+    const smem_list<_value_type> &operator=(const smem_list<_value_type> &others);
 
 protected:
 
@@ -322,13 +322,13 @@ public:
         return  sizeof(_shm_list_head)  + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode ;
     }
 
-    smem_list<_value_type>* getinstance()
+    smem_list<_value_type> *getinstance()
     {
         return this;
     }
 
     //初始化
-    static smem_list<_value_type>* initialize(const size_t numnode, char *pmmap, bool if_restore = false)
+    static smem_list<_value_type> *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
         _shm_list_head *listhead = reinterpret_cast<_shm_list_head *>(pmmap);

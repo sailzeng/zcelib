@@ -66,10 +66,10 @@ public:
     //写锁定超时，相对时间
     virtual bool duration_lock_write(const ZCE_Time_Value &relative_time);
 
-	///解写锁
-	virtual void unlock_write();
-	///解读锁
-	virtual void unlock_read();
+    ///解写锁
+    virtual void unlock_write();
+    ///解读锁
+    virtual void unlock_read();
 
     ///取出内部的锁的指针
     pthread_rwlock_t *get_lock();
@@ -117,16 +117,16 @@ public:
     ///解读锁
     virtual void unlock_read();
 
-	///解写锁
-	virtual void unlock_write();
+    ///解写锁
+    virtual void unlock_write();
 
     ///取出内部的锁的指针
-	SRWLOCK *get_lock();
+    SRWLOCK *get_lock();
 
 protected:
 
-	///WINSVR 2008以后，WINDOWS自己实现的读写锁
-	SRWLOCK                rwlock_slim_;
+    ///WINSVR 2008以后，WINDOWS自己实现的读写锁
+    SRWLOCK                rwlock_slim_;
 
 };
 

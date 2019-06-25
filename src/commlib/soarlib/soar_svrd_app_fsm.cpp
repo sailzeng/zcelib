@@ -70,7 +70,7 @@ int Comm_SvrdApp_FSM::app_run()
 
     Transaction_Manager *trans_mgr = Transaction_Manager::instance();
 
-    size_t size_io_event = 0 , num_timer_expire  = 0;
+    size_t size_io_event = 0, num_timer_expire  = 0;
 
     size_t proc_frame = 0, gen_trans = 0, proc_data_num = 0;
     unsigned int idle = 0;

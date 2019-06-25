@@ -350,7 +350,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, uns
     *id = id_builder_;
     crt_async->asyncobj_id_ = id_builder_;
 
-    
+
     ++async_rec->create_num_;
     crt_async->on_start();
 
@@ -429,7 +429,7 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id, void *outer_data)
     async_obj->cancel_timeout();
 
     bool continue_run = false;
-    async_obj->on_run(outer_data,continue_run);
+    async_obj->on_run(outer_data, continue_run);
     ++async_rec.active_num_;
 
     //如果不继续运行了，

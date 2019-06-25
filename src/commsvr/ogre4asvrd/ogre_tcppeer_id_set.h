@@ -20,7 +20,7 @@ public:
     void init_services_peerinfo(size_t szpeer);
 
     ///查询配置信息
-    int find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler* &);
+    int find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *&);
     ///设置配置信息
     int add_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *);
     ///删除配置信息

@@ -70,13 +70,13 @@ ssize_t ZCE_Socket_DataGram::recvfrom_timeout (void *buf,
                                                ZCE_Time_Value &timeout_tv,
                                                int flags)  const
 {
-    return ZCE_LIB::recvfrom_timeout (socket_handle_,
-                                      buf,
-                                      len,
-                                      from_addr->sockaddr_ptr_,
-                                      &from_addr->sockaddr_size_,
-                                      timeout_tv,
-                                      flags);
+    return zce::recvfrom_timeout (socket_handle_,
+                                  buf,
+                                  len,
+                                  from_addr->sockaddr_ptr_,
+                                  &from_addr->sockaddr_size_,
+                                  timeout_tv,
+                                  flags);
 }
 
 //UDP的发送暂时是不会阻塞的，不用超时处理，写这个函数完全是为了和前面对齐
@@ -87,12 +87,12 @@ ssize_t ZCE_Socket_DataGram::sendto_timeout (const void *buf,
                                              ZCE_Time_Value &timeout_tv,
                                              int flags)  const
 {
-    return ZCE_LIB::sendto_timeout (socket_handle_,
-                                    buf,
-                                    len,
-                                    to_addr->sockaddr_ptr_,
-                                    to_addr->sockaddr_size_,
-                                    timeout_tv,
-                                    flags);
+    return zce::sendto_timeout (socket_handle_,
+                                buf,
+                                len,
+                                to_addr->sockaddr_ptr_,
+                                to_addr->sockaddr_size_,
+                                timeout_tv,
+                                flags);
 }
 

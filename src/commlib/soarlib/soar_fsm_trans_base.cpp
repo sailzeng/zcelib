@@ -204,7 +204,7 @@ void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
 
 
 //检查接受到的FRAME的数据和命令
-int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame, 
+int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame,
                                           unsigned int wait_cmd)
 {
     //
@@ -229,7 +229,7 @@ int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame,
 //用于检查请求的IP地址是否是内部IP地址,是返回0，不是返回非0
 int Transaction_Base::check_request_internal() const
 {
-    return (ZCE_LIB::is_internal(req_ip_address_)) ? 0 : -1;
+    return (zce::is_internal(req_ip_address_)) ? 0 : -1;
 }
 
 //检测包头和包体的user_id以及发送的service_id是否一致,
@@ -250,14 +250,14 @@ int Transaction_Base::close_request_service() const
 {
 
     ZCE_LOG(RS_INFO, "[framework] close_request_service() at req_command_=%u,fsm_stage_=%d,req_user_id_=%u.",
-        req_command_,
-        get_stage(),
-        req_user_id_);
+            req_command_,
+            get_stage(),
+            req_user_id_);
 
     return trans_manager_->mgr_sendmsghead_to_service(INNER_RSP_CLOSE_SOCKET,
-        req_user_id_,
-        req_rcv_service_,
-        req_proxy_service_);
+                                                      req_user_id_,
+                                                      req_rcv_service_,
+                                                      req_proxy_service_);
 }
 
 
@@ -298,7 +298,7 @@ void Transaction_Base::output_trans_info(const char *outstr ) const
 {
     std::ostringstream strstream;
     dump_transa_info(strstream);
-    ZCE_LOG(RS_DEBUG, "[framework] %s:%s" , outstr, strstream.str().c_str());
+    ZCE_LOG(RS_DEBUG, "[framework] %s:%s", outstr, strstream.str().c_str());
 }
 
 int Transaction_Base::request_send_buf_to_peer(unsigned int cmd,

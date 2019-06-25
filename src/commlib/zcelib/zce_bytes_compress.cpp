@@ -59,12 +59,12 @@ const size_t HASH_TABLE_LEN = 0x1 << (HASH_TABLE_LEN_2_POWER);
 
 //===============================================================================================================
 
-ZCE_LIB::ZLZ_Compress_Format::ZLZ_Compress_Format()
+zce::ZLZ_Compress_Format::ZLZ_Compress_Format()
 {
     hash_lz_offset_ = new uint32_t[HASH_TABLE_LEN];
 }
 
-ZCE_LIB::ZLZ_Compress_Format::~ZLZ_Compress_Format()
+zce::ZLZ_Compress_Format::~ZLZ_Compress_Format()
 {
     if (hash_lz_offset_)
     {
@@ -74,10 +74,10 @@ ZCE_LIB::ZLZ_Compress_Format::~ZLZ_Compress_Format()
 
 
 //压缩的关键函数，内部函数，不对对外暴漏
-void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
-                                                 size_t original_size,
-                                                 unsigned char *compressed_buf,
-                                                 size_t *compressed_size)
+void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
+                                             size_t original_size,
+                                             unsigned char *compressed_buf,
+                                             size_t *compressed_size)
 {
     //初始化各种初始值
     const unsigned char *read_pos = original_buf;
@@ -104,7 +104,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
 
         //你可以认为ZCELZ算法的多个块组成，一个块中间有一个不能压缩字段（可选），一个可以压缩字段组成（可选），
 
-       nomatch_achor = read_pos;
+        nomatch_achor = read_pos;
         nomatch_count = 0;
         match_count = 0;
 
@@ -148,9 +148,10 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
             next_read_pos = read_pos + step_len;
 
 
-        }while (ZBYTE_TO_UINT32(ref_offset) != ZBYTE_TO_UINT32(read_pos)
-                || (match_offset) >= ZCE_LZ_MAX_OFFSET 
-                || match_offset == 0 );
+        }
+        while (ZBYTE_TO_UINT32(ref_offset) != ZBYTE_TO_UINT32(read_pos)
+               || (match_offset) >= ZCE_LZ_MAX_OFFSET
+               || match_offset == 0 );
 
         while (read_pos > nomatch_achor && ref_offset > original_buf && ref_offset[-1] ==  read_pos[-1])
         {
@@ -162,7 +163,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
         //read_pos += 4;
         //ref_offset += 4;
         //match_count+= 4;
-        
+
         //持续的需找相等
         for (;;)
         {
@@ -256,7 +257,7 @@ void ZCE_LIB::ZLZ_Compress_Format::compress_core(const unsigned char *original_b
             match_count += tail_match;
             break;
         }
-        
+
 
 zlz_token_process:
 
@@ -336,7 +337,7 @@ zlz_token_process:
                 read_pos - original_buf,
                 write_pos - compressed_buf,
                 original_size - (read_pos - original_buf)
-        );
+               );
 #endif
     }
 
@@ -382,10 +383,10 @@ zlz_end_process:
 
 
 //解压缩的核心处理函数，如果你对压缩的格式了解，解压的代码应该容易理解，
-int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_buf,
-                                                  size_t compressed_size,
-                                                  unsigned char *original_buf,
-                                                  size_t original_size)
+int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_buf,
+                                              size_t compressed_size,
+                                              unsigned char *original_buf,
+                                              size_t original_size)
 {
 
     //初始化各种初始值
@@ -417,7 +418,7 @@ int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compresse
         offset_token = *(read_pos++);
         noncomp_count = (offset_token & 0x0F) ;
         comp_count = (offset_token & 0xF0) >> 4;
-        
+
         //TOKEN的值0xE,表示用一个字节表示长度，0xF表示2个字节表示长度，否则其值就是长度
         if (noncomp_count == 0xE)
         {
@@ -490,7 +491,7 @@ int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compresse
             write_stop = write_pos + comp_count;
             if (ZCE_LIKELY( ref_offset >= sizeof(uint64_t) ) )
             {
-                ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos , write_stop);
+                ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
             }
             //参考的位置和当前的位置之间不足8个字节，有交错，这儿要进行特殊处理了。
             else
@@ -514,12 +515,12 @@ int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compresse
                     static const size_t POS_MOVE_REFER[] = {0, 0, 2, 2, 0, 3, 2, 1};
                     ref_pos +=  POS_MOVE_REFER[ref_offset];
                     unsigned char *match_write = (write_pos + 8);
-                    ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos , write_stop);
+                    ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos, write_stop);
                 }
             }
             write_pos = write_stop;
         }
-        
+
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
 
         ZCE_LOG(RS_DEBUG,
@@ -549,12 +550,12 @@ int ZCE_LIB::ZLZ_Compress_Format::decompress_core(const unsigned char *compresse
 
 //===============================================================================================================
 
-ZCE_LIB::LZ4_Compress_Format::LZ4_Compress_Format()
+zce::LZ4_Compress_Format::LZ4_Compress_Format()
 {
     hash_lz_offset_ = new uint32_t[HASH_TABLE_LEN];
 }
 
-ZCE_LIB::LZ4_Compress_Format::~LZ4_Compress_Format()
+zce::LZ4_Compress_Format::~LZ4_Compress_Format()
 {
     if (hash_lz_offset_)
     {
@@ -564,10 +565,10 @@ ZCE_LIB::LZ4_Compress_Format::~LZ4_Compress_Format()
 
 //压缩的关键函数，内部函数，
 //模仿LZ4的算法的格式进行的函数，
-void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
-                                                 size_t original_size,
-                                                 unsigned char *compressed_buf,
-                                                 size_t *compressed_size)
+void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
+                                             size_t original_size,
+                                             unsigned char *compressed_buf,
+                                             size_t *compressed_size)
 {
     //初始化各种初始值
     const unsigned char *read_pos = original_buf;
@@ -586,7 +587,7 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
     const unsigned char *nomatch_achor =  NULL, *match_achor = NULL;
     unsigned char *offset_token = NULL;
 
-    size_t match_offset , nomatch_count = 0, match_count = 0;
+    size_t match_offset, nomatch_count = 0, match_count = 0;
     nomatch_achor = read_pos;
     hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
     ++read_pos;
@@ -597,8 +598,8 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
         ZCE_LOG(RS_DEBUG,
                 "lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u] ",
-                nomatch_count ,
-                match_count ,
+                nomatch_count,
+                match_count,
                 read_pos - original_buf,
                 write_pos - compressed_buf,
                 original_size - (read_pos - original_buf)
@@ -641,8 +642,9 @@ void ZCE_LIB::LZ4_Compress_Format::compress_core(const unsigned char *original_b
             }
             //如果发现匹配,而且两者间的间距不大，（间距要2个字节表述，如果更长需要更多字节，那么就完全起不到压缩的效果了）
             //间距长度ZCE_LZ_MAX_OFFSET,用2个字节（或者一个字节）表述，
-        } while (ZBYTE_TO_UINT32(ref_offset) != ZBYTE_TO_UINT32(read_pos)
-                 || (match_offset) >= ZCE_LZ_MAX_OFFSET);
+        }
+        while (ZBYTE_TO_UINT32(ref_offset) != ZBYTE_TO_UINT32(read_pos)
+               || (match_offset) >= ZCE_LZ_MAX_OFFSET);
 
 
         //因为其实前面做过HASH检查，所以其实如果step_len 等于1的时候，前面还有相等的情况是很少的，但确实存在
@@ -775,7 +777,7 @@ lz4_match_process:
         }
 
         //LZ4的代码到这个地方，match_count至少是4
-        match_count = read_pos - match_achor -4;
+        match_count = read_pos - match_achor - 4;
         if (ZCE_LIKELY(match_count < 0xF))
         {
             *offset_token |= (unsigned char)(match_count) << 4;
@@ -801,8 +803,8 @@ lz4_match_process:
 #if defined ZCE_LZ_DEBUG && ZCE_LZ_DEBUG==1
         ZCE_LOG(RS_DEBUG,
                 "lz4 compress no match size [%10u],match size [%10u],read len [%10u] ,write len[%10u],remain read[%10u]",
-                nomatch_count ,
-                match_count +4,
+                nomatch_count,
+                match_count + 4,
                 read_pos - original_buf,
                 write_pos - compressed_buf,
                 original_size - (read_pos - original_buf));
@@ -817,13 +819,13 @@ lz4_match_process:
             break;
         }
         //
-        hash_lz_offset_[ZCE_LZ_HASH((read_pos - 2))] = 
+        hash_lz_offset_[ZCE_LZ_HASH((read_pos - 2))] =
             (uint32_t)(read_pos - 2 - original_buf);
         // Test next position
         ref_offset = original_buf + hash_lz_offset_[ZCE_LZ_HASH(read_pos)];
         hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
 
-        if ((static_cast<size_t>(read_pos -ref_offset) <= ZCE_LZ_MAX_OFFSET) && 
+        if ((static_cast<size_t>(read_pos - ref_offset) <= ZCE_LZ_MAX_OFFSET) &&
             (ZBYTE_TO_UINT32(ref_offset) == ZBYTE_TO_UINT32(read_pos)))
         {
             nomatch_count = 0;
@@ -834,7 +836,7 @@ lz4_match_process:
         nomatch_achor = read_pos++;
 #else
         nomatch_achor = read_pos;
-#endif 
+#endif
 
 
     }
@@ -872,10 +874,10 @@ lz4_end_process:
 
 
 //解压缩的核心处理函数，如果你对压缩的格式了解，解压的代码应该容易理解，
-int ZCE_LIB::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_buf,
-                                                  size_t compressed_size,
-                                                  unsigned char *original_buf,
-                                                  size_t original_size)
+int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_buf,
+                                              size_t compressed_size,
+                                              unsigned char *original_buf,
+                                              size_t original_size)
 {
 
     //初始化各种初始值
@@ -972,7 +974,7 @@ int ZCE_LIB::LZ4_Compress_Format::decompress_core(const unsigned char *compresse
         write_stop = write_pos + comp_count;
         if (ZCE_LIKELY( ref_offset >= sizeof(uint64_t) ) )
         {
-            ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos , write_stop);
+            ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
         }
         //这儿要进行特殊处理了。
         else
@@ -996,7 +998,7 @@ int ZCE_LIB::LZ4_Compress_Format::decompress_core(const unsigned char *compresse
                 static const size_t POS_MOVE_REFER[] = {0, 0, 2, 2, 0, 3, 2, 1};
                 ref_pos +=  POS_MOVE_REFER[ref_offset];
                 unsigned char *match_write = (write_pos + 8);
-                ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos , write_stop);
+                ZCE_LZ_FAST_COPY_STOP(match_write, ref_pos, write_stop);
             }
         }
         write_pos = write_stop;

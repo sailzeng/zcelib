@@ -65,8 +65,8 @@ int AI_IIJIMA_BINARY_DATA::protobuf_encode(unsigned int index_1,
     if (!msg->IsInitialized())
     {
         ZCE_LOG(RS_ERROR, "class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
-            msg->GetTypeName().c_str(),
-            msg->InitializationErrorString().c_str());
+                msg->GetTypeName().c_str(),
+                msg->InitializationErrorString().c_str());
         return -1;
     }
 
@@ -116,8 +116,8 @@ int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int *index_1,
     if (!msg->IsInitialized())
     {
         ZCE_LOG(RS_ERROR, "class [%s] protobuf encode fail, IsInitialized return false.error string [%s].",
-            msg->GetTypeName().c_str(),
-            msg->InitializationErrorString().c_str());
+                msg->GetTypeName().c_str(),
+                msg->InitializationErrorString().c_str());
         return -1;
     }
     return 0;
@@ -219,7 +219,7 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
                                                unsigned int index_1,
                                                unsigned int index_2,
                                                size_t blob_len,
-                                               const char * blob_data,
+                                               const char *blob_data,
                                                unsigned int last_mod_time)
 {
     //构造后面的SQL
@@ -227,7 +227,7 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
     size_t buflen = MAX_SQLSTRING_LEN;
 
     //对于空间，我们是预留了足够的空间的，就不检查边界了
-	//对于x,x的作用是说明里面的数据''用base 16的编码处理，视作二进制
+    //对于x,x的作用是说明里面的数据''用base 16的编码处理，视作二进制
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(%u,%u,x'",
@@ -255,35 +255,35 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
 
 //BASE16的编码
 int ZCE_General_Config_Table::base16_encode(const char *in,
-											size_t in_len,
-											char *out,
-											size_t *out_len)
+                                            size_t in_len,
+                                            char *out,
+                                            size_t *out_len)
 {
-	//
-	static const char BASE16_ENC_MAP[] = "0123456789abcdef";
+    //
+    static const char BASE16_ENC_MAP[] = "0123456789abcdef";
 
-	ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
+    ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
 
-	size_t output_len = in_len * 2;
-	if (*out_len < output_len + 1)
-	{
-		*out_len = output_len + 1;
-		errno = ENOMEM;
-		return -1;
-	}
+    size_t output_len = in_len * 2;
+    if (*out_len < output_len + 1)
+    {
+        *out_len = output_len + 1;
+        errno = ENOMEM;
+        return -1;
+    }
 
-	const char *p = in;
-	char *q = out;
+    const char *p = in;
+    char *q = out;
 
-	for (size_t i = 0; i < in_len; i++)
-	{
-		char c = p[i] & 0xff;
-		*q++ = BASE16_ENC_MAP[(c >> 4) & 0xf];
-		*q++ = BASE16_ENC_MAP[c & 0xf];
-	}
-	out[output_len] = '\0';
-	*out_len = output_len;
-	return 0;
+    for (size_t i = 0; i < in_len; i++)
+    {
+        char c = p[i] & 0xff;
+        *q++ = BASE16_ENC_MAP[(c >> 4) & 0xf];
+        *q++ = BASE16_ENC_MAP[c & 0xf];
+    }
+    out[output_len] = '\0';
+    *out_len = output_len;
+    return 0;
 }
 
 
@@ -411,7 +411,7 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
     }
 
     ZCE_SQLite_STMTHdl::BIN_Param binary_data((void *)conf_data->ai_iijima_data_,
-                                           conf_data->ai_data_length_);
+                                              conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
     stmt_handler << binary_data;
@@ -457,7 +457,7 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
         }
 
         ZCE_SQLite_STMTHdl::BIN_Param binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                               (*ary_ai_iijma)[i].ai_data_length_);
+                                                  (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
@@ -507,7 +507,7 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
     }
 
     ZCE_SQLite_STMTHdl::BIN_Result binary_data((void *)conf_data->ai_iijima_data_,
-                                           &(conf_data->ai_data_length_));
+                                               &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -612,13 +612,13 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
         if (blob_len > AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA)
         {
             ZCE_LOG(RS_ERROR, "Error current column bytes length [%u] > "
-                    "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u]." ,
+                    "AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA [%u].",
                     blob_len, AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA);
             return -1;
         }
 
         ZCE_SQLite_STMTHdl::BIN_Result binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                               &((*ary_ai_iijma)[i].ai_data_length_));
+                                                   &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
@@ -647,7 +647,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
 
 
     //读取旧数据
-    ret = open_dbfile(old_db, true , false);
+    ret = open_dbfile(old_db, true, false);
     if (0 != ret)
     {
         return ret;
@@ -682,7 +682,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
     std::sort(old_ai_iijma.begin(), old_ai_iijma.end());
     std::sort(new_ai_iijma.begin(), new_ai_iijma.end());
 
-    update_sql->reserve(1024*1024*8);
+    update_sql->reserve(1024 * 1024 * 8);
 
     //两个都有序，找出差异的元素
     size_t p = 0, q = 0;

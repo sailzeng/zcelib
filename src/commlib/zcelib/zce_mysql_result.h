@@ -105,7 +105,7 @@ public:
     * @param[in]  fieldid  列ID，从0开始
     * @param[out] ffield   返回列的值
     */
-    int get_field(unsigned int fieldid , ZCE_Mysql_Field &ffield) const;
+    int get_field(unsigned int fieldid, ZCE_Mysql_Field &ffield) const;
 
     /*!
     * @brief      通过列名称查询当前行的某个字段的值，但性能并不好
@@ -343,7 +343,7 @@ inline int ZCE_Mysql_Result::field_data(unsigned int fieldid, char *pfdata) cons
         return -1;
     }
 
-    memcpy(pfdata , current_row_[fieldid], fields_length_[fieldid]);
+    memcpy(pfdata, current_row_[fieldid], fields_length_[fieldid]);
     return 0;
 }
 
@@ -383,7 +383,7 @@ inline unsigned int ZCE_Mysql_Result::get_cur_field_length()
 }
 
 //根据字段的序列值得到字段值
-inline int ZCE_Mysql_Result::get_field(unsigned int fieldid , ZCE_Mysql_Field &ffield) const
+inline int ZCE_Mysql_Result::get_field(unsigned int fieldid, ZCE_Mysql_Field &ffield) const
 {
     //进行安全检查，如果错误返回
     if (current_row_ == NULL || fieldid >= num_result_field_)

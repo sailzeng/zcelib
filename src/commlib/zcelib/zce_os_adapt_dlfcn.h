@@ -15,7 +15,7 @@
 
 #include "zce_os_adapt_predefine.h"
 
-namespace ZCE_LIB
+namespace zce
 {
 
 //动态库使用的四个函数

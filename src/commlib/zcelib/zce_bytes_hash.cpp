@@ -446,7 +446,7 @@ void ZCE_Hash_CRC32::finalize(context *ctx,
 
 //求一个buffer的CRC32值，可以用于一些要求速度的简单校验,
 
-uint32_t ZCE_LIB::crc32(uint32_t crcinit, const unsigned char *buf, size_t buf_size)
+uint32_t zce::crc32(uint32_t crcinit, const unsigned char *buf, size_t buf_size)
 {
     const unsigned char *p = buf;
     uint32_t crc = crcinit;
@@ -545,9 +545,9 @@ static const uint16_t ZCE_CRC16_TABLE[256] =
 };
 
 //计算CRC16的值。
-uint16_t ZCE_LIB::crc16(uint16_t crcinit,
-                        const unsigned char *buf,
-                        size_t buf_size)
+uint16_t zce::crc16(uint16_t crcinit,
+                    const unsigned char *buf,
+                    size_t buf_size)
 {
     uint16_t crc = crcinit;
     const unsigned char *p = buf;
@@ -562,7 +562,7 @@ uint16_t ZCE_LIB::crc16(uint16_t crcinit,
 //================================================================================================
 
 // BKDR Hash Function
-size_t ZCE_LIB::bkdr_hash(const unsigned char *str, size_t str_len)
+size_t zce::bkdr_hash(const unsigned char *str, size_t str_len)
 {
     // 31 131 1313 13131 131313 etc..
     static const size_t seed = 131;
@@ -576,7 +576,7 @@ size_t ZCE_LIB::bkdr_hash(const unsigned char *str, size_t str_len)
 }
 
 // AP Hash Function
-size_t ZCE_LIB::ap_hash(const unsigned char *str, size_t str_len)
+size_t zce::ap_hash(const unsigned char *str, size_t str_len)
 {
     size_t hash = 0;
 
@@ -596,7 +596,7 @@ size_t ZCE_LIB::ap_hash(const unsigned char *str, size_t str_len)
 }
 
 // JS Hash Function
-size_t ZCE_LIB::js_hash(const unsigned char *str, size_t str_len)
+size_t zce::js_hash(const unsigned char *str, size_t str_len)
 {
     size_t hash = 1315423911;
 
@@ -609,7 +609,7 @@ size_t ZCE_LIB::js_hash(const unsigned char *str, size_t str_len)
 }
 
 // DJB Hash Function
-size_t ZCE_LIB::djb_hash(const unsigned char *str, size_t str_len)
+size_t zce::djb_hash(const unsigned char *str, size_t str_len)
 {
     size_t hash = 5381;
 

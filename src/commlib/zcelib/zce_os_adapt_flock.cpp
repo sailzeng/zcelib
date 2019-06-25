@@ -5,10 +5,10 @@
 #include "zce_os_adapt_file.h"
 #include "zce_os_adapt_flock.h"
 
-void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
-                                   int whence,
-                                   size_t &start,
-                                   size_t &len)
+void zce::flock_adjust_params (zce_flock_t *lock,
+                               int whence,
+                               size_t &start,
+                               size_t &len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -31,7 +31,7 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
                                      &offset,
                                      FILE_CURRENT))
             {
-                errno = ZCE_LIB::last_error();
+                errno = zce::last_error();
                 return;
             }
 
@@ -42,7 +42,7 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
         case SEEK_END:
         {
             size_t file_size = 0;
-            ret = ZCE_LIB::filesize (lock->handle_, &file_size);
+            ret = zce::filesize (lock->handle_, &file_size);
 
             if ( ret != 0)
             {
@@ -65,7 +65,7 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
     if (len == 0)
     {
         size_t file_size = 0;
-        ret = ZCE_LIB::filesize (lock->handle_, &file_size);
+        ret = zce::filesize (lock->handle_, &file_size);
 
         if ( ret != 0)
         {
@@ -85,8 +85,8 @@ void ZCE_LIB::flock_adjust_params (zce_flock_t *lock,
 
 
 //文件锁初始化zce_flock_t,直接用fd
-int ZCE_LIB::flock_init (zce_flock_t *lock,
-                         ZCE_HANDLE file_hadle)
+int zce::flock_init (zce_flock_t *lock,
+                     ZCE_HANDLE file_hadle)
 {
 
 #if defined (ZCE_OS_WINDOWS)
@@ -107,20 +107,20 @@ int ZCE_LIB::flock_init (zce_flock_t *lock,
 }
 
 //销毁锁？这样解释不是特别合理，其实应该说，销毁zce_flock_t这个结构
-void ZCE_LIB::flock_destroy (zce_flock_t * /*lock*/)
+void zce::flock_destroy (zce_flock_t * /*lock*/)
 {
     return;
 }
 
 //whence == SEEK_SET,SEEK_CUR
-int ZCE_LIB::flock_unlock (zce_flock_t *lock,
-                           int  whence,
-                           size_t start,
-                           size_t len)
+int zce::flock_unlock (zce_flock_t *lock,
+                       int  whence,
+                       size_t start,
+                       size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
@@ -141,7 +141,7 @@ int ZCE_LIB::flock_unlock (zce_flock_t *lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
     // Unlock file.
     lock->lock_.l_type = F_UNLCK;
     return ::fcntl(lock->handle_,
@@ -151,14 +151,14 @@ int ZCE_LIB::flock_unlock (zce_flock_t *lock,
 
 }
 
-int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
-                           int  whence,
-                           size_t start,
-                           size_t len)
+int zce::flock_rdlock (zce_flock_t *lock,
+                       int  whence,
+                       size_t start,
+                       size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
@@ -180,7 +180,7 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
     // set read lock
     lock->lock_.l_type = F_RDLCK;
     //block, if no access 注意F_SETLKW和F_SETLK的区别
@@ -192,16 +192,16 @@ int ZCE_LIB::flock_rdlock (zce_flock_t *lock,
 }
 
 //测试是否可以加锁，如果不行立即返回
-int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
-                              int  whence,
-                              size_t start,
-                              size_t len)
+int zce::flock_tryrdlock (::zce_flock_t *lock,
+                          int  whence,
+                          size_t start,
+                          size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
 
     //调整参数，因为WINDOWS参数的一些麻烦
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
@@ -223,7 +223,7 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
     lock->lock_.l_type = F_RDLCK;         // set read lock
 
     int result = 0;
@@ -242,15 +242,15 @@ int ZCE_LIB::flock_tryrdlock (::zce_flock_t *lock,
 }
 
 //尝试进行写锁定
-int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
-                              int  whence,
-                              size_t start,
-                              size_t len)
+int zce::flock_trywrlock (zce_flock_t *lock,
+                          int  whence,
+                          size_t start,
+                          size_t len)
 {
 
 #if defined (ZCE_OS_WINDOWS)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
@@ -272,7 +272,7 @@ int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
     lock->lock_.l_type = F_WRLCK;         // set write lock
 
     int result = 0;
@@ -290,14 +290,14 @@ int ZCE_LIB::flock_trywrlock (zce_flock_t *lock,
 #endif
 }
 
-int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
-                           int whence,
-                           size_t start,
-                           size_t len)
+int zce::flock_wrlock (zce_flock_t *lock,
+                       int whence,
+                       size_t start,
+                       size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
 
     LARGE_INTEGER large_len;
     large_len.QuadPart  = len;
@@ -319,7 +319,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 
 #elif defined (ZCE_OS_LINUX)
 
-    ZCE_LIB::flock_adjust_params (lock, whence, start, len);
+    zce::flock_adjust_params (lock, whence, start, len);
     // set write lock
     lock->lock_.l_type = F_WRLCK;
     // block, if no access
@@ -340,14 +340,14 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //A call to flock() may block if an incompatible lock is held by another process. To make a non-blocking request, include LOCK_NB (by ORing) with any of the above operations.
 
 //文件锁函数，只对一个文件进行加锁
-//int ZCE_LIB::flock(ZCE_HANDLE file_hadle, int operation)
+//int zce::flock(ZCE_HANDLE file_hadle, int operation)
 //{
 //#if defined (ZCE_OS_WINDOWS)
 //
 //    zce_flock_t lock_handle;
 //
 //    int ret = 0;
-//    ret = ZCE_LIB::flock_init (&lock_handle,
+//    ret = zce::flock_init (&lock_handle,
 //                               file_hadle);
 //
 //    //读取锁，共享锁
@@ -356,7 +356,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //        //如果是不阻塞的
 //        if ( LOCK_NB & operation)
 //        {
-//            ret = ZCE_LIB::flock_tryrdlock (&lock_handle,
+//            ret = zce::flock_tryrdlock (&lock_handle,
 //                                            SEEK_SET,
 //                                            0,
 //                                            0);
@@ -364,7 +364,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //        //如果是阻塞调用
 //        else
 //        {
-//            ret = ZCE_LIB::flock_rdlock (&lock_handle,
+//            ret = zce::flock_rdlock (&lock_handle,
 //                                         SEEK_SET,
 //                                         0,
 //                                         0);
@@ -377,7 +377,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //        //如果是不阻塞的
 //        if ( LOCK_NB & operation)
 //        {
-//            ret = ZCE_LIB::flock_trywrlock (&lock_handle,
+//            ret = zce::flock_trywrlock (&lock_handle,
 //                                            SEEK_SET,
 //                                            0,
 //                                            0);
@@ -385,7 +385,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //        //如果是阻塞调用
 //        else
 //        {
-//            ret = ZCE_LIB::flock_wrlock (&lock_handle,
+//            ret = zce::flock_wrlock (&lock_handle,
 //                                         SEEK_SET,
 //                                         0,
 //                                         0);
@@ -394,7 +394,7 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //    //解开锁
 //    else if ( LOCK_UN & operation)
 //    {
-//        ret = ZCE_LIB::flock_unlock (&lock_handle,
+//        ret = zce::flock_unlock (&lock_handle,
 //                                     SEEK_SET,
 //                                     0,
 //                                     0);
@@ -407,11 +407,11 @@ int ZCE_LIB::flock_wrlock (zce_flock_t *lock,
 //
 //    if (ret != 0)
 //    {
-//        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_LIB::flock fail. operation =%d ret =%d", operation, ret);
+//        ZCE_LOG(RS_ERROR,"[zcelib] zce::flock fail. operation =%d ret =%d", operation, ret);
 //    }
 //
 //    //其实完全可以不掉用这个函数,调用他是为了让你觉得公正,
-//    ZCE_LIB::flock_destroy(&lock_handle);
+//    zce::flock_destroy(&lock_handle);
 //
 //    return ret;
 //

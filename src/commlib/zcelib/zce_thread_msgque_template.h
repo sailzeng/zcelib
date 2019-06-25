@@ -26,12 +26,12 @@
 *
 * @tparam     _zce_synch       ZCE_MT_SYNCH 或者 ZCE_NULL_SYNCH
 * @tparam     _value_type      容器里面的数据类型
-* @tparam     _container_type  QUEUE的类型，deque,list,ZCE_LIB::lordrings
+* @tparam     _container_type  QUEUE的类型，deque,list,zce::lordrings
 * @note
 */
 template < typename _zce_synch,
-         typename _value_type,
-         typename _container_type = std::deque<_value_type> >
+           typename _value_type,
+           typename _container_type = std::deque<_value_type> >
 class ZCE_Message_Queue : public ZCE_NON_Copyable
 {
 
@@ -101,8 +101,8 @@ protected:
 
 
 template < typename _zce_synch,
-    typename _value_type >
-    class ZCE_Message_Queue_List : public ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >
+           typename _value_type >
+class ZCE_Message_Queue_List : public ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >
 {
 public:
     //
@@ -117,8 +117,8 @@ public:
 };
 
 template < typename _zce_synch,
-    typename _value_type >
-    class ZCE_Message_Queue_Deque : public ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >
+           typename _value_type >
+class ZCE_Message_Queue_Deque : public ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >
 {
 public:
     //
@@ -138,13 +138,13 @@ public:
 };
 
 template < typename _zce_synch,
-    typename _value_type >
-    class ZCE_Message_Queue_Rings : public ZCE_Message_Queue<_zce_synch, _value_type, ZCE_LIB::lordrings<_value_type> >
+           typename _value_type >
+class ZCE_Message_Queue_Rings : public ZCE_Message_Queue<_zce_synch, _value_type, zce::lordrings<_value_type> >
 {
 public:
     //
     ZCE_Message_Queue_Rings(size_t queue_max_size) :
-        ZCE_Message_Queue<_zce_synch, _value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
+        ZCE_Message_Queue<_zce_synch, _value_type, zce::lordrings<_value_type> >(queue_max_size)
     {
     }
     ~ZCE_Message_Queue_Rings()

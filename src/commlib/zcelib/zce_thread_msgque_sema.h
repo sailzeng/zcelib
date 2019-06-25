@@ -35,7 +35,7 @@
 * @tparam     _container_type  消息队列内部容器类型
 */
 template < typename _value_type,
-         typename _container_type >
+           typename _container_type >
 class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
 {
 
@@ -200,7 +200,7 @@ public:
         //如果超时了，返回false
         if (!bret)
         {
-			errno = EWOULDBLOCK;
+            errno = EWOULDBLOCK;
             return -1;
         }
 
@@ -337,22 +337,22 @@ public:
 
 
 
-   
+
 /*!
 * @brief      内部用circular_buffer实现的消息队列，性能非常好,边界保护用信号灯，的消息队列，
 *             但空间比较费
-* @tparam     _value_type 消息队列保存的数据类型 
+* @tparam     _value_type 消息队列保存的数据类型
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <typename _value_type >
-class ZCE_Message_Queue_Rings<ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >
+class ZCE_Message_Queue_Rings<ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, zce::lordrings<_value_type> >
 {
 public:
     //
     explicit ZCE_Message_Queue_Rings(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >(queue_max_size)
+        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, zce::lordrings<_value_type> >(queue_max_size)
     {
-        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, ZCE_LIB::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
     ~ZCE_Message_Queue_Rings()

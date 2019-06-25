@@ -54,7 +54,7 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
     {
         ZCE_LOG(RS_ERROR, "[%s] invoke ::inotify_init fail,error [%u].",
                 __ZCE_FUNC__,
-                ZCE_LIB::last_error());
+                zce::last_error());
         return -1;
     }
 
@@ -137,7 +137,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     {
         ZCE_LOG(RS_ERROR, "[%s] invoke ::inotify_add_watch fail,error [%u].",
                 __ZCE_FUNC__,
-                ZCE_LIB::last_error());
+                zce::last_error());
         return -1;
     }
 
@@ -193,7 +193,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         ZCE_LOG(RS_ERROR, "[zcelib][%s] invoke ::CreateFile [%s] inotify fail,error [%u].",
                 __ZCE_FUNC__,
                 pathname,
-                ZCE_LIB::last_error());
+                zce::last_error());
         return -1;
     }
 
@@ -229,8 +229,8 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     {
         ZCE_LOG(RS_ERROR, "[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
                 __ZCE_FUNC__,
-                ZCE_LIB::last_error(),
-                strerror(ZCE_LIB::last_error()));
+                zce::last_error(),
+                strerror(zce::last_error()));
 
         ::CloseHandle(watch_handle_);
 
@@ -298,7 +298,7 @@ int ZCE_Event_INotify::handle_input ()
     size_t watch_event_num = 0;
 
     //读取
-    ssize_t read_ret = ZCE_LIB::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
+    ssize_t read_ret = zce::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
     if (read_ret <= 0)
     {
         return -1;
@@ -441,7 +441,7 @@ int ZCE_Event_INotify::handle_input ()
     {
         ZCE_LOG(RS_ERROR, "[%s] ::GetOverlappedResult fail,error [%u].",
                 __ZCE_FUNC__,
-                ZCE_LIB::last_error());
+                zce::last_error());
         return -1;
     }
 
@@ -507,7 +507,7 @@ int ZCE_Event_INotify::handle_input ()
                                                 active_path);
                 }
                 break;
-                //注意Windows 下的这个类型，包括了属性更改
+            //注意Windows 下的这个类型，包括了属性更改
             case FILE_ACTION_MODIFIED:
                 if (watch_mask_ | IN_MODIFY)
                 {
@@ -579,7 +579,7 @@ int ZCE_Event_INotify::handle_input ()
     {
         ZCE_LOG(RS_ERROR, "[zcelib][%s] ::ReadDirectoryChangesW fail,error [%u].",
                 __ZCE_FUNC__,
-                ZCE_LIB::last_error());
+                zce::last_error());
     }
 
     return 0;

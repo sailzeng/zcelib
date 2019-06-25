@@ -40,7 +40,7 @@
 
 
 
-namespace ZCE_LIB
+namespace zce
 {
 
 
@@ -61,7 +61,7 @@ int pthread_rwlock_init(pthread_rwlock_t *rwlock,
 * @return     int
 * @param      rwlock
 */
-int pthread_rwlock_destroy(pthread_rwlock_t* rwlock);
+int pthread_rwlock_destroy(pthread_rwlock_t *rwlock);
 
 /*!
 * @brief      读写锁的对象的的初始化，非标准，但建议，使用

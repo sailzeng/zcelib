@@ -45,7 +45,7 @@ int Soar_Stat_Monitor::initialize(const char *app_base_name,
     create_stat_fname(app_base_name, business_id, service_info);
 
     // 将stat_mmap_filename_转换为大写
-    ZCE_LIB::strupr(stat_mmap_filename_);
+    zce::strupr(stat_mmap_filename_);
 
     int ret = ZCE_Server_Status::initialize(stat_mmap_filename_,
                                             num_stat_item,

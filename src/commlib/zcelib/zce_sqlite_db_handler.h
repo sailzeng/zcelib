@@ -180,7 +180,7 @@ public:
     template <typename value_type>
     value_type field_data(int row, int column)
     {
-        return ZCE_LIB::str_to_value<value_type>( result_[row * column_ + column - 1] );
+        return zce::str_to_value<value_type>( result_[row * column_ + column - 1] );
     }
 
     //!行的数量

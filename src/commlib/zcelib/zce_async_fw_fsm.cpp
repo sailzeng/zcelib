@@ -8,7 +8,7 @@
 //状态机的异步对象
 ZCE_Async_FSM::ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
     ZCE_Async_Object(async_mgr, create_cmd),
-	fsm_stage_(0)
+    fsm_stage_(0)
 {
 }
 

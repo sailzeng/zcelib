@@ -10,7 +10,7 @@
 
 //¹¹Ôìº¯Êý
 ZCE_WFMO_Reactor::ZCE_WFMO_Reactor():
-	watch_handle_ary_{ ZCE_INVALID_HANDLE }
+    watch_handle_ary_{ ZCE_INVALID_HANDLE }
 {
     initialize();
 
@@ -67,7 +67,7 @@ int ZCE_WFMO_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         {
             ZCE_LOG(RS_ERROR, "[zcelib][%s]WSACreateEvent return fail.last error [%d]",
                     __ZCE_FUNC__,
-                    ZCE_LIB::last_error()
+                    zce::last_error()
                    );
             return -1;
         }
@@ -223,7 +223,7 @@ int ZCE_WFMO_Reactor::wfmo_socket_event(ZCE_Event_Handler *event_handler,
                 __ZCE_FUNC__,
                 ret,
                 event_mask,
-                ZCE_LIB::last_error()
+                zce::last_error()
                );
         return -1;
     }
@@ -249,7 +249,7 @@ int ZCE_WFMO_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event
     {
         ZCE_LOG(RS_ERROR, "[%s] ::WaitForMultipleObjects fail,error [%u].",
                 __ZCE_FUNC__,
-                ZCE_LIB::last_error());
+                zce::last_error());
         return -1;
     }
 

@@ -8,7 +8,7 @@
 //为什么不让我用ACE，卫生棉！，卫生棉！！！！！卫生棉卫生棉卫生棉！！！！！！！！
 
 //打开一个目录，用于读取
-DIR *ZCE_LIB::opendir (const char *dir_name)
+DIR *zce::opendir (const char *dir_name)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -48,7 +48,7 @@ DIR *ZCE_LIB::opendir (const char *dir_name)
 }
 
 //关闭已经打开的目录
-int ZCE_LIB::closedir (DIR *dir_handle)
+int zce::closedir (DIR *dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -75,7 +75,7 @@ int ZCE_LIB::closedir (DIR *dir_handle)
 }
 
 //
-struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
+struct dirent *zce::readdir (DIR *dir_handle)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -85,7 +85,7 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
         char scan_dirname[PATH_MAX + 16];
         //前面验证过是目录，正确使用不会溢出
         strncpy(scan_dirname, dir_handle->directory_name_, PATH_MAX);
-		scan_dirname[PATH_MAX + 1] = '\0';
+        scan_dirname[PATH_MAX + 1] = '\0';
         size_t const lastchar = ::strlen (scan_dirname);
         //前面已经保证了是目录,用断言保护之
         assert(lastchar > 0);
@@ -147,14 +147,14 @@ struct dirent *ZCE_LIB::readdir (DIR *dir_handle)
 }
 
 //read dir 可以重入版本，
-int ZCE_LIB::readdir_r (DIR *dir_handle,
-                        dirent *entry,
-                        dirent **result)
+int zce::readdir_r (DIR *dir_handle,
+                    dirent *entry,
+                    dirent **result)
 {
 
 #if defined (ZCE_OS_WINDOWS)
 
-    dirent *p_dirent = ZCE_LIB::readdir(dir_handle);
+    dirent *p_dirent = zce::readdir(dir_handle);
 
     //改进后，重入应该安全了。
     if (p_dirent)
@@ -170,7 +170,7 @@ int ZCE_LIB::readdir_r (DIR *dir_handle,
         //曾经有一次在下面的代码增加了一段判定，用last_error判定是否返回错误
         //但测试发现有问题，FindNextFile 在没有发现文件后，会放入一个错误EXDEV，
         //所以这个方法有问题，感谢charlie和derrick发现问题，修改后自大没有测试
-        //if (ZCE_LIB::last_error() != 0) return -1;
+        //if (zce::last_error() != 0) return -1;
     }
 
     return 0;
@@ -188,15 +188,15 @@ int ZCE_LIB::readdir_r (DIR *dir_handle,
 
 
 //读取某个前缀，后缀的文件名称
-int ZCE_LIB::readdir_nameary(const char *dirname,
-                             const char *prefix_name,
-                             const char *ext_name,
-                             bool select_dir,
-                             bool select_file,
-                             std::vector<std::string> &file_name_ary)
+int zce::readdir_nameary(const char *dirname,
+                         const char *prefix_name,
+                         const char *ext_name,
+                         bool select_dir,
+                         bool select_file,
+                         std::vector<std::string> &file_name_ary)
 {
     int retval = 0;
-    DIR *dir_hdl = ZCE_LIB::opendir(dirname);
+    DIR *dir_hdl = zce::opendir(dirname);
     if (dir_hdl == NULL)
     {
         return -1;
@@ -215,9 +215,9 @@ int ZCE_LIB::readdir_nameary(const char *dirname,
     //循环所有文件，检测扩展名称
     dirent dir_tmp, *dir_p = NULL;
 
-    for (retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p);
+    for (retval = zce::readdir_r(dir_hdl, &dir_tmp, &dir_p);
          dir_p && retval == 0;
-         retval = ZCE_LIB::readdir_r(dir_hdl, &dir_tmp, &dir_p))
+         retval = zce::readdir_r(dir_hdl, &dir_tmp, &dir_p))
     {
         //目录
         if (dir_tmp.d_type == DT_DIR )
@@ -272,7 +272,7 @@ int ZCE_LIB::readdir_nameary(const char *dirname,
         file_name_ary.push_back(dir_tmp.d_name);
     }
 
-    ZCE_LIB::closedir(dir_hdl);
+    zce::closedir(dir_hdl);
 
     if (retval != 0)
     {
@@ -286,10 +286,10 @@ int ZCE_LIB::readdir_nameary(const char *dirname,
 //dirent **namelist[],返回参数，一个dirent的指针数组，切记这个参数是函数内2层分配的空间必须释放
 //选择器的函数指针
 //比较函数排序函数的指针
-int ZCE_LIB::scandir (const char *dirname,
-                      dirent **namelist[],
-                      int (*selector)(const struct dirent *),
-                      int (*comparator)(const struct dirent **, const struct dirent **))
+int zce::scandir (const char *dirname,
+                  dirent **namelist[],
+                  int (*selector)(const struct dirent *),
+                  int (*comparator)(const struct dirent **, const struct dirent **))
 {
 
     //Windows下使用opendir等函数实现，
@@ -298,22 +298,22 @@ int ZCE_LIB::scandir (const char *dirname,
     assert(namelist);
     int retval = 0;
 
-    DIR *dir_handle = ZCE_LIB::opendir (dirname);
+    DIR *dir_handle = zce::opendir (dirname);
     if (dir_handle == 0)
     {
         return -1;
     }
 
     dirent **vector_dir = NULL;
-    dirent dir_tmp , *dir_p = NULL;
+    dirent dir_tmp, *dir_p = NULL;
 
     int once_nfiles = 0;
     bool occur_fail = false;
 
     //找到合适的文件个数,
-    for (retval = ZCE_LIB::readdir_r (dir_handle, &dir_tmp, &dir_p);
+    for (retval = zce::readdir_r (dir_handle, &dir_tmp, &dir_p);
          dir_p && retval == 0;
-         retval = ZCE_LIB::readdir_r (dir_handle, &dir_tmp, &dir_p))
+         retval = zce::readdir_r (dir_handle, &dir_tmp, &dir_p))
     {
         //如果有选择器
         if (selector )
@@ -337,7 +337,7 @@ int ZCE_LIB::scandir (const char *dirname,
     }
 
     //关闭DIR
-    ZCE_LIB::closedir (dir_handle);
+    zce::closedir (dir_handle);
 
     if (occur_fail)
     {
@@ -351,7 +351,7 @@ int ZCE_LIB::scandir (const char *dirname,
     }
 
     //再打开一次使用
-    dir_handle = ZCE_LIB::opendir (dirname);
+    dir_handle = zce::opendir (dirname);
 
     if (dir_handle == 0)
     {
@@ -362,10 +362,10 @@ int ZCE_LIB::scandir (const char *dirname,
     if (once_nfiles > 0)
     {
         vector_dir = (dirent **)::malloc (once_nfiles * sizeof(dirent *));
-		if (!vector_dir)
-		{
-			return -1;
-		}
+        if (!vector_dir)
+        {
+            return -1;
+        }
     }
 
     //两次操作好处是代码清晰，不用写realloc这类函数，坏处是第二次和第一次可能结果不一致
@@ -374,7 +374,7 @@ int ZCE_LIB::scandir (const char *dirname,
 
     for (twice_nfiles = 0; twice_nfiles < once_nfiles; )
     {
-        retval = ZCE_LIB::readdir_r (dir_handle, &dir_tmp, &dir_p);
+        retval = zce::readdir_r (dir_handle, &dir_tmp, &dir_p);
 
         //如果发生失败
         if (retval != 0 )
@@ -395,19 +395,19 @@ int ZCE_LIB::scandir (const char *dirname,
         }
 
         vector_dir[twice_nfiles] = (dirent *)::malloc (sizeof (dirent));
-		if (vector_dir[twice_nfiles])
-		{
-			::memcpy(vector_dir[twice_nfiles], &dir_tmp, sizeof(dirent));
-		}
-		else
-		{
-			return -1;
-		}
+        if (vector_dir[twice_nfiles])
+        {
+            ::memcpy(vector_dir[twice_nfiles], &dir_tmp, sizeof(dirent));
+        }
+        else
+        {
+            return -1;
+        }
         ++twice_nfiles;
     }
 
     //关闭DIR
-    ZCE_LIB::closedir (dir_handle);
+    zce::closedir (dir_handle);
 
     //如果出现了错误，释放分配的内存
     if (occur_fail && vector_dir)
@@ -455,7 +455,7 @@ int ZCE_LIB::scandir (const char *dirname,
 
 
 //释放scandir 返回参数的里面的各种分配数据，非标准函数
-void ZCE_LIB::free_scandir_result(int list_number, dirent *namelist[])
+void zce::free_scandir_result(int list_number, dirent *namelist[])
 {
     ZCE_ASSERT(list_number > 0);
 
@@ -468,7 +468,7 @@ void ZCE_LIB::free_scandir_result(int list_number, dirent *namelist[])
 }
 
 //用于目录排序比较
-int ZCE_LIB::scandir_namesort (const struct dirent **left, const struct dirent **right)
+int zce::scandir_namesort (const struct dirent **left, const struct dirent **right)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::strcmp ((*(left))->d_name,   (*(right))->d_name);
@@ -477,7 +477,7 @@ int ZCE_LIB::scandir_namesort (const struct dirent **left, const struct dirent *
 #endif
 }
 
-const char *ZCE_LIB::basename (const char *path_name, char *file_name, size_t buf_len)
+const char *zce::basename (const char *path_name, char *file_name, size_t buf_len)
 {
     const char *temp = NULL;
 
@@ -513,7 +513,7 @@ const char *ZCE_LIB::basename (const char *path_name, char *file_name, size_t bu
     }
 }
 
-const char *ZCE_LIB::dirname (const char *path_name, char *dir_name, size_t buf_len)
+const char *zce::dirname (const char *path_name, char *dir_name, size_t buf_len)
 {
 
     const char *temp = NULL;
@@ -554,7 +554,7 @@ const char *ZCE_LIB::dirname (const char *path_name, char *dir_name, size_t buf_
 }
 
 //得到当前目录
-char *ZCE_LIB::getcwd(char *buffer, int maxlen  )
+char *zce::getcwd(char *buffer, int maxlen  )
 {
     //其实安装我们明确的宏定义，下面的函数不用_也可以
 #if defined (ZCE_OS_WINDOWS)
@@ -565,7 +565,7 @@ char *ZCE_LIB::getcwd(char *buffer, int maxlen  )
 }
 
 //CD某个目录
-int ZCE_LIB::chdir(const char *dirname )
+int zce::chdir(const char *dirname )
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_chdir (dirname);
@@ -575,7 +575,7 @@ int ZCE_LIB::chdir(const char *dirname )
 }
 
 //建立某个目录，单层,WINDOWS下，后面那个参数无效
-int ZCE_LIB::mkdir(const char *pathname, mode_t mode)
+int zce::mkdir(const char *pathname, mode_t mode)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(mode);
@@ -586,7 +586,7 @@ int ZCE_LIB::mkdir(const char *pathname, mode_t mode)
 }
 
 //递归的建立目录，非标准函数，如果想一次建立多层目录，用这个函数
-int ZCE_LIB::mkdir_recurse(const char *pathname, mode_t mode)
+int zce::mkdir_recurse(const char *pathname, mode_t mode)
 {
     char process_dir[PATH_MAX + 1];
     memset(process_dir, 0, sizeof(process_dir));
@@ -610,7 +610,7 @@ int ZCE_LIB::mkdir_recurse(const char *pathname, mode_t mode)
 #endif
 
             ::strncpy(process_dir, pathname, i + 1);
-            ret = ZCE_LIB::mkdir(process_dir, mode);
+            ret = zce::mkdir(process_dir, mode);
 
             //如果目录已经存在，不进行处理
             if (ret != 0 && errno != EEXIST)
@@ -623,14 +623,14 @@ int ZCE_LIB::mkdir_recurse(const char *pathname, mode_t mode)
     //如果你写的路径最后不是以\或者/结尾，以整个路径创建一下
     if (path_len > 0 && false == ZCE_IS_DIRECTORY_SEPARATOR(pathname[path_len - 1]) )
     {
-        ret = ZCE_LIB::mkdir(pathname, mode);
+        ret = zce::mkdir(pathname, mode);
     }
 
     return 0;
 }
 
 //删除某个目录
-int ZCE_LIB::rmdir(const char *pathname)
+int zce::rmdir(const char *pathname)
 {
 #if defined (ZCE_OS_WINDOWS)
     return ::_rmdir (pathname);

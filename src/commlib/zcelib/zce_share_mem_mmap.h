@@ -17,7 +17,7 @@ public:
 public:
     //打开文件，进行映射
     int open(const char *file_name,
-             std::size_t shm_size ,
+             std::size_t shm_size,
              int file_open_mode = O_CREAT | O_RDWR,
              int file_perms_mode = ZCE_SHARE_FILE_PERMS,
              const void *want_address = NULL,
@@ -46,13 +46,13 @@ public:
     int flush();
 
     ///返回映射的内存地址
-    inline void* addr()
+    inline void *addr()
     {
         return mmap_addr_;
     }
 
     ///返回文件名称
-    inline const char* file_name()
+    inline const char *file_name()
     {
         return mmap_file_name_.c_str();
     }
