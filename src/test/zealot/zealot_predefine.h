@@ -6,10 +6,9 @@
 //ZCELIBµÄ´úÂë
 
 #include <zce_predefine.h>
-#include <zce_trace_debugging.h>
-#include <zce_trace_log_plus.h>
-#include <zce_trace_log_msg.h>
-#include <zce_trace_aid_debug.h>
+#include <zce_log_logging.h>
+#include <zce_log_plus.h>
+#include <zce_log_msg.h>
 
 #include <zce_os_adapt_predefine.h>
 #include <zce_os_adapt_file.h>
@@ -23,6 +22,7 @@
 #include <zce_os_adapt_stdlib.h>
 #include <zce_os_adapt_coroutine.h>
 #include <zce_os_adapt_flock.h>
+#include <zce_os_adapt_backtrace.h>
 
 #include <zce_share_mem_mmap.h>
 #include <zce_share_mem_posix.h>

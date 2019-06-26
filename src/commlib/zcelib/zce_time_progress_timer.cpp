@@ -1,5 +1,5 @@
 #include "zce_predefine.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_os_adapt_sysinfo.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_time.h"
@@ -97,7 +97,7 @@ ZCE_HR_Progress_Timer::ZCE_HR_Progress_Timer()
     int ret = ::clock_getres(CLOCK_MONOTONIC, &precision_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "::clock_getres return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_getres return fail. error is %d.", zce::last_error());
     }
 
 #endif
@@ -125,7 +125,7 @@ void ZCE_HR_Progress_Timer::restart()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -158,7 +158,7 @@ void ZCE_HR_Progress_Timer::addup_start()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &start_time_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
     }
 
     end_time_.tv_sec = 0;
@@ -184,7 +184,7 @@ void ZCE_HR_Progress_Timer::end()
     int ret = ::clock_gettime(CLOCK_MONOTONIC, &end_time_);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", ZCE_LIB::last_error());
+        ZCE_LOG(RS_ERROR, "::clock_gettime return fail. error is %d.", zce::last_error());
     }
 #endif
 }
@@ -197,14 +197,14 @@ double ZCE_HR_Progress_Timer::elapsed_usec() const
 
     ZCE_ASSERT(end_time_.QuadPart >= start_time_.QuadPart);
     return double(end_time_.QuadPart - start_time_.QuadPart + addup_time_.QuadPart ) *
-           ZCE_LIB::SEC_PER_USEC / frequency_.QuadPart;
+           zce::SEC_PER_USEC / frequency_.QuadPart;
 #elif defined ZCE_OS_LINUX
 
-    ZCE_ASSERT((end_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + end_time_.tv_nsec ) >
-               (start_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + start_time_.tv_nsec ));
+    ZCE_ASSERT((end_time_.tv_sec * zce::SEC_PER_NSEC + end_time_.tv_nsec ) >
+               (start_time_.tv_sec * zce::SEC_PER_NSEC + start_time_.tv_nsec ));
 
-    return ((end_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + end_time_.tv_nsec ) -
-            (start_time_.tv_sec * ZCE_LIB::SEC_PER_NSEC + start_time_.tv_nsec ) + addup_time_) / ZCE_LIB::USEC_PER_NSEC;
+    return ((end_time_.tv_sec * zce::SEC_PER_NSEC + end_time_.tv_nsec ) -
+            (start_time_.tv_sec * zce::SEC_PER_NSEC + start_time_.tv_nsec ) + addup_time_) / zce::USEC_PER_NSEC;
 #endif
 }
 
@@ -212,9 +212,9 @@ double ZCE_HR_Progress_Timer::elapsed_usec() const
 double ZCE_HR_Progress_Timer::precision_usec()
 {
 #if defined ZCE_OS_WINDOWS
-    return (double)(ZCE_LIB::SEC_PER_USEC) / ((uint64_t)( frequency_.QuadPart));
+    return (double)(zce::SEC_PER_USEC) / ((uint64_t)( frequency_.QuadPart));
 #elif defined ZCE_OS_LINUX
-    return (precision_.tv_sec * ZCE_LIB::SEC_PER_NSEC  + precision_.tv_nsec ) * ZCE_LIB::USEC_PER_NSEC;
+    return (precision_.tv_sec * zce::SEC_PER_NSEC  + precision_.tv_nsec ) * zce::USEC_PER_NSEC;
 #endif
 }
 
@@ -241,13 +241,13 @@ void ZCE_TSC_Progress_Timer::restart()
 {
     end_time_ = 0;
     addup_time_ = 0;
-    start_time_ = ZCE_LIB::rdtsc();
+    start_time_ = zce::rdtsc();
 }
 
 //结束计时
 void ZCE_TSC_Progress_Timer::end()
 {
-    end_time_ = ZCE_LIB::rdtsc();
+    end_time_ = zce::rdtsc();
 }
 
 ///累计计时开始,用于多次计时的过程，
@@ -260,7 +260,7 @@ void ZCE_TSC_Progress_Timer::addup_start()
     //会有一些特殊情况，导致 start_time_ > end_time_,最大可能是在不同的CPU上计时了,
 
     end_time_ = 0;
-    start_time_ = ZCE_LIB::rdtsc();
+    start_time_ = zce::rdtsc();
 }
 
 //计算消耗的TICK（CPU周期）数量，注意这个值，只能在自己的机器上做对比才有意义，
@@ -282,14 +282,14 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
     if ( 0 == cpu_hz_ )
     {
         ZCE_SYSTEM_INFO system_info;
-        ret = ZCE_LIB::get_system_info(&system_info);
+        ret = zce::get_system_info(&system_info);
         if (0 == ret )
         {
             cpu_hz_ = system_info.cpu_hz_;
         }
         else
         {
-            ZCE_LOG(RS_ERROR, "ZCE_LIB::get_system_info return fail. cpu use default 1G.");
+            ZCE_LOG(RS_ERROR, "zce::get_system_info return fail. cpu use default 1G.");
             //用1G作为作为默认值
             cpu_hz_ = DEFAULT_CPU_HZ;
         }

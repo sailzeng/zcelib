@@ -1,6 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_time.h"
-#include "zce_trace_log_basic.h"
+#include "zce_log_basic.h"
 #include "zce_log_msg.h"
 
 //ZengXing 22503

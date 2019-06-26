@@ -23,8 +23,8 @@
 #include <zce_os_adapt_process.h>
 #include <zce_os_adapt_getopt.h>
 #include <zce_os_adapt_dlfcn.h>
-#include <zce_trace_debugging.h>
-#include <zce_trace_log_msg.h>
+#include <zce_log_logging.h>
+#include <zce_log_msg.h>
 #include <zce_lock_null_lock.h>
 #include <zce_lock_thread_mutex.h>
 #include <zce_config_property_tree.h>

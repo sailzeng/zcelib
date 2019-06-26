@@ -256,3 +256,44 @@ int test_progress_timer(int  /*argc*/, char * /*argv*/[])
 
     return 0;
 }
+
+static int test_stack5()
+{
+    zce::backtrace_stack(stdout);
+    return 0;
+}
+
+static int test_stack4()
+{
+    test_stack5();
+    return 0;
+}
+
+static int test_stack3()
+{
+    test_stack4();
+    return 0;
+}
+
+
+static int test_stack2()
+{
+    test_stack3();
+    return 0;
+}
+
+static int test_stack1()
+{
+    test_stack2();
+    return 0;
+}
+
+
+
+
+
+int test_back_stack(int  /*argc*/,char* /*argv*/[])
+{
+    return test_stack1();
+}
+

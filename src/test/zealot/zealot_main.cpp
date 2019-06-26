@@ -21,6 +21,7 @@ int main(int argc, char *argv[])
                                                 LOG_HEAD_RECORD_NONE);
     ZCE_TRACE_FILELINE(RS_DEBUG);
     test_memory_debug(argc, argv);
+    test_back_stack(argc,argv);
     //test_out_buffer(argc, argv);
     //test_progress_timer(argc,argv);
     //test_bytes_hash(argc, argv);

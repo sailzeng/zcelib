@@ -32,7 +32,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     int ret = 0;
 
     //清理最后的错误值
-    ZCE_LIB::clear_last_error();
+    zce::clear_last_error();
 
     //如果没有初始化
     if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
@@ -67,15 +67,15 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     }
 
     //进行连接尝试
-    ret = ZCE_LIB::connect(new_stream.get_handle(),
-                           remote_addr->sockaddr_ptr_,
-                           remote_addr->sockaddr_size_);
+    ret = zce::connect(new_stream.get_handle(),
+                       remote_addr->sockaddr_ptr_,
+                       remote_addr->sockaddr_size_);
 
     //
     if (ret != 0  )
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
-        int last_err =  ZCE_LIB::last_error();
+        int last_err =  zce::last_error();
 
         if ( EINPROGRESS != last_err &&  EWOULDBLOCK != last_err )
         {
@@ -85,9 +85,9 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     }
 
     //进行超时处理
-    ret = ZCE_LIB::handle_ready(new_stream.get_handle(),
-                                &timeout,
-                                ZCE_LIB::HANDLE_READY_CONNECTED);
+    ret = zce::handle_ready(new_stream.get_handle(),
+                            &timeout,
+                            zce::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -119,9 +119,9 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     int ret = 0;
 
     //清理最后的错误值
-    ZCE_LIB::clear_last_error();
+    zce::clear_last_error();
 
-    zcecket，如果需要绑定，会绑定IP和端口
+    //初始化Socket，如果需要绑定，会绑定IP和端口
     //如果没有初始化
     if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
     {
@@ -151,17 +151,17 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     //errno = 0;
 
     //进行连接
-    ret = ZCE_LIB::connect(new_stream.get_handle(),
-                           remote_addr->sockaddr_ptr_,
-                           zce          remote_addr->sockaddr_size_);
+    ret = zce::connect(new_stream.get_handle(),
+                       remote_addr->sockaddr_ptr_,
+                       remote_addr->sockaddr_size_);
 
     //进行非阻塞的连接，一般都是返回错误。但是UNIX 网络卷一也提到了过本地连接立即返回0，我自己测试过好像都是返回-1
     if (ret != 0 )
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
-        int last_error = ZCE_LIB::last_error();
+        int last_error = zce::last_error();
 
-        if ( non_blocing zceNPROGRESS == last_error ||  EWOULDBLOCK == last_error ) )
+        if (non_blocing && (EINPROGRESS == last_error || EWOULDBLOCK == last_error))
         {
             //不关闭socket stream
             return -1;

@@ -14,13 +14,14 @@
 *
 */
 
-#ifndef ZCE_LIB_LOGGING_H_
-#define ZCE_LIB_LOGGING_H_
+#ifndef ZCE_LIB_LOG_LOGGING_H_
+#define ZCE_LIB_LOG_LOGGING_H_
 
 //==========================================================================================================
 
 #include "zce_config.h"
 #include "zce_os_adapt_error.h"
+
 
 //定义日志输出,则实用内部的函数作为输出定义
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
@@ -372,7 +373,17 @@ public:
 #endif
 
 
-//==========================================================================================================
+//日志打印堆栈信息的宏，x是日志的输出级别
+#ifndef ZCE_BACKTRACE_STACK
+#define ZCE_BACKTRACE_STACK(x)            zce::backtrace_stack(x,__ZCE_FUNC__)
+#endif
+
+//日志打印堆栈信息的宏，x是日志的输出级别,y是指针，z是指针长度
+#ifndef ZCE_TRACE_POINTER_DATA
+#define ZCE_TRACE_POINTER_DATA(x,y,z)     zce::memory_debug((x),__ZCE_FUNC__,(y),(z))
+#endif
+
+//-----------------------------------------------------------------------------------------------
 //DEBUG 版本特有的一些宏
 //ZCE_ASSERT原来的写法是 while(!(f)){ do something,后来发现WINDOWS下会对这个进行告警，被迫改了
 
@@ -394,6 +405,9 @@ public:
 #define ZCE_FILELINE_TRACE_DEBUG   ZCE_TRACE_FILELINE
 #endif
 
+#ifndef ZCE_BACKTRACE_STACK_DEBUG
+#define ZCE_BACKTRACE_STACK_DEBUG    ZCE_BACKTRACE_STACK
+#endif
 
 //非调试版本的宏定义，
 #else  //#if defined DEBUG || defined _DEBUG
@@ -422,10 +436,16 @@ public:
 #define ZCE_FILELINE_TRACE_DEBUG(...) ((void)0)
 #endif
 
+#ifndef ZCE_BACKTRACE_STACK_DEBUG
+#define ZCE_BACKTRACE_STACK_DEBUG(...) ((void)0)
+#endif
+
 
 #endif //#if defined DEBUG || defined _DEBUG
 
+//-----------------------------------------------------------------------------------------------
 
 
 
-#endif //ZCE_LIB_LOGGING_H_
+
+#endif 

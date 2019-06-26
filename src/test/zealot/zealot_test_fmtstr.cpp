@@ -562,9 +562,9 @@ int test_out_file_stream()
 int test_log_debug(int, char *[])
 {
     ZCE_BACKTRACE_STACK(RS_DEBUG);
-    char dbg_ptr[916];
+    unsigned char dbg_ptr[916];
     memset(dbg_ptr, 0x68, 916);
-    ZCE_TRACE_POINTER_DATA(RS_DEBUG, (const unsigned char *)dbg_ptr, 916);
+    ZCE_TRACE_POINTER_DATA(RS_DEBUG, dbg_ptr, 916);
     return 0;
 }
 

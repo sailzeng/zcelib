@@ -23,7 +23,7 @@
 #define ZCE_LIB_OS_ADAPT_STRING_H_
 
 
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 
 
 
@@ -456,11 +456,11 @@ const char *skip_separator(const char *str, char separator_char);
 /*!
 * @brief      用 11 02 03 0E E0         ..... 格式的输出，指针信息。调试打印内存信息
 *             格式信息更加丰富，和清晰，当然打印也更加慢
-* @param      mem     调试的内存指针
+* @param      mem_ptr 调试的内存指针
 * @param      mem_len 指针长度
 * @param      str_ary 字符串的数组，为什么不用std::ostream呢，因为我可能会要重新格式输出
 */
-void memory_debug(const unsigned char *mem,
+void memory_debug(const unsigned char* mem_ptr,
                   size_t mem_len,
                   std::vector<std::string> &str_ary);
 
@@ -471,7 +471,18 @@ void memory_debug(const unsigned char *mem,
 * @param      mem_len 指针长度，
 * @param      stream  文件流对象，stdout,stderr也都可以
 */
-void memory_debug(const unsigned char *mem, size_t mem_len, FILE *stream);
+void memory_debug(const unsigned char* mem_ptr,
+                  size_t mem_len, 
+                  FILE *stream);
+
+
+///日志打印堆栈信息
+///调试打印的指针
+///指针数据的长度
+void memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
+                  const char* dbg_info,
+                  const unsigned char* mem_ptr,
+                  size_t mem_len);
 
 //----------------------------------------------------------------------------------------------------------
 

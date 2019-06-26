@@ -2,7 +2,7 @@
 #define ZCE_LIB_BYTES_SERIALIZATION_H_
 
 #include "zce_bytes_base.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 
 //===========================================================================================================
 //流编码处理的类，写入流的处理类

@@ -261,6 +261,12 @@ void _foo_c11_outstring(std::string &foo_string,
     }
 }
 
+inline static void _foo_c11_outdata(std::string& foo_string,
+                                    const char*& foo_fmt_spec)
+{
+    foo_string.append(foo_fmt_spec);
+}
+
 //--------------------------------------------------------------------------------------------------------------------------------
 /*!
 * @brief      函数用于讲多个参数拼接成一个字符串，可以使用风格符

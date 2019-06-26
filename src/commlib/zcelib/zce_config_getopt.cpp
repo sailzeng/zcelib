@@ -1,7 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_math.h"
 #include "zce_os_adapt_process.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_config_getopt.h"
 
 /*

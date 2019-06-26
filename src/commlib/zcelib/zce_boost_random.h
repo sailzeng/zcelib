@@ -73,7 +73,7 @@
 #ifndef ZCE_LIB_BOOST_RANDOM_H_
 #define ZCE_LIB_BOOST_RANDOM_H_
 
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_boost_singleton.h"
 
 namespace zce

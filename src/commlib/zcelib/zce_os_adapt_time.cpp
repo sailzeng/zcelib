@@ -19,7 +19,7 @@
 #include "zce_os_adapt_predefine.h"
 #include "zce_os_adapt_mutex.h"
 #include "zce_lock_thread_mutex.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_time.h"
 

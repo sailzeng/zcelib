@@ -1,5 +1,5 @@
 #include "zce_predefine.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_net_http_client.h"
 
 

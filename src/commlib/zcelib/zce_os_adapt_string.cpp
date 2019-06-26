@@ -5,7 +5,7 @@
 
 #include "zce_predefine.h"
 #include "zce_os_adapt_process.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_socket_addr_in.h"
 #include "zce_socket_addr_in6.h"
 #include "zce_time_value.h"
@@ -253,46 +253,30 @@ const char *zce::skip_separator(const char *str, char separator_char)
     return str;
 }
 
-
-
-
 //==========================================================================================================
-
-//调试打印内存信息，就是简单的内存翻译为16进制字符串
-void zce::memory_debug( const unsigned char *mem, size_t mem_len, FILE *stream)
-{
-    //%zu不知道VC从什么年代支持的
-    fprintf(stream, "DEBUG memory[%p][%zu] \n", mem, mem_len);
-    std::vector<std::string> str_ary;
-    zce::memory_debug(mem, mem_len, str_ary);
-    for (std::string &out : str_ary)
-    {
-        fprintf(stream, "%s\n", out.c_str());
-    }
-
-}
 
 
 //用 11 02 03 0E E0         ..... 格式的输出，指针信息。调试打印内存信息
-void zce::memory_debug(const unsigned char *mem,
+void zce::memory_debug(const unsigned char* mem_ptr,
                        size_t mem_len,
                        std::vector<std::string> &str_ary)
 {
-    //60个字符换行
-    const size_t LINE_OUT_NUM = 60;
+    //一行输出的字符数量
+    const size_t LINE_OUT_NUM = 32;
     const size_t SPEARATOR_LEN = 2;
     char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = {0};
-    ascii_str[LINE_OUT_NUM] = '\0';
+    ascii_str[LINE_OUT_NUM + SPEARATOR_LEN] = '\0';
     const size_t HEX_STR_LEN = 4;
     char hex_str[HEX_STR_LEN] = {0};
-
+    const size_t ADDR_STR_LEN = 32;
+    char addr_str[ADDR_STR_LEN] = { 0 };
     //头部用4个空格作为分割富豪
 
     ascii_str[0] = ' ';
     ascii_str[1] = ' ';
 
     std::string line_string;
-    line_string.reserve(LINE_OUT_NUM * 4 + 12);
+    line_string.reserve(LINE_OUT_NUM * 4 + 64);
     str_ary.reserve(mem_len / LINE_OUT_NUM + 1);
 
     size_t j = 0;
@@ -307,7 +291,12 @@ void zce::memory_debug(const unsigned char *mem,
             //从头开始记录
             j = 0;
         }
-        unsigned char bytmp = *(mem + i);
+        if (j == 0)
+        {
+            snprintf(addr_str,ADDR_STR_LEN,"%p ",mem_ptr+i);
+            line_string += addr_str;
+        }
+        unsigned char bytmp = *(mem_ptr + i);
         snprintf(hex_str, HEX_STR_LEN, "%02X ", bytmp);
         line_string += hex_str;
 
@@ -332,6 +321,37 @@ void zce::memory_debug(const unsigned char *mem,
         line_string += ascii_str;
         str_ary.push_back(line_string);
     }
+}
+
+//调试打印内存信息，就是简单的内存翻译为16进制字符串
+void zce::memory_debug(const unsigned char* mem_ptr,size_t mem_len,FILE* stream)
+{
+    //%zu不知道VC从什么年代支持的
+    fprintf(stream,"DEBUG memory[%p][%zu] \n",mem_ptr,mem_len);
+    std::vector<std::string> str_ary;
+    zce::memory_debug(mem_ptr,mem_len,str_ary);
+    for (std::string& out : str_ary)
+    {
+        fprintf(stream,"%s\n",out.c_str());
+    }
+}
+
+
+//辅助打印一个指针内部数据的函数，用16进制的方式打印日志
+void zce::memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
+                       const char* dbg_info,
+                       const unsigned char* mem_ptr,
+                       size_t mem_len)
+{
+    ZCE_LOG(dbg_lvl,"[DEBUG_POINTER] out pointer address[%p] [%s].",mem_ptr,dbg_info);
+    std::vector<std::string> str_ary;
+    zce::memory_debug(mem_ptr,mem_len,str_ary);
+    for (std::string& out : str_ary)
+    {
+        ZCE_LOG(dbg_lvl,"[DEBUG_POINTER] %s.",out.c_str());
+    }
+
+    return;
 }
 
 

@@ -315,11 +315,10 @@
     <ClInclude Include="zce_timer_queue_wheel.h" />
     <ClInclude Include="zce_time_progress_timer.h" />
     <ClInclude Include="zce_time_value.h" />
-    <ClInclude Include="zce_trace_debugging.h" />
-    <ClInclude Include="zce_trace_log_basic.h" />
-    <ClInclude Include="zce_trace_aid_debug.h" />
-    <ClInclude Include="zce_trace_log_msg.h" />
-    <ClInclude Include="zce_trace_log_plus.h" />
+    <ClInclude Include="zce_log_logging.h" />
+    <ClInclude Include="zce_log_basic.h" />
+    <ClInclude Include="zce_log_msg.h" />
+    <ClInclude Include="zce_log_plus.h" />
     <ClInclude Include="zce_trace_log_priority.h" />
     <ClInclude Include="zce_uuid_generator.h" />
   </ItemGroup>
@@ -425,10 +424,9 @@
     <ClCompile Include="zce_timer_queue_wheel.cpp" />
     <ClCompile Include="zce_time_progress_timer.cpp" />
     <ClCompile Include="zce_time_value.cpp" />
-    <ClCompile Include="zce_trace_log_basic.cpp" />
-    <ClCompile Include="zce_trace_aid_debug.cpp" />
-    <ClCompile Include="zce_trace_log_msg.cpp" />
-    <ClCompile Include="zce_trace_log_plus.cpp" />
+    <ClCompile Include="zce_log_basic.cpp" />
+    <ClCompile Include="zce_log_msg.cpp" />
+    <ClCompile Include="zce_log_plus.cpp" />
     <ClCompile Include="zce_uuid_generator.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

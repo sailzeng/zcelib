@@ -113,7 +113,7 @@ void fmt_str(std::string &stdstr,
 * @param      value       要进行输出的int64值
 * @param      base        输出的进制 参考， @ref zce::BASE_NUMBER_SYSTEM
 * @param      width       输出的宽度，为0表示不处理宽度，相当于printf函数格式化参数%32.16d中间的32。
-* @param      precision   精度，就是输出几个字符，相当于printf函数格式化参数%32.16d中间的16。
+* @param      precision   精度，就是输出几个字符，相当于printf函数格式化参数%32.16d中间的16。整数输出不会截断
 * @param      flags       参考 @ref zce::FORMAT_STRING_FLAG
 */
 void fmt_int64(char *buffer,
@@ -122,7 +122,7 @@ void fmt_int64(char *buffer,
                int64_t value,
                BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
                size_t width = 0,
-               size_t precision = -1,
+               size_t precision = 0,
                int flags = 0);
 
 ///用于将int64格式化后输出（添加）到 @stdstr里面（末尾），参数含义见上面的函数
@@ -130,7 +130,7 @@ void fmt_int64(std::string &stdstr,
                int64_t value,
                BASE_NUMBER_SYSTEM base,
                size_t width = 0,
-               size_t precision = -1,
+               size_t precision = 0,
                int flags = 0);
 
 /*!

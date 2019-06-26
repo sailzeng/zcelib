@@ -9,14 +9,13 @@
 *             也提供了一组宏帮助输出。
 *             output_helper 函数为模板函数提供统一的入口，
 *             XXXXX_Out_Helper 这些类一般是为了帮助提供格式化输出，
-*             ZCE_XXXX_YYYY_OUT 的宏一般是为了简化格式化输出的
 *
 * @details    基本的数据类型，zce里面的基础数据类型，都有了输出，
 *
 *             2012年5月
 *             前几天有以为令人尊敬的何培蓉（珍珠）女士将光诚从山东救了出来，在凶恶，
 *             背叛，恐惧，默默的云云众生中，我们看到了一朵奇葩，
-*             正因为他们的存在，我们看到了希望
+*             不知道是否是因为奇葩的存在，我们看到了希望
 *
 */
 
@@ -440,14 +439,44 @@ inline void output_helper(char *buffer,
                  max_len,
                  use_len,
                  out_data.c_str(),
-                 out_data.length()
-                );
+                 out_data.length());
 }
 
 inline void string_helper(std::string &stdstr,
                           const std::string &out_data)
 {
     stdstr.append(out_data);
+}
+
+///辅助输出void *指针地址输出
+inline void output_helper(char* buffer,
+                          size_t max_len,
+                          size_t& use_len,
+                          const void* out_data)
+{
+    size_t save_point = 0;
+    memcpy(&save_point,&out_data,sizeof(size_t));
+    zce::fmt_int64(buffer,
+                   max_len,
+                   use_len,
+                   static_cast<int64_t>(save_point),
+                   zce::BASE_HEXADECIMAL,
+                   0,
+                   sizeof(size_t) == 4 ? 8 : 16,
+                   zce::FMT_PREFIX | zce::FMT_UP| zce::FMT_ZERO);
+}
+
+inline void string_helper(std::string& stdstr,
+                          const void* out_data)
+{
+    size_t save_point = 0;
+    memcpy(&save_point,&out_data,sizeof(size_t));
+    zce::fmt_int64(stdstr,
+                   static_cast<int64_t>(save_point),
+                   zce::BASE_HEXADECIMAL,
+                   0,
+                   sizeof(size_t) == 4 ? 8 : 16,
+                   zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
 }
 
 //===========================================================================================
@@ -813,14 +842,15 @@ inline void string_helper(std::string &stdstr,
 class Int_Out_Helper
 {
 public:
-    //辅助类的构造函数
-    template <typename int_type>
+    //辅助类的构造函数，跟进有符号和没有符号的整数类型进行了区分处理
+    //使用enable_if 嵌套实现并且语义，is_unsigned 不光对整数生效，对浮点也有作用
+    template <typename int_type,typename std::enable_if<std::is_integral<int_type>::value,
+        typename std::enable_if<std::is_unsigned<int_type>::value,int>::type >::type = 0>
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
                    BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
-                   size_t precision = size_t(-1),
-                   typename std::enable_if<std::is_unsigned<int_type>::value>::type * = 0) :
+                   size_t precision = 0) :
         out_data_(out_data),
         width_(width),
         precision_(precision),
@@ -830,13 +860,13 @@ public:
         flags_ |= zce::FMT_UNSIGNED;
     }
 
-    template <typename int_type>
+    template <typename int_type, typename std::enable_if<std::is_integral<int_type>::value,
+        typename std::enable_if<std::is_signed<int_type>::value,int>::type>::type = 0>
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
                    BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
-                   size_t precision = size_t(-1),
-                   typename std::enable_if<std::is_signed<int_type>::value>::type * = 0) :
+                   size_t precision = 0) :
         out_data_(out_data),
         width_(width),
         precision_(precision),
@@ -868,7 +898,7 @@ public:
     Int_HexOut_Helper(int_type out_data,
                       size_t width = 0,
                       int flags = zce::FMT_PREFIX | zce::FMT_UP,
-                      size_t precision = size_t(-1)) :
+                      size_t precision =0) :
         Int_Out_Helper(out_data, width, flags, zce::BASE_HEXADECIMAL, precision)
     {
         flags_ |= zce::FMT_UNSIGNED;
@@ -889,8 +919,7 @@ inline void output_helper(char *buffer,
                    out_data.base_,
                    out_data.width_,
                    out_data.precision_,
-                   out_data.flags_
-                  );
+                   out_data.flags_);
 }
 
 inline void string_helper(std::string &stdstr,
@@ -1045,6 +1074,8 @@ inline void string_helper(std::string &stdstr,
                  out_data.precision_,
                  out_data.flags_);
 }
+
+
 
 };//zce
 

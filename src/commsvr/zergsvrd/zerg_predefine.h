@@ -21,8 +21,7 @@
 #include <zce_os_adapt_thread.h>
 #include <zce_os_adapt_process.h>
 #include <zce_os_adapt_getopt.h>
-#include <zce_trace_debugging.h>
-#include <zce_trace_log_msg.h>
+#include <zce_log_logging.h>
 #include <zce_lock_null_lock.h>
 #include <zce_lock_thread_mutex.h>
 #include <zce_config_property_tree.h>
@@ -43,7 +42,6 @@
 #include <zce_socket_connector.h>
 #include <zce_socket_stream.h>
 #include <zce_mml_command.h>
-#include <zce_trace_aid_debug.h>
 
 #include <soar_predefine.h>
 #include <soar_error_code.h>

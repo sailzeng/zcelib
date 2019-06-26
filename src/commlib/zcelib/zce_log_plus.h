@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_trace_log_plus.h
+* @filename   zce_log_plus.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       2004年8月1日
@@ -12,7 +12,7 @@
 *             日志输出，当然不得不说，也还是挺酷的，
 *             但说回来C++ stream真算不上一个设计完美的东东
 *             1.格式化控制痛苦，必须承认在格式化控制上他远远不如printf这种函数，
-*             2.性能弱，大约比snprintf这类函数的慢50%.(GCC最新版本有惊喜)
+*             2.性能弱，大约比snprintf这类函数的慢50%.(GCC7.1最新版本有惊喜)
 *             3.多线程情况并不好控制，特别是多线程环境下，你基本无法加锁，
 *             所以C++ stream空有一身靓丽的外表，却很少人真正使用。
 *
@@ -33,7 +33,7 @@
 #define ZCE_LIB_TRACE_LOG_PLUS_H_
 
 #include "zce_string_extend.h"
-#include "zce_trace_log_basic.h"
+#include "zce_log_basic.h"
 
 
 
@@ -88,7 +88,7 @@ public:
 
         sz_buf_len -= sz_use_len;
 
-        //得到打印信息,_vsnprintf为特殊函数
+        //得到打印信息,foo_snprintf 为自己内部的函数，str_format使用%?作为输出控制符
         size_t sprt_use_len = 0;
         zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data...);
         sz_use_len += sprt_use_len;

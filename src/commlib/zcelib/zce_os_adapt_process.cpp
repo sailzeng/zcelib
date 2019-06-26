@@ -4,7 +4,7 @@
 #include "zce_os_adapt_file.h"
 #include "zce_os_adapt_string.h"
 #include "zce_os_adapt_time.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_os_adapt_process.h"
 
 //得到当前的进程ID

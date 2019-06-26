@@ -33,7 +33,7 @@
 
 #include "zce_boost_non_copyable.h"
 #include "zce_os_adapt_string.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_mysql_field.h"
 
 /*!

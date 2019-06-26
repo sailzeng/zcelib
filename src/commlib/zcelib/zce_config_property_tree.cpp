@@ -1,7 +1,7 @@
 #include "zce_predefine.h"
 #include "zce_socket_addr_in.h"
 #include "zce_socket_addr_in6.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_config_property_tree.h"
 
 //·Ö¸î·û,

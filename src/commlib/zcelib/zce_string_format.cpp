@@ -758,7 +758,7 @@ void zce::fmt_int64(std::string &stdstr,
     while (place > 0)
     {
         --place;
-        stdstr.append(zero_pad_len, convert[place]);
+        stdstr.append(1, convert[place]);
     }
 
     //左对齐，在末尾添加空格

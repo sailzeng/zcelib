@@ -129,6 +129,7 @@ int test_net_getaddrinfo(int argc, char *argv[]);
 
 
 int test_memory_debug(int /*argc*/, char * /*argv */[]);
+int test_back_stack(int /*argc*/,char* /*argv */[]);
 
 
 #endif //

@@ -6,7 +6,7 @@
 #include "zce_os_adapt_socket.h"
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_dirent.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_server_base.h"
 
 

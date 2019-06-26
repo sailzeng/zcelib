@@ -2,7 +2,7 @@
 #include "zce_time_value.h"
 #include "zce_event_handle_base.h"
 #include "zce_os_adapt_socket.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_event_reactor_wfmo.h"
 
 

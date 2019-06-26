@@ -1,6 +1,6 @@
 #include "zce_predefine.h"
 #include "zce_os_adapt_time.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_timer_handler_base.h"
 #include "zce_timer_queue_base.h"
 

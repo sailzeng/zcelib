@@ -9,7 +9,7 @@
 #include "zce_os_adapt_rwlock.h"
 #include "zce_os_adapt_semaphore.h"
 
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_lock_thread_rw_mutex.h"
 
 /************************************************************************************************************

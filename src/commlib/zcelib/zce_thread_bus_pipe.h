@@ -44,7 +44,7 @@
 #include "zce_os_adapt_file.h"
 #include "zce_os_adapt_error.h"
 #include "zce_share_mem_mmap.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_lock_null_lock.h"
 #include "zce_lock_thread_mutex.h"
 
@@ -166,7 +166,7 @@ public:
     //注意
 
     //从RECV管道读取数据，
-    inline bool pop_front_recvpipe(zce::dequechunk_node*&node)
+    inline bool pop_front_recvpipe(zce::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
@@ -181,7 +181,7 @@ public:
 
 
     //从SEND管道读取数据，
-    inline bool pop_front_sendpipe(zce::dequechunk_node*&node)
+    inline bool pop_front_sendpipe(zce::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);

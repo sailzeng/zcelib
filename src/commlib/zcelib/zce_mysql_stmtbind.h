@@ -20,7 +20,7 @@
 
 //这些函数都是4.1.2后的版本功能
 
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 
 
 /*!

@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_trace_log_msg.h
+* @filename   zce_log_msg.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Monday, December 30, 2013
@@ -15,10 +15,10 @@
 *
 */
 
-#ifndef ZCE_LIB_TRACE_LOG_MESSAGE_H_
-#define ZCE_LIB_TRACE_LOG_MESSAGE_H_
+#ifndef ZCE_LIB_LOG_MESSAGE_H_
+#define ZCE_LIB_LOG_MESSAGE_H_
 
-#include "zce_trace_log_basic.h"
+#include "zce_log_basic.h"
 
 /******************************************************************************************
 class ZCE_Trace_LogMsg

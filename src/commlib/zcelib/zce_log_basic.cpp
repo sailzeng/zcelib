@@ -9,7 +9,7 @@
 #include "zce_os_adapt_string.h"
 #include "zce_os_adapt_error.h"
 #include "zce_os_adapt_file.h"
-#include "zce_trace_log_basic.h"
+#include "zce_log_basic.h"
 
 const char ZCE_LogTrace_Basic::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 
@@ -159,7 +159,7 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
     //如果需要日志文件输出，输出一个文件
     if (output_way_ & LOG_OUTPUT_FILE )
     {
-        timeval now_time(ZCE_LIB::gettimeofday());
+        timeval now_time(zce::gettimeofday());
         open_new_logfile(true, now_time);
     }
 
@@ -211,11 +211,11 @@ void ZCE_LogTrace_Basic::make_configure(void)
     char dir_name[PATH_MAX + 16];
     dir_name[PATH_MAX] = '\0';
 
-    ZCE_LIB::dirname(log_file_prefix_.c_str(), dir_name, PATH_MAX + 1);
+    zce::dirname(log_file_prefix_.c_str(), dir_name, PATH_MAX + 1);
     log_file_dir_ = dir_name;
 
     // 如果目录不存在，则创建
-    if (ZCE_LIB::mkdir_recurse(log_file_dir_.c_str()) != 0)
+    if (zce::mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
         // 创建失败，
         fprintf(stderr, "mkdir %s fail. err=%d|%s\n",
@@ -308,12 +308,12 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
         {
             int ret = 0;
             std::vector<std::string> file_name_ary;
-            ret = ZCE_LIB::readdir_nameary(log_file_dir_.c_str(),
-                                           log_file_prefix_.c_str(),
-                                           STR_LOG_POSTFIX,
-                                           false,
-                                           true,
-                                           file_name_ary);
+            ret = zce::readdir_nameary(log_file_dir_.c_str(),
+                                       log_file_prefix_.c_str(),
+                                       STR_LOG_POSTFIX,
+                                       false,
+                                       true,
+                                       file_name_ary);
             if (ret != 0)
             {
                 fprintf(stderr, "readdir %s | %s fail. err=%d|%s\n",
@@ -341,7 +341,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
         NAME_TIME_MONTH_DEVIDE_TIME == div_log_file_ ||
         NAME_TIME_YEAR_DEVIDE_TIME == div_log_file_)
     {
-        cur_click = current_time.tv_sec / ZCE_LIB::ONE_HOUR_SECONDS;
+        cur_click = current_time.tv_sec / zce::ONE_HOUR_SECONDS;
 
         //降低比较频率
         if (current_click_ != cur_click)
@@ -481,7 +481,7 @@ void ZCE_LogTrace_Basic::del_old_logfile()
             }
         }
 
-        ZCE_LIB::clear_last_error();
+        zce::clear_last_error();
     }
 }
 
@@ -580,10 +580,10 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
     if (record_info_ & LOG_HEAD_RECORD_CURRENTTIME)
     {
         //转换为语句
-        ZCE_LIB::timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
+        zce::timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
         //别计算了，快点
-        sz_use_len = ZCE_LIB::TIMESTR_ISO_USEC_LEN;
+        sz_use_len = zce::TIMESTR_ISO_USEC_LEN;
 
         sz_buf_len -= sz_use_len;
     }
@@ -626,13 +626,13 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
     //如果纪录当前的PID
     if (record_info_ & LOG_HEAD_RECORD_PROCESSID)
     {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]", static_cast<unsigned int>(ZCE_LIB::getpid()));
+        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]", static_cast<unsigned int>(zce::getpid()));
         sz_buf_len -= sz_use_len;
     }
 
     if (record_info_ & LOG_HEAD_RECORD_THREADID)
     {
-        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[TID:%u]", static_cast<unsigned int>(ZCE_LIB::pthread_self()));
+        sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[TID:%u]", static_cast<unsigned int>(zce::pthread_self()));
         sz_buf_len -= sz_use_len;
     }
 }

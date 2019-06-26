@@ -10,7 +10,7 @@
 #include "zce_os_adapt_file.h"
 #include "zce_os_adapt_dirent.h"
 #include "zce_os_adapt_error.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_share_mem_posix.h"
 
 //¹¹Ôìº¯Êý

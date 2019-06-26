@@ -1,5 +1,5 @@
 #include "zce_predefine.h"
-#include "zce_trace_debugging.h"
+#include "zce_log_logging.h"
 #include "zce_sqlite_db_handler.h"
 #include "zce_sqlite_stmt_handler.h"
 #include "zce_sqlite_conf_table.h"

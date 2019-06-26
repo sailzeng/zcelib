@@ -54,17 +54,17 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
 
     if (ret != 0)
     {
-        ZCE_LIB::closesocket(socket_handle_);
+        zce::closesocket(socket_handle_);
         return ret;
     }
 
     //½¨Á¢¼àÌý
-    ret = ZCE_LIB::listen (socket_handle_,
-                           backlog);
+    ret = zce::listen (socket_handle_,
+                       backlog);
 
     if (ret != 0)
     {
-        ZCE_LIB::closesocket(socket_handle_);
+        zce::closesocket(socket_handle_);
         return ret;
     }
 
@@ -75,9 +75,9 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
 int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
                                  ZCE_Sockaddr *remote_addr) const
 {
-    ZCE_SOCKET sock_handle = ZCE_LIB::accept(socket_handle_,
-                                             remote_addr->sockaddr_ptr_,
-                                             &remote_addr->sockaddr_size_);
+    ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
+                                         remote_addr->sockaddr_ptr_,
+                                         &remote_addr->sockaddr_size_);
 
     if (sock_handle == ZCE_INVALID_SOCKET)
     {
@@ -94,9 +94,9 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
                                  ZCE_Sockaddr *remote_addr) const
 {
     int ret = 0;
-    ret = ZCE_LIB::handle_ready(socket_handle_,
-                                &timeout,
-                                ZCE_LIB::HANDLE_READY_ACCEPT);
+    ret = zce::handle_ready(socket_handle_,
+                            &timeout,
+                            zce::HANDLE_READY_ACCEPT);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -106,9 +106,9 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
     }
 
     //
-    ZCE_SOCKET sock_handle = ZCE_LIB::accept(socket_handle_,
-                                             zce         remote_addr->sockaddr_ptr_,
-                                             &remote_addr->sockaddr_size_);
+    ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
+                                         remote_addr->sockaddr_ptr_,
+                                         &remote_addr->sockaddr_size_);
 
     if (sock_handle == ZCE_INVALID_SOCKET)
     {
