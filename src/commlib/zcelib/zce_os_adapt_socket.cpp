@@ -1557,11 +1557,13 @@ const char *zce::socketaddr_ntop(const sockaddr *sock_addr,
 //输出IP地址信息以及端口信息，内部是不使用静态变量，线程安全，BUF长度IPV4至少长度>21.IPV6至少长度>45
 const char *zce::socketaddr_ntop_ex(const sockaddr *sock_addr,
                                     char *str_ptr,
-                                    size_t str_len)
+                                    size_t str_len,
+                                    size_t& use_len,
+                                    bool out_port_info)
 {
     uint16_t addr_port = 0;
-    const char *ret_str = NULL;
-
+    const char *ret_str = nullptr;
+    use_len = 0;
     //根据不同的地址协议族，进行转换，不使用上面那个函数的原因是因为，我同时要进行读取port的操作
     if (sock_addr->sa_family == AF_INET)
     {
@@ -1583,27 +1585,26 @@ const char *zce::socketaddr_ntop_ex(const sockaddr *sock_addr,
     else
     {
         errno = EAFNOSUPPORT;
-        return NULL;
+        return nullptr;
     }
 
     //如果返回错误
-    if ( NULL == ret_str )
+    if (nullptr == ret_str )
     {
-        return NULL;
+        return nullptr;
     }
 
-    size_t add_str_len = strlen(str_ptr);
-
-    //5个数字，一个连接符，一个空字符标志
-    const size_t PORT_LEN = 7;
-
-    if (str_len < add_str_len + PORT_LEN)
+    use_len += strlen(str_ptr);
+    if (out_port_info)
     {
-        return NULL;
+        //前面已经检查过了，这儿不判断返回了
+        int port_len = snprintf(str_ptr + use_len,str_len - use_len,"#%u",addr_port);
+        if (port_len <= 0 || port_len + use_len > str_len)
+        {
+            return nullptr;
+        }
+        use_len += port_len;
     }
-
-    //前面已经检查过了，这儿不判断返回了
-    snprintf(str_ptr + add_str_len, str_len - add_str_len, "#%u", addr_port);
 
     return str_ptr;
 }

@@ -368,9 +368,6 @@
     <ClInclude Include="zce_config.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce_trace_log_priority.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce_shm_trie_tree.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -405,6 +402,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce_log_logging.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce_log_priority.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

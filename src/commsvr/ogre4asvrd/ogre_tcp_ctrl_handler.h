@@ -81,10 +81,8 @@ public:
     //
     virtual int handle_close ();
 
-    //得到Handle对应PEER的端口
-    unsigned short get_peer_port();
     //得到Handle对应PEER的IP地址
-    const char *get_peer_address();
+    const ZCE_Sockaddr_In &get_peer();
 
 protected:
 

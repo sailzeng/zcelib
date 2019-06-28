@@ -75,15 +75,8 @@ public:
     ///检查端口号是否是一个安全端口
     bool check_safeport();
 
-    //取得以.符号的IP地址信息STRING
-    inline const char *get_host_addr(char *addr, size_t buf_size) const;
-    ///取得以.符号的IP地址信息STRING.不可冲入的非安全函数
-    inline const char *get_host_addr (void) const;
+    //端口的打印输出使用to_string函数
 
-    //取得以.符号的IP地址#端口号STRING
-    const char *get_host_addr_port(char *addr, size_t buf_size) const;
-    //不可冲入的非安全函数
-    //const char *get_host_addr_port() const;
 
     //取得IP地址，本地序列
     inline uint32_t get_ip_address (void) const;
@@ -140,33 +133,7 @@ inline uint16_t ZCE_Sockaddr_In::get_port_number (void) const
     return ntohs(in4_addr_.sin_port);
 }
 
-//取得以.符号的IP地址信息STRING
-inline const char *ZCE_Sockaddr_In::get_host_addr(char *addr_buf, size_t buf_size) const
-{
-    return zce::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in4_addr_),
-                                addr_buf,
-                                buf_size);
-}
 
-//不可冲入的非安全函数
-inline const char *ZCE_Sockaddr_In::get_host_addr (void) const
-{
-    const size_t BUF_LEN = 64;
-    static char in4_buf[BUF_LEN + 1];
-    in4_buf[BUF_LEN] = '\0';
-
-    return zce::socketaddr_ntop(reinterpret_cast<const sockaddr *>(&in4_addr_),
-                                in4_buf,
-                                BUF_LEN);
-}
-
-//取得以.符号的IP地址#端口号STRING
-inline const char *ZCE_Sockaddr_In::get_host_addr_port(char *addr_buf, size_t buf_size) const
-{
-    return zce::socketaddr_ntop_ex(reinterpret_cast<const sockaddr *>(&in4_addr_),
-                                   addr_buf,
-                                   buf_size);
-}
 
 #endif  //ZCE_LIB_SOCKET_ADDR_IN_
 

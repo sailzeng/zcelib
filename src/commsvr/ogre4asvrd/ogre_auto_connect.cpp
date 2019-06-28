@@ -47,10 +47,11 @@ int Ogre_Connect_Server::get_config(const Ogre_Server_Config *config)
         {
             char out_buf[32 + 1];
             out_buf[32] = '\0';
+            size_t use_len = 0;
             ZCE_LOG(RS_ERROR, "Insert fail,may be have repeat peer id [%u|%u] ip[%s],please check your config .",
                     peer_module.peer_id_.peer_ip_address_,
                     peer_module.peer_id_.peer_port_,
-                    peer_module.peer_info_.peer_socketin_.to_string(out_buf, 32)
+                    peer_module.peer_info_.peer_socketin_.to_string(out_buf, 32,use_len)
                    );
             return SOAR_RET::ERR_OGRE_CFG_REPEAT_PEERID;
         }
@@ -123,7 +124,9 @@ int Ogre_Connect_Server::connect_server_by_peerid(const OGRE_PEER_ID &socket_pee
 int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_module)
 {
     int ret = 0;
-
+    const size_t IP_ADDR_LEN = 31;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //如果已经连接上了，不进行连接
     Ogre_TCP_Svc_Handler *tcp_hdl = NULL;
     ret = Ogre_TCP_Svc_Handler::find_services_peer(peer_module.peer_id_, tcp_hdl);
@@ -138,9 +141,8 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
     ZCE_Socket_Stream tcpscoket;
     tcpscoket.sock_enable(O_NONBLOCK);
 
-    ZCE_LOG(RS_INFO, "Try NONBLOCK connect server IP|Port :[%s|%u] .\n",
-            inetaddr.get_host_addr(),
-            inetaddr.get_port_number());
+    ZCE_LOG(RS_INFO, "Try NONBLOCK connect server IP|Port :[%s] .\n",
+            inetaddr.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
 
     //记住,是这个时间标志使SOCKET异步连接,
     ret = ogre_connector_.connect(tcpscoket, &inetaddr, true);

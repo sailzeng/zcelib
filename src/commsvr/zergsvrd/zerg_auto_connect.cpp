@@ -60,14 +60,13 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
 
 
         //由于该死的C/C++的返回静态指针的问题，这儿要输出两个地址，所以只能先打印到其他地方
-        const size_t TMP_ADDR_LEN = 32;
-        char mainroute_addr[TMP_ADDR_LEN + 1];
-
-        ZCE_LOG(RS_INFO, "[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s|%u].",
+        const size_t IP_ADDR_LEN = 32;
+        char ip_addr_str[IP_ADDR_LEN + 1];
+        size_t use_len = 0;
+        ZCE_LOG(RS_INFO, "[zergsvr] Add one auto connect data, main route services id[%u|%u] ip[%s].",
                 svc_route.svc_id_.services_type_,
                 svc_route.svc_id_.services_id_,
-                svc_route.ip_address_.get_host_addr(mainroute_addr, TMP_ADDR_LEN),
-                svc_route.ip_address_.get_port_number()
+                svc_route.ip_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
                );
 
         auto map_iter = type_to_idary_map_.find(svc_route.svc_id_.services_type_);
@@ -169,12 +168,13 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
     {
         return SOAR_RET::ERR_ZERG_SVCID_ALREADY_CONNECTED;
     }
-
-    ZCE_LOG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s|%u] .",
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
+    ZCE_LOG(RS_DEBUG, "[zergsvr] Try NONBLOCK connect services[%u|%u] IP|Port :[%s] .",
             svc_id.services_type_,
             svc_id.services_id_,
-            inetaddr.get_host_addr(),
-            inetaddr.get_port_number()
+            inetaddr.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
            );
 
     ZCE_Socket_Stream sockstream;

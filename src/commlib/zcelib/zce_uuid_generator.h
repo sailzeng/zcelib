@@ -88,22 +88,8 @@ public:
     operator uint64_t();
 
     /// 转换为字符串
-    const char *to_string(char *buffer, size_t buf_len) const;
+    const char *to_string(char *buffer, size_t buf_len, size_t& use_buf) const;
 
-    /// 转换为字符串，同时返回输出字符串的长度
-    inline const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const
-    {
-        const char *ret_ptr = to_string(buffer, buf_len);
-        if (ret_ptr)
-        {
-            use_buf = LEN_OF_ZCE_UUID64_STR;
-        }
-        else
-        {
-            use_buf = 0;
-        }
-        return 0;
-    }
 
 public:
 
@@ -291,22 +277,11 @@ public:
     bool operator == (const ZCE_UUID128 &others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
-    const char *to_string(char *buffer, size_t buf_len) const;
+    const char *to_string(char *buffer, size_t buf_len, size_t& use_buf) const;
 
-    /// 转换为字符串，同时返回输出字符串的长度
-    inline const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const
-    {
-        const char *ret_ptr = to_string(buffer, buf_len);
-        if (ret_ptr)
-        {
-            use_buf = LEN_OF_ZCE_UUID128_STR;
-        }
-        else
-        {
-            use_buf = 0;
-        }
-        return 0;
-    }
+public:
+    ///UUID的字符串表示的长度
+    static const size_t LEN_OF_ZCE_UUID128_STR = 36;
 
 public:
 
@@ -326,9 +301,7 @@ public:
 
     };
 
-public:
-    ///UUID的字符串表示的长度
-    static const size_t LEN_OF_ZCE_UUID128_STR = 36;
+
 };
 
 

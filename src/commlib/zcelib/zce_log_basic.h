@@ -31,7 +31,7 @@
 
 #include "zce_boost_non_copyable.h"
 #include "zce_lock_thread_mutex.h"
-#include "zce_trace_log_priority.h"
+#include "zce_log_priority.h"
 
 
 ///日志文件的分割方法,以及对应的名称关系

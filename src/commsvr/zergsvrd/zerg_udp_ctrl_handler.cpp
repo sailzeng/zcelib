@@ -41,21 +41,11 @@ UDP_Svc_Handler::~UDP_Svc_Handler()
     }
 }
 
-//
-/******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2007年11月17日
-Function        : UDP_Svc_Handler::init_udp_services
-Return          : int
-Parameter List  : NULL
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
 int UDP_Svc_Handler::init_udp_services()
 {
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     dgram_databuf_ = ZBuffer_Storage::instance()->allocate_buffer();
 
     int ret = 0;
@@ -63,9 +53,8 @@ int UDP_Svc_Handler::init_udp_services()
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] fail.",
-                udp_bind_addr_.get_host_addr(),
-                udp_bind_addr_.get_port_number());
+        ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
+                udp_bind_addr_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         handle_close();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
@@ -79,22 +68,18 @@ int UDP_Svc_Handler::init_udp_services()
     dgram_peer_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
     dgram_peer_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void *>(&opval), opvallen);
 
-
-
     ret = reactor()->register_handler(this, ZCE_Event_Handler::READ_MASK);
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] fail.",
-                udp_bind_addr_.get_host_addr(),
-                udp_bind_addr_.get_port_number());
+        ZCE_LOG(RS_ERROR, "[zergsvr] init_udp_services ,UDP bind ip address [%s] fail.",
+                udp_bind_addr_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         handle_close();
         return SOAR_RET::ERR_ZERG_INIT_UPD_PORT_FAIL;
     }
 
-    ZCE_LOG(RS_INFO, "[zergsvr] init_udp_services ,UDP bind ip address [%s|%u] success.",
-            udp_bind_addr_.get_host_addr(),
-            udp_bind_addr_.get_port_number());
+    ZCE_LOG(RS_INFO, "[zergsvr] init_udp_services ,UDP bind ip address [%s] success.",
+            udp_bind_addr_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
     return 0;
 }
 
@@ -104,21 +89,15 @@ ZCE_HANDLE UDP_Svc_Handler::get_handle(void) const
     return (ZCE_HANDLE)dgram_peer_.get_handle();
 }
 
-
-
 int UDP_Svc_Handler::handle_input()
 {
-
-    int ret = 0;
-
     //多次读取UDP的数据，保证UDP的响应也比较及时。
     for (size_t i = 0; i < ONCE_MAX_READ_UDP_NUMBER; ++i)
     {
         size_t szrevc = 0;
 
         //读取数据
-        ret = read_data_from_udp(szrevc);
-
+        int ret = read_data_from_udp(szrevc);
         ZCE_LOGMSG_DEBUG(RS_DEBUG, "UPD Handle input event triggered. ret:%d,szrecv:%u.", ret, szrevc);
 
         if (ret != 0)
@@ -167,7 +146,9 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     int ret = 0;
     size_revc = 0;
     ssize_t recvret = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
 
     ZCE_Sockaddr_In     remote_addr;
 
@@ -190,9 +171,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
             }
 
             //记录错误,返回错误
-            ZCE_LOG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s|%u] peer:%u zce::last_error()=%d|%s.",
-                    remote_addr.get_host_addr(),
-                    remote_addr.get_port_number(),
+            ZCE_LOG(RS_ERROR, "[zergsvr] UDP receive data error IP[%s] peer:%u zce::last_error()=%d|%s.",
+                    remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     dgram_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -214,9 +194,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     //Socket被关闭，也返回错误标示,但是我不知道会不会出现这个问题...
     if (recvret == 0)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] UDP Peer IP [%s|%u] recv return 0, I don't know how to process.?",
-                remote_addr.get_host_addr(),
-                remote_addr.get_port_number());
+        ZCE_LOG(RS_ERROR, "[zergsvr] UDP Peer IP [%s] recv return 0, I don't know how to process.?",
+                remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         return 0;
     }
 
@@ -253,9 +232,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     size_revc = recvret;
 
-    ZCE_LOG(RS_DEBUG, "[zergsvr] UDP recviese data success. peer IP [%s|%u] handle:%u .recv len :%u.",
-            remote_addr.get_host_addr(),
-            remote_addr.get_port_number(),
+    ZCE_LOG(RS_DEBUG, "[zergsvr] UDP recviese data success. peer IP [%s] handle:%u .recv len :%u.",
+            remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
             dgram_peer_.get_handle(),
             size_revc);
 
@@ -266,7 +244,9 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 {
     ssize_t szsend = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //这里service_id_和services_type_保存的是对方的ip和port，而不是真正的type和id
     ZCE_Sockaddr_In remote_addr(send_frame->recv_service_.services_id_,
                                 send_frame->recv_service_.services_type_);
@@ -285,18 +265,16 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
     //
     if (szsend <= 0)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] UDP send data error. peer IP [%s|%u] handle:%u zce::last_error()=%d|%s.",
-                remote_addr.get_host_addr(),
-                remote_addr.get_port_number(),
+        ZCE_LOG(RS_ERROR, "[zergsvr] UDP send data error. peer IP [%s] handle:%u zce::last_error()=%d|%s.",
+                remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 dgram_peer_.get_handle(),
                 zce::last_error(),
                 strerror(zce::last_error()));
         return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
     }
 
-    ZCE_LOG(RS_DEBUG, "[zergsvr] UDP send data success. peer IP [%s|%u] handle:%u send len :%u.",
-            remote_addr.get_host_addr(),
-            remote_addr.get_port_number(),
+    ZCE_LOG(RS_DEBUG, "[zergsvr] UDP send data success. peer IP [%s] handle:%u send len :%u.",
+            remote_addr.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
             dgram_peer_.get_handle(),
             send_len);
     //
@@ -305,9 +283,6 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 
     return 0;
 }
-
-
-
 
 
 

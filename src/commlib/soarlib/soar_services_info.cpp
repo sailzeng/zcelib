@@ -141,11 +141,12 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
 const char *SERVICES_INFO::to_str(char *str_buffer, size_t buf_len)
 {
     char str_svc_id[32], str_inet_add[32];
+    size_t use_buf = 0;
     snprintf(str_buffer,
              buf_len,
              "%16s|%24s|%6u|%6u",
              svc_id_.to_str(str_svc_id, sizeof(str_svc_id) - 1),
-             ip_address_.to_string(str_inet_add, sizeof(str_inet_add) - 1),
+             ip_address_.to_string(str_inet_add, sizeof(str_inet_add) - 1,use_buf),
              idc_no_,
              business_id_
             );

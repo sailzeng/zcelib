@@ -215,14 +215,15 @@ int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svc_id,
         TCP_Svc_Handler *old_svchdl = (*iter).second;
 
         //一个很有意思的问题导致了代码必须这样写。如果你能直接知道为什么，可以直接找Scottxu要求请客
-        const size_t TMP_ADDR_LEN = 32;
-        char new_addr[TMP_ADDR_LEN], old_addr[TMP_ADDR_LEN];
+        const size_t TMP_ADDR_LEN = 31;
+        char new_addr[TMP_ADDR_LEN+1], old_addr[TMP_ADDR_LEN + 1];
+        size_t use_len = 0;
 
         ZCE_LOG(RS_ERROR, "[zergsvr] add_services_peerinfo:%u|%u fail.Find old IP:[%s],new IP[%s],no replace old.",
                 svc_id.services_type_,
                 svc_id.services_id_,
-                old_svchdl->get_peer_address(old_addr, TMP_ADDR_LEN),
-                new_svchdl->get_peer_address(new_addr, TMP_ADDR_LEN)
+                old_svchdl->get_peer().to_string(old_addr, TMP_ADDR_LEN,use_len),
+                new_svchdl->get_peer().to_string(new_addr, TMP_ADDR_LEN,use_len)
                );
         return SOAR_RET::ERR_ZERG_SERVER_ALREADY_LONGIN;
     }
@@ -264,14 +265,14 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svc_id,
     {
         old_svchdl = (*iter).second;
 
-        const size_t TMP_ADDR_LEN = 32;
-        char new_addr[TMP_ADDR_LEN], old_addr[TMP_ADDR_LEN];
-
+        const size_t TMP_ADDR_LEN = 31;
+        char new_addr[TMP_ADDR_LEN+1], old_addr[TMP_ADDR_LEN + 1];
+        size_t use_len = 0;
         ZCE_LOG(RS_INFO, "[zergsvr] replace_services_peerInfo:%u|%u ,Find old IP[%s],new IP [%s],replace old.",
                 svc_id.services_type_,
                 svc_id.services_id_,
-                old_svchdl->get_peer_address(old_addr, TMP_ADDR_LEN - 1),
-                new_svchdl->get_peer_address(new_addr, TMP_ADDR_LEN - 1)
+                old_svchdl->get_peer().to_string(old_addr, TMP_ADDR_LEN ,use_len),
+                new_svchdl->get_peer().to_string(new_addr, TMP_ADDR_LEN ,use_len)
                );
     }
 

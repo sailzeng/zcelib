@@ -319,7 +319,7 @@
     <ClInclude Include="zce_log_basic.h" />
     <ClInclude Include="zce_log_msg.h" />
     <ClInclude Include="zce_log_plus.h" />
-    <ClInclude Include="zce_trace_log_priority.h" />
+    <ClInclude Include="zce_log_priority.h" />
     <ClInclude Include="zce_uuid_generator.h" />
   </ItemGroup>
   <ItemGroup>

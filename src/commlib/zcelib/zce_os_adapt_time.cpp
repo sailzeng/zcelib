@@ -148,9 +148,11 @@ int zce::gettimezone()
 //将参数timeval的值作为的时间格格式化后输出打印出来
 //可以控制各种格式输出
 //如果成功，返回参数字符串str_date_time，如果失败返回NULL
+//timeval->tv_usec 千万不要溢出，会导致不可以预期问题
 const char *zce::timeval_to_str(const timeval *timeval,
                                 char *str_date_time,
                                 size_t str_len,
+                                size_t& use_buf,
                                 bool uct_time,
                                 TIME_STR_FORMAT_TYPE fmt
                                )
@@ -184,7 +186,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
     };
     time_t now_time = timeval->tv_sec;
     tm tm_data;
-
+    use_buf = 0;
     if (uct_time)
     {
         //Email Date域是带有时区的输出，不用UTC
@@ -212,6 +214,23 @@ const char *zce::timeval_to_str(const timeval *timeval,
     //如果是压缩格式，精度到天，20100910
     if ( zce::TIME_STRFMT_COMPACT_DAY == fmt)
     {
+        ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_DAY_LEN);
+        if (str_len <= zce::TIMESTR_COMPACT_DAY_LEN)
+        {
+            return NULL;
+        }
+
+        snprintf(str_date_time,
+                 str_len,
+                 "%4d%02d%02d",
+                 tm_data.tm_year + 1900,
+                 tm_data.tm_mon + 1,
+                 tm_data.tm_mday);
+        use_buf = zce::TIMESTR_COMPACT_DAY_LEN;
+    }
+    //如果是压缩格式，精度到秒，20100910100318
+    else if ( zce::TIME_STRFMT_COMPACT_SEC == fmt)
+    {
         //参数保护和检查
         ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_SEC_LEN);
         if (str_len <= zce::TIMESTR_COMPACT_SEC_LEN)
@@ -228,23 +247,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec);
-
-    }
-    //如果是压缩格式，精度到秒，20100910100318
-    else if ( zce::TIME_STRFMT_COMPACT_SEC == fmt)
-    {
-        ZCE_ASSERT(str_len > zce::TIMESTR_COMPACT_DAY_LEN);
-        if (str_len <= zce::TIMESTR_COMPACT_DAY_LEN)
-        {
-            return NULL;
-        }
-
-        snprintf(str_date_time,
-                 str_len,
-                 "%4d%02d%02d",
-                 tm_data.tm_year + 1900,
-                 tm_data.tm_mon + 1,
-                 tm_data.tm_mday);
+        use_buf = zce::TIMESTR_COMPACT_SEC_LEN;
     }
     //2010-09-10
     else if ( zce::TIME_STRFMT_ISO_DAY == fmt )
@@ -261,6 +264,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_year + 1900,
                  tm_data.tm_mon + 1,
                  tm_data.tm_mday);
+        use_buf = zce::TIMESTR_ISO_DAY_LEN;
     }
     //2010-09-10 10:03:18
     else if (zce::TIME_STRFMT_ISO_SEC == fmt)
@@ -280,6 +284,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec);
+        use_buf = zce::TIMESTR_ISO_SEC_LEN;
     }
     //2010-09-10 10:03:18.100190
     else if ( zce::TIME_STRFMT_ISO_USEC == fmt )
@@ -301,6 +306,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_min,
                  tm_data.tm_sec,
                  timeval->tv_usec);
+        use_buf = zce::TIMESTR_ISO_USEC_LEN;
     }
     //Fri Aug 24 2002 07:43:05
     else if ( zce::TIME_STRFMT_US_SEC == fmt)
@@ -321,6 +327,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec);
+        use_buf = zce::TIME_STRFMT_US_SEC;
     }
     //Fri Aug 24 2002 07:43:05.100190
     else if ( zce::TIME_STRFMT_US_USEC == fmt)
@@ -342,6 +349,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_min,
                  (int)tm_data.tm_sec,
                  (int)timeval->tv_usec);
+        use_buf = zce::TIMESTR_US_USEC_LEN;
     }
     //Thu, 26 Nov 2009 13:50:19 GMT
     else if ( zce::TIME_STRFMT_HTTP_GMT == fmt )
@@ -362,6 +370,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_hour,
                  tm_data.tm_min,
                  tm_data.tm_sec);
+        use_buf = zce::TIMESTR_HTTP_GMT_LEN;
     }
     //Fri, 08 Nov 2002 09:42:22 +0800
     else if (zce::TIME_STRFMT_EMAIL_DATE == fmt)
@@ -385,6 +394,7 @@ const char *zce::timeval_to_str(const timeval *timeval,
                  tm_data.tm_min,
                  tm_data.tm_sec,
                  tz / 360 * 10);
+        use_buf = zce::TIMESTR_EMAIL_DATE_LEN;
     }
     //没有实现，参数错误
     else

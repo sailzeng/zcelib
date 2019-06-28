@@ -121,10 +121,7 @@ public:
 
 
     ///得到Handle对应PEER的端口
-    unsigned short get_peer_port();
-
-    ///得到Handle对应PEER的IP地址
-    const char *get_peer_address(char *addr_buf, int buf_size);
+    const ZCE_Sockaddr_In& get_peer();
 
     //得到每个PEER状态信息
     void dump_status_info(ZCE_LOG_PRIORITY out_lvl);
@@ -217,8 +214,6 @@ public:
     //注销静态参数
     static int uninit_all_staticdata();
 
-    //从SEND管道找到所有的数据去发送,
-    static int popall_sendpipe_write(size_t &procframe);
 
     //得到最大的
     static void get_max_peer_num(size_t &maxaccept, size_t &maxconnect);

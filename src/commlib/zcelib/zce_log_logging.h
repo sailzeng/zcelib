@@ -120,7 +120,7 @@ __THROW __attribute__((__noreturn__));
 //如果没有定义实用ZCE内部的日志输出，使用printf作为输出方法，
 #else
 
-#include "zce_trace_log_priority.h"
+#include "zce_log_priority.h"
 
 //==========================================================================================================
 class ZCE_Trace_Printf
@@ -375,7 +375,7 @@ public:
 
 //日志打印堆栈信息的宏，x是日志的输出级别
 #ifndef ZCE_BACKTRACE_STACK
-#define ZCE_BACKTRACE_STACK(x)            zce::backtrace_stack(x,__ZCE_FUNC__)
+#define ZCE_BACKTRACE_STACK(x) zce::backtrace_stack(x,__ZCE_FUNC__)
 #endif
 
 //日志打印堆栈信息的宏，x是日志的输出级别,y是指针，z是指针长度

@@ -130,10 +130,12 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     ////调整Socket 为O_NONBLOCK
     int ret = socket_peer_.sock_enable(O_NONBLOCK);
 
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Accept peer socket IP Address:[%s|%u] Success. Set O_NONBLOCK ret =%d.",
-            peer_address_.get_host_addr(),
-            peer_address_.get_port_number(),
+    ZCE_LOG(RS_INFO, "[zergsvr] Accept peer socket IP Address:[%s] Success. Set O_NONBLOCK ret =%d.",
+            peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
             ret);
 
     //先增加计数器。避免等下关闭的时候又--了。
@@ -168,9 +170,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
         //
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "[zergsvr] Register accept [%s|%u] handler fail! ret =%u  errno=%u|%s .",
-                    peer_address_.get_host_addr(),
-                    peer_address_.get_port_number(),
+            ZCE_LOG(RS_ERROR, "[zergsvr] Register accept [%s] handler fail! ret =%u  errno=%u|%s .",
+                    peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     ret,
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -188,9 +189,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     //要测试检查一下,
     else
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] Peer [%s|%u] great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u .",
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number(),
+        ZCE_LOG(RS_ERROR, "[zergsvr] Peer [%s] great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u .",
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 num_accept_peer_,
                 max_accept_svr_);
         handle_close();
@@ -260,12 +260,14 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
     //调整Socket 为ACE_NONBLOCK
     int ret = socket_peer_.sock_enable(O_NONBLOCK);
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Connect peer socket Services ID[%u|%u] IP Address:[%s|%u] Success. Set O_NONBLOCK ret =%d.",
+    ZCE_LOG(RS_INFO, "[zergsvr] Connect peer socket Services ID[%u|%u] IP Address:[%s] Success. Set O_NONBLOCK ret =%d.",
             peer_svr_id_.services_type_,
             peer_svr_id_.services_id_,
-            peer_address_.get_host_addr(),
-            peer_address_.get_port_number(),
+            peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
             ret);
 
     snd_buffer_deque_.initialize(connect_send_deque_size_);
@@ -276,11 +278,10 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     //我几乎没有见过register_handler失败,
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] Register services [%u|%u] IP[%s|%u]  connect handler fail! ret =%d  errno=%d|%s .",
+        ZCE_LOG(RS_ERROR, "[zergsvr] Register services [%u|%u] IP[%s]  connect handler fail! ret =%d  errno=%d|%s .",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number(),
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
@@ -483,14 +484,15 @@ int TCP_Svc_Handler::handle_input()
 {
     //读取数据
     size_t szrecv;
-
     int ret = read_data_from_peer(szrecv);
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Read event ,svcinfo[%u|%u] IP[%s|%u], handle input event triggered. ret:%d,szrecv:%u.",
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
+    ZCE_LOGMSG_DEBUG(RS_DEBUG, "Read event ,svcinfo[%u|%u] IP[%s], handle input event triggered. ret:%d,szrecv:%u.",
                      peer_svr_id_.services_type_,
                      peer_svr_id_.services_id_,
-                     peer_address_.get_host_addr(),
-                     peer_address_.get_port_number(),
+                     peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                      ret,
                      szrecv);
 
@@ -549,7 +551,9 @@ int TCP_Svc_Handler::handle_output()
 int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //连接上N秒，或者接受了M秒
     if (TCPCTRL_TIME_ID[0] == timeid)
     {
@@ -567,12 +571,11 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
                  (0 < start_live_time_ && 0 < receive_timeout_)))
             {
 
-                ZCE_LOG(RS_ERROR, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] "
+                ZCE_LOG(RS_ERROR, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s]"
                         "want to close handle. live time %lu. recieve times=%u.",
                         peer_svr_id_.services_type_,
                         peer_svr_id_.services_id_,
-                        peer_address_.get_host_addr(),
-                        peer_address_.get_port_number(),
+                        peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                         now_time.sec() - start_live_time_,
                         receive_times_);
 
@@ -589,12 +592,11 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
         }
 
         //打印一下各个端口的生存信息
-        ZCE_LOG(RS_DEBUG, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s|%u] live "
+        ZCE_LOG(RS_DEBUG, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s] live "
                 "time %lu. recieve times=%u.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number(),
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 now_time.sec() - start_live_time_,
                 receive_times_);
 
@@ -624,7 +626,9 @@ int TCP_Svc_Handler::handle_close()
             peer_svr_id_.services_type_, peer_svr_id_.services_id_);
 
     //不要使用cancel_timer(this),其繁琐,而且慢,好要new,而且有一个不知名的死机
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //取消此Event Handler相关的定时器
     if (-1 != timeout_time_id_)
     {
@@ -699,11 +703,10 @@ int TCP_Svc_Handler::handle_close()
     //不进行主动重新连接,如果有一个新的数据要发送时主动重新连接
     if (handler_mode_ == HANDLER_MODE_CONNECT)
     {
-        ZCE_LOG(RS_INFO, "[zergsvr] Connect peer close, services[%u|%u] socket IP|Port :[%s|%u].",
+        ZCE_LOG(RS_INFO, "[zergsvr] Connect peer close, services[%u|%u] socket IP|Port :[%s].",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number()
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
                );
 
         --num_connect_peer_;
@@ -714,11 +717,10 @@ int TCP_Svc_Handler::handle_close()
     }
     else if (handler_mode_ == HANDLER_MODE_ACCEPTED)
     {
-        ZCE_LOG(RS_INFO, "[zergsvr] Accept peer close, services[%u|%u] socket IP|Port :[%s|%u].",
+        ZCE_LOG(RS_INFO, "[zergsvr] Accept peer close, services[%u|%u] socket IP|Port :[%s.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number()
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
                );
 
         --num_accept_peer_;
@@ -738,7 +740,9 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
 {
 
     //Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( rcv_buffer_->buffer_data_);
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //必须解码,否则后面的管道无法识别
     proc_frame->framehead_decode();
     DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "preprocess_recvframe After framehead_decode:", proc_frame);
@@ -822,11 +826,10 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
         //最后调整自己PEER的状态
         peer_status_ = PEER_STATUS_ACTIVE;
 
-        ZCE_LOG(RS_INFO, "[zergsvr] Accept peer services[%u|%u],IP|Prot[%s|%u] regist success.",
+        ZCE_LOG(RS_INFO, "[zergsvr] Accept peer services[%u|%u],IP|Prot[%s] regist success.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number()
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
                );
     }
     //如果端口仅仅刚刚ACCEPT上去，还没有收到数据
@@ -835,11 +838,10 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
         //最后调整自己PEER的状态
         peer_status_ = PEER_STATUS_ACTIVE;
 
-        ZCE_LOG(RS_INFO, "[zergsvr] Connect peer services[%u|%u],IP|Prot[%s|%u] active success.",
+        ZCE_LOG(RS_INFO, "[zergsvr] Connect peer services[%u|%u],IP|Prot[%s] active success.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number()
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
                );
 
     }
@@ -897,7 +899,9 @@ Modify Record   :
 ******************************************************************************************/
 int TCP_Svc_Handler::process_connect_register()
 {
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     peer_status_ = PEER_STATUS_JUST_CONNECT;
 
     //主动发射一个注册CMD，如果有要发射的数据正好.
@@ -913,11 +917,10 @@ int TCP_Svc_Handler::process_connect_register()
     //打印信息
     ZCE_Sockaddr_In      peeraddr;
     socket_peer_.getpeername(&peeraddr);
-    ZCE_LOG(RS_INFO, "[zergsvr] Connect services[%u|%u] peer socket IP|Port :[%s|%u] Success.",
+    ZCE_LOG(RS_INFO, "[zergsvr] Connect services[%u|%u] peer socket IP|Port :[%s] Success.",
             peer_svr_id_.services_type_,
             peer_svr_id_.services_id_,
-            peeraddr.get_host_addr(),
-            peeraddr.get_port_number());
+            peeraddr.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
 
     return 0;
 }
@@ -931,7 +934,9 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 
     szrevc = 0;
     ssize_t recvret = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //申请分配一个内存
     if (rcv_buffer_ == NULL)
     {
@@ -963,11 +968,10 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
             server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, 0, 0, 1);
 
             //记录错误,返回错误
-            ZCE_LOG(RS_ERROR, "[zergsvr] Receive data error ,services[%u|%u],IP[%s|%u] peer:%u,zce::last_error()=%d|%s.",
+            ZCE_LOG(RS_ERROR, "[zergsvr] Receive data error ,services[%u|%u],IP[%s] peer:%u,zce::last_error()=%d|%s.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
-                    peer_address_.get_host_addr(),
-                    peer_address_.get_port_number(),
+                    peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     socket_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -1007,7 +1011,9 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
 {
     whole_frame_len = 0;
     bfull = false;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //如果连4个字节都没有收集齐,不用处理下面这段
     //注意这儿是在32位环境考虑
     if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= sizeof(unsigned int))
@@ -1019,11 +1025,10 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
         if (whole_frame_len > Zerg_App_Frame::MAX_LEN_OF_APPFRAME || whole_frame_len < Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
         {
-            ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s|%u], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
+            ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
-                    peer_address_.get_host_addr(),
-                    peer_address_.get_port_number(),
+                    peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     whole_frame_len,
                     Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
                     rcv_buffer_->size_of_buffer_,
@@ -1042,11 +1047,10 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
     {
         bfull = true;
         ++recieve_counter_;
-        ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a whole frame from services[%u|%u] IP|Port [%s|%u] FrameLen:%u.",
+        ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a whole frame from services[%u|%u] IP|Port [%s] FrameLen:%u.",
                          peer_svr_id_.services_type_,
                          peer_svr_id_.services_id_,
-                         peer_address_.get_host_addr(),
-                         peer_address_.get_port_number(),
+                         peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                          whole_frame_len);
     }
 
@@ -1058,7 +1062,9 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
 int TCP_Svc_Handler::write_all_data_to_peer()
 {
     int ret = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     for (;;)
     {
         //发送一个数据包
@@ -1120,11 +1126,10 @@ int TCP_Svc_Handler::write_all_data_to_peer()
         //如果将要关闭
         if (true == if_force_close_)
         {
-            ZCE_LOG(RS_INFO, "[zergsvr] Send to peer services [%u|%u] IP|Port :[%s|%u] complete ,want to close peer on account of frame option.",
+            ZCE_LOG(RS_INFO, "[zergsvr] Send to peer services [%u|%u] IP|Port :[%s] complete ,want to close peer on account of frame option.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
-                    peer_address_.get_host_addr(),
-                    peer_address_.get_port_number());
+                    peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
             //让上层去关闭，要小心，小心，很麻烦，很多生命周期的问题
             return SOAR_RET::ERR_ZERG_SOCKET_CLOSE;
         }
@@ -1158,7 +1163,9 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
 {
     bfull = false;
     szsend = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //如果没有数据要发送, 到这儿应该是有问题
     //#if defined DEBUG || defined _DEBUG
     if (snd_buffer_deque_.empty() == true)
@@ -1170,9 +1177,6 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
         ZCE_ASSERT(false);
         return 0;
     }
-
-    //#endif //#if defined DEBUG || defined _DEBUG
-
 
 
     //前面有检查,不会越界
@@ -1190,11 +1194,10 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
         if (zce::last_error() != EWOULDBLOCK)
         {
             //后面应该会打印方的IP，这儿不重复
-            ZCE_LOG(RS_ERROR, "[zergsvr] Send data error,services[%u|%u] IP|Port [%s|%u],Peer:%d errno=%d|%s .",
+            ZCE_LOG(RS_ERROR, "[zergsvr] Send data error,services[%u|%u] IP|Port [%s],Peer:%d errno=%d|%s .",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
-                    peer_address_.get_host_addr(),
-                    peer_address_.get_port_number(),
+                    peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     socket_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
@@ -1233,6 +1236,9 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
 //处理发送错误.
 int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
 {
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //记录已经使用到的位置
     size_t use_start = tmpbuf->size_of_buffer_;
     tmpbuf->size_of_buffer_ = 0;
@@ -1240,7 +1246,8 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
     //一个队列中间可能有多个FRAME，要对头部进行解码，所以必须一个个弄出来
     while (tmpbuf->size_of_buffer_ != tmpbuf->size_of_use_)
     {
-        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_ + tmpbuf->size_of_buffer_);
+        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_ +
+                                                                        tmpbuf->size_of_buffer_);
 
         //如果FRAME已经编码
         if (frame_encode)
@@ -1257,7 +1264,8 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
             //如果是要记录的命令，记录下来，可以帮忙回溯一些问题
             if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD)
             {
-                ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s|%u],peer status[%u]. ",
+                ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame "
+                        "uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s],peer status[%u]. ",
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
                         proc_frame->frame_uid_,
@@ -1267,8 +1275,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
                         proc_frame->proxy_service_.services_id_,
                         proc_frame->recv_service_.services_type_,
                         proc_frame->recv_service_.services_id_,
-                        peer_address_.get_host_addr(),
-                        peer_address_.get_port_number(),
+                        peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                         peer_status_
                        );
             }
@@ -1299,7 +1306,8 @@ TCP_Svc_Handler *TCP_Svc_Handler::alloce_hdl_from_pool(HANDLER_MODE handler_mode
     {
         if (pool_of_acpthdl_.size() == 0)
         {
-            ZCE_LOG(RS_INFO, "[zergsvr] Pool is too small to process accept handler,please notice.Pool size:%u,capacity:%u.",
+            ZCE_LOG(RS_INFO, "[zergsvr] Pool is too small to process accept handler,please notice."
+                    "Pool size:%u,capacity:%u.",
                     pool_of_acpthdl_.size(),
                     pool_of_acpthdl_.capacity()
                    );
@@ -1549,18 +1557,18 @@ int TCP_Svc_Handler::send_zergheatbeat_reg()
 int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 {
     int ret = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
 
     //如果是通知关闭端口
     if (proc_frame->frame_command_ == INNER_RSP_CLOSE_SOCKET)
     {
-        ZCE_LOG(RS_INFO, "[zergsvr] Recvice CMD_RSP_CLOSE_SOCKET,services[%u|%u] IP[%s|%u] Svchanle will close.",
+        ZCE_LOG(RS_INFO, "[zergsvr] Recvice CMD_RSP_CLOSE_SOCKET,services[%u|%u] IP[%s] Svchanle will close.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number()
-               );
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         if_force_close_ = true;
         //回收帧
         process_send_error(tmpbuf, false);
@@ -1574,11 +1582,11 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
     //如果发送完成,并且后台业务要求关闭端口,注意必须转换网络序
     if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER)
     {
-        ZCE_LOG(RS_INFO, "[zergsvr] This Peer Services[%u|%u] IP|Port :[%s|%u] will close when all frame send complete ,because send frame has option Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER.",
+        ZCE_LOG(RS_INFO, "[zergsvr] This Peer Services[%u|%u] IP|Port :[%s] will close when all frame"
+                " send complete ,because send frame has option Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number());
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         if_force_close_ = true;
     }
 
@@ -1599,11 +1607,10 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
         server_status_->increase_by_statid(ZERG_SEND_LIST_FULL_COUNTER, 0, 0, 1);
         //丢弃或者错误处理那个数据比较好呢?这儿值得商榷, 我这儿进行错误处理(可能丢弃)的是最新的.
         //我的考虑是如果命令有先后性.而且可以避免内存操作.
-        ZCE_LOG(RS_ERROR, "[zergsvr] Services [%u|%u] IP|Port[%s|%u] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.",
+        ZCE_LOG(RS_ERROR, "[zergsvr] Services [%u|%u] IP|Port[%s] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
-                peer_address_.get_host_addr(),
-                peer_address_.get_port_number(),
+                peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 snd_buffer_deque_.capacity());
 
         //回收帧
@@ -1687,7 +1694,9 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
 {
 
     int ret = 0;
-
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //
     rcv_buffer_->size_of_use_ = 0;
 
@@ -1733,7 +1742,8 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             if (SOAR_RET::ERR_ZERG_APPFRAME_ERROR == ret || SOAR_RET::ERR_ZERG_SERVER_ALREADY_LONGIN == ret)
             {
                 //
-                ZCE_LOG(RS_ERROR, "[zergsvr] Peer services[%u|%u] IP[%s|%u] appFrame Error,Frame Len:%u,Command:%u,Uin:%u "
+                ZCE_LOG(RS_ERROR, "[zergsvr] Peer services[%u|%u] IP[%s] appFrame Error,Frame Len:%u,"
+                        "Command:%u,Uin:%u "
                         "Peer SvrType|SvrID:%u|%u,"
                         "Self SvrType|SvrID:%u|%u,"
                         "Send SvrType|SvrID:%u|%u,"
@@ -1741,8 +1751,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
                         "Proxy SvrType|SvrID:%u|%u.",
                         peer_svr_id_.services_type_,
                         peer_svr_id_.services_id_,
-                        peer_address_.get_host_addr(),
-                        peer_address_.get_port_number(),
+                        peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
                         proc_frame->frame_uid_,
@@ -1758,11 +1767,10 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             }
             else
             {
-                ZCE_LOG(RS_ERROR, "[zergsvr] Peer services [%u|%u] IP[%s|%u] preprocess_recvframe Ret =%d.",
+                ZCE_LOG(RS_ERROR, "[zergsvr] Peer services [%u|%u] IP[%s] preprocess_recvframe Ret =%d.",
                         peer_svr_id_.services_type_,
                         peer_svr_id_.services_id_,
-                        peer_address_.get_host_addr(),
-                        peer_address_.get_port_number(),
+                        peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                         ret);
             }
 
@@ -1804,9 +1812,9 @@ void TCP_Svc_Handler::get_max_peer_num(size_t &maxaccept, size_t &maxconnect)
 
 
 //得到Handle对应PEER的IP地址#端口信息
-const char *TCP_Svc_Handler::get_peer_address(char *addr_buf, int buf_size)
+const ZCE_Sockaddr_In & TCP_Svc_Handler::get_peer()
 {
-    return peer_address_.get_host_addr_port(addr_buf, buf_size);
+    return peer_address_;
 }
 
 void TCP_Svc_Handler::dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl)
@@ -1828,11 +1836,12 @@ void TCP_Svc_Handler::dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl)
 void TCP_Svc_Handler::dump_status_info(ZCE_LOG_PRIORITY out_lvl)
 {
     const size_t OUT_BUF_LEN = 64;
-    char out_buf[OUT_BUF_LEN];
-    out_buf[OUT_BUF_LEN - 1] = '\0';
+    char out_buf[OUT_BUF_LEN+1];
+    out_buf[OUT_BUF_LEN] = '\0';
+    size_t use_buffer = 0;
     ZCE_LOG(out_lvl, "my_svc_id_=[%hu.%u]", my_svc_id_.services_type_, my_svc_id_.services_id_);
     ZCE_LOG(out_lvl, "peer_svr_id_=[%hu.%u]", peer_svr_id_.services_type_, peer_svr_id_.services_id_);
-    ZCE_LOG(out_lvl, "peer_address_=%s", peer_address_.to_string(out_buf, OUT_BUF_LEN - 1));
+    ZCE_LOG(out_lvl, "peer_address_=%s", peer_address_.to_string(out_buf, OUT_BUF_LEN - 1,use_buffer));
     ZCE_LOG(out_lvl, "peer_status_=%d", peer_status_);
 #if defined (ZCE_OS_WINDOWS)
     ZCE_LOG(out_lvl, "get_handle=%p", get_handle());

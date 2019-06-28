@@ -25,8 +25,12 @@ Ogre_TCPAccept_Hdl::~Ogre_TCPAccept_Hdl()
 //
 int Ogre_TCPAccept_Hdl::create_listenpeer()
 {
-
     int ret = 0;
+
+    const size_t IP_ADDR_LEN = 31;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
+    
     ret = peer_module_info_.open_module();
     if (ret != 0)
     {
@@ -57,17 +61,15 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     if (ret != 0)
     {
         int last_err = zce::last_error();
-        ZCE_LOG(RS_ERROR, "Bind Listen IP|Port :[%s|%u] Fail.Error: %u|%s.\n",
-                peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
-                peer_module_info_.peer_info_.peer_socketin_.get_port_number(),
+        ZCE_LOG(RS_ERROR, "Bind Listen IP|Port :[%s] Fail.Error: %u|%s.\n",
+                peer_module_info_.peer_info_.peer_socketin_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 last_err,
                 strerror(last_err));
         return SOAR_RET::ERR_OGRE_INIT_LISTEN_PORT_FAIL;
     }
 
-    ZCE_LOG(RS_INFO, "Bind listen IP|Port : [%s|%u] Success.\n",
-            peer_module_info_.peer_info_.peer_socketin_.get_host_addr(),
-            peer_module_info_.peer_info_.peer_socketin_.get_port_number());
+    ZCE_LOG(RS_INFO,"Bind listen IP|Port : [%s|%u] Success.\n",
+            peer_module_info_.peer_info_.peer_socketin_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
 
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
@@ -97,6 +99,10 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 //
 int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
 {
+    const size_t IP_ADDR_LEN = 31;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
+
     ZCE_Socket_Stream  sockstream;
     ZCE_Sockaddr_In   remoteaddress;
     int ret = 0;
@@ -110,9 +116,8 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
 
         //¼ÇÂ¼´íÎó
         int accept_error =  zce::last_error();
-        ZCE_LOG(RS_ERROR, "Accept [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
-                remoteaddress.get_host_addr(),
-                remoteaddress.get_port_number(),
+        ZCE_LOG(RS_ERROR, "Accept [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
+                remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 ret,
                 accept_error,
                 strerror(accept_error));

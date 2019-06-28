@@ -23,6 +23,9 @@ Ogre_Comm_Manger::~Ogre_Comm_Manger()
 //检查一个端口是否安全.然后根据配置进行处理
 int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
 {
+    const size_t IP_ADDR_LEN = 31;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
 
     //如果打开了保险检查,检查配置的端口
     if ( false == inetadd.check_safeport() )
@@ -30,18 +33,16 @@ int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
         //如果使用保险打开(TRUE)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
-            ZCE_LOG(RS_ERROR, "Unsafe port [%s|%u],if you need to open this port,please close insurance. \n",
-                    inetadd.get_host_addr(),
-                    inetadd.get_port_number());
+            ZCE_LOG(RS_ERROR, "Unsafe port [%s],if you need to open this port,please close insurance. \n",
+                    inetadd.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
         //如果不使用保险(FALSE)
         else
         {
             //给出警告
-            ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s|%u] listen.Please notice! \n",
-                    inetadd.get_host_addr(),
-                    inetadd.get_port_number());
+            ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
+                    inetadd.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         }
     }
     //

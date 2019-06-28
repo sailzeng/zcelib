@@ -454,23 +454,21 @@ inline void output_helper(char* buffer,
                           size_t& use_len,
                           const void* out_data)
 {
-    size_t save_point = 0;
-    memcpy(&save_point,&out_data,sizeof(size_t));
+    ptrdiff_t save_point = (const char *)out_data - (const char *)0;
     zce::fmt_int64(buffer,
                    max_len,
                    use_len,
                    static_cast<int64_t>(save_point),
                    zce::BASE_HEXADECIMAL,
                    0,
-                   sizeof(size_t) == 4 ? 8 : 16,
+                   sizeof(save_point) == 4 ? 8 : 16,
                    zce::FMT_PREFIX | zce::FMT_UP| zce::FMT_ZERO);
 }
 
 inline void string_helper(std::string& stdstr,
                           const void* out_data)
 {
-    size_t save_point = 0;
-    memcpy(&save_point,&out_data,sizeof(size_t));
+    ptrdiff_t save_point = (const char*)out_data - (const char*)0;
     zce::fmt_int64(stdstr,
                    static_cast<int64_t>(save_point),
                    zce::BASE_HEXADECIMAL,
@@ -523,15 +521,12 @@ inline void output_helper(char *buffer,
 {
     const char *ret_str = zce::socketaddr_ntop_ex((const sockaddr *)(&out_data),
                                                   buffer,
-                                                  max_len);
+                                                  max_len,
+                                                  use_len);
     //返回成功
-    if (ret_str)
+    if (!ret_str)
     {
-        use_len = strlen(buffer);
-    }
-    else
-    {
-        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
+        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
     }
 }
 
@@ -541,9 +536,11 @@ inline void string_helper(std::string &stdstr,
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
+    size_t use_len = 0;
     auto ret_str = zce::socketaddr_ntop_ex((const sockaddr *)(&out_data),
                                            addr_str,
-                                           max_len);
+                                           max_len,
+                                           use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -555,15 +552,11 @@ inline void output_helper(char *buffer,
 {
     const char *ret_str = zce::socketaddr_ntop_ex((const sockaddr *)(&out_data),
                                                   buffer,
-                                                  max_len);
-    //返回成功
-    if (ret_str)
+                                                  max_len,
+                                                  use_len);
+    if (!ret_str)
     {
-        use_len = strlen(buffer);
-    }
-    else
-    {
-        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
+        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
     }
 }
 
@@ -573,9 +566,11 @@ inline void string_helper(std::string &stdstr,
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
+    size_t use_len = 0;
     auto ret_str = zce::socketaddr_ntop_ex((const sockaddr *)(&out_data),
                                            addr_str,
-                                           max_len);
+                                           max_len,
+                                           use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -587,15 +582,12 @@ inline void output_helper(char *buffer,
 {
     const char *ret_str = zce::socketaddr_ntop_ex(out_data,
                                                   buffer,
-                                                  max_len);
+                                                  max_len,
+                                                  use_len);
     //返回成功
-    if (ret_str)
+    if (!ret_str)
     {
-        use_len = strlen(buffer);
-    }
-    else
-    {
-        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
+        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
     }
 }
 
@@ -605,9 +597,11 @@ inline void string_helper(std::string &stdstr,
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
+    size_t use_len = 0;
     auto ret_str = zce::socketaddr_ntop_ex(out_data,
                                            addr_str,
-                                           max_len);
+                                           max_len,
+                                           use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -621,8 +615,6 @@ inline void output_helper(char *buffer,
                                          (void *)(&out_data),
                                          buffer,
                                          max_len);
-
-    //返回成功
     if (ret_str)
     {
         use_len = strlen(buffer);
@@ -689,8 +681,9 @@ inline void output_helper(char *buffer,
                           size_t &use_len,
                           const ZCE_Time_Value &out_data)
 {
-    const char *ret_str = out_data.timestamp(buffer,
-                                             max_len);
+    const char *ret_str = out_data.to_string(buffer,
+                                             max_len,
+                                             use_len);
     //返回成功
     if (ret_str)
     {
@@ -708,8 +701,10 @@ inline void string_helper(std::string &stdstr,
     char time_str[MAX_TIMEVAL_STRING_LEN + 1];
     time_str[MAX_TIMEVAL_STRING_LEN] = '\0';
     size_t max_len = MAX_TIMEVAL_STRING_LEN + 1;
-    const char *ret_str = out_data.timestamp(time_str,
-                                             max_len);
+    size_t use_len = 0;
+    const char *ret_str = out_data.to_string(time_str,
+                                             max_len,
+                                             use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -720,16 +715,13 @@ inline void output_helper(char *buffer,
                           const ZCE_Sockaddr_In &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
-                                             max_len);
+                                             max_len,
+                                             use_len);
 
     //返回成功
-    if (ret_str)
+    if (!ret_str)
     {
-        use_len = strlen(buffer);
-    }
-    else
-    {
-        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
+        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
     }
 }
 
@@ -739,8 +731,10 @@ inline void string_helper(std::string &stdstr,
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
+    size_t use_len = 0;
     const char *ret_str = out_data.to_string(addr_str,
-                                             max_len);
+                                             max_len,
+                                             use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -751,16 +745,13 @@ inline void output_helper(char *buffer,
                           const ZCE_Sockaddr_In6 &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
-                                             max_len);
+                                             max_len,
+                                             use_len);
 
     //返回成功
-    if (ret_str)
+    if (!ret_str)
     {
-        use_len = strlen(buffer);
-    }
-    else
-    {
-        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
+        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
     }
 }
 
@@ -770,8 +761,10 @@ inline void string_helper(std::string &stdstr,
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
     size_t max_len = MAX_SOCKETADDR_STRING_LEN + 1;
+    size_t use_len = 0;
     const char *ret_str = out_data.to_string(addr_str,
-                                             max_len);
+                                             max_len,
+                                             use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -782,7 +775,8 @@ inline void output_helper(char *buffer,
                           const ZCE_UUID64 &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
-                                             max_len);
+                                             max_len,
+                                             use_len);
 
     //返回成功
     if (ret_str)
@@ -801,8 +795,10 @@ inline void string_helper(std::string &stdstr,
     char uuid_str[ZCE_UUID64::LEN_OF_ZCE_UUID64_STR + 1];
     uuid_str[ZCE_UUID64::LEN_OF_ZCE_UUID64_STR] = '\0';
     size_t max_len = ZCE_UUID64::LEN_OF_ZCE_UUID64_STR + 1;
+    size_t use_len = 0;
     const char *ret_str = out_data.to_string(uuid_str,
-                                             max_len);
+                                             max_len,
+                                             use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -813,14 +809,11 @@ inline void output_helper(char *buffer,
                           const ZCE_UUID128 &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
-                                             max_len);
-    if (ret_str)
+                                             max_len,
+                                             use_len);
+    if (!ret_str)
     {
-        use_len = ZCE_UUID128::LEN_OF_ZCE_UUID128_STR;
-    }
-    else
-    {
-        use_len = 0;
+        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
     }
 }
 
@@ -830,8 +823,10 @@ inline void string_helper(std::string &stdstr,
     char uuid_str[ZCE_UUID128::LEN_OF_ZCE_UUID128_STR + 1];
     uuid_str[ZCE_UUID128::LEN_OF_ZCE_UUID128_STR] = '\0';
     size_t max_len = ZCE_UUID128::LEN_OF_ZCE_UUID128_STR + 1;
+    size_t use_len = 0;
     const char *ret_str = out_data.to_string(uuid_str,
-                                             max_len);
+                                             max_len,
+                                             use_len);
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
@@ -1031,21 +1026,6 @@ public:
     int                flags_;
 };
 
-///帮助字符串以左对齐的方式输出
-#ifndef ZCE_STRING_LEFTALIGN_OUT
-#define ZCE_STRING_LEFTALIGN_OUT(x,y)   zce::String_Out_Helper((x),\
-                                                               (y),\
-                                                               size_t(-1),\
-                                                               zce::FMT_LEFT_ALIGN)
-#endif
-
-///帮助字符串以右对齐的方式输出
-#ifndef ZCE_STRING_RIGHTALIGN_OUT
-#define ZCE_STRING_RIGHTALIGN_OUT(x,y)  zce::String_Out_Helper((x),\
-                                                               (y),\
-                                                               size_t(-1),\
-                                                               0)
-#endif
 
 ///const char *字符串输出辅助函数
 inline void output_helper(char *buffer,

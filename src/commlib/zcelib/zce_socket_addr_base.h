@@ -35,26 +35,15 @@ public:
     // 检查地址是否不相等
     bool operator != (const ZCE_Sockaddr &others_sockaddr) const;
 
-    //转换成字符串,
-    inline const char *to_string(char *buffer, size_t buf_len) const
-    {
-        return zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len);
-    }
 
     //转换成字符串,同时输出字符串的长度
-    inline const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const
+    inline const char *to_string(char *buffer,
+                                 size_t buf_len, 
+                                 size_t &use_buf,
+                                 bool out_port_info = true) const
     {
 
-        const char *ret_str = zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len);
-        if (ret_str)
-        {
-            use_buf = ::strlen(ret_str);
-        }
-        else
-        {
-            use_buf = 0;
-        }
-        return ret_str;
+        return zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len,use_buf,out_port_info);
     }
 
 public:

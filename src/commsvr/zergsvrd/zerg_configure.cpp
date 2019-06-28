@@ -115,6 +115,9 @@ Zerg_Server_Config::~Zerg_Server_Config()
 int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
                                              SERVICES_INFO &svc_info) const
 {
+    const size_t IP_ADDR_LEN = 32;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     int ret = 0;
     ret = services_info_table_.find_svcinfo(svc_id, svc_info);
     if (0 != ret)
@@ -122,13 +125,11 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
         return ret;
     }
 
-
     //´òÓ¡Ò»ÏÂ
-    ZCE_LOG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s|%u].",
+    ZCE_LOG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s].",
             svc_id.services_type_,
             svc_id.services_id_,
-            svc_info.ip_address_.get_host_addr(),
-            svc_info.ip_address_.get_port_number());
+            svc_info.ip_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
 
     return ret;
 }

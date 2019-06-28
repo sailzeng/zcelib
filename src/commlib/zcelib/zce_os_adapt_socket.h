@@ -719,7 +719,9 @@ const char *socketaddr_ntop(const sockaddr *sock_addr,
 */
 const char *socketaddr_ntop_ex(const sockaddr *sock_addr,
                                char *str_ptr,
-                               size_t str_len);
+                               size_t str_len,
+                               size_t& use_len,
+                               bool out_port_info = true);
 
 //======================================================================================================
 //域名解析，转换IP地址的几个函数
@@ -1781,7 +1783,7 @@ inline int zce::select(
     }
 
     //如果不需要等待句柄，直接使用sleep替代select，
-    //这是因为WINDOWS的select 必须等待一个句柄，否则就会return -1，看了
+    //这是因为WINDOWS的select 必须等待一个句柄，否则就会return -1，你觉得麻烦不
     if (no_handle_to_wait)
     {
         zce::sleep(*timeout_tv);

@@ -23,6 +23,9 @@ TCP_Accept_Handler::~TCP_Accept_Handler()
 //创建监听端口
 int TCP_Accept_Handler::create_listen()
 {
+    const size_t IP_ADDR_LEN = 31;
+    char str_ip_addr[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //直接把backlog干上一个很大的值
     const int DEF_ZERG_BACKLOG = 512;
     //
@@ -38,8 +41,7 @@ int TCP_Accept_Handler::create_listen()
     {
 
         ZCE_LOG(RS_ERROR, "[zergsvr] Bind Listen IP|Port :[%s|%u] Fail.Error: %d|%s.",
-                accept_bind_addr_.get_host_addr(),
-                accept_bind_addr_.get_port_number(),
+                accept_bind_addr_.to_string(str_ip_addr,IP_ADDR_LEN,use_len),
                 zce::last_error(),
                 strerror(zce::last_error()));
         return SOAR_RET::ERR_ZERG_INIT_LISTEN_PORT_FAIL;
@@ -47,8 +49,9 @@ int TCP_Accept_Handler::create_listen()
 
     peer_acceptor_.sock_enable(O_NONBLOCK);
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Bind Listen IP|Port : [%s|%u] Success.",
-            accept_bind_addr_.get_host_addr(),
+
+    ZCE_LOG(RS_INFO,"[zergsvr] Bind Listen IP|Port : [%s] Success.",
+            accept_bind_addr_.to_string(str_ip_addr,IP_ADDR_LEN,use_len),
             accept_bind_addr_.get_port_number());
 
     //被Accept的端口会继承这些选项
@@ -95,15 +98,13 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
     if (ret != 0)
     {
         //由于该死的C/C++的返回静态指针的问题，这儿要输出两个地址，所以只能先打印到其他地方
-        const size_t TMP_ADDR_LEN = 64;
-        char str_local_addr[TMP_ADDR_LEN], str_remote_addr[TMP_ADDR_LEN];
-
+        const size_t IP_ADDR_LEN = 63;
+        char str_local_addr[IP_ADDR_LEN+1], str_remote_addr[IP_ADDR_LEN+1];
+        size_t use_len = 0;
         int accept_error =  zce::last_error();
-        ZCE_LOG(RS_ERROR, "[zergsvr] Local peer[%s|%u] Accept remote [%s|%u] handler fail! peer_acceptor_.accept ret =%d  errno=%d|%s ",
-                accept_bind_addr_.get_host_addr(str_local_addr, TMP_ADDR_LEN),
-                accept_bind_addr_.get_port_number(),
-                remote_address.get_host_addr(str_remote_addr, TMP_ADDR_LEN),
-                remote_address.get_port_number(),
+        ZCE_LOG(RS_ERROR, "[zergsvr] Local peer[%s] Accept remote [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%d|%s ",
+                accept_bind_addr_.to_string(str_local_addr,IP_ADDR_LEN,use_len),
+                remote_address.to_string(str_remote_addr,IP_ADDR_LEN,use_len),
                 ret,
                 accept_error,
                 strerror(accept_error));
@@ -113,7 +114,6 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
         if ( accept_error == EWOULDBLOCK || accept_error == EINVAL
              || accept_error == ECONNABORTED || accept_error == EPROTOTYPE )
         {
-
             return 0;
         }
 

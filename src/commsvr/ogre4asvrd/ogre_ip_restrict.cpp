@@ -66,7 +66,9 @@ int Ogre_IPRestrict_Mgr::get_config(const Ogre_Server_Config *config)
 //
 int Ogre_IPRestrict_Mgr::check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress)
 {
-
+    const size_t IP_ADDR_LEN = 31;
+    char ip_addr_str[IP_ADDR_LEN + 1];
+    size_t use_len = 0;
     //如果允许的连接的服务器地址中间没有... kill
     if (allow_ip_set_.empty() == false )
     {
@@ -74,7 +76,8 @@ int Ogre_IPRestrict_Mgr::check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress)
 
         if ( iter == allow_ip_set_.end() )
         {
-            ZCE_LOG(RS_INFO, "A NO Allowed IP|Port : %s|%u Connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
+            ZCE_LOG(RS_INFO, "A NO Allowed IP|Port : %s Connect me.\n", 
+                    remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
             return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }
     }
@@ -86,7 +89,8 @@ int Ogre_IPRestrict_Mgr::check_ip_restrict(const ZCE_Sockaddr_In &remoteaddress)
 
         if ( iter != reject_ip_set_.end() )
         {
-            ZCE_LOG(RS_INFO, "Reject IP|Port : %s|%u connect me.\n", remoteaddress.get_host_addr(), remoteaddress.get_port_number());
+            ZCE_LOG(RS_INFO, "Reject IP|Port : %s connect me.\n", 
+                    remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
             return SOAR_RET::ERR_OGRE_IP_RESTRICT_CHECK_FAIL;
         }
     }

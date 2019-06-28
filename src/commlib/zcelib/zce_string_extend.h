@@ -67,6 +67,17 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 
 //--------------------------------------------------------------------------------------------------------------------------------
 
+/*!
+* @brief      
+* @tparam     out_type
+* @return     char*
+* @param      foo_buffer
+* @param      foo_max_len
+* @param      foo_use_len
+* @param      foo_fmt_spec
+* @param      ...out_data
+* @note       
+*/
 template <typename... out_type >
 char *foo_snprintf(char *foo_buffer,
                    size_t foo_max_len,
@@ -344,9 +355,8 @@ void _foo_c11_splice(char *&foo_buffer,
 
 #else
 
-//我估计这辈子也不会再用这种方式增加这类函数了。
-
-//因为模版函数写在.h文件中，所以宏也卸载了.h文件里面，过年回家看看能否用export,
+//我估计这辈子也不会再用这种方式增加这类函数了。估计不久就会废弃这些代码。我辛辛苦苦用python生成的
+//因为模版函数写在.h文件中，所以宏也卸载了.h文件里面，过年回家看看能否用,
 
 #define __ZCE_SNPRINTF_BEGIN   foo_use_len = 0; \
     if ( 0 == foo_max_len ) \

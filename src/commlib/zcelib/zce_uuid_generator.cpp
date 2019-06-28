@@ -37,7 +37,7 @@ bool ZCE_UUID64::operator == (const ZCE_UUID64 &others) const
 }
 
 //转换为字符串
-const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len) const
+const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len, size_t& use_buf) const
 {
 
     //如果传递的BUFFER空间不够，直接返回NULL
@@ -51,7 +51,7 @@ const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len) const
     {
         return NULL;
     }
-
+    use_buf = LEN_OF_ZCE_UUID64_STR;
     return buffer;
 }
 
@@ -194,7 +194,7 @@ bool ZCE_UUID128::operator == (const ZCE_UUID128 &others) const
 }
 
 //转换为字符串,这儿采用的格式是标准的8-4-4-4-12，而不是GUID的8-4-4-16的格式
-const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len) const
+const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len,size_t& use_buf) const
 {
 
     //如果传递的BUFFER空间不够，干脆什么都不做,直接返回NULL,长度要考虑'\0'
@@ -226,7 +226,7 @@ const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len) const
     {
         return NULL;
     }
-
+    use_buf = LEN_OF_ZCE_UUID128_STR;
     return buffer;
 }
 
