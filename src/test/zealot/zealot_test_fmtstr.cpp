@@ -90,7 +90,7 @@ int test_printf_int()
 
 int test_fmt_splice(int /*argc*/, char * /*argv*/[])
 {
-    const size_t BUFFER_LEN = 1024;
+    const size_t BUFFER_LEN = 1023;
     size_t use_len = 0;
     char buffer[BUFFER_LEN + 1] = {0};
     zce::foo_strnsplice(buffer, BUFFER_LEN, use_len, '|', "ABC", "efghi");

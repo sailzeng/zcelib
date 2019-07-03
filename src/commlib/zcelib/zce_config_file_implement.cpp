@@ -85,9 +85,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
             cur_node->set_leaf<std::string &>(key, val);
         }
     }
-
     return 0;
-
 }
 
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1

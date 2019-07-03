@@ -7,8 +7,8 @@
 * @brief      这个代码是参考Tinker实现的，仍然感谢原作者
 *
 *             这个代码的目的一方面是我对于如何捏合一个脚本语言总是好奇，今天
-*             终于有了机会折腾一下
-*
+*             终于有了机会折腾一下.
+*             目前支持LUA 5.1
 * @details
 *
 *
@@ -42,7 +42,7 @@
 //LUA目前的包装代码使用C11的新特效，必须用新的编译器
 #if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 == 1
 
-//LUA 5.02版本目前而言，大部分组件都还不支持，所以……
+//LUA 5.2版本目前而言，大部分组件都还不支持，所以……
 #if LUA_VERSION_NUM != 501
 #error "[Error] please check your lua libary version,only support 5.1,Lua 5.2 is not mature. LUA_VERSION_NUM != 501."
 #endif
@@ -582,18 +582,36 @@ int array_meta_set(lua_State *state)
 
 //=======================================================================================================
 
+template <typename func_type,
+    typename args_type,
+    typename ...args_tlist >
+static void _g_functor_invoke(func_type fun_ptr,args_type arg,args_tlist... arg_tlist)
+{
+    _g_functor_invoke(fun_ptr,pop_stack<args_type>(state),pop_stack<args_tlist>(state)...);
+    _g_functor_invoke(fun_ptr,pop_stack<args_tlist>(state)...);
+}
+
+template <typename func_type,
+    typename args_type,
+    typename ...args_tlist >
+static ret_type _g_functor_invoke(func_type fun_ptr,args_type arg,args_tlist... arg_tlist)
+{
+    return fun_ptr(pop_stack<args_type>(state)...);
+}
 
 /*!
 * @brief      全局函数的封装类，辅助调用实际注册的全局函数
 *             根据ret_type 是否是void，分了2个版本。另外一个见g_functor_void
 * @tparam     ret_type  返回值类型
 * @tparam     args_type 参数类型列表，0-N个参数
-* note        这儿要注意，有一个严重的问题。而我确实找不到方法规避，（不使用变参是可以避免），
-*             这样的，C++的模板变参的函数包扩展，在VS2013的编译器，和GCC 4.8的编译器上都有
-*             不足，会出现参数顺序颠倒的情况，问题估计是编译器在扩展处理是，是采用的标准参数处
-*             理顺序，从左到右，但是其处理一个参数就将其后就入栈了，而C++的编译器，大部分的栈处理
-*             顺序是从右到左，所函数得到的参数顺序就是反的。所以我只有反过来取参数，
+* note        这儿要注意，有一个潜在的风险（问题）。我假定了参数传递方式。
+*             在VS2013的编译器，和GCC 4.8的编译器上大部分的变参展开顺序是从右到左，导致我们展开...
+*             时看的顺序和参数顺序是相反的。问题估计是编译器各表实现导致，但确实C++也没有明确规定
+*             所以我只有反过来取参数，来规避这个问题。
+*             大部分variadic的函数都是通过递归展开避免这个问题，但我这儿无法递归，
 *             但是这应该是一个bug，我不知道哪天编译器会修复这个问题，咩咩，那时候又只有……
+*             另外，鉴于bind的实现，我估计也可以绕开这个问题，但好像成本有点高。先将就
+*             
 */
 template < bool last_yield,
            typename ret_type,
@@ -603,15 +621,15 @@ class g_functor_ret
 public:
     static int invoke(lua_State *state)
     {
-        //push是将结果放入堆栈
+        //取出函数指针，并且转型
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...) = (ret_type( *)(args_type...)) (upvalue_1);
 
+        //如果参数传递顺序错误，请参考note的说明，
         //size_t sz_par = sizeof...(args_type);
 
-        //如果参数传递顺序错误，请参考note的说明，
-
         //根据是否有返回值，决定如何处理，是否push_stack
+        //注意下面使用的是pop_stack,这个其实是反着展开堆栈的，
         push_stack<ret_type>(state, fun_ptr(pop_stack<args_type>(state)...));
         if (last_yield)
         {
@@ -633,12 +651,12 @@ public:
     static int invoke(lua_State *state)
     {
 
-        //push是将结果放入堆栈
+        //取出函数指针，并且转型
         void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
         void (*fun_ptr)(args_type...) = (void( *)(args_type...)) (upvalue_1);
 
         //size_t sz_par = sizeof...(args_type);
-
+        //注意下面使用的是pop_stack,这个其实是反着展开堆栈的，
         fun_ptr(pop_stack<args_type>(state)...);
         if (last_yield)
         {
@@ -756,6 +774,7 @@ public:
 
         //我恨函数指针，我更恨类成员的指针,注意下面的那个括号。一定要，否则，我看了1个小时
         //为什么采用--，请参考前面的解释 g_functor_ret
+        //另外使用的是read_stack，但因为明确了堆栈最后没有返回值，
         (obj_ptr->*fun_ptr)(read_stack<args_type>(state, para_idx--)...);
         if (last_yield)
         {
@@ -1490,8 +1509,9 @@ public:
 
         lua_pushstring(lua_state_, name);
         //mem_var 继承于var_base,实际调用的时候利用var_base的虚函数完成回调。
-        new (lua_newuserdata(lua_state_, sizeof(zce::member_array<class_type, ary_type, ary_size>)))  \
-        zce::member_array<class_type, ary_type, ary_size>(mem_ary, read_only);
+        new (lua_newuserdata(lua_state_, 
+                             sizeof(zce::member_array<class_type,ary_type,ary_size>))) \
+            zce::member_array<class_type,ary_type,ary_size>(mem_ary,read_only);
         lua_rawset(lua_state_, -3);
 
         lua_pop(lua_state_, 1);
@@ -1512,8 +1532,6 @@ public:
     {
         return class_mem_fun_all<true, class_type, ret_type, args_type...>(name, func);
     }
-
-
 
     ///放入某个东东到堆栈
     template<typename val_type >
