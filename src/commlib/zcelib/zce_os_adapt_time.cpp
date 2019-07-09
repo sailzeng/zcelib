@@ -152,7 +152,7 @@ int zce::gettimezone()
 const char *zce::timeval_to_str(const timeval *timeval,
                                 char *str_date_time,
                                 size_t str_len,
-                                size_t& use_buf,
+                                size_t &use_buf,
                                 bool uct_time,
                                 TIME_STR_FORMAT_TYPE fmt
                                )

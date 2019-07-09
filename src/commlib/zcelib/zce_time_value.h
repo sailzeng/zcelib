@@ -230,7 +230,7 @@ public:
     */
     const char *to_string(char *str_date_time,
                           size_t datetime_strlen,
-                          size_t& use_buf,
+                          size_t &use_buf,
                           bool uct_time = false,
                           zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC
                          )  const;

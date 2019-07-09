@@ -73,11 +73,11 @@ static const char SNRPINTF_FMT_ESCAPE_CHAR  = '?';
 * @tparam     out_type     输出的参数类型
 * @return     char*        格式化后的字符串指针
 * @param      foo_buffer   用于格式化字符串
-* @param      foo_max_len  字符串最大长度 
+* @param      foo_max_len  字符串最大长度
 * @param      foo_use_len  使用的字符串长度
 * @param      foo_fmt_spec 格式化的格式字符串
 * @param      ...out_data  输出数据，插入格式化字符串中
-* @note       
+* @note
 */
 template <typename... out_type >
 char *foo_snprintf(char *foo_buffer,
@@ -273,8 +273,8 @@ void _foo_c11_outstring(std::string &foo_string,
     }
 }
 
-inline static void _foo_c11_outdata(std::string& foo_string,
-                                    const char*& foo_fmt_spec)
+inline static void _foo_c11_outdata(std::string &foo_string,
+                                    const char *&foo_fmt_spec)
 {
     foo_string.append(foo_fmt_spec);
 }
@@ -354,31 +354,31 @@ void _foo_c11_splice(char *&foo_buffer,
 
 //--------------------------------------------------------------------------------------------------------------------------------
 template <typename... out_type >
-std::string &foo_string_splice(std::string& foo_string,
+std::string &foo_string_splice(std::string &foo_string,
                                char separator_char,
-                               const out_type& ...out_data)
+                               const out_type &...out_data)
 {
-    _foo_c11_string_splice(foo_string,separator_char,out_data...);
+    _foo_c11_string_splice(foo_string, separator_char, out_data...);
     return foo_string;
 }
 
 template <typename out_type >
-static void _foo_c11_string_splice(std::string& foo_string,
+static void _foo_c11_string_splice(std::string &foo_string,
                                    char separator_char,
-                                   const out_type& out_data)
+                                   const out_type &out_data)
 {
-    zce::string_helper(foo_string,out_data);
-    foo_string.append(1,separator_char);
+    zce::string_helper(foo_string, out_data);
+    foo_string.append(1, separator_char);
 }
 
-template <typename out_type,typename... out_tlist >
-static void _foo_c11_string_splice(std::string& foo_string,
+template <typename out_type, typename... out_tlist >
+static void _foo_c11_string_splice(std::string &foo_string,
                                    char separator_char,
-                                   const out_type& out_data,
+                                   const out_type &out_data,
                                    out_tlist ... out_datalist)
 {
-    _foo_c11_string_splice(foo_string,separator_char,out_data);
-    _foo_c11_string_splice(foo_string,separator_char,out_datalist...);
+    _foo_c11_string_splice(foo_string, separator_char, out_data);
+    _foo_c11_string_splice(foo_string, separator_char, out_datalist...);
 }
 
 #else

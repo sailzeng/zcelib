@@ -20,17 +20,20 @@ int main(int argc, char *argv[])
                                                 LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT,
                                                 LOG_HEAD_RECORD_NONE);
     ZCE_TRACE_FILELINE(RS_DEBUG);
-    test_memory_debug(argc, argv);
-    test_back_stack(argc,argv);
-    //test_out_buffer(argc, argv);
-    //test_progress_timer(argc,argv);
-    //test_bytes_hash(argc, argv);
-
-    //benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
-
+    
+    test_lua_script3(argc,argv);
     return 0;
 
 #if 0
+
+    test_memory_debug(argc,argv);
+    test_back_stack(argc,argv);
+    test_out_buffer(argc, argv);
+    test_progress_timer(argc,argv);
+    test_bytes_hash(argc, argv);
+
+    benchmark_compress("D:\\TestDir\\compress\\txt\\05.txt");
+
     test_net_getaddrinfo(argc, argv);
 
     test_bytes_data_represent(argc, argv);

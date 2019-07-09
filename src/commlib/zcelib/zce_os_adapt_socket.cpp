@@ -1558,7 +1558,7 @@ const char *zce::socketaddr_ntop(const sockaddr *sock_addr,
 const char *zce::socketaddr_ntop_ex(const sockaddr *sock_addr,
                                     char *str_ptr,
                                     size_t str_len,
-                                    size_t& use_len,
+                                    size_t &use_len,
                                     bool out_port_info)
 {
     uint16_t addr_port = 0;
@@ -1598,7 +1598,7 @@ const char *zce::socketaddr_ntop_ex(const sockaddr *sock_addr,
     if (out_port_info)
     {
         //前面已经检查过了，这儿不判断返回了
-        int port_len = snprintf(str_ptr + use_len,str_len - use_len,"#%u",addr_port);
+        int port_len = snprintf(str_ptr + use_len, str_len - use_len, "#%u", addr_port);
         if (port_len <= 0 || port_len + use_len > str_len)
         {
             return nullptr;

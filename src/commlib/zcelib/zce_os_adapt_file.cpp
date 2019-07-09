@@ -137,7 +137,7 @@ ssize_t zce::lseek(ZCE_HANDLE file_handle, ssize_t offset, int whence)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //WINDOWS的lseek是不支持64位的，所以直接用API，完成工作，
+    //WINDOWS的lseek是不支持64位的，所以直接用API，完成工作，（后来有了_lseeki64）
     DWORD dwmovemethod = FILE_BEGIN;
 
     if (whence == SEEK_SET)
@@ -508,7 +508,11 @@ int zce::access(const char *pathname, int mode)
 //--------------------------------------------------------------------------------------------------
 //非标准函数
 //用只读方式读取一个文件的内容，返回的buffer最后填充'\0',buf_len >= 2
-int zce::read_file_data(const char *filename, char *buffer, size_t buf_len, size_t *read_len)
+int zce::read_file_data(const char *filename, 
+                        char *buffer, 
+                        size_t buf_len, 
+                        size_t *read_len,
+                        size_t offset)
 {
     //参数检查
     ZCE_ASSERT(filename && buffer && buf_len >= 2);
@@ -521,7 +525,7 @@ int zce::read_file_data(const char *filename, char *buffer, size_t buf_len, size
         ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d", filename, zce::last_error());
         return -1;
     }
-
+    zce::lseek(fd,static_cast<ssize_t>(offset),SEEK_SET);
     //读取内容
     ssize_t len = zce::read(fd, buffer, buf_len - 1);
     zce::close(fd);
@@ -538,14 +542,4 @@ int zce::read_file_data(const char *filename, char *buffer, size_t buf_len, size
     return 0;
 }
 
-//template <> zce::close_assist<FILE *>::~close_assist()
-//{
-//    ::fclose(to_close_);
-//}
-//
-//
-//
-//template <> zce::close_assist<ZCE_HANDLE>::~close_assist()
-//{
-//    zce::close(to_close_);
-//}
+

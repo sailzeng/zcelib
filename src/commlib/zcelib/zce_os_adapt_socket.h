@@ -720,7 +720,7 @@ const char *socketaddr_ntop(const sockaddr *sock_addr,
 const char *socketaddr_ntop_ex(const sockaddr *sock_addr,
                                char *str_ptr,
                                size_t str_len,
-                               size_t& use_len,
+                               size_t &use_len,
                                bool out_port_info = true);
 
 //======================================================================================================

@@ -257,7 +257,7 @@ const char *zce::skip_separator(const char *str, char separator_char)
 
 
 //用 11 02 03 0E E0         ..... 格式的输出，指针信息。调试打印内存信息
-void zce::memory_debug(const unsigned char* mem_ptr,
+void zce::memory_debug(const unsigned char *mem_ptr,
                        size_t mem_len,
                        std::vector<std::string> &str_ary)
 {
@@ -293,7 +293,7 @@ void zce::memory_debug(const unsigned char* mem_ptr,
         }
         if (j == 0)
         {
-            snprintf(addr_str,ADDR_STR_LEN,"%p ",mem_ptr+i);
+            snprintf(addr_str, ADDR_STR_LEN, "%p ", mem_ptr + i);
             line_string += addr_str;
         }
         unsigned char bytmp = *(mem_ptr + i);
@@ -324,31 +324,31 @@ void zce::memory_debug(const unsigned char* mem_ptr,
 }
 
 //调试打印内存信息，就是简单的内存翻译为16进制字符串
-void zce::memory_debug(const unsigned char* mem_ptr,size_t mem_len,FILE* stream)
+void zce::memory_debug(const unsigned char *mem_ptr, size_t mem_len, FILE *stream)
 {
     //%zu不知道VC从什么年代支持的
-    fprintf(stream,"DEBUG memory[%p][%zu] \n",mem_ptr,mem_len);
+    fprintf(stream, "DEBUG memory[%p][%zu] \n", mem_ptr, mem_len);
     std::vector<std::string> str_ary;
-    zce::memory_debug(mem_ptr,mem_len,str_ary);
-    for (std::string& out : str_ary)
+    zce::memory_debug(mem_ptr, mem_len, str_ary);
+    for (std::string &out : str_ary)
     {
-        fprintf(stream,"%s\n",out.c_str());
+        fprintf(stream, "%s\n", out.c_str());
     }
 }
 
 
 //辅助打印一个指针内部数据的函数，用16进制的方式打印日志
 void zce::memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
-                       const char* dbg_info,
-                       const unsigned char* mem_ptr,
+                       const char *dbg_info,
+                       const unsigned char *mem_ptr,
                        size_t mem_len)
 {
-    ZCE_LOG(dbg_lvl,"[DEBUG_POINTER] out pointer address[%p] [%s].",mem_ptr,dbg_info);
+    ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] out pointer address[%p] [%s].", mem_ptr, dbg_info);
     std::vector<std::string> str_ary;
-    zce::memory_debug(mem_ptr,mem_len,str_ary);
-    for (std::string& out : str_ary)
+    zce::memory_debug(mem_ptr, mem_len, str_ary);
+    for (std::string &out : str_ary)
     {
-        ZCE_LOG(dbg_lvl,"[DEBUG_POINTER] %s.",out.c_str());
+        ZCE_LOG(dbg_lvl, "[DEBUG_POINTER] %s.", out.c_str());
     }
 
     return;

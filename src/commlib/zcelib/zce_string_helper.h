@@ -449,10 +449,10 @@ inline void string_helper(std::string &stdstr,
 }
 
 ///辅助输出void *指针地址输出
-inline void output_helper(char* buffer,
+inline void output_helper(char *buffer,
                           size_t max_len,
-                          size_t& use_len,
-                          const void* out_data)
+                          size_t &use_len,
+                          const void *out_data)
 {
     ptrdiff_t save_point = (const char *)out_data - (const char *)0;
     zce::fmt_int64(buffer,
@@ -462,13 +462,13 @@ inline void output_helper(char* buffer,
                    zce::BASE_HEXADECIMAL,
                    0,
                    sizeof(save_point) == 4 ? 8 : 16,
-                   zce::FMT_PREFIX | zce::FMT_UP| zce::FMT_ZERO);
+                   zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
 }
 
-inline void string_helper(std::string& stdstr,
-                          const void* out_data)
+inline void string_helper(std::string &stdstr,
+                          const void *out_data)
 {
-    ptrdiff_t save_point = (const char*)out_data - (const char*)0;
+    ptrdiff_t save_point = (const char *)out_data - (const char *)0;
     zce::fmt_int64(stdstr,
                    static_cast<int64_t>(save_point),
                    zce::BASE_HEXADECIMAL,
@@ -526,7 +526,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (!ret_str)
     {
-        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
+        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
     }
 }
 
@@ -556,7 +556,7 @@ inline void output_helper(char *buffer,
                                                   use_len);
     if (!ret_str)
     {
-        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
+        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
     }
 }
 
@@ -587,7 +587,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (!ret_str)
     {
-        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
+        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
     }
 }
 
@@ -721,7 +721,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (!ret_str)
     {
-        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
+        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
     }
 }
 
@@ -751,7 +751,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (!ret_str)
     {
-        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
+        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
     }
 }
 
@@ -813,7 +813,7 @@ inline void output_helper(char *buffer,
                                              use_len);
     if (!ret_str)
     {
-        zce::output_helper(buffer,max_len,use_len,"<ERROR>");
+        zce::output_helper(buffer, max_len, use_len, "<ERROR>");
     }
 }
 
@@ -838,9 +838,9 @@ class Int_Out_Helper
 {
 public:
     //辅助类的构造函数，跟进有符号和没有符号的整数类型进行了区分处理
-    //使用enable_if 嵌套实现并且语义，is_unsigned 不光对整数生效，对浮点也有作用
-    template <typename int_type,typename std::enable_if<std::is_integral<int_type>::value,
-        typename std::enable_if<std::is_unsigned<int_type>::value,int>::type >::type = 0>
+    //is_unsigned 不光对整数生效，对浮点也有作用
+    template <typename int_type, typename std::enable_if<(std::is_integral<int_type>::value &&
+                                                         std::is_unsigned<int_type>::value),int >::type = 0>
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
@@ -856,7 +856,7 @@ public:
     }
 
     template <typename int_type, typename std::enable_if<std::is_integral<int_type>::value,
-        typename std::enable_if<std::is_signed<int_type>::value,int>::type>::type = 0>
+                                                         typename std::enable_if<std::is_signed<int_type>::value, int>::type>::type = 0>
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
@@ -893,7 +893,7 @@ public:
     Int_HexOut_Helper(int_type out_data,
                       size_t width = 0,
                       int flags = zce::FMT_PREFIX | zce::FMT_UP,
-                      size_t precision =0) :
+                      size_t precision = 0) :
         Int_Out_Helper(out_data, width, flags, zce::BASE_HEXADECIMAL, precision)
     {
         flags_ |= zce::FMT_UNSIGNED;

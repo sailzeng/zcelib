@@ -231,7 +231,7 @@ static const size_t MAX_TIMEVAL_STRING_LEN = TIMESTR_EMAIL_DATE_LEN;
 const char *timeval_to_str(const timeval *timeval,
                            char *str_date_time,
                            size_t str_len,
-                           size_t& use_buf,
+                           size_t &use_buf,
                            bool uct_time = false,
                            TIME_STR_FORMAT_TYPE fmt = zce::TIME_STRFMT_ISO_USEC
                           );

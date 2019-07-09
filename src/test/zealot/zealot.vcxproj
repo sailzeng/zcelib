@@ -228,16 +228,16 @@
     <ClInclude Include="zealot_test_function.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\bin\test.lua\lua_test_01.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_02.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_03.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_04.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_05.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_06.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_07.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_08.lua" />
+    <None Include="..\..\..\bin\test.lua\lua_test_09.lua" />
     <None Include="conf\test_0001.ini" />
-    <None Include="lua\lua_test_01.lua" />
-    <None Include="lua\lua_test_02.lua" />
-    <None Include="lua\lua_test_03.lua" />
-    <None Include="lua\lua_test_04.lua" />
-    <None Include="lua\lua_test_05.lua" />
-    <None Include="lua\lua_test_06.lua" />
-    <None Include="lua\lua_test_07.lua" />
-    <None Include="lua\lua_test_08.lua" />
-    <None Include="lua\lua_test_09.lua" />
     <None Include="makefile" />
   </ItemGroup>
   <ItemGroup>

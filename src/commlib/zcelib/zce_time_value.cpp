@@ -432,7 +432,7 @@ ZCE_Time_Value::operator timeval *()
 //将时间打印出来
 const char *ZCE_Time_Value::to_string(char *str_date_time,
                                       size_t datetime_strlen,
-                                      size_t& use_buf,
+                                      size_t &use_buf,
                                       bool utc_time,
                                       zce::TIME_STR_FORMAT_TYPE fmt) const
 {

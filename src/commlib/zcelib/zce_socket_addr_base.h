@@ -38,12 +38,12 @@ public:
 
     //转换成字符串,同时输出字符串的长度
     inline const char *to_string(char *buffer,
-                                 size_t buf_len, 
+                                 size_t buf_len,
                                  size_t &use_buf,
                                  bool out_port_info = true) const
     {
 
-        return zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len,use_buf,out_port_info);
+        return zce::socketaddr_ntop_ex(sockaddr_ptr_, buffer, buf_len, use_buf, out_port_info);
     }
 
 public:

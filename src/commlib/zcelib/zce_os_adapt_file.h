@@ -157,8 +157,13 @@ int access(const char *pathname, int mode);
 * @param[in]  buff     读取的buffer
 * @param[in]  buf_len  buffer的长度
 * @param[out] read_len 输出参数，返回读取的长度
+* @param[in]  offset   从文件头位置计算，开始读取的偏移是多少
 */
-int read_file_data(const char *filename, char *buff, size_t buf_len, size_t *read_len);
+int read_file_data(const char* filename,
+                   char* buff,
+                   size_t buf_len,
+                   size_t* read_len,
+                   size_t offset=0);
 
 
 
@@ -167,29 +172,67 @@ int read_file_data(const char *filename, char *buff, size_t buf_len, size_t *rea
 
 /*!
 * @brief     用于文件处理过程的自动释放
-*            还没有使用，
 */
-template <class _value_type >
+template <typename close_type>
 class close_assist
 {
 public:
 
     ///构造函得到文件句柄
-    close_assist(const _value_type to_close) :
+    close_assist(close_type to_close):
         to_close_(to_close)
     {
     }
-
     //利用析构函数关闭文件
     ~close_assist();
+
 
 protected:
 
     ///自动处理的文件句柄
-    _value_type    to_close_;
-
+    close_type    to_close_;
 };
 
+
+template<>
+class close_assist<FILE*>
+{
+public:
+
+    ///构造函得到文件句柄
+    close_assist(FILE* to_close):
+        to_close_(to_close)
+    {
+    }
+    //利用析构函数关闭文件
+    ~close_assist()
+    {
+        ::fclose(to_close_);
+    }
+protected:
+
+    FILE* to_close_;
+};
+
+template<>
+class close_assist<ZCE_HANDLE>
+{
+public:
+
+    ///构造函得到文件句柄
+    close_assist(ZCE_HANDLE to_close):
+        to_close_(to_close)
+    {
+    }
+    //利用析构函数关闭文件
+    ~close_assist()
+    {
+        zce::close(to_close_);
+    }
+protected:
+
+    ZCE_HANDLE to_close_;
+};
 
 };
 

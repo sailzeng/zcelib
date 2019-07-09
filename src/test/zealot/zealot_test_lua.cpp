@@ -2,6 +2,9 @@
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
+namespace  tie = zce::luatie;
+
+char test_lua_file[PATH_MAX]="../../test.lua/";
 
 //
 int add2_fun(int a, int b)
@@ -24,12 +27,12 @@ int test_lua_script1(int, char *[])
 
 
 
-    lua_tie.reg_gfun("add2_fun", add2_fun);
+    lua_tie.reg_gfunc("add2_fun", add2_fun);
 
-    lua_tie.reg_gfun("add3_fun", add3_fun);
+    lua_tie.reg_gfunc("add3_fun", add3_fun);
 
 
-    lua_tie.do_file("lua/lua_test_01.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_01.lua"));
 
     int ret_a = 0, ret_b = 0, ret_c = 0;
     int var_a = 100, var_b = 200, var_c = 300, var_d = 400;
@@ -80,7 +83,7 @@ int test_lua_script2(int, char *[])
     lua_tie.set_garray("g_array", g_array, 20);
 
 
-    lua_tie.do_file("lua/lua_test_02.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_02.lua"));
 
     printf("g_b = %d\n", g_b);
 
@@ -94,8 +97,9 @@ int test_lua_script2(int, char *[])
     return 0;
 }
 
-struct T3A
+class T3A
 {
+public:
     T3A(int a) : a_(a)
     {
     }
@@ -110,8 +114,9 @@ struct T3A
 
 
 
-struct T3B : public T3A
+class T3B : public T3A
 {
+public:
     T3B(int b1, int b2, int b3) : T3A(0), b1_(b1), b2_(b2), b3_(b3)
     {
     }
@@ -141,14 +146,48 @@ struct T3B : public T3A
     double b_array_[120];
 };
 
+class T3C
+{
+public:
+    T3C(int c1,const std::string& c2,double c3):
+        c1_(c1),
+        c2_(c2),
+        c3_(c3)
+    {
+    }
+
+    int set_c1(int c1_1,int c1_2)
+    {
+        c1_= c1_1+c1_2;
+        return c1_;
+    }
+
+    std::string set_c2(int c2_1,double c2_2,const std::string &c2_3)
+    {
+        c2_=std::to_string(c2_1)+std::to_string(c2_2)+(c2_3);
+        return c2_;
+    }
+
+    double set_c3(double c3_1,double c3_2,double c3_3,int c3_4,const std::string &c3_5)
+    {
+        c3_=c3_1+c3_2-c3_3+c3_4 + std::stof(c3_5);
+        return c3_;
+    }
+
+    int c1_;
+    std::string c2_;
+    double c3_;
+
+};
+
 int test_lua_script3(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
     lua_tie.reg_class<T3A>("T3A", false);
     lua_tie.class_mem_var<T3A>("a_", &T3A::a_);
-    lua_tie.class_mem_fun("set_a", &T3A::set_a);
-    lua_tie.class_constructor<T3A>(zce::constructor<T3A, int> );
+    lua_tie.class_memfunc("set_a", &T3A::set_a);
+    lua_tie.class_constructor<T3A>(tie::constructor<T3A, int> );
 
     T3A ta_val(100);
     T3A *ta_ptr = new T3A(200);
@@ -159,17 +198,17 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar("ta_ptr", ta_ptr);
     lua_tie.set_gvar<T3A &>("ta_ref", ta_ref);
 
-
-    lua_tie.reg_class<T3B>("T3B", false)
-    .construct(zce::constructor<T3B, int, int, int>)
-    .inherit<T3A>()
-    .mem_var("b1_", &T3B::b1_)
-    .mem_var("b2_", &T3B::b2_)
-    .mem_var("b3_", &T3B::b3_)
-    .mem_ary<double, 120>("b_array_", &T3B::b_array_)
-    .mem_fun("set_b1", &T3B::set_b1)
-    .mem_fun("set_b2", &T3B::set_b2)
-    .mem_fun("set_b3", &T3B::set_b3);
+    //注册T3B
+    lua_tie.reg_class<T3B>("T3B",false)
+        .construct(tie::constructor<T3B,int,int,int>)
+        .inherit<T3A>()
+        .mem_var("b1_",&T3B::b1_)
+        .mem_var("b2_",&T3B::b2_)
+        .mem_var("b3_",&T3B::b3_)
+        .mem_ary<double,120>("b_array_",&T3B::b_array_)
+        .mem_fun("set_b1",&T3B::set_b1)
+        .mem_fun("set_b2",&T3B::set_b2)
+        .mem_fun("set_b3",&T3B::set_b3);
 
     T3B tb_val(100, 200, 300);
     T3B *tb_ptr_1 = new T3B(1000, 2000, 3000);
@@ -183,8 +222,18 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar("tb_ptr_2", tb_ptr_2);
     lua_tie.set_gvar<T3B &>("tb_ref", tb_ref);
 
+    //注册T3C
+    lua_tie.reg_class<T3C>("T3C",false)
+        .construct(tie::constructor<T3C,int,std::string,double>)
+        .mem_var("c1_",&T3C::c1_)
+        .mem_var("c2_",&T3C::c2_)
+        .mem_var("c3_",&T3C::c3_)
+        .mem_fun("set_c1",&T3C::set_c1)
+        .mem_fun("set_c2",&T3C::set_c2)
+        .mem_fun("set_c3",&T3C::set_c3);
 
-    lua_tie.do_file("lua/lua_test_03.lua");
+
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_03.lua"));
 
     printf("---------------------------------------------------\n");
     printf("ta_ptr->a_ = %d\n", ta_ptr->a_);
@@ -226,7 +275,7 @@ int test_lua_script4(int, char *[])
     printf("%s\n", "-------------------------- current stack");
     lua_tie.enum_stack();
 
-    // 泅犁 胶琶狼 郴侩阑 促矫 免仿茄促.
+    //
     printf("%s\n", "-------------------------- stack after push '1'");
     lua_tie.push(1);
     lua_tie.push(2);
@@ -234,7 +283,7 @@ int test_lua_script4(int, char *[])
     lua_tie.enum_stack();
 
     // sample5.lua 颇老阑 肺靛/角青茄促.
-    lua_tie.do_file("sample5.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_04.lua"));
 
     // test_error()
     // test_error() 会调用到 test_error_3()
@@ -306,7 +355,7 @@ int test_lua_script5(int, char *[])
                      );
 
 
-    lua_tie.do_file("lua/lua_test_05.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_05.lua"));
 
     printf("%s\n", "-------------------------- ");
     int read_ary_a[10];
@@ -376,8 +425,8 @@ int test_lua_script6(int, char *[])
 
     //请注意这个地方，注册函数用的是reg_yeild_gfun，这样thread_func执行
     //完毕会，调用lua_yield
-    lua_tie.reg_yeild_gfun("thread_func", &thread_func);
-    lua_tie.reg_yeild_gfun("thread_func2", &thread_func2);
+    lua_tie.reg_yeild_gfunc("thread_func", &thread_func);
+    lua_tie.reg_yeild_gfunc("thread_func2", &thread_func2);
 
 
     lua_tie.reg_class<Test_Thread_Class>("TestClass").
@@ -395,7 +444,7 @@ int test_lua_script6(int, char *[])
     Test_Thread_Class g_test;
     lua_tie.set_gvar("g_test", &g_test);
 
-    thread_hdl.do_file("lua/lua_test_06.lua");
+    thread_hdl.do_file(strcat(test_lua_file,"lua_test_06.lua"));
 
 
     ret = thread_hdl.get_luaobj("ThreadTest", LUA_TFUNCTION);
@@ -501,9 +550,9 @@ int test_lua_script7(int, char *[])
     obj_y.e_ = 50;
     obj_y.f_ = 60;
 
-    lua_tie.reg_gfun("set_result", &set_woo);
+    lua_tie.reg_gfunc("set_result", &set_woo);
 
-    lua_tie.do_file("lua/lua_test_07.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_07.lua"));
 
     lua_tie.call_luafun_0("read_objx",
                           obj_x.a_,
@@ -614,7 +663,7 @@ int test_lua_script8(int, char *[])
     lua_tie.set_gvar("obj_y", &obj_y);
     lua_tie.set_gvar("obj_result", &obj_result);
 
-    lua_tie.do_file("lua/lua_test_08.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_08.lua"));
     lua_tie.call_luafun_0("obj_add");
     printf("result a=%d b=%d c=%d d=%d e=%d f=%d \n",
            obj_result.a_,
@@ -765,14 +814,14 @@ int test_lua_script9(int, char *[])
     lua_tie.open(true, true);
     //注册T9B
     lua_tie.reg_class<T9B>("T9B").
-    construct(zce::constructor<T9B>).
+    construct(tie::constructor<T9B>).
     mem_var("t9b_val_", &T9B::t9b_val_);
 
     lua_tie.reg_class<T9C_base>("T9C_base").
     mem_fun("is_base", &T9C_base::is_base);
 
     lua_tie.reg_class<T9C>("T9C").
-    construct(zce::constructor<T9C, int >).
+    construct(tie::constructor<T9C, int >).
     inherit<T9C_base>().
     mem_fun("is_t9c", &T9C::is_t9c).
     mem_fun("ret_int", &T9C::ret_int).
@@ -783,7 +832,7 @@ int test_lua_script9(int, char *[])
 
     lua_tie.set_gvar("g_t9c", &g_t9c);
 
-    lua_tie.do_file("lua/lua_test_09.lua");
+    lua_tie.do_file(strcat(test_lua_file,"lua_test_09.lua"));
 
     lua_tie.close();
     return 0;

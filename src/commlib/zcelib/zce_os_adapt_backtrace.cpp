@@ -31,8 +31,8 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
     //打印所有的堆栈信息,有些时候信息无法显示符号表，建议使用
     for (int j = 0; j < sz_of_stack; j++)
     {
-        zce::foo_string_format(line_data,"%?. address %?:\t%?\t source file info[ %?: %?] ",
-                               zce::Int_Out_Helper(j+1,3),
+        zce::foo_string_format(line_data, "%?. address %?:\t%?\t source file info[ %?: %?] ",
+                               zce::Int_Out_Helper(j + 1, 3),
                                backtrace_stack_ptr[j],
                                symbols_strings ? symbols_strings[j] : "<no symbol>");
         str_ary.push_back(line_data);
@@ -108,7 +108,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
     //初始化  dbghelp library 并且加载symbol表，注意pdb文件的位置，
     if (!::SymInitialize(process, NULL, TRUE))
     {
-        ZCE_LOG(RS_ERROR,"SymInitialize fail,no symbol loaded error =%d,Please notice PDB file directory.",
+        ZCE_LOG(RS_ERROR, "SymInitialize fail,no symbol loaded error =%d,Please notice PDB file directory.",
                 ::GetLastError());
         return -1;
     }
@@ -118,7 +118,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
     std::string line_data;
     line_data.reserve(LINE_OUTLEN);
     BOOL load_symbol = FALSE, load_line = FALSE;
-    bool save_ls_error = false,save_ll_error = false;
+    bool save_ls_error = false, save_ll_error = false;
     int k = 0;
     // Enumerate call stack frame.
     while (::StackWalk64(machine_type,
@@ -141,7 +141,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         load_symbol = ::SymFromAddr(process, stackframe.AddrPC.Offset, NULL, symbol);
         if (!load_symbol && !save_ls_error)
         {
-            ZCE_LOG(RS_ERROR,"SymFromAddr fail,no debug symbol loaded for this function error =%d.",
+            ZCE_LOG(RS_ERROR, "SymFromAddr fail,no debug symbol loaded for this function error =%d.",
                     ::GetLastError());
             //只记录一次，避免过多的日志浪费
             save_ls_error = true;
@@ -153,7 +153,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
                                            &source_info);
         if (!load_line && !save_ll_error)
         {
-            ZCE_LOG(RS_ERROR,"SymGetLineFromAddr64 fail. no debug file and line loaded for this function error =%d.",
+            ZCE_LOG(RS_ERROR, "SymGetLineFromAddr64 fail. no debug file and line loaded for this function error =%d.",
                     ::GetLastError());
             save_ll_error = true;
         }
@@ -163,7 +163,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         //    break;
         //}
         zce::foo_string_format(line_data, "%?. address %?:\t%?\t source file info[ %?: %?] ",
-                               zce::Int_Out_Helper(k+1, 3),
+                               zce::Int_Out_Helper(k + 1, 3),
                                zce::Int_HexOut_Helper(stackframe.AddrPC.Offset, 16),
                                load_symbol ? symbol->Name : "<no symbol>",
                                load_line ? source_info.FileName : "<no source file info>",
@@ -173,7 +173,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         line_data.clear();
         ++k;
     }
- 
+
     // Clean up and exit.
     ::SymCleanup(process);
     free(symbol);
@@ -184,15 +184,15 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
 }
 
 //调试打印内存信息，就是简单的内存翻译为16进制字符串
-int zce::backtrace_stack(FILE* stream)
+int zce::backtrace_stack(FILE *stream)
 {
     int ret = 0;
     //%zu不知道VC从什么年代支持的
     std::vector<std::string> str_ary;
     ret = zce::backtrace_stack(str_ary);
-    for (std::string& out : str_ary)
+    for (std::string &out : str_ary)
     {
-        fprintf(stream,"%s\n",out.c_str());
+        fprintf(stream, "%s\n", out.c_str());
     }
     return ret;
 }
@@ -200,16 +200,16 @@ int zce::backtrace_stack(FILE* stream)
 
 //辅助打印一个指针内部数据的函数，用16进制的方式打印日志
 int zce::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
-                         const char* dbg_info)
+                         const char *dbg_info)
 {
     int ret = 0;
-    ZCE_LOG(dbg_lvl,"[BACKTRACE_STACK] out pointer [%s].",dbg_info);
+    ZCE_LOG(dbg_lvl, "[BACKTRACE_STACK] out pointer [%s].", dbg_info);
     std::vector<std::string> str_ary;
     zce::backtrace_stack(str_ary);
-    for (std::string& out : str_ary)
+    for (std::string &out : str_ary)
     {
         //方便你grep
-        ZCE_LOG(dbg_lvl,"[BACKTRACE_STACK] %s.",out.c_str());
+        ZCE_LOG(dbg_lvl, "[BACKTRACE_STACK] %s.", out.c_str());
     }
 
     return ret;

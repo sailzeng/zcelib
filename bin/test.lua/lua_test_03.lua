@@ -1,12 +1,29 @@
+--测试构造函数
+temp_3c = T3C(1024,"2048",4096)
+print(temp_3c)
+print("temp_3c.c1_ = "..temp_3c.c1_)
+print("temp_3c.c2_ = "..temp_3c.c2_)
+print("temp_3c.c3_ = "..temp_3c.c3_)
+
+temp_3c:set_c1(1111,2222)
+print("temp_3c.c1_ = "..temp_3c.c1_)
+temp_3c:set_c2(1111,2222.3333,"I love beijing TianAnMen!!!")
+print("temp_3c.c2_ = "..temp_3c.c2_)
+temp_3c:set_c3(1000.1111,2000.2222,3000.3333,55,"1000.1111")
+print("temp_3c.c3_ = "..temp_3c.c3_)
+
 -- 对象测试
+print("start lua test.----------------------------------")
+-- 测试使用继承的数据
+tb_ptr_2.a_ = 100
 tb_ptr_2.b_array_[1] = 10000
+tb_ptr_1.b1_ = 1111
 
-tb_ptr_1.a_ = 1111
-tb_ptr_2:set_a(2222)
-
+tb_ptr_2:set_b2(2222,3333)
 
 tb_val:set_b1(1)
 
+print("ta ptr val ref ")
 print("ta_ptr.a_ = "..ta_ptr.a_)
 print("ta_ref.a_ = "..ta_ref.a_)
 print("ta_val.a_ = "..ta_val.a_)
@@ -46,4 +63,5 @@ tb_ptr_2.b_array_[17] = 170000
 tb_ptr_2.b_array_[18] = 180000
 tb_ptr_2.b_array_[19] = 190000
 tb_ptr_2.b_array_[20] = 200000
+
 
