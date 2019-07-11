@@ -97,28 +97,15 @@ class ZCE_XML_Implement INI文件的配置读取，写入实现器
 
 int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *propertytree)
 {
-    int ret = 0;
-    size_t file_size = 0;
-    ret = zce::filelen(file_name, &file_size);
-    if (0 != ret)
+    size_t file_len = 0;
+    auto pair = zce::read_file_all(file_name, &file_len);
+    if (0 != pair.first)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,zce::filelen."
+        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,zce::read_file_all."
                 "path=[%s],last error [%d]",
                 file_name,
                 zce::last_error());
-        return ret;
-    }
-    size_t buf_len = file_size + 16, read_len = 0;
-    //只有unique_ptr 才能默认直接使用数组，
-    std::unique_ptr<char[]> file_data(new char[buf_len]);
-    ret = zce::read_file_data(file_name, file_data.get(), buf_len, &read_len);
-    if (0 != ret)
-    {
-        ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_XML_Implement::read fail,zce::read_file_data."
-                "path=[%s],last error [%d]",
-                file_name,
-                zce::last_error());
-        return ret;
+        return pair.first;
     }
 
     try
@@ -126,7 +113,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
         // character type defaults to char
         std::unique_ptr<rapidxml::xml_document<char> > doc(new rapidxml::xml_document<char>);
         //parse_non_destructive
-        doc->parse<rapidxml::parse_default>(file_data.get());
+        doc->parse<rapidxml::parse_default>(pair.second.get());
 
         const rapidxml::xml_node<char> *root = doc->first_node();
         //广度遍历dom tree

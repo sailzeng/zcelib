@@ -27,6 +27,8 @@
 #ifndef ZCE_LIB_SQLITE_DBHANDLE_H_
 #define ZCE_LIB_SQLITE_DBHANDLE_H_
 
+#include "zce_os_adapt_string.h"
+
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 

@@ -150,12 +150,6 @@ public:
         :lua_udat_base(new val_type(arg ...))
     {
     }
-    ////args_type是构造函数的参数,args_type1 存在的目的是和默认构造函数分开，
-    //template<typename args_type1, typename ...args_tlist>
-    //val_2_udat(args_type1 arg1, args_tlist ...arg)
-    //    :lua_udat_base(new val_type(arg1, arg ...))
-    //{
-    //}
 
     template<typename args_type>
     val_2_udat(args_type arg)
@@ -515,9 +509,6 @@ read_stack(lua_State *state, int index)
     return read_stack_val<typename std::remove_cv<ret_type>::type>(state, index);
 }
 
-
-
-
 ///
 template<typename val_type>
 val_type pop_stack(lua_State *state)
@@ -526,7 +517,6 @@ val_type pop_stack(lua_State *state)
     lua_pop(state, 1);
     return t;
 }
-
 
 //=======================================================================================================
 
@@ -587,6 +577,9 @@ int array_meta_set(lua_State *state)
     return 0;
 }
 
+
+
+
 //=======================================================================================================
 
 /*!
@@ -598,9 +591,11 @@ int array_meta_set(lua_State *state)
 *             在VS2013的编译器，和GCC 4.8的编译器上大部分的变参展开顺序是从右到左，导致我们展开...
 *             得到的参数顺序也是反的。
 *             虽然我们可以使用tuple或者初始化运算(airfu提供了一个好方法）。可以让参数从左到右展开，
-*             但我们还有一个函数参数需要参数++，在函数参数展开后还是反的，所以这个就矛盾了。
-*             所以我只有反过来取参数,pop_stack，同时避免了++参数，来规避这个问题。
+*             但我们还有一个函数参数需要参数++，在函数参数展开后还是反的，所以用make_tuple就矛盾了。
 *             而确实C++也没有明确规定是从右到左传递参数。所以这种方法其实……
+*             所以我只有反过来取参数,pop_stack，同时避免了++参数，来规避这个问题。
+*             另外我在#if 0我在新的代码里面做了tuple的测试，也通过了。但这个需要C++14，用宏
+*             LUATIE_CPP14_INDEX_SEQUENCE 打开这个代码
 *
 *             关于variaic参数展开：
 *             大部分variadic的函数都是通过递归展开避免这个问题，但我这儿无法递归，
@@ -619,29 +614,67 @@ template < bool last_yield,
 class g_func_ret
 {
 public:
-    static int invoke(lua_State *state)
+
+#if defined __TEST_VARIADIC_FUN && __TEST_VARIADIC_FUN == 1
+    //这是依赖于函数从有向左展开的版本 LINUX GCC 7有-Wsequence-point的告警,
+    //这个告警是正确的，这代码确实依赖不明确的参数顺序
+    //如果把下面的read_stack换成pop，居然可以蒙骗编译器。愚蠢的编译器
+    static int invoke(lua_State* state)
     {
         //取出函数指针，并且转型
-        void *upvalue_1 = ::lua_touserdata(state, lua_upvalueindex(1));
-        ret_type(*fun_ptr)(args_type...) = (ret_type(*)(args_type...)) (upvalue_1);
-
+        void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
+        ret_type(*fun_ptr)(args_type...)=(ret_type(*)(args_type...)) (upvalue_1);
         //如果参数传递顺序错误，请参考note的说明，
         //根据函数是否有返回值，决定如何处理，是否push_stack
         //注意下面使用的是para_idx--,这个其实是反着读取堆栈的，因为...是从右到左
         int para_idx=::lua_gettop(state);
         //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
         push_stack<ret_type>(state,
-                             fun_ptr(read_stack<typename std::decay<args_type>::type>\
+                             fun_ptr(read_stack<typename std::decay<args_type>::type>
                              (state,para_idx--)...));
-        if (last_yield)
-        {
-            return ::lua_yield(state, 1);
-        }
-        else
-        {
-            return 1;
-        }
+        return (last_yield)?::lua_yield(state,1):1;
     }
+    
+#elif defined __TEST_VARIADIC_FUN && __TEST_VARIADIC_FUN == 2
+    //这个版本是利用tuple赋值展开的版本，但是在Linux GCC，仍然有告警。？？？
+    //我认为这个告警是错误的，因为我的展开是tuple初始化。顺序是明确的
+    static int invoke(lua_State* state)
+    {
+        //取出函数指针，并且转型
+        void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
+        ret_type(*fun_ptr)(args_type...)=(ret_type(*)(args_type...)) (upvalue_1);
+        //使用tuple展开参数，而且是从左到右展开
+        //同时注意decay，我这儿退化了参数，因为我很多都是临时变量
+        int para_idx=1;
+        std::tuple<typename std::decay<args_type>::type...> para={
+            (read_stack<typename std::decay<args_type>::type>(state,para_idx++))...};
+        //使用tuple执行函数调用
+        push_stack<ret_type>(state,
+                             zce::g_func_tuplearg_invoke(fun_ptr,para));
+        return (last_yield)?::lua_yield(state,1):1;
+    }
+#else
+    //利用make_index_sequence展开VARIADIC的方法，但是这个必须要C++ 14才支持
+    static int invoke(lua_State* state)
+    {
+        const static int para_count=sizeof...(args_type);
+        return _invoke_witch_stack(state,std::make_index_sequence<para_count>());
+    }
+
+private:
+
+    template<std::size_t... I>
+    static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
+    {
+        //取出函数指针，并且转型
+        void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
+        ret_type(*fun_ptr)(args_type...)=(ret_type(*)(args_type...)) (upvalue_1);
+
+        push_stack<ret_type>(state,fun_ptr(read_stack<typename std::decay<args_type>::type>
+            (state,I+1)...));
+        return (last_yield)?::lua_yield(state,1):1;
+    }
+#endif
 };
 
 ///全局没有返回值的函数封装，详细信息见g_func_ret
@@ -652,22 +685,21 @@ class g_func_void
 public:
     static int invoke(lua_State *state)
     {
-        //取出函数指针，并且转型
-        void *upvalue_1 = lua_touserdata(state, lua_upvalueindex(1));
-        void (*fun_ptr)(args_type...) = (void( *)(args_type...)) (upvalue_1);
+        const static int para_count=sizeof...(args_type);
+        return _invoke_witch_stack(state,std::make_index_sequence<para_count>());
+    }
+private:
 
-        //注意下面使用的是pop_stack,这个其实是反着展开堆栈的，
-        int para_idx=::lua_gettop(state);
-        fun_ptr(read_stack<typename std::decay<args_type>::type>\
-            (state,para_idx--)...);
-        if (last_yield)
-        {
-            return ::lua_yield(state, 0);
-        }
-        else
-        {
-            return 0;
-        }
+    template<std::size_t... I>
+    static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
+    {
+        //取出函数指针，并且转型
+        void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
+        void (*fun_ptr)(args_type...)=(void(*)(args_type...)) (upvalue_1);
+
+        fun_ptr(read_stack<typename std::decay<args_type>::type>
+            (state,I+1)...);
+        return (last_yield)?::lua_yield(state,0):0;
     }
 };
 
@@ -701,6 +733,7 @@ int constructor(lua_State *state)
                            sizeof(val_2_udat<class_type>))) \
     val_2_udat<class_type>(read_stack<args_type>(state,para_idx--)...);
 
+    
     ::lua_pushstring(state, class_name<class_type>::name());
     ::lua_gettable(state, LUA_GLOBALSINDEX);
 
@@ -729,60 +762,60 @@ class member_func_ret
 public:
     static int invoke(lua_State *state)
     {
-        //push是将结果放入堆栈
-        void *upvalue_1 = ::lua_touserdata(state, lua_upvalueindex(1));
-        typedef ret_type(class_type::*mem_fun)(args_type...);
-        mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
-        //enum_clua_stack(state);
-        //第一个参数是对象指针
-        class_type *obj_ptr = read_stack<class_type *>(state, 1);
+        const static int para_count=sizeof...(args_type);
+        return _invoke_witch_stack(state,std::make_index_sequence<para_count>());
+    }
 
-        //根据是否有返回值，决定如何处理，是否push_stack
-        //为什么采用--，请参考前面的解释 g_func_ret
-        int para_idx=::lua_gettop(state);
+private:
+
+    template<std::size_t... I>
+    static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
+    {
+        //push是将结果放入堆栈
+        void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
+        typedef ret_type(class_type::*mem_fun)(args_type...);
+        mem_fun fun_ptr=*(mem_fun*)(upvalue_1);
+        //第一个参数是对象指针
+        class_type* obj_ptr=read_stack<class_type*>(state,1);
+
+        //为什么是2，1被被对象指针占用了
         push_stack<ret_type>(state,
-                             (obj_ptr->*fun_ptr)\
-                             (read_stack<typename std::decay<args_type>::type>(state,para_idx--)...));
-        if (last_yield)
-        {
-            return ::lua_yield(state, 1);
-        }
-        else
-        {
-            return 1;
-        }
+            (obj_ptr->*fun_ptr)\
+                             (read_stack<typename std::decay<args_type>::type>(state,I+2)...));
+        return (last_yield)?::lua_yield(state,1):1;
     }
 };
-///void 函数
+
+//返回void的成员函数
 template<bool last_yield, typename class_type, typename ...args_type>
 class member_func_void
 {
 public:
     static int invoke(lua_State *state)
     {
+        const static int para_count=sizeof...(args_type);
+        return _invoke_witch_stack(state,std::make_index_sequence<para_count>());
+    }
+
+private:
+
+    template<std::size_t... I>
+    static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
+    {
         //push是将结果放入堆栈
-        void *upvalue_1 = ::lua_touserdata(state, lua_upvalueindex(1));
-
+        void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         typedef void (class_type::*mem_fun)(args_type...);
-        mem_fun fun_ptr = *(mem_fun *)(upvalue_1);
-
+        mem_fun fun_ptr=*(mem_fun*)(upvalue_1);
         //第一个参数是对象指针
-        class_type *obj_ptr = read_stack<class_type *>(state, 1);
+        class_type* obj_ptr=read_stack<class_type*>(state,1);
 
-        //我恨函数指针，我更恨类成员的指针,注意下面的那个括号。一定要，否则，我看了1个小时
-        int para_idx=::lua_gettop(state);
-        (obj_ptr->*fun_ptr)(read_stack<typename std::decay<args_type>::type>\
-            (state,para_idx--)...);
-        if (last_yield)
-        {
-            return ::lua_yield(state, 0);
-        }
-        else
-        {
-            return 0;
-        }
+        //为什么是2，1被被对象指针占用了
+        (obj_ptr->*fun_ptr)\
+            (read_stack<typename std::decay<args_type>::type>(state,I+2)...);
+        return (last_yield)?::lua_yield(state,1):1;
     }
 };
+
 
 /*!
 * @brief      成员变量的处理的基类，用于class_meta_get,class_meta_set内部处理

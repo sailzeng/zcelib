@@ -20,7 +20,7 @@ compile_object = staticlib
 #如果你使用预定头文件,请定义PREH_FILE,比如下面这样
 #对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
 #如果你不适用预定头文件，可以屏蔽下面这个定义
-PREH_FILE = soar_predefine.h
+PCH_FILE = soar_predefine.h
 
 #DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
 #如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，

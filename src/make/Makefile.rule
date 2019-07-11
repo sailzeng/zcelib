@@ -64,12 +64,12 @@ MISS_DEP = $(patsubst %.d,%.o, $(filter-out $(wildcard $(DEP_FILE)),$(DEP_FILE))
 #PRGNAME表示你的程序名称，一般就是你的目录名称，当然希望目录名称不要重复，
 #OUTFILE,最总输出的文件名称，为啥要定义这个呢，最后删除的时候可以统一
 
-#如果你使用预定头文件,请定义PREH_FILE
+#如果你使用预定头文件,请定义PCH_FILE
 #对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
-ifneq ($(PREH_FILE),) 
-PREH_DIR = $(PREH_FILE).gch
-PREH_GCH = $(PREH_DIR)/$(PREH_FILE).$(VERSIONTYPE).gch
-PREH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(PREH_FILE).d
+ifneq ($(PCH_FILE),) 
+PCH_DIR = $(PCH_FILE).gch
+PCH_GCH = $(PCH_DIR)/$(PCH_FILE).$(VERSIONTYPE).gch
+PCH_DEP = $(PATH_OBJ)/$(PRGNAME)/$(PCH_FILE).d
 endif
 
 all : $(OUTFILE) 
@@ -124,12 +124,12 @@ endif
 
 #如果你使用预定头文件,我帮你编译gch文件.gch 文件支持在当前目录下有一个 all.h  如果有一个all.h.gch的目录，如果多个gch文件
 #都在这个文件里面，GCC会根据编译参数选择一个更加合适的
-ifneq ($(PREH_GCH),) 
-$(O_FILE) : $(PREH_GCH) 
+ifneq ($(PCH_GCH),) 
+$(O_FILE) : $(PCH_GCH) 
 
 #如果.d文件不存在，删除gch文件，重新建立之
-ifneq ($(PREH_DEP), $(wildcard $(PREH_DEP)))
-$(shell $(RM) $(PREH_GCH))
+ifneq ($(PCH_DEP), $(wildcard $(PCH_DEP)))
+$(shell $(RM) $(PCH_GCH))
 endif
 
 #.gch文件的.d文件不放在gch目录下，因为如果放在下面，会被GCC误认为是GCH文件，造成他查询麻烦，如果打开-Winvalid-pch也会触发
@@ -137,10 +137,10 @@ endif
 
 #如果.预编译头文件的.d文件都存在，用.d判断依赖关系，是否需要重新生成，否则，重新生成gch文件。
 
--include $(PREH_DEP)
+-include $(PCH_DEP)
 
-$(PREH_GCH) : $(PREH_FILE)
-	$(PRECOMPILE.cc) -MF $(PREH_DEP) $< -o $@ 
+$(PCH_GCH) : $(PCH_FILE)
+	$(PRECOMPILE.cc) -MF $(PCH_DEP) $< -o $@ 
 endif    
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -176,11 +176,11 @@ $(PATH_OBJ)/$(PRGNAME)/%.o : ./%.cpp
 
 #如果你认为gch不需要删除，在clean的时候不删除也应该可以，现在gch文件已经用了.d 保证一定是最新的
 clean:
-	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PREH_DEP) $(PREH_GCH) 
+	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PCH_DEP) $(PCH_GCH) 
 
 #清理.gch文件，清理ccache的数据
 veryclean:
-	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PREH_DEP) $(PREH_GCH) ;
+	$(RM)  $(OUTFILE) $(O_FILE) $(DEP_FILE) $(PCH_DEP) $(PCH_GCH) ;
 ifeq ($(ccache),1 ) 
 	ccache  --cleanup
 endif    
@@ -199,8 +199,8 @@ mkdir:
 	if (test ! -d $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME));   then $(MKDIR) $(PARENT_PATH_OBJ)/x64_debug/$(PRGNAME) ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_release/$(PRGNAME) ; fi ;
 	if (test ! -d $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME)); then $(MKDIR) $(PARENT_PATH_OBJ)/x64_neutral/$(PRGNAME) ; fi ;
-ifneq ($(PREH_FILE),) 
-	if (test ! -d $(PREH_DIR)) ; then $(MKDIR) $(PREH_DIR) ; fi ;
+ifneq ($(PCH_FILE),) 
+	if (test ! -d $(PCH_DIR)) ; then $(MKDIR) $(PCH_DIR) ; fi ;
 endif    
     
 #--------------------------------------------------------------------------------------------------------------------

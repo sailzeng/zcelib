@@ -156,21 +156,17 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_pe
     char file_name[PATH_MAX + 1];
     file_name[PATH_MAX] = '\0';
     snprintf(file_name, PATH_MAX, PROC_PROCESS_STAT, read_pid);
-
-    char buffer[4096];
-    size_t read_len = 0;
-    uint64_t read_data = 0;
+    
     //读取/proc下的文件
-    int ret = zce::read_file_data(file_name, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair = zce::read_file_all(file_name, &read_len);
+    if ( 0 !=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char *in_para =pair.second.get();
     char *out_para = NULL;
-
     in_para = zce::skip_token(in_para);              /* skip  pid*/
     in_para = zce::skip_token(in_para);              /* skip  name*/
     in_para = zce::skip_token(in_para);              /* skip  state*/
@@ -191,7 +187,7 @@ static int read_proc_get_processstat(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_pe
 #else
     long cpu_tick_precision = 1000;
 #endif
-
+    uint64_t read_data=0;
     // utime
     read_data = ::strtoull(in_para, &out_para, 10);
     in_para = out_para;
@@ -238,18 +234,14 @@ static int read_proc_get_processmem(pid_t read_pid, ZCE_PROCESS_PERFORM *prc_per
     char file_name[PATH_MAX + 1];
     file_name[PATH_MAX] = '\0';
     snprintf(file_name, PATH_MAX, PROC_PROCESS_MEM, read_pid);
-
-    char buffer[4096];
-    size_t read_len = 0;
-    //读取/proc下的文件
-    int ret = zce::read_file_data(file_name, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair=zce::read_file_all(file_name,&read_len);
+    if(0!=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char* in_para=pair.second.get();
     char *out_para = NULL;
 
     //64位下应该是8096

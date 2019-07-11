@@ -8,7 +8,14 @@
 
 
 //=======================================================================================================
-
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( push )
+#pragma warning ( disable : 4127)
+#pragma warning ( disable : 4189)
+#elif defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsequence-point"
+#endif
 
 
 namespace zce
@@ -1199,6 +1206,12 @@ int ZCE_Lua_Tie::resume_thread(ZCE_Lua_Thread *lua_thread, int narg)
 {
     return lua_thread->resume(narg);
 }
+
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( pop )
+#elif defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic pop
+#endif
 
 
 #endif //#if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 == 1

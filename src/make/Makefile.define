@@ -135,12 +135,12 @@ endif
 ifeq ($(rogue),1)
 WARNFLAGS +=
 else
-WARNFLAGS += -Werror 
+WARNFLAGS += -Werror
 endif 
 
 #编译选项
 CFLAGS += $(WARNFLAGS) -MMD 
-CCFLAGS += $(WARNFLAGS) -std=c++11 -MMD
+CCFLAGS += $(WARNFLAGS) -std=c++17 -MMD
 
 #注意这个地方,-MMD是这样一个选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
 

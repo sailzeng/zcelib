@@ -2,7 +2,7 @@
 #include "zealot_test_function.h"
 
 
-int test_osadapt_file(int  /*argc*/, char * /*argv*/[])
+int test_windows_handle(int  /*argc*/, char * /*argv*/[])
 {
 #if defined ZCE_OS_WINDOWS
 
@@ -34,6 +34,19 @@ int test_osadapt_file(int  /*argc*/, char * /*argv*/[])
 
 #endif
 
+    return 0;
+}
+
+
+int test_osadapt_file(int  /*argc*/,char* /*argv*/[])
+{
+    size_t file_len=0;
+    auto pair=zce::read_file_all("C:\\123.txt",&file_len);
+    if(pair.first!=0)
+    {
+        return pair.first;
+    }
+    std::cout<<pair.second<<std::endl;
     return 0;
 }
 

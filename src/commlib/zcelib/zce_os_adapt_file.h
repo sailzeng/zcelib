@@ -8,7 +8,7 @@
 *
 * @details    为什么在WINDOWS平台要提供一组以WINDOWS的HANDLE函数呢，而不是C文件描述符的函数呢
 *             1.因为WINDOWS内部的API大量使用HANDLE作为参数而不是int fd,所以我不能完全依赖CRT
-*             2.因为WINDOWS下CRT的函数实现都有一些瑕疵，比如lseek,
+*             2.因为WINDOWS下CRT的函数实现都有一些瑕疵，比如lseek,(新的倒是有了_lseek64)
 *
 *             还有一个问题必须说明一下，文件长度的问题，文件操作的很多参数我用了ssize_t这个类型，
 *             LINUX下往往是off_t，off_t大部分情况下和ssize_t表现一样，（除非你自己去编译内核）
@@ -157,7 +157,7 @@ int access(const char *pathname, int mode);
 * @param[in]  buff     读取的buffer
 * @param[in]  buf_len  buffer的长度
 * @param[out] read_len 输出参数，返回读取的长度
-* @param[in]  offset   从文件头位置计算，开始读取的偏移是多少
+* @param[in]  offset   开始读取的偏移是多少，从文件头位置计算，
 */
 int read_file_data(const char* filename,
                    char* buff,
@@ -167,6 +167,17 @@ int read_file_data(const char* filename,
 
 
 
+/*!
+* @brief      用C++ 11的方式包装一个给你。
+* @return     std::pair<int,std::unique_ptr<char*>>
+* @param[in]  filename
+* @param[out] read_len 输出参数，返回读取的长度
+* @param[in]  offset
+* @note       Windows下面不可能一次读取超过4G大小的数据但，超大文件别指望这个函数
+*/
+std::pair<int,std::shared_ptr<char>> read_file_all(const char* filename,
+                                                   size_t* file_len,
+                                                   size_t offset=0);
 
 
 

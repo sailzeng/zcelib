@@ -10,6 +10,7 @@
 ssize_t zce::read(ZCE_HANDLE file_handle, void *buf, size_t count)
 {
     //WINDOWS下，长度无法突破32位的，参数限制了ReadFileEx也一样，大概WINDOWS认为没人这样读取文件
+    //位置当然你是可以调整的
 #if defined (ZCE_OS_WINDOWS)
     DWORD ok_len;
     BOOL ret_bool = ::ReadFile (file_handle,
@@ -74,7 +75,6 @@ int zce::truncate(const char *filename, size_t offset)
     int ret = 0;
     //打开文件，并且截断，最后关闭
     ZCE_HANDLE file_handle = zce::open(filename, (O_CREAT | O_RDWR));
-
     if ( ZCE_INVALID_HANDLE == file_handle)
     {
         return -1;
@@ -507,7 +507,7 @@ int zce::access(const char *pathname, int mode)
 
 //--------------------------------------------------------------------------------------------------
 //非标准函数
-//用只读方式读取一个文件的内容，返回的buffer最后填充'\0',buf_len >= 2
+//用只读方式读取一个文件的内容，返回的buffer最后填充'\0',buf_len >= 1
 int zce::read_file_data(const char *filename, 
                         char *buffer, 
                         size_t buf_len, 
@@ -515,11 +515,10 @@ int zce::read_file_data(const char *filename,
                         size_t offset)
 {
     //参数检查
-    ZCE_ASSERT(filename && buffer && buf_len >= 2);
+    ZCE_ASSERT(filename && buffer && buf_len >= 1);
 
     //打开文件
     ZCE_HANDLE  fd = zce::open(filename, O_RDONLY);
-
     if (ZCE_INVALID_HANDLE == fd)
     {
         ZCE_LOG(RS_ERROR, "open file [%s]  fail ,error =%d", filename, zce::last_error());
@@ -542,4 +541,39 @@ int zce::read_file_data(const char *filename,
     return 0;
 }
 
+//读取文件的全部数据，
+std::pair<int,std::shared_ptr<char>> zce::read_file_all(const char* filename,
+                                                        size_t* file_len,
+                                                        size_t offset)
+{
+    int ret=-1;
+    std::shared_ptr<char> null_ptr;
+    //打开文件
+    ZCE_HANDLE  fd=zce::open(filename,O_RDONLY);
+    if(ZCE_INVALID_HANDLE==fd)
+    {
+        ZCE_LOG(RS_ERROR,"open file [%s]  fail ,error =%d",filename,zce::last_error());
+        return std::make_pair(ret,null_ptr);
+    }
+    *file_len = zce::lseek(fd,0,SEEK_END);
+    if(static_cast<size_t>(-1) == *file_len)
+    {
+        zce::close(fd);
+        ZCE_LOG(RS_ERROR,"open file [%s]  fail ,error =%d",filename,zce::last_error());
+        return std::make_pair(ret,null_ptr);
+    }
+    std::shared_ptr<char> ptr(new char [*file_len+1],std::default_delete<char []>());
+    *(ptr.get() +*file_len)='\0';
+    //调整偏移，读取内容
+    zce::lseek(fd,static_cast<ssize_t>(offset),SEEK_SET);
+    ssize_t len=zce::read(fd,ptr.get(),*file_len);
+    zce::close(fd);
+    if(len<0)
+    {
+        ZCE_LOG(RS_ERROR,"read file [%s] fail ,error =%d",filename,zce::last_error());
+        return std::make_pair(ret,null_ptr);
+    }
 
+    ret=0;
+    return std::make_pair(ret,ptr);
+}

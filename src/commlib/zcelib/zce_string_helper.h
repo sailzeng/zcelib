@@ -876,12 +876,12 @@ public:
 
     ///输出的int数据
     int64_t            out_data_;
-    ///输出的进制方式
-    BASE_NUMBER_SYSTEM base_;
     ///输出宽度，默认0
     size_t             width_;
     ///输出精度，默认-1，最大值，
     size_t             precision_;
+    ///输出的进制方式
+    BASE_NUMBER_SYSTEM base_;
     ///输出格式控制标志
     int                flags_;
 };

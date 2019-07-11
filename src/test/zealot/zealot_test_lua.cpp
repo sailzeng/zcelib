@@ -15,6 +15,9 @@ int add2_fun(int a, int b)
 
 int add3_fun(int a, int b, int c)
 {
+    std::cout<<"para 1 a="<<a<<std::endl;
+    std::cout<<"para 2 b="<<b<<std::endl;
+    std::cout<<"para 3 c="<<c<<std::endl;
     return a + b + c;
 }
 
@@ -837,3 +840,5 @@ int test_lua_script9(int, char *[])
     lua_tie.close();
     return 0;
 }
+
+

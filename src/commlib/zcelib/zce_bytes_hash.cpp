@@ -55,7 +55,7 @@ void ZCE_Hash_MD5::initialize(context *ctx)
 void ZCE_Hash_MD5::process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                                  const uint32_t block[PROCESS_BLOCK_SIZE / 4])
 {
-    register uint32_t a, b, c, d;
+    uint32_t a, b, c, d;
     const uint32_t *x = NULL;
     a = state[0];
     b = state[1];
@@ -170,7 +170,7 @@ void ZCE_Hash_SHA1::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 {
     size_t        t;
     uint32_t      wblock[80];
-    register uint32_t      a, b, c, d, e, temp;
+    uint32_t      a, b, c, d, e, temp;
 
     endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
 
@@ -285,7 +285,7 @@ void ZCE_Hash_SHA256::process_block(uint32_t hash[HASH_RESULT_SIZE / 4],
 {
 
     uint32_t  wblock[64];
-    register uint32_t a, b, c, d, e, f, g, h, temp1, temp2;
+    uint32_t a, b, c, d, e, f, g, h, temp1, temp2;
 
     endian_copy(wblock, block, PROCESS_BLOCK_SIZE);
 

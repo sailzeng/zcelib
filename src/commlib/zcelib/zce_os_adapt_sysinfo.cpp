@@ -21,18 +21,14 @@ int read_proc_get_cpuhz (struct ZCE_SYSTEM_INFO *info)
 {
     //
     const char *PROC_FILENAME_CPUHZ = "/proc/cpuinfo";
-    char buffer[8192 ];
-
-    size_t read_len = 0;
-    //读取/proc下的文件
-    int ret = zce::read_file_data(PROC_FILENAME_CPUHZ, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair=zce::read_file_all(PROC_FILENAME_CPUHZ,&read_len);
+    if(0!=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char* in_para=pair.second.get();
     char *out_para = NULL;
     in_para = zce::skip_line(in_para);
     in_para = zce::skip_line(in_para);
@@ -52,22 +48,15 @@ static int read_proc_get_loadavg (struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     //
     const char *PROC_FILENAME_LOADAVG = "/proc/loadavg";
-    char buffer[4096 ];
-
-    size_t read_len = 0;
-    //读取/proc下的文件
-    int ret = zce::read_file_data(PROC_FILENAME_LOADAVG, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair=zce::read_file_all(PROC_FILENAME_LOADAVG,&read_len);
+    if(0!=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char* in_para=pair.second.get();
     char *out_para = NULL;
-
-    buffer[read_len] = '\0';
-    in_para = buffer;
 
     //1,5,10 min load averages
     info->sys_loads_[0] = ::strtod(in_para, &out_para);
@@ -91,19 +80,14 @@ static int read_proc_get_loadavg (struct ZCE_SYSTEM_PERFORMANCE *info)
 int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     const char *PROC_FILENAME_MEMINFO = "/proc/meminfo";
-
-    char buffer[4096 ];
-
-    size_t read_len = 0;
-    //读取/proc下的文件
-    int ret = zce::read_file_data(PROC_FILENAME_MEMINFO, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair=zce::read_file_all(PROC_FILENAME_MEMINFO,&read_len);
+    if(0!=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char* in_para=pair.second.get();
     char *out_para = NULL;
 
     uint64_t mem_data = 0;
@@ -173,18 +157,14 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
 int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     const char *PROC_FILENAME_STAT = "/proc/stat";
-    char buffer[4096];
-
-    size_t read_len = 0;
-    //读取/proc下的文件
-    int ret = zce::read_file_data(PROC_FILENAME_STAT, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair=zce::read_file_all(PROC_FILENAME_STAT,&read_len);
+    if(0!=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char* in_para=pair.second.get();
     char *out_para = NULL;
 
     // "cpu"
@@ -260,18 +240,14 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
 int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     const char *PROC_FILENAME_UPTIME = "/proc/uptime";
-    char buffer[4096];
-
-    size_t read_len = 0;
-    //读取/proc下的文件
-    int ret = zce::read_file_data(PROC_FILENAME_UPTIME, buffer, sizeof(buffer), &read_len);
-
-    if ( 0 != ret )
+    size_t read_len=0;
+    auto pair=zce::read_file_all(PROC_FILENAME_UPTIME,&read_len);
+    if(0!=pair.first)
     {
-        return ret;
+        return pair.first;
     }
 
-    const char *in_para = buffer;
+    const char* in_para=pair.second.get();
     char *out_para = NULL;
 
     //

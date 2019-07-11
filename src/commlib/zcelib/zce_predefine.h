@@ -118,7 +118,7 @@
 #define ZCE_SUPPORT_CPP11 0
 #endif
 
-
+//VC++ 2019只有支持14，和19的选项
 //#if __cplusplus < 201103L
 //#error "Should use --std=c++11 option for compile."
 //#endif
@@ -128,6 +128,19 @@
 #if ZCE_SUPPORT_CPP11 == 0
 #error "[Error]Only support C11 compiler, include Visual Studio 2013 and "\
 "upper version, or GCC 4.8 and upper version, and use –std=c++11 options."
+#endif
+
+//in VC++ 2019的编译器，请同时调节Property Pages /General/C++ Language Standard
+#if __cplusplus >= 201402L 
+#define  ZCE_SUPPORT_CPP14 == 1
+#else
+#define  ZCE_SUPPORT_CPP14 == 0
+#endif
+
+#if __cplusplus >= 201703L 
+#define  ZCE_SUPPORT_CPP17 == 1
+#else
+#define  ZCE_SUPPORT_CPP17 == 0
 #endif
 
 //==================================================================================================
@@ -205,6 +218,7 @@
 #include <windows.h>
 #include <winnt.h>
 #include <winbase.h>
+#include <BaseTsd.h>
 #include <Psapi.h>
 #include <windef.h>
 #include <WTypes.h>
@@ -422,7 +436,7 @@ typedef __int64             int64_t;
 //外部库的告警，在这个地方屏蔽了。
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
-#pragma warning ( disable : 4244 4100 4512 4100 26495)
+#pragma warning ( disable : 4244 4100 4512 4100 4996 26495)
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"

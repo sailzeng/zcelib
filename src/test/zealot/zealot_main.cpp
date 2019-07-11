@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
 
 #define ZCE_USE_LOGMSG 1
     ZCE_Trace_LogMsg::instance()->init_time_log(NAME_TIME_DAY_DEVIDE_TIME,
-                                                "E:\\TEST_1",
+                                                "E:\\My.Log\\TEST_1",
                                                 false,
                                                 true,
                                                 0,
@@ -21,7 +21,8 @@ int main(int argc, char *argv[])
                                                 LOG_HEAD_RECORD_NONE);
     ZCE_TRACE_FILELINE(RS_DEBUG);
     
-    test_lua_script3(argc,argv);
+    test_lua_script1(argc,argv);
+
     return 0;
 
 #if 0
@@ -49,7 +50,16 @@ int main(int argc, char *argv[])
     //test_lua_script3(argc, argv);
 
     printf("%s", "----------------------------------------------------------------------------\n");
-    test_lua_script9(argc, argv);
+    test_lua_script1(argc,argv);
+    test_lua_script2(argc,argv);
+    test_lua_script3(argc,argv);
+    test_lua_script4(argc,argv);
+    test_lua_script4(argc,argv);
+    test_lua_script5(argc,argv);
+    test_lua_script6(argc,argv);
+    test_lua_script7(argc,argv);
+    test_lua_script8(argc,argv);
+    test_lua_script9(argc,argv);
     printf("%s", "----------------------------------------------------------------------------\n");
 
 

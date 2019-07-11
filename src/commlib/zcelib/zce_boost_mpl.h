@@ -105,7 +105,7 @@ auto g_func_tuplearg_invoke(fun_t &&f, const para_tuple &a)
 template<typename fun_t, typename ...args_type>
 auto g_func_invoke(fun_t &&f, args_type &&...datalist)
 {
-    auto arg = std::make_tuple(std::forward<args_type>(datalist)...);
+    auto a = std::make_tuple(std::forward<args_type>(datalist)...);
     g_func_tuplearg_invoke(f, a);
 }
 
@@ -120,8 +120,18 @@ auto mem_func_invoke_impl(class_type *obj, fun_t &f, const para_tuple &a, std::i
 template<typename class_type, typename fun_t, typename para_tuple>
 auto mem_func_tuplearg_invoke(class_type *obj, fun_t &f, const para_tuple &a)
 {
-    static constexpr auto t_count = std::tuple_size<para_tuple>::value;
-    return mem_func_invoke_impl(obj, f, a, std::make_index_sequence<t_count>());
+    auto t_count = std::tuple_size<para_tuple>::value;
+    return mem_func_invoke_impl(obj, 
+                                f, 
+                                a,
+                                std::make_index_sequence<t_count>());
+}
+
+template<typename class_type,typename fun_t,typename ...args_type>
+auto mem_func_invoke(class_type* obj,fun_t& f,args_type&& ...datalist)
+{
+    auto a=std::make_tuple(std::forward<args_type>(datalist)...);
+    return mem_func_invoke_impl(obj,f,a);
 }
 
 };
