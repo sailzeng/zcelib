@@ -587,16 +587,31 @@ int array_meta_set(lua_State *state)
 *             根据ret_type 是否是void，分了2个版本。另外一个见g_func_void
 * @tparam     ret_type  返回值类型
 * @tparam     args_type 参数类型列表，0-N个参数
-* @note       这儿要注意，有一个潜在的风险（问题）。我假定了参数传递(展开)方式。
-*             在VS2013的编译器，和GCC 4.8的编译器上大部分的变参展开顺序是从右到左，导致我们展开...
-*             得到的参数顺序也是反的。
-*             虽然我们可以使用tuple或者初始化运算(airfu提供了一个好方法）。可以让参数从左到右展开，
-*             但我们还有一个函数参数需要参数++，在函数参数展开后还是反的，所以用make_tuple就矛盾了。
-*             而确实C++也没有明确规定是从右到左传递参数。所以这种方法其实……
-*             所以我只有反过来取参数,pop_stack，同时避免了++参数，来规避这个问题。
-*             另外我在#if 0我在新的代码里面做了tuple的测试，也通过了。但这个需要C++14，用宏
-*             LUATIE_CPP14_INDEX_SEQUENCE 打开这个代码
+* @note       这儿要注意，下面的代码有3个版本，对3个，其实我至少写了的有5-6个版本。剩下3个。
+*             告诉你VARIADIC展开的方式。这简直是血泪史。
 *
+*             第一种有一个潜在的风险（问题）。我假定了参数传递(展开)方式。
+*             在VS2013的编译器，和GCC 4.8的编译器上大部分的变参展开顺序是从右到左，导致我
+*             们展开...得到的参数顺序也是反的。
+*             而确实C++也没有明确规定是从右到左传递参数。所以这种方法其实……
+*             注意，虽然我们可以列表初始化运算(airfu提供了一个好方法）。可以让参数从左到右
+*             展开，但我们还有一个函数参数需要参数++，在函数参数展开后还是反的，
+*             所以这个版本里面，我是反着取参数的。
+*             但这个版本其实还有一个问题，就是GCC的告警，-Wsequence-point的告警,GCC准确
+*             检查到了这个问题，GCC就是NB呀（其实也有没检查出来的，以及后面误报的）。
+*             BTW:这儿为了避免告警，还有一个没有写出来的版本，就是pop_stack，反过来取参数,
+*             同时避免了++参数，来规避这个问题（欺骗编译器）。
+*             
+*             第二种，std::bind里面是展开过函数的，bind内部用了tuple，那么tuple应该可以借
+*             用。注意用tuple，我们不能用make_tuple，make_tuple也是函数同上。
+*             这儿出现了第二种解法，利用tuple的初始化，记录展开的参数数值，然后调用函数。
+*             但GCC对这个代码还是有-Wsequence-point的告警，里面上这事初始化，不应该有告警才
+*             对。
+*              
+*             第三种，std::bind展开函数的过程中，在实用tuple的过程用过index_sequence，辅助
+*             展开，这样去掉了tuple记录参数的过程。也去掉了告警。
+*             这种最大的缺点就是，需要编译器支持C++14.
+*             
 *             关于variaic参数展开：
 *             大部分variadic的函数都是通过递归展开避免这个问题，但我这儿无法递归，
 *             另外，鉴于std::bind的实现，还是可以绕开这个问题，但好像成本有点高。
@@ -604,8 +619,6 @@ int array_meta_set(lua_State *state)
 *             std::bind使用的是tuple 和 index_sequence  来解决参数存储以及顺序问题
 *             但是即使用了tuple正确得到参数，也不能使用++的函数参数，我也要用index_sequence
 *             来read_stack。
-*             另外tuple目前只能用make_tuple获取，如果C++ 17的后，应该能用初始化列表的方式
-*             直接构造tuple，
 *
 */
 template < bool last_yield,
@@ -716,31 +729,36 @@ int class_parent(lua_State *state);
 
 /*!
 * @brief      封装类的构造函数给LUA使用
-* @tparam     class_type
-* @tparam     args_type
-* @return     int
-* @param      state
+* @tparam     class_type 构造的类型
+* @tparam     args_type  构造的参数，
 */
 template<typename class_type, typename... args_type>
-int constructor(lua_State *state)
+class constructor
 {
-    //记录当前的栈的顶部，lua_newuserdata会入栈，所以不能用pop的方法
-    int para_idx = ::lua_gettop(state);
-    
-    //new 一个user data，用<T>的大小,同时，同时用placement new 的方式，
-    //（指针式lua_newuserdata分配的）完成构造函数
-    new (::lua_newuserdata(state,
-                           sizeof(val_2_udat<class_type>))) \
-    val_2_udat<class_type>(read_stack<args_type>(state,para_idx--)...);
+public:
+    static int invoke(lua_State* state)
+    {
+        const static int para_count=sizeof...(args_type);
+        return _invoke_witch_stack(state,std::make_index_sequence<para_count>());
+    }
+private:
+    template<std::size_t... I>
+    static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
+    {
+        //new 一个user data，用<T>的大小,同时，同时用placement new 的方式，
+        //（指针式lua_newuserdata分配的）完成构造函数
+        new (::lua_newuserdata(state,
+                               sizeof(val_2_udat<class_type>))) \
+            val_2_udat<class_type>(read_stack<args_type>(state,I+2)...);
 
-    
-    ::lua_pushstring(state, class_name<class_type>::name());
-    ::lua_gettable(state, LUA_GLOBALSINDEX);
+        ::lua_pushstring(state,class_name<class_type>::name());
+        ::lua_gettable(state,LUA_GLOBALSINDEX);
 
-    ::lua_setmetatable(state, -2);
+        ::lua_setmetatable(state,-2);
+        return 1;
+    }
+};
 
-    return 1;
-}
 
 //调用USER_DATA的基类的析构,由于userdata_base其实是一个LUA使用的userdata对象的基类，
 //其子类包括3种，val,ptr,ref,其中val的析构会释放对象，ptr，ref的对象什么都不会做，
@@ -812,7 +830,7 @@ private:
         //为什么是2，1被被对象指针占用了
         (obj_ptr->*fun_ptr)\
             (read_stack<typename std::decay<args_type>::type>(state,I+2)...);
-        return (last_yield)?::lua_yield(state,1):1;
+        return (last_yield)?::lua_yield(state,0):0;
     }
 };
 

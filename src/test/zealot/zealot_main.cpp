@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
                                                 LOG_HEAD_RECORD_NONE);
     ZCE_TRACE_FILELINE(RS_DEBUG);
     
-    test_lua_script1(argc,argv);
+    test_lua_script3(argc,argv);
 
     return 0;
 

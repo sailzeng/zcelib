@@ -190,7 +190,7 @@ int test_lua_script3(int, char *[])
     lua_tie.reg_class<T3A>("T3A", false);
     lua_tie.class_mem_var<T3A>("a_", &T3A::a_);
     lua_tie.class_memfunc("set_a", &T3A::set_a);
-    lua_tie.class_constructor<T3A>(tie::constructor<T3A, int> );
+    lua_tie.class_constructor<T3A>(tie::constructor<T3A,int>::invoke);
 
     T3A ta_val(100);
     T3A *ta_ptr = new T3A(200);
@@ -203,7 +203,7 @@ int test_lua_script3(int, char *[])
 
     //×¢²áT3B
     lua_tie.reg_class<T3B>("T3B",false)
-        .construct(tie::constructor<T3B,int,int,int>)
+        .construct(tie::constructor<T3B,int,int,int>::invoke)
         .inherit<T3A>()
         .mem_var("b1_",&T3B::b1_)
         .mem_var("b2_",&T3B::b2_)
@@ -227,7 +227,7 @@ int test_lua_script3(int, char *[])
 
     //×¢²áT3C
     lua_tie.reg_class<T3C>("T3C",false)
-        .construct(tie::constructor<T3C,int,std::string,double>)
+        .construct(tie::constructor<T3C,int,std::string,double>::invoke)
         .mem_var("c1_",&T3C::c1_)
         .mem_var("c2_",&T3C::c2_)
         .mem_var("c3_",&T3C::c3_)
@@ -817,14 +817,14 @@ int test_lua_script9(int, char *[])
     lua_tie.open(true, true);
     //×¢²áT9B
     lua_tie.reg_class<T9B>("T9B").
-    construct(tie::constructor<T9B>).
+    construct(tie::constructor<T9B>::invoke).
     mem_var("t9b_val_", &T9B::t9b_val_);
 
     lua_tie.reg_class<T9C_base>("T9C_base").
     mem_fun("is_base", &T9C_base::is_base);
 
     lua_tie.reg_class<T9C>("T9C").
-    construct(tie::constructor<T9C, int >).
+    construct(tie::constructor<T9C, int >::invoke).
     inherit<T9C_base>().
     mem_fun("is_t9c", &T9C::is_t9c).
     mem_fun("ret_int", &T9C::ret_int).
