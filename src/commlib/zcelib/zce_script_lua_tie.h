@@ -578,7 +578,7 @@ int array_meta_set(lua_State *state)
 }
 
 
-
+#define __TEST_VARIADIC_FUN 3
 
 //=======================================================================================================
 
@@ -767,7 +767,7 @@ int destroyer(lua_State *state);
 
 
 /*!
-* @brief      用C++11的新特效，变参实现的类函数桥接
+* @brief      用C++11 C++14的新特效，变参实现的类函数桥接
 * @tparam     last_yield 函数最后是否使用lua_yield返回
 * @tparam     class_type 类的类型
 * @tparam     ret_type   返回值的类型
@@ -1923,10 +1923,21 @@ public:
         read_only_(read_only)
     {
     }
+    Candy_Tie_Class(const Candy_Tie_Class &others):
+        lua_tie_(others.lua_tie_),
+        read_only_(others.read_only_)
+    {
+    }
+    Candy_Tie_Class(Candy_Tie_Class&& others):
+        lua_tie_(others.lua_tie_),
+        read_only_(others.read_only_)
+    {
+        others.lua_tie_=nullptr;
+    }
 
     ////在类的meta table注册构造函数
     template <typename construct_fun >
-    Candy_Tie_Class &construct(construct_fun func)
+    Candy_Tie_Class &construct(construct_fun func) 
     {
         lua_tie_->class_constructor<class_type, construct_fun >(func);
         return *this;

@@ -35,7 +35,8 @@ public:
     {
         for (size_t i = 0; i < number_prc_; ++i)
         {
-            message_queue_.enqueue((const int)i);
+            int data=static_cast<int>(i);
+            message_queue_.enqueue(data);
 
             {
                 ZCE_Lock_Guard<ZCE_Thread_Light_Mutex>  lock(io_mutex);

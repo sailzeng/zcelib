@@ -79,7 +79,7 @@ ZCE_STATUS_ITEM_WITHNAME::ZCE_STATUS_ITEM_WITHNAME(unsigned int statics_id,
 
 ZCE_STATUS_ITEM_WITHNAME::ZCE_STATUS_ITEM_WITHNAME()
 {
-    item_name_[MAX_COUNTER_NAME_LEN] = '\0';
+    item_name_[MAX_COUNTER_NAME_LEN]='\0';
 }
 
 ZCE_STATUS_ITEM_WITHNAME::~ZCE_STATUS_ITEM_WITHNAME()
@@ -562,7 +562,7 @@ void ZCE_Server_Status::copy_stat_counter()
     status_copy_mandy_->resize(num_of_counter);
     ZCE_STATUS_ITEM *stat_sandy_begin = status_stat_sandy_->begin();
     ZCE_STATUS_ITEM *stat_mandy_begin = status_copy_mandy_->begin();
-    memcpy(stat_mandy_begin, stat_sandy_begin, sizeof(ZCE_STATUS_ITEM) * num_of_counter);
+    std::copy_n(stat_sandy_begin,num_of_counter,stat_mandy_begin);
 
     //刷新备份时间
     ZCE_ASSERT(stat_file_head_ != NULL);

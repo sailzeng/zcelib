@@ -282,7 +282,8 @@ const int COROUTINE_LOOP_NUMBER = 3;
 * context pointed to by main_context1. */
 void loop(
     coroutine_t *loop_context,
-    int *i_from_iterator)
+    int *i_from_iterator,
+    void *)
 {
     int i;
 

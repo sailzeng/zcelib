@@ -135,9 +135,11 @@ void ZCE_Async_Coroutine::coroutine_do()
 }
 
 ///static 函数，用于协程运行函数，调用协程对象的运行函数
-void ZCE_Async_Coroutine::static_do(ZCE_Async_Coroutine *coroutine)
+void ZCE_Async_Coroutine::static_do(void *coroutine,
+                                    void*,
+                                    void*)
 {
-    coroutine->coroutine_do();
+    ((ZCE_Async_Coroutine*)coroutine)->coroutine_do();
 }
 
 

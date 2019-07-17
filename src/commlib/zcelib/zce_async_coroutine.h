@@ -112,7 +112,7 @@ protected:
 public:
 
     ///static 函数，用于协程运行函数，调用协程对象的运行函数
-    static void static_do(ZCE_Async_Coroutine *coroutine);
+    static void static_do(void *coroutine,void *,void *);
 
 protected:
 

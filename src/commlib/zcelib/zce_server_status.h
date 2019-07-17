@@ -75,22 +75,24 @@ struct ZCE_STATUS_ITEM_ID
 {
 public:
 
-    ///统计ID
-    uint32_t              statics_id_;
-    ///分类ID，目前好像主要是业务ID,这个是可以变化的
-    uint32_t              classify_id_;
-    ///子分类ID，这个也是可以变化的，
-    uint32_t              subclassing_id_;
-
-public:
-
     ZCE_STATUS_ITEM_ID(uint32_t statics_id,
                        uint32_t classify_id,
                        uint32_t subclassing_id);
     ZCE_STATUS_ITEM_ID();
     ~ZCE_STATUS_ITEM_ID();
 
-    bool operator == (const ZCE_STATUS_ITEM_ID &others) const;
+    bool operator == (const ZCE_STATUS_ITEM_ID& others) const;
+
+public:
+
+    ///统计ID
+    uint32_t              statics_id_=0;
+    ///分类ID，目前好像主要是业务ID,这个是可以变化的
+    uint32_t              classify_id_=0;
+    ///子分类ID，这个也是可以变化的，
+    uint32_t              subclassing_id_=0;
+
+
 };
 
 //===========================================================================================
@@ -132,10 +134,10 @@ public:
     ZCE_STATUS_ITEM_ID        item_id_;
 
     ///可以重新计数
-    ZCE_STATUS_STATICS_TYPE   statics_type_;
+    ZCE_STATUS_STATICS_TYPE   statics_type_ =STATICS_INVALID_TYPE;
 
     ///计数器
-    uint64_t                  counter_;
+    uint64_t                  counter_=0;
 };
 
 //===========================================================================================
@@ -436,7 +438,7 @@ protected:
     // 存放状态计数器的数组
     ARRYA_OF_SHM_STATUS      *status_stat_sandy_;
 
-    //状态计数器的一份拷贝，数据放在共享内存中，我们可以用考虑用mandy读取数据，所以可以讲每个
+    //状态计数器的一份拷贝(备份)，数据放在共享内存中，我们可以用考虑用mandy读取数据，所以可以讲每个
     ARRYA_OF_SHM_STATUS      *status_copy_mandy_;
 
     //记录配置的的统计数据SET，用于记录配置的统计项目，也用于防止重复插入和dump 输出时有名称信息
