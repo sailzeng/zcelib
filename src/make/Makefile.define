@@ -295,15 +295,15 @@ PARENT_PATH_BIN :=$(PATH_DEV)/bin/linux
 PATH_BIN  :=$(PARENT_PATH_BIN)/$(PLATFROM)
 
 #--------------------------------------------------------------------------------------------------------------------
-ifeq ($(compile_object),staticlib) 
+ifeq ($(COMPILE_OBJECT),staticlib) 
 OUTFILE := $(PATH_LIB)/lib$(PRGNAME).a
 endif
 
-ifeq ($(compile_object),dynamiclib) 
+ifeq ($(COMPILE_OBJECT),dynamiclib) 
 OUTFILE := $(PATH_LIB)/lib$(PRGNAME).so
 endif
 
-ifeq ($(compile_object),executeprg) 
+ifeq ($(COMPILE_OBJECT),executeprg) 
 OUTFILE := $(PATH_BIN)/$(PRGNAME)
 endif
 

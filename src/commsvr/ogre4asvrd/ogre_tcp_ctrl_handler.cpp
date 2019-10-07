@@ -759,7 +759,8 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
         //if(  Soar_MMAP_BusPipe::instance()->IsExistZergPipe(Soar_MMAP_BusPipe::ERROR_PIPE_ID) == true)
         //{
         //}
-        ZCE_LOG(RS_ERROR, " Peer handle [%u] ,send frame fail.frame len[%u] address[%s],peer status[%u]. \n",
+        ZCE_LOG(RS_ERROR, " Peer handle [%u] ,send frame fail.frame len[%u] "
+                "address[%s],peer status[%u]. \n",
                 socket_peer_.get_handle(),
                 inner_frame->ogre_frame_len_,
                 remote_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
@@ -774,8 +775,9 @@ int Ogre_TCP_Svc_Handler::process_senderror(Ogre4a_App_Frame *inner_frame)
         inner_frame->ogre_frame_option_ |= Ogre4a_App_Frame::OGREDESC_SEND_ERROR;
 
         //日志在函数中有输出,这儿略.
-        ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
-                                                           reinterpret_cast<const zce::dequechunk_node *>(inner_frame));
+        ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
+            Soar_MMAP_BusPipe::RECV_PIPE_ID,
+            reinterpret_cast<const zce::lockfree::dequechunk_node *>(inner_frame));
 
         if (ret != 0)
         {
@@ -1102,8 +1104,9 @@ void Ogre_TCP_Svc_Handler::unite_frame_sendlist()
 int Ogre_TCP_Svc_Handler::push_frame_to_recvpipe(unsigned int sz_data)
 {
 
-    int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
-                                                           reinterpret_cast<zce::dequechunk_node *>(rcv_buffer_));
+    int ret = Soar_MMAP_BusPipe::instance()->push_back_bus(
+        Soar_MMAP_BusPipe::RECV_PIPE_ID,
+        reinterpret_cast<zce::lockfree::dequechunk_node *>(rcv_buffer_));
 
     //还收到了后面一个帧的数据,
     if (rcv_buffer_->ogre_frame_len_ > sz_data + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD )

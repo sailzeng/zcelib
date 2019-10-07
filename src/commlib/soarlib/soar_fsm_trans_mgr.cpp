@@ -470,7 +470,6 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
     Zerg_App_Frame *tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
-
     inner_frame_malloc_->clone_appframe(post_frame, tmp_frame);
 
     //理论上不用等待任何时间

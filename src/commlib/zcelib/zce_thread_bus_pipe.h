@@ -48,7 +48,7 @@
 #include "zce_lock_null_lock.h"
 #include "zce_lock_thread_mutex.h"
 
-namespace zce
+namespace zce::lockfree
 {
 class dequechunk_node;
 class shm_dequechunk;
@@ -83,7 +83,7 @@ protected:
     size_t                     size_room_[THR_NUM_OF_PIPE];
 
     //N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    zce::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
+    zce::lockfree::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
 
     //锁
     ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
@@ -125,8 +125,8 @@ public:
         size_pipe_[THR_RECV_PIPE_ID] = size_recv_pipe;
         size_pipe_[THR_SEND_PIPE_ID] = size_send_pipe;
 
-        size_room_[THR_RECV_PIPE_ID] = zce::shm_dequechunk::getallocsize(size_pipe_[THR_RECV_PIPE_ID]);
-        size_room_[THR_SEND_PIPE_ID] = zce::shm_dequechunk::getallocsize(size_pipe_[THR_SEND_PIPE_ID]);
+        size_room_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::getallocsize(size_pipe_[THR_RECV_PIPE_ID]);
+        size_room_[THR_SEND_PIPE_ID] = zce::lockfree::shm_dequechunk::getallocsize(size_pipe_[THR_SEND_PIPE_ID]);
 
         //
         const size_t FIXED_INTERVALS = 16;
@@ -135,12 +135,12 @@ public:
         pipe_buffer_ = new char [sz_malloc ];
 
         //初始化内存
-        bus_pipe_[THR_RECV_PIPE_ID] = zce::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
+        bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
                                                                       max_frame_len,
                                                                       pipe_buffer_,
                                                                       false);
 
-        bus_pipe_[THR_SEND_PIPE_ID] = zce::shm_dequechunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
+        bus_pipe_[THR_SEND_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
                                                                       max_frame_len,
                                                                       pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
                                                                       false);
@@ -166,14 +166,14 @@ public:
     //注意
 
     //从RECV管道读取数据，
-    inline bool pop_front_recvpipe(zce::dequechunk_node *&node)
+    inline bool pop_front_recvpipe(zce::lockfree::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
     }
 
     //向RECV管道写入数据
-    inline bool push_back_recvpipe(const zce::dequechunk_node *node)
+    inline bool push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->push_end(node);
@@ -181,14 +181,14 @@ public:
 
 
     //从SEND管道读取数据，
-    inline bool pop_front_sendpipe(zce::dequechunk_node *&node)
+    inline bool pop_front_sendpipe(zce::lockfree::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
     }
 
     //向SEND管道写入数据
-    inline bool push_back_sendpipe(const zce::dequechunk_node *node)
+    inline bool push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->push_end(node);

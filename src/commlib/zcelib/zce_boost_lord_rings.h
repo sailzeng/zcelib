@@ -1,5 +1,5 @@
 /*!
-* @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
+* @copyright  2004-2019  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_boost_lord_rings.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version

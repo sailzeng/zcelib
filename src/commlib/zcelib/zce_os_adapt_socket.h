@@ -51,7 +51,7 @@ int socket_init(int version_high = 2,
 * @brief      程序退出，DLL鞋砸时，关闭SOCKET（WinSock）的使用，Finalize WinSock after last use (e.g., when a DLL is unloaded).
 * @return     int 0成功，-1失败
 */
-int socket_fini(void);
+int socket_finish(void);
 
 /*!
 * @brief      创建一个SOCKET对象

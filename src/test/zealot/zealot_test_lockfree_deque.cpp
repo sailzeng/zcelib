@@ -33,7 +33,7 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     test_abc.data[250] = 'A';
     test_abc.data[251] = 0;
 
-    zce::dequechunk_node *pnode = reinterpret_cast<zce::dequechunk_node *>(&test_abc);
+    zce::dequechunk_node *pnode = reinterpret_cast<zce::lockfree::dequechunk_node *>(&test_abc);
     pmmap->push_end(pnode);
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pmmap->push_end(pnode);
@@ -42,7 +42,7 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
 
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
 
-    zce::dequechunk_node *pnode1 = NULL;
+    zce::lockfree::dequechunk_node *pnode1 = NULL;
     pmmap->pop_front(pnode1);
     std::cout << "pnode1 sz:" << (int)pnode1->size_of_node_ << std::endl;
     std::cout << "pnode1 data:" << pnode1->chunk_data_ << std::endl;
@@ -61,7 +61,7 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     test_def.data[2] = 'B';
     test_def.data[3] = 0;
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
-    pnode = reinterpret_cast<zce::dequechunk_node *>(&test_def);
+    pnode = reinterpret_cast<zce::lockfree::dequechunk_node *>(&test_def);
     pmmap->push_end(pnode);
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pmmap->push_end(pnode);

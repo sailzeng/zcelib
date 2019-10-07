@@ -147,9 +147,9 @@ public:
     //Clone一个APP FRAME
     Zerg_App_Frame *clone() const;
     //
-    void clone(Zerg_App_Frame *clone_frame) const;
+    void clone(Zerg_App_Frame * dst_frame) const;
     //
-    void clone_head(Zerg_App_Frame *clone_frame) const;
+    void clone_head(Zerg_App_Frame * dst_frame) const;
 
     //Dump头部和DATA区的数据
     void dump_appframe_info(std::ostringstream &strstream) const;

@@ -1,20 +1,3 @@
-/************************************************************************************************************
-Copyright           : 2004-2011  Fullsail Technology (Shenzhen) Company Limited.
-FileName            : zce_lock_thread_mutex.cpp
-Author              : Sailzeng ZENGXING
-Version             :
-Date Of Creation    : 2011年9月13日
-Description         : 线程的互斥量，有轻量的锁，递归锁，非递归锁，读写锁
-
-Others              :
-Function List       :
-    1.  ......
-Modification History:
-    1.Date  :
-      Author  :
-      Modification  :
-************************************************************************************************************/
-
 #include "zce_predefine.h"
 #include "zce_os_adapt_spin.h"
 #include "zce_os_adapt_time.h"

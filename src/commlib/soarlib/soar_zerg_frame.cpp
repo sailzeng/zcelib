@@ -2,6 +2,12 @@
 #include "soar_error_code.h"
 #include "soar_zerg_frame.h"
 
+
+#if defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wclass-memaccess"
+#endif
+
 Zerg_App_Frame::Zerg_App_Frame() :
     frame_length_(CMD_INVALID_CMD),
     frame_option_(DESC_V1_VERSION),
@@ -271,9 +277,9 @@ void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
 
 
 //CloneÒ»¸öAPP FRAME
-void Zerg_App_Frame::clone(Zerg_App_Frame *clone_frame) const
+void Zerg_App_Frame::clone(Zerg_App_Frame *dst_frame) const
 {
-    memcpy(clone_frame, this, frame_length_);
+    memcpy(dst_frame, this, frame_length_);
     return ;
 }
 
@@ -339,4 +345,9 @@ int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
     return 0;
 }
 
+#endif
+
+
+#if defined (ZCE_OS_LINUX)
+#pragma GCC diagnostic pop
 #endif

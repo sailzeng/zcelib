@@ -8,7 +8,7 @@
 *
 *
 * @details    本来在里面放了一把锁，但是考虑既然是实现一个LOCKFREE的队列，锁就显得多余了。放弃了。
-*
+*             2019了。应该用atomic改写一下。
 *
 *
 * @note
@@ -18,14 +18,18 @@
 
 
 
-#ifndef ZCE_LIB_SHM_LOCKFREE_DEQUE_H_
-#define ZCE_LIB_SHM_LOCKFREE_DEQUE_H_
+#ifndef ZCE_LIB_LOCKFREE_DEQUE_H_
+#define ZCE_LIB_LOCKFREE_DEQUE_H_
 
 #include "zce_shm_predefine.h"
 
 
 namespace zce
 {
+
+namespace lockfree
+{
+
 
 /*!
 @brief      可以放如deque的node结构，变长，前面4个字节表示长度，
@@ -49,8 +53,6 @@ public:
     //养成好习惯,写new,就写delete.
     //void operator delete(void *ptrframe, size_t);
     void operator delete (void *ptrframe);
-
-
 
 public:
     ///
@@ -328,7 +330,9 @@ inline size_t shm_dequechunk::get_front_len()
 
 };
 
-#endif //ZCE_LIB_SHM_LOCKFREE_DEQUE_H_
+};
+
+#endif //ZCE_LIB_LOCKFREE_DEQUE_H_
 
 
 

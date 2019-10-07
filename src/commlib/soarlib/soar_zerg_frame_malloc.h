@@ -268,12 +268,13 @@ Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
 template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model_freame, Zerg_App_Frame *&cloned_frame)
+void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model_freame,
+                                                     Zerg_App_Frame *&cloned_frame)
 {
     //
     size_t frame_len = model_freame->frame_length_;
     cloned_frame = alloc_appframe(frame_len);
-    memcpy(cloned_frame, model_freame, frame_len);
+    model_freame->clone(cloned_frame);
 }
 
 

@@ -204,6 +204,7 @@
     <ClInclude Include="zce_event_proactor.h" />
     <ClInclude Include="zce_event_reactor_wfmo.h" />
     <ClInclude Include="zce_lockfree_kfifo.h" />
+    <ClInclude Include="zce_lockfree_ring.h" />
     <ClInclude Include="zce_os_adapt_backtrace.h" />
     <ClInclude Include="zce_readfile_cvs.h" />
     <ClInclude Include="zce_boost_any.h" />
@@ -333,6 +334,7 @@
     <ClCompile Include="zce_event_proactor.cpp" />
     <ClCompile Include="zce_event_reactor_wfmo.cpp" />
     <ClCompile Include="zce_lockfree_kfifo.cpp" />
+    <ClInclude Include="zce_lockfree_stack.h" />
     <ClCompile Include="zce_os_adapt_backtrace.cpp" />
     <ClCompile Include="zce_readfile_cvs.cpp" />
     <ClCompile Include="zce_boost_random.cpp" />

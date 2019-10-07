@@ -100,21 +100,21 @@ ifneq ($(DEPENDS_DIR), )
 endif
 
 
-#如果你要编译LIB(.a)静态库，请在你的makefile定义 compile_object= staticlib
-#如果你要编译DLL(.so)动态库，请在你的makefile定义 compile_object= dynamiclib
-#如果你要编译EXECUTE文件，请在你的makefile定义 compile_object= executeprg
+#如果你要编译LIB(.a)静态库，请在你的makefile定义 COMPILE_OBJECT= staticlib
+#如果你要编译DLL(.so)动态库，请在你的makefile定义 COMPILE_OBJECT= dynamiclib
+#如果你要编译EXECUTE文件，请在你的makefile定义 COMPILE_OBJECT= executeprg
 
 #如果有 DEPENDS_DIR 的目录需要编译，会先去编译这写目录下的东东，这个是airfu 大大帮忙想的方法，
 $(OUTFILE): $(DEPENDS_LIB) $(O_FILE)
-ifeq ($(compile_object),staticlib) 
+ifeq ($(COMPILE_OBJECT),staticlib) 
 	@echo $OUTFILE
 	$(AR) $(ARFLAGS) $(OUTFILE) $(O_FILE)
 endif
-ifeq ($(compile_object),dynamiclib) 
+ifeq ($(COMPILE_OBJECT),dynamiclib) 
 	@echo $OUTFILE
 	$(SOLINK.cc) -o$(OUTFILE) $(O_FILE) $(LIBARYS)
 endif
-ifeq ($(compile_object),executeprg) 
+ifeq ($(COMPILE_OBJECT),executeprg) 
 	@echo $OUTFILE
 	$(LINK.cc) -o$(OUTFILE) $(O_FILE)  $(LIBARYS)  
 endif

@@ -13,11 +13,11 @@
 PRGNAME = zergsvrd
 
 #如果你要编译静态库 staticlib
-#compile_object = staticlib
+#COMPILE_OBJECT = staticlib
 #如果你要编译动态库
-#compile_object = dynamiclib
+#COMPILE_OBJECT = dynamiclib
 #如果你要编译可执行性程序
-compile_object = executeprg
+COMPILE_OBJECT = executeprg
 
 #如果你使用预定头文件,请定义PREH_FILE,比如下面这样
 #对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.

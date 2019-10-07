@@ -101,7 +101,7 @@ int ZCE_Bus_MMAPPipe::initialize(const char *bus_mmap_name,
 
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        size_t sz_room = zce::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = zce::lockfree::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
         bus_head_.size_of_room_[i] = sz_room;
         sz_malloc += sz_room;
     }
@@ -234,7 +234,7 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
         char *pt_pipe = static_cast<char *>( mmap_file_.addr() ) + file_offset ;
 
         //³õÊ¼»¯ÄÚ´æ
-        bus_pipe_pointer_[i] = zce::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
+        bus_pipe_pointer_[i] = zce::lockfree::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
                                                                max_frame_len,
                                                                pt_pipe,
                                                                if_restore
@@ -252,7 +252,7 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
 
         ZCE_ASSERT( bus_pipe_pointer_[i] != NULL );
 
-        size_t sz_room = zce::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        size_t sz_room = zce::lockfree::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
         file_offset += sz_room;
     }
 

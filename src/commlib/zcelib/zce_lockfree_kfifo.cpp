@@ -6,7 +6,7 @@
 #include "zce_lockfree_kfifo.h"
 
 
-namespace zce
+namespace zce::lockfree
 {
 
 /*********************************************************************************
@@ -242,7 +242,6 @@ bool shm_dequechunk::pop_front_new(dequechunk_node *&new_node)
 
     //这样写会有一些重复调用，但是我觉得这个地方性能不会是问题。
     return pop_front(new_node);
-
 }
 
 
@@ -415,6 +414,6 @@ bool shm_dequechunk::full()
 
 
 
-}; //namespace zce
+}; 
 
 

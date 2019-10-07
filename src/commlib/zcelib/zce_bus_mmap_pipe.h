@@ -6,7 +6,7 @@
 
 #include "zce_boost_non_copyable.h"
 
-namespace zce
+namespace zce::lockfree
 {
 class dequechunk_node;
 class shm_dequechunk;
@@ -56,7 +56,7 @@ public:
     const char *mmap_file_name();
 
     //向管道写入帧
-    inline int push_back_bus(size_t pipe_id, const zce::dequechunk_node *node);
+    inline int push_back_bus(size_t pipe_id, const zce::lockfree::dequechunk_node *node);
 
     /*!
     * @brief      从管道POP读取帧，(就是拷贝后删除)
@@ -65,7 +65,7 @@ public:
     * @param      node     准备复制node指针，指针的空间请分配好
     * @note
     */
-    inline int pop_front_bus(size_t pipe_id, zce::dequechunk_node *node);
+    inline int pop_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *node);
 
     /*!
     * @brief      从管道拷贝复制一个帧出来
@@ -74,7 +74,7 @@ public:
     * @param      node
     * @note
     */
-    inline int read_front_bus(size_t pipe_id, zce::dequechunk_node *&node);
+    inline int read_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *&node);
     //抛弃一个帧
     inline int pop_front_bus(size_t pipe_id);
     //取管道头的帧长
@@ -134,7 +134,7 @@ protected:
     ZCE_BUS_PIPE_HEAD          bus_head_;
 
     ///N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    zce::shm_dequechunk  *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
+    zce::lockfree::shm_dequechunk  *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
 
     ///MMAP内存文件，
     ZCE_ShareMem_Mmap         mmap_file_;
@@ -173,7 +173,7 @@ inline void ZCE_Bus_MMAPPipe::get_bus_freesize(size_t pipe_id, size_t &pipe_size
 
 
 //向管道写入帧
-inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const zce::dequechunk_node *node)
+inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const zce::lockfree::dequechunk_node *node)
 {
 
     //取出一个帧
@@ -209,7 +209,7 @@ inline int ZCE_Bus_MMAPPipe::get_front_nodesize(size_t pipe_id, size_t &note_siz
 
 
 //从管道弹出POP帧,
-inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id, zce::dequechunk_node *node)
+inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *node)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())
     {
@@ -223,7 +223,7 @@ inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id, zce::dequechunk_node 
 }
 
 //从管道拷贝复制一个帧出来
-inline int ZCE_Bus_MMAPPipe::read_front_bus(size_t pipe_id, zce::dequechunk_node *&node)
+inline int ZCE_Bus_MMAPPipe::read_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *&node)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())
     {

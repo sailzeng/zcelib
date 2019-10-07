@@ -75,7 +75,7 @@ int zce::socket_init(int version_high, int version_low)
 #endif
 }
 
-int zce::socket_fini(void)
+int zce::socket_finish(void)
 {
 #if defined (ZCE_OS_WINDOWS)
 
