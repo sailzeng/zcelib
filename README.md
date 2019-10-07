@@ -48,7 +48,7 @@ ZCELIB是一个网络开放的基本类库，可以跨平台在Windows,Linux下�
 - **iNotify**   iNotify 机制是对于目录，文件发生变化是产生的事件进行回调处理（比如日志发生了改变）。对这个反应器进行了简单封装，目前甚至可以在Windows和Linux两个平台下使用，（当然底层反应器不一样，没辙）。
 
 
-- MMAP  操作库,包括一些类似STL的模版。
+- MMAP  操作库,包括一些类似STL的模版。这部分算是当年的得意之作。主要用于在共享内存里面使用STL的语义东西。主要yuan'y
 
 - SERVERKIT  服务器的工具类，目前提供了一个使用MMAP的状态统计类。
 
@@ -81,13 +81,18 @@ Linux下的编译先要定义环境变量。
 其他ZCELiB的代码都提供Makefile，可以直接在各个目录下编译。工程的src目录下也提供Make所有代码的Makefile。可以直接使用。
 
 一般的编译方法就是，其中make mkdir是用于建立相应的目录。
-​    make mkdir
-​    make 
 
-如果需要debug（DEBUG=1）版本和realse（NDEBUG=1）版本。
+```shell
+make mkdir
+make 
+```
 
-    make debug=1 
-    make realse=1
+如果需要debug（DEBUG=1）版本和realse（NDEBUG=1）版本。可以用下面的命令。
+
+```shell
+make debug=1 
+make realse=1
+```
 关于Linux 下Makefile的说明，请参考**Linux下的Makefile编译** 
 
 ### Windows下的编译
@@ -180,10 +185,90 @@ Linux下，Protobuf也有相应的AutoMakefile，编译会产生动态库和静�
 Linux下提供了Lualib相应的Makefile，Linux下，我们只使用相应的静态库。
 Lua的编译有时候需要几个库，readline 和ncurses，可能要提前安装。
 
-    sudo apt-get install libreadline-gplv2-dev
-    sudo apt-get install libncurses5-dev
+```shell
+sudo apt-get install libreadline-gplv2-dev
+sudo apt-get install libncurses5-dev
+```
 
 ## Linux下的Makefile编译
+
+先举一个我们代码里面的Makefile的例子，如下，使用GNU Make编译，虽然他看上去一点都不像Makefile。
+
+```
+#Richard Stallman说：软件就像性，免费的比较好.
+#SAILLIB_ROOT必现提前定义，
+#所有的工程下面的代码，可以使用相同的编译选项和方法，
+#所有的预定义，编译方法，编译参数在src/make/makefile.define 
+# src/make/makefile.linux src/make/makefile.rule 3个文件中都已经进行了
+#预定义，你可以直接使用。
+#如果你没有特殊需求，你就只用打开关闭下面定义就可以了。
+
+#你要定义输出文件,和PRGNAME的名称这两个变量
+#PRGNAME表示你的程序名称，一般就是你的目录名称，当然希望目录名称不要重复，
+#OUTFILE,最总输出的文件名称，为啥要定义这个呢，最后删除的时候可以统一
+PRGNAME = zergsvrd
+
+#如果你要编译静态库 staticlib
+#COMPILE_OBJECT = staticlib
+#如果你要编译动态库
+#COMPILE_OBJECT = dynamiclib
+#如果你要编译可执行性程序
+COMPILE_OBJECT = executeprg
+
+#如果你使用预定头文件,请定义PREH_FILE,比如下面这样
+#对应生成的GCH文件还只能放在当前目录下比较简单，放入其他目录很难保证其正常运行，打包源文件的脚本必须删除gch文件.
+#如果你不适用预定头文件，可以屏蔽下面这个定义
+PCH_FILE = zerg_predefine.h
+
+
+#DEPLIB_DIR,标识编译当前的前提（依赖）目标目录  标识依赖目标的编译的库（目录）是什么，可以是多个
+#如果依赖多个目录，请按照依赖的顺序填写，用空格隔开，
+DEPENDS_DIR := $(ZCELIB_ROOT)/src/commlib/zcelib  $(ZCELIB_ROOT)/src/commlib/soarlib 
+
+DEPENDS_LIB := $(ZCELIB_ROOT)/lib/libzcelib.a  $(ZCELIB_ROOT)/lib/libsoarlib.a
+
+#这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
+include $(ZCELIB_ROOT)/src/make/Makefile.define
+
+#如果你想改变Mafile的规则，请在这个地方加入你自己的定义.
+
+#这个定义其他所有的规则,还是你自己看吧
+include $(ZCELIB_ROOT)/src/make/Makefile.rule
+```
+
+另外里面的注释应该比较清晰，请先阅读，里面其实东西不多。
+
+PRGNAME 标识程序的名称。
+
+COMPILE_OBJECT编译的对象是什么，有3个选择，staticlib静态库，dynamiclib动态库，executeprg为可执行程序。
+
+PCH_FILE 为预定义头文件，为了加快编译的的东东，没有就注释掉。
+
+DEPENDS_DIR，外部依赖的库文件目录，编译时，会扫描这些目录，重新进行makefile操作。 DEPENDS_DIR,标识编译当前的前提（依赖）目标目录 ，标识依赖目标的编译的库（目录）是什么，可以是多个，如果依赖多个目录，请按照依赖的顺序填写，用空格隔开。
+
+DEPENDS_LIB，外部依赖的文件。如果有更新，会重新编译文件。
+
+上面这个例子中，这样会编译一个名字为zergsvrd的可执行程序。他的预编译头文件是zerg\_predefine.h。他会使用目录下的所有的CPP文件生成这个文件。他的外部依赖的目录和库文件也在DEPENDS\_DIR，DEPENDS\_LIB下有定义。当这些目录更新的时候，zergsvrd也会重新编译。
+
+其他相应的规则，写在两个文件里面。
+
+$(ZCELIB_ROOT)/src/make/Makefile.define   这个里面定义所有的变量和定义，以及包含了平台性相关定义,你自己看吧
+
+$(ZCELIB_ROOT)/src/make/Makefile.rule，这个定义其他所有的规则,还是你自己看吧，如果你想改变Mafile的规则，请在这个定义前面加入。你自己的定义.
+
+
+
+编译从此变得快捷，安全，爽！
+
+## Makefile头文件
+
+对的，ZCELIB的Makefile爽歪歪所依靠的都是，这个目录下的， 3个Makefile的头文件。这个3个文件内部都有非常非常详细的注释，我不再这儿费太多的口舌了。
+
+- Makefile.define 定义ZCELIB 内部的各种变量，工程目录,需要链接的各种外部库，内部库等。头文件目录，包括外部和COMMLIB的各种目录。如果你有特殊的Make需求，可以修改这个文件。
+- Makefile.linux 定义Linux环境下的各种环境变量，编译选项，很多选项在这个地方都有定义，比如你想编译debug版本，就make debug=1就可以了。
+- Makefile.rule 所有编译规则的核心定义，非常重要的一个地方。包括内部的预编译头文件，SO，STATIC Library，EXE，的编译规则，内部依赖关系的.d文件的实用，甚至包括外部依赖关系的处理。都在这儿了。
+
+目前我仍然没有使用CMake，大约是我曾经为如何写好Makefile作出过巨大努力。不愿意
 
 ## Visual Studio 工程说明
 
