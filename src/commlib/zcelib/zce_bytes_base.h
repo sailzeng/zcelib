@@ -49,12 +49,106 @@
 //以下参考之 德问
 //前者告诉编译器结构体或类内部的成员变量相对于第一个变量的地址的偏移量的对齐方式，
 //缺省情况下，编译器按照自然边界对齐，当变量所需的自然对齐边界比n大 时，按照n对齐，
-//否则按照自然边界对齐；后者告诉编译器一个结构体或者类或者联合或者一个类型的变量
+//否则按照自然边界对齐；
+//后者告诉编译器一个结构体或者类或者联合或者一个类型的变量
 //(对象)分配地址空间时的地址对齐方式。也就是所，如果将__attribute__((aligned(m)))
 //作用于一个类型，那么该类型的变量在分配地址空间时，其存放的地址一定按照m字节对齐
 //(m必 须是2的幂次方)。并且其占用的空间，即大小,也是m的整数倍，以保证在申请连续存储空间的时候，
 //每一个元素的地址也是按照m字节对齐。 __attribute__((aligned(m)))也可以作用于一个单独的变量。
 //由上可以看出__attribute__((aligned(m)))的功能更全。
+
+
+
+
+
+///在GCC 4.8的处理中，写
+//unsigned int a = *(unsigned int *)(char_ptr);
+//会出现告警 dereferencing type-punned pointer will break strict-aliasing。
+//而且使用 ZBYTE_TO_UINT32 也无法绕开，请参考ZRD_U32_FROM_BYTES解决类似问题。
+//GCC 对于对其采取了默认认为不是对齐的方式编译，所以写
+//unsigned int a = *(unsigned int *)(char_ptr);
+//还有告警错误，方法是采用下面的宏规避，
+//或者使用参数 -fstrict-aliasing 和 -Wstrict-aliasing 可以消除掉这个warning。
+
+union ZU16_UNION
+{
+    char char_data_[2];
+    uint16_t value_;
+};
+union ZU32_UNION
+{
+    char char_data_[4];
+    uint32_t value_;
+};
+union ZU64_UNION
+{
+    char char_data_[8];
+    uint64_t value_;
+};
+union ZFLOAT_UNION
+{
+    char char_data_[4];
+    float value_;
+};
+union ZDOUBLE_UNION
+{
+    char char_data_[8];
+    double value_;
+};
+
+#define ZBYTE_TO_UINT16(rd_data,bytes_ptr) \
+    {\
+        ZU16_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        rd_data = __tmp_var_.value_; \
+    }
+#define ZBYTE_TO_UINT32(rd_data,bytes_ptr) \
+    {\
+        ZU32_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        rd_data = __tmp_var_.value_; \
+    }
+#define ZBYTE_TO_UINT64(rd_data,bytes_ptr) \
+    {\
+        ZU64_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        __tmp_var_.char_data_[4] = bytes_ptr[4];\
+        __tmp_var_.char_data_[5] = bytes_ptr[5];\
+        __tmp_var_.char_data_[6] = bytes_ptr[6];\
+        __tmp_var_.char_data_[7] = bytes_ptr[7];\
+        rd_data = __tmp_var_.value_; \
+    }
+#define ZBYTE_TO_FLOAT(rd_data,bytes_ptr)  \
+    {\
+        ZFLOAT_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        rd_data = __tmp_var_.value_; \
+    }
+#define ZBYTE_TO_DOUBLE(rd_data,bytes_ptr)  \
+    {\
+        ZDOUBLE_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        __tmp_var_.char_data_[4] = bytes_ptr[4];\
+        __tmp_var_.char_data_[5] = bytes_ptr[5];\
+        __tmp_var_.char_data_[6] = bytes_ptr[6];\
+        __tmp_var_.char_data_[7] = bytes_ptr[7];\
+        rd_data = __tmp_var_.value_; \
+    }
+
+/*
 
 #if defined ZCE_OS_WINDOWS
 
@@ -107,18 +201,13 @@ struct ZDOUBLE_STRUCT
 } __attribute__((packed));
 #endif
 
-
-
-///在GCC 4.8的处理中，写
-//unsigned int a = *(unsigned int *)(char_ptr);
-//会出现告警 dereferencing type-punned pointer will break strict-aliasing。
-//而且使用 ZBYTE_TO_UINT32 也无法绕开，请参考ZRD_U32_FROM_BYTES解决类似问题。
-
 ///从一个(char *)指针内读取(也可以用于写入)一个uint16_t,or uint32_t or uint64_t
-
 # define ZBYTE_TO_UINT16(ptr)  ((ZU16_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_UINT32(ptr)  ((ZU32_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_UINT64(ptr)  ((ZU64_STRUCT *)(ptr))->value_
+//FLOAT 和 DOUBLE的处理
+# define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
+# define ZBYTE_TO_DOUBLE(ptr)  ((ZDOUBLE_STRUCT *)(ptr))->value_
 
 ///从一个(char *)指针内读取uint16_t,or uint32_t or uint64_t 的数组内的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
 # define ZINDEX_TO_UINT16(ptr,ary_index)  (((ZU16_STRUCT *)(ptr))+(ary_index))->value_
@@ -130,30 +219,19 @@ struct ZDOUBLE_STRUCT
 # define ZUINT32_TO_BYTE(ptr,wr_data)  ((ZU32_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZUINT64_TO_BYTE(ptr,wr_data)  ((ZU64_STRUCT *)(ptr))->value_ = (wr_data)
 
-//向一个(char *)指针内写入一个uint16_t,or uint32_t or uint64_t的数组内部的ary_index单元，注意数组下标是值对于整形的下标，(而不是ptr的下标)
-# define ZUINT16_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU16_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
-# define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU32_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
-# define ZUINT64_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU64_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
-
-
-//FLOAT 和 DOUBLE的处理
-# define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
-# define ZBYTE_TO_DOUBLE(ptr)  ((ZDOUBLE_STRUCT *)(ptr))->value_
 
 # define ZFLOAT_TO_BYTE(ptr,wr_data)  ((ZFLOAT_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZDOUBLE_TO_BYTE(ptr,wr_data)  ((ZDOUBLE_STRUCT *)(ptr))->value_ = (wr_data)
-
-# define ZFLOAT_TO_INDEX(ptr,ary_index,wr_data)  (((((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
-# define ZDOUBLE_TO_INDEX(ptr,ary_index,wr_data)  (((((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
-
-# define ZINDEX_TO_FLOAT(ptr,ary_index)  (((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_
-# define ZINDEX_TO_DOUBLE(ptr,ary_index)  (((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_
 
 //上面的代码从功能上等同下面的代码。但是这些写会导致BUS ERROR问题。
 //# define ZBYTE_TO_UINT32(ptr)  (*(uint32_t *)(ptr))
 //# define ZINDEX_TO_UINT32(ptr,ary_index)  (*(((uint32_t *)(ptr))+(ary_index)))
 //# define ZUINT32_TO_BYTE(ptr,wr_data)  ((*(uint32_t *)(ptr)) = (wr_data))
 //# define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  ((*(((uint32_t *)(ptr))+(ary_index))) = (wr_data))
+
+
+*/
+
 
 //考虑字节序的读取短整型，整形，64位长整形的方式
 //不好意思，年纪大了，记忆力真的有点成问题了，有几次写这段东东就是想不明白加密，MD5等代码中为啥要考
@@ -294,97 +372,4 @@ struct ZDOUBLE_STRUCT
 #endif
 
 
-
-//GCC 对于对其采取了默认认为不是对齐的方式编译，所以写
-//unsigned int a = *(unsigned int *)(char_ptr);
-//还有告警错误，方法是采用下面的宏规避，
-//或者使用参数 -fstrict-aliasing 和 -Wstrict-aliasing 可以消除掉这个warning。
-
-union ZU16_UNION
-{
-    char char_data_[2];
-    uint16_t value_;
-};
-union ZU32_UNION
-{
-    char char_data_[4];
-    uint32_t value_;
-};
-union ZU64_UNION
-{
-    char char_data_[8];
-    uint64_t value_;
-};
-union ZFLOAT_UNION
-{
-    char char_data_[4];
-    float value_;
-};
-union ZDOUBLE_UNION
-{
-    char char_data_[8];
-    double value_;
-};
-
-
-# define ZRD_U16_FROM_BYTES(rd_data,bytes_ptr)  \
-    {\
-        ZU16_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        rd_data = __tmp_var_.value_; \
-    }
-
-# define ZRD_U32_FROM_BYTES(rd_data,bytes_ptr)  \
-    {\
-        ZU32_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        rd_data = __tmp_var_.value_; \
-    }
-
-
-# define ZRD_U64_FROM_BYTES(rd_data,bytes_ptr)  \
-    {\
-        ZU64_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        __tmp_var_.char_data_[4] = bytes_ptr[4];\
-        __tmp_var_.char_data_[5] = bytes_ptr[5];\
-        __tmp_var_.char_data_[6] = bytes_ptr[6];\
-        __tmp_var_.char_data_[7] = bytes_ptr[7];\
-        rd_data = __tmp_var_.value_; \
-    }
-
-# define ZRD_FLOAT_FROM_BYTES(rd_data,bytes_ptr)  \
-    {\
-        ZFLOAT_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        rd_data = __tmp_var_.value_; \
-    }
-
-
-# define ZRD_DOUBLE_FROM_BYTES(rd_data,bytes_ptr)  \
-    {\
-        ZDOUBLE_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        __tmp_var_.char_data_[4] = bytes_ptr[4];\
-        __tmp_var_.char_data_[5] = bytes_ptr[5];\
-        __tmp_var_.char_data_[6] = bytes_ptr[6];\
-        __tmp_var_.char_data_[7] = bytes_ptr[7];\
-        rd_data = __tmp_var_.value_; \
-    }
-
-
 #endif
-
