@@ -193,6 +193,10 @@ void test_findwith_container(size_t container_len)
 
     std::cout << "test vector gettimeofday :" << test_timer.elapsed_usec() << " " << std::endl;
 
+#ifdef ZCE_OS_WINDOWS
+#pragma warning ( push )
+#pragma warning ( disable : 4834)
+#endif
     test_timer.restart();
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
@@ -220,6 +224,9 @@ void test_findwith_container(size_t container_len)
 
 }
 
+#ifdef ZCE_OS_WINDOWS
+#pragma warning ( pop )
+#endif
 
 
 //

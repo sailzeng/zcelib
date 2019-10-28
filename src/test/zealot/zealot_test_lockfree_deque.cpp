@@ -7,7 +7,7 @@
 int test_dequechunk(int /*argc*/, char * /*argv*/ [])
 {
     size_t dequesize = 1026;
-    size_t szalloc = zce::shm_dequechunk::getallocsize(dequesize);
+    size_t szalloc = zce::lockfree::shm_dequechunk::getallocsize(dequesize);
     std::cout << "need mem: " << (int)szalloc << std::endl;
 
 
@@ -15,7 +15,8 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     char *tmproom = new char [szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::shm_dequechunk *pmmap =  zce::shm_dequechunk::initialize(dequesize, 2048, tmproom, false);
+    zce::lockfree::shm_dequechunk *pmmap = 
+        zce::lockfree::shm_dequechunk::initialize(dequesize, 2048, tmproom, false);
 
     if (pmmap->empty())
     {
@@ -33,7 +34,7 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     test_abc.data[250] = 'A';
     test_abc.data[251] = 0;
 
-    zce::dequechunk_node *pnode = reinterpret_cast<zce::lockfree::dequechunk_node *>(&test_abc);
+    zce::lockfree::dequechunk_node *pnode = reinterpret_cast<zce::lockfree::dequechunk_node *>(&test_abc);
     pmmap->push_end(pnode);
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     pmmap->push_end(pnode);
@@ -74,11 +75,11 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     pmmap->pop_front(pnode1);
     delete pnode1;
     //
-    pnode1 = new (1024)zce::dequechunk_node;
+    pnode1 = new (1024)zce::lockfree::dequechunk_node;
     pmmap->pop_front(pnode1);
     delete pnode1;
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
-    pnode1 = new (1024)zce::dequechunk_node;
+    pnode1 = new (1024)zce::lockfree::dequechunk_node;
     pmmap->pop_front(pnode1);
     delete pnode1;
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;

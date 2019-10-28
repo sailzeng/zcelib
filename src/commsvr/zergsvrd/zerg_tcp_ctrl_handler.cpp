@@ -1019,7 +1019,7 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
     if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= sizeof(unsigned int))
     {
         //如果有4个字节,检查帧的长度
-        ZRD_U32_FROM_BYTES(whole_frame_len, (rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_));
+        ZRD_U32_FROM_BYTES((rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_),whole_frame_len);
         whole_frame_len = ntohl(whole_frame_len);
 
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
