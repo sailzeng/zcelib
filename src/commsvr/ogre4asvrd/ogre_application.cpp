@@ -28,7 +28,7 @@ int Ogre_Service_App::app_start(int argc, const char *argv[])
     int ret = 0;
     ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
     //
-    ret = Soar_Svrd_Appliction::app_start(argc, argv);
+    ret = Soar_Svrd_Application::app_start(argc, argv);
 
     if (ret != 0)
     {
@@ -73,7 +73,7 @@ int Ogre_Service_App::app_exit()
     Ogre_Buffer_Storage::instance()->uninit_buffer_list();
 
     //基类的退出
-    Soar_Svrd_Appliction::app_exit();
+    Soar_Svrd_Application::app_exit();
 
     //
     ZCE_LOG(RS_INFO, "%s Succ.Have Fun.!!!\n", __ZCE_FUNC__);

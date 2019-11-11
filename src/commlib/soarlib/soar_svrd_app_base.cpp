@@ -25,9 +25,9 @@
 #include "soar_stat_monitor.h"
 
 
-Soar_Svrd_Appliction *Soar_Svrd_Appliction::instance_ = NULL;
+Soar_Svrd_Application *Soar_Svrd_Application::instance_ = NULL;
 
-Soar_Svrd_Appliction::Soar_Svrd_Appliction() :
+Soar_Svrd_Application::Soar_Svrd_Application() :
     business_id_(INVALID_BUSINESS_ID),
     self_svc_id_(),
     run_as_win_serivces_(false),
@@ -40,7 +40,7 @@ Soar_Svrd_Appliction::Soar_Svrd_Appliction() :
     app_author_ = "FXL Platform Server Dev Team.";
 }
 
-Soar_Svrd_Appliction::~Soar_Svrd_Appliction()
+Soar_Svrd_Application::~Soar_Svrd_Application()
 {
     if (timer_base_)
     {
@@ -56,7 +56,7 @@ Soar_Svrd_Appliction::~Soar_Svrd_Appliction()
 }
 
 //初始化，放入一些基类的指针，
-int Soar_Svrd_Appliction::initialize(Server_Config_Base *config_base,
+int Soar_Svrd_Application::initialize(Server_Config_Base *config_base,
                                      Server_Timer_Base *timer_base)
 {
     config_base_ = config_base;
@@ -65,14 +65,14 @@ int Soar_Svrd_Appliction::initialize(Server_Config_Base *config_base,
 }
 
 //获取配置的指针
-Server_Config_Base *Soar_Svrd_Appliction::config_instance()
+Server_Config_Base *Soar_Svrd_Application::config_instance()
 {
     return config_base_;
 }
 
 
 //启动过程的处理
-int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
+int Soar_Svrd_Application::app_start(int argc, const char *argv[])
 {
 
     //Soar_Svrd_Appliction 只可能启动一个实例，所以在这个地方初始化了static指针
@@ -274,7 +274,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 }
 
 //退出的工作
-int Soar_Svrd_Appliction::app_exit()
+int Soar_Svrd_Application::app_exit()
 {
     //可能要增加多线程的等待
     ZCE_Thread_Wait_Manager::instance()->wait_all();
@@ -317,19 +317,19 @@ int Soar_Svrd_Appliction::app_exit()
 }
 
 //设置日志的优先级
-void Soar_Svrd_Appliction::set_log_priority(ZCE_LOG_PRIORITY log_prio)
+void Soar_Svrd_Application::set_log_priority(ZCE_LOG_PRIORITY log_prio)
 {
     ZCE_Trace_LogMsg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
-ZCE_LOG_PRIORITY Soar_Svrd_Appliction::get_log_priority()
+ZCE_LOG_PRIORITY Soar_Svrd_Application::get_log_priority()
 {
     return ZCE_Trace_LogMsg::instance()->get_log_priority();
 }
 
 //日志初始化
-int Soar_Svrd_Appliction::init_log()
+int Soar_Svrd_Application::init_log()
 {
     int ret = 0;
 
@@ -359,26 +359,26 @@ int Soar_Svrd_Appliction::init_log()
 
 
 //重新加载配置
-int Soar_Svrd_Appliction::reload_config()
+int Soar_Svrd_Application::reload_config()
 {
     return 0;
 }
 
 
 //注册实例指针
-void Soar_Svrd_Appliction::set_instance(Soar_Svrd_Appliction *inst)
+void Soar_Svrd_Application::set_instance(Soar_Svrd_Application *inst)
 {
     instance_ = inst;
 }
 
 //得到实例指针
-Soar_Svrd_Appliction *Soar_Svrd_Appliction::instance()
+Soar_Svrd_Application *Soar_Svrd_Application::instance()
 {
     return instance_;
 }
 
 //清理实例指针
-void Soar_Svrd_Appliction::clean_instance()
+void Soar_Svrd_Application::clean_instance()
 {
     if (instance_)
     {
