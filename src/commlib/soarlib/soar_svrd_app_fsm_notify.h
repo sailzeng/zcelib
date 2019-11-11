@@ -16,7 +16,7 @@
 
 class NotifyTrans_TaskBase;
 
-class Comm_SvrdApp_FSM_Notify : public Soar_Svrd_Appliction
+class Comm_SvrdApp_FSM_Notify : public Soar_Svrd_Application
 {
 
 protected:

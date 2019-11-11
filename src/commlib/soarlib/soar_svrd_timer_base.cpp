@@ -117,7 +117,7 @@ void Server_Timer_Base::report_status()
 {
     // 上报进程存活状态
     stat_monitor_->increase_once(COMM_STAT_APP_ALIVE, 0, 0);
-    Soar_Svrd_Appliction *svrd_app = Soar_Svrd_Appliction::instance();
+    Soar_Svrd_Application *svrd_app = Soar_Svrd_Application::instance();
 
     {
         // 获取服务器状态信息

@@ -14,7 +14,7 @@ class Zerg_Comm_Manager;
 *
 * @note
 */
-class Zerg_Service_App : public Soar_Svrd_Appliction
+class Zerg_Service_App : public Soar_Svrd_Application
 {
 
 

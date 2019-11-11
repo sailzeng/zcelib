@@ -5,7 +5,7 @@
 #include "soar_error_code.h"
 
 Soar_SvrdApp_ZergBus::Soar_SvrdApp_ZergBus() :
-    Soar_Svrd_Appliction(),
+    Soar_Svrd_Application(),
     nonctrl_recv_buffer_(NULL)
 {
     nonctrl_recv_buffer_ = Zerg_App_Frame::new_frame(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
