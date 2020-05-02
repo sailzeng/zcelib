@@ -57,7 +57,7 @@ int Wormhole_Server_Config::get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_t
     int ret = 0;
     std::string temp_value;
 
-    //最大Accept 数量
+    //鏈�澶ccept 鏁伴噺
     ret = conf_tree->path_get_leaf("PROXY_CFG", "PROXY_TYPE",
                                    temp_value);
     if ( 0 != ret )

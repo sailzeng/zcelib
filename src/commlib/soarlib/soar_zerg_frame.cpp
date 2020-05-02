@@ -28,7 +28,7 @@ Zerg_App_Frame::~Zerg_App_Frame()
 }
 
 
-// Assign =ÔËËã·ûºÅ
+// Assign =è¿ç®—ç¬¦å·
 Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
 {
     if (this != &other )
@@ -39,7 +39,7 @@ Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
     return *this;
 }
 
-//´´½¨Ò»¸öFrame
+//åˆ›å»ºä¸€ä¸ªFrame
 Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
@@ -48,16 +48,16 @@ Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
         frame_len = sizeof(Zerg_App_Frame);
     }
 
-    //¼ÆËãÊı¾İ¼ÓÃÜºóµÄ³¤¶È
+    //è®¡ç®—æ•°æ®åŠ å¯†åçš„é•¿åº¦
 
     void *ptr = ::new unsigned char[frame_len];
 
 #if defined(DEBUG) || defined(_DEBUG)
-    //¼ì²éÖ¡µÄÄÄ¸öµØ·½³öÏÖÎÊÌâ£¬»¹ÊÇÕâÑùºÃÒ»µã
+    //æ£€æŸ¥å¸§çš„å“ªä¸ªåœ°æ–¹å‡ºç°é—®é¢˜ï¼Œè¿˜æ˜¯è¿™æ ·å¥½ä¸€ç‚¹
     memset(ptr, 0, frame_len);
 #endif //DEBUG
 
-    //Ã»ÓĞ±ØÒª¼ÓÏÂÃæÕâ¾ä£¬ÒòÎªÊµ¼Ê³¤¶ÈÒª¸ù¾İÊ¹ÓÃ¾ö¶¨
+    //æ²¡æœ‰å¿…è¦åŠ ä¸‹é¢è¿™å¥ï¼Œå› ä¸ºå®é™…é•¿åº¦è¦æ ¹æ®ä½¿ç”¨å†³å®š
     //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
     return static_cast<Zerg_App_Frame *>(ptr);
 }
@@ -69,22 +69,22 @@ void Zerg_App_Frame::delete_frame(Zerg_App_Frame *frame)
     delete[]ptr;
 }
 
-//Ìî³äAppDataÊı¾İµ½APPFrame
+//å¡«å……AppDataæ•°æ®åˆ°APPFrame
 int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
 {
-    // ÅĞ¶Ï³¤¶ÈÊÇ·ñ×ã¹»
+    // åˆ¤æ–­é•¿åº¦æ˜¯å¦è¶³å¤Ÿ
     if (szdata > MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
 
-    //ÌîĞ´Êı¾İÇøµÄ³¤¶È
+    //å¡«å†™æ•°æ®åŒºçš„é•¿åº¦
     memcpy(frame_appdata_, vardata, szdata);
     frame_length_ = static_cast<uint32_t>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
     return 0;
 }
 
-//½«ËùÓĞµÄuint16_t,uint32_t×ª»»ÎªÍøÂçĞò
+//å°†æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºç½‘ç»œåº
 void Zerg_App_Frame::framehead_encode()
 {
     frame_length_ = htonl(frame_length_);
@@ -111,7 +111,7 @@ void Zerg_App_Frame::framehead_encode()
 
 }
 
-//½«ËùÓĞµÄuint16_t,uint32_t×ª»»Îª±¾µØĞò
+//å°†æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºæœ¬åœ°åº
 void Zerg_App_Frame::framehead_decode()
 {
     frame_length_ = ntohl(frame_length_);
@@ -138,7 +138,7 @@ void Zerg_App_Frame::framehead_decode()
 
 
 
-//ÌîĞ´·¢ËÍÕß·şÎñĞÅÏ¢
+//å¡«å†™å‘é€è€…æœåŠ¡ä¿¡æ¯
 void Zerg_App_Frame::set_send_svcid(uint16_t svrtype, uint32_t svrid)
 {
     send_service_.services_type_ = svrtype;
@@ -167,7 +167,7 @@ void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo,
 }
 
 
-//½»»»½ÓÊÜÕßºÍ·¢ËÍÕß,ÓÉÓÚÒª»ØËÍÊı¾İÊ±
+//äº¤æ¢æ¥å—è€…å’Œå‘é€è€…,ç”±äºè¦å›é€æ•°æ®æ—¶
 void Zerg_App_Frame::exchange_rcvsnd_svcid(void )
 {
 
@@ -193,15 +193,15 @@ void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
     send_service_ = exframe.recv_service_;
     proxy_service_ = exframe.proxy_service_;
     transaction_id_ = exframe.backfill_trans_id_;
-    //»ØÈ¥µÄÊÂÎñidÓ¦µ±ÊÇÇëÇóµÄÊÂÎñid
+    //å›å»çš„äº‹åŠ¡idåº”å½“æ˜¯è¯·æ±‚çš„äº‹åŠ¡id
     backfill_trans_id_ = exframe.transaction_id_;
     app_id_ = exframe.app_id_;
     frame_uid_ = exframe.frame_uid_;
 }
 
 
-//µ÷ÊÔAppFrame, ×ª»¯ËùÓĞµÄÊı¾İĞÅÏ¢ÎªÒ»¸öÄã¿ÉÒÔ¶Á¶®µÄ×´Ì¬
-//Õâ¸öµ÷ÊÔÊÇÒ»¸ö·Ç³£,·Ç³£ÏûºÄÊ±µÄ²Ù×÷,³ı·Ç,·¢²¼°æ±¾Ç§Íò²»ÒªÊ¹ÓÃ
+//è°ƒè¯•AppFrame, è½¬åŒ–æ‰€æœ‰çš„æ•°æ®ä¿¡æ¯ä¸ºä¸€ä¸ªä½ å¯ä»¥è¯»æ‡‚çš„çŠ¶æ€
+//è¿™ä¸ªè°ƒè¯•æ˜¯ä¸€ä¸ªéå¸¸,éå¸¸æ¶ˆè€—æ—¶çš„æ“ä½œ,é™¤é,å‘å¸ƒç‰ˆæœ¬åƒä¸‡ä¸è¦ä½¿ç”¨
 void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
 {
     dump_appframe_head(strstream);
@@ -209,7 +209,7 @@ void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
     return;
 }
 
-//DumpËùÓĞµÄÊı¾İĞÅÏ¢,Ò»¸ö×Ö½Ú×Ö½ÚµÄ¸æËßÄã,
+//Dumpæ‰€æœ‰çš„æ•°æ®ä¿¡æ¯,ä¸€ä¸ªå­—èŠ‚å­—èŠ‚çš„å‘Šè¯‰ä½ ,
 void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 {
     //
@@ -224,7 +224,7 @@ void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 }
 
 
-//Êä³ö°üÍ·ĞÅÏ¢
+//è¾“å‡ºåŒ…å¤´ä¿¡æ¯
 void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
 {
     strstream << "Len:" << frame_length_
@@ -244,14 +244,14 @@ void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
     return;
 }
 
-//Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
+//è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
 void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
     ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
-//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
+//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
 void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
 {
 
@@ -260,14 +260,14 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
     ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
 
-//Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
+//è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
 void Zerg_App_Frame::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
                                           const Zerg_App_Frame *proc_frame )
 {
     proc_frame->dumpoutput_framehead(outstr, log_priority);
 }
-//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
+//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
 void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
                                           const Zerg_App_Frame *proc_frame)
@@ -276,14 +276,14 @@ void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
 }
 
 
-//CloneÒ»¸öAPP FRAME
+//Cloneä¸€ä¸ªAPP FRAME
 void Zerg_App_Frame::clone(Zerg_App_Frame *dst_frame) const
 {
     memcpy(dst_frame, this, frame_length_);
     return ;
 }
 
-//CloneÒ»¸öAPP FRAME µÄÍ·²¿
+//Cloneä¸€ä¸ªAPP FRAME çš„å¤´éƒ¨
 void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 {
     memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);
@@ -294,7 +294,7 @@ void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
-///½«Ò»¸ö½á¹¹½øĞĞ±àÂë
+///å°†ä¸€ä¸ªç»“æ„è¿›è¡Œç¼–ç 
 int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
                                     const google::protobuf::MessageLite *msg,
                                     size_t data_start,
@@ -325,7 +325,7 @@ int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
     return 0;
 }
 
-///½«Ò»¸ö½á¹¹½øĞĞ½âÂë
+///å°†ä¸€ä¸ªç»“æ„è¿›è¡Œè§£ç 
 int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
                                     size_t data_start,
                                     size_t *sz_code)

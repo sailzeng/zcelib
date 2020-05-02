@@ -6,10 +6,10 @@
 /****************************************************************************************************
 class  Ogre_App_Timer_Handler
 ****************************************************************************************************/
-//¶¨Ê±Æ÷ID,±ÜÃâNew´«µİ,»ØÊÕ
+//å®šæ—¶å™¨ID,é¿å…Newä¼ é€’,å›æ”¶
 const int Ogre_App_Timer_Handler::OGRE_APP_TIME_ID[] =
 {
-    0x101,                    //ÖØÁ¬·şÎñÆ÷µÄID
+    0x101,                    //é‡è¿æœåŠ¡å™¨çš„ID
     0x102                     //
 };
 
@@ -17,7 +17,7 @@ const int Ogre_App_Timer_Handler::OGRE_APP_TIME_ID[] =
 //
 Ogre_App_Timer_Handler::Ogre_App_Timer_Handler()
 {
-    //Ö÷¶¯ÖØÏÖÁ´½ÓµÄ¼ä¸ôÊ±¼ä
+    //ä¸»åŠ¨é‡ç°é“¾æ¥çš„é—´éš”æ—¶é—´
     const time_t AUTOCONNECT_RETRY_SEC = 5;
     ZCE_Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
 
@@ -31,12 +31,12 @@ Ogre_App_Timer_Handler::~Ogre_App_Timer_Handler()
 //
 int Ogre_App_Timer_Handler::timer_timeout(const ZCE_Time_Value &time_now, const void *arg)
 {
-    //µÈµ½µ±Ç°µÄÊ±¼ä
+    //ç­‰åˆ°å½“å‰çš„æ—¶é—´
     Server_Timer_Base::timer_timeout(time_now, arg);
 
     const int timeid = *(static_cast<const int *>(arg));
 
-    //´¦ÀíÒ»¸ö´íÎó·¢ËÍÊı¾İ
+    //å¤„ç†ä¸€ä¸ªé”™è¯¯å‘é€æ•°æ®
     if (OGRE_APP_TIME_ID[0] == timeid)
     {
         Ogre_TCP_Svc_Handler::connect_all_server();

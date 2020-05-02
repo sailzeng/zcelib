@@ -3,7 +3,7 @@
 
 
 
-//ZCELIBµÄ´úÂë
+//ZCELIBçš„ä»£ç 
 
 #include <zce_predefine.h>
 #include <zce_log_logging.h>
@@ -96,7 +96,7 @@
 #include <zce_config_getopt.h>
 
 
-//BOOSTµÄ´úÂë£¬ÓÃÓÚÒ»Ğ©¶Ô±È²âÊÔ
+//BOOSTçš„ä»£ç ï¼Œç”¨äºä¸€äº›å¯¹æ¯”æµ‹è¯•
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)
 #endif

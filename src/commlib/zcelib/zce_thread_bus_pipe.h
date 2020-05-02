@@ -4,7 +4,7 @@
 * @filename   zce_thread_bus_pipe.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012��9��18�����ϣ��й�������81��������գ�81��
+* @date       2012年9月18日晚上，中国人民抗日81周年纪念日，81年
 * @brief
 *
 *
@@ -14,24 +14,24 @@
 *
 * @note
 *
-* ม��������ۿ�ս��ʮ�ꡡ�������䡡�Ҵ�Ӧ����һ�㡡�����
+* 喔　你我霎眼抗战二十年　世界怎变　我答应你那一点　不会变
 *
-* ������ֿձ����Ǿ��Ͻ֡�ûʲô���ƺƴ�
-* �����������󡡲������������±�̬
-* ����һ�𾭹���ʱ���߽⡡ʮ��ִλ��ʮ��
-* ·�Ϸ缱���һ���Ŵ������˾���
+* 当天空手空臂我们就上街　没什么声势浩大
+* 但被不安养大　不足养大　哪里怕表态
+* 当中一起经过了时代瓦解　十大执位再十大
+* 路上风急雨大　一起吓大　听惯了警戒
 *
-* Ӧ����ϧ�ġ���ʹ�����ˡ�����Ļ𻨡���Ȼ��ҫ
+* 应该珍惜的　即使牺牲了　激起的火花　仍然照耀
 
-* ����ǹ�������˳�Ĭ������ʣ���ս���ζ��
-* �����ٵ��ŭ����Щ�����ż��Ҳ����
-* ���������������ͻ����ס�δ���õļ�����
-* ���ű���������ĸ�����������ȥ����
+* 几响枪火敲破了沉默领土　剩下烧焦了味道
+* 现在少点愤怒　多些厚道　偶尔也很躁
+* 不管这种争拗有型或老套　未做好的继续做
+* 活着必须革命　心高气傲　哪里去不到
 
-* �����ߵ��硡���ഺ���ϡ���ɫ�Ĺ켣��ĥ��Ѫ·
+* 他虽走得早　他青春不老　灰色的轨迹　磨成血路
 
-* ม��������ۿ�ս��ʮ�ꡡ�������䡡��Զ������һ��
-* ม�������ȥ��ս��ʮ�ꡡȥ����Զ����Ҳ��������㡡�����
+* 喔　你我霎眼抗战二十年　世界怎变　永远企你这一边
+* 喔　哪怕再去抗战二十年　去到多远　我也铭记我起点　不会变
 */
 
 #ifndef ZCE_LIB_THREAD_BUS_PIPE_H_
@@ -54,46 +54,46 @@ class dequechunk_node;
 class shm_dequechunk;
 };
 
-//�߳�ʹ�õ�˫��BUS�ܵ���
-//��Ҫֱ��ʹ������࣬ʹ�����������typedef
+//线程使用的双向BUS管道，
+//不要直接使用这个类，使用下面的两个typedef
 template <typename ZCE_LOCK>
 class ZCE_Thread_Bus_Pipe : public ZCE_NON_Copyable
 {
 
 protected:
 
-    //�ڲ���ö�٣�PIPE�ı�ţ��ⲿ�����˽�
+    //内部的枚举，PIPE的编号，外部不用了解
     enum ZCE_BUS_PIPE_ID
     {
         THR_RECV_PIPE_ID     = 0,
         THR_SEND_PIPE_ID     = 1,
 
-        //���ȱ�ʾ,��Ҫ��������������,����������
+        //长度标示,不要用于做函数参数,否则会有溢出
         THR_NUM_OF_PIPE      = 2,
     };
 
 protected:
 
-    //�ܵ��õ��ڴ�ռ��ַ
+    //管道用的内存空间地址
     char                      *pipe_buffer_;
 
-    //�ܵ����ó���,2���ܵ������ó���,
+    //管道配置长度,2个管道的配置长度,
     size_t                     size_pipe_[THR_NUM_OF_PIPE];
-    //���͹ܵ���ʵ�ʿռ䳤��
+    //发送管道的实际空间长度
     size_t                     size_room_[THR_NUM_OF_PIPE];
 
-    //N���ܵ�,������չܵ�,���͹ܵ�����,���MAX_NUMBER_OF_PIPE��
+    //N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
     zce::lockfree::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
 
-    //��
+    //锁
     ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
 
 protected:
-    //instance����ʹ�õĶ���
+    //instance函数使用的东西
     static ZCE_Thread_Bus_Pipe *instance_;
 
 public:
-    //���캯��,�������ж��ʵ���Ŀ��ܣ���������
+    //构造函数,允许你有多个实例的可能，不做保护
     ZCE_Thread_Bus_Pipe():
         pipe_buffer_(NULL)
     {
@@ -105,7 +105,7 @@ public:
         }
 
     }
-    //��������
+    //析购函数
     ~ZCE_Thread_Bus_Pipe()
     {
 
@@ -114,7 +114,7 @@ public:
 public:
 
     //-----------------------------------------------------------------
-    //��ʼ�����ֲ���,�������ͺͽ��յĳ��Ȳ�һ��
+    //初始化部分参数,允许发送和接收的长度不一致
     int initialize(size_t size_recv_pipe,
                    size_t size_send_pipe,
                    size_t max_frame_len)
@@ -134,7 +134,7 @@ public:
 
         pipe_buffer_ = new char [sz_malloc ];
 
-        //��ʼ���ڴ�
+        //初始化内存
         bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
                                                                       max_frame_len,
                                                                       pipe_buffer_,
@@ -145,7 +145,7 @@ public:
                                                                       pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
                                                                       false);
 
-        //�ܵ������Լ�Ҳ�����Ƿ��ָܻ�
+        //管道创建自己也会检查是否能恢复
         if ( NULL == bus_pipe_[THR_RECV_PIPE_ID]  || NULL == bus_pipe_[THR_SEND_PIPE_ID])
         {
             ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Thread_Bus_Pipe::initialize pipe fail recv[%p]size[%u],send[%p],size[%u].",
@@ -163,16 +163,16 @@ public:
 
 
     //-----------------------------------------------------------------
-    //ע��
+    //注意
 
-    //��RECV�ܵ���ȡ���ݣ�
+    //从RECV管道读取数据，
     inline bool pop_front_recvpipe(zce::lockfree::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
     }
 
-    //��RECV�ܵ�д������
+    //向RECV管道写入数据
     inline bool push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
@@ -180,14 +180,14 @@ public:
     }
 
 
-    //��SEND�ܵ���ȡ���ݣ�
+    //从SEND管道读取数据，
     inline bool pop_front_sendpipe(zce::lockfree::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
     }
 
-    //��SEND�ܵ�д������
+    //向SEND管道写入数据
     inline bool push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
@@ -195,7 +195,7 @@ public:
     }
 
 
-    //ȡRecv�ܵ�ͷ��֡��
+    //取Recv管道头的帧长
     inline int get_frontsize_recvpipe(size_t &note_size)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
@@ -209,7 +209,7 @@ public:
         return 0;
     }
 
-    //ȡSend�ܵ�ͷ��֡��
+    //取Send管道头的帧长
     inline int get_frontsize_sendpipe(size_t &note_size)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
@@ -227,8 +227,8 @@ public:
 
 public:
 
-    //Ϊ��SingleTon��׼��
-    //�õ�Ψһ�ĵ���ʵ��
+    //为了SingleTon类准备
+    //得到唯一的单子实例
     ZCE_Thread_Bus_Pipe *instance()
     {
         if (instance_ == NULL)
@@ -239,7 +239,7 @@ public:
         return instance_;
     }
 
-    //��ֵΨһ�ĵ���ʵ��
+    //赋值唯一的单子实例
     void instance(ZCE_Thread_Bus_Pipe *pinstatnce)
     {
         clean_instance();
@@ -247,7 +247,7 @@ public:
         return;
     }
 
-    //�������ʵ��
+    //清除单子实例
     void clean_instance()
     {
         if (instance_)
@@ -265,11 +265,11 @@ public:
 
 
 //--------------------------------------------------------------------------------------
-//����һ���̶߳���һ���߳�д��BUS����Ȼ��ST������ʵ�����������̼߳���Ч��
-//����һЩ�����ٶ��м���׷��ĵط�
+//用于一个线程读，一个线程写的BUS，虽然叫ST，但其实还是在两个线程间有效，
+//用于一些对于速度有极致追求的地方
 typedef ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>   ZCE_Thread_ST_Bus_Pipe;
 
-//������BUS,�����ж��˾���
+//加锁的BUS,可以有多人竞争
 typedef ZCE_Thread_Bus_Pipe<ZCE_Thread_Light_Mutex> ZCE_Thread_MT_Bus_Pipe;
 
 

@@ -3,8 +3,8 @@
 * @filename   zce_fmtstr_strnsplice.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê2ÔÂ6ÈÕ
-* @brief      ×Ö·û´®Æ´½Óº¯Êý
+* @date       2013å¹´2æœˆ6æ—¥
+* @brief      å­—ç¬¦ä¸²æ‹¼æŽ¥å‡½æ•°
 *
 * @details
 *
@@ -26,7 +26,7 @@ namespace ZCE_LIB
 #endif
 
 
-//Ã»ÓÐC++ 11µÄÌØÐÔ£¬Ã»ÓÐÈÎºÎÓÃ´¦
+//æ²¡æœ‰C++ 11çš„ç‰¹æ€§ï¼Œæ²¡æœ‰ä»»ä½•ç”¨å¤„
 #if ZCE_SUPPORT_CPP11 == 0
 #define FOO_FMT_STRING_USE_VARIADIC 0
 #endif

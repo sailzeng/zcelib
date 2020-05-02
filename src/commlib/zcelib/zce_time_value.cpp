@@ -1,35 +1,35 @@
 #include "zce_predefine.h"
 #include "zce_time_value.h"
 
-//ZCE_Time_ValueÄ¬ÈÏµÄzeroÖµ
+//ZCE_Time_Valueé»˜è®¤çš„zeroå€¼
 const ZCE_Time_Value ZCE_Time_Value::ZERO_TIME_VALUE(0, 0);
 //
 const ZCE_Time_Value ZCE_Time_Value::MAX_TIME_VALUE(0x7FFFFFFF, 0x7FFFFFFF);
 
-//Ä¬ÈÏ¹¹Ôìº¯Êı
+//é»˜è®¤æ„é€ å‡½æ•°
 ZCE_Time_Value::ZCE_Time_Value()
 {
     zce_time_value_.tv_sec = 0;
     zce_time_value_.tv_usec = 0;
 }
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 ZCE_Time_Value::~ZCE_Time_Value()
 {
 }
 
-//¹¹Ôìº¯Êı£¬ÓÃtimeval
+//æ„é€ å‡½æ•°ï¼Œç”¨timeval
 ZCE_Time_Value::ZCE_Time_Value(const timeval &time_data)
 {
     zce_time_value_ = time_data;
 }
 
-//¹¹Ôìº¯Êı£¬ÓÃ::timespec
+//æ„é€ å‡½æ•°ï¼Œç”¨::timespec
 ZCE_Time_Value::ZCE_Time_Value(const ::timespec &timespec_val)
 {
     zce_time_value_ = zce::make_timeval(&timespec_val);
 }
 
-//¹¹Ôìº¯Êı£¬¼¸¸öÊ±¼äÊı¾İÊı¾İ
+//æ„é€ å‡½æ•°ï¼Œå‡ ä¸ªæ—¶é—´æ•°æ®æ•°æ®
 ZCE_Time_Value::ZCE_Time_Value(time_t sec, time_t usec)
 {
 #if defined ZCE_OS_WINDOWS
@@ -42,7 +42,7 @@ ZCE_Time_Value::ZCE_Time_Value(time_t sec, time_t usec)
 
 }
 
-//¹¹Ôìº¯Êı£¬ÓÃtime_t, usec±»ÖÃÎª0
+//æ„é€ å‡½æ•°ï¼Œç”¨time_t, usecè¢«ç½®ä¸º0
 ZCE_Time_Value::ZCE_Time_Value(time_t sec)
 {
 #if defined ZCE_OS_WINDOWS
@@ -91,13 +91,13 @@ ZCE_Time_Value::ZCE_Time_Value(const std::chrono::steady_clock::time_point &val)
 }
 
 #ifdef ZCE_OS_WINDOWS
-//¹¹Ôìº¯Êı£¬ÓÃLPFILETIME,FILETIME
+//æ„é€ å‡½æ•°ï¼Œç”¨LPFILETIME,FILETIME
 ZCE_Time_Value::ZCE_Time_Value(LPFILETIME file_time) :
     zce_time_value_(zce::make_timeval(file_time))
 {
 }
 
-//¹¹Ôìº¯Êı£¬ÓÃLPSYSTEMTIME,SYSTEMTIME
+//æ„é€ å‡½æ•°ï¼Œç”¨LPSYSTEMTIME,SYSTEMTIME
 ZCE_Time_Value::ZCE_Time_Value(LPSYSTEMTIME system_time) :
     zce_time_value_(zce::make_timeval(system_time))
 {
@@ -174,12 +174,12 @@ void ZCE_Time_Value::set(const std::chrono::steady_clock::time_point &val)
 }
 
 #ifdef ZCE_OS_WINDOWS
-//ÉèÖÃZCE_Time_Value, ÓÃFILETIME
+//è®¾ç½®ZCE_Time_Value, ç”¨FILETIME
 void ZCE_Time_Value::set(LPFILETIME file_time)
 {
     zce_time_value_ = zce::make_timeval(file_time);
 }
-//ÉèÖÃZCE_Time_Value, ÓÃLPSYSTEMTIME
+//è®¾ç½®ZCE_Time_Value, ç”¨LPSYSTEMTIME
 void ZCE_Time_Value::set(LPSYSTEMTIME system_time)
 {
     zce_time_value_ = zce::make_timeval(system_time);
@@ -187,24 +187,24 @@ void ZCE_Time_Value::set(LPSYSTEMTIME system_time)
 
 #endif
 
-//ÓÃclock_t ÉèÖÃÊ±¼ä£¬±»ÆÈÓÃÕâ¸öº¯ÊıÃû×Ö£¬±ÜÃâºÍÆäËûº¯Êı³åÍ»
+//ç”¨clock_t è®¾ç½®æ—¶é—´ï¼Œè¢«è¿«ç”¨è¿™ä¸ªå‡½æ•°åå­—ï¼Œé¿å…å’Œå…¶ä»–å‡½æ•°å†²çª
 void ZCE_Time_Value::set_by_clock_t(clock_t time)
 {
     zce_time_value_ = zce::make_timeval(time);
 }
 
-//µÃµ½×Ü¹²¶àÉÙºÁÃë
+//å¾—åˆ°æ€»å…±å¤šå°‘æ¯«ç§’
 uint64_t ZCE_Time_Value::total_msec() const
 {
     return static_cast<uint64_t>(this->zce_time_value_.tv_sec) * zce::SEC_PER_MSEC
            + this->zce_time_value_.tv_usec / zce::MSEC_PER_USEC;
 }
 
-//ËÄÉáÎåÈëµÃµ½×Ü¹²¶àÉÙºÁÃë£¬ÆäÊµ²»ÊÇÕæÕıµÄËÄÉáÎåÈë£¬¶øÊÇÈç¹ûÎ¢ÃëÓĞÊı¾İ£¬¾Í·µ»Ø1ºÁÃë£¬
+//å››èˆäº”å…¥å¾—åˆ°æ€»å…±å¤šå°‘æ¯«ç§’ï¼Œå…¶å®ä¸æ˜¯çœŸæ­£çš„å››èˆäº”å…¥ï¼Œè€Œæ˜¯å¦‚æœå¾®ç§’æœ‰æ•°æ®ï¼Œå°±è¿”å›1æ¯«ç§’ï¼Œ
 uint64_t ZCE_Time_Value::total_msec_round() const
 {
     uint64_t ret_msec = total_msec();
-    //¿ÉÄÜÎ¢ÃëÊı¾İÉÏÓĞÊı¾İ£¬µ«<1000,
+    //å¯èƒ½å¾®ç§’æ•°æ®ä¸Šæœ‰æ•°æ®ï¼Œä½†<1000,
     if ( 0 == ret_msec  && this->zce_time_value_.tv_usec > 0 )
     {
         ret_msec = 1;
@@ -212,7 +212,7 @@ uint64_t ZCE_Time_Value::total_msec_round() const
     return ret_msec;
 }
 
-//ÓÃºÁÃë×÷Îªµ¥Î»ÉèÖÃTimeValue
+//ç”¨æ¯«ç§’ä½œä¸ºå•ä½è®¾ç½®TimeValue
 void ZCE_Time_Value::total_msec(uint64_t set_msec)
 {
 #if defined ZCE_OS_WINDOWS
@@ -224,13 +224,13 @@ void ZCE_Time_Value::total_msec(uint64_t set_msec)
 #endif
 }
 
-//µÃµ½×Ü¹²¶àÉÙÎ¢Ãë
+//å¾—åˆ°æ€»å…±å¤šå°‘å¾®ç§’
 uint64_t ZCE_Time_Value::total_usec() const
 {
     return static_cast<uint64_t>(zce_time_value_.tv_sec) * zce::SEC_PER_USEC + zce_time_value_.tv_usec;
 }
 
-//ÓÃÎ¢Ãë×÷Îªµ¥Î»£¬ÉèÖÃTimeValue£¬×¢ÒâÕâ¸öº¯ÊıºÍusecº¯ÊıµÄÇø±ğ£¬usecº¯ÊıÊÇÉèÖÃtimevalµÄusec²¿·Ö£¬
+//ç”¨å¾®ç§’ä½œä¸ºå•ä½ï¼Œè®¾ç½®TimeValueï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°å’Œusecå‡½æ•°çš„åŒºåˆ«ï¼Œusecå‡½æ•°æ˜¯è®¾ç½®timevalçš„usecéƒ¨åˆ†ï¼Œ
 void ZCE_Time_Value::total_usec(uint64_t set_usec)
 {
     const int SEC_PER_UESC = 1000000;
@@ -243,13 +243,13 @@ void ZCE_Time_Value::total_usec(uint64_t set_usec)
 #endif
 }
 
-//µÃµ½TimevalueµÄÃë²¿·Ö
+//å¾—åˆ°Timevalueçš„ç§’éƒ¨åˆ†
 time_t ZCE_Time_Value::sec (void) const
 {
     return zce_time_value_.tv_sec;
 }
 
-// ÉèÖÃTimevalueµÄÃë²¿·Ö
+// è®¾ç½®Timevalueçš„ç§’éƒ¨åˆ†
 void ZCE_Time_Value::sec (time_t sec)
 {
 #if defined ZCE_OS_WINDOWS
@@ -259,13 +259,13 @@ void ZCE_Time_Value::sec (time_t sec)
 #endif
 }
 
-//µÃµ½TimevalueµÄÎ¢Ãë²¿·Ö
+//å¾—åˆ°Timevalueçš„å¾®ç§’éƒ¨åˆ†
 time_t ZCE_Time_Value::usec (void) const
 {
     return zce_time_value_.tv_usec;
 }
 
-//ÉèÖÃTimevalueµÄÎ¢Ãë²¿·Ö
+//è®¾ç½®Timevalueçš„å¾®ç§’éƒ¨åˆ†
 void ZCE_Time_Value::usec (time_t usec)
 {
 #if defined ZCE_OS_WINDOWS
@@ -275,7 +275,7 @@ void ZCE_Time_Value::usec (time_t usec)
 #endif
 }
 
-//»ñÈ¡µ±Ç°Ê±¼ä
+//è·å–å½“å‰æ—¶é—´
 void ZCE_Time_Value::gettimeofday()
 {
     zce_time_value_ = zce::gettimeofday();
@@ -297,21 +297,21 @@ ZCE_Time_Value &ZCE_Time_Value::operator = (const ZCE_Time_Value &tv)
 // Subtract @a tv to this.
 ZCE_Time_Value &ZCE_Time_Value::operator -= (const ZCE_Time_Value &tv)
 {
-    //±£Ö¤·µ»ØÖµÀïÃæµÄÊ±ÖÓ>=0
+    //ä¿è¯è¿”å›å€¼é‡Œé¢çš„æ—¶é’Ÿ>=0
     zce_time_value_ = zce::timeval_sub(zce_time_value_, tv.zce_time_value_, true);
     return *this;
 }
 
-// Á½¸öÊ±¼ä½øĞĞ±È½Ï <
+// ä¸¤ä¸ªæ—¶é—´è¿›è¡Œæ¯”è¾ƒ <
 bool ZCE_Time_Value::operator < (const ZCE_Time_Value &tv)
 {
-    //ÏÈ±È½ÏÃë£¬
+    //å…ˆæ¯”è¾ƒç§’ï¼Œ
     if (zce_time_value_.tv_sec < tv.zce_time_value_.tv_sec)
     {
         return true;
     }
 
-    //ÔÙ±È½ÏÎ¢Ãë
+    //å†æ¯”è¾ƒå¾®ç§’
     if (zce_time_value_.tv_sec == tv.zce_time_value_.tv_sec &&
         zce_time_value_.tv_usec < tv.zce_time_value_.tv_usec )
     {
@@ -321,16 +321,16 @@ bool ZCE_Time_Value::operator < (const ZCE_Time_Value &tv)
     return false;
 }
 
-// Á½¸öÊ±¼ä½øĞĞ±È½Ï >
+// ä¸¤ä¸ªæ—¶é—´è¿›è¡Œæ¯”è¾ƒ >
 bool ZCE_Time_Value::operator > (const ZCE_Time_Value &tv)
 {
-    //ÏÈ±È½ÏÃë£¬
+    //å…ˆæ¯”è¾ƒç§’ï¼Œ
     if (zce_time_value_.tv_sec > tv.zce_time_value_.tv_sec)
     {
         return true;
     }
 
-    //ÔÙ±È½ÏÎ¢Ãë
+    //å†æ¯”è¾ƒå¾®ç§’
     if (zce_time_value_.tv_sec == tv.zce_time_value_.tv_sec &&
         zce_time_value_.tv_usec > tv.zce_time_value_.tv_usec )
     {
@@ -343,13 +343,13 @@ bool ZCE_Time_Value::operator > (const ZCE_Time_Value &tv)
 //
 bool ZCE_Time_Value::operator <= (const ZCE_Time_Value &tv)
 {
-    //ÏÈ±È½ÏÃë£¬
+    //å…ˆæ¯”è¾ƒç§’ï¼Œ
     if (zce_time_value_.tv_sec <= tv.zce_time_value_.tv_sec)
     {
         return true;
     }
 
-    //ÔÙ±È½ÏÎ¢Ãë
+    //å†æ¯”è¾ƒå¾®ç§’
     if (zce_time_value_.tv_sec == tv.zce_time_value_.tv_sec &&
         zce_time_value_.tv_usec <= tv.zce_time_value_.tv_usec )
     {
@@ -362,13 +362,13 @@ bool ZCE_Time_Value::operator <= (const ZCE_Time_Value &tv)
 /// True if @a tv1 >= @a tv2.
 bool ZCE_Time_Value::operator >= (const ZCE_Time_Value &tv)
 {
-    //ÏÈ±È½ÏÃë£¬
+    //å…ˆæ¯”è¾ƒç§’ï¼Œ
     if (zce_time_value_.tv_sec > tv.zce_time_value_.tv_sec)
     {
         return true;
     }
 
-    //ÔÙ±È½ÏÎ¢Ãë
+    //å†æ¯”è¾ƒå¾®ç§’
     if (zce_time_value_.tv_sec == tv.zce_time_value_.tv_sec &&
         zce_time_value_.tv_usec >= tv.zce_time_value_.tv_usec )
     {
@@ -407,7 +407,7 @@ ZCE_Time_Value operator + (const ZCE_Time_Value &tv1,
 ZCE_Time_Value operator - (const ZCE_Time_Value &tv1,
                            const ZCE_Time_Value &tv2)
 {
-    //±£Ö¤·µ»ØÖµÀïÃæµÄÊ±ÖÓ>=0
+    //ä¿è¯è¿”å›å€¼é‡Œé¢çš„æ—¶é’Ÿ>=0
     return zce::timeval_sub(tv1.zce_time_value_, tv2.zce_time_value_, true);
 }
 
@@ -429,7 +429,7 @@ ZCE_Time_Value::operator timeval *()
     return &zce_time_value_;
 }
 
-//½«Ê±¼ä´òÓ¡³öÀ´
+//å°†æ—¶é—´æ‰“å°å‡ºæ¥
 const char *ZCE_Time_Value::to_string(char *str_date_time,
                                       size_t datetime_strlen,
                                       size_t &use_buf,
@@ -445,7 +445,7 @@ const char *ZCE_Time_Value::to_string(char *str_date_time,
 }
 
 
-//´Ó×Ö·û´®ÖĞµÃµ½Ê±¼ä
+//ä»å­—ç¬¦ä¸²ä¸­å¾—åˆ°æ—¶é—´
 int ZCE_Time_Value::from_string(const char *strtm,
                                 bool uct_time,
                                 zce::TIME_STR_FORMAT_TYPE fmt)

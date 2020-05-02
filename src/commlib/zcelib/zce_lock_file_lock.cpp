@@ -5,7 +5,7 @@
 #include "zce_os_adapt_flock.h"
 #include "zce_lock_file_lock.h"
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_File_Lock::ZCE_File_Lock():
     lock_file_hadle_(ZCE_INVALID_HANDLE),
     open_by_self_(false),
@@ -13,22 +13,22 @@ ZCE_File_Lock::ZCE_File_Lock():
 {
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 ZCE_File_Lock::~ZCE_File_Lock()
 {
     close();
 }
 
-//Í¨¹ıÎÄ¼şÃû³Æ²ÎÊı³õÊ¼»¯ÎÄ¼şËø£¬»á´ò¿ªÕâ¸öÎÄ¼ş
+//é€šè¿‡æ–‡ä»¶åç§°å‚æ•°åˆå§‹åŒ–æ–‡ä»¶é”ï¼Œä¼šæ‰“å¼€è¿™ä¸ªæ–‡ä»¶
 int ZCE_File_Lock::open(const char *file_name,
                         int open_mode,
                         mode_t perms)
 {
     int ret = 0;
-    //±ÜÃâÖØ¸´´ò¿ª£¬ÓÃ¶ÏÑÔ±£»¤
+    //é¿å…é‡å¤æ‰“å¼€ï¼Œç”¨æ–­è¨€ä¿æŠ¤
     ZCE_ASSERT(lock_file_hadle_ == ZCE_INVALID_HANDLE);
 
-    //´ò¿ªÕâ¸öÎÄ¼ş
+    //æ‰“å¼€è¿™ä¸ªæ–‡ä»¶
     lock_file_hadle_ = zce::open (file_name,
                                   open_mode,
                                   perms);
@@ -46,13 +46,13 @@ int ZCE_File_Lock::open(const char *file_name,
 
     zce::flock_init(&file_lock_hdl_, lock_file_hadle_);
 
-    //±êÊ¶ÊÇ×Ô¼º´ò¿ªµÄ
+    //æ ‡è¯†æ˜¯è‡ªå·±æ‰“å¼€çš„
     open_by_self_ = true;
 
     return 0;
 }
 
-//Í¨¹ıÎÄ¼ş¾ä±ú³õÊ¼»¯ÎÄ¼şËø
+//é€šè¿‡æ–‡ä»¶å¥æŸ„åˆå§‹åŒ–æ–‡ä»¶é”
 int ZCE_File_Lock::open(ZCE_HANDLE file_handle)
 {
     int ret = 0;
@@ -68,12 +68,12 @@ int ZCE_File_Lock::open(ZCE_HANDLE file_handle)
     return 0;
 }
 
-//¹Ø±ÕÎÄ¼şËø
+//å…³é—­æ–‡ä»¶é”
 int ZCE_File_Lock::close()
 {
     unlock();
 
-    //Èç¹ûÊÇ×Ô¼º´ò¿ªµÄ£¬¹Ø±ÕÖ®
+    //å¦‚æœæ˜¯è‡ªå·±æ‰“å¼€çš„ï¼Œå…³é—­ä¹‹
     if (open_by_self_)
     {
         zce::close(lock_file_hadle_);
@@ -82,13 +82,13 @@ int ZCE_File_Lock::close()
     return 0;
 }
 
-//µÃµ½ËøÎÄ¼şµÄ¾ä±ú
+//å¾—åˆ°é”æ–‡ä»¶çš„å¥æŸ„
 ZCE_HANDLE ZCE_File_Lock::get_file_handle()
 {
     return lock_file_hadle_;
 }
 
-//¶ÁÈ¡Ëø
+//è¯»å–é”
 void ZCE_File_Lock::lock_read()
 {
     int ret = 0;
@@ -102,7 +102,7 @@ void ZCE_File_Lock::lock_read()
 
     return;
 }
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_File_Lock::try_lock_read()
 {
     int ret = 0;
@@ -117,7 +117,7 @@ bool ZCE_File_Lock::try_lock_read()
     return true;
 }
 
-//Ğ´Ëø¶¨
+//å†™é”å®š
 void ZCE_File_Lock::lock_write()
 {
     int ret = 0;
@@ -128,7 +128,7 @@ void ZCE_File_Lock::lock_write()
         return;
     }
 }
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_File_Lock::try_lock_write()
 {
     int ret = 0;
@@ -143,7 +143,7 @@ bool ZCE_File_Lock::try_lock_write()
     return true;
 }
 
-//½âËø,Èç¹ûÊÇ¶ÁĞ´ËøÒ²Ö»ĞèÒªÕâÒ»¸öº¯Êı
+//è§£é”,å¦‚æœæ˜¯è¯»å†™é”ä¹Ÿåªéœ€è¦è¿™ä¸€ä¸ªå‡½æ•°
 void ZCE_File_Lock::unlock()
 {
     int ret = 0;

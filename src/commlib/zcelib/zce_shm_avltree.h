@@ -3,24 +3,24 @@
 * @filename   zce_shm_avltree.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2006Äê1ÔÂ16ÈÕ
-* @brief      Ï£ÍûAVLTreeÖ÷ÒªÊÇÍê³É¿ÉÒÔÅÅĞòµÄMAP,SET,µÄMMAPÀà
+* @date       2006å¹´1æœˆ16æ—¥
+* @brief      å¸Œæœ›AVLTreeä¸»è¦æ˜¯å®Œæˆå¯ä»¥æ’åºçš„MAP,SET,çš„MMAPç±»
 *
 * @details
 *
-* @note       Õâ¸ö´úÂëºÜÔçÏëĞ´£¬µ«µ½ÁË2014Äê3ÔÂ8ÈÕÎÒÒ²Ã»ÓĞÕæÕı¶¯±Ê£¬
-*             Ö÷ÒªÔ­ÒòÊÇ¶ÔAVLµÄÉ¾³ı´úÂëÒ»Ö±Ã»ÓĞÓÃĞÄ¿´£¬ËùÒÔ½á¹û¾ÍÒ»Ö±µ¢¸éÁË¡£
-*             07ÄêµÄÊ±ºò£¬scottxuÌø³öÀ´£¬µ¥Ç¹Æ¥Âí°ÑºìºÚÊ÷¸ã¶¨ÁË£¬Õâ¸ö´úÂë
-*             ¾ÍÒ»Ö±Ã»ÓĞÁËÓÃÎäÖ®µØ£¬ºÇºÇ¡£Ò²ĞíÄÇÌìÎÒ»¹ÊÇ»áÊµÏÖµÄ¡£
+* @note       è¿™ä¸ªä»£ç å¾ˆæ—©æƒ³å†™ï¼Œä½†åˆ°äº†2014å¹´3æœˆ8æ—¥æˆ‘ä¹Ÿæ²¡æœ‰çœŸæ­£åŠ¨ç¬”ï¼Œ
+*             ä¸»è¦åŸå› æ˜¯å¯¹AVLçš„åˆ é™¤ä»£ç ä¸€ç›´æ²¡æœ‰ç”¨å¿ƒçœ‹ï¼Œæ‰€ä»¥ç»“æœå°±ä¸€ç›´è€½æäº†ã€‚
+*             07å¹´çš„æ—¶å€™ï¼Œscottxuè·³å‡ºæ¥ï¼Œå•æªåŒ¹é©¬æŠŠçº¢é»‘æ ‘æå®šäº†ï¼Œè¿™ä¸ªä»£ç 
+*             å°±ä¸€ç›´æ²¡æœ‰äº†ç”¨æ­¦ä¹‹åœ°ï¼Œå‘µå‘µã€‚ä¹Ÿè®¸é‚£å¤©æˆ‘è¿˜æ˜¯ä¼šå®ç°çš„ã€‚
 *
-*             Ò»¸öÈË×øÔÚ°ì¹«ÊÒ£¬µğ¸ùÑÌ×°¿á¡£ĞÄÖĞ°µÂî×Ô¼º£¬2B¡£
+*             ä¸€ä¸ªäººååœ¨åŠå…¬å®¤ï¼Œå¼æ ¹çƒŸè£…é…·ã€‚å¿ƒä¸­æš—éª‚è‡ªå·±ï¼Œ2Bã€‚
 *
-*             ¿ªÊ¼¸ãµÄÊ±ºò£¬ÈÏÕæ¿´ÁËScottµÄºìºÚÊ÷µÄÊµÏÖ£¬·¢ÏÖµ×ÖÊ»¹¿ÉÒÔ£¬
-*             ¿ÉÒÔÖ±½ÓÔÚÉÏÃæ¸Ä£¬Í¬Ê±¿´µ½Õâ¸ö´úÂë£¬Ó¦¸Ã¿ÉÒÔ²Î¿¼ÓÃ£¬
-*             ×îºó·¢ÏÖ£¬Ğ´ÆğÀ´×î¿à±ÆµÄ»¹ÊÇÉ¾³ınode´úÂë£¬ÎÒÖÁÉÙ·ÏÁË2¸ö·½°¸¡£
-*             ÒòÎªºÜ¶àÌû×ÓµÄ·½°¸¶¼²»Ì«¿¿Æ×£¬ÎÒÔÚÈçºÎ°ÑÒªÉ¾³ıµÄ½Úµã½»»»µ½Ò¶×Ó
-*             ½ÚµãÉÏÓĞ·¸ÁËÉµ¡£
-*             ¶øÇÒAVLµÄÉ¾³ıºó£¬½ÚµãµÄµ÷ÕûÒ²²»Ö¹ÄÇ4ÖÖ±ä»»¡£
+*             å¼€å§‹æçš„æ—¶å€™ï¼Œè®¤çœŸçœ‹äº†Scottçš„çº¢é»‘æ ‘çš„å®ç°ï¼Œå‘ç°åº•è´¨è¿˜å¯ä»¥ï¼Œ
+*             å¯ä»¥ç›´æ¥åœ¨ä¸Šé¢æ”¹ï¼ŒåŒæ—¶çœ‹åˆ°è¿™ä¸ªä»£ç ï¼Œåº”è¯¥å¯ä»¥å‚è€ƒç”¨ï¼Œ
+*             æœ€åå‘ç°ï¼Œå†™èµ·æ¥æœ€è‹¦é€¼çš„è¿˜æ˜¯åˆ é™¤nodeä»£ç ï¼Œæˆ‘è‡³å°‘åºŸäº†2ä¸ªæ–¹æ¡ˆã€‚
+*             å› ä¸ºå¾ˆå¤šå¸–å­çš„æ–¹æ¡ˆéƒ½ä¸å¤ªé è°±ï¼Œæˆ‘åœ¨å¦‚ä½•æŠŠè¦åˆ é™¤çš„èŠ‚ç‚¹äº¤æ¢åˆ°å¶å­
+*             èŠ‚ç‚¹ä¸Šæœ‰çŠ¯äº†å‚»ã€‚
+*             è€Œä¸”AVLçš„åˆ é™¤åï¼ŒèŠ‚ç‚¹çš„è°ƒæ•´ä¹Ÿä¸æ­¢é‚£4ç§å˜æ¢ã€‚
 *             http://www.cnblogs.com/fullsail/p/3729015.html
 *
 */
@@ -38,7 +38,7 @@ namespace zce
 
 template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_avl_tree;
 
-///AVL TREEµÄÍ·²¿Êı¾İÇø
+///AVL TREEçš„å¤´éƒ¨æ•°æ®åŒº
 class _shm_avl_tree_head
 {
 protected:
@@ -54,18 +54,18 @@ protected:
     }
 
 public:
-    //ÄÚ´æÇøµÄ³¤¶È
+    //å†…å­˜åŒºçš„é•¿åº¦
     size_t               size_of_mmap_;
-    //NODE½áµã¸öÊı
+    //NODEç»“ç‚¹ä¸ªæ•°
     size_t               num_of_node_;
-    //FREEµÄNODE¸öÊı
+    //FREEçš„NODEä¸ªæ•°
     size_t               sz_free_node_;
-    //USEµÄNODE¸öÊı
+    //USEçš„NODEä¸ªæ•°
     size_t               sz_use_node_;
 };
 
 
-//AVL treeµÄË÷ÒıµÄ½Úµã
+//AVL treeçš„ç´¢å¼•çš„èŠ‚ç‚¹
 class _shm_avl_tree_index
 {
 
@@ -91,18 +91,18 @@ public:
     }
 
 public:
-    ///¸¸½Úµã
+    ///çˆ¶èŠ‚ç‚¹
     size_t       parent_;
-    ///×ó×ÓÊ÷
+    ///å·¦å­æ ‘
     size_t       left_;
-    ///ÓÒ×ÓÊ÷
+    ///å³å­æ ‘
     size_t       right_;
-    ///Æ½ºâ
+    ///å¹³è¡¡
     int32_t      balanced_;
 };
 
 
-//AVL treeµÄµü´úÆ÷
+//AVL treeçš„è¿­ä»£å™¨
 template < class _value_type,
            class _key_type,
            class _extract_key,
@@ -114,7 +114,7 @@ class _shm_avl_tree_iterator
     typedef shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key> shm_avl_tree_t;
 
 
-    //µü´úÆ÷İÍÈ¡Æ÷ËùÓĞµÄ¶«¶«
+    //è¿­ä»£å™¨èƒå–å™¨æ‰€æœ‰çš„ä¸œä¸œ
     typedef ptrdiff_t difference_type;
     typedef _value_type *pointer;
     typedef _value_type &reference;
@@ -122,7 +122,7 @@ class _shm_avl_tree_iterator
     typedef std::bidirectional_iterator_tag iterator_category;
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     _shm_avl_tree_iterator(size_t seq, shm_avl_tree_t *instance)
         : serial_(seq)
         , avl_tree_inst_(instance)
@@ -139,14 +139,14 @@ public:
     {
     }
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void initialize(size_t seq, shm_avl_tree_t *instance)
     {
         serial_ = seq;
         avl_tree_inst_ = instance;
     }
 
-    //±£ÁôĞòºÅ¾Í¿ÉÒÔÔÙ¸ù¾İÄ£°æÊµÀı»¯¶ÔÏóÕÒµ½ÏàÓ¦Êı¾İ,²»ÓÃÊ¹ÓÃÖ¸Õë
+    //ä¿ç•™åºå·å°±å¯ä»¥å†æ ¹æ®æ¨¡ç‰ˆå®ä¾‹åŒ–å¯¹è±¡æ‰¾åˆ°ç›¸åº”æ•°æ®,ä¸ç”¨ä½¿ç”¨æŒ‡é’ˆ
     size_t getserial() const
     {
         return serial_;
@@ -166,7 +166,7 @@ public:
         return *(operator->());
     }
 
-    //ÔÚ¶àÏß³ÌµÄ»·¾³ÏÂÌá¹©Õâ¸öÔËËÍ·ûºÅÊÇ²»°²È«µÄ,Ã»ÓĞ¼ÓËø,ÉÏ²ã×Ô¼º±£Ö¤
+    //åœ¨å¤šçº¿ç¨‹çš„ç¯å¢ƒä¸‹æä¾›è¿™ä¸ªè¿é€ç¬¦å·æ˜¯ä¸å®‰å…¨çš„,æ²¡æœ‰åŠ é”,ä¸Šå±‚è‡ªå·±ä¿è¯
     _value_type *operator->() const
     {
         return avl_tree_inst_->getdatabase() + serial_;
@@ -196,12 +196,12 @@ public:
         return tmp;
     }
 
-    ///ÓÃÓÚÊµÏÖoperator++£¬ÕÒÏÂÒ»¸ö±È×Ô¼º´ó(±È½Ïº¯Êı¶øÑÔ)µÄ½Úµã
+    ///ç”¨äºå®ç°operator++ï¼Œæ‰¾ä¸‹ä¸€ä¸ªæ¯”è‡ªå·±å¤§(æ¯”è¾ƒå‡½æ•°è€Œè¨€)çš„èŠ‚ç‚¹
     void increment()
     {
         if ((avl_tree_inst_->index_base_ + serial_)->right_ != _shm_memory_base::_INVALID_POINT)
         {
-            //Èç¹ûÓĞÓÒ×Ó½Úµã£¬¾ÍÏòÓÒ×ß£¬È»ºóÒ»Ö±ÑØ×ó×ÓÊ÷×ßµ½µ×¼´¿É
+            //å¦‚æœæœ‰å³å­èŠ‚ç‚¹ï¼Œå°±å‘å³èµ°ï¼Œç„¶åä¸€ç›´æ²¿å·¦å­æ ‘èµ°åˆ°åº•å³å¯
             serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
 
             while ((avl_tree_inst_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT)
@@ -211,7 +211,7 @@ public:
         }
         else
         {
-            //Èç¹ûÃ»ÓĞÓÒ×Ó½Úµã£¬ÕÒµ½¸¸½Úµã£¬Èç¹ûµ±Ç°½ÚµãÊÇÄ³¸öÓÒ×Ó½Úµã£¬¾ÍÒ»Ö±ÉÏËİµ½²»ÎªÓÒ×Ó½ÚµãÎªÖ¹
+            //å¦‚æœæ²¡æœ‰å³å­èŠ‚ç‚¹ï¼Œæ‰¾åˆ°çˆ¶èŠ‚ç‚¹ï¼Œå¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯æŸä¸ªå³å­èŠ‚ç‚¹ï¼Œå°±ä¸€ç›´ä¸Šæº¯åˆ°ä¸ä¸ºå³å­èŠ‚ç‚¹ä¸ºæ­¢
             size_t y = (avl_tree_inst_->index_base_ + serial_)->parent_;
 
             while (serial_ == (avl_tree_inst_->index_base_ + y)->right_)
@@ -220,7 +220,7 @@ public:
                 y = (avl_tree_inst_->index_base_ + y)->parent_;
             }
 
-            //Èô´ËÊ±µÄÓÒ×Ó½Úµã²»µÈÓÚ¸¸½Úµã£¬Ôò¸¸½Úµã¼´ÊÇ£¬·ñÔò¾ÍÊÇµ±Ç°½Úµã
+            //è‹¥æ­¤æ—¶çš„å³å­èŠ‚ç‚¹ä¸ç­‰äºçˆ¶èŠ‚ç‚¹ï¼Œåˆ™çˆ¶èŠ‚ç‚¹å³æ˜¯ï¼Œå¦åˆ™å°±æ˜¯å½“å‰èŠ‚ç‚¹
             if ((avl_tree_inst_->index_base_ + serial_)->right_ != y)
             {
                 serial_ = y;
@@ -228,18 +228,18 @@ public:
         }
     }
 
-    //ÓÃÓÚÊµÏÖoperator--£¬ÕÒÏÂÒ»¸ö±È×Ô¼ºĞ¡(±È½Ïº¯Êı¶øÑÔ)µÄ½Úµã
+    //ç”¨äºå®ç°operator--ï¼Œæ‰¾ä¸‹ä¸€ä¸ªæ¯”è‡ªå·±å°(æ¯”è¾ƒå‡½æ•°è€Œè¨€)çš„èŠ‚ç‚¹
     void decrement()
     {
-        //Èç¹ûÊÇEND£¬serial_¾ÍÊÇhead_index_µÄÏÂ±ê£¬ÄÇÃ´Æäright_¾ÍÊÇendÇ°ÃæµÄÄÇ¸ö
+        //å¦‚æœæ˜¯ENDï¼Œserial_å°±æ˜¯head_index_çš„ä¸‹æ ‡ï¼Œé‚£ä¹ˆå…¶right_å°±æ˜¯endå‰é¢çš„é‚£ä¸ª
         if (avl_tree_inst_->avl_tree_head_->num_of_node_ == serial_)
         {
             serial_ = (avl_tree_inst_->index_base_ + serial_)->right_;
         }
-        //Èç¹ûÓĞ×ó×Ó½Úµã
+        //å¦‚æœæœ‰å·¦å­èŠ‚ç‚¹
         else if ((avl_tree_inst_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT)
         {
-            //ÁîyÖ¸Ïò×ó×Ó½Úµã£¬ÕÒµ½yµÄÓÒ×Ó½Úµã£¬ÏòÓÒ×ßµ½µ×¼´ÊÇ
+            //ä»¤yæŒ‡å‘å·¦å­èŠ‚ç‚¹ï¼Œæ‰¾åˆ°yçš„å³å­èŠ‚ç‚¹ï¼Œå‘å³èµ°åˆ°åº•å³æ˜¯
             size_t y = (avl_tree_inst_->index_base_ + serial_)->left_;
 
             while ((avl_tree_inst_->index_base_ + y)->right_ != _shm_memory_base::_INVALID_POINT)
@@ -251,7 +251,7 @@ public:
         }
         else
         {
-            //ÕÒ³ö¸¸½Úµã£¬Èç¹ûµ±Ç°½ÚµãÊÇ¸ö×ó×Ó½Úµã£¬¾ÍÒ»Ö±ÉÏËİ£¬Ö±µ½²»ÔÙÎª×ó×Ó½Úµã£¬ÔòÆäµÄ¸¸½Úµã¼´ÊÇ
+            //æ‰¾å‡ºçˆ¶èŠ‚ç‚¹ï¼Œå¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯ä¸ªå·¦å­èŠ‚ç‚¹ï¼Œå°±ä¸€ç›´ä¸Šæº¯ï¼Œç›´åˆ°ä¸å†ä¸ºå·¦å­èŠ‚ç‚¹ï¼Œåˆ™å…¶çš„çˆ¶èŠ‚ç‚¹å³æ˜¯
             size_t y = (avl_tree_inst_->index_base_ + serial_)->parent_;
 
             while (serial_ == (avl_tree_inst_->index_base_ + y)->left_)
@@ -266,22 +266,22 @@ public:
 
 
 protected:
-    //ĞòÁĞºÅ
+    //åºåˆ—å·
     size_t          serial_;
-    //RBtreeµÄÊµÀıÖ¸Õë
+    //RBtreeçš„å®ä¾‹æŒ‡é’ˆ
     shm_avl_tree_t  *avl_tree_inst_;
 
 };
 
 
 /*!
-* @brief      AVL TreeµÄÈİÆ÷£¬ÓÃÓÚÅÅĞòµÄ´¦ÀíµÈ£¬
-*             AVLµÄ¸÷·½ÃæµÄ´¦ÀíĞÔÄÜ¶¼½ÏÎªÒ»°ã£¬±ÈÈç²åÈë£¬É¾³ıµÄºÄÊ±¶¼ÊÇ O(LOG2N)
-*             µÄ¼¶±ğ
-* @tparam     _value_type   Êı¾İÀàĞÍ
-* @tparam     _key_type     KEYµÄÀàĞÍ
-* @tparam     _extract_key  Èç¹û´Ó_value_typeÖĞ»ñÈ¡_key_typeµÄ·½·¨
-* @tparam     _compare_key  ±È½Ï·½·¨
+* @brief      AVL Treeçš„å®¹å™¨ï¼Œç”¨äºæ’åºçš„å¤„ç†ç­‰ï¼Œ
+*             AVLçš„å„æ–¹é¢çš„å¤„ç†æ€§èƒ½éƒ½è¾ƒä¸ºä¸€èˆ¬ï¼Œæ¯”å¦‚æ’å…¥ï¼Œåˆ é™¤çš„è€—æ—¶éƒ½æ˜¯ O(LOG2N)
+*             çš„çº§åˆ«
+* @tparam     _value_type   æ•°æ®ç±»å‹
+* @tparam     _key_type     KEYçš„ç±»å‹
+* @tparam     _extract_key  å¦‚æœä»_value_typeä¸­è·å–_key_typeçš„æ–¹æ³•
+* @tparam     _compare_key  æ¯”è¾ƒæ–¹æ³•
 */
 template < class _value_type,
            class _key_type,
@@ -290,27 +290,27 @@ template < class _value_type,
 class shm_avl_tree : public _shm_memory_base
 {
 public:
-    //¶¨Òå×Ô¼º
+    //å®šä¹‰è‡ªå·±
     typedef shm_avl_tree < _value_type,
             _key_type,
             _extract_key,
             _compare_key > self;
 
-    //¶¨Òåµü´úÆ÷
+    //å®šä¹‰è¿­ä»£å™¨
     typedef _shm_avl_tree_iterator < _value_type,
             _key_type,
             _extract_key,
             _compare_key > iterator;
 
-    //µü´úÆ÷ÓÑÔª
+    //è¿­ä»£å™¨å‹å…ƒ
     friend class _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
 
 
 
 public:
 
-    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
-    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
+    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
+    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
     shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore)
         : _shm_memory_base(NULL)
         , index_base_(NULL)
@@ -327,38 +327,38 @@ public:
     {
     }
 
-    //Ö»¶¨Òå,²»ÊµÏÖ,±ÜÃâ·¸´í
+    //åªå®šä¹‰,ä¸å®ç°,é¿å…çŠ¯é”™
     const self &operator=(const self &others);
 
-    //µÃµ½Ë÷ÒıµÄ»ù´¡µØÖ·
+    //å¾—åˆ°ç´¢å¼•çš„åŸºç¡€åœ°å€
     inline _shm_avl_tree_index *getindexbase()
     {
         return index_base_;
     }
 
-    //µÃµ½Êı¾İÇøµÄ»ù´¡µØÖÊ
+    //å¾—åˆ°æ•°æ®åŒºçš„åŸºç¡€åœ°è´¨
     inline  _value_type *getdatabase()
     {
         return data_base_;
     }
 
 protected:
-    //·ÖÅäÒ»¸öNODE,½«Æä´ÓFREELISTÖĞÈ¡³ö
+    //åˆ†é…ä¸€ä¸ªNODE,å°†å…¶ä»FREELISTä¸­å–å‡º
     size_t create_node(const _value_type &val)
     {
-        //Èç¹ûÃ»ÓĞ¿Õ¼ä¿ÉÒÔ·ÖÅä
+        //å¦‚æœæ²¡æœ‰ç©ºé—´å¯ä»¥åˆ†é…
         if (avl_tree_head_->sz_free_node_ == 0)
         {
             return _INVALID_POINT;
         }
 
-        //´ÓÁ´ÉÏÈ¡1¸öÏÂÀ´
+        //ä»é“¾ä¸Šå–1ä¸ªä¸‹æ¥
         size_t new_node = free_index_->right_;
         free_index_->right_ = (index_base_ + new_node)->right_;
         avl_tree_head_->sz_free_node_--;
         avl_tree_head_->sz_use_node_++;
 
-        //³õÊ¼»¯
+        //åˆå§‹åŒ–
         (index_base_ + new_node)->parent_ = _INVALID_POINT;
         (index_base_ + new_node)->left_ = _INVALID_POINT;
         (index_base_ + new_node)->right_ = _INVALID_POINT;
@@ -369,7 +369,7 @@ protected:
         return new_node;
     }
 
-    //ÊÍ·ÅÒ»¸öNODE,½«Æä¹é»¹¸øFREELIST
+    //é‡Šæ”¾ä¸€ä¸ªNODE,å°†å…¶å½’è¿˜ç»™FREELIST
     void destroy_node(size_t pos)
     {
         size_t freenext = free_index_->right_;
@@ -384,13 +384,13 @@ protected:
         avl_tree_head_->sz_free_node_++;
         avl_tree_head_->sz_use_node_--;
 
-        //µ÷ÓÃÏÔÊ½µÄÎö¹¹º¯Êı
+        //è°ƒç”¨æ˜¾å¼çš„ææ„å‡½æ•°
         (data_base_ + pos)->~_value_type();
     }
 
 public:
 
-    //ÄÚ´æÇøµÄ¹¹³ÉÎª Í·²¿¶¨ÒåÇø,indexÇø,dataÇø,·µ»ØËùĞèÒªµÄ³¤¶È,
+    //å†…å­˜åŒºçš„æ„æˆä¸º å¤´éƒ¨å®šä¹‰åŒº,indexåŒº,dataåŒº,è¿”å›æ‰€éœ€è¦çš„é•¿åº¦,
     static size_t getallocsize(const size_t numnode)
     {
         return  sizeof(_shm_avl_tree_head)
@@ -398,16 +398,16 @@ public:
                 + sizeof(_value_type) * numnode;
     }
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     static self *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
         _shm_avl_tree_head *avl_tree_head = reinterpret_cast<_shm_avl_tree_head *>(pmmap);
 
-        //Èç¹ûÊÇ»Ö¸´,Êı¾İ¶¼ÔÚÄÚ´æÖĞ,
+        //å¦‚æœæ˜¯æ¢å¤,æ•°æ®éƒ½åœ¨å†…å­˜ä¸­,
         if (true == if_restore)
         {
-            //¼ì²éÒ»ÏÂ»Ö¸´µÄÄÚ´æÊÇ·ñÕıÈ·,
+            //æ£€æŸ¥ä¸€ä¸‹æ¢å¤çš„å†…å­˜æ˜¯å¦æ­£ç¡®,
             if (getallocsize(numnode) != avl_tree_head->size_of_mmap_ ||
                 numnode != avl_tree_head->num_of_node_)
             {
@@ -415,27 +415,27 @@ public:
             }
         }
 
-        //³õÊ¼»¯³ß´ç
+        //åˆå§‹åŒ–å°ºå¯¸
         avl_tree_head->size_of_mmap_ = getallocsize(numnode);
         avl_tree_head->num_of_node_ = numnode;
 
         self *instance = new self();
 
-        //ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ü¼Ó»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
+        //æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ›´åŠ åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
         instance->smem_base_ = pmmap;
-        //Í·²¿
+        //å¤´éƒ¨
         instance->avl_tree_head_ = avl_tree_head;
-        //Ë÷ÒıÇø
+        //ç´¢å¼•åŒº
         instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(
                                     pmmap +
                                     sizeof(_shm_avl_tree_head));
-        //Êı¾İÇø
+        //æ•°æ®åŒº
         instance->data_base_ = reinterpret_cast<_value_type *>(
                                    pmmap +
                                    sizeof(_shm_rb_tree_head) +
                                    sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
-        //³õÊ¼»¯free_index_,head_index_
+        //åˆå§‹åŒ–free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_avl_tree_index *>(
                                     pmmap +
                                     sizeof(_shm_avl_tree_head) +
@@ -447,21 +447,21 @@ public:
 
         if (false == if_restore)
         {
-            //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
+            //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
             instance->clear();
         }
 
         return instance;
     }
 
-    //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
+    //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
     void clear()
     {
-        //´¦Àí2¸ö¹Ø¼üNode,ÒÔ¼°Ïà¹Ø³¤¶È,¿ªÊ¼ËùÓĞµÄÊı¾İÊÇfree.
+        //å¤„ç†2ä¸ªå…³é”®Node,ä»¥åŠç›¸å…³é•¿åº¦,å¼€å§‹æ‰€æœ‰çš„æ•°æ®æ˜¯free.
         avl_tree_head_->sz_free_node_ = avl_tree_head_->num_of_node_;
         avl_tree_head_->sz_use_node_ = 0;
 
-        //½«ÇåÀíÎªNULL,ÈÃÖ¸Õë¶¼Ö¸Ïò×Ô¼º
+        //å°†æ¸…ç†ä¸ºNULL,è®©æŒ‡é’ˆéƒ½æŒ‡å‘è‡ªå·±
         head_index_->parent_ = _INVALID_POINT;
         head_index_->right_ = avl_tree_head_->num_of_node_;
         head_index_->left_ = avl_tree_head_->num_of_node_;
@@ -472,16 +472,16 @@ public:
         free_index_->parent_ = _INVALID_POINT;
         free_index_->balanced_ = 0;
 
-        //ÓÃright_´®ÆğÀ´FREE NODEµÄÁĞ±í
+        //ç”¨right_ä¸²èµ·æ¥FREE NODEçš„åˆ—è¡¨
         free_index_->right_ = 0;
 
-        //³õÊ¼»¯freeÊı¾İÇø
+        //åˆå§‹åŒ–freeæ•°æ®åŒº
         _shm_avl_tree_index *pindex = index_base_;
         for (size_t i = 0; i < avl_tree_head_->num_of_node_; ++i)
         {
             pindex->right_ = (i + 1);
 
-            //½«ËùÓĞFREENODE´®ÆğÀ´
+            //å°†æ‰€æœ‰FREENODEä¸²èµ·æ¥
             if (i == avl_tree_head_->num_of_node_ - 1)
             {
                 pindex->right_ = avl_tree_head_->num_of_node_ + 1;
@@ -491,19 +491,19 @@ public:
         }
     }
 
-    //ÕÒµ½µÚÒ»¸ö½Úµã
+    //æ‰¾åˆ°ç¬¬ä¸€ä¸ªèŠ‚ç‚¹
     iterator begin()
     {
         return iterator(head_index_->left_, this);
     };
 
-    //ÈİÆ÷Ó¦¸ÃÊÇÇ°±Õºó¿ªµÄ,Í·½ÚµãÊÓÎª×îºóÒ»¸öindex
+    //å®¹å™¨åº”è¯¥æ˜¯å‰é—­åå¼€çš„,å¤´èŠ‚ç‚¹è§†ä¸ºæœ€åä¸€ä¸ªindex
     iterator end()
     {
         return iterator(avl_tree_head_->num_of_node_, this);
     }
 
-    //ËùÓĞ½Úµã¶¼ÔÚfreeÁ´ÉÏ¼´ÊÇ¿Õ
+    //æ‰€æœ‰èŠ‚ç‚¹éƒ½åœ¨freeé“¾ä¸Šå³æ˜¯ç©º
     bool empty()
     {
         if (avl_tree_head_->sz_free_node_ == avl_tree_head_->num_of_node_)
@@ -514,7 +514,7 @@ public:
         return false;
     }
 
-    //ÔÚ²åÈëÊı¾İÇ°µ÷ÓÃ,Õâ¸öº¯Êı¼ì²é
+    //åœ¨æ’å…¥æ•°æ®å‰è°ƒç”¨,è¿™ä¸ªå‡½æ•°æ£€æŸ¥
     bool full()
     {
         if (avl_tree_head_->sz_free_node_ == 0)
@@ -535,7 +535,7 @@ public:
         return avl_tree_head_->num_of_node_;
     }
 
-    //¿ÕÏĞµÄ½Úµã¸öÊı
+    //ç©ºé—²çš„èŠ‚ç‚¹ä¸ªæ•°
     size_t sizefree()
     {
         return avl_tree_head_->sz_free_node_;
@@ -543,8 +543,8 @@ public:
 
 public:
 
-    //±¾À´´òËã°ÑÕâ¶Î´úÂëÈ«²¿ºê¶¨ÒåµÄ£¬µ«¿¼ÂÇÁËÒ»ÏÂ£¬¾õµÃ»¹ÊÇinline¾Í×ã¹»ÁË¡£
-    //ºê±Ï¾¹»áÈÃ´úÂë±äµÃ³óÂª£¬ËãÁË¡£¶øÇÒÕâĞ©º¯ÊıµÄ³¤¶ÈÓ¦¸ÃÊÇ¿ÉÒÔ±»inlineµÄ¡£
+    //æœ¬æ¥æ‰“ç®—æŠŠè¿™æ®µä»£ç å…¨éƒ¨å®å®šä¹‰çš„ï¼Œä½†è€ƒè™‘äº†ä¸€ä¸‹ï¼Œè§‰å¾—è¿˜æ˜¯inlineå°±è¶³å¤Ÿäº†ã€‚
+    //å®æ¯•ç«Ÿä¼šè®©ä»£ç å˜å¾—ä¸‘é™‹ï¼Œç®—äº†ã€‚è€Œä¸”è¿™äº›å‡½æ•°çš„é•¿åº¦åº”è¯¥æ˜¯å¯ä»¥è¢«inlineçš„ã€‚
 
     inline size_t  &header() const
     {
@@ -596,7 +596,7 @@ public:
         return _extract_key()(value(x));
     }
 
-    //È¡¼«´óÖµ
+    //å–æå¤§å€¼
     size_t minimum(size_t x)
     {
         while (left(x) != _INVALID_POINT)
@@ -607,7 +607,7 @@ public:
         return x;
     }
 
-    //È¡¼«Ğ¡Öµ
+    //å–æå°å€¼
     size_t maximum(size_t x)
     {
         while (right(x) != _INVALID_POINT)
@@ -622,25 +622,25 @@ protected:
 
 
     /*!
-    * @brief      ÕæÕıµÄ²åÈëÊÇÓÉÕâ¸öº¯ÊıÍê³ÉµÄ
-    * @return     std::pair<iterator, bool> ·µ»ØµÄ²åÈë½á¹¹£¬°üÀ¨µü´úÆ÷ºÍ½á¹û
-    * @param      x   ²åÈëµã,´ó²¿·ÖÊ±ºòÎª_INVALID_POINT
-    * @param      y   ²åÈëµãµÄ¸¸½Úµã
-    * @param      val ²åÈëµÄÊı¾İ
+    * @brief      çœŸæ­£çš„æ’å…¥æ˜¯ç”±è¿™ä¸ªå‡½æ•°å®Œæˆçš„
+    * @return     std::pair<iterator, bool> è¿”å›çš„æ’å…¥ç»“æ„ï¼ŒåŒ…æ‹¬è¿­ä»£å™¨å’Œç»“æœ
+    * @param      x   æ’å…¥ç‚¹,å¤§éƒ¨åˆ†æ—¶å€™ä¸º_INVALID_POINT
+    * @param      y   æ’å…¥ç‚¹çš„çˆ¶èŠ‚ç‚¹
+    * @param      val æ’å…¥çš„æ•°æ®
     */
     std::pair<iterator, bool> _insert(size_t x, size_t y, const _value_type &val)
     {
-        //·ÖÅäÒ»¸ö¿Õ¼ä
+        //åˆ†é…ä¸€ä¸ªç©ºé—´
         size_t z = create_node(val);
-        //ÈÕ¹ı¿Õ¼ä²»×ã£¬ÎŞ·¨²åÈë£¬·µ»Øend,falseµÄpair
+        //æ—¥è¿‡ç©ºé—´ä¸è¶³ï¼Œæ— æ³•æ’å…¥ï¼Œè¿”å›end,falseçš„pair
         if (_INVALID_POINT == z)
         {
             return std::pair<iterator, bool>(end(), false);
         }
 
-        //°Ñ´Ë¶ş»õ²åÈë½øÈ¥£¬¶øÇÒµ÷Õû¸÷ÖÖ¶«¶«
+        //æŠŠæ­¤äºŒè´§æ’å…¥è¿›å»ï¼Œè€Œä¸”è°ƒæ•´å„ç§ä¸œä¸œ
 
-        //Èç¹û1.²åÈëµÄÊÇroot½Úµã£¬2.Èç¹û²åÈë½Úµã²»ÊÇ¿Õ½Úµã£¬3.Èç¹û±È½ÏÎªTRUE
+        //å¦‚æœ1.æ’å…¥çš„æ˜¯rootèŠ‚ç‚¹ï¼Œ2.å¦‚æœæ’å…¥èŠ‚ç‚¹ä¸æ˜¯ç©ºèŠ‚ç‚¹ï¼Œ3.å¦‚æœæ¯”è¾ƒä¸ºTRUE
         if (y == header() || x != _INVALID_POINT || _compare_key()(_extract_key()(val), key(y)))
         {
             left(y) = z;
@@ -650,7 +650,7 @@ protected:
                 root() = z;
                 rightmost() = z;
             }
-            //Èç¹ûYÊÇ×îĞ¡Öµ£¬Ôò°É×îĞ¡Öµ¸ÄÎªY
+            //å¦‚æœYæ˜¯æœ€å°å€¼ï¼Œåˆ™å§æœ€å°å€¼æ”¹ä¸ºY
             else if (y == leftmost())
             {
                 leftmost() = z;
@@ -670,7 +670,7 @@ protected:
         left(z) = _INVALID_POINT;
         right(z) = _INVALID_POINT;
 
-        //Èç¹û²»ÊÇ¸ù½Úµã£¬ÎÒÃÇ½øĞĞÆ½ºâµ÷Õû
+        //å¦‚æœä¸æ˜¯æ ¹èŠ‚ç‚¹ï¼Œæˆ‘ä»¬è¿›è¡Œå¹³è¡¡è°ƒæ•´
         if (y != header())
         {
             _balance_adjust(z, true);
@@ -682,15 +682,15 @@ protected:
 
 
     /*!
-    * @brief      ½øĞĞÆ½ºâµ÷Õû£¬ÄÚ²¿º¯Êı£¬
-    * @param[in]  z ²åÈëµÄ½ÚµãÎ»ÖÃ
-    * @param[in]  if_inssert ÊÇ·ñÊÇ²åÈë²Ù×÷½øĞĞµ÷Õû£¬Èç¹ûÊÇÉ¾³ı²Ù×÷£¬ÌîĞ´false
+    * @brief      è¿›è¡Œå¹³è¡¡è°ƒæ•´ï¼Œå†…éƒ¨å‡½æ•°ï¼Œ
+    * @param[in]  z æ’å…¥çš„èŠ‚ç‚¹ä½ç½®
+    * @param[in]  if_inssert æ˜¯å¦æ˜¯æ’å…¥æ“ä½œè¿›è¡Œè°ƒæ•´ï¼Œå¦‚æœæ˜¯åˆ é™¤æ“ä½œï¼Œå¡«å†™false
     */
     void _balance_adjust(size_t z, bool if_inssert)
     {
-        //ÆäÊµÕâ¸öµØ·½Ö±½ÓÊ¹ÓÃ³£Á¿»¹¸ü¼ÓÇåÎúÒ»µã,ËùÒÔÎÒÃ»ÓĞÓÃÃ¶¾Ù»òÕßºê
+        //å…¶å®è¿™ä¸ªåœ°æ–¹ç›´æ¥ä½¿ç”¨å¸¸é‡è¿˜æ›´åŠ æ¸…æ™°ä¸€ç‚¹,æ‰€ä»¥æˆ‘æ²¡æœ‰ç”¨æšä¸¾æˆ–è€…å®
 
-        //ÕÒµ½×îĞ¡µÄ²»Æ½ºâµÄµã,
+        //æ‰¾åˆ°æœ€å°çš„ä¸å¹³è¡¡çš„ç‚¹,
 
         size_t s = parent(z);
         size_t t = z, u = 0;
@@ -707,12 +707,12 @@ protected:
                 mod_balance = (t == left(s)) ? -1 : 1;
             }
 
-            //Èç¹ûÊÇÆ½ºâµÄ£¬ĞŞ¸ÄÆ½ºâ²ÎÊı£¬¼ÌĞøÏòÉÏ¸É»î
+            //å¦‚æœæ˜¯å¹³è¡¡çš„ï¼Œä¿®æ”¹å¹³è¡¡å‚æ•°ï¼Œç»§ç»­å‘ä¸Šå¹²æ´»
             if (0 == balanced(s))
             {
                 balanced(s) += mod_balance;
 
-                //Èç¹ûÊÇ²åÈë£¬Ô­À´½ÚµãÊÇÆ½ºâµÄ£¬¼ÌĞøÏòÉÏ£¬Èç¹ûÊÇÉ¾³ı£¬Ô­À´½ÚµãÊÇÆ½ºâµÄ£¬µ½´ËÎªÖ¹
+                //å¦‚æœæ˜¯æ’å…¥ï¼ŒåŸæ¥èŠ‚ç‚¹æ˜¯å¹³è¡¡çš„ï¼Œç»§ç»­å‘ä¸Šï¼Œå¦‚æœæ˜¯åˆ é™¤ï¼ŒåŸæ¥èŠ‚ç‚¹æ˜¯å¹³è¡¡çš„ï¼Œåˆ°æ­¤ä¸ºæ­¢
                 if (if_inssert)
                 {
                     continue;
@@ -723,14 +723,14 @@ protected:
                 }
 
             }
-            //Õâ¸öµãÉÏÔ­À´¾Í²»Æ½ºâ£¬ÕÒµ½×îĞ¡µÄ²»Æ½ºâÊ÷£¬½øĞĞĞı×ª£¬ÈÃÆäÆ½ºâ
+            //è¿™ä¸ªç‚¹ä¸ŠåŸæ¥å°±ä¸å¹³è¡¡ï¼Œæ‰¾åˆ°æœ€å°çš„ä¸å¹³è¡¡æ ‘ï¼Œè¿›è¡Œæ—‹è½¬ï¼Œè®©å…¶å¹³è¡¡
             else
             {
                 balanced(s) += mod_balance;
-                //¸ù¾İ²»Æ½ºâµÄÇé¿ö£¬¾ö¶¨½øĞĞÊ²Ã´ÑùµÄĞı×ª
+                //æ ¹æ®ä¸å¹³è¡¡çš„æƒ…å†µï¼Œå†³å®šè¿›è¡Œä»€ä¹ˆæ ·çš„æ—‹è½¬
                 if (2 == balanced(s))
                 {
-                    //¿¼ÂÇµ½É¾³ıµÄÌØÊâÇé¿ö£¬Õâ¶ù²»ÄÜÖ±½ÓÓÃt
+                    //è€ƒè™‘åˆ°åˆ é™¤çš„ç‰¹æ®Šæƒ…å†µï¼Œè¿™å„¿ä¸èƒ½ç›´æ¥ç”¨t
                     u = left(s);
                     int32_t u_b = balanced(u);
                     if (-1 == u_b )
@@ -748,7 +748,7 @@ protected:
                     else
                     {
                         _ll_rotate(s, u);
-                        //u_b == 0 Ö»¿ÉÄÜÔÚÉ¾³ıµÄÇé¿ö·¢Éú,¶øÇÒÕâÑù²Ù×÷ºó£¬¸ß¶È²»±ä»¯£¬
+                        //u_b == 0 åªå¯èƒ½åœ¨åˆ é™¤çš„æƒ…å†µå‘ç”Ÿ,è€Œä¸”è¿™æ ·æ“ä½œåï¼Œé«˜åº¦ä¸å˜åŒ–ï¼Œ
                         break;
                     }
                 }
@@ -770,12 +770,12 @@ protected:
                     else
                     {
                         _rr_rotate(s, u);
-                        //u_b == 0 Ö»¿ÉÄÜÔÚÉ¾³ıµÄÇé¿ö·¢Éú
+                        //u_b == 0 åªå¯èƒ½åœ¨åˆ é™¤çš„æƒ…å†µå‘ç”Ÿ
                         break;
                     }
                 }
 
-                //¶ÔÓÚÉ¾³ıÀ´Ëµ£¬Ğı×ªºó£¬ÀíÂÛÉÏÕâ¸ö×ÓÊ÷µÄ¸ß¶È»áÓĞ±ä»¯£¬ËùÒÔÒª¼ÌĞø
+                //å¯¹äºåˆ é™¤æ¥è¯´ï¼Œæ—‹è½¬åï¼Œç†è®ºä¸Šè¿™ä¸ªå­æ ‘çš„é«˜åº¦ä¼šæœ‰å˜åŒ–ï¼Œæ‰€ä»¥è¦ç»§ç»­
                 if (if_inssert)
                 {
                     break;
@@ -790,9 +790,9 @@ protected:
     }
 
     /*!
-    * @brief      LLĞı×ª£¬
-    * @param      a   ¸¸½Úµã£¬×îĞ¡µÄ²»Æ½ºâÊ÷µÄ¸ù½Úµã
-    * @param      b  ×ó±ßµÄ×Ó½Úµã
+    * @brief      LLæ—‹è½¬ï¼Œ
+    * @param      a   çˆ¶èŠ‚ç‚¹ï¼Œæœ€å°çš„ä¸å¹³è¡¡æ ‘çš„æ ¹èŠ‚ç‚¹
+    * @param      b  å·¦è¾¹çš„å­èŠ‚ç‚¹
     */
     void _ll_rotate(size_t a, size_t b)
     {
@@ -808,20 +808,20 @@ protected:
         parent(b) = gf;
 
 
-        //µ÷ÕûÆ½ºâÒò×Ó
+        //è°ƒæ•´å¹³è¡¡å› å­
         if ( 1 == balanced(b) )
         {
             balanced(a) = 0;
             balanced(b) = 0;
         }
-        //¶ÔÓÚ²åÈëLL£¬balanced(b)Ö»¿ÉÄÜµÈÓÚ1£¬µ«¶ÔÓÚÉ¾³ıbalanced(b) »¹¿ÉÄÜµÈÓÚ0
+        //å¯¹äºæ’å…¥LLï¼Œbalanced(b)åªå¯èƒ½ç­‰äº1ï¼Œä½†å¯¹äºåˆ é™¤balanced(b) è¿˜å¯èƒ½ç­‰äº0
         else
         {
             balanced(a) = 1;
             balanced(b) = -1;
         }
 
-        //µ÷ÕûpµÄ¸¸½ÚµãµÄ×óÓÒ×ÓÊ÷£¬ÈÃÆäÖ¸ÏòĞÂµÄ×ÓÊ÷ĞÂ¸ù
+        //è°ƒæ•´pçš„çˆ¶èŠ‚ç‚¹çš„å·¦å³å­æ ‘ï¼Œè®©å…¶æŒ‡å‘æ–°çš„å­æ ‘æ–°æ ¹
         if (gf == header())
         {
             root() = b;
@@ -840,10 +840,10 @@ protected:
     }
 
     /*!
-    * @brief      LRĞı×ª
-    * @param      a   ¸¸½Úµã£¬×îĞ¡µÄ²»Æ½ºâÊ÷µÄ¸ù½Úµã
-    * @param      b   aµÄ×ó×Ó½Úµã
-    * @param      c   bµÄÓÒ×Ó½Úµã
+    * @brief      LRæ—‹è½¬
+    * @param      a   çˆ¶èŠ‚ç‚¹ï¼Œæœ€å°çš„ä¸å¹³è¡¡æ ‘çš„æ ¹èŠ‚ç‚¹
+    * @param      b   açš„å·¦å­èŠ‚ç‚¹
+    * @param      c   bçš„å³å­èŠ‚ç‚¹
     */
     void _lr_rotate(size_t a, size_t b, size_t c)
     {
@@ -865,7 +865,7 @@ protected:
         right(c) = a;
         parent(c) = gf;
 
-        //¸ù¾İCµÄ×´Ì¬µ÷ÕûÆ½ºâÒò×Ó
+        //æ ¹æ®Cçš„çŠ¶æ€è°ƒæ•´å¹³è¡¡å› å­
         if (1 == balanced(c) )
         {
             balanced(a) = -1;
@@ -885,7 +885,7 @@ protected:
             balanced(c) = 0;
         }
 
-        //µ÷ÕûpµÄ¸¸½ÚµãµÄ×óÓÒ×ÓÊ÷£¬ÈÃÆäÖ¸ÏòĞÂµÄ×ÓÊ÷ĞÂ¸ù
+        //è°ƒæ•´pçš„çˆ¶èŠ‚ç‚¹çš„å·¦å³å­æ ‘ï¼Œè®©å…¶æŒ‡å‘æ–°çš„å­æ ‘æ–°æ ¹
         if (gf == header())
         {
             root() = c;
@@ -904,9 +904,9 @@ protected:
     }
 
     /*!
-    * @brief      RRĞı×ª£¬
-    * @param      a  ¸¸½Úµã£¬×îĞ¡µÄ²»Æ½ºâÊ÷µÄ¸ù½Úµã
-    * @param      b  ÓÒ±ßµÄ×Ó½Úµã
+    * @brief      RRæ—‹è½¬ï¼Œ
+    * @param      a  çˆ¶èŠ‚ç‚¹ï¼Œæœ€å°çš„ä¸å¹³è¡¡æ ‘çš„æ ¹èŠ‚ç‚¹
+    * @param      b  å³è¾¹çš„å­èŠ‚ç‚¹
     */
     void _rr_rotate(size_t a, size_t b)
     {
@@ -921,20 +921,20 @@ protected:
         left(b) = a;
         parent(b) = gf;
 
-        //µ÷ÕûÆ½ºâÒò×Ó
+        //è°ƒæ•´å¹³è¡¡å› å­
         if ( -1 == balanced(b) )
         {
             balanced(a) = 0;
             balanced(b) = 0;
         }
-        //¶ÔÓÚ²åÈëRRĞı×ª£¬balanced(b)Ö»¿ÉÄÜµÈÓÚ-1£¬µ«¶ÔÓÚÉ¾³ıbalanced(b) »¹¿ÉÄÜµÈÓÚ0
+        //å¯¹äºæ’å…¥RRæ—‹è½¬ï¼Œbalanced(b)åªå¯èƒ½ç­‰äº-1ï¼Œä½†å¯¹äºåˆ é™¤balanced(b) è¿˜å¯èƒ½ç­‰äº0
         else
         {
             balanced(a) = -1;
             balanced(b) = 1;
         }
 
-        //µ÷ÕûpµÄ¸¸½ÚµãµÄ×óÓÒ×ÓÊ÷£¬ÈÃÆäÖ¸ÏòĞÂµÄ×ÓÊ÷ĞÂ¸ù
+        //è°ƒæ•´pçš„çˆ¶èŠ‚ç‚¹çš„å·¦å³å­æ ‘ï¼Œè®©å…¶æŒ‡å‘æ–°çš„å­æ ‘æ–°æ ¹
         if (gf == header())
         {
             root() = b;
@@ -973,7 +973,7 @@ protected:
         right(c) = b;
         parent(c) = gf;
 
-        //¸ù¾İCµÄ×´Ì¬µ÷ÕûÆ½ºâÒò×Ó
+        //æ ¹æ®Cçš„çŠ¶æ€è°ƒæ•´å¹³è¡¡å› å­
         if (balanced(c) == 1)
         {
             balanced(a) = 0;
@@ -993,7 +993,7 @@ protected:
             balanced(c) = 0;
         }
 
-        //µ÷ÕûCµÄ¸¸½ÚµãµÄ×óÓÒ×ÓÊ÷£¬ÈÃÆäÖ¸ÏòĞÂµÄ×ÓÊ÷ĞÂ¸ù
+        //è°ƒæ•´Cçš„çˆ¶èŠ‚ç‚¹çš„å·¦å³å­æ ‘ï¼Œè®©å…¶æŒ‡å‘æ–°çš„å­æ ‘æ–°æ ¹
         if (gf == header())
         {
             root() = c;
@@ -1013,14 +1013,14 @@ protected:
 
 
     /*!
-    * @brief      ÕæÕıµÄÉ¾³ıº¯ÊıÊµÏÖ£¬¸Ğ¾õAVLµÄÉ¾³ı¾ø¶Ô²»¿ì
-    * @param      x ÎªÉ¾³ıµÄÎ»ÖÃ
-    * @param      y ÎªXµÄ¸¸½Úµã
+    * @brief      çœŸæ­£çš„åˆ é™¤å‡½æ•°å®ç°ï¼Œæ„Ÿè§‰AVLçš„åˆ é™¤ç»å¯¹ä¸å¿«
+    * @param      x ä¸ºåˆ é™¤çš„ä½ç½®
+    * @param      y ä¸ºXçš„çˆ¶èŠ‚ç‚¹
     */
     void _erase(size_t x, size_t y)
     {
 
-        //¶Ôleftmost£¬rightmost½øĞĞ´¦Àí£¬
+        //å¯¹leftmostï¼Œrightmostè¿›è¡Œå¤„ç†ï¼Œ
         if (x == leftmost())
         {
             iterator iter(x, this);
@@ -1043,8 +1043,8 @@ protected:
         }
 
         size_t a = x, a_p = y, a_l = left(a), a_r = right(a), b = 0, b_p  = 0;
-        //Òª°ÑAÏòÏÂ½»»»£¬Ñ¡ÔñºÍËû×î½Ó½üµÄ½ÚµãBÌæ»»Ëû£¬±ÈÈç×ó×ÓÊ÷µÄÒ»Ö±ÏòÓÒ±ßµÄ½Úµã£¬
-        //±ÈÈçÓÒ×ÓÊ÷µÄÒ»Ö±Ïò×ó±ßµÄ½Úµã£¬Ö±µ½AÊÇÒ¶×Ó½Úµã
+        //è¦æŠŠAå‘ä¸‹äº¤æ¢ï¼Œé€‰æ‹©å’Œä»–æœ€æ¥è¿‘çš„èŠ‚ç‚¹Bæ›¿æ¢ä»–ï¼Œæ¯”å¦‚å·¦å­æ ‘çš„ä¸€ç›´å‘å³è¾¹çš„èŠ‚ç‚¹ï¼Œ
+        //æ¯”å¦‚å³å­æ ‘çš„ä¸€ç›´å‘å·¦è¾¹çš„èŠ‚ç‚¹ï¼Œç›´åˆ°Aæ˜¯å¶å­èŠ‚ç‚¹
         while (a_l != _INVALID_POINT || a_r != _INVALID_POINT)
         {
             if (a_l != _INVALID_POINT)
@@ -1064,7 +1064,7 @@ protected:
                 }
             }
             b_p = parent(b);
-            //°ÑA£¬B½øĞĞ½»»»
+            //æŠŠAï¼ŒBè¿›è¡Œäº¤æ¢
             _exchange(a, a_p, b, b_p);
 
             a_l = left(a);
@@ -1073,7 +1073,7 @@ protected:
 
         }
 
-        //×öÆ½ºâµ÷Õû
+        //åšå¹³è¡¡è°ƒæ•´
         _balance_adjust(a, false);
 
         size_t last_p = parent(x);
@@ -1099,11 +1099,11 @@ protected:
     }
 
     /*!
-    * @brief      ½«a,bÁ½¸ö½Úµã×ó½»»»£¬×¢ÒâÕâ¸öº¯ÊıÖ»»á½øĞĞ½»»»£¬²»»á¿¼ÂÇÆ½ºâµÈ
-    * @param      a   a ½Úµã£¬aÊÇbµÄ¸¸½Úµã»òÕß¸ü×æÏÈµÄµÄ¼¸µã£¬
-    * @param      a_p aËûÂè
-    * @param      b   b½Úµã£¬
-    * @param      b_p bËûÂè
+    * @brief      å°†a,bä¸¤ä¸ªèŠ‚ç‚¹å·¦äº¤æ¢ï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°åªä¼šè¿›è¡Œäº¤æ¢ï¼Œä¸ä¼šè€ƒè™‘å¹³è¡¡ç­‰
+    * @param      a   a èŠ‚ç‚¹ï¼Œaæ˜¯bçš„çˆ¶èŠ‚ç‚¹æˆ–è€…æ›´ç¥–å…ˆçš„çš„å‡ ç‚¹ï¼Œ
+    * @param      a_p aä»–å¦ˆ
+    * @param      b   bèŠ‚ç‚¹ï¼Œ
+    * @param      b_p bä»–å¦ˆ
     */
     void _exchange(size_t a, size_t a_p, size_t b, size_t b_p)
     {
@@ -1194,14 +1194,14 @@ protected:
 public:
 
     /*!
-    * @brief      ÔÊĞíÖØ¸´key²åÈëµÄ²åÈëº¯Êı£¬Multimap¡¢MultimapÓÃÕâ¸ö
-    *             ÒòÎª¿Õ¼ä¿ÉÄÜÂú£¬ËùÒÔ·µ»ØµÄÊı¾İÖĞ»¹ÊÇÓĞboolµÄpair
-    * @return     std::pair<iterator, bool>  ·µ»ØµÄiteratorÎªµü´úÆ÷£¬boolÎªÊÇ·ñ²åÈë³É¹¦
-    * @param      v        ²åÈëµÄ_value_typeµÄÊı¾İ
+    * @brief      å…è®¸é‡å¤keyæ’å…¥çš„æ’å…¥å‡½æ•°ï¼ŒMultimapã€Multimapç”¨è¿™ä¸ª
+    *             å› ä¸ºç©ºé—´å¯èƒ½æ»¡ï¼Œæ‰€ä»¥è¿”å›çš„æ•°æ®ä¸­è¿˜æ˜¯æœ‰boolçš„pair
+    * @return     std::pair<iterator, bool>  è¿”å›çš„iteratorä¸ºè¿­ä»£å™¨ï¼Œboolä¸ºæ˜¯å¦æ’å…¥æˆåŠŸ
+    * @param      v        æ’å…¥çš„_value_typeçš„æ•°æ®
     */
     std::pair<iterator, bool> insert_equal(const _value_type &v)
     {
-        //Èç¹ûÒÀ¾İÂúÁË£¬Ò²·µ»ØÊ§°Ü
+        //å¦‚æœä¾æ®æ»¡äº†ï¼Œä¹Ÿè¿”å›å¤±è´¥
         if (avl_tree_head_->sz_free_node_ == 0)
         {
             return std::pair<iterator, bool>(end(), false);
@@ -1210,7 +1210,7 @@ public:
         size_t y = header();
         size_t x = root();
 
-        //²åÈëµ½Ò»¸ö¿Õ½ÚµãÉÏ
+        //æ’å…¥åˆ°ä¸€ä¸ªç©ºèŠ‚ç‚¹ä¸Š
         while (x != _INVALID_POINT)
         {
             y = x;
@@ -1221,13 +1221,13 @@ public:
     }
 
     /*!
-    * @brief      ÖØ¸´key²åÈëÔòÊ§°ÜµÄ²åÈëº¯Êı£¬Map¡¢SapÓÃÕâ¸ö
-    * @return     std::pair<iterator, bool> ·µ»ØµÄiteratorÎªµü´úÆ÷£¬boolÎªÊÇ·ñ²åÈë³É¹¦
-    * @param      v ²åÈëµÄ_value_typeµÄÊı¾İ
+    * @brief      é‡å¤keyæ’å…¥åˆ™å¤±è´¥çš„æ’å…¥å‡½æ•°ï¼ŒMapã€Sapç”¨è¿™ä¸ª
+    * @return     std::pair<iterator, bool> è¿”å›çš„iteratorä¸ºè¿­ä»£å™¨ï¼Œboolä¸ºæ˜¯å¦æ’å…¥æˆåŠŸ
+    * @param      v æ’å…¥çš„_value_typeçš„æ•°æ®
     */
     std::pair<iterator, bool> insert_unique(const _value_type &v)
     {
-        //Èç¹ûÒÀ¾İÂúÁË£¬Ò²·µ»ØÊ§°Ü
+        //å¦‚æœä¾æ®æ»¡äº†ï¼Œä¹Ÿè¿”å›å¤±è´¥
         if (avl_tree_head_->sz_free_node_ == 0)
         {
             return std::pair<iterator, bool>(end(), false);
@@ -1237,7 +1237,7 @@ public:
         size_t x = root();
         bool comp = true;
 
-        //Èç¹û±È½Ï(±ÈÈçÊÇ<)·µ»Øtrue,¾ÍÏò×ó£¬·ñÔò(>=)¾ÍÏòÓÒ£¬
+        //å¦‚æœæ¯”è¾ƒ(æ¯”å¦‚æ˜¯<)è¿”å›true,å°±å‘å·¦ï¼Œå¦åˆ™(>=)å°±å‘å³ï¼Œ
         while (x != _INVALID_POINT)
         {
             y = x;
@@ -1264,29 +1264,29 @@ public:
             return _insert(x, y, v);
         }
 
-        //Èç¹û¼È²»ÊÇ>,ÓÖ²»ÊÇ<£¬ÄÇÃ´¾ÍÊÇ==,ÄÇÃ´·µ»Ø´íÎó
+        //å¦‚æœæ—¢ä¸æ˜¯>,åˆä¸æ˜¯<ï¼Œé‚£ä¹ˆå°±æ˜¯==,é‚£ä¹ˆè¿”å›é”™è¯¯
         return std::pair<iterator, bool>(j, false);
     }
 
     /*!
-    * @brief      Í¨¹ıµü´úÆ÷É¾³ıÒ»¸ö½Úµã
-    * @return     void ×¢Òâ£¬Î¢ÈíµÄÕâ¸öº¯ÊıºÃÏñ·µ»ØÒ»¸öµü´úÆ÷£¬
-    * @param      pos É¾³ıµÄµü´úÆ÷
+    * @brief      é€šè¿‡è¿­ä»£å™¨åˆ é™¤ä¸€ä¸ªèŠ‚ç‚¹
+    * @return     void æ³¨æ„ï¼Œå¾®è½¯çš„è¿™ä¸ªå‡½æ•°å¥½åƒè¿”å›ä¸€ä¸ªè¿­ä»£å™¨ï¼Œ
+    * @param      pos åˆ é™¤çš„è¿­ä»£å™¨
     */
     void erase(const iterator &pos)
     {
-        //x,ÎªÉ¾³ıµÄÎ»ÖÃ£¬yÎªXµÄ¸¸½Úµã£¬zÓÃÓÚÎªÌæ»»xµÄ½Úµã
+        //x,ä¸ºåˆ é™¤çš„ä½ç½®ï¼Œyä¸ºXçš„çˆ¶èŠ‚ç‚¹ï¼Œzç”¨äºä¸ºæ›¿æ¢xçš„èŠ‚ç‚¹
         size_t x = pos.getserial();
         size_t y = parent(x);
         return _erase(x, y);
     }
 
-    //Í¨¹ıÆğÊ¼µü´úÆ÷É¾³ıÒ»¶Î½Úµã
+    //é€šè¿‡èµ·å§‹è¿­ä»£å™¨åˆ é™¤ä¸€æ®µèŠ‚ç‚¹
     size_t erase(iterator first, iterator last)
     {
         size_t erase_count = 0;
 
-        //ÌØÊâÇé¿öµÄ¼ÓËÙ
+        //ç‰¹æ®Šæƒ…å†µçš„åŠ é€Ÿ
         if (first == begin() && last == end())
         {
             erase_count = size();
@@ -1298,17 +1298,17 @@ public:
             while (first != last)
             {
                 ++erase_count;
-                //×¢ÒâÕâ¸öµØ·½ÓÃµÄÊÇerase(first++)£¬ÊÇfirst
+                //æ³¨æ„è¿™ä¸ªåœ°æ–¹ç”¨çš„æ˜¯erase(first++)ï¼Œæ˜¯first
                 erase(first++);
             }
         }
         return erase_count;
     }
 
-    //Í¨¹ıkeyÉ¾³ı½Úµã£¬MAPÊ¹ÓÃ
+    //é€šè¿‡keyåˆ é™¤èŠ‚ç‚¹ï¼ŒMAPä½¿ç”¨
     size_t erase_unique(const _key_type &k)
     {
-        //ÏÈ³¢ÊÔÕÒµ½½Úµã
+        //å…ˆå°è¯•æ‰¾åˆ°èŠ‚ç‚¹
         iterator find_iter = find(k);
         if (find_iter == end())
         {
@@ -1318,14 +1318,14 @@ public:
         return 1;
     }
 
-    //Í¨¹ıvalueÉ¾³ı½Úµã£¬SETÊ¹ÓÃ
+    //é€šè¿‡valueåˆ é™¤èŠ‚ç‚¹ï¼ŒSETä½¿ç”¨
     size_t erase_unique_value(const _value_type &v)
     {
         _extract_key get_key;
         return erase_unique(get_key(v));
     }
 
-    //Í¨¹ıkeyÉ¾³ı½Úµã£¬MULTIMAPÓÃ
+    //é€šè¿‡keyåˆ é™¤èŠ‚ç‚¹ï¼ŒMULTIMAPç”¨
     size_t erase_equal(const _key_type &k)
     {
         iterator it_l = lower_bound(k);
@@ -1333,14 +1333,14 @@ public:
         return erase(it_l, it_u);
     }
 
-    //Í¨¹ıÖµÉ¾³ı½Úµã£¬MULTISETÓÃ
+    //é€šè¿‡å€¼åˆ é™¤èŠ‚ç‚¹ï¼ŒMULTISETç”¨
     size_t erase_equal_value(const _value_type &v)
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
     }
 
-    //ÕÒµ½µÚÒ»¸ökeyÖµÏàÍ¬µÄ½Úµã
+    //æ‰¾åˆ°ç¬¬ä¸€ä¸ªkeyå€¼ç›¸åŒçš„èŠ‚ç‚¹
     iterator lower_bound(const _key_type &k)
     {
         size_t y = header();
@@ -1348,7 +1348,7 @@ public:
 
         while (x != _INVALID_POINT)
         {
-            //ÉÏÏÂÁ½¸öº¯Êı¾ÍÕâĞĞ´úÂë²»Ò»Ñù£¬×¢ÒâÏÈºó±È½Ï
+            //ä¸Šä¸‹ä¸¤ä¸ªå‡½æ•°å°±è¿™è¡Œä»£ç ä¸ä¸€æ ·ï¼Œæ³¨æ„å…ˆåæ¯”è¾ƒ
             if (!_compare_key()(key(x), k))
             {
                 y = x;
@@ -1363,7 +1363,7 @@ public:
         return iterator(y, this);
     }
 
-    //ÕÒµ½×îºóÒ»¸ökeyÖµÏàÍ¬µÄ½Úµã
+    //æ‰¾åˆ°æœ€åä¸€ä¸ªkeyå€¼ç›¸åŒçš„èŠ‚ç‚¹
     iterator upper_bound(const _key_type &k)
     {
         size_t y = header();
@@ -1371,7 +1371,7 @@ public:
 
         while (x != _INVALID_POINT)
         {
-            //ÉÏÏÂÁ½¸öº¯Êı¾ÍÕâĞĞ´úÂë²»Ò»Ñù£¬×¢ÒâÏÈºó±È½Ï¹ØÏµ
+            //ä¸Šä¸‹ä¸¤ä¸ªå‡½æ•°å°±è¿™è¡Œä»£ç ä¸ä¸€æ ·ï¼Œæ³¨æ„å…ˆåæ¯”è¾ƒå…³ç³»
             if (_compare_key()(k, key(x)))
             {
                 y = x;
@@ -1386,7 +1386,7 @@ public:
         return iterator(y, this);
     }
 
-    //ÕÒkeyÏàÍ¬µÄ½Úµã
+    //æ‰¾keyç›¸åŒçš„èŠ‚ç‚¹
     iterator find(const _key_type &k)
     {
         size_t y = header();
@@ -1406,18 +1406,18 @@ public:
         }
 
         iterator j = iterator(y, this);
-        //×¢ÒâÁ½´Îµ÷ÓÃ_compare_keyµÄ±È½Ï²ÎÊıË³Ğòà¸
+        //æ³¨æ„ä¸¤æ¬¡è°ƒç”¨_compare_keyçš„æ¯”è¾ƒå‚æ•°é¡ºåºå–”
         return (j == end() || _compare_key()(k, key(j.getserial()))) ? end() : j;
     }
 
-    //ÕÒvalueÏàÍ¬µÄ½Úµã
+    //æ‰¾valueç›¸åŒçš„èŠ‚ç‚¹
     iterator find_value(const _value_type &v)
     {
         _extract_key get_key;
         return find(get_key(v));
     }
 
-    //ÕÒvalueÏàÍ¬µÄ½Úµã£¬ÈçÎ´ÕÒµ½Ôò²åÈë
+    //æ‰¾valueç›¸åŒçš„èŠ‚ç‚¹ï¼Œå¦‚æœªæ‰¾åˆ°åˆ™æ’å…¥
     _value_type &find_or_insert(const _value_type &v)
     {
         iterator iter = find_value(v);
@@ -1431,7 +1431,7 @@ public:
         return *iter;
     }
 
-    //µ÷ÊÔ´úÂë£¬Èç¹û_value_typeÊÇÕûÊı µÄÊ±ºòÉúĞ§£¬·ñÔòÎŞĞ§
+    //è°ƒè¯•ä»£ç ï¼Œå¦‚æœ_value_typeæ˜¯æ•´æ•° çš„æ—¶å€™ç”Ÿæ•ˆï¼Œå¦åˆ™æ— æ•ˆ
     void debug_note(size_t x, typename std::enable_if<std::is_integral<_value_type>::value >::type * = 0)
     {
         std::cout << "Note :" << std::setw(6) << x
@@ -1443,7 +1443,7 @@ public:
                   << std::endl;
     }
 
-    //¼ì²éÊ÷ĞÎ½á¹¹ÊÇ·ñÆ½ºâ
+    //æ£€æŸ¥æ ‘å½¢ç»“æ„æ˜¯å¦å¹³è¡¡
     bool check_balanced(size_t x)
     {
         int32_t x_b = balanced(x);
@@ -1456,7 +1456,7 @@ public:
         return true;
     }
 
-    //µÃµ½Ä³¸ö½ÚµãµÄ¸ß¶È
+    //å¾—åˆ°æŸä¸ªèŠ‚ç‚¹çš„é«˜åº¦
     size_t height(size_t x)
     {
         if (x == _INVALID_POINT)
@@ -1471,37 +1471,37 @@ public:
     }
 
 protected:
-    //indexÇøÒªÔö¼ÓÁ½¸öÊı¾İ,Ò»¸öÊÇÍ·Ö¸Õë£¬Ò»¸öÊÇ¿Õ½ÚµãµÄÍ·Ö¸Õë
+    //indexåŒºè¦å¢åŠ ä¸¤ä¸ªæ•°æ®,ä¸€ä¸ªæ˜¯å¤´æŒ‡é’ˆï¼Œä¸€ä¸ªæ˜¯ç©ºèŠ‚ç‚¹çš„å¤´æŒ‡é’ˆ
     static const size_t ADDED_NUM_OF_INDEX = 2;
 
 protected:
-    ///RBTreeÍ·²¿
+    ///RBTreeå¤´éƒ¨
     _shm_avl_tree_head            *avl_tree_head_;
 
-    ///ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ù¾İ»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
-    ///Ë÷ÒıÊı¾İÇø,
+    ///æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ ¹æ®åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
+    ///ç´¢å¼•æ•°æ®åŒº,
     _shm_avl_tree_index            *index_base_;
 
-    ///Êı¾İÇøÆğÊ¼Ö¸Õë,
+    ///æ•°æ®åŒºèµ·å§‹æŒ‡é’ˆ,
     _value_type                   *data_base_;
 
-    ///Í·½ÚµãµÄÍ·Ö¸Õë,N+1¸öË÷ÒıÎ»±íÊ¾
+    ///å¤´èŠ‚ç‚¹çš„å¤´æŒ‡é’ˆ,N+1ä¸ªç´¢å¼•ä½è¡¨ç¤º
     _shm_avl_tree_index            *head_index_;
 
-    ///¿Õ½ÚµãµÄÍ·Ö¸Õë,N+2¸öË÷ÒıÎ»±íÊ¾£¨ÕâÀïÀûÓÃright½Úµã×öÁ´½Ó£¬°Ñ¿Õ½Úµã´®ÆğÀ´£©
+    ///ç©ºèŠ‚ç‚¹çš„å¤´æŒ‡é’ˆ,N+2ä¸ªç´¢å¼•ä½è¡¨ç¤ºï¼ˆè¿™é‡Œåˆ©ç”¨rightèŠ‚ç‚¹åšé“¾æ¥ï¼ŒæŠŠç©ºèŠ‚ç‚¹ä¸²èµ·æ¥ï¼‰
     _shm_avl_tree_index            *free_index_;
 
 };
 
-//ÓÃAVL TreeÊµÏÖSET£¬²»Çø·ÖmultisetºÍset£¬Í¨¹ı²»Í¨µÄinsert×Ô¼ºÇø·Ö
+//ç”¨AVL Treeå®ç°SETï¼Œä¸åŒºåˆ†multisetå’Œsetï¼Œé€šè¿‡ä¸é€šçš„insertè‡ªå·±åŒºåˆ†
 template < class _value_type,
            class _compare_key = std::less<_value_type> >
 class mmap_avl_set :
     public shm_avl_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
 protected:
-    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
-    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
+    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
+    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
     mmap_avl_set<_value_type, _compare_key >(size_t numnode, void *pmmap, bool if_restore) :
         shm_avl_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>(numnode, pmmap, if_restore)
     {
@@ -1525,7 +1525,7 @@ public:
     }
 };
 
-//ÓÃAVL TreeÊµÏÖMAP£¬²»Çø·ÖmultisetºÍset£¬Í¨¹ı²»Í¨µÄinsert×Ô¼ºÇø·Ö
+//ç”¨AVL Treeå®ç°MAPï¼Œä¸åŒºåˆ†multisetå’Œsetï¼Œé€šè¿‡ä¸é€šçš„insertè‡ªå·±åŒºåˆ†
 template < class _key_type,
            class _value_type,
            class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
@@ -1534,8 +1534,8 @@ class mmap_avl_map :
     public shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:
-    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
-    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
+    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
+    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
     mmap_avl_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore) :
         shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
@@ -1559,7 +1559,7 @@ public:
                    _extract_key,
                    _compare_key >::initialize(numnode, pmmap, if_restore));
     }
-    //[]²Ù×÷·ûºÅÓĞÓÅµãºÍÈ±µã£¬½÷É÷Ê¹ÓÃ
+    //[]æ“ä½œç¬¦å·æœ‰ä¼˜ç‚¹å’Œç¼ºç‚¹ï¼Œè°¨æ…ä½¿ç”¨
     _value_type &operator[](const _key_type &key)
     {
         return (find_or_insert(std::pair<_key_type, _value_type >(key, _value_type()))).second;

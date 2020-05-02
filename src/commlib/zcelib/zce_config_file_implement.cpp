@@ -6,14 +6,14 @@
 #include "zce_config_file_implement.h"
 
 /******************************************************************************************
-class ZCE_INI_Implement INIÎÄ¼şµÄÅäÖÃ¶ÁÈ¡£¬Ğ´ÈëÊµÏÖÆ÷
+class ZCE_INI_Implement INIæ–‡ä»¶çš„é…ç½®è¯»å–ï¼Œå†™å…¥å®ç°å™¨
 ******************************************************************************************/
 
 
 //
 int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *propertytree)
 {
-    //1ĞĞµÄ×î´óÖµ
+    //1è¡Œçš„æœ€å¤§å€¼
     std::unique_ptr<char[]> one_line(new char[LINE_BUFFER_LEN + 1]);
     std::unique_ptr<char[]> str_key(new char[LINE_BUFFER_LEN + 1]);
     std::unique_ptr<char[]> str_value(new char[LINE_BUFFER_LEN + 1]);
@@ -26,7 +26,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 
     std::ifstream cfgfile(file_name);
 
-    //ÎÄ¼ş´ò²»¿ª£¬·µ»ØÄ¬ÈÏÖµ
+    //æ–‡ä»¶æ‰“ä¸å¼€ï¼Œè¿”å›é»˜è®¤å€¼
     if (!cfgfile)
     {
         ZCE_LOG(RS_ERROR, "[zcelib]: ZCE_INI_Implement::read config fail.path=[%s] ,last error [%d]",
@@ -39,26 +39,26 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
     {
 
         cfgfile.getline(one_line.get(), LINE_BUFFER_LEN);
-        //ÕûÀí
+        //æ•´ç†
         zce::strtrim(one_line.get());
 
-        //×¢ÊÍĞĞ
+        //æ³¨é‡Šè¡Œ
         if (one_line[0] == ';' || one_line[0] == '#')
         {
             continue;
         }
 
-        //ÕÒµ½Ò»¸ösection
+        //æ‰¾åˆ°ä¸€ä¸ªsection
 
         if (one_line[0] == '[' && one_line[strlen(one_line.get()) - 1] == ']')
         {
-            //ÒÑ¾­ÕÒµ½ÏÂÒ»¸öSection,Ã»ÓĞ·¢ÏÖÏà¹ØµÄKey£¬·µ»ØÄ¬ÈÏÖµ
+            //å·²ç»æ‰¾åˆ°ä¸‹ä¸€ä¸ªSection,æ²¡æœ‰å‘ç°ç›¸å…³çš„Keyï¼Œè¿”å›é»˜è®¤å€¼
 
-            //È¥µô'[',']'
+            //å»æ‰'[',']'
             memmove(one_line.get(), one_line.get() + 1, strlen(one_line.get()) - 1);
             one_line[strlen(one_line.get()) - 2] = '\0';
 
-            //ÏûÃğ¿Õ¸ñ
+            //æ¶ˆç­ç©ºæ ¼
             zce::strtrim(one_line.get());
 
             ZCE_Conf_PropertyTree *tree_node = NULL;
@@ -79,7 +79,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
             zce::strtrim(str_key.get());
             zce::strtrim(str_value.get());
 
-            //ÕÒµ½·µ»Ø¡£
+            //æ‰¾åˆ°è¿”å›ã€‚
             std::string val(str_value.get());
             std::string key(str_key.get());
             cur_node->set_leaf<std::string &>(key, val);
@@ -91,7 +91,7 @@ int ZCE_INI_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 #if defined ZCE_USE_RAPIDXML && ZCE_USE_RAPIDXML == 1
 
 /******************************************************************************************
-class ZCE_XML_Implement INIÎÄ¼şµÄÅäÖÃ¶ÁÈ¡£¬Ğ´ÈëÊµÏÖÆ÷
+class ZCE_XML_Implement INIæ–‡ä»¶çš„é…ç½®è¯»å–ï¼Œå†™å…¥å®ç°å™¨
 ******************************************************************************************/
 
 
@@ -116,7 +116,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
         doc->parse<rapidxml::parse_default>(pair.second.get());
 
         const rapidxml::xml_node<char> *root = doc->first_node();
-        //¹ã¶È±éÀúdom tree
+        //å¹¿åº¦éå†dom tree
         read_dfs(root, propertytree);
     }
     catch (rapidxml::parse_error &e)
@@ -132,7 +132,7 @@ int ZCE_XML_Implement::read(const char *file_name, ZCE_Conf_PropertyTree *proper
 }
 
 
-//Éî¶ÈÓÅÏÈ¶ÁĞ´
+//æ·±åº¦ä¼˜å…ˆè¯»å†™
 void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
                                  ZCE_Conf_PropertyTree *propertytree)
 {
@@ -141,7 +141,7 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
     {
         return;
     }
-    //Ò»Ğ©nodeÔİÊ±²»´¦Àí
+    //ä¸€äº›nodeæš‚æ—¶ä¸å¤„ç†
     if (node->type() == rapidxml::node_comment)
     {
         return;
@@ -163,7 +163,7 @@ void ZCE_XML_Implement::read_dfs(const rapidxml::xml_node<char> *node,
         }
         while (node_attr);
     }
-    //»¹ÓĞ×Ó½Úµã£¬Éî¶Èµİ¹é
+    //è¿˜æœ‰å­èŠ‚ç‚¹ï¼Œæ·±åº¦é€’å½’
     if (node->first_node())
     {
         rapidxml::xml_node<char> *node_child = node->first_node();

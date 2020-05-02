@@ -6,7 +6,7 @@ namespace zce
 
 /*!
 * @brief
-* @return     int  ==0 表示执行成功
+* @return     int  ==0 琛ㄧず鎵ц鎴愬姛
 * @param      str_ary
 * @note
 */

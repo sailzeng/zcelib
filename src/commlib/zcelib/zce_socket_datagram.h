@@ -11,60 +11,60 @@ class ZCE_Socket_DataGram : public ZCE_Socket_Base
 
 public:
 
-    //¹¹Ôìº¯ÊýºÍÎö¹¹º¯ÊýµÈ
+    //æž„é€ å‡½æ•°å’Œæžæž„å‡½æ•°ç­‰
     ZCE_Socket_DataGram();
     explicit ZCE_Socket_DataGram(const ZCE_SOCKET &socket_hanle);
     explicit ZCE_Socket_DataGram(const ZCE_Sockaddr &sock_addr);
     ~ZCE_Socket_DataGram();
 
-    //Open SOCK¾ä±ú£¬²»BIND±¾µØµØÖ·µÄ·½Ê½
+    //Open SOCKå¥æŸ„ï¼Œä¸BINDæœ¬åœ°åœ°å€çš„æ–¹å¼
     int open(int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = true);
 
-    ///Open SOCK¾ä±ú£¬BIND±¾µØµØÖ·µÄ·½Ê½,Ò»°ãÇé¿öÏÂ²»ÓÃÕâÑùÊ¹ÓÃ£¬³ý·Ç¡­¡­
-    ///protocol_family ²ÎÊý¿ÉÒÔÊÇAF_INET,»òÕßAF_INET6µÈ
+    ///Open SOCKå¥æŸ„ï¼ŒBINDæœ¬åœ°åœ°å€çš„æ–¹å¼,ä¸€èˆ¬æƒ…å†µä¸‹ä¸ç”¨è¿™æ ·ä½¿ç”¨ï¼Œé™¤éžâ€¦â€¦
+    ///protocol_family å‚æ•°å¯ä»¥æ˜¯AF_INET,æˆ–è€…AF_INET6ç­‰
     int open(const ZCE_Sockaddr *local_addr,
              int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
 
-    //UDP½ÓÊÕ
+    //UDPæŽ¥æ”¶
     inline ssize_t recvfrom (void *buf,
                              size_t len,
                              int flags,
                              ZCE_Sockaddr *addr) const;
 
-    //UDP·¢ËÍ
+    //UDPå‘é€
     inline ssize_t sendto (const void *buf,
                            size_t len,
                            int flags,
                            const ZCE_Sockaddr *to_addr) const;
 
-    //ÊÕUDPµÄÊý¾Ý,Ò²´øÓÐ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊý¾Ý¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃselectÊµÏÖ
+    //æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨selectå®žçŽ°
     inline ssize_t recvfrom (void *buf,
                              size_t len,
                              ZCE_Sockaddr *addr,
                              ZCE_Time_Value  *timeout_tv,
                              int flags = 0) const;
 
-    //UDPµÄ·¢ËÍÔÝÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ð´Õâ¸öº¯ÊýÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-    //·¢ËÍUDPµÄÊý¾Ý,´ø³¬Ê±´¦Àí²ÎÊý£¬µ«ÊÇÊµ¼ÊÉÏ½øÐÐÃ»ÓÐ³¬Ê±´¦Àí£¬
+    //UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡žçš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+    //å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®žé™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†ï¼Œ
     inline ssize_t sendto (const void *buf,
                            size_t len,
                            const ZCE_Sockaddr *addr,
                            ZCE_Time_Value *   /*timeout_tv*/,
                            int flags = 0) const;
 
-    //ÊÕUDPµÄÊý¾Ý,Ò²´øÓÐ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊý¾Ý¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃSO_RCVTIMEOÊµÏÖ
+    //æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨SO_RCVTIMEOå®žçŽ°
     ssize_t recvfrom_timeout (void *buf,
                               size_t len,
                               ZCE_Sockaddr *addr,
                               ZCE_Time_Value  &timeout_tv,
                               int flags = 0) const;
 
-    //UDPµÄ·¢ËÍÔÝÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ð´Õâ¸öº¯ÊýÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-    //·¢ËÍUDPµÄÊý¾Ý,´ø³¬Ê±´¦Àí²ÎÊý£¬µ«ÊÇÊµ¼ÊÉÏ½øÐÐÃ»ÓÐ³¬Ê±´¦Àí
+    //UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡žçš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+    //å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®žé™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†
     ssize_t sendto_timeout (const void *buf,
                             size_t len,
                             const ZCE_Sockaddr *addr,
@@ -72,7 +72,7 @@ public:
                             int flags = 0) const;
 };
 
-//UDP½ÓÊÕ
+//UDPæŽ¥æ”¶
 inline ssize_t ZCE_Socket_DataGram::recvfrom (void *buf,
                                               size_t len,
                                               int flags,
@@ -87,7 +87,7 @@ inline ssize_t ZCE_Socket_DataGram::recvfrom (void *buf,
                          );
 }
 
-//UDP·¢ËÍ
+//UDPå‘é€
 inline ssize_t ZCE_Socket_DataGram::sendto (const void *buf,
                                             size_t len,
                                             int flags,
@@ -101,7 +101,7 @@ inline ssize_t ZCE_Socket_DataGram::sendto (const void *buf,
                         to_addr->sockaddr_size_);
 }
 
-//ÊÕUDPµÄÊý¾Ý,Ò²´øÓÐ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊý¾Ý¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃselectÊµÏÖ
+//æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨selectå®žçŽ°
 inline ssize_t ZCE_Socket_DataGram::recvfrom (void *buf,
                                               size_t len,
                                               ZCE_Sockaddr *from_addr,
@@ -117,8 +117,8 @@ inline ssize_t ZCE_Socket_DataGram::recvfrom (void *buf,
                           flags);
 }
 
-//UDPµÄ·¢ËÍÔÝÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ð´Õâ¸öº¯ÊýÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-//·¢ËÍUDPµÄÊý¾Ý,´ø³¬Ê±´¦Àí²ÎÊý£¬µ«ÊÇÊµ¼ÊÉÏ½øÐÐÃ»ÓÐ³¬Ê±´¦Àí£¬
+//UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡žçš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+//å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®žé™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†ï¼Œ
 inline ssize_t ZCE_Socket_DataGram::sendto (const void *buf,
                                             size_t len,
                                             const ZCE_Sockaddr *to_addr,

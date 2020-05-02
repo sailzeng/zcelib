@@ -23,13 +23,13 @@ ZCE_Reactor::~ZCE_Reactor()
 {
 }
 
-//µ±Ç°·´Ó¦Æ÷ÈİÆ÷µÄ¾ä±úÊıÁ¿
+//å½“å‰ååº”å™¨å®¹å™¨çš„å¥æŸ„æ•°é‡
 size_t ZCE_Reactor::size()
 {
     return handler_map_.size();
 }
 
-//µ±Ç°·´Ó¦Æ÷±£ÁôµÄ×î´ó¾ä±úÊıÁ¿£¬ÈİÁ¿
+//å½“å‰ååº”å™¨ä¿ç•™çš„æœ€å¤§å¥æŸ„æ•°é‡ï¼Œå®¹é‡
 size_t ZCE_Reactor::max_size()
 {
     return max_event_number_;
@@ -44,22 +44,22 @@ int ZCE_Reactor::initialize(size_t max_event_number)
     return 0;
 }
 
-//¹Ø±Õ·´Ó¦Æ÷£¬½«ËùÓĞ×¢²áµÄEVENT HANDLER ×¢Ïúµô
+//å…³é—­ååº”å™¨ï¼Œå°†æ‰€æœ‰æ³¨å†Œçš„EVENT HANDLER æ³¨é”€æ‰
 int ZCE_Reactor::close()
 {
-    //ÓÉÓÚÊÇHASH MAPËÙ¶ÈÓĞµãÂı
+    //ç”±äºæ˜¯HASH MAPé€Ÿåº¦æœ‰ç‚¹æ…¢
     MAP_OF_HANDLER_TO_EVENT::iterator iter_temp =  handler_map_.begin();
 
     //
     for (; iter_temp != handler_map_.end();)
     {
-        //¹Ø±ÕÖ®
+        //å…³é—­ä¹‹
         ZCE_Event_Handler *event_handler = (iter_temp->second);
 
-        //ÏÈhandle_close,
+        //å…ˆhandle_close,
         event_handler->handle_close();
 
-        //ÈÃµü´úÆ÷¼ÌĞø´Ó×î¿ªÊ¼¸ÉÆğ
+        //è®©è¿­ä»£å™¨ç»§ç»­ä»æœ€å¼€å§‹å¹²èµ·
         iter_temp = handler_map_.begin();
     }
 
@@ -68,14 +68,14 @@ int ZCE_Reactor::close()
     return 0;
 }
 
-//×¢²áÒ»¸öZCE_Event_Handlerµ½·´Ó¦Æ÷
+//æ³¨å†Œä¸€ä¸ªZCE_Event_Handleråˆ°ååº”å™¨
 int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
                                   int event_mask )
 {
 
     int ret = 0;
 
-    //Èç¹ûÒÑ¾­´óÓÚ×î´óÊıÁ¿£¬·µ»Ø´íÎó
+    //å¦‚æœå·²ç»å¤§äºæœ€å¤§æ•°é‡ï¼Œè¿”å›é”™è¯¯
     if (handler_map_.size() >= max_event_number_)
     {
         return -1;
@@ -84,7 +84,7 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
     ZCE_HANDLE socket_hd = event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
-    //Èç¹ûÒÑ¾­´æÔÚ£¬²»ÄÜ¼ÌĞø×¢²á
+    //å¦‚æœå·²ç»å­˜åœ¨ï¼Œä¸èƒ½ç»§ç»­æ³¨å†Œ
     ret = find_event_handler(socket_hd, tmp_handler);
     if (ret == 0)
     {
@@ -94,7 +94,7 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
         return -1;
     }
 
-    //²»¼ì²âÁË£¬Ê§°ÜÁË¾ÍÊÇÃü²»ºÃ
+    //ä¸æ£€æµ‹äº†ï¼Œå¤±è´¥äº†å°±æ˜¯å‘½ä¸å¥½
     handler_map_.insert(std::make_pair(socket_hd, event_handler));
 
     if (event_mask != 0)
@@ -105,8 +105,8 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
     return 0;
 }
 
-//´Ó·´Ó¦Æ÷×¢ÏúÒ»¸öZCE_Event_Handler£¬Í¬ÊÂÈ¡ÏûËûËùÓĞµÄmask
-//event_maskÆäÊµÖ»ÅĞ¶ÏÀïÃæµÄDONT_CALL
+//ä»ååº”å™¨æ³¨é”€ä¸€ä¸ªZCE_Event_Handlerï¼ŒåŒäº‹å–æ¶ˆä»–æ‰€æœ‰çš„mask
+//event_maskå…¶å®åªåˆ¤æ–­é‡Œé¢çš„DONT_CALL
 int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
                                 bool call_handle_close)
 {
@@ -115,35 +115,35 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
     ZCE_HANDLE ev_hd = event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
-    //remove_handler¿ÉÄÜ»á³öÏÖÁ½´Îµ÷ÓÃµÄÇé¿ö£¬ÎÒÍÆ¼öÄãÖ±½Óµ÷ÓÃhandle_close
+    //remove_handlerå¯èƒ½ä¼šå‡ºç°ä¸¤æ¬¡è°ƒç”¨çš„æƒ…å†µï¼Œæˆ‘æ¨èä½ ç›´æ¥è°ƒç”¨handle_close
     ret = find_event_handler(ev_hd, tmp_handler);
     if (ret != 0)
     {
-        // Î´ÕÒµ½
+        // æœªæ‰¾åˆ°
         ZCE_LOG(RS_INFO, "[zcelib][%s] find handle [%lu] fail. my be reclose ?",
                 __ZCE_FUNC__,
                 ev_hd);
         return -1;
     }
 
-    //²»ºÃÓÃÕâ¸ö¶ÏÑÔ±£»¤£¬ÒòÎª¿ÉÄÜ³öÏÖÒ»Ğ©ÖØ¸´µ÷ÓÃµÈÎÊÌâ
+    //ä¸å¥½ç”¨è¿™ä¸ªæ–­è¨€ä¿æŠ¤ï¼Œå› ä¸ºå¯èƒ½å‡ºç°ä¸€äº›é‡å¤è°ƒç”¨ç­‰é—®é¢˜
     //ZCE_ASSERT_DGB(tmp_handler == event_handler);
 
     int event_mask = event_handler->get_mask();
 
-    //Èç¹ûÓĞmask£¬È¡Ïûµô
+    //å¦‚æœæœ‰maskï¼Œå–æ¶ˆæ‰
     if (event_mask != 0)
     {
         cancel_wakeup(event_handler, event_mask);
     }
 
-    //²»¼ì²âÁË£¬Ê§°ÜÁË¾ÍÊÇÃü²»ºÃ
+    //ä¸æ£€æµ‹äº†ï¼Œå¤±è´¥äº†å°±æ˜¯å‘½ä¸å¥½
     handler_map_.erase(event_handler->get_handle());
 
     //
     if (call_handle_close)
     {
-        //µ÷ÓÃhandle_close
+        //è°ƒç”¨handle_close
         event_handler->handle_close();
     }
 
@@ -164,14 +164,14 @@ int ZCE_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mas
     return 0;
 }
 
-//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
+//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
 ZCE_Reactor *ZCE_Reactor::instance()
 {
-    //Õâ¸öµØ·½ºÍÆäËûµ¥×Óº¯Êı²»Í¬£¬ÒªÏÈ¸³Öµ
+    //è¿™ä¸ªåœ°æ–¹å’Œå…¶ä»–å•å­å‡½æ•°ä¸åŒï¼Œè¦å…ˆèµ‹å€¼
     return instance_;
 }
 
-//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
+//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
 void ZCE_Reactor::instance(ZCE_Reactor *pinstatnce)
 {
     clean_instance();
@@ -179,7 +179,7 @@ void ZCE_Reactor::instance(ZCE_Reactor *pinstatnce)
     return;
 }
 
-//Çå³ıµ¥×ÓÊµÀı
+//æ¸…é™¤å•å­å®ä¾‹
 void ZCE_Reactor::clean_instance()
 {
     if (instance_)

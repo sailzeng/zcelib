@@ -6,14 +6,14 @@
 
 //=====================================================================================================================
 
-//´òÓ¡¶ÑÕ»ĞÅÏ¢
+//æ‰“å°å †æ ˆä¿¡æ¯
 int zce::backtrace_stack(std::vector<std::string> &str_ary)
 {
 
-    //¸ú×Ùº¯ÊıµÄ²ãÊı
+    //è·Ÿè¸ªå‡½æ•°çš„å±‚æ•°
     const size_t SIZE_OF_BACKTRACE_FUNC = 100;
 
-    //Õâ¸ö·½·¨ÊÇÌá¹©¸øLinux ÏÂµÄGCCÊ¹ÓÃµÄ
+    //è¿™ä¸ªæ–¹æ³•æ˜¯æä¾›ç»™Linux ä¸‹çš„GCCä½¿ç”¨çš„
 #if defined(ZCE_OS_LINUX)
 
     void *backtrace_stack_ptr[SIZE_OF_BACKTRACE_FUNC];
@@ -28,7 +28,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         ZCE_LOG(RS_ERROR, "%s", "[BACKTRACE] backtrace_symbols return fail.");
     }
 
-    //´òÓ¡ËùÓĞµÄ¶ÑÕ»ĞÅÏ¢,ÓĞĞ©Ê±ºòĞÅÏ¢ÎŞ·¨ÏÔÊ¾·ûºÅ±í£¬½¨ÒéÊ¹ÓÃ
+    //æ‰“å°æ‰€æœ‰çš„å †æ ˆä¿¡æ¯,æœ‰äº›æ—¶å€™ä¿¡æ¯æ— æ³•æ˜¾ç¤ºç¬¦å·è¡¨ï¼Œå»ºè®®ä½¿ç”¨
     for (int j = 0; j < sz_of_stack; j++)
     {
         zce::foo_string_format(line_data, "%?. address %?:\t%?\t source file info[ %?: %?] ",
@@ -39,12 +39,12 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         line_data.clear();
     }
 
-    //ÊÍ·Å¿Õ¼ä
+    //é‡Šæ”¾ç©ºé—´
     ::free(symbols_strings);
 
 #elif defined(ZCE_OS_WINDOWS) && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //ÎÒ»¹Ã»ÓĞÊ±¼ä¿´ÍêdbghelpËùÓĞµÄ¶«Î÷,Ä¿Ç°µÄ´úÂë²Î¿¼ºóÒ»¸ö°æ±¾¾Ó¶à,Ä¿Ç°Õâ¸ö¶«¶«±ØĞëÓĞpdbÎÄ¼ş£¬
+    //æˆ‘è¿˜æ²¡æœ‰æ—¶é—´çœ‹å®Œdbghelpæ‰€æœ‰çš„ä¸œè¥¿,ç›®å‰çš„ä»£ç å‚è€ƒåä¸€ä¸ªç‰ˆæœ¬å±…å¤š,ç›®å‰è¿™ä¸ªä¸œä¸œå¿…é¡»æœ‰pdbæ–‡ä»¶ï¼Œ
     //http://blog.csdn.net/skies457/article/details/7201185
     //https://github.com/adobe/chromium/blob/master/base/debug/stack_trace_win.cc
     // Max length of symbols' name.
@@ -105,7 +105,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
     process = ::GetCurrentProcess();
     cur_thread = ::GetCurrentThread();
 
-    //³õÊ¼»¯  dbghelp library ²¢ÇÒ¼ÓÔØsymbol±í£¬×¢ÒâpdbÎÄ¼şµÄÎ»ÖÃ£¬
+    //åˆå§‹åŒ–  dbghelp library å¹¶ä¸”åŠ è½½symbolè¡¨ï¼Œæ³¨æ„pdbæ–‡ä»¶çš„ä½ç½®ï¼Œ
     if (!::SymInitialize(process, NULL, TRUE))
     {
         ZCE_LOG(RS_ERROR, "SymInitialize fail,no symbol loaded error =%d,Please notice PDB file directory.",
@@ -113,7 +113,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         return -1;
     }
 
-    //ÕâĞ©¿Õ¼äÊÇ¾ø¶Ô×ã¹»µÄ£¬ÎÒÒ²²»×öÏêÏ¸µÄ¼ì²éÁË
+    //è¿™äº›ç©ºé—´æ˜¯ç»å¯¹è¶³å¤Ÿçš„ï¼Œæˆ‘ä¹Ÿä¸åšè¯¦ç»†çš„æ£€æŸ¥äº†
     const size_t LINE_OUTLEN = 1024;
     std::string line_data;
     line_data.reserve(LINE_OUTLEN);
@@ -131,7 +131,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
                          SymGetModuleBase64,
                          NULL))
     {
-        // ½áÊø´¦Àí
+        // ç»“æŸå¤„ç†
         if (stackframe.AddrFrame.Offset == 0 || k > SIZE_OF_BACKTRACE_FUNC)
         {
             break;
@@ -143,7 +143,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         {
             ZCE_LOG(RS_ERROR, "SymFromAddr fail,no debug symbol loaded for this function error =%d.",
                     ::GetLastError());
-            //Ö»¼ÇÂ¼Ò»´Î£¬±ÜÃâ¹ı¶àµÄÈÕÖ¾ÀË·Ñ
+            //åªè®°å½•ä¸€æ¬¡ï¼Œé¿å…è¿‡å¤šçš„æ—¥å¿—æµªè´¹
             save_ls_error = true;
         }
 
@@ -157,7 +157,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
                     ::GetLastError());
             save_ll_error = true;
         }
-        //¾ÍËãÓĞÆ«ÒÆµØÖ·ĞÅÏ¢ÊÇ·ñÒ²¿ÉÒÔ¸¨Öú¶¨Î»£¿
+        //å°±ç®—æœ‰åç§»åœ°å€ä¿¡æ¯æ˜¯å¦ä¹Ÿå¯ä»¥è¾…åŠ©å®šä½ï¼Ÿ
         //if (!load_symbol && !load_line)
         //{
         //    break;
@@ -183,11 +183,11 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
     return 0;
 }
 
-//µ÷ÊÔ´òÓ¡ÄÚ´æĞÅÏ¢£¬¾ÍÊÇ¼òµ¥µÄÄÚ´æ·­ÒëÎª16½øÖÆ×Ö·û´®
+//è°ƒè¯•æ‰“å°å†…å­˜ä¿¡æ¯ï¼Œå°±æ˜¯ç®€å•çš„å†…å­˜ç¿»è¯‘ä¸º16è¿›åˆ¶å­—ç¬¦ä¸²
 int zce::backtrace_stack(FILE *stream)
 {
     int ret = 0;
-    //%zu²»ÖªµÀVC´ÓÊ²Ã´Äê´úÖ§³ÖµÄ
+    //%zuä¸çŸ¥é“VCä»ä»€ä¹ˆå¹´ä»£æ”¯æŒçš„
     std::vector<std::string> str_ary;
     ret = zce::backtrace_stack(str_ary);
     for (std::string &out : str_ary)
@@ -198,7 +198,7 @@ int zce::backtrace_stack(FILE *stream)
 }
 
 
-//¸¨Öú´òÓ¡Ò»¸öÖ¸ÕëÄÚ²¿Êı¾İµÄº¯Êı£¬ÓÃ16½øÖÆµÄ·½Ê½´òÓ¡ÈÕÖ¾
+//è¾…åŠ©æ‰“å°ä¸€ä¸ªæŒ‡é’ˆå†…éƒ¨æ•°æ®çš„å‡½æ•°ï¼Œç”¨16è¿›åˆ¶çš„æ–¹å¼æ‰“å°æ—¥å¿—
 int zce::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
                          const char *dbg_info)
 {
@@ -208,7 +208,7 @@ int zce::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
     zce::backtrace_stack(str_ary);
     for (std::string &out : str_ary)
     {
-        //·½±ãÄãgrep
+        //æ–¹ä¾¿ä½ grep
         ZCE_LOG(dbg_lvl, "[BACKTRACE_STACK] %s.", out.c_str());
     }
 

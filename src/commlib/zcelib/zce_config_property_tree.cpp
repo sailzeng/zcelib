@@ -4,10 +4,10 @@
 #include "zce_log_logging.h"
 #include "zce_config_property_tree.h"
 
-//·Ö¸î·û,
+//åˆ†å‰²ç¬¦,
 char ZCE_Conf_PropertyTree::SEPARATOR_STRING[2] = ".";
 
-//¹¹Ôìº¯Êı,Îö¹¹º¯Êı
+//æ„é€ å‡½æ•°,ææ„å‡½æ•°
 ZCE_Conf_PropertyTree::ZCE_Conf_PropertyTree()
 {
 }
@@ -15,18 +15,18 @@ ZCE_Conf_PropertyTree::~ZCE_Conf_PropertyTree()
 {
 }
 
-//µÃµ½×ÓÊ÷½Úµã£¬
+//å¾—åˆ°å­æ ‘èŠ‚ç‚¹ï¼Œ
 int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
                                               ZCE_Conf_PropertyTree::child_iterator &child_iter)
 {
 
-    //ÕÒµ½
+    //æ‰¾åˆ°
     size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
 
     std::string start_str(path_str, 0, str_pos);
 
     CHILDREN_NOTE_TYPE::iterator iter_tmp = child_node_.find(start_str);
-    //Èç¹ûÃ»ÓĞÕÒµ½
+    //å¦‚æœæ²¡æœ‰æ‰¾åˆ°
     if (child_node_.end() == iter_tmp)
     {
         ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] key[%s].",
@@ -37,7 +37,7 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
 
     ZCE_Conf_PropertyTree *child_tree = &(iter_tmp->second);
 
-    //»¹ÓĞÂ·¾¶£¬½øĞĞµİ¹é²éÑ¯
+    //è¿˜æœ‰è·¯å¾„ï¼Œè¿›è¡Œé€’å½’æŸ¥è¯¢
     if (str_pos != std::string::npos)
     {
         std::string remain_str(path_str, str_pos + 1);
@@ -45,24 +45,24 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     }
     else
     {
-        //Õâ¶ùÎŞ·ÇÊÇÌáÇ°·µ»ØÁË,
+        //è¿™å„¿æ— éæ˜¯æå‰è¿”å›äº†,
         child_iter = iter_tmp;
         return 0;
     }
 }
 
-//µÃµ½×ÓÊ÷½Úµã£¬const
+//å¾—åˆ°å­æ ‘èŠ‚ç‚¹ï¼Œconst
 int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
                                               ZCE_Conf_PropertyTree::const_child_iterator &child_iter) const
 {
 
-    //ÕÒµ½
+    //æ‰¾åˆ°
     size_t str_pos = path_str.find(SEPARATOR_STRING, 0);
 
     std::string start_str(path_str, 0, str_pos);
 
     CHILDREN_NOTE_TYPE::const_iterator iter_tmp = child_node_.find(start_str);
-    //Èç¹ûÃ»ÓĞÕÒµ½
+    //å¦‚æœæ²¡æœ‰æ‰¾åˆ°
     if (child_node_.end() == iter_tmp)
     {
         ZCE_LOG(RS_ERROR, "[zcelib][%s]Read config path fail, path[%s] .",
@@ -73,7 +73,7 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
 
     const ZCE_Conf_PropertyTree *child_tree = &(iter_tmp->second);
 
-    //»¹ÓĞÂ·¾¶£¬½øĞĞµİ¹é²éÑ¯
+    //è¿˜æœ‰è·¯å¾„ï¼Œè¿›è¡Œé€’å½’æŸ¥è¯¢
     if (str_pos != std::string::npos)
     {
         std::string remain_str(path_str, str_pos + 1);
@@ -81,14 +81,14 @@ int ZCE_Conf_PropertyTree::path_get_childiter(const std::string &path_str,
     }
     else
     {
-        //Õâ¶ùÎŞ·ÇÊÇÌáÇ°·µ»ØÁË,
+        //è¿™å„¿æ— éæ˜¯æå‰è¿”å›äº†,
         child_iter = iter_tmp;
         return 0;
     }
 }
 
 
-//È¡µÃÒ¶×Ó½ÚµãµÄµü´úÆ÷
+//å–å¾—å¶å­èŠ‚ç‚¹çš„è¿­ä»£å™¨
 int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
                                              const std::string &key_str,
                                              ZCE_Conf_PropertyTree::leaf_iterator &leaf_iter)
@@ -113,7 +113,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     }
     else
     {
-        //¶ÔXML,XMLµÄnodeÒ²ÊÇÓĞvalue£¬
+        //å¯¹XML,XMLçš„nodeä¹Ÿæ˜¯æœ‰valueï¼Œ
         leaf_iter = child_note->leaf_node_.find("<self_note>");
     }
     if (child_note->leaf_node_.end() == leaf_iter)
@@ -127,7 +127,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     return 0;
 }
 
-//Í¬ÉÏ£¬Ö»ÊÇconstµÄ
+//åŒä¸Šï¼Œåªæ˜¯constçš„
 int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
                                              const std::string &key_str,
                                              ZCE_Conf_PropertyTree::const_leaf_iterator &leaf_iter) const
@@ -152,7 +152,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
     }
     else
     {
-        //¶ÔXML,XMLµÄnodeÒ²ÊÇÓĞvalue£¬
+        //å¯¹XML,XMLçš„nodeä¹Ÿæ˜¯æœ‰valueï¼Œ
         leaf_iter = child_note->leaf_node_.find("<self_note>");
     }
     if (child_note->leaf_node_.end() == leaf_iter)
@@ -168,7 +168,7 @@ int ZCE_Conf_PropertyTree::path_get_leafiter(const std::string &path_str,
 }
 
 
-//µÃµ½child nodeµÄÖ¸Õë
+//å¾—åˆ°child nodeçš„æŒ‡é’ˆ
 int ZCE_Conf_PropertyTree::path_get_childptr(const std::string &path_str,
                                              ZCE_Conf_PropertyTree *&child_ptr)
 {
@@ -182,7 +182,7 @@ int ZCE_Conf_PropertyTree::path_get_childptr(const std::string &path_str,
     return 0;
 }
 
-//Í¬ÉÏ£¬Ö»ÊÇconstµÄ
+//åŒä¸Šï¼Œåªæ˜¯constçš„
 int ZCE_Conf_PropertyTree::path_get_childptr(const std::string &path_str,
                                              const ZCE_Conf_PropertyTree *&child_ptr) const
 {
@@ -197,36 +197,36 @@ int ZCE_Conf_PropertyTree::path_get_childptr(const std::string &path_str,
 }
 
 
-///µÃµ½£¨µ±Ç°node£©Ò¶×Ó½ÚµãµÄbegin Î»ÖÃµÄµü´úÆ÷
+///å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å¶å­èŠ‚ç‚¹çš„begin ä½ç½®çš„è¿­ä»£å™¨
 ZCE_Conf_PropertyTree::leaf_iterator ZCE_Conf_PropertyTree::leaf_begin()
 {
     return leaf_node_.begin();
 }
-///µÃµ½£¨µ±Ç°node£©Ò¶×Ó½ÚµãµÄend Î»ÖÃµÄµü´úÆ÷
+///å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å¶å­èŠ‚ç‚¹çš„end ä½ç½®çš„è¿­ä»£å™¨
 ZCE_Conf_PropertyTree::leaf_iterator ZCE_Conf_PropertyTree::leaf_end()
 {
     return leaf_node_.end();
 }
 
-//µÃµ½£¨µ±Ç°node£©×ÓÊ÷½ÚµãµÄbegin Î»ÖÃµÄµü´úÆ÷
+//å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å­æ ‘èŠ‚ç‚¹çš„begin ä½ç½®çš„è¿­ä»£å™¨
 ZCE_Conf_PropertyTree::child_iterator ZCE_Conf_PropertyTree::child_begin()
 {
     return child_node_.begin();
 }
-//µÃµ½£¨µ±Ç°node£©×ÓÊ÷½ÚµãµÄbegin Î»ÖÃµÄµü´úÆ÷
+//å¾—åˆ°ï¼ˆå½“å‰nodeï¼‰å­æ ‘èŠ‚ç‚¹çš„begin ä½ç½®çš„è¿­ä»£å™¨
 ZCE_Conf_PropertyTree::child_iterator ZCE_Conf_PropertyTree::child_end()
 {
     return child_node_.end();
 }
 
 
-//×îºó»¹ÊÇÓÃÄ£°åº¯ÊıÌØ»¯ÁË£¬Ò²ĞíÄÜÓĞÊ²Ã´ĞÒ¸£Éú»îµÈ×ÅÎÒÄØ£¿
+//æœ€åè¿˜æ˜¯ç”¨æ¨¡æ¿å‡½æ•°ç‰¹åŒ–äº†ï¼Œä¹Ÿè®¸èƒ½æœ‰ä»€ä¹ˆå¹¸ç¦ç”Ÿæ´»ç­‰ç€æˆ‘å‘¢ï¼Ÿ
 
 /*!
-* @brief      È¡µÃÒ»¸öÒ¶×Ó½ÚµãµÄÊı¾İ,È¡»ØÊı¾İÊÇsrting
-* @return     int == 0 ±íÊ¾³É¹¦
-* @param      path_str Â·¾¶£¬ÓÃ.±íÊ¾Ò»¶Î×ÓÊ÷
-* @param      val      ·µ»ØµÄÊıÖµ
+* @brief      å–å¾—ä¸€ä¸ªå¶å­èŠ‚ç‚¹çš„æ•°æ®,å–å›æ•°æ®æ˜¯srting
+* @return     int == 0 è¡¨ç¤ºæˆåŠŸ
+* @param      path_str è·¯å¾„ï¼Œç”¨.è¡¨ç¤ºä¸€æ®µå­æ ‘
+* @param      val      è¿”å›çš„æ•°å€¼
 */
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
@@ -248,10 +248,10 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 
 
 /*!
-* @brief      È¡µÃÒ»¸öÒ¶×Ó½ÚµãµÄÊı¾İ£¬È¡»ØÊı¾İÊÇchar *
-* @return     int == 0 ±íÊ¾³É¹¦
+* @brief      å–å¾—ä¸€ä¸ªå¶å­èŠ‚ç‚¹çš„æ•°æ®ï¼Œå–å›æ•°æ®æ˜¯char *
+* @return     int == 0 è¡¨ç¤ºæˆåŠŸ
 * @param      path_str
-* @param      val      ÊÇÒ»¸öpair£¬ÊäÈëµÄÊ±ºòfirst ×Ö·û´®Ö¸Õë£¬secondÊÇ×Ö·û´®µÄ¿Õ¼ä³¤¶È
+* @param      val      æ˜¯ä¸€ä¸ªpairï¼Œè¾“å…¥çš„æ—¶å€™first å­—ç¬¦ä¸²æŒ‡é’ˆï¼Œsecondæ˜¯å­—ç¬¦ä¸²çš„ç©ºé—´é•¿åº¦
 */
 template<>
 int  ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
@@ -272,11 +272,11 @@ int  ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 
 
 /*!
-* @brief      È¡µÃÒ»¸öÒ¶×Ó½ÚµãµÄÊı¾İ£¬È¡»ØÊı¾İÊÇint32_t,Ö§³Ö16½øÖÆ,8½øÖÆĞ´·¨
-* @return     int == 0 ±íÊ¾³É¹¦
+* @brief      å–å¾—ä¸€ä¸ªå¶å­èŠ‚ç‚¹çš„æ•°æ®ï¼Œå–å›æ•°æ®æ˜¯int32_t,æ”¯æŒ16è¿›åˆ¶,8è¿›åˆ¶å†™æ³•
+* @return     int == 0 è¡¨ç¤ºæˆåŠŸ
 * @param      path_str
-* @param      val      ·µ»ØµÄÊıÖµ
-* @note       Èç¹ûÊÇ8½øÖÆµÄĞ´·¨£¬ÇëÒÔ0¿ªÍ·£¬Èç¹ûÊÇ16½øÖÆĞ´·¨£¬ÇëÒÔ0x¿ªÍ·
+* @param      val      è¿”å›çš„æ•°å€¼
+* @note       å¦‚æœæ˜¯8è¿›åˆ¶çš„å†™æ³•ï¼Œè¯·ä»¥0å¼€å¤´ï¼Œå¦‚æœæ˜¯16è¿›åˆ¶å†™æ³•ï¼Œè¯·ä»¥0xå¼€å¤´
 */
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
@@ -304,7 +304,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///Í¬ÉÏ£¬Çø±ğÊÇµÃµ½Ò»¸öÓĞ·ûºÅ16Î»ÕûÊıÕûÊı£¬
+///åŒä¸Šï¼ŒåŒºåˆ«æ˜¯å¾—åˆ°ä¸€ä¸ªæœ‰ç¬¦å·16ä½æ•´æ•°æ•´æ•°ï¼Œ
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -332,7 +332,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 }
 
 
-///Í¬ÉÏ£¬Çø±ğÊÇµÃµ½Ò»¸öÓĞ·ûºÅ16Î»ÕûÊıÕûÊı£¬
+///åŒä¸Šï¼ŒåŒºåˆ«æ˜¯å¾—åˆ°ä¸€ä¸ªæœ‰ç¬¦å·16ä½æ•´æ•°æ•´æ•°ï¼Œ
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -358,7 +358,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///Í¬ÉÏ£¬Çø±ğÊÇµÃµ½Ò»¸öÎŞ·ûºÅ32Î»ÕûÊıÕûÊı£¬
+///åŒä¸Šï¼ŒåŒºåˆ«æ˜¯å¾—åˆ°ä¸€ä¸ªæ— ç¬¦å·32ä½æ•´æ•°æ•´æ•°ï¼Œ
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -385,7 +385,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///Í¬ÉÏ£¬Çø±ğÊÇµÃµ½Ò»¸öÓĞ·ûºÅ64Î»ÕûÊıÕûÊı£¬
+///åŒä¸Šï¼ŒåŒºåˆ«æ˜¯å¾—åˆ°ä¸€ä¸ªæœ‰ç¬¦å·64ä½æ•´æ•°æ•´æ•°ï¼Œ
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -411,7 +411,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///Í¬ÉÏ£¬Çø±ğÊÇµÃµ½Ò»¸öÎŞ·ûºÅ64Î»ÕûÊıÕûÊı£¬
+///åŒä¸Šï¼ŒåŒºåˆ«æ˜¯å¾—åˆ°ä¸€ä¸ªæ— ç¬¦å·64ä½æ•´æ•°æ•´æ•°ï¼Œ
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -437,7 +437,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///È¡µÃÒ»¸öÒ¶×Ó½ÚµãµÄÊı¾İ£¬È¡»ØÊı¾İÊÇbool
+///å–å¾—ä¸€ä¸ªå¶å­èŠ‚ç‚¹çš„æ•°æ®ï¼Œå–å›æ•°æ®æ˜¯bool
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -465,10 +465,10 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 }
 
 /*!
-* @brief      È¡µÃIPV4µÄµØÖ·
-* @return     int      == 0 ±íÊ¾³É¹¦
-* @param      path_str Â·¾¶£¬ÓÃ|±íÊ¾Ò»¶Î×ÓÊ÷
-* @param      val      µÃµ½µÄIPµØÖ·£¬Èç¹û×Ö·û´®ÀïÃæÓĞ#£¬ºóÃæ¼ÓÉÏ¶Ë¿ÚºÅ£¬Ò²»á½øĞĞ×ª»»
+* @brief      å–å¾—IPV4çš„åœ°å€
+* @return     int      == 0 è¡¨ç¤ºæˆåŠŸ
+* @param      path_str è·¯å¾„ï¼Œç”¨|è¡¨ç¤ºä¸€æ®µå­æ ‘
+* @param      val      å¾—åˆ°çš„IPåœ°å€ï¼Œå¦‚æœå­—ç¬¦ä¸²é‡Œé¢æœ‰#ï¼Œåé¢åŠ ä¸Šç«¯å£å·ï¼Œä¹Ÿä¼šè¿›è¡Œè½¬æ¢
 */
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
@@ -486,7 +486,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///IPV6µÄµØÖ·
+///IPV6çš„åœ°å€
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -503,7 +503,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-///È¡µÃÊ±¼ä
+///å–å¾—æ—¶é—´
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
@@ -520,7 +520,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     return 0;
 }
 
-//Ôö¼ÓÒ»¸öĞÂµÄCHILD,µ±È»ÀïÃæÈ«²¿Êı¾İÎªNULL
+//å¢åŠ ä¸€ä¸ªæ–°çš„CHILD,å½“ç„¶é‡Œé¢å…¨éƒ¨æ•°æ®ä¸ºNULL
 void ZCE_Conf_PropertyTree::add_child(const std::string &key_str,
                                       ZCE_Conf_PropertyTree *&new_child_note)
 {
@@ -589,7 +589,7 @@ void ZCE_Conf_PropertyTree::set_leaf(const std::string &key_str,
 
 }
 
-//ÉèÖÃ·Ö¸î·ûºÅ
+//è®¾ç½®åˆ†å‰²ç¬¦å·
 void ZCE_Conf_PropertyTree::set_separator(char separator_char)
 {
     SEPARATOR_STRING[0] = separator_char;

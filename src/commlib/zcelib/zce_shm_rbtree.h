@@ -1,17 +1,17 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_shm_rbtree.h
-* @author     scottxu(Ğìê»)
+* @author     scottxu(å¾æ˜Š)
 * @version
-* @date       2007Äê7ÔÂ24ÈÕ
-* @brief      RBTreeÖ÷ÒªÊÇÍê³É¿ÉÒÔÅÅĞòµÄMAP,SET,MultiMap,MultiSetµÄMMAPÀà
-*             ÊµÏÖÁËRBTreeÒÔ¼°MAP,SET,MultiMap,MultiSet
+* @date       2007å¹´7æœˆ24æ—¥
+* @brief      RBTreeä¸»è¦æ˜¯å®Œæˆå¯ä»¥æ’åºçš„MAP,SET,MultiMap,MultiSetçš„MMAPç±»
+*             å®ç°äº†RBTreeä»¥åŠMAP,SET,MultiMap,MultiSet
 *
 * @details
 *
 *
 *
-* @note       ²»±£Ö¤Ïß³Ì°²È«£¬ÉÏ²ã×Ô¼ºÀ´±£Ö¤
+* @note       ä¸ä¿è¯çº¿ç¨‹å®‰å…¨ï¼Œä¸Šå±‚è‡ªå·±æ¥ä¿è¯
 *
 */
 
@@ -26,9 +26,9 @@ namespace zce
 
 enum RB_TREE_COLOR
 {
-    //ºì½Úµã
+    //çº¢èŠ‚ç‚¹
     RB_TREE_RED   = 0,
-    //ºÚ½Úµã
+    //é»‘èŠ‚ç‚¹
     RB_TREE_BLACK = 1,
 };
 
@@ -37,7 +37,7 @@ typedef char  color_type;
 
 template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_rb_tree;
 
-//RB TREEµÄÍ·²¿Êı¾İÇø
+//RB TREEçš„å¤´éƒ¨æ•°æ®åŒº
 class _shm_rb_tree_head
 {
 protected:
@@ -53,17 +53,17 @@ protected:
     }
 
 public:
-    //ÄÚ´æÇøµÄ³¤¶È
+    //å†…å­˜åŒºçš„é•¿åº¦
     size_t               size_of_mmap_;
-    //NODE½áµã¸öÊı
+    //NODEç»“ç‚¹ä¸ªæ•°
     size_t               num_of_node_;
-    //FREEµÄNODE¸öÊı
+    //FREEçš„NODEä¸ªæ•°
     size_t               sz_free_node_;
-    //USEµÄNODE¸öÊı
+    //USEçš„NODEä¸ªæ•°
     size_t               sz_use_node_;
 };
 
-//RBtreeµÄË÷ÒıµÄ½Úµã
+//RBtreeçš„ç´¢å¼•çš„èŠ‚ç‚¹
 class _shm_rb_tree_index
 {
 
@@ -89,18 +89,18 @@ public:
     }
 
 public:
-    //¸¸½Úµã
+    //çˆ¶èŠ‚ç‚¹
     size_t       parent_;
-    //×ó×ÓÊ÷
+    //å·¦å­æ ‘
     size_t       left_;
-    //ÓÒ×ÓÊ÷
+    //å³å­æ ‘
     size_t       right_;
-    //ÑÕÉ«
+    //é¢œè‰²
     color_type   color_;
 
 };
 
-//RBtreeµÄµü´úÆ÷
+//RBtreeçš„è¿­ä»£å™¨
 template <class _value_type, class _key_type, class _extract_key, class _compare_key> class _shm_rb_tree_iterator
 {
     typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
@@ -108,7 +108,7 @@ template <class _value_type, class _key_type, class _extract_key, class _compare
     typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> shm_rb_tree_t;
 
 
-    //µü´úÆ÷İÍÈ¡Æ÷ËùÓĞµÄ¶«¶«
+    //è¿­ä»£å™¨èƒå–å™¨æ‰€æœ‰çš„ä¸œä¸œ
     typedef ptrdiff_t difference_type;
     typedef _value_type *pointer;
     typedef _value_type &reference;
@@ -132,14 +132,14 @@ public:
     {
     }
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void initialize(size_t seq, shm_rb_tree_t *instance)
     {
         serial_ = seq;
         rb_tree_instance_ = instance;
     }
 
-    //±£ÁôĞòºÅ¾Í¿ÉÒÔÔÙ¸ù¾İÄ£°æÊµÀı»¯¶ÔÏóÕÒµ½ÏàÓ¦Êı¾İ,²»ÓÃÊ¹ÓÃÖ¸Õë
+    //ä¿ç•™åºå·å°±å¯ä»¥å†æ ¹æ®æ¨¡ç‰ˆå®ä¾‹åŒ–å¯¹è±¡æ‰¾åˆ°ç›¸åº”æ•°æ®,ä¸ç”¨ä½¿ç”¨æŒ‡é’ˆ
     size_t getserial() const
     {
         return serial_;
@@ -159,7 +159,7 @@ public:
         return *(operator->());
     }
 
-    //ÔÚ¶àÏß³ÌµÄ»·¾³ÏÂÌá¹©Õâ¸öÔËËÍ·ûºÅÊÇ²»°²È«µÄ,Ã»ÓĞ¼ÓËø,ÉÏ²ã×Ô¼º±£Ö¤
+    //åœ¨å¤šçº¿ç¨‹çš„ç¯å¢ƒä¸‹æä¾›è¿™ä¸ªè¿é€ç¬¦å·æ˜¯ä¸å®‰å…¨çš„,æ²¡æœ‰åŠ é”,ä¸Šå±‚è‡ªå·±ä¿è¯
     _value_type *operator->() const
     {
         return rb_tree_instance_->getdatabase() + serial_;
@@ -189,12 +189,12 @@ public:
         return tmp;
     }
 
-    //ÓÃÓÚÊµÏÖoperator++£¬ÕÒÏÂÒ»¸ö½Úµã
+    //ç”¨äºå®ç°operator++ï¼Œæ‰¾ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
     void increment()
     {
         if ( (rb_tree_instance_->index_base_ + serial_)->right_ != _shm_memory_base::_INVALID_POINT )
         {
-            //Èç¹ûÓĞÓÒ×Ó½Úµã£¬¾ÍÏòÓÒ×ß£¬È»ºóÒ»Ö±ÑØ×ó×ÓÊ÷×ßµ½µ×¼´¿É
+            //å¦‚æœæœ‰å³å­èŠ‚ç‚¹ï¼Œå°±å‘å³èµ°ï¼Œç„¶åä¸€ç›´æ²¿å·¦å­æ ‘èµ°åˆ°åº•å³å¯
             serial_ = (rb_tree_instance_->index_base_ + serial_)->right_;
 
             while ( (rb_tree_instance_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT )
@@ -204,7 +204,7 @@ public:
         }
         else
         {
-            //Èç¹ûÃ»ÓĞÓÒ×Ó½Úµã£¬ÕÒµ½¸¸½Úµã£¬Èç¹ûµ±Ç°½ÚµãÊÇÄ³¸öÓÒ×Ó½Úµã£¬¾ÍÒ»Ö±ÉÏËİµ½²»ÎªÓÒ×Ó½ÚµãÎªÖ¹
+            //å¦‚æœæ²¡æœ‰å³å­èŠ‚ç‚¹ï¼Œæ‰¾åˆ°çˆ¶èŠ‚ç‚¹ï¼Œå¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯æŸä¸ªå³å­èŠ‚ç‚¹ï¼Œå°±ä¸€ç›´ä¸Šæº¯åˆ°ä¸ä¸ºå³å­èŠ‚ç‚¹ä¸ºæ­¢
             size_t y = (rb_tree_instance_->index_base_ + serial_)->parent_;
 
             while ( serial_ == (rb_tree_instance_->index_base_ + y)->right_ )
@@ -213,7 +213,7 @@ public:
                 y = (rb_tree_instance_->index_base_ + y)->parent_;
             }
 
-            //Èô´ËÊ±µÄÓÒ×Ó½Úµã²»µÈÓÚ¸¸½Úµã£¬Ôò¸¸½Úµã¼´ÊÇ£¬·ñÔò¾ÍÊÇµ±Ç°½Úµã
+            //è‹¥æ­¤æ—¶çš„å³å­èŠ‚ç‚¹ä¸ç­‰äºçˆ¶èŠ‚ç‚¹ï¼Œåˆ™çˆ¶èŠ‚ç‚¹å³æ˜¯ï¼Œå¦åˆ™å°±æ˜¯å½“å‰èŠ‚ç‚¹
             if ( (rb_tree_instance_->index_base_ + serial_)->right_ != y )
             {
                 serial_ = y;
@@ -221,20 +221,20 @@ public:
         }
     }
 
-    //ÓÃÓÚÊµÏÖoperator--£¬ÕÒÉÏÒ»¸ö½Úµã
+    //ç”¨äºå®ç°operator--ï¼Œæ‰¾ä¸Šä¸€ä¸ªèŠ‚ç‚¹
     void decrement()
     {
-        //Èç¹ûÊÇºì½Úµã£¬ÇÒ¸¸½ÚµãµÄµÄ¸¸½ÚµãµÈÓÚ×Ô¼º
+        //å¦‚æœæ˜¯çº¢èŠ‚ç‚¹ï¼Œä¸”çˆ¶èŠ‚ç‚¹çš„çš„çˆ¶èŠ‚ç‚¹ç­‰äºè‡ªå·±
         if ( (rb_tree_instance_->index_base_ + serial_)->color_ == RB_TREE_RED &&
              (rb_tree_instance_->index_base_ + ((rb_tree_instance_->index_base_ + serial_)->parent_))->parent_ == serial_ )
         {
-            //ÓÒ×Ó½Úµã¼´ÊÇ
+            //å³å­èŠ‚ç‚¹å³æ˜¯
             serial_ = (rb_tree_instance_->index_base_ + serial_)->right_;
         }
-        //Èç¹ûÓĞ×ó×Ó½Úµã
+        //å¦‚æœæœ‰å·¦å­èŠ‚ç‚¹
         else if ( (rb_tree_instance_->index_base_ + serial_)->left_ != _shm_memory_base::_INVALID_POINT )
         {
-            //ÁîyÖ¸Ïò×ó×Ó½Úµã£¬ÕÒµ½yµÄÓÒ×Ó½Úµã£¬ÏòÓÒ×ßµ½µ×¼´ÊÇ
+            //ä»¤yæŒ‡å‘å·¦å­èŠ‚ç‚¹ï¼Œæ‰¾åˆ°yçš„å³å­èŠ‚ç‚¹ï¼Œå‘å³èµ°åˆ°åº•å³æ˜¯
             size_t y = (rb_tree_instance_->index_base_ + serial_)->left_;
 
             while ( (rb_tree_instance_->index_base_ + y)->right_ != _shm_memory_base::_INVALID_POINT )
@@ -246,7 +246,7 @@ public:
         }
         else
         {
-            //ÕÒ³ö¸¸½Úµã£¬Èç¹ûµ±Ç°½ÚµãÊÇ¸ö×ó×Ó½Úµã£¬¾ÍÒ»Ö±ÉÏËİ£¬Ö±µ½²»ÔÙÎª×ó×Ó½Úµã£¬ÔòÆäµÄ¸¸½Úµã¼´ÊÇ
+            //æ‰¾å‡ºçˆ¶èŠ‚ç‚¹ï¼Œå¦‚æœå½“å‰èŠ‚ç‚¹æ˜¯ä¸ªå·¦å­èŠ‚ç‚¹ï¼Œå°±ä¸€ç›´ä¸Šæº¯ï¼Œç›´åˆ°ä¸å†ä¸ºå·¦å­èŠ‚ç‚¹ï¼Œåˆ™å…¶çš„çˆ¶èŠ‚ç‚¹å³æ˜¯
             size_t y = (rb_tree_instance_->index_base_ + serial_)->parent_;
 
             while ( serial_ == (rb_tree_instance_->index_base_ + y)->left_ )
@@ -260,9 +260,9 @@ public:
     }
 
 protected:
-    //ĞòÁĞºÅ
+    //åºåˆ—å·
     size_t          serial_;
-    //RBtreeµÄÊµÀıÖ¸Õë
+    //RBtreeçš„å®ä¾‹æŒ‡é’ˆ
     shm_rb_tree_t  *rb_tree_instance_;
 
 };
@@ -272,10 +272,10 @@ protected:
 /*!
 * @brief
 *
-* @tparam     _value_type   ½ÚµãµÄÊµ¼ÊÖµĞÍ±ğ
-* @tparam     _key_type     ½ÚµãµÄ¼üµÄĞÍ±ğ
-* @tparam     _extract_key  ´Ó½ÚµãÖĞµÃµ½¼üÖµµÄ·½·¨,»òÕßº¯Êı¶ÔÏó
-* @tparam     _compare_key  ±È½Ï¼üÖµ´óĞ¡µÄ·½·¨,»òÕßº¯Êı¶ÔÏó
+* @tparam     _value_type   èŠ‚ç‚¹çš„å®é™…å€¼å‹åˆ«
+* @tparam     _key_type     èŠ‚ç‚¹çš„é”®çš„å‹åˆ«
+* @tparam     _extract_key  ä»èŠ‚ç‚¹ä¸­å¾—åˆ°é”®å€¼çš„æ–¹æ³•,æˆ–è€…å‡½æ•°å¯¹è±¡
+* @tparam     _compare_key  æ¯”è¾ƒé”®å€¼å¤§å°çš„æ–¹æ³•,æˆ–è€…å‡½æ•°å¯¹è±¡
 * @note
 */
 template < class _value_type,
@@ -285,18 +285,18 @@ template < class _value_type,
 class shm_rb_tree : public _shm_memory_base
 {
 public:
-    //¶¨Òå×Ô¼º
+    //å®šä¹‰è‡ªå·±
     typedef shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key> self;
 
-    //¶¨Òåµü´úÆ÷
+    //å®šä¹‰è¿­ä»£å™¨
     typedef _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
 
-    //µü´úÆ÷ÓÑÔª
+    //è¿­ä»£å™¨å‹å…ƒ
     friend class _shm_rb_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
 
 protected:
-    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
-    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
+    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
+    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
     shm_rb_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore)
         : _shm_memory_base(NULL)
         , index_base_(NULL)
@@ -314,38 +314,38 @@ public:
     {
     }
 
-    //Ö»¶¨Òå,²»ÊµÏÖ,±ÜÃâ·¸´í
+    //åªå®šä¹‰,ä¸å®ç°,é¿å…çŠ¯é”™
     const self &operator=(const self &others);
 
-    //µÃµ½Ë÷ÒıµÄ»ù´¡µØÖ·
+    //å¾—åˆ°ç´¢å¼•çš„åŸºç¡€åœ°å€
     inline _shm_rb_tree_index *getindexbase()
     {
         return index_base_;
     }
 
-    //µÃµ½Êı¾İÇøµÄ»ù´¡µØÖÊ
+    //å¾—åˆ°æ•°æ®åŒºçš„åŸºç¡€åœ°è´¨
     inline  _value_type *getdatabase()
     {
         return data_base_;
     }
 
 protected:
-    //·ÖÅäÒ»¸öNODE,½«Æä´ÓFREELISTÖĞÈ¡³ö
+    //åˆ†é…ä¸€ä¸ªNODE,å°†å…¶ä»FREELISTä¸­å–å‡º
     size_t create_node(const _value_type &val)
     {
-        //Èç¹ûÃ»ÓĞ¿Õ¼ä¿ÉÒÔ·ÖÅä
+        //å¦‚æœæ²¡æœ‰ç©ºé—´å¯ä»¥åˆ†é…
         if (rb_tree_head_->sz_free_node_ == 0)
         {
             return _INVALID_POINT;
         }
 
-        //´ÓÁ´ÉÏÈ¡1¸öÏÂÀ´
+        //ä»é“¾ä¸Šå–1ä¸ªä¸‹æ¥
         size_t new_node = free_index_->right_;
         free_index_->right_ = (index_base_ + new_node)->right_;
         rb_tree_head_->sz_free_node_--;
         rb_tree_head_->sz_use_node_++;
 
-        //³õÊ¼»¯
+        //åˆå§‹åŒ–
         (index_base_ + new_node)->parent_ = _INVALID_POINT;
         (index_base_ + new_node)->left_ = _INVALID_POINT;
         (index_base_ + new_node)->right_ = _INVALID_POINT;
@@ -356,7 +356,7 @@ protected:
         return new_node;
     }
 
-    //ÊÍ·ÅÒ»¸öNODE,½«Æä¹é»¹¸øFREELIST
+    //é‡Šæ”¾ä¸€ä¸ªNODE,å°†å…¶å½’è¿˜ç»™FREELIST
     void destroy_node(size_t pos)
     {
         size_t freenext = free_index_->right_;
@@ -365,13 +365,13 @@ protected:
         rb_tree_head_->sz_free_node_++;
         rb_tree_head_->sz_use_node_--;
 
-        //µ÷ÓÃÏÔÊ½µÄÎö¹¹º¯Êı
+        //è°ƒç”¨æ˜¾å¼çš„ææ„å‡½æ•°
         (data_base_ + pos)->~_value_type();
     }
 
 public:
 
-    //ÄÚ´æÇøµÄ¹¹³ÉÎª ¶¨ÒåÇø,indexÇø,dataÇø,·µ»ØËùĞèÒªµÄ³¤¶È,
+    //å†…å­˜åŒºçš„æ„æˆä¸º å®šä¹‰åŒº,indexåŒº,dataåŒº,è¿”å›æ‰€éœ€è¦çš„é•¿åº¦,
     static size_t getallocsize(const size_t numnode)
     {
         return  sizeof(_shm_rb_tree_head)  +
@@ -379,16 +379,16 @@ public:
                 sizeof(_value_type) * numnode ;
     }
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     static self *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
         _shm_rb_tree_head *rb_tree_head = reinterpret_cast<_shm_rb_tree_head *>(pmmap);
 
-        //Èç¹ûÊÇ»Ö¸´,Êı¾İ¶¼ÔÚÄÚ´æÖĞ,
+        //å¦‚æœæ˜¯æ¢å¤,æ•°æ®éƒ½åœ¨å†…å­˜ä¸­,
         if ( true == if_restore)
         {
-            //¼ì²éÒ»ÏÂ»Ö¸´µÄÄÚ´æÊÇ·ñÕıÈ·,
+            //æ£€æŸ¥ä¸€ä¸‹æ¢å¤çš„å†…å­˜æ˜¯å¦æ­£ç¡®,
             if (getallocsize(numnode) != rb_tree_head->size_of_mmap_ ||
                 numnode != rb_tree_head->num_of_node_ )
             {
@@ -396,39 +396,39 @@ public:
             }
         }
 
-        //³õÊ¼»¯³ß´ç
+        //åˆå§‹åŒ–å°ºå¯¸
         rb_tree_head->size_of_mmap_ = getallocsize(numnode);
         rb_tree_head->num_of_node_ = numnode;
 
         self *instance = new self();
 
-        //ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ü¼Ó»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
+        //æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ›´åŠ åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
         instance->smem_base_ = pmmap;
         instance->rb_tree_head_ = rb_tree_head;
         instance->index_base_ = reinterpret_cast<_shm_rb_tree_index *>(pmmap + sizeof(_shm_rb_tree_head));
         instance->data_base_  = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + ADDED_NUM_OF_INDEX) );
 
-        //³õÊ¼»¯free_index_,head_index_
+        //åˆå§‹åŒ–free_index_,head_index_
         instance->head_index_ = reinterpret_cast<_shm_rb_tree_index *>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode ));
         instance->free_index_ = reinterpret_cast<_shm_rb_tree_index *>(pmmap + sizeof(_shm_rb_tree_head) + sizeof(_shm_rb_tree_index) * (numnode + 1));
 
         if ( false == if_restore)
         {
-            //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
+            //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
             instance->clear();
         }
 
         return instance;
     }
 
-    //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
+    //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
     void clear()
     {
-        //´¦Àí2¸ö¹Ø¼üNode,ÒÔ¼°Ïà¹Ø³¤¶È,¿ªÊ¼ËùÓĞµÄÊı¾İÊÇfree.
+        //å¤„ç†2ä¸ªå…³é”®Node,ä»¥åŠç›¸å…³é•¿åº¦,å¼€å§‹æ‰€æœ‰çš„æ•°æ®æ˜¯free.
         rb_tree_head_->sz_free_node_ = rb_tree_head_->num_of_node_;
         rb_tree_head_->sz_use_node_ = 0;
 
-        //½«ÇåÀíÎªNULL,ÈÃÖ¸Õë¶¼Ö¸Ïò×Ô¼º
+        //å°†æ¸…ç†ä¸ºNULL,è®©æŒ‡é’ˆéƒ½æŒ‡å‘è‡ªå·±
         head_index_->parent_ = _INVALID_POINT;
         head_index_->right_  = rb_tree_head_->num_of_node_;
         head_index_->left_   = rb_tree_head_->num_of_node_;
@@ -438,12 +438,12 @@ public:
 
         free_index_->right_ = 0;
 
-        //³õÊ¼»¯freeÊı¾İÇø
+        //åˆå§‹åŒ–freeæ•°æ®åŒº
         for (size_t i = 0; i < rb_tree_head_->num_of_node_ ; ++i )
         {
             pindex->right_ = (i + 1) ;
 
-            //½«ËùÓĞFREENODE´®ÆğÀ´
+            //å°†æ‰€æœ‰FREENODEä¸²èµ·æ¥
             if (i == rb_tree_head_->num_of_node_ - 1)
             {
                 pindex->right_ = rb_tree_head_->num_of_node_ + 1;
@@ -453,19 +453,19 @@ public:
         }
     }
 
-    //ÕÒµ½µÚÒ»¸ö½Úµã
+    //æ‰¾åˆ°ç¬¬ä¸€ä¸ªèŠ‚ç‚¹
     iterator begin()
     {
         return iterator(head_index_->left_, this);
     };
 
-    //ÈİÆ÷Ó¦¸ÃÊÇÇ°±Õºó¿ªµÄ,Í·½ÚµãÊÓÎª×îºóÒ»¸öindex
+    //å®¹å™¨åº”è¯¥æ˜¯å‰é—­åå¼€çš„,å¤´èŠ‚ç‚¹è§†ä¸ºæœ€åä¸€ä¸ªindex
     iterator end()
     {
         return iterator(rb_tree_head_->num_of_node_, this);
     }
 
-    //ËùÓĞ½Úµã¶¼ÔÚfreeÁ´ÉÏ¼´ÊÇ¿Õ
+    //æ‰€æœ‰èŠ‚ç‚¹éƒ½åœ¨freeé“¾ä¸Šå³æ˜¯ç©º
     bool empty()
     {
         if (rb_tree_head_->sz_free_node_ == rb_tree_head_->num_of_node_)
@@ -476,7 +476,7 @@ public:
         return false;
     }
 
-    //ÔÚ²åÈëÊı¾İÇ°µ÷ÓÃ,Õâ¸öº¯Êı¼ì²é
+    //åœ¨æ’å…¥æ•°æ®å‰è°ƒç”¨,è¿™ä¸ªå‡½æ•°æ£€æŸ¥
     bool full()
     {
         if (rb_tree_head_->sz_free_node_ == 0 )
@@ -497,7 +497,7 @@ public:
         return rb_tree_head_->num_of_node_;
     }
 
-    //¿ÕÏĞµÄ½Úµã¸öÊı
+    //ç©ºé—²çš„èŠ‚ç‚¹ä¸ªæ•°
     size_t sizefree()
     {
         return rb_tree_head_->sz_free_node_;
@@ -505,8 +505,8 @@ public:
 
 protected:
 
-    //±¾À´´òËã°ÑÕâ¶Î´úÂëÈ«²¿ºê¶¨ÒåµÄ£¬µ«¿¼ÂÇÁËÒ»ÏÂ£¬¾õµÃ»¹ÊÇinline¾Í×ã¹»ÁË¡£
-    //ºê±Ï¾¹»áÈÃ´úÂë±äµÃ³óÂª£¬ËãÁË¡£¶øÇÒÕâĞ©º¯ÊıµÄ³¤¶ÈÓ¦¸ÃÊÇ¿ÉÒÔ±»inlineµÄ¡£
+    //æœ¬æ¥æ‰“ç®—æŠŠè¿™æ®µä»£ç å…¨éƒ¨å®å®šä¹‰çš„ï¼Œä½†è€ƒè™‘äº†ä¸€ä¸‹ï¼Œè§‰å¾—è¿˜æ˜¯inlineå°±è¶³å¤Ÿäº†ã€‚
+    //å®æ¯•ç«Ÿä¼šè®©ä»£ç å˜å¾—ä¸‘é™‹ï¼Œç®—äº†ã€‚è€Œä¸”è¿™äº›å‡½æ•°çš„é•¿åº¦åº”è¯¥æ˜¯å¯ä»¥è¢«inlineçš„ã€‚
 
     inline size_t  &header() const
     {
@@ -558,7 +558,7 @@ protected:
         return _extract_key()(value(x));
     }
 
-    //È¡¼«´óÖµ
+    //å–æå¤§å€¼
     size_t minimum(size_t x)
     {
         while ( left(x) != _INVALID_POINT )
@@ -569,7 +569,7 @@ protected:
         return x;
     }
 
-    //È¡¼«Ğ¡Öµ
+    //å–æå°å€¼
     size_t maximum(size_t x)
     {
         while ( right(x) != _INVALID_POINT )
@@ -581,11 +581,11 @@ protected:
     }
 
 protected:
-    //ÕæÕıµÄ²åÈëÊÇÓÉÕâ¸öº¯ÊıÍê³ÉµÄ
+    //çœŸæ­£çš„æ’å…¥æ˜¯ç”±è¿™ä¸ªå‡½æ•°å®Œæˆçš„
     std::pair<iterator, bool>  _insert(size_t x, size_t y, const _value_type &v)
     {
         size_t z = create_node(v);
-        //Èç¹û¿Õ¼ä²»×ã£¬ÎŞ·¨²åÈë£¬·µ»Øend,falseµÄpair
+        //å¦‚æœç©ºé—´ä¸è¶³ï¼Œæ— æ³•æ’å…¥ï¼Œè¿”å›end,falseçš„pair
         if (_INVALID_POINT == z)
         {
             return std::pair<iterator, bool>(end(), false);
@@ -624,9 +624,9 @@ protected:
         return  std::pair<iterator, bool>(iterator(z, this), true);
     }
 
-    //Í¨¹ıĞı×ªºÍ±äÉ«£¬µ÷ÕûÕû¸öÊ÷£¬ÈÃÆä·ûºÏRBTreeÒªÇó
-    //²ÎÊı1£ºĞÂÔö½Úµã
-    //²ÎÊı2£º¸ù½Úµã
+    //é€šè¿‡æ—‹è½¬å’Œå˜è‰²ï¼Œè°ƒæ•´æ•´ä¸ªæ ‘ï¼Œè®©å…¶ç¬¦åˆRBTreeè¦æ±‚
+    //å‚æ•°1ï¼šæ–°å¢èŠ‚ç‚¹
+    //å‚æ•°2ï¼šæ ¹èŠ‚ç‚¹
     void _rb_tree_rebalance(size_t x, size_t &root)
     {
         color(x) = RB_TREE_RED;
@@ -686,9 +686,9 @@ protected:
         color(root) = RB_TREE_BLACK;
     }
 
-    //×óĞıº¯Êı
-    //²ÎÊı1£º×óĞı½Úµã
-    //²ÎÊı2£º¸ù½Úµã
+    //å·¦æ—‹å‡½æ•°
+    //å‚æ•°1ï¼šå·¦æ—‹èŠ‚ç‚¹
+    //å‚æ•°2ï¼šæ ¹èŠ‚ç‚¹
     void _rb_tree_rotate_left(size_t x, size_t &root)
     {
         size_t y = right(x);
@@ -718,9 +718,9 @@ protected:
         parent(x) = y;
     }
 
-    //ÓÒĞıº¯Êı
-    //²ÎÊı1£ºÓÒĞı½Úµã
-    //²ÎÊı2£º¸ù½Úµã
+    //å³æ—‹å‡½æ•°
+    //å‚æ•°1ï¼šå³æ—‹èŠ‚ç‚¹
+    //å‚æ•°2ï¼šæ ¹èŠ‚ç‚¹
     void _rb_tree_rotate_right(size_t x, size_t &root)
     {
         size_t y = left(x);
@@ -750,26 +750,26 @@ protected:
         parent(x) = y;
     }
 
-    //É¾³ıÊ±µÄÊ÷ĞÎµ÷Õû£¬ÈÃÆä·ûºÏRBTreeÒªÇó
+    //åˆ é™¤æ—¶çš„æ ‘å½¢è°ƒæ•´ï¼Œè®©å…¶ç¬¦åˆRBTreeè¦æ±‚
     size_t _erase(size_t z)
     {
         size_t y = z;
         size_t x = _INVALID_POINT;
         size_t x_parent = _INVALID_POINT;
 
-        //Èç¹û×ó×ÓÊ÷ÎªNULL£¬Ñ¡ÔñÓÒ×ÓÊ÷
+        //å¦‚æœå·¦å­æ ‘ä¸ºNULLï¼Œé€‰æ‹©å³å­æ ‘
         if (left(y) == _INVALID_POINT)
         {
             x = right(y);
         }
         else
         {
-            //Èç¹û×ó×ÓÊ÷²»ÎªNULL£¬¶øÓÒ×ÓÊ÷ÎªNULL
+            //å¦‚æœå·¦å­æ ‘ä¸ä¸ºNULLï¼Œè€Œå³å­æ ‘ä¸ºNULL
             if (right(x) == _INVALID_POINT)
             {
                 x = left(y);
             }
-            //Èç¹û×óÓÒ×ÓÊ÷¶¼²»ÎªNULL
+            //å¦‚æœå·¦å³å­æ ‘éƒ½ä¸ä¸ºNULL
             else
             {
                 y = minimum(right(y));
@@ -777,7 +777,7 @@ protected:
             }
         }
 
-        //y²»ÊÇz,±íÊ¾y²»ÊÇ×Ô¼ºÕâ¿Å×ÓÊ÷µÄ¼«Ğ¡Öµ
+        //yä¸æ˜¯z,è¡¨ç¤ºyä¸æ˜¯è‡ªå·±è¿™é¢—å­æ ‘çš„æå°å€¼
         if (y != z)
         {
             parent(left(z)) = y;
@@ -979,7 +979,7 @@ protected:
 
 public:
 
-    //ÔÊĞíÖØ¸´key²åÈëµÄ²åÈëº¯Êı£¬Multimap¡¢MultimapÓÃÕâ¸ö
+    //å…è®¸é‡å¤keyæ’å…¥çš„æ’å…¥å‡½æ•°ï¼ŒMultimapã€Multimapç”¨è¿™ä¸ª
     std::pair<iterator, bool>  insert_equal(const _value_type &v)
     {
         size_t y = header();
@@ -994,7 +994,7 @@ public:
         return _insert(x, y, v);
     }
 
-    //ÖØ¸´key²åÈëÔòÊ§°ÜµÄ²åÈëº¯Êı£¬Map¡¢SapÓÃÕâ¸ö
+    //é‡å¤keyæ’å…¥åˆ™å¤±è´¥çš„æ’å…¥å‡½æ•°ï¼ŒMapã€Sapç”¨è¿™ä¸ª
     std::pair<iterator, bool> insert_unique(const _value_type &v)
     {
         size_t y = header();
@@ -1030,7 +1030,7 @@ public:
         return std::pair<iterator, bool>(j, false);
     }
 
-    //Í¨¹ıµü´úÆ÷É¾³ıÒ»¸ö½Úµã
+    //é€šè¿‡è¿­ä»£å™¨åˆ é™¤ä¸€ä¸ªèŠ‚ç‚¹
     iterator erase(const iterator &pos)
     {
         size_t tmp = _erase(pos.getserial());
@@ -1038,12 +1038,12 @@ public:
         return iterator(tmp, this);
     }
 
-    //Í¨¹ıÆğÊ¼µü´úÆ÷É¾³ıÒ»¶Î½Úµã
+    //é€šè¿‡èµ·å§‹è¿­ä»£å™¨åˆ é™¤ä¸€æ®µèŠ‚ç‚¹
     size_t erase(iterator first, iterator last)
     {
         size_t erase_count = 0;
 
-        //ÌØÊâÇé¿öµÄ¼ÓËÙ
+        //ç‰¹æ®Šæƒ…å†µçš„åŠ é€Ÿ
         if (first == begin() && last == end())
         {
             erase_count = size();
@@ -1055,14 +1055,14 @@ public:
             while (first != last)
             {
                 ++erase_count;
-                //×¢ÒâÕâ¸öµØ·½ÓÃµÄÊÇerase(first++)£¬ÊÇfirst
+                //æ³¨æ„è¿™ä¸ªåœ°æ–¹ç”¨çš„æ˜¯erase(first++)ï¼Œæ˜¯first
                 erase(first++);
             }
         }
         return erase_count;
     }
 
-    //Í¨¹ıkeyÉ¾³ı½Úµã£¬MapºÍSetÓÃ
+    //é€šè¿‡keyåˆ é™¤èŠ‚ç‚¹ï¼ŒMapå’ŒSetç”¨
     size_t erase_unique(const _key_type &k)
     {
         iterator it = find(k);
@@ -1076,14 +1076,14 @@ public:
         return 0;
     }
 
-    //Í¨¹ıvalueÉ¾³ı½Úµã£¬MapºÍSetÓÃ
+    //é€šè¿‡valueåˆ é™¤èŠ‚ç‚¹ï¼ŒMapå’ŒSetç”¨
     size_t erase_unique_value(const _value_type &v)
     {
         _extract_key get_key;
         return erase_unique(get_key(v));
     }
 
-    //Í¨¹ıkeyÉ¾³ı½Úµã£¬MultimapºÍMultisetÓÃ
+    //é€šè¿‡keyåˆ é™¤èŠ‚ç‚¹ï¼ŒMultimapå’ŒMultisetç”¨
     size_t erase_equal(const _key_type &k)
     {
         iterator it_l = lower_bound(k);
@@ -1091,14 +1091,14 @@ public:
         return erase(it_l, it_u);
     }
 
-    //Í¨¹ıÖµÉ¾³ı½Úµã£¬MultimapºÍMultisetÓÃ
+    //é€šè¿‡å€¼åˆ é™¤èŠ‚ç‚¹ï¼ŒMultimapå’ŒMultisetç”¨
     size_t erase_equal_value(const _value_type &v)
     {
         _extract_key get_key;
         return erase_equal(get_key(v));
     }
 
-    //ÕÒµ½µÚÒ»¸ökeyÖµÏàÍ¬µÄ½Úµã
+    //æ‰¾åˆ°ç¬¬ä¸€ä¸ªkeyå€¼ç›¸åŒçš„èŠ‚ç‚¹
     iterator lower_bound(const _key_type &k)
     {
         size_t y = header();
@@ -1106,7 +1106,7 @@ public:
 
         while (x != _INVALID_POINT)
         {
-            //ÉÏÏÂÁ½¸öº¯Êı¾ÍÕâĞĞ´úÂë²»Ò»Ñù£¬×¢ÒâÏÈºó±È½Ï
+            //ä¸Šä¸‹ä¸¤ä¸ªå‡½æ•°å°±è¿™è¡Œä»£ç ä¸ä¸€æ ·ï¼Œæ³¨æ„å…ˆåæ¯”è¾ƒ
             if (!_compare_key()(key(x), k) )
             {
                 y = x;
@@ -1121,7 +1121,7 @@ public:
         return iterator(y, this);
     }
 
-    //ÕÒµ½×îºóÒ»¸ökeyÖµÏàÍ¬µÄ½Úµã
+    //æ‰¾åˆ°æœ€åä¸€ä¸ªkeyå€¼ç›¸åŒçš„èŠ‚ç‚¹
     iterator upper_bound(const _key_type &k)
     {
         size_t y = header();
@@ -1129,7 +1129,7 @@ public:
 
         while (x != _INVALID_POINT)
         {
-            //ÉÏÏÂÁ½¸öº¯Êı¾ÍÕâĞĞ´úÂë²»Ò»Ñù£¬×¢ÒâÏÈºó±È½Ï¹ØÏµ
+            //ä¸Šä¸‹ä¸¤ä¸ªå‡½æ•°å°±è¿™è¡Œä»£ç ä¸ä¸€æ ·ï¼Œæ³¨æ„å…ˆåæ¯”è¾ƒå…³ç³»
             if (_compare_key()(k, key(x)))
             {
                 y = x;
@@ -1144,7 +1144,7 @@ public:
         return iterator(y, this);
     }
 
-    //ÕÒkeyÏàÍ¬µÄ½Úµã
+    //æ‰¾keyç›¸åŒçš„èŠ‚ç‚¹
     iterator find(const _key_type &k)
     {
         size_t y = header();
@@ -1167,14 +1167,14 @@ public:
         return (j == end() || _compare_key()(k, key(j.getserial()))) ? end() : j;
     }
 
-    //ÕÒvalueÏàÍ¬µÄ½Úµã
+    //æ‰¾valueç›¸åŒçš„èŠ‚ç‚¹
     iterator find_value(const _value_type &v)
     {
         _extract_key get_key;
         return find(get_key(v));
     }
 
-    //ÕÒvalueÏàÍ¬µÄ½Úµã£¬ÈçÎ´ÕÒµ½Ôò²åÈë
+    //æ‰¾valueç›¸åŒçš„èŠ‚ç‚¹ï¼Œå¦‚æœªæ‰¾åˆ°åˆ™æ’å…¥
     _value_type &find_or_insert(const _value_type &v)
     {
         iterator iter = find_value(v);
@@ -1190,36 +1190,36 @@ public:
 
 
 protected:
-    //indexÇøÒªÔö¼ÓÁ½¸öÊı¾İ,Ò»¸öÊÇÍ·Ö¸Õë£¬Ò»¸öÊÇ¿Õ½ÚµãµÄÍ·Ö¸Õë
+    //indexåŒºè¦å¢åŠ ä¸¤ä¸ªæ•°æ®,ä¸€ä¸ªæ˜¯å¤´æŒ‡é’ˆï¼Œä¸€ä¸ªæ˜¯ç©ºèŠ‚ç‚¹çš„å¤´æŒ‡é’ˆ
     static const size_t ADDED_NUM_OF_INDEX = 2;
 
 protected:
-    //RBTreeÍ·²¿
+    //RBTreeå¤´éƒ¨
     _shm_rb_tree_head                  *rb_tree_head_;
 
-    //ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ù¾İ»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
-    //Ë÷ÒıÊı¾İÇø,
+    //æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ ¹æ®åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
+    //ç´¢å¼•æ•°æ®åŒº,
     _shm_rb_tree_index                 *index_base_;
 
-    //Êı¾İÇøÆğÊ¼Ö¸Õë,
+    //æ•°æ®åŒºèµ·å§‹æŒ‡é’ˆ,
     _value_type                         *data_base_;
 
-    //Í·½ÚµãµÄÍ·Ö¸Õë,N+1¸öË÷ÒıÎ»±íÊ¾
+    //å¤´èŠ‚ç‚¹çš„å¤´æŒ‡é’ˆ,N+1ä¸ªç´¢å¼•ä½è¡¨ç¤º
     _shm_rb_tree_index                 *head_index_;
 
-    //¿Õ½ÚµãµÄÍ·Ö¸Õë,N+2¸öË÷ÒıÎ»±íÊ¾£¨ÕâÀïÀûÓÃright½Úµã×öÁ´½Ó£¬°Ñ¿Õ½Úµã´®ÆğÀ´£©
+    //ç©ºèŠ‚ç‚¹çš„å¤´æŒ‡é’ˆ,N+2ä¸ªç´¢å¼•ä½è¡¨ç¤ºï¼ˆè¿™é‡Œåˆ©ç”¨rightèŠ‚ç‚¹åšé“¾æ¥ï¼ŒæŠŠç©ºèŠ‚ç‚¹ä¸²èµ·æ¥ï¼‰
     _shm_rb_tree_index                 *free_index_;
 
 };
 
-//ÓÃRBTreeÊµÏÖSET£¬²»Çø·ÖmultisetºÍset£¬Í¨¹ı²»Í¨µÄinsert×Ô¼ºÇø·Ö
+//ç”¨RBTreeå®ç°SETï¼Œä¸åŒºåˆ†multisetå’Œsetï¼Œé€šè¿‡ä¸é€šçš„insertè‡ªå·±åŒºåˆ†
 template<class _value_type, class _compare_key = std::less<_value_type> >
 class mmap_set :
     public shm_rb_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
 protected:
-    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
-    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
+    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
+    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
     mmap_set<_value_type, _compare_key >(size_t numnode, void *pmmap, bool if_restore):
         shm_rb_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>(numnode, pmmap, if_restore)
     {
@@ -1239,14 +1239,14 @@ public:
     }
 };
 
-//ÓÃRBTreeÊµÏÖMAP£¬²»Çø·ÖmultisetºÍset£¬Í¨¹ı²»Í¨µÄinsert×Ô¼ºÇø·Ö
+//ç”¨RBTreeå®ç°MAPï¼Œä¸åŒºåˆ†multisetå’Œsetï¼Œé€šè¿‡ä¸é€šçš„insertè‡ªå·±åŒºåˆ†
 template<class _key_type, class _value_type, class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >, class _compare_key = std::less<_value_type>  >
 class mmap_map :
     public shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:
-    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
-    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
+    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
+    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
     mmap_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore):
         shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
@@ -1263,7 +1263,7 @@ public:
         return reinterpret_cast<mmap_map< _key_type, _value_type, _extract_key, _compare_key  >*>(
                    shm_rb_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key>::initialize(numnode, pmmap, if_restore));
     }
-    //[]²Ù×÷·ûºÅÓĞÓÅµãºÍÈ±µã£¬½÷É÷Ê¹ÓÃ
+    //[]æ“ä½œç¬¦å·æœ‰ä¼˜ç‚¹å’Œç¼ºç‚¹ï¼Œè°¨æ…ä½¿ç”¨
     _value_type &operator[](const _key_type &key)
     {
         return (find_or_insert(std::pair<_key_type, _value_type >(key, _value_type()))).second;

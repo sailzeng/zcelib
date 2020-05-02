@@ -9,10 +9,10 @@ class ZCE_Socket_Stream;
 class ZCE_Socket_Base;
 
 /************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation: 2011Äê6ÔÂ19ÈÕ
+Author          : Sailzeng ZENGXING  Date Of Creation: 2011å¹´6æœˆ19æ—¥
 Class           : ZCE_Socket_Acceptor
 Inherit         :
-Description     : AcceptorµÄ¹¤³§£¬ÓÃÓÚ²úÉúZCE_Socket_Stream
+Description     : Acceptorçš„å·¥å‚ï¼Œç”¨äºäº§ç”ŸZCE_Socket_Stream
 Other           :
 Modify Record   :
 ************************************************************************************************************/
@@ -25,18 +25,18 @@ public:
 
 public:
 
-    //´ò¿ªÒ»¸ö¼àÌıµØÖ·£¬Ä¿Ç°Ö»Ö§³ÖAF_INET,ºÍAFINET6
+    //æ‰“å¼€ä¸€ä¸ªç›‘å¬åœ°å€ï¼Œç›®å‰åªæ”¯æŒAF_INET,å’ŒAFINET6
     int open(const ZCE_Sockaddr *local_addr,
              bool reuse_addr = true,
              int protocol_family = AF_UNSPEC,
              int backlog = ZCE_DEFAULT_BACKLOG,
              int protocol = 0);
 
-    //½ÓÊÜÒ»¸öSOCKET
+    //æ¥å—ä¸€ä¸ªSOCKET
     int accept (ZCE_Socket_Stream &new_stream,
                 ZCE_Sockaddr *remote_addr) const;
 
-    //´øÓĞ³¬Ê±µÄ´¦ÀíµÄaccept
+    //å¸¦æœ‰è¶…æ—¶çš„å¤„ç†çš„accept
     int accept (ZCE_Socket_Stream &new_stream,
                 ZCE_Time_Value &timeout,
                 ZCE_Sockaddr *remote_addr) const;

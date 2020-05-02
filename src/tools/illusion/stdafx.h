@@ -9,11 +9,11 @@
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
 
-// ��WINDOWS�º�POSIX��׼���ݵĺ꣬VS2003���°汾��Σ���û�в��ԣ�2003�Ժ�Windows���ںܶ������ʹ��"_"ǰ׺��
+// 在WINDOWS下和POSIX标准兼容的宏，VS2003以下版本如何，我没有测试，2003以后，Windows对于很多代码宏会使用"_"前缀，
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_NONSTDC_NO_WARNINGS  1
 
-// ���ڸ���VC++���Ҳ�ǿ��ʹ��_s���͵�API��_CRT_SECURE_NO_DEPRECATE��_CRT_SECURE_NO_WARNINGS���ϰ汾
+// 用于告诉VC++，我不强迫使用_s类型的API，_CRT_SECURE_NO_DEPRECATE是_CRT_SECURE_NO_WARNINGS的老版本
 #define _CRT_SECURE_NO_WARNINGS   1
 #define _CRT_SECURE_NO_DEPRECATE  1
 #define _WINSOCK_DEPRECATED_NO_WARNINGS 1
@@ -90,7 +90,7 @@ using namespace std;
 
 
 
-//����һ����Ӧ���õ�
+//用了一个不应该用的
 #include <CRange.h>
 #include <CWorkbook.h>
 #include <CWorkbooks.h>
@@ -98,10 +98,10 @@ using namespace std;
 #include <CWorksheets.h>
 #include <CApplication.h>
 
-//������� error C3505: cannot load type library '{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}
-//��ȷ��һ��ע����е���Ŀ
+//如果出现 error C3505: cannot load type library '{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}
+//请确认一下注册表中的项目
 //HKEY_CLASSES_ROOT\TypeLib\{2DF8D04C - 5BFA - 101B - BDE5 - 00AA0044DE52}
-//��ʱ��װ������汾��EXCEL����������⡣
+//有时候安装过多个版本的EXCEL会有这个问题。
 
 // mso.dll
 #import "libid:{2df8d04c-5bfa-101b-bde5-00aa0044de52}"  auto_rename

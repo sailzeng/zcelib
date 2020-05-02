@@ -16,19 +16,19 @@ public:
 
 public:
 
-    ///¶ÁÈ¡ÅäÖÃÎÄ¼ş£¬µÃµ½ÎÄ¼şÅäÖÃ²ÎÊı
+    ///è¯»å–é…ç½®æ–‡ä»¶ï¼Œå¾—åˆ°æ–‡ä»¶é…ç½®å‚æ•°
     virtual int read_cfgfile();
 
 
-    ///´ÓÅäÖÃÖĞ¶ÁÈ¡Wormhole svrdµÄÅäÖÃ
+    ///ä»é…ç½®ä¸­è¯»å–Wormhole svrdçš„é…ç½®
     int get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 public:
 
-    ///´úÀíÀàĞÍ
+    ///ä»£ç†ç±»å‹
     Interface_WH_Proxy::PROXY_TYPE  proxy_type_ = Interface_WH_Proxy::INVALID_PROXY_TYPE;
 
-    ///´úÀíµÄÅäÖÃÊı¾İÒª
+    ///ä»£ç†çš„é…ç½®æ•°æ®è¦
     ZCE_Conf_PropertyTree proxy_conf_tree_;
 
 };

@@ -7,7 +7,7 @@
 //============================================================================================
 
 /*!
-* @brief      PIPEµÄÅäÖÃÊı¾İ
+* @brief      PIPEçš„é…ç½®æ•°æ®
 *
 * @note
 */
@@ -15,18 +15,18 @@ struct SOAR_PIPE_CFG_DATA
 {
 
 public:
-    ///ÊÇ·ñ»Ö¸´¹ÜµÀ
+    ///æ˜¯å¦æ¢å¤ç®¡é“
     bool if_restore_pipe_ = true;
 
-    /// ½ÓÊÕ¹ÜµÀ³¤¶È, Ä¬ÈÏ50M
+    /// æ¥æ”¶ç®¡é“é•¿åº¦, é»˜è®¤50M
     uint32_t recv_pipe_len_ = 50 * 1024 * 1024;
-    /// ·¢ËÍ¹ÜµÀ³¤¶È, Ä¬ÈÏ50M
+    /// å‘é€ç®¡é“é•¿åº¦, é»˜è®¤50M
     uint32_t send_pipe_len_ = 50 * 1024 * 1024;
 };
 
 //============================================================================================
 /*!
-* @brief      ÈÕÖ¾µÄÅäÖÃÊı¾İ
+* @brief      æ—¥å¿—çš„é…ç½®æ•°æ®
 *
 * @note
 */
@@ -34,29 +34,29 @@ struct SOAR_LOG_CFG_DATA
 {
 public:
 
-    ///±£ÁôÈÕÖ¾ÎÄ¼şÊıÁ¿£¬
+    ///ä¿ç•™æ—¥å¿—æ–‡ä»¶æ•°é‡ï¼Œ
     static const size_t DEF_RESERVE_FILE_NUM = 8;
 
 public:
 
-    ///appÈÕÖ¾¼¶±ğ: @ref ZCE_LOG_PRIORITY
+    ///appæ—¥å¿—çº§åˆ«: @ref ZCE_LOG_PRIORITY
     ZCE_LOG_PRIORITY log_level_ = RS_DEBUG;
 
-    ///ÈÕÖ¾Êä³ö·½Ê½: @ref LOG_OUTPUT_WAY ,¶àÖÖÊä³ö·½Ê½¿ÉÒÔ×éºÏ
+    ///æ—¥å¿—è¾“å‡ºæ–¹å¼: @ref LOG_OUTPUT_WAY ,å¤šç§è¾“å‡ºæ–¹å¼å¯ä»¥ç»„åˆ
     uint32_t log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
 
-    // ÈÕÖ¾·Ö¸î·½Ê½:101°´´óĞ¡ 201°´Ğ¡Ê± 205°´Ìì
+    // æ—¥å¿—åˆ†å‰²æ–¹å¼:101æŒ‰å¤§å° 201æŒ‰å°æ—¶ 205æŒ‰å¤©
     ZCE_LOGFILE_NAME_DEVIDE log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
 
-    // ÈÕÖ¾ÎÄ¼ş±£Áô¸öÊı£¬¶à³öµÄÈÕÖ¾ÎÄ¼ş½«»á±»É¾³ı
+    // æ—¥å¿—æ–‡ä»¶ä¿ç•™ä¸ªæ•°ï¼Œå¤šå‡ºçš„æ—¥å¿—æ–‡ä»¶å°†ä¼šè¢«åˆ é™¤
     uint32_t reserve_file_num_ = DEF_RESERVE_FILE_NUM;
 
-    // ÈÕÖ¾ÎÄ¼ş×î´ó´óĞ¡,µ±log_div_type_ ÊÇ LOGDEVIDE_BY_SIZE Ê±ÓĞĞ§¡£
+    // æ—¥å¿—æ–‡ä»¶æœ€å¤§å¤§å°,å½“log_div_type_ æ˜¯ LOGDEVIDE_BY_SIZE æ—¶æœ‰æ•ˆã€‚
     uint32_t max_log_file_size_ = 32 * 1024 * 1024;
 };
 
 
-///ÓÃÓÚ¶ÁÈ¡ÅäÖÃÊ§°Ü¼ÇÂ¼·¢ËÍÊ§°ÜµÄµØµãµÄµØ·½£¬
+///ç”¨äºè¯»å–é…ç½®å¤±è´¥è®°å½•å‘é€å¤±è´¥çš„åœ°ç‚¹çš„åœ°æ–¹ï¼Œ
 #ifndef SOAR_CFG_READ_FAIL
 #define SOAR_CFG_READ_FAIL(x)        ZCE_LOG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
                                              __FILE__,__LINE__,__ZCE_FUNC__)
@@ -64,7 +64,7 @@ public:
 
 //============================================================================================
 /*!
-* @brief ÅäÖÃ
+* @brief é…ç½®
 *
 * @note
 */
@@ -72,14 +72,14 @@ class Server_Config_Base
 {
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     Server_Config_Base();
     virtual ~Server_Config_Base();
 
 public:
 
     /*!
-    * @brief      ´¦ÀíÃüÁîĞĞ²ÎÊı
+    * @brief      å¤„ç†å‘½ä»¤è¡Œå‚æ•°
     * @return     virtual int
     * @param      argc
     * @param      argv
@@ -87,28 +87,28 @@ public:
     virtual int read_start_arg(int argc, const char *argv[]);
 
     /*!
-    * @brief      ¼ÓÔØÅäÖÃÎÄ¼şµÄÅäÖÃ
+    * @brief      åŠ è½½é…ç½®æ–‡ä»¶çš„é…ç½®
     * @return     int
     */
     virtual int read_cfgfile();
 
     /*!
-    * @brief      ¶ÁÈ¡£¬ÔÚÈÕÖ¾ÀïÃæÊä³öÒ»Ğ©ÅäÖÃĞÅÏ¢£¬ÒÔ±ã¸ú×Ù»ØËİ
-    * @param      out_lvl Êä³ö¼¶±ğ£¬
+    * @brief      è¯»å–ï¼Œåœ¨æ—¥å¿—é‡Œé¢è¾“å‡ºä¸€äº›é…ç½®ä¿¡æ¯ï¼Œä»¥ä¾¿è·Ÿè¸ªå›æº¯
+    * @param      out_lvl è¾“å‡ºçº§åˆ«ï¼Œ
     */
     virtual void dump_cfg_info(ZCE_LOG_PRIORITY out_lvl);
 
 protected:
 
-    /// Ê¹ÓÃ°ïÖú
+    /// ä½¿ç”¨å¸®åŠ©
     virtual int usage(const char *program_name);
 
-    //ÓÉÓÚ
+    //ç”±äº
 
-    ///´ÓÅäÖÃÖĞ¶ÁÈ¡¿ò¼Ü»ù´¡µÄÅäÖÃ,°üÀ¨self_svc_id_µÈ
+    ///ä»é…ç½®ä¸­è¯»å–æ¡†æ¶åŸºç¡€çš„é…ç½®,åŒ…æ‹¬self_svc_id_ç­‰
     int get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
-    ///´ÓÅäÖÃÖĞ¶ÁÈ¡ÈÕÖ¾µÄÅäÖÃ
+    ///ä»é…ç½®ä¸­è¯»å–æ—¥å¿—çš„é…ç½®
     int get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 
@@ -118,50 +118,50 @@ public:
 
 public:
 
-    /// ×Ô¼ºµÄ·şÎñÆ÷ID
+    /// è‡ªå·±çš„æœåŠ¡å™¨ID
     SERVICES_ID self_svc_id_;
 
-    /// ·şÎñÆ÷ÊµÀıid
+    /// æœåŠ¡å™¨å®ä¾‹id
     unsigned int instance_id_ = 1;
 
-    ///¹ÜµÀµÄÅäÖÃ
+    ///ç®¡é“çš„é…ç½®
     SOAR_PIPE_CFG_DATA pipe_cfg_;
 
-    ///ÈÕÖ¾ÕÊµ¥µÄÅäÖÃÊı¾İ
+    ///æ—¥å¿—å¸å•çš„é…ç½®æ•°æ®
     SOAR_LOG_CFG_DATA log_config_;
 
-    ///ÊÇ·ñºóÌ¨ÔËĞĞ, windowsÏÂÒÔÈç¹ûÉèÖÃÁË´ËÖµ£¬ÔòÒÔ·şÎñµÄ·½Ê½ÔËĞĞ
+    ///æ˜¯å¦åå°è¿è¡Œ, windowsä¸‹ä»¥å¦‚æœè®¾ç½®äº†æ­¤å€¼ï¼Œåˆ™ä»¥æœåŠ¡çš„æ–¹å¼è¿è¡Œ
     bool app_run_daemon_ = false;
 
-    /// WindowsÏÂÊÇ·ñ°²×°·şÎñ
+    /// Windowsä¸‹æ˜¯å¦å®‰è£…æœåŠ¡
     bool win_install_service_ = false;
-    /// WindowsÏÂÊÇ·ñĞ¶ÔØ·şÎñ
+    /// Windowsä¸‹æ˜¯å¦å¸è½½æœåŠ¡
     bool win_uninstall_service_ = false;
 
 
-    ///ÊÇ·ñÊ¹ÓÃÅäÖÃ·şÎñÆ÷£¬Èç¹ûfalse£¬ÔòÊ¹ÓÃ±¾µØÅäÖÃ
+    ///æ˜¯å¦ä½¿ç”¨é…ç½®æœåŠ¡å™¨ï¼Œå¦‚æœfalseï¼Œåˆ™ä½¿ç”¨æœ¬åœ°é…ç½®
     bool is_use_cfgsvr_ = false;
-    ///ÅäÖÃ·şÎñÆ÷ĞÅÏ¢
+    ///é…ç½®æœåŠ¡å™¨ä¿¡æ¯
     ZCE_Sockaddr_In master_cfgsvr_ip_;
 
-    ///×î´óµÄ¶¨Ê±Æ÷¸öÊı
+    ///æœ€å¤§çš„å®šæ—¶å™¨ä¸ªæ•°
     size_t max_timer_nuamber_ = 1024;
-    ///×î´óµÄ·´Ó¦Æ÷µÄ¾ä±úÊıÁ¿
+    ///æœ€å¤§çš„ååº”å™¨çš„å¥æŸ„æ•°é‡
     size_t max_reactor_hdl_num_ = 1024;
 
-    ///½øĞĞÔËĞĞÄ¿Â¼
+    ///è¿›è¡Œè¿è¡Œç›®å½•
     std::string app_run_dir_;
 
-    ///ÈÕÖ¾Â·¾¶
+    ///æ—¥å¿—è·¯å¾„
     std::string log_file_prefix_;
 
-    ///ÒµÎñºÍÍ¨ĞÅ½ø³Ì¹«ÓÃµÄµÄÅäÖÃÎÄ¼ş
+    ///ä¸šåŠ¡å’Œé€šä¿¡è¿›ç¨‹å…¬ç”¨çš„çš„é…ç½®æ–‡ä»¶
     std::string common_cfg_file_;
 
-    ///×Ô¼ºµÄÅäÖÃÎÄ¼ş
+    ///è‡ªå·±çš„é…ç½®æ–‡ä»¶
     std::string app_cfg_file_;
 
-    ///svcidµÄÅäÖÃÎÄ¼ş
+    ///svcidçš„é…ç½®æ–‡ä»¶
     std::string svc_table_file_;
 
 

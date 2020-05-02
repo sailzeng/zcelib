@@ -6,16 +6,16 @@
 
 
 /*!
-* @brief      Ïß³ÌµÄµÈ´ı¹ÜÀíÆ÷
+* @brief      çº¿ç¨‹çš„ç­‰å¾…ç®¡ç†å™¨
 *
-* @note       ±¾À´ÊÇÔÚÏß³ÌZCE_Thread_Base ÄÚ²¿´¦ÀíµÄ£¬µ«ÊÇÇ¶Èë¹ı¶à£¬¶øÇÒÓÃ´óÁ¿µÄstatic ±äÁ¿£¬
-*             Ò²Ó°ÏìZCE_Thread_BaseµÄĞÔÄÜ
+* @note       æœ¬æ¥æ˜¯åœ¨çº¿ç¨‹ZCE_Thread_Base å†…éƒ¨å¤„ç†çš„ï¼Œä½†æ˜¯åµŒå…¥è¿‡å¤šï¼Œè€Œä¸”ç”¨å¤§é‡çš„static å˜é‡ï¼Œ
+*             ä¹Ÿå½±å“ZCE_Thread_Baseçš„æ€§èƒ½
 */
 class ZCE_Thread_Wait_Manager : public ZCE_NON_Copyable
 {
 protected:
 
-    //¼ÇÂ¼ĞèÒªµÈ´ıµÄÏß³ÌĞÅÏ¢£¬Í¨¹ı¿ª¹ØÊ¹ÓÃ
+    //è®°å½•éœ€è¦ç­‰å¾…çš„çº¿ç¨‹ä¿¡æ¯ï¼Œé€šè¿‡å¼€å…³ä½¿ç”¨
     struct MANAGE_WAIT_INFO
     {
     public:
@@ -29,35 +29,35 @@ protected:
         {
         }
     public:
-        //Ïß³ÌµÄID
+        //çº¿ç¨‹çš„ID
         ZCE_THREAD_ID     wait_thr_id_;
-        //·Ö×éID
+        //åˆ†ç»„ID
         int               wait_group_id_;
     };
 
 protected:
-    //ÓÃlist¹ÜÀí£¬ĞÔÄÜ²»ÊÇÌØ±ğºÃ£¬µ«¿¼ÂÇµ½ÒªÖĞ¼äÉ¾³ıÒòËØµÈµÈ£¬ÈÌÁË
+    //ç”¨listç®¡ç†ï¼Œæ€§èƒ½ä¸æ˜¯ç‰¹åˆ«å¥½ï¼Œä½†è€ƒè™‘åˆ°è¦ä¸­é—´åˆ é™¤å› ç´ ç­‰ç­‰ï¼Œå¿äº†
     typedef std::list <MANAGE_WAIT_INFO>   MANAGE_WAIT_THREAD_LIST;
 
-    //µ¥×ÓÊµÀı
+    //å•å­å®ä¾‹
     static ZCE_Thread_Wait_Manager *instance_;
 
 protected:
 
-    //ËùÓĞÏ£ÍûµÈ´ıµÄÏß³Ì¼ÇÂ¼
+    //æ‰€æœ‰å¸Œæœ›ç­‰å¾…çš„çº¿ç¨‹è®°å½•
     MANAGE_WAIT_THREAD_LIST   wait_thread_list_;
 
 public:
-    //¹¹Ôìº¯Êı£¬ÔÊĞíÄãÓµÓĞÊµÀı£¬µ«ÍÆ¼öÄãÓÃµ¥¼ş´¦Àí
+    //æ„é€ å‡½æ•°ï¼Œå…è®¸ä½ æ‹¥æœ‰å®ä¾‹ï¼Œä½†æ¨èä½ ç”¨å•ä»¶å¤„ç†
     ZCE_Thread_Wait_Manager();
     ~ZCE_Thread_Wait_Manager();
 
-    //Èç¹ûĞèÒª¹ÜÀí´¦Àí£¬Òª×Ô¼ºµÇ¼Ç£¬
+    //å¦‚æœéœ€è¦ç®¡ç†å¤„ç†ï¼Œè¦è‡ªå·±ç™»è®°ï¼Œ
     void record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id = 0 );
-    //µÇ¼ÇÒ»¸öÒª½øĞĞµÈ´ı´¦ÀíµÈ´ıÏß³Ì
+    //ç™»è®°ä¸€ä¸ªè¦è¿›è¡Œç­‰å¾…å¤„ç†ç­‰å¾…çº¿ç¨‹
     void record_wait_thread(const ZCE_Thread_Task *wait_thr_task);
 
-    //µÈËùÓĞµÄÏß³ÌÍË³ö
+    //ç­‰æ‰€æœ‰çš„çº¿ç¨‹é€€å‡º
     void wait_all();
 
     //
@@ -65,9 +65,9 @@ public:
 
 public:
 
-    //µ¥×Óº¯Êı
+    //å•å­å‡½æ•°
     static ZCE_Thread_Wait_Manager *instance();
-    //ÇåÀíµ¥×ÓµÄº¯Êı
+    //æ¸…ç†å•å­çš„å‡½æ•°
     static void clean_instance();
 };
 
