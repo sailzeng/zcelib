@@ -8,7 +8,7 @@
 #include "soar_fsm_trans_mgr.h"
 
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 Transaction_Base::Transaction_Base(Transaction_Manager *pmngr,
                                    unsigned int create_cmd,
                                    bool trans_locker) :
@@ -34,12 +34,12 @@ Transaction_Base::Transaction_Base(Transaction_Manager *pmngr,
 {
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 Transaction_Base::~Transaction_Base()
 {
 }
 
-//ÊÂÎñÄÚ´æÖØÖÃ
+//äº‹åŠ¡å†…å­˜é‡ç½®
 void Transaction_Base::on_start()
 {
     trans_create_ = true;
@@ -65,13 +65,13 @@ void Transaction_Base::on_start()
 
 
 
-//¸ù¾İFrame³õÊ¼»¯µÃµ½¶Ô·½·¢ËÍµÄĞÅÏ¢
+//æ ¹æ®Frameåˆå§‹åŒ–å¾—åˆ°å¯¹æ–¹å‘é€çš„ä¿¡æ¯
 void Transaction_Base::create_init(Zerg_App_Frame *proc_frame)
 {
 
     req_command_ = proc_frame->frame_command_;
 
-    //µÃµ½·¢ËÍ·şÎñÆ÷µÄĞÅÏ¢,Õâ¶Î´úÂëÖ»ÔÚÇëÇóµÄÊ±ºòÓĞÓÃ.
+    //å¾—åˆ°å‘é€æœåŠ¡å™¨çš„ä¿¡æ¯,è¿™æ®µä»£ç åªåœ¨è¯·æ±‚çš„æ—¶å€™æœ‰ç”¨.
     req_snd_service_ = proc_frame->send_service_;
     req_rcv_service_ = proc_frame->recv_service_;
     req_proxy_service_ = proc_frame->proxy_service_;
@@ -85,7 +85,7 @@ void Transaction_Base::create_init(Zerg_App_Frame *proc_frame)
     req_ip_address_ = proc_frame->send_ip_address_;
     req_frame_option_ = proc_frame->frame_option_;
 
-    //Èç¹ûÓĞ¼à¿ØÑ¡Ïî£¬Ìá¸ßÈÕÖ¾¼¶±ğ£¬±£Ö¤²¿·ÖÈÕÖ¾µÃµ½Êä³ö
+    //å¦‚æœæœ‰ç›‘æ§é€‰é¡¹ï¼Œæé«˜æ—¥å¿—çº§åˆ«ï¼Œä¿è¯éƒ¨åˆ†æ—¥å¿—å¾—åˆ°è¾“å‡º
     if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
         trace_log_pri_ = RS_INFO;
@@ -98,7 +98,7 @@ void Transaction_Base::on_run(void *outer_data, bool &continue_run)
 {
     Zerg_App_Frame *recv_frame = (Zerg_App_Frame *)outer_data;
 
-    //Èç¹ûÊÇµÚÒ»´Î´´½¨ÊÂÎïµÄÊ±ºò£¬
+    //å¦‚æœæ˜¯ç¬¬ä¸€æ¬¡åˆ›å»ºäº‹ç‰©çš„æ—¶å€™ï¼Œ
     if (trans_create_)
     {
         create_init(recv_frame);
@@ -141,14 +141,14 @@ void Transaction_Base::on_run(void *outer_data, bool &continue_run)
     {
         if (running_errno_ == 0)
         {
-            // ³É¹¦ÍË³ö£¬ĞŞ¸Ä¼à¿ØÊı¾İ
+            // æˆåŠŸé€€å‡ºï¼Œä¿®æ”¹ç›‘æ§æ•°æ®
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
                                                          req_game_app_id_,
                                                          req_command_);
         }
         else
         {
-            // Ê§°ÜÍË³ö£¬ĞŞ¸Ä¼à¿ØÊı¾İ
+            // å¤±è´¥é€€å‡ºï¼Œä¿®æ”¹ç›‘æ§æ•°æ®
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
                                                          req_game_app_id_,
                                                          req_command_);
@@ -184,14 +184,14 @@ void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
     {
         if (running_errno_ == 0)
         {
-            // ³É¹¦ÍË³ö£¬ĞŞ¸Ä¼à¿ØÊı¾İ
+            // æˆåŠŸé€€å‡ºï¼Œä¿®æ”¹ç›‘æ§æ•°æ®
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
                                                          req_game_app_id_,
                                                          req_command_);
         }
         else
         {
-            // Ê§°ÜÍË³ö£¬ĞŞ¸Ä¼à¿ØÊı¾İ
+            // å¤±è´¥é€€å‡ºï¼Œä¿®æ”¹ç›‘æ§æ•°æ®
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
                                                          req_game_app_id_,
                                                          req_command_);
@@ -203,7 +203,7 @@ void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
 }
 
 
-//¼ì²é½ÓÊÜµ½µÄFRAMEµÄÊı¾İºÍÃüÁî
+//æ£€æŸ¥æ¥å—åˆ°çš„FRAMEçš„æ•°æ®å’Œå‘½ä»¤
 int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame,
                                           unsigned int wait_cmd)
 {
@@ -226,13 +226,13 @@ int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame,
 }
 
 
-//ÓÃÓÚ¼ì²éÇëÇóµÄIPµØÖ·ÊÇ·ñÊÇÄÚ²¿IPµØÖ·,ÊÇ·µ»Ø0£¬²»ÊÇ·µ»Ø·Ç0
+//ç”¨äºæ£€æŸ¥è¯·æ±‚çš„IPåœ°å€æ˜¯å¦æ˜¯å†…éƒ¨IPåœ°å€,æ˜¯è¿”å›0ï¼Œä¸æ˜¯è¿”å›é0
 int Transaction_Base::check_request_internal() const
 {
     return (zce::is_internal(req_ip_address_)) ? 0 : -1;
 }
 
-//¼ì²â°üÍ·ºÍ°üÌåµÄuser_idÒÔ¼°·¢ËÍµÄservice_idÊÇ·ñÒ»ÖÂ,
+//æ£€æµ‹åŒ…å¤´å’ŒåŒ…ä½“çš„user_idä»¥åŠå‘é€çš„service_idæ˜¯å¦ä¸€è‡´,
 int Transaction_Base::check_req_userid(unsigned int user_id) const
 {
     if (user_id != req_user_id_)
@@ -245,7 +245,7 @@ int Transaction_Base::check_req_userid(unsigned int user_id) const
     return 0;
 }
 
-//¹Ø±ÕÇëÇóµÄµÄServiceµÄÁ¬½Ó
+//å…³é—­è¯·æ±‚çš„çš„Serviceçš„è¿æ¥
 int Transaction_Base::close_request_service() const
 {
 
@@ -261,28 +261,28 @@ int Transaction_Base::close_request_service() const
 }
 
 
-//¶Ôµ±Ç°ÓÃ»§µÄÒ»¸öËøID½øĞĞ¼ÓËø
+//å¯¹å½“å‰ç”¨æˆ·çš„ä¸€ä¸ªé”IDè¿›è¡ŒåŠ é”
 int Transaction_Base::lock_qquin_key(unsigned int one_key)
 {
     return trans_manager_->lock_qquin_trnas_cmd(req_user_id_, one_key, req_command_);
 }
-//¶Ôµ±Ç°ÓÃ»§µÄÒ»¸öËøID½øĞĞ½âËø
+//å¯¹å½“å‰ç”¨æˆ·çš„ä¸€ä¸ªé”IDè¿›è¡Œè§£é”
 void Transaction_Base::unlock_qquin_key(unsigned int one_key)
 {
     return trans_manager_->unlock_qquin_trans_cmd(req_user_id_, one_key);
 }
-//¶Ôµ±Ç°ÓÃ»§µÄ£¬µ±Ç°ÊÂÎñÃüÁî×Ö½øĞĞ¼ÓËø
+//å¯¹å½“å‰ç”¨æˆ·çš„ï¼Œå½“å‰äº‹åŠ¡å‘½ä»¤å­—è¿›è¡ŒåŠ é”
 int Transaction_Base::lock_qquin_cmd()
 {
     return trans_manager_->lock_qquin_trnas_cmd(req_user_id_, req_command_, req_command_);
 }
-//¶Ôµ±Ç°ÓÃ»§µÄ£¬µ±Ç°ÊÂÎñÃüÁî×Ö½øĞĞ½âËø
+//å¯¹å½“å‰ç”¨æˆ·çš„ï¼Œå½“å‰äº‹åŠ¡å‘½ä»¤å­—è¿›è¡Œè§£é”
 void Transaction_Base::unlock_qquin_cmd()
 {
     return trans_manager_->unlock_qquin_trans_cmd(req_user_id_, req_command_);
 }
 
-//DUMPËùÓĞµÄÊÂÎïµÄĞÅÏ¢
+//DUMPæ‰€æœ‰çš„äº‹ç‰©çš„ä¿¡æ¯
 void Transaction_Base::dump_transa_info(std::ostringstream &strstream) const
 {
     strstream << "ID:" << asyncobj_id_ << " uid:" << req_user_id_ << " Cmd:" << req_command_ << " Stage:" << std::dec << fsm_stage_ << " ";
@@ -293,7 +293,7 @@ void Transaction_Base::dump_transa_info(std::ostringstream &strstream) const
     return;
 }
 
-//DUMPÊä³öÊÂÎñµÄËùÓĞĞÅÏ¢
+//DUMPè¾“å‡ºäº‹åŠ¡çš„æ‰€æœ‰ä¿¡æ¯
 void Transaction_Base::output_trans_info(const char *outstr ) const
 {
     std::ostringstream strstream;
@@ -358,13 +358,13 @@ int Transaction_Base::sendbuf_to_service(unsigned int cmd,
                                          unsigned int app_id,
                                          unsigned int option )
 {
-    // Èç¹ûÇëÇóµÄÃüÁîÒªÇóÒª¼à¿Ø£¬ºóÃæµÄ´¦Àí½øĞĞ¼à¿Ø
+    // å¦‚æœè¯·æ±‚çš„å‘½ä»¤è¦æ±‚è¦ç›‘æ§ï¼Œåé¢çš„å¤„ç†è¿›è¡Œç›‘æ§
     if (req_frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
         option |= Zerg_App_Frame::DESC_MONITOR_TRACK;
     }
 
-    //ÌõÓÃ¹ÜÀíÆ÷µÄ·¢ËÍº¯Êı
+    //æ¡ç”¨ç®¡ç†å™¨çš„å‘é€å‡½æ•°
     return trans_manager_->mgr_sendbuf_to_service(cmd,
                                                   uid,
                                                   transaction_id,
@@ -384,9 +384,9 @@ int Transaction_Base::response_buf_sendback(unsigned int cmd,
                                             unsigned int buf_len,
                                             unsigned int option )
 {
-    // »Ø°ü²»ĞèÒª¼Ó¼à¿Ø±ê¼Ç°É£¿
+    // å›åŒ…ä¸éœ€è¦åŠ ç›‘æ§æ ‡è®°å§ï¼Ÿ
 
-    //¼ÓÈëUDP·µ»ØµÄ´úÂë²¿·Ö
+    //åŠ å…¥UDPè¿”å›çš„ä»£ç éƒ¨åˆ†
     if (req_frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
     {
         option |= Zerg_App_Frame::DESC_UDP_FRAME;

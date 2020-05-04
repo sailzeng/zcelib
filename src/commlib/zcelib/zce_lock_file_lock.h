@@ -3,9 +3,9 @@
 * @filename   zce_lock_file_lock.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê1ÔÂ14ÈÕ
-* @brief      ÎÄ¼þËø£¬ÓÃÓÚÕû¸öËø¶¨ÎÄ¼þ£¬
-*             ¼ÇÂ¼ËøÇå²Î¿¼@ref zce_lock_record_lock.h
+* @date       2013å¹´1æœˆ14æ—¥
+* @brief      æ–‡ä»¶é”ï¼Œç”¨äºŽæ•´ä¸ªé”å®šæ–‡ä»¶ï¼Œ
+*             è®°å½•é”æ¸…å‚è€ƒ@ref zce_lock_record_lock.h
 *
 * @details
 *
@@ -20,66 +20,66 @@
 #include "zce_lock_guard.h"
 
 /*!
-* @brief      ÎÄ¼þËø£¬¶ÔÓÚÕû¸öÎÄ¼þ½øÐÐ²Ù×÷
+* @brief      æ–‡ä»¶é”ï¼Œå¯¹äºŽæ•´ä¸ªæ–‡ä»¶è¿›è¡Œæ“ä½œ
 */
 class ZCE_File_Lock : public ZCE_NON_Copyable
 {
 public:
 
-    ///¶ÁËøµÄGUARD
+    ///è¯»é”çš„GUARD
     typedef ZCE_Read_Guard<ZCE_File_Lock> LOCK_READ_GUARD;
-    ///Ð´ËøµÄGUARD
+    ///å†™é”çš„GUARD
     typedef ZCE_Write_Guard<ZCE_File_Lock> LOCK_WRITE_GUARD;
 
 public:
 
-    //¹¹Ôìº¯Êý
+    //æž„é€ å‡½æ•°
     ZCE_File_Lock();
     ~ZCE_File_Lock();
 
 public:
 
-    //Í¨¹ýÎÄ¼þÃû³Æ²ÎÊý³õÊ¼»¯ÎÄ¼þËø£¬»á´ò¿ªÕâ¸öÎÄ¼þ
+    //é€šè¿‡æ–‡ä»¶åç§°å‚æ•°åˆå§‹åŒ–æ–‡ä»¶é”ï¼Œä¼šæ‰“å¼€è¿™ä¸ªæ–‡ä»¶
     int open(const char *file_name,
              int open_mode,
              mode_t perms = ZCE_DEFAULT_FILE_PERMS);
 
-    //Í¨¹ýÎÄ¼þ¾ä±ú³õÊ¼»¯ÎÄ¼þËø
+    //é€šè¿‡æ–‡ä»¶å¥æŸ„åˆå§‹åŒ–æ–‡ä»¶é”
     int open(ZCE_HANDLE file_handle);
 
-    //¹Ø±ÕÎÄ¼þËø£¬Èç¹ûÊÇÎÒ´ò¿ªµÄÎÄ¼þ£¬ÎÒ¹Ø±Õ£¬
+    //å…³é—­æ–‡ä»¶é”ï¼Œå¦‚æžœæ˜¯æˆ‘æ‰“å¼€çš„æ–‡ä»¶ï¼Œæˆ‘å…³é—­ï¼Œ
     int close();
 
-    //µÃµ½ËøÎÄ¼þµÄ¾ä±ú
+    //å¾—åˆ°é”æ–‡ä»¶çš„å¥æŸ„
     ZCE_HANDLE get_file_handle();
 
-    //×¢ÒâÕâ¶ùµÄ¶ÁÐ´Ëø±êÊ¶¶ÁÐ´Ëø·½Ê½£¬¶ø²»ÊÇ¶ÁÐ´²Ù×÷
+    //æ³¨æ„è¿™å„¿çš„è¯»å†™é”æ ‡è¯†è¯»å†™é”æ–¹å¼ï¼Œè€Œä¸æ˜¯è¯»å†™æ“ä½œ
 
-    //¶ÁÈ¡Ëø
+    //è¯»å–é”
     void lock_read();
-    //³¢ÊÔ¶ÁÈ¡Ëø
+    //å°è¯•è¯»å–é”
     bool try_lock_read();
 
-    //Ð´Ëø¶¨
+    //å†™é”å®š
     void lock_write();
-    //³¢ÊÔ¶ÁÈ¡Ëø
+    //å°è¯•è¯»å–é”
     bool try_lock_write();
 
-    //½âËø,Èç¹ûÊÇ¶ÁÐ´ËøÒ²Ö»ÐèÒªÕâÒ»¸öº¯Êý
+    //è§£é”,å¦‚æžœæ˜¯è¯»å†™é”ä¹Ÿåªéœ€è¦è¿™ä¸€ä¸ªå‡½æ•°
     void unlock();
 
 protected:
 
-    ///²Ù×÷µÄÎÄ¼þ¾ä±ú
+    ///æ“ä½œçš„æ–‡ä»¶å¥æŸ„
     ZCE_HANDLE    lock_file_hadle_;
 
-    ///×Ô¼º´ò¿ªµÄÕâ¸öÎÄ¼þ£¬Ò²¾ÍÊÇµ÷ÓÃ¹ýopenº¯Êý
+    ///è‡ªå·±æ‰“å¼€çš„è¿™ä¸ªæ–‡ä»¶ï¼Œä¹Ÿå°±æ˜¯è°ƒç”¨è¿‡openå‡½æ•°
     bool          open_by_self_;
 
     ///
     size_t        file_len_;
 
-    ///ÎÄ¼þËø¾ä±ú
+    ///æ–‡ä»¶é”å¥æŸ„
     zce_flock_t   file_lock_hdl_;
 
 };

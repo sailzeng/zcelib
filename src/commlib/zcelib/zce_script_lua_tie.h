@@ -4,30 +4,30 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Sunday, June 22, 2014
-* @brief      Õâ¸ö´úÂëÊÇ²Î¿¼TinkerÊµÏÖµÄ£¬ÈÔÈ»¸ĞĞ»Ô­×÷Õß
+* @brief      è¿™ä¸ªä»£ç æ˜¯å‚è€ƒTinkerå®ç°çš„ï¼Œä»ç„¶æ„Ÿè°¢åŸä½œè€…
 *
-*             Õâ¸ö´úÂëµÄÄ¿µÄÒ»·½ÃæÊÇÎÒ¶ÔÓÚÈçºÎÄóºÏÒ»¸ö½Å±¾ÓïÑÔ×ÜÊÇºÃÆæ£¬½ñÌì
-*             ÖÕÓÚÓĞÁË»ú»áÕÛÌÚÒ»ÏÂ.
-*             Ä¿Ç°Ö§³ÖLUA 5.1
+*             è¿™ä¸ªä»£ç çš„ç›®çš„ä¸€æ–¹é¢æ˜¯æˆ‘å¯¹äºå¦‚ä½•æåˆä¸€ä¸ªè„šæœ¬è¯­è¨€æ€»æ˜¯å¥½å¥‡ï¼Œä»Šå¤©
+*             ç»ˆäºæœ‰äº†æœºä¼šæŠ˜è…¾ä¸€ä¸‹.
+*             ç›®å‰æ”¯æŒLUA 5.1
 * @details
 *
 *
 *
-* @note       ¸ĞĞ»fergzhang°ïÃ¦½âÊÍÁËºÜ¶àTinkerµÄÊµÏÖ£¬
-*             ÎÒµÈÁËËÄÄê£¬¾ÍÊÇÒªµÈÒ»¸ö»ú»á£¬ÎÒÒªÕùÒ»¿ÚÆø£¬²»ÊÇÏëÖ¤Ã÷ÎÒÁË²»Æğ£¬ÎÒÊÇÒª¸æËßÈË¼Ò£¬ÎÒÊ§È¥µÄ¶«Î÷Ò»¶¨ÒªÇ×ÊÖÄÃ»ØÀ´£¡
-*             -- ¡¶Ó¢ĞÛ±¾É«¡· Ğ¡Âí¸ç
-*             2014Äê6ÔÂ13ÈÕÔçÉÏ£¬ºÉÀ¼¸É¾»ÀûÂäµÄ±¬ÁËÎ÷°àÑÀ5£º1£¬
+* @note       æ„Ÿè°¢fergzhangå¸®å¿™è§£é‡Šäº†å¾ˆå¤šTinkerçš„å®ç°ï¼Œ
+*             æˆ‘ç­‰äº†å››å¹´ï¼Œå°±æ˜¯è¦ç­‰ä¸€ä¸ªæœºä¼šï¼Œæˆ‘è¦äº‰ä¸€å£æ°”ï¼Œä¸æ˜¯æƒ³è¯æ˜æˆ‘äº†ä¸èµ·ï¼Œæˆ‘æ˜¯è¦å‘Šè¯‰äººå®¶ï¼Œæˆ‘å¤±å»çš„ä¸œè¥¿ä¸€å®šè¦äº²æ‰‹æ‹¿å›æ¥ï¼
+*             -- ã€Šè‹±é›„æœ¬è‰²ã€‹ å°é©¬å“¥
+*             2014å¹´6æœˆ13æ—¥æ—©ä¸Šï¼Œè·å…°å¹²å‡€åˆ©è½çš„çˆ†äº†è¥¿ç­ç‰™5ï¼š1ï¼Œ
 *
-*             2014Äê6ÔÂ25ÈÕ ±ğÁË£¬²¼·ë£¬±ğÁË£¬Æ¤¶ûÂå£¬±ğÁË£¬Òâ´óÀû¡£
-*             ³¬¼¶ÑÕÂÛµÄÑÕÇ¿ÌáĞÑÎÒÃÇÓ¦¸ÃÓÃÕâÊ×¸è¸øÆ¤¶ûÂåËÍ±ğ¡£
-*             ³¤Í¤Íâ£¬¹ÅµÀ±ß
-*             ·¼²İ±ÌÁ¬Ìì
-*             Íí·ç·÷ÁøµÑÉù²Ğ
-*             Ï¦ÑôÉ½ÍâÉ½
-*             ÌìÖ®ÑÄ£¬µØÖ®½Ç
-*             Öª½»°ëÁãÂä
-*             Ò»Æ°(õı)[a]×Ç¾Æ¾¡Óà»¶
-*             ½ñÏü±ğÃÎº®
+*             2014å¹´6æœˆ25æ—¥ åˆ«äº†ï¼Œå¸ƒå†¯ï¼Œåˆ«äº†ï¼Œçš®å°”æ´›ï¼Œåˆ«äº†ï¼Œæ„å¤§åˆ©ã€‚
+*             è¶…çº§é¢œè®ºçš„é¢œå¼ºæé†’æˆ‘ä»¬åº”è¯¥ç”¨è¿™é¦–æ­Œç»™çš®å°”æ´›é€åˆ«ã€‚
+*             é•¿äº­å¤–ï¼Œå¤é“è¾¹
+*             èŠ³è‰ç¢§è¿å¤©
+*             æ™šé£æ‹‚æŸ³ç¬›å£°æ®‹
+*             å¤•é˜³å±±å¤–å±±
+*             å¤©ä¹‹æ¶¯ï¼Œåœ°ä¹‹è§’
+*             çŸ¥äº¤åŠé›¶è½
+*             ä¸€ç“¢(è§š)[a]æµŠé…’å°½ä½™æ¬¢
+*             ä»Šå®µåˆ«æ¢¦å¯’
 */
 
 
@@ -39,19 +39,19 @@
 #include "zce_boost_mpl.h"
 
 
-//LUAÄ¿Ç°µÄ°ü×°´úÂëÊ¹ÓÃC11µÄĞÂÌØĞ§£¬±ØĞëÓÃĞÂµÄ±àÒëÆ÷
+//LUAç›®å‰çš„åŒ…è£…ä»£ç ä½¿ç”¨C11çš„æ–°ç‰¹æ•ˆï¼Œå¿…é¡»ç”¨æ–°çš„ç¼–è¯‘å™¨
 #if ZCE_USE_LUA == 1 && ZCE_SUPPORT_CPP11 == 1
 
-//LUA 5.2°æ±¾Ä¿Ç°¶øÑÔ£¬´ó²¿·Ö×é¼ş¶¼»¹²»Ö§³Ö£¬ËùÒÔ¡­¡­
+//LUA 5.2ç‰ˆæœ¬ç›®å‰è€Œè¨€ï¼Œå¤§éƒ¨åˆ†ç»„ä»¶éƒ½è¿˜ä¸æ”¯æŒï¼Œæ‰€ä»¥â€¦â€¦
 #if LUA_VERSION_NUM != 501
 #error "[Error] please check your lua libary version,only support 5.1,"\
     "Lua 5.2 is not mature. LUA_VERSION_NUM != 501."
 #endif
 
 
-//ÔÚLuaµÄÊ¹ÓÃ¹ı³ÌÖĞ£¬Èç¹ûÒ»¸öÀà²»ĞèÒªÔÙLuaÖĞÊ¹ÓÃ£¬ÆäÊµ¿ÉÒÔ²»ĞèÒªÏÈ×¢²á½øÈ¥£¬
-//Õâ¸öÀà¾ÍÃ»ÓĞmeta table¶øÒÑ£¬µ«ÓĞÊ±ºò»áÔì³Éµ÷ÊÔÂé·³£¬ËùÒÔÔö¼ÓÕâºê£¬Æ½³£¿É
-//ÒÔ¹Ø±Õ,½ö½öÔÚĞèÒªµ÷ÊÔµÄ½×¶Î´ò¿ª¡£
+//åœ¨Luaçš„ä½¿ç”¨è¿‡ç¨‹ä¸­ï¼Œå¦‚æœä¸€ä¸ªç±»ä¸éœ€è¦å†Luaä¸­ä½¿ç”¨ï¼Œå…¶å®å¯ä»¥ä¸éœ€è¦å…ˆæ³¨å†Œè¿›å»ï¼Œ
+//è¿™ä¸ªç±»å°±æ²¡æœ‰meta tableè€Œå·²ï¼Œä½†æœ‰æ—¶å€™ä¼šé€ æˆè°ƒè¯•éº»çƒ¦ï¼Œæ‰€ä»¥å¢åŠ è¿™å®ï¼Œå¹³å¸¸å¯
+//ä»¥å…³é—­,ä»…ä»…åœ¨éœ€è¦è°ƒè¯•çš„é˜¶æ®µæ‰“å¼€ã€‚
 #ifndef ZCE_CHECK_CLASS_NOMETA
 #define ZCE_CHECK_CLASS_NOMETA 0
 #endif
@@ -71,33 +71,33 @@ namespace zce
 
 namespace luatie
 {
-///Ö»¶ÁµÄtableµÄnewdindex
+///åªè¯»çš„tableçš„newdindex
 int newindex_onlyread(lua_State *state);
 
-///dump luaÔËĞĞµÄµÄ¶ÑÕ»£¬ÓÃÓÚ¼ì²éluaÔËĞĞÊ±µÄÎÊÌâ£¬´íÎó´¦ÀíµÈ
+///dump luaè¿è¡Œçš„çš„å †æ ˆï¼Œç”¨äºæ£€æŸ¥luaè¿è¡Œæ—¶çš„é—®é¢˜ï¼Œé”™è¯¯å¤„ç†ç­‰
 int dump_luacall_stack(lua_State *state);
 
-///dump Cµ÷ÓÃluaµÄ¶ÑÕ»£¬
+///dump Cè°ƒç”¨luaçš„å †æ ˆï¼Œ
 int enum_clua_stack(lua_State *state);
 
-///ÔÚº¯Êı´¦Àí´íÎóºóµÄ´¦Àíº¯Êı
+///åœ¨å‡½æ•°å¤„ç†é”™è¯¯åçš„å¤„ç†å‡½æ•°
 int on_error(lua_State *state);
 
 
 
 /*!
-* @brief      ÓÃÄ£°åº¯Êı¸¨Öú°ïÃ¦ÊµÏÖÒ»¸ö·½·¨£¬
-*             ¿ÉÒÔÍ¨¹ıclass ÕÒµ½¶ÔÓ¦µÄÀàÃû³Æ£¨×¢²áµ½LUAµÄÃû³Æ£©£¬
-* @tparam     class_type ÀàĞÍ
+* @brief      ç”¨æ¨¡æ¿å‡½æ•°è¾…åŠ©å¸®å¿™å®ç°ä¸€ä¸ªæ–¹æ³•ï¼Œ
+*             å¯ä»¥é€šè¿‡class æ‰¾åˆ°å¯¹åº”çš„ç±»åç§°ï¼ˆæ³¨å†Œåˆ°LUAçš„åç§°ï¼‰ï¼Œ
+* @tparam     class_type ç±»å‹
 */
 template<typename class_type>
 class class_name
 {
 public:
     /*!
-    * @brief      ¼ÇÂ¼(·µ»Ø)ÀàĞÍµÄÈ«¾ÖµÄÃû³Æ
-    * @return     const char* ·µ»ØµÄÃû³Æ
-    * @param      name        ¼ÇÂ¼µÄÃû³Æ£¬·Ç¿ÕµÄÊ±ºò±ê¼ÇÃû³Æ£¬Îª¿ÕÈ¡µÃÔ­À´µÄÒ»¸ö
+    * @brief      è®°å½•(è¿”å›)ç±»å‹çš„å…¨å±€çš„åç§°
+    * @return     const char* è¿”å›çš„åç§°
+    * @param      name        è®°å½•çš„åç§°ï¼Œéç©ºçš„æ—¶å€™æ ‡è®°åç§°ï¼Œä¸ºç©ºå–å¾—åŸæ¥çš„ä¸€ä¸ª
     * @note
     */
     static const char *name(const char *name = NULL)
@@ -114,8 +114,8 @@ public:
 };
 
 /*!
-* @brief      USER DATAµÄ»ùÀà£¬±£´æÒ»¸övoid *µÄÖ¸Õë
-*             ÓÃÓÚ¼ÇÂ¼Êı¾İµÄÖ¸Õë£¬Í¨¹ı¼Ì³ĞÊµÏÖ¶ÔÓÚval£¬ptr£¬refµÄ¶ÔÏó¹ÜÀí
+* @brief      USER DATAçš„åŸºç±»ï¼Œä¿å­˜ä¸€ä¸ªvoid *çš„æŒ‡é’ˆ
+*             ç”¨äºè®°å½•æ•°æ®çš„æŒ‡é’ˆï¼Œé€šè¿‡ç»§æ‰¿å®ç°å¯¹äºvalï¼Œptrï¼Œrefçš„å¯¹è±¡ç®¡ç†
 */
 class lua_udat_base
 {
@@ -124,17 +124,17 @@ public:
         : obj_ptr_(p)
     {
     }
-    ///±ØĞëÊÇvirtual
+    ///å¿…é¡»æ˜¯virtual
     virtual ~lua_udat_base()
     {
     }
-    //ÒòÎª¼ÇÂ¼ÁË¶àÖÖÀàĞÍ£¬°üÀ¨Ö¸Õë£¬ptr£¬refµÈ£¬ËùÒÔÊÇvoid *
+    //å› ä¸ºè®°å½•äº†å¤šç§ç±»å‹ï¼ŒåŒ…æ‹¬æŒ‡é’ˆï¼Œptrï¼Œrefç­‰ï¼Œæ‰€ä»¥æ˜¯void *
     void *obj_ptr_;
 };
 
 /*!
-* @brief      °ÑÒ»¸övalÖµ·ÅÈëLUA USER DATAµÄ·â×°
-* @tparam     val_type ÖµµÃÀàĞÍ
+* @brief      æŠŠä¸€ä¸ªvalå€¼æ”¾å…¥LUA USER DATAçš„å°è£…
+* @tparam     val_type å€¼å¾—ç±»å‹
 */
 template<typename val_type>
 class val_2_udat: public lua_udat_base
@@ -144,7 +144,7 @@ public:
         : lua_udat_base(new val_type)
     {
     }
-    //args_typeÊÇ¹¹Ôìº¯ÊıµÄ²ÎÊı,args_type1 ´æÔÚµÄÄ¿µÄÊÇºÍÄ¬ÈÏ¹¹Ôìº¯Êı·Ö¿ª£¬
+    //args_typeæ˜¯æ„é€ å‡½æ•°çš„å‚æ•°,args_type1 å­˜åœ¨çš„ç›®çš„æ˜¯å’Œé»˜è®¤æ„é€ å‡½æ•°åˆ†å¼€ï¼Œ
     template<typename ...args_tlist>
     val_2_udat(args_tlist ...arg)
         :lua_udat_base(new val_type(arg ...))
@@ -158,7 +158,7 @@ public:
     }
 
 
-    //¸¨ÖúÍê³ÉÎö¹¹,»á,ÊÍ·Å·ÖÅäµÄ¿Õ¼ä,Ô­×÷ºÃÏñÉÙÁËvirtual
+    //è¾…åŠ©å®Œæˆææ„,ä¼š,é‡Šæ”¾åˆ†é…çš„ç©ºé—´,åŸä½œå¥½åƒå°‘äº†virtual
     virtual ~val_2_udat()
     {
         delete ((val_type *)obj_ptr_);
@@ -166,8 +166,8 @@ public:
 };
 
 /*!
-* @brief      °ÑÒ»¸öptrÖ¸Õë·ÅÈëLUA USER DATAµÄ·â×°
-* @tparam     val_type Ö¸ÕëµÄÀàĞÍ
+* @brief      æŠŠä¸€ä¸ªptræŒ‡é’ˆæ”¾å…¥LUA USER DATAçš„å°è£…
+* @tparam     val_type æŒ‡é’ˆçš„ç±»å‹
 */
 template<typename val_type>
 class ptr_2_udat: public lua_udat_base
@@ -180,14 +180,14 @@ public:
 };
 
 /*!
-* @brief      °ÑÒ»¸örefÒıÓÃ·ÅÈëLUA USER DATAµÄ·â×°
-* @tparam     val_type ÒıÓÃµÄÀàĞÍ
+* @brief      æŠŠä¸€ä¸ªrefå¼•ç”¨æ”¾å…¥LUA USER DATAçš„å°è£…
+* @tparam     val_type å¼•ç”¨çš„ç±»å‹
 */
 template<typename val_type>
 class ref_2_udat: public lua_udat_base
 {
 public:
-    //×¢ÒâµÚÒ»¸ö&t±íÊ¾ÊÇÒıÓÃ²ÎÊı£¬µÚ¶ş¸öÊÇ±êÊ¾´«µİÖ¸Õë¸ølua_udat_base»ùÀà
+    //æ³¨æ„ç¬¬ä¸€ä¸ª&tè¡¨ç¤ºæ˜¯å¼•ç”¨å‚æ•°ï¼Œç¬¬äºŒä¸ªæ˜¯æ ‡ç¤ºä¼ é€’æŒ‡é’ˆç»™lua_udat_baseåŸºç±»
     ref_2_udat(val_type t):
         lua_udat_base(&t)
     {
@@ -195,14 +195,14 @@ public:
 };
 
 /*!
-* @brief      °ÑÒ»¸öÊı×éµÄÒıÓÃÈëLUA USER DATAµÄ·â×°
-* @tparam     val_type ÒıÓÃµÄÀàĞÍ
+* @brief      æŠŠä¸€ä¸ªæ•°ç»„çš„å¼•ç”¨å…¥LUA USER DATAçš„å°è£…
+* @tparam     val_type å¼•ç”¨çš„ç±»å‹
 */
 template<typename ary_type>
 class arrayref_2_udat: public lua_udat_base
 {
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     arrayref_2_udat(ary_type *ary_ptr, size_t ary_size, bool read_only):
         lua_udat_base(ary_ptr),
         ary_size_(ary_size),
@@ -210,20 +210,20 @@ public:
     {
     }
 
-    ///¿Õ¼ä³¤¶È
+    ///ç©ºé—´é•¿åº¦
     size_t ary_size_;
-    ///ÊÇ·ñÖ»¶Á
+    ///æ˜¯å¦åªè¯»
     bool   read_only_;
 
 };
 
 //=======================================================================================================
-//Push Ò»¸öÊı¾İµ½LuaµÄ¶ÑÕ»ÖĞ
+//Push ä¸€ä¸ªæ•°æ®åˆ°Luaçš„å †æ ˆä¸­
 
-///±ÜÃâÄ³Ğ©±àÒë´íÎóµÄº¯Êı
+///é¿å…æŸäº›ç¼–è¯‘é”™è¯¯çš„å‡½æ•°
 void push_stack(lua_State * /*state*/);
 
-///Îª±ä²ÎÄ£°åº¯Êıµİ¹é×¼±¸µÄº¯Êı
+///ä¸ºå˜å‚æ¨¡æ¿å‡½æ•°é€’å½’å‡†å¤‡çš„å‡½æ•°
 template<typename val_type, typename... val_tlist>
 void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 {
@@ -233,10 +233,10 @@ void push_stack(lua_State *state, val_type val, val_tlist ... val_s)
 }
 
 /*!
-* @brief      ·ÅÈëÒ»¸öÒıÓÃ
-* @tparam     val_type  ÒıÓÃµÄÀàĞÍ
+* @brief      æ”¾å…¥ä¸€ä¸ªå¼•ç”¨
+* @tparam     val_type  å¼•ç”¨çš„ç±»å‹
 * @param      state     lua state
-* @param      ref       ÒıÓÃ£¬
+* @param      ref       å¼•ç”¨ï¼Œ
 * @note
 */
 template<typename val_type  >
@@ -247,10 +247,10 @@ void push_stack(lua_State *state,
     new (::lua_newuserdata(state,
                            sizeof(ref_2_udat<val_type>))) ref_2_udat<val_type>(ref);
 
-    //Èç¹ûÔ­ÀàĞÍ£¨È¥µôÒıÓÃ£©ÊÇÒ»¸öobject£¬
+    //å¦‚æœåŸç±»å‹ï¼ˆå»æ‰å¼•ç”¨ï¼‰æ˜¯ä¸€ä¸ªobjectï¼Œ
     if (std::is_class<typename std::remove_reference<val_type>::type >::value)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬ÉèÖÃmetatable£¬×¢ÒâÕâ¶ùÈ¥µôÁËÒıÓÃ£¬½øĞĞµÄ²éÑ¯£¬
+        //æ ¹æ®ç±»çš„åç§°ï¼Œè®¾ç½®metatableï¼Œæ³¨æ„è¿™å„¿å»æ‰äº†å¼•ç”¨ï¼Œè¿›è¡Œçš„æŸ¥è¯¢ï¼Œ
         ::lua_pushstring(state, class_name < typename
                          std::remove_reference < typename
                          std::remove_cv<val_type>::type >::type >::name());
@@ -280,10 +280,10 @@ void push_stack_ptr(lua_State *state, ptr_type ptr)
     {
         new (::lua_newuserdata(state, sizeof(ptr_2_udat<ptr_type>))) ptr_2_udat<ptr_type>(ptr);
 
-        //Èç¹ûÔ­ÀàĞÍ£¨È¥µôÖ¸Õë£©ÊÇÒ»¸öobject£¬
+        //å¦‚æœåŸç±»å‹ï¼ˆå»æ‰æŒ‡é’ˆï¼‰æ˜¯ä¸€ä¸ªobjectï¼Œ
         if (std::is_class<typename std::remove_pointer<ptr_type>::type >::value)
         {
-            //¸ù¾İÀàµÄÃû³Æ£¬ÉèÖÃmetatable£¬×¢ÒâÕâ¶ùÈ¥µôÁËÖ¸Õë£¬½øĞĞµÄ²éÑ¯£¬
+            //æ ¹æ®ç±»çš„åç§°ï¼Œè®¾ç½®metatableï¼Œæ³¨æ„è¿™å„¿å»æ‰äº†æŒ‡é’ˆï¼Œè¿›è¡Œçš„æŸ¥è¯¢ï¼Œ
             ::lua_pushstring(state, class_name <
                              typename std::remove_pointer <ptr_type> ::type > ::name());
             ::lua_gettable(state, LUA_GLOBALSINDEX);
@@ -312,10 +312,10 @@ void push_stack_ptr(lua_State *state, ptr_type ptr)
 
 
 /*!
-* @brief      ·ÅÈëÒ»¸öÖ¸Õë
-* @tparam     val_type Ö¸ÕëµÄÀàĞÍ
+* @brief      æ”¾å…¥ä¸€ä¸ªæŒ‡é’ˆ
+* @tparam     val_type æŒ‡é’ˆçš„ç±»å‹
 * @param      state    Lua state
-* @param      ptr      ·ÅÈëµÄÖ¸Õë
+* @param      ptr      æ”¾å…¥çš„æŒ‡é’ˆ
 */
 template<typename ptr_type  >
 void push_stack(lua_State *state,
@@ -324,12 +324,12 @@ void push_stack(lua_State *state,
     return push_stack_ptr<typename std::remove_cv<ptr_type>::type >(state, ptr);
 }
 
-//¶ÔÓÚ·ÇobjectÀàĞÍµÄÊı¾İ£¬Èç¹ûÒª·ÅÈëÒıÓÃºÍÖ¸Õë£¬Èç¹ûÏ£ÍûLuaÄÜÊ¹ÓÃ£¬ÒªÏÈÉùÃ÷ÕâĞ©¶ÔÏó
-//Õâ¸öÇë×¢Òâ£¡£¡£¡
+//å¯¹äºéobjectç±»å‹çš„æ•°æ®ï¼Œå¦‚æœè¦æ”¾å…¥å¼•ç”¨å’ŒæŒ‡é’ˆï¼Œå¦‚æœå¸Œæœ›Luaèƒ½ä½¿ç”¨ï¼Œè¦å…ˆå£°æ˜è¿™äº›å¯¹è±¡
+//è¿™ä¸ªè¯·æ³¨æ„ï¼ï¼ï¼
 template<typename val_type >
 void push_stack_val(lua_State *state, val_type val)
 {
-    //Õâ¶ùÖ»Õë¶Ô·Çobject¶ÔÏó
+    //è¿™å„¿åªé’ˆå¯¹éobjectå¯¹è±¡
     if (!std::is_class<val_type>::value)
     {
         ZCE_LOG(RS_ERROR, "[LUATIE]Type[%s] not support in this code?", typeid(val_type).name());
@@ -340,7 +340,7 @@ void push_stack_val(lua_State *state, val_type val)
                            sizeof(val_2_udat<val_type>)))
     val_2_udat<typename std::remove_cv<val_type>::type >(val);
 
-    //¸ù¾İÀàµÄÃû³Æ£¬ÉèÖÃmetatable
+    //æ ¹æ®ç±»çš„åç§°ï¼Œè®¾ç½®metatable
     ::lua_pushstring(state, class_name<typename std::remove_cv<val_type>::type >::name());
     ::lua_gettable(state, LUA_GLOBALSINDEX);
     if (!lua_istable(state, -1))
@@ -360,7 +360,7 @@ void push_stack_val(lua_State *state, val_type val)
     return;
 }
 
-//Ã¶¾Ù
+//æšä¸¾
 template<typename val_type  >
 void push_stack(lua_State *state,
                 typename  std::enable_if<std::is_enum<val_type>::value, val_type>::type val)
@@ -368,7 +368,7 @@ void push_stack(lua_State *state,
     lua_pushnumber(state, val);
 }
 
-//·ÅÈëÒ»¸öval£¬
+//æ”¾å…¥ä¸€ä¸ªvalï¼Œ
 template<typename val_type  >
 void push_stack(lua_State *state,
                 typename  std::enable_if
@@ -381,7 +381,7 @@ void push_stack(lua_State *state,
 }
 
 
-///Ö¸ÕëµÄÁ½ÖÖÌØ»¯
+///æŒ‡é’ˆçš„ä¸¤ç§ç‰¹åŒ–
 void push_stack(lua_State *state, char *const val);
 void push_stack(lua_State *state, const char *const val);
 
@@ -390,7 +390,7 @@ template<typename array_type> int array_meta_get(lua_State *state);
 template<typename array_type> int array_meta_set(lua_State *state);
 
 
-///·ÅÈëÒ»¸öÊı×éµÄÒıÓÃ
+///æ”¾å…¥ä¸€ä¸ªæ•°ç»„çš„å¼•ç”¨
 template<typename array_type  >
 void push_stack(lua_State *state, arrayref_2_udat<array_type> &ary_dat)
 {
@@ -406,14 +406,14 @@ void push_stack(lua_State *state, arrayref_2_udat<array_type> &ary_dat)
     ::lua_pushcclosure(state, array_meta_get<array_type>, 0);
     ::lua_rawset(state, -3);
 
-    //·ÇÖ»¶Á
+    //éåªè¯»
     if (!ary_dat.read_only_)
     {
         ::lua_pushstring(state, "__newindex");
         ::lua_pushcclosure(state, array_meta_set<array_type>, 0);
         ::lua_rawset(state, -3);
     }
-    //Èç¹ûÖ»¶Á£¬__newindex
+    //å¦‚æœåªè¯»ï¼Œ__newindex
     else
     {
         ::lua_pushstring(state, "__newindex");
@@ -425,7 +425,7 @@ void push_stack(lua_State *state, arrayref_2_udat<array_type> &ary_dat)
 }
 
 
-//¸÷ÖÖÖØÔØµÄpush_backº¯Êı
+//å„ç§é‡è½½çš„push_backå‡½æ•°
 template<> void push_stack_val(lua_State *state, char val);
 template<> void push_stack_val(lua_State *state, unsigned char val);
 template<> void push_stack_val(lua_State *state, short val);
@@ -438,7 +438,7 @@ template<> void push_stack_val(lua_State *state, bool val);
 template<> void push_stack_val(lua_State *state, int64_t val);
 template<> void push_stack_val(lua_State *state, uint64_t val);
 
-//²»ÔÊĞí³öÏÖlongµÄ±äÁ¿£¬ÒòÎªlongÎŞ·¨ÒÆÖ²£¬ËùÒÔÖ»¶¨Òå£¬²»ÊµÏÖ
+//ä¸å…è®¸å‡ºç°longçš„å˜é‡ï¼Œå› ä¸ºlongæ— æ³•ç§»æ¤ï¼Œæ‰€ä»¥åªå®šä¹‰ï¼Œä¸å®ç°
 template<> void push_stack_val(lua_State *state,long val);
 template<> void push_stack_val(lua_State *state,unsigned long val);
 template<> void push_stack_val(lua_State* state,long long val);
@@ -446,7 +446,7 @@ template<> void push_stack_val(lua_State* state,unsigned long long val);
 
 //=======================================================================================================
 
-///¶ÁÈ¡Ò»¸öÖ¸Õë
+///è¯»å–ä¸€ä¸ªæŒ‡é’ˆ
 template<typename ret_type>
 typename std::enable_if<std::is_pointer<ret_type>::value, typename std::remove_cv<ret_type>::type >::type
 read_stack(lua_State *state, int index)
@@ -460,7 +460,7 @@ ptr_type read_stack_ptr(lua_State *state, int index)
     return (ptr_type)(((lua_udat_base *)::lua_touserdata(state, index))->obj_ptr_);
 }
 
-///´Ó¶ÑÕ»ÖĞ¶ÁÈ¡Ä³¸öÀàĞÍ
+///ä»å †æ ˆä¸­è¯»å–æŸä¸ªç±»å‹
 template < typename ret_type >
 ret_type read_stack_val(lua_State *state, int index)
 {
@@ -481,7 +481,7 @@ template<> uint64_t read_stack_val(lua_State *state, int index);
 template<> std::string read_stack_val(lua_State *state, int index);
 
 
-///¶ÁÈ¡Ò»¸öÒıÓÃ
+///è¯»å–ä¸€ä¸ªå¼•ç”¨
 template<typename ret_type>
 typename std::enable_if<std::is_reference<ret_type>::value, typename std::remove_cv<ret_type>::type>::type
 read_stack(lua_State *state, int index)
@@ -490,7 +490,7 @@ read_stack(lua_State *state, int index)
              (((lua_udat_base *)lua_touserdata(state, index))->obj_ptr_));
 }
 
-///¶ÁÈ¡Ã¶¾ÙÖµ
+///è¯»å–æšä¸¾å€¼
 template<typename ret_type>
 typename std::enable_if<std::is_enum<ret_type>::value, ret_type>::type
 read_stack(lua_State *state, int index)
@@ -498,7 +498,7 @@ read_stack(lua_State *state, int index)
     return (ret_type)lua_tonumber(state, index);
 }
 
-///¶ÁÈ¡Ò»¸öval
+///è¯»å–ä¸€ä¸ªval
 template<typename ret_type>
 typename std::enable_if < !(std::is_pointer<ret_type>::value ||
                             std::is_reference<ret_type>::value ||
@@ -521,11 +521,11 @@ val_type pop_stack(lua_State *state)
 //=======================================================================================================
 
 
-///ÈÃLUA´ÓÒ»¸ö°ó¶¨µÄÊı×é£¨Ö¸Õë£©ÄÇÀïµÃµ½Êı×éµÄµÄÖµ
+///è®©LUAä»ä¸€ä¸ªç»‘å®šçš„æ•°ç»„ï¼ˆæŒ‡é’ˆï¼‰é‚£é‡Œå¾—åˆ°æ•°ç»„çš„çš„å€¼
 template<typename array_type>
 int array_meta_get(lua_State *state)
 {
-    //Èç¹û²»ÊÇ
+    //å¦‚æœä¸æ˜¯
     int index = static_cast<int>(lua_tonumber(state, -1));
     arrayref_2_udat<array_type> *ptr = ((arrayref_2_udat<array_type> *)lua_touserdata(state, -2));
     if (index < 1 && index > static_cast<int>(ptr->ary_size_))
@@ -541,23 +541,23 @@ int array_meta_get(lua_State *state)
     else
     {
         array_type *ary_ptr = (array_type *)(ptr->obj_ptr_);
-        //×¢ÒâÕâ¶ùÎªÁË·ûºÏLuaµÄÏ°¹ß£¬LUAµÄË÷ÒıÊÇ´Ó1¿ªÊ¼
+        //æ³¨æ„è¿™å„¿ä¸ºäº†ç¬¦åˆLuaçš„ä¹ æƒ¯ï¼ŒLUAçš„ç´¢å¼•æ˜¯ä»1å¼€å§‹
         push_stack<array_type>(state, ary_ptr[index - 1]);
     }
 
-    //index Ó¦¸Ã×ö¸ö¼ì²é
+    //index åº”è¯¥åšä¸ªæ£€æŸ¥
 
     return 1;
 }
 
-///ÈÃLUA¿ÉÒÔÉèÖÃÒ»¸ö°ó¶¨µÄÊı×é£¨Ö¸Õë£©µÄÄ³¸öÖµ
+///è®©LUAå¯ä»¥è®¾ç½®ä¸€ä¸ªç»‘å®šçš„æ•°ç»„ï¼ˆæŒ‡é’ˆï¼‰çš„æŸä¸ªå€¼
 template<typename array_type>
 int array_meta_set(lua_State *state)
 {
     arrayref_2_udat<array_type> *ptr = ((arrayref_2_udat<array_type> *)::lua_touserdata(state, -3));
     int index = static_cast<int>(::lua_tonumber(state, -2));
 
-    //¶Ôindex×ö±ß½ç¼ì²é
+    //å¯¹indexåšè¾¹ç•Œæ£€æŸ¥
     if (index < 1 && index > static_cast<int>(ptr->ary_size_))
     {
         ZCE_LOG(RS_ERROR, "Lua script use error index [%d] to visit array %s[] size[%u].",
@@ -570,7 +570,7 @@ int array_meta_set(lua_State *state)
     else
     {
         array_type *ary_ptr = (array_type *)(ptr->obj_ptr_);
-        //×¢ÒâÕâ¶ùÎªÁË·ûºÏLuaµÄÏ°¹ß£¬LUAµÄË÷ÒıÊÇ´Ó1¿ªÊ¼
+        //æ³¨æ„è¿™å„¿ä¸ºäº†ç¬¦åˆLuaçš„ä¹ æƒ¯ï¼ŒLUAçš„ç´¢å¼•æ˜¯ä»1å¼€å§‹
         ary_ptr[index - 1] = read_stack<array_type>(state, -1);
     }
 
@@ -583,42 +583,42 @@ int array_meta_set(lua_State *state)
 //=======================================================================================================
 
 /*!
-* @brief      È«¾Öº¯ÊıµÄ·â×°Àà£¬¸¨Öúµ÷ÓÃÊµ¼Ê×¢²áµÄÈ«¾Öº¯Êı
-*             ¸ù¾İret_type ÊÇ·ñÊÇvoid£¬·ÖÁË2¸ö°æ±¾¡£ÁíÍâÒ»¸ö¼ûg_func_void
-* @tparam     ret_type  ·µ»ØÖµÀàĞÍ
-* @tparam     args_type ²ÎÊıÀàĞÍÁĞ±í£¬0-N¸ö²ÎÊı
-* @note       Õâ¶ùÒª×¢Òâ£¬ÏÂÃæµÄ´úÂëÓĞ3¸ö°æ±¾£¬¶Ô3¸ö£¬ÆäÊµÎÒÖÁÉÙĞ´ÁËµÄÓĞ5-6¸ö°æ±¾¡£Ê£ÏÂ3¸ö¡£
-*             ¸æËßÄãVARIADICÕ¹¿ªµÄ·½Ê½¡£Õâ¼òÖ±ÊÇÑªÀáÊ·¡£
+* @brief      å…¨å±€å‡½æ•°çš„å°è£…ç±»ï¼Œè¾…åŠ©è°ƒç”¨å®é™…æ³¨å†Œçš„å…¨å±€å‡½æ•°
+*             æ ¹æ®ret_type æ˜¯å¦æ˜¯voidï¼Œåˆ†äº†2ä¸ªç‰ˆæœ¬ã€‚å¦å¤–ä¸€ä¸ªè§g_func_void
+* @tparam     ret_type  è¿”å›å€¼ç±»å‹
+* @tparam     args_type å‚æ•°ç±»å‹åˆ—è¡¨ï¼Œ0-Nä¸ªå‚æ•°
+* @note       è¿™å„¿è¦æ³¨æ„ï¼Œä¸‹é¢çš„ä»£ç æœ‰3ä¸ªç‰ˆæœ¬ï¼Œå¯¹3ä¸ªï¼Œå…¶å®æˆ‘è‡³å°‘å†™äº†çš„æœ‰5-6ä¸ªç‰ˆæœ¬ã€‚å‰©ä¸‹3ä¸ªã€‚
+*             å‘Šè¯‰ä½ VARIADICå±•å¼€çš„æ–¹å¼ã€‚è¿™ç®€ç›´æ˜¯è¡€æ³ªå²ã€‚
 *
-*             µÚÒ»ÖÖÓĞÒ»¸öÇ±ÔÚµÄ·çÏÕ£¨ÎÊÌâ£©¡£ÎÒ¼Ù¶¨ÁË²ÎÊı´«µİ(Õ¹¿ª)·½Ê½¡£
-*             ÔÚVS2013µÄ±àÒëÆ÷£¬ºÍGCC 4.8µÄ±àÒëÆ÷ÉÏ´ó²¿·ÖµÄ±ä²ÎÕ¹¿ªË³ĞòÊÇ´ÓÓÒµ½×ó£¬µ¼ÖÂÎÒ
-*             ÃÇÕ¹¿ª...µÃµ½µÄ²ÎÊıË³ĞòÒ²ÊÇ·´µÄ¡£
-*             ¶øÈ·ÊµC++Ò²Ã»ÓĞÃ÷È·¹æ¶¨ÊÇ´ÓÓÒµ½×ó´«µİ²ÎÊı¡£ËùÒÔÕâÖÖ·½·¨ÆäÊµ¡­¡­
-*             ×¢Òâ£¬ËäÈ»ÎÒÃÇ¿ÉÒÔÁĞ±í³õÊ¼»¯ÔËËã(airfuÌá¹©ÁËÒ»¸öºÃ·½·¨£©¡£¿ÉÒÔÈÃ²ÎÊı´Ó×óµ½ÓÒ
-*             Õ¹¿ª£¬µ«ÎÒÃÇ»¹ÓĞÒ»¸öº¯Êı²ÎÊıĞèÒª²ÎÊı++£¬ÔÚº¯Êı²ÎÊıÕ¹¿ªºó»¹ÊÇ·´µÄ£¬
-*             ËùÒÔÕâ¸ö°æ±¾ÀïÃæ£¬ÎÒÊÇ·´×ÅÈ¡²ÎÊıµÄ¡£
-*             µ«Õâ¸ö°æ±¾ÆäÊµ»¹ÓĞÒ»¸öÎÊÌâ£¬¾ÍÊÇGCCµÄ¸æ¾¯£¬-Wsequence-pointµÄ¸æ¾¯,GCC×¼È·
-*             ¼ì²éµ½ÁËÕâ¸öÎÊÌâ£¬GCC¾ÍÊÇNBÑ½£¨ÆäÊµÒ²ÓĞÃ»¼ì²é³öÀ´µÄ£¬ÒÔ¼°ºóÃæÎó±¨µÄ£©¡£
-*             BTW:Õâ¶ùÎªÁË±ÜÃâ¸æ¾¯£¬»¹ÓĞÒ»¸öÃ»ÓĞĞ´³öÀ´µÄ°æ±¾£¬¾ÍÊÇpop_stack£¬·´¹ıÀ´È¡²ÎÊı,
-*             Í¬Ê±±ÜÃâÁË++²ÎÊı£¬À´¹æ±ÜÕâ¸öÎÊÌâ£¨ÆÛÆ­±àÒëÆ÷£©¡£
+*             ç¬¬ä¸€ç§æœ‰ä¸€ä¸ªæ½œåœ¨çš„é£é™©ï¼ˆé—®é¢˜ï¼‰ã€‚æˆ‘å‡å®šäº†å‚æ•°ä¼ é€’(å±•å¼€)æ–¹å¼ã€‚
+*             åœ¨VS2013çš„ç¼–è¯‘å™¨ï¼Œå’ŒGCC 4.8çš„ç¼–è¯‘å™¨ä¸Šå¤§éƒ¨åˆ†çš„å˜å‚å±•å¼€é¡ºåºæ˜¯ä»å³åˆ°å·¦ï¼Œå¯¼è‡´æˆ‘
+*             ä»¬å±•å¼€...å¾—åˆ°çš„å‚æ•°é¡ºåºä¹Ÿæ˜¯åçš„ã€‚
+*             è€Œç¡®å®C++ä¹Ÿæ²¡æœ‰æ˜ç¡®è§„å®šæ˜¯ä»å³åˆ°å·¦ä¼ é€’å‚æ•°ã€‚æ‰€ä»¥è¿™ç§æ–¹æ³•å…¶å®â€¦â€¦
+*             æ³¨æ„ï¼Œè™½ç„¶æˆ‘ä»¬å¯ä»¥åˆ—è¡¨åˆå§‹åŒ–è¿ç®—(airfuæä¾›äº†ä¸€ä¸ªå¥½æ–¹æ³•ï¼‰ã€‚å¯ä»¥è®©å‚æ•°ä»å·¦åˆ°å³
+*             å±•å¼€ï¼Œä½†æˆ‘ä»¬è¿˜æœ‰ä¸€ä¸ªå‡½æ•°å‚æ•°éœ€è¦å‚æ•°++ï¼Œåœ¨å‡½æ•°å‚æ•°å±•å¼€åè¿˜æ˜¯åçš„ï¼Œ
+*             æ‰€ä»¥è¿™ä¸ªç‰ˆæœ¬é‡Œé¢ï¼Œæˆ‘æ˜¯åç€å–å‚æ•°çš„ã€‚
+*             ä½†è¿™ä¸ªç‰ˆæœ¬å…¶å®è¿˜æœ‰ä¸€ä¸ªé—®é¢˜ï¼Œå°±æ˜¯GCCçš„å‘Šè­¦ï¼Œ-Wsequence-pointçš„å‘Šè­¦,GCCå‡†ç¡®
+*             æ£€æŸ¥åˆ°äº†è¿™ä¸ªé—®é¢˜ï¼ŒGCCå°±æ˜¯NBå‘€ï¼ˆå…¶å®ä¹Ÿæœ‰æ²¡æ£€æŸ¥å‡ºæ¥çš„ï¼Œä»¥åŠåé¢è¯¯æŠ¥çš„ï¼‰ã€‚
+*             BTW:è¿™å„¿ä¸ºäº†é¿å…å‘Šè­¦ï¼Œè¿˜æœ‰ä¸€ä¸ªæ²¡æœ‰å†™å‡ºæ¥çš„ç‰ˆæœ¬ï¼Œå°±æ˜¯pop_stackï¼Œåè¿‡æ¥å–å‚æ•°,
+*             åŒæ—¶é¿å…äº†++å‚æ•°ï¼Œæ¥è§„é¿è¿™ä¸ªé—®é¢˜ï¼ˆæ¬ºéª—ç¼–è¯‘å™¨ï¼‰ã€‚
 *             
-*             µÚ¶şÖÖ£¬std::bindÀïÃæÊÇÕ¹¿ª¹ıº¯ÊıµÄ£¬bindÄÚ²¿ÓÃÁËtuple£¬ÄÇÃ´tupleÓ¦¸Ã¿ÉÒÔ½è
-*             ÓÃ¡£×¢ÒâÓÃtuple£¬ÎÒÃÇ²»ÄÜÓÃmake_tuple£¬make_tupleÒ²ÊÇº¯ÊıÍ¬ÉÏ¡£
-*             Õâ¶ù³öÏÖÁËµÚ¶şÖÖ½â·¨£¬ÀûÓÃtupleµÄ³õÊ¼»¯£¬¼ÇÂ¼Õ¹¿ªµÄ²ÎÊıÊıÖµ£¬È»ºóµ÷ÓÃº¯Êı¡£
-*             µ«GCC¶ÔÕâ¸ö´úÂë»¹ÊÇÓĞ-Wsequence-pointµÄ¸æ¾¯£¬ÀïÃæÉÏÕâÊÂ³õÊ¼»¯£¬²»Ó¦¸ÃÓĞ¸æ¾¯²Å
-*             ¶Ô¡£
+*             ç¬¬äºŒç§ï¼Œstd::bindé‡Œé¢æ˜¯å±•å¼€è¿‡å‡½æ•°çš„ï¼Œbindå†…éƒ¨ç”¨äº†tupleï¼Œé‚£ä¹ˆtupleåº”è¯¥å¯ä»¥å€Ÿ
+*             ç”¨ã€‚æ³¨æ„ç”¨tupleï¼Œæˆ‘ä»¬ä¸èƒ½ç”¨make_tupleï¼Œmake_tupleä¹Ÿæ˜¯å‡½æ•°åŒä¸Šã€‚
+*             è¿™å„¿å‡ºç°äº†ç¬¬äºŒç§è§£æ³•ï¼Œåˆ©ç”¨tupleçš„åˆå§‹åŒ–ï¼Œè®°å½•å±•å¼€çš„å‚æ•°æ•°å€¼ï¼Œç„¶åè°ƒç”¨å‡½æ•°ã€‚
+*             ä½†GCCå¯¹è¿™ä¸ªä»£ç è¿˜æ˜¯æœ‰-Wsequence-pointçš„å‘Šè­¦ï¼Œé‡Œé¢ä¸Šè¿™äº‹åˆå§‹åŒ–ï¼Œä¸åº”è¯¥æœ‰å‘Šè­¦æ‰
+*             å¯¹ã€‚
 *              
-*             µÚÈıÖÖ£¬std::bindÕ¹¿ªº¯ÊıµÄ¹ı³ÌÖĞ£¬ÔÚÊµÓÃtupleµÄ¹ı³ÌÓÃ¹ıindex_sequence£¬¸¨Öú
-*             Õ¹¿ª£¬ÕâÑùÈ¥µôÁËtuple¼ÇÂ¼²ÎÊıµÄ¹ı³Ì¡£Ò²È¥µôÁË¸æ¾¯¡£
-*             ÕâÖÖ×î´óµÄÈ±µã¾ÍÊÇ£¬ĞèÒª±àÒëÆ÷Ö§³ÖC++14.
+*             ç¬¬ä¸‰ç§ï¼Œstd::bindå±•å¼€å‡½æ•°çš„è¿‡ç¨‹ä¸­ï¼Œåœ¨å®ç”¨tupleçš„è¿‡ç¨‹ç”¨è¿‡index_sequenceï¼Œè¾…åŠ©
+*             å±•å¼€ï¼Œè¿™æ ·å»æ‰äº†tupleè®°å½•å‚æ•°çš„è¿‡ç¨‹ã€‚ä¹Ÿå»æ‰äº†å‘Šè­¦ã€‚
+*             è¿™ç§æœ€å¤§çš„ç¼ºç‚¹å°±æ˜¯ï¼Œéœ€è¦ç¼–è¯‘å™¨æ”¯æŒC++14.
 *             
-*             ¹ØÓÚvariaic²ÎÊıÕ¹¿ª£º
-*             ´ó²¿·ÖvariadicµÄº¯Êı¶¼ÊÇÍ¨¹ıµİ¹éÕ¹¿ª±ÜÃâÕâ¸öÎÊÌâ£¬µ«ÎÒÕâ¶ùÎŞ·¨µİ¹é£¬
-*             ÁíÍâ£¬¼øÓÚstd::bindµÄÊµÏÖ£¬»¹ÊÇ¿ÉÒÔÈÆ¿ªÕâ¸öÎÊÌâ£¬µ«ºÃÏñ³É±¾ÓĞµã¸ß¡£
-*             »¹ÓĞÒ»¸öÕ¹¿ª·½·¨ÊÇÀûÓÃ³õÊ¼»¯µÄ·½·¨£¬¶ººÅ
-*             std::bindÊ¹ÓÃµÄÊÇtuple ºÍ index_sequence  À´½â¾ö²ÎÊı´æ´¢ÒÔ¼°Ë³ĞòÎÊÌâ
-*             µ«ÊÇ¼´Ê¹ÓÃÁËtupleÕıÈ·µÃµ½²ÎÊı£¬Ò²²»ÄÜÊ¹ÓÃ++µÄº¯Êı²ÎÊı£¬ÎÒÒ²ÒªÓÃindex_sequence
-*             À´read_stack¡£
+*             å…³äºvariaicå‚æ•°å±•å¼€ï¼š
+*             å¤§éƒ¨åˆ†variadicçš„å‡½æ•°éƒ½æ˜¯é€šè¿‡é€’å½’å±•å¼€é¿å…è¿™ä¸ªé—®é¢˜ï¼Œä½†æˆ‘è¿™å„¿æ— æ³•é€’å½’ï¼Œ
+*             å¦å¤–ï¼Œé‰´äºstd::bindçš„å®ç°ï¼Œè¿˜æ˜¯å¯ä»¥ç»•å¼€è¿™ä¸ªé—®é¢˜ï¼Œä½†å¥½åƒæˆæœ¬æœ‰ç‚¹é«˜ã€‚
+*             è¿˜æœ‰ä¸€ä¸ªå±•å¼€æ–¹æ³•æ˜¯åˆ©ç”¨åˆå§‹åŒ–çš„æ–¹æ³•ï¼Œé€—å·
+*             std::bindä½¿ç”¨çš„æ˜¯tuple å’Œ index_sequence  æ¥è§£å†³å‚æ•°å­˜å‚¨ä»¥åŠé¡ºåºé—®é¢˜
+*             ä½†æ˜¯å³ä½¿ç”¨äº†tupleæ­£ç¡®å¾—åˆ°å‚æ•°ï¼Œä¹Ÿä¸èƒ½ä½¿ç”¨++çš„å‡½æ•°å‚æ•°ï¼Œæˆ‘ä¹Ÿè¦ç”¨index_sequence
+*             æ¥read_stackã€‚
 *
 */
 template < bool last_yield,
@@ -629,19 +629,19 @@ class g_func_ret
 public:
 
 #if defined __TEST_VARIADIC_FUN && __TEST_VARIADIC_FUN == 1
-    //ÕâÊÇÒÀÀµÓÚº¯Êı´ÓÓĞÏò×óÕ¹¿ªµÄ°æ±¾ LINUX GCC 7ÓĞ-Wsequence-pointµÄ¸æ¾¯,
-    //Õâ¸ö¸æ¾¯ÊÇÕıÈ·µÄ£¬Õâ´úÂëÈ·ÊµÒÀÀµ²»Ã÷È·µÄ²ÎÊıË³Ğò
-    //Èç¹û°ÑÏÂÃæµÄread_stack»»³Épop£¬¾ÓÈ»¿ÉÒÔÃÉÆ­±àÒëÆ÷¡£ÓŞ´ÀµÄ±àÒëÆ÷
+    //è¿™æ˜¯ä¾èµ–äºå‡½æ•°ä»æœ‰å‘å·¦å±•å¼€çš„ç‰ˆæœ¬ LINUX GCC 7æœ‰-Wsequence-pointçš„å‘Šè­¦,
+    //è¿™ä¸ªå‘Šè­¦æ˜¯æ­£ç¡®çš„ï¼Œè¿™ä»£ç ç¡®å®ä¾èµ–ä¸æ˜ç¡®çš„å‚æ•°é¡ºåº
+    //å¦‚æœæŠŠä¸‹é¢çš„read_stackæ¢æˆpopï¼Œå±…ç„¶å¯ä»¥è’™éª—ç¼–è¯‘å™¨ã€‚æ„šè ¢çš„ç¼–è¯‘å™¨
     static int invoke(lua_State* state)
     {
-        //È¡³öº¯ÊıÖ¸Õë£¬²¢ÇÒ×ªĞÍ
+        //å–å‡ºå‡½æ•°æŒ‡é’ˆï¼Œå¹¶ä¸”è½¬å‹
         void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...)=(ret_type(*)(args_type...)) (upvalue_1);
-        //Èç¹û²ÎÊı´«µİË³Ğò´íÎó£¬Çë²Î¿¼noteµÄËµÃ÷£¬
-        //¸ù¾İº¯ÊıÊÇ·ñÓĞ·µ»ØÖµ£¬¾ö¶¨ÈçºÎ´¦Àí£¬ÊÇ·ñpush_stack
-        //×¢ÒâÏÂÃæÊ¹ÓÃµÄÊÇpara_idx--,Õâ¸öÆäÊµÊÇ·´×Å¶ÁÈ¡¶ÑÕ»µÄ£¬ÒòÎª...ÊÇ´ÓÓÒµ½×ó
+        //å¦‚æœå‚æ•°ä¼ é€’é¡ºåºé”™è¯¯ï¼Œè¯·å‚è€ƒnoteçš„è¯´æ˜ï¼Œ
+        //æ ¹æ®å‡½æ•°æ˜¯å¦æœ‰è¿”å›å€¼ï¼Œå†³å®šå¦‚ä½•å¤„ç†ï¼Œæ˜¯å¦push_stack
+        //æ³¨æ„ä¸‹é¢ä½¿ç”¨çš„æ˜¯para_idx--,è¿™ä¸ªå…¶å®æ˜¯åç€è¯»å–å †æ ˆçš„ï¼Œå› ä¸º...æ˜¯ä»å³åˆ°å·¦
         int para_idx=::lua_gettop(state);
-        //Í¬Ê±×¢Òâdecay£¬ÎÒÕâ¶ùÍË»¯ÁË²ÎÊı£¬ÒòÎªÎÒºÜ¶à¶¼ÊÇÁÙÊ±±äÁ¿
+        //åŒæ—¶æ³¨æ„decayï¼Œæˆ‘è¿™å„¿é€€åŒ–äº†å‚æ•°ï¼Œå› ä¸ºæˆ‘å¾ˆå¤šéƒ½æ˜¯ä¸´æ—¶å˜é‡
         push_stack<ret_type>(state,
                              fun_ptr(read_stack<typename std::decay<args_type>::type>
                              (state,para_idx--)...));
@@ -649,25 +649,25 @@ public:
     }
     
 #elif defined __TEST_VARIADIC_FUN && __TEST_VARIADIC_FUN == 2
-    //Õâ¸ö°æ±¾ÊÇÀûÓÃtuple¸³ÖµÕ¹¿ªµÄ°æ±¾£¬µ«ÊÇÔÚLinux GCC£¬ÈÔÈ»ÓĞ¸æ¾¯¡££¿£¿£¿
-    //ÎÒÈÏÎªÕâ¸ö¸æ¾¯ÊÇ´íÎóµÄ£¬ÒòÎªÎÒµÄÕ¹¿ªÊÇtuple³õÊ¼»¯¡£Ë³ĞòÊÇÃ÷È·µÄ
+    //è¿™ä¸ªç‰ˆæœ¬æ˜¯åˆ©ç”¨tupleèµ‹å€¼å±•å¼€çš„ç‰ˆæœ¬ï¼Œä½†æ˜¯åœ¨Linux GCCï¼Œä»ç„¶æœ‰å‘Šè­¦ã€‚ï¼Ÿï¼Ÿï¼Ÿ
+    //æˆ‘è®¤ä¸ºè¿™ä¸ªå‘Šè­¦æ˜¯é”™è¯¯çš„ï¼Œå› ä¸ºæˆ‘çš„å±•å¼€æ˜¯tupleåˆå§‹åŒ–ã€‚é¡ºåºæ˜¯æ˜ç¡®çš„
     static int invoke(lua_State* state)
     {
-        //È¡³öº¯ÊıÖ¸Õë£¬²¢ÇÒ×ªĞÍ
+        //å–å‡ºå‡½æ•°æŒ‡é’ˆï¼Œå¹¶ä¸”è½¬å‹
         void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...)=(ret_type(*)(args_type...)) (upvalue_1);
-        //Ê¹ÓÃtupleÕ¹¿ª²ÎÊı£¬¶øÇÒÊÇ´Ó×óµ½ÓÒÕ¹¿ª
-        //Í¬Ê±×¢Òâdecay£¬ÎÒÕâ¶ùÍË»¯ÁË²ÎÊı£¬ÒòÎªÎÒºÜ¶à¶¼ÊÇÁÙÊ±±äÁ¿
+        //ä½¿ç”¨tupleå±•å¼€å‚æ•°ï¼Œè€Œä¸”æ˜¯ä»å·¦åˆ°å³å±•å¼€
+        //åŒæ—¶æ³¨æ„decayï¼Œæˆ‘è¿™å„¿é€€åŒ–äº†å‚æ•°ï¼Œå› ä¸ºæˆ‘å¾ˆå¤šéƒ½æ˜¯ä¸´æ—¶å˜é‡
         int para_idx=1;
         std::tuple<typename std::decay<args_type>::type...> para={
             (read_stack<typename std::decay<args_type>::type>(state,para_idx++))...};
-        //Ê¹ÓÃtupleÖ´ĞĞº¯Êıµ÷ÓÃ
+        //ä½¿ç”¨tupleæ‰§è¡Œå‡½æ•°è°ƒç”¨
         push_stack<ret_type>(state,
                              zce::g_func_tuplearg_invoke(fun_ptr,para));
         return (last_yield)?::lua_yield(state,1):1;
     }
 #else
-    //ÀûÓÃmake_index_sequenceÕ¹¿ªVARIADICµÄ·½·¨£¬µ«ÊÇÕâ¸ö±ØĞëÒªC++ 14²ÅÖ§³Ö
+    //åˆ©ç”¨make_index_sequenceå±•å¼€VARIADICçš„æ–¹æ³•ï¼Œä½†æ˜¯è¿™ä¸ªå¿…é¡»è¦C++ 14æ‰æ”¯æŒ
     static int invoke(lua_State* state)
     {
         const static int para_count=sizeof...(args_type);
@@ -679,7 +679,7 @@ private:
     template<std::size_t... I>
     static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
     {
-        //È¡³öº¯ÊıÖ¸Õë£¬²¢ÇÒ×ªĞÍ
+        //å–å‡ºå‡½æ•°æŒ‡é’ˆï¼Œå¹¶ä¸”è½¬å‹
         void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         ret_type(*fun_ptr)(args_type...)=(ret_type(*)(args_type...)) (upvalue_1);
 
@@ -690,7 +690,7 @@ private:
 #endif
 };
 
-///È«¾ÖÃ»ÓĞ·µ»ØÖµµÄº¯Êı·â×°£¬ÏêÏ¸ĞÅÏ¢¼ûg_func_ret
+///å…¨å±€æ²¡æœ‰è¿”å›å€¼çš„å‡½æ•°å°è£…ï¼Œè¯¦ç»†ä¿¡æ¯è§g_func_ret
 template < bool last_yield,
            typename... args_type >
 class g_func_void
@@ -706,7 +706,7 @@ private:
     template<std::size_t... I>
     static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
     {
-        //È¡³öº¯ÊıÖ¸Õë£¬²¢ÇÒ×ªĞÍ
+        //å–å‡ºå‡½æ•°æŒ‡é’ˆï¼Œå¹¶ä¸”è½¬å‹
         void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         void (*fun_ptr)(args_type...)=(void(*)(args_type...)) (upvalue_1);
 
@@ -716,21 +716,21 @@ private:
     }
 };
 
-///lua¶ÁÈ¡ÀàÀïÃæµÄÊı¾İµÄmeta tableµÄ__index¶ÔÓ¦º¯Êı
+///luaè¯»å–ç±»é‡Œé¢çš„æ•°æ®çš„meta tableçš„__indexå¯¹åº”å‡½æ•°
 int class_meta_get(lua_State *state);
 
-///luaĞ´ÈëÀàÀïÃæµÄÊı¾İµÄmeta tableµÄ__newindex¶ÔÓ¦º¯Êı
+///luaå†™å…¥ç±»é‡Œé¢çš„æ•°æ®çš„meta tableçš„__newindexå¯¹åº”å‡½æ•°
 int class_meta_set(lua_State *state);
 
 
-///µ÷ÓÃ¸¸Ä¸µÄº¯Êı
+///è°ƒç”¨çˆ¶æ¯çš„å‡½æ•°
 int class_parent(lua_State *state);
 
 
 /*!
-* @brief      ·â×°ÀàµÄ¹¹Ôìº¯Êı¸øLUAÊ¹ÓÃ
-* @tparam     class_type ¹¹ÔìµÄÀàĞÍ
-* @tparam     args_type  ¹¹ÔìµÄ²ÎÊı£¬
+* @brief      å°è£…ç±»çš„æ„é€ å‡½æ•°ç»™LUAä½¿ç”¨
+* @tparam     class_type æ„é€ çš„ç±»å‹
+* @tparam     args_type  æ„é€ çš„å‚æ•°ï¼Œ
 */
 template<typename class_type, typename... args_type>
 class constructor
@@ -745,8 +745,8 @@ private:
     template<std::size_t... I>
     static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
     {
-        //new Ò»¸öuser data£¬ÓÃ<T>µÄ´óĞ¡,Í¬Ê±£¬Í¬Ê±ÓÃplacement new µÄ·½Ê½£¬
-        //£¨Ö¸ÕëÊ½lua_newuserdata·ÖÅäµÄ£©Íê³É¹¹Ôìº¯Êı
+        //new ä¸€ä¸ªuser dataï¼Œç”¨<T>çš„å¤§å°,åŒæ—¶ï¼ŒåŒæ—¶ç”¨placement new çš„æ–¹å¼ï¼Œ
+        //ï¼ˆæŒ‡é’ˆå¼lua_newuserdataåˆ†é…çš„ï¼‰å®Œæˆæ„é€ å‡½æ•°
         new (::lua_newuserdata(state,
                                sizeof(val_2_udat<class_type>))) \
             val_2_udat<class_type>(read_stack<args_type>(state,I+2)...);
@@ -760,19 +760,19 @@ private:
 };
 
 
-//µ÷ÓÃUSER_DATAµÄ»ùÀàµÄÎö¹¹,ÓÉÓÚuserdata_baseÆäÊµÊÇÒ»¸öLUAÊ¹ÓÃµÄuserdata¶ÔÏóµÄ»ùÀà£¬
-//Æä×ÓÀà°üÀ¨3ÖÖ£¬val,ptr,ref,ÆäÖĞvalµÄÎö¹¹»áÊÍ·Å¶ÔÏó£¬ptr£¬refµÄ¶ÔÏóÊ²Ã´¶¼²»»á×ö£¬
-//ÕâÑù¾Í±£Ö¤ÎŞÂÛÄã´«µİ¸øLUAÊ²Ã´£¬ËûÃÇµÄÉúÃüÖÜÆÚ¶¼ÊÇÕıÈ·µÄ£¬
+//è°ƒç”¨USER_DATAçš„åŸºç±»çš„ææ„,ç”±äºuserdata_baseå…¶å®æ˜¯ä¸€ä¸ªLUAä½¿ç”¨çš„userdataå¯¹è±¡çš„åŸºç±»ï¼Œ
+//å…¶å­ç±»åŒ…æ‹¬3ç§ï¼Œval,ptr,ref,å…¶ä¸­valçš„ææ„ä¼šé‡Šæ”¾å¯¹è±¡ï¼Œptrï¼Œrefçš„å¯¹è±¡ä»€ä¹ˆéƒ½ä¸ä¼šåšï¼Œ
+//è¿™æ ·å°±ä¿è¯æ— è®ºä½ ä¼ é€’ç»™LUAä»€ä¹ˆï¼Œä»–ä»¬çš„ç”Ÿå‘½å‘¨æœŸéƒ½æ˜¯æ­£ç¡®çš„ï¼Œ
 int destroyer(lua_State *state);
 
 
 /*!
-* @brief      ÓÃC++11 C++14µÄĞÂÌØĞ§£¬±ä²ÎÊµÏÖµÄÀàº¯ÊıÇÅ½Ó
-* @tparam     last_yield º¯Êı×îºóÊÇ·ñÊ¹ÓÃlua_yield·µ»Ø
-* @tparam     class_type ÀàµÄÀàĞÍ
-* @tparam     ret_type   ·µ»ØÖµµÄÀàĞÍ
-* @tparam     ...args_type ±ä²ÎµÄ²ÎÊıÀàĞÍÁĞ±í
-* note        ÓĞÒ»¸öÖµµÃ×¢ÒâµÄÎÊÌâÇë²Î¿¼ËµÃ÷g_func_ret
+* @brief      ç”¨C++11 C++14çš„æ–°ç‰¹æ•ˆï¼Œå˜å‚å®ç°çš„ç±»å‡½æ•°æ¡¥æ¥
+* @tparam     last_yield å‡½æ•°æœ€åæ˜¯å¦ä½¿ç”¨lua_yieldè¿”å›
+* @tparam     class_type ç±»çš„ç±»å‹
+* @tparam     ret_type   è¿”å›å€¼çš„ç±»å‹
+* @tparam     ...args_type å˜å‚çš„å‚æ•°ç±»å‹åˆ—è¡¨
+* note        æœ‰ä¸€ä¸ªå€¼å¾—æ³¨æ„çš„é—®é¢˜è¯·å‚è€ƒè¯´æ˜g_func_ret
 */
 template<bool last_yield, typename class_type, typename ret_type, typename ...args_type>
 class member_func_ret
@@ -789,14 +789,14 @@ private:
     template<std::size_t... I>
     static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
     {
-        //pushÊÇ½«½á¹û·ÅÈë¶ÑÕ»
+        //pushæ˜¯å°†ç»“æœæ”¾å…¥å †æ ˆ
         void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         typedef ret_type(class_type::*mem_fun)(args_type...);
         mem_fun fun_ptr=*(mem_fun*)(upvalue_1);
-        //µÚÒ»¸ö²ÎÊıÊÇ¶ÔÏóÖ¸Õë
+        //ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯å¯¹è±¡æŒ‡é’ˆ
         class_type* obj_ptr=read_stack<class_type*>(state,1);
 
-        //ÎªÊ²Ã´ÊÇ2£¬1±»±»¶ÔÏóÖ¸ÕëÕ¼ÓÃÁË
+        //ä¸ºä»€ä¹ˆæ˜¯2ï¼Œ1è¢«è¢«å¯¹è±¡æŒ‡é’ˆå ç”¨äº†
         push_stack<ret_type>(state,
             (obj_ptr->*fun_ptr)\
                              (read_stack<typename std::decay<args_type>::type>(state,I+2)...));
@@ -804,7 +804,7 @@ private:
     }
 };
 
-//·µ»ØvoidµÄ³ÉÔ±º¯Êı
+//è¿”å›voidçš„æˆå‘˜å‡½æ•°
 template<bool last_yield, typename class_type, typename ...args_type>
 class member_func_void
 {
@@ -820,14 +820,14 @@ private:
     template<std::size_t... I>
     static int _invoke_witch_stack(lua_State* state,std::index_sequence<I...>)
     {
-        //pushÊÇ½«½á¹û·ÅÈë¶ÑÕ»
+        //pushæ˜¯å°†ç»“æœæ”¾å…¥å †æ ˆ
         void* upvalue_1=::lua_touserdata(state,lua_upvalueindex(1));
         typedef void (class_type::*mem_fun)(args_type...);
         mem_fun fun_ptr=*(mem_fun*)(upvalue_1);
-        //µÚÒ»¸ö²ÎÊıÊÇ¶ÔÏóÖ¸Õë
+        //ç¬¬ä¸€ä¸ªå‚æ•°æ˜¯å¯¹è±¡æŒ‡é’ˆ
         class_type* obj_ptr=read_stack<class_type*>(state,1);
 
-        //ÎªÊ²Ã´ÊÇ2£¬1±»±»¶ÔÏóÖ¸ÕëÕ¼ÓÃÁË
+        //ä¸ºä»€ä¹ˆæ˜¯2ï¼Œ1è¢«è¢«å¯¹è±¡æŒ‡é’ˆå ç”¨äº†
         (obj_ptr->*fun_ptr)\
             (read_stack<typename std::decay<args_type>::type>(state,I+2)...);
         return (last_yield)?::lua_yield(state,0):0;
@@ -836,10 +836,10 @@ private:
 
 
 /*!
-* @brief      ³ÉÔ±±äÁ¿µÄ´¦ÀíµÄ»ùÀà£¬ÓÃÓÚclass_meta_get,class_meta_setÄÚ²¿´¦Àí
-* @note       memvar_base ×¢ÒâÆä²»ÊÇÒ»¸öÓĞÄ£°åµÄº¯Êı£¬ÊÇÒ»¸ö»ùÀà
-*             ÕâÑù¾Í¿ÉÒÔ±£Ö¤Í¨¹ıLUA user dataÀïÃæµÄvoid * ×ª»»Îª memvar_base *
-*             ¶øÍ¨¹ımemvar_base *µÄµ÷ÓÃ get, set °ïÃ¦Ç¡Ç¡ÄÜÖ±½Óµ÷ÓÃµ½ÕæÕıµÄ
+* @brief      æˆå‘˜å˜é‡çš„å¤„ç†çš„åŸºç±»ï¼Œç”¨äºclass_meta_get,class_meta_setå†…éƒ¨å¤„ç†
+* @note       memvar_base æ³¨æ„å…¶ä¸æ˜¯ä¸€ä¸ªæœ‰æ¨¡æ¿çš„å‡½æ•°ï¼Œæ˜¯ä¸€ä¸ªåŸºç±»
+*             è¿™æ ·å°±å¯ä»¥ä¿è¯é€šè¿‡LUA user dataé‡Œé¢çš„void * è½¬æ¢ä¸º memvar_base *
+*             è€Œé€šè¿‡memvar_base *çš„è°ƒç”¨ get, set å¸®å¿™æ°æ°èƒ½ç›´æ¥è°ƒç”¨åˆ°çœŸæ­£çš„
 *             member_var <class_type,var_type>
 */
 class memvar_base
@@ -851,10 +851,10 @@ public:
 
 
 /*!
-* @brief      ³ÉÔ±±äÁ¿°ó¶¨µÄ¸¨ÖúÀà£¬Ò²¾ÍÊÇuser data±£´æµÄÀà
+* @brief      æˆå‘˜å˜é‡ç»‘å®šçš„è¾…åŠ©ç±»ï¼Œä¹Ÿå°±æ˜¯user dataä¿å­˜çš„ç±»
 *
-* @tparam     class_type class_type Îªclass ÀàĞÍ£¬
-* @tparam     var_type   Îª±äÁ¿ÀàĞÍ
+* @tparam     class_type class_type ä¸ºclass ç±»å‹ï¼Œ
+* @tparam     var_type   ä¸ºå˜é‡ç±»å‹
 */
 template<typename class_type, typename var_type>
 class member_var: memvar_base
@@ -865,37 +865,37 @@ public:
     {
     }
 
-    ///Íê³ÉÉèÖÃÄ³¸ö
+    ///å®Œæˆè®¾ç½®æŸä¸ª
     void set(lua_State *state)
     {
-        //Õâ¶Î¿´ÆğÀ´ÊÇ²»ÊÇÓĞµãµãÔÎ£¬ÆäÊµËû¸ÉµÄÊÂÇé¾ÍÊÇÏÂÃæÕâ¶Î£¬ËûÊÇÀûÓÃÀàµÄ³ÉÔ±±äÁ¿Ö¸ÕëÍê³É³ÉÔ±µÄĞ´£¬
+        //è¿™æ®µçœ‹èµ·æ¥æ˜¯ä¸æ˜¯æœ‰ç‚¹ç‚¹æ™•ï¼Œå…¶å®ä»–å¹²çš„äº‹æƒ…å°±æ˜¯ä¸‹é¢è¿™æ®µï¼Œä»–æ˜¯åˆ©ç”¨ç±»çš„æˆå‘˜å˜é‡æŒ‡é’ˆå®Œæˆæˆå‘˜çš„å†™ï¼Œ
         //float A::*pfl = &A::float_var;
         //A a1;  a1.*pfl = 0.5f;
-        //Õâ¸öÕæÒª¸ĞĞ»airfu GGµÄ¾«ĞÄ½²½â
+        //è¿™ä¸ªçœŸè¦æ„Ÿè°¢airfu GGçš„ç²¾å¿ƒè®²è§£
         read_stack<class_type *>(state, 1)->*(var_ptr_) = read_stack<var_type>(state, 3);
     }
 
-    //getÊÇLUA¶ÁÈ¡µÄ²Ù×÷£¬Ò²¾ÍÊÇ°ÑC++µÄÊı¾İ¶ÁÈ¡µ½LUAÀïÃæ£¬ËùÒÔÊÇPUSH
+    //getæ˜¯LUAè¯»å–çš„æ“ä½œï¼Œä¹Ÿå°±æ˜¯æŠŠC++çš„æ•°æ®è¯»å–åˆ°LUAé‡Œé¢ï¼Œæ‰€ä»¥æ˜¯PUSH
     void get(lua_State *state)
     {
-        //read_stackÆäÊµ¾ÍÊÇ°ÑÀàµÄ¶ÔÏóµÄÖ¸Õë¶ÁÈ¡³öÀ´¡£
-        //È»ºóÍ¨¹ıÀà³ÉÔ±Ö¸Õë£¬°Ñ³ÉÔ±»ñÈ¡³öÀ´
+        //read_stackå…¶å®å°±æ˜¯æŠŠç±»çš„å¯¹è±¡çš„æŒ‡é’ˆè¯»å–å‡ºæ¥ã€‚
+        //ç„¶åé€šè¿‡ç±»æˆå‘˜æŒ‡é’ˆï¼ŒæŠŠæˆå‘˜è·å–å‡ºæ¥
         push_stack<var_type>(state,
                              read_stack<class_type *>(state, 1)->*(var_ptr_));
     }
 
-    //´æ·ÅÀàµÄ³ÉÔ±Ö¸Õë
+    //å­˜æ”¾ç±»çš„æˆå‘˜æŒ‡é’ˆ
     var_type class_type::*var_ptr_;
 };
 
 
 
 /*!
-* @brief      ³ÉÔ±Êı×éÀàĞÍµÄÀà£¬ÓÃÓÚuserdataµÄ´¦Àí
+* @brief      æˆå‘˜æ•°ç»„ç±»å‹çš„ç±»ï¼Œç”¨äºuserdataçš„å¤„ç†
 *
-* @tparam     class_type ÀàÀàĞÍ
-* @tparam     ary_type   Êı×éÀàĞÍ
-* @tparam     ary_size   Êı×é³¤¶È
+* @tparam     class_type ç±»ç±»å‹
+* @tparam     ary_type   æ•°ç»„ç±»å‹
+* @tparam     ary_size   æ•°ç»„é•¿åº¦
 * @note
 */
 template<typename class_type, typename ary_type, size_t ary_size>
@@ -903,7 +903,7 @@ class member_array: memvar_base
 {
 public:
 
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     member_array(ary_type(class_type::* mem_ary_ptr)[ary_size],
                  bool read_only):
         mem_ary_ptr_(mem_ary_ptr),
@@ -912,26 +912,26 @@ public:
     }
 
 
-    ///¶ÔÓÚ³ÉÔ±Êı×é£¬ÉèÖÃÃ»ÓĞÈÎºÎÒâÒå£¬
+    ///å¯¹äºæˆå‘˜æ•°ç»„ï¼Œè®¾ç½®æ²¡æœ‰ä»»ä½•æ„ä¹‰ï¼Œ
     void set(lua_State *state)
     {
         luaL_error(state, "Member array ptr is read only ,can't modify,please check your code.");
     }
 
-    //getÊÇLUA¶ÁÈ¡µÄ²Ù×÷£¬Ò²¾ÍÊÇ°ÑC++µÄÊı¾İ¶ÁÈ¡µ½LUAÀïÃæ£¬ËùÒÔÊÇPUSH
+    //getæ˜¯LUAè¯»å–çš„æ“ä½œï¼Œä¹Ÿå°±æ˜¯æŠŠC++çš„æ•°æ®è¯»å–åˆ°LUAé‡Œé¢ï¼Œæ‰€ä»¥æ˜¯PUSH
     void get(lua_State *state)
     {
-        //read_stackÆäÊµ¾ÍÊÇ°ÑÀàµÄ¶ÔÏóµÄÖ¸Õë¶ÁÈ¡³öÀ´¡£
-        //È»ºóÍ¨¹ıÀà³ÉÔ±Ö¸Õë£¬°Ñ³ÉÔ±»ñÈ¡³öÀ´
+        //read_stackå…¶å®å°±æ˜¯æŠŠç±»çš„å¯¹è±¡çš„æŒ‡é’ˆè¯»å–å‡ºæ¥ã€‚
+        //ç„¶åé€šè¿‡ç±»æˆå‘˜æŒ‡é’ˆï¼ŒæŠŠæˆå‘˜è·å–å‡ºæ¥
         ary_type *ary_ptr = read_stack<class_type *>(state, 1)->*(mem_ary_ptr_);
         arrayref_2_udat<ary_type> ary_dat(ary_ptr, ary_size, read_only_);
         push_stack(state, ary_dat);
     }
 
-    ///³ÉÔ±Êı×éµÄÖ¸Õë
+    ///æˆå‘˜æ•°ç»„çš„æŒ‡é’ˆ
     ary_type(class_type::* mem_ary_ptr_)[ary_size];
 
-    ///ÊÇ·ñÖ»¶Á
+    ///æ˜¯å¦åªè¯»
     bool                   read_only_;
 };
 
@@ -944,81 +944,81 @@ public:
 template<typename class_type> class Candy_Tie_Class;
 
 /*!
-* @brief      Lua ¸÷ÖÖ·â×°µÄ»ùÀà£¬´ó²¿·Ö¹¦ÄÜ¶¼·â×°ÔÚÕâ¶ù£¬
-*             °üÀ¨¶ÑÕ»£¬¸÷ÖÖ·â×°£¬class£¬º¯ÊıµÄ×¢²á£¬
-* @note       ÒòÎªĞ­³ÌºÍTie¶¼Ó¦¸Ã»áÊ¹ÓÃµ½Õâ²¿·Ö¡£ËùÒÔ¶ÀÁ¢
-*             ×÷Îª»ùÀà
+* @brief      Lua å„ç§å°è£…çš„åŸºç±»ï¼Œå¤§éƒ¨åˆ†åŠŸèƒ½éƒ½å°è£…åœ¨è¿™å„¿ï¼Œ
+*             åŒ…æ‹¬å †æ ˆï¼Œå„ç§å°è£…ï¼Œclassï¼Œå‡½æ•°çš„æ³¨å†Œï¼Œ
+* @note       å› ä¸ºåç¨‹å’ŒTieéƒ½åº”è¯¥ä¼šä½¿ç”¨åˆ°è¿™éƒ¨åˆ†ã€‚æ‰€ä»¥ç‹¬ç«‹
+*             ä½œä¸ºåŸºç±»
 */
 class ZCE_Lua_Base
 {
 
 protected:
 
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     explicit ZCE_Lua_Base(lua_State *lua_state);
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     virtual ~ZCE_Lua_Base();
 
 public:
 
-    ///Ö´ĞĞÒ»¸öluaÎÄ¼ş
+    ///æ‰§è¡Œä¸€ä¸ªluaæ–‡ä»¶
     int do_file(const char *filename);
-    ///Ö´ĞĞÒ»¸öLUAµÄbuffer
+    ///æ‰§è¡Œä¸€ä¸ªLUAçš„buffer
     int do_buffer(const char *buff, size_t sz);
 
-    ///dump Cµ÷ÓÃluaµÄ¶ÑÕ»£¬
+    ///dump Cè°ƒç”¨luaçš„å †æ ˆï¼Œ
     void enum_stack();
-    ///dump luaÔËĞĞµÄµÄ¶ÑÕ»£¬ÓÃÓÚ¼ì²éluaÔËĞĞÊ±µÄÎÊÌâ£¬´íÎó´¦ÀíµÈ
+    ///dump luaè¿è¡Œçš„çš„å †æ ˆï¼Œç”¨äºæ£€æŸ¥luaè¿è¡Œæ—¶çš„é—®é¢˜ï¼Œé”™è¯¯å¤„ç†ç­‰
     void dump_stack();
 
 
-    ///ÏòLUA×¢²áint64_tµÄÀàĞÍ£¬ÒòÎªLUAÄÚ²¿µÄnumberÄ¬ÈÏÊÇdouble£¬ËùÒÔÆäÊµÎŞ·¨±íÊ¾¡£ËùÒÔÒª×¢²áÕâ¸ö
+    ///å‘LUAæ³¨å†Œint64_tçš„ç±»å‹ï¼Œå› ä¸ºLUAå†…éƒ¨çš„numberé»˜è®¤æ˜¯doubleï¼Œæ‰€ä»¥å…¶å®æ— æ³•è¡¨ç¤ºã€‚æ‰€ä»¥è¦æ³¨å†Œè¿™ä¸ª
     void reg_int64();
-    ///ÏòLUA×¢²áuint64_tµÄÀàĞÍ
+    ///å‘LUAæ³¨å†Œuint64_tçš„ç±»å‹
     void reg_uint64();
-    ///ÏòLUA×¢²ástd::stringµÄÀàĞÍ
+    ///å‘LUAæ³¨å†Œstd::stringçš„ç±»å‹
     void reg_stdstring();
 
 
-    //·â×°lua¶ÑÕ»µÄº¯Êı
+    //å°è£…luaå †æ ˆçš„å‡½æ•°
 
-    /// É¾³ıÖ¸¶¨Ë÷ÒıÉÏµÄÔªËØ£¬²¢½«¸ÃÎ»ÖÃÖ®ÉÏµÄËùÓĞÔªËØÏÂÒÆ¡£
+    /// åˆ é™¤æŒ‡å®šç´¢å¼•ä¸Šçš„å…ƒç´ ï¼Œå¹¶å°†è¯¥ä½ç½®ä¹‹ä¸Šçš„æ‰€æœ‰å…ƒç´ ä¸‹ç§»ã€‚
     inline void stack_remove(int index)
     {
         ::lua_remove(lua_state_, index);
     }
 
-    ///»áÉÏÒÆÖ¸¶¨Î»ÖÃÖ®ÉÏµÄËùÓĞÔªËØÒÔ¿ª±ÙÒ»¸ö²ÛµÄ¿Õ¼ä£¬È»ºó½«Õ»¶¥ÔªËØÒÆµ½¸ÃÎ»ÖÃ
+    ///ä¼šä¸Šç§»æŒ‡å®šä½ç½®ä¹‹ä¸Šçš„æ‰€æœ‰å…ƒç´ ä»¥å¼€è¾Ÿä¸€ä¸ªæ§½çš„ç©ºé—´ï¼Œç„¶åå°†æ ˆé¡¶å…ƒç´ ç§»åˆ°è¯¥ä½ç½®
     inline void stack_insert(int index)
     {
         return ::lua_insert(lua_state_, index);
     }
 
-    ///·µ»ØÕ»µÄÔªËØ¸öÊı
+    ///è¿”å›æ ˆçš„å…ƒç´ ä¸ªæ•°
     inline int stack_gettop()
     {
         return ::lua_gettop(lua_state_);
     }
 
-    ///ÉèÖÃÕ»µÄÔªËØ¸öÊı£¬Èç¹ûÔ­À´µÄÕ»¿Õ¼äĞ¡ÓÚindex£¬Ìî³änil£¬Èç¹û´óÓÚindex£¬É¾³ı¶àÓàÔªËØ
+    ///è®¾ç½®æ ˆçš„å…ƒç´ ä¸ªæ•°ï¼Œå¦‚æœåŸæ¥çš„æ ˆç©ºé—´å°äºindexï¼Œå¡«å……nilï¼Œå¦‚æœå¤§äºindexï¼Œåˆ é™¤å¤šä½™å…ƒç´ 
     inline void stack_settop(int index)
     {
         return ::lua_settop(lua_state_, index);
     }
 
-    ///È·±£¶ÑÕ»¿Õ¼äÓĞextraÄÇÃ´´ó
+    ///ç¡®ä¿å †æ ˆç©ºé—´æœ‰extraé‚£ä¹ˆå¤§
     inline int stack_check(int extra)
     {
         return ::lua_checkstack(lua_state_, extra);
     }
 
-    ///°ÑindexÎ»ÖÃÉÏµÄÖµÔÚ¶ÑÕ»¶¥¸´ÖÆpushÒ»¸ö
+    ///æŠŠindexä½ç½®ä¸Šçš„å€¼åœ¨å †æ ˆé¡¶å¤åˆ¶pushä¸€ä¸ª
     inline void stack_pushvalue(int index)
     {
         return ::lua_pushvalue(lua_state_, index);
     }
 
-    ///È¡µÃindexÎ»ÖÃµÄÀàĞÍ£¬·µ»ØÖµLUA_TNILµÈÃ¶¾ÙÖµ
+    ///å–å¾—indexä½ç½®çš„ç±»å‹ï¼Œè¿”å›å€¼LUA_TNILç­‰æšä¸¾å€¼
     ///lua_type is LUA_TNIL, LUA_TNUMBER, LUA_TBOOLEAN, LUA_TSTRING, LUA_TTABLE,
     ///LUA_TFUNCTION, LUA_TUSERDATA, LUA_TTHREAD, and LUA_TLIGHTUSERDATA
     inline int stack_type(int index)
@@ -1026,25 +1026,25 @@ public:
         return ::lua_type(lua_state_, index);
     }
 
-    ///¼ì²éË÷ÒıindexµÄÎ»ÖÃµÄÊı¾İµÄÀàĞÍÊÇ·ñÊÇlua_t
+    ///æ£€æŸ¥ç´¢å¼•indexçš„ä½ç½®çš„æ•°æ®çš„ç±»å‹æ˜¯å¦æ˜¯lua_t
     inline bool stack_istype(int index, int lua_t)
     {
         return ::lua_type(lua_state_, index) == lua_t;
     }
 
-    ///µÃµ½¶ÑÕ»ÉÏindexÎ»ÖÃµÄÀàĞÍÃû³Æ£¬
+    ///å¾—åˆ°å †æ ˆä¸Šindexä½ç½®çš„ç±»å‹åç§°ï¼Œ
     inline const char *stack_typename(int index)
     {
         return ::lua_typename(lua_state_, lua_type(lua_state_, index));
     }
 
-    ////¼ì²éindexÎ»ÖÃµÄÀàĞÍ£¬
+    ////æ£€æŸ¥indexä½ç½®çš„ç±»å‹ï¼Œ
     inline void stack_checktype(int index, int lua_t)
     {
         return ::luaL_checktype(lua_state_, index, lua_t);
     }
 
-    ///µÃµ½¶ÔÏóµÄ³¤¶È
+    ///å¾—åˆ°å¯¹è±¡çš„é•¿åº¦
     ///for tables, this is the result of the length operator ('#');
     ///for userdata, this is the size of the block of memory allocated for the userdata;
     ///for other values, it is 0.
@@ -1053,11 +1053,11 @@ public:
         return ::lua_objlen(lua_state_, index);
     }
 
-    ///È¡µÃtableµÄËùÓĞÔªËØ¸öÊı,×¢ÒâÆäºÍstack_objlenµÄÆä±ğ,´Ëº¯Êı¾ø¶Ô²»¸ßĞ§£¬ºÇºÇ
+    ///å–å¾—tableçš„æ‰€æœ‰å…ƒç´ ä¸ªæ•°,æ³¨æ„å…¶å’Œstack_objlençš„å…¶åˆ«,æ­¤å‡½æ•°ç»å¯¹ä¸é«˜æ•ˆï¼Œå‘µå‘µ
     inline size_t get_tablecount(int index)
     {
         size_t table_count = 0;
-        //·ÅÈëµü´úÆ÷
+        //æ”¾å…¥è¿­ä»£å™¨
         ::lua_pushnil(lua_state_);
         while (::lua_next(lua_state_, index) != 0)
         {
@@ -1066,7 +1066,7 @@ public:
         return table_count;
     }
 
-    ///Í¨¹ıÃû³ÆÈ¡µÃlua¶ÔÏó£¬²¢ÇÒ¼ì²é
+    ///é€šè¿‡åç§°å–å¾—luaå¯¹è±¡ï¼Œå¹¶ä¸”æ£€æŸ¥
     inline int get_luaobj(const char *obj_name, int luatype)
     {
         ::lua_pushstring(lua_state_, obj_name);
@@ -1079,22 +1079,22 @@ public:
     }
 
     /*!
-    * @brief      ÏòLUAÉèÖÃÒ»¸ö£¨¶ÔLUA¶øÑÔ£©È«¾Ö±äÁ¿£¨Ãû³ÆºÍ±äÁ¿¶ÔÓ¦ÖµµÄ¿½±´£©
-    * @tparam     val_type ·ÅÈëµÄÊı¾İÀàĞÍ£¬Èç¹ûÊÇval£¬»áÔÚLUAÀïÃæ±£Áô¿½±´£¬Èç¹ûÊÇptr£¬ref£¬luaÄÚ²¿¿ÉÒÔÖ±½ÓĞŞ¸ÄÕâ¸ö±äÁ¿
-    * @param      name Ãû³Æ
-    * @param      val  ·ÅÈëµÄ±äÁ¿£¬×¢ÒâÈç¹ûÒª·ÅÈëÒıÓÃ£¬ĞèÒªset_gvar<var_type &>(ref)£¬ÕâÑùĞ´
+    * @brief      å‘LUAè®¾ç½®ä¸€ä¸ªï¼ˆå¯¹LUAè€Œè¨€ï¼‰å…¨å±€å˜é‡ï¼ˆåç§°å’Œå˜é‡å¯¹åº”å€¼çš„æ‹·è´ï¼‰
+    * @tparam     val_type æ”¾å…¥çš„æ•°æ®ç±»å‹ï¼Œå¦‚æœæ˜¯valï¼Œä¼šåœ¨LUAé‡Œé¢ä¿ç•™æ‹·è´ï¼Œå¦‚æœæ˜¯ptrï¼Œrefï¼Œluaå†…éƒ¨å¯ä»¥ç›´æ¥ä¿®æ”¹è¿™ä¸ªå˜é‡
+    * @param      name åç§°
+    * @param      val  æ”¾å…¥çš„å˜é‡ï¼Œæ³¨æ„å¦‚æœè¦æ”¾å…¥å¼•ç”¨ï¼Œéœ€è¦set_gvar<var_type &>(ref)ï¼Œè¿™æ ·å†™
     */
     template<typename var_type>
     void set_gvar(const char *name, var_type var)
     {
-        //Ãû³Æ¶ÔÏó£¬
+        //åç§°å¯¹è±¡ï¼Œ
         ::lua_pushstring(lua_state_, name);
-        //Ä£°åº¯Êı£¬¸ù¾İval_type¾ø¶ÔÈçºÎpush
+        //æ¨¡æ¿å‡½æ•°ï¼Œæ ¹æ®val_typeç»å¯¹å¦‚ä½•push
         zce::luatie::push_stack<var_type>(lua_state_, var);
         ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-    ///¸ù¾İÃû³Æ£¬´ÓLUA¶ÁÈ¡Ò»¸ö±äÁ¿
+    ///æ ¹æ®åç§°ï¼Œä»LUAè¯»å–ä¸€ä¸ªå˜é‡
     template<typename var_type>
     var_type get_gvar(const char *name)
     {
@@ -1104,13 +1104,13 @@ public:
     }
 
     /*!
-    * @brief      ÏòLUAÉèÖÃÒ»¸öÊı×éµÄÒıÓÃ,ÔÚLUAÄÚ²¿±£´æÒ»¸öÏà¹ØµÄuserdata£¬
+    * @brief      å‘LUAè®¾ç½®ä¸€ä¸ªæ•°ç»„çš„å¼•ç”¨,åœ¨LUAå†…éƒ¨ä¿å­˜ä¸€ä¸ªç›¸å…³çš„userdataï¼Œ
     * @tparam     array_type
     * @param      name
     * @param      ary_data
     * @param      ary_size
     * @param      read_only
-    * @note       ×¢ÒâÊÇÒıÓÃà¸£¬Ò»¶¨Òª×¢Òâà¸¡£
+    * @note       æ³¨æ„æ˜¯å¼•ç”¨å–”ï¼Œä¸€å®šè¦æ³¨æ„å–”ã€‚
     */
     template<typename array_type>
     void set_garray(const char *name,
@@ -1119,23 +1119,23 @@ public:
                     bool read_only = false)
     {
         zce::luatie::arrayref_2_udat<array_type> aux_ary(ary_data, ary_size, read_only);
-        //Ãû³Æ¶ÔÏó£¬
+        //åç§°å¯¹è±¡ï¼Œ
         ::lua_pushstring(lua_state_, name);
         zce::luatie::push_stack(lua_state_, aux_ary);
         ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
-    ///´ÓLUAÖĞ»ñÈ¡Ò»¸öÈ«¾ÖµÄÊı×é
+    ///ä»LUAä¸­è·å–ä¸€ä¸ªå…¨å±€çš„æ•°ç»„
     template<typename ary_type>
     int get_garray(const char *name,
                    ary_type ary_data[],
                    size_t &ary_size)
     {
-        //Ãû³Æ¶ÔÏó£¬
+        //åç§°å¯¹è±¡ï¼Œ
         ::lua_pushstring(lua_state_, name);
         ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
-        //Èç¹û²»ÊÇÒ»¸ötable£¬´íÎóÅ¶
+        //å¦‚æœä¸æ˜¯ä¸€ä¸ªtableï¼Œé”™è¯¯å“¦
         if (!::lua_isuserdata(lua_state_, -1))
         {
             ::lua_remove(lua_state_, -1);
@@ -1151,8 +1151,8 @@ public:
         return 0;
     }
 
-    ///ÏòLUA×¢²áÒ»¸öÈ«¾Öº¯Êı£¬»òÕßÀàµÄ¾²Ì¬º¯Êı¸øluaµ÷ÓÃ
-    ///²ÎÊıÏêÏ¸ËµÃ÷Çë²Î¿¼reg_gfun_all
+    ///å‘LUAæ³¨å†Œä¸€ä¸ªå…¨å±€å‡½æ•°ï¼Œæˆ–è€…ç±»çš„é™æ€å‡½æ•°ç»™luaè°ƒç”¨
+    ///å‚æ•°è¯¦ç»†è¯´æ˜è¯·å‚è€ƒreg_gfun_all
     template<typename ret_type, typename... args_type>
     void reg_gfunc(const char *name, ret_type(*func)(args_type...))
     {
@@ -1160,8 +1160,8 @@ public:
     }
 
 
-    ///ÏòLUA×¢²áÒ»¸öÈ«¾Öº¯Êı£¬»òÕßÀàµÄ¾²Ì¬º¯Êı¸øluaµ÷ÓÃ.ºÍreg_gfunµÄÇø±ğÊÇ£¬×îºó»áÊ¹ÓÃlua_yield·µ»Ø£¬
-    ///²ÎÊıÏêÏ¸ËµÃ÷Çë²Î¿¼reg_gfun_all
+    ///å‘LUAæ³¨å†Œä¸€ä¸ªå…¨å±€å‡½æ•°ï¼Œæˆ–è€…ç±»çš„é™æ€å‡½æ•°ç»™luaè°ƒç”¨.å’Œreg_gfunçš„åŒºåˆ«æ˜¯ï¼Œæœ€åä¼šä½¿ç”¨lua_yieldè¿”å›ï¼Œ
+    ///å‚æ•°è¯¦ç»†è¯´æ˜è¯·å‚è€ƒreg_gfun_all
     template<typename ret_type, typename... args_type>
     void reg_yeild_gfunc(const char *name, ret_type(*func)(args_type...))
     {
@@ -1169,12 +1169,12 @@ public:
     }
 
     /*!
-    * @brief      ½«Ò»¸öÈİÆ÷ÀïÃæµÄÊı¾İ·ÅÈëLuaµÄtableÖĞ£¬¸ù¾İµü´úÆ÷µÄÀàĞÍ»áÑ¡Ôñ²»Í¬µÄ
-    *             ÖØÔØº¯Êı
-    * @tparam     iter_type   µü´úÆ÷µÄÀàĞÍ£¬£¨µ±È»Ò²¿ÉÒÔÊÇÖ¸Õë£©
-    * @param      table_name  tableµÄÃû³Æ
-    * @param      first       µÚÒ»¸öfirstµü´úÆ÷
-    * @param      last        ×îºóÒ»¸ölastµÄµü´úÆ÷
+    * @brief      å°†ä¸€ä¸ªå®¹å™¨é‡Œé¢çš„æ•°æ®æ”¾å…¥Luaçš„tableä¸­ï¼Œæ ¹æ®è¿­ä»£å™¨çš„ç±»å‹ä¼šé€‰æ‹©ä¸åŒçš„
+    *             é‡è½½å‡½æ•°
+    * @tparam     iter_type   è¿­ä»£å™¨çš„ç±»å‹ï¼Œï¼ˆå½“ç„¶ä¹Ÿå¯ä»¥æ˜¯æŒ‡é’ˆï¼‰
+    * @param      table_name  tableçš„åç§°
+    * @param      first       ç¬¬ä¸€ä¸ªfirstè¿­ä»£å™¨
+    * @param      last        æœ€åä¸€ä¸ªlastçš„è¿­ä»£å™¨
     */
     template<class iter_type >
     void to_luatable(const char *table_name,
@@ -1210,7 +1210,7 @@ public:
     int from_luatable(const char *table_name,
                       array_type *array_dat)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         ::lua_pushstring(lua_state_, table_name);
         ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
@@ -1222,7 +1222,7 @@ public:
             return -1;
         }
 
-        //first key ,fergÈÃÎÒ°ÑÕâ¶«Î÷¾ÍÀí½â³Éµü´úÆ÷
+        //first key ,fergè®©æˆ‘æŠŠè¿™ä¸œè¥¿å°±ç†è§£æˆè¿­ä»£å™¨
         ::lua_pushnil(lua_state_);
         while (::lua_next(lua_state_, -2) != 0)
         {
@@ -1235,7 +1235,7 @@ public:
         return 0;
     }
 
-    ///µ÷ÓÃLUAµÄº¯Êı£¬Ö»ÓĞÒ»¸ö·µ»ØÖµ
+    ///è°ƒç”¨LUAçš„å‡½æ•°ï¼Œåªæœ‰ä¸€ä¸ªè¿”å›å€¼
     template<typename... args_type>
     int call_luafun_0(const char *fun_name, args_type... args)
     {
@@ -1248,7 +1248,7 @@ public:
         return 0;
     }
 
-    ///µ÷ÓÃLUAµÄº¯Êı£¬Ö»ÓĞÒ»¸ö·µ»ØÖµ
+    ///è°ƒç”¨LUAçš„å‡½æ•°ï¼Œåªæœ‰ä¸€ä¸ªè¿”å›å€¼
     template<typename ret_type1, typename... args_type>
     int call_luafun_1(const char *fun_name, ret_type1 &ret_val1, args_type... args)
     {
@@ -1258,13 +1258,13 @@ public:
         {
             return ret;
         }
-        //ÔÚ¶ÑÕ»µ¯³ö·µ»ØÖµ
+        //åœ¨å †æ ˆå¼¹å‡ºè¿”å›å€¼
         ret_val1 = zce::luatie::read_stack<ret_type1>(lua_state_, -1);
         lua_pop(lua_state_, 1);
         return 0;
     }
 
-    ///µ÷ÓÃLUAµÄº¯Êı£¬ÓĞÁ½¸ö·µ»ØÖµ
+    ///è°ƒç”¨LUAçš„å‡½æ•°ï¼Œæœ‰ä¸¤ä¸ªè¿”å›å€¼
     template<typename ret_type1, typename ret_type2, typename... args_type>
     int call_luafun_2(const char *fun_name,
                       ret_type1 &ret_val1,
@@ -1277,14 +1277,14 @@ public:
         {
             return ret;
         }
-        //ÔÚ¶ÑÕ»µ¯³ö·µ»ØÖµ
+        //åœ¨å †æ ˆå¼¹å‡ºè¿”å›å€¼
         ret_val1 = zce::luatie::read_stack<ret_type1>(lua_state_, -2);
         ret_val2 = zce::luatie::read_stack<ret_type2>(lua_state_, -1);
         lua_pop(lua_state_, 2);
         return 0;
     }
 
-    ///µ÷ÓÃLUAµÄº¯Êı£¬ÓĞÈı¸ö·µ»ØÖµ,ºÃ°É¾ÍÖ§³Öµ½3¸ö·µ»ØÖµ°Ñ£¬ÊµÔÚÃ»ĞËÈ¤ÁË
+    ///è°ƒç”¨LUAçš„å‡½æ•°ï¼Œæœ‰ä¸‰ä¸ªè¿”å›å€¼,å¥½å§å°±æ”¯æŒåˆ°3ä¸ªè¿”å›å€¼æŠŠï¼Œå®åœ¨æ²¡å…´è¶£äº†
     template<typename ret_type1, typename ret_type2, typename ret_type3, typename... args_type>
     int call_luafun_3(const char *fun_name,
                       ret_type1 &ret_val1,
@@ -1298,7 +1298,7 @@ public:
         {
             return ret;
         }
-        //ÔÚ¶ÑÕ»µ¯³ö·µ»ØÖµ,×¢Òâ²ÎÊıË³Ğò
+        //åœ¨å †æ ˆå¼¹å‡ºè¿”å›å€¼,æ³¨æ„å‚æ•°é¡ºåº
         ret_val1 = zce::luatie::read_stack<ret_type1>(lua_state_, -3);
         ret_val2 = zce::luatie::read_stack<ret_type2>(lua_state_, -2);
         ret_val3 = zce::luatie::read_stack<ret_type3>(lua_state_, -1);
@@ -1308,11 +1308,11 @@ public:
 
 
     /*!
-    * @brief      ÔÚLuaÀïÃænewÒ»¸ötable£¬Í¬Ê±°Ñpair_list²ÎÊıÀïÃæµÄÊı¾İ·ÅÈëµ½tableÖĞ
-    * @tparam     pair_tlist pair listµÄÀàĞÍÁĞ±í£¬±ØĞëÊÇstd::pair
-    * @param      table_name ±íµÄÃû³Æ£¬
-    * @param      pair_list  piarµÄlistÍ¬Ê±°ÑpairµÄfirst£¬×÷Îªkey£¬pairµÄsecond×÷Îªvalue£¬
-    * @note       Í¨¹ıÕâ¸öº¯Êı£¬¿ÉÒÔÇáËÉµÄ°ÑÃ¶¾ÙÑ½£¬×¢²á¸øluaÊ¹ÓÃ£¬±ÈÈçÏÂÃæÕâÖÖ·½Ê½
+    * @brief      åœ¨Luaé‡Œé¢newä¸€ä¸ªtableï¼ŒåŒæ—¶æŠŠpair_listå‚æ•°é‡Œé¢çš„æ•°æ®æ”¾å…¥åˆ°tableä¸­
+    * @tparam     pair_tlist pair listçš„ç±»å‹åˆ—è¡¨ï¼Œå¿…é¡»æ˜¯std::pair
+    * @param      table_name è¡¨çš„åç§°ï¼Œ
+    * @param      pair_list  piarçš„liståŒæ—¶æŠŠpairçš„firstï¼Œä½œä¸ºkeyï¼Œpairçš„secondä½œä¸ºvalueï¼Œ
+    * @note       é€šè¿‡è¿™ä¸ªå‡½æ•°ï¼Œå¯ä»¥è½»æ¾çš„æŠŠæšä¸¾å‘€ï¼Œæ³¨å†Œç»™luaä½¿ç”¨ï¼Œæ¯”å¦‚ä¸‹é¢è¿™ç§æ–¹å¼
     *             lua_tie.new_table("tolua_enum",std::make_pair("ENUM_0001", ENUM_0001),
     *                 std::make_pair("ENUM_0002", ENUM_0002);
     */
@@ -1321,7 +1321,7 @@ public:
     {
         ::lua_pushstring(lua_state_, table_name);
         lua_newtable(lua_state_);
-        //ÏòtableÀïÃæÌí¼Ópair
+        //å‘tableé‡Œé¢æ·»åŠ pair
         newtable_addkv(pair_list...);
         ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
@@ -1329,35 +1329,35 @@ public:
 
 
     /*!
-    * @brief      °ó¶¨ÀàµÄ¸øLuaÊ¹ÓÃ£¬¶¨ÒåÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍµÄ±í¡£
-    * @tparam     class_type      °ó¶¨ÀàµÄÀàĞÍ
-    * @return     Candy_Tie_Class ÓÃÓÚ·½±ã°ó¶¨ÀàµÄ³ÉÔ±£¬¿ÉÒÔÈÃÄãĞ´³öÁ¬Ğø.µÄ²Ù×÷
-    * @param      class_name      ÀàµÄÃû³Æ£¬ÔÚLuaÖĞÊ¹ÓÃ
-    * @param      read_only       Õâ¸öÀàµÄÊı¾İÊÇ·ñÖ»¶Á£¬¶ø²»ÄÜĞ´
+    * @brief      ç»‘å®šç±»çš„ç»™Luaä½¿ç”¨ï¼Œå®šä¹‰ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹çš„è¡¨ã€‚
+    * @tparam     class_type      ç»‘å®šç±»çš„ç±»å‹
+    * @return     Candy_Tie_Class ç”¨äºæ–¹ä¾¿ç»‘å®šç±»çš„æˆå‘˜ï¼Œå¯ä»¥è®©ä½ å†™å‡ºè¿ç»­.çš„æ“ä½œ
+    * @param      class_name      ç±»çš„åç§°ï¼Œåœ¨Luaä¸­ä½¿ç”¨
+    * @param      read_only       è¿™ä¸ªç±»çš„æ•°æ®æ˜¯å¦åªè¯»ï¼Œè€Œä¸èƒ½å†™
     */
     template<typename class_type>
     Candy_Tie_Class<class_type> reg_class(const char *class_name,
                                           bool read_only = false)
     {
 
-        //°ó¶¨TºÍÃû³Æ,ÀàµÄÃû³Æ
+        //ç»‘å®šTå’Œåç§°,ç±»çš„åç§°
         ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name(class_name));
-        //new Ò»¸ötable£¬Õâ¸ötableÊÇ×÷ÎªÆäËûµÄÀàµÄmetatableµÄ£¨Ä³ÖÖ³Ì¶ÈÉÏÒ²¿ÉÒÔËµÊÇÔ­ĞÍ£©£¬
+        //new ä¸€ä¸ªtableï¼Œè¿™ä¸ªtableæ˜¯ä½œä¸ºå…¶ä»–çš„ç±»çš„metatableçš„ï¼ˆæŸç§ç¨‹åº¦ä¸Šä¹Ÿå¯ä»¥è¯´æ˜¯åŸå‹ï¼‰ï¼Œ
         ::lua_newtable(lua_state_);
 
-        //__name²»ÊÇ±ê×¼µÄÔª·½·¨£¬µ«ÔÚÀı×ÓÖĞÓĞÊ¹ÓÃ
+        //__nameä¸æ˜¯æ ‡å‡†çš„å…ƒæ–¹æ³•ï¼Œä½†åœ¨ä¾‹å­ä¸­æœ‰ä½¿ç”¨
         ::lua_pushstring(lua_state_, "__name");
         ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
         ::lua_rawset(lua_state_, -3);
 
-        //½«meta_getº¯Êı×÷Îª__indexº¯Êı
+        //å°†meta_getå‡½æ•°ä½œä¸º__indexå‡½æ•°
         ::lua_pushstring(lua_state_, "__index");
         ::lua_pushcclosure(lua_state_, zce::luatie::class_meta_get, 0);
         ::lua_rawset(lua_state_, -3);
 
         if (!read_only)
         {
-            //·ÇÖ»¶ÁÇé¿ö½«meta_setº¯Êı×÷Îª__newindexº¯Êı
+            //éåªè¯»æƒ…å†µå°†meta_setå‡½æ•°ä½œä¸º__newindexå‡½æ•°
             ::lua_pushstring(lua_state_, "__newindex");
             ::lua_pushcclosure(lua_state_, zce::luatie::class_meta_set, 0);
             ::lua_rawset(lua_state_, -3);
@@ -1369,7 +1369,7 @@ public:
             ::lua_rawset(lua_state_, -3);
         }
 
-        //À¬»ø»ØÊÕº¯Êı
+        //åƒåœ¾å›æ”¶å‡½æ•°
         ::lua_pushstring(lua_state_, "__gc");
         ::lua_pushcclosure(lua_state_, zce::luatie::destroyer, 0);
         ::lua_rawset(lua_state_, -3);
@@ -1382,20 +1382,20 @@ public:
 
 
     /*!
-    * @brief      ×¢²áÀàµÄ¹¹Ôìº¯Êı£¬
-    * @tparam     class_type class_type ÊÇÀà
-    * @tparam     construct_func ÊÇ¹¹Ôìº¯ÊıµÄ·â×°£¬zce::luatie::constructor
+    * @brief      æ³¨å†Œç±»çš„æ„é€ å‡½æ•°ï¼Œ
+    * @tparam     class_type class_type æ˜¯ç±»
+    * @tparam     construct_func æ˜¯æ„é€ å‡½æ•°çš„å°è£…ï¼Œzce::luatie::constructor
     * @return     int
     * @param      func
     */
     template<typename class_type, typename construct_func>
     int class_constructor(construct_func func)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
-        //Èç¹ûÕ»¶¥ÊÇ²»ÊÇÒ»¸ö±í£¬½øĞĞ´íÎó´¦Àí
+        //å¦‚æœæ ˆé¡¶æ˜¯ä¸æ˜¯ä¸€ä¸ªè¡¨ï¼Œè¿›è¡Œé”™è¯¯å¤„ç†
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
@@ -1405,17 +1405,17 @@ public:
             return -1;
         }
 
-        //¶ÔÕâ¸öÀàµÄmetatableµÄ±í£¬ÉèÖÃÒ»¸ömetatable£¬ÔÚÆäÖĞÔö¼ÓÒ»¸ö__callµÄ¶ÔÓ¦º¯Êı
-        //ÕâÑùµÄÄ¿µÄÊÇÕâÑùµÄ£¬__callÊÇ¶ÔÓ¦Ò»¸ö()µ÷ÓÃ£¬µ«ÊµÌå²»ÊÇº¯ÊıÊ½£¬µÄµ÷ÓÃº¯Êı
-        //LUAÖĞ³öÏÖÕâÑùµÄµ÷ÓÃ£¬var1,var2ÊÇ¹¹Ôì²ÎÊı£¬ºÍ¹¹Ôìº¯ÊıÒ»Ñù£¬Õâ¸öµØ·½Òª¸ĞĞ»fergzhang GGµÄ°ïÖú
+        //å¯¹è¿™ä¸ªç±»çš„metatableçš„è¡¨ï¼Œè®¾ç½®ä¸€ä¸ªmetatableï¼Œåœ¨å…¶ä¸­å¢åŠ ä¸€ä¸ª__callçš„å¯¹åº”å‡½æ•°
+        //è¿™æ ·çš„ç›®çš„æ˜¯è¿™æ ·çš„ï¼Œ__callæ˜¯å¯¹åº”ä¸€ä¸ª()è°ƒç”¨ï¼Œä½†å®ä½“ä¸æ˜¯å‡½æ•°å¼ï¼Œçš„è°ƒç”¨å‡½æ•°
+        //LUAä¸­å‡ºç°è¿™æ ·çš„è°ƒç”¨ï¼Œvar1,var2æ˜¯æ„é€ å‚æ•°ï¼Œå’Œæ„é€ å‡½æ•°ä¸€æ ·ï¼Œè¿™ä¸ªåœ°æ–¹è¦æ„Ÿè°¢fergzhang GGçš„å¸®åŠ©
         //object =class_name(var1,var2)
         lua_newtable(lua_state_);
 
         lua_pushstring(lua_state_, "__call");
         lua_pushcclosure(lua_state_, func, 0);
         lua_rawset(lua_state_, -3);
-        //ÉèÖÃÕâ¸ötable×÷Îªclass Ô­ĞÍµÄmetatable.
-        //»òÕßËµÉèÖÃÕâ¸ötable×÷Îªclass metatableµÄmetatable.
+        //è®¾ç½®è¿™ä¸ªtableä½œä¸ºclass åŸå‹çš„metatable.
+        //æˆ–è€…è¯´è®¾ç½®è¿™ä¸ªtableä½œä¸ºclass metatableçš„metatable.
         lua_setmetatable(lua_state_, -2);
 
         lua_pop(lua_state_, 1);
@@ -1424,20 +1424,20 @@ public:
 
 
     /*!
-    * @brief      ±¾À´Ïë°Ñ¶àÖØ¼Ì³ĞÊµÏÖÁË£¬µ«ºóÃæºÍfergÌÖÂÛ£¬¾õµÃ½á¹û·¢ÏÖÒâÒå²»´ó£¬
-    *             ¶øÇÒÈİÒ×
-    * @tparam     class_type  ÀàĞÍ
-    * @tparam     parent_type ¸¸ÀàĞÍ
-    * @return     int == 0 ·µ»ØÖµ±êÊ¶³É¹¦
+    * @brief      æœ¬æ¥æƒ³æŠŠå¤šé‡ç»§æ‰¿å®ç°äº†ï¼Œä½†åé¢å’Œfergè®¨è®ºï¼Œè§‰å¾—ç»“æœå‘ç°æ„ä¹‰ä¸å¤§ï¼Œ
+    *             è€Œä¸”å®¹æ˜“
+    * @tparam     class_type  ç±»å‹
+    * @tparam     parent_type çˆ¶ç±»å‹
+    * @return     int == 0 è¿”å›å€¼æ ‡è¯†æˆåŠŸ
     */
     template<typename class_type, typename parent_type>
     int class_inherit()
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
-        //Èç¹ûÕ»¶¥ÊÇÒ»¸ö±í
+        //å¦‚æœæ ˆé¡¶æ˜¯ä¸€ä¸ªè¡¨
         if (!lua_istable(lua_state_, -1))
         {
             ZCE_LOG(RS_ERROR, "[LUATIE] class name[%s] is not tie to lua.",
@@ -1447,8 +1447,8 @@ public:
             return -1;
         }
 
-        //ÉèÖÃ__parent Îª ¸¸ÀàÃû³Æ£¬Ä¿Ç°²»ÄÜ¶àÖØ¼Ì³Ğ,ÎÒºÍfregÌÖÂÛ¹ı£¬ÆäÊµÊµÏÖ¶àÖØ¼¯³ÉÒ²¿ÉÒÔ£¬
-        //¾ÍÊÇÔÚ´¦Àí²éÑ¯µÄÊ±ºò¸÷ÖÖÂé·³
+        //è®¾ç½®__parent ä¸º çˆ¶ç±»åç§°ï¼Œç›®å‰ä¸èƒ½å¤šé‡ç»§æ‰¿,æˆ‘å’Œfregè®¨è®ºè¿‡ï¼Œå…¶å®å®ç°å¤šé‡é›†æˆä¹Ÿå¯ä»¥ï¼Œ
+        //å°±æ˜¯åœ¨å¤„ç†æŸ¥è¯¢çš„æ—¶å€™å„ç§éº»çƒ¦
 
 #if defined DEBUG || defined _DEBUG
         lua_pushstring(lua_state_, "__parent");
@@ -1476,27 +1476,27 @@ public:
         }
         lua_rawset(lua_state_, -3);
 
-        //´Ó¶ÑÕ»µ¯³öpush_metaÈ¡µÃµÄvlue
+        //ä»å †æ ˆå¼¹å‡ºpush_metaå–å¾—çš„vlue
         lua_pop(lua_state_, 1);
         return 0;
     }
 
 
     /*!
-    * @brief      ¸øÒ»¸öÀà£¨µÄmeta table£©×¢²á°ó¶¨³ÉÔ±±äÁ¿
-    * @tparam     class_type °ó¶¨µÄÀàµÄÀàĞÍ
-    * @tparam     var_type   ³ÉÔ±ÀàĞÍ
-    * @return     int        ÊÇ·ñ°ó¶¨³É¹¦
-    * @param      name       °ó¶¨µÄÃû³Æ
-    * @param      class_type::*val °ó¶¨µÄ³ÉÔ±±äÁ¿µÄÖ¸Õë
-    * @note       LuatinkerÖĞ»¹ÓĞÒ»¸öÄ£°å²ÎÊıbase_type£¬³ÉÔ±ËùÊôµÄÀà£¬Ò»°ãÎÒÈÏÎªclass_type
-    *             ºÍbase_typeÊÇÒ»ÑùµÄ,µ«ÄãÒ²¿ÉÒÔ°ÑÒ»¸ö»ùÀàµÄ³ÉÔ±°ó¶¨ÔÚ×ÓÀàµÄLuaµÄmeta tableÀïÃæ£¬
-    *             ÎÒ×Ô¼º¸Ğ¾õÕâ¶«¶«µÄ´æÔÚ±ØÒªĞÔ²»´ó£¬È¥µôÁË
+    * @brief      ç»™ä¸€ä¸ªç±»ï¼ˆçš„meta tableï¼‰æ³¨å†Œç»‘å®šæˆå‘˜å˜é‡
+    * @tparam     class_type ç»‘å®šçš„ç±»çš„ç±»å‹
+    * @tparam     var_type   æˆå‘˜ç±»å‹
+    * @return     int        æ˜¯å¦ç»‘å®šæˆåŠŸ
+    * @param      name       ç»‘å®šçš„åç§°
+    * @param      class_type::*val ç»‘å®šçš„æˆå‘˜å˜é‡çš„æŒ‡é’ˆ
+    * @note       Luatinkerä¸­è¿˜æœ‰ä¸€ä¸ªæ¨¡æ¿å‚æ•°base_typeï¼Œæˆå‘˜æ‰€å±çš„ç±»ï¼Œä¸€èˆ¬æˆ‘è®¤ä¸ºclass_type
+    *             å’Œbase_typeæ˜¯ä¸€æ ·çš„,ä½†ä½ ä¹Ÿå¯ä»¥æŠŠä¸€ä¸ªåŸºç±»çš„æˆå‘˜ç»‘å®šåœ¨å­ç±»çš„Luaçš„meta tableé‡Œé¢ï¼Œ
+    *             æˆ‘è‡ªå·±æ„Ÿè§‰è¿™ä¸œä¸œçš„å­˜åœ¨å¿…è¦æ€§ä¸å¤§ï¼Œå»æ‰äº†
     */
     template<typename class_type, typename var_type>
     int class_mem_var(const char *name, var_type class_type::*val)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
         ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
@@ -1511,7 +1511,7 @@ public:
         }
 
         ::lua_pushstring(lua_state_, name);
-        //mem_var ¼Ì³ĞÓÚvar_base,Êµ¼Êµ÷ÓÃµÄÊ±ºòÀûÓÃvar_baseµÄĞéº¯ÊıÍê³É»Øµ÷¡£
+        //mem_var ç»§æ‰¿äºvar_base,å®é™…è°ƒç”¨çš„æ—¶å€™åˆ©ç”¨var_baseçš„è™šå‡½æ•°å®Œæˆå›è°ƒã€‚
         new (lua_newuserdata(lua_state_,
                              sizeof(zce::luatie::member_var<class_type, var_type>))) \
         zce::luatie::member_var<class_type, var_type>(val);
@@ -1523,21 +1523,21 @@ public:
 
 
     /*!
-    * @brief      ¸øÒ»¸öÀàµÄmeta table °ó¶¨³ÉÔ±Êı×é
-    * @tparam     class_type ÀàµÄÀàĞÍ
-    * @tparam     ary_type   Êı×éµÄÀàĞÍ
-    * @tparam     ary_size   Êı×éµÄ³¤¶È
-    * @return     int        == 0±íÊ¾³É¹¦
-    * @param      name       ×¢²áµÄÃû×Ö
-    * @param      mem_ary    Êı×éµÄÖ¸Õë
-    * @param      read_only  Êı×éÖ»¶Á
+    * @brief      ç»™ä¸€ä¸ªç±»çš„meta table ç»‘å®šæˆå‘˜æ•°ç»„
+    * @tparam     class_type ç±»çš„ç±»å‹
+    * @tparam     ary_type   æ•°ç»„çš„ç±»å‹
+    * @tparam     ary_size   æ•°ç»„çš„é•¿åº¦
+    * @return     int        == 0è¡¨ç¤ºæˆåŠŸ
+    * @param      name       æ³¨å†Œçš„åå­—
+    * @param      mem_ary    æ•°ç»„çš„æŒ‡é’ˆ
+    * @param      read_only  æ•°ç»„åªè¯»
     */
     template<typename class_type, typename ary_type, size_t ary_size>
     int class_mem_ary(const char *name,
                       ary_type(class_type:: *mem_ary)[ary_size],
                       bool read_only = false)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
@@ -1552,7 +1552,7 @@ public:
         }
 
         lua_pushstring(lua_state_, name);
-        //mem_var ¼Ì³ĞÓÚvar_base,Êµ¼Êµ÷ÓÃµÄÊ±ºòÀûÓÃvar_baseµÄĞéº¯ÊıÍê³É»Øµ÷¡£
+        //mem_var ç»§æ‰¿äºvar_base,å®é™…è°ƒç”¨çš„æ—¶å€™åˆ©ç”¨var_baseçš„è™šå‡½æ•°å®Œæˆå›è°ƒã€‚
         new (lua_newuserdata(lua_state_,
                              sizeof(zce::luatie::member_array<class_type, ary_type, ary_size>))) \
         zce::luatie::member_array<class_type, ary_type, ary_size>(mem_ary, read_only);
@@ -1562,29 +1562,29 @@ public:
         return 0;
     }
 
-    ///×¢²áÒ»¸öÀàµÄ³ÉÔ±º¯Êı£¬Ãû³ÆÊÇname£¬ÏêÏ¸µÄº¯ÊıËµÃ÷£¬Çë²Î¿¼class_mem_fun_all
+    ///æ³¨å†Œä¸€ä¸ªç±»çš„æˆå‘˜å‡½æ•°ï¼Œåç§°æ˜¯nameï¼Œè¯¦ç»†çš„å‡½æ•°è¯´æ˜ï¼Œè¯·å‚è€ƒclass_mem_fun_all
     template<typename class_type, typename ret_type, typename... args_type>
     int class_memfunc(const char *name, ret_type(class_type::*func)(args_type...))
     {
         return class_mem_func<false, class_type, ret_type, args_type...>(name, func);
     }
 
-    ///×¢²áÒ»¸öÀàµÄ³ÉÔ±º¯Êı£¬ºÍclass_mem_funµÄÇø±ğÊÇº¯Êı×îºóµÄ·µ»Ø»áµ÷ÓÃlua_yield,º¯ÊıÃû³ÆÊÇname£¬
-    ///ÏêÏ¸µÄº¯ÊıËµÃ÷£¬Çë²Î¿¼class_mem_fun_all
+    ///æ³¨å†Œä¸€ä¸ªç±»çš„æˆå‘˜å‡½æ•°ï¼Œå’Œclass_mem_funçš„åŒºåˆ«æ˜¯å‡½æ•°æœ€åçš„è¿”å›ä¼šè°ƒç”¨lua_yield,å‡½æ•°åç§°æ˜¯nameï¼Œ
+    ///è¯¦ç»†çš„å‡½æ•°è¯´æ˜ï¼Œè¯·å‚è€ƒclass_mem_fun_all
     template<typename class_type, typename ret_type, typename... args_type>
     int class_mem_yield_func(const char *name, ret_type(class_type::*func)(args_type...))
     {
         return class_mem_func<true, class_type, ret_type, args_type...>(name, func);
     }
 
-    ///·ÅÈëÄ³¸ö¶«¶«µ½¶ÑÕ»
+    ///æ”¾å…¥æŸä¸ªä¸œä¸œåˆ°å †æ ˆ
     template<typename val_type >
     inline void push(val_type val)
     {
         zce::luatie::push_stack<val_type>(lua_state_, val);
     }
 
-    ///¶ÁÈ¡¶ÑÕ»ÉÏµÄÄ³¸öÊı¾İ
+    ///è¯»å–å †æ ˆä¸Šçš„æŸä¸ªæ•°æ®
     template<typename val_type >
     inline val_type read(int index)
     {
@@ -1605,13 +1605,13 @@ public:
 
 protected:
 
-    ///¸¨Öúº¯Êı£¬Õ¹¿ªkv pari list
+    ///è¾…åŠ©å‡½æ•°ï¼Œå±•å¼€kv pari list
     template<typename... pair_tlist>
     void newtable_addkv(pair_tlist ... pair_list)
     {
         return;
     }
-    ///¸¨Öúº¯Êı£¬Õ¹¿ªkv pari list,Í¬Ê±°ÑµÚÒ»¸ö²ÎÊı·ÅÈëtableÖĞ
+    ///è¾…åŠ©å‡½æ•°ï¼Œå±•å¼€kv pari list,åŒæ—¶æŠŠç¬¬ä¸€ä¸ªå‚æ•°æ”¾å…¥tableä¸­
     template<typename pair_type, typename... pair_tlist>
     void newtable_addkv(pair_type pair_dat, pair_tlist ... pair_list)
     {
@@ -1623,24 +1623,24 @@ protected:
     }
 
     /*!
-    * @brief      µ÷ÓÃLUAµÄº¯Êı£¬Ã»ÓĞ·µ»ØÖµ£¬£¨»òÕßÔİ²»È¡»ØÒ»¸ö·µ»ØÖµ£©
-    * @tparam     args_type ²ÎÊıÀàĞÍÁĞ±í
-    * @return     int == 0 ±íÊ¾³É¹¦
-    * @param      fun_name º¯ÊıÃû³Æ
-    * @param      ret_num  ·µ»ØÖµµÃÊıÁ¿
-    * @param      args     ²ÎÊıÁĞ±í
+    * @brief      è°ƒç”¨LUAçš„å‡½æ•°ï¼Œæ²¡æœ‰è¿”å›å€¼ï¼Œï¼ˆæˆ–è€…æš‚ä¸å–å›ä¸€ä¸ªè¿”å›å€¼ï¼‰
+    * @tparam     args_type å‚æ•°ç±»å‹åˆ—è¡¨
+    * @return     int == 0 è¡¨ç¤ºæˆåŠŸ
+    * @param      fun_name å‡½æ•°åç§°
+    * @param      ret_num  è¿”å›å€¼å¾—æ•°é‡
+    * @param      args     å‚æ•°åˆ—è¡¨
     */
     template<typename... args_type>
     int call_luafun(const char *fun_name, size_t ret_num, args_type... args)
     {
         int ret = 0;
-        //·ÅÈë´íÎó´¦ÀíµÄº¯Êı£¬²¢ÇÒ¼ÇÂ¼¶ÑÕ»µÄµØÖ·
+        //æ”¾å…¥é”™è¯¯å¤„ç†çš„å‡½æ•°ï¼Œå¹¶ä¸”è®°å½•å †æ ˆçš„åœ°å€
         lua_pushcclosure(lua_state_, zce::luatie::on_error, 0);
         int errfunc = lua_gettop(lua_state_);
 
         lua_pushstring(lua_state_, fun_name);
         lua_gettable(lua_state_, LUA_GLOBALSINDEX);
-        //¼ì²éÆäÊÇ·ñÊÇº¯Êı
+        //æ£€æŸ¥å…¶æ˜¯å¦æ˜¯å‡½æ•°
         if (!lua_isfunction(lua_state_, -1))
         {
             ZCE_LOG(RS_ERROR, "[LUATIE] call_luafun() attempt to call global `%s' (not a function)",
@@ -1652,13 +1652,13 @@ protected:
         size_t arg_num = sizeof...(args);
         if (arg_num)
         {
-            //·ÅÈë¶ÑÕ»²ÎÊı£¬args
+            //æ”¾å…¥å †æ ˆå‚æ•°ï¼Œargs
             zce::luatie::push_stack(lua_state_, args...);
         }
 
 
 
-        //µ÷ÓÃluaµÄº¯Êı£¬
+        //è°ƒç”¨luaçš„å‡½æ•°ï¼Œ
         ret = ::lua_pcall(lua_state_,
                           static_cast<int>(arg_num),
                           static_cast<int>(ret_num),
@@ -1668,28 +1668,28 @@ protected:
             ZCE_LOG(RS_ERROR, "[LUATIE] lua_pcall ret = %d", ret);
         }
 
-        //ÔÚ¶ÑÕ»É¾³ıµô´íÎó´¦ÀíµÄº¯Êı
+        //åœ¨å †æ ˆåˆ é™¤æ‰é”™è¯¯å¤„ç†çš„å‡½æ•°
         lua_remove(lua_state_, errfunc);
 
-        //×¢ÒâÕâ¶ù£¬»¹Ã»ÓĞÈ¡³ö·µ»ØÖµ£¬»òÕßÕâ¸öº¯Êı¾ÍÃ»ÓĞ·µ»ØÖµ
+        //æ³¨æ„è¿™å„¿ï¼Œè¿˜æ²¡æœ‰å–å‡ºè¿”å›å€¼ï¼Œæˆ–è€…è¿™ä¸ªå‡½æ•°å°±æ²¡æœ‰è¿”å›å€¼
 
         return 0;
     }
 
     /*!
-    * @brief      ´ÓLuaÖĞ¿½±´Êı¾İµ½C++µÄÈİÆ÷ÖĞ£¬°üÀ¨Êı×é£¬vector£¬vectorÀàÒªÏÈresize
-    * @tparam     container_type  ÈİÆ÷ÀàĞÍ£¬
-    * @return     int             ³É¹¦·µ»Ø0
-    * @param      table_name      ±íµÄÃû³Æ
-    * @param      container_dat   ÈİÆ÷Êı¾İ
-    * @param      nouse           Ã»ÓĞÊ¹ÓÃµÄ²ÎÊı£¬½ö½öÓÃÓÚÀàĞÍÖØÔØÊ¶±ğ
+    * @brief      ä»Luaä¸­æ‹·è´æ•°æ®åˆ°C++çš„å®¹å™¨ä¸­ï¼ŒåŒ…æ‹¬æ•°ç»„ï¼Œvectorï¼Œvectorç±»è¦å…ˆresize
+    * @tparam     container_type  å®¹å™¨ç±»å‹ï¼Œ
+    * @return     int             æˆåŠŸè¿”å›0
+    * @param      table_name      è¡¨çš„åç§°
+    * @param      container_dat   å®¹å™¨æ•°æ®
+    * @param      nouse           æ²¡æœ‰ä½¿ç”¨çš„å‚æ•°ï¼Œä»…ä»…ç”¨äºç±»å‹é‡è½½è¯†åˆ«
     */
     template<class container_type>
     int from_luatable(const char *table_name,
                       container_type &container_dat,
                       std::random_access_iterator_tag /*nouse*/)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         ::lua_pushstring(lua_state_, table_name);
         ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
@@ -1701,7 +1701,7 @@ protected:
             return -1;
         }
 
-        //first key ,fergÈÃÎÒ°ÑÕâ¶«Î÷¾ÍÀí½â³Éµü´úÆ÷
+        //first key ,fergè®©æˆ‘æŠŠè¿™ä¸œè¥¿å°±ç†è§£æˆè¿­ä»£å™¨
         ::lua_pushnil(lua_state_);
         while (::lua_next(lua_state_, -2) != 0)
         {
@@ -1717,13 +1717,13 @@ protected:
         return 0;
     }
 
-    //´ÓLuaÖĞ¿½±´Êı¾İµ½C++µÄÈİÆ÷ÖĞ£¬°üÀ¨Êı×é£¬vector£¬vectorÀàÒªÏÈresize
+    //ä»Luaä¸­æ‹·è´æ•°æ®åˆ°C++çš„å®¹å™¨ä¸­ï¼ŒåŒ…æ‹¬æ•°ç»„ï¼Œvectorï¼Œvectorç±»è¦å…ˆresize
     template<class container_type>
     int from_luatable(const char *table_name,
                       container_type &container_dat,
                       std::bidirectional_iterator_tag /*nouse*/)
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         ::lua_pushstring(lua_state_, table_name);
         ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
@@ -1736,7 +1736,7 @@ protected:
             return -1;
         }
 
-        //first key ,fergÈÃÎÒ°ÑÕâ¶«Î÷¾ÍÀí½â³Éµü´úÆ÷
+        //first key ,fergè®©æˆ‘æŠŠè¿™ä¸œè¥¿å°±ç†è§£æˆè¿­ä»£å™¨
         ::lua_pushnil(lua_state_);
         while (lua_next(lua_state_, -2) != 0)
         {
@@ -1750,12 +1750,12 @@ protected:
     }
 
     /*!
-    * @brief      Ê¹ÓÃµü´úÆ÷¿½±´Êı×é£¬vectorµÄÊı¾İ,µ½LUAÖĞµÄÒ»¸ötableÖĞ£¬
-    * @tparam     raiter_type ÊäÈëµÄµü´úÆ÷£¬random_access_iterator_tag ÀàĞÍµÄµü´úÆ÷
-    * @param      table_name tableµÄÃû³Æ
-    * @param      first      µÚÒ»¸öfirstµü´úÆ÷
-    * @param      last       ×îºóÒ»¸ölastµÄµü´úÆ÷
-    * @param      nouse      Ã»ÓĞÊ¹ÓÃµÄ²ÎÊı£¬½ö½öÓÃÓÚÀàĞÍÖØÔØÊ¶±ğ
+    * @brief      ä½¿ç”¨è¿­ä»£å™¨æ‹·è´æ•°ç»„ï¼Œvectorçš„æ•°æ®,åˆ°LUAä¸­çš„ä¸€ä¸ªtableä¸­ï¼Œ
+    * @tparam     raiter_type è¾“å…¥çš„è¿­ä»£å™¨ï¼Œrandom_access_iterator_tag ç±»å‹çš„è¿­ä»£å™¨
+    * @param      table_name tableçš„åç§°
+    * @param      first      ç¬¬ä¸€ä¸ªfirstè¿­ä»£å™¨
+    * @param      last       æœ€åä¸€ä¸ªlastçš„è¿­ä»£å™¨
+    * @param      nouse      æ²¡æœ‰ä½¿ç”¨çš„å‚æ•°ï¼Œä»…ä»…ç”¨äºç±»å‹é‡è½½è¯†åˆ«
     * @note
     */
     template<class raiter_type >
@@ -1770,9 +1770,9 @@ protected:
         raiter_type iter_temp = first;
         for (int i = 0; iter_temp != last; iter_temp++, i++)
         {
-            //LuaµÄÊ¹ÓÃÏ°¹ßË÷ÒıÊÇ´Ó1¿ªÊ¼
+            //Luaçš„ä½¿ç”¨ä¹ æƒ¯ç´¢å¼•æ˜¯ä»1å¼€å§‹
             ::lua_pushnumber(lua_state_, i + 1);
-            //Í¨¹ıµü´úÆ÷İÍÈ¡µÃµ½ÀàĞÍ£¬
+            //é€šè¿‡è¿­ä»£å™¨èƒå–å¾—åˆ°ç±»å‹ï¼Œ
             zce::luatie::push_stack<typename std::iterator_traits<raiter_type>::value_type >(
                 lua_state_,
                 *iter_temp);
@@ -1782,13 +1782,13 @@ protected:
     }
 
     /*!
-    * @brief      Í¨¹ıµü´úÆ÷½«Ò»¸ömap,»òÕßunorder_map·ÅÈëlua table£¬
-    * @tparam     biiter_type µü´úÆ÷ÀàĞÍ,bidirectional_iterator_tag,Ë«Ïòµü´úÆ÷
-    * @param      table_name  ±íµÄÃû³Æ
-    * @param      first       µÚÒ»¸öµü´úÆ÷£¬
-    * @param      last        ×îºóÒ»¸öµü´úÆ÷
-    * @param      nouse       Ã»ÓĞÊ¹ÓÃµÄ²ÎÊı£¬½ö½öÓÃÓÚÀàĞÍÖØÔØÊ¶±ğ
-    * @note       Õâ¸öÆäÊµÒ²Ö§³ÖºÍmultiµÄ¼¸¸ömap£¬µ«£¬µ«¡­¡­£¬ÁíÍâlistÒ²ÊÇbidirectional_iterator_tag
+    * @brief      é€šè¿‡è¿­ä»£å™¨å°†ä¸€ä¸ªmap,æˆ–è€…unorder_mapæ”¾å…¥lua tableï¼Œ
+    * @tparam     biiter_type è¿­ä»£å™¨ç±»å‹,bidirectional_iterator_tag,åŒå‘è¿­ä»£å™¨
+    * @param      table_name  è¡¨çš„åç§°
+    * @param      first       ç¬¬ä¸€ä¸ªè¿­ä»£å™¨ï¼Œ
+    * @param      last        æœ€åä¸€ä¸ªè¿­ä»£å™¨
+    * @param      nouse       æ²¡æœ‰ä½¿ç”¨çš„å‚æ•°ï¼Œä»…ä»…ç”¨äºç±»å‹é‡è½½è¯†åˆ«
+    * @note       è¿™ä¸ªå…¶å®ä¹Ÿæ”¯æŒå’Œmultiçš„å‡ ä¸ªmapï¼Œä½†ï¼Œä½†â€¦â€¦ï¼Œå¦å¤–listä¹Ÿæ˜¯bidirectional_iterator_tag
     */
     template<class biiter_type >
     void to_luatable(const char *table_name,
@@ -1804,7 +1804,7 @@ protected:
         biiter_type iter_temp = first;
         for (; iter_temp != last; iter_temp++)
         {
-            //½«mapµÄkey×÷ÎªtableµÄkey
+            //å°†mapçš„keyä½œä¸ºtableçš„key
             zce::luatie::push_stack <typename std::remove_cv < typename
             std::iterator_traits<biiter_type>::value_type::first_type
             >::type > (lua_state_, iter_temp->first);
@@ -1820,22 +1820,22 @@ protected:
     }
 
     /*!
-    * @brief      ÏòLUA×¢²áÒ»¸öÈ«¾Öº¯Êı£¬»òÕßÀàµÄ¾²Ì¬º¯Êı¸øluaµ÷ÓÃ
-    *             ¸ù¾İlast_yieldÈ·¶¨·µ»ØµÄ·½Ê½£¬ÊÇ·ñµ÷ÓÃlua_yield
-    * @tparam     last_yield º¯ÊıµÄ×îºó£¬ÊÇ·ñÊ¹ÓÃyield·µ»Ø£¬
-    * @tparam     ret_type   ·µ»Ø²ÎÊıÀàĞÍ
-    * @tparam     args_type  º¯ÊıµÄ²ÎÊıÀàĞÍ£¬±ä²Î
-    * @param      name       ÏòLUA×¢²áµÄº¯ÊıÃû³Æ
-    * @param      func       ×¢²áµÄCº¯Êı
+    * @brief      å‘LUAæ³¨å†Œä¸€ä¸ªå…¨å±€å‡½æ•°ï¼Œæˆ–è€…ç±»çš„é™æ€å‡½æ•°ç»™luaè°ƒç”¨
+    *             æ ¹æ®last_yieldç¡®å®šè¿”å›çš„æ–¹å¼ï¼Œæ˜¯å¦è°ƒç”¨lua_yield
+    * @tparam     last_yield å‡½æ•°çš„æœ€åï¼Œæ˜¯å¦ä½¿ç”¨yieldè¿”å›ï¼Œ
+    * @tparam     ret_type   è¿”å›å‚æ•°ç±»å‹
+    * @tparam     args_type  å‡½æ•°çš„å‚æ•°ç±»å‹ï¼Œå˜å‚
+    * @param      name       å‘LUAæ³¨å†Œçš„å‡½æ•°åç§°
+    * @param      func       æ³¨å†Œçš„Cå‡½æ•°
     */
     template<bool last_yield, typename ret_type, typename... args_type>
     void reg_g_func(const char *name, ret_type(*func)(args_type...))
     {
-        //º¯ÊıÃû³Æ
+        //å‡½æ•°åç§°
         ::lua_pushstring(lua_state_, name);
-        //½«º¯ÊıÖ¸Õë×ª»»Îªvoid * £¬×÷Îªlightuserdata ·ÅÈë¶ÑÕ»£¬×÷ÎªclosureµÄupvalue·ÅÈë
+        //å°†å‡½æ•°æŒ‡é’ˆè½¬æ¢ä¸ºvoid * ï¼Œä½œä¸ºlightuserdata æ”¾å…¥å †æ ˆï¼Œä½œä¸ºclosureçš„upvalueæ”¾å…¥
         ::lua_pushlightuserdata(lua_state_, (void *)func);
-        //functorÄ£°åº¯Êı£¬·ÅÈëclosure,
+        //functoræ¨¡æ¿å‡½æ•°ï¼Œæ”¾å…¥closure,
         ::lua_pushcclosure(lua_state_,
                            zce::if_ < std::is_void<ret_type>::value,
                            zce::luatie::g_func_void<last_yield, args_type...>,
@@ -1843,24 +1843,24 @@ protected:
                            >::type::invoke,
                            1);
 
-        //½«Æä·ÅÈëÈ«¾Ö»·¾³±íÖĞ
+        //å°†å…¶æ”¾å…¥å…¨å±€ç¯å¢ƒè¡¨ä¸­
         ::lua_settable(lua_state_, LUA_GLOBALSINDEX);
     }
 
     /*!
-    * @brief      ×¢²áÀàµÄ³ÉÔ±º¯Êı
-    * @tparam     last_yield ×îºó£¬ÊÇ·ñÊ¹ÓÃlua_yieldº¯Êı·µ»Ø£¬Ö÷ÒªÓÃÓÚĞ­³ÌÖĞ
-    * @tparam     class_type ³ÉÔ±º¯ÊıËùÊôµÄÀà
-    * @tparam     ret_type   ·µ»ØÖµ
-    * @tparam     args_type  ²ÎÊıÁĞ±í£¬ÊÇ¶à¸ö²ÎÊıÀàĞÍ
-    * @return     int   == 0 ±íÊ¾×¢²á³É¹¦
-    * @param      name  º¯ÊıµÄÃû×Ö
-    * @param      func  ³ÉÔ±º¯ÊıÖ¸Õë
+    * @brief      æ³¨å†Œç±»çš„æˆå‘˜å‡½æ•°
+    * @tparam     last_yield æœ€åï¼Œæ˜¯å¦ä½¿ç”¨lua_yieldå‡½æ•°è¿”å›ï¼Œä¸»è¦ç”¨äºåç¨‹ä¸­
+    * @tparam     class_type æˆå‘˜å‡½æ•°æ‰€å±çš„ç±»
+    * @tparam     ret_type   è¿”å›å€¼
+    * @tparam     args_type  å‚æ•°åˆ—è¡¨ï¼Œæ˜¯å¤šä¸ªå‚æ•°ç±»å‹
+    * @return     int   == 0 è¡¨ç¤ºæ³¨å†ŒæˆåŠŸ
+    * @param      name  å‡½æ•°çš„åå­—
+    * @param      func  æˆå‘˜å‡½æ•°æŒ‡é’ˆ
     */
     template<bool last_yield, typename class_type, typename ret_type, typename... args_type>
     int class_mem_func(const char *name, ret_type(class_type::*func)(args_type...))
     {
-        //¸ù¾İÀàµÄÃû³Æ£¬È¡µÃÀàµÄmetatableµÄ±í£¬»òÕßËµÔ­ĞÍ¡£
+        //æ ¹æ®ç±»çš„åç§°ï¼Œå–å¾—ç±»çš„metatableçš„è¡¨ï¼Œæˆ–è€…è¯´åŸå‹ã€‚
         ::lua_pushstring(lua_state_, zce::luatie::class_name<class_type>::name());
         ::lua_gettable(lua_state_, LUA_GLOBALSINDEX);
 
@@ -1875,9 +1875,9 @@ protected:
         }
 
         ::lua_pushstring(lua_state_, name);
-        //Õâ¸öÀàµÄº¯ÊıÖ¸Õë×÷Îªupvalue_µÄ¡£
-        //×¢ÒâÕâ¶ùÊÇÀàµÄ³ÉÔ±Ö¸Õë£¨¸ü¼Ó½Ó½üsize_t£©£¬¶ø²»ÊÇÊµ¼ÊµÄÖ¸Õë£¬ËùÒÔÕâ¶ù²»ÄÜÓÃlight userdata
-        //ÏÂÃæÕâ¸öĞ´·¨ÕæÊÇÒªÁËÈËÃñ£¬·ÇÒªÓÃtypedefÖĞ×ªÒ»ÏÂ
+        //è¿™ä¸ªç±»çš„å‡½æ•°æŒ‡é’ˆä½œä¸ºupvalue_çš„ã€‚
+        //æ³¨æ„è¿™å„¿æ˜¯ç±»çš„æˆå‘˜æŒ‡é’ˆï¼ˆæ›´åŠ æ¥è¿‘size_tï¼‰ï¼Œè€Œä¸æ˜¯å®é™…çš„æŒ‡é’ˆï¼Œæ‰€ä»¥è¿™å„¿ä¸èƒ½ç”¨light userdata
+        //ä¸‹é¢è¿™ä¸ªå†™æ³•çœŸæ˜¯è¦äº†äººæ°‘ï¼Œéè¦ç”¨typedefä¸­è½¬ä¸€ä¸‹
         typedef ret_type(class_type:: *mem_fun)(args_type...);
         new (lua_newuserdata(lua_state_, sizeof(mem_fun))) mem_fun(func);
         //
@@ -1894,7 +1894,7 @@ protected:
 
 protected:
 
-    //LuaµÄ½âÊÍÆ÷µÄ×´Ì¬
+    //Luaçš„è§£é‡Šå™¨çš„çŠ¶æ€
     lua_State   *lua_state_;
 };
 
@@ -1905,18 +1905,18 @@ protected:
 class ZCE_Lua_Base;
 
 /*!
-* @brief      ¸ølua°ó¶¨ÀàµÄÓï·¨ÌÇ£¬Ã¿¸öº¯Êı»á·µ»Ø*thisµÄÒıÓÃ£¬Ö÷ÒªÊÇÎªÁËÊµÏÖÁ¬Ğø.²Ù×÷Óï·¨
-*             ÕâÑùµÄÓï·¨£¬ÈÃ´úÂëÊéĞ´¸ü¼Ó¼òµ¥Ò»µã¡£
+* @brief      ç»™luaç»‘å®šç±»çš„è¯­æ³•ç³–ï¼Œæ¯ä¸ªå‡½æ•°ä¼šè¿”å›*thisçš„å¼•ç”¨ï¼Œä¸»è¦æ˜¯ä¸ºäº†å®ç°è¿ç»­.æ“ä½œè¯­æ³•
+*             è¿™æ ·çš„è¯­æ³•ï¼Œè®©ä»£ç ä¹¦å†™æ›´åŠ ç®€å•ä¸€ç‚¹ã€‚
 *             tie.reg_class<TA>("TA",false).mem_var(...).mem_var(...)
-*             µ±È»È±µãÒ²»áÓĞ£¬ÒòÎªÕâÑùµÄ²Ù×÷Ã»ÓĞ·µ»ØÖµ£¬ËùÒÔ¼´Ê¹ÓĞ´íÎóÒ²ÎŞ·¨·´À¡
-* @tparam     class_type °ó¶¨µÄÀàµÄÃû³Æ
-* @note       ¾ßÌåº¯ÊıµÄ½âÊÍÇë²Î¿¼ZCE_Lua_Tie
+*             å½“ç„¶ç¼ºç‚¹ä¹Ÿä¼šæœ‰ï¼Œå› ä¸ºè¿™æ ·çš„æ“ä½œæ²¡æœ‰è¿”å›å€¼ï¼Œæ‰€ä»¥å³ä½¿æœ‰é”™è¯¯ä¹Ÿæ— æ³•åé¦ˆ
+* @tparam     class_type ç»‘å®šçš„ç±»çš„åç§°
+* @note       å…·ä½“å‡½æ•°çš„è§£é‡Šè¯·å‚è€ƒZCE_Lua_Tie
 */
 template <typename class_type>
 class Candy_Tie_Class
 {
 public:
-    ///¹¹Ôìº¯Êı
+    ///æ„é€ å‡½æ•°
     Candy_Tie_Class(ZCE_Lua_Base *lua_tie,
                     bool read_only) :
         lua_tie_(lua_tie),
@@ -1935,7 +1935,7 @@ public:
         others.lua_tie_=nullptr;
     }
 
-    ////ÔÚÀàµÄmeta table×¢²á¹¹Ôìº¯Êı
+    ////åœ¨ç±»çš„meta tableæ³¨å†Œæ„é€ å‡½æ•°
     template <typename construct_fun >
     Candy_Tie_Class &construct(construct_fun func) 
     {
@@ -1943,7 +1943,7 @@ public:
         return *this;
     }
 
-    ///ÔÚÀàµÄmeta table×¢²á³ÉÔ±±äÁ¿
+    ///åœ¨ç±»çš„meta tableæ³¨å†Œæˆå‘˜å˜é‡
     template <typename var_type >
     Candy_Tie_Class &mem_var(const char *name, var_type class_type::*val)
     {
@@ -1951,7 +1951,7 @@ public:
         return *this;
     }
 
-    ///ÔÚÀàµÄmeta table×¢²á³ÉÔ±Êı×é
+    ///åœ¨ç±»çš„meta tableæ³¨å†Œæˆå‘˜æ•°ç»„
     template <typename array_type, size_t array_size>
     Candy_Tie_Class &mem_ary(const char *name, array_type(class_type::*ary)[array_size])
     {
@@ -1959,7 +1959,7 @@ public:
         return *this;
     }
 
-    ///ÔÚÀàµÄmeta table°ó¶¨º¯Êı
+    ///åœ¨ç±»çš„meta tableç»‘å®šå‡½æ•°
     template<typename ret_type, typename... args_type>
     Candy_Tie_Class &mem_fun(const char *name, ret_type(class_type::*func)(args_type...))
     {
@@ -1974,7 +1974,7 @@ public:
         return *this;
     }
 
-    //´ÓÄ³¸öÀà¼Ì³Ğ
+    //ä»æŸä¸ªç±»ç»§æ‰¿
     template<typename parent_type>
     Candy_Tie_Class &inherit()
     {
@@ -1983,20 +1983,20 @@ public:
     }
 
 protected:
-    ///LuaµÄ½âÊÍÆ÷µÄ×´Ì¬
+    ///Luaçš„è§£é‡Šå™¨çš„çŠ¶æ€
     ZCE_Lua_Base   *lua_tie_ = nullptr;
 
-    ///Õâ¸öÀàÊÇ·ñÊÇÖ»¶ÁµÄ·½Ê½
+    ///è¿™ä¸ªç±»æ˜¯å¦æ˜¯åªè¯»çš„æ–¹å¼
     bool           read_only_ = false;
 };
 
 //=======================================================================================================
 
 /*!
-* @brief      LuaµÄĞ­³ÌµÄ·â×°£¬±£´æĞ­³ÌµÄstateÒÔ¼°ÆäÔÚ¶ÑÕ»µÄid
-*             ÆäLuaµÄ¹¦ÄÜ¶¼´ÓZCE_Lua_Base µÃµ½
-* @note       LuaµÄ´úÂëÀïÃæ×Ô³ÆÊÇThread£¬µ«ÆäÊµÊÇĞ­³Ì£¬¶øÎªÁËÍ³Ò»ÎÒÒ²Ã»ÓĞÊ¹ÓÃcoroutineÃüÃû£¬
-*             ÎÒµÄ´úÂëÀïÃæÒ²ÓĞÕæÕıµÄthreadÏà¹ØµÄ¶«¶«£¬±ÜÃâÎó½â£¬Í³Ò»Ê¹ÓÃLua ThreadÕâÑùµÄÃüÃû
+* @brief      Luaçš„åç¨‹çš„å°è£…ï¼Œä¿å­˜åç¨‹çš„stateä»¥åŠå…¶åœ¨å †æ ˆçš„id
+*             å…¶Luaçš„åŠŸèƒ½éƒ½ä»ZCE_Lua_Base å¾—åˆ°
+* @note       Luaçš„ä»£ç é‡Œé¢è‡ªç§°æ˜¯Threadï¼Œä½†å…¶å®æ˜¯åç¨‹ï¼Œè€Œä¸ºäº†ç»Ÿä¸€æˆ‘ä¹Ÿæ²¡æœ‰ä½¿ç”¨coroutineå‘½åï¼Œ
+*             æˆ‘çš„ä»£ç é‡Œé¢ä¹Ÿæœ‰çœŸæ­£çš„threadç›¸å…³çš„ä¸œä¸œï¼Œé¿å…è¯¯è§£ï¼Œç»Ÿä¸€ä½¿ç”¨Lua Threadè¿™æ ·çš„å‘½å
 */
 class ZCE_Lua_Thread : public ZCE_Lua_Base
 {
@@ -2004,26 +2004,26 @@ public:
 
     ZCE_Lua_Thread();
 
-    ///Îö¹¹´úÂë£¬Lua ThreadµÄ´úÂë²»»á×Ô¼ºÊÍ·Å×Ô¼º£¬Lua ThreadÔÚ
-    ///¶ÑÕ»±»Çå¿ÕµÄÊ±ºò£¬»á±»GC»ØÊÕµô¡£ËùÒÔ£¬Îö¹¹º¯ÊıÊ²Ã´Ò²²»×ö¡£
+    ///ææ„ä»£ç ï¼ŒLua Threadçš„ä»£ç ä¸ä¼šè‡ªå·±é‡Šæ”¾è‡ªå·±ï¼ŒLua Threadåœ¨
+    ///å †æ ˆè¢«æ¸…ç©ºçš„æ—¶å€™ï¼Œä¼šè¢«GCå›æ”¶æ‰ã€‚æ‰€ä»¥ï¼Œææ„å‡½æ•°ä»€ä¹ˆä¹Ÿä¸åšã€‚
     ~ZCE_Lua_Thread();
 
-    ///ÉèÖÃÏß³ÌÏà¹ØµÄÊı¾İ
+    ///è®¾ç½®çº¿ç¨‹ç›¸å…³çš„æ•°æ®
     void set_thread(lua_State *lua_thread, int thread_stackidx);
 
-    ///È¡µÃÏß³ÌÔÚ´´½¨Õß¶ÑÕ»µÄÎ»ÖÃË÷Òı
+    ///å–å¾—çº¿ç¨‹åœ¨åˆ›å»ºè€…å †æ ˆçš„ä½ç½®ç´¢å¼•
     int get_thread_stackidx();
 
 
-    ///»Ö¸´Ïß³ÌÔËĞĞ
+    ///æ¢å¤çº¿ç¨‹è¿è¡Œ
     int resume(int narg);
 
-    ///¹ÒÆğÏß³ÌÔËĞĞ
+    ///æŒ‚èµ·çº¿ç¨‹è¿è¡Œ
     int yield(int nresults);
 
 protected:
 
-    ///Ïß³ÌÔÚ´´½¨Õß¶ÑÕ»µÄÎ»ÖÃË÷Òı
+    ///çº¿ç¨‹åœ¨åˆ›å»ºè€…å †æ ˆçš„ä½ç½®ç´¢å¼•
     int luathread_stackidx_ = 0;
 };
 
@@ -2031,8 +2031,8 @@ protected:
 
 
 /*!
-* @brief      LUA Ğ¬´ø£¬ÓÃÓÚ°ïÖú°ó¶¨ºÎÖÖC£¬»òÕßC++µÄ´úÂëµ½Lua£¬»òÕßÊ¹ÓÃLuaµÄ¸÷ÖÖ¹¦ÄÜ¡£
-*             Í¬Ê±»¹¿ÉÒÔÊ¹ÓÃÏß³ÌµÈ¹¦ÄÜ
+* @brief      LUA é‹å¸¦ï¼Œç”¨äºå¸®åŠ©ç»‘å®šä½•ç§Cï¼Œæˆ–è€…C++çš„ä»£ç åˆ°Luaï¼Œæˆ–è€…ä½¿ç”¨Luaçš„å„ç§åŠŸèƒ½ã€‚
+*             åŒæ—¶è¿˜å¯ä»¥ä½¿ç”¨çº¿ç¨‹ç­‰åŠŸèƒ½
 * @note
 */
 class ZCE_Lua_Tie : public ZCE_Lua_Base
@@ -2043,23 +2043,23 @@ public:
     ~ZCE_Lua_Tie();
 
     /*!
-    * @brief      ´ò¿ªlua state
+    * @brief      æ‰“å¼€lua state
     * @return     int
-    * @param      open_libs  ÊÇ·ñ´ò¿ª³£ÓÃµÄÒ»Ğ©LUA¿â
-    * @param      reg_common ÊÇ·ñ×¢²áÒ»Ğ©³£ÓÃ
+    * @param      open_libs  æ˜¯å¦æ‰“å¼€å¸¸ç”¨çš„ä¸€äº›LUAåº“
+    * @param      reg_common æ˜¯å¦æ³¨å†Œä¸€äº›å¸¸ç”¨
     */
     int open(bool open_libs,
              bool reg_common);
-    ///¹Ø±Õlua state
+    ///å…³é—­lua state
     void close();
 
-    ///¿ªÆôÒ»¸öĞÂµÄlua thread
+    ///å¼€å¯ä¸€ä¸ªæ–°çš„lua thread
     int new_thread(ZCE_Lua_Thread *lua_thread);
 
-    ///¹Ø±Õ£¬»ØÊÕÒ»¸ölua thread
+    ///å…³é—­ï¼Œå›æ”¶ä¸€ä¸ªlua thread
     void del_thread(ZCE_Lua_Thread *lua_thread);
 
-    ///»Ö¸´Ò»¸öÏß³ÌµÄÔËĞĞ
+    ///æ¢å¤ä¸€ä¸ªçº¿ç¨‹çš„è¿è¡Œ
     int resume_thread(ZCE_Lua_Thread *lua_thread, int narg);
 };
 

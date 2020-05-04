@@ -14,7 +14,7 @@ class Wormhole_Proxy_App : public Soar_SvrdApp_ZergBus
 {
 
 public:
-    // ×Ô¼ºµÄµ¥×ÓÍµÍµ²Ø×Å£¬
+    // è‡ªå·±çš„å•å­å·å·è—ç€ï¼Œ
     Wormhole_Proxy_App();
     ~Wormhole_Proxy_App();
 
@@ -22,26 +22,26 @@ public:
 
 
     /*!
-    * @brief      ´¦ÀíÊÕµ½µÄAPPFRAME,
+    * @brief      å¤„ç†æ”¶åˆ°çš„APPFRAME,
     * @return     int
-    * @param      recv_frame  ´¦ÀíµÄFrame£¬²»Ê¹ÓÃconstµÄÔ­ÒòÊÇÒòÎªÎªÁË¼Ó¿ìËÙ¶È£¬ºÜ¶àµØ·½ÊÇÖ±½Ó½«recv_frameĞŞ¸Ä
-    * @note       app_runº¯ÊıÔÚComm_SvrdApp_BUSÀïÃæÒÑ¾­ÊµÏÖÁË£¬
+    * @param      recv_frame  å¤„ç†çš„Frameï¼Œä¸ä½¿ç”¨constçš„åŸå› æ˜¯å› ä¸ºä¸ºäº†åŠ å¿«é€Ÿåº¦ï¼Œå¾ˆå¤šåœ°æ–¹æ˜¯ç›´æ¥å°†recv_frameä¿®æ”¹
+    * @note       app_runå‡½æ•°åœ¨Comm_SvrdApp_BUSé‡Œé¢å·²ç»å®ç°äº†ï¼Œ
     */
     virtual int process_recv_frame(Zerg_App_Frame *recv_frame);
 
-    ///³õÊ¼»¯,¸ù¾İÆô¶¯²ÎÊıÆô¶¯
+    ///åˆå§‹åŒ–,æ ¹æ®å¯åŠ¨å‚æ•°å¯åŠ¨
     virtual int app_start(int argc, const char *argv[]);
 
-    ///´¦ÀíÍË³öµÄÇåÀí¹¤×÷
+    ///å¤„ç†é€€å‡ºçš„æ¸…ç†å·¥ä½œ
     virtual int app_exit();
 
 protected:
-    ///ÖØĞÂ¼ÓÔØÅäÖÃ
+    ///é‡æ–°åŠ è½½é…ç½®
     virtual int reload_config();
 
 protected:
 
-    /// ´¦ÀíµÄPROXYµÄ½Ó¿Ú
+    /// å¤„ç†çš„PROXYçš„æ¥å£
     Interface_WH_Proxy *interface_proxy_ = NULL;
 
 

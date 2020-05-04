@@ -8,8 +8,8 @@
 
 
 //----------------------------------------------------------------------------------------
-//ÏÂÃæÕâÐ©´úÂëÊÇ´ÓtopµÄ´úÂë×Ü½áÕª³­ÐÞ¸Ä¹ýÀ´¹ýÀ´µÄ£¬
-//Çë²Î¿¼ http://www.cppblog.com/dyj057/archive/2007/01/31/18221.aspx
+//ä¸‹é¢è¿™äº›ä»£ç æ˜¯ä»Žtopçš„ä»£ç æ€»ç»“æ‘˜æŠ„ä¿®æ”¹è¿‡æ¥è¿‡æ¥çš„ï¼Œ
+//è¯·å‚è€ƒ http://www.cppblog.com/dyj057/archive/2007/01/31/18221.aspx
 
 #if defined ZCE_OS_LINUX
 
@@ -43,7 +43,7 @@ int read_proc_get_cpuhz (struct ZCE_SYSTEM_INFO *info)
     return 0;
 }
 
-// get load averages ,µÃµ½CPU¸ºÔØµÄ
+// get load averages ,å¾—åˆ°CPUè´Ÿè½½çš„
 static int read_proc_get_loadavg (struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     //
@@ -76,7 +76,7 @@ static int read_proc_get_loadavg (struct ZCE_SYSTEM_PERFORMANCE *info)
     return 0;
 }
 
-//¶ÁÈ¡/proc/meminfoÎÄ¼þ£¬È¡µÃÄÚ´æµÄÐÅÏ¢
+//è¯»å–/proc/meminfoæ–‡ä»¶ï¼Œå–å¾—å†…å­˜çš„ä¿¡æ¯
 int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     const char *PROC_FILENAME_MEMINFO = "/proc/meminfo";
@@ -93,26 +93,26 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
     uint64_t mem_data = 0;
 
     // be prepared for extra columns to appear be seeking to ends of lines
-    // total memory ÑùÀý MemTotal:        3584536 kB
+    // total memory æ ·ä¾‹ MemTotal:        3584536 kB
     in_para = zce::skip_token(in_para);
     mem_data = strtoull(in_para, &out_para, 10);
     info->totalram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
-    // free memory ÑùÀý MemFree:           22532 kB
+    // free memory æ ·ä¾‹ MemFree:           22532 kB
     in_para = zce::skip_token(in_para);
     mem_data = strtoull(in_para, &out_para, 10);
     info->freeram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
 
-    // buffer memory ÑùÀý Buffers:          443268 kB
+    // buffer memory æ ·ä¾‹ Buffers:          443268 kB
     in_para = zce::skip_token(in_para);
     mem_data = strtoull(in_para, &out_para, 10);
     info->bufferram_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
-    // cached memory ÑùÀý Cached:          2580892 kB
+    // cached memory æ ·ä¾‹ Cached:          2580892 kB
     in_para = zce::skip_token(in_para);
     mem_data = strtoull(in_para, &out_para, 10);
     info->cachedram_size_ = mem_data * 1024;
@@ -124,7 +124,7 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
     info->swapcached_size_ = mem_data * 1024;
     in_para = zce::skip_line(in_para);
 
-    //Ìø¹ý8ÐÐ£¬
+    //è·³è¿‡8è¡Œï¼Œ
     for (size_t i = 0; i < 8 ; i++)
     {
         in_para = zce::skip_line(in_para);
@@ -146,7 +146,7 @@ int read_proc_get_meminfo(struct ZCE_SYSTEM_PERFORMANCE *info)
 }
 
 
-// get the cpu time info ÑùÀý£ºcpu  34151643 618 25185530 4126447092 5407693 433 2641178 1187028 0
+// get the cpu time info æ ·ä¾‹ï¼šcpu  34151643 618 25185530 4126447092 5407693 433 2641178 1187028 0
 //user: normal processes executing in user mode
 //nice: niced processes executing in user mode
 //system: processes executing in kernel mode
@@ -173,10 +173,10 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
     long cpu_tick_precision = 1000;
     long cpu_config_num = 0;
 #if defined ZCE_OS_LINUX
-    // tlinux64(2.6.32.43)ÏÂÕâ¸öÖµÊÇ100
+    // tlinux64(2.6.32.43)ä¸‹è¿™ä¸ªå€¼æ˜¯100
     cpu_tick_precision = ::sysconf(_SC_CLK_TCK);
 
-    // »ñÈ¡CPUºËÐÄ¸öÊý
+    // èŽ·å–CPUæ ¸å¿ƒä¸ªæ•°
     cpu_config_num = ::sysconf(_SC_NPROCESSORS_CONF);
 #endif
 
@@ -223,11 +223,11 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
     info->softirq_time_.tv_sec = static_cast<time_t>(time_data / cpu_tick_precision);
     info->softirq_time_.tv_usec = static_cast<time_t>((time_data % cpu_tick_precision) * (SEC_PER_USEC / cpu_tick_precision));
 
-    // »ñµÃÏµÍ³µÄuptime
+    // èŽ·å¾—ç³»ç»Ÿçš„uptime
     info->up_time_ = zce::get_uptime();
 
-    //±ØÏÖ²¹³äÉùÃ÷µÄÊÇ£¬ÆäÊµÕâ7¸öÊýÖµ²¢²»´ú±íËùÓÐµÄCPUÊ±¼ä£¨³ý·Ç·Ç³£ÔçµÄÄÚºË£©£¬ºóÃæ»¹ÓÐÈô¸ÉÊýÖµ£¬ÎÒÅ×Æú²»ÓÃ
-    //ÀïÃæÊµ¼ÊÓ¦¸ÃÓÐuser+nice+system+idle+iowait+irq+softirq+( stealstolen  +  guest)
+    //å¿…çŽ°è¡¥å……å£°æ˜Žçš„æ˜¯ï¼Œå…¶å®žè¿™7ä¸ªæ•°å€¼å¹¶ä¸ä»£è¡¨æ‰€æœ‰çš„CPUæ—¶é—´ï¼ˆé™¤éžéžå¸¸æ—©çš„å†…æ ¸ï¼‰ï¼ŒåŽé¢è¿˜æœ‰è‹¥å¹²æ•°å€¼ï¼Œæˆ‘æŠ›å¼ƒä¸ç”¨
+    //é‡Œé¢å®žé™…åº”è¯¥æœ‰user+nice+system+idle+iowait+irq+softirq+( stealstolen  +  guest)
     //stealstolen 2.6.11
     //guest       2.6.24
 
@@ -236,7 +236,7 @@ int read_proc_get_stat(struct ZCE_SYSTEM_PERFORMANCE *info)
 
 
 
-//È¡µÃUPTIME  ÑùÀý 10665138.96 41312475.36
+//å–å¾—UPTIME  æ ·ä¾‹ 10665138.96 41312475.36
 int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     const char *PROC_FILENAME_UPTIME = "/proc/uptime";
@@ -266,7 +266,7 @@ int read_proc_get_uptime(struct ZCE_SYSTEM_PERFORMANCE *info)
 
 
 
-//¸ù¾ÝPROCµÄ¼¸¸öÎÄ¼þµÃµ½µ±Ç°µÄÏµÍ³ÐÔÄÜ
+//æ ¹æ®PROCçš„å‡ ä¸ªæ–‡ä»¶å¾—åˆ°å½“å‰çš„ç³»ç»Ÿæ€§èƒ½
 int  zce::read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info)
 {
     int ret = 0;
@@ -297,11 +297,11 @@ int  zce::read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info)
 
 
 
-//sysinfoº¯ÊýÖÐ¼äµÄºÜ¶àÊýÖµºÍ/procÄ¿Â¼µÄ¶¨Òå²¢²»Ò»ÖÂ£¬ÎÒ½«¾Í×ÅÀ´
+//sysinfoå‡½æ•°ä¸­é—´çš„å¾ˆå¤šæ•°å€¼å’Œ/procç›®å½•çš„å®šä¹‰å¹¶ä¸ä¸€è‡´ï¼Œæˆ‘å°†å°±ç€æ¥
 int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
 {
     struct sysinfo info;
-    //ÆäÊµÍ¨¹ý::sysconfÒ²¿ÉÒÔµÃµ½Õâ¸öÊý¾Ý
+    //å…¶å®žé€šè¿‡::sysconfä¹Ÿå¯ä»¥å¾—åˆ°è¿™ä¸ªæ•°æ®
     int ret = ::sysinfo(&info);
 
     if (ret == -1)
@@ -316,7 +316,7 @@ int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
         return -1;
     }
 
-    //¸ºÔØÊÇÒ»¸öÕûÊý£¬ÒªÌØÊâ´¦ÀíÒ»ÏÂ
+    //è´Ÿè½½æ˜¯ä¸€ä¸ªæ•´æ•°ï¼Œè¦ç‰¹æ®Šå¤„ç†ä¸€ä¸‹
     zce_system_perf->sys_loads_[0] = double(info.loads[0]) / (1 << SI_LOAD_SHIFT);
     zce_system_perf->sys_loads_[1] = double(info.loads[1]) / (1 << SI_LOAD_SHIFT);
     zce_system_perf->sys_loads_[2] = double(info.loads[2]) / (1 << SI_LOAD_SHIFT);
@@ -327,7 +327,7 @@ int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
     zce_system_perf->totalram_size_ = info.totalram * info.mem_unit;
     zce_system_perf->freeram_size_ = info.freeram * info.mem_unit;
 
-    //bufferr ºÍ cache ÔÚsysinfoÖ»ÓÐÒ»¸öbufferµÄ¸ÅÄî£¬ÎÒ¹À¼ÆÕâ¸öbufferÓ¦¸ÃÊÇmeminfoµÄbufºÍcache×ÜºÍ
+    //bufferr å’Œ cache åœ¨sysinfoåªæœ‰ä¸€ä¸ªbufferçš„æ¦‚å¿µï¼Œæˆ‘ä¼°è®¡è¿™ä¸ªbufferåº”è¯¥æ˜¯meminfoçš„bufå’Œcacheæ€»å’Œ
     zce_system_perf->shared_size_ = info.sharedram * info.mem_unit;
     zce_system_perf->bufferram_size_ = info.bufferram * info.mem_unit;
     zce_system_perf->cachedram_size_ = 0;
@@ -336,7 +336,7 @@ int zce::read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
     zce_system_perf->freeswap_size_ =  info.freeswap * info.mem_unit;
     zce_system_perf->swapcached_size_ = 0;
 
-    //uptime¿ÉÒÔ¶ÁÈ¡/proc/uptimeµÃµ½,µ«Õâ¶ùÔÝÊ±ËãÁË
+    //uptimeå¯ä»¥è¯»å–/proc/uptimeå¾—åˆ°,ä½†è¿™å„¿æš‚æ—¶ç®—äº†
     zce_system_perf->up_time_ = zce::get_uptime();
 
     return 0;
@@ -359,7 +359,7 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
     mem_status.dwLength = sizeof(MEMORYSTATUSEX);
     BOOL bool_ret = FALSE;
 
-    //µÃµ½ÄÚ´æ´¦ÀíÇé¿ö
+    //å¾—åˆ°å†…å­˜å¤„ç†æƒ…å†µ
     bool_ret = ::GlobalMemoryStatusEx(&mem_status);
 
     if (!bool_ret)
@@ -367,19 +367,19 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
         return -1;
     }
 
-    //µÃµ½CPUµÄ¸öÊý
+    //å¾—åˆ°CPUçš„ä¸ªæ•°
     zce_system_info->nprocs_conf_ = system_info.dwNumberOfProcessors;
     zce_system_info->nprocs_av_ = system_info.dwNumberOfProcessors;
 
-    //µÃµ½ÄÚ´æ×´¿ö
+    //å¾—åˆ°å†…å­˜çŠ¶å†µ
     zce_system_info->totalram_size_ = mem_status.ullTotalPhys;
     zce_system_info->freeram_size_ = mem_status.ullAvailPhys;
 
-    //Õâ¼¸¸öÊý¾Ý¶ÔÓÚWINDOWSÃ»ÓÐÈÎºÎÓÃ´¦,
+    //è¿™å‡ ä¸ªæ•°æ®å¯¹äºŽWINDOWSæ²¡æœ‰ä»»ä½•ç”¨å¤„,
     zce_system_info->shared_size_ = 0;
     zce_system_info->bufferram_size_ = 0;
 
-    //Õâ¸öµØ·½ÎÒ°ÑMSµÄpagesfileµÄ³ß´ç£¬¼õÈ¥  ÎïÀíÄÚ´æ³ß´ç µÃµ½µÄ½»»»·ÖÇøµÄ³ß´ç£¨Á½Õß¸ÅÄîÏàËÆ£©
+    //è¿™ä¸ªåœ°æ–¹æˆ‘æŠŠMSçš„pagesfileçš„å°ºå¯¸ï¼Œå‡åŽ»  ç‰©ç†å†…å­˜å°ºå¯¸ å¾—åˆ°çš„äº¤æ¢åˆ†åŒºçš„å°ºå¯¸ï¼ˆä¸¤è€…æ¦‚å¿µç›¸ä¼¼ï¼‰
     zce_system_info->totalswap_size_ = mem_status.ullTotalPageFile - mem_status.ullTotalPhys;
 
     if (zce_system_info->totalswap_size_ < 0)
@@ -394,9 +394,9 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
         zce_system_info->freeswap_size_ = 0;
     }
 
-    //´Ó×¢²á±í¶ÁÈ¡CPUµÄÖ÷Æµ
+    //ä»Žæ³¨å†Œè¡¨è¯»å–CPUçš„ä¸»é¢‘
 
-    //Ê¹ÓÃÒ»¸öÄ¬ÈÏÖµ
+    //ä½¿ç”¨ä¸€ä¸ªé»˜è®¤å€¼
     zce_system_info->cpu_hz_ = 1024 * 1024 * 1024;
     DWORD dw_mhz;
     DWORD dw_size = sizeof(DWORD);
@@ -423,7 +423,7 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
 #elif defined ZCE_OS_LINUX
 
     struct sysinfo info;
-    //ÆäÊµÍ¨¹ý::sysconfÒ²¿ÉÒÔµÃµ½Õâ¸öÊý¾Ý
+    //å…¶å®žé€šè¿‡::sysconfä¹Ÿå¯ä»¥å¾—åˆ°è¿™ä¸ªæ•°æ®
     int ret = ::sysinfo(&info);
 
     if (ret == -1)
@@ -437,7 +437,7 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
     zce_system_info->totalram_size_ = info.totalram * info.mem_unit;
     zce_system_info->freeram_size_ = info.freeram * info.mem_unit;
 
-    //bufferr ºÍ cache ÔÚsysinfoÖ»ÓÐÒ»¸öbufferµÄ¸ÅÄî£¬ÎÒ¹À¼ÆÕâ¸öbufferÓ¦¸ÃÊÇmeminfoµÄbufºÍcache×ÜºÍ
+    //bufferr å’Œ cache åœ¨sysinfoåªæœ‰ä¸€ä¸ªbufferçš„æ¦‚å¿µï¼Œæˆ‘ä¼°è®¡è¿™ä¸ªbufferåº”è¯¥æ˜¯meminfoçš„bufå’Œcacheæ€»å’Œ
     zce_system_info->shared_size_ = info.sharedram * info.mem_unit;
     zce_system_info->bufferram_size_ = info.bufferram * info.mem_unit;
 
@@ -456,21 +456,21 @@ int zce::get_system_info(ZCE_SYSTEM_INFO *zce_system_info)
 
 
 
-//µÃµ½²Ù×÷ÏµÍ³µÄÐÔÄÜÐÅÏ¢
+//å¾—åˆ°æ“ä½œç³»ç»Ÿçš„æ€§èƒ½ä¿¡æ¯
 int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
 {
 #if defined ZCE_OS_WINDOWS
 
     BOOL bool_ret = FALSE;
 
-    //µÃµ½½ø³Ì×ÜÊý
+    //å¾—åˆ°è¿›ç¨‹æ€»æ•°
 
-    //µÃµ½ÄÚ´æÊ¹ÓÃ×´¿ö
+    //å¾—åˆ°å†…å­˜ä½¿ç”¨çŠ¶å†µ
     MEMORYSTATUSEX mem_status;
     mem_status.dwLength = sizeof(MEMORYSTATUSEX);
     bool_ret = ::GlobalMemoryStatusEx(&mem_status);
 
-    //µÃµ½CPUµÄÊ¹ÓÃ×´¿ö
+    //å¾—åˆ°CPUçš„ä½¿ç”¨çŠ¶å†µ
     FILETIME idle_time, kernel_time, user_time;
     bool_ret = ::GetSystemTimes(&idle_time,
                                 &kernel_time,
@@ -493,16 +493,16 @@ int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
         return -1;
     }
 
-    //µÃµ½ÄÚ´æ×´¿ö
+    //å¾—åˆ°å†…å­˜çŠ¶å†µ
     zce_system_perf->totalram_size_ = mem_status.ullTotalPhys;
     zce_system_perf->freeram_size_ = mem_status.ullAvailPhys;
 
-    //ÕâÁ½¸öÊý¾Ý¶ÔÓÚWINDOWSÃ»ÓÐÈÎºÎÓÃ´¦
+    //è¿™ä¸¤ä¸ªæ•°æ®å¯¹äºŽWINDOWSæ²¡æœ‰ä»»ä½•ç”¨å¤„
     zce_system_perf->shared_size_ = 0;
     zce_system_perf->bufferram_size_ = 0;
     zce_system_perf->cachedram_size_ = 0;
 
-    //Õâ¸öµØ·½ÎÒ°ÑMSµÄpagesfileµÄ³ß´ç£¬¼õÈ¥  ÎïÀíÄÚ´æ³ß´ç µÃµ½µÄ ÐéÄâÄÚ´æµÄ³ß´ç
+    //è¿™ä¸ªåœ°æ–¹æˆ‘æŠŠMSçš„pagesfileçš„å°ºå¯¸ï¼Œå‡åŽ»  ç‰©ç†å†…å­˜å°ºå¯¸ å¾—åˆ°çš„ è™šæ‹Ÿå†…å­˜çš„å°ºå¯¸
     zce_system_perf->totalswap_size_ = mem_status.ullTotalPageFile - mem_status.ullTotalPhys;
 
     if (zce_system_perf->totalswap_size_ < 0)
@@ -519,14 +519,14 @@ int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
 
     zce_system_perf->swapcached_size_ = 0;
 
-    //µÃµ½ÏµÍ³µÄÆô¶¯Ê±¼ä
+    //å¾—åˆ°ç³»ç»Ÿçš„å¯åŠ¨æ—¶é—´
     zce_system_perf->up_time_ = zce::get_uptime();
 
     zce_system_perf->idle_time_ = zce::make_timeval(&idle_time);
     zce_system_perf->system_time_ = zce::make_timeval(&kernel_time);
     zce_system_perf->user_time_ = zce::make_timeval(&user_time);
 
-    //WINDOWSÃ»ÓÐ¸ÅÄîµÄÊý¾Ý
+    //WINDOWSæ²¡æœ‰æ¦‚å¿µçš„æ•°æ®
     zce_system_perf->nice_time_.tv_sec = 0;
     zce_system_perf->nice_time_.tv_usec = 0;
     zce_system_perf->iowait_time_.tv_sec = 0;
@@ -537,14 +537,14 @@ int zce::get_system_perf(ZCE_SYSTEM_PERFORMANCE *zce_system_perf)
     zce_system_perf->hardirq_time_.tv_usec = 0;
 
 
-    //WINDOWSÆ½Ì¨Ã»ÓÐÕâ¸ö¸ÅÄî£¬Ã»ÓÃ
+    //WINDOWSå¹³å°æ²¡æœ‰è¿™ä¸ªæ¦‚å¿µï¼Œæ²¡ç”¨
     zce_system_perf->sys_loads_[0] = 0.0;
     zce_system_perf->sys_loads_[1] = 0.0;
     zce_system_perf->sys_loads_[2] = 0.0;
 
 
     zce_system_perf->processes_num_ = performance_info.ProcessCount;
-    //WINDOWÒ²Ã»ÓÐÕâ¸ö¸ÅÄî
+    //WINDOWä¹Ÿæ²¡æœ‰è¿™ä¸ªæ¦‚å¿µ
     zce_system_perf->running_num_ = 0;
 
     return 0;

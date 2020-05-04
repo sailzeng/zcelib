@@ -24,7 +24,7 @@ Zulu_SendRecv_Package::~Zulu_SendRecv_Package()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê4ÔÂ25ÈÕ
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´4æœˆ25æ—¥
 Function        : Zulu_SendRecv_Package::set_zulu_svcinfo
 Return          : int
 Parameter List  :
@@ -34,7 +34,7 @@ Parameter List  :
   Param4: const SERVICES_ID& send_service
   Param5: const SERVICES_ID& proxy_service
   Param6: size_t frame_len
-Description     : //ÉèÖÃÏàÓ¦µÄSVC INFO,
+Description     : //è®¾ç½®ç›¸åº”çš„SVC INFO,
 Calls           :
 Called By       :
 Other           :
@@ -61,18 +61,18 @@ int Zulu_SendRecv_Package::set_zulu_svcinfo(const char *svc_ip,
     return 0;
 }
 
-//Á´½Ó·şÎñÆ÷
+//é“¾æ¥æœåŠ¡å™¨
 int Zulu_SendRecv_Package::connect_zulu_server(ZCE_Time_Value *time_wait)
 {
     int ret = 0;
 
-    //GCS·şÎñÆ÷µÄÁ´½ÓÎÊÌâ¡£
+    //GCSæœåŠ¡å™¨çš„é“¾æ¥é—®é¢˜ã€‚
     if ( false == zulu_connected_ )
     {
         ZCE_Socket_Connector tmp_connector;
-        //×Ô¼º¶¨Òå³¬Ê±Ê±¼ä10s,Èç¹û²»ÄÜÁ´½ÓÈÏÎªÊ§°Ü£¬±Ï¾¹¶¼ÊÇÄÚÍø,
-        // Ä¬ÈÏ³¬Ê±ÊÇ10s, Èç¹ûÖ¸¶¨ÁËtime_waitÔòÊ¹ÓÃtime_wait
-        // ·ñÔòÓÃÄ¬ÈÏµÄÖµ
+        //è‡ªå·±å®šä¹‰è¶…æ—¶æ—¶é—´10s,å¦‚æœä¸èƒ½é“¾æ¥è®¤ä¸ºå¤±è´¥ï¼Œæ¯•ç«Ÿéƒ½æ˜¯å†…ç½‘,
+        // é»˜è®¤è¶…æ—¶æ˜¯10s, å¦‚æœæŒ‡å®šäº†time_waitåˆ™ä½¿ç”¨time_wait
+        // å¦åˆ™ç”¨é»˜è®¤çš„å€¼
         ZCE_Time_Value real_time_wait(10, 0);
 
         if (time_wait != NULL)
@@ -80,7 +80,7 @@ int Zulu_SendRecv_Package::connect_zulu_server(ZCE_Time_Value *time_wait)
             real_time_wait = *time_wait;
         }
 
-        //Á¬½ÓÅäÖÃÖĞĞÄ
+        //è¿æ¥é…ç½®ä¸­å¿ƒ
         ret = tmp_connector.connect(zulu_stream_,
                                     &zulu_svc_ip_,
                                     real_time_wait);
@@ -105,7 +105,7 @@ void Zulu_SendRecv_Package::close()
     }
 }
 
-//½ÓÊÕÒ»¸öÊı¾İ°ü£¬µÃµ½ÃüÁî×Ö£¬Äã¿ÉÒÔµ÷ÓÃget_recv_appframe½øĞĞºóĞøµÄ´¦Àí£¬
+//æ¥æ”¶ä¸€ä¸ªæ•°æ®åŒ…ï¼Œå¾—åˆ°å‘½ä»¤å­—ï¼Œä½ å¯ä»¥è°ƒç”¨get_recv_appframeè¿›è¡Œåç»­çš„å¤„ç†ï¼Œ
 int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
 {
 
@@ -115,12 +115,12 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
     //
     for (;;)
     {
-        //½ÓÊÕÒ»¸öÖ¡Í·,³¤¶È±ØÈ»ÊÇLEN_OF_APPFRAME_HEAD,
+        //æ¥æ”¶ä¸€ä¸ªå¸§å¤´,é•¿åº¦å¿…ç„¶æ˜¯LEN_OF_APPFRAME_HEAD,
         socket_ret  = zulu_stream_.recv_n((void *)(tibetan_recv_appframe_),
                                           Zerg_App_Frame::LEN_OF_APPFRAME_HEAD,
                                           time_wait);
 
-        //ret == 0µÄÇé¿öÏÂÒ»°ãÊÇÁ´½Ó±»¶Ï¿ª
+        //ret == 0çš„æƒ…å†µä¸‹ä¸€èˆ¬æ˜¯é“¾æ¥è¢«æ–­å¼€
         if (socket_ret == 0 )
         {
             ZCE_LOG(RS_INFO, "[framework] Link is disconnect recv ret =%d, error[%u|%s].",
@@ -129,10 +129,10 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
                     strerror(zce::last_error()));
             return SOAR_RET::ERROR_ZULU_LINK_DISCONNECT;
         }
-        //Ğ¡ÓÚ0Ò»°ã±íÊ¾´íÎó,¶ÔÓÚ×èÈû£¬Õâ¶ùÒ²±íÊ¾Ò»¸ö´íÎó,ÎÒ¸øÁËÄãµÈ´ıÊ±¼ä×÷ÎªÑ¡Ôñ
+        //å°äº0ä¸€èˆ¬è¡¨ç¤ºé”™è¯¯,å¯¹äºé˜»å¡ï¼Œè¿™å„¿ä¹Ÿè¡¨ç¤ºä¸€ä¸ªé”™è¯¯,æˆ‘ç»™äº†ä½ ç­‰å¾…æ—¶é—´ä½œä¸ºé€‰æ‹©
         else if (socket_ret < 0)
         {
-            //Èç¹û´íÎóÊÇĞÅºÅµ¼ÖÂµÄÖØÈë
+            //å¦‚æœé”™è¯¯æ˜¯ä¿¡å·å¯¼è‡´çš„é‡å…¥
             int last_error =  zce::last_error();
 
             ZCE_LOG(RS_ERROR, "[framework] RECV Zerg_App_Frame head error or time out. Ret:%d, error[%u|%s].",
@@ -140,7 +140,7 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
                     last_error,
                     strerror(last_error));
 
-            //×èÈûµÄ´úÂë£¬¿ÉÄÜÓĞÕâ¸öÎÊÌâ
+            //é˜»å¡çš„ä»£ç ï¼Œå¯èƒ½æœ‰è¿™ä¸ªé—®é¢˜
             if ( EINTR == last_error )
             {
                 continue;
@@ -155,11 +155,11 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
         ZCE_ASSERT(test_frame_len_ > tibetan_recv_appframe_->frame_length_);
 #endif //#if defined _DEBUG || defined DEBUG
 
-        //±£´æ½ÓÊÕµ½µÄÊÂÎñID
+        //ä¿å­˜æ¥æ”¶åˆ°çš„äº‹åŠ¡ID
         recv_trans_id_ = tibetan_recv_appframe_->transaction_id_;
         backfill_trans_id_ = tibetan_recv_appframe_->backfill_trans_id_;
 
-        //Êı¾İ°üµÄ³¤¶È
+        //æ•°æ®åŒ…çš„é•¿åº¦
         data_len = tibetan_recv_appframe_->frame_length_ - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
 
         if (data_len < 0)
@@ -171,13 +171,13 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
             return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
         }
 
-        //Ö»´¦Àí°üÍ·ĞÅÏ¢
+        //åªå¤„ç†åŒ…å¤´ä¿¡æ¯
         if (data_len == 0)
         {
             break;
         }
 
-        //ÎªÁËcontinue£¬Õâ¸ö´úÂëÊÇ×èÈûµÄ
+        //ä¸ºäº†continueï¼Œè¿™ä¸ªä»£ç æ˜¯é˜»å¡çš„
         for (;;)
         {
             //
@@ -185,10 +185,10 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
                                               data_len,
                                               time_wait);
 
-            //¶ÔÓÚ×èÈû£¬Õâ¶ùÒ²±íÊ¾Ò»¸ö´íÎó
+            //å¯¹äºé˜»å¡ï¼Œè¿™å„¿ä¹Ÿè¡¨ç¤ºä¸€ä¸ªé”™è¯¯
             if (socket_ret < 0)
             {
-                //Èç¹û´íÎóÊÇĞÅºÅµ¼ÖÂµÄÖØÈë
+                //å¦‚æœé”™è¯¯æ˜¯ä¿¡å·å¯¼è‡´çš„é‡å…¥
                 int last_error = zce::last_error();
                 ZCE_LOG(RS_ERROR, "[framework] RECV Zerg_App_Frame body data error. Ret:%d, error[%u|%s].",
                         socket_ret,
@@ -223,11 +223,11 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
                 return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
             }
 
-            //Ìø³öÑ­»·
+            //è·³å‡ºå¾ªç¯
             break;
         }
 
-        //Ìø³öÑ­»·
+        //è·³å‡ºå¾ªç¯
         break;
     }
 
@@ -235,13 +235,13 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
             tibetan_recv_appframe_->frame_command_,
             tibetan_recv_appframe_->frame_length_);
 
-    //Èç¹ûÊÇ¶¯Ì¬·ÖÅäµÄtibetan_send_service_£¬ÊÕµ½ºóÖØĞÂÌîĞ´Ò»ÏÂ£¬Ğ¡³æ»á·ÖÅäÒ»¸ö
+    //å¦‚æœæ˜¯åŠ¨æ€åˆ†é…çš„tibetan_send_service_ï¼Œæ”¶åˆ°åé‡æ–°å¡«å†™ä¸€ä¸‹ï¼Œå°è™«ä¼šåˆ†é…ä¸€ä¸ª
     if ( SERVICES_ID::DYNAMIC_ALLOC_SERVICES_ID == tibetan_send_service_.services_id_ )
     {
         tibetan_send_service_.services_id_ = tibetan_recv_appframe_->recv_service_.services_id_;
     }
 
-    //Ô­À´³öÏÖ¹ı²»ÊÇ×Ô¼ºµÄÊı¾İ·µ»Ø»ØÀ´µÄÊÂÇé£¬¼Ó¸öÈÕÖ¾Êä³ö
+    //åŸæ¥å‡ºç°è¿‡ä¸æ˜¯è‡ªå·±çš„æ•°æ®è¿”å›å›æ¥çš„äº‹æƒ…ï¼ŒåŠ ä¸ªæ—¥å¿—è¾“å‡º
     if (tibetan_send_service_ != tibetan_recv_appframe_->recv_service_)
     {
         ZCE_LOG(RS_ERROR, "[framework] zulu recv a error or unexpect frame,cmd %u. snd svc id [%u|%u] recv svc id[%u|%u].",
@@ -257,14 +257,14 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
     return 0;
 }
 
-//·¢ËÍtibetan_send_appframe_³öÈ¥£¬
+//å‘é€tibetan_send_appframe_å‡ºå»ï¼Œ
 int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
 {
     tibetan_send_appframe_->send_service_ = tibetan_send_service_;
     tibetan_send_appframe_->recv_service_ = tibetan_recv_service_;
     tibetan_send_appframe_->proxy_service_ = tibetan_proxy_service_;
 
-    //±£Ö¤ÊÂÎñID²»ÊÇ0
+    //ä¿è¯äº‹åŠ¡IDä¸æ˜¯0
     ++trans_id_builder_;
 
     if (++trans_id_builder_ == 0)
@@ -277,7 +277,7 @@ int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
     int len = tibetan_send_appframe_->frame_length_;
     unsigned int cmd = tibetan_send_appframe_->frame_command_;
 
-    //×èÈû·¢ËÍËùÓĞµÄÊı¾İ
+    //é˜»å¡å‘é€æ‰€æœ‰çš„æ•°æ®
     tibetan_send_appframe_->framehead_encode();
 
     //
@@ -297,7 +297,7 @@ int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
     return 0;
 }
 
-//½ÓÊÕÒ»¸öÊı¾İ°ü£¬µÃµ½ÃüÁî×Ö£¬Äã¿ÉÒÔµ÷ÓÃget_recv_appframe½øĞĞºóĞøµÄ´¦Àí£¬
+//æ¥æ”¶ä¸€ä¸ªæ•°æ®åŒ…ï¼Œå¾—åˆ°å‘½ä»¤å­—ï¼Œä½ å¯ä»¥è°ƒç”¨get_recv_appframeè¿›è¡Œåç»­çš„å¤„ç†ï¼Œ
 int Zulu_SendRecv_Package::receive_svc_package(unsigned int &recv_cmd,
                                                ZCE_Time_Value *time_out)
 {
@@ -312,13 +312,13 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int &recv_cmd,
         return ret;
     }
 
-    //½ÓÊÕµÄÃüÁî
+    //æ¥æ”¶çš„å‘½ä»¤
     recv_cmd = tibetan_recv_appframe_->frame_command_;
 
     return 0;
 }
 
-//È¡µÃ±¾µØµÄµØÖ·ĞÅÏ¢
+//å–å¾—æœ¬åœ°çš„åœ°å€ä¿¡æ¯
 int Zulu_SendRecv_Package::getsockname (ZCE_Sockaddr *addr)  const
 {
     return zulu_stream_.getsockname(addr);

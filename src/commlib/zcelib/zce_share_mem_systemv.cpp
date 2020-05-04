@@ -9,9 +9,9 @@
 #include "zce_log_logging.h"
 #include "zce_share_mem_systemv.h"
 
-//ÎÒÏÖÔÚÓĞµãÀí½â´ó¼ÒÎªÊ²Ã´Ï²»¶ÓÃSystem VµÄ¹±Ï×ÄÚ´æÁË£¬¼òµ¥¡£ÒòÎªÃ»ÓĞÎÄ¼şÓ³Éä£¬ËùÒÔÆäÊµËûÉÙÁËºÜ¶à²ÎÊı
+//æˆ‘ç°åœ¨æœ‰ç‚¹ç†è§£å¤§å®¶ä¸ºä»€ä¹ˆå–œæ¬¢ç”¨System Vçš„è´¡çŒ®å†…å­˜äº†ï¼Œç®€å•ã€‚å› ä¸ºæ²¡æœ‰æ–‡ä»¶æ˜ å°„ï¼Œæ‰€ä»¥å…¶å®ä»–å°‘äº†å¾ˆå¤šå‚æ•°
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_ShareMem_SystemV::ZCE_ShareMem_SystemV():
     sysv_key_(0),
     sysv_shmid_(ZCE_INVALID_HANDLE),
@@ -28,14 +28,14 @@ ZCE_ShareMem_SystemV::~ZCE_ShareMem_SystemV()
     }
 }
 
-//´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä
+//æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„
 int ZCE_ShareMem_SystemV::open(key_t sysv_key,
                                std::size_t shm_size,
                                int shmget_flg,
                                int shmat_flg,
                                const void *want_address)
 {
-    //±ÜÃâÖØÈëµ÷ÓÃopenº¯Êı£¬Èç¹û³öÏÖ¶ÏÑÔ±íÊ¾¶à´Îµ÷ÓÃopen,
+    //é¿å…é‡å…¥è°ƒç”¨openå‡½æ•°ï¼Œå¦‚æœå‡ºç°æ–­è¨€è¡¨ç¤ºå¤šæ¬¡è°ƒç”¨open,
     ZCE_ASSERT(NULL == shm_addr_);
     ZCE_ASSERT(ZCE_INVALID_HANDLE == sysv_shmid_);
 
@@ -61,7 +61,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
     return 0;
 }
 
-//´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä, ¼òµ¥
+//æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„, ç®€å•
 int ZCE_ShareMem_SystemV::open(key_t sysv_key,
                                std::size_t shm_size,
                                bool fail_if_exist,
@@ -72,7 +72,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
     int shmget_flg = 0;
     int shmat_flg = 0;
 
-    //Èç¹ûÊÇÖ»¶Á·½Ê½´ò¿ª¹²ÏíÄÚ´æ
+    //å¦‚æœæ˜¯åªè¯»æ–¹å¼æ‰“å¼€å…±äº«å†…å­˜
     if (read_only)
     {
         shmget_flg = SHM_R;
@@ -83,7 +83,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
         shmget_flg = SHM_R | SHM_W;
     }
 
-    //È·¶¨´ò¿ª·½Ê½£¬
+    //ç¡®å®šæ‰“å¼€æ–¹å¼ï¼Œ
     shmget_flg |= IPC_CREAT;
 
     if (fail_if_exist)
@@ -91,7 +91,7 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
         shmget_flg |= IPC_EXCL;
     }
 
-    //Èç¹ûÓĞÏ£ÍûÉèÖÃµÄµØÖ·£¬
+    //å¦‚æœæœ‰å¸Œæœ›è®¾ç½®çš„åœ°å€ï¼Œ
     if (want_address)
     {
         shmat_flg |= SHM_RND;
@@ -106,10 +106,10 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
 
 }
 
-//¹Ø±ÕÎÄ¼ş
+//å…³é—­æ–‡ä»¶
 int ZCE_ShareMem_SystemV::close()
 {
-    //¶ÏÑÔ±£Ö¤²»³öÏÖÃ»ÓĞopen¾Íµ÷ÓÃcloseµÄÇé¿ö
+    //æ–­è¨€ä¿è¯ä¸å‡ºç°æ²¡æœ‰openå°±è°ƒç”¨closeçš„æƒ…å†µ
     ZCE_ASSERT(shm_addr_ != NULL );
     ZCE_ASSERT(sysv_shmid_ != ZCE_INVALID_HANDLE);
 
@@ -127,13 +127,13 @@ int ZCE_ShareMem_SystemV::close()
     return 0;
 }
 
-//É¾³ıÓ³ÉäµÄÎÄ¼ş£¬µ±È»ÕıÔÚÓ³ÉäµÄÊ±ºò²»ÄÜÉ¾³ı
+//åˆ é™¤æ˜ å°„çš„æ–‡ä»¶ï¼Œå½“ç„¶æ­£åœ¨æ˜ å°„çš„æ—¶å€™ä¸èƒ½åˆ é™¤
 int ZCE_ShareMem_SystemV::remove()
 {
     return zce::shmctl(sysv_shmid_, IPC_RMID, NULL);
 }
 
-//·µ»ØÓ³ÉäµÄÄÚ´æµØÖ·
+//è¿”å›æ˜ å°„çš„å†…å­˜åœ°å€
 void *ZCE_ShareMem_SystemV::addr()
 {
     return shm_addr_;

@@ -4,7 +4,7 @@
 * @filename   zce_thread_bus_pipe.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012Äê9ÔÂ18ÈÕÍíÉÏ£¬ÖĞ¹úÈËÃñ¿¹ÈÕ81ÖÜÄê¼ÍÄîÈÕ£¬81Äê
+* @date       2012å¹´9æœˆ18æ—¥æ™šä¸Šï¼Œä¸­å›½äººæ°‘æŠ—æ—¥81å‘¨å¹´çºªå¿µæ—¥ï¼Œ81å¹´
 * @brief
 *
 *
@@ -14,24 +14,24 @@
 *
 * @note
 *
-* à¸¡¡ÄãÎÒö®ÑÛ¿¹Õ½¶şÊ®Äê¡¡ÊÀ½çÔõ±ä¡¡ÎÒ´ğÓ¦ÄãÄÇÒ»µã¡¡²»»á±ä
+* å–”ã€€ä½ æˆ‘éœçœ¼æŠ—æˆ˜äºŒåå¹´ã€€ä¸–ç•Œæ€å˜ã€€æˆ‘ç­”åº”ä½ é‚£ä¸€ç‚¹ã€€ä¸ä¼šå˜
 *
-* µ±Ìì¿ÕÊÖ¿Õ±ÛÎÒÃÇ¾ÍÉÏ½Ö¡¡Ã»Ê²Ã´ÉùÊÆºÆ´ó
-* µ«±»²»°²Ñø´ó¡¡²»×ãÑø´ó¡¡ÄÄÀïÅÂ±íÌ¬
-* µ±ÖĞÒ»Æğ¾­¹ıÁËÊ±´úÍß½â¡¡Ê®´óÖ´Î»ÔÙÊ®´ó
-* Â·ÉÏ·ç¼±Óê´ó¡¡Ò»ÆğÏÅ´ó¡¡Ìı¹ßÁË¾¯½ä
+* å½“å¤©ç©ºæ‰‹ç©ºè‡‚æˆ‘ä»¬å°±ä¸Šè¡—ã€€æ²¡ä»€ä¹ˆå£°åŠ¿æµ©å¤§
+* ä½†è¢«ä¸å®‰å…»å¤§ã€€ä¸è¶³å…»å¤§ã€€å“ªé‡Œæ€•è¡¨æ€
+* å½“ä¸­ä¸€èµ·ç»è¿‡äº†æ—¶ä»£ç“¦è§£ã€€åå¤§æ‰§ä½å†åå¤§
+* è·¯ä¸Šé£æ€¥é›¨å¤§ã€€ä¸€èµ·å“å¤§ã€€å¬æƒ¯äº†è­¦æˆ’
 *
-* Ó¦¸ÃÕäÏ§µÄ¡¡¼´Ê¹ÎşÉüÁË¡¡¼¤ÆğµÄ»ğ»¨¡¡ÈÔÈ»ÕÕÒ«
+* åº”è¯¥çæƒœçš„ã€€å³ä½¿ç‰ºç‰²äº†ã€€æ¿€èµ·çš„ç«èŠ±ã€€ä»ç„¶ç…§è€€
 
-* ¼¸ÏìÇ¹»ğÇÃÆÆÁË³ÁÄ¬ÁìÍÁ¡¡Ê£ÏÂÉÕ½¹ÁËÎ¶µÀ
-* ÏÖÔÚÉÙµã·ßÅ­¡¡¶àĞ©ºñµÀ¡¡Å¼¶ûÒ²ºÜÔê
-* ²»¹ÜÕâÖÖÕùŞÖÓĞĞÍ»òÀÏÌ×¡¡Î´×öºÃµÄ¼ÌĞø×ö
-* »î×Å±ØĞë¸ïÃü¡¡ĞÄ¸ßÆø°Á¡¡ÄÄÀïÈ¥²»µ½
+* å‡ å“æªç«æ•²ç ´äº†æ²‰é»˜é¢†åœŸã€€å‰©ä¸‹çƒ§ç„¦äº†å‘³é“
+* ç°åœ¨å°‘ç‚¹æ„¤æ€’ã€€å¤šäº›åšé“ã€€å¶å°”ä¹Ÿå¾ˆèº
+* ä¸ç®¡è¿™ç§äº‰æ‹—æœ‰å‹æˆ–è€å¥—ã€€æœªåšå¥½çš„ç»§ç»­åš
+* æ´»ç€å¿…é¡»é©å‘½ã€€å¿ƒé«˜æ°”å‚²ã€€å“ªé‡Œå»ä¸åˆ°
 
-* ËûËä×ßµÃÔç¡¡ËûÇà´º²»ÀÏ¡¡»ÒÉ«µÄ¹ì¼£¡¡Ä¥³ÉÑªÂ·
+* ä»–è™½èµ°å¾—æ—©ã€€ä»–é’æ˜¥ä¸è€ã€€ç°è‰²çš„è½¨è¿¹ã€€ç£¨æˆè¡€è·¯
 
-* à¸¡¡ÄãÎÒö®ÑÛ¿¹Õ½¶şÊ®Äê¡¡ÊÀ½çÔõ±ä¡¡ÓÀÔ¶ÆóÄãÕâÒ»±ß
-* à¸¡¡ÄÄÅÂÔÙÈ¥¿¹Õ½¶şÊ®Äê¡¡È¥µ½¶àÔ¶¡¡ÎÒÒ²Ãú¼ÇÎÒÆğµã¡¡²»»á±ä
+* å–”ã€€ä½ æˆ‘éœçœ¼æŠ—æˆ˜äºŒåå¹´ã€€ä¸–ç•Œæ€å˜ã€€æ°¸è¿œä¼ä½ è¿™ä¸€è¾¹
+* å–”ã€€å“ªæ€•å†å»æŠ—æˆ˜äºŒåå¹´ã€€å»åˆ°å¤šè¿œã€€æˆ‘ä¹Ÿé“­è®°æˆ‘èµ·ç‚¹ã€€ä¸ä¼šå˜
 */
 
 #ifndef ZCE_LIB_THREAD_BUS_PIPE_H_
@@ -51,49 +51,49 @@
 namespace zce::lockfree
 {
 class dequechunk_node;
-class shm_dequechunk;
+class deque_chunk;
 };
 
-//Ïß³ÌÊ¹ÓÃµÄË«ÏòBUS¹ÜµÀ£¬
-//²»ÒªÖ±½ÓÊ¹ÓÃÕâ¸öÀà£¬Ê¹ÓÃÏÂÃæµÄÁ½¸ötypedef
+//çº¿ç¨‹ä½¿ç”¨çš„åŒå‘BUSç®¡é“ï¼Œ
+//ä¸è¦ç›´æ¥ä½¿ç”¨è¿™ä¸ªç±»ï¼Œä½¿ç”¨ä¸‹é¢çš„ä¸¤ä¸ªtypedef
 template <typename ZCE_LOCK>
 class ZCE_Thread_Bus_Pipe : public ZCE_NON_Copyable
 {
 
 protected:
 
-    //ÄÚ²¿µÄÃ¶¾Ù£¬PIPEµÄ±àºÅ£¬Íâ²¿²»ÓÃÁË½â
+    //å†…éƒ¨çš„æšä¸¾ï¼ŒPIPEçš„ç¼–å·ï¼Œå¤–éƒ¨ä¸ç”¨äº†è§£
     enum ZCE_BUS_PIPE_ID
     {
         THR_RECV_PIPE_ID     = 0,
         THR_SEND_PIPE_ID     = 1,
 
-        //³¤¶È±êÊ¾,²»ÒªÓÃÓÚ×öº¯Êı²ÎÊı,·ñÔò»áÓĞÒç³ö
+        //é•¿åº¦æ ‡ç¤º,ä¸è¦ç”¨äºåšå‡½æ•°å‚æ•°,å¦åˆ™ä¼šæœ‰æº¢å‡º
         THR_NUM_OF_PIPE      = 2,
     };
 
 protected:
 
-    //¹ÜµÀÓÃµÄÄÚ´æ¿Õ¼äµØÖ·
+    //ç®¡é“ç”¨çš„å†…å­˜ç©ºé—´åœ°å€
     char                      *pipe_buffer_;
 
-    //¹ÜµÀÅäÖÃ³¤¶È,2¸ö¹ÜµÀµÄÅäÖÃ³¤¶È,
+    //ç®¡é“é…ç½®é•¿åº¦,2ä¸ªç®¡é“çš„é…ç½®é•¿åº¦,
     size_t                     size_pipe_[THR_NUM_OF_PIPE];
-    //·¢ËÍ¹ÜµÀµÄÊµ¼Ê¿Õ¼ä³¤¶È
+    //å‘é€ç®¡é“çš„å®é™…ç©ºé—´é•¿åº¦
     size_t                     size_room_[THR_NUM_OF_PIPE];
 
-    //N¸ö¹ÜµÀ,±ÈÈç½ÓÊÕ¹ÜµÀ,·¢ËÍ¹ÜµÀ¡­¡­,×î´óMAX_NUMBER_OF_PIPE¸ö
-    zce::lockfree::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
+    //Nä¸ªç®¡é“,æ¯”å¦‚æ¥æ”¶ç®¡é“,å‘é€ç®¡é“â€¦â€¦,æœ€å¤§MAX_NUMBER_OF_PIPEä¸ª
+    zce::lockfree::deque_chunk  *bus_pipe_[THR_NUM_OF_PIPE];
 
-    //Ëø
+    //é”
     ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
 
 protected:
-    //instanceº¯ÊıÊ¹ÓÃµÄ¶«Î÷
+    //instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
     static ZCE_Thread_Bus_Pipe *instance_;
 
 public:
-    //¹¹Ôìº¯Êı,ÔÊĞíÄãÓĞ¶à¸öÊµÀıµÄ¿ÉÄÜ£¬²»×ö±£»¤
+    //æ„é€ å‡½æ•°,å…è®¸ä½ æœ‰å¤šä¸ªå®ä¾‹çš„å¯èƒ½ï¼Œä¸åšä¿æŠ¤
     ZCE_Thread_Bus_Pipe():
         pipe_buffer_(NULL)
     {
@@ -105,7 +105,7 @@ public:
         }
 
     }
-    //Îö¹ºº¯Êı
+    //æè´­å‡½æ•°
     ~ZCE_Thread_Bus_Pipe()
     {
 
@@ -114,7 +114,7 @@ public:
 public:
 
     //-----------------------------------------------------------------
-    //³õÊ¼»¯²¿·Ö²ÎÊı,ÔÊĞí·¢ËÍºÍ½ÓÊÕµÄ³¤¶È²»Ò»ÖÂ
+    //åˆå§‹åŒ–éƒ¨åˆ†å‚æ•°,å…è®¸å‘é€å’Œæ¥æ”¶çš„é•¿åº¦ä¸ä¸€è‡´
     int initialize(size_t size_recv_pipe,
                    size_t size_send_pipe,
                    size_t max_frame_len)
@@ -125,8 +125,8 @@ public:
         size_pipe_[THR_RECV_PIPE_ID] = size_recv_pipe;
         size_pipe_[THR_SEND_PIPE_ID] = size_send_pipe;
 
-        size_room_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::getallocsize(size_pipe_[THR_RECV_PIPE_ID]);
-        size_room_[THR_SEND_PIPE_ID] = zce::lockfree::shm_dequechunk::getallocsize(size_pipe_[THR_SEND_PIPE_ID]);
+        size_room_[THR_RECV_PIPE_ID] = zce::lockfree::deque_chunk::getallocsize(size_pipe_[THR_RECV_PIPE_ID]);
+        size_room_[THR_SEND_PIPE_ID] = zce::lockfree::deque_chunk::getallocsize(size_pipe_[THR_SEND_PIPE_ID]);
 
         //
         const size_t FIXED_INTERVALS = 16;
@@ -134,18 +134,18 @@ public:
 
         pipe_buffer_ = new char [sz_malloc ];
 
-        //³õÊ¼»¯ÄÚ´æ
-        bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
+        //åˆå§‹åŒ–å†…å­˜
+        bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::deque_chunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
                                                                       max_frame_len,
                                                                       pipe_buffer_,
                                                                       false);
 
-        bus_pipe_[THR_SEND_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
+        bus_pipe_[THR_SEND_PIPE_ID] = zce::lockfree::deque_chunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
                                                                       max_frame_len,
                                                                       pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
                                                                       false);
 
-        //¹ÜµÀ´´½¨×Ô¼ºÒ²»á¼ì²éÊÇ·ñÄÜ»Ö¸´
+        //ç®¡é“åˆ›å»ºè‡ªå·±ä¹Ÿä¼šæ£€æŸ¥æ˜¯å¦èƒ½æ¢å¤
         if ( NULL == bus_pipe_[THR_RECV_PIPE_ID]  || NULL == bus_pipe_[THR_SEND_PIPE_ID])
         {
             ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Thread_Bus_Pipe::initialize pipe fail recv[%p]size[%u],send[%p],size[%u].",
@@ -163,16 +163,16 @@ public:
 
 
     //-----------------------------------------------------------------
-    //×¢Òâ
+    //æ³¨æ„
 
-    //´ÓRECV¹ÜµÀ¶ÁÈ¡Êı¾İ£¬
+    //ä»RECVç®¡é“è¯»å–æ•°æ®ï¼Œ
     inline bool pop_front_recvpipe(zce::lockfree::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
     }
 
-    //ÏòRECV¹ÜµÀĞ´ÈëÊı¾İ
+    //å‘RECVç®¡é“å†™å…¥æ•°æ®
     inline bool push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
@@ -180,14 +180,14 @@ public:
     }
 
 
-    //´ÓSEND¹ÜµÀ¶ÁÈ¡Êı¾İ£¬
+    //ä»SENDç®¡é“è¯»å–æ•°æ®ï¼Œ
     inline bool pop_front_sendpipe(zce::lockfree::dequechunk_node *&node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
     }
 
-    //ÏòSEND¹ÜµÀĞ´ÈëÊı¾İ
+    //å‘SENDç®¡é“å†™å…¥æ•°æ®
     inline bool push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
@@ -195,7 +195,7 @@ public:
     }
 
 
-    //È¡Recv¹ÜµÀÍ·µÄÖ¡³¤
+    //å–Recvç®¡é“å¤´çš„å¸§é•¿
     inline int get_frontsize_recvpipe(size_t &note_size)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
@@ -209,7 +209,7 @@ public:
         return 0;
     }
 
-    //È¡Send¹ÜµÀÍ·µÄÖ¡³¤
+    //å–Sendç®¡é“å¤´çš„å¸§é•¿
     inline int get_frontsize_sendpipe(size_t &note_size)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
@@ -227,8 +227,8 @@ public:
 
 public:
 
-    //ÎªÁËSingleTonÀà×¼±¸
-    //µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
+    //ä¸ºäº†SingleTonç±»å‡†å¤‡
+    //å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
     ZCE_Thread_Bus_Pipe *instance()
     {
         if (instance_ == NULL)
@@ -239,7 +239,7 @@ public:
         return instance_;
     }
 
-    //¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
+    //èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
     void instance(ZCE_Thread_Bus_Pipe *pinstatnce)
     {
         clean_instance();
@@ -247,7 +247,7 @@ public:
         return;
     }
 
-    //Çå³ıµ¥×ÓÊµÀı
+    //æ¸…é™¤å•å­å®ä¾‹
     void clean_instance()
     {
         if (instance_)
@@ -265,11 +265,11 @@ public:
 
 
 //--------------------------------------------------------------------------------------
-//ÓÃÓÚÒ»¸öÏß³Ì¶Á£¬Ò»¸öÏß³ÌĞ´µÄBUS£¬ËäÈ»½ĞST£¬µ«ÆäÊµ»¹ÊÇÔÚÁ½¸öÏß³Ì¼äÓĞĞ§£¬
-//ÓÃÓÚÒ»Ğ©¶ÔÓÚËÙ¶ÈÓĞ¼«ÖÂ×·ÇóµÄµØ·½
+//ç”¨äºä¸€ä¸ªçº¿ç¨‹è¯»ï¼Œä¸€ä¸ªçº¿ç¨‹å†™çš„BUSï¼Œè™½ç„¶å«STï¼Œä½†å…¶å®è¿˜æ˜¯åœ¨ä¸¤ä¸ªçº¿ç¨‹é—´æœ‰æ•ˆï¼Œ
+//ç”¨äºä¸€äº›å¯¹äºé€Ÿåº¦æœ‰æè‡´è¿½æ±‚çš„åœ°æ–¹
 typedef ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>   ZCE_Thread_ST_Bus_Pipe;
 
-//¼ÓËøµÄBUS,¿ÉÒÔÓĞ¶àÈË¾ºÕù
+//åŠ é”çš„BUS,å¯ä»¥æœ‰å¤šäººç«äº‰
 typedef ZCE_Thread_Bus_Pipe<ZCE_Thread_Light_Mutex> ZCE_Thread_MT_Bus_Pipe;
 
 

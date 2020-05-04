@@ -3,9 +3,9 @@
 * @filename   soar_sndrcv_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê11ÔÂ30ÈÕ
-* @brief      ¶ÔÓ¦ZERGµÄ£¬²âÊÔ£¬»òÕß¿Í»§¶Ë½Ó¿Ú£¬
-*             ÓÃÓÚ½«TCP£¬UDPµÄ·¢ËÍ´úÂë²¿·Ö×öÒ»¸öÕûºÏ£¬¸ã³öÒ»¸öbaseÀà£¬´¦ÀíÒ»Ğ©¹²ÓĞÊÂÇé
+* @date       2011å¹´11æœˆ30æ—¥
+* @brief      å¯¹åº”ZERGçš„ï¼Œæµ‹è¯•ï¼Œæˆ–è€…å®¢æˆ·ç«¯æ¥å£ï¼Œ
+*             ç”¨äºå°†TCPï¼ŒUDPçš„å‘é€ä»£ç éƒ¨åˆ†åšä¸€ä¸ªæ•´åˆï¼Œæå‡ºä¸€ä¸ªbaseç±»ï¼Œå¤„ç†ä¸€äº›å…±æœ‰äº‹æƒ…
 *
 * @details
 *
@@ -20,7 +20,7 @@
 #define SOARING_LIB_SND_RCV_BASE_H_
 
 /******************************************************************************************
-class SendRecv_Package_Base base Àà
+class SendRecv_Package_Base base ç±»
 ******************************************************************************************/
 class SendRecv_Package_Base
 {
@@ -32,50 +32,50 @@ public:
 
 public:
 
-    //ÉèÖÃÏàÓ¦µÄSVC INFO,
+    //è®¾ç½®ç›¸åº”çš„SVC INFO,
     void set_services_id(const SERVICES_ID &recv_service,
                          const SERVICES_ID &send_service,
                          const SERVICES_ID &proxy_service,
                          size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
 
-    //È¡µÃÊÕµ½µÄÊÂÎñID
+    //å–å¾—æ”¶åˆ°çš„äº‹åŠ¡ID
     void get_recv_transid(unsigned int &trans_id);
 
     unsigned int get_send_transid();
     unsigned int get_backfill_transid();
 
-    //È¡µÃ²âÊÔµÄAPPFRAME
+    //å–å¾—æµ‹è¯•çš„APPFRAME
     Zerg_App_Frame *get_send_appframe();
-    //È¡µÃ½ÓÊÕµÄAPPFRAME
+    //å–å¾—æ¥æ”¶çš„APPFRAME
     Zerg_App_Frame *get_recv_appframe();
 
 protected:
 
-    //½ÓÊÜÕßµÄSERVICES_ID
+    //æ¥å—è€…çš„SERVICES_ID
     SERVICES_ID              tibetan_recv_service_;
-    //·¢ËÍÕßµÄtibetan_send_service_£¬
+    //å‘é€è€…çš„tibetan_send_service_ï¼Œ
     SERVICES_ID              tibetan_send_service_;
-    //´úÀí·şÎñÆ÷µÄĞÅÏ¢
+    //ä»£ç†æœåŠ¡å™¨çš„ä¿¡æ¯
     SERVICES_ID              tibetan_proxy_service_;
 
-    //»º³åÇøµÄÖ¡µÄ³¤¶È,Äã¿ÉÒÔÉèÖÃ½ÓÊÜÊı¾İµÄ´óĞ¡£¬Èç¹û¶¼ÊÇ64K,Ì«¶à¿ÉÄÜÓ°ÏìÄã×îºóµÄ×ÜÈİÁ¿,µ«Ä¿Ç°¸Ğ¾õÎÊÌâ²»´ó
+    //ç¼“å†²åŒºçš„å¸§çš„é•¿åº¦,ä½ å¯ä»¥è®¾ç½®æ¥å—æ•°æ®çš„å¤§å°ï¼Œå¦‚æœéƒ½æ˜¯64K,å¤ªå¤šå¯èƒ½å½±å“ä½ æœ€åçš„æ€»å®¹é‡,ä½†ç›®å‰æ„Ÿè§‰é—®é¢˜ä¸å¤§
     size_t                    test_frame_len_;
 
-    //ÊÂÎñID·¢ÉúÆ÷£¬¾ÍÊÇÒ»¸ö¼ÆÊıÆ÷
+    //äº‹åŠ¡IDå‘ç”Ÿå™¨ï¼Œå°±æ˜¯ä¸€ä¸ªè®¡æ•°å™¨
     unsigned int              trans_id_builder_;
 
-    //ÎªÁË¶àÏß³Ì½«Ô­À´µÄtest_appframe_¸ÄÎªÁË2¸ö£¬Ò»¸ö½ÓÊÜÒ»¸ö·¢ËÍ£¬ÕâÑùÔÚ¶àÏß³Ì´¦ÀíµÄÇé¿öÏÂ£¬
-    //¾Í²»»á³öÏÖ¹²ÓÃÒ»¸öBUFFERµÄÊÂÇé
+    //ä¸ºäº†å¤šçº¿ç¨‹å°†åŸæ¥çš„test_appframe_æ”¹ä¸ºäº†2ä¸ªï¼Œä¸€ä¸ªæ¥å—ä¸€ä¸ªå‘é€ï¼Œè¿™æ ·åœ¨å¤šçº¿ç¨‹å¤„ç†çš„æƒ…å†µä¸‹ï¼Œ
+    //å°±ä¸ä¼šå‡ºç°å…±ç”¨ä¸€ä¸ªBUFFERçš„äº‹æƒ…
 
-    //·¢ËÍ»º³åÇøµÄÖ¡
+    //å‘é€ç¼“å†²åŒºçš„å¸§
     Zerg_App_Frame *tibetan_send_appframe_;
-    //½ÓÊÕ»º³åÇø
+    //æ¥æ”¶ç¼“å†²åŒº
     Zerg_App_Frame *tibetan_recv_appframe_;
 
-    //ÊÕµ½µÄÊÂÎñID
+    //æ”¶åˆ°çš„äº‹åŠ¡ID
     unsigned int              recv_trans_id_;
 
-    //»ØÌîµÄÊÂÎñID
+    //å›å¡«çš„äº‹åŠ¡ID
     unsigned int              backfill_trans_id_;
 
 };

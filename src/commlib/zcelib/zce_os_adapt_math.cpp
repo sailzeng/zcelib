@@ -16,7 +16,7 @@ uint32_t zce::gcd (uint32_t x, uint32_t y)
     return x;
 }
 
-//ÕÒµ½ÊäÈë²ÎÊın×î½ü(´óÓÚ)µÄÒ»¸öÖÊÊı£¬
+//æ‰¾åˆ°è¾“å…¥å‚æ•°næœ€è¿‘(å¤§äº)çš„ä¸€ä¸ªè´¨æ•°ï¼Œ
 size_t zce::nearest_prime(const size_t n)
 {
     size_t test_num = n;

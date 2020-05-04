@@ -5,7 +5,7 @@
 
 //==================================================================================================
 
-//Ò»Ğ©×Ö½ÚĞò½»»»µÄºê
+//ä¸€äº›å­—èŠ‚åºäº¤æ¢çš„å®
 //#if (_MSC_VER > 1300) && (defined(CPU_IA32) || defined(CPU_X64)) /* MS VC */
 //_MSC_VER > 1300  _byteswap_ushort,_byteswap_ulong,_byteswap_uint64
 //#if defined(__GNUC__) && (__GNUC__ >= 4) && (__GNUC__ > 4 || __GNUC_MINOR__ >= 3)
@@ -25,7 +25,7 @@
                               (((x) & 0x000000000000ff00ULL) << 40 ) | (((x) & 0x00000000000000ffULL) <<  56))
 #endif
 
-//¶¨ÒåÒ»×éntol ntos,nothllµÈ£¬Ö÷ÒªÎÊÌâÊÇ64µÄ×ª»»£¬²»ÊÇËùÓĞÏµÍ³¶¼ÓĞ£¬
+//å®šä¹‰ä¸€ç»„ntol ntos,nothllç­‰ï¼Œä¸»è¦é—®é¢˜æ˜¯64çš„è½¬æ¢ï¼Œä¸æ˜¯æ‰€æœ‰ç³»ç»Ÿéƒ½æœ‰ï¼Œ
 #if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN)
 # define ZCE_HTONS(x)  ZCE_SWAP_UINT16 (x)
 # define ZCE_NTOHS(x)  ZCE_SWAP_UINT16 (x)
@@ -43,112 +43,18 @@
 #endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
 
 
-//ÕâÑùĞ´ÊÇÎªÁË±ÜÃâBUS ERRORÎÊÌâ£¬µ«ÎÒ×Ô¼ºÒ²²»ÄÜ100%¿Ï¶¨Õâ¸ö·½·¨ÄÜ½â¾öBUS ERROR£¬
-//ÒòÎªÎÒÃ»ÓĞ»·¾³½øĞĞÏà¹ØµÄ²âÊÔ¡£
-//×¢Òâ#pragma pack(push, 1) ºÍ__attribute__ ((packed)) ÊÇÓĞÇø±ğµÄ£¬
-//ÒÔÏÂ²Î¿¼Ö® µÂÎÊ
-//Ç°Õß¸æËß±àÒëÆ÷½á¹¹Ìå»òÀàÄÚ²¿µÄ³ÉÔ±±äÁ¿Ïà¶ÔÓÚµÚÒ»¸ö±äÁ¿µÄµØÖ·µÄÆ«ÒÆÁ¿µÄ¶ÔÆë·½Ê½£¬
-//È±Ê¡Çé¿öÏÂ£¬±àÒëÆ÷°´ÕÕ×ÔÈ»±ß½ç¶ÔÆë£¬µ±±äÁ¿ËùĞèµÄ×ÔÈ»¶ÔÆë±ß½ç±Èn´ó Ê±£¬°´ÕÕn¶ÔÆë£¬
-//·ñÔò°´ÕÕ×ÔÈ»±ß½ç¶ÔÆë£»
-//ºóÕß¸æËß±àÒëÆ÷Ò»¸ö½á¹¹Ìå»òÕßÀà»òÕßÁªºÏ»òÕßÒ»¸öÀàĞÍµÄ±äÁ¿
-//(¶ÔÏó)·ÖÅäµØÖ·¿Õ¼äÊ±µÄµØÖ·¶ÔÆë·½Ê½¡£Ò²¾ÍÊÇËù£¬Èç¹û½«__attribute__((aligned(m)))
-//×÷ÓÃÓÚÒ»¸öÀàĞÍ£¬ÄÇÃ´¸ÃÀàĞÍµÄ±äÁ¿ÔÚ·ÖÅäµØÖ·¿Õ¼äÊ±£¬Æä´æ·ÅµÄµØÖ·Ò»¶¨°´ÕÕm×Ö½Ú¶ÔÆë
-//(m±Ø ĞëÊÇ2µÄÃİ´Î·½)¡£²¢ÇÒÆäÕ¼ÓÃµÄ¿Õ¼ä£¬¼´´óĞ¡,Ò²ÊÇmµÄÕûÊı±¶£¬ÒÔ±£Ö¤ÔÚÉêÇëÁ¬Ğø´æ´¢¿Õ¼äµÄÊ±ºò£¬
-//Ã¿Ò»¸öÔªËØµÄµØÖ·Ò²ÊÇ°´ÕÕm×Ö½Ú¶ÔÆë¡£ __attribute__((aligned(m)))Ò²¿ÉÒÔ×÷ÓÃÓÚÒ»¸öµ¥¶ÀµÄ±äÁ¿¡£
-//ÓÉÉÏ¿ÉÒÔ¿´³ö__attribute__((aligned(m)))µÄ¹¦ÄÜ¸üÈ«¡£
-
-
-
-
-
-///ÔÚGCC 4.8µÄ´¦ÀíÖĞ£¬Ğ´
-//unsigned int a = *(unsigned int *)(char_ptr);
-//»á³öÏÖ¸æ¾¯ dereferencing type-punned pointer will break strict-aliasing¡£
-//¶øÇÒÊ¹ÓÃ ZBYTE_TO_UINT32 Ò²ÎŞ·¨ÈÆ¿ª£¬Çë²Î¿¼ZRD_U32_FROM_BYTES½â¾öÀàËÆÎÊÌâ¡£
-//GCC ¶ÔÓÚ¶ÔÆä²ÉÈ¡ÁËÄ¬ÈÏÈÏÎª²»ÊÇ¶ÔÆëµÄ·½Ê½±àÒë£¬ËùÒÔĞ´
-//unsigned int a = *(unsigned int *)(char_ptr);
-//»¹ÓĞ¸æ¾¯´íÎó£¬·½·¨ÊÇ²ÉÓÃÏÂÃæµÄºê¹æ±Ü£¬
-//»òÕßÊ¹ÓÃ²ÎÊı -fstrict-aliasing ºÍ -Wstrict-aliasing ¿ÉÒÔÏû³ıµôÕâ¸öwarning¡£
-
-union ZU16_UNION
-{
-    char char_data_[2];
-    uint16_t value_;
-};
-union ZU32_UNION
-{
-    char char_data_[4];
-    uint32_t value_;
-};
-union ZU64_UNION
-{
-    char char_data_[8];
-    uint64_t value_;
-};
-union ZFLOAT_UNION
-{
-    char char_data_[4];
-    float value_;
-};
-union ZDOUBLE_UNION
-{
-    char char_data_[8];
-    double value_;
-};
-
-#define ZBYTE_TO_UINT16(rd_data,bytes_ptr) \
-    {\
-        ZU16_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        rd_data = __tmp_var_.value_; \
-    }
-#define ZBYTE_TO_UINT32(rd_data,bytes_ptr) \
-    {\
-        ZU32_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        rd_data = __tmp_var_.value_; \
-    }
-#define ZBYTE_TO_UINT64(rd_data,bytes_ptr) \
-    {\
-        ZU64_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        __tmp_var_.char_data_[4] = bytes_ptr[4];\
-        __tmp_var_.char_data_[5] = bytes_ptr[5];\
-        __tmp_var_.char_data_[6] = bytes_ptr[6];\
-        __tmp_var_.char_data_[7] = bytes_ptr[7];\
-        rd_data = __tmp_var_.value_; \
-    }
-#define ZBYTE_TO_FLOAT(rd_data,bytes_ptr)  \
-    {\
-        ZFLOAT_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        rd_data = __tmp_var_.value_; \
-    }
-#define ZBYTE_TO_DOUBLE(rd_data,bytes_ptr)  \
-    {\
-        ZDOUBLE_UNION __tmp_var_; \
-        __tmp_var_.char_data_[0] = bytes_ptr[0];\
-        __tmp_var_.char_data_[1] = bytes_ptr[1];\
-        __tmp_var_.char_data_[2] = bytes_ptr[2];\
-        __tmp_var_.char_data_[3] = bytes_ptr[3];\
-        __tmp_var_.char_data_[4] = bytes_ptr[4];\
-        __tmp_var_.char_data_[5] = bytes_ptr[5];\
-        __tmp_var_.char_data_[6] = bytes_ptr[6];\
-        __tmp_var_.char_data_[7] = bytes_ptr[7];\
-        rd_data = __tmp_var_.value_; \
-    }
-
-/*
+//è¿™æ ·å†™æ˜¯ä¸ºäº†é¿å…BUS ERRORé—®é¢˜ï¼Œä½†æˆ‘è‡ªå·±ä¹Ÿä¸èƒ½100%è‚¯å®šè¿™ä¸ªæ–¹æ³•èƒ½è§£å†³BUS ERRORï¼Œ
+//å› ä¸ºæˆ‘æ²¡æœ‰ç¯å¢ƒè¿›è¡Œç›¸å…³çš„æµ‹è¯•ã€‚
+//æ³¨æ„#pragma pack(push, 1) å’Œ__attribute__ ((packed)) æ˜¯æœ‰åŒºåˆ«çš„ï¼Œ
+//ä»¥ä¸‹å‚è€ƒä¹‹ å¾·é—®
+//å‰è€…å‘Šè¯‰ç¼–è¯‘å™¨ç»“æ„ä½“æˆ–ç±»å†…éƒ¨çš„æˆå‘˜å˜é‡ç›¸å¯¹äºç¬¬ä¸€ä¸ªå˜é‡çš„åœ°å€çš„åç§»é‡çš„å¯¹é½æ–¹å¼ï¼Œ
+//ç¼ºçœæƒ…å†µä¸‹ï¼Œç¼–è¯‘å™¨æŒ‰ç…§è‡ªç„¶è¾¹ç•Œå¯¹é½ï¼Œå½“å˜é‡æ‰€éœ€çš„è‡ªç„¶å¯¹é½è¾¹ç•Œæ¯”nå¤§ æ—¶ï¼ŒæŒ‰ç…§nå¯¹é½ï¼Œ
+//å¦åˆ™æŒ‰ç…§è‡ªç„¶è¾¹ç•Œå¯¹é½ï¼›åè€…å‘Šè¯‰ç¼–è¯‘å™¨ä¸€ä¸ªç»“æ„ä½“æˆ–è€…ç±»æˆ–è€…è”åˆæˆ–è€…ä¸€ä¸ªç±»å‹çš„å˜é‡
+//(å¯¹è±¡)åˆ†é…åœ°å€ç©ºé—´æ—¶çš„åœ°å€å¯¹é½æ–¹å¼ã€‚ä¹Ÿå°±æ˜¯æ‰€ï¼Œå¦‚æœå°†__attribute__((aligned(m)))
+//ä½œç”¨äºä¸€ä¸ªç±»å‹ï¼Œé‚£ä¹ˆè¯¥ç±»å‹çš„å˜é‡åœ¨åˆ†é…åœ°å€ç©ºé—´æ—¶ï¼Œå…¶å­˜æ”¾çš„åœ°å€ä¸€å®šæŒ‰ç…§må­—èŠ‚å¯¹é½
+//(må¿… é¡»æ˜¯2çš„å¹‚æ¬¡æ–¹)ã€‚å¹¶ä¸”å…¶å ç”¨çš„ç©ºé—´ï¼Œå³å¤§å°,ä¹Ÿæ˜¯mçš„æ•´æ•°å€ï¼Œä»¥ä¿è¯åœ¨ç”³è¯·è¿ç»­å­˜å‚¨ç©ºé—´çš„æ—¶å€™ï¼Œ
+//æ¯ä¸€ä¸ªå…ƒç´ çš„åœ°å€ä¹Ÿæ˜¯æŒ‰ç…§må­—èŠ‚å¯¹é½ã€‚ __attribute__((aligned(m)))ä¹Ÿå¯ä»¥ä½œç”¨äºä¸€ä¸ªå•ç‹¬çš„å˜é‡ã€‚
+//ç”±ä¸Šå¯ä»¥çœ‹å‡º__attribute__((aligned(m)))çš„åŠŸèƒ½æ›´å…¨ã€‚
 
 #if defined ZCE_OS_WINDOWS
 
@@ -178,7 +84,7 @@ struct ZDOUBLE_STRUCT
 #pragma pack(pop)
 
 #elif defined ZCE_OS_LINUX
-//__attribute__ ((packed)) ÔÚÕâ¶ùµÄÄ¿µÄÊÇÀûÓÃÆäÌØĞÔ±ÜÃâBUS ERROR´íÎó
+//__attribute__ ((packed)) åœ¨è¿™å„¿çš„ç›®çš„æ˜¯åˆ©ç”¨å…¶ç‰¹æ€§é¿å…BUS ERRORé”™è¯¯
 struct ZU16_STRUCT
 {
     uint16_t value_;
@@ -201,94 +107,110 @@ struct ZDOUBLE_STRUCT
 } __attribute__((packed));
 #endif
 
-///´ÓÒ»¸ö(char *)Ö¸ÕëÄÚ¶ÁÈ¡(Ò²¿ÉÒÔÓÃÓÚĞ´Èë)Ò»¸öuint16_t,or uint32_t or uint64_t
+
+
+///åœ¨GCC 4.8çš„å¤„ç†ä¸­ï¼Œå†™
+//unsigned int a = *(unsigned int *)(char_ptr);
+//ä¼šå‡ºç°å‘Šè­¦ dereferencing type-punned pointer will break strict-aliasingã€‚
+//è€Œä¸”ä½¿ç”¨ ZBYTE_TO_UINT32 ä¹Ÿæ— æ³•ç»•å¼€ï¼Œè¯·å‚è€ƒZRD_U32_FROM_BYTESè§£å†³ç±»ä¼¼é—®é¢˜ã€‚
+
+///ä»ä¸€ä¸ª(char *)æŒ‡é’ˆå†…è¯»å–(ä¹Ÿå¯ä»¥ç”¨äºå†™å…¥)ä¸€ä¸ªuint16_t,or uint32_t or uint64_t
+
 # define ZBYTE_TO_UINT16(ptr)  ((ZU16_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_UINT32(ptr)  ((ZU32_STRUCT *)(ptr))->value_
 # define ZBYTE_TO_UINT64(ptr)  ((ZU64_STRUCT *)(ptr))->value_
-//FLOAT ºÍ DOUBLEµÄ´¦Àí
-# define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
-# define ZBYTE_TO_DOUBLE(ptr)  ((ZDOUBLE_STRUCT *)(ptr))->value_
 
-///´ÓÒ»¸ö(char *)Ö¸ÕëÄÚ¶ÁÈ¡uint16_t,or uint32_t or uint64_t µÄÊı×éÄÚµÄary_indexµ¥Ôª£¬×¢ÒâÊı×éÏÂ±êÊÇÖµ¶ÔÓÚÕûĞÎµÄÏÂ±ê£¬(¶ø²»ÊÇptrµÄÏÂ±ê)
+///ä»ä¸€ä¸ª(char *)æŒ‡é’ˆå†…è¯»å–uint16_t,or uint32_t or uint64_t çš„æ•°ç»„å†…çš„ary_indexå•å…ƒï¼Œæ³¨æ„æ•°ç»„ä¸‹æ ‡æ˜¯å€¼å¯¹äºæ•´å½¢çš„ä¸‹æ ‡ï¼Œ(è€Œä¸æ˜¯ptrçš„ä¸‹æ ‡)
 # define ZINDEX_TO_UINT16(ptr,ary_index)  (((ZU16_STRUCT *)(ptr))+(ary_index))->value_
 # define ZINDEX_TO_UINT32(ptr,ary_index)  (((ZU32_STRUCT *)(ptr))+(ary_index))->value_
 # define ZINDEX_TO_UINT64(ptr,ary_index)  (((ZU64_STRUCT *)(ptr))+(ary_index))->value_
 
-///ÏòÒ»¸ö(char *)Ö¸ÕëÄÚĞ´ÈëÒ»¸öuint16_t,or uint32_t or uint64_t
+///å‘ä¸€ä¸ª(char *)æŒ‡é’ˆå†…å†™å…¥ä¸€ä¸ªuint16_t,or uint32_t or uint64_t
 # define ZUINT16_TO_BYTE(ptr,wr_data)  ((ZU16_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZUINT32_TO_BYTE(ptr,wr_data)  ((ZU32_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZUINT64_TO_BYTE(ptr,wr_data)  ((ZU64_STRUCT *)(ptr))->value_ = (wr_data)
 
+//å‘ä¸€ä¸ª(char *)æŒ‡é’ˆå†…å†™å…¥ä¸€ä¸ªuint16_t,or uint32_t or uint64_tçš„æ•°ç»„å†…éƒ¨çš„ary_indexå•å…ƒï¼Œæ³¨æ„æ•°ç»„ä¸‹æ ‡æ˜¯å€¼å¯¹äºæ•´å½¢çš„ä¸‹æ ‡ï¼Œ(è€Œä¸æ˜¯ptrçš„ä¸‹æ ‡)
+# define ZUINT16_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU16_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+# define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU32_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+# define ZUINT64_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU64_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+
+
+//FLOAT å’Œ DOUBLEçš„å¤„ç†
+# define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
+# define ZBYTE_TO_DOUBLE(ptr)  ((ZDOUBLE_STRUCT *)(ptr))->value_
 
 # define ZFLOAT_TO_BYTE(ptr,wr_data)  ((ZFLOAT_STRUCT *)(ptr))->value_ = (wr_data)
 # define ZDOUBLE_TO_BYTE(ptr,wr_data)  ((ZDOUBLE_STRUCT *)(ptr))->value_ = (wr_data)
 
-//ÉÏÃæµÄ´úÂë´Ó¹¦ÄÜÉÏµÈÍ¬ÏÂÃæµÄ´úÂë¡£µ«ÊÇÕâĞ©Ğ´»áµ¼ÖÂBUS ERRORÎÊÌâ¡£
+# define ZFLOAT_TO_INDEX(ptr,ary_index,wr_data)  (((((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+# define ZDOUBLE_TO_INDEX(ptr,ary_index,wr_data)  (((((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
+
+# define ZINDEX_TO_FLOAT(ptr,ary_index)  (((ZFLOAT_STRUCT *)(ptr))+(ary_index))->value_
+# define ZINDEX_TO_DOUBLE(ptr,ary_index)  (((ZDOUBLE_STRUCT *)(ptr))+(ary_index))->value_
+
+//ä¸Šé¢çš„ä»£ç ä»åŠŸèƒ½ä¸Šç­‰åŒä¸‹é¢çš„ä»£ç ã€‚ä½†æ˜¯è¿™äº›å†™ä¼šå¯¼è‡´BUS ERRORé—®é¢˜ã€‚
 //# define ZBYTE_TO_UINT32(ptr)  (*(uint32_t *)(ptr))
 //# define ZINDEX_TO_UINT32(ptr,ary_index)  (*(((uint32_t *)(ptr))+(ary_index)))
 //# define ZUINT32_TO_BYTE(ptr,wr_data)  ((*(uint32_t *)(ptr)) = (wr_data))
 //# define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  ((*(((uint32_t *)(ptr))+(ary_index))) = (wr_data))
 
-
-*/
-
-
-//¿¼ÂÇ×Ö½ÚĞòµÄ¶ÁÈ¡¶ÌÕûĞÍ£¬ÕûĞÎ£¬64Î»³¤ÕûĞÎµÄ·½Ê½
-//²»ºÃÒâË¼£¬Äê¼Í´óÁË£¬¼ÇÒäÁ¦ÕæµÄÓĞµã³ÉÎÊÌâÁË£¬ÓĞ¼¸´ÎĞ´Õâ¶Î¶«¶«¾ÍÊÇÏë²»Ã÷°×¼ÓÃÜ£¬MD5µÈ´úÂëÖĞÎªÉ¶Òª¿¼
-//ÂÇ×Ö½ÚĞò´¦ÀíÄØ£¿
-//µÚÒ»£¬ÎªÁË±£³ÖËã·¨µÄÒ»ÖÂĞÔ£¬Ò»Ì¨Ğ¡Í·×Ö½ÚĞò»úÆ÷ÉÏ¼ÆËãµÄµÃµ½µÄÃÜÎÄ£¬ÔÚÁíÍâÒ»Ì¨´óÍ·ĞòµÄ»úÆ÷ÒªÄÜ½â¿ª£¬
-//£¨»òÕßËµ´óÍ·ºÍĞ¡Í·µÄ»úÆ÷¶ÔÍ¬ÑùµÄÒ»¶Îbuffer£¬¼ÓÃÜµÃµ½µÄÃÜÎÄÓ¦¸ÃÊÇÒ»ÖÂµÄ£©
-//Õâ¾ÍÒªÇó¼ÆËã»ú´Ó×Ö½ÚÁ÷ÖĞÈ¡³öµÄÕûÊıº¬ÒåÊÇÒ»ÖÂµÄ¡£ËùÒÔ¾ÍÒªÇó¿¼ÂÇ×Ö½ÚĞòÎÊÌâÁË¡£ÕâÊÇ×î¹Ø¼üµÄÒòËØ¡£
-//µÚ¶ş£¬ÓĞĞ©Ëã·¨ÊÇÎªÁË¼Ó¿ì´¦Àí£¬±íÃæÊÇÓÃÕûÊı´¦ÀíµÄ£¬µ«Êµ¼ÊÀïÃæ£¬ÊÇ±ØĞë¿¼ÂÇ×Ö½ÚË³ĞòµÄ£¬±ÈÈçÎÒÃÇµÄ
-//CRC32Ëã·¨£¬¾ÍÓĞÕâ¸öÎÊÌâ£¬ËùÒÔÕâÖÖËã·¨£¬Äã±ØĞë¿¼ÂÇ×Ö½ÚĞòÎÊÌâ£¬Ğ¡Í·ÔÚÕâÖÖÇé¿öÏÂÍùÍù²»ĞèÒª½øĞĞ×ª£¬
-//µÚÈı£¬ÓĞĞ©Ëã·¨ÆäÊµÃ÷È·ÒªÇóÁËÀïÃæ²ÉÓÃ´óÍ·Ğò£¬»¹ÊÇĞ¡Í·Ğò£¬ÕâÖÖÄã¾Í±ØĞë¿¼ÂÇÄãµÄ»·¾³£¬
+//è€ƒè™‘å­—èŠ‚åºçš„è¯»å–çŸ­æ•´å‹ï¼Œæ•´å½¢ï¼Œ64ä½é•¿æ•´å½¢çš„æ–¹å¼
+//ä¸å¥½æ„æ€ï¼Œå¹´çºªå¤§äº†ï¼Œè®°å¿†åŠ›çœŸçš„æœ‰ç‚¹æˆé—®é¢˜äº†ï¼Œæœ‰å‡ æ¬¡å†™è¿™æ®µä¸œä¸œå°±æ˜¯æƒ³ä¸æ˜ç™½åŠ å¯†ï¼ŒMD5ç­‰ä»£ç ä¸­ä¸ºå•¥è¦è€ƒ
+//è™‘å­—èŠ‚åºå¤„ç†å‘¢ï¼Ÿ
+//ç¬¬ä¸€ï¼Œä¸ºäº†ä¿æŒç®—æ³•çš„ä¸€è‡´æ€§ï¼Œä¸€å°å°å¤´å­—èŠ‚åºæœºå™¨ä¸Šè®¡ç®—çš„å¾—åˆ°çš„å¯†æ–‡ï¼Œåœ¨å¦å¤–ä¸€å°å¤§å¤´åºçš„æœºå™¨è¦èƒ½è§£å¼€ï¼Œ
+//ï¼ˆæˆ–è€…è¯´å¤§å¤´å’Œå°å¤´çš„æœºå™¨å¯¹åŒæ ·çš„ä¸€æ®µbufferï¼ŒåŠ å¯†å¾—åˆ°çš„å¯†æ–‡åº”è¯¥æ˜¯ä¸€è‡´çš„ï¼‰
+//è¿™å°±è¦æ±‚è®¡ç®—æœºä»å­—èŠ‚æµä¸­å–å‡ºçš„æ•´æ•°å«ä¹‰æ˜¯ä¸€è‡´çš„ã€‚æ‰€ä»¥å°±è¦æ±‚è€ƒè™‘å­—èŠ‚åºé—®é¢˜äº†ã€‚è¿™æ˜¯æœ€å…³é”®çš„å› ç´ ã€‚
+//ç¬¬äºŒï¼Œæœ‰äº›ç®—æ³•æ˜¯ä¸ºäº†åŠ å¿«å¤„ç†ï¼Œè¡¨é¢æ˜¯ç”¨æ•´æ•°å¤„ç†çš„ï¼Œä½†å®é™…é‡Œé¢ï¼Œæ˜¯å¿…é¡»è€ƒè™‘å­—èŠ‚é¡ºåºçš„ï¼Œæ¯”å¦‚æˆ‘ä»¬çš„
+//CRC32ç®—æ³•ï¼Œå°±æœ‰è¿™ä¸ªé—®é¢˜ï¼Œæ‰€ä»¥è¿™ç§ç®—æ³•ï¼Œä½ å¿…é¡»è€ƒè™‘å­—èŠ‚åºé—®é¢˜ï¼Œå°å¤´åœ¨è¿™ç§æƒ…å†µä¸‹å¾€å¾€ä¸éœ€è¦è¿›è¡Œè½¬ï¼Œ
+//ç¬¬ä¸‰ï¼Œæœ‰äº›ç®—æ³•å…¶å®æ˜ç¡®è¦æ±‚äº†é‡Œé¢é‡‡ç”¨å¤§å¤´åºï¼Œè¿˜æ˜¯å°å¤´åºï¼Œè¿™ç§ä½ å°±å¿…é¡»è€ƒè™‘ä½ çš„ç¯å¢ƒï¼Œ
 //
-//ÔÚÄ¬ÈÏ±àÂëµÄÎÊÌâÉÏ£¬ÎÒ»¹ÊÇÇãÏòÁËĞ¡Í·£¬Ò»·½ÃæÎÒµÄ´úÂë¹À¼Æ99.99%¶¼ÊÇÅÜÔÚX86¼Ü¹¹Ö®ÏÂ£¬ÁíÒ»·½Ãæ
-//Ğ¡Í·µÄÊÇ´ÓµÍµ½¸ß£¬ºÍ×Ö½ÚË³ĞòÒ»ÖÂ£¬´¦ÀíÉÏÒ²·½±ãÒ»µã¡£
+//åœ¨é»˜è®¤ç¼–ç çš„é—®é¢˜ä¸Šï¼Œæˆ‘è¿˜æ˜¯å€¾å‘äº†å°å¤´ï¼Œä¸€æ–¹é¢æˆ‘çš„ä»£ç ä¼°è®¡99.99%éƒ½æ˜¯è·‘åœ¨X86æ¶æ„ä¹‹ä¸‹ï¼Œå¦ä¸€æ–¹é¢
+//å°å¤´çš„æ˜¯ä»ä½åˆ°é«˜ï¼Œå’Œå­—èŠ‚é¡ºåºä¸€è‡´ï¼Œå¤„ç†ä¸Šä¹Ÿæ–¹ä¾¿ä¸€ç‚¹ã€‚
 
 #if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN)
 
-///´ÓÒ»¸ö(char *)Ö¸ÕëÄÚ¶ÁÈ¡Ğ¡Í·×Ö½ÚĞòµÄuint16_t,or uint32_t or uint64_t£¬ÔÚĞ¡Í·×Ö½ÚĞòµÄ»úÆ÷ÉÏ²»·¢Éú¸Ä±ä
+///ä»ä¸€ä¸ª(char *)æŒ‡é’ˆå†…è¯»å–å°å¤´å­—èŠ‚åºçš„uint16_t,or uint32_t or uint64_tï¼Œåœ¨å°å¤´å­—èŠ‚åºçš„æœºå™¨ä¸Šä¸å‘ç”Ÿæ”¹å˜
 # define ZBYTE_TO_LEUINT16(ptr)    ZBYTE_TO_UINT16(ptr)
 # define ZBYTE_TO_LEUINT32(ptr)    ZBYTE_TO_UINT32(ptr)
 # define ZBYTE_TO_LEUINT64(ptr)    ZBYTE_TO_UINT64(ptr)
 
-///´ÓÒ»¸ö(char *)Ö¸ÕëÄÚ¶ÁÈ¡Ğ¡Í·×Ö½ÚĞòµÄuint16_t,or uint32_t or uint64_t µÄÊı×éÄÚµÄary_indexµ¥Ôª£¬×¢ÒâÊı×éÏÂ±êÊÇÖµ¶ÔÓÚÕûĞÎµÄÏÂ±ê£¬(¶ø²»ÊÇptrµÄÏÂ±ê)
+///ä»ä¸€ä¸ª(char *)æŒ‡é’ˆå†…è¯»å–å°å¤´å­—èŠ‚åºçš„uint16_t,or uint32_t or uint64_t çš„æ•°ç»„å†…çš„ary_indexå•å…ƒï¼Œæ³¨æ„æ•°ç»„ä¸‹æ ‡æ˜¯å€¼å¯¹äºæ•´å½¢çš„ä¸‹æ ‡ï¼Œ(è€Œä¸æ˜¯ptrçš„ä¸‹æ ‡)
 # define ZINDEX_TO_LEUINT16(ptr,ary_index)  ZINDEX_TO_UINT16(ptr,ary_index)
 # define ZINDEX_TO_LEUINT32(ptr,ary_index)  ZINDEX_TO_UINT32(ptr,ary_index)
 # define ZINDEX_TO_LEUINT64(ptr,ary_index)  ZINDEX_TO_UINT64(ptr,ary_index)
 
-///ÏòÒ»¸ö(char *)Ö¸ÕëÄÚĞ´ÈëÒ»¸öĞ¡Í·×Ö½ÚĞòµÄuint16_t,or uint32_t or uint64_t£¬ÔÚĞ¡Í·×Ö½ÚĞòµÄ»úÆ÷ÉÏ²»·¢Éú¸Ä±ä
+///å‘ä¸€ä¸ª(char *)æŒ‡é’ˆå†…å†™å…¥ä¸€ä¸ªå°å¤´å­—èŠ‚åºçš„uint16_t,or uint32_t or uint64_tï¼Œåœ¨å°å¤´å­—èŠ‚åºçš„æœºå™¨ä¸Šä¸å‘ç”Ÿæ”¹å˜
 # define ZLEUINT16_TO_BYTE(ptr,wr_data)  ZUINT16_TO_BYTE(ptr,wr_data)
 # define ZLEUINT32_TO_BYTE(ptr,wr_data)  ZUINT32_TO_BYTE(ptr,wr_data)
 # define ZLEUINT64_TO_BYTE(ptr,wr_data)  ZUINT64_TO_BYTE(ptr,wr_data)
 
-//ÏòÒ»¸ö(char *)Ö¸ÕëÄÚĞ´ÈëÒ»¸öĞ¡Í·×Ö½ÚĞòµÄuuint16_t,or uint32_t or uint64_tµÄÊı×éÄÚ²¿µÄary_indexµ¥Ôª£¬×¢ÒâÊı×éÏÂ±êÊÇÖµ¶ÔÓÚÕûĞÎµÄÏÂ±ê£¬(¶ø²»ÊÇptrµÄÏÂ±ê)
+//å‘ä¸€ä¸ª(char *)æŒ‡é’ˆå†…å†™å…¥ä¸€ä¸ªå°å¤´å­—èŠ‚åºçš„uuint16_t,or uint32_t or uint64_tçš„æ•°ç»„å†…éƒ¨çš„ary_indexå•å…ƒï¼Œæ³¨æ„æ•°ç»„ä¸‹æ ‡æ˜¯å€¼å¯¹äºæ•´å½¢çš„ä¸‹æ ‡ï¼Œ(è€Œä¸æ˜¯ptrçš„ä¸‹æ ‡)
 # define ZLEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZUINT16_TO_INDEX(ptr,ary_index,wr_data)
 # define ZLEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZUINT32_TO_INDEX(ptr,ary_index,wr_data)
 # define ZLEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZUINT64_TO_INDEX(ptr,ary_index,wr_data)
 
-///´ÓÒ»¸ö(char *)Ö¸ÕëÄÚ¶ÁÈ¡´óÍ·Í·×Ö½ÚĞòµÄuint16_t,or uint32_t or uint64_t£¬ÔÚĞ¡Í·×Ö½ÚĞòµÄ»úÆ÷ÉÏ½øĞĞ×ª»»
+///ä»ä¸€ä¸ª(char *)æŒ‡é’ˆå†…è¯»å–å¤§å¤´å¤´å­—èŠ‚åºçš„uint16_t,or uint32_t or uint64_tï¼Œåœ¨å°å¤´å­—èŠ‚åºçš„æœºå™¨ä¸Šè¿›è¡Œè½¬æ¢
 # define ZBYTE_TO_BEUINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
 # define ZBYTE_TO_BEUINT32(ptr)  ZCE_SWAP_UINT32(((ZU32_STRUCT *)(ptr))->value_)
 # define ZBYTE_TO_BEUINT64(ptr)  ZCE_SWAP_UINT64(((ZU64_STRUCT *)(ptr))->value_)
 
-///´ÓÒ»¸ö(char *)Ö¸ÕëÄÚ¶ÁÈ¡´óÍ·×Ö½ÚĞòµÄuint16_t,or uint32_t or uint64_t µÄÊı×éÄÚµÄary_indexµ¥Ôª£¬×¢ÒâÊı×éÏÂ±êÊÇÖµ¶ÔÓÚÕûĞÎµÄÏÂ±ê£¬(¶ø²»ÊÇptrµÄÏÂ±ê)
+///ä»ä¸€ä¸ª(char *)æŒ‡é’ˆå†…è¯»å–å¤§å¤´å­—èŠ‚åºçš„uint16_t,or uint32_t or uint64_t çš„æ•°ç»„å†…çš„ary_indexå•å…ƒï¼Œæ³¨æ„æ•°ç»„ä¸‹æ ‡æ˜¯å€¼å¯¹äºæ•´å½¢çš„ä¸‹æ ‡ï¼Œ(è€Œä¸æ˜¯ptrçš„ä¸‹æ ‡)
 # define ZINDEX_TO_BEUINT16(ptr,ary_index)  ZCE_SWAP_UINT16((((ZU16_STRUCT *)(ptr))+(ary_index))->value_)
 # define ZINDEX_TO_BEUINT32(ptr,ary_index)  ZCE_SWAP_UINT32((((ZU32_STRUCT *)(ptr))+(ary_index))->value_)
 # define ZINDEX_TO_BEUINT64(ptr,ary_index)  ZCE_SWAP_UINT64((((ZU64_STRUCT *)(ptr))+(ary_index))->value_)
 
-///ÏòÒ»¸ö(char *)Ö¸ÕëÄÚĞ´ÈëÒ»¸ö´óÍ·×Ö½ÚĞòµÄuint16_t,or uint32_t or uint64_t£¬ÔÚĞ¡Í·×Ö½ÚĞòµÄ»úÆ÷ÉÏÒª½øĞĞ×ª»»
+///å‘ä¸€ä¸ª(char *)æŒ‡é’ˆå†…å†™å…¥ä¸€ä¸ªå¤§å¤´å­—èŠ‚åºçš„uint16_t,or uint32_t or uint64_tï¼Œåœ¨å°å¤´å­—èŠ‚åºçš„æœºå™¨ä¸Šè¦è¿›è¡Œè½¬æ¢
 # define ZBEUINT16_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT16(ptr) = ZCE_SWAP_UINT16(wr_data)
 # define ZBEUINT32_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT32(ptr) = ZCE_SWAP_UINT32(wr_data)
 # define ZBEUINT64_TO_BYTE(ptr,wr_data)  ZBYTE_TO_UINT64(ptr) = ZCE_SWAP_UINT64(wr_data)
 
-//ÏòÒ»¸ö(char *)Ö¸ÕëÄÚĞ´ÈëÒ»¸ö´óÍ·×Ö½ÚĞòµÄuuint16_t,or uint32_t or uint64_tµÄÊı×éÄÚ²¿µÄary_indexµ¥Ôª£¬×¢ÒâÊı×éÏÂ±êÊÇÖµ¶ÔÓÚÕûĞÎµÄÏÂ±ê£¬(¶ø²»ÊÇptrµÄÏÂ±ê)
+//å‘ä¸€ä¸ª(char *)æŒ‡é’ˆå†…å†™å…¥ä¸€ä¸ªå¤§å¤´å­—èŠ‚åºçš„uuint16_t,or uint32_t or uint64_tçš„æ•°ç»„å†…éƒ¨çš„ary_indexå•å…ƒï¼Œæ³¨æ„æ•°ç»„ä¸‹æ ‡æ˜¯å€¼å¯¹äºæ•´å½¢çš„ä¸‹æ ‡ï¼Œ(è€Œä¸æ˜¯ptrçš„ä¸‹æ ‡)
 # define ZBEUINT16_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT16(ptr,ary_index) = ZCE_SWAP_UINT16(wr_data)
 # define ZBEUINT32_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT32(ptr,ary_index) = ZCE_SWAP_UINT32(wr_data)
 # define ZBEUINT64_TO_INDEX(ptr,ary_index,wr_data)  ZINDEX_TO_UINT64(ptr,ary_index) = ZCE_SWAP_UINT64(wr_data)
 
-//¶Ô´óÍ·×Ö½ÚĞò½øĞĞ¶¨Òå
+//å¯¹å¤§å¤´å­—èŠ‚åºè¿›è¡Œå®šä¹‰
 #else
 
 # define ZBYTE_TO_LEUINT16(ptr)  ZCE_SWAP_UINT16(((ZU16_STRUCT *)(ptr))->value_)
@@ -325,8 +247,8 @@ struct ZDOUBLE_STRUCT
 
 #endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
 
-//´øÓĞĞı×ªµÄÒÆÎ»²Ù×÷£¬²»Í¬Î»Êı±íÊ¾ÊÇÕë¶Ô¶ÌÕû£¬ÕûÊı£¬64Î»³¤ÕûµÄ²Ù×÷£¬
-//×¢Òân²»Òª´«ÈëÒ»¸öÎŞÒâÒåµÄÖµ£¬±ÈÈç32Î»µÄZCE_ROTL32£¬nÒªĞ¡ÓÚ31£¬·ñÔò
+//å¸¦æœ‰æ—‹è½¬çš„ç§»ä½æ“ä½œï¼Œä¸åŒä½æ•°è¡¨ç¤ºæ˜¯é’ˆå¯¹çŸ­æ•´ï¼Œæ•´æ•°ï¼Œ64ä½é•¿æ•´çš„æ“ä½œï¼Œ
+//æ³¨æ„nä¸è¦ä¼ å…¥ä¸€ä¸ªæ— æ„ä¹‰çš„å€¼ï¼Œæ¯”å¦‚32ä½çš„ZCE_ROTL32ï¼Œnè¦å°äº31ï¼Œå¦åˆ™
 #ifndef ZCE_ROTL16
 #define ZCE_ROTL16(word, n)  (((word) <<  ((n)&15))  | ((word) >>  (16 - ((n)&15))))
 #endif
@@ -363,7 +285,7 @@ struct ZDOUBLE_STRUCT
 #define ZUINT64_6BYTE(data)    (((data) >> 48) & 0xFF)
 #define ZUINT64_7BYTE(data)    ((data)  >> 56)
 
-///¼ì²éÖ¸ÕëÊÇ·ñ32Î»¶ÔÆä»òÕß64Î»¶ÔÆë
+///æ£€æŸ¥æŒ‡é’ˆæ˜¯å¦32ä½å¯¹å…¶æˆ–è€…64ä½å¯¹é½
 #ifndef ZCE_IS_ALIGNED_32
 #define ZCE_IS_ALIGNED_32(p) (0 == (0x3 & ((const char*)(p) - (const char*)0)))
 #endif
@@ -372,4 +294,97 @@ struct ZDOUBLE_STRUCT
 #endif
 
 
+
+//GCC å¯¹äºå¯¹å…¶é‡‡å–äº†é»˜è®¤è®¤ä¸ºä¸æ˜¯å¯¹é½çš„æ–¹å¼ç¼–è¯‘ï¼Œæ‰€ä»¥å†™
+//unsigned int a = *(unsigned int *)(char_ptr);
+//è¿˜æœ‰å‘Šè­¦é”™è¯¯ï¼Œæ–¹æ³•æ˜¯é‡‡ç”¨ä¸‹é¢çš„å®è§„é¿ï¼Œ
+//æˆ–è€…ä½¿ç”¨å‚æ•° -fstrict-aliasing å’Œ -Wstrict-aliasing å¯ä»¥æ¶ˆé™¤æ‰è¿™ä¸ªwarningã€‚
+
+union ZU16_UNION
+{
+    char char_data_[2];
+    uint16_t value_;
+};
+union ZU32_UNION
+{
+    char char_data_[4];
+    uint32_t value_;
+};
+union ZU64_UNION
+{
+    char char_data_[8];
+    uint64_t value_;
+};
+union ZFLOAT_UNION
+{
+    char char_data_[4];
+    float value_;
+};
+union ZDOUBLE_UNION
+{
+    char char_data_[8];
+    double value_;
+};
+
+
+# define ZRD_U16_FROM_BYTES(rd_data,bytes_ptr)  \
+    {\
+        ZU16_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        rd_data = __tmp_var_.value_; \
+    }
+
+# define ZRD_U32_FROM_BYTES(rd_data,bytes_ptr)  \
+    {\
+        ZU32_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        rd_data = __tmp_var_.value_; \
+    }
+
+
+# define ZRD_U64_FROM_BYTES(rd_data,bytes_ptr)  \
+    {\
+        ZU64_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        __tmp_var_.char_data_[4] = bytes_ptr[4];\
+        __tmp_var_.char_data_[5] = bytes_ptr[5];\
+        __tmp_var_.char_data_[6] = bytes_ptr[6];\
+        __tmp_var_.char_data_[7] = bytes_ptr[7];\
+        rd_data = __tmp_var_.value_; \
+    }
+
+# define ZRD_FLOAT_FROM_BYTES(rd_data,bytes_ptr)  \
+    {\
+        ZFLOAT_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        rd_data = __tmp_var_.value_; \
+    }
+
+
+# define ZRD_DOUBLE_FROM_BYTES(rd_data,bytes_ptr)  \
+    {\
+        ZDOUBLE_UNION __tmp_var_; \
+        __tmp_var_.char_data_[0] = bytes_ptr[0];\
+        __tmp_var_.char_data_[1] = bytes_ptr[1];\
+        __tmp_var_.char_data_[2] = bytes_ptr[2];\
+        __tmp_var_.char_data_[3] = bytes_ptr[3];\
+        __tmp_var_.char_data_[4] = bytes_ptr[4];\
+        __tmp_var_.char_data_[5] = bytes_ptr[5];\
+        __tmp_var_.char_data_[6] = bytes_ptr[6];\
+        __tmp_var_.char_data_[7] = bytes_ptr[7];\
+        rd_data = __tmp_var_.value_; \
+    }
+
+
 #endif
+

@@ -2,40 +2,40 @@
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê11ÔÂ27ÈÕ
-* @brief      Ğ­³ÌµÄOSÊÊÅä²ã£¬
+* @date       2013å¹´11æœˆ27æ—¥
+* @brief      åç¨‹çš„OSé€‚é…å±‚ï¼Œ
 *
-* @details    Ò»¸ö¼òµ¥µÄĞ­³ÌµÄ·â×°
-*             ×î¿ªÊ¼²Î¿¼µÄÎÄÕÂÊÇÕâ¸ö£¬
+* @details    ä¸€ä¸ªç®€å•çš„åç¨‹çš„å°è£…
+*             æœ€å¼€å§‹å‚è€ƒçš„æ–‡ç« æ˜¯è¿™ä¸ªï¼Œ
 *             http://www.codeproject.com/Articles/4225/Unix-ucontext_t-Operations-on-Windows-Platforms
-*             µ«·¢ÏÖÆäÊµËû²¢²»ÕıÈ·£¬
-*             1.CONTEXT¸ù¾İCPU½á¹¹Ëù²»Í¬µÄ£¬
-*             2.Windows ÏÂµÄAPI GetThreadContext,SetThreadContext £¬ÔÚ64Î»µÄ»·¾³
-*               ÏÂÊÇÃ»·¨ÓÃµÄ¡£ºóÃæWindows Ôö¼ÓÁËWow64GetThreadContext £¬
-*             3.GetThreadContext¶Ôµ±Ç°ÔËĞĞÏß³ÌÊÇÎŞĞ§µÄ£¬ÒòÎªµ±Ç°Ïß³ÌÊÇÔÚÔËĞĞµÄ¡£
-*             Õâµã×îÌÖÑá£¬Äã¾Í²»ÄÜÇĞ»»»áÖ÷Ïß³ÌÁË£¬
+*             ä½†å‘ç°å…¶å®ä»–å¹¶ä¸æ­£ç¡®ï¼Œ
+*             1.CONTEXTæ ¹æ®CPUç»“æ„æ‰€ä¸åŒçš„ï¼Œ
+*             2.Windows ä¸‹çš„API GetThreadContext,SetThreadContext ï¼Œåœ¨64ä½çš„ç¯å¢ƒ
+*               ä¸‹æ˜¯æ²¡æ³•ç”¨çš„ã€‚åé¢Windows å¢åŠ äº†Wow64GetThreadContext ï¼Œ
+*             3.GetThreadContextå¯¹å½“å‰è¿è¡Œçº¿ç¨‹æ˜¯æ— æ•ˆçš„ï¼Œå› ä¸ºå½“å‰çº¿ç¨‹æ˜¯åœ¨è¿è¡Œçš„ã€‚
+*             è¿™ç‚¹æœ€è®¨åŒï¼Œä½ å°±ä¸èƒ½åˆ‡æ¢ä¼šä¸»çº¿ç¨‹äº†ï¼Œ
 *
-*             µÚ¶ş´Î£¬ÎÒÏ£ÍûÓÃWindows µÄFibersÀ´Ä£ÄâLinuxÏÂµÄgetcontextµÈº¯Êı£¬µ«·¢ÏÖ
-*             ÆäÊµFibersºÍContextÊÇÓĞ±¾ÖÊ²»Í¬µÄ£¬Fibers¸üÏñÏß³ÌµÄ¶ÔÏó£¨¹ı³Ì£©£¬Context
-*             ¸üÏñÒ»¸ö¶ÑÕ»£¨µã£©£¬±ÈÈç
-*             0.context APIÊµÏÖÆğÀ´¸üÏñgoto£¬FibersµÄAPI¸üÏñÊÇÏß³Ì¡£×¢Òâ£ºcontextµÄ
-*             swapcontext»á¸øÄã´í¾õ¡£µ«ÆäÊµswapcontextÊÇÏÈ±£´æµ±Ç°µÄcontextµ½µÚÒ»¸ö²ÎÊı£¬
-*             1.FibersÊÇÎŞ·¨ÊµÏÖÀàËÆSwitchToFiber( GetCurrentFiber() );µÄµ÷ÓÃ£¬Æä
-*               Ö»ÄÜÌøÈëÁíÍâÒ»¸öFibers£¬
-*             2.Fibers³ıÁËÆô¶¯½×¶ÎºÍSwitchToFiber µã£¬²»´æÔÚÒ»¸öÀàËÆgetcontextµÄµãÄÜ
-*               ÇĞ»»¹ıÈ¥£¬£¨getcontextºÍGetCurrentFiber²»ÊÇÒ»¸ö¶«¶«£©
-*             3.ÎŞ·¨ÍêÈ«ÈÚºÏµÄ²îÒìµÄ£¬±ÈÈçCreateFiber ÊÇ×Ô¼º¹¹Ôì¶ÑÕ»µÄ£¬¶ømakecontext
-*               ²»´¦ÀíÕâĞ©ÊÂÇé£¬ÒªÄã×Ô¼ºÔÚ²ÎÊıÀïÃæ¾ö¶¨¡£
-*             ËùÒÔ¡­¡­
+*             ç¬¬äºŒæ¬¡ï¼Œæˆ‘å¸Œæœ›ç”¨Windows çš„Fibersæ¥æ¨¡æ‹ŸLinuxä¸‹çš„getcontextç­‰å‡½æ•°ï¼Œä½†å‘ç°
+*             å…¶å®Fiberså’ŒContextæ˜¯æœ‰æœ¬è´¨ä¸åŒçš„ï¼ŒFibersæ›´åƒçº¿ç¨‹çš„å¯¹è±¡ï¼ˆè¿‡ç¨‹ï¼‰ï¼ŒContext
+*             æ›´åƒä¸€ä¸ªå †æ ˆï¼ˆç‚¹ï¼‰ï¼Œæ¯”å¦‚
+*             0.context APIå®ç°èµ·æ¥æ›´åƒgotoï¼ŒFibersçš„APIæ›´åƒæ˜¯çº¿ç¨‹ã€‚æ³¨æ„ï¼šcontextçš„
+*             swapcontextä¼šç»™ä½ é”™è§‰ã€‚ä½†å…¶å®swapcontextæ˜¯å…ˆä¿å­˜å½“å‰çš„contextåˆ°ç¬¬ä¸€ä¸ªå‚æ•°ï¼Œ
+*             1.Fibersæ˜¯æ— æ³•å®ç°ç±»ä¼¼SwitchToFiber( GetCurrentFiber() );çš„è°ƒç”¨ï¼Œå…¶
+*               åªèƒ½è·³å…¥å¦å¤–ä¸€ä¸ªFibersï¼Œ
+*             2.Fibersé™¤äº†å¯åŠ¨é˜¶æ®µå’ŒSwitchToFiber ç‚¹ï¼Œä¸å­˜åœ¨ä¸€ä¸ªç±»ä¼¼getcontextçš„ç‚¹èƒ½
+*               åˆ‡æ¢è¿‡å»ï¼Œï¼ˆgetcontextå’ŒGetCurrentFiberä¸æ˜¯ä¸€ä¸ªä¸œä¸œï¼‰
+*             3.æ— æ³•å®Œå…¨èåˆçš„å·®å¼‚çš„ï¼Œæ¯”å¦‚CreateFiber æ˜¯è‡ªå·±æ„é€ å †æ ˆçš„ï¼Œè€Œmakecontext
+*               ä¸å¤„ç†è¿™äº›äº‹æƒ…ï¼Œè¦ä½ è‡ªå·±åœ¨å‚æ•°é‡Œé¢å†³å®šã€‚
+*             æ‰€ä»¥â€¦â€¦
 *
-*             ËùÒÔÖ»ÄÜÊµÏÖÒ»¸öCOROUTINEµÄ·â×°£¬ÎÒµÄÉè¼ÆÏ£ÍûÊÇÕâÑùµÄ
-*             ÔÚmainÀïÃæ£¬ÔÚÀïÃæÓÃmake_coroutineÉú³ÉĞ­³Ì£¬
-*             ÔÚmainÀïÃæ£¬switch_to_coroutineÇĞ»»µ½Ğ­³Ì£¬
-*             ÔÚcoroutineÀïÃæ£¬Ê¹ÓÃswitch_to_mainÇĞ»»µ½Ö÷Ğ­³Ì£¬
+*             æ‰€ä»¥åªèƒ½å®ç°ä¸€ä¸ªCOROUTINEçš„å°è£…ï¼Œæˆ‘çš„è®¾è®¡å¸Œæœ›æ˜¯è¿™æ ·çš„
+*             åœ¨mainé‡Œé¢ï¼Œåœ¨é‡Œé¢ç”¨make_coroutineç”Ÿæˆåç¨‹ï¼Œ
+*             åœ¨mainé‡Œé¢ï¼Œswitch_to_coroutineåˆ‡æ¢åˆ°åç¨‹ï¼Œ
+*             åœ¨coroutineé‡Œé¢ï¼Œä½¿ç”¨switch_to_mainåˆ‡æ¢åˆ°ä¸»åç¨‹ï¼Œ
 *
-*             ÎÒÔÚµÈ´ıC++ 20µÄĞ­³Ì£¬×îºóÎÒ¸ÉµôÕâĞ©´úÂë¡£
+*             æˆ‘åœ¨ç­‰å¾…C++ 20çš„åç¨‹ï¼Œæœ€åæˆ‘å¹²æ‰è¿™äº›ä»£ç ã€‚
 *
-* @note       ¹ØÓÚFibersº¯ÊıµÄËµÃ÷£¬Çå²Î¿¼ÈçÏÂÎÄµµ£¬×÷ÕßĞ´µÄ·Ç³£Çå³ş¡£
+* @note       å…³äºFiberså‡½æ•°çš„è¯´æ˜ï¼Œæ¸…å‚è€ƒå¦‚ä¸‹æ–‡æ¡£ï¼Œä½œè€…å†™çš„éå¸¸æ¸…æ¥šã€‚
 *             ConvertFiberToThread
 *             http://www.cnblogs.com/wz19860913/archive/2008/08/26/1276816.html
 *
@@ -48,7 +48,7 @@
 
 #if defined ZCE_OS_WINDOWS
 
-///coroutine_t ÄÚ²¿±£´æĞ­³Ì¾ä±úµÄÊı¾İ£¬°üÀ¨MAINºÍCOROUTINEµÄÊı¾İ
+///coroutine_t å†…éƒ¨ä¿å­˜åç¨‹å¥æŸ„çš„æ•°æ®ï¼ŒåŒ…æ‹¬MAINå’ŒCOROUTINEçš„æ•°æ®
 struct  coroutine_t
 {
     coroutine_t()
@@ -71,7 +71,7 @@ struct  coroutine_t
 
 #endif
 
-//ÎªÊ²Ã´×îºóÑ¡Ôñ3¸ö²ÎÊıµÄº¯Êı×÷ÎªÖ§³ÖµÄÀàĞÍ£¬´ó¸ÅÊÇÒòÎªÎ¬»ùµÄÀı×Ó£¬£¨ÎÒ±¾À´Ò»Ö±ÈÏÎª2¸ö²ÎÊı×ã¹»ÁË£©
+//ä¸ºä»€ä¹ˆæœ€åé€‰æ‹©3ä¸ªå‚æ•°çš„å‡½æ•°ä½œä¸ºæ”¯æŒçš„ç±»å‹ï¼Œå¤§æ¦‚æ˜¯å› ä¸ºç»´åŸºçš„ä¾‹å­ï¼Œï¼ˆæˆ‘æœ¬æ¥ä¸€ç›´è®¤ä¸º2ä¸ªå‚æ•°è¶³å¤Ÿäº†ï¼‰
 typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
                                       void *para2,
                                       void *para3);
@@ -82,34 +82,34 @@ namespace zce
 
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬Éú³ÉĞ­³Ì¾ä±ú£¬
-*             ½èÓÃLINUXÏÂµÄmakecontext£¬WindowsÏÂµÄCreateFiberExÊµ
-*             ÏÖ£¬µ«×¢ÒâÕâ¶ù²»ÊÇÉú³Écontext,¶øÊÇĞ­³Ì£¬×¢Òâ
-*             1.º¯ÊıÖ¸Õë±êÊ¶µÄº¯ÊıÖ»ÔÊĞíÊ¹ÓÃ2¸ö²ÎÊı£¬²»ÄÜºÍLINUXÒ»ÑùÊ¹ÓÃ±ä²Î
-*             2.LINUXÔ­ÉúµÄ::makecontextµÄucontext_t²ÎÊıÒªÏÈÓÃ::getcontext£¬
-*             »ñÈ¡µÄ£¬  µ«Ê¹ÓÃ´Ëº¯Êı²»ÓÃ£¬ÄÚ²¿¼¯³ÉÁË£¬
-*             3.µÚ¶ş¸ö²ÎÊıÊÇ¶ÑÕ»´óĞ¡£¬ÎÒ»á¸ù¾İÄãµÄÖ¸¶¨·ÖÅä¶Ñ¿Õ¼ä£¬×÷ÎªÄãµÄCOROUTINE
-*             µÄÕ»£¬¶øLINUXÔ­ÉúµÄmakecontext µÄucontext_t²ÎÊıÊ¹ÓÃÇ°Òª³õÊ¼»¯¶ÑÖ¸
-*             ÕëºÍ³¤¶È£¬
-*             4.½áÊøºó£¬±ØĞëµ÷ÓÃdelete_coroutineÇåÀícoroutine_t£¬
-*             delete_coroutineÔÚWINDOWSÏÂµ÷ÓÃDeleteFiberº¯Êı£¬ÔÚLinux¸ºÔğÇå
-*             Àíucontext_tÀïÃæµÄÕ»Ö¸Õë£¨´Ó¶ÑÉÏ·ÖÅäµÄ¿Õ¼ä£©
-*             5.LINUXÔ­ÉúµÄ::makecontextÃ»ÓĞ·µ»ØÖµ£¬¶ø´Ë·â×°ÓĞ£¬ÒòÎªWindowsÏÂÎÒ
-*             ÃÇÓÃÁËCreateFiberEx£¬LinuxÏÂÎÒÃÇÄÚ²¿µ÷ÓÃÁË::getcontext£¬ÕâĞ©º¯Êı
-*             ¶¼¿ÉÄÜÊ§°Ü
-*             6.LINUXµÄ::makecontext¿ÉÒÔÊ¹ÓÃ±ä²Î£¬Õâ¸öº¯ÊıÃ»ÓĞ¿¼ÂÇ²ÎÊı£¬µ±È»Õâ¸ö±ä
-*             Ò²ÊÇÓĞ·çÏÕ£¬µ«ÆäÊµÊ¹ÓÃ²ÎÊıÊÇÓĞÒÆÖ²·çÏÕµÄ£¬Ïà¼ûÏÂÃæÁ½¸öÎÄµµµÄËµÃ÷£¬
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œç”Ÿæˆåç¨‹å¥æŸ„ï¼Œ
+*             å€Ÿç”¨LINUXä¸‹çš„makecontextï¼ŒWindowsä¸‹çš„CreateFiberExå®
+*             ç°ï¼Œä½†æ³¨æ„è¿™å„¿ä¸æ˜¯ç”Ÿæˆcontext,è€Œæ˜¯åç¨‹ï¼Œæ³¨æ„
+*             1.å‡½æ•°æŒ‡é’ˆæ ‡è¯†çš„å‡½æ•°åªå…è®¸ä½¿ç”¨2ä¸ªå‚æ•°ï¼Œä¸èƒ½å’ŒLINUXä¸€æ ·ä½¿ç”¨å˜å‚
+*             2.LINUXåŸç”Ÿçš„::makecontextçš„ucontext_tå‚æ•°è¦å…ˆç”¨::getcontextï¼Œ
+*             è·å–çš„ï¼Œ  ä½†ä½¿ç”¨æ­¤å‡½æ•°ä¸ç”¨ï¼Œå†…éƒ¨é›†æˆäº†ï¼Œ
+*             3.ç¬¬äºŒä¸ªå‚æ•°æ˜¯å †æ ˆå¤§å°ï¼Œæˆ‘ä¼šæ ¹æ®ä½ çš„æŒ‡å®šåˆ†é…å †ç©ºé—´ï¼Œä½œä¸ºä½ çš„COROUTINE
+*             çš„æ ˆï¼Œè€ŒLINUXåŸç”Ÿçš„makecontext çš„ucontext_tå‚æ•°ä½¿ç”¨å‰è¦åˆå§‹åŒ–å †æŒ‡
+*             é’ˆå’Œé•¿åº¦ï¼Œ
+*             4.ç»“æŸåï¼Œå¿…é¡»è°ƒç”¨delete_coroutineæ¸…ç†coroutine_tï¼Œ
+*             delete_coroutineåœ¨WINDOWSä¸‹è°ƒç”¨DeleteFiberå‡½æ•°ï¼Œåœ¨Linuxè´Ÿè´£æ¸…
+*             ç†ucontext_té‡Œé¢çš„æ ˆæŒ‡é’ˆï¼ˆä»å †ä¸Šåˆ†é…çš„ç©ºé—´ï¼‰
+*             5.LINUXåŸç”Ÿçš„::makecontextæ²¡æœ‰è¿”å›å€¼ï¼Œè€Œæ­¤å°è£…æœ‰ï¼Œå› ä¸ºWindowsä¸‹æˆ‘
+*             ä»¬ç”¨äº†CreateFiberExï¼ŒLinuxä¸‹æˆ‘ä»¬å†…éƒ¨è°ƒç”¨äº†::getcontextï¼Œè¿™äº›å‡½æ•°
+*             éƒ½å¯èƒ½å¤±è´¥
+*             6.LINUXçš„::makecontextå¯ä»¥ä½¿ç”¨å˜å‚ï¼Œè¿™ä¸ªå‡½æ•°æ²¡æœ‰è€ƒè™‘å‚æ•°ï¼Œå½“ç„¶è¿™ä¸ªå˜
+*             ä¹Ÿæ˜¯æœ‰é£é™©ï¼Œä½†å…¶å®ä½¿ç”¨å‚æ•°æ˜¯æœ‰ç§»æ¤é£é™©çš„ï¼Œç›¸è§ä¸‹é¢ä¸¤ä¸ªæ–‡æ¡£çš„è¯´æ˜ï¼Œ
 *             http://en.wikipedia.org/wiki/Setcontext
 *             http://pubs.opengroup.org/onlinepubs/009695399/functions/makecontext.html
-*             ÁíÍâ£¬ÎªÁË°ü×°²ÎÊı´«µİ£¬ÔÚWindowsÏÂ£¬Õâ¸öº¯Êı»ánewÒ»¸ö½á¹¹
-* @return     int ·µ»Ø0±êÊ¶³É¹¦£¬
-* @param      coroutine_hdl ucontext_t£¬Éú³ÉµÄCONTEXT¾ä±ú£¬
-* @param      stack_size    Õ»´óĞ¡
-* @param      back_main     Ğ¯³Ì×îºóÊÇ·ñ·µ»Ømainº¯Êı
-* @param      fun_ptr       º¯ÊıÖ¸Õë£¬½ÓÊÜ3¸öÖ¸Õë²ÎÊı
-* @param      para1         Ö¸Õë²ÎÊı1
-* @param      para2         Ö¸Õë²ÎÊı2
-* @param      para3         Ö¸Õë²ÎÊı3
+*             å¦å¤–ï¼Œä¸ºäº†åŒ…è£…å‚æ•°ä¼ é€’ï¼Œåœ¨Windowsä¸‹ï¼Œè¿™ä¸ªå‡½æ•°ä¼šnewä¸€ä¸ªç»“æ„
+* @return     int è¿”å›0æ ‡è¯†æˆåŠŸï¼Œ
+* @param      coroutine_hdl ucontext_tï¼Œç”Ÿæˆçš„CONTEXTå¥æŸ„ï¼Œ
+* @param      stack_size    æ ˆå¤§å°
+* @param      back_main     æºç¨‹æœ€åæ˜¯å¦è¿”å›mainå‡½æ•°
+* @param      fun_ptr       å‡½æ•°æŒ‡é’ˆï¼Œæ¥å—3ä¸ªæŒ‡é’ˆå‚æ•°
+* @param      para1         æŒ‡é’ˆå‚æ•°1
+* @param      para2         æŒ‡é’ˆå‚æ•°2
+* @param      para3         æŒ‡é’ˆå‚æ•°3
 */
 int make_coroutine(coroutine_t *coroutine_hdl,
                    size_t stack_size,
@@ -121,31 +121,31 @@ int make_coroutine(coroutine_t *coroutine_hdl,
 
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬LINUXÏÂµÄ»á·ÖÅä¶ÔµÄ¿Õ¼ä
+* @brief      éæ ‡å‡†å‡½æ•°ï¼ŒLINUXä¸‹çš„ä¼šåˆ†é…å¯¹çš„ç©ºé—´
 * @return     void
-* @param      coroutine_hdl  Òª½øĞĞÊÍ·ÅcoroutineµÄ¾ä±ú£¬
-* @note       LINUXÏÂÊÍ·ÅÁË×Ô¶¯·ÖÅäµÄucctµÄ¿Õ¼ä£¬WindowsÏÂµ÷ÓÃµÄÊÇDeleteFiber
+* @param      coroutine_hdl  è¦è¿›è¡Œé‡Šæ”¾coroutineçš„å¥æŸ„ï¼Œ
+* @note       LINUXä¸‹é‡Šæ”¾äº†è‡ªåŠ¨åˆ†é…çš„ucctçš„ç©ºé—´ï¼ŒWindowsä¸‹è°ƒç”¨çš„æ˜¯DeleteFiber
 */
 void delete_coroutine(coroutine_t *coroutine_hdl);
 
 
 /*!
-* @brief      ´ÓMainÇĞ»»µ½Ğ­³Ì£¬
-* @return     int ·µ»Ø0±êÊ¶³É¹¦
+* @brief      ä»Mainåˆ‡æ¢åˆ°åç¨‹ï¼Œ
+* @return     int è¿”å›0æ ‡è¯†æˆåŠŸ
 * @param      coroutine_hdl
 */
 int yeild_coroutine(coroutine_t *coroutine_hdl);
 
 /*!
-* @brief      ´ÓcoroutineÇĞ»»µ½Main
-* @return     int ·µ»Ø0±êÊ¶³É¹¦
+* @brief      ä»coroutineåˆ‡æ¢åˆ°Main
+* @return     int è¿”å›0æ ‡è¯†æˆåŠŸ
 * @param      coroutine_hdl
 */
 int yeild_main(coroutine_t *coroutine_hdl);
 
 /*!
-* @brief      ´ÓÒ»¸öcoroutineÇĞ»»µ½ÁíÍâÒ»¸öcoroutine
-* @return     int ·µ»Ø0±êÊ¶³É¹¦
+* @brief      ä»ä¸€ä¸ªcoroutineåˆ‡æ¢åˆ°å¦å¤–ä¸€ä¸ªcoroutine
+* @return     int è¿”å›0æ ‡è¯†æˆåŠŸ
 * @param      save_hdl
 * @param      goto_hdl
 */

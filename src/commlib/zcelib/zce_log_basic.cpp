@@ -13,7 +13,7 @@
 
 const char ZCE_LogTrace_Basic::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_LogTrace_Basic::ZCE_LogTrace_Basic():
     div_log_file_(LOGDEVIDE_NONE),
     output_way_(LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT),
@@ -27,7 +27,7 @@ ZCE_LogTrace_Basic::ZCE_LogTrace_Basic():
     size_log_file_(0),
     if_output_log_(true)
 {
-    //Ô¤ÏÈ·ÖÅä¿Õ¼ä
+    //é¢„å…ˆåˆ†é…ç©ºé—´
     log_file_name_.reserve(PATH_MAX + 32);
     log_file_dir_.reserve(PATH_MAX + 32);
     log_file_prefix_.reserve(PATH_MAX + 32);
@@ -37,12 +37,12 @@ ZCE_LogTrace_Basic::ZCE_LogTrace_Basic():
 //
 ZCE_LogTrace_Basic::~ZCE_LogTrace_Basic()
 {
-    //×¢Ïú
+    //æ³¨é”€
     finalize();
 }
 
 
-//³õÊ¼»¯º¯Êı,ÓÃÓÚÊ±¼ä·Ö¸îÈÕÖ¾µÄ¹¹Ôì
+//åˆå§‹åŒ–å‡½æ•°,ç”¨äºæ—¶é—´åˆ†å‰²æ—¥å¿—çš„æ„é€ 
 int ZCE_LogTrace_Basic::init_time_log(ZCE_LOGFILE_NAME_DEVIDE div_log_file,
                                       const char *log_file_prefix,
                                       bool if_thread_synchro,
@@ -62,7 +62,7 @@ int ZCE_LogTrace_Basic::init_time_log(ZCE_LOGFILE_NAME_DEVIDE div_log_file,
                       head_record);
 }
 
-//³õÊ¼»¯º¯Êı,ÓÃÓÚ³ß´ç·Ö¸îÈÕÖ¾µÄ¹¹Ôì ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
+//åˆå§‹åŒ–å‡½æ•°,ç”¨äºå°ºå¯¸åˆ†å‰²æ—¥å¿—çš„æ„é€  ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
 int ZCE_LogTrace_Basic::init_size_log(
     const char *log_file_prefix,
     bool if_thread_synchro,
@@ -75,7 +75,7 @@ int ZCE_LogTrace_Basic::init_size_log(
 
     ZCE_LOGFILE_NAME_DEVIDE div_log_file = NAME_ID_DEVIDE_SIZE;
 
-    //Èç¹û²»±êÊ¶ÎÄ¼ş·Ö¸î´óĞ¡
+    //å¦‚æœä¸æ ‡è¯†æ–‡ä»¶åˆ†å‰²å¤§å°
     if ( 0 == max_size_log_file )
     {
         div_log_file = LOGDEVIDE_NONE;
@@ -91,7 +91,7 @@ int ZCE_LogTrace_Basic::init_size_log(
                       head_record);
 }
 
-//³õÊ¼»¯º¯Êı£¬ÓÃÓÚ±ê×¼Êä³ö
+//åˆå§‹åŒ–å‡½æ•°ï¼Œç”¨äºæ ‡å‡†è¾“å‡º
 int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro,
                                     bool use_err_out,
                                     bool auto_new_line,
@@ -118,7 +118,7 @@ int ZCE_LogTrace_Basic::init_stdout(bool if_thread_synchro,
                       head_record);
 }
 
-//³õÊ¼»¯º¯Êı,²ÎÊı×îÆëÈ«µÄÒ»¸ö
+//åˆå§‹åŒ–å‡½æ•°,å‚æ•°æœ€é½å…¨çš„ä¸€ä¸ª
 int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
                                    ZCE_LOGFILE_NAME_DEVIDE div_log_file,
                                    const char *log_file_prefix,
@@ -143,12 +143,12 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
 
     if_output_log_ = true;
 
-    //¶ÏÑÔ¼ì²éÊäÈë²ÎÊı
+    //æ–­è¨€æ£€æŸ¥è¾“å…¥å‚æ•°
     if ( log_file_prefix != NULL)
     {
         log_file_prefix_ = log_file_prefix;
     }
-    //Èç¹ûÎÄ¼ş²ÎÊı²»ÆëÈ«
+    //å¦‚æœæ–‡ä»¶å‚æ•°ä¸é½å…¨
     else
     {
         assert(0 == ( output_way_ & (LOG_OUTPUT_FILE)) );
@@ -156,7 +156,7 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
 
     //
     make_configure();
-    //Èç¹ûĞèÒªÈÕÖ¾ÎÄ¼şÊä³ö£¬Êä³öÒ»¸öÎÄ¼ş
+    //å¦‚æœéœ€è¦æ—¥å¿—æ–‡ä»¶è¾“å‡ºï¼Œè¾“å‡ºä¸€ä¸ªæ–‡ä»¶
     if (output_way_ & LOG_OUTPUT_FILE )
     {
         timeval now_time(zce::gettimeofday());
@@ -166,7 +166,7 @@ int ZCE_LogTrace_Basic::initialize(unsigned int output_way,
     return 0;
 }
 
-//¹Ø±ÕÈÕÖ¾£¬×¢Òâ¹Ø±Õºó£¬±ØĞëÖØĞÂ³õÊ¼»¯
+//å…³é—­æ—¥å¿—ï¼Œæ³¨æ„å…³é—­åï¼Œå¿…é¡»é‡æ–°åˆå§‹åŒ–
 void ZCE_LogTrace_Basic::finalize()
 {
     if (log_file_handle_.is_open())
@@ -184,10 +184,10 @@ void ZCE_LogTrace_Basic::finalize()
     if_output_log_ = true;
 }
 
-//ÅäÖÃÈÕÖ¾ÎÄ¼ş
+//é…ç½®æ—¥å¿—æ–‡ä»¶
 void ZCE_LogTrace_Basic::make_configure(void)
 {
-    //¼ì²émax_size_log_file_µÈ²ÎÊıµÄ´óĞ¡·¶Î§
+    //æ£€æŸ¥max_size_log_file_ç­‰å‚æ•°çš„å¤§å°èŒƒå›´
     if (max_size_log_file_ < MIN_LOG_SIZE)
     {
         max_size_log_file_ = MIN_LOG_SIZE;
@@ -207,17 +207,17 @@ void ZCE_LogTrace_Basic::make_configure(void)
         reserve_file_num_ = MAX_RESERVE_FILENUM;
     }
 
-    //µÃµ½Ä¿Â¼µÄÃû³Æ
+    //å¾—åˆ°ç›®å½•çš„åç§°
     char dir_name[PATH_MAX + 16];
     dir_name[PATH_MAX] = '\0';
 
     zce::dirname(log_file_prefix_.c_str(), dir_name, PATH_MAX + 1);
     log_file_dir_ = dir_name;
 
-    // Èç¹ûÄ¿Â¼²»´æÔÚ£¬Ôò´´½¨
+    // å¦‚æœç›®å½•ä¸å­˜åœ¨ï¼Œåˆ™åˆ›å»º
     if (zce::mkdir_recurse(log_file_dir_.c_str()) != 0)
     {
-        // ´´½¨Ê§°Ü£¬
+        // åˆ›å»ºå¤±è´¥ï¼Œ
         fprintf(stderr, "mkdir %s fail. err=%d|%s\n",
                 log_file_dir_.c_str(),
                 errno,
@@ -225,41 +225,41 @@ void ZCE_LogTrace_Basic::make_configure(void)
     }
 }
 
-//´ò¿ªÈÕÖ¾Êä³ö¿ª¹Ø
+//æ‰“å¼€æ—¥å¿—è¾“å‡ºå¼€å…³
 void ZCE_LogTrace_Basic::enable_output(bool enable_out)
 {
     if_output_log_ = enable_out;
 }
 
 
-//ÉèÖÃÈÕÖ¾Êä³öLevel
+//è®¾ç½®æ—¥å¿—è¾“å‡ºLevel
 ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::set_log_priority( ZCE_LOG_PRIORITY outlevel )
 {
     ZCE_LOG_PRIORITY oldlevel = permit_outlevel_;
     permit_outlevel_ = outlevel;
     return oldlevel;
 }
-//È¡µÃÊä³öLevel
+//å–å¾—è¾“å‡ºLevel
 ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::get_log_priority(void )
 {
     return permit_outlevel_;
 }
 
-//ÉèÖÃÄ¬ÈÏÊä³öµÄĞÅÏ¢ÀàĞÍ
+//è®¾ç½®é»˜è®¤è¾“å‡ºçš„ä¿¡æ¯ç±»å‹
 unsigned int ZCE_LogTrace_Basic::set_log_head(unsigned int recdinfo)
 {
     unsigned int tmprecdinfo = recdinfo;
     record_info_ = recdinfo;
     return tmprecdinfo;
 }
-//È¡µÃÄ¬ÈÏÊä³öµÄĞÅÏ¢ÀàĞÍ
+//å–å¾—é»˜è®¤è¾“å‡ºçš„ä¿¡æ¯ç±»å‹
 unsigned int ZCE_LogTrace_Basic::get_log_head(void)
 {
     return record_info_;
 }
 
-//ÉèÖÃÍ¬²½Êä³öµÄ±êÊ¾
-//Èç¹û¿ªÊ¼Ã»ÓĞÉèÖÃÎÄ¼şÍ¬²½Êä³ö,ºóÃæ²»µ÷Õû.
+//è®¾ç½®åŒæ­¥è¾“å‡ºçš„æ ‡ç¤º
+//å¦‚æœå¼€å§‹æ²¡æœ‰è®¾ç½®æ–‡ä»¶åŒæ­¥è¾“å‡º,åé¢ä¸è°ƒæ•´.
 unsigned int ZCE_LogTrace_Basic::set_output_way(unsigned int output_way)
 {
     //
@@ -269,13 +269,13 @@ unsigned int ZCE_LogTrace_Basic::set_output_way(unsigned int output_way)
     return tmpsynchr;
 }
 
-//È¡µÃÍ¬²½Êä³öµÄ±êÊ¾
+//å–å¾—åŒæ­¥è¾“å‡ºçš„æ ‡ç¤º
 unsigned int ZCE_LogTrace_Basic::get_output_way(void)
 {
     return output_way_;
 }
 
-//ÉèÖÃÊÇ·ñÏß³ÌÍ¬²½
+//è®¾ç½®æ˜¯å¦çº¿ç¨‹åŒæ­¥
 bool ZCE_LogTrace_Basic::set_thread_synchro(bool if_thread_synchro)
 {
     bool old_synchro = if_thread_synchro_;
@@ -283,22 +283,22 @@ bool ZCE_LogTrace_Basic::set_thread_synchro(bool if_thread_synchro)
     return old_synchro;
 
 }
-//È¡µÃÊÇ·ñ½øĞĞÏß³ÌÍ¬²½
+//å–å¾—æ˜¯å¦è¿›è¡Œçº¿ç¨‹åŒæ­¥
 bool ZCE_LogTrace_Basic::get_thread_synchro(void)
 {
     return if_thread_synchro_;
 }
 
-//µÃµ½ĞÂµÄÈÕÖ¾ÎÄ¼şÎÄ¼şÃû³Æ
+//å¾—åˆ°æ–°çš„æ—¥å¿—æ–‡ä»¶æ–‡ä»¶åç§°
 void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_time)
 {
-    //ÊÇ·ñÒªÉú³ÉĞÂµÄÎÄ¼şÃû³Æ
+    //æ˜¯å¦è¦ç”Ÿæˆæ–°çš„æ–‡ä»¶åç§°
     bool to_new_file = false;
     if (initiate)
     {
         to_new_file = true;
 
-        //°ÑÊ±¼äÈÕÖ¾µÄ¾ÉÈÕÖ¾¶¼É¨Ãè³öÀ´£¬±ãÓÚÉ¾³ı´¦Àí
+        //æŠŠæ—¶é—´æ—¥å¿—çš„æ—§æ—¥å¿—éƒ½æ‰«æå‡ºæ¥ï¼Œä¾¿äºåˆ é™¤å¤„ç†
         if (NAME_TIME_HOUR_DEVIDE_TIME == div_log_file_ ||
             NAME_SIXHOUR_DEVIDE_TIME == div_log_file_ ||
             NAME_TIME_DAY_DEVIDE_TIME == div_log_file_ ||
@@ -343,7 +343,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
     {
         cur_click = current_time.tv_sec / zce::ONE_HOUR_SECONDS;
 
-        //½µµÍ±È½ÏÆµÂÊ
+        //é™ä½æ¯”è¾ƒé¢‘ç‡
         if (current_click_ != cur_click)
         {
             current_click_ = cur_click;
@@ -351,8 +351,8 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
             new_file_name.reserve(PATH_MAX + 32);
             create_time_logname(current_time, new_file_name);
 
-            //Èç¹ûÈÕÖ¾ÎÄ¼şÃû³ÆÒÑ¾­¸üĞÂ,±íÊ¾Òª²úÉúÒ»¸öĞÂÎÄ¼ş,
-            //StringµÄ±È½ÏÊÇ±È½ÏºÄÊ±µÄ,µ«Ç°ÃæµÄÏŞ¶¨±£Ö¤1Ìì×î¶à±È½Ï24´Î,Ğ¡case
+            //å¦‚æœæ—¥å¿—æ–‡ä»¶åç§°å·²ç»æ›´æ–°,è¡¨ç¤ºè¦äº§ç”Ÿä¸€ä¸ªæ–°æ–‡ä»¶,
+            //Stringçš„æ¯”è¾ƒæ˜¯æ¯”è¾ƒè€—æ—¶çš„,ä½†å‰é¢çš„é™å®šä¿è¯1å¤©æœ€å¤šæ¯”è¾ƒ24æ¬¡,å°case
             if (log_file_name_ != new_file_name)
             {
                 to_new_file = true;
@@ -362,7 +362,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
     }
     else if (NAME_ID_DEVIDE_SIZE == div_log_file_)
     {
-        //Èç¹ûÈÕÖ¾ÎÄ¼şµÄ³ß´çÒÑ¾­³¬³ö
+        //å¦‚æœæ—¥å¿—æ–‡ä»¶çš„å°ºå¯¸å·²ç»è¶…å‡º
         if (size_log_file_ > max_size_log_file_)
         {
             to_new_file = true;
@@ -376,7 +376,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
     {
         std::string new_file_name;
         new_file_name.reserve(PATH_MAX + 32);
-        //Èç¹ûÈÕÖ¾ÎÄ¼şµÄ³ß´çÒÑ¾­³¬³ö
+        //å¦‚æœæ—¥å¿—æ–‡ä»¶çš„å°ºå¯¸å·²ç»è¶…å‡º
         if (size_log_file_ > max_size_log_file_)
         {
             to_new_file = true;
@@ -388,7 +388,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
     {
     }
 
-    //Èç¹ûÎÄ¼şÊÇ´ò¿ª×´Ì¬,µ«ÎÄ¼ş¾ä±ú²»Õı³££¬ÖØĞÂ´ò¿ªÒ»¸ö
+    //å¦‚æœæ–‡ä»¶æ˜¯æ‰“å¼€çŠ¶æ€,ä½†æ–‡ä»¶å¥æŸ„ä¸æ­£å¸¸ï¼Œé‡æ–°æ‰“å¼€ä¸€ä¸ª
     if (log_file_handle_.is_open())
     {
         if (log_file_handle_.good() == false)
@@ -397,10 +397,10 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
         }
     }
 
-    //Èç¹ûÉú³ÉÁËÒ»¸öĞÂµÄÎÄ¼şÃû³Æ
+    //å¦‚æœç”Ÿæˆäº†ä¸€ä¸ªæ–°çš„æ–‡ä»¶åç§°
     if (to_new_file == true )
     {
-        //¹Ø±ÕÔ­ÓĞµÄÎÄ¼ş.
+        //å…³é—­åŸæœ‰çš„æ–‡ä»¶.
         if (log_file_handle_.is_open())
         {
             log_file_handle_.close();
@@ -409,7 +409,7 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
         del_old_logfile();
 
         log_file_handle_.clear();
-        //´ò¿ªÖ®,
+        //æ‰“å¼€ä¹‹,
         log_file_handle_.open(log_file_name_.c_str(), std::ios::out | std::ios::app);
 
         size_log_file_ = static_cast<size_t>(log_file_handle_.tellp());
@@ -429,10 +429,10 @@ void ZCE_LogTrace_Basic::open_new_logfile(bool initiate, const timeval &current_
 
 void ZCE_LogTrace_Basic::del_old_logfile()
 {
-    //Èç¹û±£ÁôËùÓĞÈÕÖ¾£¬»òÕß·Ö¸îÈÕÖ¾µÄÊ±¼äÎª ÔÂ »òÕß Äê
+    //å¦‚æœä¿ç•™æ‰€æœ‰æ—¥å¿—ï¼Œæˆ–è€…åˆ†å‰²æ—¥å¿—çš„æ—¶é—´ä¸º æœˆ æˆ–è€… å¹´
     if (reserve_file_num_ > 0)
     {
-        //Èç¹ûÊÇ°´ÕÕÊ±¼ä½øĞĞ·Ö¸îÎÄ¼şµÄ
+        //å¦‚æœæ˜¯æŒ‰ç…§æ—¶é—´è¿›è¡Œåˆ†å‰²æ–‡ä»¶çš„
         if (NAME_TIME_HOUR_DEVIDE_TIME == div_log_file_ ||
             NAME_SIXHOUR_DEVIDE_TIME == div_log_file_ ||
             NAME_TIME_DAY_DEVIDE_TIME == div_log_file_ ||
@@ -440,7 +440,7 @@ void ZCE_LogTrace_Basic::del_old_logfile()
             NAME_TIME_YEAR_DEVIDE_TIME == div_log_file_ ||
             NAME_TIME_MILLISECOND_DEVIDE_SIZE == div_log_file_ )
         {
-            //Èç¹ûÈ·¶¨ÁËÖ»±£ÁôÒ»¶¨ÊıÁ¿µÄÈÕÖ¾ÎÄ¼ş,¶øÇÒÎÄ¼ş¹ı¶à,É¾³ıµô¶àÓàµÄÎÄ¼ş
+            //å¦‚æœç¡®å®šäº†åªä¿ç•™ä¸€å®šæ•°é‡çš„æ—¥å¿—æ–‡ä»¶,è€Œä¸”æ–‡ä»¶è¿‡å¤š,åˆ é™¤æ‰å¤šä½™çš„æ–‡ä»¶
             if (time_logfile_list_.size() > reserve_file_num_)
             {
                 auto dlenum = time_logfile_list_.size() - reserve_file_num_;
@@ -453,7 +453,7 @@ void ZCE_LogTrace_Basic::del_old_logfile()
             }
         }
 
-        //Èç¹ûÊÇ°²×°³ß´ç·ç¸ñÎÄ¼şµÄ
+        //å¦‚æœæ˜¯å®‰è£…å°ºå¯¸é£æ ¼æ–‡ä»¶çš„
         else if (NAME_ID_DEVIDE_SIZE == div_log_file_)
         {
             std::string dellogfname;
@@ -465,7 +465,7 @@ void ZCE_LogTrace_Basic::del_old_logfile()
             oldlogfilename.reserve(MAX_PATH + 16);
             renamefilename.reserve(MAX_PATH + 16);
 
-            // ÖØÃüÃûĞèÒª´ÓºóÃæ¿ªÊ¼ÍùÇ°ÖØÃüÃû
+            // é‡å‘½åéœ€è¦ä»åé¢å¼€å§‹å¾€å‰é‡å‘½å
             for (size_t i = reserve_file_num_ ; i > 0; --i)
             {
                 create_id_logname(i - 1, oldlogfilename);
@@ -486,7 +486,7 @@ void ZCE_LogTrace_Basic::del_old_logfile()
 }
 
 
-//¸ù¾İÈÕÆÚµÃµ½ÎÄ¼şÃû³Æ
+//æ ¹æ®æ—¥æœŸå¾—åˆ°æ–‡ä»¶åç§°
 void ZCE_LogTrace_Basic::create_time_logname(const timeval &cur_time,
                                              std::string &logfilename)
 {
@@ -497,7 +497,7 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval &cur_time,
 
     switch (div_log_file_)
     {
-        //ÒÔĞ¡Ê±Îªµ¥Î»µÃµ½ÎÄ¼şÃû³Æ
+        //ä»¥å°æ—¶ä¸ºå•ä½å¾—åˆ°æ–‡ä»¶åç§°
         case NAME_TIME_HOUR_DEVIDE_TIME:
         case NAME_SIXHOUR_DEVIDE_TIME:
         {
@@ -545,7 +545,7 @@ void ZCE_LogTrace_Basic::create_time_logname(const timeval &cur_time,
 
 
 
-//¸ù¾İIDµÃµ½ÎÄ¼şÃû³Æf
+//æ ¹æ®IDå¾—åˆ°æ–‡ä»¶åç§°f
 void ZCE_LogTrace_Basic::create_id_logname(size_t logfileid, std::string &log_filename)
 {
     char tmpbuf[32];
@@ -566,7 +566,7 @@ void ZCE_LogTrace_Basic::create_id_logname(size_t logfileid, std::string &log_fi
     log_filename += tmpbuf;
 }
 
-//½«ÈÕÖ¾µÄÍ·²¿ĞÅÏ¢Êä³öµ½Ò»¸öStringbufÖĞ
+//å°†æ—¥å¿—çš„å¤´éƒ¨ä¿¡æ¯è¾“å‡ºåˆ°ä¸€ä¸ªStringbufä¸­
 void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
                                            const timeval &now_time,
                                            char *log_tmp_buffer,
@@ -576,19 +576,19 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
 
     sz_use_len = 0;
 
-    //Èç¹û¼ÍÂ¼Ê±¼ä
+    //å¦‚æœçºªå½•æ—¶é—´
     if (record_info_ & LOG_HEAD_RECORD_CURRENTTIME)
     {
-        //×ª»»ÎªÓï¾ä
+        //è½¬æ¢ä¸ºè¯­å¥
         zce::timestamp(&now_time, log_tmp_buffer + sz_use_len, sz_buf_len);
 
-        //±ğ¼ÆËãÁË£¬¿ìµã
+        //åˆ«è®¡ç®—äº†ï¼Œå¿«ç‚¹
         sz_use_len = zce::TIMESTR_ISO_USEC_LEN;
 
         sz_buf_len -= sz_use_len;
     }
 
-    //Èç¹û¼ÇÂ¼ÈÕÖ¾¼¶±ğ
+    //å¦‚æœè®°å½•æ—¥å¿—çº§åˆ«
     if (record_info_ & LOG_HEAD_RECORD_LOGLEVEL)
     {
         switch (outlevel)
@@ -623,7 +623,7 @@ void ZCE_LogTrace_Basic::stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
         }
     }
 
-    //Èç¹û¼ÍÂ¼µ±Ç°µÄPID
+    //å¦‚æœçºªå½•å½“å‰çš„PID
     if (record_info_ & LOG_HEAD_RECORD_PROCESSID)
     {
         sz_use_len += snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, "[PID:%u]", static_cast<unsigned int>(zce::getpid()));
@@ -641,26 +641,26 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
                                          char *log_tmp_buffer,
                                          size_t sz_use_len)
 {
-    //Èç¹ûÒªÏß³ÌÍ¬²½£¬ÔÚÕâ¸öµØ·½¼ÓËø£¬ÓÉÓÚÊ¹ÓÃÁËÌõ¼şÅĞ¶ÏÊÇ·ñ¼ÓËø£¬¶ø²»ÊÇÄ£°æ£¬ËùÒÔÕâ¸öµØ·½Ã»ÓĞÓÃGRUAD£¬
+    //å¦‚æœè¦çº¿ç¨‹åŒæ­¥ï¼Œåœ¨è¿™ä¸ªåœ°æ–¹åŠ é”ï¼Œç”±äºä½¿ç”¨äº†æ¡ä»¶åˆ¤æ–­æ˜¯å¦åŠ é”ï¼Œè€Œä¸æ˜¯æ¨¡ç‰ˆï¼Œæ‰€ä»¥è¿™ä¸ªåœ°æ–¹æ²¡æœ‰ç”¨GRUADï¼Œ
     if (if_thread_synchro_)
     {
         protect_lock_.lock();
     }
 
-    //¼ÇÂ¼µ½ÎÄ¼şÖĞ
+    //è®°å½•åˆ°æ–‡ä»¶ä¸­
     if ((output_way_ & LOG_OUTPUT_FILE) )
     {
-        //µÃµ½ĞÂµÄÎÄ¼şÃû×Ö
+        //å¾—åˆ°æ–°çš„æ–‡ä»¶åå­—
         open_new_logfile(false, now_time);
 
-        //Èç¹ûÎÄ¼ş×´Ì¬OK
+        //å¦‚æœæ–‡ä»¶çŠ¶æ€OK
         if (log_file_handle_)
         {
             log_file_handle_.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
 
-            //±ØĞëµ÷ÓÃflush½øĞĞÊä³ö,ÒòÎªÈç¹ûÓĞ»º³åÄã¾Í²»ÄÜÁ¢¼´¿´µ½ÈÕÖ¾Êä³öÁË£¬
-            //Õâ¶ù±ØĞëÃ÷°×£¬²»Ê¹ÓÃ»º³å»áÈÃÈÕÖ¾µÄËÙ¶ÈÏÂ½µºÜ¶àºÜ¶à,ºÜ¶àºÜ¶à,
-            //ÊÇ·ñ¿ÉÒÔÓÅ»¯ÄØ£¬ÕâÊÇÒ»¸öÁ½ÄÑÎÊÌâ
+            //å¿…é¡»è°ƒç”¨flushè¿›è¡Œè¾“å‡º,å› ä¸ºå¦‚æœæœ‰ç¼“å†²ä½ å°±ä¸èƒ½ç«‹å³çœ‹åˆ°æ—¥å¿—è¾“å‡ºäº†ï¼Œ
+            //è¿™å„¿å¿…é¡»æ˜ç™½ï¼Œä¸ä½¿ç”¨ç¼“å†²ä¼šè®©æ—¥å¿—çš„é€Ÿåº¦ä¸‹é™å¾ˆå¤šå¾ˆå¤š,å¾ˆå¤šå¾ˆå¤š,
+            //æ˜¯å¦å¯ä»¥ä¼˜åŒ–å‘¢ï¼Œè¿™æ˜¯ä¸€ä¸ªä¸¤éš¾é—®é¢˜
             log_file_handle_.flush();
 
             //size_log_file_ = static_cast<size_t>( log_file_handle_.tellp());
@@ -668,20 +668,20 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
         }
     }
 
-    //Èç¹ûÓĞÍ¬²½ÒªÇóÊä³öµÄµØ·½
+    //å¦‚æœæœ‰åŒæ­¥è¦æ±‚è¾“å‡ºçš„åœ°æ–¹
     if (output_way_ & LOG_OUTPUT_STDOUT)
     {
-        //coutÊÇĞĞ»º³å
+        //coutæ˜¯è¡Œç¼“å†²
         std::cout.write(log_tmp_buffer, static_cast<std::streamsize>(sz_use_len));
     }
 
     if (output_way_ & LOG_OUTPUT_ERROUT)
     {
-        //cerrÃ»ÓĞ»º³å£¬ÔÆ·ÉËµµÄ
+        //cerræ²¡æœ‰ç¼“å†²ï¼Œäº‘é£è¯´çš„
         std::cerr.write(log_tmp_buffer, static_cast<std::streamsize>( sz_use_len));
     }
 
-    //WIN32 ÏÂµÄµ÷ÊÔÊä³ö,Ïòµ÷ÊÔ´°¿ÚÊä³ö
+    //WIN32 ä¸‹çš„è°ƒè¯•è¾“å‡º,å‘è°ƒè¯•çª—å£è¾“å‡º
 #ifdef ZCE_OS_WINDOWS
     if (output_way_ & LOG_OUTPUT_WINDBG)
     {
@@ -690,14 +690,14 @@ void ZCE_LogTrace_Basic::output_log_info(const timeval &now_time,
 
 #endif
 
-    //Èç¹ûÓĞÏß³ÌÍ¬²½£¬ÔÚÕâ¸öµØ·½½âËø
+    //å¦‚æœæœ‰çº¿ç¨‹åŒæ­¥ï¼Œåœ¨è¿™ä¸ªåœ°æ–¹è§£é”
     if (if_thread_synchro_)
     {
         protect_lock_.unlock();
     }
 }
 
-//Í¨¹ı×Ö·û´®µÃµ½¶ÔÓ¦µÄÈÕÖ¾²ßÂÔ,
+//é€šè¿‡å­—ç¬¦ä¸²å¾—åˆ°å¯¹åº”çš„æ—¥å¿—ç­–ç•¥,
 ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::log_priorities(const char *str_priority)
 {
     if (strcasecmp (str_priority,  ("TRACE")) == 0)
@@ -731,7 +731,7 @@ ZCE_LOG_PRIORITY ZCE_LogTrace_Basic::log_priorities(const char *str_priority)
 }
 
 
-//Í¨¹ı×Ö·û´®µÃµ½¶ÔÓ¦µÄÈÕÖ¾²ßÂÔ,
+//é€šè¿‡å­—ç¬¦ä¸²å¾—åˆ°å¯¹åº”çš„æ—¥å¿—ç­–ç•¥,
 ZCE_LOGFILE_NAME_DEVIDE ZCE_LogTrace_Basic::log_file_devide(const char *str_devide)
 {
     if (strcasecmp(str_devide, ("SIZE_ID")) == 0)

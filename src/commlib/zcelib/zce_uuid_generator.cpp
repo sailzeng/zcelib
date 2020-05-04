@@ -14,7 +14,7 @@ ZCE_UUID64::~ZCE_UUID64()
 {
 }
 
-// < ÔËËã·û
+// < è¿ç®—ç¬¦
 bool ZCE_UUID64::operator < (const ZCE_UUID64 &others) const
 {
     if (this->u_uint64_ < others.u_uint64_)
@@ -25,7 +25,7 @@ bool ZCE_UUID64::operator < (const ZCE_UUID64 &others) const
     return false;
 }
 
-// == ÔËËã·û
+// == è¿ç®—ç¬¦
 bool ZCE_UUID64::operator == (const ZCE_UUID64 &others) const
 {
     if (this->u_uint64_ == others.u_uint64_)
@@ -36,11 +36,11 @@ bool ZCE_UUID64::operator == (const ZCE_UUID64 &others) const
     return false;
 }
 
-//×ª»»Îª×Ö·û´®
+//è½¬æ¢ä¸ºå­—ç¬¦ä¸²
 const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len, size_t &use_buf) const
 {
 
-    //Èç¹û´«µİµÄBUFFER¿Õ¼ä²»¹»£¬Ö±½Ó·µ»ØNULL
+    //å¦‚æœä¼ é€’çš„BUFFERç©ºé—´ä¸å¤Ÿï¼Œç›´æ¥è¿”å›NULL
     if (buf_len < LEN_OF_ZCE_UUID64_STR + 1)
     {
         return NULL;
@@ -55,7 +55,7 @@ const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len, size_t &use_buf)
     return buffer;
 }
 
-// ×ªÒÆ³ÉÒ»¸öuint64_tµÄ½á¹¹
+// è½¬ç§»æˆä¸€ä¸ªuint64_tçš„ç»“æ„
 ZCE_UUID64::operator uint64_t ()
 {
     return this->u_uint64_;
@@ -65,10 +65,10 @@ ZCE_UUID64::operator uint64_t ()
 Class           : ZCE_UUID64_Generator
 ************************************************************************************************************/
 
-//ÊµÀıÖ¸Õë
+//å®ä¾‹æŒ‡é’ˆ
 ZCE_UUID64_Generator *ZCE_UUID64_Generator::instance_ = NULL;
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_UUID64_Generator::ZCE_UUID64_Generator():
     generator_type_(UUID64_GENERATOR_INVALID)
 {
@@ -77,8 +77,8 @@ ZCE_UUID64_Generator::~ZCE_UUID64_Generator()
 {
 }
 
-//Ëæ»úÊıµÄÖÖ×Ó£¬×¢ÒâÈç¹ûÊÇÊÇÔÚÒ»¸ö·Ö²¼Ê½ÏµÍ³ÖĞÕÒÖÖ×Ó£¬
-//Ê±¼äÎ´±ØÌØ±ğºÏÀí£¬Ò²ĞíÓÃIPµØÖ·¼ÆËãµÃµ½Ò»¸öÖÖ×Ó¸üºÃÒ»Ğ©
+//éšæœºæ•°çš„ç§å­ï¼Œæ³¨æ„å¦‚æœæ˜¯æ˜¯åœ¨ä¸€ä¸ªåˆ†å¸ƒå¼ç³»ç»Ÿä¸­æ‰¾ç§å­ï¼Œ
+//æ—¶é—´æœªå¿…ç‰¹åˆ«åˆç†ï¼Œä¹Ÿè®¸ç”¨IPåœ°å€è®¡ç®—å¾—åˆ°ä¸€ä¸ªç§å­æ›´å¥½ä¸€äº›
 void ZCE_UUID64_Generator::random_seed(uint32_t seed)
 {
     generator_type_ = UUID64_GENERATOR_RANDOM;
@@ -86,12 +86,12 @@ void ZCE_UUID64_Generator::random_seed(uint32_t seed)
     mt_11213b_random_.srand(seed);
 }
 
-//²úÉúÒ»¸öUUID64
+//äº§ç”Ÿä¸€ä¸ªUUID64
 ZCE_UUID64 ZCE_UUID64_Generator::random_gen()
 {
     ZCE_ASSERT(UUID64_GENERATOR_RANDOM == generator_type_);
 
-    //·Ö±ğÓÃ2¸öËæ»úÊı·¢ÉúÆ÷µÃµ½Ëæ»úÊı
+    //åˆ†åˆ«ç”¨2ä¸ªéšæœºæ•°å‘ç”Ÿå™¨å¾—åˆ°éšæœºæ•°
     ZCE_UUID64 uuid64_ret;
 
     uuid64_ret.u_2uint32_[0] = mt_19937_random_.rand();
@@ -100,7 +100,7 @@ ZCE_UUID64 ZCE_UUID64_Generator::random_gen()
     return uuid64_ret;
 }
 
-//ÒÔÊ±¼äÎª»ùÊıµÄ³õÊ¼»¯£¬
+//ä»¥æ—¶é—´ä¸ºåŸºæ•°çš„åˆå§‹åŒ–ï¼Œ
 void ZCE_UUID64_Generator::time_radix(uint16_t identity, uint32_t radix )
 {
     generator_type_ = UUID64_GENERATOR_TIME;
@@ -109,7 +109,7 @@ void ZCE_UUID64_Generator::time_radix(uint16_t identity, uint32_t radix )
     time_radix_seed_.u_16_48_.data2_ = static_cast<uint64_t>(radix) * 0x10;
 }
 
-//ÒÔÊ±¼äÎª»ùÊı²úÉúUUID64
+//ä»¥æ—¶é—´ä¸ºåŸºæ•°äº§ç”ŸUUID64
 ZCE_UUID64 ZCE_UUID64_Generator::timeradix_gen()
 {
     ZCE_ASSERT(UUID64_GENERATOR_TIME == generator_type_);
@@ -133,7 +133,7 @@ ZCE_UUID128::~ZCE_UUID128()
 {
 }
 
-// < ÔËËã·û
+// < è¿ç®—ç¬¦
 bool ZCE_UUID128::operator < (const ZCE_UUID128 &others) const
 {
     if (u_4uint32_[3] < others.u_4uint32_[3])
@@ -179,7 +179,7 @@ bool ZCE_UUID128::operator < (const ZCE_UUID128 &others) const
     }
 }
 
-// == ÔËËã·û
+// == è¿ç®—ç¬¦
 bool ZCE_UUID128::operator == (const ZCE_UUID128 &others) const
 {
     if (this->u_4uint32_[0] == others.u_4uint32_[0] &&
@@ -193,17 +193,17 @@ bool ZCE_UUID128::operator == (const ZCE_UUID128 &others) const
     return false;
 }
 
-//×ª»»Îª×Ö·û´®,Õâ¶ù²ÉÓÃµÄ¸ñÊ½ÊÇ±ê×¼µÄ8-4-4-4-12£¬¶ø²»ÊÇGUIDµÄ8-4-4-16µÄ¸ñÊ½
+//è½¬æ¢ä¸ºå­—ç¬¦ä¸²,è¿™å„¿é‡‡ç”¨çš„æ ¼å¼æ˜¯æ ‡å‡†çš„8-4-4-4-12ï¼Œè€Œä¸æ˜¯GUIDçš„8-4-4-16çš„æ ¼å¼
 const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len, size_t &use_buf) const
 {
 
-    //Èç¹û´«µİµÄBUFFER¿Õ¼ä²»¹»£¬¸É´àÊ²Ã´¶¼²»×ö,Ö±½Ó·µ»ØNULL,³¤¶ÈÒª¿¼ÂÇ'\0'
+    //å¦‚æœä¼ é€’çš„BUFFERç©ºé—´ä¸å¤Ÿï¼Œå¹²è„†ä»€ä¹ˆéƒ½ä¸åš,ç›´æ¥è¿”å›NULL,é•¿åº¦è¦è€ƒè™‘'\0'
     if (buf_len < LEN_OF_ZCE_UUID128_STR + 1)
     {
         return NULL;
     }
 
-    //Êä³ö8-4-4-4-12µÄ¸ñÊ½
+    //è¾“å‡º8-4-4-4-12çš„æ ¼å¼
     int ret = snprintf(buffer, buf_len, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
                        this->u_16uint8_[15],
                        this->u_16uint8_[14],
@@ -234,10 +234,10 @@ const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len, size_t &use_buf
 Class           : ZCE_UUID128_Generator
 ************************************************************************************************************/
 
-//ÊµÀıÖ¸Õë
+//å®ä¾‹æŒ‡é’ˆ
 ZCE_UUID128_Generator *ZCE_UUID128_Generator::instance_ = NULL;
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_UUID128_Generator::ZCE_UUID128_Generator() :
     generator_type_(UUID128_GENERATOR_INVALID)
 {
@@ -246,8 +246,8 @@ ZCE_UUID128_Generator::~ZCE_UUID128_Generator()
 {
 }
 
-//Ëæ»úÊıµÄÖÖ×Ó£¬×¢ÒâÈç¹ûÊÇÊÇÔÚÒ»¸ö·Ö²¼Ê½ÏµÍ³ÖĞÕÒÖÖ×Ó£¬
-//Ê±¼äÎ´±ØÌØ±ğºÏÀí£¬Ò²ĞíÓÃIPµØÖ·¼ÆËãµÃµ½Ò»¸öÖÖ×Ó¸üºÃÒ»Ğ©
+//éšæœºæ•°çš„ç§å­ï¼Œæ³¨æ„å¦‚æœæ˜¯æ˜¯åœ¨ä¸€ä¸ªåˆ†å¸ƒå¼ç³»ç»Ÿä¸­æ‰¾ç§å­ï¼Œ
+//æ—¶é—´æœªå¿…ç‰¹åˆ«åˆç†ï¼Œä¹Ÿè®¸ç”¨IPåœ°å€è®¡ç®—å¾—åˆ°ä¸€ä¸ªç§å­æ›´å¥½ä¸€äº›
 void ZCE_UUID128_Generator::random_seed(uint32_t seed)
 {
     generator_type_ = UUID128_GENERATOR_RANDOM;
@@ -255,12 +255,12 @@ void ZCE_UUID128_Generator::random_seed(uint32_t seed)
     mt_11213b_random_.srand(seed);
 }
 
-//²úÉúÒ»¸öUUID64
+//äº§ç”Ÿä¸€ä¸ªUUID64
 ZCE_UUID128 ZCE_UUID128_Generator::random_gen()
 {
     ZCE_ASSERT(UUID128_GENERATOR_RANDOM == generator_type_);
 
-    //·Ö±ğÓÃ2¸öËæ»úÊı·¢ÉúÆ÷µÃµ½Ëæ»úÊı
+    //åˆ†åˆ«ç”¨2ä¸ªéšæœºæ•°å‘ç”Ÿå™¨å¾—åˆ°éšæœºæ•°
     ZCE_UUID128 uuid64_ret;
 
     uuid64_ret.u_4uint32_[0] = mt_19937_random_.rand();
@@ -271,7 +271,7 @@ ZCE_UUID128 ZCE_UUID128_Generator::random_gen()
     return uuid64_ret;
 }
 
-//ÒÔÊ±¼äÎª»ùÊıµÄ³õÊ¼»¯£¬
+//ä»¥æ—¶é—´ä¸ºåŸºæ•°çš„åˆå§‹åŒ–ï¼Œ
 void ZCE_UUID128_Generator::time_radix(uint32_t identity, uint32_t radix)
 {
     generator_type_ = UUID128_GENERATOR_TIME;
@@ -280,7 +280,7 @@ void ZCE_UUID128_Generator::time_radix(uint32_t identity, uint32_t radix)
     time_radix_seed_.u_32_32_64_.data1_ = radix;
 }
 
-//ÒÔÊ±¼äÎª»ùÊı²úÉúUUID64
+//ä»¥æ—¶é—´ä¸ºåŸºæ•°äº§ç”ŸUUID64
 ZCE_UUID128 ZCE_UUID128_Generator::timeradix_gen()
 {
     ZCE_ASSERT(UUID128_GENERATOR_TIME == generator_type_);

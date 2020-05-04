@@ -7,7 +7,7 @@
 
 //========================================================================================
 
-///¹¹Ôìº¯Êý
+///æž„é€ å‡½æ•°
 ZCE_Serialize_Write::ZCE_Serialize_Write(char *write_buf, size_t buf_len) :
     is_good_(true),
     write_buf_(write_buf),
@@ -165,7 +165,7 @@ void ZCE_ClassSerialize_WriteHelp<std::string>::write_help(ZCE_Serialize_Write *
 
 //========================================================================================
 
-//¹¹Ôìº¯Êý
+//æž„é€ å‡½æ•°
 ZCE_Serialize_Read::ZCE_Serialize_Read(const char *read_buf, size_t buf_len) :
     is_good_(true),
     read_buf_(read_buf),

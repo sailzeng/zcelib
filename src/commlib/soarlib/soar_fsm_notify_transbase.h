@@ -5,7 +5,7 @@
 #include "soar_fsm_trans_base.h"
 #include "soar_fsm_notify_trans_mgr.h"
 
-//ÓĞµã»³ÒÉÎÒÊÇ²»ÊÇÄ£°å±äÌ¬ÁË¡£TMD¡£
+//æœ‰ç‚¹æ€€ç–‘æˆ‘æ˜¯ä¸æ˜¯æ¨¡æ¿å˜æ€äº†ã€‚TMDã€‚
 /******************************************************************************************
 class Notify_Trans_Base
 ******************************************************************************************/
@@ -14,20 +14,20 @@ class Notify_Trans_Base : public Transaction_Base
 {
 protected:
 
-    //¹ÜÀíÆ÷
+    //ç®¡ç†å™¨
     NotifyTrans_Manger<_ZCE_SYNCH>    *trans_notify_mgr_;
 
 public:
 
-    //Õâ¶øÒªÇó´«µİµÄTransaction_Manager *ÊÇ×ÓÀàNotifyTrans_MangerµÄ£¬
-    //±ØĞëÈç´Ë¡£
-    //Õâ¶ùÊÇÒ»¸öµäĞÍµÄÉè¼ÆÁ½ÄÑ£¬Èç¹ûÊ¹ÓÃÏòÏÂË·ĞÍDOWNCAST£¬ÎŞÒâÊÇ³óÂªµÄ¡£
-    //µ«ÊÇÎÒ¾õµÃÄÇ²¿·Ö¹¦ÄÜ»¹ÊÇÔÚNotifyTrans_Manger±È½ÏºÃ¡£ÓÃvirualº¯ÊıÒ²²»ÊÇÌ«ºÃ,ÉõÖÁ²»¿ÉÄÜ£¬ÎÒÓÃÁËÄ£°åº¯Êı¡£ÎÒ¡£¡£¡£¡£
+    //è¿™è€Œè¦æ±‚ä¼ é€’çš„Transaction_Manager *æ˜¯å­ç±»NotifyTrans_Mangerçš„ï¼Œ
+    //å¿…é¡»å¦‚æ­¤ã€‚
+    //è¿™å„¿æ˜¯ä¸€ä¸ªå…¸å‹çš„è®¾è®¡ä¸¤éš¾ï¼Œå¦‚æœä½¿ç”¨å‘ä¸‹æœ”å‹DOWNCASTï¼Œæ— æ„æ˜¯ä¸‘é™‹çš„ã€‚
+    //ä½†æ˜¯æˆ‘è§‰å¾—é‚£éƒ¨åˆ†åŠŸèƒ½è¿˜æ˜¯åœ¨NotifyTrans_Mangeræ¯”è¾ƒå¥½ã€‚ç”¨virualå‡½æ•°ä¹Ÿä¸æ˜¯å¤ªå¥½,ç”šè‡³ä¸å¯èƒ½ï¼Œæˆ‘ç”¨äº†æ¨¡æ¿å‡½æ•°ã€‚æˆ‘ã€‚ã€‚ã€‚ã€‚
     Notify_Trans_Base(Transaction_Manager *trans_notify_mgr, unsigned int create_cmd)
         : Transaction_Base(trans_notify_mgr, create_cmd)
         , trans_notify_mgr_(NULL)
     {
-        //±ØĞëÒªÇótrans_notify_mgrÖÁÉÙÊÇtrans_notify_mgrµÄ×ÓÀà£¬
+        //å¿…é¡»è¦æ±‚trans_notify_mgrè‡³å°‘æ˜¯trans_notify_mgrçš„å­ç±»ï¼Œ
         trans_notify_mgr_ = dynamic_cast<NotifyTrans_Manger<_ZCE_SYNCH>* > (trans_notify_mgr);
         ZCE_ASSERT(trans_notify_mgr_);
     }
@@ -58,53 +58,53 @@ protected:
 
 };
 
-//Á½¸ötypedef
+//ä¸¤ä¸ªtypedef
 
-//ÓÃÏß³ÌËøµÄÀàNotify Trans Àà
+//ç”¨çº¿ç¨‹é”çš„ç±»Notify Trans ç±»
 typedef Notify_Trans_Base<ZCE_MT_SYNCH> MT_NOTIFY_TRANS_BASE ;
-//ÎŞËøµÄÀàNotify Trans Àà
+//æ— é”çš„ç±»Notify Trans ç±»
 typedef Notify_Trans_Base<ZCE_NULL_SYNCH> NULL_NOTIFY_TRANS_BASE ;
 
 /******************************************************************************************
-class Notify_Trans_Abnormal_Base ÔÚÄ³Ğ©ÌØÊâÊ±ºò(±ÜÃâ¶à´Î¿½±´),Ê±Ê¹ÓÃ£¬³ı·Ç¶ÔĞÔÄÜÓĞÇ¿ÁÒµÄ°®ºÃ£¬·ñÔò²»ÒªÓÃ
-ËûÊ¹ÓÃµÄÇ°ÌáÊÇ£º
-1.ÄãÊÇÇ¿ÁÒµÄĞÔÄÜ°®ºÃÕß£¬Ï£Íû±ÜÃâÒ»´Î¿½±´
-2.ÄãÖªµÀÄãÒªÊ¹ÓÃµÄFrameµÄ³¤¶È,¿ÉÒÔ×Ô¼º½øĞĞ¹ÜÀí·ÖÅä
-3.ÄãÖªµÀ×Ô¼ºÔÚ×öÊ²Ã´£¬²¢ÇÒÔ¸Òâ³Ğµ£ºó¹û
+class Notify_Trans_Abnormal_Base åœ¨æŸäº›ç‰¹æ®Šæ—¶å€™(é¿å…å¤šæ¬¡æ‹·è´),æ—¶ä½¿ç”¨ï¼Œé™¤éå¯¹æ€§èƒ½æœ‰å¼ºçƒˆçš„çˆ±å¥½ï¼Œå¦åˆ™ä¸è¦ç”¨
+ä»–ä½¿ç”¨çš„å‰ææ˜¯ï¼š
+1.ä½ æ˜¯å¼ºçƒˆçš„æ€§èƒ½çˆ±å¥½è€…ï¼Œå¸Œæœ›é¿å…ä¸€æ¬¡æ‹·è´
+2.ä½ çŸ¥é“ä½ è¦ä½¿ç”¨çš„Frameçš„é•¿åº¦,å¯ä»¥è‡ªå·±è¿›è¡Œç®¡ç†åˆ†é…
+3.ä½ çŸ¥é“è‡ªå·±åœ¨åšä»€ä¹ˆï¼Œå¹¶ä¸”æ„¿æ„æ‰¿æ‹…åæœ
 
-Ê¹ÓÃNotify_Trans_Abnormal_BaseµÄ¹ı³Ì±ØĞëÊÇ
+ä½¿ç”¨Notify_Trans_Abnormal_Baseçš„è¿‡ç¨‹å¿…é¡»æ˜¯
 malloc_abnormalframe
-Ê¹ÓÃget_abnormal_frame£¬
+ä½¿ç”¨get_abnormal_frameï¼Œ
 ******************************************************************************************/
 class Notify_Trans_Abnormal_Base : public Notify_Trans_Base<ZCE_MT_SYNCH>
 {
 
-    //ÉèÖÃ³ÉprivateÊÇÓĞÄ¿µÄµÄ£¬¾ÍÊÇ²»ÈÃÄãÓÃ¡£
+    //è®¾ç½®æˆprivateæ˜¯æœ‰ç›®çš„çš„ï¼Œå°±æ˜¯ä¸è®©ä½ ç”¨ã€‚
 private:
-    //ÔÚÄ³Ğ©ÌØÊâÊ±ºò(±ÜÃâ¶à´Î¿½±´)£¬Òª×Ô¼º¹ÜÀíÏòSEND QUEUE·¢ËÍµÄFRAME
+    //åœ¨æŸäº›ç‰¹æ®Šæ—¶å€™(é¿å…å¤šæ¬¡æ‹·è´)ï¼Œè¦è‡ªå·±ç®¡ç†å‘SEND QUEUEå‘é€çš„FRAME
     Zerg_App_Frame                        *abnormal_frame_;
 
 public:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr, unsigned int create_cmd);
 protected:
     //
     virtual ~Notify_Trans_Abnormal_Base();
 public:
 
-    //·ÖÅäµÃµ½Ò»¸öÄ³¸ö³¤¶ÈµÄAPP Frame
+    //åˆ†é…å¾—åˆ°ä¸€ä¸ªæŸä¸ªé•¿åº¦çš„APP Frame
     void malloc_abnormalframe(size_t frame_len);
 
-    //È¡µÃFRAME½øĞĞ²Ù×÷£¬²»Òª¸Ä±ä³¤¶ÈµÈFRAME HEADµÄÊı¾İ£¬Êı
+    //å–å¾—FRAMEè¿›è¡Œæ“ä½œï¼Œä¸è¦æ”¹å˜é•¿åº¦ç­‰FRAME HEADçš„æ•°æ®ï¼Œæ•°
     Zerg_App_Frame *get_abnormal_frame();
-    //È¡µÃFRAMEµÄÊı¾İÇøÓÃÓÚ²Ù×÷
+    //å–å¾—FRAMEçš„æ•°æ®åŒºç”¨äºæ“ä½œ
     char *get_abnormal_framedata();
 
-    //Í¶ËÍ
+    //æŠ•é€
     int pushbak_mgr_sendqueue(unsigned int cmd,
                               unsigned int option);
 
-    //Ôö¼ÓÁË»ØÊÕsndqueue_frame_µÄ¹¦ÄÜ
+    //å¢åŠ äº†å›æ”¶sndqueue_frame_çš„åŠŸèƒ½
     virtual void finish();
 };
 

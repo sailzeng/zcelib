@@ -1,130 +1,13 @@
-/*!
+é”˜å¡Šæ•‡?*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   illusion_excel_file.cpp
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2009Äê4ÔÂ3ÈÕ
-* @brief
+* @date       2009æ¥ ?é–¾?é—€?* @brief
 *
 *
 * @details
 *
 *
 *
-* @note           Õâ¸öÀàÊÇ´ÓÍøÉÏÏÂÔØµÄ£¬ÎÒ×øÏíÆä³É£¬¸ĞĞ»Ô­À´µÄ×÷Õß£¬ÎÒÖ»ÊÔÊÔÊÇ
-*                 ×öÁËÒ»ÏÂĞŞÕı¡£
-*                 ĞŞÕı°üÀ¨Ò»Ğ©²ÎÊıµÄÊ¹ÓÃ²»½÷É÷£¬bool ¸ÄÎªBOOLµÈ,¶ÔÓÚ¶ÔÏó¹ØÏµ£¬
-*                 ÎÒ¸ÄÁËÒ»²¿·Ö£¬¸Ğ¾õÔ­À´µÄ×÷Õß¶ÔÓÚOOµÄË¼Â·²¿·Ö²»ÊÇºÜÇå³ş¡£
-*                 ¶ÔÓÚÕâÀà¶«Î÷OLE£¬ÎÒÍêÈ«²»ÁË½â£¬ÓÃ±ğÈË·â×°µÄ¶«Î÷¸Ğ¾õ»¹ÊÇ·ÅĞÄÁË
-*                 ºÜ¶à£¬¿ªÔ´£¬Î°´óµÄ¿ªÔ´¼ÓÉÏ C++
-*                 http://blog.csdn.net/gyssoft/archive/2007/04/29/1592104.aspx
-*
-*                 OLE¶ÁĞ´EXCEL¶¼±È½ÏÂı£¬ËùÒÔÓ¦¸Ã¾¡Á¿¼õÉÙOLEµÄ´ÎÊı
-*                 ¶ÔÓÚ¶ÁÈ¡£¬»¹ÓĞ½â¾ö·½·¨£¬ÇëÊÔÓÃÒ»ÏÂÔ¤¼ÓÔØµÄ·½Ê½£¬Õâ¸ö·½·¨Ò»´Î¼ÓÔØ
-*                 ËùÓĞµÄ¶ÁÈ¡Êı¾İ,Èç´ËËÙ¶È¾Í·É¿ìÁË¡£
-*                 ¾İËµĞ´Êı¾İÊÇÃ»ÓĞÊ²Ã´·½·¨¼Ó¿ìµÄ
-*                 http://topic.csdn.net/t/20030626/21/1962211.html
-*
-*                 Ôö¼ÓÁËÒ»Ğ©Ğ´Èë·½Ê½µÄ´úÂë£¬±£Ö¤¿ÉÒÔĞ´ÈëEXCELÊı¾İÇø£¬µ«ÊÇ¶ÔÓÚ±£´æ£¬
-*                 ÎÒ·¢ÏÖÈç¹ûµ÷ÓÃCLOSE²¢ÇÒ±£´æµÄ·½Ê½£¬ËÙ¶È·Ç³£Âı£¬ÎÒ²»Àí½âÎªÊ²Ã´¡£
-*                 ËùÒÔÎÒ°ÉEXCEL´ò¿ªÁË£¬ÈÃÄã½øĞĞºóĞø¹ÜÀí,
-*
-*/
-#pragma once
-
-
-class Illusion_ExcelFile
-{
-
-public:
-
-    //
-    Illusion_ExcelFile();
-    virtual ~Illusion_ExcelFile();
-
-protected:
-    //
-    static CApplication excel_application_;
-public:
-    //
-    void show_in_excel(BOOL bShow);
-
-    //¼ì²éÒ»¸öCELLÊÇ·ñÊÇ×Ö·û´®
-    BOOL    is_cell_string(long iRow, long iColumn);
-    //¼ì²éÒ»¸öCELLÊÇ·ñÊÇÊıÖµ
-    BOOL    is_cell_number(long iRow, long iColumn);
-
-    //µÃµ½Ò»¸öCELLµÄCString
-    CString get_cell_cstring(long iRow, long iColumn);
-    //µÃµ½ÕûÊı
-    int     get_cell_int(long iRow, long iColumn);
-    //µÃµ½doubleµÄÊı¾İ
-    double  get_celldouble(long iRow, long iColumn);
-
-    //È¡µÃĞĞµÄ×ÜÊı
-    long row_count();
-    //È¡µÃÁĞµÄ×ÜÊı
-    long column_count();
-
-    //Ê¹ÓÃÄ³¸öshet£¬shit£¬shit
-    BOOL load_sheet(long table_index, BOOL pre_load = FALSE);
-    //Í¨¹ıÃû³ÆÊ¹ÓÃÄ³¸ösheet£¬
-    BOOL load_sheet(const CString &sheet, BOOL pre_load = FALSE);
-    //Í¨¹ıĞòºÅÈ¡µÃÄ³¸öSheetµÄÃû³Æ
-    CString sheet_name(long table_index);
-
-    //µÃµ½SheetµÄ×ÜÊı
-    int sheets_count();
-
-    //´ò¿ªÎÄ¼ş
-    BOOL open_excelfile(const CString &file_name);
-    //¹Ø±Õ´ò¿ªµÄExcel ÎÄ¼ş£¬ÓĞÊ±ºò´ò¿ªEXCELÎÄ¼ş¾ÍÒª
-    void close_excelfile(BOOL if_save = FALSE);
-    //Áí´æÎªÒ»¸öEXCELÎÄ¼ş
-    void saveas_excelfile(const CString &xls_file);
-    //È¡µÃ´ò¿ªÎÄ¼şµÄÃû³Æ
-    CString open_filename();
-
-    //
-    void set_cell_int(long iline, long icolumn, int new_int);
-    //
-    void set_cell_string(long iline, long icolumn, const CString &new_string);
-
-public:
-    //³õÊ¼»¯EXCEL OLE
-    static BOOL init_excel();
-    //ÊÍ·ÅEXCELµÄ OLE
-    static void release_excel();
-
-    //È¡µÃÁĞµÄÃû³Æ£¬±ÈÈç27->AA
-    static TCHAR *column_name(long column_no);
-
-    //»¹ÊÇÒª¿¼ÂÇ¶ÔÓÚÒ»Ğ©´òÓ¡Êä³öµÄÇé¿ö¡£
-    static char *column_mbcs_name(long column_no);
-
-protected:
-
-    //Ô¤ÏÈ¼ÓÔØ
-    void preload_sheet();
-
-protected:
-    //´ò¿ªµÄEXCELÎÄ¼şÃû³Æ
-    CString       open_excel_file_;
-
-    //
-    CWorkbooks    excel_books_;
-    //
-    CWorkbook     excel_work_book_;
-    //
-    CWorksheets   excel_sheets_;
-    //
-    CWorksheet    excel_work_sheet_;
-    //
-    CRange        excel_current_range_;
-
-    ///ÊÇ·ñ½øĞĞÔ¤ÏÈ¼ÓÔØ£¬Ô¤¼ÓÔØ¸ü¼ÓÏûºÄÄÚ´æ£¬µ«¶ÁÈ¡Ğ§ÂÊÌá¸ß¼¸Ê®±¶
-    BOOL          already_preload_;
-
-    //Create the SAFEARRAY from the VARIANT ret.
-    COleSafeArray ole_safe_array_;
-};
+* @note           é‰â•‚ç‘¤é–²æ»…çŒ¾ç·‡æ¨»Ğ¦å«»çŠ²æµ·ç¶å¤‹ç¨‰æ¿å‹­ç‘“é‰ç‚µæ™«å­Œæˆ¦æ•çæ‡¼ç‰é–¸Ñ„åŠ’é—Šâ•…å´—é‘¸é›ç‡é–¿æ¶˜æœ¬é”å‘¯æ‹«éŠçŠ²ç¬€é–ºå¤ˆå„³å­Œæˆæ“”å©Šå—˜ç²

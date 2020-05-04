@@ -16,19 +16,19 @@ int TCP_PEER_CONFIG_INFO::from_str(const char *peer_info_str)
         return SOAR_RET::ERROR_STRING_TO_PEERINFO_FAIL;
     }
 
-    //»•µÙ¿Ô√ÊÀ˘”–µƒø’∏Ò£¨±‹√‚Œ€»æsscanf, ∏Ò ΩªØ◊÷∑˚¥ÆŒ™"%u.%u.%u.%u%#%hu|%u|%u",
+    //ÂéªÊéâÈáåÈù¢ÊâÄÊúâÁöÑÁ©∫Ê†ºÔºåÈÅøÂÖçÊ±°Êüìsscanf, Ê†ºÂºèÂåñÂ≠óÁ¨¶‰∏≤‰∏∫"%u.%u.%u.%u%#%hu|%u|%u",
     //char pure_str[SVC_INFO_STR_LEN];
     //zce::str_replace(svc_info_str, pure_str," ","");
     char mod_file_name[MAX_PATH];
     uint32_t u[4] = { 0 };
     uint16_t port = 0;
-    //≤‚ ‘∑¢œ÷∆‰ µ≤ª–Ë“™ ÷∂Ø»•µÙ∂‡”‡ø’∏Òµƒ∏…»≈£¨∞—Ãÿ ‚◊÷∑˚«∞√Ê“≤‘ˆº”%øÿ÷∆æÕø…“‘¡À°£
+    //ÊµãËØïÂèëÁé∞ÂÖ∂ÂÆû‰∏çÈúÄË¶ÅÊâãÂä®ÂéªÊéâÂ§ö‰ΩôÁ©∫Ê†ºÁöÑÂπ≤Êâ∞ÔºåÊääÁâπÊÆäÂ≠óÁ¨¶ÂâçÈù¢‰πüÂ¢ûÂä†%ÊéßÂà∂Â∞±ÂèØ‰ª•‰∫Ü„ÄÇ
     int ret_num = sscanf(peer_info_str,
                          " %u.%u.%u.%u # %hu | %128s",
                          &u[0], &u[1], &u[2], &u[3],
                          &port,
                          mod_file_name);
-    //∑µªÿ9±Ì æÀ˘”– ˝æ›∂º∂¡»°¡À
+    //ËøîÂõû9Ë°®Á§∫ÊâÄÊúâÊï∞ÊçÆÈÉΩËØªÂèñ‰∫Ü
     if (ret_num != 9 || u[0] > 0xFF || u[1] > 0xFF || u[2] > 0xFF || u[3] > 0xFF)
     {
         return SOAR_RET::ERROR_STRING_TO_PEERINFO_FAIL;
@@ -56,7 +56,7 @@ TCP_PEER_MODULE_INFO::~TCP_PEER_MODULE_INFO()
 {
 }
 
-///º”‘ÿƒ£øÈ
+///Âä†ËΩΩÊ®°Âùó
 int TCP_PEER_MODULE_INFO::open_module()
 {
     recv_mod_handler_ = zce::dlopen(peer_info_.module_file_.c_str());
@@ -84,7 +84,7 @@ int TCP_PEER_MODULE_INFO::open_module()
     return 0;
 }
 
-//πÿ±’ƒ£øÈ
+//ÂÖ≥Èó≠Ê®°Âùó
 int TCP_PEER_MODULE_INFO::close_module()
 {
     if (ZCE_SHLIB_INVALID_HANDLE != recv_mod_handler_)
@@ -120,7 +120,7 @@ int Ogre_Server_Config::read_cfgfile()
         return ret;
     }
 
-    // Œ¥÷∏∂®Õ®—∂∑˛ŒÒ∆˜≈‰÷√
+    // Êú™ÊåáÂÆöÈÄöËÆØÊúçÂä°Âô®ÈÖçÁΩÆ
     ogre_cfg_file_ = app_run_dir_ + "/cfg/ogre4asvrd.cfg";
 
     ZCE_Conf_PropertyTree pt_tree;
@@ -144,14 +144,14 @@ int Ogre_Server_Config::read_cfgfile()
         return ret;
     }
 
-    //…Ë÷√reactorµƒæ‰±˙ ˝¡ø
+    //ËÆæÁΩÆreactorÁöÑÂè•ÊüÑÊï∞Èáè
     max_reactor_hdl_num_ = ogre_cfg_data_.max_accept_svr_ + ogre_cfg_data_.auto_connect_num_ + 64;
     max_reactor_hdl_num_ = max_reactor_hdl_num_ > 64 ? max_reactor_hdl_num_ : 1024;
 
     return 0;
 }
 
-///¥”≈‰÷√÷–∂¡»°OGREµƒ≈‰÷√
+///‰ªéÈÖçÁΩÆ‰∏≠ËØªÂèñOGREÁöÑÈÖçÁΩÆ
 int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
 
@@ -159,7 +159,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     std::string temp_value;
     std::vector <std::string> str_ary;
 
-    //◊Ó¥ÛAccept  ˝¡ø
+    //ÊúÄÂ§ßAccept Êï∞Èáè
     ret = conf_tree->path_get_leaf("OGRE_CFG", "MAX_FRAMEDATA_LEN",
                                    ogre_cfg_data_.max_data_len_);
     if (0 != ret || ogre_cfg_data_.max_data_len_ > 8 * 1024 * 1024)
@@ -168,7 +168,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //◊Ó¥ÛAccept  ˝¡ø
+    //ÊúÄÂ§ßAccept Êï∞Èáè
     ret = conf_tree->path_get_leaf("OGRE_CFG", "MAX_ACCEPT_SVR",
                                    ogre_cfg_data_.max_accept_svr_);
     if (0 != ret || ogre_cfg_data_.max_accept_svr_ < 32)
@@ -178,12 +178,12 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //◊Ó–°µƒ∂Àø⁄µƒ∑¢ÀÕ∂”¡–≥§∂»
+    //ÊúÄÂ∞èÁöÑÁ´ØÂè£ÁöÑÂèëÈÄÅÈòüÂàóÈïøÂ∫¶
     const uint32_t MIN_SEND_DEQUE_SIZE = 4;
-    //ƒ¨»œAccept ∂Àø⁄µƒ∑¢ÀÕ∂”¡–≥§∂»
+    //ÈªòËÆ§Accept Á´ØÂè£ÁöÑÂèëÈÄÅÈòüÂàóÈïøÂ∫¶
     const uint32_t MAX_SEND_DEQUE_SIZE = 512;
 
-    //Accept∫Õconect∂Àø⁄µƒ∑¢ÀÕ∂”¡–≥§∂»
+    //AcceptÂíåconectÁ´ØÂè£ÁöÑÂèëÈÄÅÈòüÂàóÈïøÂ∫¶
     ret = conf_tree->path_get_leaf("OGRE_CFG", "ACPT_SEND_DEQUE_SIZE",
                                    ogre_cfg_data_.acpt_send_deque_size_);
     if (0 != ret
@@ -203,7 +203,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //±£œ’
+    //‰øùÈô©
     ret = conf_tree->path_get_leaf("OGRE_CFG", "ZERG_INSURANCE",
                                    ogre_cfg_data_.ogre_insurance_);
     if (0 != ret)
@@ -226,7 +226,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         ogre_cfg_data_.accept_backlog_ = ZCE_DEFAULT_BACKLOG;
     }
 
-    //∏˜÷÷≥¨ ±¥¶¿Ìµƒ ±º‰
+    //ÂêÑÁßçË∂ÖÊó∂Â§ÑÁêÜÁöÑÊó∂Èó¥
     ret = conf_tree->path_get_leaf("OGRE_CFG", "ACCEPTED_TIMEOUT",
                                    ogre_cfg_data_.accepted_timeout_);
     if (0 != ret)
@@ -243,7 +243,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //‘ –Ì∫Õæ‹æ¯IP
+    //ÂÖÅËÆ∏ÂíåÊãíÁªùIP
     ret = conf_tree->path_get_leaf("OGRE_CFG", "REJECT_IP",
                                    ogre_cfg_data_.reject_ip_);
     if (0 != ret)
@@ -260,7 +260,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //∂¡»°◊‘∂Ø¡¨Ω”µƒ≈‰÷√
+    //ËØªÂèñËá™Âä®ËøûÊé•ÁöÑÈÖçÁΩÆ
     ret = conf_tree->path_get_leaf("TCP_ACCEPT", "ACCEPT_PEER_NUM",
                                    ogre_cfg_data_.auto_connect_num_);
     if (0 != ret || ogre_cfg_data_.auto_connect_num_ > OGRE_CONFIG_DATA::MAX_TCPACCEPT_PEERID_NUM)
@@ -283,7 +283,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //∂¡»°◊‘∂Ø¡¨Ω”µƒ≈‰÷√
+    //ËØªÂèñËá™Âä®ËøûÊé•ÁöÑÈÖçÁΩÆ
     ret = conf_tree->path_get_leaf("AUTO_CONNECT", "AUTO_CONNECT_NUM",
                                    ogre_cfg_data_.auto_connect_num_);
     if (0 != ret || ogre_cfg_data_.auto_connect_num_ > OGRE_CONFIG_DATA::MAX_AUTO_CONNECT_PEER_NUM)

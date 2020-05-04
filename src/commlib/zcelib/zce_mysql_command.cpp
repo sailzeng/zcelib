@@ -2,14 +2,14 @@
 #include "zce_predefine.h"
 #include "zce_mysql_command.h"
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #if defined ZCE_USE_MYSQL
 
 
 ZCE_Mysql_Command::ZCE_Mysql_Command():
     mysql_connect_(NULL)
 {
-    //±£ÁôINITBUFSIZEµÄ¿Õ¼ä
+    //ä¿ç•™INITBUFSIZEçš„ç©ºé—´
     mysql_command_.reserve(INITBUFSIZE);
     sql_buffer_ = new char[INITBUFSIZE];
 }
@@ -23,7 +23,7 @@ ZCE_Mysql_Command::ZCE_Mysql_Command(ZCE_Mysql_Connect *conn):
         mysql_connect_ = conn;
     }
 
-    //±£ÁôINITBUFSIZEµÄ¿Õ¼ä
+    //ä¿ç•™INITBUFSIZEçš„ç©ºé—´
     mysql_command_.reserve(INITBUFSIZE);
     sql_buffer_ = new char[INITBUFSIZE];
 }
@@ -37,7 +37,7 @@ ZCE_Mysql_Command::~ZCE_Mysql_Command()
     }
 }
 
-//ÎªZCE_Mysql_CommandÉèÖÃÏà¹ØµÄÁ¬½Ó¶ÔÏó£¬¶øÇÒÊÇ±ØĞëÒÑ¾­³É¹¦Á¬½ÓÉÏÊı¾İµÄ
+//ä¸ºZCE_Mysql_Commandè®¾ç½®ç›¸å…³çš„è¿æ¥å¯¹è±¡ï¼Œè€Œä¸”æ˜¯å¿…é¡»å·²ç»æˆåŠŸè¿æ¥ä¸Šæ•°æ®çš„
 int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect *conn)
 {
     if (conn != NULL && conn->is_connected())
@@ -49,37 +49,37 @@ int ZCE_Mysql_Command::set_connection(ZCE_Mysql_Connect *conn)
     return -1;
 }
 
-///ÉèÖÃSQL CommandÓï¾ä,¶¯Ì¬²ÎÊı°æ±¾
+///è®¾ç½®SQL Commandè¯­å¥,åŠ¨æ€å‚æ•°ç‰ˆæœ¬
 int ZCE_Mysql_Command::set_sql_command(const char *sql_format, ...)
 {
     va_list args;
     va_start(args, sql_format);
 
-    //_vsnprintf²»ÊÇANSI C±ê×¼º¯Êı,µ«ÊÇ´ó²¿·Öº¯Êı¿âÓ¦¸ÃÊµÏÖÁËËü,±Ï¾¹vsprintfÈ±·¦»ù±¾µÄ°²È«¸Ğ
+    //_vsnprintfä¸æ˜¯ANSI Cæ ‡å‡†å‡½æ•°,ä½†æ˜¯å¤§éƒ¨åˆ†å‡½æ•°åº“åº”è¯¥å®ç°äº†å®ƒ,æ¯•ç«Ÿvsprintfç¼ºä¹åŸºæœ¬çš„å®‰å…¨æ„Ÿ
     int ret = vsnprintf(sql_buffer_, INITBUFSIZE, sql_format, args);
 
     va_end(args);
 
-    //Èç¹û·µ»Ø½á¹û´íÎó,_vsnprintf =-1±íÊ¾Buf³¤¶È²»¹»
+    //å¦‚æœè¿”å›ç»“æœé”™è¯¯,_vsnprintf =-1è¡¨ç¤ºBufé•¿åº¦ä¸å¤Ÿ
     if (ret < 0)
     {
         return -1;
     }
 
-    //ÉèÖÃ
+    //è®¾ç½®
     mysql_command_.assign(sql_buffer_);
 
-    //³É¹¦
+    //æˆåŠŸ
     return 0;
 }
 
-//µÃµ½SQL Command. ÖØÔØ¶àÖÖĞÎÊ½,ÓÃÓÚÎÄ±¾ÀàĞÍ
+//å¾—åˆ°SQL Command. é‡è½½å¤šç§å½¢å¼,ç”¨äºæ–‡æœ¬ç±»å‹
 const char *ZCE_Mysql_Command::get_sql_command() const
 {
     return mysql_command_.c_str();
 }
 
-// µÃµ½SQL Óï¾ä. ÀàĞÍÊı¾İ,´«ÈëµÄchar buf³¤¶ÈÊÇ·ñ×ã¹»×Ô¼º±£Ö¤
+// å¾—åˆ°SQL è¯­å¥. ç±»å‹æ•°æ®,ä¼ å…¥çš„char bufé•¿åº¦æ˜¯å¦è¶³å¤Ÿè‡ªå·±ä¿è¯
 int ZCE_Mysql_Command::get_sql_command( char *cmdbuf, size_t &szbuf) const
 {
     if (cmdbuf == NULL )
@@ -103,25 +103,25 @@ int ZCE_Mysql_Command::get_sql_command( char *cmdbuf, size_t &szbuf) const
 //
 void ZCE_Mysql_Command::get_sql_command(std::string &strcmd) const
 {
-    //Ô¤ÏÈ·ÖÅäÄÚ´æ,±£Ö¤Ğ§ÂÊ
+    //é¢„å…ˆåˆ†é…å†…å­˜,ä¿è¯æ•ˆç‡
     strcmd.reserve(mysql_command_.length());
     strcmd = mysql_command_;
 }
 
-//int ·µ»ØÊÇ·ñ³É¹¦»¹ÊÇÊ§°Ü MYSQL_RETURN_FAIL±íÊ¾Ê§°Ü
-//Ö´ĞĞSQLÓï¾ä£¬¹¦ÄÜÈ«¼¯£¬²»¶ÔÍâÊ¹ÓÃ
+//int è¿”å›æ˜¯å¦æˆåŠŸè¿˜æ˜¯å¤±è´¥ MYSQL_RETURN_FAILè¡¨ç¤ºå¤±è´¥
+//æ‰§è¡ŒSQLè¯­å¥ï¼ŒåŠŸèƒ½å…¨é›†ï¼Œä¸å¯¹å¤–ä½¿ç”¨
 int ZCE_Mysql_Command::execute(uint64_t *num_affect,
                                uint64_t *last_id,
                                ZCE_Mysql_Result *sql_result,
                                bool bstore)
 {
-    //Èç¹ûÃ»ÓĞÉèÖÃÁ¬½Ó»òÕßÃ»ÓĞÉèÖÃÃüÁî
+    //å¦‚æœæ²¡æœ‰è®¾ç½®è¿æ¥æˆ–è€…æ²¡æœ‰è®¾ç½®å‘½ä»¤
     if (mysql_connect_ == NULL || mysql_command_.empty())
     {
         return -1;
     }
 
-    //Ö´ĞĞSQLÃüÁî
+    //æ‰§è¡ŒSQLå‘½ä»¤
     int tmpret = ::mysql_real_query(mysql_connect_->get_mysql_handle(),
                                     mysql_command_.c_str(),
                                     (unsigned long)mysql_command_.length());
@@ -130,36 +130,36 @@ int ZCE_Mysql_Command::execute(uint64_t *num_affect,
         return tmpret;
     }
 
-    //Èç¹ûÓÃ»§ÒªÇó×ª´¢½á¹û¼¯
+    //å¦‚æœç”¨æˆ·è¦æ±‚è½¬å‚¨ç»“æœé›†
     if (sql_result)
     {
         MYSQL_RES *tmp_res = NULL;
 
         if (bstore)
         {
-            //×ª´¢½á¹û
+            //è½¬å‚¨ç»“æœ
             tmp_res = ::mysql_store_result(mysql_connect_->get_mysql_handle());
         }
         else
         {
-            //×ª´¢½á¹û
+            //è½¬å‚¨ç»“æœ
             tmp_res = ::mysql_use_result(mysql_connect_->get_mysql_handle());
         }
 
-        //±ÈÈçÄãÓÃINSERTÓï¾äµ«ÊÇ,ÄãÒªÈ¡»Ø½á¹û¼¯,ÎÒÔİÊ±ÈÏÎªÄãÊÇ¶ÔµÄ,Ö»ÊÇ·µ»ØµÄ½á¹û¼¯Îª¿Õ»òÕßÄã²»¿´×¢ÊÍ
-        //Èç¹û×ª´¢Ê§°Ü,ÎªÊ²Ã´ÕâÑù×÷,¼ûMySQLÎÄµµ"ÎªÊ²Ã´ÔÚmysql_query()·µ»Ø³É¹¦ºómysql_store_result()ÓĞÊ±·µ»ØNULL? "
-        //Èç¹ûÊÇINSERTÓï¾ä£¬ÄÇÃ´mysql_store_result¾ÍÊÇ·µ»ØNULL£¬mysql_field_countÒ²Ó¦¸ÃµÈÓÚ0£¬
-        //Èç¹ûMYSQLÄÚ²¿·¢ÉúÄ³¸ö´íÎó£¬ÄÇÃ´mysql_store_result ·µ»ØNULL£¬µ«mysql_field_count »á´óÓÚ0£¬´ËÊ±ÊÇ¸ö´íÎó
+        //æ¯”å¦‚ä½ ç”¨INSERTè¯­å¥ä½†æ˜¯,ä½ è¦å–å›ç»“æœé›†,æˆ‘æš‚æ—¶è®¤ä¸ºä½ æ˜¯å¯¹çš„,åªæ˜¯è¿”å›çš„ç»“æœé›†ä¸ºç©ºæˆ–è€…ä½ ä¸çœ‹æ³¨é‡Š
+        //å¦‚æœè½¬å‚¨å¤±è´¥,ä¸ºä»€ä¹ˆè¿™æ ·ä½œ,è§MySQLæ–‡æ¡£"ä¸ºä»€ä¹ˆåœ¨mysql_query()è¿”å›æˆåŠŸåmysql_store_result()æœ‰æ—¶è¿”å›NULL? "
+        //å¦‚æœæ˜¯INSERTè¯­å¥ï¼Œé‚£ä¹ˆmysql_store_resultå°±æ˜¯è¿”å›NULLï¼Œmysql_field_countä¹Ÿåº”è¯¥ç­‰äº0ï¼Œ
+        //å¦‚æœMYSQLå†…éƒ¨å‘ç”ŸæŸä¸ªé”™è¯¯ï¼Œé‚£ä¹ˆmysql_store_result è¿”å›NULLï¼Œä½†mysql_field_count ä¼šå¤§äº0ï¼Œæ­¤æ—¶æ˜¯ä¸ªé”™è¯¯
         if ( tmp_res == NULL && mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
         {
             return -1;
         }
 
-        //µÃµ½½á¹û¼¯,²éÑ¯½á¹û¼¯ĞÅÏ¢
+        //å¾—åˆ°ç»“æœé›†,æŸ¥è¯¢ç»“æœé›†ä¿¡æ¯
         sql_result->set_mysql_result(tmp_res);
     }
 
-    //Ö´ĞĞSQLÃüÁîÓ°ÏìÁË¶àÉÙĞĞ,mysql_affected_rows ±ØĞëÔÚ×ª´¢½á¹û¼¯ºó,ËùÒÔÄãÒª×¢ÒâÊäÈëµÄ²ÎÊı
+    //æ‰§è¡ŒSQLå‘½ä»¤å½±å“äº†å¤šå°‘è¡Œ,mysql_affected_rows å¿…é¡»åœ¨è½¬å‚¨ç»“æœé›†å,æ‰€ä»¥ä½ è¦æ³¨æ„è¾“å…¥çš„å‚æ•°
     if (num_affect)
     {
         *num_affect = (uint64_t) ::mysql_affected_rows(mysql_connect_->get_mysql_handle());
@@ -170,27 +170,27 @@ int ZCE_Mysql_Command::execute(uint64_t *num_affect,
         *last_id = (uint64_t) ::mysql_insert_id(mysql_connect_->get_mysql_handle());
     }
 
-    //³É¹¦
+    //æˆåŠŸ
     return 0;
 }
 
-//Ö´ĞĞSQLÓï¾ä,²»ÓÃÊä³ö½á¹û¼¯ºÏµÄÄÇÖÖ,·ÇSELECTÓï¾ä
-//num_affect Îª·µ»Ø²ÎÊı,¸æËßÄãĞŞ¸ÄÁË¼¸ĞĞ
+//æ‰§è¡ŒSQLè¯­å¥,ä¸ç”¨è¾“å‡ºç»“æœé›†åˆçš„é‚£ç§,éSELECTè¯­å¥
+//num_affect ä¸ºè¿”å›å‚æ•°,å‘Šè¯‰ä½ ä¿®æ”¹äº†å‡ è¡Œ
 int ZCE_Mysql_Command::execute(uint64_t &num_affect, uint64_t &last_id)
 {
     return execute(&num_affect, &last_id, NULL, false);
 }
 
-//Ö´ĞĞSQLÓï¾ä,SELECTÓï¾ä,×ª´¢½á¹û¼¯ºÏµÄÄÇÖÖ,×¢ÒâÕâ¸öº¯ÊıÌõÓÃµÄÊÇmysql_store_result.
-//num_affect Îª·µ»Ø²ÎÊı,¸æËßÄãĞŞ¸ÄÁË¼¸ĞĞ,SELECTÁË¼¸ĞĞ
+//æ‰§è¡ŒSQLè¯­å¥,SELECTè¯­å¥,è½¬å‚¨ç»“æœé›†åˆçš„é‚£ç§,æ³¨æ„è¿™ä¸ªå‡½æ•°æ¡ç”¨çš„æ˜¯mysql_store_result.
+//num_affect ä¸ºè¿”å›å‚æ•°,å‘Šè¯‰ä½ ä¿®æ”¹äº†å‡ è¡Œ,SELECTäº†å‡ è¡Œ
 int ZCE_Mysql_Command::execute(uint64_t &num_affect, ZCE_Mysql_Result &sql_result)
 {
     return execute(&num_affect, NULL, &sql_result, true);
 }
 
-//Ö´ĞĞSQLÓï¾ä,SELECTÓï¾ä,USE½á¹û¼¯ºÏµÄÄÇÖÖ,×¢ÒâÆäµ÷ÓÃµÄÊÇmysql_use_result,num_affect¶ÔËüÎŞĞ§
-//ÓÃÓÚ½á¹û¼¯Ì«¶àµÄ´¦Àí,Èç¹ûÒ»´Î×ª´¢½á¹û¼¯»áÕ¼ÓÃÌ«¶àÄÚ´æµÄ´¦Àí,¿ÉÒÔ¿¼ÂÇÓÃËü,
-//µ«²»ÍÆ¼öÊ¹ÓÃ,Ò»´ÎÈ¡Ò»ĞĞ,½»»¥Ì«¶à
+//æ‰§è¡ŒSQLè¯­å¥,SELECTè¯­å¥,USEç»“æœé›†åˆçš„é‚£ç§,æ³¨æ„å…¶è°ƒç”¨çš„æ˜¯mysql_use_result,num_affectå¯¹å®ƒæ— æ•ˆ
+//ç”¨äºç»“æœé›†å¤ªå¤šçš„å¤„ç†,å¦‚æœä¸€æ¬¡è½¬å‚¨ç»“æœé›†ä¼šå ç”¨å¤ªå¤šå†…å­˜çš„å¤„ç†,å¯ä»¥è€ƒè™‘ç”¨å®ƒ,
+//ä½†ä¸æ¨èä½¿ç”¨,ä¸€æ¬¡å–ä¸€è¡Œ,äº¤äº’å¤ªå¤š
 int ZCE_Mysql_Command::execute(ZCE_Mysql_Result &sql_result)
 {
     return execute(NULL, NULL, &sql_result, false);
@@ -199,14 +199,14 @@ int ZCE_Mysql_Command::execute(ZCE_Mysql_Result &sql_result)
 
 #if MYSQL_VERSION_ID > 40100
 
-//ÓÃÓÚ multiple-statement executions ÖĞµÃµ½¶à¸ö
-//Èç¹û
+//ç”¨äº multiple-statement executions ä¸­å¾—åˆ°å¤šä¸ª
+//å¦‚æœ
 int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result &sqlresult, bool bstore)
 {
 
     int tmpret = ::mysql_next_result(mysql_connect_->get_mysql_handle());
 
-    //tmpret == -1±íÊ¾Ã»ÓĞ½á¹û¼¯,ÆäËû<0µÄÖµ±íÊ¾´íÎó
+    //tmpret == -1è¡¨ç¤ºæ²¡æœ‰ç»“æœé›†,å…¶ä»–<0çš„å€¼è¡¨ç¤ºé”™è¯¯
     if (tmpret < 0 )
     {
         return -1;
@@ -216,31 +216,31 @@ int ZCE_Mysql_Command::fetch_next_multi_result(ZCE_Mysql_Result &sqlresult, bool
 
     if (bstore)
     {
-        //×ª´¢½á¹û
+        //è½¬å‚¨ç»“æœ
         tmp_res = ::mysql_store_result(mysql_connect_->get_mysql_handle());
     }
     else
     {
-        //×ª´¢½á¹û
+        //è½¬å‚¨ç»“æœ
         tmp_res = ::mysql_use_result(mysql_connect_->get_mysql_handle());
     }
 
-    //±ÈÈçÄãÓÃINSERTÓï¾äµ«ÊÇ,ÄãÒªÈ¡»Ø½á¹û¼¯,ÎÒÔİÊ±ÈÏÎªÄãÊÇ¶ÔµÄ,Ö»ÊÇ·µ»ØµÄ½á¹û¼¯Îª¿Õ»òÕßÄã²»¿´×¢ÊÍ
-    //Èç¹û×ª´¢Ê§°Ü,ÎªÊ²Ã´ÕâÑù×÷,¼ûMySQLÎÄµµ"ÎªÊ²Ã´ÔÚmysql_query()·µ»Ø³É¹¦ºómysql_store_result()ÓĞÊ±·µ»ØNULL? "
+    //æ¯”å¦‚ä½ ç”¨INSERTè¯­å¥ä½†æ˜¯,ä½ è¦å–å›ç»“æœé›†,æˆ‘æš‚æ—¶è®¤ä¸ºä½ æ˜¯å¯¹çš„,åªæ˜¯è¿”å›çš„ç»“æœé›†ä¸ºç©ºæˆ–è€…ä½ ä¸çœ‹æ³¨é‡Š
+    //å¦‚æœè½¬å‚¨å¤±è´¥,ä¸ºä»€ä¹ˆè¿™æ ·ä½œ,è§MySQLæ–‡æ¡£"ä¸ºä»€ä¹ˆåœ¨mysql_query()è¿”å›æˆåŠŸåmysql_store_result()æœ‰æ—¶è¿”å›NULL? "
     if ( tmp_res == NULL && ::mysql_field_count(mysql_connect_->get_mysql_handle()) > 0)
     {
         return -1;
     }
 
-    //µÃµ½½á¹û¼¯,²éÑ¯½á¹û¼¯ĞÅÏ¢
+    //å¾—åˆ°ç»“æœé›†,æŸ¥è¯¢ç»“æœé›†ä¿¡æ¯
     sqlresult.set_mysql_result(tmp_res);
 
-    //³É¹¦
+    //æˆåŠŸ
     return 0;
 }
 
 #endif //MYSQL_VERSION_ID > 40100
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #endif //#if defined ZCE_USE_MYSQL
 
