@@ -6,16 +6,7 @@ const ZCE_Time_Value ZCE_Time_Value::ZERO_TIME_VALUE(0, 0);
 //
 const ZCE_Time_Value ZCE_Time_Value::MAX_TIME_VALUE(0x7FFFFFFF, 0x7FFFFFFF);
 
-//默认构造函数
-ZCE_Time_Value::ZCE_Time_Value()
-{
-    zce_time_value_.tv_sec = 0;
-    zce_time_value_.tv_usec = 0;
-}
-//析构函数
-ZCE_Time_Value::~ZCE_Time_Value()
-{
-}
+
 
 //构造函数，用timeval
 ZCE_Time_Value::ZCE_Time_Value(const timeval &time_data)

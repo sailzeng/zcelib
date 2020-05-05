@@ -293,7 +293,7 @@ protected:
             watch_handle_(ZCE_INVALID_HANDLE),
             watch_mask_(0)
         {
-            watch_path_[0] = '\0';
+            watch_path_[MAX_PATH] = '\0';
         }
         ~EVENT_INOTIFY_NODE()
         {
@@ -302,7 +302,7 @@ protected:
         ///监控的句柄
         ZCE_HANDLE              watch_handle_;
         ///监视的文件路径
-        char                    watch_path_[MAX_PATH];
+        char                    watch_path_[MAX_PATH+1];
         ///监控项的掩码
         uint32_t                watch_mask_;
 

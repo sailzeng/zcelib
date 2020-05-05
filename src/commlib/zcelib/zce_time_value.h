@@ -32,10 +32,15 @@ public:
     * @brief      默认构造函数
     */
     ZCE_Time_Value();
+
     /*!
     * @brief      析构函数
     */
     ~ZCE_Time_Value();
+
+    ZCE_Time_Value(const ZCE_Time_Value&) = default;
+    ZCE_Time_Value(ZCE_Time_Value&&) = default;
+
 
     /*!
     * @brief      构造函数，用timeval

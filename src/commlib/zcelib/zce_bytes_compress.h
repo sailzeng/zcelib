@@ -312,7 +312,7 @@ public:
     //压缩核心代码
     void compress_core(const unsigned char* original_buf,
                        size_t original_size,
-                       unsigned char alignas(sizeof(size_t))* compressed_buf,
+                       unsigned char compressed_buf[],
                        size_t* compressed_size);
 
     //解压核心代码
