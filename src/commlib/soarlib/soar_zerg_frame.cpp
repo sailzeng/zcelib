@@ -4,8 +4,10 @@
 
 
 #if defined (ZCE_OS_LINUX)
+#if ( _GCC_VER >= 80000)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wclass-memaccess"
+#endif
 #endif
 
 Zerg_App_Frame::Zerg_App_Frame() :

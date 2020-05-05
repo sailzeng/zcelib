@@ -90,24 +90,24 @@ class random_base
 public:
 
     ///产生的随机数类型
-    enum RAND_STRING_TYPE
+    enum class RAND_STRING
     {
         ///产生数字字符串，字符0-9
-        RAND_STR_NUMBER,
+        NUMBER,
         ///产生小写字符串，字符a-z
-        RAND_STR_LOWER,
+        LOWER,
         ///产生大写字符串，字符A-Z
-        RAND_STR_UPPER,
+        UPPER,
         ///产生数字+小写字符串，字符0-9，a-z
-        RAND_STR_NUMBER_LOWER,
+        NUMBER_LOWER,
         ///产生数字大写字符串，字符0-9，A-Z
-        RAND_STR_NUMBER_UPPER,
+        NUMBER_UPPER,
         ///产生数字+小写+大写字符串，字符0-9，a-z,A-Z
-        RAND_STR_NUMBER_LOWER_UPPER,
+        NUMBER_LOWER_UPPER,
         ///产生0-127的ASCII(非扩展)字符串
-        RAND_STR_ASCII,
+        ASCII,
         ///产生0-255二进制字符串
-        RAND_STR_BINARY,
+        BINARY,
     };
 
     //构造函数和析构函数，避免你声明的写法
@@ -180,7 +180,7 @@ public:
     * @param[out] rand_str  返回的生成随机数字符串
     * @param[in]  str_len   要求生成的字符串的长度
     */
-    virtual void get_string(RAND_STRING_TYPE str_type, char *rand_str, size_t str_len);
+    virtual void get_string(RAND_STRING str_type, char *rand_str, size_t str_len);
 
 protected:
 

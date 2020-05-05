@@ -260,10 +260,10 @@ ifeq ($(optimize),1)
   SOFLAGS += -Wl, $(OCCFLAGS)
 endif
 
-LIBARYS += -ldl
+SYS_LIBARYS += -ldl
 
 ifeq ($(threads),1)
-  LIBARYS += -lpthread -lrt
+  SYS_LIBARYS += -lpthread -lrt
 endif
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -340,17 +340,18 @@ LIB_ZCELIB =-L$(PATH_LIB) -lzcelib
 
 
 INC_SOARLIB =-I$(PATH_SRC)/commlib/soarlib
-LIB_SOARLIB =-lsoarlib
+LIB_SOARLIB =-L$(PATH_LIB) -lsoarlib
 
 
 INC_DEV_INNER := $(INC_ZCELIB) $(INC_SOARLIB)
-LIB_DEV_INNER := $(LIB_ZCELIB) $(LIB_SOARLIB)
+#注意顺序，ZCELIB放后面，
+LIB_DEV_INNER := $(LIB_SOARLIB) $(LIB_ZCELIB) 
 
 #--------------------------------------------------------------------------------------------------------------------
 #如果你有特殊的需求，你可以在你的Makefile里面定义INCLDIRS 和 LIBARYS
 
-INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
-LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
+INCLDIRS := $(INC_DEV_INNER) $(INC_DEV_OUTER)
+LIBARYS  := $(LIB_DEV_INNER) $(LIB_DEV_OUTER) $(SYS_LIBARYS)
 
 
 CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)

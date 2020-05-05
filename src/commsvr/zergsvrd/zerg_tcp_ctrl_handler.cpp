@@ -495,7 +495,8 @@ int TCP_Svc_Handler::handle_input()
                      peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                      ret,
                      szrecv);
-
+    ZCE_UNUSED_ARG(ip_addr_str);
+    ZCE_UNUSED_ARG(use_len);
     //这儿任何错误都关闭,
     if (ret != 0)
     {

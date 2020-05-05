@@ -113,9 +113,39 @@ public:
 
 #pragma pack(pop)
 
-/************************************************************************************************************
-Class           : ZCE_UUID64_Generator
-************************************************************************************************************/
+class ZCE_UUID_Generator_Base
+{
+
+public:
+    //UUID产生方法，
+    enum class UUID_GENERATOR
+    {
+        ///无效的产生方式
+        INVALID,
+        ///用随机数的方法产生
+        RANDOM,
+        ///用事件作为基数触发
+        TIME,
+    };
+
+    /*!
+    * @brief      构造函数
+    */
+    ZCE_UUID_Generator_Base(UUID_GENERATOR generator_type):
+        generator_type_(generator_type)
+    {
+    }
+
+    /*!
+    * @brief      析构函数
+    */
+    ~ZCE_UUID_Generator_Base();
+
+protected:
+
+    ///发生器使用什么发生方式
+    UUID_GENERATOR         generator_type_;
+};
 
 /*!
 * @brief      UUID64的产生器，提供随机数产生，以时间为基数产生随机数的方法
@@ -127,19 +157,9 @@ Class           : ZCE_UUID64_Generator
 *                 是什么服务器产生的数据
 *
 */
-class ZCE_UUID64_Generator
+class ZCE_UUID64_Generator :public ZCE_UUID_Generator_Base
 {
-    //UUID产生方法，
-    enum UUID64_GENERATOR_TYPE
-    {
-        ///无效的产生方式
-        UUID64_GENERATOR_INVALID,
 
-        ///用随机数的方法产生
-        UUID64_GENERATOR_RANDOM,
-        ///用事件作为基数触发
-        UUID64_GENERATOR_TIME,
-    };
 
 public:
 
@@ -182,26 +202,6 @@ public:
     ZCE_UUID64 timeradix_gen();
 
 protected:
-
-    ///发生器实例指针
-    static ZCE_UUID64_Generator *instance_;
-
-protected:
-
-    /*!
-    * @brief      单子函数
-    * @return     ZCE_UUID64_Generator* 返回的实例指针
-    */
-    static ZCE_UUID64_Generator *instance();
-    /*!
-    * @brief      清理实例指针
-    */
-    static void clean_instance();
-
-protected:
-
-    ///发生器使用什么发生方式
-    UUID64_GENERATOR_TYPE         generator_type_;
 
     ///随机发生器1
     zce::random_mt19937       mt_19937_random_;
@@ -314,19 +314,8 @@ Class           : ZCE_UUID128_Generator UUID的发生器
 * @brief      ZCE_UUID128_Generator UUID的发生器
 *
 */
-class ZCE_UUID128_Generator
+class ZCE_UUID128_Generator : public ZCE_UUID_Generator_Base
 {
-    //
-    enum UUID128_GENERATOR_TYPE
-    {
-        //
-        UUID128_GENERATOR_INVALID,
-
-        ///用随机数的方法产生
-        UUID128_GENERATOR_RANDOM,
-        ///用事件作为基数触发
-        UUID128_GENERATOR_TIME,
-    };
 
 public:
 
@@ -363,8 +352,6 @@ public:
 
 protected:
 
-    ///发生器使用什么发生方式
-    UUID128_GENERATOR_TYPE        generator_type_;
 
     ///随机发生器1
     zce::random_mt19937       mt_19937_random_;
@@ -372,12 +359,7 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///
-    ZCE_UUID128                   time_radix_seed_;
-
-protected:
-
-    //发生器实例指针
-    static ZCE_UUID128_Generator *instance_;
+    ZCE_UUID128               time_radix_seed_;
 
 };
 

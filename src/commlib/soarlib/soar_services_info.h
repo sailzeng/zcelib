@@ -15,6 +15,7 @@ public:
     ///构造,析构函数,默认为0
     explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE,
                          uint32_t svrno = INVALID_SERVICES_ID);
+
     //
     ~SERVICES_ID();
 

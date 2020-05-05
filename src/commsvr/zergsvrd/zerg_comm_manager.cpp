@@ -200,11 +200,11 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
 
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
         Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
+        zce::lockfree::dequechunk_node *my_node = reinterpret_cast<zce::lockfree::dequechunk_node*>(proc_frame);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
         zerg_mmap_pipe_->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                       reinterpret_cast< zce::lockfree::dequechunk_node *&>(
-                                           proc_frame));
+                                       my_node);
 
         tmpbuf->size_of_use_ = proc_frame->frame_length_;
 
