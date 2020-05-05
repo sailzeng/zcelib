@@ -134,7 +134,11 @@ protected:
     ZCE_BUS_PIPE_HEAD          bus_head_;
 
     ///N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
+<<<<<<< HEAD
     zce::lockfree::deque_chunk  *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
+=======
+    zce::lockfree::shm_dequechunk  *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
     ///MMAP内存文件，
     ZCE_ShareMem_Mmap         mmap_file_;

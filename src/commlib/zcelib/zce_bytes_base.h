@@ -49,7 +49,12 @@
 //以下参考之 德问
 //前者告诉编译器结构体或类内部的成员变量相对于第一个变量的地址的偏移量的对齐方式，
 //缺省情况下，编译器按照自然边界对齐，当变量所需的自然对齐边界比n大 时，按照n对齐，
+<<<<<<< HEAD
 //否则按照自然边界对齐；后者告诉编译器一个结构体或者类或者联合或者一个类型的变量
+=======
+//否则按照自然边界对齐；
+//后者告诉编译器一个结构体或者类或者联合或者一个类型的变量
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 //(对象)分配地址空间时的地址对齐方式。也就是所，如果将__attribute__((aligned(m)))
 //作用于一个类型，那么该类型的变量在分配地址空间时，其存放的地址一定按照m字节对齐
 //(m必 须是2的幂次方)。并且其占用的空间，即大小,也是m的整数倍，以保证在申请连续存储空间的时候，
@@ -108,12 +113,15 @@ struct ZDOUBLE_STRUCT
 #endif
 
 
+<<<<<<< HEAD
 
 ///在GCC 4.8的处理中，写
 //unsigned int a = *(unsigned int *)(char_ptr);
 //会出现告警 dereferencing type-punned pointer will break strict-aliasing。
 //而且使用 ZBYTE_TO_UINT32 也无法绕开，请参考ZRD_U32_FROM_BYTES解决类似问题。
 
+=======
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 ///从一个(char *)指针内读取(也可以用于写入)一个uint16_t,or uint32_t or uint64_t
 
 # define ZBYTE_TO_UINT16(ptr)  ((ZU16_STRUCT *)(ptr))->value_
@@ -295,10 +303,19 @@ struct ZDOUBLE_STRUCT
 
 
 
+<<<<<<< HEAD
 //GCC 对于对其采取了默认认为不是对齐的方式编译，所以写
 //unsigned int a = *(unsigned int *)(char_ptr);
 //还有告警错误，方法是采用下面的宏规避，
 //或者使用参数 -fstrict-aliasing 和 -Wstrict-aliasing 可以消除掉这个warning。
+=======
+//在GCC 4.8的处理中，写
+//unsigned int a = *(unsigned int *)(char_ptr);
+//会出现告警 dereferencing type-punned pointer will break strict-aliasing。
+//特别是如果你的数据是alignas(1) pack(1),那么即使你使用ZCE_SWAP_UINT32，还是可能出现这个告警。
+//那么请参考ZRD_U32_FROM_BYTES解决类似问题。
+//或者使用参数 -fno-strict-aliasing 和 -Wno-strict-aliasing 可以消除掉这个warning。
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 union ZU16_UNION
 {
@@ -326,16 +343,24 @@ union ZDOUBLE_UNION
     double value_;
 };
 
+<<<<<<< HEAD
 
 # define ZRD_U16_FROM_BYTES(rd_data,bytes_ptr)  \
+=======
+#define ZRD_U16_FROM_BYTES(bytes_ptr,rd_data)  \
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     {\
         ZU16_UNION __tmp_var_; \
         __tmp_var_.char_data_[0] = bytes_ptr[0];\
         __tmp_var_.char_data_[1] = bytes_ptr[1];\
         rd_data = __tmp_var_.value_; \
     }
+<<<<<<< HEAD
 
 # define ZRD_U32_FROM_BYTES(rd_data,bytes_ptr)  \
+=======
+#define ZRD_U32_FROM_BYTES(bytes_ptr,rd_data)  \
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     {\
         ZU32_UNION __tmp_var_; \
         __tmp_var_.char_data_[0] = bytes_ptr[0];\
@@ -344,9 +369,13 @@ union ZDOUBLE_UNION
         __tmp_var_.char_data_[3] = bytes_ptr[3];\
         rd_data = __tmp_var_.value_; \
     }
+<<<<<<< HEAD
 
 
 # define ZRD_U64_FROM_BYTES(rd_data,bytes_ptr)  \
+=======
+#define ZRD_U64_FROM_BYTES(bytes_ptr,rd_data)  \
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     {\
         ZU64_UNION __tmp_var_; \
         __tmp_var_.char_data_[0] = bytes_ptr[0];\
@@ -359,8 +388,12 @@ union ZDOUBLE_UNION
         __tmp_var_.char_data_[7] = bytes_ptr[7];\
         rd_data = __tmp_var_.value_; \
     }
+<<<<<<< HEAD
 
 # define ZRD_FLOAT_FROM_BYTES(rd_data,bytes_ptr)  \
+=======
+#define ZRD_FLOAT_FROM_BYTES(bytes_ptr,rd_data)  \
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     {\
         ZFLOAT_UNION __tmp_var_; \
         __tmp_var_.char_data_[0] = bytes_ptr[0];\
@@ -369,9 +402,13 @@ union ZDOUBLE_UNION
         __tmp_var_.char_data_[3] = bytes_ptr[3];\
         rd_data = __tmp_var_.value_; \
     }
+<<<<<<< HEAD
 
 
 # define ZRD_DOUBLE_FROM_BYTES(rd_data,bytes_ptr)  \
+=======
+#define ZRD_DOUBLE_FROM_BYTES(bytes_ptr,rd_data)  \
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     {\
         ZDOUBLE_UNION __tmp_var_; \
         __tmp_var_.char_data_[0] = bytes_ptr[0];\
@@ -384,7 +421,61 @@ union ZDOUBLE_UNION
         __tmp_var_.char_data_[7] = bytes_ptr[7];\
         rd_data = __tmp_var_.value_; \
     }
+<<<<<<< HEAD
 
+=======
+#define ZWT_U16_FROM_BYTES(bytes_ptr,wr_data)  \
+    { \
+        ZU16_UNION __tmp_var_; \
+        __tmp_var_.value_ = wr_data;\
+        bytes_ptr[0]=__tmp_var_.char_data_[0];\
+        bytes_ptr[1]=__tmp_var_.char_data_[1];\
+    }
+#define ZWT_U32_FROM_BYTES(bytes_ptr,wr_data)  \
+    { \
+        ZU32_UNION __tmp_var_; \
+        __tmp_var_.value_ = wr_data; \
+        bytes_ptr[0]=__tmp_var_.char_data_[0];\
+        bytes_ptr[1]=__tmp_var_.char_data_[1];\
+        bytes_ptr[2]=__tmp_var_.char_data_[2];\
+        bytes_ptr[3]=__tmp_var_.char_data_[3];\
+    }
+#define ZWT_U64_FROM_BYTES(bytes_ptr,wr_data)  \
+    { \
+        ZU64_UNION __tmp_var_; \
+        __tmp_var_.value_ = wr_data; \
+        bytes_ptr[0]=__tmp_var_.char_data_[0];\
+        bytes_ptr[1]=__tmp_var_.char_data_[1];\
+        bytes_ptr[2]=__tmp_var_.char_data_[2];\
+        bytes_ptr[3]=__tmp_var_.char_data_[3];\
+        bytes_ptr[4]=__tmp_var_.char_data_[4];\
+        bytes_ptr[5]=__tmp_var_.char_data_[5];\
+        bytes_ptr[6]=__tmp_var_.char_data_[6];\
+        bytes_ptr[7]=__tmp_var_.char_data_[7];\
+    }
+#define ZWT_FLOAT_FROM_BYTES(bytes_ptr,wr_data)  \
+    { \
+        ZFLOAT_UNION __tmp_var_; \
+        __tmp_var_.value_ = wr_data; \
+        bytes_ptr[0]=__tmp_var_.char_data_[0];\
+        bytes_ptr[1]=__tmp_var_.char_data_[1];\
+        bytes_ptr[2]=__tmp_var_.char_data_[2];\
+        bytes_ptr[3]=__tmp_var_.char_data_[3];\
+    }
+#define ZWT_DOUBLE_FROM_BYTES(bytes_ptr,wr_data)  \
+    { \
+        ZDOUBLE_UNION __tmp_var_; \
+        __tmp_var_.value_ = wr_data; \
+        bytes_ptr[0]=__tmp_var_.char_data_[0];\
+        bytes_ptr[1]=__tmp_var_.char_data_[1];\
+        bytes_ptr[2]=__tmp_var_.char_data_[2];\
+        bytes_ptr[3]=__tmp_var_.char_data_[3];\
+        bytes_ptr[4]=__tmp_var_.char_data_[4];\
+        bytes_ptr[5]=__tmp_var_.char_data_[5];\
+        bytes_ptr[6]=__tmp_var_.char_data_[6];\
+        bytes_ptr[7]=__tmp_var_.char_data_[7];\
+    }
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 #endif
 

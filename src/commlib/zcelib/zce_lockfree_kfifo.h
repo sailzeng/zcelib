@@ -99,7 +99,11 @@ class _dequechunk_head
 protected:
 
     ///构造函数，不对外提供，
+<<<<<<< HEAD
     _dequechunk_head():
+=======
+    _shm_dequechunk_head():
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
         size_of_mmap_(0),
         size_of_deque_(0),
         max_len_node_(0),
@@ -108,7 +112,11 @@ protected:
     {
     }
     ///析构函数
+<<<<<<< HEAD
     ~_dequechunk_head()
+=======
+    ~_shm_dequechunk_head()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     {
     }
 
@@ -147,7 +155,11 @@ class deque_chunk : public _shm_memory_base
 protected:
 
     ///只定义不实现
+<<<<<<< HEAD
     const deque_chunk &operator=(const deque_chunk & );
+=======
+    const shm_dequechunk &operator=(const shm_dequechunk & );
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
     /*!
     @brief      得到两个关键指针的快照，用于判定队列里面的数据还有多少，是否为满或者空
@@ -165,7 +177,11 @@ protected:
     deque_chunk();
 public:
     ///析构函数
+<<<<<<< HEAD
     ~deque_chunk();
+=======
+    ~shm_dequechunk();
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 public:
 
@@ -282,7 +298,11 @@ protected:
 protected:
 
     ///内存的头部
+<<<<<<< HEAD
     _dequechunk_head     *dequechunk_head_;
+=======
+    _shm_dequechunk_head     *dequechunk_head_;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
     ///数据区的头指针,方便计算
     char                     *dequechunk_database_;
@@ -296,7 +316,11 @@ protected:
 
 //取队列头的buffer长度,你必须在确认pipe里面有数据才能调用这个函数，否则后果自负。
 //因为这个函数的使用语境大部分是empty之后，
+<<<<<<< HEAD
 inline size_t deque_chunk::get_front_len()
+=======
+inline size_t shm_dequechunk::get_front_len()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     //还是要担心长度截断2节,头大,头大,多写好多代码
     char *tmp1 = dequechunk_database_ + dequechunk_head_->deque_begin_;

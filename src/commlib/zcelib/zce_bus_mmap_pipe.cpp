@@ -234,7 +234,11 @@ int ZCE_Bus_MMAPPipe::init_all_pipe(size_t max_frame_len,
         char *pt_pipe = static_cast<char *>( mmap_file_.addr() ) + file_offset ;
 
         //初始化内存
+<<<<<<< HEAD
         bus_pipe_pointer_[i] = zce::lockfree::deque_chunk::initialize(bus_head_.size_of_pipe_[i],
+=======
+        bus_pipe_pointer_[i] = zce::lockfree::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
                                                                max_frame_len,
                                                                pt_pipe,
                                                                if_restore

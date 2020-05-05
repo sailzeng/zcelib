@@ -310,9 +310,13 @@ public:
     ~ZLZ_Compress_Format();
 
     //压缩核心代码
+<<<<<<< HEAD
     void compress_core(const unsigned char *original_buf,
+=======
+    void compress_core(const unsigned char alignas(sizeof(size_t))* original_buf,
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
                        size_t original_size,
-                       unsigned char *compressed_buf,
+                       unsigned char alignas(sizeof(size_t)) *compressed_buf,
                        size_t *compressed_size);
 
     //解压核心代码

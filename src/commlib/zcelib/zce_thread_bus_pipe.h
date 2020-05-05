@@ -83,7 +83,11 @@ protected:
     size_t                     size_room_[THR_NUM_OF_PIPE];
 
     //N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
+<<<<<<< HEAD
     zce::lockfree::deque_chunk  *bus_pipe_[THR_NUM_OF_PIPE];
+=======
+    zce::lockfree::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
     //锁
     ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
@@ -135,7 +139,11 @@ public:
         pipe_buffer_ = new char [sz_malloc ];
 
         //初始化内存
+<<<<<<< HEAD
         bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::deque_chunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
+=======
+        bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
                                                                       max_frame_len,
                                                                       pipe_buffer_,
                                                                       false);

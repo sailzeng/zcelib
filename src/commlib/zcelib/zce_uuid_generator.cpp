@@ -65,6 +65,11 @@ ZCE_UUID64::operator uint64_t ()
 Class           : ZCE_UUID64_Generator
 ************************************************************************************************************/
 
+<<<<<<< HEAD
+=======
+//实例指针
+ZCE_UUID64_Generator *ZCE_UUID64_Generator::instance_ = NULL;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 //构造函数
 ZCE_UUID64_Generator::ZCE_UUID64_Generator():
@@ -232,9 +237,18 @@ const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len, size_t &use_buf
 Class           : ZCE_UUID128_Generator
 ************************************************************************************************************/
 
+<<<<<<< HEAD
 //构造函数
 ZCE_UUID128_Generator::ZCE_UUID128_Generator():
     ZCE_UUID_Generator_Base(UUID_GENERATOR::INVALID)
+=======
+//实例指针
+ZCE_UUID128_Generator *ZCE_UUID128_Generator::instance_ = NULL;
+
+//构造函数
+ZCE_UUID128_Generator::ZCE_UUID128_Generator() :
+    generator_type_(UUID128_GENERATOR_INVALID)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
 }
 ZCE_UUID128_Generator::~ZCE_UUID128_Generator()

@@ -48,7 +48,11 @@ void dequechunk_node::operator delete (void *ptrframe)
 class shm_dequechunk
 *********************************************************************************/
 //构造函数和析构函数都不是打算给你使用的,
+<<<<<<< HEAD
 deque_chunk::deque_chunk():
+=======
+shm_dequechunk::shm_dequechunk():
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     dequechunk_head_(NULL),
     dequechunk_database_(NULL),
     line_wrap_nodeptr_(NULL)
@@ -72,7 +76,11 @@ size_t deque_chunk::getallocsize(const size_t szdeque)
 
 
 //根据参数初始化
+<<<<<<< HEAD
 deque_chunk *deque_chunk::initialize(size_t size_of_deque,
+=======
+shm_dequechunk *shm_dequechunk::initialize(size_t size_of_deque,
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
                                            size_t max_len_node,
                                            char *pmmap,
                                            bool if_restore )
@@ -122,7 +130,11 @@ deque_chunk *deque_chunk::initialize(size_t size_of_deque,
 }
 
 //清理成没有使用过的状态
+<<<<<<< HEAD
 void deque_chunk::clear()
+=======
+void shm_dequechunk::clear()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     //
     dequechunk_head_->deque_begin_ = 0;
@@ -133,7 +145,11 @@ void deque_chunk::clear()
 
 //得到两个关键指针的快照
 //这个操作可以不用加锁基于一点,32位操作系统中的32位整数操作是原子操作
+<<<<<<< HEAD
 void deque_chunk::snap_getpoint(size_t &pstart, size_t &pend)
+=======
+void shm_dequechunk::snap_getpoint(size_t &pstart, size_t &pend)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     pstart = dequechunk_head_->deque_begin_;
     pend   = dequechunk_head_->deque_end_;
@@ -143,7 +159,11 @@ void deque_chunk::snap_getpoint(size_t &pstart, size_t &pend)
 
 
 //将一个NODE放入尾部
+<<<<<<< HEAD
 bool deque_chunk::push_end(const dequechunk_node *node)
+=======
+bool shm_dequechunk::push_end(const dequechunk_node *node)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     //粗略的检查,如果长度不合格,返回不成功
     if (node->size_of_node_ < dequechunk_node::MIN_SIZE_DEQUE_CHUNK_NODE ||
@@ -185,7 +205,11 @@ bool deque_chunk::push_end(const dequechunk_node *node)
 //将队列一个NODE拷贝取出,
 //如果缓冲自己分配,最好准备一个够用的缓冲使用
 //返回的节点区,要求node!=NULL,已经分配好了数据区
+<<<<<<< HEAD
 bool deque_chunk::pop_front(dequechunk_node *const node)
+=======
+bool shm_dequechunk::pop_front(dequechunk_node *const node)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     assert(node != NULL);
 
@@ -227,7 +251,11 @@ bool deque_chunk::pop_front(dequechunk_node *const node)
 
 
 //将队列一个NODE从队首部取出,我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
+<<<<<<< HEAD
 bool deque_chunk::pop_front_new(dequechunk_node *&new_node)
+=======
+bool shm_dequechunk::pop_front_new(dequechunk_node *&new_node)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     assert(new_node == NULL);
 
@@ -247,7 +275,11 @@ bool deque_chunk::pop_front_new(dequechunk_node *&new_node)
 
 
 //将队列一个NODE读取复制出来,但是不是取出，
+<<<<<<< HEAD
 bool deque_chunk::read_front(dequechunk_node *const node)
+=======
+bool shm_dequechunk::read_front(dequechunk_node *const node)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     assert(node != NULL);
 
@@ -279,7 +311,11 @@ bool deque_chunk::read_front(dequechunk_node *const node)
 
 
 //读取队列的第一个NODE，我根据node的长度帮你分配空间,要求new_node=NULL,表示你要函数帮你分配缓冲,
+<<<<<<< HEAD
 bool deque_chunk::read_front_new(dequechunk_node *&new_node)
+=======
+bool shm_dequechunk::read_front_new(dequechunk_node *&new_node)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     assert(new_node == NULL);
 
@@ -296,7 +332,11 @@ bool deque_chunk::read_front_new(dequechunk_node *&new_node)
 }
 
 //读取队列的第一个NODE的指针，如果是折行的数据会特殊处理
+<<<<<<< HEAD
 bool deque_chunk::read_front_ptr(const dequechunk_node *&node_ptr)
+=======
+bool shm_dequechunk::read_front_ptr(const dequechunk_node *&node_ptr)
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     //检查是否为空
     if (empty() == true)
@@ -335,7 +375,11 @@ bool deque_chunk::read_front_ptr(const dequechunk_node *&node_ptr)
 }
 
 //丢弃队列前面的第一个NODE
+<<<<<<< HEAD
 bool deque_chunk::discard_frond()
+=======
+bool shm_dequechunk::discard_frond()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
 
     //检查是否为空
@@ -367,7 +411,11 @@ bool deque_chunk::discard_frond()
 
 
 //FREE的尺寸,空闲的空间有多少
+<<<<<<< HEAD
 size_t deque_chunk::free_size()
+=======
+size_t shm_dequechunk::free_size()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     //取快照
     size_t pstart, pend, szfree;
@@ -394,20 +442,32 @@ size_t deque_chunk::free_size()
 }
 
 //容量
+<<<<<<< HEAD
 size_t deque_chunk::capacity()
+=======
+size_t shm_dequechunk::capacity()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     return dequechunk_head_->size_of_mmap_;
 }
 
 
 //得到某1时刻的快照是否为EMPTY
+<<<<<<< HEAD
 bool deque_chunk::empty()
+=======
+bool shm_dequechunk::empty()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     return free_size() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
 }
 
 //得到某1时刻的快照是否为FULL
+<<<<<<< HEAD
 bool deque_chunk::full()
+=======
+bool shm_dequechunk::full()
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 {
     return free_size() == 0;
 }

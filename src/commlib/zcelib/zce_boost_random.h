@@ -90,6 +90,7 @@ class random_base
 public:
 
     ///产生的随机数类型
+<<<<<<< HEAD
     enum class RAND_STRING
     {
         ///产生数字字符串，字符0-9
@@ -108,6 +109,26 @@ public:
         ASCII,
         ///产生0-255二进制字符串
         BINARY,
+=======
+    enum RAND_STRING_TYPE
+    {
+        ///产生数字字符串，字符0-9
+        RAND_STR_NUMBER,
+        ///产生小写字符串，字符a-z
+        RAND_STR_LOWER,
+        ///产生大写字符串，字符A-Z
+        RAND_STR_UPPER,
+        ///产生数字+小写字符串，字符0-9，a-z
+        RAND_STR_NUMBER_LOWER,
+        ///产生数字大写字符串，字符0-9，A-Z
+        RAND_STR_NUMBER_UPPER,
+        ///产生数字+小写+大写字符串，字符0-9，a-z,A-Z
+        RAND_STR_NUMBER_LOWER_UPPER,
+        ///产生0-127的ASCII(非扩展)字符串
+        RAND_STR_ASCII,
+        ///产生0-255二进制字符串
+        RAND_STR_BINARY,
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     };
 
     //构造函数和析构函数，避免你声明的写法

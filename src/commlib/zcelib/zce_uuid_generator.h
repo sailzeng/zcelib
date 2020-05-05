@@ -159,7 +159,21 @@ protected:
 */
 class ZCE_UUID64_Generator :public ZCE_UUID_Generator_Base
 {
+<<<<<<< HEAD
 
+=======
+    //UUID产生方法，
+    enum UUID64_GENERATOR_TYPE
+    {
+        ///无效的产生方式
+        UUID64_GENERATOR_INVALID,
+
+        ///用随机数的方法产生
+        UUID64_GENERATOR_RANDOM,
+        ///用事件作为基数触发
+        UUID64_GENERATOR_TIME,
+    };
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 public:
 
@@ -203,6 +217,29 @@ public:
 
 protected:
 
+<<<<<<< HEAD
+=======
+    ///发生器实例指针
+    static ZCE_UUID64_Generator *instance_;
+
+protected:
+
+    /*!
+    * @brief      单子函数
+    * @return     ZCE_UUID64_Generator* 返回的实例指针
+    */
+    static ZCE_UUID64_Generator *instance();
+    /*!
+    * @brief      清理实例指针
+    */
+    static void clean_instance();
+
+protected:
+
+    ///发生器使用什么发生方式
+    UUID64_GENERATOR_TYPE         generator_type_;
+
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
     ///随机发生器1
     zce::random_mt19937       mt_19937_random_;
     ///随机发生器2
@@ -316,6 +353,20 @@ Class           : ZCE_UUID128_Generator UUID的发生器
 */
 class ZCE_UUID128_Generator : public ZCE_UUID_Generator_Base
 {
+<<<<<<< HEAD
+=======
+    //
+    enum UUID128_GENERATOR_TYPE
+    {
+        //
+        UUID128_GENERATOR_INVALID,
+
+        ///用随机数的方法产生
+        UUID128_GENERATOR_RANDOM,
+        ///用事件作为基数触发
+        UUID128_GENERATOR_TIME,
+    };
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 public:
 
@@ -352,6 +403,11 @@ public:
 
 protected:
 
+<<<<<<< HEAD
+=======
+    ///发生器使用什么发生方式
+    UUID128_GENERATOR_TYPE        generator_type_;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
     ///随机发生器1
     zce::random_mt19937       mt_19937_random_;
@@ -359,7 +415,16 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///
+<<<<<<< HEAD
     ZCE_UUID128               time_radix_seed_;
+=======
+    ZCE_UUID128                   time_radix_seed_;
+
+protected:
+
+    //发生器实例指针
+    static ZCE_UUID128_Generator *instance_;
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
 };
 
