@@ -57,7 +57,7 @@ class deque_chunk;
 //线程使用的双向BUS管道，
 //不要直接使用这个类，使用下面的两个typedef
 template <typename ZCE_LOCK>
-class ZCE_Thread_Bus_Pipe : public ZCE_NON_Copyable
+class ZCE_Thread_Bus_Pipe: public ZCE_NON_Copyable
 {
 
 protected:
@@ -65,17 +65,17 @@ protected:
     //内部的枚举，PIPE的编号，外部不用了解
     enum ZCE_BUS_PIPE_ID
     {
-        THR_RECV_PIPE_ID     = 0,
-        THR_SEND_PIPE_ID     = 1,
+        THR_RECV_PIPE_ID = 0,
+        THR_SEND_PIPE_ID = 1,
 
         //长度标示,不要用于做函数参数,否则会有溢出
-        THR_NUM_OF_PIPE      = 2,
+        THR_NUM_OF_PIPE = 2,
     };
 
 protected:
 
     //管道用的内存空间地址
-    char                      *pipe_buffer_;
+    char* pipe_buffer_;
 
     //管道配置长度,2个管道的配置长度,
     size_t                     size_pipe_[THR_NUM_OF_PIPE];
@@ -83,25 +83,21 @@ protected:
     size_t                     size_room_[THR_NUM_OF_PIPE];
 
     //N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-<<<<<<< HEAD
-    zce::lockfree::deque_chunk  *bus_pipe_[THR_NUM_OF_PIPE];
-=======
-    zce::lockfree::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
+    zce::lockfree::deque_chunk* bus_pipe_[THR_NUM_OF_PIPE];
 
     //锁
     ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
 
 protected:
     //instance函数使用的东西
-    static ZCE_Thread_Bus_Pipe *instance_;
+    static ZCE_Thread_Bus_Pipe* instance_;
 
 public:
     //构造函数,允许你有多个实例的可能，不做保护
     ZCE_Thread_Bus_Pipe():
         pipe_buffer_(NULL)
     {
-        for (size_t i = 0; i < THR_NUM_OF_PIPE; ++i )
+        for (size_t i = 0; i < THR_NUM_OF_PIPE; ++i)
         {
             size_pipe_[i] = 0;
             size_room_[i] = 0;
@@ -136,32 +132,28 @@ public:
         const size_t FIXED_INTERVALS = 16;
         size_t sz_malloc = size_room_[THR_RECV_PIPE_ID] + size_room_[THR_SEND_PIPE_ID] + FIXED_INTERVALS * 2;
 
-        pipe_buffer_ = new char [sz_malloc ];
+        pipe_buffer_ = new char[sz_malloc];
 
         //初始化内存
-<<<<<<< HEAD
         bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::deque_chunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
-=======
-        bus_pipe_[THR_RECV_PIPE_ID] = zce::lockfree::shm_dequechunk::initialize(size_pipe_[THR_RECV_PIPE_ID],
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
-                                                                      max_frame_len,
-                                                                      pipe_buffer_,
-                                                                      false);
+                                                                             max_frame_len,
+                                                                             pipe_buffer_,
+                                                                             false);
 
         bus_pipe_[THR_SEND_PIPE_ID] = zce::lockfree::deque_chunk::initialize(size_pipe_[THR_SEND_PIPE_ID],
-                                                                      max_frame_len,
-                                                                      pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
-                                                                      false);
+                                                                             max_frame_len,
+                                                                             pipe_buffer_ + size_room_[THR_RECV_PIPE_ID] + FIXED_INTERVALS,
+                                                                             false);
 
         //管道创建自己也会检查是否能恢复
-        if ( NULL == bus_pipe_[THR_RECV_PIPE_ID]  || NULL == bus_pipe_[THR_SEND_PIPE_ID])
+        if (NULL == bus_pipe_[THR_RECV_PIPE_ID] || NULL == bus_pipe_[THR_SEND_PIPE_ID])
         {
-            ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Thread_Bus_Pipe::initialize pipe fail recv[%p]size[%u],send[%p],size[%u].",
+            ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Thread_Bus_Pipe::initialize pipe fail recv[%p]size[%u],send[%p],size[%u].",
                     bus_pipe_[THR_RECV_PIPE_ID],
                     size_pipe_[THR_RECV_PIPE_ID],
                     bus_pipe_[THR_SEND_PIPE_ID],
                     size_pipe_[THR_SEND_PIPE_ID]
-                   );
+            );
             return -1;
         }
 
@@ -174,14 +166,14 @@ public:
     //注意
 
     //从RECV管道读取数据，
-    inline bool pop_front_recvpipe(zce::lockfree::dequechunk_node *&node)
+    inline bool pop_front_recvpipe(zce::lockfree::dequechunk_node*& node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
     }
 
     //向RECV管道写入数据
-    inline bool push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
+    inline bool push_back_recvpipe(const zce::lockfree::dequechunk_node* node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->push_end(node);
@@ -189,14 +181,14 @@ public:
 
 
     //从SEND管道读取数据，
-    inline bool pop_front_sendpipe(zce::lockfree::dequechunk_node *&node)
+    inline bool pop_front_sendpipe(zce::lockfree::dequechunk_node*& node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
     }
 
     //向SEND管道写入数据
-    inline bool push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
+    inline bool push_back_sendpipe(const zce::lockfree::dequechunk_node* node)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->push_end(node);
@@ -204,11 +196,11 @@ public:
 
 
     //取Recv管道头的帧长
-    inline int get_frontsize_recvpipe(size_t &note_size)
+    inline int get_frontsize_recvpipe(size_t& note_size)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
 
-        if (bus_pipe_[THR_RECV_PIPE_ID] ->empty())
+        if (bus_pipe_[THR_RECV_PIPE_ID]->empty())
         {
             return -1;
         }
@@ -218,16 +210,16 @@ public:
     }
 
     //取Send管道头的帧长
-    inline int get_frontsize_sendpipe(size_t &note_size)
+    inline int get_frontsize_sendpipe(size_t& note_size)
     {
         ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
 
-        if (bus_pipe_[THR_SEND_PIPE_ID] ->empty())
+        if (bus_pipe_[THR_SEND_PIPE_ID]->empty())
         {
             return -1;
         }
 
-        note_size =  bus_pipe_[THR_SEND_PIPE_ID]->get_front_len();
+        note_size = bus_pipe_[THR_SEND_PIPE_ID]->get_front_len();
         return 0;
     }
 
@@ -237,7 +229,7 @@ public:
 
     //为了SingleTon类准备
     //得到唯一的单子实例
-    ZCE_Thread_Bus_Pipe *instance()
+    ZCE_Thread_Bus_Pipe* instance()
     {
         if (instance_ == NULL)
         {
@@ -248,7 +240,7 @@ public:
     }
 
     //赋值唯一的单子实例
-    void instance(ZCE_Thread_Bus_Pipe *pinstatnce)
+    void instance(ZCE_Thread_Bus_Pipe* pinstatnce)
     {
         clean_instance();
         instance_ = pinstatnce;

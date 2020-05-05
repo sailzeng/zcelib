@@ -81,7 +81,7 @@ public:
     * @param      need_cmpbuf_size   所需的压缩buffer的长度，一般会比原文长，但内部会尽力保证用最短的尺寸。
     */
     inline static int need_compressed_bufsize(size_t original_size,
-                                              size_t *need_cmpbuf_size)
+                                              size_t* need_cmpbuf_size)
     {
         //大约可以处理2G的数据，
         return COMPRESS_STRATEGY::need_comp_size(original_size,
@@ -94,8 +94,8 @@ public:
     * @param      original_buf  压缩的数据buffer
     * @param      original_size 返回参数，原文的尺寸
     */
-    static int get_original_size(const unsigned char *compressed_buf,
-                                 size_t *original_size)
+    static int get_original_size(const unsigned char* compressed_buf,
+                                 size_t* original_size)
     {
         uint32_t srclen_type = *compressed_buf & 0x7;
         size_t need_srclen = 0;
@@ -129,17 +129,17 @@ public:
     * @param[in,out] compressed_size  压缩的尺寸，传入传出参数，传入时表示compressed_buf长度，必须need_compressdbuf_size的返回值
     *                                 ，返回时，返回使用的compressed_buf的长度
     */
-    int compress(const unsigned char *original_buf,
+    int compress(const unsigned char* original_buf,
                  size_t original_size,
-                 unsigned char *compressed_buf,
-                 size_t *compressed_size)
+                 unsigned char* compressed_buf,
+                 size_t* compressed_size)
     {
         ZCE_ASSERT(original_buf && compressed_buf && original_size > 0);
 
         //如果准备的压缩空间不够，
         int ret = 0;
         size_t need_compbuf_size = 0;
-        ret = need_compressed_bufsize(original_size, &need_compbuf_size);
+        ret = need_compressed_bufsize(original_size,&need_compbuf_size);
         if (ret != 0
             || *compressed_size < need_compbuf_size
             || original_size <= 0)
@@ -148,7 +148,7 @@ public:
             return -1;
         }
 
-        unsigned char *head_pos = compressed_buf;
+        unsigned char* head_pos = compressed_buf;
         *head_pos = 0;
 
         //注意保存的数据全部用的LE
@@ -165,14 +165,14 @@ public:
         {
             head_size = 3;
             *head_pos |= 0x2;
-            ZLEUINT16_TO_BYTE((head_pos + 1), ((uint16_t)(original_size)));
+            ZLEUINT16_TO_BYTE((head_pos + 1),((uint16_t)(original_size)));
         }
         //头部，1字节选项，1个4字节标识原长度字段，
         else  if (original_size <= COMPRESS_STRATEGY::LZ_MAX_ORIGINAL_SIZE)
         {
             head_size = 5;
             *head_pos |= 0x4;
-            ZLEUINT32_TO_BYTE((head_pos + 1), ((uint32_t)(original_size)));
+            ZLEUINT32_TO_BYTE((head_pos + 1),((uint32_t)(original_size)));
         }
         else
         {
@@ -207,7 +207,7 @@ public:
         {
             *compressed_size = original_size + head_size;
             //字节是对齐的地方，还是使用memcpy把
-            ::memcpy(compressed_buf + head_size, original_buf, original_size);
+            ::memcpy(compressed_buf + head_size,original_buf,original_size);
         }
 
         return 0;
@@ -221,17 +221,17 @@ public:
     * @param      original_buf    原文
     * @param      original_size   原文的大小
     */
-    int decompress(const unsigned char *compressed_buf,
+    int decompress(const unsigned char* compressed_buf,
                    size_t compressed_size,
-                   unsigned char *original_buf,
-                   size_t *original_size)
+                   unsigned char* original_buf,
+                   size_t* original_size)
     {
         ZCE_ASSERT(original_buf && compressed_buf && compressed_size >= 5);
         if (compressed_size < 5)
         {
             return -1;
         }
-        const unsigned char *head_pos = compressed_buf;
+        const unsigned char* head_pos = compressed_buf;
         uint32_t srclen_type = *head_pos & 0x7;
         size_t need_srclen = 0;
         size_t head_size = 0;
@@ -257,13 +257,13 @@ public:
         }
 
         //传入的空间不够
-        if (need_srclen > *original_size)
+        if (need_srclen > * original_size)
         {
             return -1;
         }
 
         *original_size = need_srclen;
-        bool if_compressed = (*head_pos & 0x80) ? true : false;
+        bool if_compressed = (*head_pos & 0x80)?true:false;
         if (if_compressed)
         {
             return compress_fmt_.decompress_core(compressed_buf + head_size,
@@ -279,7 +279,7 @@ public:
                 return -1;
             }
             //字节对齐的地方还是直接用memcpy吧
-            ::memcpy(original_buf, compressed_buf + head_size, need_srclen);
+            ::memcpy(original_buf,compressed_buf + head_size,need_srclen);
             return 0;
         }
 
@@ -310,30 +310,26 @@ public:
     ~ZLZ_Compress_Format();
 
     //压缩核心代码
-<<<<<<< HEAD
-    void compress_core(const unsigned char *original_buf,
-=======
-    void compress_core(const unsigned char alignas(sizeof(size_t))* original_buf,
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
+    void compress_core(const unsigned char* original_buf,
                        size_t original_size,
-                       unsigned char alignas(sizeof(size_t)) *compressed_buf,
-                       size_t *compressed_size);
+                       unsigned char alignas(sizeof(size_t))* compressed_buf,
+                       size_t* compressed_size);
 
     //解压核心代码
-    int decompress_core(const unsigned char *compressed_buf,
+    int decompress_core(const unsigned char* compressed_buf,
                         size_t compressed_size,
-                        unsigned char *original_buf,
+                        unsigned char* original_buf,
                         size_t original_size);
 
     //需要的压缩的buffer长度
     inline static int need_comp_size(size_t original_size,
-                                     size_t *need_cmpbuf_size)
+                                     size_t* need_cmpbuf_size)
     {
         if (original_size > LZ_MAX_ORIGINAL_SIZE)
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFFF7 + 1) * 3 + 64);
+        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFFF7 + 1) * 3 + 64);
         return 0;
     }
 
@@ -347,7 +343,7 @@ public:
 protected:
 
     //HASH TABLE的指针
-    uint32_t *hash_lz_offset_ = nullptr;
+    uint32_t* hash_lz_offset_ = nullptr;
 };
 
 //直接的ZLZ的typedef，使用zce::ZLZ_Compress::compress ,decompress函数就可以完成功能
@@ -367,25 +363,25 @@ public:
     ~LZ4_Compress_Format();
 
     //压缩核心代码
-    void compress_core(const unsigned char *original_buf,
+    void compress_core(const unsigned char* original_buf,
                        size_t original_size,
-                       unsigned char *compressed_buf,
-                       size_t *compressed_size);
+                       unsigned char* compressed_buf,
+                       size_t* compressed_size);
     //解压核心代码
-    int decompress_core(const unsigned char *compressed_buf,
+    int decompress_core(const unsigned char* compressed_buf,
                         size_t compressed_size,
-                        unsigned char *original_buf,
+                        unsigned char* original_buf,
                         size_t original_size);
 
     //需要的压缩的buffer长度
     inline static int need_comp_size(size_t original_size,
-                                     size_t *need_cmpbuf_size)
+                                     size_t* need_cmpbuf_size)
     {
         if (original_size > LZ_MAX_ORIGINAL_SIZE)
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFF + 1) + 64);
+        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFF + 1) + 64);
         return 0;
     }
 
@@ -396,7 +392,7 @@ public:
 protected:
 
     //HASH TABLE的指针
-    uint32_t *hash_lz_offset_ = nullptr;
+    uint32_t* hash_lz_offset_ = nullptr;
 };
 
 //直接的ZEN LZ4的typedef
