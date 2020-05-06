@@ -3,11 +3,11 @@
 #include "soar_ogre_frame.h"
 
 /******************************************************************************************
-struct  Ogre4a_App_Frame OGRE ·şÎñÆ÷µÄÄÚ²¿ÃüÁîÖ¡Í·
+struct  Ogre4a_App_Frame OGRE æœåŠ¡å™¨çš„å†…éƒ¨å‘½ä»¤å¸§å¤´
 ******************************************************************************************/
-//×î´óµÄDATAÊı¾İÇø³¤¶È,¿ÉÒÔÅäÖÃ
+//æœ€å¤§çš„DATAæ•°æ®åŒºé•¿åº¦,å¯ä»¥é…ç½®
 size_t Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN = 64 * 1024;
-//×î´óµÄFRAMEµÄ³¤¶È,ÎªMAX_OF_OGRE_DATA_LEN £« LEN_OF_OGRE_FRAME_HEAD
+//æœ€å¤§çš„FRAMEçš„é•¿åº¦,ä¸ºMAX_OF_OGRE_DATA_LEN ï¼‹ LEN_OF_OGRE_FRAME_HEAD
 size_t Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN = Ogre4a_App_Frame::MAX_OF_OGRE_DATA_LEN + Ogre4a_App_Frame::LEN_OF_OGRE_FRAME_HEAD;
 
 Ogre4a_App_Frame::Ogre4a_App_Frame():
@@ -36,7 +36,7 @@ Ogre4a_App_Frame *Ogre4a_App_Frame::new_ogre(size_t lenframe)
     void *ptr = ::new unsigned char[lenframe];
 
 #if defined(DEBUG) || defined(_DEBUG)
-    //¼ì²éÖ¡µÄÄÄ¸öµØ·½³öÏÖÎÊÌâ£¬»¹ÊÇÕâÑùºÃÒ»µã
+    //æ£€æŸ¥å¸§çš„å“ªä¸ªåœ°æ–¹å‡ºç°é—®é¢˜ï¼Œè¿˜æ˜¯è¿™æ ·å¥½ä¸€ç‚¹
     memset(ptr, 0, lenframe);
 #endif //DEBUG
 
@@ -55,7 +55,7 @@ void Ogre4a_App_Frame::delete_ogre(Ogre4a_App_Frame *ptrframe) noexcept
 
 
 
-//Ôö¼ÓÊı¾İ
+//å¢åŠ æ•°æ®
 int Ogre4a_App_Frame::add_data(unsigned int add_size, char *add_data)
 {
     if (ogre_frame_len_ + add_size > MAX_OF_OGRE_DATA_LEN)
@@ -71,15 +71,15 @@ int Ogre4a_App_Frame::add_data(unsigned int add_size, char *add_data)
 }
 
 
-//ÅäÖÃ×î´óµÄDATAÊı¾İÇø³¤¶È,
+//é…ç½®æœ€å¤§çš„DATAæ•°æ®åŒºé•¿åº¦,
 void Ogre4a_App_Frame::set_max_framedata_len(unsigned int  max_framedata)
 {
     MAX_OF_OGRE_DATA_LEN = max_framedata;
-    //×î´óµÄFRAMEµÄ³¤¶È,ÎªMAX_OF_OGRE_DATA_LEN £« LEN_OF_OGRE_FRAME_HEAD
+    //æœ€å¤§çš„FRAMEçš„é•¿åº¦,ä¸ºMAX_OF_OGRE_DATA_LEN ï¼‹ LEN_OF_OGRE_FRAME_HEAD
     MAX_OF_OGRE_FRAME_LEN = MAX_OF_OGRE_DATA_LEN + LEN_OF_OGRE_FRAME_HEAD;
 }
 
-//½»»»×Ô¼ºRcv ,Snd Peer Info
+//äº¤æ¢è‡ªå·±Rcv ,Snd Peer Info
 void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
 {
     OGRE_PEER_ID sock_peer = snd_peer_info_;
@@ -87,7 +87,7 @@ void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo()
     rcv_peer_info_ = sock_peer;
 }
 
-//ºÍÆäËûÈË½»»»Rcv ,Snd Peer Info,
+//å’Œå…¶ä»–äººäº¤æ¢Rcv ,Snd Peer Info,
 void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe )
 {
     ogre_frame_option_ = exframe->ogre_frame_option_;
@@ -95,7 +95,7 @@ void Ogre4a_App_Frame::exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe 
     snd_peer_info_ = exframe->rcv_peer_info_ ;
 }
 
-//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
+//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
 void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
                                            const char *outstr,
                                            ZCE_LOG_PRIORITY log_priority)
@@ -116,7 +116,7 @@ void Ogre4a_App_Frame::dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
 #endif
 }
 
-//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
+//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
 void Ogre4a_App_Frame::dump_ogre_framehead(const char *outstr,
                                            ZCE_LOG_PRIORITY log_priority) const
 {

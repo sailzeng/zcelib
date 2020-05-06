@@ -4,7 +4,7 @@
 * @author
 * @version
 * @date       Monday, August 25, 2014
-* @brief      这个代码是ACE的ACE_Get_Option的代码，我没有版权，
+* @brief      杩欎釜浠ｇ爜鏄疉CE鐨凙CE_Get_Option鐨勪唬鐮侊紝鎴戞病鏈夌増鏉冿紝
 *
 *
 * @details

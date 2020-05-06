@@ -1,5 +1,4 @@
-
-// illusion.cpp : Defines the class behaviors for the application.
+é”˜?// illusion.cpp : Defines the class behaviors for the application.
 //
 
 
@@ -25,11 +24,17 @@ Illusion_Application::~Illusion_Application()
 }
 
 
-/// appµÄ¿ªÊ¼ÔËÐÐ
+<<<<<<< HEAD
+/// appé•„å‹«ç´‘æ¿®å¬­ç¹ç›?int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
+{
+    int ret = 0;
+    //æµ£è·¨æ•¤UTF8æµ ï½‡çˆœæ¶”ç†»ç·­é‘çŒ´ç´å¨´å¬­ç˜¯é™æˆ å¹‡æ©æ¨»æ§¸é“¾å¤Šç·¢æ¾¶æ°¶æ£¶æ£°æ¡¡ç´é”²çŠ±è´Ÿé•Š
+=======
+/// appçš„å¼€å§‹è¿è¡Œ
 int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
 {
     int ret = 0;
-    //Ê¹ÓÃUTF8´úÂëÒ²Êä³ö£¬²âÊÔ·¢ÏÖ»¹ÊÇÓÐºÜ¶àÎÊÌâ£¬ÒòÎª×Ô¼ºµÄ¿âÄÚ²¿Ê¹ÓÃµÄÊÇNot setµÄ×Ö·û¼¯¡£
+    //ä½¿ç”¨UTF8ä»£ç ä¹Ÿè¾“å‡ºï¼Œæµ‹è¯•å‘çŽ°è¿˜æ˜¯æœ‰å¾ˆå¤šé—®é¢˜ï¼Œå› ä¸ºè‡ªå·±çš„åº“å†…éƒ¨ä½¿ç”¨çš„æ˜¯Not setçš„å­—ç¬¦é›†ã€‚
     //bret = ::SetConsoleOutputCP(CP_UTF8);
     //if (bret == FALSE)
     //{
@@ -41,7 +46,7 @@ int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
     //{
     //    return -1;
     //}
-    ////ÉèÖÃÆÁÄ»»º³åÇøºÍÊä³öÆÁÄ»´óÐ¡
+    ////è®¾ç½®å±å¹•ç¼“å†²åŒºå’Œè¾“å‡ºå±å¹•å¤§å°
     //COORD coord = { 161, 481 };
     //bret = ::SetConsoleScreenBufferSize(handle_out, coord);
     //if (bret == FALSE)
@@ -84,7 +89,7 @@ int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
     ZCE_Trace_LogMsg::instance()->init_time_log(LOGDEVIDE_BY_DAY,
         logdir_path_.c_str());
 
-    //¶ÁÈ¡.xls , .xlsx ÎÄ¼þ
+    //è¯»å–.xls , .xlsx æ–‡ä»¶
     ret = ZCE_LIB::readdir_nameary(excel_path_.c_str(),
                                    NULL,
                                    ".xls",
@@ -111,7 +116,7 @@ int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
         return 0;
     }
 
-    //¶ÁÈ¡.protoÎÄ¼þ
+    //è¯»å–.protoæ–‡ä»¶
     ret = ZCE_LIB::readdir_nameary(proto_path_.c_str(),
                                    NULL,
                                    ".proto",
@@ -136,7 +141,7 @@ int Illusion_Application::app_start(int /*argc*/, const char * /*argv*/[])
     return 0;
 }
 
-/// app ÔËÐÐ
+/// app è¿è¡Œ
 int Illusion_Application::on_run()
 {
     int ret = 0;
@@ -159,13 +164,13 @@ int Illusion_Application::on_run()
 
         //
         mbcs_xls_name = excel_path_;
-        //ÁÙÊ±ÎÄ¼þÌø¹ý
+        //ä¸´æ—¶æ–‡ä»¶è·³è¿‡
         if (execl_cfg_fileary_[i].length() > 0 && execl_cfg_fileary_[i][0] == '~')
         {
             continue;
         }
         ZCE_LIB::path_string_cat(mbcs_xls_name, execl_cfg_fileary_[i]);
-        //ZCE LIBµÄ¿âÊÇ°´ÕÕMBCS±àÂë¿¼ÂÇµÄ£¬
+        //ZCE LIBçš„åº“æ˜¯æŒ‰ç…§MBCSç¼–ç è€ƒè™‘çš„ï¼Œ
         ret = Illusion_Read_Config::instance()->read_excel(
                   mbcs_xls_name);
         if (ret != 0)
@@ -185,7 +190,7 @@ int Illusion_Application::on_run()
     return 0;
 }
 
-/// appµÄÍË³ö
+/// appçš„é€€å‡º
 int Illusion_Application::on_exit()
 {
     Illusion_Read_Config::instance()->finalize();
@@ -253,3 +258,4 @@ int main(int argc, const char *argv[])
     the_app.on_exit();
     return 0;
 }
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

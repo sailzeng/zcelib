@@ -7,48 +7,48 @@
 * @brief
 *
 *
-* @details    ËùÒÔÄã°´ÔÞÒòÎªÄã¹Âµ¥,ËùÒÔÄã°´ÔÞºÃÏñÄã´æÔÚ
+* @details    æ‰€ä»¥ä½ æŒ‰èµžå› ä¸ºä½ å­¤å•,æ‰€ä»¥ä½ æŒ‰èµžå¥½åƒä½ å­˜åœ¨
 *
 *
 *
 * @note
-*      ÔÞ
-*      ÑÝ³ª£ºÌÕ¾§Ó¨
-*      ÓÐÉÏÉ½ÏÂº£ÓÐ²àÅÄ×ÔÅÄ
-*      ÓÐ³èÎïÓÐÐ¡º¢
-*      ÓÐ·Û×¨ÉçÍÅ×î°®
-*      ÓÐÆæÎÅ¹ÖÌ·ÓÐÉÏµÛÓÐÈöµ©
-*      ËùÒÔÄã·ÖÏíÒòÎªÄã¸Ð¿®
-*      ËùÒÔÄã´ò¿¨ºÃÏñÄã¾«²Ê
-*      ÓÐÄÐÈËÅ®ÈË
-*      ÓÐ¼ÒÈËµÐÈËÓÐÐ©»°²»ÄÜËµ
-*      ÓÐ×ìÅÚÒÀÈ»³ôÛJ
-*      ÓÐ¼ÙêþÏ¹êþÓÐµÄÃ»µÄ¶¯Ì¬
-*      ËùÒÔÄã°´ÔÞÒòÎªÄã¹Âµ¥
-*      ËùÒÔÄã°´ÔÞºÃÏñÄã´æÔÚ
-*      ËùÒÔÎÒ°´ÔÞ
+*      èµž
+*      æ¼”å”±ï¼šé™¶æ™¶èŽ¹
+*      æœ‰ä¸Šå±±ä¸‹æµ·æœ‰ä¾§æ‹è‡ªæ‹
+*      æœ‰å® ç‰©æœ‰å°å­©
+*      æœ‰ç²‰ä¸“ç¤¾å›¢æœ€çˆ±
+*      æœ‰å¥‡é—»æ€ªè°­æœ‰ä¸Šå¸æœ‰æ’’æ—¦
+*      æ‰€ä»¥ä½ åˆ†äº«å› ä¸ºä½ æ„Ÿæ…¨
+*      æ‰€ä»¥ä½ æ‰“å¡å¥½åƒä½ ç²¾å½©
+*      æœ‰ç”·äººå¥³äºº
+*      æœ‰å®¶äººæ•Œäººæœ‰äº›è¯ä¸èƒ½è¯´
+*      æœ‰å˜´ç‚®ä¾ç„¶è‡­è·©
+*      æœ‰å‡æŽ°çžŽæŽ°æœ‰çš„æ²¡çš„åŠ¨æ€
+*      æ‰€ä»¥ä½ æŒ‰èµžå› ä¸ºä½ å­¤å•
+*      æ‰€ä»¥ä½ æŒ‰èµžå¥½åƒä½ å­˜åœ¨
+*      æ‰€ä»¥æˆ‘æŒ‰èµž
 *
-*      ÓÐÈËÉ¹¶÷°®ÓÐÈËË£°×ÀÃ
-*      ÓÐÐ¡²ËÓÐ´ó²Í
-*      ÓÐÇ°ÄÐÓÑÇ°Å®ÓÑ
-*      ÓÐ¼ÓÁËÃ»ÓÐÓÐ¹ÊÊÂÓÐÆ¬¶Î
-*      ËùÒÔÄã·ÖÏíÒòÎªÄã¸Ð¿®
-*      ËùÒÔÄã´ò¿¨ºÃÏñÄã¾«²Ê
-*      ÓÐÇ±Ë®Íµ¿´ÓÐ´ó¾ªÐ¡¹Ö
-*      ÓÐºÚÌØÓÐ¹«¹Ø
-*      ÓÐÃþ²»µ½µÄÔÆ¶Ë
+*      æœ‰äººæ™’æ©çˆ±æœ‰äººè€ç™½çƒ‚
+*      æœ‰å°èœæœ‰å¤§é¤
+*      æœ‰å‰ç”·å‹å‰å¥³å‹
+*      æœ‰åŠ äº†æ²¡æœ‰æœ‰æ•…äº‹æœ‰ç‰‡æ®µ
+*      æ‰€ä»¥ä½ åˆ†äº«å› ä¸ºä½ æ„Ÿæ…¨
+*      æ‰€ä»¥ä½ æ‰“å¡å¥½åƒä½ ç²¾å½©
+*      æœ‰æ½œæ°´å·çœ‹æœ‰å¤§æƒŠå°æ€ª
+*      æœ‰é»‘ç‰¹æœ‰å…¬å…³
+*      æœ‰æ‘¸ä¸åˆ°çš„äº‘ç«¯
 *
-*      ËùÒÔÄã°´ÔÞÒòÎªÄã¹Âµ¥
-*      ËùÒÔÄã°´ÔÞºÃÏñÄã´æÔÚ
-*      ËùÒÔÎÒ°´ÔÞ
+*      æ‰€ä»¥ä½ æŒ‰èµžå› ä¸ºä½ å­¤å•
+*      æ‰€ä»¥ä½ æŒ‰èµžå¥½åƒä½ å­˜åœ¨
+*      æ‰€ä»¥æˆ‘æŒ‰èµž
 *
-*      ÓÎÀÖÔ°»Ã»¯³ÉÊýÎ»Ô´
-*      ÔÚÄãµÄÆÁÄ»Ç°È¡´úÁËÈ«ÊÀ½ç
-*      Ë¢ÁËÓÖË¢²»ÖØÒªµÄ½ü¿ö
-*      ¶á×ßÄãµÄÏÖÊµµ½µ×ÓÐ¶à·è¿ñ
-*      ËùÒÔÄã°´ÔÞÒòÎªÄã¹Âµ¥
-*      ËùÒÔÄã°´ÔÞºÃÏñÄã´æÔÚ
-*      ËùÒÔÎÒ°´ÔÞ
+*      æ¸¸ä¹å›­å¹»åŒ–æˆæ•°ä½æº
+*      åœ¨ä½ çš„å±å¹•å‰å–ä»£äº†å…¨ä¸–ç•Œ
+*      åˆ·äº†åˆåˆ·ä¸é‡è¦çš„è¿‘å†µ
+*      å¤ºèµ°ä½ çš„çŽ°å®žåˆ°åº•æœ‰å¤šç–¯ç‹‚
+*      æ‰€ä»¥ä½ æŒ‰èµžå› ä¸ºä½ å­¤å•
+*      æ‰€ä»¥ä½ æŒ‰èµžå¥½åƒä½ å­˜åœ¨
+*      æ‰€ä»¥æˆ‘æŒ‰èµž
 *
 */
 
@@ -61,8 +61,8 @@ class Server_Config_Base;
 
 
 /*!
-* @brief      ·þÎñÆ÷¿ò¼ÜµÄ¶¨Ê±Æ÷´¦ÀíÀà
-*             ¿ÉÒÔ´ÓÆäµÃµ½µ±Ç°µÄÊ±ÖÓ
+* @brief      æœåŠ¡å™¨æ¡†æž¶çš„å®šæ—¶å™¨å¤„ç†ç±»
+*             å¯ä»¥ä»Žå…¶å¾—åˆ°å½“å‰çš„æ—¶é’Ÿ
 * @note
 */
 class Server_Timer_Base : public ZCE_Timer_Handler
@@ -71,20 +71,20 @@ class Server_Timer_Base : public ZCE_Timer_Handler
     friend class Soar_Svrd_Appliction;
 public:
 
-    ///¹¹Ôìº¯Êý,ÒòÎª¿ò¼ÜµÄÉè¼Æ¹¹ÔìµÄÊ±ºò²»³õÊ¼»¯timer queue£¬
+    ///æž„é€ å‡½æ•°,å› ä¸ºæ¡†æž¶çš„è®¾è®¡æž„é€ çš„æ—¶å€™ä¸åˆå§‹åŒ–timer queueï¼Œ
     Server_Timer_Base();
-    ///Îö¹¹º¯Êý
+    ///æžæž„å‡½æ•°
     ~Server_Timer_Base();
 
 protected:
 
-    // ¼ì²é¼à¿ØÊý¾Ý
+    // æ£€æŸ¥ç›‘æŽ§æ•°æ®
     void check_monitor(const ZCE_Time_Value &now_time);
 
-    // ÏµÍ³¼°½ø³Ì×´Ì¬²ÉÑù
+    // ç³»ç»ŸåŠè¿›ç¨‹çŠ¶æ€é‡‡æ ·
     void report_status();
 
-    ///È¡µÃµ±Ç°µÄÊ±¼ä£¬ÓÃÓÚ¶ÔÊ±¼ä¾«¶ÈÒªÇó²»¸ßµÄ³¡ºÏ
+    ///å–å¾—å½“å‰çš„æ—¶é—´ï¼Œç”¨äºŽå¯¹æ—¶é—´ç²¾åº¦è¦æ±‚ä¸é«˜çš„åœºåˆ
     ZCE_Time_Value gettimeofday();
 
 
@@ -92,63 +92,63 @@ protected:
 
 
     /*!
-    * @brief      ³õÊ¼»¯£¬Èç¹ûÏ£ÍûÔö¼ÓAPPµÄ¶¨Ê±Æ÷»òÕßµ÷ÕûÐÄÌø½ø¶È£¬ÇëÔÚµ÷ÓÃÕâ¸öº¯ÊýÇ°Íê³É
+    * @brief      åˆå§‹åŒ–ï¼Œå¦‚æžœå¸Œæœ›å¢žåŠ APPçš„å®šæ—¶å™¨æˆ–è€…è°ƒæ•´å¿ƒè·³è¿›åº¦ï¼Œè¯·åœ¨è°ƒç”¨è¿™ä¸ªå‡½æ•°å‰å®Œæˆ
     * @return     virtual int
     * @param      queue
     */
     virtual int initialize(ZCE_Timer_Queue_Base *queue);
 
 
-    /// ¶¨Ê±´¦Àí¼à¿ØÊý¾Ý
+    /// å®šæ—¶å¤„ç†ç›‘æŽ§æ•°æ®
     virtual int timer_timeout(const ZCE_Time_Value &now_time,
                               const void *act = 0);
 
-    ///¶¨Ê±Æ÷¹Ø±Õ
+    ///å®šæ—¶å™¨å…³é—­
     virtual int timer_close();
 
-    ///ÉèÖÃÐÄÌø¶¨Ê±Æ÷µÄ½ø¶È£¬Ä¬ÈÏÊÇ0.5sÒ»´Î£¬Èç¹û¾õµÃ²»¹»£¬ÔÚinitializeÇ°ÖØÐÂÉèÖÃ
-    ///¾«¶ÈUSEC
+    ///è®¾ç½®å¿ƒè·³å®šæ—¶å™¨çš„è¿›åº¦ï¼Œé»˜è®¤æ˜¯0.5sä¸€æ¬¡ï¼Œå¦‚æžœè§‰å¾—ä¸å¤Ÿï¼Œåœ¨initializeå‰é‡æ–°è®¾ç½®
+    ///ç²¾åº¦USEC
     void set_heart_precision(const ZCE_Time_Value &precision);
 
 
     /*!
-    * @brief      Ôö¼ÓÒ»¸öAPPµÄ¶¨Ê±Æ÷
-    * @param[in]  interval Ôö¼ÓµÄ¶¨Ê±Æ÷µÄ¼ä¸ô
-    * @param[in]  act      Ôö¼ÓµÄ¶¨Ê±Æ÷µÄ±êÊ¾
+    * @brief      å¢žåŠ ä¸€ä¸ªAPPçš„å®šæ—¶å™¨
+    * @param[in]  interval å¢žåŠ çš„å®šæ—¶å™¨çš„é—´éš”
+    * @param[in]  act      å¢žåŠ çš„å®šæ—¶å™¨çš„æ ‡ç¤º
     */
     void add_app_timer(const ZCE_Time_Value &interval, const void *act);
 
 
 protected:
 
-    ///·þÎñÆ÷¶¨Ê±Æ÷ID,
+    ///æœåŠ¡å™¨å®šæ—¶å™¨ID,
     static const  int  SERVER_TIMER_ID[];
 
-    ///APP TimerµÄ×î´óÊýÁ¿£¬
+    ///APP Timerçš„æœ€å¤§æ•°é‡ï¼Œ
     static const size_t MAX_APP_TIMER_NUMBER = 6;
 
-    ///Ä¬ÈÏÐÄÌøµÄ¾«¶È
+    ///é»˜è®¤å¿ƒè·³çš„ç²¾åº¦
     static const time_t DEF_TIMER_INTERVAL_USEC = 500000;
 
 protected:
 
-    ///ÐÄÌøµÄ¾«¶È£¬
+    ///å¿ƒè·³çš„ç²¾åº¦ï¼Œ
     ZCE_Time_Value heart_precision_ = ZCE_Time_Value(0, DEF_TIMER_INTERVAL_USEC);
 
-    ///ÐÄÌø¼ÆÊýÆ÷£¬heartbeat_counter_²»´Ó0¿ªÊ¼¼ÆÊýÊÇ±ÜÃâµÚÒ»´ÎÄ£³ýµÄÊ±ºò¾Í·¢ÉúÊÂÇé
+    ///å¿ƒè·³è®¡æ•°å™¨ï¼Œheartbeat_counter_ä¸ä»Ž0å¼€å§‹è®¡æ•°æ˜¯é¿å…ç¬¬ä¸€æ¬¡æ¨¡é™¤çš„æ—¶å€™å°±å‘ç”Ÿäº‹æƒ…
     uint64_t  heartbeat_counter_ = 1;
 
-    ///´Ó¿ªÊ¼ÐÄÌøµ½ÏÖÔÚµÄºÁÃëÊý£¬Õâ¸öÊýÖµÊÇÍ¨¹ýheartbeat_counter_ºÍ¾«¶ÈµÃµ½µÄ£¬
-    ///²¢²»×¼È·£¬ÓÃÓÚ¸÷ÖÖ³õÂÔ¼ÆËã
+    ///ä»Žå¼€å§‹å¿ƒè·³åˆ°çŽ°åœ¨çš„æ¯«ç§’æ•°ï¼Œè¿™ä¸ªæ•°å€¼æ˜¯é€šè¿‡heartbeat_counter_å’Œç²¾åº¦å¾—åˆ°çš„ï¼Œ
+    ///å¹¶ä¸å‡†ç¡®ï¼Œç”¨äºŽå„ç§åˆç•¥è®¡ç®—
     uint64_t  heart_total_mesc_ = 0;
 
     time_t last_check_ = 0;
 
-    // ¼à¿ØµÄÊµÀý
+    // ç›‘æŽ§çš„å®žä¾‹
     Soar_Stat_Monitor *stat_monitor_ = NULL;
 
 
-    ///·ÇÐÄÌøÒÔÍâ£¬»¹¿ÉÒÔÉèÖÃN¸öAPP¶¨Ê±Æ÷£¬Äã×Ô¼ºÅäÖÃ,ÎÒÎªÄãµã¸öÔÞ
+    ///éžå¿ƒè·³ä»¥å¤–ï¼Œè¿˜å¯ä»¥è®¾ç½®Nä¸ªAPPå®šæ—¶å™¨ï¼Œä½ è‡ªå·±é…ç½®,æˆ‘ä¸ºä½ ç‚¹ä¸ªèµž
     size_t zan_timer_num_ = 0;
     ///
     ZCE_Time_Value zan_timer_internal_[MAX_APP_TIMER_NUMBER];
@@ -157,7 +157,7 @@ protected:
 
 
 public:
-    ///µ±Ç°Ê±¼ä
+    ///å½“å‰æ—¶é—´
     static ZCE_Time_Value now_time_;
 
 };

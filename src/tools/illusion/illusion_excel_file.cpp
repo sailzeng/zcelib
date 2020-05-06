@@ -1,5 +1,4 @@
-
-#include "stdafx.h"
+é”˜?#include "stdafx.h"
 #include "illusion_excel_file.h"
 
 #ifdef _DEBUG
@@ -27,22 +26,25 @@ Illusion_ExcelFile::~Illusion_ExcelFile()
 }
 
 
-//³õÊ¼»¯EXCELÎÄ¼þ£¬
+<<<<<<< HEAD
+//é’æ¿†
+=======
+//åˆå§‹åŒ–EXCELæ–‡ä»¶ï¼Œ
 BOOL Illusion_ExcelFile::init_excel()
 {
 
     HRESULT hret = ::CoInitializeEx(NULL, COINIT_APARTMENTTHREADED);
-    //ÆäÊµÕâ¸ö³õÊ¼»¯·ÅÔÚÕâ¶ù²¢²»¼ûµÃºÏÀí£¬
+    //å…¶å®žè¿™ä¸ªåˆå§‹åŒ–æ”¾åœ¨è¿™å„¿å¹¶ä¸è§å¾—åˆç†ï¼Œ
     if (FAILED(hret))
     {
-        ::AfxMessageBox(_T("³õÊ¼»¯COMÖ§³Ö¿âÊ§°Ü!"));
+        ::AfxMessageBox(_T("åˆå§‹åŒ–COMæ”¯æŒåº“å¤±è´¥!"));
         return FALSE;
     }
 
-    //´´½¨Excel 2000·þÎñÆ÷(Æô¶¯Excel)
+    //åˆ›å»ºExcel 2000æœåŠ¡å™¨(å¯åŠ¨Excel)
     if (!excel_application_.CreateDispatch(_T("Excel.Application"), NULL))
     {
-        ::AfxMessageBox(_T("ÎÞ·¨Æô¶¯EXCEL,Çë¼ì²éÊÇ·ñ°²×°ÁËOffice EXCEL£¬»òÕß¼ì²é×¢²á±í¡£"));
+        ::AfxMessageBox(_T("æ— æ³•å¯åŠ¨EXCEL,è¯·æ£€æŸ¥æ˜¯å¦å®‰è£…äº†Office EXCELï¼Œæˆ–è€…æ£€æŸ¥æ³¨å†Œè¡¨ã€‚"));
         return FALSE;
     }
 
@@ -60,13 +62,13 @@ void Illusion_ExcelFile::release_excel()
     ::CoUninitialize();
 }
 
-//´ò¿ªexcelÎÄ¼þ
+//æ‰“å¼€excelæ–‡ä»¶
 BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
 {
-    //ÏÈ¹Ø±Õ
+    //å…ˆå…³é—­
     close_excelfile();
 
-    //ÀûÓÃÄ£°åÎÄ¼þ½¨Á¢ÐÂÎÄµµ
+    //åˆ©ç”¨æ¨¡æ¿æ–‡ä»¶å»ºç«‹æ–°æ–‡æ¡£
     excel_books_.AttachDispatch(excel_application_.get_Workbooks(), true);
 
     LPDISPATCH lpDis = NULL;
@@ -78,10 +80,10 @@ BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
     if (lpDis)
     {
         excel_work_book_.AttachDispatch(lpDis);
-        //µÃµ½Worksheets
+        //å¾—åˆ°Worksheets
         excel_sheets_.AttachDispatch(excel_work_book_.get_Worksheets(), true);
 
-        //¼ÇÂ¼´ò¿ªµÄÎÄ¼þÃû³Æ
+        //è®°å½•æ‰“å¼€çš„æ–‡ä»¶åç§°
         open_excel_file_ = file_name;
 
         return TRUE;
@@ -91,13 +93,13 @@ BOOL Illusion_ExcelFile::open_excelfile(const CString &file_name)
 
 }
 
-//¹Ø±Õ´ò¿ªµÄExcel ÎÄ¼þ,Ä¬ÈÏÇé¿ö²»±£´æÎÄ¼þ
+//å…³é—­æ‰“å¼€çš„Excel æ–‡ä»¶,é»˜è®¤æƒ…å†µä¸ä¿å­˜æ–‡ä»¶
 void Illusion_ExcelFile::close_excelfile(BOOL if_save)
 {
-    //Èç¹ûÒÑ¾­´ò¿ª£¬¹Ø±ÕÎÄ¼þ
+    //å¦‚æžœå·²ç»æ‰“å¼€ï¼Œå…³é—­æ–‡ä»¶
     if (open_excel_file_.IsEmpty() == FALSE)
     {
-        //Èç¹û±£´æ,½»¸øÓÃ»§¿ØÖÆ,ÈÃÓÃ»§×Ô¼º´æ£¬Èç¹û×Ô¼ºSAVE£¬»á³öÏÖÄªÃûµÄµÈ´ý
+        //å¦‚æžœä¿å­˜,äº¤ç»™ç”¨æˆ·æŽ§åˆ¶,è®©ç”¨æˆ·è‡ªå·±å­˜ï¼Œå¦‚æžœè‡ªå·±SAVEï¼Œä¼šå‡ºçŽ°èŽ«åçš„ç­‰å¾…
         if (if_save)
         {
             show_in_excel(TRUE);
@@ -112,7 +114,7 @@ void Illusion_ExcelFile::close_excelfile(BOOL if_save)
             excel_books_.Close();
         }
 
-        //´ò¿ªÎÄ¼þµÄÃû³ÆÇå¿Õ
+        //æ‰“å¼€æ–‡ä»¶çš„åç§°æ¸…ç©º
         open_excel_file_.Empty();
     }
 
@@ -158,7 +160,7 @@ CString Illusion_ExcelFile::sheet_name(long table_index)
     return name;
 }
 
-//°´ÕÕÐòºÅ¼ÓÔØSheet±í¸ñ,¿ÉÒÔÌáÇ°¼ÓÔØËùÓÐµÄ±í¸ñÄÚ²¿Êý¾Ý
+//æŒ‰ç…§åºå·åŠ è½½Sheetè¡¨æ ¼,å¯ä»¥æå‰åŠ è½½æ‰€æœ‰çš„è¡¨æ ¼å†…éƒ¨æ•°æ®
 BOOL Illusion_ExcelFile::load_sheet(long table_index, BOOL pre_load)
 {
     LPDISPATCH lpDis = NULL;
@@ -185,7 +187,7 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index, BOOL pre_load)
     }
 
     already_preload_ = FALSE;
-    //Èç¹û½øÐÐÔ¤ÏÈ¼ÓÔØ
+    //å¦‚æžœè¿›è¡Œé¢„å…ˆåŠ è½½
     if (pre_load)
     {
         preload_sheet();
@@ -195,7 +197,7 @@ BOOL Illusion_ExcelFile::load_sheet(long table_index, BOOL pre_load)
     return TRUE;
 }
 
-//°´ÕÕÃû³Æ¼ÓÔØSheet±í¸ñ,¿ÉÒÔÌáÇ°¼ÓÔØËùÓÐµÄ±í¸ñÄÚ²¿Êý¾Ý
+//æŒ‰ç…§åç§°åŠ è½½Sheetè¡¨æ ¼,å¯ä»¥æå‰åŠ è½½æ‰€æœ‰çš„è¡¨æ ¼å†…éƒ¨æ•°æ®
 BOOL Illusion_ExcelFile::load_sheet(const CString &sheet, BOOL pre_load)
 {
     LPDISPATCH lpDis = NULL;
@@ -223,7 +225,7 @@ BOOL Illusion_ExcelFile::load_sheet(const CString &sheet, BOOL pre_load)
     }
     //
     already_preload_ = FALSE;
-    //Èç¹û½øÐÐÔ¤ÏÈ¼ÓÔØ
+    //å¦‚æžœè¿›è¡Œé¢„å…ˆåŠ è½½
     if (pre_load)
     {
         already_preload_ = TRUE;
@@ -233,7 +235,7 @@ BOOL Illusion_ExcelFile::load_sheet(const CString &sheet, BOOL pre_load)
     return TRUE;
 }
 
-//µÃµ½ÁÐµÄ×ÜÊý
+//å¾—åˆ°åˆ—çš„æ€»æ•°
 long Illusion_ExcelFile::column_count()
 {
     CRange range;
@@ -246,7 +248,7 @@ long Illusion_ExcelFile::column_count()
     return count;
 }
 
-//µÃµ½ÐÐµÄ×ÜÊý
+//å¾—åˆ°è¡Œçš„æ€»æ•°
 long Illusion_ExcelFile::row_count()
 {
     CRange range;
@@ -259,7 +261,7 @@ long Illusion_ExcelFile::row_count()
     return count;
 }
 
-//¼ì²éÒ»¸öCELLÊÇ·ñÊÇ×Ö·û´®
+//æ£€æŸ¥ä¸€ä¸ªCELLæ˜¯å¦æ˜¯å­—ç¬¦ä¸²
 BOOL Illusion_ExcelFile::is_cell_string(long irow, long icolumn)
 {
     CRange range;
@@ -267,7 +269,7 @@ BOOL Illusion_ExcelFile::is_cell_string(long irow, long icolumn)
     _variant_t v_column((long)icolumn);
     range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
     COleVariant vResult = range.get_Value2();
-    //VT_BSTR±êÊ¾×Ö·û´®
+    //VT_BSTRæ ‡ç¤ºå­—ç¬¦ä¸²
     if (vResult.vt == VT_BSTR)
     {
         return TRUE;
@@ -275,7 +277,7 @@ BOOL Illusion_ExcelFile::is_cell_string(long irow, long icolumn)
     return FALSE;
 }
 
-//¼ì²éÒ»¸öCELLÊÇ·ñÊÇÊýÖµ
+//æ£€æŸ¥ä¸€ä¸ªCELLæ˜¯å¦æ˜¯æ•°å€¼
 BOOL Illusion_ExcelFile::is_cell_number(long iline, long icolumn)
 {
     CRange range;
@@ -283,7 +285,7 @@ BOOL Illusion_ExcelFile::is_cell_number(long iline, long icolumn)
     _variant_t v_column((long)icolumn);
     range.AttachDispatch(excel_current_range_.get_Item(v_row, v_column).pdispVal, true);
     VARIANT vResult = range.get_Value2();
-    //ºÃÏñÒ»°ã¶¼ÊÇVT_R8
+    //å¥½åƒä¸€èˆ¬éƒ½æ˜¯VT_R8
     if (vResult.vt == VT_INT || vResult.vt == VT_R8)
     {
         return TRUE;
@@ -297,7 +299,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long iline, long icolumn)
 
     COleVariant vResult ;
     CString str;
-    //×Ö·û´®
+    //å­—ç¬¦ä¸²
     if (already_preload_ == FALSE)
     {
         CRange range;
@@ -307,7 +309,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long iline, long icolumn)
         vResult = range.get_Value2();
         range.ReleaseDispatch();
     }
-    //Èç¹ûÊý¾ÝÒÀ¾ÝÔ¤ÏÈ¼ÓÔØÁË
+    //å¦‚æžœæ•°æ®ä¾æ®é¢„å…ˆåŠ è½½äº†
     else
     {
         long read_address[2];
@@ -322,17 +324,17 @@ CString Illusion_ExcelFile::get_cell_cstring(long iline, long icolumn)
     {
         str = vResult.bstrVal;
     }
-    //ÕûÊý
+    //æ•´æ•°
     else if (vResult.vt == VT_INT)
     {
         str.Format(_T("%d"), vResult.pintVal);
     }
-    //8×Ö½ÚµÄÊý×Ö
+    //8å­—èŠ‚çš„æ•°å­—
     else if (vResult.vt == VT_R8)
     {
         str.Format(_T("%.6f"), vResult.dblVal);
     }
-    //Ê±¼ä¸ñÊ½
+    //æ—¶é—´æ ¼å¼
     else if (vResult.vt == VT_DATE)
     {
         SYSTEMTIME st;
@@ -341,7 +343,7 @@ CString Illusion_ExcelFile::get_cell_cstring(long iline, long icolumn)
         str = tm.Format(_T("%Y-%m-%d"));
 
     }
-    //µ¥Ôª¸ñ¿ÕµÄ
+    //å•å…ƒæ ¼ç©ºçš„
     else if (vResult.vt == VT_EMPTY)
     {
         str = "";
@@ -420,13 +422,13 @@ void Illusion_ExcelFile::show_in_excel(BOOL bShow)
     excel_application_.put_UserControl(bShow);
 }
 
-//·µ»Ø´ò¿ªµÄEXCELÎÄ¼þÃû³Æ
+//è¿”å›žæ‰“å¼€çš„EXCELæ–‡ä»¶åç§°
 CString Illusion_ExcelFile::open_filename()
 {
     return open_excel_file_;
 }
 
-//È¡µÃÁÐµÄÃû³Æ£¬±ÈÈç27->AA
+//å–å¾—åˆ—çš„åç§°ï¼Œæ¯”å¦‚27->AA
 TCHAR *Illusion_ExcelFile::column_name(long column_no)
 {
     static TCHAR column_name[64];
@@ -441,12 +443,12 @@ TCHAR *Illusion_ExcelFile::column_name(long column_no)
             num_data = 26;
             column_no--;
         }
-        //²»ÖªµÀÕâ¸ö¶Ô²»£¬
+        //ä¸çŸ¥é“è¿™ä¸ªå¯¹ä¸ï¼Œ
         column_name[str_len] = (TCHAR)((num_data - 1) + _T('A') );
         str_len ++;
     }
     column_name[str_len] = '\0';
-    //·´×ª
+    //åè½¬
     _tcsrev(column_name);
 
     return column_name;
@@ -466,18 +468,18 @@ char *Illusion_ExcelFile::column_mbcs_name(long column_no)
             num_data = 26;
             column_no--;
         }
-        //²»ÖªµÀÕâ¸ö¶Ô²»£¬
+        //ä¸çŸ¥é“è¿™ä¸ªå¯¹ä¸ï¼Œ
         column_name[str_len] = (char)((num_data - 1) + ('A'));
         str_len++;
     }
     column_name[str_len] = '\0';
-    //·´×ª
+    //åè½¬
     _mbsrev(column_name);
 
     return(char *) column_name;
 }
 
-//Ô¤ÏÈ¼ÓÔØ
+//é¢„å…ˆåŠ è½½
 void Illusion_ExcelFile::preload_sheet()
 {
 
@@ -496,3 +498,4 @@ void Illusion_ExcelFile::preload_sheet()
     ole_safe_array_.Attach(ret_ary);
 }
 
+>>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

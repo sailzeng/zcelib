@@ -6,44 +6,44 @@
 class  ZCE_Thread_Bus_Pipe
 ****************************************************************************************************/
 
-//·ÅÈëCPP?»¹ÊÇ?
+//æ”¾å…¥CPP?è¿˜æ˜¯?
 template <> ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex> *
 ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::instance_ = NULL;
 
 template <> ZCE_Thread_Bus_Pipe<ZCE_Thread_Light_Mutex> *
 ZCE_Thread_Bus_Pipe<ZCE_Thread_Light_Mutex>::instance_ = NULL;
 
-//ÌØ»¯º¯Êı
+//ç‰¹åŒ–å‡½æ•°
 
-//´ÓRECV¹ÜµÀ¶ÁÈ¡Êı¾İ
+//ä»RECVç®¡é“è¯»å–æ•°æ®
 template <>
 inline bool ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::pop_front_recvpipe(zce::lockfree::dequechunk_node *&node)
 {
     return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
 }
 
-//ÏòRECV¹ÜµÀĞ´ÈëÊı¾İ
+//å‘RECVç®¡é“å†™å…¥æ•°æ®
 template <>
 inline bool ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
 {
     return bus_pipe_[THR_RECV_PIPE_ID]->push_end(node);
 }
 
-//´ÓSEND¹ÜµÀ¶ÁÈ¡Êı¾İ
+//ä»SENDç®¡é“è¯»å–æ•°æ®
 template <>
 inline bool ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::pop_front_sendpipe(zce::lockfree::dequechunk_node *&node)
 {
     return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
 }
 
-//ÏòSEND¹ÜµÀĞ´ÈëÊı¾İ
+//å‘SENDç®¡é“å†™å…¥æ•°æ®
 template <>
 inline bool ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
 {
     return bus_pipe_[THR_SEND_PIPE_ID]->push_end(node);
 }
 
-//È¡Recv¹ÜµÀÍ·µÄÖ¡³¤
+//å–Recvç®¡é“å¤´çš„å¸§é•¿
 template <>
 inline int ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::get_frontsize_recvpipe(size_t &note_size)
 {
@@ -56,7 +56,7 @@ inline int ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::get_frontsize_recvpipe(size_t &n
     return 0;
 }
 
-//È¡Send¹ÜµÀÍ·µÄÖ¡³¤¡¢
+//å–Sendç®¡é“å¤´çš„å¸§é•¿ã€
 template <>
 inline int ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::get_frontsize_sendpipe(size_t &note_size)
 {

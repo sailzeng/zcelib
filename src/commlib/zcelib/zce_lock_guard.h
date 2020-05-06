@@ -3,10 +3,10 @@
 * @filename   zce_lock_guard.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013Äê1ÔÂ14ÈÕ
-* @brief      GURAD¡£ÀûÓÃ¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı×Ô¶¯¼ÓËø£¬½âËøµÄÀà£¬
-*             ÔÚ¸÷¸öÀàÀïÃæ¶¼ÓĞtypdef°ïÖúÊ¹ÓÃ
-*             ±ÈÈçZCE_Thread_Light_Mutex
+* @date       2013å¹´1æœˆ14æ—¥
+* @brief      GURADã€‚åˆ©ç”¨æ„é€ å‡½æ•°å’Œææ„å‡½æ•°è‡ªåŠ¨åŠ é”ï¼Œè§£é”çš„ç±»ï¼Œ
+*             åœ¨å„ä¸ªç±»é‡Œé¢éƒ½æœ‰typdefå¸®åŠ©ä½¿ç”¨
+*             æ¯”å¦‚ZCE_Thread_Light_Mutex
 *
 */
 
@@ -16,24 +16,24 @@
 #include "zce_boost_non_copyable.h"
 
 /*!
-* @brief      ËøGUARD£¬ÀûÓÃ¹¹ÔìºÍĞŞ¸Ä½øĞĞ×Ô¶¯¼ÓËø£¬×Ô¶¯½âËø²Ù×÷·½·¨
-* @tparam     ZCE_LOCK ËøµÄÀàĞÍ£¬¿ÉÒÔÊÇZCE_Null_Mutex£¬ZCE_Process_Mutex£¬
-*             ZCE_Thread_Light_Mutex£¬ZCE_Thread_Recursive_Mutex
-*             ZCE_Process_Semaphore,ZCE_Thread_NONR_Mutex,µÈ
+* @brief      é”GUARDï¼Œåˆ©ç”¨æ„é€ å’Œä¿®æ”¹è¿›è¡Œè‡ªåŠ¨åŠ é”ï¼Œè‡ªåŠ¨è§£é”æ“ä½œæ–¹æ³•
+* @tparam     ZCE_LOCK é”çš„ç±»å‹ï¼Œå¯ä»¥æ˜¯ZCE_Null_Mutexï¼ŒZCE_Process_Mutexï¼Œ
+*             ZCE_Thread_Light_Mutexï¼ŒZCE_Thread_Recursive_Mutex
+*             ZCE_Process_Semaphore,ZCE_Thread_NONR_Mutex,ç­‰
 */
 template <typename ZCE_LOCK>
 class ZCE_Lock_Guard : public ZCE_NON_Copyable
 {
 public:
 
-    ///¹¹Ôì£¬µÃµ½Ëø£¬½øĞĞËø¶¨
+    ///æ„é€ ï¼Œå¾—åˆ°é”ï¼Œè¿›è¡Œé”å®š
     ZCE_Lock_Guard (ZCE_LOCK &lock):
         lock_(&lock)
     {
         lock_->lock();
     }
 
-    //¹¹Ôì£¬µÃµ½Ëø£¬¸ù¾İÒªÇó¾ö¶¨ÊÇ·ñ½øĞĞËø¶¨²Ù×÷
+    //æ„é€ ï¼Œå¾—åˆ°é”ï¼Œæ ¹æ®è¦æ±‚å†³å®šæ˜¯å¦è¿›è¡Œé”å®šæ“ä½œ
     ZCE_Lock_Guard (ZCE_LOCK &lock, bool block):
         lock_(&lock)
     {
@@ -43,25 +43,25 @@ public:
         }
     }
 
-    ///Îö¹¹£¬Í¬Ê±¶ÔËø½øĞĞÊÍ·Å²Ù×÷
+    ///ææ„ï¼ŒåŒæ—¶å¯¹é”è¿›è¡Œé‡Šæ”¾æ“ä½œ
     ~ZCE_Lock_Guard (void)
     {
         lock_->unlock();
     };
 
-    ///Ëø¶¨²Ù×÷
+    ///é”å®šæ“ä½œ
     void lock (void)
     {
         return lock_->lock();
     }
 
-    ///³¢ÊÔËø¶¨²Ù×÷
+    ///å°è¯•é”å®šæ“ä½œ
     bool try_lock (void)
     {
         return lock_->try_lock();
     }
 
-    ///½âËø²Ù×÷
+    ///è§£é”æ“ä½œ
     void unlock (void)
     {
         return lock_->unlock();
@@ -69,27 +69,27 @@ public:
 
 protected:
 
-    ///ÓÃÀ´GUARD±£»¤µÄËø
+    ///ç”¨æ¥GUARDä¿æŠ¤çš„é”
     ZCE_LOCK *lock_;
 
 };
 
 /*!
-* @brief      ¶ÁĞ´ËøµÄ¹²ÏíËø£¨¶ÁÈ¡£©Ëø¶¨µÄGUARD£¬ÀûÓÃ¹¹ÔìºÍĞŞ¸Ä½øĞĞ×Ô¶¯¼ÓËø£¬×Ô¶¯½âËø²Ù×÷·½·¨
-* @tparam     ZCE_LOCK ËøµÄÀàĞÍ,¿ÉÒÔÊÇ£¬ZCE_Null_Mutex, ZCE_File_Lock ZCE_Thread_RW_Mutex
+* @brief      è¯»å†™é”çš„å…±äº«é”ï¼ˆè¯»å–ï¼‰é”å®šçš„GUARDï¼Œåˆ©ç”¨æ„é€ å’Œä¿®æ”¹è¿›è¡Œè‡ªåŠ¨åŠ é”ï¼Œè‡ªåŠ¨è§£é”æ“ä½œæ–¹æ³•
+* @tparam     ZCE_LOCK é”çš„ç±»å‹,å¯ä»¥æ˜¯ï¼ŒZCE_Null_Mutex, ZCE_File_Lock ZCE_Thread_RW_Mutex
 */
 template <class ZCE_LOCK>
 class ZCE_Read_Guard : public ZCE_NON_Copyable
 {
 public:
-    ///¹¹Ôì£¬µÃµ½¶ÁĞ´Ëø£¬½øĞĞ¶ÁËø¶¨
+    ///æ„é€ ï¼Œå¾—åˆ°è¯»å†™é”ï¼Œè¿›è¡Œè¯»é”å®š
     ZCE_Read_Guard (ZCE_LOCK &lock):
         lock_(&lock)
     {
         lock_->lock_read();
     }
 
-    ///¹¹Ôì£¬µÃµ½¶ÁĞ´Ëø£¬¸ù¾İ²ÎÊıÈ·¶¨ÊÇ·ñ½øĞĞ¶ÁËø¶¨
+    ///æ„é€ ï¼Œå¾—åˆ°è¯»å†™é”ï¼Œæ ¹æ®å‚æ•°ç¡®å®šæ˜¯å¦è¿›è¡Œè¯»é”å®š
     ZCE_Read_Guard (ZCE_LOCK &lock, bool block):
         lock_(&lock)
     {
@@ -99,24 +99,24 @@ public:
         }
     }
 
-    ///Îö¹¹£¬½øĞĞ½âËø²Ù×÷
+    ///ææ„ï¼Œè¿›è¡Œè§£é”æ“ä½œ
     ~ZCE_Read_Guard()
     {
         lock_->unlock();
     }
 
-    ///¶ÁÈ¡Ëø
+    ///è¯»å–é”
     void lock_read()
     {
         return lock_->lock_read();
     }
-    ///³¢ÊÔ¶ÁÈ¡Ëø
+    ///å°è¯•è¯»å–é”
     bool try_lock_read()
     {
         return lock_->try_lock_read();
     }
 
-    ///½âËø,Èç¹ûÊÇ¶ÁĞ´ËøÒ²Ö»ĞèÒªÕâÒ»¸öº¯Êı
+    ///è§£é”,å¦‚æœæ˜¯è¯»å†™é”ä¹Ÿåªéœ€è¦è¿™ä¸€ä¸ªå‡½æ•°
     void unlock_read()
     {
         return lock_->unlock_read();
@@ -124,27 +124,27 @@ public:
 
 protected:
 
-    ///ÓÃÀ´GUARD±£»¤µÄËø
+    ///ç”¨æ¥GUARDä¿æŠ¤çš„é”
     ZCE_LOCK *lock_;
 
 };
 
 /*!
-* @brief      ¶ÁĞ´Ëø£¬Ğ´Ëø¶¨µÄGUARD£¬ÀûÓÃ¹¹ÔìºÍĞŞ¸Ä½øĞĞ×Ô¶¯¼ÓËø£¬×Ô¶¯½âËø²Ù×÷·½·¨
-* @tparam     ZCE_LOCK ËøµÄÀàĞÍ,¿ÉÒÔÊÇ ZCE_Null_Mutex ZCE_File_Lock ZCE_Thread_RW_Mutex
+* @brief      è¯»å†™é”ï¼Œå†™é”å®šçš„GUARDï¼Œåˆ©ç”¨æ„é€ å’Œä¿®æ”¹è¿›è¡Œè‡ªåŠ¨åŠ é”ï¼Œè‡ªåŠ¨è§£é”æ“ä½œæ–¹æ³•
+* @tparam     ZCE_LOCK é”çš„ç±»å‹,å¯ä»¥æ˜¯ ZCE_Null_Mutex ZCE_File_Lock ZCE_Thread_RW_Mutex
 */
 template <class ZCE_LOCK>
 class ZCE_Write_Guard : public ZCE_NON_Copyable
 {
 public:
-    ///¹¹Ôì£¬µÃµ½¶ÁĞ´Ëø£¬½øĞĞ¶ÁËø¶¨
+    ///æ„é€ ï¼Œå¾—åˆ°è¯»å†™é”ï¼Œè¿›è¡Œè¯»é”å®š
     ZCE_Write_Guard (ZCE_LOCK &lock):
         lock_(&lock)
     {
         lock_->lock_write();
     }
 
-    ///¹¹Ôì£¬µÃµ½¶ÁĞ´Ëø£¬¸ù¾İ²ÎÊıÈ·¶¨ÊÇ·ñ½øĞĞ¶ÁËø¶¨
+    ///æ„é€ ï¼Œå¾—åˆ°è¯»å†™é”ï¼Œæ ¹æ®å‚æ•°ç¡®å®šæ˜¯å¦è¿›è¡Œè¯»é”å®š
     ZCE_Write_Guard (ZCE_LOCK &lock, bool block):
         lock_(&lock)
     {
@@ -154,24 +154,24 @@ public:
         }
     }
 
-    ///Îö¹¹£¬½øĞĞ½âËø²Ù×÷
+    ///ææ„ï¼Œè¿›è¡Œè§£é”æ“ä½œ
     ~ZCE_Write_Guard()
     {
         lock_->unlock();
     }
 
-    ///¶ÁÈ¡Ëø
+    ///è¯»å–é”
     void lock_write()
     {
         return lock_->lock_write();
     }
-    ///³¢ÊÔ¶ÁÈ¡Ëø
+    ///å°è¯•è¯»å–é”
     bool try_lock_write()
     {
         return lock_->try_lock_write();
     }
 
-    ///½âËø,Èç¹ûÊÇ¶ÁĞ´ËøÒ²Ö»ĞèÒªÕâÒ»¸öº¯Êı
+    ///è§£é”,å¦‚æœæ˜¯è¯»å†™é”ä¹Ÿåªéœ€è¦è¿™ä¸€ä¸ªå‡½æ•°
     void unlock_write()
     {
         return lock_->unlock_write();
@@ -179,7 +179,7 @@ public:
 
 protected:
 
-    ///ÓÃÀ´GUARD±£»¤µÄËø
+    ///ç”¨æ¥GUARDä¿æŠ¤çš„é”
     ZCE_LOCK *lock_;
 
 };

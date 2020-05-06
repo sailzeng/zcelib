@@ -3,23 +3,23 @@
 * @filename   zce_log_basic.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2004��7��11��
+* @date       2004年7月11日
 * @brief
 *
 *
-* @details    ������־���Ż�����2������Ҳ���ǿ��Կ��ǵģ�
-*             1.���������Ƚ��ͣ�д��־������һ����2���ط����ã���־�ļ��ļ����Ʊ仯��
-*             ��־Ҫд������һ���ļ�ʱ����Ҫ��������������������޷��Ż�
-*             �ڶ����ط���д���ļ��ط�������������˻����д�뷽ʽ����ô�����������
-*             ���������Ϣ���ҵ���������ǿ��ܿ����Ż����ģ���Ϊwrite������д��BUFFER
-*             ��4K���µ����ʱ����ʵ�ǲ���Ҫ�����ģ��������������LINUX������ȷ�ģ�����
-*             ��ƽ̨�أ������ú�֤���������������ط�ֱ����wirte��������ô������С����
-*             �ķ�Χ��
-*             2.�ڶ����Ż��ķ�����ǻ�������⣬��־�����һ���ǲ����û���ģ�������־��
-*             �ص�����˵ģ����ļ����ʹ�û���Ͳ�ʵ�û��壬�ٶ��Ǹ�������൱�൱��ม�
-*             �����ܷ���һ�ַ�ʽ�����û���ȷ�Լ����û��壿�����Լ��ڶ�ʱ���е��û��壬
-*             ��Ȼ�����������������������������������᲻�ᶪ��־�ء�����Ȼ���Խػ�
-*             �źŵȣ������ַ�ʽ���ͨ���أ�
+* @details    关于日志的优化，有2个方向也许是可以考虑的，
+*             1.将锁的粒度降低，写日志的锁，一般在2个地方有用，日志文件文件名称变化，
+*             日志要写入另外一个文件时，需要加锁。这种情况，几乎无法优化
+*             第二个地方是写入文件地方，如果我们用了缓冲的写入方式，那么必须加锁，否
+*             则输出的信息将乱掉。而这个是可能可以优化掉的，因为write函数在写入BUFFER
+*             在4K以下的情况时，其实是不需要加锁的，（但这个特性在LINUX下是正确的，在其
+*             他平台呢？并不好好证明。），如果这个地方直接用wirte函数，那么可以缩小加锁
+*             的范围，
+*             2.第二个优化的方向就是缓冲的问题，日志的输出一般是不能用缓冲的，这是日志的
+*             特点决定了的，但文件输出使用缓冲和不实用缓冲，速度那个差别是相当相当大喔。
+*             所以能否有一种方式，让用户明确自己调用缓冲？比如自己在定时器中调用缓冲，
+*             当然这个方案最大的问题是如果发生崩溃……，会不会丢日志呢、（当然可以截获
+*             信号等，但这种方式如何通用呢）
 *
 *
 * @note
@@ -34,117 +34,117 @@
 #include "zce_log_priority.h"
 
 
-///��־�ļ��ķָ��,�Լ���Ӧ�����ƹ�ϵ
-///Ĭ�ϵķָ���ǰ���ʱ��.�ָ���ǰ���ÿ��һ���ļ�,�ļ������м�¼ʱ��
-///��������ļ�SIZE,������־�������ָ��ļ�,��һ��ID��ʶ�ļ���־�ļ�
-///ʹ��ID���ַָ���־��һ������.����ÿ�γ�ʼ��ʱҪ�õ�ID,����Ҫ����ԭ��
-///��־�ļ�,����Ҫ��ѯԭ�����һ����־�ļ�,��Ҫ�õ���ļ�¼�����Լ��ļ��ߴ�
+///日志文件的分割方法,以及对应的名称关系
+///默认的分割方法是按照时间.分割就是按照每天一个文件,文件名称中记录时间
+///如果按照文件SIZE,或者日志的行数分割文件,用一个ID标识文件日志文件
+///使用ID区分分隔日志有一个问题.就是每次初始化时要得到ID,否则要覆盖原有
+///日志文件,所以要查询原有最后一个日志文件,还要得到其的记录个数以及文件尺寸
 enum ZCE_LOGFILE_NAME_DEVIDE
 {
-    ///��¼��������־�ļ�,���ָ�
+    ///记录单个个日志文件,不分割
     LOGDEVIDE_NONE          = 1,
 
-    ///���ճߴ��¼�ָ���־�ļ�,��ID��ʶ,���ID����˼�ǹ���������ID��
-    ///��ǰ����־�ļ���.log����ļ��������ľ�����־�ļ�������1-N����ǰ�������ļ�
-    ///д����ɾ����N���ļ��������ļ����θ�������ǰ�ļ�����Ϊlog.1,Ȼ��������һ��
-    ///�ļ���Ϊ��ǰд�����־�ļ������ַ�ʽ�ô��Ǵ�С���Թ̶����ô����ļ��������ڱ�
-    ///������������ά���͹���
-    ///��32λ�Ļ������ָ���־�Ĵ�С��Ҫ����4G��64λ����������,�����ڲ�������16G
+    ///按照尺寸记录分割日志文件,用ID标识,这个ID的意思是滚动处理的ID，
+    ///当前的日志文件是.log这个文件，其他的就有日志文件名称是1-N，当前处理的文件
+    ///写满后，删除第N个文件，其他文件依次改名，当前文件改名为log.1,然后新生成一个
+    ///文件作为当前写入的日志文件。这种方式好处是大小绝对固定，好处是文件名称总在变
+    ///化，并不利于维护和管理
+    ///在32位的机器，分割日志的大小不要超过4G，64位理论无限制,代码内部限制是16G
     NAME_ID_DEVIDE_SIZE       = 101,
 
 
-    ///����Сʱ�ָ���־,
+    ///按照小时分割日志,
     NAME_TIME_HOUR_DEVIDE_TIME       = 201,
-    ///����6��Сʱ�ָ���־,1��ָ�Ϊ4��
+    ///按照6个小时分割日志,1天分割为4个
     NAME_SIXHOUR_DEVIDE_TIME    = 202,
-    ///�������ڷָ���־,�ļ������¼
+    ///按照日期分割日志,文件按天记录
     NAME_TIME_DAY_DEVIDE_TIME  = 203,
-    ///�����·ݷָ���־,
+    ///按照月份分割日志,
     NAME_TIME_MONTH_DEVIDE_TIME = 204,
-    ///����ʱ��ָ���־,�ļ������¼
+    ///按照时间分割日志,文件按年记录
     NAME_TIME_YEAR_DEVIDE_TIME  = 205,
 
-    //�ļ����ư������¼,��־����С�ָ
+    //文件名称按毫秒记录,日志按大小分割，
     NAME_TIME_MILLISECOND_DEVIDE_SIZE = 301,
 
 
 };
-//��������ͼʵ�������𣬵��Ǹо��ܲ����ƣ���������ƾ���һ��ȡ��
-//LOGDEVIDE_BY_RECORD                ���ռ�¼�ĸ���(��������)Ŀ�ָ���־�ļ�,��ID��ʶ,���Ƽ�ʹ��
+//本来有意图实现这个类别，但是感觉总不完善，放弃，设计就是一种取舍
+//LOGDEVIDE_BY_RECORD                按照记录的个数(不是行数)目分割日志文件,用ID标识,不推荐使用
 
 
 
-///Ĭ�ϼ�¼������,��ÿ����־��ͷ��
+///默认记录的数据,在每条日志的头部
 enum LOG_HEAD_RECORD_INFO
 {
-    ///ʲô������¼
+    ///什么都不纪录
     LOG_HEAD_RECORD_NONE          = 0,
-    ///��¼��ǰ��ʱ��
+    ///纪录当前的时间
     LOG_HEAD_RECORD_CURRENTTIME   = 1,
-    ///��¼��־�ļ�����Ϣ
+    ///纪录日志的级别信息
     LOG_HEAD_RECORD_LOGLEVEL      = 2,
-    ///��¼����ID
+    ///纪录进程ID
     LOG_HEAD_RECORD_PROCESSID     = 4,
-    ///��¼�߳�ID
+    ///纪录线程ID
     LOG_HEAD_RECORD_THREADID      = 8,
 
 };
 
-///ѡ������ķ�ʽ
+///选择输出的方式
 enum LOG_OUTPUT_WAY
 {
-    ///�����κεط����
+    ///不向任何地方输出
     LOG_OUTPUT_NONE     = 0,
-    ///ͬ�����������ط����,Ĭ��
+    ///同步不向其他地方输出,默认
     LOG_OUTPUT_FILE     = 1,
-    ///ͬ�����׼������.�����ĳ�����CGI����,����
+    ///同步向标准输出输出.如果你的程序是CGI程序,慎用
     LOG_OUTPUT_STDOUT   = 2,
-    ///ͬ�����׼�������.
+    ///同步向标准错误输出.
     LOG_OUTPUT_ERROUT   = 4,
-    ///�����ڴ��ļ��������
+    ///向共享内存文件里面输出
     LOG_OUTPUT_MMAP_FILE = 8,
-    ///ͬ����WINDOWS�ĵ��Դ������,������WIN32����������
+    ///同步向WINDOWS的调试窗口输出,仅仅在WIN32环境起作用
     LOG_OUTPUT_WINDBG   = 32
 };
 
 
 
 /*!
-@brief      ��־����Ļ������ܶ�����������棬�����߳�ͬ�����ļ����ƣ��ļ���С���ƣ�
-            ��־����������ֳ�ʼ�������ƺ�����
-            ���������඼�Ƕ����ں����ӿ��Ͻ����˷�װ��
-            LOG_MSG  C printf���ַ�����ʽ������������ǳ��õķ�ʽһ����������
-            �ڲ���������װ����������������ģ�
-            LOG_PLUS CPP ��һ������C++ģ��������ʽ��ĳ�̶ֳ���������ַ�����
-            ʽ�������ܣ���ע������ƿ����ͷ���ļ�����ǿ飩���ڲ��õĺ���
-            zce::foo_snprintf��
+@brief      日志输出的基本功能都在这个类里面，包括线程同步，文件名称，文件大小控制，
+            日志的输出，各种初始化，控制函数，
+            他的扩张类都是都是在函数接口上进行了封装，
+            LOG_MSG  C printf的字符串格式化输出，和我们常用的方式一样，基本上
+            内部和其他封装都是依据这个类来的，
+            LOG_PLUS CPP ，一种依靠C++模版的输出方式，某种程度上提高了字符串格
+            式化的性能，（注意性能瓶颈大头在文件输出那块），内部用的函数
+            zce::foo_snprintf，
 
 */
 class ZCE_LogTrace_Basic : public ZCE_NON_Copyable
 {
 protected:
 
-    //time(NULL)������һ���ȽϺ�ʱ�Ĳ���,������������ǿ�ҵ���,����ʹ��ʱ������Ч��
-    //���Լ�ʹ�ö�ʱ��ÿ���д��ʱ��,Ȼ�����е���־ϵͳʱ�佫ʹ�����ʱ���
-    //�����ⷽ��ACEҲû���ÿ���,
+    //time(NULL)函数是一个比较耗时的操作,如果你对性能有强烈的癖好,可以使用时间戳提高效率
+    //你自己使用定时器每秒改写定时器,然后所有的日志系统时间将使用这个时间戳
+    //对于这方面ACE也没有用考虑,
 
 public:
 
-    ///���캯��,
+    ///构造函数,
     ZCE_LogTrace_Basic();
-    ///��������
+    ///析构函数
     virtual ~ZCE_LogTrace_Basic();
 
     /*!
-    @brief      ��ʼ������,����ʱ��ָ���־�Ĺ���
-    @return     int               ����0��ʶ��ʼ���ɹ�
-    @param[in]  div_log_file      �ָ���־�ķ�ʽ
-    @param[in]  log_file_prefix   ��־��ǰ׺
-    @param[in]  if_thread_synchro �Ƿ�����߳�ͬ����
-    @param[in]  auto_new_line     ��־��¼��ĩβ�Ƿ��Զ��Ļ��У�newһ��
-    @param[in]  reserve_file_num  ��������־�ļ����������������������־����ɾ��
-    @param[in]  output_way        ��־����ķ�ʽ,���Զ��ַ�ʽ���棬�ο� @ref LOG_OUTPUT_WAY
-    @param[in]  head_record       ��־ͷ����������Ϣ�������ο� @ref LOG_HEAD_RECORD_INFO
+    @brief      初始化函数,用于时间分割日志的构造
+    @return     int               返回0标识初始化成功
+    @param[in]  div_log_file      分割日志的方式
+    @param[in]  log_file_prefix   日志的前缀
+    @param[in]  if_thread_synchro 是否进行线程同步，
+    @param[in]  auto_new_line     日志记录的末尾是否自动的换行，new一行
+    @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
+    @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT_WAY
+    @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_time_log(ZCE_LOGFILE_NAME_DEVIDE div_log_file,
                       const char *log_file_prefix,
@@ -156,15 +156,15 @@ public:
                      );
 
     /*!
-    @brief      ��ʼ������,���ڳߴ�ָ���־�Ĺ��� �ڲ��� ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
-    @return     int                ����0��ʶ��ʼ���ɹ�
-    @param[in]  log_file_prefix    ��־��ǰ׺
-    @param[in]  if_thread_synchro  �Ƿ�����߳�ͬ��
-    @param[in]  auto_new_line      ��־��¼��ĩβ�Ƿ��Զ��Ļ��У�newһ��
-    @param[in]  max_size_log_file  ��־�ļ������ߴ磬Ŀǰ���ߴ��ڲ��õ�4G
-    @param[in]  reserve_file_num   ��������־�ļ����������������������־����ɾ��
-    @param[in]  output_way         ��־����ķ�ʽ���ο� @ref LOG_OUTPUT_WAY
-    @param[in]  head_record        ��־ͷ����������Ϣ�������ο� @ref LOG_HEAD_RECORD_INFO
+    @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
+    @return     int                返回0标识初始化成功
+    @param[in]  log_file_prefix    日志的前缀
+    @param[in]  if_thread_synchro  是否进行线程同步
+    @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
+    @param[in]  max_size_log_file  日志文件的最大尺寸，目前最大尺寸内部用的4G
+    @param[in]  reserve_file_num   保留的日志文件数量，超过这个数量的日志将被删除
+    @param[in]  output_way         日志输出的方式，参考 @ref LOG_OUTPUT_WAY
+    @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_size_log(const char *log_file_prefix,
                       bool if_thread_synchro = false,
@@ -176,12 +176,12 @@ public:
 
 
     /*!
-    @brief      ��ʼ�����������ڱ�׼���
-    @return     int                ����0��ʶ��ʼ���ɹ�
-    @param[in]  if_thread_synchro  �Ƿ�����߳�ͬ��
-    @param[in]  use_err_out        �Ƿ���ʹ�ô�����������������Ϊ��׼������鷳��һ���ô������
-    @param[in]  auto_new_line      ��־��¼��ĩβ�Ƿ��Զ��Ļ��У�newһ��
-    @param[in]  head_record        ��־ͷ����������Ϣ�������ο� @ref LOG_HEAD_RECORD_INFO
+    @brief      初始化函数，用于标准输出
+    @return     int                返回0标识初始化成功
+    @param[in]  if_thread_synchro  是否进行线程同步
+    @param[in]  use_err_out        是否是使用错误输出进行输出，因为标准输出的麻烦，一般用错误输出
+    @param[in]  auto_new_line      日志记录的末尾是否自动的换行，new一行
+    @param[in]  head_record        日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int init_stdout(bool if_thread_synchro = false,
                     bool use_err_out = true,
@@ -189,16 +189,16 @@ public:
                     unsigned int head_record = LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
 
     /*!
-    @brief      ��ʼ�������������󼯺��ͺ�,���ݸ��ֲ������ѡ��,
-    @return     int                ����0��ʶ��ʼ���ɹ�
-    @param[in]  output_way        ��־����ķ�ʽ,���Զ��ַ�ʽ���棬�ο� @ref LOG_OUTPUT_WAY
+    @brief      初始化函数，超级大集合型号,根据各种参数组合选择,
+    @return     int                返回0标识初始化成功
+    @param[in]  output_way        日志输出的方式,可以多种方式并存，参考 @ref LOG_OUTPUT_WAY
     @param[in]  div_log_file
     @param[in]  log_file_prefix
     @param[in]  if_thread_synchro
     @param[in]  auto_new_line
-    @param[in]  max_size_log_file ��־�ļ������ߴ�
-    @param[in]  reserve_file_num  ��������־�ļ����������������������־����ɾ��
-    @param[in]  head_record       ��־ͷ����������Ϣ�������ο� @ref LOG_HEAD_RECORD_INFO
+    @param[in]  max_size_log_file 日志文件的最大尺寸
+    @param[in]  reserve_file_num  保留的日志文件数量，超过这个数量的日志将被删除
+    @param[in]  head_record       日志头部包含的信息包括，参考 @ref LOG_HEAD_RECORD_INFO
     */
     int initialize(unsigned int output_way,
                    ZCE_LOGFILE_NAME_DEVIDE div_log_file,
@@ -211,71 +211,71 @@ public:
 
 
     /*!
-    @brief      �ر���־��ע��رպ󣬱������³�ʼ��
+    @brief      关闭日志，注意关闭后，必须重新初始化
     */
     void finalize();
 
     /*!
-    @brief      ��/�ر���־�������
+    @brief      打开/关闭日志输出开关
     */
     void enable_output(bool enable_out);
 
 
     /*!
-    @brief      ������־��������Level
-    @return     ZCE_LOG_PRIORITY  �ɵ���־�������
-    @param[in]  outmask           ���õ���־�������
+    @brief      设置日志输出级别的Level
+    @return     ZCE_LOG_PRIORITY  旧的日志输出级别
+    @param[in]  outmask           设置的日志输出级别
     */
     ZCE_LOG_PRIORITY set_log_priority(ZCE_LOG_PRIORITY out_level );
     /*!
-    @brief      ȡ�����Level
+    @brief      取得输出Level
     @return     ZCE_LOG_PRIORITY
     */
     ZCE_LOG_PRIORITY get_log_priority(void );
 
     /*!
-    @brief      ����Ĭ���������Ϣ����
+    @brief      设置默认输出的信息类型
     @return     unsigned int
     @param      recdinfo
     */
     unsigned int set_log_head(unsigned int recdinfo);
     /*!
-    @brief      ȡ��Ĭ���������Ϣ����
+    @brief      取得默认输出的信息类型
     @return     unsigned int
     */
     unsigned int get_log_head(void);
 
     /*!
-    @brief      ����ͬ�������λ��
+    @brief      设置同步输出的位置
     @return     unsigned int
     @param      output_way
     */
     unsigned int set_output_way(unsigned int output_way);
     /*!
-    @brief      ����Ĭ�������λ��
+    @brief      设置默认输出的位置
     @return     unsigned int
     */
     unsigned int get_output_way(void);
 
 
     /*!
-    @brief      �����Ƿ��߳�ͬ��
-    @return     bool              �ɣ�ԭ���е��Ƿ���߳�ͬ��ֵ��
-    @param      if_thread_synchro �Ƿ���ж��߳�ͬ������
+    @brief      设置是否线程同步
+    @return     bool              旧（原）有的是否多线程同步值，
+    @param      if_thread_synchro 是否进行多线程同步保护
     */
     bool set_thread_synchro(bool if_thread_synchro);
     /*!
-    @brief      ȡ���Ƿ�����߳�ͬ��
-    @return     bool   ��ǰ���Ƿ���߳�ͬ��ֵ
+    @brief      取得是否进行线程同步
+    @return     bool   当前的是否多线程同步值
     */
     bool get_thread_synchro(void);
 
 
     /*!
-    @brief      ����ļ���־��Ϣ
-    @param      now_time         ��ǰ��ʱ��
-    @param      log_tmp_buffer   �����buffer��
-    @param      sz_use_len       �����buffer����
+    @brief      输出文件日志信息
+    @param      now_time         当前的时间
+    @param      log_tmp_buffer   输出的buffer，
+    @param      sz_use_len       输出的buffer长度
     */
     void output_log_info(const timeval &now_time,
                          char *log_tmp_buffer,
@@ -284,17 +284,17 @@ public:
 protected:
 
     /*!
-    @brief      ����ID�õ��ļ�����
-    @param      logfileid     ��־��ID
-    @param      idlogfilename ���ɵ���־�ļ�����
+    @brief      根据ID得到文件名称
+    @param      logfileid     日志的ID
+    @param      idlogfilename 生成的日志文件名称
     */
     void create_id_logname(size_t logfileid,
                            std::string &idlogfilename);
 
     /*!
-    @brief      �������ڵõ��ļ�����
-    @param      tmt         ����������־�ļ����Ƶ�ʱ���
-    @param      logfilename ���ɵ���־�ļ�����
+    @brief      根据日期得到文件名称
+    @param      tmt         用于生成日志文件名称的时间戳
+    @param      logfilename 生成的日志文件名称
     */
     void create_time_logname(const timeval &cur_time,
                              std::string &logfilename);
@@ -302,18 +302,18 @@ protected:
 
 
     /*!
-    @brief      �������ڵ���־�ļ���
+    @brief      处理超期的日志文件，
     */
     void del_old_logfile();
 
 
     /*!
-    @brief      ����־��ͷ����Ϣ�����һ��Stringbuf��
-    @param[in]  outlevel       �������־����
-    @param[in]  now_time       ��ǰʱ��
-    @param[out] log_tmp_buffer ͷ����Ϣ�����buffer
-    @param[in]  sz_buf_len     buffer�ĳ���
-    @param[out] sz_use_len     ʹ����buffer�ĳ���
+    @brief      将日志的头部信息输出到一个Stringbuf中
+    @param[in]  outlevel       输出的日志级别
+    @param[in]  now_time       当前时间
+    @param[out] log_tmp_buffer 头部信息输出的buffer
+    @param[in]  sz_buf_len     buffer的长度
+    @param[out] sz_use_len     使用了buffer的长度
     */
     void stringbuf_loghead(ZCE_LOG_PRIORITY outlevel,
                            const timeval &now_time,
@@ -324,111 +324,111 @@ protected:
 
 
     /*!
-    @brief      ����������Ϣ,�޸Ĵ�������,
+    @brief      生成配置信息,修改错误配置,
     */
     void make_configure(void);
 
     /*!
-    @brief      ������б�Ҫ�����õ��µ���־�ļ���
-    @param      init     �Ƿ��ǳ�ʼ���׶�
-    @param      current_time  ��ǰʱ��
+    @brief      （如果有必要，）得到新的日志文件，
+    @param      init     是否是初始化阶段
+    @param      current_time  当前时间
     */
     void open_new_logfile(bool initiate, const timeval &current_time);
 
 public:
 
-    ///�����ַ������õ���־����
+    ///根据字符串，得到日志级别
     static ZCE_LOG_PRIORITY log_priorities(const char *str_priority);
 
-    ///�����ַ���,�õ���־�ָʽ��ö��
+    ///根据字符串,得到日志分割方式的枚举
     static ZCE_LOGFILE_NAME_DEVIDE log_file_devide(const char *str_devide);
 
 protected:
 
-    ///��־�Ļ������ĳߴ�,�������8K���ܳ��ˣ�
-    ///�������ڲ�����ʹ�õ�C++��stream ��Ϊ��������������ڶ��߳��»���ʹ��������
-    ///�����ֱ����write ����д��4096(-1)��һ�������ʵ�ֵ��
+    ///日志的缓冲区的尺寸,这儿用了8K，很长了，
+    ///由于我内部还是使用的C++的stream 作为输出对象，所以我在多线程下还是使用了锁。
+    ///但如果直接用write 函数写，4096(-1)是一个更合适的值，
     static const size_t  LOG_TMP_BUFFER_SIZE    = 8191;
 
-    ///Ĭ�ϵı������ļ�������
+    ///默认的保留的文件的数量
     static const size_t DEFAULT_RESERVE_FILENUM = 100;
-    ///���ı������ļ�������
+    ///最大的保留的文件的数量
     static const size_t MAX_RESERVE_FILENUM = 9999;
-    ///��С�ı������ļ�������
+    ///最小的保留的文件的数量
     static const size_t MIN_RESERVE_FILENUM = 3;
 
-    ///��־�ļ�����С�����ߴ���8M
+    ///日志文件的最小允许尺寸是8M
     static const size_t MIN_LOG_SIZE            = 4096000UL;
-    ///��־�ļ�����������ߴ���4G
+    ///日志文件的最大允许尺寸是4G
     static const size_t MAX_LOG_SIZE            = 4096000000UL;
-    ///��־�ļ���Ĭ�������ߴ���40M
+    ///日志文件的默认允许尺寸是40M
     static const size_t DEFAULT_LOG_SIZE        = 40960000UL;
 
-    ///��־��ͳһ��׺����
+    ///日志的统一后缀长度
     static const size_t LEN_LOG_POSTFIX         = 4;
-    ///��־��׺��4����ĸ.log��ʲô��������.tlog��BS
+    ///日志后缀的4个字母.log，什么，你想用.tlog？BS
     static const char STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1];
 
 protected:
 
-    ///��־��Ƭ�Ĵ�����ʽ
+    ///日志分片的处理方式
     ZCE_LOGFILE_NAME_DEVIDE div_log_file_;
 
-    ///��־�ļ�����ǰ׺,����·��
+    ///日志文件名的前缀,包括路径
     std::string log_file_prefix_;
 
-    ///��־���ļ�����,��ǰ���������־�ļ�����
+    ///日志的文件名称,当前是输出的日志文件名称
     std::string log_file_name_;
 
-    ///��־�ļ��ĵ�ǰĿ¼��Ϣ
+    ///日志文件的当前目录信息
     std::string log_file_dir_;
 
-    ///����ķ�ʽ��LOG_OUTPUT_WAY��ö��ֵ��� @ref LOG_OUTPUT_WAY
+    ///输出的方式，LOG_OUTPUT_WAY的枚举值组合 @ref LOG_OUTPUT_WAY
     unsigned int output_way_;
 
-    ///�����̰߳�ȫ,�ҵĿ�������,�����ģ��,�������,ֻ�öԶ��߳�ģ�ͼ���,
-    //�����ģ�͹���һ���ļ�������,���Ҳ������ļ�������,���Բ��ÿ���ͬ��,
-    //���߳�ģ��,�����ļ�������(��ȫ�ö�ջ���Խ��),IO�����Ļ���Ҳ���ܹ���,���Ա���ͬ����
-    //��ͬ���ĵ�Ӧ����������1.�ļ��ĸ��������Ҫ���⼸����ͬʱ���룬2.�򻺳���д���ʱ��
-    //����2����ʵ������д����������������ֻ��4K��������ʵ�����Ͽ����ӱ�������⣬��Ȼ��������ʹ�ô��л�������,ֻ����write
+    ///对于线程安全,我的考虑如下,多进程模型,无需加锁,只用对多线程模型加锁,
+    //多进程模型共用一个文件描述符,而且不共享文件缓冲区,所以不用考虑同步,
+    //多线程模型,共享文件缓冲区(完全用堆栈可以解决),IO本身的缓冲也可能共享,所以必须同步。
+    //而同步的点应该有两个，1.文件的更换，这个要避免几个人同时重入，2.向缓冲区写入的时候，
+    //对于2，其实由于我写入的数据区长度最大只有4K，所以其实理论上可以逃避这个问题，当然这样不能使用带有缓冲的输出,只能用write
 
 
-    ///�Ƿ���ж��̵߳�ͬ��
+    ///是否进行多线程的同步
     bool if_thread_synchro_;
 
-    ///ͬ����
+    ///同步锁
     ZCE_Thread_Light_Mutex protect_lock_;
 
-    ///�Ƿ�����Զ�����
+    ///是否进行自动换行
     bool                   auto_new_line_;
 
-    ///�ļ������ߴ�
+    ///文件的最大尺寸
     size_t                 max_size_log_file_;
 
-    ///�����ļ��ĸ���,�����̫���ļ�Ҫɾ��,Ϊ0��ʾ��ɾ��
+    ///保留文件的个数,如果有太多文件要删除,为0表示不删除
     size_t                 reserve_file_num_;
 
 
 
-    ///Ĭ�ϼ�¼������,���պ�LOG_HEAD_RECORD_INFO ���
+    ///默认记录的数据,按照和LOG_HEAD_RECORD_INFO 异或
     unsigned int           record_info_;
 
 
-    ///��ǰ�Ĵ��ʱ��,��Сʱ��¼,������й����ʱ���ж�
+    ///当前的大概时间,按小时记录,避免进行过多的时间判断
     time_t                current_click_;
 
-    ///�����־��Ϣ��Maskֵ,С�������Ϣ����Ϣ���������
+    ///输出日志信息的Mask值,小于这个信息的信息不予以输出
     ZCE_LOG_PRIORITY      permit_outlevel_;
 
 
-    ///��־�ļ��ĳߴ�
+    ///日志文件的尺寸
     size_t                size_log_file_;
 
 
-    ///�Ƿ������־��Ϣ,����������ʱ����
+    ///是否输出日志信息,可以用于暂时屏蔽
     bool                  if_output_log_;
 
-    ///��־���ļ����
+    ///日志的文件句柄
     std::ofstream         log_file_handle_;
 
     //r

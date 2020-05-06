@@ -3,15 +3,15 @@
 * @filename   zce_timer_handler_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2008Äê10ÔÂ6ÈÕ
-* @brief      Timer´¦ÀíµÄ»ùÀà
+* @date       2008å¹´10æœˆ6æ—¥
+* @brief      Timerå¤„ç†çš„åŸºç±»
 *
 *
 * @details
 *
 *
 *
-* @note       ÎªÊ²Ã´Òªµ¥¶À½²NODE·ÅÈëÒ»¸öÎÄ¼şÖĞ¼ä£¬ÒòÎªÎÒ¿ÉÄÜĞ´¶à¸ö·´Ó¦Æ÷
+* @note       ä¸ºä»€ä¹ˆè¦å•ç‹¬è®²NODEæ”¾å…¥ä¸€ä¸ªæ–‡ä»¶ä¸­é—´ï¼Œå› ä¸ºæˆ‘å¯èƒ½å†™å¤šä¸ªååº”å™¨
 *
 */
 
@@ -31,7 +31,7 @@ class ZCE_Timer_Handler
 
 protected:
 
-    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
     ZCE_Timer_Handler(ZCE_Timer_Queue_Base *timer_queue);
     ZCE_Timer_Handler();
     virtual ~ZCE_Timer_Handler();
@@ -43,10 +43,10 @@ protected:
 
 public:
 
-    //³¬Ê±´¥·¢
+    //è¶…æ—¶è§¦å‘
     virtual int timer_timeout(const ZCE_Time_Value &now_timenow_time,
                               const void *act = 0)  = 0;
-    //¶¨Ê±Æ÷¹Ø±Õ
+    //å®šæ—¶å™¨å…³é—­
     virtual int timer_close();
 
     //
@@ -55,7 +55,7 @@ public:
     //
     void timer_queue(ZCE_Timer_Queue_Base *set_timer_queue);
 
-    //¿¼ÂÇµÄ°ëÌì£¬ÎÒ¾õµÃ¶ÔÓÚTimerµÄ´¦Àí»¹ÊÇ²»ÓÃ¿¼ÂÇÊµÏÖÒ»¸öhandle_closeÁË¡£
+    //è€ƒè™‘çš„åŠå¤©ï¼Œæˆ‘è§‰å¾—å¯¹äºTimerçš„å¤„ç†è¿˜æ˜¯ä¸ç”¨è€ƒè™‘å®ç°ä¸€ä¸ªhandle_closeäº†ã€‚
     //handle_close
 };
 

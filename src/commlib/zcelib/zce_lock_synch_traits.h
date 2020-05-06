@@ -3,19 +3,19 @@
 * @filename   zce_lock_synch_traits.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê11ÔÂ15ÈÕ
-* @brief      ²ßÂÔËøÄ£Ê½µÄÀàÝÍÈ¡ traits£¬ÓÃÓÚÄ£°æ´úÂëÖÐµÄtypedef£¬
-*             ±ÈÈçÒ»¸ö´úÂë¿ÉÄÜÐèÒª¼ÓËøºÍ²»¼ÓËøÁ½ÖÖ²ßÂÔµÄÊ±ºò£¬¶øÇÒÄÚ²¿»¹ÓÐ
-*             »¥³âÁ¿£¬ÐÅºÅµÆµÈ¶àÖÖÍ¬²½¶ÔÏóÊ±£¬
-*             ¿ÉÒÔÓÃZCE_MT_SYNCH»òÕßZCE_NULL_SYNCHÀàÐÍ×÷ÎªÄ£°æ²ÎÊý£¬Ä£°æÍ¨¹ý
-*             type::MUTEXÕâÑùµÄ·½Ê½»ñµÃ²»Í¬¼ÓËø²ßÂÔÒÔÊÊÅä¶àÏß³Ì£¬»òÕß
-*             µ¥Ïß³Ì»·¾³
+* @date       2011å¹´11æœˆ15æ—¥
+* @brief      ç­–ç•¥é”æ¨¡å¼çš„ç±»èƒå– traitsï¼Œç”¨äºŽæ¨¡ç‰ˆä»£ç ä¸­çš„typedefï¼Œ
+*             æ¯”å¦‚ä¸€ä¸ªä»£ç å¯èƒ½éœ€è¦åŠ é”å’Œä¸åŠ é”ä¸¤ç§ç­–ç•¥çš„æ—¶å€™ï¼Œè€Œä¸”å†…éƒ¨è¿˜æœ‰
+*             äº’æ–¥é‡ï¼Œä¿¡å·ç¯ç­‰å¤šç§åŒæ­¥å¯¹è±¡æ—¶ï¼Œ
+*             å¯ä»¥ç”¨ZCE_MT_SYNCHæˆ–è€…ZCE_NULL_SYNCHç±»åž‹ä½œä¸ºæ¨¡ç‰ˆå‚æ•°ï¼Œæ¨¡ç‰ˆé€šè¿‡
+*             type::MUTEXè¿™æ ·çš„æ–¹å¼èŽ·å¾—ä¸åŒåŠ é”ç­–ç•¥ä»¥é€‚é…å¤šçº¿ç¨‹ï¼Œæˆ–è€…
+*             å•çº¿ç¨‹çŽ¯å¢ƒ
 */
 
 #ifndef ZCE_LIB_LOCK_SYNCH_TRAITS_H_
 #define ZCE_LIB_LOCK_SYNCH_TRAITS_H_
 
-//ÓÃÓÚÄ³Ð©²ßÂÔ´¦ÀíµÄÀà
+//ç”¨äºŽæŸäº›ç­–ç•¥å¤„ç†çš„ç±»
 #include "zce_lock_process_mutex.h"
 #include "zce_lock_thread_mutex.h"
 #include "zce_lock_thread_rw_mutex.h"
@@ -24,7 +24,7 @@
 #include "zce_lock_null_lock.h"
 
 /*!
-* @brief      Ïß³Ì¼ÓËø»·¾³µÄËøÀàÐÍÝÍÈ¡Æ÷
+* @brief      çº¿ç¨‹åŠ é”çŽ¯å¢ƒçš„é”ç±»åž‹èƒå–å™¨
 */
 class ZCE_MT_SYNCH
 {
@@ -41,7 +41,7 @@ public:
 };
 
 /*!
-* @brief      ZCE_NULL_SYNCH ²»¼ÓËø»·¾³µÄËøÀàÐÍÝÍÈ¡Æ÷
+* @brief      ZCE_NULL_SYNCH ä¸åŠ é”çŽ¯å¢ƒçš„é”ç±»åž‹èƒå–å™¨
 */
 class ZCE_NULL_SYNCH
 {

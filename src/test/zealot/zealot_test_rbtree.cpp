@@ -1,4 +1,4 @@
-//ÓÃÓÚ²âÊÔRB Tree »òÕß AVL Tree
+//ç”¨äºæµ‹è¯•RB Tree æˆ–è€… AVL Tree
 
 
 #include "zealot_predefine.h"
@@ -19,7 +19,7 @@ int test_mmap_rbtree1(int /*argc*/, char * /*argv*/[])
     char *pt_rb_tree = new char[sz_malloc];
     memset(pt_rb_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_rb_tree = TEST_RB_TREE::initialize(size_of_tree, pt_rb_tree, false);
     if ( NULL == test_rb_tree)
     {
@@ -122,7 +122,7 @@ int test_mmap_rbtree1(int /*argc*/, char * /*argv*/[])
 
 
 
-//Ê¹ÓÃËæ»úÊı²âÊÔ£¬RB Tree
+//ä½¿ç”¨éšæœºæ•°æµ‹è¯•ï¼ŒRB Tree
 int test_mmap_rbtree2(int /*argc*/, char * /*argv*/[])
 {
 
@@ -135,7 +135,7 @@ int test_mmap_rbtree2(int /*argc*/, char * /*argv*/[])
     char *pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_rb_tree = TEST_RB_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_rb_tree)
     {
@@ -249,7 +249,7 @@ int test_mmap_rbtree2(int /*argc*/, char * /*argv*/[])
     return 0;
 }
 
-//²âÊÔ£¬AVL Tree
+//æµ‹è¯•ï¼ŒAVL Tree
 int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
 {
 
@@ -262,7 +262,7 @@ int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
     char *pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
@@ -321,7 +321,7 @@ int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
     return 0;
 }
 
-//Ê¹ÓÃËæ»úÊı²âÊÔ£¬AVL Tree
+//ä½¿ç”¨éšæœºæ•°æµ‹è¯•ï¼ŒAVL Tree
 int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
 {
 
@@ -334,7 +334,7 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
     char *pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
@@ -474,7 +474,7 @@ int test_mmap_avltree3(int /*argc*/, char * /*argv*/[])
     char *pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
@@ -610,7 +610,7 @@ int test_mmap_avltree3(int /*argc*/, char * /*argv*/[])
 
 
 
-//²âÊÔ4ÖÖ²åÈëÇé¿öµÄÆ½ºâĞı×ª
+//æµ‹è¯•4ç§æ’å…¥æƒ…å†µçš„å¹³è¡¡æ—‹è½¬
 int test_mmap_avltree4(int /*argc*/, char * /*argv*/[])
 {
 
@@ -623,7 +623,7 @@ int test_mmap_avltree4(int /*argc*/, char * /*argv*/[])
     char *pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
@@ -720,7 +720,7 @@ int test_mmap_avltree4(int /*argc*/, char * /*argv*/[])
 }
 
 
-//Ê¹ÓÃËæ»úÊı²âÊÔ£¬²âÊÔequalµÄÇé¿ö,AVL Tree
+//ä½¿ç”¨éšæœºæ•°æµ‹è¯•ï¼Œæµ‹è¯•equalçš„æƒ…å†µ,AVL Tree
 int test_mmap_avltree5(int /*argc*/, char * /*argv*/[])
 {
 
@@ -733,7 +733,7 @@ int test_mmap_avltree5(int /*argc*/, char * /*argv*/[])
     char *pt_avl_tree = new char[sz_malloc];
     memset(pt_avl_tree, 0, sz_malloc);
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     test_avl_tree = TEST_AVL_TREE::initialize(SIZE_OF_TREE, pt_avl_tree, false);
     if (NULL == test_avl_tree)
     {
@@ -745,7 +745,7 @@ int test_mmap_avltree5(int /*argc*/, char * /*argv*/[])
     zce::random_mt11213b  mt11231b_gen(TEST_SEED);
     int ins = 0;
     size_t ins_count = 0;
-    //²åÈëÏàÍ¬µÄÊıÖµ
+    //æ’å…¥ç›¸åŒçš„æ•°å€¼
     for (ins_count = 0; ins_count < SIZE_OF_TREE;)
     {
         ins = mt11231b_gen.rand() % SIZE_OF_TREE;

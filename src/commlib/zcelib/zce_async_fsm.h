@@ -9,7 +9,7 @@
 //====================================================================================
 
 /*!
-* @brief      ×´Ì¬»ú¶ÔÏó
+* @brief      çŠ¶æ€æœºå¯¹è±¡
 */
 class ZCE_Async_FSM : public ZCE_Async_Object
 {
@@ -18,48 +18,48 @@ class ZCE_Async_FSM : public ZCE_Async_Object
 
 public:
     /*!
-    * @brief      ¹¹Ôìº¯Êı£¬
-    * @param      async_mgr ,Ğ­³ÌÒì²½¹ÜÀíÆ÷µÄÖ¸Õë
+    * @brief      æ„é€ å‡½æ•°ï¼Œ
+    * @param      async_mgr ,åç¨‹å¼‚æ­¥ç®¡ç†å™¨çš„æŒ‡é’ˆ
     */
     ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd);
 protected:
     /*!
-    * @brief      Îö¹¹º¯Êı
+    * @brief      ææ„å‡½æ•°
     */
     ~ZCE_Async_FSM();
 
 
     /*!
-    * @brief      ×´Ì¬»úÔËĞĞ´¦Àí£¬¼Ì³ĞZCE_Async_ObjectµÄº¯Êı£¬´Ëº¯Êı½ö½öÓÃÓÚ×÷ÎªÀı×Ó½øĞĞ²Î¿¼£¬
-    * @param[in]  outer_data ´«Èë²ÎÊı£¬Íâ²¿µ÷ÓÃÊı¾İ
-    * @param[out] continue_run ·µ»Ø²ÎÊı£¬·µ»Øµ±Ç°µÄĞ­³ÌÊÇ·ñÒª¼ÌĞøÔËĞĞÏÂÈ¥
+    * @brief      çŠ¶æ€æœºè¿è¡Œå¤„ç†ï¼Œç»§æ‰¿ZCE_Async_Objectçš„å‡½æ•°ï¼Œæ­¤å‡½æ•°ä»…ä»…ç”¨äºä½œä¸ºä¾‹å­è¿›è¡Œå‚è€ƒï¼Œ
+    * @param[in]  outer_data ä¼ å…¥å‚æ•°ï¼Œå¤–éƒ¨è°ƒç”¨æ•°æ®
+    * @param[out] continue_run è¿”å›å‚æ•°ï¼Œè¿”å›å½“å‰çš„åç¨‹æ˜¯å¦è¦ç»§ç»­è¿è¡Œä¸‹å»
     */
     virtual void on_run(const void *outer_data,
                         bool &continue_run) = 0;
 
     /*!
-    * @brief      ×´Ì¬»ú¶ÔÏó³¬Ê±´¦Àí£¬Ä¬ÈÏcontinue_run·µ»Øfalse£¬ÈÃÏµÍ³»ØÊÕ£¬
-    * @param[in]  now_time  ·¢Éú³¬Ê±µÄÊ±¼ä£¬
-    * @param[out] continue_run Òì²½¶ÔÏóÊÇ·ñ¼ÌĞøÔËĞĞ,
+    * @brief      çŠ¶æ€æœºå¯¹è±¡è¶…æ—¶å¤„ç†ï¼Œé»˜è®¤continue_runè¿”å›falseï¼Œè®©ç³»ç»Ÿå›æ”¶ï¼Œ
+    * @param[in]  now_time  å‘ç”Ÿè¶…æ—¶çš„æ—¶é—´ï¼Œ
+    * @param[out] continue_run å¼‚æ­¥å¯¹è±¡æ˜¯å¦ç»§ç»­è¿è¡Œ,
     */
     virtual void on_timeout(const ZCE_Time_Value &now_time,
                             bool &continue_run) override;
 
     /*!
-    * @brief      ÉèÖÃµÄ×´Ì¬»ú½×¶Î£¬
+    * @brief      è®¾ç½®çš„çŠ¶æ€æœºé˜¶æ®µï¼Œ
     * @param      stage
     */
     void set_stage(int stage);
 
     /*!
-    * @brief      È¡µÃµÄ×´Ì¬»ú½×¶Î
+    * @brief      å–å¾—çš„çŠ¶æ€æœºé˜¶æ®µ
     * @return     int
     */
     int get_stage() const;
 
 protected:
 
-    ///×´Ì¬»úµÄ½×¶Î
+    ///çŠ¶æ€æœºçš„é˜¶æ®µ
     int               fsm_stage_;
 };
 
@@ -67,7 +67,7 @@ protected:
 //====================================================================================
 
 /*!
-* @brief      ×´Ì¬»úÖ÷¿Ø¹ÜÀíÀà
+* @brief      çŠ¶æ€æœºä¸»æ§ç®¡ç†ç±»
 *
 */
 class ZCE_Async_FSMMgr : public ZCE_Async_ObjectMgr
@@ -81,9 +81,9 @@ public:
 protected:
 
 
-    ///Ä¬ÈÏ×´Ì¬»ú¶ÔÏó³Ø×ÓµÄ³õÊ¼»¯µÄÊıÁ¿,×´Ì¬»ú²»Ì«ÏûºÄÄÚ´æ£¬¿ÉÒÔ×·Çó¸üºÃµÄĞÔÄÜ
+    ///é»˜è®¤çŠ¶æ€æœºå¯¹è±¡æ± å­çš„åˆå§‹åŒ–çš„æ•°é‡,çŠ¶æ€æœºä¸å¤ªæ¶ˆè€—å†…å­˜ï¼Œå¯ä»¥è¿½æ±‚æ›´å¥½çš„æ€§èƒ½
     static const size_t FSM_POOL_INIT_SIZE = 4;
-    ///Ä¬ÈÏ×´Ì¬»úÀ©Õ¹µÄÊ±ºò£¬À©Õ¹µÄÒì²½¶ÔÏóµÄÊıÁ¿
+    ///é»˜è®¤çŠ¶æ€æœºæ‰©å±•çš„æ—¶å€™ï¼Œæ‰©å±•çš„å¼‚æ­¥å¯¹è±¡çš„æ•°é‡
     static const size_t FSM_POOL_EXTEND_SIZE = 256;
 
 };

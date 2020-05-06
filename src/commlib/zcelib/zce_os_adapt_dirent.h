@@ -3,8 +3,8 @@
 * @filename   zce_os_adapt_dirent.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011Äê7ÔÂ16ÈÕ
-* @brief      Ä¿Â¼µÄ¸÷ÖÖ²Ù×÷¿çÆ½Ì¨º¯Êı£¬ÓÃÓÚ¸÷ÖÖ¶ÔÓÚÄ¿Â¼µÄ´¦Àí£¬°üÀ¨¶ÁÈ¡£¬½¨Á¢Ä¿Â¼£¬É¾³ıµÈµÈ£¬
+* @date       2011å¹´7æœˆ16æ—¥
+* @brief      ç›®å½•çš„å„ç§æ“ä½œè·¨å¹³å°å‡½æ•°ï¼Œç”¨äºå„ç§å¯¹äºç›®å½•çš„å¤„ç†ï¼ŒåŒ…æ‹¬è¯»å–ï¼Œå»ºç«‹ç›®å½•ï¼Œåˆ é™¤ç­‰ç­‰ï¼Œ
 *
 * @details
 *
@@ -23,37 +23,37 @@
 ///
 struct dirent
 {
-    /// inode number,WIN32ÏÂÃ»ÓÃ
+    /// inode number,WIN32ä¸‹æ²¡ç”¨
     ino_t          d_ino;
-    /// offset to the next dirent,WIN32ÏÂÃ»ÓÃ
+    /// offset to the next dirent,WIN32ä¸‹æ²¡ç”¨
     off_t          d_off;
 
-    //³¤¶È¼ÇÂ¼
+    //é•¿åº¦è®°å½•
     unsigned short d_reclen;
 
-    ///ÎÄ¼şÀàĞÍ,LINUXÔÚ2.6.XXºóÃæµÄ°æ±¾²ÅÖ§³ÖÕâ¸öÑ¡Ïî
+    ///æ–‡ä»¶ç±»å‹,LINUXåœ¨2.6.XXåé¢çš„ç‰ˆæœ¬æ‰æ”¯æŒè¿™ä¸ªé€‰é¡¹
     unsigned char  d_type;
 
-    //ÎÄ¼şÃû³Æ
+    //æ–‡ä»¶åç§°
     char           d_name[PATH_MAX + 1];
 };
 
-///readdirµÈº¯Êı²Ù×÷µÄ¾ä±ú
+///readdirç­‰å‡½æ•°æ“ä½œçš„å¥æŸ„
 struct DIR
 {
-    ///Ä¿Â¼µÄÃû×Ö
+    ///ç›®å½•çš„åå­—
     char              directory_name_[PATH_MAX + 1];
 
-    ///µ±Ç°´¦ÀíµÄ¾ä±ú
+    ///å½“å‰å¤„ç†çš„å¥æŸ„
     HANDLE            current_handle_;
 
-    ///·µ»ØµÄdirent_½á¹û
+    ///è¿”å›çš„dirent_ç»“æœ
     dirent *dirent_;
 
     /// The struct for intermediate results.
     WIN32_FIND_DATAA  fdata_;
 
-    ///ÊÇ·ñÒÑ¾­¾Í¿ªÊ¼ÕÒµÄ±êÖ¾
+    ///æ˜¯å¦å·²ç»å°±å¼€å§‹æ‰¾çš„æ ‡å¿—
     int               started_reading_;
 };
 
@@ -63,41 +63,41 @@ namespace zce
 {
 
 /*!
-* @brief      ´ò¿ªÒ»¸öÄ¿Â¼½øĞĞ¶ÁÈ¡
-* @return     DIR* ·µ»ØµÄÊÇÄ¿Â¼µÄ¾ä±ú£¬³É¹¦·µ»ØÒ»¸ö·ÇNULLÖµ£¬Äã±ØĞëÓÃclosedirÊÍ·Åµô£¬Ê§°Ü·µ»ØNULL
-* @param      dir_name Ä¿Â¼Ãû³Æ
-* @note       ¿ÉÒÔÈÏÎª²Ù×÷ÊıĞòÊÇopendir£¬readdir£¨readdir_r£©£¬closedir£¬²Î¿¼closedir£¬readdir
+* @brief      æ‰“å¼€ä¸€ä¸ªç›®å½•è¿›è¡Œè¯»å–
+* @return     DIR* è¿”å›çš„æ˜¯ç›®å½•çš„å¥æŸ„ï¼ŒæˆåŠŸè¿”å›ä¸€ä¸ªéNULLå€¼ï¼Œä½ å¿…é¡»ç”¨closediré‡Šæ”¾æ‰ï¼Œå¤±è´¥è¿”å›NULL
+* @param      dir_name ç›®å½•åç§°
+* @note       å¯ä»¥è®¤ä¸ºæ“ä½œæ•°åºæ˜¯opendirï¼Œreaddirï¼ˆreaddir_rï¼‰ï¼Œclosedirï¼Œå‚è€ƒclosedirï¼Œreaddir
 */
 DIR *opendir (const char *dirname);
 
 /*!
-* @brief      ¹Ø±Õ´ò¿ªµÄÄ¿Â¼£¨µÄ¾ä±ú£©£¬
-* @return     int ==0±êÊ¶³É¹¦
-* @param      dir_handle DIRµÄ¾ä±ú,ÔÚ¶ÁÈ¡Ä¿Â¼Íê±Ïºó£¬±ØĞëÒª¹Ø±Õ£¬
-* @note       ¿ÉÒÔÈÏÎª²Ù×÷ÊıĞòÊÇopendir£¬readdir£¬closedir
+* @brief      å…³é—­æ‰“å¼€çš„ç›®å½•ï¼ˆçš„å¥æŸ„ï¼‰ï¼Œ
+* @return     int ==0æ ‡è¯†æˆåŠŸ
+* @param      dir_handle DIRçš„å¥æŸ„,åœ¨è¯»å–ç›®å½•å®Œæ¯•åï¼Œå¿…é¡»è¦å…³é—­ï¼Œ
+* @note       å¯ä»¥è®¤ä¸ºæ“ä½œæ•°åºæ˜¯opendirï¼Œreaddirï¼Œclosedir
 */
 int closedir (DIR *dir_handle);
 
 /*!
-* @brief      ¶ÁÈ¡Ò»¸öÄ¿Â¼Ïî£¬²¢ÇÒ·µ»Ø£¬
-* @return     struct dirent* ·µ»ØNULL±êÊ¶¶ÁÈ¡Ê§°Ü£¬»òÕßÍê±Ï£¬
-* @param      dir_handle ¶ÁÈ¡Ä¿Â¼DIR¾ä±ú£¬¶Áµ½Ê²Ã´Î»ÖÃµÈĞÅÏ¢ÆäÊµÊÇ¼ÇÂ¼ÔÚDIR¾ä±úÄÚ²¿
-* @note       WINµÄÊµÏÖÒòÎªreaddirµÄ·µ»Ødirent ÊÇ²ÎÊıDIR *dir_handleÄÚ²¿Êı¾İ£¬¶ÁÈ¡
-*             µÄÎ»ÖÃĞÅÏ¢Ò²ÊÇ¼ÇÂ¼ÔÚ²ÎÊıDIR *dir_handleÄÚ²¿£¬ËùÒÔÆäÊÇ²»¿ÉÖØÈë°æ±¾£¬
-*             LINUXµÄÊµÏÖ¿ÉÄÜ·µ»ØµÄÊÇstaticÊı¾İ£¬,ËùÒÔÒ²²»¿ÉÒÔÖØÈë
-*             ×î½üÒ»´ÎÔö¼Ó×¢ÊÍµÄÊ±ºò£¬¶Ô×Ô¼ºËµµÄ²»¿ÉÖØÈëÓÖ¿¼ÂÇÒ»ÏÂ£¬ËùÒÔ»¹ÊÇ¼Óµã×¢ÊÍ¼ÇÂ¼
-*             ÏÂÀ´£¬ÓÉÓÚ·µ»ØÖµÊÇ²ÎÊıdir_handleµÄÒ»²¿·ÖÊı¾İ£¬ËùÒÔÈç¹ûÁ½´Îµ÷ÓÃºó£¬Ç°ÃæÒ»´Î
-*             µÄ½á¹¹¾ÍÊ§Ğ§ÁË¡£
+* @brief      è¯»å–ä¸€ä¸ªç›®å½•é¡¹ï¼Œå¹¶ä¸”è¿”å›ï¼Œ
+* @return     struct dirent* è¿”å›NULLæ ‡è¯†è¯»å–å¤±è´¥ï¼Œæˆ–è€…å®Œæ¯•ï¼Œ
+* @param      dir_handle è¯»å–ç›®å½•DIRå¥æŸ„ï¼Œè¯»åˆ°ä»€ä¹ˆä½ç½®ç­‰ä¿¡æ¯å…¶å®æ˜¯è®°å½•åœ¨DIRå¥æŸ„å†…éƒ¨
+* @note       WINçš„å®ç°å› ä¸ºreaddirçš„è¿”å›dirent æ˜¯å‚æ•°DIR *dir_handleå†…éƒ¨æ•°æ®ï¼Œè¯»å–
+*             çš„ä½ç½®ä¿¡æ¯ä¹Ÿæ˜¯è®°å½•åœ¨å‚æ•°DIR *dir_handleå†…éƒ¨ï¼Œæ‰€ä»¥å…¶æ˜¯ä¸å¯é‡å…¥ç‰ˆæœ¬ï¼Œ
+*             LINUXçš„å®ç°å¯èƒ½è¿”å›çš„æ˜¯staticæ•°æ®ï¼Œ,æ‰€ä»¥ä¹Ÿä¸å¯ä»¥é‡å…¥
+*             æœ€è¿‘ä¸€æ¬¡å¢åŠ æ³¨é‡Šçš„æ—¶å€™ï¼Œå¯¹è‡ªå·±è¯´çš„ä¸å¯é‡å…¥åˆè€ƒè™‘ä¸€ä¸‹ï¼Œæ‰€ä»¥è¿˜æ˜¯åŠ ç‚¹æ³¨é‡Šè®°å½•
+*             ä¸‹æ¥ï¼Œç”±äºè¿”å›å€¼æ˜¯å‚æ•°dir_handleçš„ä¸€éƒ¨åˆ†æ•°æ®ï¼Œæ‰€ä»¥å¦‚æœä¸¤æ¬¡è°ƒç”¨åï¼Œå‰é¢ä¸€æ¬¡
+*             çš„ç»“æ„å°±å¤±æ•ˆäº†ã€‚
 */
 struct dirent *readdir (DIR *dir_handle);
 
 /*!
-* @brief      read dir ¿ÉÒÔÖØÈë°æ±¾£¬
-* @return     int ==0 ±êÊ¶³É¹¦
-* @param[in]  dir_handle ¶ÁÈ¡Ä¿Â¼DIR¾ä±ú£¬
-* @param[out] entry ·µ»ØµÄ¶ÁÈ¡µ½µÄÄ¿Â¼ÏîÄ¿,entry±ØĞëÊÇÍâ²¿ÒÑ¾­·ÖÅäºÃµÄ±äÁ¿
-* @param[out] result ¶ÁÈ¡µ½µÄÄ¿Â¼ÏîÄ¿Ö¸Õë£¬Èç¹ûÊÇÒÑ¾­¶ÁÈ¡µ½ÁË×îºó£¬*result½«±»ÖÃÎªNULL
-*                    Èç¹û¶ÁÈ¡µ½ÁËÏîÄ¿£¬resultÖ¸Ïòentry
+* @brief      read dir å¯ä»¥é‡å…¥ç‰ˆæœ¬ï¼Œ
+* @return     int ==0 æ ‡è¯†æˆåŠŸ
+* @param[in]  dir_handle è¯»å–ç›®å½•DIRå¥æŸ„ï¼Œ
+* @param[out] entry è¿”å›çš„è¯»å–åˆ°çš„ç›®å½•é¡¹ç›®,entryå¿…é¡»æ˜¯å¤–éƒ¨å·²ç»åˆ†é…å¥½çš„å˜é‡
+* @param[out] result è¯»å–åˆ°çš„ç›®å½•é¡¹ç›®æŒ‡é’ˆï¼Œå¦‚æœæ˜¯å·²ç»è¯»å–åˆ°äº†æœ€åï¼Œ*resultå°†è¢«ç½®ä¸ºNULL
+*                    å¦‚æœè¯»å–åˆ°äº†é¡¹ç›®ï¼ŒresultæŒ‡å‘entry
 */
 int readdir_r (DIR *dir_handle,
                struct dirent *entry,
@@ -105,14 +105,14 @@ int readdir_r (DIR *dir_handle,
 
 
 /*!
-* @brief      ¸ù¾İÇ°×ººÍºó×º£¬¶ÁÈ¡Ä¿Â¼ÏÂÃæµÄ¸÷ÖÖÎÄ¼ş£¬
-* @return     int == 0 ±íÊ¾³É¹¦
-* @param[in]  dirname ¶ÁÈ¡Ä¿Â¼
-* @param[in]  prefix_name Ç°×ºÃû³Æ£¬¿ÉÒÔÎªNULL£¬Ò²¿ÉÒÔ¾ÍÊÇÄ³¸öÎÄ¼şÃû³Æ
-* @param[in]  ext_name ºó×ºÃû³Æ£¬¿ÉÒÔÎªNULL£¬ÎªNULL±íÊ¾²»¼ì²é
-* @param[in]  select_dir Ñ¡ÔñÄ¿Â¼
-* @param[in]  select_file Ñ¡ÔñÎÄ¼ş
-* @param[out] file_name_ary ÎÄ¼şÃû³Æ¶ÓÁĞ
+* @brief      æ ¹æ®å‰ç¼€å’Œåç¼€ï¼Œè¯»å–ç›®å½•ä¸‹é¢çš„å„ç§æ–‡ä»¶ï¼Œ
+* @return     int == 0 è¡¨ç¤ºæˆåŠŸ
+* @param[in]  dirname è¯»å–ç›®å½•
+* @param[in]  prefix_name å‰ç¼€åç§°ï¼Œå¯ä»¥ä¸ºNULLï¼Œä¹Ÿå¯ä»¥å°±æ˜¯æŸä¸ªæ–‡ä»¶åç§°
+* @param[in]  ext_name åç¼€åç§°ï¼Œå¯ä»¥ä¸ºNULLï¼Œä¸ºNULLè¡¨ç¤ºä¸æ£€æŸ¥
+* @param[in]  select_dir é€‰æ‹©ç›®å½•
+* @param[in]  select_file é€‰æ‹©æ–‡ä»¶
+* @param[out] file_name_ary æ–‡ä»¶åç§°é˜Ÿåˆ—
 */
 int readdir_nameary(const char *dirname,
                     const char *prefix_name,
@@ -122,13 +122,13 @@ int readdir_nameary(const char *dirname,
                     std::vector<std::string> &file_name_ary);
 
 /*!
-* @brief      É¨ÃèÒ»¸öÄ¿Â¼ÀïÃæµÄÄ¿Â¼ÏîÄ¿£¬¾ÍÒ»¸öº¯Êı£¬¿´ÉÏÈ¥¼òµ¥£¬¶øÇÒ¿ÉÒÔÀûÓÃÑ¡ÔñÆ÷µÈ¹¤¾ß¼Ó¿ì¿ª·¢ËÙ¶È£¬µ«Òª×¢Òâ½á¹ûÊÍ·Å
-* @return     int           ·µ»ØÉ¨Ãèµ½µÄÏîÄ¿µÄÊıÁ¿£¬·µ»ØÖµ<0±íÊ¾Ê§°Ü
-* @param      dirname       Ä¿Â¼µÄÃû×Ö£¬
-* @param      namelist      ×¢ÒâÕâ¸öÊÇÒ»¸öÖ¸ÏòÊı×éÖ¸ÕëµÄÖ¸Õë£¬ÀïÃæµÄÃ¿¸öÊı¾İÒ²ÒªÊ©·Å£¬Êı×éÒ²ÒªÊÍ·Å
-* @param      (*selector)   Ñ¡ÔñÆ÷µÄº¯ÊıÖ¸Õë£¬¿ÉÒÔÎªNULL£¬Ñ¡ÔñÆ÷·µ»Ø·Ç0±íÊ¾Ñ¡Ôñ
-* @param      (*comparator) ÅÅĞòÆ÷¾ßµÄº¯ÊıÖ¸Õë£¬¿ÉÒÔÎªNULL
-* @note       namelist ·µ»ØµÄÊı¾İÒ»¶¨ÊÍ·Å£¬¶øÇÒÊÇ2´ÎÊÍ·Å£¬¿ÉÒÔÓÃfree_scandir_listº¯ÊıÊÍ·Å
+* @brief      æ‰«æä¸€ä¸ªç›®å½•é‡Œé¢çš„ç›®å½•é¡¹ç›®ï¼Œå°±ä¸€ä¸ªå‡½æ•°ï¼Œçœ‹ä¸Šå»ç®€å•ï¼Œè€Œä¸”å¯ä»¥åˆ©ç”¨é€‰æ‹©å™¨ç­‰å·¥å…·åŠ å¿«å¼€å‘é€Ÿåº¦ï¼Œä½†è¦æ³¨æ„ç»“æœé‡Šæ”¾
+* @return     int           è¿”å›æ‰«æåˆ°çš„é¡¹ç›®çš„æ•°é‡ï¼Œè¿”å›å€¼<0è¡¨ç¤ºå¤±è´¥
+* @param      dirname       ç›®å½•çš„åå­—ï¼Œ
+* @param      namelist      æ³¨æ„è¿™ä¸ªæ˜¯ä¸€ä¸ªæŒ‡å‘æ•°ç»„æŒ‡é’ˆçš„æŒ‡é’ˆï¼Œé‡Œé¢çš„æ¯ä¸ªæ•°æ®ä¹Ÿè¦æ–½æ”¾ï¼Œæ•°ç»„ä¹Ÿè¦é‡Šæ”¾
+* @param      (*selector)   é€‰æ‹©å™¨çš„å‡½æ•°æŒ‡é’ˆï¼Œå¯ä»¥ä¸ºNULLï¼Œé€‰æ‹©å™¨è¿”å›é0è¡¨ç¤ºé€‰æ‹©
+* @param      (*comparator) æ’åºå™¨å…·çš„å‡½æ•°æŒ‡é’ˆï¼Œå¯ä»¥ä¸ºNULL
+* @note       namelist è¿”å›çš„æ•°æ®ä¸€å®šé‡Šæ”¾ï¼Œè€Œä¸”æ˜¯2æ¬¡é‡Šæ”¾ï¼Œå¯ä»¥ç”¨free_scandir_listå‡½æ•°é‡Šæ”¾
 */
 int scandir (const char *dirname,
              dirent **namelist[],
@@ -136,83 +136,83 @@ int scandir (const char *dirname,
              int (*comparator)(const struct dirent **, const struct dirent **));
 
 /*!
-* @brief      ÊÍ·Åscandir ·µ»Ø²ÎÊıµÄÀïÃæµÄ¸÷ÖÖ·ÖÅäÊı¾İ£¬·Ç±ê×¼º¯Êı
-* @param      list_number scandir º¯ÊıµÄ³É¹¦·µ»ØÖµ,>0
-* @param      namelist    scandir º¯Êı·µ»ØµÄnamelist²ÎÊı
+* @brief      é‡Šæ”¾scandir è¿”å›å‚æ•°çš„é‡Œé¢çš„å„ç§åˆ†é…æ•°æ®ï¼Œéæ ‡å‡†å‡½æ•°
+* @param      list_number scandir å‡½æ•°çš„æˆåŠŸè¿”å›å€¼,>0
+* @param      namelist    scandir å‡½æ•°è¿”å›çš„namelistå‚æ•°
 */
 void free_scandir_result(int list_number, dirent *namelist[]);
 
 /*!
-* @brief      ÓÃÓÚÄ¿Â¼ÅÅĞòµÄ±È½Ï£¬¾ÍÊÇÄÇ¸öcomparator²ÎÊıº¯ÊıÖ¸ÕëµÄ²ÎÊı
-* @return     int   Ãû×ÖµÄstring±È½Ï½á¹û
-* @param      left  ±È½ÏµÄÄ¿Â¼ÏîÄ¿
-* @param      right ±È½ÏµÄÄ¿Â¼ÏîÄ¿
+* @brief      ç”¨äºç›®å½•æ’åºçš„æ¯”è¾ƒï¼Œå°±æ˜¯é‚£ä¸ªcomparatorå‚æ•°å‡½æ•°æŒ‡é’ˆçš„å‚æ•°
+* @return     int   åå­—çš„stringæ¯”è¾ƒç»“æœ
+* @param      left  æ¯”è¾ƒçš„ç›®å½•é¡¹ç›®
+* @param      right æ¯”è¾ƒçš„ç›®å½•é¡¹ç›®
 */
 int scandir_namesort (const struct dirent **left,
                       const struct dirent **right);
 
 /*!
-* @brief      ´ÓÒ»¸öÂ·¾¶µÃµ½ÎÄ¼şµÄÃû³Æ£¬Ó¦¸ÃÊÇ·Ç±ê×¼º¯Êı
-* @return     const char*    ·µ»ØÎÄ¼şµÄÃû³Æ×Ö·û´®£¬·µ»ØµÄÆäÊµ¾ÍÊÇfilename²ÎÊıµÄBUFFER
-* @param[in]  pathname  Â·¾¶×Ö·û´®
-* @param[out] filename  ·µ»ØµÄÎÄ¼şÃû³Æ×Ö·û´®µÄ´æ·Åbuf
-* @param[in]  buf_len   filename²ÎÊıBUFFERµÄ³¤¶È
+* @brief      ä»ä¸€ä¸ªè·¯å¾„å¾—åˆ°æ–‡ä»¶çš„åç§°ï¼Œåº”è¯¥æ˜¯éæ ‡å‡†å‡½æ•°
+* @return     const char*    è¿”å›æ–‡ä»¶çš„åç§°å­—ç¬¦ä¸²ï¼Œè¿”å›çš„å…¶å®å°±æ˜¯filenameå‚æ•°çš„BUFFER
+* @param[in]  pathname  è·¯å¾„å­—ç¬¦ä¸²
+* @param[out] filename  è¿”å›çš„æ–‡ä»¶åç§°å­—ç¬¦ä¸²çš„å­˜æ”¾buf
+* @param[in]  buf_len   filenameå‚æ•°BUFFERçš„é•¿åº¦
 * @note
 */
 const char *basename (const char *pathname, char *filename, size_t buf_len);
 
 /*!
-* @brief      ´ÓÒ»¸öÂ·¾¶ÖĞ¼äµÃµ½Ä¿Â¼Ãû³Æ
-* @return     const char*    ·µ»ØµÄÄ¿Â¼×Ö·û´®£¬·µ»ØµÄ¾ÍÊÇdir_name²ÎÊıµÄBUFFER
-* @param[in]  path_name  Â·¾¶×Ö·û´®
-* @param[out] dir_name  ´æ·ÅÄ¿Â¼×Ö·û´®µÄBUFFER
-* @param[in]  buf_len    dir_name²ÎÊıBUFFERµÄ³¤¶È
-* @note       Ä¿Â¼Ãû³ÆµÄÄ©Î²Ã»ÓĞ´ø·Ö¸ô·û
+* @brief      ä»ä¸€ä¸ªè·¯å¾„ä¸­é—´å¾—åˆ°ç›®å½•åç§°
+* @return     const char*    è¿”å›çš„ç›®å½•å­—ç¬¦ä¸²ï¼Œè¿”å›çš„å°±æ˜¯dir_nameå‚æ•°çš„BUFFER
+* @param[in]  path_name  è·¯å¾„å­—ç¬¦ä¸²
+* @param[out] dir_name  å­˜æ”¾ç›®å½•å­—ç¬¦ä¸²çš„BUFFER
+* @param[in]  buf_len    dir_nameå‚æ•°BUFFERçš„é•¿åº¦
+* @note       ç›®å½•åç§°çš„æœ«å°¾æ²¡æœ‰å¸¦åˆ†éš”ç¬¦
 */
 const char *dirname (const char *path_name, char *dir_name, size_t buf_len);
 
 /*!
-* @brief      µÃµ½µ±Ç°Ä¿Â¼
-* @return     char*   µ±Ç°Ä¿Â¼µÄ×Ö·û´®Ö¸Õë£¬¾ÍÊÇbuffer£¬
-* @param      buffer  È¡»ØµÄ×Ö·û´®
-* @param      maxlen  ×Ö·û´®³¤¶È
+* @brief      å¾—åˆ°å½“å‰ç›®å½•
+* @return     char*   å½“å‰ç›®å½•çš„å­—ç¬¦ä¸²æŒ‡é’ˆï¼Œå°±æ˜¯bufferï¼Œ
+* @param      buffer  å–å›çš„å­—ç¬¦ä¸²
+* @param      maxlen  å­—ç¬¦ä¸²é•¿åº¦
 */
 char *getcwd(char *buffer, int maxlen  );
 
 /*!
-* @brief      CDÄ³¸öÄ¿Â¼,¸Ä±äµ±Ç°Ä¿Â¼
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param[in]  dirname Ä¿Â¼
+* @brief      CDæŸä¸ªç›®å½•,æ”¹å˜å½“å‰ç›®å½•
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  dirname ç›®å½•
 */
 int chdir(const char *dirname );
 
 /*!
-* @brief      ½¨Á¢Ä³¸öÄ¿Â¼£¬Ö»ÄÜ½¨Á¢Ò»²ãÄ¿Â¼
-* @return     int      0³É¹¦£¬-1Ê§°Ü
-* @param      pathname Â·¾¶×Ö·û´®£¬
-* @param      mode     Ä¿Â¼µÄ¹²ÏíÄ£Ê½£¬WINDOWSÏÂ£¬´Ë²ÎÊıÎŞĞ§,
+* @brief      å»ºç«‹æŸä¸ªç›®å½•ï¼Œåªèƒ½å»ºç«‹ä¸€å±‚ç›®å½•
+* @return     int      0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      pathname è·¯å¾„å­—ç¬¦ä¸²ï¼Œ
+* @param      mode     ç›®å½•çš„å…±äº«æ¨¡å¼ï¼ŒWINDOWSä¸‹ï¼Œæ­¤å‚æ•°æ— æ•ˆ,
 */
 int mkdir(const char *pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
-* @brief      µİ¹éµÄ½¨Á¢Ä¿Â¼£¬·Ç±ê×¼º¯Êı£¬Èç¹ûÏëÒ»´Î½¨Á¢¶à²ãÄ¿Â¼£¬ÓÃÕâ¸öº¯Êı
-* @return     int =0 ±íÊ¾³É¹¦
-* @param      pathname Â·¾¶×Ö·û´®£¬
-* @param      mode Ä¿Â¼µÄ¹²ÏíÄ£Ê½£¬WINDOWSÏÂ£¬´Ë²ÎÊıÎŞĞ§,
+* @brief      é€’å½’çš„å»ºç«‹ç›®å½•ï¼Œéæ ‡å‡†å‡½æ•°ï¼Œå¦‚æœæƒ³ä¸€æ¬¡å»ºç«‹å¤šå±‚ç›®å½•ï¼Œç”¨è¿™ä¸ªå‡½æ•°
+* @return     int =0 è¡¨ç¤ºæˆåŠŸ
+* @param      pathname è·¯å¾„å­—ç¬¦ä¸²ï¼Œ
+* @param      mode ç›®å½•çš„å…±äº«æ¨¡å¼ï¼ŒWINDOWSä¸‹ï¼Œæ­¤å‚æ•°æ— æ•ˆ,
 */
 int mkdir_recurse(const char *pathname, mode_t mode = ZCE_DEFAULT_DIR_PERMS);
 
 /*!
-* @brief      É¾³ıÄ³¸öÄ¿Â¼
-* @return     int ·µ»Ø0±êÊ¶³É¹¦
-* @param      pathname Ä¿Â¼Â·¾¶
-* @note       ÀíÂÛÉÏÉÏÕâ¸öÄ¿Â¼±ØĞëÊÇ¿ÕµÄ£¬
+* @brief      åˆ é™¤æŸä¸ªç›®å½•
+* @return     int è¿”å›0æ ‡è¯†æˆåŠŸ
+* @param      pathname ç›®å½•è·¯å¾„
+* @note       ç†è®ºä¸Šä¸Šè¿™ä¸ªç›®å½•å¿…é¡»æ˜¯ç©ºçš„ï¼Œ
 */
 int rmdir(const char *pathname);
 
 
 /*!
-* @brief      Â·¾¶Æ´½Ó
+* @brief      è·¯å¾„æ‹¼æ¥
 * @return     const char*
 * @param      dst
 * @param      src

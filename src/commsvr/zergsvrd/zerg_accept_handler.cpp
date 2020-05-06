@@ -5,7 +5,7 @@
 
 
 
-//TCP Accept ´¦ÀíµÄEventHandler,
+//TCP Accept å¤„ç†çš„EventHandler,
 TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid,
                                        const ZCE_Sockaddr_In &addr):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
@@ -15,18 +15,18 @@ TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid,
 {
 }
 
-//×Ô¼ºÇåÀíµÄÀàĞÍ£¬Í³Ò»¹Ø±ÕÔÚhandle_close,Õâ¸öµØ·½²»ÓÃ¹Ø±Õ
+//è‡ªå·±æ¸…ç†çš„ç±»å‹ï¼Œç»Ÿä¸€å…³é—­åœ¨handle_close,è¿™ä¸ªåœ°æ–¹ä¸ç”¨å…³é—­
 TCP_Accept_Handler::~TCP_Accept_Handler()
 {
 }
 
-//´´½¨¼àÌı¶Ë¿Ú
+//åˆ›å»ºç›‘å¬ç«¯å£
 int TCP_Accept_Handler::create_listen()
 {
     const size_t IP_ADDR_LEN = 31;
     char str_ip_addr[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //Ö±½Ó°Ñbacklog¸ÉÉÏÒ»¸öºÜ´óµÄÖµ
+    //ç›´æ¥æŠŠbacklogå¹²ä¸Šä¸€ä¸ªå¾ˆå¤§çš„å€¼
     const int DEF_ZERG_BACKLOG = 512;
     //
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;
@@ -36,7 +36,7 @@ int TCP_Accept_Handler::create_listen()
     socklen_t sndbuflen = 0, rcvbuflen = 0;
     int ret = peer_acceptor_.open(&accept_bind_addr_, true, AF_UNSPEC, DEF_ZERG_BACKLOG);
 
-    //Èç¹û²»ÄÜBindÏàÓ¦µÄ¶Ë¿Ú
+    //å¦‚æœä¸èƒ½Bindç›¸åº”çš„ç«¯å£
     if (ret != 0)
     {
 
@@ -54,12 +54,12 @@ int TCP_Accept_Handler::create_listen()
             accept_bind_addr_.to_string(str_ip_addr,IP_ADDR_LEN,use_len),
             accept_bind_addr_.get_port_number());
 
-    //±»AcceptµÄ¶Ë¿Ú»á¼Ì³ĞÕâĞ©Ñ¡Ïî
+    //è¢«Acceptçš„ç«¯å£ä¼šç»§æ‰¿è¿™äº›é€‰é¡¹
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
     ZCE_LOG(RS_INFO, "[zergsvr] Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.", rcvbuflen, sndbuflen);
 
-    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
+    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<const void *>(&opval), opvallen);
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<const void *>(&opval), opvallen);
 
@@ -69,12 +69,12 @@ int TCP_Accept_Handler::create_listen()
 
 #ifndef ZCE_OS_WINDOWS
 
-    //±ÜÃâDELAY·¢ËÍÕâÖÖÇé¿ö
+    //é¿å…DELAYå‘é€è¿™ç§æƒ…å†µ
     int NODELAY = 1;
     opvallen = sizeof(int);
     peer_acceptor_.setsockopt(SOL_TCP, TCP_NODELAY, reinterpret_cast<void *>(&NODELAY), opvallen);
 
-    //TCP_DEFER_ACCEPT,Õâ¸öÑ¡ÏîÎÒÔİÊ±²»¿ª£¬µ«ÊÇÕâ¸öÑ¡ÏîÊÇÒ»¸öºÜºÃµÄ±ÜÃâ¹¥»÷µÄÊÖ¶Î¡£
+    //TCP_DEFER_ACCEPT,è¿™ä¸ªé€‰é¡¹æˆ‘æš‚æ—¶ä¸å¼€ï¼Œä½†æ˜¯è¿™ä¸ªé€‰é¡¹æ˜¯ä¸€ä¸ªå¾ˆå¥½çš„é¿å…æ”»å‡»çš„æ‰‹æ®µã€‚
     //int val = 1;
     //ret = peer_acceptor_.set_option(IPPROTO_TCP, TCP_DEFER_ACCEPT, &val, sizeof(val));
     //ZCE_LOG(RS_INFO,"[zergsvr]  setsockopt TCP_DEFER_ACCEPT val(%d) ret(%d). ", val, ret);
@@ -87,17 +87,17 @@ int TCP_Accept_Handler::create_listen()
     return 0;
 }
 
-//ÊÂ¼ş´¥·¢´¦Àí£¬±íÊ¾ÓĞÒ»¸öaccept µÄÊı¾İ
+//äº‹ä»¶è§¦å‘å¤„ç†ï¼Œè¡¨ç¤ºæœ‰ä¸€ä¸ªaccept çš„æ•°æ®
 int TCP_Accept_Handler::handle_input(/*handle*/)
 {
     ZCE_Socket_Stream  sockstream;
     ZCE_Sockaddr_In       remote_address;
     int ret = peer_acceptor_.accept(sockstream, &remote_address);
 
-    //Èç¹û³öÏÖ´íÎó,ÈçºÎ´¦Àí? return -1?
+    //å¦‚æœå‡ºç°é”™è¯¯,å¦‚ä½•å¤„ç†? return -1?
     if (ret != 0)
     {
-        //ÓÉÓÚ¸ÃËÀµÄC/C++µÄ·µ»Ø¾²Ì¬Ö¸ÕëµÄÎÊÌâ£¬Õâ¶ùÒªÊä³öÁ½¸öµØÖ·£¬ËùÒÔÖ»ÄÜÏÈ´òÓ¡µ½ÆäËûµØ·½
+        //ç”±äºè¯¥æ­»çš„C/C++çš„è¿”å›é™æ€æŒ‡é’ˆçš„é—®é¢˜ï¼Œè¿™å„¿è¦è¾“å‡ºä¸¤ä¸ªåœ°å€ï¼Œæ‰€ä»¥åªèƒ½å…ˆæ‰“å°åˆ°å…¶ä»–åœ°æ–¹
         const size_t IP_ADDR_LEN = 63;
         char str_local_addr[IP_ADDR_LEN+1], str_remote_addr[IP_ADDR_LEN+1];
         size_t use_len = 0;
@@ -110,14 +110,14 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
                 strerror(accept_error));
         sockstream.close();
 
-        //Èç¹ûÊÇÕâĞ©´íÎó¼ÌĞø¡£
+        //å¦‚æœæ˜¯è¿™äº›é”™è¯¯ç»§ç»­ã€‚
         if ( accept_error == EWOULDBLOCK || accept_error == EINVAL
              || accept_error == ECONNABORTED || accept_error == EPROTOTYPE )
         {
             return 0;
         }
 
-        //Õâ¶ùÓ¦¸ÃÍË³ö½ø³Ì???,»¹ÊÇ¼ÌĞø°Ñ¡£¹ş¹ş¡£
+        //è¿™å„¿åº”è¯¥é€€å‡ºè¿›ç¨‹???,è¿˜æ˜¯ç»§ç»­æŠŠã€‚å“ˆå“ˆã€‚
         //return -1;
         return 0;
 
@@ -136,7 +136,7 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
     if (phandler != NULL)
     {
         phandler->init_tcpsvr_handler(my_svc_info_, sockstream, remote_address);
-        //±ÜÃâÎö¹¹µÄÊ±ºòclose¾ä±ú
+        //é¿å…ææ„çš„æ—¶å€™closeå¥æŸ„
         sockstream.release_noclose();
     }
     else
@@ -147,13 +147,13 @@ int TCP_Accept_Handler::handle_input(/*handle*/)
     return 0;
 }
 
-//·µ»Ø¾ä±úID
+//è¿”å›å¥æŸ„ID
 ZCE_HANDLE TCP_Accept_Handler::get_handle(void) const
 {
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
-//ÍË³ö´¦Àí
+//é€€å‡ºå¤„ç†
 int TCP_Accept_Handler::handle_close ()
 {
     //
@@ -163,7 +163,7 @@ int TCP_Accept_Handler::handle_close ()
         peer_acceptor_.close ();
     }
 
-    //É¾³ı×Ô¼º
+    //åˆ é™¤è‡ªå·±
     delete this;
 
     return 0;

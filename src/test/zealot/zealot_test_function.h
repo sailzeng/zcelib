@@ -3,12 +3,12 @@
 
 
 
-//²âÊÔËæ»úÊı
+//æµ‹è¯•éšæœºæ•°
 int test_matchboost_random(int argc, char *argv[]);
 int test_template_random(int argc, char *argv[]);
 int test_oo_random(int argc, char *argv[]);
 
-//²âÊÔSHM¹²ÏíÄÚ´æµÄÈİÆ÷
+//æµ‹è¯•SHMå…±äº«å†…å­˜çš„å®¹å™¨
 int test_lru_hashtable(int argc, char *argv[]);
 int test_lru_hashtable2(int argc, char *argv[]);
 int test_lru_hashtable3(int argc, char *argv[]);
@@ -98,7 +98,7 @@ int test_mmap_avltree4(int /*argc*/, char * /*argv*/[]);
 int test_mmap_avltree5(int /*argc*/, char * /*argv*/[]);
 
 
-//Lua º¯Êı²âÊÔ¡£
+//Lua å‡½æ•°æµ‹è¯•ã€‚
 int test_lua_script1(int /*argc*/, char * /*argv*/[]);
 int test_lua_script2(int /*argc*/, char * /*argv*/[]);
 int test_lua_script3(int /*argc*/, char * /*argv*/[]);

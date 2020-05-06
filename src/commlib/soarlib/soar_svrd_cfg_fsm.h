@@ -14,31 +14,31 @@ struct FRAMEWORK_CONFIG
     struct TaskInfo
     {
     public: /* members */
-        uint32_t task_thread_num_; // taskÏß³ÌÊıÁ¿
-        uint32_t task_thread_stack_size_; // taskÏß³Ì¶ÑÕ»´óĞ¡
-        uint32_t enqueue_timeout_sec_; // pushÊı¾İµ½task¶ÓÁĞÊ±µÄ³¬Ê±Ê±¼äÃë
-        uint32_t enqueue_timeout_usec_; // pushÊı¾İµ½task¶ÓÁĞÊ±µÄ³¬Ê±Ê±¼äÎ¢Ãë
+        uint32_t task_thread_num_; // taskçº¿ç¨‹æ•°é‡
+        uint32_t task_thread_stack_size_; // taskçº¿ç¨‹å †æ ˆå¤§å°
+        uint32_t enqueue_timeout_sec_; // pushæ•°æ®åˆ°taské˜Ÿåˆ—æ—¶çš„è¶…æ—¶æ—¶é—´ç§’
+        uint32_t enqueue_timeout_usec_; // pushæ•°æ®åˆ°taské˜Ÿåˆ—æ—¶çš„è¶…æ—¶æ—¶é—´å¾®ç§’
     };
 
     struct TransInfo
     {
     public: /* members */
-        uint32_t trans_num_; // ÊÂÎñµÄÊıÁ¿
-        uint32_t trans_cmd_num_; // ÊÂÎñÃüÁî×ÖµÄ¸öÊı
-        uint32_t func_cmd_num_; // º¯ÊıÃüÁî×ÖµÄ¸öÊı
+        uint32_t trans_num_; // äº‹åŠ¡çš„æ•°é‡
+        uint32_t trans_cmd_num_; // äº‹åŠ¡å‘½ä»¤å­—çš„ä¸ªæ•°
+        uint32_t func_cmd_num_; // å‡½æ•°å‘½ä»¤å­—çš„ä¸ªæ•°
     };
 
     struct MonitorInfo
     {
     public: /* members */
-        uint32_t filter_statics_id_cnt_; // ÒªÅÅ³ıµÄÍ³¼ÆID¸öÊı
-        uint32_t filter_statics_id_list_[100]; // ÒªÅÅ³ıµÄÍ³¼ÆIDÁĞ±í
+        uint32_t filter_statics_id_cnt_; // è¦æ’é™¤çš„ç»Ÿè®¡IDä¸ªæ•°
+        uint32_t filter_statics_id_list_[100]; // è¦æ’é™¤çš„ç»Ÿè®¡IDåˆ—è¡¨
     };
 
-    TransInfo trans_info_; // ÊÂÎñµÄÅäÖÃ
-    TaskInfo task_info_; // TaskµÄÅäÖÃ£¬Ê¹ÓÃnotifytransÊ±ÓĞĞ§
+    TransInfo trans_info_; // äº‹åŠ¡çš„é…ç½®
+    TaskInfo task_info_; // Taskçš„é…ç½®ï¼Œä½¿ç”¨notifytransæ—¶æœ‰æ•ˆ
 
-    MonitorInfo monitor_info_; // ¼à¿ØÅäÖÃĞÅÏ¢
+    MonitorInfo monitor_info_; // ç›‘æ§é…ç½®ä¿¡æ¯
 };
 
 struct SVCID_CONFIG
@@ -48,7 +48,7 @@ struct SVCID_CONFIG
 
 
 /*!
-* @brief ¿ò¼ÜÒµÎñ·şÎñÆ÷µÄÅäÖÃ
+* @brief æ¡†æ¶ä¸šåŠ¡æœåŠ¡å™¨çš„é…ç½®
 *
 * @note
 */
@@ -56,19 +56,19 @@ class Server_Config_FSM : public Server_Config_Base
 {
 
 protected:
-    //¹¹Ôìº¯Êı
+    //æ„é€ å‡½æ•°
     Server_Config_FSM();
     virtual ~Server_Config_FSM();
 
 public:
 
-    /// ¼ÓÔØzerg framwork appµÄÅäÖÃ
+    /// åŠ è½½zerg framwork appçš„é…ç½®
     virtual int read_cfgfile();
 
 protected:
 
 
-    /// Ê¹ÓÃ°ïÖú
+    /// ä½¿ç”¨å¸®åŠ©
     virtual int usage(const char *program_name);
 
 public:

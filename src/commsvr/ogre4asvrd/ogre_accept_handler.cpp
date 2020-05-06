@@ -5,7 +5,7 @@
 #include "ogre_accept_handler.h"
 
 /****************************************************************************************************
-class  OgreTCPAcceptHandler TCP Accept ´¦ÀíµÄEventHandler,
+class  OgreTCPAcceptHandler TCP Accept å¤„ç†çš„EventHandler,
 ****************************************************************************************************/
 Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
                                        ZCE_Reactor *reactor):
@@ -16,7 +16,7 @@ Ogre_TCPAccept_Hdl::Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
     ZCE_ASSERT(peer_module_info_.fp_judge_whole_frame_);
 }
 
-//×Ô¼ºÇåÀíµÄÀàĞÍ£¬Í³Ò»¹Ø±ÕÔÚhandle_close,Õâ¸öµØ·½²»ÓÃ¹Ø±Õ
+//è‡ªå·±æ¸…ç†çš„ç±»å‹ï¼Œç»Ÿä¸€å…³é—­åœ¨handle_close,è¿™ä¸ªåœ°æ–¹ä¸ç”¨å…³é—­
 Ogre_TCPAccept_Hdl::~Ogre_TCPAccept_Hdl()
 {
     peer_module_info_.close_module();
@@ -47,7 +47,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
     ZCE_LOG(RS_INFO, "Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
-    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
+    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
 
@@ -57,7 +57,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
 
     ret = peer_acceptor_.open(&peer_module_info_.peer_info_.peer_socketin_);
 
-    //Èç¹û²»ÄÜBindÏàÓ¦µÄ¶Ë¿Ú
+    //å¦‚æœä¸èƒ½Bindç›¸åº”çš„ç«¯å£
     if (ret != 0)
     {
         int last_err = zce::last_error();
@@ -75,7 +75,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
     ZCE_LOG(RS_INFO, "Get listen peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
-    //ÉèÖÃÒ»¸öSND,RCV BUFFER,
+    //è®¾ç½®ä¸€ä¸ªSND,RCV BUFFER,
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
     peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
 
@@ -84,7 +84,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     ZCE_LOG(RS_INFO, "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
 
 #ifndef WIN32
-    //±ÜÃâDELAY·¢ËÍÕâÖÖÇé¿ö
+    //é¿å…DELAYå‘é€è¿™ç§æƒ…å†µ
     int NODELAY = 1;
     opvallen = sizeof(int);
     peer_acceptor_.setsockopt(SOL_TCP, TCP_NODELAY, reinterpret_cast<void *>(&NODELAY), opvallen);
@@ -108,13 +108,13 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
     int ret = 0;
     ret = peer_acceptor_.accept(sockstream, &remoteaddress);
 
-    //Èç¹û³öÏÖ´íÎó,ÈçºÎ´¦Àí? return -1?
+    //å¦‚æœå‡ºç°é”™è¯¯,å¦‚ä½•å¤„ç†? return -1?
     if (ret != 0)
     {
 
         sockstream.close();
 
-        //¼ÇÂ¼´íÎó
+        //è®°å½•é”™è¯¯
         int accept_error =  zce::last_error();
         ZCE_LOG(RS_ERROR, "Accept [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
                 remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
@@ -122,20 +122,20 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
                 accept_error,
                 strerror(accept_error));
 
-        //Èç¹ûÊÇÕâĞ©´íÎó¼ÌĞø¡£
+        //å¦‚æœæ˜¯è¿™äº›é”™è¯¯ç»§ç»­ã€‚
         if ( accept_error == EWOULDBLOCK || accept_error == EINVAL
              || accept_error == ECONNABORTED || accept_error == EPROTOTYPE )
         {
             return 0;
         }
 
-        //Õâ¶ùÓ¦¸ÃÍË³ö½ø³Ì
+        //è¿™å„¿åº”è¯¥é€€å‡ºè¿›ç¨‹
         //return -1;
         return 0;
 
     }
 
-    //Èç¹ûÔÊĞíµÄÁ¬½ÓµÄ·şÎñÆ÷µØÖ·ÖĞ¼äÃ»ÓĞ.»òÕßÔÚ¾Ü¾øµÄ·şÎñÁĞ±íÖĞ... kill
+    //å¦‚æœå…è®¸çš„è¿æ¥çš„æœåŠ¡å™¨åœ°å€ä¸­é—´æ²¡æœ‰.æˆ–è€…åœ¨æ‹’ç»çš„æœåŠ¡åˆ—è¡¨ä¸­... kill
     ret =  ip_restrict_->check_ip_restrict(remoteaddress) ;
 
     if (ret != 0)
@@ -174,7 +174,7 @@ int Ogre_TCPAccept_Hdl::handle_close ()
         peer_acceptor_.close ();
     }
 
-    //É¾³ı×Ô¼º
+    //åˆ é™¤è‡ªå·±
     delete this;
 
     return 0;

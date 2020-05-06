@@ -13,7 +13,7 @@ static const unsigned char BASE64_ENC_MAP[64] =
     '8', '9', '+', '/'
 };
 
-//¶ÔÒ»¸öÄÚ´æ¿é½øĞĞBASE64±àÂë£¬
+//å¯¹ä¸€ä¸ªå†…å­˜å—è¿›è¡ŒBASE64ç¼–ç ï¼Œ
 int zce::base64_encode(const unsigned char *in,
                        size_t in_len,
                        unsigned char *out,
@@ -24,7 +24,7 @@ int zce::base64_encode(const unsigned char *in,
 
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
 
-    //Èç¹ûÊäÈëµÄ¿Õ¼ä²»¹»£¬·µ»Ø´íÎó£¬Í¬Ê±¸æËßÄãĞèÒªµÄ³¤¶È
+    //å¦‚æœè¾“å…¥çš„ç©ºé—´ä¸å¤Ÿï¼Œè¿”å›é”™è¯¯ï¼ŒåŒæ—¶å‘Šè¯‰ä½ éœ€è¦çš„é•¿åº¦
     size_t output_len = 4 * ((in_len + 2) / 3) ;
     if (*out_len < output_len + 1)
     {
@@ -43,7 +43,7 @@ int zce::base64_encode(const unsigned char *in,
         *p++ = BASE64_ENC_MAP[in[2] & 0x3F];
         in += 3;
     }
-    //²¹=
+    //è¡¥=
     if (i < in_len)
     {
         unsigned a = in[0];
@@ -87,7 +87,7 @@ static const unsigned char BASE64_DECODE_MAP[256] =
     255, 255, 255, 255
 };
 
-//¶ÔÒ»¸öÄÚ´æ¿é½øĞĞbase64µÄ½âÂë
+//å¯¹ä¸€ä¸ªå†…å­˜å—è¿›è¡Œbase64çš„è§£ç 
 int zce::base64_decode(const unsigned char *in,
                        size_t in_len,
                        unsigned char *out,
@@ -160,7 +160,7 @@ static const char BASE16_ENC_LOWER_MAP[] = "0123456789abcdef";
 //
 static const char BASE16_ENC_UPPER_MAP[] = "0123456789ABCDEF";
 
-//BASE16µÄ±àÂë
+//BASE16çš„ç¼–ç 
 int zce::base16_encode(const unsigned char *in,
                        size_t in_len,
                        unsigned char *out,
@@ -190,7 +190,7 @@ int zce::base16_encode(const unsigned char *in,
     return 0;
 }
 
-//BASE64µÄ½âÂë
+//BASE64çš„è§£ç 
 int zce::base16_decode(const unsigned char *in,
                        size_t in_len,
                        unsigned char *out,

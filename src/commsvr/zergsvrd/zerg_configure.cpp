@@ -43,7 +43,7 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
 }
 
 
-//¸ù¾İSvrInfoĞÅÏ¢²éÑ¯IPÅäÖÃĞÅÏ¢
+//æ ¹æ®SvrInfoä¿¡æ¯æŸ¥è¯¢IPé…ç½®ä¿¡æ¯
 int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
                                       SERVICES_INFO &svc_info) const
 {
@@ -62,7 +62,7 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
     return 0;
 }
 
-//¼ì²éÊÇ·ñÓµÓĞÏàÓ¦µÄServices Info
+//æ£€æŸ¥æ˜¯å¦æ‹¥æœ‰ç›¸åº”çš„Services Info
 bool SERVICES_INFO_TABLE::hash_svcinfo(const SERVICES_ID &svrinfo) const
 {
     SERVICES_INFO svc_ip_info;
@@ -77,7 +77,7 @@ bool SERVICES_INFO_TABLE::hash_svcinfo(const SERVICES_ID &svrinfo) const
     return true;
 }
 
-//ÉèÖÃÅäÖÃĞÅÏ¢
+//è®¾ç½®é…ç½®ä¿¡æ¯
 int SERVICES_INFO_TABLE::add_svcinfo(const SERVICES_INFO &svc_info)
 {
 
@@ -111,7 +111,7 @@ Zerg_Server_Config::~Zerg_Server_Config()
 {
 }
 
-//¸ù¾İSVCINFOµÃµ½IPµØÖ·ĞÅÏ¢
+//æ ¹æ®SVCINFOå¾—åˆ°IPåœ°å€ä¿¡æ¯
 int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
                                              SERVICES_INFO &svc_info) const
 {
@@ -125,7 +125,7 @@ int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
         return ret;
     }
 
-    //´òÓ¡Ò»ÏÂ
+    //æ‰“å°ä¸€ä¸‹
     ZCE_LOG(RS_INFO, "[zergsvr] Svc id [%u|%u] ipaddress info [%s].",
             svc_id.services_type_,
             svc_id.services_id_,
@@ -145,7 +145,7 @@ int Zerg_Server_Config::read_cfgfile()
         return ret;
     }
 
-    // Î´Ö¸¶¨Í¨Ñ¶·şÎñÆ÷ÅäÖÃ
+    // æœªæŒ‡å®šé€šè®¯æœåŠ¡å™¨é…ç½®
     zerg_cfg_file_ = app_run_dir_ + "/cfg/zergsvrd.cfg";
 
     ZCE_Conf_PropertyTree pt_tree;
@@ -189,7 +189,7 @@ int Zerg_Server_Config::read_cfgfile()
 }
 
 
-//´ÓÅäÖÃÖĞ¶ÁÈ¡ZERGµÄÅäÖÃ
+//ä»é…ç½®ä¸­è¯»å–ZERGçš„é…ç½®
 int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
@@ -199,7 +199,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     const size_t MIN_SEND_DEQUE_SIZE = 4;
     const size_t MAX_SEND_DEQUE_SIZE = 512;
 
-    //×î´óAccept ÊıÁ¿
+    //æœ€å¤§Accept æ•°é‡
     ret = conf_tree->path_get_leaf("ZERG_CFG", "MAX_ACCEPT_SVR",
                                    zerg_cfg_data_.max_accept_svr_);
     if (0 != ret || zerg_cfg_data_.max_accept_svr_ < 32)
@@ -208,7 +208,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //AcceptºÍconect¶Ë¿ÚµÄ·¢ËÍ¶ÓÁĞ³¤¶È
+    //Acceptå’Œconectç«¯å£çš„å‘é€é˜Ÿåˆ—é•¿åº¦
     ret = conf_tree->path_get_leaf("ZERG_CFG", "ACPT_SEND_DEQUE_SIZE",
                                    zerg_cfg_data_.acpt_send_deque_size_);
     if (0 != ret
@@ -228,7 +228,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //±£ÏÕ
+    //ä¿é™©
     ret = conf_tree->path_get_leaf("ZERG_CFG", "ZERG_INSURANCE",
                                    zerg_cfg_data_.zerg_insurance_);
     if (0 != ret)
@@ -251,7 +251,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.accept_backlog_ = ZCE_DEFAULT_BACKLOG;
     }
 
-    //¸÷ÖÖ³¬Ê±´¦ÀíµÄÊ±¼ä
+    //å„ç§è¶…æ—¶å¤„ç†çš„æ—¶é—´
     ret = conf_tree->path_get_leaf("ZERG_CFG", "ACCEPTED_TIMEOUT",
                                    zerg_cfg_data_.accepted_timeout_);
     if (0 != ret)
@@ -268,7 +268,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //ÔÊĞíºÍ¾Ü¾øIP
+    //å…è®¸å’Œæ‹’ç»IP
     ret = conf_tree->path_get_leaf("ZERG_CFG", "REJECT_IP",
                                    zerg_cfg_data_.reject_ip_);
     if (0 != ret)
@@ -285,7 +285,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //¼à¿ØÃüÁî
+    //ç›‘æ§å‘½ä»¤
     ret = conf_tree->path_get_leaf("ZERG_CFG", "MONITOR_CMD_LIST",
                                    temp_value);
     if (0 != ret)
@@ -306,7 +306,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //´íÎóÖØÊÔ´ÎÊı
+    //é”™è¯¯é‡è¯•æ¬¡æ•°
     ret = conf_tree->path_get_leaf("ZERG_CFG", "RETRY_ERROR",
                                    zerg_cfg_data_.retry_error_);
     if (0 != ret || zerg_cfg_data_.retry_error_ > 5)
@@ -315,7 +315,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //BIND SVCID ¶ÁÈ¡ÅäÖÃ
+    //BIND SVCID è¯»å–é…ç½®
     ret = conf_tree->path_get_leaf("SLAVE_SVCID", "SLAVE_SVC_NUM",
                                    zerg_cfg_data_.bind_svcid_num_);
     if (0 != ret || zerg_cfg_data_.bind_svcid_num_ > ZERG_CONFIG_DATA::MAX_SLAVE_SERVICES_ID)
@@ -324,11 +324,11 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //µÚ0¸öÎ»ÖÃÊÇ¸øself_svc_id_ Ö÷IDµÄ
+    //ç¬¬0ä¸ªä½ç½®æ˜¯ç»™self_svc_id_ ä¸»IDçš„
     zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_id_;
     zerg_cfg_data_.bind_svcid_num_ += 1;
 
-    //×¢ÒâÊÇ´Ó1¿ªÊ¼,×¢Òâbind_svcid_num_ÉÏÃæÒÑ¾­+1ÁË£¬
+    //æ³¨æ„æ˜¯ä»1å¼€å§‹,æ³¨æ„bind_svcid_num_ä¸Šé¢å·²ç»+1äº†ï¼Œ
     for (size_t i = 1; i < zerg_cfg_data_.bind_svcid_num_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("SLAVE_SVCID", "SLAVE_SERVICES_ID_", i, temp_value);
@@ -345,7 +345,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
 
-    //¶ÁÈ¡×Ô¶¯Á¬½ÓµÄÅäÖÃ
+    //è¯»å–è‡ªåŠ¨è¿æ¥çš„é…ç½®
     ret = conf_tree->path_get_leaf("AUTO_CONNECT", "AUTO_CONNECT_NUM",
                                    zerg_cfg_data_.auto_connect_num_);
     if (0 != ret || zerg_cfg_data_.auto_connect_num_ > ZERG_CONFIG_DATA::MAX_AUTO_CONNECT_SVRS)
@@ -367,7 +367,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         }
     }
 
-    //ÉèÖÃreactorµÄ¾ä±úÊıÁ¿
+    //è®¾ç½®reactorçš„å¥æŸ„æ•°é‡
     max_reactor_hdl_num_ = zerg_cfg_data_.max_accept_svr_ + zerg_cfg_data_.auto_connect_num_ + 64;
     max_reactor_hdl_num_ = max_reactor_hdl_num_ > 64 ? max_reactor_hdl_num_ : 1024;
 
@@ -375,7 +375,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 }
 
 
-//µÃµ½Ä³¸öÅäÖÃÎÄ¼şµÄÅäÖÃĞÅÏ¢,ÅäÖÃÎÄ¼şÆäÖĞÓĞ[SERVICES_TABLE]×Ö¶Î
+//å¾—åˆ°æŸä¸ªé…ç½®æ–‡ä»¶çš„é…ç½®ä¿¡æ¯,é…ç½®æ–‡ä»¶å…¶ä¸­æœ‰[SERVICES_TABLE]å­—æ®µ
 int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
@@ -418,7 +418,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
     return 0;
 }
 
-//DumpÅäÖÃµÄÊı¾İĞÅÏ¢
+//Dumpé…ç½®çš„æ•°æ®ä¿¡æ¯
 void Zerg_Server_Config::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
 {
     Server_Config_Base::dump_cfg_info(out_lvl);

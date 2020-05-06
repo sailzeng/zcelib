@@ -22,7 +22,7 @@ int add3_fun(int a, int b, int c)
 }
 
 
-//²âÊÔÁ½±ßº¯ÊıµÄ»¥Ïàµ÷ÓÃ
+//æµ‹è¯•ä¸¤è¾¹å‡½æ•°çš„äº’ç›¸è°ƒç”¨
 int test_lua_script1(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
@@ -55,7 +55,7 @@ int g_b = 2222;
 
 int g_array[20];
 
-//²âÊÔÈ«¾Ö±äÁ¿ÔÚÁ½±ßµÄÊ¹ÓÃ
+//æµ‹è¯•å…¨å±€å˜é‡åœ¨ä¸¤è¾¹çš„ä½¿ç”¨
 int test_lua_script2(int, char *[])
 {
 
@@ -67,13 +67,13 @@ int test_lua_script2(int, char *[])
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
-    //°ó¶¨ÒıÓÃºÍÖ¸ÕëÖ®Ç°£¬Òª×¢²áÕâ¸öÀà
+    //ç»‘å®šå¼•ç”¨å’ŒæŒ‡é’ˆä¹‹å‰ï¼Œè¦æ³¨å†Œè¿™ä¸ªç±»
 
     lua_tie.set_gvar("g_b_var", g_b);
-    //°ó¶¨Ö¸Õë
+    //ç»‘å®šæŒ‡é’ˆ
     int *g_b_ptr1 = &g_b;
     lua_tie.set_gvar("g_b_ptr", g_b_ptr1);
-    //ÖØĞÂµÃµ½Ö¸Õë£¬
+    //é‡æ–°å¾—åˆ°æŒ‡é’ˆï¼Œ
     int *g_b_ptr2 = lua_tie.get_gvar<int *>("g_b_ptr");
 
 
@@ -201,7 +201,7 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar("ta_ptr", ta_ptr);
     lua_tie.set_gvar<T3A &>("ta_ref", ta_ref);
 
-    //×¢²áT3B
+    //æ³¨å†ŒT3B
     lua_tie.reg_class<T3B>("T3B",false)
         .construct(tie::constructor<T3B,int,int,int>::invoke)
         .inherit<T3A>()
@@ -225,7 +225,7 @@ int test_lua_script3(int, char *[])
     lua_tie.set_gvar("tb_ptr_2", tb_ptr_2);
     lua_tie.set_gvar<T3B &>("tb_ref", tb_ref);
 
-    //×¢²áT3C
+    //æ³¨å†ŒT3C
     lua_tie.reg_class<T3C>("T3C",false)
         .construct(tie::constructor<T3C,int,std::string,double>::invoke)
         .mem_var("c1_",&T3C::c1_)
@@ -285,11 +285,11 @@ int test_lua_script4(int, char *[])
     lua_tie.push("333333");
     lua_tie.enum_stack();
 
-    // sample5.lua ÆÄÀÏÀ» ·Îµå/½ÇÇàÇÑ´Ù.
+    // sample5.lua é¢‡è€é˜‘ è‚ºé›/è§’é’èŒ„ä¿ƒ.
     lua_tie.do_file(strcat(test_lua_file,"lua_test_04.lua"));
 
     // test_error()
-    // test_error() »áµ÷ÓÃµ½ test_error_3()
+    // test_error() ä¼šè°ƒç”¨åˆ° test_error_3()
     printf("%s\n", "-------------------------- calling test_error()");
     int abc = 0;
     lua_tie.call_luafun_0("test_error", abc);
@@ -311,7 +311,7 @@ enum TO_LUA_ENUM
     ENUM_0003,
     ENUM_0004,
 };
-//Õ¹ÏÖtableµÄ¼¸ÖÖÊ¹ÓÃ·½Ê½
+//å±•ç°tableçš„å‡ ç§ä½¿ç”¨æ–¹å¼
 int test_lua_script5(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
@@ -349,7 +349,7 @@ int test_lua_script5(int, char *[])
 
     lua_tie.to_luatable("map_b", map_b.begin(), map_b.end());
 
-    //ÇáÇáËÉËÉÍê³É°ÉÃ¶¾ÙÖµ×¢²á¸øluaµÄÈÎÎñ
+    //è½»è½»æ¾æ¾å®Œæˆå§æšä¸¾å€¼æ³¨å†Œç»™luaçš„ä»»åŠ¡
     lua_tie.new_table("tolua_enum",
                       std::make_pair("ENUM_0001", ENUM_0001),
                       std::make_pair("ENUM_0002", ENUM_0002),
@@ -417,17 +417,17 @@ public:
 
 };
 
-//Õâ¸ö²âÊÔÊÇºÍtinkerÀàËÆµÄ£¬µ«×ĞÏ¸Äã»á·¢ÏÖÎÒµÄÊµÏÖ±Ètinker¸ßÃ÷ÁËºÜ¶à£¡£¡£¡£¡
-//ÎÒ²»ĞèÒªÄãµÄº¯ÊıĞ´³ÉÌØ¶¨µÄ·½Ê½¡£
+//è¿™ä¸ªæµ‹è¯•æ˜¯å’Œtinkerç±»ä¼¼çš„ï¼Œä½†ä»”ç»†ä½ ä¼šå‘ç°æˆ‘çš„å®ç°æ¯”tinkeré«˜æ˜äº†å¾ˆå¤šï¼ï¼ï¼ï¼
+//æˆ‘ä¸éœ€è¦ä½ çš„å‡½æ•°å†™æˆç‰¹å®šçš„æ–¹å¼ã€‚
 
-//²âÊÔLua Thread Ğ­³Ì
+//æµ‹è¯•Lua Thread åç¨‹
 int test_lua_script6(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
 
-    //Çë×¢ÒâÕâ¸öµØ·½£¬×¢²áº¯ÊıÓÃµÄÊÇreg_yeild_gfun£¬ÕâÑùthread_funcÖ´ĞĞ
-    //Íê±Ï»á£¬µ÷ÓÃlua_yield
+    //è¯·æ³¨æ„è¿™ä¸ªåœ°æ–¹ï¼Œæ³¨å†Œå‡½æ•°ç”¨çš„æ˜¯reg_yeild_gfunï¼Œè¿™æ ·thread_funcæ‰§è¡Œ
+    //å®Œæ¯•ä¼šï¼Œè°ƒç”¨lua_yield
     lua_tie.reg_yeild_gfunc("thread_func", &thread_func);
     lua_tie.reg_yeild_gfunc("thread_func2", &thread_func2);
 
@@ -505,7 +505,7 @@ int test_lua_script6(int, char *[])
     return 0;
 }
 
-//±íÊö²»Í¬µÄ¼¯³É·½Ê½£¬ÒÔ¼°²âÊÔĞÔÄÜÊı¾İ£¬
+//è¡¨è¿°ä¸åŒçš„é›†æˆæ–¹å¼ï¼Œä»¥åŠæµ‹è¯•æ€§èƒ½æ•°æ®ï¼Œ
 
 struct Woo_Struct
 {
@@ -582,7 +582,7 @@ int test_lua_script7(int, char *[])
            woo_result.e_,
            woo_result.f_);
 
-    //×öÒ»ÏÂĞÔÄÜ²âÊÔ¡£
+    //åšä¸€ä¸‹æ€§èƒ½æµ‹è¯•ã€‚
     const uint32_t TEST_SEED = 120825;
     zce::random_mt11213b  mt11231b_gen(TEST_SEED);
 
@@ -676,14 +676,14 @@ int test_lua_script8(int, char *[])
            obj_result.e_,
            obj_result.f_);
 
-    //×öÒ»ÏÂĞÔÄÜ²âÊÔ¡£
+    //åšä¸€ä¸‹æ€§èƒ½æµ‹è¯•ã€‚
     const uint32_t TEST_SEED = 120825;
     zce::random_mt11213b  mt11231b_gen(TEST_SEED);
 
     ZCE_Progress_Timer timer;
 
-    //Ê¹ÓÃÖ¸Õë¶ÔÓ¦Êı¾İ£¬ËÙ¶È±ÈÍêÈ«ÓÃLua Õ»½»»¥¿ì£¬µ«Õâ¸ö²âÊÔ£¬Êı¾İÃ»ÓĞ¸ú»»¹ı£¬
-    //Ò»Ö±Ê¹ÓÃobj_x£¬obj_y£¬obj_result
+    //ä½¿ç”¨æŒ‡é’ˆå¯¹åº”æ•°æ®ï¼Œé€Ÿåº¦æ¯”å®Œå…¨ç”¨Lua æ ˆäº¤äº’å¿«ï¼Œä½†è¿™ä¸ªæµ‹è¯•ï¼Œæ•°æ®æ²¡æœ‰è·Ÿæ¢è¿‡ï¼Œ
+    //ä¸€ç›´ä½¿ç”¨obj_xï¼Œobj_yï¼Œobj_result
     timer.restart();
     for (size_t i = 0; i < LUA_TEST_COUNT; ++i)
     {
@@ -706,7 +706,7 @@ int test_lua_script8(int, char *[])
     timer.end();
     std::cout << " elapsed  01: " << std::setprecision(6) << timer.elapsed_sec() << std::endl;
 
-    //Èç¹ûÃ¿´ÎÊ¹ÓÃµÄÊÇ£¬¶¼¸ú»»Êı¾İ£¬Äã»á·¢ÏÖĞÔÄÜ»áÏÂ½µºÜ¶à£¬ÆäÊµÒ²ÈİÒ×Àí½â£¬°ó¶¨ÊÇÓĞnew²Ù×÷µÄ
+    //å¦‚æœæ¯æ¬¡ä½¿ç”¨çš„æ˜¯ï¼Œéƒ½è·Ÿæ¢æ•°æ®ï¼Œä½ ä¼šå‘ç°æ€§èƒ½ä¼šä¸‹é™å¾ˆå¤šï¼Œå…¶å®ä¹Ÿå®¹æ˜“ç†è§£ï¼Œç»‘å®šæ˜¯æœ‰newæ“ä½œçš„
     timer.restart();
     for (size_t i = 0; i < LUA_TEST_COUNT; ++i)
     {
@@ -724,7 +724,7 @@ int test_lua_script8(int, char *[])
         obj_y.e_ = mt11231b_gen.get_uint32();
         obj_y.f_ = mt11231b_gen.get_uint32();
 
-        //Ã¿´Î¶¼ÖØĞÂ°ó¶¨£¬
+        //æ¯æ¬¡éƒ½é‡æ–°ç»‘å®šï¼Œ
         lua_tie.set_gvar("obj_x", &obj_x);
         lua_tie.set_gvar("obj_y", &obj_y);
         lua_tie.set_gvar("obj_result", &obj_result);
@@ -739,7 +739,7 @@ int test_lua_script8(int, char *[])
     return 0;
 }
 
-//°´ÕÕLua Tinker µÄÀı×Ó3¸´¿ÌµÄÒ»¸öÀı×Ó£¬ÓÃÓÚ²âÊÔOO²¿·Ö
+//æŒ‰ç…§Lua Tinker çš„ä¾‹å­3å¤åˆ»çš„ä¸€ä¸ªä¾‹å­ï¼Œç”¨äºæµ‹è¯•OOéƒ¨åˆ†
 struct T9A
 {
     T9A(int v) :
@@ -815,7 +815,7 @@ int test_lua_script9(int, char *[])
 {
     ZCE_Lua_Tie lua_tie;
     lua_tie.open(true, true);
-    //×¢²áT9B
+    //æ³¨å†ŒT9B
     lua_tie.reg_class<T9B>("T9B").
     construct(tie::constructor<T9B>::invoke).
     mem_var("t9b_val_", &T9B::t9b_val_);

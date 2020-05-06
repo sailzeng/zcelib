@@ -14,48 +14,48 @@ class dequechunk_node
 *********************************************************************************/
 
 
-//nodelen ½áµãµÄ³¤¶È,°üÀ¨sizeofnodeµÄ³¤¶È
-//ÖØÔØnewÔËËã·û,µÃµ½Ò»¸ö±ä³¤µÄÊı¾İ
-void   *dequechunk_node::operator new   (size_t, size_t nodelen)
+//nodelen ç»“ç‚¹çš„é•¿åº¦,åŒ…æ‹¬sizeofnodeçš„é•¿åº¦
+//é‡è½½newè¿ç®—ç¬¦,å¾—åˆ°ä¸€ä¸ªå˜é•¿çš„æ•°æ®
+void* dequechunk_node::operator new   (size_t,size_t nodelen)
 {
     //assert(nodelen > sizeof (dequechunk_node));
-    if (nodelen < sizeof (dequechunk_node))
+    if (nodelen < sizeof(dequechunk_node))
     {
-        nodelen = sizeof (dequechunk_node);
+        nodelen = sizeof(dequechunk_node);
     }
 
     //
-    void *ptr = ::new unsigned char [nodelen ];
+    void* ptr = ::new unsigned char[nodelen];
 
 #ifdef  DEBUG
-    //¼ì²éÖ¡µÄÄÄ¸öµØ·½³öÏÖÎÊÌâ£¬»¹ÊÇÕâÑùºÃÒ»µã
-    memset(ptr, 0, nodelen);
+    //æ£€æŸ¥å¸§çš„å“ªä¸ªåœ°æ–¹å‡ºç°é—®é¢˜ï¼Œè¿˜æ˜¯è¿™æ ·å¥½ä¸€ç‚¹
+    memset(ptr,0,nodelen);
 #endif
     //
-    ((dequechunk_node *)ptr)->size_of_node_ = (unsigned int)nodelen;
+    ((dequechunk_node*)ptr)->size_of_node_ = (unsigned int)nodelen;
 
     return ptr;
 };
 
 
-void dequechunk_node::operator delete (void *ptrframe)
+void dequechunk_node::operator delete (void* ptrframe)
 {
-    unsigned char *ptr = (unsigned char *)ptrframe;
+    unsigned char* ptr = (unsigned char*)ptrframe;
     delete[] ptr;
 }
 
 /*********************************************************************************
 class shm_dequechunk
 *********************************************************************************/
-//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı¶¼²»ÊÇ´òËã¸øÄãÊ¹ÓÃµÄ,
-shm_dequechunk::shm_dequechunk():
+//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°éƒ½ä¸æ˜¯æ‰“ç®—ç»™ä½ ä½¿ç”¨çš„,
+deque_chunk::deque_chunk():
     dequechunk_head_(NULL),
     dequechunk_database_(NULL),
     line_wrap_nodeptr_(NULL)
 {
 }
 
-shm_dequechunk::~shm_dequechunk()
+deque_chunk::~deque_chunk()
 {
     if (line_wrap_nodeptr_)
     {
@@ -65,34 +65,34 @@ shm_dequechunk::~shm_dequechunk()
 }
 
 
-size_t shm_dequechunk::getallocsize(const size_t szdeque)
+size_t deque_chunk::getallocsize(const size_t szdeque)
 {
-    return  sizeof(_shm_dequechunk_head) + szdeque + JUDGE_FULL_INTERVAL ;
+    return  sizeof(_dequechunk_head) + szdeque + JUDGE_FULL_INTERVAL;
 }
 
 
-//¸ù¾İ²ÎÊı³õÊ¼»¯
-shm_dequechunk *shm_dequechunk::initialize(size_t size_of_deque,
-                                           size_t max_len_node,
-                                           char *pmmap,
-                                           bool if_restore )
+//æ ¹æ®å‚æ•°åˆå§‹åŒ–
+deque_chunk* deque_chunk::initialize(size_t size_of_deque,
+                                     size_t max_len_node,
+                                     char* pmmap,
+                                     bool if_restore)
 {
-    //±ØĞë´óÓÚ¼ä¸ô³¤¶È
+    //å¿…é¡»å¤§äºé—´éš”é•¿åº¦
     if (size_of_deque <= sizeof(size_t) + 16)
     {
         return NULL;
     }
 
     //
-    _shm_dequechunk_head *dequechunk_head = reinterpret_cast<_shm_dequechunk_head *>(pmmap);
+    _dequechunk_head* dequechunk_head = reinterpret_cast<_dequechunk_head*>(pmmap);
 
-    //Èç¹ûÊÇ»Ö¸´£¬¼ì²é¼¸¸öÖµÊÇ·ñÏàµÈ
+    //å¦‚æœæ˜¯æ¢å¤ï¼Œæ£€æŸ¥å‡ ä¸ªå€¼æ˜¯å¦ç›¸ç­‰
     if (if_restore == true)
     {
-        //¼á³Ö¹Ø¼üÊı¾İÊÇ·ñÒ»ÖÂ
+        //åšæŒå…³é”®æ•°æ®æ˜¯å¦ä¸€è‡´
         if (dequechunk_head->size_of_mmap_ != getallocsize(size_of_deque)
             || dequechunk_head->size_of_deque_ != size_of_deque + JUDGE_FULL_INTERVAL
-            || dequechunk_head->max_len_node_ != max_len_node )
+            || dequechunk_head->max_len_node_ != max_len_node)
         {
             return NULL;
         }
@@ -103,15 +103,15 @@ shm_dequechunk *shm_dequechunk::initialize(size_t size_of_deque,
     dequechunk_head->size_of_deque_ = size_of_deque + JUDGE_FULL_INTERVAL;
     dequechunk_head->max_len_node_ = max_len_node;
 
-    shm_dequechunk *dequechunk  = new shm_dequechunk();
+    deque_chunk* dequechunk = new deque_chunk();
 
-    //µÃµ½¿Õ¼ä´óĞ¡
+    //å¾—åˆ°ç©ºé—´å¤§å°
     dequechunk->smem_base_ = pmmap;
 
     //
     dequechunk->dequechunk_head_ = dequechunk_head;
     //
-    dequechunk->dequechunk_database_ = pmmap + sizeof(_shm_dequechunk_head);
+    dequechunk->dequechunk_database_ = pmmap + sizeof(_dequechunk_head);
 
     if (if_restore == false)
     {
@@ -121,59 +121,59 @@ shm_dequechunk *shm_dequechunk::initialize(size_t size_of_deque,
     return dequechunk;
 }
 
-//ÇåÀí³ÉÃ»ÓĞÊ¹ÓÃ¹ıµÄ×´Ì¬
-void shm_dequechunk::clear()
+//æ¸…ç†æˆæ²¡æœ‰ä½¿ç”¨è¿‡çš„çŠ¶æ€
+void deque_chunk::clear()
 {
     //
     dequechunk_head_->deque_begin_ = 0;
-    dequechunk_head_->deque_end_ = 0 ;
-    memset(dequechunk_database_, 0, dequechunk_head_->size_of_deque_);
+    dequechunk_head_->deque_end_ = 0;
+    memset(dequechunk_database_,0,dequechunk_head_->size_of_deque_);
 }
 
 
-//µÃµ½Á½¸ö¹Ø¼üÖ¸ÕëµÄ¿ìÕÕ
-//Õâ¸ö²Ù×÷¿ÉÒÔ²»ÓÃ¼ÓËø»ùÓÚÒ»µã,32Î»²Ù×÷ÏµÍ³ÖĞµÄ32Î»ÕûÊı²Ù×÷ÊÇÔ­×Ó²Ù×÷
-void shm_dequechunk::snap_getpoint(size_t &pstart, size_t &pend)
+//å¾—åˆ°ä¸¤ä¸ªå…³é”®æŒ‡é’ˆçš„å¿«ç…§
+//è¿™ä¸ªæ“ä½œå¯ä»¥ä¸ç”¨åŠ é”åŸºäºä¸€ç‚¹,32ä½æ“ä½œç³»ç»Ÿä¸­çš„32ä½æ•´æ•°æ“ä½œæ˜¯åŸå­æ“ä½œ
+void deque_chunk::snap_getpoint(size_t& pstart,size_t& pend)
 {
     pstart = dequechunk_head_->deque_begin_;
-    pend   = dequechunk_head_->deque_end_;
+    pend = dequechunk_head_->deque_end_;
     return;
 }
 
 
 
-//½«Ò»¸öNODE·ÅÈëÎ²²¿
-bool shm_dequechunk::push_end(const dequechunk_node *node)
+//å°†ä¸€ä¸ªNODEæ”¾å…¥å°¾éƒ¨
+bool deque_chunk::push_end(const dequechunk_node* node)
 {
-    //´ÖÂÔµÄ¼ì²é,Èç¹û³¤¶È²»ºÏ¸ñ,·µ»Ø²»³É¹¦
+    //ç²—ç•¥çš„æ£€æŸ¥,å¦‚æœé•¿åº¦ä¸åˆæ ¼,è¿”å›ä¸æˆåŠŸ
     if (node->size_of_node_ < dequechunk_node::MIN_SIZE_DEQUE_CHUNK_NODE ||
-        node->size_of_node_ > dequechunk_head_->max_len_node_ )
+        node->size_of_node_ > dequechunk_head_->max_len_node_)
     {
         return false;
     }
 
-    //¼ì²é¶ÓÁĞµÄ¿Õ¼äÊÇ·ñ¹»ÓÃ
-    if (free_size() < node->size_of_node_ )
+    //æ£€æŸ¥é˜Ÿåˆ—çš„ç©ºé—´æ˜¯å¦å¤Ÿç”¨
+    if (free_size() < node->size_of_node_)
     {
         return false;
     }
 
-    //Èç¹û¿Õ¼ä×ã¹»
-    char *pend = dequechunk_database_ + dequechunk_head_->deque_end_;
+    //å¦‚æœç©ºé—´è¶³å¤Ÿ
+    char* pend = dequechunk_database_ + dequechunk_head_->deque_end_;
 
-    //Èç¹ûÈÆÈ¦
+    //å¦‚æœç»•åœˆ
     if (pend + node->size_of_node_ >= dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
-        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_end_ ;
+        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_end_;
         size_t second = node->size_of_node_ - first;
-        memcpy(pend, reinterpret_cast<const char *>(node), first);
-        memcpy(dequechunk_database_, reinterpret_cast<const char *>(node) + first, second);
+        memcpy(pend,reinterpret_cast<const char*>(node),first);
+        memcpy(dequechunk_database_,reinterpret_cast<const char*>(node) + first,second);
         dequechunk_head_->deque_end_ = second;
     }
-    //Èç¹û¿ÉÒÔÒ»´Î¿½±´Íê³É
+    //å¦‚æœå¯ä»¥ä¸€æ¬¡æ‹·è´å®Œæˆ
     else
     {
-        memcpy(pend, reinterpret_cast<const char *>(node), node->size_of_node_);
+        memcpy(pend,reinterpret_cast<const char*>(node),node->size_of_node_);
         dequechunk_head_->deque_end_ += node->size_of_node_;
     }
 
@@ -182,38 +182,38 @@ bool shm_dequechunk::push_end(const dequechunk_node *node)
 
 
 
-//½«¶ÓÁĞÒ»¸öNODE¿½±´È¡³ö,
-//Èç¹û»º³å×Ô¼º·ÖÅä,×îºÃ×¼±¸Ò»¸ö¹»ÓÃµÄ»º³åÊ¹ÓÃ
-//·µ»ØµÄ½ÚµãÇø,ÒªÇónode!=NULL,ÒÑ¾­·ÖÅäºÃÁËÊı¾İÇø
-bool shm_dequechunk::pop_front(dequechunk_node *const node)
+//å°†é˜Ÿåˆ—ä¸€ä¸ªNODEæ‹·è´å–å‡º,
+//å¦‚æœç¼“å†²è‡ªå·±åˆ†é…,æœ€å¥½å‡†å¤‡ä¸€ä¸ªå¤Ÿç”¨çš„ç¼“å†²ä½¿ç”¨
+//è¿”å›çš„èŠ‚ç‚¹åŒº,è¦æ±‚node!=NULL,å·²ç»åˆ†é…å¥½äº†æ•°æ®åŒº
+bool deque_chunk::pop_front(dequechunk_node* const node)
 {
     assert(node != NULL);
 
-    //¼ì²éÊÇ·ñÎª¿Õ
+    //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     if (empty() == true)
     {
         return false;
     }
 
-    char *pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
+    char* pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
     size_t tmplen = get_front_len();
 
     assert(tmplen > 0);
     assert(tmplen < 64 * 1024);
     assert(dequechunk_head_->deque_begin_ <= dequechunk_head_->size_of_deque_);
 
-    //Èç¹û±»·ÖÎª2½Ø
+    //å¦‚æœè¢«åˆ†ä¸º2æˆª
     if (pbegin + tmplen > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
-        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_ ;
+        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
         size_t second = tmplen - first;
-        memcpy(reinterpret_cast<char *>(node), pbegin, first);
-        memcpy(reinterpret_cast<char *>(node) + first, dequechunk_database_, second);
-        dequechunk_head_->deque_begin_ = second ;
+        memcpy(reinterpret_cast<char*>(node),pbegin,first);
+        memcpy(reinterpret_cast<char*>(node) + first,dequechunk_database_,second);
+        dequechunk_head_->deque_begin_ = second;
     }
     else
     {
-        memcpy(reinterpret_cast<char *>(node), pbegin, tmplen);
+        memcpy(reinterpret_cast<char*>(node),pbegin,tmplen);
         dequechunk_head_->deque_begin_ += node->size_of_node_;
         assert(dequechunk_head_->deque_begin_ <= dequechunk_head_->size_of_deque_);
     }
@@ -226,12 +226,12 @@ bool shm_dequechunk::pop_front(dequechunk_node *const node)
 
 
 
-//½«¶ÓÁĞÒ»¸öNODE´Ó¶ÓÊ×²¿È¡³ö,ÎÒ¸ù¾İnodeµÄ³¤¶È°ïÄã·ÖÅä¿Õ¼ä,ÒªÇónew_node=NULL,±íÊ¾ÄãÒªº¯Êı°ïÄã·ÖÅä»º³å,
-bool shm_dequechunk::pop_front_new(dequechunk_node *&new_node)
+//å°†é˜Ÿåˆ—ä¸€ä¸ªNODEä»é˜Ÿé¦–éƒ¨å–å‡º,æˆ‘æ ¹æ®nodeçš„é•¿åº¦å¸®ä½ åˆ†é…ç©ºé—´,è¦æ±‚new_node=NULL,è¡¨ç¤ºä½ è¦å‡½æ•°å¸®ä½ åˆ†é…ç¼“å†²,
+bool deque_chunk::pop_front_new(dequechunk_node*& new_node)
 {
     assert(new_node == NULL);
 
-    //¼ì²éÊÇ·ñÎª¿Õ
+    //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     if (empty() == true)
     {
         return false;
@@ -240,50 +240,50 @@ bool shm_dequechunk::pop_front_new(dequechunk_node *&new_node)
     size_t tmplen = get_front_len();
     new_node = new (tmplen) dequechunk_node;
 
-    //ÕâÑùĞ´»áÓĞÒ»Ğ©ÖØ¸´µ÷ÓÃ£¬µ«ÊÇÎÒ¾õµÃÕâ¸öµØ·½ĞÔÄÜ²»»áÊÇÎÊÌâ¡£
+    //è¿™æ ·å†™ä¼šæœ‰ä¸€äº›é‡å¤è°ƒç”¨ï¼Œä½†æ˜¯æˆ‘è§‰å¾—è¿™ä¸ªåœ°æ–¹æ€§èƒ½ä¸ä¼šæ˜¯é—®é¢˜ã€‚
     return pop_front(new_node);
 }
 
 
 
-//½«¶ÓÁĞÒ»¸öNODE¶ÁÈ¡¸´ÖÆ³öÀ´,µ«ÊÇ²»ÊÇÈ¡³ö£¬
-bool shm_dequechunk::read_front(dequechunk_node *const node)
+//å°†é˜Ÿåˆ—ä¸€ä¸ªNODEè¯»å–å¤åˆ¶å‡ºæ¥,ä½†æ˜¯ä¸æ˜¯å–å‡ºï¼Œ
+bool deque_chunk::read_front(dequechunk_node* const node)
 {
     assert(node != NULL);
 
-    //¼ì²éÊÇ·ñÎª¿Õ
+    //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     if (empty() == true)
     {
         return false;
     }
 
-    //Èç¹û¿Õ¼ä×ã¹»
-    char *pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
+    //å¦‚æœç©ºé—´è¶³å¤Ÿ
+    char* pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
     size_t tmplen = get_front_len();
 
-    //Èç¹û±»·ÖÎª2½Ø
+    //å¦‚æœè¢«åˆ†ä¸º2æˆª
     if (pbegin + tmplen > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
-        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_ ;
+        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
         size_t second = tmplen - first;
-        memcpy(reinterpret_cast<char *>(node), pbegin, first);
-        memcpy(reinterpret_cast<char *>(node) + first, dequechunk_database_, second);
+        memcpy(reinterpret_cast<char*>(node),pbegin,first);
+        memcpy(reinterpret_cast<char*>(node) + first,dequechunk_database_,second);
     }
     else
     {
-        memcpy(reinterpret_cast<char *>(node), pbegin, tmplen);
+        memcpy(reinterpret_cast<char*>(node),pbegin,tmplen);
     }
 
     return true;
 }
 
 
-//¶ÁÈ¡¶ÓÁĞµÄµÚÒ»¸öNODE£¬ÎÒ¸ù¾İnodeµÄ³¤¶È°ïÄã·ÖÅä¿Õ¼ä,ÒªÇónew_node=NULL,±íÊ¾ÄãÒªº¯Êı°ïÄã·ÖÅä»º³å,
-bool shm_dequechunk::read_front_new(dequechunk_node *&new_node)
+//è¯»å–é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªNODEï¼Œæˆ‘æ ¹æ®nodeçš„é•¿åº¦å¸®ä½ åˆ†é…ç©ºé—´,è¦æ±‚new_node=NULL,è¡¨ç¤ºä½ è¦å‡½æ•°å¸®ä½ åˆ†é…ç¼“å†²,
+bool deque_chunk::read_front_new(dequechunk_node*& new_node)
 {
     assert(new_node == NULL);
 
-    //¼ì²éÊÇ·ñÎª¿Õ
+    //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     if (empty() == true)
     {
         return false;
@@ -295,67 +295,67 @@ bool shm_dequechunk::read_front_new(dequechunk_node *&new_node)
     return read_front(new_node);
 }
 
-//¶ÁÈ¡¶ÓÁĞµÄµÚÒ»¸öNODEµÄÖ¸Õë£¬Èç¹ûÊÇÕÛĞĞµÄÊı¾İ»áÌØÊâ´¦Àí
-bool shm_dequechunk::read_front_ptr(const dequechunk_node *&node_ptr)
+//è¯»å–é˜Ÿåˆ—çš„ç¬¬ä¸€ä¸ªNODEçš„æŒ‡é’ˆï¼Œå¦‚æœæ˜¯æŠ˜è¡Œçš„æ•°æ®ä¼šç‰¹æ®Šå¤„ç†
+bool deque_chunk::read_front_ptr(const dequechunk_node*& node_ptr)
 {
-    //¼ì²éÊÇ·ñÎª¿Õ
+    //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     if (empty() == true)
     {
         return false;
     }
 
-    //Èç¹û¿Õ¼ä×ã¹»
-    char *pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
+    //å¦‚æœç©ºé—´è¶³å¤Ÿ
+    char* pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
     size_t tmplen = get_front_len();
 
-    //Èç¹û±»·ÖÎª2½Ø,ÕÛĞĞÁË£¬ÓÃline_wrap_nodeptr_£¬±£´æÊı¾İ£¬Ìá½»¸øÉÏ²ã£¬
+    //å¦‚æœè¢«åˆ†ä¸º2æˆª,æŠ˜è¡Œäº†ï¼Œç”¨line_wrap_nodeptr_ï¼Œä¿å­˜æ•°æ®ï¼Œæäº¤ç»™ä¸Šå±‚ï¼Œ
     if (pbegin + tmplen > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
-        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_ ;
+        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
         size_t second = tmplen - first;
 
-        //Èç¹ûline_wrap_nodeptr_Ã»ÓĞ¿Õ¼ä£¬ÏÖ·ÖÅä
+        //å¦‚æœline_wrap_nodeptr_æ²¡æœ‰ç©ºé—´ï¼Œç°åˆ†é…
         if (line_wrap_nodeptr_ == NULL)
         {
             line_wrap_nodeptr_ = new (dequechunk_head_->max_len_node_) dequechunk_node;
         }
 
-        //½«Á½½ØÊı¾İ±£´æµ½line_wrap_nodeptr_ÖĞ£¬¸øÉÏ²ãµ÷ÓÃÕßÓÃ£¬ÈÃÉÏ²ãÈÔÈ»Ê¹ÓÃÒ»¸öÁ¬ĞøµÄ¿Õ¼ä
-        memcpy(reinterpret_cast<char *>(line_wrap_nodeptr_), pbegin, first);
-        memcpy(reinterpret_cast<char *>(line_wrap_nodeptr_) + first, dequechunk_database_, second);
+        //å°†ä¸¤æˆªæ•°æ®ä¿å­˜åˆ°line_wrap_nodeptr_ä¸­ï¼Œç»™ä¸Šå±‚è°ƒç”¨è€…ç”¨ï¼Œè®©ä¸Šå±‚ä»ç„¶ä½¿ç”¨ä¸€ä¸ªè¿ç»­çš„ç©ºé—´
+        memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_),pbegin,first);
+        memcpy(reinterpret_cast<char*>(line_wrap_nodeptr_) + first,dequechunk_database_,second);
 
-        node_ptr = reinterpret_cast<const dequechunk_node *>(line_wrap_nodeptr_);
+        node_ptr = reinterpret_cast<const dequechunk_node*>(line_wrap_nodeptr_);
     }
     else
     {
-        node_ptr = reinterpret_cast<const dequechunk_node *>(pbegin);
+        node_ptr = reinterpret_cast<const dequechunk_node*>(pbegin);
     }
 
     return true;
 }
 
-//¶ªÆú¶ÓÁĞÇ°ÃæµÄµÚÒ»¸öNODE
-bool shm_dequechunk::discard_frond()
+//ä¸¢å¼ƒé˜Ÿåˆ—å‰é¢çš„ç¬¬ä¸€ä¸ªNODE
+bool deque_chunk::discard_frond()
 {
 
-    //¼ì²éÊÇ·ñÎª¿Õ
+    //æ£€æŸ¥æ˜¯å¦ä¸ºç©º
     if (empty() == true)
     {
         return false;
     }
 
-    //Èç¹û¿Õ¼ä×ã¹»
-    char *pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
+    //å¦‚æœç©ºé—´è¶³å¤Ÿ
+    char* pbegin = dequechunk_database_ + dequechunk_head_->deque_begin_;
     size_t tmplen = get_front_len();
 
-    //Èç¹ûÒªÇó°ïÊ¹ÓÃÕß·ÖÅä,ÇĞ¼ÇÊÍ·Å,
+    //å¦‚æœè¦æ±‚å¸®ä½¿ç”¨è€…åˆ†é…,åˆ‡è®°é‡Šæ”¾,
 
-    //Èç¹û±»·ÖÎª2½Ø
+    //å¦‚æœè¢«åˆ†ä¸º2æˆª
     if (pbegin + tmplen > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
-        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_ ;
+        size_t first = dequechunk_head_->size_of_deque_ - dequechunk_head_->deque_begin_;
         size_t second = tmplen - first;
-        dequechunk_head_->deque_begin_ = second ;
+        dequechunk_head_->deque_begin_ = second;
     }
     else
     {
@@ -366,54 +366,54 @@ bool shm_dequechunk::discard_frond()
 }
 
 
-//FREEµÄ³ß´ç,¿ÕÏĞµÄ¿Õ¼äÓĞ¶àÉÙ
-size_t shm_dequechunk::free_size()
+//FREEçš„å°ºå¯¸,ç©ºé—²çš„ç©ºé—´æœ‰å¤šå°‘
+size_t deque_chunk::free_size()
 {
-    //È¡¿ìÕÕ
-    size_t pstart, pend, szfree;
-    snap_getpoint(pstart, pend);
+    //å–å¿«ç…§
+    size_t pstart,pend,szfree;
+    snap_getpoint(pstart,pend);
 
-    //¼ÆËã³ß´ç
-    if (pstart == pend )
+    //è®¡ç®—å°ºå¯¸
+    if (pstart == pend)
     {
         szfree = dequechunk_head_->size_of_deque_;
     }
     else if (pstart < pend)
     {
-        szfree = dequechunk_head_->size_of_deque_ - (pend - pstart) ;
+        szfree = dequechunk_head_->size_of_deque_ - (pend - pstart);
     }
     else
     {
-        szfree = pstart - pend ;
+        szfree = pstart - pend;
     }
 
-    //ÖØÒª£ºFREE³¤¶ÈÓ¦¸Ã¼õÈ¥Ô¤Áô²¿·Ö³¤¶È£¬±£Ö¤Ê×Î²²»»áÏà½Ó
+    //é‡è¦ï¼šFREEé•¿åº¦åº”è¯¥å‡å»é¢„ç•™éƒ¨åˆ†é•¿åº¦ï¼Œä¿è¯é¦–å°¾ä¸ä¼šç›¸æ¥
     szfree -= JUDGE_FULL_INTERVAL;
 
     return szfree;
 }
 
-//ÈİÁ¿
-size_t shm_dequechunk::capacity()
+//å®¹é‡
+size_t deque_chunk::capacity()
 {
     return dequechunk_head_->size_of_mmap_;
 }
 
 
-//µÃµ½Ä³1Ê±¿ÌµÄ¿ìÕÕÊÇ·ñÎªEMPTY
-bool shm_dequechunk::empty()
+//å¾—åˆ°æŸ1æ—¶åˆ»çš„å¿«ç…§æ˜¯å¦ä¸ºEMPTY
+bool deque_chunk::empty()
 {
     return free_size() == dequechunk_head_->size_of_deque_ - JUDGE_FULL_INTERVAL;
 }
 
-//µÃµ½Ä³1Ê±¿ÌµÄ¿ìÕÕÊÇ·ñÎªFULL
-bool shm_dequechunk::full()
+//å¾—åˆ°æŸ1æ—¶åˆ»çš„å¿«ç…§æ˜¯å¦ä¸ºFULL
+bool deque_chunk::full()
 {
     return free_size() == 0;
 }
 
 
 
-}; 
+};
 
 
