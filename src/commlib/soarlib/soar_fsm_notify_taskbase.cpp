@@ -9,8 +9,8 @@ NotifyTrans_TaskBase::NotifyTrans_TaskBase():
     task_run_(false),
     task_frame_buf_(NULL)
 {
-    task_frame_buf_ = Zerg_App_Frame::new_frame(Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16);
-    task_frame_buf_->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
+    task_frame_buf_ = ZERG_FRAME_HEAD::new_frame(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME + 16);
+    task_frame_buf_->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME);
 }
 
 //
@@ -18,7 +18,7 @@ NotifyTrans_TaskBase::~NotifyTrans_TaskBase()
 {
     if (task_frame_buf_ )
     {
-        Zerg_App_Frame::delete_frame(task_frame_buf_);
+        ZERG_FRAME_HEAD::delete_frame(task_frame_buf_);
         task_frame_buf_ = NULL;
     }
 }
@@ -71,7 +71,7 @@ int NotifyTrans_TaskBase::svc (void)
 
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
-            Zerg_App_Frame *tmp_frame = NULL;
+            ZERG_FRAME_HEAD *tmp_frame = NULL;
 
             //忙的时候只测试，不阻塞等待
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)

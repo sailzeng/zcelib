@@ -96,7 +96,7 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
     int ret = 0;
     ret = zce::handle_ready(socket_handle_,
                             &timeout,
-                            zce::HANDLE_READY_ACCEPT);
+                            zce::HANDLE_READY_TODO::ACCEPT);
 
     const int HANDLE_READY_ONE = 1;
 

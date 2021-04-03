@@ -8,7 +8,7 @@ Soar_SvrdApp_ZergBus::Soar_SvrdApp_ZergBus() :
     Soar_Svrd_Appliction(),
     nonctrl_recv_buffer_(NULL)
 {
-    nonctrl_recv_buffer_ = Zerg_App_Frame::new_frame(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
+    nonctrl_recv_buffer_ = ZERG_FRAME_HEAD::new_frame(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME);
 }
 
 Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
@@ -16,7 +16,7 @@ Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
     //释放资源
     if (nonctrl_recv_buffer_)
     {
-        Zerg_App_Frame::delete_frame(nonctrl_recv_buffer_);
+        ZERG_FRAME_HEAD::delete_frame(nonctrl_recv_buffer_);
         nonctrl_recv_buffer_ = NULL;
     }
 }

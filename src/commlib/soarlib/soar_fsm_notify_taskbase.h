@@ -4,7 +4,7 @@
 #include "soar_zerg_frame.h"
 #include "soar_fsm_notify_trans_mgr.h"
 
-class Zerg_App_Frame;
+class ZERG_FRAME_HEAD;
 template <class _ZCE_SYNCH > class NotifyTrans_Manger;
 
 class NotifyTrans_TaskBase : public ZCE_Thread_Task
@@ -42,22 +42,22 @@ protected:
     virtual int task_moonlighting (size_t &send_frame_num);
 
     //任务根据FRAME的处理
-    virtual int taskprocess_appframe(const Zerg_App_Frame *app_frame) = 0;
+    virtual int taskprocess_appframe(const ZERG_FRAME_HEAD *app_frame) = 0;
 
 protected:
 
     //将数据放入管理器，
     template <class T>
-    int pushbak_mgr_recvqueue(const Zerg_App_Frame *recv_frame,
+    int pushbak_mgr_recvqueue(const ZERG_FRAME_HEAD *recv_frame,
                               unsigned int cmd,
                               const T &info,
                               unsigned int option
                              )
     {
-        Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(task_frame_buf_);
-        rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+        ZERG_FRAME_HEAD *rsp_msg = reinterpret_cast<ZERG_FRAME_HEAD *>(task_frame_buf_);
+        rsp_msg->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uid_ = recv_frame->frame_uid_;
+        rsp_msg->frame_userid_ = recv_frame->frame_userid_;
 
         rsp_msg->recv_service_ = recv_frame->send_service_;
         rsp_msg->proxy_service_ = recv_frame->proxy_service_;
@@ -66,10 +66,10 @@ protected:
         //填写自己transaction_id_,
         rsp_msg->transaction_id_ = 0;
         rsp_msg->backfill_trans_id_ = recv_frame->transaction_id_;
-        rsp_msg->app_id_ = recv_frame->app_id_;
+        rsp_msg->business_id_ = recv_frame->business_id_;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
         {
@@ -104,10 +104,10 @@ protected:
                               unsigned int option = 0
                              )
     {
-        Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(task_frame_buf_);
-        rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+        ZERG_FRAME_HEAD *rsp_msg = reinterpret_cast<ZERG_FRAME_HEAD *>(task_frame_buf_);
+        rsp_msg->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uid_ = user_id;
+        rsp_msg->frame_userid_ = user_id;
 
         SERVICES_ID proxy_svcid(0, 0);
         rsp_msg->recv_service_ = mgr_svc_id_;
@@ -117,10 +117,10 @@ protected:
         //填写自己transaction_id_,
         rsp_msg->transaction_id_ = 0;
         rsp_msg->backfill_trans_id_ = backfill_trans_id;
-        rsp_msg->app_id_ = 0;
+        rsp_msg->business_id_ = 0;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
         {
@@ -177,7 +177,7 @@ protected:
     bool                                   task_run_;
 
     //QQPET APPFRAME
-    Zerg_App_Frame                        *task_frame_buf_;
+    ZERG_FRAME_HEAD                        *task_frame_buf_;
 
 };
 

@@ -42,7 +42,7 @@ void Notify_Trans_Abnormal_Base::malloc_abnormalframe(size_t frame_len)
 }
 
 //取得FRAME进行操作，不要改变长度等FRAME HEAD的数据，其实推荐使用下面的函数
-Zerg_App_Frame *Notify_Trans_Abnormal_Base::get_abnormal_frame()
+ZERG_FRAME_HEAD *Notify_Trans_Abnormal_Base::get_abnormal_frame()
 {
     ZCE_ASSERT (abnormal_frame_ != NULL);
     return abnormal_frame_;
@@ -76,7 +76,7 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
     unsigned int frame_len = abnormal_frame_->frame_length_;
     abnormal_frame_->init_framehead(frame_len, option, cmd);
 
-    abnormal_frame_->frame_uid_ = req_user_id_;
+    abnormal_frame_->frame_userid_ = req_user_id_;
     //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
     abnormal_frame_->transaction_id_ = asyncobj_id_;
     abnormal_frame_->backfill_trans_id_ = req_session_id_;
@@ -87,7 +87,7 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
     abnormal_frame_->proxy_service_ = proxysvc;
     abnormal_frame_->send_service_ = selfsvc;
 
-    abnormal_frame_->app_id_ = req_game_app_id_;
+    abnormal_frame_->business_id_ = req_game_app_id_;
 
 
     ret = trans_notify_mgr_->enqueue_sendqueue(abnormal_frame_, true);

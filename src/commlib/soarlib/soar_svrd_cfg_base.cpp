@@ -24,7 +24,7 @@ Server_Config_Base::Server_Config_Base() :
 
     log_config_.log_level_ = RS_DEBUG;
     log_config_.log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
-    log_config_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
+    log_config_.log_output_ = LOG_OUTPUT_WAY::FILE | LOG_OUTPUT_WAY::ERROUT;
 
     log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
     log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;

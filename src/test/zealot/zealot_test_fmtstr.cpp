@@ -61,27 +61,27 @@ int test_printf_int()
     char out_buffer[1024 + 1];
     size_t cur_len = 0;
     size_t buf_max_len = 1024;
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, size_t(-1));
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 0, size_t(-1));
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, size_t(-1), zce::FMT_PLUS);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 0, size_t(-1), zce::FMT_PLUS);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 8, zce::FMT_UNSIGNED);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 25, 8, zce::FMT_UNSIGNED);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 8, zce::FMT_PLUS);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 25, 8, zce::FMT_PLUS);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 8, zce::FMT_PLUS | zce::FMT_UNSIGNED);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 25, 8, zce::FMT_PLUS | zce::FMT_UNSIGNED);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 25, 0, zce::FMT_PLUS | zce::FMT_UNSIGNED);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 25, 0, zce::FMT_PLUS | zce::FMT_UNSIGNED);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_HEXADECIMAL, 25, 0, zce::FMT_PREFIX);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::HEXADECIMAL, 25, 0, zce::FMT_PREFIX);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_HEXADECIMAL, 25, 0, zce::FMT_PREFIX | zce::FMT_ZERO);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::HEXADECIMAL, 25, 0, zce::FMT_PREFIX | zce::FMT_ZERO);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_HEXADECIMAL, 25, 8, zce::FMT_ZERO);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::HEXADECIMAL, 25, 8, zce::FMT_ZERO);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, 8, 0);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 0, 8, 0);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
-    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_DECIMAL, 0, 0, 0);
+    zce::fmt_int64(out_buffer, buf_max_len, cur_len, int_data, zce::BASE_NUMBER::DECIMAL, 0, 0, 0);
     printf("[%.*s]\n", (int)cur_len, out_buffer);
 
     printf("+-----------------------------------------------------------+\n");
@@ -359,7 +359,7 @@ int test_out_buffer(int /*argc*/, char * /*argv*/[])
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
         zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_HEXADECIMAL),
+                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                           bool_data,
                           zce::Double_Out_Helper(double_data, 16, 3),
                           zce::String_Out_Helper(cstr_data, 30),
@@ -376,7 +376,7 @@ int test_out_buffer(int /*argc*/, char * /*argv*/[])
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
         zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
-                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_HEXADECIMAL),
+                          zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                           bool_data,
                           zce::Double_Out_Helper(double_data, 16, 3),
                           zce::String_Out_Helper(cstr_data, 30),

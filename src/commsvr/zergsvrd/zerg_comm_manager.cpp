@@ -199,7 +199,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
     {
 
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
+        ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>( tmpbuf->buffer_data_);
         zce::lockfree::dequechunk_node *my_node = reinterpret_cast<zce::lockfree::dequechunk_node*>(proc_frame);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
@@ -209,7 +209,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         tmpbuf->size_of_use_ = proc_frame->frame_length_;
 
         //如果是要跟踪的命令
-        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+        if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
         {
             proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]opt", RS_INFO);
         }
@@ -219,14 +219,14 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             {
                 if (monitor_cmd_[i] == proc_frame->frame_command_)
                 {
-                    proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+                    proc_frame->frame_option_ |= ZERG_FRAME_HEAD::DESC_MONITOR_TRACK;
                     proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]cmd", RS_INFO);
                 }
             }
         }
 
         //发送UDP的数据
-        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
+        if (proc_frame->frame_option_.protocol_ = ZERG_FRAME_OPTION::PROTOCOL_UDP)
         {
             //发送错误日志在send_all_to_udp函数内部处理，这儿不增加重复记录
             UDP_Svc_Handler::send_all_to_udp(proc_frame);
@@ -359,13 +359,13 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
 
-    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
+    ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(tmpbuf->buffer_data_);
 
     //如果失败归还缓存，如果成功的情况下，会放入发送队列，放入发送队列的归还和这个不一样
     if (ret != 0)
     {
         //记录下来处理
-        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD )
+        if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_SEND_FAIL_RECORD )
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                     proc_frame->frame_length_,
@@ -384,13 +384,13 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 
         //
         server_status_->increase_once(ZERG_SEND_FAIL_COUNTER,
-                                      proc_frame->app_id_,
+                                      proc_frame->business_id_,
                                       0);
         if (proc_frame->recv_service_.services_type_ == 0)
         {
             // 不应该出现0的services_type
             server_status_->increase_once(ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
-                                          proc_frame->app_id_, proc_frame->recv_service_.services_type_);
+                                          proc_frame->business_id_, proc_frame->recv_service_.services_type_);
         }
         //
         zbuffer_storage_->free_byte_buffer(tmpbuf);
@@ -403,7 +403,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 
 
 //
-void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
+void Zerg_Comm_Manager::pushback_recvpipe(ZERG_FRAME_HEAD *recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -412,7 +412,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
     }
 
     //为了提高效率，先检查标志位，
-    if (recv_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    if (recv_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
     {
         recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]opt", RS_INFO);
     }
@@ -424,7 +424,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
         {
             if (monitor_cmd_[i] == recv_frame->frame_command_)
             {
-                recv_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+                recv_frame->frame_option_ |= ZERG_FRAME_HEAD::DESC_MONITOR_TRACK;
                 recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]cmd", RS_INFO);
             }
         }
@@ -436,19 +436,19 @@ void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
     if (ret != 0)
     {
         server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       0);
     }
     else
     {
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       0);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       recv_frame->frame_command_);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       recv_frame->send_service_.services_type_);
     }
 

@@ -76,7 +76,7 @@ public:
                          const SERVICES_ID &recv_service,
                          const SERVICES_ID &send_service,
                          const SERVICES_ID &proxy_service,
-                         size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+                         size_t frame_len = ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME,
                          bool is_check_conn_info = false);
 
     //发送数据
@@ -157,7 +157,7 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     //保存接收到的事务ID
     recv_trans_id_ = tibetan_recv_appframe_->transaction_id_;
     //数据包的长度
-    data_len = tibetan_recv_appframe_->frame_length_ - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
+    data_len = tibetan_recv_appframe_->frame_length_ - ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD;
 
     if (data_len < 0)
     {
@@ -217,12 +217,12 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
 
     //如果有回填数据
     tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
-    tibetan_send_appframe_->frame_uid_ = user_id;
+    tibetan_send_appframe_->frame_userid_ = user_id;
 
     //填写GAME ID
-    tibetan_send_appframe_->app_id_ = app_id;
+    tibetan_send_appframe_->business_id_ = app_id;
 
-    ret = tibetan_send_appframe_->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = tibetan_send_appframe_->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {

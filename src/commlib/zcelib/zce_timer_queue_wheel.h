@@ -97,7 +97,7 @@ public:
     ZCE_Timer_Wheel(size_t num_timer_node,
                     unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
                     unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                    TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK,
                     bool dynamic_expand_node = true );
     ///构造函数
     ZCE_Timer_Wheel();
@@ -118,7 +118,7 @@ public:
     int initialize(size_t num_timer_node,
                    unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK,
                    bool dynamic_expand_node = true );
 
     /*!

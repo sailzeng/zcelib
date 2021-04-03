@@ -71,7 +71,7 @@
 #pragma warning ( disable : 26495)
 #endif
 
-typedef struct
+struct sem_t
 {
     //信号量的句柄
     HANDLE  sem_hanlde_ = INVALID_HANDLE_VALUE;
@@ -79,7 +79,7 @@ typedef struct
     //信号量是否是一个无名的信号灯
     bool    sem_unnamed_ = false;
 
-} sem_t;
+};
 
 #if !defined (SEM_FAILED)
 #  define SEM_FAILED ((sem_t *) -1)

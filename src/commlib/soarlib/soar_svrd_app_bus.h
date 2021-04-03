@@ -4,7 +4,7 @@
 
 #include "soar_svrd_app_base.h"
 
-class Zerg_App_Frame;
+class ZERG_FRAME_HEAD;
 
 //单个函数处理APP FRAME
 class Soar_SvrdApp_ZergBus : public Soar_Svrd_Appliction
@@ -12,7 +12,7 @@ class Soar_SvrdApp_ZergBus : public Soar_Svrd_Appliction
 protected:
 
     //接受的数据区
-    Zerg_App_Frame          *nonctrl_recv_buffer_;
+    ZERG_FRAME_HEAD          *nonctrl_recv_buffer_;
 
 protected:
     //
@@ -30,7 +30,7 @@ protected:
     virtual int popfront_recvpipe(size_t max_prc, size_t &proc_frame);
 
     //处理收到的APPFRAME，不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
-    virtual int process_recv_frame(Zerg_App_Frame *recv_frame) = 0;
+    virtual int process_recv_frame(ZERG_FRAME_HEAD *recv_frame) = 0;
 
 
 };

@@ -535,7 +535,7 @@ template<>
 ZCE_Time_Value str_to_value(const char *str)
 {
     ZCE_Time_Value val;
-    val.from_string(str, false, zce::TIME_STRFMT_US_SEC);
+    val.from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
     return val;
 }
 
@@ -646,7 +646,7 @@ void str_to_ptr(const char *str, ZCE_Sockaddr_In6 *ptr)
 template<>
 void str_to_ptr(const char *str, ZCE_Time_Value *ptr)
 {
-    ptr->from_string(str, false, zce::TIME_STRFMT_US_SEC);
+    ptr->from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
 }
 
 };

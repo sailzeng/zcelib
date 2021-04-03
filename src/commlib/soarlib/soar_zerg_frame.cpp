@@ -10,12 +10,12 @@
 #endif
 #endif
 
-Zerg_App_Frame::Zerg_App_Frame() :
+ZERG_FRAME_HEAD::ZERG_FRAME_HEAD() :
     frame_length_(CMD_INVALID_CMD),
     frame_option_(DESC_V1_VERSION),
     frame_command_(LEN_OF_APPFRAME_HEAD),
-    frame_uid_(0),
-    app_id_(0),
+    frame_userid_(0),
+    business_id_(0),
     send_service_(0, 0),
     recv_service_(0, 0),
     proxy_service_(0, 0),
@@ -25,13 +25,13 @@ Zerg_App_Frame::Zerg_App_Frame() :
 {
 }
 
-Zerg_App_Frame::~Zerg_App_Frame()
+ZERG_FRAME_HEAD::~ZERG_FRAME_HEAD()
 {
 }
 
 
 // Assign =运算符号
-Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
+ZERG_FRAME_HEAD &ZERG_FRAME_HEAD::operator = (const ZERG_FRAME_HEAD &other)
 {
     if (this != &other )
     {
@@ -42,12 +42,12 @@ Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
 }
 
 //创建一个Frame
-Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
+ZERG_FRAME_HEAD *ZERG_FRAME_HEAD::new_frame(std::size_t frame_len)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
-    if (frame_len < sizeof(Zerg_App_Frame))
+    if (frame_len < sizeof(ZERG_FRAME_HEAD))
     {
-        frame_len = sizeof(Zerg_App_Frame);
+        frame_len = sizeof(ZERG_FRAME_HEAD);
     }
 
     //计算数据加密后的长度
@@ -61,18 +61,18 @@ Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
 
     //没有必要加下面这句，因为实际长度要根据使用决定
     //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
-    return static_cast<Zerg_App_Frame *>(ptr);
+    return static_cast<ZERG_FRAME_HEAD *>(ptr);
 }
 
 //
-void Zerg_App_Frame::delete_frame(Zerg_App_Frame *frame)
+void ZERG_FRAME_HEAD::delete_frame(ZERG_FRAME_HEAD *frame)
 {
     char *ptr = reinterpret_cast<char *>(frame);
     delete[]ptr;
 }
 
 //填充AppData数据到APPFrame
-int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
+int ZERG_FRAME_HEAD::fill_appdata(const size_t szdata, const char *vardata)
 {
     // 判断长度是否足够
     if (szdata > MAX_LEN_OF_APPFRAME_DATA)
@@ -82,18 +82,18 @@ int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
 
     //填写数据区的长度
     memcpy(frame_appdata_, vardata, szdata);
-    frame_length_ = static_cast<uint32_t>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
+    frame_length_ = static_cast<uint32_t>( ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD + szdata);
     return 0;
 }
 
 //将所有的uint16_t,uint32_t转换为网络序
-void Zerg_App_Frame::framehead_encode()
+void ZERG_FRAME_HEAD::framehead_encode()
 {
     frame_length_ = htonl(frame_length_);
     frame_option_ = htonl(frame_option_);
     frame_command_ = htonl(frame_command_);
 
-    frame_uid_ = htonl(frame_uid_);
+    frame_userid_ = htonl(frame_userid_);
 
     //
     recv_service_.services_type_ = htons(recv_service_.services_type_);
@@ -107,19 +107,19 @@ void Zerg_App_Frame::framehead_encode()
 
     transaction_id_ = htonl(transaction_id_);
     backfill_trans_id_ = htonl(backfill_trans_id_);
-    app_id_ = htonl(app_id_);
+    business_id_ = htonl(business_id_);
 
     send_serial_number_ = htonl(send_serial_number_);
 
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
-void Zerg_App_Frame::framehead_decode()
+void ZERG_FRAME_HEAD::framehead_decode()
 {
     frame_length_ = ntohl(frame_length_);
     frame_option_ = ntohl(frame_option_);
     frame_command_ = ntohl(frame_command_);
-    frame_uid_ = ntohl(frame_uid_);
+    frame_userid_ = ntohl(frame_userid_);
 
     //
     recv_service_.services_type_ = ntohs(recv_service_.services_type_);
@@ -133,7 +133,7 @@ void Zerg_App_Frame::framehead_decode()
 
     transaction_id_ = ntohl(transaction_id_);
     backfill_trans_id_ = ntohl(backfill_trans_id_);
-    app_id_ = ntohl(app_id_);
+    business_id_ = ntohl(business_id_);
 
     send_serial_number_ = ntohl(send_serial_number_);
 }
@@ -141,25 +141,25 @@ void Zerg_App_Frame::framehead_decode()
 
 
 //填写发送者服务信息
-void Zerg_App_Frame::set_send_svcid(uint16_t svrtype, uint32_t svrid)
+void ZERG_FRAME_HEAD::set_send_svcid(uint16_t svrtype, uint32_t svrid)
 {
     send_service_.services_type_ = svrtype;
     send_service_.services_id_  = svrid;
 }
 
-void Zerg_App_Frame::set_recv_svcid(uint16_t svrtype, uint32_t svrid)
+void ZERG_FRAME_HEAD::set_recv_svcid(uint16_t svrtype, uint32_t svrid)
 {
     recv_service_.services_type_ = svrtype;
     recv_service_.services_id_ = svrid;
 }
 
-void Zerg_App_Frame::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
+void ZERG_FRAME_HEAD::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
 {
     proxy_service_.services_type_ = svrtype;
     proxy_service_.services_id_ = svrid;
 }
 
-void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo,
+void ZERG_FRAME_HEAD::set_all_svcid(const SERVICES_ID &rcvinfo,
                                    const SERVICES_ID &sndinfo,
                                    const SERVICES_ID &proxyinfo)
 {
@@ -170,7 +170,7 @@ void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo,
 
 
 //交换接受者和发送者,由于要回送数据时
-void Zerg_App_Frame::exchange_rcvsnd_svcid(void )
+void ZERG_FRAME_HEAD::exchange_rcvsnd_svcid(void )
 {
 
     SERVICES_ID tmpsvrinfo = recv_service_;
@@ -178,18 +178,18 @@ void Zerg_App_Frame::exchange_rcvsnd_svcid(void )
     send_service_ = tmpsvrinfo;
 }
 
-void Zerg_App_Frame::exchange_rcvsnd_svcid(Zerg_App_Frame &exframe )
+void ZERG_FRAME_HEAD::exchange_rcvsnd_svcid(ZERG_FRAME_HEAD &exframe )
 {
     recv_service_ = exframe.send_service_;
     send_service_ = exframe.recv_service_;
     proxy_service_ = exframe.proxy_service_;
     transaction_id_ = exframe.transaction_id_;
     backfill_trans_id_ = exframe.backfill_trans_id_;
-    app_id_ = exframe.app_id_;
-    frame_uid_ = exframe.frame_uid_;
+    business_id_ = exframe.business_id_;
+    frame_userid_ = exframe.frame_userid_;
 }
 
-void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
+void ZERG_FRAME_HEAD::fillback_appframe_head(ZERG_FRAME_HEAD &exframe )
 {
     recv_service_ = exframe.send_service_;
     send_service_ = exframe.recv_service_;
@@ -197,14 +197,14 @@ void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
     transaction_id_ = exframe.backfill_trans_id_;
     //回去的事务id应当是请求的事务id
     backfill_trans_id_ = exframe.transaction_id_;
-    app_id_ = exframe.app_id_;
-    frame_uid_ = exframe.frame_uid_;
+    business_id_ = exframe.business_id_;
+    frame_userid_ = exframe.frame_userid_;
 }
 
 
 //调试AppFrame, 转化所有的数据信息为一个你可以读懂的状态
 //这个调试是一个非常,非常消耗时的操作,除非,发布版本千万不要使用
-void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
+void ZERG_FRAME_HEAD::dump_appframe_info(std::ostringstream &strstream) const
 {
     dump_appframe_head(strstream);
     dump_appframe_data(strstream);
@@ -212,7 +212,7 @@ void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
 }
 
 //Dump所有的数据信息,一个字节字节的告诉你,
-void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
+void ZERG_FRAME_HEAD::dump_appframe_data(std::ostringstream &strstream) const
 {
     //
     char tmpstr[MAX_LEN_OF_APPFRAME * 2 + 1];
@@ -227,15 +227,15 @@ void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 
 
 //输出包头信息
-void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
+void ZERG_FRAME_HEAD::dump_appframe_head(std::ostringstream &strstream) const
 {
     strstream << "Len:" << frame_length_
               << " Framedesc:0x " << frame_option_
               << " Command:" << frame_command_
-              << " Uin:" << frame_uid_
+              << " Uin:" << frame_userid_
               << " TransactionID:" << transaction_id_
               << " BackfillTransID:" << backfill_trans_id_
-              << " ProcessHandler:" << app_id_
+              << " ProcessHandler:" << business_id_
               << " Sendip:" << send_ip_address_;
     strstream << "Rcvsvr:" << recv_service_.services_type_
               << "|" << recv_service_.services_id_
@@ -247,14 +247,14 @@ void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
 }
 
 //输出APPFRAME的头部信息
-void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
+void ZERG_FRAME_HEAD::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
     ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
 //输出APPFRAME的全部部信息
-void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
+void ZERG_FRAME_HEAD::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
 {
 
     std::ostringstream strstream;
@@ -263,30 +263,30 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
 }
 
 //输出APPFRAME的头部信息
-void Zerg_App_Frame::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
+void ZERG_FRAME_HEAD::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
-                                          const Zerg_App_Frame *proc_frame )
+                                          const ZERG_FRAME_HEAD *proc_frame )
 {
     proc_frame->dumpoutput_framehead(outstr, log_priority);
 }
 //输出APPFRAME的全部部信息
-void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
+void ZERG_FRAME_HEAD::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
-                                          const Zerg_App_Frame *proc_frame)
+                                          const ZERG_FRAME_HEAD *proc_frame)
 {
     proc_frame->dumpoutput_frameinfo(outstr, log_priority);
 }
 
 
 //Clone一个APP FRAME
-void Zerg_App_Frame::clone(Zerg_App_Frame *dst_frame) const
+void ZERG_FRAME_HEAD::clone(ZERG_FRAME_HEAD *dst_frame) const
 {
     memcpy(dst_frame, this, frame_length_);
     return ;
 }
 
 //Clone一个APP FRAME 的头部
-void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
+void ZERG_FRAME_HEAD::clone_head(ZERG_FRAME_HEAD *clone_frame) const
 {
     memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);
     return ;
@@ -297,7 +297,7 @@ void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
 ///将一个结构进行编码
-int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
+int ZERG_FRAME_HEAD::protobuf_encode(size_t szframe_appdata,
                                     const google::protobuf::MessageLite *msg,
                                     size_t data_start,
                                     size_t *sz_code)
@@ -328,7 +328,7 @@ int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
 }
 
 ///将一个结构进行解码
-int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
+int ZERG_FRAME_HEAD::protobuf_decode(google::protobuf::MessageLite *msg,
                                     size_t data_start,
                                     size_t *sz_code)
 {

@@ -48,7 +48,7 @@ public:
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
 
     ///代理的处理,返回生产的帧的个数
-    virtual int process_proxy(Zerg_App_Frame *proc_frame) = 0;
+    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame) = 0;
 
 
 protected:
@@ -109,7 +109,7 @@ public:
 
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     // 进行代理的处理
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
 };
 
 
@@ -130,7 +130,7 @@ public:
     ///处理配置文件
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     //
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
 };
 
 
@@ -153,7 +153,7 @@ public:
     ///处理配置文件
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     ///
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
 
 
 protected:
@@ -192,7 +192,7 @@ public:
     ///处理配置文件
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     ///
-    virtual int process_proxy(Zerg_App_Frame *proc_frame);
+    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
 
 
 protected:

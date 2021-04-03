@@ -237,7 +237,7 @@ public:
                           size_t datetime_strlen,
                           size_t &use_buf,
                           bool uct_time = false,
-                          zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC
+                          zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC
                          )  const;
 
     /*!
@@ -249,7 +249,7 @@ public:
     */
     int from_string(const char *strtm,
                     bool uct_time = false,
-                    zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC);
+                    zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC);
 
     ///返回一个timespec的对象
     //operator ::timespec () const;

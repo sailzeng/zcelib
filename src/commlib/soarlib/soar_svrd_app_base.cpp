@@ -255,7 +255,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
           initialize(self_svc_id_,
                      config_base_->pipe_cfg_.recv_pipe_len_,
                      config_base_->pipe_cfg_.send_pipe_len_,
-                     Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+                     ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME,
                      config_base_->pipe_cfg_.if_restore_pipe_);
 
     if (0 != ret)
@@ -345,7 +345,7 @@ int Soar_Svrd_Appliction::init_log()
                                                    true,
                                                    config_base_->log_config_.max_log_file_size_,
                                                    config_base_->log_config_.reserve_file_num_,
-                                                   LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
+                                                   LOG_HEAD_RECORD::CURRENT_TIME | LOG_HEAD_RECORD::LOG_LEVEL);
     if (0 != ret)
     {
         ZCE_LOG(RS_ERROR, "ZCE_Trace_LogMsg::instance()->initialize ret fail.");

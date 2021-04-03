@@ -41,7 +41,7 @@ public:
     * @note
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
-                    size_t max_frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
+                    size_t max_frame_len = ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME);
 
 
     /*!
@@ -49,13 +49,13 @@ public:
     * @return     Zerg_App_Frame*
     * @param      frame_len
     */
-    Zerg_App_Frame *alloc_appframe(size_t frame_len);
+    ZERG_FRAME_HEAD *alloc_appframe(size_t frame_len);
 
     /*!
     * @brief      释放一个APPFRAME到池子
     * @param      proc_frame 处理的frame
     */
-    void free_appframe(Zerg_App_Frame *proc_frame);
+    void free_appframe(ZERG_FRAME_HEAD *proc_frame);
 
     /*!
     * @brief      复制一个APPFRAME
@@ -63,7 +63,7 @@ public:
     * @param      cloned_frame  被克隆的FRAME
     * @note
     */
-    void clone_appframe(const Zerg_App_Frame *model_freame, Zerg_App_Frame *&cloned_frame);
+    void clone_appframe(const ZERG_FRAME_HEAD *model_freame, ZERG_FRAME_HEAD *&cloned_frame);
 
     /*!
     * @brief      返回最大可以分配的FRAME的长度
@@ -111,7 +111,7 @@ protected:
     static const size_t NUM_OF_ALLOW_LIST_IDLE_FRAME = 1024;
 
     //
-    typedef zce::lordrings <Zerg_App_Frame *>     LIST_OF_APPFRAME;
+    typedef zce::lordrings <ZERG_FRAME_HEAD *>     LIST_OF_APPFRAME;
     //
     typedef std::vector< LIST_OF_APPFRAME > APPFRAME_MEMORY_POOL;
 
@@ -234,9 +234,9 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 
         for (size_t j = 0; j < frame_pool_len; ++j)
         {
-            Zerg_App_Frame *proc_frame = NULL;
+            ZERG_FRAME_HEAD *proc_frame = NULL;
             frame_pool_[i].pop_front(proc_frame);
-            Zerg_App_Frame::delete_frame(proc_frame);
+            ZERG_FRAME_HEAD::delete_frame(proc_frame);
         }
     }
 }
@@ -244,7 +244,7 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 
 //根据需要长度，从池子分配一个APPFRAME
 template <typename ZCE_LOCK >
-Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len)
+ZERG_FRAME_HEAD *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len)
 {
     typename ZCE_LOCK::LOCK_GUARD tmp_guard(zce_lock_);
     size_t hk = get_roundup(frame_len);
@@ -256,7 +256,7 @@ Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len
     }
 
     //
-    Zerg_App_Frame *new_frame = NULL;
+    ZERG_FRAME_HEAD *new_frame = NULL;
     frame_pool_[hk].pop_front(new_frame);
 
     new_frame->init_framehead(static_cast<unsigned int>(frame_len));
@@ -268,8 +268,8 @@ Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
 template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model_freame,
-                                                     Zerg_App_Frame *&cloned_frame)
+void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const ZERG_FRAME_HEAD *model_freame,
+                                                     ZERG_FRAME_HEAD *&cloned_frame)
 {
     //
     size_t frame_len = model_freame->frame_length_;
@@ -280,7 +280,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model
 
 //释放一个APPFRAME到池子
 template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::free_appframe(Zerg_App_Frame *proc_frame)
+void AppFrame_Mallocor_Mgr<ZCE_LOCK>::free_appframe(ZERG_FRAME_HEAD *proc_frame)
 {
     ZCE_ASSERT(proc_frame);
     typename ZCE_LOCK::LOCK_GUARD tmp_guard(zce_lock_);
@@ -303,7 +303,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::adjust_pool_capacity()
 
             for (size_t j = 0; j < free_sz; ++j)
             {
-                Zerg_App_Frame *new_frame = NULL;
+                ZERG_FRAME_HEAD *new_frame = NULL;
                 frame_pool_[i].pop_front(new_frame);
                 delete new_frame;
             }
@@ -320,7 +320,7 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::extend_list_capacity(size_t list_no, size_
 
     for (size_t j = 0; j < extend_num; ++j)
     {
-        Zerg_App_Frame *proc_frame =  Zerg_App_Frame::new_frame(size_appframe_[list_no] + 1);
+        ZERG_FRAME_HEAD *proc_frame =  ZERG_FRAME_HEAD::new_frame(size_appframe_[list_no] + 1);
         frame_pool_[list_no].push_back(proc_frame);
     }
 }

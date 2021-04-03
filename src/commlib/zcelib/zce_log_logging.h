@@ -269,25 +269,14 @@ protected:
 //利用一个结构的构造和析构函数进行函数跟踪
 class ZCE_Trace_Function
 {
-public:
-    //!函数名称
-    const char        *func_name_;
-    //!文件名称
-    const char        *codefile_name_;
-    //!文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
-    int                code_line_;
-    //!输出的日志级别
-    ZCE_LOG_PRIORITY   log_priority_;
 
-    //!如果需要跟踪返回值，把返回值的变量的指针作为一个参数
-    int               *ret_ptr_ = NULL;
 
 public:
     //利用构造函数显示进入函数的输出
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
-                       ZCE_LOG_PRIORITY   log_priority) :
+                       ZCE_LOG_PRIORITY log_priority) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
@@ -339,6 +328,19 @@ public:
                     code_line_);
         }
     }
+
+public:
+    //!函数名称
+    const char* func_name_;
+    //!文件名称
+    const char* codefile_name_;
+    //!文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
+    int                code_line_;
+    //!输出的日志级别
+    ZCE_LOG_PRIORITY   log_priority_;
+
+    //!如果需要跟踪返回值，把返回值的变量的指针作为一个参数
+    int* ret_ptr_ = NULL;
 
 };
 

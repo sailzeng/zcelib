@@ -117,7 +117,7 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
     {
         //接收一个帧头,长度必然是LEN_OF_APPFRAME_HEAD,
         socket_ret  = zulu_stream_.recv_n((void *)(tibetan_recv_appframe_),
-                                          Zerg_App_Frame::LEN_OF_APPFRAME_HEAD,
+                                          ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD,
                                           time_wait);
 
         //ret == 0的情况下一般是链接被断开
@@ -160,7 +160,7 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
         backfill_trans_id_ = tibetan_recv_appframe_->backfill_trans_id_;
 
         //数据包的长度
-        data_len = tibetan_recv_appframe_->frame_length_ - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
+        data_len = tibetan_recv_appframe_->frame_length_ - ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD;
 
         if (data_len < 0)
         {

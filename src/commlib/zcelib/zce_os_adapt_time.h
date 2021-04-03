@@ -148,31 +148,31 @@ const char *timestamp(char *str_date_time,
 
 
 ///时间格式化输出的格式类型
-enum TIME_STR_FORMAT_TYPE
+enum class TIME_STR_FORMAT
 {
 
     ///用紧凑的格式进行输出 20100910
-    TIME_STRFMT_COMPACT_DAY  = 1,
+    COMPACT_DAY  = 1,
     ///用紧凑的格式进行输出 20100910100318
-    TIME_STRFMT_COMPACT_SEC  = 2,
+    COMPACT_SEC  = 2,
 
     ///用ISO的格式进行时间输出，精度到天 2010-09-10
-    TIME_STRFMT_ISO_DAY      = 5,
+    ISO_DAY      = 5,
     ///用ISO的格式进行时间输出，精度到秒，2010-09-10 10:03:18
-    TIME_STRFMT_ISO_SEC      = 6,
+    ISO_SEC      = 6,
     ///用ISO的格式进行时间输出，精度到微秒，2010-09-10 10:03:18.100190
-    TIME_STRFMT_ISO_USEC     = 7,
+    ISO_USEC     = 7,
 
     ///用美国的时间格式进行输出 Fri Aug 24 2002 07:43:05
-    TIME_STRFMT_US_SEC       = 10,
+    US_SEC       = 10,
     ///用美国的时间格式进行输出 Fri Aug 24 2002 07:43:05.100190
-    TIME_STRFMT_US_USEC      = 11,
+    US_USEC      = 11,
 
 
     ///用HTTP头部GMT的时间格式进行输出, Thu, 26 Nov 2009 13:50:19 GMT
-    TIME_STRFMT_HTTP_GMT     = 1001,
+    HTTP_GMT     = 1001,
     ///用EMAIL头部DATE的时间格式进行输出, Fri, 08 Nov 2002 09:42:22 +0800
-    TIME_STRFMT_EMAIL_DATE   = 1002,
+    EMAIL_DATE   = 1002,
 };
 
 /*
@@ -233,7 +233,7 @@ const char *timeval_to_str(const timeval *timeval,
                            size_t str_len,
                            size_t &use_buf,
                            bool uct_time = false,
-                           TIME_STR_FORMAT_TYPE fmt = zce::TIME_STRFMT_ISO_USEC
+                           TIME_STR_FORMAT fmt = zce::TIME_STR_FORMAT::ISO_USEC
                           );
 
 /*!
@@ -245,7 +245,7 @@ const char *timeval_to_str(const timeval *timeval,
 * @param[out] tz      返回的的时区,默认为NULL，表示不需要返回，很多种格式里面没有时区信息
 */
 void str_to_tm(const char *strtm,
-               TIME_STR_FORMAT_TYPE fmt,
+               TIME_STR_FORMAT fmt,
                tm *ptr_tm,
                time_t *usec = NULL,
                int *tz = NULL);
@@ -262,14 +262,14 @@ void str_to_tm(const char *strtm,
 * @param[out] tval     返回的时间,
 */
 int str_to_timeval(const char *strtm,
-                   TIME_STR_FORMAT_TYPE fmt,
+                   TIME_STR_FORMAT fmt,
                    bool uct_time,
                    timeval *tval);
 
 
 ///本地时间字符串转换为time_t
 int localtimestr_to_time_t(const char *localtime_str,
-                           TIME_STR_FORMAT_TYPE fmt,
+                           TIME_STR_FORMAT fmt,
                            time_t *time_t_val);
 
 /*!

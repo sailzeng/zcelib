@@ -114,7 +114,7 @@ int UDP_Svc_Handler::handle_input()
         //如果出来成功
         if (szrevc > 0)
         {
-            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<Zerg_App_Frame *>(dgram_databuf_->buffer_data_));
+            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<ZERG_FRAME_HEAD *>(dgram_databuf_->buffer_data_));
         }
     }
 
@@ -152,10 +152,10 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     ZCE_Sockaddr_In     remote_addr;
 
-    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *> (dgram_databuf_->buffer_data_);
+    ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *> (dgram_databuf_->buffer_data_);
 
     recvret = dgram_peer_.recvfrom(dgram_databuf_->buffer_data_,
-                                   Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA,
+                                   ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA,
                                    0,
                                    &remote_addr);
 
@@ -228,7 +228,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     //避免发生其他人填写的情况
     proc_frame->clear_inner_option();
-    proc_frame->frame_option_ |= Zerg_App_Frame::DESC_UDP_FRAME;
+    proc_frame->frame_option_.protocol_ = ZERG_FRAME_OPTION::PROTOCOL_UDP;
 
     size_revc = recvret;
 
@@ -241,7 +241,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 }
 
 //
-int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
+int UDP_Svc_Handler::write_data_to_udp(ZERG_FRAME_HEAD *send_frame)
 {
     ssize_t szsend = 0;
     const size_t IP_ADDR_LEN = 32;
@@ -286,7 +286,7 @@ int UDP_Svc_Handler::write_data_to_udp(Zerg_App_Frame *send_frame)
 
 
 
-int UDP_Svc_Handler::send_all_to_udp(Zerg_App_Frame *send_frame)
+int UDP_Svc_Handler::send_all_to_udp(ZERG_FRAME_HEAD *send_frame)
 {
     //找到原来的那个UDP端口，使用原来的端口发送，
     //这样可以保证防火墙的穿透问题

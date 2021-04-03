@@ -137,7 +137,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -149,7 +149,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -167,7 +167,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -179,7 +179,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -197,7 +197,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -209,7 +209,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -227,7 +227,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -239,7 +239,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -257,7 +257,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -269,7 +269,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   BASE_DECIMAL,
+                   BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -287,7 +287,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -299,7 +299,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   BASE_DECIMAL,
+                   BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -317,7 +317,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -329,7 +329,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -347,7 +347,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -359,7 +359,7 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_DECIMAL,
+                   zce::BASE_NUMBER::DECIMAL,
                    0,
                    0,
                    0);
@@ -459,7 +459,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    static_cast<int64_t>(save_point),
-                   zce::BASE_HEXADECIMAL,
+                   zce::BASE_NUMBER::HEXADECIMAL,
                    0,
                    sizeof(save_point) == 4 ? 8 : 16,
                    zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
@@ -471,7 +471,7 @@ inline void string_helper(std::string &stdstr,
     ptrdiff_t save_point = (const char *)out_data - (const char *)0;
     zce::fmt_int64(stdstr,
                    static_cast<int64_t>(save_point),
-                   zce::BASE_HEXADECIMAL,
+                   zce::BASE_NUMBER::HEXADECIMAL,
                    0,
                    sizeof(size_t) == 4 ? 8 : 16,
                    zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
@@ -844,7 +844,7 @@ public:
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
-                   BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
+                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
                    size_t precision = 0) :
         out_data_(out_data),
         width_(width),
@@ -860,7 +860,7 @@ public:
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
-                   BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
+                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
                    size_t precision = 0) :
         out_data_(out_data),
         width_(width),
@@ -881,7 +881,7 @@ public:
     ///输出精度，默认-1，最大值，
     size_t             precision_;
     ///输出的进制方式
-    BASE_NUMBER_SYSTEM base_;
+    BASE_NUMBER        base_;
     ///输出格式控制标志
     int                flags_;
 };
@@ -894,7 +894,7 @@ public:
                       size_t width = 0,
                       int flags = zce::FMT_PREFIX | zce::FMT_UP,
                       size_t precision = 0) :
-        Int_Out_Helper(out_data, width, flags, zce::BASE_HEXADECIMAL, precision)
+        Int_Out_Helper(out_data, width, flags, zce::BASE_NUMBER::HEXADECIMAL, precision)
     {
         flags_ |= zce::FMT_UNSIGNED;
     }

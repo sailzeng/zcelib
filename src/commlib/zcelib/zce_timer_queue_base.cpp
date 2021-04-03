@@ -59,7 +59,7 @@ int ZCE_Timer_Queue_Base::initialize(size_t num_timer_node,
     extend_node(num_timer_node, old_num_node);
 
     //触发模式
-    if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
+    if (trigger_mode_ == TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK)
     {
         //得到一个时间长度，用于比较衡量
         ZCE_Time_Value  now_time(zce::gettimeofday());
@@ -68,7 +68,7 @@ int ZCE_Timer_Queue_Base::initialize(size_t num_timer_node,
         prev_trigger_msec_ = now_time.total_msec();
     }
     //
-    else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
         ZCE_Time_Value cpu_tick(zce::get_uptime());
@@ -350,13 +350,13 @@ int ZCE_Timer_Queue_Base::get_first_timeout(ZCE_Time_Value *first_timeout)
     uint64_t now_trigger_msec = 0;
 
     //触发模式
-    if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
+    if (trigger_mode_ == TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK)
     {
         //取得毫秒
         now_trigger_msec = now_time.total_msec();
     }
     //
-    else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
         ZCE_Time_Value cpu_tick(zce::get_uptime());
@@ -387,13 +387,13 @@ size_t ZCE_Timer_Queue_Base::expire()
     uint64_t now_trigger_msec = 0;
 
     //触发模式
-    if (trigger_mode_ == TRIGGER_MODE_SYSTEM_CLOCK)
+    if (trigger_mode_ == TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK)
     {
         //取得毫秒
         now_trigger_msec = now_time.total_msec();
     }
     //
-    else if (trigger_mode_ == TRIGGER_MODE_CPU_TICK)
+    else if (trigger_mode_ == TRIGGER_MODE::TRIGGER_MODE_CPU_TICK)
     {
         //其实这不是真正的CPU Tick
         ZCE_Time_Value cpu_tick(zce::get_uptime());

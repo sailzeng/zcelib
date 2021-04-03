@@ -59,7 +59,7 @@ enum PET_APPFRAME_CMD
     INNER_RSP_RECV_NAKED_UDP_FRAME             = 18,           //占位
     INNER_REQ_SEND_NAKED_UDP_FRAME             = 19,           //占位
     INNER_RSP_SEND_NAKED_UDP_FRAME             = 20,           //内部处理,业务服务器要发送一个UDP的裸数据，其用APPFRAME包裹，发送数据存在在DATA区
-    INTERNAL_COMMAND_END                       = 9999,         //
+    INTERNAL_COMMAND_END                       = 1000,         //
 
     //------------------------------------------------------------------------------------------------
     //通讯服务器的命令
@@ -72,7 +72,7 @@ enum PET_APPFRAME_CMD
     ZERG_RESEND_SINGATRUE_KEY_RSP             = 290000006,               //占位
     ZERG_REPEAT_LOGIN_KICK_OLD_REQ            = 290000007,               //
     ZERG_REPEAT_LOGIN_KICK_OLD_RSP            = 290000008,               //占位
-    ZERG_WITH_64_SINGATRUE_KEY_REQ            = 290000009,               //这个是FRAME带有SINGATRUE_KEY数据(0x82登录)
+    ZERG_WITH_64_SINGATRUE_KEY_REQ            = 290000009,               //这个是FRAME带有SINGATRUE_KEY数据
     ZERG_WITH_64_SINGATRUE_KEY_RSP            = 290000010,               //占位
     ZERG_HEART_BEAT_REQ                       = 290000011,               //心跳,内部心跳处理
     ZERG_HEART_BEAT_RSP                       = 290000012,               //占位

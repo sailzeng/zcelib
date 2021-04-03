@@ -463,7 +463,7 @@ void zce::fmt_int64(char *buffer,
                     size_t max_len,
                     size_t &use_len,
                     int64_t value,
-                    BASE_NUMBER_SYSTEM base,
+                    BASE_NUMBER base,
                     size_t width,
                     size_t precision,
                     int flags)
@@ -512,12 +512,12 @@ void zce::fmt_int64(char *buffer,
     //如果要添加0x之类的前缀
     if (flags & FMT_PREFIX)
     {
-        if (BASE_HEXADECIMAL == base )
+        if (BASE_NUMBER::HEXADECIMAL == base )
         {
             prefix_len = 2;
         }
 
-        if (BASE_OCTAL  == base )
+        if (BASE_NUMBER::OCTAL  == base )
         {
             prefix_len = 1;
         }
@@ -536,8 +536,8 @@ void zce::fmt_int64(char *buffer,
 
     do
     {
-        convert[place++] = use_char_ary [uvalue % base];
-        uvalue = (uvalue / base );
+        convert[place++] = use_char_ary [uvalue % static_cast<int>(base)];
+        uvalue = (uvalue / static_cast<int>( base ));
     }
     while (uvalue && (place < MAX_OUT_LEN));
 
@@ -575,7 +575,7 @@ void zce::fmt_int64(char *buffer,
     if (flags & FMT_PREFIX)
     {
         //十六进制添加0x
-        if (BASE_HEXADECIMAL == base)
+        if (BASE_NUMBER::HEXADECIMAL == base)
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
 
@@ -590,7 +590,7 @@ void zce::fmt_int64(char *buffer,
         }
 
         //8进制添加0
-        if (BASE_OCTAL == base)
+        if (BASE_NUMBER::OCTAL == base)
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
         }
@@ -624,7 +624,7 @@ void zce::fmt_int64(char *buffer,
 
 void zce::fmt_int64(std::string &stdstr,
                     int64_t value,
-                    BASE_NUMBER_SYSTEM base,
+                    BASE_NUMBER base,
                     size_t width,
                     size_t precision,
                     int flags)
@@ -667,12 +667,12 @@ void zce::fmt_int64(std::string &stdstr,
     //如果要添加0x之类的前缀
     if (flags & FMT_PREFIX)
     {
-        if (BASE_HEXADECIMAL == base)
+        if (BASE_NUMBER::HEXADECIMAL == base)
         {
             prefix_len = 2;
         }
 
-        if (BASE_OCTAL == base)
+        if (BASE_NUMBER::OCTAL == base)
         {
             prefix_len = 1;
         }
@@ -692,8 +692,8 @@ void zce::fmt_int64(std::string &stdstr,
     //注意得到的字符串是反转的
     do
     {
-        convert[place++] = use_char_ary[uvalue % base];
-        uvalue = (uvalue / base);
+        convert[place++] = use_char_ary[uvalue % static_cast<int>(base)];
+        uvalue = (uvalue / static_cast<int>(base));
     }
     while (uvalue && (place < MAX_OUT_LEN));
 
@@ -728,7 +728,7 @@ void zce::fmt_int64(std::string &stdstr,
     if (flags & FMT_PREFIX)
     {
         //十六进制添加0x
-        if (BASE_HEXADECIMAL == base)
+        if (BASE_NUMBER::HEXADECIMAL == base)
         {
             stdstr.append(1, '0');
             if (flags & FMT_UP)
@@ -742,7 +742,7 @@ void zce::fmt_int64(std::string &stdstr,
         }
 
         //8进制添加0
-        if (BASE_OCTAL == base)
+        if (BASE_NUMBER::OCTAL == base)
         {
             stdstr.append(1, '0');
         }

@@ -82,7 +82,7 @@ class Notify_Trans_Abnormal_Base : public Notify_Trans_Base<ZCE_MT_SYNCH>
     //设置成private是有目的的，就是不让你用。
 private:
     //在某些特殊时候(避免多次拷贝)，要自己管理向SEND QUEUE发送的FRAME
-    Zerg_App_Frame                        *abnormal_frame_;
+    ZERG_FRAME_HEAD                        *abnormal_frame_;
 
 public:
     //构造函数
@@ -96,7 +96,7 @@ public:
     void malloc_abnormalframe(size_t frame_len);
 
     //取得FRAME进行操作，不要改变长度等FRAME HEAD的数据，数
-    Zerg_App_Frame *get_abnormal_frame();
+    ZERG_FRAME_HEAD *get_abnormal_frame();
     //取得FRAME的数据区用于操作
     char *get_abnormal_framedata();
 

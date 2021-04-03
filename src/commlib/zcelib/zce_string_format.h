@@ -58,16 +58,16 @@ enum FORMAT_STRING_FLAG
 };
 
 ///输出的进制系统，默认是10进制
-enum BASE_NUMBER_SYSTEM
+enum class BASE_NUMBER
 {
     ///二进制
-    BASE_BINARY        = 2,
+    BINARY        = 2,
     ///八进制
-    BASE_OCTAL         = 8,
+    OCTAL         = 8,
     ///十进制
-    BASE_DECIMAL       = 10,
+    DECIMAL       = 10,
     ///十六进制
-    BASE_HEXADECIMAL   = 16,
+    HEXADECIMAL   = 16,
 };
 
 ///默认的浮点精度长度
@@ -120,7 +120,7 @@ void fmt_int64(char *buffer,
                size_t max_len,
                size_t &use_len,
                int64_t value,
-               BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
+               BASE_NUMBER base = BASE_NUMBER::DECIMAL,
                size_t width = 0,
                size_t precision = 0,
                int flags = 0);
@@ -128,7 +128,7 @@ void fmt_int64(char *buffer,
 ///用于将int64格式化后输出（添加）到 @stdstr里面（末尾），参数含义见上面的函数
 void fmt_int64(std::string &stdstr,
                int64_t value,
-               BASE_NUMBER_SYSTEM base,
+               BASE_NUMBER base,
                size_t width = 0,
                size_t precision = 0,
                int flags = 0);

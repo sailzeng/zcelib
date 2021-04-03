@@ -31,7 +31,7 @@ class NotifyTrans_Manger : public Transaction_Manager
 protected:
 
     //ZCE_Message_Queue_Deque底层实现用的Deque
-    typedef ZCE_Message_Queue_Deque<_ZCE_SYNCH, Zerg_App_Frame *>  APPFRAME_MESSAGE_QUEUE;
+    typedef ZCE_Message_Queue_Deque<_ZCE_SYNCH, ZERG_FRAME_HEAD *>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
     typedef AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
@@ -158,7 +158,7 @@ public:
         for (proc_frame = 0; proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
         {
 
-            Zerg_App_Frame *tmp_frame = NULL;
+            ZERG_FRAME_HEAD *tmp_frame = NULL;
             //
             ret = recv_msg_queue_->try_dequeue(tmp_frame);
 
@@ -210,7 +210,7 @@ public:
     int stop_notify_task();
 
     //从recv的消息队列中去一个数据出来，进行超时等待
-    int dequeue_recvqueue(Zerg_App_Frame *&get_frame, ZCE_Time_Value *tv)
+    int dequeue_recvqueue(ZERG_FRAME_HEAD *&get_frame, ZCE_Time_Value *tv)
     {
         int ret = recv_msg_queue_->dequeue(get_frame, tv);
 
@@ -229,7 +229,7 @@ public:
     }
 
     //从recv的消息队列中去一个数据出来，不进行超时等待
-    int trydequeue_recvqueue(Zerg_App_Frame *&get_frame)
+    int trydequeue_recvqueue(ZERG_FRAME_HEAD *&get_frame)
     {
         int ret = recv_msg_queue_->try_dequeue(get_frame);
 
@@ -248,7 +248,7 @@ public:
     }
 
     //从send的消息队列中去一个数据出来，进行超时等待
-    int dequeue_sendqueue(Zerg_App_Frame *&get_frame, ZCE_Time_Value &tv)
+    int dequeue_sendqueue(ZERG_FRAME_HEAD *&get_frame, ZCE_Time_Value &tv)
     {
         int ret = 0;
         ret = send_msg_queue_->dequeue(get_frame, tv);
@@ -267,7 +267,7 @@ public:
     }
 
     //从send的消息队列中去一个数据出来，不进行超时等待
-    int trydequeue_sendqueue(Zerg_App_Frame *&get_frame)
+    int trydequeue_sendqueue(ZERG_FRAME_HEAD *&get_frame)
     {
         int ret = 0;
         ret = send_msg_queue_->try_dequeue(get_frame);
@@ -292,12 +292,12 @@ public:
 
     //聚合frame_mallocor_的功能
     //从池子分配一个APPFRAME
-    Zerg_App_Frame *alloc_appframe(size_t frame_len)
+    ZERG_FRAME_HEAD *alloc_appframe(size_t frame_len)
     {
         return frame_mallocor_->alloc_appframe(frame_len);
     }
     //释放一个APPFRAME到池子
-    void free_appframe(Zerg_App_Frame *proc_frame)
+    void free_appframe(ZERG_FRAME_HEAD *proc_frame)
     {
         frame_mallocor_->free_appframe(proc_frame);
     }
@@ -342,10 +342,10 @@ public:
         unsigned int app_id,
         unsigned int option)
     {
-        Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(trans_send_buffer_);
-        rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+        ZERG_FRAME_HEAD *rsp_msg = reinterpret_cast<ZERG_FRAME_HEAD *>(trans_send_buffer_);
+        rsp_msg->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uid_ = qquin;
+        rsp_msg->frame_userid_ = qquin;
         rsp_msg->transaction_id_ = trans_id;
         rsp_msg->recv_service_ = rcvsvc;
         rsp_msg->proxy_service_ = proxysvc;
@@ -353,10 +353,10 @@ public:
 
         //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
         rsp_msg->backfill_trans_id_ = backfill_trans_id;
-        rsp_msg->app_id_ = app_id;
+        rsp_msg->business_id_ = app_id;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
         {
@@ -391,10 +391,10 @@ public:
     Other           :
     Modify Record   :
     ******************************************************************************************/
-    int enqueue_sendqueue(Zerg_App_Frame *post_frame, bool alloc_frame)
+    int enqueue_sendqueue(ZERG_FRAME_HEAD *post_frame, bool alloc_frame)
     {
         int ret = 0;
-        Zerg_App_Frame *tmp_frame = NULL;
+        ZERG_FRAME_HEAD *tmp_frame = NULL;
 
         //如果是从池子中间取出的FRAME，就什么都不做
         if ( alloc_frame )
@@ -414,11 +414,11 @@ public:
         if (ret < 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
-                    ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
+                    ret, tmp_frame->frame_userid_, tmp_frame->frame_command_);
 
             // 加个监控
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
-                                                         tmp_frame->app_id_,
+                                                         tmp_frame->business_id_,
                                                          0);
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
         }
@@ -443,10 +443,10 @@ public:
     Other           :
     Modify Record   :
     ******************************************************************************************/
-    int enqueue_recvqueue(const Zerg_App_Frame *post_frame, const ZCE_Time_Value *tv)
+    int enqueue_recvqueue(const ZERG_FRAME_HEAD *post_frame, const ZCE_Time_Value *tv)
     {
         int ret = 0;
-        Zerg_App_Frame *tmp_frame = NULL;
+        ZERG_FRAME_HEAD *tmp_frame = NULL;
         frame_mallocor_->clone_appframe(post_frame, tmp_frame);
         ret = recv_msg_queue_->enqueue(tmp_frame, *tv);
 

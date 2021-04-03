@@ -66,7 +66,7 @@ void Transaction_Base::on_start()
 
 
 //根据Frame初始化得到对方发送的信息
-void Transaction_Base::create_init(Zerg_App_Frame *proc_frame)
+void Transaction_Base::create_init(ZERG_FRAME_HEAD *proc_frame)
 {
 
     req_command_ = proc_frame->frame_command_;
@@ -78,15 +78,15 @@ void Transaction_Base::create_init(Zerg_App_Frame *proc_frame)
 
     req_trans_id_ = proc_frame->transaction_id_;
     req_session_id_ = proc_frame->backfill_trans_id_;
-    req_game_app_id_ =  proc_frame->app_id_;
+    req_game_app_id_ =  proc_frame->business_id_;
 
-    req_user_id_ = proc_frame->frame_uid_;
+    req_user_id_ = proc_frame->frame_userid_;
 
     req_ip_address_ = proc_frame->send_ip_address_;
     req_frame_option_ = proc_frame->frame_option_;
 
     //如果有监控选项，提高日志级别，保证部分日志得到输出
-    if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
     {
         trace_log_pri_ = RS_INFO;
     }
@@ -96,7 +96,7 @@ void Transaction_Base::create_init(Zerg_App_Frame *proc_frame)
 
 void Transaction_Base::on_run(void *outer_data, bool &continue_run)
 {
-    Zerg_App_Frame *recv_frame = (Zerg_App_Frame *)outer_data;
+    ZERG_FRAME_HEAD *recv_frame = (ZERG_FRAME_HEAD *)outer_data;
 
     //如果是第一次创建事物的时候，
     if (trans_create_)
@@ -204,7 +204,7 @@ void Transaction_Base::on_timeout(const ZCE_Time_Value &now_time,
 
 
 //检查接受到的FRAME的数据和命令
-int Transaction_Base::check_receive_frame(const Zerg_App_Frame *recv_frame,
+int Transaction_Base::check_receive_frame(const ZERG_FRAME_HEAD *recv_frame,
                                           unsigned int wait_cmd)
 {
     //
@@ -359,9 +359,9 @@ int Transaction_Base::sendbuf_to_service(unsigned int cmd,
                                          unsigned int option )
 {
     // 如果请求的命令要求要监控，后面的处理进行监控
-    if (req_frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    if (req_frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
     {
-        option |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+        option |= ZERG_FRAME_HEAD::DESC_MONITOR_TRACK;
     }
 
     //条用管理器的发送函数
@@ -387,9 +387,9 @@ int Transaction_Base::response_buf_sendback(unsigned int cmd,
     // 回包不需要加监控标记吧？
 
     //加入UDP返回的代码部分
-    if (req_frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
+    if (req_frame_option_ & ZERG_FRAME_OPTION::PROTOCOL_UDP)
     {
-        option |= Zerg_App_Frame::DESC_UDP_FRAME;
+        option |= ZERG_FRAME_OPTION::PROTOCOL_UDP;
     }
 
     //

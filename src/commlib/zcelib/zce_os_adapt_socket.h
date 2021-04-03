@@ -335,22 +335,22 @@ inline int select(
 );
 
 ///用于handle_ready函数,handle_multi_ready函数
-enum HANDLE_READY_TODO
+enum class HANDLE_READY_TODO
 {
     ///读事件
-    HANDLE_READY_READ            = 0x1,
+    READ            = 0x1,
 
     ///写事件
-    HANDLE_READY_WRITE           = 0x2,
+    WRITE           = 0x2,
 
     ///异常
-    HANDLE_READY_EXCEPTION       = 0x3,
+    EXCEPTION       = 0x3,
 
     ///ACCPET 事件，也是放在读的SET
-    HANDLE_READY_ACCEPT          = 0x4,
+    ACCEPT          = 0x4,
 
     ///连接成功，我为连接成功做了多少努力，你看不见
-    HANDLE_READY_CONNECTED       = 0x5,
+    CONNECTED       = 0x5,
 
 };
 

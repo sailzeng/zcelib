@@ -43,10 +43,10 @@ public:
     ZCE_LOG_PRIORITY log_level_ = RS_DEBUG;
 
     ///日志输出方式: @ref LOG_OUTPUT_WAY ,多种输出方式可以组合
-    uint32_t log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
+    uint32_t log_output_ = LOG_OUTPUT_WAY::FILE | LOG_OUTPUT_WAY::ERROUT;
 
     // 日志分割方式:101按大小 201按小时 205按天
-    ZCE_LOGFILE_NAME_DEVIDE log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
+    ZCE_LOGFILE_DEVIDE log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
 
     // 日志文件保留个数，多出的日志文件将会被删除
     uint32_t reserve_file_num_ = DEF_RESERVE_FILE_NUM;

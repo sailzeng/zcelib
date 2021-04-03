@@ -143,7 +143,7 @@ int Echo_Proxy_Process::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 }
 
 
-int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
+int Echo_Proxy_Process::process_proxy(ZERG_FRAME_HEAD *proc_frame)
 {
 
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a echo frame to process,"
@@ -156,7 +156,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
                      proc_frame->send_service_.services_id_,
                      proc_frame->recv_service_.services_type_,
                      proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_uid_,
+                     proc_frame->frame_userid_,
                      proc_frame->frame_command_,
                      proc_frame->frame_length_);
 
@@ -167,7 +167,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_uid_, proc_frame->frame_command_);
+                proc_frame->frame_userid_, proc_frame->frame_command_);
         return 0;
     }
 
@@ -185,7 +185,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "Echo to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
                      proc_frame->recv_service_.services_type_,
                      proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_uid_,
+                     proc_frame->frame_userid_,
                      proc_frame->frame_command_,
                      proc_frame->frame_length_);
     return 0;
@@ -219,7 +219,7 @@ int Transmit_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
     return 0;
 }
 
-int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
+int Transmit_Proxy::process_proxy(ZERG_FRAME_HEAD *proc_frame)
 {
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "Receive a transmit frame to process,"
                      "send svr:[%u|%u], "
@@ -231,7 +231,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
                      proc_frame->send_service_.services_id_,
                      proc_frame->recv_service_.services_type_,
                      proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_uid_,
+                     proc_frame->frame_userid_,
                      proc_frame->frame_command_,
                      proc_frame->frame_length_);
 
@@ -243,7 +243,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_uid_, proc_frame->frame_command_);
+                proc_frame->frame_userid_, proc_frame->frame_command_);
         return 0;
     }
 
@@ -258,7 +258,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "Transmit to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                      proc_frame->recv_service_.services_type_,
                      proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_uid_,
+                     proc_frame->frame_userid_,
                      proc_frame->frame_command_,
                      proc_frame->frame_length_,
                      proc_frame->transaction_id_);
@@ -347,7 +347,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
 }
 
 //
-int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
+int Broadcast_ProxyProcess::process_proxy(ZERG_FRAME_HEAD *proc_frame)
 {
     int ret = 0;
 
@@ -360,7 +360,7 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_uid_, proc_frame->frame_command_);
+                proc_frame->frame_userid_, proc_frame->frame_command_);
         return 0;
     }
 
@@ -387,7 +387,7 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
         ZCE_LOGMSG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                          proc_frame->recv_service_.services_type_,
                          proc_frame->recv_service_.services_id_,
-                         proc_frame->frame_uid_,
+                         proc_frame->frame_userid_,
                          proc_frame->frame_command_,
                          proc_frame->frame_length_,
                          proc_frame->transaction_id_);
@@ -472,7 +472,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
 }
 
 //
-int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
+int Modulo_ProxyProcess::process_proxy(ZERG_FRAME_HEAD *proc_frame)
 {
     int ret = 0;
 
@@ -485,7 +485,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     if (proc_frame->is_internal_process(bsnderr) == true)
     {
         ZCE_LOG(RS_DEBUG, "Receive a internal command, frame_uin:%u, frame_command:%u. ",
-                proc_frame->frame_uid_, proc_frame->frame_command_);
+                proc_frame->frame_userid_, proc_frame->frame_command_);
         return 0;
     }
 
@@ -499,7 +499,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     uint32_t mod_number = 0;
     if ( MODULO_UID == modulo_type_)
     {
-        mod_number = proc_frame->frame_uid_;
+        mod_number = proc_frame->frame_userid_;
     }
     else if (MODULO_SENDSVC_ID == modulo_type_)
     {
@@ -522,7 +522,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     ZCE_LOGMSG_DEBUG(RS_DEBUG, "Copy to [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u, trans_id[%u]. ",
                      proc_frame->recv_service_.services_type_,
                      proc_frame->recv_service_.services_id_,
-                     proc_frame->frame_uid_,
+                     proc_frame->frame_userid_,
                      proc_frame->frame_command_,
                      proc_frame->frame_length_,
                      proc_frame->transaction_id_);

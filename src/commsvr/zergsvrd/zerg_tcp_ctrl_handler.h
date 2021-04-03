@@ -178,7 +178,7 @@ protected:
 
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(Zerg_App_Frame *proc_frame);
+    int  preprocess_recvframe(ZERG_FRAME_HEAD *proc_frame);
 
     //处理发送的REGISTER数据,连接后发送第一个数据
     int  process_connect_register();

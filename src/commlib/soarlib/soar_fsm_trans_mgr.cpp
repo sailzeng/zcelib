@@ -74,11 +74,11 @@ int Transaction_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
     self_svc_id_ = selfsvr;
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
-    trans_send_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
+    trans_send_buffer_ = ZERG_FRAME_HEAD::new_frame(max_frame_len + 32);
     trans_send_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
-    trans_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
+    trans_recv_buffer_ = ZERG_FRAME_HEAD::new_frame(max_frame_len + 32);
     trans_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
-    fake_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
+    fake_recv_buffer_ = ZERG_FRAME_HEAD::new_frame(max_frame_len + 32);
     fake_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
@@ -117,17 +117,17 @@ void Transaction_Manager::finish()
     }
     if (trans_send_buffer_)
     {
-        Zerg_App_Frame::delete_frame(trans_send_buffer_);
+        ZERG_FRAME_HEAD::delete_frame(trans_send_buffer_);
         trans_send_buffer_ = NULL;
     }
     if (trans_recv_buffer_)
     {
-        Zerg_App_Frame::delete_frame(trans_recv_buffer_);
+        ZERG_FRAME_HEAD::delete_frame(trans_recv_buffer_);
         trans_recv_buffer_ = NULL;
     }
     if (fake_recv_buffer_)
     {
-        Zerg_App_Frame::delete_frame(fake_recv_buffer_);
+        ZERG_FRAME_HEAD::delete_frame(fake_recv_buffer_);
         fake_recv_buffer_ = NULL;
     }
     ZCE_Async_FSMMgr::finish();
@@ -154,7 +154,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
     int ret = 0;
     create_trans = 0;
 
-    Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(trans_recv_buffer_);
+    ZERG_FRAME_HEAD *tmp_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(trans_recv_buffer_);
 
     for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
     {
@@ -191,7 +191,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
 }
 
 //将数据放入发送管道
-int Transaction_Manager::push_back_sendpipe(Zerg_App_Frame *proc_frame)
+int Transaction_Manager::push_back_sendpipe(ZERG_FRAME_HEAD *proc_frame)
 {
     //Soar_MMAP_BusPipe必须先初始化....
     return zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
@@ -256,15 +256,15 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrttx)
+int Transaction_Manager::process_appframe(ZERG_FRAME_HEAD *app_frame, bool &bcrttx)
 {
     bcrttx = false;
     int ret = 0;
 
     //如果是跟踪命令，打印出来
-    if (app_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    if (app_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
     {
-        Zerg_App_Frame::dumpoutput_framehead(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]", app_frame);
+        ZERG_FRAME_HEAD::dumpoutput_framehead(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]", app_frame);
     }
 
 
@@ -438,12 +438,12 @@ int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
                                                     unsigned int option)
 {
     //
-    Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(trans_send_buffer_);
-    rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
+    ZERG_FRAME_HEAD *rsp_msg = reinterpret_cast<ZERG_FRAME_HEAD *>(trans_send_buffer_);
+    rsp_msg->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME);
 
-    rsp_msg->frame_length_ = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
+    rsp_msg->frame_length_ = ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD;
     rsp_msg->frame_command_ = cmd;
-    rsp_msg->frame_uid_ = qquin;
+    rsp_msg->frame_userid_ = qquin;
 
     rsp_msg->transaction_id_ = 0;
     rsp_msg->recv_service_ = rcvsvc;
@@ -453,7 +453,7 @@ int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
 
     //回填事务ID
     rsp_msg->backfill_trans_id_ = backfill_trans_id;
-    rsp_msg->app_id_ = app_id;
+    rsp_msg->business_id_ = app_id;
 
     return push_back_sendpipe(rsp_msg);
 }
@@ -464,10 +464,10 @@ void Transaction_Manager::enable_trans_statistics (const ZCE_Time_Value *stat_cl
     statistics_clock_ = stat_clock;
 }
 
-int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
+int Transaction_Manager::mgr_postframe_to_msgqueue(ZERG_FRAME_HEAD *post_frame)
 {
     int ret = 0;
-    Zerg_App_Frame *tmp_frame = NULL;
+    ZERG_FRAME_HEAD *tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     inner_frame_malloc_->clone_appframe(post_frame, tmp_frame);
@@ -482,7 +482,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
                 "Send queue message_count:%u message_bytes:%u. ",
                 ret,
                 inner_message_queue_->size(),
-                inner_message_queue_->size() * sizeof(Zerg_App_Frame *));
+                inner_message_queue_->size() * sizeof(ZERG_FRAME_HEAD *));
         //出错了以后还回去
         inner_frame_malloc_->free_appframe(tmp_frame);
 
@@ -502,7 +502,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
     for (proc_frame = 0; inner_message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
     {
 
-        Zerg_App_Frame *tmp_frame = NULL;
+        ZERG_FRAME_HEAD *tmp_frame = NULL;
         //
         ret = inner_message_queue_->dequeue(tmp_frame);
 

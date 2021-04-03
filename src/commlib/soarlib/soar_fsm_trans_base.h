@@ -24,7 +24,7 @@
 #include "soar_fsm_trans_mgr.h"
 #include "soar_error_code.h"
 
-class Zerg_App_Frame;
+class ZERG_FRAME_HEAD;
 class Soar_MMAP_BusPipe;
 
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
@@ -81,7 +81,7 @@ public:
     * @param      recv_frame
     * @param      continue_run
     */
-    virtual void trans_run(Zerg_App_Frame *recv_frame,
+    virtual void trans_run(ZERG_FRAME_HEAD *recv_frame,
                            bool &continue_run) = 0;
 
     /*!
@@ -99,7 +99,7 @@ protected:
     * @brief      根据Frame初始化得到对方发送的信息
     * @param      recv_frame 初始化接收的FRAME数据,
     */
-    void create_init(Zerg_App_Frame *recv_frame);
+    void create_init(ZERG_FRAME_HEAD *recv_frame);
 
 
 
@@ -124,7 +124,7 @@ protected:
     ///用于检查请求的IP地址是否是内部IP地址
     int check_request_internal() const;
     ///检查接受到的FRAME的数据和命令
-    int check_receive_frame(const Zerg_App_Frame *recv_frame,
+    int check_receive_frame(const ZERG_FRAME_HEAD *recv_frame,
                             unsigned int wait_cmd);
 
 
@@ -512,9 +512,9 @@ int Transaction_Base::response_sendback(unsigned int cmd,
 {
 
     //加入UDP返回的代码部分
-    if (req_frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
+    if (req_frame_option_ & ZERG_FRAME_OPTION::PROTOCOL_UDP)
     {
-        option |= Zerg_App_Frame::DESC_UDP_FRAME;
+        option |= ZERG_FRAME_OPTION::PROTOCOL_UDP;
     }
 
     //
@@ -540,9 +540,9 @@ int Transaction_Base::response_sendback2(unsigned int cmd,
                                          unsigned int option)
 {
     //加入UDP返回的代码部分
-    if (req_frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
+    if (req_frame_option_ & ZERG_FRAME_OPTION::PROTOCOL_UDP)
     {
-        option |= Zerg_App_Frame::DESC_UDP_FRAME;
+        option |= ZERG_FRAME_OPTION::PROTOCOL_UDP;
     }
 
     //
@@ -573,9 +573,9 @@ int Transaction_Base::sendmsg_to_service(unsigned int cmd,
                                          unsigned int option)
 {
     //如果请求的命令要求要监控，后面的处理进行监控
-    if (req_frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    if (req_frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
     {
-        option |= Zerg_App_Frame::DESC_MONITOR_TRACK;
+        option |= ZERG_FRAME_HEAD::DESC_MONITOR_TRACK;
     }
 
     //如果发送的

@@ -8,7 +8,7 @@
 #include "soar_stat_define.h"
 #include "soar_svrd_cfg_fsm.h"
 
-class Zerg_App_Frame;
+class ZERG_FRAME_HEAD;
 
 class SOARING_EXPORT Soar_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
 {
@@ -35,9 +35,9 @@ public:
 
     //-----------------------------------------------------------------
     //从RECV管道读取帧
-    inline int pop_front_recvpipe(Zerg_App_Frame *&proc_frame);
+    inline int pop_front_recvpipe(ZERG_FRAME_HEAD *&proc_frame);
     //向SEND管道写入帧
-    inline int push_back_sendpipe(Zerg_App_Frame *proc_frame);
+    inline int push_back_sendpipe(ZERG_FRAME_HEAD *proc_frame);
 
     //原来的名字都是send_msg_to，一开始认为这样挺好的，但是逐步逐步的感觉发现修改替换的时候痛苦不少。
     //不确认改为pipe_sendmsg_to_service是不是一个好主意，但是试验一下?
@@ -118,7 +118,7 @@ protected:
     ///这个服务器的配置信息.
     SERVICES_ID         zerg_svr_info_ = SERVICES_ID(0, 0);
     ///发送的缓冲区
-    static char         send_buffer_[Zerg_App_Frame::MAX_LEN_OF_APPFRAME];
+    static char         send_buffer_[ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME];
 
     ///监控对象
     Soar_Stat_Monitor   *monitor_ = NULL;
@@ -126,7 +126,7 @@ protected:
 };
 
 //从RECV管道读取帧，
-inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
+inline int Soar_MMAP_BusPipe::pop_front_recvpipe(ZERG_FRAME_HEAD *&proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID, reinterpret_cast<zce::lockfree::dequechunk_node *&>(proc_frame));
 
@@ -134,18 +134,18 @@ inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
     if (ret == 0)
     {
         monitor_->increase_once(COMM_STAT_RECV_PKG_COUNT,
-                                proc_frame->app_id_,
+                                proc_frame->business_id_,
                                 proc_frame->frame_command_);
         monitor_->increase_by_statid(COMM_STAT_RECV_PKG_BYTES,
-                                     proc_frame->app_id_,
+                                     proc_frame->business_id_,
                                      proc_frame->frame_command_,
                                      proc_frame->frame_length_);
 
 
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+        if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
         {
-            Zerg_App_Frame::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Recv]", proc_frame);
+            ZERG_FRAME_HEAD::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Recv]", proc_frame);
         }
     }
 
@@ -153,11 +153,11 @@ inline int Soar_MMAP_BusPipe::pop_front_recvpipe(Zerg_App_Frame *&proc_frame)
 }
 
 //向SEND管道写入帧，
-inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
+inline int Soar_MMAP_BusPipe::push_back_sendpipe(ZERG_FRAME_HEAD *proc_frame)
 {
     DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO SEND PIPE FRAME:", proc_frame);
 
-    if (proc_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME || proc_frame->frame_length_ < Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
+    if (proc_frame->frame_length_ > ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME || proc_frame->frame_length_ < ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD)
     {
         ZCE_LOG(RS_ERROR, "[framework] Frame Len is error ,frame length :%u ,Please check your code.",
                 proc_frame->frame_length_);
@@ -165,9 +165,9 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
     }
 
     //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-    if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
+    if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
     {
-        Zerg_App_Frame::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Send]", proc_frame);
+        ZERG_FRAME_HEAD::dumpoutput_frameinfo(RS_ERROR, "[TRACK MONITOR][Send]", proc_frame);
     }
 
     int ret = push_back_bus(SEND_PIPE_ID,
@@ -177,17 +177,17 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
     {
         // 发送失败, 管道满了
         monitor_->increase_once(COMM_STAT_SEND_PKG_FAIL,
-                                proc_frame->app_id_,
+                                proc_frame->business_id_,
                                 proc_frame->frame_command_);
         return SOAR_RET::ERROR_PIPE_IS_FULL;
     }
     else
     {
         monitor_->increase_once(COMM_STAT_SEND_PKG_SUCC,
-                                proc_frame->app_id_,
+                                proc_frame->business_id_,
                                 proc_frame->frame_command_);
         monitor_->increase_by_statid(COMM_STAT_SEND_PKG_BYTES,
-                                     proc_frame->app_id_,
+                                     proc_frame->business_id_,
                                      proc_frame->frame_command_,
                                      proc_frame->frame_length_);
     }
@@ -318,11 +318,11 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 {
     int ret = 0;
 
-    Zerg_App_Frame *send_frame = reinterpret_cast<Zerg_App_Frame *>(send_buffer_);
+    ZERG_FRAME_HEAD *send_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(send_buffer_);
 
-    send_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
-    send_frame->frame_uid_ = qquin;
-    send_frame->app_id_ = app_id;
+    send_frame->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
+    send_frame->frame_userid_ = qquin;
+    send_frame->business_id_ = app_id;
 
     send_frame->send_service_ = sendsvc;
     send_frame->proxy_service_ = proxysvc;
@@ -332,7 +332,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
     send_frame->transaction_id_ = transaction_id;
     send_frame->backfill_trans_id_ = backfill_trans_id;
 
-    ret = send_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = send_frame->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {

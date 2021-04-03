@@ -516,7 +516,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
     {
         return ret;
     }
-    val.from_string(value_str.c_str(), false, zce::TIME_STRFMT_US_SEC);
+    val.from_string(value_str.c_str(), false, zce::TIME_STR_FORMAT::US_SEC);
     return 0;
 }
 

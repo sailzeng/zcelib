@@ -36,7 +36,7 @@ public:
     void set_services_id(const SERVICES_ID &recv_service,
                          const SERVICES_ID &send_service,
                          const SERVICES_ID &proxy_service,
-                         size_t frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
+                         size_t frame_len = ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME);
 
     //取得收到的事务ID
     void get_recv_transid(unsigned int &trans_id);
@@ -45,9 +45,9 @@ public:
     unsigned int get_backfill_transid();
 
     //取得测试的APPFRAME
-    Zerg_App_Frame *get_send_appframe();
+    ZERG_FRAME_HEAD *get_send_appframe();
     //取得接收的APPFRAME
-    Zerg_App_Frame *get_recv_appframe();
+    ZERG_FRAME_HEAD *get_recv_appframe();
 
 protected:
 
@@ -68,9 +68,9 @@ protected:
     //就不会出现共用一个BUFFER的事情
 
     //发送缓冲区的帧
-    Zerg_App_Frame *tibetan_send_appframe_;
+    ZERG_FRAME_HEAD *tibetan_send_appframe_;
     //接收缓冲区
-    Zerg_App_Frame *tibetan_recv_appframe_;
+    ZERG_FRAME_HEAD *tibetan_recv_appframe_;
 
     //收到的事务ID
     unsigned int              recv_trans_id_;

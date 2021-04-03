@@ -47,7 +47,7 @@ SEND PIPE<=================================
 ************************************************************************************/
 class Soar_MMAP_BusPipe;
 class Transaction_Base;
-class Zerg_App_Frame;
+class ZERG_FRAME_HEAD;
 
 /******************************************************************************************
 struct TRANS_LOCK_RECORD 加锁的记录单元
@@ -100,7 +100,7 @@ protected:
 
 
     ///
-    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, Zerg_App_Frame *> INNER_FRAME_MESSAGE_QUEUE;
+    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, ZERG_FRAME_HEAD *> INNER_FRAME_MESSAGE_QUEUE;
     ///APPFRAME的分配器
     typedef AppFrame_Mallocor_Mgr<ZCE_Null_Mutex>                     INNER_APPFRAME_MALLOCOR;
 
@@ -117,7 +117,7 @@ protected:
 
 
     //处理一个收到的命令，
-    int process_appframe( Zerg_App_Frame *ppetappframe, bool &crttx );
+    int process_appframe( ZERG_FRAME_HEAD *ppetappframe, bool &crttx );
 
 public:
 
@@ -163,7 +163,7 @@ public:
                    size_t sztransmap,
                    const SERVICES_ID &selfsvr,
                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                   unsigned int max_frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
+                   unsigned int max_frame_len = ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
 
@@ -277,7 +277,7 @@ public:
                                unsigned int option);
 
     //发送一个数据到PIPE
-    int push_back_sendpipe(Zerg_App_Frame *proc_frame);
+    int push_back_sendpipe(ZERG_FRAME_HEAD *proc_frame);
 
 protected:
     //发送一消息头给一个服务器,内部函数
@@ -293,7 +293,7 @@ protected:
 protected:
 
     //发送一个数据到QUEUE
-    int mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame);
+    int mgr_postframe_to_msgqueue(ZERG_FRAME_HEAD *post_frame);
 
     //注册TransID.
     int regiester_trans_id(unsigned int transid, unsigned int trans_cmd, Transaction_Base *ptxbase);
@@ -324,7 +324,7 @@ protected:
 
     //QUEUE FRAME队列的水位标，考虑倒由于MessageQueue中奖存放的是指针，
     //但是长度应该应该是按照APPFRAME的帧头计算的。这个数量级别的长度已经不小了
-    static const size_t INNER_QUEUE_WATER_MARK = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD * 102400;
+    static const size_t INNER_QUEUE_WATER_MARK = ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD * 102400;
 
 protected:
 
@@ -345,12 +345,12 @@ protected:
     const ZCE_Time_Value       *statistics_clock_;
 
     //发送的缓冲区
-    Zerg_App_Frame             *trans_send_buffer_;
+    ZERG_FRAME_HEAD             *trans_send_buffer_;
     //接受数据缓冲区
-    Zerg_App_Frame             *trans_recv_buffer_;
+    ZERG_FRAME_HEAD             *trans_recv_buffer_;
 
     // fake数据缓冲区
-    Zerg_App_Frame             *fake_recv_buffer_;
+    ZERG_FRAME_HEAD             *fake_recv_buffer_;
 
     //内部FRAME分配器
     INNER_APPFRAME_MALLOCOR    *inner_frame_malloc_;
@@ -403,19 +403,19 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
 {
     int ret = 0;
 
-    Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(fake_recv_buffer_);
-    tmp_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    ZERG_FRAME_HEAD *tmp_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(fake_recv_buffer_);
+    tmp_frame->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_uid_ = qquin;
+    tmp_frame->frame_userid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
     tmp_frame->transaction_id_ = trans_id;
     tmp_frame->backfill_trans_id_ = backfill_trans_id;
-    tmp_frame->app_id_ = app_id;
+    tmp_frame->business_id_ = app_id;
 
-    ret = tmp_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = tmp_frame->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0)
     {
@@ -448,20 +448,20 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
 {
     int ret = 0;
 
-    Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(fake_recv_buffer_);
-    tmp_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    ZERG_FRAME_HEAD *tmp_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(fake_recv_buffer_);
+    tmp_frame->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_uid_ = qquin;
+    tmp_frame->frame_userid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
     tmp_frame->transaction_id_ = trans_id;
     tmp_frame->backfill_trans_id_ = backfill_trans_id;
-    tmp_frame->app_id_ = app_id;
+    tmp_frame->business_id_ = app_id;
 
-    tmp_frame->frame_length_ = (unsigned int)(buff_size + Zerg_App_Frame::LEN_OF_APPFRAME_HEAD);
-    if (tmp_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA)
+    tmp_frame->frame_length_ = (unsigned int)(buff_size + ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD);
+    if (tmp_frame->frame_length_ > ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
@@ -524,10 +524,10 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     unsigned int app_id,
     unsigned int option)
 {
-    Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(trans_send_buffer_);
-    rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    ZERG_FRAME_HEAD *rsp_msg = reinterpret_cast<ZERG_FRAME_HEAD *>(trans_send_buffer_);
+    rsp_msg->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    rsp_msg->frame_uid_ = qquin;
+    rsp_msg->frame_userid_ = qquin;
     rsp_msg->transaction_id_ = trans_id;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
@@ -535,10 +535,10 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
 
     //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
     rsp_msg->backfill_trans_id_ = backfill_trans_id;
-    rsp_msg->app_id_ = app_id;
+    rsp_msg->business_id_ = app_id;
 
     //拷贝发送的MSG Block
-    int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    int ret = rsp_msg->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {

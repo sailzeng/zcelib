@@ -30,7 +30,7 @@ public:
     static const int  INVALID_TIMER_ID = -1;
 
     ///触发模式，
-    enum TRIGGER_MODE
+    enum class TRIGGER_MODE
     {
 
         ///根据系统时钟进行触发，缺点是，在系统时间被调整的情况下，会丢失定时器
@@ -115,7 +115,7 @@ protected:
     //构造函数
     ZCE_Timer_Queue_Base(size_t num_timer_node,
                          unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                         TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                         TRIGGER_MODE trigger_mode = TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK,
                          bool dynamic_expand_node = true);
     ZCE_Timer_Queue_Base();
 public:
@@ -223,7 +223,7 @@ protected:
     */
     int initialize(size_t num_timer_node,
                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK,
                    bool dynamic_expand_node = true);
 
     /*!
@@ -294,7 +294,7 @@ protected:
     size_t                      num_use_node_ = 0;
 
     ///触发模式
-    TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE_SYSTEM_CLOCK;
+    TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE::TRIGGER_MODE_SYSTEM_CLOCK;
 
     ///是否支持动态扩张NODE
     bool                        dynamic_expand_node_ = true;

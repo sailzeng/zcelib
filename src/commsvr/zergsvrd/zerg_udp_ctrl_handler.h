@@ -6,7 +6,7 @@
 
 
 //forward declaration
-class Zerg_App_Frame;
+class ZERG_FRAME_HEAD;
 class Zerg_Buffer;
 class Zerg_IPRestrict_Mgr;
 class Zerg_Comm_Manager;
@@ -45,14 +45,14 @@ protected:
     int read_data_from_udp(size_t &szrevc);
 
     //发送UDP的数据
-    int write_data_to_udp(Zerg_App_Frame *send_frame);
+    int write_data_to_udp(ZERG_FRAME_HEAD *send_frame);
 
 public:
     //初始化静态参数
     static int init_all_static_data();
 
     //
-    static int send_all_to_udp(Zerg_App_Frame *send_frame);
+    static int send_all_to_udp(ZERG_FRAME_HEAD *send_frame);
 
     ///读取配置
     static int get_config(const Zerg_Server_Config *config);

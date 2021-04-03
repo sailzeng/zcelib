@@ -75,7 +75,7 @@ public:
     int popall_sendpipe_write(size_t want_send_frame, size_t &proc_frame_num);
 
     //
-    void pushback_recvpipe(Zerg_App_Frame *recv_frame);
+    void pushback_recvpipe(ZERG_FRAME_HEAD *recv_frame);
 
     //检查发包频率
     void check_freamcount(unsigned int now);

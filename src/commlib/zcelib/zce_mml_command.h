@@ -43,17 +43,17 @@ class MML_Console_Command
 public:
 
     ///MML语句的格式，
-    enum MML_STRING_PATTERN
+    enum class MML_STRING_PATTERN
     {
         ///第一种，对应函数parse_mml_cnd_string1
         ///CMD SVR : A = 1, B = 2, C = " i love c++!", D;
         ///:前面是命令字，命令字可以是两个单词，后面是参数，或者选项，之间用,隔开，字符串可以用""扩起来，用;结尾，
         ///没有考虑转意，
-        MML_STRING_PATTERN_1,
+        PATTERN_1,
         ///第二种，对应函数parse_mml_cnd_string1
         ///CMD_1 A = 1 B = 2 C = " i love c++!" D
         ///第一个单词是命令字，后面是选项和参数，之间用空格隔开, 一行只能有一个命令
-        MML_STRING_PATTERN_2,
+        PATTERN_2,
     };
 
 public:
