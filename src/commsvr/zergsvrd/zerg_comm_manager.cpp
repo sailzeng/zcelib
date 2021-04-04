@@ -7,7 +7,7 @@
 #include "zerg_comm_manager.h"
 
 
-//å®ä¾‹
+//ÊµÀı
 Zerg_Comm_Manager *Zerg_Comm_Manager::instance_ = NULL;
 
 Zerg_Comm_Manager::Zerg_Comm_Manager():
@@ -30,40 +30,40 @@ Zerg_Comm_Manager::Zerg_Comm_Manager():
 
 Zerg_Comm_Manager::~Zerg_Comm_Manager()
 {
-    //å…ˆå…³é—­ACCEPET
+    //ÏÈ¹Ø±ÕACCEPET
     for (size_t i = 0; i < zerg_acceptor_.size(); ++i)
     {
         zerg_acceptor_[i]->handle_close();
     }
 
-    //å…ˆå…³é—­UDP
+    //ÏÈ¹Ø±ÕUDP
     for (size_t i = 0; i < zerg_updsvc_.size(); ++i)
     {
         zerg_updsvc_[i]->handle_close();
     }
 }
 
-//åˆå§‹åŒ–
+//³õÊ¼»¯
 int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
 {
 
     zerg_config_ = config;
 
-    //æ¸…ç†ç›‘æ§å‘½ä»¤
+    //ÇåÀí¼à¿ØÃüÁî
     monitor_size_ = 0;
     memset(monitor_cmd_, 0, sizeof(monitor_cmd_));
 
-    //é”™è¯¯å‘é€æ•°æ®å°è¯•å‘é€æ¬¡æ•°
+    //´íÎó·¢ËÍÊı¾İ³¢ÊÔ·¢ËÍ´ÎÊı
     error_try_num_ = config->zerg_cfg_data_.retry_error_;
 
 
-    //é”™è¯¯å‘é€æ•°æ®å°è¯•å‘é€æ¬¡æ•°
+    //´íÎó·¢ËÍÊı¾İ³¢ÊÔ·¢ËÍ´ÎÊı
     monitor_size_ = config->zerg_cfg_data_.monitor_cmd_count_;
 
     ZCE_LOG(RS_INFO, "[zergsvr] Zerg_Comm_Manager::get_config monitor_size_ = %u", monitor_size_);
 
-    //è¯»å–ç›‘æ§çš„å‘½ä»¤ï¼Œç›‘æ§çš„å‘½ä»¤æ•°é‡å¿…é¡»å¾ˆå°‘ï¼Œæœ€å¥½ç­‰äº==0ï¼Œæ¯”è¾ƒè€—æ—¶ã€‚ä½ å¯ä»¥å¯¹å•æœºè¿›è¡Œç›‘æ§ã€‚
-    //ä½†æ˜¯æœ€å¥½ä¸è¦å¯¹æ‰€æœ‰çš„æœºå™¨è¿›è¡Œç›‘æ§ï¼Œ
+    //¶ÁÈ¡¼à¿ØµÄÃüÁî£¬¼à¿ØµÄÃüÁîÊıÁ¿±ØĞëºÜÉÙ£¬×îºÃµÈÓÚ==0£¬±È½ÏºÄÊ±¡£Äã¿ÉÒÔ¶Ôµ¥»ú½øĞĞ¼à¿Ø¡£
+    //µ«ÊÇ×îºÃ²»Òª¶ÔËùÓĞµÄ»úÆ÷½øĞĞ¼à¿Ø£¬
     for (size_t i = 0; i < monitor_size_; ++i)
     {
         monitor_cmd_[i] = config->zerg_cfg_data_.monitor_cmd_list_[i];
@@ -76,7 +76,7 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
 int Zerg_Comm_Manager::init_allpeer()
 {
     int ret = 0;
-    //åˆå§‹åŒ–æ‰€æœ‰çš„ç›‘å¬ç«¯å£
+    //³õÊ¼»¯ËùÓĞµÄ¼àÌı¶Ë¿Ú
     for (unsigned int i = 0; i < zerg_config_->zerg_cfg_data_.bind_svcid_num_; ++i)
     {
         ret = init_socketpeer(zerg_config_->zerg_cfg_data_.bind_svcid_ary_[i]);
@@ -102,20 +102,20 @@ int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
         return ret;
     }
 
-    //æ£€æŸ¥ä¸€ä¸‹ç«¯å£
+    //¼ì²éÒ»ÏÂ¶Ë¿Ú
     ret = check_safeport(svc_info.ip_address_);
     if (ret != 0)
     {
         return ret;
     }
 
-    //å¦‚æœæ˜¯TCPçš„æ¥å£
+    //Èç¹ûÊÇTCPµÄ½Ó¿Ú
     if (init_svcid.services_type_ < SVC_UDP_SERVER_BEGIN )
     {
-        //è®¾ç½®Bindåœ°å€
+        //ÉèÖÃBindµØÖ·
         TCP_Accept_Handler *ptr_acceptor = new TCP_Accept_Handler(init_svcid,
                                                                   svc_info.ip_address_);
-        //é‡‡ç”¨åŒæ­¥çš„æ–¹å¼åˆ›å»ºLISTER PEER
+        //²ÉÓÃÍ¬²½µÄ·½Ê½´´½¨LISTER PEER
         ret = ptr_acceptor->create_listen();
 
         if (ret != 0 )
@@ -130,14 +130,14 @@ int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
 
         zerg_acceptor_.push_back(ptr_acceptor);
     }
-    //å¦‚æœæ˜¯UDPçš„æ¥å£
+    //Èç¹ûÊÇUDPµÄ½Ó¿Ú
     else
     {
         //
         UDP_Svc_Handler *tmp_udphdl =  new UDP_Svc_Handler(init_svcid,
                                                            svc_info.ip_address_);
 
-        //åˆå§‹åŒ–UDPçš„ç«¯å£
+        //³õÊ¼»¯UDPµÄ¶Ë¿Ú
         ret = tmp_udphdl->init_udp_services();
 
         if (ret != 0 )
@@ -152,33 +152,33 @@ int Zerg_Comm_Manager::init_socketpeer(const SERVICES_ID &init_svcid)
     return 0;
 }
 
-//æ£€æŸ¥ä¸€ä¸ªç«¯å£æ˜¯å¦å®‰å…¨
+//¼ì²éÒ»¸ö¶Ë¿ÚÊÇ·ñ°²È«
 int Zerg_Comm_Manager::check_safeport(const ZCE_Sockaddr_In  &inetadd)
 {
-    //é«˜å±ç«¯å£æ£€æŸ¥å¸¸é‡
+    //¸ßÎ£¶Ë¿Ú¼ì²é³£Á¿
     const unsigned short UNSAFE_PORT1 = 1024;
     const unsigned short UNSAFE_PORT2 = 3306;
     const unsigned short UNSAFE_PORT3 = 36000;
     const unsigned short UNSAFE_PORT4 = 56000;
     const unsigned short SAFE_PORT1 = 80;
 
-    //å¦‚æœæ‰“å¼€äº†ä¿é™©æ£€æŸ¥,æ£€æŸ¥é…ç½®çš„ç«¯å£
+    //Èç¹û´ò¿ªÁË±£ÏÕ¼ì²é,¼ì²éÅäÖÃµÄ¶Ë¿Ú
     if ((inetadd.get_port_number() <= UNSAFE_PORT1 && inetadd.get_port_number() != SAFE_PORT1)  ||
         inetadd.get_port_number() == UNSAFE_PORT2  ||
         inetadd.get_port_number() == UNSAFE_PORT3 ||
         inetadd.get_port_number() == UNSAFE_PORT4 )
     {
-        //å¦‚æœä½¿ç”¨ä¿é™©æ‰“å¼€(TRUE)
+        //Èç¹ûÊ¹ÓÃ±£ÏÕ´ò¿ª(TRUE)
         if (zerg_config_->zerg_cfg_data_.zerg_insurance_)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Unsafe port %u,if you need to open this port,please close insurance. ",
                     inetadd.get_port_number());
             return SOAR_RET::ERR_ZERG_UNSAFE_PORT_WARN;
         }
-        //å¦‚æœä¸ä½¿ç”¨ä¿é™©(FALSE)
+        //Èç¹û²»Ê¹ÓÃ±£ÏÕ(FALSE)
         else
         {
-            //ç»™å‡ºè­¦å‘Š
+            //¸ø³ö¾¯¸æ
             ZCE_LOG(RS_INFO, "[zergsvr] Warn!Warn! Unsafe port %u.Please notice! ",
                     inetadd.get_port_number());
         }
@@ -189,7 +189,7 @@ int Zerg_Comm_Manager::check_safeport(const ZCE_Sockaddr_In  &inetadd)
 }
 
 
-//å–å¾—å‘é€æ•°æ®è¿›è¡Œå‘é€
+//È¡µÃ·¢ËÍÊı¾İ½øĞĞ·¢ËÍ
 int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_t &num_send_frame)
 {
     num_send_frame = 0;
@@ -199,17 +199,17 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
     {
 
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-        ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>( tmpbuf->buffer_data_);
-        zce::lockfree::dequechunk_node *my_node = reinterpret_cast<zce::lockfree::dequechunk_node*>(proc_frame);
+        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( tmpbuf->buffer_data_);
 
-        //æ³¨æ„å‹å…¥çš„æ•°æ®ä¸è¦å¤§äºAPPFRAMEå…è®¸çš„æœ€å¤§é•¿åº¦,å¯¹äºè¿™å„¿æˆ‘æƒè¡¡é€‰æ‹©æ•ˆç‡
+        //×¢ÒâÑ¹ÈëµÄÊı¾İ²»Òª´óÓÚAPPFRAMEÔÊĞíµÄ×î´ó³¤¶È,¶ÔÓÚÕâ¶ùÎÒÈ¨ºâÑ¡ÔñĞ§ÂÊ
         zerg_mmap_pipe_->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                       my_node);
+                                       reinterpret_cast< zce::lockfree::dequechunk_node *&>(
+                                           proc_frame));
 
         tmpbuf->size_of_use_ = proc_frame->frame_length_;
 
-        //å¦‚æœæ˜¯è¦è·Ÿè¸ªçš„å‘½ä»¤
-        if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
+        //Èç¹ûÊÇÒª¸ú×ÙµÄÃüÁî
+        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
         {
             proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]opt", RS_INFO);
         }
@@ -219,23 +219,23 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             {
                 if (monitor_cmd_[i] == proc_frame->frame_command_)
                 {
-                    proc_frame->frame_option_ |= ZERG_FRAME_HEAD::DESC_MONITOR_TRACK;
+                    proc_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
                     proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]cmd", RS_INFO);
                 }
             }
         }
 
-        //å‘é€UDPçš„æ•°æ®
-        if (proc_frame->frame_option_.protocol_ = ZERG_FRAME_OPTION::PROTOCOL_UDP)
+        //·¢ËÍUDPµÄÊı¾İ
+        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_UDP_FRAME)
         {
-            //å‘é€é”™è¯¯æ—¥å¿—åœ¨send_all_to_udpå‡½æ•°å†…éƒ¨å¤„ç†ï¼Œè¿™å„¿ä¸å¢åŠ é‡å¤è®°å½•
+            //·¢ËÍ´íÎóÈÕÖ¾ÔÚsend_all_to_udpº¯ÊıÄÚ²¿´¦Àí£¬Õâ¶ù²»Ôö¼ÓÖØ¸´¼ÇÂ¼
             UDP_Svc_Handler::send_all_to_udp(proc_frame);
-            //UDPçš„åŒ…å½’è¿˜ç¼“å­˜
+            //UDPµÄ°ü¹é»¹»º´æ
             zbuffer_storage_->free_byte_buffer(tmpbuf);
         }
         else
         {
-            //// å¦‚æœæ˜¯å¹¿æ’­çš„è¯ï¼Œç»™å¯¹åº”Svr_typeçš„æ‰€æœ‰Svrå‘
+            //// Èç¹ûÊÇ¹ã²¥µÄ»°£¬¸ø¶ÔÓ¦Svr_typeµÄËùÓĞSvr·¢
             //if (proc_frame->recv_service_.services_id_ == SERVICES_ID::BROADCAST_SERVICES_ID)
             //{
             //    std::vector<SERVICES_ID> vec;
@@ -256,7 +256,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             //        if (i == size -1)
             //        {
             //            reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
-            //            // last Bufå°±ç”¨æœ¬èº«çš„tmpbufæ¥å‘ï¼Œç¨å¾®åŠ å¿«é€Ÿåº¦
+            //            // last Buf¾ÍÓÃ±¾ÉíµÄtmpbufÀ´·¢£¬ÉÔÎ¢¼Ó¿ìËÙ¶È
             //            ret = send_single_buf(tmpbuf);
             //        }
             //        else
@@ -281,7 +281,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
                 ret = send_single_buf(tmpbuf);
                 if (ret != 0)
                 {
-                    // æ²¡æœ‰å‘æˆåŠŸï¼Œä¸åŠ å…¥åé¢çš„ç»Ÿè®¡
+                    // Ã»ÓĞ·¢³É¹¦£¬²»¼ÓÈëºóÃæµÄÍ³¼Æ
                     continue;
                 }
 
@@ -296,7 +296,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
     return 0;
 }
 
-//æ£€æŸ¥å‘åŒ…é¢‘ç‡
+//¼ì²é·¢°üÆµÂÊ
 void Zerg_Comm_Manager::check_freamcount(unsigned int now)
 {
     if (now <= count_start_time_)
@@ -330,10 +330,10 @@ void Zerg_Comm_Manager::check_freamcount(unsigned int now)
 }
 
 
-//å•å­å®ä¾‹å‡½æ•°
+//µ¥×ÓÊµÀıº¯Êı
 Zerg_Comm_Manager *Zerg_Comm_Manager::instance()
 {
-    //å¦‚æœæ²¡æœ‰åˆå§‹åŒ–
+    //Èç¹ûÃ»ÓĞ³õÊ¼»¯
     if (instance_ == NULL)
     {
         instance_ = new Zerg_Comm_Manager();
@@ -342,7 +342,7 @@ Zerg_Comm_Manager *Zerg_Comm_Manager::instance()
     return instance_;
 }
 
-//æ¸…ç†å®ä¾‹
+//ÇåÀíÊµÀı
 void Zerg_Comm_Manager::clean_instance()
 {
     if (instance_)
@@ -356,16 +356,16 @@ void Zerg_Comm_Manager::clean_instance()
 
 int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 {
-    //å‘é€é”™è¯¯æ—¥å¿—åœ¨process_send_dataå‡½æ•°å†…éƒ¨å¤„ç†ï¼Œè¿™å„¿ä¸å¢åŠ é‡å¤è®°å½•
+    //·¢ËÍ´íÎóÈÕÖ¾ÔÚprocess_send_dataº¯ÊıÄÚ²¿´¦Àí£¬Õâ¶ù²»Ôö¼ÓÖØ¸´¼ÇÂ¼
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
 
-    ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
 
-    //å¦‚æœå¤±è´¥å½’è¿˜ç¼“å­˜ï¼Œå¦‚æœæˆåŠŸçš„æƒ…å†µä¸‹ï¼Œä¼šæ”¾å…¥å‘é€é˜Ÿåˆ—ï¼Œæ”¾å…¥å‘é€é˜Ÿåˆ—çš„å½’è¿˜å’Œè¿™ä¸ªä¸ä¸€æ ·
+    //Èç¹ûÊ§°Ü¹é»¹»º´æ£¬Èç¹û³É¹¦µÄÇé¿öÏÂ£¬»á·ÅÈë·¢ËÍ¶ÓÁĞ£¬·ÅÈë·¢ËÍ¶ÓÁĞµÄ¹é»¹ºÍÕâ¸ö²»Ò»Ñù
     if (ret != 0)
     {
-        //è®°å½•ä¸‹æ¥å¤„ç†
-        if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_SEND_FAIL_RECORD )
+        //¼ÇÂ¼ÏÂÀ´´¦Àí
+        if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD )
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                     proc_frame->frame_length_,
@@ -384,13 +384,13 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 
         //
         server_status_->increase_once(ZERG_SEND_FAIL_COUNTER,
-                                      proc_frame->business_id_,
+                                      proc_frame->app_id_,
                                       0);
         if (proc_frame->recv_service_.services_type_ == 0)
         {
-            // ä¸åº”è¯¥å‡ºç°0çš„services_type
+            // ²»Ó¦¸Ã³öÏÖ0µÄservices_type
             server_status_->increase_once(ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
-                                          proc_frame->business_id_, proc_frame->recv_service_.services_type_);
+                                          proc_frame->app_id_, proc_frame->recv_service_.services_type_);
         }
         //
         zbuffer_storage_->free_byte_buffer(tmpbuf);
@@ -403,28 +403,28 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 
 
 //
-void Zerg_Comm_Manager::pushback_recvpipe(ZERG_FRAME_HEAD *recv_frame)
+void Zerg_Comm_Manager::pushback_recvpipe(Zerg_App_Frame *recv_frame)
 {
-    // å¦‚æœæ˜¯é€šä¿¡æœåŠ¡å™¨çš„å‘½ä»¤,ä¸è¿›è¡Œä»»ä½•å¤„ç†
+    // Èç¹ûÊÇÍ¨ĞÅ·şÎñÆ÷µÄÃüÁî,²»½øĞĞÈÎºÎ´¦Àí
     if (true == recv_frame->is_zerg_processcmd())
     {
         return;
     }
 
-    //ä¸ºäº†æé«˜æ•ˆç‡ï¼Œå…ˆæ£€æŸ¥æ ‡å¿—ä½ï¼Œ
-    if (recv_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_MONITOR_TRACK)
+    //ÎªÁËÌá¸ßĞ§ÂÊ£¬ÏÈ¼ì²é±êÖ¾Î»£¬
+    if (recv_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
         recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]opt", RS_INFO);
     }
     else
     {
-        //è¿™æ®µä»£ç åœ¨å‘é€æ¥æ”¶æ—¶éƒ½è¦æ£€æŸ¥ï¼Œå¦åˆ™éƒ½æœ‰å¯èƒ½æ¼æ‰
-        //å¦‚æœæ˜¯è¦è·Ÿè¸ªçš„å‘½ä»¤
+        //Õâ¶Î´úÂëÔÚ·¢ËÍ½ÓÊÕÊ±¶¼Òª¼ì²é£¬·ñÔò¶¼ÓĞ¿ÉÄÜÂ©µô
+        //Èç¹ûÊÇÒª¸ú×ÙµÄÃüÁî
         for (size_t i = 0; i < monitor_size_; ++i)
         {
             if (monitor_cmd_[i] == recv_frame->frame_command_)
             {
-                recv_frame->frame_option_ |= ZERG_FRAME_HEAD::DESC_MONITOR_TRACK;
+                recv_frame->frame_option_ |= Zerg_App_Frame::DESC_MONITOR_TRACK;
                 recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]cmd", RS_INFO);
             }
         }
@@ -436,19 +436,19 @@ void Zerg_Comm_Manager::pushback_recvpipe(ZERG_FRAME_HEAD *recv_frame)
     if (ret != 0)
     {
         server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
-                                      recv_frame->business_id_,
+                                      recv_frame->app_id_,
                                       0);
     }
     else
     {
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER,
-                                      recv_frame->business_id_,
+                                      recv_frame->app_id_,
                                       0);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
-                                      recv_frame->business_id_,
+                                      recv_frame->app_id_,
                                       recv_frame->frame_command_);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
-                                      recv_frame->business_id_,
+                                      recv_frame->app_id_,
                                       recv_frame->send_service_.services_type_);
     }
 

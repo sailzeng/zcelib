@@ -3,63 +3,63 @@
 ///
 /// @author     yunfeiyang
 ///
-/// @brief      æ¡†æž¶ç›‘æŽ§ç‰¹æ€§IDå®šä¹‰
+/// @brief      ¿ò¼Ü¼à¿ØÌØÐÔID¶¨Òå
 ///
 
 #ifndef SOARING_LIB_MONITOR_DEFINE_H_
 #define SOARING_LIB_MONITOR_DEFINE_H_
 
 
-// æ¡†æž¶ç‰¹æ€§IDä»Ž9100å¼€å§‹
+// ¿ò¼ÜÌØÐÔID´Ó9100¿ªÊ¼
 enum CommStatFeatureID
 {
-    // æ— æ•ˆçš„ç»Ÿè®¡ID
+    // ÎÞÐ§µÄÍ³¼ÆID
     COMM_STAT_INVALID_ID        = 0,
-    // ä»¥ä¸‹ç‰¹æ€§IDåªèƒ½å¾€åŽåŠ ï¼Œä¸èƒ½åœ¨ä¸­é—´æ’å…¥ï¼Œå› ä¸ºè¿™äº›ç‰¹æ€§å€¼å·²ç»åœ¨monitorä¸Šé…ç½®äº†
+    // ÒÔÏÂÌØÐÔIDÖ»ÄÜÍùºó¼Ó£¬²»ÄÜÔÚÖÐ¼ä²åÈë£¬ÒòÎªÕâÐ©ÌØÐÔÖµÒÑ¾­ÔÚmonitorÉÏÅäÖÃÁË
     COMM_STAT_FEATURE_ID_BEGIN  = 9100,
-    // åŒ…é‡çš„ç»Ÿè®¡
-    // appæ”¶åˆ°çš„åŒ…é‡
+    // °üÁ¿µÄÍ³¼Æ
+    // appÊÕµ½µÄ°üÁ¿
     COMM_STAT_RECV_PKG_COUNT    = 9101,
-    // appå‘é€æˆåŠŸçš„åŒ…é‡
+    // app·¢ËÍ³É¹¦µÄ°üÁ¿
     COMM_STAT_SEND_PKG_SUCC     = 9102,
-    // appå‘é€å¤±è´¥çš„åŒ…é‡
+    // app·¢ËÍÊ§°ÜµÄ°üÁ¿
     COMM_STAT_SEND_PKG_FAIL     = 9103,
 
-    // åŒ…å¤„ç†ç»“æžœçš„ç»Ÿè®¡
-    // appäº‹åŠ¡å¤„ç†æˆåŠŸçš„é‡
+    // °ü´¦Àí½á¹ûµÄÍ³¼Æ
+    // appÊÂÎñ´¦Àí³É¹¦µÄÁ¿
     COMM_STAT_TRANS_END_SUCC   = 9104,
-    // appäº‹åŠ¡å¤„ç†å¤±è´¥çš„é‡
+    // appÊÂÎñ´¦ÀíÊ§°ÜµÄÁ¿
     COMM_STAT_TRANS_END_FAIL   = 9105,
-    // appäº‹åŠ¡å¤„ç†è¶…æ—¶çš„é‡
+    // appÊÂÎñ´¦Àí³¬Ê±µÄÁ¿
     COMM_STAT_TRANS_PROC_TIMEOUT = 9106,
-    // appäº‹åŠ¡å¤„ç†å‡ºé”™çš„é”™è¯¯ç 
+    // appÊÂÎñ´¦Àí³ö´íµÄ´íÎóÂë
     COMM_STAT_TRANS_PROC_ERRNO  = 9107,
 
-    // appäº‹åŠ¡èŠ±è´¹çš„æ—¶é—´
+    // appÊÂÎñ»¨·ÑµÄÊ±¼ä
     COMM_STAT_TRANS_USE_TIME    = 9108,
 
-    // appè¿›ç¨‹å­˜æ´»çŠ¶æ€,åªè¦æœ‰æ•°å€¼ä¸ŠæŠ¥ï¼Œè¡¨ç¤ºè¿›ç¨‹å­˜åœ¨
+    // app½ø³Ì´æ»î×´Ì¬,Ö»ÒªÓÐÊýÖµÉÏ±¨£¬±íÊ¾½ø³Ì´æÔÚ
     COMM_STAT_APP_ALIVE         = 9109,
 
-    // appäº§ç”Ÿçš„å¸å•é‡ç»Ÿè®¡
+    // app²úÉúµÄÕÊµ¥Á¿Í³¼Æ
     COMM_STAT_BILL_COUNT        = 9110,
 
-    // è¿›ç¨‹åŠç³»ç»Ÿç›‘æŽ§ä¸ŠæŠ¥é¡¹
-    // ç³»ç»Ÿçš„CPUåˆ©ç”¨åƒåˆ†çŽ‡
+    // ½ø³Ì¼°ÏµÍ³¼à¿ØÉÏ±¨Ïî
+    // ÏµÍ³µÄCPUÀûÓÃÇ§·ÖÂÊ
     COMM_STAT_SYS_CPU_RATIO     = 9111,
-    // è¿›ç¨‹çš„CPUåˆ©ç”¨åƒåˆ†çŽ‡
+    // ½ø³ÌµÄCPUÀûÓÃÇ§·ÖÂÊ
     COMM_STAT_PROCESS_CPU_RATIO = 9112,
-    // ç³»ç»Ÿå†…å­˜ä½¿ç”¨åƒåˆ†çŽ‡
+    // ÏµÍ³ÄÚ´æÊ¹ÓÃÇ§·ÖÂÊ
     COMM_STAT_SYS_MEM_USE_RATIO = 9113,
-    // ç³»ç»Ÿå½“å‰å¯ç”¨å†…å­˜ï¼ˆå•ä½ï¼šByteï¼‰
+    // ÏµÍ³µ±Ç°¿ÉÓÃÄÚ´æ£¨µ¥Î»£ºByte£©
     COMM_STAT_AVAILABLE_MEM_SIZE = 9114,
 
-    // appæ”¶åˆ°æ•°æ®çš„å­—èŠ‚æ•°
+    // appÊÕµ½Êý¾ÝµÄ×Ö½ÚÊý
     COMM_STAT_RECV_PKG_BYTES        = 9115,
-    // appå‘é€åŒ…çš„å­—èŠ‚æ•°
+    // app·¢ËÍ°üµÄ×Ö½ÚÊý
     COMM_STAT_SEND_PKG_BYTES        = 9116,
 
-    // å¾€notify taské˜Ÿåˆ—ä¸­å‘é€æ•°æ®å¤±è´¥çš„é‡
+    // Íùnotify task¶ÓÁÐÖÐ·¢ËÍÊý¾ÝÊ§°ÜµÄÁ¿
     COMM_STAT_TASK_QUEUE_SEND_FAIL = 9117,
 
 
@@ -68,7 +68,7 @@ enum CommStatFeatureID
 
 };
 
-// æ¡†æž¶åˆ†ç±»id
+// ¿ò¼Ü·ÖÀàid
 enum CommStatClassfyID
 {
     COMM_STAT_ZERG_CID = 1,
@@ -76,7 +76,7 @@ enum CommStatClassfyID
 };
 
 
-// ç»Ÿè®¡é…ç½®ä¿¡æ¯
+// Í³¼ÆÅäÖÃÐÅÏ¢
 static const ZCE_STATUS_ITEM_WITHNAME COMM_STAT_ITEM_WITH_NAME[] =
 {
     DEF_ZCE_STATUS_ITEM(COMM_STAT_RECV_PKG_COUNT, STATICS_PER_FIVE_MINTUES),
@@ -93,22 +93,22 @@ static const ZCE_STATUS_ITEM_WITHNAME COMM_STAT_ITEM_WITH_NAME[] =
     DEF_ZCE_STATUS_ITEM(COMM_STAT_APP_ALIVE, STATICS_PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(COMM_STAT_BILL_COUNT, STATICS_PER_FIVE_MINTUES),
 
-    // è¿›ç¨‹åŠç³»ç»Ÿç›‘æŽ§ä¸ŠæŠ¥é¡¹
+    // ½ø³Ì¼°ÏµÍ³¼à¿ØÉÏ±¨Ïî
     DEF_ZCE_STATUS_ITEM(COMM_STAT_SYS_CPU_RATIO, STATICS_PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(COMM_STAT_PROCESS_CPU_RATIO, STATICS_PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(COMM_STAT_SYS_MEM_USE_RATIO, STATICS_PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(COMM_STAT_AVAILABLE_MEM_SIZE, STATICS_PER_FIVE_MINTUES),
 
-    // appæ”¶åˆ°çš„åŒ…å­—èŠ‚æ•°
+    // appÊÕµ½µÄ°ü×Ö½ÚÊý
     DEF_ZCE_STATUS_ITEM(COMM_STAT_RECV_PKG_BYTES, STATICS_PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(COMM_STAT_SEND_PKG_BYTES, STATICS_PER_FIVE_MINTUES),
 
-    // å¾€notify taské˜Ÿåˆ—ä¸­å‘é€æ•°æ®å¤±è´¥çš„é‡
+    // Íùnotify task¶ÓÁÐÖÐ·¢ËÍÊý¾ÝÊ§°ÜµÄÁ¿
     DEF_ZCE_STATUS_ITEM(COMM_STAT_TASK_QUEUE_SEND_FAIL, STATICS_PER_FIVE_MINTUES),
 
 };
 
-// ä¸ŠæŠ¥æ•°æ®é¡¹ä¸ªæ•°
+// ÉÏ±¨Êý¾ÝÏî¸öÊý
 static const unsigned int COMM_STAT_FRATURE_NUM = ZCE_ARRAY_SIZE(COMM_STAT_ITEM_WITH_NAME);
 
 #endif //COMM_STAT_DEFINE_H_

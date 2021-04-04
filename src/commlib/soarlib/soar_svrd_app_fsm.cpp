@@ -16,7 +16,7 @@ Comm_SvrdApp_FSM::~Comm_SvrdApp_FSM()
 {
 }
 
-//å¢åŠ è°ƒç”¨register_func_cmd
+//Ôö¼Óµ÷ÓÃregister_func_cmd
 int Comm_SvrdApp_FSM::app_start(int argc, const char *argv[])
 {
     int ret = 0;
@@ -29,7 +29,7 @@ int Comm_SvrdApp_FSM::app_start(int argc, const char *argv[])
 
     Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
 
-    //äº‹åŠ¡ç®¡ç†å™¨çš„åˆå§‹åŒ–, è‡ªåŠ¨æœºä¸ä½¿ç”¨notify
+    //ÊÂÎñ¹ÜÀíÆ÷µÄ³õÊ¼»¯, ×Ô¶¯»ú²»Ê¹ÓÃnotify
     Transaction_Manager *p_trans_mgr_ = new Transaction_Manager();
     p_trans_mgr_->initialize(ZCE_Timer_Queue_Base::instance(),
                              svd_config->framework_config_.trans_info_.trans_cmd_num_,
@@ -50,7 +50,7 @@ int Comm_SvrdApp_FSM::app_start(int argc, const char *argv[])
     return 0;
 }
 
-//è¿è¡Œå¤„ç†,
+//ÔËĞĞ´¦Àí,
 int Comm_SvrdApp_FSM::app_run()
 {
     ZCE_LOG(RS_INFO, "======================================================================================================");
@@ -58,13 +58,13 @@ int Comm_SvrdApp_FSM::app_run()
             get_app_basename(),
             typeid(*this).name());
 
-    //ç©ºé—²Næ¬¡å,è°ƒæ•´SELECTçš„ç­‰å¾…æ—¶é—´é—´éš”
+    //¿ÕÏĞN´Îºó,µ÷ÕûSELECTµÄµÈ´ıÊ±¼ä¼ä¸ô
     const unsigned int LIGHT_IDLE_SELECT_INTERVAL = 128;
-    //ç©ºé—²Næ¬¡å,SLEEPçš„æ—¶é—´é—´éš”
+    //¿ÕÏĞN´Îºó,SLEEPµÄÊ±¼ä¼ä¸ô
     const unsigned int HEAVY_IDLE_SLEEP_INTERVAL = 10240;
 
     //microsecond
-    // 64ä½tlinuxä¸‹idleçš„æ—¶é—´å¦‚æœå¤ªçŸ­ä¼šå¯¼è‡´cpuè¿‡é«˜
+    // 64Î»tlinuxÏÂidleµÄÊ±¼äÈç¹ûÌ«¶Ì»áµ¼ÖÂcpu¹ı¸ß
     const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
@@ -82,17 +82,17 @@ int Comm_SvrdApp_FSM::app_run()
 
     for (; app_run_;)
     {
-        //å¤„ç†æ”¶åˆ°çš„å‘½ä»¤
+        //´¦ÀíÊÕµ½µÄÃüÁî
         trans_mgr->process_pipe_frame(proc_frame, gen_trans);
 
-        //è¶…æ—¶
+        //³¬Ê±
         num_timer_expire = time_queue->expire();
 
-        // IOäº‹ä»¶
+        // IOÊÂ¼ş
         size_io_event = 0;
         reactor->handle_events(&select_interval, &size_io_event);
 
-        //å¦‚æœæ²¡æœ‰å¤„ç†ä»»ä½•å¸§
+        //Èç¹ûÃ»ÓĞ´¦ÀíÈÎºÎÖ¡
         if ((proc_frame + num_timer_expire + proc_data_num + size_io_event) <= 0)
         {
             ++idle;
@@ -102,18 +102,18 @@ int Comm_SvrdApp_FSM::app_run()
             idle = 0;
         }
 
-        //å¦‚æœå¿™ï¼Œç»§ç»­å¹²æ´»
+        //Èç¹ûÃ¦£¬¼ÌĞø¸É»î
         if (idle < LIGHT_IDLE_SELECT_INTERVAL)
         {
             select_interval.usec(0);
             continue;
         }
-        //å¦‚æœç©ºé—²å¾ˆå¤š,ä¼‘æ¯ä¸€ä¸‹,å¦‚æœä½ æ¯”è¾ƒç©ºé—²ï¼Œåœ¨è¿™å„¿SELECTç›¸å½“äºSleepï¼Œ
+        //Èç¹û¿ÕÏĞºÜ¶à,ĞİÏ¢Ò»ÏÂ,Èç¹ûÄã±È½Ï¿ÕÏĞ£¬ÔÚÕâ¶ùSELECTÏàµ±ÓÚSleep£¬
         else if (idle >= HEAVY_IDLE_SLEEP_INTERVAL)
         {
             select_interval.usec(HEAVY_IDLE_INTERVAL_MICROSECOND);
         }
-        //else ç›¸å½“äº else if (idle >= LIGHT_IDLE_SELECT_INTERVAL)
+        //else Ïàµ±ÓÚ else if (idle >= LIGHT_IDLE_SELECT_INTERVAL)
         else
         {
             select_interval.usec(LIGHT_IDLE_INTERVAL_MICROSECOND);
@@ -127,7 +127,7 @@ int Comm_SvrdApp_FSM::app_run()
     return 0;
 }
 
-//é€€å‡ºå¤„ç†
+//ÍË³ö´¦Àí
 int Comm_SvrdApp_FSM::app_exit()
 {
     int ret = 0;

@@ -17,7 +17,7 @@ protected:
     ~Ogre_UDPSvc_Hdl();
 
 public:
-    //å–å¾—å¥æŸ„
+    //È¡µÃ¾ä±ú
     virtual ZCE_HANDLE get_handle(void) const;
     //
     virtual int handle_input(ZCE_HANDLE);
@@ -25,19 +25,19 @@ public:
     virtual int handle_close();
 
 public:
-    //åˆå§‹åŒ–UPDç«¯å£
+    //³õÊ¼»¯UPD¶Ë¿Ú
     int init_udp_peer();
 
 public:
 
-    //å‘é€UDPæ•°æ®ç»™
+    //·¢ËÍUDPÊı¾İ¸ø
     static int send_alldata_to_udp(Ogre4a_App_Frame *send_frame);
 
 protected:
 
-    //ä»PEERè¯»å–æ•°æ®
+    //´ÓPEER¶ÁÈ¡Êı¾İ
     int read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr);
-    //å°†æ”¶åˆ°çš„æ•°æ®æ”¾å…¥ç®¡é“
+    //½«ÊÕµ½µÄÊı¾İ·ÅÈë¹ÜµÀ
     int pushdata_to_recvpipe();
 
 protected:
@@ -45,7 +45,7 @@ protected:
     //
     ZCE_Socket_DataGram        dgram_peer_;
 
-    //é‚¦å®šçš„åœ°å€
+    //°î¶¨µÄµØÖ·
     ZCE_Sockaddr_In            udp_bind_addr_;
     //Socket_Peer_Info
     OGRE_PEER_ID           peer_svc_info_;
@@ -53,7 +53,7 @@ protected:
     //
     Ogre4a_App_Frame           *dgram_databuf_;
 
-    //IPé™åˆ¶ç®¡ç†å™¨
+    //IPÏŞÖÆ¹ÜÀíÆ÷
     Ogre_IPRestrict_Mgr       *ip_restrict_;
 
 protected:

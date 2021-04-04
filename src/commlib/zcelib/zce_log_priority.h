@@ -1,21 +1,21 @@
 #pragma once
 
 
-//!RSçš„ç¼©å†™æ˜¯ç”¨äºŽçºªå¿µRichard steven
-//!æ—¥å¿—è¾“å‡ºçº§åˆ«,æ—¥å¿—è®°å½•æ—¶ä½¿ç”¨çš„æ˜¯çº§åˆ«,
+//!RSµÄËõÐ´ÊÇÓÃÓÚ¼ÍÄîRichard steven
+//!ÈÕÖ¾Êä³ö¼¶±ð,ÈÕÖ¾¼ÇÂ¼Ê±Ê¹ÓÃµÄÊÇ¼¶±ð,
 enum ZCE_LOG_PRIORITY
 {
-    //!è·Ÿè¸ªä¿¡æ¯,é»˜è®¤Maskè¾“å‡ºçº§åˆ«,é»˜è®¤å…¨éƒ¨è¾“å‡º
+    //!¸ú×ÙÐÅÏ¢,Ä¬ÈÏMaskÊä³ö¼¶±ð,Ä¬ÈÏÈ«²¿Êä³ö
     RS_TRACE   = 1,
-    //!è°ƒè¯•ä¿¡æ¯
+    //!µ÷ÊÔÐÅÏ¢
     RS_DEBUG   = 2,
-    //!æ™®é€šä¿¡æ¯
+    //!ÆÕÍ¨ÐÅÏ¢
     RS_INFO    = 3,
-    //!é”™è¯¯ä¿¡æ¯
+    //!´íÎóÐÅÏ¢
     RS_ERROR   = 4,
-    //!å‘Šè­¦ç±»åž‹çš„é”™è¯¯
+    //!¸æ¾¯ÀàÐÍµÄ´íÎó
     RS_ALERT   = 5,
-    //!è‡´å‘½é”™è¯¯
+    //!ÖÂÃü´íÎó
     RS_FATAL   = 6,
 };
 

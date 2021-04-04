@@ -11,14 +11,14 @@
 // MUTEXES BEGIN
 /*****************************************************************************/
 
-//ç”¨ä¸´ç•ŒåŒºæ¨¡æ‹Ÿçš„PTHREAD MUTEXï¼Œè¦æ±‚è¿›ç¨‹å†…éƒ¨ï¼ˆçº¿ç¨‹ï¼‰ï¼Œé€’å½’ï¼Œä¸éœ€è¦è¶…æ—¶
+//ÓÃÁÙ½çÇøÄ£ÄâµÄPTHREAD MUTEX£¬ÒªÇó½ø³ÌÄÚ²¿£¨Ïß³Ì£©£¬µÝ¹é£¬²»ÐèÒª³¬Ê±
 #ifndef ZCE_IS_CS_SIMULATE_PMUTEX
 #define ZCE_IS_CS_SIMULATE_PMUTEX(mutex) ( (PTHREAD_PROCESS_PRIVATE == (mutex)->lock_shared_  ) \
                                            && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE))  \
                                            && (ZCE_BIT_ISNOT_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_TIMEOUT)) )
 #endif
 
-//ç”¨MUTEXæ¨¡æ‹ŸPTHREAD MUTEXï¼Œå¤šè¿›ç¨‹ï¼Œé€’å½’ï¼Œæˆ–è€…è¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’ï¼Œè€Œä¸”æœ‰è¶…æ—¶
+//ÓÃMUTEXÄ£ÄâPTHREAD MUTEX£¬¶à½ø³Ì£¬µÝ¹é£¬»òÕß½ø³ÌÄÚ²¿£¬µÝ¹é£¬¶øÇÒÓÐ³¬Ê±
 #ifndef ZCE_IS_MUTEX_SIMULATE_PMUTEX
 #define ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex) ( ( (PTHREAD_PROCESS_SHARED == (mutex)->lock_shared_ ) \
                                                 && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE)) ) \
@@ -27,20 +27,20 @@
                                                    && (ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_TIMEOUT)) ) )
 #endif
 
-//ç”¨ä¿¡å·ç¯æ¨¡æ‹ŸPTHREAD MUTEXï¼Œéžé€’å½’
+//ÓÃÐÅºÅµÆÄ£ÄâPTHREAD MUTEX£¬·ÇµÝ¹é
 #ifndef ZCE_IS_SEMA_SIMULATE_PMUTEX
 #define ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex) (!ZCE_BIT_IS_SET((mutex)->lock_type_ ,PTHREAD_MUTEX_RECURSIVE))
 #endif
 
-//äº’æ–¥é‡å±žæ€§åˆå§‹åŒ–
+//»¥³âÁ¿ÊôÐÔ³õÊ¼»¯
 int zce::pthread_mutexattr_init (pthread_mutexattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //çº¿ç¨‹ç‹¬æœ‰
+    //Ïß³Ì¶ÀÓÐ
     attr->lock_shared_ = PTHREAD_PROCESS_PRIVATE;
-    //WINDOWSä¸‹é»˜è®¤å°±æ˜¯é€’å½’çš„ï¼Œä½ è¦æˆ‘æžä¸ªéžé€’å½’çš„æˆ‘è¿˜è¦æŠ˜è…¾
+    //WINDOWSÏÂÄ¬ÈÏ¾ÍÊÇµÝ¹éµÄ£¬ÄãÒªÎÒ¸ã¸ö·ÇµÝ¹éµÄÎÒ»¹ÒªÕÛÌÚ
     attr->lock_type_ = PTHREAD_MUTEX_RECURSIVE;
-    //åˆå§‹åŒ–åç§°
+    //³õÊ¼»¯Ãû³Æ
     attr->mutex_name_[PATH_MAX] = '\0';
     attr->mutex_name_[0] = '\0';
     return 0;
@@ -51,7 +51,7 @@ int zce::pthread_mutexattr_init (pthread_mutexattr_t *attr)
 #endif
 }
 
-//äº’æ–¥é‡å±žæ€§é”€æ¯
+//»¥³âÁ¿ÊôÐÔÏú»Ù
 int zce::pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -62,7 +62,7 @@ int zce::pthread_mutexattr_destroy(pthread_mutexattr_t *attr)
 #endif
 }
 
-//äº’æ–¥é‡å±žæ€§è®¾ç½®å…±äº«å±žæ€§PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
+//»¥³âÁ¿ÊôÐÔÉèÖÃ¹²ÏíÊôÐÔPTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
 int zce::pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
                                        int pshared)
 {
@@ -70,7 +70,7 @@ int zce::pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
 
     attr->lock_shared_ = pshared;
 
-    //å¦‚æžœMUTEXçš„åå­—æ˜¯ç©ºçš„,å¿…é¡»ç»™ä»–èµ‹ä¸ªå€¼ï¼Œ
+    //Èç¹ûMUTEXµÄÃû×ÖÊÇ¿ÕµÄ,±ØÐë¸øËû¸³¸öÖµ£¬
     if ( '\0' == attr->mutex_name_[0] && PTHREAD_PROCESS_SHARED == pshared )
     {
         const char *MUTEX_PREFIX = "MUTEX";
@@ -83,7 +83,7 @@ int zce::pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
 #endif
 }
 
-//å–å¾—çº¿ç¨‹çš„å…±äº«å±žæ€§
+//È¡µÃÏß³ÌµÄ¹²ÏíÊôÐÔ
 int zce::pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr,
                                       int *pshared)
 {
@@ -95,7 +95,7 @@ int zce::pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr,
 #endif
 }
 
-//è®¾ç½®çº¿ç¨‹çš„å±žæ€§ï¼ŒPTHREAD_MUTEX_XXXXçš„å‡ ä¸ªå€¼ï¼Œå¯ä»¥æˆ–è€…|ä¸€æ¬¡è®¾ç½®å¤šä¸ªå±žæ€§
+//ÉèÖÃÏß³ÌµÄÊôÐÔ£¬PTHREAD_MUTEX_XXXXµÄ¼¸¸öÖµ£¬¿ÉÒÔ»òÕß|Ò»´ÎÉèÖÃ¶à¸öÊôÐÔ
 int zce::pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -106,7 +106,7 @@ int zce::pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type)
 #endif
 }
 
-//å–å¾—çº¿ç¨‹çš„å±žæ€§
+//È¡µÃÏß³ÌµÄÊôÐÔ
 int zce::pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
                                    int *type)
 {
@@ -118,9 +118,9 @@ int zce::pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
 #endif
 }
 
-//è®¾ç½®çº¿ç¨‹çš„å±žæ€§ï¼Œä¸åŒçš„å¹³å°ç»™ä¸åŒçš„é»˜è®¤å®šä¹‰
-//éžæ ‡å‡†ï¼Œä½†æ˜¯å»ºè®®ä½ ä½¿ç”¨ï¼Œç®€å•å¤šäº†,
-//å¦‚æžœè¦å¤šè¿›ç¨‹å…±äº«ï¼Œéº»çƒ¦ä½ è€ç»™ä¸ªåå­—ï¼ŒåŒæ—¶åœ¨LINUXå¹³å°ä¸‹ï¼Œä½ å¿…é¡»pthread_mutex_tæ”¾å…¥å…±äº«å†…å­˜
+//ÉèÖÃÏß³ÌµÄÊôÐÔ£¬²»Í¬µÄÆ½Ì¨¸ø²»Í¬µÄÄ¬ÈÏ¶¨Òå
+//·Ç±ê×¼£¬µ«ÊÇ½¨ÒéÄãÊ¹ÓÃ£¬¼òµ¥¶àÁË,
+//Èç¹ûÒª¶à½ø³Ì¹²Ïí£¬Âé·³ÄãÀÏ¸ø¸öÃû×Ö£¬Í¬Ê±ÔÚLINUXÆ½Ì¨ÏÂ£¬Äã±ØÐëpthread_mutex_t·ÅÈë¹²ÏíÄÚ´æ
 int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
                               bool process_share,
                               bool recursive,
@@ -128,7 +128,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
                               const char *mutex_name)
 {
 
-    //å‰é¢æœ‰é”™è¯¯è¿”å›žï¼Œ
+    //Ç°ÃæÓÐ´íÎó·µ»Ø£¬
     int result = 0;
     pthread_mutexattr_t attr;
     result = zce::pthread_mutexattr_init (&attr);
@@ -143,7 +143,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
     {
         lock_shared = PTHREAD_PROCESS_SHARED;
 
-        //è¿›ç¨‹å…±äº«ï¼Œå¿…é¡»æœ‰ä¸ªåå­—ï¼ŒWINå’ŒLINUXéƒ½å¿…é¡»ä¸€æ ·ï¼ŒLINUXä¸‹ç”¨åå­—åˆ›å»ºå…±äº«å†…å­˜
+        //½ø³Ì¹²Ïí£¬±ØÐëÓÐ¸öÃû×Ö£¬WINºÍLINUX¶¼±ØÐëÒ»Ñù£¬LINUXÏÂÓÃÃû×Ö´´½¨¹²ÏíÄÚ´æ
         if (mutex_name)
         {
 #if defined (ZCE_OS_WINDOWS)
@@ -156,7 +156,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
         lock_shared = PTHREAD_PROCESS_PRIVATE;
     }
 
-    //è®¾ç½®å…±äº«å±žæ€§
+    //ÉèÖÃ¹²ÏíÊôÐÔ
     result = zce::pthread_mutexattr_setpshared(&attr, lock_shared);
 
     if (0 != result)
@@ -172,7 +172,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
         lock_type |= PTHREAD_MUTEX_RECURSIVE;
     }
 
-    //è¿™ä¸ªæ˜¯æˆ‘åœ¨WINDOWSä¸‹ç”¨çš„ï¼Œç”¨äºŽæŸäº›æ—¶å€™æˆ‘å¯ä»¥ç”¨ä¸´ç•ŒåŒºï¼Œè€Œä¸æ˜¯æ›´é‡çš„äº’æ–¥é‡
+    //Õâ¸öÊÇÎÒÔÚWINDOWSÏÂÓÃµÄ£¬ÓÃÓÚÄ³Ð©Ê±ºòÎÒ¿ÉÒÔÓÃÁÙ½çÇø£¬¶ø²»ÊÇ¸üÖØµÄ»¥³âÁ¿
 #if defined (ZCE_OS_WINDOWS)
 
     if (need_timeout)
@@ -184,7 +184,7 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
     ZCE_UNUSED_ARG(need_timeout);
 #endif
 
-    //è®¾ç½®å±žæ€§
+    //ÉèÖÃÊôÐÔ
     result = zce::pthread_mutexattr_settype(&attr, lock_type);
 
     if (0 != result)
@@ -204,18 +204,18 @@ int zce::pthread_mutex_initex(pthread_mutex_t *mutex,
     return 0;
 }
 
-//pthread mutex åˆå§‹åŒ–,
-//åœ¨Windowsä¸‹æ ¹æ®ä¸åŒçš„éœ€è¦ï¼Œåˆ†åˆ«ä¼šä½¿ç”¨ä¸åŒçš„åŒæ­¥å¯¹è±¡æ¨¡æ‹ŸMutexï¼Œ
-//å¦‚æžœéœ€è¦éžé€’å½’é”ï¼Œé‚£ä¹ˆç”¨ä¿¡å·ç¯
-//å¦‚æžœæ˜¯é€’å½’çš„ï¼Œçº¿ç¨‹å†…éƒ¨é€’å½’çš„ï¼Œè€Œä¸”ä¸éœ€è¦è¶…æ—¶ç­‰å¾…ï¼Œç”¨è½»é‡çº§çš„ä¸´ç•ŒåŒºæ¨¡æ‹Ÿ
-//å¦‚æžœéœ€è¦é€’å½’çš„ï¼Œçº¿ç¨‹å†…éƒ¨éœ€è¦è¶…æ—¶çš„ï¼Œè¿›ç¨‹é—´çš„ï¼Œé‚£ä¹ˆé€‰æ‹©MUTEXï¼Œ
+//pthread mutex ³õÊ¼»¯,
+//ÔÚWindowsÏÂ¸ù¾Ý²»Í¬µÄÐèÒª£¬·Ö±ð»áÊ¹ÓÃ²»Í¬µÄÍ¬²½¶ÔÏóÄ£ÄâMutex£¬
+//Èç¹ûÐèÒª·ÇµÝ¹éËø£¬ÄÇÃ´ÓÃÐÅºÅµÆ
+//Èç¹ûÊÇµÝ¹éµÄ£¬Ïß³ÌÄÚ²¿µÝ¹éµÄ£¬¶øÇÒ²»ÐèÒª³¬Ê±µÈ´ý£¬ÓÃÇáÁ¿¼¶µÄÁÙ½çÇøÄ£Äâ
+//Èç¹ûÐèÒªµÝ¹éµÄ£¬Ïß³ÌÄÚ²¿ÐèÒª³¬Ê±µÄ£¬½ø³Ì¼äµÄ£¬ÄÇÃ´Ñ¡ÔñMUTEX£¬
 int zce::pthread_mutex_init (pthread_mutex_t *mutex,
                              const pthread_mutexattr_t *attr)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
 
-    //æ ¹æ®attræ˜¯å¦ä¸ºNULLï¼Œå¦‚æžœNULLï¼Œåˆå§‹åŒ–ä¸ºé»˜è®¤å‚æ•°
+    //¸ù¾ÝattrÊÇ·ñÎªNULL£¬Èç¹ûNULL£¬³õÊ¼»¯ÎªÄ¬ÈÏ²ÎÊý
     const char *mutex_name = NULL;
     if (attr)
     {
@@ -229,16 +229,16 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
         mutex->lock_type_ = PTHREAD_MUTEX_NORMAL;
     }
 
-    //æˆ‘å®žåœ¨ä¸å¥½ä¸ºå†…å­˜æ³„æ¼åšå¤ªå¤šäº‹æƒ…ï¼Œå¦‚æžœä½ å¤šæ¬¡åˆå§‹åŒ–ï¼Œæˆ‘è¿˜çœŸæ²¡æœ‰å¤ªå¥½çš„æ³•å­ï¼Œï¼ˆæ¯”è¾ƒå¯è¡Œçš„æ³•å­æ˜¯pthread_mutex_tç”¨æž„é€ å‡½æ•°.?ï¼‰
+    //ÎÒÊµÔÚ²»ºÃÎªÄÚ´æÐ¹Â©×öÌ«¶àÊÂÇé£¬Èç¹ûÄã¶à´Î³õÊ¼»¯£¬ÎÒ»¹ÕæÃ»ÓÐÌ«ºÃµÄ·¨×Ó£¬£¨±È½Ï¿ÉÐÐµÄ·¨×ÓÊÇpthread_mutex_tÓÃ¹¹Ôìº¯Êý.?£©
 
-    //å¦‚æžœåˆé€‚ç”¨ä¿¡å·ç¯æ¨¡æ‹ŸPTHREAD MUTEX ï¼ˆéžé€’å½’ï¼‰
+    //Èç¹ûºÏÊÊÓÃÐÅºÅµÆÄ£ÄâPTHREAD MUTEX £¨·ÇµÝ¹é£©
     if (ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex))
     {
         mutex->non_recursive_mutex_ = NULL;
 
-        //æ³¨æ„ä¿¡å·ç¯å‡½æ•°éƒ½æ˜¯return -1è¡¨ç¤ºå¤±è´¥ï¼Œé”™è¯¯ä¿å­˜åœ¨errnoï¼Œè¿™ä¸ªåœ°æ–¹è¦è½¬æ¢
+        //×¢ÒâÐÅºÅµÆº¯Êý¶¼ÊÇreturn -1±íÊ¾Ê§°Ü£¬´íÎó±£´æÔÚerrno£¬Õâ¸öµØ·½Òª×ª»»
 
-        //å¦‚æžœä¸éœ€è¦åå­—ï¼Œåˆ›å»ºåŒ¿åä¿¡å·ç¯
+        //Èç¹û²»ÐèÒªÃû×Ö£¬´´½¨ÄäÃûÐÅºÅµÆ
         if ( NULL == mutex_name )
         {
             mutex->non_recursive_mutex_ = new sem_t();
@@ -252,13 +252,13 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
                 delete mutex->non_recursive_mutex_;
                 mutex->non_recursive_mutex_ = NULL;
 
-                //å¾—åˆ°æœ€åŽçš„é”™è¯¯ï¼Œå¦‚æžœæ²¡æœ‰å°±ç”¨EINVAL
+                //µÃµ½×îºóµÄ´íÎó£¬Èç¹ûÃ»ÓÐ¾ÍÓÃEINVAL
                 return last_error_with_default(EINVAL);
             }
         }
         else
         {
-            //,å½“å‰å€¼å’Œæœ€å¤§å€¼éƒ½è°ƒæ•´æˆ1
+            //,µ±Ç°ÖµºÍ×î´óÖµ¶¼µ÷Õû³É1
             mutex->non_recursive_mutex_ = zce::sem_open(mutex_name,
                                                         O_CREAT,
                                                         ZCE_DEFAULT_FILE_PERMS,
@@ -273,10 +273,10 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚ç”¨CSæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’ï¼Œä¸éœ€è¦è¶…æ—¶
+    //Èç¹ûºÏÊÊÓÃCSÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é£¬²»ÐèÒª³¬Ê±
     else if (ZCE_IS_CS_SIMULATE_PMUTEX(mutex))
     {
-        //è¿™ä¸ªå¼‚å¸¸åœ¨VISTAåŽè¢«æ·˜æ±°äº†
+        //Õâ¸öÒì³£ÔÚVISTAºó±»ÌÔÌ­ÁË
         __try
         {
             ::InitializeCriticalSection (&mutex->thr_nontimeout_mutex_);
@@ -288,7 +288,7 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚MUTEXæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’è€Œä¸”éœ€è¦è¶…æ—¶ æˆ–è€…è¿›ç¨‹å¤–éƒ¨ï¼Œé€’å½’ï¼Œ
+    //Èç¹ûºÏÊÊMUTEXÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é¶øÇÒÐèÒª³¬Ê± »òÕß½ø³ÌÍâ²¿£¬µÝ¹é£¬
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
         mutex->recursive_mutex_ = ::CreateMutexA (NULL,
@@ -301,7 +301,7 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
         }
         else
         {
-            //åˆ°è¿™å„¿æ˜¯å·²ç»æˆåŠŸçš„åˆ›å»ºï¼Œä½†å› ä¸ºå…¶å¯èƒ½å·²ç»å­˜åœ¨ï¼Œæ­¤æ—¶ä¼šè¿”å›žé”™è¯¯ ERROR_ALREADY_EXISTS
+            //µ½Õâ¶ùÊÇÒÑ¾­³É¹¦µÄ´´½¨£¬µ«ÒòÎªÆä¿ÉÄÜÒÑ¾­´æÔÚ£¬´ËÊ±»á·µ»Ø´íÎó ERROR_ALREADY_EXISTS
             errno = ::GetLastError ();
             return 0;
         }
@@ -311,7 +311,7 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
         return EINVAL;
     }
 
-    //æ°¸è¿œä¸åˆ°è¿™å„¿
+    //ÓÀÔ¶²»µ½Õâ¶ù
     //return 0;
 
 #elif defined (ZCE_OS_LINUX)
@@ -319,17 +319,17 @@ int zce::pthread_mutex_init (pthread_mutex_t *mutex,
 #endif
 }
 
-//é”€æ¯MUTEXå¯¹è±¡
+//Ïú»ÙMUTEX¶ÔÏó
 int zce::pthread_mutex_destroy (pthread_mutex_t *mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //å¦‚æžœåˆé€‚ç”¨ä¿¡å·ç¯æ¨¡æ‹ŸPTHREAD MUTEX ï¼ˆéžé€’å½’ï¼‰
+    //Èç¹ûºÏÊÊÓÃÐÅºÅµÆÄ£ÄâPTHREAD MUTEX £¨·ÇµÝ¹é£©
     if (ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex))
     {
         int ret = 0;
 
-        //å…³é—­ä¿¡å·ç¯,å¦‚æžœä½ æ²¡æœ‰åˆå§‹åŒ–å°±å…³é—­ï¼Œä¼šå´©æºƒçš„ï¼Œæœ‰åçš„å’Œæ— åçš„é‡‡ç”¨ä¸åŒçš„æ–¹å¼
+        //¹Ø±ÕÐÅºÅµÆ,Èç¹ûÄãÃ»ÓÐ³õÊ¼»¯¾Í¹Ø±Õ£¬»á±ÀÀ£µÄ£¬ÓÐÃûµÄºÍÎÞÃûµÄ²ÉÓÃ²»Í¬µÄ·½Ê½
         if (  true == mutex->non_recursive_mutex_->sem_unnamed_ )
         {
             ret = zce::sem_destroy(mutex->non_recursive_mutex_);
@@ -348,19 +348,19 @@ int zce::pthread_mutex_destroy (pthread_mutex_t *mutex)
                 return last_error_with_default(EINVAL);
             }
 
-            //WINDOWSä¸‹æ²¡å“Ÿå¿…è¦è°ƒç”¨sem_unlinkï¼Œå·æ‡’ï¼Œå¦‚æžœä¸å·æ‡’ï¼Œè¦åœ¨sem_closeå‰è¦å¾—åˆ°è¿™ä¸ªåå­—
+            //WINDOWSÏÂÃ»Ó´±ØÒªµ÷ÓÃsem_unlink£¬ÍµÀÁ£¬Èç¹û²»ÍµÀÁ£¬ÒªÔÚsem_closeÇ°ÒªµÃµ½Õâ¸öÃû×Ö
             //zce::sem_unlink(sema_name);
         }
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚ç”¨CSæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’ï¼Œä¸éœ€è¦è¶…æ—¶
+    //Èç¹ûºÏÊÊÓÃCSÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é£¬²»ÐèÒª³¬Ê±
     else if (ZCE_IS_CS_SIMULATE_PMUTEX(mutex))
     {
         ::DeleteCriticalSection (&(mutex->thr_nontimeout_mutex_));
         return 0;
     }
-    //å¦‚æžœåˆé€‚MUTEXæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’è€Œä¸”éœ€è¦è¶…æ—¶ æˆ–è€…è¿›ç¨‹å¤–éƒ¨ï¼Œé€’å½’ï¼Œ
+    //Èç¹ûºÏÊÊMUTEXÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é¶øÇÒÐèÒª³¬Ê± »òÕß½ø³ÌÍâ²¿£¬µÝ¹é£¬
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
         ::CloseHandle (mutex->recursive_mutex_);
@@ -382,10 +382,10 @@ int zce::pthread_mutex_lock (pthread_mutex_t *mutex)
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //å¦‚æžœåˆé€‚ç”¨ä¿¡å·ç¯æ¨¡æ‹ŸPTHREAD MUTEX ï¼ˆéžé€’å½’ï¼‰
+    //Èç¹ûºÏÊÊÓÃÐÅºÅµÆÄ£ÄâPTHREAD MUTEX £¨·ÇµÝ¹é£©
     if (ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex))
     {
-        //é”å®šä¿¡å·ç¯
+        //Ëø¶¨ÐÅºÅµÆ
         int ret = zce::sem_wait(mutex->non_recursive_mutex_);
 
         if (0 != ret)
@@ -395,13 +395,13 @@ int zce::pthread_mutex_lock (pthread_mutex_t *mutex)
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚ç”¨CSæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’ï¼Œä¸éœ€è¦è¶…æ—¶
+    //Èç¹ûºÏÊÊÓÃCSÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é£¬²»ÐèÒª³¬Ê±
     else if (ZCE_IS_CS_SIMULATE_PMUTEX(mutex))
     {
         ::EnterCriticalSection (&(mutex->thr_nontimeout_mutex_));
         return 0;
     }
-    //å¦‚æžœåˆé€‚MUTEXæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’è€Œä¸”éœ€è¦è¶…æ—¶ æˆ–è€…è¿›ç¨‹å¤–éƒ¨ï¼Œé€’å½’ï¼Œ
+    //Èç¹ûºÏÊÊMUTEXÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é¶øÇÒÐèÒª³¬Ê± »òÕß½ø³ÌÍâ²¿£¬µÝ¹é£¬
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
         DWORD retsult = ::WaitForSingleObject (mutex->recursive_mutex_, INFINITE);
@@ -426,7 +426,7 @@ int zce::pthread_mutex_lock (pthread_mutex_t *mutex)
 
 }
 
-//pthread mutex è¶…æ—¶é”å®šï¼Œ
+//pthread mutex ³¬Ê±Ëø¶¨£¬
 int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
                                  const ::timespec *abs_timeout_spec)
 {
@@ -434,13 +434,13 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
     //
     assert(abs_timeout_spec);
 
-    //å¾—åˆ°ç›¸å¯¹æ—¶é—´ï¼Œè¿™ä¸ªæŠ˜è…¾ï¼Œ
+    //µÃµ½Ïà¶ÔÊ±¼ä£¬Õâ¸öÕÛÌÚ£¬
     timeval now_time = zce::gettimeofday();
     timeval abs_time = zce::make_timeval(abs_timeout_spec);
 
     timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
 
-    //å¦‚æžœæ˜¯å¯ä»¥é€’å½’çš„
+    //Èç¹ûÊÇ¿ÉÒÔµÝ¹éµÄ
     if (ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_RECURSIVE))
     {
         if  ( (PTHREAD_PROCESS_SHARED == mutex->lock_shared_ )
@@ -448,7 +448,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
                   && ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT))
             )
         {
-            //ç­‰å¾…æ—¶é—´è§¦å‘
+            //µÈ´ýÊ±¼ä´¥·¢
             DWORD retsult = ::WaitForSingleObject (mutex->recursive_mutex_,
                                                    static_cast<DWORD>( zce::total_milliseconds(timeout_time)));
 
@@ -465,7 +465,7 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
                 return EINVAL;
             }
         }
-        //æ˜Žç¡®äº†è¿™ç§æ–¹å¼æ˜¯ä¸æ”¯æŒè¶…æ—¶çš„ï¼Œå¦‚æžœåˆ°è¿™å„¿æ ‡è¯†ä½ è°ƒç”¨é”™äº†åˆå§‹åŒ–å‡½æ•°
+        //Ã÷È·ÁËÕâÖÖ·½Ê½ÊÇ²»Ö§³Ö³¬Ê±µÄ£¬Èç¹ûµ½Õâ¶ù±êÊ¶Äãµ÷ÓÃ´íÁË³õÊ¼»¯º¯Êý
         else if ( PTHREAD_PROCESS_PRIVATE == mutex->lock_shared_
                   && !ZCE_BIT_IS_SET(mutex->lock_type_, PTHREAD_MUTEX_TIMEOUT) )
         {
@@ -476,10 +476,10 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
             return EINVAL;
         }
     }
-    //éžé€’å½’çš„é”
+    //·ÇµÝ¹éµÄËø
     else
     {
-        //é”å®šä¿¡å·ç¯ï¼Œè¶…æ—¶é€€å‡º
+        //Ëø¶¨ÐÅºÅµÆ£¬³¬Ê±ÍË³ö
         int ret = zce::sem_timedwait(mutex->non_recursive_mutex_, abs_timeout_spec);
 
         if (0 != ret )
@@ -494,8 +494,8 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
     int result = 0;
     result = ::pthread_mutex_timedlock (mutex, abs_timeout_spec);
 
-    //ACEçš„ä»£ç é‡Œé¢æœ‰ä¸€æ®µè½¬æ¢é”™è¯¯IDçš„ï¼Œå°†ETIMEDOUTè½¬æ¢ä¸ºETIMEï¼Œï¼ˆETIMEå’ŒETIMEDOUTå€¼ä¸€èˆ¬ä¸ä¸€æ ·ï¼‰
-    //ä½†æˆ‘çœ‹è¿‡LINUXçš„æ‰‹å†Œè¿”å›žçš„æ˜¯ETIMEDOUTï¼ŒACEçš„ä»£ç æ˜¯å‘SUNçš„çº¿ç¨‹å‡½æ•°é é½çš„ï¼Œ
+    //ACEµÄ´úÂëÀïÃæÓÐÒ»¶Î×ª»»´íÎóIDµÄ£¬½«ETIMEDOUT×ª»»ÎªETIME£¬£¨ETIMEºÍETIMEDOUTÖµÒ»°ã²»Ò»Ñù£©
+    //µ«ÎÒ¿´¹ýLINUXµÄÊÖ²á·µ»ØµÄÊÇETIMEDOUT£¬ACEµÄ´úÂëÊÇÏòSUNµÄÏß³Ìº¯Êý¿¿ÆëµÄ£¬
 
     if (result != 0 && result == ETIME)
     {
@@ -507,26 +507,26 @@ int zce::pthread_mutex_timedlock(pthread_mutex_t *mutex,
 #endif
 }
 
-//pthread mutex è¶…æ—¶é”å®šï¼Œéžæ ‡å‡†å®žçŽ°,æ˜¯ç”¨æˆ‘å†…éƒ¨çš„æ—¶é—´å˜é‡timeval
+//pthread mutex ³¬Ê±Ëø¶¨£¬·Ç±ê×¼ÊµÏÖ,ÊÇÓÃÎÒÄÚ²¿µÄÊ±¼ä±äÁ¿timeval
 int zce::pthread_mutex_timedlock (pthread_mutex_t *mutex,
                                   const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
-    //è¿™ä¸ªæ—¶é—´æ˜¯ç»å¯¹å€¼æ—¶é—´ï¼Œè¦è°ƒæ•´ä¸ºç›¸å¯¹æ—¶é—´
+    //Õâ¸öÊ±¼äÊÇ¾ø¶ÔÖµÊ±¼ä£¬Òªµ÷ÕûÎªÏà¶ÔÊ±¼ä
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
     return zce::pthread_mutex_timedlock(mutex, &abs_timeout_spec);
 }
 
-//pthread mutex å°è¯•åŠ é”
+//pthread mutex ³¢ÊÔ¼ÓËø
 int zce::pthread_mutex_trylock (pthread_mutex_t *mutex)
 {
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //å¦‚æžœåˆé€‚ç”¨ä¿¡å·ç¯æ¨¡æ‹ŸPTHREAD MUTEX ï¼ˆéžé€’å½’ï¼‰
+    //Èç¹ûºÏÊÊÓÃÐÅºÅµÆÄ£ÄâPTHREAD MUTEX £¨·ÇµÝ¹é£©
     if (ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex))
     {
-        //æµ‹è¯•ä¿¡å·ç¯
+        //²âÊÔÐÅºÅµÆ
         int ret = zce::sem_trywait(mutex->non_recursive_mutex_);
 
         if (0 != ret)
@@ -536,10 +536,10 @@ int zce::pthread_mutex_trylock (pthread_mutex_t *mutex)
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚ç”¨CSæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’ï¼Œä¸éœ€è¦è¶…æ—¶
+    //Èç¹ûºÏÊÊÓÃCSÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é£¬²»ÐèÒª³¬Ê±
     else if (ZCE_IS_CS_SIMULATE_PMUTEX(mutex))
     {
-        //å¦‚æžœå¯ä»¥è¿›å…¥ä¸´ç•ŒåŒºï¼Œè¿”å›žå€¼åº”è¯¥æ˜¯TRUE
+        //Èç¹û¿ÉÒÔ½øÈëÁÙ½çÇø£¬·µ»ØÖµÓ¦¸ÃÊÇTRUE
         BOOL bool_ret = ::TryEnterCriticalSection(&(mutex->thr_nontimeout_mutex_));
 
         if ( FALSE == bool_ret)
@@ -549,10 +549,10 @@ int zce::pthread_mutex_trylock (pthread_mutex_t *mutex)
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚MUTEXæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’è€Œä¸”éœ€è¦è¶…æ—¶ æˆ–è€…è¿›ç¨‹å¤–éƒ¨ï¼Œé€’å½’ï¼Œ
+    //Èç¹ûºÏÊÊMUTEXÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é¶øÇÒÐèÒª³¬Ê± »òÕß½ø³ÌÍâ²¿£¬µÝ¹é£¬
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
-        //ç­‰å¾…0é•¿åº¦æ—¶é—´è§¦å‘ï¼Œä¸ä¼šé˜»å¡žï¼Œå°±æ˜¯try
+        //µÈ´ý0³¤¶ÈÊ±¼ä´¥·¢£¬²»»á×èÈû£¬¾ÍÊÇtry
         DWORD retsult = ::WaitForSingleObject (mutex->recursive_mutex_, 0);
 
         if (WAIT_OBJECT_0 == retsult || WAIT_ABANDONED == retsult)
@@ -579,7 +579,7 @@ int zce::pthread_mutex_trylock (pthread_mutex_t *mutex)
 
 }
 
-//pthread mutex è§£é”
+//pthread mutex ½âËø
 int zce::pthread_mutex_unlock (pthread_mutex_t *mutex)
 {
 
@@ -587,10 +587,10 @@ int zce::pthread_mutex_unlock (pthread_mutex_t *mutex)
 
     int ret = 0;
 
-    //å¦‚æžœåˆé€‚ç”¨ä¿¡å·ç¯æ¨¡æ‹ŸPTHREAD MUTEX ï¼ˆéžé€’å½’ï¼‰
+    //Èç¹ûºÏÊÊÓÃÐÅºÅµÆÄ£ÄâPTHREAD MUTEX £¨·ÇµÝ¹é£©
     if (ZCE_IS_SEMA_SIMULATE_PMUTEX(mutex))
     {
-        //è§£é”ä¿¡å·ç¯
+        //½âËøÐÅºÅµÆ
         ret = zce::sem_post(mutex->non_recursive_mutex_);
 
         if (0 != ret)
@@ -600,13 +600,13 @@ int zce::pthread_mutex_unlock (pthread_mutex_t *mutex)
 
         return 0;
     }
-    //å¦‚æžœåˆé€‚ç”¨CSæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’ï¼Œä¸éœ€è¦è¶…æ—¶
+    //Èç¹ûºÏÊÊÓÃCSÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é£¬²»ÐèÒª³¬Ê±
     else if (ZCE_IS_CS_SIMULATE_PMUTEX(mutex))
     {
         ::LeaveCriticalSection (&(mutex->thr_nontimeout_mutex_));
         return 0;
     }
-    //å¦‚æžœåˆé€‚MUTEXæ¨¡æ‹ŸPTHREAD MUTEXï¼Œè¿›ç¨‹å†…éƒ¨ï¼Œé€’å½’è€Œä¸”éœ€è¦è¶…æ—¶ æˆ–è€…è¿›ç¨‹å¤–éƒ¨ï¼Œé€’å½’ï¼Œ
+    //Èç¹ûºÏÊÊMUTEXÄ£ÄâPTHREAD MUTEX£¬½ø³ÌÄÚ²¿£¬µÝ¹é¶øÇÒÐèÒª³¬Ê± »òÕß½ø³ÌÍâ²¿£¬µÝ¹é£¬
     else if (ZCE_IS_MUTEX_SIMULATE_PMUTEX(mutex))
     {
         ::ReleaseMutex (mutex->recursive_mutex_);

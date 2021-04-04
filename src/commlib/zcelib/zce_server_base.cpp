@@ -18,7 +18,7 @@ class ZCE_Server_Base
 ZCE_Server_Base *ZCE_Server_Base::base_instance_ = NULL;
 
 
-// æ„é€ å‡½æ•°,ç§æœ‰,ä½¿ç”¨å•å­ç±»çš„å®ä¾‹,
+// ¹¹Ôìº¯Êı,Ë½ÓĞ,Ê¹ÓÃµ¥×ÓÀàµÄÊµÀı,
 ZCE_Server_Base::ZCE_Server_Base():
     pid_handle_(ZCE_INVALID_HANDLE),
     self_pid_(0),
@@ -40,7 +40,7 @@ ZCE_Server_Base::ZCE_Server_Base():
 
 ZCE_Server_Base::~ZCE_Server_Base()
 {
-    // å…³é—­æ–‡ä»¶
+    // ¹Ø±ÕÎÄ¼ş
     if (pid_handle_ != ZCE_INVALID_HANDLE)
     {
         zce::flock_unlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
@@ -49,7 +49,7 @@ ZCE_Server_Base::~ZCE_Server_Base()
     }
 }
 
-// åˆå§‹åŒ–
+// ³õÊ¼»¯
 int ZCE_Server_Base::socket_init()
 {
     int ret = 0;
@@ -63,7 +63,7 @@ int ZCE_Server_Base::socket_init()
     return 0;
 }
 
-//æ‰“å°è¾“å‡ºPID File
+//´òÓ¡Êä³öPID File
 int ZCE_Server_Base::out_pid_file(const char *pragramname)
 {
     int ret = 0;
@@ -73,7 +73,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     self_pid_ = zce::getpid();
 
-    //æ£€æŸ¥PIDæ–‡ä»¶æ˜¯å¦å­˜åœ¨ï¼Œï¼Œ
+    //¼ì²éPIDÎÄ¼şÊÇ·ñ´æÔÚ£¬£¬
     bool must_create_new = false;
     ret = zce::access(pidfile_name.c_str(), F_OK);
     if ( 0 != ret)
@@ -81,7 +81,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
         must_create_new = true;
     }
 
-    // è®¾ç½®æ–‡ä»¶è¯»å–å‚æ•°,è¡¨ç¤ºå…¶ä»–ç”¨æˆ·å¯ä»¥è¯»å–ï¼Œopenå‡½æ•°ä¼šè‡ªåŠ¨å¸®å¿™è°ƒæ•´å‚æ•°çš„ã€‚
+    // ÉèÖÃÎÄ¼ş¶ÁÈ¡²ÎÊı,±íÊ¾ÆäËûÓÃ»§¿ÉÒÔ¶ÁÈ¡£¬openº¯Êı»á×Ô¶¯°ïÃ¦µ÷Õû²ÎÊıµÄ¡£
     int fileperms = 0644;
 
     pid_handle_ = zce::open(pidfile_name.c_str(),
@@ -94,12 +94,12 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
         return -1;
     }
 
-    //å¦‚æœPIDæ–‡ä»¶ä¸å­˜åœ¨ï¼Œè°ƒæ•´æ–‡ä»¶é•¿åº¦ï¼Œ(è¯´æ˜è§ä¸‹)
-    //è¿™ä¸ªåœ°æ–¹æ²¡æœ‰åŸå­ä¿æŠ¤ï¼Œæœ‰ä¸€å®šé£é™©,ä½†â€¦â€¦
+    //Èç¹ûPIDÎÄ¼ş²»´æÔÚ£¬µ÷ÕûÎÄ¼ş³¤¶È£¬(ËµÃ÷¼ûÏÂ)
+    //Õâ¸öµØ·½Ã»ÓĞÔ­×Ó±£»¤£¬ÓĞÒ»¶¨·çÏÕ,µ«¡­¡­
     if (true == must_create_new)
     {
-        //æˆ‘æ˜¯ç”¨WINDOWSä¸‹çš„è®°å½•é”æ˜¯æ¨¡æ‹Ÿå’ŒLinuxç±»ä¼¼ï¼Œä½†Windowsçš„æ–‡ä»¶é”å…¶å®æ²¡æœ‰å¯¹å°†é•¿åº¦å‚æ•°è®¾ç½®0ï¼Œ
-        //é”å®šæ•´ä¸ªæ–‡ä»¶çš„åŠŸèƒ½ï¼Œæ‰€ä»¥è¦å…ˆæŠŠæ–‡ä»¶é•¿åº¦è°ƒæ•´
+        //ÎÒÊÇÓÃWINDOWSÏÂµÄ¼ÇÂ¼ËøÊÇÄ£ÄâºÍLinuxÀàËÆ£¬µ«WindowsµÄÎÄ¼şËøÆäÊµÃ»ÓĞ¶Ô½«³¤¶È²ÎÊıÉèÖÃ0£¬
+        //Ëø¶¨Õû¸öÎÄ¼şµÄ¹¦ÄÜ£¬ËùÒÔÒªÏÈ°ÑÎÄ¼ş³¤¶Èµ÷Õû
         zce::ftruncate(pid_handle_, PID_FILE_LEN);
     }
 
@@ -110,7 +110,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
     snprintf(tmpbuff, PID_FILE_LEN + 1, "%*.u", (int)PID_FILE_LEN * (-1), self_pid_);
 
-    // å°è¯•é”å®šå…¨éƒ¨æ–‡ä»¶ï¼Œå¦‚æœé”å®šä¸æˆåŠŸï¼Œè¡¨ç¤ºæœ‰äººæ­£åœ¨ç”¨è¿™ä¸ªæ–‡ä»¶
+    // ³¢ÊÔËø¶¨È«²¿ÎÄ¼ş£¬Èç¹ûËø¶¨²»³É¹¦£¬±íÊ¾ÓĞÈËÕıÔÚÓÃÕâ¸öÎÄ¼ş
     ret = zce::flock_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
     if (ret != 0)
     {
@@ -119,7 +119,7 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
         return ret;
     }
 
-    //å†™å…¥æ–‡ä»¶å†…å®¹, æˆªæ–­æ–‡ä»¶ä¸ºBUFFER_LENï¼Œ
+    //Ğ´ÈëÎÄ¼şÄÚÈİ, ½Ø¶ÏÎÄ¼şÎªBUFFER_LEN£¬
     zce::ftruncate(pid_handle_, PID_FILE_LEN);
     zce::lseek(pid_handle_, 0, SEEK_SET);
     zce::write(pid_handle_, tmpbuff, PID_FILE_LEN);
@@ -129,13 +129,13 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
 
 
 
-// ç›‘æµ‹è¿™ä¸ªè¿›ç¨‹çš„ç³»ç»ŸçŠ¶å†µ,æ¯Nåˆ†é’Ÿè¿è¡Œä¸€æ¬¡å°±OKäº†
-// çœ‹é—¨ç‹—å¾—åˆ°è¿›ç¨‹çš„çŠ¶æ€
+// ¼à²âÕâ¸ö½ø³ÌµÄÏµÍ³×´¿ö,Ã¿N·ÖÖÓÔËĞĞÒ»´Î¾ÍOKÁË
+// ¿´ÃÅ¹·µÃµ½½ø³ÌµÄ×´Ì¬
 int ZCE_Server_Base::watch_dog_status(bool first_record)
 {
     int ret = 0;
 
-    // å¦‚æœä¸æ˜¯ç¬¬ä¸€æ¬¡è®°å½•ï¼Œä¿å­˜ä¸Šä¸€æ¬¡è®°å½•çš„ç»“æœ
+    // Èç¹û²»ÊÇµÚÒ»´Î¼ÇÂ¼£¬±£´æÉÏÒ»´Î¼ÇÂ¼µÄ½á¹û
     if (!first_record)
     {
         last_process_perf_ = now_process_perf_;
@@ -158,7 +158,7 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
 
     cur_mem_usesize_ = now_process_perf_.vm_size_;
 
-    // è®°å½•ç¬¬ä¸€æ¬¡çš„å†…å­˜æ•°æ®
+    // ¼ÇÂ¼µÚÒ»´ÎµÄÄÚ´æÊı¾İ
     if (first_record)
     {
         mem_checkpoint_size_ = now_process_perf_.vm_size_;
@@ -166,20 +166,20 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
     }
 
 
-    // å¤„ç†å†…å­˜å˜åŒ–çš„æƒ…å†µ
+    // ´¦ÀíÄÚ´æ±ä»¯µÄÇé¿ö
     size_t vary_mem_size = 0;
 
     if (now_process_perf_.vm_size_ >= mem_checkpoint_size_)
     {
         vary_mem_size = now_process_perf_.vm_size_ - mem_checkpoint_size_;
     }
-    // å†…å­˜å±…ç„¶ç¼©å°äº†â€¦â€¦
+    // ÄÚ´æ¾ÓÈ»ËõĞ¡ÁË¡­¡­
     else
     {
         mem_checkpoint_size_ = now_process_perf_.vm_size_;
     }
 
-    // è¿™ä¸ªå‘Šè­¦å¦‚ä½•å‘ç›‘æ§æ±‡æŠ¥è¦è€ƒè™‘ä¸€ä¸‹
+    // Õâ¸ö¸æ¾¯ÈçºÎÏò¼à¿Ø»ã±¨Òª¿¼ÂÇÒ»ÏÂ
     if (vary_mem_size >= MEMORY_LEAK_THRESHOLD)
     {
         ++check_leak_times_;
@@ -189,7 +189,7 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
                 mem_checkpoint_size_,
                 now_process_perf_.vm_size_);
 
-        // å¦‚æœå·²ç»ç›‘æµ‹äº†è‹¥å¹²æ¬¡å†…å­˜æ³„æ¼,åˆ™ä¸å†è®°å½•å‘Šè­¦
+        // Èç¹ûÒÑ¾­¼à²âÁËÈô¸É´ÎÄÚ´æĞ¹Â©,Ôò²»ÔÙ¼ÇÂ¼¸æ¾¯
         if (check_leak_times_ > MAX_RECORD_MEMLEAK_NUMBER)
         {
             mem_checkpoint_size_ = now_process_perf_.vm_size_;
@@ -197,19 +197,19 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
         }
     }
 
-    // å…¶å®åˆ°è¿™ä¸ªåœ°æ–¹äº†ï¼Œä½ å¯ä»¥å¹²çš„äº‹æƒ…å¾ˆå¤šï¼Œ
-    // ç”šè‡³è®¡ç®—æŸä¸€æ®µæ—¶é—´å†…ç¨‹åºçš„CPUå ç”¨ç‡è¿‡é«˜(TNNND,åæ¥æˆ‘çœŸåšäº†)
+    // ÆäÊµµ½Õâ¸öµØ·½ÁË£¬Äã¿ÉÒÔ¸ÉµÄÊÂÇéºÜ¶à£¬
+    // ÉõÖÁ¼ÆËãÄ³Ò»¶ÎÊ±¼äÄÚ³ÌĞòµÄCPUÕ¼ÓÃÂÊ¹ı¸ß(TNNND,ºóÀ´ÎÒÕæ×öÁË)
     timeval last_to_now = zce::timeval_sub(now_system_perf_.up_time_,
                                            last_system_perf_.up_time_);
 
-    // å¾—åˆ°è¿›ç¨‹çš„CPUåˆ©ç”¨ç‡
+    // µÃµ½½ø³ÌµÄCPUÀûÓÃÂÊ
     timeval proc_utime = zce::timeval_sub(now_process_perf_.run_utime_,
                                           last_process_perf_.run_utime_);
     timeval proc_stime = zce::timeval_sub(now_process_perf_.run_stime_,
                                           last_process_perf_.run_stime_);
     timeval proc_cpu_time = zce::timeval_add(proc_utime, proc_stime);
 
-    // å¦‚æœé—´éš”æ—¶é—´ä¸ä¸º0
+    // Èç¹û¼ä¸ôÊ±¼ä²»Îª0
     if (zce::total_milliseconds(last_to_now) > 0)
     {
         process_cpu_ratio_ = static_cast<uint32_t>(zce::total_milliseconds(proc_cpu_time)
@@ -234,12 +234,12 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
             cur_mem_usesize_,
             vary_mem_size);
 
-    // è®¡ç®—ç³»ç»Ÿçš„CPUæ—¶é—´ï¼ŒéIDLEä»¥å¤–çš„æ—¶é—´éƒ½æ˜¯æ¶ˆè€—æ—¶é—´
+    // ¼ÆËãÏµÍ³µÄCPUÊ±¼ä£¬·ÇIDLEÒÔÍâµÄÊ±¼ä¶¼ÊÇÏûºÄÊ±¼ä
     timeval sys_idletime = zce::timeval_sub(now_system_perf_.idle_time_,
                                             last_system_perf_.idle_time_);
     timeval sys_cputime = zce::timeval_sub(last_to_now, sys_idletime);
 
-    // å¦‚æœé—´éš”æ—¶é—´ä¸ä¸º0
+    // Èç¹û¼ä¸ôÊ±¼ä²»Îª0
     if (zce::total_milliseconds(last_to_now) > 0)
     {
         system_cpu_ratio_ =
@@ -254,7 +254,7 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
         system_cpu_ratio_ = 0;
     }
 
-    // ç³»ç»Ÿæˆ–è¿›ç¨‹CPUä½¿ç”¨è¶…è¿‡é˜ˆå€¼æ—¶è®°æ¡è´¦å•
+    // ÏµÍ³»ò½ø³ÌCPUÊ¹ÓÃ³¬¹ıãĞÖµÊ±¼ÇÌõÕËµ¥
     if (process_cpu_ratio_ >= PROCESS_CPU_RATIO_THRESHOLD ||
         system_cpu_ratio_ >= SYSTEM_CPU_RATIO_THRESHOLD)
     {
@@ -276,7 +276,7 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
                 zce::total_milliseconds(proc_stime));
     }
 
-    // å†…å­˜ä½¿ç”¨æƒ…å†µçš„ç›‘æ§
+    // ÄÚ´æÊ¹ÓÃÇé¿öµÄ¼à¿Ø
     can_use_size_ = now_system_perf_.freeram_size_ +
                     now_system_perf_.cachedram_size_ +
                     now_system_perf_.bufferram_size_;
@@ -322,31 +322,31 @@ int ZCE_Server_Base::watch_dog_status(bool first_record)
 
 int ZCE_Server_Base::process_signal(void)
 {
-    //å¿½è§†éƒ¨åˆ†ä¿¡å·,è¿™æ ·ç®€å•
+    //ºöÊÓ²¿·ÖĞÅºÅ,ÕâÑù¼òµ¥
     zce::signal(SIGHUP, SIG_IGN);
     zce::signal(SIGPIPE, SIG_IGN);
     zce::signal(SIGCHLD, SIG_IGN);
 
 #ifdef ZCE_OS_WINDOWS
-    //Windowsä¸‹è®¾ç½®é€€å‡ºå¤„ç†å‡½æ•°ï¼Œå¯ä»¥ç”¨Ctrl + C é€€å‡º
+    //WindowsÏÂÉèÖÃÍË³ö´¦Àíº¯Êı£¬¿ÉÒÔÓÃCtrl + C ÍË³ö
     SetConsoleCtrlHandler((PHANDLER_ROUTINE)exit_signal, TRUE);
 #else
-    //è¿™ä¸ªå‡ ä¸ªä¿¡å·è¢«è®¤å¯ä¸ºé€€å‡ºä¿¡å·
+    //Õâ¸ö¼¸¸öĞÅºÅ±»ÈÏ¿ÉÎªÍË³öĞÅºÅ
     zce::signal(SIGINT, exit_signal);
     zce::signal(SIGQUIT, exit_signal);
     zce::signal(SIGTERM, exit_signal);
 
-    //é‡æ–°åŠ è½½éƒ¨åˆ†é…ç½®,ç”¨äº†SIGUSR1 kill -10
+    //ÖØĞÂ¼ÓÔØ²¿·ÖÅäÖÃ,ÓÃÁËSIGUSR1 kill -10
     zce::signal(SIGUSR1, reload_cfg_signal);
 #endif
 
-    //SIGUSR1,SIGUSR2ä½ å¯ä»¥ç”¨æ¥å¹²ç‚¹è‡ªå·±çš„æ´»,
+    //SIGUSR1,SIGUSR2Äã¿ÉÒÔÓÃÀ´¸Éµã×Ô¼ºµÄ»î,
     return 0;
 }
 
 int ZCE_Server_Base::daemon_init()
 {
-    //Daemon ç²¾çµè¿›ç¨‹,ä½†æ˜¯æˆ‘ä¸æ¸…ç†ç›®å½•è·¯å¾„,
+    //Daemon ¾«Áé½ø³Ì,µ«ÊÇÎÒ²»ÇåÀíÄ¿Â¼Â·¾¶,
 
 #if defined (ZCE_OS_LINUX)
 
@@ -367,7 +367,7 @@ int ZCE_Server_Base::daemon_init()
     zce::umask(0);
 
 #if defined (ZCE_OS_WINDOWS)
-    //è®¾ç½®Consoleçš„æ ‡é¢˜ä¿¡æ¯
+    //ÉèÖÃConsoleµÄ±êÌâĞÅÏ¢
     std::string out_str = get_app_basename();
     out_str += " ";
     out_str += app_author_;
@@ -378,18 +378,18 @@ int ZCE_Server_Base::daemon_init()
 }
 
 
-//é€šè¿‡å¯åŠ¨å‚æ•°0ï¼Œå¾—åˆ°app_base_name_ï¼Œapp_run_name_
+//Í¨¹ıÆô¶¯²ÎÊı0£¬µÃµ½app_base_name_£¬app_run_name_
 int ZCE_Server_Base::create_app_name(const char *argv_0)
 {
     app_run_name_ = argv_0;
-    // å–å¾—base name
+    // È¡µÃbase name
     char str_base_name[PATH_MAX + 1];
     str_base_name[PATH_MAX] = '\0';
     zce::basename(argv_0, str_base_name, PATH_MAX);
 
 #if defined ZCE_OS_WINDOWS
 
-    //Windowsä¸‹è¦å»æ‰,EXEåç¼€
+    //WindowsÏÂÒªÈ¥µô,EXEºó×º
     const size_t WIN_EXE_SUFFIX_LEN = 4;
     size_t name_len = strlen(str_base_name);
 
@@ -399,7 +399,7 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
         return -1;
     }
 
-    //å¦‚æœæœ‰åç¼€æ‰å–æ¶ˆï¼Œæ²¡æœ‰å°±æ”¾é¸­å­
+    //Èç¹ûÓĞºó×º²ÅÈ¡Ïû£¬Ã»ÓĞ¾Í·ÅÑ¼×Ó
     if (strcasecmp(str_base_name + name_len - WIN_EXE_SUFFIX_LEN, ".EXE") == 0)
     {
         str_base_name[name_len - WIN_EXE_SUFFIX_LEN] = '\0';
@@ -407,10 +407,10 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
 
 #endif
 
-    //å¦‚æœæ˜¯è°ƒè¯•ç‰ˆæœ¬ï¼Œå»æ‰åç¼€ç¬¦å·_d
+    //Èç¹ûÊÇµ÷ÊÔ°æ±¾£¬È¥µôºó×º·ûºÅ_d
 #if defined (DEBUG) || defined (_DEBUG)
 
-    //å¦‚æœæ˜¯è°ƒè¯•ç‰ˆæœ¬ï¼Œå»æ‰åç¼€ç¬¦å·_d
+    //Èç¹ûÊÇµ÷ÊÔ°æ±¾£¬È¥µôºó×º·ûºÅ_d
     const size_t DEBUG_SUFFIX_LEN = 2;
     size_t debug_name_len = strlen(str_base_name);
 
@@ -432,7 +432,7 @@ int ZCE_Server_Base::create_app_name(const char *argv_0)
     return 0;
 }
 
-//windowsä¸‹è®¾ç½®æœåŠ¡ä¿¡æ¯
+//windowsÏÂÉèÖÃ·şÎñĞÅÏ¢
 void ZCE_Server_Base::set_service_info(const char *svc_name,
                                        const char *svc_desc)
 {
@@ -449,13 +449,13 @@ void ZCE_Server_Base::set_service_info(const char *svc_name,
 
 
 
-//å¾—åˆ°è¿è¡Œä¿¡æ¯ï¼Œå¯èƒ½åŒ…æ‹¬è·¯å¾„ä¿¡æ¯
+//µÃµ½ÔËĞĞĞÅÏ¢£¬¿ÉÄÜ°üÀ¨Â·¾¶ĞÅÏ¢
 const char *ZCE_Server_Base::get_app_runname()
 {
     return app_run_name_.c_str();
 }
 
-//å¾—åˆ°ç¨‹åºè¿›ç¨‹åç§°ï¼Œï¼Œå»æ‰äº†è·¯å¾„ï¼ŒWINDOWSä¸‹å»æ‰äº†åç¼€
+//µÃµ½³ÌĞò½ø³ÌÃû³Æ£¬£¬È¥µôÁËÂ·¾¶£¬WINDOWSÏÂÈ¥µôÁËºó×º
 const char *ZCE_Server_Base::get_app_basename()
 {
     return app_base_name_.c_str();
@@ -463,20 +463,20 @@ const char *ZCE_Server_Base::get_app_basename()
 
 
 
-//è®¾ç½®è¿›ç¨‹æ˜¯å¦è¿è¡Œçš„æ ‡å¿—
+//ÉèÖÃ½ø³ÌÊÇ·ñÔËĞĞµÄ±êÖ¾
 void ZCE_Server_Base::set_run_sign(bool app_run)
 {
     app_run_ = app_run;
 }
 
-//è®¾ç½®reloadæ ‡å¿—
+//ÉèÖÃreload±êÖ¾
 void ZCE_Server_Base::set_reload_sign(bool app_reload)
 {
     app_reload_ = app_reload;
 }
 
 
-//ä¿¡å·å¤„ç†ä»£ç ï¼Œ
+//ĞÅºÅ´¦Àí´úÂë£¬
 #ifdef ZCE_OS_WINDOWS
 
 BOOL ZCE_Server_Base::exit_signal(DWORD)
@@ -493,10 +493,10 @@ void ZCE_Server_Base::exit_signal(int)
     return;
 }
 
-// USER1ä¿¡å·å¤„ç†å‡½æ•°
+// USER1ĞÅºÅ´¦Àíº¯Êı
 void ZCE_Server_Base::reload_cfg_signal(int)
 {
-    // ä¿¡å·å¤„ç†å‡½æ•°ä¸­ä¸èƒ½æœ‰IOç­‰ä¸å¯é‡å…¥çš„æ“ä½œï¼Œå¦åˆ™å®¹æ˜“æ­»é”
+    // ĞÅºÅ´¦Àíº¯ÊıÖĞ²»ÄÜÓĞIOµÈ²»¿ÉÖØÈëµÄ²Ù×÷£¬·ñÔòÈİÒ×ËÀËø
     base_instance_->set_reload_sign(true);
     return;
 }
@@ -508,7 +508,7 @@ void ZCE_Server_Base::reload_cfg_signal(int)
 
 #if defined ZCE_OS_WINDOWS
 
-//è¿è¡ŒæœåŠ¡
+//ÔËĞĞ·şÎñ
 int ZCE_Server_Base::win_services_run()
 {
     char service_name[PATH_MAX + 1];
@@ -537,7 +537,7 @@ int ZCE_Server_Base::win_services_run()
     return 0;
 }
 
-//å®‰è£…æœåŠ¡
+//°²×°·şÎñ
 int ZCE_Server_Base::win_services_install()
 {
 
@@ -547,7 +547,7 @@ int ZCE_Server_Base::win_services_install()
         return 0;
     }
 
-    //æ‰“å¼€æœåŠ¡æ§åˆ¶ç®¡ç†å™¨
+    //´ò¿ª·şÎñ¿ØÖÆ¹ÜÀíÆ÷
     SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (handle_scm == NULL)
@@ -562,7 +562,7 @@ int ZCE_Server_Base::win_services_install()
     file_path[MAX_PATH] = '\0';
     ::GetModuleFileName(NULL, file_path, MAX_PATH);
 
-    //åˆ›å»ºæœåŠ¡
+    //´´½¨·şÎñ
     SC_HANDLE handle_services = ::CreateService(
                                     handle_scm,
                                     app_base_name_.c_str(),
@@ -587,7 +587,7 @@ int ZCE_Server_Base::win_services_install()
         return -1;
     }
 
-    // ä¿®æ”¹æè¿°
+    // ĞŞ¸ÄÃèÊö
     SC_LOCK lock = LockServiceDatabase(handle_scm);
 
     if (lock != NULL)
@@ -606,7 +606,7 @@ int ZCE_Server_Base::win_services_install()
     return 0;
 }
 
-//å¸è½½æœåŠ¡
+//Ğ¶ÔØ·şÎñ
 int ZCE_Server_Base::win_services_uninstall()
 {
     if (!win_services_isinstalled())
@@ -639,7 +639,7 @@ int ZCE_Server_Base::win_services_uninstall()
     SERVICE_STATUS status;
     ::ControlService(handle_services, SERVICE_CONTROL_STOP, &status);
 
-    //åˆ é™¤æœåŠ¡
+    //É¾³ı·şÎñ
     BOOL bDelete = ::DeleteService(handle_services);
     ::CloseServiceHandle(handle_services);
     ::CloseServiceHandle(handle_scm);
@@ -656,17 +656,17 @@ int ZCE_Server_Base::win_services_uninstall()
 
 }
 
-//æ£€æŸ¥æœåŠ¡æ˜¯å¦å®‰è£…
+//¼ì²é·şÎñÊÇ·ñ°²×°
 bool ZCE_Server_Base::win_services_isinstalled()
 {
     bool b_result = false;
 
-    //æ‰“å¼€æœåŠ¡æ§åˆ¶ç®¡ç†å™¨
+    //´ò¿ª·şÎñ¿ØÖÆ¹ÜÀíÆ÷
     SC_HANDLE handle_scm = ::OpenSCManager(NULL, NULL, SC_MANAGER_ALL_ACCESS);
 
     if (handle_scm != NULL)
     {
-        //æ‰“å¼€æœåŠ¡
+        //´ò¿ª·şÎñ
         SC_HANDLE handle_service = ::OpenService(handle_scm, app_base_name_.c_str(), SERVICE_QUERY_CONFIG);
 
         if (handle_service != NULL)
@@ -681,10 +681,10 @@ bool ZCE_Server_Base::win_services_isinstalled()
     return b_result;
 }
 
-//æœåŠ¡è¿è¡Œå‡½æ•°
+//·şÎñÔËĞĞº¯Êı
 void WINAPI ZCE_Server_Base::win_service_main()
 {
-    //WINæœåŠ¡ç”¨çš„çŠ¶æ€
+    //WIN·şÎñÓÃµÄ×´Ì¬
     static SERVICE_STATUS_HANDLE handle_service_status = NULL;
 
     SERVICE_STATUS status;
@@ -701,7 +701,7 @@ void WINAPI ZCE_Server_Base::win_service_main()
     status.dwCurrentState = SERVICE_START_PENDING;
     status.dwControlsAccepted = SERVICE_ACCEPT_STOP;
 
-    //æ³¨å†ŒæœåŠ¡æ§åˆ¶
+    //×¢²á·şÎñ¿ØÖÆ
     handle_service_status = ::RegisterServiceCtrlHandler(base_instance_->get_app_basename(),
                                                          win_services_ctrl);
 
@@ -726,7 +726,7 @@ void WINAPI ZCE_Server_Base::win_service_main()
     //LogEvent(_T("Service stopped"));
 }
 
-//æœåŠ¡æ§åˆ¶å°æ‰€éœ€è¦çš„æ§åˆ¶å‡½æ•°
+//·şÎñ¿ØÖÆÌ¨ËùĞèÒªµÄ¿ØÖÆº¯Êı
 void WINAPI ZCE_Server_Base::win_services_ctrl(DWORD op_code)
 {
     switch (op_code)

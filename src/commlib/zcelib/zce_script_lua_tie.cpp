@@ -37,7 +37,7 @@ void push_stack(lua_State *state, const char *const ptr)
     lua_pushstring(state, ptr);
 }
 
-//read_stackä»å †æ ˆä¸­è¯»å–ä¸€ä¸ªæ•°æ®
+//read_stack´Ó¶ÑÕ»ÖĞ¶ÁÈ¡Ò»¸öÊı¾İ
 template<>
 void push_stack_val(lua_State *state, char val)
 {
@@ -90,7 +90,7 @@ void push_stack_val(lua_State *state, int64_t val)
     lua_pushstring(state, "int64_t");
     lua_gettable(state, LUA_GLOBALSINDEX);
 
-    //åœ¨DEBUGç‰ˆæœ¬å¢å¼ºä¸€äº›æ£€æŸ¥ï¼Œå¦‚æœä¸æ˜¯table
+    //ÔÚDEBUG°æ±¾ÔöÇ¿Ò»Ğ©¼ì²é£¬Èç¹û²»ÊÇtable
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
@@ -111,7 +111,7 @@ void push_stack_val(lua_State *state, uint64_t val)
     lua_pushstring(state, "uint64_t");
     lua_gettable(state, LUA_GLOBALSINDEX);
 
-    //åœ¨DEBUGç‰ˆæœ¬å¢å¼ºä¸€äº›æ£€æŸ¥ï¼Œå¦‚æœä¸æ˜¯table
+    //ÔÚDEBUG°æ±¾ÔöÇ¿Ò»Ğ©¼ì²é£¬Èç¹û²»ÊÇtable
 #if defined DEBUG || defined _DEBUG
     if (!lua_istable(state, -1))
     {
@@ -128,7 +128,7 @@ void push_stack_val(lua_State *state, uint64_t val)
 
 
 //=======================================================================================================
-//read_stackä»å †æ ˆä¸­è¯»å–ä¸€ä¸ªæ•°æ®
+//read_stack´Ó¶ÑÕ»ÖĞ¶ÁÈ¡Ò»¸öÊı¾İ
 
 template<> char *read_stack_ptr(lua_State *state, int index)
 {
@@ -187,7 +187,7 @@ template<> bool read_stack_val(lua_State *state, int index)
     {
         return lua_toboolean(state, index) != 0;
     }
-    //é¿å…æŸäº›ç¨‹åº¦çš„è½¬æ¢ä¸æˆåŠŸï¼Ÿ
+    //±ÜÃâÄ³Ğ©³Ì¶ÈµÄ×ª»»²»³É¹¦£¿
     else
     {
         return lua_tonumber(state, index) != 0;
@@ -253,16 +253,16 @@ template<> std::string read_stack_val(lua_State *state, int index)
 
 
 //=======================================================================================================
-//ä¸€äº›å…¬ç”¨çš„ç‰¹æ€§çš„LUAæ³¨å†Œå‡½æ•°ï¼Œ
+//Ò»Ğ©¹«ÓÃµÄÌØĞÔµÄLUA×¢²áº¯Êı£¬
 
-//åªè¯»çš„tableçš„newdindex
+//Ö»¶ÁµÄtableµÄnewdindex
 int newindex_onlyread(lua_State *state)
 {
     luaL_error(state, "Table is read only ,can't modify,please check your code.");
     return 1;
 }
 
-//dump luaè¿è¡Œçš„çš„å †æ ˆï¼Œç”¨äºæ£€æŸ¥luaè¿è¡Œæ—¶çš„é—®é¢˜ï¼Œé”™è¯¯å¤„ç†ç­‰
+//dump luaÔËĞĞµÄµÄ¶ÑÕ»£¬ÓÃÓÚ¼ì²éluaÔËĞĞÊ±µÄÎÊÌâ£¬´íÎó´¦ÀíµÈ
 int dump_luacall_stack(lua_State *state)
 {
     lua_Debug ar;
@@ -288,7 +288,7 @@ int dump_luacall_stack(lua_State *state)
     return 0;
 }
 
-//dump Cè°ƒç”¨luaçš„å †æ ˆï¼Œ
+//dump Cµ÷ÓÃluaµÄ¶ÑÕ»£¬
 int enum_clua_stack(lua_State *state)
 {
     int stack_top = lua_gettop(state);
@@ -370,42 +370,42 @@ int on_error(lua_State *state)
 }
 
 
-//LUAçš„ç¨‹åºé€šè¿‡è¿™ä¸ªå‡½æ•°å®Œå®šä¹‰ç±»çš„__index
+//LUAµÄ³ÌĞòÍ¨¹ıÕâ¸öº¯ÊıÍê¶¨ÒåÀàµÄ__index
 int class_meta_get(lua_State *state)
 {
     int ret = 0;
 
-    //è¦æ£€æŸ¥çš„æ•°æ®åœ¨æ ˆåº•éƒ¨ï¼Œå–å‡ºå¾—åˆ°å…¶metatableæ”¾å…¥æ ˆé¡¶
+    //Òª¼ì²éµÄÊı¾İÔÚÕ»µ×²¿£¬È¡³öµÃµ½Æämetatable·ÅÈëÕ»¶¥
     lua_getmetatable(state, 1);
-    //å¤åˆ¶æ ˆåº•å€’æ•°ç¬¬äºŒä¸ªå‚æ•°keyï¼Œæ”¾å…¥æ ˆé¡¶
+    //¸´ÖÆÕ»µ×µ¹ÊıµÚ¶ş¸ö²ÎÊıkey£¬·ÅÈëÕ»¶¥
     lua_pushvalue(state, 2);
 
-    //åœ¨metatableé‡Œé¢å¯»æ‰¾keyï¼Œ
+    //ÔÚmetatableÀïÃæÑ°ÕÒkey£¬
     lua_rawget(state, -2);
 
-    //å¦‚æœæ²¡æœ‰æ‰¾åˆ°
+    //Èç¹ûÃ»ÓĞÕÒµ½
     if (lua_isnil(state, -1))
     {
-        //å»æ‰nil
+        //È¥µônil
         lua_remove(state, -1);
-        //æ£€æŸ¥çš„ä»–çš„çˆ¶ç±»é‡Œé¢æ˜¯å¦æœ‰å¯ä»¥è°ƒç”¨çš„
+        //¼ì²éµÄËûµÄ¸¸ÀàÀïÃæÊÇ·ñÓĞ¿ÉÒÔµ÷ÓÃµÄ
         ret = class_parent(state);
     }
 
     if (ret == 0)
     {
-        //å¦‚æœæ˜¯ä¸€ä¸ªuserdataï¼Œå…¶å®å…¶å°±æ˜¯æˆ‘ä»¬æ‰”è¿›å»çš„ç±»çš„æˆå‘˜æŒ‡é’ˆ
+        //Èç¹ûÊÇÒ»¸öuserdata£¬ÆäÊµÆä¾ÍÊÇÎÒÃÇÈÓ½øÈ¥µÄÀàµÄ³ÉÔ±Ö¸Õë
         if (lua_isuserdata(state, -1))
         {
-            //è¿›è¡Œè°ƒç”¨,å–å¾—è¿™ä¸ªæˆå‘˜å¯¹è±¡ï¼Œæ”¾å…¥å †æ ˆ
+            //½øĞĞµ÷ÓÃ,È¡µÃÕâ¸ö³ÉÔ±¶ÔÏó£¬·ÅÈë¶ÑÕ»
             ((memvar_base *)lua_touserdata(state, -1))->get(state);
-            //ä»å †æ ˆç§»é™¤è¿™ä¸ªusedataï¼ŒçœŸæ­£è¦æ”¾å…¥stackçš„å€¼ï¼Œå·²ç»åœ¨getå‡½æ•°ä¸Šä½¿ç”¨äº†.
+            //´Ó¶ÑÕ»ÒÆ³ıÕâ¸öusedata£¬ÕæÕıÒª·ÅÈëstackµÄÖµ£¬ÒÑ¾­ÔÚgetº¯ÊıÉÏÊ¹ÓÃÁË.
             lua_remove(state, -2);
         }
-        //å¦‚æœæ˜¯ä¸€ä¸ªå‡½æ•°ï¼Œè¿”å›ï¼Œ
+        //Èç¹ûÊÇÒ»¸öº¯Êı£¬·µ»Ø£¬
         else if (lua_isfunction(state, -1))
         {
-            //ä»€ä¹ˆä¹Ÿä¸å¹²
+            //Ê²Ã´Ò²²»¸É
         }
         else
         {
@@ -414,7 +414,7 @@ int class_meta_get(lua_State *state)
         }
     }
 
-    //å¦‚æœè¿”å›å€¼å‘Šè¯‰æˆ‘ä»¬æ²¡æœ‰å¾—åˆ°
+    //Èç¹û·µ»ØÖµ¸æËßÎÒÃÇÃ»ÓĞµÃµ½
     if (0 != ret)
     {
         lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
@@ -424,18 +424,18 @@ int class_meta_get(lua_State *state)
         return 0;
     }
 
-    //åˆ é™¤æ‰metatableï¼Œ
+    //É¾³ıµômetatable£¬
     lua_remove(state, -2);
 
     return 1;
 }
 
 
-//LUAçš„ç¨‹åºé€šè¿‡è¿™ä¸ªå‡½æ•°å®Œæˆå®šä¹‰ç±»çš„__newindex
+//LUAµÄ³ÌĞòÍ¨¹ıÕâ¸öº¯ÊıÍê³É¶¨ÒåÀàµÄ__newindex
 int class_meta_set(lua_State *state)
 {
     int ret = 0;
-    //å¾—åˆ°tableçš„meta tableï¼Œæ ¹æ®å˜é‡åç§°å¾—åˆ°å¯¹åº”çš„å˜é‡çš„setå‡½æ•°
+    //µÃµ½tableµÄmeta table£¬¸ù¾İ±äÁ¿Ãû³ÆµÃµ½¶ÔÓ¦µÄ±äÁ¿µÄsetº¯Êı
     lua_getmetatable(state, 1);
     lua_pushvalue(state, 2);
     lua_rawget(state, -2);
@@ -443,9 +443,9 @@ int class_meta_set(lua_State *state)
 
     if (lua_isnil(state, -1))
     {
-        //å»æ‰nil
+        //È¥µônil
         lua_remove(state, -1);
-        //æ£€æŸ¥çš„ä»–çš„çˆ¶ç±»é‡Œé¢æ˜¯å¦æœ‰å¯ä»¥è°ƒç”¨çš„
+        //¼ì²éµÄËûµÄ¸¸ÀàÀïÃæÊÇ·ñÓĞ¿ÉÒÔµ÷ÓÃµÄ
         ret = class_parent(state);
     }
 
@@ -457,13 +457,13 @@ int class_meta_set(lua_State *state)
         }
         else
         {
-            //å»æ‰nil
+            //È¥µônil
             lua_remove(state, -1);
             ret = -1;
         }
     }
 
-    //å¦‚æœè¿”å›å€¼å‘Šè¯‰æˆ‘ä»¬æ²¡æœ‰å¾—åˆ°
+    //Èç¹û·µ»ØÖµ¸æËßÎÒÃÇÃ»ÓĞµÃµ½
     if (0 != ret)
     {
         lua_pushfstring(state, "[LUATIE]%s can't find '%s' class variable. (forgot registering class variable ?)",
@@ -477,7 +477,7 @@ int class_meta_set(lua_State *state)
 }
 
 
-///è°ƒç”¨çˆ¶æ¯çš„å¯¹åº”çš„meta tableé‡Œé¢æ˜¯å¦æœ‰ç›¸åº”çš„ get
+///µ÷ÓÃ¸¸Ä¸µÄ¶ÔÓ¦µÄmeta tableÀïÃæÊÇ·ñÓĞÏàÓ¦µÄ get
 int class_parent(lua_State *state)
 {
     int ret = 0;
@@ -485,22 +485,22 @@ int class_parent(lua_State *state)
     lua_pushstring(state, "__parent");
     lua_rawget(state, -2);
 
-    //å¦‚æœä¸æ˜¯tableï¼Œè¡¨ç¤ºæ²¡æœ‰çˆ¶æ¯ï¼Œæ¶ˆå¤±
+    //Èç¹û²»ÊÇtable£¬±íÊ¾Ã»ÓĞ¸¸Ä¸£¬ÏûÊ§
     if (!lua_istable(state, -1))
     {
         lua_remove(state, -1);
         return -1;
     }
 
-    //å¦‚æœçˆ¶æ¯å¯¹åº”çš„æ˜¯ä¸€ä¸ªtable
-    //å¤åˆ¶æ ˆåº•å€’æ•°ç¬¬äºŒä¸ªå‚æ•°keyï¼Œæ”¾å…¥æ ˆé¡¶,åœ¨metatableé‡Œé¢å¯»æ‰¾keyï¼Œ
+    //Èç¹û¸¸Ä¸¶ÔÓ¦µÄÊÇÒ»¸ötable
+    //¸´ÖÆÕ»µ×µ¹ÊıµÚ¶ş¸ö²ÎÊıkey£¬·ÅÈëÕ»¶¥,ÔÚmetatableÀïÃæÑ°ÕÒkey£¬
     lua_pushvalue(state, 2);
     lua_rawget(state, -2);
 
-    //å¦‚æœæ˜¯ä¸€ä¸ªuserdataï¼Œå…¶å®å…¶å°±æ˜¯æˆ‘ä»¬æ‰”è¿›å»çš„ç±»çš„æˆå‘˜æŒ‡é’ˆ
+    //Èç¹ûÊÇÒ»¸öuserdata£¬ÆäÊµÆä¾ÍÊÇÎÒÃÇÈÓ½øÈ¥µÄÀàµÄ³ÉÔ±Ö¸Õë
     if (lua_isnil(state, -1))
     {
-        //å¼¹å‡ºnil
+        //µ¯³önil
         lua_remove(state, -1);
         ret = class_parent(state);
     }
@@ -522,7 +522,7 @@ int destroyer(lua_State *state)
 };// namespace
 
 //=======================================================================================================
-//ä¸ºint64_t å‡†å¤‡çš„metatable
+//Îªint64_t ×¼±¸µÄmetatable
 static int tostring_int64(lua_State *state)
 {
     char temp[64];
@@ -679,22 +679,22 @@ void ZCE_Lua_Base::reg_int64()
     lua_pushcclosure(lua_state_, selfsub_int64, 0);
     lua_rawset(lua_state_, -3);
 
-    //è¿™æ ·çš„ç›®çš„æ˜¯è¿™æ ·çš„ï¼Œ__callæ˜¯å¯¹åº”ä¸€ä¸ª()è°ƒç”¨ï¼Œä½†å®ä½“ä¸æ˜¯å‡½æ•°å¼ï¼Œçš„è°ƒç”¨å‡½æ•°
-    //LUAä¸­å‡ºç°è¿™æ ·çš„è°ƒç”¨ï¼Œi1 =int64_t("123")
+    //ÕâÑùµÄÄ¿µÄÊÇÕâÑùµÄ£¬__callÊÇ¶ÔÓ¦Ò»¸ö()µ÷ÓÃ£¬µ«ÊµÌå²»ÊÇº¯ÊıÊ½£¬µÄµ÷ÓÃº¯Êı
+    //LUAÖĞ³öÏÖÕâÑùµÄµ÷ÓÃ£¬i1 =int64_t("123")
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__call");
     lua_pushcclosure(lua_state_, constructor_int64, 0);
     lua_rawset(lua_state_, -3);
 
-    //è®¾ç½®è¿™ä¸ªtableä½œä¸ºint64_t åŸå‹çš„metatable.
+    //ÉèÖÃÕâ¸ötable×÷Îªint64_t Ô­ĞÍµÄmetatable.
     lua_setmetatable(lua_state_, -2);
 
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
 //=======================================================================================================
-//ä¸ºuint64_t å‡†å¤‡çš„metatable
+//Îªuint64_t ×¼±¸µÄmetatable
 static int tostring_uint64(lua_State *state)
 {
     char temp[64];
@@ -779,7 +779,7 @@ static int sub_uint64(lua_State *state)
     zce::luatie::push_stack(state, c);
     return 1;
 }
-//æ„é€ å‡½æ•°ï¼Œè®©ä½ æ”¯æŒint64_t("123")
+//¹¹Ôìº¯Êı£¬ÈÃÄãÖ§³Öint64_t("123")
 static int constructor_uint64(lua_State *state)
 {
     uint64_t data = 0;
@@ -850,22 +850,22 @@ void ZCE_Lua_Base::reg_uint64()
     lua_pushcclosure(lua_state_, selfsub_uint64, 0);
     lua_rawset(lua_state_, -3);
 
-    //è¿™æ ·çš„ç›®çš„æ˜¯è¿™æ ·çš„ï¼Œ__callæ˜¯å¯¹åº”ä¸€ä¸ª()è°ƒç”¨ï¼Œä½†å®ä½“ä¸æ˜¯å‡½æ•°å¼ï¼Œçš„è°ƒç”¨å‡½æ•°
-    //LUAä¸­å‡ºç°è¿™æ ·çš„è°ƒç”¨ï¼Œi1 =int64_t("123")
+    //ÕâÑùµÄÄ¿µÄÊÇÕâÑùµÄ£¬__callÊÇ¶ÔÓ¦Ò»¸ö()µ÷ÓÃ£¬µ«ÊµÌå²»ÊÇº¯ÊıÊ½£¬µÄµ÷ÓÃº¯Êı
+    //LUAÖĞ³öÏÖÕâÑùµÄµ÷ÓÃ£¬i1 =int64_t("123")
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__call");
     lua_pushcclosure(lua_state_, constructor_uint64, 0);
     lua_rawset(lua_state_, -3);
 
-    //è®¾ç½®è¿™ä¸ªtableä½œä¸ºint64_t åŸå‹çš„metatable.
+    //ÉèÖÃÕâ¸ötable×÷Îªint64_t Ô­ĞÍµÄmetatable.
     lua_setmetatable(lua_state_, -2);
 
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
 }
 
 //=======================================================================================================
-//ä¸ºstd::string å‡†å¤‡çš„metatable
+//Îªstd::string ×¼±¸µÄmetatable
 
 static int tostring_stdstring(lua_State *state)
 {
@@ -948,7 +948,7 @@ static int constructor_stdstring(lua_State *state)
     return 1;
 }
 
-//æ³¨å†Œstd::string
+//×¢²ástd::string
 void ZCE_Lua_Base::reg_stdstring()
 {
     const char *stdstring_name = "stdstring";
@@ -985,15 +985,15 @@ void ZCE_Lua_Base::reg_stdstring()
     lua_pushcclosure(lua_state_, add_stdstring, 0);
     lua_rawset(lua_state_, -3);
 
-    //è¿™æ ·çš„ç›®çš„æ˜¯è¿™æ ·çš„ï¼Œ__callæ˜¯å¯¹åº”ä¸€ä¸ª()è°ƒç”¨ï¼Œä½†å®ä½“ä¸æ˜¯å‡½æ•°å¼ï¼Œçš„è°ƒç”¨å‡½æ•°
-    //LUAä¸­å‡ºç°è¿™æ ·çš„è°ƒç”¨ï¼Œi1 =stdstring("123")
+    //ÕâÑùµÄÄ¿µÄÊÇÕâÑùµÄ£¬__callÊÇ¶ÔÓ¦Ò»¸ö()µ÷ÓÃ£¬µ«ÊµÌå²»ÊÇº¯ÊıÊ½£¬µÄµ÷ÓÃº¯Êı
+    //LUAÖĞ³öÏÖÕâÑùµÄµ÷ÓÃ£¬i1 =stdstring("123")
     lua_newtable(lua_state_);
 
     lua_pushstring(lua_state_, "__call");
     lua_pushcclosure(lua_state_, constructor_stdstring, 0);
     lua_rawset(lua_state_, -3);
 
-    //è®¾ç½®è¿™ä¸ªtableä½œä¸ºint64_t åŸå‹çš„metatable.
+    //ÉèÖÃÕâ¸ötable×÷Îªint64_t Ô­ĞÍµÄmetatable.
     lua_setmetatable(lua_state_, -2);
 
     lua_settable(lua_state_, LUA_GLOBALSINDEX);
@@ -1014,7 +1014,7 @@ ZCE_Lua_Base::~ZCE_Lua_Base()
 {
 }
 
-// æ‰§è¡Œä¸€ä¸ªLUAçš„buffer
+// Ö´ĞĞÒ»¸öLUAµÄbuffer
 int ZCE_Lua_Base::do_buffer(const char *buff, size_t len)
 {
     int ret = 0;
@@ -1033,7 +1033,7 @@ int ZCE_Lua_Base::do_buffer(const char *buff, size_t len)
         return ret;
     }
 
-    //lua_pcallçš„é”™è¯¯æ˜¯å³é”™è¯¯å¤„ç†å‡½æ•°å¤„ç†çš„ï¼Œ
+    //lua_pcallµÄ´íÎóÊÇÓÒ´íÎó´¦Àíº¯Êı´¦ÀíµÄ£¬
     ret = ::lua_pcall(lua_state_, 0, 0, errfunc);
     if (0 != ret)
     {
@@ -1044,7 +1044,7 @@ int ZCE_Lua_Base::do_buffer(const char *buff, size_t len)
     return 0;
 }
 
-// æ‰§è¡Œä¸€ä¸ªLUAçš„æ–‡ä»¶
+// Ö´ĞĞÒ»¸öLUAµÄÎÄ¼ş
 int ZCE_Lua_Base::do_file(const char *filename)
 {
     int ret = 0;
@@ -1063,7 +1063,7 @@ int ZCE_Lua_Base::do_file(const char *filename)
         return ret;
     }
 
-    //lua_pcallçš„é”™è¯¯æ˜¯å³é”™è¯¯å¤„ç†å‡½æ•°å¤„ç†çš„ï¼Œ
+    //lua_pcallµÄ´íÎóÊÇÓÒ´íÎó´¦Àíº¯Êı´¦ÀíµÄ£¬
     ret = lua_pcall(lua_state_, 0, 0, errfunc);
     if (0 != ret)
     {
@@ -1075,19 +1075,19 @@ int ZCE_Lua_Base::do_file(const char *filename)
 }
 
 
-///dump Cè°ƒç”¨luaçš„å †æ ˆï¼Œ
+///dump Cµ÷ÓÃluaµÄ¶ÑÕ»£¬
 void ZCE_Lua_Base::enum_stack()
 {
     zce::luatie::enum_clua_stack(lua_state_);
 }
-///dump luaè¿è¡Œçš„çš„å †æ ˆï¼Œç”¨äºæ£€æŸ¥luaè¿è¡Œæ—¶çš„é—®é¢˜ï¼Œé”™è¯¯å¤„ç†ç­‰
+///dump luaÔËĞĞµÄµÄ¶ÑÕ»£¬ÓÃÓÚ¼ì²éluaÔËĞĞÊ±µÄÎÊÌâ£¬´íÎó´¦ÀíµÈ
 void ZCE_Lua_Base::dump_stack()
 {
     zce::luatie::dump_luacall_stack(lua_state_);
 }
 
 //=======================================================================================================
-//Lua Thread çš„å°è£…
+//Lua Thread µÄ·â×°
 ZCE_Lua_Thread::ZCE_Lua_Thread():
     ZCE_Lua_Base(nullptr)
 {
@@ -1099,27 +1099,27 @@ ZCE_Lua_Thread::~ZCE_Lua_Thread()
 }
 
 
-//è®¾ç½®çº¿ç¨‹ç›¸å…³çš„æ•°æ®
+//ÉèÖÃÏß³ÌÏà¹ØµÄÊı¾İ
 void ZCE_Lua_Thread::set_thread(lua_State *lua_thread, int thread_stackidx)
 {
     lua_state_ = lua_thread;
     luathread_stackidx_ = thread_stackidx;
 }
 
-//å–å¾—çº¿ç¨‹åœ¨åˆ›å»ºè€…å †æ ˆçš„ä½ç½®ç´¢å¼•
+//È¡µÃÏß³ÌÔÚ´´½¨Õß¶ÑÕ»µÄÎ»ÖÃË÷Òı
 int ZCE_Lua_Thread::get_thread_stackidx()
 {
     return luathread_stackidx_;
 }
 
 
-//æ¢å¤çº¿ç¨‹è¿è¡Œ
+//»Ö¸´Ïß³ÌÔËĞĞ
 int ZCE_Lua_Thread::resume(int narg)
 {
     return ::lua_resume(lua_state_, narg);
 }
 
-//æŒ‚èµ·çº¿ç¨‹è¿è¡Œ
+//¹ÒÆğÏß³ÌÔËĞĞ
 int ZCE_Lua_Thread::yield(int nresults)
 {
     return ::lua_yield(lua_state_, nresults);
@@ -1137,18 +1137,18 @@ ZCE_Lua_Tie::~ZCE_Lua_Tie()
     close();
 }
 
-//æ‰“å¼€lua state
+//´ò¿ªlua state
 int ZCE_Lua_Tie::open(bool open_libs,
                       bool reg_common_use)
 {
-    //å¦‚æœé”™è¯¯
+    //Èç¹û´íÎó
     if (lua_state_)
     {
         ZCE_LOG(RS_ERROR, "lua_state_ != NULL ,reopen?");
         close();
     }
 
-    //lua_open è¿™ä¸ªä¸œä¸œå°±æ˜¯luaL_newstateï¼Œè¿™ä¸ªå¥½åƒæ˜¯ä¸ºäº†å‘å‰å…¼å®¹
+    //lua_open Õâ¸ö¶«¶«¾ÍÊÇluaL_newstate£¬Õâ¸öºÃÏñÊÇÎªÁËÏòÇ°¼æÈİ
     lua_state_ = lua_open();
     if (nullptr == lua_state_)
     {
@@ -1167,7 +1167,7 @@ int ZCE_Lua_Tie::open(bool open_libs,
     return 0;
 }
 
-//å…³é—­lua state
+//¹Ø±Õlua state
 void ZCE_Lua_Tie::close()
 {
     if (lua_state_)
@@ -1178,7 +1178,7 @@ void ZCE_Lua_Tie::close()
 }
 
 
-//å¼€å¯ä¸€ä¸ªæ–°çš„lua thread
+//¿ªÆôÒ»¸öĞÂµÄlua thread
 int ZCE_Lua_Tie::new_thread(ZCE_Lua_Thread *lua_thread)
 {
     lua_State *tread_state = lua_newthread(lua_state_);
@@ -1190,10 +1190,10 @@ int ZCE_Lua_Tie::new_thread(ZCE_Lua_Thread *lua_thread)
     return 0;
 }
 
-//å–å¾—çº¿ç¨‹åœ¨åˆ›å»ºè€…å †æ ˆçš„ä½ç½®ç´¢å¼•
+//È¡µÃÏß³ÌÔÚ´´½¨Õß¶ÑÕ»µÄÎ»ÖÃË÷Òı
 void ZCE_Lua_Tie::del_thread(ZCE_Lua_Thread *lua_thread)
 {
-    ///Lua Threadçš„ä»£ç ä¸ä¼šè‡ªå·±é‡Šæ”¾è‡ªå·±ï¼ŒLua Threadåœ¨å †æ ˆè¢«æ¸…ç©ºçš„æ—¶å€™ï¼Œä¼šè¢«GCå›æ”¶æ‰
+    ///Lua ThreadµÄ´úÂë²»»á×Ô¼ºÊÍ·Å×Ô¼º£¬Lua ThreadÔÚ¶ÑÕ»±»Çå¿ÕµÄÊ±ºò£¬»á±»GC»ØÊÕµô
     int idx = lua_thread->get_thread_stackidx();
     if (idx != 0)
     {
@@ -1201,7 +1201,7 @@ void ZCE_Lua_Tie::del_thread(ZCE_Lua_Thread *lua_thread)
     }
 }
 
-//æ¢å¤ä¸€ä¸ªçº¿ç¨‹çš„è¿è¡Œ
+//»Ö¸´Ò»¸öÏß³ÌµÄÔËĞĞ
 int ZCE_Lua_Tie::resume_thread(ZCE_Lua_Thread *lua_thread, int narg)
 {
     return lua_thread->resume(narg);

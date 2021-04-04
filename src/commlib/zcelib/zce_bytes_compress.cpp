@@ -8,14 +8,14 @@
 #pragma warning ( disable : 4127)
 #endif
 
-//æ‰“å¼€ä¸‹é¢å®å®šä¹‰ï¼Œä¼šå¢åŠ è°ƒè¯•ä¿¡æ¯ï¼Œå¯¹æ¯æ¬¡å‹ç¼©ç»“æœè¿›è¡Œè®°å½•
+//´ò¿ªÏÂÃæºê¶¨Òå£¬»áÔö¼Óµ÷ÊÔĞÅÏ¢£¬¶ÔÃ¿´ÎÑ¹Ëõ½á¹û½øĞĞ¼ÇÂ¼
 #define  ZCE_LZ_DEBUG 0
 
-//ä½¿ç”¨HASHå‡½æ•°ï¼Œåªä¿ç•™ä½ä½13ä½çš„ä¿¡æ¯ï¼Œæ‰€ä»¥å³ç§»åŠ¨19ä½
-//è§£é‡Šä¸€ä¸‹((4*8)-13)ï¼Œç¼“å†²çš„å¤§å°æ˜¯ 8192ï¼Œæ‰€ä»¥æ˜¯2^13ï¼Œ
+//Ê¹ÓÃHASHº¯Êı£¬Ö»±£ÁôµÍÎ»13Î»µÄĞÅÏ¢£¬ËùÒÔÓÒÒÆ¶¯19Î»
+//½âÊÍÒ»ÏÂ((4*8)-13)£¬»º³åµÄ´óĞ¡ÊÇ 8192£¬ËùÒÔÊÇ2^13£¬
 #define ZCE_LZ_HASH(ptr)       (((*(uint32_t *)(ptr)) *2654435761U)  >> ((4*8)-13))
 
-//ä½ è¦åŒ…è£…dstæœ‰è¶³å¤Ÿçš„ç©ºé—´ï¼Œéƒ½æ˜¯8å­—èŠ‚è¡¥é½çš„ã€‚
+//ÄãÒª°ü×°dstÓĞ×ã¹»µÄ¿Õ¼ä£¬¶¼ÊÇ8×Ö½Ú²¹ÆëµÄ¡£
 #if defined ZCE_OS64
 #define ZCE_LZ_FAST_COPY_STOP(dst,src,stop)  \
     do \
@@ -38,22 +38,22 @@
 #endif
 
 
-//å¯ä»¥è®°å½•çš„æœ€å¤§åç§»é•¿åº¦ï¼Œåç§»é•¿åº¦ä¸å¯èƒ½è®°å½•çš„æ›´å¤§
+//¿ÉÒÔ¼ÇÂ¼µÄ×î´óÆ«ÒÆ³¤¶È£¬Æ«ÒÆ³¤¶È²»¿ÉÄÜ¼ÇÂ¼µÄ¸ü´ó
 const size_t  ZCE_LZ_MAX_OFFSET  = 0xFFFF;
 
-//æ­¥è¿›é•¿åº¦çš„å¹‚ï¼Œ1<<6,64æ¬¡
+//²½½ø³¤¶ÈµÄÃİ£¬1<<6,64´Î
 const size_t ZCE_LZ_STEP_LEN_POW  = 6;
-//æœ€å¤§çš„æ­¥è¿›é•¿åº¦ï¼Œ
-//LZ4çš„æ­¥è¿›é•¿åº¦æ˜¯ä¸å¤„ç†çš„ï¼Œæ‰€ä»¥ä»–æœ€åå¯èƒ½éå¸¸å¿«ï¼Œä½†ä¹Ÿæœ‰å¯èƒ½æ˜¯ä»–å¯¹æŸäº›æç«¯æƒ…å†µæ— æ³•å‹ç¼©
+//×î´óµÄ²½½ø³¤¶È£¬
+//LZ4µÄ²½½ø³¤¶ÈÊÇ²»´¦ÀíµÄ£¬ËùÒÔËû×îºó¿ÉÄÜ·Ç³£¿ì£¬µ«Ò²ÓĞ¿ÉÄÜÊÇËû¶ÔÄ³Ğ©¼«¶ËÇé¿öÎŞ·¨Ñ¹Ëõ
 const size_t ZCE_LZ_STEP_MAX_LEN  = 32;
 
 
-//å°¾éƒ¨ä¸å¤„ç†çš„æ¨¡å—ï¼Œå› ä¸ºæ¯”è¾ƒçš„é•¿åº¦æ˜¯8ï¼Œè€Œå¿«é€Ÿæ‹·è´çš„é•¿åº¦ä¹Ÿæ˜¯8ï¼Œæ‰€ä»¥ä¿ç•™16ä¸ªå­—èŠ‚æ˜¯å®‰å…¨çš„
+//Î²²¿²»´¦ÀíµÄÄ£¿é£¬ÒòÎª±È½ÏµÄ³¤¶ÈÊÇ8£¬¶ø¿ìËÙ¿½±´µÄ³¤¶ÈÒ²ÊÇ8£¬ËùÒÔ±£Áô16¸ö×Ö½ÚÊÇ°²È«µÄ
 const size_t ZCE_LZ_NOPROCESS_TAIL = 8 * 2;
 
-//HASHTABLEé•¿åº¦ç­‰äº2å¤šå°‘æ¬¡æ–¹
+//HASHTABLE³¤¶ÈµÈÓÚ2¶àÉÙ´Î·½
 const uint32_t HASH_TABLE_LEN_2_POWER = 13;
-//HASHTABLEçš„é•¿åº¦
+//HASHTABLEµÄ³¤¶È
 const size_t HASH_TABLE_LEN = 0x1 << (HASH_TABLE_LEN_2_POWER);
 
 
@@ -73,23 +73,23 @@ zce::ZLZ_Compress_Format::~ZLZ_Compress_Format()
 }
 
 
-//å‹ç¼©çš„å…³é”®å‡½æ•°ï¼Œå†…éƒ¨å‡½æ•°ï¼Œä¸å¯¹å¯¹å¤–æš´æ¼
+//Ñ¹ËõµÄ¹Ø¼üº¯Êı£¬ÄÚ²¿º¯Êı£¬²»¶Ô¶ÔÍâ±©Â©
 void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
                                              size_t original_size,
                                              unsigned char *compressed_buf,
                                              size_t *compressed_size)
 {
-    //åˆå§‹åŒ–å„ç§åˆå§‹å€¼
+    //³õÊ¼»¯¸÷ÖÖ³õÊ¼Öµ
     const unsigned char *read_pos = original_buf;
     const unsigned char *read_end = original_buf + original_size;
     const unsigned char *next_read_pos = NULL;
     unsigned char *write_pos = compressed_buf;
     unsigned char *write_stop = NULL;
 
-    //å› ä¸ºå¿«é€Ÿæ‹·è´ï¼Œä¸€æ¬¡å¤„ç†8ä¸ªå­—èŠ‚ï¼Œç”¨16ä¸ªå­—èŠ‚ä¿è¯ä¸æº¢å‡ºï¼Œ
+    //ÒòÎª¿ìËÙ¿½±´£¬Ò»´Î´¦Àí8¸ö×Ö½Ú£¬ÓÃ16¸ö×Ö½Ú±£Ö¤²»Òç³ö£¬
     const unsigned char *match_end = read_end - ZCE_LZ_NOPROCESS_TAIL;
 
-    //æ¸…ç†æˆ0
+    //ÇåÀí³É0
     memset(hash_lz_offset_, 0, sizeof(uint32_t)*HASH_TABLE_LEN);
 
     const unsigned char *ref_offset = NULL;
@@ -102,21 +102,21 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
     for (;;)
     {
 
-        //ä½ å¯ä»¥è®¤ä¸ºZCELZç®—æ³•çš„å¤šä¸ªå—ç»„æˆï¼Œä¸€ä¸ªå—ä¸­é—´æœ‰ä¸€ä¸ªä¸èƒ½å‹ç¼©å­—æ®µï¼ˆå¯é€‰ï¼‰ï¼Œä¸€ä¸ªå¯ä»¥å‹ç¼©å­—æ®µç»„æˆï¼ˆå¯é€‰ï¼‰ï¼Œ
+        //Äã¿ÉÒÔÈÏÎªZCELZËã·¨µÄ¶à¸ö¿é×é³É£¬Ò»¸ö¿éÖĞ¼äÓĞÒ»¸ö²»ÄÜÑ¹Ëõ×Ö¶Î£¨¿ÉÑ¡£©£¬Ò»¸ö¿ÉÒÔÑ¹Ëõ×Ö¶Î×é³É£¨¿ÉÑ¡£©£¬
 
         nomatch_achor = read_pos;
         nomatch_count = 0;
         match_count = 0;
 
         size_t step_len = 1;
-        //ç­‰äº(1 << ZCE_LZ_STEP_LEN_POW)+1
+        //µÈÓÚ(1 << ZCE_LZ_STEP_LEN_POW)+1
         size_t step_attempts = 65;
         next_read_pos = read_pos;
-        //å¦‚æœä¸åŒ¹é…
+        //Èç¹û²»Æ¥Åä
         do
         {
-            //é•¿åº¦ä¹Ÿæ˜¯æœ€å¤§è®°å½•2ä¸ªå­—èŠ‚,
-            //ä¸‹ä¸€è½® step_len å¯èƒ½è¿˜ä¼šè‡ªå¢ï¼Œæ‰€ä»¥è¿™å„¿æ˜¯<,æ³¨æ„æ˜¯0xFFDFï¼Œ= 0xFFFF -32
+            //³¤¶ÈÒ²ÊÇ×î´ó¼ÇÂ¼2¸ö×Ö½Ú,
+            //ÏÂÒ»ÂÖ step_len ¿ÉÄÜ»¹»á×ÔÔö£¬ËùÒÔÕâ¶ùÊÇ<,×¢ÒâÊÇ0xFFDF£¬= 0xFFFF -32
             if (ZCE_UNLIKELY(read_pos - nomatch_achor > 0xFFDF))
             {
                 goto zlz_token_process;
@@ -126,7 +126,7 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
                 goto zlz_end_process;
             }
             read_pos = next_read_pos;
-            //è¿™ä¸ªåœ°æ–¹è¯´æ˜ä¸€ä¸‹ï¼Œå¦‚æœtable_old_offset == 0ï¼Œé‚£ä¹ˆä¹Ÿè®¤ä¸ºæ˜¯æ²¡æœ‰åŒ¹é…
+            //Õâ¸öµØ·½ËµÃ÷Ò»ÏÂ£¬Èç¹ûtable_old_offset == 0£¬ÄÇÃ´Ò²ÈÏÎªÊÇÃ»ÓĞÆ¥Åä
             uint32_t hash_value = ZCE_LZ_HASH(read_pos);
 
             uint32_t table_old_offset = hash_lz_offset_[hash_value];
@@ -134,17 +134,17 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
             hash_lz_offset_[hash_value] = (uint32_t)(read_pos - original_buf);
             match_offset = (size_t)(read_pos - ref_offset);
 
-            //step_attempts++çš„ç›®çš„æ˜¯åœ¨é•¿æœŸå‘ç°æ— æ³•å‹ç¼©çš„æƒ…å†µä¸‹ï¼Œ
-            //ç›¸å½“äºï¼Œ2^ZCE_LZ_STEP_LEN_POWæ¬¡åï¼Œæ­¥è¿›é•¿åº¦2,å†2^ZCE_LZ_STEP_LEN_POWæ¬¡åï¼Œæ­¥è¿›å˜ä¸º3
-            //å½“æ­¥è¿›é•¿åº¦è¾¾åˆ°ä¸€å®šç¨‹åº¦åï¼Œåœæ­¢æ­¥è¿›å¢åŠ ï¼Œ
+            //step_attempts++µÄÄ¿µÄÊÇÔÚ³¤ÆÚ·¢ÏÖÎŞ·¨Ñ¹ËõµÄÇé¿öÏÂ£¬
+            //Ïàµ±ÓÚ£¬2^ZCE_LZ_STEP_LEN_POW´Îºó£¬²½½ø³¤¶È2,ÔÙ2^ZCE_LZ_STEP_LEN_POW´Îºó£¬²½½ø±äÎª3
+            //µ±²½½ø³¤¶È´ïµ½Ò»¶¨³Ì¶Èºó£¬Í£Ö¹²½½øÔö¼Ó£¬
             step_len = ((step_attempts++) >> ZCE_LZ_STEP_LEN_POW);
             if (ZCE_UNLIKELY(step_len > ZCE_LZ_STEP_MAX_LEN))
             {
                 step_len = ZCE_LZ_STEP_MAX_LEN;
             }
-            //å¦‚æœåˆ°äº†æœ€åï¼Œè·³åˆ°æœ€åçš„å¤„ç†ï¼Œæ³¨æ„è¿™å„¿å’ŒZLZçš„ç®—æ³•æœ‰åŒºåˆ«
-            //ZLZçš„ç®—æ³•æ˜¯è·³å…¥Tokenå¤„ç†ï¼ŒZLZçš„ç®—æ³•æ¯ä¸ªTokenå†…æ— æ³•å‹ç¼©çš„æ•°æ®åŒºé•¿åº¦æ˜¯æœ‰é™åˆ¶çš„
-            //LZ4çš„ç®—æ³•å¯¹äºæ¯ä¸ªTokenæ— æ³•å‹ç¼©çš„æ•°æ®åŒºé•¿åº¦æ²¡æœ‰é™åˆ¶,æ‰€ä»¥è¿™ä¸ªåœ°æ–¹ç›´æ¥è·³å…¥äº†æœ€å
+            //Èç¹ûµ½ÁË×îºó£¬Ìøµ½×îºóµÄ´¦Àí£¬×¢ÒâÕâ¶ùºÍZLZµÄËã·¨ÓĞÇø±ğ
+            //ZLZµÄËã·¨ÊÇÌøÈëToken´¦Àí£¬ZLZµÄËã·¨Ã¿¸öTokenÄÚÎŞ·¨Ñ¹ËõµÄÊı¾İÇø³¤¶ÈÊÇÓĞÏŞÖÆµÄ
+            //LZ4µÄËã·¨¶ÔÓÚÃ¿¸öTokenÎŞ·¨Ñ¹ËõµÄÊı¾İÇø³¤¶ÈÃ»ÓĞÏŞÖÆ,ËùÒÔÕâ¸öµØ·½Ö±½ÓÌøÈëÁË×îºó
             next_read_pos = read_pos + step_len;
 
 
@@ -159,30 +159,30 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
             --read_pos;
         }
         nomatch_count = read_pos - nomatch_achor;
-        //æ­¥è¿›4ä½ï¼Œï¼ˆå‰é¢å‘ç°äº†è‡³å°‘4ä¸ªå­—èŠ‚ç›¸ç­‰ï¼‰
+        //²½½ø4Î»£¬£¨Ç°Ãæ·¢ÏÖÁËÖÁÉÙ4¸ö×Ö½ÚÏàµÈ£©
         //read_pos += 4;
         //ref_offset += 4;
         //match_count+= 4;
 
-        //æŒç»­çš„éœ€æ‰¾ç›¸ç­‰
+        //³ÖĞøµÄĞèÕÒÏàµÈ
         for (;;)
         {
-            //0xFFF7æ˜¯é¿å…æº¢å‡º
+            //0xFFF7ÊÇ±ÜÃâÒç³ö
             if (ZCE_UNLIKELY((read_pos > match_end) || (match_count > 0xFFF7)) )
             {
                 goto zlz_token_process;
             }
 
             //-----------------------------------------------------------------------------
-            //ä¸‹é¢è¿™å‡ æ®µå®ç°åœ¨ä¸åŒçš„OSä¸‹å¿«é€Ÿçš„æŸ¥è¯¢ç›¸ç­‰çš„æ•°æ®ï¼Œä¸ºäº†åŠ é€Ÿï¼Œä»£ç åˆ†64ä½ï¼Œ32ä½å¤„ç†ï¼Œ
-            //ï¼ˆæ›¾ç»å°è¯•è¿‡åœ¨32ä½å¹³å°ä¸‹ç”¨64ä½å¤„ç†ï¼Œé€Ÿåº¦å·®ä¸å¤šæŠŠï¼‰
-            //ç†è§£æ¯”è¾ƒå¤æ‚ï¼Œæœ¬æ¥æ‰“ç®—å†™ä¸ªå®ï¼Œä½†æ„Ÿè§‰å®ä¸€æ ·æ²¡æ³•è®©äººç†è§£ï¼Œè®¤çœŸå†™å†™æ³¨é‡ŠæŠŠã€‚
+            //ÏÂÃæÕâ¼¸¶ÎÊµÏÖÔÚ²»Í¬µÄOSÏÂ¿ìËÙµÄ²éÑ¯ÏàµÈµÄÊı¾İ£¬ÎªÁË¼ÓËÙ£¬´úÂë·Ö64Î»£¬32Î»´¦Àí£¬
+            //£¨Ôø¾­³¢ÊÔ¹ıÔÚ32Î»Æ½Ì¨ÏÂÓÃ64Î»´¦Àí£¬ËÙ¶È²î²»¶à°Ñ£©
+            //Àí½â±È½Ï¸´ÔÓ£¬±¾À´´òËãĞ´¸öºê£¬µ«¸Ğ¾õºêÒ»ÑùÃ»·¨ÈÃÈËÀí½â£¬ÈÏÕæĞ´Ğ´×¢ÊÍ°Ñ¡£
             uint32_t tail_match = 0;
 
 #if defined ZCE_OS64
-            //64ä½å¹³å°ï¼Œæ¯æ¬¡æ¯”è¾ƒ64bits
+            //64Î»Æ½Ì¨£¬Ã¿´Î±È½Ï64bits
             uint64_t diff = ZBYTE_TO_UINT64(ref_offset) ^ ZBYTE_TO_UINT64(read_pos);
-            //å¦‚æœä¸ç­‰ï¼Œç”¨æŒ‡ä»¤å‡½æ•°è¿…é€Ÿå¾—åˆ°æœ‰å¤šå°‘å­—èŠ‚ç›¸ç­‰.
+            //Èç¹û²»µÈ£¬ÓÃÖ¸Áîº¯ÊıÑ¸ËÙµÃµ½ÓĞ¶àÉÙ×Ö½ÚÏàµÈ.
             if (!diff)
             {
                 read_pos += sizeof(uint64_t);
@@ -191,12 +191,12 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
                 continue;
             }
 
-            //å¦‚æœæ˜¯LINUXå¹³å°ï¼Œç”¨__builtin_ctzll,__builtin_clzll æŒ‡ä»¤å¾—åˆ°æœ€å¼€å§‹ä¸º1çš„ä½ç½®ï¼Œä»è€Œåˆ¤å®šæœ‰å¤šå°‘ä¸ªæƒ³åŒï¼Œ
-            //åŒæ—¶æ ¹æ®å¤§å¤´å’Œå°å¤´å¹³å°ä½¿ç”¨ä¸åŒçš„å‡½æ•°ï¼Œå°å¤´ç”¨LBE to MBE ,å¤§å¤´ç”¨ MBE to LBE,
-            //æœ¬æ¥æˆ‘å¯¹è¿™ä¸ªé—®é¢˜æœ‰ç‚¹ç–‘æƒ‘ï¼Œå…¶ä»–å‹ç¼©åº“ä»£ç å¤„ç†MBE to LBEï¼Œåé¢LZ4çš„ä½œè€…å›å¤äº†æˆ‘ï¼Œï¼ˆå¼€æºçš„éƒ½æ˜¯å¥½äººï¼‰ï¼Œ
-            //è¿™å„¿ä¸ºäº†é€Ÿåº¦ï¼Œæˆ‘ä»¬å–å‡º64bitçš„æ•°å€¼ä½œä¸ºlonglongæ¯”è¾ƒçš„æ—¶å€™ï¼Œæ²¡æœ‰è€ƒè™‘å­—èŠ‚åº
+            //Èç¹ûÊÇLINUXÆ½Ì¨£¬ÓÃ__builtin_ctzll,__builtin_clzll Ö¸ÁîµÃµ½×î¿ªÊ¼Îª1µÄÎ»ÖÃ£¬´Ó¶øÅĞ¶¨ÓĞ¶àÉÙ¸öÏëÍ¬£¬
+            //Í¬Ê±¸ù¾İ´óÍ·ºÍĞ¡Í·Æ½Ì¨Ê¹ÓÃ²»Í¬µÄº¯Êı£¬Ğ¡Í·ÓÃLBE to MBE ,´óÍ·ÓÃ MBE to LBE,
+            //±¾À´ÎÒ¶ÔÕâ¸öÎÊÌâÓĞµãÒÉ»ó£¬ÆäËûÑ¹Ëõ¿â´úÂë´¦ÀíMBE to LBE£¬ºóÃæLZ4µÄ×÷Õß»Ø¸´ÁËÎÒ£¬£¨¿ªÔ´µÄ¶¼ÊÇºÃÈË£©£¬
+            //Õâ¶ùÎªÁËËÙ¶È£¬ÎÒÃÇÈ¡³ö64bitµÄÊıÖµ×÷Îªlonglong±È½ÏµÄÊ±ºò£¬Ã»ÓĞ¿¼ÂÇ×Ö½ÚĞò
 
-            //å³ç§»3ä½æ˜¯ä¸ºäº†æ‰¾åˆ°ç¬¬å‡ ä¸ªå­—èŠ‚ä¸åŒ
+            //ÓÒÒÆ3Î»ÊÇÎªÁËÕÒµ½µÚ¼¸¸ö×Ö½Ú²»Í¬
 #if defined ZCE_LINUX64
 
 #if defined ZCE_LITTLE_ENDIAN
@@ -205,7 +205,7 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
             tail_match += __builtin_clzll(diff) >> 3;
 #endif
 
-            //WIN64å¹³å°ï¼Œç”¨_BitScanForward64ï¼Œ_BitScanReverse64å¾—åˆ°æœ€å·¦è¾¹çš„é‚£ä¸ªbitä¸º1çš„ä½ç½®ï¼Œå…¶ä»–å‚è€ƒLINUXé‚£æ®µæ³¨é‡Š
+            //WIN64Æ½Ì¨£¬ÓÃ_BitScanForward64£¬_BitScanReverse64µÃµ½×î×ó±ßµÄÄÇ¸öbitÎª1µÄÎ»ÖÃ£¬ÆäËû²Î¿¼LINUXÄÇ¶Î×¢ÊÍ
             //
 #elif defined ZCE_WIN64
 
@@ -219,7 +219,7 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
 
 #endif //#if defined ZCE_WIN64
 
-            //å¯¹äº32ä½çš„ç³»ç»Ÿè¿›è¡Œå¤„ç†ï¼Œæ¯æ¬¡æ¯”è¾ƒ32bitsï¼Œè¯·å‚è€ƒ64ä½LINUXçš„è§£é‡Š
+            //¶ÔÓÚ32Î»µÄÏµÍ³½øĞĞ´¦Àí£¬Ã¿´Î±È½Ï32bits£¬Çë²Î¿¼64Î»LINUXµÄ½âÊÍ
 #elif defined ZCE_OS32
 
             uint32_t diff = ZBYTE_TO_UINT32(ref_offset) ^ ZBYTE_TO_UINT32(read_pos);
@@ -261,27 +261,27 @@ void zce::ZLZ_Compress_Format::compress_core(const unsigned char *original_buf,
 
 zlz_token_process:
 
-        //å—çš„æœ€å¼€å§‹æ˜¯ä¸€ä¸ªå­—èŠ‚çš„offset_tokenï¼ŒTOKENçš„é«˜4bitè¡¨ç¤ºéå‹ç¼©é•¿åº¦ï¼Œä½å››ä½è¡¨ç¤ºå‹ç¼©é•¿åº¦
+        //¿éµÄ×î¿ªÊ¼ÊÇÒ»¸ö×Ö½ÚµÄoffset_token£¬TOKENµÄ¸ß4bit±íÊ¾·ÇÑ¹Ëõ³¤¶È£¬µÍËÄÎ»±íÊ¾Ñ¹Ëõ³¤¶È
         offset_token = (write_pos++);
 
-        //æ¥ç€ä¿å­˜æœªå‹ç¼©æ•°æ®çš„é•¿åº¦
+        //½Ó×Å±£´æÎ´Ñ¹ËõÊı¾İµÄ³¤¶È
         if (nomatch_count <  0xE)
         {
             *offset_token = (unsigned char)(nomatch_count);
         }
         else
         {
-            //ä¸åŒ¹é…çš„å­—èŠ‚æ•°å¯ä»¥ç”¨ä¸€ä¸ªå­—èŠ‚è¡¨è¿°
+            //²»Æ¥ÅäµÄ×Ö½ÚÊı¿ÉÒÔÓÃÒ»¸ö×Ö½Ú±íÊö
             if (ZCE_UNLIKELY(nomatch_count <  0xFF))
             {
-                //offset_token å¡«å†™ä¸º0xE,æ ‡è¯†ç”¨æ‰©å±•1å­—èŠ‚å­—æ®µæ ‡è¯†é•¿åº¦
+                //offset_token ÌîĞ´Îª0xE,±êÊ¶ÓÃÀ©Õ¹1×Ö½Ú×Ö¶Î±êÊ¶³¤¶È
                 *offset_token = 0xE;
                 *write_pos = (uint8_t)(nomatch_count);
                 ++write_pos;
             }
             else
             {
-                //offset_token å¡«å†™ä¸º0xF,æ ‡è¯†ç”¨æ‰©å±•2å­—èŠ‚å­—æ®µæ ‡è¯†é•¿åº¦
+                //offset_token ÌîĞ´Îª0xF,±êÊ¶ÓÃÀ©Õ¹2×Ö½Ú×Ö¶Î±êÊ¶³¤¶È
                 *offset_token = 0xF;
                 ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(nomatch_count)));
                 write_pos += 2;
@@ -290,7 +290,7 @@ zlz_token_process:
 
         if (match_count)
         {
-            //ç›¸åŒçš„æƒ…å†µä¸‹ï¼Œæœ€å°é•¿åº¦æ˜¯4ï¼Œæ‰€ä»¥0è¡¨ç¤º0ï¼Œ1è¡¨ç¤º4ï¼Œè¿™ä¸ªåœ°æ–¹ZLZå’ŒLZ4çš„ä»£ç ä¸å¤ªä¸€æ ·,
+            //ÏàÍ¬µÄÇé¿öÏÂ£¬×îĞ¡³¤¶ÈÊÇ4£¬ËùÒÔ0±íÊ¾0£¬1±íÊ¾4£¬Õâ¸öµØ·½ZLZºÍLZ4µÄ´úÂë²»Ì«Ò»Ñù,
             if (match_count <  0xE + 0x3)
             {
                 *offset_token |= (unsigned char)((match_count - 0x3) << 4);
@@ -299,31 +299,31 @@ zlz_token_process:
             {
                 if (match_count <  0xFF)
                 {
-                    //offset_token å¡«å†™ä¸º0xE,æ ‡è¯†ç”¨æ‰©å±•1å­—èŠ‚å­—æ®µæ ‡è¯†é•¿åº¦
+                    //offset_token ÌîĞ´Îª0xE,±êÊ¶ÓÃÀ©Õ¹1×Ö½Ú×Ö¶Î±êÊ¶³¤¶È
                     *offset_token |= (0xE << 4);
                     *write_pos = (uint8_t)(match_count);
                     ++write_pos;
                 }
                 else
                 {
-                    //offset_token å¡«å†™ä¸º0xF,æ ‡è¯†ç”¨æ‰©å±•2å­—èŠ‚å­—æ®µæ ‡è¯†é•¿åº¦
+                    //offset_token ÌîĞ´Îª0xF,±êÊ¶ÓÃÀ©Õ¹2×Ö½Ú×Ö¶Î±êÊ¶³¤¶È
                     *offset_token |= (0xF << 4);
                     ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(match_count)));
                     write_pos += 2;
                 }
             }
-            //å†™å…¥åç§»é•¿åº¦,å‰é¢å·²ç»è®¡ç®—è¿‡äº†
-            //å‰é¢å·²ç»ä¿è¯äº†read_poså’Œref_offset ç›¸å·®å°äº0xFFFFï¼Œ2ä¸ªå­—èŠ‚è¶³å¤Ÿ
+            //Ğ´ÈëÆ«ÒÆ³¤¶È,Ç°ÃæÒÑ¾­¼ÆËã¹ıÁË
+            //Ç°ÃæÒÑ¾­±£Ö¤ÁËread_posºÍref_offset Ïà²îĞ¡ÓÚ0xFFFF£¬2¸ö×Ö½Ú×ã¹»
             ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(match_offset )));
             write_pos += 2;
         }
 
-        //å¦‚æœæœ‰æ²¡æœ‰å‹ç¼©çš„æ•°æ®
+        //Èç¹ûÓĞÃ»ÓĞÑ¹ËõµÄÊı¾İ
         if (nomatch_count)
         {
-            //å¦‚æœæœ‰ä¸åŒ¹é…çš„æ•°æ®ï¼Œç”¨å¿«é€Ÿæ‹·è´çš„æ–¹æ³•è¿›è¡Œæ‹·è´ã€‚
-            //memcpyé€‰æ‹©çš„å‡†åˆ™æ˜¯ å°äº256ï¼Œç”¨ZCE_LZ_FAST_COPYï¼Œå¤§äº256,ç”¨memcpy,è¿™ä¸ªå·æ‡’ä»¥åŠä¸ºäº†é¿å…é€‰æ‹©ï¼Œç›´æ¥ç”¨äº†å¿«é€Ÿæ‹·è´
-            //æ¯æ¬¡ç”¨8å­—èŠ‚è¿›è¡Œå¤åˆ¶ï¼Œè¯»å–å’Œå†™å…¥éƒ½è€ƒè™‘äº†ç©ºä½™  http://www.cnblogs.com/fullsail/p/3160098.html
+            //Èç¹ûÓĞ²»Æ¥ÅäµÄÊı¾İ£¬ÓÃ¿ìËÙ¿½±´µÄ·½·¨½øĞĞ¿½±´¡£
+            //memcpyÑ¡ÔñµÄ×¼ÔòÊÇ Ğ¡ÓÚ256£¬ÓÃZCE_LZ_FAST_COPY£¬´óÓÚ256,ÓÃmemcpy,Õâ¸öÍµÀÁÒÔ¼°ÎªÁË±ÜÃâÑ¡Ôñ£¬Ö±½ÓÓÃÁË¿ìËÙ¿½±´
+            //Ã¿´ÎÓÃ8×Ö½Ú½øĞĞ¸´ÖÆ£¬¶ÁÈ¡ºÍĞ´Èë¶¼¿¼ÂÇÁË¿ÕÓà  http://www.cnblogs.com/fullsail/p/3160098.html
             write_stop = write_pos + nomatch_count;
             ZCE_LZ_FAST_COPY_STOP(write_pos, nomatch_achor, write_stop);
             write_pos = write_stop;
@@ -343,7 +343,7 @@ zlz_token_process:
 
 zlz_end_process:
 
-    //æŠŠæœ€åå‡ ä¸ªå­—èŠ‚(ä½œä¸ºéå‹ç¼©æ•°æ®)æ‹·è´åˆ°å‹ç¼©æ•°æ®é‡Œé¢
+    //°Ñ×îºó¼¸¸ö×Ö½Ú(×÷Îª·ÇÑ¹ËõÊı¾İ)¿½±´µ½Ñ¹ËõÊı¾İÀïÃæ
     read_pos = nomatch_achor;
     size_t remain_len =  read_end - read_pos;
     offset_token = (write_pos++);
@@ -353,17 +353,17 @@ zlz_end_process:
     }
     else
     {
-        //ä¸åŒ¹é…çš„å­—èŠ‚æ•°å¯ä»¥ç”¨ä¸€ä¸ªå­—èŠ‚è¡¨è¿°
+        //²»Æ¥ÅäµÄ×Ö½ÚÊı¿ÉÒÔÓÃÒ»¸ö×Ö½Ú±íÊö
         if (remain_len <  0xFF)
         {
-            //offset_token å¡«å†™ä¸º0xE,æ ‡è¯†ç”¨æ‰©å±•1å­—èŠ‚å­—æ®µæ ‡è¯†é•¿åº¦
+            //offset_token ÌîĞ´Îª0xE,±êÊ¶ÓÃÀ©Õ¹1×Ö½Ú×Ö¶Î±êÊ¶³¤¶È
             *offset_token = 0xE;
             *write_pos = (uint8_t)(remain_len);
             ++write_pos;
         }
         else
         {
-            //offset_token å¡«å†™ä¸º0xF,æ ‡è¯†ç”¨æ‰©å±•2å­—èŠ‚å­—æ®µæ ‡è¯†é•¿åº¦
+            //offset_token ÌîĞ´Îª0xF,±êÊ¶ÓÃÀ©Õ¹2×Ö½Ú×Ö¶Î±êÊ¶³¤¶È
             *offset_token = 0xF;
             ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(remain_len)));
             nomatch_count = 0;
@@ -371,25 +371,25 @@ zlz_end_process:
         }
     }
 
-    //æ³¨æ„è¿™å„¿ç”¨çš„æ˜¯memcpyå–”ï¼Œè¿™å„¿ä¸èƒ½æœ‰è¶Šç•Œï¼Œæ‰€ä»¥ä¸èƒ½ç”¨ZCE_LZ_FAST_COPY_STOP
+    //×¢ÒâÕâ¶ùÓÃµÄÊÇmemcpyà¸£¬Õâ¶ù²»ÄÜÓĞÔ½½ç£¬ËùÒÔ²»ÄÜÓÃZCE_LZ_FAST_COPY_STOP
     memcpy(write_pos, read_pos, remain_len);
     write_pos += remain_len;
 
     *compressed_size = write_pos - compressed_buf;
 
-    //å‹ç¼©å®Œæˆ
+    //Ñ¹ËõÍê³É
     return;
 }
 
 
-//è§£å‹ç¼©çš„æ ¸å¿ƒå¤„ç†å‡½æ•°ï¼Œå¦‚æœä½ å¯¹å‹ç¼©çš„æ ¼å¼äº†è§£ï¼Œè§£å‹çš„ä»£ç åº”è¯¥å®¹æ˜“ç†è§£ï¼Œ
+//½âÑ¹ËõµÄºËĞÄ´¦Àíº¯Êı£¬Èç¹ûÄã¶ÔÑ¹ËõµÄ¸ñÊ½ÁË½â£¬½âÑ¹µÄ´úÂëÓ¦¸ÃÈİÒ×Àí½â£¬
 int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_buf,
                                               size_t compressed_size,
                                               unsigned char *original_buf,
                                               size_t original_size)
 {
 
-    //åˆå§‹åŒ–å„ç§åˆå§‹å€¼
+    //³õÊ¼»¯¸÷ÖÖ³õÊ¼Öµ
     const uint8_t *read_pos = compressed_buf;
     const uint8_t *read_end = compressed_buf + compressed_size;
 
@@ -407,19 +407,19 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
 
     for (;;)
     {
-        //å—çš„æœ€å¼€å§‹æ˜¯ä¸€ä¸ªå­—èŠ‚çš„ åšå¤šéœ€è¦6ä¸ªå­—èŠ‚å®Œæˆä¸€ä¸ªTOKENçš„é•¿åº¦é¢„åˆ¤ï¼Œè€Œä¸”åç§»æ˜¯2ä¸ªå­—èŠ‚,6+2=9
-        //è€Œå°¾éƒ¨ä¿ç•™çš„æ•°æ®æ˜¯è¶³å¤Ÿçš„ç©ºé—´16å­—èŠ‚ï¼Œæ‰€ä»¥è¿™ä¸ªåˆ¤æ–­æ˜¯å®‰å…¨çš„
+        //¿éµÄ×î¿ªÊ¼ÊÇÒ»¸ö×Ö½ÚµÄ ×ö¶àĞèÒª6¸ö×Ö½ÚÍê³ÉÒ»¸öTOKENµÄ³¤¶ÈÔ¤ÅĞ£¬¶øÇÒÆ«ÒÆÊÇ2¸ö×Ö½Ú,6+2=9
+        //¶øÎ²²¿±£ÁôµÄÊı¾İÊÇ×ã¹»µÄ¿Õ¼ä16×Ö½Ú£¬ËùÒÔÕâ¸öÅĞ¶ÏÊÇ°²È«µÄ
         if ( ZCE_UNLIKELY(read_end - read_pos < 8 ))
         {
             return -1;
         }
 
-        //å–å¾—å„ç§é•¿åº¦ï¼Œåšè¿ç®—
+        //È¡µÃ¸÷ÖÖ³¤¶È£¬×öÔËËã
         offset_token = *(read_pos++);
         noncomp_count = (offset_token & 0x0F) ;
         comp_count = (offset_token & 0xF0) >> 4;
 
-        //TOKENçš„å€¼0xE,è¡¨ç¤ºç”¨ä¸€ä¸ªå­—èŠ‚è¡¨ç¤ºé•¿åº¦ï¼Œ0xFè¡¨ç¤º2ä¸ªå­—èŠ‚è¡¨ç¤ºé•¿åº¦ï¼Œå¦åˆ™å…¶å€¼å°±æ˜¯é•¿åº¦
+        //TOKENµÄÖµ0xE,±íÊ¾ÓÃÒ»¸ö×Ö½Ú±íÊ¾³¤¶È£¬0xF±íÊ¾2¸ö×Ö½Ú±íÊ¾³¤¶È£¬·ñÔòÆäÖµ¾ÍÊÇ³¤¶È
         if (noncomp_count == 0xE)
         {
             noncomp_count = (uint8_t)(*(read_pos));
@@ -430,16 +430,16 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
             noncomp_count = (uint16_t)(ZBYTE_TO_LEUINT16(read_pos));
             read_pos += 2;
         }
-        //å·²ç»åˆ°äº†æœ€åä¸€ä¸ªblockï¼Œ
+        //ÒÑ¾­µ½ÁË×îºóÒ»¸öblock£¬
         if ( ZCE_UNLIKELY( noncomp_count == (size_t)(read_end - read_pos) ))
         {
             break;
         }
 
-        //å¦‚æœTOKENè¡¨ç¤ºå‹ç¼©éƒ¨åˆ†çš„é•¿åº¦æ˜¯0ï¼Œè¡¨ç¤ºæ²¡æœ‰å‹ç¼©ï¼Œ
+        //Èç¹ûTOKEN±íÊ¾Ñ¹Ëõ²¿·ÖµÄ³¤¶ÈÊÇ0£¬±íÊ¾Ã»ÓĞÑ¹Ëõ£¬
         if (comp_count)
         {
-            //å¦‚æœè¡¨ç¤ºä¸ºå°äº0xE,é•¿åº¦ç­‰äº0xE + 3(å¦‚æœåŒ¹é…ã€‚æœ€å°é•¿åº¦æ˜¯4)
+            //Èç¹û±íÊ¾ÎªĞ¡ÓÚ0xE,³¤¶ÈµÈÓÚ0xE + 3(Èç¹ûÆ¥Åä¡£×îĞ¡³¤¶ÈÊÇ4)
             if (ZCE_LIKELY(comp_count < 0xE))
             {
                 comp_count += 0x3;
@@ -454,14 +454,14 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
                 comp_count = (uint16_t)(ZBYTE_TO_LEUINT16(read_pos));
                 read_pos += 2;
             }
-            //å–å¾—åç§»åœ°å€
+            //È¡µÃÆ«ÒÆµØÖ·
             ref_offset = (uint16_t)(ZBYTE_TO_LEUINT16(read_pos));
             read_pos += 2;
         }
 
-        //å¦‚æœåç§»åœ°å€é”™è¯¯ï¼Œè¿”å›é”™è¯¯ï¼Œæ³¨æ„compressed_buf ç¬¬ä¸€ä¸ªå­—èŠ‚ä¹Ÿæ˜¯éå‚è€ƒå­—èŠ‚ï¼Œ
-        //åç§»çš„é•¿åº¦ä¸å¯èƒ½å¤§äºå†™ä½ç½®å’Œå¤´ä½ç½®çš„å·®  +8 å› ä¸ºè¿™ç§å¤åˆ¶é£æ ¼ï¼Œæ‰€ä»¥è¦ç•™æœ‰8å­—èŠ‚çš„é—´è·ï¼Œ
-        //ä¿è¯æœ‰è¿™äº›ç©ºé—´å¯è¯»ï¼Œ
+        //Èç¹ûÆ«ÒÆµØÖ·´íÎó£¬·µ»Ø´íÎó£¬×¢Òâcompressed_buf µÚÒ»¸ö×Ö½ÚÒ²ÊÇ·Ç²Î¿¼×Ö½Ú£¬
+        //Æ«ÒÆµÄ³¤¶È²»¿ÉÄÜ´óÓÚĞ´Î»ÖÃºÍÍ·Î»ÖÃµÄ²î  +8 ÒòÎªÕâÖÖ¸´ÖÆ·ç¸ñ£¬ËùÒÔÒªÁôÓĞ8×Ö½ÚµÄ¼ä¾à£¬
+        //±£Ö¤ÓĞÕâĞ©¿Õ¼ä¿É¶Á£¬
         if ( ZCE_UNLIKELY( (size_t)(read_end - read_pos) < ( 8 + noncomp_count)
                            || ((size_t)(write_end - write_pos) < ( 8 + noncomp_count + comp_count))  ) )
         {
@@ -477,26 +477,26 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
             write_pos = write_stop;
         }
 
-        //å¦‚æœTOKENè¡¨ç¤ºå‹ç¼©éƒ¨åˆ†çš„é•¿åº¦æ˜¯0ï¼Œè¡¨ç¤ºæ²¡æœ‰å‹ç¼©ï¼Œ
+        //Èç¹ûTOKEN±íÊ¾Ñ¹Ëõ²¿·ÖµÄ³¤¶ÈÊÇ0£¬±íÊ¾Ã»ÓĞÑ¹Ëõ£¬
         if (comp_count)
         {
-            //å¦‚æœéå‹ç¼©æ•°æ®æ•°æ®é•¿åº¦> 0,æ‹·è´æ²¡æœ‰å‹ç¼©çš„å­—ç¬¦ä¸²åˆ°source
+            //Èç¹û·ÇÑ¹ËõÊı¾İÊı¾İ³¤¶È> 0,¿½±´Ã»ÓĞÑ¹ËõµÄ×Ö·û´®µ½source
             ref_pos = write_pos - ref_offset;
             if ( ref_pos == write_pos || ref_pos  < original_buf  )
             {
                 return -1;
             }
 
-            //å¦å¤–è¿™ä¸ªåœ°æ–¹ï¼Œç”¨memcpyæ˜¯ä¸åˆé€‚çš„ï¼Œå› ä¸ºåœ°å€å¯èƒ½æœ‰äº¤å 
+            //ÁíÍâÕâ¸öµØ·½£¬ÓÃmemcpyÊÇ²»ºÏÊÊµÄ£¬ÒòÎªµØÖ·¿ÉÄÜÓĞ½»µş
             write_stop = write_pos + comp_count;
             if (ZCE_LIKELY( ref_offset >= sizeof(uint64_t) ) )
             {
                 ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
             }
-            //å‚è€ƒçš„ä½ç½®å’Œå½“å‰çš„ä½ç½®ä¹‹é—´ä¸è¶³8ä¸ªå­—èŠ‚ï¼Œæœ‰äº¤é”™ï¼Œè¿™å„¿è¦è¿›è¡Œç‰¹æ®Šå¤„ç†äº†ã€‚
+            //²Î¿¼µÄÎ»ÖÃºÍµ±Ç°µÄÎ»ÖÃÖ®¼ä²»×ã8¸ö×Ö½Ú£¬ÓĞ½»´í£¬Õâ¶ùÒª½øĞĞÌØÊâ´¦ÀíÁË¡£
             else
             {
-                //å³ä½¿é•¿åº¦ä¸åˆ°8ä¸ªå­—èŠ‚ï¼Œè¿˜æ˜¯ä¸€æ¬¡æ‹·è´äº†8ä¸ªå­—èŠ‚ï¼Œå¦åˆ™è¿™å„¿çš„å¤„ç†è¿˜æ˜¯æ¯”è¾ƒå•°å—¦çš„ï¼Œ
+                //¼´Ê¹³¤¶È²»µ½8¸ö×Ö½Ú£¬»¹ÊÇÒ»´Î¿½±´ÁË8¸ö×Ö½Ú£¬·ñÔòÕâ¶ùµÄ´¦Àí»¹ÊÇ±È½Ï†ªàÂµÄ£¬
                 write_pos[0] = ref_pos[0];
                 write_pos[1] = ref_pos[1];
                 write_pos[2] = ref_pos[2];
@@ -506,12 +506,12 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
                 write_pos[6] = ref_pos[6];
                 write_pos[7] = ref_pos[7];
 
-                //å¦‚æœç›¸ç­‰çš„æ•°é‡è¶…è¿‡8
+                //Èç¹ûÏàµÈµÄÊıÁ¿³¬¹ı8
                 if (comp_count > sizeof(uint64_t))
                 {
-                    //ç¬¬ä¸€ä¸ª0æ²¡æœ‰æ„ä¹‰ï¼Œå› ä¸ºoffsetä¸å¯èƒ½ä¸º0ï¼Œ
-                    //å…¶ä»–æ•°æ®çš„æ„ä¹‰æ˜¯ï¼Œå› ä¸ºå¸Œæœ›è¿›è¡Œ8å­—èŠ‚ç›¯å¾—å¿«é€Ÿæ‹·è´ï¼Œå¸Œæœ›æºå’Œç›¸å¯¹æ•°æ®çš„é•¿åº¦å·®åˆ«å¤§äº8å­—èŠ‚ï¼Œ
-                    //é‚£ä¹ˆå°±è¦æ‰¾åˆ°ä¸€ä¸ªåœ¨è¿™ç§æƒ…å†µä¸‹é‡å¤å¼€å§‹çš„è§„å¾‹
+                    //µÚÒ»¸ö0Ã»ÓĞÒâÒå£¬ÒòÎªoffset²»¿ÉÄÜÎª0£¬
+                    //ÆäËûÊı¾İµÄÒâÒåÊÇ£¬ÒòÎªÏ£Íû½øĞĞ8×Ö½Ú¶¢µÃ¿ìËÙ¿½±´£¬Ï£ÍûÔ´ºÍÏà¶ÔÊı¾İµÄ³¤¶È²î±ğ´óÓÚ8×Ö½Ú£¬
+                    //ÄÇÃ´¾ÍÒªÕÒµ½Ò»¸öÔÚÕâÖÖÇé¿öÏÂÖØ¸´¿ªÊ¼µÄ¹æÂÉ
                     static const size_t POS_MOVE_REFER[] = {0, 0, 2, 2, 0, 3, 2, 1};
                     ref_pos +=  POS_MOVE_REFER[ref_offset];
                     unsigned char *match_write = (write_pos + 8);
@@ -535,7 +535,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
 #endif
     }
 
-    //å¦‚æœç©ºé—´ä¸å¤Ÿï¼Œè¿˜æ˜¯è¿”å›é”™è¯¯
+    //Èç¹û¿Õ¼ä²»¹»£¬»¹ÊÇ·µ»Ø´íÎó
     if ( ZCE_UNLIKELY( (size_t)(read_pos - read_end) < noncomp_count
                        || (size_t)(write_end - write_pos) < noncomp_count ) )
     {
@@ -544,7 +544,7 @@ int zce::ZLZ_Compress_Format::decompress_core(const unsigned char *compressed_bu
 
     ::memcpy(write_pos, read_pos, noncomp_count);
 
-    //æˆåŠŸè§£å‹
+    //³É¹¦½âÑ¹
     return 0;
 }
 
@@ -563,24 +563,24 @@ zce::LZ4_Compress_Format::~LZ4_Compress_Format()
     }
 }
 
-//å‹ç¼©çš„å…³é”®å‡½æ•°ï¼Œå†…éƒ¨å‡½æ•°ï¼Œ
-//æ¨¡ä»¿LZ4çš„ç®—æ³•çš„æ ¼å¼è¿›è¡Œçš„å‡½æ•°ï¼Œ
+//Ñ¹ËõµÄ¹Ø¼üº¯Êı£¬ÄÚ²¿º¯Êı£¬
+//Ä£·ÂLZ4µÄËã·¨µÄ¸ñÊ½½øĞĞµÄº¯Êı£¬
 void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
                                              size_t original_size,
                                              unsigned char *compressed_buf,
                                              size_t *compressed_size)
 {
-    //åˆå§‹åŒ–å„ç§åˆå§‹å€¼
+    //³õÊ¼»¯¸÷ÖÖ³õÊ¼Öµ
     const unsigned char *read_pos = original_buf;
     const unsigned char *next_read_pos = NULL;
     const unsigned char *read_end = original_buf + original_size;
     unsigned char *write_pos = compressed_buf;
     unsigned char *write_stop = NULL;
 
-    //å› ä¸ºå¿«é€Ÿæ‹·è´ï¼Œæ¯”è¾ƒç­‰ï¼Œç”¨16ä¸ªå­—èŠ‚ä¿è¯ä¸æº¢å‡ºï¼Œ
+    //ÒòÎª¿ìËÙ¿½±´£¬±È½ÏµÈ£¬ÓÃ16¸ö×Ö½Ú±£Ö¤²»Òç³ö£¬
     const unsigned char *match_end = read_end - ZCE_LZ_NOPROCESS_TAIL;
 
-    //æ¸…0
+    //Çå0
     memset(hash_lz_offset_, 0, sizeof(uint32_t)*HASH_TABLE_LEN);
 
     const unsigned char *ref_offset = NULL;
@@ -591,7 +591,7 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
     nomatch_achor = read_pos;
     hash_lz_offset_[ZCE_LZ_HASH(read_pos)] = (uint32_t)(read_pos - original_buf);
     ++read_pos;
-    //å¤„ç†æ¯ä¸€ä¸ªè¦å‹ç¼©çš„å­—èŠ‚
+    //´¦ÀíÃ¿Ò»¸öÒªÑ¹ËõµÄ×Ö½Ú
     for (;;)
     {
 
@@ -606,20 +606,20 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
                );
 #endif
 
-        //ä½ å¯ä»¥è®¤ä¸ºZLZç®—æ³•çš„å¤šä¸ªå—ç»„æˆï¼Œä¸€ä¸ªå—ä¸­é—´æœ‰ä¸€ä¸ªä¸èƒ½å‹ç¼©å­—æ®µï¼ˆå¯é€‰ï¼‰ï¼Œä¸€ä¸ªå¯ä»¥å‹ç¼©å­—æ®µç»„æˆï¼ˆå¯é€‰ï¼‰ï¼Œ
+        //Äã¿ÉÒÔÈÏÎªZLZËã·¨µÄ¶à¸ö¿é×é³É£¬Ò»¸ö¿éÖĞ¼äÓĞÒ»¸ö²»ÄÜÑ¹Ëõ×Ö¶Î£¨¿ÉÑ¡£©£¬Ò»¸ö¿ÉÒÔÑ¹Ëõ×Ö¶Î×é³É£¨¿ÉÑ¡£©£¬
 
         //nomatch_achor = read_pos;
 
-        //ç­‰äº(1 << ZCE_LZ_STEP_LEN_POW)+1
+        //µÈÓÚ(1 << ZCE_LZ_STEP_LEN_POW)+1
         size_t step_attempts = 65;
 
-        //æ‰¾åˆ°ä¸€ä¸ªTokenï¼ˆåŒ…æ‹¬å¯ä»¥å‹ç¼©çš„æ•°æ®å’Œä¸å¯ä»¥å‹ç¼©çš„æ•°æ®ï¼‰
+        //ÕÒµ½Ò»¸öToken£¨°üÀ¨¿ÉÒÔÑ¹ËõµÄÊı¾İºÍ²»¿ÉÒÔÑ¹ËõµÄÊı¾İ£©
         next_read_pos = read_pos;
-        //å¦‚æœä¸åŒ¹é…
+        //Èç¹û²»Æ¥Åä
         do
         {
             read_pos = next_read_pos;
-            //è¿™ä¸ªåœ°æ–¹è¯´æ˜ä¸€ä¸‹ï¼Œå¦‚æœtable_old_offset == 0ï¼Œé‚£ä¹ˆä¹Ÿè®¤ä¸ºæ˜¯æ²¡æœ‰åŒ¹é…
+            //Õâ¸öµØ·½ËµÃ÷Ò»ÏÂ£¬Èç¹ûtable_old_offset == 0£¬ÄÇÃ´Ò²ÈÏÎªÊÇÃ»ÓĞÆ¥Åä
             uint32_t hash_value = ZCE_LZ_HASH(read_pos);
 
             uint32_t table_old_offset = hash_lz_offset_[hash_value];
@@ -627,27 +627,27 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
             hash_lz_offset_[hash_value] = (uint32_t)(read_pos - original_buf);
             match_offset = (size_t)(read_pos - ref_offset);
 
-            //step_attempts++çš„ç›®çš„æ˜¯åœ¨é•¿æœŸå‘ç°æ— æ³•å‹ç¼©çš„æƒ…å†µä¸‹ï¼Œ
-            //ç›¸å½“äºï¼Œ2^ZCE_LZ_STEP_LEN_POWæ¬¡åï¼Œæ­¥è¿›é•¿åº¦2,å†2^ZCE_LZ_STEP_LEN_POWæ¬¡åï¼Œæ­¥è¿›å˜ä¸º3
-            //å½“æ­¥è¿›é•¿åº¦è¾¾åˆ°ä¸€å®šç¨‹åº¦åï¼Œåœæ­¢æ­¥è¿›å¢åŠ ï¼Œ
+            //step_attempts++µÄÄ¿µÄÊÇÔÚ³¤ÆÚ·¢ÏÖÎŞ·¨Ñ¹ËõµÄÇé¿öÏÂ£¬
+            //Ïàµ±ÓÚ£¬2^ZCE_LZ_STEP_LEN_POW´Îºó£¬²½½ø³¤¶È2,ÔÙ2^ZCE_LZ_STEP_LEN_POW´Îºó£¬²½½ø±äÎª3
+            //µ±²½½ø³¤¶È´ïµ½Ò»¶¨³Ì¶Èºó£¬Í£Ö¹²½½øÔö¼Ó£¬
             size_t step_len = ((step_attempts++) >> ZCE_LZ_STEP_LEN_POW);
 
-            //å¦‚æœåˆ°äº†æœ€åï¼Œè·³åˆ°æœ€åçš„å¤„ç†ï¼Œæ³¨æ„è¿™å„¿å’ŒZLZçš„ç®—æ³•æœ‰åŒºåˆ«
-            //ZLZçš„ç®—æ³•æ˜¯è·³å…¥Tokenå¤„ç†ï¼ŒZLZçš„ç®—æ³•æ¯ä¸ªTokenå†…æ— æ³•å‹ç¼©çš„æ•°æ®åŒºé•¿åº¦æ˜¯æœ‰é™åˆ¶çš„
-            //LZ4çš„ç®—æ³•å¯¹äºæ¯ä¸ªTokenæ— æ³•å‹ç¼©çš„æ•°æ®åŒºé•¿åº¦æ²¡æœ‰é™åˆ¶,æ‰€ä»¥è¿™ä¸ªåœ°æ–¹ç›´æ¥è·³å…¥äº†æœ€å
+            //Èç¹ûµ½ÁË×îºó£¬Ìøµ½×îºóµÄ´¦Àí£¬×¢ÒâÕâ¶ùºÍZLZµÄËã·¨ÓĞÇø±ğ
+            //ZLZµÄËã·¨ÊÇÌøÈëToken´¦Àí£¬ZLZµÄËã·¨Ã¿¸öTokenÄÚÎŞ·¨Ñ¹ËõµÄÊı¾İÇø³¤¶ÈÊÇÓĞÏŞÖÆµÄ
+            //LZ4µÄËã·¨¶ÔÓÚÃ¿¸öTokenÎŞ·¨Ñ¹ËõµÄÊı¾İÇø³¤¶ÈÃ»ÓĞÏŞÖÆ,ËùÒÔÕâ¸öµØ·½Ö±½ÓÌøÈëÁË×îºó
             next_read_pos = read_pos + step_len;
             if (ZCE_UNLIKELY(next_read_pos > match_end))
             {
                 goto lz4_end_process;
             }
-            //å¦‚æœå‘ç°åŒ¹é…,è€Œä¸”ä¸¤è€…é—´çš„é—´è·ä¸å¤§ï¼Œï¼ˆé—´è·è¦2ä¸ªå­—èŠ‚è¡¨è¿°ï¼Œå¦‚æœæ›´é•¿éœ€è¦æ›´å¤šå­—èŠ‚ï¼Œé‚£ä¹ˆå°±å®Œå…¨èµ·ä¸åˆ°å‹ç¼©çš„æ•ˆæœäº†ï¼‰
-            //é—´è·é•¿åº¦ZCE_LZ_MAX_OFFSET,ç”¨2ä¸ªå­—èŠ‚ï¼ˆæˆ–è€…ä¸€ä¸ªå­—èŠ‚ï¼‰è¡¨è¿°ï¼Œ
+            //Èç¹û·¢ÏÖÆ¥Åä,¶øÇÒÁ½Õß¼äµÄ¼ä¾à²»´ó£¬£¨¼ä¾àÒª2¸ö×Ö½Ú±íÊö£¬Èç¹û¸ü³¤ĞèÒª¸ü¶à×Ö½Ú£¬ÄÇÃ´¾ÍÍêÈ«Æğ²»µ½Ñ¹ËõµÄĞ§¹ûÁË£©
+            //¼ä¾à³¤¶ÈZCE_LZ_MAX_OFFSET,ÓÃ2¸ö×Ö½Ú£¨»òÕßÒ»¸ö×Ö½Ú£©±íÊö£¬
         }
         while (ZBYTE_TO_UINT32(ref_offset) != ZBYTE_TO_UINT32(read_pos)
                || (match_offset) >= ZCE_LZ_MAX_OFFSET);
 
 
-        //å› ä¸ºå…¶å®å‰é¢åšè¿‡HASHæ£€æŸ¥ï¼Œæ‰€ä»¥å…¶å®å¦‚æœstep_len ç­‰äº1çš„æ—¶å€™ï¼Œå‰é¢è¿˜æœ‰ç›¸ç­‰çš„æƒ…å†µæ˜¯å¾ˆå°‘çš„ï¼Œä½†ç¡®å®å­˜åœ¨
+        //ÒòÎªÆäÊµÇ°Ãæ×ö¹ıHASH¼ì²é£¬ËùÒÔÆäÊµÈç¹ûstep_len µÈÓÚ1µÄÊ±ºò£¬Ç°Ãæ»¹ÓĞÏàµÈµÄÇé¿öÊÇºÜÉÙµÄ£¬µ«È·Êµ´æÔÚ
         while (read_pos > nomatch_achor && ref_offset > original_buf && ref_offset[-1] ==  read_pos[-1])
         {
             --ref_offset ;
@@ -655,7 +655,7 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
         }
         nomatch_count = read_pos - nomatch_achor;
 
-        //å—çš„æœ€å¼€å§‹æ˜¯ä¸€ä¸ªå­—èŠ‚çš„offset_tokenï¼ŒTOKENçš„é«˜4bitè¡¨ç¤ºéå‹ç¼©é•¿åº¦ï¼Œä½å››ä½è¡¨ç¤ºå‹ç¼©é•¿åº¦
+        //¿éµÄ×î¿ªÊ¼ÊÇÒ»¸ö×Ö½ÚµÄoffset_token£¬TOKENµÄ¸ß4bit±íÊ¾·ÇÑ¹Ëõ³¤¶È£¬µÍËÄÎ»±íÊ¾Ñ¹Ëõ³¤¶È
         offset_token = (write_pos++);
 
         //
@@ -674,23 +674,23 @@ void zce::LZ4_Compress_Format::compress_core(const unsigned char *original_buf,
             *write_pos++ = (unsigned char)remain_len;
         }
 
-        //å¦‚æœæœ‰æ²¡æœ‰å‹ç¼©çš„æ•°æ®
-        //å¦‚æœæœ‰ä¸åŒ¹é…çš„æ•°æ®ï¼Œç”¨å¿«é€Ÿæ‹·è´çš„æ–¹æ³•è¿›è¡Œæ‹·è´ã€‚
-        //memcpyé€‰æ‹©çš„å‡†åˆ™æ˜¯ å°äº256ï¼Œç”¨ZCE_LZ_FAST_COPYï¼Œå¤§äº256,ç”¨memcpy,è¿™ä¸ªå·æ‡’ä»¥åŠä¸ºäº†é¿å…é€‰æ‹©ï¼Œç›´æ¥ç”¨äº†å¿«é€Ÿæ‹·è´
+        //Èç¹ûÓĞÃ»ÓĞÑ¹ËõµÄÊı¾İ
+        //Èç¹ûÓĞ²»Æ¥ÅäµÄÊı¾İ£¬ÓÃ¿ìËÙ¿½±´µÄ·½·¨½øĞĞ¿½±´¡£
+        //memcpyÑ¡ÔñµÄ×¼ÔòÊÇ Ğ¡ÓÚ256£¬ÓÃZCE_LZ_FAST_COPY£¬´óÓÚ256,ÓÃmemcpy,Õâ¸öÍµÀÁÒÔ¼°ÎªÁË±ÜÃâÑ¡Ôñ£¬Ö±½ÓÓÃÁË¿ìËÙ¿½±´
         // http://www.cnblogs.com/fullsail/p/3160098.html
 
-        //æ¯æ¬¡ç”¨8å­—èŠ‚è¿›è¡Œå¤åˆ¶ï¼Œè¯»å–å’Œå†™å…¥éƒ½è€ƒè™‘äº†ç©ºä½™
+        //Ã¿´ÎÓÃ8×Ö½Ú½øĞĞ¸´ÖÆ£¬¶ÁÈ¡ºÍĞ´Èë¶¼¿¼ÂÇÁË¿ÕÓà
         write_stop = write_pos + nomatch_count;
         ZCE_LZ_FAST_COPY_STOP(write_pos, nomatch_achor, write_stop);
         write_pos = write_stop;
 
 lz4_match_process:
-        //åˆ°è¿™å„¿æ¥äº†å°±æ˜¯å‘ç°æœ‰(è‡³å°‘)4å­—èŠ‚çš„åŒ¹é…äº†ï¼Œ
+        //µ½Õâ¶ùÀ´ÁË¾ÍÊÇ·¢ÏÖÓĞ(ÖÁÉÙ)4×Ö½ÚµÄÆ¥ÅäÁË£¬
         match_achor = read_pos;
         read_pos += 4;
         ref_offset += 4;
 
-        //å¿«é€Ÿçš„æ‰¾å‡ºæœ‰å¤šå°‘æ•°æ®æ˜¯ç›¸åŒçš„ï¼Œ
+        //¿ìËÙµÄÕÒ³öÓĞ¶àÉÙÊı¾İÊÇÏàÍ¬µÄ£¬
         for (;;)
         {
             if (ZCE_UNLIKELY((read_pos > match_end) ) )
@@ -700,7 +700,7 @@ lz4_match_process:
 
             uint32_t tail_match = 0;
 #if defined ZCE_OS64
-            //64ä½å¹³å°ï¼Œæ¯æ¬¡æ¯”è¾ƒ64bits
+            //64Î»Æ½Ì¨£¬Ã¿´Î±È½Ï64bits
             uint64_t diff = ZBYTE_TO_UINT64(ref_offset) ^ ZBYTE_TO_UINT64(read_pos);
             if (!diff)
             {
@@ -708,14 +708,14 @@ lz4_match_process:
                 ref_offset += 8;
                 continue;
             }
-            //å¦‚æœä¸ç­‰ï¼Œç”¨æŒ‡ä»¤å‡½æ•°è¿…é€Ÿå¾—åˆ°æœ‰å¤šå°‘å­—èŠ‚ç›¸ç­‰.
+            //Èç¹û²»µÈ£¬ÓÃÖ¸Áîº¯ÊıÑ¸ËÙµÃµ½ÓĞ¶àÉÙ×Ö½ÚÏàµÈ.
             //-----------------------------------------------------------------------------
-            //ä¸‹é¢è¿™å‡ æ®µæ¯”è¾ƒå¤æ‚ï¼Œæœ¬æ¥æ‰“ç®—å†™ä¸ªå®ï¼Œä½†æ„Ÿè§‰å®ä¸€æ ·æ²¡æ³•è®©äººç†è§£ï¼Œè®¤çœŸå†™å†™æ³¨é‡ŠæŠŠã€‚
-            //ä¸ºäº†åŠ é€Ÿï¼Œä»£ç åˆ†64ä½ï¼Œ32ä½å¤„ç†ï¼Œï¼ˆæ›¾ç»å°è¯•è¿‡åœ¨32ä½å¹³å°ä¸‹ç”¨64ä½å¤„ç†ï¼Œé€Ÿåº¦å·®ä¸å¤šæŠŠï¼‰
-            //å¦‚æœæ˜¯LINUXå¹³å°ï¼Œç”¨__builtin_ctzll,__builtin_clzll æŒ‡ä»¤å¾—åˆ°æœ€å¼€å§‹ä¸º1çš„ä½ç½®ï¼Œä»è€Œåˆ¤å®šæœ‰å¤šå°‘ä¸ªæƒ³åŒï¼Œ
-            //åŒæ—¶æ ¹æ®å¤§å¤´å’Œå°å¤´å¹³å°ä½¿ç”¨ä¸åŒçš„å‡½æ•°ï¼Œå°å¤´ç”¨LBE to MBE ,å¤§å¤´ç”¨ MBE to LBE,
-            //æœ¬æ¥æˆ‘å¯¹è¿™ä¸ªé—®é¢˜æœ‰ç‚¹å¼‚æˆ–ï¼Œå…¶ä»–å‹ç¼©åº“ä»£ç å¤„ç†MBE to LBEï¼Œåé¢LZ4çš„ä½œè€…å›å¤äº†æˆ‘ï¼Œï¼ˆå¼€æºçš„éƒ½æ˜¯å¥½äººï¼‰ï¼Œ
-            //è¿™å„¿ä¸ºäº†é€Ÿåº¦ï¼Œæˆ‘ä»¬å–å‡º64bitçš„æ•°å€¼ä½œä¸ºlonglongæ¯”è¾ƒçš„æ—¶å€™ï¼Œæ²¡æœ‰è€ƒè™‘å­—èŠ‚åº
+            //ÏÂÃæÕâ¼¸¶Î±È½Ï¸´ÔÓ£¬±¾À´´òËãĞ´¸öºê£¬µ«¸Ğ¾õºêÒ»ÑùÃ»·¨ÈÃÈËÀí½â£¬ÈÏÕæĞ´Ğ´×¢ÊÍ°Ñ¡£
+            //ÎªÁË¼ÓËÙ£¬´úÂë·Ö64Î»£¬32Î»´¦Àí£¬£¨Ôø¾­³¢ÊÔ¹ıÔÚ32Î»Æ½Ì¨ÏÂÓÃ64Î»´¦Àí£¬ËÙ¶È²î²»¶à°Ñ£©
+            //Èç¹ûÊÇLINUXÆ½Ì¨£¬ÓÃ__builtin_ctzll,__builtin_clzll Ö¸ÁîµÃµ½×î¿ªÊ¼Îª1µÄÎ»ÖÃ£¬´Ó¶øÅĞ¶¨ÓĞ¶àÉÙ¸öÏëÍ¬£¬
+            //Í¬Ê±¸ù¾İ´óÍ·ºÍĞ¡Í·Æ½Ì¨Ê¹ÓÃ²»Í¬µÄº¯Êı£¬Ğ¡Í·ÓÃLBE to MBE ,´óÍ·ÓÃ MBE to LBE,
+            //±¾À´ÎÒ¶ÔÕâ¸öÎÊÌâÓĞµãÒì»ò£¬ÆäËûÑ¹Ëõ¿â´úÂë´¦ÀíMBE to LBE£¬ºóÃæLZ4µÄ×÷Õß»Ø¸´ÁËÎÒ£¬£¨¿ªÔ´µÄ¶¼ÊÇºÃÈË£©£¬
+            //Õâ¶ùÎªÁËËÙ¶È£¬ÎÒÃÇÈ¡³ö64bitµÄÊıÖµ×÷Îªlonglong±È½ÏµÄÊ±ºò£¬Ã»ÓĞ¿¼ÂÇ×Ö½ÚĞò
 #if defined ZCE_LINUX64
 
 #if defined ZCE_LITTLE_ENDIAN
@@ -724,7 +724,7 @@ lz4_match_process:
             tail_match += __builtin_clzll(diff) >> 3;
 #endif
 
-            //WIN64å¹³å°ï¼Œç”¨_BitScanForward64ï¼Œ_BitScanReverse64å¾—åˆ°æœ€å·¦è¾¹çš„é‚£ä¸ªbitä¸º1çš„ä½ç½®ï¼Œå…¶ä»–å‚è€ƒLINUXé‚£æ®µæ³¨é‡Š
+            //WIN64Æ½Ì¨£¬ÓÃ_BitScanForward64£¬_BitScanReverse64µÃµ½×î×ó±ßµÄÄÇ¸öbitÎª1µÄÎ»ÖÃ£¬ÆäËû²Î¿¼LINUXÄÇ¶Î×¢ÊÍ
             //
 #elif defined ZCE_WIN64
 
@@ -738,8 +738,8 @@ lz4_match_process:
 
 #endif //#if defined ZCE_WIN64
 
-            //å¯¹äº32ä½çš„ç³»ç»Ÿè¿›è¡Œå¤„ç†ï¼Œæ¯æ¬¡æ¯”è¾ƒ32bitsï¼Œè¯·å‚è€ƒ64ä½LINUXçš„è§£é‡Š
-            //æˆ‘çš„æµ‹è¯•æ„Ÿè§‰æ˜¯å¦‚æœ32ä½ç³»ç»Ÿè¿˜æ˜¯ç”¨32ä½å¤„ç†ï¼Œä¼šå¿«ä¸€ç‚¹ç‚¹ç‚¹ç‚¹ç‚¹ã€‚
+            //¶ÔÓÚ32Î»µÄÏµÍ³½øĞĞ´¦Àí£¬Ã¿´Î±È½Ï32bits£¬Çë²Î¿¼64Î»LINUXµÄ½âÊÍ
+            //ÎÒµÄ²âÊÔ¸Ğ¾õÊÇÈç¹û32Î»ÏµÍ³»¹ÊÇÓÃ32Î»´¦Àí£¬»á¿ìÒ»µãµãµãµãµã¡£
 #elif defined ZCE_OS32
 
             uint32_t diff = ZBYTE_TO_UINT32(ref_offset) ^ ZBYTE_TO_UINT32(read_pos);
@@ -776,7 +776,7 @@ lz4_match_process:
             break;
         }
 
-        //LZ4çš„ä»£ç åˆ°è¿™ä¸ªåœ°æ–¹ï¼Œmatch_countè‡³å°‘æ˜¯4
+        //LZ4µÄ´úÂëµ½Õâ¸öµØ·½£¬match_countÖÁÉÙÊÇ4
         match_count = read_pos - match_achor - 4;
         if (ZCE_LIKELY(match_count < 0xF))
         {
@@ -793,10 +793,10 @@ lz4_match_process:
             *write_pos++ = (unsigned char )remain_len;
         }
 
-        //å†™å…¥åç§»é•¿åº¦,
+        //Ğ´ÈëÆ«ÒÆ³¤¶È,
         match_offset = read_pos - ref_offset ;
 
-        //å‰é¢å·²ç»ä¿è¯äº†read_poså’Œref_offset ç›¸å·®å°äº0xFFFFï¼Œ2ä¸ªå­—èŠ‚è¶³å¤Ÿ
+        //Ç°ÃæÒÑ¾­±£Ö¤ÁËread_posºÍref_offset Ïà²îĞ¡ÓÚ0xFFFF£¬2¸ö×Ö½Ú×ã¹»
         ZLEUINT16_TO_BYTE(write_pos, ((uint16_t)(match_offset )));
         write_pos += 2;
 
@@ -810,8 +810,8 @@ lz4_match_process:
                 original_size - (read_pos - original_buf));
 #endif
 
-        //ä¸‹é¢è¿™æ®µæˆ‘ä»»åŠ¡æ˜¯LZ4çš„ç¥æ¥ä¹‹ç¬”ï¼Œä½ å¯ä»¥æŠŠ#if 1è°ƒæ•´æˆ0æµ‹è¯•ä¸€ä¸‹ï¼Œä»£ç åŠŸèƒ½æ˜¯ä¸€æ ·çš„ã€‚ä½†
-        //ä»–å°±æ˜¯æ¯”æˆ‘å¿«15%
+        //ÏÂÃæÕâ¶ÎÎÒÈÎÎñÊÇLZ4µÄÉñÀ´Ö®±Ê£¬Äã¿ÉÒÔ°Ñ#if 1µ÷Õû³É0²âÊÔÒ»ÏÂ£¬´úÂë¹¦ÄÜÊÇÒ»ÑùµÄ¡£µ«
+        //Ëû¾ÍÊÇ±ÈÎÒ¿ì15%
 #if 1
         if (ZCE_UNLIKELY((read_pos > match_end) ) )
         {
@@ -843,7 +843,7 @@ lz4_match_process:
 
 lz4_end_process:
 
-    //æŠŠæœ€åå‡ ä¸ªå­—èŠ‚(ä½œä¸ºéå‹ç¼©æ•°æ®)æ‹·è´åˆ°å‹ç¼©æ•°æ®é‡Œé¢
+    //°Ñ×îºó¼¸¸ö×Ö½Ú(×÷Îª·ÇÑ¹ËõÊı¾İ)¿½±´µ½Ñ¹ËõÊı¾İÀïÃæ
     nomatch_count = read_end - nomatch_achor;
     match_count = 0;
 
@@ -868,19 +868,19 @@ lz4_end_process:
 
     *compressed_size = write_pos - compressed_buf;
 
-    //å‹ç¼©å®Œæˆ
+    //Ñ¹ËõÍê³É
     return;
 }
 
 
-//è§£å‹ç¼©çš„æ ¸å¿ƒå¤„ç†å‡½æ•°ï¼Œå¦‚æœä½ å¯¹å‹ç¼©çš„æ ¼å¼äº†è§£ï¼Œè§£å‹çš„ä»£ç åº”è¯¥å®¹æ˜“ç†è§£ï¼Œ
+//½âÑ¹ËõµÄºËĞÄ´¦Àíº¯Êı£¬Èç¹ûÄã¶ÔÑ¹ËõµÄ¸ñÊ½ÁË½â£¬½âÑ¹µÄ´úÂëÓ¦¸ÃÈİÒ×Àí½â£¬
 int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_buf,
                                               size_t compressed_size,
                                               unsigned char *original_buf,
                                               size_t original_size)
 {
 
-    //åˆå§‹åŒ–å„ç§åˆå§‹å€¼
+    //³õÊ¼»¯¸÷ÖÖ³õÊ¼Öµ
     const unsigned char *read_pos = compressed_buf;
     const unsigned char *read_end = compressed_buf + compressed_size;
 
@@ -912,7 +912,7 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_bu
 #endif
 
 
-        //å–å¾—å„ç§é•¿åº¦ï¼Œåšè¿ç®—
+        //È¡µÃ¸÷ÖÖ³¤¶È£¬×öÔËËã
         offset_token = *(read_pos++);
         noncomp_count = (offset_token & 0x0F) ;
         comp_count = (offset_token & 0xF0) >> 4;
@@ -927,13 +927,13 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_bu
             }
         }
 
-        //å·²ç»åˆ°äº†æœ€åä¸€ä¸ªblockï¼Œ
+        //ÒÑ¾­µ½ÁË×îºóÒ»¸öblock£¬
         if (ZCE_UNLIKELY(noncomp_count == (size_t)(read_end - read_pos)))
         {
             break;
         }
 
-        //æ‹·è´æ²¡æœ‰å‹ç¼©çš„å­—ç¬¦ä¸²åˆ°source, è¿™å„¿ä¸ºäº†åŠ å¿«é€Ÿåº¦ï¼Œä¸è€ƒè™‘noncomp_count æ˜¯å¦ä¸º0
+        //¿½±´Ã»ÓĞÑ¹ËõµÄ×Ö·û´®µ½source, Õâ¶ùÎªÁË¼Ó¿ìËÙ¶È£¬²»¿¼ÂÇnoncomp_count ÊÇ·ñÎª0
         write_stop = write_pos + noncomp_count;
         read_stop = read_pos + noncomp_count;
         ZCE_LZ_FAST_COPY_STOP(write_pos, read_pos, write_stop);
@@ -950,36 +950,36 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_bu
             }
         }
         comp_count += 4;
-        //å¦‚æœåç§»åœ°å€é”™è¯¯ï¼Œè¿”å›é”™è¯¯ï¼Œæ³¨æ„compressed_buf ç¬¬ä¸€ä¸ªå­—èŠ‚ä¹Ÿæ˜¯éå‚è€ƒå­—èŠ‚ï¼Œ
-        //åç§»çš„é•¿åº¦ä¸å¯èƒ½å¤§äºå†™ä½ç½®å’Œå¤´ä½ç½®çš„å·®  +8 å› ä¸ºè¿™ç§å¤åˆ¶é£æ ¼ï¼Œæ‰€ä»¥è¦ç•™æœ‰8å­—èŠ‚çš„é—´è·ï¼Œ
-        //ä¿è¯æœ‰è¿™äº›ç©ºé—´å¯è¯»ï¼Œ
+        //Èç¹ûÆ«ÒÆµØÖ·´íÎó£¬·µ»Ø´íÎó£¬×¢Òâcompressed_buf µÚÒ»¸ö×Ö½ÚÒ²ÊÇ·Ç²Î¿¼×Ö½Ú£¬
+        //Æ«ÒÆµÄ³¤¶È²»¿ÉÄÜ´óÓÚĞ´Î»ÖÃºÍÍ·Î»ÖÃµÄ²î  +8 ÒòÎªÕâÖÖ¸´ÖÆ·ç¸ñ£¬ËùÒÔÒªÁôÓĞ8×Ö½ÚµÄ¼ä¾à£¬
+        //±£Ö¤ÓĞÕâĞ©¿Õ¼ä¿É¶Á£¬
         //if ( ZCE_LIKELY( (size_t)(read_end - read_pos) < (2 + 8 + noncomp_count)
         //                 || ((size_t)(write_end - write_pos) < ( 8 + noncomp_count + comp_count))  ) )
         //{
         //    return -1;
         //}
 
-        //å–å¾—åç§»åœ°å€
+        //È¡µÃÆ«ÒÆµØÖ·
         ref_offset = (uint16_t)(ZBYTE_TO_LEUINT16(read_pos));
         read_pos += 2;
 
         ref_pos = write_pos - ref_offset;
-        //ref_poså¿…é¡»æ˜¯ä¸€ä¸ªåˆç†çš„å€¼
+        //ref_pos±ØĞëÊÇÒ»¸öºÏÀíµÄÖµ
         if ( ZCE_LIKELY(ref_offset == 0 || ref_pos  < original_buf ))
         {
             return -1;
         }
 
-        //å¦å¤–è¿™ä¸ªåœ°æ–¹ï¼Œç”¨memcpyæ˜¯ä¸åˆé€‚çš„ï¼Œå› ä¸ºåœ°å€å¯èƒ½æœ‰äº¤å 
+        //ÁíÍâÕâ¸öµØ·½£¬ÓÃmemcpyÊÇ²»ºÏÊÊµÄ£¬ÒòÎªµØÖ·¿ÉÄÜÓĞ½»µş
         write_stop = write_pos + comp_count;
         if (ZCE_LIKELY( ref_offset >= sizeof(uint64_t) ) )
         {
             ZCE_LZ_FAST_COPY_STOP(write_pos, ref_pos, write_stop);
         }
-        //è¿™å„¿è¦è¿›è¡Œç‰¹æ®Šå¤„ç†äº†ã€‚
+        //Õâ¶ùÒª½øĞĞÌØÊâ´¦ÀíÁË¡£
         else
         {
-            //å³ä½¿é•¿åº¦ä¸åˆ°8ä¸ªå­—èŠ‚ï¼Œè¿˜æ˜¯ä¸€æ¬¡æ‹·è´äº†8ä¸ªå­—èŠ‚ï¼Œå¦åˆ™è¿™å„¿çš„å¤„ç†è¿˜æ˜¯æ¯”è¾ƒå•°å—¦çš„ï¼Œ
+            //¼´Ê¹³¤¶È²»µ½8¸ö×Ö½Ú£¬»¹ÊÇÒ»´Î¿½±´ÁË8¸ö×Ö½Ú£¬·ñÔòÕâ¶ùµÄ´¦Àí»¹ÊÇ±È½Ï†ªàÂµÄ£¬
             write_pos[0] = ref_pos[0];
             write_pos[1] = ref_pos[1];
             write_pos[2] = ref_pos[2];
@@ -989,12 +989,12 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_bu
             write_pos[6] = ref_pos[6];
             write_pos[7] = ref_pos[7];
 
-            //å¦‚æœç›¸ç­‰çš„æ•°é‡è¶…è¿‡8
+            //Èç¹ûÏàµÈµÄÊıÁ¿³¬¹ı8
             if (comp_count > sizeof(uint64_t))
             {
-                //ç¬¬ä¸€ä¸ª0æ²¡æœ‰æ„ä¹‰ï¼Œå› ä¸ºoffsetä¸å¯èƒ½ä¸º0ï¼Œ
-                //å…¶ä»–æ•°æ®çš„æ„ä¹‰æ˜¯ï¼Œå› ä¸ºå¸Œæœ›è¿›è¡Œ8å­—èŠ‚ç›¯å¾—å¿«é€Ÿæ‹·è´ï¼Œå¸Œæœ›æºå’Œç›¸å¯¹æ•°æ®çš„é•¿åº¦å·®åˆ«å¤§äº8å­—èŠ‚ï¼Œ
-                //é‚£ä¹ˆå°±è¦æ‰¾åˆ°ä¸€ä¸ªåœ¨è¿™ç§æƒ…å†µä¸‹é‡å¤å¼€å§‹çš„è§„å¾‹
+                //µÚÒ»¸ö0Ã»ÓĞÒâÒå£¬ÒòÎªoffset²»¿ÉÄÜÎª0£¬
+                //ÆäËûÊı¾İµÄÒâÒåÊÇ£¬ÒòÎªÏ£Íû½øĞĞ8×Ö½Ú¶¢µÃ¿ìËÙ¿½±´£¬Ï£ÍûÔ´ºÍÏà¶ÔÊı¾İµÄ³¤¶È²î±ğ´óÓÚ8×Ö½Ú£¬
+                //ÄÇÃ´¾ÍÒªÕÒµ½Ò»¸öÔÚÕâÖÖÇé¿öÏÂÖØ¸´¿ªÊ¼µÄ¹æÂÉ
                 static const size_t POS_MOVE_REFER[] = {0, 0, 2, 2, 0, 3, 2, 1};
                 ref_pos +=  POS_MOVE_REFER[ref_offset];
                 unsigned char *match_write = (write_pos + 8);
@@ -1005,7 +1005,7 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_bu
 
     }
 
-    //å¦‚æœç©ºé—´ä¸å¤Ÿï¼Œè¿˜æ˜¯è¿”å›é”™è¯¯
+    //Èç¹û¿Õ¼ä²»¹»£¬»¹ÊÇ·µ»Ø´íÎó
     if ( ZCE_UNLIKELY( (size_t)(read_pos - read_end) < noncomp_count
                        || (size_t)(write_end - write_pos) < noncomp_count ) )
     {
@@ -1014,7 +1014,7 @@ int zce::LZ4_Compress_Format::decompress_core(const unsigned char *compressed_bu
 
     ::memcpy(write_pos, read_pos, noncomp_count);
 
-    //æˆåŠŸè§£å‹
+    //³É¹¦½âÑ¹
     return 0;
 }
 

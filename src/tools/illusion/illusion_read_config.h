@@ -1,4 +1,4 @@
-é”˜å¡Šæ•‡?pragma once
+#pragma once
 
 #include "illusion_protobuf_reflect.h"
 
@@ -11,36 +11,33 @@ public:
 
     struct TABLE_CONFIG
     {
-<<<<<<< HEAD
-        ///éæ¶–åŠé—æ“±å´¥å®€æ ƒ?        CString excel_table_name_;
-=======
-        ///è¡¨æ ¼åç§°
+        ///±í¸ñÃû³Æ
         CString excel_table_name_;
 
-        ///è¡¨æ ¼æ•°æ®ä»ç¬¬å‡ è¡Œè¯»å–
+        ///±í¸ñÊı¾İ´ÓµÚ¼¸ĞĞ¶ÁÈ¡
         long read_data_start_ = 3;
 
-        ///è¡¨æ ¼å¯¹åº”çš„protobufçš„messageåç§°
+        ///±í¸ñ¶ÔÓ¦µÄprotobufµÄmessageÃû³Æ
         std::string   pb_msg_name_;
 
-        ///è¡¨æ ¼çš„ç¬¬å‡ è¡Œæè¿°å­—æ®µå¯¹åº”çš„protobuf
+        ///±í¸ñµÄµÚ¼¸ĞĞÃèÊö×Ö¶Î¶ÔÓ¦µÄprotobuf
         long pb_fieldname_line_ = 2;
 
-        ///è¡¨æ ¼å­˜æ”¾çš„æ•°æ®åº“ï¼ˆSQLiteï¼‰æ–‡ä»¶åç§°
+        ///±í¸ñ´æ·ÅµÄÊı¾İ¿â£¨SQLite£©ÎÄ¼şÃû³Æ
         std::string sqlite3_db_name_;
 
-        ///è¡¨æ ¼å¯¹åº”çš„table id
+        ///±í¸ñ¶ÔÓ¦µÄtable id
         unsigned int table_id_ = 0;
-        ///è¡¨æ ¼ç´¢å¼•çš„å­—æ®µ1çš„åˆ—å·
+        ///±í¸ñË÷ÒıµÄ×Ö¶Î1µÄÁĞºÅ
         long index1_column_ = 0;
-        ///è¡¨æ ¼ç´¢å¼•çš„å­—æ®µ2çš„åˆ—å·
+        ///±í¸ñË÷ÒıµÄ×Ö¶Î2µÄÁĞºÅ
         long index2_column_ = 0;
 
 
-        ///Protobuf itemå®šä¹‰çš„æ•°æ®
+        ///Protobuf item¶¨ÒåµÄÊı¾İ
         std::vector<std::string>  proto_field_ary_;
 
-        ///å‡è®¾ç»“æ„å¦‚ä¸‹ï¼Œrecordæ˜¯ä¸€ä¸ªrepeated çš„messageï¼Œ
+        ///¼ÙÉè½á¹¹ÈçÏÂ£¬recordÊÇÒ»¸örepeated µÄmessage£¬
         ///phonebook.master
         ///phonebook.record.name
         ///phonebook.record.tele_number
@@ -48,17 +45,17 @@ public:
         ///phonebook.record.name
         ///phonebook.record.tele_number
         ///phonebook.record.email
-        ///é‚£ä¹ˆphonebook.record.nameå‡ºç°çš„ä½ç½®ä¼šè¢«æ ‡è¯†ä¸ºitem_msg_firstshow_ ä¸º1
+        ///ÄÇÃ´phonebook.record.name³öÏÖµÄÎ»ÖÃ»á±»±êÊ¶Îªitem_msg_firstshow_ Îª1
         std::vector<int> item_msg_firstshow_;
 
-        ///åœ¨ä¸Šé¢çš„ä¾‹å­  ä¼šè¢«è®°å½•ä¸ºphonebook.record.name
+        ///ÔÚÉÏÃæµÄÀı×Ó  »á±»¼ÇÂ¼Îªphonebook.record.name
         std::string firstshow_field_;
-        ///åœ¨ä¸Šé¢çš„ä¾‹å­ ä¼šè¢«è®°å½•ä¸ºphonebook.record
+        ///ÔÚÉÏÃæµÄÀı×Ó »á±»¼ÇÂ¼Îªphonebook.record
         std::string firstshow_msg_;
 
     };
 
-    ///æšä¸¾å€¼çš„å¯¹åº”å…³ç³»è¡¨
+    ///Ã¶¾ÙÖµµÄ¶ÔÓ¦¹ØÏµ±í
     typedef std::map <CString, CString >  MAP_CSTRING_TO_CSTRING;
 
     ///
@@ -74,7 +71,7 @@ public:
 
     typedef std::map <CString, EXCEL_FILE_DATA> MAP_FNAME_TO_CFGDATA;
 
-protected: // ä»…ä»åºåˆ—åŒ–åˆ›å»º
+protected: // ½ö´ÓĞòÁĞ»¯´´½¨
     Illusion_Read_Config();
 protected:
     virtual ~Illusion_Read_Config();
@@ -90,7 +87,7 @@ public:
 
 public:
 
-    ///åˆå§‹åŒ–
+    ///³õÊ¼»¯
     bool initialize(bool need_open_excel,
                     const std::string &config_path);
     //
@@ -99,14 +96,14 @@ public:
     /*!
     * @brief
     * @return     int
-    * @param      open_file æ‰“å¼€çš„EXCELæ–‡ä»¶åç§°ï¼Œåç§°MFC
+    * @param      open_file ´ò¿ªµÄEXCELÎÄ¼şÃû³Æ£¬Ãû³ÆMFC
     */
     int read_excel_byucname(const CString &open_file);
 
     /*!
     * @brief
     * @return     int
-    * @param      proto_fname EXCELæ–‡ä»¶åç§°ã€‚
+    * @param      proto_fname EXCELÎÄ¼şÃû³Æ¡£
     */
     int read_excel(const std::string &excel_fname);
 
@@ -125,12 +122,12 @@ public:
     int read_proto(const std::string &mbcs_name);
 
 
-    //æ¸…ç†æ‰€æœ‰çš„è¯»å–æ•°æ®
+    //ÇåÀíËùÓĞµÄ¶ÁÈ¡Êı¾İ
     void clear();
 
 
 
-    ///ä»DB3æ–‡ä»¶é‡Œé¢è¯»å–æŸä¸ªé…ç½®è¡¨çš„é…ç½®
+    ///´ÓDB3ÎÄ¼şÀïÃæ¶ÁÈ¡Ä³¸öÅäÖÃ±íµÄÅäÖÃ
     int read_db3_conftable(const std::string &db3_fname,
                            const std::string &conf_message_name,
                            unsigned int table_id,
@@ -139,17 +136,17 @@ public:
 
 protected:
 
-    //è¯»æšä¸¾å€¼
+    //¶ÁÃ¶¾ÙÖµ
     int read_table_enum(EXCEL_FILE_DATA &file_cfg_data);
 
-    ///è¯»å–è¡¨æ ¼é…ç½®
+    ///¶ÁÈ¡±í¸ñÅäÖÃ
     int read_table_config(EXCEL_FILE_DATA &file_cfg_data);
 
-    ///è¯»å–è¡¨æ ¼æ•°æ®
+    ///¶ÁÈ¡±í¸ñÊı¾İ
     int read_table_cfgdata(TABLE_CONFIG &table_cfg,
                            ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
 
-    ///å°†æ•°æ®ä¿å­˜åˆ°SQLite3 DBæ–‡ä»¶é‡Œé¢
+    ///½«Êı¾İ±£´æµ½SQLite3 DBÎÄ¼şÀïÃæ
     int save_to_sqlitedb(const TABLE_CONFIG &table_cfg,
                          const ARRARY_OF_AI_IIJIMA_BINARY *aiiijma_ary);
 
@@ -157,29 +154,29 @@ protected:
 
 protected:
 
-    //å•å­å®ä¾‹
+    //µ¥×ÓÊµÀı
     static Illusion_Read_Config  *instance_;
 
 protected:
 
-    ///é…ç½®è·¯å¾„
+    ///ÅäÖÃÂ·¾¶
     std::string config_path_;
 
-    ///æ—¥å¿—è¾“å‡ºçš„ç›®å½•
+    ///ÈÕÖ¾Êä³öµÄÄ¿Â¼
     std::string outlog_dir_path_;
 
-    ///DB3æ–‡ä»¶è¾“å‡ºçš„ç›®å½•
+    ///DB3ÎÄ¼şÊä³öµÄÄ¿Â¼
     std::string sqlitedb_pah_;
 
     bool need_open_excel_ = false;
 
-    ///Excelçš„å¤„ç†å¯¹è±¡,EXCELçš„å¤„ç†ç±»
+    ///ExcelµÄ´¦Àí¶ÔÏó,EXCELµÄ´¦ÀíÀà
     Illusion_ExcelFile ils_excel_file_;
 
     ///
     Illusion_Protobuf_Reflect ils_proto_reflect_;
 
-    ///æ–‡ä»¶å¯¹åº”çš„é…ç½®æ•°æ®ï¼Œç”¨äºæˆ‘çš„æŸ¥è¯¢
+    ///ÎÄ¼ş¶ÔÓ¦µÄÅäÖÃÊı¾İ£¬ÓÃÓÚÎÒµÄ²éÑ¯
     MAP_FNAME_TO_CFGDATA   file_cfg_map_;
 
 
@@ -192,6 +189,4 @@ protected:
 
 };
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b
 
-        ///éæ¶–åŠé—æ“±å¼«é—å ç¥¦å«»çŠ²?s

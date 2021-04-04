@@ -3,17 +3,17 @@
 * @filename   zce_config_ini_pasttime.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2002å¹´1æœˆ3æ—¥
-* @brief      INI æ–‡ä»¶çš„è¯»å†™çš„æ€€æ—§ç‰ˆï¼Œå’ŒWINDOWSçš„APIåŠŸèƒ½ç±»ä¼¼ï¼Œ
-*             ä¼˜åŠ¿åœ¨äºå†™å›çš„æ—¶å€™ä¸­ä¼šä¿è¯æ–‡ä»¶åŸæ¥çš„æ ¼å¼å’Œæ³¨é‡Šï¼Œä¸ä¼šç ´åæ–‡ä»¶çš„æ ¼å¼ã€‚
-*             å¦å¤–ï¼Œè¿™ä¸ªAPIæœ‰ä¸€äº›ç‰¹æ®ŠåŠŸèƒ½ï¼Œæ¯”å¦‚è¯»å–ä¸€ä¸ªsectionä¸‹æ‰€æœ‰çš„å­—æ®µå†…å®¹ç­‰ï¼Œ
-* @details    é‡Œé¢INIæ–‡ä»¶ï¼Œä¸€è¡Œçš„æœ€å¤§é•¿åº¦æ˜¯8K
+* @date       2002Äê1ÔÂ3ÈÕ
+* @brief      INI ÎÄ¼şµÄ¶ÁĞ´µÄ»³¾É°æ£¬ºÍWINDOWSµÄAPI¹¦ÄÜÀàËÆ£¬
+*             ÓÅÊÆÔÚÓÚĞ´»ØµÄÊ±ºòÖĞ»á±£Ö¤ÎÄ¼şÔ­À´µÄ¸ñÊ½ºÍ×¢ÊÍ£¬²»»áÆÆ»µÎÄ¼şµÄ¸ñÊ½¡£
+*             ÁíÍâ£¬Õâ¸öAPIÓĞÒ»Ğ©ÌØÊâ¹¦ÄÜ£¬±ÈÈç¶ÁÈ¡Ò»¸ösectionÏÂËùÓĞµÄ×Ö¶ÎÄÚÈİµÈ£¬
+* @details    ÀïÃæINIÎÄ¼ş£¬Ò»ĞĞµÄ×î´ó³¤¶ÈÊÇ8K
 *
-* @note       è¿™åº”è¯¥æ˜¯2002å¹´ï¼Œ2003å¹´åœ¨è®¡è´¹é¡¹ç›®æ—¶ï¼Œè‡ªå·±åœ¨å®¶é‡Œå†™çš„ä»£ç ã€‚æŸç§ç¨‹
-*             åº¦ä¸Šï¼Œè¿™ä¸ªä»£ç ä¼°è®¡æ˜¯ä¸å†ä¼šä½¿ç”¨åˆ°äº†ï¼Œ
-*             ä¿ç•™ä»–æŸç§ç¨‹åº¦æ˜¯æ›´å¤šçš„æ€€æ—§ã€‚æ‰€ä»¥æœ€åä¹Ÿè¿˜æ˜¯æŠŠè¿™äº›ä»£ç æ•´ç†æˆäº†æœ€æ–°çš„
-*             ä»£ç è§„èŒƒ
-*             æ•´ç†æ³¨é‡Šå‘ç°é‡Œé¢è¿˜æœ‰WIN95çš„æç¤ºï¼Œå‘µå‘µ
+* @note       ÕâÓ¦¸ÃÊÇ2002Äê£¬2003ÄêÔÚ¼Æ·ÑÏîÄ¿Ê±£¬×Ô¼ºÔÚ¼ÒÀïĞ´µÄ´úÂë¡£Ä³ÖÖ³Ì
+*             ¶ÈÉÏ£¬Õâ¸ö´úÂë¹À¼ÆÊÇ²»ÔÙ»áÊ¹ÓÃµ½ÁË£¬
+*             ±£ÁôËûÄ³ÖÖ³Ì¶ÈÊÇ¸ü¶àµÄ»³¾É¡£ËùÒÔ×îºóÒ²»¹ÊÇ°ÑÕâĞ©´úÂëÕûÀí³ÉÁË×îĞÂµÄ
+*             ´úÂë¹æ·¶
+*             ÕûÀí×¢ÊÍ·¢ÏÖÀïÃæ»¹ÓĞWIN95µÄÌáÊ¾£¬ºÇºÇ
 */
 
 #ifndef ZCE_LIB_CONFIG_INI_PASTTIME_H_
@@ -21,24 +21,24 @@
 
 
 /*!
-* @brief      INIæ–‡ä»¶è¯»å†™çš„å¤„ç†ï¼Œæ¥å£éƒ½æ¨¡ä»¿WIndowsçš„API
+* @brief      INIÎÄ¼ş¶ÁĞ´µÄ´¦Àí£¬½Ó¿Ú¶¼Ä£·ÂWIndowsµÄAPI
 */
 class ZCE_INI_Pt
 {
 
 public:
 
-    ///æ„é€ å‡½æ•°,
-    ///@param file_name æ–‡ä»¶åç§°
+    ///¹¹Ôìº¯Êı,
+    ///@param file_name ÎÄ¼şÃû³Æ
     ZCE_INI_Pt(const char *file_name);
-    //ææ„å‡½æ•°
+    //Îö¹¹º¯Êı
     ~ZCE_INI_Pt();
 
 public:
 
     /*!
-    * @brief      è¯»å–INIæ–‡ä»¶çš„å­—æ®µï¼Œæ®µè½ï¼Œæ¨¡ä»¿WIN32æ¥å£GetPrivateProfileString,
-    *             æ‰€æœ‰å‚æ•°æˆ‘å°±ç›´æ¥ç»™ä½ MSDNäº†
+    * @brief      ¶ÁÈ¡INIÎÄ¼şµÄ×Ö¶Î£¬¶ÎÂä£¬Ä£·ÂWIN32½Ó¿ÚGetPrivateProfileString,
+    *             ËùÓĞ²ÎÊıÎÒ¾ÍÖ±½Ó¸øÄãMSDNÁË
     * @return     size_t
     *             If the function succeeds, the return value is the number of characters
     *             copied to the buffer, not including the terminating null character.
@@ -82,27 +82,27 @@ public:
                            char *return_str,
                            const size_t size_ret_str);
 
-    ///å¾—åˆ°æ‰€æœ‰çš„section,ç”¨'\0'åˆ†éš”ï¼Œä»¥'\0\0'ç»“æŸï¼Œå‚æ•°è¿”å›å€¼å‚è€ƒget_privateprofile_string
+    ///µÃµ½ËùÓĞµÄsection,ÓÃ'\0'·Ö¸ô£¬ÒÔ'\0\0'½áÊø£¬²ÎÊı·µ»ØÖµ²Î¿¼get_privateprofile_string
     size_t get_private_allsection(char *return_str,
                                   const size_t size_ret_str);
 
-    ///å¾—åˆ°æŸä¸ªSectionä¸‹æ‰€æœ‰çš„Keyå€¼ï¼Œå‚æ•°è¿”å›å€¼å‚è€ƒget_privateprofile_string
+    ///µÃµ½Ä³¸öSectionÏÂËùÓĞµÄKeyÖµ£¬²ÎÊı·µ»ØÖµ²Î¿¼get_privateprofile_string
     size_t getprivate_allkey(const char *sec_name,
                              char *return_str,
                              const size_t size_ret_str);
 
-    ///å¾—åˆ°Intçš„ Keyå€¼ï¼Œå‚æ•°è¿”å›å€¼å‚è€ƒget_privateprofile_string
+    ///µÃµ½IntµÄ KeyÖµ£¬²ÎÊı·µ»ØÖµ²Î¿¼get_privateprofile_string
     int get_private_int(const char *sec_name,
                         const char *key_name,
                         const int default_int);
 
-    ///å¾—åˆ°boolçš„ Keyå€¼ï¼Œå‚æ•°è¿”å›å€¼å‚è€ƒget_privateprofile_string
+    ///µÃµ½boolµÄ KeyÖµ£¬²ÎÊı·µ»ØÖµ²Î¿¼get_privateprofile_string
     bool   get_private_bool(const char *sec_name,
                             const char *key_name,
                             const bool default_int);
 
     /*!
-    * @brief      å†™æŸä¸ªå­—æ®µï¼Œæ¨¡ä»¿WIN32æ¥å£WritePrivateProfileString
+    * @brief      Ğ´Ä³¸ö×Ö¶Î£¬Ä£·ÂWIN32½Ó¿ÚWritePrivateProfileString
     * @return     bool
     *             If the function successfully copies the string to the initialization
     *             file, the return value is nonzero.
@@ -114,7 +114,7 @@ public:
     *             to which the string will be copied. If the section does not exist, it
     *             is created. The name of the section is case-independent; the string
     *             can be any combination of uppercase and lowercase letters.
-    * @param      key_nameã€
+    * @param      key_name¡¢
     *             Points to the null-terminated string containing the name of the key
     *             to be associated with a string. If the key does not exist in the
     *             specified section, it is created. If this parameter is NULL, the entire
@@ -129,34 +129,34 @@ public:
                                 const char *key_name,
                                 const char *write_string);
 
-    ///ä¿®æ”¹Section
+    ///ĞŞ¸ÄSection
     bool   write_private_section(const char *sec_name,
                                  const char *write_string);
-    ///å†™å…¥Int
+    ///Ğ´ÈëInt
     bool   write_private_int(const char *sec_name,
                              const char *key_name,
                              const int nvalue);
-    ///å†™å…¥Boolå˜é‡
+    ///Ğ´ÈëBool±äÁ¿
     bool   write_private_bool(const char *sec_name,
                               const char *key_name,
                               const bool bvalue);
 
-    ///åˆ é™¤Key
+    ///É¾³ıKey
     bool   del_private_key(const char *sec_name,
                            const char *key_name);
-    ///åˆ é™¤Section
+    ///É¾³ıSection
     bool   del_private_section(const char *sec_name);
 
 
 
 
 protected:
-    //æ¯è¡Œçš„æœ€å¤§é•¿åº¦
+    //Ã¿ĞĞµÄ×î´ó³¤¶È
     static const size_t LINE_BUFFER_LEN = 8191;
 
 protected:
 
-    ///å¤„ç†çš„æ–‡ä»¶åç§°
+    ///´¦ÀíµÄÎÄ¼şÃû³Æ
     std::string            file_name_;
 
     //

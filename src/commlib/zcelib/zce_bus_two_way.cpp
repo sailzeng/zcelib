@@ -17,7 +17,7 @@ const char  ZCE_BusPipe_TwoWay::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
     "SEND_PIPE",
 };
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_BusPipe_TwoWay::ZCE_BusPipe_TwoWay()
 {
 }
@@ -57,7 +57,7 @@ int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
 
 
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::instance()
 {
     if (two_way_instance_ == NULL)
@@ -68,7 +68,7 @@ ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::instance()
     return two_way_instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
 void ZCE_BusPipe_TwoWay::instance(ZCE_BusPipe_TwoWay *pinstatnce)
 {
     clean_instance();
@@ -76,7 +76,7 @@ void ZCE_BusPipe_TwoWay::instance(ZCE_BusPipe_TwoWay *pinstatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_BusPipe_TwoWay::clean_instance()
 {
     if (two_way_instance_)

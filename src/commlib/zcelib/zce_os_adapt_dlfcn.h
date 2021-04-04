@@ -3,8 +3,8 @@
 * @filename   zce_os_adapt_dlfcn.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´7æœˆ9æ—¥
-* @brief      DLLåº“æ“ä½œçš„å‡ ä¸ªè·¨å¹³å°å‡½æ•°
+* @date       2011Äê7ÔÂ9ÈÕ
+* @brief      DLL¿â²Ù×÷µÄ¼¸¸ö¿çÆ½Ì¨º¯Êı
 *
 * @details
 *
@@ -18,35 +18,35 @@
 namespace zce
 {
 
-//åŠ¨æ€åº“ä½¿ç”¨çš„å››ä¸ªå‡½æ•°
+//¶¯Ì¬¿âÊ¹ÓÃµÄËÄ¸öº¯Êı
 
 /*!
-* @brief      æ‰“å¼€åŠ¨æ€åº“
-* @return     ZCE_SHLIB_HANDLE åŠ¨æ€åº“çš„å¥æŸ„ï¼Œåœ¨ä¸åŒçš„å¹³å°æœ‰ä¸åŒçš„typdefï¼Œ==NULLæ ‡è¯†å¤±è´¥
-* @param      fname DLLçš„æ–‡ä»¶åç§°
-* @param      mode æ‰“å¼€çš„æ¨¡å¼
+* @brief      ´ò¿ª¶¯Ì¬¿â
+* @return     ZCE_SHLIB_HANDLE ¶¯Ì¬¿âµÄ¾ä±ú£¬ÔÚ²»Í¬µÄÆ½Ì¨ÓĞ²»Í¬µÄtypdef£¬==NULL±êÊ¶Ê§°Ü
+* @param      fname DLLµÄÎÄ¼şÃû³Æ
+* @param      mode ´ò¿ªµÄÄ£Ê½
 */
 ZCE_SHLIB_HANDLE dlopen (const char *fname, int mode = ZCE_DEFAULT_SHLIB_MODE);
 
 /*!
-* @brief      å…³é—­åŠ¨æ€åº“
-* @return     int = 0 æ ‡è¯†æˆåŠŸï¼Œï¼ˆWINDOWSå…¶å®è¿™ä¸ªå‡½æ•°æ²¡æœ‰è¿”å›å€¼ï¼Œå…¶å®é‡Šæ”¾èµ„æºæ°¸è¿œä¸åº”å¤±è´¥ï¼‰
-* @param      handle  æ‰“å¼€åŠ¨æ€åº“æ—¶å¾—åˆ°çš„å¥æŸ„
+* @brief      ¹Ø±Õ¶¯Ì¬¿â
+* @return     int = 0 ±êÊ¶³É¹¦£¬£¨WINDOWSÆäÊµÕâ¸öº¯ÊıÃ»ÓĞ·µ»ØÖµ£¬ÆäÊµÊÍ·Å×ÊÔ´ÓÀÔ¶²»Ó¦Ê§°Ü£©
+* @param      handle  ´ò¿ª¶¯Ì¬¿âÊ±µÃµ½µÄ¾ä±ú
 */
 int dlclose (ZCE_SHLIB_HANDLE handle);
 
 /*!
-* @brief      æ­¤åŠ¨æ€åº“å¼•å‡ºå‡½æ•°
-* @return     void* å‡½æ•°æŒ‡é’ˆ
-* @param      handle æ‰“å¼€åŠ¨æ€åº“æ—¶å¾—åˆ°çš„å¥æŸ„
-* @param      symbolname å‡½æ•°ç¬¦å·çš„åç§°
+* @brief      ´Ë¶¯Ì¬¿âÒı³öº¯Êı
+* @return     void* º¯ÊıÖ¸Õë
+* @param      handle ´ò¿ª¶¯Ì¬¿âÊ±µÃµ½µÄ¾ä±ú
+* @param      symbolname º¯Êı·ûºÅµÄÃû³Æ
 * @note
 */
 void *dlsym (ZCE_SHLIB_HANDLE handle, const char *symbolname);
 
 /*!
-* @brief      è¿”å›åŠ¨æ€åº“å‡½æ•°çš„é”™è¯¯æè¿°
-* @return     const char* é”™è¯¯æè¿°
+* @brief      ·µ»Ø¶¯Ì¬¿âº¯ÊıµÄ´íÎóÃèÊö
+* @return     const char* ´íÎóÃèÊö
 */
 const char *dlerror (void);
 

@@ -3,7 +3,7 @@
 * @filename   zce_thread_msgque_nonlock.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´10æœˆ8æ—¥
+* @date       2011Äê10ÔÂ8ÈÕ
 * @brief
 *
 *
@@ -20,22 +20,22 @@
 #include "zce_lock_synch_traits.h"
 #include "zce_thread_msgque_template.h"
 
-//ä½¿ç”¨åç‰¹åŒ–å¾—åˆ°ä¸€ä¸ªZCE_Message_Queue
+//Ê¹ÓÃÆ«ÌØ»¯µÃµ½Ò»¸öZCE_Message_Queue
 template < typename _value_type,
            typename _container_type >
 class ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
 {
 protected:
 
-    //    ZCE_NULL_SYNCHå…¶å®æ²¡æœ‰ä½¿ç”¨ï¼Œå› ä¸ºæ²¡æœ‰æ›´å¿«
+    //    ZCE_NULL_SYNCHÆäÊµÃ»ÓĞÊ¹ÓÃ£¬ÒòÎªÃ»ÓĞ¸ü¿ì
 
-    //QUEUEçš„æœ€å¤§å°ºå¯¸
+    //QUEUEµÄ×î´ó³ß´ç
     std::size_t                                    queue_max_size_;
 
-    //ç”±äºLISTçš„size()å‡½æ•°æ¯”è¾ƒè€—æ—¶ï¼Œæ‰€ä»¥è¿™å„¿è¿˜æ˜¯ç”¨äº†ä¸ªè®¡æ•°å™¨ï¼Œè€Œä¸ç›´æ¥ä½¿ç”¨_container_type.size()
+    //ÓÉÓÚLISTµÄsize()º¯Êı±È½ÏºÄÊ±£¬ËùÒÔÕâ¶ù»¹ÊÇÓÃÁË¸ö¼ÆÊıÆ÷£¬¶ø²»Ö±½ÓÊ¹ÓÃ_container_type.size()
     std::size_t                                    queue_cur_size_;
 
-    //å®¹å™¨ç±»å‹ï¼Œå¯ä»¥æ˜¯list,dequeue,
+    //ÈİÆ÷ÀàĞÍ£¬¿ÉÒÔÊÇlist,dequeue,
     _container_type                       message_queue_;
 
 public:
@@ -51,7 +51,7 @@ public:
     {
     }
 
-    //QUEUEæ˜¯å¦ä¸ºNULL
+    //QUEUEÊÇ·ñÎªNULL
     inline bool empty()
     {
         if (queue_cur_size_ == 0)
@@ -62,7 +62,7 @@ public:
         return false;
     }
 
-    //QUEUEæ˜¯å¦ä¸ºæ»¡
+    //QUEUEÊÇ·ñÎªÂú
     inline bool full()
     {
         if (queue_cur_size_ == queue_max_size_)
@@ -73,7 +73,7 @@ public:
         return false;
     }
 
-    //æ”¾å…¥æ•°æ®
+    //·ÅÈëÊı¾İ
     int enqueue(const _value_type &value_data)
     {
         if (queue_cur_size_ >= queue_max_size_)
@@ -87,7 +87,7 @@ public:
         return 0;
     }
 
-    //æ”¾å…¥ä¸€ä¸ªæ•°æ®ï¼Œè¿›è¡Œè¶…æ—¶ç­‰å¾…
+    //·ÅÈëÒ»¸öÊı¾İ£¬½øĞĞ³¬Ê±µÈ´ı
     int enqueue(const _value_type &value_data,
                 ZCE_Time_Value & )
     {
@@ -115,14 +115,14 @@ public:
         return dequeue(value_data);
     }
 
-    //æ¸…ç†æ¶ˆæ¯é˜Ÿåˆ—
+    //ÇåÀíÏûÏ¢¶ÓÁĞ
     void clear()
     {
         message_queue_.clear();
         queue_cur_size_ = 0;
     }
 
-    //è¿”å›æ¶ˆæ¯å¯¹è±¡çš„å°ºå¯¸
+    //·µ»ØÏûÏ¢¶ÔÏóµÄ³ß´ç
     size_t size()
     {
         return queue_cur_size_;

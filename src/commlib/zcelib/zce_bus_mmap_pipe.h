@@ -2,112 +2,112 @@
 #ifndef ZCE_LIB_BUS_MMAP_PIPE_H_
 #define ZCE_LIB_BUS_MMAP_PIPE_H_
 
-//ç¾Žå›½è‘—åè®¡ç®—æœºä¸“å®¶ã€Cè¯­è¨€åŠUnixä¹‹çˆ¶ã€å›¾çµå¥–èŽ·å¾—è€…ä¸¹å°¼æ–¯Â·é‡Œå¥‡ï¼ˆDennis Ritchieï¼‰äºŽ2011å¹´10æ—¥12æ—¥äºŽå®¶ä¸­åŽ»ä¸–ï¼Œäº«å¹´70å²ã€‚
+//ÃÀ¹úÖøÃû¼ÆËã»ú×¨¼Ò¡¢CÓïÑÔ¼°UnixÖ®¸¸¡¢Í¼Áé½±»ñµÃÕßµ¤ÄáË¹¡¤ÀïÆæ£¨Dennis Ritchie£©ÓÚ2011Äê10ÈÕ12ÈÕÓÚ¼ÒÖÐÈ¥ÊÀ£¬ÏíÄê70Ëê¡£
 
 #include "zce_boost_non_copyable.h"
 
 namespace zce::lockfree
 {
 class dequechunk_node;
-class deque_chunk;
+class shm_dequechunk;
 };
 
-//MMAPçš„ç®¡é“ï¼Œä½ è¦åˆå§‹åŒ–å‡ æ¡å°±åˆå§‹åŒ–å‡ æ¡
-class ZCE_Bus_MMAPPipe: public ZCE_NON_Copyable
+//MMAPµÄ¹ÜµÀ£¬ÄãÒª³õÊ¼»¯¼¸Ìõ¾Í³õÊ¼»¯¼¸Ìõ
+class ZCE_Bus_MMAPPipe : public ZCE_NON_Copyable
 {
 
 
 
 public:
 
-    //æž„é€ å‡½æ•°,
+    //¹¹Ôìº¯Êý,
     ZCE_Bus_MMAPPipe();
-    //æžè´­å‡½æ•°
+    //Îö¹ºº¯Êý
     ~ZCE_Bus_MMAPPipe();
 
 public:
 
     /*!
-    * @brief      åˆå§‹åŒ–ï¼Œæ ¹æ®å‚æ•°ï¼Œ
+    * @brief      ³õÊ¼»¯£¬¸ù¾Ý²ÎÊý£¬
     * @return     int
     * @param      bus_mmap_name
-    * @param      number_of_pipe  ç®¡é“çš„æ•°é‡
-    * @param      size_of_pipe    ç®¡é“çš„å¤§å°
-    * @param      max_frame_len   æœ€å¤§çš„å¸§é•¿åº¦
-    * @param      if_restore      æ˜¯å¦è¿›è¡Œæ¢å¤
+    * @param      number_of_pipe  ¹ÜµÀµÄÊýÁ¿
+    * @param      size_of_pipe    ¹ÜµÀµÄ´óÐ¡
+    * @param      max_frame_len   ×î´óµÄÖ¡³¤¶È
+    * @param      if_restore      ÊÇ·ñ½øÐÐ»Ö¸´
     * @note
     */
-    int initialize(const char* bus_mmap_name,
+    int initialize(const char *bus_mmap_name,
                    uint32_t number_of_pipe,
                    size_t size_of_pipe[],
                    size_t max_frame_len,
                    bool if_restore);
 
-    ///åˆå§‹åŒ–ï¼Œåªæ ¹æ®æ–‡ä»¶è¿›è¡Œåˆå§‹åŒ–ï¼Œç”¨äºŽæŸäº›å·¥å…·å¯¹MMAPæ–‡ä»¶è¿›è¡Œå¤„ç†çš„æ—¶å€™
-    int initialize(const char* bus_mmap_name,
+    ///³õÊ¼»¯£¬Ö»¸ù¾ÝÎÄ¼þ½øÐÐ³õÊ¼»¯£¬ÓÃÓÚÄ³Ð©¹¤¾ß¶ÔMMAPÎÄ¼þ½øÐÐ´¦ÀíµÄÊ±ºò
+    int initialize(const char *bus_mmap_name,
                    size_t max_frame_len);
 
 
     //-----------------------------------------------------------------
-    //æ€€ç–‘TMDæˆ‘æœ‰å¼ºè¿«ç—‡å€¾å‘ï¼Œæä¾›è¿™ä¹ˆå¤šæŽ¥å£å¹²å˜›ï¼Œä¸‹é¢ä¸€ç»„è¶³å¤Ÿç”¨äº†ã€‚
+    //»³ÒÉTMDÎÒÓÐÇ¿ÆÈÖ¢ÇãÏò£¬Ìá¹©ÕâÃ´¶à½Ó¿Ú¸ÉÂï£¬ÏÂÃæÒ»×é×ã¹»ÓÃÁË¡£
     bool is_exist_bus(size_t pipe_id);
 
-    //MMAPéšå°„æ–‡ä»¶åç§°
-    const char* mmap_file_name();
+    //MMAPÒþÉäÎÄ¼þÃû³Æ
+    const char *mmap_file_name();
 
-    //å‘ç®¡é“å†™å…¥å¸§
-    inline int push_back_bus(size_t pipe_id,const zce::lockfree::dequechunk_node* node);
+    //Ïò¹ÜµÀÐ´ÈëÖ¡
+    inline int push_back_bus(size_t pipe_id, const zce::lockfree::dequechunk_node *node);
 
     /*!
-    * @brief      ä»Žç®¡é“POPè¯»å–å¸§ï¼Œ(å°±æ˜¯æ‹·è´åŽåˆ é™¤)
+    * @brief      ´Ó¹ÜµÀPOP¶ÁÈ¡Ö¡£¬(¾ÍÊÇ¿½±´ºóÉ¾³ý)
     * @return     int
-    * @param      pipe_id  ç®¡é“ID
-    * @param      node     å‡†å¤‡å¤åˆ¶nodeæŒ‡é’ˆï¼ŒæŒ‡é’ˆçš„ç©ºé—´è¯·åˆ†é…å¥½
+    * @param      pipe_id  ¹ÜµÀID
+    * @param      node     ×¼±¸¸´ÖÆnodeÖ¸Õë£¬Ö¸ÕëµÄ¿Õ¼äÇë·ÖÅäºÃ
     * @note
     */
-    inline int pop_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node* node);
+    inline int pop_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *node);
 
     /*!
-    * @brief      ä»Žç®¡é“æ‹·è´å¤åˆ¶ä¸€ä¸ªå¸§å‡ºæ¥
+    * @brief      ´Ó¹ÜµÀ¿½±´¸´ÖÆÒ»¸öÖ¡³öÀ´
     * @return     int
-    * @param      pipe_id ç®¡é“ID
+    * @param      pipe_id ¹ÜµÀID
     * @param      node
     * @note
     */
-    inline int read_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node*& node);
-    //æŠ›å¼ƒä¸€ä¸ªå¸§
+    inline int read_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *&node);
+    //Å×ÆúÒ»¸öÖ¡
     inline int pop_front_bus(size_t pipe_id);
-    //å–ç®¡é“å¤´çš„å¸§é•¿
-    inline int get_front_nodesize(size_t pipe_id,size_t& note_size);
+    //È¡¹ÜµÀÍ·µÄÖ¡³¤
+    inline int get_front_nodesize(size_t pipe_id, size_t &note_size);
 
 
-    //ç®¡é“ä¸ºæ»¡
+    //¹ÜµÀÎªÂú
     inline bool is_full_bus(size_t pipe_id);
-    //ç®¡é“æ˜¯å¦ä¸ºç©º
+    //¹ÜµÀÊÇ·ñÎª¿Õ
     inline bool is_empty_bus(size_t pipe_id);
-    //ç®¡é“çš„ç©ºä½™ç©ºé—´,
-    inline void get_bus_freesize(size_t pipe_id,size_t& pipe_size,size_t& free_size);
+    //¹ÜµÀµÄ¿ÕÓà¿Õ¼ä,
+    inline void get_bus_freesize(size_t pipe_id, size_t &pipe_size, size_t &free_size);
 
     //-----------------------------------------------------------------
 protected:
 
-    //åˆå§‹åŒ–æ‰€æœ‰çš„æ•°æ®ç®¡é“
+    //³õÊ¼»¯ËùÓÐµÄÊý¾Ý¹ÜµÀ
     int init_all_pipe(size_t max_frame_len,
                       bool if_restore);
 
 public:
 
-    ///ä¸ºäº†SingleTonç±»å‡†å¤‡
-    ///å®žä¾‹çš„èµ‹å€¼
-    static void instance(ZCE_Bus_MMAPPipe*);
-    ///å®žä¾‹çš„èŽ·å¾—
-    static ZCE_Bus_MMAPPipe* instance();
-    ///æ¸…é™¤å®žä¾‹
+    ///ÎªÁËSingleTonÀà×¼±¸
+    ///ÊµÀýµÄ¸³Öµ
+    static void instance(ZCE_Bus_MMAPPipe *);
+    ///ÊµÀýµÄ»ñµÃ
+    static ZCE_Bus_MMAPPipe *instance();
+    ///Çå³ýÊµÀý
     static void clean_instance();
 
 public:
 
-    //æœ€å¤§çš„PIPEçš„æ•°é‡ï¼Œæš‚æ—¶å†™å®Œ512æ¡,æ„Ÿè§‰å¤§éƒ¨åˆ†æ—¶å€™æ¯”è¾ƒæµªè´¹ï¼Œå‘µå‘µï¼Œä¸è¿‡ç®—äº†ï¼Œä¹Ÿå°±å‡ Kç©ºé—´
+    //×î´óµÄPIPEµÄÊýÁ¿£¬ÔÝÊ±Ð´Íê512Ìõ,¸Ð¾õ´ó²¿·ÖÊ±ºò±È½ÏÀË·Ñ£¬ºÇºÇ£¬²»¹ýËãÁË£¬Ò²¾Í¼¸K¿Õ¼ä
     static const size_t MAX_NUMBER_OF_PIPE = 512;
 
 protected:
@@ -117,12 +117,12 @@ protected:
         ZCE_BUS_PIPE_HEAD();
         ~ZCE_BUS_PIPE_HEAD();
 
-        //æœºå™¨å­—é•¿
+        //»úÆ÷×Ö³¤
         uint32_t            size_of_sizet_;
         //
-        //ç®¡é“æ•°é‡
+        //¹ÜµÀÊýÁ¿
         uint32_t            number_of_pipe_;
-        //ç®¡é“é…ç½®é•¿åº¦,2ä¸ªç®¡é“çš„é…ç½®é•¿åº¦,
+        //¹ÜµÀÅäÖÃ³¤¶È,2¸ö¹ÜµÀµÄÅäÖÃ³¤¶È,
         size_t              size_of_pipe_[MAX_NUMBER_OF_PIPE];
         //
         size_t              size_of_room_[MAX_NUMBER_OF_PIPE];
@@ -130,41 +130,41 @@ protected:
 
 protected:
 
-    ///BUSæ–‡ä»¶çš„å¤´éƒ¨ä¿¡æ¯
+    ///BUSÎÄ¼þµÄÍ·²¿ÐÅÏ¢
     ZCE_BUS_PIPE_HEAD          bus_head_;
 
-    ///Nä¸ªç®¡é“,æ¯”å¦‚æŽ¥æ”¶ç®¡é“,å‘é€ç®¡é“â€¦â€¦,æœ€å¤§MAX_NUMBER_OF_PIPEä¸ª
-    zce::lockfree::deque_chunk* bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
+    ///N¸ö¹ÜµÀ,±ÈÈç½ÓÊÕ¹ÜµÀ,·¢ËÍ¹ÜµÀ¡­¡­,×î´óMAX_NUMBER_OF_PIPE¸ö
+    zce::lockfree::shm_dequechunk  *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
 
-    ///MMAPå†…å­˜æ–‡ä»¶ï¼Œ
+    ///MMAPÄÚ´æÎÄ¼þ£¬
     ZCE_ShareMem_Mmap         mmap_file_;
 
 
 protected:
-    //instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
-    static ZCE_Bus_MMAPPipe* instance_;
+    //instanceº¯ÊýÊ¹ÓÃµÄ¶«Î÷
+    static ZCE_Bus_MMAPPipe *instance_;
 };
 
 
-//ç®¡é“æ˜¯å¦å­˜åœ¨
+//¹ÜµÀÊÇ·ñ´æÔÚ
 inline bool ZCE_Bus_MMAPPipe::is_exist_bus(size_t pipe_id)
 {
-    return bus_pipe_pointer_[pipe_id] == NULL?false:true;
+    return bus_pipe_pointer_[pipe_id] == NULL ? false : true;
 }
-//ç®¡é“ä¸ºæ»¡
+//¹ÜµÀÎªÂú
 inline bool ZCE_Bus_MMAPPipe::is_full_bus(size_t pipe_id)
 {
     return bus_pipe_pointer_[pipe_id]->full();
 }
 
-//ç®¡é“æ˜¯å¦ä¸ºç©º
+//¹ÜµÀÊÇ·ñÎª¿Õ
 inline bool ZCE_Bus_MMAPPipe::is_empty_bus(size_t pipe_id)
 {
     return bus_pipe_pointer_[pipe_id]->empty();
 }
 
-//ç®¡é“çš„ç©ºä½™ç©ºé—´,
-inline void ZCE_Bus_MMAPPipe::get_bus_freesize(size_t pipe_id,size_t& pipe_size,size_t& free_size)
+//¹ÜµÀµÄ¿ÕÓà¿Õ¼ä,
+inline void ZCE_Bus_MMAPPipe::get_bus_freesize(size_t pipe_id, size_t &pipe_size, size_t &free_size)
 {
     pipe_size = bus_head_.size_of_pipe_[pipe_id];
     free_size = bus_pipe_pointer_[pipe_id]->free_size();
@@ -172,31 +172,31 @@ inline void ZCE_Bus_MMAPPipe::get_bus_freesize(size_t pipe_id,size_t& pipe_size,
 }
 
 
-//å‘ç®¡é“å†™å…¥å¸§
-inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id,const zce::lockfree::dequechunk_node* node)
+//Ïò¹ÜµÀÐ´ÈëÖ¡
+inline int ZCE_Bus_MMAPPipe::push_back_bus(size_t pipe_id, const zce::lockfree::dequechunk_node *node)
 {
 
-    //å–å‡ºä¸€ä¸ªå¸§
+    //È¡³öÒ»¸öÖ¡
     bool bret = bus_pipe_pointer_[pipe_id]->push_end(node);
 
     //
     if (!bret)
     {
-        ZCE_LOG(RS_ALERT,"[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
+        ZCE_LOG(RS_ALERT, "[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
                 "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
                 pipe_id,
                 node->size_of_node_,
                 bus_pipe_pointer_[pipe_id]->free_size(),
                 bus_pipe_pointer_[pipe_id]->capacity()
-        );
+               );
         return -1;
     }
 
     return 0;
 }
 
-//å–ç®¡é“å¤´çš„å¸§é•¿
-inline int ZCE_Bus_MMAPPipe::get_front_nodesize(size_t pipe_id,size_t& note_size)
+//È¡¹ÜµÀÍ·µÄÖ¡³¤
+inline int ZCE_Bus_MMAPPipe::get_front_nodesize(size_t pipe_id, size_t &note_size)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())
     {
@@ -208,35 +208,35 @@ inline int ZCE_Bus_MMAPPipe::get_front_nodesize(size_t pipe_id,size_t& note_size
 }
 
 
-//ä»Žç®¡é“å¼¹å‡ºPOPå¸§,
-inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node* node)
+//´Ó¹ÜµÀµ¯³öPOPÖ¡,
+inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *node)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())
     {
         return -1;
     }
 
-    //å–å‡ºä¸€ä¸ªå¸§
+    //È¡³öÒ»¸öÖ¡
     bus_pipe_pointer_[pipe_id]->pop_front(node);
 
     return 0;
 }
 
-//ä»Žç®¡é“æ‹·è´å¤åˆ¶ä¸€ä¸ªå¸§å‡ºæ¥
-inline int ZCE_Bus_MMAPPipe::read_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node*& node)
+//´Ó¹ÜµÀ¿½±´¸´ÖÆÒ»¸öÖ¡³öÀ´
+inline int ZCE_Bus_MMAPPipe::read_front_bus(size_t pipe_id, zce::lockfree::dequechunk_node *&node)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())
     {
         return -1;
     }
 
-    //å–å‡ºä¸€ä¸ªå¸§
+    //È¡³öÒ»¸öÖ¡
     bus_pipe_pointer_[pipe_id]->read_front(node);
 
     return 0;
 }
 
-//æŠ›å¼ƒä¸€ä¸ªå¸§
+//Å×ÆúÒ»¸öÖ¡
 inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id)
 {
     if (bus_pipe_pointer_[pipe_id]->empty())
@@ -244,7 +244,7 @@ inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id)
         return -1;
     }
 
-    //å–å‡ºä¸€ä¸ªå¸§
+    //È¡³öÒ»¸öÖ¡
     bus_pipe_pointer_[pipe_id]->discard_frond();
     return 0;
 }

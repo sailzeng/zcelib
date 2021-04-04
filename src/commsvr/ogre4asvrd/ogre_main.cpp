@@ -9,7 +9,7 @@
 
 int main(int argc, const char *argv[])
 {
-    //åˆ©ç”¨æ¨¡æ¿å¼€å§‹å¯åŠ¨
+    //ÀûÓÃÄ£°å¿ªÊ¼Æô¶¯
     return SOAR_LIB::soar_svrd_main < Ogre_Service_App,
            Ogre_Server_Config,
            Ogre_App_Timer_Handler > (argc, argv);

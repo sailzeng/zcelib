@@ -23,27 +23,27 @@ protected:
 
 public:
 
-    ///ä»é…ç½®æ–‡ä»¶ä¸­å¾—åˆ°ç›¸å…³çš„é…ç½®
+    ///´ÓÅäÖÃÎÄ¼şÖĞµÃµ½Ïà¹ØµÄÅäÖÃ
     int get_config(const Zerg_Server_Config *config);
-    ///æ£€æŸ¥IPé™åˆ¶
+    ///¼ì²éIPÏŞÖÆ
     int check_iprestrict(const ZCE_Sockaddr_In &remoteaddress);
 
 public:
 
-    ///å•å­å®ä¾‹å‡½æ•°
+    ///µ¥×ÓÊµÀıº¯Êı
     static Zerg_IPRestrict_Mgr *instance();
-    ///æ¸…ç†å•å­å®ä¾‹
+    ///ÇåÀíµ¥×ÓÊµÀı
     static void clean_instance();
 
 protected:
-    ///å•å­å®ä¾‹
+    ///µ¥×ÓÊµÀı
     static Zerg_IPRestrict_Mgr        *instance_;
 
 protected:
 
-    //å…è®¸è¿›è¡Œè¿æ¥çš„IPåœ°å€
+    //ÔÊĞí½øĞĞÁ¬½ÓµÄIPµØÖ·
     Set_Of_IPAddress           allow_ip_set_;
-    //æ‹’ç»è¿›è¡Œè¿æ¥çš„IPåœ°å€
+    //¾Ü¾ø½øĞĞÁ¬½ÓµÄIPµØÖ·
     Set_Of_IPAddress           reject_ip_set_;
 
 };

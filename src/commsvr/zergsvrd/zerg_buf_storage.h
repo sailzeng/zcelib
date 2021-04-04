@@ -13,17 +13,17 @@ class Zerg_Buffer
 {
 public:
     //
-    static const unsigned int CAPACITY_OF_BUFFER = ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME + 16;
+    static const unsigned int CAPACITY_OF_BUFFER = Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16;
 
 public:
 
-    //å½“å‰è¦ä½¿ç”¨çš„ç¼“å†²é•¿åº¦ï¼Œå½“å‰å¤„ç†çš„å¸§çš„é•¿åº¦,æ²¡æœ‰å¾—åˆ°é•¿åº¦å‰å¡«å†™0
+    //µ±Ç°ÒªÊ¹ÓÃµÄ»º³å³¤¶È£¬µ±Ç°´¦ÀíµÄÖ¡µÄ³¤¶È,Ã»ÓĞµÃµ½³¤¶ÈÇ°ÌîĞ´0
     size_t      size_of_use_;
 
-    //ä½¿ç”¨çš„å°ºå¯¸
+    //Ê¹ÓÃµÄ³ß´ç
     size_t      size_of_buffer_;
 
-    //æ•°æ®ç¼“å†²åŒº
+    //Êı¾İ»º³åÇø
     char       buffer_data_[CAPACITY_OF_BUFFER];
 
 public:
@@ -32,9 +32,9 @@ public:
     //
     ~Zerg_Buffer();
 
-    //å¡«å……æ•°æ®
+    //Ìî³äÊı¾İ
     void fill_write_data(const size_t szdata, const char *data);
-    //è¯»å–æ•°æ®
+    //¶ÁÈ¡Êı¾İ
     void get_read_data(size_t &szdata, char *data);
 
     //
@@ -86,53 +86,53 @@ public:
 class ZBuffer_Storage : public ZCE_NON_Copyable
 {
 public:
-    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
     ZBuffer_Storage();
     ~ZBuffer_Storage();
 
-    //åˆå§‹åŒ–
+    //³õÊ¼»¯
     void init_buffer_list(size_t szlist);
 
-    //è·Ÿè¿›å¤–éƒ¨çš„Handlerçš„æ•°é‡ï¼Œåˆå§‹åŒ–å¾—åˆ°Buffer Listçš„å°ºå¯¸
+    //¸ú½øÍâ²¿µÄHandlerµÄÊıÁ¿£¬³õÊ¼»¯µÃµ½Buffer ListµÄ³ß´ç
     void init_buflist_by_hdlnum(size_t num_of_hdl);
 
-    //ååˆå§‹åŒ–,æ˜¯å¦æ‰€æœ‰çš„ç”³è¯·ç©ºé—´,ç»“æŸåä¸€å®šè¦è°ƒç”¨
+    //·´³õÊ¼»¯,ÊÇ·ñËùÓĞµÄÉêÇë¿Õ¼ä,½áÊøºóÒ»¶¨Òªµ÷ÓÃ
     void close();
 
-    //ä»é˜Ÿåˆ—åˆ†é…ä¸€ä¸ªBufferå‡ºæ¥
+    //´Ó¶ÓÁĞ·ÖÅäÒ»¸öBuffer³öÀ´
     Zerg_Buffer *allocate_buffer();
 
-    //é‡Šæ”¾ä¸€ä¸ªBufferåˆ°é˜Ÿåˆ—ä¸­
+    //ÊÍ·ÅÒ»¸öBufferµ½¶ÓÁĞÖĞ
     void free_byte_buffer(Zerg_Buffer *ptrbuf );
 
-    //æ‰©å±•Bufferé˜Ÿåˆ—
+    //À©Õ¹Buffer¶ÓÁĞ
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);
 
 public:
 
-    //å•å­å®ä¾‹å‡½æ•°
+    //µ¥×ÓÊµÀıº¯Êı
     static ZBuffer_Storage *instance();
-    //æ¸…ç†å•å­å®ä¾‹
+    //ÇåÀíµ¥×ÓÊµÀı
     static void clean_instance();
 
 protected:
-    //å•å­å®ä¾‹æŒ‡é’ˆ
+    //µ¥×ÓÊµÀıÖ¸Õë
     static ZBuffer_Storage *instance_;
 
 protected:
 
-    //æ¯æ¬¡å¦‚æœBufferStrogeä¸å¤Ÿç”¨äº†ï¼Œæ‰©å±•çš„ä¸ªæ•°
+    //Ã¿´ÎÈç¹ûBufferStroge²»¹»ÓÃÁË£¬À©Õ¹µÄ¸öÊı
     static const size_t EXTEND_NUM_OF_LIST = 1024;
 
 protected:
 
-    ///å­˜æ”¾BUFF çš„é˜Ÿåˆ—ç±»å‹
+    ///´æ·ÅBUFF µÄ¶ÓÁĞÀàĞÍ
     typedef zce::lordrings <Zerg_Buffer *> ZBUFFER_RINGS;
 
-    ///æˆ‘æ‹…å¿ƒå†…å­˜æ³„éœ²,æ‰€ä»¥åŠ ä¸ªæ€»æ•°è®¡æ•°
+    ///ÎÒµ£ĞÄÄÚ´æĞ¹Â¶,ËùÒÔ¼Ó¸ö×ÜÊı¼ÆÊı
     size_t                size_of_bufferalloc_;
 
-    ///BUFFé˜Ÿåˆ—
+    ///BUFF¶ÓÁĞ
     ZBUFFER_RINGS         buffer_deque_;
 
 

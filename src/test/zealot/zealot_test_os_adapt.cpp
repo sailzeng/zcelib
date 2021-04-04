@@ -13,7 +13,7 @@ int test_windows_handle(int  /*argc*/, char * /*argv*/[])
         return 0;
     }
 
-    //fh_1 == fh_2 å†…æ ¸å¥æŸ„ä¸€è‡´
+    //fh_1 == fh_2 ÄÚºË¾ä±úÒ»ÖÂ
     HANDLE fh_1 = (HANDLE)_get_osfhandle(file_desc);
     HANDLE fh_2 = (HANDLE)_get_osfhandle(file_desc);
 
@@ -21,14 +21,14 @@ int test_windows_handle(int  /*argc*/, char * /*argv*/[])
     std::cout << fh_1 << std::endl;
     std::cout << fh_2 << std::endl;
 
-    //file_desc != filedesc_1 != filedesc_2,3ä¸ªæ–‡ä»¶æè¿°ç¬¦ä¸ä¸€æ ·
+    //file_desc != filedesc_1 != filedesc_2,3¸öÎÄ¼şÃèÊö·û²»Ò»Ñù
     int filedesc_1 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
     int filedesc_2 = _open_osfhandle((intptr_t)fh_1, O_RDONLY);
 
     std::cout << (int)filedesc_1 << std::endl;
     std::cout << (int)filedesc_2 << std::endl;
 
-    //fh_1 == fh_2 == fh_3,å†…æ ¸å¥æŸ„ä¸€è‡´ä¸€è‡´
+    //fh_1 == fh_2 == fh_3,ÄÚºË¾ä±úÒ»ÖÂÒ»ÖÂ
     HANDLE fh_3 = (HANDLE)_get_osfhandle(filedesc_1);
     std::cout << fh_3 << std::endl;
 
@@ -87,7 +87,7 @@ int test_osadapt_perf(int  /*argc*/, char * /*argv*/[])
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-//é€‰å–æ‰€æœ‰çš„.hæ–‡ä»¶
+//Ñ¡È¡ËùÓĞµÄ.hÎÄ¼ş
 int hfile_selector(const struct dirent *dir_info)
 {
     size_t name_len = strlen(dir_info->d_name);
@@ -202,11 +202,7 @@ void test_findwith_container(size_t container_len)
     {
 
         int find_number = (int)i % container_len;
-        auto iter = int_map.find(find_number);
-        if(iter->first)
-        {
-
-        }
+        int_map.find(find_number);
     }
 
     test_timer.end();
@@ -218,11 +214,7 @@ void test_findwith_container(size_t container_len)
     for (size_t i = 0; i < TEST_NUMBER; ++i)
     {
         int find_number = (int)i % container_len;
-        auto iter = int_hash.find(find_number);
-        if(iter->first)
-        {
-
-        }
+        int_hash.find(find_number);
     }
 
     test_timer.end();

@@ -6,7 +6,7 @@
 
 
 /*!
-* @brief      IPv4çš„ç‰©ç†ç»“æ„
+* @brief      IPv4µÄÎïÀí½á¹¹
 *
 * @note
 */
@@ -14,34 +14,34 @@ class ZCE_Sockaddr_In : public ZCE_Sockaddr
 {
 public:
 
-    ///é»˜è®¤æ„é€ å‡½æ•°
+    ///Ä¬ÈÏ¹¹Ôìº¯Êı
     ZCE_Sockaddr_In (void);
 
-    ///æ ¹æ®sockaddr_inæ„é€ ï¼Œ
+    ///¸ù¾İsockaddr_in¹¹Ôì£¬
     ZCE_Sockaddr_In (const sockaddr_in *addr);
 
-    ///æ ¹æ®IPåœ°å€(XXX.XXX.XXX.XXX)å­—ç¬¦ä¸²ï¼Œç«¯å£å·åˆå§‹åŒ–æ„é€ 
+    ///¸ù¾İIPµØÖ·(XXX.XXX.XXX.XXX)×Ö·û´®£¬¶Ë¿ÚºÅ³õÊ¼»¯¹¹Ôì
     ZCE_Sockaddr_In (const char *ip_addr_str,
                      uint16_t port_number);
 
-    ///æ ¹æ®åœ°å€(æ•´æ•°)ï¼Œç«¯å£å·åˆå§‹åŒ–æ„é€ 
+    ///¸ù¾İµØÖ·(ÕûÊı)£¬¶Ë¿ÚºÅ³õÊ¼»¯¹¹Ôì
     ZCE_Sockaddr_In (uint32_t ip_addr,
                      uint16_t port_number);
 
-    ///æ‹·è´æ„é€ ï¼Œä¸€å®šè¦å†™ï¼Œè¿™ä¸ªç±»çš„åŸºç±»æŒ‡é’ˆæ˜¯æŒ‡å‘è‡ªå·±çš„ä¸€ä¸ªåœ°å€çš„ï¼Œ
+    ///¿½±´¹¹Ôì£¬Ò»¶¨ÒªĞ´£¬Õâ¸öÀàµÄ»ùÀàÖ¸ÕëÊÇÖ¸Ïò×Ô¼ºµÄÒ»¸öµØÖ·µÄ£¬
     explicit ZCE_Sockaddr_In(const ZCE_Sockaddr_In &others);
 
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     virtual ~ZCE_Sockaddr_In();
 
 public:
 
-    ///è®¾ç½®åœ°å€ä¿¡æ¯
+    ///ÉèÖÃµØÖ·ĞÅÏ¢
     virtual  void set_sockaddr (sockaddr *addr, socklen_t len);
 
     /*!
-    * @brief      æ ¹æ®IPåœ°å€(XXX.XXX.XXX.XXX)å­—ç¬¦ä¸²ï¼Œç«¯å£å·æ ¹æ®å‚æ•°è®¾ç½®
-    * @return     int  è¿”å›0è¡¨ç¤ºè½¬æ¢æˆåŠŸ
+    * @brief      ¸ù¾İIPµØÖ·(XXX.XXX.XXX.XXX)×Ö·û´®£¬¶Ë¿ÚºÅ¸ù¾İ²ÎÊıÉèÖÃ
+    * @return     int  ·µ»Ø0±íÊ¾×ª»»³É¹¦
     * @param      ip_addr_str
     * @param      port_number
     * @note
@@ -50,8 +50,8 @@ public:
             uint16_t port_number);
 
     /*!
-    * @brief      æ ¹æ®åœ°å€IPæ•´æ•°ï¼Œç«¯å£å·è®¾ç½®
-    * @return     int è¿”å›0è¡¨ç¤ºè½¬æ¢æˆåŠŸ
+    * @brief      ¸ù¾İµØÖ·IPÕûÊı£¬¶Ë¿ÚºÅÉèÖÃ
+    * @return     int ·µ»Ø0±íÊ¾×ª»»³É¹¦
     * @param      ip_addr
     * @param      port_number
     */
@@ -60,74 +60,74 @@ public:
 
 
     /*!
-    * @brief      æ ¹æ®å­—ç¬¦ä¸²å–å¾—IPåœ°å€ä¿¡æ¯ï¼Œä»¥åŠç«¯å£å·ä¿¡æ¯,
-    * @return     int  è¿”å›0è¡¨ç¤ºè½¬æ¢æˆåŠŸ
-    * @param      ip_addr_str åœ°å€å­—ç¬¦ä¸²
-    * @note       å¦‚æœå­—ç¬¦ä¸²é‡Œé¢æœ‰#,ä¼šè¢«è®¤ä¸ºæœ‰ç«¯å£å·ï¼Œå¦‚æœæ²¡æœ‰ï¼Œç«¯å£å·ä¸º0
+    * @brief      ¸ù¾İ×Ö·û´®È¡µÃIPµØÖ·ĞÅÏ¢£¬ÒÔ¼°¶Ë¿ÚºÅĞÅÏ¢,
+    * @return     int  ·µ»Ø0±íÊ¾×ª»»³É¹¦
+    * @param      ip_addr_str µØÖ·×Ö·û´®
+    * @note       Èç¹û×Ö·û´®ÀïÃæÓĞ#,»á±»ÈÏÎªÓĞ¶Ë¿ÚºÅ£¬Èç¹ûÃ»ÓĞ£¬¶Ë¿ÚºÅÎª0
     */
     int set(const char *ip_addr_str);
 
-    ///è®¾ç½®ç«¯å£å¥½ï¼Œ
+    ///ÉèÖÃ¶Ë¿ÚºÃ£¬
     inline void set_port_number (uint16_t);
-    ///å–å¾—ç«¯å£å·
+    ///È¡µÃ¶Ë¿ÚºÅ
     inline uint16_t get_port_number (void) const;
 
-    ///æ£€æŸ¥ç«¯å£å·æ˜¯å¦æ˜¯ä¸€ä¸ªå®‰å…¨ç«¯å£
+    ///¼ì²é¶Ë¿ÚºÅÊÇ·ñÊÇÒ»¸ö°²È«¶Ë¿Ú
     bool check_safeport();
 
-    //ç«¯å£çš„æ‰“å°è¾“å‡ºä½¿ç”¨to_stringå‡½æ•°
+    //¶Ë¿ÚµÄ´òÓ¡Êä³öÊ¹ÓÃto_stringº¯Êı
 
 
-    //å–å¾—IPåœ°å€ï¼Œæœ¬åœ°åºåˆ—
+    //È¡µÃIPµØÖ·£¬±¾µØĞòÁĞ
     inline uint32_t get_ip_address (void) const;
 
-    ///æ£€æŸ¥åœ°å€æ˜¯å¦æ˜¯ä¸€ä¸ªå†…ç½‘åœ°å€
+    ///¼ì²éµØÖ·ÊÇ·ñÊÇÒ»¸öÄÚÍøµØÖ·
     bool is_internal();
 
-    ///æ£€æŸ¥åœ°å€æ˜¯å¦æ˜¯ä¸€ä¸ªå¤–ç½‘åœ°å€ï¼Œå…¶å®æˆ‘å°±ç®€å•è®¤ä¸ºä¸æ˜¯å¤–ç½‘åœ°å€å°±æ˜¯å†…ç½‘åœ°å€
+    ///¼ì²éµØÖ·ÊÇ·ñÊÇÒ»¸öÍâÍøµØÖ·£¬ÆäÊµÎÒ¾Í¼òµ¥ÈÏÎª²»ÊÇÍâÍøµØÖ·¾ÍÊÇÄÚÍøµØÖ·
     bool is_internet();
 
-    //æ¯”è¾ƒä¸¤ä¸ªåœ°å€æ˜¯å¦ç›¸ç­‰
+    //±È½ÏÁ½¸öµØÖ·ÊÇ·ñÏàµÈ
     bool operator == (const ZCE_Sockaddr_In &others) const;
-    //æ¯”è¾ƒä¸¤ä¸ªåœ°å€æ˜¯å¦ä¸æƒ³ç­‰
+    //±È½ÏÁ½¸öµØÖ·ÊÇ·ñ²»ÏëµÈ
     bool operator != (const ZCE_Sockaddr_In &others) const;
 
-    //æ£€æŸ¥IPåœ°å€æ˜¯å¦ç›¸ç­‰,å¿½è§†ç«¯å£
+    //¼ì²éIPµØÖ·ÊÇ·ñÏàµÈ,ºöÊÓ¶Ë¿Ú
     bool is_ip_equal (const ZCE_Sockaddr_In &others) const;
 
-    ///DNSç›¸å…³å‡½æ•°ï¼Œ
-    ///å–å¾—IPåœ°å€ç›¸å…³çš„åŸŸåä¿¡æ¯,è°ƒç”¨å‡½æ•°æ˜¯getnameinfo
+    ///DNSÏà¹Øº¯Êı£¬
+    ///È¡µÃIPµØÖ·Ïà¹ØµÄÓòÃûĞÅÏ¢,µ÷ÓÃº¯ÊıÊÇgetnameinfo
     int get_name_info(char *host_name, size_t name_len) const;
 
-    ///å–å¾—åŸŸåç›¸å…³çš„IPåœ°å€ä¿¡æ¯ï¼Œè°ƒç”¨å‡½æ•°æ˜¯getaddrinfoï¼Œnotenameå¯ä»¥æ˜¯æ•°å€¼åœ°å€ï¼Œæˆ–è€…åŸŸå
+    ///È¡µÃÓòÃûÏà¹ØµÄIPµØÖ·ĞÅÏ¢£¬µ÷ÓÃº¯ÊıÊÇgetaddrinfo£¬notename¿ÉÒÔÊÇÊıÖµµØÖ·£¬»òÕßÓòÃû
     int getaddrinfo_to_addr(const char *nodename);
 
-    ///å„ç§æ“ä½œç¬¦å·è½¬æ¢å‡½æ•°ï¼Œæ–¹ä¾¿å„ç§ä½¿ç”¨ï¼Œè®©ZCE_Sockaddr_Inçš„è¡Œä¸ºå’Œsockaddr_inåŸºæœ¬ä¸€è‡´
-    ///è¿”å›sockaddr_in
+    ///¸÷ÖÖ²Ù×÷·ûºÅ×ª»»º¯Êı£¬·½±ã¸÷ÖÖÊ¹ÓÃ£¬ÈÃZCE_Sockaddr_InµÄĞĞÎªºÍsockaddr_in»ù±¾Ò»ÖÂ
+    ///·µ»Øsockaddr_in
     operator sockaddr_in () const;
-    ///è¿”å›å†…éƒ¨const sockaddr_inçš„æŒ‡é’ˆï¼Œï¼ˆä¸å¯ä»¥è¢«ä¿®æ”¹ï¼‰
+    ///·µ»ØÄÚ²¿const sockaddr_inµÄÖ¸Õë£¬£¨²»¿ÉÒÔ±»ĞŞ¸Ä£©
     operator const sockaddr_in *() const;
-    ///è¿”å›å†…éƒ¨sockaddr_inçš„æŒ‡é’ˆï¼Œï¼ˆå¯ä»¥è¢«ä¿®æ”¹ï¼‰
+    ///·µ»ØÄÚ²¿sockaddr_inµÄÖ¸Õë£¬£¨¿ÉÒÔ±»ĞŞ¸Ä£©
     operator sockaddr_in *();
 
 protected:
 
-    ///IPV4çš„åœ°å€
+    ///IPV4µÄµØÖ·
     sockaddr_in           in4_addr_;
 };
 
-//å–å¾—IPåœ°å€ï¼Œæœ¬åœ°åºåˆ—
+//È¡µÃIPµØÖ·£¬±¾µØĞòÁĞ
 inline uint32_t ZCE_Sockaddr_In::get_ip_address (void) const
 {
     return ntohl(in4_addr_.sin_addr.s_addr);
 }
 
-//è®¾ç½®ç«¯å£å¥½ï¼Œ
+//ÉèÖÃ¶Ë¿ÚºÃ£¬
 inline void ZCE_Sockaddr_In::set_port_number (uint16_t port_number)
 {
     in4_addr_.sin_port = ntohs(port_number);
 }
-//å–å¾—ç«¯å£å·
+//È¡µÃ¶Ë¿ÚºÅ
 inline uint16_t ZCE_Sockaddr_In::get_port_number (void) const
 {
     return ntohs(in4_addr_.sin_port);

@@ -16,7 +16,7 @@ Server_Config_FSM::~Server_Config_FSM()
 
 int Server_Config_FSM::read_cfgfile()
 {
-    // 鍔犺浇zerg 閰嶇疆
+    // 加载zerg 配置
     int ret = 0;
 
 
@@ -26,7 +26,7 @@ int Server_Config_FSM::read_cfgfile()
         return ret;
     }
 
-    // 閰嶇疆鍔犺浇鎴愬姛
+    // 配置加载成功
     ZCE_LOG(RS_INFO, "Comm_Svrd_Config load framework config succ.");
     return 0;
 }

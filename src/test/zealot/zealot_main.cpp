@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
                                                 false,
                                                 true,
                                                 0,
-                                                LOG_OUTPUT_WAY::FILE | LOG_OUTPUT_WAY::ERROUT,
-                                                LOG_HEAD_RECORD::RECORD_NONE);
+                                                LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT,
+                                                LOG_HEAD_RECORD_NONE);
     ZCE_TRACE_FILELINE(RS_DEBUG);
     
     test_lua_script3(argc,argv);

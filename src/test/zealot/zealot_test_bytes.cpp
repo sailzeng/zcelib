@@ -257,8 +257,8 @@ int test_encrypt()
                              " exceeds the short vehemence of any carnal pleasure.";
     char key_1[] = "1111222233334444";
 
-    //ä¸ºä»€ä¹ˆå†™çš„è¿™æ ·è¯¡å¼‚ï¼Œå› ä¸ºGCCçš„ä¸€ä¸ªbugï¼Œå¦‚æœsource_buffer_1 å†™æˆ unsigned char *
-    //ä¼šå‡ºç°ä¸€ä¸ªé”™è¯¯ï¼Œchar-array initialized from wide string
+    //ÎªÊ²Ã´Ğ´µÄÕâÑù¹îÒì£¬ÒòÎªGCCµÄÒ»¸öbug£¬Èç¹ûsource_buffer_1 Ğ´³É unsigned char *
+    //»á³öÏÖÒ»¸ö´íÎó£¬char-array initialized from wide string
     unsigned char *source_buffer = (unsigned char *) source_buffer_1;
     unsigned char *key = (unsigned char *)key_1;
 
@@ -311,8 +311,8 @@ int perf_encrypt()
                              "123456789012345678901234567890123456789012345678901234567890"
                              "123456789012345678901234567890123456789012345678901234567890";
     char key_1[] = "11112222333344445555666677778888";
-    //ä¸ºä»€ä¹ˆå†™çš„è¿™æ ·è¯¡å¼‚ï¼Œå› ä¸ºGCCçš„ä¸€ä¸ªbugï¼Œå¦‚æœsource_buffer_1 å†™æˆ unsigned char *
-    //ä¼šå‡ºç°ä¸€ä¸ªé”™è¯¯ï¼Œchar-array initialized from wide string
+    //ÎªÊ²Ã´Ğ´µÄÕâÑù¹îÒì£¬ÒòÎªGCCµÄÒ»¸öbug£¬Èç¹ûsource_buffer_1 Ğ´³É unsigned char *
+    //»á³öÏÖÒ»¸ö´íÎó£¬char-array initialized from wide string
     unsigned char *source_buffer = (unsigned char *) source_buffer_1;
     unsigned char *key = (unsigned char *)key_1;
 
@@ -483,7 +483,7 @@ int bytes_encrypt_right(int /*argc*/, char * /*argv*/[])
     test_encrypt<zce::TEA_Crypt_64_128_16>();
     test_encrypt<zce::TEA_Crypt_64_128_32>();
     test_encrypt<zce::TEA_Crypt_64_128_64>();
-    //æµ‹è¯•ä¸€ä¸‹ç‰¹æ®Šçš„è½®æ•°
+    //²âÊÔÒ»ÏÂÌØÊâµÄÂÖÊı
     test_encrypt<zce::ZCE_Crypt< zce::TEA_ECB<19 > > >();
 
     test_encrypt<zce::XTEA_Crypt_64_128_16>();
@@ -524,7 +524,7 @@ int bytes_encrypt_right(int /*argc*/, char * /*argv*/[])
 }
 
 
-//ä½ è¦åŒ…è£…dstæœ‰è¶³å¤Ÿçš„ç©ºé—´,å…¶è¦æ±‚ç©ºé—´å¾ˆå¯èƒ½æ¯”szå¤§ï¼Œéƒ½æ˜¯8å­—èŠ‚è¡¥é½çš„ã€‚
+//ÄãÒª°ü×°dstÓĞ×ã¹»µÄ¿Õ¼ä,ÆäÒªÇó¿Õ¼äºÜ¿ÉÄÜ±Èsz´ó£¬¶¼ÊÇ8×Ö½Ú²¹ÆëµÄ¡£
 
 #define ZCE_LZ_FAST_COPY(dst,src,sz)  {\
         unsigned char *_cpy_dst = dst; \
@@ -538,7 +538,7 @@ int bytes_encrypt_right(int /*argc*/, char * /*argv*/[])
         }while( _cpy_size > sizeof(uint64_t) && (_cpy_size -= sizeof(uint64_t))); \
     }
 
-//ä½ è¦åŒ…è£…dstæœ‰è¶³å¤Ÿçš„ç©ºé—´ï¼Œéƒ½æ˜¯8å­—èŠ‚è¡¥é½çš„ã€‚
+//ÄãÒª°ü×°dstÓĞ×ã¹»µÄ¿Õ¼ä£¬¶¼ÊÇ8×Ö½Ú²¹ÆëµÄ¡£
 #define ZCE_LZ_FAST_COPY_STOP(dst,src,stop)  \
     do \
     { \
@@ -866,7 +866,7 @@ int test_compress_filedata(const char *file_name)
     ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
-        //æ‰¾å‡ºå·®å¼‚çš„å­—èŠ‚
+        //ÕÒ³ö²îÒìµÄ×Ö½Ú
         for (size_t i = 0; i < source_len; ++i)
         {
             if (file_buffer[i] != decompress_buf[i])
@@ -911,7 +911,7 @@ int test_compress_filedata(const char *file_name)
     ret = memcmp(file_buffer, decompress_buf, source_len);
     if (ret != 0)
     {
-        //æ‰¾å‡ºå·®å¼‚çš„å­—èŠ‚
+        //ÕÒ³ö²îÒìµÄ×Ö½Ú
         for (size_t i = 0; i < source_len; ++i)
         {
             if (file_buffer[i] != decompress_buf[i])

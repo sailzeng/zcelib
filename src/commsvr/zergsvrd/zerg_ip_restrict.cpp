@@ -4,21 +4,21 @@
 #include "zerg_ip_restrict.h"
 
 
-//å®ä¾‹
+//ÊµÀı
 Zerg_IPRestrict_Mgr *Zerg_IPRestrict_Mgr::instance_ = NULL;
 
 /****************************************************************************************************
-class  Zerg_IPRestrict_Mgr å¤„ç†é€šè®¯ä¸­é—´çš„IPé™åˆ¶é—®é¢˜
+class  Zerg_IPRestrict_Mgr ´¦ÀíÍ¨Ñ¶ÖĞ¼äµÄIPÏŞÖÆÎÊÌâ
 ****************************************************************************************************/
 Zerg_IPRestrict_Mgr::Zerg_IPRestrict_Mgr()
 {
 }
-//è‡ªå·±æ¸…ç†çš„ç±»å‹ï¼Œç»Ÿä¸€å…³é—­åœ¨handle_close,è¿™ä¸ªåœ°æ–¹ä¸ç”¨å…³é—­
+//×Ô¼ºÇåÀíµÄÀàĞÍ£¬Í³Ò»¹Ø±ÕÔÚhandle_close,Õâ¸öµØ·½²»ÓÃ¹Ø±Õ
 Zerg_IPRestrict_Mgr::~Zerg_IPRestrict_Mgr()
 {
 }
 
-//ä»é…ç½®æ–‡ä»¶ä¸­å¾—åˆ°ç›¸å…³çš„é…ç½®
+//´ÓÅäÖÃÎÄ¼şÖĞµÃµ½Ïà¹ØµÄÅäÖÃ
 int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
@@ -31,11 +31,11 @@ int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
     zce::str_split(config->zerg_cfg_data_.allow_ip_.c_str(), "|", v);
     allow_ip_set_.rehash(v.size());
 
-    //è¯»å–è¿è¡Œè¿æ¥çš„æœåŠ¡å™¨IPåœ°å€
+    //¶ÁÈ¡ÔËĞĞÁ¬½ÓµÄ·şÎñÆ÷IPµØÖ·
     for (unsigned int i = 0; i < v.size(); ++i )
     {
         ZCE_Sockaddr_In     inetadd;
-        //0æ˜¯ä¸€ä¸ªé»˜è®¤ç«¯å£
+        //0ÊÇÒ»¸öÄ¬ÈÏ¶Ë¿Ú
         ret = inetadd.set(v[i].c_str(), 0);
         if (0 != ret)
         {
@@ -45,7 +45,7 @@ int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
         allow_ip_set_.insert(inetadd.get_ip_address());
     }
 
-    //è¯»å–æ‹’ç»è¿æ¥çš„æœåŠ¡å™¨IPåœ°å€
+    //¶ÁÈ¡¾Ü¾øÁ¬½ÓµÄ·şÎñÆ÷IPµØÖ·
     v.clear();
     zce::str_split(config->zerg_cfg_data_.reject_ip_.c_str(), "|", v);
     reject_ip_set_.rehash(v.size());
@@ -69,7 +69,7 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //å¦‚æœå…è®¸çš„è¿æ¥çš„æœåŠ¡å™¨åœ°å€ä¸­é—´æ²¡æœ‰... kill
+    //Èç¹ûÔÊĞíµÄÁ¬½ÓµÄ·şÎñÆ÷µØÖ·ÖĞ¼äÃ»ÓĞ... kill
     if (allow_ip_set_.empty() == false )
     {
         Set_Of_IPAddress::iterator iter = allow_ip_set_.find(remoteaddress.get_ip_address());
@@ -82,7 +82,7 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
         }
     }
 
-    //å¦‚æœæ˜¯è¦è¢«æ‹’ç»è¿æ¥çš„IPåœ°å€...kill
+    //Èç¹ûÊÇÒª±»¾Ü¾øÁ¬½ÓµÄIPµØÖ·...kill
     if (reject_ip_set_.empty() == false )
     {
         Set_Of_IPAddress::iterator iter = reject_ip_set_.find(remoteaddress.get_ip_address());
@@ -98,10 +98,10 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const ZCE_Sockaddr_In &remoteaddress)
     return 0;
 }
 
-//å•å­å®ä¾‹å‡½æ•°
+//µ¥×ÓÊµÀıº¯Êı
 Zerg_IPRestrict_Mgr *Zerg_IPRestrict_Mgr::instance()
 {
-    //å¦‚æœæ²¡æœ‰åˆå§‹åŒ–
+    //Èç¹ûÃ»ÓĞ³õÊ¼»¯
     if (instance_ == NULL)
     {
         instance_ = new Zerg_IPRestrict_Mgr();
@@ -110,7 +110,7 @@ Zerg_IPRestrict_Mgr *Zerg_IPRestrict_Mgr::instance()
     return instance_;
 }
 
-//æ¸…ç†å®ä¾‹
+//ÇåÀíÊµÀı
 void Zerg_IPRestrict_Mgr::clean_instance()
 {
     if (instance_)

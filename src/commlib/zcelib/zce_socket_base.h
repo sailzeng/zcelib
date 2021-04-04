@@ -1,116 +1,116 @@
 #ifndef ZCE_LIB_SOCKET_BASE_H_
 #define ZCE_LIB_SOCKET_BASE_H_
 
-//SOCKETåœ°å€çš„åŸºç±»
+//SOCKETµØÖ·µÄ»ùÀà
 class ZCE_Sockaddr;
 class ZCE_Time_Value;
 
-//SOCKETçš„åŸºç±»
+//SOCKETµÄ»ùÀà
 class ZCE_Socket_Base
 {
 protected:
 
-    //SOCKETå¥æŸ„ï¼ŒLINUXä¸‹æ˜¯intï¼Œæ–‡ä»¶å¥æŸ„ï¼ŒWINDOWSæ˜¯ä¸€ä¸ªSOCKETç±»å‹ï¼Œå…¶å®å°±æ˜¯ä¸€ä¸ªWINDOWSå¥æŸ„ï¼Œä¹Ÿå°±æ˜¯æŒ‡é’ˆ
+    //SOCKET¾ä±ú£¬LINUXÏÂÊÇint£¬ÎÄ¼ş¾ä±ú£¬WINDOWSÊÇÒ»¸öSOCKETÀàĞÍ£¬ÆäÊµ¾ÍÊÇÒ»¸öWINDOWS¾ä±ú£¬Ò²¾ÍÊÇÖ¸Õë
     ZCE_SOCKET     socket_handle_;
 
-    //ZCE_Socket_Baseä¸ä¼šæä¾›ç»™å¤–éƒ¨ç”¨ï¼Œæ‰€ä»¥ä¸å‡†ç”¨
+    //ZCE_Socket_Base²»»áÌá¹©¸øÍâ²¿ÓÃ£¬ËùÒÔ²»×¼ÓÃ
 protected:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°
+    * @brief      ¹¹Ôìº¯Êı
     */
     ZCE_Socket_Base();
 
     /*!
-    * @brief      æ‹·è´æ„é€ å‡½æ•°
+    * @brief      ¿½±´¹¹Ôìº¯Êı
     * @param      socket_hanle
     */
     explicit ZCE_Socket_Base(const ZCE_SOCKET &socket_hanle);
 
 
     /*!
-    * @brief      ææ„å‡½æ•°ï¼Œä¼šè°ƒç”¨closeï¼Œ
-    * @note       è¿™å„¿å¿…é¡»è¯´æ˜ä¸€ä¸‹ï¼ŒACEåœ¨è®¾è®¡socketå°è£…çš„æ—¶å€™ï¼Œåœ¨ææ„å‡½æ•°é‡Œé¢
-    *             æ²¡æœ‰è°ƒç”¨closeï¼Œä»–çš„å‡ºå‘ç‚¹æ˜¯é¿å…åœ¨å‚æ•°(value)ä¼ é€’çš„æ—¶å€™è¢«ææ„
-    *             äº†ï¼Œä½†æˆ‘è§‰å¾—è‰¯å¥½çš„å‚æ•°è®¾è®¡åº”è¯¥æ›´å¥½ï¼Œè€Œè®©æ™®ç½—å¤§ä¼—çŸ¥é“è¿™ä¸ªææ„æ²¡
-    *             æœ‰é‡Šæ”¾èµ„æºï¼Œè¿™ä¸ªåè€Œæ›´éš¾ã€‚
+    * @brief      Îö¹¹º¯Êı£¬»áµ÷ÓÃclose£¬
+    * @note       Õâ¶ù±ØĞëËµÃ÷Ò»ÏÂ£¬ACEÔÚÉè¼Æsocket·â×°µÄÊ±ºò£¬ÔÚÎö¹¹º¯ÊıÀïÃæ
+    *             Ã»ÓĞµ÷ÓÃclose£¬ËûµÄ³ö·¢µãÊÇ±ÜÃâÔÚ²ÎÊı(value)´«µİµÄÊ±ºò±»Îö¹¹
+    *             ÁË£¬µ«ÎÒ¾õµÃÁ¼ºÃµÄ²ÎÊıÉè¼ÆÓ¦¸Ã¸üºÃ£¬¶øÈÃÆÕÂŞ´óÖÚÖªµÀÕâ¸öÎö¹¹Ã»
+    *             ÓĞÊÍ·Å×ÊÔ´£¬Õâ¸ö·´¶ø¸üÄÑ¡£
     */
     ~ZCE_Socket_Base();
 
 public:
 
-    //è®¾ç½®å¥æŸ„
+    //ÉèÖÃ¾ä±ú
     void set_handle(const ZCE_SOCKET &socket_hanle);
-    //è·å–å¥æŸ„
+    //»ñÈ¡¾ä±ú
     ZCE_SOCKET get_handle() const;
 
-    //Open SOCKå¥æŸ„ï¼Œä¸BINDæœ¬åœ°åœ°å€çš„æ–¹å¼
+    //Open SOCK¾ä±ú£¬²»BIND±¾µØµØÖ·µÄ·½Ê½
     int open(int type,
              int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = true);
 
-    //Open SOCKå¥æŸ„ï¼ŒBINDæœ¬åœ°åœ°å€çš„æ–¹å¼
+    //Open SOCK¾ä±ú£¬BIND±¾µØµØÖ·µÄ·½Ê½
     int open(int type,
              const ZCE_Sockaddr *local_addr,
              int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
 
-    ///å…³é—­ä¹‹,ä¸€èˆ¬æƒ…å†µä¸‹ï¼Œæˆ‘ä¼šå‡è®¾é‡Šæ”¾èµ„æºæ˜¯å¿…ç„¶æˆåŠŸçš„ä¸€ä»¶äº‹
+    ///¹Ø±ÕÖ®,Ò»°ãÇé¿öÏÂ£¬ÎÒ»á¼ÙÉèÊÍ·Å×ÊÔ´ÊÇ±ØÈ»³É¹¦µÄÒ»¼şÊÂ
     int close();
 
 
     /*!
-    * @brief      é‡Šæ”¾å¯¹å¥æŸ„çš„ç®¡ç†ï¼Œå°†å¥æŸ„ç½®ä¸ºæ— æ•ˆè€Œå·²ï¼Œåœ¨å…¶å’Œå…¶çš„å­ç±»ä½œä¸ºå‚æ•°ä¼ é€’æ—¶
-    *             ä¸ºäº†é¿å…ææ„å‡½æ•°ä¸»åŠ¨å…³é—­closeäº†å¥æŸ„æ—¶ï¼Œåœ¨ææ„å‰ä½¿ç”¨è¿™ä¸ªå‡½æ•°
-    * @note       è¯·å‚è€ƒææ„å‡½æ•°çš„è¯´æ˜
+    * @brief      ÊÍ·Å¶Ô¾ä±úµÄ¹ÜÀí£¬½«¾ä±úÖÃÎªÎŞĞ§¶øÒÑ£¬ÔÚÆäºÍÆäµÄ×ÓÀà×÷Îª²ÎÊı´«µİÊ±
+    *             ÎªÁË±ÜÃâÎö¹¹º¯ÊıÖ÷¶¯¹Ø±ÕcloseÁË¾ä±úÊ±£¬ÔÚÎö¹¹Ç°Ê¹ÓÃÕâ¸öº¯Êı
+    * @note       Çë²Î¿¼Îö¹¹º¯ÊıµÄËµÃ÷
     */
     void release_noclose();
 
     /*!
-    * @brief      ç»‘å®šæŸä¸ªæœ¬åœ°çš„IPåœ°å€ï¼Œ
+    * @brief      °ó¶¨Ä³¸ö±¾µØµÄIPµØÖ·£¬
     * @return     int
     * @param      add_name
     */
     int bind(const ZCE_Sockaddr *add_name) const;
 
-    ///æ‰“å¼€æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
+    ///´ò¿ªÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
     int sock_enable (int value) const;
 
-    ///å…³é—­æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
+    ///¹Ø±ÕÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
     int sock_disable(int value) const;
 
-    //è·å–Socketçš„é€‰é¡¹
+    //»ñÈ¡SocketµÄÑ¡Ïî
     int getsockopt (int level,
                     int optname,
                     void *optval,
                     socklen_t *optlen)  const;
 
-    //è®¾ç½®Socketçš„é€‰é¡¹
+    //ÉèÖÃSocketµÄÑ¡Ïî
     int setsockopt (int level,
                     int optname,
                     const void *optval,
                     int optlen) const;
 
-    //å–å¾—å¯¹ç«¯çš„åœ°å€ä¿¡æ¯
+    //È¡µÃ¶Ô¶ËµÄµØÖ·ĞÅÏ¢
     int getpeername (ZCE_Sockaddr *addr)  const;
 
-    //å–å¾—æœ¬åœ°çš„åœ°å€ä¿¡æ¯
+    //È¡µÃ±¾µØµÄµØÖ·ĞÅÏ¢
     int getsockname (ZCE_Sockaddr *addr)  const;
 
-    //éœ€è¦è¯´æ˜çš„æ˜¯ï¼ŒUDPä¹Ÿå¯ä»¥ç”¨connectå‡½æ•°ï¼ˆUDPçš„connectå¹¶ä¸å‘èµ·æ¡æ‰‹,åªæ˜¯è®°å½•é€šä¿¡åœ°å€ï¼‰ï¼Œç„¶åå¯ä»¥ç›´æ¥è°ƒç”¨send or recvï¼Œè€Œä¸æ˜ç¡®è¦é€šä¿¡çš„åœ°å€
-    //æ‰€ä»¥å°†connectï¼Œsendï¼Œrecv 3ä¸ªå‡½æ•°æ”¾åˆ°äº†baseé‡Œé¢ï¼Œå¤§å®¶éƒ½å¯ä»¥ä½¿ç”¨
+    //ĞèÒªËµÃ÷µÄÊÇ£¬UDPÒ²¿ÉÒÔÓÃconnectº¯Êı£¨UDPµÄconnect²¢²»·¢ÆğÎÕÊÖ,Ö»ÊÇ¼ÇÂ¼Í¨ĞÅµØÖ·£©£¬È»ºó¿ÉÒÔÖ±½Óµ÷ÓÃsend or recv£¬¶ø²»Ã÷È·ÒªÍ¨ĞÅµÄµØÖ·
+    //ËùÒÔ½«connect£¬send£¬recv 3¸öº¯Êı·Åµ½ÁËbaseÀïÃæ£¬´ó¼Ò¶¼¿ÉÒÔÊ¹ÓÃ
 
-    //connectæŸä¸ªåœ°å€
+    //connectÄ³¸öµØÖ·
     int connect(const ZCE_Sockaddr *addr) const;
 
-    //æ¥å—æ•°æ®ï¼Œæ ¹æ®é˜»å¡çŠ¶æ€å†³å®šè¡Œä¸º
+    //½ÓÊÜÊı¾İ£¬¸ù¾İ×èÈû×´Ì¬¾ö¶¨ĞĞÎª
     ssize_t recv (void *buf,
                   size_t len,
                   int flags = 0) const;
 
-    //å‘é€æ•°æ®ï¼Œæ ¹æ®é˜»å¡çŠ¶æ€å†³å®šè¡Œä¸º
+    //·¢ËÍÊı¾İ£¬¸ù¾İ×èÈû×´Ì¬¾ö¶¨ĞĞÎª
     ssize_t send (const void *buf,
                   size_t len,
                   int flags = 0) const;

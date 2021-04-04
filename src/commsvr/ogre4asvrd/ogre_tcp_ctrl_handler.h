@@ -18,12 +18,12 @@ class Ogre_TCP_Svc_Handler : public  ZCE_Event_Handler,
 {
 public:
 
-    //æœåŠ¡çš„æ¨¡å¼
+    //·şÎñµÄÄ£Ê½
     enum OGRE_HANDLER_MODE
     {
-        //ä¸»åŠ¨è¿æ¥çš„Handler
+        //Ö÷¶¯Á¬½ÓµÄHandler
         HANDLER_MODE_CONNECT,
-        //è¢«åŠ¨æ¥å—æŸä¸ªç«¯å£çš„Handler
+        //±»¶¯½ÓÊÜÄ³¸ö¶Ë¿ÚµÄHandler
         HANDLER_MODE_ACCEPTED,
     };
 
@@ -32,19 +32,19 @@ protected:
     //
     enum PEER_STATUS
     {
-        //PEER æ²¡æœ‰è¿æ¥ä¸Š
+        //PEER Ã»ÓĞÁ¬½ÓÉÏ
         PEER_STATUS_NOACTIVE,
-        //PEER åˆšåˆšè¿æ¥ä¸Š,ä½†æ˜¯æ²¡æœ‰å‘é€æˆ–è€…å—åˆ°ä»»ä½•æ•°æ®
+        //PEER ¸Õ¸ÕÁ¬½ÓÉÏ,µ«ÊÇÃ»ÓĞ·¢ËÍ»òÕßÊÜµ½ÈÎºÎÊı¾İ
         PEER_STATUS_JUST_CONNECT,
-        //PEER å·²ç»å¤„äºæ¿€æ´»çŠ¶æ€,
+        //PEER ÒÑ¾­´¦ÓÚ¼¤»î×´Ì¬,
         PEER_STATUS_ACTIVE,
     };
 
 public:
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     explicit Ogre_TCP_Svc_Handler(Ogre_TCP_Svc_Handler::OGRE_HANDLER_MODE hdl_mode);
-    //ä¸ºäº†è®©ä½ æ— æ³•åœ¨å †ä»¥å¤–ä½¿ç”¨Ogre_TCP_Svc_Handler
+    //ÎªÁËÈÃÄãÎŞ·¨ÔÚ¶ÑÒÔÍâÊ¹ÓÃOgre_TCP_Svc_Handler
 protected:
     virtual ~Ogre_TCP_Svc_Handler();
 
@@ -52,7 +52,7 @@ public:
 
 
     /*!
-    * @brief      åˆå§‹åŒ–å¯¹è±¡
+    * @brief      ³õÊ¼»¯¶ÔÏó
     * @return     void
     * @param      sockstream
     * @param      fp_judge_whole
@@ -70,7 +70,7 @@ public:
                               const ZCE_Sockaddr_In &socketaddr,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
-    //ZENçš„ä¸€ç»„è¦æ±‚è‡ªå·±ç»§æ‰¿çš„å‡½æ•°.
+    //ZENµÄÒ»×éÒªÇó×Ô¼º¼Ì³ĞµÄº¯Êı.
     virtual ZCE_HANDLE get_handle(void) const;
     //
     virtual int handle_input(ZCE_HANDLE);
@@ -81,70 +81,70 @@ public:
     //
     virtual int handle_close ();
 
-    //å¾—åˆ°Handleå¯¹åº”PEERçš„IPåœ°å€
+    //µÃµ½Handle¶ÔÓ¦PEERµÄIPµØÖ·
     const ZCE_Sockaddr_In &get_peer();
 
 protected:
 
-    //ä»PEERè¯»å–æ•°æ®
+    //´ÓPEER¶ÁÈ¡Êı¾İ
     int read_data_from_peer(size_t &szrevc);
-    //å°†æ•°æ®å†™å…¥PEER
+    //½«Êı¾İĞ´ÈëPEER
     int write_data_to_peer(size_t &szsend, bool &bfull);
-    //å°†æ‰€æœ‰å¯ä»¥å‘é€çš„æ•°æ®éƒ½å‘é€å‡ºå»
+    //½«ËùÓĞ¿ÉÒÔ·¢ËÍµÄÊı¾İ¶¼·¢ËÍ³öÈ¥
     int write_all_aata_to_peer();
 
-    //é¢„å¤„ç†,æ£€æŸ¥æ•°æ®,æ¥æ”¶çš„REGISTERæ•°æ®,æ ¹æ®ç¬¬ä¸€ä¸ªæŠ¥å†³å®šå¯¹åº”å…³ç³»
+    //Ô¤´¦Àí,¼ì²éÊı¾İ,½ÓÊÕµÄREGISTERÊı¾İ,¸ù¾İµÚÒ»¸ö±¨¾ö¶¨¶ÔÓ¦¹ØÏµ
     int  preprocess_recv_frame();
 
-    //å¤„ç†å‘é€çš„REGISTERæ•°æ®,è¿æ¥åå‘é€ç¬¬ä¸€ä¸ªæ•°æ®
+    //´¦Àí·¢ËÍµÄREGISTERÊı¾İ,Á¬½Óºó·¢ËÍµÚÒ»¸öÊı¾İ
     int  process_connect_register();
 
-    //å¤„ç†å‘é€é”™è¯¯
+    //´¦Àí·¢ËÍ´íÎó
     int process_senderror(Ogre4a_App_Frame *tmpbuf);
 
-    //å¾—åˆ°ä¸€ä¸ªPEERçš„çŠ¶æ€
+    //µÃµ½Ò»¸öPEERµÄ×´Ì¬
     PEER_STATUS  get_peer_status();
 
-    //å°†æ•°æ®å¸§æ”¾å…¥ç®¡é“,å‚æ•°ä¸ºè¦æ”¾å…¥çš„æ•°æ®é•¿åº¦
+    //½«Êı¾İÖ¡·ÅÈë¹ÜµÀ,²ÎÊıÎªÒª·ÅÈëµÄÊı¾İ³¤¶È
     int push_frame_to_recvpipe(unsigned int sz_data);
 
-    //å°†ä¸€ä¸ªå‘é€çš„å¸§æ”¾å…¥ç­‰å¾…å‘é€é˜Ÿåˆ—
+    //½«Ò»¸ö·¢ËÍµÄÖ¡·ÅÈëµÈ´ı·¢ËÍ¶ÓÁĞ
     int put_frame_to_sendlist(Ogre4a_App_Frame *ogre_frame);
 
-    //åˆå¹¶å‘é€çš„å¸§æ•°æ®
+    //ºÏ²¢·¢ËÍµÄÖ¡Êı¾İ
     void unite_frame_sendlist();
 
 public:
 
-    ///è¯»å–é…ç½®æ–‡ä»¶
+    ///¶ÁÈ¡ÅäÖÃÎÄ¼ş
     static int get_config(const Ogre_Server_Config *config);
 
-    ///åˆå§‹åŒ–é™æ€å‚æ•°
+    ///³õÊ¼»¯¾²Ì¬²ÎÊı
     static int init_all_static_data();
 
-    ///æ³¨é”€é™æ€å‚æ•°
+    ///×¢Ïú¾²Ì¬²ÎÊı
     static int unInit_all_static_data();
 
-    //ä»æ± å­åˆ†é…ä¸€ä¸ªHandler
+    //´Ó³Ø×Ó·ÖÅäÒ»¸öHandler
     static Ogre_TCP_Svc_Handler *alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode);
 
-    //å–å¾—é…ç½®çš„æœ€å¤§PEERæ•°é‡
+    //È¡µÃÅäÖÃµÄ×î´óPEERÊıÁ¿
     static void get_maxpeer_num(size_t &maxaccept, size_t &maxconnect);
 
-    //å°†æ•°æ®ä»ç«¯å£å‘é€æ•°æ®
+    //½«Êı¾İ´Ó¶Ë¿Ú·¢ËÍÊı¾İ
     static int process_send_data(Ogre4a_App_Frame *tmpbuf );
 
 
     /*!
     * @brief
-    * @return     int == 0è¡¨ç¤ºæ‰¾åˆ°ï¼Œ
-    * @param      peer_id  æŸ¥è¯¢çš„PEER ID
-    * @param      svchanle è¿”å›æŸ¥è¯¢åˆ°çš„å¥æŸ„
+    * @return     int == 0±íÊ¾ÕÒµ½£¬
+    * @param      peer_id  ²éÑ¯µÄPEER ID
+    * @param      svchanle ·µ»Ø²éÑ¯µ½µÄ¾ä±ú
     */
     static int find_services_peer(const OGRE_PEER_ID &peer_id,
                                   Ogre_TCP_Svc_Handler *&svchanle);
 
-    ///å¯¹æ²¡æœ‰é“¾æ¥çš„çš„æœåŠ¡å™¨è¿›è¡Œé‡è¿
+    ///¶ÔÃ»ÓĞÁ´½ÓµÄµÄ·şÎñÆ÷½øĞĞÖØÁ¬
     static int connect_all_server();
 
 protected:
@@ -152,91 +152,91 @@ protected:
     ///
     typedef zce::lordrings<Ogre_TCP_Svc_Handler *> POOL_OF_TCP_HANDLER;
 
-    ///å®šæ—¶å™¨ID,é¿å…Newä¼ é€’,å›æ”¶,æˆ‘è®¨åŒè¿™ä¸ªæƒ³æ³•,ACE timer_timeoutä¸ºä»€ä¹ˆä¸ç›´æ¥ä½¿ç”¨TIMEID
+    ///¶¨Ê±Æ÷ID,±ÜÃâNew´«µİ,»ØÊÕ,ÎÒÌÖÑáÕâ¸öÏë·¨,ACE timer_timeoutÎªÊ²Ã´²»Ö±½ÓÊ¹ÓÃTIMEID
     static const  int      TCPCTRL_TIME_ID[];
 
-    ///ä¸€ä¸ªæœªèƒ½è¿æ¥ä¸Šçš„Connect æœ€å¤§å¯ä»¥ç­‰å¾…å‘é€çš„FRAMEæ•°é‡
+    ///Ò»¸öÎ´ÄÜÁ¬½ÓÉÏµÄConnect ×î´ó¿ÉÒÔµÈ´ı·¢ËÍµÄFRAMEÊıÁ¿
     static const size_t   MAX_LEN_OF_SEND_LIST = 8;
 
-    ///ACCEPT PEERæœ€å¤§å¯ä»¥ç­‰å¾…å‘é€çš„FRAMEæ•°é‡
+    ///ACCEPT PEER×î´ó¿ÉÒÔµÈ´ı·¢ËÍµÄFRAMEÊıÁ¿
     static const size_t   MAX_OF_ACCEPT_PEER_SEND_DEQUE = 64;
-    ///CONNECT PEERæœ€å¤§å¯ä»¥ç­‰å¾…å‘é€çš„FRAMEæ•°é‡,
+    ///CONNECT PEER×î´ó¿ÉÒÔµÈ´ı·¢ËÍµÄFRAMEÊıÁ¿,
     static const size_t   MAX_OF_CONNECT_PEER_SEND_DEQUE = 256;
 
 protected:
 
-    ///æœ€å¤§èƒ½å¤ŸAcceptçš„PEERæ•°é‡,
+    ///×î´óÄÜ¹»AcceptµÄPEERÊıÁ¿,
     static size_t                  max_accept_svr_;
-    ///æœ€å¤§èƒ½å¤ŸConnectçš„PEERæ•°é‡
+    ///×î´óÄÜ¹»ConnectµÄPEERÊıÁ¿
     static size_t                  max_connect_svr_;
 
-    ///Connectåç­‰å¾…åŠ¨ä½œçš„æ—¶é•¿,Connectè¶…æ—¶
+    ///ConnectºóµÈ´ı¶¯×÷µÄÊ±³¤,Connect³¬Ê±
     static unsigned int           accept_timeout_;
 
-    ///ç­‰å¾…æ¥å—ä¸€ä¸ªå®Œæ•´æ•°æ®çš„è¶…æ—¶æ—¶é—´,ä¸º0è¡¨ç¤ºä¸é™åˆ¶
+    ///µÈ´ı½ÓÊÜÒ»¸öÍêÕûÊı¾İµÄ³¬Ê±Ê±¼ä,Îª0±íÊ¾²»ÏŞÖÆ
     static unsigned int           receive_timeout_;
 
-    ///å¯¹äºé”™è¯¯çš„æ•°æ®,å°è¯•å‘é€çš„æ¬¡æ•°,åªæ˜¯äº†ä¿è¯ä¸€å®šçš„ç½‘ç»œç¬æ–­
+    ///¶ÔÓÚ´íÎóµÄÊı¾İ,³¢ÊÔ·¢ËÍµÄ´ÎÊı,Ö»ÊÇÁË±£Ö¤Ò»¶¨µÄÍøÂçË²¶Ï
     static unsigned int           error_try_num_;
 
-    ///SVRINFOå¯¹åº”çš„PEERçš„HASHMAP
+    ///SVRINFO¶ÔÓ¦µÄPEERµÄHASHMAP
     static PeerID_To_TCPHdl_Map   svr_peer_hdl_set_;
 
-    ///è¦è‡ªåŠ¨é“¾æ¥çš„æœåŠ¡å™¨çš„ç®¡ç†ç±»
+    ///Òª×Ô¶¯Á´½ÓµÄ·şÎñÆ÷µÄ¹ÜÀíÀà
     static Ogre_Connect_Server    zerg_auto_connect_;
 
-    ///å·²ç»Acceptçš„PEERæ•°é‡
+    ///ÒÑ¾­AcceptµÄPEERÊıÁ¿
     static size_t                 num_accept_peer_;
-    ///å·²ç»Connectçš„PEERæ•°é‡
+    ///ÒÑ¾­ConnectµÄPEERÊıÁ¿
     static size_t                 num_connect_peer_;
 
-    ///ACCEPT SVC handlerçš„æ± å­
+    ///ACCEPT SVC handlerµÄ³Ø×Ó
     static POOL_OF_TCP_HANDLER    pool_of_acpthdl_;
 
-    ///CONNECT svc handlerçš„æ± å­
+    ///CONNECT svc handlerµÄ³Ø×Ó
     static POOL_OF_TCP_HANDLER    pool_of_cnthdl_;
 
 protected:
 
-    ///æœåŠ¡æ¨¡å¼
+    ///·şÎñÄ£Ê½
     OGRE_HANDLER_MODE             handler_mode_;
 
-    ///æ¥æ”¶æ•°æ®çš„ç¼“å†²
+    ///½ÓÊÕÊı¾İµÄ»º³å
     Ogre4a_App_Frame              *rcv_buffer_;
 
 
-    ///å‘é€çš„æ•°æ®å¯èƒ½è¦æ’é˜Ÿ
+    ///·¢ËÍµÄÊı¾İ¿ÉÄÜÒªÅÅ¶Ó
     zce::lordrings<Ogre4a_App_Frame *>  \
     snd_buffer_deque_;
 
-    ///è¿™ä¸ªPEERæ¥å—æ•°æ®
+    ///Õâ¸öPEER½ÓÊÜÊı¾İ
     size_t                        recieve_bytes_;
 
-    ///è¿™ä¸ªPEERå‘é€æ•°æ®
+    ///Õâ¸öPEER·¢ËÍÊı¾İ
     size_t                        send_bytes_;
 
     ///ACE Socket Stream,
     ZCE_Socket_Stream             socket_peer_;
 
-    ///PEERè¿æ¥çš„è¿œç«¯IPåœ°å€ä¿¡æ¯,æœ‰ä»–ä¸è¿‡æ˜¯ä¸ºäº†åŠ å¿«é€Ÿåº¦.
+    ///PEERÁ¬½ÓµÄÔ¶¶ËIPµØÖ·ĞÅÏ¢,ÓĞËû²»¹ıÊÇÎªÁË¼Ó¿ìËÙ¶È.
     ZCE_Sockaddr_In               remote_address_;
 
-    ///PEERè¿æ¥çš„æœ¬åœ°IPåœ°å€ä¿¡æ¯,æœ‰ä»–ä¸è¿‡æ˜¯ä¸ºäº†åŠ å¿«é€Ÿåº¦.
+    ///PEERÁ¬½ÓµÄ±¾µØIPµØÖ·ĞÅÏ¢,ÓĞËû²»¹ıÊÇÎªÁË¼Ó¿ìËÙ¶È.
     ZCE_Sockaddr_In               local_address_;
 
-    //æ˜¯å¦å¤„äºæ´»åŠ¨çŠ¶æ€
+    //ÊÇ·ñ´¦ÓÚ»î¶¯×´Ì¬
     PEER_STATUS                   peer_status_;
 
-    ///è¿æ¥åæ— ååº”è¶…æ—¶çš„TimeID,
+    ///Á¬½ÓºóÎŞ·´Ó¦³¬Ê±µÄTimeID,
     long                          timeout_time_id_;
 
-    ///ä¸€ä¸ªæ—¶é—´é—´éš”å†…æ¥å—æ•°æ®çš„æ¬¡æ•°
+    ///Ò»¸öÊ±¼ä¼ä¸ôÄÚ½ÓÊÜÊı¾İµÄ´ÎÊı
     unsigned int                  receive_times_;
 
-    ///æ˜¯å¦è¢«å¼ºåˆ¶è¦æ±‚åœ¨å‘é€å®Œæˆåå…³é—­ç«¯å£
+    ///ÊÇ·ñ±»Ç¿ÖÆÒªÇóÔÚ·¢ËÍÍê³Éºó¹Ø±Õ¶Ë¿Ú
     bool                          if_force_close_;
 
-    ///åˆ¤æ–­æ¥æ”¶åˆ°çš„æ•°æ®æ˜¯å¦æ˜¯å®Œæ•´çš„å¤„ç†å‡½æ•°æŒ‡é’ˆ
+    ///ÅĞ¶Ï½ÓÊÕµ½µÄÊı¾İÊÇ·ñÊÇÍêÕûµÄ´¦Àíº¯ÊıÖ¸Õë
     FP_JudgeRecv_WholeFrame       fp_judge_whole_frame_;
 
 };

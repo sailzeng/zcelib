@@ -3,11 +3,11 @@
 * @filename   zce_os_adapt_error.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´6æœˆ1æ—¥
-* @brief      é”™è¯¯å®šä¹‰çš„é€‚é…å™¨å±‚ï¼Œä¸»è¦è¿˜æ˜¯å‘LINUXä¸‹é æ‹¢
-*             åŒ…æ‹¬
-*             é”™è¯¯å®šä¹‰ï¼Œå„ç§errorçš„å®šä¹‰ï¼Œ
-*             è·å–errnoçš„å‡½æ•°ï¼Œlast_error()å‡½æ•°ç­‰ï¼Œ
+* @date       2011Äê6ÔÂ1ÈÕ
+* @brief      ´íÎó¶¨ÒåµÄÊÊÅäÆ÷²ã£¬Ö÷Òª»¹ÊÇÏòLINUXÏÂ¿¿Â£
+*             °üÀ¨
+*             ´íÎó¶¨Òå£¬¸÷ÖÖerrorµÄ¶¨Òå£¬
+*             »ñÈ¡errnoµÄº¯Êı£¬last_error()º¯ÊıµÈ£¬
 *
 * @details
 *
@@ -427,7 +427,7 @@
 namespace zce
 {
 
-//å–å¾—æœ€åçš„errnoï¼Œåœ¨Windowsä¸‹æœ‰ç‚¹
+//È¡µÃ×îºóµÄerrno£¬ÔÚWindowsÏÂÓĞµã
 inline int last_error (void)
 {
 
@@ -445,22 +445,22 @@ inline int last_error (void)
 #endif /* ACE_WIN32 */
 }
 
-//å–å¾—last errorï¼Œå¦‚æœæ²¡æœ‰é”™è¯¯ï¼Œè®¾ç½®é»˜è®¤é”™è¯¯é”™è¯¯ä¸ºé”™è¯¯
+//È¡µÃlast error£¬Èç¹ûÃ»ÓĞ´íÎó£¬ÉèÖÃÄ¬ÈÏ´íÎó´íÎóÎª´íÎó
 inline int last_error_with_default(int default_error)
 {
     int lerror = last_error();
 
-    //å¦‚æœæ²¡æœ‰é”™è¯¯IDï¼Œè®¾ç½®ä¸€ä¸ª
+    //Èç¹ûÃ»ÓĞ´íÎóID£¬ÉèÖÃÒ»¸ö
     if (lerror == 0)
     {
         lerror = default_error;
-        //æˆ‘è¿™å„¿æ²¡æœ‰æŠŠé”™è¯¯è®¾ç½®åˆ°ç³»ç»Ÿçš„errnoä¸­é—´ï¼Œâ€¦â€¦ä»¥åçœ‹éœ€è¦æŠŠã€‚ç›®å‰æ„Ÿè§‰ä¸å‡ºæ¥
+        //ÎÒÕâ¶ùÃ»ÓĞ°Ñ´íÎóÉèÖÃµ½ÏµÍ³µÄerrnoÖĞ¼ä£¬¡­¡­ÒÔºó¿´ĞèÒª°Ñ¡£Ä¿Ç°¸Ğ¾õ²»³öÀ´
     }
 
     return lerror;
 }
 
-//è®¾ç½®æœ€åçš„é”™è¯¯
+//ÉèÖÃ×îºóµÄ´íÎó
 inline void last_error (int error)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -477,7 +477,7 @@ inline void set_errno_to_last_error (void)
 # endif
 }
 
-//æ¸…ç†é”™è¯¯
+//ÇåÀí´íÎó
 inline void clear_last_error()
 {
 # if defined (ZCE_OS_WINDOWS)

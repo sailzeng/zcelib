@@ -5,7 +5,7 @@
 #include "zce_log_logging.h"
 #include "zce_socket_base.h"
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Socket_Base::ZCE_Socket_Base():
     socket_handle_(ZCE_INVALID_SOCKET)
 {
@@ -16,7 +16,7 @@ ZCE_Socket_Base::ZCE_Socket_Base(const ZCE_SOCKET &socket_handle):
 {
 }
 
-//ææ„å‡½æ•°ï¼Œä¼šè°ƒç”¨closeï¼Œ
+//Îö¹¹º¯Êı£¬»áµ÷ÓÃclose£¬
 ZCE_Socket_Base::~ZCE_Socket_Base()
 {
     close();
@@ -34,7 +34,7 @@ ZCE_SOCKET ZCE_Socket_Base::get_handle() const
     return socket_handle_;
 }
 
-//Open SOCKå¥æŸ„ï¼Œä¸BINDæœ¬åœ°åœ°å€çš„æ–¹å¼
+//Open SOCK¾ä±ú£¬²»BIND±¾µØµØÖ·µÄ·½Ê½
 int ZCE_Socket_Base::open(int type,
                           int family,
                           int protocol,
@@ -42,7 +42,7 @@ int ZCE_Socket_Base::open(int type,
 {
     int ret = 0;
 
-    //é˜²æ­¢ä½ å¹²åäº‹ï¼Œé‡å¤è°ƒç”¨ï¼Œé€ æˆèµ„æºæ— æ³•é‡Šæ”¾
+    //·ÀÖ¹Äã¸É»µÊÂ£¬ÖØ¸´µ÷ÓÃ£¬Ôì³É×ÊÔ´ÎŞ·¨ÊÍ·Å
     assert(socket_handle_ == ZCE_INVALID_SOCKET);
 
     socket_handle_ = zce::socket(family, type, protocol);
@@ -55,7 +55,7 @@ int ZCE_Socket_Base::open(int type,
         return -1;
     }
 
-    //å¦‚æœè¦REUSEè¿™ä¸ªåœ°å€
+    //Èç¹ûÒªREUSEÕâ¸öµØÖ·
     if (reuse_addr)
     {
         int one = 1;
@@ -75,7 +75,7 @@ int ZCE_Socket_Base::open(int type,
     return 0;
 }
 
-//Open SOCKå¥æŸ„ï¼ŒBINDåœ°å€çš„æ–¹å¼
+//Open SOCK¾ä±ú£¬BINDµØÖ·µÄ·½Ê½
 int ZCE_Socket_Base::open(int type,
                           const ZCE_Sockaddr *local_addr,
                           int family,
@@ -84,13 +84,13 @@ int ZCE_Socket_Base::open(int type,
 {
     int ret = 0;
 
-    //å¦‚æœæ²¡æœ‰æ ‡æ³¨åè®®ç°‡ï¼Œç”¨bindçš„æœ¬åœ°åœ°å€çš„åè®®ç°‡æ ‡è¯†
+    //Èç¹ûÃ»ÓĞ±ê×¢Ğ­Òé´Ø£¬ÓÃbindµÄ±¾µØµØÖ·µÄĞ­Òé´Ø±êÊ¶
     if (local_addr && family == AF_UNSPEC )
     {
         family = local_addr->sockaddr_ptr_->sa_family;
     }
 
-    //å¦‚æœåœ°å€åè®®å’Œsocketçš„åè®®ç°‡ä¸ä¸€æ ·ï¼Œ
+    //Èç¹ûµØÖ·Ğ­ÒéºÍsocketµÄĞ­Òé´Ø²»Ò»Ñù£¬
     if (local_addr && family != local_addr->sockaddr_ptr_->sa_family)
     {
         assert(false);
@@ -102,7 +102,7 @@ int ZCE_Socket_Base::open(int type,
                      protocol,
                      reuse_addr);
 
-    //å¦‚æœè¦ç»‘å®šæœ¬åœ°åœ°å€ï¼Œä¸€èˆ¬SOCKETæ— é¡»æ­¤æ­¥
+    //Èç¹ûÒª°ó¶¨±¾µØµØÖ·£¬Ò»°ãSOCKETÎŞĞë´Ë²½
     if (local_addr)
     {
         ret = ZCE_Socket_Base::bind(local_addr);
@@ -118,7 +118,7 @@ int ZCE_Socket_Base::open(int type,
 
 }
 
-//å…³é—­ä¹‹
+//¹Ø±ÕÖ®
 int ZCE_Socket_Base::close()
 {
     int ret = zce::closesocket(socket_handle_);
@@ -131,7 +131,7 @@ int ZCE_Socket_Base::close()
     return ret;
 }
 
-//é‡Šæ”¾å¯¹å¥æŸ„çš„ç®¡ç†ï¼Œ
+//ÊÍ·Å¶Ô¾ä±úµÄ¹ÜÀí£¬
 void ZCE_Socket_Base::release_noclose()
 {
     socket_handle_ = ZCE_INVALID_SOCKET;
@@ -142,19 +142,19 @@ int ZCE_Socket_Base::bind(const ZCE_Sockaddr *add_name) const
     return zce::bind(socket_handle_, add_name->sockaddr_ptr_, add_name->sockaddr_size_);
 }
 
-//æ‰“å¼€æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
+//´ò¿ªÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
 int ZCE_Socket_Base::sock_enable (int value) const
 {
     return zce::sock_enable(socket_handle_, value);
 }
 
-//å…³é—­æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
+//¹Ø±ÕÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
 int ZCE_Socket_Base::sock_disable(int value) const
 {
     return zce::sock_disable(socket_handle_, value);
 }
 
-//è·å–Socketçš„é€‰é¡¹
+//»ñÈ¡SocketµÄÑ¡Ïî
 int ZCE_Socket_Base::getsockopt (int level,
                                  int optname,
                                  void *optval,
@@ -163,7 +163,7 @@ int ZCE_Socket_Base::getsockopt (int level,
     return zce::getsockopt(socket_handle_, level, optname, optval, optlen);
 }
 
-//è®¾ç½®Socketçš„é€‰é¡¹
+//ÉèÖÃSocketµÄÑ¡Ïî
 int ZCE_Socket_Base::setsockopt (int level,
                                  int optname,
                                  const void *optval,
@@ -176,7 +176,7 @@ int ZCE_Socket_Base::setsockopt (int level,
                            optlen);
 }
 
-//å–å¾—å¯¹ç«¯çš„åœ°å€ä¿¡æ¯
+//È¡µÃ¶Ô¶ËµÄµØÖ·ĞÅÏ¢
 int ZCE_Socket_Base::getpeername (ZCE_Sockaddr *addr)  const
 {
     return zce::getpeername (socket_handle_,
@@ -185,7 +185,7 @@ int ZCE_Socket_Base::getpeername (ZCE_Sockaddr *addr)  const
 
 }
 
-//å–å¾—æœ¬åœ°çš„åœ°å€ä¿¡æ¯
+//È¡µÃ±¾µØµÄµØÖ·ĞÅÏ¢
 int ZCE_Socket_Base::getsockname (ZCE_Sockaddr *addr)  const
 {
     return zce::getsockname (socket_handle_,
@@ -193,7 +193,7 @@ int ZCE_Socket_Base::getsockname (ZCE_Sockaddr *addr)  const
                              &addr->sockaddr_size_);
 }
 
-//connectæŸä¸ªåœ°å€
+//connectÄ³¸öµØÖ·
 int ZCE_Socket_Base::connect(const ZCE_Sockaddr *addr) const
 {
     return zce::connect(socket_handle_,
@@ -201,7 +201,7 @@ int ZCE_Socket_Base::connect(const ZCE_Sockaddr *addr) const
                         addr->sockaddr_size_);
 }
 
-//æ¥æ”¶æ•°æ®ï¼Œæ ¹æ®é˜»å¡çŠ¶æ€å†³å®šè¡Œä¸º
+//½ÓÊÕÊı¾İ£¬¸ù¾İ×èÈû×´Ì¬¾ö¶¨ĞĞÎª
 ssize_t ZCE_Socket_Base::recv (void *buf,
                                size_t len,
                                int flags) const
@@ -212,7 +212,7 @@ ssize_t ZCE_Socket_Base::recv (void *buf,
                      flags);
 }
 
-//å‘é€æ•°æ®ï¼Œæ ¹æ®é˜»å¡çŠ¶æ€å†³å®šè¡Œä¸º
+//·¢ËÍÊı¾İ£¬¸ù¾İ×èÈû×´Ì¬¾ö¶¨ĞĞÎª
 ssize_t ZCE_Socket_Base::send (const void *buf,
                                size_t len,
                                int flags) const

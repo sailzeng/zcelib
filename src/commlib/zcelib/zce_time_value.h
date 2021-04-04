@@ -3,15 +3,15 @@
 * @filename   zce_time_value.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´10æœˆ6æ—¥
-* @brief      æœ¬æ¥å¸Œæœ›è‡ªå·±æ‰€æœ‰çš„ä»£ç é‡Œé¢çš„é€šç”¨æ—¶é—´å¯¹è±¡å°±æ˜¯timevalçš„ï¼Œ
-*             ä½†å†™ç€å†™ç€ï¼Œå‘ç°è¿˜æ˜¯è¦æœ‰ä¸€ä¸ªæ—¶é—´çš„ç±»ï¼Œå¦åˆ™å¾ˆå¤šåœ°æ–¹å†—ä½™
-*             ä»£ç ä¼šéå¸¸å¤šï¼Œäºæ˜¯å°±æœ‰äº†è¿™ä¸ªä¸œä¸œï¼Œ
-*             åœ¨ZCELIBé‡Œé¢ï¼Œä»–å’Œtimevalçš„ä½œç”¨ä¸€æ ·ï¼Œæœ‰æ—¶å€™æ ‡è¯†æ—¶é—´ç‚¹ï¼Œ
-*             æœ‰æ—¶å€™è¡¨ç¤ºä¸€æ®µæ—¶é—´ã€‚
+* @date       2011Äê10ÔÂ6ÈÕ
+* @brief      ±¾À´Ï£Íû×Ô¼ºËùÓĞµÄ´úÂëÀïÃæµÄÍ¨ÓÃÊ±¼ä¶ÔÏó¾ÍÊÇtimevalµÄ£¬
+*             µ«Ğ´×ÅĞ´×Å£¬·¢ÏÖ»¹ÊÇÒªÓĞÒ»¸öÊ±¼äµÄÀà£¬·ñÔòºÜ¶àµØ·½ÈßÓà
+*             ´úÂë»á·Ç³£¶à£¬ÓÚÊÇ¾ÍÓĞÁËÕâ¸ö¶«¶«£¬
+*             ÔÚZCELIBÀïÃæ£¬ËûºÍtimevalµÄ×÷ÓÃÒ»Ñù£¬ÓĞÊ±ºò±êÊ¶Ê±¼äµã£¬
+*             ÓĞÊ±ºò±íÊ¾Ò»¶ÎÊ±¼ä¡£
 *
-* @details    å†…éƒ¨å°è£…çš„è¿˜æ˜¯timeval,è¿™ç‚¹å’ŒACEä¸€æ ·ï¼Œæˆ‘æ›¾ç»è®°å¾—ACEæ›¾ç»
-*             å°è£…è¿‡doubleä½œä¸ºæ—¶é—´å€¼ï¼Œä½†æ— æ³•ç¡®è®¤äº†ã€‚
+* @details    ÄÚ²¿·â×°µÄ»¹ÊÇtimeval,ÕâµãºÍACEÒ»Ñù£¬ÎÒÔø¾­¼ÇµÃACEÔø¾­
+*             ·â×°¹ıdouble×÷ÎªÊ±¼äÖµ£¬µ«ÎŞ·¨È·ÈÏÁË¡£
 *
 */
 #ifndef ZCE_LIB_TIME_VALUE_H_
@@ -21,7 +21,7 @@
 #include "zce_os_adapt_time.h"
 
 /*!
-* @brief      ZCELIB é‡Œé¢çš„æ—¶é—´å€¼ï¼Œæ—¶é—´å¯¹è±¡ï¼Œ
+* @brief      ZCELIB ÀïÃæµÄÊ±¼äÖµ£¬Ê±¼ä¶ÔÏó£¬
 *
 */
 class ZCE_Time_Value
@@ -29,47 +29,42 @@ class ZCE_Time_Value
 public:
 
     /*!
-    * @brief      é»˜è®¤æ„é€ å‡½æ•°
+    * @brief      Ä¬ÈÏ¹¹Ôìº¯Êı
     */
     ZCE_Time_Value();
-
     /*!
-    * @brief      ææ„å‡½æ•°
+    * @brief      Îö¹¹º¯Êı
     */
     ~ZCE_Time_Value();
 
-    ZCE_Time_Value(const ZCE_Time_Value&) = default;
-    ZCE_Time_Value(ZCE_Time_Value&&) = default;
-
-
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨timeval
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃtimeval
     * @param      time_data
     */
     ZCE_Time_Value(const timeval &time_data);
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨::timespec
-    * @param      timespec_val timespecè¡¨ç¤ºæ—¶é—´
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃ::timespec
+    * @param      timespec_val timespec±íÊ¾Ê±¼ä
     */
     ZCE_Time_Value(const ::timespec &timespec_val);
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œå‡ ä¸ªæ—¶é—´æ•°æ®æ•°æ®
-    * @param      sec   timeval ä¸­ç§’æ•°æ®
-    * @param      usec  timevalä¸­çš„å¾®ç§’æ•°æ®
+    * @brief      ¹¹Ôìº¯Êı£¬¼¸¸öÊ±¼äÊı¾İÊı¾İ
+    * @param      sec   timeval ÖĞÃëÊı¾İ
+    * @param      usec  timevalÖĞµÄÎ¢ÃëÊı¾İ
     */
     ZCE_Time_Value(time_t sec, time_t usec);
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨time_t, usecè¢«ç½®ä¸º0
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃtime_t, usec±»ÖÃÎª0
     * @param      sec
     */
     ZCE_Time_Value(time_t sec);
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨CPP 11çš„ä¸€äº›durationçš„å€¼
-    * @param      val CPP11çš„durationæ—¶é—´
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃCPP 11µÄÒ»Ğ©durationµÄÖµ
+    * @param      val CPP11µÄdurationÊ±¼ä
     */
     ZCE_Time_Value(const std::chrono::hours &val);
     ZCE_Time_Value(const std::chrono::minutes &val);
@@ -79,8 +74,8 @@ public:
     ZCE_Time_Value(const std::chrono::nanoseconds &val);
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨CPP 11çš„ä¸€äº›time_pointçš„å€¼
-    * @param      val CPP11çš„durationæ—¶é—´
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃCPP 11µÄÒ»Ğ©time_pointµÄÖµ
+    * @param      val CPP11µÄdurationÊ±¼ä
     */
     ZCE_Time_Value(const std::chrono::system_clock::time_point &val);
     ZCE_Time_Value(const std::chrono::steady_clock::time_point &val);
@@ -88,13 +83,13 @@ public:
 #ifdef ZCE_OS_WINDOWS
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨LPFILETIME,FILETIME
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃLPFILETIME,FILETIME
     * @param      file_time
     */
     ZCE_Time_Value(LPFILETIME file_time);
 
     /*!
-    * @brief      æ„é€ å‡½æ•°ï¼Œç”¨LPSYSTEMTIME,SYSTEMTIME
+    * @brief      ¹¹Ôìº¯Êı£¬ÓÃLPSYSTEMTIME,SYSTEMTIME
     * @param      system_time
     */
     ZCE_Time_Value(LPSYSTEMTIME system_time);
@@ -103,33 +98,33 @@ public:
 
 public:
     /*!
-    * @brief      è®¾ç½®ZCE_Time_Value,ç”¨timeval
+    * @brief      ÉèÖÃZCE_Time_Value,ÓÃtimeval
     * @param      time_data
     */
     void set(const timeval &time_data);
 
     /*!
-    * @brief      è®¾ç½®ZCE_Time_Value,ç”¨::timespec
+    * @brief      ÉèÖÃZCE_Time_Value,ÓÃ::timespec
     * @param      timespec_val
     */
     void set(const ::timespec &timespec_val);
 
     /*!
-    * @brief      è®¾ç½®ZCE_Time_Value,å‡ ä¸ªæ—¶é—´æ•°æ®æ•°æ®
+    * @brief      ÉèÖÃZCE_Time_Value,¼¸¸öÊ±¼äÊı¾İÊı¾İ
     * @param      sec
     * @param      usec
     */
     void set(time_t sec, time_t usec);
 
     /*!
-    * @brief      è®¾ç½®ZCE_Time_Value,ç”¨time_t, usecè¢«ç½®ä¸º0
+    * @brief      ÉèÖÃZCE_Time_Value,ÓÃtime_t, usec±»ÖÃÎª0
     * @param      sec
     */
     void set(time_t sec);
 
     /*!
-    * @brief      ç”¨clock_t è®¾ç½®æ—¶é—´ï¼Œå› ä¸ºéƒ½æ˜¯æ•´æ•°ï¼Œä¸ºäº†é¿å…å‡½æ•°å†²çªï¼Œæ‰€ä»¥è¿™ä¸ªå‡½æ•°æ²¡æœ‰setçš„åå­—
-    * @param      time è®¾ç½®çš„clock_t
+    * @brief      ÓÃclock_t ÉèÖÃÊ±¼ä£¬ÒòÎª¶¼ÊÇÕûÊı£¬ÎªÁË±ÜÃâº¯Êı³åÍ»£¬ËùÒÔÕâ¸öº¯ÊıÃ»ÓĞsetµÄÃû×Ö
+    * @param      time ÉèÖÃµÄclock_t
     */
     void set_by_clock_t(clock_t time);
 
@@ -148,70 +143,70 @@ public:
 #ifdef ZCE_OS_WINDOWS
 
     /*!
-    * @brief      è®¾ç½®ZCE_Time_Value, ç”¨FILETIME
+    * @brief      ÉèÖÃZCE_Time_Value, ÓÃFILETIME
     * @param      file_time
     */
     void set(LPFILETIME file_time);
 
     /*!
-    * @brief      è®¾ç½®ZCE_Time_Value, ç”¨LPSYSTEMTIME
-    * @param      system_time  WINDOWSçš„SYSTEMTIMEæ—¶é—´
+    * @brief      ÉèÖÃZCE_Time_Value, ÓÃLPSYSTEMTIME
+    * @param      system_time  WINDOWSµÄSYSTEMTIMEÊ±¼ä
     */
     void set(LPSYSTEMTIME system_time);
 
 #endif
 
     /*!
-    * @brief      å¾—åˆ°Timevalueçš„ç§’éƒ¨åˆ†
+    * @brief      µÃµ½TimevalueµÄÃë²¿·Ö
     * @return     time_t
     */
     time_t sec (void) const;
     /*!
-    * @brief      è®¾ç½®Timevalueçš„ç§’éƒ¨åˆ†
-    * @param      set_sec  è®¾ç½®çš„ï¼Œtimevalçš„ç§’éƒ¨åˆ†çš„æ•°å€¼
+    * @brief      ÉèÖÃTimevalueµÄÃë²¿·Ö
+    * @param      set_sec  ÉèÖÃµÄ£¬timevalµÄÃë²¿·ÖµÄÊıÖµ
     */
     void sec (time_t set_sec);
 
     /*!
-    * @brief      å¾—åˆ°Timevalueçš„å¾®ç§’éƒ¨åˆ†ï¼Œæ³¨æ„æ˜¯å¾—åˆ°å¾®ç§’éƒ¨åˆ†ï¼Œä¸æ˜¯æ€»è®¡å€¼å‘€ã€‚ï¼ˆå·²ç»çœ‹è§ä¸€ä¸ªäººè°ƒç”¨é”™äº†ï¼‰
-    * @return     time_t ZCE_Time_Valueå¾®ç§’éƒ¨åˆ†çš„æ•°æ®
+    * @brief      µÃµ½TimevalueµÄÎ¢Ãë²¿·Ö£¬×¢ÒâÊÇµÃµ½Î¢Ãë²¿·Ö£¬²»ÊÇ×Ü¼ÆÖµÑ½¡££¨ÒÑ¾­¿´¼ûÒ»¸öÈËµ÷ÓÃ´íÁË£©
+    * @return     time_t ZCE_Time_ValueÎ¢Ãë²¿·ÖµÄÊı¾İ
     */
     time_t usec (void) const;
     /*!
-    * @brief      è®¾ç½®Timevalueçš„å¾®ç§’éƒ¨åˆ†
-    * @param      set_usec è®¾ç½®çš„ï¼Œtimevalçš„å¾®ç§’éƒ¨åˆ†çš„æ•°å€¼ï¼Œæ³¨æ„ä»–å’Œtotal_usecçš„åŒºåˆ«ã€‚
+    * @brief      ÉèÖÃTimevalueµÄÎ¢Ãë²¿·Ö
+    * @param      set_usec ÉèÖÃµÄ£¬timevalµÄÎ¢Ãë²¿·ÖµÄÊıÖµ£¬×¢ÒâËûºÍtotal_usecµÄÇø±ğ¡£
     */
     void usec(time_t set_usec);
 
     /*!
-    * @brief      å¾—åˆ°æ€»å…±å¤šå°‘æ¯«ç§’
-    * @return     uint64_t è¿”å›æ¯«ç§’æ€»æ•°
+    * @brief      µÃµ½×Ü¹²¶àÉÙºÁÃë
+    * @return     uint64_t ·µ»ØºÁÃë×ÜÊı
     */
     uint64_t total_msec() const;
 
     /*!
-    * @brief      å››èˆäº”å…¥å¾—åˆ°æ€»å…±å¤šå°‘æ¯«ç§’ï¼Œå…¶å®ä¸æ˜¯çœŸæ­£çš„å››èˆäº”å…¥ï¼Œè€Œæ˜¯å¦‚æœå¾®ç§’æœ‰æ•°æ®ï¼Œå°±è¿”å›1æ¯«ç§’ï¼Œ
-    *             ä¸ºä»€ä¹ˆè¦è¿™æ ·å‘¢ï¼Œå› ä¸ºEPOLLç­‰å‡½æ•°æ˜¯ä½¿ç”¨æ¯«ç§’æ•°å€¼çš„ï¼Œä½†æœ‰çš„åœ°æ–¹æˆ‘ä»¬å†™çš„ç­‰å¾…æ—¶é—´æ˜¯å°äº
-    *             1æ¯«ç§’çš„ï¼Œè¿™æ—¶ä¼šè®©epoll_waitè¿›å…¥ä¸€ä¸ªé«˜é€Ÿå¾ªç¯çŠ¶æ€ã€‚
-    * @return     uint64_t è¿”å›æ¯«ç§’æ€»æ•°
+    * @brief      ËÄÉáÎåÈëµÃµ½×Ü¹²¶àÉÙºÁÃë£¬ÆäÊµ²»ÊÇÕæÕıµÄËÄÉáÎåÈë£¬¶øÊÇÈç¹ûÎ¢ÃëÓĞÊı¾İ£¬¾Í·µ»Ø1ºÁÃë£¬
+    *             ÎªÊ²Ã´ÒªÕâÑùÄØ£¬ÒòÎªEPOLLµÈº¯ÊıÊÇÊ¹ÓÃºÁÃëÊıÖµµÄ£¬µ«ÓĞµÄµØ·½ÎÒÃÇĞ´µÄµÈ´ıÊ±¼äÊÇĞ¡ÓÚ
+    *             1ºÁÃëµÄ£¬ÕâÊ±»áÈÃepoll_wait½øÈëÒ»¸ö¸ßËÙÑ­»·×´Ì¬¡£
+    * @return     uint64_t ·µ»ØºÁÃë×ÜÊı
     */
     uint64_t total_msec_round() const;
 
     /*!
-    * @brief      ç”¨æ¯«ç§’ä½œä¸ºå•ä½è®¾ç½®TimeValue
+    * @brief      ÓÃºÁÃë×÷Îªµ¥Î»ÉèÖÃTimeValue
     * @param      set_msec
     */
     void total_msec(uint64_t set_msec);
 
     /*!
-    * @brief      å¾—åˆ°æ€»å…±å¤šå°‘å¾®ç§’
+    * @brief      µÃµ½×Ü¹²¶àÉÙÎ¢Ãë
     * @return     uint64_t
     */
     uint64_t total_usec() const;
 
     /*!
-    * @brief      ç”¨å¾®ç§’ä½œä¸ºå•ä½ï¼Œè®¾ç½®TimeValueï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°å’Œusecå‡½æ•°çš„åŒºåˆ«ï¼Œusecå‡½æ•°æ˜¯è®¾ç½®timevalçš„usecéƒ¨åˆ†ï¼Œ
-    * @param[in]  set_usec æ€»å…±çš„å¾®ç§’æ—¶é—´ï¼Œå°†è¢«æ¢ç®—ä¸ºtimeval
+    * @brief      ÓÃÎ¢Ãë×÷Îªµ¥Î»£¬ÉèÖÃTimeValue£¬×¢ÒâÕâ¸öº¯ÊıºÍusecº¯ÊıµÄÇø±ğ£¬usecº¯ÊıÊÇÉèÖÃtimevalµÄusec²¿·Ö£¬
+    * @param[in]  set_usec ×Ü¹²µÄÎ¢ÃëÊ±¼ä£¬½«±»»»ËãÎªtimeval
     */
     void total_usec(uint64_t set_usec);
 
@@ -227,88 +222,88 @@ public:
                           size_t datetime_strlen) const;
 
     /*!
-    * @brief      æ ¹æ®ä½ çš„æ ¼å¼åŒ–è¦æ±‚ï¼Œå°†æ—¶é—´æˆ³æ‰“å°å‡ºæ¥
-    * @return     const char*     æ‰“å°çš„å­—ç¬¦ä¸²ï¼Œæ–¹ä¾¿ä½ å¤„ç†
-    * @param[out] str_date_time   è¦è¾“å‡ºçš„å­—ç¬¦ä¸²æ•°ç»„
-    * @param[in]  datetime_strlen å­—ç¬¦ä¸²çš„é•¿åº¦
-    * @param[in]   fromat_type    æ—¶é—´æ ¼å¼ï¼Œå‚è€ƒ@ref TIME_STR_FORMAT_TYPE æšä¸¾ï¼Œé»˜è®¤è¾“å‡ºISOæ ¼å¼çš„æœ¬åœ°æ—¶é—´ï¼Œç²¾åº¦åˆ°USECã€‚
+    * @brief      ¸ù¾İÄãµÄ¸ñÊ½»¯ÒªÇó£¬½«Ê±¼ä´Á´òÓ¡³öÀ´
+    * @return     const char*     ´òÓ¡µÄ×Ö·û´®£¬·½±ãÄã´¦Àí
+    * @param[out] str_date_time   ÒªÊä³öµÄ×Ö·û´®Êı×é
+    * @param[in]  datetime_strlen ×Ö·û´®µÄ³¤¶È
+    * @param[in]   fromat_type    Ê±¼ä¸ñÊ½£¬²Î¿¼@ref TIME_STR_FORMAT_TYPE Ã¶¾Ù£¬Ä¬ÈÏÊä³öISO¸ñÊ½µÄ±¾µØÊ±¼ä£¬¾«¶Èµ½USEC¡£
     */
     const char *to_string(char *str_date_time,
                           size_t datetime_strlen,
                           size_t &use_buf,
                           bool uct_time = false,
-                          zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC
+                          zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC
                          )  const;
 
     /*!
-    * @brief      æ ¹æ®ä½ çš„æ ¼å¼åŒ–è¦æ±‚,å°†å­—ç¬¦ä¸²ï¼Œè½¬æ¢ä¸ºäº‹ä»¶
+    * @brief      ¸ù¾İÄãµÄ¸ñÊ½»¯ÒªÇó,½«×Ö·û´®£¬×ª»»ÎªÊÂ¼ş
     * @return     int ==0
-    * @param[in]  strtm       æ—¶é—´å­—ç¬¦ä¸²
-    * @param[in]  uct_time    æ˜¯å¦è½¬æ¢ä¸ºUTCæ—¶é—´
-    * @param[in]  fromat_type æ—¶é—´æ ¼å¼ï¼Œé»˜è®¤ä¸ºISOçš„usec
+    * @param[in]  strtm       Ê±¼ä×Ö·û´®
+    * @param[in]  uct_time    ÊÇ·ñ×ª»»ÎªUTCÊ±¼ä
+    * @param[in]  fromat_type Ê±¼ä¸ñÊ½£¬Ä¬ÈÏÎªISOµÄusec
     */
     int from_string(const char *strtm,
                     bool uct_time = false,
-                    zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC);
+                    zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC);
 
-    ///è¿”å›ä¸€ä¸ªtimespecçš„å¯¹è±¡
+    ///·µ»ØÒ»¸ötimespecµÄ¶ÔÏó
     //operator ::timespec () const;
 
-    ///è¿”å›ä¸€ä¸ªtimevalçš„å¯¹è±¡ï¼ŒReturns the value of the object as a timeval.
+    ///·µ»ØÒ»¸ötimevalµÄ¶ÔÏó£¬Returns the value of the object as a timeval.
     operator timeval () const;
 
-    ///è¿”å›ä¸€ä¸ªconst çš„timevalï¼ŒæŒ‡é’ˆï¼Œ
+    ///·µ»ØÒ»¸öconst µÄtimeval£¬Ö¸Õë£¬
     operator const timeval *() const;
 
-    ///è¿”å›timevalçš„æŒ‡é’ˆï¼Œä½ å¯ä»¥é€šè¿‡è¿™ä¸ªæ–¹æ³•ç›´æ¥ä¿®æ”¹è¿™ä¸ªå¯¹è±¡å†…éƒ¨çš„æ•°æ®ï¼Œåœ¨æŸäº›å‡½æ•°æœ‰ç”¨ï¼Œ
+    ///·µ»ØtimevalµÄÖ¸Õë£¬Äã¿ÉÒÔÍ¨¹ıÕâ¸ö·½·¨Ö±½ÓĞŞ¸ÄÕâ¸ö¶ÔÏóÄÚ²¿µÄÊı¾İ£¬ÔÚÄ³Ğ©º¯ÊıÓĞÓÃ£¬
     operator timeval *();
 
-    ///è·å–å½“å‰æ—¶é—´
+    ///»ñÈ¡µ±Ç°Ê±¼ä
     void gettimeofday();
 
-    /// åŠ ä¸Š @a tv çš„æ—¶é—´
+    /// ¼ÓÉÏ @a tv µÄÊ±¼ä
     ZCE_Time_Value &operator += (const ZCE_Time_Value &tv);
 
-    /// èµ‹å€¼ @a tv çš„æ—¶é—´
+    /// ¸³Öµ @a tv µÄÊ±¼ä
     ZCE_Time_Value &operator = (const ZCE_Time_Value &tv);
 
-    /// å‡å» @a tvçš„æ—¶é—´
+    /// ¼õÈ¥ @a tvµÄÊ±¼ä
     ZCE_Time_Value &operator -= (const ZCE_Time_Value &tv);
 
-    /// è¿”å›trueï¼Œå¦‚æœ < @a tv çš„æ—¶é—´
+    /// ·µ»Øtrue£¬Èç¹û < @a tv µÄÊ±¼ä
     bool operator < (const ZCE_Time_Value &tv);
-    /// è¿”å›trueï¼Œå¦‚æœ > @a tv çš„æ—¶é—´
+    /// ·µ»Øtrue£¬Èç¹û > @a tv µÄÊ±¼ä
     bool operator > (const ZCE_Time_Value &tv);
 
-    /// è¿”å›trueï¼Œå¦‚æœ <= @a tv çš„æ—¶é—´
+    /// ·µ»Øtrue£¬Èç¹û <= @a tv µÄÊ±¼ä
     bool operator <= (const ZCE_Time_Value &tv);
 
-    /// è¿”å›trueï¼Œå¦‚æœ >= @a tv çš„æ—¶é—´
+    /// ·µ»Øtrue£¬Èç¹û >= @a tv µÄÊ±¼ä
     bool operator >= (const ZCE_Time_Value &tv);
 
-    /// è¿”å›trueï¼Œå¦‚æœ == @a tv çš„æ—¶é—´
+    /// ·µ»Øtrue£¬Èç¹û == @a tv µÄÊ±¼ä
     bool operator == (const ZCE_Time_Value &tv);
 
-    /// è¿”å›trueï¼Œå¦‚æœ != @a tv çš„æ—¶é—´
+    /// ·µ»Øtrue£¬Èç¹û != @a tv µÄÊ±¼ä
     bool operator != (const ZCE_Time_Value &tv);
 
-    /// å°†ä¸¤ä¸ª ZCE_Time_Value å¯¹è±¡ @a tv1 å’Œ @a tv2 åŠ èµ·æ¥ï¼Œè¿”å›ç»“æœï¼Œ
+    /// ½«Á½¸ö ZCE_Time_Value ¶ÔÏó @a tv1 ºÍ @a tv2 ¼ÓÆğÀ´£¬·µ»Ø½á¹û£¬
     friend ZCE_Time_Value operator + (const ZCE_Time_Value &tv1,
                                       const ZCE_Time_Value &tv2);
 
-    /// å°†ä¸¤ä¸ª ZCE_Time_Value å¯¹è±¡ @a tv1 å’Œ @a tv2 ç›¸å‡ï¼Œè¿”å›ç»“æœï¼Œ
+    /// ½«Á½¸ö ZCE_Time_Value ¶ÔÏó @a tv1 ºÍ @a tv2 Ïà¼õ£¬·µ»Ø½á¹û£¬
     friend ZCE_Time_Value operator - (const ZCE_Time_Value &tv1,
                                       const ZCE_Time_Value &tv2);
 
 protected:
 
-    ///åº•å±‚é‡‡ç”¨timevalè®°å½•æ—¶é—´ï¼Œå¯èƒ½ä¼šæœ‰ä¸€äº›è¿›åº¦è¯¯å·®ï¼Œä½†æˆ‘å®åœ¨æƒ³ä¸å‡ºæ¥ï¼ŒæœåŠ¡å™¨ä¸ºä»€ä¹ˆè¦ç²¾ç»†è¶…è¿‡usec
+    ///µ×²ã²ÉÓÃtimeval¼ÇÂ¼Ê±¼ä£¬¿ÉÄÜ»áÓĞÒ»Ğ©½ø¶ÈÎó²î£¬µ«ÎÒÊµÔÚÏë²»³öÀ´£¬·şÎñÆ÷ÎªÊ²Ã´Òª¾«Ï¸³¬¹ıusec
     timeval                        zce_time_value_;
 
 public:
-    ///ä¸º0çš„æ—¶é—´
+    ///Îª0µÄÊ±¼ä
     static const ZCE_Time_Value    ZERO_TIME_VALUE;
-    ///æœ€å¤§èƒ½è¡¨ç¤ºçš„æ—¶é—´
+    ///×î´óÄÜ±íÊ¾µÄÊ±¼ä
     static const ZCE_Time_Value    MAX_TIME_VALUE;
 };
 

@@ -11,20 +11,20 @@ public:
 
 public:
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     ReadFile_CVS(const char *file_name,
                  size_t read_buf_len = 50 * 1024 * 1024,
                  unsigned char line_delim = '\n',
                  unsigned char word_delim = '|');
     ~ReadFile_CVS();
 
-    //å¤„ç†æ‰¹é‡æ–‡ä»¶,å¾—åˆ°åˆ—è¡¨
+    //´¦ÀíÅúÁ¿ÎÄ¼ş,µÃµ½ÁĞ±í
     int readfile_cvs();
 
 
 protected:
 
-    ///æ‰¹å¤„ç†æ–‡ä»¶åç§°
+    ///Åú´¦ÀíÎÄ¼şÃû³Æ
     std::string   readfile_name_;
 
     ///

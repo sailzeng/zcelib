@@ -3,32 +3,32 @@
 * @filename   zce_mysql_result.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2004å¹´7æœˆ24æ—¥
-* @brief      MYSQLæ•°æ®åº“ç»“æœé›†çš„å°è£…
+* @date       2004Äê7ÔÂ24ÈÕ
+* @brief      MYSQLÊı¾İ¿â½á¹û¼¯µÄ·â×°
 *
-* @details    è®¾è®¡æ€è·¯å¦‚ä¸‹ï¼Œæˆ‘ä¸æƒ³æå¤ªå¤šç±»ï¼Œå…¶å®å‡†ç¡®è¯´åº”è¯¥è¿˜æœ‰ä¸€å±‚å°è£…ï¼Œåˆ—å°è£…åœ¨OO
-*             çš„è§’åº¦çœ‹èµ·ä¼šæ›´åŠ å®Œç¾ä¸€äº›ï¼Œ
-*             ä½†æ˜¯æˆ‘ä¸å–œæ¬¢å¤ªéº»çƒ¦äº†ï¼Œä¸€èˆ¬äººä¹Ÿä¼šç›´æ¥ä»ç»“æœé›†å¤„ç†ç©æ‰€æœ‰çš„ç»“æœï¼Œ
-*             è€ŒMYSQLçš„å‡½æ•°ï¼Œï¼ˆä¸çŸ¥é“5.0å¢åŠ å‡½æ•°æ²¡æœ‰ï¼Œæˆ‘ä»¥4.0çš„CPIåšçš„è®¾è®¡ï¼‰ï¼Œæ˜¯é€šè¿‡
-*             ä¸€ä¸ªmysql_fetch_rowå‡½æ•°å¾—åˆ°å½“å‰è¡Œï¼Œä½ å¿…é¡»ä¸€è¡Œè¡Œçš„é»‘é†‹æ —
-*             æ‰€ä»¥æˆ‘è®¾è®¡æˆä¸»åŠ¨å¸®ä½ è®°å½•å½“å‰è¡Œçš„ï¼Œå½“å‰åˆ—ï¼Œä½ é€šè¿‡fetch_row_nextï¼Œå°†å½“å‰è¡Œ+1ï¼Œ
-*             ç„¶åä½ å¯ä»¥é€šè¿‡ >> æ“ä½œç¬¦å·ï¼Œå–å¾—ä¸ªä¸ªå­—æ®µå€¼ã€‚
-*             ç›¸å¯¹è€Œè¨€è¿˜æ˜¯æ¯”è¾ƒç®€å•çš„ï¼Œ
-*             æ—©å¹´åœ¨ä»£ç é‡Œé¢ç”¨äº†å¾ˆå¤šä¿æŠ¤ï¼Œä½†åæ¥å‘ç°ï¼Œè¿™äº›ä¿æŠ¤çš„æ„ä¹‰å®åœ¨æœ‰é™ï¼Œä¸å¦‚è®©ä½ å´©æºƒ
+* @details    Éè¼ÆË¼Â·ÈçÏÂ£¬ÎÒ²»Ïë¸ãÌ«¶àÀà£¬ÆäÊµ×¼È·ËµÓ¦¸Ã»¹ÓĞÒ»²ã·â×°£¬ÁĞ·â×°ÔÚOO
+*             µÄ½Ç¶È¿´Æğ»á¸ü¼ÓÍêÃÀÒ»Ğ©£¬
+*             µ«ÊÇÎÒ²»Ï²»¶Ì«Âé·³ÁË£¬Ò»°ãÈËÒ²»áÖ±½Ó´Ó½á¹û¼¯´¦ÀíÍæËùÓĞµÄ½á¹û£¬
+*             ¶øMYSQLµÄº¯Êı£¬£¨²»ÖªµÀ5.0Ôö¼Óº¯ÊıÃ»ÓĞ£¬ÎÒÒÔ4.0µÄCPI×öµÄÉè¼Æ£©£¬ÊÇÍ¨¹ı
+*             Ò»¸ömysql_fetch_rowº¯ÊıµÃµ½µ±Ç°ĞĞ£¬Äã±ØĞëÒ»ĞĞĞĞµÄºÚ´×Àõ
+*             ËùÒÔÎÒÉè¼Æ³ÉÖ÷¶¯°ïÄã¼ÇÂ¼µ±Ç°ĞĞµÄ£¬µ±Ç°ÁĞ£¬ÄãÍ¨¹ıfetch_row_next£¬½«µ±Ç°ĞĞ+1£¬
+*             È»ºóÄã¿ÉÒÔÍ¨¹ı >> ²Ù×÷·ûºÅ£¬È¡µÃ¸ö¸ö×Ö¶ÎÖµ¡£
+*             Ïà¶Ô¶øÑÔ»¹ÊÇ±È½Ï¼òµ¥µÄ£¬
+*             ÔçÄêÔÚ´úÂëÀïÃæÓÃÁËºÜ¶à±£»¤£¬µ«ºóÀ´·¢ÏÖ£¬ÕâĞ©±£»¤µÄÒâÒåÊµÔÚÓĞÏŞ£¬²»ÈçÈÃÄã±ÀÀ£
 *
-*             2013å¹´1æœˆï¼Œæˆ‘ä»æ–°å›å¤´æ•´ç†ä¸€ä¸‹è¿™æ®µä»£ç çš„æ³¨é‡Šï¼Œæˆ‘è§‰å¾—æˆ‘åœ¨æä¾›APIä¸Šæœ‰ç‚¹åæ‰§ç‹‚çš„
-*             å€¾å‘ï¼Œå¥½å§ï¼Œæƒ³8å¹´å‰çš„æ‡µæ‡‚å°‘å¹´è‡´æ•¬ã€‚
+*             2013Äê1ÔÂ£¬ÎÒ´ÓĞÂ»ØÍ·ÕûÀíÒ»ÏÂÕâ¶Î´úÂëµÄ×¢ÊÍ£¬ÎÒ¾õµÃÎÒÔÚÌá¹©APIÉÏÓĞµãÆ«Ö´¿ñµÄ
+*             ÇãÏò£¬ºÃ°É£¬Ïë8ÄêÇ°µÄãÂ¶®ÉÙÄêÖÂ¾´¡£
 *
-* @note       å…¶ä¸­æœ‰ä¸å°‘ç”¨åˆ—å­—æ®µåç§°å¤„ç†çš„å‡½æ•°ï¼Œä½†å…¶å®ä¸€æ–¹é¢ï¼Œåˆ—åç§°çš„å¤„ç†å¹¶ä¸é«˜æ•ˆï¼Œ
-*             ä¸€æ–¹é¢å…¶å®å¾ˆå¤šç»“æœçš„åˆ—å­—æ®µåç§°å¾ˆä¸æ ‡å‡†ï¼Œæ¯”å¦‚å¤§å°å†™ï¼Œä¸€äº›å­—æ®µæ˜¯ç»„åˆï¼Œå‡½
-*             æ•°è¿ç®—å¾—åˆ°çš„ç»“æœç­‰ï¼Œæ‰€ä»¥æˆ‘ä¸æ¨èä½¿ç”¨ï¼Œ
+* @note       ÆäÖĞÓĞ²»ÉÙÓÃÁĞ×Ö¶ÎÃû³Æ´¦ÀíµÄº¯Êı£¬µ«ÆäÊµÒ»·½Ãæ£¬ÁĞÃû³ÆµÄ´¦Àí²¢²»¸ßĞ§£¬
+*             Ò»·½ÃæÆäÊµºÜ¶à½á¹ûµÄÁĞ×Ö¶ÎÃû³ÆºÜ²»±ê×¼£¬±ÈÈç´óĞ¡Ğ´£¬Ò»Ğ©×Ö¶ÎÊÇ×éºÏ£¬º¯
+*             ÊıÔËËãµÃµ½µÄ½á¹ûµÈ£¬ËùÒÔÎÒ²»ÍÆ¼öÊ¹ÓÃ£¬
 *
 */
 
 #ifndef ZCE_LIB_MYSQL_DB_RESULT_H_
 #define ZCE_LIB_MYSQL_DB_RESULT_H_
 
-//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
+//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
 #if defined ZCE_USE_MYSQL
 
 #include "zce_boost_non_copyable.h"
@@ -37,117 +37,117 @@
 #include "zce_mysql_field.h"
 
 /*!
-* @brief      MYSQLçš„ç»“æœé›†å°è£…
-*             è€ƒè™‘ä¸€ä¸‹ï¼Œä¹Ÿè®©è¿™ä¸ªä¸œä¸œNO Copyableäº†ï¼Œ
+* @brief      MYSQLµÄ½á¹û¼¯·â×°
+*             ¿¼ÂÇÒ»ÏÂ£¬Ò²ÈÃÕâ¸ö¶«¶«NO CopyableÁË£¬
 *
 */
 class ZCE_Mysql_Result : ZCE_NON_Copyable
 {
 public:
 
-    ///ä¸€ä¸ªç©ºç»“æ„ï¼Œç”±äºäºŒè¿›åˆ¶æ•°æ®çš„çš„è½¬æ¢ï¼Œç”¨äº>>æ“ä½œåŒºåˆ†char *å’Œ2è¿›åˆ¶æ•°æ®ï¼Œ
+    ///Ò»¸ö¿Õ½á¹¹£¬ÓÉÓÚ¶ş½øÖÆÊı¾İµÄµÄ×ª»»£¬ÓÃÓÚ>>²Ù×÷Çø·Öchar *ºÍ2½øÖÆÊı¾İ£¬
     struct BINARY
     {
     };
 
 public:
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     ZCE_Mysql_Result();
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     ZCE_Mysql_Result(MYSQL_RES *sqlresult);
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     ~ZCE_Mysql_Result();
 
-    ///ç»“æœé›†åˆæ˜¯å¦ä¸ºç©º
+    ///½á¹û¼¯ºÏÊÇ·ñÎª¿Õ
     inline bool is_null();
 
     /*!
-    * @brief      è®¾ç½®ç»“æœé›†åˆ
+    * @brief      ÉèÖÃ½á¹û¼¯ºÏ
     * @return     void
-    * @param      sqlresult æ”¾å…¥ç»“æœé›†åˆ
+    * @param      sqlresult ·ÅÈë½á¹û¼¯ºÏ
     */
     void set_mysql_result(MYSQL_RES *sqlresult);
 
-    ///æ ¹æ®Field IDè¿”å›è¡¨å®šä¹‰åˆ—åŸŸå,æ³¨æ„è®¡ç®—å¾—åˆ°çš„åˆ—çš„åå­—ä¹Ÿå¯èƒ½æ˜¯ç©º
+    ///¸ù¾İField ID·µ»Ø±í¶¨ÒåÁĞÓòÃû,×¢Òâ¼ÆËãµÃµ½µÄÁĞµÄÃû×ÖÒ²¿ÉÄÜÊÇ¿Õ
     inline char *field_name(unsigned int fieldid) const;
 
     /*!
-    * @brief      æ ¹æ®Field Nameå¾—åˆ°Field ID,åˆ—å·
-    * @return     inline int 0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param[in]  fname      åˆ—åç§°,
-    * @param[out] fieldid    è¿”å›çš„åˆ—åç§°å¯¹åº”åˆ—ID
+    * @brief      ¸ù¾İField NameµÃµ½Field ID,ÁĞºÅ
+    * @return     inline int 0³É¹¦£¬-1Ê§°Ü
+    * @param[in]  fname      ÁĞÃû³Æ,
+    * @param[out] fieldid    ·µ»ØµÄÁĞÃû³Æ¶ÔÓ¦ÁĞID
     */
     inline int field_index(const char *fname,
                            unsigned int &fieldid) const;
 
     /*!
-    * @brief      è¿”å›ç»“æœé›†çš„è¡Œæ•°ç›®
-    * @return     unsigned int è¡Œçš„æ•°é‡
+    * @brief      ·µ»Ø½á¹û¼¯µÄĞĞÊıÄ¿
+    * @return     unsigned int ĞĞµÄÊıÁ¿
     */
     inline unsigned int num_of_rows() const;
 
     /*!
-    * @brief      è¿”å›ç»“æœé›†çš„åˆ—æ•°ç›®
-    * @return     unsigned int åˆ—çš„æ•°é‡
+    * @brief      ·µ»Ø½á¹û¼¯µÄÁĞÊıÄ¿
+    * @return     unsigned int ÁĞµÄÊıÁ¿
     */
     inline unsigned int num_of_fields() const;
 
     /*!
-    * @brief      æ ¹æ®åˆ—åºå·IDå¾—åˆ°å­—æ®µFIELDï¼Œ[]æ“ä½œç¬¦å·å‡½æ•°ä¸æ£€æŸ¥æ£€æŸ¥åˆ—ID,è‡ªå·±ä¿è¯å‚æ•°
+    * @brief      ¸ù¾İÁĞĞòºÅIDµÃµ½×Ö¶ÎFIELD£¬[]²Ù×÷·ûºÅº¯Êı²»¼ì²é¼ì²éÁĞID,×Ô¼º±£Ö¤²ÎÊı
     * @return     ZCE_MySQL_Field
-    * @param[in]  fieldid          å–çš„å­—æ®µä¸‹æ ‡
+    * @param[in]  fieldid          È¡µÄ×Ö¶ÎÏÂ±ê
     */
     ZCE_Mysql_Field operator[](unsigned int fieldid) const;
 
     /*!
-    * @brief      é€šè¿‡åˆ—IDï¼ŒæŸ¥è¯¢å½“å‰è¡Œçš„å­—æ®µï¼Œæ€§èƒ½å¥½ï¼Œä¸‹æ ‡å®šä½
-    * @return     int      0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param[in]  fieldid  åˆ—IDï¼Œä»0å¼€å§‹
-    * @param[out] ffield   è¿”å›åˆ—çš„å€¼
+    * @brief      Í¨¹ıÁĞID£¬²éÑ¯µ±Ç°ĞĞµÄ×Ö¶Î£¬ĞÔÄÜºÃ£¬ÏÂ±ê¶¨Î»
+    * @return     int      0³É¹¦£¬-1Ê§°Ü
+    * @param[in]  fieldid  ÁĞID£¬´Ó0¿ªÊ¼
+    * @param[out] ffield   ·µ»ØÁĞµÄÖµ
     */
     int get_field(unsigned int fieldid, ZCE_Mysql_Field &ffield) const;
 
     /*!
-    * @brief      é€šè¿‡åˆ—åç§°æŸ¥è¯¢å½“å‰è¡Œçš„æŸä¸ªå­—æ®µçš„å€¼ï¼Œä½†æ€§èƒ½å¹¶ä¸å¥½
-    * @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      fname   åˆ—å­—æ®µçš„åç§°ï¼ŒSQLä¸­çš„åç§°ï¼Œå¦‚æœæ˜¯å¤æ‚çš„SQL SELECTï¼Œåˆ—åå­—ä¼šæ¯”è¾ƒæ€ªå¼‚ï¼Œ
-    * @param      ffield  è¿”å›å‚æ•°ï¼Œåˆ—æ•°æ®çš„å°è£…
+    * @brief      Í¨¹ıÁĞÃû³Æ²éÑ¯µ±Ç°ĞĞµÄÄ³¸ö×Ö¶ÎµÄÖµ£¬µ«ĞÔÄÜ²¢²»ºÃ
+    * @return     int     0³É¹¦£¬-1Ê§°Ü
+    * @param      fname   ÁĞ×Ö¶ÎµÄÃû³Æ£¬SQLÖĞµÄÃû³Æ£¬Èç¹ûÊÇ¸´ÔÓµÄSQL SELECT£¬ÁĞÃû×Ö»á±È½Ï¹ÖÒì£¬
+    * @param      ffield  ·µ»Ø²ÎÊı£¬ÁĞÊı¾İµÄ·â×°
     */
     int get_field(const char *, ZCE_Mysql_Field &ffield) const;
 
     /*!
-    * @brief      åœ¨å½“å‰è¡Œï¼Œæ ¹æ®åˆ—åºå·IDå¾—åˆ°å­—æ®µå€¼,å°†æ•°æ®çš„æŒ‡é’ˆä½œä¸ºä½œä¸ºè¿”å›å€¼
-    * @return     const char* æ•°æ®çš„æŒ‡é’ˆï¼Œè¿”å›NULLè¡¨ç¤ºå–é”™è¯¯
-    * @param      fieldid     ä¸‹æ ‡
+    * @brief      ÔÚµ±Ç°ĞĞ£¬¸ù¾İÁĞĞòºÅIDµÃµ½×Ö¶ÎÖµ,½«Êı¾İµÄÖ¸Õë×÷Îª×÷Îª·µ»ØÖµ
+    * @return     const char* Êı¾İµÄÖ¸Õë£¬·µ»ØNULL±íÊ¾È¡´íÎó
+    * @param      fieldid     ÏÂ±ê
     * @note
     */
     inline const char *field_data(const unsigned int fieldid) const;
 
     /*!
-    * @brief      åœ¨å½“å‰è¡Œï¼Œå½“å‰åˆ—ï¼Œå¾—åˆ°å­—æ®µå€¼,å°†æ•°æ®çš„æŒ‡é’ˆä½œä¸ºä½œä¸ºè¿”å›å€¼
-    * @return     const char* æ•°æ®çš„æŒ‡é’ˆï¼Œè¿”å›NULLè¡¨ç¤ºå–é”™è¯¯
-    * @param      fname       åˆ—ï¼ˆå­—æ®µï¼‰åç§°
+    * @brief      ÔÚµ±Ç°ĞĞ£¬µ±Ç°ÁĞ£¬µÃµ½×Ö¶ÎÖµ,½«Êı¾İµÄÖ¸Õë×÷Îª×÷Îª·µ»ØÖµ
+    * @return     const char* Êı¾İµÄÖ¸Õë£¬·µ»ØNULL±íÊ¾È¡´íÎó
+    * @param      fname       ÁĞ£¨×Ö¶Î£©Ãû³Æ
     */
     const char *field_data(const char *fname) const;
 
     /*!
-    * @brief      æ ¹æ®åˆ—åºå·IDå¾—åˆ°å½“å‰è¡Œçš„å­—æ®µå€¼,
-    * @return     int       0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      fieldid   åˆ—ID
-    * @param      pfdata    åˆ—æ•°æ®çš„æŒ‡é’ˆ
+    * @brief      ¸ù¾İÁĞĞòºÅIDµÃµ½µ±Ç°ĞĞµÄ×Ö¶ÎÖµ,
+    * @return     int       0³É¹¦£¬-1Ê§°Ü
+    * @param      fieldid   ÁĞID
+    * @param      pfdata    ÁĞÊı¾İµÄÖ¸Õë
     */
     inline int field_data(unsigned int fieldid, char *pfdata) const;
 
     /*!
-    * @brief      æ ¹æ®åˆ—åå­—å¾—åˆ°å­—æ®µå€¼
-    * @return     int      0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      fname    åˆ—åç§°
-    * @param      pfdata   åˆ—æ•°æ®çš„æŒ‡é’ˆ
+    * @brief      ¸ù¾İÁĞÃû×ÖµÃµ½×Ö¶ÎÖµ
+    * @return     int      0³É¹¦£¬-1Ê§°Ü
+    * @param      fname    ÁĞÃû³Æ
+    * @param      pfdata   ÁĞÊı¾İµÄÖ¸Õë
     */
     int field_data(const char *fname, char *pfdata) const;
 
     /*!
-    * @brief      æ ¹æ®åˆ—åºå·å¾—åˆ°å­—æ®µçš„é•¿åº¦
+    * @brief      ¸ù¾İÁĞĞòºÅµÃµ½×Ö¶ÎµÄ³¤¶È
     * @return     int
     * @param      fieldid
     * @param      flength
@@ -156,42 +156,42 @@ public:
     inline int field_length(unsigned int fieldid, unsigned int &flength) const;
 
     /*!
-    * @brief      æ ¹æ®åˆ—åå­—å¾—åˆ°å­—æ®µçš„é•¿åº¦
-    * @return     int      0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      fname    åˆ—åç§°ï¼ŒSELECTå­—æ®µåç§°
-    * @param      flength  åˆ—æ•°æ®çš„é•¿åº¦
+    * @brief      ¸ù¾İÁĞÃû×ÖµÃµ½×Ö¶ÎµÄ³¤¶È
+    * @return     int      0³É¹¦£¬-1Ê§°Ü
+    * @param      fname    ÁĞÃû³Æ£¬SELECT×Ö¶ÎÃû³Æ
+    * @param      flength  ÁĞÊı¾İµÄ³¤¶È
     */
     int field_length(const char *fname, unsigned int &flength) const;
 
-    ///å–å¾—å½“å‰çš„å­—æ®µçš„é•¿åº¦
+    ///È¡µÃµ±Ç°µÄ×Ö¶ÎµÄ³¤¶È
     inline unsigned int get_cur_field_length();
 
     /*!
-    * @brief      æ ¹æ®åˆ—åºå·IDå¾—åˆ°å­—æ®µçš„ç±»å‹
-    * @return     inline int   0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      fieldid      åˆ—å­—æ®µID
-    * @param      ftype        åˆ—æ•°æ®çš„é•¿åº¦ï¼Œè¦å‚è€ƒMYSQL CAPI çš„enum_field_types
+    * @brief      ¸ù¾İÁĞĞòºÅIDµÃµ½×Ö¶ÎµÄÀàĞÍ
+    * @return     inline int   0³É¹¦£¬-1Ê§°Ü
+    * @param      fieldid      ÁĞ×Ö¶ÎID
+    * @param      ftype        ÁĞÊı¾İµÄ³¤¶È£¬Òª²Î¿¼MYSQL CAPI µÄenum_field_types
     */
     inline int field_type(unsigned int fieldid, enum_field_types &ftype) const;
 
     /*!
-    * @brief      æ ¹æ®åˆ—åå­—å¾—åˆ°å­—æ®µçš„ç±»å‹
-    * @return     int    0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      fname  åˆ—åç§°ï¼ŒSELECTå­—æ®µåç§°
-    * @param      ftype  åˆ—ç±»å‹ï¼Œè¦å‚è€ƒMYSQL CAPI çš„enum_field_types
+    * @brief      ¸ù¾İÁĞÃû×ÖµÃµ½×Ö¶ÎµÄÀàĞÍ
+    * @return     int    0³É¹¦£¬-1Ê§°Ü
+    * @param      fname  ÁĞÃû³Æ£¬SELECT×Ö¶ÎÃû³Æ
+    * @param      ftype  ÁĞÀàĞÍ£¬Òª²Î¿¼MYSQL CAPI µÄenum_field_types
     */
     int field_type(const char *fname, enum_field_types &ftype) const;
 
     /*!
-    * @brief      å¾—åˆ°å­—æ®µè¡¨ç»“æ„å®šä¹‰çš„é•¿åº¦
+    * @brief      µÃµ½×Ö¶Î±í½á¹¹¶¨ÒåµÄ³¤¶È
     * @return     int
-    * @param      fieldid åˆ—å­—æ®µID
-    * @param      flength åˆ—å®šä¹‰çš„é•¿åº¦ï¼Œ
+    * @param      fieldid ÁĞ×Ö¶ÎID
+    * @param      flength ÁĞ¶¨ÒåµÄ³¤¶È£¬
     */
     int field_define_size(unsigned int fieldid, unsigned int &flength) const;
 
     /*!
-    * @brief      å¾—åˆ°å­—æ®µè¡¨ç»“æ„å®šä¹‰çš„é•¿åº¦
+    * @brief      µÃµ½×Ö¶Î±í½á¹¹¶¨ÒåµÄ³¤¶È
     * @return     int
     * @param      name
     * @param      flength
@@ -200,26 +200,26 @@ public:
     int field_define_size(const char *name, unsigned int &flength) const;
 
     /*!
-    * @brief      å°†ç»“æœé›†å¤„ç†çš„è¡Œï¼Œæ£€ç´¢ç§»åŠ¨åˆ°æŸè¡Œ
-    * @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
-    * @param      row_id è¡ŒID
+    * @brief      ½«½á¹û¼¯´¦ÀíµÄĞĞ£¬¼ìË÷ÒÆ¶¯µ½Ä³ĞĞ
+    * @return     int  0³É¹¦£¬-1Ê§°Ü
+    * @param      row_id ĞĞID
     */
     int seek_row(unsigned int row_id);
 
     /*!
-    * @brief      æ£€ç´¢åˆ°ä¸‹ä¸€è¡Œï¼Œè¿”å›true,å…¶å®æœ‰ç‚¹ç±»ä¼¼Oraleçš„å…‰æ ‡å¤„ç†ï¼Œå‘µå‘µ
-    * @return     bool trueè¿˜æœ‰ç»“æœé›†åˆï¼Œfalseæ²¡æœ‰ç»“æœé›†åˆäº†
+    * @brief      ¼ìË÷µ½ÏÂÒ»ĞĞ£¬·µ»Øtrue,ÆäÊµÓĞµãÀàËÆOraleµÄ¹â±ê´¦Àí£¬ºÇºÇ
+    * @return     bool true»¹ÓĞ½á¹û¼¯ºÏ£¬falseÃ»ÓĞ½á¹û¼¯ºÏÁË
     */
     bool fetch_row_next();
 
     /*!
-    * @brief      å¦‚æœå·²ç»æœ‰ç»“æœé›†, é‡Šæ”¾åŸæœ‰çš„ç»“æœé›†,
+    * @brief      Èç¹ûÒÑ¾­ÓĞ½á¹û¼¯, ÊÍ·ÅÔ­ÓĞµÄ½á¹û¼¯,
     */
     void free_result();
 
-    /// >> æ“ä½œç¬¦å·,ç”¨äºå°†ç»“æœè¾“å‡ºåˆ°valä¸­
-    ///æ—©å¹´ä¸ºäº†å®‰å…¨ï¼Œ>>æ“ä½œå‰è¿˜åšäº†å„ç§é˜²æ­¢æº¢å‡ºçš„æ£€æŸ¥ï¼Œç»“æœåè€Œå¯¼è‡´ä¸€ä¸ªbugï¼Œ
-    ///æ‰€ä»¥åæ¥æ”¹ä¸ºè¿˜æ˜¯ç”±è°ƒç”¨è€…åŒ…è£…è¾¹ç•Œå®‰å…¨æŠŠ
+    /// >> ²Ù×÷·ûºÅ,ÓÃÓÚ½«½á¹ûÊä³öµ½valÖĞ
+    ///ÔçÄêÎªÁË°²È«£¬>>²Ù×÷Ç°»¹×öÁË¸÷ÖÖ·ÀÖ¹Òç³öµÄ¼ì²é£¬½á¹û·´¶øµ¼ÖÂÒ»¸öbug£¬
+    ///ËùÒÔºóÀ´¸ÄÎª»¹ÊÇÓÉµ÷ÓÃÕß°ü×°±ß½ç°²È«°Ñ
     ZCE_Mysql_Result &operator >> (char &val);
     ZCE_Mysql_Result &operator >> (short &val);
     ZCE_Mysql_Result &operator >> (int &val);
@@ -241,33 +241,33 @@ public:
     ZCE_Mysql_Result &operator >> (unsigned char *val);
     ZCE_Mysql_Result &operator >> (std::string &val);
 
-    ///äºŒè¿›åˆ¶çš„æ•°æ®è¦ç‰¹åˆ«è€ƒè™‘ä¸€ä¸‹,å­—ç¬¦ä¸²éƒ½ç‰¹åˆ«+1äº†,è€ŒäºŒè¿›åˆ¶æ•°æ®ä¸è¦è¿™æ ·è€ƒè™‘
+    ///¶ş½øÖÆµÄÊı¾İÒªÌØ±ğ¿¼ÂÇÒ»ÏÂ,×Ö·û´®¶¼ÌØ±ğ+1ÁË,¶ø¶ş½øÖÆÊı¾İ²»ÒªÕâÑù¿¼ÂÇ
     ZCE_Mysql_Result &operator >> (BINARY *);
 
 private:
-    ///ç»“æœé›†åˆ
+    ///½á¹û¼¯ºÏ
     MYSQL_RES       *mysql_result_;
 
-    ///ç»“æœé›†åˆçš„å½“å‰è¡Œ
+    ///½á¹û¼¯ºÏµÄµ±Ç°ĞĞ
     MYSQL_ROW        current_row_;
-    ///å½“å‰åˆ—ï¼Œ
+    ///µ±Ç°ÁĞ£¬
     unsigned int     current_field_;
 
-    ///æ•°ç»„æŒ‡é’ˆ,æŒ‡å‘ç»“æœé›†åˆçš„å½“å‰è¡Œçš„å„ä¸ªå­—æ®µæ•°æ®çš„é•¿åº¦
+    ///Êı×éÖ¸Õë,Ö¸Ïò½á¹û¼¯ºÏµÄµ±Ç°ĞĞµÄ¸÷¸ö×Ö¶ÎÊı¾İµÄ³¤¶È
     unsigned long   *fields_length_;
 
-    ///ç»“æœé›†çš„è¡Œæ•°
+    ///½á¹û¼¯µÄĞĞÊı
     unsigned int     num_result_row_;
 
-    ///ç»“æœé›†çš„åˆ—æ•°
+    ///½á¹û¼¯µÄÁĞÊı
     unsigned int     num_result_field_;
 
-    ///MYSQL_FIELDæ•°ç»„æŒ‡é’ˆ,æŒ‡å‘ç»“æœé›†åˆçš„æ‰€æœ‰Fieldè¯´æ˜.
+    ///MYSQL_FIELDÊı×éÖ¸Õë,Ö¸Ïò½á¹û¼¯ºÏµÄËùÓĞFieldËµÃ÷.
     MYSQL_FIELD      *mysql_fields_;
 
 };
 
-//Description     : æŸ¥è¯¢ç»“æœé›†åˆæ˜¯å¦ä¸ºç©º
+//Description     : ²éÑ¯½á¹û¼¯ºÏÊÇ·ñÎª¿Õ
 inline bool ZCE_Mysql_Result::is_null()
 {
     if (mysql_result_)
@@ -278,14 +278,14 @@ inline bool ZCE_Mysql_Result::is_null()
     return true;
 }
 
-//æ ¹æ®åˆ—åå¾—åˆ°åˆ—ID,ä»0å¼€å§‹æ’åº
-//å¾ªç¯æ¯”è¾ƒ,æ•ˆç‡æ¯”è¾ƒä½
+//¸ù¾İÁĞÃûµÃµ½ÁĞID,´Ó0¿ªÊ¼ÅÅĞò
+//Ñ­»·±È½Ï,Ğ§ÂÊ±È½ÏµÍ
 inline int ZCE_Mysql_Result::field_index(const char *fname, unsigned int &field_id) const
 {
-    //å¾ªç¯æ¯”è¾ƒæ‰€æœ‰çš„åˆ—å,æ•ˆç‡æ¯”è¾ƒä½ä¸‹
+    //Ñ­»·±È½ÏËùÓĞµÄÁĞÃû,Ğ§ÂÊ±È½ÏµÍÏÂ
     for (unsigned int i = 0; i < num_result_field_; ++i)
     {
-        //MYSQLåˆ—åå­—æ˜¯ä¸åŒºåˆ†å¤§å°å†™çš„
+        //MYSQLÁĞÃû×ÖÊÇ²»Çø·Ö´óĞ¡Ğ´µÄ
         if (!strcasecmp(fname, mysql_fields_[i].name))
         {
             field_id = i;
@@ -296,33 +296,33 @@ inline int ZCE_Mysql_Result::field_index(const char *fname, unsigned int &field_
     return -1;
 }
 
-//æ ¹æ®åˆ—Field ID è¿”å›è¡¨å®šä¹‰åˆ—åŸŸå,åˆ—åŸŸåå­—,å¯èƒ½ä¸ºç©º
-//è®¡ç®—å¾—åˆ°çš„åˆ—çš„åˆ—åå­—ä¹Ÿå¯èƒ½æ˜¯ç©º,
+//¸ù¾İÁĞField ID ·µ»Ø±í¶¨ÒåÁĞÓòÃû,ÁĞÓòÃû×Ö,¿ÉÄÜÎª¿Õ
+//¼ÆËãµÃµ½µÄÁĞµÄÁĞÃû×ÖÒ²¿ÉÄÜÊÇ¿Õ,
 inline char *ZCE_Mysql_Result::field_name(unsigned int fieldid) const
 {
-    //æ£€æŸ¥ç»“æœé›†åˆä¸ºç©º,æˆ–è€…å‚æ•°nfieldé”™è¯¯
+    //¼ì²é½á¹û¼¯ºÏÎª¿Õ,»òÕß²ÎÊınfield´íÎó
     if (mysql_result_ == NULL || fieldid >= num_result_field_)
     {
         return NULL;
     }
 
-    //ç›´æ¥å¾—åˆ°åˆ—åŸŸçš„åå­—
+    //Ö±½ÓµÃµ½ÁĞÓòµÄÃû×Ö
     return mysql_fields_[fieldid].name;
 }
 
-//è¿”å›ç»“æœé›†çš„è¡Œæ•°ç›®,num_result_row_ ç»“æœåœ¨executeå‡½æ•°ä¸­ä¹Ÿå¯ä»¥å¾—åˆ°
+//·µ»Ø½á¹û¼¯µÄĞĞÊıÄ¿,num_result_row_ ½á¹ûÔÚexecuteº¯ÊıÖĞÒ²¿ÉÒÔµÃµ½
 inline unsigned int ZCE_Mysql_Result::num_of_rows() const
 {
     return num_result_row_;
 }
 
-//è¿”å›ç»“æœé›†çš„åˆ—æ•°ç›®
+//·µ»Ø½á¹û¼¯µÄÁĞÊıÄ¿
 inline unsigned int ZCE_Mysql_Result::num_of_fields() const
 {
     return num_result_field_;
 }
 
-//æ ¹æ®å­—æ®µåˆ—ID,å¾—åˆ°å­—æ®µå€¼
+//¸ù¾İ×Ö¶ÎÁĞID,µÃµ½×Ö¶ÎÖµ
 const char *ZCE_Mysql_Result::field_data(const unsigned int fieldid) const
 {
     if (current_row_ == NULL || fieldid >= num_result_field_ )
@@ -333,10 +333,10 @@ const char *ZCE_Mysql_Result::field_data(const unsigned int fieldid) const
     return current_row_[fieldid];
 }
 
-//æ ¹æ®å­—æ®µåˆ—ID,å¾—åˆ°å­—æ®µå€¼çš„æŒ‡é’ˆï¼Œé•¿åº¦ä½ è‡ªå·±ä¿è¯
+//¸ù¾İ×Ö¶ÎÁĞID,µÃµ½×Ö¶ÎÖµµÄÖ¸Õë£¬³¤¶ÈÄã×Ô¼º±£Ö¤
 inline int ZCE_Mysql_Result::field_data(unsigned int fieldid, char *pfdata) const
 {
-    //æ£€æŸ¥ç»“æœé›†åˆçš„å½“å‰è¡Œä¸ºç©º(å¯èƒ½æ²¡æœ‰fetch_row_next),æˆ–è€…å‚æ•°fieldidé”™è¯¯
+    //¼ì²é½á¹û¼¯ºÏµÄµ±Ç°ĞĞÎª¿Õ(¿ÉÄÜÃ»ÓĞfetch_row_next),»òÕß²ÎÊıfieldid´íÎó
     if (current_row_ == NULL || fieldid >= num_result_field_ || pfdata == NULL)
     {
         ZCE_ASSERT(false);
@@ -347,11 +347,11 @@ inline int ZCE_Mysql_Result::field_data(unsigned int fieldid, char *pfdata) cons
     return 0;
 }
 
-//æ ¹æ®å­—æ®µé¡ºåºID,å¾—åˆ°å­—æ®µè¡¨ç»“æ„å®šä¹‰çš„ç±»å‹
+//¸ù¾İ×Ö¶ÎË³ĞòID,µÃµ½×Ö¶Î±í½á¹¹¶¨ÒåµÄÀàĞÍ
 inline int ZCE_Mysql_Result::field_type(unsigned int fieldid, enum_field_types &ftype) const
 {
 
-    //æ£€æŸ¥ç»“æœé›†åˆä¸ºç©º,æˆ–è€…å‚æ•°nfieldé”™è¯¯
+    //¼ì²é½á¹û¼¯ºÏÎª¿Õ,»òÕß²ÎÊınfield´íÎó
     if (current_row_ == NULL || fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
@@ -363,10 +363,10 @@ inline int ZCE_Mysql_Result::field_type(unsigned int fieldid, enum_field_types &
 
 }
 
-//æ ¹æ®Field ID å¾—åˆ°æ­¤åˆ—å€¼çš„å®é™…é•¿åº¦
+//¸ù¾İField ID µÃµ½´ËÁĞÖµµÄÊµ¼Ê³¤¶È
 inline int ZCE_Mysql_Result::field_length(unsigned int fieldid, unsigned int  &flength) const
 {
-    //æ£€æŸ¥ç»“æœé›†åˆçš„å½“å‰è¡Œä¸ºç©º(å¯èƒ½æ²¡æœ‰fetch_row_next),æˆ–è€…å‚æ•°fieldidé”™è¯¯
+    //¼ì²é½á¹û¼¯ºÏµÄµ±Ç°ĞĞÎª¿Õ(¿ÉÄÜÃ»ÓĞfetch_row_next),»òÕß²ÎÊıfieldid´íÎó
     if (current_row_ == NULL && fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
@@ -382,10 +382,10 @@ inline unsigned int ZCE_Mysql_Result::get_cur_field_length()
     return static_cast<unsigned int>(fields_length_[current_field_]);
 }
 
-//æ ¹æ®å­—æ®µçš„åºåˆ—å€¼å¾—åˆ°å­—æ®µå€¼
+//¸ù¾İ×Ö¶ÎµÄĞòÁĞÖµµÃµ½×Ö¶ÎÖµ
 inline int ZCE_Mysql_Result::get_field(unsigned int fieldid, ZCE_Mysql_Field &ffield) const
 {
-    //è¿›è¡Œå®‰å…¨æ£€æŸ¥ï¼Œå¦‚æœé”™è¯¯è¿”å›
+    //½øĞĞ°²È«¼ì²é£¬Èç¹û´íÎó·µ»Ø
     if (current_row_ == NULL || fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
@@ -397,15 +397,15 @@ inline int ZCE_Mysql_Result::get_field(unsigned int fieldid, ZCE_Mysql_Field &ff
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004å¹´7æœˆ22æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004Äê7ÔÂ22ÈÕ
 Function        : ZCE_Mysql_Result::operator[]
 Return          : ZCE_MySQL_Field
 Parameter List  :
   Param1: unsigned int fieldid
-Description     : æ ¹æ®åˆ—åºå·IDå¾—åˆ°å­—æ®µFIELDï¼Œ
+Description     : ¸ù¾İÁĞĞòºÅIDµÃµ½×Ö¶ÎFIELD£¬
 Calls           :
 Called By       :
-Other           : []æ“ä½œç¬¦å·å‡½æ•°ä¸æ£€æŸ¥æ£€æŸ¥åˆ—ID,è‡ªå·±ä¿è¯å‚æ•°
+Other           : []²Ù×÷·ûºÅº¯Êı²»¼ì²é¼ì²éÁĞID,×Ô¼º±£Ö¤²ÎÊı
 Modify Record   :
 ******************************************************************************************/
 inline ZCE_Mysql_Field ZCE_Mysql_Result::operator[](unsigned int fieldid) const
@@ -414,7 +414,7 @@ inline ZCE_Mysql_Field ZCE_Mysql_Result::operator[](unsigned int fieldid) const
     return ffield;
 }
 
-//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
+//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
 #endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_DB_RESULT_H_

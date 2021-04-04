@@ -21,29 +21,29 @@ SendRecv_Package_Base::SendRecv_Package_Base():
 
 SendRecv_Package_Base::~SendRecv_Package_Base()
 {
-    //æ¸…ç†å·²ç»åˆ†é…çš„ç¼“å†²åŒº
+    //ÇåÀíÒÑ¾­·ÖÅäµÄ»º³åÇø
     if (tibetan_send_appframe_)
     {
-        ZERG_FRAME_HEAD::delete_frame(tibetan_send_appframe_);
+        Zerg_App_Frame::delete_frame(tibetan_send_appframe_);
         tibetan_send_appframe_ = NULL;
     }
 
     if (tibetan_recv_appframe_)
     {
-        ZERG_FRAME_HEAD::delete_frame(tibetan_recv_appframe_);
+        Zerg_App_Frame::delete_frame(tibetan_recv_appframe_);
         tibetan_recv_appframe_ = NULL;
     }
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008å¹´4æœˆ25æ—¥
+Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008Äê4ÔÂ25ÈÕ
 Function        : Tibetan_SendRecv_Package::set_services_id
 Return          : void
 Parameter List  :
-  Param1: const SERVICES_ID& recv_service  æ¥æ”¶çš„æœåŠ¡å™¨ID
-  Param2: const SERVICES_ID& send_service  å‘é€çš„æœåŠ¡å™¨ID
-  Param3: const SERVICES_ID& proxy_service PROXYçš„æœåŠ¡å™¨ID
-  Param4: size_t frame_len å‡†å¤‡çš„FRAMEé•¿åº¦
+  Param1: const SERVICES_ID& recv_service  ½ÓÊÕµÄ·şÎñÆ÷ID
+  Param2: const SERVICES_ID& send_service  ·¢ËÍµÄ·şÎñÆ÷ID
+  Param3: const SERVICES_ID& proxy_service PROXYµÄ·şÎñÆ÷ID
+  Param4: size_t frame_len ×¼±¸µÄFRAME³¤¶È
 Description     :
 Calls           :
 Called By       :
@@ -61,16 +61,16 @@ void SendRecv_Package_Base::set_services_id(const SERVICES_ID &recv_service,
     tibetan_proxy_service_ = proxy_service;
     test_frame_len_ = frame_len;
 
-    //newä¸€ä¸ªAPPFRAME,
-    tibetan_send_appframe_ = ZERG_FRAME_HEAD::new_frame(test_frame_len_);
+    //newÒ»¸öAPPFRAME,
+    tibetan_send_appframe_ = Zerg_App_Frame::new_frame(test_frame_len_);
     tibetan_send_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
 
-    tibetan_recv_appframe_ = ZERG_FRAME_HEAD::new_frame(test_frame_len_);
+    tibetan_recv_appframe_ = Zerg_App_Frame::new_frame(test_frame_len_);
     tibetan_recv_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
 
 }
 
-//å–å¾—æ”¶åˆ°çš„äº‹åŠ¡ID
+//È¡µÃÊÕµ½µÄÊÂÎñID
 void SendRecv_Package_Base::get_recv_transid(unsigned int &trans_id)
 {
     trans_id = recv_trans_id_;
@@ -87,14 +87,14 @@ unsigned int SendRecv_Package_Base::get_backfill_transid()
     return backfill_trans_id_;
 }
 
-//å–å¾—æµ‹è¯•çš„APPFRAME
-ZERG_FRAME_HEAD *SendRecv_Package_Base::get_send_appframe()
+//È¡µÃ²âÊÔµÄAPPFRAME
+Zerg_App_Frame *SendRecv_Package_Base::get_send_appframe()
 {
     return tibetan_send_appframe_;
 }
 
-//å–å¾—æ¥æ”¶çš„APPFRAME
-ZERG_FRAME_HEAD *SendRecv_Package_Base::get_recv_appframe()
+//È¡µÃ½ÓÊÕµÄAPPFRAME
+Zerg_App_Frame *SendRecv_Package_Base::get_recv_appframe()
 {
     return tibetan_recv_appframe_;
 }

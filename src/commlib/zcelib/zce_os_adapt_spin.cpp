@@ -4,14 +4,14 @@
 #include "zce_os_adapt_mutex.h"
 #include "zce_os_adapt_spin.h"
 
-//SPIN é”çš„åˆå§‹åŒ–
+//SPIN ËøµÄ³õÊ¼»¯
 int zce::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int ret = 0;
 
-    //è¿›è¡Œåˆå§‹åŒ–ï¼Œå¤šçº¿ç¨‹ä¸‹ç”¨ä¸´ç•ŒåŒºæ¨¡æ‹Ÿ
+    //½øĞĞ³õÊ¼»¯£¬¶àÏß³ÌÏÂÓÃÁÙ½çÇøÄ£Äâ
     ret = zce::pthread_spin_initex(lock,
                                    (pshared == PTHREAD_PROCESS_SHARED) ? true : false,
                                    NULL);
@@ -29,7 +29,7 @@ int zce::pthread_spin_init(pthread_spinlock_t *lock, int pshared)
 #endif
 }
 
-//SPIN é”çš„åˆå§‹åŒ–æ‰©å±•ç‰ˆæœ¬
+//SPIN ËøµÄ³õÊ¼»¯À©Õ¹°æ±¾
 int zce::pthread_spin_initex(pthread_spinlock_t *lock,
                              bool process_share,
                              const char *spin_name)
@@ -39,7 +39,7 @@ int zce::pthread_spin_initex(pthread_spinlock_t *lock,
 
     int ret = 0;
 
-    //è¿›è¡Œåˆå§‹åŒ–ï¼Œå¤šçº¿ç¨‹ä¸‹ç”¨ä¸´ç•ŒåŒºæ¨¡æ‹Ÿ
+    //½øĞĞ³õÊ¼»¯£¬¶àÏß³ÌÏÂÓÃÁÙ½çÇøÄ£Äâ
     ret = zce::pthread_mutex_initex(lock,
                                     process_share,
                                     true,
@@ -51,10 +51,10 @@ int zce::pthread_spin_initex(pthread_spinlock_t *lock,
         return ret;
     }
 
-    //4000æ˜¯MSDNç»™å‡ºçš„å‚è€ƒæ•°æ®ã€‚
+    //4000ÊÇMSDN¸ø³öµÄ²Î¿¼Êı¾İ¡£
     const DWORD WIN_CS_SPIN_DEFAULT = 4096;
 
-    //æ²¡æœ‰è¿›ç¨‹é—´å…±äº«
+    //Ã»ÓĞ½ø³Ì¼ä¹²Ïí
     if (false == process_share )
     {
         ::SetCriticalSectionSpinCount(&(lock->thr_nontimeout_mutex_), WIN_CS_SPIN_DEFAULT);
@@ -69,33 +69,33 @@ int zce::pthread_spin_initex(pthread_spinlock_t *lock,
 #endif
 }
 
-//SPIN é”çš„é”€æ¯
+//SPIN ËøµÄÏú»Ù
 int zce::pthread_spin_destroy(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //Windowsä¸‹ç”¨ä¸´ç•ŒåŒºæˆ–è€…äº’æ–¥é‡æ¨¡æ‹Ÿ
+    //WindowsÏÂÓÃÁÙ½çÇø»òÕß»¥³âÁ¿Ä£Äâ
     return zce::pthread_mutex_destroy(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_destroy (lock);
 #endif
 }
 
-//SPIN é”çš„åŠ é”
+//SPIN ËøµÄ¼ÓËø
 int zce::pthread_spin_lock(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //Windowsä¸‹ç”¨ä¸´ç•ŒåŒºæˆ–è€…äº’æ–¥é‡æ¨¡æ‹Ÿ
+    //WindowsÏÂÓÃÁÙ½çÇø»òÕß»¥³âÁ¿Ä£Äâ
     return zce::pthread_mutex_lock(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_lock (lock);
 #endif
 }
 
-//SPIN é”çš„å°è¯•åŠ é”
+//SPIN ËøµÄ³¢ÊÔ¼ÓËø
 int zce::pthread_spin_trylock(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //Windowsä¸‹ç”¨ä¸´ç•ŒåŒºæˆ–è€…äº’æ–¥é‡æ¨¡æ‹Ÿ
+    //WindowsÏÂÓÃÁÙ½çÇø»òÕß»¥³âÁ¿Ä£Äâ
     return zce::pthread_mutex_trylock(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_trylock (lock);
@@ -103,11 +103,11 @@ int zce::pthread_spin_trylock(pthread_spinlock_t *lock)
 
 }
 
-//SPIN é”çš„è§£é”
+//SPIN ËøµÄ½âËø
 int zce::pthread_spin_unlock(pthread_spinlock_t *lock)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //Windowsä¸‹ç”¨ä¸´ç•ŒåŒºæˆ–è€…äº’æ–¥é‡æ¨¡æ‹Ÿ
+    //WindowsÏÂÓÃÁÙ½çÇø»òÕß»¥³âÁ¿Ä£Äâ
     return zce::pthread_mutex_unlock(lock);
 #elif defined (ZCE_OS_LINUX)
     return ::pthread_spin_unlock (lock);

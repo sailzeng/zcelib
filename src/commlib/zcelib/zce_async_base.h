@@ -4,8 +4,8 @@
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
 * @date       Saturday, March 01, 2014
-* @brief      ä¸€å¥—å¾ˆç®€å•çš„å¼‚æ­¥æ¡†æ¶çš„åŸºç±»ï¼Œå·²ç»æ‰©å±•å‡ºäº†FSMå’Œåç¨‹çš„ä¸¤ä¸ªå­ç±»ï¼Œ
-*             Luaçš„åç¨‹å¦‚æœæˆ‘æƒ³å°è£…åº”è¯¥ä¹Ÿä¸éš¾ï¼ŒLuaä»£ç éƒ¨åˆ†æˆ‘å·²ç»æ²¡æœ‰éšœç¢ã€‚
+* @brief      Ò»Ì×ºÜ¼òµ¥µÄÒì²½¿ò¼ÜµÄ»ùÀà£¬ÒÑ¾­À©Õ¹³öÁËFSMºÍĞ­³ÌµÄÁ½¸ö×ÓÀà£¬
+*             LuaµÄĞ­³ÌÈç¹ûÎÒÏë·â×°Ó¦¸ÃÒ²²»ÄÑ£¬Lua´úÂë²¿·ÖÎÒÒÑ¾­Ã»ÓĞÕÏ°­¡£
 *
 * @details
 *
@@ -29,7 +29,7 @@
 class ZCE_Async_ObjectMgr;
 
 /*!
-* @brief      å¼‚æ­¥å¯¹è±¡çš„åŸºç±»
+* @brief      Òì²½¶ÔÏóµÄ»ùÀà
 *
 */
 class ZCE_Async_Object
@@ -46,21 +46,21 @@ public:
 
 
     /*!
-    * @brief      åˆå§‹åŒ–å‡½æ•°ï¼Œåœ¨æ„é€ å‡½æ•°åè°ƒç”¨ï¼Œåœ¨æ”¾å…¥æ± å­å‰æ‰§è¡Œä¸€æ¬¡ï¼Œ
-    *             ä¸ºä»€ä¹ˆä¸å¦¨åˆ°æ„é€ å‡½æ•°ï¼Œå› ä¸ºæ‹…å¿ƒæœ‰äº›åˆå§‹åŒ–ä¼šæœ‰ä¸æˆåŠŸçš„æƒ…å†µï¼Œ
-    * @return     int 0æ ‡è¯†æˆåŠŸ
+    * @brief      ³õÊ¼»¯º¯Êı£¬ÔÚ¹¹Ôìº¯Êıºóµ÷ÓÃ£¬ÔÚ·ÅÈë³Ø×ÓÇ°Ö´ĞĞÒ»´Î£¬
+    *             ÎªÊ²Ã´²»·Áµ½¹¹Ôìº¯Êı£¬ÒòÎªµ£ĞÄÓĞĞ©³õÊ¼»¯»áÓĞ²»³É¹¦µÄÇé¿ö£¬
+    * @return     int 0±êÊ¶³É¹¦
     */
     virtual int initialize();
 
 
     /*!
-    * @brief      ç»“æŸé”€æ¯å‡½æ•°ï¼Œåœ¨ææ„å‰çš„è°ƒç”¨ï¼Œå…¶å®å°±æ˜¯å¯¹åº”ä¸Šé¢
+    * @brief      ½áÊøÏú»Ùº¯Êı£¬ÔÚÎö¹¹Ç°µÄµ÷ÓÃ£¬ÆäÊµ¾ÍÊÇ¶ÔÓ¦ÉÏÃæ
     * @return     int
     */
     virtual void finish();
 
     /*!
-    * @brief      å…‹éš†è‡ªå·±
+    * @brief      ¿ËÂ¡×Ô¼º
     * @return     ZCE_Async_Object*
     * @param      async_mgr
     */
@@ -68,40 +68,40 @@ public:
                                     unsigned int reg_cmd) = 0;
 
     /*!
-    * @brief      å¼‚æ­¥å¯¹è±¡å¼€å§‹,å¯ä»¥ç”¨æ¥åšæ¯æ¬¡é‡æ–°è¿›è¡Œåˆå§‹åŒ–æ—¶å€™çš„äº‹æƒ…
+    * @brief      Òì²½¶ÔÏó¿ªÊ¼,¿ÉÒÔÓÃÀ´×öÃ¿´ÎÖØĞÂ½øĞĞ³õÊ¼»¯Ê±ºòµÄÊÂÇé
     */
     virtual void on_start();
 
     /*!
-    * @brief      å¼‚æ­¥å¯¹è±¡è¿è¡Œ
-    * @param[out] continue_run å¼‚æ­¥å¯¹è±¡æ˜¯å¦ç»§ç»­è¿è¡Œï¼Œå¦‚æœä¸ç»§ç»­(è¿”å›false)ï¼Œ
+    * @brief      Òì²½¶ÔÏóÔËĞĞ
+    * @param[out] continue_run Òì²½¶ÔÏóÊÇ·ñ¼ÌĞøÔËĞĞ£¬Èç¹û²»¼ÌĞø(·µ»Øfalse)£¬
     */
     virtual void on_run(const void *outer_data, bool &continue_run) = 0;
 
 
     /*!
-    * @brief      å¼‚æ­¥å¯¹è±¡è¶…æ—¶å¤„ç†
-    * @param[in]  now_time  å‘ç”Ÿè¶…æ—¶çš„æ—¶é—´ï¼Œ
-    * @param[out] continue_run å¼‚æ­¥å¯¹è±¡æ˜¯å¦ç»§ç»­è¿è¡Œ,
+    * @brief      Òì²½¶ÔÏó³¬Ê±´¦Àí
+    * @param[in]  now_time  ·¢Éú³¬Ê±µÄÊ±¼ä£¬
+    * @param[out] continue_run Òì²½¶ÔÏóÊÇ·ñ¼ÌĞøÔËĞĞ,
     */
     virtual void on_timeout(const ZCE_Time_Value &now_time,
                             bool &continue_run) = 0;
 
     /*!
-    * @brief      å¼‚æ­¥å¯¹è±¡è¿è¡Œç»“æŸï¼Œåšç»“æŸï¼Œé‡Šæ”¾èµ„æºçš„äº‹æƒ…
-    *             ç›®å‰è¿™ä¸ªç±»åšçš„äº‹æƒ…ä¸»è¦æ˜¯æ¸…ç†å®šæ—¶å™¨
+    * @brief      Òì²½¶ÔÏóÔËĞĞ½áÊø£¬×ö½áÊø£¬ÊÍ·Å×ÊÔ´µÄÊÂÇé
+    *             Ä¿Ç°Õâ¸öÀà×öµÄÊÂÇéÖ÷ÒªÊÇÇåÀí¶¨Ê±Æ÷
     */
     virtual void on_end();
 
 
     /*!
-    * @brief      è®°å½•å¤„ç†è¿‡ç¨‹å‘ç”Ÿçš„é”™è¯¯
+    * @brief      ¼ÇÂ¼´¦Àí¹ı³Ì·¢ÉúµÄ´íÎó
     * @param      error_no
     */
     void set_errorno(int error_no);
 
     /*!
-    * @brief      ä¿å­˜æ¥æ”¶åˆ°å¤–éƒ¨æ•°æ®çš„æŒ‡é’ˆï¼Œ
+    * @brief      ±£´æ½ÓÊÕµ½Íâ²¿Êı¾İµÄÖ¸Õë£¬
     */
     inline void receive_data(const void *recv_data)
     {
@@ -111,14 +111,14 @@ public:
 protected:
 
     /*!
-    * @brief                   è®¾ç½®è¶…æ—¶å®šæ—¶å™¨,å¦‚æœè§¦å‘ï¼Œå›è°ƒå‡½æ•°
-    * @param  time_out         è¶…æ—¶çš„æ—¶é—´ï¼Œç›¸å¯¹æ—¶é—´ï¼Œ
+    * @brief                   ÉèÖÃ³¬Ê±¶¨Ê±Æ÷,Èç¹û´¥·¢£¬»Øµ÷º¯Êı
+    * @param  time_out         ³¬Ê±µÄÊ±¼ä£¬Ïà¶ÔÊ±¼ä£¬
     */
     int set_timeout(const ZCE_Time_Value &time_out);
 
 
     /*!
-    * @brief      å–æ¶ˆè¶…æ—¶å®šæ—¶å™¨
+    * @brief      È¡Ïû³¬Ê±¶¨Ê±Æ÷
     */
     void cancel_timeout();
 
@@ -131,25 +131,25 @@ protected:
 
 protected:
 
-    ///å¼‚æ­¥å¯¹è±¡ID
+    ///Òì²½¶ÔÏóID
     unsigned int asyncobj_id_ = 0;
 
-    ///ç®¡ç†è€…
+    ///¹ÜÀíÕß
     ZCE_Async_ObjectMgr *async_mgr_ = NULL;
 
-    ///å¯¹åº”æ¿€æ´»çš„å¤„ç†çš„å‘½ä»¤
+    ///¶ÔÓ¦¼¤»îµÄ´¦ÀíµÄÃüÁî
     unsigned int  create_cmd_ = 0;
 
-    ///è¶…æ—¶çš„å®šæ—¶å™¨ID
+    ///³¬Ê±µÄ¶¨Ê±Æ÷ID
     int timeout_id_ = ZCE_Timer_Queue_Base::INVALID_TIMER_ID;
 
-    /// å¼‚æ­¥å¯¹è±¡å¤„ç†çš„é”™è¯¯ç ï¼Œç»Ÿè®¡äº‹ç‰©é”™è¯¯çš„æ—¶å€™ä½¿ç”¨
+    /// Òì²½¶ÔÏó´¦ÀíµÄ´íÎóÂë£¬Í³¼ÆÊÂÎï´íÎóµÄÊ±ºòÊ¹ÓÃ
     int running_errno_ = 0;
 
-    ///æ—¥å¿—è·Ÿè¸ªçš„ä¼˜å…ˆçº§
+    ///ÈÕÖ¾¸ú×ÙµÄÓÅÏÈ¼¶
     ZCE_LOG_PRIORITY trace_log_pri_ = RS_INFO;
 
-    ///ä¼ é€’çš„å¤–éƒ¨æ•°æ®ï¼Œ
+    ///´«µİµÄÍâ²¿Êı¾İ£¬
     const void *receive_data_ = NULL;
 };
 
@@ -159,7 +159,7 @@ protected:
 class ZCE_Timer_Queue_Base;
 
 /*!
-* @brief      å¼‚æ­¥å¯¹è±¡çš„ç®¡ç†å™¨åŸºç±»
+* @brief      Òì²½¶ÔÏóµÄ¹ÜÀíÆ÷»ùÀà
 *
 */
 class ZCE_Async_ObjectMgr : public ZCE_Timer_Handler
@@ -167,38 +167,38 @@ class ZCE_Async_ObjectMgr : public ZCE_Timer_Handler
 
 protected:
 
-    ///å¼‚æ­¥å¯¹è±¡æ± å­ï¼Œ
+    ///Òì²½¶ÔÏó³Ø×Ó£¬
     typedef zce::lordrings<ZCE_Async_Object *>  ASYNC_OBJECT_POOL;
 
-    ///å¼‚æ­¥å¯¹è±¡è®°å½•
+    ///Òì²½¶ÔÏó¼ÇÂ¼
     struct ASYNC_OBJECT_RECORD
     {
         ASYNC_OBJECT_RECORD();
         ~ASYNC_OBJECT_RECORD();
 
-        //å¼‚æ­¥å¯¹è±¡æ± å­ï¼Œ
+        //Òì²½¶ÔÏó³Ø×Ó£¬
         ASYNC_OBJECT_POOL aysncobj_pool_;
 
 
-        //ä¸‹é¢æ˜¯ç»Ÿè®¡ä¿¡æ¯
+        //ÏÂÃæÊÇÍ³¼ÆĞÅÏ¢
 
-        //åˆ›å»ºçš„äº‹åŠ¡çš„æ•°é‡
+        //´´½¨µÄÊÂÎñµÄÊıÁ¿
         uint64_t create_num_;
 
-        //é”€æ¯æ—¶çŠ¶æ€å¼‚å¸¸çš„äº‹åŠ¡æ•°é‡
+        //Ïú»ÙÊ±×´Ì¬Òì³£µÄÊÂÎñÊıÁ¿
         uint64_t active_num_;
 
-        //æ­£å¸¸ç»“æŸçš„æ•°é‡
+        //Õı³£½áÊøµÄÊıÁ¿
         uint64_t end_num_;
 
-        ///å¼ºè¡Œç»“æŸçš„æ•°é‡
+        ///Ç¿ĞĞ½áÊøµÄÊıÁ¿
         uint64_t force_end_num_;
 
-        //è¿è¡Œè¿‡ç¨‹å‘ç”Ÿè¶…æ—¶çš„æ•°é‡
+        //ÔËĞĞ¹ı³Ì·¢Éú³¬Ê±µÄÊıÁ¿
         uint64_t timeout_num_;
 
 
-        //è¿è¡Œæ€»æ¶ˆè€—æ—¶é—´
+        //ÔËĞĞ×ÜÏûºÄÊ±¼ä
         uint64_t run_consume_ms_;
     };
 
@@ -209,12 +209,12 @@ protected:
 
 public:
 
-    ///å¼‚æ­¥å¯¹è±¡ç®¡ç†å™¨çš„æ„é€ å‡½æ•°
+    ///Òì²½¶ÔÏó¹ÜÀíÆ÷µÄ¹¹Ôìº¯Êı
     ZCE_Async_ObjectMgr();
     virtual ~ZCE_Async_ObjectMgr();
 
     /*!
-    * @brief      åˆå§‹åŒ–ï¼Œæ§åˆ¶å„ç§æ± å­ï¼Œå®¹å™¨çš„å¤§å°
+    * @brief      ³õÊ¼»¯£¬¿ØÖÆ¸÷ÖÖ³Ø×Ó£¬ÈİÆ÷µÄ´óĞ¡
     * @return     int
     * @param      crtn_type_num
     * @param      running_number
@@ -225,14 +225,14 @@ public:
 
 
     /*!
-    * @brief      ç»“æŸæ‰€æœ‰çš„åç¨‹å¤„ç†ï¼Œå›æ”¶é‡Šæ”¾èµ„æºï¼Œ
-    *             æ‰“å°ç»Ÿè®¡ä¿¡æ¯ï¼Œæ£€æŸ¥æ˜¯å¦æœ‰æ³„æ¼ç­‰
+    * @brief      ½áÊøËùÓĞµÄĞ­³Ì´¦Àí£¬»ØÊÕÊÍ·Å×ÊÔ´£¬
+    *             ´òÓ¡Í³¼ÆĞÅÏ¢£¬¼ì²éÊÇ·ñÓĞĞ¹Â©µÈ
     */
     void finish();
 
 
     /*!
-    * @brief      æ³¨å†Œä¸€ç±»åç¨‹ï¼Œå…¶ç”¨reg_cmdå¯¹åº”ï¼Œ
+    * @brief      ×¢²áÒ»ÀàĞ­³Ì£¬ÆäÓÃreg_cmd¶ÔÓ¦£¬
     * @return     int
     * @param      create_cmd
     * @param      async_base
@@ -242,24 +242,24 @@ public:
                           ZCE_Async_Object *async_base);
 
     /*!
-    * @brief      åˆ¤æ–­æŸä¸ªå‘½ä»¤æ˜¯å¦æ˜¯æ³¨å†Œï¼ˆåˆ›å»ºï¼‰å¼‚æ­¥å¯¹è±¡å‘½ä»¤
+    * @brief      ÅĞ¶ÏÄ³¸öÃüÁîÊÇ·ñÊÇ×¢²á£¨´´½¨£©Òì²½¶ÔÏóÃüÁî
     * @return     bool
     * @param      cmd
     */
     bool is_register_cmd(unsigned int cmd);
 
     /*!
-    * @brief      åˆ›å»ºä¸€ä¸ªå¼‚æ­¥å¯¹è±¡
+    * @brief      ´´½¨Ò»¸öÒì²½¶ÔÏó
     * @return     int
-    * @param      cmd         åˆ›å»ºçš„å‘½ä»¤ï¼Œå¦‚æœæ˜¯æ³¨å†Œå‘½ä»¤ï¼Œä¼šåˆ›å»ºä¸€ä¸ªå¼‚æ­¥å¯¹è±¡è¿›è¡Œå¤„ç†
-    * @param      outer_data  å¤–éƒ¨æ•°æ®ï¼Œå¸¦ç»™å¼‚æ­¥å¯¹è±¡ï¼Œç»™ä»–å¤„ç†
-    * @param      id          è¿”å›å‚æ•°ï¼Œå†…éƒ¨åˆ›å»ºå¼‚æ­¥å¯¹è±¡çš„IDï¼Œ
+    * @param      cmd         ´´½¨µÄÃüÁî£¬Èç¹ûÊÇ×¢²áÃüÁî£¬»á´´½¨Ò»¸öÒì²½¶ÔÏó½øĞĞ´¦Àí
+    * @param      outer_data  Íâ²¿Êı¾İ£¬´ø¸øÒì²½¶ÔÏó£¬¸øËû´¦Àí
+    * @param      id          ·µ»Ø²ÎÊı£¬ÄÚ²¿´´½¨Òì²½¶ÔÏóµÄID£¬
     */
     int create_asyncobj(unsigned int cmd, void *outer_data, unsigned int *id);
 
 
     /*!
-    * @brief      æ¿€æ´»æŸä¸ªå·²ç»è¿è¡Œçš„å¼‚æ­¥å¯¹è±¡,
+    * @brief      ¼¤»îÄ³¸öÒÑ¾­ÔËĞĞµÄÒì²½¶ÔÏó,
     * @return     int
     * @param      outer_data
     * @param      id
@@ -267,15 +267,15 @@ public:
     int active_asyncobj(unsigned int id, void *outer_data );
 
     /*!
-    * @brief      æ‰“å°ç®¡ç†å™¨çš„åŸºæœ¬ä¿¡æ¯ï¼Œè¿è¡ŒçŠ¶æ€
-    * @param      log_priority   æ—¥å¿—çš„ä¼˜å…ˆçº§ï¼Œä»¥æ­¤ä¼˜å…ˆçº§è¿›è¡Œè¾“å‡º
+    * @brief      ´òÓ¡¹ÜÀíÆ÷µÄ»ù±¾ĞÅÏ¢£¬ÔËĞĞ×´Ì¬
+    * @param      log_priority   ÈÕÖ¾µÄÓÅÏÈ¼¶£¬ÒÔ´ËÓÅÏÈ¼¶½øĞĞÊä³ö
     */
     void dump_info(ZCE_LOG_PRIORITY log_priority) const;
 
 protected:
 
     /*!
-    * @brief      ä»æ± å­é‡Œé¢åˆ†é…ä¸€ä¸ªå¼‚æ­¥å¯¹è±¡
+    * @brief      ´Ó³Ø×ÓÀïÃæ·ÖÅäÒ»¸öÒì²½¶ÔÏó
     * @return     int
     * @param      cmd
     * @param      async_rec
@@ -286,7 +286,7 @@ protected:
                            ZCE_Async_Object *&alloc_aysnc);
 
     /*!
-    * @brief      é‡Šæ”¾ä¸€ä¸ªå¼‚æ­¥å¯¹è±¡åˆ°æ± å­é‡Œé¢
+    * @brief      ÊÍ·ÅÒ»¸öÒì²½¶ÔÏóµ½³Ø×ÓÀïÃæ
     * @return     int
     * @param      free_async
     */
@@ -294,17 +294,17 @@ protected:
 
 
     /*!
-    * @brief      é€šè¿‡IDï¼Œå¯»æ‰¾ä¸€ä¸ªæ­£åœ¨è¿è¡Œçš„å¼‚æ­¥å¯¹è±¡
-    * @return     int  è¿”å›0è¡¨ç¤ºæˆåŠŸ
-    * @param[in]  id   è¿è¡Œçš„å¼‚æ­¥å¯¹è±¡çš„æ ‡è¯†ID
-    * @param[out] running_aysnc æŸ¥è¯¢åˆ°çš„å¼‚æ­¥å¯¹è±¡
+    * @brief      Í¨¹ıID£¬Ñ°ÕÒÒ»¸öÕıÔÚÔËĞĞµÄÒì²½¶ÔÏó
+    * @return     int  ·µ»Ø0±íÊ¾³É¹¦
+    * @param[in]  id   ÔËĞĞµÄÒì²½¶ÔÏóµÄ±êÊ¶ID
+    * @param[out] running_aysnc ²éÑ¯µ½µÄÒì²½¶ÔÏó
     */
     int find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc);
 
 
 
     /*!
-    * @brief      å®šæ—¶å™¨è§¦å‘çš„å¤„ç†å‡½æ•°
+    * @brief      ¶¨Ê±Æ÷´¥·¢µÄ´¦Àíº¯Êı
     * @return     int
     * @param      now_time
     * @param      act
@@ -314,34 +314,34 @@ protected:
 
 protected:
 
-    ///é»˜è®¤çš„å¼‚æ­¥å¯¹è±¡ç±»å‹æ•°é‡
+    ///Ä¬ÈÏµÄÒì²½¶ÔÏóÀàĞÍÊıÁ¿
     static const size_t DEFUALT_ASYNC_TYPE_NUM = 2048;
-    ///é»˜è®¤åŒæ—¶è¿è¡Œçš„ä¸€éƒ¨åˆ†å¯¹è±¡çš„æ•°é‡
+    ///Ä¬ÈÏÍ¬Ê±ÔËĞĞµÄÒ»²¿·Ö¶ÔÏóµÄÊıÁ¿
     static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 2048;
 
 
 
 public:
-    ///æ— æ•ˆçš„äº‹åŠ¡ID
+    ///ÎŞĞ§µÄÊÂÎñID
     static const unsigned int INVALID_IDENTITY = 0;
-    ///æ— æ•ˆçš„çš„å‘½ä»¤
+    ///ÎŞĞ§µÄµÄÃüÁî
     static const unsigned int INVALID_COMMAND = 0;
 
 protected:
 
-    //äº‹åŠ¡IDå‘ç”Ÿå™¨
+    //ÊÂÎñID·¢ÉúÆ÷
     unsigned int id_builder_;
 
-    //åç¨‹çš„æ± å­ï¼Œéƒ½æ˜¯æ³¨å†Œè¿›æ¥çš„
+    //Ğ­³ÌµÄ³Ø×Ó£¬¶¼ÊÇ×¢²á½øÀ´µÄ
     ID_TO_REGASYNC_POOL_MAP regaysnc_pool_;
 
-    ///æ­£åœ¨è¿è¡Œçš„åç¨‹
+    ///ÕıÔÚÔËĞĞµÄĞ­³Ì
     RUNNING_ASYNOBJ_MAP running_aysncobj_;
 
-    ///å¼‚æ­¥å¯¹è±¡æ± å­çš„åˆå§‹åŒ–å¤§å°ï¼Œ
+    ///Òì²½¶ÔÏó³Ø×ÓµÄ³õÊ¼»¯´óĞ¡£¬
     size_t  pool_init_size_;
 
-    ///å¼‚æ­¥å¯¹è±¡æ± å­çš„æ¯æ¬¡æ‰©å¤§çš„æ•°é‡
+    ///Òì²½¶ÔÏó³Ø×ÓµÄÃ¿´ÎÀ©´óµÄÊıÁ¿
     size_t  pool_extend_size_;
 };
 

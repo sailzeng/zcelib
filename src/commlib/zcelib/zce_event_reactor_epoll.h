@@ -3,9 +3,9 @@
 * @filename   zce_event_reactor_epoll.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´8æœˆ28æ—¥
-* @brief      EPOLL çš„IOååº”å™¨ï¼ŒIOå¤šè·¯å¤ç”¨æ¨¡åž‹
-*             ä»–åªèƒ½åœ¨LINUXä¸‹ä½¿ç”¨ï¼ˆè™½ç„¶å¯ä»¥ç¼–è¯‘ï¼‰ï¼Œ
+* @date       2011Äê8ÔÂ28ÈÕ
+* @brief      EPOLL µÄIO·´Ó¦Æ÷£¬IO¶àÂ·¸´ÓÃÄ£ÐÍ
+*             ËûÖ»ÄÜÔÚLINUXÏÂÊ¹ÓÃ£¨ËäÈ»¿ÉÒÔ±àÒë£©£¬
 *
 * @details
 *
@@ -17,7 +17,7 @@
 #include "zce_event_reactor_base.h"
 
 /*!
-* @brief      EPOLL çš„IOååº”å™¨ï¼ŒIOå¤šè·¯å¤ç”¨æ¨¡åž‹
+* @brief      EPOLL µÄIO·´Ó¦Æ÷£¬IO¶àÂ·¸´ÓÃÄ£ÐÍ
 *
 */
 class  ZCE_Epoll_Reactor : public ZCE_Reactor
@@ -25,38 +25,38 @@ class  ZCE_Epoll_Reactor : public ZCE_Reactor
 
 protected:
 
-    //é»˜è®¤çš„ä¸€æ¬¡æœ€å¤§å¤„ç†çš„æ—¶é—´æ•°é‡ï¼Œå¦‚æžœä½ è§‰å¾—ä¸å¤Ÿå¤§ï¼Œå¯ä»¥è°ƒæ•´ä¸€ä¸‹ï¼Œ
+    //Ä¬ÈÏµÄÒ»´Î×î´ó´¦ÀíµÄÊ±¼äÊýÁ¿£¬Èç¹ûÄã¾õµÃ²»¹»´ó£¬¿ÉÒÔµ÷ÕûÒ»ÏÂ£¬
     static const int DEFAULT_ONCE_TRIGGER_MAX_EVENT = 2048;
 
 public:
 
     /*!
-    * @brief      æž„é€ å‡½æ•°
+    * @brief      ¹¹Ôìº¯Êý
     */
     ZCE_Epoll_Reactor();
 
     /*!
-    * @brief      æž„é€ å‡½æ•°,ç›¸å½“äºŽæŠŠåˆå§‹åŒ–ä¹Ÿå¹²äº†ï¼Œ
-    * @param[in]  max_event_number æœ€å¤§å¥æŸ„æ•°é‡
-    * @param[in]  edge_triggered   æ˜¯å¦è¿›è¡Œè¾¹ç¼˜è§¦å‘æ–¹å¼
-    * @param[in]  once_max_event   ä¸€æ¬¡æœ€å¤§å¤„ç†çš„æœ€å¤§äº‹ä»¶æ•°é‡
+    * @brief      ¹¹Ôìº¯Êý,Ïàµ±ÓÚ°Ñ³õÊ¼»¯Ò²¸ÉÁË£¬
+    * @param[in]  max_event_number ×î´ó¾ä±úÊýÁ¿
+    * @param[in]  edge_triggered   ÊÇ·ñ½øÐÐ±ßÔµ´¥·¢·½Ê½
+    * @param[in]  once_max_event   Ò»´Î×î´ó´¦ÀíµÄ×î´óÊÂ¼þÊýÁ¿
     */
     ZCE_Epoll_Reactor(size_t max_event_number,
                       bool edge_triggered = false,
                       int once_max_event = DEFAULT_ONCE_TRIGGER_MAX_EVENT);
     /*!
-    * @brief      æžæž„å‡½æ•°
+    * @brief      Îö¹¹º¯Êý
     */
     virtual ~ZCE_Epoll_Reactor();
 
 public:
 
     /*!
-    * @brief      åˆå§‹åŒ–
-    * @return     int              è¿”å›ž0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
-    * @param[in]  max_event_number æœ€å¤§å¥æŸ„æ•°é‡
-    * @param[in]  edge_triggered   æ˜¯å¦è¿›è¡Œè¾¹ç¼˜è§¦å‘æ–¹å¼
-    * @param[in]  once_max_event   ä¸€æ¬¡æœ€å¤§å¤„ç†çš„æœ€å¤§äº‹ä»¶æ•°é‡
+    * @brief      ³õÊ¼»¯
+    * @return     int              ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
+    * @param[in]  max_event_number ×î´ó¾ä±úÊýÁ¿
+    * @param[in]  edge_triggered   ÊÇ·ñ½øÐÐ±ßÔµ´¥·¢·½Ê½
+    * @param[in]  once_max_event   Ò»´Î×î´ó´¦ÀíµÄ×î´óÊÂ¼þÊýÁ¿
     * @note
     */
     int initialize(size_t max_event_number,
@@ -64,76 +64,76 @@ public:
                    int once_max_event = DEFAULT_ONCE_TRIGGER_MAX_EVENT);
 
     /*!
-    * @brief      æ³¨å†Œä¸€ä¸ªZCE_Event_Handleråˆ°ååº”å™¨,EPOLLæ˜¯æ˜Žç¡®çš„æ³¨å†Œæ“ä½œçš„ï¼Œæ‰€ä»¥éœ€è¦é‡è½½è¿™ä¸ªå‡½æ•°
-    * @return     int             è¿”å›ž0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
-    * @param[in]  event_handler   æ³¨å†Œçš„å¥æŸ„
-    * @param[in]  event_mask      æ³¨å†ŒåŽåŒæ—¶è®¾ç½®çš„MASKæ ‡å¿—ï¼Œè¯·å‚è€ƒ@ref EVENT_MASK ,å¯ä»¥å¤šä¸ªå€¼|ä½¿ç”¨ã€‚
+    * @brief      ×¢²áÒ»¸öZCE_Event_Handlerµ½·´Ó¦Æ÷,EPOLLÊÇÃ÷È·µÄ×¢²á²Ù×÷µÄ£¬ËùÒÔÐèÒªÖØÔØÕâ¸öº¯Êý
+    * @return     int             ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
+    * @param[in]  event_handler   ×¢²áµÄ¾ä±ú
+    * @param[in]  event_mask      ×¢²áºóÍ¬Ê±ÉèÖÃµÄMASK±êÖ¾£¬Çë²Î¿¼@ref EVENT_MASK ,¿ÉÒÔ¶à¸öÖµ|Ê¹ÓÃ¡£
     */
     virtual int register_handler(ZCE_Event_Handler *event_handler, int event_mask) override;
 
     /*!
-    * @brief      ä»Žååº”å™¨æ³¨é”€ä¸€ä¸ªZCE_Event_Handlerï¼ŒåŒäº‹å–æ¶ˆä»–æ‰€æœ‰çš„mask
-    * @return     int               0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param[in]  event_handler     æ³¨é”€çš„å¥æŸ„
-    * @param[in]  call_handle_close æ³¨é”€åŽï¼Œæ˜¯å¦è‡ªåŠ¨è°ƒç”¨å¥æŸ„çš„handle_closeå‡½æ•°
+    * @brief      ´Ó·´Ó¦Æ÷×¢ÏúÒ»¸öZCE_Event_Handler£¬Í¬ÊÂÈ¡ÏûËûËùÓÐµÄmask
+    * @return     int               0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param[in]  event_handler     ×¢ÏúµÄ¾ä±ú
+    * @param[in]  call_handle_close ×¢Ïúºó£¬ÊÇ·ñ×Ô¶¯µ÷ÓÃ¾ä±úµÄhandle_closeº¯Êý
     * */
     virtual int remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close) override;
 
     /*!
-    * @brief      å–æ¶ˆæŸäº›maskæ ‡å¿—ï¼Œï¼Œ
-    * @return     int           è¿”å›ž0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
-    * @param[in]  event_handler æ“ä½œçš„å¥æŸ„
-    * @param[in]  cancel_mask   è¦å–æ¶ˆçš„MASKæ ‡å¿—ï¼Œè¯·å‚è€ƒ@ref EVENT_MASK ,å¯ä»¥å¤šä¸ªå€¼|ä½¿ç”¨ã€‚
+    * @brief      È¡ÏûÄ³Ð©mask±êÖ¾£¬£¬
+    * @return     int           ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
+    * @param[in]  event_handler ²Ù×÷µÄ¾ä±ú
+    * @param[in]  cancel_mask   ÒªÈ¡ÏûµÄMASK±êÖ¾£¬Çë²Î¿¼@ref EVENT_MASK ,¿ÉÒÔ¶à¸öÖµ|Ê¹ÓÃ¡£
     * */
     virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) override;
 
     /*!
-    * @brief      æ‰“å¼€æŸäº›maskæ ‡å¿—ï¼Œ
-    * @return     int             è¿”å›ž0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
-    * @param[in]  event_handler   æ“ä½œçš„å¥æŸ„
-    * @param[in]  event_mask      è¦æ‰“å¼€çš„æ ‡å¿—ï¼Œè¯·å‚è€ƒ@ref EVENT_MASK ,å¯ä»¥å¤šä¸ªå€¼|ä½¿ç”¨ã€‚
+    * @brief      ´ò¿ªÄ³Ð©mask±êÖ¾£¬
+    * @return     int             ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
+    * @param[in]  event_handler   ²Ù×÷µÄ¾ä±ú
+    * @param[in]  event_mask      Òª´ò¿ªµÄ±êÖ¾£¬Çë²Î¿¼@ref EVENT_MASK ,¿ÉÒÔ¶à¸öÖµ|Ê¹ÓÃ¡£
     * */
     virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) override;
 
     /*!
-    * @brief      è¿›è¡ŒIOè§¦å‘æ“ä½œ
-    * @return        int           è¿”å›ž0è¡¨ç¤ºæˆåŠŸï¼Œå…¶ä»–è¡¨ç¤ºå¤±è´¥
-    * @param[in,out] time_out      è¶…æ—¶æ—¶é—´ï¼Œå®Œæ¯•åŽè¿”å›žå‰©ä½™æ—¶é—´
-    * @param[out]    size_event    è§¦å‘çš„å¥æŸ„æ•°é‡
+    * @brief      ½øÐÐIO´¥·¢²Ù×÷
+    * @return        int           ·µ»Ø0±íÊ¾³É¹¦£¬ÆäËû±íÊ¾Ê§°Ü
+    * @param[in,out] time_out      ³¬Ê±Ê±¼ä£¬Íê±Ïºó·µ»ØÊ£ÓàÊ±¼ä
+    * @param[out]    size_event    ´¥·¢µÄ¾ä±úÊýÁ¿
     */
     virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) override;
 
 protected:
 
     /*!
-    * @brief      è¿™ä¸ªinlineå‡½æ•°ç†è®ºä¸Šå¯ä»¥æ”¾å…¥CPP,å°†maskè½¬æ¢ä¸ºepoll_eventç»“æž„,
-    * @param[out] ep_event      EPOLL å‡½æ•°æ“ä½œçš„ç»“æž„
-    * @param[in]  event_handler è¦å¤„ç†çš„EVENTå¥æŸ„
+    * @brief      Õâ¸öinlineº¯ÊýÀíÂÛÉÏ¿ÉÒÔ·ÅÈëCPP,½«mask×ª»»Îªepoll_event½á¹¹,
+    * @param[out] ep_event      EPOLL º¯Êý²Ù×÷µÄ½á¹¹
+    * @param[in]  event_handler Òª´¦ÀíµÄEVENT¾ä±ú
     */
     inline void make_epoll_event(struct epoll_event *ep_event, ZCE_Event_Handler *event_handler) const;
 
     /*!
-    * @brief      å¤„ç†å·²ç»è§¦å‘çš„å¥æŸ„ï¼Œè°ƒç”¨ç›¸åº”çš„è™šå‡½æ•°ï¼Œè¿›è¡Œè§¦å‘ï¼Œè®©ä½ å¤„ç†
-    * @param[in]  ep_event  epoll è¿”å›žçš„å¥æŸ„é›†åˆ
+    * @brief      ´¦ÀíÒÑ¾­´¥·¢µÄ¾ä±ú£¬µ÷ÓÃÏàÓ¦µÄÐéº¯Êý£¬½øÐÐ´¥·¢£¬ÈÃÄã´¦Àí
+    * @param[in]  ep_event  epoll ·µ»ØµÄ¾ä±ú¼¯ºÏ
     */
     void process_ready_event(struct epoll_event *ep_event);
 
 protected:
 
-    ///EPOLLè‡ªå·±çš„æ–‡ä»¶å¥æŸ„ï¼Œæœ€åŽè¦å…³é—­ä¹‹
+    ///EPOLL×Ô¼ºµÄÎÄ¼þ¾ä±ú£¬×îºóÒª¹Ø±ÕÖ®
     int          epoll_fd_;
 
-    ///æ˜¯å¦ä½¿ç”¨è¾¹ç•Œè§¦å‘ï¼Œè¾¹ç•Œè§¦å‘åœ¨ä»£ç ç¼–å†™ä¸­éœ€è¦æ›´åŠ å•Šå°å¿ƒä¸€äº›
+    ///ÊÇ·ñÊ¹ÓÃ±ß½ç´¥·¢£¬±ß½ç´¥·¢ÔÚ´úÂë±àÐ´ÖÐÐèÒª¸ü¼Ó°¡Ð¡ÐÄÒ»Ð©
     bool         edge_triggered_;
 
-    ///ä¸€æ¬¡è§¦å‘æœ€å¤§å¤„ç†çš„å¥æŸ„æ•°é‡
+    ///Ò»´Î´¥·¢×î´ó´¦ÀíµÄ¾ä±úÊýÁ¿
     int          once_max_events_;
 
-    ///ä¸€æ¬¡è§¦å‘æœ€å¤§å¤„ç†çš„epoll_eventæ•°ç»„
+    ///Ò»´Î´¥·¢×î´ó´¦ÀíµÄepoll_eventÊý×é
     epoll_event *once_events_ary_;
 };
 
-//å°†maskè½¬æ¢ä¸ºepoll_eventç»“æž„
+//½«mask×ª»»Îªepoll_event½á¹¹
 inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZCE_Event_Handler *event_handler) const
 {
     ep_event->events = 0;
@@ -158,7 +158,7 @@ inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZC
     {
         ep_event->events |= EPOLLERR;
     }
-    //Connectæœ‰æˆåŠŸå’Œå¤±è´¥ä¸¤ç§æƒ…å†µ
+    //ConnectÓÐ³É¹¦ºÍÊ§°ÜÁ½ÖÖÇé¿ö
     if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
     {
         ep_event->events |= EPOLLOUT;
@@ -174,7 +174,7 @@ inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZC
     {
         ep_event->events |= EPOLLIN;
     }
-    //å¦‚æžœä½ è¦è¾¹ç¼˜è§¦å‘
+    //Èç¹ûÄãÒª±ßÔµ´¥·¢
     if (edge_triggered_)
     {
         ep_event->events |= EPOLLET;

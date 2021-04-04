@@ -4,15 +4,15 @@
 
 #include "soar_svrd_app_base.h"
 
-class ZERG_FRAME_HEAD;
+class Zerg_App_Frame;
 
-//鍗曚釜鍑芥暟澶勭悊APP FRAME
+//单个函数处理APP FRAME
 class Soar_SvrdApp_ZergBus : public Soar_Svrd_Appliction
 {
 protected:
 
-    //鎺ュ彈鐨勬暟鎹尯
-    ZERG_FRAME_HEAD          *nonctrl_recv_buffer_;
+    //接受的数据区
+    Zerg_App_Frame          *nonctrl_recv_buffer_;
 
 protected:
     //
@@ -21,16 +21,16 @@ protected:
 
 public:
 
-    //杩愯澶勭悊,
+    //运行处理,
     virtual int app_run();
 
 protected:
 
-    //澶勭悊鎺ユ敹鍒扮殑Frame,
+    //处理接收到的Frame,
     virtual int popfront_recvpipe(size_t max_prc, size_t &proc_frame);
 
-    //澶勭悊鏀跺埌鐨凙PPFRAME锛屼笉浣跨敤const鐨勫師鍥犳槸鍥犱负涓轰簡鍔犲揩閫熷害锛屽緢澶氬湴鏂规槸鐩存帴灏唕ecv_frame淇敼
-    virtual int process_recv_frame(ZERG_FRAME_HEAD *recv_frame) = 0;
+    //处理收到的APPFRAME，不使用const的原因是因为为了加快速度，很多地方是直接将recv_frame修改
+    virtual int process_recv_frame(Zerg_App_Frame *recv_frame) = 0;
 
 
 };

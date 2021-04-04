@@ -31,10 +31,10 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 
     int ret = 0;
 
-    //æ¸…ç†æœ€åŽçš„é”™è¯¯å€¼
+    //ÇåÀí×îºóµÄ´íÎóÖµ
     zce::clear_last_error();
 
-    //å¦‚æžœæ²¡æœ‰åˆå§‹åŒ–
+    //Èç¹ûÃ»ÓÐ³õÊ¼»¯
     if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
     {
         if (local_addr)
@@ -57,7 +57,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
         }
     }
 
-    //ä¸èƒ½ç”¨é˜»å¡žçŠ¶æ€çš„SOCKETè¿›è¡Œè¶…æ—¶å°è¯•
+    //²»ÄÜÓÃ×èÈû×´Ì¬µÄSOCKET½øÐÐ³¬Ê±³¢ÊÔ
     ret = new_stream.sock_enable(O_NONBLOCK);
 
     if (ret != 0)
@@ -66,7 +66,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
         return ret;
     }
 
-    //è¿›è¡Œè¿žæŽ¥å°è¯•
+    //½øÐÐÁ¬½Ó³¢ÊÔ
     ret = zce::connect(new_stream.get_handle(),
                        remote_addr->sockaddr_ptr_,
                        remote_addr->sockaddr_size_);
@@ -74,7 +74,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     //
     if (ret != 0  )
     {
-        //WINDOWSä¸‹è¿”å›žEWOULDBLOCKï¼ŒLINUXä¸‹è¿”å›žEINPROGRESS
+        //WINDOWSÏÂ·µ»ØEWOULDBLOCK£¬LINUXÏÂ·µ»ØEINPROGRESS
         int last_err =  zce::last_error();
 
         if ( EINPROGRESS != last_err &&  EWOULDBLOCK != last_err )
@@ -84,10 +84,10 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
         }
     }
 
-    //è¿›è¡Œè¶…æ—¶å¤„ç†
+    //½øÐÐ³¬Ê±´¦Àí
     ret = zce::handle_ready(new_stream.get_handle(),
                             &timeout,
-                            zce::HANDLE_READY_TODO::CONNECTED);
+                            zce::HANDLE_READY_CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -97,7 +97,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
         return -1;
     }
 
-    //å…³é—­éžé˜»å¡žçŠ¶æ€
+    //¹Ø±Õ·Ç×èÈû×´Ì¬
     ret = new_stream.sock_disable(O_NONBLOCK);
     if (ret != 0)
     {
@@ -108,7 +108,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     return 0;
 }
 
-//è¿›è¡Œè¿žæŽ¥å¤„ç†ï¼Œå¯ä»¥è¿›è¡Œéžé˜»å¡žè¿žæŽ¥å¤„ç†ï¼Œ
+//½øÐÐÁ¬½Ó´¦Àí£¬¿ÉÒÔ½øÐÐ·Ç×èÈûÁ¬½Ó´¦Àí£¬
 int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
                                    const ZCE_Sockaddr *remote_addr,
                                    bool non_blocing,
@@ -118,11 +118,11 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 {
     int ret = 0;
 
-    //æ¸…ç†æœ€åŽçš„é”™è¯¯å€¼
+    //ÇåÀí×îºóµÄ´íÎóÖµ
     zce::clear_last_error();
 
-    //åˆå§‹åŒ–Socketï¼Œå¦‚æžœéœ€è¦ç»‘å®šï¼Œä¼šç»‘å®šIPå’Œç«¯å£
-    //å¦‚æžœæ²¡æœ‰åˆå§‹åŒ–
+    //³õÊ¼»¯Socket£¬Èç¹ûÐèÒª°ó¶¨£¬»á°ó¶¨IPºÍ¶Ë¿Ú
+    //Èç¹ûÃ»ÓÐ³õÊ¼»¯
     if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
     {
         ret = new_stream.open (local_addr,
@@ -136,7 +136,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
         }
     }
 
-    //è¿›è¡Œéžé˜»å¡žè¿žæŽ¥
+    //½øÐÐ·Ç×èÈûÁ¬½Ó
     if (non_blocing)
     {
         ret = new_stream.sock_enable(O_NONBLOCK);
@@ -150,20 +150,20 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 
     //errno = 0;
 
-    //è¿›è¡Œè¿žæŽ¥
+    //½øÐÐÁ¬½Ó
     ret = zce::connect(new_stream.get_handle(),
                        remote_addr->sockaddr_ptr_,
                        remote_addr->sockaddr_size_);
 
-    //è¿›è¡Œéžé˜»å¡žçš„è¿žæŽ¥ï¼Œä¸€èˆ¬éƒ½æ˜¯è¿”å›žé”™è¯¯ã€‚ä½†æ˜¯UNIX ç½‘ç»œå·ä¸€ä¹Ÿæåˆ°äº†è¿‡æœ¬åœ°è¿žæŽ¥ç«‹å³è¿”å›ž0ï¼Œæˆ‘è‡ªå·±æµ‹è¯•è¿‡å¥½åƒéƒ½æ˜¯è¿”å›ž-1
+    //½øÐÐ·Ç×èÈûµÄÁ¬½Ó£¬Ò»°ã¶¼ÊÇ·µ»Ø´íÎó¡£µ«ÊÇUNIX ÍøÂç¾íÒ»Ò²Ìáµ½ÁË¹ý±¾µØÁ¬½ÓÁ¢¼´·µ»Ø0£¬ÎÒ×Ô¼º²âÊÔ¹ýºÃÏñ¶¼ÊÇ·µ»Ø-1
     if (ret != 0 )
     {
-        //WINDOWSä¸‹è¿”å›žEWOULDBLOCKï¼ŒLINUXä¸‹è¿”å›žEINPROGRESS
+        //WINDOWSÏÂ·µ»ØEWOULDBLOCK£¬LINUXÏÂ·µ»ØEINPROGRESS
         int last_error = zce::last_error();
 
         if (non_blocing && (EINPROGRESS == last_error || EWOULDBLOCK == last_error))
         {
-            //ä¸å…³é—­socket stream
+            //²»¹Ø±Õsocket stream
             return -1;
         }
         else

@@ -3,19 +3,19 @@
 * @filename   zce_event_reactor_select.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´9æœˆ1æ—¥
-* @brief      SELECT çš„IOååº”å™¨ï¼ŒIOå¤šè·¯å¤ç”¨æ¨¡å‹
-*             æ›´å¤šçš„çªå‡ºæ€§èƒ½ç¬¬ä¸€çš„å‰æï¼Œä½ ä»ZCE_Event_Handlerä¸Šç»§æ‰¿å¾—åˆ°å¤„ç†çš„å¥æŸ„
-*             å°è£…ï¼Œå„ç§äº‹ä»¶çš„å¤„ç†éƒ½å·²ç»å°è£…äº†ï¼Œè€Œä¸”æ•´ä½“æ˜¯å’ŒLINUXå¹³å°ä¸€è‡´ã€‚
+* @date       2011Äê9ÔÂ1ÈÕ
+* @brief      SELECT µÄIO·´Ó¦Æ÷£¬IO¶àÂ·¸´ÓÃÄ£ĞÍ
+*             ¸ü¶àµÄÍ»³öĞÔÄÜµÚÒ»µÄÇ°Ìá£¬Äã´ÓZCE_Event_HandlerÉÏ¼Ì³ĞµÃµ½´¦ÀíµÄ¾ä±ú
+*             ·â×°£¬¸÷ÖÖÊÂ¼şµÄ´¦Àí¶¼ÒÑ¾­·â×°ÁË£¬¶øÇÒÕûÌåÊÇºÍLINUXÆ½Ì¨Ò»ÖÂ¡£
 *
-*             ä»–çš„ä¼˜ç‚¹æ˜¯åœ¨Windowså¹³å°ä¹Ÿå¯ä»¥ç”¨ï¼Œç¼ºç‚¹å°±æ˜¯SELECTå‡½æ•°æ‰€æœ‰çš„ç¼ºç‚¹ï¼Œ
-*             å½“ç„¶æˆ‘ä»¬é€šè¿‡å°è£…ï¼Œå·²ç»ä¿è¯äº†åœ¨ä¸ªä¸ªå¹³å°éƒ½æœ‰ä¸é”™çš„æ€§èƒ½ã€‚
-*             ä¸å®¹æ˜“ã€‚
+*             ËûµÄÓÅµãÊÇÔÚWindowsÆ½Ì¨Ò²¿ÉÒÔÓÃ£¬È±µã¾ÍÊÇSELECTº¯ÊıËùÓĞµÄÈ±µã£¬
+*             µ±È»ÎÒÃÇÍ¨¹ı·â×°£¬ÒÑ¾­±£Ö¤ÁËÔÚ¸ö¸öÆ½Ì¨¶¼ÓĞ²»´íµÄĞÔÄÜ¡£
+*             ²»ÈİÒ×¡£
 *
-* @details    è¿™ä¸ªå’ŒACEçš„Reactoræœ‰ç‚¹åƒï¼Œä½†æˆ‘ä»¬ç®€åŒ–äº†å¾ˆå¤šåœ°æ–¹ï¼Œæˆ‘ä»¬ä¸èå…¥å®šæ—¶å™¨ï¼Œ
-*             æˆ‘ä»¬ä¹Ÿä¸èå…¥æ¶ˆæ¯é˜Ÿåˆ—ï¼Œä»–ç®€ç®€å•å•å°±æ˜¯ä¸ºäº†IOè§¦å‘ã€‚
+* @details    Õâ¸öºÍACEµÄReactorÓĞµãÏñ£¬µ«ÎÒÃÇ¼ò»¯ÁËºÜ¶àµØ·½£¬ÎÒÃÇ²»ÈÚÈë¶¨Ê±Æ÷£¬
+*             ÎÒÃÇÒ²²»ÈÚÈëÏûÏ¢¶ÓÁĞ£¬Ëû¼ò¼òµ¥µ¥¾ÍÊÇÎªÁËIO´¥·¢¡£
 *
-*             è¯·å‚è€ƒï¼š
+*             Çë²Î¿¼£º
 *             http://www.cnblogs.com/fullsail/archive/2012/08/12/2634336.html
 *             http://www.cnblogs.com/fullsail/archive/2011/11/06/2238464.html
 * @note
@@ -27,7 +27,7 @@
 #include "zce_event_reactor_base.h"
 
 /*!
-* @brief      SELECT çš„IOååº”å™¨ï¼ŒIOå¤šè·¯å¤ç”¨æ¨¡å‹
+* @brief      SELECT µÄIO·´Ó¦Æ÷£¬IO¶àÂ·¸´ÓÃÄ£ĞÍ
 *
 */
 class ZCE_Select_Reactor : public ZCE_Reactor
@@ -36,78 +36,78 @@ class ZCE_Select_Reactor : public ZCE_Reactor
 public:
 
     /*!
-    * @brief    æ„é€ å‡½æ•°
+    * @brief    ¹¹Ôìº¯Êı
     */
     ZCE_Select_Reactor();
 
     /*!
-    * @brief      æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
-    * @param      max_event_number æœ€å¤§çš„å¥æŸ„æ•°é‡ï¼Œç”¨äºåˆå§‹åŒ–ä¸€äº›å®¹å™¨çš„å¤§å°ï¼ŒåŠ å¿«å¤„ç†
+    * @brief      ¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+    * @param      max_event_number ×î´óµÄ¾ä±úÊıÁ¿£¬ÓÃÓÚ³õÊ¼»¯Ò»Ğ©ÈİÆ÷µÄ´óĞ¡£¬¼Ó¿ì´¦Àí
     */
     ZCE_Select_Reactor(size_t max_event_number);
 
     /*!
-    * @brief      å’Œææ„å‡½æ•° virtualçš„å–”ã€‚
+    * @brief      ºÍÎö¹¹º¯Êı virtualµÄà¸¡£
     */
     virtual ~ZCE_Select_Reactor();
 
 public:
 
     /*!
-    * @brief      åˆå§‹åŒ–
-    * @return     int              è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param      max_event_number æœ€å¤§çš„å¥æŸ„æ•°é‡ï¼Œ
+    * @brief      ³õÊ¼»¯
+    * @return     int              ·µ»Ø0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param      max_event_number ×î´óµÄ¾ä±úÊıÁ¿£¬
     */
     int initialize(size_t max_event_number);
 
     /*!
-    * @brief      å–æ¶ˆæŸäº›maskæ ‡å¿—ï¼Œ
-    * @return     int            è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param      event_handler  æ“ä½œçš„å¥æŸ„
-    * @param      cancel_mask    è¦å–æ¶ˆçš„MASKå€¼
+    * @brief      È¡ÏûÄ³Ğ©mask±êÖ¾£¬
+    * @return     int            ·µ»Ø0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param      event_handler  ²Ù×÷µÄ¾ä±ú
+    * @param      cancel_mask    ÒªÈ¡ÏûµÄMASKÖµ
     */
     virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) override;
 
 
     /*!
-    * @brief      æ‰“å¼€æŸäº›maskæ ‡å¿—ï¼Œ
-    * @return     virtual int    è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param      event_handler  æ“ä½œçš„å¥æŸ„
-    * @param      event_mask     è¦å¢åŠ çš„MASKå€¼
+    * @brief      ´ò¿ªÄ³Ğ©mask±êÖ¾£¬
+    * @return     virtual int    ·µ»Ø0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param      event_handler  ²Ù×÷µÄ¾ä±ú
+    * @param      event_mask     ÒªÔö¼ÓµÄMASKÖµ
     */
     virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) override;
 
     /*!
-    * @brief      äº‹ä»¶è§¦å‘
-    * @return     int           è¿”å›0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param      time_out      è¶…æ—¶æ—¶é•¿
-    * @param      size_event    è§¦å‘çš„å¥æŸ„æ•°é‡
+    * @brief      ÊÂ¼ş´¥·¢
+    * @return     int           ·µ»Ø0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param      time_out      ³¬Ê±Ê±³¤
+    * @param      size_event    ´¥·¢µÄ¾ä±úÊıÁ¿
     */
     virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) override;
 
 protected:
 
     /*!
-    * @brief      å¤„ç†readyçš„FDï¼Œè°ƒç”¨ç›¸åº”çš„è™šå‡½æ•°
-    * @param      out_fds    å¥æŸ„çš„fd set
-    * @param      proc_mask  è¦å¤„ç†çš„MASKå€¼ï¼Œå†…éƒ¨ä¼šæŒ‰ç…§ï¼Œè¯»ï¼Œå†™ï¼Œå¼‚å¸¸çš„é¡ºåºè¿›è¡Œå¤„ç†ï¼Œ
+    * @brief      ´¦ÀíreadyµÄFD£¬µ÷ÓÃÏàÓ¦µÄĞéº¯Êı
+    * @param      out_fds    ¾ä±úµÄfd set
+    * @param      proc_mask  Òª´¦ÀíµÄMASKÖµ£¬ÄÚ²¿»á°´ÕÕ£¬¶Á£¬Ğ´£¬Òì³£µÄË³Ğò½øĞĞ´¦Àí£¬
     */
     void process_ready(const fd_set *out_fds,
                        ZCE_Event_Handler::EVENT_MASK proc_mask);
 
 protected:
 
-    ///æœ€å¤§æ–‡ä»¶å¥æŸ„+1çš„æ•°å€¼,å€’éœ‰çš„SELECTï¼Œéè¦æå‘€ã€‚
+    ///×î´óÎÄ¼ş¾ä±ú+1µÄÊıÖµ,µ¹Ã¹µÄSELECT£¬·ÇÒª¸ãÑ½¡£
     int          max_fd_plus_one_ = 0;
 
-    ///ä¿å­˜ä½¿ç”¨çš„Read FD SET
+    ///±£´æÊ¹ÓÃµÄRead FD SET
     fd_set       read_fd_set_;
-    ///ä¿å­˜ä½¿ç”¨çš„Write FD SET
+    ///±£´æÊ¹ÓÃµÄWrite FD SET
     fd_set       write_fd_set_;
-    ///ä¿å­˜ä½¿ç”¨çš„Exception FD SET
+    ///±£´æÊ¹ÓÃµÄException FD SET
     fd_set       exception_fd_set_;
 
-    ///æ¯æ¬¡åšä½œä¸ºSELECT å‡½æ•°çš„å‚æ•°
+    ///Ã¿´Î×ö×÷ÎªSELECT º¯ÊıµÄ²ÎÊı
     ///
     fd_set       para_read_fd_set_;
     ///

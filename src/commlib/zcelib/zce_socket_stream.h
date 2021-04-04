@@ -10,47 +10,47 @@ class ZCE_Socket_Stream : public ZCE_Socket_Base
 
 public:
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     ZCE_Socket_Stream();
     explicit ZCE_Socket_Stream(const ZCE_SOCKET &socket_hanle);
     ~ZCE_Socket_Stream();
 
 public:
 
-    //Open SOCKå¥æŸ„ï¼Œä¸BINDæœ¬åœ°åœ°å€çš„æ–¹å¼
+    //Open SOCK¾ä±ú£¬²»BIND±¾µØµØÖ·µÄ·½Ê½
     int open(int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = true);
 
-    //Open SOCKå¥æŸ„ï¼ŒBINDæœ¬åœ°åœ°å€çš„æ–¹å¼,ä¸€èˆ¬æƒ…å†µä¸‹ä¸ç”¨è¿™æ ·ä½¿ç”¨ï¼Œé™¤éâ€¦â€¦
-    //protocol_family å‚æ•°å¯ä»¥æ˜¯AF_INET,æˆ–è€…AF_INET6ç­‰
+    //Open SOCK¾ä±ú£¬BIND±¾µØµØÖ·µÄ·½Ê½,Ò»°ãÇé¿öÏÂ²»ÓÃÕâÑùÊ¹ÓÃ£¬³ı·Ç¡­¡­
+    //protocol_family ²ÎÊı¿ÉÒÔÊÇAF_INET,»òÕßAF_INET6µÈ
     int open(const ZCE_Sockaddr *local_addr,
              int protocol_family = AF_INET,
              int protocol = 0,
              bool reuse_addr = false);
 
-    //shutdown,ç‰¹æ®Šçš„å…³é—­æ–¹å¼å‡½æ•°ï¼Œhowå‚æ•°å‘LINUXä¸‹é é½,SHUT_RD,SHUT_WR,SHUT_RDWR
+    //shutdown,ÌØÊâµÄ¹Ø±Õ·½Ê½º¯Êı£¬how²ÎÊıÏòLINUXÏÂ¿¿Æë,SHUT_RD,SHUT_WR,SHUT_RDWR
     int shutdown (int how) const;
 
-    //å¸¦è¶…æ—¶å¤„ç†çš„å‘é€å‡½æ•°ï¼Œæ¥æ”¶Nä¸ªå­—èŠ‚åè¿”å›,å†…éƒ¨ç”¨çš„æ˜¯selectè®°å½•æ—¶é—´ï¼Œè®¡æ—¶ç²¾ç¡®ä¸€ç‚¹
+    //´ø³¬Ê±´¦ÀíµÄ·¢ËÍº¯Êı£¬½ÓÊÕN¸ö×Ö½Úºó·µ»Ø,ÄÚ²¿ÓÃµÄÊÇselect¼ÇÂ¼Ê±¼ä£¬¼ÆÊ±¾«È·Ò»µã
     ssize_t recv_n (void *buf,
                     size_t len,
                     ZCE_Time_Value  *timeout_tv,
                     int flags = 0)  const;
 
-    //å¸¦è¶…æ—¶å¤„ç†çš„å‘é€å‡½æ•°ï¼Œå‘é€Nä¸ªå­—èŠ‚åè¿”å›,å†…éƒ¨ç”¨çš„æ˜¯selectè®°å½•æ—¶é—´ï¼Œè®¡æ—¶ç²¾ç¡®ä¸€ç‚¹
+    //´ø³¬Ê±´¦ÀíµÄ·¢ËÍº¯Êı£¬·¢ËÍN¸ö×Ö½Úºó·µ»Ø,ÄÚ²¿ÓÃµÄÊÇselect¼ÇÂ¼Ê±¼ä£¬¼ÆÊ±¾«È·Ò»µã
     ssize_t send_n (const void *buf,
                     size_t len,
                     ZCE_Time_Value  *timeout_tv,
                     int flags = 0)  const;
 
-    //å¸¦è¶…æ—¶å¤„ç†çš„æ¥å—å‡½æ•°ï¼Œå‘é€Nä¸ªå­—èŠ‚åè¿”å›,å†…éƒ¨ç”¨çš„æ˜¯SO_RCVTIMEOï¼Œè®°æ—¶ä¸æ˜¯ç‰¹åˆ«å‡†ç¡®ï¼Œ
+    //´ø³¬Ê±´¦ÀíµÄ½ÓÊÜº¯Êı£¬·¢ËÍN¸ö×Ö½Úºó·µ»Ø,ÄÚ²¿ÓÃµÄÊÇSO_RCVTIMEO£¬¼ÇÊ±²»ÊÇÌØ±ğ×¼È·£¬
     ssize_t recvn_timeout (void *buf,
                            size_t len,
                            ZCE_Time_Value &timeout_tv,
                            int flags = 0)  const;
 
-    //å¸¦è¶…æ—¶å¤„ç†çš„å‘é€å‡½æ•°ï¼Œå‘é€Nä¸ªå­—èŠ‚åè¿”å›,å†…éƒ¨ç”¨çš„æ˜¯SO_SNDTIMEOï¼Œè®°æ—¶ä¸æ˜¯ç‰¹åˆ«å‡†ç¡®ï¼Œ
+    //´ø³¬Ê±´¦ÀíµÄ·¢ËÍº¯Êı£¬·¢ËÍN¸ö×Ö½Úºó·µ»Ø,ÄÚ²¿ÓÃµÄÊÇSO_SNDTIMEO£¬¼ÇÊ±²»ÊÇÌØ±ğ×¼È·£¬
     ssize_t sendn_timeout (void *buf,
                            size_t len,
                            ZCE_Time_Value &timeout_tv,

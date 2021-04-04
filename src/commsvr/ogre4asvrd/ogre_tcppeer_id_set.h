@@ -12,18 +12,18 @@ class PeerID_To_TCPHdl_Map
 
 
 public:
-    ///æ„é€ å‡½æ•°,
+    ///¹¹Ôìº¯Êı,
     PeerID_To_TCPHdl_Map();
     ~PeerID_To_TCPHdl_Map();
 
-    //åˆå§‹åŒ–
+    //³õÊ¼»¯
     void init_services_peerinfo(size_t szpeer);
 
-    ///æŸ¥è¯¢é…ç½®ä¿¡æ¯
+    ///²éÑ¯ÅäÖÃĞÅÏ¢
     int find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *&);
-    ///è®¾ç½®é…ç½®ä¿¡æ¯
+    ///ÉèÖÃÅäÖÃĞÅÏ¢
     int add_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *);
-    ///åˆ é™¤é…ç½®ä¿¡æ¯
+    ///É¾³ıÅäÖÃĞÅÏ¢
     size_t del_services_peerinfo(const OGRE_PEER_ID &svrinfo);
     //
     void clear_and_close();

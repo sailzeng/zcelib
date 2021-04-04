@@ -10,7 +10,7 @@
 Class           : ZCE_Socket_Acceptor
 ************************************************************************************************************/
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Socket_Acceptor::ZCE_Socket_Acceptor():
     ZCE_Socket_Base()
 {
@@ -18,12 +18,12 @@ ZCE_Socket_Acceptor::ZCE_Socket_Acceptor():
 
 ZCE_Socket_Acceptor::~ZCE_Socket_Acceptor()
 {
-    //ä¸ºä»€ä¹ˆåœ¨è¿™äººä¸å…³é—­socket_handle_,æ˜¯è€ƒè™‘åˆ°ä¸‡ä¸€è¦è¿›è¡Œå¤åˆ¶å‘¢
+    //ÎªÊ²Ã´ÔÚÕâÈË²»¹Ø±Õsocket_handle_,ÊÇ¿¼ÂÇµ½ÍòÒ»Òª½øĞĞ¸´ÖÆÄØ
     close();
 }
 
-//è·Ÿè¿›åœ°å€å‚æ•°ç­‰ï¼Œæ‰“å¼€ä¸€ä¸ªAccepetçš„ç«¯å£ (Bind,å¹¶ä¸”ç›‘å¬),
-//æ‰“å¼€ä¸€ä¸ªç›‘å¬åœ°å€ï¼Œç›®å‰åªæ”¯æŒAF_INET,å’ŒAFINET6
+//¸ú½øµØÖ·²ÎÊıµÈ£¬´ò¿ªÒ»¸öAccepetµÄ¶Ë¿Ú (Bind,²¢ÇÒ¼àÌı),
+//´ò¿ªÒ»¸ö¼àÌıµØÖ·£¬Ä¿Ç°Ö»Ö§³ÖAF_INET,ºÍAFINET6
 int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
                               bool reuse_addr,
                               int protocol_family,
@@ -33,7 +33,7 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
 
     int ret = 0;
 
-    //å¦‚æœæ²¡æœ‰æ ‡æ³¨åè®®ç±»å‹ï¼Œç”¨åœ°å€
+    //Èç¹ûÃ»ÓĞ±ê×¢Ğ­ÒéÀàĞÍ£¬ÓÃµØÖ·
     if (protocol_family == AF_UNSPEC)
     {
         protocol_family = local_addr->sockaddr_ptr_->sa_family;
@@ -58,7 +58,7 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
         return ret;
     }
 
-    //å»ºç«‹ç›‘å¬
+    //½¨Á¢¼àÌı
     ret = zce::listen (socket_handle_,
                        backlog);
 
@@ -71,7 +71,7 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
     return 0;
 }
 
-//éè¶…æ—¶å¤„ç†çš„accept,NONBLOCKæ¨¡å¼ä¸‹ä¼šè¿…é€Ÿé€€å‡ºï¼Œé˜»å¡æ¨¡å¼ä¸‹ä¼šä¸€è‡´ç­‰å¾…
+//·Ç³¬Ê±´¦ÀíµÄaccept,NONBLOCKÄ£Ê½ÏÂ»áÑ¸ËÙÍË³ö£¬×èÈûÄ£Ê½ÏÂ»áÒ»ÖÂµÈ´ı
 int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
                                  ZCE_Sockaddr *remote_addr) const
 {
@@ -96,7 +96,7 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
     int ret = 0;
     ret = zce::handle_ready(socket_handle_,
                             &timeout,
-                            zce::HANDLE_READY_TODO::ACCEPT);
+                            zce::HANDLE_READY_ACCEPT);
 
     const int HANDLE_READY_ONE = 1;
 

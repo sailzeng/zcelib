@@ -4,7 +4,7 @@
 #include "zce_event_handle_base.h"
 #include "zce_event_reactor_base.h"
 
-//鏋勯�犲嚱鏁板拰鏋愭瀯鍑芥暟
+//构造函数和析构函数
 ZCE_Event_Handler::ZCE_Event_Handler():
     zce_reactor_(NULL),
     event_mask_(NULL_MASK)
@@ -41,7 +41,7 @@ int ZCE_Event_Handler::handle_exception()
 
 int ZCE_Event_Handler::handle_close ()
 {
-    //绉婚櫎鑷繁锛屼絾鏄笉鍒ゆ柇杩斿洖锛屽洜涓哄鏋滀唬鐮佽�冭檻鐨勪笉缁嗚嚧锛屽彲鑳藉嚭鐜颁袱娆emove_handler
+    //移除自己，但是不判断返回，因为如果代码考虑的不细致，可能出现两次remove_handler
     reactor()->remove_handler(this, false);
     return 0;
 }

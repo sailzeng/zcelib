@@ -11,25 +11,25 @@ class Interface_WH_Proxy
 {
 public:
 
-    /// ä»£ç†çš„ç±»å‹
+    /// ´úÀíµÄÀàĞÍ
     enum PROXY_TYPE
     {
-        /// æ— æ•ˆçš„TYPE
+        /// ÎŞĞ§µÄTYPE
         INVALID_PROXY_TYPE           = 0,
 
-        /// å°†æ‰€æœ‰çš„æ•°æ®æ•°æ®å›æ˜¾
+        /// ½«ËùÓĞµÄÊı¾İÊı¾İ»ØÏÔ
         PROXY_TYPE_ECHO              = 1,
-        /// ç›´æ¥è¿›è¡Œè½¬å‘å¤„ç†ï¼Œä¸å¯¹æ•°æ®å¸§è¿›è¡Œä»»ä½•å¤„ç†
+        /// Ö±½Ó½øĞĞ×ª·¢´¦Àí£¬²»¶ÔÊı¾İÖ¡½øĞĞÈÎºÎ´¦Àí
         PROXY_TYPE_TRANSMIT          = 2,
-        /// å°†æ•°æ®å¤åˆ¶è½¬å‘ç»™æ‰€æœ‰é…ç½®çš„æœåŠ¡å™¨
+        /// ½«Êı¾İ¸´ÖÆ×ª·¢¸øËùÓĞÅäÖÃµÄ·şÎñÆ÷
         PROXY_TYPE_BROADCAST         = 3,
 
-        /// æŒ‰ç…§UIDå–æ¨¡è¿›è¡ŒProxyè½¬å‘ï¼Œ
+        /// °´ÕÕUIDÈ¡Ä£½øĞĞProxy×ª·¢£¬
         PROXY_TYPE_MODULO_UID        = 101,
-        /// æŒ‰ç…§SENDSVC_IDå–æ¨¡è¿›è¡ŒProxyè½¬å‘ï¼Œ
+        /// °´ÕÕSENDSVC_IDÈ¡Ä£½øĞĞProxy×ª·¢£¬
         PROXY_TYPE_MODULO_SENDSVCID = 102,
 
-        /// CH,Consistent Hash,æ ¹æ®UIDè¿›è¡Œä¸€è‡´æ€§Hashå¤„ç†ï¼Œ
+        /// CH,Consistent Hash,¸ù¾İUID½øĞĞÒ»ÖÂĞÔHash´¦Àí£¬
         PROXY_TYPE_CH_UID            = 201,
 
 
@@ -37,26 +37,26 @@ public:
 
 public:
 
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     Interface_WH_Proxy();
     virtual ~Interface_WH_Proxy();
 
-    //åˆå§‹åŒ–ä»£ç†çš„å®ä¾‹
+    //³õÊ¼»¯´úÀíµÄÊµÀı
     virtual int init_proxy_instance();
 
-    /// é€šè¿‡é…ç½®æ–‡ä»¶å–å¾—ä»£ç†çš„é…ç½®ä¿¡æ¯,è¿™ä¸ªå‡½æ•°åªå–è¿‡æ»¤å‘½ä»¤éƒ¨åˆ†çš„ä»£ç ,è¦ä½¿ç”¨æŒ‡å®šåŸºç±»è®¿é—®
+    /// Í¨¹ıÅäÖÃÎÄ¼şÈ¡µÃ´úÀíµÄÅäÖÃĞÅÏ¢,Õâ¸öº¯ÊıÖ»È¡¹ıÂËÃüÁî²¿·ÖµÄ´úÂë,ÒªÊ¹ÓÃÖ¸¶¨»ùÀà·ÃÎÊ
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
 
-    ///ä»£ç†çš„å¤„ç†,è¿”å›ç”Ÿäº§çš„å¸§çš„ä¸ªæ•°
-    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame) = 0;
+    ///´úÀíµÄ´¦Àí,·µ»ØÉú²úµÄÖ¡µÄ¸öÊı
+    virtual int process_proxy(Zerg_App_Frame *proc_frame) = 0;
 
 
 protected:
 
     /*!
-    * @brief      å‘½ä»¤çš„è¿‡æ»¤å™¨,çœ‹ä¸å‡ºæœ‰ä»€ä¹ˆæ‰©å±•å¿…è¦,æ‰€ä»¥æ”¾åœ¨è¿™å„¿,
+    * @brief      ÃüÁîµÄ¹ıÂËÆ÷,¿´²»³öÓĞÊ²Ã´À©Õ¹±ØÒª,ËùÒÔ·ÅÔÚÕâ¶ù,
     * @return     int
-    * @param      cmd  è¦æ£€æŸ¥çš„CMD
+    * @param      cmd  Òª¼ì²éµÄCMD
     * @note
     */
     inline int filter_command(unsigned long cmd);
@@ -64,7 +64,7 @@ protected:
 public:
 
     /*!
-    * @brief      ä»£ç†æ¥å£åˆ¶é€ çš„å·¥å‚
+    * @brief      ´úÀí½Ó¿ÚÖÆÔìµÄ¹¤³§
     * @return     Interface_WH_Proxy*
     * @param      proxytype
     */
@@ -81,7 +81,7 @@ public:
 
 protected:
 
-    // é»˜è®¤åˆå§‹åŒ–çš„é•¿åº¦
+    // Ä¬ÈÏ³õÊ¼»¯µÄ³¤¶È
     static const size_t INIT_PROCESS_FRAME = 64;
 
 
@@ -95,7 +95,7 @@ protected:
 
 
 /*!
-* @brief      å›é€å¤„ç†æ•°æ®
+* @brief      »ØËÍ´¦ÀíÊı¾İ
 *
 * @note
 */
@@ -103,20 +103,20 @@ class Echo_Proxy_Process : public Interface_WH_Proxy
 {
 
 public:
-    // Echoå¤„ç†
+    // Echo´¦Àí
     Echo_Proxy_Process();
     virtual ~Echo_Proxy_Process();
 
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
-    // è¿›è¡Œä»£ç†çš„å¤„ç†
-    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
+    // ½øĞĞ´úÀíµÄ´¦Àí
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
 
 
 //====================================================================================
 
 /*!
-* @brief      ç›´æ¥è¿›è¡Œè½¬å‘ï¼Œä¸è¿›è¡Œä»»ä½•å¤„ç†çš„Proxyæ–¹å¼
+* @brief      Ö±½Ó½øĞĞ×ª·¢£¬²»½øĞĞÈÎºÎ´¦ÀíµÄProxy·½Ê½
 *
 * @note
 */
@@ -127,10 +127,10 @@ public:
     Transmit_Proxy();
     virtual ~Transmit_Proxy();
 
-    ///å¤„ç†é…ç½®æ–‡ä»¶
+    ///´¦ÀíÅäÖÃÎÄ¼ş
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     //
-    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
 
 
@@ -138,7 +138,7 @@ public:
 //====================================================================================
 
 /*!
-* @brief      å°†æ•°æ®å¤åˆ¶è½¬å‘ç»™æ‰€æœ‰é…ç½®çš„æœåŠ¡å™¨
+* @brief      ½«Êı¾İ¸´ÖÆ×ª·¢¸øËùÓĞÅäÖÃµÄ·şÎñÆ÷
 *
 * @note
 */
@@ -150,10 +150,10 @@ public:
     Broadcast_ProxyProcess();
     virtual ~Broadcast_ProxyProcess();
 
-    ///å¤„ç†é…ç½®æ–‡ä»¶
+    ///´¦ÀíÅäÖÃÎÄ¼ş
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     ///
-    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 
 
 protected:
@@ -161,11 +161,11 @@ protected:
     static const size_t MAX_NUM_COPY_SVC = 512;
 protected:
 
-    // è¦å¤åˆ¶çš„æœåŠ¡å™¨ç±»å‹
+    // Òª¸´ÖÆµÄ·şÎñÆ÷ÀàĞÍ
     uint16_t broadcast_svctype_ = SERVICES_ID::INVALID_SERVICES_ID;
-    // è¦å¤åˆ¶çš„æ•°é‡
+    // Òª¸´ÖÆµÄÊıÁ¿
     size_t broadcast_svcnum_ = 0;
-    // è¦å¤åˆ¶çš„FRAMEçš„å°ºå¯¸
+    // Òª¸´ÖÆµÄFRAMEµÄ³ß´ç
     uint32_t broadcast_svcid_[MAX_NUM_COPY_SVC];
 };
 
@@ -189,10 +189,10 @@ public:
     Modulo_ProxyProcess(MODULO_TYPE modulo_type);
     virtual ~Modulo_ProxyProcess();
 
-    ///å¤„ç†é…ç½®æ–‡ä»¶
+    ///´¦ÀíÅäÖÃÎÄ¼ş
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     ///
-    virtual int process_proxy(ZERG_FRAME_HEAD *proc_frame);
+    virtual int process_proxy(Zerg_App_Frame *proc_frame);
 
 
 protected:
@@ -203,35 +203,35 @@ protected:
     //
     MODULO_TYPE modulo_type_ = MODULO_UID;
 
-    // è¦å¤åˆ¶çš„æœåŠ¡å™¨ç±»å‹
+    // Òª¸´ÖÆµÄ·şÎñÆ÷ÀàĞÍ
     uint16_t modulo_svctype_ = SERVICES_ID::INVALID_SERVICES_ID;
-    // è¦å¤åˆ¶çš„æ•°é‡
+    // Òª¸´ÖÆµÄÊıÁ¿
     size_t modulo_svcnum_ = 0;
-    // è¦å¤åˆ¶çš„FRAMEçš„å°ºå¯¸
+    // Òª¸´ÖÆµÄFRAMEµÄ³ß´ç
     uint32_t modulo_svcid_[MAX_NUM_MODULO_SVC];
 };
 
 
 ////====================================================================================
-////å–æ¨¡è¿›è¡Œæ•°æ®è½¬å‘çš„å¤„ç†æ–¹å¼
+////È¡Ä£½øĞĞÊı¾İ×ª·¢µÄ´¦Àí·½Ê½
 //
 //
 //class DBModalProxyInfo
 //{
 //public:
-//    // åˆ†å¸ƒçš„ä½ç§»
+//    // ·Ö²¼µÄÎ»ÒÆ
 //    unsigned int distribute_offset_;
 //
-//    // åˆ†å¸ƒçš„å–æ¨¡
+//    // ·Ö²¼µÄÈ¡Ä£
 //    unsigned int distribute_module_;
 //
-//    // è·¯ç”±çš„æœåŠ¡å™¨ç±»å‹
+//    // Â·ÓÉµÄ·şÎñÆ÷ÀàĞÍ
 //    unsigned short router_svr_type_;
 //
-//    // ä¸»è·¯ç”±é…ç½®ï¼Œ
+//    // Ö÷Â·ÓÉÅäÖÃ£¬
 //    std::vector<unsigned int> normal_router_cfg_;
 //
-//    // å…‹éš†è·¯ç”±çš„é…ç½®ï¼Œ
+//    // ¿ËÂ¡Â·ÓÉµÄÅäÖÃ£¬
 //    std::vector<unsigned int> clone_router_cfg_;
 //
 //};
@@ -240,14 +240,14 @@ protected:
 //{
 //
 //protected:
-//    // ä»æµ‹è¯•ä¸Šæ¥çœ‹åç§»å–8å’Œ16å·®ä¸å¤š,è‚¯å®šå¯ä»¥ä¿è¯æ•°æ®é‡æœ€å¤§åå·®åœ¨10%ä»¥å†…,æ‰€ä»¥ä½ å°½ç®¡æ”¾å¿ƒ
-//    // æˆ‘æµ‹è¯•çš„æœ€å·®çš„å–æ¨¡çš„æ–¹å¼æ˜¯æ¨¡10ç±»ä¼¼çš„æ–¹å¼.
+//    // ´Ó²âÊÔÉÏÀ´¿´Æ«ÒÆÈ¡8ºÍ16²î²»¶à,¿Ï¶¨¿ÉÒÔ±£Ö¤Êı¾İÁ¿×î´óÆ«²îÔÚ10%ÒÔÄÚ,ËùÒÔÄã¾¡¹Ü·ÅĞÄ
+//    // ÎÒ²âÊÔµÄ×î²îµÄÈ¡Ä£µÄ·½Ê½ÊÇÄ£10ÀàËÆµÄ·½Ê½.
 //
-//    // è¿™ä¸ªåˆ†å¸ƒçš„æ–¹æ³•æ¥è‡ªäºQQGame,æˆ‘è®¤ä¸ºOFFSETå–8åº”è¯¥æœ‰æ›´å¥½çš„è¡¨ç°,ä½†æ˜¯,ä½†æ˜¯
-//    // å–16å¯ä»¥ä¿è¯TCçš„Leaderä»¬éƒ½åœ¨æœºå™¨1ä¸Š,å®‰å…¨ç¬¬ä¸€,å®‰å…¨ç¬¬ä¸€,
-//    // ä¸ºä»€ä¹ˆå·²ç»å›ºå®šäº†256ä¸ªæ¨¡æ•°,å› ä¸ºä¸ä¼šè¶…è¿‡,æ—¥åä¹Ÿå®¹æ˜“æ”¹,æ‰€ä»¥æˆ‘æ”¾å¼ƒé…ç½®
+//    // Õâ¸ö·Ö²¼µÄ·½·¨À´×ÔÓÚQQGame,ÎÒÈÏÎªOFFSETÈ¡8Ó¦¸ÃÓĞ¸üºÃµÄ±íÏÖ,µ«ÊÇ,µ«ÊÇ
+//    // È¡16¿ÉÒÔ±£Ö¤TCµÄLeaderÃÇ¶¼ÔÚ»úÆ÷1ÉÏ,°²È«µÚÒ»,°²È«µÚÒ»,
+//    // ÎªÊ²Ã´ÒÑ¾­¹Ì¶¨ÁË256¸öÄ£Êı,ÒòÎª²»»á³¬¹ı,ÈÕºóÒ²ÈİÒ×¸Ä,ËùÒÔÎÒ·ÅÆúÅäÖÃ
 //
-//    // è·¯ç”±è¡¨, keyä¸ºservice_type, valueä¸ºå¯¹åº”è·¯ç”±ä¿¡æ¯
+//    // Â·ÓÉ±í, keyÎªservice_type, valueÎª¶ÔÓ¦Â·ÓÉĞÅÏ¢
 //    std::map<unsigned short, DBModalProxyInfo*> dbmodal_proxy_map_;
 //
 //public:
@@ -264,7 +264,7 @@ protected:
 //
 //
 ///****************************************************************************
-//struct DBModalMGKey DBModalMGProxyProcessä½¿ç”¨çš„ç´¢å¼•è¡¨çš„key
+//struct DBModalMGKey DBModalMGProxyProcessÊ¹ÓÃµÄË÷Òı±íµÄkey
 //**************************************************************************/
 //struct DBModalMGKey
 //{
@@ -280,13 +280,13 @@ protected:
 //struct DBModalMGRouteItem
 //{
 //public:
-//    // è·¯ç”±å…¥å£çš„hashå€¼
+//    // Â·ÓÉÈë¿ÚµÄhashÖµ
 //    uint16_t hash_;
-//    // ä¸»è·¯ç”±id
+//    // Ö÷Â·ÓÉid
 //    unsigned int normal_router_;
-//    // å…‹éš†è·¯ç”±id
+//    // ¿ËÂ¡Â·ÓÉid
 //    unsigned int clone_router_;
-//    // æ—è·¯è·¯ç”±id
+//    // ÅÔÂ·Â·ÓÉid
 //    unsigned int passby_router_;
 //
 //    bool operator<(DBModalMGRouteItem r)const
@@ -298,9 +298,9 @@ protected:
 //class DBModalMGProxyInfo
 //{
 //public:
-//    // è·¯ç”±çš„æœåŠ¡å™¨ç±»å‹
+//    // Â·ÓÉµÄ·şÎñÆ÷ÀàĞÍ
 //    unsigned short router_svr_type_;
-//    // è·¯ç”±è¡¨
+//    // Â·ÓÉ±í
 //    std::vector<DBModalMGRouteItem> route_cfg_;
 //
 //    const DBModalMGRouteItem *find_route(unsigned int uid);
@@ -308,7 +308,7 @@ protected:
 //
 //
 ///****************************************************************************************************
-//class  DBModalProxyMGProcess æ‰‹æ¸¸ç±»æŒ‰ç…§APPIDå’Œuidè¿›è¡Œæ•°æ®è½¬å‘çš„å¤„ç†æ–¹å¼
+//class  DBModalProxyMGProcess ÊÖÓÎÀà°´ÕÕAPPIDºÍuid½øĞĞÊı¾İ×ª·¢µÄ´¦Àí·½Ê½
 //****************************************************************************************************/
 //class DBModalMGProxyProcess : public Interface_WH_Proxy
 //{

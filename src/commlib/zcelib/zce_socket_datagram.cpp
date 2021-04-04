@@ -20,13 +20,13 @@ ZCE_Socket_DataGram::~ZCE_Socket_DataGram()
 {
 }
 
-//Open SOCKå¥æŸ„ï¼Œä¸BINDæœ¬åœ°åœ°å€çš„æ–¹å¼
+//Open SOCK¾ä±ú£¬²»BIND±¾µØµØÖ·µÄ·½Ê½
 int ZCE_Socket_DataGram::open(int protocol_family,
                               int protocol,
                               bool reuse_addr)
 {
     int ret = 0;
-    //æ‰“å¼€
+    //´ò¿ª
     ret = ZCE_Socket_Base::open(SOCK_DGRAM,
                                 protocol_family,
                                 protocol,
@@ -40,8 +40,8 @@ int ZCE_Socket_DataGram::open(int protocol_family,
     return 0;
 }
 
-///Open SOCKå¥æŸ„ï¼ŒBINDæœ¬åœ°åœ°å€çš„æ–¹å¼,ä¸€èˆ¬æƒ…å†µä¸‹ä¸ç”¨è¿™æ ·ä½¿ç”¨ï¼Œé™¤éâ€¦â€¦
-//protocol_family å‚æ•°å¯ä»¥æ˜¯AF_INET,æˆ–è€…AF_INET6ç­‰
+///Open SOCK¾ä±ú£¬BIND±¾µØµØÖ·µÄ·½Ê½,Ò»°ãÇé¿öÏÂ²»ÓÃÕâÑùÊ¹ÓÃ£¬³ı·Ç¡­¡­
+//protocol_family ²ÎÊı¿ÉÒÔÊÇAF_INET,»òÕßAF_INET6µÈ
 int ZCE_Socket_DataGram::open(const ZCE_Sockaddr *local_addr,
                               int protocol_family,
                               int protocol,
@@ -63,7 +63,7 @@ int ZCE_Socket_DataGram::open(const ZCE_Sockaddr *local_addr,
     return 0;
 }
 
-//æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨SO_RCVTIMEOå®ç°
+//ÊÕUDPµÄÊı¾İ,Ò²´øÓĞ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊı¾İ¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃSO_RCVTIMEOÊµÏÖ
 ssize_t ZCE_Socket_DataGram::recvfrom_timeout (void *buf,
                                                size_t len,
                                                ZCE_Sockaddr *from_addr,
@@ -79,8 +79,8 @@ ssize_t ZCE_Socket_DataGram::recvfrom_timeout (void *buf,
                                   flags);
 }
 
-//UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
-//å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†
+//UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
+//·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí
 ssize_t ZCE_Socket_DataGram::sendto_timeout (const void *buf,
                                              size_t len,
                                              const ZCE_Sockaddr *to_addr,

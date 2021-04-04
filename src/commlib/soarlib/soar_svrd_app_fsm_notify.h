@@ -21,31 +21,31 @@ class Comm_SvrdApp_FSM_Notify : public Soar_Svrd_Appliction
 
 protected:
 
-    //ä½¿ç”¨äº‹åŠ¡å¤„ç†çš„Application
+    //Ê¹ÓÃÊÂÎñ´¦ÀíµÄApplication
     Comm_SvrdApp_FSM_Notify();
     virtual ~Comm_SvrdApp_FSM_Notify();
 
 public:
 
-    //å¢åŠ è°ƒç”¨register_func_cmd
+    //Ôö¼Óµ÷ÓÃregister_func_cmd
     virtual int app_start(int argc, const char *argv[]);
 
-    //è¿è¡Œå¤„ç†,
+    //ÔËĞĞ´¦Àí,
     virtual int app_run();
 
-    //é€€å‡ºå¤„ç†
+    //ÍË³ö´¦Àí
     virtual int app_exit();
 
 protected:
 
-    //æ³¨å†Œè¦äº‹åŠ¡å¤„ç†çš„å‘½ä»¤ï¼Œ
-    //å¯ä»¥ä½¿ç”¨å®REGISTER_NOTIFYTRANS_CMDæ³¨å†Œå‘½ä»¤
+    //×¢²áÒªÊÂÎñ´¦ÀíµÄÃüÁî£¬
+    //¿ÉÒÔÊ¹ÓÃºêREGISTER_NOTIFYTRANS_CMD×¢²áÃüÁî
     virtual int register_notifytrans_cmd() = 0;
 
-    //æ³¨å†Œnotifyçš„å¤„ç†çº¿ç¨‹,ä½ æŠŠè¿™å‡ ä¸ªå‚æ•°èµ‹å€¼äº†å°±OK
-    //clone_taskï¼Œéº»çƒ¦ä½ newä¸€ä¸ªç»™æˆ‘
-    //task_num ä¸è¦ç”¨å¤ªå¤šçš„çº¿ç¨‹ï¼Œåˆç†å°±OKï¼Œé™¤éæœ‰å¤§é‡çš„é˜»å¡
-    //task_stack_size å¦‚æœçº¿ç¨‹æ•°é‡è¾ƒå¤šï¼Œåˆ‡è®°æ§åˆ¶å †æ ˆå¤§å°
+    //×¢²ánotifyµÄ´¦ÀíÏß³Ì,Äã°ÑÕâ¼¸¸ö²ÎÊı¸³ÖµÁË¾ÍOK
+    //clone_task£¬Âé·³ÄãnewÒ»¸ö¸øÎÒ
+    //task_num ²»ÒªÓÃÌ«¶àµÄÏß³Ì£¬ºÏÀí¾ÍOK£¬³ı·ÇÓĞ´óÁ¿µÄ×èÈû
+    //task_stack_size Èç¹ûÏß³ÌÊıÁ¿½Ï¶à£¬ÇĞ¼Ç¿ØÖÆ¶ÑÕ»´óĞ¡
     virtual int register_notify_task(NotifyTrans_TaskBase *&clone_task,
                                      size_t &task_num,
                                      size_t &task_stack_size) = 0;

@@ -8,7 +8,7 @@
 
 int main(int argc, const char *argv[])
 {
-    //åˆ©ç”¨æ¨¡æ¿å¼€å§‹å¯åŠ¨
+    //ÀûÓÃÄ£°å¿ªÊ¼Æô¶¯
     return SOAR_LIB::soar_svrd_main < Zerg_Service_App,
            Zerg_Server_Config,
            Zerg_App_Timer_Handler > (argc, argv);

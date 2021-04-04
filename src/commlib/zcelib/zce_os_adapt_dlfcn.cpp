@@ -4,8 +4,8 @@
 #include "zce_os_adapt_dlfcn.h"
 
 //----------------------------------------------------------------------------------------
-//åŠ¨æ€åº“ä½¿ç”¨çš„ä¸€éƒ¨åˆ†å‡½æ•°å°è£…
-//å…³é—­åŠ¨æ€åº“ä½¿ç”¨çš„å‡½æ•°
+//¶¯Ì¬¿âÊ¹ÓÃµÄÒ»²¿·Öº¯Êı·â×°
+//¹Ø±Õ¶¯Ì¬¿âÊ¹ÓÃµÄº¯Êı
 int zce::dlclose (ZCE_SHLIB_HANDLE handle)
 {
 
@@ -30,7 +30,7 @@ const char *zce::dlerror (void)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //ä»…ä»…æ˜¯ç”¨äºå…¼å®¹
+    //½ö½öÊÇÓÃÓÚ¼æÈİ
     const size_t ERROR_BUFFER_LEN = 256;
     static char error_buf[ERROR_BUFFER_LEN + 1];
     error_buf[ERROR_BUFFER_LEN] = '\0';

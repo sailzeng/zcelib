@@ -20,7 +20,7 @@ void PeerID_To_TCPHdl_Map::init_services_peerinfo(size_t szpeer)
     peer_info_set_.rehash(szpeer);
 }
 
-//æ ¹æ®SERVICEINFOæŸ¥è¯¢PEERä¿¡æ¯
+//¸ù¾İSERVICEINFO²éÑ¯PEERĞÅÏ¢
 int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Ogre_TCP_Svc_Handler *&svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(svrinfo);
@@ -40,7 +40,7 @@ int PeerID_To_TCPHdl_Map::find_services_peerinfo(const OGRE_PEER_ID &svrinfo, Og
     return 0;
 }
 
-//è®¾ç½®PEERä¿¡æ¯
+//ÉèÖÃPEERĞÅÏ¢
 int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID &peer_info, Ogre_TCP_Svc_Handler *svrhandle)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
@@ -48,7 +48,7 @@ int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID &peer_info, O
     const size_t BUFFER_SIZE = 32;
     char buffer[BUFFER_SIZE];
 
-    //å·²ç»æœ‰ç›¸å…³çš„è®°å½•äº†
+    //ÒÑ¾­ÓĞÏà¹ØµÄ¼ÇÂ¼ÁË
     if (iter != peer_info_set_.end() )
     {
         ZCE_LOG(RS_INFO, "Can't add_services_peerinfo peer_info:[%s|%u] ",
@@ -62,14 +62,14 @@ int PeerID_To_TCPHdl_Map::add_services_peerinfo(const OGRE_PEER_ID &peer_info, O
     return 0;
 }
 
-//æ ¹æ®Socket_Peer_Info,åˆ é™¤PEERä¿¡æ¯,
+//¸ù¾İSocket_Peer_Info,É¾³ıPEERĞÅÏ¢,
 size_t PeerID_To_TCPHdl_Map::del_services_peerinfo(const OGRE_PEER_ID &peer_info)
 {
     MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.find(peer_info);
 
     size_t szdel = peer_info_set_.erase(peer_info);
 
-    //å¦‚æœæ²¡æœ‰æ‰¾åˆ°,99.99%ç†è®ºä¸Šåº”è¯¥æ˜¯ä»£ç å†™çš„æœ‰é—®é¢˜,é™¤éæ’å…¥æ²¡æœ‰æˆåŠŸçš„æƒ…å†µ.è°ƒç”¨äº†handle_close.
+    //Èç¹ûÃ»ÓĞÕÒµ½,99.99%ÀíÂÛÉÏÓ¦¸ÃÊÇ´úÂëĞ´µÄÓĞÎÊÌâ,³ı·Ç²åÈëÃ»ÓĞ³É¹¦µÄÇé¿ö.µ÷ÓÃÁËhandle_close.
     if (szdel <= 0)
     {
         ZCE_LOG(RS_ERROR, "Can't PeerInfoSetToTCPHdlMap::del_services_peerinfo Size peer_info_set_ %u: szdel:%u peer_info:%u|%u .\n", peer_info_set_.size(), szdel, peer_info.peer_ip_address_, peer_info.peer_port_);
@@ -85,7 +85,7 @@ void PeerID_To_TCPHdl_Map::clear_and_close()
 
     ZCE_LOG(RS_INFO, "Has %u peer want to close. Please wait. ACE that is accursed.\n", peer_info_set_.size());
 
-    //è¿™ä¸ªå‡½æ•°å¯èƒ½æ˜¯ç»å¯¹çš„æ…¢
+    //Õâ¸öº¯Êı¿ÉÄÜÊÇ¾ø¶ÔµÄÂı
     while (peer_info_set_.size() > 0)
     {
         if (peer_info_set_.size() % SHOWINFO_NUMBER == 0 )
@@ -96,7 +96,7 @@ void PeerID_To_TCPHdl_Map::clear_and_close()
         MAP_OF_SOCKETPEER_ID::iterator iter = peer_info_set_.begin();
         Ogre_TCP_Svc_Handler *svrhandle = (*(iter)).second;
 
-        //Ogre_TCP_Svc_Handler::handle_closeè°ƒç”¨äº†del_services_peerinfo
+        //Ogre_TCP_Svc_Handler::handle_closeµ÷ÓÃÁËdel_services_peerinfo
         svrhandle->handle_close();
     }
 }

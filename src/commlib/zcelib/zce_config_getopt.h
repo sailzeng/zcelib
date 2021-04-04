@@ -4,7 +4,7 @@
 * @author
 * @version
 * @date       Monday, August 25, 2014
-* @brief      杩欎釜浠ｇ爜鏄疉CE鐨凙CE_Get_Option鐨勪唬鐮侊紝鎴戞病鏈夌増鏉冿紝
+* @brief      这个代码是ACE的ACE_Get_Option的代码，我没有版权，
 *
 *
 * @details
@@ -52,7 +52,7 @@ public:
     };
 
     /// Mutually exclusive option argument mode used by long options.
-    enum class OPTION_ARG_MODE
+    enum OPTION_ARG_MODE
     {
         /// Doesn't take an argument.
         NO_ARG = 0,
@@ -241,7 +241,7 @@ public:
      * @retval -1 The long option can not be added.
      */
     int long_option (const char *name,
-                     OPTION_ARG_MODE has_arg = OPTION_ARG_MODE::NO_ARG);
+                     OPTION_ARG_MODE has_arg = NO_ARG);
 
     /// Adds a long option with a corresponding short option.
     /**
@@ -259,7 +259,7 @@ public:
      */
     int long_option (const char *name,
                      int short_option,
-                     OPTION_ARG_MODE has_arg = OPTION_ARG_MODE::NO_ARG);
+                     OPTION_ARG_MODE has_arg = NO_ARG);
 
     /// Returns the name of the long option found on the last call to
     /// @c operator() or 0 if none was found.
@@ -337,7 +337,7 @@ private:
 
         /// ctor
         ZCE_GETOPT_LONG_OPTION (const char *name,
-                                ZCE_Get_Option::OPTION_ARG_MODE has_arg,
+                                int has_arg,
                                 int val = 0);
 
         /// Dtor.
@@ -349,7 +349,7 @@ private:
         std::string    name_;
 
         /// Contains value for <OPTION_ARG_MODE>.
-        ZCE_Get_Option::OPTION_ARG_MODE     has_arg_;
+        int            has_arg_;
 
         /// Contains a valid short option character or zero if it doesn't
         /// have a corresponding short option.  It can also contain a

@@ -4,18 +4,16 @@
 
 
 #if defined (ZCE_OS_LINUX)
-#if ( _GCC_VER >= 80000)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wclass-memaccess"
 #endif
-#endif
 
-ZERG_FRAME_HEAD::ZERG_FRAME_HEAD() :
+Zerg_App_Frame::Zerg_App_Frame() :
     frame_length_(CMD_INVALID_CMD),
     frame_option_(DESC_V1_VERSION),
     frame_command_(LEN_OF_APPFRAME_HEAD),
-    frame_userid_(0),
-    business_id_(0),
+    frame_uid_(0),
+    app_id_(0),
     send_service_(0, 0),
     recv_service_(0, 0),
     proxy_service_(0, 0),
@@ -25,13 +23,13 @@ ZERG_FRAME_HEAD::ZERG_FRAME_HEAD() :
 {
 }
 
-ZERG_FRAME_HEAD::~ZERG_FRAME_HEAD()
+Zerg_App_Frame::~Zerg_App_Frame()
 {
 }
 
 
-// Assign =è¿ç®—ç¬¦å·
-ZERG_FRAME_HEAD &ZERG_FRAME_HEAD::operator = (const ZERG_FRAME_HEAD &other)
+// Assign =ÔËËã·ûºÅ
+Zerg_App_Frame &Zerg_App_Frame::operator = (const Zerg_App_Frame &other)
 {
     if (this != &other )
     {
@@ -41,59 +39,59 @@ ZERG_FRAME_HEAD &ZERG_FRAME_HEAD::operator = (const ZERG_FRAME_HEAD &other)
     return *this;
 }
 
-//åˆ›å»ºä¸€ä¸ªFrame
-ZERG_FRAME_HEAD *ZERG_FRAME_HEAD::new_frame(std::size_t frame_len)
+//´´½¨Ò»¸öFrame
+Zerg_App_Frame *Zerg_App_Frame::new_frame(std::size_t frame_len)
 {
     //assert( FrameLength <= MAX_FRAME_SIZE );
-    if (frame_len < sizeof(ZERG_FRAME_HEAD))
+    if (frame_len < sizeof(Zerg_App_Frame))
     {
-        frame_len = sizeof(ZERG_FRAME_HEAD);
+        frame_len = sizeof(Zerg_App_Frame);
     }
 
-    //è®¡ç®—æ•°æ®åŠ å¯†åçš„é•¿åº¦
+    //¼ÆËãÊı¾İ¼ÓÃÜºóµÄ³¤¶È
 
     void *ptr = ::new unsigned char[frame_len];
 
 #if defined(DEBUG) || defined(_DEBUG)
-    //æ£€æŸ¥å¸§çš„å“ªä¸ªåœ°æ–¹å‡ºç°é—®é¢˜ï¼Œè¿˜æ˜¯è¿™æ ·å¥½ä¸€ç‚¹
+    //¼ì²éÖ¡µÄÄÄ¸öµØ·½³öÏÖÎÊÌâ£¬»¹ÊÇÕâÑùºÃÒ»µã
     memset(ptr, 0, frame_len);
 #endif //DEBUG
 
-    //æ²¡æœ‰å¿…è¦åŠ ä¸‹é¢è¿™å¥ï¼Œå› ä¸ºå®é™…é•¿åº¦è¦æ ¹æ®ä½¿ç”¨å†³å®š
+    //Ã»ÓĞ±ØÒª¼ÓÏÂÃæÕâ¾ä£¬ÒòÎªÊµ¼Ê³¤¶ÈÒª¸ù¾İÊ¹ÓÃ¾ö¶¨
     //reinterpret_cast<Zerg_App_Frame*>(ptr)->frame_length_ = static_cast<uint32_t>(lenframe);
-    return static_cast<ZERG_FRAME_HEAD *>(ptr);
+    return static_cast<Zerg_App_Frame *>(ptr);
 }
 
 //
-void ZERG_FRAME_HEAD::delete_frame(ZERG_FRAME_HEAD *frame)
+void Zerg_App_Frame::delete_frame(Zerg_App_Frame *frame)
 {
     char *ptr = reinterpret_cast<char *>(frame);
     delete[]ptr;
 }
 
-//å¡«å……AppDataæ•°æ®åˆ°APPFrame
-int ZERG_FRAME_HEAD::fill_appdata(const size_t szdata, const char *vardata)
+//Ìî³äAppDataÊı¾İµ½APPFrame
+int Zerg_App_Frame::fill_appdata(const size_t szdata, const char *vardata)
 {
-    // åˆ¤æ–­é•¿åº¦æ˜¯å¦è¶³å¤Ÿ
+    // ÅĞ¶Ï³¤¶ÈÊÇ·ñ×ã¹»
     if (szdata > MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
 
-    //å¡«å†™æ•°æ®åŒºçš„é•¿åº¦
+    //ÌîĞ´Êı¾İÇøµÄ³¤¶È
     memcpy(frame_appdata_, vardata, szdata);
-    frame_length_ = static_cast<uint32_t>( ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD + szdata);
+    frame_length_ = static_cast<uint32_t>( Zerg_App_Frame::LEN_OF_APPFRAME_HEAD + szdata);
     return 0;
 }
 
-//å°†æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºç½‘ç»œåº
-void ZERG_FRAME_HEAD::framehead_encode()
+//½«ËùÓĞµÄuint16_t,uint32_t×ª»»ÎªÍøÂçĞò
+void Zerg_App_Frame::framehead_encode()
 {
     frame_length_ = htonl(frame_length_);
     frame_option_ = htonl(frame_option_);
     frame_command_ = htonl(frame_command_);
 
-    frame_userid_ = htonl(frame_userid_);
+    frame_uid_ = htonl(frame_uid_);
 
     //
     recv_service_.services_type_ = htons(recv_service_.services_type_);
@@ -107,19 +105,19 @@ void ZERG_FRAME_HEAD::framehead_encode()
 
     transaction_id_ = htonl(transaction_id_);
     backfill_trans_id_ = htonl(backfill_trans_id_);
-    business_id_ = htonl(business_id_);
+    app_id_ = htonl(app_id_);
 
     send_serial_number_ = htonl(send_serial_number_);
 
 }
 
-//å°†æ‰€æœ‰çš„uint16_t,uint32_tè½¬æ¢ä¸ºæœ¬åœ°åº
-void ZERG_FRAME_HEAD::framehead_decode()
+//½«ËùÓĞµÄuint16_t,uint32_t×ª»»Îª±¾µØĞò
+void Zerg_App_Frame::framehead_decode()
 {
     frame_length_ = ntohl(frame_length_);
     frame_option_ = ntohl(frame_option_);
     frame_command_ = ntohl(frame_command_);
-    frame_userid_ = ntohl(frame_userid_);
+    frame_uid_ = ntohl(frame_uid_);
 
     //
     recv_service_.services_type_ = ntohs(recv_service_.services_type_);
@@ -133,33 +131,33 @@ void ZERG_FRAME_HEAD::framehead_decode()
 
     transaction_id_ = ntohl(transaction_id_);
     backfill_trans_id_ = ntohl(backfill_trans_id_);
-    business_id_ = ntohl(business_id_);
+    app_id_ = ntohl(app_id_);
 
     send_serial_number_ = ntohl(send_serial_number_);
 }
 
 
 
-//å¡«å†™å‘é€è€…æœåŠ¡ä¿¡æ¯
-void ZERG_FRAME_HEAD::set_send_svcid(uint16_t svrtype, uint32_t svrid)
+//ÌîĞ´·¢ËÍÕß·şÎñĞÅÏ¢
+void Zerg_App_Frame::set_send_svcid(uint16_t svrtype, uint32_t svrid)
 {
     send_service_.services_type_ = svrtype;
     send_service_.services_id_  = svrid;
 }
 
-void ZERG_FRAME_HEAD::set_recv_svcid(uint16_t svrtype, uint32_t svrid)
+void Zerg_App_Frame::set_recv_svcid(uint16_t svrtype, uint32_t svrid)
 {
     recv_service_.services_type_ = svrtype;
     recv_service_.services_id_ = svrid;
 }
 
-void ZERG_FRAME_HEAD::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
+void Zerg_App_Frame::set_proxy_svcid(uint16_t svrtype, uint32_t svrid)
 {
     proxy_service_.services_type_ = svrtype;
     proxy_service_.services_id_ = svrid;
 }
 
-void ZERG_FRAME_HEAD::set_all_svcid(const SERVICES_ID &rcvinfo,
+void Zerg_App_Frame::set_all_svcid(const SERVICES_ID &rcvinfo,
                                    const SERVICES_ID &sndinfo,
                                    const SERVICES_ID &proxyinfo)
 {
@@ -169,8 +167,8 @@ void ZERG_FRAME_HEAD::set_all_svcid(const SERVICES_ID &rcvinfo,
 }
 
 
-//äº¤æ¢æ¥å—è€…å’Œå‘é€è€…,ç”±äºè¦å›é€æ•°æ®æ—¶
-void ZERG_FRAME_HEAD::exchange_rcvsnd_svcid(void )
+//½»»»½ÓÊÜÕßºÍ·¢ËÍÕß,ÓÉÓÚÒª»ØËÍÊı¾İÊ±
+void Zerg_App_Frame::exchange_rcvsnd_svcid(void )
 {
 
     SERVICES_ID tmpsvrinfo = recv_service_;
@@ -178,41 +176,41 @@ void ZERG_FRAME_HEAD::exchange_rcvsnd_svcid(void )
     send_service_ = tmpsvrinfo;
 }
 
-void ZERG_FRAME_HEAD::exchange_rcvsnd_svcid(ZERG_FRAME_HEAD &exframe )
+void Zerg_App_Frame::exchange_rcvsnd_svcid(Zerg_App_Frame &exframe )
 {
     recv_service_ = exframe.send_service_;
     send_service_ = exframe.recv_service_;
     proxy_service_ = exframe.proxy_service_;
     transaction_id_ = exframe.transaction_id_;
     backfill_trans_id_ = exframe.backfill_trans_id_;
-    business_id_ = exframe.business_id_;
-    frame_userid_ = exframe.frame_userid_;
+    app_id_ = exframe.app_id_;
+    frame_uid_ = exframe.frame_uid_;
 }
 
-void ZERG_FRAME_HEAD::fillback_appframe_head(ZERG_FRAME_HEAD &exframe )
+void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
 {
     recv_service_ = exframe.send_service_;
     send_service_ = exframe.recv_service_;
     proxy_service_ = exframe.proxy_service_;
     transaction_id_ = exframe.backfill_trans_id_;
-    //å›å»çš„äº‹åŠ¡idåº”å½“æ˜¯è¯·æ±‚çš„äº‹åŠ¡id
+    //»ØÈ¥µÄÊÂÎñidÓ¦µ±ÊÇÇëÇóµÄÊÂÎñid
     backfill_trans_id_ = exframe.transaction_id_;
-    business_id_ = exframe.business_id_;
-    frame_userid_ = exframe.frame_userid_;
+    app_id_ = exframe.app_id_;
+    frame_uid_ = exframe.frame_uid_;
 }
 
 
-//è°ƒè¯•AppFrame, è½¬åŒ–æ‰€æœ‰çš„æ•°æ®ä¿¡æ¯ä¸ºä¸€ä¸ªä½ å¯ä»¥è¯»æ‡‚çš„çŠ¶æ€
-//è¿™ä¸ªè°ƒè¯•æ˜¯ä¸€ä¸ªéå¸¸,éå¸¸æ¶ˆè€—æ—¶çš„æ“ä½œ,é™¤é,å‘å¸ƒç‰ˆæœ¬åƒä¸‡ä¸è¦ä½¿ç”¨
-void ZERG_FRAME_HEAD::dump_appframe_info(std::ostringstream &strstream) const
+//µ÷ÊÔAppFrame, ×ª»¯ËùÓĞµÄÊı¾İĞÅÏ¢ÎªÒ»¸öÄã¿ÉÒÔ¶Á¶®µÄ×´Ì¬
+//Õâ¸öµ÷ÊÔÊÇÒ»¸ö·Ç³£,·Ç³£ÏûºÄÊ±µÄ²Ù×÷,³ı·Ç,·¢²¼°æ±¾Ç§Íò²»ÒªÊ¹ÓÃ
+void Zerg_App_Frame::dump_appframe_info(std::ostringstream &strstream) const
 {
     dump_appframe_head(strstream);
     dump_appframe_data(strstream);
     return;
 }
 
-//Dumpæ‰€æœ‰çš„æ•°æ®ä¿¡æ¯,ä¸€ä¸ªå­—èŠ‚å­—èŠ‚çš„å‘Šè¯‰ä½ ,
-void ZERG_FRAME_HEAD::dump_appframe_data(std::ostringstream &strstream) const
+//DumpËùÓĞµÄÊı¾İĞÅÏ¢,Ò»¸ö×Ö½Ú×Ö½ÚµÄ¸æËßÄã,
+void Zerg_App_Frame::dump_appframe_data(std::ostringstream &strstream) const
 {
     //
     char tmpstr[MAX_LEN_OF_APPFRAME * 2 + 1];
@@ -226,16 +224,16 @@ void ZERG_FRAME_HEAD::dump_appframe_data(std::ostringstream &strstream) const
 }
 
 
-//è¾“å‡ºåŒ…å¤´ä¿¡æ¯
-void ZERG_FRAME_HEAD::dump_appframe_head(std::ostringstream &strstream) const
+//Êä³ö°üÍ·ĞÅÏ¢
+void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
 {
     strstream << "Len:" << frame_length_
               << " Framedesc:0x " << frame_option_
               << " Command:" << frame_command_
-              << " Uin:" << frame_userid_
+              << " Uin:" << frame_uid_
               << " TransactionID:" << transaction_id_
               << " BackfillTransID:" << backfill_trans_id_
-              << " ProcessHandler:" << business_id_
+              << " ProcessHandler:" << app_id_
               << " Sendip:" << send_ip_address_;
     strstream << "Rcvsvr:" << recv_service_.services_type_
               << "|" << recv_service_.services_id_
@@ -246,15 +244,15 @@ void ZERG_FRAME_HEAD::dump_appframe_head(std::ostringstream &strstream) const
     return;
 }
 
-//è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
-void ZERG_FRAME_HEAD::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
+//Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
+void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
     ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
-//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
-void ZERG_FRAME_HEAD::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
+//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
+void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
 {
 
     std::ostringstream strstream;
@@ -262,31 +260,31 @@ void ZERG_FRAME_HEAD::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY 
     ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
 
-//è¾“å‡ºAPPFRAMEçš„å¤´éƒ¨ä¿¡æ¯
-void ZERG_FRAME_HEAD::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
+//Êä³öAPPFRAMEµÄÍ·²¿ĞÅÏ¢
+void Zerg_App_Frame::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
-                                          const ZERG_FRAME_HEAD *proc_frame )
+                                          const Zerg_App_Frame *proc_frame )
 {
     proc_frame->dumpoutput_framehead(outstr, log_priority);
 }
-//è¾“å‡ºAPPFRAMEçš„å…¨éƒ¨éƒ¨ä¿¡æ¯
-void ZERG_FRAME_HEAD::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
+//Êä³öAPPFRAMEµÄÈ«²¿²¿ĞÅÏ¢
+void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
                                           const char *outstr,
-                                          const ZERG_FRAME_HEAD *proc_frame)
+                                          const Zerg_App_Frame *proc_frame)
 {
     proc_frame->dumpoutput_frameinfo(outstr, log_priority);
 }
 
 
-//Cloneä¸€ä¸ªAPP FRAME
-void ZERG_FRAME_HEAD::clone(ZERG_FRAME_HEAD *dst_frame) const
+//CloneÒ»¸öAPP FRAME
+void Zerg_App_Frame::clone(Zerg_App_Frame *dst_frame) const
 {
     memcpy(dst_frame, this, frame_length_);
     return ;
 }
 
-//Cloneä¸€ä¸ªAPP FRAME çš„å¤´éƒ¨
-void ZERG_FRAME_HEAD::clone_head(ZERG_FRAME_HEAD *clone_frame) const
+//CloneÒ»¸öAPP FRAME µÄÍ·²¿
+void Zerg_App_Frame::clone_head(Zerg_App_Frame *clone_frame) const
 {
     memcpy(clone_frame, this, LEN_OF_APPFRAME_HEAD);
     return ;
@@ -296,8 +294,8 @@ void ZERG_FRAME_HEAD::clone_head(ZERG_FRAME_HEAD *clone_frame) const
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
-///å°†ä¸€ä¸ªç»“æ„è¿›è¡Œç¼–ç 
-int ZERG_FRAME_HEAD::protobuf_encode(size_t szframe_appdata,
+///½«Ò»¸ö½á¹¹½øĞĞ±àÂë
+int Zerg_App_Frame::protobuf_encode(size_t szframe_appdata,
                                     const google::protobuf::MessageLite *msg,
                                     size_t data_start,
                                     size_t *sz_code)
@@ -327,8 +325,8 @@ int ZERG_FRAME_HEAD::protobuf_encode(size_t szframe_appdata,
     return 0;
 }
 
-///å°†ä¸€ä¸ªç»“æ„è¿›è¡Œè§£ç 
-int ZERG_FRAME_HEAD::protobuf_decode(google::protobuf::MessageLite *msg,
+///½«Ò»¸ö½á¹¹½øĞĞ½âÂë
+int Zerg_App_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
                                     size_t data_start,
                                     size_t *sz_code)
 {

@@ -5,11 +5,11 @@
 #include "zerg_configure.h"
 #include "zerg_stat_define.h"
 
-//å·¦å°ç¥–å’’ï¼šå€Ÿæˆ‘é‚£æŠŠæªå§ï¼Œæˆ–è€…å€Ÿæˆ‘äº”æ¯›é’±
-//è¿™å„¿å¿…é¡»è®°å½•ä¸€ä¸‹ï¼Œä¸ºä»€ä¹ˆæ¯ä¸ªç«¯å£è¦é…ç½®ä¸€ä¸ªSVC IDï¼Œè¿™ä¸ªé—®é¢˜ï¼Œ
-//æˆ‘éš”ä¸‰å·®äº”å°±ä¼šè€ƒè™‘ä¸€è¾¹ã€‚è€Œä¸”æ¯æ¬¡éƒ½ä¼šè€ƒè™‘åˆ°UDPç©¿é€è¿™ä¸ªé—®é¢˜ä¸Š,å¤ªTMDæŠ€æœ¯æƒ…èŠ‚äº†ã€‚
-//è„‘å­å¤ªç¬¨çš„ç»“æœï¼Œå…¶å®å¾ˆç®€å•
-//å¦‚æœä¸€ä¸ªSVCIDå¯¹åº”å¤šä¸ªç«¯å£ï¼Œä½ ä¸åŒºåˆ†æ ‡è¯†å¼€ï¼Œé‚£ä¹ˆå…¶ä»–è¿æ¥è€…çŸ¥é“è¿æ¥çš„SVCIDåˆ°åº•æ˜¯é‚£ä¸ªç«¯å£å—ï¼Ÿ
+//×óĞ¡×æÖä£º½èÎÒÄÇ°ÑÇ¹°É£¬»òÕß½èÎÒÎåÃ«Ç®
+//Õâ¶ù±ØĞë¼ÇÂ¼Ò»ÏÂ£¬ÎªÊ²Ã´Ã¿¸ö¶Ë¿ÚÒªÅäÖÃÒ»¸öSVC ID£¬Õâ¸öÎÊÌâ£¬
+//ÎÒ¸ôÈı²îÎå¾Í»á¿¼ÂÇÒ»±ß¡£¶øÇÒÃ¿´Î¶¼»á¿¼ÂÇµ½UDP´©Í¸Õâ¸öÎÊÌâÉÏ,Ì«TMD¼¼ÊõÇé½ÚÁË¡£
+//ÄÔ×ÓÌ«±¿µÄ½á¹û£¬ÆäÊµºÜ¼òµ¥
+//Èç¹ûÒ»¸öSVCID¶ÔÓ¦¶à¸ö¶Ë¿Ú£¬Äã²»Çø·Ö±êÊ¶¿ª£¬ÄÇÃ´ÆäËûÁ¬½ÓÕßÖªµÀÁ¬½ÓµÄSVCIDµ½µ×ÊÇÄÇ¸ö¶Ë¿ÚÂğ£¿
 
 class TCP_Accept_Handler;
 class UDP_Svc_Handler;
@@ -30,7 +30,7 @@ class Zerg_Comm_Manager
 
 protected:
 
-    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
     Zerg_Comm_Manager();
     ~Zerg_Comm_Manager();
 
@@ -38,46 +38,46 @@ public:
 
 
     /*!
-    * @brief      åˆå§‹åŒ–,ä»é…ç½®æ–‡ä»¶è¯»å–é…ç½®
+    * @brief      ³õÊ¼»¯,´ÓÅäÖÃÎÄ¼ş¶ÁÈ¡ÅäÖÃ
     * @return     int
     * @param      config
     */
     int get_config(const Zerg_Server_Config *config);
 
     /*!
-    * @brief      åˆå§‹åŒ–æ‰€æœ‰çš„ç›‘å¬ï¼ŒUDPç«¯å£ï¼Œ
+    * @brief      ³õÊ¼»¯ËùÓĞµÄ¼àÌı£¬UDP¶Ë¿Ú£¬
     * @return     int
     */
     int init_allpeer();
 
     /*!
-    * @brief      æ ¹æ®SVC INFO åˆå§‹åŒ–Socket,
+    * @brief      ¸ù¾İSVC INFO ³õÊ¼»¯Socket,
     * @return     int
-    * @param      init_svcid åˆå§‹åŒ–æ‰€ä¾æ®çš„SVC INFO
+    * @param      init_svcid ³õÊ¼»¯ËùÒÀ¾İµÄSVC INFO
     */
     int init_socketpeer(const SERVICES_ID &init_svcid);
 
     /*!
-    * @brief      æ£€æŸ¥ç«¯å£æ˜¯å¦å®‰å…¨,å®‰å…¨ç«¯å£å¿…é¡»ä¸ä½¿ç”¨ä¿é™©(FALSE)
+    * @brief      ¼ì²é¶Ë¿ÚÊÇ·ñ°²È«,°²È«¶Ë¿Ú±ØĞë²»Ê¹ÓÃ±£ÏÕ(FALSE)
     * @return     int
-    * @param      inetadd æ£€æŸ¥çš„çš„åœ°å€ä¿¡æ¯
+    * @param      inetadd ¼ì²éµÄµÄµØÖ·ĞÅÏ¢
     */
     int check_safeport(const ZCE_Sockaddr_In &inetadd);
 
 
     /*!
-    * @brief      å–å¾—å‘é€æ•°æ®è¿›è¡Œå‘é€
+    * @brief      È¡µÃ·¢ËÍÊı¾İ½øĞĞ·¢ËÍ
     * @return     int
-    * @param      want_send_frame  å¸Œæœ›å‘é€çš„æ•°é‡ï¼Œæƒ³äº†æƒ³ï¼Œè¿˜æ˜¯åŠ äº†ä¸€ä¸ªæœ€å¤šå‘é€çš„å¸§çš„é™é¢
-    * @param      proc_frame_num   å®é™…å¤„ç†çš„æ•°é‡
+    * @param      want_send_frame  Ï£Íû·¢ËÍµÄÊıÁ¿£¬ÏëÁËÏë£¬»¹ÊÇ¼ÓÁËÒ»¸ö×î¶à·¢ËÍµÄÖ¡µÄÏŞ¶î
+    * @param      proc_frame_num   Êµ¼Ê´¦ÀíµÄÊıÁ¿
     * @note
     */
     int popall_sendpipe_write(size_t want_send_frame, size_t &proc_frame_num);
 
     //
-    void pushback_recvpipe(ZERG_FRAME_HEAD *recv_frame);
+    void pushback_recvpipe(Zerg_App_Frame *recv_frame);
 
-    //æ£€æŸ¥å‘åŒ…é¢‘ç‡
+    //¼ì²é·¢°üÆµÂÊ
     void check_freamcount(unsigned int now);
 
     //
@@ -85,55 +85,55 @@ public:
 
 public:
 
-    //å•å­å®ä¾‹å‡½æ•°
+    //µ¥×ÓÊµÀıº¯Êı
     static Zerg_Comm_Manager *instance();
-    //æ¸…ç†å•å­å®ä¾‹
+    //ÇåÀíµ¥×ÓÊµÀı
     static void clean_instance();
 
 protected:
 
-    ///ä¸€æ¬¡æœ€å¤šå‘é€2048å¸§
+    ///Ò»´Î×î¶à·¢ËÍ2048Ö¡
     static const unsigned int MAX_ONCE_SEND_FRAME = 4096;
 
-    ///å‘åŒ…æ•°å‘Šè­¦å€¼
+    ///·¢°üÊı¸æ¾¯Öµ
     static const unsigned int SEND_FRAME_ALERT_VALUE = 40000;
 
 protected:
-    //å•å­å®ä¾‹
+    //µ¥×ÓÊµÀı
     static Zerg_Comm_Manager  *instance_;
 
 
 protected:
 
-    ///ACCEPETçš„HANDLERæ•°ç»„
+    ///ACCEPETµÄHANDLERÊı×é
     TCPACCEPT_HANDLER_LIST zerg_acceptor_;
-    ///UPDçš„HANDLERæ•°ç»„
+    ///UPDµÄHANDLERÊı×é
     UDPSVC_HANDLER_LIST zerg_updsvc_;
 
 
-    ///å¯¹äºé”™è¯¯çš„æ•°æ®,å°è¯•å‘é€çš„æ¬¡æ•°,åªæ˜¯äº†ä¿è¯ä¸€å®šçš„ç½‘ç»œç¬æ–­
+    ///¶ÔÓÚ´íÎóµÄÊı¾İ,³¢ÊÔ·¢ËÍµÄ´ÎÊı,Ö»ÊÇÁË±£Ö¤Ò»¶¨µÄÍøÂçË²¶Ï
     unsigned int error_try_num_;
 
-    ///ç›‘æ§å‘½ä»¤çš„æ•°é‡ï¼Œä¸ºäº†åŠ å¿«é€Ÿåº¦ï¼Œå¤šç”¨å˜é‡ã€‚
+    ///¼à¿ØÃüÁîµÄÊıÁ¿£¬ÎªÁË¼Ó¿ìËÙ¶È£¬¶àÓÃ±äÁ¿¡£
     size_t monitor_size_;
-    ///ç›‘æ§çš„å‘½ä»¤
+    ///¼à¿ØµÄÃüÁî
     unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
 
-    ///å†…å­˜ç®¡é“ç±»çš„å®ä¾‹å¯¹è±¡ï¼Œä¿ç•™å®ƒä»…ä»…ä¸ºäº†åŠ é€Ÿ
+    ///ÄÚ´æ¹ÜµÀÀàµÄÊµÀı¶ÔÏó£¬±£ÁôËü½ö½öÎªÁË¼ÓËÙ
     Soar_MMAP_BusPipe *zerg_mmap_pipe_;
-    ///å‘é€å’Œæ¥æ”¶ç¼“å†²çš„BUFFçš„å®ä¾‹å¯¹è±¡ï¼Œä¿ç•™å®ƒä»…ä»…ä¸ºäº†åŠ é€Ÿ
+    ///·¢ËÍºÍ½ÓÊÕ»º³åµÄBUFFµÄÊµÀı¶ÔÏó£¬±£ÁôËü½ö½öÎªÁË¼ÓËÙ
     ZBuffer_Storage *zbuffer_storage_;
-    ///ç»Ÿè®¡ï¼Œä½¿ç”¨å•å­ç±»çš„æŒ‡é’ˆï¼Œä¿ç•™å®ƒä»…ä»…ä¸ºäº†åŠ é€Ÿ
+    ///Í³¼Æ£¬Ê¹ÓÃµ¥×ÓÀàµÄÖ¸Õë£¬±£ÁôËü½ö½öÎªÁË¼ÓËÙ
     Soar_Stat_Monitor *server_status_;
 
 
 
-    ///è®¡æ•°èµ·å§‹æ—¶é—´
+    ///¼ÆÊıÆğÊ¼Ê±¼ä
     unsigned int count_start_time_;
-    ///åè®®åŒ…å‘é€è®¡æ•°å™¨
+    ///Ğ­Òé°ü·¢ËÍ¼ÆÊıÆ÷
     unsigned int send_frame_count_;
 
-    ///é…ç½®å®ä¾‹æŒ‡é’ˆ
+    ///ÅäÖÃÊµÀıÖ¸Õë
     const Zerg_Server_Config *zerg_config_;
 };
 

@@ -3,27 +3,27 @@
 * @filename   zce_server_status.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2006å¹´3æœˆ7æ—¥
+* @date       2006Äê3ÔÂ7ÈÕ
 * @brief
 *
 *
-* @details    æœåŠ¡å™¨çš„ç»Ÿè®¡ç±»ï¼Œ
-*             è¿™ä¸ªæƒ³æ³•æ¥è‡ªrong,sonicmaoçš„C4Açš„æœåŠ¡å™¨,å‘rong,sonicmaoè‡´æ•¬.
+* @details    ·şÎñÆ÷µÄÍ³¼ÆÀà£¬
+*             Õâ¸öÏë·¨À´×Ôrong,sonicmaoµÄC4AµÄ·şÎñÆ÷,Ïòrong,sonicmaoÖÂ¾´.
 *
 *
-* @note       ä¿®æ”¹è®°å½•ï¼Œå¾ˆç®€å•çš„ä¸€ä¸ªç±»ï¼Œä½†æ”¹åŠ¨å¾ˆå¤š
-*     1.Date  :2011å¹´10æœˆ30æ—¥
-*     Author  :æ ¹æ®ZCELIBçš„ä»£ç å¯¹ç°æœ‰çš„ä»£ç è¿›è¡Œä¼˜åŒ–
+* @note       ĞŞ¸Ä¼ÇÂ¼£¬ºÜ¼òµ¥µÄÒ»¸öÀà£¬µ«¸Ä¶¯ºÜ¶à
+*     1.Date  :2011Äê10ÔÂ30ÈÕ
+*     Author  :¸ù¾İZCELIBµÄ´úÂë¶ÔÏÖÓĞµÄ´úÂë½øĞĞÓÅ»¯
 *     Modification  :
-*     2.Date  :2012å¹´1æœˆ15æ—¥
+*     2.Date  :2012Äê1ÔÂ15ÈÕ
 *     Author  :Sailzeng
-*     Modification  :åœ¨Næ¬¡åå¤ï¼Œä»¥åŠåè¡€çš„æ”¹äº†2æ¬¡åï¼Œæˆ‘å¼€å§‹å€¾å‘ç”¨ä¸€ä¸ªæœ€ç®€å•çš„æ–¹å¼è§£å†³é—®é¢˜ï¼Œ
-*     3.Date  :2012å¹´5æœˆ10æ—¥
+*     Modification  :ÔÚN´Î·´¸´£¬ÒÔ¼°ÍÂÑªµÄ¸ÄÁË2´Îºó£¬ÎÒ¿ªÊ¼ÇãÏòÓÃÒ»¸ö×î¼òµ¥µÄ·½Ê½½â¾öÎÊÌâ£¬
+*     3.Date  :2012Äê5ÔÂ10ÈÕ
 *     Author  :Sailzeng
-*     Modification  :å¾ˆå¤šå•ŠåŒäº‹è¿˜æ˜¯åæ§½éœ€è¦è®¾ç½®classifyï¼Œæˆ‘æƒ³è¿˜æ˜¯æ”¹äº†æŠŠã€‚éƒ¨åˆ†å‘Šåˆ«sandyå’Œmandy
-*     4.Date  :2013å¹´10æœˆ1æ—¥
+*     Modification  :ºÜ¶à°¡Í¬ÊÂ»¹ÊÇÍÂ²ÛĞèÒªÉèÖÃclassify£¬ÎÒÏë»¹ÊÇ¸ÄÁË°Ñ¡£²¿·Ö¸æ±ğsandyºÍmandy
+*     4.Date  :2013Äê10ÔÂ1ÈÕ
 *     Author  :Sailzeng
-*     Modification  :æœ‰ä¸€ä¸ªé˜²æ­¢ç»Ÿè®¡IDé‡å¤çš„éœ€æ±‚ï¼Œå°†åŸæ¥çš„ARRAYæ”¹é€ æˆäº†ä¸€ä¸ªMAPæ˜ å°„ï¼Œ
+*     Modification  :ÓĞÒ»¸ö·ÀÖ¹Í³¼ÆIDÖØ¸´µÄĞèÇó£¬½«Ô­À´µÄARRAY¸ÄÔì³ÉÁËÒ»¸öMAPÓ³Éä£¬
 *
 */
 
@@ -38,36 +38,36 @@
 
 //===========================================================================================
 /*!
-* @brief      çŠ¶æ€ç»Ÿè®¡çš„æ–¹å¼ï¼Œæ¯”å¦‚5åˆ†é’Ÿè®°å½•ä¸€æ¬¡çš„æ–¹å¼ï¼Œä¸€ä¸ªå°æ—¶è®°å½•çš„æ–¹å¼ç­‰
+* @brief      ×´Ì¬Í³¼ÆµÄ·½Ê½£¬±ÈÈç5·ÖÖÓ¼ÇÂ¼Ò»´ÎµÄ·½Ê½£¬Ò»¸öĞ¡Ê±¼ÇÂ¼µÄ·½Ê½µÈ
 *
 * @note
 */
-enum class ZCE_STATUS_STATICS
+enum ZCE_STATUS_STATICS_TYPE
 {
-    //æ ‡è¯†èŒƒå›´
-    INVALID       = 0,
+    //±êÊ¶·¶Î§
+    STATICS_INVALID_TYPE       = 0,
 
-    //æ¯5åˆ†é’Ÿè¿›è¡Œä¸€æ¬¡ç»Ÿè®¡ï¼Œå°½é‡ç”¨5åˆ†é’Ÿçš„ç»Ÿè®¡æ–¹å¼
-    PER_FIVE_MINTUES   = 1,
+    //Ã¿5·ÖÖÓ½øĞĞÒ»´ÎÍ³¼Æ£¬¾¡Á¿ÓÃ5·ÖÖÓµÄÍ³¼Æ·½Ê½
+    STATICS_PER_FIVE_MINTUES   = 1,
 
-    //æ¯å°æ—¶è¿›è¡Œä¸€æ¬¡ç»Ÿè®¡,:0ä¼šæ¸…ç©ºï¼Œè¿™ç§ç»Ÿè®¡æ–¹å¼ä¸»è¦ç”¨äº1ä¸ªå°æ—¶å˜åŒ–æ•°æ®ï¼Œç”¨äºå¯¹æ¯”ç­‰ï¼Œ
-    PER_HOUR           = 2,
-    //æ¯å¤©è¿›è¡Œä¸€æ¬¡ç»Ÿè®¡ï¼Œ0:0ä¼šæ¸…ç©ºï¼Œï¼Œè¿™ç§ç»Ÿè®¡æ–¹å¼ä¸»è¦ç”¨äº1å¤©å˜åŒ–æ•°æ®
-    PER_DAYS           = 3,
+    //Ã¿Ğ¡Ê±½øĞĞÒ»´ÎÍ³¼Æ,:0»áÇå¿Õ£¬ÕâÖÖÍ³¼Æ·½Ê½Ö÷ÒªÓÃÓÚ1¸öĞ¡Ê±±ä»¯Êı¾İ£¬ÓÃÓÚ¶Ô±ÈµÈ£¬
+    STATICS_PER_HOUR           = 2,
+    //Ã¿Ìì½øĞĞÒ»´ÎÍ³¼Æ£¬0:0»áÇå¿Õ£¬£¬ÕâÖÖÍ³¼Æ·½Ê½Ö÷ÒªÓÃÓÚ1Ìì±ä»¯Êı¾İ
+    STATICS_PER_DAYS           = 3,
 
-    //ç»å¯¹å€¼
-    ABSOLUTE_VALUE     = 11,
+    //¾ø¶ÔÖµ
+    STATICS_ABSOLUTE_VALUE     = 11,
 
-    //åŸæ¥è¿˜æœ‰ä¸€ç§æ¯æ¬¡å¯åŠ¨æ—¶ï¼Œæ•°å€¼æ˜¯å¦æ¸…ç©ºçš„é€‰é¡¹ï¼Œç®—äº†ï¼Œæ²¡å¿…è¦ä¿ç•™äº†
+    //Ô­À´»¹ÓĞÒ»ÖÖÃ¿´ÎÆô¶¯Ê±£¬ÊıÖµÊÇ·ñÇå¿ÕµÄÑ¡Ïî£¬ËãÁË£¬Ã»±ØÒª±£ÁôÁË
 
 };
 
-//ä¿è¯æ•°æ®æ–‡ä»¶çš„ä¸€è‡´æ€§
+//±£Ö¤Êı¾İÎÄ¼şµÄÒ»ÖÂĞÔ
 #pragma pack(8)
 
 //===========================================================================================
 /*!
-* @brief      ç»Ÿè®¡é¡¹ç›®ID,
+* @brief      Í³¼ÆÏîÄ¿ID,
 *
 * @note
 */
@@ -85,11 +85,11 @@ public:
 
 public:
 
-    ///ç»Ÿè®¡ID
+    ///Í³¼ÆID
     uint32_t              statics_id_=0;
-    ///åˆ†ç±»IDï¼Œç›®å‰å¥½åƒä¸»è¦æ˜¯ä¸šåŠ¡ID,è¿™ä¸ªæ˜¯å¯ä»¥å˜åŒ–çš„
+    ///·ÖÀàID£¬Ä¿Ç°ºÃÏñÖ÷ÒªÊÇÒµÎñID,Õâ¸öÊÇ¿ÉÒÔ±ä»¯µÄ
     uint32_t              classify_id_=0;
-    ///å­åˆ†ç±»IDï¼Œè¿™ä¸ªä¹Ÿæ˜¯å¯ä»¥å˜åŒ–çš„ï¼Œ
+    ///×Ó·ÖÀàID£¬Õâ¸öÒ²ÊÇ¿ÉÒÔ±ä»¯µÄ£¬
     uint32_t              subclassing_id_=0;
 
 
@@ -97,13 +97,13 @@ public:
 
 //===========================================================================================
 /*!
-* @brief      ZCE_STATUS_ITEM_IDå¾—åˆ°HASHå› å­çš„å‡½æ•°ï¼Œ
+* @brief      ZCE_STATUS_ITEM_IDµÃµ½HASHÒò×ÓµÄº¯Êı£¬
 *
 */
 struct HASH_ZCE_STATUS_ITEM_ID
 {
 public:
-    //å°±æŠŠ3ä¸ªæ•°å€¼ç›¸+ï¼Œè¿™æ ·å†²çªæ„Ÿè§‰è¿˜å°ä¸€ç‚¹ï¼Œï¼ˆå·¦ç§»åè€Œæ„Ÿè§‰ä¸å¥½ï¼‰
+    //¾Í°Ñ3¸öÊıÖµÏà+£¬ÕâÑù³åÍ»¸Ğ¾õ»¹Ğ¡Ò»µã£¬£¨×óÒÆ·´¶ø¸Ğ¾õ²»ºÃ£©
     size_t operator()(const ZCE_STATUS_ITEM_ID &stat_item) const
     {
         return static_cast<size_t>(stat_item.statics_id_)
@@ -115,34 +115,34 @@ public:
 
 //===========================================================================================
 /*!
-* @brief      çŠ¶æ€è®¡æ•°å™¨é¡¹,åŒ…æ‹¬IDï¼Œç»Ÿè®¡æ–¹å¼ï¼Œä»¥åŠæ•°å€¼
+* @brief      ×´Ì¬¼ÆÊıÆ÷Ïî,°üÀ¨ID£¬Í³¼Æ·½Ê½£¬ÒÔ¼°ÊıÖµ
 *
 */
 class ZCE_STATUS_ITEM
 {
 public:
 
-    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
     ZCE_STATUS_ITEM();
     ZCE_STATUS_ITEM(unsigned int statics_id,
-                    ZCE_STATUS_STATICS statics_type);
+                    ZCE_STATUS_STATICS_TYPE statics_type);
     ~ZCE_STATUS_ITEM();
 
 public:
 
-    ///IDæ ‡è¯†
+    ///ID±êÊ¶
     ZCE_STATUS_ITEM_ID        item_id_;
 
-    ///å¯ä»¥é‡æ–°è®¡æ•°
-    ZCE_STATUS_STATICS   statics_type_ = ZCE_STATUS_STATICS::INVALID;
+    ///¿ÉÒÔÖØĞÂ¼ÆÊı
+    ZCE_STATUS_STATICS_TYPE   statics_type_ =STATICS_INVALID_TYPE;
 
-    ///è®¡æ•°å™¨
+    ///¼ÆÊıÆ÷
     uint64_t                  counter_=0;
 };
 
 //===========================================================================================
 /*!
-* @brief      çŠ¶æ€è®¡æ•°å™¨+åå­—ï¼Œç”¨äºé…ç½®ï¼ŒDUMPè¾“å‡ºç­‰
+* @brief      ×´Ì¬¼ÆÊıÆ÷+Ãû×Ö£¬ÓÃÓÚÅäÖÃ£¬DUMPÊä³öµÈ
 *
 */
 class ZCE_STATUS_ITEM_WITHNAME
@@ -151,27 +151,27 @@ public:
 
     //
     ZCE_STATUS_ITEM_WITHNAME(unsigned int,
-                             ZCE_STATUS_STATICS,
+                             ZCE_STATUS_STATICS_TYPE,
                              const char *);
     ZCE_STATUS_ITEM_WITHNAME();
     ~ZCE_STATUS_ITEM_WITHNAME();
 
 public:
-    //ç»Ÿè®¡é¡¹ç›®åç§°çš„é•¿åº¦
+    //Í³¼ÆÏîÄ¿Ãû³ÆµÄ³¤¶È
     static const size_t       MAX_COUNTER_NAME_LEN = 64;
 
 public:
 
     ZCE_STATUS_ITEM           statics_item_;
 
-    //è®¡æ•°å™¨åç§°
+    //¼ÆÊıÆ÷Ãû³Æ
     char                      item_name_[MAX_COUNTER_NAME_LEN + 1];
 
 };
 
 
 
-//ç”¨äºå¸®åŠ©ä½ å®šä¹‰ ZCE_STATUS_ITEM_WITHNAMEæ•°ç»„
+//ÓÃÓÚ°ïÖúÄã¶¨Òå ZCE_STATUS_ITEM_WITHNAMEÊı×é
 #ifndef DEF_ZCE_STATUS_ITEM
 #define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) ZCE_STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
 #endif
@@ -180,21 +180,21 @@ public:
 //===========================================================================================
 
 /*!
-* @brief      å­˜æ”¾ç»Ÿè®¡ä¿¡æ¯çš„çŠ¶æ€æ–‡ä»¶çš„å¤´éƒ¨ã€‚è®°å½•ç›‘æ§æ—¶é—´ç­‰æ—¶é—´æˆ³
+* @brief      ´æ·ÅÍ³¼ÆĞÅÏ¢µÄ×´Ì¬ÎÄ¼şµÄÍ·²¿¡£¼ÇÂ¼¼à¿ØÊ±¼äµÈÊ±¼ä´Á
 *
 */
 struct ZCE_STATUS_HEAD
 {
-    //ç›‘æ§å¼€å§‹æ—¶é—´
+    //¼à¿Ø¿ªÊ¼Ê±¼ä
     uint64_t monitor_start_time_;
 
-    //ç›‘æ§æ•°æ®å¤åˆ¶çš„æ—¶é—´æˆ³
+    //¼à¿ØÊı¾İ¸´ÖÆµÄÊ±¼ä´Á
     uint64_t copy_time_;
 
-    //å‘monitorä¸ŠæŠ¥çš„æ—¶é—´
+    //ÏòmonitorÉÏ±¨µÄÊ±¼ä
     uint64_t report_monitor_time_;
 
-    //æ¿€æ´»æ—¶é—´é•¿åº¦ï¼Œç›®å‰æ²¡æœ‰è®°å½•
+    //¼¤»îÊ±¼ä³¤¶È£¬Ä¿Ç°Ã»ÓĞ¼ÇÂ¼
     uint64_t active_time_;
 
 };
@@ -205,54 +205,54 @@ struct ZCE_STATUS_HEAD
 
 
 /*!
-* @brief      ä½¿ç”¨Posix MMAP,è®°å½•ä¿å­˜æœåŠ¡å™¨çš„ä¸€äº›è®¡æ•°å™¨,çŠ¶æ€,
+* @brief      Ê¹ÓÃPosix MMAP,¼ÇÂ¼±£´æ·şÎñÆ÷µÄÒ»Ğ©¼ÆÊıÆ÷,×´Ì¬,
 *
-* @note       æœ¬æ¥ä½¿ç”¨çš„æ˜¯é”æ¨¡å¼ï¼Œä½†å‘ç°ä½¿ç”¨è¿™ä¸ªä¸œè¥¿ä¼šå¯¼è‡´æ»¡ä¸–ç•Œçš„é—®é¢˜æ‰©å¤§åŒ–,
+* @note       ±¾À´Ê¹ÓÃµÄÊÇËøÄ£Ê½£¬µ«·¢ÏÖÊ¹ÓÃÕâ¸ö¶«Î÷»áµ¼ÖÂÂúÊÀ½çµÄÎÊÌâÀ©´ó»¯,
 */
 class ZCE_Server_Status : public ZCE_NON_Copyable
 {
 protected:
 
-    ///å­˜æ”¾ç»Ÿè®¡æ•°æ®çš„å…±äº«å†…å­˜æ•°ç»„ï¼Œ
+    ///´æ·ÅÍ³¼ÆÊı¾İµÄ¹²ÏíÄÚ´æÊı×é£¬
     typedef zce::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
-    ///ç»Ÿè®¡IDåˆ°æ•°ç»„çš„ä¸‹æ ‡çš„hash map
+    ///Í³¼ÆIDµ½Êı×éµÄÏÂ±êµÄhash map
     typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
-    ///statics_id_åškeyçš„ZCE_STATUS_ITEM_WITHNAMEçš„ç»“æ„
+    ///statics_id_×ökeyµÄZCE_STATUS_ITEM_WITHNAMEµÄ½á¹¹
     typedef unordered_map<uint32_t, ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
-    ///ç»Ÿè®¡æ•°æ®çš„æ•°ç»„ï¼Œç”¨äºdumpè¾“å‡ºçš„æ•°æ®ç»“æ„
+    ///Í³¼ÆÊı¾İµÄÊı×é£¬ÓÃÓÚdumpÊä³öµÄÊı¾İ½á¹¹
     typedef std::vector<ZCE_STATUS_ITEM_WITHNAME>  ARRAY_OF_STATUS_WITHNAME;
 
 public:
 
-    ///æ„é€ å‡½æ•°,ä¹Ÿç»™ä½ å•ç‹¬ä½¿ç”¨çš„æœºä¼šï¼Œæ‰€ä»¥ä¸ç”¨protected
+    ///¹¹Ôìº¯Êı,Ò²¸øÄãµ¥¶ÀÊ¹ÓÃµÄ»ú»á£¬ËùÒÔ²»ÓÃprotected
     ZCE_Server_Status();
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     virtual ~ZCE_Server_Status();
 
 protected:
 
 
     /*!
-    * @brief      åˆå§‹åŒ–çš„æ–¹æ³•,é€šç”¨çš„åº•å±‚ï¼Œ
+    * @brief      ³õÊ¼»¯µÄ·½·¨,Í¨ÓÃµÄµ×²ã£¬
     * @return     int
-    * @param[in]  stat_filename MMAPå½±å°„çš„çŠ¶æ€æ–‡ä»¶åç§°
-    * @param[in]  restore_mmap  æ˜¯å¦ç”¨äºæ¢å¤MMAPï¼Œå¦‚æœæ˜¯æ¢å¤ï¼Œæ–‡ä»¶å¿…é¡»æ˜¯å­˜åœ¨çš„,
-    * @param[in]  multi_thread  æ˜¯å¦æ˜¯å¤šçº¿ç¨‹ç¯å¢ƒä½¿ç”¨
+    * @param[in]  stat_filename MMAPÓ°ÉäµÄ×´Ì¬ÎÄ¼şÃû³Æ
+    * @param[in]  restore_mmap  ÊÇ·ñÓÃÓÚ»Ö¸´MMAP£¬Èç¹ûÊÇ»Ö¸´£¬ÎÄ¼ş±ØĞëÊÇ´æÔÚµÄ,
+    * @param[in]  multi_thread  ÊÇ·ñÊÇ¶àÏß³Ì»·¾³Ê¹ÓÃ
     */
     int initialize(const char *stat_filename,
                    bool restore_mmap,
                    bool multi_thread);
 
     /*!
-    * @brief      åœ¨æ•°æ®åŒºé‡Œé¢ï¼Œæ‰¾æ•°æ®é¡¹ç›®
-    * @return     int å¦‚æœæˆåŠŸæ‰¾åˆ°è¿”å›0
-    * @param[in]  statics_id  ç»Ÿè®¡ID
-    * @param[in]  classify_id åˆ†ç±»ID
-    * @param[in]  subclassing_id å­åˆ†ç±»ID
-    * @param[out] idx æŸ¥è¯¢åˆ°æ•°æ®é¡¹ç›®å­˜æ”¾ç´¢å¼•
+    * @brief      ÔÚÊı¾İÇøÀïÃæ£¬ÕÒÊı¾İÏîÄ¿
+    * @return     int Èç¹û³É¹¦ÕÒµ½·µ»Ø0
+    * @param[in]  statics_id  Í³¼ÆID
+    * @param[in]  classify_id ·ÖÀàID
+    * @param[in]  subclassing_id ×Ó·ÖÀàID
+    * @param[out] idx ²éÑ¯µ½Êı¾İÏîÄ¿´æ·ÅË÷Òı
     */
     int find_insert_idx(uint32_t statics_id,
                         uint32_t classify_id,
@@ -263,25 +263,25 @@ public:
 
 
     /*!
-    * @brief      æ ¹æ®ä¸€ä¸ªå·²ç»å­˜åœ¨çš„æ–‡ä»¶è¿›è¡Œåˆå§‹åŒ–,ç”¨äºæ¢å¤æ•°æ®åŒº,æ–‡ä»¶å¿…é¡»å·²ç»å­˜åœ¨ï¼Œ
-    *             ä¸€èˆ¬æŸ¥è¯¢çŠ¶æ€å·¥å…·ä½¿ç”¨è¿™ä¸ªå‡½æ•°ã€‚
+    * @brief      ¸ù¾İÒ»¸öÒÑ¾­´æÔÚµÄÎÄ¼ş½øĞĞ³õÊ¼»¯,ÓÃÓÚ»Ö¸´Êı¾İÇø,ÎÄ¼ş±ØĞëÒÑ¾­´æÔÚ£¬
+    *             Ò»°ã²éÑ¯×´Ì¬¹¤¾ßÊ¹ÓÃÕâ¸öº¯Êı¡£
     * @return     int
-    * @param[in]  stat_filename MMAPå½±å°„çš„çŠ¶æ€æ–‡ä»¶åç§°
-    * @param[in]  multi_thread  æ˜¯å¦å¤šçº¿ç¨‹
+    * @param[in]  stat_filename MMAPÓ°ÉäµÄ×´Ì¬ÎÄ¼şÃû³Æ
+    * @param[in]  multi_thread  ÊÇ·ñ¶àÏß³Ì
     */
     int initialize(const char *stat_filename,
                    bool multi_thread);
 
 
     /*!
-    * @brief      åˆ›å»ºä¸€ä¸ªå·²ç»å­˜åœ¨çš„æ–‡ä»¶è¿›è¡Œåˆå§‹åŒ–,ç”¨äºæ¢å¤æ•°æ®åŒº,å¦‚æœæ–‡ä»¶å¿…é¡»å·²ç»å­˜åœ¨ï¼Œä¼šé‡æ–°åˆ›å»º
-    *             éœ€è¦è®°å½•çŠ¶æ€çš„æœåŠ¡å™¨ä½¿ç”¨è¿™ä¸ªå‡½æ•°
+    * @brief      ´´½¨Ò»¸öÒÑ¾­´æÔÚµÄÎÄ¼ş½øĞĞ³õÊ¼»¯,ÓÃÓÚ»Ö¸´Êı¾İÇø,Èç¹ûÎÄ¼ş±ØĞëÒÑ¾­´æÔÚ£¬»áÖØĞÂ´´½¨
+    *             ĞèÒª¼ÇÂ¼×´Ì¬µÄ·şÎñÆ÷Ê¹ÓÃÕâ¸öº¯Êı
     * @return     int
-    * @param[in]  stat_filename MMAPå½±å°„çš„çŠ¶æ€æ–‡ä»¶åç§°
-    * @param[in]  num_stat_item item_aryçš„æ•°é‡ï¼Œ
-    * @param[in]  item_ary      ç»Ÿè®¡é¡¹ç›®ï¼Œ
-    * @param[in]  multi_thread  æ˜¯å¦å¤šçº¿ç¨‹
-    * @note       æ³¨æ„ç»Ÿè®¡é¡¹ç›®æ•°é‡ä¸æ˜¯ç›‘æ§IDçš„æ•°é‡ï¼Œç›‘æ§IDæ•°é‡é»˜è®¤æ˜¯å›ºå®šçš„ @ref MAX_MONITOR_STAT_ITEM
+    * @param[in]  stat_filename MMAPÓ°ÉäµÄ×´Ì¬ÎÄ¼şÃû³Æ
+    * @param[in]  num_stat_item item_aryµÄÊıÁ¿£¬
+    * @param[in]  item_ary      Í³¼ÆÏîÄ¿£¬
+    * @param[in]  multi_thread  ÊÇ·ñ¶àÏß³Ì
+    * @note       ×¢ÒâÍ³¼ÆÏîÄ¿ÊıÁ¿²»ÊÇ¼à¿ØIDµÄÊıÁ¿£¬¼à¿ØIDÊıÁ¿Ä¬ÈÏÊÇ¹Ì¶¨µÄ @ref MAX_MONITOR_STAT_ITEM
     */
     int initialize(const char *stat_filename,
                    size_t num_stat_item,
@@ -289,29 +289,29 @@ public:
                    bool multi_thread);
 
     /*!
-    * @brief      å¢åŠ ä¸€äº›ç›‘æ§é¡¹ç›®ï¼Œå¦‚æœæœ‰2æ®µçš„åˆå§‹åŒ–ï¼ˆæ¯”å¦‚æ¡†æ¶ä¸€æ¬¡ï¼Œä¸šåŠ¡ä¸€æ¬¡ï¼‰æ—¶ä½¿ç”¨
+    * @brief      Ôö¼ÓÒ»Ğ©¼à¿ØÏîÄ¿£¬Èç¹ûÓĞ2¶ÎµÄ³õÊ¼»¯£¨±ÈÈç¿ò¼ÜÒ»´Î£¬ÒµÎñÒ»´Î£©Ê±Ê¹ÓÃ
     * @return     void
-    * @param      num_stat_item item_aryçš„æ•°é‡
-    * @param      item_ary      å¢åŠ çš„ç»Ÿè®¡é¡¹ç›®
+    * @param      num_stat_item item_aryµÄÊıÁ¿
+    * @param      item_ary      Ôö¼ÓµÄÍ³¼ÆÏîÄ¿
     */
     void add_status_item(size_t num_stat_item,
                          const ZCE_STATUS_ITEM_WITHNAME item_ary[]);
 
 
-    ///ç›‘æ§é¡¹æ˜¯å¦å·²ç»å­˜åœ¨
+    ///¼à¿ØÏîÊÇ·ñÒÑ¾­´æÔÚ
     bool is_exist_stat_id(unsigned int stat_id,
                           ZCE_STATUS_ITEM_WITHNAME *status_item_withname) const;
 
-    ///åˆå§‹åŒ–ä»¥åï¼Œä¿®æ”¹æ˜¯å¦éœ€è¦å¤šçº¿ç¨‹ä¿æŠ¤
+    ///³õÊ¼»¯ÒÔºó£¬ĞŞ¸ÄÊÇ·ñĞèÒª¶àÏß³Ì±£»¤
     void multi_thread_guard(bool multi_thread);
 
 
     /*!
-    * @brief      ä½¿ç”¨ç»Ÿè®¡IDå’Œåˆ†ç±»IDä½œä¸ºkey,å¯¹ç»Ÿè®¡å€¼å¢åŠ 1
+    * @brief      Ê¹ÓÃÍ³¼ÆIDºÍ·ÖÀàID×÷Îªkey,¶ÔÍ³¼ÆÖµÔö¼Ó1
     * @return     int
-    * @param[in]  statics_id  ç»Ÿè®¡ID
-    * @param[in]  classify_id åˆ†ç±»ID
-    * @param[in]  subclassing_id å­åˆ†ç±»ID
+    * @param[in]  statics_id  Í³¼ÆID
+    * @param[in]  classify_id ·ÖÀàID
+    * @param[in]  subclassing_id ×Ó·ÖÀàID
     */
     inline int increase_once(uint32_t statics_id,
                              uint32_t classify_id,
@@ -322,12 +322,12 @@ public:
 
 
     /*!
-    * @brief      ä½¿ç”¨ç»Ÿè®¡IDå’Œåˆ†ç±»IDä½œä¸ºkey,ç»å¯¹å€¼ä¿®æ”¹ç›‘æ§ç»Ÿè®¡é¡¹ç›®
+    * @brief      Ê¹ÓÃÍ³¼ÆIDºÍ·ÖÀàID×÷Îªkey,¾ø¶ÔÖµĞŞ¸Ä¼à¿ØÍ³¼ÆÏîÄ¿
     * @return     int
-    * @param[in]  statics_id  ç»Ÿè®¡ID
-    * @param[in]  classify_id åˆ†ç±»ID
-    * @param[in]  subclassing_id å­åˆ†ç±»ID
-    * @param[in]  set_value ä¿®æ”¹çš„ç»Ÿè®¡å€¼
+    * @param[in]  statics_id  Í³¼ÆID
+    * @param[in]  classify_id ·ÖÀàID
+    * @param[in]  subclassing_id ×Ó·ÖÀàID
+    * @param[in]  set_value ĞŞ¸ÄµÄÍ³¼ÆÖµ
     */
     int set_by_statid(uint32_t statics_id,
                       uint32_t classify_id,
@@ -335,12 +335,12 @@ public:
                       uint64_t set_value);
 
     /*!
-    * @brief      ä½¿ç”¨ç»Ÿè®¡IDå’Œåˆ†ç±»IDä½œä¸ºkey,ç›¸å¯¹å€¼ä¿®æ”¹ç›‘æ§ç»Ÿè®¡å€¼
+    * @brief      Ê¹ÓÃÍ³¼ÆIDºÍ·ÖÀàID×÷Îªkey,Ïà¶ÔÖµĞŞ¸Ä¼à¿ØÍ³¼ÆÖµ
     * @return     int
-    * @param[in]  statics_id  ç»Ÿè®¡ID
-    * @param[in]  classify_id åˆ†ç±»ID
-    * @param[in]  subclassing_id å­åˆ†ç±»ID
-    * @param[in]  incre_value ä¿®æ”¹çš„ç›¸å¯¹å€¼ï¼Œç¬¦å·æ•´æ•°ï¼Œå¯åŠ å¯å‡
+    * @param[in]  statics_id  Í³¼ÆID
+    * @param[in]  classify_id ·ÖÀàID
+    * @param[in]  subclassing_id ×Ó·ÖÀàID
+    * @param[in]  incre_value ĞŞ¸ÄµÄÏà¶ÔÖµ£¬·ûºÅÕûÊı£¬¿É¼Ó¿É¼õ
     */
     int increase_by_statid(uint32_t statics_id,
                            uint32_t classify_id,
@@ -352,110 +352,110 @@ public:
 
 
     /*!
-    * @brief      æ ¹æ®ç»Ÿè®¡IDå’Œåˆ†ç±»IDä½œä¸ºkeyï¼Œå¾—åˆ°ç»Ÿè®¡æ•°å€¼
-    * @return     uint64_t è¿”å›çš„ç»Ÿè®¡å€¼
-    * @param[in]  statics_id  ç»Ÿè®¡ID
-    * @param[in]  classify_id åˆ†ç±»ID
-    * @param[in]  subclassing_id å­åˆ†ç±»ID
+    * @brief      ¸ù¾İÍ³¼ÆIDºÍ·ÖÀàID×÷Îªkey£¬µÃµ½Í³¼ÆÊıÖµ
+    * @return     uint64_t ·µ»ØµÄÍ³¼ÆÖµ
+    * @param[in]  statics_id  Í³¼ÆID
+    * @param[in]  classify_id ·ÖÀàID
+    * @param[in]  subclassing_id ×Ó·ÖÀàID
     */
     uint64_t get_counter(uint32_t statics_id,
                          uint32_t classify_id,
                          uint32_t subclassing_id);
 
-    //å–å¾—è®¡æ•°å™¨çš„ä¸ªæ•°
+    //È¡µÃ¼ÆÊıÆ÷µÄ¸öÊı
     size_t num_of_counter();
 
-    //è·å–copy_time
+    //»ñÈ¡copy_time
     uint64_t get_copy_time();
 
-    //æ¸…ç†è¿‡æœŸçš„æ•°æ®ï¼Œåœ¨ä½ çš„å®šæ—¶å™¨è§¦å‘æ—¶è°ƒç”¨ï¼ˆå½“ç„¶å‰é¢æœ€å¥½åº”è¯¥ä¸ŠæŠ¥ï¼‰ï¼Œç”¨äºå°†ä¸€äº›æ•°æ®æ¸…0ï¼Œ
-    //ç†è®ºä¸Šæ¯5åˆ†é’Ÿè°ƒç”¨ä¸€æ¬¡å°±OK
+    //ÇåÀí¹ıÆÚµÄÊı¾İ£¬ÔÚÄãµÄ¶¨Ê±Æ÷´¥·¢Ê±µ÷ÓÃ£¨µ±È»Ç°Ãæ×îºÃÓ¦¸ÃÉÏ±¨£©£¬ÓÃÓÚ½«Ò»Ğ©Êı¾İÇå0£¬
+    //ÀíÂÛÉÏÃ¿5·ÖÖÓµ÷ÓÃÒ»´Î¾ÍOK
     void check_overtime(time_t now_time);
 
-    ///å¤‡ä»½è®¡æ•°å™¨ä¿¡æ¯
+    ///±¸·İ¼ÆÊıÆ÷ĞÅÏ¢
     void copy_stat_counter();
 
-    ///ç”±äºå°†å†…éƒ¨æ•°æ®å…¨éƒ¨å–å‡ºï¼Œç”¨äºä½ å¤–éƒ¨æ‰“åŒ…ä¹‹ç±»
+    ///ÓÉÓÚ½«ÄÚ²¿Êı¾İÈ«²¿È¡³ö£¬ÓÃÓÚÄãÍâ²¿´ò°üÖ®Àà
     void dump_all(ARRAY_OF_STATUS_WITHNAME &array_status,
                   bool dump_copy = false);
 
-    ///Dumpæ‰€æœ‰çš„æ•°æ®
+    ///DumpËùÓĞµÄÊı¾İ
     void dump_status_info(std::ostringstream &strstream,
                           bool dump_copy = false);
 
-    ///Dumpæ‰€æœ‰çš„æ•°æ®
+    ///DumpËùÓĞµÄÊı¾İ
     void dump_status_info(ZCE_LOG_PRIORITY log_priority,
                           bool dump_copy = false);
 
-    ///å¾—åˆ°æ–‡ä»¶çš„å¤´éƒ¨ä¿¡æ¯
+    ///µÃµ½ÎÄ¼şµÄÍ·²¿ĞÅÏ¢
     void get_stat_head(ZCE_STATUS_HEAD *stat_head );
 
-    ///è®°å½•ç›‘æ§çš„ä¸ŠæŠ¥æ—¶é—´
+    ///¼ÇÂ¼¼à¿ØµÄÉÏ±¨Ê±¼ä
     void report_monitor_time(uint64_t report_time = static_cast<uint64_t>(time(NULL)));
 
-    //å•å­çš„å‡½æ•°ç¾¤ï¼Œä¸æ˜¯æˆ‘ä¸çŸ¥é“å¯ä»¥ç”¨BOOSTçš„æ¨¡æ¿ä½¿ç”¨å•å­ï¼Œæ˜¯è¿™æ ·æ›´åŠ ç›´æ¥æ¸…çˆ½ï¼Œå®¹æ˜“æ‰©å¼ ä¿®æ”¹ä¸€äº›
-    //æˆ‘ä¸ä¼šä¸ºäº†å•å­è€ƒè™‘æ‰€è°“çš„ä¿æŠ¤é—®é¢˜ï¼Œä½ è‡ªå·±ä¿è¯ä½ çš„åˆå§‹åŒ–å‡½æ•°ä¸ä¼šé‡å…¥
+    //µ¥×ÓµÄº¯ÊıÈº£¬²»ÊÇÎÒ²»ÖªµÀ¿ÉÒÔÓÃBOOSTµÄÄ£°åÊ¹ÓÃµ¥×Ó£¬ÊÇÕâÑù¸ü¼ÓÖ±½ÓÇåË¬£¬ÈİÒ×À©ÕÅĞŞ¸ÄÒ»Ğ©
+    //ÎÒ²»»áÎªÁËµ¥×Ó¿¼ÂÇËùÎ½µÄ±£»¤ÎÊÌâ£¬Äã×Ô¼º±£Ö¤ÄãµÄ³õÊ¼»¯º¯Êı²»»áÖØÈë
 
 public:
 
-    //å¾—åˆ°å•å­å®ä¾‹
+    //µÃµ½µ¥×ÓÊµÀı
     static ZCE_Server_Status *instance();
-    //å•å­å®ä¾‹èµ‹å€¼
+    //µ¥×ÓÊµÀı¸³Öµ
     static void instance(ZCE_Server_Status *);
-    //æ¸…ç†å•å­å®ä¾‹
+    //ÇåÀíµ¥×ÓÊµÀı
     static void clean_instance();
 
 protected:
 
-    //æœ€å¤šçš„ç›‘æ§é¡¹ç›®ID,
+    //×î¶àµÄ¼à¿ØÏîÄ¿ID,
     static const size_t MAX_MONITOR_STAT_ITEM = 64 * 1024;
 
-    //äº”åˆ†é’Ÿçš„æè¿°
+    //Îå·ÖÖÓµÄÃèÊö
     static const time_t FIVE_MINTUE_SECONDS   = 300;
-    //ä¸€å°æ—¶çš„ç§’æ•°
+    //Ò»Ğ¡Ê±µÄÃëÊı
     static const time_t ONE_HOURS_SECONDS     = 3600;
-    //ä¸€å¤©çš„æ—¶é—´
+    //Ò»ÌìµÄÊ±¼ä
     static const time_t ONE_DAY_SECONDS       = 86400;
 
-    //ç»Ÿè®¡é¡¹ç›®æ•°å€¼å¢åŠ 1
+    //Í³¼ÆÏîÄ¿ÊıÖµÔö¼Ó1
     static const uint64_t INCREASE_VALUE_ONCE = 1;
 
 protected:
 
-    //å¤šæ€çš„é”,
+    //¶àÌ¬µÄËø,
     ZCE_Lock_Base            *stat_lock_;
 
-    //MMAPå†…å­˜å½±å°„çš„æ•°æ®æ–‡ä»¶
+    //MMAPÄÚ´æÓ°ÉäµÄÊı¾İÎÄ¼ş
     ZCE_ShareMem_Posix        stat_file_;
 
-    //å†…å­˜æ–‡ä»¶å¤´
+    //ÄÚ´æÎÄ¼şÍ·
     ZCE_STATUS_HEAD          *stat_file_head_;
 
-    //mandyå’Œsandyæ˜¯åŸæ¥ä»£ç ä¸­é—´ä¸ºäº†åŒºåˆ†ç”¨æ•°ç»„å®šä½ï¼Œhashå®šä½ä¸¤ä¸ªæ•°æ®åŒºçš„ä¸œä¸œï¼Œ
-    //åæ¥ä»£ç å…¨éƒ¨æ”¹ä¸ºäº†ç”¨hanshå®šä½ï¼Œä¸å¥½æ„æ€ï¼Œä¸¤ä¸ªå°MMï¼Œæ€ªèœ€é»å°±æ˜¯æ­¥æ”¾è¿‡ä½ ä»¬ï¼Œ
+    //mandyºÍsandyÊÇÔ­À´´úÂëÖĞ¼äÎªÁËÇø·ÖÓÃÊı×é¶¨Î»£¬hash¶¨Î»Á½¸öÊı¾İÇøµÄ¶«¶«£¬
+    //ºóÀ´´úÂëÈ«²¿¸ÄÎªÁËÓÃhansh¶¨Î»£¬²»ºÃÒâË¼£¬Á½¸öĞ¡MM£¬¹ÖÊñÊò¾ÍÊÇ²½·Å¹ıÄãÃÇ£¬
     //http://t.qq.com/angelbaby22
 
-    // å­˜æ”¾çŠ¶æ€è®¡æ•°å™¨çš„æ•°ç»„
+    // ´æ·Å×´Ì¬¼ÆÊıÆ÷µÄÊı×é
     ARRYA_OF_SHM_STATUS      *status_stat_sandy_;
 
-    //çŠ¶æ€è®¡æ•°å™¨çš„ä¸€ä»½æ‹·è´(å¤‡ä»½)ï¼Œæ•°æ®æ”¾åœ¨å…±äº«å†…å­˜ä¸­ï¼Œæˆ‘ä»¬å¯ä»¥ç”¨è€ƒè™‘ç”¨mandyè¯»å–æ•°æ®ï¼Œæ‰€ä»¥å¯ä»¥è®²æ¯ä¸ª
+    //×´Ì¬¼ÆÊıÆ÷µÄÒ»·İ¿½±´(±¸·İ)£¬Êı¾İ·ÅÔÚ¹²ÏíÄÚ´æÖĞ£¬ÎÒÃÇ¿ÉÒÔÓÃ¿¼ÂÇÓÃmandy¶ÁÈ¡Êı¾İ£¬ËùÒÔ¿ÉÒÔ½²Ã¿¸ö
     ARRYA_OF_SHM_STATUS      *status_copy_mandy_;
 
-    //è®°å½•é…ç½®çš„çš„ç»Ÿè®¡æ•°æ®SETï¼Œç”¨äºè®°å½•é…ç½®çš„ç»Ÿè®¡é¡¹ç›®ï¼Œä¹Ÿç”¨äºé˜²æ­¢é‡å¤æ’å…¥å’Œdump è¾“å‡ºæ—¶æœ‰åç§°ä¿¡æ¯
+    //¼ÇÂ¼ÅäÖÃµÄµÄÍ³¼ÆÊı¾İSET£¬ÓÃÓÚ¼ÇÂ¼ÅäÖÃµÄÍ³¼ÆÏîÄ¿£¬Ò²ÓÃÓÚ·ÀÖ¹ÖØ¸´²åÈëºÍdump Êä³öÊ±ÓĞÃû³ÆĞÅÏ¢
     STATUS_WITHNAME_MAP       conf_stat_map_;
 
-    //STAT_ID to idxç´¢å¼•çš„MAP
+    //STAT_ID to idxË÷ÒıµÄMAP
     STATID_TO_INDEX_MAP       statid_to_index_;
 
-    //æ˜¯å¦è¿›è¡Œå¤šçº¿ç¨‹ä¿æŠ¤
+    //ÊÇ·ñ½øĞĞ¶àÏß³Ì±£»¤
     bool                      multi_thread_guard_;
 
-    // æ˜¯å¦å·²ç»åˆå§‹åŒ–
+    // ÊÇ·ñÒÑ¾­³õÊ¼»¯
     bool                      initialized_;
 
 protected:
 
-    //å•å­å®ä¾‹
+    //µ¥×ÓÊµÀı
     static ZCE_Server_Status *instance_;
 };
 

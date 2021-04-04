@@ -3,13 +3,13 @@
 * @filename  zce_thread_task.h
 * @author    Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date      2011å¹´6æœˆ18æ—¥
-* @brief     è·¨å¹³å°çš„çº¿ç¨‹å¯¹è±¡å°è£…ï¼Œä¸ºäº†å°è£…çš„çš„æ–¹ä¾¿ï¼Œè¿™ä¸ªå®ç°æ˜¯ä¸€ä¸ªçº¿ç¨‹ä¸€ä¸ªå¯¹è±¡ï¼Œ
-*            çº¿ç¨‹å¯ä»¥ç”¨ä¸ªä¸€ä¸ªGROUP IDå†æ¬¡åŒ…è£…ä¸€ä¸‹
+* @date      2011Äê6ÔÂ18ÈÕ
+* @brief     ¿çÆ½Ì¨µÄÏß³Ì¶ÔÏó·â×°£¬ÎªÁË·â×°µÄµÄ·½±ã£¬Õâ¸öÊµÏÖÊÇÒ»¸öÏß³ÌÒ»¸ö¶ÔÏó£¬
+*            Ïß³Ì¿ÉÒÔÓÃ¸öÒ»¸öGROUP IDÔÙ´Î°ü×°Ò»ÏÂ
 *
-* @details   å†…éƒ¨å°è£…ç”¨çš„æ˜¯è‡ªå·±OSå±‚çš„pthread_XXXçš„å‡½æ•°ï¼Œä¸€æ ·å¯ä»¥joinå’Œdetach
-*            æˆ‘å‚è€ƒäº†ACEçš„å®ç°ï¼Œä½†æˆ‘å®åœ¨ä¸æ˜ç¡®ACEä¸ºå•¥è¦å®ç°åœ¨ä¸€ä¸ªTASKç±»é‡Œé¢å¯åŠ¨
-             å¤šä¸ªçº¿ç¨‹æœ‰å•¥å¥½å¤„ï¼Œè€Œä¸”ä¸ºäº†è¿™ä¸ªå°†ä»£ç å†™çš„æ™¦æ¶©äº†å¾ˆå¤š
+* @details   ÄÚ²¿·â×°ÓÃµÄÊÇ×Ô¼ºOS²ãµÄpthread_XXXµÄº¯Êı£¬Ò»Ñù¿ÉÒÔjoinºÍdetach
+*            ÎÒ²Î¿¼ÁËACEµÄÊµÏÖ£¬µ«ÎÒÊµÔÚ²»Ã÷È·ACEÎªÉ¶ÒªÊµÏÖÔÚÒ»¸öTASKÀàÀïÃæÆô¶¯
+             ¶à¸öÏß³ÌÓĞÉ¶ºÃ´¦£¬¶øÇÒÎªÁËÕâ¸ö½«´úÂëĞ´µÄ»ŞÉ¬ÁËºÜ¶à
 *
 *
 * @note
@@ -22,30 +22,30 @@
 #include "zce_boost_non_copyable.h"
 
 /*!
-* @brief      ç”¨è‡ªå·±å°è£…çš„pthreadå‡½æ•°æ„å»ºçš„TASKç±»å‹ï¼Œæ¯ä¸ªçº¿ç¨‹ä¸€ä¸ªå¯¹è±¡
+* @brief      ÓÃ×Ô¼º·â×°µÄpthreadº¯Êı¹¹½¨µÄTASKÀàĞÍ£¬Ã¿¸öÏß³ÌÒ»¸ö¶ÔÏó
 *
-* @note       å¯¹è±¡ä¸å¯æ‹·è´å¤åˆ¶ï¼Œ
+* @note       ¶ÔÏó²»¿É¿½±´¸´ÖÆ£¬
 */
 class ZCE_Thread_Task : public ZCE_NON_Copyable
 {
 
 public:
 
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     ZCE_Thread_Task();
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     virtual ~ZCE_Thread_Task();
 
 public:
 
     /*!
-    * @brief      æ¿€æ´»ä¸€ä¸ªçº¿ç¨‹ï¼Œæ¿€æ´»åï¼Œçº¿ç¨‹å¼€å§‹è¿è¡Œ
-    * @return     int ==0æ ‡è¯†æˆåŠŸï¼Œé0å¤±è´¥
-    * @param[in]  group_id çº¿ç¨‹ç®¡ç†å™¨å¯ä»¥å¯¹ç›¸åŒGROUP IDçš„çº¿ç¨‹è¿›è¡Œä¸€äº›æ“ä½œ
-    * @param[out] threadid è¿”å›çš„çº¿ç¨‹IDï¼Œ
-    * @param[in]  detachstate äº§ç”Ÿåˆ†ç¦»çš„çº¿ç¨‹è¿˜æ˜¯JOINçš„çº¿ç¨‹ PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
-    * @param[in]  stacksize å †æ ˆå¤§å° ä¸º0è¡¨ç¤ºé»˜è®¤ï¼Œå¦‚æœä½ éœ€è¦ä½¿ç”¨å¾ˆå¤šçº¿ç¨‹ï¼Œæ¸…è°ƒæ•´è¿™ä¸ªå¤§å°ï¼ŒWIN ä¸€èˆ¬æ˜¯1Mï¼ŒLINUXä¸€èˆ¬æ˜¯10M(8M)
-    * @param[in]  threadpriority ä¼˜å…ˆçº§ï¼Œä¸º0è¡¨ç¤ºé»˜è®¤
+    * @brief      ¼¤»îÒ»¸öÏß³Ì£¬¼¤»îºó£¬Ïß³Ì¿ªÊ¼ÔËĞĞ
+    * @return     int ==0±êÊ¶³É¹¦£¬·Ç0Ê§°Ü
+    * @param[in]  group_id Ïß³Ì¹ÜÀíÆ÷¿ÉÒÔ¶ÔÏàÍ¬GROUP IDµÄÏß³Ì½øĞĞÒ»Ğ©²Ù×÷
+    * @param[out] threadid ·µ»ØµÄÏß³ÌID£¬
+    * @param[in]  detachstate ²úÉú·ÖÀëµÄÏß³Ì»¹ÊÇJOINµÄÏß³Ì PTHREAD_CREATE_DETACHED or PTHREAD_CREATE_JOINABLE
+    * @param[in]  stacksize ¶ÑÕ»´óĞ¡ Îª0±íÊ¾Ä¬ÈÏ£¬Èç¹ûÄãĞèÒªÊ¹ÓÃºÜ¶àÏß³Ì£¬Çåµ÷ÕûÕâ¸ö´óĞ¡£¬WIN Ò»°ãÊÇ1M£¬LINUXÒ»°ãÊÇ10M(8M)
+    * @param[in]  threadpriority ÓÅÏÈ¼¶£¬Îª0±íÊ¾Ä¬ÈÏ
     * @note
     */
     int activate(int group_id,
@@ -54,48 +54,48 @@ public:
                  size_t stacksize = 0,
                  int threadpriority = 0);
 
-    ///çº¿ç¨‹ç»“æŸåçš„è¿”å›å€¼int ç±»å‹
+    ///Ïß³Ì½áÊøºóµÄ·µ»ØÖµint ÀàĞÍ
     int thread_return();
 
-    ///å¾—åˆ°group id
+    ///µÃµ½group id
     int group_id() const;
 
-    ///å¾—åˆ°è¿™ä¸ªçº¿ç¨‹å¯¹è±¡å…³è”çš„çº¿ç¨‹ID
+    ///µÃµ½Õâ¸öÏß³Ì¶ÔÏó¹ØÁªµÄÏß³ÌID
     ZCE_THREAD_ID thread_id() const;
 
-    ///åˆ†ç¦»ï¼Œä¸å†è¿›è¡Œç»‘å®š
+    ///·ÖÀë£¬²»ÔÙ½øĞĞ°ó¶¨
     int detach();
 
-    ///ç­‰å¾…çº¿ç¨‹é€€å‡ºåjoin
+    ///µÈ´ıÏß³ÌÍË³öºójoin
     int wait_join();
 
-    ///çº¿ç¨‹è®©å‡ºCPUçš„æ—¶é—´
+    ///Ïß³ÌÈÃ³öCPUµÄÊ±¼ä
     int yield();
 
 protected:
 
-    ///éœ€è¦ç»§æ‰¿çš„å¤„ç†çš„å‡½æ•°,ç†è®ºä¸Šé‡è½½è¿™ä¸€ä¸ªå‡½æ•°å°±OK
+    ///ĞèÒª¼Ì³ĞµÄ´¦ÀíµÄº¯Êı,ÀíÂÛÉÏÖØÔØÕâÒ»¸öº¯Êı¾ÍOK
     virtual int svc (void);
 
 protected:
 
-    ///é™æ€å‡½æ•°ï¼Œä¹Ÿå°±æ˜¯è¦æ‰§è¡Œçš„å‡½æ•°ï¼Œé‡Œé¢è°ƒç”¨svc
+    ///¾²Ì¬º¯Êı£¬Ò²¾ÍÊÇÒªÖ´ĞĞµÄº¯Êı£¬ÀïÃæµ÷ÓÃsvc
     static void svc_run (void *args);
 
 public:
 
-    ///æ— æ•ˆçš„ç»„ID
+    ///ÎŞĞ§µÄ×éID
     static const int INVALID_GROUP_ID = -1;
 
 protected:
 
-    ///çº¿ç¨‹çš„GROUP ID,
+    ///Ïß³ÌµÄGROUP ID,
     int                     group_id_;
 
-    ///çº¿ç¨‹çš„ID
+    ///Ïß³ÌµÄID
     ZCE_THREAD_ID           thread_id_;
 
-    ///çº¿ç¨‹çš„è¿”å›å€¼
+    ///Ïß³ÌµÄ·µ»ØÖµ
     int                     thread_return_;
 
 };

@@ -2,9 +2,9 @@
 #include "zce_os_adapt_file.h"
 #include "zce_lock_record_lock.h"
 
-//è®°å½•é”çš„å°è£…ï¼Œ
+//¼ÇÂ¼ËøµÄ·â×°£¬
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_Record_Lock::ZCE_Record_Lock(ZCE_HANDLE file_handle)
 {
     open(file_handle);
@@ -19,12 +19,12 @@ ZCE_Record_Lock::~ZCE_Record_Lock()
     close();
 }
 
-//æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶,åŒæ—¶åˆå§‹åŒ–å…³è”çš„lockå¯¹è±¡
+//´ò¿ªÒ»¸öÎÄ¼ş,Í¬Ê±³õÊ¼»¯¹ØÁªµÄlock¶ÔÏó
 int ZCE_Record_Lock::open(const char *file_name,
                           int open_mode,
                           mode_t perms)
 {
-    //æ‰“å¼€è¿™ä¸ªæ–‡ä»¶
+    //´ò¿ªÕâ¸öÎÄ¼ş
     ZCE_HANDLE lock_hadle = zce::open(file_name,
                                       open_mode,
                                       perms);
@@ -33,26 +33,26 @@ int ZCE_Record_Lock::open(const char *file_name,
                            lock_hadle);
 }
 
-//ç”¨ä¸€ä¸ªæ–‡ä»¶Handleåˆå§‹åŒ–,å¤–éƒ¨ä¼ å…¥çš„ZCE_HANDLEï¼Œæˆ‘ä¸ä¼šå…³é—­ï¼Œæ–‡ä»¶
+//ÓÃÒ»¸öÎÄ¼şHandle³õÊ¼»¯,Íâ²¿´«ÈëµÄZCE_HANDLE£¬ÎÒ²»»á¹Ø±Õ£¬ÎÄ¼ş
 int ZCE_Record_Lock::open(ZCE_HANDLE file_handle)
 {
     return zce::flock_init(&record_lock_, file_handle);
 }
 
-//å¾—åˆ°é”æ–‡ä»¶çš„å¥æŸ„
+//µÃµ½ËøÎÄ¼şµÄ¾ä±ú
 ZCE_HANDLE ZCE_Record_Lock::get_file_handle()
 {
     return record_lock_.handle_;
 }
 
-//å…³é—­ä¹‹ï¼Œå¦‚æœæ˜¯ZCE_Record_Lockå†…éƒ¨è‡ªå·±æ‰“å¼€çš„æ–‡ä»¶ï¼ˆä¸æ˜¯æ–‡ä»¶å¥æŸ„å‚æ•°ï¼‰ï¼Œå…³é—­æ—¶ä¼šå…³é—­æ–‡ä»¶
+//¹Ø±ÕÖ®£¬Èç¹ûÊÇZCE_Record_LockÄÚ²¿×Ô¼º´ò¿ªµÄÎÄ¼ş£¨²»ÊÇÎÄ¼ş¾ä±ú²ÎÊı£©£¬¹Ø±ÕÊ±»á¹Ø±ÕÎÄ¼ş
 void ZCE_Record_Lock::close()
 {
     zce::flock_destroy(&record_lock_);
     return;
 }
 
-//æ–‡ä»¶è®°å½•è¯»å†™é”
+//ÎÄ¼ş¼ÇÂ¼¶ÁĞ´Ëø
 int ZCE_Record_Lock::flock_rdlock (int  whence,
                                    ssize_t start,
                                    ssize_t len)
@@ -63,7 +63,7 @@ int ZCE_Record_Lock::flock_rdlock (int  whence,
                              len);
 }
 
-//å°è¯•å¯¹æ–‡ä»¶è®°å½•è¿›è¡ŒåŠ è¯»å–é”
+//³¢ÊÔ¶ÔÎÄ¼ş¼ÇÂ¼½øĞĞ¼Ó¶ÁÈ¡Ëø
 int ZCE_Record_Lock::flock_tryrdlock (int  whence,
                                       ssize_t start,
                                       ssize_t len)
@@ -74,7 +74,7 @@ int ZCE_Record_Lock::flock_tryrdlock (int  whence,
                                 len);
 }
 
-//å¯¹æ–‡ä»¶è®°å½•ç›´æ¥ä¸Šé”
+//¶ÔÎÄ¼ş¼ÇÂ¼Ö±½ÓÉÏËø
 int ZCE_Record_Lock::flock_wrlock (int  whence,
                                    ssize_t start,
                                    ssize_t len)
@@ -85,7 +85,7 @@ int ZCE_Record_Lock::flock_wrlock (int  whence,
                              len);
 }
 
-//å°è¯•å¯¹æ–‡ä»¶è®°å½•è¿›è¡ŒåŠ å†™å–é”
+//³¢ÊÔ¶ÔÎÄ¼ş¼ÇÂ¼½øĞĞ¼ÓĞ´È¡Ëø
 int ZCE_Record_Lock::flock_trywrlock (int  whence,
                                       ssize_t start,
                                       ssize_t len)
@@ -96,7 +96,7 @@ int ZCE_Record_Lock::flock_trywrlock (int  whence,
                                 len);
 }
 
-//è§£é”
+//½âËø
 int ZCE_Record_Lock::flock_unlock (int  whence,
                                    ssize_t start,
                                    ssize_t len)

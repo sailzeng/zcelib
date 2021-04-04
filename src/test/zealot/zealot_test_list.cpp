@@ -83,7 +83,7 @@ int test_list(int /*argc*/, char * /*argv*/ [])
     std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
 
 
-    //灏戞墦涓�涓狟egin
+    //少打一个Begin
     for (zce::smem_list<int>::iterator it = --pmmap->end(); it != pmmap->begin(); --it)
     {
         std::cout << " " << *it;

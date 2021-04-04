@@ -8,7 +8,7 @@ class Ogre_IPRestrict_Mgr;
 
 
 /*!
-* @brief      TCP Accept å¤„ç†çš„EventHandler
+* @brief      TCP Accept ´¦ÀíµÄEventHandler
 *
 * @note
 */
@@ -17,7 +17,7 @@ class Ogre_TCPAccept_Hdl : public ZCE_Event_Handler
 
 public:
 
-    //æ„é€ å‡½æ•°
+    //¹¹Ôìº¯Êı
     Ogre_TCPAccept_Hdl(const TCP_PEER_CONFIG_INFO &config_info,
                        ZCE_Reactor *reactor = ZCE_Reactor::instance());
 protected:
@@ -25,16 +25,16 @@ protected:
 public:
 
 
-    //åˆ›å»ºç›‘å¬çš„ç«¯å£
+    //´´½¨¼àÌıµÄ¶Ë¿Ú
     int create_listenpeer();
 
-    //å¤„ç†æœ‰ç«¯å£
+    //´¦ÀíÓĞ¶Ë¿Ú
     virtual int handle_input(ZCE_HANDLE );
 
-    //å…³é—­å¤„ç†
+    //¹Ø±Õ´¦Àí
     virtual int handle_close ();
 
-    //å¾—åˆ°Acceptorçš„å¥æŸ„
+    //µÃµ½AcceptorµÄ¾ä±ú
     ZCE_HANDLE get_handle(void) const;
 
 protected:
@@ -45,7 +45,7 @@ protected:
 
     TCP_PEER_MODULE_INFO   peer_module_info_;
 
-    //IPé™åˆ¶ç®¡ç†å™¨
+    //IPÏŞÖÆ¹ÜÀíÆ÷
     Ogre_IPRestrict_Mgr   *ip_restrict_;
 
 };

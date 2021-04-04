@@ -3,7 +3,7 @@
 * @filename   zce_shm_lockfree_deque.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2019å¹´8æœˆ7æ—¥
+* @date       2019Äê8ÔÂ7ÈÕ
 * @brief      
 *
 *
@@ -27,15 +27,15 @@ namespace zce::lockfree
 {
 
 /*!
-* @tparam    _value_type æ•°æ®ç±»å‹
-* @brief     é­”æˆ’.å¾ªç¯é“¾è¡¨ï¼Œå¯ä»¥è‡ªåŠ¨æ‰©å±•ï¼Œå¯ä»¥æœ€åçš„è¦†ç›–ç¬¬ä¸€ä¸ªï¼Œ
+* @tparam    _value_type Êı¾İÀàĞÍ
+* @brief     Ä§½ä.Ñ­»·Á´±í£¬¿ÉÒÔ×Ô¶¯À©Õ¹£¬¿ÉÒÔ×îºóµÄ¸²¸ÇµÚÒ»¸ö£¬
 */
 template<class _value_type >
 class rings
 {
 
 public:
-    ///æ„é€ å‡½æ•°ï¼Œåé¢å¿…é¡»è°ƒç”¨,initialize
+    ///¹¹Ôìº¯Êı£¬ºóÃæ±ØĞëµ÷ÓÃ,initialize
     rings():
         rings_start_(0),
         rings_size_(0),
@@ -44,7 +44,7 @@ public:
     {
     }
 
-    ///æ„é€ å‡½æ•°ï¼ŒåŒæ—¶å®Œæˆåˆå§‹åŒ–,åé¢å®Œå…¨ æ²¡æœ‰å¿…è¦è°ƒç”¨,initialize
+    ///¹¹Ôìº¯Êı£¬Í¬Ê±Íê³É³õÊ¼»¯,ºóÃæÍêÈ« Ã»ÓĞ±ØÒªµ÷ÓÃ,initialize
     rings(size_t max_len):
         rings_start_(0),
         rings_size_(0),
@@ -56,14 +56,14 @@ public:
 
     }
 
-    ///ææ„å‡½æ•°ï¼Œé‡Šæ”¾ç©ºé—´
+    ///Îö¹¹º¯Êı£¬ÊÍ·Å¿Õ¼ä
     ~rings()
     {
         finalize();
     }
 
-    ///åˆå§‹åŒ–æ•°æ®åŒºï¼Œå’Œæ„é€ å‡½æ•°å¹²çš„äº‹æƒ…åŸºæœ¬ä¸€æ ·ï¼Œåªæ˜¯å¤šäº†ä¸€æ­¥åŸæ¥æœ‰æ•°æ®å°±æ¸…ç†æ‰
-    ///initialize ä¸åŠ é”ï¼Œ
+    ///³õÊ¼»¯Êı¾İÇø£¬ºÍ¹¹Ôìº¯Êı¸ÉµÄÊÂÇé»ù±¾Ò»Ñù£¬Ö»ÊÇ¶àÁËÒ»²½Ô­À´ÓĞÊı¾İ¾ÍÇåÀíµô
+    ///initialize ²»¼ÓËø£¬
     void initialize(size_t max_len)
     {
         assert(max_len>0);
@@ -72,24 +72,24 @@ public:
         rings_size_=0;
         rings_capacity_=max_len;
 
-        //æ¸…ç†ç°åœº
+        //ÇåÀíÏÖ³¡
         if(value_ptr_)
         {
             free(value_ptr_);
             value_ptr_=NULL;
         }
-        //ä¸ç”¨newé¿å…è¿‡å¤šçš„æ„é€ å‡½æ•°
+        //²»ÓÃnew±ÜÃâ¹ı¶àµÄ¹¹Ôìº¯Êı
         value_ptr_=(_value_type*)malloc(sizeof(_value_type)*capacity_);
     }
 
-    ///ç»“æŸï¼Œå®Œæˆï¼Œé”€æ¯
+    ///½áÊø£¬Íê³É£¬Ïú»Ù
     void finalize()
     {
         rings_start_=0;
         rings_size_=0;
         rings_capacity_=0;
 
-        //æ¸…ç†ç°åœº
+        //ÇåÀíÏÖ³¡
         if(value_ptr_)
         {
             size_t sz= rings_size_.load();
@@ -103,34 +103,34 @@ public:
         }
     }
 
-    ///æ¸…ç†ç®¡é“ï¼Œ
+    ///ÇåÀí¹ÜµÀ£¬
     void clear()
     {
         rings_start_=0;
         rings_size_=0;
     }
 
-    ///å°ºå¯¸ç©ºé—´
+    ///³ß´ç¿Õ¼ä
     inline size_t size() const
     {
         return rings_size_;
     }
-    ///è¿”å›ç©ºé—²ç©ºé—´çš„å¤§å°
+    ///·µ»Ø¿ÕÏĞ¿Õ¼äµÄ´óĞ¡
     inline size_t freesize() const
     {
         return rings_capacity_-rings_size_;
     }
 
-    ///è¿”å›é˜Ÿåˆ—çš„å®¹é‡
+    ///·µ»Ø¶ÓÁĞµÄÈİÁ¿
     inline size_t capacity() const
     {
         return rings_capacity_;
     }
 
-    ////æ£€æŸ¥æ˜¯å¦å·²ç»æ»¡äº†
+    ////¼ì²éÊÇ·ñÒÑ¾­ÂúÁË
     inline bool full() const
     {
-        //å·²ç»ç”¨çš„ç©ºé—´ç­‰äºå®¹é‡
+        //ÒÑ¾­ÓÃµÄ¿Õ¼äµÈÓÚÈİÁ¿
         if(rings_size_==rings_capacity_)
         {
             return true;
@@ -139,10 +139,10 @@ public:
         return false;
     }
 
-    ///åˆ¤æ–­é˜Ÿåˆ—æ˜¯å¦ä¸ºç©º
+    ///ÅĞ¶Ï¶ÓÁĞÊÇ·ñÎª¿Õ
     inline bool empty() const
     {
-        //ç©ºé—´ç­‰äº0
+        //¿Õ¼äµÈÓÚ0
         if(rings_size_==0)
         {
             return true;
@@ -151,14 +151,14 @@ public:
         return false;
     }
 
-    ///é‡æ–°åˆ†é…ä¸€ä¸ªç©ºé—´,
+    ///ÖØĞÂ·ÖÅäÒ»¸ö¿Õ¼ä,
     bool resize(size_t new_max_size)
     {
         assert(new_max_size>0);
 
         size_t deque_size=size();
 
-        //å¦‚æœåŸæ¥çš„å°ºå¯¸å¤§äºæ–°çš„å°ºå¯¸ï¼Œæ— æ³•æ‰©å±•
+        //Èç¹ûÔ­À´µÄ³ß´ç´óÓÚĞÂµÄ³ß´ç£¬ÎŞ·¨À©Õ¹
         if(deque_size>new_max_size)
         {
             return false;
@@ -166,7 +166,7 @@ public:
 
         _value_type* new_value_ptr=new _value_type[new_max_size];
 
-        //å¦‚æœåŸæ¥æœ‰æ•°æ®,æ‹·è´åˆ°æ–°çš„æ•°æ®åŒº
+        //Èç¹ûÔ­À´ÓĞÊı¾İ,¿½±´µ½ĞÂµÄÊı¾İÇø
         if(value_ptr_!=NULL)
         {
             for(size_t i=0; i<deque_size&&i<new_max_size; ++i)
@@ -178,31 +178,31 @@ public:
             value_ptr_=NULL;
         }
 
-        //è°ƒæ•´å‡ ä¸ªå†…éƒ¨å‚æ•°
+        //µ÷Õû¼¸¸öÄÚ²¿²ÎÊı
         rings_start_=0;
         rings_capacity_=new_max_size;
-        //cycdeque_size_ ä¸å˜
+        //cycdeque_size_ ²»±ä
 
         value_ptr_=new_value_ptr;
 
         return true;
     }
 
-    ///å°†ä¸€ä¸ªæ•°æ®æ”¾å…¥é˜Ÿåˆ—çš„å°¾éƒ¨,å¦‚æœé˜Ÿåˆ—å·²ç»æ»¡äº†,ä½ å¯ä»¥å°†lay_overå‚æ•°ç½®ä½true,è¦†ç›–åŸæœ‰çš„æ•°æ®
+    ///½«Ò»¸öÊı¾İ·ÅÈë¶ÓÁĞµÄÎ²²¿,Èç¹û¶ÓÁĞÒÑ¾­ÂúÁË,Äã¿ÉÒÔ½«lay_over²ÎÊıÖÃÎ»true,¸²¸ÇÔ­ÓĞµÄÊı¾İ
     bool push_back(const _value_type& value_data,bool lay_over=false)
     {
-        //å¦‚æœå·²ç»æ»¡äº†
+        //Èç¹ûÒÑ¾­ÂúÁË
         if(full())
         {
-            //å¦‚æœä¸è¦è¦†ç›–ï¼Œè¿”å›é”™è¯¯
+            //Èç¹û²»Òª¸²¸Ç£¬·µ»Ø´íÎó
             if(lay_over==false)
             {
                 return false;
             }
-            //å¦‚æœè¦è¦†ç›–
+            //Èç¹ûÒª¸²¸Ç
             else
             {
-                //å°†æœ€åä¸€ä¸ªä½ç½®è¦†ç›–ï¼Œå¹¶ä¸”è°ƒæ•´èµ·å§‹å’Œç»“æŸä½ç½®
+                //½«×îºóÒ»¸öÎ»ÖÃ¸²¸Ç£¬²¢ÇÒµ÷ÕûÆğÊ¼ºÍ½áÊøÎ»ÖÃ
                 value_ptr_[(rings_start_+rings_size_)%rings_capacity_]=value_data;
                 rings_start_=(rings_start_+1)%rings_capacity_;
 
@@ -210,7 +210,7 @@ public:
             }
         }
 
-        //ç›´æ¥æ”¾åœ¨é˜Ÿå°¾
+        //Ö±½Ó·ÅÔÚ¶ÓÎ²
 
         value_ptr_[(rings_start_+rings_size_)%rings_capacity_]=value_data;
         ++rings_size_;
@@ -218,31 +218,31 @@ public:
         return true;
     }
 
-    ///å°†ä¸€ä¸ªæ•°æ®æ”¾å…¥é˜Ÿåˆ—çš„å°¾éƒ¨,å¦‚æœé˜Ÿåˆ—å·²ç»æ»¡äº†,ä½ å¯ä»¥å°†lay_overå‚æ•°ç½®ä½true,è¦†ç›–åŸæœ‰çš„æ•°æ®
+    ///½«Ò»¸öÊı¾İ·ÅÈë¶ÓÁĞµÄÎ²²¿,Èç¹û¶ÓÁĞÒÑ¾­ÂúÁË,Äã¿ÉÒÔ½«lay_over²ÎÊıÖÃÎ»true,¸²¸ÇÔ­ÓĞµÄÊı¾İ
     bool push_front(const _value_type& value_data,bool lay_over=false)
     {
-        //å¦‚æœå·²ç»æ»¡äº†
+        //Èç¹ûÒÑ¾­ÂúÁË
         if(full())
         {
-            //å¦‚æœä¸è¦è¦†ç›–ï¼Œè¿”å›é”™è¯¯
+            //Èç¹û²»Òª¸²¸Ç£¬·µ»Ø´íÎó
             if(lay_over==false)
             {
                 return false;
             }
-            //å¦‚æœè¦è¦†ç›–
+            //Èç¹ûÒª¸²¸Ç
             else
             {
-                //å°†ç¬¬ä¸€ä¸ªä½ç½®è°ƒæ•´è¦†ç›–ï¼Œå¹¶ä¸”è°ƒæ•´èµ·å§‹å’Œç»“æŸä½ç½®
+                //½«µÚÒ»¸öÎ»ÖÃµ÷Õû¸²¸Ç£¬²¢ÇÒµ÷ÕûÆğÊ¼ºÍ½áÊøÎ»ÖÃ
                 rings_start_=(rings_start_>0)?rings_start_-1:rings_capacity_-1;
                 value_ptr_[rings_start_]=value_data;
 
-                //è¦†ç›–ï¼Œå°ºå¯¸ä¹Ÿä¸ç”¨è°ƒæ•´
+                //¸²¸Ç£¬³ß´çÒ²²»ÓÃµ÷Õû
 
                 return true;
             }
         }
 
-        //ç›´æ¥æ”¾åœ¨é˜Ÿå°¾
+        //Ö±½Ó·ÅÔÚ¶ÓÎ²
         rings_start_=(rings_start_>0)?rings_start_-1:rings_capacity_-1;
         value_ptr_[rings_start_]=value_data;
 
@@ -251,10 +251,10 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—çš„å‰é¢popå¹¶ä¸”å¾—åˆ°ä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞµÄÇ°Ãæpop²¢ÇÒµÃµ½Ò»¸öÊı¾İ
     bool pop_front(_value_type& value_data)
     {
-        //å¦‚æœæ˜¯ç©ºçš„è¿”å›é”™è¯¯
+        //Èç¹ûÊÇ¿ÕµÄ·µ»Ø´íÎó
         if(empty())
         {
             return false;
@@ -268,10 +268,10 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—å‰é¢popä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞÇ°ÃæpopÒ»¸öÊı¾İ
     bool pop_front()
     {
-        //å¦‚æœæ˜¯ç©ºçš„è¿”å›é”™è¯¯
+        //Èç¹ûÊÇ¿ÕµÄ·µ»Ø´íÎó
         if(empty())
         {
             return false;
@@ -283,10 +283,10 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—çš„å°¾éƒ¨popå¹¶ä¸”å¾—åˆ°ä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞµÄÎ²²¿pop²¢ÇÒµÃµ½Ò»¸öÊı¾İ
     bool pop_back(_value_type& value_data)
     {
-        //å¦‚æœæ˜¯ç©ºçš„è¿”å›é”™è¯¯
+        //Èç¹ûÊÇ¿ÕµÄ·µ»Ø´íÎó
         if(empty())
         {
             return false;
@@ -297,7 +297,7 @@ public:
         return true;
     }
 
-    ///ä»é˜Ÿåˆ—çš„å°¾éƒ¨popä¸€ä¸ªæ•°æ®
+    ///´Ó¶ÓÁĞµÄÎ²²¿popÒ»¸öÊı¾İ
     bool pop_back()
     {
         //
@@ -314,16 +314,16 @@ public:
 
 protected:
 
-    ///å¾ªç¯é˜Ÿåˆ—çš„èµ·å§‹ä½ç½®
+    ///Ñ­»·¶ÓÁĞµÄÆğÊ¼Î»ÖÃ
     std::atomic<size_t> rings_start_;
 
-    ///å¾ªç¯é˜Ÿåˆ—çš„é•¿åº¦ï¼Œ
-    ///æ²¡æœ‰ç”¨ç»“æŸä¸ºæ­¢æ˜¯æ–¹ä¾¿è®¡ç®—ï¼Œ ç»“æŸä½ç½®é€šè¿‡(rings_start_+cycdeque_size_)%rings_capacity_å¾—åˆ°ï¼Œæ€è·¯ä»ç„¶æ˜¯å‰å¼€åé—­
+    ///Ñ­»·¶ÓÁĞµÄ³¤¶È£¬
+    ///Ã»ÓĞÓÃ½áÊøÎªÖ¹ÊÇ·½±ã¼ÆËã£¬ ½áÊøÎ»ÖÃÍ¨¹ı(rings_start_+cycdeque_size_)%rings_capacity_µÃµ½£¬Ë¼Â·ÈÔÈ»ÊÇÇ°¿ªºó±Õ
     std::atomic<size_t> rings_size_;
 
-    ///é˜Ÿåˆ—çš„é•¿åº¦ï¼Œ
+    ///¶ÓÁĞµÄ³¤¶È£¬
     size_t rings_capacity_;
-    ///å­˜æ”¾æ•°æ®çš„æŒ‡é’ˆ
+    ///´æ·ÅÊı¾İµÄÖ¸Õë
     _value_type* value_ptr_;
 
 };

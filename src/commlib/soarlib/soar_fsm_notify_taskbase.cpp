@@ -9,8 +9,8 @@ NotifyTrans_TaskBase::NotifyTrans_TaskBase():
     task_run_(false),
     task_frame_buf_(NULL)
 {
-    task_frame_buf_ = ZERG_FRAME_HEAD::new_frame(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME + 16);
-    task_frame_buf_->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME);
+    task_frame_buf_ = Zerg_App_Frame::new_frame(Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16);
+    task_frame_buf_->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME);
 }
 
 //
@@ -18,7 +18,7 @@ NotifyTrans_TaskBase::~NotifyTrans_TaskBase()
 {
     if (task_frame_buf_ )
     {
-        ZERG_FRAME_HEAD::delete_frame(task_frame_buf_);
+        Zerg_App_Frame::delete_frame(task_frame_buf_);
         task_frame_buf_ = NULL;
     }
 }
@@ -34,7 +34,7 @@ int NotifyTrans_TaskBase::initialize(NotifyTrans_Manger<ZCE_MT_SYNCH> *trans_not
 
     once_max_get_sendqueue_ = once_max_get_sendqueue;
 
-    //è®°å½•ä¸¤ä¸ªsvcid
+    //¼ÇÂ¼Á½¸ösvcid
     mgr_svc_id_ = mgr_svc_id;
     thread_svc_id_ = thread_svc_id;
 
@@ -66,19 +66,19 @@ int NotifyTrans_TaskBase::svc (void)
     for (; task_run_;)
     {
 
-        //å¦‚æœå·²ç»å–å‡ºæˆåŠŸ
+        //Èç¹ûÒÑ¾­È¡³ö³É¹¦
         size_t recv_frame_num = 0;
 
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
-            ZERG_FRAME_HEAD *tmp_frame = NULL;
+            Zerg_App_Frame *tmp_frame = NULL;
 
-            //å¿™çš„æ—¶å€™åªæµ‹è¯•ï¼Œä¸é˜»å¡ç­‰å¾…
+            //Ã¦µÄÊ±ºòÖ»²âÊÔ£¬²»×èÈûµÈ´ı
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)
             {
                 ret = trans_notify_mgr_->trydequeue_sendqueue(tmp_frame);
             }
-            //ä¸å¿™çš„æ—¶å€™ï¼Œå¯ä»¥è®©ä»–ç­‰å¾…åœ¨é˜Ÿåˆ—ä¸Š
+            //²»Ã¦µÄÊ±ºò£¬¿ÉÒÔÈÃËûµÈ´ıÔÚ¶ÓÁĞÉÏ
             else
             {
                 ZCE_Time_Value tv(0, 1000000);
@@ -90,12 +90,12 @@ int NotifyTrans_TaskBase::svc (void)
                 break;
             }
 
-            // ä¸€æ—¦ä¸å¿™æ—¶æ”¶åˆ°æ•°æ®ï¼ŒidleçŠ¶æ€æ”¹ä¸ºå¿™
+            // Ò»µ©²»Ã¦Ê±ÊÕµ½Êı¾İ£¬idle×´Ì¬¸ÄÎªÃ¦
             idle = 0;
             DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM SEND QUEUE FRAME:", tmp_frame);
 
             ret = taskprocess_appframe(tmp_frame);
-            //å›æ”¶FRAME
+            //»ØÊÕFRAME
             trans_notify_mgr_->free_appframe(tmp_frame);
 
             if (ret != 0)
@@ -105,10 +105,10 @@ int NotifyTrans_TaskBase::svc (void)
         }
 
         size_t send_frame_num = 0;
-        //Task å¹²ç§æ´»
+        //Task ¸ÉË½»î
         ret = task_moonlighting (send_frame_num);
 
-        //æ§åˆ¶ç¨‹åºçš„å¿™é—²çŠ¶æ€
+        //¿ØÖÆ³ÌĞòµÄÃ¦ÏĞ×´Ì¬
         if (0 == send_frame_num  && 0 == recv_frame_num )
         {
             idle ++;

@@ -3,8 +3,8 @@
 * @filename   zce_lock_process_semaphore.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2013å¹´1æœˆ15æ—¥
-* @brief      è¿›ç¨‹é—´åŒæ­¥ç”¨çš„ä¿¡å·ç¯ï¼Œ
+* @date       2013Äê1ÔÂ15ÈÕ
+* @brief      ½ø³Ì¼äÍ¬²½ÓÃµÄĞÅºÅµÆ£¬
 *
 */
 #ifndef ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
@@ -14,59 +14,59 @@
 #include "zce_lock_guard.h"
 
 /*!
-* @brief      è¿›ç¨‹çš„ä¿¡å·ç¯ç±»
-*             LINUXä¸‹ç”¨æœ‰åä¿¡å·ç¯ï¼Œ
-*             WINDOWSä¸‹ç”¨å¸¦åç§°çš„ä¿¡å·ç¯ï¼Œ
+* @brief      ½ø³ÌµÄĞÅºÅµÆÀà
+*             LINUXÏÂÓÃÓĞÃûĞÅºÅµÆ£¬
+*             WINDOWSÏÂÓÃ´øÃû³ÆµÄĞÅºÅµÆ£¬
 */
 class ZCE_Process_Semaphore  : public ZCE_Lock_Base
 {
 
 public:
 
-    ///çº¿ç¨‹é”çš„GUARD
+    ///Ïß³ÌËøµÄGUARD
     typedef ZCE_Lock_Guard<ZCE_Process_Semaphore> LOCK_GUARD;
 
 public:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°,é»˜è®¤åˆ›å»ºåŒ¿åä¿¡å·ç¯ï¼Œ
-    * @param      init_value  ä¿¡å·ç¯åˆå§‹åŒ–çš„å€¼
-    * @param      sem_name    ä¿¡å·ç¯çš„åç§°
+    * @brief      ¹¹Ôìº¯Êı,Ä¬ÈÏ´´½¨ÄäÃûĞÅºÅµÆ£¬
+    * @param      init_value  ĞÅºÅµÆ³õÊ¼»¯µÄÖµ
+    * @param      sem_name    ĞÅºÅµÆµÄÃû³Æ
     */
     ZCE_Process_Semaphore (unsigned int init_value,
                            const char *sem_name
                           );
     virtual ~ZCE_Process_Semaphore (void);
 
-    ///é”å®š
+    ///Ëø¶¨
     virtual void lock();
 
-    ///å°è¯•é”å®š
+    ///³¢ÊÔËø¶¨
     virtual bool try_lock();
 
-    //è§£é”,
+    //½âËø,
     virtual void unlock();
 
     /*!
-    * @brief      ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
-    * @return     bool      trueè·å¾—äº†é”ï¼Œfalseï¼Œæ— æ³•è·å¾—é”
-    * @param      abs_time  è¶…æ—¶çš„ç»å¯¹æ—¶é—´
+    * @brief      ¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+    * @return     bool      true»ñµÃÁËËø£¬false£¬ÎŞ·¨»ñµÃËø
+    * @param      abs_time  ³¬Ê±µÄ¾ø¶ÔÊ±¼ä
     */
     virtual bool systime_lock(const ZCE_Time_Value &abs_time);
 
     /*!
-    * @brief      ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
-    * @return     bool           trueè·å¾—äº†é”ï¼Œfalseï¼Œæ— æ³•è·å¾—é”
-    * @param      relative_time  è¶…æ—¶çš„ç»å¯¹æ—¶é—´
+    * @brief      Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+    * @return     bool           true»ñµÃÁËËø£¬false£¬ÎŞ·¨»ñµÃËø
+    * @param      relative_time  ³¬Ê±µÄ¾ø¶ÔÊ±¼ä
     */
     virtual bool duration_lock(const ZCE_Time_Value &relative_time);
 
 protected:
 
-    ///ä¿¡å·ç¯å¯¹è±¡
+    ///ĞÅºÅµÆ¶ÔÏó
     sem_t            *lock_;
 
-    ///ä¿¡å·ç¯çš„åç§°ï¼Œä¸å¾—ä¸è®°å½•ä¸‹æ¥ï¼Œæˆ–è€…æ˜¯å…±äº«å†…å­˜çš„æ–‡ä»¶åç§°
+    ///ĞÅºÅµÆµÄÃû³Æ£¬²»µÃ²»¼ÇÂ¼ÏÂÀ´£¬»òÕßÊÇ¹²ÏíÄÚ´æµÄÎÄ¼şÃû³Æ
     char              sema_name_[PATH_MAX + 1];
 
 };

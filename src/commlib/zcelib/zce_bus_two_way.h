@@ -6,44 +6,44 @@
 namespace zce
 {
 class dequechunk_node;
-class deque_chunk;
+class shm_dequechunk;
 };
 
-//åŒè¡Œé“
+//Ë«ĞĞµÀ
 class ZCE_BusPipe_TwoWay : public ZCE_Bus_MMAPPipe
 {
 public:
 
-    //PIPEçš„ç¼–å·
+    //PIPEµÄ±àºÅ
     enum ZCE_BUS_PIPE_ID
     {
         RECV_PIPE_ID     = 0,
         SEND_PIPE_ID     = 1,
-        NUM_OF_PIPE      = 2,      //é•¿åº¦æ ‡ç¤º,ä¸è¦ç”¨äºåšå‡½æ•°å‚æ•°,å¦åˆ™ä¼šæœ‰æº¢å‡º
+        NUM_OF_PIPE      = 2,      //³¤¶È±êÊ¾,²»ÒªÓÃÓÚ×öº¯Êı²ÎÊı,·ñÔò»áÓĞÒç³ö
     };
 
 
 protected:
 
-    //ZERGç®¡é“çš„åç§°,æ”¾åœ¨è¿™å„¿ï¼Œå› ä¸ºå¤§å®¶éƒ½ç”¨
+    //ZERG¹ÜµÀµÄÃû³Æ,·ÅÔÚÕâ¶ù£¬ÒòÎª´ó¼Ò¶¼ÓÃ
     static const char          BUS_PIPE_NAME[NUM_OF_PIPE][16];
 
 
 
 protected:
-    //instanceå‡½æ•°ä½¿ç”¨çš„ä¸œè¥¿
+    //instanceº¯ÊıÊ¹ÓÃµÄ¶«Î÷
     static ZCE_BusPipe_TwoWay *two_way_instance_;
 
 public:
 
-    //æ„é€ å‡½æ•°,
+    //¹¹Ôìº¯Êı,
     ZCE_BusPipe_TwoWay();
-    //æè´­å‡½æ•°
+    //Îö¹ºº¯Êı
     ~ZCE_BusPipe_TwoWay();
 
 public:
 
-    //åˆå§‹åŒ–éƒ¨åˆ†å‚æ•°,
+    //³õÊ¼»¯²¿·Ö²ÎÊı,
     int initialize(const char *bus_mmap_name,
                    size_t size_recv_pipe,
                    size_t size_send_pipe,
@@ -52,42 +52,42 @@ public:
 
 
     //-----------------------------------------------------------------
-    //ä»RECVç®¡é“è¯»å–æ•°æ®ï¼Œ
+    //´ÓRECV¹ÜµÀ¶ÁÈ¡Êı¾İ£¬
     inline int pop_front_recvpipe(zce::lockfree::dequechunk_node *const node);
-    //ä»SENDç®¡é“è¯»å–æ•°æ®ï¼Œ
+    //´ÓSEND¹ÜµÀ¶ÁÈ¡Êı¾İ£¬
     inline int pop_front_sendpipe(zce::lockfree::dequechunk_node *const node);
-    //å‘SENDç®¡é“å†™å…¥æ•°æ®
+    //ÏòSEND¹ÜµÀĞ´ÈëÊı¾İ
     inline int push_back_sendpipe(const zce::lockfree::dequechunk_node *node);
-    //å‘RECVç®¡é“å†™å…¥æ•°æ®
+    //ÏòRECV¹ÜµÀĞ´ÈëÊı¾İ
     inline int push_back_recvpipe(const zce::lockfree::dequechunk_node *node);
 
 
-    //å–Recvç®¡é“å¤´çš„å¸§é•¿
+    //È¡Recv¹ÜµÀÍ·µÄÖ¡³¤
     inline int get_frontsize_recvpipe(size_t &note_size);
-    //å–Sendç®¡é“å¤´çš„å¸§é•¿
+    //È¡Send¹ÜµÀÍ·µÄÖ¡³¤
     inline int get_frontsize_sendpipe(size_t &note_size);
 
 
 
 public:
 
-    //å®ä¾‹çš„èµ‹å€¼
+    //ÊµÀıµÄ¸³Öµ
     static void instance(ZCE_BusPipe_TwoWay *);
-    //å®ä¾‹çš„è·å¾—
+    //ÊµÀıµÄ»ñµÃ
     static ZCE_BusPipe_TwoWay *instance();
-    //æ¸…é™¤å®ä¾‹
+    //Çå³ıÊµÀı
     static void clean_instance();
 
 };
 
 
-//å–Recvç®¡é“å¤´çš„å¸§é•¿
+//È¡Recv¹ÜµÀÍ·µÄÖ¡³¤
 inline int ZCE_BusPipe_TwoWay::get_frontsize_recvpipe(size_t &note_size)
 {
     return get_front_nodesize(RECV_PIPE_ID, note_size);
 }
 
-//å–Sendç®¡é“å¤´çš„å¸§é•¿
+//È¡Send¹ÜµÀÍ·µÄÖ¡³¤
 inline int ZCE_BusPipe_TwoWay::get_frontsize_sendpipe(size_t &note_size)
 {
     return get_front_nodesize(SEND_PIPE_ID, note_size);
@@ -95,27 +95,27 @@ inline int ZCE_BusPipe_TwoWay::get_frontsize_sendpipe(size_t &note_size)
 
 
 
-//ä»RECVç®¡é“è¯»å–å¸§ï¼Œ
+//´ÓRECV¹ÜµÀ¶ÁÈ¡Ö¡£¬
 inline int ZCE_BusPipe_TwoWay::pop_front_recvpipe(zce::lockfree::dequechunk_node *const node)
 {
     return pop_front_bus(RECV_PIPE_ID, node);
 }
 
 
-//å‘SENDç®¡é“å†™å…¥å¸§ï¼Œ
+//ÏòSEND¹ÜµÀĞ´ÈëÖ¡£¬
 inline int ZCE_BusPipe_TwoWay::push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
 {
     return push_back_bus(SEND_PIPE_ID, node);
 }
 
-//ä»SENDç®¡é“è¯»å–å¸§ï¼Œ
+//´ÓSEND¹ÜµÀ¶ÁÈ¡Ö¡£¬
 inline int ZCE_BusPipe_TwoWay::pop_front_sendpipe(zce::lockfree::dequechunk_node *const node)
 {
     return pop_front_bus(SEND_PIPE_ID, node);
 }
 
 
-//å‘RECVç®¡é“å†™å…¥å¸§ï¼Œ
+//ÏòRECV¹ÜµÀĞ´ÈëÖ¡£¬
 inline int ZCE_BusPipe_TwoWay::push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
 {
     return push_back_bus(RECV_PIPE_ID, node);

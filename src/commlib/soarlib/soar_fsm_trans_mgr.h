@@ -4,61 +4,61 @@
 #include "soar_zerg_frame_malloc.h"
 #include "soar_mmap_buspipe.h"
 
-//æ˜¯å¦æŒ‰ç…§zengyuæ‰€è¯´çš„å°†æ‰€æœ‰çš„IOæ¥å£ç»§æ‰¿å¤„ç†???
-//æˆ‘å¿ƒä¸­å……æ»¡äº†æ— æ•°çš„é—®å·
-//å¦‚æœå°±æ˜¯è¿™ä¸ªå’šå’šæœ€åæ˜¯ä¸€ä¸ªæ¡†æ¶ï¼Œæˆ‘å‡ ä¹è®¤ä¸ºè®¤ä¸ºè¿™ä¸ªäº‹åŠ¡æ¨¡å‹ä¸ç”¨ä¿®æ”¹.ä½†æ˜¯.....
+//ÊÇ·ñ°´ÕÕzengyuËùËµµÄ½«ËùÓĞµÄIO½Ó¿Ú¼Ì³Ğ´¦Àí???
+//ÎÒĞÄÖĞ³äÂúÁËÎŞÊıµÄÎÊºÅ
+//Èç¹û¾ÍÊÇÕâ¸ößËßË×îºóÊÇÒ»¸ö¿ò¼Ü£¬ÎÒ¼¸ºõÈÏÎªÈÏÎªÕâ¸öÊÂÎñÄ£ĞÍ²»ÓÃĞŞ¸Ä.µ«ÊÇ.....
 
-//ç®€å•ï¼Œä½†æ˜¯ä¸è¦å¤ªç®€å•.....
-//æ„Ÿè§‰æˆ‘çš„æƒ³æ³•æ˜¯æ¯”è¾ƒç®€å•çš„,è¡¨é¢çœ‹æˆ‘æ²¡æœ‰äº‹ä»¶é˜Ÿåˆ—,å…¶å®æˆ‘ç”¨äº†Reactorè¿›è¡Œç®¡ç†,å…¶å®å†…éƒ¨å®é™…æ˜¯ç”±é˜Ÿåˆ—çš„.
+//¼òµ¥£¬µ«ÊÇ²»ÒªÌ«¼òµ¥.....
+//¸Ğ¾õÎÒµÄÏë·¨ÊÇ±È½Ï¼òµ¥µÄ,±íÃæ¿´ÎÒÃ»ÓĞÊÂ¼ş¶ÓÁĞ,ÆäÊµÎÒÓÃÁËReactor½øĞĞ¹ÜÀí,ÆäÊµÄÚ²¿Êµ¼ÊÊÇÓÉ¶ÓÁĞµÄ.
 
 
 
 /************************************************************************************
-2008å¹´12æœˆ26æ—¥,åœ£è¯çš„åé¢ä¸€å¤©ï¼Œè¿™ä¸€å‘¨ç®€ç›´æ˜¯æµ‘å¤©é»‘åœ°,ä¸è¿‡è¿˜å¥½æ˜¯å‘¨æœ«äº†
-èº«ä¸ºä¸€é“å½©è™¹ï¼Œé›¨è¿‡å°±è¦é—ªäº®æ•´ç‰‡å¤©ç©ºï¼Œè®©æˆ‘æ·±çˆ±çš„ä½ æ„Ÿåˆ°å…‰è£
-ä»æ–°å®¡è§†è¿™æ®µä»£ç ï¼ŒSusantianå»ºè®®åŠ å…¥ä¸€ä¸ªæ¶ˆæ¯é˜Ÿåˆ—,å¥¹çš„è¦æ±‚å¾ˆåˆç†ï¼Œæœ‰ä¸€ä¸ªé˜Ÿåˆ—å°±
-æä¾›ä¸€ç§åœ¨å†…éƒ¨å¼‚æ­¥è°ƒç”¨äº‹åŠ¡çš„æ–¹æ³•,
-åŸæ¥æ˜¯æœ‰ä¸€ä¸ªé˜Ÿåˆ—çš„ï¼Œä½†æ˜¯ï¼Œä½†æ˜¯ï¼Œæˆ‘è¿˜æ˜¯è¦è¯´è¯´å†å²ï¼Œè¿™æ®µä»£ç çš„å…‰è¾‰å²æœˆ
-æœ€æ—©æˆ‘ä»¬çš„ä»£ç æ˜¯ç”¨ACEçš„Notifyæœºåˆ¶çš„é˜Ÿåˆ—çš„ï¼Œ
-ç»„æœ€æ—©çš„äº‹åŠ¡å¤„ç†æ¨¡å‹
-RECV PIPE===============>ACE Notify çš„é˜Ÿåˆ—==================>
-                                                             äº‹åŠ¡ç®¡ç†å™¨å¤„ç†
+2008Äê12ÔÂ26ÈÕ,Ê¥µ®µÄºóÃæÒ»Ìì£¬ÕâÒ»ÖÜ¼òÖ±ÊÇ»ëÌìºÚµØ,²»¹ı»¹ºÃÊÇÖÜÄ©ÁË
+ÉíÎªÒ»µÀ²Êºç£¬Óê¹ı¾ÍÒªÉÁÁÁÕûÆ¬Ìì¿Õ£¬ÈÃÎÒÉî°®µÄÄã¸Ğµ½¹âÈÙ
+´ÓĞÂÉóÊÓÕâ¶Î´úÂë£¬Susantian½¨Òé¼ÓÈëÒ»¸öÏûÏ¢¶ÓÁĞ,ËıµÄÒªÇóºÜºÏÀí£¬ÓĞÒ»¸ö¶ÓÁĞ¾Í
+Ìá¹©Ò»ÖÖÔÚÄÚ²¿Òì²½µ÷ÓÃÊÂÎñµÄ·½·¨,
+Ô­À´ÊÇÓĞÒ»¸ö¶ÓÁĞµÄ£¬µ«ÊÇ£¬µ«ÊÇ£¬ÎÒ»¹ÊÇÒªËµËµÀúÊ·£¬Õâ¶Î´úÂëµÄ¹â»ÔËêÔÂ
+×îÔçÎÒÃÇµÄ´úÂëÊÇÓÃACEµÄNotify»úÖÆµÄ¶ÓÁĞµÄ£¬
+×é×îÔçµÄÊÂÎñ´¦ÀíÄ£ĞÍ
+RECV PIPE===============>ACE Notify µÄ¶ÓÁĞ==================>
+                                                             ÊÂÎñ¹ÜÀíÆ÷´¦Àí
 SEND PIPE<===================================================
 
-ä½†æ˜¯åœ¨å‘ç°ACE Notifyæœºåˆ¶æœ‰ä¸€å®šé—®é¢˜åæˆ‘ä»¬æ”¹ä¸ºäº†ä¸è¦é˜Ÿåˆ—ã€‚å…·ä½“è§ã€ŠACEé™·é˜±ã€‹
-å–æ¶ˆACE_NOtifyæœºåˆ¶åçš„æ¨¡å‹,
+µ«ÊÇÔÚ·¢ÏÖACE Notify»úÖÆÓĞÒ»¶¨ÎÊÌâºóÎÒÃÇ¸ÄÎªÁË²»Òª¶ÓÁĞ¡£¾ßÌå¼û¡¶ACEÏİÚå¡·
+È¡ÏûACE_NOtify»úÖÆºóµÄÄ£ĞÍ,
 RECV PIPE==========================================>
-                                                    äº‹åŠ¡ç®¡ç†å™¨å¤„ç†
+                                                    ÊÂÎñ¹ÜÀíÆ÷´¦Àí
 SEND PIPE<==========================================
 
-è€Œåæˆ‘ä»¬ä¸ºäº†TASKå¤„ç†ï¼Œæˆ‘ä»¬æ”¹äº†ä¸€ä¸ªæ–°çš„æ¨¡å¼
-å¯¹äºå¤šTASKçš„äº‹åŠ¡å¤„ç†æ¨¡å‹:
-RECV PIPE =====================>          ==============> Sendé˜Ÿåˆ—(å¯¹äº‹åŠ¡æ˜¯Send)
-                                 äº‹åŠ¡å¤„ç†                                  å¤šTASKå¤„ç†
-SEND PIPE <=====================          <============= Recvé˜Ÿåˆ—(å¯¹äº‹åŠ¡æ˜¯Recv)
+¶øºóÎÒÃÇÎªÁËTASK´¦Àí£¬ÎÒÃÇ¸ÄÁËÒ»¸öĞÂµÄÄ£Ê½
+¶ÔÓÚ¶àTASKµÄÊÂÎñ´¦ÀíÄ£ĞÍ:
+RECV PIPE =====================>          ==============> Send¶ÓÁĞ(¶ÔÊÂÎñÊÇSend)
+                                 ÊÂÎñ´¦Àí                                  ¶àTASK´¦Àí
+SEND PIPE <=====================          <============= Recv¶ÓÁĞ(¶ÔÊÂÎñÊÇRecv)
 
-ä¸ºä»€ä¹ˆè¿˜æ˜¯å¸Œæœ›åœ¨PIPEçš„å¤„ç†æœºåˆ¶ä¹‹å¤–ï¼Œå†åŠ å…¥ä¸€æ¡æ–°çš„é˜Ÿåˆ—å¤„ç†æ¶ˆæ¯å—?
-å› ä¸ºå¦‚æœæ‰€æœ‰çš„å¤„ç†éƒ½æ˜¯åŒæ­¥è°ƒç”¨(å‡½æ•°ç«‹å³è¿”å›çš„æ–¹å¼),å°±å°‘äº†å¾ˆå¤šå˜åŒ–ï¼Œè€Œä¸”ä¸€äº›è§¦å‘æœºåˆ¶ä¸èƒ½ä½¿ç”¨.
-æ‰€ä»¥æˆ‘å¸Œæœ›å®ç°çš„æ–°çš„æ¨¡å‹æ˜¯
+ÎªÊ²Ã´»¹ÊÇÏ£ÍûÔÚPIPEµÄ´¦Àí»úÖÆÖ®Íâ£¬ÔÙ¼ÓÈëÒ»ÌõĞÂµÄ¶ÓÁĞ´¦ÀíÏûÏ¢Âğ?
+ÒòÎªÈç¹ûËùÓĞµÄ´¦Àí¶¼ÊÇÍ¬²½µ÷ÓÃ(º¯ÊıÁ¢¼´·µ»ØµÄ·½Ê½),¾ÍÉÙÁËºÜ¶à±ä»¯£¬¶øÇÒÒ»Ğ©´¥·¢»úÖÆ²»ÄÜÊ¹ÓÃ.
+ËùÒÔÎÒÏ£ÍûÊµÏÖµÄĞÂµÄÄ£ĞÍÊÇ
 RECV PIPE==================================>
-                                           äº‹åŠ¡ç®¡ç†å™¨å¤„ç†  <==============> æ¶ˆæ¯é˜Ÿåˆ—
+                                           ÊÂÎñ¹ÜÀíÆ÷´¦Àí  <==============> ÏûÏ¢¶ÓÁĞ
 SEND PIPE<=================================
 
 ************************************************************************************/
 class Soar_MMAP_BusPipe;
 class Transaction_Base;
-class ZERG_FRAME_HEAD;
+class Zerg_App_Frame;
 
 /******************************************************************************************
-struct TRANS_LOCK_RECORD åŠ é”çš„è®°å½•å•å…ƒ
+struct TRANS_LOCK_RECORD ¼ÓËøµÄ¼ÇÂ¼µ¥Ôª
 ******************************************************************************************/
 struct SOARING_EXPORT TRANS_LOCK_RECORD
 {
 public:
-    //è¦åŠ é”çš„USER ID,
+    //Òª¼ÓËøµÄUSER ID,
     unsigned int     lock_user_id_;
-    //äº‹åŠ¡çš„åŠ é”IDï¼Œå¦‚æœå°±æ˜¯ä¸€ä¸ªå‘½ä»¤å¯¹åº”ä¸€ä¸ªé”ï¼Œå»ºè®®ç›´æ¥ä½¿ç”¨å‘½ä»¤å­—
-    //å¦‚æœæ˜¯å¤šä¸ªå‘½ä»¤å¯¹ä¸€ä¸ªä¸œä¸œåŠ é”ï¼Œå»ºè®®å ä½ä¸€ä¸ªå‘½ä»¤ï¼Œç„¶åå¯¹é‚£ä¸ªå‘½ä»¤åŠ é”ï¼Œ
+    //ÊÂÎñµÄ¼ÓËøID£¬Èç¹û¾ÍÊÇÒ»¸öÃüÁî¶ÔÓ¦Ò»¸öËø£¬½¨ÒéÖ±½ÓÊ¹ÓÃÃüÁî×Ö
+    //Èç¹ûÊÇ¶à¸öÃüÁî¶ÔÒ»¸ö¶«¶«¼ÓËø£¬½¨ÒéÕ¼Î»Ò»¸öÃüÁî£¬È»ºó¶ÔÄÇ¸öÃüÁî¼ÓËø£¬
     unsigned int     lock_trans_cmd_;
 
 public:
@@ -67,7 +67,7 @@ public:
     ~TRANS_LOCK_RECORD();
 };
 
-//å¾—åˆ°KEYçš„HASHå‡½æ•°
+//µÃµ½KEYµÄHASHº¯Êı
 struct SOARING_EXPORT HASH_OF_TRANS_LOCK
 {
 public:
@@ -77,7 +77,7 @@ public:
     }
 };
 
-//åˆ¤æ–­ç›¸ç­‰çš„å‡½æ•°
+//ÅĞ¶ÏÏàµÈµÄº¯Êı
 class SOARING_EXPORT EQUAL_OF_TRANS_LOCK
 {
 public:
@@ -93,122 +93,122 @@ class Transaction_Manager
 ******************************************************************************************/
 class SOARING_EXPORT Transaction_Manager : public ZCE_Async_FSMMgr
 {
-    //å£°æ˜å‹å…ƒ
+    //ÉùÃ÷ÓÑÔª
     friend class Transaction_Base;
 
 protected:
 
 
     ///
-    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, ZERG_FRAME_HEAD *> INNER_FRAME_MESSAGE_QUEUE;
-    ///APPFRAMEçš„åˆ†é…å™¨
+    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH, Zerg_App_Frame *> INNER_FRAME_MESSAGE_QUEUE;
+    ///APPFRAMEµÄ·ÖÅäÆ÷
     typedef AppFrame_Mallocor_Mgr<ZCE_Null_Mutex>                     INNER_APPFRAME_MALLOCOR;
 
-    //å†…éƒ¨çš„é”çš„æ•°é‡
+    //ÄÚ²¿µÄËøµÄÊıÁ¿
     typedef unordered_set<TRANS_LOCK_RECORD, HASH_OF_TRANS_LOCK, EQUAL_OF_TRANS_LOCK>  INNER_TRANS_LOCK_POOL;
 
 public:
 
-    //ç®¡ç†å™¨çš„æ„é€ å‡½æ•°
+    //¹ÜÀíÆ÷µÄ¹¹Ôìº¯Êı
     Transaction_Manager();
     virtual ~Transaction_Manager();
 
 protected:
 
 
-    //å¤„ç†ä¸€ä¸ªæ”¶åˆ°çš„å‘½ä»¤ï¼Œ
-    int process_appframe( ZERG_FRAME_HEAD *ppetappframe, bool &crttx );
+    //´¦ÀíÒ»¸öÊÕµ½µÄÃüÁî£¬
+    int process_appframe( Zerg_App_Frame *ppetappframe, bool &crttx );
 
 public:
 
 
-    //å¤„ç†ç®¡é“çš„æ•°æ®
+    //´¦Àí¹ÜµÀµÄÊı¾İ
     int process_pipe_frame(size_t &proc_frame, size_t &create_trans);
-    //å¤„ç†æ¶ˆæ¯é˜Ÿåˆ—çš„æ•°æ®
+    //´¦ÀíÏûÏ¢¶ÓÁĞµÄÊı¾İ
     int process_queue_frame(size_t &proc_frame, size_t &create_trans);
 
-    //å¯¹æŸä¸€ä¸ªç”¨æˆ·çš„ä¸€ä¸ªå‘½ä»¤çš„äº‹åŠ¡è¿›è¡ŒåŠ é”
+    //¶ÔÄ³Ò»¸öÓÃ»§µÄÒ»¸öÃüÁîµÄÊÂÎñ½øĞĞ¼ÓËø
     int lock_qquin_trnas_cmd(unsigned int user_id,
                              unsigned int trnas_lock_id,
                              unsigned int trans_cmd);
-    //å¯¹æŸä¸€ä¸ªç”¨æˆ·çš„ä¸€ä¸ªå‘½ä»¤çš„äº‹åŠ¡è¿›è¡ŒåŠ é”
+    //¶ÔÄ³Ò»¸öÓÃ»§µÄÒ»¸öÃüÁîµÄÊÂÎñ½øĞĞ¼ÓËø
     void unlock_qquin_trans_cmd(unsigned int user_id,
                                 unsigned int trnas_lock_id);
 
 
     /*!
-    * @brief      æ³¨å†Œå‘½ä»¤ä»¥åŠå¯¹åº”çš„äº‹åŠ¡å¤„ç†çš„ç±»
+    * @brief      ×¢²áÃüÁîÒÔ¼°¶ÔÓ¦µÄÊÂÎñ´¦ÀíµÄÀà
     * @return     int
-    * @param      cmd æ³¨å†Œçš„å‘½ä»¤å­—
-    * @param      ptxbase å‘½ä»¤å¯¹åº”çš„å¤„ç†Handlerï¼Œæœ€åä¼šåˆ é™¤
-    * @param      if_lock_trans è¿™ä¸ªäº‹åŠ¡æ˜¯å¦åŠ é”ï¼Œäº‹åŠ¡é”çš„æ„æ€æ˜¯ä¿è¯ä¸€ä¸ªæ—¶åˆ»ï¼Œåªèƒ½ä¸€ä¸ªè¿™æ ·çš„äº‹åŠ¡,äº‹åŠ¡é”ä¸é˜»å¡
-    * @param      lock_trans_cmd åŠ é”çš„ID,å¯ä»¥æ˜¯å‘½ä»¤ID,ä¹Ÿå¯ä»¥å¤šä¸ªå‘½ä»¤å…±ç”¨ä¸€ä¸ªä¸ªID,
-    * @note       äº‹åŠ¡é”çš„æ„æ€æ˜¯ä¿è¯ä¸€ä¸ªæ—¶åˆ»ï¼Œåªèƒ½ä¸€ä¸ªè¿™æ ·çš„äº‹åŠ¡,äº‹åŠ¡é”ä¸é˜»å¡
-    *             è¿™ä¸ªåœ°æ–¹è¿èƒŒäº†è°ç”³è¯·ï¼Œè°åˆ é™¤çš„åŸåˆ™ï¼Œä¸å¥½ï¼Œä½†æ˜¯â€¦â€¦
+    * @param      cmd ×¢²áµÄÃüÁî×Ö
+    * @param      ptxbase ÃüÁî¶ÔÓ¦µÄ´¦ÀíHandler£¬×îºó»áÉ¾³ı
+    * @param      if_lock_trans Õâ¸öÊÂÎñÊÇ·ñ¼ÓËø£¬ÊÂÎñËøµÄÒâË¼ÊÇ±£Ö¤Ò»¸öÊ±¿Ì£¬Ö»ÄÜÒ»¸öÕâÑùµÄÊÂÎñ,ÊÂÎñËø²»×èÈû
+    * @param      lock_trans_cmd ¼ÓËøµÄID,¿ÉÒÔÊÇÃüÁîID,Ò²¿ÉÒÔ¶à¸öÃüÁî¹²ÓÃÒ»¸ö¸öID,
+    * @note       ÊÂÎñËøµÄÒâË¼ÊÇ±£Ö¤Ò»¸öÊ±¿Ì£¬Ö»ÄÜÒ»¸öÕâÑùµÄÊÂÎñ,ÊÂÎñËø²»×èÈû
+    *             Õâ¸öµØ·½Î¥±³ÁËË­ÉêÇë£¬Ë­É¾³ıµÄÔ­Ôò£¬²»ºÃ£¬µ«ÊÇ¡­¡­
     */
     int register_trans_cmd(unsigned int cmd,
                            Transaction_Base *ptxbase,
                            bool if_lock_trans = false,
                            unsigned int lock_trans_cmd = 0);
 
-    //é€šè¿‡äº‹åŠ¡IDå¾—åˆ°ç›¸åº”çš„äº‹åŠ¡æŒ‡é’ˆ
+    //Í¨¹ıÊÂÎñIDµÃµ½ÏàÓ¦µÄÊÂÎñÖ¸Õë
     int get_handler_by_transid(unsigned int transid, unsigned int trans_cmd, Transaction_Base *&ptxbase);
 
-    //åˆ›å»ºä¸€ä¸ªäº‹åŠ¡ï¼Œæ¯”å¦‚è‡ªå·±è¦å‘é€æŸä¸ªæ•°æ®ç»™å…¶ä»–æœåŠ¡å™¨å¼€å§‹çš„äº‹åŠ¡.
+    //´´½¨Ò»¸öÊÂÎñ£¬±ÈÈç×Ô¼ºÒª·¢ËÍÄ³¸öÊı¾İ¸øÆäËû·şÎñÆ÷¿ªÊ¼µÄÊÂÎñ.
     int create_self(Transaction_Base *ptxbase);
 
-    //åˆå§‹åŒ–,ä½ä¸€ä¸ªå‡ ä¸ªé»˜è®¤å‚æ•°
+    //³õÊ¼»¯,×¡Ò»¸ö¼¸¸öÄ¬ÈÏ²ÎÊı
     int initialize(ZCE_Timer_Queue_Base *timer_queue,
                    size_t szregtrans,
                    size_t sztransmap,
                    const SERVICES_ID &selfsvr,
                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                   unsigned int max_frame_len = ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME,
+                   unsigned int max_frame_len = Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
 
     //
     void finish();
 
-    //å¾—åˆ°ä¸€ä¸ªSvrInfo
+    //µÃµ½Ò»¸öSvrInfo
     inline const SERVICES_ID *self_svc_info();
 
-    //å–å¾—ç®¡ç†å™¨çš„è´Ÿè½½å› å­
+    //È¡µÃ¹ÜÀíÆ÷µÄ¸ºÔØÒò×Ó
     void get_manager_load_foctor(unsigned int &load_max,
                                  unsigned int &load_cur);
 
     void get_manager_load_foctor2(unsigned int &load_max,
                                   unsigned int &load_cur);
 
-    //æ³¨é”€TransID.
+    //×¢ÏúTransID.
     int unregiester_trans_id(unsigned int transid,
                              unsigned int trans_cmd,
                              int run_state,
                              time_t trans_start);
 
-    //æ‰“å¼€Transç»Ÿè®¡ä¿¡æ¯ï¼Œå¾—åˆ°ä¸€ä¸ªå½“å‰æ—¶é’Ÿ
+    //´ò¿ªTransÍ³¼ÆĞÅÏ¢£¬µÃµ½Ò»¸öµ±Ç°Ê±ÖÓ
     void enable_trans_statistics (const ZCE_Time_Value *stat_clock);
 
-    //DUMPæ‰€æœ‰çš„ç»Ÿè®¡ä¿¡æ¯
+    //DUMPËùÓĞµÄÍ³¼ÆĞÅÏ¢
     void dump_statistics_info() const;
-    //DUMPæ‰€æœ‰çš„äº‹åŠ¡ä¿¡æ¯
+    //DUMPËùÓĞµÄÊÂÎñĞÅÏ¢
     void dump_all_trans_info() const ;
-    //DUMPæ‰€æœ‰çš„çš„Tans POOL ä¿¡æ¯
+    //DUMPËùÓĞµÄµÄTans POOL ĞÅÏ¢
     void dump_trans_pool_info() const;
 
-    //Dump æ‰€æœ‰DEBUGä¿¡æ¯
+    //Dump ËùÓĞDEBUGĞÅÏ¢
     void dump_all_debug_info() const;
 
     //----------------------------------------------------------------------------------------------------------
 
-    //å‡è£…æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯ï¼Œè¿›è¡Œå¤„ç†,å‚æ•°å°‘çš„ç®€åŒ–ç‰ˆæœ¬
+    //¼Ù×°ÊÕµ½Ò»¸öÏûÏ¢£¬½øĞĞ´¦Àí,²ÎÊıÉÙµÄ¼ò»¯°æ±¾
     template< class T> int fake_receive_appframe(unsigned int cmd,
                                                  unsigned int qquin,
                                                  const SERVICES_ID &snd_svc,
                                                  const T &info,
                                                  unsigned int option = 0);
 
-    //å‡è£…æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯ï¼Œè¿›è¡Œå¤„ç†,å‚æ•°æœ‰ç‚¹å¤šï¼Œå»ºè®®ä½ ä½¿ç”¨çš„æ—¶å€™å†è¿›è¡Œä¸€æ¬¡å°è£…
+    //¼Ù×°ÊÕµ½Ò»¸öÏûÏ¢£¬½øĞĞ´¦Àí,²ÎÊıÓĞµã¶à£¬½¨ÒéÄãÊ¹ÓÃµÄÊ±ºòÔÙ½øĞĞÒ»´Î·â×°
     template< class T> int fake_receive_appframe(unsigned int cmd,
                                                  unsigned int qquin,
                                                  unsigned int trans_id,
@@ -219,7 +219,7 @@ public:
                                                  unsigned int app_id,
                                                  unsigned int option );
 
-    //å‡è£…æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯(buffer)
+    //¼Ù×°ÊÕµ½Ò»¸öÏûÏ¢(buffer)
     inline int fake_receive_appframe_buffer(unsigned int cmd,
                                             unsigned int qquin,
                                             unsigned int trans_id,
@@ -232,13 +232,13 @@ public:
                                             unsigned int option);
 
     //----------------------------------------------------------------------------------------------------------
-    //Postä¸€ä¸ªFRAMEæ•°æ®åˆ°æ¶ˆæ¯é˜Ÿåˆ—,ç®€å•ç‰ˆæœ¬ï¼Œæ²¡æœ‰ç‰¹æ®Šè¦æ±‚ï¼Œä½ å¯ä»¥ç”¨è¿™ä¸ª
+    //PostÒ»¸öFRAMEÊı¾İµ½ÏûÏ¢¶ÓÁĞ,¼òµ¥°æ±¾£¬Ã»ÓĞÌØÊâÒªÇó£¬Äã¿ÉÒÔÓÃÕâ¸ö
     template< class T> int mgr_postframe_to_msgqueue(unsigned int cmd,
                                                      unsigned int qquin,
                                                      const T &info,
                                                      unsigned int option = 0);
 
-    //Postä¸€ä¸ªFRAMEæ•°æ®åˆ°æ¶ˆæ¯é˜Ÿåˆ—ï¼Œå¯ä»¥ä¼ªé€ ä¸€äº›æ¶ˆæ¯ï¼Œä½†æ˜¯æˆ‘ä¸çŸ¥é“æä¾›å‡ºæ¥æ˜¯å¦æ˜¯å¥½äº‹,
+    //PostÒ»¸öFRAMEÊı¾İµ½ÏûÏ¢¶ÓÁĞ£¬¿ÉÒÔÎ±ÔìÒ»Ğ©ÏûÏ¢£¬µ«ÊÇÎÒ²»ÖªµÀÌá¹©³öÀ´ÊÇ·ñÊÇºÃÊÂ,
     template< class T> int mgr_postframe_to_msgqueue(unsigned int cmd,
                                                      unsigned int qquin,
                                                      unsigned int trans_id,
@@ -251,7 +251,7 @@ public:
                                                      unsigned int option);
 
     //----------------------------------------------------------------------------------------------------------
-    //ç®¡ç†å™¨å‘é€ä¸€ä¸ªå‘½ä»¤ç»™ä¸€ä¸ªæœåŠ¡å™¨,å†…éƒ¨å‡½æ•°
+    //¹ÜÀíÆ÷·¢ËÍÒ»¸öÃüÁî¸øÒ»¸ö·şÎñÆ÷,ÄÚ²¿º¯Êı
     template< class T> int mgr_sendmsg_to_service(unsigned int cmd,
                                                   unsigned int qquin,
                                                   unsigned int trans_id,
@@ -263,7 +263,7 @@ public:
                                                   unsigned int app_id,
                                                   unsigned int option);
 
-    // å‘é€bufåˆ°æŸä¸ªservice, bufæ˜¯æ‰“å¥½çš„åŒ…ï¼Œæ»¡è¶³æŸäº›éœ€è¦è½¬å‘bufçš„éœ€æ±‚
+    // ·¢ËÍbufµ½Ä³¸öservice, bufÊÇ´òºÃµÄ°ü£¬Âú×ãÄ³Ğ©ĞèÒª×ª·¢bufµÄĞèÇó
     int mgr_sendbuf_to_service(unsigned int cmd,
                                unsigned int qquin,
                                unsigned int trans_id,
@@ -276,11 +276,11 @@ public:
                                unsigned int app_id,
                                unsigned int option);
 
-    //å‘é€ä¸€ä¸ªæ•°æ®åˆ°PIPE
-    int push_back_sendpipe(ZERG_FRAME_HEAD *proc_frame);
+    //·¢ËÍÒ»¸öÊı¾İµ½PIPE
+    int push_back_sendpipe(Zerg_App_Frame *proc_frame);
 
 protected:
-    //å‘é€ä¸€æ¶ˆæ¯å¤´ç»™ä¸€ä¸ªæœåŠ¡å™¨,å†…éƒ¨å‡½æ•°
+    //·¢ËÍÒ»ÏûÏ¢Í·¸øÒ»¸ö·şÎñÆ÷,ÄÚ²¿º¯Êı
     int mgr_sendmsghead_to_service(unsigned int cmd,
                                    unsigned int qquin,
                                    const SERVICES_ID &rcvsvc,
@@ -292,84 +292,84 @@ protected:
     //----------------------------------------------------------------------------------------------------------
 protected:
 
-    //å‘é€ä¸€ä¸ªæ•°æ®åˆ°QUEUE
-    int mgr_postframe_to_msgqueue(ZERG_FRAME_HEAD *post_frame);
+    //·¢ËÍÒ»¸öÊı¾İµ½QUEUE
+    int mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame);
 
-    //æ³¨å†ŒTransID.
+    //×¢²áTransID.
     int regiester_trans_id(unsigned int transid, unsigned int trans_cmd, Transaction_Base *ptxbase);
 
 private:
 
 public:
-    //ä¸ºäº†SingleTonç±»å‡†å¤‡
-    //å®ä¾‹èµ‹å€¼
+    //ÎªÁËSingleTonÀà×¼±¸
+    //ÊµÀı¸³Öµ
     static void instance(Transaction_Manager *);
-    //è·å¾—å®ä¾‹
+    //»ñµÃÊµÀı
     static Transaction_Manager *instance();
-    //æ¸…é™¤å®ä¾‹
+    //Çå³ıÊµÀı
     static void clean_instance();
 
 protected:
 
-    //ä¸€æ¬¡æœ€å¤§å¤„ç†çš„FRAMEä¸ªæ•°
+    //Ò»´Î×î´ó´¦ÀíµÄFRAME¸öÊı
     static const size_t MAX_ONCE_PROCESS_FRAME = 1024;
 
-    //æ± å­æ¯æ¬¡æ‰©å±•çš„äº‹åŠ¡ä¸ªæ•°
+    //³Ø×ÓÃ¿´ÎÀ©Õ¹µÄÊÂÎñ¸öÊı
     static const size_t POOL_EXTEND_TRANSACTION_NUM = 1024;
 
-    //å›æ”¶çš„é˜ˆå€¼
+    //»ØÊÕµÄãĞÖµ
     static const size_t RECYCLE_POOL_THRESHOLD_VALUE = 2048;
 
     static const size_t INIT_FRAME_MALLOC_NUMBER = 2048;
 
-    //QUEUE FRAMEé˜Ÿåˆ—çš„æ°´ä½æ ‡ï¼Œè€ƒè™‘å€’ç”±äºMessageQueueä¸­å¥–å­˜æ”¾çš„æ˜¯æŒ‡é’ˆï¼Œ
-    //ä½†æ˜¯é•¿åº¦åº”è¯¥åº”è¯¥æ˜¯æŒ‰ç…§APPFRAMEçš„å¸§å¤´è®¡ç®—çš„ã€‚è¿™ä¸ªæ•°é‡çº§åˆ«çš„é•¿åº¦å·²ç»ä¸å°äº†
-    static const size_t INNER_QUEUE_WATER_MARK = ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD * 102400;
+    //QUEUE FRAME¶ÓÁĞµÄË®Î»±ê£¬¿¼ÂÇµ¹ÓÉÓÚMessageQueueÖĞ½±´æ·ÅµÄÊÇÖ¸Õë£¬
+    //µ«ÊÇ³¤¶ÈÓ¦¸ÃÓ¦¸ÃÊÇ°´ÕÕAPPFRAMEµÄÖ¡Í·¼ÆËãµÄ¡£Õâ¸öÊıÁ¿¼¶±ğµÄ³¤¶ÈÒÑ¾­²»Ğ¡ÁË
+    static const size_t INNER_QUEUE_WATER_MARK = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD * 102400;
 
 protected:
 
-    //é”çš„æ± å­
+    //ËøµÄ³Ø×Ó
     INNER_TRANS_LOCK_POOL       trans_lock_pool_;
 
-    //æœ€å¤§çš„äº‹ä»¶ä¸ªæ•°
+    //×î´óµÄÊÂ¼ş¸öÊı
     size_t                      max_trans_;
 
 
-    //è‡ªå·±çš„Services Info
+    //×Ô¼ºµÄServices Info
     SERVICES_ID                 self_svc_id_;
 
-    //å…±äº«å†…å­˜çš„ç®¡é“
+    //¹²ÏíÄÚ´æµÄ¹ÜµÀ
     Soar_MMAP_BusPipe          *zerg_mmap_pipe_;
 
-    //ç»Ÿè®¡æ—¶é’Ÿ
+    //Í³¼ÆÊ±ÖÓ
     const ZCE_Time_Value       *statistics_clock_;
 
-    //å‘é€çš„ç¼“å†²åŒº
-    ZERG_FRAME_HEAD             *trans_send_buffer_;
-    //æ¥å—æ•°æ®ç¼“å†²åŒº
-    ZERG_FRAME_HEAD             *trans_recv_buffer_;
+    //·¢ËÍµÄ»º³åÇø
+    Zerg_App_Frame             *trans_send_buffer_;
+    //½ÓÊÜÊı¾İ»º³åÇø
+    Zerg_App_Frame             *trans_recv_buffer_;
 
-    // fakeæ•°æ®ç¼“å†²åŒº
-    ZERG_FRAME_HEAD             *fake_recv_buffer_;
+    // fakeÊı¾İ»º³åÇø
+    Zerg_App_Frame             *fake_recv_buffer_;
 
-    //å†…éƒ¨FRAMEåˆ†é…å™¨
+    //ÄÚ²¿FRAME·ÖÅäÆ÷
     INNER_APPFRAME_MALLOCOR    *inner_frame_malloc_;
-    //å†…éƒ¨FRAMEçš„é˜Ÿåˆ—
+    //ÄÚ²¿FRAMEµÄ¶ÓÁĞ
     INNER_FRAME_MESSAGE_QUEUE  *inner_message_queue_;
 
-    //ç»Ÿè®¡åˆ†æçš„ä¸€äº›å˜é‡
-    //äº§ç”Ÿäº‹åŠ¡çš„æ€»é‡è®°å½•
+    //Í³¼Æ·ÖÎöµÄÒ»Ğ©±äÁ¿
+    //²úÉúÊÂÎñµÄ×ÜÁ¿¼ÇÂ¼
     uint64_t                    gen_trans_counter_;
-    //ä¸€ä¸ªå‘¨æœŸå†…äº§ç”Ÿçš„äº‹åŠ¡æ€»æ•°
+    //Ò»¸öÖÜÆÚÄÚ²úÉúµÄÊÂÎñ×ÜÊı
     unsigned int                cycle_gentrans_counter_;
 
 protected:
-    //SingleTonçš„æŒ‡é’ˆ
+    //SingleTonµÄÖ¸Õë
     static Transaction_Manager *instance_;
 
 };
 
-//å‡è£…æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯ï¼Œè¿›è¡Œå¤„ç†,å‚æ•°å°‘çš„ç®€åŒ–ç‰ˆæœ¬
+//¼Ù×°ÊÕµ½Ò»¸öÏûÏ¢£¬½øĞĞ´¦Àí,²ÎÊıÉÙµÄ¼ò»¯°æ±¾
 template< class T>
 int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
                                                unsigned int qquin,
@@ -389,7 +389,7 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
                                  option);
 }
 
-//å‡è£…æ”¶åˆ°ä¸€ä¸ªæ¶ˆæ¯ï¼Œè¿›è¡Œå¤„ç†,å‚æ•°æœ‰ç‚¹å¤šï¼Œå»ºè®®ä½ ä½¿ç”¨çš„æ—¶å€™å†è¿›è¡Œä¸€æ¬¡å°è£…
+//¼Ù×°ÊÕµ½Ò»¸öÏûÏ¢£¬½øĞĞ´¦Àí,²ÎÊıÓĞµã¶à£¬½¨ÒéÄãÊ¹ÓÃµÄÊ±ºòÔÙ½øĞĞÒ»´Î·â×°
 template< class T>
 int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
                                                unsigned int qquin,
@@ -403,26 +403,26 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
 {
     int ret = 0;
 
-    ZERG_FRAME_HEAD *tmp_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(fake_recv_buffer_);
-    tmp_frame->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
+    Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(fake_recv_buffer_);
+    tmp_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_userid_ = qquin;
+    tmp_frame->frame_uid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
     tmp_frame->transaction_id_ = trans_id;
     tmp_frame->backfill_trans_id_ = backfill_trans_id;
-    tmp_frame->business_id_ = app_id;
+    tmp_frame->app_id_ = app_id;
 
-    ret = tmp_frame->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = tmp_frame->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0)
     {
         return ret;
     }
 
-    //å¤„ç†ä¸€ä¸ªæ”¶åˆ°çš„å‘½ä»¤ï¼Œ
+    //´¦ÀíÒ»¸öÊÕµ½µÄÃüÁî£¬
     bool crttx;
     ret = process_appframe(tmp_frame, crttx);
 
@@ -434,7 +434,7 @@ int Transaction_Manager::fake_receive_appframe(unsigned int cmd,
     return 0;
 }
 
-// recv_svrå¡«çš„æ˜¯è‡ªå·±ï¼Œå°±å‡è£…æ”¶åˆ°ä¸€ä¸ªåŒ…ï¼Œå¦‚å…¶åfake
+// recv_svrÌîµÄÊÇ×Ô¼º£¬¾Í¼Ù×°ÊÕµ½Ò»¸ö°ü£¬ÈçÆäÃûfake
 int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
                                                       unsigned int qquin,
                                                       unsigned int trans_id,
@@ -448,20 +448,20 @@ int Transaction_Manager::fake_receive_appframe_buffer(unsigned int cmd,
 {
     int ret = 0;
 
-    ZERG_FRAME_HEAD *tmp_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(fake_recv_buffer_);
-    tmp_frame->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
+    Zerg_App_Frame *tmp_frame = reinterpret_cast<Zerg_App_Frame *>(fake_recv_buffer_);
+    tmp_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_userid_ = qquin;
+    tmp_frame->frame_uid_ = qquin;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
     tmp_frame->transaction_id_ = trans_id;
     tmp_frame->backfill_trans_id_ = backfill_trans_id;
-    tmp_frame->business_id_ = app_id;
+    tmp_frame->app_id_ = app_id;
 
-    tmp_frame->frame_length_ = (unsigned int)(buff_size + ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD);
-    if (tmp_frame->frame_length_ > ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA)
+    tmp_frame->frame_length_ = (unsigned int)(buff_size + Zerg_App_Frame::LEN_OF_APPFRAME_HEAD);
+    if (tmp_frame->frame_length_ > Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
@@ -484,7 +484,7 @@ inline const SERVICES_ID *Transaction_Manager::self_svc_info()
     return &self_svc_id_;
 }
 
-//ç®¡ç†å™¨å‘é€ä¸€ä¸ªå‘½ä»¤ç»™ä¸€ä¸ªæœåŠ¡å™¨,å†…éƒ¨å‡½æ•°
+//¹ÜÀíÆ÷·¢ËÍÒ»¸öÃüÁî¸øÒ»¸ö·şÎñÆ÷,ÄÚ²¿º¯Êı
 template< class T>
 int Transaction_Manager::mgr_sendmsg_to_service(unsigned int cmd,
                                                 unsigned int qquin,
@@ -497,7 +497,7 @@ int Transaction_Manager::mgr_sendmsg_to_service(unsigned int cmd,
                                                 unsigned int app_id,
                                                 unsigned int option)
 {
-    //[æ³¨æ„]ä¸€ä¸‹è¿™ä¸ªåœ°æ–¹ï¼Œrecvå’Œsendå‚æ•°ä¸¤è¾¹çš„é¡ºåºæ˜¯åçš„
+    //[×¢Òâ]Ò»ÏÂÕâ¸öµØ·½£¬recvºÍsend²ÎÊıÁ½±ßµÄË³ĞòÊÇ·´µÄ
     return zerg_mmap_pipe_->pipe_sendmsg_to_service(cmd,
                                                     qquin,
                                                     trans_id,
@@ -510,7 +510,7 @@ int Transaction_Manager::mgr_sendmsg_to_service(unsigned int cmd,
                                                     option);
 }
 
-//Postä¸€ä¸ªFRAMEæ•°æ®åˆ°æ¶ˆæ¯é˜Ÿåˆ—ï¼Œå¯ä»¥ä¼ªé€ ä¸€äº›æ¶ˆæ¯ï¼Œä½†æ˜¯æˆ‘ä¸çŸ¥é“æä¾›å‡ºæ¥æ˜¯å¦æ˜¯å¥½äº‹
+//PostÒ»¸öFRAMEÊı¾İµ½ÏûÏ¢¶ÓÁĞ£¬¿ÉÒÔÎ±ÔìÒ»Ğ©ÏûÏ¢£¬µ«ÊÇÎÒ²»ÖªµÀÌá¹©³öÀ´ÊÇ·ñÊÇºÃÊÂ
 template< class T>
 int Transaction_Manager::mgr_postframe_to_msgqueue(
     unsigned int cmd,
@@ -524,28 +524,28 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     unsigned int app_id,
     unsigned int option)
 {
-    ZERG_FRAME_HEAD *rsp_msg = reinterpret_cast<ZERG_FRAME_HEAD *>(trans_send_buffer_);
-    rsp_msg->init_framehead(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME, option, cmd);
+    Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(trans_send_buffer_);
+    rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    rsp_msg->frame_userid_ = qquin;
+    rsp_msg->frame_uid_ = qquin;
     rsp_msg->transaction_id_ = trans_id;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
     rsp_msg->send_service_ = sndsvc;
 
-    //å¡«å†™è‡ªå·±transaction_id_,å…¶å®æ˜¯è‡ªå·±çš„äº‹åŠ¡ID,æ–¹ä¾¿å›æ¥å¯ä»¥æ‰¾åˆ°è‡ªå·±
+    //ÌîĞ´×Ô¼ºtransaction_id_,ÆäÊµÊÇ×Ô¼ºµÄÊÂÎñID,·½±ã»ØÀ´¿ÉÒÔÕÒµ½×Ô¼º
     rsp_msg->backfill_trans_id_ = backfill_trans_id;
-    rsp_msg->business_id_ = app_id;
+    rsp_msg->app_id_ = app_id;
 
-    //æ‹·è´å‘é€çš„MSG Block
-    int ret = rsp_msg->appdata_encode(ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME_DATA, info);
+    //¿½±´·¢ËÍµÄMSG Block
+    int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {
         return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
     }
 
-    //ç›¸ä¿¡è¿™ä¸ªé”ä¸ä¼šå æ®ä¸»å¾ªç¯
+    //ÏàĞÅÕâ¸öËø²»»áÕ¼¾İÖ÷Ñ­»·
     ret = mgr_postframe_to_msgqueue(rsp_msg);
     DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
 
@@ -558,7 +558,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(
     return 0;
 }
 
-//Postä¸€ä¸ªFRAMEæ•°æ®åˆ°æ¶ˆæ¯é˜Ÿåˆ—
+//PostÒ»¸öFRAMEÊı¾İµ½ÏûÏ¢¶ÓÁĞ
 template< class T>
 int Transaction_Manager::mgr_postframe_to_msgqueue(
     unsigned int cmd,

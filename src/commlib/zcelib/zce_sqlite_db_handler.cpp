@@ -3,13 +3,13 @@
 #include "zce_log_logging.h"
 #include "zce_sqlite_db_handler.h"
 
-//å¯¹äºSQLITEçš„æœ€ä½ç‰ˆæœ¬é™åˆ¶
+//¶ÔÓÚSQLITEµÄ×îµÍ°æ±¾ÏŞÖÆ
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 //=========================================================================================
 
 /******************************************************************************************
-SQLite3_DB_Handler SQLite3DB Handler è¿æ¥å¤„ç†ä¸€ä¸ªSQLite3æ•°æ®åº“çš„Handler
+SQLite3_DB_Handler SQLite3DB Handler Á¬½Ó´¦ÀíÒ»¸öSQLite3Êı¾İ¿âµÄHandler
 ******************************************************************************************/
 ZCE_SQLite_DB_Handler::ZCE_SQLite_DB_Handler():
     sqlite3_handler_(NULL)
@@ -21,8 +21,8 @@ ZCE_SQLite_DB_Handler::~ZCE_SQLite_DB_Handler()
     close_database();
 }
 
-//const char* db_file ,æ•°æ®åº“åç§°æ–‡ä»¶è·¯å¾„,æ¥å£è¦æ±‚UTF8ç¼–ç ï¼Œ
-//int == 0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
+//const char* db_file ,Êı¾İ¿âÃû³ÆÎÄ¼şÂ·¾¶,½Ó¿ÚÒªÇóUTF8±àÂë£¬
+//int == 0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
 int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
                                          bool read_only,
                                          bool create_db)
@@ -31,7 +31,7 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
     if (create_db)
     {
         flags |= SQLITE_OPEN_CREATE;
-        //ä¸èƒ½åŒæ—¶å­˜åœ¨
+        //²»ÄÜÍ¬Ê±´æÔÚ
         ZCE_ASSERT(read_only == false);
     }
 
@@ -59,13 +59,13 @@ int ZCE_SQLite_DB_Handler::open_database(const char *db_file,
 
 #if defined ZCE_OS_WINDOWS
 
-//ä»¥MBCSè·¯å¾„çš„æ‰“å¼€ä¸€ä¸ªDBæ–‡ä»¶
+//ÒÔMBCSÂ·¾¶µÄ´ò¿ªÒ»¸öDBÎÄ¼ş
 int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
                                              bool read_only,
                                              bool create_db)
 {
 
-    // Begin(æŠŠä¸€ä¸ªasciiç å­—ç¬¦è½¬æ¢æˆUTF-8)
+    // Begin(°ÑÒ»¸öasciiÂë×Ö·û×ª»»³ÉUTF-8)
 
     DWORD utf16_buffer_len = ::MultiByteToWideChar(CP_ACP, 0, db_file, -1, NULL, 0);
     if (utf16_buffer_len > MAX_PATH)
@@ -74,7 +74,7 @@ int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
     }
     wchar_t utf16_buffer[MAX_PATH + 1];
 
-    // ç¬¬ä¸€æ¬¡å…ˆæŠŠasciiç è½¬æ¢æˆUTF-16
+    // µÚÒ»´ÎÏÈ°ÑasciiÂë×ª»»³ÉUTF-16
     ::MultiByteToWideChar(CP_ACP, 0, db_file, -1, utf16_buffer, utf16_buffer_len);
 
     DWORD utf8_buffer_len = WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, NULL, 0, NULL, FALSE);
@@ -85,10 +85,10 @@ int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
 
     char utf8_buffer [MAX_PATH + 1];
 
-    // ç¬¬äºŒæ¬¡å†æŠŠUTF-16ç¼–ç è½¬æ¢ä¸ºUTF-8ç¼–ç 
+    // µÚ¶ş´ÎÔÙ°ÑUTF-16±àÂë×ª»»ÎªUTF-8±àÂë
     ::WideCharToMultiByte(CP_UTF8, NULL, utf16_buffer, -1, utf8_buffer, utf8_buffer_len, NULL, 0);
 
-    // End(æŠŠä¸€ä¸ªasciiç å­—ç¬¦è½¬æ¢æˆUTF-8)
+    // End(°ÑÒ»¸öasciiÂë×Ö·û×ª»»³ÉUTF-8)
 
 
     int ret = open_database(utf8_buffer,
@@ -106,7 +106,7 @@ int ZCE_SQLite_DB_Handler::open_mbcs_path_db(const char *db_file,
 #endif
 
 
-//å…³é—­æ•°æ®åº“ã€‚
+//¹Ø±ÕÊı¾İ¿â¡£
 void ZCE_SQLite_DB_Handler::close_database()
 {
     if (sqlite3_handler_)
@@ -116,37 +116,37 @@ void ZCE_SQLite_DB_Handler::close_database()
     }
 }
 
-//é”™è¯¯è¯­å¥Str
+//´íÎóÓï¾äStr
 const char *ZCE_SQLite_DB_Handler::error_message()
 {
     return ::sqlite3_errmsg(sqlite3_handler_);
 }
 
-//DBè¿”å›çš„é”™è¯¯ID
+//DB·µ»ØµÄ´íÎóID
 int ZCE_SQLite_DB_Handler::error_code()
 {
     return ::sqlite3_errcode(sqlite3_handler_);
 }
 
-//å¼€å§‹ä¸€ä¸ªäº‹åŠ¡
+//¿ªÊ¼Ò»¸öÊÂÎñ
 int ZCE_SQLite_DB_Handler::begin_transaction()
 {
     return execute("BEGIN TRANSACTION;");
 }
 
-//æäº¤ä¸€ä¸ªäº‹åŠ¡
+//Ìá½»Ò»¸öÊÂÎñ
 int ZCE_SQLite_DB_Handler::commit_transction()
 {
     return execute("COMMIT TRANSACTION;");
 }
 
-//å°†åŒæ­¥é€‰é¡¹å…³é—­ï¼Œå¯ä»¥é€‚å½“çš„æé«˜insertçš„é€Ÿåº¦ï¼Œä½†æ˜¯ä¸ºäº†å®‰å…¨èµ·è§ï¼Œå»ºè®®ä¸è¦ä½¿ç”¨
+//½«Í¬²½Ñ¡Ïî¹Ø±Õ£¬¿ÉÒÔÊÊµ±µÄÌá¸ßinsertµÄËÙ¶È£¬µ«ÊÇÎªÁË°²È«Æğ¼û£¬½¨Òé²»ÒªÊ¹ÓÃ
 int ZCE_SQLite_DB_Handler::turn_off_synch()
 {
     return execute("PRAGMA synchronous=OFF;");
 }
 
-//!æ‰§è¡ŒDDLç­‰ä¸éœ€è¦ç»“æœçš„SQL
+//!Ö´ĞĞDDLµÈ²»ĞèÒª½á¹ûµÄSQL
 int ZCE_SQLite_DB_Handler::execute(const char *sql_string)
 {
     int ret = 0;
@@ -172,7 +172,7 @@ int ZCE_SQLite_DB_Handler::execute(const char *sql_string)
 }
 
 
-//æ‰§è¡ŒSQL æŸ¥è¯¢ï¼Œå–å¾—ç»“æœ
+//Ö´ĞĞSQL ²éÑ¯£¬È¡µÃ½á¹û
 int ZCE_SQLite_DB_Handler::get_table(const char *sql_string,
                                      ZCE_SQLite_Result *result)
 {
@@ -204,7 +204,7 @@ ZCE_SQLite_Result::~ZCE_SQLite_Result()
 
 }
 
-//é‡Šæ”¾ç»“æœé›†åˆ
+//ÊÍ·Å½á¹û¼¯ºÏ
 void ZCE_SQLite_Result::free_result()
 {
     if (err_msg_)

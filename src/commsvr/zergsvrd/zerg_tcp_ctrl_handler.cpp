@@ -8,9 +8,9 @@
 /****************************************************************************************************
 class  TCP_Svc_Handler
 ****************************************************************************************************/
-//CONNECTéšåº£ç“‘å¯°å‘®æšŸé¹î†¾æ®‘ç“’å‘®æ¤‚éƒå •æ£¿
+//CONNECTºóµÈ´ıÊı¾İµÄ³¬Ê±Ê±¼ä
 unsigned int   TCP_Svc_Handler::accepted_timeout_ = 3;
-//éºãƒ¥å½ˆéç‰ˆåµé¨å‹®ç§´éƒèˆµæ¤‚é—‚ï¿½
+//½ÓÊÜÊı¾İµÄ³¬Ê±Ê±¼ä
 unsigned int   TCP_Svc_Handler::receive_timeout_ = 5;
 
 //TIME ID
@@ -22,18 +22,18 @@ Active_SvcHandle_Set TCP_Svc_Handler::svr_peer_info_set_;
 
 
 
-//æ©æ¬åŠ¹å¨Œâ„ƒæ¹æµ£è·¨æ•¤Singltoné¨å‹¬æŸŸå¯®å¿•æ®‘é˜ç†·æ´œæ¿¡å‚™ç¬…é”›ï¿½
-//1.é–«ç†·å®³ç»—îƒ¿ç«´é¨å‹¬ï¿½æ¿‡å…‚
-//2.é˜ç†¸æ½µå¨Œâ„ƒæ¹é¢â•¥nstance
+//Õâ¶ùÃ»ÓĞÊ¹ÓÃSingltonµÄ·½Ê½µÄÔ­ÒòÈçÏÂ£º
+//1.ËÙ¶ÈµÚÒ»µÄË¼Ïë
+//2.Ô­À´Ã»ÓĞÓÃinstance
 
 //
 ZBuffer_Storage  *TCP_Svc_Handler::zbuffer_storage_ = NULL;
-//é–«æ°«ä¿Šç» ï¼„æ‚Šé£ï¿½
+//Í¨ĞÅ¹ÜÀíÆ÷
 Zerg_Comm_Manager *TCP_Svc_Handler::zerg_comm_mgr_ = NULL;
 //
 Soar_Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
 
-//é‘·î„ç¹é„îˆšæƒé„îˆ™å”¬éï¿½
+//×Ô¼ºÊÇ·ñÊÇ´úÀí
 bool           TCP_Svc_Handler::if_proxy_ = false;
 
 //
@@ -42,35 +42,35 @@ size_t         TCP_Svc_Handler::num_accept_peer_ = 0;
 size_t         TCP_Svc_Handler::num_connect_peer_ = 0;
 
 
-//éˆï¿½æ¾¶Ñƒå½²æµ ãƒ¦å¸´é™æ¥ƒæ®‘éºãƒ¥å½ˆéä¼´å™º
+//×î´ó¿ÉÒÔ½ÓÊÜµÄ½ÓÊÜÊıÁ¿
 size_t         TCP_Svc_Handler::max_accept_svr_ = 0;
-//éˆï¿½æ¾¶Ñƒå½²æµ ãƒ¦å¸´é™æ¥ƒæ®‘æ©ç‚´å¸´éä¼´å™º
+//×î´ó¿ÉÒÔ½ÓÊÜµÄÁ¬½ÓÊıÁ¿
 size_t         TCP_Svc_Handler::max_connect_svr_ = 0;
 
-//ç€¹å½’å™ºé›å©…î„Ÿé—ƒå ï¿½ï¿½
+//ÈİÁ¿¸æ¾¯ãĞÖµ
 size_t         TCP_Svc_Handler::accpet_threshold_warn_ = 0;
-//å®¸èŒ¬ç²¡ç“’å‘°ç¹ƒé›å©…î„Ÿé—ƒå ï¿½è‚©æ®‘å¨†â„ƒæšŸ
+//ÒÑ¾­³¬¹ı¸æ¾¯ãĞÖµµÄ´ÎÊı
 size_t         TCP_Svc_Handler::threshold_warn_number_ = 0;
 
 //
 Zerg_Auto_Connector TCP_Svc_Handler::zerg_auto_connect_;
 
 
-//svc handleré¨å‹¬çœç€›ï¿½
+//svc handlerµÄ³Ø×Ó
 TCP_Svc_Handler::POOL_OF_TCP_HANDLER TCP_Svc_Handler::pool_of_acpthdl_;
-//svc handleré¨å‹¬çœç€›ï¿½
+//svc handlerµÄ³Ø×Ó
 TCP_Svc_Handler::POOL_OF_TCP_HANDLER TCP_Svc_Handler::pool_of_cnthdl_;
 
-//é™æˆ¦ï¿½ä½ºç´¦éæ’å°¯é¨å‹¬æ¸¶æ¾¶îœ¬rameéå¸®ç´æµ åº¨å¤ç¼ƒî†¿î‡°é™ï¿½
+//·¢ËÍ»º³åÇøµÄ×î´óframeÊı£¬´ÓÅäÖÃ¶ÁÈ¡
 size_t         TCP_Svc_Handler::accept_send_deque_size_ = 0;
 
-//æ¶“è¯²å§©æ©ç‚´å¸´é¨å‹«å½‚é–«ä¾€æ§¦é’æ¥…æš±æ´ï¿½
+//Ö÷¶¯Á¬½ÓµÄ·¢ËÍ¶ÓÁĞ³¤¶È
 size_t  TCP_Svc_Handler::connect_send_deque_size_ = 0;
 
 unsigned int  TCP_Svc_Handler::handler_id_builder_ = 0;
 
 
-//é‹å‹¯ï¿½çŠ²åš±éï¿½
+//¹¹Ôìº¯Êı
 TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     ZCE_Timer_Handler(ZCE_Timer_Queue_Base::instance()),
@@ -105,7 +105,7 @@ TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode) :
 }
 
 
-//é¢ã„¤ç°¬Accepté¨å‹­î¬é™ï½‡æ®‘æ¾¶å‹­æ‚ŠEvent Handleé’æ¿†îé–æ §î˜©éï¿½.
+//ÓÃÓÚAcceptµÄ¶Ë¿ÚµÄ´¦ÀíEvent Handle³õÊ¼»¯´¦Àí.
 void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
                                           const ZCE_Socket_Stream &sockstream,
                                           const ZCE_Sockaddr_In     &socketaddr)
@@ -127,7 +127,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     start_live_time_ = 0;
     tptoid_table_id_ = size_t(-1);
 
-    ////ç’‹å†©æš£Socket æ¶“ç¯›_NONBLOCK
+    ////µ÷ÕûSocket ÎªO_NONBLOCK
     int ret = socket_peer_.sock_enable(O_NONBLOCK);
 
     const size_t IP_ADDR_LEN = 32;
@@ -138,14 +138,14 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
             peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
             ret);
 
-    //éå î–ƒé”çŠºî…¸éæ¿æ«’éŠ†å‚ä¼©éå¶‡ç“‘æ¶“å¬ªå§é—‚î… æ®‘éƒè·ºï¿½æ¬å¼µ--æµœå—ï¿½ï¿½
+    //ÏÈÔö¼Ó¼ÆÊıÆ÷¡£±ÜÃâµÈÏÂ¹Ø±ÕµÄÊ±ºòÓÖ--ÁË¡£
     ++num_accept_peer_;
 
-    //å¦«ï¿½éŒãƒ¦æ¸¶æ¾¶Ñ‡æ‘¼éºãƒ¦æšŸé–²ï¿½,REACTORé‘·î„ç¹éè·ºç–„éˆå¤‹å¸¶é’ï¿½,æµ£å—˜æ§¸é´æˆå¼µç‘•ä½¹å¸¶é’ç¦”CCEPTé™å £î›¦éºÑƒåŸ—CONNECT.
-    //éµï¿½æµ ãƒ¥å½§æ¿‚ï¿½,æ¾¶ç¢­Xæ¾¶ï¿½, é™ï¹€î˜»æ©æ¬é‡œæµœå¬«å„éè·ºç–„æµ åº£æ‚Šç’è½°ç¬‚é‰ãƒ¨î†‰,é‘çŠ±ç®®æ¶“å¶„ç´°é™æˆ æ•“,
+    //¼ì²é×î´óÁ´½ÓÊıÁ¿,REACTOR×Ô¼ºÆäÊµÓĞ¿ØÖÆ,µ«ÊÇÎÒÓÖÒª¿ØÖÆACCEPTÓÖÒª¿ØÖÆCONNECT.
+    //ËùÒÔÖ»ºÃ,Í·XX´ó, ÁíÍâÕâ¸öÊÂÇéÆäÊµ´ÓÀíÂÛÉÏÀ´½²,¼¸ºõ²»»á·¢Éú,
     if (num_accept_peer_ <= max_accept_svr_)
     {
-        //ç¼Ñ…ç”»å¦«ï¿½éŒãƒ¦æ§¸éšï¸½æ¹é›å©…î„Ÿé—ƒå ï¿½ï¿½
+        //¼ÌĞø¼ì²éÊÇ·ñÓĞ¸æ¾¯ãĞÖµ
         if (num_accept_peer_ > accpet_threshold_warn_)
         {
             const size_t WARNNING_TIMES = 5;
@@ -159,11 +159,11 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
                         max_accept_svr_);
             }
 
-            //ç’æ¿ç¶é›å©…î„Ÿé¬ç»˜î‚¼éæ‰®æ®‘æ¾§ç‚²å§
+            //¼ÇÂ¼¸æ¾¯×Ü´ÎÊıµÄÔö¼Ó
             ++threshold_warn_number_;
         }
 
-        //å¨‰ã„¥å”½ç’‡è¯²å•“æµœå¬©æ¬¢
+        //×¢²á¶ÁĞ´ÊÂ¼ş
         ret = reactor()->register_handler(this,
                                           ZCE_Event_Handler::READ_MASK | ZCE_Event_Handler::WRITE_MASK);
 
@@ -182,11 +182,11 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
         reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
-        //ç¼ç†»î…¸
+        //Í³¼Æ
         server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0, 0, static_cast<int>(num_accept_peer_));
         server_status_->increase_by_statid(ZERG_ACCEPT_PEER_COUNTER, 0, 0, 1);
     }
-    //ç‘•ä½¹ç¥´ç’‡æ›Ÿî—…éŒãƒ¤ç«´æ¶“ï¿½,
+    //Òª²âÊÔ¼ì²éÒ»ÏÂ,
     else
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] Peer [%s] great than max_accept_svr_ Reject! num_accept_peer_:%u,max_accept_svr_:%u .",
@@ -197,7 +197,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
         return;
     }
 
-    //æ¿¡å‚›ç‰é–°å¶‡ç–†æµœå—šç§´éƒè·ºåš­é‰ï¿½,Nç»‰æ‘ç¹€æ¤¤ç»˜æ•¹é’é¢ç«´æ¶“î„å¯˜
+    //Èç¹ûÅäÖÃÁË³¬Ê±³öÀ´,NÃë±ØĞëÊÕµ½Ò»¸ö°ü
 
     ZCE_Time_Value delay(0, 0);
     ZCE_Time_Value interval(0, 0);
@@ -209,14 +209,14 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     timeout_time_id_ = timer_queue()->schedule_timer(this, &TCPCTRL_TIME_ID[0], delay, interval);
 
 
-    //æ·‡æ¿‡æ¤¿
+    //±£»î
     int keep_alive = 1;
     socklen_t opvallen = sizeof(int);
     socket_peer_.setsockopt(SOL_SOCKET, SO_KEEPALIVE, reinterpret_cast<void *>(&keep_alive), opvallen);
 
-    //æ©æ¬åŠ¹é¦ç‰ˆæŸŸç€µè‰°åš§æ©å›¦ç«´æ¶“ç‹ŸUGé”›å±½æ°¨é„îˆšî…¹é´é£î¬é€æœµç¬‰é’ç‰ˆæšŸé¹î‡†ç´éµï¿½æµ ãƒ¨ç¹–æ¶“îˆï¿½å¤ã€æ©æ¨¹ç¬‰é–«å‚šæ‚é¦ã„¨ç¹–æ¶“î…æ¹‡é”â€³æ«’æµ£è·¨æ•¤éŠ†å‚šæ‡™é›ç‚¹ï¿½ï¿½
-    //æ©æ¬é‡œé–«å¤ã€é„îˆ™ç¹šç’‡ä½·å¯Œé”ã„¥å§é—‚î… æ®‘éƒè·ºï¿½æ¬™ç´æ¶“å¶‡æ•¤ç»›å¤Šç·Ÿçå—˜æšŸé¹î†¼å½‚é–«ä½ºç²°ç€µè§„æŸŸ,
-    //æ©æ¬î†Œæ¶“æ»†ã‚¿å¯®ï¿½æ©å›¦è¢±å¨†â˜…ç´æµ£å—•ç¯ƒéæŠ½æ£´æµœå—•è¢±å¨†â˜…ç´é´æˆ£ç¹•é„îˆ™åŠç’â„ƒæ¹æ¶“ï¿½æµœæ¶šç²é‘ºå‚›åœå¨Œâ„ƒæ¹å¯®å‹¬æ§‘é§å§ï¿½ï¿½
+    //Õâ¶ùµØ·½µ¼ÖÂ¹ıÒ»¸öBUG£¬¾ÍÊÇ¿Í»§¶ËÊÕ²»µ½Êı¾İ£¬ËùÒÔÕâ¸öÑ¡Ïî»¹²»ÊÊºÏÔÚÕâ¸ö·şÎñÆ÷Ê¹ÓÃ¡£ºÇºÇ¡£
+    //Õâ¸öÑ¡ÏîÊÇ±£Ö¤Ö÷¶¯¹Ø±ÕµÄÊ±ºò£¬²»ÓÃµÈ´ı½«Êı¾İ·¢ËÍ¸ø¶Ô·½,
+    //Õâ¶Î¶«Î÷¿ª¹ıÁ½´Î£¬µ«Ò²¹Ø±ÕÁËÁ½´Î£¬ÎÒ»¹ÊÇ¹À¼ÆÓĞÒ»Ğ©Ï¸½ÚÎÒÃ»ÓĞÅªÃ÷°×¡£
     //struct linger sock_linger = {1, 30};
     //sock_linger.l_onoff = 1;
     //sock_linger.l_linger = 30;
@@ -235,7 +235,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
 
 
-//æ¶“è¯²å§©CONNETé–¾ç‚¬å¸´é‘å“„å¹“é¨å‡¥ANDLERé”›å±½î‡®æ´æ“¡vent Handleé¨å‹«åµæ¿®å¬ªå¯².
+//Ö÷¶¯CONNETÁ´½Ó³öÈ¥µÄHANDLER£¬¶ÔÓ¦Event HandleµÄ³õÊ¼»¯.
 void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
                                           const SERVICES_ID &peer_svrinfo,
                                           const ZCE_Socket_Stream &sockstream,
@@ -258,7 +258,7 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
     start_live_time_ = 0;
     tptoid_table_id_ = size_t(-1);
 
-    //ç’‹å†©æš£Socket æ¶“ç¯ˆCE_NONBLOCK
+    //µ÷ÕûSocket ÎªACE_NONBLOCK
     int ret = socket_peer_.sock_enable(O_NONBLOCK);
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -272,10 +272,10 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
     snd_buffer_deque_.initialize(connect_send_deque_size_);
 
-    //å¨‰ã„¥å”½é’ï¿½
+    //×¢²áµ½
     ret = reactor()->register_handler(this, ZCE_Event_Handler::CONNECT_MASK);
 
-    //é´æˆåš‘æ¶”åº¢ç—…éˆå¤î†æ©å™egister_handleræ¾¶è¾«è§¦,
+    //ÎÒ¼¸ºõÃ»ÓĞ¼û¹ıregister_handlerÊ§°Ü,
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "[zergsvr] Register services [%u|%u] IP[%s]  connect handler fail! ret =%d  errno=%d|%s .",
@@ -289,10 +289,10 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
         return;
     }
 
-    //é€æƒ§å†æ©ç‚´å¸´æ¾¶å‹­æ‚Šé¨å‡ªAP
+    //·ÅÈëÁ¬½Ó´¦ÀíµÄMAP
     ret = svr_peer_info_set_.add_services_peerinfo(peer_svr_id_, this);
 
-    //é¦ã„¨ç¹–éèƒ¯åšœé‰ï¿½é„îˆ™ç¬‰é„îˆšåµ„é—„â•€ç°¡æ¶“ï¿½éï¿½
+    //ÔÚÕâ¶ù×ÔÉ±ÊÇ²»ÊÇÎ£ÏÕÁËÒ»µã
     if (ret != 0)
     {
         handle_close();
@@ -306,19 +306,19 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
 
     timeout_time_id_ = timer_queue()->schedule_timer(this, &TCPCTRL_TIME_ID[0], delay, interval);
 
-    //ç¼ç†»î…¸
+    //Í³¼Æ
     server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER, 0, 0, num_connect_peer_);
     server_status_->increase_by_statid(ZERG_CONNECT_PEER_COUNTER, 0, 0, 1);
 
-    //SO_RCVBUFé”›å­²O_SNDBUFé”›å±¾å¯œé“îœ›NPv1é¨å‹®î†‰ç‘™ï½ç´æ´æ—‡î‡šé¦â•Ÿonnectæ¶”å¬ªå¢ ç’å‰§ç–†é”›å²ƒæ«§é’èˆµåœé¨å‹¬ç¥´ç’‡æ›¡ç˜‰é„åº¯ç´é€æƒ§æ¹ªæ©æ¬åŠ¹ç’å‰§ç–†æ¶”ç†·å½²æµ ãƒ£ï¿½ï¿½
+    //SO_RCVBUF£¬SO_SNDBUF£¬°´ÕÕUNPv1µÄ½²½â£¬Ó¦¸ÃÔÚconnectÖ®Ç°ÉèÖÃ£¬ËäÈ»ÎÒµÄ²âÊÔÖ¤Ã÷£¬·ÅÔÚÕâ¶ùÉèÖÃÒ²¿ÉÒÔ¡£
 
     int keep_alive = 1;
     socklen_t opvallen = sizeof(int);
     socket_peer_.setsockopt(SOL_SOCKET, SO_KEEPALIVE, reinterpret_cast<void *>(&keep_alive), opvallen);
 
-    //Win32æ¶“å¬«ç—…éˆå¤ç¹–æ¶“îˆï¿½å¤ã€
+    //Win32ÏÂÃ»ÓĞÕâ¸öÑ¡Ïî
 #ifndef ZCE_OS_WINDOWS
-    //é–¬å®å¤DELAYé™æˆ¦ï¿½ä½½ç¹–ç»‰å¶†å„éï¿½
+    //±ÜÃâDELAY·¢ËÍÕâÖÖÇé¿ö
     int NODELAY = 1;
     opvallen = sizeof(int);
     socket_peer_.setsockopt(SOL_TCP, TCP_NODELAY, reinterpret_cast<void *>(&NODELAY), opvallen);
@@ -339,45 +339,45 @@ TCP_Svc_Handler::~TCP_Svc_Handler()
 }
 
 
-//æµ åº¨å¤ç¼ƒî†½æƒæµ æƒ°î‡°é™æ ­å¤ç¼ƒî†»ä¿Šé­ï¿½
+//´ÓÅäÖÃÎÄ¼ş¶ÁÈ¡ÅäÖÃĞÅÏ¢
 int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
 
     //unsigned int tmp_uint = 0 ;
-    //æµ å¶¤ONNECTé’ç‰ˆæ•¹é’ç‰ˆæšŸé¹î†¾æ®‘éƒå •æš±
+    //´ÓCONNECTµ½ÊÕµ½Êı¾İµÄÊ±³¤
     accepted_timeout_ = config->zerg_cfg_data_.accepted_timeout_;
 
 
-    //RECEIVEæ¶“ï¿½æ¶“î…æšŸé¹î†¾æ®‘ç“’å‘®æ¤‚éƒå •æ£¿,æ¶“ï¿½0ç›ã„§ãšæ¶“å¶‰æªºé’ï¿½
+    //RECEIVEÒ»¸öÊı¾İµÄ³¬Ê±Ê±¼ä,Îª0±íÊ¾²»ÏŞÖÆ
     receive_timeout_ = config->zerg_cfg_data_.receive_timeout_;
 
 
-    //é„îˆšæƒé„îˆ™ç«´æ¶“îƒå”¬éå—˜æ¹‡é”ï¿½,æµ ï½‡æ‚Šé¨å‹«å½‚é–«ä½½î”‘æ¶“å“„æ‹°é…î‡€ï¿½æ°­æ¹‡é”â€³æ«’æ¶“å¶„ç«´éï¿½.
+    //ÊÇ·ñÊÇÒ»¸ö´úÀí·şÎñ,´úÀíµÄ·¢ËÍĞĞÎªºÍÆÕÍ¨·şÎñÆ÷²»Ò»Ñù.
     if_proxy_ = config->zerg_cfg_data_.is_proxy_;
 
 
-    //éˆï¿½æ¾¶Ñ…æ®‘é–¾ç‚¬å¸´é´æˆ æ®‘,é´æˆ¦æ‘¼éºãƒ¥åš­é˜è¤æ®‘éˆå¶…å§Ÿé£ã„¤é‡œéï¿½
+    //×î´óµÄÁ´½ÓÎÒµÄ,ÎÒÁ´½Ó³öÈ¥µÄ·şÎñÆ÷¸öÊı
     max_accept_svr_ = config->zerg_cfg_data_.max_accept_svr_;
     max_connect_svr_ = config->zerg_cfg_data_.auto_connect_num_;
 
 
-    //ç€¹å½’å™ºé›å©…î„Ÿé—ƒå ï¿½ï¿½
+    //ÈİÁ¿¸æ¾¯ãĞÖµ
     accpet_threshold_warn_ = static_cast<size_t> (max_accept_svr_ * 0.8);
     ZCE_LOG(RS_INFO, "[zergsvr] Max accept svr number :%u,accept warn threshold number:%u. ",
             max_accept_svr_,
             accpet_threshold_warn_);
 
 
-    //é™æˆ¦ï¿½ä½ºç´¦éæ’å°¯é¨å‹¬æ¸¶æ¾¶îœ¬rameéï¿½
+    //·¢ËÍ»º³åÇøµÄ×î´óframeÊı
     accept_send_deque_size_ = config->zerg_cfg_data_.acpt_send_deque_size_;
 
-    //æ¶“è¯²å§©æ©ç‚´å¸´é¨å‹«å½‚é–«ä¾€æ§¦é’æ¥…æš±æ´ï¿½
+    //Ö÷¶¯Á¬½ÓµÄ·¢ËÍ¶ÓÁĞ³¤¶È
     connect_send_deque_size_ = config->zerg_cfg_data_.cnnt_send_deque_size_;
     ZCE_LOG(RS_INFO, "[zergsvr] conncet send deque size :%u ,accept send deque size :%u",
             connect_send_deque_size_, accept_send_deque_size_);
 
-    //å¯°æ¥€åŸŒæ©ç‚´å¸´é¨å‡·ERVERé¨å‹¯å¤ç¼ƒï¿½
+    //µÃµ½Á¬½ÓµÄSERVERµÄÅäÖÃ
     ret = zerg_auto_connect_.get_config(config);
 
     if (ret != 0)
@@ -391,27 +391,27 @@ int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
 
 
 
-//çå—›æ¸¶ç‘•ä½¸åµæ¿®å¬ªå¯²é¨å‹¯æ½¤é¬ä½¸å¼¬éæ¿åµæ¿®å¬ªå¯²
-//æ¶“ï¿½æµœæ¶˜å¼¬éé¢ç² é–°å¶‡ç–†ç»«æ˜î‡°é™ï¿½,é–¬å®å¤éšåº¨æ½°é¨å‹¬æ·æµ£æ»†ç¹•ç‘•ä½½î†–é—‚î‡€å¤ç¼ƒî†¾è¢«
+//½«ĞèÒª³õÊ¼»¯µÄ¾²Ì¬²ÎÊı³õÊ¼»¯
+//Ò»Ğ©²ÎÊı´ÓÅäÖÃÀà¶ÁÈ¡,±ÜÃâºóÃæµÄ²Ù×÷»¹Òª·ÃÎÊÅäÖÃÀà
 int TCP_Svc_Handler::init_all_static_data()
 {
     //
     //int ret = 0;
     //
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
-    //é‘·î„ç¹é¨å‹¬æ¹‡é”ï¼„æ®‘ç»«è¯²ç€·,éˆå¶…å§Ÿç¼‚æ §å½¿,APPID
+    //×Ô¼ºµÄ·şÎñµÄÀàĞÍ,·şÎñ±àºÅ,APPID
     //
     zbuffer_storage_ = ZBuffer_Storage::instance();
 
-    //éˆå¶…å§Ÿé£ã„§æ®‘ç¼ç†»î…¸é¿å¶„ç¶”ç€¹ç‚°ç·¥
+    //·şÎñÆ÷µÄÍ³¼Æ²Ù×÷ÊµÀı
     server_status_ = Soar_Stat_Monitor::instance();
 
 
-    //éˆï¿½æ¾¶Ñ†î›¦é–¾ç‚¬å¸´éä¼´å™ºç»›å¤‰ç°¬é‘·î„å§©é–¾ç‚¬å¸´éˆå¶…å§Ÿé¨å‹¬æšŸé–²ï¿½,æ¾§ç‚²å§16æ¶“ï¿½
+    //×î´óÒªÁ´½ÓÊıÁ¿µÈÓÚ×Ô¶¯Á´½Ó·şÎñµÄÊıÁ¿,Ôö¼Ó16¸ö
 
     ZCE_LOG(RS_INFO, "[zergsvr] MaxAcceptSvr:%u MaxConnectSvr:%u.", max_accept_svr_, max_connect_svr_);
 
-    //æ¶“ç¯ŠONNECTé¨å‡¥DLæ£°å‹«å›é’å—›å¤éå‘­ç“¨é”›å±¾åšæ¶“è½°ç«´æ¶“î…çœç€›ï¿½
+    //ÎªCONNECTµÄHDLÔ¤ÏÈ·ÖÅäÄÚ´æ£¬³ÉÎªÒ»¸ö³Ø×Ó
     ZCE_LOG(RS_INFO, "[zergsvr] Connet Hanlder:size of TCP_Svc_Handler [%u],one connect handler have deqeue length [%u],number of connect handler [%u]."
             "About need  memory [%u] bytes.",
             sizeof(TCP_Svc_Handler),
@@ -427,7 +427,7 @@ int TCP_Svc_Handler::init_all_static_data()
         pool_of_cnthdl_.push_back(p_handler);
     }
 
-    //æ¶“ç¯ˆCCEPTé¨å‡¥DLæ£°å‹«å›é’å—›å¤éå‘­ç“¨é”›å±¾åšæ¶“è½°ç«´æ¶“î…çœç€›ï¿½
+    //ÎªACCEPTµÄHDLÔ¤ÏÈ·ÖÅäÄÚ´æ£¬³ÉÎªÒ»¸ö³Ø×Ó
     ZCE_LOG(RS_INFO, "[zergsvr] Accept Hanlder:size of TCP_Svc_Handler [%u],one accept handler have deqeue length [%u],number of accept handler [%u]."
             "About need  memory [%u] bytes.",
             sizeof(TCP_Svc_Handler),
@@ -443,23 +443,23 @@ int TCP_Svc_Handler::init_all_static_data()
         pool_of_acpthdl_.push_back(p_handler);
     }
 
-    //æ¶”ç†»î†é¶å©…ç¹–æ¶“î…å¢¿çæ›šç«´æµœæ¶™ç˜®æˆå†©æ™¥éœå›§ã‚½éŠ†ï¿½
+    //Ò²Ğí°ÑÕâ¸öÀ©Õ¹Ò»Ğ©±È½ÏĞ§ÂÊºÃ¡£
     svr_peer_info_set_.initialize(max_accept_svr_ + max_connect_svr_ + 1024);
 
-    //æ©ç‚´å¸´éµï¿½éˆå¤Œæ®‘SERVER
+    //Á¬½ÓËùÓĞµÄSERVER
     size_t szsucc = 0, szfail = 0, szvalid = 0;
     zerg_auto_connect_.reconnect_allserver(szvalid, szsucc, szfail);
 
     return 0;
 }
 
-//é™æ §ç·±é™ãƒ¦ç„º
+//È¡µÃ¾ä±ú
 ZCE_HANDLE TCP_Svc_Handler::get_handle(void) const
 {
     return (ZCE_HANDLE)socket_peer_.get_handle();
 }
 
-//é‘¾å³°ç·±æ¶“ï¿½æ¶“î…æš£é¨å¬¬æ®‘handle
+//»ñµÃÒ»¸öÕûĞÍµÄhandle
 unsigned int TCP_Svc_Handler::get_handle_id()
 {
 #if defined ZCE_OS_WINDOWS
@@ -479,10 +479,10 @@ unsigned int TCP_Svc_Handler::get_handle_id()
 }
 
 
-//ç’‡è¯²å½‡,é‚î…¡ç¹›é¨å‹ªç°¨æµ æƒ°Ğ•é™æˆî˜©éå——åš±éï¿½
+//¶ÁÈ¡,¶ÏÁ¬µÄÊÂ¼ş´¥·¢´¦Àíº¯Êı
 int TCP_Svc_Handler::handle_input()
 {
-    //ç’‡è¯²å½‡éç‰ˆåµ
+    //¶ÁÈ¡Êı¾İ
     size_t szrecv;
     int ret = read_data_from_peer(szrecv);
 
@@ -495,19 +495,17 @@ int TCP_Svc_Handler::handle_input()
                      peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                      ret,
                      szrecv);
-    ZCE_UNUSED_ARG(ip_addr_str);
-    ZCE_UNUSED_ARG(use_len);
 
-    //æ©æ¬åŠ¹æµ è®³ç¶é–¿æ¬’î‡¤é–®è—‰å§é—‚ï¿½,
+    //Õâ¶ùÈÎºÎ´íÎó¶¼¹Ø±Õ,
     if (ret != 0)
     {
         return -1;
     }
 
-    //çå—˜æšŸé¹î†½æ–éãƒ¦å¸´é€å‰æ®‘ç» ï¿ äº¾,æ©æ¬åŠ¹æ©æ–¿æ´–é¨å‹¯æ•Šç’‡îˆšç°²ç’‡ãƒ©å…˜é„îˆî•©æ¾¶å‹­æ‚Šé¨å‹¯æ•Šç’‡ï¿½,é€æƒ§å†ç» ï¿ äº¾é¨å‹¯æ•Šç’‡îˆšç°²ç’‡ãƒ¤ç¬‰æµ¼æ°«ç¬‚é—ï¿½
+    //½«Êı¾İ·ÅÈë½ÓÊÕµÄ¹ÜµÀ,Õâ¶ù·µ»ØµÄ´íÎóÓ¦¸Ã¶¼ÊÇÔ¤´¦ÀíµÄ´íÎó,·ÅÈë¹ÜµÀµÄ´íÎóÓ¦¸Ã²»»áÉÏÉı
     ret = push_frame_to_comm_mgr();
 
-    //æ©æ¬åŠ¹æµ è®³ç¶é–¿æ¬’î‡¤é–®è—‰å§é—‚ï¿½,
+    //Õâ¶ùÈÎºÎ´íÎó¶¼¹Ø±Õ,
     if (ret != 0)
     {
         return -1;
@@ -519,14 +517,14 @@ int TCP_Svc_Handler::handle_input()
 
 
 
-//ç’‡è¯²å½‡,é‚î…¡ç¹›é¨å‹ªç°¨æµ æƒ°Ğ•é™æˆî˜©éå——åš±éï¿½
+//¶ÁÈ¡,¶ÏÁ¬µÄÊÂ¼ş´¥·¢´¦Àíº¯Êı
 int TCP_Svc_Handler::handle_output()
 {
 
-    //æ¿¡å‚›ç‰NON BLOCK Connecté´æ„¬å§›,æ¶”ç†¶ç´°ç’‹å†ªæ•¤handle_output
+    //Èç¹ûNON BLOCK Connect³É¹¦,Ò²»áµ÷ÓÃhandle_output
     if (PEER_STATUS_NOACTIVE == peer_status_)
     {
-        //æ¾¶å‹­æ‚Šæ©ç‚´å¸´éšåº£æ®‘æµœå¬ªç–
+        //´¦ÀíÁ¬½ÓºóµÄÊÂÒË
         process_connect_register();
 
         return 0;
@@ -538,9 +536,9 @@ int TCP_Svc_Handler::handle_output()
     if (0 != ret)
     {
         //
-        //æ¶“è½°ç²ˆæ¶”å Ÿåœæ¶“å¶…î˜©éå—›æ•Šç’‡îˆšæ†¿,æ¶“å³³eturn -1,é¥çŠ±è´Ÿæ¿¡å‚›ç‰é–¿æ¬’î‡¤æµ¼æ°¬å§é—‚ç’–ocket,handle_inputçå—šî¦ç’‹å†ªæ•¤,æ©æ¬åŠ¹æ¶“å¶‰å™¸æ¾¶å¶…î˜©éï¿½
-        //æ¿¡å‚›ç‰é„îˆ™è…‘é‚î… ç“‘é–¿æ¬’î‡¤,ç»‹å¬ªç°­é™îˆ™äº’ç¼Ñ…ç”»é¨ï¿½.
-        //éšåº¢æ½µæ¶“å“„æšé™å Ÿæ•¼é´æ„ªç°¡return -1,é”çŠ²æ©æ¾¶å‹­æ‚Š?è¹‡æ¨¿î†‡è¹‡æ¨¿î†‡æµœå—ï¿½å‚šç°²ç’‡ãƒ¥å•“å¨‰ã„©å™´é›ï¿½éŠ†ï¿½
+        //ÎªÊ²Ã´ÎÒ²»´¦Àí´íÎóÄØ,²»return -1,ÒòÎªÈç¹û´íÎó»á¹Ø±ÕSocket,handle_input½«±»µ÷ÓÃ,Õâ¶ù²»ÖØ¸´´¦Àí
+        //Èç¹ûÊÇÖĞ¶ÏµÈ´íÎó,³ÌĞò¿ÉÒÔ¼ÌĞøµÄ.
+        //ºóÀ´ÎªÉ¶ÓÖ¸Ä³ÉÁËreturn -1,¼Ó¿ì´¦Àí?Íü¼ÇÍü¼ÇÁË¡£Ó¦¸ÃĞ´×¢ÊÍÑ½¡£
         return -1;
     }
 
@@ -549,25 +547,25 @@ int TCP_Svc_Handler::handle_output()
 
 
 
-//ç€¹æ°­æ¤‚é£ã„¨Ğ•é™ï¿½
+//¶¨Ê±Æ÷´¥·¢
 int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *arg)
 {
     const int timeid = *(static_cast<const int *>(arg));
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //æ©ç‚´å¸´æ¶“å¥›ç»‰æç´é´æ ¬ï¿½å‘®å¸´é™æ¤¾ç°¡Mç»‰ï¿½
+    //Á¬½ÓÉÏNÃë£¬»òÕß½ÓÊÜÁËMÃë
     if (TCPCTRL_TIME_ID[0] == timeid)
     {
-        //æ¿¡å‚›ç‰éˆå¤Šå½ˆé’ç‰ˆæšŸé¹î‡†ç´é–­ï½„ç®æµ ï¿½æ¶”å œç¯ƒæ¶“å¶…ä»›
+        //Èç¹ûÓĞÊÜµ½Êı¾İ£¬ÄÇÃ´Ê²Ã´Ò²²»×ö
         if (receive_times_ > 0)
         {
             receive_times_ = 0;
         }
-        //æ¿¡å‚›ç‰å¨Œâ„ƒæ¹é€è·ºåŸŒéç‰ˆåµ,ç’ºè™«ã‚¼é‘·î…æ½ƒ
+        //Èç¹ûÃ»ÓĞÊÕµ½Êı¾İ,ÌøÂ¥×ÔÉ±
         else
         {
-            //æ¿¡å‚›ç‰é„îˆœæ´ƒéšî„‚æ®‘ç»”îˆšå½›é”›å²ƒï¿½å±¼ç¬–éˆå¤Œæµ‰æ´æ—‚æ®‘ç“’å‘®æ¤‚é’ã‚†æŸ‡
+            //Èç¹ûÊÇ¼àÌıµÄ¶Ë¿Ú£¬¶øÇÒÓĞÏàÓ¦µÄ³¬Ê±ÅĞ¶Ï
             if (HANDLER_MODE_ACCEPTED == handler_mode_ &&
                 ((0 == start_live_time_ && 0 < accepted_timeout_) ||
                  (0 < start_live_time_ && 0 < receive_timeout_)))
@@ -581,19 +579,19 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
                         now_time.sec() - start_live_time_,
                         receive_times_);
 
-                //é¦ã„¨ç¹–éè·¨æ´¿éºãƒ¨çšŸé¢â•¤andle_close
+                //ÔÚÕâ¶ùÖ±½Óµ÷ÓÃhandle_close
                 handle_close();
                 return 0;
             }
         }
 
-        //ç»—îƒ¿ç«´å¨†â€²å¨‡é¢ã„§æ®‘é„ç—‘ccepted_timeout_
+        //µÚÒ»´ÎÊ¹ÓÃµÄÊÇaccepted_timeout_
         if (0 == start_live_time_)
         {
             start_live_time_ = now_time.sec();
         }
 
-        //éµæ’³åµƒæ¶“ï¿½æ¶“å¬ªæ‚‡æ¶“î†î¬é™ï½‡æ®‘é¢ç†·ç“¨æ·‡â„ƒä¼…
+        //´òÓ¡Ò»ÏÂ¸÷¸ö¶Ë¿ÚµÄÉú´æĞÅÏ¢
         ZCE_LOG(RS_DEBUG, "[zergsvr] Connect or receive expire event,peer services [%u|%u] IP[%s] live "
                 "time %lu. recieve times=%u.",
                 peer_svr_id_.services_type_,
@@ -602,7 +600,7 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
                 now_time.sec() - start_live_time_,
                 receive_times_);
 
-        //æ©æ¬‘è¢«ç¼ç†»î…¸æ¿¡å‚›ç‰æ©å›¦ç°¬æ£°æˆ ç®’è¤°åæ·ç»‹å¬ªç°­é¨å‹®ç¹ç›ï¿½,éµï¿½æµ ãƒ¦æ–éãƒ¥ç•¾éƒè·ºæ«’æµ£ï¿½,é“ç•ŒåŠ§æµ¼æ°­åŠ…ç‘™å¤‰ç¬‰é„îˆšãŠé‘å—™â€˜,æµ£å—˜æ§¸é¬Ñ†å…˜æµ¼æ¨ºå›
+        //ÕâÀàÍ³¼ÆÈç¹û¹ıÓÚÆµ·±Ó°Ïì³ÌĞòµÄÔËĞĞ,ËùÒÔ·ÅÈë¶¨Ê±Æ÷×÷,ËäÈ»»á¸Ğ¾õ²»ÊÇÌ«×¼È·,µ«ÊÇĞÔÄÜÓÅÏÈ
         server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER, 0, 0, recieve_counter_);
         server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER, 0, 0, send_counter_);
         server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER, 0, 0, send_bytes_);
@@ -621,17 +619,17 @@ int TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &now_time, const void *a
 }
 
 
-//PEER Event HandleréæŠ½æ£´é¨å‹«î˜©éï¿½
+//PEER Event Handler¹Ø±ÕµÄ´¦Àí
 int TCP_Svc_Handler::handle_close()
 {
     ZCE_LOG(RS_DEBUG, "[zergsvr] TCP_Svc_Handler::handle_close : %u.%u.",
             peer_svr_id_.services_type_, peer_svr_id_.services_id_);
 
-    //æ¶“å¶ˆî›¦æµ£è·¨æ•¤cancel_timer(this),éå‰ç®’éï¿½,é‘°å±¼ç¬–é±ï¿½,æ¿‚å€Ÿî›¦new,é‘°å±¼ç¬–éˆå¤‰ç«´æ¶“îƒç¬‰é­ãƒ¥æ‚•é¨å‹¬î„´éˆï¿½
+    //²»ÒªÊ¹ÓÃcancel_timer(this),Æä·±Ëö,¶øÇÒÂı,ºÃÒªnew,¶øÇÒÓĞÒ»¸ö²»ÖªÃûµÄËÀ»ú
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //é™æ ¨ç§·å§î—«vent Handleré©ç¨¿å§é¨å‹«ç•¾éƒè·ºæ«’
+    //È¡Ïû´ËEvent HandlerÏà¹ØµÄ¶¨Ê±Æ÷
     if (-1 != timeout_time_id_)
     {
         timer_queue()->cancel_timer(timeout_time_id_);
@@ -639,54 +637,54 @@ int TCP_Svc_Handler::handle_close()
     }
 
 
-    //é™æ ¨ç§·MASK,éˆï¿½éšåº¨æ¨å¨ˆï¿½,é–¬å®å¤ç’‹å†ªæ•¤handle_close,
-    //éå‘´å„´æµ¼æ°³ç¹˜ç›å®ºemove_handler
+    //È¡ÏûMASK,×îºó½×¶Î,±ÜÃâµ÷ÓÃhandle_close,
+    //ÄÚ²¿»á½øĞĞremove_handler
     ZCE_Event_Handler::handle_close();
 
-    //éæŠ½æ£´ç»”îˆšå½›,
+    //¹Ø±Õ¶Ë¿Ú,
     socket_peer_.close();
 
-    //é–²å©ƒæ–éºãƒ¦æ•¹éç‰ˆåµç¼‚æ’³å•¿é–ï¿½
+    //ÊÍ·Å½ÓÊÕÊı¾İ»º³åÇø
     if (rcv_buffer_)
     {
         zbuffer_storage_->free_byte_buffer(rcv_buffer_);
         rcv_buffer_ = NULL;
     }
 
-    //æ¾¶å‹­æ‚Šé™æˆ¦ï¿½ä½¹æšŸé¹î†¾ç´¦éæ’å°¯
+    //´¦Àí·¢ËÍÊı¾İ»º³åÇø
     size_t sz_of_deque = snd_buffer_deque_.size();
 
     for (size_t i = 0; i < sz_of_deque; i++)
     {
-        //æ¾¶å‹­æ‚Šé™æˆ¦ï¿½ä¾€æ•Šç’‡îˆæ§¦é’ï¿½,éšå±¾æ¤‚æ©æ¶œî”‘é¥ç‚´æ•¹
+        //´¦Àí·¢ËÍ´íÎó¶ÓÁĞ,Í¬Ê±½øĞĞ»ØÊÕ
         process_send_error(snd_buffer_deque_[i], true);
         snd_buffer_deque_[i] = NULL;
     }
 
     snd_buffer_deque_.clear();
 
-    //æ¿¡å‚›ç‰éˆå¶…å§Ÿé„îˆ›ç¸ºå¨²è¤å§¸é¬ä¾Šç´é´æ ¬ï¿½å‘®æ§¸æ¶“è¯²å§©æ©ç‚´å¸´é¨å‹¬æ¹‡é”ï¿½.
+    //Èç¹û·şÎñÊÇ¼¤»î×´Ì¬£¬»òÕßÊÇÖ÷¶¯Á¬½ÓµÄ·şÎñ.
     if (peer_status_ == PEER_STATUS_ACTIVE || handler_mode_ == HANDLER_MODE_CONNECT)
     {
-        //å¨‰ã„©æ”¢æ©æ¬ç°ºæ·‡â„ƒä¼…
+        //×¢ÏúÕâĞ©ĞÅÏ¢
         svr_peer_info_set_.del_services_peerInfo(peer_svr_id_);
 
-        //æ¿¡å‚›ç‰é„îˆæ½ªéšåº£î¬æ¶“æ°¬å§Ÿæ©æ¶šâ–¼å¯®å“„åŸ—éæŠ½æ£´é”›å±½å¯é™æˆ¦ï¿½ä½·ç«´æ¶“îˆï¿½æ°±ç…¡ç¼æ¬ç¬Ÿé”Â¤ç¹˜ç»‹å¬¶ç´éšï¹€å¯æ¶“å¶…ä»›é–«æ°±ç…¡
+        //Èç¹ûÊÇ·Çºó¶ËÒµÎñ½ø³ÌÇ¿ÖÆ¹Ø±Õ£¬Ôò·¢ËÍÒ»¸öÍ¨Öª¸øÒµÎñ½ø³Ì£¬·ñÔò²»×öÍ¨Öª
         if (false == if_force_close_)
         {
-            //é–«æ°±ç…¡éšåº¨æ½°é¨å‹¬æ¹‡é”â€³æ«’
+            //Í¨ÖªºóÃæµÄ·şÎñÆ÷
 
             Zerg_Buffer *close_buf = zbuffer_storage_->allocate_buffer();
-            ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(close_buf->buffer_data_);
+            Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(close_buf->buffer_data_);
 
-            proc_frame->init_framehead(ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
+            proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
             proc_frame->send_service_ = peer_svr_id_;
             zerg_comm_mgr_->pushback_recvpipe(proc_frame);
             zbuffer_storage_->free_byte_buffer(close_buf);
         }
     }
 
-    //æ©æ¬‘è¢«ç¼ç†»î…¸æ¿¡å‚›ç‰æ©å›¦ç°¬æ£°æˆ ç®’è¤°åæ·ç»‹å¬ªç°­é¨å‹®ç¹ç›ï¿½,éµï¿½æµ ãƒ¦æ–éãƒ¦æ¸¶éšåºç¶”,é“ç•ŒåŠ§æµ¼æ°­åŠ…ç‘™å¤‰ç¬‰é„îˆšãŠé‘å—™â€˜,æµ£å—˜æ§¸é¬Ñ†å…˜æµ¼æ¨ºå›
+    //ÕâÀàÍ³¼ÆÈç¹û¹ıÓÚÆµ·±Ó°Ïì³ÌĞòµÄÔËĞĞ,ËùÒÔ·ÅÈë×îºó×÷,ËäÈ»»á¸Ğ¾õ²»ÊÇÌ«×¼È·,µ«ÊÇĞÔÄÜÓÅÏÈ
     server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER, 0, 0, recieve_counter_);
     server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER, 0, 0, send_counter_);
     server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER, 0, 0, send_bytes_);
@@ -700,9 +698,9 @@ int TCP_Svc_Handler::handle_close()
 
     peer_status_ = PEER_STATUS_NOACTIVE;
 
-    //éè§„åµæ¶“å¶…æ‚“é¨å‹­è¢«é¨å¬­î…¸éï¿½,
+    //¸ù¾İ²»Í¬µÄÀàĞÍ¼ÆÊı,
 
-    //æ¶“å¶ˆç¹˜ç›å±¼å¯Œé”ã„©å™¸é‚æ‹Œç¹›éºï¿½,æ¿¡å‚›ç‰éˆå¤‰ç«´æ¶“î…æŸŠé¨å‹¬æšŸé¹î†¿î›¦é™æˆ¦ï¿½ä½¹æ¤‚æ¶“è¯²å§©é–²å¶†æŸŠæ©ç‚´å¸´
+    //²»½øĞĞÖ÷¶¯ÖØĞÂÁ¬½Ó,Èç¹ûÓĞÒ»¸öĞÂµÄÊı¾İÒª·¢ËÍÊ±Ö÷¶¯ÖØĞÂÁ¬½Ó
     if (handler_mode_ == HANDLER_MODE_CONNECT)
     {
         ZCE_LOG(RS_INFO, "[zergsvr] Connect peer close, services[%u|%u] socket IP|Port :[%s].",
@@ -714,7 +712,7 @@ int TCP_Svc_Handler::handle_close()
         --num_connect_peer_;
         server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER, 0, 0,
                                       num_connect_peer_);
-        //çå—˜å¯šé–½å ç¶Šæ©æ¨ºåŸŒå§¹çŠ²ç“™æ¶“î…¢æ£¿é˜ï¿½
+        //½«Ö¸Õë¹é»¹µ½³Ø×ÓÖĞ¼äÈ¥
         pool_of_cnthdl_.push_back(this);
     }
     else if (handler_mode_ == HANDLER_MODE_ACCEPTED)
@@ -727,7 +725,7 @@ int TCP_Svc_Handler::handle_close()
 
         --num_accept_peer_;
         server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER, 0, 0, num_accept_peer_);
-        //çå—˜å¯šé–½å ç¶Šæ©æ¨ºåŸŒå§¹çŠ²ç“™æ¶“î…¢æ£¿é˜ï¿½
+        //½«Ö¸Õë¹é»¹µ½³Ø×ÓÖĞ¼äÈ¥
         pool_of_acpthdl_.push_back(this);
     }
 
@@ -736,31 +734,25 @@ int TCP_Svc_Handler::handle_close()
 
 
 
-<<<<<<< HEAD
-//æ”¶åˆ°ä¸€ä¸ªå®Œæ•´çš„å¸§åçš„é¢„å¤„ç†å·¥ä½œ
-//åˆå¹¶å‘é€é˜Ÿåˆ—
-int TCP_Svc_Handler::preprocess_recvframe(ZERG_FRAME_HEAD *proc_frame)
-=======
-//é€è·ºåŸŒæ¶“ï¿½æ¶“î„ç•¬éå¯¸æ®‘ç”¯Ñƒæ‚—é¨å‹¯î•©æ¾¶å‹­æ‚Šå®¸ãƒ¤ç¶”
-//éšå è‹Ÿé™æˆ¦ï¿½ä¾€æ§¦é’ï¿½
+//ÊÕµ½Ò»¸öÍêÕûµÄÖ¡ºóµÄÔ¤´¦Àí¹¤×÷
+//ºÏ²¢·¢ËÍ¶ÓÁĞ
 int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
->>>>>>> 822b6377f4cdc443cbb2f70750601ca28174e570
 {
 
     //Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>( rcv_buffer_->buffer_data_);
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //è¹‡å‘´ã€ç‘™ï½‡çˆœ,éšï¹€å¯éšåº¨æ½°é¨å‹­î…¸é–¬æ’´æ£¤å¨‰æ›¡ç˜‘é’ï¿½
+    //±ØĞë½âÂë,·ñÔòºóÃæµÄ¹ÜµÀÎŞ·¨Ê¶±ğ
     proc_frame->framehead_decode();
     DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "preprocess_recvframe After framehead_decode:", proc_frame);
 
-    //å¨“å‘¯æ‚Šéå‘´å„´é–«å¤ã€,é–¬å®å¤çšî‚¦æ•Šç’‡îˆ›æšŸé¹î†½å¨é‘°å‘­å¾æµ æ ¦æ±‰éç£‹æ³­
+    //ÇåÀíÄÚ²¿Ñ¡Ïî,±ÜÃâ±»´íÎóÊı¾İ»òÕßÆäËûÈËÕû¹Æ
     proc_frame->clear_inner_option();
 
-    //å¦«ï¿½éŒãƒ¨ç¹–æ¶“î„æŠšé„îˆšæƒé„îˆšå½‚é–«ä½ºç²°æ©æ¬é‡œSVR,
+    //¼ì²éÕâ¸öÖ¡ÊÇ·ñÊÇ·¢ËÍ¸øÕâ¸öSVR,
 
-    //æ¿¡å‚›ç‰é„îˆ™å”¬éï¿½,å¦«ï¿½éŒãƒ¥æŠšé¨å‹ªå”¬éå—›å„´é’å—˜æšŸé¹ï¿½
+    //Èç¹ûÊÇ´úÀí,¼ì²éÖ¡µÄ´úÀí²¿·ÖÊı¾İ
     if (proc_frame->proxy_service_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE && if_proxy_ == true)
     {
 
@@ -771,14 +763,14 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
         //
         proc_frame->proxy_service_.services_id_ = my_svc_id_.services_id_;
     }
-    //å¦«ï¿½éŒãƒ¥æŠšé¨å‹¬å¸´é™æ¥…å„´é’ï¿½
+    //¼ì²éÖ¡µÄ½ÓÊÜ²¿·Ö
     else
     {
         if (my_svc_id_ != proc_frame->recv_service_)
         {
             return SOAR_RET::ERR_ZERG_APPFRAME_ERROR;
         }
-        //ç€µé€›ç°¬éŒæ„ªç°ºé¯å‘­å–Œ(æ¶“æ˜î›¦é„îˆšî…¹é´é£î¬),ç€µè§„æŸŸæ¶“å¶‡ç…¡é–¬æervicesID
+        //¶ÔÓÚÄ³Ğ©Çé¿ö(Ö÷ÒªÊÇ¿Í»§¶Ë),¶Ô·½²»ÖªµÀServicesID
         else
         {
             proc_frame->recv_service_ = my_svc_id_;
@@ -786,26 +778,26 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
 
     }
 
-    //æ¿¡å‚›ç‰ç»”îˆšå½›æµ å‘¬ç²é’æ°¬å°ACCEPTæ¶“å©ƒæ½µé”›å²ƒç¹•å¨Œâ„ƒæ¹é€è·ºåŸŒéç‰ˆåµ
+    //Èç¹û¶Ë¿Ú½ö½ö¸Õ¸ÕACCEPTÉÏÀ´£¬»¹Ã»ÓĞÊÕµ½Êı¾İ
     if (PEER_STATUS_JUST_ACCEPT == peer_status_)
     {
-        //ç’æ¿ç¶Service Info,é¢ã„¤ç°¬éšåº¨æ½°é¨å‹«î˜©éï¿½,(é™æˆ¦ï¿½ä½ºæ®‘éƒè·ºï¿½ï¿½)
+        //¼ÇÂ¼Service Info,ÓÃÓÚºóÃæµÄ´¦Àí,(·¢ËÍµÄÊ±ºò)
         if (proc_frame->proxy_service_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE && if_proxy_ == false)
         {
             peer_svr_id_ = proc_frame->proxy_service_;
         }
         else
         {
-            //æ¿¡å‚›ç‰é„îˆœå£’å¨ˆå©„æ®‘æ¶“å¶…å§ç€µå—™æ®‘ç€¹ãˆ¡åŸ›ç»”îˆ¤ç´é–­ï½„ç®é©å­˜å¸´é·ç¸£andleé¢ç†¸åšIDé”›å±½æ´œæ¶“é¸¿ç¹–æ¶“î…æ¤‚éŠæ¬ç—…éˆå¡¹qé™æ«ï¿½ï¿½
+            //Èç¹ûÊÇÌØÊâµÄ²»¼ÓÃÜµÄ¿Í»§¶Ë£¬ÄÇÃ´Ö±½ÓÄÃhandleÉú³ÉID£¬ÒòÎªÕâ¸öÊ±ºòÃ»ÓĞqqºÅ¡£
             if (SERVICES_ID::DYNAMIC_ALLOC_SERVICES_ID == proc_frame->send_service_.services_id_)
             {
-                //é’å—›å¤æ¶“ï¿½æ¶“ç‹ªDç¼æ¬ç¶˜éŠ†å‚™çµ¾æµ£çŠºî›¦ç’æ¿ç·±é¥ç‚²ï½é ï¿½
+                //·ÖÅäÒ»¸öID¸øÄã¡£µ«ÄãÒª¼ÇµÃ»ØÌîà¸
                 proc_frame->send_service_.services_id_ = get_handle_id();
                 peer_svr_id_ = proc_frame->send_service_;
 
                 //proc_frame->frame_uid_   = proc_frame->send_service_.services_id_;
 
-                //æ©æ¬‘î’é¯å‘­å–Œé”›å±½å½²æµ ãƒ¥å›æ©æ–¿æ´–æ¶“ï¿½æ¶“ç‹ªDç¼æ¬î‡®é‚ï¿½
+                //ÕâÖÖÇé¿ö£¬¿ÉÒÔÏÈ·µ»ØÒ»¸öID¸ø¶Ô·½
                 //send_simple_zerg_cmd(,peer_svr_info_);
             }
             else
@@ -814,24 +806,24 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
             }
         }
 
-        //å¨‰ã„¥å”½,æ¿¡å‚›ç‰é˜ç†¸æ½µéˆå¤Šæ·æ´æ—‚æ®‘é–¾ç‚¬å¸´,æµ¼æ°³ç¹‘é¥ç‚²å¸«éˆå¤Œæ®‘é–¾ç‚¬å¸´.replace_services_peerInfo,è¹‡å‘¯åŠ§é´æ„¬å§›
+        //×¢²á,Èç¹ûÔ­À´ÓĞÏìÓ¦µÄÁ´½Ó,»á·µ»ØÔ­ÓĞµÄÁ´½Ó.replace_services_peerInfo,±ØÈ»³É¹¦
         TCP_Svc_Handler *old_hdl = NULL;
         svr_peer_info_set_.replace_services_peerInfo(peer_svr_id_, this, old_hdl);
 
-        //æ¿¡å‚›ç‰éˆå¤Šå¸«éˆå¤Œæ®‘é–¾ç‚¬å¸´,é’æ¬å£˜é’æ¿å¸«é‰ãƒ§æ®‘é–­ï½„é‡œéŸªî­ç¬…é˜ï¿½.
+        //Èç¹ûÓĞÔ­ÓĞµÄÁ´½Ó,ÔòÕÒµ½Ô­À´µÄÄÇ¸öÌßÏÂÈ¥.
         if (old_hdl != NULL)
         {
-            //é‘°å±¼ç¬–æ·‡î†½æ•¼é˜ç†¸æ¹é–¾ç‚¬å¸´é¨å‹­å§¸é¬ï¿½,é–¬å®å¤é–²å¶…î˜²æµ å¶´ETé’çŠ»æ«
+            //¶øÇÒĞŞ¸ÄÔ­ÓĞÁ´½ÓµÄ×´Ì¬,±ÜÃâÖØ¸´´ÓSETÉ¾³ı
             old_hdl->peer_status_ = PEER_STATUS_JUST_ACCEPT;
             old_hdl->send_simple_zerg_cmd(ZERG_REPEAT_LOGIN_KICK_OLD_RSP,
                                           peer_svr_id_,
-                                          ZERG_FRAME_HEAD::DESC_SNDPRC_CLOSE_PEER);
+                                          Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER);
 
-            //æ¶“å¶‡æ´¿éºãƒ¥å§é—‚î…ç°¡é”›å²ƒï¿½å±¾æ§¸éå Ÿå¦¸é›æˆ’æŠ¤é™æˆ¦ï¿½ä½¸ç•¬é´æ„ªç°¡é”›å±½å•€éæŠ½æ£´
+            //²»Ö±½Ó¹Ø±ÕÁË£¬¶øÊÇÏÈ°ÑÃüÁî·¢ËÍÍê³ÉÁË£¬ÔÙ¹Ø±Õ
             //old_hdl->handle_close(ACE_INVALID_HANDLE, 0);
         }
 
-        //éˆï¿½éšåº¤çšŸéç£‹åšœå®¸ç›¤EERé¨å‹­å§¸é¬ï¿½
+        //×îºóµ÷Õû×Ô¼ºPEERµÄ×´Ì¬
         peer_status_ = PEER_STATUS_ACTIVE;
 
         ZCE_LOG(RS_INFO, "[zergsvr] Accept peer services[%u|%u],IP|Prot[%s] regist success.",
@@ -840,10 +832,10 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
                 peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
                );
     }
-    //æ¿¡å‚›ç‰ç»”îˆšå½›æµ å‘¬ç²é’æ°¬å°ACCEPTæ¶“å©‚å¹“é”›å²ƒç¹•å¨Œâ„ƒæ¹é€è·ºåŸŒéç‰ˆåµ
+    //Èç¹û¶Ë¿Ú½ö½ö¸Õ¸ÕACCEPTÉÏÈ¥£¬»¹Ã»ÓĞÊÕµ½Êı¾İ
     else if (PEER_STATUS_JUST_CONNECT == peer_status_)
     {
-        //éˆï¿½éšåº¤çšŸéç£‹åšœå®¸ç›¤EERé¨å‹­å§¸é¬ï¿½
+        //×îºóµ÷Õû×Ô¼ºPEERµÄ×´Ì¬
         peer_status_ = PEER_STATUS_ACTIVE;
 
         ZCE_LOG(RS_INFO, "[zergsvr] Connect peer services[%u|%u],IP|Prot[%s] active success.",
@@ -857,7 +849,7 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
     {
         if (SERVICES_ID::DYNAMIC_ALLOC_SERVICES_ID != proc_frame->send_service_.services_id_)
         {
-            //éšï¹€å¯å¦«ï¿½å¨´å¬ªå½‚é–«ä½½ï¿½å‘°ç¹•é„îˆ™ç¬‰é„îˆšå¸«é‰ãƒ§æ®‘é™æˆ¦ï¿½ä½½ï¿½å’ƒç´é„îˆšæƒçšî‚¤î‡–é€ï¿½
+            //·ñÔò¼ì²â·¢ËÍÕß»¹ÊÇ²»ÊÇÔ­À´µÄ·¢ËÍÕß£¬ÊÇ·ñ±»´Û¸Ä
             if ((peer_svr_id_ != proc_frame->send_service_) && (peer_svr_id_ != proc_frame->proxy_service_))
             {
                 return SOAR_RET::ERR_ZERG_APPFRAME_ERROR;
@@ -865,14 +857,14 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
         }
     }
 
-    //æ¿¡å‚›ç‰é„îˆæ‘¼éºãƒ¦æ•éå²€æ®‘ç’‡é”‹çœ°é”›å±½æ´–ç»›æ–¾ç«´æ¶“î„ç°²ç»›ï¿½
-    //æ¿¡å‚›ç‰é¯å†²ä»›æ¾¶å¶†æ½…é¨å‹ªæ°¦æµœæ“å¸¶é’è®¹ç´æ´æ—‡î‡šé¦ã„¨ç¹–æ¶“î„æ¹´é‚ç‘°å§æµ ï½‡çˆœéŠ†ï¿½
+    //Èç¹ûÊÇÁ´½Ó×¢²áµÄÇëÇó£¬»Ø´ğÒ»¸öÓ¦´ğ
+    //Èç¹ûÏë×ö¸´ÔÓµÄ½»»¥¿ØÖÆ£¬Ó¦¸ÃÔÚÕâ¸öµØ·½¼Ó´úÂë¡£
     if (ZERG_CONNECT_REGISTER_REQ == proc_frame->frame_command_)
     {
         send_simple_zerg_cmd(ZERG_CONNECT_REGISTER_RSP, peer_svr_id_);
     }
 
-    //ç’æ¿ç¶éºãƒ¥å½ˆæµœå——î˜¿çæˆî‚¼éç‰ˆåµ
+    //¼ÇÂ¼½ÓÊÜÁË¶àÉÙ´ÎÊı¾İ
     receive_times_++;
 
     if (receive_times_ == 0)
@@ -881,28 +873,28 @@ int TCP_Svc_Handler::preprocess_recvframe(Zerg_App_Frame *proc_frame)
     }
 
     //
-    //æ¿‰î‚¢å•“IPé¦æ¿æ½ƒéœå²€î¬é™ï½…å½¿
+    //ÌîĞ´IPµØÖ·ºÍ¶Ë¿ÚºÅ
     proc_frame->send_ip_address_ = peer_address_.get_ip_address();
 
 
     return 0;
 }
 
-//æ©æ–¿æ´–ç»”îˆšå½›é¨å‹­å§¸é¬ï¿½,
+//·µ»Ø¶Ë¿ÚµÄ×´Ì¬,
 TCP_Svc_Handler::PEER_STATUS  TCP_Svc_Handler::get_peer_status()
 {
     return peer_status_;
 }
 
 /******************************************************************************************
-Author          : Sail ZENGXING  Date Of Creation: 2005éªï¿½11éˆï¿½27éƒï¿½
+Author          : Sail ZENGXING  Date Of Creation: 2005Äê11ÔÂ27ÈÕ
 Function        : TCP_Svc_Handler::process_connect_register
 Return          : int
 Parameter List  : NULL
-Description     : æ¾¶å‹­æ‚Šå¨‰ã„¥å”½é™æˆ¦ï¿½ï¿½,
+Description     : ´¦Àí×¢²á·¢ËÍ,
 Calls           :
 Called By       :
-Other           : é’æ°¬å°æ©ç‚´å¸´æ¶“å©‚î‡®é‚ï¿½,é™æˆ¦ï¿½ä½·ç«´æ¶“î…æ•éå±¼ä¿Šé­îˆœç²°ç€µè§„æŸŸ.æ¿¡å‚›ç‰éˆå¤Šæ‡¡æµ ã‚…å½‚é–«ä½¸æ‡¡æµ ï¿½
+Other           : ¸Õ¸ÕÁ¬½ÓÉÏ¶Ô·½,·¢ËÍÒ»¸ö×¢²áĞÅÏ¢¸ø¶Ô·½.Èç¹ûÓĞÃüÁî·¢ËÍÃüÁî
 Modify Record   :
 ******************************************************************************************/
 int TCP_Svc_Handler::process_connect_register()
@@ -912,17 +904,17 @@ int TCP_Svc_Handler::process_connect_register()
     size_t use_len = 0;
     peer_status_ = PEER_STATUS_JUST_CONNECT;
 
-    //æ¶“è¯²å§©é™æˆçš æ¶“ï¿½æ¶“î…æ•éå­‹MDé”›å±½î›§é‹æ»„æ¹ç‘•ä½¸å½‚çå‹­æ®‘éç‰ˆåµå§ï½…ã‚½.
+    //Ö÷¶¯·¢ÉäÒ»¸ö×¢²áCMD£¬Èç¹ûÓĞÒª·¢ÉäµÄÊı¾İÕıºÃ.
     send_simple_zerg_cmd(ZERG_CONNECT_REGISTER_REQ, peer_svr_id_);
 
-    //éå¶†å§Œé‘µå¥ç°¡é´æˆ£åš¦çï¿½3æ¾¶â•€äº’éšåº¯ç´ç¼å œç°¬é™æˆ å¹‡æµœå’µPOLLé™å¶…î˜²ç‘™ï¹€å½‚éæ¬ç°¨æµ å‰æ®‘é˜ç†·æ´œé„îˆ›ç—…éˆå¤Šå½‡å¨‘åœ•ONNECT_MASK
+    //ÔÙÕÛÌÚÁËÎÒÖÁÉÙ3ÌìÒÔºó£¬ÖÕÓÚ·¢ÏÖÁËEPOLL·´¸´´¥·¢Ğ´ÊÂ¼şµÄÔ­ÒòÊÇÃ»ÓĞÈ¡ÏûCONNECT_MASK
     reactor()->cancel_wakeup(this, ZCE_Event_Handler::CONNECT_MASK);
 
-    //å¨‰ã„¥å”½ç’‡è¯²å½‡é¨å‡ªASK
+    //×¢²á¶ÁÈ¡µÄMASK
     reactor()->schedule_wakeup(this, ZCE_Event_Handler::READ_MASK);
 
 
-    //éµæ’³åµƒæ·‡â„ƒä¼…
+    //´òÓ¡ĞÅÏ¢
     ZCE_Sockaddr_In      peeraddr;
     socket_peer_.getpeername(&peeraddr);
     ZCE_LOG(RS_INFO, "[zergsvr] Connect services[%u|%u] peer socket IP|Port :[%s] Success.",
@@ -936,7 +928,7 @@ int TCP_Svc_Handler::process_connect_register()
 
 
 
-//æµ å¶±EERç’‡è¯²å½‡éç‰ˆåµ
+//´ÓPEER¶ÁÈ¡Êı¾İ
 int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 {
 
@@ -945,7 +937,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //é¢å® î‡¬é’å—›å¤æ¶“ï¿½æ¶“î„å”´ç€›ï¿½
+    //ÉêÇë·ÖÅäÒ»¸öÄÚ´æ
     if (rcv_buffer_ == NULL)
     {
         rcv_buffer_ = zbuffer_storage_->allocate_buffer();
@@ -953,29 +945,29 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 
     //ZCE_LOG(RS_INFO,"[zergsvr] read_data_from_peer %d .", get_handle());
 
-    //éå‘­åé’â•ƒæ•¤ç¼‚æ’³å•¿é–å“„å¹“éºãƒ¦æ•¹
+    //³ä·ÖÀûÓÃ»º³åÇøÈ¥½ÓÊÕ
     recvret = socket_peer_.recv(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_,
                                 Zerg_Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
                                 0);
 
-    //ç›ã„§ãšçšî‚¢å§é—‚î…Ÿå¨é‘°å‘­åš­éœä¼´æ•Šç’‡ï¿½
+    //±íÊ¾±»¹Ø±Õ»òÕß³öÏÖ´íÎó
     if (recvret < 0)
     {
-        //é´æˆå½§æµ£è·¨æ•¤EWOULDBLOCK æµ£å—˜æ§¸ç‘•ä½¹æ•é°å»AGAIN, zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
+        //ÎÒÖ»Ê¹ÓÃEWOULDBLOCK µ«ÊÇÒª×¢ÒâEAGAIN, zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
         if (zce::last_error() != EWOULDBLOCK)
         {
             szrevc = 0;
 
-            //é–¬å›§åŸŒæ¶“î…ŸæŸ‡,ç»›å¤Šç·Ÿé–²å¶…å†
+            //Óöµ½ÖĞ¶Ï,µÈ´ıÖØÈë
             if (zce::last_error() == EINTR)
             {
                 return 0;
             }
 
-            //ç¼ç†»î…¸éºãƒ¦æ•¹é–¿æ¬’î‡¤
+            //Í³¼Æ½ÓÊÕ´íÎó
             server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, 0, 0, 1);
 
-            //ç’æ¿ç¶é–¿æ¬’î‡¤,æ©æ–¿æ´–é–¿æ¬’î‡¤
+            //¼ÇÂ¼´íÎó,·µ»Ø´íÎó
             ZCE_LOG(RS_ERROR, "[zergsvr] Receive data error ,services[%u|%u],IP[%s] peer:%u,zce::last_error()=%d|%s.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
@@ -986,23 +978,23 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
-        //ç¼ç†»î…¸éºãƒ¦æ•¹é—ƒè¯²î”£é¨å‹¯æ•Šç’‡ï¿½
+        //Í³¼Æ½ÓÊÕ×èÈûµÄ´íÎó
         server_status_->increase_by_statid(ZERG_RECV_BLOCK_COUNTER, 0, 0, 1);
 
-        //æ¿¡å‚›ç‰é–¿æ¬’î‡¤é„îˆæ¨†æ¿‰ï¿½,æµ ï¿½æ¶”å ¥å…˜æ¶“å¶„ç¶”
+        //Èç¹û´íÎóÊÇ×èÈû,Ê²Ã´¶¼²»×÷
         return 0;
     }
 
-    //Socketçšî‚¢å§é—‚î…¨ç´æ¶”ç†»ç¹‘é¥ç‚ºæ•Šç’‡îˆ›çˆ£ç»€ï¿½
+    //Socket±»¹Ø±Õ£¬Ò²·µ»Ø´íÎó±êÊ¾
     if (recvret == 0)
     {
         return SOAR_RET::ERR_ZERG_SOCKET_CLOSE;
     }
 
-    //å§ã‚†æ¤‚RETæ´æ—‡î‡š> 0
+    //´ËÊ±RETÓ¦¸Ã> 0
     szrevc = recvret;
 
-    //éºãƒ¦æ•¹æµœå“Šæ¶“î„ç“§ç»—ï¿½
+    //½ÓÊÕÁËN¸ö×Ö·û
     rcv_buffer_->size_of_buffer_ += static_cast<size_t>(szrevc);
     recieve_bytes_ += static_cast<size_t>(szrevc);
 
@@ -1012,8 +1004,8 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 
 
 
-//å¦«ï¿½éŒãƒ¦æ§¸éšï¸½æ•¹é’é¢ç°¡æ¶“ï¿½æ¶“î„ç•¬éå¯¸æ®‘ç”¯ï¿½,
-//æ©æ¬åŠ¹æ©æ¨ºç“¨é¦ã„¤ç«´ç»‰å¶…å½²é‘³ï¿½,æ¶“ï¿½å¨†â„ƒæ•¹é™æ ¦ç°¡æ¾¶æ°«é‡œç”¯Ñ…æ®‘é™îˆå…˜,
+//¼ì²éÊÇ·ñÊÕµ½ÁËÒ»¸öÍêÕûµÄÖ¡,
+//Õâ¶ù»¹´æÔÚÒ»ÖÖ¿ÉÄÜ,Ò»´ÎÊÕÈ¡ÁË¶à¸öÖ¡µÄ¿ÉÄÜ,
 int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
                                            unsigned int &whole_frame_len)
 {
@@ -1022,40 +1014,35 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //æ¿¡å‚›ç‰æ©ï¿½4æ¶“î„ç“§é‘ºå‚å…˜å¨Œâ„ƒæ¹é€å •æ³¦æ¦»ï¿½,æ¶“å¶‡æ•¤æ¾¶å‹­æ‚Šæ¶“å¬®æ½°æ©æ¬î†Œ
-    //å¨‰ã„¦å‰°æ©æ¬åŠ¹é„îˆšæ¹ª32æµ£å¶‡å¹†æ¾§å†­ï¿½å†­æª»
+    //Èç¹ûÁ¬4¸ö×Ö½Ú¶¼Ã»ÓĞÊÕ¼¯Æë,²»ÓÃ´¦ÀíÏÂÃæÕâ¶Î
+    //×¢ÒâÕâ¶ùÊÇÔÚ32Î»»·¾³¿¼ÂÇ
     if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= sizeof(unsigned int))
     {
-        //æ¿¡å‚›ç‰éˆï¿½4æ¶“î„ç“§é‘ºï¿½,å¦«ï¿½éŒãƒ¥æŠšé¨å‹¯æš±æ´ï¿½
-        ZRD_U32_FROM_BYTES(whole_frame_len, (rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_));
+        //Èç¹ûÓĞ4¸ö×Ö½Ú,¼ì²éÖ¡µÄ³¤¶È
+        ZRD_U32_FROM_BYTES((rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_),whole_frame_len);
         whole_frame_len = ntohl(whole_frame_len);
 
-<<<<<<< HEAD
-        //å¦‚æœåŒ…çš„é•¿åº¦å¤§äºå®šä¹‰çš„æœ€å¤§é•¿åº¦,å°äºæœ€å°é•¿åº¦,è§é¬¼å»,å‡ºç°åšä¸ªé”™è¯¯ä¸æ˜¯ä»£ç é”™è¯¯ï¼Œå°±æ˜¯è¢«äººæ•´è›Š
-        if (whole_frame_len > ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME || whole_frame_len < ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD)
-=======
-        //æ¿¡å‚›ç‰é–å‘¯æ®‘é—€å®å®³æ¾¶Ñ‚ç°¬ç€¹æ°«ç®Ÿé¨å‹¬æ¸¶æ¾¶Ñ‡æš±æ´ï¿½,çå¿ç°¬éˆï¿½çå¿›æš±æ´ï¿½,ç‘™ä¾€îƒ—é˜ï¿½,é‘è™¹å¹‡é‹æ°«é‡œé–¿æ¬’î‡¤æ¶“å¶†æ§¸æµ ï½‡çˆœé–¿æ¬’î‡¤é”›å±½æ°¨é„îˆî¦æµœçƒ˜æš£é“”ï¿½
+        //Èç¹û°üµÄ³¤¶È´óÓÚ¶¨ÒåµÄ×î´ó³¤¶È,Ğ¡ÓÚ×îĞ¡³¤¶È,¼û¹íÈ¥,³öÏÖ×ö¸ö´íÎó²»ÊÇ´úÂë´íÎó£¬¾ÍÊÇ±»ÈËÕû¹Æ
         if (whole_frame_len > Zerg_App_Frame::MAX_LEN_OF_APPFRAME || whole_frame_len < Zerg_App_Frame::LEN_OF_APPFRAME_HEAD)
->>>>>>> 822b6377f4cdc443cbb2f70750601ca28174e570
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
                     peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     whole_frame_len,
-                    ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME,
+                    Zerg_App_Frame::MAX_LEN_OF_APPFRAME,
                     rcv_buffer_->size_of_buffer_,
                     rcv_buffer_->size_of_use_);
             //
             DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG,
                                      "Error frame before framehead_decode,",
-                                     reinterpret_cast<ZERG_FRAME_HEAD *>(rcv_buffer_->buffer_data_));
+                                     reinterpret_cast<Zerg_App_Frame *>(rcv_buffer_->buffer_data_));
             return SOAR_RET::ERR_ZERG_GREATER_MAX_LEN_FRAME;
         }
     }
 
 
-    //æ¿¡å‚›ç‰éºãƒ¥å½ˆé¨å‹¬æšŸé¹î†¼å‡¡ç¼å¿“ç•¬éï¿½,(é‘·å†²çš¯éˆå¤‰ç«´æ¶“î„ç•¬éï¿½)
+    //Èç¹û½ÓÊÜµÄÊı¾İÒÑ¾­ÍêÕû,(ÖÁÉÙÓĞÒ»¸öÍêÕû)
     if (rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_ >= whole_frame_len && whole_frame_len > 0)
     {
         bfull = true;
@@ -1071,7 +1058,7 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
 }
 
 
-//çå—˜æšŸé¹î†¼å•“éî™–EERé”›å±½æ‚“éƒè·ºî˜©éå——æ‡†æˆåœ­æ®‘æµœå¬«å„é”›å±½å¯˜é·î„€å•“æµœå¬©æ¬¢å¨‰ã„¥å”½,æ¿¡å‚›ç‰é™æˆ¦ï¿½ä¾€æ§¦é’æ¥„ç¹•éˆå¤‹æšŸé¹î‡†ç´ç¼Ñ…ç”»é™æˆ¦ï¿½ä½ºç“‘
+//½«Êı¾İĞ´ÈëPEER£¬Í¬Ê±´¦ÀíÖÜ±ßµÄÊÂÇé£¬°üÀ¨Ğ´ÊÂ¼ş×¢²á,Èç¹û·¢ËÍ¶ÓÁĞ»¹ÓĞÊı¾İ£¬¼ÌĞø·¢ËÍµÈ
 int TCP_Svc_Handler::write_all_data_to_peer()
 {
     int ret = 0;
@@ -1080,52 +1067,52 @@ int TCP_Svc_Handler::write_all_data_to_peer()
     size_t use_len = 0;
     for (;;)
     {
-        //é™æˆ¦ï¿½ä½·ç«´æ¶“î…æšŸé¹î†¼å¯˜
+        //·¢ËÍÒ»¸öÊı¾İ°ü
         size_t szsend;
         bool   bfull = false;
         ret = write_data_to_peer(szsend, bfull);
 
-        //é‘è™¹å¹‡é–¿æ¬’î‡¤,
+        //³öÏÖ´íÎó,
         if (ret != 0)
         {
             return ret;
         }
 
-        //æ¿¡å‚›ç‰éç‰ˆåµé¶ãƒ¥å‡¡ç¼å¿“ç•¬éæ‘å½‚é–«ï¿½
+        //Èç¹ûÊı¾İ±¨ÒÑ¾­ÍêÕû·¢ËÍ
         if (true == bfull)
         {
-            //é´æ„¬å§›é”›å²„å™´é€å‰§æ•µç’‡é£æ®‘ç»Œæ´ªæ£¿
+            //³É¹¦£¬ÊÍ·ÅÉêÇëµÄ¿Õ¼ä
             zbuffer_storage_->free_byte_buffer(snd_buffer_deque_[0]);
             snd_buffer_deque_[0] = NULL;
             snd_buffer_deque_.pop_front();
         }
-        //æ¿¡å‚›ç‰å¨Œâ„ƒæ¹éã„©å„´é™æˆ¦ï¿½ä½¸åš­é˜ä¼™ç´ç»›å¤Šç·Ÿæ¶“å¬©ç«´å¨†â€³å•“éƒå •æ£¿é¨å‹®Ğ•é™ï¿½
+        //Èç¹ûÃ»ÓĞÈ«²¿·¢ËÍ³öÈ¥£¬µÈ´ıÏÂÒ»´ÎĞ´Ê±¼äµÄ´¥·¢
         else
         {
             break;
         }
 
-        //æ¿¡å‚›ç‰å®¸èŒ¬ç²¡å¨Œâ„ƒæ¹éç‰ˆåµé™îˆ™äº’é™æˆ¦ï¿½ä½·ç°¡
+        //Èç¹ûÒÑ¾­Ã»ÓĞÊı¾İ¿ÉÒÔ·¢ËÍÁË
         if (snd_buffer_deque_.size() == 0)
         {
             break;
         }
     }
 
-    //é™æ §ç·±è¤°æ’³å¢ é¨å‡ªASKéŠï¿½
+    //È¡µÃµ±Ç°µÄMASKÖµ
     int  handle_mask = get_mask();
 
 
-    //æ¿¡å‚›ç‰é—ƒç†·åªæ¶“î…Ÿç—…éˆå¤Šå½²æµ ãƒ¥å•“é¨å‹¬æšŸé¹ï¿½
+    //Èç¹û¶ÓÁĞÖĞÃ»ÓĞ¿ÉÒÔĞ´µÄÊı¾İ
     if (snd_buffer_deque_.size() == 0)
     {
         //
         if (handle_mask & ZCE_Event_Handler::WRITE_MASK)
         {
-            //é™æ ¨ç§·é™îˆšå•“é¨å‡ªASKéŠï¿½,
+            //È¡Ïû¿ÉĞ´µÄMASKÖµ,
             ret = reactor()->cancel_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
-            //return -1ç›ã„§ãšé–¿æ¬’î‡¤é”›å±¾î„œçº­î†¿ç¹‘é¥ç‚µæ®‘é„ç—®ld maskéŠï¿½
+            //return -1±íÊ¾´íÎó£¬ÕıÈ··µ»ØµÄÊÇold maskÖµ
             if (-1 == ret)
             {
                 ZCE_LOG(RS_ERROR, "[zergsvr] TNNND cancel_wakeup return(%d) == -1 errno=%d|%s. ",
@@ -1136,26 +1123,26 @@ int TCP_Svc_Handler::write_all_data_to_peer()
 
         }
 
-        //æ¿¡å‚›ç‰çå—šî›¦éæŠ½æ£´
+        //Èç¹û½«Òª¹Ø±Õ
         if (true == if_force_close_)
         {
             ZCE_LOG(RS_INFO, "[zergsvr] Send to peer services [%u|%u] IP|Port :[%s] complete ,want to close peer on account of frame option.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
                     peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
-            //ç’â•€ç¬‚çå‚šå¹“éæŠ½æ£´é”›å²ƒî›¦çå¿“ç¸¾é”›å±½çš¬è¹‡å†¿ç´å¯°å ¥å¤¯é‘ï¸¼ç´å¯°å î˜¿é¢ç†·æ‡¡é›ã„¦æ¹¡é¨å‹¯æ£¶æ£°ï¿½
+            //ÈÃÉÏ²ãÈ¥¹Ø±Õ£¬ÒªĞ¡ĞÄ£¬Ğ¡ĞÄ£¬ºÜÂé·³£¬ºÜ¶àÉúÃüÖÜÆÚµÄÎÊÌâ
             return SOAR_RET::ERR_ZERG_SOCKET_CLOSE;
         }
     }
-    //æ¿¡å‚ç¹ƒå¨Œâ„ƒæ¹é™æˆ¦ï¿½ä½¹åšé”ç‡‚ç´éã„©å„´é™æˆ¦ï¿½ä½¸åš­é˜ä¼™ç´é’æ¬å™¯æ¾¶å›ªç¹˜ç›å±½å•“æµœå¬©æ¬¢
+    //Èç¹ıÃ»ÓĞ·¢ËÍ³É¹¦£¬È«²¿·¢ËÍ³öÈ¥£¬Ôò×¼±¸½øĞĞĞ´ÊÂ¼ş
     else
     {
-        //å¨Œâ„ƒæ¹WRITE MASKé”›å±½å™¯æ¾¶å›§î–ƒé”çŠ²å•“éå›§ç¹”
+        //Ã»ÓĞWRITE MASK£¬×¼±¸Ôö¼ÓĞ´±êÖ¾
         if (!(handle_mask & ZCE_Event_Handler::WRITE_MASK))
         {
             ret = reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
 
-            //schedule_wakeup æ©æ–¿æ´–return -1ç›ã„§ãšé–¿æ¬’î‡¤é”›å±½å•€å¨†î“ˆS ACEæ¶“ï¿½å¨†â˜…ç´å§ï½‡â€˜æ©æ–¿æ´–é¨å‹¬æ§¸old maskéŠï¿½
+            //schedule_wakeup ·µ»Øreturn -1±íÊ¾´íÎó£¬ÔÙ´ÎBS ACEÒ»´Î£¬ÕıÈ··µ»ØµÄÊÇold maskÖµ
             if (-1 == ret)
             {
                 ZCE_LOG(RS_ERROR, "[zergsvr] TNNND schedule_wakeup return (%d)== -1 errno=%d|%s. ",
@@ -1171,7 +1158,7 @@ int TCP_Svc_Handler::write_all_data_to_peer()
 
 
 
-//çå—˜æšŸé¹î†¼å•“éî™–EER
+//½«Êı¾İĞ´ÈëPEER
 int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
 {
     bfull = false;
@@ -1179,7 +1166,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //æ¿¡å‚›ç‰å¨Œâ„ƒæ¹éç‰ˆåµç‘•ä½¸å½‚é–«ï¿½, é’æ‹Œç¹–éå®ç°²ç’‡ãƒ¦æ§¸éˆå¤æ£¶æ£°ï¿½
+    //Èç¹ûÃ»ÓĞÊı¾İÒª·¢ËÍ, µ½Õâ¶ùÓ¦¸ÃÊÇÓĞÎÊÌâ
     //#if defined DEBUG || defined _DEBUG
     if (snd_buffer_deque_.empty() == true)
     {
@@ -1192,7 +1179,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
     }
 
 
-    //é“å¶‰æ½°éˆå¤‹î—…éŒï¿½,æ¶“å¶„ç´°ç“’å©„æ™«
+    //Ç°ÃæÓĞ¼ì²é,²»»áÔ½½ç
     Zerg_Buffer *sndbuffer = snd_buffer_deque_[0];
 
     ssize_t sendret = socket_peer_.send(sndbuffer->buffer_data_ + sndbuffer->size_of_buffer_,
@@ -1202,11 +1189,11 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
     if (sendret <= 0)
     {
 
-        //é–¬å›§åŸŒæ¶“î…ŸæŸ‡,ç»›å¤Šç·Ÿé–²å¶…å†é¨å‹«å½é‚î…Ÿæ§¸if (zce::last_error() == EINVAL),æµ£å—šç¹–éå¤¸ç¬‰æµ æ—‚ç²å¦«ï¿½éŒãƒ©æ•Šç’‡ï¿½,æ¶“ï¿½ç‘™å——æ‚“æµ ï¿½,æ¶“å©‚çœ°é¥ç‚²æ‹·ç‘™å—˜å¢éˆå¤æ•Šç’‡ï¿½,æ¿¡å‚›ç‰é–¿æ¬’î‡¤é‘·æ‘æ‡¡,æ©æ¨¹ç´°éˆå¡°andle_inputé™å¶…çš 
-        //é´æˆå½§æµ£è·¨æ•¤EWOULDBLOCK æµ£å—˜æ§¸ç‘•ä½¹æ•é°å»AGAIN zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
+        //Óöµ½ÖĞ¶Ï,µÈ´ıÖØÈëµÄÅĞ¶ÏÊÇif (zce::last_error() == EINVAL),µ«Õâ¶ù²»×ĞÏ¸¼ì²é´íÎó,Ò»ÊÓÍ¬ÈÊ,ÉÏ²ã»ØºöÊÓËùÓĞ´íÎó,Èç¹û´íÎóÖÂÃü,»¹»áÓĞhandle_input·´Éä
+        //ÎÒÖ»Ê¹ÓÃEWOULDBLOCK µ«ÊÇÒª×¢ÒâEAGAIN zce::last_error() != EWOULDBLOCK && zce::last_error() != EAGAIN
         if (zce::last_error() != EWOULDBLOCK)
         {
-            //éšåº¨æ½°æ´æ—‡î‡šæµ¼æ°­å¢¦é—ç‰ˆæŸŸé¨å‡¦Pé”›å²ƒç¹–éå¤¸ç¬‰é–²å¶…î˜²
+            //ºóÃæÓ¦¸Ã»á´òÓ¡·½µÄIP£¬Õâ¶ù²»ÖØ¸´
             ZCE_LOG(RS_ERROR, "[zergsvr] Send data error,services[%u|%u] IP|Port [%s],Peer:%d errno=%d|%s .",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
@@ -1219,20 +1206,20 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
-        //ç¼ç†»î…¸é™æˆ¦ï¿½ä¾€æ¨†æ¿‰ç‚µæ®‘é–¿æ¬’î‡¤
+        //Í³¼Æ·¢ËÍ×èÈûµÄ´íÎó
         server_status_->increase_by_statid(ZERG_SEND_BLOCK_COUNTER, 0, 0, 1);
 
-        //æ¿¡å‚›ç‰é–¿æ¬’î‡¤é„îˆæ¨†æ¿‰ï¿½,æµ ï¿½æ¶”å ¥å…˜æ¶“å¶„ç¶”
+        //Èç¹û´íÎóÊÇ×èÈû,Ê²Ã´¶¼²»×÷
         return 0;
     }
 
     szsend = sendret;
 
-    //é™æˆ¦ï¿½ä½·ç°¡Næ¶“î„ç“§ç»—ï¿½
+    //·¢ËÍÁËN¸ö×Ö·û
     sndbuffer->size_of_buffer_ += static_cast<size_t>(szsend);
     send_bytes_ += static_cast<size_t>(szsend);
 
-    //æ¿¡å‚›ç‰éç‰ˆåµå®¸èŒ¬ç²¡éã„©å„´é™æˆ¦ï¿½ä½·ç°¡
+    //Èç¹ûÊı¾İÒÑ¾­È«²¿·¢ËÍÁË
     if (sndbuffer->size_of_use_ == sndbuffer->size_of_buffer_)
     {
         bfull = true;
@@ -1246,47 +1233,42 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend, bool &bfull)
     return 0;
 }
 
-//æ¾¶å‹­æ‚Šé™æˆ¦ï¿½ä¾€æ•Šç’‡ï¿½.
+//´¦Àí·¢ËÍ´íÎó.
 int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    //ç’æ¿ç¶å®¸èŒ¬ç²¡æµ£è·¨æ•¤é’æ‰®æ®‘æµ£å¶‡ç–†
+    //¼ÇÂ¼ÒÑ¾­Ê¹ÓÃµ½µÄÎ»ÖÃ
     size_t use_start = tmpbuf->size_of_buffer_;
     tmpbuf->size_of_buffer_ = 0;
 
-    //æ¶“ï¿½æ¶“îˆæ§¦é’æ¤¾è…‘é—‚æ‘å½²é‘³èŠ¥æ¹æ¾¶æ°«é‡œFRAMEé”›å²ƒî›¦ç€µç‘°ã”é–®ã„¨ç¹˜ç›å²ƒĞ’é®ä¾Šç´éµï¿½æµ ãƒ¥ç¹€æ¤¤è®³ç«´æ¶“îƒé‡œå¯®å‹«åš­é‰ï¿½
+    //Ò»¸ö¶ÓÁĞÖĞ¼ä¿ÉÄÜÓĞ¶à¸öFRAME£¬Òª¶ÔÍ·²¿½øĞĞ½âÂë£¬ËùÒÔ±ØĞëÒ»¸ö¸öÅª³öÀ´
     while (tmpbuf->size_of_buffer_ != tmpbuf->size_of_use_)
     {
-        ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(tmpbuf->buffer_data_ +
+        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_ +
                                                                         tmpbuf->size_of_buffer_);
 
-        //æ¿¡å‚›ç‰FRAMEå®¸èŒ¬ç²¡ç¼‚æ «çˆœ
+        //Èç¹ûFRAMEÒÑ¾­±àÂë
         if (frame_encode)
         {
             proc_frame->framehead_decode();
         }
 
-        //å¦«ï¿½éŒãƒ¥å‡¡ç¼å¿å¨‡é¢ã„§æ®‘é¦æ¿æ½ƒç›ã„§ãšæ©æ¬é‡œç”¯Ñ„æ§¸éšï¹€å½‚é–«ä½·ç°¡,æ¿¡å‚›ç‰å®¸èŒ¬ç²¡é™æˆ¦ï¿½ä½·ç°¡é”›å²ƒç¹–æ¶“î„æŠšçå˜ç¬‰ç‘•ä½¸î˜©éï¿½
+        //¼ì²éÒÑ¾­Ê¹ÓÃµÄµØÖ·±íÊ¾Õâ¸öÖ¡ÊÇ·ñ·¢ËÍÁË,Èç¹ûÒÑ¾­·¢ËÍÁË£¬Õâ¸öÖ¡¾Í²»Òª´¦Àí
 
-        //æ¿¡å‚›ç‰å¨Œâ„ƒæ¹é™æˆ¦ï¿½ä½¸ç•¬é´æ„¶ç´ç’æ¿ç¶æ¶“å¬«æ½µé”›å²ƒç¹˜ç›å±½î˜©éï¿½
+        //Èç¹ûÃ»ÓĞ·¢ËÍÍê³É£¬¼ÇÂ¼ÏÂÀ´£¬½øĞĞ´¦Àí
         if (use_start < tmpbuf->size_of_buffer_ + proc_frame->frame_length_)
         {
 
-<<<<<<< HEAD
-            //å¦‚æœæ˜¯è¦è®°å½•çš„å‘½ä»¤ï¼Œè®°å½•ä¸‹æ¥ï¼Œå¯ä»¥å¸®å¿™å›æº¯ä¸€äº›é—®é¢˜
-            if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_SEND_FAIL_RECORD)
-=======
-            //æ¿¡å‚›ç‰é„îˆî›¦ç’æ¿ç¶é¨å‹«æ‡¡æµ ã‚ç´ç’æ¿ç¶æ¶“å¬«æ½µé”›å±½å½²æµ ãƒ¥åºœè¹‡æ¬æ´–å©§îˆ™ç«´æµœæ¶¢æ£¶æ£°ï¿½
+            //Èç¹ûÊÇÒª¼ÇÂ¼µÄÃüÁî£¬¼ÇÂ¼ÏÂÀ´£¬¿ÉÒÔ°ïÃ¦»ØËİÒ»Ğ©ÎÊÌâ
             if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SEND_FAIL_RECORD)
->>>>>>> 822b6377f4cdc443cbb2f70750601ca28174e570
             {
                 ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame "
                         "uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s],peer status[%u]. ",
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
-                        proc_frame->frame_userid_,
+                        proc_frame->frame_uid_,
                         proc_frame->send_service_.services_type_,
                         proc_frame->send_service_.services_id_,
                         proc_frame->proxy_service_.services_type_,
@@ -1299,14 +1281,14 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
             }
         }
 
-        //æ¾§ç‚²å§é–¿æ¬’î‡¤é™æˆ¦ï¿½ä½ºæ®‘æ¾¶å‹­æ‚Š
+        //Ôö¼Ó´íÎó·¢ËÍµÄ´¦Àí
         server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER, 0, 0, 1);
 
         //
         tmpbuf->size_of_buffer_ += proc_frame->frame_length_;
     }
 
-    //è¤°æ•ç¹•é’ç™™OOLæ¶“î…¢æ£¿éŠ†ï¿½
+    //¹é»¹µ½POOLÖĞ¼ä¡£
     zbuffer_storage_->free_byte_buffer(tmpbuf);
 
     return 0;
@@ -1316,7 +1298,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
 
 
 
-// æµ åº¢çœç€›æ„°å™·é—ˆãˆ ç·±é’é¢ç«´æ¶“ç‹§andlerç¼æ¬ã‡ç€¹æœµå¨‡é¢ï¿½
+// ´Ó³Ø×ÓÀïÃæµÃµ½Ò»¸öHandler¸ø´ó¼ÒÊ¹ÓÃ
 TCP_Svc_Handler *TCP_Svc_Handler::alloce_hdl_from_pool(HANDLER_MODE handler_mode)
 {
     //
@@ -1336,7 +1318,7 @@ TCP_Svc_Handler *TCP_Svc_Handler::alloce_hdl_from_pool(HANDLER_MODE handler_mode
         pool_of_acpthdl_.pop_front(p_handler);
         return p_handler;
     }
-    //Connecté¨å‹­î¬é™ï½…ç°²ç’‡ãƒ¦æ¡ˆæ©æ»€ç¬‰é™æˆ æ•“é™æ ¦ç¬‰é’ç™anleré¨å‹ªç°¨é¯ï¿½
+    //ConnectµÄ¶Ë¿ÚÓ¦¸ÃÓÀÔ¶²»·¢ÉúÈ¡²»µ½HanlerµÄÊÂÇé
     else if (HANDLER_MODE_CONNECT == handler_mode)
     {
         ZCE_ASSERT(pool_of_cnthdl_.size() > 0);
@@ -1353,10 +1335,10 @@ TCP_Svc_Handler *TCP_Svc_Handler::alloce_hdl_from_pool(HANDLER_MODE handler_mode
 }
 
 
-//é–¾ç‚¬å¸´éµï¿½éˆå¤Œæ®‘ç‘•ä½½åšœé”ã„©æ‘¼éºãƒ§æ®‘éˆå¶…å§Ÿé£ï¿½,æ©æ¬é‡œæµœå¬®ä¼©éå¶†æ¹‡é”â€³æ«’é¨å‹¯æ‘¼éºãƒ¦æŸ‡é™ï½…æ‚—éŠ†å‚šå¼µå¨Œâ„ƒæ¹éç‰ˆåµé™æˆ¦ï¿½ä½ºæ®‘é¯å‘­å–Œ
+//Á´½ÓËùÓĞµÄÒª×Ô¶¯Á´½ÓµÄ·şÎñÆ÷,Õâ¸öÊÂ±ÜÃâ·şÎñÆ÷µÄÁ´½Ó¶Ï¿Úºó¡£ÓÖÃ»ÓĞÊı¾İ·¢ËÍµÄÇé¿ö
 void TCP_Svc_Handler::reconnect_allserver()
 {
-    //æ©ç‚´å¸´éµï¿½éˆå¤Œæ®‘SERVER
+    //Á¬½ÓËùÓĞµÄSERVER
     size_t num_valid = 0, num_succ = 0, num_fail = 0;
     zerg_auto_connect_.reconnect_allserver(num_valid, num_succ, num_fail);
 }
@@ -1371,18 +1353,18 @@ int TCP_Svc_Handler::uninit_all_staticdata()
     return 0;
 }
 
-//æ¾¶å‹­æ‚Šé™æˆ¦ï¿½ä½·ç«´æ¶“î…æšŸé¹ï¿½
+//´¦Àí·¢ËÍÒ»¸öÊı¾İ
 int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 {
     int ret = 0;
     server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, 0, 0, 1);
     //
-    ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
     DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "process_send_data Before framehead_encode:", proc_frame);
 
     SERVICES_ID *p_sendto_svrinfo = NULL;
 
-    //é™æˆ¦ï¿½ä½ºç²°æµ ï½‡æ‚Šé”›å±½å½‚é–«ä½ºç²°éºãƒ¥å½ˆé‘°ï¿½
+    //·¢ËÍ¸ø´úÀí£¬·¢ËÍ¸ø½ÓÊÜÕß
     if (proc_frame->proxy_service_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE && if_proxy_ == false)
     {
         p_sendto_svrinfo = &(proc_frame->proxy_service_);
@@ -1392,7 +1374,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         p_sendto_svrinfo = &(proc_frame->recv_service_);
     }
 
-    //éªæŒæŒ±
+    //¹ã²¥
     if (p_sendto_svrinfo->services_id_ == SERVICES_ID::BROADCAST_SERVICES_ID)
     {
         std::vector<uint32_t> *id_ary;
@@ -1411,7 +1393,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
             SERVICES_ID bc_svc_id(p_sendto_svrinfo->services_type_, (*id_ary)[i]);
             ret = svr_peer_info_set_.find_handle_by_svcid(bc_svc_id, svchanle);
 
-            //éå—šî†‘æ¶“å©ç¬‰é™îˆå…˜éµå¥ç¬‰é’ï¿½
+            //ÀíÂÛÉÏ²»¿ÉÄÜÕÒ²»µ½
             ZCE_ASSERT(ret == 0);
             if (ret != 0)
             {
@@ -1422,14 +1404,14 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         }
 
     }
-    //ç¼æ¬ç«´æ¶“îƒæ±‰
+    //¸øÒ»¸öÈË
     else
     {
         uint32_t services_id = SERVICES_ID::INVALID_SERVICES_ID;
         TCP_Svc_Handler *svchanle = NULL;
 
-        //ç€µé€›ç«´æµœæ¶˜å§©é¬ä½ºæ®‘SVC IDæ©æ¶œî”‘æ¾¶å‹­æ‚Š
-        //ç’ç†»æµ‡é§å›ªã€€é¨å‹¬æŸŸå¯®ï¿½
+        //¶ÔÒ»Ğ©¶¯Ì¬µÄSVC ID½øĞĞ´¦Àí
+        //¸ºÔØ¾ùºâµÄ·½Ê½
         if (p_sendto_svrinfo->services_id_ == SERVICES_ID::LOAD_BALANCE_DYNAMIC_ID)
         {
 
@@ -1440,15 +1422,15 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
                         p_sendto_svrinfo->services_type_);
             }
 
-            // æ·‡î†½æ•¼æ¶“ï¿½æ¶“å¬­î›¦é™æˆ¦ï¿½ä½ºæ®‘svrinfoé¨åˆ¬d
+            // ĞŞ¸ÄÒ»ÏÂÒª·¢ËÍµÄsvrinfoµÄid
             p_sendto_svrinfo->services_id_ = services_id;
             ZCE_LOG(RS_DEBUG, "process_send_data: service_type=%d service_id= LOAD_BALANCE_DYNAMIC_ID,"
                     " change service id to %u",
                     p_sendto_svrinfo->services_type_,
                     p_sendto_svrinfo->services_id_);
         }
-        //æ©æ¬‘î’é¯å‘­å–Œé”›å²„å¤ç¼ƒî†¾æ®‘éˆå¶…å§Ÿé£ã„¦æšŸé–²å¿ç¬‰é‘³è—‰ãŠæ¾¶ï¿½
-        //ç’ç†»æµ‡é§å›ªã€€é¨å‹¬æŸŸå¯®ï¿½
+        //ÕâÖÖÇé¿ö£¬ÅäÖÃµÄ·şÎñÆ÷ÊıÁ¿²»ÄÜÌ«¶à
+        //¸ºÔØ¾ùºâµÄ·½Ê½
         else if (p_sendto_svrinfo->services_id_ == SERVICES_ID::MAIN_STANDBY_DYNAMIC_ID)
         {
             ret = svr_peer_info_set_.find_mshdl_by_type(p_sendto_svrinfo->services_type_, services_id, svchanle);
@@ -1457,21 +1439,21 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
                 ZCE_LOG(RS_ERROR, "process_send_data: service_id==MAIN_STANDBY_DYNAMIC_ID but cant't find has service_type=%d svrinfo",
                         p_sendto_svrinfo->services_type_);
             }
-            // æ·‡î†½æ•¼æ¶“ï¿½æ¶“å¬­î›¦é™æˆ¦ï¿½ä½ºæ®‘svrinfoé¨åˆ¬d
+            // ĞŞ¸ÄÒ»ÏÂÒª·¢ËÍµÄsvrinfoµÄid
             p_sendto_svrinfo->services_id_ = services_id;
             ZCE_LOG(RS_DEBUG, "process_send_data: service_type=%d service_id= LOAD_BALANCE_DYNAMIC_ID,"
                     " change service id to %u",
                     p_sendto_svrinfo->services_type_,
                     p_sendto_svrinfo->services_id_);
-            //é’æ‹Œæªæ©æ¬åŠ¹æ´æ—‡î‡šéˆå¤Šåš‘ç»‰å¶†å„éï¿½,
-            //æ¶“æ˜çŸ¾é¢ç›£Ké”›å±½î˜©æµœå¶¢CTIVEé˜èˆµï¿½ä¾Šç´æµ£è·¨æ•¤æ¶“æ˜çŸ¾é¢åå½‚é–«ï¿½
-            //æ¶“æ˜çŸ¾é¢å˜ç¬‰æ¾¶å‹ªç°¬ACTIVEé˜èˆµï¿½ä¾Šç´æµ£å—˜æ§¸æ¾¶å›¦å”¤ç’ºîˆœæ•±æ¾¶å‹ªç°¬ACTIVEé˜èˆµï¿½ä¾Šç´æµ£è·¨æ•¤æ¾¶å›¦å”¤ç’ºîˆœæ•±é™æˆ¦ï¿½ï¿½
-            //æ¶“æ˜çŸ¾é¢åç“¨é¦îŸ’ç´æµ£å—˜æ§¸æ¶“å¶…î˜©æµœå¶¢CTIVEé˜èˆµï¿½ä¾Šç´æ¾¶å›¦å”¤ç’ºîˆœæ•±æ¶”ç†¶ç¬‰æ¾¶å‹ªç°¬ACTIVEé˜èˆµï¿½ä¾Šç´çå—˜æšŸé¹î†»æ°¦ç¼æ¬ç«´æ¶“îƒæ±‰é”›å²€ç´¦éæ’åŸŒé™æˆ¦ï¿½ä¾€æ§¦é’ï¿½
+            //µ½´ïÕâ¶ùÓ¦¸ÃÓĞ¼¸ÖÖÇé¿ö,
+            //Ö÷Â·ÓÉOK£¬´¦ÓÚACTIVE×´Ì¬£¬Ê¹ÓÃÖ÷Â·ÓÉ·¢ËÍ
+            //Ö÷Â·ÓÉ²»´¦ÓÚACTIVE×´Ì¬£¬µ«ÊÇ±¸·İÂ·ÓÉ´¦ÓÚACTIVE×´Ì¬£¬Ê¹ÓÃ±¸·İÂ·ÓÉ·¢ËÍ
+            //Ö÷Â·ÓÉ´æÔÚ£¬µ«ÊÇ²»´¦ÓÚACTIVE×´Ì¬£¬±¸·İÂ·ÓÉÒ²²»´¦ÓÚACTIVE×´Ì¬£¬½«Êı¾İ½»¸øÒ»¸öÈË£¬»º³åµ½·¢ËÍ¶ÓÁĞ
         }
         else
         {
             ret = svr_peer_info_set_.find_handle_by_svcid(*p_sendto_svrinfo, svchanle);
-            //æ¿¡å‚›ç‰é„îˆî›¦æ¶“è¯²å§©æ©ç‚´å¸´é‘å“„å¹“é¨å‹¬æ¹‡é”â€³æ«’
+            //Èç¹ûÊÇÒªÖ÷¶¯Á¬½Ó³öÈ¥µÄ·şÎñÆ÷
             if (0 != ret )
             {
                 ZCE_LOG(RS_ERROR, "process_send_data: but cant't find has svc id=%u.%u svrinfo",
@@ -1480,23 +1462,23 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 
                 //if (zerg_auto_connect_.is_auto_connect_svcid(*p_sendto_svrinfo))
                 //{
-                //    //æ¶“å¶†î—…éŒãƒ¦æ§¸éšï¸½åšé”ç‡‚ç´å¯®å‚›î„æ©ç‚´å¸´é”›ï¿½99.99999%é„îˆ›åšé”ç†ºæ®‘,
+                //    //²»¼ì²éÊÇ·ñ³É¹¦£¬Òì²½Á¬½Ó£¬99.99999%ÊÇ³É¹¦µÄ,
                 //    zerg_auto_connect_.reconnect_server(*p_sendto_svrinfo);
                 //}
             }
         }
 
-        //Double Checké‚è§„ç¡¶
-        //æ¿¡å‚›ç‰SVCHANDLEæ¶“è™¹â”–,ç›ã„§ãšå¨Œâ„ƒæ¹é©ç¨¿å§é¨å‹®ç¹›éºï¿½,æ©æ¶œî”‘é–¿æ¬’î‡¤æ¾¶å‹­æ‚Š
+        //Double Check·½·¨
+        //Èç¹ûSVCHANDLEÎª¿Õ,±íÊ¾Ã»ÓĞÏà¹ØµÄÁ¬½Ó,½øĞĞ´íÎó´¦Àí
         if (svchanle == NULL)
         {
-            //æ©æ¬åŠ¹æ©æ¨»ç—…éˆå¤Œç´ªé®ï¿½
+            //Õâ¶ù»¹Ã»ÓĞ±àÂë
             ZCE_LOG(RS_ERROR, "[zergsvr] [SEND TO NO EXIST HANDLE] ,send to a no exist handle[%u|%u],it could "
                     "have been existed. frame command[%u]. uid[%u] frame length[%u].",
                     p_sendto_svrinfo->services_type_,
                     p_sendto_svrinfo->services_id_,
                     proc_frame->frame_command_,
-                    proc_frame->frame_userid_,
+                    proc_frame->frame_uid_,
                     proc_frame->frame_length_
                    );
             DEBUGDUMP_FRAME_HEAD_DBG(RS_ERROR, "[SEND TO NO EXIST HANDLE]", proc_frame );
@@ -1504,12 +1486,12 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
         }
 
 
-        //çå——å½‚é–«ä½ºæ®‘FRAMEç¼æ©¦ANDLEç€µç¡…è–„é”›å±½ç¶‹é’æƒ°ç¹–æ¶“î„æ¹´é‚è§„æ¹­è¹‡å‘¬ç«´ç€¹æ°­æ–é¨å‹®ç¹˜é˜ä¼™ç´é¥çŠ±è´Ÿéˆå¤Šåš‘ç»‰å¶†å„éï¿½,
-        //1.çè¾¨æ§¸æ¶“ï¿½æ¶“î„å§é—‚î…Ÿå¯šæµ ï¿½,
-        //2.HANDLEéå‘´å„´é¨å‹¯æ§¦é’æ¥å¼§æµœï¿½,
+        //½«·¢ËÍµÄFRAME¸øHANDLE¶ÔÏó£¬µ±È»Õâ¸öµØ·½Î´±ØÒ»¶¨·ÅµÄ½øÈ¥£¬ÒòÎªÓĞ¼¸ÖÖÇé¿ö,
+        //1.¾ÍÊÇÒ»¸ö¹Ø±ÕÖ¸Áî,
+        //2.HANDLEÄÚ²¿µÄ¶ÓÁĞÂúÁË,
 
-        //æ©æ¬åŠ¹æ¶“å¶ˆç¹˜ç›å²„æ•Šç’‡îˆšî˜©éå—­ç´é¥çŠ±è´Ÿput_frame_to_sendlistéå‘´å„´æ©æ¶œî”‘æµœå—›æ•Šç’‡îˆšî˜©éå—­ç´é¥ç‚´æ•¹ç»›å¤‹æ·æµ£ï¿½
-        //é’æ‹Œç¹–éå¤¸è´Ÿå§î®ç´ç’ã‚„è´Ÿé´æ„¬å§›
+        //Õâ¶ù²»½øĞĞ´íÎó´¦Àí£¬ÒòÎªput_frame_to_sendlistÄÚ²¿½øĞĞÁË´íÎó´¦Àí£¬»ØÊÕµÈ²Ù×÷
+        //µ½Õâ¶ùÎªÖ¹£¬ÈÏÎª³É¹¦
         svchanle->put_frame_to_sendlist(tmpbuf);
     }
 
@@ -1517,8 +1499,8 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 }
 
 
-///éè§„åµservices_typeéŒãƒ¨î‡—ç€µç‘°ç°²é¨å‹¯å¤ç¼ƒî†»å¯Œæ¾¶å›¨æ¹‡é”â€³æ«’é’æ¥„ã€ƒéæ‰®ç² MSé”›å œå¯Œæ¾¶å›·ç´š,
-///ç’‡å³°å¼¬é‘°ï¿½ @ref Zerg_Auto_Connector
+///¸ù¾İservices_type²éÑ¯¶ÔÓ¦µÄÅäÖÃÖ÷±¸·şÎñÆ÷ÁĞ±íÊı×é MS£¨Ö÷±¸£©,
+///Çë²Î¿¼ @ref Zerg_Auto_Connector
 int TCP_Svc_Handler::find_conf_ms_svcid_ary(uint16_t services_type,
                                             std::vector<uint32_t> *&ms_svcid_ary)
 {
@@ -1526,7 +1508,7 @@ int TCP_Svc_Handler::find_conf_ms_svcid_ary(uint16_t services_type,
 }
 
 
-//é™æˆ¦ï¿½ä½ºç•é—æ› æ®‘é¨åˆERGé›æˆ’æŠ¤,é¢ã„¤ç°¬éŒæ„ªç°ºé—è§„ç•©é›æˆ’æŠ¤é¨å‹«î˜©éï¿½
+//·¢ËÍ¼òµ¥µÄµÄZERGÃüÁî,ÓÃÓÚÄ³Ğ©ÌØÊâÃüÁîµÄ´¦Àí
 int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
                                           const SERVICES_ID &recv_services_info,
                                           unsigned int option)
@@ -1537,20 +1519,15 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     //    peer_address_.get_host_addr(),
     //    peer_address_.get_port_number(),
     //    cmd);
-    //éšæˆî‡®é‚ç‘°å½‚é–«ä½·ç«´æ¶“î„ç¸¾ç’ºå†²å¯˜
+    //Ïò¶Ô·½·¢ËÍÒ»¸öĞÄÌø°ü
     Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-    ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
 
-<<<<<<< HEAD
-    proc_frame->init_framehead(ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD, option, cmd);
-    //æ³¨å†Œå‘½ä»¤
-=======
     proc_frame->init_framehead(Zerg_App_Frame::LEN_OF_APPFRAME_HEAD, option, cmd);
-    //å¨‰ã„¥å”½é›æˆ’æŠ¤
->>>>>>> 822b6377f4cdc443cbb2f70750601ca28174e570
+    //×¢²áÃüÁî
     proc_frame->send_service_ = my_svc_id_;
 
-    //æ¿¡å‚›ç‰é‘·î„ç¹é„îˆ™å”¬éå—˜æ¹‡é”â€³æ«’,æ¿‰î‚¢å•“æµ ï½‡æ‚Šéˆå¶…å§Ÿé£ã„¤ä¿Šé­ï¿½,æ·‡æ¿Šç˜‰é™æˆ¦ï¿½ï¿½,
+    //Èç¹û×Ô¼ºÊÇ´úÀí·şÎñÆ÷,ÌîĞ´´úÀí·şÎñÆ÷ĞÅÏ¢,±£Ö¤·¢ËÍ,
     if (if_proxy_)
     {
         proc_frame->proxy_service_ = my_svc_id_;
@@ -1560,13 +1537,13 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     proc_frame->recv_service_ = recv_services_info;
 
     //
-    tmpbuf->size_of_use_ = ZERG_FRAME_HEAD::LEN_OF_APPFRAME_HEAD;
+    tmpbuf->size_of_use_ = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
 
     //
     return put_frame_to_sendlist(tmpbuf);
 }
 
-//é™æˆ¦ï¿½ä½¸ç¸¾ç’ºï¿½
+//·¢ËÍĞÄÌø
 int TCP_Svc_Handler::send_zergheatbeat_reg()
 {
     //
@@ -1574,18 +1551,18 @@ int TCP_Svc_Handler::send_zergheatbeat_reg()
 }
 
 
-//çå——å½‚é–«ä½¹æšŸé¹î†½æ–éãƒ¥å½‚é–«ä¾€æ§¦é’æ¤¾è…‘
-//æ¿¡å‚›ç‰æ¶“ï¿½æ¶“ç‹¿EERå¨Œâ„ƒæ¹æ©ç‚´å¸´æ¶“ï¿½,ç»›å¤Šç·Ÿé™æˆ¦ï¿½ä½ºæ®‘éç‰ˆåµæ¶“å¶ˆå…˜æ¾¶æ°«ç°¬PEER_STATUS_NOACTIVEæ¶“ï¿½
-//put_frame_to_sendlistéå‘´å„´æ©æ¶œî”‘æµœå—›æ•Šç’‡îˆšî˜©éå—­ç´é¥ç‚´æ•¹ç»›å¤‹æ·æµ£ï¿½
+//½«·¢ËÍÊı¾İ·ÅÈë·¢ËÍ¶ÓÁĞÖĞ
+//Èç¹ûÒ»¸öPEERÃ»ÓĞÁ¬½ÓÉÏ,µÈ´ı·¢ËÍµÄÊı¾İ²»ÄÜ¶àÓÚPEER_STATUS_NOACTIVE¸ö
+//put_frame_to_sendlistÄÚ²¿½øĞĞÁË´íÎó´¦Àí£¬»ØÊÕµÈ²Ù×÷
 int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(tmpbuf->buffer_data_);
+    Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(tmpbuf->buffer_data_);
 
-    //æ¿¡å‚›ç‰é„îˆï¿½æ°±ç…¡éæŠ½æ£´ç»”îˆšå½›
+    //Èç¹ûÊÇÍ¨Öª¹Ø±Õ¶Ë¿Ú
     if (proc_frame->frame_command_ == INNER_RSP_CLOSE_SOCKET)
     {
         ZCE_LOG(RS_INFO, "[zergsvr] Recvice CMD_RSP_CLOSE_SOCKET,services[%u|%u] IP[%s] Svchanle will close.",
@@ -1593,22 +1570,17 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
                 peer_svr_id_.services_id_,
                 peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         if_force_close_ = true;
-        //é¥ç‚´æ•¹ç”¯ï¿½
+        //»ØÊÕÖ¡
         process_send_error(tmpbuf, false);
-        //æ¿¡å‚›ç‰æ¶“å¶†æ§¸UDPé¨å‹«î˜©éï¿½,éæŠ½æ£´ç»”îˆšå½›,UDPé¨å‹ªç¬¢ç‘—æŒç—…éˆå¤æ‘¼éºãƒ§æ®‘å§’å‚šåº·,
+        //Èç¹û²»ÊÇUDPµÄ´¦Àí,¹Ø±Õ¶Ë¿Ú,UDPµÄ¶«Î÷Ã»ÓĞÁ´½ÓµÄ¸ÅÄî,
         handle_close();
 
-        //æ©æ–¿æ´–æ¶“ï¿½æ¶“îˆæ•Šç’‡îˆ¤ç´ç’â•€ç¬‚çå‚šæ´–é€ï¿½
+        //·µ»ØÒ»¸ö´íÎó£¬ÈÃÉÏ²ã»ØÊÕ
         return SOAR_RET::ERR_ZERG_SOCKET_CLOSE;
     }
 
-<<<<<<< HEAD
-    //å¦‚æœå‘é€å®Œæˆ,å¹¶ä¸”åå°ä¸šåŠ¡è¦æ±‚å…³é—­ç«¯å£,æ³¨æ„å¿…é¡»è½¬æ¢ç½‘ç»œåº
-    if (proc_frame->frame_option_ & ZERG_FRAME_HEAD::DESC_SNDPRC_CLOSE_PEER)
-=======
-    //æ¿¡å‚›ç‰é™æˆ¦ï¿½ä½¸ç•¬é´ï¿½,éªæœµç¬–éšåº¡å½´æ¶“æ°¬å§Ÿç‘•ä½¹çœ°éæŠ½æ£´ç»”îˆšå½›,å¨‰ã„¦å‰°è¹‡å‘´ã€æî„å´²ç¼ƒæˆ ç²¶æ´ï¿½
+    //Èç¹û·¢ËÍÍê³É,²¢ÇÒºóÌ¨ÒµÎñÒªÇó¹Ø±Õ¶Ë¿Ú,×¢Òâ±ØĞë×ª»»ÍøÂçĞò
     if (proc_frame->frame_option_ & Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER)
->>>>>>> 822b6377f4cdc443cbb2f70750601ca28174e570
     {
         ZCE_LOG(RS_INFO, "[zergsvr] This Peer Services[%u|%u] IP|Port :[%s] will close when all frame"
                 " send complete ,because send frame has option Zerg_App_Frame::DESC_SNDPRC_CLOSE_PEER.",
@@ -1618,66 +1590,66 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
         if_force_close_ = true;
     }
 
-    //å¨‰ã„¦å‰°æ©æ¬é‡œé¦ç‰ˆæŸŸé”›å±¾åœæµ îƒ¿ç´°ç’‹å†©æš£æ©æ¬é‡œServices IDé”›å±¼ç¹šç’‡ä½¸å½‚é–«ä½¸åš­é˜è¤æ®‘éç‰ˆåµé–®èŠ¥æ§¸é¢ã„¨åšœå®¸è¾©æ®‘SVCIDéå›©ãšé¨ï¿½.
+    //×¢ÒâÕâ¸öµØ·½£¬ÎÒÃÇ»áµ÷ÕûÕâ¸öServices ID£¬±£Ö¤·¢ËÍ³öÈ¥µÄÊı¾İ¶¼ÊÇÓÃ×Ô¼ºµÄSVCID±êÊ¾µÄ.
     if (!if_proxy_)
     {
         proc_frame->send_service_ = my_svc_id_;
     }
 
-    //ç€µç‘°ã”é–®ã„¨ç¹˜ç›å²€ç´ªé®ï¿½
+    //¶ÔÍ·²¿½øĞĞ±àÂë
     proc_frame->framehead_encode();
 
-    //é€æƒ§å†é™æˆ¦ï¿½ä¾€æ§¦é’ï¿½,éªèˆµæ•éå±¾çˆ£è¹‡æ¤¾ç¶…
+    //·ÅÈë·¢ËÍ¶ÓÁĞ,²¢×¢²á±êÖ¾Î»
     bool bret = snd_buffer_deque_.push_back(tmpbuf);
 
     if (!bret)
     {
         server_status_->increase_by_statid(ZERG_SEND_LIST_FULL_COUNTER, 0, 0, 1);
-        //æ¶“ãˆ ç´”é´æ ¬ï¿½å‘´æ•Šç’‡îˆšî˜©éå—›å…æ¶“î…æšŸé¹î†½ç˜®æˆå†¨ã‚½é›ï¿½?æ©æ¬åŠ¹éŠç…ç·±éŸå—˜Î¨, é´æˆ£ç¹–éèƒ¯ç¹˜ç›å²„æ•Šç’‡îˆšî˜©éï¿½(é™îˆå…˜æ¶“ãˆ ç´”)é¨å‹¬æ§¸éˆï¿½é‚æ‰®æ®‘.
-        //é´æˆ æ®‘é‘°å†­æª»é„îˆšî›§é‹æ»ƒæ‡¡æµ ã‚†æ¹éå æ‚—é¬ï¿½.é‘°å±¼ç¬–é™îˆ™äº’é–¬å®å¤éå‘­ç“¨é¿å¶„ç¶”.
+        //¶ªÆú»òÕß´íÎó´¦ÀíÄÇ¸öÊı¾İ±È½ÏºÃÄØ?Õâ¶ùÖµµÃÉÌÈ¶, ÎÒÕâ¶ù½øĞĞ´íÎó´¦Àí(¿ÉÄÜ¶ªÆú)µÄÊÇ×îĞÂµÄ.
+        //ÎÒµÄ¿¼ÂÇÊÇÈç¹ûÃüÁîÓĞÏÈºóĞÔ.¶øÇÒ¿ÉÒÔ±ÜÃâÄÚ´æ²Ù×÷.
         ZCE_LOG(RS_ERROR, "[zergsvr] Services [%u|%u] IP|Port[%s] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
                 peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 snd_buffer_deque_.capacity());
 
-        //é¥ç‚´æ•¹ç”¯ï¿½
+        //»ØÊÕÖ¡
         process_send_error(tmpbuf, true);
-        //æ©æ–¿æ´–æ¶“ï¿½æ¶“îˆæ•Šç’‡ï¿½
+        //·µ»ØÒ»¸ö´íÎó
         return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
     }
 
     //------------------------------------------------------------------
-    //æ©æ¬åŠ¹å¯®ï¿½æ¿®å¬¶ç´éç‰ˆåµå®¸èŒ¬ç²¡é€æƒ§å†é™æˆ¦ï¿½ä¾€æ§¦é’æ¥‹ç´é¥ç‚´æ•¹é™îˆ™äº’éå³¢andle_closeé‘·î„ç¹é¥ç‚´æ•¹æµœï¿½.
+    //Õâ¶ù¿ªÊ¼£¬Êı¾İÒÑ¾­·ÅÈë·¢ËÍ¶ÓÁĞ£¬»ØÊÕ¿ÉÒÔÔÙhandle_close×Ô¼º»ØÊÕÁË.
 
     if (peer_status_ != PEER_STATUS_NOACTIVE)
     {
         ret = write_all_data_to_peer();
 
-        //é‘è™¹å¹‡é–¿æ¬’î‡¤,
+        //³öÏÖ´íÎó,
         if (ret != 0)
         {
-            //æ¶“è½°ç²ˆæ¶”å Ÿåœæ¶“å¶…î˜©éå—›æ•Šç’‡îˆšæ†¿,æ¶“å³³eturn -1,é¥çŠ±è´Ÿæ¿¡å‚›ç‰é–¿æ¬’î‡¤æµ¼æ°¬å§é—‚ç’–ocket,handle_inputçå—šî¦ç’‹å†ªæ•¤,æ©æ¬åŠ¹æ¶“å¶‰å™¸æ¾¶å¶…î˜©éï¿½
-            //æ¿¡å‚›ç‰é„îˆ™è…‘é‚î… ç“‘é–¿æ¬’î‡¤,ç»‹å¬ªç°­é™îˆ™äº’ç¼Ñ…ç”»é¨ï¿½.
+            //ÎªÊ²Ã´ÎÒ²»´¦Àí´íÎóÄØ,²»return -1,ÒòÎªÈç¹û´íÎó»á¹Ø±ÕSocket,handle_input½«±»µ÷ÓÃ,Õâ¶ù²»ÖØ¸´´¦Àí
+            //Èç¹ûÊÇÖĞ¶ÏµÈ´íÎó,³ÌĞò¿ÉÒÔ¼ÌĞøµÄ.
             handle_close();
 
-            //é™æˆ¦ï¿½ä½¹æšŸé¹î†¼å‡¡ç¼å¿”æ–éãƒ©æ§¦é’æ¥‹ç´æ©æ–¿æ´–OK
+            //·¢ËÍÊı¾İÒÑ¾­·ÅÈë¶ÓÁĞ£¬·µ»ØOK
             return 0;
         }
 
-        //éšå è‹Ÿ
+        //ºÏ²¢
         unite_frame_sendlist();
     }
 
-    //é™î…æ¹é€æƒ§å†é™æˆ¦ï¿½ä¾€æ§¦é’æ¥å¢ ç» æ¥åšé”ï¿½.
+    //Ö»ÓĞ·ÅÈë·¢ËÍ¶ÓÁĞ²ÅËã³É¹¦.
     return 0;
 }
 
 
-//éšå è‹Ÿé™æˆ¦ï¿½ä¾€æ§¦é’ï¿½
+//ºÏ²¢·¢ËÍ¶ÓÁĞ
 void TCP_Svc_Handler::unite_frame_sendlist()
 {
-    //æ¿¡å‚›ç‰éˆï¿½2æ¶“îƒäº’æ¶“å©„æ®‘é¨å‹«å½‚é–«ä¾€æ§¦é’æ¥‹ç´é’æ¬å½²æµ ãƒ¨ï¿½å†­æª»éšå è‹Ÿæ¾¶å‹­æ‚Š
+    //Èç¹ûÓĞ2¸öÒÔÉÏµÄµÄ·¢ËÍ¶ÓÁĞ£¬Ôò¿ÉÒÔ¿¼ÂÇºÏ²¢´¦Àí
     size_t sz_deque = snd_buffer_deque_.size();
 
     if (sz_deque <= 1)
@@ -1685,28 +1657,23 @@ void TCP_Svc_Handler::unite_frame_sendlist()
         return;
     }
 
-<<<<<<< HEAD
-    //å¦‚æœå€’æ•°ç¬¬2ä¸ªæ¡¶æœ‰èƒ½åŠ›æ”¾ä¸‹å€’æ•°ç¬¬1ä¸ªæ¡¶çš„FRAMEæ•°æ®ï¼Œåˆ™è¿›è¡Œåˆå¹¶æ“ä½œã€‚
-    if (ZERG_FRAME_HEAD::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
-=======
-    //æ¿¡å‚›ç‰éŠæ“æšŸç»—ï¿½2æ¶“î…ã€Šéˆå¤å…˜é”æ¶™æ–æ¶“å¬ªï¿½æ“æšŸç»—ï¿½1æ¶“î…ã€Šé¨å‡¢RAMEéç‰ˆåµé”›å±½å¯æ©æ¶œî”‘éšå è‹Ÿé¿å¶„ç¶”éŠ†ï¿½
+    //Èç¹ûµ¹ÊıµÚ2¸öÍ°ÓĞÄÜÁ¦·ÅÏÂµ¹ÊıµÚ1¸öÍ°µÄFRAMEÊı¾İ£¬Ôò½øĞĞºÏ²¢²Ù×÷¡£
     if (Zerg_App_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
->>>>>>> 822b6377f4cdc443cbb2f70750601ca28174e570
     {
-        //çå——ï¿½æ“æšŸç»—ï¿½1æ¶“î‡å¦­éåœ­æ®‘éç‰ˆåµé€æƒ§å†éŠæ“æšŸç»—ï¿½2æ¶“î‡å¦­éé€›è…‘é—‚æ·¬ï¿½å‚›å¢æµ ãƒ¥ç–„é—„å‘¯æ®‘Cacheé‘³è—‰å§é„îˆæ½ªç”¯ç¨¿å·±é¨å‹¶ç´
-        //ç»Œæ´ªæ£¿é’â•ƒæ•¤éœå›¦ç¯ƒå¯°å ¥ç®éŠ†å‚ç§ºé™æˆœåƒµéˆå¶†åœé‘·î„ç¹æµœå—ï¿½ï¿½
+        //½«µ¹ÊıµÚ1¸ö½ÚµãµÄÊı¾İ·ÅÈëµ¹ÊıµÚ2¸ö½ÚµãÖĞ¼ä¡£ËùÒÔÊµ¼ÊµÄCacheÄÜÁ¦ÊÇ·Ç³£Ç¿µÄ£¬
+        //¿Õ¼äÀûÓÃÂÊÒ²ºÜ¸ß¡£Ô½·¢Åå·şÎÒ×Ô¼ºÁË¡£
         memcpy(snd_buffer_deque_[sz_deque - 2]->buffer_data_ + snd_buffer_deque_[sz_deque - 2]->size_of_use_,
                snd_buffer_deque_[sz_deque - 1]->buffer_data_,
                snd_buffer_deque_[sz_deque - 1]->size_of_use_);
         snd_buffer_deque_[sz_deque - 2]->size_of_use_ += snd_buffer_deque_[sz_deque - 1]->size_of_use_;
 
-        //çå——ï¿½æ“æšŸç»—îƒ¿ç«´æ¶“î…æŸ¦é€ç‚¬å¸€
+        //½«µ¹ÊıµÚÒ»¸öÊ©·Åµô
         zbuffer_storage_->free_byte_buffer(snd_buffer_deque_[sz_deque - 1]);
         snd_buffer_deque_[sz_deque - 1] = NULL;
         snd_buffer_deque_.pop_back();
     }
 
-    ////æ¶“å¬®æ½°é¨å‹ªå”¬é®ä½ºæ•¤æµœåº¡æ‚éªå‰æ®‘å¨´å¬­ç˜¯é”›å±½é’©ç”¯é•ç´°å¨‰ã„©å™´éºï¿½
+    ////ÏÂÃæµÄ´úÂëÓÃÓÚºÏ²¢µÄ²âÊÔ£¬Æ½³£»á×¢ÊÍµô
     //else
     //{
     //    ZCE_LOGMSG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,Zerg_App_Frame::MAX_LEN_OF_APPFRAME=%u,"
@@ -1722,7 +1689,7 @@ void TCP_Svc_Handler::unite_frame_sendlist()
 
 
 
-//çå—˜æšŸé¹î†¼æŠšæµœã‚‡ç²°é–«æ°«ä¿Šç» ï¼„æ‚Šé£îŸ’ç´é€æƒ§å†ç» ï¿ äº¾
+//½«Êı¾İÖ¡½»¸øÍ¨ĞÅ¹ÜÀíÆ÷£¬·ÅÈë¹ÜµÀ
 int TCP_Svc_Handler::push_frame_to_comm_mgr()
 {
 
@@ -1745,17 +1712,17 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             return -1;
         }
 
-        //æ¿¡å‚›ç‰å¨Œâ„ƒæ¹é™æ¥€åŸŒ
+        //Èç¹ûÃ»ÓĞÊÜµ½
         if (false == bfull)
         {
             if (rcv_buffer_->size_of_use_ > 0)
             {
-                //é·ç–¯ç¤‰é¨å‹«å”´ç€›æ¨ºå½²é‘³æˆ’æ°¦é–¿ï¿½,éµï¿½æµ ãƒ¤ç¬‰é¢â•©emcpy
+                //¿½±´µÄÄÚ´æ¿ÉÄÜ½»´í,ËùÒÔ²»ÓÃmemcpy
                 memmove(rcv_buffer_->buffer_data_,
                         rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_,
                         rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_);
 
-                //é€ç‘°å½‰bufferé—€å®å®³
+                //¸Ä±äbuffer³¤¶È
                 rcv_buffer_->size_of_buffer_ = rcv_buffer_->size_of_buffer_ - rcv_buffer_->size_of_use_;
                 rcv_buffer_->size_of_use_ = 0;
             }
@@ -1763,15 +1730,15 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             break;
         }
 
-        ZERG_FRAME_HEAD *proc_frame = reinterpret_cast<ZERG_FRAME_HEAD *>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_);
+        Zerg_App_Frame *proc_frame = reinterpret_cast<Zerg_App_Frame *>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_);
 
-        //æ¿¡å‚›ç‰å®¸èŒ¬ç²¡é€å •æ³¦æµœå—•ç«´æ¶“î…æšŸé¹ï¿½
+        //Èç¹ûÒÑ¾­ÊÕ¼¯ÁËÒ»¸öÊı¾İ
         ret = preprocess_recvframe(proc_frame);
 
-        //å®¸èŒ¬ç²¡éˆå¤Œæµ‰éšå²€æ®‘IDæ©ç‚´å¸´æµœï¿½,é´æ ¬ï¿½å‘­æŠšå¦«ï¿½éŒãƒ©æ•Šç’‡ï¿½
+        //ÒÑ¾­ÓĞÏàÍ¬µÄIDÁ¬½ÓÁË,»òÕßÖ¡¼ì²é´íÎó
         if (ret != 0)
         {
-            //æ©î‚¡ç¬‰å¯°æ¥€å‡¡,é¶ï¿½ é–¿æ¬’î‡¤ç»›æ–¿ç°²é¨å‹«åš±éç‰ˆæ–é’æ‹Œç¹–æ¶“î„æ¹´é‚ï¿½,é€æƒ§åŸŒéšåº¨æ½°é¨å‹«åš±éï¿½,ç‘•ä½½ç·­é‘è™¹æ®‘ç»‰å¶‡è¢«æ©å›§î˜¿,æ©æ¿Šå„—é´æˆ æ®‘æµ ï½‡çˆœç¼‡åº¡î„Ÿ.
+            //ÆÈ²»µÃÒÑ,°Ñ ´íÎó´ğÓ¦µÄº¯Êı·Åµ½Õâ¸öµØ·½,·Åµ½ºóÃæµÄº¯Êı,ÒªÊä³öµÄÖÖÀà¹ı¶à,Î¥±³ÎÒµÄ´úÂëÃÀÑ§.
             if (SOAR_RET::ERR_ZERG_APPFRAME_ERROR == ret || SOAR_RET::ERR_ZERG_SERVER_ALREADY_LONGIN == ret)
             {
                 //
@@ -1787,7 +1754,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
                         peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
-                        proc_frame->frame_userid_,
+                        proc_frame->frame_uid_,
                         peer_svr_id_.services_type_, peer_svr_id_.services_id_,
                         my_svc_id_.services_type_, my_svc_id_.services_id_,
                         proc_frame->send_service_.services_type_,
@@ -1807,26 +1774,26 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
                         ret);
             }
 
-            //ç¼ç†»î…¸éºãƒ¦æ•¹é–¿æ¬’î‡¤
+            //Í³¼Æ½ÓÊÕ´íÎó
             server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER, 0, 0, 1);
             return -1;
         }
 
-        //çå—˜æšŸé¹î†½æ–éãƒ¦å¸´é€å‰æ®‘ç» ï¿ äº¾,æ¶“å¶†î—…å¨´å¬®æ•Šç’‡ï¿½,é¥çŠ±è´Ÿé–¿æ¬’î‡¤æµ¼æ°³î†‡è¤°æ›Ÿæ£©è¹‡ï¿½,é‘°å±¼ç¬–éˆå¤æ•Šç’‡îˆ¤ç´æ¶”ç†¸æ£¤å¨‰æ›î˜©éï¿½
+        //½«Êı¾İ·ÅÈë½ÓÊÕµÄ¹ÜµÀ,²»¼ì²â´íÎó,ÒòÎª´íÎó»á¼ÇÂ¼ÈÕÖ¾,¶øÇÒÓĞ´íÎó£¬Ò²ÎŞ·¨´¦Àí
 
         zerg_comm_mgr_->pushback_recvpipe(proc_frame);
 
-        //éºãƒ¦æ•¹æ¶“ï¿½æ¶“î„ç•¬éå¯¸æ®‘éç‰ˆåµ
+        //½ÓÊÕÒ»¸öÍêÕûµÄÊı¾İ
         rcv_buffer_->size_of_use_ += whole_frame_len;
 
         if (rcv_buffer_->size_of_buffer_ == rcv_buffer_->size_of_use_)
         {
-            //éƒçŠºî†‘æ¾¶å‹­æ‚Šå§ï½‡â€˜æ¶“åº¡æƒ,é–®ä»‹å™´é€å‰§ç´¦éæ’å°¯é¨å‹­â”–é—‚ï¿½
+            //ÎŞÂÛ´¦ÀíÕıÈ·Óë·ñ,¶¼ÊÍ·Å»º³åÇøµÄ¿Õ¼ä
             zbuffer_storage_->free_byte_buffer(rcv_buffer_);
             rcv_buffer_ = NULL;
         }
-        //æ¿¡å‚›ç‰ç»—îƒ¿ç«´æ¶“î„å¯˜é¨å‹¬æ•¹é’ç‰ˆæšŸé¹î†¼å‡¡ç¼å¿“ã‡æµœåº¤ç¹–æ¶“îˆæš±æ´ï¿½.é–­ï½„ç®çå˜ç´°é‘è™¹å¹‡æ¶“å¬®æ½°é¨å‹¬å„éç¢‰ç´
-        //æ¿¡å‚›ç‰æ©æ¬åŠ¹é¯æŠ½ä¼©éå¶…î˜²é‰å‚œæ®‘é’ã‚†æŸ‡é”›å±½å½²æµ ãƒ©æªºç€¹æ°­æ•¹é’æ‰®æ®‘ç»—îƒ¿ç«´æ¶“î…æšŸé¹î†¼å¯˜é¨å‹¬æ¸¶æ¾¶Ñ‡æš±æ´ï¸¿è´Ÿç”¯Ñƒã”é¨å‹¯æš±æ´ï¸¼ç´æµ£å—˜æ§¸æ©æ¬ç‰±æµ¼æ°¶æª·æµ£åº¢æ™¥éœå›¥ï¿½ï¿½
+        //Èç¹ûµÚÒ»¸ö°üµÄÊÕµ½Êı¾İÒÑ¾­´óÓÚÕâ¸ö³¤¶È.ÄÇÃ´¾Í»á³öÏÖÏÂÃæµÄÇé¿ö£¬
+        //Èç¹ûÕâ¶ùÏë±ÜÃâ¸´ÔÓµÄÅĞ¶Ï£¬¿ÉÒÔÏŞ¶¨ÊÕµ½µÄµÚÒ»¸öÊı¾İ°üµÄ×î´ó³¤¶ÈÎªÖ¡Í·µÄ³¤¶È£¬µ«ÊÇÕâÑù»á½µµÍĞ§ÂÊ¡£
         else if (rcv_buffer_->size_of_buffer_ > rcv_buffer_->size_of_use_)
         {
 
@@ -1844,7 +1811,7 @@ void TCP_Svc_Handler::get_max_peer_num(size_t &maxaccept, size_t &maxconnect)
 }
 
 
-//å¯°æ¥€åŸŒHandleç€µç‘°ç°²PEERé¨å‡¦Pé¦æ¿æ½ƒ#ç»”îˆšå½›æ·‡â„ƒä¼…
+//µÃµ½Handle¶ÔÓ¦PEERµÄIPµØÖ·#¶Ë¿ÚĞÅÏ¢
 const ZCE_Sockaddr_In & TCP_Svc_Handler::get_peer()
 {
     return peer_address_;
@@ -1885,21 +1852,21 @@ void TCP_Svc_Handler::dump_status_info(ZCE_LOG_PRIORITY out_lvl)
     ZCE_LOG(out_lvl, "send_bytes_=%lu snd_buffer_deque_.size=%lu", send_bytes_, snd_buffer_deque_.size());
 }
 
-//Dump éµï¿½éˆå¤Œæ®‘PEERæ·‡â„ƒä¼…
+//Dump ËùÓĞµÄPEERĞÅÏ¢
 void TCP_Svc_Handler::dump_svcpeer_info(ZCE_LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Services Peer Size =%lu", svr_peer_info_set_.get_services_peersize());
     svr_peer_info_set_.dump_svr_peerinfo(out_lvl);
 }
 
-//éæŠ½æ£´é©ç¨¿ç°²é¨å‹®ç¹›éºï¿½
+//¹Ø±ÕÏàÓ¦µÄÁ¬½Ó
 int TCP_Svc_Handler::close_services_peer(const SERVICES_ID &svr_info)
 {
     int ret = 0;
     TCP_Svc_Handler *svchanle = NULL;
     ret = svr_peer_info_set_.find_handle_by_svcid(svr_info, svchanle);
 
-    //æ¿¡å‚›ç‰é„îˆî›¦é–²å¶†æŸŠæ©æ¶œî”‘æ©ç‚´å¸´é¨å‹¬æ¹‡é”â€³æ«’æ¶“è¯²å§©æ¶“è¯²å§©æ©ç‚´å¸´,
+    //Èç¹ûÊÇÒªÖØĞÂ½øĞĞÁ¬½ÓµÄ·şÎñÆ÷Ö÷¶¯Ö÷¶¯Á¬½Ó,
     if (ret != 0)
     {
         return ret;
@@ -1909,13 +1876,13 @@ int TCP_Svc_Handler::close_services_peer(const SERVICES_ID &svr_info)
     return 0;
 }
 
-//éè§„åµéˆå¤Œæ®‘SVR INFOé”›å±¾ç…¡ç’‡ãˆ¢æµ‰æ´æ—‚æ®‘HDL
+//¸ù¾İÓĞµÄSVR INFO£¬²éÑ¯ÏàÓ¦µÄHDL
 int TCP_Svc_Handler::find_services_peer(const SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle)
 {
     int ret = 0;
     ret = svr_peer_info_set_.find_handle_by_svcid(svc_id, svchanle);
 
-    //æ¿¡å‚›ç‰é„îˆî›¦é–²å¶†æŸŠæ©æ¶œî”‘æ©ç‚´å¸´é¨å‹¬æ¹‡é”â€³æ«’æ¶“è¯²å§©æ¶“è¯²å§©æ©ç‚´å¸´,
+    //Èç¹ûÊÇÒªÖØĞÂ½øĞĞÁ¬½ÓµÄ·şÎñÆ÷Ö÷¶¯Ö÷¶¯Á¬½Ó,
     if (ret != 0)
     {
         return ret;
@@ -1929,12 +1896,12 @@ const ZCE_Sockaddr_In &TCP_Svc_Handler::get_peer_sockaddr() const
     return peer_address_;
 }
 
-///é™æ §ç·±tptoid_table_id_
+///È¡µÃtptoid_table_id_
 size_t TCP_Svc_Handler::get_tptoid_table_id()
 {
     return tptoid_table_id_;
 }
-///ç’å‰§ç–†tptoid_table_id_
+///ÉèÖÃtptoid_table_id_
 void TCP_Svc_Handler::set_tptoid_table_id(size_t ary_id)
 {
     tptoid_table_id_ = ary_id;

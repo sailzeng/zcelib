@@ -3,9 +3,9 @@
 * @filename   zce_shm_hash_expire.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2005å¹´10æœˆ26æ—¥
-* @brief      ç»„åˆHASH TABLEï¼ŒLISTçš„åŠŸèƒ½çš„HASHè¡¨ï¼Œç”¨äºåœ¨LRUæ·˜æ±°çš„æ—¶å€™æ–¹ä¾¿çš„
-*             æä¾›HASHçš„æŸ¥è¯¢åŠŸèƒ½ï¼ŒåŒæ—¶æä¾›LRUçš„æ·˜æ±°æœºåˆ¶
+* @date       2005Äê10ÔÂ26ÈÕ
+* @brief      ×éºÏHASH TABLE£¬LISTµÄ¹¦ÄÜµÄHASH±í£¬ÓÃÓÚÔÚLRUÌÔÌ­µÄÊ±ºò·½±ãµÄ
+*             Ìá¹©HASHµÄ²éÑ¯¹¦ÄÜ£¬Í¬Ê±Ìá¹©LRUµÄÌÔÌ­»úÖÆ
 *
 * @details
 *
@@ -34,7 +34,7 @@ template < class _value_type,
            class _equal_key,
            class _washout_fun > class shm_hashtable_expire;
 
-//LRU HASH è¿­ä»£å™¨
+//LRU HASH µü´úÆ÷
 template < class _value_type,
            class _key_type,
            class _hashfun,
@@ -45,7 +45,7 @@ class _hashtable_expire_iterator
 {
 protected:
 
-    //HASH TABLEçš„å®šä¹‰
+    //HASH TABLEµÄ¶¨Òå
     typedef shm_hashtable_expire < _value_type,
             _key_type,
             _hashfun,
@@ -53,7 +53,7 @@ protected:
             _equal_key,
             _washout_fun  > _lru_hashtable;
 
-    //å®šä¹‰è¿­ä»£å™¨
+    //¶¨Òåµü´úÆ÷
     typedef _hashtable_expire_iterator < _value_type,
             _key_type,
             _hashfun,
@@ -62,7 +62,7 @@ protected:
             _washout_fun > iterator;
 
 protected:
-    //åºåˆ—å·
+    //ĞòÁĞºÅ
     size_t                 serial_;
     //
     _lru_hashtable        *lruht_instance_;
@@ -95,18 +95,18 @@ public:
         return lruht_instance_->value_base_ + serial_;
     }
 
-    //æœ¬æ¥åªæä¾›å‰å‘è¿­ä»£å™¨ï¼Œæ›¾ç»ä»¥ä¸ºä½¿ç”¨å¯ä»¥ä½¿ç”¨LISTä¿è¯è¿­ä»£çš„é«˜æ•ˆï¼Œå‘ç°ä¸è¡Œï¼Œ
-    //å¯èƒ½è¦æä¾›å¦å¤–çš„å‡½æ•°
-    //å‰å‘è¿­ä»£å™¨
+    //±¾À´Ö»Ìá¹©Ç°Ïòµü´úÆ÷£¬Ôø¾­ÒÔÎªÊ¹ÓÃ¿ÉÒÔÊ¹ÓÃLIST±£Ö¤µü´úµÄ¸ßĞ§£¬·¢ÏÖ²»ĞĞ£¬
+    //¿ÉÄÜÒªÌá¹©ÁíÍâµÄº¯Êı
+    //Ç°Ïòµü´úÆ÷
     iterator &operator++()
     {
         size_t oldseq = serial_;
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
-        //å¦‚æœè¿™ä¸ªèŠ‚ç‚¹æ˜¯æœ«ä½çš„èŠ‚ç‚¹
+        //Èç¹ûÕâ¸ö½ÚµãÊÇÄ©Î»µÄ½Úµã
         if (serial_ == _shm_memory_base::_INVALID_POINT)
         {
-            //é¡ºç€IndexæŸ¥è¯¢.
+            //Ë³×ÅIndex²éÑ¯.
             size_t bucket = lruht_instance_->bkt_num_value(*(lruht_instance_->value_base_ + oldseq));
 
             //
@@ -119,16 +119,16 @@ public:
         return *this;
     }
 
-    //è¿™ä¸ªå‡½æ•°ç±»ä¼¼++ï¼Œä½†æ˜¯åªåœ¨Hashæ•°æ®çš„é“¾è¡¨ä¸Šæ¸¸è¡ï¼Œæ‰€ä»¥æ€§èƒ½æ›´å¥½
-    //å¦‚æœä¸‹ä¸€ä¸ªæ•°æ®æ˜¯ä¸€æ ·çš„KEYï¼Œé‚£ä¹ˆå°±æˆä¸ºä¸‹ä¸ªæ•°æ®çš„è¿­ä»£å™¨ã€‚
-    //å¦åˆ™æˆä¸ºend
-    //å…¶å®ä¹Ÿå°±æ¯”ä½ è‡ªå·±åšå¿«ä¸€ç‚¹ç‚¹ã€‚
+    //Õâ¸öº¯ÊıÀàËÆ++£¬µ«ÊÇÖ»ÔÚHashÊı¾İµÄÁ´±íÉÏÓÎµ´£¬ËùÒÔĞÔÄÜ¸üºÃ
+    //Èç¹ûÏÂÒ»¸öÊı¾İÊÇÒ»ÑùµÄKEY£¬ÄÇÃ´¾Í³ÉÎªÏÂ¸öÊı¾İµÄµü´úÆ÷¡£
+    //·ñÔò³ÉÎªend
+    //ÆäÊµÒ²¾Í±ÈÄã×Ô¼º×ö¿ìÒ»µãµã¡£
     iterator &goto_next_equal()
     {
         size_t oldseq = serial_;
         serial_ = *(lruht_instance_->hash_index_base_ + serial_);
 
-        //å¦‚æœè¿™ä¸ªèŠ‚ç‚¹ä¸æ˜¯æœ«ä½çš„èŠ‚ç‚¹
+        //Èç¹ûÕâ¸ö½Úµã²»ÊÇÄ©Î»µÄ½Úµã
         if (serial_ != _shm_memory_base::_INVALID_POINT)
         {
             _extract_key get_key;
@@ -147,7 +147,7 @@ public:
         return *this;
     }
 
-    //å‰å‘è¿­ä»£å™¨
+    //Ç°Ïòµü´úÆ÷
     iterator operator++(int)
     {
         iterator tmp = *this;
@@ -171,7 +171,7 @@ public:
         return !(*this == it);
     }
 
-    //ä¿ç•™åºå·å°±å¯ä»¥å†æ ¹æ®æ¨¡ç‰ˆå®ä¾‹åŒ–å¯¹è±¡æ‰¾åˆ°ç›¸åº”æ•°æ®,ä¸ç”¨ä½¿ç”¨æŒ‡é’ˆ
+    //±£ÁôĞòºÅ¾Í¿ÉÒÔÔÙ¸ù¾İÄ£°æÊµÀı»¯¶ÔÏóÕÒµ½ÏàÓ¦Êı¾İ,²»ÓÃÊ¹ÓÃÖ¸Õë
     size_t getserial() const
     {
         return serial_;
@@ -179,7 +179,7 @@ public:
 };
 
 
-//å¤´éƒ¨ï¼ŒLRU_HASHçš„å¤´éƒ¨ç»“æ„ï¼Œæ”¾åœ¨LRUHASHå†…å­˜çš„å‰é¢
+//Í·²¿£¬LRU_HASHµÄÍ·²¿½á¹¹£¬·ÅÔÚLRUHASHÄÚ´æµÄÇ°Ãæ
 class _hashtable_expire_head
 {
 protected:
@@ -196,18 +196,18 @@ protected:
     }
 
 public:
-    //å†…å­˜åŒºçš„é•¿åº¦
+    //ÄÚ´æÇøµÄ³¤¶È
     size_t           size_of_mmap_;
 
-    //NODE,INDEXç»“ç‚¹ä¸ªæ•°,INDEXçš„ä¸ªæ•°å’ŒNODEçš„èŠ‚ç‚¹ä¸ªæ•°ä¸º1:1,
+    //NODE,INDEX½áµã¸öÊı,INDEXµÄ¸öÊıºÍNODEµÄ½Úµã¸öÊıÎª1:1,
     size_t           num_of_node_;
 
-    //FREEçš„NODEä¸ªæ•°
+    //FREEµÄNODE¸öÊı
     size_t           sz_freenode_;
-    //USEçš„NODEä¸ªæ•°
+    //USEµÄNODE¸öÊı
     size_t           sz_usenode_;
 
-    //ä½¿ç”¨çš„INDEXä¸ªæ•°,å¯ä»¥äº†è§£å®é™…å¼€é“¾çš„è´Ÿè½½æ¯”ç‡
+    //Ê¹ÓÃµÄINDEX¸öÊı,¿ÉÒÔÁË½âÊµ¼Ê¿ªÁ´µÄ¸ºÔØ±ÈÂÊ
     size_t           sz_useindex_;
 };
 
@@ -218,7 +218,7 @@ public:
 
 
 /*!
-@brief      ä»£è¶…æ—¶å¤„ç†çš„åœ¨ä¸€å—å†…å­˜ï¼ˆå…±äº«å†…å­˜ï¼‰ä½¿ç”¨çš„Hash tableï¼Œ
+@brief      ´ú³¬Ê±´¦ÀíµÄÔÚÒ»¿éÄÚ´æ£¨¹²ÏíÄÚ´æ£©Ê¹ÓÃµÄHash table£¬
 
 @tparam     _value_type
 @tparam     _key_type
@@ -237,7 +237,7 @@ template < class _value_type,
 class shm_hashtable_expire : public  _shm_memory_base
 {
 public:
-    //å®šä¹‰è¿­ä»£å™¨
+    //¶¨Òåµü´úÆ÷
     typedef _hashtable_expire_iterator < _value_type,
             _key_type,
             _hash_fun,
@@ -260,22 +260,22 @@ protected:
     //
     _hashtable_expire_head *lru_hash_head_;
 
-    //Hashå› å­çš„BASE
+    //HashÒò×ÓµÄBASE
     size_t                 *hash_factor_base_;
-    //Hashçš„ç´¢å¼•,hashé“¾çš„ç´¢å¼•,æ³¨é‡Šå†™å¾—ä¸æ¸…æ¥šï¼Œè‡ªå·±éƒ½è®°ä¸å¾—äº†.
+    //HashµÄË÷Òı,hashÁ´µÄË÷Òı,×¢ÊÍĞ´µÃ²»Çå³ş£¬×Ô¼º¶¼¼Ç²»µÃÁË.
     size_t                 *hash_index_base_;
 
 
-    //LISTçš„ç´¢å¼•
+    //LISTµÄË÷Òı
     _shm_list_index       *lst_index_base_;
-    //FREEèŠ‚ç‚¹é“¾è¡¨çš„å¼€å§‹
+    //FREE½ÚµãÁ´±íµÄ¿ªÊ¼
     _shm_list_index       *lst_free_node_;
-    //USEèŠ‚ç‚¹é“¾è¡¨çš„å¼€å§‹
+    //USE½ÚµãÁ´±íµÄ¿ªÊ¼
     _shm_list_index       *lst_use_node_;
 
-    //ä¼˜å…ˆçº§çš„æ•°æ®æŒ‡é’ˆ,ç”¨32ä½çš„æ•°æ®ä¿å­˜ä¼˜å…ˆçº§
+    //ÓÅÏÈ¼¶µÄÊı¾İÖ¸Õë,ÓÃ32Î»µÄÊı¾İ±£´æÓÅÏÈ¼¶
     unsigned int           *priority_base_;
-    //æ•°æ®åŒºæŒ‡é’ˆ
+    //Êı¾İÇøÖ¸Õë
     _value_type            *value_base_;
 
 
@@ -307,15 +307,15 @@ public:
 
 
     /*!
-    * @brief      å†…å­˜åŒºçš„æ„æˆä¸º defineåŒº,indexåŒº,dataåŒº,è¿”å›æ‰€éœ€è¦çš„é•¿åº¦,
-    * @return     size_t   æ‰€éœ€çš„å°ºå¯¸
-    * @param      req_num  è¯·æ±‚çš„NODEæ•°é‡
-    * @param      real_num å®é™…åˆ†é…çš„NODEæ•°é‡
-    * @note       æ³¨æ„è¿”å›çš„æ˜¯å®é™…INDEXé•¿åº¦,ä¼šå–ä¸€ä¸ªè´¨æ•°
+    * @brief      ÄÚ´æÇøµÄ¹¹³ÉÎª defineÇø,indexÇø,dataÇø,·µ»ØËùĞèÒªµÄ³¤¶È,
+    * @return     size_t   ËùĞèµÄ³ß´ç
+    * @param      req_num  ÇëÇóµÄNODEÊıÁ¿
+    * @param      real_num Êµ¼Ê·ÖÅäµÄNODEÊıÁ¿
+    * @note       ×¢Òâ·µ»ØµÄÊÇÊµ¼ÊINDEX³¤¶È,»áÈ¡Ò»¸öÖÊÊı
     */
     static size_t getallocsize(size_t req_num, size_t &real_num)
     {
-        //å–å¾—ä¸€ä¸ªæ¯”è¿™ä¸ªæ•°å­—åšä¸€å®šæ”¾å¤§çš„è´¨æ•°ï¼Œ
+        //È¡µÃÒ»¸ö±ÈÕâ¸öÊı×Ö×öÒ»¶¨·Å´óµÄÖÊÊı£¬
         zce::hash_prime(req_num, real_num);
         size_t sz_alloc =  0;
         //
@@ -329,7 +329,7 @@ public:
         return sz_alloc;
     }
 
-    //åˆå§‹åŒ–
+    //³õÊ¼»¯
     static shm_hashtable_expire < _value_type,
            _key_type,
            _hash_fun,
@@ -339,22 +339,22 @@ public:
            initialize(size_t req_num, size_t &real_num, char *pmmap, bool if_restore = false)
     {
         assert(pmmap != NULL && req_num > 0);
-        //è°ƒæ•´
+        //µ÷Õû
         size_t sz_mmap = getallocsize(req_num, real_num);
         _hashtable_expire_head *hashhead =  reinterpret_cast< _hashtable_expire_head * >(pmmap);
 
-        //å¦‚æœæ˜¯æ¢å¤,æ•°æ®éƒ½åœ¨å†…å­˜ä¸­,
+        //Èç¹ûÊÇ»Ö¸´,Êı¾İ¶¼ÔÚÄÚ´æÖĞ,
         if ( true == if_restore )
         {
 
 
-            //æ£€æŸ¥ä¸€ä¸‹æ¢å¤çš„å†…å­˜æ˜¯å¦æ­£ç¡®,
-            //åœ¨ç‰¹æ®Šçš„æ¢å¤ï¼Œæ¯”å¦‚å–è´¨æ•°çš„æ–¹æ³•è¢«æ”¹å˜äº†ï¼Œ
+            //¼ì²éÒ»ÏÂ»Ö¸´µÄÄÚ´æÊÇ·ñÕıÈ·,
+            //ÔÚÌØÊâµÄ»Ö¸´£¬±ÈÈçÈ¡ÖÊÊıµÄ·½·¨±»¸Ä±äÁË£¬
             if (sz_mmap != hashhead->size_of_mmap_ ||
                 real_num != hashhead->num_of_node_ )
             {
 
-                //ä¸€èˆ¬æƒ…å†µä¸‹ä¸ä¸€è‡´è¿”å›NULLï¼Œæ ‡è¯†æ¢å¤å¤±è´¥ï¼Œ
+                //Ò»°ãÇé¿öÏÂ²»Ò»ÖÂ·µ»ØNULL£¬±êÊ¶»Ö¸´Ê§°Ü£¬
 #if ALLOW_RESTORE_INCONFORMITY != 1
                 return NULL;
 #else
@@ -369,7 +369,7 @@ public:
         }
         else
         {
-            //è®°å½•åˆå§‹åŒ–å°ºå¯¸
+            //¼ÇÂ¼³õÊ¼»¯³ß´ç
             hashhead->size_of_mmap_ = sz_mmap;
             hashhead->num_of_node_ = real_num;
         }
@@ -398,25 +398,25 @@ public:
 
         if ( false == if_restore )
         {
-            //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
+            //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
             instance->clear();
         }
-        //å…¶å®å¦‚æœæ˜¯æ¢å¤ï¼Œè¿˜åº”è¯¥æ£€æŸ¥ä¸€æ¬¡æ‰€æœ‰çš„é˜Ÿåˆ—
+        //ÆäÊµÈç¹ûÊÇ»Ö¸´£¬»¹Ó¦¸Ã¼ì²éÒ»´ÎËùÓĞµÄ¶ÓÁĞ
 
-        //æ‰“å®Œæ”¶å·¥
+        //´òÍêÊÕ¹¤
         return instance;
     }
 
-    //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
+    //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
     void clear()
     {
-        //å¤„ç†å…³é”®Node,ä»¥åŠç›¸å…³é•¿åº¦,å¼€å§‹æ‰€æœ‰çš„æ•°æ®æ˜¯free.
+        //´¦Àí¹Ø¼üNode,ÒÔ¼°Ïà¹Ø³¤¶È,¿ªÊ¼ËùÓĞµÄÊı¾İÊÇfree.
         lru_hash_head_->sz_freenode_ = lru_hash_head_->num_of_node_;
         lru_hash_head_->sz_usenode_ = 0;
         lru_hash_head_->sz_useindex_ = 0;
 
-        //å°†ä¸¤ä¸ªé˜Ÿåˆ—éƒ½æ¸…ç†ä¸ºNULL,è®©æŒ‡é’ˆéƒ½æŒ‡å‘è‡ªå·±,è¿™å„¿æœ‰ä¸€ç‚¹å°æŠ€å·§,
-        //ä½ å¯ä»¥å°†å…¶è§†ä¸ºå°†åŒå‘é“¾è¡¨çš„å¤´æŒ‡é’ˆ,(å…¶å®ä¹Ÿæ˜¯å°¾æŒ‡é’ˆ).
+        //½«Á½¸ö¶ÓÁĞ¶¼ÇåÀíÎªNULL,ÈÃÖ¸Õë¶¼Ö¸Ïò×Ô¼º,Õâ¶ùÓĞÒ»µãĞ¡¼¼ÇÉ,
+        //Äã¿ÉÒÔ½«ÆäÊÓÎª½«Ë«ÏòÁ´±íµÄÍ·Ö¸Õë,(ÆäÊµÒ²ÊÇÎ²Ö¸Õë).
         lst_use_node_->idx_next_ = lru_hash_head_->num_of_node_ ;
         lst_use_node_->idx_prev_ = lru_hash_head_->num_of_node_ ;
 
@@ -425,7 +425,7 @@ public:
 
         _shm_list_index *pindex = lst_index_base_;
 
-        //åˆå§‹åŒ–freeæ•°æ®åŒº
+        //³õÊ¼»¯freeÊı¾İÇø
         for (size_t i = 0; i < lru_hash_head_->num_of_node_ ; ++i )
         {
 
@@ -437,7 +437,7 @@ public:
             pindex->idx_next_ = (i + 1) ;
             pindex->idx_prev_ = (i - 1) ;
 
-            //å°†æ‰€æœ‰çš„æ•°æ®ç”¨FREENODEä¸²èµ·æ¥
+            //½«ËùÓĞµÄÊı¾İÓÃFREENODE´®ÆğÀ´
             if (0 == i)
             {
                 pindex->idx_prev_ = lst_free_node_->idx_next_;
@@ -456,41 +456,41 @@ public:
 
 protected:
 
-    //åˆ†é…ä¸€ä¸ªNODE,å°†å…¶ä»FREELISTä¸­å–å‡º
+    //·ÖÅäÒ»¸öNODE,½«Æä´ÓFREELISTÖĞÈ¡³ö
     size_t create_node(const _value_type &val, unsigned int priority )
     {
-        //å¦‚æœæ²¡æœ‰ç©ºé—´å¯ä»¥åˆ†é…
+        //Èç¹ûÃ»ÓĞ¿Õ¼ä¿ÉÒÔ·ÖÅä
         if (lru_hash_head_->sz_freenode_ == 0)
         {
             return _INVALID_POINT;
         }
 
-        //ä»é“¾ä¸Šå–1ä¸ªä¸‹æ¥
+        //´ÓÁ´ÉÏÈ¡1¸öÏÂÀ´
         size_t newnode = lst_free_node_->idx_next_;
 
         lst_free_node_->idx_next_ = (lst_index_base_ + newnode)->idx_next_;
-        //lst_free_node_->idx_next_å·²ç»å‘åè°ƒæ•´ä¸€ä¸ªä½ç½®äº†
+        //lst_free_node_->idx_next_ÒÑ¾­Ïòºóµ÷ÕûÒ»¸öÎ»ÖÃÁË
         (lst_index_base_ + lst_free_node_->idx_next_)->idx_prev_ = (lst_index_base_ + newnode)->idx_prev_;
 
-        //æ³¨æ„num_of_node_çš„ä½ç½®æ˜¯usenode
+        //×¢Òânum_of_node_µÄÎ»ÖÃÊÇusenode
         lst_index_base_[newnode].idx_next_ = lst_use_node_->idx_next_;
         lst_index_base_[newnode].idx_prev_ = lst_index_base_[lst_use_node_->idx_next_].idx_prev_;
         lst_index_base_[lst_use_node_->idx_next_].idx_prev_ = newnode;
         lst_use_node_->idx_next_ = newnode;
 
-        //placement newè®°å½•æ•°æ®å’Œä¼˜å…ˆçº§
+        //placement new¼ÇÂ¼Êı¾İºÍÓÅÏÈ¼¶
         new (value_base_ + newnode)  _value_type( val);
         priority_base_[newnode] = priority;
 
         lru_hash_head_->sz_usenode_  ++;
         lru_hash_head_->sz_freenode_ --;
 
-        //æ£€æŸ¥ä½ å¹²é”™äº‹æƒ…ä¹ˆæ²¡æœ‰
+        //¼ì²éÄã¸É´íÊÂÇéÃ´Ã»ÓĞ
         assert(lru_hash_head_->sz_usenode_ + lru_hash_head_->sz_freenode_ == lru_hash_head_->num_of_node_);
         return newnode;
     }
 
-    //é‡Šæ”¾ä¸€ä¸ªNODE,å°†å…¶å½’è¿˜ç»™FREELIST,å•å‘é“¾è¡¨å°±æ˜¯ç®€å•
+    //ÊÍ·ÅÒ»¸öNODE,½«Æä¹é»¹¸øFREELIST,µ¥ÏòÁ´±í¾ÍÊÇ¼òµ¥
     void destroy_node(size_t pos)
     {
         size_t freenext = lst_free_node_->idx_next_;
@@ -512,7 +512,7 @@ protected:
         hash_index_base_[pos] = _INVALID_POINT;
 
 
-        //è°ƒç”¨æ˜¾å¼çš„ææ„å‡½æ•°
+        //µ÷ÓÃÏÔÊ½µÄÎö¹¹º¯Êı
         (value_base_ + pos)->~_value_type();
         priority_base_[pos] = 0;
 
@@ -520,15 +520,15 @@ protected:
     }
 
 
-    //ä»valueä¸­å–å€¼
+    //´ÓvalueÖĞÈ¡Öµ
     size_t bkt_num_value(const _value_type &obj) const
     {
         _extract_key get_key;
         return static_cast<size_t>(bkt_num_key(get_key(obj)));
     }
 
-    //ä¸ºä»€ä¹ˆä¸èƒ½é‡è½½ä¸Šé¢çš„å‡½æ•°,è‡ªå·±è€ƒè™‘ä¸€ä¸‹,
-    //é‡è½½çš„è¯ï¼Œå¦‚æœ_value_typeå’Œ_key_typeä¸€æ ·ï¼Œå°±ç­‰ç€å“­å§ ---inmore
+    //ÎªÊ²Ã´²»ÄÜÖØÔØÉÏÃæµÄº¯Êı,×Ô¼º¿¼ÂÇÒ»ÏÂ,
+    //ÖØÔØµÄ»°£¬Èç¹û_value_typeºÍ_key_typeÒ»Ñù£¬¾ÍµÈ×Å¿Ş°É ---inmore
     size_t bkt_num_key(const _key_type &key) const
     {
         _hash_fun hash_fun;
@@ -538,7 +538,7 @@ protected:
 public:
 
 
-    //å¾—åˆ°å¼€å§‹çš„è¿­ä»£å™¨çš„ä½ç½®
+    //µÃµ½¿ªÊ¼µÄµü´úÆ÷µÄÎ»ÖÃ
     iterator begin()
     {
         for (size_t i = 0; i < lru_hash_head_->num_of_node_; ++i)
@@ -552,17 +552,17 @@ public:
         return end();
     }
 
-    //å¾—åˆ°ç»“æŸä½ç½®
+    //µÃµ½½áÊøÎ»ÖÃ
     iterator end()
     {
         return iterator(_INVALID_POINT, this);
     }
-    //å½“å‰ä½¿ç”¨çš„èŠ‚ç‚¹æ•°é‡
+    //µ±Ç°Ê¹ÓÃµÄ½ÚµãÊıÁ¿
     size_t size() const
     {
         return lru_hash_head_->sz_usenode_;
     }
-    //å¾—åˆ°å®¹é‡
+    //µÃµ½ÈİÁ¿
     size_t capacity() const
     {
         return lru_hash_head_->num_of_node_;
@@ -572,7 +572,7 @@ public:
     {
         return (lru_hash_head_->sz_freenode_ == lru_hash_head_->num_of_node_);
     }
-    //æ˜¯å¦ç©ºé—´å·²ç»æ»¡äº†
+    //ÊÇ·ñ¿Õ¼äÒÑ¾­ÂúÁË
     bool full() const
     {
         return (lru_hash_head_->sz_freenode_ == 0);
@@ -580,13 +580,13 @@ public:
 
 
     /*!
-    * @brief      æ’å…¥èŠ‚ç‚¹
-    * @return     std::pair<iterator, bool>  è¿”å›çš„è¿­ä»£å™¨å’Œbool,
-    * @param      val      æ’å…¥çš„èŠ‚ç‚¹
-    * @param      priority ä¼˜å…ˆçº§å¯ä»¥ï¼Œä¼ é€’å…¥å½“å‰æ—¶é—´ä½œä¸ºå‚æ•°ï¼Œæ·˜æ±°æ—¶ç”¨å°äºæŸä¸ªå€¼
-    *                      éƒ½æ·˜æ±°çš„æ–¹æ³•å¤„ç†,æ‰€ä»¥è¦ä¿è¯åé¢ä¼ å…¥æ•°æ®å€¼æ›´å¤§  æˆ‘ä¸ºä»€
-    *                      ä¹ˆä¸ç›´æ¥ç”¨time(NULL),æ˜¯ç»™ä½ æ›´å¤§çš„çµæ´»æ€§,
-    * @note       è¿™å„¿ä¼šå°†æ’å…¥çš„æ•°æ®æ”¾åœ¨æœ€åæ·˜æ±°çš„åœ°æ–¹
+    * @brief      ²åÈë½Úµã
+    * @return     std::pair<iterator, bool>  ·µ»ØµÄµü´úÆ÷ºÍbool,
+    * @param      val      ²åÈëµÄ½Úµã
+    * @param      priority ÓÅÏÈ¼¶¿ÉÒÔ£¬´«µİÈëµ±Ç°Ê±¼ä×÷Îª²ÎÊı£¬ÌÔÌ­Ê±ÓÃĞ¡ÓÚÄ³¸öÖµ
+    *                      ¶¼ÌÔÌ­µÄ·½·¨´¦Àí,ËùÒÔÒª±£Ö¤ºóÃæ´«ÈëÊı¾İÖµ¸ü´ó  ÎÒÎªÊ²
+    *                      Ã´²»Ö±½ÓÓÃtime(NULL),ÊÇ¸øÄã¸ü´óµÄÁé»îĞÔ,
+    * @note       Õâ¶ù»á½«²åÈëµÄÊı¾İ·ÅÔÚ×îºóÌÔÌ­µÄµØ·½
     */
     std::pair<iterator, bool> insert_unique(const _value_type &val,
                                             unsigned int priority  /*=reinterpret_cast<unsigned int>(time(NULL))*/  )
@@ -594,14 +594,14 @@ public:
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
 
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
         while (first != _INVALID_POINT )
         {
 
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Keyå‡½æ•°
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKeyº¯Êı
             if (equal_key((get_key(value_base_[first])), (get_key(val))) == true )
             {
                 return std::pair<iterator, bool>(iterator(first, this), false);
@@ -610,16 +610,16 @@ public:
             first = hash_index_base_[ first ];
         }
 
-        //æ²¡æœ‰æ‰¾åˆ°,æ’å…¥æ–°æ•°æ®
+        //Ã»ÓĞÕÒµ½,²åÈëĞÂÊı¾İ
         size_t newnode = create_node(val, priority);
 
-        //ç©ºé—´ä¸è¶³,
+        //¿Õ¼ä²»×ã,
         if (newnode == _INVALID_POINT)
         {
             return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
         }
 
-        //æ”¾å…¥é“¾è¡¨ä¸­
+        //·ÅÈëÁ´±íÖĞ
         hash_index_base_[newnode]  = hash_factor_base_[idx];
         hash_factor_base_[idx] = newnode;
 
@@ -628,21 +628,21 @@ public:
     }
 
 
-    //æ’å…¥èŠ‚ç‚¹,å…è®¸ç›¸ç­‰
-    //ä¼˜å…ˆçº§å¯ä»¥ï¼Œä¼ é€’å…¥å½“å‰æ—¶é—´ä½œä¸ºå‚æ•°ï¼Œ
+    //²åÈë½Úµã,ÔÊĞíÏàµÈ
+    //ÓÅÏÈ¼¶¿ÉÒÔ£¬´«µİÈëµ±Ç°Ê±¼ä×÷Îª²ÎÊı£¬
     std::pair<iterator, bool> insert_equal(const _value_type &val,
                                            unsigned int priority /*=reinterpret_cast<unsigned int>(time(NULL))*/ )
     {
         size_t idx = bkt_num_value(val);
         size_t first = hash_factor_base_[idx];
 
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Keyå‡½æ•°
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKeyº¯Êı
             if (equal_key((get_key(value_base_[first])), (get_key(val))) == true )
             {
                 break;
@@ -651,26 +651,26 @@ public:
             first = hash_index_base_[ first ];
         }
 
-        //æ²¡æœ‰æ‰¾åˆ°,æ’å…¥æ–°æ•°æ®
+        //Ã»ÓĞÕÒµ½,²åÈëĞÂÊı¾İ
         size_t newnode = create_node(val, priority);
 
-        //ç©ºé—´ä¸è¶³,
+        //¿Õ¼ä²»×ã,
         if (newnode == _INVALID_POINT)
         {
             return std::pair<iterator, bool>(iterator(_INVALID_POINT, this), false);
         }
 
-        //æ²¡æœ‰æ‰¾åˆ°ç›¸åŒKEYçš„æ•°æ®
+        //Ã»ÓĞÕÒµ½ÏàÍ¬KEYµÄÊı¾İ
         if (first == _INVALID_POINT)
         {
-            //æ”¾å…¥é“¾è¡¨çš„é¦–éƒ¨å°±å¯ä»¥äº†
+            //·ÅÈëÁ´±íµÄÊ×²¿¾Í¿ÉÒÔÁË
             hash_index_base_[newnode]  = hash_factor_base_[idx];
             hash_factor_base_[idx] = newnode;
         }
-        //å¦‚æœæ‰¾åˆ°äº†ç›¸åŒçš„KEYèŠ‚ç‚¹
+        //Èç¹ûÕÒµ½ÁËÏàÍ¬µÄKEY½Úµã
         else
         {
-            //æ”¾åˆ°è¿™ä¸ªèŠ‚ç‚¹çš„åé¢
+            //·Åµ½Õâ¸ö½ÚµãµÄºóÃæ
             hash_index_base_ [newnode] = hash_index_base_[first];
             hash_index_base_[first] = newnode;
         }
@@ -678,12 +678,12 @@ public:
         return std::pair<iterator, bool>(iterator(newnode, this), true);
     }
 
-    //æŸ¥è¯¢ç›¸åº”çš„Keyæ˜¯å¦æœ‰,è¿”å›è¿­ä»£å™¨
+    //²éÑ¯ÏàÓ¦µÄKeyÊÇ·ñÓĞ,·µ»Øµü´úÆ÷
     iterator find(const _key_type &key)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
@@ -702,22 +702,22 @@ public:
         return find(get_key(val));
     }
 
-    //å¾—åˆ°æŸä¸ªKEYçš„å…ƒç´ ä¸ªæ•°ï¼Œæœ‰ç‚¹ç›¸å½“äºæŸ¥è¯¢æ“ä½œ
+    //µÃµ½Ä³¸öKEYµÄÔªËØ¸öÊı£¬ÓĞµãÏàµ±ÓÚ²éÑ¯²Ù×÷
     size_t count(const _key_type &key)
     {
         size_t equal_count = 0;
         size_t idx = bkt_num_key(key);
-        //ä»ç´¢å¼•ä¸­æ‰¾åˆ°ç¬¬ä¸€ä¸ª
+        //´ÓË÷ÒıÖĞÕÒµ½µÚÒ»¸ö
         size_t first = hash_factor_base_[ idx];
 
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 ++equal_count;
@@ -729,7 +729,7 @@ public:
         return equal_count;
     }
 
-    //å¾—åˆ°æŸä¸ªVALUEçš„å…ƒç´ ä¸ªæ•°ï¼Œæœ‰ç‚¹ç›¸å½“äºæŸ¥è¯¢æ“ä½œ
+    //µÃµ½Ä³¸öVALUEµÄÔªËØ¸öÊı£¬ÓĞµãÏàµ±ÓÚ²éÑ¯²Ù×÷
     size_t count_value(const _value_type &val)
     {
         _extract_key get_key;
@@ -744,18 +744,18 @@ public:
     bool erase_unique(const _key_type &key)
     {
         size_t idx = bkt_num_key(key);
-        //ä»ç´¢å¼•ä¸­æ‰¾åˆ°ç¬¬ä¸€ä¸ª
+        //´ÓË÷ÒıÖĞÕÒµ½µÚÒ»¸ö
         size_t first = hash_factor_base_[ idx];
         size_t prev = first;
 
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
         //
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 if (first == hash_factor_base_[ idx])
@@ -767,7 +767,7 @@ public:
                     hash_index_base_[prev] = hash_index_base_[first];
                 }
 
-                //å›æ”¶ç©ºé—´
+                //»ØÊÕ¿Õ¼ä
                 destroy_node(first);
 
                 return true;
@@ -782,9 +782,9 @@ public:
 
 
     /*!
-    * @brief      ä½¿ç”¨è¿­ä»£å™¨åˆ é™¤,å°½é‡é«˜æ•ˆæ‰€ä»¥ä¸ç”¨ç®€åŒ–å†™æ³•
-    * @return     bool è¿”å›å€¼
-    * @param      it   åˆ é™¤çš„è¿­ä»£å™¨
+    * @brief      Ê¹ÓÃµü´úÆ÷É¾³ı,¾¡Á¿¸ßĞ§ËùÒÔ²»ÓÃ¼ò»¯Ğ´·¨
+    * @return     bool ·µ»ØÖµ
+    * @param      it   É¾³ıµÄµü´úÆ÷
     */
     bool erase(const iterator &it)
     {
@@ -808,7 +808,7 @@ public:
                     hash_index_base_[prev] = hash_index_base_[first];
                 }
 
-                //å›æ”¶ç©ºé—´
+                //»ØÊÕ¿Õ¼ä
                 destroy_node(first);
 
                 return true;
@@ -821,7 +821,7 @@ public:
         return false;
     }
 
-    //åˆ é™¤æŸä¸ªå€¼
+    //É¾³ıÄ³¸öÖµ
     bool erase_unique_value(const _value_type &val )
     {
         _extract_key get_key;
@@ -830,7 +830,7 @@ public:
 
 
     /*!
-    * @brief      åˆ é™¤æ‰€æœ‰ç›¸ç­‰çš„KEYçš„æ•°æ®,å’Œinsert_equalé…å¯¹ä½¿ç”¨ï¼Œè¿”å›åˆ é™¤äº†å‡ ä¸ªæ•°æ®
+    * @brief      É¾³ıËùÓĞÏàµÈµÄKEYµÄÊı¾İ,ºÍinsert_equalÅä¶ÔÊ¹ÓÃ£¬·µ»ØÉ¾³ıÁË¼¸¸öÊı¾İ
     * @return     size_t
     * @param      key
     * @note
@@ -839,18 +839,18 @@ public:
     {
         size_t erase_count = 0;
         size_t idx = bkt_num_key(key);
-        //ä»ç´¢å¼•ä¸­æ‰¾åˆ°ç¬¬ä¸€ä¸ª
+        //´ÓË÷ÒıÖĞÕÒµ½µÚÒ»¸ö
         size_t first = hash_factor_base_[ idx];
         size_t prev = first;
 
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
-        //å¾ªç¯æŸ¥è¯¢
+        //Ñ­»·²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 if (first == hash_factor_base_[ idx])
@@ -862,16 +862,16 @@ public:
                     hash_index_base_[prev] = hash_index_base_[first];
                 }
 
-                //åˆ é™¤çš„æƒ…å†µä¸‹prevä¸ç”¨è°ƒæ•´ï¼Œfirstå‘åç§»åŠ¨
+                //É¾³ıµÄÇé¿öÏÂprev²»ÓÃµ÷Õû£¬firstÏòºóÒÆ¶¯
                 size_t del_pos = first;
                 first = hash_index_base_[ first ];
-                //å›æ”¶ç©ºé—´
+                //»ØÊÕ¿Õ¼ä
                 destroy_node(del_pos);
                 ++erase_count;
             }
             else
             {
-                //å¦‚æœå·²ç»åˆ é™¤è¿‡ï¼Œé€€å‡ºå¾ªç¯ï¼Œå› ä¸ºæ‰€æœ‰çš„KEYç›¸åŒçš„ä¸œä¸œæŒ‚åœ¨ä¸€èµ·ï¼Œåˆ é™¤ä¹Ÿæ˜¯ä¸€èµ·åˆ é™¤äº†.
+                //Èç¹ûÒÑ¾­É¾³ı¹ı£¬ÍË³öÑ­»·£¬ÒòÎªËùÓĞµÄKEYÏàÍ¬µÄ¶«¶«¹ÒÔÚÒ»Æğ£¬É¾³ıÒ²ÊÇÒ»ÆğÉ¾³ıÁË.
                 if (erase_count > 0)
                 {
                     break;
@@ -888,35 +888,35 @@ public:
 
 
     /*!
-    * @brief      æ¿€æ´»,å°†æ¿€æ´»çš„æ•°æ®æŒ‚åˆ°LISTçš„æœ€å¼€å§‹,æ·˜æ±°ä½¿ç”¨expire,disuse
+    * @brief      ¼¤»î,½«¼¤»îµÄÊı¾İ¹Òµ½LISTµÄ×î¿ªÊ¼,ÌÔÌ­Ê¹ÓÃexpire,disuse
     * @return     bool
     * @param      key
-    * @param      priority ä¼˜å…ˆçº§å‚æ•°å¯ä»¥ä½¿ç”¨å½“å‰çš„æ—¶é—´
+    * @param      priority ÓÅÏÈ¼¶²ÎÊı¿ÉÒÔÊ¹ÓÃµ±Ç°µÄÊ±¼ä
     */
     bool active_unique(const _key_type &key,
                        unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 priority_base_[first] = priority;
 
                 size_t first_prv = lst_index_base_[first].idx_prev_;
                 size_t first_nxt = lst_index_base_[first].idx_next_;
-                //ä»åŸæ¥çš„åœ°æ–¹å–ä¸‹æ¥
+                //´ÓÔ­À´µÄµØ·½È¡ÏÂÀ´
                 lst_index_base_[first_prv].idx_next_ = lst_index_base_[first].idx_next_;
                 lst_index_base_[first_nxt].idx_prev_ = lst_index_base_[first].idx_prev_;
 
-                //æ”¾å¦‚å¤´éƒ¨
+                //·ÅÈçÍ·²¿
                 lst_index_base_[first].idx_next_ = lst_use_node_->idx_next_;
                 lst_index_base_[lst_use_node_->idx_next_].idx_prev_ = first;
                 lst_index_base_[first].idx_prev_ = lru_hash_head_->num_of_node_;
@@ -935,12 +935,12 @@ public:
 
 
     /*!
-    * @brief      é€šè¿‡VALUEæ¿€æ´»ï¼ŒåŒæ—¶è®²å€¼æ›¿æ¢æˆæœ€æ–°çš„æ•°æ®VALUEï¼Œ
-    *             ä¼˜å…ˆçº§å‚æ•°å¯ä»¥ä½¿ç”¨å½“å‰çš„æ—¶é—´ï¼ŒMAPä½¿ç”¨ï¼Œ
-    * @return     bool     æ˜¯å¦æ¿€æ´»æˆåŠŸ
-    * @param      val      å€¼
-    * @param      priority ä¼˜å…ˆçº§
-    * @note       LRUä¸­å¦‚æœï¼Œä¸€ä¸ªå€¼è¢«ä½¿ç”¨åï¼Œå¯ä»¥è®¤ä¸ºæ˜¯æ¿€æ´»è¿‡ä¸€æ¬¡ï¼Œ
+    * @brief      Í¨¹ıVALUE¼¤»î£¬Í¬Ê±½²ÖµÌæ»»³É×îĞÂµÄÊı¾İVALUE£¬
+    *             ÓÅÏÈ¼¶²ÎÊı¿ÉÒÔÊ¹ÓÃµ±Ç°µÄÊ±¼ä£¬MAPÊ¹ÓÃ£¬
+    * @return     bool     ÊÇ·ñ¼¤»î³É¹¦
+    * @param      val      Öµ
+    * @param      priority ÓÅÏÈ¼¶
+    * @note       LRUÖĞÈç¹û£¬Ò»¸öÖµ±»Ê¹ÓÃºó£¬¿ÉÒÔÈÏÎªÊÇ¼¤»î¹ıÒ»´Î£¬
     */
     bool active_unique_value(const _value_type &val,
                              unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
@@ -951,25 +951,25 @@ public:
         _key_type key = get_key(val);
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[idx];
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
 
 
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 priority_base_[first] = priority;
                 value_base_[first] = val;
                 size_t first_prv = lst_index_base_[first].idx_prev_;
                 size_t first_nxt = lst_index_base_[first].idx_next_;
-                //ä»åŸæ¥çš„åœ°æ–¹å–ä¸‹æ¥
+                //´ÓÔ­À´µÄµØ·½È¡ÏÂÀ´
                 lst_index_base_[first_prv].idx_next_ = lst_index_base_[first].idx_next_;
                 lst_index_base_[first_nxt].idx_prev_ = lst_index_base_[first].idx_prev_;
 
-                //æ”¾å¦‚å¤´éƒ¨
+                //·ÅÈçÍ·²¿
                 lst_index_base_[first].idx_next_ = lst_use_node_->idx_next_;
                 lst_index_base_[lst_use_node_->idx_next_].idx_prev_ = first;
                 lst_index_base_[first].idx_prev_ = lru_hash_head_->num_of_node_;
@@ -985,7 +985,7 @@ public:
         return false;
     }
 
-    //æ¿€æ´»æ‰€æœ‰ç›¸åŒçš„KEY,å°†æ¿€æ´»çš„æ•°æ®æŒ‚åˆ°LISTçš„æœ€å¼€å§‹,æ·˜æ±°ä½¿ç”¨expire
+    //¼¤»îËùÓĞÏàÍ¬µÄKEY,½«¼¤»îµÄÊı¾İ¹Òµ½LISTµÄ×î¿ªÊ¼,ÌÔÌ­Ê¹ÓÃexpire
     size_t active_equal(const _key_type &key,
                         unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
     {
@@ -993,25 +993,25 @@ public:
 
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 priority_base_[first] = priority;
 
                 size_t first_prv = lst_index_base_[first].idx_prev_;
                 size_t first_nxt = lst_index_base_[first].idx_next_;
-                //ä»åŸæ¥çš„åœ°æ–¹å–ä¸‹æ¥
+                //´ÓÔ­À´µÄµØ·½È¡ÏÂÀ´
                 lst_index_base_[first_prv].idx_next_ = lst_index_base_[first].idx_next_;
                 lst_index_base_[first_nxt].idx_prev_ = lst_index_base_[first].idx_prev_;
 
-                //æ”¾å¦‚å¤´éƒ¨
+                //·ÅÈçÍ·²¿
                 lst_index_base_[first].idx_next_ = lst_use_node_->idx_next_;
                 lst_index_base_[first].idx_prev_ = lst_index_base_[lst_use_node_->idx_next_].idx_prev_;
                 lst_index_base_[lst_use_node_->idx_next_].idx_prev_ = first;
@@ -1019,7 +1019,7 @@ public:
             }
             else
             {
-                //å¦‚æœå·²ç»æœ‰æ•°æ®ï¼Œé€€å‡ºå¾ªç¯ï¼Œå› ä¸ºæ‰€æœ‰çš„KEYç›¸åŒçš„ä¸œä¸œæŒ‚åœ¨ä¸€èµ·ï¼Œåˆ é™¤ä¹Ÿæ˜¯ä¸€èµ·åˆ é™¤äº†.
+                //Èç¹ûÒÑ¾­ÓĞÊı¾İ£¬ÍË³öÑ­»·£¬ÒòÎªËùÓĞµÄKEYÏàÍ¬µÄ¶«¶«¹ÒÔÚÒ»Æğ£¬É¾³ıÒ²ÊÇÒ»ÆğÉ¾³ıÁË.
                 if (active_count > 0)
                 {
                     break;
@@ -1035,17 +1035,17 @@ public:
 
 
 
-    //æ·˜æ±°è¿‡æœŸçš„æ•°æ®,å‡è®¾LISTä¸­é—´çš„æ•°æ®æ˜¯æŒ‰ç…§è¿‡æœŸå®é™…æ’åºçš„ï¼Œè¿™è¦æ±‚ä½ ä¼ å…¥çš„ä¼˜å…ˆçº§æœ€å¥½æ˜¯æ—¶é—´
-    //å°äºç­‰äºè¿™ä¸ªä¼˜å…ˆçº§çš„æ•°æ®å°†è¢«æ·˜æ±°
+    //ÌÔÌ­¹ıÆÚµÄÊı¾İ,¼ÙÉèLISTÖĞ¼äµÄÊı¾İÊÇ°´ÕÕ¹ıÆÚÊµ¼ÊÅÅĞòµÄ£¬ÕâÒªÇóÄã´«ÈëµÄÓÅÏÈ¼¶×îºÃÊÇÊ±¼ä
+    //Ğ¡ÓÚµÈÓÚÕâ¸öÓÅÏÈ¼¶µÄÊı¾İ½«±»ÌÔÌ­
     size_t expire(unsigned int expire_time)
     {
-        //ä»å°¾éƒ¨å¼€å§‹æ£€æŸ¥ï¼Œ
+        //´ÓÎ²²¿¿ªÊ¼¼ì²é£¬
         size_t list_idx = lst_use_node_->idx_prev_;
         size_t expire_num = 0;
 
         while (list_idx != lru_hash_head_->num_of_node_)
         {
-            //å°äºç­‰äº
+            //Ğ¡ÓÚµÈÓÚ
             if (priority_base_[list_idx] <= expire_time)
             {
                 size_t del_iter = list_idx;
@@ -1061,19 +1061,19 @@ public:
                 break;
             }
 
-            //å¦‚æœåˆ é™¤äº†ï¼Œè¿˜æ˜¯æ£€æŸ¥ç¬¬ä¸€ä¸ª
+            //Èç¹ûÉ¾³ıÁË£¬»¹ÊÇ¼ì²éµÚÒ»¸ö
             list_idx = lst_use_node_->idx_prev_;
         }
 
         return expire_num;
     }
 
-    //å¸Œæœ›æ·˜æ±°æ‰disuse_numä¸ªæ•°æ®ï¼Œ
-    //å¦‚æœdisuse_eaqul == tureï¼Œåˆ™åˆ é™¤å’Œæœ€ååˆ é™¤çš„é‚£ä¸ªä¼˜å…ˆçº§ç›¸ç­‰çš„æ‰€æœ‰å…ƒç´ 
-    //disuse_eaqulå¯ä»¥ä¿è¯æ•°æ®çš„æ•´ä½“æ·˜æ±°ï¼Œé¿å…ä¸€ä¸ªKEYçš„éƒ¨åˆ†æ•°æ®åœ¨å†…å­˜ï¼Œä¸€éƒ¨åˆ†ä¸åœ¨
+    //Ï£ÍûÌÔÌ­µôdisuse_num¸öÊı¾İ£¬
+    //Èç¹ûdisuse_eaqul == ture£¬ÔòÉ¾³ıºÍ×îºóÉ¾³ıµÄÄÇ¸öÓÅÏÈ¼¶ÏàµÈµÄËùÓĞÔªËØ
+    //disuse_eaqul¿ÉÒÔ±£Ö¤Êı¾İµÄÕûÌåÌÔÌ­£¬±ÜÃâÒ»¸öKEYµÄ²¿·ÖÊı¾İÔÚÄÚ´æ£¬Ò»²¿·Ö²»ÔÚ
     size_t disuse(size_t disuse_num, bool disuse_eaqul)
     {
-        //ä»å°¾éƒ¨å¼€å§‹æ£€æŸ¥ï¼Œ
+        //´ÓÎ²²¿¿ªÊ¼¼ì²é£¬
         size_t list_idx = lst_use_node_->idx_prev_;
         size_t fact_del_num = 0;
         unsigned int disuse_priority = 0;
@@ -1089,7 +1089,7 @@ public:
             erase(iter_tmp);
             disuse_priority = priority_base_[list_idx];
             //
-            //å¦‚æœåˆ é™¤äº†ï¼Œè¿˜æ˜¯æ£€æŸ¥ç¬¬ä¸€ä¸ª
+            //Èç¹ûÉ¾³ıÁË£¬»¹ÊÇ¼ì²éµÚÒ»¸ö
             list_idx = lst_use_node_->idx_prev_;
         }
 
@@ -1101,19 +1101,19 @@ public:
         return fact_del_num;
     }
 
-    //æ ‡æ³¨ï¼Œé‡æ–°ç»™ä¸€ä¸ªæ•°æ®æ‰“ä¸€ä¸ªä¼˜å…ˆçº§æ ‡ç­¾ï¼Œæ·˜æ±°ä½¿ç”¨å‡½æ•°washout
+    //±ê×¢£¬ÖØĞÂ¸øÒ»¸öÊı¾İ´òÒ»¸öÓÅÏÈ¼¶±êÇ©£¬ÌÔÌ­Ê¹ÓÃº¯Êıwashout
     bool mark_unique(const _key_type &key, unsigned int priority)
     {
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 priority_base_[first] = priority;
@@ -1127,10 +1127,10 @@ public:
         return false;
     }
 
-    //æ ¹æ®valueå°†ä¼˜å…ˆçº§è·Ÿæ–°ï¼Œé‡æ–°ç»™ä¸€ä¸ªæ•°æ®æ‰“ä¸€ä¸ªä¼˜å…ˆçº§æ ‡ç­¾ï¼ŒåŒæ—¶å°†å€¼æ›¿æ¢ï¼Œ
+    //¸ù¾İvalue½«ÓÅÏÈ¼¶¸úĞÂ£¬ÖØĞÂ¸øÒ»¸öÊı¾İ´òÒ»¸öÓÅÏÈ¼¶±êÇ©£¬Í¬Ê±½«ÖµÌæ»»£¬
     bool mark_value(const _value_type &val, unsigned int priority )
     {
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
@@ -1140,10 +1140,10 @@ public:
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 priority_base_[first] = priority;
@@ -1157,28 +1157,28 @@ public:
         return false;
     }
 
-    //æ ‡æ³¨æ‰€æœ‰ç›¸ç­‰çš„æ•°æ®ï¼Œé‡æ–°ç»™ä¸€ä¸ªæ•°æ®æ‰“ä¸€ä¸ªä¼˜å…ˆçº§æ ‡ç­¾ï¼Œæ·˜æ±°ä½¿ç”¨å‡½æ•°washout
+    //±ê×¢ËùÓĞÏàµÈµÄÊı¾İ£¬ÖØĞÂ¸øÒ»¸öÊı¾İ´òÒ»¸öÓÅÏÈ¼¶±êÇ©£¬ÌÔÌ­Ê¹ÓÃº¯Êıwashout
     bool mark_equal(const _key_type &key, unsigned int priority)
     {
         size_t mark_count = 0;
 
         size_t idx = bkt_num_key(key);
         size_t first = hash_factor_base_[ idx];
-        //ä½¿ç”¨é‡å‡½æ•°å¯¹è±¡,ä¸€ä¸ªç±»å•ç‹¬å®šä¹‰ä¸€ä¸ªæ˜¯å¦æ›´å¥½?
+        //Ê¹ÓÃÁ¿º¯Êı¶ÔÏó,Ò»¸öÀàµ¥¶À¶¨ÒåÒ»¸öÊÇ·ñ¸üºÃ?
         _extract_key get_key;
         _equal_key   equal_key;
 
-        //åœ¨åˆ—è¡¨ä¸­é—´æŸ¥è¯¢
+        //ÔÚÁĞ±íÖĞ¼ä²éÑ¯
         while (first != _INVALID_POINT )
         {
-            //å¦‚æœæ‰¾åˆ°ç›¸åŒçš„Key
+            //Èç¹ûÕÒµ½ÏàÍ¬µÄKey
             if (equal_key(get_key(value_base_[first]), key) == true )
             {
                 priority_base_[first] = priority;
             }
             else
             {
-                //å¦‚æœå·²ç»æœ‰æ•°æ®ï¼Œé€€å‡ºå¾ªç¯ï¼Œå› ä¸ºæ‰€æœ‰çš„KEYç›¸åŒçš„ä¸œä¸œæŒ‚åœ¨ä¸€èµ·ï¼Œåˆ é™¤ä¹Ÿæ˜¯ä¸€èµ·åˆ é™¤äº†.
+                //Èç¹ûÒÑ¾­ÓĞÊı¾İ£¬ÍË³öÑ­»·£¬ÒòÎªËùÓĞµÄKEYÏàÍ¬µÄ¶«¶«¹ÒÔÚÒ»Æğ£¬É¾³ıÒ²ÊÇÒ»ÆğÉ¾³ıÁË.
                 if (mark_count > 0)
                 {
                     break;
@@ -1192,24 +1192,24 @@ public:
         return mark_count;
     }
 
-    //æ ‡æ³¨æ‰€æœ‰ç›¸ç­‰çš„æ•°æ®ã€‚è¿™ä¸ªå‡½æ•°æœ‰ç‚¹åˆ«æ‰­ã€‚æˆ‘ä¸å–œæ¬¢ï¼Œï¼Œå› ä¸ºVALUEæ²¡æœ‰ï¼ˆæ²¡æ³•ï¼‰è·Ÿæ–°
+    //±ê×¢ËùÓĞÏàµÈµÄÊı¾İ¡£Õâ¸öº¯ÊıÓĞµã±ğÅ¤¡£ÎÒ²»Ï²»¶£¬£¬ÒòÎªVALUEÃ»ÓĞ£¨Ã»·¨£©¸úĞÂ
     //size_t mark_value_equal(const _value_type &val, unsigned int priority )
     //{
     //    return mark(_extract_key(val),priority);
     //}
 
 
-    //æ·˜æ±°ä¼˜å…ˆçº§è¿‡ä½çš„æ•°æ®,LISTä¸­é—´çš„æ•°æ®æ˜¯æ˜¯ä¹±åºçš„ä¹Ÿå¯ä»¥.åªæ·˜æ±°num_washæ•°é‡çš„æ•°æ®
-    //ä½†é™åˆ¶æ·˜æ±°æ˜¯ä»å¤´éƒ¨å¼€å§‹ï¼Œæ„Ÿè§‰ä¸æ˜¯å¤ªå¥½ã€‚
+    //ÌÔÌ­ÓÅÏÈ¼¶¹ıµÍµÄÊı¾İ,LISTÖĞ¼äµÄÊı¾İÊÇÊÇÂÒĞòµÄÒ²¿ÉÒÔ.Ö»ÌÔÌ­num_washÊıÁ¿µÄÊı¾İ
+    //µ«ÏŞÖÆÌÔÌ­ÊÇ´ÓÍ·²¿¿ªÊ¼£¬¸Ğ¾õ²»ÊÇÌ«ºÃ¡£
     void washout(unsigned int wash_priority, size_t num_wash)
     {
         size_t list_idx = lst_use_node_->idx_next_;
         size_t num_del = 0;
 
-        //ä¸ä¸ºNULLï¼Œè€Œä¸”åˆ é™¤çš„ä¸ªæ•°æ²¡æœ‰è¾¾åˆ°ï¼Œä»å¤´éƒ¨å¼€å§‹æ˜¯å¦å¥½å‘¢?æˆ‘ä¸ç¡®å®šï¼Œæ‰“ç®—åœ¨æä¾›ä¸€ä¸ªå‡½æ•°
+        //²»ÎªNULL£¬¶øÇÒÉ¾³ıµÄ¸öÊıÃ»ÓĞ´ïµ½£¬´ÓÍ·²¿¿ªÊ¼ÊÇ·ñºÃÄØ?ÎÒ²»È·¶¨£¬´òËãÔÚÌá¹©Ò»¸öº¯Êı
         while ( list_idx != lru_hash_head_->num_of_node_ && num_del < num_wash)
         {
-            //å¦‚æœä¼˜å…ˆçº§å°äºæ·˜æ±°ç³»æ•°
+            //Èç¹ûÓÅÏÈ¼¶Ğ¡ÓÚÌÔÌ­ÏµÊı
             if (priority_base_[list_idx] < wash_priority)
             {
                 ++num_del;
@@ -1250,8 +1250,8 @@ class shm_hashset_expire :
 
 protected:
 
-    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
-    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
+    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
+    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
     shm_hashset_expire<_value_type, _hash_fun, _equal_key, _washout_fun >(size_t numnode, void *pmmap, bool if_restore):
         shm_hashtable_expire<_value_type, _value_type, _hash_fun, smem_identity<_value_type>, _equal_key, _washout_fun>(numnode, pmmap, if_restore)
     {
@@ -1294,8 +1294,8 @@ class smem_hashmap_expire :
 
 protected:
 
-    //å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
-    //è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
+    //Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
+    //Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
     smem_hashmap_expire<_key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >(size_t numnode, void *pmmap, bool if_restore):
         shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _extract_key, _equal_key, _washout_fun >(numnode, pmmap, if_restore)
     {
@@ -1313,7 +1313,7 @@ public:
         return reinterpret_cast<smem_hashmap_expire< _key_type, _value_type, _hash_fun, _extract_key, _equal_key, _washout_fun >*>(
                    shm_hashtable_expire< std::pair <_key_type, _value_type>, _key_type, _hash_fun, _extract_key, _equal_key, _washout_fun >::initialize(numnode, pmmap, if_restore));
     }
-    //[]æ“ä½œç¬¦å·æœ‰ä¼˜ç‚¹å’Œç¼ºç‚¹ï¼Œ
+    //[]²Ù×÷·ûºÅÓĞÓÅµãºÍÈ±µã£¬
     _value_type &operator[](const _key_type &key)
     {
         return (find(key)).second;

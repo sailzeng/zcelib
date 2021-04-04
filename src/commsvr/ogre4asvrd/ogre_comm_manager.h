@@ -9,7 +9,7 @@ class Ogre4a_App_Frame;
 class Ogre_Connect_Server;
 class Ogre_Server_Config;
 
-//é€šè®¯é›†ä¸­ç®¡ç†å™¨
+//Í¨Ñ¶¼¯ÖĞ¹ÜÀíÆ÷
 class Ogre_Comm_Manger
 {
 
@@ -19,29 +19,29 @@ public:
     Ogre_Comm_Manger();
     ~Ogre_Comm_Manger();
 
-    ///è¯»å–é…ç½®æ–‡ä»¶
+    ///¶ÁÈ¡ÅäÖÃÎÄ¼ş
     int get_config(const Ogre_Server_Config *config);
 
-    //ä»SENDç®¡é“æ‰¾åˆ°æ‰€æœ‰çš„æ•°æ®å»å‘é€,
+    //´ÓSEND¹ÜµÀÕÒµ½ËùÓĞµÄÊı¾İÈ¥·¢ËÍ,
     int get_all_senddata_to_write(size_t &procframe);
 
-    //æ£€æŸ¥å®‰å…¨ç«¯å£
+    //¼ì²é°²È«¶Ë¿Ú
     int check_safe_port(ZCE_Sockaddr_In &inetadd);
 
-    //åˆå§‹åŒ–é€šè®¯ç®¡ç†å™¨
+    //³õÊ¼»¯Í¨Ñ¶¹ÜÀíÆ÷
     int init_comm_manger();
-    //æ³¨é”€é€šè®¯ç®¡ç†å™¨
+    //×¢ÏúÍ¨Ñ¶¹ÜÀíÆ÷
     int uninit_comm_manger();
 
 public:
-    //å¾—åˆ°å•å­çš„å®ä¾‹
+    //µÃµ½µ¥×ÓµÄÊµÀı
     static Ogre_Comm_Manger *instance();
-    //æ¸…ç†å•å­çš„å®ä¾‹
+    //ÇåÀíµ¥×ÓµÄÊµÀı
     static void clean_instance();
 
 protected:
 
-    //ä¸€æ¬¡æœ€å¤šå‘é€1024å¸§
+    //Ò»´Î×î¶à·¢ËÍ1024Ö¡
     static const unsigned int MAX_ONCE_SEND_FRAME = 1024;
 
 protected:
@@ -50,7 +50,7 @@ protected:
 
 protected:
 
-    //é…ç½®å®ä¾‹æŒ‡é’ˆ
+    //ÅäÖÃÊµÀıÖ¸Õë
     const Ogre_Server_Config *ogre_config_;
 };
 

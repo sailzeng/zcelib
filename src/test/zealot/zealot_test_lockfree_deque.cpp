@@ -7,13 +7,17 @@
 int test_dequechunk(int /*argc*/, char * /*argv*/ [])
 {
     size_t dequesize = 1026;
-    size_t szalloc = zce::lockfree::deque_chunk::getallocsize(dequesize);
+    size_t szalloc = zce::lockfree::shm_dequechunk::getallocsize(dequesize);
     std::cout << "need mem: " << (int)szalloc << std::endl;
+
+
 
     char *tmproom = new char [szalloc + 4];
     memset(tmproom, 0, szalloc + 4);
 
-    zce::lockfree::deque_chunk *pmmap =  zce::lockfree::deque_chunk::initialize(dequesize, 2048, tmproom, false);
+    zce::lockfree::shm_dequechunk *pmmap = 
+        zce::lockfree::shm_dequechunk::initialize(dequesize, 2048, tmproom, false);
+
     if (pmmap->empty())
     {
         std::cout << "empty" << std::endl;

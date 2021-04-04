@@ -1,97 +1,97 @@
 #--------------------------------------------------------------------------------------------------------------------
 # Basic Makefile for ZCELIB 1.0
-# ZCELIB 1.0 的CPP文件的编译,
+# ZCELIB 1.0 ��CPP�ļ��ı���,
 # Author : Sailzeng
-# 定义外部库，和内部库和内部COMM库的INCLUDE路径和LIB文件，
+# �����ⲿ�⣬���ڲ�����ڲ�COMM���INCLUDE·����LIB�ļ���
 # 
-# 必须定义好 ZCELIB_ROOT 这个环境变量，内部代码是依据这个变量进行的路径查询
+# ���붨��� ZCELIB_ROOT ��������������ڲ���������������������е�·����ѯ
 #
-# 默认使用内部包含的第三方库。如果你需要自己在外部管理，可以定义
-# ZCELIB_THIRDPARTY 环境变量。
+# Ĭ��ʹ���ڲ������ĵ������⡣�������Ҫ�Լ����ⲿ���������Զ���
+# ZCELIB_THIRDPARTY ����������
 #
 #--------------------------------------------------------------------------------------------------------------------
-#我们可以使用的MakreFile的变量，
-#这些变量你可以参考ACE的在wrapper_macros.GNU，platform_macros.GNU有定义
+#���ǿ���ʹ�õ�MakreFile�ı�����
+#��Щ��������Բο�ACE����wrapper_macros.GNU��platform_macros.GNU�ж���
 #
-#  变量              描述
+#  ����              ����
 #  --------          -----------
-#  AR                ar 命令的名字
-#  CC                C编译器的命令的名字
-#  CXX               C++编译器的命令的名字
-#  RM                删除工具的命令
-#  MKDIR             建立目录，递归创建的目录，直接支持递归
-#  DLD               dynamic linker 动态库link命令的名字，
-#  LD                linker 命令的名字
+#  AR                ar ���������
+#  CC                C�����������������
+#  CXX               C++�����������������
+#  RM                ɾ�����ߵ�����
+#  MKDIR             ����Ŀ¼���ݹ鴴����Ŀ¼��ֱ��֧�ֵݹ�
+#  DLD               dynamic linker ��̬��link��������֣�
+#  LD                linker ���������
 
-#  PLATFROM          平台是 x86 OR  x64
-#  VERSIONTYPE       版本类型，debug，release，或者 neutral ，debug=1,VERSIONTYPE=debug,release=1 VERSIONTYPE=release debug=0 and release=0 VERSIONTYPE=neutral
+#  PLATFROM          ƽ̨�� x86 OR  x64
+#  VERSIONTYPE       �汾���ͣ�debug��release������ neutral ��debug=1,VERSIONTYPE=debug,release=1 VERSIONTYPE=release debug=0 and release=0 VERSIONTYPE=neutral
 
-#  CFLAGS            C语言编译选项
-#  CCFLAGS           C++语言编译选项
-#  DEFFLAGS          预处理的DEFINE部分
-#  CPPFLAGS          用于语言编译的预处理标志，比如DEFINDE等. CPPFLAGS += $(DEFFLAGS) 
-#  SOFLAGS           生成.so库时候的参数
-#  ARFLAGS           ar 的参数
-#  DCFLAGS           Debugging 程序的C语言编译选项,一般在有 debuginfo=1 变量时有效
-#  DCCFLAGS          Debugging 程序的C++语言编译选项,一般在有 debuginfo=1变量时有效
-#  OCFLAGS           Optimizing 程序的C语言编译选项
-#  OCCFLAGS          Optimizing 程序的C++语言编译选项
-#  PCFLAGS           profiling 程序的C语言编译选项 profiling是什么不要问我。
-#  PCCFLAGS          profiling 程序的C++语言编译选项
+#  CFLAGS            C���Ա���ѡ��
+#  CCFLAGS           C++���Ա���ѡ��
+#  DEFFLAGS          Ԥ������DEFINE����
+#  CPPFLAGS          �������Ա����Ԥ������־������DEFINDE��. CPPFLAGS += $(DEFFLAGS) 
+#  SOFLAGS           ����.so��ʱ��Ĳ���
+#  ARFLAGS           ar �Ĳ���
+#  DCFLAGS           Debugging �����C���Ա���ѡ��,һ������ debuginfo=1 ����ʱ��Ч
+#  DCCFLAGS          Debugging �����C++���Ա���ѡ��,һ������ debuginfo=1����ʱ��Ч
+#  OCFLAGS           Optimizing �����C���Ա���ѡ��
+#  OCCFLAGS          Optimizing �����C++���Ա���ѡ��
+#  PCFLAGS           profiling �����C���Ա���ѡ�� profiling��ʲô��Ҫ���ҡ�
+#  PCCFLAGS          profiling �����C++���Ա���ѡ��
 #  LDFLAGS           ld linker flags
  
-#  COMPILE.c         编译C文件的命令行,  一般为:$(CC) $(CFLAGS) $(CPPFLAGS) -c
-#  COMPILE.cc        编译C++文件的命令行,一般为:$(CXX) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS) -c
-#  COMPILEESO.cc     $(CXX) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS),（少个-c）没太搞明白，不知道为什么和SO有关，好像是为了修正错误增加的。不理也罢,
-#  LINK.c            链接C文件的命令行
-#  LINK.cc           链接C++文件的命令行,一般为:$(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS)
-#  SOLINK.cc         生成.so库时候的命令行
+#  COMPILE.c         ����C�ļ���������,  һ��Ϊ:$(CC) $(CFLAGS) $(CPPFLAGS) -c
+#  COMPILE.cc        ����C++�ļ���������,һ��Ϊ:$(CXX) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS) -c
+#  COMPILEESO.cc     $(CXX) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS),���ٸ�-c��û̫�����ף���֪��Ϊʲô��SO�йأ�������Ϊ�������������ӵġ�����Ҳ��,
+#  LINK.c            ����C�ļ���������
+#  LINK.cc           ����C++�ļ���������,һ��Ϊ:$(PURELINK) $(PRELINK) $(LD) $(CCFLAGS) $(CPPFLAGS) $(PTDIRS)
+#  SOLINK.cc         ����.so��ʱ���������
 
-#  INCLDIRS          外部的头文件定义的部分
-#  LIBARYS           定义的外部库部分,包括库路径，库名称，ACE原来用的LIBS这个变量
+#  INCLDIRS          �ⲿ��ͷ�ļ�����Ĳ���
+#  LIBARYS           ������ⲿ�ⲿ��,������·���������ƣ�ACEԭ���õ�LIBS�������
 
 #  MAKEFLAGS         Flags that are passed into the compilation from the commandline
-#  PIC               PIC就是position independent code 
-#  PWD               得到当前目录的命令
+#  PIC               PIC����position independent code 
+#  PWD               �õ���ǰĿ¼������
 
-#  PRELINK           LINK之前执行的命令，有些工具需要在LINK前干点坏事，比如purify等
-#  PURELINK          purify 执行的命令，purify是什么不要问我。
+#  PRELINK           LINK֮ǰִ�е������Щ������Ҫ��LINKǰ�ɵ㻵�£�����purify��
+#  PURELINK          purify ִ�е����purify��ʲô��Ҫ���ҡ�
 
 #--------------------------------------------------------------------------------------------------------------------
 
-# ?= 表示如果没有赋值，就赋值
-# := 表示立即展开变量，防止递归等问题。
-# =  普通赋值，内部变量延后（在使用时）展开
+# ?= ��ʾ���û�и�ֵ���͸�ֵ
+# := ��ʾ����չ����������ֹ�ݹ�����⡣
+# =  ��ͨ��ֵ���ڲ������Ӻ���ʹ��ʱ��չ��
 
-#ACE的Makefile支持，make "debug="等同于debug=0，我不打算这样干，无聊宠坏你
+#ACE��Makefile֧�֣�make "debug="��ͬ��debug=0���Ҳ����������ɣ����ĳ軵��
 
-#编译的版本类型,暂时默认编译中性 neutral 版本
+#����İ汾����,��ʱĬ�ϱ������� neutral �汾
 debug ?= 0
 release ?= 0
 
-#默认都打开debuginfo,optimize，GCC这点和WINDOWS完全不一样
+#Ĭ�϶���debuginfo,optimize��GCC����WINDOWS��ȫ��һ��
 debuginfo ?=1
 optimize ?= 1
 
 #Build with thread support.
 threads ?= 1
-#编译增加-pipe选项
+#��������-pipeѡ��
 pipes ?= 1
 
-#对于编译环境是否，增加-static
+#���ڱ��뻷���Ƿ�����-static
 static_link ?= 0
 symlinks ?= 0
 
-#交叉编译 ==32，指定编译32位的程序，==64，编译64位程序
+#������� ==32��ָ������32λ�ĳ���==64������64λ����
 buildbits ?= 0
 
-#如果你非要当流氓不用告警，你自己加入一个 rogue=1,这样就可以在有告警的情况下编译通过
+#������Ҫ����å���ø澯�����Լ�����һ�� rogue=1,�����Ϳ������и澯������±���ͨ��
 rogue ?= 0 
 
-#为了gprof 的profile 性能测试
+#Ϊ��gprof ��profile ���ܲ���
 profile ?= 0
 
-#一些测试工具的支持，目前都不考虑了，vargrind目前是最好的测试工具
+#һЩ���Թ��ߵ�֧�֣�Ŀǰ���������ˣ�vargrindĿǰ����õĲ��Թ���
 insure ?= 0
 purify ?= 0
 quantify ?= 0
@@ -110,39 +110,39 @@ RM        ?= rm -f
 MKDIR     ?= mkdir -p
 RMDIR     ?= rm -rf
 
-#如果定义使用insure查询代码的bug。
+#�������ʹ��insure��ѯ�����bug��
 ifeq ($(insure),1)
 CC  = insure
 CXX = insure
 endif
 
-#如果需要使用ccache加快编译速度
+#�����Ҫʹ��ccache�ӿ�����ٶ�
 ifeq ($(ccache),1)
 CC  := ccache $(CC)
 CXX := ccache $(CXX)
 endif
 
-#告警标志
+#�澯��־
 WARNFLAGS += -W -Wall -Wpointer-arith -Winline -Wunreachable-code -Wshadow -Wcast-align
 
-#这个告警有胆量的可以考虑一下，我第一次挑战以失败告终
+#����澯�е����Ŀ��Կ���һ�£��ҵ�һ����ս��ʧ�ܸ���
 ifeq ($(effcpp),1)
 WARNFLAGS += -Weffc++
 endif
 
 
-#-Werror 是告警为错误,我消灭了一半服务器的告警,所以我有权要求你也这样做,
+#-Werror �Ǹ澯Ϊ����,��������һ��������ĸ澯,��������ȨҪ����Ҳ������,
 ifeq ($(rogue),1)
 WARNFLAGS +=
 else
 WARNFLAGS += -Werror
 endif 
 
-#编译选项
+#����ѡ��
 CFLAGS += $(WARNFLAGS) -MMD 
 CCFLAGS += $(WARNFLAGS) -std=c++17 -MMD
 
-#注意这个地方,-MMD是这样一个选项的，在生产.o的同时，生成.d文件,而且.d文件不包含系统头文件.
+#ע������ط�,-MMD������һ��ѡ��ģ�������.o��ͬʱ������.d�ļ�,����.d�ļ�������ϵͳͷ�ļ�.
 
 ifeq ($(buildbits),32)
 CFLAGS += -m32
@@ -155,61 +155,61 @@ CCFLAGS += -m32
 LDFLAGS  += -m64
 endif
 
-#ARFLAGS好像外部有定义，诡异
+#ARFLAGS�����ⲿ�ж��壬����
 ARFLAGS   = rsuv
 
 
-#-pipe用于加快编译速度，如果pipes被设置1打开-pipe,
-#我自己的测试-pipe加快不了多少速度
+#-pipe���ڼӿ�����ٶȣ����pipes������1��-pipe,
+#���Լ��Ĳ���-pipe�ӿ첻�˶����ٶ�
 ifeq ($(pipes), 1)
 CFLAGS += -pipe
 CCFLAGS += -pipe
 endif # pipes
 
 
-#优化选项
+#�Ż�ѡ��
 OCFLAGS ?= -O2
 OCCFLAGS ?= -O2
 
-#如果有优化
+#������Ż�
 ifeq ($(optimize),1)
 CFLAGS  += $(OCFLAGS)
 CCFLAGS += $(OCCFLAGS)
 endif # optimize
 
 
-#-ggdb这个调试开关打开后调试信息应该好于-g,但是不能使用其他调试器调试了
+#-ggdb������Կ��ش򿪺������ϢӦ�ú���-g,���ǲ���ʹ������������������
 DCFLAGS  += -ggdb
 DCCFLAGS += -ggdb
 
-#如果需要调试信息，linux的版本一般还是带上了调试信息，无论版本
+#�����Ҫ������Ϣ��linux�İ汾һ�㻹�Ǵ����˵�����Ϣ�����۰汾
 ifeq ($(debuginfo),1)
   CFLAGS  += $(DCFLAGS)
   CCFLAGS += $(DCCFLAGS)
 endif # debuginfo
 
-#下面两个选项主要是为了动态库导出准备的。
+#��������ѡ����Ҫ��Ϊ�˶�̬�⵼��׼���ġ�
 
 #CCFLAGS += -fvisibility=hidden -fvisibility-inlines-hidden
 
 PCFLAGS  +=-pg
 PCCFLAGS +=-pg
 
-#为GPORF编译准备的编译选项
+#ΪGPORF����׼���ı���ѡ��
 ifeq ($(profile),1)
   CFLAGS  += $(PCFLAGS)
   CCFLAGS += $(PCCFLAGS)
 endif # profile
 
 #=====================================================================================================================
-#不支持同时定义这两个东东，
+#��֧��ͬʱ����������������
 ifeq ($(debug),1)
 ifeq ($(release),1)
   $(error flag debug=1 and release=1 is error.please check your make file or command.)
 endif
 endif
 
-#检查操作系统的位数
+#������ϵͳ��λ��
 OS_BITS := $(shell getconf LONG_BIT)
 
 ifeq ($(OS_BITS),32)
@@ -243,7 +243,7 @@ DEFFLAGS  += -DNDEBUG
 endif
 #--------------------------------------------------------------------------------------------------------------------
 
-#线程增加，理论上多线程，也可以使用-pthread，-pthread等同与-D_REENTRANT 连接时等同于-lpthread
+#�߳����ӣ������϶��̣߳�Ҳ����ʹ��-pthread��-pthread��ͬ��-D_REENTRANT ����ʱ��ͬ��-lpthread
 ifeq ($(threads),1)
   DEFFLAGS  += -D_REENTRANT 
 endif # threads
@@ -253,17 +253,17 @@ endif # threads
 # for you): _SVID_SOURCE _BSD_SOURCE _POSIX_SOURCE _POSIX_C_SOURCE=199506L, ...
 DEFFLAGS += -D_GNU_SOURCE
 
-#-shared包括了-fpic选项，该选项用于生成位置无关代码
+#-shared������-fpicѡ���ѡ����������λ���޹ش���
 SOFLAGS += $(DEFFLAGS) -shared  
 
 ifeq ($(optimize),1)
   SOFLAGS += -Wl, $(OCCFLAGS)
 endif
 
-SYS_LIBARYS += -ldl
+LIBARYS += -ldl
 
 ifeq ($(threads),1)
-  SYS_LIBARYS += -lpthread -lrt
+  LIBARYS += -lpthread -lrt
 endif
 
 #--------------------------------------------------------------------------------------------------------------------
@@ -276,21 +276,21 @@ else
 PATH_THIRDPARTY := $(ZCELIB_ROOT)/third_party
 endif
 
-#源代码的根目录，也就是makefile的共用文件放置的目录
+#Դ����ĸ�Ŀ¼��Ҳ����makefile�Ĺ����ļ����õ�Ŀ¼
 PATH_SRC  :=$(PATH_DEV)/src
 
-# 目录是否跟进操作系统以及(debug , release，neutral) 做区分？
-# 区分的好处是避免一些编译连接问题。
-# 这是一个问题，WINDOWS下最好区分，而Linux呐，意义要低，有个麻烦的地方，运行目录如何管理。
-# 我暂时只对平台类型做了区分，不想过分折腾
+# Ŀ¼�Ƿ��������ϵͳ�Լ�(debug , release��neutral) �����֣�
+# ���ֵĺô��Ǳ���һЩ�����������⡣
+# ����һ�����⣬WINDOWS��������֣���Linux�ţ�����Ҫ�ͣ��и��鷳�ĵط�������Ŀ¼��ι�����
+# ����ʱֻ��ƽ̨�����������֣������������
 
-#编译的obj文件放置的目录
+#�����obj�ļ����õ�Ŀ¼
 PARENT_PATH_OBJ  :=$(PATH_DEV)/obj/linux
 PATH_OBJ = $(PARENT_PATH_OBJ)/$(VERSIONTYPE)
-#生成的lib放置的目录，
+#���ɵ�lib���õ�Ŀ¼��
 PARENT_PATH_LIB :=$(PATH_DEV)/lib/linux
 PATH_LIB  :=$(PARENT_PATH_LIB)/$(PLATFROM)
-#生成dll，bin文件放置的目录
+#����dll��bin�ļ����õ�Ŀ¼
 PARENT_PATH_BIN :=$(PATH_DEV)/bin/linux
 PATH_BIN  :=$(PARENT_PATH_BIN)/$(PLATFROM)
 
@@ -317,11 +317,11 @@ INC_SQLITE   = -I$(PATH_THIRDPARTY_INC)/sqlite-3.8.8.1
 INC_MYSQL    = -I$(PATH_THIRDPARTY_INC)/mysql-linux-5.6.22
 INC_RAPIDXML = -I$(PATH_THIRDPARTY_INC)/rapidxml-1.13
 
-# 外部库的环境
+# �ⲿ��Ļ���
 INC_DEV_OUTER :=  $(INC_MYSQL) $(INC_SQLITE)  $(INC_RAPIDXML)  $(INC_LUALIB)  $(INC_PROTOBUF)
 
 #--------------------------------------------------------------------------------------------------------------------
-#外部头文件
+#�ⲿͷ�ļ�
 
 ifeq ($(OS_BITS),32)
 PATH_THIRDPARTY_LIB= $(PATH_THIRDPARTY)/lib/linux/x86
@@ -340,40 +340,39 @@ LIB_ZCELIB =-L$(PATH_LIB) -lzcelib
 
 
 INC_SOARLIB =-I$(PATH_SRC)/commlib/soarlib
-LIB_SOARLIB =-L$(PATH_LIB) -lsoarlib
+LIB_SOARLIB =-lsoarlib
 
 
 INC_DEV_INNER := $(INC_ZCELIB) $(INC_SOARLIB)
-#注意顺序，ZCELIB放后面，
-LIB_DEV_INNER := $(LIB_SOARLIB) $(LIB_ZCELIB) 
+LIB_DEV_INNER := $(LIB_ZCELIB) $(LIB_SOARLIB)
 
 #--------------------------------------------------------------------------------------------------------------------
-#如果你有特殊的需求，你可以在你的Makefile里面定义INCLDIRS 和 LIBARYS
+#��������������������������Makefile���涨��INCLDIRS �� LIBARYS
 
-INCLDIRS := $(INC_DEV_INNER) $(INC_DEV_OUTER)
-LIBARYS  := $(LIB_DEV_INNER) $(LIB_DEV_OUTER) $(SYS_LIBARYS)
+INCLDIRS ?= $(INC_DEV_INNER) $(INC_DEV_OUTER)
+LIBARYS  ?= $(LIB_DEV_INNER) $(LIB_DEV_OUTER)
 
 
 CPPFLAGS += $(DEFFLAGS) $(INCLDIRS)
 
 #--------------------------------------------------------------------------------------------------------------------
 
-#-Winvalid-pch是检查pch文件是否有效的。但因为我们使用了多个gch的方案，暂时不用这个参数了。
-#主要可以帮助你定位bug
+#-Winvalid-pch�Ǽ��pch�ļ��Ƿ���Ч�ġ�����Ϊ����ʹ���˶��gch�ķ�������ʱ������������ˡ�
+#��Ҫ���԰����㶨λbug
 COMPILE.c       := $(CC)  $(CFLAGS)  $(CPPFLAGS) -c
 COMPILE.cc      := $(CXX) $(CCFLAGS) $(CPPFLAGS) -c
 
 PRECOMPILE.c    := $(CC)  $(CFLAGS)  $(CPPFLAGS) -x c++-header -c
 PRECOMPILE.cc   := $(CXX) $(CCFLAGS) $(CPPFLAGS) -x c++-header -c 
 
-#-rdynamic方便使用backtrace_symbols函数跟踪堆栈
+#-rdynamic����ʹ��backtrace_symbols�������ٶ�ջ
 
 PRELINK  ?=
 PURELINK ?=
 LDFLAGS  ?= -rdynamic
 
-# -static 强制编译器默认选择静态库，默认编译器会选择动态库，但我们的发布不在乎东西的大小，
-#而动态库的管理比较麻烦，我们一般都使用静态库发布。
+# -static ǿ�Ʊ�����Ĭ��ѡ��̬�⣬Ĭ�ϱ�������ѡ��̬�⣬�����ǵķ������ں������Ĵ�С��
+#����̬��Ĺ����Ƚ��鷳������һ�㶼ʹ�þ�̬�ⷢ����
 ifeq ($(static_link),1)
   LDFLAGS += -static
 endif

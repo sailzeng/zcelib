@@ -17,7 +17,7 @@
 
 
 /*!
-* @brief      çŠ¶æ€æœºçš„APP
+* @brief      ×´Ì¬»úµÄAPP
 *
 * @note
 */
@@ -26,19 +26,19 @@ class Comm_SvrdApp_FSM : public Soar_Svrd_Appliction
 
 protected:
 
-    //ä½¿ç”¨äº‹åŠ¡å¤„ç†çš„Application
+    //Ê¹ÓÃÊÂÎñ´¦ÀíµÄApplication
     Comm_SvrdApp_FSM();
     virtual ~Comm_SvrdApp_FSM();
 
 public:
 
-    //å¢åŠ è°ƒç”¨register_func_cmd
+    //Ôö¼Óµ÷ÓÃregister_func_cmd
     virtual int app_start(int argc, const char *argv[]);
 
-    //è¿è¡Œå¤„ç†,
+    //ÔËĞĞ´¦Àí,
     virtual int app_run();
 
-    //é€€å‡ºå¤„ç†
+    //ÍË³ö´¦Àí
     virtual int app_exit();
 
 protected:

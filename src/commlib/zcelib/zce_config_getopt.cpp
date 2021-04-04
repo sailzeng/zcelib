@@ -78,7 +78,7 @@ Class           : ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION
 ************************************************************************************************************/
 ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION (
     const char *name,
-    ZCE_Get_Option::OPTION_ARG_MODE has_arg,
+    int has_arg,
     int val)
     :  name_ (name),
        has_arg_ (has_arg),
@@ -87,7 +87,7 @@ ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION (
 }
 
 ZCE_Get_Option::ZCE_GETOPT_LONG_OPTION::ZCE_GETOPT_LONG_OPTION (void):
-    has_arg_(ZCE_Get_Option::OPTION_ARG_MODE::NO_ARG),
+    has_arg_(0),
     val_(0)
 {
 }
@@ -297,7 +297,7 @@ ZCE_Get_Option::long_option_i (void)
         {
             // s must point to '=' which means there's an argument (well
             // close enough).
-            if (pfound->has_arg_ != OPTION_ARG_MODE::NO_ARG)
+            if (pfound->has_arg_ != NO_ARG)
                 // Good, we want an argument and here it is.
             {
                 this->optarg = ++s;
@@ -319,7 +319,7 @@ ZCE_Get_Option::long_option_i (void)
                 // doesn't know we ignored an argument if opt_err is off!!!
             }
         }
-        else if (pfound->has_arg_ == OPTION_ARG_MODE::ARG_REQUIRED)
+        else if (pfound->has_arg_ == ARG_REQUIRED)
         {
             // s didn't help us, but we need an argument. Note that
             // optional arguments for long options must use the "=" syntax,
@@ -505,15 +505,17 @@ ZCE_Get_Option::operator () (void)
     return this->short_option_i ();
 }
 
-int ZCE_Get_Option::long_option (const char *name,
-                                 OPTION_ARG_MODE has_arg)
+int
+ZCE_Get_Option::long_option (const char *name,
+                             OPTION_ARG_MODE has_arg)
 {
     return this->long_option (name, 0, has_arg);
 }
 
-int ZCE_Get_Option::long_option (const char *name,
-                                 int short_option,
-                                 OPTION_ARG_MODE has_arg)
+int
+ZCE_Get_Option::long_option (const char *name,
+                             int short_option,
+                             OPTION_ARG_MODE has_arg)
 {
 
     // We only allow valid alpha-numeric characters as short options.
@@ -536,7 +538,7 @@ int ZCE_Get_Option::long_option (const char *name,
             {
                 if (s[2] == ':')
                 {
-                    if (has_arg != OPTION_ARG_MODE::ARG_OPTIONAL)
+                    if (has_arg != ARG_OPTIONAL)
                     {
                         if (this->opterr)
                         {
@@ -549,7 +551,7 @@ int ZCE_Get_Option::long_option (const char *name,
                         return -1;
                     }
                 }
-                else if (has_arg != OPTION_ARG_MODE::ARG_REQUIRED)
+                else if (has_arg != ARG_REQUIRED)
                 {
                     if (this->opterr)
                     {
@@ -562,7 +564,7 @@ int ZCE_Get_Option::long_option (const char *name,
                     return -1;
                 }
             }
-            else if (has_arg != OPTION_ARG_MODE::NO_ARG)
+            else if (has_arg != NO_ARG)
             {
                 if (this->opterr)
                 {
@@ -580,11 +582,11 @@ int ZCE_Get_Option::long_option (const char *name,
             // Didn't find short option, so add it...
             this->optstring_ += (char) short_option;
 
-            if (has_arg == OPTION_ARG_MODE::ARG_REQUIRED)
+            if (has_arg == ARG_REQUIRED)
             {
                 this->optstring_ +=  ":";
             }
-            else if (has_arg == OPTION_ARG_MODE::ARG_OPTIONAL)
+            else if (has_arg == ARG_OPTIONAL)
             {
                 this->optstring_ += ("::");
             }

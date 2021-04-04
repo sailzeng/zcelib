@@ -1,5 +1,5 @@
-//ç”¨äºASNI stringå‡½æ•°çš„è¡¥å……
-//å§‹äº2002-06-22ï¼Œå½“ç„¶å†…éƒ¨åå¤æ”¹å†™è¿‡
+//ÓÃÓÚASNI stringº¯ÊıµÄ²¹³ä
+//Ê¼ÓÚ2002-06-22£¬µ±È»ÄÚ²¿·´¸´¸ÄĞ´¹ı
 //
 
 
@@ -14,7 +14,7 @@
 
 
 //==========================================================================================================
-//å–å¾—ä¸€ä¸ªå”¯ä¸€çš„åç§°,ç”¨äºä¸€äº›éœ€è¦å–å”¯ä¸€åå­—çš„åœ°æ–¹ï¼Œobjectä¸€èˆ¬é€‰å–ä¸€äº›æŒ‡é’ˆè€ƒè™‘
+//È¡µÃÒ»¸öÎ¨Ò»µÄÃû³Æ,ÓÃÓÚÒ»Ğ©ĞèÒªÈ¡Î¨Ò»Ãû×ÖµÄµØ·½£¬objectÒ»°ãÑ¡È¡Ò»Ğ©Ö¸Õë¿¼ÂÇ
 char *zce::object_unique_name (const void *object_ptr,
                                char *name,
                                size_t length)
@@ -30,7 +30,7 @@ char *zce::object_unique_name (const void *object_ptr,
 }
 
 
-//é€šè¿‡å‰ç¼€å¼ï¼Œå¾—åˆ°ä¸€ä¸ªå”¯ä¸€çš„åç§°,
+//Í¨¹ıÇ°×ºÊ½£¬µÃµ½Ò»¸öÎ¨Ò»µÄÃû³Æ,
 char *zce::prefix_unique_name(const char *prefix_name,
                               char *name,
                               size_t length)
@@ -57,7 +57,7 @@ char *zce::prefix_unique_name(const char *prefix_name,
 
 
 //==========================================================================================================
-//å°†å­—ç¬¦ä¸²å…¨éƒ¨è½¬æ¢ä¸ºå¤§å†™å­—ç¬¦
+//½«×Ö·û´®È«²¿×ª»»Îª´óĞ´×Ö·û
 char *zce::strupr(char *str)
 {
 
@@ -73,7 +73,7 @@ char *zce::strupr(char *str)
     return str;
 }
 
-//å°†å­—ç¬¦ä¸²å…¨éƒ¨è½¬æ¢ä¸ºå°å†™å­—ç¬¦
+//½«×Ö·û´®È«²¿×ª»»ÎªĞ¡Ğ´×Ö·û
 char *zce::strlwr(char *str)
 {
 
@@ -88,8 +88,8 @@ char *zce::strlwr(char *str)
     return str;
 }
 
-//å­—ç¬¦ä¸²æ¯”è¾ƒï¼Œå¿½è§†å¤§å°å†™
-//é«˜æ•ˆç‰ˆæœ¬
+//×Ö·û´®±È½Ï£¬ºöÊÓ´óĞ¡Ğ´
+//¸ßĞ§°æ±¾
 int zce::strcasecmp(const char *string1, const char *string2)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -100,8 +100,8 @@ int zce::strcasecmp(const char *string1, const char *string2)
 
 }
 
-//å­—ç¬¦ä¸²å®šé•¿æ¯”è¾ƒï¼Œå¿½è§†å¤§å°å†™
-//é«˜æ•ˆç‰ˆæœ¬
+//×Ö·û´®¶¨³¤±È½Ï£¬ºöÊÓ´óĞ¡Ğ´
+//¸ßĞ§°æ±¾
 int zce::strncasecmp(const char *string1, const char *string2, size_t maxlen)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -113,25 +113,25 @@ int zce::strncasecmp(const char *string1, const char *string2, size_t maxlen)
 
 
 
-//æ›¿æ¢srcå­—ç¬¦ä¸²ä¸­çš„subå­—ç¬¦ä¸²ä¸ºreplaceï¼Œä¿å­˜åˆ°dstå­—ç¬¦ä¸²ä¸­
+//Ìæ»»src×Ö·û´®ÖĞµÄsub×Ö·û´®Îªreplace£¬±£´æµ½dst×Ö·û´®ÖĞ
 const char *zce::str_replace(const char *src, char *dst, const char *sub, const char *replace)
 {
     ZCE_ASSERT(src && dst && sub && replace);
 
-    //è®°å½•å½“å‰æŒ‡é’ˆä½ç½®,åç§»
+    //¼ÇÂ¼µ±Ç°Ö¸ÕëÎ»ÖÃ,Æ«ÒÆ
     size_t  dst_offset = 0, src_offset = 0;
 
-    //æ±‚å¾—å„å­—ç¬¦ä¸²é•¿åº¦
+    //ÇóµÃ¸÷×Ö·û´®³¤¶È
     size_t src_len = strlen(src);
     size_t sub_len = strlen(sub);
     size_t replace_len = strlen(replace);
 
     const char *find_pos = NULL;
-    //strstræŸ¥æ‰¾subå­—ç¬¦ä¸²å‡ºç°çš„æŒ‡é’ˆ
+    //strstr²éÕÒsub×Ö·û´®³öÏÖµÄÖ¸Õë
     while ( 0 != (find_pos = strstr(src + src_offset, sub)) )
     {
 
-        //æ‹·è´srcå­—ç¬¦ä¸²ï¼Œä»é¦–åœ°å€å¼€å§‹ï¼Œposä¸ªå­—ç¬¦ã€‚
+        //¿½±´src×Ö·û´®£¬´ÓÊ×µØÖ·¿ªÊ¼£¬pos¸ö×Ö·û¡£
         memcpy(dst + dst_offset, src + src_offset, find_pos - (src + src_offset));
 
         dst_offset += find_pos - (src + src_offset);
@@ -141,14 +141,14 @@ const char *zce::str_replace(const char *src, char *dst, const char *sub, const 
         dst_offset += replace_len;
     }
 
-    //æŠŠsubå­—ç¬¦ä¸²åé¢çš„å­—ç¬¦ä¸²åˆ°dstä¸­
+    //°Ñsub×Ö·û´®ºóÃæµÄ×Ö·û´®µ½dstÖĞ
     memcpy(dst + dst_offset, src + src_offset, src_len - src_offset);
     dst_offset += src_len - src_offset;
 
-    //æœ€åæ·»åŠ å­—ç¬¦ä¸²ç»“å°¾æ ‡è®°'\0'
+    //×îºóÌí¼Ó×Ö·û´®½áÎ²±ê¼Ç'\0'
     *(dst + dst_offset) = '\0';
 
-    //è¿”å›dst
+    //·µ»Ødst
     return dst;
 }
 
@@ -185,7 +185,7 @@ void str_split_into2(const std::string &src_str,
 }
 
 //-------------------------------------------------------------------------------------------------------------------
-//è·¨è¶Šç©ºç™½ç¬¦ï¼ŒæŒ‡ç©ºæ ¼ã€æ°´å¹³åˆ¶è¡¨ã€å‚ç›´åˆ¶è¡¨ã€æ¢é¡µã€å›è½¦å’Œæ¢è¡Œç¬¦ï¼Œè¿™ç±»å­—ç¬¦éƒ½è·¨è¶Šï¼Œ
+//¿çÔ½¿Õ°×·û£¬Ö¸¿Õ¸ñ¡¢Ë®Æ½ÖÆ±í¡¢´¹Ö±ÖÆ±í¡¢»»Ò³¡¢»Ø³µºÍ»»ĞĞ·û£¬ÕâÀà×Ö·û¶¼¿çÔ½£¬
 const char *zce::skip_whitespace (const char *str)
 {
     while (::isspace(static_cast<unsigned char>(*str)))
@@ -196,7 +196,7 @@ const char *zce::skip_whitespace (const char *str)
     return str;
 }
 
-//è·¨è¶ŠæŸä¸ªtoken
+//¿çÔ½Ä³¸ötoken
 const  char *zce::skip_token(const char *str)
 {
     while (::isspace(static_cast<unsigned char>(*str)))
@@ -209,7 +209,7 @@ const  char *zce::skip_token(const char *str)
         ++str;
     }
 
-    //åé¢çš„ç©ºæ ¼è¦ä¸è¦è·³è¿‡ï¼Ÿç®—äº†ï¼Œç•™ç»™ä¸‹ä¸€ä¸ªæŠŠ
+    //ºóÃæµÄ¿Õ¸ñÒª²»ÒªÌø¹ı£¿ËãÁË£¬Áô¸øÏÂÒ»¸ö°Ñ
     //while (::isspace(static_cast<unsigned char>(*str)))
     //{
     //    ++str;
@@ -217,7 +217,7 @@ const  char *zce::skip_token(const char *str)
     return str;
 }
 
-//è·¨è¶Šä¸€è¡Œ
+//¿çÔ½Ò»ĞĞ
 const char *zce::skip_line(const char *str)
 {
     while ( ('\n' != (*str)) && ('\0' != (*str)) )
@@ -225,7 +225,7 @@ const char *zce::skip_line(const char *str)
         ++str;
     }
 
-    //å¦‚æœæ˜¯æ¢è¡Œç¬¦ï¼Œå‰è¿›ä¸€ä¸ª
+    //Èç¹ûÊÇ»»ĞĞ·û£¬Ç°½øÒ»¸ö
     if ('\n' == (*str) )
     {
         ++str;
@@ -236,7 +236,7 @@ const char *zce::skip_line(const char *str)
 
 
 
-//è·¨è¶Šè°‹ä¸ªåˆ†éš”ç¬¦å·
+//¿çÔ½Ä±¸ö·Ö¸ô·ûºÅ
 const char *zce::skip_separator(const char *str, char separator_char)
 {
     while ( (separator_char != (*str)) && ('\0' != (*str)) )
@@ -244,7 +244,7 @@ const char *zce::skip_separator(const char *str, char separator_char)
         ++str;
     }
 
-    //å¦‚æœæ˜¯æ¢è¡Œç¬¦ï¼Œå‰è¿›ä¸€ä¸ª
+    //Èç¹ûÊÇ»»ĞĞ·û£¬Ç°½øÒ»¸ö
     if (separator_char == (*str) )
     {
         ++str;
@@ -256,12 +256,12 @@ const char *zce::skip_separator(const char *str, char separator_char)
 //==========================================================================================================
 
 
-//ç”¨ 11 02 03 0E E0         ..... æ ¼å¼çš„è¾“å‡ºï¼ŒæŒ‡é’ˆä¿¡æ¯ã€‚è°ƒè¯•æ‰“å°å†…å­˜ä¿¡æ¯
+//ÓÃ 11 02 03 0E E0         ..... ¸ñÊ½µÄÊä³ö£¬Ö¸ÕëĞÅÏ¢¡£µ÷ÊÔ´òÓ¡ÄÚ´æĞÅÏ¢
 void zce::memory_debug(const unsigned char *mem_ptr,
                        size_t mem_len,
                        std::vector<std::string> &str_ary)
 {
-    //ä¸€è¡Œè¾“å‡ºçš„å­—ç¬¦æ•°é‡
+    //Ò»ĞĞÊä³öµÄ×Ö·ûÊıÁ¿
     const size_t LINE_OUT_NUM = 32;
     const size_t SPEARATOR_LEN = 2;
     char ascii_str[LINE_OUT_NUM + SPEARATOR_LEN + 1] = {0};
@@ -270,7 +270,7 @@ void zce::memory_debug(const unsigned char *mem_ptr,
     char hex_str[HEX_STR_LEN] = {0};
     const size_t ADDR_STR_LEN = 32;
     char addr_str[ADDR_STR_LEN] = { 0 };
-    //å¤´éƒ¨ç”¨4ä¸ªç©ºæ ¼ä½œä¸ºåˆ†å‰²å¯Œè±ª
+    //Í·²¿ÓÃ4¸ö¿Õ¸ñ×÷Îª·Ö¸î¸»ºÀ
 
     ascii_str[0] = ' ';
     ascii_str[1] = ' ';
@@ -282,13 +282,13 @@ void zce::memory_debug(const unsigned char *mem_ptr,
     size_t j = 0;
     for (size_t i = 0; i < mem_len ; ++i, ++j)
     {
-        //æ¢è¡Œ
+        //»»ĞĞ
         if (i % LINE_OUT_NUM == 0 && i != 0  )
         {
             line_string += ascii_str;
             str_ary.push_back(line_string);
             line_string.clear();
-            //ä»å¤´å¼€å§‹è®°å½•
+            //´ÓÍ·¿ªÊ¼¼ÇÂ¼
             j = 0;
         }
         if (j == 0)
@@ -300,7 +300,7 @@ void zce::memory_debug(const unsigned char *mem_ptr,
         snprintf(hex_str, HEX_STR_LEN, "%02X ", bytmp);
         line_string += hex_str;
 
-        //åªè€ƒè™‘èƒ½æ˜¾ç¤ºçš„å­—ç¬¦ï¼Œç‰¹æ®Šå­—ç¬¦æ›´æ¢ä¸º'.',æ‰©å±•ASICIIç å°±ä¸è€ƒè™‘äº†
+        //Ö»¿¼ÂÇÄÜÏÔÊ¾µÄ×Ö·û£¬ÌØÊâ×Ö·û¸ü»»Îª'.',À©Õ¹ASICIIÂë¾Í²»¿¼ÂÇÁË
         if (bytmp <= 0x20 || bytmp >= 0x7F )
         {
             bytmp = '.';
@@ -308,10 +308,10 @@ void zce::memory_debug(const unsigned char *mem_ptr,
         ascii_str [SPEARATOR_LEN + j] = bytmp;
     }
 
-    //å¦‚æœä¸æ˜¯LINE_OUT_NUM é•¿åº¦æ•´é™¤ï¼Œè¦å¯¹é½ï¼Œè¾“å‡ºæœ€åçš„å­—ç¬¦ä¸²
+    //Èç¹û²»ÊÇLINE_OUT_NUM ³¤¶ÈÕû³ı£¬Òª¶ÔÆë£¬Êä³ö×îºóµÄ×Ö·û´®
     if (mem_len % LINE_OUT_NUM != 0 )
     {
-        //ä¸ºäº†å¯¹é½ï¼Œæ‰“å°ç©ºæ ¼
+        //ÎªÁË¶ÔÆë£¬´òÓ¡¿Õ¸ñ
         for (size_t k = 0; k < LINE_OUT_NUM - mem_len % LINE_OUT_NUM; k++)
         {
             snprintf(hex_str, HEX_STR_LEN, "   ");
@@ -323,10 +323,10 @@ void zce::memory_debug(const unsigned char *mem_ptr,
     }
 }
 
-//è°ƒè¯•æ‰“å°å†…å­˜ä¿¡æ¯ï¼Œå°±æ˜¯ç®€å•çš„å†…å­˜ç¿»è¯‘ä¸º16è¿›åˆ¶å­—ç¬¦ä¸²
+//µ÷ÊÔ´òÓ¡ÄÚ´æĞÅÏ¢£¬¾ÍÊÇ¼òµ¥µÄÄÚ´æ·­ÒëÎª16½øÖÆ×Ö·û´®
 void zce::memory_debug(const unsigned char *mem_ptr, size_t mem_len, FILE *stream)
 {
-    //%zuä¸çŸ¥é“VCä»ä»€ä¹ˆå¹´ä»£æ”¯æŒçš„
+    //%zu²»ÖªµÀVC´ÓÊ²Ã´Äê´úÖ§³ÖµÄ
     fprintf(stream, "DEBUG memory[%p][%zu] \n", mem_ptr, mem_len);
     std::vector<std::string> str_ary;
     zce::memory_debug(mem_ptr, mem_len, str_ary);
@@ -337,7 +337,7 @@ void zce::memory_debug(const unsigned char *mem_ptr, size_t mem_len, FILE *strea
 }
 
 
-//è¾…åŠ©æ‰“å°ä¸€ä¸ªæŒ‡é’ˆå†…éƒ¨æ•°æ®çš„å‡½æ•°ï¼Œç”¨16è¿›åˆ¶çš„æ–¹å¼æ‰“å°æ—¥å¿—
+//¸¨Öú´òÓ¡Ò»¸öÖ¸ÕëÄÚ²¿Êı¾İµÄº¯Êı£¬ÓÃ16½øÖÆµÄ·½Ê½´òÓ¡ÈÕÖ¾
 void zce::memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
                        const char *dbg_info,
                        const unsigned char *mem_ptr,
@@ -357,13 +357,13 @@ void zce::memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
 
 //==========================================================================================================
 
-//å¿«é€Ÿå†…å­˜æ‹·è´ï¼Œå½“ç„¶å…¶å®ä»–å¹¶ä¸ç®—å—ï¼Œ
-//è¿™ä¸ªçº¯å±å¥½ç©çš„ï¼Œç»è¿‡æµ‹è¯•ï¼Œä»–å…¶å®å¹¶æ²¡æœ‰memcpyå¿«ï¼Œæ‰€ä»¥ä¸å»ºè®®ä½¿ç”¨
+//¿ìËÙÄÚ´æ¿½±´£¬µ±È»ÆäÊµËû²¢²»Ëã¿é£¬
+//Õâ¸ö´¿ÊôºÃÍæµÄ£¬¾­¹ı²âÊÔ£¬ËûÆäÊµ²¢Ã»ÓĞmemcpy¿ì£¬ËùÒÔ²»½¨ÒéÊ¹ÓÃ
 void *zce::fast_memcpy(void *dst, const void *src, size_t sz)
 {
     void *r = dst;
 
-    //å…ˆè¿›è¡Œuint64_té•¿åº¦çš„æ‹·è´ï¼Œä¸€èˆ¬è€Œè¨€ï¼Œå†…å­˜åœ°å€éƒ½æ˜¯å¯¹é½çš„ï¼Œ
+    //ÏÈ½øĞĞuint64_t³¤¶ÈµÄ¿½±´£¬Ò»°ã¶øÑÔ£¬ÄÚ´æµØÖ·¶¼ÊÇ¶ÔÆëµÄ£¬
     size_t n = sz & ~(sizeof(uint64_t) - 1);
     uint64_t *src_u64 = (uint64_t *) src;
     uint64_t *dst_u64 = (uint64_t *) dst;
@@ -374,7 +374,7 @@ void *zce::fast_memcpy(void *dst, const void *src, size_t sz)
         n -= sizeof(uint64_t);
     }
 
-    //å°†æ²¡æœ‰é8å­—èŠ‚å­—é•¿å–æ•´çš„éƒ¨åˆ†copy
+    //½«Ã»ÓĞ·Ç8×Ö½Ú×Ö³¤È¡ÕûµÄ²¿·Öcopy
     n = sz & (sizeof(uint64_t) - 1);
     uint8_t *src_u8 = (uint8_t *) src;
     uint8_t *dst_u8 = (uint8_t *) dst;
@@ -386,13 +386,13 @@ void *zce::fast_memcpy(void *dst, const void *src, size_t sz)
     return r;
 }
 
-//å¿«é€Ÿå†…å­˜æ‹·è´çš„ç¬¬äºŒä¸ªç‰ˆæœ¬ï¼Œå…¶å®å°±æ˜¯åœ¨å¤åˆ¶çš„æ—¶å€™å¢åŠ äº†ä¸€æ¬¡å¤åˆ¶ï¼Œæ›´åŠ ä¼˜åŒ–ä¸€ç‚¹
-//è¿™ä¸ªä¹Ÿæ²¡æœ‰memcpyå¿«
+//¿ìËÙÄÚ´æ¿½±´µÄµÚ¶ş¸ö°æ±¾£¬ÆäÊµ¾ÍÊÇÔÚ¸´ÖÆµÄÊ±ºòÔö¼ÓÁËÒ»´Î¸´ÖÆ£¬¸ü¼ÓÓÅ»¯Ò»µã
+//Õâ¸öÒ²Ã»ÓĞmemcpy¿ì
 void *zce::fast_memcpy2(void *dst, const void *src, size_t sz)
 {
     void *r = dst;
 
-    //å…ˆè¿›è¡Œuint64_té•¿åº¦çš„æ‹·è´ï¼Œä¸€èˆ¬è€Œè¨€ï¼Œå†…å­˜åœ°å€éƒ½æ˜¯å¯¹é½çš„ï¼Œ
+    //ÏÈ½øĞĞuint64_t³¤¶ÈµÄ¿½±´£¬Ò»°ã¶øÑÔ£¬ÄÚ´æµØÖ·¶¼ÊÇ¶ÔÆëµÄ£¬
     size_t n = sz & ~((sizeof(uint64_t) << 1)  - 1);
     uint64_t *src_u64 = (uint64_t *) src;
     uint64_t *dst_u64 = (uint64_t *) dst;
@@ -404,7 +404,7 @@ void *zce::fast_memcpy2(void *dst, const void *src, size_t sz)
         n -= sizeof(uint64_t) * 2;
     }
 
-    //è®²æ²¡æœ‰é8å­—èŠ‚å­—é•¿çš„éƒ¨åˆ†copy
+    //½²Ã»ÓĞ·Ç8×Ö½Ú×Ö³¤µÄ²¿·Öcopy
     n = sz & ((sizeof(uint64_t) << 1) - 1);
     uint8_t *src_u8 = (uint8_t *) src;
     uint8_t *dst_u8 = (uint8_t *) dst;
@@ -417,16 +417,16 @@ void *zce::fast_memcpy2(void *dst, const void *src, size_t sz)
 
 //==========================================================================================================
 
-//GCC ç¼–è¯‘çš„æ—¶å€™ä¸èƒ½å¤„ç†template<> int8_t zce::str_to_value(const char *str)
-//çš„å†™æ³•ï¼Œåªèƒ½æŠŠåå­—ç©ºé—´æ”¾åˆ°å¤–é¢æ¥äº†ï¼Œä¼°è®¡æ˜¯å’Œclasså®¹æ˜“æ··æ·†
+//GCC ±àÒëµÄÊ±ºò²»ÄÜ´¦Àítemplate<> int8_t zce::str_to_value(const char *str)
+//µÄĞ´·¨£¬Ö»ÄÜ°ÑÃû×Ö¿Õ¼ä·Åµ½ÍâÃæÀ´ÁË£¬¹À¼ÆÊÇºÍclassÈİÒ×»ìÏı
 namespace zce
 {
 
-//å°†c str è½¬æ¢ä¸ºå¾ˆå¤šæ•°å€¼ç±»å‹ï¼Œä½œä¸ºè¿”å›å€¼è¿”å›
+//½«c str ×ª»»ÎªºÜ¶àÊıÖµÀàĞÍ£¬×÷Îª·µ»ØÖµ·µ»Ø
 template<>
 int8_t str_to_value(const char *str)
 {
-    //10è¡¨ç¤º10è¿›åˆ¶ï¼Œ
+    //10±íÊ¾10½øÖÆ£¬
     char   *stopstring = NULL;
     return static_cast<int8_t>(::strtol(str, &stopstring, 10));
 }
@@ -441,7 +441,7 @@ uint8_t str_to_value(const char *str)
 template<>
 int16_t str_to_value(const char *str)
 {
-    //10è¡¨ç¤º10è¿›åˆ¶ï¼Œ
+    //10±íÊ¾10½øÖÆ£¬
     char   *stopstring = NULL;
     return static_cast<int16_t>(::strtol(str, &stopstring, 10));
 }
@@ -535,16 +535,16 @@ template<>
 ZCE_Time_Value str_to_value(const char *str)
 {
     ZCE_Time_Value val;
-    val.from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
+    val.from_string(str, false, zce::TIME_STRFMT_US_SEC);
     return val;
 }
 
 
-//å°†c str è½¬æ¢ä¸ºå¾ˆå¤šæ•°å€¼ç±»å‹ï¼Œä½œä¸ºæŒ‡é’ˆå‚æ•°è¿”å›
+//½«c str ×ª»»ÎªºÜ¶àÊıÖµÀàĞÍ£¬×÷ÎªÖ¸Õë²ÎÊı·µ»Ø
 template<>
 void str_to_ptr(const char *str, int8_t *ptr)
 {
-    //10è¡¨ç¤º10è¿›åˆ¶ï¼Œ
+    //10±íÊ¾10½øÖÆ£¬
     char   *stopstring = NULL;
     *ptr = static_cast<int8_t>(::strtol(str, &stopstring, 10));
 }
@@ -646,7 +646,7 @@ void str_to_ptr(const char *str, ZCE_Sockaddr_In6 *ptr)
 template<>
 void str_to_ptr(const char *str, ZCE_Time_Value *ptr)
 {
-    ptr->from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
+    ptr->from_string(str, false, zce::TIME_STRFMT_US_SEC);
 }
 
 };

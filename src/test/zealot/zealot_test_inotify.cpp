@@ -54,7 +54,7 @@ protected:
         return 0;
     }
 
-    ///ç›‘æµ‹åˆ°æœ‰åˆ é™¤æ–‡ä»¶æˆ–è€…ç›®å½•,å¯¹åº”æŽ©ç IN_DELETEï¼Œå‚æ•°è¯´æ˜Žå‚è€ƒ@fun inotify_create
+    ///¼à²âµ½ÓÐÉ¾³ýÎÄ¼þ»òÕßÄ¿Â¼,¶ÔÓ¦ÑÚÂëIN_DELETE£¬²ÎÊýËµÃ÷²Î¿¼@fun inotify_create
     virtual int inotify_delete(ZCE_HANDLE watch_handle,
                                uint32_t watch_mask,
                                const char *watch_path,
@@ -66,7 +66,7 @@ protected:
         return 0;
     }
 
-    ///ç›‘æµ‹åˆ°æœ‰æ–‡ä»¶è¢«ä¿®æ”¹,å¯¹åº”æŽ©ç IN_MODIFYï¼Œå‚æ•°è¯´æ˜Žå‚è€ƒ@fun inotify_create
+    ///¼à²âµ½ÓÐÎÄ¼þ±»ÐÞ¸Ä,¶ÔÓ¦ÑÚÂëIN_MODIFY£¬²ÎÊýËµÃ÷²Î¿¼@fun inotify_create
     virtual int inotify_modify(ZCE_HANDLE watch_handle,
                                uint32_t watch_mask,
                                const char *watch_path,
@@ -78,7 +78,7 @@ protected:
         return 0;
     }
 
-    ///ç›‘æŽ§æ–‡ä»¶ä»ŽæŸä¸ªç›®å½•ç§»åŠ¨å‡ºåŽ»ï¼ŒIN_MOVED_FROM,å‚æ•°è¯´æ˜Žå‚è€ƒ@fun inotify_create
+    ///¼à¿ØÎÄ¼þ´ÓÄ³¸öÄ¿Â¼ÒÆ¶¯³öÈ¥£¬IN_MOVED_FROM,²ÎÊýËµÃ÷²Î¿¼@fun inotify_create
     virtual int inotify_moved_from(ZCE_HANDLE watch_handle,
                                    uint32_t watch_mask,
                                    const char *watch_path,
@@ -90,8 +90,8 @@ protected:
         return 0;
     }
 
-    ///ç›‘æŽ§æ–‡ä»¶ç§»åŠ¨åˆ°æŸä¸ªç›®å½•ï¼ŒIN_MOVED_TO,(æˆ‘è‡ªå·±æµ‹è¯•åªæœ‰åœ¨ç›‘æŽ§ç›®å½•ä¸‹ç§»åŠ¨æ‰ä¼šå‘ç”Ÿè¿™ä¸ªäº‹ä»¶),
-    ///å‚æ•°è¯´æ˜Žå‚è€ƒ@fun inotify_create
+    ///¼à¿ØÎÄ¼þÒÆ¶¯µ½Ä³¸öÄ¿Â¼£¬IN_MOVED_TO,(ÎÒ×Ô¼º²âÊÔÖ»ÓÐÔÚ¼à¿ØÄ¿Â¼ÏÂÒÆ¶¯²Å»á·¢ÉúÕâ¸öÊÂ¼þ),
+    ///²ÎÊýËµÃ÷²Î¿¼@fun inotify_create
     virtual int inotify_moved_to(ZCE_HANDLE watch_handle,
                                  uint32_t watch_mask,
                                  const char *watch_path,
@@ -107,7 +107,7 @@ protected:
 
 
 
-//ç‹¬ç«‹çš„Event reactorï¼Œ
+//¶ÀÁ¢µÄEvent reactor£¬
 int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 {
     int ret = 0;
@@ -150,7 +150,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
         return ret;
     }
 
-    //Linuxä¸‹ï¼Œä¸€ä¸ªevent handleå¯ä»¥ç›‘æŽ§å¤šä¸ªç›®å½•
+    //LinuxÏÂ£¬Ò»¸öevent handle¿ÉÒÔ¼à¿Ø¶à¸öÄ¿Â¼
     ret = inotify_event->add_watch(TEST_PATH_2,
                                    IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
                                    &watch_handle);
@@ -158,15 +158,15 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "inotify_event add_watch fail.dir[%s]? ret =%d,This is ok in windows.", TEST_PATH_2, ret );
-        //Windowsä¸‹ï¼Œæ˜¯æ¯”å¦‚ä¿ºå‡ºé”™çš„ã€‚Windowsä¸‹ä¸€ä¸ªevent handleï¼Œåªèƒ½ç›‘æŽ§ä¸€ä¸ªç›®å½•
+        //WindowsÏÂ£¬ÊÇ±ÈÈç°³³ö´íµÄ¡£WindowsÏÂÒ»¸öevent handle£¬Ö»ÄÜ¼à¿ØÒ»¸öÄ¿Â¼
 #if !defined ZCE_OS_WINDOWS
         return ret;
 #endif
     }
 
 #if defined ZCE_OS_WINDOWS
-    //Windowsä¸‹ï¼Œå¯ä»¥ç”¨ä¸€ä¸ªæ–°çš„event handleç›‘æŽ§ç›®å½•ï¼Œ
-    //å½“ç„¶Windowsæœ‰ä¸€ä¸ªåŠŸèƒ½ï¼Œä½¿ç”¨ç›‘æŽ§å­ç›®å½•çš„åŠŸèƒ½
+    //WindowsÏÂ£¬¿ÉÒÔÓÃÒ»¸öÐÂµÄevent handle¼à¿ØÄ¿Â¼£¬
+    //µ±È»WindowsÓÐÒ»¸ö¹¦ÄÜ£¬Ê¹ÓÃ¼à¿Ø×ÓÄ¿Â¼µÄ¹¦ÄÜ
     My_INotify_Event *inotify_event2 = new My_INotify_Event();
     ret = inotify_event2->open(ZCE_Reactor::instance());
     ret = inotify_event2->add_watch(TEST_PATH_2,

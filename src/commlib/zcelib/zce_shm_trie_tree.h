@@ -3,10 +3,10 @@
 * @filename   zce_shm_trie_tree.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2018å¹´9æœˆ9æ—¥
-* @brief      ä¸€ä¸ªå­—å…¸æ ‘(ORå‰ç¼€æ ‘)çš„å®ç°ã€‚å­—å…¸æ ‘åœ¨åœ¨HWçš„è®¡è´¹çš„æ—¶å€™å®ç°è¿‡ã€‚å½“æ—¶ä¸»è¦ä¸ºäº†åšè®¡è´¹ã€‚
-*             æ—¶éš”10å¹´åï¼Œåœ¨äº’åŠ¨å½±è§†æœ‰å‘ç°äº†ä¸€æ¬¡è¿ç”¨åœºæ™¯ã€‚è€Œä¸”æˆ‘æŒ‰ç›®æ ‡æ¥çœ‹ã€‚å¯èƒ½ä¹Ÿéœ€è¦ä¸€ä¸ªé•¿åº¦
-*             é™åˆ¶ã€‚æ‰å¥½ç”¨ã€‚
+* @date       2018Äê9ÔÂ9ÈÕ
+* @brief      Ò»¸ö×ÖµäÊ÷(ORÇ°×ºÊ÷)µÄÊµÏÖ¡£×ÖµäÊ÷ÔÚÔÚHWµÄ¼Æ·ÑµÄÊ±ºòÊµÏÖ¹ı¡£µ±Ê±Ö÷ÒªÎªÁË×ö¼Æ·Ñ¡£
+*             Ê±¸ô10Äêºó£¬ÔÚ»¥¶¯Ó°ÊÓÓĞ·¢ÏÖÁËÒ»´ÎÔËÓÃ³¡¾°¡£¶øÇÒÎÒ°´Ä¿±êÀ´¿´¡£¿ÉÄÜÒ²ĞèÒªÒ»¸ö³¤¶È
+*             ÏŞÖÆ¡£²ÅºÃÓÃ¡£
 *
 * @details
 *
@@ -14,26 +14,26 @@
 *
 * @note
 *
-*   ã€Šæ©„æ¦„æ ‘ã€‹ é½è±«
-*   ä¸è¦é—®æˆ‘ä»å“ªé‡Œæ¥
-*   æˆ‘çš„æ•…ä¹¡åœ¨è¿œæ–¹
-*   ä¸ºä»€ä¹ˆæµæµª
-*   æµæµªè¿œæ–¹ æµæµª
-*   ä¸ºäº†å¤©ç©ºé£ç¿”çš„å°é¸Ÿ
-*   ä¸ºäº†å±±é—´è½»æµçš„å°æºª
-*   ä¸ºäº†å®½é˜”çš„è‰åŸ
-*   æµæµªè¿œæ–¹ æµæµª
-*   è¿˜æœ‰è¿˜æœ‰
-*   ä¸ºäº†æ¢¦ä¸­çš„æ©„æ¦„æ ‘ æ©„æ¦„æ ‘
-*   ä¸è¦é—®æˆ‘ä»å“ªé‡Œæ¥
-*   æˆ‘çš„æ•…ä¹¡åœ¨è¿œæ–¹
-*   ä¸ºä»€ä¹ˆæµæµª
-*   ä¸ºä»€ä¹ˆæµæµªè¿œæ–¹
-*   ä¸ºäº†æˆ‘æ¢¦ä¸­çš„æ©„æ¦„æ ‘
-*   ä¸è¦é—®æˆ‘ä»å“ªé‡Œæ¥
-*   æˆ‘çš„æ•…ä¹¡åœ¨è¿œæ–¹
-*   ä¸ºä»€ä¹ˆæµæµª
-*   æµæµªè¿œæ–¹ æµæµª [4]
+*   ¡¶éÏé­Ê÷¡· ÆëÔ¥
+*   ²»ÒªÎÊÎÒ´ÓÄÄÀïÀ´
+*   ÎÒµÄ¹ÊÏçÔÚÔ¶·½
+*   ÎªÊ²Ã´Á÷ÀË
+*   Á÷ÀËÔ¶·½ Á÷ÀË
+*   ÎªÁËÌì¿Õ·ÉÏèµÄĞ¡Äñ
+*   ÎªÁËÉ½¼äÇáÁ÷µÄĞ¡Ïª
+*   ÎªÁË¿íÀ«µÄ²İÔ­
+*   Á÷ÀËÔ¶·½ Á÷ÀË
+*   »¹ÓĞ»¹ÓĞ
+*   ÎªÁËÃÎÖĞµÄéÏé­Ê÷ éÏé­Ê÷
+*   ²»ÒªÎÊÎÒ´ÓÄÄÀïÀ´
+*   ÎÒµÄ¹ÊÏçÔÚÔ¶·½
+*   ÎªÊ²Ã´Á÷ÀË
+*   ÎªÊ²Ã´Á÷ÀËÔ¶·½
+*   ÎªÁËÎÒÃÎÖĞµÄéÏé­Ê÷
+*   ²»ÒªÎÊÎÒ´ÓÄÄÀïÀ´
+*   ÎÒµÄ¹ÊÏçÔÚÔ¶·½
+*   ÎªÊ²Ã´Á÷ÀË
+*   Á÷ÀËÔ¶·½ Á÷ÀË [4]
 *
 */
 
@@ -47,37 +47,37 @@ namespace zce
 //============================================================================================
 
 /*!
-@brief      TRIE TREEæ•°æ®åŒºçš„å¤´éƒ¨ï¼Œç”¨äºå­˜æ”¾æ­¤æ¬¡ï¼Œå¯¹è±¡æ•°é‡ï¼Œç­‰æ•°æ®
-            ä½¿ç”¨çš„NODEæ•°é‡ï¼ŒFREEçš„NODEæ•°é‡ç­‰
+@brief      TRIE TREEÊı¾İÇøµÄÍ·²¿£¬ÓÃÓÚ´æ·Å´Ë´Î£¬¶ÔÏóÊıÁ¿£¬µÈÊı¾İ
+            Ê¹ÓÃµÄNODEÊıÁ¿£¬FREEµÄNODEÊıÁ¿µÈ
 */
 struct _shm_trie_tree_head
 {
-    //æˆ‘ä¸èƒ½å¯¹æ¨¡ç‰ˆæä¸ªå‹å…ƒï¼Œç®—äº†ï¼Œå¼€å§‹å¼€æ”¾å‡ºæ¥æŠŠ
+    //ÎÒ²»ÄÜ¶ÔÄ£°æ¸ã¸öÓÑÔª£¬ËãÁË£¬¿ªÊ¼¿ª·Å³öÀ´°Ñ
 public:
 
-    ///å†…å­˜åŒºçš„é•¿åº¦
+    ///ÄÚ´æÇøµÄ³¤¶È
     uint32_t         size_of_mmap_ = 0;
-    ///NODEç»“ç‚¹ä¸ªæ•°
+    ///NODE½áµã¸öÊı
     uint32_t         num_of_node_ = 0;
 
-    ///FREEçš„NODEä¸ªæ•°
+    ///FREEµÄNODE¸öÊı
     uint32_t         size_free_node_ = 0;
-    ///USEçš„NODEä¸ªæ•°
+    ///USEµÄNODE¸öÊı
     uint32_t         size_use_node_ = 0;
 };
 
 //============================================================================================
 
-///TRIE TREEçš„æ ‘å½¢NODEçš„ç´¢å¼•
+///TRIE TREEµÄÊ÷ĞÎNODEµÄË÷Òı
 template <class _meta_type> class _shm_trie_tree_node
 {
 public:
 
     ///
     _meta_type  meta_;
-    ///å…„èŠ‚ç‚¹
+    ///ĞÖ½Úµã
     uint32_t    idx_brother_ = static_cast<uint32_t>(-1);
-    ///å­èŠ‚ç‚¹
+    ///×Ó½Úµã
     uint32_t    idx_children_ = static_cast<uint32_t>(-1);
 
 };
@@ -85,43 +85,43 @@ public:
 
 //============================================================================================
 /*!
-@brief      å­—å…¸æ ‘(ORå‰ç¼€æ ‘)ï¼Œå¯ä»¥åœ¨å…±äº«å†…å­˜ï¼ˆæ™®é€šå†…å­˜ä¹Ÿè¡Œï¼‰ï¼Œä¸€å—å†…å­˜ä¸­ï¼Œä½¿ç”¨ï¼Œ
-            ä¹Ÿå¯ä»¥å¤šè¿›ç¨‹å…±äº«ï¼Œï¼ˆå½“ç„¶åŒæ­¥å±‚é¢çš„äº‹æƒ…ï¼Œä½ è‡ªå·±è€ƒè™‘ï¼‰
+@brief      ×ÖµäÊ÷(ORÇ°×ºÊ÷)£¬¿ÉÒÔÔÚ¹²ÏíÄÚ´æ£¨ÆÕÍ¨ÄÚ´æÒ²ĞĞ£©£¬Ò»¿éÄÚ´æÖĞ£¬Ê¹ÓÃ£¬
+            Ò²¿ÉÒÔ¶à½ø³Ì¹²Ïí£¬£¨µ±È»Í¬²½²ãÃæµÄÊÂÇé£¬Äã×Ô¼º¿¼ÂÇ£©
 
-            é¢å¤–éœ€è¦çš„åœ°å€ç©ºé—´å¤§å°è¯´æ˜ï¼Œæ¯ä¸ªnodeé¢å¤–éœ€è¦2ä¸ªshm_index_tå¤§å°çš„ç©ºé—´ï¼Œ
+            ¶îÍâĞèÒªµÄµØÖ·¿Õ¼ä´óĞ¡ËµÃ÷£¬Ã¿¸önode¶îÍâĞèÒª2¸öshm_index_t´óĞ¡µÄ¿Õ¼ä£¬
 
-@tparam     _meta_type å…ƒç±»å‹ï¼Œæ¯ä¸ªNODEåŒ…æ‹¬çš„æ•°æ®
+@tparam     _meta_type ÔªÀàĞÍ£¬Ã¿¸öNODE°üÀ¨µÄÊı¾İ
 */
 template <class _meta_type> class smem_trie_tree
 {
 protected:
 
-    //indexåŒºè¦å¢åŠ ä¸¤ä¸ªæ•°æ®,ä¸€ä¸ªè¡¨ç¤º
+    //indexÇøÒªÔö¼ÓÁ½¸öÊı¾İ,Ò»¸ö±íÊ¾
     static const size_t ADDED_NUM_OF_ROOT = 1;
 
 protected:
 
-    //æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ›´åŠ åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
-    //å†…å­˜åŸºç¡€åœ°å€
+    //ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ü¼Ó»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
+    //ÄÚ´æ»ù´¡µØÖ·
     char                            *smem_base_;
 
-    //æ•°æ®åŒºèµ·å§‹æŒ‡é’ˆ,
+    //Êı¾İÇøÆğÊ¼Ö¸Õë,
     _shm_trie_tree_node<_meta_type> *data_base_;
 
-    //ç´¢å¼•æ•°æ®åŒºæŒ‡é’ˆ,
+    //Ë÷ÒıÊı¾İÇøÖ¸Õë,
     _shm_trie_tree_node             *index_base_;
 
-    //LISTçš„å¤´éƒ¨åŒºæŒ‡é’ˆ
+    //LISTµÄÍ·²¿ÇøÖ¸Õë
     _shm_trie_tree_head             *list_head_;
 
-    //FREE NODEçš„å¤´æŒ‡é’ˆ,N+1ä¸ªç´¢å¼•ä½è¡¨ç¤º
+    //FREE NODEµÄÍ·Ö¸Õë,N+1¸öË÷ÒıÎ»±íÊ¾
     _shm_trie_tree_node             *free_node_;
 
 
 public:
 
-    ///å¦‚æœåœ¨å…±äº«å†…å­˜ä½¿ç”¨,æ²¡æœ‰new,æ‰€ä»¥ç»Ÿä¸€ç”¨initialize åˆå§‹åŒ–
-    ///è¿™ä¸ªå‡½æ•°,ä¸ç»™ä½ ç”¨,å°±æ˜¯ä¸ç»™ä½ ç”¨
+    ///Èç¹ûÔÚ¹²ÏíÄÚ´æÊ¹ÓÃ,Ã»ÓĞnew,ËùÒÔÍ³Ò»ÓÃinitialize ³õÊ¼»¯
+    ///Õâ¸öº¯Êı,²»¸øÄãÓÃ,¾ÍÊÇ²»¸øÄãÓÃ
     smem_trie_tree<_meta_type>(size_t numnode, void *pmmap, bool if_restore):
         _shm_memory_base(pmmap),
         list_head_(NULL),
@@ -146,39 +146,39 @@ public:
     {
     }
 
-    //åªå®šä¹‰,ä¸å®ç°,
+    //Ö»¶¨Òå,²»ÊµÏÖ,
     const smem_list<_meta_type> &operator=(const smem_list<_meta_type> &others);
 
 protected:
 
-    //å¾—åˆ°ç´¢å¼•çš„åŸºç¡€åœ°å€
+    //µÃµ½Ë÷ÒıµÄ»ù´¡µØÖ·
     inline _shm_list_index *getindexbase()
     {
         return index_base_;
     }
-    //å¾—åˆ°æ•°æ®åŒºçš„åŸºç¡€åœ°è´¨
+    //µÃµ½Êı¾İÇøµÄ»ù´¡µØÖÊ
     inline  _value_type *getdatabase()
     {
         return data_base_;
     }
 
-    //åˆ†é…ä¸€ä¸ªNODE,å°†å…¶ä»FREELISTä¸­å–å‡º
+    //·ÖÅäÒ»¸öNODE,½«Æä´ÓFREELISTÖĞÈ¡³ö
     size_t create_node(const _meta_type &val)
     {
-        //å¦‚æœæ²¡æœ‰ç©ºé—´å¯ä»¥åˆ†é…
+        //Èç¹ûÃ»ÓĞ¿Õ¼ä¿ÉÒÔ·ÖÅä
         if (list_head_->size_free_node_ == 0)
         {
             return _INVALID_POINT;
         }
 
-        //ä»é“¾ä¸Šå–1ä¸ªä¸‹æ¥
+        //´ÓÁ´ÉÏÈ¡1¸öÏÂÀ´
         size_t node = freenode_->idx_next_;
 
         freenode_->idx_next_ = (index_base_ + node)->idx_next_;
         //
         (index_base_ + freenode_->idx_next_)->idx_prev_ = (index_base_ + node)->idx_prev_;
 
-        //ç”¨placement newç”Ÿäº§å¯¹è±¡
+        //ÓÃplacement newÉú²ú¶ÔÏó
         new (data_base_ + node) _meta_type(val) ;
 
         list_head_->size_use_node_  ++;
@@ -188,7 +188,7 @@ protected:
 
         return node;
     }
-    //é‡Šæ”¾ä¸€ä¸ªNODE,å°†å…¶å½’è¿˜ç»™FREELIST
+    //ÊÍ·ÅÒ»¸öNODE,½«Æä¹é»¹¸øFREELIST
     void destroy_node(size_t pos)
     {
         size_t freenext = freenode_->idx_next_;
@@ -200,7 +200,7 @@ protected:
 
         (index_base_ + freenext)->idx_prev_ = pos;
 
-        //è°ƒç”¨æ˜¾å¼çš„ææ„å‡½æ•°
+        //µ÷ÓÃÏÔÊ½µÄÎö¹¹º¯Êı
         (data_base_ + pos)->~_value_type();
 
         list_head_->size_use_node_  --;
@@ -211,7 +211,7 @@ protected:
 
 public:
 
-    //å†…å­˜åŒºçš„æ„æˆä¸º å®šä¹‰åŒº,indexåŒº,dataåŒº,è¿”å›æ‰€éœ€è¦çš„é•¿åº¦,
+    //ÄÚ´æÇøµÄ¹¹³ÉÎª ¶¨ÒåÇø,indexÇø,dataÇø,·µ»ØËùĞèÒªµÄ³¤¶È,
     static size_t getallocsize(const size_t numnode)
     {
         return  sizeof(_shm_list_head)  + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) + sizeof(_value_type) * numnode ;
@@ -222,16 +222,16 @@ public:
         return this;
     }
 
-    //åˆå§‹åŒ–
+    //³õÊ¼»¯
     static smem_list<_value_type> *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
         _shm_list_head *listhead = reinterpret_cast<_shm_list_head *>(pmmap);
 
-        //å¦‚æœæ˜¯æ¢å¤,æ•°æ®éƒ½åœ¨å†…å­˜ä¸­,
+        //Èç¹ûÊÇ»Ö¸´,Êı¾İ¶¼ÔÚÄÚ´æÖĞ,
         if (if_restore == true)
         {
-            //æ£€æŸ¥ä¸€ä¸‹æ¢å¤çš„å†…å­˜æ˜¯å¦æ­£ç¡®,
+            //¼ì²éÒ»ÏÂ»Ö¸´µÄÄÚ´æÊÇ·ñÕıÈ·,
             if (getallocsize(numnode) != listhead->size_of_mmap_ ||
                 numnode != listhead->num_of_node_ )
             {
@@ -239,44 +239,44 @@ public:
             }
         }
 
-        //åˆå§‹åŒ–å°ºå¯¸
+        //³õÊ¼»¯³ß´ç
         listhead->size_of_mmap_ = getallocsize(numnode);
         listhead->num_of_node_ = numnode;
 
         smem_list<_value_type> *instance = new smem_list<_value_type>();
 
-        //æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ›´åŠ åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
+        //ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ü¼Ó»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
         instance->smem_base_ = pmmap;
         instance->list_head_ = listhead;
         instance->index_base_ = reinterpret_cast<_shm_list_index *>(pmmap + sizeof(_shm_list_head));
         instance->data_base_  = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + ADDED_NUM_OF_INDEX) );
 
-        //è¿™ä¸¤ä¸ªå®¶ä¼™ç”¨äºFREENODE,USENODEçš„ä½¿ç”¨
+        //ÕâÁ½¸ö¼Ò»ïÓÃÓÚFREENODE,USENODEµÄÊ¹ÓÃ
         instance->freenode_   = reinterpret_cast<_shm_list_index *>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode ));
         instance->usenode_    = reinterpret_cast<_shm_list_index *>(pmmap + sizeof(_shm_list_head) + sizeof(_shm_list_index) * (numnode + 1));
 
         //
         if (if_restore == false)
         {
-            //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
+            //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
             instance->clear();
         }
 
         assert(listhead->size_use_node_ + listhead->size_free_node_ == listhead->num_of_node_);
 
-        //æ‰“å®Œæ”¶å·¥
+        //´òÍêÊÕ¹¤
         return instance;
     }
 
-    //æ¸…ç†åˆå§‹åŒ–æ‰€æœ‰çš„å†…å­˜,æ‰€æœ‰çš„èŠ‚ç‚¹ä¸ºFREE
+    //ÇåÀí³õÊ¼»¯ËùÓĞµÄÄÚ´æ,ËùÓĞµÄ½ÚµãÎªFREE
     void clear()
     {
-        //å¤„ç†2ä¸ªå…³é”®Node,ä»¥åŠç›¸å…³é•¿åº¦,å¼€å§‹æ‰€æœ‰çš„æ•°æ®æ˜¯free.
+        //´¦Àí2¸ö¹Ø¼üNode,ÒÔ¼°Ïà¹Ø³¤¶È,¿ªÊ¼ËùÓĞµÄÊı¾İÊÇfree.
         list_head_->size_free_node_ = list_head_->num_of_node_;
         list_head_->size_use_node_ = 0;
 
-        //å°†ä¸¤ä¸ªé˜Ÿåˆ—éƒ½æ¸…ç†ä¸ºNULL,è®©æŒ‡é’ˆéƒ½æŒ‡å‘è‡ªå·±,è¿™å„¿æœ‰ä¸€ç‚¹å°æŠ€å·§,
-        //ä½ å¯ä»¥å°†å…¶è§†ä¸ºå°†åŒå‘é“¾è¡¨çš„å¤´æŒ‡é’ˆ,(å…¶å®ä¹Ÿæ˜¯å°¾æŒ‡é’ˆ).
+        //½«Á½¸ö¶ÓÁĞ¶¼ÇåÀíÎªNULL,ÈÃÖ¸Õë¶¼Ö¸Ïò×Ô¼º,Õâ¶ùÓĞÒ»µãĞ¡¼¼ÇÉ,
+        //Äã¿ÉÒÔ½«ÆäÊÓÎª½«Ë«ÏòÁ´±íµÄÍ·Ö¸Õë,(ÆäÊµÒ²ÊÇÎ²Ö¸Õë).
         freenode_->idx_next_ = list_head_->num_of_node_ ;
         freenode_->idx_prev_ = list_head_->num_of_node_ ;
 
@@ -285,14 +285,14 @@ public:
 
         _shm_list_index *pindex = index_base_;
 
-        //åˆå§‹åŒ–freeæ•°æ®åŒº
+        //³õÊ¼»¯freeÊı¾İÇø
         for (size_t i = 0; i < list_head_->num_of_node_ ; ++i )
         {
 
             pindex->idx_next_ = (i + 1) ;
             pindex->idx_prev_ = (i - 1) ;
 
-            //å°†æ‰€æœ‰çš„æ•°æ®ç”¨FREENODEä¸²èµ·æ¥
+            //½«ËùÓĞµÄÊı¾İÓÃFREENODE´®ÆğÀ´
             if (0 == i)
             {
                 pindex->idx_prev_ = freenode_->idx_next_;
@@ -319,7 +319,7 @@ public:
 
         return false;
     }
-    //åœ¨æ’å…¥æ•°æ®å‰è°ƒç”¨,è¿™ä¸ªå‡½æ•°æ£€æŸ¥
+    //ÔÚ²åÈëÊı¾İÇ°µ÷ÓÃ,Õâ¸öº¯Êı¼ì²é
     bool full()
     {
         if (list_head_->size_free_node_ == 0 )
@@ -331,8 +331,8 @@ public:
     };
 
 protected:
-    //é€šè¿‡åç§»åºåˆ—å·æ’å…¥,å¦‚æœä½ èƒ¡ä¹±ä½¿ç”¨,ä¸æ˜¯éå¸¸å®‰å…¨,FREENODEä¹Ÿæ˜¯æœ‰POSçš„.
-    //æ’å…¥åœ¨è¿™ä¸ªPOSèŠ‚ç‚¹çš„å‰é¢
+    //Í¨¹ıÆ«ÒÆĞòÁĞºÅ²åÈë,Èç¹ûÄãºúÂÒÊ¹ÓÃ,²»ÊÇ·Ç³£°²È«,FREENODEÒ²ÊÇÓĞPOSµÄ.
+    //²åÈëÔÚÕâ¸öPOS½ÚµãµÄÇ°Ãæ
     size_t insert(size_t pos, const _value_type &val)
     {
         size_t node = create_node(val);
@@ -342,7 +342,7 @@ protected:
             return _INVALID_POINT;
         }
 
-        //å°†æ–°ç»“ç‚¹æŒ‚æ¥åˆ°é˜Ÿåˆ—ä¸­
+        //½«ĞÂ½áµã¹Ò½Óµ½¶ÓÁĞÖĞ
         (index_base_ + node)->idx_next_ = pos;
         (index_base_ + node)->idx_prev_ = (index_base_ + pos)->idx_prev_;
 
@@ -354,13 +354,13 @@ protected:
 
 public:
 
-    //é€šè¿‡è¿­ä»£å™¨æ’å…¥,æ¨èä½¿ç”¨è¿™ä¸ªå‡½æ•°,
-    //æ’å…¥åœ¨è¿™ä¸ªè¿­ä»£å™¨èŠ‚ç‚¹çš„å‰é¢
+    //Í¨¹ıµü´úÆ÷²åÈë,ÍÆ¼öÊ¹ÓÃÕâ¸öº¯Êı,
+    //²åÈëÔÚÕâ¸öµü´úÆ÷½ÚµãµÄÇ°Ãæ
     std::pair<iterator, bool> insert(const iterator &pos, const _value_type &val)
     {
         size_t tmp = insert(pos.getserial(), val);
 
-        //æ’å…¥å¤±è´¥
+        //²åÈëÊ§°Ü
         if (_INVALID_POINT == tmp)
         {
             return std::pair<iterator, bool>(end(), false);
@@ -373,7 +373,7 @@ public:
 
 protected:
 
-    //é€šè¿‡åç§»åºåˆ—å·åˆ é™¤,å±é™©å‡½æ•°,è‡ªå·±åŒ…è£…æ­£ç¡®ä½¿ç”¨
+    //Í¨¹ıÆ«ÒÆĞòÁĞºÅÉ¾³ı,Î£ÏÕº¯Êı,×Ô¼º°ü×°ÕıÈ·Ê¹ÓÃ
     size_t erase(size_t pos)
     {
         size_t nextnode = (index_base_ + pos)->idx_next_;
@@ -388,14 +388,14 @@ protected:
     }
 
 public:
-    //é€šè¿‡è¿­ä»£å™¨åˆ é™¤
+    //Í¨¹ıµü´úÆ÷É¾³ı
     iterator erase(const iterator &pos)
     {
         size_t tmp = erase(pos.getserial());
         return iterator(tmp, this);
     }
 
-    //æœ‰äº†è¿­ä»£å™¨,è¿™äº›å‡½æ•°å±…ç„¶å¦‚æ­¤ç®€å•,æƒ³ä¸åˆ°å§
+    //ÓĞÁËµü´úÆ÷,ÕâĞ©º¯Êı¾ÓÈ»Èç´Ë¼òµ¥,Ïë²»µ½°É
     bool push_front(const _value_type &x)
     {
         std::pair<iterator, bool> tmp = insert(begin(), x);
@@ -439,12 +439,12 @@ public:
         move_end(itr, iterator((index_base_ + itr.getserial())->idx_next_, this));
     }
 
-    //è¿”å›é“¾è¡¨ä¸­å·²ç»æœ‰çš„å…ƒç´ ä¸ªæ•°
+    //·µ»ØÁ´±íÖĞÒÑ¾­ÓĞµÄÔªËØ¸öÊı
     size_t size()
     {
         return list_head_->size_use_node_;
     }
-    //è¿”å›é“¾è¡¨æ± å­çš„å®¹é‡
+    //·µ»ØÁ´±í³Ø×ÓµÄÈİÁ¿
     size_t capacity()
     {
         return list_head_->num_of_node_;

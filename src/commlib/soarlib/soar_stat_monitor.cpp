@@ -4,7 +4,7 @@
 #include "soar_stat_define.h"
 
 /******************************************************************************************
-class Soar_Stat_Monitor å•çº¿ç¨‹ç‰ˆæœ¬çš„å®ä¾‹
+class Soar_Stat_Monitor µ¥Ïß³Ì°æ±¾µÄÊµÀı
 ******************************************************************************************/
 Soar_Stat_Monitor *Soar_Stat_Monitor::instance_ = NULL;
 
@@ -34,7 +34,7 @@ void Soar_Stat_Monitor::clean_instance()
     instance_ = NULL;
 }
 
-//åˆå§‹åŒ–,ç”±äºå°è™«å’Œä¸šåŠ¡æœåŠ¡å™¨ä»¥ç›¸åŒIDçš„å…±å­˜ï¼Œæ‰€ä»¥ç”¨äº†ä¸€ä¸ªå‰ç¼€
+//³õÊ¼»¯,ÓÉÓÚĞ¡³æºÍÒµÎñ·şÎñÆ÷ÒÔÏàÍ¬IDµÄ¹²´æ£¬ËùÒÔÓÃÁËÒ»¸öÇ°×º
 int Soar_Stat_Monitor::initialize(const char *app_base_name,
                                   unsigned int business_id,
                                   const SERVICES_ID &service_info,
@@ -44,7 +44,7 @@ int Soar_Stat_Monitor::initialize(const char *app_base_name,
 {
     create_stat_fname(app_base_name, business_id, service_info);
 
-    // å°†stat_mmap_filename_è½¬æ¢ä¸ºå¤§å†™
+    // ½«stat_mmap_filename_×ª»»Îª´óĞ´
     zce::strupr(stat_mmap_filename_);
 
     int ret = ZCE_Server_Status::initialize(stat_mmap_filename_,
@@ -55,7 +55,7 @@ int Soar_Stat_Monitor::initialize(const char *app_base_name,
     return ret;
 }
 
-//ç”Ÿäº§statæ–‡ä»¶åç§°
+//Éú²ústatÎÄ¼şÃû³Æ
 void Soar_Stat_Monitor::create_stat_fname(const char *app_base_name,
                                           unsigned int business_id,
                                           const SERVICES_ID &service_info)
@@ -72,7 +72,7 @@ void Soar_Stat_Monitor::create_stat_fname(const char *app_base_name,
 }
 
 
-//ä»æ–‡ä»¶åç§°ä¸­å¾—åˆ°ç›¸åº”çš„ä¿¡æ¯
+//´ÓÎÄ¼şÃû³ÆÖĞµÃµ½ÏàÓ¦µÄĞÅÏ¢
 int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
                                            unsigned int *business_id,
                                            SERVICES_ID *svc_id,
@@ -87,7 +87,7 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     strncpy(file_name, stat_file_name, STAT_MMAP_FILENAME_LEN);
     file_name[STAT_MMAP_FILENAME_LEN] = '\0';
 
-    //æ£€æŸ¥æ–‡ä»¶é•¿åº¦
+    //¼ì²éÎÄ¼ş³¤¶È
     const size_t MIN_STATS_FILENAME_LEN = 14;
     size_t name_len = strlen(file_name);
     if (name_len < MIN_STATS_FILENAME_LEN)
@@ -95,21 +95,21 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
 
-    //æ£€æŸ¥æ–‡ä»¶åç§°å‰ç¼€
+    //¼ì²éÎÄ¼şÃû³ÆÇ°×º
     if (strncmp(file_name, "STATS_", 6) != 0)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
-    //æ£€æŸ¥åç¼€
+    //¼ì²éºó×º
     if (strncmp(file_name + name_len - 4, ".SHM", 4) != 0)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
 
-    //ä»åé¢å¼€å§‹æ‰¾_
+    //´ÓºóÃæ¿ªÊ¼ÕÒ_
     SERVICES_ID tmp_svc_id;
     char *find_pos = NULL;
-    //åå‘æŸ¥è¯¢çš„ï¼Œå…ˆè§£å†³svc idï¼Œ
+    //·´Ïò²éÑ¯µÄ£¬ÏÈ½â¾ösvc id£¬
     find_pos = strrchr(file_name, '_');
     if (NULL == find_pos)
     {
@@ -118,7 +118,7 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     ret = sscanf(find_pos + 1, "%hu.%u",
                  &tmp_svc_id.services_type_,
                  &tmp_svc_id.services_id_);
-    //!=2 è¡¨ç¤ºæ²¡æœ‰å¾—åˆ°ä¸¤ä¸ªæ•°å­—
+    //!=2 ±íÊ¾Ã»ÓĞµÃµ½Á½¸öÊı×Ö
     if (ret != 2)
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
@@ -126,7 +126,7 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
 
     *svc_id = tmp_svc_id;
 
-    //å†å¤„ç†ä¸šåŠ¡ID
+    //ÔÙ´¦ÀíÒµÎñID
     *find_pos = '\0';
     unsigned int tmp_business_id;
     find_pos = strrchr(file_name, '_');
@@ -142,7 +142,7 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     }
     *business_id = tmp_business_id;
 
-    //å¾—åˆ°APPçš„åå­—
+    //µÃµ½APPµÄÃû×Ö
     *find_pos = '\0';
     strncpy(app_base_name, file_name + 6, STAT_MMAP_FILENAME_LEN);
 

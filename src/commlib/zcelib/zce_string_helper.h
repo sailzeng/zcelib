@@ -3,19 +3,19 @@
 * @filename   zce_fmtstr_helper.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2012å¹´5æœˆ2æ—¥
-* @brief      å­—ç¬¦ä¸²çš„è¾“å‡ºè¾…åŠ©å·¥å…·ï¼ŒåŒ…æ‹¬Adaptç­‰ï¼Œä¿æŒç›¸åŒçš„è¾“å‡ºå‡½æ•°ï¼Œ
-*             è¿™æ ·åœ¨ä½¿ç”¨æ¨¡ç‰ˆçš„æ—¶å€™å°±å¾ˆæ–¹ä¾¿äº†ã€‚
-*             ä¹Ÿæä¾›äº†ä¸€ç»„å®å¸®åŠ©è¾“å‡ºã€‚
-*             output_helper å‡½æ•°ä¸ºæ¨¡æ¿å‡½æ•°æä¾›ç»Ÿä¸€çš„å…¥å£ï¼Œ
-*             XXXXX_Out_Helper è¿™äº›ç±»ä¸€èˆ¬æ˜¯ä¸ºäº†å¸®åŠ©æä¾›æ ¼å¼åŒ–è¾“å‡ºï¼Œ
+* @date       2012Äê5ÔÂ2ÈÕ
+* @brief      ×Ö·û´®µÄÊä³ö¸¨Öú¹¤¾ß£¬°üÀ¨AdaptµÈ£¬±£³ÖÏàÍ¬µÄÊä³öº¯Êı£¬
+*             ÕâÑùÔÚÊ¹ÓÃÄ£°æµÄÊ±ºò¾ÍºÜ·½±ãÁË¡£
+*             Ò²Ìá¹©ÁËÒ»×éºê°ïÖúÊä³ö¡£
+*             output_helper º¯ÊıÎªÄ£°åº¯ÊıÌá¹©Í³Ò»µÄÈë¿Ú£¬
+*             XXXXX_Out_Helper ÕâĞ©ÀàÒ»°ãÊÇÎªÁË°ïÖúÌá¹©¸ñÊ½»¯Êä³ö£¬
 *
-* @details    åŸºæœ¬çš„æ•°æ®ç±»å‹ï¼Œzceé‡Œé¢çš„åŸºç¡€æ•°æ®ç±»å‹ï¼Œéƒ½æœ‰äº†è¾“å‡ºï¼Œ
+* @details    »ù±¾µÄÊı¾İÀàĞÍ£¬zceÀïÃæµÄ»ù´¡Êı¾İÀàĞÍ£¬¶¼ÓĞÁËÊä³ö£¬
 *
-*             2012å¹´5æœˆ
-*             å‰å‡ å¤©æœ‰ä»¥ä¸ºä»¤äººå°Šæ•¬çš„ä½•åŸ¹è“‰ï¼ˆçç ï¼‰å¥³å£«å°†å…‰è¯šä»å±±ä¸œæ•‘äº†å‡ºæ¥ï¼Œåœ¨å‡¶æ¶ï¼Œ
-*             èƒŒå›ï¼Œææƒ§ï¼Œé»˜é»˜çš„äº‘äº‘ä¼—ç”Ÿä¸­ï¼Œæˆ‘ä»¬çœ‹åˆ°äº†ä¸€æœµå¥‡è‘©ï¼Œ
-*             ä¸çŸ¥é“æ˜¯å¦æ˜¯å› ä¸ºå¥‡è‘©çš„å­˜åœ¨ï¼Œæˆ‘ä»¬çœ‹åˆ°äº†å¸Œæœ›
+*             2012Äê5ÔÂ
+*             Ç°¼¸ÌìÓĞÒÔÎªÁîÈË×ğ¾´µÄºÎÅàÈØ£¨ÕäÖé£©Å®Ê¿½«¹â³Ï´ÓÉ½¶«¾ÈÁË³öÀ´£¬ÔÚĞ×¶ñ£¬
+*             ±³ÅÑ£¬¿Ö¾å£¬Ä¬Ä¬µÄÔÆÔÆÖÚÉúÖĞ£¬ÎÒÃÇ¿´µ½ÁËÒ»¶äÆæİâ£¬
+*             ²»ÖªµÀÊÇ·ñÊÇÒòÎªÆæİâµÄ´æÔÚ£¬ÎÒÃÇ¿´µ½ÁËÏ£Íû
 *
 */
 
@@ -34,10 +34,10 @@
 namespace zce
 {
 
-//æ ‡å‡†æ•°æ®ç±»å‹çš„è¾“å‡ºï¼Œç”¨é»˜è®¤çš„æ ¼å¼------------------------------------------------------------------------
+//±ê×¼Êı¾İÀàĞÍµÄÊä³ö£¬ÓÃÄ¬ÈÏµÄ¸ñÊ½------------------------------------------------------------------------
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºä¸€ä¸ªbool å¸ƒå°”å€¼
+///¸¨ÖúÊä³öÒ»¸öbool ²¼¶ûÖµ
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -71,7 +71,7 @@ inline void string_helper(std::string &stdstr,
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºä¸€ä¸ªCHAR
+///¸¨ÖúÊä³öÒ»¸öCHAR
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -79,7 +79,7 @@ inline void output_helper(char *buffer,
 {
     const size_t CHAR_NEEN_ROOM = 1;
 
-    //åªè¾“å‡ºä¸€ä¸ªå­—ç¬¦
+    //Ö»Êä³öÒ»¸ö×Ö·û
     if (max_len >= CHAR_NEEN_ROOM)
     {
         *buffer = out_data;
@@ -99,14 +99,14 @@ inline void string_helper(std::string &stdstr,
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºæ— ç¬¦å·CHAR
+///¸¨ÖúÊä³öÎŞ·ûºÅCHAR
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
                           const unsigned char &out_data)
 {
     const size_t CHAR_NEEN_ROOM = 1;
-    //åªè¾“å‡ºä¸€ä¸ªå­—ç¬¦
+    //Ö»Êä³öÒ»¸ö×Ö·û
     if (max_len >= CHAR_NEEN_ROOM)
     {
         *buffer = out_data;
@@ -126,7 +126,7 @@ inline void string_helper(std::string &stdstr,
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºçŸ­æ•´æ•°çš„å­—ç¬¦ä¸²
+///¸¨ÖúÊä³ö¶ÌÕûÊıµÄ×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -137,7 +137,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
@@ -149,14 +149,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºæ— ç¬¦å·çŸ­æ•´æ•°
+///¸¨ÖúÊä³öÎŞ·ûºÅ¶ÌÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -167,7 +167,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -179,14 +179,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºintæ•´æ•°
+///¸¨ÖúÊä³öintÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -197,7 +197,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
@@ -209,14 +209,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///æ— ç¬¦å·intæ•´æ•°
+///ÎŞ·ûºÅintÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -227,7 +227,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -239,14 +239,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///ç¬¦å·longæ•´æ•°
+///·ûºÅlongÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -257,7 +257,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
@@ -269,14 +269,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   BASE_NUMBER::DECIMAL,
+                   BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºæ— ç¬¦å·longæ•´æ•°
+///¸¨ÖúÊä³öÎŞ·ûºÅlongÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -287,7 +287,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -299,14 +299,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   BASE_NUMBER::DECIMAL,
+                   BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºæœ‰ç¬¦å·long longæ•´æ•°
+///¸¨ÖúÊä³öÓĞ·ûºÅlong longÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -317,7 +317,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
@@ -329,14 +329,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºæ— ç¬¦å·long longæ•´æ•°
+///¸¨ÖúÊä³öÎŞ·ûºÅlong longÕûÊı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -347,7 +347,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    zce::FMT_UNSIGNED);
@@ -359,14 +359,14 @@ inline void string_helper(std::string &stdstr,
     int64_t cvt_out_data = out_data;
     zce::fmt_int64(stdstr,
                    cvt_out_data,
-                   zce::BASE_NUMBER::DECIMAL,
+                   zce::BASE_DECIMAL,
                    0,
                    0,
                    0);
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºfloatå•ç²¾åº¦æµ®ç‚¹
+///¸¨ÖúÊä³öfloatµ¥¾«¶È¸¡µã
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -388,7 +388,7 @@ inline void string_helper(std::string &stdstr,
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºdoubleåŒç²¾åº¦æµ®ç‚¹
+///¸¨ÖúÊä³ödoubleË«¾«¶È¸¡µã
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -408,7 +408,7 @@ inline void string_helper(std::string &stdstr,
 }
 
 //--------------------------------------------
-///è¾…åŠ©è¾“å‡ºconst charå­—ç¬¦ä¸²è¾“å‡ºè¾…åŠ©å‡½æ•°
+///¸¨ÖúÊä³öconst char×Ö·û´®Êä³ö¸¨Öúº¯Êı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -429,7 +429,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(out_data);
 }
 
-///è¾…åŠ©è¾“å‡ºstd::stringå­—ç¬¦ä¸²è¾“å‡º
+///¸¨ÖúÊä³östd::string×Ö·û´®Êä³ö
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -448,7 +448,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(out_data);
 }
 
-///è¾…åŠ©è¾“å‡ºvoid *æŒ‡é’ˆåœ°å€è¾“å‡º
+///¸¨ÖúÊä³övoid *Ö¸ÕëµØÖ·Êä³ö
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -459,7 +459,7 @@ inline void output_helper(char *buffer,
                    max_len,
                    use_len,
                    static_cast<int64_t>(save_point),
-                   zce::BASE_NUMBER::HEXADECIMAL,
+                   zce::BASE_HEXADECIMAL,
                    0,
                    sizeof(save_point) == 4 ? 8 : 16,
                    zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
@@ -471,16 +471,16 @@ inline void string_helper(std::string &stdstr,
     ptrdiff_t save_point = (const char *)out_data - (const char *)0;
     zce::fmt_int64(stdstr,
                    static_cast<int64_t>(save_point),
-                   zce::BASE_NUMBER::HEXADECIMAL,
+                   zce::BASE_HEXADECIMAL,
                    0,
                    sizeof(size_t) == 4 ? 8 : 16,
                    zce::FMT_PREFIX | zce::FMT_UP | zce::FMT_ZERO);
 }
 
 //===========================================================================================
-//ä¸€äº›Cè¯­è¨€çš„ç»“æ„çš„å­—ç¬¦ä¸²è¾“å‡º
+//Ò»Ğ©CÓïÑÔµÄ½á¹¹µÄ×Ö·û´®Êä³ö
 
-///è¾“å‡ºTimeæ—¶é—´
+///Êä³öTimeÊ±¼ä
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -490,7 +490,7 @@ inline void output_helper(char *buffer,
     const char *ret_str = zce::timestamp(&out_data,
                                          buffer,
                                          max_len);
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (ret_str)
     {
         use_len = strlen(buffer);
@@ -513,7 +513,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///IPV4çš„socketåœ°å€
+///IPV4µÄsocketµØÖ·
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -523,7 +523,7 @@ inline void output_helper(char *buffer,
                                                   buffer,
                                                   max_len,
                                                   use_len);
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (!ret_str)
     {
         zce::output_helper(buffer, max_len, use_len, "<ERROR>");
@@ -544,7 +544,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///IPV6çš„socketåœ°å€
+///IPV6µÄsocketµØÖ·
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -574,7 +574,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///sockaddr *çš„æŒ‡é’ˆç±»å‹
+///sockaddr *µÄÖ¸ÕëÀàĞÍ
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -584,7 +584,7 @@ inline void output_helper(char *buffer,
                                                   buffer,
                                                   max_len,
                                                   use_len);
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (!ret_str)
     {
         zce::output_helper(buffer, max_len, use_len, "<ERROR>");
@@ -605,7 +605,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///è¾…åŠ©IPV4çš„socketåœ°å€å­—ç¬¦ä¸²
+///¸¨ÖúIPV4µÄsocketµØÖ·×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -638,7 +638,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///è¾…åŠ©è¾“å‡ºIPV6çš„socketåœ°å€å­—ç¬¦ä¸²
+///¸¨ÖúÊä³öIPV6µÄsocketµØÖ·×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -648,7 +648,7 @@ inline void output_helper(char *buffer,
                                          (void *)(&out_data),
                                          buffer,
                                          max_len);
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (ret_str)
     {
         use_len = strlen(buffer);
@@ -673,9 +673,9 @@ inline void string_helper(std::string &stdstr,
 }
 
 //-----------------------------------------------------------------------------------------------
-//ä¸€äº›ZCELIBå¸¸ç”¨çš„ç»“æ„çš„å­—ç¬¦ä¸²è¾“å‡º
+//Ò»Ğ©ZCELIB³£ÓÃµÄ½á¹¹µÄ×Ö·û´®Êä³ö
 
-///è¾“å‡ºZCE_Time_Valueçš„æ—¶é—´
+///Êä³öZCE_Time_ValueµÄÊ±¼ä
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -684,7 +684,7 @@ inline void output_helper(char *buffer,
     const char *ret_str = out_data.to_string(buffer,
                                              max_len,
                                              use_len);
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (ret_str)
     {
         use_len = zce::TIMESTR_ISO_USEC_LEN;
@@ -708,7 +708,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///è¾“å‡ºZCE_Sockaddr_Inçš„å­—ç¬¦ä¸²
+///Êä³öZCE_Sockaddr_InµÄ×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -718,7 +718,7 @@ inline void output_helper(char *buffer,
                                              max_len,
                                              use_len);
 
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (!ret_str)
     {
         zce::output_helper(buffer, max_len, use_len, "<ERROR>");
@@ -738,7 +738,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///è¾…åŠ©è¾“å‡ºZCE_Sockaddr_In6çš„å­—ç¬¦ä¸²
+///¸¨ÖúÊä³öZCE_Sockaddr_In6µÄ×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -748,7 +748,7 @@ inline void output_helper(char *buffer,
                                              max_len,
                                              use_len);
 
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (!ret_str)
     {
         zce::output_helper(buffer, max_len, use_len, "<ERROR>");
@@ -768,7 +768,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///è¾…åŠ©è¾“å‡ºZCE_UUID64çš„å­—ç¬¦ä¸²
+///¸¨ÖúÊä³öZCE_UUID64µÄ×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -778,7 +778,7 @@ inline void output_helper(char *buffer,
                                              max_len,
                                              use_len);
 
-    //è¿”å›æˆåŠŸ
+    //·µ»Ø³É¹¦
     if (ret_str)
     {
         use_len = ZCE_UUID64::LEN_OF_ZCE_UUID64_STR;
@@ -802,7 +802,7 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///è¾…åŠ©è¾“å‡ºZCE_UUID128çš„å­—ç¬¦ä¸²
+///¸¨ÖúÊä³öZCE_UUID128µÄ×Ö·û´®
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -831,20 +831,20 @@ inline void string_helper(std::string &stdstr,
 }
 
 //-----------------------------------------------------------------------------------------------
-//ç‰¹æ®Šçš„æ ¼å¼è¾“å‡ºæ–¹å¼
+//ÌØÊâµÄ¸ñÊ½Êä³ö·½Ê½
 
-///INTæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©ç±»ï¼Œå¯ä»¥å¸®åŠ©è¿›è¡Œä¸€äº›æ ¼å¼åŒ–è¾“å‡º
+///INT¸ñÊ½»¯Êä³ö¸¨ÖúÀà£¬¿ÉÒÔ°ïÖú½øĞĞÒ»Ğ©¸ñÊ½»¯Êä³ö
 class Int_Out_Helper
 {
 public:
-    //è¾…åŠ©ç±»çš„æ„é€ å‡½æ•°ï¼Œè·Ÿè¿›æœ‰ç¬¦å·å’Œæ²¡æœ‰ç¬¦å·çš„æ•´æ•°ç±»å‹è¿›è¡Œäº†åŒºåˆ†å¤„ç†
-    //is_unsigned ä¸å…‰å¯¹æ•´æ•°ç”Ÿæ•ˆï¼Œå¯¹æµ®ç‚¹ä¹Ÿæœ‰ä½œç”¨
+    //¸¨ÖúÀàµÄ¹¹Ôìº¯Êı£¬¸ú½øÓĞ·ûºÅºÍÃ»ÓĞ·ûºÅµÄÕûÊıÀàĞÍ½øĞĞÁËÇø·Ö´¦Àí
+    //is_unsigned ²»¹â¶ÔÕûÊıÉúĞ§£¬¶Ô¸¡µãÒ²ÓĞ×÷ÓÃ
     template <typename int_type, typename std::enable_if<(std::is_integral<int_type>::value &&
                                                          std::is_unsigned<int_type>::value),int >::type = 0>
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
-                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
+                   BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
                    size_t precision = 0) :
         out_data_(out_data),
         width_(width),
@@ -860,7 +860,7 @@ public:
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
-                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
+                   BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
                    size_t precision = 0) :
         out_data_(out_data),
         width_(width),
@@ -874,15 +874,15 @@ public:
 
 public:
 
-    ///è¾“å‡ºçš„intæ•°æ®
+    ///Êä³öµÄintÊı¾İ
     int64_t            out_data_;
-    ///è¾“å‡ºå®½åº¦ï¼Œé»˜è®¤0
+    ///Êä³ö¿í¶È£¬Ä¬ÈÏ0
     size_t             width_;
-    ///è¾“å‡ºç²¾åº¦ï¼Œé»˜è®¤-1ï¼Œæœ€å¤§å€¼ï¼Œ
+    ///Êä³ö¾«¶È£¬Ä¬ÈÏ-1£¬×î´óÖµ£¬
     size_t             precision_;
-    ///è¾“å‡ºçš„è¿›åˆ¶æ–¹å¼
-    BASE_NUMBER        base_;
-    ///è¾“å‡ºæ ¼å¼æ§åˆ¶æ ‡å¿—
+    ///Êä³öµÄ½øÖÆ·½Ê½
+    BASE_NUMBER_SYSTEM base_;
+    ///Êä³ö¸ñÊ½¿ØÖÆ±êÖ¾
     int                flags_;
 };
 
@@ -894,14 +894,14 @@ public:
                       size_t width = 0,
                       int flags = zce::FMT_PREFIX | zce::FMT_UP,
                       size_t precision = 0) :
-        Int_Out_Helper(out_data, width, flags, zce::BASE_NUMBER::HEXADECIMAL, precision)
+        Int_Out_Helper(out_data, width, flags, zce::BASE_HEXADECIMAL, precision)
     {
         flags_ |= zce::FMT_UNSIGNED;
     }
 };
 
 
-//INTæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©
+//INT¸ñÊ½»¯Êä³ö¸¨Öú
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -928,7 +928,7 @@ inline void string_helper(std::string &stdstr,
                    out_data.flags_);
 }
 
-///DOUBLEæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©ç±»,å¸®åŠ©åšä¸€äº›æ ¼å¼åŒ–æ“ä½œï¼Œ
+///DOUBLE¸ñÊ½»¯Êä³ö¸¨ÖúÀà,°ïÖú×öÒ»Ğ©¸ñÊ½»¯²Ù×÷£¬
 class Double_Out_Helper
 {
 public:
@@ -939,17 +939,17 @@ public:
     ~Double_Out_Helper();
 
 public:
-    //è¦è¾“å‡ºçš„æµ®ç‚¹
+    //ÒªÊä³öµÄ¸¡µã
     double             out_data_;
-    //è¾“å‡ºçš„å®½åº¦
+    //Êä³öµÄ¿í¶È
     size_t             width_;
-    //è¾“å‡ºçš„ç²¾åº¦ï¼Œå°æ•°ç‚¹è¿›åº¦
+    //Êä³öµÄ¾«¶È£¬Ğ¡Êıµã½ø¶È
     size_t             precision_;
-    //è¾“å‡ºæ ‡å¿—
+    //Êä³ö±êÖ¾
     int                flags_;
 };
 
-///å¸®åŠ©æµ®ç‚¹ä»¥å°æ•°æ–¹å¼è¾“å‡ºï¼Œåå­—æœ‰ç‚¹è¯¯è§£ï¼Œä½†doubleå’Œfloatéƒ½å¯ä»¥ï¼Œ
+///°ïÖú¸¡µãÒÔĞ¡Êı·½Ê½Êä³ö£¬Ãû×ÖÓĞµãÎó½â£¬µ«doubleºÍfloat¶¼¿ÉÒÔ£¬
 #ifndef ZCE_DOUBLE_DECIMAL_OUT
 #define ZCE_DOUBLE_DECIMAL_OUT(x)   zce::Double_Out_Helper((x),\
                                                            0,\
@@ -957,7 +957,7 @@ public:
                                                            0)
 #endif
 
-///å¸®åŠ©æµ®ç‚¹ä»¥æŒ‡æ•°æ–¹å¼è¾“å‡º
+///°ïÖú¸¡µãÒÔÖ¸Êı·½Ê½Êä³ö
 #ifndef ZCE_DOUBLE_EXPONENT_OUT
 #define ZCE_DOUBLE_EXPONENT_OUT(x)  zce::Double_Out_Helper((x),\
                                                            0,\
@@ -965,7 +965,7 @@ public:
                                                            zce::FMT_UP|zce::FMT_EXPONENT)
 #endif
 
-///DOUBLEæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©
+///DOUBLE¸ñÊ½»¯Êä³ö¸¨Öú
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
@@ -990,7 +990,7 @@ inline void string_helper(std::string &stdstr,
                     out_data.flags_);
 }
 
-///Stringæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©ç±»ï¼Œå¸®åŠ©åšä¸€äº›æ ¼å¼åŒ–æ“ä½œ
+///String¸ñÊ½»¯Êä³ö¸¨ÖúÀà£¬°ïÖú×öÒ»Ğ©¸ñÊ½»¯²Ù×÷
 class String_Out_Helper
 {
 public:
@@ -1014,20 +1014,20 @@ public:
     ~String_Out_Helper();
 
 public:
-    ///å­—ç¬¦ä¸²
+    ///×Ö·û´®
     const char        *out_str_ptr_;
-    ///å­—ç¬¦ä¸²çš„é•¿åº¦
+    ///×Ö·û´®µÄ³¤¶È
     size_t             out_str_len_;
-    ///è¾“å‡ºçš„å®½åº¦
+    ///Êä³öµÄ¿í¶È
     size_t             width_;
-    ///è¾“å‡ºçš„ç²¾åº¦ï¼Œå°æ•°ç‚¹è¿›åº¦
+    ///Êä³öµÄ¾«¶È£¬Ğ¡Êıµã½ø¶È
     size_t             precision_;
-    ///è¾“å‡ºæ ‡å¿—
+    ///Êä³ö±êÖ¾
     int                flags_;
 };
 
 
-///const char *å­—ç¬¦ä¸²è¾“å‡ºè¾…åŠ©å‡½æ•°
+///const char *×Ö·û´®Êä³ö¸¨Öúº¯Êı
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,

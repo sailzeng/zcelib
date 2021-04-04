@@ -8,7 +8,7 @@
 
 
 
-//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
 ZCE_Event_INotify::ZCE_Event_INotify():
     ZCE_Event_Handler(),
 
@@ -37,18 +37,18 @@ ZCE_Event_INotify::~ZCE_Event_INotify()
     }
 }
 
-//æ‰“å¼€ç›‘æ§å¥æŸ„ç­‰ï¼Œç»‘å®šreactorç­‰
+//´ò¿ª¼à¿Ø¾ä±úµÈ£¬°ó¶¨reactorµÈ
 int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
 {
 
 #if defined (ZCE_OS_LINUX)
     int ret = 0;
-    //å¦‚æœå·²ç»åˆå§‹åŒ–è¿‡äº†
+    //Èç¹ûÒÑ¾­³õÊ¼»¯¹ıÁË
     if (ZCE_INVALID_HANDLE != inotify_handle_)
     {
         return -1;
     }
-    //åœ¨LINUXä¸‹ä½¿ç”¨INOTIFYçš„æœºåˆ¶
+    //ÔÚLINUXÏÂÊ¹ÓÃINOTIFYµÄ»úÖÆ
     inotify_handle_ = ::inotify_init();
     if (ZCE_INVALID_HANDLE == inotify_handle_ )
     {
@@ -72,26 +72,26 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
 }
 
 
-//å…³é—­ç›‘æ§å¥æŸ„ç­‰ï¼Œè§£é™¤ç»‘å®šreactorç­‰
+//¹Ø±Õ¼à¿Ø¾ä±úµÈ£¬½â³ı°ó¶¨reactorµÈ
 int ZCE_Event_INotify::close()
 {
 
 #if defined (ZCE_OS_LINUX)
 
-    //ç”±äºæ˜¯HASH MAPé€Ÿåº¦æœ‰ç‚¹æ…¢
+    //ÓÉÓÚÊÇHASH MAPËÙ¶ÈÓĞµãÂı
     HDL_TO_EIN_MAP::iterator iter_temp =  watch_event_map_.begin();
     for (; iter_temp != watch_event_map_.end();)
     {
         rm_watch(iter_temp->second.watch_handle_);
-        //è®©è¿­ä»£å™¨ç»§ç»­ä»æœ€å¼€å§‹å¹²èµ·
+        //ÈÃµü´úÆ÷¼ÌĞø´Ó×î¿ªÊ¼¸ÉÆğ
         iter_temp = watch_event_map_.begin();
     }
 
 
-    //å…³é—­ç›‘æ§å¥æŸ„
+    //¹Ø±Õ¼à¿Ø¾ä±ú
     if (inotify_handle_ != ZCE_INVALID_HANDLE)
     {
-        //ä»ååº”å™¨ç§»é™¤
+        //´Ó·´Ó¦Æ÷ÒÆ³ı
         reactor()->remove_handler(this, false);
 
         ::close(inotify_handle_);
@@ -108,14 +108,14 @@ int ZCE_Event_INotify::close()
 }
 
 
-//æ·»åŠ ç›‘æ§
+//Ìí¼Ó¼à¿Ø
 int ZCE_Event_INotify::add_watch(const char *pathname,
                                  uint32_t mask,
                                  ZCE_HANDLE *watch_handle,
                                  bool watch_sub_dir)
 {
 
-    //æ£€æŸ¥å‚æ•°æ˜¯å¦æœ‰æ•ˆï¼Œ
+    //¼ì²é²ÎÊıÊÇ·ñÓĞĞ§£¬
     ZCE_ASSERT( pathname &&  mask);
     if ( pathname == NULL || mask == 0)
     {
@@ -125,7 +125,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
 #if defined (ZCE_OS_LINUX)
 
-    //Linuxçš„Inotifyæ²¡æ³•ç›‘æ§å­ç›®å½•
+    //LinuxµÄInotifyÃ»·¨¼à¿Ø×ÓÄ¿Â¼
     ZCE_ASSERT(watch_sub_dir == false);
 
     *watch_handle = ZCE_INVALID_HANDLE;
@@ -148,11 +148,11 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     std::pair<HDL_TO_EIN_MAP::iterator, bool>
     ins_ret = watch_event_map_.insert(HDL_TO_EIN_MAP::value_type(hdl_dir, watch_note));
 
-    //å¦‚æœæ’å…¥ä¸æˆåŠŸï¼Œè¿›è¡Œå„ç§éš¾è¿‡æ¸…ç†å·¥ä½œ
+    //Èç¹û²åÈë²»³É¹¦£¬½øĞĞ¸÷ÖÖÄÑ¹ıÇåÀí¹¤×÷
     if (ins_ret.second == false)
     {
 
-        //ä¸‹é¢è¿™æ®µä»£ç å±è”½çš„åŸå› æ˜¯ï¼Œè€ŒLInuxä¸‹ï¼Œå¦‚æœinotify_add_watch åŒä¸€ä¸ªç›®å½•ï¼Œhandleæ˜¯ä¸€æ ·çš„ã€‚
+        //ÏÂÃæÕâ¶Î´úÂëÆÁ±ÎµÄÔ­ÒòÊÇ£¬¶øLInuxÏÂ£¬Èç¹ûinotify_add_watch Í¬Ò»¸öÄ¿Â¼£¬handleÊÇÒ»ÑùµÄ¡£
         //::inotify_rm_watch(inotify_handle_, hdl_dir);
 
         ZCE_LOG(RS_ERROR, "[%s] insert code node to map fail. code error or map already haved one equal HANDLE[%u].",
@@ -169,7 +169,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
     int ret = 0;
     *watch_handle = ZCE_INVALID_HANDLE;
 
-    //å·²ç»ç›‘æ§äº†ä¸€ä¸ªç›®å½•ï¼ŒWindowsçš„ä¸€ä¸ªZCE_Event_INotifyä¸èƒ½åŒæ—¶ç›‘æ§ä¸¤ä¸ªç›®å½•
+    //ÒÑ¾­¼à¿ØÁËÒ»¸öÄ¿Â¼£¬WindowsµÄÒ»¸öZCE_Event_INotify²»ÄÜÍ¬Ê±¼à¿ØÁ½¸öÄ¿Â¼
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
         ZCE_LOG(RS_ERROR, "[zcelib][%s]add_watch fail handle[%lu]. Windows one ZCE_Event_INotify only watch one dir.",
@@ -178,7 +178,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
         return -1;
     }
 
-    //é‡‡ç”¨OVERLAPPEDçš„æ–¹å¼æ‰“å¼€æ–‡ä»¶ï¼Œæ³¨æ„FILE_LIST_DIRECTORYå’ŒFILE_FLAG_OVERLAPPED
+    //²ÉÓÃOVERLAPPEDµÄ·½Ê½´ò¿ªÎÄ¼ş£¬×¢ÒâFILE_LIST_DIRECTORYºÍFILE_FLAG_OVERLAPPED
     watch_handle_ = ::CreateFileA(pathname, // pointer to the file name
                                   FILE_LIST_DIRECTORY,                // access (read/write) mode
                                   FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, // share mode
@@ -224,7 +224,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
                     NULL // completion routine
                 );
 
-    //å¦‚æœè¯»å–å¤±è´¥ï¼Œä¸€èˆ¬è€Œè¨€ï¼Œè¿™æ˜¯è¿™æ®µä»£ç æœ‰é—®é¢˜
+    //Èç¹û¶ÁÈ¡Ê§°Ü£¬Ò»°ã¶øÑÔ£¬ÕâÊÇÕâ¶Î´úÂëÓĞÎÊÌâ
     if (bret == FALSE)
     {
         ZCE_LOG(RS_ERROR, "[%s] ::ReadDirectoryChangesW fail,error [%u|%s].",
@@ -253,7 +253,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 {
 #if defined (ZCE_OS_LINUX)
-    //å…ˆç”¨å¥æŸ„æŸ¥è¯¢
+    //ÏÈÓÃ¾ä±ú²éÑ¯
     HDL_TO_EIN_MAP::iterator iter_del = watch_event_map_.find(watch_handle);
     if (iter_del == watch_event_map_.end())
     {
@@ -266,7 +266,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
         return -1;
     }
 
-    //ä»MAPä¸­åˆ é™¤è¿™ä¸ªNODe
+    //´ÓMAPÖĞÉ¾³ıÕâ¸öNODe
     watch_event_map_.erase(iter_del);
     return 0;
 #elif defined (ZCE_OS_WINDOWS)
@@ -274,7 +274,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
     ZCE_UNUSED_ARG(watch_handle);
     if (watch_handle_ != ZCE_INVALID_HANDLE)
     {
-        //ä»ååº”å™¨ç§»é™¤
+        //´Ó·´Ó¦Æ÷ÒÆ³ı
         reactor()->remove_handler(this, false);
 
         ::CloseHandle(watch_handle_);
@@ -286,7 +286,7 @@ int ZCE_Event_INotify::rm_watch(ZCE_HANDLE watch_handle)
 }
 
 
-//è¯»å–äº‹ä»¶è§¦å‘è°ƒç”¨å‡½æ•°
+//¶ÁÈ¡ÊÂ¼ş´¥·¢µ÷ÓÃº¯Êı
 int ZCE_Event_INotify::handle_input ()
 {
 
@@ -297,7 +297,7 @@ int ZCE_Event_INotify::handle_input ()
     int detect_ret = 0;
     size_t watch_event_num = 0;
 
-    //è¯»å–
+    //¶ÁÈ¡
     ssize_t read_ret = zce::read(inotify_handle_, read_buffer_, READ_BUFFER_LEN);
     if (read_ret <= 0)
     {
@@ -307,21 +307,21 @@ int ZCE_Event_INotify::handle_input ()
     uint32_t read_len = static_cast<uint32_t>(read_ret);
     uint32_t next_entry_offset = 0;
 
-    //å¯èƒ½ä¸€æ¬¡è¯»å–å‡ºæ¥å¤šä¸ªinotify_eventæ•°æ®ï¼Œæ‰€ä»¥è¦å¾ªç¯å¤„ç†
+    //¿ÉÄÜÒ»´Î¶ÁÈ¡³öÀ´¶à¸öinotify_eventÊı¾İ£¬ËùÒÔÒªÑ­»·´¦Àí
     do
     {
         detect_ret = 0;
 
         ::inotify_event *ne_ptr = (::inotify_event *) (read_buffer_ + next_entry_offset);
 
-        //æ£€æŸ¥è¯»å–çš„æ•°æ®æ˜¯å¦è¿˜æœ‰ä¸€ä¸ªï¼Œ
+        //¼ì²é¶ÁÈ¡µÄÊı¾İÊÇ·ñ»¹ÓĞÒ»¸ö£¬
         read_len -= (sizeof(::inotify_event) + ne_ptr->len);
         next_entry_offset += sizeof(::inotify_event) + ne_ptr->len;
 
         HDL_TO_EIN_MAP::iterator active_iter = watch_event_map_.find(ne_ptr->wd);
         if (active_iter == watch_event_map_.end())
         {
-            //æŸä¸ªFDåœ¨MAPä¸­é—´æ— æ³•æ‰¾åˆ°ï¼Œæœ€å¤§çš„å¯èƒ½æ˜¯
+            //Ä³¸öFDÔÚMAPÖĞ¼äÎŞ·¨ÕÒµ½£¬×î´óµÄ¿ÉÄÜÊÇ
             ZCE_LOG(RS_DEBUG,
                     "You code error or a handle not in map (delete in this do while), please check you code. handle[%u]",
                     ne_ptr->wd);
@@ -329,10 +329,10 @@ int ZCE_Event_INotify::handle_input ()
         }
         EVENT_INOTIFY_NODE *node_ptr = &(active_iter->second);
         const char *active_path = ne_ptr->name;
-        //æ ¹æ®è¿”å›çš„maskå†³å®šå¦‚ä½•å¤„ç†
+        //¸ù¾İ·µ»ØµÄmask¾ö¶¨ÈçºÎ´¦Àí
 
-        //æ³¨æ„ä¸‹é¢çš„ä»£ç åˆ†æ”¯ç”¨çš„if else if ,è€Œä¸æ˜¯if ifï¼Œæˆ‘çš„åˆæ­¥çœ‹æ³•æ˜¯è¿™äº›äº‹ä»¶ä¸ä¼šä¸€èµ·è§¦å‘ï¼Œä½†ä¹Ÿè®¸ä¸å¯¹ã€‚
-        //ä¸‹é¢5ä¸ªæ˜¯å’ŒWindows å…±æœ‰çš„ï¼Œ
+        //×¢ÒâÏÂÃæµÄ´úÂë·ÖÖ§ÓÃµÄif else if ,¶ø²»ÊÇif if£¬ÎÒµÄ³õ²½¿´·¨ÊÇÕâĞ©ÊÂ¼ş²»»áÒ»Æğ´¥·¢£¬µ«Ò²Ğí²»¶Ô¡£
+        //ÏÂÃæ5¸öÊÇºÍWindows ¹²ÓĞµÄ£¬
         uint32_t event_mask = ne_ptr->mask;
         if (event_mask & IN_CREATE )
         {
@@ -369,7 +369,7 @@ int ZCE_Event_INotify::handle_input ()
                                           node_ptr->watch_path_,
                                           active_path);
         }
-        //ä¸‹é¢è¿™äº›æ˜¯LINUXè‡ªå·±ç‰¹æœ‰çš„
+        //ÏÂÃæÕâĞ©ÊÇLINUX×Ô¼ºÌØÓĞµÄ
         else if ( event_mask & IN_ACCESS)
         {
             detect_ret = inotify_access(node_ptr->watch_handle_,
@@ -413,13 +413,13 @@ int ZCE_Event_INotify::handle_input ()
                                              active_path);
         }
 
-        //è¿”å›-1ï¼Œå…³é—­ä¹‹,
+        //·µ»Ø-1£¬¹Ø±ÕÖ®,
         if (detect_ret == -1)
         {
             rm_watch(node_ptr->watch_handle_);
         }
 
-        //ç´¯è®¡å‘ç°äº‹ä»¶è®¡æ•°
+        //ÀÛ¼Æ·¢ÏÖÊÂ¼ş¼ÆÊı
         ++(watch_event_num);
 
     }
@@ -436,7 +436,7 @@ int ZCE_Event_INotify::handle_input ()
                                       &num_read,
                                       FALSE);
 
-    //è¯»å–ç»“æœå¤±è´¥
+    //¶ÁÈ¡½á¹ûÊ§°Ü
     if (FALSE == bret)
     {
         ZCE_LOG(RS_ERROR, "[%s] ::GetOverlappedResult fail,error [%u].",
@@ -446,7 +446,7 @@ int ZCE_Event_INotify::handle_input ()
     }
 
 
-    //è®°å½•å½“å‰å¤„ç†çš„å¥æŸ„ï¼Œ
+    //¼ÇÂ¼µ±Ç°´¦ÀíµÄ¾ä±ú£¬
 
 
     FILE_NOTIFY_INFORMATION *read_ptr = NULL;
@@ -456,9 +456,9 @@ int ZCE_Event_INotify::handle_input ()
         detect_ret = 0;
         read_ptr = (FILE_NOTIFY_INFORMATION *)(read_buffer_ + next_entry_offset);
 
-        //æ–‡ä»¶åç§°è¿›è¡Œè½¬æ¢,ä»å®½å­—èŠ‚è½¬æ¢ä¸ºå¤šå­—èŠ‚,
-        //å¤©æ€çš„Windowsåœ¨è¿™äº›åœ°æ–¹åˆåŸ‹äº†é™·é˜±FILE_NOTIFY_INFORMATIONé‡Œé¢çš„é•¿åº¦FileNameLengthæ˜¯å­—èŠ‚é•¿åº¦
-        //è€ŒWideCharToMultiByteå‡½æ•°éœ€è¦çš„é•¿åº¦æ˜¯å­—é•¿åº¦ï¼Œä½ èƒ½TMDç»Ÿä¸€ä¸€ç‚¹å—ï¼Ÿ
+        //ÎÄ¼şÃû³Æ½øĞĞ×ª»»,´Ó¿í×Ö½Ú×ª»»Îª¶à×Ö½Ú,
+        //ÌìÉ±µÄWindowsÔÚÕâĞ©µØ·½ÓÖÂñÁËÏİÚåFILE_NOTIFY_INFORMATIONÀïÃæµÄ³¤¶ÈFileNameLengthÊÇ×Ö½Ú³¤¶È
+        //¶øWideCharToMultiByteº¯ÊıĞèÒªµÄ³¤¶ÈÊÇ×Ö³¤¶È£¬ÄãÄÜTMDÍ³Ò»Ò»µãÂğ£¿
         int length_of_ws = ::WideCharToMultiByte(CP_ACP,
                                                  0,
                                                  read_ptr->FileName,
@@ -467,7 +467,7 @@ int ZCE_Event_INotify::handle_input ()
                                                  0,
                                                  NULL,
                                                  NULL);
-        //Windows çš„ç›®å½•åç§°æœ€å¤§é•¿åº¦å¯ä»¥åˆ°3Kï¼Œæˆ‘æ²¡æœ‰å…´è¶£å»æä¸€å¥—è¿™ä¸ªç©
+        //Windows µÄÄ¿Â¼Ãû³Æ×î´ó³¤¶È¿ÉÒÔµ½3K£¬ÎÒÃ»ÓĞĞËÈ¤È¥¸ãÒ»Ì×Õâ¸öÍæ
         if (length_of_ws >= MAX_PATH)
         {
             ZCE_LOG(RS_ALERT, "My God ,your path length [%u] more than MAX_PATH [%u],I don't process this.",
@@ -486,7 +486,7 @@ int ZCE_Event_INotify::handle_input ()
                               NULL);
         active_path[length_of_ws] = '\0';
 
-        //æ ¹æ®Actionå’Œmaskç¡®å®šè°ƒç”¨å‡½æ•°
+        //¸ù¾İActionºÍmaskÈ·¶¨µ÷ÓÃº¯Êı
         switch (read_ptr->Action)
         {
             case FILE_ACTION_ADDED:
@@ -507,7 +507,7 @@ int ZCE_Event_INotify::handle_input ()
                                                 active_path);
                 }
                 break;
-            //æ³¨æ„Windows ä¸‹çš„è¿™ä¸ªç±»å‹ï¼ŒåŒ…æ‹¬äº†å±æ€§æ›´æ”¹
+            //×¢ÒâWindows ÏÂµÄÕâ¸öÀàĞÍ£¬°üÀ¨ÁËÊôĞÔ¸ü¸Ä
             case FILE_ACTION_MODIFIED:
                 if (watch_mask_ | IN_MODIFY)
                 {
@@ -537,16 +537,16 @@ int ZCE_Event_INotify::handle_input ()
                 break;
         }
 
-        //ç´¯è®¡åç§»é•¿åº¦
+        //ÀÛ¼ÆÆ«ÒÆ³¤¶È
         next_entry_offset += read_ptr->NextEntryOffset;
 
-        //è¿”å›-1ï¼Œå…³é—­ä¹‹
+        //·µ»Ø-1£¬¹Ø±ÕÖ®
         if (detect_ret == -1)
         {
             handle_close();
         }
 
-        //ä¸ºä»€ä¹ˆè¦è¿™æ ·åšï¼Œå› ä¸ºä¸Šé¢çš„å¤„ç†è¿‡ç¨‹ï¼Œå¯èƒ½æœ‰äººå·²ç»è°ƒç”¨äº†rm_watchï¼Œæˆ–è€…handle_closeï¼Œ
+        //ÎªÊ²Ã´ÒªÕâÑù×ö£¬ÒòÎªÉÏÃæµÄ´¦Àí¹ı³Ì£¬¿ÉÄÜÓĞÈËÒÑ¾­µ÷ÓÃÁËrm_watch£¬»òÕßhandle_close£¬
         if (watch_handle_ == ZCE_INVALID_HANDLE)
         {
             return 0;
@@ -557,7 +557,7 @@ int ZCE_Event_INotify::handle_input ()
 
     DWORD bytes_returned = 0;
 
-    //ç»§ç»­è¿›è¡Œç›‘æ§å¤„ç†
+    //¼ÌĞø½øĞĞ¼à¿Ø´¦Àí
     bret = ::ReadDirectoryChangesW(
                watch_handle_,            // handle to directory
                read_buffer_, // read results buffer
@@ -588,7 +588,7 @@ int ZCE_Event_INotify::handle_input ()
 }
 
 
-//å…³é—­ç›‘æ§å¥æŸ„
+//¹Ø±Õ¼à¿Ø¾ä±ú
 int ZCE_Event_INotify::handle_close ()
 {
     return close();

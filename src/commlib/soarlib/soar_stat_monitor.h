@@ -3,29 +3,29 @@
 
 #include "soar_services_info.h"
 
-//åŸæ¥æ˜¯ä½¿ç”¨æ¨¡ç‰ˆç­–ç•¥é”ï¼Œåæ¥å‘ç°æ¨¡ç‰ˆå®¹æ˜“å°†é—®é¢˜æ‰©å¤§åŒ–ï¼Œ
-//æ”¹æˆå¤šæ€ç­–ç•¥
+//Ô­À´ÊÇÊ¹ÓÃÄ£°æ²ßÂÔËø£¬ºóÀ´·¢ÏÖÄ£°æÈİÒ×½«ÎÊÌâÀ©´ó»¯£¬
+//¸Ä³É¶àÌ¬²ßÂÔ
 class Soar_Stat_Monitor : public ZCE_Server_Status
 {
 
 
 
 public:
-    //gunneré‡Œé¢æœ‰æ¥æ”¶å¤šä¸ªcgiç»Ÿè®¡ä¸ŠæŠ¥çš„éœ€æ±‚
-    //å•ä»¶æ— æ³•æ”¯æŒ
+    //gunnerÀïÃæÓĞ½ÓÊÕ¶à¸öcgiÍ³¼ÆÉÏ±¨µÄĞèÇó
+    //µ¥¼şÎŞ·¨Ö§³Ö
     Soar_Stat_Monitor();
 
     ~Soar_Stat_Monitor();
 
     /*!
-    * @brief      åˆå§‹åŒ–,ç”±äºå°è™«å’Œä¸šåŠ¡æœåŠ¡å™¨ä»¥ç›¸åŒIDçš„å…±å­˜ï¼Œæ‰€ä»¥ç”¨äº†ä¸€ä¸ªå‰ç¼€
+    * @brief      ³õÊ¼»¯,ÓÉÓÚĞ¡³æºÍÒµÎñ·şÎñÆ÷ÒÔÏàÍ¬IDµÄ¹²´æ£¬ËùÒÔÓÃÁËÒ»¸öÇ°×º
     * @return     int
-    * @param[in]  app_base_name è¿›ç¨‹çš„åç§°
-    * @param[in]  business_id   ä¸šåŠ¡ID,
-    * @param[in]  service_info  æœåŠ¡ID
-    * @param[in]  num_stat_item ç»Ÿè®¡é¡¹ç›®æ•°é‡
-    * @param[in]  item_ary      ç»Ÿè®¡é¡¹é˜Ÿåˆ—ï¼ŒåŒ…æ‹¬åç§°
-    * @param[in]  mutli_thread  æ˜¯å¦åœ¨å¤šçº¿ç¨‹ç¯å¢ƒä¸‹ä½¿ç”¨
+    * @param[in]  app_base_name ½ø³ÌµÄÃû³Æ
+    * @param[in]  business_id   ÒµÎñID,
+    * @param[in]  service_info  ·şÎñID
+    * @param[in]  num_stat_item Í³¼ÆÏîÄ¿ÊıÁ¿
+    * @param[in]  item_ary      Í³¼ÆÏî¶ÓÁĞ£¬°üÀ¨Ãû³Æ
+    * @param[in]  mutli_thread  ÊÇ·ñÔÚ¶àÏß³Ì»·¾³ÏÂÊ¹ÓÃ
     */
     int initialize(const char *app_base_name,
                    unsigned int business_id,
@@ -35,11 +35,11 @@ public:
                    bool mutli_thread);
 
     /*!
-    * @brief      ä»statæ–‡ä»¶åå–å‡ºservice_id ï¼Œapp nameç­‰ä¿¡æ¯
-    * @return     int ==0 è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™è¡¨ç¤ºæ–‡ä»¶åç§°é”™è¯¯
-    * @param[in]  stat_file_name æ–‡ä»¶åç§°
-    * @param[out] service_id     æœåŠ¡å™¨çš„SVC ID
-    * @param[out] app_base_name  è¿›ç¨‹çš„åç§°
+    * @brief      ´ÓstatÎÄ¼şÃûÈ¡³öservice_id £¬app nameµÈĞÅÏ¢
+    * @return     int ==0 ±íÊ¾³É¹¦£¬·ñÔò±íÊ¾ÎÄ¼şÃû³Æ´íÎó
+    * @param[in]  stat_file_name ÎÄ¼şÃû³Æ
+    * @param[out] service_id     ·şÎñÆ÷µÄSVC ID
+    * @param[out] app_base_name  ½ø³ÌµÄÃû³Æ
     * @note
     */
     static int get_info_from_fname(const char *stat_file_name,
@@ -49,14 +49,14 @@ public:
 
 protected:
 
-    //ç”Ÿäº§statæ–‡ä»¶åç§°
+    //Éú²ústatÎÄ¼şÃû³Æ
     void create_stat_fname(const char *app_base_name,
                            unsigned int business_id,
                            const SERVICES_ID &service_info);
 
 
-    //å•å­çš„å‡½æ•°ç¾¤ï¼Œä¸æ˜¯æˆ‘ä¸çŸ¥é“å¯ä»¥ç”¨BOOSTçš„æ¨¡æ¿ä½¿ç”¨å•å­ï¼Œæ˜¯è¿™æ ·æ›´åŠ ç›´æ¥æ¸…çˆ½ï¼Œå®¹æ˜“æ‰©å¼ ä¿®æ”¹ä¸€äº›
-    //æˆ‘ä¸ä¼šä¸ºäº†å•å­è€ƒè™‘æ‰€è°“çš„ä¿æŠ¤é—®é¢˜ï¼Œä½ è‡ªå·±ä¿è¯ä½ çš„åˆå§‹åŒ–å‡½æ•°ä¸ä¼šé‡å…¥
+    //µ¥×ÓµÄº¯ÊıÈº£¬²»ÊÇÎÒ²»ÖªµÀ¿ÉÒÔÓÃBOOSTµÄÄ£°åÊ¹ÓÃµ¥×Ó£¬ÊÇÕâÑù¸ü¼ÓÖ±½ÓÇåË¬£¬ÈİÒ×À©ÕÅĞŞ¸ÄÒ»Ğ©
+    //ÎÒ²»»áÎªÁËµ¥×Ó¿¼ÂÇËùÎ½µÄ±£»¤ÎÊÌâ£¬Äã×Ô¼º±£Ö¤ÄãµÄ³õÊ¼»¯º¯Êı²»»áÖØÈë
 public:
     //
     static Soar_Stat_Monitor *instance();
@@ -64,15 +64,15 @@ public:
     static void clean_instance();
 
 protected:
-    // ç›‘æ§mmapæ–‡ä»¶åæœ€å¤§é•¿åº¦
+    // ¼à¿ØmmapÎÄ¼şÃû×î´ó³¤¶È
     static const size_t STAT_MMAP_FILENAME_LEN = 128;
 
 protected:
-    // å­˜æ”¾mmapæ–‡ä»¶å
+    // ´æ·ÅmmapÎÄ¼şÃû
     char stat_mmap_filename_[STAT_MMAP_FILENAME_LEN + 1];
 
 protected:
-    //å•å­å®ä¾‹
+    //µ¥×ÓÊµÀı
     static Soar_Stat_Monitor *instance_;
 };
 

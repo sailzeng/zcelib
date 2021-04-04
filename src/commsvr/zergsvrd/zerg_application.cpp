@@ -13,9 +13,9 @@
 class  Zerg_Service_App
 ****************************************************************************************************/
 
-//å•å­çš„staticå®ä¾‹
+//µ¥×ÓµÄstaticÊµÀı
 
-//æˆ‘åˆè¦å·å·è—ç€
+//ÎÒÓÖÒªÍµÍµ²Ø×Å
 Zerg_Service_App::Zerg_Service_App():
     zerg_comm_mgr_(NULL),
     conf_timestamp_(0)
@@ -26,7 +26,7 @@ Zerg_Service_App::~Zerg_Service_App()
 {
 }
 
-//æ ¹æ®å¯åŠ¨å‚æ•°å¯åŠ¨
+//¸ù¾İÆô¶¯²ÎÊıÆô¶¯
 int Zerg_Service_App::app_start(int argc, const char *argv[])
 {
     int ret = 0;
@@ -43,7 +43,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    //é€šä¿¡ç®¡ç†å™¨è¯»å–é…ç½®æ–‡ä»¶
+    //Í¨ĞÅ¹ÜÀíÆ÷¶ÁÈ¡ÅäÖÃÎÄ¼ş
     ret = Zerg_Comm_Manager::instance()->get_config(config);
     if (0 != ret)
     {
@@ -61,8 +61,8 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
     {
         return ret;
     }
-    //åˆå§‹åŒ–ç»Ÿè®¡æ¨¡å—
-    //å› ä¸ºé…ç½®åˆå§‹åŒ–æ—¶ä¼šä»é…ç½®æœåŠ¡å™¨æ‹‰å–ipï¼Œè§¦å‘ç»Ÿè®¡ï¼Œå› æ­¤éœ€è¦æå‰åˆå§‹åŒ–
+    //³õÊ¼»¯Í³¼ÆÄ£¿é
+    //ÒòÎªÅäÖÃ³õÊ¼»¯Ê±»á´ÓÅäÖÃ·şÎñÆ÷À­È¡ip£¬´¥·¢Í³¼Æ£¬Òò´ËĞèÒªÌáÇ°³õÊ¼»¯
     ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
                                                     business_id_,
                                                     self_svc_id_,
@@ -81,11 +81,11 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
     max_peer = max_accept + max_connect + 16;
 
 
-    //è®¾ç½®å‘é€æ¥æ”¶ç¼“å†²çš„æ•°é‡
+    //ÉèÖÃ·¢ËÍ½ÓÊÕ»º³åµÄÊıÁ¿
     ZBuffer_Storage::instance()->init_buflist_by_hdlnum(max_peer);
 
 
-    //é€šä¿¡ç®¡ç†å™¨åˆå§‹åŒ–
+    //Í¨ĞÅ¹ÜÀíÆ÷³õÊ¼»¯
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
 
@@ -93,7 +93,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
     ZCE_LOG(RS_INFO, "[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
 
     //-----------------------------------------------------------------------------------------------
-    //åˆå§‹åŒ–é™æ€æ•°æ®
+    //³õÊ¼»¯¾²Ì¬Êı¾İ
     ret = TCP_Svc_Handler::init_all_static_data();
 
     if ( ret != 0 )
@@ -114,7 +114,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
     }
 
     ZCE_LOG(RS_INFO, "[zergsvr] init_instance Succ.Have Fun.!!!");
-    //è¿›ç¨‹ç›‘æ§ï¼Œè¿™ä¸ªæœ€å¥½ï¼Œæˆ–è€…è¯´å¿…é¡»æ”¾åœ¨ç¨‹åºåˆå§‹åŒ–çš„æœ€åï¼Œè¿™æ ·å¯ä»¥ä¿è¯ä¸åˆ†é…çš„å†…å­˜çš„åˆå§‹åŒ–åŸºæœ¬å®Œæˆäº†,
+    //½ø³Ì¼à¿Ø£¬Õâ¸ö×îºÃ£¬»òÕßËµ±ØĞë·ÅÔÚ³ÌĞò³õÊ¼»¯µÄ×îºó£¬ÕâÑù¿ÉÒÔ±£Ö¤Óë·ÖÅäµÄÄÚ´æµÄ³õÊ¼»¯»ù±¾Íê³ÉÁË,
 
     return 0;
 }
@@ -123,23 +123,23 @@ int Zerg_Service_App::app_exit()
 {
     ZCE_LOG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
 
-    //é‡Šæ”¾æ‰€æœ‰çš„é™æ€èµ„æºï¼Œå…³é—­æ‰€æœ‰çš„å¥æŸ„
+    //ÊÍ·ÅËùÓĞµÄ¾²Ì¬×ÊÔ´£¬¹Ø±ÕËùÓĞµÄ¾ä±ú
     TCP_Svc_Handler::uninit_all_staticdata();
 
-    //æ¸…ç†ç®¡ç†å™¨çš„å®ä¾‹
+    //ÇåÀí¹ÜÀíÆ÷µÄÊµÀı
     Zerg_Comm_Manager::clean_instance();
 
-    //æ¸…ç†å•å­
+    //ÇåÀíµ¥×Ó
     Zerg_IPRestrict_Mgr::clean_instance();
 
-    //æœ€åè°ƒç”¨åŸºç±»çš„é€€å‡ºå‡½æ•°
+    //×îºóµ÷ÓÃ»ùÀàµÄÍË³öº¯Êı
     Soar_Svrd_Appliction::app_exit();
 
     return 0;
 }
 
 
-//è¿è¡Œå‡½æ•°,ä¸åˆ°ä¸‡ä¸å¾—å·²,ä¸ä¼šé€€å‡º,ä¸ºäº†åŠ å¿«å‘é€çš„é€Ÿåº¦ï¼Œå¯¹å¤šç§è¯·æ±‚åšäº†ä¸åŒçš„å¾®è°ƒã€‚æœ€é‡è¦çš„å‡½æ•°,ä½†æ˜¯ä¹Ÿæœ€ç®€å•,
+//ÔËĞĞº¯Êı,²»µ½Íò²»µÃÒÑ,²»»áÍË³ö,ÎªÁË¼Ó¿ì·¢ËÍµÄËÙ¶È£¬¶Ô¶àÖÖÇëÇó×öÁË²»Í¬µÄÎ¢µ÷¡£×îÖØÒªµÄº¯Êı,µ«ÊÇÒ²×î¼òµ¥,
 int Zerg_Service_App::app_run()
 {
 
@@ -178,13 +178,13 @@ int Zerg_Service_App::app_run()
     for (size_t i = 0; app_run_; ++i)
     {
 
-        //å¦‚æœæ¯”è¾ƒå¿™ï¼Œ
+        //Èç¹û±È½ÏÃ¦£¬
         if ( num_send_frame >= SEND_BUSY_JUDGE_STANDARD )
         {
-            //å¦‚æœå•å•æ˜¯å‘é€æ¯”è¾ƒå¿™ï¼Œ
+            //Èç¹ûµ¥µ¥ÊÇ·¢ËÍ±È½ÏÃ¦£¬
             if (num_io_event == 0)
             {
-                //å–å¾—å‘é€æ•°æ®æ•°æ®
+                //È¡µÃ·¢ËÍÊı¾İÊı¾İ
                 run_interval.usec(SEND_BUSY_REACTOR_WAIT_USEC);
                 want_send_frame = SENDBUSY_MAX_ONCE_SEND_FRAME;
             }
@@ -194,7 +194,7 @@ int Zerg_Service_App::app_run()
                 want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
             }
         }
-        //å¦‚æœæ¯”è¾ƒä¼˜å…ˆ
+        //Èç¹û±È½ÏÓÅÏÈ
         else if ( num_send_frame < SEND_IDLE_JUDGE_STANDARD )
         {
             if (num_io_event == 0)
@@ -217,16 +217,16 @@ int Zerg_Service_App::app_run()
         //
         preactor->handle_events(&run_interval, &num_io_event);
 
-        //æ¯æ¬¡éƒ½åœ¨è¿™å„¿åˆå§‹åŒ–ZCE_Time_Valueä¸å¥½,å…¶è¦è°ƒæ•´.
+        //Ã¿´Î¶¼ÔÚÕâ¶ù³õÊ¼»¯ZCE_Time_Value²»ºÃ,ÆäÒªµ÷Õû.
         zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
 
-        //å¦‚æœå‘é€é˜Ÿåˆ—å¾ˆå¿™ï¼Œå†è¿›è¡Œä¸€æ¬¡å‘é€
+        //Èç¹û·¢ËÍ¶ÓÁĞºÜÃ¦£¬ÔÙ½øĞĞÒ»´Î·¢ËÍ
         if ((num_send_frame > SEND_BUSY_JUDGE_STANDARD && num_io_event == 0) || num_send_frame >= NORMAL_MAX_ONCE_SEND_FRAME )
         {
             zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
         }
 
-        //å¶å°”å¤„ç†ä¸€ä¸‹å®šæ—¶å™¨
+        //Å¼¶û´¦ÀíÒ»ÏÂ¶¨Ê±Æ÷
         if (i % DEFAULT_IO_FIRST_RATIO == 0)
         {
             p_timer_queue->expire();

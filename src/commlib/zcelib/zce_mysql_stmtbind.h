@@ -3,7 +3,7 @@
 * @filename   zce_mysql_stmtbind.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2005年10月17日
+* @date       2005��10��17��
 * @brief
 *
 * @details
@@ -15,27 +15,27 @@
 #ifndef ZCE_LIB_MYSQL_STMT_RESULT_H_
 #define ZCE_LIB_MYSQL_STMT_RESULT_H_
 
-//如果你要用MYSQL的库
+//�����Ҫ��MYSQL�Ŀ�
 #if defined ZCE_USE_MYSQL
 
-//这些函数都是4.1.2后的版本功能
+//��Щ��������4.1.2��İ汾����
 
 #include "zce_log_logging.h"
 
 
 /*!
-* @brief MYSQL_BIND 的包装封装累，
+* @brief MYSQL_BIND �İ�װ��װ�ۣ�
 *
-* @note  ZCE_Mysql_STMT_Bind里面bind的变量数据，是否为NULL，返回长度，都是指针，
-*        外部的保存生命周期，请慎重处理。
+* @note  ZCE_Mysql_STMT_Bind����bind�ı������ݣ��Ƿ�ΪNULL�����س��ȣ�����ָ�룬
+*        �ⲿ�ı����������ڣ������ش�����
 */
 class ZCE_Mysql_STMT_Bind
 {
 public:
 
     /*!
-    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
-    *             绑定2进制参数数据，用于 mysql_stmt_bind_param
+    * @brief      ������Ϊ������ ZCE_Mysql_STMT_Bind << �Ĳ�������
+    *             ��2���Ʋ������ݣ����� mysql_stmt_bind_param
     */
     class BinData_Param
     {
@@ -45,9 +45,9 @@ public:
 
         /*!
         * @brief
-        * @param[in] data_type 数据类型，只能是MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
-        * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
-        * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
+        * @param[in] data_type �������ͣ�ֻ����MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
+        * @param[in] pdata ����ָ�룬������д��Ĵ�ŵĵط����ݣ�
+        * @param[in] data_len ���ݳ��ȵ�ָ�룬���������ʾ���ݳ��ȣ�ʹ�ú󱣴��Ǳ�ʾд������ݳ���
         */
         BinData_Param(enum_field_types data_type, void *pdata, unsigned long data_len) :
             stmt_data_type_(data_type),
@@ -72,8 +72,8 @@ public:
 
 
     /*!
-    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
-    *             绑定2进制结果数据，用于 mysql_stmt_bind_result
+    * @brief      ������Ϊ������ ZCE_Mysql_STMT_Bind << �Ĳ�������
+    *             ��2���ƽ�����ݣ����� mysql_stmt_bind_result
     */
     class BinData_Result
     {
@@ -83,9 +83,9 @@ public:
 
         /*!
         * @brief
-        * @param[in] data_type 数据类型，只能是MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
-        * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
-        * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
+        * @param[in] data_type �������ͣ�ֻ����MYSQL_TYPE_BLOB or MYSQL_TYPE_STRING
+        * @param[in] pdata ����ָ�룬������д��Ĵ�ŵĵط����ݣ�
+        * @param[in] data_len ���ݳ��ȵ�ָ�룬���������ʾ���ݳ��ȣ�ʹ�ú󱣴��Ǳ�ʾд������ݳ���
         */
         BinData_Result(enum_field_types data_type, void *pdata, unsigned long *data_len) :
             stmt_data_type_(data_type),
@@ -109,7 +109,7 @@ public:
     };
 
     /*!
-    @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
+    @brief      ������Ϊ������ ZCE_Mysql_STMT_Bind << �Ĳ�������
 
     */
     class TimeData
@@ -140,8 +140,8 @@ public:
     };
 
     /*!
-    * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
-    *             绑定一个空参数
+    * @brief      ������Ϊ������ ZCE_Mysql_STMT_Bind << �Ĳ�������
+    *             ��һ���ղ���
     * @note
     */
     class NULL_Param
@@ -162,27 +162,27 @@ public:
 
 protected:
 
-    //定义出来不实现,让你无法用,有很多地方有我分配的指针,不能给你浅度复制
+    //���������ʵ��,�����޷���,�кܶ�ط����ҷ����ָ��,���ܸ���ǳ�ȸ���
     ZCE_Mysql_STMT_Bind &operator=(const ZCE_Mysql_STMT_Bind &others);
 
 public:
 
     /*!
-    * @brief      构造函数
-    * @param      numbind  要绑定变量,结果的个数
+    * @brief      ���캯��
+    * @param      numbind  Ҫ�󶨱���,����ĸ���
     */
     ZCE_Mysql_STMT_Bind(size_t numbind);
     //
     ~ZCE_Mysql_STMT_Bind();
 
     /*!
-    * @brief      绑定一个参数
+    * @brief      ��һ������
     * @return     int
-    * @param      paramno   参数的编号
-    * @param      paramtype 参数类型
-    * @param      bisnull   是否为NULL,
-    * @param      paramdata 参数的数据的指针
-    * @param      szparam   参数的长度
+    * @param      paramno   �����ı��
+    * @param      paramtype ��������
+    * @param      bisnull   �Ƿ�ΪNULL,
+    * @param      paramdata ���������ݵ�ָ��
+    * @param      szparam   �����ĳ���
     */
     int bind_one_param(size_t paramno,
                        ::enum_field_types paramtype,
@@ -204,7 +204,7 @@ public:
                         void *paramdata,
                         unsigned long *szparam);
 
-    ///得到STMT HANDLE
+    ///�õ�STMT HANDLE
     inline MYSQL_BIND *get_stmt_bind_handle()
     {
         return stmt_bind_;
@@ -215,10 +215,10 @@ public:
         return &stmt_bind_[paramno];
     }
 
-    ///重新设置
+    ///��������
     void reset();
 
-    ///将变量绑定
+    ///��������
     void bind(size_t bind_col, char val);
     void bind(size_t bind_col, char &val);
     void bind(size_t bind_col, short &val);
@@ -236,14 +236,14 @@ public:
     void bind(size_t bind_col, float &val);
     void bind(size_t bind_col, double &val);
 
-    ///为了使用几个类型的适配器
-    ///绑定二进制数据，的适配器
+    ///Ϊ��ʹ�ü������͵�������
+    ///�󶨶��������ݣ���������
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Param &val);
-    ///绑定二进制结果的适配器
+    ///�󶨶����ƽ����������
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result &val);
-    ///绑定时间的适配器
+    ///��ʱ���������
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData &val);
-    ///绑定空的适配器
+    ///�󶨿յ�������
     void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param &val);
 
 
@@ -257,13 +257,13 @@ public:
 
 protected:
 
-    ///绑定的变量个数
+    ///�󶨵ı�������
     size_t           num_bind_;
 
-    ///当前使用的绑定参数序号,用于<<
+    ///��ǰʹ�õİ󶨲������,����<<
     size_t            current_bind_;
 
-    ///BIND MySQL的封装方式让我不能用vector,
+    ///BIND MySQL�ķ�װ��ʽ���Ҳ�����vector,
     MYSQL_BIND       *stmt_bind_;
 
 };

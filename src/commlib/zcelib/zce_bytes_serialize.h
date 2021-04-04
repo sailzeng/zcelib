@@ -5,11 +5,11 @@
 #include "zce_log_logging.h"
 
 //===========================================================================================================
-//æµç¼–ç å¤„ç†çš„ç±»ï¼Œå†™å…¥æµçš„å¤„ç†ç±»
+//Á÷±àÂë´¦ÀíµÄÀà£¬Ğ´ÈëÁ÷µÄ´¦ÀíÀà
 
 class ZCE_Serialize_Write;
 
-//è¾…åŠ©å¤„ç†ä¿å­˜æ•°æ®çš„ä¸€äº›ç±»
+//¸¨Öú´¦Àí±£´æÊı¾İµÄÒ»Ğ©Àà
 template<typename val_type >
 class ZCE_ClassSerialize_WriteHelp
 {
@@ -47,48 +47,48 @@ public:
 
 
 /*!
-* @brief      å¯¹æ•°æ®è¿›è¡Œç¼–ç å¤„ç†çš„ç±»ï¼Œå°†æ•°æ®å˜æˆæµï¼Œ
+* @brief      ¶ÔÊı¾İ½øĞĞ±àÂë´¦ÀíµÄÀà£¬½«Êı¾İ±ä³ÉÁ÷£¬
 *
-* @note       æ²¡æœ‰è€ƒè™‘å¯¹é½ç­‰é—®é¢˜ï¼Œ
-*             BTWï¼šå¯¹äºå†™å…¥ï¼Œæˆ‘ä»¬ä¸åœ¨æº¢å‡ºä¿æŠ¤ä¸Šåšè¿‡å¤šåŠªåŠ›ï¼Œé‚£æ˜¯ä½ è´Ÿè´£çš„äº‹æƒ…
+* @note       Ã»ÓĞ¿¼ÂÇ¶ÔÆëµÈÎÊÌâ£¬
+*             BTW£º¶ÔÓÚĞ´Èë£¬ÎÒÃÇ²»ÔÚÒç³ö±£»¤ÉÏ×ö¹ı¶àÅ¬Á¦£¬ÄÇÊÇÄã¸ºÔğµÄÊÂÇé
 */
 class ZCE_Serialize_Write
 {
 public:
 
-    ///æ„é€ å‡½æ•°
+    ///¹¹Ôìº¯Êı
     ZCE_Serialize_Write(char *write_buf, size_t buf_len);
 
     ~ZCE_Serialize_Write();
 
 public:
 
-    ///è¿”å›å½“å‰ç±»æ˜¯å¦æ­£å¸¸ï¼Œ
+    ///·µ»Øµ±Ç°ÀàÊÇ·ñÕı³££¬
     bool is_good()
     {
         return is_good_;
     }
 
-    ///è®¾ç½®é”™è¯¯æ ‡å¿—
+    ///ÉèÖÃ´íÎó±êÖ¾
     void set_bad()
     {
         is_good_ = false;
     }
 
-    ///é‡ç½®,é‡ç½®å¼€å§‹ä½ç½®å’Œgoodæ ‡å¿—ä½
+    ///ÖØÖÃ,ÖØÖÃ¿ªÊ¼Î»ÖÃºÍgood±êÖ¾Î»
     void reset()
     {
         write_pos_ = write_buf_;
         is_good_ = true;
     }
 
-    ///å·²ç»å†™å…¥çš„é•¿åº¦
+    ///ÒÑ¾­Ğ´ÈëµÄ³¤¶È
     size_t write_len()
     {
         return write_pos_ - write_buf_;
     }
 
-    ///ä¿å­˜æšä¸¾å€¼,åˆ©ç”¨SFINAçš„åŸåˆ™ï¼Œè¿›è¡Œé‡è½½
+    ///±£´æÃ¶¾ÙÖµ,ÀûÓÃSFINAµÄÔ­Ôò£¬½øĞĞÖØÔØ
     template<typename val_type  >
     void write(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
     {
@@ -100,7 +100,7 @@ public:
         write_arithmetic(static_cast<const int &>(val));
     }
 
-    ///ä¿å­˜æ•°å€¼ç±»å‹
+    ///±£´æÊıÖµÀàĞÍ
     template<typename val_type >
     typename std::enable_if<std::is_arithmetic<val_type>::value >::type write(const val_type &val)
     {
@@ -118,7 +118,7 @@ public:
     void write_arithmetic(const float &val);
     void write_arithmetic(const double &val);
 
-    ///ä¿å­˜æ•°ç»„
+    ///±£´æÊı×é
     template<typename val_type >
     typename std::enable_if<std::is_array<val_type>::value >::type write(const val_type &val)
     {
@@ -132,7 +132,7 @@ public:
     template<typename array_type >
     void write_array(const array_type *ary, size_t count)
     {
-        //å…¶å®ç”¨ä¸‹é¢æ³¨é‡Šçš„è¿™ä¸ªä»£ç ä¼šæ›´é…·ä¸€ç‚¹ï¼Œä½†ä¸çŸ¥é“ä¸ºå•¥æœ‰å‘Šè­¦ï¼Œæ”¾å¼ƒï¼Œ
+        //ÆäÊµÓÃÏÂÃæ×¢ÊÍµÄÕâ¸ö´úÂë»á¸ü¿áÒ»µã£¬µ«²»ÖªµÀÎªÉ¶ÓĞ¸æ¾¯£¬·ÅÆú£¬
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
         ZCE_ASSERT(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
@@ -143,7 +143,7 @@ public:
         return;
     }
 
-    ///ç‰¹åŒ–ï¼Œå¯¹å­—ç¬¦ä¸²è¿›è¡ŒåŠ é€Ÿ
+    ///ÌØ»¯£¬¶Ô×Ö·û´®½øĞĞ¼ÓËÙ
     void write_array(const char *ary, size_t count)
     {
         ZCE_ASSERT(count < 0xFFFFFFFFll);
@@ -160,7 +160,7 @@ public:
         }
     }
 
-    ///å­—ç¬¦ä¸²ç‰¹åŒ–
+    ///×Ö·û´®ÌØ»¯
     void write_array(const unsigned char *ary, size_t count)
     {
         ZCE_ASSERT(count < 0xFFFFFFFFll);
@@ -177,7 +177,7 @@ public:
         }
     }
 
-    ///ä¿å­˜ç±»ï¼Œè¿™å„¿è¦ç”¨è¾…åŠ©ç±»å®ç°ä¸€äº›åç‰¹åŒ–çš„èƒ½åŠ›
+    ///±£´æÀà£¬Õâ¶ùÒªÓÃ¸¨ÖúÀàÊµÏÖÒ»Ğ©Æ«ÌØ»¯µÄÄÜÁ¦
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value >::type write(const val_type &val)
     {
@@ -186,7 +186,7 @@ public:
         return;
     }
 
-    ///ä½¿ç”¨& æ“ä½œç¬¦å·å†™å…¥æ•°æ®ï¼Œ
+    ///Ê¹ÓÃ& ²Ù×÷·ûºÅĞ´ÈëÊı¾İ£¬
     template<typename val_type>
     ZCE_Serialize_Write &operator &(const val_type &val)
     {
@@ -196,23 +196,23 @@ public:
 
 protected:
 
-    ///çŠ¶æ€æ˜¯å¦æ­£ç¡®ï¼Œå¦‚æœå†™å…¥ä½ç½®è¶…å‡ºç¼“å†²åŒºçš„ç»“å°¾ï¼Œä¼šç½®ä¸ºfalse
+    ///×´Ì¬ÊÇ·ñÕıÈ·£¬Èç¹ûĞ´ÈëÎ»ÖÃ³¬³ö»º³åÇøµÄ½áÎ²£¬»áÖÃÎªfalse
     bool is_good_;
 
-    ///ä¿å­˜æ•°æ®ï¼Œè¢«å†™çš„bufferï¼Œ
+    ///±£´æÊı¾İ£¬±»Ğ´µÄbuffer£¬
     char *write_buf_;
-    ///bufçš„é•¿åº¦
+    ///bufµÄ³¤¶È
     size_t buf_len_;
 
-    ///bufçš„æœ€åçš„ä½ç½®ï¼Œç”¨äºåˆ¤æ–­åŠ å¿«å¤„ç†
+    ///bufµÄ×îºóµÄÎ»ÖÃ£¬ÓÃÓÚÅĞ¶Ï¼Ó¿ì´¦Àí
     char *end_pos_;
-    ///å½“å‰å†™å…¥çš„posä½ç½®ï¼Œ
+    ///µ±Ç°Ğ´ÈëµÄposÎ»ÖÃ£¬
     char *write_pos_;
 };
 
-//è¾…åŠ©ç±»ï¼Œwrite_help å‡½æ•°çš„å®ç°
+//¸¨ÖúÀà£¬write_help º¯ÊıµÄÊµÏÖ
 
-//ç”¨ä¿å­˜classè¾…åŠ©å¤„ç†çš„ base templates å®ç°
+//ÓÃ±£´æclass¸¨Öú´¦ÀíµÄ base templates ÊµÏÖ
 template<typename val_type>
 void ZCE_ClassSerialize_WriteHelp<val_type>::write_help(ZCE_Serialize_Write *ssave,
                                                         const val_type &val)
@@ -220,7 +220,7 @@ void ZCE_ClassSerialize_WriteHelp<val_type>::write_help(ZCE_Serialize_Write *ssa
     val.serialize(ssave);
 }
 
-//ç”¨äºä¿å­˜vector è¾…åŠ©å¤„ç†çš„ç‰¹åŒ–
+//ÓÃÓÚ±£´ævector ¸¨Öú´¦ÀíµÄÌØ»¯
 template<typename vector_type>
 void ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >::write_help(ZCE_Serialize_Write *ssave,
                                                                          const std::vector<vector_type> &val)
@@ -269,7 +269,7 @@ void ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >::write_help(ZC
 //===========================================================================================================
 
 class ZCE_Serialize_Read;
-//è¾…åŠ©å¤„ç†è¯»å–æ•°æ®çš„ä¸€äº›ç±»
+//¸¨Öú´¦Àí¶ÁÈ¡Êı¾İµÄÒ»Ğ©Àà
 template<typename val_type >
 class ZCE_ClassSerialize_ReadHelp
 {
@@ -306,9 +306,9 @@ public:
 };
 
 /*!
-* @brief      å¯¹æ•°æ®è¿›è¡Œè§£ç ç å¤„ç†çš„ç±»ï¼Œå°†æµå˜æˆæ•°æ®ï¼Œ
+* @brief      ¶ÔÊı¾İ½øĞĞ½âÂëÂë´¦ÀíµÄÀà£¬½«Á÷±ä³ÉÊı¾İ£¬
 *
-* @note       è¯»å–å¯¹äºè¾¹ç•Œæœ‰æœ‰ä¸€äº›å®‰å…¨å¤„ç†ï¼Œé¿å…è¾“å…¥æ•°æ®å°±æœ‰é—®é¢˜çš„æƒ…å†µ
+* @note       ¶ÁÈ¡¶ÔÓÚ±ß½çÓĞÓĞÒ»Ğ©°²È«´¦Àí£¬±ÜÃâÊäÈëÊı¾İ¾ÍÓĞÎÊÌâµÄÇé¿ö
 */
 class ZCE_Serialize_Read
 {
@@ -316,17 +316,17 @@ class ZCE_Serialize_Read
 public:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°
-    * @param      read_buf è¾“å…¥çš„æ•°æ®ï¼Œä¸ä¼šå¯¹æ•°æ®è¿›è¡Œæ”¹åŠ¨
-    * @param      buf_len  æ•°æ®çš„é•¿åº¦
+    * @brief      ¹¹Ôìº¯Êı
+    * @param      read_buf ÊäÈëµÄÊı¾İ£¬²»»á¶ÔÊı¾İ½øĞĞ¸Ä¶¯
+    * @param      buf_len  Êı¾İµÄ³¤¶È
     */
     ZCE_Serialize_Read(const char *read_buf, size_t buf_len);
 
-    ///ææ„å‡½æ•°
+    ///Îö¹¹º¯Êı
     ~ZCE_Serialize_Read();
 
 public:
-    ///è¿”å›å½“å‰ç±»æ˜¯å¦æ­£å¸¸ï¼ŒBTWï¼šæˆ‘ä»¬ä¸åœ¨æº¢å‡ºä¿æŠ¤ä¸ŠåšåŠªåŠ›ï¼Œé‚£æ˜¯ä½ è´Ÿè´£çš„äº‹æƒ…
+    ///·µ»Øµ±Ç°ÀàÊÇ·ñÕı³££¬BTW£ºÎÒÃÇ²»ÔÚÒç³ö±£»¤ÉÏ×öÅ¬Á¦£¬ÄÇÊÇÄã¸ºÔğµÄÊÂÇé
     bool is_good()
     {
         return is_good_;
@@ -337,26 +337,26 @@ public:
         return read_pos_;
     }
 
-    ///è®¾ç½®é”™è¯¯æ ‡å¿—
+    ///ÉèÖÃ´íÎó±êÖ¾
     void set_bad()
     {
         is_good_ = false;
     }
 
-    ///é‡ç½®ï¼Œé‡ç½®å¼€å§‹ä½ç½®å’Œgoodæ ‡å¿—ä½
+    ///ÖØÖÃ£¬ÖØÖÃ¿ªÊ¼Î»ÖÃºÍgood±êÖ¾Î»
     void reset()
     {
         read_pos_ = read_buf_;
         is_good_ = true;
     }
 
-    ///å·²ç»è¯»å–çš„é•¿åº¦
+    ///ÒÑ¾­¶ÁÈ¡µÄ³¤¶È
     size_t read_len()
     {
         return read_pos_ - read_buf_;
     }
 
-    ///ä¿å­˜æšä¸¾å€¼
+    ///±£´æÃ¶¾ÙÖµ
     template<typename val_type  >
     typename std::enable_if<std::is_enum<val_type>::value>::type read(val_type &val)
     {
@@ -368,7 +368,7 @@ public:
         read_arithmetic(static_cast<int &>(val));
     }
 
-    ///ä¿å­˜æ•°å€¼ç±»å‹
+    ///±£´æÊıÖµÀàĞÍ
     template<typename val_type >
     typename std::enable_if<std::is_arithmetic<val_type>::value>::type read(val_type &val)
     {
@@ -386,7 +386,7 @@ public:
     void read_arithmetic(float &val);
     void read_arithmetic(double &val);
 
-    ///å†™å…¥æ•°ç»„
+    ///Ğ´ÈëÊı×é
     template<typename val_type >
     typename std::enable_if<std::is_array<val_type>::value>::type read(val_type &val)
     {
@@ -401,7 +401,7 @@ public:
     template<typename array_type >
     void read_array(array_type ary, size_t ary_count, size_t &load_count)
     {
-        //è¯»å–æ•°ç»„é•¿åº¦
+        //¶ÁÈ¡Êı×é³¤¶È
         unsigned int ui_load_count;
         this->read_arithmetic(ui_load_count);
         load_count = ui_load_count;
@@ -417,7 +417,7 @@ public:
         }
         return;
     }
-    ///ç‰¹åŒ–ï¼Œå¯¹å­—ç¬¦ä¸²è¿›è¡ŒåŠ é€Ÿ
+    ///ÌØ»¯£¬¶Ô×Ö·û´®½øĞĞ¼ÓËÙ
     void read_array(char *ary, size_t ary_count, size_t &load_count)
     {
         unsigned int ui_load_count;
@@ -434,7 +434,7 @@ public:
         read_pos_ += load_count;
     }
 
-    ///ç‰¹åŒ–
+    ///ÌØ»¯
     void read_array(unsigned char *ary, size_t ary_count, size_t &load_count)
     {
         unsigned int ui_load_count;
@@ -451,7 +451,7 @@ public:
         read_pos_ += load_count;
     }
 
-    ///åŠ è½½ç±»ï¼Œè¿™å„¿è¦ç”¨è¾…åŠ©ç±»å®ç°ä¸€äº›åç‰¹åŒ–çš„èƒ½åŠ›
+    ///¼ÓÔØÀà£¬Õâ¶ùÒªÓÃ¸¨ÖúÀàÊµÏÖÒ»Ğ©Æ«ÌØ»¯µÄÄÜÁ¦
     template<typename val_type >
     typename std::enable_if<std::is_class<val_type>::value>::type read(val_type &val)
     {
@@ -460,7 +460,7 @@ public:
         return;
     }
 
-    ///ä½¿ç”¨&æ“ä½œç¬¦å·å†™å…¥æ•°æ®ï¼Œ
+    ///Ê¹ÓÃ&²Ù×÷·ûºÅĞ´ÈëÊı¾İ£¬
     template<typename val_type>
     ZCE_Serialize_Read &operator &(val_type &val)
     {
@@ -470,22 +470,22 @@ public:
 
 protected:
 
-    ///çŠ¶æ€æ˜¯å¦æ­£ç¡®ï¼Œå¦‚æœå†™å…¥ä½ç½®è¶…å‡ºç¼“å†²åŒºçš„ç»“å°¾ï¼Œä¼šç½®ä¸ºfalse
+    ///×´Ì¬ÊÇ·ñÕıÈ·£¬Èç¹ûĞ´ÈëÎ»ÖÃ³¬³ö»º³åÇøµÄ½áÎ²£¬»áÖÃÎªfalse
     bool is_good_;
 
-    ///è¯»å–æµçš„BUFFER
+    ///¶ÁÈ¡Á÷µÄBUFFER
     const char *read_buf_;
-    ///BUFçš„é•¿åº¦
+    ///BUFµÄ³¤¶È
     size_t buf_len_;
 
-    ///BUFFERç»“æŸçš„ä½ç½®
+    ///BUFFER½áÊøµÄÎ»ÖÃ
     const char *end_pos_;
-    ///å½“å‰è¯»å–çš„ä½ç½®
+    ///µ±Ç°¶ÁÈ¡µÄÎ»ÖÃ
     const char *read_pos_;
 
 };
 
-//è¾…åŠ©ç±»ï¼Œsave_help å‡½æ•°
+//¸¨ÖúÀà£¬save_help º¯Êı
 template<typename val_type>
 void ZCE_ClassSerialize_ReadHelp<val_type>::read_help(ZCE_Serialize_Read *sload,
                                                       val_type &val)

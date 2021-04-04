@@ -8,23 +8,23 @@
 #include "zce_os_adapt_time.h"
 #include "zce_os_adapt_condi.h"
 
-//ç”¨å¤šä¸ªWINDOWS20008çš„æ¡ä»¶å˜é‡å¯¹è±¡æ¨¡æ‹ŸPTHREAD CVæ¡ä»¶å˜é‡
+//ÓÃ¶à¸öWINDOWS20008µÄÌõ¼ş±äÁ¿¶ÔÏóÄ£ÄâPTHREAD CVÌõ¼ş±äÁ¿
 #ifndef ZCE_IS_USE_WIN2008_SIMULATE_PCV
 #define ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond) ( (ZCE_BIT_IS_SET((cond)->outer_lock_type_ , PTHREAD_MUTEX_RECURSIVE)) \
                                                 && (ZCE_BIT_ISNOT_SET((cond)->outer_lock_type_ , PTHREAD_MUTEX_TIMEOUT)) )
 #endif
 
-//ZCE_SUPPORT_WINSVR2008 == 1é‡Œé¢çš„ä»£ç éƒ½è‡ªæˆä¸€æ®µï¼Œçœ‹ä»£ç çš„æ—¶å€™æ³¨æ„
-//éƒ½æ˜¯WIN SERVER 2008åï¼ŒWINDOWSè‡ªå·±çš„æ¡ä»¶å˜é‡çš„å°è£…ï¼Œ
+//ZCE_SUPPORT_WINSVR2008 == 1ÀïÃæµÄ´úÂë¶¼×Ô³ÉÒ»¶Î£¬¿´´úÂëµÄÊ±ºò×¢Òâ
+//¶¼ÊÇWIN SERVER 2008ºó£¬WINDOWS×Ô¼ºµÄÌõ¼ş±äÁ¿µÄ·â×°£¬
 
 //
 int zce::pthread_condattr_init(pthread_condattr_t *attr)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //WINDOWSä¸‹é»˜è®¤å°±æ˜¯é€’å½’çš„ï¼Œä½ è¦æˆ‘æä¸ªéé€’å½’çš„æˆ‘è¿˜è¦æŠ˜è…¾
+    //WINDOWSÏÂÄ¬ÈÏ¾ÍÊÇµİ¹éµÄ£¬ÄãÒªÎÒ¸ã¸ö·Çµİ¹éµÄÎÒ»¹ÒªÕÛÌÚ
     attr->outer_lock_type_ = PTHREAD_MUTEX_RECURSIVE;
-    //åˆå§‹åŒ–åç§°
+    //³õÊ¼»¯Ãû³Æ
     attr->cv_name_[PATH_MAX] = '\0';
     attr->cv_name_[0] = '\0';
     return 0;
@@ -44,7 +44,7 @@ int zce::pthread_condattr_destroy(pthread_condattr_t *attr)
 #endif
 }
 
-//æ¡ä»¶å˜é‡å¯¹è±¡çš„åˆå§‹åŒ–
+//Ìõ¼ş±äÁ¿¶ÔÏóµÄ³õÊ¼»¯
 int zce::pthread_cond_init(pthread_cond_t *cond,
                            const pthread_condattr_t *attr)
 {
@@ -59,10 +59,10 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
         cond->outer_lock_type_ = PTHREAD_MUTEX_RECURSIVE;
     }
 
-    //WIN SERVER 2008ï¼ŒVISTA åæ”¯æŒæ¡ä»¶å˜é‡
+    //WIN SERVER 2008£¬VISTA ºóÖ§³ÖÌõ¼ş±äÁ¿
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
-    //å¦‚æœæ˜¯çº¿ç¨‹å†…éƒ¨çš„ï¼Œè€Œä¸”æ˜¯é€’å½’çš„ï¼Œè€Œä¸”æ²¡æœ‰è¶…æ—¶åŠŸèƒ½ï¼Œå¯ä»¥ç”¨Windowsçš„æ¡ä»¶æ¡ä»¶å˜é‡å¹²æ´»
+    //Èç¹ûÊÇÏß³ÌÄÚ²¿µÄ£¬¶øÇÒÊÇµİ¹éµÄ£¬¶øÇÒÃ»ÓĞ³¬Ê±¹¦ÄÜ£¬¿ÉÒÔÓÃWindowsµÄÌõ¼şÌõ¼ş±äÁ¿¸É»î
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {
         ::InitializeConditionVariable(&(cond->cv_object_));
@@ -81,13 +81,13 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
     sem_block_name[PATH_MAX] = '\0';
     sem_finish_name[PATH_MAX] = '\0';
 
-    //è¿™æ®µä»£ç åªåœ¨WIN32ä¸‹ç”¨ï¼Œæˆ‘ç®€åŒ–äº†
+    //Õâ¶Î´úÂëÖ»ÔÚWIN32ÏÂÓÃ£¬ÎÒ¼ò»¯ÁË
     pthread_mutexattr_t waiters_lock_attr;
     zce::pthread_mutexattr_init(&waiters_lock_attr);
     waiters_lock_attr.lock_shared_ = PTHREAD_PROCESS_PRIVATE;
     waiters_lock_attr.lock_type_ = PTHREAD_MUTEX_RECURSIVE;
 
-    //åˆå§‹åŒ–çº¿ç¨‹çš„äº’æ–¥é‡
+    //³õÊ¼»¯Ïß³ÌµÄ»¥³âÁ¿
     int result = 0;
     result = zce::pthread_mutex_init(&cond->simulate_cv_.waiters_lock_,
                                      &waiters_lock_attr);
@@ -102,7 +102,7 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
                                                    ZCE_DEFAULT_FILE_PERMS,
                                                    0);
 
-    //å¦‚æœå¤±è´¥äº†ï¼Œè¦å›æ”¶å‰é¢è·å¾—çš„èµ„æº
+    //Èç¹ûÊ§°ÜÁË£¬Òª»ØÊÕÇ°Ãæ»ñµÃµÄ×ÊÔ´
     if (!cond->simulate_cv_.block_sema_)
     {
         zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
@@ -114,12 +114,12 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
                                                          ZCE_DEFAULT_FILE_PERMS,
                                                          0);
 
-    //å¦‚æœå¤±è´¥äº†ï¼Œè¦å›æ”¶å‰é¢è·å¾—çš„èµ„æº,è¿™ç§åˆ†æ®µç”³è¯·èµ„æºæœ€éº»çƒ¦
+    //Èç¹ûÊ§°ÜÁË£¬Òª»ØÊÕÇ°Ãæ»ñµÃµÄ×ÊÔ´,ÕâÖÖ·Ö¶ÎÉêÇë×ÊÔ´×îÂé·³
     if (!cond->simulate_cv_.finish_broadcast_)
     {
         zce::pthread_mutex_destroy(&cond->simulate_cv_.waiters_lock_);
         zce::sem_close(cond->simulate_cv_.block_sema_);
-        //å…¶å®æ²¡ç”¨
+        //ÆäÊµÃ»ÓÃ
         //zce::sem_unlink(sem_block_name);
         return EINVAL;
     }
@@ -131,14 +131,14 @@ int zce::pthread_cond_init(pthread_cond_t *cond,
 #endif
 }
 
-//åˆå§‹åŒ–æ¡ä»¶å˜é‡å¯¹è±¡ï¼Œä¸åŒçš„å¹³å°ç»™ä¸åŒçš„é»˜è®¤å®šä¹‰
-//éæ ‡å‡†ï¼Œä½†æ˜¯å»ºè®®ä½ ä½¿ç”¨ï¼Œç®€å•å¤šäº†,
-//å¦‚æœè¦å¤šè¿›ç¨‹å…±äº«ï¼Œéº»çƒ¦ä½ è€ç»™ä¸ªåå­—ï¼ŒåŒæ—¶åœ¨LINUXå¹³å°ä¸‹ï¼Œä½ å¿…é¡»pthread_condattr_tæ”¾å…¥å…±äº«å†…å­˜
+//³õÊ¼»¯Ìõ¼ş±äÁ¿¶ÔÏó£¬²»Í¬µÄÆ½Ì¨¸ø²»Í¬µÄÄ¬ÈÏ¶¨Òå
+//·Ç±ê×¼£¬µ«ÊÇ½¨ÒéÄãÊ¹ÓÃ£¬¼òµ¥¶àÁË,
+//Èç¹ûÒª¶à½ø³Ì¹²Ïí£¬Âé·³ÄãÀÏ¸ø¸öÃû×Ö£¬Í¬Ê±ÔÚLINUXÆ½Ì¨ÏÂ£¬Äã±ØĞëpthread_condattr_t·ÅÈë¹²ÏíÄÚ´æ
 int zce::pthread_cond_initex(pthread_cond_t *cond,
                              bool win_mutex_or_sema)
 {
 
-    //å‰é¢æœ‰é”™è¯¯è¿”å›ï¼Œ
+    //Ç°ÃæÓĞ´íÎó·µ»Ø£¬
     int result = 0;
 
     pthread_condattr_t attr;
@@ -148,9 +148,9 @@ int zce::pthread_cond_initex(pthread_cond_t *cond,
         return result;
     }
 
-    //è¿™ä¸ªæ˜¯æˆ‘åœ¨WINDOWSä¸‹ç”¨çš„ï¼Œç”¨äºæŸäº›æ—¶å€™æˆ‘å¯ä»¥ç”¨ä¸´ç•ŒåŒºï¼Œè€Œä¸æ˜¯æ›´é‡çš„äº’æ–¥é‡
+    //Õâ¸öÊÇÎÒÔÚWINDOWSÏÂÓÃµÄ£¬ÓÃÓÚÄ³Ğ©Ê±ºòÎÒ¿ÉÒÔÓÃÁÙ½çÇø£¬¶ø²»ÊÇ¸üÖØµÄ»¥³âÁ¿
 #if defined (ZCE_OS_WINDOWS)
-    //é»˜è®¤è¿˜æ˜¯ç”¨é€’å½’çš„é”
+    //Ä¬ÈÏ»¹ÊÇÓÃµİ¹éµÄËø
     attr.outer_lock_type_ |= PTHREAD_MUTEX_RECURSIVE;
 
     if (win_mutex_or_sema)
@@ -179,17 +179,17 @@ int zce::pthread_cond_initex(pthread_cond_t *cond,
     return 0;
 }
 
-//æ¡ä»¶å˜é‡å¯¹è±¡çš„é”€æ¯
+//Ìõ¼ş±äÁ¿¶ÔÏóµÄÏú»Ù
 int zce::pthread_cond_destroy(pthread_cond_t *cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //ä½¿ç”¨WINDOWSçš„æ¡ä»¶å˜é‡
+    //Ê¹ÓÃWINDOWSµÄÌõ¼ş±äÁ¿
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {
-        //WINDOWSçš„æ¡ä»¶å˜é‡æ²¡æœ‰é‡Šæ”¾
+        //WINDOWSµÄÌõ¼ş±äÁ¿Ã»ÓĞÊÍ·Å
         return 0;
     }
 
@@ -200,7 +200,7 @@ int zce::pthread_cond_destroy(pthread_cond_t *cond)
     zce::sem_close(cond->simulate_cv_.block_sema_);
     zce::sem_close(cond->simulate_cv_.finish_broadcast_);
 
-    //WINå¹³å°ä¸‹ï¼Œæ— é¡»è°ƒç”¨è¿™ä¸ªå‡½æ•°ï¼Œå·æ‡’
+    //WINÆ½Ì¨ÏÂ£¬ÎŞĞëµ÷ÓÃÕâ¸öº¯Êı£¬ÍµÀÁ
     //zce::sem_unlink(sem_name);
 
     cond->simulate_cv_.block_sema_ = NULL;
@@ -215,7 +215,7 @@ int zce::pthread_cond_destroy(pthread_cond_t *cond)
 #endif
 }
 
-//æ¡ä»¶å˜é‡ç­‰å¾…ä¸€æ®µæ—¶é—´ï¼Œè¶…æ—¶åç»§ç»­
+//Ìõ¼ş±äÁ¿µÈ´ıÒ»¶ÎÊ±¼ä£¬³¬Ê±ºó¼ÌĞø
 int zce::pthread_cond_timedwait(pthread_cond_t *cond,
                                 pthread_mutex_t *external_mutex,
                                 const ::timespec *abs_timespec_out)
@@ -223,24 +223,24 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //å¦‚æœå¤–éƒ¨çš„MUTEXçš„ç±»å‹å’Œå…±äº«æ–¹å¼ä¸æ˜¯æˆ‘ä»¬æ‰€é¢„æœŸçš„ï¼Œæ»šè›‹
+    //Èç¹ûÍâ²¿µÄMUTEXµÄÀàĞÍºÍ¹²Ïí·½Ê½²»ÊÇÎÒÃÇËùÔ¤ÆÚµÄ£¬¹öµ°
     if ( external_mutex->lock_type_ != cond->outer_lock_type_ )
     {
         ZCE_ASSERT(false);
         return EINVAL;
     }
 
-    //ä½¿ç”¨WINDOWS2008çš„æ¡ä»¶å˜é‡
+    //Ê¹ÓÃWINDOWS2008µÄÌõ¼ş±äÁ¿
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
     {
         DWORD wait_msec = INFINITE;
 
-        //å¦‚æœæœ‰è¶…æ—¶ï¼Œè®¡ç®—ç›¸å¯¹è¶…æ—¶æ—¶é—´
+        //Èç¹ûÓĞ³¬Ê±£¬¼ÆËãÏà¶Ô³¬Ê±Ê±¼ä
         if (abs_timespec_out)
         {
-            //å¾—åˆ°ç›¸å¯¹æ—¶é—´ï¼Œè¿™ä¸ªæŠ˜è…¾ï¼Œ
+            //µÃµ½Ïà¶ÔÊ±¼ä£¬Õâ¸öÕÛÌÚ£¬
             timeval now_time = zce::gettimeofday();
             timeval abs_time = zce::make_timeval(abs_timespec_out);
 
@@ -248,7 +248,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
             wait_msec = static_cast<DWORD>( zce::total_milliseconds(timeout_time));
         }
 
-        //WINDOWSçš„æ¡ä»¶å˜é‡æ²¡æœ‰é‡Šæ”¾
+        //WINDOWSµÄÌõ¼ş±äÁ¿Ã»ÓĞÊÍ·Å
         BOOL bret = ::SleepConditionVariableCS(
                         &(cond->cv_object_),
                         &(external_mutex->thr_nontimeout_mutex_),
@@ -256,8 +256,8 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 
         if (bret == FALSE)
         {
-            //SleepConditionVariableCS æ˜¯åœ¨GetLastErrorçœ‹ç»“æœï¼Œ
-            //è¿™äº›APIçš„è®¾è®¡ç»§ç»­åæ˜ å‡ºWINDOWSçš„å‰åä¸ä¸€ã€‚
+            //SleepConditionVariableCS ÊÇÔÚGetLastError¿´½á¹û£¬
+            //ÕâĞ©APIµÄÉè¼Æ¼ÌĞø·´Ó³³öWINDOWSµÄÇ°ºó²»Ò»¡£
             if (::GetLastError() == WAIT_TIMEOUT)
             {
                 return ETIMEDOUT;
@@ -271,7 +271,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
         return 0;
     }
 
-#endif  //ä½¿ç”¨WINDOWS2008çš„æ¡ä»¶å˜é‡
+#endif  //Ê¹ÓÃWINDOWS2008µÄÌõ¼ş±äÁ¿
 
     // Prevent race conditions on the <waiters_> count.
     zce::pthread_mutex_lock (&(cond->simulate_cv_.waiters_lock_));
@@ -280,17 +280,17 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 
     int result = 0;
 
-    //å¯¹å¤–éƒ¨çš„é”é‡æ–°è§£é”ï¼Œ
-    //ä¸å¯¹é‡Šæ”¾èµ„æºè¿›è¡Œé”™è¯¯å¤„ç†ï¼Œå¦‚æœé‡Šæ”¾å¤±è´¥ï¼Œæˆ‘èƒ½å¦‚ä½•å‘¢
+    //¶ÔÍâ²¿µÄËøÖØĞÂ½âËø£¬
+    //²»¶ÔÊÍ·Å×ÊÔ´½øĞĞ´íÎó´¦Àí£¬Èç¹ûÊÍ·ÅÊ§°Ü£¬ÎÒÄÜÈçºÎÄØ
     zce::pthread_mutex_unlock (external_mutex);
 
-    ///@noteè¿™ä¸ªåœ°æ–¹å­˜åœ¨æŸç§äº‰è®®ï¼Œä¹Ÿå°±æ˜¯ä¸Šé¢è¿™æ­¥å’Œä¸‹é¢è¿™æ­¥æ˜¯å¦è¦
-    ///å½¢æˆåŸå­æ“ä½œï¼Œè¿™ä¸ªé—®é¢˜åœ¨Douglas C. Schmidt and Irfan Pyaraliçš„è®ºæ–‡ä¸­æœ‰è¿‡æè¿°ï¼Œ
-    ///ä½†æ˜¯å› ä¸ºæˆ‘ä»¬ç”¨çš„æ˜¯ä¿¡å·ç¯ï¼Œæ‰€ä»¥è¿™å„¿å³ä½¿æœ‰äººæ’é˜Ÿåˆ°è¿™ä¸ªåœ°æ–¹å¾—åˆ°external_mutexï¼Œå‘å‡ºäº†
-    ///signalæˆ–è€…å¹¿æ’­ï¼Œä¹Ÿä¸ä¼šé€ æˆä¸‹é¢æ­»é”ï¼Œæˆ‘è¿™æ ·è®¤ä¸ºï¼Œå‘µå‘µã€‚
-    ///å½“ç„¶å¦‚æœçœŸæœ‰é—®é¢˜ï¼Œå°±æ¢æˆSignalObjectAndWaitï¼Œ
+    ///@noteÕâ¸öµØ·½´æÔÚÄ³ÖÖÕùÒé£¬Ò²¾ÍÊÇÉÏÃæÕâ²½ºÍÏÂÃæÕâ²½ÊÇ·ñÒª
+    ///ĞÎ³ÉÔ­×Ó²Ù×÷£¬Õâ¸öÎÊÌâÔÚDouglas C. Schmidt and Irfan PyaraliµÄÂÛÎÄÖĞÓĞ¹ıÃèÊö£¬
+    ///µ«ÊÇÒòÎªÎÒÃÇÓÃµÄÊÇĞÅºÅµÆ£¬ËùÒÔÕâ¶ù¼´Ê¹ÓĞÈË²å¶Óµ½Õâ¸öµØ·½µÃµ½external_mutex£¬·¢³öÁË
+    ///signal»òÕß¹ã²¥£¬Ò²²»»áÔì³ÉÏÂÃæËÀËø£¬ÎÒÕâÑùÈÏÎª£¬ºÇºÇ¡£
+    ///µ±È»Èç¹ûÕæÓĞÎÊÌâ£¬¾Í»»³ÉSignalObjectAndWait£¬
 
-    //å¦‚æœæ˜¯è¶…æ—¶ç­‰å¾…ï¼Œå°±è¿›è¡Œç­‰å¾…
+    //Èç¹ûÊÇ³¬Ê±µÈ´ı£¬¾Í½øĞĞµÈ´ı
     if (abs_timespec_out)
     {
         result = zce::sem_timedwait(cond->simulate_cv_.block_sema_,
@@ -302,15 +302,15 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
         result = zce::sem_wait (cond->simulate_cv_.block_sema_);
     }
 
-    //è®°å½•é”™è¯¯
+    //¼ÇÂ¼´íÎó
     if (result != 0)
     {
         result = zce::last_error_with_default(EINVAL);
     }
 
-    //åŒæ­¥ï¼Œé¿å…ç«äº‰
+    //Í¬²½£¬±ÜÃâ¾ºÕù
     zce::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
-    //ä¿¡å·ç¯å·²ç»é€€å‡ºï¼Œå‡å°‘ç­‰å¾…çš„æ€»æ•°
+    //ĞÅºÅµÆÒÑ¾­ÍË³ö£¬¼õÉÙµÈ´ıµÄ×ÜÊı
     --(cond->simulate_cv_.waiters_);
     bool const last_waiter = (cond->simulate_cv_.was_broadcast_
                               && cond->simulate_cv_.waiters_ == 0);
@@ -318,10 +318,10 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 
     if (result == 0)
     {
-        //è¿™å°±æ˜¯æˆ‘ç‰¹åˆ«çœ‹ä¸æ‡‚çš„åœ°æ–¹ï¼Œç†è®ºæ„å›¾åº”è¯¥æ˜¯æœ€åä¸€ä¸ªï¼Œå‘ŠçŸ¥å¹¿æ’­è€…ï¼Œ
-        //å¦‚æœæ˜¯æœ€åä¸€ä¸ªäººï¼Œé€šçŸ¥broadcasterå¯¹è±¡ï¼Œæˆ‘ä»¬æ˜¯æœ€åä¸€ä¸ªäººäº†ï¼Œä½ å¯ä»¥é€€å‡ºäº†ï¼Œä¸ç”¨ç­‰äº†ã€‚
-        //è¿™ä¸ªåœ°æ–¹ç”¨ä¿¡å·ç¯å…¶å®æœ‰ä¸€äº›é—®é¢˜ï¼Œå› ä¸ºä¸åˆ©äºå…¬å¹³æ€§ï¼Œä½†ç”±äºè¿™ä¸ªæ¨¡æ‹Ÿè¦æ±‚å¹¿æ’­çš„æ—¶å€™ï¼Œå¤–éƒ¨é”
-        //å¿…ç°åŠ ä¸Šï¼Œæ‰€ä»¥é—®é¢˜ä¸å¤§
+        //Õâ¾ÍÊÇÎÒÌØ±ğ¿´²»¶®µÄµØ·½£¬ÀíÂÛÒâÍ¼Ó¦¸ÃÊÇ×îºóÒ»¸ö£¬¸æÖª¹ã²¥Õß£¬
+        //Èç¹ûÊÇ×îºóÒ»¸öÈË£¬Í¨Öªbroadcaster¶ÔÏó£¬ÎÒÃÇÊÇ×îºóÒ»¸öÈËÁË£¬Äã¿ÉÒÔÍË³öÁË£¬²»ÓÃµÈÁË¡£
+        //Õâ¸öµØ·½ÓÃĞÅºÅµÆÆäÊµÓĞÒ»Ğ©ÎÊÌâ£¬ÒòÎª²»ÀûÓÚ¹«Æ½ĞÔ£¬µ«ÓÉÓÚÕâ¸öÄ£ÄâÒªÇó¹ã²¥µÄÊ±ºò£¬Íâ²¿Ëø
+        //±ØÏÖ¼ÓÉÏ£¬ËùÒÔÎÊÌâ²»´ó
         if (last_waiter)
         {
             // Release the signaler/broadcaster if we're the last waiter.
@@ -329,7 +329,7 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
         }
     }
 
-    //å¯¹å¤–éƒ¨çš„é”é‡æ–°åŠ ä¸Š
+    //¶ÔÍâ²¿µÄËøÖØĞÂ¼ÓÉÏ
     zce::pthread_mutex_lock (external_mutex);
 
     return result;
@@ -343,25 +343,25 @@ int zce::pthread_cond_timedwait(pthread_cond_t *cond,
 #endif
 }
 
-//æ¡ä»¶å˜é‡ç­‰å¾…ä¸€æ®µæ—¶é—´ï¼Œè¶…æ—¶åç»§ç»­,æ—¶é—´å˜é‡ç”¨æˆ‘å†…éƒ¨ç»Ÿä¸€çš„timeval
+//Ìõ¼ş±äÁ¿µÈ´ıÒ»¶ÎÊ±¼ä£¬³¬Ê±ºó¼ÌĞø,Ê±¼ä±äÁ¿ÓÃÎÒÄÚ²¿Í³Ò»µÄtimeval
 int zce::pthread_cond_timedwait(pthread_cond_t *cond,
                                 pthread_mutex_t *external_mutex,
                                 const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
-    //è¿™ä¸ªæ—¶é—´æ˜¯ç»å¯¹å€¼æ—¶é—´ï¼Œè¦è°ƒæ•´ä¸ºç›¸å¯¹æ—¶é—´
+    //Õâ¸öÊ±¼äÊÇ¾ø¶ÔÖµÊ±¼ä£¬Òªµ÷ÕûÎªÏà¶ÔÊ±¼ä
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
     return zce::pthread_cond_timedwait(cond,
                                        external_mutex,
                                        &abs_timeout_spec);
 }
 
-//æ¡ä»¶å˜é‡ç­‰å¾…
+//Ìõ¼ş±äÁ¿µÈ´ı
 int zce::pthread_cond_wait(pthread_cond_t *cond,
                            pthread_mutex_t *external_mutex)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //è¿™æ ·å†™æ˜¯ä¸ºäº†é¿å…å‡½æ•°å†²çªå‘Šè­¦ï¼Œ
+    //ÕâÑùĞ´ÊÇÎªÁË±ÜÃâº¯Êı³åÍ»¸æ¾¯£¬
     const ::timespec *abs_timespec_out = NULL;
     return zce::pthread_cond_timedwait(cond,
                                        external_mutex,
@@ -378,10 +378,10 @@ int zce::pthread_cond_broadcast(pthread_cond_t *cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //åœ¨è°ƒç”¨è¿™ä¸ªæ–¹å¼å‰ï¼Œå¤–éƒ¨çš„é”å¿…é¡»æ˜¯é”ä¸Šçš„ï¼Œï¼ˆè¿™ä¸ªåœ°æ–¹ç•¥æœ‰ç–‘é—®ï¼Œå…¶å®POSIXå¹¶æ²¡æœ‰ç‰¹åˆ«æ˜ç¡®è¯´æ˜æ­¤é—®é¢˜ï¼‰
+    //ÔÚµ÷ÓÃÕâ¸ö·½Ê½Ç°£¬Íâ²¿µÄËø±ØĞëÊÇËøÉÏµÄ£¬£¨Õâ¸öµØ·½ÂÔÓĞÒÉÎÊ£¬ÆäÊµPOSIX²¢Ã»ÓĞÌØ±ğÃ÷È·ËµÃ÷´ËÎÊÌâ£©
     // The <external_mutex> must be locked before this call is made.
 
-    //ä½¿ç”¨WINDOWSçš„æ¡ä»¶å˜é‡
+    //Ê¹ÓÃWINDOWSµÄÌõ¼ş±äÁ¿
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
@@ -412,17 +412,17 @@ int zce::pthread_cond_broadcast(pthread_cond_t *cond)
 
     if (have_waiters)
     {
-        //ACEæ¯”è¾ƒå–œæ¬¢è¿™ç§ifçš„æ–¹å¼ï¼Œæˆ‘ä¸æ˜¯ç‰¹åˆ«ä¹ æƒ¯ï¼Œä½†åœ¨å¤šå±‚å¤„ç†çš„è¿‡ç¨‹ä¸­è¿™ä¸ªæ–¹æ³•ä¹Ÿè¿˜å‡‘åˆ
-        //å”¤é†’æ‰€æœ‰çš„ç­‰å¾…è€…,
+        //ACE±È½ÏÏ²»¶ÕâÖÖifµÄ·½Ê½£¬ÎÒ²»ÊÇÌØ±ğÏ°¹ß£¬µ«ÔÚ¶à²ã´¦ÀíµÄ¹ı³ÌÖĞÕâ¸ö·½·¨Ò²»¹´ÕºÏ
+        //»½ĞÑËùÓĞµÄµÈ´ıÕß,
         if ( zce::sem_post (cond->simulate_cv_.block_sema_, cond->simulate_cv_.waiters_) != 0)
         {
             result = EINVAL;
         }
 
-        //æ³¨æ„è¿™å„¿ï¼Œè¿™å„¿çš„å®ç°æ˜¯ä¸å®Œç¾çš„ï¼Œå› ä¸ºå…¶å®ä»è¯­ä¹‰ä¸Šè®²ï¼Œä¸Šé¢è¿™å¥è¯å’Œä¸‹é¢è¿™å¥è¯ä¹Ÿå¿…é¡»æ˜¯åŸå­çš„ï¼Œ
-        //å¦åˆ™ï¼Œä¹Ÿè®¸post block_sema_ åï¼Œwaitçš„çº¿ç¨‹å–å¾—æ‰§è¡Œæƒåˆ©ï¼Œfinish_broadcast_å·²ç»postäº†ï¼Œ
-        //é‚£ä¹ˆä¸‹é¢å°±æ²¡æœ‰ä»»ä½•ä½œç”¨äº†ï¼ŒACEçš„æºä»£ç é‡Œé¢æ˜¯ç”¨çš„SignalObjectAndWait
-        //ä½†ACEçš„å®ç°ä¹Ÿè¦æ±‚å¤§å®¶è°ƒç”¨broadcastæ˜¯ï¼Œå¤–éƒ¨é”æ˜¯åŠ ä¸Šçš„ï¼Œæ‰€ä»¥å§
+        //×¢ÒâÕâ¶ù£¬Õâ¶ùµÄÊµÏÖÊÇ²»ÍêÃÀµÄ£¬ÒòÎªÆäÊµ´ÓÓïÒåÉÏ½²£¬ÉÏÃæÕâ¾ä»°ºÍÏÂÃæÕâ¾ä»°Ò²±ØĞëÊÇÔ­×ÓµÄ£¬
+        //·ñÔò£¬Ò²Ğípost block_sema_ ºó£¬waitµÄÏß³ÌÈ¡µÃÖ´ĞĞÈ¨Àû£¬finish_broadcast_ÒÑ¾­postÁË£¬
+        //ÄÇÃ´ÏÂÃæ¾ÍÃ»ÓĞÈÎºÎ×÷ÓÃÁË£¬ACEµÄÔ´´úÂëÀïÃæÊÇÓÃµÄSignalObjectAndWait
+        //µ«ACEµÄÊµÏÖÒ²ÒªÇó´ó¼Òµ÷ÓÃbroadcastÊÇ£¬Íâ²¿ËøÊÇ¼ÓÉÏµÄ£¬ËùÒÔ°É
         // Wait for all the awakened threads to acquire their part of
         // the counting semaphore.
         else if (zce::sem_wait (cond->simulate_cv_.finish_broadcast_) != 0 )
@@ -430,7 +430,7 @@ int zce::pthread_cond_broadcast(pthread_cond_t *cond)
             result = EINVAL;
         }
 
-        //ç”±äºè¿™ä¸ªå‡½æ•°è¦æ±‚å¤–éƒ¨é”æ˜¯é”ä¸Šçš„ï¼Œæ‰€ä»¥was_broadcast_çš„è°ƒæ•´ä¹ŸOK
+        //ÓÉÓÚÕâ¸öº¯ÊıÒªÇóÍâ²¿ËøÊÇËøÉÏµÄ£¬ËùÒÔwas_broadcast_µÄµ÷ÕûÒ²OK
         // This is okay, even without the <waiters_lock_> held because
         // no other waiter threads can wake up to access it.
         cond->simulate_cv_.was_broadcast_ = false;
@@ -443,13 +443,13 @@ int zce::pthread_cond_broadcast(pthread_cond_t *cond)
 #endif
 }
 
-//å‘ä¿¡å·
+//·¢ĞÅºÅ
 int zce::pthread_cond_signal(pthread_cond_t *cond)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //åœ¨è°ƒç”¨è¿™ä¸ªæ–¹å¼å‰ï¼Œå¤–éƒ¨çš„é”å¿…é¡»æ˜¯é”ä¸Šçš„ï¼Œ
-    //ä½¿ç”¨WINDOWSçš„æ¡ä»¶å˜é‡
+    //ÔÚµ÷ÓÃÕâ¸ö·½Ê½Ç°£¬Íâ²¿µÄËø±ØĞëÊÇËøÉÏµÄ£¬
+    //Ê¹ÓÃWINDOWSµÄÌõ¼ş±äÁ¿
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
     if (ZCE_IS_USE_WIN2008_SIMULATE_PCV(cond))
@@ -461,7 +461,7 @@ int zce::pthread_cond_signal(pthread_cond_t *cond)
 #endif
 
     int result = 0;
-    //æ˜¯å¦æœ‰äººåœ¨ç­‰å¾…
+    //ÊÇ·ñÓĞÈËÔÚµÈ´ı
     zce::pthread_mutex_lock (&cond->simulate_cv_.waiters_lock_);
     bool const have_waiters = cond->simulate_cv_.waiters_ > 0;
     zce::pthread_mutex_unlock (&cond->simulate_cv_.waiters_lock_);

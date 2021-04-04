@@ -35,7 +35,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
 
     Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
 
-    // åˆå§‹åŒ–æ•°æ®è½¬å‘æ¨¡å¼
+    // ³õÊ¼»¯Êı¾İ×ª·¢Ä£Ê½
     interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
                            static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
@@ -65,7 +65,7 @@ int Wormhole_Proxy_App::app_exit()
     ZCE_LOG(RS_INFO, "Wormhole_Proxy_App::exit. ");
     int ret = 0;
 
-    //æœ€åè°ƒç”¨é€šç”¨çš„é€€å‡ºæ¨¡å—
+    //×îºóµ÷ÓÃÍ¨ÓÃµÄÍË³öÄ£¿é
     ret = Soar_Svrd_Appliction::app_exit();
     if (ret != 0)
     {
@@ -84,11 +84,11 @@ int Wormhole_Proxy_App::reload_config()
 
     ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
 
-    // é‡æ–°åˆå§‹åŒ–æ•°æ®è½¬å‘æ¨¡å¼
+    // ÖØĞÂ³õÊ¼»¯Êı¾İ×ª·¢Ä£Ê½
     delete interface_proxy_;
 
     Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
-    // åˆå§‹åŒ–æ•°æ®è½¬å‘æ¨¡å¼
+    // ³õÊ¼»¯Êı¾İ×ª·¢Ä£Ê½
     interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
                            static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
@@ -108,7 +108,7 @@ int Wormhole_Proxy_App::reload_config()
     return 0;
 }
 
-int Wormhole_Proxy_App::process_recv_frame(ZERG_FRAME_HEAD *recv_frame)
+int Wormhole_Proxy_App::process_recv_frame(Zerg_App_Frame *recv_frame)
 {
     return interface_proxy_->process_proxy(recv_frame);
 }

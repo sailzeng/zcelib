@@ -3,8 +3,8 @@
 * @filename   zce_event_reactor_base.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´9æœˆ1æ—¥
-* @brief      ååº”å™¨çš„åŸºç±»
+* @date       2011Äê9ÔÂ1ÈÕ
+* @brief      ·´Ó¦Æ÷µÄ»ùÀà
 *
 * @details
 *
@@ -22,7 +22,7 @@ class ZCE_Event_Handler;
 class ZCE_Time_Value;
 
 /*!
-* @brief      ååº”å™¨çš„åŸºç±»
+* @brief      ·´Ó¦Æ÷µÄ»ùÀà
 *
 */
 class ZCE_Reactor : public ZCE_NON_Copyable
@@ -30,41 +30,41 @@ class ZCE_Reactor : public ZCE_NON_Copyable
 
 protected:
 
-    ///ä½¿ç”¨hansh mapä¿å­˜å¥æŸ„åˆ°ZCE_Event_Handlerçš„MAP ï¼ŒåŠ›æ±‚æœ€é«˜çš„æ€§èƒ½
+    ///Ê¹ÓÃhansh map±£´æ¾ä±úµ½ZCE_Event_HandlerµÄMAP £¬Á¦Çó×î¸ßµÄĞÔÄÜ
     typedef unordered_map<ZCE_HANDLE, ZCE_Event_Handler *>  MAP_OF_HANDLER_TO_EVENT;
 
 protected:
 
     /*!
-    * @brief      æ„é€ å‡½æ•°
+    * @brief      ¹¹Ôìº¯Êı
     */
     ZCE_Reactor();
     /*!
-    * @brief      æ„é€ å‡½æ•°
-    * @param[in]  max_event_number æœ€å¤§çš„å®¹é‡ï¼Œ
+    * @brief      ¹¹Ôìº¯Êı
+    * @param[in]  max_event_number ×î´óµÄÈİÁ¿£¬
     */
     ZCE_Reactor(size_t max_event_number);
     /*!
-    * @brief      ææ„å‡½æ•°ï¼Œvirtualçš„å–”
+    * @brief      Îö¹¹º¯Êı£¬virtualµÄà¸
     */
     virtual ~ZCE_Reactor();
 
 public:
 
     /*!
-    * @brief      å½“å‰ååº”å™¨å®¹å™¨çš„å¥æŸ„æ•°é‡
-    * @return     size_t è¿”å›çš„å½“å‰åœ¨ååº”å™¨çš„å¥æŸ„æ•°é‡
+    * @brief      µ±Ç°·´Ó¦Æ÷ÈİÆ÷µÄ¾ä±úÊıÁ¿
+    * @return     size_t ·µ»ØµÄµ±Ç°ÔÚ·´Ó¦Æ÷µÄ¾ä±úÊıÁ¿
     */
     size_t size();
 
     /*!
-    * @brief      ååº”å™¨çš„æœ€å¤§å°ºå¯¸ï¼Œå®¹é‡ï¼Œ
-    * @return     size_t è¿”å›å®¹é‡
+    * @brief      ·´Ó¦Æ÷µÄ×î´ó³ß´ç£¬ÈİÁ¿£¬
+    * @return     size_t ·µ»ØÈİÁ¿
     */
     size_t max_size();
 
     /*!
-    * @brief      åˆå§‹åŒ–
+    * @brief      ³õÊ¼»¯
     * @return     int
     * @param      max_event_number
     * @note
@@ -72,68 +72,68 @@ public:
     int initialize(size_t max_event_number);
 
     /*!
-    * @brief      å…³é—­ååº”å™¨ï¼Œå°†æ‰€æœ‰æ³¨å†Œçš„EVENT HANDLER æ³¨é”€æ‰
+    * @brief      ¹Ø±Õ·´Ó¦Æ÷£¬½«ËùÓĞ×¢²áµÄEVENT HANDLER ×¢Ïúµô
     * @return     int
     */
     virtual int close();
 
     /*!
-    * @brief      æ³¨å†Œä¸€ä¸ªZCE_Event_Handleråˆ°ååº”å™¨ï¼Œ
-    *             register_handler æ˜¯è®²ä¸€ä¸ªhandleræ³¨å†Œåˆ°ååº”å™¨ï¼Œè€Œä¸”ç½®ä¸Šæ ‡å¿—ä½ï¼Œ
-    *             schedule_wakeupï¼Œåªæ˜¯å¯¹æ ‡å¿—ä½è¿›è¡Œå¤„ç†
-    * @return     int 0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param[in]  event_handler æ³¨å†Œçš„å¥æŸ„
-    * @param[in]  event_mask    å¥æŸ„è¦å¤„ç†çš„MASK
+    * @brief      ×¢²áÒ»¸öZCE_Event_Handlerµ½·´Ó¦Æ÷£¬
+    *             register_handler ÊÇ½²Ò»¸öhandler×¢²áµ½·´Ó¦Æ÷£¬¶øÇÒÖÃÉÏ±êÖ¾Î»£¬
+    *             schedule_wakeup£¬Ö»ÊÇ¶Ô±êÖ¾Î»½øĞĞ´¦Àí
+    * @return     int 0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param[in]  event_handler ×¢²áµÄ¾ä±ú
+    * @param[in]  event_mask    ¾ä±úÒª´¦ÀíµÄMASK
     */
     virtual int register_handler(ZCE_Event_Handler *event_handler, int event_mask);
 
     /*!
-    * @brief      ä»ååº”å™¨æ³¨é”€ä¸€ä¸ªZCE_Event_Handlerï¼ŒåŒæ—¶å–æ¶ˆä»–æ‰€æœ‰çš„mask
-    *             cancel_wakeupï¼Œæ˜¯ä»
-    * @return     int               0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param[in]  event_handler     æ³¨é”€çš„å¥æŸ„
-    * @param[in]  call_handle_close æ³¨é”€åï¼Œæ˜¯å¦è‡ªåŠ¨è°ƒç”¨å¥æŸ„çš„handle_closeå‡½æ•°
+    * @brief      ´Ó·´Ó¦Æ÷×¢ÏúÒ»¸öZCE_Event_Handler£¬Í¬Ê±È¡ÏûËûËùÓĞµÄmask
+    *             cancel_wakeup£¬ÊÇ´Ó
+    * @return     int               0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param[in]  event_handler     ×¢ÏúµÄ¾ä±ú
+    * @param[in]  call_handle_close ×¢Ïúºó£¬ÊÇ·ñ×Ô¶¯µ÷ÓÃ¾ä±úµÄhandle_closeº¯Êı
     */
     virtual int remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close);
 
     /*!
-    * @brief      å–æ¶ˆæŸäº›maskæ ‡å¿—ï¼Œ
-    * @return     int           0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param[in]  event_handler å¤„ç†çš„å¥æŸ„
-    * @param[in]  cancel_mask   å–æ¶ˆçš„äº‹ä»¶maskæ ‡å¿—
+    * @brief      È¡ÏûÄ³Ğ©mask±êÖ¾£¬
+    * @return     int           0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param[in]  event_handler ´¦ÀíµÄ¾ä±ú
+    * @param[in]  cancel_mask   È¡ÏûµÄÊÂ¼şmask±êÖ¾
     */
     virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) = 0;
 
     /*!
-    * @brief      æ‰“å¼€æŸäº›maskæ ‡å¿—ï¼Œ
+    * @brief      ´ò¿ªÄ³Ğ©mask±êÖ¾£¬
     * @return     virtual int
-    * @param[in]  event_handler å¤„ç†çš„å¥æŸ„
-    * @param[in]  event_mask    è®¾ç½®çš„äº‹ä»¶maskæ ‡å¿—
+    * @param[in]  event_handler ´¦ÀíµÄ¾ä±ú
+    * @param[in]  event_mask    ÉèÖÃµÄÊÂ¼şmask±êÖ¾
     */
     virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) = 0;
 
     /*!
-    * @brief      è§¦å‘äº‹ä»¶,çº¯è™šå‡½æ•°
-    * @return     int           0è¡¨ç¤ºæˆåŠŸï¼Œå¦åˆ™å¤±è´¥
-    * @param[in,out]  time_out  è¶…æ—¶æ—¶é—´
-    * @param[out] size_event    è¿”å›è§¦å‘çš„äº‹ä»¶å¥æŸ„æ•°é‡
+    * @brief      ´¥·¢ÊÂ¼ş,´¿Ğéº¯Êı
+    * @return     int           0±íÊ¾³É¹¦£¬·ñÔòÊ§°Ü
+    * @param[in,out]  time_out  ³¬Ê±Ê±¼ä
+    * @param[out] size_event    ·µ»Ø´¥·¢µÄÊÂ¼ş¾ä±úÊıÁ¿
     */
     virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) = 0;
 
 protected:
 
     /*!
-    * @brief      æŸ¥è¯¢ä¸€ä¸ªevent handleræ˜¯å¦æ³¨å†Œäº†ï¼Œå¦‚æœå­˜åœ¨è¿”å›0
-    * @return     int           è¿”å›å€¼,0æ ‡è¯†æŸ¥è¯¢åˆ°äº†ï¼Œ-1æ ‡è¯†æ²¡æœ‰æŸ¥è¯¢åˆ°
-    * @param[in]  event_handler ç¡®è®¤æ˜¯å¦å­˜åœ¨çš„ZCE_Event_Handler å¥æŸ„
+    * @brief      ²éÑ¯Ò»¸öevent handlerÊÇ·ñ×¢²áÁË£¬Èç¹û´æÔÚ·µ»Ø0
+    * @return     int           ·µ»ØÖµ,0±êÊ¶²éÑ¯µ½ÁË£¬-1±êÊ¶Ã»ÓĞ²éÑ¯µ½
+    * @param[in]  event_handler È·ÈÏÊÇ·ñ´æÔÚµÄZCE_Event_Handler ¾ä±ú
     */
     inline int exist_event_handler(ZCE_Event_Handler *event_handler);
 
     /*!
-    * @brief      é€šè¿‡å¥æŸ„æŸ¥è¯¢event handlerï¼Œå¦‚æœå­˜åœ¨è¿”å›0
-    * @return     int           è¿”å›å€¼
-    * @param[in]  socket_handle æŸ¥è¯¢çš„ZCE_HANDLEå¥æŸ„
-    * @param[out] event_handler æŸ¥è¯¢å¾—åˆ°çš„å¥æŸ„å¯¹åº”çš„ZCE_Event_HandleræŒ‡é’ˆ
+    * @brief      Í¨¹ı¾ä±ú²éÑ¯event handler£¬Èç¹û´æÔÚ·µ»Ø0
+    * @return     int           ·µ»ØÖµ
+    * @param[in]  socket_handle ²éÑ¯µÄZCE_HANDLE¾ä±ú
+    * @param[out] event_handler ²éÑ¯µÃµ½µÄ¾ä±ú¶ÔÓ¦µÄZCE_Event_HandlerÖ¸Õë
     */
     inline int find_event_handler(ZCE_HANDLE handle, ZCE_Event_Handler *&event_handler);
 
@@ -141,37 +141,37 @@ public:
 
 
     /*!
-    * @brief      è·å–å•å­å‡½æ•°
-    * @return     ZCE_Reactor* ååº”å™¨çš„æŒ‡é’ˆ
+    * @brief      »ñÈ¡µ¥×Óº¯Êı
+    * @return     ZCE_Reactor* ·´Ó¦Æ÷µÄÖ¸Õë
     */
     static ZCE_Reactor *instance();
-    ///æ¸…ç†å•å­å‡½æ•°
+    ///ÇåÀíµ¥×Óº¯Êı
     static void clean_instance();
-    ///è®¾ç½®å•å­çš„å‡½æ•°
+    ///ÉèÖÃµ¥×ÓµÄº¯Êı
     static void instance(ZCE_Reactor *pinstatnce);
 
 protected:
 
-    ///å­˜æ”¾ZCE_SOCKETå¯¹åº”ZCE_Event_Handler *çš„MAP,æ–¹ä¾¿äº‹ä»¶è§¦å‘çš„æ—¶å€™ï¼Œè°ƒç”¨ZCE_Event_Handler *çš„å‡½æ•°
+    ///´æ·ÅZCE_SOCKET¶ÔÓ¦ZCE_Event_Handler *µÄMAP,·½±ãÊÂ¼ş´¥·¢µÄÊ±ºò£¬µ÷ÓÃZCE_Event_Handler *µÄº¯Êı
     MAP_OF_HANDLER_TO_EVENT    handler_map_;
 
-    ///æœ€å¤§çš„å¤„ç†å¥æŸ„å¤§å°ï¼Œç”¨äºä¸€äº›å®¹å™¨çš„resize
+    ///×î´óµÄ´¦Àí¾ä±ú´óĞ¡£¬ÓÃÓÚÒ»Ğ©ÈİÆ÷µÄresize
     size_t                     max_event_number_;
 
 protected:
 
-    ///å•å­å®ä¾‹æŒ‡é’ˆ
+    ///µ¥×ÓÊµÀıÖ¸Õë
     static ZCE_Reactor         *instance_;
 };
 
-//æŸ¥è¯¢ä¸€ä¸ªevent handleræ˜¯å¦æ³¨å†Œäº†ï¼Œå¦‚æœå­˜åœ¨è¿”å›0
+//²éÑ¯Ò»¸öevent handlerÊÇ·ñ×¢²áÁË£¬Èç¹û´æÔÚ·µ»Ø0
 inline int ZCE_Reactor::exist_event_handler(ZCE_Event_Handler *event_handler)
 {
     ZCE_HANDLE socket_hd = event_handler->get_handle();
 
     MAP_OF_HANDLER_TO_EVENT::iterator iter_temp =  handler_map_.find(socket_hd);
 
-    //å·²ç»æœ‰ä¸€ä¸ªHANDLEäº†
+    //ÒÑ¾­ÓĞÒ»¸öHANDLEÁË
     if (iter_temp == handler_map_.end())
     {
         return -1;
@@ -180,13 +180,13 @@ inline int ZCE_Reactor::exist_event_handler(ZCE_Event_Handler *event_handler)
     return 0;
 }
 
-//é€šè¿‡å¥æŸ„æŸ¥è¯¢event handlerï¼Œå¦‚æœå­˜åœ¨è¿”å›0
+//Í¨¹ı¾ä±ú²éÑ¯event handler£¬Èç¹û´æÔÚ·µ»Ø0
 inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle,
                                            ZCE_Event_Handler *&event_handler)
 {
     MAP_OF_HANDLER_TO_EVENT::iterator iter_temp = handler_map_.find(handle);
 
-    //å·²ç»æœ‰ä¸€ä¸ªHANDLEäº†
+    //ÒÑ¾­ÓĞÒ»¸öHANDLEÁË
     if (iter_temp == handler_map_.end())
     {
         event_handler = NULL;

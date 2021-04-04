@@ -3,9 +3,9 @@
 #include "soar_services_info.h"
 
 /****************************************************************************************************
-class SERVICES_ID æœåŠ¡ä¿¡æ¯,
+class SERVICES_ID ·şÎñĞÅÏ¢,
 ****************************************************************************************************/
-//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
+//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
 SERVICES_ID::SERVICES_ID(unsigned short svrtype, unsigned int svrid):
     services_type_(svrtype),
     services_id_(svrid)
@@ -23,7 +23,7 @@ void SERVICES_ID::set_svcid(unsigned short svrtype, unsigned int svrid )
     services_id_ = svrid;
 }
 
-//æ¯”è¾ƒæ˜¯å¦ç›¸åŒçš„å‡½æ•°
+//±È½ÏÊÇ·ñÏàÍ¬µÄº¯Êı
 bool SERVICES_ID::operator ==(const SERVICES_ID &others) const
 {
     if (services_type_ == others.services_type_ &&   services_id_ == others.services_id_ )
@@ -34,7 +34,7 @@ bool SERVICES_ID::operator ==(const SERVICES_ID &others) const
     return false;
 }
 
-//æ¯”è¾ƒæ˜¯å¦ä¸åŒçš„å‡½æ•°
+//±È½ÏÊÇ·ñ²»Í¬µÄº¯Êı
 bool SERVICES_ID::operator !=(const SERVICES_ID &others) const
 {
     if (services_type_ != others.services_type_ ||   services_id_ != others.services_id_ )
@@ -45,7 +45,7 @@ bool SERVICES_ID::operator !=(const SERVICES_ID &others) const
     return false;
 }
 
-//æ¯”è¾ƒå¤§å°çš„å‡½æ•°
+//±È½Ï´óĞ¡µÄº¯Êı
 bool SERVICES_ID::operator <(const SERVICES_ID &others) const
 {
     if (services_type_ + services_id_ < others.services_type_ + others.services_id_ )
@@ -57,7 +57,7 @@ bool SERVICES_ID::operator <(const SERVICES_ID &others) const
 }
 
 
-///è½¬æ¢string
+///×ª»»string
 const char *SERVICES_ID::to_str(char *str_buffer, size_t buf_len)
 {
     snprintf(str_buffer,
@@ -70,7 +70,7 @@ const char *SERVICES_ID::to_str(char *str_buffer, size_t buf_len)
 
 int SERVICES_ID::from_str(const char *str_buffer, bool check_valid)
 {
-    //æ³¨æ„.å‰é¢çš„%å·
+    //×¢Òâ.Ç°ÃæµÄ%ºÅ
     int ret_num = sscanf(str_buffer,
                          "%hu.%u",
                          &services_type_,
@@ -92,10 +92,10 @@ int SERVICES_ID::from_str(const char *str_buffer, bool check_valid)
 
 
 /******************************************************************************************
-struct SERVICES_IP_INFO æœåŠ¡IDä¿¡æ¯ + IPä¿¡æ¯
+struct SERVICES_IP_INFO ·şÎñIDĞÅÏ¢ + IPĞÅÏ¢
 ******************************************************************************************/
 
-///ä»å­—ç¬¦ä¸²ä¸­è·å–
+///´Ó×Ö·û´®ÖĞ»ñÈ¡
 int SERVICES_INFO::from_str(const char *svc_info_str,
                             bool check_valid)
 {
@@ -105,13 +105,13 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
         return SOAR_RET::ERROR_STRING_TO_SVCID_FAIL;
     }
 
-    //å»æ‰é‡Œé¢æ‰€æœ‰çš„ç©ºæ ¼ï¼Œé¿å…æ±¡æŸ“sscanf, æ ¼å¼åŒ–å­—ç¬¦ä¸²ä¸º"%hu.%u|%u.%u.%u.%u#%hu|%u|%u",
+    //È¥µôÀïÃæËùÓĞµÄ¿Õ¸ñ£¬±ÜÃâÎÛÈ¾sscanf, ¸ñÊ½»¯×Ö·û´®Îª"%hu.%u|%u.%u.%u.%u#%hu|%u|%u",
     //char pure_str[SVC_INFO_STR_LEN];
     //zce::str_replace(svc_info_str, pure_str," ","");
 
     uint32_t u[4] = {0};
     uint16_t port = 0;
-    //æµ‹è¯•å‘ç°å…¶å®ä¸éœ€è¦æ‰‹åŠ¨å»æ‰å¤šä½™ç©ºæ ¼çš„å¹²æ‰°ï¼ŒæŠŠç‰¹æ®Šå­—ç¬¦å‰é¢ä¹Ÿå¢åŠ %æ§åˆ¶å°±å¯ä»¥äº†ã€‚
+    //²âÊÔ·¢ÏÖÆäÊµ²»ĞèÒªÊÖ¶¯È¥µô¶àÓà¿Õ¸ñµÄ¸ÉÈÅ£¬°ÑÌØÊâ×Ö·ûÇ°ÃæÒ²Ôö¼Ó%¿ØÖÆ¾Í¿ÉÒÔÁË¡£
     int ret_num = sscanf(svc_info_str,
                          "%hu.%u | %u.%u.%u.%u # %hu | %u | %u",
                          &svc_id_.services_type_,
@@ -120,7 +120,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
                          &port,
                          &idc_no_,
                          &business_id_ );
-    //è¿”å›9è¡¨ç¤ºæ‰€æœ‰æ•°æ®éƒ½è¯»å–äº†
+    //·µ»Ø9±íÊ¾ËùÓĞÊı¾İ¶¼¶ÁÈ¡ÁË
     if (ret_num != 9 || u[0] > 0xFF || u[1] > 0xFF || u[2] > 0xFF || u[3] > 0xFF )
     {
         return SOAR_RET::ERROR_STRING_TO_SVCID_FAIL;
@@ -137,7 +137,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
     return 0;
 }
 
-///è½¬æ¢string
+///×ª»»string
 const char *SERVICES_INFO::to_str(char *str_buffer, size_t buf_len)
 {
     char str_svc_id[32], str_inet_add[32];

@@ -3,8 +3,8 @@
 * @filename   zce_log_loggging.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2010å¹´7æœˆ11æ—¥
-* @brief      å®šä¹‰å„ç§è°ƒè¯•çš„æ—¥å¿—ï¼Œæ–­è¨€ï¼Œå®ï¼Œç”¨äºè°ƒè¯•æ—¥å¿—è¾“å‡º
+* @date       2010Äê7ÔÂ11ÈÕ
+* @brief      ¶¨Òå¸÷ÖÖµ÷ÊÔµÄÈÕÖ¾£¬¶ÏÑÔ£¬ºê£¬ÓÃÓÚµ÷ÊÔÈÕÖ¾Êä³ö
 *
 * @details
 *
@@ -23,27 +23,27 @@
 #include "zce_os_adapt_error.h"
 
 
-//å®šä¹‰æ—¥å¿—è¾“å‡º,åˆ™å®ç”¨å†…éƒ¨çš„å‡½æ•°ä½œä¸ºè¾“å‡ºå®šä¹‰
+//¶¨ÒåÈÕÖ¾Êä³ö,ÔòÊµÓÃÄÚ²¿µÄº¯Êı×÷ÎªÊä³ö¶¨Òå
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
 #include "zce_log_msg.h"
 
-//æ‰“å¼€è¾“å‡º
+//´ò¿ªÊä³ö
 #define ZLOG_ENABLE           ZCE_Trace_LogMsg::instance()->enable_output(true)
-//å…³é—­è¾“å‡º
+//¹Ø±ÕÊä³ö
 #define ZLOG_DISABLE          ZCE_Trace_LogMsg::instance()->enable_output(false)
-//è¾“å‡ºMASKçº§åˆ«,å°äºè¿™ä¸ªçº§åˆ«çš„æ—¥å¿—ä¿¡æ¯ä¸äºˆè¾“å‡º
+//Êä³öMASK¼¶±ğ,Ğ¡ÓÚÕâ¸ö¼¶±ğµÄÈÕÖ¾ĞÅÏ¢²»ÓèÊä³ö
 #define ZLOG_SET_OUTLEVEL     ZCE_Trace_LogMsg::instance()->set_log_priority
 
 
-//å½“å¹´è¿˜ç”¨è¿‡ä¸€å¥—ä¸ºGCC2.9å®šä¹‰çš„åŒæ‹¬å·çš„çº¢ï¼ŒåœŸæ­»äº†ï¼Œåæ¥ä¸æ‰“ç®—å…¼å®¹é‚£ä¹ˆå¤šç‰ˆæœ¬ï¼Œæˆ‘æ‡’
+//µ±Äê»¹ÓÃ¹ıÒ»Ì×ÎªGCC2.9¶¨ÒåµÄË«À¨ºÅµÄºì£¬ÍÁËÀÁË£¬ºóÀ´²»´òËã¼æÈİÄÇÃ´¶à°æ±¾£¬ÎÒÀÁ
 
-//ä½¿ç”¨è°ƒè¯•çº§åˆ«è¾“å‡ºæ—¥å¿—
+//Ê¹ÓÃµ÷ÊÔ¼¶±ğÊä³öÈÕÖ¾
 #define ZCE_LOG               ZCE_Trace_LogMsg::debug_output
 
 #if _MSC_VER <= 1300
 
-//æä¾›ä¸€äº›ç®€å†™çš„æ–¹å¼ï¼Œè™½ç„¶æˆ‘ä¹Ÿè§‰å¾—ä¸æ˜¯ç‰¹åˆ«å¥½
+//Ìá¹©Ò»Ğ©¼òĞ´µÄ·½Ê½£¬ËäÈ»ÎÒÒ²¾õµÃ²»ÊÇÌØ±ğºÃ
 #define ZLOG_TRACE            ZCE_Trace_LogMsg::debug_traceex
 #define ZLOG_DEBUG            ZCE_Trace_LogMsg::debug_debugex
 #define ZLOG_INFO             ZCE_Trace_LogMsg::debug_infoex
@@ -63,10 +63,10 @@
 #endif
 
 //----------------------------------------------------------------------------------
-//æ— è®ºï¼ŒDEBUGç‰ˆæœ¬ï¼ŒREALSEç‰ˆæœ¬ä¹Ÿèµ·ä½œç”¨çš„ä¸€äº›æ–­è¨€ï¼Œè¿™äº›å®åœ¨æ‰€æœ‰ç‰ˆæœ¬éƒ½èµ·ä½œç”¨ï¼Œç”¨äºä¸€äº›åœ¨è¿è¡Œæ—¶æœŸä¹Ÿè¦åˆ¤æ–­çš„ä¸œä¸œ
-//ALLï¼Œä»»ä½•æ—¶å€™ï¼Œ
+//ÎŞÂÛ£¬DEBUG°æ±¾£¬REALSE°æ±¾Ò²Æğ×÷ÓÃµÄÒ»Ğ©¶ÏÑÔ£¬ÕâĞ©ºêÔÚËùÓĞ°æ±¾¶¼Æğ×÷ÓÃ£¬ÓÃÓÚÒ»Ğ©ÔÚÔËĞĞÊ±ÆÚÒ²ÒªÅĞ¶ÏµÄ¶«¶«
+//ALL£¬ÈÎºÎÊ±ºò£¬
 
-//å› ä¸ºWindowå’ŒLINUXæ–­è¨€ä¸­å®é™…ä½¿ç”¨çš„å‡½æ•°ï¼Œå…¶å®åœ¨éDEBUGç‰ˆæœ¬å…¶å®éƒ½æ²¡æœ‰æš´æ¼å‡ºæ¥ï¼Œæ‰€ä»¥å¿…ç°æœ‰ä¸‹é¢è¿™äº›å®šä¹‰æ‰èƒ½ä½¿ç”¨ã€‚
+//ÒòÎªWindowºÍLINUX¶ÏÑÔÖĞÊµ¼ÊÊ¹ÓÃµÄº¯Êı£¬ÆäÊµÔÚ·ÇDEBUG°æ±¾ÆäÊµ¶¼Ã»ÓĞ±©Â©³öÀ´£¬ËùÒÔ±ØÏÖÓĞÏÂÃæÕâĞ©¶¨Òå²ÅÄÜÊ¹ÓÃ¡£
 
 #if defined (ZCE_OS_WINDOWS)
 
@@ -80,7 +80,7 @@ _ACRTIMP int __cdecl _CrtDbgReport(
 #endif
 
 #if defined (ZCE_OS_LINUX)
-//__assert_failè¿™ä¸ªå‡½æ•°æ˜¯externçš„ï¼Œå¿…é¡»åœ¨è¿™å„¿externå¼•ç”¨ï¼Œlinuxè‡ªå·±åªåœ¨éNDEBUGç‰ˆæœ¬ä¸‹æ‰æœ‰externå¼•ç”¨
+//__assert_failÕâ¸öº¯ÊıÊÇexternµÄ£¬±ØĞëÔÚÕâ¶ùexternÒıÓÃ£¬linux×Ô¼ºÖ»ÔÚ·ÇNDEBUG°æ±¾ÏÂ²ÅÓĞexternÒıÓÃ
 extern "C"  void __assert_fail(__const char *__assertion, __const char *__file,
                                unsigned int __line, __const char *__function)
 __THROW __attribute__((__noreturn__));
@@ -117,7 +117,7 @@ __THROW __attribute__((__noreturn__));
 #endif  //#ifndef ZCE_ASSERT_ALL_EX
 
 
-//å¦‚æœæ²¡æœ‰å®šä¹‰å®ç”¨ZCEå†…éƒ¨çš„æ—¥å¿—è¾“å‡ºï¼Œä½¿ç”¨printfä½œä¸ºè¾“å‡ºæ–¹æ³•ï¼Œ
+//Èç¹ûÃ»ÓĞ¶¨ÒåÊµÓÃZCEÄÚ²¿µÄÈÕÖ¾Êä³ö£¬Ê¹ÓÃprintf×÷ÎªÊä³ö·½·¨£¬
 #else
 
 #include "zce_log_priority.h"
@@ -127,29 +127,29 @@ class ZCE_Trace_Printf
 {
 public:
 
-    //è¾“å‡ºva_listçš„å‚æ•°ä¿¡æ¯
+    //Êä³öva_listµÄ²ÎÊıĞÅÏ¢
     void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
                        const char *str_format,
                        va_list args)
     {
-        //å¦‚æœæ—¥å¿—è¾“å‡ºå¼€å…³å…³é—­
+        //Èç¹ûÈÕÖ¾Êä³ö¿ª¹Ø¹Ø±Õ
         if (if_output_log_ == false)
         {
             return;
         }
 
-        //å¦‚æœè¾“å‡ºçš„æ—¥å¿—çº§åˆ«ä½äºMaskå€¼
+        //Èç¹ûÊä³öµÄÈÕÖ¾¼¶±ğµÍÓÚMaskÖµ
         if (permit_outlevel_ > outlevel)
         {
             return;
         }
 
-        //å¾—åˆ°æ‰“å°ä¿¡æ¯,_vsnprintfä¸ºç‰¹æ®Šå‡½æ•°
+        //µÃµ½´òÓ¡ĞÅÏ¢,_vsnprintfÎªÌØÊâº¯Êı
         vfprintf(stderr, str_format, args);
         fprintf(stderr, "\n");
     }
 
-    //å†™æ—¥å¿—
+    //Ğ´ÈÕÖ¾
     void write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ...)
     {
         va_list args;
@@ -159,13 +159,13 @@ public:
 
     }
 
-    //æ‰“å¼€æ—¥å¿—è¾“å‡ºå¼€å…³
+    //´ò¿ªÈÕÖ¾Êä³ö¿ª¹Ø
     void enable_output(bool enable_out)
     {
         if_output_log_ = enable_out;
     }
 
-    //è®¾ç½®æ—¥å¿—è¾“å‡ºLevel
+    //ÉèÖÃÈÕÖ¾Êä³öLevel
     ZCE_LOG_PRIORITY set_log_priority(ZCE_LOG_PRIORITY outlevel)
     {
         ZCE_LOG_PRIORITY oldlevel = permit_outlevel_;
@@ -173,7 +173,7 @@ public:
         return oldlevel;
     }
 
-    //!åˆ©ç”¨å•å­å¯¹è±¡ï¼Œæ‰“å°æ—¥å¿—ä¿¡æ¯
+    //!ÀûÓÃµ¥×Ó¶ÔÏó£¬´òÓ¡ÈÕÖ¾ĞÅÏ¢
     static void debug_output(ZCE_LOG_PRIORITY dbglevel,
                              const char *str_format,
                              ...)
@@ -186,7 +186,7 @@ public:
         va_end(args);
     }
 
-    //å®ä¾‹çš„è·å¾—
+    //ÊµÀıµÄ»ñµÃ
     static ZCE_Trace_Printf *instance()
     {
         static ZCE_Trace_Printf log_instance;
@@ -196,10 +196,10 @@ public:
     //
 protected:
 
-    //!è¾“å‡ºæ—¥å¿—ä¿¡æ¯çš„Maskå€¼,å°äºè¿™ä¸ªä¿¡æ¯çš„ä¿¡æ¯ä¸äºˆä»¥è¾“å‡º
+    //!Êä³öÈÕÖ¾ĞÅÏ¢µÄMaskÖµ,Ğ¡ÓÚÕâ¸öĞÅÏ¢µÄĞÅÏ¢²»ÓèÒÔÊä³ö
     ZCE_LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
-    //!æ˜¯å¦è¾“å‡ºæ—¥å¿—ä¿¡æ¯,å¯ä»¥ç”¨äºæš‚æ—¶å±è”½
+    //!ÊÇ·ñÊä³öÈÕÖ¾ĞÅÏ¢,¿ÉÒÔÓÃÓÚÔİÊ±ÆÁ±Î
     bool                  if_output_log_ = true;
 
 };
@@ -228,9 +228,9 @@ protected:
 
 
 //==========================================================================================================
-//æ–­è¨€çš„å®çš„å®šä¹‰
+//¶ÏÑÔµÄºêµÄ¶¨Òå
 
-//éREALSEç‰ˆæœ¬çš„ä¸€äº›å®
+//·ÇREALSE°æ±¾µÄÒ»Ğ©ºê
 #if !defined NDEBUG
 
 #ifndef ZCE_ASSERT
@@ -248,7 +248,7 @@ protected:
 //#if !defined NDEBUG
 #else
 
-//æ³¨æ„åŒºåˆ«ZCE_ASSERTå’ŒVERIFYZCE_VERIFYçš„åŒºåˆ«,VERIFYå†…éƒ¨çš„è¡¨è¾¾å¼å¼ä»ç„¶ä¿ç•™çš„
+//×¢ÒâÇø±ğZCE_ASSERTºÍVERIFYZCE_VERIFYµÄÇø±ğ,VERIFYÄÚ²¿µÄ±í´ïÊ½Ê½ÈÔÈ»±£ÁôµÄ
 #ifndef ZCE_ASSERT
 #define ZCE_ASSERT(...)             ((void)0)
 #endif
@@ -266,17 +266,28 @@ protected:
 
 
 //==========================================================================================================
-//åˆ©ç”¨ä¸€ä¸ªç»“æ„çš„æ„é€ å’Œææ„å‡½æ•°è¿›è¡Œå‡½æ•°è·Ÿè¸ª
+//ÀûÓÃÒ»¸ö½á¹¹µÄ¹¹ÔìºÍÎö¹¹º¯Êı½øĞĞº¯Êı¸ú×Ù
 class ZCE_Trace_Function
 {
+public:
+    //!º¯ÊıÃû³Æ
+    const char        *func_name_;
+    //!ÎÄ¼şÃû³Æ
+    const char        *codefile_name_;
+    //!ÎÄ¼şµÄĞĞºÅ£¬ĞĞºÅÊÇº¯ÊıÌåÄÚ²¿µÄÎ»ÖÃ£¬²»ÊÇº¯ÊıÉùÃ÷µÄÆğÊ¼Î»ÖÃ£¬µ«ÕâÓÖºÎ·Á
+    int                code_line_;
+    //!Êä³öµÄÈÕÖ¾¼¶±ğ
+    ZCE_LOG_PRIORITY   log_priority_;
 
+    //!Èç¹ûĞèÒª¸ú×Ù·µ»ØÖµ£¬°Ñ·µ»ØÖµµÄ±äÁ¿µÄÖ¸Õë×÷ÎªÒ»¸ö²ÎÊı
+    int               *ret_ptr_ = NULL;
 
 public:
-    //åˆ©ç”¨æ„é€ å‡½æ•°æ˜¾ç¤ºè¿›å…¥å‡½æ•°çš„è¾“å‡º
+    //ÀûÓÃ¹¹Ôìº¯ÊıÏÔÊ¾½øÈëº¯ÊıµÄÊä³ö
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
-                       ZCE_LOG_PRIORITY log_priority) :
+                       ZCE_LOG_PRIORITY   log_priority) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
@@ -286,7 +297,7 @@ public:
         ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE]%s entry,File %s|%u ", func_name_, codefile_name_, code_line_);
     }
 
-    //åˆ©ç”¨æ„é€ å‡½æ•°æ˜¾ç¤ºè¿›å…¥å‡½æ•°çš„è¾“å‡º
+    //ÀûÓÃ¹¹Ôìº¯ÊıÏÔÊ¾½øÈëº¯ÊıµÄÊä³ö
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
@@ -305,13 +316,13 @@ public:
                 *ret_ptr_);
     }
 
-    //åˆ©ç”¨ææ„å‡½æ•°æ˜¾ç¤ºè¿›å…¥å‡½æ•°çš„è¾“å‡º
+    //ÀûÓÃÎö¹¹º¯ÊıÏÔÊ¾½øÈëº¯ÊıµÄÊä³ö
     ~ZCE_Trace_Function()
     {
-        //æ ¹æ®æ˜¯å¦å…³æ³¨è¿”å›å€¼è¿›è¡Œä¸åŒçš„è¾“å‡º
+        //¸ù¾İÊÇ·ñ¹Ø×¢·µ»ØÖµ½øĞĞ²»Í¬µÄÊä³ö
         if (ret_ptr_)
         {
-            //è¿™ä¸ªåœ°æ–¹è¾“å‡ºçš„æˆåŠŸå¤±è´¥æ–‡å­—åªæœ‰ç›¸å¯¹å‚è€ƒæ„ä¹‰ã€‚
+            //Õâ¸öµØ·½Êä³öµÄ³É¹¦Ê§°ÜÎÄ×ÖÖ»ÓĞÏà¶Ô²Î¿¼ÒâÒå¡£
             ZCE_LOG(log_priority_, "[zcelib] [FUNCTION TRACE][%s] exit,code file [%s|%u] "
                     "ret = [%d],return %s.",
                     func_name_,
@@ -329,23 +340,10 @@ public:
         }
     }
 
-public:
-    //!å‡½æ•°åç§°
-    const char* func_name_;
-    //!æ–‡ä»¶åç§°
-    const char* codefile_name_;
-    //!æ–‡ä»¶çš„è¡Œå·ï¼Œè¡Œå·æ˜¯å‡½æ•°ä½“å†…éƒ¨çš„ä½ç½®ï¼Œä¸æ˜¯å‡½æ•°å£°æ˜çš„èµ·å§‹ä½ç½®ï¼Œä½†è¿™åˆä½•å¦¨
-    int                code_line_;
-    //!è¾“å‡ºçš„æ—¥å¿—çº§åˆ«
-    ZCE_LOG_PRIORITY   log_priority_;
-
-    //!å¦‚æœéœ€è¦è·Ÿè¸ªè¿”å›å€¼ï¼ŒæŠŠè¿”å›å€¼çš„å˜é‡çš„æŒ‡é’ˆä½œä¸ºä¸€ä¸ªå‚æ•°
-    int* ret_ptr_ = NULL;
-
 };
 
-//ZCE_FUNCTION_TRACE(RS_DEBUG)å®ç”¨äºè·Ÿè¸ªå‡½æ•°çš„è¿›å‡º
-//è¯·åœ¨å‡½æ•°çš„å¼€å§‹ä½¿ç”¨ZCE_FUNCTION_TRACE(RS_DEBUG)è¿™ä¸ªå®ï¼Œåé¢å¿…é¡»åŠ åˆ†å·
+//ZCE_FUNCTION_TRACE(RS_DEBUG)ºêÓÃÓÚ¸ú×Ùº¯ÊıµÄ½ø³ö
+//ÇëÔÚº¯ÊıµÄ¿ªÊ¼Ê¹ÓÃZCE_FUNCTION_TRACE(RS_DEBUG)Õâ¸öºê£¬ºóÃæ±ØĞë¼Ó·ÖºÅ
 #ifndef ZCE_TRACE_FUNCTION
 #define ZCE_TRACE_FUNCTION(x) ZCE_Trace_Function  ____tmp_func_trace_(__ZCE_FUNC__,__FILE__,__LINE__,(x))
 #endif
@@ -356,7 +354,7 @@ public:
 #endif
 
 
-//!ç”¨äºç¨‹åºè¿è¡Œåˆ°çš„åœ°æ–¹ã€‚
+//!ÓÃÓÚ³ÌĞòÔËĞĞµ½µÄµØ·½¡£
 #ifndef ZCE_TRACE_FILELINE
 #define ZCE_TRACE_FILELINE(log_priority)   ZCE_LOG((log_priority),"[FILELINE TRACE]goto File %s|%d,function:%s.",\
                                                    __FILE__,__LINE__,__ZCE_FUNC__)
@@ -375,19 +373,19 @@ public:
 #endif
 
 
-//æ—¥å¿—æ‰“å°å †æ ˆä¿¡æ¯çš„å®ï¼Œxæ˜¯æ—¥å¿—çš„è¾“å‡ºçº§åˆ«
+//ÈÕÖ¾´òÓ¡¶ÑÕ»ĞÅÏ¢µÄºê£¬xÊÇÈÕÖ¾µÄÊä³ö¼¶±ğ
 #ifndef ZCE_BACKTRACE_STACK
 #define ZCE_BACKTRACE_STACK(x) zce::backtrace_stack(x,__ZCE_FUNC__)
 #endif
 
-//æ—¥å¿—æ‰“å°å †æ ˆä¿¡æ¯çš„å®ï¼Œxæ˜¯æ—¥å¿—çš„è¾“å‡ºçº§åˆ«,yæ˜¯æŒ‡é’ˆï¼Œzæ˜¯æŒ‡é’ˆé•¿åº¦
+//ÈÕÖ¾´òÓ¡¶ÑÕ»ĞÅÏ¢µÄºê£¬xÊÇÈÕÖ¾µÄÊä³ö¼¶±ğ,yÊÇÖ¸Õë£¬zÊÇÖ¸Õë³¤¶È
 #ifndef ZCE_TRACE_POINTER_DATA
 #define ZCE_TRACE_POINTER_DATA(x,y,z)     zce::memory_debug((x),__ZCE_FUNC__,(y),(z))
 #endif
 
 //-----------------------------------------------------------------------------------------------
-//DEBUG ç‰ˆæœ¬ç‰¹æœ‰çš„ä¸€äº›å®
-//ZCE_ASSERTåŸæ¥çš„å†™æ³•æ˜¯ while(!(f)){ do something,åæ¥å‘ç°WINDOWSä¸‹ä¼šå¯¹è¿™ä¸ªè¿›è¡Œå‘Šè­¦ï¼Œè¢«è¿«æ”¹äº†
+//DEBUG °æ±¾ÌØÓĞµÄÒ»Ğ©ºê
+//ZCE_ASSERTÔ­À´µÄĞ´·¨ÊÇ while(!(f)){ do something,ºóÀ´·¢ÏÖWINDOWSÏÂ»á¶ÔÕâ¸ö½øĞĞ¸æ¾¯£¬±»ÆÈ¸ÄÁË
 
 #if defined DEBUG || defined _DEBUG
 
@@ -411,10 +409,10 @@ public:
 #define ZCE_BACKTRACE_STACK_DEBUG    ZCE_BACKTRACE_STACK
 #endif
 
-//éè°ƒè¯•ç‰ˆæœ¬çš„å®å®šä¹‰ï¼Œ
+//·Çµ÷ÊÔ°æ±¾µÄºê¶¨Òå£¬
 #else  //#if defined DEBUG || defined _DEBUG
 
-//å¦‚æœä¸æ˜¯è°ƒè¯•ç¼–è¯‘,å°†è¿™äº›å®ç½®ä¸ºç©º
+//Èç¹û²»ÊÇµ÷ÊÔ±àÒë,½«ÕâĞ©ºêÖÃÎª¿Õ
 
 
 #ifndef ZCE_LOGMSG_DEBUG

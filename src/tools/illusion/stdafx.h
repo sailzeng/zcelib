@@ -1,4 +1,5 @@
-é”˜å¡Šæ•‡?// stdafx.h : include file for standard system include files,
+
+// stdafx.h : include file for standard system include files,
 // or project specific include files that are used frequently,
 // but are changed infrequently
 
@@ -8,14 +9,11 @@
 #define VC_EXTRALEAN            // Exclude rarely-used stuff from Windows headers
 #endif
 
-<<<<<<< HEAD
-// é–¸ï¸¹æ™¸INDOWSå¨‘æ’³ç¨éŽ·ç™™OSIXé—€æ¬æ´¤é¡æŠ½å´—é“?
-=======
-// åœ¨WINDOWSä¸‹å’ŒPOSIXæ ‡å‡†å…¼å®¹çš„å®ï¼ŒVS2003ä»¥ä¸‹ç‰ˆæœ¬å¦‚ä½•ï¼Œæˆ‘æ²¡æœ‰æµ‹è¯•ï¼Œ2003ä»¥åŽï¼ŒWindowså¯¹äºŽå¾ˆå¤šä»£ç å®ä¼šä½¿ç”¨"_"å‰ç¼€ï¼Œ
+// ÔÚWINDOWSÏÂºÍPOSIX±ê×¼¼æÈÝµÄºê£¬VS2003ÒÔÏÂ°æ±¾ÈçºÎ£¬ÎÒÃ»ÓÐ²âÊÔ£¬2003ÒÔºó£¬Windows¶ÔÓÚºÜ¶à´úÂëºê»áÊ¹ÓÃ"_"Ç°×º£¬
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_NONSTDC_NO_WARNINGS  1
 
-// ç”¨äºŽå‘Šè¯‰VC++ï¼Œæˆ‘ä¸å¼ºè¿«ä½¿ç”¨_sç±»åž‹çš„APIï¼Œ_CRT_SECURE_NO_DEPRECATEæ˜¯_CRT_SECURE_NO_WARNINGSçš„è€ç‰ˆæœ¬
+// ÓÃÓÚ¸æËßVC++£¬ÎÒ²»Ç¿ÆÈÊ¹ÓÃ_sÀàÐÍµÄAPI£¬_CRT_SECURE_NO_DEPRECATEÊÇ_CRT_SECURE_NO_WARNINGSµÄÀÏ°æ±¾
 #define _CRT_SECURE_NO_WARNINGS   1
 #define _CRT_SECURE_NO_DEPRECATE  1
 #define _WINSOCK_DEPRECATED_NO_WARNINGS 1
@@ -92,7 +90,7 @@ using namespace std;
 
 
 
-//ç”¨äº†ä¸€ä¸ªä¸åº”è¯¥ç”¨çš„
+//ÓÃÁËÒ»¸ö²»Ó¦¸ÃÓÃµÄ
 #include <CRange.h>
 #include <CWorkbook.h>
 #include <CWorkbooks.h>
@@ -100,10 +98,10 @@ using namespace std;
 #include <CWorksheets.h>
 #include <CApplication.h>
 
-//å¦‚æžœå‡ºçŽ° error C3505: cannot load type library '{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}
-//è¯·ç¡®è®¤ä¸€ä¸‹æ³¨å†Œè¡¨ä¸­çš„é¡¹ç›®
+//Èç¹û³öÏÖ error C3505: cannot load type library '{2DF8D04C-5BFA-101B-BDE5-00AA0044DE52}
+//ÇëÈ·ÈÏÒ»ÏÂ×¢²á±íÖÐµÄÏîÄ¿
 //HKEY_CLASSES_ROOT\TypeLib\{2DF8D04C - 5BFA - 101B - BDE5 - 00AA0044DE52}
-//æœ‰æ—¶å€™å®‰è£…è¿‡å¤šä¸ªç‰ˆæœ¬çš„EXCELä¼šæœ‰è¿™ä¸ªé—®é¢˜ã€‚
+//ÓÐÊ±ºò°²×°¹ý¶à¸ö°æ±¾µÄEXCEL»áÓÐÕâ¸öÎÊÌâ¡£
 
 // mso.dll
 #import "libid:{2df8d04c-5bfa-101b-bde5-00aa0044de52}"  auto_rename
@@ -137,4 +135,3 @@ using namespace std;
 #endif
 
 
->>>>>>> ecb76a1a4aa8381667ced3cb31202915f48ca78b

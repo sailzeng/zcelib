@@ -11,7 +11,7 @@
 #define FMT_MAX(a,b) (((a)>(b))?(a):(b))
 #endif
 
-//æˆ‘ä¸ºäº†è¿½æ±‚é€Ÿåº¦ï¼Œdopr_outchï¼Œå°†å‡½æ•°dopr_outch æ”¹å†™æˆäº†å®ï¼Œ
+//ÎÒÎªÁË×·ÇóËÙ¶È£¬dopr_outch£¬½«º¯Êıdopr_outch ¸ÄĞ´³ÉÁËºê£¬
 #ifndef FMT_DOPR_OUTCH
 #define FMT_DOPR_OUTCH(a,b,c,d)   if (((b)) < (c)) \
         (a)[((b))++] = d;
@@ -25,7 +25,7 @@
 //    }
 //}
 
-//æ ¼å¼åŒ–double
+//¸ñÊ½»¯double
 void zce::fmt_double(char *buffer,
                      size_t max_len,
                      size_t &use_len,
@@ -38,29 +38,29 @@ void zce::fmt_double(char *buffer,
     buffer [0] = '\0';
     use_len = 0;
 
-    //å¯¹äºå‚æ•°è¿›è¡Œæ£€æŸ¥,
+    //¶ÔÓÚ²ÎÊı½øĞĞ¼ì²é,
     if ( max_len == 0 )
     {
         return;
     }
 
-    //å¦‚æœä½ ä¸å…³æ³¨ç²¾åº¦ï¼Œå°†ç²¾åº¦è°ƒæ•´æˆ6ï¼Œ
+    //Èç¹ûÄã²»¹Ø×¢¾«¶È£¬½«¾«¶Èµ÷Õû³É6£¬
     if (precision == 0 || precision > 64)
     {
         precision = DEFAULT_DOUBLE_PRECISION;
     }
 
-    //doubleçš„æœ€å¤§é•¿åº¦E308
+    //doubleµÄ×î´ó³¤¶ÈE308
     const size_t LEN_OF_TMP_OUT_BUF = 512;
     char tmp_out_buf[LEN_OF_TMP_OUT_BUF + 1];
     tmp_out_buf[LEN_OF_TMP_OUT_BUF] = '\0';
 
-    //è¾“å‡ºè¦ç”¨çš„å­—ç¬¦ä¸²
+    //Êä³öÒªÓÃµÄ×Ö·û´®
     int decimal = 0, sign = 0;
 
     if (flags & FMT_EXPONENT)
     {
-        //æŒ‡æ•°ecvtçš„ç²¾åº¦æ˜¯è¾“å‡ºæ•°å­—çš„é•¿åº¦ï¼Œä¸æ˜¯å°æ•°ç‚¹çš„é•¿åº¦ï¼Œæ‰€ä»¥ä¼šæœ‰precision + 1
+        //Ö¸ÊıecvtµÄ¾«¶ÈÊÇÊä³öÊı×ÖµÄ³¤¶È£¬²»ÊÇĞ¡ÊıµãµÄ³¤¶È£¬ËùÒÔ»áÓĞprecision + 1
         zce::ecvt_r(fvalue,
                     static_cast<int>(precision + 1),
                     &decimal,
@@ -84,8 +84,8 @@ void zce::fmt_double(char *buffer,
         return;
     }
 
-    //è®¡ç®—å„ç§æ–¹å¼ä¸‹çš„å­—ç¬¦ä¸²ç©ºé—´ï¼Œçœ‹å¯¹é½æ–¹å¼ä¸‹è¿˜è¦å¢åŠ å¤šå°‘ä¸ªç©ºæ ¼
-    //ä¸‹é¢çš„éƒ¨åˆ†æ•°å­—åº”è¯¥ç”¨å¸¸é‡ï¼Œä½†æ˜¯æˆ‘éƒ½è§£é‡Šäº†ï¼Œä¸å•°å—¦äº†
+    //¼ÆËã¸÷ÖÖ·½Ê½ÏÂµÄ×Ö·û´®¿Õ¼ä£¬¿´¶ÔÆë·½Ê½ÏÂ»¹ÒªÔö¼Ó¶àÉÙ¸ö¿Õ¸ñ
+    //ÏÂÃæµÄ²¿·ÖÊı×ÖÓ¦¸ÃÓÃ³£Á¿£¬µ«ÊÇÎÒ¶¼½âÊÍÁË£¬²»†ªàÂÁË
     int sign_len = 0;
 
     if ( sign || flags & FMT_PLUS || flags & FMT_SPACE )
@@ -97,7 +97,7 @@ void zce::fmt_double(char *buffer,
 
     if (flags & FMT_EXPONENT)
     {
-        //7çš„æ¥å†æ˜¯1.E+001,sign_lenä¸ºç¬¦å·ä½ç½®å ç”¨çš„ç©ºé—´
+        //7µÄÀ´ÀúÊÇ1.E+001,sign_lenÎª·ûºÅÎ»ÖÃÕ¼ÓÃµÄ¿Õ¼ä
         out_str_len = static_cast<int>(7 + precision + sign_len);
     }
     else
@@ -105,20 +105,20 @@ void zce::fmt_double(char *buffer,
         //tmp_out_buf
         if (decimal > 0)
         {
-            //1ä¸ºå°æ•°ç‚¹.
+            //1ÎªĞ¡Êıµã.
             out_str_len = 1 + cvt_str_len + sign_len;
         }
         else
         {
-            //2ä¸º"0."ï¼Œ
+            //2Îª"0."£¬
             out_str_len = static_cast<int>(2 + precision + sign_len);
         }
     }
 
-    //è¦å¡«è¡¥çš„ç©ºæ ¼é•¿åº¦
+    //ÒªÌî²¹µÄ¿Õ¸ñ³¤¶È
     int space_pad_len = static_cast<int>(  width - out_str_len );
 
-    //å¦‚æœè¦å³å¯¹é½,
+    //Èç¹ûÒªÓÒ¶ÔÆë,
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0 )
     {
         for (int i = 0; i < space_pad_len ; i++)
@@ -127,7 +127,7 @@ void zce::fmt_double(char *buffer,
         }
     }
 
-    //å–å‡ºç¬¦å·ï¼Œè¿›è¡Œåˆ¤æ–­ï¼Œ//å¦‚æœæµ®ç‚¹å°äº0ï¼Œå¡«å†™è´Ÿæ•°æ ‡ç¤º
+    //È¡³ö·ûºÅ£¬½øĞĞÅĞ¶Ï£¬//Èç¹û¸¡µãĞ¡ÓÚ0£¬ÌîĞ´¸ºÊı±êÊ¾
     if (sign)
     {
         FMT_DOPR_OUTCH(buffer, use_len, max_len, '-');
@@ -141,20 +141,20 @@ void zce::fmt_double(char *buffer,
         FMT_DOPR_OUTCH(buffer, use_len, max_len, ' ');
     }
 
-    //ç”¨æŒ‡æ•°çš„æ–¹å¼è¾“å‡º
+    //ÓÃÖ¸ÊıµÄ·½Ê½Êä³ö
     if (flags & FMT_EXPONENT)
     {
-        //è¾“å‡ºç¬¬ä¸€ä¸ªæ•°å­—å’Œ.
+        //Êä³öµÚÒ»¸öÊı×ÖºÍ.
         FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[0]);
         FMT_DOPR_OUTCH(buffer, use_len, max_len, '.');
 
-        //å°†å°æ•°éƒ¨åˆ†è¾“å‡º
+        //½«Ğ¡Êı²¿·ÖÊä³ö
         for (size_t i = 0; i < precision; ++i)
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i + 1]);
         }
 
-        //è¾“å‡ºæŒ‡æ•°éƒ¨åˆ†ï¼Œæ ¹æ®å¤§å°å†™è¾“å‡ºæŒ‡æ•°E
+        //Êä³öÖ¸Êı²¿·Ö£¬¸ù¾İ´óĞ¡Ğ´Êä³öÖ¸ÊıE
         if (flags & FMT_UP)
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, 'E');
@@ -164,10 +164,10 @@ void zce::fmt_double(char *buffer,
             FMT_DOPR_OUTCH(buffer, use_len, max_len, 'e');
         }
 
-        //ä¸‹é¢è¿™æ®µä»£ç å³ä½¿snprintf(bufbuffer+use_len,max_len-use_len,"%+0.3d",decimal);
-        //æ˜¯æˆ‘æœ‰ç‚¹èµ°ç«å…¥é­”ï¼Œæˆ‘è¿™æ ·å†™æ— éæ˜¯å¸Œæœ›åŠ å¿«ä¸€ç‚¹ç‚¹é€Ÿåº¦,
+        //ÏÂÃæÕâ¶Î´úÂë¼´Ê¹snprintf(bufbuffer+use_len,max_len-use_len,"%+0.3d",decimal);
+        //ÊÇÎÒÓĞµã×ß»ğÈëÄ§£¬ÎÒÕâÑùĞ´ÎŞ·ÇÊÇÏ£Íû¼Ó¿ìÒ»µãµãËÙ¶È,
 
-        //å°†æŒ‡æ•°è¾“å‡º,ä½¿ç”¨"%+0.3d"çš„æ ¼å¼
+        //½«Ö¸ÊıÊä³ö,Ê¹ÓÃ"%+0.3d"µÄ¸ñÊ½
         int i_exponent = decimal - 1;
 
         if (i_exponent >= 0)
@@ -179,11 +179,11 @@ void zce::fmt_double(char *buffer,
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '-');
         }
 
-        //ç»å¯¹å€¼ï¼Œå› ä¸ºæˆ‘
+        //¾ø¶ÔÖµ£¬ÒòÎªÎÒ
         int u_exponent = i_exponent >= 0 ? i_exponent : -i_exponent ;
         int out_dec = 0;
 
-        //è¾“å‡ºç™¾ä½
+        //Êä³ö°ÙÎ»
         if (u_exponent >= 100)
         {
             out_dec = u_exponent / 100;
@@ -191,7 +191,7 @@ void zce::fmt_double(char *buffer,
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '0' + static_cast<char>(out_dec));
         }
 
-        //è¾“å‡º10ä½å’Œä¸ªä½
+        //Êä³ö10Î»ºÍ¸öÎ»
         out_dec = 0;
 
         if (u_exponent >= 10)
@@ -204,10 +204,10 @@ void zce::fmt_double(char *buffer,
     }
     else
     {
-        //æ•´æ•°å’Œå°æ•°æ··åˆè¾“å‡º
+        //ÕûÊıºÍĞ¡Êı»ìºÏÊä³ö
         if (decimal > 0)
         {
-            //å°†æ•´æ•°éƒ¨åˆ†è¾“å‡º
+            //½«ÕûÊı²¿·ÖÊä³ö
             for (size_t i = 0; i < cvt_str_len - precision; ++i)
             {
                 FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i]);
@@ -215,25 +215,25 @@ void zce::fmt_double(char *buffer,
 
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '.');
 
-            //å°†å°æ•°éƒ¨åˆ†è¾“å‡º
+            //½«Ğ¡Êı²¿·ÖÊä³ö
             for (size_t i = 0; i < precision; ++i)
             {
                 FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i + cvt_str_len - precision]);
             }
         }
-        //çº¯å°æ•°è¾“å‡º
+        //´¿Ğ¡ÊıÊä³ö
         else
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '.');
 
-            //è¡¥å……å¥½0
+            //²¹³äºÃ0
             for (size_t i = 0; i < precision - cvt_str_len; ++i)
             {
                 FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
             }
 
-            //å°†å°æ•°éƒ¨åˆ†è¾“å‡º
+            //½«Ğ¡Êı²¿·ÖÊä³ö
             for (int i = 0; i < cvt_str_len; ++i)
             {
                 FMT_DOPR_OUTCH(buffer, use_len, max_len, tmp_out_buf[i]);
@@ -241,7 +241,7 @@ void zce::fmt_double(char *buffer,
         }
     }
 
-    //å¦‚æœè¦å·¦å¯¹é½ï¼Œåœ¨å°¾å·´ä¸Šè¡¥æ°”ç©ºæ ¼
+    //Èç¹ûÒª×ó¶ÔÆë£¬ÔÚÎ²°ÍÉÏ²¹Æø¿Õ¸ñ
     if ( (flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         for (int i = 0; i < space_pad_len ; i++)
@@ -257,23 +257,23 @@ void zce::fmt_double(std::string &stdstr,
                      size_t precision,
                      int flags)
 {
-    //å¦‚æœä½ ä¸å…³æ³¨ç²¾åº¦ï¼Œå°†ç²¾åº¦è°ƒæ•´æˆ6ï¼Œ
+    //Èç¹ûÄã²»¹Ø×¢¾«¶È£¬½«¾«¶Èµ÷Õû³É6£¬
     if (precision == 0 || precision > 64)
     {
         precision = DEFAULT_DOUBLE_PRECISION;
     }
 
-    //doubleçš„æœ€å¤§é•¿åº¦E308
+    //doubleµÄ×î´ó³¤¶ÈE308
     const size_t LEN_OF_TMP_OUT_BUF = 512;
     char tmp_out_buf[LEN_OF_TMP_OUT_BUF + 1];
     tmp_out_buf[LEN_OF_TMP_OUT_BUF] = '\0';
 
-    //è¾“å‡ºè¦ç”¨çš„å­—ç¬¦ä¸²
+    //Êä³öÒªÓÃµÄ×Ö·û´®
     int decimal = 0, sign = 0;
 
     if (flags & FMT_EXPONENT)
     {
-        //æŒ‡æ•°ecvtçš„ç²¾åº¦æ˜¯è¾“å‡ºæ•°å­—çš„é•¿åº¦ï¼Œä¸æ˜¯å°æ•°ç‚¹çš„é•¿åº¦ï¼Œæ‰€ä»¥ä¼šæœ‰precision + 1
+        //Ö¸ÊıecvtµÄ¾«¶ÈÊÇÊä³öÊı×ÖµÄ³¤¶È£¬²»ÊÇĞ¡ÊıµãµÄ³¤¶È£¬ËùÒÔ»áÓĞprecision + 1
         zce::ecvt_r(fvalue,
                     static_cast<int>(precision + 1),
                     &decimal,
@@ -297,8 +297,8 @@ void zce::fmt_double(std::string &stdstr,
         return;
     }
 
-    //è®¡ç®—å„ç§æ–¹å¼ä¸‹çš„å­—ç¬¦ä¸²ç©ºé—´ï¼Œçœ‹å¯¹é½æ–¹å¼ä¸‹è¿˜è¦å¢åŠ å¤šå°‘ä¸ªç©ºæ ¼
-    //ä¸‹é¢çš„éƒ¨åˆ†æ•°å­—åº”è¯¥ç”¨å¸¸é‡ï¼Œä½†æ˜¯æˆ‘éƒ½è§£é‡Šäº†ï¼Œä¸å•°å—¦äº†
+    //¼ÆËã¸÷ÖÖ·½Ê½ÏÂµÄ×Ö·û´®¿Õ¼ä£¬¿´¶ÔÆë·½Ê½ÏÂ»¹ÒªÔö¼Ó¶àÉÙ¸ö¿Õ¸ñ
+    //ÏÂÃæµÄ²¿·ÖÊı×ÖÓ¦¸ÃÓÃ³£Á¿£¬µ«ÊÇÎÒ¶¼½âÊÍÁË£¬²»†ªàÂÁË
     int sign_len = 0;
 
     if (sign || flags & FMT_PLUS || flags & FMT_SPACE)
@@ -310,7 +310,7 @@ void zce::fmt_double(std::string &stdstr,
 
     if (flags & FMT_EXPONENT)
     {
-        //7çš„æ¥å†æ˜¯1.E+001,sign_lenä¸ºç¬¦å·ä½ç½®å ç”¨çš„ç©ºé—´
+        //7µÄÀ´ÀúÊÇ1.E+001,sign_lenÎª·ûºÅÎ»ÖÃÕ¼ÓÃµÄ¿Õ¼ä
         out_str_len = static_cast<int>(7 + precision + sign_len);
     }
     else
@@ -318,26 +318,26 @@ void zce::fmt_double(std::string &stdstr,
         //tmp_out_buf
         if (decimal > 0)
         {
-            //1ä¸ºå°æ•°ç‚¹.
+            //1ÎªĞ¡Êıµã.
             out_str_len = 1 + cvt_str_len + sign_len;
         }
         else
         {
-            //2ä¸º"0."ï¼Œ
+            //2Îª"0."£¬
             out_str_len = static_cast<int>(2 + precision + sign_len);
         }
     }
 
-    //è¦å¡«è¡¥çš„ç©ºæ ¼é•¿åº¦
+    //ÒªÌî²¹µÄ¿Õ¸ñ³¤¶È
     int space_pad_len = static_cast<int>(width - out_str_len);
 
-    //å¦‚æœè¦å³å¯¹é½,
+    //Èç¹ûÒªÓÒ¶ÔÆë,
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         stdstr.append(space_pad_len, ' ');
     }
 
-    //å–å‡ºç¬¦å·ï¼Œè¿›è¡Œåˆ¤æ–­ï¼Œ//å¦‚æœæµ®ç‚¹å°äº0ï¼Œå¡«å†™è´Ÿæ•°æ ‡ç¤º
+    //È¡³ö·ûºÅ£¬½øĞĞÅĞ¶Ï£¬//Èç¹û¸¡µãĞ¡ÓÚ0£¬ÌîĞ´¸ºÊı±êÊ¾
     if (sign)
     {
         stdstr.append(1, '-');
@@ -351,20 +351,20 @@ void zce::fmt_double(std::string &stdstr,
         stdstr.append(1, ' ');
     }
 
-    //ç”¨æŒ‡æ•°çš„æ–¹å¼è¾“å‡º
+    //ÓÃÖ¸ÊıµÄ·½Ê½Êä³ö
     if (flags & FMT_EXPONENT)
     {
-        //è¾“å‡ºç¬¬ä¸€ä¸ªæ•°å­—å’Œ.
+        //Êä³öµÚÒ»¸öÊı×ÖºÍ.
         stdstr.append(1, tmp_out_buf[0]);
         stdstr.append(1, '.');
 
-        //å°†å°æ•°éƒ¨åˆ†è¾“å‡º
+        //½«Ğ¡Êı²¿·ÖÊä³ö
         for (size_t i = 0; i < precision; ++i)
         {
             stdstr.append(1, tmp_out_buf[i + 1]);
         }
 
-        //è¾“å‡ºæŒ‡æ•°éƒ¨åˆ†ï¼Œæ ¹æ®å¤§å°å†™è¾“å‡ºæŒ‡æ•°E
+        //Êä³öÖ¸Êı²¿·Ö£¬¸ù¾İ´óĞ¡Ğ´Êä³öÖ¸ÊıE
         if (flags & FMT_UP)
         {
             stdstr.append(1, 'E');
@@ -374,10 +374,10 @@ void zce::fmt_double(std::string &stdstr,
             stdstr.append(1, 'e');
         }
 
-        //ä¸‹é¢è¿™æ®µä»£ç å³ä½¿snprintf(bufbuffer+use_len,max_len-use_len,"%+0.3d",decimal);
-        //æ˜¯æˆ‘æœ‰ç‚¹èµ°ç«å…¥é­”ï¼Œæˆ‘è¿™æ ·å†™æ— éæ˜¯å¸Œæœ›åŠ å¿«ä¸€ç‚¹ç‚¹é€Ÿåº¦,
+        //ÏÂÃæÕâ¶Î´úÂë¼´Ê¹snprintf(bufbuffer+use_len,max_len-use_len,"%+0.3d",decimal);
+        //ÊÇÎÒÓĞµã×ß»ğÈëÄ§£¬ÎÒÕâÑùĞ´ÎŞ·ÇÊÇÏ£Íû¼Ó¿ìÒ»µãµãËÙ¶È,
 
-        //å°†æŒ‡æ•°è¾“å‡º,ä½¿ç”¨"%+0.3d"çš„æ ¼å¼
+        //½«Ö¸ÊıÊä³ö,Ê¹ÓÃ"%+0.3d"µÄ¸ñÊ½
         int i_exponent = decimal - 1;
 
         if (i_exponent >= 0)
@@ -389,11 +389,11 @@ void zce::fmt_double(std::string &stdstr,
             stdstr.append(1, '-');
         }
 
-        //ç»å¯¹å€¼ï¼Œå› ä¸ºæˆ‘
+        //¾ø¶ÔÖµ£¬ÒòÎªÎÒ
         int u_exponent = i_exponent >= 0 ? i_exponent : -i_exponent;
         int out_dec = 0;
 
-        //è¾“å‡ºç™¾ä½
+        //Êä³ö°ÙÎ»
         if (u_exponent >= 100)
         {
             out_dec = u_exponent / 100;
@@ -401,7 +401,7 @@ void zce::fmt_double(std::string &stdstr,
             stdstr.append(1, '0' + static_cast<char>(out_dec));
         }
 
-        //è¾“å‡º10ä½å’Œä¸ªä½
+        //Êä³ö10Î»ºÍ¸öÎ»
         out_dec = 0;
 
         if (u_exponent >= 10)
@@ -414,35 +414,35 @@ void zce::fmt_double(std::string &stdstr,
     }
     else
     {
-        //æ•´æ•°å’Œå°æ•°æ··åˆè¾“å‡º
+        //ÕûÊıºÍĞ¡Êı»ìºÏÊä³ö
         if (decimal > 0)
         {
-            //å°†æ•´æ•°éƒ¨åˆ†è¾“å‡º
+            //½«ÕûÊı²¿·ÖÊä³ö
             for (size_t i = 0; i < cvt_str_len - precision; ++i)
             {
                 stdstr.append(1, tmp_out_buf[i]);
             }
             stdstr.append(1, '.');
 
-            //å°†å°æ•°éƒ¨åˆ†è¾“å‡º
+            //½«Ğ¡Êı²¿·ÖÊä³ö
             for (size_t i = 0; i < precision; ++i)
             {
                 stdstr.append(1, tmp_out_buf[i + cvt_str_len - precision]);
             }
         }
-        //çº¯å°æ•°è¾“å‡º
+        //´¿Ğ¡ÊıÊä³ö
         else
         {
             stdstr.append(1, '0');
             stdstr.append(1, '.');
 
-            //è¡¥å……å¥½0
+            //²¹³äºÃ0
             for (size_t i = 0; i < precision - cvt_str_len; ++i)
             {
                 stdstr.append(1, '0');
             }
 
-            //å°†å°æ•°éƒ¨åˆ†è¾“å‡º
+            //½«Ğ¡Êı²¿·ÖÊä³ö
             for (int i = 0; i < cvt_str_len; ++i)
             {
                 stdstr.append(1, tmp_out_buf[i]);
@@ -450,7 +450,7 @@ void zce::fmt_double(std::string &stdstr,
         }
     }
 
-    //å¦‚æœè¦å·¦å¯¹é½ï¼Œåœ¨å°¾å·´ä¸Šè¡¥æ°”ç©ºæ ¼
+    //Èç¹ûÒª×ó¶ÔÆë£¬ÔÚÎ²°ÍÉÏ²¹Æø¿Õ¸ñ
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         stdstr.append(space_pad_len, ' ');
@@ -458,12 +458,12 @@ void zce::fmt_double(std::string &stdstr,
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-//ç”¨äºint64çš„æ ¼å¼åŒ–è¾“å‡ºï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°åœ¨BUFFERæœ«å°¾ä¸æ·»åŠ \0,ä»BSDçš„openssh snprintfä»£ç ç§»æ¤
+//ÓÃÓÚint64µÄ¸ñÊ½»¯Êä³ö£¬×¢ÒâÕâ¸öº¯ÊıÔÚBUFFERÄ©Î²²»Ìí¼Ó\0,´ÓBSDµÄopenssh snprintf´úÂëÒÆÖ²
 void zce::fmt_int64(char *buffer,
                     size_t max_len,
                     size_t &use_len,
                     int64_t value,
-                    BASE_NUMBER base,
+                    BASE_NUMBER_SYSTEM base,
                     size_t width,
                     size_t precision,
                     int flags)
@@ -487,10 +487,10 @@ void zce::fmt_int64(char *buffer,
     int space_pad_len = 0;
     // amount to zero pad
     int zero_pad_len = 0;
-    //0x,æˆ–è€…0å‰ç¼€çš„é•¿åº¦ï¼Œ#æ ‡è¯†æ—¶ä½¿ç”¨
+    //0x,»òÕß0Ç°×ºµÄ³¤¶È£¬#±êÊ¶Ê±Ê¹ÓÃ
     int prefix_len = 0;
 
-    //å¯¹ç¬¦å·ä½ç½®è¿›è¡Œå¤„ç†
+    //¶Ô·ûºÅÎ»ÖÃ½øĞĞ´¦Àí
     if (!(flags & FMT_UNSIGNED))
     {
         if (value < 0)
@@ -509,15 +509,15 @@ void zce::fmt_int64(char *buffer,
         }
     }
 
-    //å¦‚æœè¦æ·»åŠ 0xä¹‹ç±»çš„å‰ç¼€
+    //Èç¹ûÒªÌí¼Ó0xÖ®ÀàµÄÇ°×º
     if (flags & FMT_PREFIX)
     {
-        if (BASE_NUMBER::HEXADECIMAL == base )
+        if (BASE_HEXADECIMAL == base )
         {
             prefix_len = 2;
         }
 
-        if (BASE_NUMBER::OCTAL  == base )
+        if (BASE_OCTAL  == base )
         {
             prefix_len = 1;
         }
@@ -526,7 +526,7 @@ void zce::fmt_int64(char *buffer,
     const char BASE_UPPERCASE_OUTCHAR[] = {"0123456789ABCDEF"};
     const char BASE_LOWERCASE_OUTCHAR[] = {"0123456789abcdef"};
 
-    //å¦‚æœæ˜¯å¤§å†™,16è¿›åˆ¶çš„è½¬æ¢å…¨éƒ¨ç”¨å¤§å†™
+    //Èç¹ûÊÇ´óĞ´,16½øÖÆµÄ×ª»»È«²¿ÓÃ´óĞ´
     const char *use_char_ary = BASE_LOWERCASE_OUTCHAR;
 
     if (flags & FMT_UP)
@@ -536,16 +536,16 @@ void zce::fmt_int64(char *buffer,
 
     do
     {
-        convert[place++] = use_char_ary [uvalue % static_cast<int>(base)];
-        uvalue = (uvalue / static_cast<int>( base ));
+        convert[place++] = use_char_ary [uvalue % base];
+        uvalue = (uvalue / base );
     }
     while (uvalue && (place < MAX_OUT_LEN));
 
-    //è®¡ç®—è¦å¡«è¡¥å¤šå°‘0æˆ–è€…ç©ºæ ¼
+    //¼ÆËãÒªÌî²¹¶àÉÙ0»òÕß¿Õ¸ñ
     zero_pad_len = static_cast<int>(precision - place);
     space_pad_len = static_cast<int>( width - FMT_MAX (precision, place) - (signvalue ? 1 : 0) - prefix_len);
 
-    //å¦‚æœç²¾åº¦ç©ºé—´æœ‰å¤šçš„ï¼Œä½†æ˜¯æ²¡æœ‰è¦æ±‚å¡«å†™0ï¼Œé‚£ä¹ˆä»ç„¶å¡«å†™' '
+    //Èç¹û¾«¶È¿Õ¼äÓĞ¶àµÄ£¬µ«ÊÇÃ»ÓĞÒªÇóÌîĞ´0£¬ÄÇÃ´ÈÔÈ»ÌîĞ´' '
     if (flags & FMT_ZERO)
     {
         if (zero_pad_len < 0)
@@ -557,7 +557,7 @@ void zce::fmt_int64(char *buffer,
         space_pad_len = 0;
     }
 
-    //å³å¯¹é½å¡«è¡¥ç©ºæ ¼
+    //ÓÒ¶ÔÆëÌî²¹¿Õ¸ñ
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0 )
     {
         for (int i = 0; i < space_pad_len ; i++)
@@ -566,7 +566,7 @@ void zce::fmt_int64(char *buffer,
         }
     }
 
-    //å¡«è¡¥ç¬¦å·
+    //Ìî²¹·ûºÅ
     if (signvalue)
     {
         FMT_DOPR_OUTCH(buffer, use_len, max_len, static_cast<char>(signvalue));
@@ -574,8 +574,8 @@ void zce::fmt_int64(char *buffer,
 
     if (flags & FMT_PREFIX)
     {
-        //åå…­è¿›åˆ¶æ·»åŠ 0x
-        if (BASE_NUMBER::HEXADECIMAL == base)
+        //Ê®Áù½øÖÆÌí¼Ó0x
+        if (BASE_HEXADECIMAL == base)
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
 
@@ -589,14 +589,14 @@ void zce::fmt_int64(char *buffer,
             }
         }
 
-        //8è¿›åˆ¶æ·»åŠ 0
-        if (BASE_NUMBER::OCTAL == base)
+        //8½øÖÆÌí¼Ó0
+        if (BASE_OCTAL == base)
         {
             FMT_DOPR_OUTCH(buffer, use_len, max_len, '0');
         }
     }
 
-    //åœ¨ç²¾åº¦èŒƒå›´è¾“å‡º0ï¼Œå¦‚æœæ²¡æœ‰0æ ‡è¯†ç¬¦å·ï¼Œå¡«å†™' '
+    //ÔÚ¾«¶È·¶Î§Êä³ö0£¬Èç¹ûÃ»ÓĞ0±êÊ¶·ûºÅ£¬ÌîĞ´' '
     if (zero_pad_len > 0)
     {
         for (int i = 0; i < zero_pad_len ; i++)
@@ -605,14 +605,14 @@ void zce::fmt_int64(char *buffer,
         }
     }
 
-    //è¾“å‡ºæ•°å­—
+    //Êä³öÊı×Ö
     while (place > 0)
     {
         --place;
         FMT_DOPR_OUTCH(buffer, use_len, max_len, convert[place]);
     }
 
-    //å·¦å¯¹é½ï¼Œåœ¨æœ«å°¾æ·»åŠ ç©ºæ ¼
+    //×ó¶ÔÆë£¬ÔÚÄ©Î²Ìí¼Ó¿Õ¸ñ
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0 )
     {
         for (int i = 0; i < space_pad_len ; i++)
@@ -624,7 +624,7 @@ void zce::fmt_int64(char *buffer,
 
 void zce::fmt_int64(std::string &stdstr,
                     int64_t value,
-                    BASE_NUMBER base,
+                    BASE_NUMBER_SYSTEM base,
                     size_t width,
                     size_t precision,
                     int flags)
@@ -642,10 +642,10 @@ void zce::fmt_int64(std::string &stdstr,
     int space_pad_len = 0;
     // amount to zero pad
     int zero_pad_len = 0;
-    //0x,æˆ–è€…0å‰ç¼€çš„é•¿åº¦ï¼Œ#æ ‡è¯†æ—¶ä½¿ç”¨
+    //0x,»òÕß0Ç°×ºµÄ³¤¶È£¬#±êÊ¶Ê±Ê¹ÓÃ
     int prefix_len = 0;
 
-    //å¯¹ç¬¦å·ä½ç½®è¿›è¡Œå¤„ç†
+    //¶Ô·ûºÅÎ»ÖÃ½øĞĞ´¦Àí
     if (!(flags & FMT_UNSIGNED))
     {
         if (value < 0)
@@ -664,15 +664,15 @@ void zce::fmt_int64(std::string &stdstr,
         }
     }
 
-    //å¦‚æœè¦æ·»åŠ 0xä¹‹ç±»çš„å‰ç¼€
+    //Èç¹ûÒªÌí¼Ó0xÖ®ÀàµÄÇ°×º
     if (flags & FMT_PREFIX)
     {
-        if (BASE_NUMBER::HEXADECIMAL == base)
+        if (BASE_HEXADECIMAL == base)
         {
             prefix_len = 2;
         }
 
-        if (BASE_NUMBER::OCTAL == base)
+        if (BASE_OCTAL == base)
         {
             prefix_len = 1;
         }
@@ -681,7 +681,7 @@ void zce::fmt_int64(std::string &stdstr,
     const char BASE_UPPERCASE_OUTCHAR[] = { "0123456789ABCDEF" };
     const char BASE_LOWERCASE_OUTCHAR[] = { "0123456789abcdef" };
 
-    //å¦‚æœæ˜¯å¤§å†™,16è¿›åˆ¶çš„è½¬æ¢å…¨éƒ¨ç”¨å¤§å†™
+    //Èç¹ûÊÇ´óĞ´,16½øÖÆµÄ×ª»»È«²¿ÓÃ´óĞ´
     const char *use_char_ary = BASE_LOWERCASE_OUTCHAR;
 
     if (flags & FMT_UP)
@@ -689,19 +689,19 @@ void zce::fmt_int64(std::string &stdstr,
         use_char_ary = BASE_UPPERCASE_OUTCHAR;
     }
 
-    //æ³¨æ„å¾—åˆ°çš„å­—ç¬¦ä¸²æ˜¯åè½¬çš„
+    //×¢ÒâµÃµ½µÄ×Ö·û´®ÊÇ·´×ªµÄ
     do
     {
-        convert[place++] = use_char_ary[uvalue % static_cast<int>(base)];
-        uvalue = (uvalue / static_cast<int>(base));
+        convert[place++] = use_char_ary[uvalue % base];
+        uvalue = (uvalue / base);
     }
     while (uvalue && (place < MAX_OUT_LEN));
 
-    //è®¡ç®—è¦å¡«è¡¥å¤šå°‘0æˆ–è€…ç©ºæ ¼
+    //¼ÆËãÒªÌî²¹¶àÉÙ0»òÕß¿Õ¸ñ
     zero_pad_len = static_cast<int>(precision - place);
     space_pad_len = static_cast<int>(width - FMT_MAX(precision, place) - (signvalue ? 1 : 0) - prefix_len);
 
-    //å¦‚æœç²¾åº¦ç©ºé—´æœ‰å¤šçš„ï¼Œä½†æ˜¯æ²¡æœ‰è¦æ±‚å¡«å†™0ï¼Œé‚£ä¹ˆä»ç„¶å¡«å†™' '
+    //Èç¹û¾«¶È¿Õ¼äÓĞ¶àµÄ£¬µ«ÊÇÃ»ÓĞÒªÇóÌîĞ´0£¬ÄÇÃ´ÈÔÈ»ÌîĞ´' '
     if (flags & FMT_ZERO)
     {
         if (zero_pad_len < 0)
@@ -713,13 +713,13 @@ void zce::fmt_int64(std::string &stdstr,
         space_pad_len = 0;
     }
 
-    //å³å¯¹é½å¡«è¡¥ç©ºæ ¼
+    //ÓÒ¶ÔÆëÌî²¹¿Õ¸ñ
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         stdstr.append(space_pad_len, ' ');
     }
 
-    //å¡«è¡¥ç¬¦å·
+    //Ìî²¹·ûºÅ
     if (signvalue)
     {
         stdstr.append(1, signvalue);
@@ -727,8 +727,8 @@ void zce::fmt_int64(std::string &stdstr,
 
     if (flags & FMT_PREFIX)
     {
-        //åå…­è¿›åˆ¶æ·»åŠ 0x
-        if (BASE_NUMBER::HEXADECIMAL == base)
+        //Ê®Áù½øÖÆÌí¼Ó0x
+        if (BASE_HEXADECIMAL == base)
         {
             stdstr.append(1, '0');
             if (flags & FMT_UP)
@@ -741,27 +741,27 @@ void zce::fmt_int64(std::string &stdstr,
             }
         }
 
-        //8è¿›åˆ¶æ·»åŠ 0
-        if (BASE_NUMBER::OCTAL == base)
+        //8½øÖÆÌí¼Ó0
+        if (BASE_OCTAL == base)
         {
             stdstr.append(1, '0');
         }
     }
 
-    //åœ¨ç²¾åº¦èŒƒå›´è¾“å‡º0ï¼Œå¦‚æœæ²¡æœ‰0æ ‡è¯†ç¬¦å·ï¼Œå¡«å†™' '
+    //ÔÚ¾«¶È·¶Î§Êä³ö0£¬Èç¹ûÃ»ÓĞ0±êÊ¶·ûºÅ£¬ÌîĞ´' '
     if (zero_pad_len > 0)
     {
         stdstr.append(zero_pad_len, '0');
     }
 
-    //è¾“å‡ºæ•°å­—
+    //Êä³öÊı×Ö
     while (place > 0)
     {
         --place;
         stdstr.append(1, convert[place]);
     }
 
-    //å·¦å¯¹é½ï¼Œåœ¨æœ«å°¾æ·»åŠ ç©ºæ ¼
+    //×ó¶ÔÆë£¬ÔÚÄ©Î²Ìí¼Ó¿Õ¸ñ
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         stdstr.append(space_pad_len, ' ');
@@ -769,7 +769,7 @@ void zce::fmt_int64(std::string &stdstr,
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-//ç”¨äºå­—ç¬¦ä¸²çš„æ ¼å¼åŒ–è¾“å‡ºï¼Œæ³¨æ„è¿™ä¸ªå‡½æ•°æœ«å°¾ä¸æ·»åŠ \0
+//ÓÃÓÚ×Ö·û´®µÄ¸ñÊ½»¯Êä³ö£¬×¢ÒâÕâ¸öº¯ÊıÄ©Î²²»Ìí¼Ó\0
 void zce::fmt_str(char *buffer,
                   size_t max_len,
                   size_t &use_len,
@@ -781,13 +781,13 @@ void zce::fmt_str(char *buffer,
 {
     use_len = 0;
 
-    //ä¸ç”¨å¤„ç†çš„å‚æ•°çš„æƒ…å†µ
+    //²»ÓÃ´¦ÀíµÄ²ÎÊıµÄÇé¿ö
     if ( 0 == max_len || ( 0 == width && 0 == precision) )
     {
         return;
     }
 
-    //å¯¹å‚æ•°è¿›è¡Œæ•´ç†
+    //¶Ô²ÎÊı½øĞĞÕûÀí
     if (value == nullptr)
     {
         value = "<NULL>";
@@ -795,10 +795,10 @@ void zce::fmt_str(char *buffer,
     }
 
     size_t out_len = FMT_MIN(str_len, precision);
-    //è¾“å‡ºçš„ç©ºæ ¼æ•°é‡
+    //Êä³öµÄ¿Õ¸ñÊıÁ¿
     int space_pad_len = static_cast<int>( width - out_len);
 
-    //å³å¯¹é½å¡«è¡¥ç©ºæ ¼(éå·¦å¯¹é½)
+    //ÓÒ¶ÔÆëÌî²¹¿Õ¸ñ(·Ç×ó¶ÔÆë)
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0 )
     {
         for (int i = 0; i < space_pad_len ; i++)
@@ -817,7 +817,7 @@ void zce::fmt_str(char *buffer,
         ++out_cnt;
     }*/
 
-    //å·¦å¯¹é½ï¼Œåœ¨æœ«å°¾æ·»åŠ ç©ºæ ¼
+    //×ó¶ÔÆë£¬ÔÚÄ©Î²Ìí¼Ó¿Õ¸ñ
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0 )
     {
         for (int i = 0; i < space_pad_len ; i++)
@@ -834,30 +834,30 @@ void zce::fmt_str(std::string &stdstr,
                   size_t precision,
                   int flags)
 {
-    //ä¸ç”¨å¤„ç†çš„å‚æ•°çš„æƒ…å†µ
+    //²»ÓÃ´¦ÀíµÄ²ÎÊıµÄÇé¿ö
     if (0 == width && 0 == precision)
     {
         return;
     }
 
-    //å¯¹å‚æ•°è¿›è¡Œæ•´ç†
+    //¶Ô²ÎÊı½øĞĞÕûÀí
     if (value == 0)
     {
         value = "<NULL>";
         str_len = 6;
     }
     size_t out_len = FMT_MIN(str_len, precision);
-    //è¾“å‡ºçš„ç©ºæ ¼æ•°é‡
+    //Êä³öµÄ¿Õ¸ñÊıÁ¿
     int space_pad_len = static_cast<int>(width - out_len);
 
-    //å³å¯¹é½å¡«è¡¥ç©ºæ ¼(éå·¦å¯¹é½)
+    //ÓÒ¶ÔÆëÌî²¹¿Õ¸ñ(·Ç×ó¶ÔÆë)
     if (!(flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         stdstr.append(space_pad_len, ' ');
     }
     stdstr.append(value, out_len);
 
-    //å·¦å¯¹é½ï¼Œåœ¨æœ«å°¾æ·»åŠ ç©ºæ ¼
+    //×ó¶ÔÆë£¬ÔÚÄ©Î²Ìí¼Ó¿Õ¸ñ
     if ((flags & FMT_LEFT_ALIGN) && space_pad_len > 0)
     {
         stdstr.append(space_pad_len, ' ');

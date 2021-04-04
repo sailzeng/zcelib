@@ -8,7 +8,7 @@
 
 
 /************************************************************************************************************
-Class           : ZCE_Progress_Timer ç”¨äºŽè®°å½•ä¸€ä¸ªäº‹ä»¶ç”¨æ—¶çš„è®¡æ—¶å™¨
+Class           : ZCE_Progress_Timer ÓÃÓÚ¼ÇÂ¼Ò»¸öÊÂ¼þÓÃÊ±µÄ¼ÆÊ±Æ÷
 ************************************************************************************************************/
 
 ZCE_Progress_Timer::ZCE_Progress_Timer():
@@ -22,7 +22,7 @@ ZCE_Progress_Timer::~ZCE_Progress_Timer()
 {
 }
 
-//ä»Žæ–°å¼€å§‹è®¡æ—¶
+//´ÓÐÂ¿ªÊ¼¼ÆÊ±
 void ZCE_Progress_Timer::restart()
 {
     end_time_ = 0;
@@ -30,13 +30,13 @@ void ZCE_Progress_Timer::restart()
     start_time_ = std::clock();
 }
 
-//ç»“æŸè®¡æ—¶
+//½áÊø¼ÆÊ±
 void ZCE_Progress_Timer::end()
 {
     end_time_ = std::clock();
 }
 
-//ç´¯è®¡è®¡æ—¶å¼€å§‹
+//ÀÛ¼Æ¼ÆÊ±¿ªÊ¼
 void ZCE_Progress_Timer::addup_start()
 {
     if (end_time_ > start_time_)
@@ -48,10 +48,10 @@ void ZCE_Progress_Timer::addup_start()
     start_time_ = std::clock();
 }
 
-//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´
+//¼ÆËãÏûºÄµÄÊ±¼ä
 double ZCE_Progress_Timer::elapsed_sec() const
 {
-    //æš‚æ—¶åŽ»æŽ‰è¿™ä¸ªæ–­è¨€ï¼Œåœ¨WINDOWSå¹³å°ï¼Œå³ä½¿ä½ ä½¿ç”¨æ­£ç¡®ï¼Œä¹Ÿå¯èƒ½å‡ºçŽ°è¿™ä¸ªæ–­è¨€,åœ¨ç±»çš„è¯´æ˜Žå†™æ¸…æ¥šäº†ï¼Œè‡ªå·±é˜…è¯»
+    //ÔÝÊ±È¥µôÕâ¸ö¶ÏÑÔ£¬ÔÚWINDOWSÆ½Ì¨£¬¼´Ê¹ÄãÊ¹ÓÃÕýÈ·£¬Ò²¿ÉÄÜ³öÏÖÕâ¸ö¶ÏÑÔ,ÔÚÀàµÄËµÃ÷Ð´Çå³þÁË£¬×Ô¼ºÔÄ¶Á
     //ZCE_ASSERT(end_time_ > start_time_);
 
     ZCE_ASSERT(end_time_ > 0);
@@ -66,7 +66,7 @@ double ZCE_Progress_Timer::elapsed_sec() const
 
 }
 
-//è¿”å›žæœ€å°çš„è®¡æ—¶ç²¾åº¦å•ä½ï¼ˆsï¼‰ï¼Œå„ä¸ªå¹³å°ä¸å¤ªä¸€è‡´ï¼Œ
+//·µ»Ø×îÐ¡µÄ¼ÆÊ±¾«¶Èµ¥Î»£¨s£©£¬¸÷¸öÆ½Ì¨²»Ì«Ò»ÖÂ£¬
 double ZCE_Progress_Timer::precision()
 {
     return double(1) / double(CLOCKS_PER_SEC);
@@ -74,7 +74,7 @@ double ZCE_Progress_Timer::precision()
 
 
 /************************************************************************************************************
-Class           : ZCE_HR_Progress_Timer é«˜æ€§èƒ½è®¡æ—¶å™¨
+Class           : ZCE_HR_Progress_Timer ¸ßÐÔÄÜ¼ÆÊ±Æ÷
 ************************************************************************************************************/
 ZCE_HR_Progress_Timer::ZCE_HR_Progress_Timer()
 {
@@ -107,13 +107,13 @@ ZCE_HR_Progress_Timer::~ZCE_HR_Progress_Timer()
 {
 }
 
-//ä»Žæ–°å¼€å§‹è®¡æ—¶
+//´ÓÐÂ¿ªÊ¼¼ÆÊ±
 void ZCE_HR_Progress_Timer::restart()
 {
 #if defined ZCE_OS_WINDOWS
-    //å¦‚æžœæ›´è®²ç©¶ä¸€ç‚¹ä½ å¯ä»¥ç”¨GetProcessAffinityMaskæ›¿æ¢ONLY_YOU_PROCESSOR
+    //Èç¹û¸ü½²¾¿Ò»µãÄã¿ÉÒÔÓÃGetProcessAffinityMaskÌæ»»ONLY_YOU_PROCESSOR
 
-    //å¦‚æžœè®¾ç½®ä¸æˆåŠŸï¼Œä¼šè¿”å›ž0
+    //Èç¹ûÉèÖÃ²»³É¹¦£¬»á·µ»Ø0
     old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //
     ::QueryPerformanceFrequency(&frequency_);
@@ -135,13 +135,13 @@ void ZCE_HR_Progress_Timer::restart()
 #endif
 }
 
-//ç´¯è®¡è®¡æ—¶å¼€å§‹,ç”¨äºŽå¤šæ¬¡è®¡æ—¶çš„è¿‡ç¨‹ï¼Œ
+//ÀÛ¼Æ¼ÆÊ±¿ªÊ¼,ÓÃÓÚ¶à´Î¼ÆÊ±µÄ¹ý³Ì£¬
 void ZCE_HR_Progress_Timer::addup_start()
 {
 #if defined ZCE_OS_WINDOWS
 
     addup_time_.QuadPart += end_time_.QuadPart - start_time_.QuadPart;
-    //å¦‚æžœè®¾ç½®ä¸æˆåŠŸï¼Œä¼šè¿”å›ž0
+    //Èç¹ûÉèÖÃ²»³É¹¦£¬»á·µ»Ø0
     old_affinity_mask_ = ::SetThreadAffinityMask(GetCurrentThread(), ONLY_YOU_PROCESSOR);
     //
     ::QueryPerformanceFrequency(&frequency_);
@@ -167,13 +167,13 @@ void ZCE_HR_Progress_Timer::addup_start()
 #endif
 }
 
-//ç»“æŸè®¡æ—¶
+//½áÊø¼ÆÊ±
 void ZCE_HR_Progress_Timer::end()
 {
 #if defined ZCE_OS_WINDOWS
 
     ::QueryPerformanceCounter(&end_time_);
-    //è¿˜åŽŸçº¿ç¨‹çš„å¤„ç†å™¨ç»‘å®šå…³ç³»
+    //»¹Ô­Ïß³ÌµÄ´¦ÀíÆ÷°ó¶¨¹ØÏµ
     if (old_affinity_mask_ != 0)
     {
         ::SetThreadAffinityMask(GetCurrentThread(), old_affinity_mask_);
@@ -189,7 +189,7 @@ void ZCE_HR_Progress_Timer::end()
 #endif
 }
 
-//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´(us)
+//¼ÆËãÏûºÄµÄÊ±¼ä(us)
 double ZCE_HR_Progress_Timer::elapsed_usec() const
 {
 
@@ -208,7 +208,7 @@ double ZCE_HR_Progress_Timer::elapsed_usec() const
 #endif
 }
 
-//å¾—åˆ°è®¡æ—¶å™¨çš„ç²¾åº¦ï¼ˆuså¾®ç§’-6ï¼‰
+//µÃµ½¼ÆÊ±Æ÷µÄ¾«¶È£¨usÎ¢Ãë-6£©
 double ZCE_HR_Progress_Timer::precision_usec()
 {
 #if defined ZCE_OS_WINDOWS
@@ -219,11 +219,11 @@ double ZCE_HR_Progress_Timer::precision_usec()
 }
 
 /************************************************************************************************************
-Class           : ZCE_TSC_Progress_Timer TSCè®¡æ—¶å™¨ï¼Œ
+Class           : ZCE_TSC_Progress_Timer TSC¼ÆÊ±Æ÷£¬
 ************************************************************************************************************/
 uint64_t ZCE_TSC_Progress_Timer::cpu_hz_ = 0;
 
-//æž„é€ å‡½æ•°
+//¹¹Ôìº¯Êý
 ZCE_TSC_Progress_Timer::ZCE_TSC_Progress_Timer():
     start_time_(0),
     end_time_(0),
@@ -231,12 +231,12 @@ ZCE_TSC_Progress_Timer::ZCE_TSC_Progress_Timer():
 {
 }
 
-//æžæž„å‡½æ•°
+//Îö¹¹º¯Êý
 ZCE_TSC_Progress_Timer::~ZCE_TSC_Progress_Timer()
 {
 }
 
-///ä»Žæ–°å¼€å§‹è®¡æ—¶
+///´ÓÐÂ¿ªÊ¼¼ÆÊ±
 void ZCE_TSC_Progress_Timer::restart()
 {
     end_time_ = 0;
@@ -244,26 +244,26 @@ void ZCE_TSC_Progress_Timer::restart()
     start_time_ = zce::rdtsc();
 }
 
-//ç»“æŸè®¡æ—¶
+//½áÊø¼ÆÊ±
 void ZCE_TSC_Progress_Timer::end()
 {
     end_time_ = zce::rdtsc();
 }
 
-///ç´¯è®¡è®¡æ—¶å¼€å§‹,ç”¨äºŽå¤šæ¬¡è®¡æ—¶çš„è¿‡ç¨‹ï¼Œ
+///ÀÛ¼Æ¼ÆÊ±¿ªÊ¼,ÓÃÓÚ¶à´Î¼ÆÊ±µÄ¹ý³Ì£¬
 void ZCE_TSC_Progress_Timer::addup_start()
 {
     if (end_time_ > start_time_)
     {
         addup_time_ += end_time_ - start_time_;
     }
-    //ä¼šæœ‰ä¸€äº›ç‰¹æ®Šæƒ…å†µï¼Œå¯¼è‡´ start_time_ > end_time_,æœ€å¤§å¯èƒ½æ˜¯åœ¨ä¸åŒçš„CPUä¸Šè®¡æ—¶äº†,
+    //»áÓÐÒ»Ð©ÌØÊâÇé¿ö£¬µ¼ÖÂ start_time_ > end_time_,×î´ó¿ÉÄÜÊÇÔÚ²»Í¬µÄCPUÉÏ¼ÆÊ±ÁË,
 
     end_time_ = 0;
     start_time_ = zce::rdtsc();
 }
 
-//è®¡ç®—æ¶ˆè€—çš„TICKï¼ˆCPUå‘¨æœŸï¼‰æ•°é‡ï¼Œæ³¨æ„è¿™ä¸ªå€¼ï¼Œåªèƒ½åœ¨è‡ªå·±çš„æœºå™¨ä¸Šåšå¯¹æ¯”æ‰æœ‰æ„ä¹‰ï¼Œ
+//¼ÆËãÏûºÄµÄTICK£¨CPUÖÜÆÚ£©ÊýÁ¿£¬×¢ÒâÕâ¸öÖµ£¬Ö»ÄÜÔÚ×Ô¼ºµÄ»úÆ÷ÉÏ×ö¶Ô±È²ÅÓÐÒâÒå£¬
 uint64_t ZCE_TSC_Progress_Timer::elapsed_tick() const
 {
     if (end_time_ > start_time_)
@@ -273,12 +273,12 @@ uint64_t ZCE_TSC_Progress_Timer::elapsed_tick() const
     return addup_time_;
 }
 
-//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´(us),æ³¨æ„è¿™ä¸ªæ•°å€¼ä¸ä¼šå¤ªå‡†ç¡®
+//¼ÆËãÏûºÄµÄÊ±¼ä(us),×¢ÒâÕâ¸öÊýÖµ²»»áÌ«×¼È·
 double ZCE_TSC_Progress_Timer::elapsed_usec() const
 {
     const uint64_t DEFAULT_CPU_HZ = 1024 * 1024 * 1024;
     int ret = 0;
-    //å¦‚æžœé™æ€å˜é‡æ²¡æœ‰åˆå§‹åŒ–
+    //Èç¹û¾²Ì¬±äÁ¿Ã»ÓÐ³õÊ¼»¯
     if ( 0 == cpu_hz_ )
     {
         ZCE_SYSTEM_INFO system_info;
@@ -290,7 +290,7 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
         else
         {
             ZCE_LOG(RS_ERROR, "zce::get_system_info return fail. cpu use default 1G.");
-            //ç”¨1Gä½œä¸ºä½œä¸ºé»˜è®¤å€¼
+            //ÓÃ1G×÷Îª×÷ÎªÄ¬ÈÏÖµ
             cpu_hz_ = DEFAULT_CPU_HZ;
         }
     }
@@ -300,24 +300,24 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
 
 
 /************************************************************************************************************
-Class           : ZCE_Chrono_HR_Timer C++ 11 chronoçš„å®šæ—¶å™¨ï¼Œ
+Class           : ZCE_Chrono_HR_Timer C++ 11 chronoµÄ¶¨Ê±Æ÷£¬
 ************************************************************************************************************/
 ZCE_Chrono_HR_Timer::ZCE_Chrono_HR_Timer():
     addup_time_(std::chrono::high_resolution_clock::duration::zero())
 {
 }
-//ä»Žæ–°å¼€å§‹è®¡æ—¶
+//´ÓÐÂ¿ªÊ¼¼ÆÊ±
 void ZCE_Chrono_HR_Timer::restart()
 {
     start_time_ = std::chrono::high_resolution_clock::now();
     addup_time_ = std::chrono::high_resolution_clock::duration::zero();
 }
-//ç»“æŸè®¡æ—¶
+//½áÊø¼ÆÊ±
 void ZCE_Chrono_HR_Timer::end()
 {
     end_time_ = std::chrono::high_resolution_clock::now();
 }
-//ç´¯è®¡è®¡æ—¶å¼€å§‹,ç”¨äºŽå¤šæ¬¡è®¡æ—¶çš„è¿‡ç¨‹ï¼Œä¹‹å‰è¦å…ˆè°ƒç”¨restart
+//ÀÛ¼Æ¼ÆÊ±¿ªÊ¼,ÓÃÓÚ¶à´Î¼ÆÊ±µÄ¹ý³Ì£¬Ö®Ç°ÒªÏÈµ÷ÓÃrestart
 void ZCE_Chrono_HR_Timer::addup_start()
 {
     if (end_time_ > start_time_)
@@ -329,7 +329,7 @@ void ZCE_Chrono_HR_Timer::addup_start()
 }
 
 
-//è®¡ç®—æ¶ˆè€—çš„æ—¶é—´(us,å¾®å¦™ -6)
+//¼ÆËãÏûºÄµÄÊ±¼ä(us,Î¢Ãî -6)
 double ZCE_Chrono_HR_Timer::elapsed_usec() const
 {
     const double NSEC_PER_USEC = 1000.0;
@@ -344,7 +344,7 @@ double ZCE_Chrono_HR_Timer::elapsed_usec() const
     }
 }
 
-//ç²¾åº¦
+//¾«¶È
 double ZCE_Chrono_HR_Timer::precision_usec()
 {
     const double USEC_PER_SEC = 1000000.0;

@@ -5,11 +5,11 @@
 #include "zce_sqlite_conf_table.h"
 
 
-//ç›®å‰ç‰ˆæœ¬é™åˆ¶åªåŠ è¿™ä¸€ä¸ª
+//Ä¿Ç°°æ±¾ÏÞÖÆÖ»¼ÓÕâÒ»¸ö
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 
-//æž„é€ å’Œæžæž„å‡½æ•°
+//¹¹ÔìºÍÎö¹¹º¯Êý
 AI_IIJIMA_BINARY_DATA::AI_IIJIMA_BINARY_DATA()
 {
     ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA] = '\0';
@@ -19,7 +19,7 @@ AI_IIJIMA_BINARY_DATA::~AI_IIJIMA_BINARY_DATA()
 
 }
 
-//æ¸…ç†å‡½æ•°
+//ÇåÀíº¯Êý
 void AI_IIJIMA_BINARY_DATA::clear()
 {
     index_1_ = 0;
@@ -29,7 +29,7 @@ void AI_IIJIMA_BINARY_DATA::clear()
     last_mod_time_ = 0;
 }
 
-//æ¯”è¾ƒå‡½æ•°
+//±È½Ïº¯Êý
 bool AI_IIJIMA_BINARY_DATA::operator < (const AI_IIJIMA_BINARY_DATA &right) const
 {
     if (this->index_1_ < right.index_1_)
@@ -126,7 +126,7 @@ int AI_IIJIMA_BINARY_DATA::protobuf_decode(unsigned int *index_1,
 #endif
 
 /*****************************************************************************************************************
-struct General_SQLite_Config ä¸€ä¸ªå¾ˆé€šç”¨çš„ä»ŽDBä¸­é—´å¾—åˆ°é€šç”¨é…ç½®ä¿¡æ¯çš„æ–¹æ³•
+struct General_SQLite_Config Ò»¸öºÜÍ¨ÓÃµÄ´ÓDBÖÐ¼äµÃµ½Í¨ÓÃÅäÖÃÐÅÏ¢µÄ·½·¨
 *****************************************************************************************************************/
 ZCE_General_Config_Table::ZCE_General_Config_Table()
 {
@@ -151,7 +151,7 @@ ZCE_General_Config_Table::~ZCE_General_Config_Table()
     }
 }
 
-//æ‰“å¼€ä¸€ä¸ªé€šç”¨çš„æ•°æ®åº“
+//´ò¿ªÒ»¸öÍ¨ÓÃµÄÊý¾Ý¿â
 int ZCE_General_Config_Table::open_dbfile(const char *db_file,
                                           bool read_only,
                                           bool create_db)
@@ -170,10 +170,10 @@ void ZCE_General_Config_Table::close_dbfile()
     sqlite_handler_->close_database();
 }
 
-//åˆ›å»ºTABLE SQLè¯­å¥
+//´´½¨TABLE SQLÓï¾ä
 void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
 {
-    //æž„é€ åŽé¢çš„SQL
+    //¹¹ÔìºóÃæµÄSQL
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
@@ -195,14 +195,14 @@ void ZCE_General_Config_Table::sql_create_table(unsigned  int table_id)
 
 }
 
-//æ”¹å†™çš„SQL
+//¸ÄÐ´µÄSQL
 void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id)
 {
-    //æž„é€ åŽé¢çš„SQL
+    //¹¹ÔìºóÃæµÄSQL
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    //æ³¨æ„é‡Œé¢çš„?
+    //×¢ÒâÀïÃæµÄ?
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(?,?,?,?) ;",
@@ -213,8 +213,8 @@ void ZCE_General_Config_Table::sql_replace_bind(unsigned int table_id)
 }
 
 
-//!æ”¹å†™çš„SQL,æ–‡æœ¬æ ¼å¼ï¼Œç”¨x
-//!æ­¤å‡½æ•°ä¿ç•™ä¸»è¦æ˜¯ç”¨äºŽæ–‡ä»¶æ¯”è¾ƒï¼Œäº§ç”Ÿæ›´æ–°SQLï¼Œå› ä¸ºæ˜¯æ›´æ–°SQLï¼Œæ‰€ä»¥å…¨éƒ¨ç”¨çš„x
+//!¸ÄÐ´µÄSQL,ÎÄ±¾¸ñÊ½£¬ÓÃx
+//!´Ëº¯Êý±£ÁôÖ÷ÒªÊÇÓÃÓÚÎÄ¼þ±È½Ï£¬²úÉú¸üÐÂSQL£¬ÒòÎªÊÇ¸üÐÂSQL£¬ËùÒÔÈ«²¿ÓÃµÄx
 void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
                                                unsigned int index_1,
                                                unsigned int index_2,
@@ -222,12 +222,12 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
                                                const char *blob_data,
                                                unsigned int last_mod_time)
 {
-    //æž„é€ åŽé¢çš„SQL
+    //¹¹ÔìºóÃæµÄSQL
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    //å¯¹äºŽç©ºé—´ï¼Œæˆ‘ä»¬æ˜¯é¢„ç•™äº†è¶³å¤Ÿçš„ç©ºé—´çš„ï¼Œå°±ä¸æ£€æŸ¥è¾¹ç•Œäº†
-    //å¯¹äºŽx,xçš„ä½œç”¨æ˜¯è¯´æ˜Žé‡Œé¢çš„æ•°æ®''ç”¨base 16çš„ç¼–ç å¤„ç†ï¼Œè§†ä½œäºŒè¿›åˆ¶
+    //¶ÔÓÚ¿Õ¼ä£¬ÎÒÃÇÊÇÔ¤ÁôÁË×ã¹»µÄ¿Õ¼äµÄ£¬¾Í²»¼ì²é±ß½çÁË
+    //¶ÔÓÚx,xµÄ×÷ÓÃÊÇËµÃ÷ÀïÃæµÄÊý¾Ý''ÓÃbase 16µÄ±àÂë´¦Àí£¬ÊÓ×÷¶þ½øÖÆ
     int len = snprintf(ptmppoint, buflen, "REPLACE INTO config_table_%u "
                        "(index_1,index_2,conf_data,last_mod_time ) VALUES "
                        "(%u,%u,x'",
@@ -253,7 +253,7 @@ void ZCE_General_Config_Table::sql_replace_one(unsigned  int table_id,
 }
 
 
-//BASE16çš„ç¼–ç 
+//BASE16µÄ±àÂë
 int ZCE_General_Config_Table::base16_encode(const char *in,
                                             size_t in_len,
                                             char *out,
@@ -287,7 +287,7 @@ int ZCE_General_Config_Table::base16_encode(const char *in,
 }
 
 
-//å¾—åˆ°é€‰æ‹©ä¸€ä¸ªç¡®å®šæ•°æ®çš„SQL
+//µÃµ½Ñ¡ÔñÒ»¸öÈ·¶¨Êý¾ÝµÄSQL
 void ZCE_General_Config_Table::sql_select_one(unsigned int table_id,
                                               unsigned int index_1,
                                               unsigned int index_2)
@@ -295,7 +295,7 @@ void ZCE_General_Config_Table::sql_select_one(unsigned int table_id,
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    //æž„é€ SQL
+    //¹¹ÔìSQL
     int len = snprintf(ptmppoint, buflen, "SELECT conf_data,last_mod_time "
                        "FROM config_table_%u WHERE ((index_1=%u) AND (index_2=%u)) ",
                        table_id,
@@ -305,7 +305,7 @@ void ZCE_General_Config_Table::sql_select_one(unsigned int table_id,
     buflen -= len;
 }
 
-//å¾—åˆ°åˆ é™¤æ•°æ®çš„SQL
+//µÃµ½É¾³ýÊý¾ÝµÄSQL
 void ZCE_General_Config_Table::sql_delete_one(unsigned int table_id,
                                               unsigned int index_1,
                                               unsigned int index_2)
@@ -329,7 +329,7 @@ void ZCE_General_Config_Table::sql_counter(unsigned int table_id,
                                            unsigned int startno,
                                            unsigned int numquery)
 {
-    //æž„é€ SQL
+    //¹¹ÔìSQL
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
@@ -338,7 +338,7 @@ void ZCE_General_Config_Table::sql_counter(unsigned int table_id,
     ptmppoint += len;
     buflen -= len;
 
-    //å¦‚æžœè¦æŸ¥è¯¢LIMITçš„æ•°ç›®
+    //Èç¹ûÒª²éÑ¯LIMITµÄÊýÄ¿
     if (numquery != 0)
     {
         len = snprintf(ptmppoint, buflen, "LIMIT %u,%u ", startno, numquery);
@@ -355,14 +355,14 @@ void ZCE_General_Config_Table::sql_select_array(unsigned int table_id,
     char *ptmppoint = sql_string_;
     size_t buflen = MAX_SQLSTRING_LEN;
 
-    //æž„é€ SQL
+    //¹¹ÔìSQL
     int len = snprintf(ptmppoint, buflen, "SELECT index_1,index_2,conf_data,last_mod_time "
                        "FROM config_table_%u ",
                        table_id);
     ptmppoint += len;
     buflen -= len;
 
-    //å¦‚æžœè¦æŸ¥è¯¢LIMITçš„æ•°ç›®
+    //Èç¹ûÒª²éÑ¯LIMITµÄÊýÄ¿
     if (numquery != 0)
     {
         len = snprintf(ptmppoint, buflen, "LIMIT %u,%u ", startno, numquery);
@@ -371,11 +371,11 @@ void ZCE_General_Config_Table::sql_select_array(unsigned int table_id,
     }
 }
 
-//!åˆ›å»ºæ•°æ®è¡¨
+//!´´½¨Êý¾Ý±í
 int ZCE_General_Config_Table::create_table(unsigned int table_id)
 {
 
-    //å»ºè¡¨å’Œå»ºç«‹ç´¢å¼•
+    //½¨±íºÍ½¨Á¢Ë÷Òý
     sql_create_table(table_id);
 
     int ret = 0;
@@ -389,11 +389,11 @@ int ZCE_General_Config_Table::create_table(unsigned int table_id)
 }
 
 
-//æ›´æ–°ä¸€æ¡è®°å½•ï¼Œ
+//¸üÐÂÒ»Ìõ¼ÇÂ¼£¬
 int ZCE_General_Config_Table::replace_one(unsigned int table_id,
                                           const AI_IIJIMA_BINARY_DATA *conf_data)
 {
-    //æž„é€ åŽé¢çš„SQL
+    //¹¹ÔìºóÃæµÄSQL
     sql_replace_bind(table_id);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
@@ -435,7 +435,7 @@ int ZCE_General_Config_Table::replace_one(unsigned int table_id,
 int ZCE_General_Config_Table::replace_array(unsigned int table_id,
                                             const ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma)
 {
-    //æž„é€ åŽé¢çš„SQL
+    //¹¹ÔìºóÃæµÄSQL
     sql_replace_bind(table_id);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
@@ -449,7 +449,7 @@ int ZCE_General_Config_Table::replace_array(unsigned int table_id,
     const size_t ary_size = ary_ai_iijma->size();
     for (size_t i = 0; i < ary_size; ++i)
     {
-        //æ„Ÿè§‰SQLite3çš„ STMTæ¬ ç«å€™ï¼Œç¬¬äºŒæ¬¡ä½¿ç”¨è¿˜è¦prepare
+        //¸Ð¾õSQLite3µÄ STMTÇ·»ðºò£¬µÚ¶þ´ÎÊ¹ÓÃ»¹Òªprepare
         ret = stmt_handler.prepare(sql_string_);
         if (ret != 0)
         {
@@ -514,12 +514,12 @@ int ZCE_General_Config_Table::select_one(unsigned int table_id,
     return 0;
 }
 
-//åˆ é™¤ä¸€æ¡è®°å½•
+//É¾³ýÒ»Ìõ¼ÇÂ¼
 int ZCE_General_Config_Table::delete_one(unsigned int table_id,
                                          unsigned int index_1,
                                          unsigned int index_2)
 {
-    //æž„é€ åŽé¢çš„SQL
+    //¹¹ÔìºóÃæµÄSQL
     sql_delete_one(table_id, index_1, index_2);
     ZCE_SQLite_STMTHdl stmt_handler(sqlite_handler_);
     int ret = 0;
@@ -568,7 +568,7 @@ int ZCE_General_Config_Table::counter(unsigned int table_id,
     return 0;
 }
 
-//æŸ¥è¯¢æ‰€æœ‰çš„é˜Ÿåˆ—
+//²éÑ¯ËùÓÐµÄ¶ÓÁÐ
 int ZCE_General_Config_Table::select_array(unsigned int table_id,
                                            unsigned int startno,
                                            unsigned int numquery,
@@ -576,7 +576,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
 {
     int ret = 0;
 
-    //å…ˆè®¡ç®—æ•°é‡
+    //ÏÈ¼ÆËãÊýÁ¿
     unsigned int  num_counter = 0;
     ret = counter(table_id, startno, numquery, &num_counter);
     if (0 != ret)
@@ -584,7 +584,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
         return ret;
     }
 
-    //æ²¡æœ‰æ‰¾åˆ°æ•°æ®
+    //Ã»ÓÐÕÒµ½Êý¾Ý
     if (num_counter == 0)
     {
         return -1;
@@ -626,7 +626,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
         ret = stmt_handler.execute_stmt_sql(hash_result);
     }
 
-    //å‡ºçŽ°é”™è¯¯æˆ–è€…æ²¡æœ‰æ‰¾åˆ°
+    //³öÏÖ´íÎó»òÕßÃ»ÓÐÕÒµ½
     if (0 != ret)
     {
         return ret;
@@ -636,7 +636,7 @@ int ZCE_General_Config_Table::select_array(unsigned int table_id,
 }
 
 
-//å¯¹æ¯”ä¸¤ä¸ªæ•°æ®è¡¨æ ¼ï¼Œæ‰¾å‡ºå·®å¼‚ï¼Œç„¶åŽæ‰¾å‡ºå·®å¼‚çš„SQL
+//¶Ô±ÈÁ½¸öÊý¾Ý±í¸ñ£¬ÕÒ³ö²îÒì£¬È»ºóÕÒ³ö²îÒìµÄSQL
 int ZCE_General_Config_Table::compare_table(const char *old_db,
                                             const char *new_db,
                                             unsigned int table_id,
@@ -646,7 +646,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
 
 
 
-    //è¯»å–æ—§æ•°æ®
+    //¶ÁÈ¡¾ÉÊý¾Ý
     ret = open_dbfile(old_db, true, false);
     if (0 != ret)
     {
@@ -662,7 +662,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
         return ret;
     }
 
-    //è¯»å–æ–°æ•°æ®
+    //¶ÁÈ¡ÐÂÊý¾Ý
     ret = open_dbfile(new_db, true, false);
     if (0 != ret)
     {
@@ -678,17 +678,17 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
         return ret;
     }
 
-    //æŠŠæ–°æ—§æ•°æ®æŽ’åºï¼Œæ–¹ä¾¿æ¯”è¾ƒ
+    //°ÑÐÂ¾ÉÊý¾ÝÅÅÐò£¬·½±ã±È½Ï
     std::sort(old_ai_iijma.begin(), old_ai_iijma.end());
     std::sort(new_ai_iijma.begin(), new_ai_iijma.end());
 
     update_sql->reserve(1024 * 1024 * 8);
 
-    //ä¸¤ä¸ªéƒ½æœ‰åºï¼Œæ‰¾å‡ºå·®å¼‚çš„å…ƒç´ 
+    //Á½¸ö¶¼ÓÐÐò£¬ÕÒ³ö²îÒìµÄÔªËØ
     size_t p = 0, q = 0;
     for (; p < old_ai_iijma.size();)
     {
-        //å¦‚æžœå¯¹æ¯”çš„ä¸¤è€…ç›¸ç­‰
+        //Èç¹û¶Ô±ÈµÄÁ½ÕßÏàµÈ
         if (old_ai_iijma[p].index_1_ == new_ai_iijma[q].index_1_ &&
             old_ai_iijma[p].index_2_ == new_ai_iijma[q].index_2_)
         {
@@ -697,13 +697,13 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                               new_ai_iijma[q].ai_iijima_data_,
                               old_ai_iijma[p].ai_data_length_))
             {
-                //old[p] = new[q]ç›¸åŒï¼Œ
+                //old[p] = new[q]ÏàÍ¬£¬
                 ++p;
                 ++q;
             }
             else
             {
-                //old[p] != new[q],å¯¹æ¯”çš„è®°å½•ä¸ç›¸åŒï¼ŒREPLACE
+                //old[p] != new[q],¶Ô±ÈµÄ¼ÇÂ¼²»ÏàÍ¬£¬REPLACE
                 sql_replace_one(table_id,
                                 new_ai_iijma[q].index_1_,
                                 new_ai_iijma[q].index_2_,
@@ -717,7 +717,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
             }
 
         }
-        //ç»§ç»­åœ¨ new é‡Œé¢å¯»æ‰¾ old[p]
+        //¼ÌÐøÔÚ new ÀïÃæÑ°ÕÒ old[p]
         else
         {
             size_t r = q++;
@@ -735,11 +735,11 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                         r_is_equal = true;
                     }
 
-                    //indexç›¸åŒçš„ä½ç½®çš„æ•°æ®æ˜¯å¦ä¸€è‡´çš„ï¼Œå†³å®šè¿™ä¸ªä½ç½®æ˜¯å¦æ›´æ–°
+                    //indexÏàÍ¬µÄÎ»ÖÃµÄÊý¾ÝÊÇ·ñÒ»ÖÂµÄ£¬¾ö¶¨Õâ¸öÎ»ÖÃÊÇ·ñ¸üÐÂ
                     size_t end_pos = r_is_equal ? r - 1 : r;
                     for (size_t s = q; s < end_pos; ++s)
                     {
-                        //new[q] åˆ° new[r] éƒ½æ˜¯æ–°èµ çš„ï¼ŒREPLACE
+                        //new[q] µ½ new[r] ¶¼ÊÇÐÂÔùµÄ£¬REPLACE
                         sql_replace_one(table_id,
                                         new_ai_iijma[s].index_1_,
                                         new_ai_iijma[s].index_2_,
@@ -759,7 +759,7 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
                 ++p;
                 q = r++;
             }
-            //old[p] æ˜¯å¤šå‡ºçš„ï¼ŒDELETE
+            //old[p] ÊÇ¶à³öµÄ£¬DELETE
             else
             {
                 sql_delete_one(table_id, old_ai_iijma[p].index_1_, old_ai_iijma[p].index_2_);
@@ -770,10 +770,10 @@ int ZCE_General_Config_Table::compare_table(const char *old_db,
 
     }
 
-    //å¦‚æžœnew[q] ä¸æ˜¯ æœ€åŽä¸€ä¸ªèŠ‚ç‚¹ï¼Œé‚£ä¹ˆnew[q]åˆ°å°¾éƒ¨éƒ½æ˜¯æ–°å¢žçš„æ•°æ® REPLACE
+    //Èç¹ûnew[q] ²»ÊÇ ×îºóÒ»¸ö½Úµã£¬ÄÇÃ´new[q]µ½Î²²¿¶¼ÊÇÐÂÔöµÄÊý¾Ý REPLACE
     for (; q < new_ai_iijma.size(); ++q)
     {
-        //new[q] åˆ° new[r] éƒ½æ˜¯æ–°èµ çš„ï¼ŒREPLACE
+        //new[q] µ½ new[r] ¶¼ÊÇÐÂÔùµÄ£¬REPLACE
         sql_replace_one(table_id,
                         new_ai_iijma[q].index_1_,
                         new_ai_iijma[q].index_2_,

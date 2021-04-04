@@ -2,21 +2,21 @@
 #include "zce_log_basic.h"
 #include "zce_log_plus.h"
 
-//å•å­æŒ‡é’ˆ
+//µ¥×ÓÖ¸Õë
 ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::lpp_instance_ = NULL;
 
-//æ„é€ å‡½æ•°
+//¹¹Ôìº¯Êı
 ZCE_LogTrace_Plus::ZCE_LogTrace_Plus()
 {
 
 }
-//ææ„å‡½æ•°
+//Îö¹¹º¯Êı
 ZCE_LogTrace_Plus::~ZCE_LogTrace_Plus()
 {
 
 }
 
-//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
+//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
 ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::instance()
 {
     if (lpp_instance_ == NULL)
@@ -27,7 +27,7 @@ ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::instance()
     return lpp_instance_;
 }
 
-//èµ‹å€¼å”¯ä¸€çš„å•å­å®ä¾‹
+//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀı
 void ZCE_LogTrace_Plus::instance(ZCE_LogTrace_Plus *instatnce)
 {
     clean_instance();
@@ -35,7 +35,7 @@ void ZCE_LogTrace_Plus::instance(ZCE_LogTrace_Plus *instatnce)
     return;
 }
 
-//æ¸…é™¤å•å­å®ä¾‹
+//Çå³ıµ¥×ÓÊµÀı
 void ZCE_LogTrace_Plus::clean_instance()
 {
     if (lpp_instance_)

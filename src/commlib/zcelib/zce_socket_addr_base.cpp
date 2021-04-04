@@ -8,13 +8,13 @@ ZCE_Sockaddr::ZCE_Sockaddr(sockaddr *sockaddr_ptr, int sa_size ):
 
 }
 
-//ï¼Œå’Œææ„å‡½æ•°
+//£¬ºÍÎö¹¹º¯Êı
 ZCE_Sockaddr::~ZCE_Sockaddr()
 {
 
 }
 
-// æ£€æŸ¥åœ°å€æ˜¯å¦ç›¸ç­‰
+// ¼ì²éµØÖ·ÊÇ·ñÏàµÈ
 bool ZCE_Sockaddr::operator == (const ZCE_Sockaddr &others_sockaddr) const
 {
     if (sockaddr_ptr_ == others_sockaddr.sockaddr_ptr_ &&
@@ -25,7 +25,7 @@ bool ZCE_Sockaddr::operator == (const ZCE_Sockaddr &others_sockaddr) const
 
     return false;
 }
-// æ£€æŸ¥åœ°å€æ˜¯å¦ä¸ç›¸ç­‰
+// ¼ì²éµØÖ·ÊÇ·ñ²»ÏàµÈ
 bool ZCE_Sockaddr::operator != (const ZCE_Sockaddr &others_sockaddr) const
 {
     return !(*this == others_sockaddr);

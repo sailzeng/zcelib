@@ -3,30 +3,30 @@
 * @filename   zce_os_adapt_predefine.h
 * @author     Sailzeng <sailerzeng@gmail.com>
 * @version
-* @date       2011å¹´5æœˆ1æ—¥
-* @brief      å®šä¹‰å„ç§è·¨å¹³å°çš„ç»“æ„ï¼Œæšä¸¾ï¼Œå®ï¼Œå…¨å±€å˜é‡å®šä¹‰
+* @date       2011Äê5ÔÂ1ÈÕ
+* @brief      ¶¨Òå¸÷ÖÖ¿çÆ½Ì¨µÄ½á¹¹£¬Ã¶¾Ù£¬ºê£¬È«¾Ö±äÁ¿¶¨Òå
 *
-* @details    å½“æ—¶è®¾è®¡æ—¶æœ‰2ä¸ªé€‰æ‹©ï¼Œä¸€ä¸ªæ˜¯ï¼ŒæŠŠå„ä¸ªå®šä¹‰åˆ†æ•£æ”¾åˆ°å…·ä½“çš„æ¯ä¸ªzce_os_adapt_XXXXXX.hæ–‡ä»¶ä¸­
-*             ä¸€ä¸ªæ˜¯æ”¾åœ¨ä¸€ä¸ªå¤´æ–‡ä»¶é‡Œé¢ï¼Œå¼€å§‹æ˜¯åˆ†æ•£ï¼Œä½†æœ€åå‘ç°éƒ¨åˆ†å®šä¹‰è¦å¤šäººä¸€èµ·ä½¿ç”¨ï¼Œæ‰€ä»¥æœ€å¥½è¿˜æ˜¯æäº†
-*             ç»Ÿä¸€å®šä¹‰è¿™ä¸ªæ–‡ä»¶ã€‚æ‰€ä»¥å‡ ä¹æ‰€æœ‰çš„è·¨å¹³å°çš„åŸºç¡€ç»“æ„éƒ½æ”¾åœ¨è¿™å„¿ï¼Œ
-*             ä½†å†™åˆ°åé¢ï¼Œå‘ç°è¿˜æ˜¯æœ‰æ„å¤–æƒ…å†µï¼Œå°‘é‡ä»£ç å¦‚æœæ”¾åˆ°è¿™å„¿ä¼šå’Œå…¶ä»–ä¸€äº›äººçš„è·¨å¹³å°ä»£ç å†²çªï¼Œæ‰€ä»¥
-*             å°‘é‡å®šä¹‰è¿˜æ˜¯æ”¾åˆ°å„è‡ªçš„æ–‡ä»¶ä¸­ã€‚å¹¶ä¸æ˜¯å› ä¸ºæ··ä¹±ã€‚
-* @note       æˆ‘å°½é‡ä¸ä½¿ç”¨off_tè¿™ä¸ªç±»å‹ï¼Œå› ä¸ºåœ¨WINå¹³å°ä¸‹ï¼Œä»–è¢«å®šä¹‰æˆlongï¼Œè€ŒWINå¹³å°ä¸‹longæ˜¯ä¸æ‰©å±•çš„ï¼Œ
-*             WINDOWSä¸‹çš„types.hå·²ç»æœ‰å®šä¹‰ï¼Œ
+* @details    µ±Ê±Éè¼ÆÊ±ÓĞ2¸öÑ¡Ôñ£¬Ò»¸öÊÇ£¬°Ñ¸÷¸ö¶¨Òå·ÖÉ¢·Åµ½¾ßÌåµÄÃ¿¸özce_os_adapt_XXXXXX.hÎÄ¼şÖĞ
+*             Ò»¸öÊÇ·ÅÔÚÒ»¸öÍ·ÎÄ¼şÀïÃæ£¬¿ªÊ¼ÊÇ·ÖÉ¢£¬µ«×îºó·¢ÏÖ²¿·Ö¶¨ÒåÒª¶àÈËÒ»ÆğÊ¹ÓÃ£¬ËùÒÔ×îºÃ»¹ÊÇ¸ãÁË
+*             Í³Ò»¶¨ÒåÕâ¸öÎÄ¼ş¡£ËùÒÔ¼¸ºõËùÓĞµÄ¿çÆ½Ì¨µÄ»ù´¡½á¹¹¶¼·ÅÔÚÕâ¶ù£¬
+*             µ«Ğ´µ½ºóÃæ£¬·¢ÏÖ»¹ÊÇÓĞÒâÍâÇé¿ö£¬ÉÙÁ¿´úÂëÈç¹û·Åµ½Õâ¶ù»áºÍÆäËûÒ»Ğ©ÈËµÄ¿çÆ½Ì¨´úÂë³åÍ»£¬ËùÒÔ
+*             ÉÙÁ¿¶¨Òå»¹ÊÇ·Åµ½¸÷×ÔµÄÎÄ¼şÖĞ¡£²¢²»ÊÇÒòÎª»ìÂÒ¡£
+* @note       ÎÒ¾¡Á¿²»Ê¹ÓÃoff_tÕâ¸öÀàĞÍ£¬ÒòÎªÔÚWINÆ½Ì¨ÏÂ£¬Ëû±»¶¨Òå³Élong£¬¶øWINÆ½Ì¨ÏÂlongÊÇ²»À©Õ¹µÄ£¬
+*             WINDOWSÏÂµÄtypes.hÒÑ¾­ÓĞ¶¨Òå£¬
 *             typedef off_t long;
-*             å¤§éƒ¨åˆ†æƒ…å†µæˆ‘ç”¨ssize_tæ›¿æ¢off_t
+*             ´ó²¿·ÖÇé¿öÎÒÓÃssize_tÌæ»»off_t
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_PREDEFINE_H_
 #define ZCE_LIB_OS_ADAPT_PREDEFINE_H_
 
-//å› ä¸ºæˆ‘æˆ‘ç”¨é¢„ç¼–è¯‘å¤´æ–‡ä»¶çš„ç¼˜æ•…ï¼Œæ‰€ä»¥è¿™å„¿ä¸ç”¨åŒ…æ‹¬è¿™ä¸ªæ–‡ä»¶
+//ÒòÎªÎÒÎÒÓÃÔ¤±àÒëÍ·ÎÄ¼şµÄÔµ¹Ê£¬ËùÒÔÕâ¶ù²»ÓÃ°üÀ¨Õâ¸öÎÄ¼ş
 
 /*!
-* @namespace zce è·¨å¹³å°çš„å‡½æ•°çš„åå­—ç©ºé—´å®šä¹‰ï¼Œå…¶ä¸­çš„å‡½æ•°ä¸»è¦å‘LINUXï¼ŒPOSIXçœ‹èµ·ï¼Œä¹Ÿæœ‰å°‘é‡
-*                    è‡ªå·±å†™çš„å‡½æ•°ï¼Œ
-*                    ä¸»è¦è¦†ç›–é¢ï¼ŒåŒ…æ‹¬ç½‘ç»œï¼Œæ–‡ä»¶ï¼Œç›®å½•ï¼ŒåŠ¨æ€åº“ï¼ŒåŒæ­¥å¯¹è±¡ï¼Œçº¿ç¨‹ï¼Œå…±äº«å†…å­˜ï¼Œæ—¶é—´
-*                    å­—ç¬¦ä¸²ï¼Œæœºå™¨æ€§èƒ½ç­‰ã€‚
+* @namespace zce ¿çÆ½Ì¨µÄº¯ÊıµÄÃû×Ö¿Õ¼ä¶¨Òå£¬ÆäÖĞµÄº¯ÊıÖ÷ÒªÏòLINUX£¬POSIX¿´Æğ£¬Ò²ÓĞÉÙÁ¿
+*                    ×Ô¼ºĞ´µÄº¯Êı£¬
+*                    Ö÷Òª¸²¸ÇÃæ£¬°üÀ¨ÍøÂç£¬ÎÄ¼ş£¬Ä¿Â¼£¬¶¯Ì¬¿â£¬Í¬²½¶ÔÏó£¬Ïß³Ì£¬¹²ÏíÄÚ´æ£¬Ê±¼ä
+*                    ×Ö·û´®£¬»úÆ÷ĞÔÄÜµÈ¡£
 */
 
 #if !defined (ZCE_INVALID_FILE_DESCRIBE)
@@ -34,34 +34,34 @@
 #endif
 
 //------------------------------------------------------------------------------------------
-//WINDOWS çš„ç‰ˆæœ¬å¦‚ä½•æ
+//WINDOWS µÄ°æ±¾ÈçºÎ¸ã
 #if defined (ZCE_OS_WINDOWS)
 
-//å¤šè¿›ç¨‹é—´å…±äº«
+//¶à½ø³Ì¼ä¹²Ïí
 #ifndef PTHREAD_PROCESS_SHARED
 #define PTHREAD_PROCESS_SHARED          0x1
 #endif
 
-//è¿›ç¨‹å†…éƒ¨
+//½ø³ÌÄÚ²¿
 #ifndef PTHREAD_PROCESS_PRIVATE
 #define PTHREAD_PROCESS_PRIVATE         0x2
 #endif
 
-//æ™®é€šçš„
+//ÆÕÍ¨µÄ
 #ifndef PTHREAD_MUTEX_NORMAL
 #define PTHREAD_MUTEX_NORMAL            0x0
 #endif
-//é”™è¯¯æ£€æŸ¥çš„äº’æ–¥é‡ï¼Œ
+//´íÎó¼ì²éµÄ»¥³âÁ¿£¬
 #ifndef PTHREAD_MUTEX_ERRORCHECK
 #define PTHREAD_MUTEX_ERRORCHECK        0x4
 #endif
 
-//é€’å½’çš„äº’æ–¥é‡
+//µİ¹éµÄ»¥³âÁ¿
 #ifndef PTHREAD_MUTEX_RECURSIVE
 #define PTHREAD_MUTEX_RECURSIVE         0x8
 #endif
 
-//è‡ªå®šä¹‰çš„ï¼Œè¶…æ—¶å¤„ç†ï¼ŒWINä¸‹çš„ä¸´ç•ŒåŒºä¸æ”¯æŒè¶…æ—¶
+//×Ô¶¨ÒåµÄ£¬³¬Ê±´¦Àí£¬WINÏÂµÄÁÙ½çÇø²»Ö§³Ö³¬Ê±
 #ifndef PTHREAD_MUTEX_TIMEOUT
 #define PTHREAD_MUTEX_TIMEOUT           0x100000
 #endif
@@ -71,15 +71,15 @@
 #pragma warning ( disable : 26495)
 #endif
 
-struct sem_t
+typedef struct sem_t
 {
-    //ä¿¡å·é‡çš„å¥æŸ„
+    //ĞÅºÅÁ¿µÄ¾ä±ú
     HANDLE  sem_hanlde_ = INVALID_HANDLE_VALUE;
 
-    //ä¿¡å·é‡æ˜¯å¦æ˜¯ä¸€ä¸ªæ— åçš„ä¿¡å·ç¯
+    //ĞÅºÅÁ¿ÊÇ·ñÊÇÒ»¸öÎŞÃûµÄĞÅºÅµÆ
     bool    sem_unnamed_ = false;
 
-};
+} ;
 
 #if !defined (SEM_FAILED)
 #  define SEM_FAILED ((sem_t *) -1)
@@ -89,10 +89,10 @@ typedef struct
 {
     // Either PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
     int lock_shared_;
-    //é”å®šç±»å‹ï¼Œä¸»è¦æ£€æŸ¥æ˜¯å¦æ˜¯PTHREAD_MUTEX_RECURSIVEï¼Œ
+    //Ëø¶¨ÀàĞÍ£¬Ö÷Òª¼ì²éÊÇ·ñÊÇPTHREAD_MUTEX_RECURSIVE£¬
     int lock_type_;
 
-    //äº’æ–¥é‡çš„åå­—ï¼Œå¦‚æœæ˜¯å¤šè¿›ç¨‹çš„äº’æ–¥é‡ï¼Œå°±å¿…é¡»æœ‰åå­—
+    //»¥³âÁ¿µÄÃû×Ö£¬Èç¹ûÊÇ¶à½ø³ÌµÄ»¥³âÁ¿£¬¾Í±ØĞëÓĞÃû×Ö
     char mutex_name_[PATH_MAX + 1];
 
 } pthread_mutexattr_t;
@@ -102,33 +102,33 @@ struct pthread_mutex_t
 {
     /// Either PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE
     int lock_shared_;
-    //é”å®šç±»å‹ï¼Œä¸»è¦æ£€æŸ¥æ˜¯å¦æ˜¯PTHREAD_MUTEX_RECURSIVEï¼Œ
-    ///è¿™ä¸ªPTHREAD_MUTEX_TIMEOUTæ˜¯æˆ‘ä»¬è‡ªå·±ä¸ºWINå®šåˆ¶çš„
+    //Ëø¶¨ÀàĞÍ£¬Ö÷Òª¼ì²éÊÇ·ñÊÇPTHREAD_MUTEX_RECURSIVE£¬
+    ///Õâ¸öPTHREAD_MUTEX_TIMEOUTÊÇÎÒÃÇ×Ô¼ºÎªWIN¶¨ÖÆµÄ
     int lock_type_;
 
-    ///çº¿ç¨‹ä½¿ç”¨äº†2ç§ä¸åŒçš„æ–¹å¼ï¼Œå¦‚æœä¸éœ€è¦éé€’å½’ï¼Œå’Œè¶…æ—¶ï¼Œæˆ‘ä»¬ç”¨ä¸´ç•ŒåŒº
-    ///å¦åˆ™ç”¨äº’æ–¥é‡
+    ///Ïß³ÌÊ¹ÓÃÁË2ÖÖ²»Í¬µÄ·½Ê½£¬Èç¹û²»ĞèÒª·Çµİ¹é£¬ºÍ³¬Ê±£¬ÎÒÃÇÓÃÁÙ½çÇø
+    ///·ñÔòÓÃ»¥³âÁ¿
     union
     {
-        //MUTEXçš„HANDLE,è¿›ç¨‹ï¼Œçº¿ç¨‹éƒ½å¯ä»¥ç”¨ï¼Œæœ‰é€’å½’ç‰¹æ€§
+        //MUTEXµÄHANDLE,½ø³Ì£¬Ïß³Ì¶¼¿ÉÒÔÓÃ£¬ÓĞµİ¹éÌØĞÔ
         HANDLE           recursive_mutex_;
-        //ä¸´ç•ŒåŒºæ€§èƒ½å¥½ï¼Œå¦‚æœä¸è¦è¶…æ—¶ï¼Œè€Œä¸”ä¸è¦å¤šè¿›ç¨‹ï¼Œä¸è¦éé€’å½’æ—¶é€‰æ‹©
+        //ÁÙ½çÇøĞÔÄÜºÃ£¬Èç¹û²»Òª³¬Ê±£¬¶øÇÒ²»Òª¶à½ø³Ì£¬²»Òª·Çµİ¹éÊ±Ñ¡Ôñ
         CRITICAL_SECTION thr_nontimeout_mutex_;
-        //éé€’å½’é”ï¼Œç”¨ä¿¡å·ç¯æ¨¡æ‹Ÿï¼Œ
+        //·Çµİ¹éËø£¬ÓÃĞÅºÅµÆÄ£Äâ£¬
         sem_t           *non_recursive_mutex_;
     };
 } ;
 
-//åœ¨WINDOWSä¸‹ç”¨ä¸´ç•ŒåŒºï¼ˆè¿›ç¨‹å†…ï¼‰+SPIN æˆ–è€…Mutexï¼ˆè¿›ç¨‹é—´ï¼‰æ¨¡æ‹ŸSPIN lock
-//æ³¨æ„è¿™ä¸ªä¸´ç•ŒåŒºçš„è¡Œä¸ºæˆ‘åŠ å…¥äº†SPINåŠŸèƒ½ï¼Œ
+//ÔÚWINDOWSÏÂÓÃÁÙ½çÇø£¨½ø³ÌÄÚ£©+SPIN »òÕßMutex£¨½ø³Ì¼ä£©Ä£ÄâSPIN lock
+//×¢ÒâÕâ¸öÁÙ½çÇøµÄĞĞÎªÎÒ¼ÓÈëÁËSPIN¹¦ÄÜ£¬
 typedef pthread_mutex_t  pthread_spinlock_t;
 
 struct pthread_condattr_t
 {
-    // å¤–éƒ¨é”å®šç±»å‹ï¼Œå¦‚æœéœ€è¦timeout,å¢åŠ è¿™ä¸ª PTHREAD_MUTEX_TIMEOUTï¼Œå¦åˆ™ä¼šä½¿ç”¨ä¸´ç•ŒåŒº
+    // Íâ²¿Ëø¶¨ÀàĞÍ£¬Èç¹ûĞèÒªtimeout,Ôö¼ÓÕâ¸ö PTHREAD_MUTEX_TIMEOUT£¬·ñÔò»áÊ¹ÓÃÁÙ½çÇø
     int outer_lock_type_;
 
-    //äº’æ–¥é‡çš„åå­—ï¼Œå¦‚æœæ˜¯å¤šè¿›ç¨‹çš„äº’æ–¥é‡ï¼Œå°±å¿…é¡»æœ‰åå­—
+    //»¥³âÁ¿µÄÃû×Ö£¬Èç¹ûÊÇ¶à½ø³ÌµÄ»¥³âÁ¿£¬¾Í±ØĞëÓĞÃû×Ö
     char cv_name_[PATH_MAX + 1];
 
 } ;
@@ -136,20 +136,20 @@ struct pthread_condattr_t
 struct win_simulate_cv_t
 {
 
-    /// ç­‰å¾…è€…çš„æ•°é‡
+    /// µÈ´ıÕßµÄÊıÁ¿
     int                  waiters_ = 0;
 
-    /// ä¿å­˜è¿›è¡Œçš„è§£é”æ“ä½œæ˜¯broadcastè¿›è¡Œçš„è¿˜æ˜¯signalè¿›è¡Œ
+    /// ±£´æ½øĞĞµÄ½âËø²Ù×÷ÊÇbroadcast½øĞĞµÄ»¹ÊÇsignal½øĞĞ
     bool                 was_broadcast_ = false;
 
-    /// waiters çš„è®¡æ•°çš„ä¿æŠ¤é”
+    /// waiters µÄ¼ÆÊıµÄ±£»¤Ëø
     pthread_mutex_t      waiters_lock_;
 
-    /// ä¿¡å·ç¯ï¼Œé˜»å¡æ’é˜Ÿç­‰å¾…çš„çº¿ç¨‹ç›´åˆ° signaled.
+    /// ĞÅºÅµÆ£¬×èÈûÅÅ¶ÓµÈ´ıµÄÏß³ÌÖ±µ½ signaled.
     sem_t               *block_sema_ = NULL;
 
-    ///å®Œæˆå¹¿æ’­åçš„é€šçŸ¥ï¼Œè¿™ä¸ªåœ°æ–¹ç”¨semaå…¶å®å¹¶ä¸åˆ©äºå…¬å¹³æ€§ï¼Œç”¨EVENTæ›´å¥½ä¸€ç‚¹ã€‚
-    ///ä½†ç”±äºè¦æ±‚å¹¿æ’­çš„æ—¶å€™å¤–éƒ¨é”å¿…ç°åŠ ä¸Šï¼Œæ‰€ä»¥é—®é¢˜ä¹Ÿä¸å¤ªå¤§ï¼Œ
+    ///Íê³É¹ã²¥ºóµÄÍ¨Öª£¬Õâ¸öµØ·½ÓÃsemaÆäÊµ²¢²»ÀûÓÚ¹«Æ½ĞÔ£¬ÓÃEVENT¸üºÃÒ»µã¡£
+    ///µ«ÓÉÓÚÒªÇó¹ã²¥µÄÊ±ºòÍâ²¿Ëø±ØÏÖ¼ÓÉÏ£¬ËùÒÔÎÊÌâÒ²²»Ì«´ó£¬
     sem_t               *finish_broadcast_ = NULL;
 
 } ;
@@ -157,26 +157,26 @@ struct win_simulate_cv_t
 struct pthread_cond_t
 {
 
-    ///å¤–éƒ¨é”å®šç±»å‹ï¼Œæ˜¯å¦éœ€è¦TIMEOUTï¼Œç­‰ï¼ŒPTHREAD_MUTEX_TIMEOUT
+    ///Íâ²¿Ëø¶¨ÀàĞÍ£¬ÊÇ·ñĞèÒªTIMEOUT£¬µÈ£¬PTHREAD_MUTEX_TIMEOUT
     int                      outer_lock_type_ = 0;
 
-    //ä¸¤ä¸ªæ¶æ„ï¼Œå®é™…èµ·ä½œç”¨çš„åªæœ‰ä¸€ä¸ª
+    //Á½¸ö¼Ü¹¹£¬Êµ¼ÊÆğ×÷ÓÃµÄÖ»ÓĞÒ»¸ö
 
-    ///WINDOWSçš„æ¡ä»¶å˜é‡åœ¨WINSERVER2008ï¼ŒVISTAåæ‰æ”¯æŒ
-    ///è¿™ä¸ªæ¡ä»¶å˜é‡åªèƒ½å•è¿›ç¨‹å†…éƒ¨ä½¿ç”¨ï¼Œå…¶å¤–éƒ¨äº’æ–¥é‡ï¼Œåªæ”¯æŒä¸´ç•ŒåŒº
+    ///WINDOWSµÄÌõ¼ş±äÁ¿ÔÚWINSERVER2008£¬VISTAºó²ÅÖ§³Ö
+    ///Õâ¸öÌõ¼ş±äÁ¿Ö»ÄÜµ¥½ø³ÌÄÚ²¿Ê¹ÓÃ£¬ÆäÍâ²¿»¥³âÁ¿£¬Ö»Ö§³ÖÁÙ½çÇø
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
     CONDITION_VARIABLE   cv_object_;
 #endif
-    ///é‡‡ç”¨ä¸¤ä¸ªä¿¡å·ç¯å’Œä¸€ä¸ªäº’æ–¥é‡æ¨¡æ‹Ÿçš„æ¡ä»¶å˜é‡ï¼ŒåŒæ—¶æ”¯æŒsignalå’Œbroadcastæ“ä½œï¼Œ
-    ///ä¹Ÿæ”¯æŒå¤–éƒ¨äº’æ–¥é‡æ˜¯å¤šè¿›ç¨‹å…±äº«ï¼Œä¹Ÿæ”¯æŒå¤–éƒ¨äº’æ–¥é‡æ˜¯MUTEXï¼ˆä¿¡å·ç¯ï¼‰ï¼Œä¸´ç•ŒåŒºæ¨¡æ‹Ÿ
-    ///çš„ï¼Œpthread_mutex_t
+    ///²ÉÓÃÁ½¸öĞÅºÅµÆºÍÒ»¸ö»¥³âÁ¿Ä£ÄâµÄÌõ¼ş±äÁ¿£¬Í¬Ê±Ö§³ÖsignalºÍbroadcast²Ù×÷£¬
+    ///Ò²Ö§³ÖÍâ²¿»¥³âÁ¿ÊÇ¶à½ø³Ì¹²Ïí£¬Ò²Ö§³ÖÍâ²¿»¥³âÁ¿ÊÇMUTEX£¨ĞÅºÅµÆ£©£¬ÁÙ½çÇøÄ£Äâ
+    ///µÄ£¬pthread_mutex_t
     win_simulate_cv_t     simulate_cv_;
 
 } ;
 
-//è¯»å†™é”çš„ä»£ç æ¥è‡ªUNP V2
+//¶ÁĞ´ËøµÄ´úÂëÀ´×ÔUNP V2
 
-///è¯»å†™é”çš„å±æ€§ç»“æ„ï¼Œ
+///¶ÁĞ´ËøµÄÊôĞÔ½á¹¹£¬
 typedef struct
 {
     //
@@ -184,27 +184,27 @@ typedef struct
 
 } pthread_rwlockattr_t;
 
-///è¯»å†™é”çš„å¯¹è±¡ç»“æ„ï¼Œåˆ©ç”¨äº’æ–¥é‡ï¼Œæ¡ä»¶å˜é‡å®ç°çš„è¯»å†™é”
+///¶ÁĞ´ËøµÄ¶ÔÏó½á¹¹£¬ÀûÓÃ»¥³âÁ¿£¬Ìõ¼ş±äÁ¿ÊµÏÖµÄ¶ÁĞ´Ëø
 struct pthread_rwlock_t
 {
-    ///æ¨¡æ‹Ÿçš„
-    ///æ˜¯å¦æ˜¯å”¤é†’å†™å…¥ä¼˜å…ˆï¼Œï¼ˆæ˜¯å°±æ˜¯å†™å…¥ä¼˜å…ˆï¼Œå¦åˆ™è¯»å–ä¼˜å…ˆï¼‰è¿™æ˜¯ä¸€ä¸ªé—®é¢˜ï¼Œæˆ‘æŠŠæŠ‰æ‹©æƒåˆ©ç»™ä½ 
+    ///Ä£ÄâµÄ
+    ///ÊÇ·ñÊÇ»½ĞÑĞ´ÈëÓÅÏÈ£¬£¨ÊÇ¾ÍÊÇĞ´ÈëÓÅÏÈ£¬·ñÔò¶ÁÈ¡ÓÅÏÈ£©ÕâÊÇÒ»¸öÎÊÌâ£¬ÎÒ°Ñ¾ñÔñÈ¨Àû¸øÄã
     bool            priority_to_write_ = true;
 
-    ///ä¿æŠ¤è¿™ä¸ªç»“æ„åœ¨å¤šçº¿ç¨‹ä¸­è¯»å†™çš„äº’æ–¥é‡ï¼Œä¸»è¦ä¸‹é¢é‚£äº›æ•´æ•°çš„ä¿®æ”¹
+    ///±£»¤Õâ¸ö½á¹¹ÔÚ¶àÏß³ÌÖĞ¶ÁĞ´µÄ»¥³âÁ¿£¬Ö÷ÒªÏÂÃæÄÇĞ©ÕûÊıµÄĞŞ¸Ä
     pthread_mutex_t rw_mutex_;
 
-    /// è¯»è€…ç­‰å¾…çš„æ¡ä»¶å˜é‡
+    /// ¶ÁÕßµÈ´ıµÄÌõ¼ş±äÁ¿
     pthread_cond_t  rw_condreaders_;
-    /// å†™å…¥ç­‰å¾…çš„æ¡ä»¶å˜é‡
+    /// Ğ´ÈëµÈ´ıµÄÌõ¼ş±äÁ¿
     pthread_cond_t  rw_condwriters_;
 
-    ///ç­‰å¾…è¯»çš„çº¿ç¨‹æ•°é‡
+    ///µÈ´ı¶ÁµÄÏß³ÌÊıÁ¿
     int             rw_nwaitreaders_ = 0;
-    ///ç­‰å¾…å†™çš„çº¿ç¨‹æ•°é‡
+    ///µÈ´ıĞ´µÄÏß³ÌÊıÁ¿
     int             rw_nwaitwriters_ = 0;
 
-    ///é”çš„æŒæœ‰çŠ¶æ€ï¼Œå¦‚æœæœ‰ä¸€ä¸ªå†™è€…æŒæœ‰é”-1 å¦‚æœ>0è¡¨ç¤ºå¤šå°‘ä¸ªè¯»è€…æŒæœ‰è¿™ä¸ªé”
+    ///ËøµÄ³ÖÓĞ×´Ì¬£¬Èç¹ûÓĞÒ»¸öĞ´Õß³ÖÓĞËø-1 Èç¹û>0±íÊ¾¶àÉÙ¸ö¶ÁÕß³ÖÓĞÕâ¸öËø
     int             rw_refcount_ = 0;
 
 } ;
@@ -219,7 +219,7 @@ typedef unsigned int          mode_t;
 typedef struct __stat64       zce_os_stat;
 
 
-//æ³¨æ„S_IFDIR å’Œ S_ISDIR çš„åŒºåˆ«ï¼ŒS_ISDIRæ˜¯ä¸€ä¸ªå®ç”¨äºåˆ¤å®šæ˜¯å¦æ˜¯ä¸€ä¸ªç›®å½•
+//×¢ÒâS_IFDIR ºÍ S_ISDIR µÄÇø±ğ£¬S_ISDIRÊÇÒ»¸öºêÓÃÓÚÅĞ¶¨ÊÇ·ñÊÇÒ»¸öÄ¿Â¼
 
 #if !defined(S_IFDIR)
 #define S_IFDIR  _S_IFDIR
@@ -229,25 +229,25 @@ typedef struct __stat64       zce_os_stat;
 #define S_IFREG  _S_IFREG
 #endif
 
-//zce_os_stat åœ¨WINDOWSä¸‹è¢«å®šä¹‰æˆ__stat64ï¼ŒLINUXä¸‹è¢«å®šä¹‰æˆstat,
-//æˆ‘ç®€å•ä»‹ç»ä¸€ä¸‹ä¸¤ä¸ªå¹³å°å…±æœ‰ï¼Œè€Œä¸”å¤§å®¶ä¸€èˆ¬ä¼šç”¨åˆ°çš„å±æ€§
+//zce_os_stat ÔÚWINDOWSÏÂ±»¶¨Òå³É__stat64£¬LINUXÏÂ±»¶¨Òå³Éstat,
+//ÎÒ¼òµ¥½éÉÜÒ»ÏÂÁ½¸öÆ½Ì¨¹²ÓĞ£¬¶øÇÒ´ó¼ÒÒ»°ã»áÓÃµ½µÄÊôĞÔ
 
-//æ–‡ä»¶æ¨¡å¼ S_IFREG æ™®é€šæ–‡ä»¶ S_IFDIR ç›®å½•,
+//ÎÄ¼şÄ£Ê½ S_IFREG ÆÕÍ¨ÎÄ¼ş S_IFDIR Ä¿Â¼,
 //[Linux]    mode_t    st_mode;
 //[WIN]      unsigned short st_mode;
-//    æ–‡ä»¶é•¿åº¦,å­—èŠ‚
+//    ÎÄ¼ş³¤¶È,×Ö½Ú
 //[Linux]    off_t     st_size;
 //[WIN]      __int64    st_size;
 
-//æœ€åè®¿é—®æ—¶é—´
+//×îºó·ÃÎÊÊ±¼ä
 //[Linux]    time_t    st_atime;
 //[WIN]      __time64_t st_atime;
-//æœ€åä¿®æ”¹æ—¶é—´
+//×îºóĞŞ¸ÄÊ±¼ä
 //[Linux]    time_t    st_mtime;
 //[WIN]      __time64_t st_mtime;
-//WINåˆ›å»ºæ—¶é—´,LINUX,çŠ¶æ€ä¿®æ”¹æ—¶é—´
-//å…¶å®è¿™ä¸ªå€¼åœ¨LINUXä¸‹ä¸æ˜¯åˆ›å»ºæ—¶é—´ï¼Œè€Œæ˜¯change timeï¼Œæ ‡è¯†çŠ¶æ€æ”¹å˜çš„æ—¶é—´ï¼Œinodeä¿®æ”¹æ—¶ï¼Œè¿™ä¸ªå€¼æ”¹å˜ï¼Œ
-//ç”±äºæ–‡ä»¶çš„å„ç§å±æ€§ä¹Ÿåœ¨INODEé‡Œé¢å°±ï¼Œå„ç§å±æ€§(chmodï¼Œchown)ä¿®æ”¹æ—¶ï¼Œè¿™ä¸ªæ—¶é—´ä¹Ÿä¼šå˜åŒ–
+//WIN´´½¨Ê±¼ä,LINUX,×´Ì¬ĞŞ¸ÄÊ±¼ä
+//ÆäÊµÕâ¸öÖµÔÚLINUXÏÂ²»ÊÇ´´½¨Ê±¼ä£¬¶øÊÇchange time£¬±êÊ¶×´Ì¬¸Ä±äµÄÊ±¼ä£¬inodeĞŞ¸ÄÊ±£¬Õâ¸öÖµ¸Ä±ä£¬
+//ÓÉÓÚÎÄ¼şµÄ¸÷ÖÖÊôĞÔÒ²ÔÚINODEÀïÃæ¾Í£¬¸÷ÖÖÊôĞÔ(chmod£¬chown)ĞŞ¸ÄÊ±£¬Õâ¸öÊ±¼äÒ²»á±ä»¯
 //[Linux]    time_t    st_ctime;
 //[WIN]      __time64_t st_ctime;
 
@@ -269,7 +269,7 @@ typedef struct __stat64       zce_os_stat;
 /* page can be executed */
 #define PROT_EXEC       0x4
 
-//åŒæ­¥çš„å‚æ•°
+//Í¬²½µÄ²ÎÊı
 /* synchronous memory sync */
 #define MS_SYNC         1
 /* sync memory asynchronously */
@@ -285,14 +285,14 @@ typedef struct __stat64       zce_os_stat;
 #define WIN_DIRECTORY_SEPARATOR_CHAR1 '\\'
 #define WIN_DIRECTORY_SEPARATOR_CHAR2 '/'
 
-//WINDOWSå¹³å°ç°åœ¨è¿™ä¸¤ä¸ªå­—ç¬¦éƒ½æ”¯æŒ
+//WINDOWSÆ½Ì¨ÏÖÔÚÕâÁ½¸ö×Ö·û¶¼Ö§³Ö
 #define ZCE_IS_DIRECTORY_SEPARATOR(ch) (('\\'==(ch)) || ('/'==(ch)))
 
 #define ZCE_DIRECTORY_SEPARATOR_CHAR '\\'
 #define ZCE_DIRECTORY_SEPARATOR_STR  "\\"
 #define ZCE_CURRENT_DIRECTORY_STR    ".\\"
 
-//Windowsä¸‹çš„POSOXæ–‡ä»¶ç»Ÿä¸€æ”¾ä¸€ä¸ªç›®å½•,
+//WindowsÏÂµÄPOSOXÎÄ¼şÍ³Ò»·ÅÒ»¸öÄ¿Â¼,
 
 #define ZCE_POSIX_MMAP_DIRECTORY   "C:\\dev.shm\\"
 
@@ -343,12 +343,12 @@ typedef struct __stat64       zce_os_stat;
 #define SO_REUSEPORT 0x0400  // We just have to pick a value that won't conflict
 #endif
 
-//LINUXä¸‹çš„å®šä¹‰å¥½åƒæ˜¯1024å§ã€‚
+//LINUXÏÂµÄ¶¨ÒåºÃÏñÊÇ1024°É¡£
 #if !defined (IOV_MAX)
 #  define IOV_MAX 32
 #endif
 
-//ç»Ÿä¸€shutdownçš„3ä¸ªå‚æ•°
+//Í³Ò»shutdownµÄ3¸ö²ÎÊı
 #if !defined (SHUT_RD)
 #define SHUT_RD SD_RECEIVE
 #endif
@@ -398,20 +398,20 @@ struct sched_param
 {
     int sched_priority;
 };
-//pthread çš„å±æ€§ç»“æ„,å…¶å®çœŸå®çš„pthread_attr_tä¸æ˜¯è¿™æ ·ï¼Œæˆ‘è¿™å„¿ç®€åŒ–äº†å¾ˆå¤šåœ°æ–¹
+//pthread µÄÊôĞÔ½á¹¹,ÆäÊµÕæÊµµÄpthread_attr_t²»ÊÇÕâÑù£¬ÎÒÕâ¶ù¼ò»¯ÁËºÜ¶àµØ·½
 struct pthread_attr_t
 {
     //
     int             detachstate;
     //
     int             inheritsched;
-    //è°ƒåº¦ç­–ç•¥å…¶å®æ²¡æ³•ä½¿ç”¨,æˆ‘çš„ä»£ç ä¸ä¼šç”¨äºREAL TIMEç³»ç»Ÿ
+    //µ÷¶È²ßÂÔÆäÊµÃ»·¨Ê¹ÓÃ,ÎÒµÄ´úÂë²»»áÓÃÓÚREAL TIMEÏµÍ³
     //int           schedpolicy;
-    //è°ƒåº¦çš„ä¼˜å…ˆçº§
+    //µ÷¶ÈµÄÓÅÏÈ¼¶
     sched_param     schedparam;
-    //å †æ ˆçš„åœ°å€ï¼Œåœ¨WINDOWSä¸‹æ²¡æ³•ç”¨
+    //¶ÑÕ»µÄµØÖ·£¬ÔÚWINDOWSÏÂÃ»·¨ÓÃ
     //void *        stackaddr
-    //å †æ ˆçš„å°ºå¯¸
+    //¶ÑÕ»µÄ³ß´ç
     size_t          stacksize;
 };
 
@@ -428,9 +428,9 @@ struct pthread_attr_t
 #define PTHREAD_EXPLICIT_SCHED  4
 #endif
 
-//çº¿ç¨‹ID
+//Ïß³ÌID
 typedef unsigned int ZCE_THREAD_ID;
-//çº¿ç¨‹çš„å¥æŸ„
+//Ïß³ÌµÄ¾ä±ú
 typedef HANDLE       ZCE_THREAD_HANDLE;
 //
 typedef unsigned int ZCE_THR_FUNC_RETURN;
@@ -438,7 +438,7 @@ typedef unsigned int ZCE_THR_FUNC_RETURN;
 //
 typedef DWORD        pid_t;
 
-//åŠ¨æ€åº“æ–¹é¢çš„è·¨å¹³å°å®šä¹‰
+//¶¯Ì¬¿â·½ÃæµÄ¿çÆ½Ì¨¶¨Òå
 #if !defined (ZCE_SHLIB_INVALID_HANDLE)
 #  define ZCE_SHLIB_INVALID_HANDLE 0
 #endif //
@@ -447,15 +447,15 @@ typedef DWORD        pid_t;
 #  define ZCE_DEFAULT_SHLIB_MODE 0
 #endif //
 
-//è¿˜æ˜¯è¯´æ˜ä¸€ä¸‹ä¸ºä»€ä¹ˆè¦åœ¨WINDOWSçš„å…¼å®¹ä»£ç ä½¿ç”¨HANDLE,è€Œä¸æ˜¯intï¼Œ
-//å› ä¸ºWINDOWsçš„APIå¤§éƒ¨åˆ†éƒ½æ˜¯ä½¿ç”¨HANDLEï¼Œå¦‚æœæ¯æ¬¡éƒ½è¦è½¬æ¢ï¼Œè¿™ä¸ªï¼Œæœ‰ç‚¹è¿èƒŒæˆ‘å¯¹æ€§èƒ½çš„çˆ±å¥½ã€‚
+//»¹ÊÇËµÃ÷Ò»ÏÂÎªÊ²Ã´ÒªÔÚWINDOWSµÄ¼æÈİ´úÂëÊ¹ÓÃHANDLE,¶ø²»ÊÇint£¬
+//ÒòÎªWINDOWsµÄAPI´ó²¿·Ö¶¼ÊÇÊ¹ÓÃHANDLE£¬Èç¹ûÃ¿´Î¶¼Òª×ª»»£¬Õâ¸ö£¬ÓĞµãÎ¥±³ÎÒ¶ÔĞÔÄÜµÄ°®ºÃ¡£
 typedef HANDLE   ZCE_HANDLE;
 
 #if !defined (ZCE_INVALID_HANDLE)
 # define ZCE_INVALID_HANDLE  INVALID_HANDLE_VALUE
 #endif
 
-//WINDOWSä¸‹é»˜è®¤æ”¯æŒçš„æƒé™ç†Ÿæ‚‰æ˜¯S_IREAD|S_IWRITE ï¼Œç”±äºä¿ºå…¨é¢å…¼å®¹LINUXï¼Œæˆ‘ä¼šæ ¹æ®ä½ çš„LINUXå‚æ•°è¿›è¡Œè½¬æ¢
+//WINDOWSÏÂÄ¬ÈÏÖ§³ÖµÄÈ¨ÏŞÊìÏ¤ÊÇS_IREAD|S_IWRITE £¬ÓÉÓÚ°³È«Ãæ¼æÈİLINUX£¬ÎÒ»á¸ù¾İÄãµÄLINUX²ÎÊı½øĞĞ×ª»»
 #if !defined S_IRWXU
 #define S_IRWXU 00700
 #endif
@@ -495,37 +495,37 @@ typedef HANDLE   ZCE_HANDLE;
 #define S_IXOTH 00001
 #endif
 
-//é»˜è®¤æ–‡ä»¶çš„æƒé™å±æ€§0660
+//Ä¬ÈÏÎÄ¼şµÄÈ¨ÏŞÊôĞÔ0660
 #if !defined (ZCE_DEFAULT_FILE_PERMS)
 #define ZCE_DEFAULT_FILE_PERMS  (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP)
 #endif
 
-//å…±äº«çš„æ–‡ä»¶æƒé™å±æ€§0666
+//¹²ÏíµÄÎÄ¼şÈ¨ÏŞÊôĞÔ0666
 #if !defined (ZCE_SHARE_FILE_PERMS)
 #define ZCE_SHARE_FILE_PERMS  (S_IRUSR|S_IWUSR|S_IRGRP|S_IWGRP|S_IROTH|S_IWOTH)
 #endif
 
-//ç§æœ‰çš„æ–‡ä»¶æƒé™ç†Ÿæ‚‰
+//Ë½ÓĞµÄÎÄ¼şÈ¨ÏŞÊìÏ¤
 #if !defined (ZCE_PRIVATE_FILE_PERMS)
 #define ZCE_PRIVATE_FILE_PERMS  (0)
 #endif
 
-//é»˜è®¤ç›®å½•çš„æƒé™å±æ€§0755ï¼Œå…¶å®åœ¨WINDOWSä¸‹æ²¡ç”¨
+//Ä¬ÈÏÄ¿Â¼µÄÈ¨ÏŞÊôĞÔ0755£¬ÆäÊµÔÚWINDOWSÏÂÃ»ÓÃ
 #if !defined (ZCE_DEFAULT_DIR_PERMS)
 #define ZCE_DEFAULT_DIR_PERMS (S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
 #endif
 
-///æ–‡ä»¶æ˜¯å¦å­˜åœ¨
+///ÎÄ¼şÊÇ·ñ´æÔÚ
 #if !defined(F_OK)
 #define F_OK 0
 #endif
 
-///æ–‡ä»¶æ˜¯å¦å¯å†™
+///ÎÄ¼şÊÇ·ñ¿ÉĞ´
 #if !defined (W_OK)
 #define W_OK 2
 #endif
 
-///æ–‡ä»¶æ˜¯å¦å¯è¯»
+///ÎÄ¼şÊÇ·ñ¿É¶Á
 #if !defined (R_OK)
 #define R_OK 4
 #endif
@@ -534,7 +534,7 @@ typedef HANDLE   ZCE_HANDLE;
 
 typedef HMODULE   ZCE_SHLIB_HANDLE;
 
-//å®šä¹‰è¿™äº›åªæ˜¯ä¸ºäº†è®©ä½ çš„ä»£ç ä¸ç”¨å®šä¹‰ä¸¤ä»½ï¼Œåœ¨WINDOWSä¸‹è¿™äº›å®šä¹‰æ²¡ç”¨ã€‚
+//¶¨ÒåÕâĞ©Ö»ÊÇÎªÁËÈÃÄãµÄ´úÂë²»ÓÃ¶¨ÒåÁ½·İ£¬ÔÚWINDOWSÏÂÕâĞ©¶¨ÒåÃ»ÓÃ¡£
 #if !defined (RTLD_LAZY)
 #define RTLD_LAZY 1
 #endif /* !RTLD_LAZY */
@@ -559,7 +559,7 @@ typedef int clockid_t;
 
 #if _MSC_VER <= 1800
 
-//POSIXçš„æ—¶é—´ï¼Œ
+//POSIXµÄÊ±¼ä£¬
 typedef struct
 {
     /// Seconds
@@ -570,7 +570,7 @@ typedef struct
 
 #endif
 
-//flockå‡½æ•°ç”¨çš„çš„4ä¸ªå‚æ•°,
+//flockº¯ÊıÓÃµÄµÄ4¸ö²ÎÊı,
 // shared lock
 #ifndef LOCK_SH
 #define LOCK_SH         1
@@ -588,10 +588,10 @@ typedef struct
 #define LOCK_UN         8
 #endif
 
-//åœ¨Windows ä¸‹å°±æ˜¯ä¸€ä¸ªç´¢å¼•å€¼
+//ÔÚWindows ÏÂ¾ÍÊÇÒ»¸öË÷ÒıÖµ
 typedef    DWORD  pthread_key_t;
 
-//TIME VALçš„æ—¶é—´ï¼Œè¿™ä¸ªåœ¨WINDOWä¸‹ä¸ºäº†selectå±…ç„¶æœ‰å®šä¹‰äº†ï¼Œéš¾å¾—,éš¾å¾—ï¼Œè™½ç„¶é‡Œé¢éƒ½æ˜¯long
+//TIME VALµÄÊ±¼ä£¬Õâ¸öÔÚWINDOWÏÂÎªÁËselect¾ÓÈ»ÓĞ¶¨ÒåÁË£¬ÄÑµÃ,ÄÑµÃ£¬ËäÈ»ÀïÃæ¶¼ÊÇlong
 //struct timeval
 //{
 //    // seconds
@@ -666,7 +666,7 @@ typedef    DWORD  pthread_key_t;
 
 typedef void (*sighandler_t)(int);
 
-//epollçš„è¿™äº›å˜é‡æä¾›å‡ºæ¥ä¸æ˜¯ä¸ºäº†æ¨¡æ‹Ÿepollï¼Œæ˜¯æ–¹ä¾¿æˆ‘ç¼–è¯‘æµ‹è¯•çš„
+//epollµÄÕâĞ©±äÁ¿Ìá¹©³öÀ´²»ÊÇÎªÁËÄ£Äâepoll£¬ÊÇ·½±ãÎÒ±àÒë²âÊÔµÄ
 typedef union epoll_data
 {
     void    *ptr;
@@ -681,20 +681,20 @@ struct epoll_event
     epoll_data_t data; /* User data variable */
 };
 
-//EPOLLINï¼šè¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦å¯ä»¥è¯»ï¼›
+//EPOLLIN£º±íÊ¾¶ÔÓ¦µÄÎÄ¼şÃèÊö·û¿ÉÒÔ¶Á£»
 #define EPOLLIN     (1<<1)
-//EPOLLOUTï¼šè¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦å¯ä»¥å†™ï¼›
+//EPOLLOUT£º±íÊ¾¶ÔÓ¦µÄÎÄ¼şÃèÊö·û¿ÉÒÔĞ´£»
 #define EPOLLOUT    (1<<2)
-//EPOLLPRIï¼šè¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦æœ‰ç´§æ€¥çš„æ•°æ®å¯è¯»
+//EPOLLPRI£º±íÊ¾¶ÔÓ¦µÄÎÄ¼şÃèÊö·ûÓĞ½ô¼±µÄÊı¾İ¿É¶Á
 #define EPOLLPRI    (1<<3)
-//EPOLLERRï¼šè¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦å‘ç”Ÿé”™è¯¯ï¼›
+//EPOLLERR£º±íÊ¾¶ÔÓ¦µÄÎÄ¼şÃèÊö·û·¢Éú´íÎó£»
 #define EPOLLERR    (1<<4)
-//EPOLLHUPï¼šè¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦è¢«æŒ‚æ–­ï¼›
+//EPOLLHUP£º±íÊ¾¶ÔÓ¦µÄÎÄ¼şÃèÊö·û±»¹Ò¶Ï£»
 #define EPOLLHUP    (1<<5)
-//EPOLLETï¼šè¡¨ç¤ºå¯¹åº”çš„æ–‡ä»¶æè¿°ç¬¦æœ‰äº‹ä»¶å‘ç”Ÿï¼›
+//EPOLLET£º±íÊ¾¶ÔÓ¦µÄÎÄ¼şÃèÊö·ûÓĞÊÂ¼ş·¢Éú£»
 #define EPOLLET     (1<<6)
 
-//ä¸ºSYSTEM Vå®šä¹‰çš„ä¸€äº›å¸¸é‡
+//ÎªSYSTEM V¶¨ÒåµÄÒ»Ğ©³£Á¿
 
 typedef int key_t;
 
@@ -740,13 +740,13 @@ typedef int key_t;
 #define IPC_STAT        2     /* get ipc_perm options */
 #endif
 
-// no use ,ä»…ä»…ä¸ºäº†ç¼–è¯‘é€šè¿‡
+// no use ,½ö½öÎªÁË±àÒëÍ¨¹ı
 struct shmid_ds
 {
     size_t shm_segsz;
 };
 
-//Inotifyçš„å„ç§ç›‘å¬é€‰é¡¹,Windowsè´¹åŠ›æ­»èƒ½ç›‘æ§åˆ°çš„äº‹ä»¶ä¹Ÿå°±è¿™å‡ ä¸ª
+//InotifyµÄ¸÷ÖÖ¼àÌıÑ¡Ïî,Windows·ÑÁ¦ËÀÄÜ¼à¿Øµ½µÄÊÂ¼şÒ²¾ÍÕâ¼¸¸ö
 
 /// File was modified
 #ifndef IN_MODIFY
@@ -772,7 +772,7 @@ struct shmid_ds
 //================================================================================================
 #elif defined (ZCE_OS_LINUX)
 
-//ä¸ºäº†å…¼å®¹Windowséƒ¨åˆ†ä»£ç çš„å®ï¼Œ
+//ÎªÁË¼æÈİWindows²¿·Ö´úÂëµÄºê£¬
 #if !defined MAXIMUM_WAIT_OBJECTS
 # define MAXIMUM_WAIT_OBJECTS 64
 #endif
@@ -796,7 +796,7 @@ struct shmid_ds
 
 #define LINUX_DIRECTORY_SEPARATOR_CHAR '/'
 
-//WINDOWSå¹³å°ç°åœ¨è¿™ä¸¤ä¸ªå­—ç¬¦éƒ½æ”¯æŒ
+//WINDOWSÆ½Ì¨ÏÖÔÚÕâÁ½¸ö×Ö·û¶¼Ö§³Ö
 #define ZCE_IS_DIRECTORY_SEPARATOR(ch) ('/'==(ch))
 
 // Define the pathname separator characters for UNIX.
@@ -806,7 +806,7 @@ struct shmid_ds
 
 #define ZCE_POSIX_MMAP_DIRECTORY "/dev/shm/"
 
-//ç½‘ç»œæ–¹é¢çš„è·¨å¹³å°å®šä¹‰
+//ÍøÂç·½ÃæµÄ¿çÆ½Ì¨¶¨Òå
 typedef int ZCE_SOCKET;
 
 #if !defined (ZCE_INVALID_SOCKET)
@@ -817,7 +817,7 @@ typedef int ZCE_SOCKET;
 #define ZCE_DEFAULT_BACKLOG 128
 #endif
 
-//çº¿ç¨‹çš„é€šç”¨åŒ–å®šä¹‰pthread_tä¸€èˆ¬åœ¨çš„å®šä¹‰æ˜¯unsigned long
+//Ïß³ÌµÄÍ¨ÓÃ»¯¶¨Òåpthread_tÒ»°ãÔÚµÄ¶¨ÒåÊÇunsigned long
 typedef pthread_t   ZCE_THREAD_ID;
 //
 typedef pthread_t   ZCE_THREAD_HANDLE;

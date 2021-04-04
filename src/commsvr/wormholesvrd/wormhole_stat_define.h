@@ -3,28 +3,28 @@
 
 /// @author     stefzhou
 
-/// @brief      æ•°æ®å’Œç±»åž‹å®šä¹‰
+/// @brief      Êý¾ÝºÍÀàÐÍ¶¨Òå
 /// @details
 
 #ifndef WORMHOLE_STAT_DEFINE_H_
 #define WORMHOLE_STAT_DEFINE_H_
 
 /******************************************************************************************
-ç›‘æŽ§ä¿¡æ¯
+¼à¿ØÐÅÏ¢
 ******************************************************************************************/
 enum ArbiterMonitorFeatureID
 {
     WORMHOLE_SERVICE_STAT_BEGIN = SVC_PROXY_SERVER * 10000, // proxysvr start
-    WORMHOLE_TRANS_PKG_ERROR,                  // è½¬å‘çš„æ•°æ®åŒ…é”™è¯¯
-    WORMHOLE_TRANS_SEND_UNBALANCE_RATE,        // å‘é€ç«¯è´Ÿè½½ä¸å‡è¡¡æ¯”ä¾‹
+    WORMHOLE_TRANS_PKG_ERROR,                  // ×ª·¢µÄÊý¾Ý°ü´íÎó
+    WORMHOLE_TRANS_SEND_UNBALANCE_RATE,        // ·¢ËÍ¶Ë¸ºÔØ²»¾ùºâ±ÈÀý
     WORMHOLE_SERVICE_STAT_END,
 };
 
-// ä¸ŠæŠ¥æ•°æ®é¡¹ä¸ªæ•°
+// ÉÏ±¨Êý¾ÝÏî¸öÊý
 static const unsigned int WORMHOLE_FRATURE_NUM =
     WORMHOLE_SERVICE_STAT_END - WORMHOLE_SERVICE_STAT_BEGIN - 1;
 
-// ç»Ÿè®¡ä¿¡æ¯å­—ç¬¦ä¸²
+// Í³¼ÆÐÅÏ¢×Ö·û´®
 const ZCE_STATUS_ITEM_WITHNAME STR_WORMHOLE_STAT[WORMHOLE_FRATURE_NUM] =
 {
     DEF_ZCE_STATUS_ITEM(WORMHOLE_TRANS_PKG_ERROR, STATICS_PER_FIVE_MINTUES),
