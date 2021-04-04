@@ -59,11 +59,11 @@ void ZCE_Async_Coroutine::on_run(const void *outer_data, bool &continue_run)
     receive_data_ = NULL;
 
     //根据调用返回的函数记录的状态值得到当前的状态
-    if (coroutine_state_ == COROUTINE_CONTINUE)
+    if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
     {
         continue_run = true;
     }
-    else if (coroutine_state_ == COROUTINE_EXIT)
+    else if (coroutine_state_ == COROUTINE_STATE::EXIT)
     {
         continue_run = false;
     }
@@ -79,15 +79,15 @@ void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
                                      bool &continue_run)
 {
     continue_run = false;
-    coroutine_state_ = COROUTINE_TIMEOUT;
+    coroutine_state_ = COROUTINE_STATE::TIMEOUT;
     yeild_coroutine();
 
     //根据调用返回的函数记录的状态值得到当前的状态
-    if (coroutine_state_ == COROUTINE_CONTINUE)
+    if (coroutine_state_ == COROUTINE_STATE::CONTINUE)
     {
         continue_run = true;
     }
-    else if (coroutine_state_ == COROUTINE_EXIT)
+    else if (coroutine_state_ == COROUTINE_STATE::EXIT)
     {
         continue_run = false;
     }
@@ -100,14 +100,14 @@ void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
 //切换回Main，协程还会继续运行
 void ZCE_Async_Coroutine::yeild_main_continue()
 {
-    coroutine_state_ = COROUTINE_CONTINUE;
+    coroutine_state_ = COROUTINE_STATE::CONTINUE;
     zce::yeild_main(&handle_);
 }
 
 //切换回Main,协程退出
 void ZCE_Async_Coroutine::yeild_main_exit()
 {
-    coroutine_state_ = COROUTINE_EXIT;
+    coroutine_state_ = COROUTINE_STATE::EXIT;
     zce::yeild_main(&handle_);
 }
 

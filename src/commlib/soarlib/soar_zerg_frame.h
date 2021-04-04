@@ -160,10 +160,10 @@ public:
 
     //输出APPFRAME的头部信息
     void dumpoutput_framehead(const char *outstr,
-                              ZCE_LOG_PRIORITY log_priority) const;
+                              zce::LOG_PRIORITY log_priority) const;
     //输出APPFRAME的尾部信息
     void dumpoutput_frameinfo(const char *outstr,
-                              ZCE_LOG_PRIORITY log_priority)  const;
+                              zce::LOG_PRIORITY log_priority)  const;
 
     //取得帧的长度
     inline size_t get_appframe_len() const;
@@ -216,11 +216,11 @@ public:
 
 
     ///输出APPFRAME的头部信息
-    static void dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
+    static void dumpoutput_framehead(zce::LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);
     ///输出APPFRAME的尾部信息
-    static void dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
+    static void dumpoutput_frameinfo(zce::LOG_PRIORITY log_priority,
                                      const char *outstr,
                                      const Zerg_App_Frame *frame);
 

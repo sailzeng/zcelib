@@ -147,7 +147,7 @@ protected:
     int running_errno_ = 0;
 
     ///日志跟踪的优先级
-    ZCE_LOG_PRIORITY trace_log_pri_ = RS_INFO;
+    zce::LOG_PRIORITY trace_log_pri_ = RS_INFO;
 
     ///传递的外部数据，
     const void *receive_data_ = NULL;
@@ -270,7 +270,7 @@ public:
     * @brief      打印管理器的基本信息，运行状态
     * @param      log_priority   日志的优先级，以此优先级进行输出
     */
-    void dump_info(ZCE_LOG_PRIORITY log_priority) const;
+    void dump_info(zce::LOG_PRIORITY log_priority) const;
 
 protected:
 

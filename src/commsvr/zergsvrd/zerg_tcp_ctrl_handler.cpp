@@ -1817,7 +1817,7 @@ const ZCE_Sockaddr_In & TCP_Svc_Handler::get_peer()
     return peer_address_;
 }
 
-void TCP_Svc_Handler::dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl)
+void TCP_Svc_Handler::dump_status_staticinfo(zce::LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Dump TCP_Svc_Handler Static Info:");
     ZCE_LOG(out_lvl, "max_accept_svr_=%lu", max_accept_svr_);
@@ -1833,7 +1833,7 @@ void TCP_Svc_Handler::dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl)
 
 
 //
-void TCP_Svc_Handler::dump_status_info(ZCE_LOG_PRIORITY out_lvl)
+void TCP_Svc_Handler::dump_status_info(zce::LOG_PRIORITY out_lvl)
 {
     const size_t OUT_BUF_LEN = 64;
     char out_buf[OUT_BUF_LEN+1];
@@ -1853,7 +1853,7 @@ void TCP_Svc_Handler::dump_status_info(ZCE_LOG_PRIORITY out_lvl)
 }
 
 //Dump 所有的PEER信息
-void TCP_Svc_Handler::dump_svcpeer_info(ZCE_LOG_PRIORITY out_lvl)
+void TCP_Svc_Handler::dump_svcpeer_info(zce::LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Services Peer Size =%lu", svr_peer_info_set_.get_services_peersize());
     svr_peer_info_set_.dump_svr_peerinfo(out_lvl);

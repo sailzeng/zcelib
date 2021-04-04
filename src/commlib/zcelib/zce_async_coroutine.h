@@ -18,16 +18,16 @@ class ZCE_Async_Coroutine : public ZCE_Async_Object
     friend class ZCE_Async_CoroutineMgr;
 
     //
-    enum COROUTINE_STATE
+    enum class COROUTINE_STATE
     {
         //
-        COROUTINE_INVALID = 0x0,
+        INVALID = 0x0,
         //携程传递给管理器的状态值，
-        COROUTINE_CONTINUE = 0x10001,
-        COROUTINE_EXIT = 0x10002,
+        CONTINUE = 0x10001,
+        EXIT = 0x10002,
 
         //超时后，管理器通知携程的状态值
-        COROUTINE_TIMEOUT = 0x20002,
+        TIMEOUT = 0x20002,
     };
 
 
@@ -123,7 +123,7 @@ protected:
     size_t           stack_size_ = DEF_STACK_SIZE;
 
     ///协程的状态
-    COROUTINE_STATE  coroutine_state_ = COROUTINE_INVALID;
+    COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
 
 
 };

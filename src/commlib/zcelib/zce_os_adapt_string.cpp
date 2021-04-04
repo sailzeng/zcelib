@@ -338,7 +338,7 @@ void zce::memory_debug(const unsigned char *mem_ptr, size_t mem_len, FILE *strea
 
 
 //辅助打印一个指针内部数据的函数，用16进制的方式打印日志
-void zce::memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
+void zce::memory_debug(zce::LOG_PRIORITY dbg_lvl,
                        const char *dbg_info,
                        const unsigned char *mem_ptr,
                        size_t mem_len)
@@ -535,7 +535,7 @@ template<>
 ZCE_Time_Value str_to_value(const char *str)
 {
     ZCE_Time_Value val;
-    val.from_string(str, false, zce::TIME_STRFMT_US_SEC);
+    val.from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
     return val;
 }
 
@@ -646,7 +646,7 @@ void str_to_ptr(const char *str, ZCE_Sockaddr_In6 *ptr)
 template<>
 void str_to_ptr(const char *str, ZCE_Time_Value *ptr)
 {
-    ptr->from_string(str, false, zce::TIME_STRFMT_US_SEC);
+    ptr->from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
 }
 
 };

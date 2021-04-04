@@ -144,33 +144,33 @@ inline void ZCE_Epoll_Reactor::make_epoll_event(struct epoll_event *ep_event, ZC
 
     int event_mask = event_handler->get_mask();
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::READ_MASK))
+    if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::READ_MASK))
     {
         ep_event->events |= EPOLLIN;
     }
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::WRITE_MASK))
+    if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::WRITE_MASK))
     {
         ep_event->events |= EPOLLOUT;
     }
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::EXCEPT_MASK))
+    if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::EXCEPT_MASK))
     {
         ep_event->events |= EPOLLERR;
     }
     //Connect有成功和失败两种情况
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::CONNECT_MASK))
+    if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::CONNECT_MASK))
     {
         ep_event->events |= EPOLLOUT;
         ep_event->events |= EPOLLIN;
     }
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::ACCEPT_MASK))
+    if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::ACCEPT_MASK))
     {
         ep_event->events |= EPOLLIN;
     }
 
-    if (ZCE_BIT_IS_SET(event_mask, ZCE_Event_Handler::INOTIFY_MASK))
+    if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::INOTIFY_MASK))
     {
         ep_event->events |= EPOLLIN;
     }

@@ -28,10 +28,10 @@ protected:
 public:
 
     ///设置日志的优先级
-    void set_log_priority(ZCE_LOG_PRIORITY new_log_prio);
+    void set_log_priority(zce::LOG_PRIORITY new_log_prio);
 
     ///获得日志的优先级
-    ZCE_LOG_PRIORITY get_log_priority();
+    zce::LOG_PRIORITY get_log_priority();
 
     ///得到APP的版本信息
     const char *get_app_version();

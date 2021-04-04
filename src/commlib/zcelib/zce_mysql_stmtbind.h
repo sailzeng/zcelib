@@ -17,6 +17,10 @@
 
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( push )
+#pragma warning ( disable : 26812)
+#endif
 
 //这些函数都是4.1.2后的版本功能
 
@@ -219,7 +223,6 @@ public:
     void reset();
 
     ///将变量绑定
-    void bind(size_t bind_col, char val);
     void bind(size_t bind_col, char &val);
     void bind(size_t bind_col, short &val);
     void bind(size_t bind_col, int &val);
@@ -269,6 +272,9 @@ protected:
 };
 
 
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( pop )
+#endif
 
 #endif //#if defined ZCE_USE_MYSQL
 

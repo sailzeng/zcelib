@@ -41,7 +41,7 @@ public:
     ///构造函数
     ZCE_Timer_Heap(size_t num_timer_node,
                    unsigned int timer_length_mesc = 1000,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                    bool dynamic_expand_node = true );
     ///默认构造函数
     ZCE_Timer_Heap();
@@ -60,7 +60,7 @@ public:
     */
     int initialize(size_t num_timer_node,
                    unsigned int timer_precision_mesc = 1000,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                    bool dynamic_expand_node = true );
 
     /*!

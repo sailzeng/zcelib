@@ -124,7 +124,7 @@ public:
     const ZCE_Sockaddr_In& get_peer();
 
     //得到每个PEER状态信息
-    void dump_status_info(ZCE_LOG_PRIORITY out_lvl);
+    void dump_status_info(zce::LOG_PRIORITY out_lvl);
 
     //发送简单的ZERG命令给对方
     int send_simple_zerg_cmd(unsigned int cmd,
@@ -237,10 +237,10 @@ public:
     static TCP_Svc_Handler *alloce_hdl_from_pool(HANDLER_MODE handler_mode);
 
     ///Dump所有的STATIC变量的信息
-    static void dump_status_staticinfo(ZCE_LOG_PRIORITY out_lvl);
+    static void dump_status_staticinfo(zce::LOG_PRIORITY out_lvl);
 
     ///Dump 所有的PEER信息
-    static void dump_svcpeer_info(ZCE_LOG_PRIORITY out_lvl);
+    static void dump_svcpeer_info(zce::LOG_PRIORITY out_lvl);
 
     ///处理发送一个数据
     static int process_send_data(Zerg_Buffer *tmpbuf);

@@ -93,7 +93,7 @@ protected:
     * @param      proc_mask  要处理的MASK值，内部会按照，读，写，异常的顺序进行处理，
     */
     void process_ready(const fd_set *out_fds,
-                       ZCE_Event_Handler::EVENT_MASK proc_mask);
+                       EVENT_MASK proc_mask);
 
 protected:
 

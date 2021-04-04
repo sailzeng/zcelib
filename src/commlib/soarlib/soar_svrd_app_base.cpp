@@ -317,13 +317,13 @@ int Soar_Svrd_Appliction::app_exit()
 }
 
 //设置日志的优先级
-void Soar_Svrd_Appliction::set_log_priority(ZCE_LOG_PRIORITY log_prio)
+void Soar_Svrd_Appliction::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
     ZCE_Trace_LogMsg::instance()->set_log_priority(log_prio);
 }
 
 //获得日志的优先级
-ZCE_LOG_PRIORITY Soar_Svrd_Appliction::get_log_priority()
+zce::LOG_PRIORITY Soar_Svrd_Appliction::get_log_priority()
 {
     return ZCE_Trace_LogMsg::instance()->get_log_priority();
 }
@@ -345,7 +345,7 @@ int Soar_Svrd_Appliction::init_log()
                                                    true,
                                                    config_base_->log_config_.max_log_file_size_,
                                                    config_base_->log_config_.reserve_file_num_,
-                                                   LOG_HEAD_RECORD_CURRENTTIME | LOG_HEAD_RECORD_LOGLEVEL);
+                                                   LOG_HEAD::CURRENTTIME | LOG_HEAD::LOGLEVEL);
     if (0 != ret)
     {
         ZCE_LOG(RS_ERROR, "ZCE_Trace_LogMsg::instance()->initialize ret fail.");

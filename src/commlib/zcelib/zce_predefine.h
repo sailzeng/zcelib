@@ -436,7 +436,7 @@ typedef __int64             int64_t;
 //外部库的告警，在这个地方屏蔽了。
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( push )
-#pragma warning ( disable : 4244 4100 4512 4100 4996 26495)
+#pragma warning ( disable : 4244 4100 4512 4100 4996 26495 26812)
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wunused-parameter"
@@ -603,12 +603,33 @@ extern "C"
 #endif
 
 //检查某个bit位是否设置了
-#if !defined(ZCE_BIT_IS_SET)
-#  define ZCE_BIT_IS_SET(compare_value, bits) (((compare_value) & (bits)) != 0)
+#ifndef ZCE_BIT_IS_SET
+#define ZCE_BIT_IS_SET(compare_value, bits) (((compare_value) & (bits)) != 0)
 #endif
-#if !defined(ZCE_BIT_ISNOT_SET)
-#  define ZCE_BIT_ISNOT_SET(compare_value, bits) (((compare_value) & (bits)) == 0)
+#ifndef ZCE_BIT_ISNOT_SET
+#define ZCE_BIT_ISNOT_SET(compare_value, bits) (((compare_value) & (bits)) == 0)
 #endif
+
+//主要用于某些enum class的处理，
+#ifndef ZCE_U32_BIT_IS_SET
+#define ZCE_U32_BIT_IS_SET(compare_value, bits) ((static_cast<uint32_t>(compare_value) & static_cast<uint32_t>(bits)) != 0)
+#endif
+#ifndef ZCE_U64_BIT_IS_SET
+#define ZCE_U64_BIT_IS_SET(compare_value, bits) ((static_cast<uint64_t>(compare_value) & static_cast<uint64_t>(bits)) != 0)
+#endif
+#ifndef ZCE_U32_OR_2
+#define ZCE_U32_OR_2(v_a,v_b) (static_cast<uint32_t>(v_a) | static_cast<uint32_t>(v_b))
+#endif
+#ifndef ZCE_U32_OR_3
+#define ZCE_U32_OR_3(v_a,v_b,v_c) (static_cast<uint32_t>(v_a) | static_cast<uint32_t>(v_b) | static_cast<uint32_t>(v_c))
+#endif
+#ifndef ZCE_U64_OR_2
+#define ZCE_U64_OR_2(v_a,v_b) (static_cast<uint64_t>(v_a) | static_cast<uint64_t>(v_b))
+#endif
+#ifndef ZCE_U64_OR_3
+#define ZCE_U64_OR_3(v_a,v_b,v_c) (static_cast<uint64_t>(v_a) | static_cast<uint64_t>(v_b) | static_cast<uint64_t>(v_c))
+#endif
+
 
 //!计算数组个数,注意传递的型别喔
 #ifndef ZCE_ARRAY_SIZE

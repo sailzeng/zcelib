@@ -245,14 +245,14 @@ void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
 }
 
 //输出APPFRAME的头部信息
-void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, ZCE_LOG_PRIORITY log_priority) const
+void Zerg_App_Frame::dumpoutput_framehead(const char *outstr, zce::LOG_PRIORITY log_priority) const
 {
     std::ostringstream strstream;
     dump_appframe_head(strstream);
     ZCE_LOG(log_priority, "[framework] [%s]%s", outstr, strstream.str().c_str());
 }
 //输出APPFRAME的全部部信息
-void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY log_priority)  const
+void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, zce::LOG_PRIORITY log_priority)  const
 {
 
     std::ostringstream strstream;
@@ -261,14 +261,14 @@ void Zerg_App_Frame::dumpoutput_frameinfo(const char *outstr, ZCE_LOG_PRIORITY l
 }
 
 //输出APPFRAME的头部信息
-void Zerg_App_Frame::dumpoutput_framehead(ZCE_LOG_PRIORITY log_priority,
+void Zerg_App_Frame::dumpoutput_framehead(zce::LOG_PRIORITY log_priority,
                                           const char *outstr,
                                           const Zerg_App_Frame *proc_frame )
 {
     proc_frame->dumpoutput_framehead(outstr, log_priority);
 }
 //输出APPFRAME的全部部信息
-void Zerg_App_Frame::dumpoutput_frameinfo(ZCE_LOG_PRIORITY log_priority,
+void Zerg_App_Frame::dumpoutput_frameinfo(zce::LOG_PRIORITY log_priority,
                                           const char *outstr,
                                           const Zerg_App_Frame *proc_frame)
 {

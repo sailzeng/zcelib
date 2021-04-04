@@ -65,7 +65,7 @@ public:
 
     //DUMP OGRE FRAME的头部信息
     void dump_ogre_framehead(const char *outstr,
-                             ZCE_LOG_PRIORITY log_priority) const;
+                             zce::LOG_PRIORITY log_priority) const;
 
 public:
 
@@ -84,7 +84,7 @@ public:
     //DUMP OGRE FRAME的头部信息
     static void dump_ogre_framehead(const Ogre4a_App_Frame *proc_frame,
                                     const char *outstr,
-                                    ZCE_LOG_PRIORITY log_priority);
+                                    zce::LOG_PRIORITY log_priority);
 
 
 public:

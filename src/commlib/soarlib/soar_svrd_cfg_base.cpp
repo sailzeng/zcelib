@@ -23,8 +23,8 @@ Server_Config_Base::Server_Config_Base() :
     const size_t DEF_MAX_LOG_FILE_SIZE = 16 * 1024 * 1024;
 
     log_config_.log_level_ = RS_DEBUG;
-    log_config_.log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
-    log_config_.log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
+    log_config_.log_div_type_ = LOGFILE_DEVIDE::BY_TIME_DAY;
+    log_config_.log_output_ = LOG_OUTPUT::FILE | LOG_OUTPUT::ERROUT;
 
     log_config_.max_log_file_size_ = DEF_MAX_LOG_FILE_SIZE;
     log_config_.reserve_file_num_ = DEF_RESERVE_FILE_NUM;
@@ -208,7 +208,7 @@ int Server_Config_Base::read_cfgfile()
     return 0;
 }
 
-void Server_Config_Base::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
+void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
     ZCE_LOG(out_lvl, "Application base name %s svc id:%hu.%u",
             Soar_Svrd_Appliction::instance()->get_app_basename(),

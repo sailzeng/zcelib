@@ -16,6 +16,10 @@
 //如果你要用MYSQL的库
 #if defined ZCE_USE_MYSQL
 
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( push )
+#pragma warning ( disable : 26812)
+#endif
 
 /*!
 @brief      MySQL的字段封装
@@ -163,6 +167,9 @@ inline ZCE_Mysql_Field::operator std::string() const
     return tmp_str;
 }
 
+#if defined (ZCE_OS_WINDOWS)
+#pragma warning ( pop )
+#endif
 
 #endif //#if defined MYSQL_VERSION_ID
 

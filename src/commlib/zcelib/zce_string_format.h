@@ -58,16 +58,16 @@ enum FORMAT_STRING_FLAG
 };
 
 ///输出的进制系统，默认是10进制
-enum BASE_NUMBER_SYSTEM
+enum class BASE_NUMBER
 {
     ///二进制
-    BASE_BINARY        = 2,
+    BINARY        = 2,
     ///八进制
-    BASE_OCTAL         = 8,
+    OCTAL         = 8,
     ///十进制
-    BASE_DECIMAL       = 10,
+    DECIMAL       = 10,
     ///十六进制
-    BASE_HEXADECIMAL   = 16,
+    HEXADECIMAL   = 16,
 };
 
 ///默认的浮点精度长度
@@ -111,7 +111,7 @@ void fmt_str(std::string &stdstr,
 * @param      max_len     BUFFER的最大可用长度，
 * @param      use_len     返回参数，格式化后使用了BUFFER的长度
 * @param      value       要进行输出的int64值
-* @param      base        输出的进制 参考， @ref zce::BASE_NUMBER_SYSTEM
+* @param      base        输出的进制 参考， @ref zce::BASE_NUMBER
 * @param      width       输出的宽度，为0表示不处理宽度，相当于printf函数格式化参数%32.16d中间的32。
 * @param      precision   精度，就是输出几个字符，相当于printf函数格式化参数%32.16d中间的16。整数输出不会截断
 * @param      flags       参考 @ref zce::FORMAT_STRING_FLAG
@@ -120,7 +120,7 @@ void fmt_int64(char *buffer,
                size_t max_len,
                size_t &use_len,
                int64_t value,
-               BASE_NUMBER_SYSTEM base = BASE_DECIMAL,
+               BASE_NUMBER base = BASE_NUMBER::DECIMAL,
                size_t width = 0,
                size_t precision = 0,
                int flags = 0);
@@ -128,7 +128,7 @@ void fmt_int64(char *buffer,
 ///用于将int64格式化后输出（添加）到 @stdstr里面（末尾），参数含义见上面的函数
 void fmt_int64(std::string &stdstr,
                int64_t value,
-               BASE_NUMBER_SYSTEM base,
+               BASE_NUMBER base,
                size_t width = 0,
                size_t precision = 0,
                int flags = 0);

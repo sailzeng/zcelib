@@ -33,7 +33,7 @@ public:
     virtual ~ZCE_Trace_LogMsg();
 
     ///为C爱好者准备的封装，且记不要混用,输出一条(行)日志记录.
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ...);
+    void write_logmsg(zce::LOG_PRIORITY outlevel, const char *str_format, ...);
 
 protected:
 
@@ -43,7 +43,7 @@ protected:
     @param      lpszFormat  日志的格式化字符串
     @param      args        动态的日志参数列表组成的va_list
     */
-    void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, va_list args);
+    void vwrite_logmsg(zce::LOG_PRIORITY outlevel, const char *str_format, va_list args);
 
 public:
 
@@ -68,7 +68,7 @@ public:
                                 const char *out_string);
 
     ///利用单子对象，打印日志信息
-    static void debug_output(ZCE_LOG_PRIORITY dbglevel,
+    static void debug_output(zce::LOG_PRIORITY dbglevel,
                              const char *str_format,
                              ... );
 

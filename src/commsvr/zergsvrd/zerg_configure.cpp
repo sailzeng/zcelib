@@ -419,7 +419,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
 }
 
 //Dump配置的数据信息
-void Zerg_Server_Config::dump_cfg_info(ZCE_LOG_PRIORITY out_lvl)
+void Zerg_Server_Config::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
 {
     Server_Config_Base::dump_cfg_info(out_lvl);
 

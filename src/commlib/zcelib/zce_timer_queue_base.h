@@ -30,14 +30,14 @@ public:
     static const int  INVALID_TIMER_ID = -1;
 
     ///触发模式，
-    enum TRIGGER_MODE
+    enum class TRIGGER_MODE
     {
 
         ///根据系统时钟进行触发，缺点是，在系统时间被调整的情况下，会丢失定时器
-        TRIGGER_MODE_SYSTEM_CLOCK = 1,
+        SYSTEM_CLOCK = 1,
 
         ///CPU，TICK，好处绝不丢失，坏处保存超时时间不是墙上时钟，
-        TRIGGER_MODE_CPU_TICK     = 2,
+        CPU_TICK     = 2,
     };
 
     //默认的时间精度
@@ -113,7 +113,7 @@ protected:
     //构造函数
     ZCE_Timer_Queue_Base(size_t num_timer_node,
                          unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                         TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                         TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                          bool dynamic_expand_node = true);
     ZCE_Timer_Queue_Base();
 public:
@@ -156,8 +156,8 @@ protected:
     @return     size_t            返回分发的触发的定时器的数量
     @param      now_time          当前的时间，墙上时钟
     @param      now_trigger_msec  当前触发的点的毫秒数，根据触发模式，表达意义不一样
-                                  触发模式是 @a TRIGGER_MODE_SYSTEM_CLOCK 那么表示墙上时钟的mesc数量
-                                  触发模式是 @a TRIGGER_MODE_CPU_TICK 那么标识CPU Tick的毫秒数量
+                                  触发模式是 @a TRIGGER_MODE::SYSTEM_CLOCK 那么表示墙上时钟的mesc数量
+                                  触发模式是 @a TRIGGER_MODE::CPU_TICK 那么标识CPU Tick的毫秒数量
     */
     virtual size_t dispatch_timer(const ZCE_Time_Value &now_time,
                                   uint64_t now_trigger_msec) = 0;
@@ -221,7 +221,7 @@ protected:
     */
     int initialize(size_t num_timer_node,
                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE_SYSTEM_CLOCK,
+                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                    bool dynamic_expand_node = true);
 
     /*!
@@ -292,7 +292,7 @@ protected:
     size_t                      num_use_node_ = 0;
 
     ///触发模式
-    TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE_SYSTEM_CLOCK;
+    TRIGGER_MODE                trigger_mode_ = TRIGGER_MODE::SYSTEM_CLOCK;
 
     ///是否支持动态扩张NODE
     bool                        dynamic_expand_node_ = true;

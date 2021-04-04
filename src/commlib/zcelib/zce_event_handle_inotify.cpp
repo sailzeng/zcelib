@@ -236,7 +236,7 @@ int ZCE_Event_INotify::add_watch(const char *pathname,
 
         return -1;
     }
-    ret = reactor()->register_handler(this, INOTIFY_MASK);
+    ret = reactor()->register_handler(this,static_cast<int>(EVENT_MASK::INOTIFY_MASK));
     if (ret != 0)
     {
         ::CloseHandle(watch_handle_);

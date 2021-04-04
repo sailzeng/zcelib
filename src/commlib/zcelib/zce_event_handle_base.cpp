@@ -7,13 +7,13 @@
 //构造函数和析构函数
 ZCE_Event_Handler::ZCE_Event_Handler():
     zce_reactor_(NULL),
-    event_mask_(NULL_MASK)
+    event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
 {
 
 }
 ZCE_Event_Handler::ZCE_Event_Handler(ZCE_Reactor *reactor):
     zce_reactor_(reactor),
-    event_mask_(NULL_MASK)
+    event_mask_(static_cast<int>(EVENT_MASK::NULL_MASK))
 {
 
 }

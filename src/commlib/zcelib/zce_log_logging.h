@@ -128,7 +128,7 @@ class ZCE_Trace_Printf
 public:
 
     //输出va_list的参数信息
-    void vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void vwrite_logmsg(zce::LOG_PRIORITY outlevel,
                        const char *str_format,
                        va_list args)
     {
@@ -150,7 +150,7 @@ public:
     }
 
     //写日志
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ...)
+    void write_logmsg(zce::LOG_PRIORITY outlevel, const char *str_format, ...)
     {
         va_list args;
         va_start(args, str_format);
@@ -166,15 +166,15 @@ public:
     }
 
     //设置日志输出Level
-    ZCE_LOG_PRIORITY set_log_priority(ZCE_LOG_PRIORITY outlevel)
+    zce::LOG_PRIORITY set_log_priority(zce::LOG_PRIORITY outlevel)
     {
-        ZCE_LOG_PRIORITY oldlevel = permit_outlevel_;
+        zce::LOG_PRIORITY oldlevel = permit_outlevel_;
         permit_outlevel_ = outlevel;
         return oldlevel;
     }
 
     //!利用单子对象，打印日志信息
-    static void debug_output(ZCE_LOG_PRIORITY dbglevel,
+    static void debug_output(zce::LOG_PRIORITY dbglevel,
                              const char *str_format,
                              ...)
     {
@@ -197,7 +197,7 @@ public:
 protected:
 
     //!输出日志信息的Mask值,小于这个信息的信息不予以输出
-    ZCE_LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
+    zce::LOG_PRIORITY      permit_outlevel_ = RS_DEBUG;
 
     //!是否输出日志信息,可以用于暂时屏蔽
     bool                  if_output_log_ = true;
@@ -277,7 +277,7 @@ public:
     //!文件的行号，行号是函数体内部的位置，不是函数声明的起始位置，但这又何妨
     int                code_line_;
     //!输出的日志级别
-    ZCE_LOG_PRIORITY   log_priority_;
+    zce::LOG_PRIORITY   log_priority_;
 
     //!如果需要跟踪返回值，把返回值的变量的指针作为一个参数
     int               *ret_ptr_ = NULL;
@@ -287,7 +287,7 @@ public:
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
-                       ZCE_LOG_PRIORITY   log_priority) :
+                       zce::LOG_PRIORITY   log_priority) :
         func_name_(func_name),
         codefile_name_(file_name),
         code_line_(file_line),
@@ -301,7 +301,7 @@ public:
     ZCE_Trace_Function(const char *func_name,
                        const char *file_name,
                        int file_line,
-                       ZCE_LOG_PRIORITY   log_priority,
+                       zce::LOG_PRIORITY   log_priority,
                        int *ret_ptr) :
         func_name_(func_name),
         codefile_name_(file_name),

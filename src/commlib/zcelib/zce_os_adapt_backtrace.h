@@ -14,7 +14,7 @@ int backtrace_stack(std::vector<std::string> &str_ary);
 
 int backtrace_stack(FILE *stream);
 
-int backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
+int backtrace_stack(zce::LOG_PRIORITY dbg_lvl,
                     const char *dbg_info);
 
 };

@@ -39,14 +39,14 @@ public:
 
 public:
 
-    ///app日志级别: @ref ZCE_LOG_PRIORITY
-    ZCE_LOG_PRIORITY log_level_ = RS_DEBUG;
+    ///app日志级别: @ref zce::LOG_PRIORITY
+    zce::LOG_PRIORITY log_level_ = RS_DEBUG;
 
-    ///日志输出方式: @ref LOG_OUTPUT_WAY ,多种输出方式可以组合
-    uint32_t log_output_ = LOG_OUTPUT_FILE | LOG_OUTPUT_ERROUT;
+    ///日志输出方式: @ref LOG_OUTPUT ,多种输出方式可以组合
+    uint32_t log_output_ = LOG_OUTPUT::FILE | LOG_OUTPUT::ERROUT;
 
     // 日志分割方式:101按大小 201按小时 205按天
-    ZCE_LOGFILE_NAME_DEVIDE log_div_type_ = NAME_TIME_DAY_DEVIDE_TIME;
+    LOGFILE_DEVIDE log_div_type_ = LOGFILE_DEVIDE::BY_TIME_DAY;
 
     // 日志文件保留个数，多出的日志文件将会被删除
     uint32_t reserve_file_num_ = DEF_RESERVE_FILE_NUM;
@@ -96,7 +96,7 @@ public:
     * @brief      读取，在日志里面输出一些配置信息，以便跟踪回溯
     * @param      out_lvl 输出级别，
     */
-    virtual void dump_cfg_info(ZCE_LOG_PRIORITY out_lvl);
+    virtual void dump_cfg_info(zce::LOG_PRIORITY out_lvl);
 
 protected:
 

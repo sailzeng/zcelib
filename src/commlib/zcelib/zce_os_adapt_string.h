@@ -479,7 +479,7 @@ void memory_debug(const unsigned char *mem_ptr,
 ///日志打印堆栈信息
 ///调试打印的指针
 ///指针数据的长度
-void memory_debug(ZCE_LOG_PRIORITY dbg_lvl,
+void memory_debug(zce::LOG_PRIORITY dbg_lvl,
                   const char *dbg_info,
                   const unsigned char *mem_ptr,
                   size_t mem_len);

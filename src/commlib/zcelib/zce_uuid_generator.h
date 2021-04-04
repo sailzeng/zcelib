@@ -47,6 +47,18 @@
 
 #include "zce_boost_random.h"
 
+
+//UUID产生方法，
+enum class UUID_GENERATOR
+{
+    ///无效的产生方式
+    INVALID,
+    ///用随机数的方法产生
+    RANDOM,
+    ///用事件作为基数触发
+    TIME,
+};
+
 /************************************************************************************************************
 Class           : ZCE_UUID64
 ************************************************************************************************************/
@@ -129,17 +141,6 @@ Class           : ZCE_UUID64_Generator
 */
 class ZCE_UUID64_Generator
 {
-    //UUID产生方法，
-    enum UUID64_GENERATOR_TYPE
-    {
-        ///无效的产生方式
-        UUID64_GENERATOR_INVALID,
-
-        ///用随机数的方法产生
-        UUID64_GENERATOR_RANDOM,
-        ///用事件作为基数触发
-        UUID64_GENERATOR_TIME,
-    };
 
 public:
 
@@ -157,7 +158,7 @@ public:
 
     /*!
     * @brief      随机数的种子,调用这个函数后，
-    *             就会确认产生方式是UUID64_GENERATOR_RANDOM，不能更改了。
+    *             就会确认产生方式是UUID64_GENERATOR::RANDOM，不能更改了。
     * @param      seed 随机数的种子,
     */
     void random_seed(uint32_t seed);
@@ -201,7 +202,7 @@ protected:
 protected:
 
     ///发生器使用什么发生方式
-    UUID64_GENERATOR_TYPE         generator_type_;
+    UUID_GENERATOR            generator_type_;
 
     ///随机发生器1
     zce::random_mt19937       mt_19937_random_;
@@ -209,7 +210,7 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///随机数的种子
-    ZCE_UUID64                    time_radix_seed_;
+    ZCE_UUID64                time_radix_seed_;
 
 
 };
@@ -316,17 +317,6 @@ Class           : ZCE_UUID128_Generator UUID的发生器
 */
 class ZCE_UUID128_Generator
 {
-    //
-    enum UUID128_GENERATOR_TYPE
-    {
-        //
-        UUID128_GENERATOR_INVALID,
-
-        ///用随机数的方法产生
-        UUID128_GENERATOR_RANDOM,
-        ///用事件作为基数触发
-        UUID128_GENERATOR_TIME,
-    };
 
 public:
 
@@ -364,7 +354,7 @@ public:
 protected:
 
     ///发生器使用什么发生方式
-    UUID128_GENERATOR_TYPE        generator_type_;
+    UUID_GENERATOR            generator_type_;
 
     ///随机发生器1
     zce::random_mt19937       mt_19937_random_;
@@ -372,7 +362,7 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///
-    ZCE_UUID128                   time_radix_seed_;
+    ZCE_UUID128               time_radix_seed_;
 
 protected:
 

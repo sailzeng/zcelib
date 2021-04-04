@@ -48,13 +48,13 @@ bool ZCE_STATUS_ITEM_ID::operator == (const ZCE_STATUS_ITEM_ID &others) const
 struct ZCE_STATUS_ITEM 状态计数器项
 ******************************************************************************************/
 ZCE_STATUS_ITEM::ZCE_STATUS_ITEM():
-    statics_type_(STATICS_PER_FIVE_MINTUES),
+    statics_type_(ZCE_STATUS_STATICS::PER_FIVE_MINTUES),
     counter_(0)
 {
 }
 
 ZCE_STATUS_ITEM::ZCE_STATUS_ITEM(unsigned int statics_id,
-                                 ZCE_STATUS_STATICS_TYPE statics_type):
+                                 ZCE_STATUS_STATICS statics_type):
     item_id_(statics_id, 0, 0),
     statics_type_(statics_type),
     counter_(0)
@@ -69,7 +69,7 @@ ZCE_STATUS_ITEM::~ZCE_STATUS_ITEM()
 class ZCE_STATUS_ITEM_WITHNAME 状态计数器+名字，用于配置，DUMP输出等
 ******************************************************************************************/
 ZCE_STATUS_ITEM_WITHNAME::ZCE_STATUS_ITEM_WITHNAME(unsigned int statics_id,
-                                                   ZCE_STATUS_STATICS_TYPE statics_type,
+                                                   ZCE_STATUS_STATICS statics_type,
                                                    const char *stat_name):
     statics_item_(statics_id, statics_type)
 {
@@ -460,26 +460,26 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
     ZCE_ASSERT(initialized_);
 
     //
-    int clear_type = STATICS_INVALID_TYPE;
+    ZCE_STATUS_STATICS clear_type = ZCE_STATUS_STATICS::INVALID_TYPE;
     time_t last_clear_time = static_cast<time_t>(stat_file_head_->active_time_);
 
     //看时间周期发生了什么变化没有
     if (last_clear_time / FIVE_MINTUE_SECONDS !=
         now_time / FIVE_MINTUE_SECONDS)
     {
-        clear_type = STATICS_PER_FIVE_MINTUES;
+        clear_type = ZCE_STATUS_STATICS::PER_FIVE_MINTUES;
 
         //如果5分钟都没有变化，小时不会变化
         if (last_clear_time / zce::ONE_HOUR_SECONDS !=
             now_time / zce::ONE_HOUR_SECONDS)
         {
-            clear_type = STATICS_PER_HOUR;
+            clear_type = ZCE_STATUS_STATICS::PER_HOUR;
 
             //如果小时都没有变化，天不会变化
             if (last_clear_time / zce::ONE_DAY_SECONDS !=
                 now_time / zce::ONE_DAY_SECONDS)
             {
-                clear_type = STATICS_PER_DAYS;
+                clear_type = ZCE_STATUS_STATICS::PER_DAYS;
             }
         }
     }
@@ -487,7 +487,7 @@ void ZCE_Server_Status::check_overtime(time_t now_time)
     size_t num_of_counter = status_stat_sandy_->size();
 
     //如果没有处理
-    if (clear_type == STATICS_INVALID_TYPE)
+    if (clear_type == ZCE_STATUS_STATICS::INVALID_TYPE)
     {
         return;
     }
@@ -622,7 +622,7 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
 }
 
 //Dump所有的数据
-void ZCE_Server_Status::dump_status_info(ZCE_LOG_PRIORITY log_priority, bool dump_copy)
+void ZCE_Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority, bool dump_copy)
 {
     size_t num_of_counter = 0;
     ZCE_STATUS_ITEM *stat_process_iter = NULL;

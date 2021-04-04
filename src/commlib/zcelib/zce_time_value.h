@@ -226,13 +226,13 @@ public:
     * @return     const char*     打印的字符串，方便你处理
     * @param[out] str_date_time   要输出的字符串数组
     * @param[in]  datetime_strlen 字符串的长度
-    * @param[in]   fromat_type    时间格式，参考@ref TIME_STR_FORMAT_TYPE 枚举，默认输出ISO格式的本地时间，精度到USEC。
+    * @param[in]   fromat_type    时间格式，参考@ref TIME_STR_FORMAT 枚举，默认输出ISO格式的本地时间，精度到USEC。
     */
     const char *to_string(char *str_date_time,
                           size_t datetime_strlen,
                           size_t &use_buf,
                           bool uct_time = false,
-                          zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC
+                          zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC
                          )  const;
 
     /*!
@@ -244,7 +244,7 @@ public:
     */
     int from_string(const char *strtm,
                     bool uct_time = false,
-                    zce::TIME_STR_FORMAT_TYPE fromat_type = zce::TIME_STRFMT_ISO_USEC);
+                    zce::TIME_STR_FORMAT fromat_type = zce::TIME_STR_FORMAT::ISO_USEC);
 
     ///返回一个timespec的对象
     //operator ::timespec () const;

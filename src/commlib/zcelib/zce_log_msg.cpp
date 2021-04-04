@@ -27,7 +27,7 @@ ZCE_Trace_LogMsg::~ZCE_Trace_LogMsg()
 }
 
 //输出va_list的参数信息
-void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
+void ZCE_Trace_LogMsg::vwrite_logmsg(zce::LOG_PRIORITY outlevel,
                                      const char *str_format,
                                      va_list args)
 {
@@ -94,7 +94,7 @@ void ZCE_Trace_LogMsg::vwrite_logmsg(ZCE_LOG_PRIORITY outlevel,
 }
 
 //写日志
-void ZCE_Trace_LogMsg::write_logmsg(ZCE_LOG_PRIORITY outlevel, const char *str_format, ... )
+void ZCE_Trace_LogMsg::write_logmsg(zce::LOG_PRIORITY outlevel, const char *str_format, ... )
 {
     va_list args;
     va_start(args, str_format);
@@ -132,7 +132,7 @@ void ZCE_Trace_LogMsg::debug_assert_ex(const char *file_name,
 }
 
 //调用vwrite_logmsg完成实际输出
-void ZCE_Trace_LogMsg::debug_output(ZCE_LOG_PRIORITY dbglevel,
+void ZCE_Trace_LogMsg::debug_output(zce::LOG_PRIORITY dbglevel,
                                     const char *str_format, ... )
 {
     va_list args;

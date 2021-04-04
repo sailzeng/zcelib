@@ -274,8 +274,8 @@
 //        return ret;
 //    }
 //
-//    ZCE_LOG_PRIORITY new_log_priority =  zce_LogTrace_Basic::log_priorities(tmpstr.c_str());
-//    ZCE_LOG_PRIORITY old_log_priority = Zerg_Service_App::instance()->get_log_priority();
+//    zce::LOG_PRIORITY new_log_priority =  zce_LogTrace_Basic::log_priorities(tmpstr.c_str());
+//    zce::LOG_PRIORITY old_log_priority = Zerg_Service_App::instance()->get_log_priority();
 //    //修改APPL的日志级别
 //    Zerg_Service_App::instance()->set_log_priority(new_log_priority);
 //

@@ -53,7 +53,7 @@ public:
 #if ZCE_SUPPORT_CPP11 == 1
 
     template <typename... out_type >
-    void foo_write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void foo_write_logmsg(zce::LOG_PRIORITY outlevel,
                           const char *str_format,
                           const out_type &...out_data)
     {
@@ -140,7 +140,7 @@ public:
 
     //
     template <class T1, class T2>
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2)
@@ -199,7 +199,7 @@ public:
     }
 
     template < class T1 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1 )
     {
@@ -209,7 +209,7 @@ public:
     }
 
     template < class T1, class T2, class T3 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -221,7 +221,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -234,7 +234,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -248,7 +248,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -263,7 +263,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -279,7 +279,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -296,7 +296,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -314,7 +314,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -333,7 +333,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -353,7 +353,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -374,7 +374,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -396,7 +396,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -419,7 +419,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -443,7 +443,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -468,7 +468,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -494,7 +494,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -521,7 +521,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -549,7 +549,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -578,7 +578,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -608,7 +608,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -639,7 +639,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -671,7 +671,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -704,7 +704,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -738,7 +738,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -773,7 +773,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -809,7 +809,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -846,7 +846,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -884,7 +884,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -923,7 +923,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
@@ -963,7 +963,7 @@ public:
     }
 
     template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31, class T32 >
-    void write_logmsg(ZCE_LOG_PRIORITY outlevel,
+    void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,

@@ -199,7 +199,7 @@ int zce::backtrace_stack(FILE *stream)
 
 
 //辅助打印一个指针内部数据的函数，用16进制的方式打印日志
-int zce::backtrace_stack(ZCE_LOG_PRIORITY dbg_lvl,
+int zce::backtrace_stack(zce::LOG_PRIORITY dbg_lvl,
                          const char *dbg_info)
 {
     int ret = 0;

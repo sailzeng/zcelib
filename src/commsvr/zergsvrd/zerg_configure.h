@@ -168,7 +168,7 @@ public:
     * @brief      读取，在日志里面输出一些配置信息，以便跟踪回溯
     * @param      out_lvl 输出级别，
     */
-    virtual void dump_cfg_info(ZCE_LOG_PRIORITY out_lvl);
+    virtual void dump_cfg_info(zce::LOG_PRIORITY out_lvl);
 
 
     //根据SVCID得到SVC INFO地址信息

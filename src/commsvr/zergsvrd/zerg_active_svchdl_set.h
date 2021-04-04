@@ -126,7 +126,7 @@ public:
     size_t get_services_peersize();
 
     ///
-    void dump_svr_peerinfo(ZCE_LOG_PRIORITY out_lvl);
+    void dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl);
 
     ///关闭所有的PEER
     void clear_and_closeall();

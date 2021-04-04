@@ -355,7 +355,7 @@ size_t Active_SvcHandle_Set::get_services_peersize()
 
 
 //
-void Active_SvcHandle_Set::dump_svr_peerinfo(ZCE_LOG_PRIORITY out_lvl)
+void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
 {
     //
     MAP_OF_SVCPEERINFO::iterator iter_tmp = svr_info_set_.begin();

@@ -42,21 +42,21 @@
 *
 * @note
 */
-enum ZCE_STATUS_STATICS_TYPE
+enum class ZCE_STATUS_STATICS
 {
     //标识范围
-    STATICS_INVALID_TYPE       = 0,
+    INVALID_TYPE       = 0,
 
     //每5分钟进行一次统计，尽量用5分钟的统计方式
-    STATICS_PER_FIVE_MINTUES   = 1,
+    PER_FIVE_MINTUES   = 1,
 
     //每小时进行一次统计,:0会清空，这种统计方式主要用于1个小时变化数据，用于对比等，
-    STATICS_PER_HOUR           = 2,
+    PER_HOUR           = 2,
     //每天进行一次统计，0:0会清空，，这种统计方式主要用于1天变化数据
-    STATICS_PER_DAYS           = 3,
+    PER_DAYS           = 3,
 
     //绝对值
-    STATICS_ABSOLUTE_VALUE     = 11,
+    ABSOLUTE_VALUE     = 11,
 
     //原来还有一种每次启动时，数值是否清空的选项，算了，没必要保留了
 
@@ -125,7 +125,7 @@ public:
     //构造函数和析构函数
     ZCE_STATUS_ITEM();
     ZCE_STATUS_ITEM(unsigned int statics_id,
-                    ZCE_STATUS_STATICS_TYPE statics_type);
+                    ZCE_STATUS_STATICS statics_type);
     ~ZCE_STATUS_ITEM();
 
 public:
@@ -134,7 +134,7 @@ public:
     ZCE_STATUS_ITEM_ID        item_id_;
 
     ///可以重新计数
-    ZCE_STATUS_STATICS_TYPE   statics_type_ =STATICS_INVALID_TYPE;
+    ZCE_STATUS_STATICS   statics_type_ =ZCE_STATUS_STATICS::INVALID_TYPE;
 
     ///计数器
     uint64_t                  counter_=0;
@@ -151,7 +151,7 @@ public:
 
     //
     ZCE_STATUS_ITEM_WITHNAME(unsigned int,
-                             ZCE_STATUS_STATICS_TYPE,
+                             ZCE_STATUS_STATICS,
                              const char *);
     ZCE_STATUS_ITEM_WITHNAME();
     ~ZCE_STATUS_ITEM_WITHNAME();
@@ -384,7 +384,7 @@ public:
                           bool dump_copy = false);
 
     ///Dump所有的数据
-    void dump_status_info(ZCE_LOG_PRIORITY log_priority,
+    void dump_status_info(zce::LOG_PRIORITY log_priority,
                           bool dump_copy = false);
 
     ///得到文件的头部信息

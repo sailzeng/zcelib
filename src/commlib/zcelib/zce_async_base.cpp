@@ -485,7 +485,7 @@ int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
 
 
 //打印管理器的基本信息，运行状态
-void ZCE_Async_ObjectMgr::dump_info(ZCE_LOG_PRIORITY log_priority) const
+void ZCE_Async_ObjectMgr::dump_info(zce::LOG_PRIORITY log_priority) const
 {
     //
     ZCE_LOG(log_priority, "Register create cmd size[%lu].active running async object size[%lu].",

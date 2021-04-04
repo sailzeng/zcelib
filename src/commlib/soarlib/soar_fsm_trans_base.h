@@ -333,7 +333,7 @@ protected:
     time_t                  trans_create_time_;
 
     ///日志跟踪的优先级
-    ZCE_LOG_PRIORITY        trace_log_pri_;
+    zce::LOG_PRIORITY       trace_log_pri_;
 
 };
 
