@@ -169,7 +169,7 @@ int fcntl_unlock(file_lock_t *lock,
 * @param      operation 相应的操作，是LOCK_SH LOCK_EX LOCK_UN LOCK_NB 的组合
 *             LOCK_SH 尝试加锁
 *             LOCK_EX 强制加锁
-*             LOCK_NB 阻塞，可以和LOCK_SH，LOCK_EX组合使用。用|
+*             LOCK_NB 不阻塞，可以和LOCK_SH，LOCK_EX组合使用。用|，如果有锁，立即返回，错误EWOULDBLOCK
 *             LOCK_UN 解锁
 */
 int flock(file_lock_t& lock_hadle,int operation);

@@ -331,19 +331,12 @@ int zce::fcntl_wrlock(zce::file_lock_t *lock,
 #endif
 }
 
-//LOCK_SH
-//Place a shared lock. More than one process may hold a shared lock for a given file at a given time.
-//LOCK_EX
-//Place an exclusive lock. Only one process may hold an exclusive lock for a given file at a given time.
-//LOCK_UN
-//Remove an existing lock held by this process.
-//LOCK_NB
-//A call to flock() may block if an incompatible lock is held by another process. To make a non-blocking request, include LOCK_NB (by ORing) with any of the above operations.
+
 //文件锁函数，只对一个文件进行加锁
 int zce::flock(zce::file_lock_t &lock_hadle,int operation)
 {
 #if defined (ZCE_OS_WINDOWS)
-
+    //Windows下仍然用的记录所模拟
     zce::file_lock_t rec_handle;
     rec_handle.handle_ = lock_hadle.handle_;
     rec_handle.overlapped_ = lock_hadle.overlapped_;
