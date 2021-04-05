@@ -5,30 +5,30 @@
 
 //ZCELIBµÄ´úÂë
 
-#include <zce_predefine.h>
-#include <zce_log_logging.h>
+#include <zce/predefine.h>
+#include <zce/log/logging.h>
 #include <zce_log_plus.h>
 #include <zce_log_msg.h>
 
-#include <zce_os_adapt_predefine.h>
-#include <zce_os_adapt_file.h>
-#include <zce_os_adapt_process.h>
-#include <zce_os_adapt_sysinfo.h>
-#include <zce_os_adapt_error.h>
-#include <zce_os_adapt_socket.h>
-#include <zce_os_adapt_rwlock.h>
-#include <zce_os_adapt_dirent.h>
-#include <zce_os_adapt_math.h>
-#include <zce_os_adapt_stdlib.h>
-#include <zce_os_adapt_coroutine.h>
-#include <zce_os_adapt_flock.h>
-#include <zce_os_adapt_backtrace.h>
+#include <zce/os_adapt/common.h>
+#include <zce/os_adapt/file.h>
+#include <zce/os_adapt/process.h>
+#include <zce/os_adapt/sysinfo.h>
+#include <zce/os_adapt/error.h>
+#include <zce/os_adapt/socket.h>
+#include <zce/os_adapt/rwlock.h>
+#include <zce/os_adapt/dirent.h>
+#include <zce/os_adapt/math.h>
+#include <zce/os_adapt/stdlib.h>
+#include <zce/os_adapt/coroutine.h>
+#include <zce/os_adapt/flock.h>
+#include <zce/os_adapt/backtrace.h>
 
 #include <zce_share_mem_mmap.h>
 #include <zce_share_mem_posix.h>
 #include <zce_share_mem_systemv.h>
 
-#include <zce_shm_predefine.h>
+#include <zce/shm_container/common.h>
 #include <zce_shm_hash_rehash.h>
 #include <zce_shm_hash_expire.h>
 #include <zce_shm_hash_table.h>
@@ -45,18 +45,18 @@
 #include <zce_boost_random.h>
 #include <zce_lock_thread_mutex.h>
 #include <zce_lock_thread_rw_mutex.h>
-#include <zce_lock_guard.h>
+#include <zce/lock/lock_guard.h>
 #include <zce_thread_msgque_condi.h>
 #include <zce_thread_msgque_sema.h>
-#include <zce_thread_task.h>
+#include <zce/thread/thread_task.h>
 
 
-#include <zce_timer_handler_base.h>
+#include <zce/timer/handler_base.h>
 #include <zce_timer_queue_heap.h>
 #include <zce_timer_queue_wheel.h>
 
 
-#include <zce_string_helper.h>
+#include <zce/string/helper.h>
 #include <zce_string_format.h>
 #include <zce_string_extend.h>
 
@@ -81,7 +81,7 @@
 #include <zce_event_reactor_select.h>
 #include <zce_event_reactor_wfmo.h>
 
-#include <zce_async_base.h>
+#include <zce/async/async_base.h>
 #include <zce_async_fsm.h>
 #include <zce_async_coroutine.h>
 

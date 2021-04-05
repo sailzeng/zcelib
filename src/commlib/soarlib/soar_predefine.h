@@ -63,9 +63,9 @@
 //---------------------------------------------------------------------------------------------
 
 //ZCElibµÄ¿âÎÄ¼þ
-#include <zce_predefine.h>
+#include <zce/predefine.h>
 #include <zce_id_to_string.h>
-#include <zce_time_value.h>
+#include <zce/time/time_value.h>
 #include <zce_mysql_connect.h>
 #include <zce_mysql_command.h>
 #include <zce_mysql_process.h>
@@ -73,21 +73,21 @@
 #include <zce_lockfree_kfifo.h>
 #include <zce_server_base.h>
 #include <zce_shm_hash_table.h>
-#include <zce_boost_non_copyable.h>
+#include <zce/util/non_copyable.h>
 #include <zce_boost_lord_rings.h>
-#include <zce_os_adapt_string.h>
-#include <zce_os_adapt_thread.h>
-#include <zce_os_adapt_socket.h>
-#include <zce_os_adapt_thread.h>
-#include <zce_os_adapt_error.h>
-#include <zce_os_adapt_process.h>
-#include <zce_os_adapt_socket.h>
-#include <zce_os_adapt_getopt.h>
-#include <zce_os_adapt_file.h>
-#include <zce_os_adapt_dirent.h>
+#include <zce/os_adapt/string.h>
+#include <zce/os_adapt/thread.h>
+#include <zce/os_adapt/socket.h>
+#include <zce/os_adapt/thread.h>
+#include <zce/os_adapt/error.h>
+#include <zce/os_adapt/process.h>
+#include <zce/os_adapt/socket.h>
+#include <zce/os_adapt/getopt.h>
+#include <zce/os_adapt/file.h>
+#include <zce/os_adapt/dirent.h>
 #include <zce_share_mem_mmap.h>
 #include <zce_share_mem_posix.h>
-#include <zce_log_logging.h>
+#include <zce/log/logging.h>
 #include <zce_log_msg.h>
 #include <zce_lock_null_lock.h>
 #include <zce_lock_thread_mutex.h>
@@ -95,22 +95,22 @@
 #include <zce_config_file_implement.h>
 #include <zce_thread_msgque_sema.h>
 #include <zce_thread_msgque_nonlock.h>
-#include <zce_timer_handler_base.h>
-#include <zce_timer_queue_base.h>
+#include <zce/timer/handler_base.h>
+#include <zce/timer/queue_base.h>
 #include <zce_timer_queue_wheel.h>
-#include <zce_bus_two_way.h>
-#include <zce_thread_task.h>
-#include <zce_socket_addr_base.h>
-#include <zce_socket_addr_in.h>
-#include <zce_socket_base.h>
-#include <zce_socket_stream.h>
+#include <zce/bus/twoway_pipe.h>
+#include <zce/thread/thread_task.h>
+#include <zce/socket/addr_base.h>
+#include <zce/socket/addr_in.h>
+#include <zce/socket/socket_base.h>
+#include <zce/socket/stream.h>
 #include <zce_socket_datagram.h>
 #include <zce_socket_connector.h>
 #include <zce_event_handle_base.h>
 #include <zce_event_reactor_base.h>
 #include <zce_event_reactor_select.h>
 #include <zce_event_reactor_epoll.h>
-#include <zce_thread_task.h>
+#include <zce/thread/thread_task.h>
 #include <zce_thread_wait_mgr.h>
 #include <zce_config_getopt.h>
 #include <zce_server_status.h>
@@ -118,7 +118,7 @@
 #include <zce_lock_file_lock.h>
 #include <zce_bytes_hash.h>
 #include <zce_bytes_encode.h>
-#include <zce_async_base.h>
+#include <zce/async/async_base.h>
 #include <zce_async_fsm.h>
 
 //
