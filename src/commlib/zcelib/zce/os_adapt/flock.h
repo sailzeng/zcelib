@@ -7,13 +7,15 @@
 * @brief      文件（记录）锁的函数，在WIN32，和LINUX 平台通用
 *             其实除了flock这个函数，叫记录锁更贴切一点，因为你可以只对文件的一部分进行操作
 *
-* @details    文件（记录）锁的适配层，兼容2个平台，参考ACE实现的，这个几乎就是COPY
-*             flock_xxx ，的函数都是非标准的，是ACE自己的一层封装。但可以说，ACE的封装
-*             还是比调用原生API fcntl舒服
-*             另外ACE没有提供flock函数，我提供了，对某个文件的全部内容进行操作是使用
+* @details    文件（记录）锁的适配层，兼容2个平台，
+*             记录锁的，fcntl的操作，没有直接模拟fcntl的操作，部分参考ACE封装。但可以说，
+*             ACE的封装还是比调用原生API fcntl舒服的。
+*             另外，不同意封装成 fcntl 的另外一个愿意是fcntl是一个大合集。直接用这个函数
+*             名字反而会给你错觉。
+*             文件锁使用的是flock函数，但不足是，其实Windows下仍然是用的记录锁实现的
 *
 * @note       而对于记录锁，其其实也是操作系统中有趣的一部分，而且其实个个平台差别不小。
-*             LINUX下，记录锁是劝告性的锁（默认是），
+*             LINUX下，记录锁是劝告性的锁（默认是），你想干坏事还是能干的。
 *             WINDOWS下是，记录锁是强制的，
 *             http://www.ibm.com/developerworks/cn/linux/l-cn-filelock/index.html
 *             http://www.cnblogs.com/hustcat/archive/2009/03/10/1408208.html
@@ -26,13 +28,19 @@
 
 #include "zce/os_adapt/common.h"
 
+
+
+namespace zce
+{
+
+
+
 /*!
-* @brief      文件锁对象的封装，
+* @brief      记录锁对象的封装，
 */
-struct zce_flock_t
+struct file_lock_t
 {
 public:
-
 
 # if defined (ZCE_OS_WINDOWS)
 
@@ -46,13 +54,22 @@ public:
 
     ///处理的文件句柄 Handle to the underlying file.
     ZCE_HANDLE   handle_ = ZCE_INVALID_HANDLE;
-
 };
 
-namespace zce
-{
+/*!
+* @brief      记录锁，文件锁初始化,直接用文件句柄初始化
+* @return         int        0成功，-1失败
+* @param[in,out]  lock       文件锁对象
+* @param[in]      file_hadle 操作的文件句柄
+*/
+int file_lock_init(file_lock_t *lock,
+                   ZCE_HANDLE file_hadle);
+
+
 
 //----------------------------------------------------------------------------------------
+// 记录锁的功能，模仿的是fcntl的功能
+
 //
 
 /*!
@@ -67,25 +84,14 @@ namespace zce
 * @note          平台的不兼容会带来某种风险，Windows下一旦文件大小调整，锁锁定的区域就不对了，
 *                所以在需要兼容的环境，最好文件大小是不调整的，
 */
-void flock_adjust_params (zce_flock_t *lock,
-                          int whence,
-                          size_t &start,
-                          size_t &len);
+void fcntl_lock_adjust_params(file_lock_t *lock,
+                              int whence,
+                              ssize_t &start,
+                              ssize_t &len);
 
-/*!
-* @brief      文件锁初始化,直接用fd
-* @return         int        0成功，-1失败
-* @param[in,out]  lock       文件锁对象
-* @param[in]      file_hadle 操作的文件句柄
-*/
-int flock_init (zce_flock_t *lock,
-                ZCE_HANDLE file_hadle);
 
-/*!
-* @brief      销毁文件锁对象zce_flock_t，也可以同时解开锁，可以同时关闭文件
-* @param[in]  lock 文件锁对象
-*/
-void flock_destroy (zce_flock_t *lock);
+
+
 
 /*!
 * @brief   加文件读取锁，共享锁，如果不能加上锁，会阻塞等待，共享锁不会阻止其他人读取
@@ -95,10 +101,10 @@ void flock_destroy (zce_flock_t *lock);
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int flock_rdlock (zce_flock_t *lock,
-                  int  whence = SEEK_SET,
-                  size_t start = 0,
-                  size_t len = 0);
+int fcntl_rdlock(file_lock_t *lock,
+                 int  whence = SEEK_SET,
+                 ssize_t start = 0,
+                 ssize_t len = 0);
 
 /*!
 * @brief  尝试进行加读取锁,如果不能加上锁，会立即返回
@@ -108,10 +114,10 @@ int flock_rdlock (zce_flock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int flock_tryrdlock (zce_flock_t *lock,
-                     int  whence = SEEK_SET,
-                     size_t start = 0,
-                     size_t len = 0);
+int fcntl_tryrdlock(file_lock_t *lock,
+                    int whence = SEEK_SET,
+                    ssize_t start = 0,
+                    ssize_t len = 0);
 
 /*!
 * @brief      对文件上写锁，排他锁，如果不能加上锁，会阻塞等待
@@ -121,10 +127,10 @@ int flock_tryrdlock (zce_flock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int flock_wrlock (zce_flock_t *lock,
-                  int  whence = SEEK_SET,
-                  size_t start = 0,
-                  size_t len = 0);
+int fcntl_wrlock(file_lock_t *lock,
+                 int whence = SEEK_SET,
+                 ssize_t start = 0,
+                 ssize_t len = 0);
 
 /*!
 * @brief      尝试进行加写锁（排他锁）,如果不能加上锁，会立即返回
@@ -134,10 +140,10 @@ int flock_wrlock (zce_flock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     锁定区域的长度，
 */
-int flock_trywrlock (zce_flock_t *lock,
-                     int  whence = SEEK_SET,
-                     size_t start = 0,
-                     size_t len = 0);
+int fcntl_trywrlock(file_lock_t *lock,
+                    int whence = SEEK_SET,
+                    ssize_t start = 0,
+                    ssize_t len = 0);
 
 /*!
 * @brief      解锁
@@ -147,10 +153,27 @@ int flock_trywrlock (zce_flock_t *lock,
 * @param[in]     start   从根源开始的相对位置
 * @param[in]     len     解锁定区域的长度，
 */
-int flock_unlock (zce_flock_t *lock,
-                  int  whence = SEEK_SET,
-                  size_t start = 0,
-                  size_t len = 0);
+int fcntl_unlock(file_lock_t *lock,
+                 int whence = SEEK_SET,
+                 ssize_t start = 0,
+                 ssize_t len = 0);
+
+
+//----------------------------------------------------------------------------------------
+// 文件锁的功能，模仿的是flock的功能
+
+/*!
+* @brief      文件锁操作
+* @return     int
+* @param      lock_hadle 注意这个地方是file_lock_t，需要用file_lock_init先初始化
+* @param      operation 相应的操作，是LOCK_SH LOCK_EX LOCK_UN LOCK_NB 的组合
+*             LOCK_SH 尝试加锁
+*             LOCK_EX 强制加锁
+*             LOCK_NB 阻塞，可以和LOCK_SH，LOCK_EX组合使用。用|
+*             LOCK_UN 解锁
+*/
+int flock(file_lock_t& lock_hadle,int operation);
+
 
 
 };

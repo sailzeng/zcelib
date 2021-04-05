@@ -101,7 +101,10 @@ public:
 protected:
 
     ///记录锁，
-    zce_flock_t    record_lock_;
+    zce::file_lock_t    record_lock_;
+
+    ///自己打开的这个文件，也就是调用过open函数
+    bool                  open_by_self_ = false;
 
 };
 

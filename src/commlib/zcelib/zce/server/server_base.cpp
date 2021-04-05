@@ -43,8 +43,7 @@ ZCE_Server_Base::~ZCE_Server_Base()
     // 关闭文件
     if (pid_handle_ != ZCE_INVALID_HANDLE)
     {
-        zce::flock_unlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
-        zce::flock_destroy(&pidfile_lock_);
+        zce::fcntl_unlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
         zce::close(pid_handle_);
     }
 }
@@ -104,14 +103,14 @@ int ZCE_Server_Base::out_pid_file(const char *pragramname)
     }
 
 
-    zce::flock_init(&pidfile_lock_, pid_handle_);
+    zce::file_lock_init(&pidfile_lock_, pid_handle_);
 
     char tmpbuff[PID_FILE_LEN + 1];
 
     snprintf(tmpbuff, PID_FILE_LEN + 1, "%*.u", (int)PID_FILE_LEN * (-1), self_pid_);
 
     // 尝试锁定全部文件，如果锁定不成功，表示有人正在用这个文件
-    ret = zce::flock_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
+    ret = zce::fcntl_trywrlock(&pidfile_lock_, SEEK_SET, 0, PID_FILE_LEN);
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR, "Trylock pid file [%s]fail. Last error =%d",

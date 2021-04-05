@@ -1,4 +1,5 @@
 #include "zce/predefine.h"
+#include "zce/log/logging.h"
 #include "zce/os_adapt/file.h"
 #include "zce/lock/record_lock.h"
 
@@ -24,19 +25,28 @@ int ZCE_Record_Lock::open(const char *file_name,
                           int open_mode,
                           mode_t perms)
 {
+    //避免重复打开，用断言保护
+    ZCE_ASSERT(record_lock_.handle_ == ZCE_INVALID_HANDLE);
     //打开这个文件
-    ZCE_HANDLE lock_hadle = zce::open(file_name,
+    ZCE_HANDLE file_handle = zce::open(file_name,
                                       open_mode,
                                       perms);
 
-    return zce::flock_init(&record_lock_,
-                           lock_hadle);
+    if (file_handle == ZCE_INVALID_HANDLE)
+    {
+        return -1;
+    }
+    //标识是自己打开的
+    open_by_self_ = true;
+
+    return zce::file_lock_init(&record_lock_,
+                                file_handle);
 }
 
 //用一个文件Handle初始化,外部传入的ZCE_HANDLE，我不会关闭，文件
 int ZCE_Record_Lock::open(ZCE_HANDLE file_handle)
 {
-    return zce::flock_init(&record_lock_, file_handle);
+    return zce::file_lock_init(&record_lock_, file_handle);
 }
 
 //得到锁文件的句柄
@@ -48,7 +58,10 @@ ZCE_HANDLE ZCE_Record_Lock::get_file_handle()
 //关闭之，如果是ZCE_Record_Lock内部自己打开的文件（不是文件句柄参数），关闭时会关闭文件
 void ZCE_Record_Lock::close()
 {
-    zce::flock_destroy(&record_lock_);
+    if (open_by_self_)
+    {
+        zce::close(record_lock_.handle_);
+    }
     return;
 }
 
@@ -57,7 +70,7 @@ int ZCE_Record_Lock::flock_rdlock (int  whence,
                                    ssize_t start,
                                    ssize_t len)
 {
-    return zce::flock_rdlock(&record_lock_,
+    return zce::fcntl_rdlock(&record_lock_,
                              whence,
                              start,
                              len);
@@ -68,7 +81,7 @@ int ZCE_Record_Lock::flock_tryrdlock (int  whence,
                                       ssize_t start,
                                       ssize_t len)
 {
-    return zce::flock_tryrdlock(&record_lock_,
+    return zce::fcntl_tryrdlock(&record_lock_,
                                 whence,
                                 start,
                                 len);
@@ -79,7 +92,7 @@ int ZCE_Record_Lock::flock_wrlock (int  whence,
                                    ssize_t start,
                                    ssize_t len)
 {
-    return zce::flock_wrlock(&record_lock_,
+    return zce::fcntl_wrlock(&record_lock_,
                              whence,
                              start,
                              len);
@@ -90,7 +103,7 @@ int ZCE_Record_Lock::flock_trywrlock (int  whence,
                                       ssize_t start,
                                       ssize_t len)
 {
-    return zce::flock_trywrlock(&record_lock_,
+    return zce::fcntl_trywrlock(&record_lock_,
                                 whence,
                                 start,
                                 len);
@@ -101,7 +114,7 @@ int ZCE_Record_Lock::flock_unlock (int  whence,
                                    ssize_t start,
                                    ssize_t len)
 {
-    return zce::flock_unlock(&record_lock_,
+    return zce::fcntl_unlock(&record_lock_,
                              whence,
                              start,
                              len);

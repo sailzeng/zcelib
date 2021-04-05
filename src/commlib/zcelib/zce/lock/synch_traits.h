@@ -29,7 +29,7 @@
 class ZCE_MT_SYNCH
 {
 public:
-    typedef ZCE_Thread_Light_Mutex                        MUTEX;
+    typedef ZCE_Thread_Light_Mutex                  MUTEX;
     typedef ZCE_Null_Mutex                          NULL_MUTEX;
     typedef ZCE_Process_Mutex                       PROCESS_MUTEX;
     typedef ZCE_Thread_Recursive_Mutex              RECURSIVE_MUTEX;

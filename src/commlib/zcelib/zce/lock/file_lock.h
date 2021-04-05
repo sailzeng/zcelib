@@ -4,7 +4,8 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013年1月14日
-* @brief      文件锁，用于整个锁定文件，
+* @brief      文件锁，用于整个锁定文件，但实现其实是用记录锁实现的。
+*             因为Windows 没有真正意义上的文件锁
 *             记录锁清参考@ref zce/lock/record_lock.h
 *
 * @details
@@ -70,17 +71,14 @@ public:
 
 protected:
 
-    ///操作的文件句柄
-    ZCE_HANDLE    lock_file_hadle_;
-
     ///自己打开的这个文件，也就是调用过open函数
-    bool          open_by_self_;
+    bool          open_by_self_ = false;
 
     ///
-    size_t        file_len_;
+    size_t        file_len_ = 0;
 
     ///文件锁句柄
-    zce_flock_t   file_lock_hdl_;
+    zce::file_lock_t   file_lock_;
 
 };
 

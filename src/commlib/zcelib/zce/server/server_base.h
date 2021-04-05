@@ -144,7 +144,7 @@ protected:
     ///PID ÎÄ¼þ¾ä±ú
     ZCE_HANDLE            pid_handle_;
     ///
-    zce_flock_t           pidfile_lock_;
+    zce::file_lock_t           pidfile_lock_;
 
     ///selfµÄPID
     pid_t                 self_pid_;
