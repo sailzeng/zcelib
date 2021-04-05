@@ -1,11 +1,11 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_file_lock.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/file_lock.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013年1月14日
 * @brief      文件锁，用于整个锁定文件，
-*             记录锁清参考@ref zce_lock_record_lock.h
+*             记录锁清参考@ref zce/lock/record_lock.h
 *
 * @details
 *
@@ -22,7 +22,7 @@
 /*!
 * @brief      文件锁，对于整个文件进行操作
 */
-class ZCE_File_Lock : public ZCE_NON_Copyable
+class ZCE_File_Lock : public zce::NON_Copyable
 {
 public:
 

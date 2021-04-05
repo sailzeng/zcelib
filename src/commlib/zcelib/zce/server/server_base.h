@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_server_base.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/server/base.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2006年3月7日
 * @brief      服务器的小工具集合,作为服务器基类使用
@@ -28,7 +28,7 @@
 /*********************************************************************************
 class ZCE_Server_Toolkit
 *********************************************************************************/
-class ZCE_Server_Base : public ZCE_NON_Copyable
+class ZCE_Server_Base : public zce::NON_Copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,

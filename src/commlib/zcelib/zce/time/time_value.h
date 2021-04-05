@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/time/time_value.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年10月6日
 * @brief      本来希望自己所有的代码里面的通用时间对象就是timeval的，

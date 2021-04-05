@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_string_extend.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/string/extend.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013年2月6日
 * @brief      实现一个C++的snprintf，类型无关的，速度可以是普通snprintf快30-50%，

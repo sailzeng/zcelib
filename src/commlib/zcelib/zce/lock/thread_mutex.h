@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_thread_mutex.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/thread_mutex.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年9月12日
 * @brief      线程的互斥量封装，分成3种方式

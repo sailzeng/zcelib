@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_bytes_encrypt.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/bytes/encrypt.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013年4月5日
 *             清明节，禽流感H7N9在上海江浙一带肆掠，10年一个轮回
@@ -192,7 +192,9 @@ public:
         ENCRYPT_STRATEGY::key_setup(proc_key, sub_key, if_encrypt);
     }
 
-protected:
+//打开主要是为了对比测试
+//protected:
+
     /*!
     @brief      ECB的加密，加密一个块，块的长度就是算法BLOCK_SIZE
     @param      key         加密的密钥

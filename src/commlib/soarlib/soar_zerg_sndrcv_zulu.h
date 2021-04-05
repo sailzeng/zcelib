@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_zerg_sndrcv_zulu.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Friday, September 05, 2014
 * @brief      2006年9月8日,原作者Scottxu ，移植,Sailzeng

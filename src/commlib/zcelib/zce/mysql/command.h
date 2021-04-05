@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_mysql_command.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/mysql/command.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2004年7月24日
 * @brief      MySQL的SQL处理对象，Command对象
@@ -28,7 +28,7 @@
 * @brief      MYSQL的命令对象，用于处理SQL语句的执行，获得结果集
 *
 */
-class ZCE_Mysql_Command: public ZCE_NON_Copyable
+class ZCE_Mysql_Command: public zce::NON_Copyable
 {
 
 public:

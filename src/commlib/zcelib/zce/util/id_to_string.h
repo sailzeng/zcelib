@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_id_to_string.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2004年8月2日
 * @brief      定义几组IDToString的宏,主要用于错误定义等。

@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/error.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年6月1日
 * @brief      错误定义的适配器层，主要还是向LINUX下靠拢

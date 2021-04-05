@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/string.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2002年06月22日
 * @brief      用于ASNI string函数的补充

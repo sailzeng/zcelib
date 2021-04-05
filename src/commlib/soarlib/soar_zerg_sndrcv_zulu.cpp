@@ -24,7 +24,7 @@ Zulu_SendRecv_Package::~Zulu_SendRecv_Package()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年4月25日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年4月25日
 Function        : Zulu_SendRecv_Package::set_zulu_svcinfo
 Return          : int
 Parameter List  :

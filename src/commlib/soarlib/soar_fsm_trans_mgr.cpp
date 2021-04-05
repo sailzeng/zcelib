@@ -137,7 +137,7 @@ void Transaction_Manager::finish()
 
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年1月9日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年1月9日
 Function        : Transaction_Manager::process_pipe_frame
 Return          : int
 Parameter List  :
@@ -244,7 +244,7 @@ void Transaction_Manager::unlock_qquin_trans_cmd(unsigned int user_id, unsigned 
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月22日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2006年4月22日
 Function        : Transaction_Manager::process_appframe
 Return          : int
 Parameter List  :
@@ -303,7 +303,7 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2006年4月3日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2006年4月3日
 Function        : Transaction_Manager::get_handler_by_transid
 Return          : int
 Parameter List  :
@@ -335,7 +335,7 @@ Modify Record   :
 //}
 //
 ///******************************************************************************************
-//Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007年11月14日
+//Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年11月14日
 //Function        : Transaction_Manager::dump_all_trans_info
 //Return          : void
 //Parameter List  : NULL

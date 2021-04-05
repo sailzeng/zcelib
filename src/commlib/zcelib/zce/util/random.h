@@ -1,7 +1,7 @@
 /*!
-* @filename   zce_boost_random.h
+* @filename   zce/util/random.h
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年10月1日
 * @brief      若干个产生随机数的类，包括随机数发生器等

@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/condi.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年10月2日
 * @brief      条件变量快平台的封装，在WINDOWS下是模拟的，而且只能在线程中使用，
@@ -81,8 +81,7 @@
 *
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_CONDITION_H_
-#define ZCE_LIB_OS_ADAPT_CONDITION_H_
+#pragma once
 
 #include "zce/os_adapt/common.h"
 
@@ -185,5 +184,4 @@ int pthread_cond_signal(pthread_cond_t *cond);
 
 };
 
-#endif //ZCE_LIB_OS_ADAPT_CONDITION_H_
 

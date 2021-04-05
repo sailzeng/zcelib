@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_svrd_application.cpp
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2008年1月22日
 * @brief      终于讲sonicmao的这个类发扬广大了，当然到今天，里面的代码已经基本100%重写了。

@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_frame_malloc.cpp
-* @author     Sailzeng <sailerzeng@gmail.com>,Scottxu,
+* @author     Sailzeng <sailzeng.cn@gmail.com>,Scottxu,
 * @version
 * @date       2008年2月20日
 * @brief
@@ -20,7 +20,7 @@
 
 #include "soar_zerg_frame.h"
 
-template <typename ZCE_LOCK >
+template <typename zce_lock >
 class AppFrame_Mallocor_Mgr
 {
 
@@ -125,7 +125,7 @@ protected:
     //FRAME的内存池子
     APPFRAME_MEMORY_POOL    frame_pool_;
     //池子的锁
-    ZCE_LOCK                zce_lock_;
+    zce_lock                zce/lock/;
 
 protected:
 
@@ -135,8 +135,8 @@ protected:
 };
 
 //初始化
-template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::initialize(size_t init_num,
+template <typename zce_lock >
+void AppFrame_Mallocor_Mgr<zce_lock>::initialize(size_t init_num,
                                                  size_t max_frame_len)
 {
     ZCE_ASSERT(max_frame_len > 2048 && init_num > 8);
@@ -164,16 +164,16 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::initialize(size_t init_num,
 }
 
 //最大可以分配的FRAME的长度
-template <typename ZCE_LOCK >
-size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_max_framelen()
+template <typename zce_lock >
+size_t AppFrame_Mallocor_Mgr<zce_lock>::get_max_framelen()
 {
     return size_appframe_[NUM_OF_FRAMELIST - 1];
 }
 
 
 //根据要求的的FRAME尺寸大小，分配一个FRAME
-template <typename ZCE_LOCK >
-inline size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_roundup(size_t sz_frame)
+template <typename zce_lock >
+inline size_t AppFrame_Mallocor_Mgr<zce_lock>::get_roundup(size_t sz_frame)
 {
     //也许循环找还快
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
@@ -190,15 +190,15 @@ inline size_t AppFrame_Mallocor_Mgr<ZCE_LOCK>::get_roundup(size_t sz_frame)
 }
 
 //构造函数
-template <typename ZCE_LOCK >
-AppFrame_Mallocor_Mgr<ZCE_LOCK>::AppFrame_Mallocor_Mgr()
+template <typename zce_lock >
+AppFrame_Mallocor_Mgr<zce_lock>::AppFrame_Mallocor_Mgr()
 {
     memset(size_appframe_, 0, sizeof(size_appframe_));
 }
 
 //析构函数
-template <typename ZCE_LOCK >
-AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
+template <typename zce_lock >
+AppFrame_Mallocor_Mgr<zce_lock>::~AppFrame_Mallocor_Mgr()
 {
     //
     ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
@@ -243,10 +243,10 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK>::~AppFrame_Mallocor_Mgr()
 
 
 //根据需要长度，从池子分配一个APPFRAME
-template <typename ZCE_LOCK >
-Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len)
+template <typename zce_lock >
+Zerg_App_Frame *AppFrame_Mallocor_Mgr<zce_lock>::alloc_appframe(size_t frame_len)
 {
-    typename ZCE_LOCK::LOCK_GUARD tmp_guard(zce_lock_);
+    typename zce_lock::LOCK_GUARD tmp_guard(zce/lock/);
     size_t hk = get_roundup(frame_len);
 
     //
@@ -267,8 +267,8 @@ Zerg_App_Frame *AppFrame_Mallocor_Mgr<ZCE_LOCK>::alloc_appframe(size_t frame_len
 
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
-template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model_freame,
+template <typename zce_lock >
+void AppFrame_Mallocor_Mgr<zce_lock>::clone_appframe(const Zerg_App_Frame *model_freame,
                                                      Zerg_App_Frame *&cloned_frame)
 {
     //
@@ -279,20 +279,20 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clone_appframe(const Zerg_App_Frame *model
 
 
 //释放一个APPFRAME到池子
-template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::free_appframe(Zerg_App_Frame *proc_frame)
+template <typename zce_lock >
+void AppFrame_Mallocor_Mgr<zce_lock>::free_appframe(Zerg_App_Frame *proc_frame)
 {
     ZCE_ASSERT(proc_frame);
-    typename ZCE_LOCK::LOCK_GUARD tmp_guard(zce_lock_);
+    typename zce_lock::LOCK_GUARD tmp_guard(zce/lock/);
     size_t hk = get_roundup(proc_frame->frame_length_);
     frame_pool_[hk].push_back(proc_frame);
 }
 
 //调整池子的容量
-template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::adjust_pool_capacity()
+template <typename zce_lock >
+void AppFrame_Mallocor_Mgr<zce_lock>::adjust_pool_capacity()
 {
-    typename ZCE_LOCK::LOCK_GUARD tmp_guard(zce_lock_);
+    typename zce_lock::LOCK_GUARD tmp_guard(zce/lock/);
 
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {
@@ -312,8 +312,8 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::adjust_pool_capacity()
 }
 
 //扩展LIST的容量
-template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::extend_list_capacity(size_t list_no, size_t extend_num)
+template <typename zce_lock >
+void AppFrame_Mallocor_Mgr<zce_lock>::extend_list_capacity(size_t list_no, size_t extend_num)
 {
     size_t old_capacity =  frame_pool_[list_no].capacity();
     frame_pool_[list_no].resize(old_capacity + extend_num);
@@ -326,8 +326,8 @@ void AppFrame_Mallocor_Mgr<ZCE_LOCK>::extend_list_capacity(size_t list_no, size_
 }
 
 //得到SINGLETON的实例
-template <typename ZCE_LOCK >
-AppFrame_Mallocor_Mgr<ZCE_LOCK> *AppFrame_Mallocor_Mgr<ZCE_LOCK>::instance()
+template <typename zce_lock >
+AppFrame_Mallocor_Mgr<zce_lock> *AppFrame_Mallocor_Mgr<zce_lock>::instance()
 {
     if (instance_ == NULL)
     {
@@ -338,8 +338,8 @@ AppFrame_Mallocor_Mgr<ZCE_LOCK> *AppFrame_Mallocor_Mgr<ZCE_LOCK>::instance()
 }
 
 //清理SINGLETON的实例
-template <typename ZCE_LOCK >
-void AppFrame_Mallocor_Mgr<ZCE_LOCK>::clean_instance()
+template <typename zce_lock >
+void AppFrame_Mallocor_Mgr<zce_lock>::clean_instance()
 {
     if (instance_)
     {

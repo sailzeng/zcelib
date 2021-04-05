@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_net_http_client.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Monday, August 25, 2014
 * @brief      代码的第一版本来自libghttp，还没有任何改写，只是尝试移植。

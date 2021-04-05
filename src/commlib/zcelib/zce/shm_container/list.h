@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_list.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/shm_container/list.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2008年1月18日
 * @brief      可以放在共享内存里面的容器，不可以放，而且可以用来恢复。甚至共享

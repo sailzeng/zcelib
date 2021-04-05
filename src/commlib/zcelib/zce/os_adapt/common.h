@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/common.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年5月1日
 * @brief      定义各种跨平台的结构，枚举，宏，全局变量定义
@@ -17,8 +17,7 @@
 *             大部分情况我用ssize_t替换off_t
 */
 
-#ifndef ZCE_LIB_OS_ADAPT_PREDEFINE_H_
-#define ZCE_LIB_OS_ADAPT_PREDEFINE_H_
+#pragma once
 
 //因为我我用预编译头文件的缘故，所以这儿不用包括这个文件
 
@@ -846,5 +845,5 @@ typedef void     *ZCE_SHLIB_HANDLE;
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-#endif //ZCE_LIB_OS_ADAPT_PREDEFINE_H_
+
 

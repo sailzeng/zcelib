@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2019  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_boost_lord_rings.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/util/lord_rings.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2006年3月11日
 * @brief      魔戒，一个循环存放数据的队列,用于各种缓冲区，队列，可以定长，也可以扩展长度

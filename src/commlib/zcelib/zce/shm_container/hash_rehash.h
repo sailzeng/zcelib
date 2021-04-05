@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_hash_rehash.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/shm_container/hash_rehash.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2010年04月6日
 * @brief      多次HASH解决冲突的HASH实现，同时也是安全的HASH,设计目的是让这个HASH

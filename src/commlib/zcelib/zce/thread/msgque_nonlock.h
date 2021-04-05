@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_msgque_nonlock.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年10月8日
 * @brief
@@ -23,7 +23,7 @@
 //使用偏特化得到一个ZCE_Message_Queue
 template < typename _value_type,
            typename _container_type >
-class ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
+class ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, _container_type> : public zce::NON_Copyable
 {
 protected:
 

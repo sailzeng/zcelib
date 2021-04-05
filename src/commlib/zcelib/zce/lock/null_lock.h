@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_null_lock.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/null_lock.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年9月13日
 * @brief      为了纪念我用ACE这么多年，我还是倾向用ACE的一些方式解决问题。

@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_ptr_guard.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/ptr_guard.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年9月21日
 * @brief      利用多态实现的锁GUARD，
@@ -17,11 +17,12 @@
 #include "zce/lock/lock_base.h"
 
 /*!
-* @brief      锁GUARD，利用构造和修改进行加锁解锁操作方法，
+* @brief      锁GUARD，利用构造和析构进行加锁解锁操作方法，利用多态兼容变化
+*             多态的好处是，你可以动态的决定使用什么锁，而不是在编译的时候。
 *             只要是从ZCE_Lock_Base继承的家伙，应该都可以使用这个，
 *             ZCE_LockPtr_Guard是利用多态特性实现的，而不是模版特性
 */
-class ZCE_Lock_Ptr_Guard : public ZCE_NON_Copyable
+class ZCE_Lock_Ptr_Guard : public zce::NON_Copyable
 {
 public:
 

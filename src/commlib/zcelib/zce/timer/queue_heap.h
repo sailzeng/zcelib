@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_timer_queue_heap.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/timer/queue_heap.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年10月3日
 * @brief      堆的定时器队列，所有的超时时间用堆进行排序，这样判断是否有定时器要触发就很简单，

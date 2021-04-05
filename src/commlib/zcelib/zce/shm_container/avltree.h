@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_avltree.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/shm_container/avltree.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2006年1月16日
 * @brief      希望AVLTree主要是完成可以排序的MAP,SET,的MMAP类
@@ -30,26 +30,23 @@
 
 #include "zce/shm_container/common.h"
 
-namespace zce
+namespace zce::shmc
 {
 
-
-
-
-template<class _value_type, class _key_type, class _extract_key, class _compare_key> class shm_avl_tree;
+template<class _value_type, class _key_type, class _extract_key, class _compare_key> class avl_tree;
 
 ///AVL TREE的头部数据区
-class _shm_avl_tree_head
+class _avl_tree_head
 {
 protected:
-    _shm_avl_tree_head()
+    _avl_tree_head()
         : size_of_mmap_(0)
         , num_of_node_(0)
         , sz_free_node_(0)
         , sz_use_node_(0)
     {
     }
-    ~_shm_avl_tree_head()
+    ~_avl_tree_head()
     {
     }
 
@@ -66,11 +63,11 @@ public:
 
 
 //AVL tree的索引的节点
-class _shm_avl_tree_index
+class _avl_tree_index
 {
 
 public:
-    _shm_avl_tree_index()
+    _avl_tree_index()
         : parent_(_shm_memory_base::_INVALID_POINT)
         , left_(_shm_memory_base::_INVALID_POINT)
         , right_(_shm_memory_base::_INVALID_POINT)
@@ -78,7 +75,7 @@ public:
     {
     }
 
-    _shm_avl_tree_index(const size_t &p, const size_t &l, const size_t &r, int8_t hb)
+    _avl_tree_index(const size_t &p, const size_t &l, const size_t &r, int8_t hb)
         : parent_(p)
         , left_(l)
         , right_(r)
@@ -86,7 +83,7 @@ public:
     {
     }
 
-    ~_shm_avl_tree_index()
+    ~_avl_tree_index()
     {
     }
 
@@ -107,11 +104,11 @@ template < class _value_type,
            class _key_type,
            class _extract_key,
            class _compare_key >
-class _shm_avl_tree_iterator
+class _avl_tree_iterator
 {
-    typedef _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
+    typedef _avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key> iterator;
 
-    typedef shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key> shm_avl_tree_t;
+    typedef avl_tree<_value_type, _key_type, _extract_key, _compare_key> shm_avl_tree_t;
 
 
     //迭代器萃取器所有的东东
@@ -123,19 +120,19 @@ class _shm_avl_tree_iterator
 
 public:
     //构造函数
-    _shm_avl_tree_iterator(size_t seq, shm_avl_tree_t *instance)
+    _avl_tree_iterator(size_t seq, shm_avl_tree_t *instance)
         : serial_(seq)
         , avl_tree_inst_(instance)
     {
     }
 
-    _shm_avl_tree_iterator()
+    _avl_tree_iterator()
         : serial_(_shm_memory_base::_INVALID_POINT),
           avl_tree_inst_(NULL)
     {
     }
 
-    ~_shm_avl_tree_iterator()
+    ~_avl_tree_iterator()
     {
     }
 
@@ -287,23 +284,23 @@ template < class _value_type,
            class _key_type,
            class _extract_key = smem_identity<_value_type>,
            class _compare_key = std::less<_key_type> >
-class shm_avl_tree : public _shm_memory_base
+class avl_tree : public _shm_memory_base
 {
 public:
     //定义自己
-    typedef shm_avl_tree < _value_type,
+    typedef avl_tree < _value_type,
             _key_type,
             _extract_key,
             _compare_key > self;
 
     //定义迭代器
-    typedef _shm_avl_tree_iterator < _value_type,
+    typedef _avl_tree_iterator < _value_type,
             _key_type,
             _extract_key,
             _compare_key > iterator;
 
     //迭代器友元
-    friend class _shm_avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
+    friend class _avl_tree_iterator<_value_type, _key_type, _extract_key, _compare_key>;
 
 
 
@@ -311,19 +308,19 @@ public:
 
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
-    shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore)
+    avl_tree<_value_type, _key_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore)
         : _shm_memory_base(NULL)
         , index_base_(NULL)
         , data_base_(NULL)
     {
     }
 
-    shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key >()
+    avl_tree<_value_type, _key_type, _extract_key, _compare_key >()
         : _shm_memory_base(NULL)
     {
     }
 
-    ~shm_avl_tree<_value_type, _key_type, _extract_key, _compare_key >()
+    ~avl_tree<_value_type, _key_type, _extract_key, _compare_key >()
     {
     }
 
@@ -331,7 +328,7 @@ public:
     const self &operator=(const self &others);
 
     //得到索引的基础地址
-    inline _shm_avl_tree_index *getindexbase()
+    inline _avl_tree_index *getindexbase()
     {
         return index_base_;
     }
@@ -393,8 +390,8 @@ public:
     //内存区的构成为 头部定义区,index区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_avl_tree_head)
-                + sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
+        return  sizeof(_avl_tree_head)
+                + sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX)
                 + sizeof(_value_type) * numnode;
     }
 
@@ -402,7 +399,7 @@ public:
     static self *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
         //assert(pmmap!=NULL && numnode >0 );
-        _shm_avl_tree_head *avl_tree_head = reinterpret_cast<_shm_avl_tree_head *>(pmmap);
+        _avl_tree_head *avl_tree_head = reinterpret_cast<_avl_tree_head *>(pmmap);
 
         //如果是恢复,数据都在内存中,
         if (true == if_restore)
@@ -426,24 +423,24 @@ public:
         //头部
         instance->avl_tree_head_ = avl_tree_head;
         //索引区
-        instance->index_base_ = reinterpret_cast<_shm_avl_tree_index *>(
+        instance->index_base_ = reinterpret_cast<_avl_tree_index *>(
                                     pmmap +
-                                    sizeof(_shm_avl_tree_head));
+                                    sizeof(_avl_tree_head));
         //数据区
         instance->data_base_ = reinterpret_cast<_value_type *>(
                                    pmmap +
                                    sizeof(_shm_rb_tree_head) +
-                                   sizeof(_shm_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
+                                   sizeof(_avl_tree_index) * (numnode + ADDED_NUM_OF_INDEX));
 
         //初始化free_index_,head_index_
-        instance->head_index_ = reinterpret_cast<_shm_avl_tree_index *>(
+        instance->head_index_ = reinterpret_cast<_avl_tree_index *>(
                                     pmmap +
-                                    sizeof(_shm_avl_tree_head) +
-                                    sizeof(_shm_avl_tree_index) * (numnode));
-        instance->free_index_ = reinterpret_cast<_shm_avl_tree_index *>(
+                                    sizeof(_avl_tree_head) +
+                                    sizeof(_avl_tree_index) * (numnode));
+        instance->free_index_ = reinterpret_cast<_avl_tree_index *>(
                                     pmmap +
-                                    sizeof(_shm_avl_tree_head) +
-                                    sizeof(_shm_avl_tree_index) * (numnode + 1));
+                                    sizeof(_avl_tree_head) +
+                                    sizeof(_avl_tree_index) * (numnode + 1));
 
         if (false == if_restore)
         {
@@ -476,7 +473,7 @@ public:
         free_index_->right_ = 0;
 
         //初始化free数据区
-        _shm_avl_tree_index *pindex = index_base_;
+        _avl_tree_index *pindex = index_base_;
         for (size_t i = 0; i < avl_tree_head_->num_of_node_; ++i)
         {
             pindex->right_ = (i + 1);
@@ -1476,20 +1473,20 @@ protected:
 
 protected:
     ///RBTree头部
-    _shm_avl_tree_head            *avl_tree_head_;
+    _avl_tree_head            *avl_tree_head_;
 
     ///所有的指针都是根据基地址计算得到的,用于方便计算,每次初始化会重新计算
     ///索引数据区,
-    _shm_avl_tree_index            *index_base_;
+    _avl_tree_index            *index_base_;
 
     ///数据区起始指针,
     _value_type                   *data_base_;
 
     ///头节点的头指针,N+1个索引位表示
-    _shm_avl_tree_index            *head_index_;
+    _avl_tree_index            *head_index_;
 
     ///空节点的头指针,N+2个索引位表示（这里利用right节点做链接，把空节点串起来）
-    _shm_avl_tree_index            *free_index_;
+    _avl_tree_index            *free_index_;
 
 };
 
@@ -1497,13 +1494,13 @@ protected:
 template < class _value_type,
            class _compare_key = std::less<_value_type> >
 class mmap_avl_set :
-    public shm_avl_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
+    public avl_tree< _value_type, _value_type, smem_identity<_value_type>, _compare_key >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     mmap_avl_set<_value_type, _compare_key >(size_t numnode, void *pmmap, bool if_restore) :
-        shm_avl_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>(numnode, pmmap, if_restore)
+        avl_tree<_value_type, _value_type, smem_identity<_value_type>, _compare_key>(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
@@ -1518,7 +1515,7 @@ public:
     initialize(size_t &numnode, char *pmmap, bool if_restore = false)
     {
         return reinterpret_cast<mmap_set< _value_type, _compare_key  >*>(
-                   shm_avl_tree < _value_type,
+                   avl_tree < _value_type,
                    _value_type,
                    smem_identity<_value_type>,
                    _compare_key >::initialize(numnode, pmmap, if_restore));
@@ -1531,13 +1528,13 @@ template < class _key_type,
            class _extract_key = mmap_select1st <std::pair <_key_type, _value_type> >,
            class _compare_key = std::less<_value_type>  >
 class mmap_avl_map :
-    public shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
+    public avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >
 {
 protected:
     //如果在共享内存使用,没有new,所以统一用initialize 初始化
     //这个函数,不给你用,就是不给你用
     mmap_avl_map<_key_type, _value_type, _extract_key, _compare_key >(size_t numnode, void *pmmap, bool if_restore) :
-        shm_avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
+        avl_tree< std::pair <_key_type, _value_type>, _key_type, _extract_key, _compare_key  >(numnode, pmmap, if_restore)
     {
         initialize(numnode, pmmap, if_restore);
     }
@@ -1553,7 +1550,7 @@ public:
                _value_type,
                _extract_key,
                _compare_key  > * > (
-                   shm_avl_tree < std::pair < _key_type,
+                   avl_tree < std::pair < _key_type,
                    _value_type >,
                    _key_type,
                    _extract_key,

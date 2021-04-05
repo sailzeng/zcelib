@@ -7,7 +7,7 @@
 /*********************************************************************************
 class ZCE_ShareMem_Mmap 封装MMAP共享内存映射文件函数
 *********************************************************************************/
-class ZCE_ShareMem_Mmap: public ZCE_NON_Copyable
+class ZCE_ShareMem_Mmap: public zce::NON_Copyable
 {
 public:
     //构造函数

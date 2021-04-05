@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_thread_msgque_condi.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/thread/msgque_condi.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年6月17日
 * @brief      多线程使用的Message Queue，内部的同步对象使用了条件变量
@@ -34,7 +34,7 @@
 * note
 */
 template <typename _value_type, typename _container_type = std::deque<_value_type> >
-class ZCE_Message_Queue_Condi : public ZCE_NON_Copyable
+class ZCE_Message_Queue_Condi : public zce::NON_Copyable
 {
 
 protected:

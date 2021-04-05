@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_socket_connector.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/socket/connector.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年6月19日
 * @brief      connect的工厂

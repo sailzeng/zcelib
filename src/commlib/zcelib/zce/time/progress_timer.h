@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_time_progress_counter.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年10月1日
 * @brief      计时器的封装，用于记录一些耗时等。也可以用于测量
@@ -254,7 +254,7 @@ protected:
 *             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
 */
 template<typename PROGRESS_TIMER>
-class ZCE_Auto_Progress_Timer : public ZCE_NON_Copyable
+class ZCE_Auto_Progress_Timer : public zce::NON_Copyable
 {
 public:
     ///构造函数，同时开始计时

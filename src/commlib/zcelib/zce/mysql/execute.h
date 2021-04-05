@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_mysql_process.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/mysql/process.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年05月18日
 * @brief      读取MYSQL数据库的类,用于读取DB的配置信息
@@ -27,7 +27,7 @@
 @brief      读取MYSQL数据库的类,用于操作MySQL DB的访问
             这个类里面包装了connect,command,你可以通过ZCE_Mysql_Result获得结果
 */
-class ZCE_Mysql_Process : ZCE_NON_Copyable
+class ZCE_Mysql_Process : zce::NON_Copyable
 {
 
 protected:

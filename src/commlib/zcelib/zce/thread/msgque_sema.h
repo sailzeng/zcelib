@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_thread_msgque_sema.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/thread/msgque_sema.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年6月17日
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
@@ -19,13 +19,13 @@
 #ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
 #define ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
 
-#include "zce_lock_synch_traits.h"
-#include "zce_thread_msgque_template.h"
+#include "zce/lock/synch_traits.h"
+#include "zce/thread/msgque_template.h"
 
 #include "zce/util/non_copyable.h"
-#include "zce_lock_thread_mutex.h"
-#include "zce_lock_synch_traits.h"
-#include "zce_lock_thread_semaphore.h"
+#include "zce/lock/thread_mutex.h"
+#include "zce/lock/synch_traits.h"
+#include "zce/lock/thread_semaphore.h"
 
 
 /*!
@@ -36,7 +36,7 @@
 */
 template < typename _value_type,
            typename _container_type >
-class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public ZCE_NON_Copyable
+class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public zce::NON_Copyable
 {
 
 public:

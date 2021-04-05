@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_mysql_connect.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/mysql/connect.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2004年7月24日
 * @brief      MYSQL的连接器，用于封装MYSQL的MYSQL句柄
@@ -23,7 +23,7 @@
 /*!
 * @brief      MYSQL的连接器
 */
-class ZCE_Mysql_Connect : public ZCE_NON_Copyable
+class ZCE_Mysql_Connect : public zce::NON_Copyable
 {
 
 public:

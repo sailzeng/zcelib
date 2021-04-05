@@ -8,7 +8,7 @@
 /*********************************************************************************
 class ZCE_ShareMem_Posix 封装POSIX共享内存映射代码，
 *********************************************************************************/
-class ZCE_ShareMem_Posix : public ZCE_NON_Copyable
+class ZCE_ShareMem_Posix : public zce::NON_Copyable
 {
 
 public:

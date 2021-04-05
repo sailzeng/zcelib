@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/process.h
-* @author     Sailzeng <sailerzeng@gmail.com>  pascalshen <pascalshen@tencent.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>  pascalshen <pascalshen@tencent.com>
 * @version
 * @date       2013年1月3日
 * @brief      进程相关的

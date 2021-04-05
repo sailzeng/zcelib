@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/semaphore.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年10月6日 今天Jobs走了，发现自己居然也到了到了开始缅怀前辈年纪，
 * @brief      信号灯的跨平台封装，向LINUX的POSIX的封装靠齐

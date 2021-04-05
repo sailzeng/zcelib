@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_record_lock.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/record_lock.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年10月1日
 * @brief      记录锁的封装，用于锁定文件中的一部分字节，字段
@@ -23,7 +23,7 @@
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
 *
 */
-class ZCE_Record_Lock : public ZCE_NON_Copyable
+class ZCE_Record_Lock : public zce::NON_Copyable
 {
 
 public:

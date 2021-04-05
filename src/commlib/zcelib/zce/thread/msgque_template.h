@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_thread_msgque_template.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/thread/msgque_template.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Saturday, December 28, 2013
 * @brief
@@ -17,7 +17,7 @@
 #ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 #define ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
 
-#include "zce_boost_lord_rings.h"
+#include "zce/util/lord_rings.h"
 
 
 
@@ -32,7 +32,7 @@
 template < typename _zce_synch,
            typename _value_type,
            typename _container_type = std::deque<_value_type> >
-class ZCE_Message_Queue : public ZCE_NON_Copyable
+class ZCE_Message_Queue : public zce::NON_Copyable
 {
 
 

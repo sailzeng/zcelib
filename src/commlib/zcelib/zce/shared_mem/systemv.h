@@ -7,7 +7,7 @@
 /*********************************************************************************
 class ZCE_ShareMem_SystemV 封装SystemV共享内存映射代码，和POSIX和MMAP的最大区别是，没有映射文件
 *********************************************************************************/
-class ZCE_ShareMem_SystemV : public ZCE_NON_Copyable
+class ZCE_ShareMem_SystemV : public zce::NON_Copyable
 {
 
 public:

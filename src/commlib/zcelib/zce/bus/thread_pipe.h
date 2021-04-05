@@ -2,7 +2,7 @@
 /*!
 * @copyright  2004-2019  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_thread_bus_pipe.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年9月18日晚上，中国人民抗日81周年纪念日，81年
 * @brief
@@ -56,8 +56,8 @@ class shm_dequechunk;
 
 //线程使用的双向BUS管道，
 //不要直接使用这个类，使用下面的两个typedef
-template <typename ZCE_LOCK>
-class ZCE_Thread_Bus_Pipe : public ZCE_NON_Copyable
+template <typename zce_lock>
+class ZCE_Thread_Bus_Pipe : public zce::NON_Copyable
 {
 
 protected:
@@ -86,7 +86,7 @@ protected:
     zce::lockfree::shm_dequechunk  *bus_pipe_[THR_NUM_OF_PIPE];
 
     //锁
-    ZCE_LOCK                   bus_lock_[THR_NUM_OF_PIPE];
+    zce_lock                   bus_lock_[THR_NUM_OF_PIPE];
 
 public:
     //构造函数,允许你有多个实例的可能，不做保护
@@ -164,14 +164,14 @@ public:
     //从RECV管道读取数据，
     inline bool pop_front_recvpipe(zce::lockfree::dequechunk_node *&node)
     {
-        ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
+        ZCE_Lock_Guard<zce_lock> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->pop_front(node);
     }
 
     //向RECV管道写入数据
     inline bool push_back_recvpipe(const zce::lockfree::dequechunk_node *node)
     {
-        ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
+        ZCE_Lock_Guard<zce_lock> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
         return bus_pipe_[THR_RECV_PIPE_ID]->push_end(node);
     }
 
@@ -179,14 +179,14 @@ public:
     //从SEND管道读取数据，
     inline bool pop_front_sendpipe(zce::lockfree::dequechunk_node *&node)
     {
-        ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
+        ZCE_Lock_Guard<zce_lock> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->pop_front(node);
     }
 
     //向SEND管道写入数据
     inline bool push_back_sendpipe(const zce::lockfree::dequechunk_node *node)
     {
-        ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
+        ZCE_Lock_Guard<zce_lock> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
         return bus_pipe_[THR_SEND_PIPE_ID]->push_end(node);
     }
 
@@ -194,7 +194,7 @@ public:
     //取Recv管道头的帧长
     inline int get_frontsize_recvpipe(size_t &note_size)
     {
-        ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
+        ZCE_Lock_Guard<zce_lock> lock_guard(bus_lock_[THR_RECV_PIPE_ID]);
 
         if (bus_pipe_[THR_RECV_PIPE_ID] ->empty())
         {
@@ -208,7 +208,7 @@ public:
     //取Send管道头的帧长
     inline int get_frontsize_sendpipe(size_t &note_size)
     {
-        ZCE_Lock_Guard<ZCE_LOCK> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
+        ZCE_Lock_Guard<zce_lock> lock_guard(bus_lock_[THR_SEND_PIPE_ID]);
 
         if (bus_pipe_[THR_SEND_PIPE_ID] ->empty())
         {

@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2018  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_shm_trie_tree.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2018年9月9日
 * @brief      一个字典树(OR前缀树)的实现。字典树在在HW的计费的时候实现过。当时主要为了做计费。

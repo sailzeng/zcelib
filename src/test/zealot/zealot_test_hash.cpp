@@ -251,7 +251,7 @@ struct EXTRACT_INT_MY_DATA
 
 
 //
-class Lux_Data_Manager : public  ZCE_NON_Copyable
+class Lux_Data_Manager : public  zce::NON_Copyable
 {
 
 protected:

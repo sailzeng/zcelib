@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_server_status.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/server/status.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2006年3月7日
 * @brief
@@ -209,7 +209,7 @@ struct ZCE_STATUS_HEAD
 *
 * @note       本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
 */
-class ZCE_Server_Status : public ZCE_NON_Copyable
+class ZCE_Server_Status : public zce::NON_Copyable
 {
 protected:
 

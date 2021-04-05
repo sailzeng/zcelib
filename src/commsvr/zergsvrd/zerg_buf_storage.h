@@ -83,7 +83,7 @@ public:
 *
 * @note
 */
-class ZBuffer_Storage : public ZCE_NON_Copyable
+class ZBuffer_Storage : public zce::NON_Copyable
 {
 public:
     //构造函数和析构函数

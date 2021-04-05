@@ -1,7 +1,7 @@
 /**
 * @copyright 2004-2012  Apache License, Version 2.0 FULLSAIL
 * @filename  zce/thread/thread_task.h
-* @author    Sailzeng <sailerzeng@gmail.com>
+* @author    Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date      2011年6月18日
 * @brief     跨平台的线程对象封装，为了封装的的方便，这个实现是一个线程一个对象，
@@ -26,7 +26,7 @@
 *
 * @note       对象不可拷贝复制，
 */
-class ZCE_Thread_Task : public ZCE_NON_Copyable
+class ZCE_Thread_Task : public zce::NON_Copyable
 {
 
 public:

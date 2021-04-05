@@ -379,7 +379,7 @@ public:
     }
 
     /******************************************************************************************
-    Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年3月17日
+    Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年3月17日
     Function        : enqueue_sendqueue
     Return          : int
     Parameter List  :
@@ -431,7 +431,7 @@ public:
     }
 
     /******************************************************************************************
-    Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年3月17日
+    Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年3月17日
     Function        : enqueue_recvqueue
     Return          : int
     Parameter List  :

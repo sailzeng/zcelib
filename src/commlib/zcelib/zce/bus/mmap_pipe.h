@@ -1,6 +1,22 @@
 
-#ifndef ZCE_LIB_BUS_MMAP_PIPE_H_
-#define ZCE_LIB_BUS_MMAP_PIPE_H_
+/*!
+* @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
+* @filename   mmap_pipe.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version    
+* @date       2021年4月5日
+* @brief      
+*             
+*             
+* @details    
+*             
+*             
+*             
+* @note       
+*             
+*/
+
+#pragma once
 
 //美国著名计算机专家、C语言及Unix之父、图灵奖获得者丹尼斯·里奇（Dennis Ritchie）于2011年10日12日于家中去世，享年70岁。
 
@@ -13,7 +29,7 @@ class shm_dequechunk;
 };
 
 //MMAP的管道，你要初始化几条就初始化几条
-class ZCE_Bus_MMAPPipe : public ZCE_NON_Copyable
+class ZCE_Bus_MMAPPipe : public zce::NON_Copyable
 {
 
 public:
@@ -234,9 +250,6 @@ inline int ZCE_Bus_MMAPPipe::pop_front_bus(size_t pipe_id)
     return 0;
 }
 
-
-
-#endif //ZCE_LIB_BUS_MMAP_PIPE_H_
 
 
 

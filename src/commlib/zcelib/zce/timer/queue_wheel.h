@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_timer_queue_wheel.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/timer/queue_wheel.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2008年10月6日
 * @brief      时间轮的定时器队列，速度飞飞飞飞飞飞飞快，但是有精度限制的定时器处理，

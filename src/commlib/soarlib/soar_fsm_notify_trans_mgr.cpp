@@ -61,7 +61,7 @@ NotifyTrans_Manger<ZCE_MT_SYNCH>::~NotifyTrans_Manger()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年3月5日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年3月5日
 Function        : NotifyTrans_Manger<ACE_NULL_SYNCH>::active_notify_task
 Return          : int
 Parameter List  :
@@ -83,7 +83,7 @@ int NotifyTrans_Manger<ZCE_NULL_SYNCH>::active_notify_task(NotifyTrans_TaskBase 
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年3月5日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年3月5日
 Function        : NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task
 Return          : int
 Parameter List  :
@@ -148,7 +148,7 @@ int NotifyTrans_Manger<ZCE_MT_SYNCH>::active_notify_task(NotifyTrans_TaskBase *c
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年3月17日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年3月17日
 Function        : NotifyTrans_Manger<ACE_NULL_SYNCH>::stop_notify_task
 Return          : int
 Parameter List  : NULL
@@ -167,7 +167,7 @@ int NotifyTrans_Manger<ZCE_NULL_SYNCH>::stop_notify_task()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年3月17日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年3月17日
 Function        : NotifyTrans_Manger<ZCE_MT_SYNCH>::stop_notify_task
 Return          : int
 Parameter List  : NULL

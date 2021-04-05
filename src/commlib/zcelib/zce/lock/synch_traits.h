@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_synch_traits.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/synch_traits.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年11月15日
 * @brief      策略锁模式的类萃取 traits，用于模版代码中的typedef，
@@ -16,12 +16,12 @@
 #define ZCE_LIB_LOCK_SYNCH_TRAITS_H_
 
 //用于某些策略处理的类
-#include "zce_lock_process_mutex.h"
-#include "zce_lock_thread_mutex.h"
-#include "zce_lock_thread_rw_mutex.h"
-#include "zce_lock_thread_semaphore.h"
-#include "zce_lock_thread_condi.h"
-#include "zce_lock_null_lock.h"
+#include "zce/lock/process_mutex.h"
+#include "zce/lock/thread_mutex.h"
+#include "zce/lock/thread_rw_mutex.h"
+#include "zce/lock/thread_semaphore.h"
+#include "zce/lock/thread_condi.h"
+#include "zce/lock/null_lock.h"
 
 /*!
 * @brief      线程加锁环境的锁类型萃取器

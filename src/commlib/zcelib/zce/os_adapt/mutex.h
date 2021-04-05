@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/mutex.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年8月13日
 * @brief      跨平台互斥量部分的代码，接口基本模拟了pthread的函数，
@@ -10,8 +10,8 @@
 *             不用TIMEOUT的MUTEX，我们用临界区模拟实现的，（临界区是递归的呀）
 *             递归锁，WINDOWS自己的MUTEX是递归的，
 *             非递归锁，喔喔喔，这个是用信号灯模拟
-*             这些东东都有完整的封装，在@ref zce_lock_thread_mutex.h
-*             @ref zce_lock_process_mutex.h,
+*             这些东东都有完整的封装，在@ref zce/lock/thread_mutex.h
+*             @ref zce/lock/process_mutex.h,
 *             所以这儿的东东看看就行了，写代码可以必用。除非你是C爱好狂，
 *             pthread_mutex内部我已经合入了非递归锁功能，用信号灯模拟
 *

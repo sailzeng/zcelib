@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/lock/lock_base.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年9月13日
 * @brief      所有锁类(记录锁除外)的基础类，让你也有多态使用（改变）加锁行为的方式
@@ -31,7 +31,7 @@ class ZCE_Time_Value;
 *             但ZCE_Lock_Base内部的成员，都应该是private的，而ZCE_Null_Mutex的内部成员都应该是
 *             public，这个矛盾是不可调和的
 */
-class ZCE_Lock_Base : public ZCE_NON_Copyable
+class ZCE_Lock_Base : public zce::NON_Copyable
 {
 
 protected:
@@ -118,7 +118,7 @@ private:
 *             扩展应该都是从这个基类扩展
 *
 */
-class ZCE_Condition_Base : public ZCE_NON_Copyable
+class ZCE_Condition_Base : public zce::NON_Copyable
 {
 
 protected:

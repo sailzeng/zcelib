@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/shm_container/common.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年10月21日
 * @brief      实现一套在共享内存使用的容器类，用于服务器的代码，
@@ -320,7 +320,7 @@ template <class _Pair> struct mmap_select2st
 
 //=============================================================================================
 //
-class _shm_memory_base : public ZCE_NON_Copyable
+class _shm_memory_base : public zce::NON_Copyable
 {
 public:
 

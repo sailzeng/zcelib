@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_hash_expire.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/shm_container/hash_expire.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年10月26日
 * @brief      组合HASH TABLE，LIST的功能的HASH表，用于在LRU淘汰的时候方便的

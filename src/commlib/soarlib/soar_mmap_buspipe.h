@@ -197,7 +197,7 @@ inline int Soar_MMAP_BusPipe::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007年3月24日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3月24日
 Function        : PipeRequstMsgToService
 Return          : int
 Parameter List  :
@@ -240,7 +240,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007年3月24日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3月24日
 Function        : pipe_sendmsg_to_proxy
 Return          : template< class T> int
 Parameter List  :
@@ -285,7 +285,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(unsigned int cmd,
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2007年3月24日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3月24日
 Function        : pipe_sendmsg_to_service
 Return          : template< class T>
 Parameter List  :

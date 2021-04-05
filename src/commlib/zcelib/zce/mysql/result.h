@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_mysql_result.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/mysql/result.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2004年7月24日
 * @brief      MYSQL数据库结果集的封装
@@ -41,7 +41,7 @@
 *             考虑一下，也让这个东东NO Copyable了，
 *
 */
-class ZCE_Mysql_Result : ZCE_NON_Copyable
+class ZCE_Mysql_Result : zce::NON_Copyable
 {
 public:
 
@@ -397,7 +397,7 @@ inline int ZCE_Mysql_Result::get_field(unsigned int fieldid, ZCE_Mysql_Field &ff
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2004年7月22日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2004年7月22日
 Function        : ZCE_Mysql_Result::operator[]
 Return          : ZCE_MySQL_Field
 Parameter List  :

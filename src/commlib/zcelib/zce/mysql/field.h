@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_mysql_field.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/mysql/field.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2004年7月24日
 * @brief      MySQL的字段封装

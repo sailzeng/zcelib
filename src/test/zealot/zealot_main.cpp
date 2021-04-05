@@ -17,8 +17,8 @@ int main(int argc, char *argv[])
                                                 false,
                                                 true,
                                                 0,
-                                                LOG_OUTPUT::FILE | LOG_OUTPUT::ERROUT,
-                                                LOG_HEAD::NONE);
+                                                ZCE_U32_OR_2(LOG_OUTPUT::FILE,LOG_OUTPUT::ERROUT),
+                                                static_cast<int>(LOG_HEAD::NONE));
     ZCE_TRACE_FILELINE(RS_DEBUG);
     
     test_lua_script3(argc,argv);

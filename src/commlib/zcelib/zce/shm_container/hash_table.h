@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_hash_table.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/shm_container/hash_table.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年10月26日
 * @brief      在共享内存中使用的hashtable

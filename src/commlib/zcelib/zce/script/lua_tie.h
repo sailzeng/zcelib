@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_script_lua_tie.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/script/lua_tie.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Sunday, June 22, 2014
 * @brief      这个代码是参考Tinker实现的，仍然感谢原作者

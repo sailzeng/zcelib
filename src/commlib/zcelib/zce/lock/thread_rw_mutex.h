@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_thread_rw_mutex.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/thread_rw_mutex.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2011年9月13日
 * @brief      线程的读写锁，ZCE_Thread_RW_Mutex

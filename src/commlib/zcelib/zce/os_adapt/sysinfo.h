@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce/os_adapt/sysinfo.h
-* @author     Pascalshen <pascalshen@tencent.com>  Sailzeng <sailerzeng@gmail.com>
+* @author     Pascalshen <pascalshen@tencent.com>  Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年11月1日
 * @brief      得到操作系统的各种信息，包括，内存大小，CPU个数

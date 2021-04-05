@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_async_fw_base.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/async/fw_base.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Saturday, March 01, 2014
 * @brief      一套很简单的异步框架的基类，已经扩展出了FSM和协程的两个子类，

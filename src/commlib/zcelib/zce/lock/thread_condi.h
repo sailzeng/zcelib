@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_thread_condi.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/thread_condi.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013Äê2ÔÂ1ÈÕ
 * @brief

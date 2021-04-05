@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_shm_cache_chunk.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/shm_container/cache_chunk.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年12月16日
 * @brief      一个简单的存放变长数据的Cache，用于大小不太固定的数据的缓冲，

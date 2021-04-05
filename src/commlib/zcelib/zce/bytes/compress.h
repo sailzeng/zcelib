@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_data_proc_encrypt.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013年6月16日
 * @brief      内存高速压缩算法，这个代码是根据LZ4 和 QuickLZ 得到的。

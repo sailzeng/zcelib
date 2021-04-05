@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2015  Apache License, Version 2.0 FULLSAIL
 * @filename   soar_zerg_sndrcv_lolo.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2006Äê9ÔÂ8ÈÕ
 * @brief

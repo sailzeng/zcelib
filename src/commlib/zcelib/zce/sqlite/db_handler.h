@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
 * @filename   zce_sqlite3_process.h
-* @author     Viviliu，Sailzeng <sailerzeng@gmail.com>
+* @author     Viviliu，Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2008年3月12日
 * @brief      用于SQLite的一些操作处理，

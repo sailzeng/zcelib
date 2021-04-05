@@ -253,7 +253,7 @@ int test_mmap_rbtree2(int /*argc*/, char * /*argv*/[])
 int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
 {
 
-    typedef zce::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE *test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -325,7 +325,7 @@ int test_mmap_avltree1(int /*argc*/, char * /*argv*/[])
 int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
 {
 
-    typedef zce::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE *test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -463,7 +463,7 @@ int test_mmap_avltree2(int /*argc*/, char * /*argv*/[])
 int test_mmap_avltree3(int /*argc*/, char * /*argv*/[])
 {
     size_t erase_count = 0;
-    typedef zce::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE *test_avl_tree;
     size_t  SIZE_OF_TREE = 16;
 
@@ -614,7 +614,7 @@ int test_mmap_avltree3(int /*argc*/, char * /*argv*/[])
 int test_mmap_avltree4(int /*argc*/, char * /*argv*/[])
 {
 
-    typedef zce::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE *test_avl_tree;
     const size_t  SIZE_OF_TREE = 500;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;
@@ -724,7 +724,7 @@ int test_mmap_avltree4(int /*argc*/, char * /*argv*/[])
 int test_mmap_avltree5(int /*argc*/, char * /*argv*/[])
 {
 
-    typedef zce::shm_avl_tree< int, int >  TEST_AVL_TREE;
+    typedef zce::shmc::avl_tree< int, int >  TEST_AVL_TREE;
     TEST_AVL_TREE *test_avl_tree;
     const size_t  SIZE_OF_TREE = 2000;
     TEST_AVL_TREE::iterator  tree_iter, tree_iter_end;

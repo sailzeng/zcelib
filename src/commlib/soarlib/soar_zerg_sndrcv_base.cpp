@@ -36,7 +36,7 @@ SendRecv_Package_Base::~SendRecv_Package_Base()
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailerzeng@gmail.com>  Date Of Creation: 2008年4月25日
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年4月25日
 Function        : Tibetan_SendRecv_Package::set_services_id
 Return          : void
 Parameter List  :

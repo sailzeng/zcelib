@@ -1,7 +1,7 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce_lock_thread_spin.h
-* @author     Sailzeng <sailerzeng@gmail.com>
+* @filename   zce/lock/thread_spin.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2013年1月31日
 * @brief      SPIN 自旋锁的封装，

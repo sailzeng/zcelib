@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2014  Apache License, Version 2.0
-* @filename   zce_config_getopt.h
+* @filename   zce/config/getopt.h
 * @author
 * @version
 * @date       Monday, August 25, 2014
@@ -19,7 +19,7 @@
 
 #include "zce/util/non_copyable.h"
 
-class  ZCE_Get_Option : public ZCE_NON_Copyable
+class  ZCE_Get_Option : public zce::NON_Copyable
 {
 public:
     /// Mutually exclusive ordering values.
