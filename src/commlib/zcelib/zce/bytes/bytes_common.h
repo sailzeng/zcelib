@@ -293,7 +293,7 @@ struct ZDOUBLE_STRUCT
 //在GCC 4.8的处理中，写
 //unsigned int a = *(unsigned int *)(char_ptr);
 //会出现告警 dereferencing type-punned pointer will break strict-aliasing。
-//特别是如果你的数据是alignas(1) pack(1),那么即使你使用ZCE_SWAP_UINT32，还是可能出现这个告警。
+//特别是如果你的数据是alignas(1) pack(1),那么即使你使用ZBYTE_TO_UINT32，还是可能出现这个告警。
 //那么请参考ZRD_U32_FROM_BYTES解决类似问题。
 //或者使用参数 -fno-strict-aliasing 和 -Wno-strict-aliasing 可以消除掉这个warning。
 

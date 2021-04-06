@@ -4,8 +4,8 @@
 * @filename   mmap_pipe.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version    
-* @date       2021年4月5日
-* @brief      
+* @date       2010年？
+* @brief      共享内存的管道。用于多进程通信。
 *             
 *             
 * @details    
