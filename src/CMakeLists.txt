@@ -19,19 +19,20 @@ include_directories(${PATH_THIRDPARTY_INC}/mysql-linux-5.6.22 )
 include_directories(${PATH_THIRDPARTY_INC}/rapidxml-1.13 )
 
 
-add_library(zcelib )
-file(GLOB_RECURSE SRC_LIST "./commlib/zcelib/" "*.cpp")
+add_library(zcelib)
+file(GLOB_RECURSE SRC_LIST "./commlib/zcelib/*.cpp")
 message(""${SRC_LIST})
-target_sources(zcelib ${SRC_LIST})
+target_sources(zcelib PRIVATE ${SRC_LIST})
 target_include_directories(zcelib PUBLIC "./commlib/zcelib/")
 
 
-add_library(soarlib ${SRC_LIST})
-file(GLOB_RECURSE SRC_LIST "./commlib/soarlib/" "*.cpp")
-target_sources(soarlib ${SRC_LIST})
+add_library(soarlib)
+file(GLOB_RECURSE SRC_LIST "./commlib/soarlib/*.cpp")
+target_sources(soarlib PRIVATE ${SRC_LIST})
 target_include_directories(soarlib PUBLIC "./commlib/soarlib/")
 
 # add the executable
 add_executable(zealot)
-
-
+file(GLOB_RECURSE SRC_LIST "./test/zealot/*.cpp")
+target_sources(zealot PRIVATE ${SRC_LIST})
+target_include_directories(soarlib PUBLIC "./test/zealot/")
