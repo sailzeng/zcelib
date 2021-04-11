@@ -76,7 +76,7 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
     unsigned int frame_len = abnormal_frame_->frame_length_;
     abnormal_frame_->init_framehead(frame_len, option, cmd);
 
-    abnormal_frame_->frame_uid_ = req_user_id_;
+    abnormal_frame_->frame_userid_ = req_user_id_;
     //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
     abnormal_frame_->transaction_id_ = asyncobj_id_;
     abnormal_frame_->backfill_trans_id_ = req_session_id_;

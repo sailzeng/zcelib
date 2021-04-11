@@ -87,7 +87,7 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     //进行超时处理
     ret = zce::handle_ready(new_stream.get_handle(),
                             &timeout,
-                            zce::HANDLE_READY_TODO::CONNECTED);
+                            zce::HANDLE_READY::CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 

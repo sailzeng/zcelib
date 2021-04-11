@@ -844,7 +844,7 @@ public:
     Int_Out_Helper(int_type out_data,
                    size_t width = 0,
                    int flags = 0,
-                   BASE_NUMBER base = BASE_DECIMAL,
+                   BASE_NUMBER base = BASE_NUMBER::DECIMAL,
                    size_t precision = 0) :
         out_data_(out_data),
         width_(width),

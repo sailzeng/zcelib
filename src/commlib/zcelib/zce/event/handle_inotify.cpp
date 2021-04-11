@@ -58,7 +58,7 @@ int ZCE_Event_INotify::open(ZCE_Reactor *reactor_base)
         return -1;
     }
 
-    ret = reactor_base->register_handler(this, INOTIFY_MASK);
+    ret = reactor_base->register_handler(this,static_cast<int>(EVENT_MASK::INOTIFY_MASK));
     if (ret != 0)
     {
         ::close(inotify_handle_);

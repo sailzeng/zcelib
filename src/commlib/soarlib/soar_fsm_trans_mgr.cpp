@@ -443,7 +443,7 @@ int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
 
     rsp_msg->frame_length_ = Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
     rsp_msg->frame_command_ = cmd;
-    rsp_msg->frame_uid_ = qquin;
+    rsp_msg->frame_userid_ = qquin;
 
     rsp_msg->transaction_id_ = 0;
     rsp_msg->recv_service_ = rcvsvc;

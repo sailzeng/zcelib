@@ -64,14 +64,14 @@
 
 //ZCElibµÄ¿âÎÄ¼þ
 #include <zce/predefine.h>
-#include <zce_id_to_string.h>
+#include <zce/util/id_to_string.h>
 #include <zce/time/time_value.h>
 #include <zce/mysql/connect.h>
 #include <zce/mysql/command.h>
-#include <zce/mysql/process.h>
+#include <zce/mysql/execute.h>
 #include <zce/shm_container/cache_chunk.h>
 #include <zce/lockfree/kfifo.h>
-#include <zce/server/base.h>
+#include <zce/server/server_base.h>
 #include <zce/shm_container/hash_table.h>
 #include <zce/util/non_copyable.h>
 #include <zce/util/lord_rings.h>
@@ -85,16 +85,16 @@
 #include <zce/os_adapt/getopt.h>
 #include <zce/os_adapt/file.h>
 #include <zce/os_adapt/dirent.h>
-#include <zce_share_mem_mmap.h>
-#include <zce_share_mem_posix.h>
+#include <zce/shared_mem/mmap.h>
+#include <zce/shared_mem/posix.h>
 #include <zce/log/logging.h>
-#include <zce_log_msg.h>
+#include <zce/log/msg.h>
 #include <zce/lock/null_lock.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 #include <zce/thread/msgque_sema.h>
-#include <zce_thread_msgque_nonlock.h>
+#include <zce/thread/msgque_nonlock.h>
 #include <zce/timer/handler_base.h>
 #include <zce/timer/queue_base.h>
 #include <zce/timer/queue_wheel.h>
@@ -104,20 +104,20 @@
 #include <zce/socket/addr_in.h>
 #include <zce/socket/socket_base.h>
 #include <zce/socket/stream.h>
-#include <zce_socket_datagram.h>
+#include <zce/socket/datagram.h>
 #include <zce/socket/connector.h>
 #include <zce/event/handle_base.h>
 #include <zce/event/reactor_base.h>
 #include <zce/event/reactor_select.h>
 #include <zce/event/reactor_epoll.h>
 #include <zce/thread/thread_task.h>
-#include <zce_thread_wait_mgr.h>
-#include <zce/config/getopt.h>
-#include <zce/server/status.h>
-#include <zce_thread_bus_pipe.h>
+#include <zce/thread/thread_wait_mgr.h>
+#include <zce/server/get_option.h>
+#include <zce/server/server_status.h>
+#include <zce/bus/twoway_pipe.h>
 #include <zce/lock/file_lock.h>
 #include <zce/bytes/hash_value.h>
-#include <zce/bytes/encode.h>
+#include <zce/bytes/base_encode.h>
 #include <zce/async/async_base.h>
 #include <zce/async/fsm.h>
 

@@ -287,12 +287,6 @@ ZCE_Time_Value &ZCE_Time_Value::operator += (const ZCE_Time_Value &tv)
     zce_time_value_ = zce::timeval_add(zce_time_value_, tv.zce_time_value_);
     return *this;
 }
-// Assign @ tv to this
-ZCE_Time_Value &ZCE_Time_Value::operator = (const ZCE_Time_Value &tv)
-{
-    zce_time_value_ = tv.zce_time_value_;
-    return *this;
-}
 
 // Subtract @a tv to this.
 ZCE_Time_Value &ZCE_Time_Value::operator -= (const ZCE_Time_Value &tv)

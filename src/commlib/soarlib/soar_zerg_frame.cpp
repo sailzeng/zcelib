@@ -12,7 +12,7 @@ Zerg_App_Frame::Zerg_App_Frame() :
     frame_length_(CMD_INVALID_CMD),
     frame_option_(DESC_V1_VERSION),
     frame_command_(LEN_OF_APPFRAME_HEAD),
-    frame_uid_(0),
+    frame_userid_(0),
     app_id_(0),
     send_service_(0, 0),
     recv_service_(0, 0),
@@ -91,7 +91,7 @@ void Zerg_App_Frame::framehead_encode()
     frame_option_ = htonl(frame_option_);
     frame_command_ = htonl(frame_command_);
 
-    frame_uid_ = htonl(frame_uid_);
+    frame_userid_ = htonl(frame_userid_);
 
     //
     recv_service_.services_type_ = htons(recv_service_.services_type_);
@@ -117,7 +117,7 @@ void Zerg_App_Frame::framehead_decode()
     frame_length_ = ntohl(frame_length_);
     frame_option_ = ntohl(frame_option_);
     frame_command_ = ntohl(frame_command_);
-    frame_uid_ = ntohl(frame_uid_);
+    frame_userid_ = ntohl(frame_userid_);
 
     //
     recv_service_.services_type_ = ntohs(recv_service_.services_type_);
@@ -184,7 +184,7 @@ void Zerg_App_Frame::exchange_rcvsnd_svcid(Zerg_App_Frame &exframe )
     transaction_id_ = exframe.transaction_id_;
     backfill_trans_id_ = exframe.backfill_trans_id_;
     app_id_ = exframe.app_id_;
-    frame_uid_ = exframe.frame_uid_;
+    frame_userid_ = exframe.frame_userid_;
 }
 
 void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
@@ -196,7 +196,7 @@ void Zerg_App_Frame::fillback_appframe_head(Zerg_App_Frame &exframe )
     //回去的事务id应当是请求的事务id
     backfill_trans_id_ = exframe.transaction_id_;
     app_id_ = exframe.app_id_;
-    frame_uid_ = exframe.frame_uid_;
+    frame_userid_ = exframe.frame_userid_;
 }
 
 
@@ -230,7 +230,7 @@ void Zerg_App_Frame::dump_appframe_head(std::ostringstream &strstream) const
     strstream << "Len:" << frame_length_
               << " Framedesc:0x " << frame_option_
               << " Command:" << frame_command_
-              << " Uin:" << frame_uid_
+              << " Uin:" << frame_userid_
               << " TransactionID:" << transaction_id_
               << " BackfillTransID:" << backfill_trans_id_
               << " ProcessHandler:" << app_id_

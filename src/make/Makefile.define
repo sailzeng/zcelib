@@ -151,7 +151,7 @@ LDFLAGS  += -m32
 endif
 ifeq ($(buildbits),64)
 CFLAGS += -m64
-CCFLAGS += -m32
+CCFLAGS += -m64
 LDFLAGS  += -m64
 endif
 

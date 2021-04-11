@@ -1268,7 +1268,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
                         "uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s],peer status[%u]. ",
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
-                        proc_frame->frame_uid_,
+                        proc_frame->frame_userid_,
                         proc_frame->send_service_.services_type_,
                         proc_frame->send_service_.services_id_,
                         proc_frame->proxy_service_.services_type_,
@@ -1478,7 +1478,7 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
                     p_sendto_svrinfo->services_type_,
                     p_sendto_svrinfo->services_id_,
                     proc_frame->frame_command_,
-                    proc_frame->frame_uid_,
+                    proc_frame->frame_userid_,
                     proc_frame->frame_length_
                    );
             DEBUGDUMP_FRAME_HEAD_DBG(RS_ERROR, "[SEND TO NO EXIST HANDLE]", proc_frame );
@@ -1754,7 +1754,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
                         peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                         proc_frame->frame_length_,
                         proc_frame->frame_command_,
-                        proc_frame->frame_uid_,
+                        proc_frame->frame_userid_,
                         peer_svr_id_.services_type_, peer_svr_id_.services_id_,
                         my_svc_id_.services_type_, my_svc_id_.services_id_,
                         proc_frame->send_service_.services_type_,

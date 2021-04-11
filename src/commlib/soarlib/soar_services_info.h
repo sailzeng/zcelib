@@ -71,12 +71,10 @@ public:
 public:
 
     ///服务的类型,参考枚举值SERVICES_TYPE，无效时用INVALID_SERVICES_TYPE
-    uint16_t           services_type_ = INVALID_SERVICES_TYPE;
+    uint32_t           services_type_:12;
 
     ///服务的编号,采用两种表现方式,服务编号可以是一个服务器定义值,也可以是一个UIN.
-    uint32_t           services_id_ = INVALID_SERVICES_ID;
-
-
+    uint32_t           services_id_:24;
 };
 
 #pragma pack ()

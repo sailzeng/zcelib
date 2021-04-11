@@ -125,7 +125,7 @@ protected:
     //FRAME的内存池子
     APPFRAME_MEMORY_POOL    frame_pool_;
     //池子的锁
-    zce_lock                zce/lock/;
+    zce_lock                zce_lock_;
 
 protected:
 
@@ -246,7 +246,7 @@ AppFrame_Mallocor_Mgr<zce_lock>::~AppFrame_Mallocor_Mgr()
 template <typename zce_lock >
 Zerg_App_Frame *AppFrame_Mallocor_Mgr<zce_lock>::alloc_appframe(size_t frame_len)
 {
-    typename zce_lock::LOCK_GUARD tmp_guard(zce/lock/);
+    typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
     size_t hk = get_roundup(frame_len);
 
     //
@@ -283,7 +283,7 @@ template <typename zce_lock >
 void AppFrame_Mallocor_Mgr<zce_lock>::free_appframe(Zerg_App_Frame *proc_frame)
 {
     ZCE_ASSERT(proc_frame);
-    typename zce_lock::LOCK_GUARD tmp_guard(zce/lock/);
+    typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
     size_t hk = get_roundup(proc_frame->frame_length_);
     frame_pool_[hk].push_back(proc_frame);
 }
@@ -292,7 +292,7 @@ void AppFrame_Mallocor_Mgr<zce_lock>::free_appframe(Zerg_App_Frame *proc_frame)
 template <typename zce_lock >
 void AppFrame_Mallocor_Mgr<zce_lock>::adjust_pool_capacity()
 {
-    typename zce_lock::LOCK_GUARD tmp_guard(zce/lock/);
+    typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
 
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {

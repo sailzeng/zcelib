@@ -345,7 +345,7 @@ public:
         Zerg_App_Frame *rsp_msg = reinterpret_cast<Zerg_App_Frame *>(trans_send_buffer_);
         rsp_msg->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_uid_ = qquin;
+        rsp_msg->frame_userid_ = qquin;
         rsp_msg->transaction_id_ = trans_id;
         rsp_msg->recv_service_ = rcvsvc;
         rsp_msg->proxy_service_ = proxysvc;
@@ -414,7 +414,7 @@ public:
         if (ret < 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
-                    ret, tmp_frame->frame_uid_, tmp_frame->frame_command_);
+                    ret, tmp_frame->frame_userid_, tmp_frame->frame_command_);
 
             // ¼Ó¸ö¼à¿Ø
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,

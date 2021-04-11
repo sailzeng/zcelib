@@ -93,7 +93,7 @@ Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
     Zerg_App_Frame *send_frame = reinterpret_cast<Zerg_App_Frame *>(send_buffer_);
 
     send_frame->init_framehead(Zerg_App_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
-    send_frame->frame_uid_ = qquin;
+    send_frame->frame_userid_ = qquin;
     send_frame->app_id_ = app_id;
 
     send_frame->send_service_ = sendsvc;

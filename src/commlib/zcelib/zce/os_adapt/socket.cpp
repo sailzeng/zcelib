@@ -468,7 +468,7 @@ int zce::sock_disable(ZCE_SOCKET handle, int flags)
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
 int zce::handle_ready(ZCE_SOCKET handle,
                       ZCE_Time_Value *timeout_tv,
-                      HANDLE_READY_TODO ready_todo)
+                      HANDLE_READY ready_todo)
 {
 #if defined ZCE_OS_WINDOWS || (defined ZCE_OS_LINUX && !defined HANDLEREADY_USE_EPOLL)
 
@@ -481,28 +481,28 @@ int zce::handle_ready(ZCE_SOCKET handle,
 
 
 
-    if (HANDLE_READY_TODO::READ == ready_todo)
+    if (HANDLE_READY::READ == ready_todo)
     {
         FD_SET(handle, &handle_set_read);
         p_set_read = &handle_set_read;
     }
-    else if (HANDLE_READY_TODO::WRITE == ready_todo)
+    else if (HANDLE_READY::WRITE == ready_todo)
     {
         FD_SET(handle, &handle_set_write);
         p_set_write = &handle_set_write;
     }
-    else if (HANDLE_READY_TODO::EXCEPTION == ready_todo)
+    else if (HANDLE_READY::EXCEPTION == ready_todo)
     {
         FD_SET(handle, &handle_set_exeception);
         p_set_exception = &handle_set_exeception;
     }
-    else if (HANDLE_READY_TODO::ACCEPT == ready_todo)
+    else if (HANDLE_READY::ACCEPT == ready_todo)
     {
         //accept事件是利用读取事件
         FD_SET(handle, &handle_set_read);
         p_set_read = &handle_set_read;
     }
-    else if (HANDLE_READY_TODO::CONNECTED == ready_todo)
+    else if (HANDLE_READY::CONNECTED == ready_todo)
     {
         //为什么前面写的这么麻烦，其实就是因为这个CONNECTED的倒霉孩子
         //首先，CONNECT的处理，要区分成功和失败事件
@@ -551,7 +551,7 @@ int zce::handle_ready(ZCE_SOCKET handle,
     }
 
     //我们处理的是CONNECTED成功，
-    if (HANDLE_READY_TODO::CONNECTED == ready_todo)
+    if (HANDLE_READY::CONNECTED == ready_todo)
     {
         //如果是CONNECTED，读返回或者异常返回都被认为是错误
         if (FD_ISSET(handle, p_set_read)
@@ -571,24 +571,24 @@ int zce::handle_ready(ZCE_SOCKET handle,
     int epoll_fd = ::epoll_create( MAX_EVENT_NUMBER);
 
     struct epoll_event ep_event;
-    if (HANDLE_READY_READ == ready_todo)
+    if (HANDLE_READY::READ == ready_todo)
     {
         ep_event.events |= EPOLLIN;
     }
-    else if ( HANDLE_READY_WRITE == ready_todo)
+    else if (HANDLE_READY::WRITE == ready_todo)
     {
         ep_event.events |= EPOLLOUT;
     }
-    else if (HANDLE_READY_EXCEPTION == ready_todo)
+    else if (HANDLE_READY::EXCEPTION == ready_todo)
     {
         ep_event.events |= EPOLLERR;
     }
-    else if (HANDLE_READY_ACCEPT == ready_todo)
+    else if (HANDLE_READY::ACCEPT == ready_todo)
     {
         //accept事件是利用读取事件
         ep_event.events |= EPOLLIN;
     }
-    else if (HANDLE_READY_CONNECTED == ready_todo)
+    else if (HANDLE_READY::CONNECTED == ready_todo)
     {
         //LINUX 无论阻塞，还是非阻塞，失败调用读写事件，成功调用写事件
         ep_event.events |= EPOLLOUT;
@@ -643,7 +643,7 @@ int zce::handle_ready(ZCE_SOCKET handle,
         return event_happen;
     }
 
-    if (HANDLE_READY_CONNECTED == ready_todo)
+    if (HANDLE_READY::CONNECTED == ready_todo)
     {
         if (once_events_ary[1].events & EPOLLIN)
         {
@@ -696,7 +696,7 @@ int zce::connect_timeout(ZCE_SOCKET handle,
     //进行超时处理
     ret = zce::handle_ready(handle,
                             &timeout_tv,
-                            HANDLE_READY_TODO::CONNECTED);
+                            HANDLE_READY::CONNECTED);
 
     const int HANDLE_READY_ONE = 1;
 
@@ -796,7 +796,7 @@ ssize_t zce::recvn_timeout (ZCE_SOCKET handle,
         //LINUX的SELECT会做这件事情，但WINDOWS的不会
         ret = zce::handle_ready (handle,
                                  &timeout_tv,
-                                 HANDLE_READY_TODO::READ);
+                                 HANDLE_READY::READ);
 
         const int HANDLE_READY_ONE = 1;
 
@@ -914,7 +914,7 @@ ssize_t zce::sendn_timeout(ZCE_SOCKET handle,
                 //等待端口准备好了处理发送事件，这儿其实不严谨，这儿timeout_tv 应该减去消耗的时间
                 ret = zce::handle_ready (handle,
                                          &timeout_tv,
-                                         HANDLE_READY_TODO::WRITE);
+                                         HANDLE_READY::WRITE);
 
                 const int HANDLE_READY_ONE = 1;
 
@@ -983,7 +983,7 @@ ssize_t zce::recvfrom_timeout (ZCE_SOCKET handle,
     ssize_t recv_result = 0;
     int ret = zce::handle_ready (handle,
                                  &timeout_tv,
-                                 HANDLE_READY_TODO::READ);
+                                 HANDLE_READY::READ);
 
     const int HANDLE_READY_ONE = 1;
 

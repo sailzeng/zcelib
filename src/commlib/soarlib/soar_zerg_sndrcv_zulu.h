@@ -216,7 +216,7 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
     tibetan_send_appframe_->frame_command_ = cmd;
     tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
     tibetan_send_appframe_->app_id_ = app_id;
-    tibetan_send_appframe_->frame_uid_ = user_id;
+    tibetan_send_appframe_->frame_userid_ = user_id;
 
     //±àÂë
     ret = tibetan_send_appframe_->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);

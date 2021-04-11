@@ -32,6 +32,12 @@ public:
     * @brief      默认构造函数
     */
     ZCE_Time_Value();
+
+    ZCE_Time_Value(const ZCE_Time_Value &) = default;
+    ZCE_Time_Value(ZCE_Time_Value &&) = default;
+    ZCE_Time_Value &operator=(const ZCE_Time_Value &) = default;
+    ZCE_Time_Value &operator=(ZCE_Time_Value &&) = default;
+
     /*!
     * @brief      析构函数
     */
@@ -263,9 +269,6 @@ public:
 
     /// 加上 @a tv 的时间
     ZCE_Time_Value &operator += (const ZCE_Time_Value &tv);
-
-    /// 赋值 @a tv 的时间
-    ZCE_Time_Value &operator = (const ZCE_Time_Value &tv);
 
     /// 减去 @a tv的时间
     ZCE_Time_Value &operator -= (const ZCE_Time_Value &tv);

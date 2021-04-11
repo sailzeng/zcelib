@@ -217,7 +217,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
 
     //如果有回填数据
     tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
-    tibetan_send_appframe_->frame_uid_ = user_id;
+    tibetan_send_appframe_->frame_userid_ = user_id;
 
     //填写GAME ID
     tibetan_send_appframe_->app_id_ = app_id;

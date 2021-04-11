@@ -335,7 +335,7 @@ inline int select(
 );
 
 ///用于handle_ready函数,handle_multi_ready函数
-enum class HANDLE_READY_TODO
+enum class HANDLE_READY
 {
     ///读事件
     READ            = 0x1,
@@ -359,12 +359,12 @@ enum class HANDLE_READY_TODO
 * @return        int          返回值和select 一致，如果成功返回值是触发事件个数，如果事件触发一般触发返回值都是1
 * @param[in]     handle       等待触发的句柄
 * @param[in,out] timeout_tv   超时的时间
-* @param[in]     ready_todo   等待什么事件（只能单个），@ref HANDLE_READY_TODO
+* @param[in]     ready_todo   等待什么事件（只能单个），@ref HANDLE_READY
 * @note          特别提醒，只能处理单个事件喔，不能同时处理读写,
 */
 int handle_ready (ZCE_SOCKET handle,
                   ZCE_Time_Value *timeout_tv,
-                  HANDLE_READY_TODO ready_todo);
+                  HANDLE_READY ready_todo);
 
 
 

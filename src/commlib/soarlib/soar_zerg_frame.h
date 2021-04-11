@@ -21,8 +21,11 @@ public:
     //frame_option_的头24个BIT作为选项字段,,
     uint32_t     inner_option_ : 24;
 
+    //
+    uint32_t     option_reserve_:4;
+
     //后4BIT作为版本标识
-    uint32_t     frame_version_ : 8;
+    uint32_t     frame_version_ : 4;
 };
 
 
@@ -246,15 +249,9 @@ public:
     //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
     static const size_t MAX_LEN_OF_APPFRAME = 64 * 1024;
 
-
-    //TEA加密后增加的长度,UPD的数据区麻烦自己搞掂长度限制等问题
-    static const size_t LEN_OF_TEA_REMAIN_ROOM = 17;
-
     //FRAME的最大长度,根据各个地方的长度而得到
-    static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD - LEN_OF_TEA_REMAIN_ROOM;
+    static const size_t MAX_LEN_OF_APPFRAME_DATA = MAX_LEN_OF_APPFRAME - LEN_OF_APPFRAME_HEAD;
 
-    //
-    static const size_t MAX_LEN_OF_TEA_APPDATA = MAX_LEN_OF_APPFRAME_DATA + LEN_OF_TEA_REMAIN_ROOM;
 
 public:
 
@@ -268,28 +265,11 @@ public:
         _ZERG_FRAME_OPTION inner_option_;
     };
 
+    ///用户ID，可以是一个ID也可以是一个名字HASH映射的ID
+    uint32_t               frame_userid_;
+
     ///命令字 命令字还是放在包头比较好,
     uint32_t               frame_command_;
-
-    ///UID
-    uint32_t               frame_uid_;
-    ///业务ID，GAMEID，用于标识游戏内部ID
-    uint32_t               app_id_;
-
-    ///发送和接收的服务器应用也要填写
-
-    ///发送服务,包括发送服务器类型，发送服务器编号,没有编号，或者不是服务填写0
-    SERVICES_ID            send_service_;
-    ///接受服务器
-    SERVICES_ID            recv_service_;
-    ///代理服务器
-    SERVICES_ID            proxy_service_;
-
-    ///事务ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
-    uint32_t               transaction_id_;
-    ///回填的请求者的事务ID,
-    uint32_t               backfill_trans_id_;
-
 
     union
     {
@@ -299,6 +279,26 @@ public:
         uint32_t           send_ip_address_;
 
     };
+
+    ///事务ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
+    uint32_t               transaction_id_;
+    ///回填的请求者的事务ID,
+    uint32_t               backfill_trans_id_;
+
+    ///发送和接收的服务器应用也要填写
+
+    ///接受服务器
+    SERVICES_ID            recv_service_;
+    ///发送服务,包括发送服务器类型，发送服务器编号,没有编号，或者不是服务填写0
+    SERVICES_ID            send_service_;
+    ///代理服务器
+    SERVICES_ID            proxy_service_;
+
+    ///业务ID，GAMEID，用于标识游戏内部ID
+    uint32_t               app_id_;
+
+
+
 
     ///frame_appdata_ 是一个变长度的字符串序列标示,
 #ifdef ZCE_OS_WINDOWS
@@ -323,7 +323,7 @@ inline void Zerg_App_Frame::init_framehead(uint32_t lenframe,
     frame_option_ = frameoption;
     frame_command_ = cmd;
 
-    frame_uid_ = 0;
+    frame_userid_ = 0;
     app_id_ = 0;
 
     send_service_.set_svcid(0, 0);
@@ -341,7 +341,7 @@ inline void Zerg_App_Frame::clear()
     frame_length_ = CMD_INVALID_CMD;
     frame_option_ = DESC_V1_VERSION;
     frame_command_ = LEN_OF_APPFRAME_HEAD;
-    frame_uid_ = 0;
+    frame_userid_ = 0;
     app_id_ = 0;
     send_service_.services_type_ = 0;
     send_service_.services_id_ = 0;
