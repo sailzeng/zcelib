@@ -113,15 +113,6 @@
     <ClCompile Include="zce\mysql\stmt_bind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\log\basic.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\log\msg.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\log\plus.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\timer\handler_base.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -320,6 +311,15 @@
     <ClCompile Include="zce\config\property_tree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zce\logger\msg.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\logger\plus.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\logger\log_basic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zce\log\logging.h">
@@ -427,16 +427,7 @@
     <ClInclude Include="zce\mysql\stmt_bind.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\log\basic.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\log\msg.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\log\priority.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\log\plus.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\timer\handler_base.h">
@@ -713,6 +704,21 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\lock\ptr_guard.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\logger\logging.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\logger\msg.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\logger\plus.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\logger\priority.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\logger\log_basic.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

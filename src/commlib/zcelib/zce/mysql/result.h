@@ -33,7 +33,7 @@
 
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/string.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/mysql/field.h"
 
 /*!

@@ -4,7 +4,7 @@
 #include "zce/lockfree/kfifo.h"
 #include "zce/os_adapt/file.h"
 #include "zce/shared_mem/mmap.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/bus/mmap_pipe.h"
 #include "zce/bus/twoway_pipe.h"
 

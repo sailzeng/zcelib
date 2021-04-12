@@ -33,7 +33,7 @@
 #define ZCE_LIB_TRACE_LOG_PLUS_H_
 
 #include "zce/string/extend.h"
-#include "zce/log/basic.h"
+#include "zce/logger/log_basic.h"
 
 
 

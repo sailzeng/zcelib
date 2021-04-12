@@ -213,6 +213,9 @@
     <ClCompile Include="zce\async\async_base.cpp" />
     <ClCompile Include="zce\async\coroutine.cpp" />
     <ClCompile Include="zce\async\fsm.cpp" />
+    <ClCompile Include="zce\logger\log_basic.cpp" />
+    <ClCompile Include="zce\logger\msg.cpp" />
+    <ClCompile Include="zce\logger\plus.cpp" />
     <ClCompile Include="zce\util\random.cpp" />
     <ClCompile Include="zce\bus\mmap_pipe.cpp" />
     <ClCompile Include="zce\bus\twoway_pipe.cpp" />
@@ -244,9 +247,6 @@
     <ClCompile Include="zce\lock\thread_rw_mutex.cpp" />
     <ClCompile Include="zce\lock\thread_semaphore.cpp" />
     <ClCompile Include="zce\lock\thread_spin.cpp" />
-    <ClCompile Include="zce\log\basic.cpp" />
-    <ClCompile Include="zce\log\msg.cpp" />
-    <ClCompile Include="zce\log\plus.cpp" />
     <ClCompile Include="zce\mysql\command.cpp">
       <AssemblerListingLocation Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(RecursiveDir)</AssemblerListingLocation>
       <ObjectFileName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">$(IntDir)%(RecursiveDir)</ObjectFileName>
@@ -321,6 +321,11 @@
     <ClInclude Include="zce\async\coroutine.h" />
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
+    <ClInclude Include="zce\logger\log_basic.h" />
+    <ClInclude Include="zce\logger\logging.h" />
+    <ClInclude Include="zce\logger\msg.h" />
+    <ClInclude Include="zce\logger\plus.h" />
+    <ClInclude Include="zce\logger\priority.h" />
     <ClInclude Include="zce\util\any.h" />
     <ClInclude Include="zce\util\lord_rings.h" />
     <ClInclude Include="zce\util\mpl.h" />
@@ -366,9 +371,6 @@
     <ClInclude Include="zce\lock\thread_semaphore.h" />
     <ClInclude Include="zce\lock\thread_spin.h" />
     <ClInclude Include="zce\log\logging.h" />
-    <ClInclude Include="zce\log\basic.h" />
-    <ClInclude Include="zce\log\msg.h" />
-    <ClInclude Include="zce\log\plus.h" />
     <ClInclude Include="zce\log\priority.h" />
     <ClInclude Include="zce\mysql\command.h" />
     <ClInclude Include="zce\mysql\connect.h" />

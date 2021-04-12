@@ -44,7 +44,7 @@
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/error.h"
 #include "zce/shared_mem/mmap.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/lock/null_lock.h"
 #include "zce/lock/thread_mutex.h"
 

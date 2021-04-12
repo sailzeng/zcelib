@@ -15,7 +15,7 @@
 #ifndef ZCE_LIB_LOCK_THREAD_CONDI_H_
 #define ZCE_LIB_LOCK_THREAD_CONDI_H_
 
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/lock/lock_base.h"
 #include "zce/os_adapt/condi.h"
 

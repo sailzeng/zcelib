@@ -6,9 +6,9 @@
 //ZCELIBµÄ´úÂë
 
 #include <zce/predefine.h>
-#include <zce/log/logging.h>
-#include <zce/log/plus.h>
-#include <zce/log/msg.h>
+#include <zce/logger/logging.h>
+#include <zce/logger/plus.h>
+#include <zce/logger/msg.h>
 
 #include <zce/os_adapt/common.h>
 #include <zce/os_adapt/file.h>

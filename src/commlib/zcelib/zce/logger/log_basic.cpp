@@ -9,7 +9,7 @@
 #include "zce/os_adapt/string.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/file.h"
-#include "zce/log/basic.h"
+#include "zce/logger/log_basic.h"
 
 const char ZCE_LogTrace_Basic::STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1] = ".log";
 

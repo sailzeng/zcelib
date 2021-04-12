@@ -129,7 +129,7 @@
 
 #include "zce/bytes/bytes_common.h"
 #include "zce/util/random.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/os_adapt/string.h"
 
 //因为模版参数的缘故，可能让部分代码恒定为真，所以先暂时屏蔽

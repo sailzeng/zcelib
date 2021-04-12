@@ -2,7 +2,7 @@
 #include "zce/os_adapt/string.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/error.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/config/file_implement.h"
 
 /******************************************************************************************

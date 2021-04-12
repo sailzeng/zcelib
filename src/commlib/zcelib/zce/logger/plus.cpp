@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
-#include "zce/log/basic.h"
-#include "zce/log/plus.h"
+#include "zce/logger/log_basic.h"
+#include "zce/logger/plus.h"
 
 //µ¥×ÓÖ¸Õë
 ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::lpp_instance_ = NULL;

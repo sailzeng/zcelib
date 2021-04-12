@@ -3,7 +3,7 @@
 #include "zce/os_adapt/semaphore.h"
 #include "zce/os_adapt/time.h"
 #include "zce/os_adapt/error.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/time/time_value.h"
 #include "zce/lock/process_semaphore.h"
 

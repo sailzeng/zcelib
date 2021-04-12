@@ -2,7 +2,7 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/util/non_copyable.h"
-#include "zce/log/logging.h"
+#include "zce/logger/logging.h"
 #include "zce/os_adapt/shm.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/dirent.h"

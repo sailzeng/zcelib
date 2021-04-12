@@ -8,14 +8,8 @@
 class ZCE_Socket_Stream;
 class ZCE_Socket_Base;
 
-/************************************************************************************************************
-Author          : Sailzeng ZENGXING  Date Of Creation: 2011年6月19日
-Class           : ZCE_Socket_Acceptor
-Inherit         :
-Description     : Acceptor的工厂，用于产生ZCE_Socket_Stream
-Other           :
-Modify Record   :
-************************************************************************************************************/
+
+/// Acceptor的工厂，用于产生ZCE_Socket_Stream
 class ZCE_Socket_Acceptor  : public ZCE_Socket_Base
 {
 

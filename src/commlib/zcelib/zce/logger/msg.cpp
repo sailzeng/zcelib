@@ -1,7 +1,7 @@
 #include "zce/predefine.h"
 #include "zce/os_adapt/time.h"
-#include "zce/log/basic.h"
-#include "zce/log/msg.h"
+#include "zce/logger/log_basic.h"
+#include "zce/logger/msg.h"
 
 //ZengXing 22503
 

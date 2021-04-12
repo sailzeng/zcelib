@@ -26,7 +26,7 @@
 //定义日志输出,则实用内部的函数作为输出定义
 #if defined ZCE_USE_LOGMSG  && ZCE_USE_LOGMSG == 1
 
-#include "zce/log/msg.h"
+#include "zce/logger/msg.h"
 
 //打开输出
 #define ZLOG_ENABLE           ZCE_Trace_LogMsg::instance()->enable_output(true)
