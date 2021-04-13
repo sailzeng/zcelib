@@ -3,16 +3,22 @@ cmake_minimum_required(VERSION 3.16)
 # set the project name
 project(zceproject CXX)
 
+#config 是大小写敏感的
+set(CMAKE_CONFIGURATION_TYPES "debug;release")
 
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin)
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../lib)
+
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/ )
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/ )
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../lib/ )
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_ ${CMAKE_SOURCE_DIR}/../lib/ )
 
 # C++标准
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-set(CMAKE_C_COMPILER "gcc")
-set(CMAKE_CXX_COMPILER "g++")
+#Linux 默认使用的编译文件是c++，也就是g++
+#set(CMAKE_C_COMPILER "gcc")
+#set(CMAKE_CXX_COMPILER "g++")
 
 
 #工程外部的头文件
@@ -37,7 +43,6 @@ endif()
 
 add_library(zcelib)
 file(GLOB_RECURSE SRC_LIST "./commlib/zcelib/*.cpp")
-message(""${SRC_LIST})
 target_sources(zcelib PRIVATE ${SRC_LIST})
 target_include_directories(zcelib PUBLIC "./commlib/zcelib/")
 target_precompile_headers(zcelib PRIVATE ./commlib/zcelib/zce/predefine.h)
@@ -49,6 +54,7 @@ file(GLOB_RECURSE SRC_LIST "./test/zealot/*.cpp")
 target_sources(zealot PRIVATE ${SRC_LIST})
 target_include_directories(zealot PUBLIC "./test/zealot/")
 add_dependencies(zealot soarlib zcelib)
+target_precompile_headers(zealot PRIVATE ./test/zealot/zce/predefine.h)
 
 
 add_library(soarlib)
