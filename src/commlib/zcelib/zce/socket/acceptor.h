@@ -9,7 +9,7 @@ class ZCE_Socket_Stream;
 class ZCE_Socket_Base;
 
 
-/// Acceptor�Ĺ��������ڲ���ZCE_Socket_Stream
+/// Acceptor的工厂，用于产生ZCE_Socket_Stream
 class ZCE_Socket_Acceptor  : public ZCE_Socket_Base
 {
 
@@ -19,18 +19,18 @@ public:
 
 public:
 
-    //��һ��������ַ��Ŀǰֻ֧��AF_INET,��AFINET6
+    //打开一个监听地址，目前只支持AF_INET,和AFINET6
     int open(const ZCE_Sockaddr *local_addr,
              bool reuse_addr = true,
              int protocol_family = AF_UNSPEC,
              int backlog = ZCE_DEFAULT_BACKLOG,
              int protocol = 0);
 
-    //����һ��SOCKET
+    //接受一个SOCKET
     int accept (ZCE_Socket_Stream &new_stream,
                 ZCE_Sockaddr *remote_addr) const;
 
-    //���г�ʱ�Ĵ�����accept
+    //带有超时的处理的accept
     int accept (ZCE_Socket_Stream &new_stream,
                 ZCE_Time_Value &timeout,
                 ZCE_Sockaddr *remote_addr) const;

@@ -7,7 +7,7 @@
 
 int main(int argc, const char *argv[])
 {
-    //ÀûÓÃÄ£°å¿ªÊ¼Æô¶¯
+    //åˆ©ç”¨æ¨¡æ¿å¼€å§‹å¯åŠ¨
     return SOAR_LIB::soar_svrd_main < Wormhole_Proxy_App,
            Wormhole_Server_Config,
            Server_Timer_Base > (argc, argv);

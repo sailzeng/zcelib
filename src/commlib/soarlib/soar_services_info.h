@@ -5,14 +5,14 @@
 
 #pragma pack (1)
 /****************************************************************************************************
-class  SERVICES_ID ¡¡·şÎñ±àºÅĞÅÏ¢,
+class  SERVICES_ID ã€€æœåŠ¡ç¼–å·ä¿¡æ¯,
 ****************************************************************************************************/
 struct SOARING_EXPORT SERVICES_ID
 {
 
 public:
 
-    ///¹¹Ôì,Îö¹¹º¯Êı,Ä¬ÈÏÎª0
+    ///æ„é€ ,ææ„å‡½æ•°,é»˜è®¤ä¸º0
     explicit SERVICES_ID(uint16_t svrtype = INVALID_SERVICES_TYPE,
                          uint32_t svrno = INVALID_SERVICES_ID);
     //
@@ -26,60 +26,60 @@ public:
 
 
     /*!
-    * @brief      ´ÓstringÖĞµÃµ½SVC ID
-    * @return     int == 0 ±íÊ¾³É¹¦
-    * @param      str ×ª»»µÄ×Ö·û´®
-    * @param      check_valid ¼ì²éÊÇ·ñÓĞĞ§,svcidµÄtypeºÍid ²»ÄÜÊÇ0
+    * @brief      ä»stringä¸­å¾—åˆ°SVC ID
+    * @return     int == 0 è¡¨ç¤ºæˆåŠŸ
+    * @param      str è½¬æ¢çš„å­—ç¬¦ä¸²
+    * @param      check_valid æ£€æŸ¥æ˜¯å¦æœ‰æ•ˆ,svcidçš„typeå’Œid ä¸èƒ½æ˜¯0
     */
     int from_str(const char *str,
                  bool check_valid = false);
 
-    ///×ª»»string
+    ///è½¬æ¢string
     const char *to_str(char *str_buffer, size_t buf_len);
 
-    ///ÉèÖÃ
+    ///è®¾ç½®
     void set_svcid(uint16_t svrtype, uint32_t svrid);
 
-    ///±È½Ïº¯Êı,services_type_,services_id_
+    ///æ¯”è¾ƒå‡½æ•°,services_type_,services_id_
     bool operator ==(const SERVICES_ID &others) const;
-    ///±È½Ï²»Í¬º¯Êı,
+    ///æ¯”è¾ƒä¸åŒå‡½æ•°,
     bool operator !=(const SERVICES_ID &others) const;
-    ///ÓĞ¸öÅÅĞòĞèÇó,
+    ///æœ‰ä¸ªæ’åºéœ€æ±‚,
     bool operator <(const SERVICES_ID &others) const;
 
 public:
 
-    ///ÎŞĞ§µÄSERVICE ÀàĞÍ
+    ///æ— æ•ˆçš„SERVICE ç±»å‹
     static const uint16_t INVALID_SERVICES_TYPE = 0;
 
-    ///ÎŞĞ§µÄSERVICE ID
+    ///æ— æ•ˆçš„SERVICE ID
     static const uint32_t INVALID_SERVICES_ID   = 0;
 
-    ///ÈÃZERG°ïÃ¦¶¯Ì¬·ÖÅäÒ»¸öSERVICES_ID £¬ÓÃÓÚÄ³Ğ©¿Í»§¶ËÇëÇó
+    ///è®©ZERGå¸®å¿™åŠ¨æ€åˆ†é…ä¸€ä¸ªSERVICES_ID ï¼Œç”¨äºæŸäº›å®¢æˆ·ç«¯è¯·æ±‚
     static const uint32_t DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint32_t>(-1);
 
-    ///¶ÔÄ³¸ötype½øĞĞ¹ã²¥¡£
+    ///å¯¹æŸä¸ªtypeè¿›è¡Œå¹¿æ’­ã€‚
     static const uint32_t BROADCAST_SERVICES_ID = static_cast<uint32_t>(-2);
 
-    ///Ê¹ÓÃ¾ùºâ¸ºÔØµÄ·½Ê½¶¯Ì¬·ÖÆ¬µÄSERVICE ID
+    ///ä½¿ç”¨å‡è¡¡è´Ÿè½½çš„æ–¹å¼åŠ¨æ€åˆ†ç‰‡çš„SERVICE ID
     static const uint32_t LOAD_BALANCE_DYNAMIC_ID = static_cast<uint32_t>(-3);
 
-    ///Ê¹ÓÃÖ÷´ÓµÄ·½Ê½£¨¸ù¾İAUTO CONNECTµÄË³Ğò£©¶¯Ì¬·ÖÅäµÄSERVICE ID
+    ///ä½¿ç”¨ä¸»ä»çš„æ–¹å¼ï¼ˆæ ¹æ®AUTO CONNECTçš„é¡ºåºï¼‰åŠ¨æ€åˆ†é…çš„SERVICE ID
     static const uint32_t MAIN_STANDBY_DYNAMIC_ID = static_cast<uint32_t>(-4);
 
 
 public:
 
-    ///·şÎñµÄÀàĞÍ,²Î¿¼Ã¶¾ÙÖµSERVICES_TYPE£¬ÎŞĞ§Ê±ÓÃINVALID_SERVICES_TYPE
+    ///æœåŠ¡çš„ç±»å‹,å‚è€ƒæšä¸¾å€¼SERVICES_TYPEï¼Œæ— æ•ˆæ—¶ç”¨INVALID_SERVICES_TYPE
     uint32_t           services_type_:12;
 
-    ///·şÎñµÄ±àºÅ,²ÉÓÃÁ½ÖÖ±íÏÖ·½Ê½,·şÎñ±àºÅ¿ÉÒÔÊÇÒ»¸ö·şÎñÆ÷¶¨ÒåÖµ,Ò²¿ÉÒÔÊÇÒ»¸öUIN.
+    ///æœåŠ¡çš„ç¼–å·,é‡‡ç”¨ä¸¤ç§è¡¨ç°æ–¹å¼,æœåŠ¡ç¼–å·å¯ä»¥æ˜¯ä¸€ä¸ªæœåŠ¡å™¨å®šä¹‰å€¼,ä¹Ÿå¯ä»¥æ˜¯ä¸€ä¸ªUIN.
     uint32_t           services_id_:24;
 };
 
 #pragma pack ()
 
-//HASHº¯Êı,ÓÃÓÚµÃµ½HASH Key
+//HASHå‡½æ•°,ç”¨äºå¾—åˆ°HASH Key
 
 struct SOARING_EXPORT HASH_OF_SVCID
 {
@@ -91,36 +91,36 @@ public:
 };
 
 /******************************************************************************************
-struct SERVICES_IP_INFO ·şÎñIDĞÅÏ¢ + IPĞÅÏ¢
+struct SERVICES_IP_INFO æœåŠ¡IDä¿¡æ¯ + IPä¿¡æ¯
 ******************************************************************************************/
 struct SOARING_EXPORT SERVICES_INFO
 {
 public:
 
-    ///´Ó×Ö·û´®ÖĞ»ñÈ¡
+    ///ä»å­—ç¬¦ä¸²ä¸­è·å–
     int from_str(const char *str,
                  bool check_valid = false);
 
-    ///×ª»»string
+    ///è½¬æ¢string
     const char *to_str(char *str_buffer, size_t buf_len);
 
 public:
 
-    ///·şÎñIDĞÅÏ¢
+    ///æœåŠ¡IDä¿¡æ¯
     SERVICES_ID      svc_id_ = SERVICES_ID(0, 0);
 
 
-    ///·şÎñIP,·şÎñ¶Ë¿Ú
+    ///æœåŠ¡IP,æœåŠ¡ç«¯å£
     ZCE_Sockaddr_In  ip_address_;
 
-    ///ÒµÎñID
+    ///ä¸šåŠ¡ID
     unsigned int     business_id_ = 0;
 
-    ///·şÎñÆ÷ËùÊô IDCµÄ±àºÅ
+    ///æœåŠ¡å™¨æ‰€å± IDCçš„ç¼–å·
     unsigned int     idc_no_ = 0;
 };
 
-//µÃµ½KEYµÄHASHº¯Êı
+//å¾—åˆ°KEYçš„HASHå‡½æ•°
 struct SOARING_EXPORT HASH_OF_SVCINFO
 {
 public:
@@ -133,10 +133,10 @@ public:
 struct SOARING_EXPORT EQUAL_OF_SVCINFO
 {
 public:
-    //×¢ÒâÅĞ¶ÏÌõ¼ş²»ÊÇËùÓĞµÄ±äÁ¿
+    //æ³¨æ„åˆ¤æ–­æ¡ä»¶ä¸æ˜¯æ‰€æœ‰çš„å˜é‡
     bool operator()(const SERVICES_INFO &right, const SERVICES_INFO &left) const
     {
-        //¼ì²éSVC INFOµÄÏàµÈ,¾ÍÈÏÎªÏàµÈ
+        //æ£€æŸ¥SVC INFOçš„ç›¸ç­‰,å°±è®¤ä¸ºç›¸ç­‰
         if (right.svc_id_ == left.svc_id_ )
         {
             return true;

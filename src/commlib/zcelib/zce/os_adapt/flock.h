@@ -3,23 +3,23 @@
 * @filename   zce/os_adapt/flock.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê9ÔÂ15ÈÕ
-* @brief      ÎÄ¼ş£¨¼ÇÂ¼£©ËøµÄº¯Êı£¬ÔÚWIN32£¬ºÍLINUX Æ½Ì¨Í¨ÓÃ
-*             ÆäÊµ³ıÁËflockÕâ¸öº¯Êı£¬½Ğ¼ÇÂ¼Ëø¸üÌùÇĞÒ»µã£¬ÒòÎªÄã¿ÉÒÔÖ»¶ÔÎÄ¼şµÄÒ»²¿·Ö½øĞĞ²Ù×÷
+* @date       2011å¹´9æœˆ15æ—¥
+* @brief      æ–‡ä»¶ï¼ˆè®°å½•ï¼‰é”çš„å‡½æ•°ï¼Œåœ¨WIN32ï¼Œå’ŒLINUX å¹³å°é€šç”¨
+*             å…¶å®é™¤äº†flockè¿™ä¸ªå‡½æ•°ï¼Œå«è®°å½•é”æ›´è´´åˆ‡ä¸€ç‚¹ï¼Œå› ä¸ºä½ å¯ä»¥åªå¯¹æ–‡ä»¶çš„ä¸€éƒ¨åˆ†è¿›è¡Œæ“ä½œ
 *
-* @details    ÎÄ¼ş£¨¼ÇÂ¼£©ËøµÄÊÊÅä²ã£¬¼æÈİ2¸öÆ½Ì¨£¬
-*             ¼ÇÂ¼ËøµÄ£¬fcntlµÄ²Ù×÷£¬Ã»ÓĞÖ±½ÓÄ£ÄâfcntlµÄ²Ù×÷£¬²¿·Ö²Î¿¼ACE·â×°¡£µ«¿ÉÒÔËµ£¬
-*             ACEµÄ·â×°»¹ÊÇ±Èµ÷ÓÃÔ­ÉúAPI fcntlÊæ·şµÄ¡£
-*             ÁíÍâ£¬²»Í¬Òâ·â×°³É fcntl µÄÁíÍâÒ»¸öÔ¸ÒâÊÇfcntlÊÇÒ»¸ö´óºÏ¼¯¡£Ö±½ÓÓÃÕâ¸öº¯Êı
-*             Ãû×Ö·´¶ø»á¸øÄã´í¾õ¡£
-*             ÎÄ¼şËøÊ¹ÓÃµÄÊÇflockº¯Êı£¬µ«²»×ãÊÇ£¬ÆäÊµWindowsÏÂÈÔÈ»ÊÇÓÃµÄ¼ÇÂ¼ËøÊµÏÖµÄ
+* @details    æ–‡ä»¶ï¼ˆè®°å½•ï¼‰é”çš„é€‚é…å±‚ï¼Œå…¼å®¹2ä¸ªå¹³å°ï¼Œ
+*             è®°å½•é”çš„ï¼Œfcntlçš„æ“ä½œï¼Œæ²¡æœ‰ç›´æ¥æ¨¡æ‹Ÿfcntlçš„æ“ä½œï¼Œéƒ¨åˆ†å‚è€ƒACEå°è£…ã€‚ä½†å¯ä»¥è¯´ï¼Œ
+*             ACEçš„å°è£…è¿˜æ˜¯æ¯”è°ƒç”¨åŸç”ŸAPI fcntlèˆ’æœçš„ã€‚
+*             å¦å¤–ï¼Œä¸åŒæ„å°è£…æˆ fcntl çš„å¦å¤–ä¸€ä¸ªæ„¿æ„æ˜¯fcntlæ˜¯ä¸€ä¸ªå¤§åˆé›†ã€‚ç›´æ¥ç”¨è¿™ä¸ªå‡½æ•°
+*             åå­—åè€Œä¼šç»™ä½ é”™è§‰ã€‚
+*             æ–‡ä»¶é”ä½¿ç”¨çš„æ˜¯flockå‡½æ•°ï¼Œä½†ä¸è¶³æ˜¯ï¼Œå…¶å®Windowsä¸‹ä»ç„¶æ˜¯ç”¨çš„è®°å½•é”å®ç°çš„
 *
-* @note       ¶ø¶ÔÓÚ¼ÇÂ¼Ëø£¬ÆäÆäÊµÒ²ÊÇ²Ù×÷ÏµÍ³ÖĞÓĞÈ¤µÄÒ»²¿·Ö£¬¶øÇÒÆäÊµ¸ö¸öÆ½Ì¨²î±ğ²»Ğ¡¡£
-*             LINUXÏÂ£¬¼ÇÂ¼ËøÊÇÈ°¸æĞÔµÄËø£¨Ä¬ÈÏÊÇ£©£¬ÄãÏë¸É»µÊÂ»¹ÊÇÄÜ¸ÉµÄ¡£
-*             WINDOWSÏÂÊÇ£¬¼ÇÂ¼ËøÊÇÇ¿ÖÆµÄ£¬
+* @note       è€Œå¯¹äºè®°å½•é”ï¼Œå…¶å…¶å®ä¹Ÿæ˜¯æ“ä½œç³»ç»Ÿä¸­æœ‰è¶£çš„ä¸€éƒ¨åˆ†ï¼Œè€Œä¸”å…¶å®ä¸ªä¸ªå¹³å°å·®åˆ«ä¸å°ã€‚
+*             LINUXä¸‹ï¼Œè®°å½•é”æ˜¯åŠå‘Šæ€§çš„é”ï¼ˆé»˜è®¤æ˜¯ï¼‰ï¼Œä½ æƒ³å¹²åäº‹è¿˜æ˜¯èƒ½å¹²çš„ã€‚
+*             WINDOWSä¸‹æ˜¯ï¼Œè®°å½•é”æ˜¯å¼ºåˆ¶çš„ï¼Œ
 *             http://www.ibm.com/developerworks/cn/linux/l-cn-filelock/index.html
 *             http://www.cnblogs.com/hustcat/archive/2009/03/10/1408208.html
-*             µ«Èç¹ûÒª¿´UNP V2¾Í»áÃ÷°×£¬ÆäÊµ×îºÃ´ó¼Ò»¹ÊÇ×ñ´ÓÏà»¥µÄÔ¼¶¨£¬Ê¹ÓÃËø¡£
+*             ä½†å¦‚æœè¦çœ‹UNP V2å°±ä¼šæ˜ç™½ï¼Œå…¶å®æœ€å¥½å¤§å®¶è¿˜æ˜¯éµä»ç›¸äº’çš„çº¦å®šï¼Œä½¿ç”¨é”ã€‚
 *
 */
 
@@ -36,7 +36,7 @@ namespace zce
 
 
 /*!
-* @brief      ¼ÇÂ¼Ëø¶ÔÏóµÄ·â×°£¬
+* @brief      è®°å½•é”å¯¹è±¡çš„å°è£…ï¼Œ
 */
 struct file_lock_t
 {
@@ -44,23 +44,23 @@ public:
 
 # if defined (ZCE_OS_WINDOWS)
 
-    //OVERLAPPED Ö÷Òª°üÀ¨Ò»Ğ©ÎÄ¼şÆ«ÒÆĞÅÏ¢
+    //OVERLAPPED ä¸»è¦åŒ…æ‹¬ä¸€äº›æ–‡ä»¶åç§»ä¿¡æ¯
     OVERLAPPED   overlapped_ = {0};
 
 # elif defined (ZCE_OS_LINUX)
-    //ÎÄ¼şËøflock¶ÔÏó
+    //æ–‡ä»¶é”flockå¯¹è±¡
     struct flock lock_;
 # endif
 
-    ///´¦ÀíµÄÎÄ¼ş¾ä±ú Handle to the underlying file.
+    ///å¤„ç†çš„æ–‡ä»¶å¥æŸ„ Handle to the underlying file.
     ZCE_HANDLE   handle_ = ZCE_INVALID_HANDLE;
 };
 
 /*!
-* @brief      ¼ÇÂ¼Ëø£¬ÎÄ¼şËø³õÊ¼»¯,Ö±½ÓÓÃÎÄ¼ş¾ä±ú³õÊ¼»¯
-* @return         int        0³É¹¦£¬-1Ê§°Ü
-* @param[in,out]  lock       ÎÄ¼şËø¶ÔÏó
-* @param[in]      file_hadle ²Ù×÷µÄÎÄ¼ş¾ä±ú
+* @brief      è®°å½•é”ï¼Œæ–‡ä»¶é”åˆå§‹åŒ–,ç›´æ¥ç”¨æ–‡ä»¶å¥æŸ„åˆå§‹åŒ–
+* @return         int        0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out]  lock       æ–‡ä»¶é”å¯¹è±¡
+* @param[in]      file_hadle æ“ä½œçš„æ–‡ä»¶å¥æŸ„
 */
 int file_lock_init(file_lock_t *lock,
                    ZCE_HANDLE file_hadle);
@@ -68,21 +68,21 @@ int file_lock_init(file_lock_t *lock,
 
 
 //----------------------------------------------------------------------------------------
-// ¼ÇÂ¼ËøµÄ¹¦ÄÜ£¬Ä£·ÂµÄÊÇfcntlµÄ¹¦ÄÜ
+// è®°å½•é”çš„åŠŸèƒ½ï¼Œæ¨¡ä»¿çš„æ˜¯fcntlçš„åŠŸèƒ½
 
 //
 
 /*!
-* @brief      µ÷Õû²ÎÊı£¬Ö÷ÒªÊÇÈÃËûÔÚWindowsÆ½Ì¨Ò²ÄÜÊ¹ÓÃ ÄÚ²¿º¯Êı,Íâ²¿²»ÒªÊ¹ÓÃ£¬
-*             Á½¸öÆ½Ì¨ÔÚ²ÎÊıµÄÊ¹ÓÃÉÏ²¢²»Ì«ÏàÍ¬£¬WINDOWSµÄAPIÃ»ÓĞ¿¼ÂÇÏà¶ÔÎ»ÖÃÕâĞ©¸ÅÄî£¬
-*             ËùÒÔ±ØĞëÔÚÊ¹ÓÃÇ°½øĞĞÒ»ÏÂµ÷Õû£¬±ÈÈç£¬¿ªÊ¼Î»ÖÃSEEK_SET,0,³¤¶È0£¬ÆäÊµÊÇËø¶¨
-*             Õû¸öÎÄ¼ş£¬µ«LockFileExÃ»ÓĞÕâÑùµÄ±íÊ¾·½·¨£¬±ØĞëµ÷Õû
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
-* @note          Æ½Ì¨µÄ²»¼æÈİ»á´øÀ´Ä³ÖÖ·çÏÕ£¬WindowsÏÂÒ»µ©ÎÄ¼ş´óĞ¡µ÷Õû£¬ËøËø¶¨µÄÇøÓò¾Í²»¶ÔÁË£¬
-*                ËùÒÔÔÚĞèÒª¼æÈİµÄ»·¾³£¬×îºÃÎÄ¼ş´óĞ¡ÊÇ²»µ÷ÕûµÄ£¬
+* @brief      è°ƒæ•´å‚æ•°ï¼Œä¸»è¦æ˜¯è®©ä»–åœ¨Windowså¹³å°ä¹Ÿèƒ½ä½¿ç”¨ å†…éƒ¨å‡½æ•°,å¤–éƒ¨ä¸è¦ä½¿ç”¨ï¼Œ
+*             ä¸¤ä¸ªå¹³å°åœ¨å‚æ•°çš„ä½¿ç”¨ä¸Šå¹¶ä¸å¤ªç›¸åŒï¼ŒWINDOWSçš„APIæ²¡æœ‰è€ƒè™‘ç›¸å¯¹ä½ç½®è¿™äº›æ¦‚å¿µï¼Œ
+*             æ‰€ä»¥å¿…é¡»åœ¨ä½¿ç”¨å‰è¿›è¡Œä¸€ä¸‹è°ƒæ•´ï¼Œæ¯”å¦‚ï¼Œå¼€å§‹ä½ç½®SEEK_SET,0,é•¿åº¦0ï¼Œå…¶å®æ˜¯é”å®š
+*             æ•´ä¸ªæ–‡ä»¶ï¼Œä½†LockFileExæ²¡æœ‰è¿™æ ·çš„è¡¨ç¤ºæ–¹æ³•ï¼Œå¿…é¡»è°ƒæ•´
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
+* @note          å¹³å°çš„ä¸å…¼å®¹ä¼šå¸¦æ¥æŸç§é£é™©ï¼ŒWindowsä¸‹ä¸€æ—¦æ–‡ä»¶å¤§å°è°ƒæ•´ï¼Œé”é”å®šçš„åŒºåŸŸå°±ä¸å¯¹äº†ï¼Œ
+*                æ‰€ä»¥åœ¨éœ€è¦å…¼å®¹çš„ç¯å¢ƒï¼Œæœ€å¥½æ–‡ä»¶å¤§å°æ˜¯ä¸è°ƒæ•´çš„ï¼Œ
 */
 void fcntl_lock_adjust_params(file_lock_t *lock,
                               int whence,
@@ -94,12 +94,12 @@ void fcntl_lock_adjust_params(file_lock_t *lock,
 
 
 /*!
-* @brief   ¼ÓÎÄ¼ş¶ÁÈ¡Ëø£¬¹²ÏíËø£¬Èç¹û²»ÄÜ¼ÓÉÏËø£¬»á×èÈûµÈ´ı£¬¹²ÏíËø²»»á×èÖ¹ÆäËûÈË¶ÁÈ¡
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief   åŠ æ–‡ä»¶è¯»å–é”ï¼Œå…±äº«é”ï¼Œå¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šé˜»å¡ç­‰å¾…ï¼Œå…±äº«é”ä¸ä¼šé˜»æ­¢å…¶ä»–äººè¯»å–
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int fcntl_rdlock(file_lock_t *lock,
                  int  whence = SEEK_SET,
@@ -107,12 +107,12 @@ int fcntl_rdlock(file_lock_t *lock,
                  ssize_t len = 0);
 
 /*!
-* @brief  ³¢ÊÔ½øĞĞ¼Ó¶ÁÈ¡Ëø,Èç¹û²»ÄÜ¼ÓÉÏËø£¬»áÁ¢¼´·µ»Ø
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief  å°è¯•è¿›è¡ŒåŠ è¯»å–é”,å¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šç«‹å³è¿”å›
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int fcntl_tryrdlock(file_lock_t *lock,
                     int whence = SEEK_SET,
@@ -120,12 +120,12 @@ int fcntl_tryrdlock(file_lock_t *lock,
                     ssize_t len = 0);
 
 /*!
-* @brief      ¶ÔÎÄ¼şÉÏĞ´Ëø£¬ÅÅËûËø£¬Èç¹û²»ÄÜ¼ÓÉÏËø£¬»á×èÈûµÈ´ı
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief      å¯¹æ–‡ä»¶ä¸Šå†™é”ï¼Œæ’ä»–é”ï¼Œå¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šé˜»å¡ç­‰å¾…
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int fcntl_wrlock(file_lock_t *lock,
                  int whence = SEEK_SET,
@@ -133,12 +133,12 @@ int fcntl_wrlock(file_lock_t *lock,
                  ssize_t len = 0);
 
 /*!
-* @brief      ³¢ÊÔ½øĞĞ¼ÓĞ´Ëø£¨ÅÅËûËø£©,Èç¹û²»ÄÜ¼ÓÉÏËø£¬»áÁ¢¼´·µ»Ø
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     Ëø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief      å°è¯•è¿›è¡ŒåŠ å†™é”ï¼ˆæ’ä»–é”ï¼‰,å¦‚æœä¸èƒ½åŠ ä¸Šé”ï¼Œä¼šç«‹å³è¿”å›
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int fcntl_trywrlock(file_lock_t *lock,
                     int whence = SEEK_SET,
@@ -146,12 +146,12 @@ int fcntl_trywrlock(file_lock_t *lock,
                     ssize_t len = 0);
 
 /*!
-* @brief      ½âËø
-* @return        int     0³É¹¦£¬-1Ê§°Ü
-* @param[in,out] lock    ÎÄ¼şËø¶ÔÏó
-* @param[in]     whence  ¼ÆËãµÄÆğÊ¼¸ùÔ´Î»ÖÃ£¬ÈçSEEK_SET£¬SEEK_CUR£¬SEEK_END
-* @param[in]     start   ´Ó¸ùÔ´¿ªÊ¼µÄÏà¶ÔÎ»ÖÃ
-* @param[in]     len     ½âËø¶¨ÇøÓòµÄ³¤¶È£¬
+* @brief      è§£é”
+* @return        int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in,out] lock    æ–‡ä»¶é”å¯¹è±¡
+* @param[in]     whence  è®¡ç®—çš„èµ·å§‹æ ¹æºä½ç½®ï¼Œå¦‚SEEK_SETï¼ŒSEEK_CURï¼ŒSEEK_END
+* @param[in]     start   ä»æ ¹æºå¼€å§‹çš„ç›¸å¯¹ä½ç½®
+* @param[in]     len     è§£é”å®šåŒºåŸŸçš„é•¿åº¦ï¼Œ
 */
 int fcntl_unlock(file_lock_t *lock,
                  int whence = SEEK_SET,
@@ -160,17 +160,17 @@ int fcntl_unlock(file_lock_t *lock,
 
 
 //----------------------------------------------------------------------------------------
-// ÎÄ¼şËøµÄ¹¦ÄÜ£¬Ä£·ÂµÄÊÇflockµÄ¹¦ÄÜ
+// æ–‡ä»¶é”çš„åŠŸèƒ½ï¼Œæ¨¡ä»¿çš„æ˜¯flockçš„åŠŸèƒ½
 
 /*!
-* @brief      ÎÄ¼şËø²Ù×÷
+* @brief      æ–‡ä»¶é”æ“ä½œ
 * @return     int
-* @param      lock_hadle ×¢ÒâÕâ¸öµØ·½ÊÇfile_lock_t£¬ĞèÒªÓÃfile_lock_initÏÈ³õÊ¼»¯
-* @param      operation ÏàÓ¦µÄ²Ù×÷£¬ÊÇLOCK_SH LOCK_EX LOCK_UN LOCK_NB µÄ×éºÏ
-*             LOCK_SH ³¢ÊÔ¼ÓËø
-*             LOCK_EX Ç¿ÖÆ¼ÓËø
-*             LOCK_NB ²»×èÈû£¬¿ÉÒÔºÍLOCK_SH£¬LOCK_EX×éºÏÊ¹ÓÃ¡£ÓÃ|£¬Èç¹ûÓĞËø£¬Á¢¼´·µ»Ø£¬´íÎóEWOULDBLOCK
-*             LOCK_UN ½âËø
+* @param      lock_hadle æ³¨æ„è¿™ä¸ªåœ°æ–¹æ˜¯file_lock_tï¼Œéœ€è¦ç”¨file_lock_initå…ˆåˆå§‹åŒ–
+* @param      operation ç›¸åº”çš„æ“ä½œï¼Œæ˜¯LOCK_SH LOCK_EX LOCK_UN LOCK_NB çš„ç»„åˆ
+*             LOCK_SH å°è¯•åŠ é”
+*             LOCK_EX å¼ºåˆ¶åŠ é”
+*             LOCK_NB ä¸é˜»å¡ï¼Œå¯ä»¥å’ŒLOCK_SHï¼ŒLOCK_EXç»„åˆä½¿ç”¨ã€‚ç”¨|ï¼Œå¦‚æœæœ‰é”ï¼Œç«‹å³è¿”å›ï¼Œé”™è¯¯EWOULDBLOCK
+*             LOCK_UN è§£é”
 */
 int flock(file_lock_t& lock_hadle,int operation);
 

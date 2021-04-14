@@ -11,11 +11,11 @@ Server_Config_Base::Server_Config_Base() :
     instance_id_(1)
 {
 
-    //Ä¬ÈÏ¶¨Ê±Æ÷µÄÊÂÊıÁ¿
+    //é»˜è®¤å®šæ—¶å™¨çš„äº‹æ•°é‡
     //const size_t DEFAULT_TIMER_NUMBER = 1024;
 
 
-    //Ä¬ÈÏ¿ò¼Ü¶¨Ê±Æ÷¼ä¸ôÊ±¼ä 100ºÁÃë
+    //é»˜è®¤æ¡†æ¶å®šæ—¶å™¨é—´éš”æ—¶é—´ 100æ¯«ç§’
     //
     //heart_precision_.set(0, DEF_TIMER_INTERVAL_USEC);
 
@@ -39,7 +39,7 @@ Server_Config_Base::~Server_Config_Base()
 int Server_Config_Base::read_start_arg(int argc, const char *argv[])
 {
 
-    // Ö¸Ã÷RETURN_IN_ORDER ²»µ÷ÕûË³Ğò
+    // æŒ‡æ˜RETURN_IN_ORDER ä¸è°ƒæ•´é¡ºåº
     ZCE_Get_Option get_opt(argc, (char **)argv,
                            "umvndhpi:t:r:a:", 1, 0, ZCE_Get_Option::RETURN_IN_ORDER);
     int c = 0;
@@ -49,7 +49,7 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
         {
             case 'v':
             {
-                // ´òÓ¡°æ±¾ĞÅÏ¢
+                // æ‰“å°ç‰ˆæœ¬ä¿¡æ¯
                 printf("%s\n", TSS_SERVER_VER_DECLARE);
                 exit(0);
                 break;
@@ -57,21 +57,21 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
 
             case 'n':
             {
-                // ´Ó¹ÜµÀ»Ö¸´Êı¾İ
+                // ä»ç®¡é“æ¢å¤æ•°æ®
                 pipe_cfg_.if_restore_pipe_ = true;
                 break;
             }
 
             case 'd':
             {
-                // ºóÌ¨ÔËĞĞ
+                // åå°è¿è¡Œ
                 app_run_daemon_ = true;
                 break;
             }
 
             case 'r':
             {
-                // Ö¸¶¨ÔËĞĞÄ¿Â¼, ÒÔ·şÎñÔËĞĞÊ±£¬ĞèÒªÖ¸¶¨´Ë²ÎÊı
+                // æŒ‡å®šè¿è¡Œç›®å½•, ä»¥æœåŠ¡è¿è¡Œæ—¶ï¼Œéœ€è¦æŒ‡å®šæ­¤å‚æ•°
                 printf("app run dir = %s\n", app_run_dir_.c_str());
                 app_run_dir_ = get_opt.optarg;
                 break;
@@ -79,8 +79,8 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
 
             case 'a':
             {
-                // Ö÷cfgsvr ipµØÖ· ¶Ë¿ÚºÅÓÃ#¸ôÀë
-                // Ö¸¶¨ÁËÅäÖÃµØÖ·£¬Ôò´ÓÅäÖÃ·şÎñÆ÷À­ÅäÖÃ
+                // ä¸»cfgsvr ipåœ°å€ ç«¯å£å·ç”¨#éš”ç¦»
+                // æŒ‡å®šäº†é…ç½®åœ°å€ï¼Œåˆ™ä»é…ç½®æœåŠ¡å™¨æ‹‰é…ç½®
                 is_use_cfgsvr_ = true;
                 master_cfgsvr_ip_.set(get_opt.optarg);
                 break;
@@ -88,35 +88,35 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
 
             case 'i':
             {
-                // Ö¸¶¨ÁË·şÎñÆ÷ÊµÌåid
+                // æŒ‡å®šäº†æœåŠ¡å™¨å®ä½“id
                 instance_id_ = static_cast<unsigned short>(atoi(get_opt.optarg));
                 break;
             }
 
             case 't':
             {
-                // Ö¸¶¨ÁË·şÎñÆ÷type
+                // æŒ‡å®šäº†æœåŠ¡å™¨type
                 self_svc_id_.services_type_ = static_cast<unsigned short>(atoi(get_opt.optarg));
                 break;
             }
 
             case 'p':
             {
-                // ´Ó·şÎñÆ÷À­ÅäÖÃ
+                // ä»æœåŠ¡å™¨æ‹‰é…ç½®
                 is_use_cfgsvr_ = true;
                 break;
             }
 
             case 'u':
             {
-                // windowsĞ¶ÔØ·şÎñ
+                // windowså¸è½½æœåŠ¡
                 win_uninstall_service_ = true;
                 break;
             }
 
             case 'm':
             {
-                // windows°²×°·şÎñ
+                // windowså®‰è£…æœåŠ¡
                 win_install_service_ = true;
                 break;
             }
@@ -136,7 +136,7 @@ int Server_Config_Base::read_start_arg(int argc, const char *argv[])
         }
     }
 
-    //Èç¹ûÃ»ÓĞÉèÖÃÔËĞĞÄ¿Â¼
+    //å¦‚æœæ²¡æœ‰è®¾ç½®è¿è¡Œç›®å½•
     if (app_run_dir_.empty())
     {
         char cur_dir[PATH_MAX + 1];
@@ -174,20 +174,20 @@ int Server_Config_Base::usage(const char *program_name)
     return 0;
 }
 
-//¶ÁÈ¡ÅäÖÃÎÄ¼ş£¬Ö÷ÒªÊÇ¿ò¼ÜµÄÅäÖÃ£¬°üÀ¨ÈÕÖ¾£¬¶¨Ê±Æ÷µÈ
+//è¯»å–é…ç½®æ–‡ä»¶ï¼Œä¸»è¦æ˜¯æ¡†æ¶çš„é…ç½®ï¼ŒåŒ…æ‹¬æ—¥å¿—ï¼Œå®šæ—¶å™¨ç­‰
 int Server_Config_Base::read_cfgfile()
 {
     int ret = 0;
 
-    // Î´Ö¸¶¨appµÄÅäÖÃÎÄ¼ş£¬ÔòÊ¹ÓÃÄ¬ÈÏµÄ
+    // æœªæŒ‡å®šappçš„é…ç½®æ–‡ä»¶ï¼Œåˆ™ä½¿ç”¨é»˜è®¤çš„
     app_cfg_file_ = app_run_dir_ + "/cfg/";
     app_cfg_file_ += Soar_Svrd_Appliction::instance()->get_app_basename();
     app_cfg_file_ += ".cfg";
 
-    // Î´Ö¸¶¨svcidÅäÖÃÎÄ¼ş
+    // æœªæŒ‡å®šsvcidé…ç½®æ–‡ä»¶
     svc_table_file_ = app_run_dir_ + "/cfg/svctable.cfg";
 
-    // ¿ò¼ÜµÄÅäÖÃÊÇ²»»á±äµÄ
+    // æ¡†æ¶çš„é…ç½®æ˜¯ä¸ä¼šå˜çš„
     common_cfg_file_ = app_run_dir_ + "/cfg/common.cfg";
 
     ZCE_Conf_PropertyTree pt_tree;
@@ -225,7 +225,7 @@ void Server_Config_Base::dump_cfg_info(zce::LOG_PRIORITY out_lvl)
             pipe_cfg_.recv_pipe_len_, pipe_cfg_.send_pipe_len_);
 }
 
-//´ÓÅäÖÃÖĞ¶ÁÈ¡self_svc_id_µÄ
+//ä»é…ç½®ä¸­è¯»å–self_svc_id_çš„
 int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
@@ -268,7 +268,7 @@ int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     return 0;
 }
 
-//´ÓÅäÖÃÖĞ¶ÁÈ¡ÈÕÖ¾µÄÅäÖÃ
+//ä»é…ç½®ä¸­è¯»å–æ—¥å¿—çš„é…ç½®
 int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
@@ -297,7 +297,7 @@ int Server_Config_Base::get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //½ö½öµ±·Ö¸î·½Ê½ÊÇSIZEÊ±ÓĞÓÃ
+    //ä»…ä»…å½“åˆ†å‰²æ–¹å¼æ˜¯SIZEæ—¶æœ‰ç”¨
     ret = conf_tree->path_get_leaf("LOG_CFG", "MAX_FILE_SIZE", log_config_.max_log_file_size_);
     if (0 != ret)
     {

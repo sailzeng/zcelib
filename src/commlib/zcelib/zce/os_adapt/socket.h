@@ -3,16 +3,16 @@
 * @filename   zce/os_adapt/socket.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê5ÔÂ1ÈÕ
-* @brief      SOCKET²Ù×÷µÄÊÊÅäÆ÷²ã£¬Ö÷Òª»¹ÊÇÏòLINUXÏÂ¿¿Â£
+* @date       2011å¹´5æœˆ1æ—¥
+* @brief      SOCKETæ“ä½œçš„é€‚é…å™¨å±‚ï¼Œä¸»è¦è¿˜æ˜¯å‘LINUXä¸‹é æ‹¢
 *
-* @details    ZCE_SOCKET ÔÚLINUXÏÂ¾ÍÊÇint£¬ÎÄ¼şÃèÊö·û£¬
-*             WINDOWSÏÂÊÇSOCKET£¬Äã¿ÉÒÔÈÏÎªËû¾ÍÊÇÒ»¸öHANDLE£¬
+* @details    ZCE_SOCKET åœ¨LINUXä¸‹å°±æ˜¯intï¼Œæ–‡ä»¶æè¿°ç¬¦ï¼Œ
+*             WINDOWSä¸‹æ˜¯SOCKETï¼Œä½ å¯ä»¥è®¤ä¸ºä»–å°±æ˜¯ä¸€ä¸ªHANDLEï¼Œ
 *
-* @note       2011 Äê 10ÔÂ31ÈÕ£¬×öÁËÌå¼ì»ØÀ´¸Ä´úÂë
-*             ½«ÄÚ²¿ËùÓĞµÄºÜ¶àtimeval »»³ÉZCE_Time_Value;ÒòÎªÈç¹û²»»»£¬ÆäÊµÉÏ²ãĞ´ÆğÀ´·´¶øÄÑ¿´
-*             2013 Äê 1ÔÂ13ÈÕ ÉîÛÚ¶¬ÌìµÄÌ«ÑôÅ¯ÒâÊ®×ã¡£
-*             ½«ËùÓĞµÄ×¢ÊÍdoxygen»¯£¬
+* @note       2011 å¹´ 10æœˆ31æ—¥ï¼Œåšäº†ä½“æ£€å›æ¥æ”¹ä»£ç 
+*             å°†å†…éƒ¨æ‰€æœ‰çš„å¾ˆå¤štimeval æ¢æˆZCE_Time_Value;å› ä¸ºå¦‚æœä¸æ¢ï¼Œå…¶å®ä¸Šå±‚å†™èµ·æ¥åè€Œéš¾çœ‹
+*             2013 å¹´ 1æœˆ13æ—¥ æ·±åœ³å†¬å¤©çš„å¤ªé˜³æš–æ„åè¶³ã€‚
+*             å°†æ‰€æœ‰çš„æ³¨é‡ŠdoxygenåŒ–ï¼Œ
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_SOCKET_H_
@@ -31,90 +31,90 @@ namespace zce
 {
 
 #ifdef ZCE_OS_WINDOWS
-//WINSocketÃ»ÓĞ±©Â¶µÄÁ½¸öº¯Êı
+//WINSocketæ²¡æœ‰æš´éœ²çš„ä¸¤ä¸ªå‡½æ•°
 static LPFN_CONNECTEX WSAConnectEx = NULL;
 static LPFN_ACCEPTEX  WSAAcceptEx = NULL;
 #endif
 
 
 /*!
-* @brief      WINDOWS µÄSOCKET±ØĞëµ÷ÓÃÒ»ÏÂ³õÊ¼»¯WSAStartup
-* @return     int 0³É¹¦£¬
-* @param[in]  version_high  °æ±¾µÄ¸ßÎ»
-* @param[in]  version_low   °æ±¾µÄµÍÎ»
-* @note       ÔÚNT SP4ÒÔºó£¬¾ÍÖ§³Ö2.2µÄ°æ±¾ÁË£¬ÎÒÊµÔÚÏë²»³öÀíÓÉ£¬ÄãÒªÓÃ¸üµÍµÄ°æ±¾¡£
+* @brief      WINDOWS çš„SOCKETå¿…é¡»è°ƒç”¨ä¸€ä¸‹åˆå§‹åŒ–WSAStartup
+* @return     int 0æˆåŠŸï¼Œ
+* @param[in]  version_high  ç‰ˆæœ¬çš„é«˜ä½
+* @param[in]  version_low   ç‰ˆæœ¬çš„ä½ä½
+* @note       åœ¨NT SP4ä»¥åï¼Œå°±æ”¯æŒ2.2çš„ç‰ˆæœ¬äº†ï¼Œæˆ‘å®åœ¨æƒ³ä¸å‡ºç†ç”±ï¼Œä½ è¦ç”¨æ›´ä½çš„ç‰ˆæœ¬ã€‚
 */
 int socket_init(int version_high = 2,
                 int version_low = 2);
 
 /*!
-* @brief      ³ÌĞòÍË³ö£¬DLLĞ¬ÔÒÊ±£¬¹Ø±ÕSOCKET£¨WinSock£©µÄÊ¹ÓÃ£¬Finalize WinSock after last use (e.g., when a DLL is unloaded).
-* @return     int 0³É¹¦£¬-1Ê§°Ü
+* @brief      ç¨‹åºé€€å‡ºï¼ŒDLLé‹ç ¸æ—¶ï¼Œå…³é—­SOCKETï¼ˆWinSockï¼‰çš„ä½¿ç”¨ï¼ŒFinalize WinSock after last use (e.g., when a DLL is unloaded).
+* @return     int 0æˆåŠŸï¼Œ-1å¤±è´¥
 */
 int socket_finish(void);
 
 /*!
-* @brief      ´´½¨Ò»¸öSOCKET¶ÔÏó
-* @return     ZCE_SOCKET ·µ»ØSOCKET¾ä±ú
-* @param[in]  family   (µØÖ·)Ğ­Òé×å£¬ÎªAF_INET£¬AF_INET6£¬AF_UNSPECµÈ,Ğ­Òé×å£¬°´µÀÀíÊÇºÍµØÖ·×åÒ»Ò»¶ÔÓ¦µÄ£¬ËùÒÔPF_XXX,Ô¼µÈÓÚAF_XXX
-* @param[in]  type     ÊÇSOCK_DGRAM»òÕßSOCK_STREAM£¬SOCK_RAW
-* @param[in]  proto    Ğ­ÒéÀàĞÍ£¬Ö÷ÒªÔÚÔ­ÉúSOCKETÖĞÊ¹ÓÃ£¬±ÈÈçICMPµÈ£¬Ò»°ãÌîĞ´Îª0
+* @brief      åˆ›å»ºä¸€ä¸ªSOCKETå¯¹è±¡
+* @return     ZCE_SOCKET è¿”å›SOCKETå¥æŸ„
+* @param[in]  family   (åœ°å€)åè®®æ—ï¼Œä¸ºAF_INETï¼ŒAF_INET6ï¼ŒAF_UNSPECç­‰,åè®®æ—ï¼ŒæŒ‰é“ç†æ˜¯å’Œåœ°å€æ—ä¸€ä¸€å¯¹åº”çš„ï¼Œæ‰€ä»¥PF_XXX,çº¦ç­‰äºAF_XXX
+* @param[in]  type     æ˜¯SOCK_DGRAMæˆ–è€…SOCK_STREAMï¼ŒSOCK_RAW
+* @param[in]  proto    åè®®ç±»å‹ï¼Œä¸»è¦åœ¨åŸç”ŸSOCKETä¸­ä½¿ç”¨ï¼Œæ¯”å¦‚ICMPç­‰ï¼Œä¸€èˆ¬å¡«å†™ä¸º0
 */
 inline ZCE_SOCKET socket (int family,
                           int type,
                           int proto = 0);
 
 /*!
-* @brief      ½ÓÊÕÒ»¸öacceptÇëÇóµÄsocket
-* @return     inline ZCE_SOCKET  ·µ»Ø½ÓÊÜµÄSOCKET¾ä±ú£¬·µ»Ø¾ä±úµÈÓÚ£¬ZCE_INVALID_SOCKET±êÊ¶Ê§°Ü
-* @param      handle             ¼àÌı¶Ë¿ÚµÄ¾ä±ú
-* @param      addr               acceptµÄSOCKETµÄµØÖ·ĞÅÏ¢£¬sockaddrµÄÆäÊµ¿ÉÒÔÊÇ¸÷ÖÖĞ­Òé×å
-* @param      addrlen            acceptµÄSOCKETµÄµØÖ·³¤¶È
+* @brief      æ¥æ”¶ä¸€ä¸ªacceptè¯·æ±‚çš„socket
+* @return     inline ZCE_SOCKET  è¿”å›æ¥å—çš„SOCKETå¥æŸ„ï¼Œè¿”å›å¥æŸ„ç­‰äºï¼ŒZCE_INVALID_SOCKETæ ‡è¯†å¤±è´¥
+* @param      handle             ç›‘å¬ç«¯å£çš„å¥æŸ„
+* @param      addr               acceptçš„SOCKETçš„åœ°å€ä¿¡æ¯ï¼Œsockaddrçš„å…¶å®å¯ä»¥æ˜¯å„ç§åè®®æ—
+* @param      addrlen            acceptçš„SOCKETçš„åœ°å€é•¿åº¦
 */
 inline ZCE_SOCKET accept (ZCE_SOCKET handle,
                           sockaddr *addr,
                           socklen_t *addrlen);
 
 /*!
-* @brief      °ó¶¨Ò»¸öµØÖ·£¬Ö÷ÒªÓÃÓÚ¼àÌı¶Ë¿Ú£¬µ±È»ÆäËû²Ù×÷Ò²¿ÉÒÔÓÃ£¬±¾µØ¶Ë¿Ú£¨CONNECT³öÈ¥µÄ¶Ë¿Ú£©£¬Ò»°ã²»Ö¸¶¨±¾µØµØÖ·
-* @return     int      0±êÊ¶³É¹¦
-* @param      handle   °ó¶¨²Ù×÷µÄµØÖ·
-* @param      addr     ¾ä±úÒªÇó°ó¶¨µÄµÄµØÖ·ĞÅÏ¢£¬sockaddrµÄÆäÊµ¿ÉÒÔÊÇ¸÷ÖÖĞ­Òé×å
-* @param      addrlen  ¾ä±úÒªÇó°ó¶¨µÄµÄµØÖ·³¤¶È
+* @brief      ç»‘å®šä¸€ä¸ªåœ°å€ï¼Œä¸»è¦ç”¨äºç›‘å¬ç«¯å£ï¼Œå½“ç„¶å…¶ä»–æ“ä½œä¹Ÿå¯ä»¥ç”¨ï¼Œæœ¬åœ°ç«¯å£ï¼ˆCONNECTå‡ºå»çš„ç«¯å£ï¼‰ï¼Œä¸€èˆ¬ä¸æŒ‡å®šæœ¬åœ°åœ°å€
+* @return     int      0æ ‡è¯†æˆåŠŸ
+* @param      handle   ç»‘å®šæ“ä½œçš„åœ°å€
+* @param      addr     å¥æŸ„è¦æ±‚ç»‘å®šçš„çš„åœ°å€ä¿¡æ¯ï¼Œsockaddrçš„å…¶å®å¯ä»¥æ˜¯å„ç§åè®®æ—
+* @param      addrlen  å¥æŸ„è¦æ±‚ç»‘å®šçš„çš„åœ°å€é•¿åº¦
 */
 int bind (ZCE_SOCKET handle,
           const struct sockaddr *addr,
           socklen_t addrlen);
 
 /*!
-* @brief      ¹Ø±Õ¾ä±ú£¬ÎªÊ²Ã´²»¶¨Òåcloseº¯Êı£¿ÎªÁËÔÚWINÏÂ¼æÈİ£¬ÆäÃ»ÓÃÓÃcloseÕâ¸öº¯Êı£¬
-* @return     int 0³É¹¦£¬-1Ê§°Ü
-* @param      Òª¹Ø±ÕµÄ¾ä±ú
+* @brief      å…³é—­å¥æŸ„ï¼Œä¸ºä»€ä¹ˆä¸å®šä¹‰closeå‡½æ•°ï¼Ÿä¸ºäº†åœ¨WINä¸‹å…¼å®¹ï¼Œå…¶æ²¡ç”¨ç”¨closeè¿™ä¸ªå‡½æ•°ï¼Œ
+* @return     int 0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      è¦å…³é—­çš„å¥æŸ„
 */
 inline int closesocket (ZCE_SOCKET handle);
 
 /*!
-* @brief      shutdown£¬how²ÎÊıÏòLINUXÏÂ¿¿ÆëSHUT_RD
-* @return     int     ¹Ø±ÕÄ³µ¥±ßµÄÍ¨µÀ
-* @param      handle  ¹Ø±Õµ¥±ßÍ¨µÀµÄ¾ä±ú
-* @param      how     ÈçºÎ¹Ø±Õ£¬SHUT_RD,SHUT_WR,SHUT_RDWR
+* @brief      shutdownï¼Œhowå‚æ•°å‘LINUXä¸‹é é½SHUT_RD
+* @return     int     å…³é—­æŸå•è¾¹çš„é€šé“
+* @param      handle  å…³é—­å•è¾¹é€šé“çš„å¥æŸ„
+* @param      how     å¦‚ä½•å…³é—­ï¼ŒSHUT_RD,SHUT_WR,SHUT_RDWR
 */
 inline int shutdown (ZCE_SOCKET handle,
                      int how);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬Óï·¨ÌÇ£¬´ò¿ªÄ³Ğ©Ñ¡Ïî£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK,
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param      handle  ÒªÉèÖÃµÄ¾ä±ú£¬
-* @param      value   Ñ¡ÏîÖµ£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK£¬
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œè¯­æ³•ç³–ï¼Œæ‰“å¼€æŸäº›é€‰é¡¹ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK,
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      handle  è¦è®¾ç½®çš„å¥æŸ„ï¼Œ
+* @param      value   é€‰é¡¹å€¼ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCKï¼Œ
 */
 int sock_enable (ZCE_SOCKET handle, int value);
 
 /*!
-* @brief      ¹Ø±ÕÄ³Ğ©Ñ¡Ïî
-* @return     int    0³É¹¦£¬-1Ê§°Ü
-* @param      handle ÒªÉèÖÃµÄ¾ä±ú£¬
-* @param      value  Ñ¡ÏîÖµ£¬WIN32Ä¿Ç°Ö»Ö§³ÖO_NONBLOCK
+* @brief      å…³é—­æŸäº›é€‰é¡¹
+* @return     int    0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      handle è¦è®¾ç½®çš„å¥æŸ„ï¼Œ
+* @param      value  é€‰é¡¹å€¼ï¼ŒWIN32ç›®å‰åªæ”¯æŒO_NONBLOCK
 */
 int sock_disable(ZCE_SOCKET handle, int value);
 
@@ -123,11 +123,11 @@ int sock_disable(ZCE_SOCKET handle, int value);
 
 
 /*!
-* @brief      Á¬½ÓÄ³¸öµØÖ·
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param[in]  handle  Á´½ÓµÄµÄ¾ä±ú
-* @param[in]  addr    Á´½ÓÄ¿±êµÄµØÖ·ĞÅÏ¢
-* @param[in]  addrlen Á´½ÓÄ¿±êµÄµØÖ·³¤¶È
+* @brief      è¿æ¥æŸä¸ªåœ°å€
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  handle  é“¾æ¥çš„çš„å¥æŸ„
+* @param[in]  addr    é“¾æ¥ç›®æ ‡çš„åœ°å€ä¿¡æ¯
+* @param[in]  addrlen é“¾æ¥ç›®æ ‡çš„åœ°å€é•¿åº¦
 * @note
 */
 inline int connect (ZCE_SOCKET handle,
@@ -136,35 +136,35 @@ inline int connect (ZCE_SOCKET handle,
 
 
 /*!
-* @brief      (TCP)È¡µÃ¶Ô¶ËµÄµØÖ·ĞÅÏ¢
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param      handle  È¡¶Ô¶ËµÄµØÖ·µÄ¾ä±ú
-* @param[out] addr    ·µ»ØµÄµØÖ·ĞÅÏ¢
-* @param[out] addrlen ·µ»ØµÄµØÖ·³¤¶È
+* @brief      (TCP)å–å¾—å¯¹ç«¯çš„åœ°å€ä¿¡æ¯
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      handle  å–å¯¹ç«¯çš„åœ°å€çš„å¥æŸ„
+* @param[out] addr    è¿”å›çš„åœ°å€ä¿¡æ¯
+* @param[out] addrlen è¿”å›çš„åœ°å€é•¿åº¦
 */
 inline int getpeername (ZCE_SOCKET handle,
                         sockaddr *addr,
                         socklen_t *addrlen);
 
 /*!
-* @brief      È¡µÃ±¾µØµÄµØÖ·ĞÅÏ¢£¬BINDµÄµØÖ·£¬»òÕßÊÇOS·ÖÅäµÄ±¾µØµØÖ·
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param      handle  ¾ä±úID
-* @param[out] addr    ·µ»ØµÄµØÖ·µØÖ·ĞÅÏ¢
-* @param[out] addrlen ·µ»ØµÄµØÖ·³¤¶È
+* @brief      å–å¾—æœ¬åœ°çš„åœ°å€ä¿¡æ¯ï¼ŒBINDçš„åœ°å€ï¼Œæˆ–è€…æ˜¯OSåˆ†é…çš„æœ¬åœ°åœ°å€
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      handle  å¥æŸ„ID
+* @param[out] addr    è¿”å›çš„åœ°å€åœ°å€ä¿¡æ¯
+* @param[out] addrlen è¿”å›çš„åœ°å€é•¿åº¦
 */
 inline int getsockname (ZCE_SOCKET handle,
                         sockaddr *addr,
                         socklen_t *addrlen);
 
 /*!
-* @brief      È¡µÃ¾ä±úµÄÄ³¸öÑ¡ÏîÖµ
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param[in]  handle  Òª²Ù×÷µÄ¾ä±ú
-* @param[in]  level   Ñ¡ÏîµÄ¼¶±ğ
-* @param[in]  optname Ñ¡ÏîµÄÃû×Ö£¬Ã¶¾Ù¶¨Òå
-* @param[out] optval  È¡µÃÑ¡ÏîÊı¾İ
-* @param[out] optlen  È¡µÃÑ¡ÏîÊı¾İµÄ³¤¶È
+* @brief      å–å¾—å¥æŸ„çš„æŸä¸ªé€‰é¡¹å€¼
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  handle  è¦æ“ä½œçš„å¥æŸ„
+* @param[in]  level   é€‰é¡¹çš„çº§åˆ«
+* @param[in]  optname é€‰é¡¹çš„åå­—ï¼Œæšä¸¾å®šä¹‰
+* @param[out] optval  å–å¾—é€‰é¡¹æ•°æ®
+* @param[out] optlen  å–å¾—é€‰é¡¹æ•°æ®çš„é•¿åº¦
 */
 inline int getsockopt (ZCE_SOCKET handle,
                        int level,
@@ -173,13 +173,13 @@ inline int getsockopt (ZCE_SOCKET handle,
                        socklen_t *optlen);
 
 /*!
-* @brief      ÉèÖÃ¾ä±úµÄÄ³¸öÑ¡ÏîÖµ
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param[in]  handle  Òª²Ù×÷µÄ¾ä±ú
-* @param[in]  level   Ñ¡ÏîµÄ¼¶±ğ
-* @param[in]  optname Ñ¡ÏîµÄÃû×Ö£¬Ã¶¾Ù¶¨Òå
-* @param[in]  optval  ÉèÖÃÑ¡ÏîÊı¾İ
-* @param[in]  optlen  ÉèÖÃÑ¡ÏîÊı¾İµÄ³¤¶È
+* @brief      è®¾ç½®å¥æŸ„çš„æŸä¸ªé€‰é¡¹å€¼
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  handle  è¦æ“ä½œçš„å¥æŸ„
+* @param[in]  level   é€‰é¡¹çš„çº§åˆ«
+* @param[in]  optname é€‰é¡¹çš„åå­—ï¼Œæšä¸¾å®šä¹‰
+* @param[in]  optval  è®¾ç½®é€‰é¡¹æ•°æ®
+* @param[in]  optlen  è®¾ç½®é€‰é¡¹æ•°æ®çš„é•¿åº¦
 * @note
 */
 inline int setsockopt (ZCE_SOCKET handle,
@@ -189,28 +189,28 @@ inline int setsockopt (ZCE_SOCKET handle,
                        socklen_t optlen);
 
 /*!
-* @brief      ¼àÌıÄ³¸ö¶Ë¿Ú
-* @return     int 0³É¹¦£¬-1Ê§°Ü
-* @param      handle ¼àÌı¶Ë¿ÚµÄ¾ä±ú
-* @param      backlog ÄÚºËÎª´ÎÌ×½Ó×ÖÅÅ¶ÓµÄ×î´óÁ¬½ÓÊıÁ¿£¬Í¬Ñ§ÃÇ·´À¡´ËÊıÖµÔÚ´ó¹æÄ£Á´½ÓµÄ·şÎñÆ÷»¹ÊÇ
-*             Í¦ÓĞÓÃµÄ£¬Èç¹û¹æÄ£½Ï´ó£¬½¨Òéµ÷ÕûÕâ¸öÊıÖµ
-*             Í¬Ê±Çëµ÷Õû  /proc/sys/net/core/somaxconn
+* @brief      ç›‘å¬æŸä¸ªç«¯å£
+* @return     int 0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      handle ç›‘å¬ç«¯å£çš„å¥æŸ„
+* @param      backlog å†…æ ¸ä¸ºæ¬¡å¥—æ¥å­—æ’é˜Ÿçš„æœ€å¤§è¿æ¥æ•°é‡ï¼ŒåŒå­¦ä»¬åé¦ˆæ­¤æ•°å€¼åœ¨å¤§è§„æ¨¡é“¾æ¥çš„æœåŠ¡å™¨è¿˜æ˜¯
+*             æŒºæœ‰ç”¨çš„ï¼Œå¦‚æœè§„æ¨¡è¾ƒå¤§ï¼Œå»ºè®®è°ƒæ•´è¿™ä¸ªæ•°å€¼
+*             åŒæ—¶è¯·è°ƒæ•´  /proc/sys/net/core/somaxconn
 *             /proc/sys/net/ipv4/tcp_max_syn_backlog
-*             Çë²Î¿¼ http://linux.die.net/man/2/listen
+*             è¯·å‚è€ƒ http://linux.die.net/man/2/listen
 */
 inline int listen (ZCE_SOCKET handle,
                    int backlog = ZCE_DEFAULT_BACKLOG);
 
 /*!
-* @brief      ½ÓÊÕÊı¾İ£¬
-* @return     ssize_t -1±êÊ¶Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµ½µÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]  handle  ²Ù×÷µÄ¾ä±ú
-* @param[out] buf     ½ÓÊÕÊı¾İµÄbuffer
-* @param[out] len     ½ÓÊÕÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  flags   ½ÓÊÕ²Ù×÷µÄflag Ä¬ÈÏÎª0£¬WINºÍLINUX²¢²»Í¨ÓÃ£¬ÏÂÃæÁĞ³ö³£ÓÃµÄÒ»Ğ©
-*                     MSG_WAITALL WIN£¬LINUX¶¼ÓĞ£¬»áµÈ´ı½ÓÊÜÖ¸¶¨³¤¶ÈµÄÊı¾İ£¬²Å·µ»Ø
-*                     MSG_DONTWAIT LINUX ÌØÓĞ¡£Ïàµ±ÓÚ·Ç×èÈû½ÓÊÕ
-*                     MSG_OOB WIN£¬LINUX¶¼ÓĞ£¬´¦Àí´øÍâÊı¾İµÄ£¬µ«¹À¼ÆÒ²Ã»ÈËÓÃµÄ×Å
+* @brief      æ¥æ”¶æ•°æ®ï¼Œ
+* @return     ssize_t -1æ ‡è¯†å¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶åˆ°çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]  handle  æ“ä½œçš„å¥æŸ„
+* @param[out] buf     æ¥æ”¶æ•°æ®çš„buffer
+* @param[out] len     æ¥æ”¶æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  flags   æ¥æ”¶æ“ä½œçš„flag é»˜è®¤ä¸º0ï¼ŒWINå’ŒLINUXå¹¶ä¸é€šç”¨ï¼Œä¸‹é¢åˆ—å‡ºå¸¸ç”¨çš„ä¸€äº›
+*                     MSG_WAITALL WINï¼ŒLINUXéƒ½æœ‰ï¼Œä¼šç­‰å¾…æ¥å—æŒ‡å®šé•¿åº¦çš„æ•°æ®ï¼Œæ‰è¿”å›
+*                     MSG_DONTWAIT LINUX ç‰¹æœ‰ã€‚ç›¸å½“äºéé˜»å¡æ¥æ”¶
+*                     MSG_OOB WINï¼ŒLINUXéƒ½æœ‰ï¼Œå¤„ç†å¸¦å¤–æ•°æ®çš„ï¼Œä½†ä¼°è®¡ä¹Ÿæ²¡äººç”¨çš„ç€
 */
 inline ssize_t recv (ZCE_SOCKET handle,
                      void *buf,
@@ -218,13 +218,13 @@ inline ssize_t recv (ZCE_SOCKET handle,
                      int flags = 0);
 
 /*!
-* @brief      ·¢ËÍÊı¾İ£¬
-* @return     ssize_t -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾·¢ËÍµÄµÄÊı¾İ³¤¶È
-* @param[in]  handle  ²Ù×÷µÄ¾ä±ú
-* @param[in]  buf     ·¢ËÍÊı¾İµÄbuffer
-* @param[in]  len     ·¢ËÍÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  flags   ·¢ËÍ²Ù×÷µÄflag,¸÷Æ½Ì¨²»Ì«Í¨ÓÃ£¬
-*                     MSG_DONTWAIT,LINUXÌØÓĞ£¬Ïàµ±ÓÚ·Ç×èÈû·¢ËÍ
+* @brief      å‘é€æ•°æ®ï¼Œ
+* @return     ssize_t -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºå‘é€çš„çš„æ•°æ®é•¿åº¦
+* @param[in]  handle  æ“ä½œçš„å¥æŸ„
+* @param[in]  buf     å‘é€æ•°æ®çš„buffer
+* @param[in]  len     å‘é€æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  flags   å‘é€æ“ä½œçš„flag,å„å¹³å°ä¸å¤ªé€šç”¨ï¼Œ
+*                     MSG_DONTWAIT,LINUXç‰¹æœ‰ï¼Œç›¸å½“äºéé˜»å¡å‘é€
 */
 inline ssize_t send (ZCE_SOCKET handle,
                      const void *buf,
@@ -232,14 +232,14 @@ inline ssize_t send (ZCE_SOCKET handle,
                      int flags = 0);
 
 /*!
-* @brief      UDP½ÓÊÕ
-* @return     ssize_t  -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµ½µÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]  handle   ²Ù×÷µÄ¾ä±ú
-* @param[out] buf      ½ÓÊÕÊı¾İµÄbuffer
-* @param[out] len      ½ÓÊÕÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  flags    ½ÓÊÜ²Ù×÷µÄflag Ä¬ÈÏÎª0£¬MSG_DONTWAI LINUXÖ§³Ö£¬Ïàµ±ÓÚ·Ç×èÈû½ÓÊÕ
-* @param[out] from     Êı¾İÀ´Ô´µÄµØÖ·£¬from¿ÉÒÔºÍfrom_lenÒ»ÆğÎªNULL,±íÊ¾²»¹ØĞÄ´ÓÄÄ¶ùÀ´µÄÊı¾İ
-* @param[out] from_len Êı¾İÀ´Ô´µØÖ·µÄ³¤¶È
+* @brief      UDPæ¥æ”¶
+* @return     ssize_t  -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶åˆ°çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]  handle   æ“ä½œçš„å¥æŸ„
+* @param[out] buf      æ¥æ”¶æ•°æ®çš„buffer
+* @param[out] len      æ¥æ”¶æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  flags    æ¥å—æ“ä½œçš„flag é»˜è®¤ä¸º0ï¼ŒMSG_DONTWAI LINUXæ”¯æŒï¼Œç›¸å½“äºéé˜»å¡æ¥æ”¶
+* @param[out] from     æ•°æ®æ¥æºçš„åœ°å€ï¼Œfromå¯ä»¥å’Œfrom_lenä¸€èµ·ä¸ºNULL,è¡¨ç¤ºä¸å…³å¿ƒä»å“ªå„¿æ¥çš„æ•°æ®
+* @param[out] from_len æ•°æ®æ¥æºåœ°å€çš„é•¿åº¦
 */
 inline ssize_t recvfrom (ZCE_SOCKET handle,
                          void *buf,
@@ -249,14 +249,14 @@ inline ssize_t recvfrom (ZCE_SOCKET handle,
                          socklen_t *from_len);
 
 /*!
-* @brief      UDP·¢ËÍ
-* @return     ssize_t  -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµ½µÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]  handle  ²Ù×÷µÄ¾ä±ú
-* @param[in]  buf     ·¢ËÍÊı¾İµÄbuffer
-* @param[in]  len     ·¢ËÍÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  flags   ·¢ËÍ²Ù×÷µÄflag Ä¬ÈÏÎª0£¬MSG_DONTWAI LINUXÖ§³Ö£¬Ïàµ±ÓÚ·Ç×èÈû·¢ËÍ
-* @param[in]  addr    Ä¿±êµÄµØÖ·
-* @param[in]  addrlen Ä¿±êµÄµØÖ·µÄ³¤¶È
+* @brief      UDPå‘é€
+* @return     ssize_t  -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶åˆ°çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]  handle  æ“ä½œçš„å¥æŸ„
+* @param[in]  buf     å‘é€æ•°æ®çš„buffer
+* @param[in]  len     å‘é€æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  flags   å‘é€æ“ä½œçš„flag é»˜è®¤ä¸º0ï¼ŒMSG_DONTWAI LINUXæ”¯æŒï¼Œç›¸å½“äºéé˜»å¡å‘é€
+* @param[in]  addr    ç›®æ ‡çš„åœ°å€
+* @param[in]  addrlen ç›®æ ‡çš„åœ°å€çš„é•¿åº¦
 */
 inline ssize_t sendto (ZCE_SOCKET handle,
                        const void *buf,
@@ -266,19 +266,19 @@ inline ssize_t sendto (ZCE_SOCKET handle,
                        socklen_t addrlen);
 
 //--------------------------------------------------------------------------------------------
-//ÏÂÃæÁ½¸öº¯ÊıÊÇ·Ç±ê×¼º¯Êı£¬²¢ÇÒ²¢²»»á¿ÌÒâ×èÈû
-//Á½¸öº¯Êı²¢²»ÔÚÒâ¾ä±úÊÇ×èÈû»¹ÊÇ·Ç×èÈû£¬µ«Á½ÖÖÇé¿öÏÂ±íÏÖ»á´óÏà¾¶Í¥£¬Ò»¸ö×èÈû£¬Ò»¸ö¿ÉÄÜÁ¢¼´·µ»Ø´íÎó
-//Èç¹ûÒª½øĞĞ³¬Ê±´¦Àí£¬ÇëÊ¹ÓÃrecv_n,send_n
+//ä¸‹é¢ä¸¤ä¸ªå‡½æ•°æ˜¯éæ ‡å‡†å‡½æ•°ï¼Œå¹¶ä¸”å¹¶ä¸ä¼šåˆ»æ„é˜»å¡
+//ä¸¤ä¸ªå‡½æ•°å¹¶ä¸åœ¨æ„å¥æŸ„æ˜¯é˜»å¡è¿˜æ˜¯éé˜»å¡ï¼Œä½†ä¸¤ç§æƒ…å†µä¸‹è¡¨ç°ä¼šå¤§ç›¸å¾„åº­ï¼Œä¸€ä¸ªé˜»å¡ï¼Œä¸€ä¸ªå¯èƒ½ç«‹å³è¿”å›é”™è¯¯
+//å¦‚æœè¦è¿›è¡Œè¶…æ—¶å¤„ç†ï¼Œè¯·ä½¿ç”¨recv_n,send_n
 
 /*!
-* @brief      ¾¡Á¿ÊÕÈ¡len³¤µÄÊı¾İ£¬Ö±µ½³öÏÖ´íÎó,
-* @return     ssize_t -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµ½µÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]  handle  ²Ù×÷µÄ¾ä±ú£¬
-* @param[out] buf     ½ÓÊÕÊı¾İµÄbuffer
-* @param[out] len     ½ÓÊÕÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  flags   ½ÓÊÕ²Ù×÷µÄflag
-* @note               Èç¹û¾ä±ú±¾À´¾ÍÊÇ×èÈûµÄ,»á×èÈû
-*                     Èç¹û¾ä±ú·Ç×èÈû²Ù×÷£¬¿ÉÄÜ»áÁ¢¼´´íÎó£¬errno±»ÖÃÎªEWOULDBLOCK
+* @brief      å°½é‡æ”¶å–lené•¿çš„æ•°æ®ï¼Œç›´åˆ°å‡ºç°é”™è¯¯,
+* @return     ssize_t -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶åˆ°çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]  handle  æ“ä½œçš„å¥æŸ„ï¼Œ
+* @param[out] buf     æ¥æ”¶æ•°æ®çš„buffer
+* @param[out] len     æ¥æ”¶æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  flags   æ¥æ”¶æ“ä½œçš„flag
+* @note               å¦‚æœå¥æŸ„æœ¬æ¥å°±æ˜¯é˜»å¡çš„,ä¼šé˜»å¡
+*                     å¦‚æœå¥æŸ„éé˜»å¡æ“ä½œï¼Œå¯èƒ½ä¼šç«‹å³é”™è¯¯ï¼Œerrnoè¢«ç½®ä¸ºEWOULDBLOCK
 */
 ssize_t recvn (ZCE_SOCKET handle,
                void *buf,
@@ -286,12 +286,12 @@ ssize_t recvn (ZCE_SOCKET handle,
                int flags = 0);
 
 /*!
-* @brief      ¾¡Á¿·¢ËÍN¸öÊı¾İ£¬Ö±µ½³öÏÖ´íÎó
-* @return     ssize_t -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµ½µÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]  handle  ²Ù×÷µÄ¾ä±ú
-* @param[in]  buf     ·¢ËÍÊı¾İµÄbuffer
-* @param[in]  len     ·¢ËÍÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  flags   ·¢ËÍ²Ù×÷µÄflag,¸÷Æ½Ì¨²»Ì«Í¨ÓÃ£¬
+* @brief      å°½é‡å‘é€Nä¸ªæ•°æ®ï¼Œç›´åˆ°å‡ºç°é”™è¯¯
+* @return     ssize_t -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶åˆ°çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]  handle  æ“ä½œçš„å¥æŸ„
+* @param[in]  buf     å‘é€æ•°æ®çš„buffer
+* @param[in]  len     å‘é€æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  flags   å‘é€æ“ä½œçš„flag,å„å¹³å°ä¸å¤ªé€šç”¨ï¼Œ
 */
 ssize_t sendn (ZCE_SOCKET handle,
                const void *buf,
@@ -301,30 +301,30 @@ ssize_t sendn (ZCE_SOCKET handle,
 //--------------------------------------------------------------------------------------------
 
 /*!
-* @brief      is_ready_fdsÓÃÓÚ°ïÖúÄãÌÓ±Ü¸ÃËÀµÄselectµÄ´úÂë±àĞ´Âé·³¡£ÎÒÈÏÎªselectÊÇÒ»¸öÉè¼ÆµÄÏàµ±Ê§°ÜµÄAPI
-*             ´Ëº¯ÊıÓÃÓÚ°ïÖú¼ì²éÒ»¸öfd_setÖĞ¼äµÄ¾ä±úÊÇ·ñreadyÁË£¬Èç¹ûÕâ¸öfd readyÁË£¬È»ºótrue£¬·ñÔòÊÇfalse
-*             Äã¿ÉÒÔÓÃÒ»¸öforÑ­»·µ÷ÓÃis_ready_fdsº¯Êı£¬ÂÖÁ÷¼ì²é¸÷¸ö¾ä±úÊÇ·ñready
-* @return     bool     Èç¹û¼ì²éµÄno_fdsÏÂ±êµÄ¾ä±úÒÑ¾­ready£¬¾Í·µ»Øtrue£¬·ñÔò·µ»Øfalse
-* @param[in]  no_fds   no_fdsÊÇ¼ì²éµÄĞòºÅ£¬Ğ¡ÓÚnfds£¬
-* @param[in]  out_fds  ¾ÍÊÇselectµÄ·µ»Øfd_set²ÎÊı
-* @param[out] ready_fd Èç¹ûÒÑ¾­readyÁË£¬ready_fd·µ»ØreadyµÄ¾ä±ú
+* @brief      is_ready_fdsç”¨äºå¸®åŠ©ä½ é€ƒé¿è¯¥æ­»çš„selectçš„ä»£ç ç¼–å†™éº»çƒ¦ã€‚æˆ‘è®¤ä¸ºselectæ˜¯ä¸€ä¸ªè®¾è®¡çš„ç›¸å½“å¤±è´¥çš„API
+*             æ­¤å‡½æ•°ç”¨äºå¸®åŠ©æ£€æŸ¥ä¸€ä¸ªfd_setä¸­é—´çš„å¥æŸ„æ˜¯å¦readyäº†ï¼Œå¦‚æœè¿™ä¸ªfd readyäº†ï¼Œç„¶åtrueï¼Œå¦åˆ™æ˜¯false
+*             ä½ å¯ä»¥ç”¨ä¸€ä¸ªforå¾ªç¯è°ƒç”¨is_ready_fdså‡½æ•°ï¼Œè½®æµæ£€æŸ¥å„ä¸ªå¥æŸ„æ˜¯å¦ready
+* @return     bool     å¦‚æœæ£€æŸ¥çš„no_fdsä¸‹æ ‡çš„å¥æŸ„å·²ç»readyï¼Œå°±è¿”å›trueï¼Œå¦åˆ™è¿”å›false
+* @param[in]  no_fds   no_fdsæ˜¯æ£€æŸ¥çš„åºå·ï¼Œå°äºnfdsï¼Œ
+* @param[in]  out_fds  å°±æ˜¯selectçš„è¿”å›fd_setå‚æ•°
+* @param[out] ready_fd å¦‚æœå·²ç»readyäº†ï¼Œready_fdè¿”å›readyçš„å¥æŸ„
 */
 inline bool is_ready_fds(int no_fds,
                          const fd_set *out_fds,
                          ZCE_SOCKET *ready_fd);
 
 /*!
-* @brief      ¿çÆ½Ì¨µÄselectº¯Êı£¬ÔÚº¯Êı¹¦ÄÜÉÏ¾¡Á¿ÏëLINUXÏÂ¿¿Æë£¬
-*             LINUXÈç¹ûÃ»ÓĞ¾ä±ú¼ì²éµÄÊ±ºò£¬Ïàµ±ÓÚsleep£¬µ«WINDOWSÈ´»á·µ»Ø´íÎó£¬ÎÒÃÇµÄ·â×°Í³Ò»ÏòLINUX¿¿Æë£¬
-* @return        int         ºÍselectµÄ·µ»ØÒ»Ñù£¬·µ»Ø´¥·¢µÄ¾ä±úÊıÁ¿£¬-1±íÊ¾³öÏÖÎÊÌâ
-* @param[in]     nfds        ×î´óµÄ¾ä±úID£¬WINDOWSÏÂ¿ÉÒÔÌîĞ´Îª0£¨²»Îª0ºÃÏñ»¹ÓĞ¸æ¾¯£©£¬LINUXÏÂÎª×î´óµÄ¾ä±úID+1
-* @param[in,out] readfds     ½øĞĞ¶ÁÈ¡´¥·¢¼ì²éµÄ¾ä±ú¼¯ºÏ
-* @param[in,out] writefds    ½øĞĞĞ´Èë´¥·¢¼ì²éµÄ¾ä±ú¼¯ºÏ
-* @param[in,out] exceptfds   ½øĞĞÒì³£´¥·¢¼ì²éµÄ¾ä±ú¼¯ºÏ£¬
-* @param[in,out] timeout_tv  ³¬Ê±Ê±¼ä£¬×¢ÒâÕâ¸ö²ÎÊıÊÇ·ÇconstµÄ£¬Íê³Éºó·µ»ØÊ£ÓàÊ±¼ä
-* @note       UNIX ÍøÂç±à³Ì¾í1ÖĞĞğÊötimeout_tv²ÎÊıÊÇconstµÄ£¬¶øÇÒ¾ÙÀıºÜ¶à£¬ÎÒÒ²¾ÍÏàĞÅÁË
-*             µ«½ñÌìÁõÙ©·´À¡ËµLINUXÏÂµÄselect µÄtimeout_tv²»ÊÇconstµÄ£¬¿´ÁËÒ»ÏÂ£¬Õæ²»ÊÇ£¬
-*             ÓÚÊÇÎÒÃæÁÙÁ½¸öÑ¡Ôñ£¬ÏòË­¿´ÆğµÄÎÊÌâ£¬×îºó¿¼ÂÇ»¹ÊÇÏëLINUX¿´Æë°É¡£
+* @brief      è·¨å¹³å°çš„selectå‡½æ•°ï¼Œåœ¨å‡½æ•°åŠŸèƒ½ä¸Šå°½é‡æƒ³LINUXä¸‹é é½ï¼Œ
+*             LINUXå¦‚æœæ²¡æœ‰å¥æŸ„æ£€æŸ¥çš„æ—¶å€™ï¼Œç›¸å½“äºsleepï¼Œä½†WINDOWSå´ä¼šè¿”å›é”™è¯¯ï¼Œæˆ‘ä»¬çš„å°è£…ç»Ÿä¸€å‘LINUXé é½ï¼Œ
+* @return        int         å’Œselectçš„è¿”å›ä¸€æ ·ï¼Œè¿”å›è§¦å‘çš„å¥æŸ„æ•°é‡ï¼Œ-1è¡¨ç¤ºå‡ºç°é—®é¢˜
+* @param[in]     nfds        æœ€å¤§çš„å¥æŸ„IDï¼ŒWINDOWSä¸‹å¯ä»¥å¡«å†™ä¸º0ï¼ˆä¸ä¸º0å¥½åƒè¿˜æœ‰å‘Šè­¦ï¼‰ï¼ŒLINUXä¸‹ä¸ºæœ€å¤§çš„å¥æŸ„ID+1
+* @param[in,out] readfds     è¿›è¡Œè¯»å–è§¦å‘æ£€æŸ¥çš„å¥æŸ„é›†åˆ
+* @param[in,out] writefds    è¿›è¡Œå†™å…¥è§¦å‘æ£€æŸ¥çš„å¥æŸ„é›†åˆ
+* @param[in,out] exceptfds   è¿›è¡Œå¼‚å¸¸è§¦å‘æ£€æŸ¥çš„å¥æŸ„é›†åˆï¼Œ
+* @param[in,out] timeout_tv  è¶…æ—¶æ—¶é—´ï¼Œæ³¨æ„è¿™ä¸ªå‚æ•°æ˜¯éconstçš„ï¼Œå®Œæˆåè¿”å›å‰©ä½™æ—¶é—´
+* @note       UNIX ç½‘ç»œç¼–ç¨‹å·1ä¸­å™è¿°timeout_två‚æ•°æ˜¯constçš„ï¼Œè€Œä¸”ä¸¾ä¾‹å¾ˆå¤šï¼Œæˆ‘ä¹Ÿå°±ç›¸ä¿¡äº†
+*             ä½†ä»Šå¤©åˆ˜ä¾ƒåé¦ˆè¯´LINUXä¸‹çš„select çš„timeout_tvä¸æ˜¯constçš„ï¼Œçœ‹äº†ä¸€ä¸‹ï¼ŒçœŸä¸æ˜¯ï¼Œ
+*             äºæ˜¯æˆ‘é¢ä¸´ä¸¤ä¸ªé€‰æ‹©ï¼Œå‘è°çœ‹èµ·çš„é—®é¢˜ï¼Œæœ€åè€ƒè™‘è¿˜æ˜¯æƒ³LINUXçœ‹é½å§ã€‚
 */
 inline int select(
     int nfds,
@@ -334,33 +334,33 @@ inline int select(
     ZCE_Time_Value *timeout_tv
 );
 
-///ÓÃÓÚhandle_readyº¯Êı,handle_multi_readyº¯Êı
+///ç”¨äºhandle_readyå‡½æ•°,handle_multi_readyå‡½æ•°
 enum class HANDLE_READY
 {
-    ///¶ÁÊÂ¼ş
+    ///è¯»äº‹ä»¶
     READ            = 0x1,
 
-    ///Ğ´ÊÂ¼ş
+    ///å†™äº‹ä»¶
     WRITE           = 0x2,
 
-    ///Òì³£
+    ///å¼‚å¸¸
     EXCEPTION       = 0x3,
 
-    ///ACCPET ÊÂ¼ş£¬Ò²ÊÇ·ÅÔÚ¶ÁµÄSET
+    ///ACCPET äº‹ä»¶ï¼Œä¹Ÿæ˜¯æ”¾åœ¨è¯»çš„SET
     ACCEPT          = 0x4,
 
-    ///Á¬½Ó³É¹¦£¬ÎÒÎªÁ¬½Ó³É¹¦×öÁË¶àÉÙÅ¬Á¦£¬Äã¿´²»¼û
+    ///è¿æ¥æˆåŠŸï¼Œæˆ‘ä¸ºè¿æ¥æˆåŠŸåšäº†å¤šå°‘åŠªåŠ›ï¼Œä½ çœ‹ä¸è§
     CONNECTED       = 0x5,
 
 };
 
 /*!
-* @brief         ·Ç±ê×¼º¯Êı£¬(ÔÚÒ»¸öÊ±¼ä¶ÎÄÚ)¿´handle×¼±¸ºÃÓÃÓÚ¸ÉÂïÃ»ÓĞ£¬ÄÚ²¿ÓÃselect´¥·¢£¬ÓÃÓÚÄ³Ğ©¶Ôµ¥¸ö¶Ë¿ÚµÄµ¥¸öÊÂ¼ş´¦Àí£¬
-* @return        int          ·µ»ØÖµºÍselect Ò»ÖÂ£¬Èç¹û³É¹¦·µ»ØÖµÊÇ´¥·¢ÊÂ¼ş¸öÊı£¬Èç¹ûÊÂ¼ş´¥·¢Ò»°ã´¥·¢·µ»ØÖµ¶¼ÊÇ1
-* @param[in]     handle       µÈ´ı´¥·¢µÄ¾ä±ú
-* @param[in,out] timeout_tv   ³¬Ê±µÄÊ±¼ä
-* @param[in]     ready_todo   µÈ´ıÊ²Ã´ÊÂ¼ş£¨Ö»ÄÜµ¥¸ö£©£¬@ref HANDLE_READY
-* @note          ÌØ±ğÌáĞÑ£¬Ö»ÄÜ´¦Àíµ¥¸öÊÂ¼şà¸£¬²»ÄÜÍ¬Ê±´¦Àí¶ÁĞ´,
+* @brief         éæ ‡å‡†å‡½æ•°ï¼Œ(åœ¨ä¸€ä¸ªæ—¶é—´æ®µå†…)çœ‹handleå‡†å¤‡å¥½ç”¨äºå¹²å˜›æ²¡æœ‰ï¼Œå†…éƒ¨ç”¨selectè§¦å‘ï¼Œç”¨äºæŸäº›å¯¹å•ä¸ªç«¯å£çš„å•ä¸ªäº‹ä»¶å¤„ç†ï¼Œ
+* @return        int          è¿”å›å€¼å’Œselect ä¸€è‡´ï¼Œå¦‚æœæˆåŠŸè¿”å›å€¼æ˜¯è§¦å‘äº‹ä»¶ä¸ªæ•°ï¼Œå¦‚æœäº‹ä»¶è§¦å‘ä¸€èˆ¬è§¦å‘è¿”å›å€¼éƒ½æ˜¯1
+* @param[in]     handle       ç­‰å¾…è§¦å‘çš„å¥æŸ„
+* @param[in,out] timeout_tv   è¶…æ—¶çš„æ—¶é—´
+* @param[in]     ready_todo   ç­‰å¾…ä»€ä¹ˆäº‹ä»¶ï¼ˆåªèƒ½å•ä¸ªï¼‰ï¼Œ@ref HANDLE_READY
+* @note          ç‰¹åˆ«æé†’ï¼Œåªèƒ½å¤„ç†å•ä¸ªäº‹ä»¶å–”ï¼Œä¸èƒ½åŒæ—¶å¤„ç†è¯»å†™,
 */
 int handle_ready (ZCE_SOCKET handle,
                   ZCE_Time_Value *timeout_tv,
@@ -369,18 +369,18 @@ int handle_ready (ZCE_SOCKET handle,
 
 
 //--------------------------------------------------------------------------------------------
-//´øÓĞ³¬Ê±´¦ÀíµÄÒ»×éº¯Êı£¬¸ù¾İtimeout_tvÈ·¶¨ÊÇ·ñ½øĞĞ³¬Ê±´¦Àí
+//å¸¦æœ‰è¶…æ—¶å¤„ç†çš„ä¸€ç»„å‡½æ•°ï¼Œæ ¹æ®timeout_tvç¡®å®šæ˜¯å¦è¿›è¡Œè¶…æ—¶å¤„ç†
 
 
 /*!
-* @brief         ½ÓÊÕÊı¾İ£¬½ÓÊÕlen³¤µÄÊı¾İ»òÕß³¬Ê±ºó·µ»Ø£¬(Ò²»òÕßÒ»Ö±µÈ´ı£¬»òÕßÁ¢¼´·µ»Ø)
-* @return        ssize_t    -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµ½µÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]     handle     ²Ù×÷µÄ¾ä±ú£¬WINDOWSÏÂÒªÇó¾ä±úÊÇ×èÈû×´Ì¬µÄ
-* @param[out]    buf        ½ÓÊÕÊı¾İµÄbuffer
-* @param[out]    len        Ö¸¶¨½ÓÊÕÊı¾İµÄ³¤¶È
-* @param[in,out] timeout_tv ³¬Ê±Ê±³¤£¬Ïà¶ÔÊ±³¤£¬timeout_tv !=NULL±êÊ¶³¬Ê±´¦Àí£¬³¬Ê±ÊÇÓÃSELECTº¯Êı½øĞĞµÄ´¦Àí£¬
-*                           timeout_tv ==NULL ±êÊ¶²»½øĞĞ³¬Ê±´¦Àí,¸ù¾İSocket×´Ì¬×Ô¼º¾ö¶¨£¬·µ»ØÊ£ÓàµÄÊ±¼ä
-* @param[in]     flags      ½ÓÊÕµÄflag,²Î¿¼@ref recv
+* @brief         æ¥æ”¶æ•°æ®ï¼Œæ¥æ”¶lené•¿çš„æ•°æ®æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œ(ä¹Ÿæˆ–è€…ä¸€ç›´ç­‰å¾…ï¼Œæˆ–è€…ç«‹å³è¿”å›)
+* @return        ssize_t    -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶åˆ°çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]     handle     æ“ä½œçš„å¥æŸ„ï¼ŒWINDOWSä¸‹è¦æ±‚å¥æŸ„æ˜¯é˜»å¡çŠ¶æ€çš„
+* @param[out]    buf        æ¥æ”¶æ•°æ®çš„buffer
+* @param[out]    len        æŒ‡å®šæ¥æ”¶æ•°æ®çš„é•¿åº¦
+* @param[in,out] timeout_tv è¶…æ—¶æ—¶é•¿ï¼Œç›¸å¯¹æ—¶é•¿ï¼Œtimeout_tv !=NULLæ ‡è¯†è¶…æ—¶å¤„ç†ï¼Œè¶…æ—¶æ˜¯ç”¨SELECTå‡½æ•°è¿›è¡Œçš„å¤„ç†ï¼Œ
+*                           timeout_tv ==NULL æ ‡è¯†ä¸è¿›è¡Œè¶…æ—¶å¤„ç†,æ ¹æ®SocketçŠ¶æ€è‡ªå·±å†³å®šï¼Œè¿”å›å‰©ä½™çš„æ—¶é—´
+* @param[in]     flags      æ¥æ”¶çš„flag,å‚è€ƒ@ref recv
 * @note
 */
 inline ssize_t recv_n (ZCE_SOCKET handle,
@@ -390,14 +390,14 @@ inline ssize_t recv_n (ZCE_SOCKET handle,
                        int flags = 0);
 
 /*!
-* @brief         ·¢ËÍÊı¾İ£¬·¢ËÍlen³¤µÄÊı¾İ»òÕß³¬Ê±ºó·µ»Ø£¬(Ò²»òÕßÒ»ÖÂµÈ´ı£¬»òÕßÁ¢¼´·µ»Ø)
-* @return        ssize_t    -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾·¢ËÍµÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]     handle     ²Ù×÷µÄ¾ä±ú£¬WINDOWSÏÂÒªÇó¾ä±úÊÇ×èÈû×´Ì¬µÄ
-* @param[in]     buf        ·¢ËÍÊı¾İµÄbuffer
-* @param[in]     len        Ö¸¶¨·¢ËÍÊı¾İµÄ³¤¶È
-* @param[in,out] timeout_tv ³¬Ê±Ê±³¤£¬Ïà¶ÔÊ±³¤£¬timeout_tv !=NULL±êÊ¶³¬Ê±´¦Àí,³¬Ê±ÊÇÓÃSELECTº¯Êı½øĞĞµÄ´¦Àí£¬
-*                           timeout_tv ==NULL ±êÊ¶²»½øĞĞ³¬Ê±´¦Àí,¸ù¾İSocket×´Ì¬×Ô¼º¾ö¶¨,·µ»ØÊ£ÓàµÄÊ±¼ä
-* @param[in]     flags      ·¢ËÍµÄflag£¬²Î¿¼@ref send
+* @brief         å‘é€æ•°æ®ï¼Œå‘é€lené•¿çš„æ•°æ®æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œ(ä¹Ÿæˆ–è€…ä¸€è‡´ç­‰å¾…ï¼Œæˆ–è€…ç«‹å³è¿”å›)
+* @return        ssize_t    -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºå‘é€çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]     handle     æ“ä½œçš„å¥æŸ„ï¼ŒWINDOWSä¸‹è¦æ±‚å¥æŸ„æ˜¯é˜»å¡çŠ¶æ€çš„
+* @param[in]     buf        å‘é€æ•°æ®çš„buffer
+* @param[in]     len        æŒ‡å®šå‘é€æ•°æ®çš„é•¿åº¦
+* @param[in,out] timeout_tv è¶…æ—¶æ—¶é•¿ï¼Œç›¸å¯¹æ—¶é•¿ï¼Œtimeout_tv !=NULLæ ‡è¯†è¶…æ—¶å¤„ç†,è¶…æ—¶æ˜¯ç”¨SELECTå‡½æ•°è¿›è¡Œçš„å¤„ç†ï¼Œ
+*                           timeout_tv ==NULL æ ‡è¯†ä¸è¿›è¡Œè¶…æ—¶å¤„ç†,æ ¹æ®SocketçŠ¶æ€è‡ªå·±å†³å®š,è¿”å›å‰©ä½™çš„æ—¶é—´
+* @param[in]     flags      å‘é€çš„flagï¼Œå‚è€ƒ@ref send
 */
 inline ssize_t send_n (ZCE_SOCKET handle,
                        const void *buf,
@@ -406,16 +406,16 @@ inline ssize_t send_n (ZCE_SOCKET handle,
                        int flags = 0);
 
 /*!
-* @brief      ½ÓÊÕUDPÊı¾İ£¬½ÓÊÕµ½Ò»¸öµÄÊı¾İ°ü»òÕß³¬Ê±ºó·µ»Ø£¬(Ò²»òÕßÒ»ÖÂµÈ´ı£¬»òÕßÁ¢¼´·µ»Ø)
-* @return     ssize_t  -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾½ÓÊÕµÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]     handle     ²Ù×÷µÄ¾ä±ú£¬WINDOWSÏÂÒªÇó¾ä±úÊÇ×èÈû×´Ì¬µÄ
-* @param[out]    buf        ½ÓÊÕÊı¾İµÄbuffer
-* @param[out]    len        ½ÓÊÕÊı¾İµÄbufferµÄ³¤¶È
-* @param[out]    from       Êı¾İÀ´Ô´µÄµØÖ·£¬from¿ÉÒÔºÍfrom_lenÒ»ÆğÎªNULL,±íÊ¾²»¹ØĞÄ´ÓÄÄ¶ùÀ´µÄÊı¾İ
-* @param[out]    from_len   Êı¾İÀ´Ô´µØÖ·µÄ³¤¶È
-* @param[in,out] timeout_tv ³¬Ê±Ê±³¤£¬Ïà¶ÔÊ±³¤£¬timeout_tv !=NULL±êÊ¶³¬Ê±´¦Àí,³¬Ê±ÊÇÓÃSELECTº¯Êı½øĞĞµÄ´¦Àí£¬
-*                           timeout_tv ==NULL ±êÊ¶²»½øĞĞ³¬Ê±´¦Àí,¸ù¾İSocket×´Ì¬×Ô¼º¾ö¶¨,·µ»ØÊ£ÓàµÄÊ±¼ä
-* @param[in]     flags      ½ÓÊÕ²Ù×÷µÄflag ²Î¿¼@ref recv
+* @brief      æ¥æ”¶UDPæ•°æ®ï¼Œæ¥æ”¶åˆ°ä¸€ä¸ªçš„æ•°æ®åŒ…æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œ(ä¹Ÿæˆ–è€…ä¸€è‡´ç­‰å¾…ï¼Œæˆ–è€…ç«‹å³è¿”å›)
+* @return     ssize_t  -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºæ¥æ”¶çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]     handle     æ“ä½œçš„å¥æŸ„ï¼ŒWINDOWSä¸‹è¦æ±‚å¥æŸ„æ˜¯é˜»å¡çŠ¶æ€çš„
+* @param[out]    buf        æ¥æ”¶æ•°æ®çš„buffer
+* @param[out]    len        æ¥æ”¶æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[out]    from       æ•°æ®æ¥æºçš„åœ°å€ï¼Œfromå¯ä»¥å’Œfrom_lenä¸€èµ·ä¸ºNULL,è¡¨ç¤ºä¸å…³å¿ƒä»å“ªå„¿æ¥çš„æ•°æ®
+* @param[out]    from_len   æ•°æ®æ¥æºåœ°å€çš„é•¿åº¦
+* @param[in,out] timeout_tv è¶…æ—¶æ—¶é•¿ï¼Œç›¸å¯¹æ—¶é•¿ï¼Œtimeout_tv !=NULLæ ‡è¯†è¶…æ—¶å¤„ç†,è¶…æ—¶æ˜¯ç”¨SELECTå‡½æ•°è¿›è¡Œçš„å¤„ç†ï¼Œ
+*                           timeout_tv ==NULL æ ‡è¯†ä¸è¿›è¡Œè¶…æ—¶å¤„ç†,æ ¹æ®SocketçŠ¶æ€è‡ªå·±å†³å®š,è¿”å›å‰©ä½™çš„æ—¶é—´
+* @param[in]     flags      æ¥æ”¶æ“ä½œçš„flag å‚è€ƒ@ref recv
 * @note
 */
 inline ssize_t recvfrom (ZCE_SOCKET handle,
@@ -427,16 +427,16 @@ inline ssize_t recvfrom (ZCE_SOCKET handle,
                          int flags = 0);
 
 /*!
-* @brief      UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-*             ·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí£¬
-* @return     ssize_t    -1±íÊ¾Ê§°Ü£¨Ê§°ÜÔ­Òò´Óerrno»ñµÃ£©£¬0±íÊ¾¶Ë¿Ú±»¶Ï¿ª£¬>0±íÊ¾·¢ËÍµÄÊı¾İ Êı¾İ³¤¶È
-* @param[in]  handle     ²Ù×÷µÄ¾ä±ú
-* @param[in]  buf        ·¢ËÍÊı¾İµÄbuffer
-* @param[in]  len        ·¢ËÍÊı¾İµÄbufferµÄ³¤¶È
-* @param[in]  addr       Ä¿±êµÄµØÖ·
-* @param[in]  addrlen    Ä¿±êµÄµØÖ·µÄ³¤¶È
-* @param[in]  timeout_tv ´Ë²ÎÊıÃ»ÓĞÒâÒå
-* @param[in]  flags      ½ÓÊÕ²Ù×÷µÄflag ²Î¿¼@ref send
+* @brief      UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+*             å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†ï¼Œ
+* @return     ssize_t    -1è¡¨ç¤ºå¤±è´¥ï¼ˆå¤±è´¥åŸå› ä»errnoè·å¾—ï¼‰ï¼Œ0è¡¨ç¤ºç«¯å£è¢«æ–­å¼€ï¼Œ>0è¡¨ç¤ºå‘é€çš„æ•°æ® æ•°æ®é•¿åº¦
+* @param[in]  handle     æ“ä½œçš„å¥æŸ„
+* @param[in]  buf        å‘é€æ•°æ®çš„buffer
+* @param[in]  len        å‘é€æ•°æ®çš„bufferçš„é•¿åº¦
+* @param[in]  addr       ç›®æ ‡çš„åœ°å€
+* @param[in]  addrlen    ç›®æ ‡çš„åœ°å€çš„é•¿åº¦
+* @param[in]  timeout_tv æ­¤å‚æ•°æ²¡æœ‰æ„ä¹‰
+* @param[in]  flags      æ¥æ”¶æ“ä½œçš„flag å‚è€ƒ@ref send
 * @note
 */
 inline ssize_t sendto (ZCE_SOCKET handle,
@@ -448,20 +448,20 @@ inline ssize_t sendto (ZCE_SOCKET handle,
                        int flags = 0);
 
 //==================================================================================================
-///ÒòÎªWINdows ²»Ö§³ÖÈ¡µÃsocket ÊÇ·ñÊÇ×èÈûµÄÄ£Ê½£¬ËùÒÔWindows ÏÂÎÒÎŞ·¨ÏÈÈ¡µÃsocketµÄÑ¡Ïî£¬
-///È»ºóÅĞ¶ÏÊÇ·ñÈ¡Ïû×èÈûÄ£Ê½ËùÒÔÇëÄãÎñ±Ø±£Ö¤ÄãµÄSocket ÊÇ×èÈûÄ£Ê½µÄ£¬·ñÔòÓĞÎÊÌâ
-///Ò»×é´øÓĞ³¬Ê±µÄSOCKET´¦Àíº¯Êı£¬ÄÚ²¿Ê¹ÓÃÊ¹ÓÃselect×÷Îª³¬Ê±º¯Êı´¦Àí
-///³¬Ê±µÄÊ±¼ä²ÎÊı±ØĞëÌîĞ´
+///å› ä¸ºWINdows ä¸æ”¯æŒå–å¾—socket æ˜¯å¦æ˜¯é˜»å¡çš„æ¨¡å¼ï¼Œæ‰€ä»¥Windows ä¸‹æˆ‘æ— æ³•å…ˆå–å¾—socketçš„é€‰é¡¹ï¼Œ
+///ç„¶ååˆ¤æ–­æ˜¯å¦å–æ¶ˆé˜»å¡æ¨¡å¼æ‰€ä»¥è¯·ä½ åŠ¡å¿…ä¿è¯ä½ çš„Socket æ˜¯é˜»å¡æ¨¡å¼çš„ï¼Œå¦åˆ™æœ‰é—®é¢˜
+///ä¸€ç»„å¸¦æœ‰è¶…æ—¶çš„SOCKETå¤„ç†å‡½æ•°ï¼Œå†…éƒ¨ä½¿ç”¨ä½¿ç”¨selectä½œä¸ºè¶…æ—¶å‡½æ•°å¤„ç†
+///è¶…æ—¶çš„æ—¶é—´å‚æ•°å¿…é¡»å¡«å†™
 
 
 
 /*!
-* @brief      ÔÚÒ»¸öÏŞ¶¨Ê±¼äÄÚÁ´½ÓÄ³¸ö·şÎñÆ÷¡£
-* @return     int 0³É¹¦£¬·Ç0±íÊ¾Ê§°Ü£¬ÒÔ¼°´íÎóID
-* @param      handle      ²Ù×÷µÄ¾ä±ú
-* @param      addr        µØÖ·
-* @param      addrlen     µØÖ·³¤¶È
-* @param      timeout_tv  ³¬Ê±Ê±¼ä
+* @brief      åœ¨ä¸€ä¸ªé™å®šæ—¶é—´å†…é“¾æ¥æŸä¸ªæœåŠ¡å™¨ã€‚
+* @return     int 0æˆåŠŸï¼Œé0è¡¨ç¤ºå¤±è´¥ï¼Œä»¥åŠé”™è¯¯ID
+* @param      handle      æ“ä½œçš„å¥æŸ„
+* @param      addr        åœ°å€
+* @param      addrlen     åœ°å€é•¿åº¦
+* @param      timeout_tv  è¶…æ—¶æ—¶é—´
 * @note
 */
 int connect_timeout(ZCE_SOCKET handle,
@@ -472,14 +472,14 @@ int connect_timeout(ZCE_SOCKET handle,
 
 
 /*!
-* @brief      Á¬½ÓÄ³¸öHOSTNAME£¬¿ÉÒÔÊÇÓòÃû£¬Ò²¿ÉÒÔÊÇÊıÖµµØÖ·¸ñÊ½
-* @return     int 0³É¹¦£¬·Ç0±íÊ¾Ê§°Ü£¬ÒÔ¼°´íÎóID
-* @param      handle      ²Ù×÷µÄ¾ä±ú
-* @param      hostname    ¿ÉÒÔÊÇÓòÃû£¬Ò²¿ÉÒÔÊÇÊıÖµµØÖ·¸ñÊ½£¬»áÓÅÏÈ³¢ÊÔÓÃÊıÖµµØÖ·¸ñÊ½½âÎö
-* @param      port        ¶Ë¿ÚºÅ
-* @param      host_addr   ÊäÈëÊä³ö²ÎÊı£¬Èç¹û²»ÊäÈëhostname£¬¿ÉÒÔ×÷ÎªÖ±Á¬µØÖ·£¬Èç¹ûÊäÈëÁËhostname£¬·µ»Ø½âÎöµÄµØÖ·
-* @param      addr_len    µØÖ·³¤¶È
-* @param      timeout_tv  ³¬Ê±Ê±¼ä
+* @brief      è¿æ¥æŸä¸ªHOSTNAMEï¼Œå¯ä»¥æ˜¯åŸŸåï¼Œä¹Ÿå¯ä»¥æ˜¯æ•°å€¼åœ°å€æ ¼å¼
+* @return     int 0æˆåŠŸï¼Œé0è¡¨ç¤ºå¤±è´¥ï¼Œä»¥åŠé”™è¯¯ID
+* @param      handle      æ“ä½œçš„å¥æŸ„
+* @param      hostname    å¯ä»¥æ˜¯åŸŸåï¼Œä¹Ÿå¯ä»¥æ˜¯æ•°å€¼åœ°å€æ ¼å¼ï¼Œä¼šä¼˜å…ˆå°è¯•ç”¨æ•°å€¼åœ°å€æ ¼å¼è§£æ
+* @param      port        ç«¯å£å·
+* @param      host_addr   è¾“å…¥è¾“å‡ºå‚æ•°ï¼Œå¦‚æœä¸è¾“å…¥hostnameï¼Œå¯ä»¥ä½œä¸ºç›´è¿åœ°å€ï¼Œå¦‚æœè¾“å…¥äº†hostnameï¼Œè¿”å›è§£æçš„åœ°å€
+* @param      addr_len    åœ°å€é•¿åº¦
+* @param      timeout_tv  è¶…æ—¶æ—¶é—´
 * @note
 */
 int connect_timeout(ZCE_SOCKET handle,
@@ -492,11 +492,11 @@ int connect_timeout(ZCE_SOCKET handle,
 
 
 /*!
-* @brief      TCP½ÓÊÕÊı¾İ£¬½ÓÊÕlen³¤µÄÊı¾İ»òÕß³¬Ê±ºó·µ»Ø£¬³ıÁËtimeout_tv²ÎÊı£¬Çå²Î¿¼@ref recv_n
-*             recvn_timeout ºÍ recvn_n µÄÇø±ğÊÇrecvn_n Èç¹û³¬Ê±²ÎÊıÎªNULL£¬¿ÉÄÜÁ¢¼´·µ»Ø»òÕßÒ»ÖÂ×èÈûµÈ´ı
-*             ÄÚ²¿³¬Ê±ÓÃselect ÊµÏÖ
-* @param      timeout_tv µÈ´ıµÄÊ±¼ä²ÎÊı£¬ÒıÓÃÖµ£¬Äã±ØĞëÌîĞ´Ò»¸öÊıÖµ
-* @param      only_once  Ö»ÊÕÈ¡Ò»´ÎÊı¾İ£¬ÊÕÈ¡ºó¾Í·µ»Ø£¬²»µÈ´ıÒ»¶¨ÒªÊÕÈ¡µ½lenµÄÊı¾İ
+* @brief      TCPæ¥æ”¶æ•°æ®ï¼Œæ¥æ”¶lené•¿çš„æ•°æ®æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œé™¤äº†timeout_två‚æ•°ï¼Œæ¸…å‚è€ƒ@ref recv_n
+*             recvn_timeout å’Œ recvn_n çš„åŒºåˆ«æ˜¯recvn_n å¦‚æœè¶…æ—¶å‚æ•°ä¸ºNULLï¼Œå¯èƒ½ç«‹å³è¿”å›æˆ–è€…ä¸€è‡´é˜»å¡ç­‰å¾…
+*             å†…éƒ¨è¶…æ—¶ç”¨select å®ç°
+* @param      timeout_tv ç­‰å¾…çš„æ—¶é—´å‚æ•°ï¼Œå¼•ç”¨å€¼ï¼Œä½ å¿…é¡»å¡«å†™ä¸€ä¸ªæ•°å€¼
+* @param      only_once  åªæ”¶å–ä¸€æ¬¡æ•°æ®ï¼Œæ”¶å–åå°±è¿”å›ï¼Œä¸ç­‰å¾…ä¸€å®šè¦æ”¶å–åˆ°lençš„æ•°æ®
 */
 ssize_t recvn_timeout (ZCE_SOCKET handle,
                        void *buf,
@@ -506,11 +506,11 @@ ssize_t recvn_timeout (ZCE_SOCKET handle,
                        bool only_once = false);
 
 /*!
-* @brief      TCP·¢ËÍÊı¾İ£¬·¢ËÍlen³¤µÄÊı¾İ»òÕß³¬Ê±ºó·µ»Ø£¬³ıÁËtimeout_tv²ÎÊı£¬Çå²Î¿¼@ref sendv_n
-*             sendn_timeout ºÍ sendv_n µÄÇø±ğÊÇrecvn_n Èç¹û³¬Ê±²ÎÊıÎªNULL£¬¿ÉÄÜÁ¢¼´·µ»Ø»òÕßÒ»ÖÂ×èÈûµÈ´ı
-*             ¶øsendn_timeout µÄ³¬Ê±²ÎÊı±ØĞëÌîĞ´
-*             ÄÚ²¿³¬Ê±ÓÃselect ÊµÏÖ
-* @param      timeout_tv µÈ´ıµÄÊ±¼ä²ÎÊı£¬ÒıÓÃÖµ£¬Äã±ØĞëÌîĞ´Ò»¸öÊıÖµ
+* @brief      TCPå‘é€æ•°æ®ï¼Œå‘é€lené•¿çš„æ•°æ®æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œé™¤äº†timeout_två‚æ•°ï¼Œæ¸…å‚è€ƒ@ref sendv_n
+*             sendn_timeout å’Œ sendv_n çš„åŒºåˆ«æ˜¯recvn_n å¦‚æœè¶…æ—¶å‚æ•°ä¸ºNULLï¼Œå¯èƒ½ç«‹å³è¿”å›æˆ–è€…ä¸€è‡´é˜»å¡ç­‰å¾…
+*             è€Œsendn_timeout çš„è¶…æ—¶å‚æ•°å¿…é¡»å¡«å†™
+*             å†…éƒ¨è¶…æ—¶ç”¨select å®ç°
+* @param      timeout_tv ç­‰å¾…çš„æ—¶é—´å‚æ•°ï¼Œå¼•ç”¨å€¼ï¼Œä½ å¿…é¡»å¡«å†™ä¸€ä¸ªæ•°å€¼
 */
 ssize_t sendn_timeout(ZCE_SOCKET handle,
                       const void *buf,
@@ -520,8 +520,8 @@ ssize_t sendn_timeout(ZCE_SOCKET handle,
 
 
 /*!
-* @brief      ½ÓÊÕUDPÊı¾İ£¬½ÓÊÕµ½Ò»¸öµÄÊı¾İ°ü»òÕß³¬Ê±ºó·µ»Ø£¬Çë²Î¿¼@ref recvfrom
-* @param      timeout_tv µÈ´ıµÄÊ±¼ä²ÎÊı£¬ÒıÓÃÖµ£¬Äã±ØĞëÌîĞ´Ò»¸öÊıÖµ
+* @brief      æ¥æ”¶UDPæ•°æ®ï¼Œæ¥æ”¶åˆ°ä¸€ä¸ªçš„æ•°æ®åŒ…æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œè¯·å‚è€ƒ@ref recvfrom
+* @param      timeout_tv ç­‰å¾…çš„æ—¶é—´å‚æ•°ï¼Œå¼•ç”¨å€¼ï¼Œä½ å¿…é¡»å¡«å†™ä¸€ä¸ªæ•°å€¼
 */
 ssize_t recvfrom_timeout (ZCE_SOCKET handle,
                           void *buf,
@@ -532,8 +532,8 @@ ssize_t recvfrom_timeout (ZCE_SOCKET handle,
                           int flags = 0);
 
 /*!
-* @brief      UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-*             ·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí
+* @brief      UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+*             å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†
 */
 ssize_t sendto_timeout (ZCE_SOCKET handle,
                         const void *buf,
@@ -547,14 +547,14 @@ ssize_t sendto_timeout (ZCE_SOCKET handle,
 
 
 //==================================================================================================
-//Õâ×éº¯ÊıÌá¹©½ö½öÎªÁË´úÂë²âÊÔ£¬ÔİÊ±²»¶ÔÍâÌá¹©
-//Õâ×éº¯ÊıÊÇÊ¹ÓÃSO_RCVTIMEO£¬SO_SNDTIMEOµÃµ½Ò»×é³¬Ê±´¦Àíº¯Êı
+//è¿™ç»„å‡½æ•°æä¾›ä»…ä»…ä¸ºäº†ä»£ç æµ‹è¯•ï¼Œæš‚æ—¶ä¸å¯¹å¤–æä¾›
+//è¿™ç»„å‡½æ•°æ˜¯ä½¿ç”¨SO_RCVTIMEOï¼ŒSO_SNDTIMEOå¾—åˆ°ä¸€ç»„è¶…æ—¶å¤„ç†å‡½æ•°
 
 /*!
-* @brief      ½ÓÊÕÊı¾İ£¬½ÓÊÕlen³¤µÄÊı¾İ»òÕß³¬Ê±ºó·µ»Ø£¬³ıÁËtimeout_tv²ÎÊı£¬Çå²Î¿¼@ref recv_n
-*             recvn_timeout2 ºÍ recvn_timeout µÄÇø±ğÊÇ´ørecvn_timeout2µÄÃû×Öº¯ÊıÊÇÊ¹ÓÃÊÇSO_RCVTIMEOÑ¡Ïî½øĞĞ³¬Ê±´¦Àí£¬
-*             ¼ÇÊ±²»ÊÇÌØ±ğ×¼È·£¬
-* @param      timeout_tv µÈ´ıµÄÊ±¼ä²ÎÊı£¬ÒıÓÃÖµ£¬Äã±ØĞëÌîĞ´Ò»¸öÊıÖµ
+* @brief      æ¥æ”¶æ•°æ®ï¼Œæ¥æ”¶lené•¿çš„æ•°æ®æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œé™¤äº†timeout_två‚æ•°ï¼Œæ¸…å‚è€ƒ@ref recv_n
+*             recvn_timeout2 å’Œ recvn_timeout çš„åŒºåˆ«æ˜¯å¸¦recvn_timeout2çš„åå­—å‡½æ•°æ˜¯ä½¿ç”¨æ˜¯SO_RCVTIMEOé€‰é¡¹è¿›è¡Œè¶…æ—¶å¤„ç†ï¼Œ
+*             è®°æ—¶ä¸æ˜¯ç‰¹åˆ«å‡†ç¡®ï¼Œ
+* @param      timeout_tv ç­‰å¾…çš„æ—¶é—´å‚æ•°ï¼Œå¼•ç”¨å€¼ï¼Œä½ å¿…é¡»å¡«å†™ä¸€ä¸ªæ•°å€¼
 */
 ssize_t recvn_timeout2 (ZCE_SOCKET handle,
                         void *buf,
@@ -563,10 +563,10 @@ ssize_t recvn_timeout2 (ZCE_SOCKET handle,
                         int flags = 0);
 
 /*!
-* @brief      ·¢ËÍÊı¾İ£¬·¢ËÍlen³¤µÄÊı¾İ»òÕß³¬Ê±ºó·µ»Ø£¬³ıÁËtimeout_tv²ÎÊı£¬Çë²Î¿¼@ref sendv_n
-*             sendn_timeout2 ºÍ sendn_timeout µÄÇø±ğÊÇ´øsendn_timeout2µÄÃû×Öº¯ÊıÊÇÊ¹ÓÃÊÇSO_SNDTIMEOÑ¡Ïî½øĞĞ³¬Ê±´¦Àí£¬
-*             ¼ÇÊ±²»ÊÇÌØ±ğ×¼È·£¬
-* @param      timeout_tv µÈ´ıµÄÊ±¼ä²ÎÊı£¬ÒıÓÃÖµ£¬Äã±ØĞëÌîĞ´Ò»¸öÊıÖµ
+* @brief      å‘é€æ•°æ®ï¼Œå‘é€lené•¿çš„æ•°æ®æˆ–è€…è¶…æ—¶åè¿”å›ï¼Œé™¤äº†timeout_två‚æ•°ï¼Œè¯·å‚è€ƒ@ref sendv_n
+*             sendn_timeout2 å’Œ sendn_timeout çš„åŒºåˆ«æ˜¯å¸¦sendn_timeout2çš„åå­—å‡½æ•°æ˜¯ä½¿ç”¨æ˜¯SO_SNDTIMEOé€‰é¡¹è¿›è¡Œè¶…æ—¶å¤„ç†ï¼Œ
+*             è®°æ—¶ä¸æ˜¯ç‰¹åˆ«å‡†ç¡®ï¼Œ
+* @param      timeout_tv ç­‰å¾…çš„æ—¶é—´å‚æ•°ï¼Œå¼•ç”¨å€¼ï¼Œä½ å¿…é¡»å¡«å†™ä¸€ä¸ªæ•°å€¼
 */
 ssize_t sendn_timeout2 (ZCE_SOCKET handle,
                         void *buf,
@@ -575,8 +575,8 @@ ssize_t sendn_timeout2 (ZCE_SOCKET handle,
                         int flags = 0);
 
 /*!
-* @brief      ÊÕUDPµÄÊı¾İ,Ò²´øÓĞ³¬Ê±´¦Àí£¬µ«ÊÇÊÇÊÕµ½¶àÉÙÊı¾İ¾ÍÊÇ¶àÉÙÁË£¬³¬Ê±ÓÃSO_RCVTIMEOÊµÏÖ
-*             ÆäËû²ÎÊı·µ»ØÖµ²Î¿¼recvfrom£¬
+* @brief      æ”¶UDPçš„æ•°æ®,ä¹Ÿå¸¦æœ‰è¶…æ—¶å¤„ç†ï¼Œä½†æ˜¯æ˜¯æ”¶åˆ°å¤šå°‘æ•°æ®å°±æ˜¯å¤šå°‘äº†ï¼Œè¶…æ—¶ç”¨SO_RCVTIMEOå®ç°
+*             å…¶ä»–å‚æ•°è¿”å›å€¼å‚è€ƒrecvfromï¼Œ
 */
 ssize_t recvfrom_timeout2 (ZCE_SOCKET handle,
                            void *buf,
@@ -587,9 +587,9 @@ ssize_t recvfrom_timeout2 (ZCE_SOCKET handle,
                            int flags = 0);
 
 /*!
-* @brief      UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-*             ·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí
-*             ÆäËû²ÎÊı·µ»ØÖµ²Î¿¼sendto£¬
+* @brief      UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+*             å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†
+*             å…¶ä»–å‚æ•°è¿”å›å€¼å‚è€ƒsendtoï¼Œ
 */
 ssize_t sendto_timeout2 (ZCE_SOCKET handle,
                          const void *buf,
@@ -600,26 +600,26 @@ ssize_t sendto_timeout2 (ZCE_SOCKET handle,
                          int flags = 0);
 
 //--------------------------------------------------------------------------------------------
-//Ò»´Î²Ù×÷Ò»×éÊı¾İµÄµÄreadv£¬writevº¯Êı
+//ä¸€æ¬¡æ“ä½œä¸€ç»„æ•°æ®çš„çš„readvï¼Œwritevå‡½æ•°
 
 /*!
-* @brief      Ò»´Î¶ÁÈ¡Ò»×éÊı¾İ£¬WINDOWSÏÂÓÃ£¬WSARecvÄ£Äâ£¬
-*             readvÕâÖÖº¯Êı±íÃæ¿´ÆğÀ´¿ÉÄÜ±È½ÏÒ»Ğ©Êı¾İµÄ·Ö½Ú´¦Àí£¬µ«ÓÉÓÚÃ»ÓĞ³¬Ê±µÈ¸¨Öú£¬Ò²Î´±ØÕæºÃÓÃ
-* @return     ssize_t ¶ÁÈ¡Êı¾İµÄ×Ü³¤¶È
-* @param[in]     handle  ²Ù×÷µÄ¾ä±ú
-* @param[in,out] iov     ¶ÁÈ¡µÄÊı¾İÊı×é£¬iovecÀïÃæÓĞ buf£¬ºÍlen£¬
-* @param[in]     iovlen  Êı×é³¤¶È
+* @brief      ä¸€æ¬¡è¯»å–ä¸€ç»„æ•°æ®ï¼ŒWINDOWSä¸‹ç”¨ï¼ŒWSARecvæ¨¡æ‹Ÿï¼Œ
+*             readvè¿™ç§å‡½æ•°è¡¨é¢çœ‹èµ·æ¥å¯èƒ½æ¯”è¾ƒä¸€äº›æ•°æ®çš„åˆ†èŠ‚å¤„ç†ï¼Œä½†ç”±äºæ²¡æœ‰è¶…æ—¶ç­‰è¾…åŠ©ï¼Œä¹Ÿæœªå¿…çœŸå¥½ç”¨
+* @return     ssize_t è¯»å–æ•°æ®çš„æ€»é•¿åº¦
+* @param[in]     handle  æ“ä½œçš„å¥æŸ„
+* @param[in,out] iov     è¯»å–çš„æ•°æ®æ•°ç»„ï¼Œiovecé‡Œé¢æœ‰ bufï¼Œå’Œlenï¼Œ
+* @param[in]     iovlen  æ•°ç»„é•¿åº¦
 */
 ssize_t readv (ZCE_SOCKET handle,
                iovec *iov,
                int iovlen);
 
 /*!
-* @brief      Ò»´ÎĞ´ÈëÒ»×éÊı¾İ£¬WINDOWSÏÂÓÃ£¬WSASendÄ£Äâ£¬
-* @return     ssize_t ·¢ËÍÊı¾İµÄ×Ü³¤¶È
-* @param[in]  handle  ²Ù×÷µÄ¾ä±ú
-* @param[in]  iov     Ğ´µÄÊı¾İÊı×é£¬iovecÀïÃæÓĞ buf£¬ºÍlen£¬
-* @param[in]  iovcnt  Êı×é³¤¶È
+* @brief      ä¸€æ¬¡å†™å…¥ä¸€ç»„æ•°æ®ï¼ŒWINDOWSä¸‹ç”¨ï¼ŒWSASendæ¨¡æ‹Ÿï¼Œ
+* @return     ssize_t å‘é€æ•°æ®çš„æ€»é•¿åº¦
+* @param[in]  handle  æ“ä½œçš„å¥æŸ„
+* @param[in]  iov     å†™çš„æ•°æ®æ•°ç»„ï¼Œiovecé‡Œé¢æœ‰ bufï¼Œå’Œlenï¼Œ
+* @param[in]  iovcnt  æ•°ç»„é•¿åº¦
 * @note
 */
 ssize_t writev (ZCE_SOCKET handle,
@@ -637,7 +637,7 @@ ssize_t recvmsg (ZCE_SOCKET handle,
 
 //--------------------------------------------------------------------------------------------
 
-//IPµØÖ·µÄ¼¸ÖÖ³¤¶È,×¢Òâ×¢Òâ×¢Òâ×¢Òâ×¢Òâ ÕâĞ©³¤¶ÈÃ»ÓĞ¼ÆËã½áÎ²µÄ'\0'
+//IPåœ°å€çš„å‡ ç§é•¿åº¦,æ³¨æ„æ³¨æ„æ³¨æ„æ³¨æ„æ³¨æ„ è¿™äº›é•¿åº¦æ²¡æœ‰è®¡ç®—ç»“å°¾çš„'\0'
 //           12345678901234567890123456789012345678901234567890
 //IPV4       202.202.202.202                                      15
 //IPV4+Port  202.202.202.202#36010                                21
@@ -645,14 +645,14 @@ ssize_t recvmsg (ZCE_SOCKET handle,
 //IPV4+Port  102A:F02B:A1F2:745B:112D:1241:1834:124A#40012        45
 
 /*!
-* @brief      º¯Êı½«addrptrµÄµØÖ·ĞÅÏ¢×ª»»ÎªµØÖ·×Ö·û´®£¬
-*             inet_ntop,inet_pton ÕâÁ½¸öº¯ÊıÔÚLINUXÏÂÓĞ£¬
-*             ÔÚVISTAµÄSOCKETº¯ÊıÀïÃæµÃµ½ÁËÖ§³Ö£¬µ«ÊÇÎÒÃÇÖ»ÄÜ×Ô¼ºÄ£ÄâÁË,
-* @return     const char* µÃµ½µÄµØÖ·×Ö·û´®
-* @param[in]  family      Ğ­Òé×å
-* @param[in]  addrptr     µØÖ·
-* @param[out] strptr      ·µ»ØµÄµÄµØÖ·×Ö·û´®
-* @param[in]  len         ×Ö·û´®³¤¶È
+* @brief      å‡½æ•°å°†addrptrçš„åœ°å€ä¿¡æ¯è½¬æ¢ä¸ºåœ°å€å­—ç¬¦ä¸²ï¼Œ
+*             inet_ntop,inet_pton è¿™ä¸¤ä¸ªå‡½æ•°åœ¨LINUXä¸‹æœ‰ï¼Œ
+*             åœ¨VISTAçš„SOCKETå‡½æ•°é‡Œé¢å¾—åˆ°äº†æ”¯æŒï¼Œä½†æ˜¯æˆ‘ä»¬åªèƒ½è‡ªå·±æ¨¡æ‹Ÿäº†,
+* @return     const char* å¾—åˆ°çš„åœ°å€å­—ç¬¦ä¸²
+* @param[in]  family      åè®®æ—
+* @param[in]  addrptr     åœ°å€
+* @param[out] strptr      è¿”å›çš„çš„åœ°å€å­—ç¬¦ä¸²
+* @param[in]  len         å­—ç¬¦ä¸²é•¿åº¦
 */
 const char *inet_ntop (int family,
                        const void *addrptr,
@@ -660,40 +660,40 @@ const char *inet_ntop (int family,
                        size_t len);
 
 /*!
-* @brief      ¸ù¾İ×Ö·û´®×ª»»µÃµ½ÍøÂçµØÖ·£¬µÚÒ»¸ö²ÎÊıafÊÇµØÖ·×å£¬×ª»»ºó´æÔÚaddrptrÖĞ£¬
-* @return     int  ×¢ÒâÕâ¸öº¯Êı·µ»Ø1±êÊ¶³É¹¦£¬·µ»Ø0±íÊ¾Ê§°Ü£¬×ğÖØÔ­À´µÄÉè¼Æ£¨µ«Õâ¸öÉè¼ÆÒ²Ì«¡­¡­£©
-* @param      family Ğ­Òé×å
-* @param      strptr µØÖ·µÄ×Ö·û´«±êÊ¶
-* @param      addrptr ×ª»»µÃµ½µÄµØÖ·
-* @note       ×¢Òâ·µ»ØÖµ
+* @brief      æ ¹æ®å­—ç¬¦ä¸²è½¬æ¢å¾—åˆ°ç½‘ç»œåœ°å€ï¼Œç¬¬ä¸€ä¸ªå‚æ•°afæ˜¯åœ°å€æ—ï¼Œè½¬æ¢åå­˜åœ¨addrpträ¸­ï¼Œ
+* @return     int  æ³¨æ„è¿™ä¸ªå‡½æ•°è¿”å›1æ ‡è¯†æˆåŠŸï¼Œè¿”å›0è¡¨ç¤ºå¤±è´¥ï¼Œå°Šé‡åŸæ¥çš„è®¾è®¡ï¼ˆä½†è¿™ä¸ªè®¾è®¡ä¹Ÿå¤ªâ€¦â€¦ï¼‰
+* @param      family åè®®æ—
+* @param      strptr åœ°å€çš„å­—ç¬¦ä¼ æ ‡è¯†
+* @param      addrptr è½¬æ¢å¾—åˆ°çš„åœ°å€
+* @note       æ³¨æ„è¿”å›å€¼
 */
 int inet_pton (int family,
                const char *strptr,
                void *addrptr);
 
 /*!
-* @brief      ½«IPV4µÄÕûÊıµÄµØÖ·ĞÅÏ¢´òÓ¡³öÀ´£¬µÚÒ»¸ö²ÎÊıÊÇÍøÂçĞò£¬·Ç±ê×¼º¯Êı£¬µ«ÊÇÖØÈë°²È«
-* @return     const char* µÃµ½µÄµØÖ·×Ö·û´®
-* @param[in]  in          IPV4ÍøÂçµØÖ·£¬ÍøÂçĞò
-* @param[out] addr_buf    ·µ»ØµÄµÄµØÖ·×Ö·û´®
-* @param[in]  addr_size   ×Ö·û´®³¤¶È
+* @brief      å°†IPV4çš„æ•´æ•°çš„åœ°å€ä¿¡æ¯æ‰“å°å‡ºæ¥ï¼Œç¬¬ä¸€ä¸ªå‚æ•°æ˜¯ç½‘ç»œåºï¼Œéæ ‡å‡†å‡½æ•°ï¼Œä½†æ˜¯é‡å…¥å®‰å…¨
+* @return     const char* å¾—åˆ°çš„åœ°å€å­—ç¬¦ä¸²
+* @param[in]  in          IPV4ç½‘ç»œåœ°å€ï¼Œç½‘ç»œåº
+* @param[out] addr_buf    è¿”å›çš„çš„åœ°å€å­—ç¬¦ä¸²
+* @param[in]  addr_size   å­—ç¬¦ä¸²é•¿åº¦
 */
 inline const char *inet_ntoa(uint32_t in,
                              char *addr_buf,
                              size_t addr_size);
 
 /*!
-* @brief      Í¨¹ıIPV4µÄµØÖ·£¬µÃµ½¶ÔÓ¦µÄ×Ö·û´®±íÊ¾£¬²»¿ÉÖØÈëº¯Êı£¬²»Ì«½¨ÒéÊ¹ÓÃ
-*             ÕâÁ½¸öº¯ÊıWIN32ºÍLINUX¶¼ÓĞ
+* @brief      é€šè¿‡IPV4çš„åœ°å€ï¼Œå¾—åˆ°å¯¹åº”çš„å­—ç¬¦ä¸²è¡¨ç¤ºï¼Œä¸å¯é‡å…¥å‡½æ•°ï¼Œä¸å¤ªå»ºè®®ä½¿ç”¨
+*             è¿™ä¸¤ä¸ªå‡½æ•°WIN32å’ŒLINUXéƒ½æœ‰
 * @return     inline const char*
-* @param      in  IPV4µÄµØÖ·£¬
+* @param      in  IPV4çš„åœ°å€ï¼Œ
 */
 inline const char *inet_ntoa(struct in_addr in);
 
 /*!
-* @brief      Í¨¹ıÒ»¸öIPµØÖ·µÄ×Ö·û´®±íÊ¾µÃµ½Ò»¸öIPV4µÄµÄÕûÊı
-* @return     inline uint32_t ·µ»ØµÄµØÖ·ÊıÖµ£¬ÍøÂçÏß
-* @param      cp µØÖ·×Ö·û´®
+* @brief      é€šè¿‡ä¸€ä¸ªIPåœ°å€çš„å­—ç¬¦ä¸²è¡¨ç¤ºå¾—åˆ°ä¸€ä¸ªIPV4çš„çš„æ•´æ•°
+* @return     inline uint32_t è¿”å›çš„åœ°å€æ•°å€¼ï¼Œç½‘ç»œçº¿
+* @param      cp åœ°å€å­—ç¬¦ä¸²
 */
 inline uint32_t inet_addr(const char *cp);
 
@@ -701,21 +701,21 @@ inline uint32_t inet_addr(const char *cp);
 
 static const size_t MAX_SOCKETADDR_STRING_LEN = 45;
 /*!
-* @brief      Êä³öIPµØÖ·ĞÅÏ¢£¬ÄÚ²¿ÊÇ²»Ê¹ÓÃ¾²Ì¬±äÁ¿£¬Ïß³Ì°²È«£¬BUF³¤¶ÈIPV4ÖÁÉÙ³¤¶È>15.IPV6ÖÁÉÙ³¤¶È>39
-* @return     const char*  µÃµ½µÄµØÖ·×Ö·û´®
-* @param      sock_addr    sockaddr µØÖ·ÃèÊö
-* @param      str_ptr      ·µ»ØµÄµÄµØÖ·×Ö·û´®
-* @param      str_len      ×Ö·û´®³¤¶È
+* @brief      è¾“å‡ºIPåœ°å€ä¿¡æ¯ï¼Œå†…éƒ¨æ˜¯ä¸ä½¿ç”¨é™æ€å˜é‡ï¼Œçº¿ç¨‹å®‰å…¨ï¼ŒBUFé•¿åº¦IPV4è‡³å°‘é•¿åº¦>15.IPV6è‡³å°‘é•¿åº¦>39
+* @return     const char*  å¾—åˆ°çš„åœ°å€å­—ç¬¦ä¸²
+* @param      sock_addr    sockaddr åœ°å€æè¿°
+* @param      str_ptr      è¿”å›çš„çš„åœ°å€å­—ç¬¦ä¸²
+* @param      str_len      å­—ç¬¦ä¸²é•¿åº¦
 */
 const char *socketaddr_ntop(const sockaddr *sock_addr,
                             char *str_ptr,
                             size_t str_len);
 
 /*!
-* @brief      socketaddr_ntop_ex Êä³öIPµØÖ·ĞÅÏ¢ºÍ¶Ë¿ÚºÅ,¶Ë¿ÚºÅ
-*             Êä³öIPµØÖ·ĞÅÏ¢ÒÔ¼°¶Ë¿ÚĞÅÏ¢£¬ÄÚ²¿ÊÇ²»Ê¹ÓÃ¾²Ì¬±äÁ¿£¬Ïß³Ì°²È«£¬BUF³¤¶ÈIPV4ÖÁÉÙ³¤¶È>21.IPV6ÖÁÉÙ³¤¶È>45
-*             ºÍsocketaddr_ntopµÄÇø±ğ¾ÍÔÚÓÚsocketaddr_ntop_exÍ¬Ê±Êä³öÁË¶Ë¿ÚºÅ
-*             ²ÎÊı²Î¿¼ @ref socketaddr_ntop
+* @brief      socketaddr_ntop_ex è¾“å‡ºIPåœ°å€ä¿¡æ¯å’Œç«¯å£å·,ç«¯å£å·
+*             è¾“å‡ºIPåœ°å€ä¿¡æ¯ä»¥åŠç«¯å£ä¿¡æ¯ï¼Œå†…éƒ¨æ˜¯ä¸ä½¿ç”¨é™æ€å˜é‡ï¼Œçº¿ç¨‹å®‰å…¨ï¼ŒBUFé•¿åº¦IPV4è‡³å°‘é•¿åº¦>21.IPV6è‡³å°‘é•¿åº¦>45
+*             å’Œsocketaddr_ntopçš„åŒºåˆ«å°±åœ¨äºsocketaddr_ntop_exåŒæ—¶è¾“å‡ºäº†ç«¯å£å·
+*             å‚æ•°å‚è€ƒ @ref socketaddr_ntop
 */
 const char *socketaddr_ntop_ex(const sockaddr *sock_addr,
                                char *str_ptr,
@@ -724,20 +724,20 @@ const char *socketaddr_ntop_ex(const sockaddr *sock_addr,
                                bool out_port_info = true);
 
 //======================================================================================================
-//ÓòÃû½âÎö£¬×ª»»IPµØÖ·µÄ¼¸¸öº¯Êı
-//»ù´¡º¯Êı²¿·Ö£¬µÚÒ»²¿·Öº¯ÊıÏêÏ¸¼ä¡¶UNIXÍøÂç±à³Ì¡·¾í1µÄµÚ9ÕÂ
+//åŸŸåè§£æï¼Œè½¬æ¢IPåœ°å€çš„å‡ ä¸ªå‡½æ•°
+//åŸºç¡€å‡½æ•°éƒ¨åˆ†ï¼Œç¬¬ä¸€éƒ¨åˆ†å‡½æ•°è¯¦ç»†é—´ã€ŠUNIXç½‘ç»œç¼–ç¨‹ã€‹å·1çš„ç¬¬9ç« 
 
 /*!
-* @brief      ¸ù¾İÓòÃû½âÎöµÃµ½¶ÔÓ¦µÄIPµØÖ·£¬Õâ¸öº¯ÊıÒÑ¾­²»ÊÇÌØ±ğÍÆ¼ö£¬ÒòÎªÖÖÖÖ²»ÈçÒâ£¬
-*             ±ÈÈç²»ÄÜÖØÈë£¬Èç¹ûÒ»¸öÓòÃûÍ¬Ê±ÓĞIPV4ºÍIPV6£¬ÄÇÃ´¾ÍÖ»ÓĞ·µ»ØIPV4£¬
-*             ÍÆ¼öÊ¹ÓÃgetaddrinfo£¬ gethostbynameµÄÊ¹ÓÃ¿ÉÒÔ²Î¿¼gethostbyname_inaryº¯Êı
-* @return     hostent*  ·µ»ØµÄIPµØÖ·ĞÅÏ¢
-* @param      hostname  ²éÑ¯µÄÓòÃû
+* @brief      æ ¹æ®åŸŸåè§£æå¾—åˆ°å¯¹åº”çš„IPåœ°å€ï¼Œè¿™ä¸ªå‡½æ•°å·²ç»ä¸æ˜¯ç‰¹åˆ«æ¨èï¼Œå› ä¸ºç§ç§ä¸å¦‚æ„ï¼Œ
+*             æ¯”å¦‚ä¸èƒ½é‡å…¥ï¼Œå¦‚æœä¸€ä¸ªåŸŸååŒæ—¶æœ‰IPV4å’ŒIPV6ï¼Œé‚£ä¹ˆå°±åªæœ‰è¿”å›IPV4ï¼Œ
+*             æ¨èä½¿ç”¨getaddrinfoï¼Œ gethostbynameçš„ä½¿ç”¨å¯ä»¥å‚è€ƒgethostbyname_inaryå‡½æ•°
+* @return     hostent*  è¿”å›çš„IPåœ°å€ä¿¡æ¯
+* @param      hostname  æŸ¥è¯¢çš„åŸŸå
 */
 hostent *gethostbyname(const char *hostname);
 
 /*!
-* @brief      GNU extensions ,¸ù¾İĞ­Òé´Ø£¬µÃµ½½âÎöµÄµØÖ·
+* @brief      GNU extensions ,æ ¹æ®åè®®ç°‡ï¼Œå¾—åˆ°è§£æçš„åœ°å€
 * @return     hostent*
 * @param      hostname
 * @param      af
@@ -745,15 +745,15 @@ hostent *gethostbyname(const char *hostname);
 hostent *gethostbyname2(const char *hostname,
                         int af);
 
-//Ïà¶Ô¶øÑÔ£¬ÏÂÃæÕâ2¸öº¯Êı¸ü¼ÓÊ¹ÓÃ¸ü¼Ó¼òµ¥Ò»µã£¬
+//ç›¸å¯¹è€Œè¨€ï¼Œä¸‹é¢è¿™2ä¸ªå‡½æ•°æ›´åŠ ä½¿ç”¨æ›´åŠ ç®€å•ä¸€ç‚¹ï¼Œ
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV4µÄµØÖ·Êı×é£¬Ê¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã£¬ÄÚ²¿Ê¹ÓÃgethostbyname
-* @return        int           0³É¹¦£¬-1Ê§°Ü
-* @param[in]     hostname      ÓòÃû
-* @param[in]     service_port  ¶Ë¿ÚºÅ£¬»áºÍ²éÑ¯µ½µÄµØÖ·ĞÅÏ¢Ò»ÆğÉèÖÃµ½sockaddr_in
-* @param[in,out] ary_addr_num  ÊäÈëÊ±Êı×éµÄ³¤¶È£¬Êä³ö·µ»ØÊµ¼Ê»ñµÃµÄÊı×é³¤¶È
-* @param[out]    ary_sock_addr ÓòÃû+¶Ë¿Ú¶ÔÓ¦µÄsockaddr_in Êı×éĞÅÏ¢
+* @brief      éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV4çš„åœ°å€æ•°ç»„ï¼Œä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿ï¼Œå†…éƒ¨ä½¿ç”¨gethostbyname
+* @return        int           0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]     hostname      åŸŸå
+* @param[in]     service_port  ç«¯å£å·ï¼Œä¼šå’ŒæŸ¥è¯¢åˆ°çš„åœ°å€ä¿¡æ¯ä¸€èµ·è®¾ç½®åˆ°sockaddr_in
+* @param[in,out] ary_addr_num  è¾“å…¥æ—¶æ•°ç»„çš„é•¿åº¦ï¼Œè¾“å‡ºè¿”å›å®é™…è·å¾—çš„æ•°ç»„é•¿åº¦
+* @param[out]    ary_sock_addr åŸŸå+ç«¯å£å¯¹åº”çš„sockaddr_in æ•°ç»„ä¿¡æ¯
 */
 int gethostbyname_inary(const char *hostname,
                         uint16_t service_port,
@@ -761,12 +761,12 @@ int gethostbyname_inary(const char *hostname,
                         sockaddr_in ary_sock_addr[]);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV6µÄµØÖ·Êı×é£¬Ê¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã
-* @return        int            0³É¹¦£¬-1Ê§°Ü
-* @param[in]     hostname       ÓòÃû
-* @param[in]     service_port   ¶Ë¿ÚºÅ£¬»áºÍ²éÑ¯µ½µÄµØÖ·ĞÅÏ¢Ò»ÆğÉèÖÃµ½sockaddr_in
-* @param[in,out] ary_addr6_num  ÊäÈëÊ±Êı×éµÄ³¤¶È£¬Êä³ö·µ»ØÊµ¼Ê»ñµÃµÄµØÖ·¸öÊı
-* @param[out]    ary_sock_addr6 ÓòÃû+¶Ë¿Ú¶ÔÓ¦µÄsockaddr_in6 Êı×é
+* @brief      éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV6çš„åœ°å€æ•°ç»„ï¼Œä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿
+* @return        int            0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]     hostname       åŸŸå
+* @param[in]     service_port   ç«¯å£å·ï¼Œä¼šå’ŒæŸ¥è¯¢åˆ°çš„åœ°å€ä¿¡æ¯ä¸€èµ·è®¾ç½®åˆ°sockaddr_in
+* @param[in,out] ary_addr6_num  è¾“å…¥æ—¶æ•°ç»„çš„é•¿åº¦ï¼Œè¾“å‡ºè¿”å›å®é™…è·å¾—çš„åœ°å€ä¸ªæ•°
+* @param[out]    ary_sock_addr6 åŸŸå+ç«¯å£å¯¹åº”çš„sockaddr_in6 æ•°ç»„
 * @note
 */
 int gethostbyname_in6ary(const char *hostname,
@@ -775,57 +775,57 @@ int gethostbyname_in6ary(const char *hostname,
                          sockaddr_in6 ary_sock_addr6[]);
 
 /*!
-* @brief      Í¨¹ıIPµØÖ·ĞÅÏ¢£¬·´²éÓòÃû£¬²»¿ÉÖØÈë£¬²»ÍÆ¼öÊ¹ÓÃ£¬ÍÆ¼öÊ¹ÓÃgetnameinfo
-* @return     hostent* ²éÑ¯µ½µÄÓòÃû
-* @param[in]  addr     Ö¸ÏòµØÖ·µÄÖ¸Õë£¬×¢ÒâµØÖ·ÊÇin_addr£¬in6_addrµÈµÈ
-* @param[in]  len      µØÖ·µÄ³¤¶È
-* @param[in]  family   µØÖ·Ğ­Òé×å
+* @brief      é€šè¿‡IPåœ°å€ä¿¡æ¯ï¼ŒåæŸ¥åŸŸåï¼Œä¸å¯é‡å…¥ï¼Œä¸æ¨èä½¿ç”¨ï¼Œæ¨èä½¿ç”¨getnameinfo
+* @return     hostent* æŸ¥è¯¢åˆ°çš„åŸŸå
+* @param[in]  addr     æŒ‡å‘åœ°å€çš„æŒ‡é’ˆï¼Œæ³¨æ„åœ°å€æ˜¯in_addrï¼Œin6_addrç­‰ç­‰
+* @param[in]  len      åœ°å€çš„é•¿åº¦
+* @param[in]  family   åœ°å€åè®®æ—
 */
 hostent *gethostbyaddr(const void *addr,
                        socklen_t len,
                        int family);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV4µØÖ·È¡µÃÓòÃû
-* @return     int        0³É¹¦£¬-1Ê§°Ü
-* @param[in]  sock_addr  IPV4µÄsockaddr
-* @param[out] host_name  ·µ»ØµÄÓòÃûĞÅÏ¢
-* @param[int] name_len   ÓòÃûbufferµÄ³¤¶È
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV4åœ°å€å–å¾—åŸŸå
+* @return     int        0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  sock_addr  IPV4çš„sockaddr
+* @param[out] host_name  è¿”å›çš„åŸŸåä¿¡æ¯
+* @param[int] name_len   åŸŸåbufferçš„é•¿åº¦
 */
 int gethostbyaddr_in(const sockaddr_in *sock_addr,
                      char *host_name,
                      size_t name_len);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV6µØÖ·È¡µÃÓòÃû
-* @return     int        0³É¹¦£¬-1Ê§°Ü
-* @param[in]  sock_addr6 IPV6µÄsockaddr
-* @param[out] host_name  ·µ»ØµÄÓòÃûĞÅÏ¢
-* @param[int] name_len   ÓòÃûbufferµÄ³¤¶È
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV6åœ°å€å–å¾—åŸŸå
+* @return     int        0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  sock_addr6 IPV6çš„sockaddr
+* @param[out] host_name  è¿”å›çš„åŸŸåä¿¡æ¯
+* @param[int] name_len   åŸŸåbufferçš„é•¿åº¦
 */
 int gethostbyaddr_in6(const sockaddr_in6 *sock_addr6,
                       char *host_name,
                       size_t name_len);
 
-//¼¸¸ö¸ü¼Ó¸ß¼¶Ò»Ğ©µÄµÄº¯Êı£¬Posix 1gµÄº¯Êı£¬ÍÆ¼öÊ¹ÓÃËûÃÇ£¬ËûÃÇ¿ÉÄÜ¿ÉÒÔÖØÈë£¨Òª¿´µ×²ãÊµÏÖ£¬Èç¹ûµ×²ã¾ÍÊÇgethostbyname£¬ÄÇÃ´¡­¡­£©
-//¸ß¼¶²¿·Öº¯ÊıÏêÏ¸¼ä¡¶UNIXÍøÂç±à³Ì¡·¾í1µÄµÚ11ÕÂ
+//å‡ ä¸ªæ›´åŠ é«˜çº§ä¸€äº›çš„çš„å‡½æ•°ï¼ŒPosix 1gçš„å‡½æ•°ï¼Œæ¨èä½¿ç”¨ä»–ä»¬ï¼Œä»–ä»¬å¯èƒ½å¯ä»¥é‡å…¥ï¼ˆè¦çœ‹åº•å±‚å®ç°ï¼Œå¦‚æœåº•å±‚å°±æ˜¯gethostbynameï¼Œé‚£ä¹ˆâ€¦â€¦ï¼‰
+//é«˜çº§éƒ¨åˆ†å‡½æ•°è¯¦ç»†é—´ã€ŠUNIXç½‘ç»œç¼–ç¨‹ã€‹å·1çš„ç¬¬11ç« 
 
 /*!
-* @brief      Í¨¹ıÓòÃûµÃµ½·şÎñÆ÷µØÖ·ĞÅÏ¢£¬¿ÉÒÔÍ¬Ê±µÃµ½IPV4£¬ºÍIPV6µÄµØÖ·
-* @return     int        0³É¹¦£¬·Ç0±íÊ¾Ê§°Ü£¬ÒÔ¼°´íÎóID
-* @param[in]  hostname   ÓòÃûĞÅÏ¢
-* @param[in]  service    ·şÎñµÄÃû³Æ£¬±ÈÈç"http","ftp"µÈ£¬ÓÃÓÚ¾ö¶¨·şÎñµÄ¶Ë¿ÚºÅ
-* @param[in]  hints      µ÷ÓÃÕßËùĞèÒªµÄµØÖ·µÄĞÅÏ¢£¬ÏàÓ¦µÄ²ÎÊıËµÃ÷£º
-*                        Èç¹ûÒªÍ¬Ê±µÃµ½IPV4£¬IPV6µÄµØÖ·£¬ÄÇÃ´hints.ai_family =  AF_UNSPEC
-*                        ai_socktype²ÎÊı×îºÃ»¹ÊÇÌîĞ´Ò»¸öÖµ£¬·ñÔò¿ÉÄÜ·µ»ØSOCK_DGRAM,SOCK_STREAM¸÷Ò»¸ö£¬
-*                        ai_flags Ìî0Ò»°ã¾ÍOK£¬£¨µ°ÌÛµÄÒ»¸ö²ÎÊı£©
-*                          AI_CANONNAME±íÊ¾·µ»ØµÄaddrinfo½á¹ûµÄµÚÒ»¸ö½Úµã»áÓĞai_canoname²ÎÊı£¨¼ûaddrinfo ½á¹¹£©£¬
-*                          AI_PASSIVE±íÊ¾·µ»ØµÄµØÖ·ÓÃÓÚbind£¨hostnameÎªNULLÊ±£¬ÈÃIPµØÖ·ĞÅÏ¢·µ»Ø0£¬£©·ñÔòÓÃÓÚconnect
-*                          AI_NUMERICHOST ×èÖ¹ÓòÃû½âÎö£¬ÈÏÎªhostnameÊÇÊıÖµ¸ñÊ½µØÖ·
-*                          AI_ALL ĞÂÑ¡Ïî£¬·µ»ØIPV4ºÍIPV6µØÖ·£¬IPV4µÄµØÖ·Ò²»áMAP³ÉIPV6·µ»Ø£¨Ò²·µ»ØIPV4µÄµØÖ·£©¡£
-*                          AI_V4MAPPED Èç¹ûÃ»ÓĞIPV6µÄµØÖ··µ»Ø£¬ÓÃIPV4µÄµØÖ·MAPIPV6µÄµØÖ··µ»Ø¡£
-*                        ai_protocol£¬Ìî0°Ñ
-* @param[out] result     ·µ»ØµÄ½á¹ûÊı×é
+* @brief      é€šè¿‡åŸŸåå¾—åˆ°æœåŠ¡å™¨åœ°å€ä¿¡æ¯ï¼Œå¯ä»¥åŒæ—¶å¾—åˆ°IPV4ï¼Œå’ŒIPV6çš„åœ°å€
+* @return     int        0æˆåŠŸï¼Œé0è¡¨ç¤ºå¤±è´¥ï¼Œä»¥åŠé”™è¯¯ID
+* @param[in]  hostname   åŸŸåä¿¡æ¯
+* @param[in]  service    æœåŠ¡çš„åç§°ï¼Œæ¯”å¦‚"http","ftp"ç­‰ï¼Œç”¨äºå†³å®šæœåŠ¡çš„ç«¯å£å·
+* @param[in]  hints      è°ƒç”¨è€…æ‰€éœ€è¦çš„åœ°å€çš„ä¿¡æ¯ï¼Œç›¸åº”çš„å‚æ•°è¯´æ˜ï¼š
+*                        å¦‚æœè¦åŒæ—¶å¾—åˆ°IPV4ï¼ŒIPV6çš„åœ°å€ï¼Œé‚£ä¹ˆhints.ai_family =  AF_UNSPEC
+*                        ai_socktypeå‚æ•°æœ€å¥½è¿˜æ˜¯å¡«å†™ä¸€ä¸ªå€¼ï¼Œå¦åˆ™å¯èƒ½è¿”å›SOCK_DGRAM,SOCK_STREAMå„ä¸€ä¸ªï¼Œ
+*                        ai_flags å¡«0ä¸€èˆ¬å°±OKï¼Œï¼ˆè›‹ç–¼çš„ä¸€ä¸ªå‚æ•°ï¼‰
+*                          AI_CANONNAMEè¡¨ç¤ºè¿”å›çš„addrinfoç»“æœçš„ç¬¬ä¸€ä¸ªèŠ‚ç‚¹ä¼šæœ‰ai_canonameå‚æ•°ï¼ˆè§addrinfo ç»“æ„ï¼‰ï¼Œ
+*                          AI_PASSIVEè¡¨ç¤ºè¿”å›çš„åœ°å€ç”¨äºbindï¼ˆhostnameä¸ºNULLæ—¶ï¼Œè®©IPåœ°å€ä¿¡æ¯è¿”å›0ï¼Œï¼‰å¦åˆ™ç”¨äºconnect
+*                          AI_NUMERICHOST é˜»æ­¢åŸŸåè§£æï¼Œè®¤ä¸ºhostnameæ˜¯æ•°å€¼æ ¼å¼åœ°å€
+*                          AI_ALL æ–°é€‰é¡¹ï¼Œè¿”å›IPV4å’ŒIPV6åœ°å€ï¼ŒIPV4çš„åœ°å€ä¹Ÿä¼šMAPæˆIPV6è¿”å›ï¼ˆä¹Ÿè¿”å›IPV4çš„åœ°å€ï¼‰ã€‚
+*                          AI_V4MAPPED å¦‚æœæ²¡æœ‰IPV6çš„åœ°å€è¿”å›ï¼Œç”¨IPV4çš„åœ°å€MAPIPV6çš„åœ°å€è¿”å›ã€‚
+*                        ai_protocolï¼Œå¡«0æŠŠ
+* @param[out] result     è¿”å›çš„ç»“æœæ•°ç»„
 */
 int getaddrinfo( const char *hostname,
                  const char *service,
@@ -833,17 +833,17 @@ int getaddrinfo( const char *hostname,
                  addrinfo **result );
 
 /*!
-* @brief      ÊÍ·ÅgetaddrinfoµÃµ½µÄ½á¹û
-* @param      result  getaddrinfo·µ»ØµÄ½á¹û
+* @brief      é‡Šæ”¾getaddrinfoå¾—åˆ°çš„ç»“æœ
+* @param      result  getaddrinfoè¿”å›çš„ç»“æœ
 */
 void freeaddrinfo(struct addrinfo *result);
 
 /*!
-* @brief      ¸¨Öúº¯Êı£¬´ÓgetaddrinfoµÄ½á¹ûÖĞÌáÈ¡Ò»¸ösockaddr½á¹û,
+* @brief      è¾…åŠ©å‡½æ•°ï¼Œä»getaddrinfoçš„ç»“æœä¸­æå–ä¸€ä¸ªsockaddrç»“æœ,
 * @return     int
-* @param[in]  result getaddrinfo·µ»ØµÄ½á¹û
-* @param[out] addr   ¸ù¾İÄãÊäÈëµÄaddr_lenµÄ È·¶¨ÊÇsockaddr_in,»¹ÊÇsockaddr_in6
-* @param[in]  addr_len µØÖ·µÄ³¤¶È
+* @param[in]  result getaddrinfoè¿”å›çš„ç»“æœ
+* @param[out] addr   æ ¹æ®ä½ è¾“å…¥çš„addr_lençš„ ç¡®å®šæ˜¯sockaddr_in,è¿˜æ˜¯sockaddr_in6
+* @param[in]  addr_len åœ°å€çš„é•¿åº¦
 */
 int getaddrinfo_result_to_addr(addrinfo *result,
                                sockaddr *addr,
@@ -851,11 +851,11 @@ int getaddrinfo_result_to_addr(addrinfo *result,
 
 
 /*!
-* @brief         ¸¨Öúº¯Êı£¬½«getaddrinfoµÄ½á¹û½øĞĞ¼Ó¹¤´¦Àí£¬´¦Àí³ÉÊı×é
+* @brief         è¾…åŠ©å‡½æ•°ï¼Œå°†getaddrinfoçš„ç»“æœè¿›è¡ŒåŠ å·¥å¤„ç†ï¼Œå¤„ç†æˆæ•°ç»„
 * @param[in]     result
-* @param[in,out] ary_addr_num   ary_addrµÄÊı×éÊıÁ¿£¬×ª»»ºó£¬·µ»ØÊıÁ¿
+* @param[in,out] ary_addr_num   ary_addrçš„æ•°ç»„æ•°é‡ï¼Œè½¬æ¢åï¼Œè¿”å›æ•°é‡
 * @param[out]    ary_addr
-* @param[in,out] ary_addr6_num  ary_addr6µÄÊı×éÊıÁ¿£¬×ª»»ºó£¬·µ»ØÊıÁ¿
+* @param[in,out] ary_addr6_num  ary_addr6çš„æ•°ç»„æ•°é‡ï¼Œè½¬æ¢åï¼Œè¿”å›æ•°é‡
 * @param[out]    ary_addr6
 */
 void getaddrinfo_result_to_addrary(addrinfo *result,
@@ -865,13 +865,13 @@ void getaddrinfo_result_to_addrary(addrinfo *result,
                                    sockaddr_in6 ary_addr6[]);
 
 /*!
-* @brief         ·Ç±ê×¼º¯Êı,µÃµ½Ä³¸öÓòÃûµÄIPV4µÄµØÖ·Êı×é£¬Ê¹ÓÃÆğÀ´±È½ÏÈİÒ×ºÍ·½±ã,µ×²ãÊ¹ÓÃgetaddrinfo
-* @return        int            0³É¹¦£¬ÆäËûÊ§°Ü
-* @param[in]     notename       ÓòÃû
-* @param[in,out] ary_addr_num   ÊäÈëÊ±Êı×éµÄ³¤¶È£¬Êä³ö·µ»ØÊµ¼Ê»ñµÃµÄÊı×é³¤¶È
-* @param[out]    ary_sock_addr  ÓòÃû¶ÔÓ¦µÄsockaddr_in Êı×éĞÅÏ¢
-* @param[in,out] ary_addr6_num  ÊäÈëÊ±Êı×éµÄ³¤¶È£¬Êä³ö·µ»ØÊµ¼Ê»ñµÃµÄµØÖ·¸öÊı
-* @param[out]    ary_sock_addr6 ÓòÃû¶ÔÓ¦µÄsockaddr_in6 Êı×é
+* @brief         éæ ‡å‡†å‡½æ•°,å¾—åˆ°æŸä¸ªåŸŸåçš„IPV4çš„åœ°å€æ•°ç»„ï¼Œä½¿ç”¨èµ·æ¥æ¯”è¾ƒå®¹æ˜“å’Œæ–¹ä¾¿,åº•å±‚ä½¿ç”¨getaddrinfo
+* @return        int            0æˆåŠŸï¼Œå…¶ä»–å¤±è´¥
+* @param[in]     notename       åŸŸå
+* @param[in,out] ary_addr_num   è¾“å…¥æ—¶æ•°ç»„çš„é•¿åº¦ï¼Œè¾“å‡ºè¿”å›å®é™…è·å¾—çš„æ•°ç»„é•¿åº¦
+* @param[out]    ary_sock_addr  åŸŸåå¯¹åº”çš„sockaddr_in æ•°ç»„ä¿¡æ¯
+* @param[in,out] ary_addr6_num  è¾“å…¥æ—¶æ•°ç»„çš„é•¿åº¦ï¼Œè¾“å‡ºè¿”å›å®é™…è·å¾—çš„åœ°å€ä¸ªæ•°
+* @param[out]    ary_sock_addr6 åŸŸåå¯¹åº”çš„sockaddr_in6 æ•°ç»„
 */
 int getaddrinfo_to_addrary(const char *notename,
                            size_t *ary_addr_num,
@@ -883,30 +883,30 @@ int getaddrinfo_to_addrary(const char *notename,
 
 /*!
 * @brief
-* @return     int      0³É¹¦£¬ÆäËûÊ§°Ü
-* @param[in]  notename ÓòÃûORÊıÖµµØÖ·¸ñÊ½£¬ÄÚ²¿»áÏÈ½øĞĞÊıÖµµØÖ·×ª»»¡£±ÜÃâºÄÊ±£¬²»³É¹¦ÔÙ½øĞĞÓòÃû½âÎö
-* @param[out] addr     ·µ»ØµÄµØÖ·
-* @param[in]  addr_len µØÖ·µÄ³¤¶È
+* @return     int      0æˆåŠŸï¼Œå…¶ä»–å¤±è´¥
+* @param[in]  notename åŸŸåORæ•°å€¼åœ°å€æ ¼å¼ï¼Œå†…éƒ¨ä¼šå…ˆè¿›è¡Œæ•°å€¼åœ°å€è½¬æ¢ã€‚é¿å…è€—æ—¶ï¼Œä¸æˆåŠŸå†è¿›è¡ŒåŸŸåè§£æ
+* @param[out] addr     è¿”å›çš„åœ°å€
+* @param[in]  addr_len åœ°å€çš„é•¿åº¦
 */
 int getaddrinfo_to_addr(const char *host_name,
                         sockaddr *addr,
                         socklen_t addr_len);
 
 /*!
-* @brief      Í¨¹ıIPµØÖ·ĞÅÏ¢£¬·´²éÓòÃû.·şÎñÃû£¬£¨¿ÉÄÜ£©¿ÉÒÔÖØÈëº¯Êı£¨Òª¿´µ×²ãÊµÏÖ£©£¬
-* @return     int   0³É¹¦£¬·Ç0±íÊ¾Ê§°Ü£¬ÒÔ¼°´íÎóID
-* @param[in]  sa      socketµØÖ·µÄÖ¸Õë£¬Í¨¹ıÕâ¸ö²éÑ¯ÓòÃû
-* @param[in]  salen   scketµØÖ·µÄ³¤¶È
-* @param[out] host    ·µ»ØµÄÓòÃû
-* @param[in]  hostlen ÓòÃûµÄbufferµÄ³¤¶È
-* @param[out] serv    ·µ»ØµÄ·şÎñÃû³Æbuffer
-* @param[in]  servlen ·şÎñÃû³ÆbufferµÄ³¤¶È
-* @param[in]  flags   flags ²ÎÊı£¬¿ÉÒÔÊ¹ÓÃµÄÖµ°üÀ¨
-*                     NI_NOFQDN        ¶ÔÓÚ±¾µØÖ÷»ú, ½ö·µ»ØÍêÈ«ÏŞ¶¨ÓòÃûµÄ½ÚµãÃû²¿·Ö.±ÈÈçbear.qq.com£¬·µ»Øµãbear£¬¶ø²»·µ»Ø.qq.com
-*                     NI_NUMERICHOST  host²ÎÊı·µ»ØÊı×ÖµÄIPµØÖ·ĞÅÏ¢ĞÅÏ¢
-*                     NI_NAMEREQD     Èç¹ûIPµØÖ·²»ÄÜ½âÎöÎªÓòÃû£¬·µ»ØÒ»¸ö´íÎó
-*                     NI_NUMERICSERV  serv²ÎÊı·µ»ØÊıÖµµÄ×Ö·û´®ĞÅÏ¢
-*                     NI_DGRAM        ·şÎñ»ùÓÚÊı¾İ±¨¶ø·Ç»ùÓÚÁ÷£¬£¨±ÈÈçÍ¬Ò»¸ö¶Ë¿ÚºÅ£¬UDPºÍTCPµÄ·şÎñÀàĞÍÊÇ²»Ò»ÑùµÄ£©
+* @brief      é€šè¿‡IPåœ°å€ä¿¡æ¯ï¼ŒåæŸ¥åŸŸå.æœåŠ¡åï¼Œï¼ˆå¯èƒ½ï¼‰å¯ä»¥é‡å…¥å‡½æ•°ï¼ˆè¦çœ‹åº•å±‚å®ç°ï¼‰ï¼Œ
+* @return     int   0æˆåŠŸï¼Œé0è¡¨ç¤ºå¤±è´¥ï¼Œä»¥åŠé”™è¯¯ID
+* @param[in]  sa      socketåœ°å€çš„æŒ‡é’ˆï¼Œé€šè¿‡è¿™ä¸ªæŸ¥è¯¢åŸŸå
+* @param[in]  salen   scketåœ°å€çš„é•¿åº¦
+* @param[out] host    è¿”å›çš„åŸŸå
+* @param[in]  hostlen åŸŸåçš„bufferçš„é•¿åº¦
+* @param[out] serv    è¿”å›çš„æœåŠ¡åç§°buffer
+* @param[in]  servlen æœåŠ¡åç§°bufferçš„é•¿åº¦
+* @param[in]  flags   flags å‚æ•°ï¼Œå¯ä»¥ä½¿ç”¨çš„å€¼åŒ…æ‹¬
+*                     NI_NOFQDN        å¯¹äºæœ¬åœ°ä¸»æœº, ä»…è¿”å›å®Œå…¨é™å®šåŸŸåçš„èŠ‚ç‚¹åéƒ¨åˆ†.æ¯”å¦‚bear.qq.comï¼Œè¿”å›ç‚¹bearï¼Œè€Œä¸è¿”å›.qq.com
+*                     NI_NUMERICHOST  hostå‚æ•°è¿”å›æ•°å­—çš„IPåœ°å€ä¿¡æ¯ä¿¡æ¯
+*                     NI_NAMEREQD     å¦‚æœIPåœ°å€ä¸èƒ½è§£æä¸ºåŸŸåï¼Œè¿”å›ä¸€ä¸ªé”™è¯¯
+*                     NI_NUMERICSERV  servå‚æ•°è¿”å›æ•°å€¼çš„å­—ç¬¦ä¸²ä¿¡æ¯
+*                     NI_DGRAM        æœåŠ¡åŸºäºæ•°æ®æŠ¥è€ŒéåŸºäºæµï¼Œï¼ˆæ¯”å¦‚åŒä¸€ä¸ªç«¯å£å·ï¼ŒUDPå’ŒTCPçš„æœåŠ¡ç±»å‹æ˜¯ä¸ä¸€æ ·çš„ï¼‰
 */
 int getnameinfo(const struct sockaddr *sa,
                 socklen_t salen,
@@ -917,11 +917,11 @@ int getnameinfo(const struct sockaddr *sa,
                 int flags);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬Í¨¹ıIPV4µØÖ·È¡µÃÓòÃû
-* @return     int  0³É¹¦£¬·Ç0±íÊ¾Ê§°Ü£¬ÒÔ¼°´íÎóID
-* @param[in]  sock_addr  sockaddrµÄµØÖ·
-* @param[out] host_name  ·µ»ØµÄÓòÃûĞÅÏ¢
-* @param[int] name_len   ÓòÃûbufferµÄ³¤¶È
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œé€šè¿‡IPV4åœ°å€å–å¾—åŸŸå
+* @return     int  0æˆåŠŸï¼Œé0è¡¨ç¤ºå¤±è´¥ï¼Œä»¥åŠé”™è¯¯ID
+* @param[in]  sock_addr  sockaddrçš„åœ°å€
+* @param[out] host_name  è¿”å›çš„åŸŸåä¿¡æ¯
+* @param[int] name_len   åŸŸåbufferçš„é•¿åº¦
 */
 int getnameinfo_sockaddr(const sockaddr *sock_addr,
                          char *host_name,
@@ -929,45 +929,45 @@ int getnameinfo_sockaddr(const sockaddr *sock_addr,
 
 
 /*!
-* @brief      ·µ»Øµ±Ç°»úÆ÷µÄÖ÷»úÃû³Æ,2¸öÆ½Ì¨Ó¦¸Ã¶¼Ö§³ÖÕâ¸öº¯Êı
-* @return     int        0³É¹¦
-* @param[out] name       ·µ»ØµÄÖ÷»úÃû³Æ£¬
-* @param[in]  name_len   Ö÷»úÃû³ÆµÄbuffer³¤¶È
+* @brief      è¿”å›å½“å‰æœºå™¨çš„ä¸»æœºåç§°,2ä¸ªå¹³å°åº”è¯¥éƒ½æ”¯æŒè¿™ä¸ªå‡½æ•°
+* @return     int        0æˆåŠŸ
+* @param[out] name       è¿”å›çš„ä¸»æœºåç§°ï¼Œ
+* @param[in]  name_len   ä¸»æœºåç§°çš„bufferé•¿åº¦
 */
 inline int gethostname(char *name, size_t name_len);
 
 //-------------------------------------------------------------------------------------
-//Îªsockaddr_inÔö¼ÓµÄÒ»×éº¯Êı£¬·½±ãÊ¹ÓÃ,
+//ä¸ºsockaddr_inå¢åŠ çš„ä¸€ç»„å‡½æ•°ï¼Œæ–¹ä¾¿ä½¿ç”¨,
 
-//±¾À´ÉèÖÃº¯ÊıÎªÊ²Ã´Òª·µ»Øsockaddr *£¬·½±ãÖ±½Ó×÷Îª²ÎÊıÔÚ´óÁ¿º¯ÊıÊ¹ÓÃ£¬µ«Èç¹û´íÎóÄØ£¬£¬£¬£¬
+//æœ¬æ¥è®¾ç½®å‡½æ•°ä¸ºä»€ä¹ˆè¦è¿”å›sockaddr *ï¼Œæ–¹ä¾¿ç›´æ¥ä½œä¸ºå‚æ•°åœ¨å¤§é‡å‡½æ•°ä½¿ç”¨ï¼Œä½†å¦‚æœé”™è¯¯å‘¢ï¼Œï¼Œï¼Œï¼Œ
 
 
 /*!
 * @brief
-* @return     int ´íÎó·µ»Ø-1£¬ÕıÈ··µ»Ø0
-* @param[out] sock_addr_ipv4 ±»ÉèÖÃµÄIPV4µØÖ·
-* @param[in]  ipv4_addr_str  µØÖ·ĞÅÏ¢×Ö·û´®
-* @param[in]  ipv4_port      ¶Ë¿Ú£¬±¾µØĞò
+* @return     int é”™è¯¯è¿”å›-1ï¼Œæ­£ç¡®è¿”å›0
+* @param[out] sock_addr_ipv4 è¢«è®¾ç½®çš„IPV4åœ°å€
+* @param[in]  ipv4_addr_str  åœ°å€ä¿¡æ¯å­—ç¬¦ä¸²
+* @param[in]  ipv4_port      ç«¯å£ï¼Œæœ¬åœ°åº
 */
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            const char *ipv4_addr_str,
                            uint16_t ipv4_port);
 
 /*!
-* @brief      ÉèÖÃÒ»¸öIPV4µÄµØÖ·£¬Èç¹û×Ö·û´®ÀïÃæÓĞ¶Ë¿ÚĞÅÏ¢£¬Ò²»áÍ¬Ê±ÉèÖÃ¶Ë¿Ú
-* @return     int ´íÎó·µ»Ø-1£¬ÕıÈ··µ»Ø0
-* @param      sock_addr_ipv4 ±»ÉèÖÃµÄIPV4µØÖ·
-* @param      ipv4_addr_str  µØÖ·×Ö·û´®,Èç¹ûÀïÃæÓĞ×Ö·û'#'£¬»áÈÏÎªÓĞ¶Ë¿ÚºÅ£¬
+* @brief      è®¾ç½®ä¸€ä¸ªIPV4çš„åœ°å€ï¼Œå¦‚æœå­—ç¬¦ä¸²é‡Œé¢æœ‰ç«¯å£ä¿¡æ¯ï¼Œä¹Ÿä¼šåŒæ—¶è®¾ç½®ç«¯å£
+* @return     int é”™è¯¯è¿”å›-1ï¼Œæ­£ç¡®è¿”å›0
+* @param      sock_addr_ipv4 è¢«è®¾ç½®çš„IPV4åœ°å€
+* @param      ipv4_addr_str  åœ°å€å­—ç¬¦ä¸²,å¦‚æœé‡Œé¢æœ‰å­—ç¬¦'#'ï¼Œä¼šè®¤ä¸ºæœ‰ç«¯å£å·ï¼Œ
 */
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                            const char *ipv4_addr_str);
 
 /*!
-* @brief      ÉèÖÃÒ»¸öIPV4µÄµØÖ·
-* @return     int ´íÎó·µ»Ø-1£¬ÕıÈ··µ»Ø0
-* @param[out] sock_addr_ipv4 ±»ÉèÖÃµÄIPV4µØÖ·
-* @param[in]  ipv4_addr_val  ±íÊ¾IPV4µÄ32Î»ÕûÊı£¬±¾µØĞò
-* @param[in]  ipv4_port      ¶Ë¿ÚºÅ£¬±¾µØĞò
+* @brief      è®¾ç½®ä¸€ä¸ªIPV4çš„åœ°å€
+* @return     int é”™è¯¯è¿”å›-1ï¼Œæ­£ç¡®è¿”å›0
+* @param[out] sock_addr_ipv4 è¢«è®¾ç½®çš„IPV4åœ°å€
+* @param[in]  ipv4_addr_val  è¡¨ç¤ºIPV4çš„32ä½æ•´æ•°ï¼Œæœ¬åœ°åº
+* @param[in]  ipv4_port      ç«¯å£å·ï¼Œæœ¬åœ°åº
 * @note
 */
 inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
@@ -976,11 +976,11 @@ inline int set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
 
 
 /*!
-* @brief      ÉèÖÃÒ»¸öIPV6µÄµØÖ·,
-* @return     int ´íÎó·µ»Ø-1£¬ ÕıÈ··µ»Ø0
-* @param[out] sock_addr_ipv6 ±»ÉèÖÃµÄIPV6µØÖ·
-* @param[in]  ipv6_addr_str  IPV6µØÖ·ĞÅÏ¢×Ö·û´®£¬ÕâÖÖ¸ñÊ½"0:0:0:0:0:0:0:0"
-* @param[in]  ipv6_port      ¶Ë¿ÚºÅ£¬±¾µØĞò
+* @brief      è®¾ç½®ä¸€ä¸ªIPV6çš„åœ°å€,
+* @return     int é”™è¯¯è¿”å›-1ï¼Œ æ­£ç¡®è¿”å›0
+* @param[out] sock_addr_ipv6 è¢«è®¾ç½®çš„IPV6åœ°å€
+* @param[in]  ipv6_addr_str  IPV6åœ°å€ä¿¡æ¯å­—ç¬¦ä¸²ï¼Œè¿™ç§æ ¼å¼"0:0:0:0:0:0:0:0"
+* @param[in]  ipv6_port      ç«¯å£å·ï¼Œæœ¬åœ°åº
 */
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                             const char *ipv6_addr_str,
@@ -988,42 +988,42 @@ inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
 
 
 /*!
-* @brief      ÉèÖÃÒ»¸öIPV4µÄµØÖ·£¬Èç¹û×Ö·û´®ÀïÃæÓĞ¶Ë¿ÚĞÅÏ¢£¬Ò²»áÍ¬Ê±ÉèÖÃ¶Ë¿Ú
-* @return     int ´íÎó·µ»Ø-1£¬ÕıÈ··µ»Ø0
-* @param      sock_addr_ipv6 ±»ÉèÖÃµÄIPV6µØÖ·
-* @param      ipv6_addr_str  µØÖ·×Ö·û´®,Èç¹ûÀïÃæÓĞ×Ö·û'#'£¬»áÈÏÎªÓĞ¶Ë¿ÚºÅ£¬
+* @brief      è®¾ç½®ä¸€ä¸ªIPV4çš„åœ°å€ï¼Œå¦‚æœå­—ç¬¦ä¸²é‡Œé¢æœ‰ç«¯å£ä¿¡æ¯ï¼Œä¹Ÿä¼šåŒæ—¶è®¾ç½®ç«¯å£
+* @return     int é”™è¯¯è¿”å›-1ï¼Œæ­£ç¡®è¿”å›0
+* @param      sock_addr_ipv6 è¢«è®¾ç½®çš„IPV6åœ°å€
+* @param      ipv6_addr_str  åœ°å€å­—ç¬¦ä¸²,å¦‚æœé‡Œé¢æœ‰å­—ç¬¦'#'ï¼Œä¼šè®¤ä¸ºæœ‰ç«¯å£å·ï¼Œ
 */
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                             const char *ipv6_addr_str);
 
 /*!
-* @brief      ÉèÖÃÒ»¸öIPV6µÄµØÖ·,ºÍÉÏÒ»¸öº¯ÊıµÄÇø±ğÖ÷ÒªÔÚ²ÎÊıË³ĞòÉÏ£¬×¢Òâ
-* @return     int   ´íÎó·µ»Ø-1£¬ÕıÈ··µ»Ø0
-* @param[out] sock_addr_ipv6 ±»ÉèÖÃµÄIPV6µØÖ·
-* @param[in]  ipv6_port      ¶Ë¿ÚºÅ£¬±¾µØĞò
-* @param[in]  ipv6_addr_val  16¸ö×Ö½ÚµÄµØÖ·ĞÅÏ¢
+* @brief      è®¾ç½®ä¸€ä¸ªIPV6çš„åœ°å€,å’Œä¸Šä¸€ä¸ªå‡½æ•°çš„åŒºåˆ«ä¸»è¦åœ¨å‚æ•°é¡ºåºä¸Šï¼Œæ³¨æ„
+* @return     int   é”™è¯¯è¿”å›-1ï¼Œæ­£ç¡®è¿”å›0
+* @param[out] sock_addr_ipv6 è¢«è®¾ç½®çš„IPV6åœ°å€
+* @param[in]  ipv6_port      ç«¯å£å·ï¼Œæœ¬åœ°åº
+* @param[in]  ipv6_addr_val  16ä¸ªå­—èŠ‚çš„åœ°å€ä¿¡æ¯
 */
 inline int set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                             uint16_t ipv6_port,
                             const char ipv6_addr_val[16]);
 
-//ÏÂÃæÒ»Ğ©ÊÇÕë¶ÔIPV4µÄº¯Êı
+//ä¸‹é¢ä¸€äº›æ˜¯é’ˆå¯¹IPV4çš„å‡½æ•°
 
-//·µ»Ø¶Ë¿ÚºÅ,ÓÃÖ¸Õë×÷Îª²ÎÊıÖ÷ÒªÊÇÏ£ÍûÍ³Ò»
+//è¿”å›ç«¯å£å·,ç”¨æŒ‡é’ˆä½œä¸ºå‚æ•°ä¸»è¦æ˜¯å¸Œæœ›ç»Ÿä¸€
 inline uint16_t get_port_number(const sockaddr *addr);
 
-//·µ»ØµØÖ·ĞÅÏ¢
+//è¿”å›åœ°å€ä¿¡æ¯
 inline const char *get_host_addr(const sockaddr *addr,
                                  char *addr_buf,
                                  size_t addr_size);
 
-//µÃµ½IPµØÖ·ºÍ¶Ë¿ÚĞÅÏ¢µÄ×Ö·û´®ÃèÊö
+//å¾—åˆ°IPåœ°å€å’Œç«¯å£ä¿¡æ¯çš„å­—ç¬¦ä¸²æè¿°
 inline const char *get_host_addr_port(const sockaddr *addr,
                                       char *addr_buf,
                                       size_t addr_size);
 
 /*!
-* @brief      ·µ»ØIPµØÖ·µÄÕûÊı,±¾µØĞò
+* @brief      è¿”å›IPåœ°å€çš„æ•´æ•°,æœ¬åœ°åº
 * @return     inline uint32_t
 * @param      sock_addr_ipv4
 * @note
@@ -1031,68 +1031,68 @@ inline const char *get_host_addr_port(const sockaddr *addr,
 inline uint32_t get_ip_address(const sockaddr_in *sock_addr_ipv4);
 
 /*!
-* @brief      ¼ì²éÒ»¸öµØÖ·ÊÇ·ñÊÇÄÚÍøµØÖ·,Õâ¸ö»¹ÕæµÃÉ¨Ã¤Ò»ÏÂ£¬IPV6Ã»ÓĞ¾ÖÓòÍøÕâ¸ö¸ÅÄî¡£
-* @return     bool trueÊÇÄÚÍøµØÖ·£¬false²»ÊÇ£¬
-* @param      sock_addr_ipv4 ÅĞ¶ÏµÄsockaddr_in
+* @brief      æ£€æŸ¥ä¸€ä¸ªåœ°å€æ˜¯å¦æ˜¯å†…ç½‘åœ°å€,è¿™ä¸ªè¿˜çœŸå¾—æ‰«ç›²ä¸€ä¸‹ï¼ŒIPV6æ²¡æœ‰å±€åŸŸç½‘è¿™ä¸ªæ¦‚å¿µã€‚
+* @return     bool trueæ˜¯å†…ç½‘åœ°å€ï¼Œfalseä¸æ˜¯ï¼Œ
+* @param      sock_addr_ipv4 åˆ¤æ–­çš„sockaddr_in
 */
 bool is_internal(const sockaddr_in *sock_addr_ipv4);
 
 
 
 /*!
-* @brief      ¼ì²éÒ»¸öIPV4µØÖ·£¨ÕûÊı£©ÊÇ·ñÊÇÄÚÍøµØÖ·,
-* @return     bool tureÊÇÄÚÍøµØÖ·£¬false²»ÊÇ£¬
-* @param[in]  ipv4_addr_val ÕûÊı±íÊ¾IPV4µØÖ·£¬±¾µØĞò
+* @brief      æ£€æŸ¥ä¸€ä¸ªIPV4åœ°å€ï¼ˆæ•´æ•°ï¼‰æ˜¯å¦æ˜¯å†…ç½‘åœ°å€,
+* @return     bool tureæ˜¯å†…ç½‘åœ°å€ï¼Œfalseä¸æ˜¯ï¼Œ
+* @param[in]  ipv4_addr_val æ•´æ•°è¡¨ç¤ºIPV4åœ°å€ï¼Œæœ¬åœ°åº
 */
 bool is_internal(uint32_t ipv4_addr_val);
 
 //uint32_t inet_lnaof(struct in_addr in); uint32_t inet_netof(struct in_addr in);
-//ÕâÁ½¸öº¯ÊıÓÃÓÚµÃµ½¸÷ÀàµØÖ·µÄÍøÂçIDºÍÖ÷»úID£¬ÎÒ¾õµÃ»ù±¾Ã»ÈË»áÓÃÕâ¸öº¯Êı°É¡£ËãÁË¡£
+//è¿™ä¸¤ä¸ªå‡½æ•°ç”¨äºå¾—åˆ°å„ç±»åœ°å€çš„ç½‘ç»œIDå’Œä¸»æœºIDï¼Œæˆ‘è§‰å¾—åŸºæœ¬æ²¡äººä¼šç”¨è¿™ä¸ªå‡½æ•°å§ã€‚ç®—äº†ã€‚
 
 //-------------------------------------------------------------------------------------
-//IPV4ºÍIPV6Ö®¼äÏà»¥×ª»»µÄº¯Êı£¬¶¼ÊÇ·Ç±ê×¼º¯Êı£¬
+//IPV4å’ŒIPV6ä¹‹é—´ç›¸äº’è½¬æ¢çš„å‡½æ•°ï¼Œéƒ½æ˜¯éæ ‡å‡†å‡½æ•°ï¼Œ
 
 /*!
-* @brief      ½«Ò»¸öIPV4µÄµØÖ·Ó³ÉäÎªIPV6µÄµØÖ·
-* @return     int  0³É¹¦£¬-1Ê§°Ü
-* @param      src  Òª½øĞĞ×ª»»µÄin_addr
-* @param      dst  ×ª»»µÃµ½IPV6µÄµØÖ·in6_addr
+* @brief      å°†ä¸€ä¸ªIPV4çš„åœ°å€æ˜ å°„ä¸ºIPV6çš„åœ°å€
+* @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      src  è¦è¿›è¡Œè½¬æ¢çš„in_addr
+* @param      dst  è½¬æ¢å¾—åˆ°IPV6çš„åœ°å€in6_addr
 */
 int inaddr_map_inaddr6(const in_addr *src, in6_addr *dst);
 
 /*!
-* @brief      ½«Ò»¸öIPV4µÄSockµØÖ·Ó³ÉäÎªIPV6µÄµØÖ·
-* @return     int  0³É¹¦£¬-1Ê§°Ü
+* @brief      å°†ä¸€ä¸ªIPV4çš„Sockåœ°å€æ˜ å°„ä¸ºIPV6çš„åœ°å€
+* @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
 * @param      src
 * @param      dst
 */
 int sockin_map_sockin6(const sockaddr_in *src, sockaddr_in6 *dst);
 
 /*!
-* @brief      ÅĞ¶ÏÒ»¸öµØÖ·ÊÇ·ñÊÇIPV4Ó³ÉäµÄµØÖ·
-* @return     bool TRUEÊÇÓ³Éä¹ıÂËµÄ£¬FALSE²»ÊÇ
+* @brief      åˆ¤æ–­ä¸€ä¸ªåœ°å€æ˜¯å¦æ˜¯IPV4æ˜ å°„çš„åœ°å€
+* @return     bool TRUEæ˜¯æ˜ å°„è¿‡æ»¤çš„ï¼ŒFALSEä¸æ˜¯
 * @param      in6
 */
 bool is_in6_addr_v4mapped(const in6_addr *in6);
 
 /*!
-* @brief      Èç¹ûÒ»¸öIPV6µÄµØÖ·´ÓIPV4Ó³Éä¹ıÀ´µÄ£¬×ª»»»ØIPV4µÄµØÖ·
-* @return     int  0³É¹¦£¬-1Ê§°Ü
+* @brief      å¦‚æœä¸€ä¸ªIPV6çš„åœ°å€ä»IPV4æ˜ å°„è¿‡æ¥çš„ï¼Œè½¬æ¢å›IPV4çš„åœ°å€
+* @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
 * @param      src
 * @param      dst
 */
 int mapped_in6_to_in(const in6_addr *src, in_addr *dst);
 
 /*!
-* @brief      Èç¹ûÒ»¸öIPV6µÄsocketaddr_in6µØÖ·´ÓIPV4Ó³Éä¹ıÀ´µÄ£¬×ª»»»ØIPV4µÄsocketaddr_inµØÖ·
-* @return     int  0³É¹¦£¬-1Ê§°Ü
-* @param[in]  src  IPV6µÄsocketaddr_in6
-* @param[out] dst  ×ª»»³ÉµÄIPV4µÄsocketaddr_in
+* @brief      å¦‚æœä¸€ä¸ªIPV6çš„socketaddr_in6åœ°å€ä»IPV4æ˜ å°„è¿‡æ¥çš„ï¼Œè½¬æ¢å›IPV4çš„socketaddr_inåœ°å€
+* @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  src  IPV6çš„socketaddr_in6
+* @param[out] dst  è½¬æ¢æˆçš„IPV4çš„socketaddr_in
 */
 int mapped_sockin6_to_sockin(const sockaddr_in6 *src, sockaddr_in *dst);
 
 /*!
-* @brief      ¼ì²éÒ»¸ö¶Ë¿ÚÊÇ·ñ°²È«£¬Ò»Ğ©¶Ë¿ÚÊÇºÚ¿ÍÖØµãÉ¨ÃèµÄ¶Ë¿Ú£¬±ÈÈç1024ÒÔÏÂ£¬
+* @brief      æ£€æŸ¥ä¸€ä¸ªç«¯å£æ˜¯å¦å®‰å…¨ï¼Œä¸€äº›ç«¯å£æ˜¯é»‘å®¢é‡ç‚¹æ‰«æçš„ç«¯å£ï¼Œæ¯”å¦‚1024ä»¥ä¸‹ï¼Œ
 * @return     bool
 * @param      check_port
 */
@@ -1100,16 +1100,16 @@ bool check_safeport(uint16_t check_port);
 
 
 //-------------------------------------------------------------------------------------
-//socks 5 ´úÀí²¿·Ö
+//socks 5 ä»£ç†éƒ¨åˆ†
 
 /*!
-* @brief      SOCKS5´úÀí³õÊ¼»¯£¬½øĞĞÓÃ»§ÑéÖ¤µÈ
-* @return     int ·µ»Ø0±êÊ¶³É¹¦
-* @param      handle      ÒÑ¾­Á¬½ÓSOCKS5·şÎñÆ÷µÄ¾ä±ú£¬±ØĞëÏÈÁ¬½Ó connect,¿ÉÒÔÊ¹ÓÃconnect_timeoutº¯Êı
-* @param      username    ÑéÖ¤Ä£Ê½ÏÂµÄÓÃ»§Ãû³Æ£¬Èç¹û²»ĞèÒªÑéÖ¤ÓÃÌîĞ´NULL
-* @param      password    ÑéÖ¤Ä£Ê½ÏÂµÄÃÜÂë£¬Èç¹û²»ĞèÒªÑéÖ¤ÓÃÌîĞ´NULL
-* @param      timeout_tv  ³¬Ê±Ê±¼ä
-* @note       handle ±ØĞëÏÈÁ¬½Ó
+* @brief      SOCKS5ä»£ç†åˆå§‹åŒ–ï¼Œè¿›è¡Œç”¨æˆ·éªŒè¯ç­‰
+* @return     int è¿”å›0æ ‡è¯†æˆåŠŸ
+* @param      handle      å·²ç»è¿æ¥SOCKS5æœåŠ¡å™¨çš„å¥æŸ„ï¼Œå¿…é¡»å…ˆè¿æ¥ connect,å¯ä»¥ä½¿ç”¨connect_timeoutå‡½æ•°
+* @param      username    éªŒè¯æ¨¡å¼ä¸‹çš„ç”¨æˆ·åç§°ï¼Œå¦‚æœä¸éœ€è¦éªŒè¯ç”¨å¡«å†™NULL
+* @param      password    éªŒè¯æ¨¡å¼ä¸‹çš„å¯†ç ï¼Œå¦‚æœä¸éœ€è¦éªŒè¯ç”¨å¡«å†™NULL
+* @param      timeout_tv  è¶…æ—¶æ—¶é—´
+* @note       handle å¿…é¡»å…ˆè¿æ¥
 */
 int socks5_initialize(ZCE_SOCKET handle,
                       const char *username,
@@ -1118,14 +1118,14 @@ int socks5_initialize(ZCE_SOCKET handle,
 
 
 /*!
-* @brief      SOCKS5´úÀí³õÊ¼»¯£¬½øĞĞÓÃ»§ÑéÖ¤µÈ
-* @return     int  ·µ»Ø0±êÊ¶³É¹¦
-* @param      handle     ÒÑ¾­Á¬½ÓSOCKS5·şÎñÆ÷µÄ¾ä±ú£¬±ØĞëÏÈÁ¬½Ó connect
-* @param      host_name  Ìø×ªµÄÓòÃû£¬ÓòÃûºÍµØÖ·Ö»Ñ¡Ò»¸ö£¬ÓÅÏÈÓòÃû£¬ÎªNULL
-* @param      port       Ìø×ªµÄ¶Ë¿Ú
-* @param      addr       Ìø×ªµÄµØÖ·
-* @param      addrlen    Ìø×ªµÄµØÖ·µÄ³¤¶È
-* @param      timeout_tv ³¬Ê±Ê±¼ä
+* @brief      SOCKS5ä»£ç†åˆå§‹åŒ–ï¼Œè¿›è¡Œç”¨æˆ·éªŒè¯ç­‰
+* @return     int  è¿”å›0æ ‡è¯†æˆåŠŸ
+* @param      handle     å·²ç»è¿æ¥SOCKS5æœåŠ¡å™¨çš„å¥æŸ„ï¼Œå¿…é¡»å…ˆè¿æ¥ connect
+* @param      host_name  è·³è½¬çš„åŸŸåï¼ŒåŸŸåå’Œåœ°å€åªé€‰ä¸€ä¸ªï¼Œä¼˜å…ˆåŸŸåï¼Œä¸ºNULL
+* @param      port       è·³è½¬çš„ç«¯å£
+* @param      addr       è·³è½¬çš„åœ°å€
+* @param      addrlen    è·³è½¬çš„åœ°å€çš„é•¿åº¦
+* @param      timeout_tv è¶…æ—¶æ—¶é—´
 */
 int socks5_connect_host(ZCE_SOCKET handle,
                         const char *host_name,
@@ -1134,7 +1134,7 @@ int socks5_connect_host(ZCE_SOCKET handle,
                         uint16_t host_port,
                         ZCE_Time_Value &timeout_tv);
 
-//socks5´úÀí£¬UDP´©Í¸
+//socks5ä»£ç†ï¼ŒUDPç©¿é€
 int socks5_udp_associate(ZCE_SOCKET handle,
                          const sockaddr *bind_addr,
                          int addr_len,
@@ -1145,11 +1145,11 @@ int socks5_udp_associate(ZCE_SOCKET handle,
 
 //-----------------------------------------------------------------------------------------
 
-//ÏêÏ¸½âÊÍÒ»ÏÂÎªÊ²Ã´ËùÓĞµÄWindowsÏÂµÄµ÷ÓÃAPI¶¼»áÓĞÒ»¶Î´úÂë
+//è¯¦ç»†è§£é‡Šä¸€ä¸‹ä¸ºä»€ä¹ˆæ‰€æœ‰çš„Windowsä¸‹çš„è°ƒç”¨APIéƒ½ä¼šæœ‰ä¸€æ®µä»£ç 
 //errno = ::WSAGetLastError ();
-//ÒòÎªWindowsÏÂÆäÊµÓĞÁ½¸öerror¼ÇÂ¼£¬Ò»¸öÊÇCµÄerrno£¬Ò»¸öÊÇ::GetLastError,»òÕß::WSAGetLastError ()
-//·µ»ØµÄ´íÎó£¬¶øÕâÁ½¸öerror¿ÉÄÜÍ¬Ê±´æÔÚ£¬ÒÔÖÁÓÚÎÒÃÇµÄ´úÂëºÜÄÑĞ´£¬¶øÎÒÃÇÕûÌåµÄÉÏÇãÏòÓÃerrno£¬ÒòÎªWindowsµÄ::GetLastError
-//ºÍÎÒÃÇ¶¨Òå²î±ğºÜ´ó£¬ËùÒÔÎÒ²»µÃ²»ÕâÑù´¦ÀíÒ»ÏÂ£¬
+//å› ä¸ºWindowsä¸‹å…¶å®æœ‰ä¸¤ä¸ªerrorè®°å½•ï¼Œä¸€ä¸ªæ˜¯Cçš„errnoï¼Œä¸€ä¸ªæ˜¯::GetLastError,æˆ–è€…::WSAGetLastError ()
+//è¿”å›çš„é”™è¯¯ï¼Œè€Œè¿™ä¸¤ä¸ªerrorå¯èƒ½åŒæ—¶å­˜åœ¨ï¼Œä»¥è‡³äºæˆ‘ä»¬çš„ä»£ç å¾ˆéš¾å†™ï¼Œè€Œæˆ‘ä»¬æ•´ä½“çš„ä¸Šå€¾å‘ç”¨errnoï¼Œå› ä¸ºWindowsçš„::GetLastError
+//å’Œæˆ‘ä»¬å®šä¹‰å·®åˆ«å¾ˆå¤§ï¼Œæ‰€ä»¥æˆ‘ä¸å¾—ä¸è¿™æ ·å¤„ç†ä¸€ä¸‹ï¼Œ
 
 //
 inline ZCE_SOCKET zce::socket (int family,
@@ -1162,7 +1162,7 @@ inline ZCE_SOCKET zce::socket (int family,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if (ZCE_INVALID_SOCKET  == socket_hdl)
     {
 
@@ -1170,9 +1170,9 @@ inline ZCE_SOCKET zce::socket (int family,
     }
     else
     {
-        //¹Ø±ÕÕâ¸öµØ·½ÊµÑéÒ»ÏÂ
-        //ÒÑ¾­³õÊ¼»¯³É¹¦£¬²¢ÇÒÊÇUDP £¬È¥µôÕâÒ»¶Î
-        //SIO_UDP_CONNRESET£¬ÊÇÈÃÄãÔÚÏòÒ»¸ö´íÎóUDP peer·¢ËÍÒ»¸öÊı¾İºó£¬ÄãºóÊÕµ½Ò»¸öRST´íÎó
+        //å…³é—­è¿™ä¸ªåœ°æ–¹å®éªŒä¸€ä¸‹
+        //å·²ç»åˆå§‹åŒ–æˆåŠŸï¼Œå¹¶ä¸”æ˜¯UDP ï¼Œå»æ‰è¿™ä¸€æ®µ
+        //SIO_UDP_CONNRESETï¼Œæ˜¯è®©ä½ åœ¨å‘ä¸€ä¸ªé”™è¯¯UDP peerå‘é€ä¸€ä¸ªæ•°æ®åï¼Œä½ åæ”¶åˆ°ä¸€ä¸ªRSTé”™è¯¯
         if ( type == SOCK_DGRAM )
         {
             DWORD bytes_returned = 0;
@@ -1186,7 +1186,7 @@ inline ZCE_SOCKET zce::socket (int family,
             if (SOCKET_ERROR == status)
             {
                 errno = ::WSAGetLastError ();
-                //¸ÉµãÉ¶ÄØ£¬²»¸ÉÉ¶£¬¿ÉÄÜ¸üºÃ£¿
+                //å¹²ç‚¹å•¥å‘¢ï¼Œä¸å¹²å•¥ï¼Œå¯èƒ½æ›´å¥½ï¼Ÿ
             }
         }
     }
@@ -1196,7 +1196,7 @@ inline ZCE_SOCKET zce::socket (int family,
     return socket_hdl;
 }
 
-// ½ÓÊÕÒ»¸öacceptÇëÇóµÄsocket
+// æ¥æ”¶ä¸€ä¸ªacceptè¯·æ±‚çš„socket
 inline ZCE_SOCKET zce::accept (ZCE_SOCKET handle,
                                sockaddr *addr,
                                socklen_t *addrlen)
@@ -1208,7 +1208,7 @@ inline ZCE_SOCKET zce::accept (ZCE_SOCKET handle,
                                       addr,
                                       addrlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if (ZCE_INVALID_SOCKET  == accept_hdl)
     {
         errno = ::WSAGetLastError ();
@@ -1223,7 +1223,7 @@ inline ZCE_SOCKET zce::accept (ZCE_SOCKET handle,
 #endif
 }
 
-//°ó¶¨IPµØÖ·Ğ­Òé£¬£¬
+//ç»‘å®šIPåœ°å€åè®®ï¼Œï¼Œ
 inline int zce::bind (ZCE_SOCKET handle,
                       const sockaddr *addr,
                       socklen_t addrlen)
@@ -1234,7 +1234,7 @@ inline int zce::bind (ZCE_SOCKET handle,
                              addr,
                              addrlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1248,13 +1248,13 @@ inline int zce::bind (ZCE_SOCKET handle,
 #endif
 }
 
-//Õâ¸öÖ»ÄÜÏòWindows¿¿Æë£¬ÒòÎªÎÒ×Ô¼º»¹ÓĞÒ»¸öcloseº¯Êı£¬µ«windowsÏÂÁ½¸öº¯ÊıÍêÈ«ÊÇÁ½»ØÊÂ
+//è¿™ä¸ªåªèƒ½å‘Windowsé é½ï¼Œå› ä¸ºæˆ‘è‡ªå·±è¿˜æœ‰ä¸€ä¸ªcloseå‡½æ•°ï¼Œä½†windowsä¸‹ä¸¤ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸¤å›äº‹
 inline int zce::closesocket (ZCE_SOCKET handle)
 {
 #if defined ZCE_OS_WINDOWS
     int zce_result = ::closesocket (handle);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1266,7 +1266,7 @@ inline int zce::closesocket (ZCE_SOCKET handle)
 #endif
 }
 
-//Á¬½Ó·şÎñÆ÷
+//è¿æ¥æœåŠ¡å™¨
 inline int zce::connect (ZCE_SOCKET handle,
                          const sockaddr *addr,
                          socklen_t addrlen)
@@ -1277,7 +1277,7 @@ inline int zce::connect (ZCE_SOCKET handle,
                                 addr,
                                 addrlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1291,7 +1291,7 @@ inline int zce::connect (ZCE_SOCKET handle,
 #endif
 }
 
-//È¡µÃ¶Ô¶ËµÄµØÖ·ĞÅÏ¢
+//å–å¾—å¯¹ç«¯çš„åœ°å€ä¿¡æ¯
 inline int zce::getpeername (ZCE_SOCKET handle,
                              sockaddr *addr,
                              socklen_t *addrlen)
@@ -1302,7 +1302,7 @@ inline int zce::getpeername (ZCE_SOCKET handle,
                                     addr,
                                     addrlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1316,7 +1316,7 @@ inline int zce::getpeername (ZCE_SOCKET handle,
 #endif
 }
 
-//È¡µÃ¶Ô¶ËµÄµØÖ·ĞÅÏ¢
+//å–å¾—å¯¹ç«¯çš„åœ°å€ä¿¡æ¯
 inline int zce::getsockname (ZCE_SOCKET handle,
                              sockaddr *addr,
                              socklen_t *addrlen)
@@ -1327,7 +1327,7 @@ inline int zce::getsockname (ZCE_SOCKET handle,
                                     addr,
                                     addrlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1342,7 +1342,7 @@ inline int zce::getsockname (ZCE_SOCKET handle,
 
 }
 
-//È¡µÃÄ³¸öÑ¡Ïî£¬×¢ÒâWINDOWSºÍLINUX»¹ÊÇÓĞºÜ¶àµÄ´úÂë²îÒìµÄ£¬Çë×¢Òâ
+//å–å¾—æŸä¸ªé€‰é¡¹ï¼Œæ³¨æ„WINDOWSå’ŒLINUXè¿˜æ˜¯æœ‰å¾ˆå¤šçš„ä»£ç å·®å¼‚çš„ï¼Œè¯·æ³¨æ„
 inline int zce::getsockopt (ZCE_SOCKET handle,
                             int level,
                             int optname,
@@ -1358,7 +1358,7 @@ inline int zce::getsockopt (ZCE_SOCKET handle,
                                     static_cast<char *>(optval),
                                     optlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1386,7 +1386,7 @@ inline int zce::setsockopt (ZCE_SOCKET handle,
 
 #if defined (ZCE_OS_WINDOWS)
 
-    //WindowsÆ½Ì¨ÏÂ£¬SO_REUSEPORT ºÍSO_REUSEADDR Ğ§¹ûÒ»ÖÂ£¬SO_REUSEADDR ÊÇÄ¬ÈÏĞ§¹û
+    //Windowså¹³å°ä¸‹ï¼ŒSO_REUSEPORT å’ŒSO_REUSEADDR æ•ˆæœä¸€è‡´ï¼ŒSO_REUSEADDR æ˜¯é»˜è®¤æ•ˆæœ
     if (optname == SO_REUSEPORT)
     {
         optname = SO_REUSEADDR;
@@ -1406,7 +1406,7 @@ inline int zce::setsockopt (ZCE_SOCKET handle,
                                     optlen);
 #endif
 
-    //Í³Ò»´íÎó·µ»Ø
+    //ç»Ÿä¸€é”™è¯¯è¿”å›
 #if defined (ZCE_OS_WINDOWS)
 
     if (zce_result == SOCKET_ERROR )
@@ -1427,14 +1427,14 @@ inline int zce::setsockopt (ZCE_SOCKET handle,
 
 }
 
-//´ò¿ªÒ»¸ö¼àÌı¶Ë¿Ú
+//æ‰“å¼€ä¸€ä¸ªç›‘å¬ç«¯å£
 inline int zce::listen (ZCE_SOCKET handle, int backlog)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int zce_result =  ::listen (handle, backlog);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1449,14 +1449,14 @@ inline int zce::listen (ZCE_SOCKET handle, int backlog)
 
 }
 
-//shutdown£¬how²ÎÊıÏòLINUXÏÂ¿¿Æë,SHUT_RD,SHUT_WR,SHUT_RDWR
+//shutdownï¼Œhowå‚æ•°å‘LINUXä¸‹é é½,SHUT_RD,SHUT_WR,SHUT_RDWR
 inline int zce::shutdown (ZCE_SOCKET handle, int how)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     int zce_result = ::shutdown (handle, how);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1471,9 +1471,9 @@ inline int zce::shutdown (ZCE_SOCKET handle, int how)
 
 }
 
-//½ÓÊÕÊı¾İ
-//²ÎÊıflagsÍ¨ÓÃĞÔ·Ç³£²î£¬LINUX£¬ºÍWINDOWSÏÂ¼¸ºõ²»Í¨ÓÃ£¬LINUXÏÂÓĞÒ»¸ö±È½ÏÓĞÓÃµÄ²ÎÊıMSG_DONTWAIT£¬µ«ÊÇWINDOWSÏÂ²»Ìá¹©¡£
-//×èÈû´íÎóÇëÊ¹ÓÃEWOULDBLOCK
+//æ¥æ”¶æ•°æ®
+//å‚æ•°flagsé€šç”¨æ€§éå¸¸å·®ï¼ŒLINUXï¼Œå’ŒWINDOWSä¸‹å‡ ä¹ä¸é€šç”¨ï¼ŒLINUXä¸‹æœ‰ä¸€ä¸ªæ¯”è¾ƒæœ‰ç”¨çš„å‚æ•°MSG_DONTWAITï¼Œä½†æ˜¯WINDOWSä¸‹ä¸æä¾›ã€‚
+//é˜»å¡é”™è¯¯è¯·ä½¿ç”¨EWOULDBLOCK
 inline ssize_t zce::recv (ZCE_SOCKET handle, void *buf, size_t len, int flags)
 {
 
@@ -1483,7 +1483,7 @@ inline ssize_t zce::recv (ZCE_SOCKET handle, void *buf, size_t len, int flags)
                              static_cast<int> (len),
                              flags);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1496,7 +1496,7 @@ inline ssize_t zce::recv (ZCE_SOCKET handle, void *buf, size_t len, int flags)
     ssize_t zce_result  = 0;
     zce_result = ::recv (handle, buf, len, flags);
 
-    //Í³Ò»´íÎó³ÉEWOULDBLOCK
+    //ç»Ÿä¸€é”™è¯¯æˆEWOULDBLOCK
 # if (EAGAIN != EWOULDBLOCK)
 
     if (zce_result == -1 && errno == EAGAIN)
@@ -1510,7 +1510,7 @@ inline ssize_t zce::recv (ZCE_SOCKET handle, void *buf, size_t len, int flags)
 #endif
 }
 
-//·¢ËÍÊı¾İ
+//å‘é€æ•°æ®
 inline ssize_t zce::send (ZCE_SOCKET handle,
                           const void *buf,
                           size_t len,
@@ -1524,7 +1524,7 @@ inline ssize_t zce::send (ZCE_SOCKET handle,
                              static_cast<int> (len),
                              flags);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1536,8 +1536,8 @@ inline ssize_t zce::send (ZCE_SOCKET handle,
 
     ssize_t const zce_result = ::send (handle, buf, len, flags);
 
-    //Í³Ò»´íÎó³ÉEWOULDBLOCK,ACEÔø¾­Ëµ¹ı£¬ÔÚÄ³Ğ©Ê±ºòÕâ¸öÓï¾ä»áÊ§Ğ§£¬µ«ÊÇ¾ÍÎÒËùÖª£¬ÔÚLINUXÆ½Ì¨£¬EAGAIN == EWOULDBLOCK
-    //Õâ¶Î´úÂë½ö½ö×÷ÎªÒ»ÖÖ·ÀÓù
+    //ç»Ÿä¸€é”™è¯¯æˆEWOULDBLOCK,ACEæ›¾ç»è¯´è¿‡ï¼Œåœ¨æŸäº›æ—¶å€™è¿™ä¸ªè¯­å¥ä¼šå¤±æ•ˆï¼Œä½†æ˜¯å°±æˆ‘æ‰€çŸ¥ï¼Œåœ¨LINUXå¹³å°ï¼ŒEAGAIN == EWOULDBLOCK
+    //è¿™æ®µä»£ç ä»…ä»…ä½œä¸ºä¸€ç§é˜²å¾¡
 # if (EAGAIN != EWOULDBLOCK)
 
     if (zce_result == -1 && errno == EAGAIN)
@@ -1573,10 +1573,10 @@ inline ssize_t zce::recvfrom (ZCE_SOCKET handle,
     if (result == SOCKET_ERROR)
     {
         errno = ::WSAGetLastError ();
-        //MSG_PEEKµÄ½âÊÍ
+        //MSG_PEEKçš„è§£é‡Š
         //Peek at the incoming data. The data is copied into the buffer, but is not removed from the input queue. This flag is valid only for non-overlapped sockets.
 
-        //Ò²¾ÍÊÇËøÈç¹ûÓĞÕâ¸ö±êÖ¾flags£¬·¢ÏÖÏûÏ¢¹ı³¤µÄ´íÎó£¬·µ»ØÏûÏ¢½ÓÊÜ»º³å³¤¶È¸øµ÷ÓÃÕß
+        //ä¹Ÿå°±æ˜¯é”å¦‚æœæœ‰è¿™ä¸ªæ ‡å¿—flagsï¼Œå‘ç°æ¶ˆæ¯è¿‡é•¿çš„é”™è¯¯ï¼Œè¿”å›æ¶ˆæ¯æ¥å—ç¼“å†²é•¿åº¦ç»™è°ƒç”¨è€…
         if (errno == WSAEMSGSIZE && (flags & MSG_PEEK))
         {
             return shortened_len;
@@ -1621,7 +1621,7 @@ inline ssize_t zce::sendto (ZCE_SOCKET handle,
                                      addr,
                                      addrlen);
 
-    //½«´íÎóĞÅÏ¢ÉèÖÃµ½errno£¬ÏêÏ¸Çë²Î¿¼ÉÏÃæzceÃû×Ö¿Õ¼äºóÃæµÄ½âÊÍ
+    //å°†é”™è¯¯ä¿¡æ¯è®¾ç½®åˆ°errnoï¼Œè¯¦ç»†è¯·å‚è€ƒä¸Šé¢zceåå­—ç©ºé—´åé¢çš„è§£é‡Š
     if ( SOCKET_ERROR == zce_result)
     {
         errno = ::WSAGetLastError ();
@@ -1640,9 +1640,9 @@ inline ssize_t zce::sendto (ZCE_SOCKET handle,
 }
 
 //--------------------------------------------------------------------------------------------
-//¸ù¾İtimeout_tv¾ö¶¨ÊÇ·ñ³¬Ê±´¦ÀíµÄTCP½ÓÊÕº¯Êı£¬
-//timeout_tv !=NULL±êÊ¶³¬Ê±´¦Àí£¬½ÓÊÕN¸ö×Ö½Úºó·µ»Ø,³¬Ê±ÓÃµÄÊÇselectÄÇ×é³¬Ê±º¯Êı
-//timeout_tv ==NULL ±êÊ¶²»½øĞĞ³¬Ê±´¦Àí,¸ù¾İSocket×´Ì¬×Ô¼º¾ö¶¨
+//æ ¹æ®timeout_två†³å®šæ˜¯å¦è¶…æ—¶å¤„ç†çš„TCPæ¥æ”¶å‡½æ•°ï¼Œ
+//timeout_tv !=NULLæ ‡è¯†è¶…æ—¶å¤„ç†ï¼Œæ¥æ”¶Nä¸ªå­—èŠ‚åè¿”å›,è¶…æ—¶ç”¨çš„æ˜¯selecté‚£ç»„è¶…æ—¶å‡½æ•°
+//timeout_tv ==NULL æ ‡è¯†ä¸è¿›è¡Œè¶…æ—¶å¤„ç†,æ ¹æ®SocketçŠ¶æ€è‡ªå·±å†³å®š
 inline ssize_t zce::recv_n (ZCE_SOCKET handle,
                             void *buf,
                             size_t len,
@@ -1666,9 +1666,9 @@ inline ssize_t zce::recv_n (ZCE_SOCKET handle,
     }
 }
 
-//¸ù¾İtimeout_tv¾ö¶¨ÊÇ·ñ³¬Ê±´¦ÀíµÄTCP·¢ËÍº¯Êı
-//timeout_tv !=NULL±êÊ¶³¬Ê±´¦Àí£¬·¢ËÍN¸ö×Ö½Úºó·µ»Ø,³¬Ê±ÓÃµÄÊÇselectÄÇ×é³¬Ê±º¯Êı ,
-//timeout_tv ==NULL ±êÊ¶²»½øĞĞ³¬Ê±´¦Àí,¸ù¾İSocket×´Ì¬×Ô¼º¾ö¶¨,¿ÉÄÜ×èÈû»òÕß·Ç×èÈû,
+//æ ¹æ®timeout_två†³å®šæ˜¯å¦è¶…æ—¶å¤„ç†çš„TCPå‘é€å‡½æ•°
+//timeout_tv !=NULLæ ‡è¯†è¶…æ—¶å¤„ç†ï¼Œå‘é€Nä¸ªå­—èŠ‚åè¿”å›,è¶…æ—¶ç”¨çš„æ˜¯selecté‚£ç»„è¶…æ—¶å‡½æ•° ,
+//timeout_tv ==NULL æ ‡è¯†ä¸è¿›è¡Œè¶…æ—¶å¤„ç†,æ ¹æ®SocketçŠ¶æ€è‡ªå·±å†³å®š,å¯èƒ½é˜»å¡æˆ–è€…éé˜»å¡,
 inline ssize_t zce::send_n (ZCE_SOCKET handle,
                             const void *buf,
                             size_t len,
@@ -1693,9 +1693,9 @@ inline ssize_t zce::send_n (ZCE_SOCKET handle,
     }
 }
 
-//¸ù¾İtimeout_tv¾ö¶¨ÊÇ·ñ³¬Ê±´¦ÀíµÄUDP½ÓÊÕº¯Êı£¬
-//timeout_tv !=NULL±êÊ¶³¬Ê±´¦Àí£¬·¢ËÍN¸ö×Ö½Úºó·µ»Ø,³¬Ê±ÓÃµÄÊÇselectÄÇ×é³¬Ê±º¯Êı ,
-//timeout_tv ==NULL ±êÊ¶²»½øĞĞ³¬Ê±´¦Àí,¸ù¾İSocket×´Ì¬×Ô¼º¾ö¶¨,¿ÉÄÜ×èÈû»òÕß·Ç×èÈû,
+//æ ¹æ®timeout_två†³å®šæ˜¯å¦è¶…æ—¶å¤„ç†çš„UDPæ¥æ”¶å‡½æ•°ï¼Œ
+//timeout_tv !=NULLæ ‡è¯†è¶…æ—¶å¤„ç†ï¼Œå‘é€Nä¸ªå­—èŠ‚åè¿”å›,è¶…æ—¶ç”¨çš„æ˜¯selecté‚£ç»„è¶…æ—¶å‡½æ•° ,
+//timeout_tv ==NULL æ ‡è¯†ä¸è¿›è¡Œè¶…æ—¶å¤„ç†,æ ¹æ®SocketçŠ¶æ€è‡ªå·±å†³å®š,å¯èƒ½é˜»å¡æˆ–è€…éé˜»å¡,
 inline ssize_t zce::recvfrom (ZCE_SOCKET handle,
                               void *buf,
                               size_t len,
@@ -1725,8 +1725,8 @@ inline ssize_t zce::recvfrom (ZCE_SOCKET handle,
     }
 }
 
-//UDPµÄ·¢ËÍÔİÊ±ÊÇ²»»á×èÈûµÄ£¬²»ÓÃ³¬Ê±´¦Àí£¬Ğ´Õâ¸öº¯ÊıÍêÈ«ÊÇÎªÁËºÍÇ°Ãæ¶ÔÆë
-//·¢ËÍUDPµÄÊı¾İ,´ø³¬Ê±´¦Àí²ÎÊı£¬µ«ÊÇÊµ¼ÊÉÏ½øĞĞÃ»ÓĞ³¬Ê±´¦Àí£¬
+//UDPçš„å‘é€æš‚æ—¶æ˜¯ä¸ä¼šé˜»å¡çš„ï¼Œä¸ç”¨è¶…æ—¶å¤„ç†ï¼Œå†™è¿™ä¸ªå‡½æ•°å®Œå…¨æ˜¯ä¸ºäº†å’Œå‰é¢å¯¹é½
+//å‘é€UDPçš„æ•°æ®,å¸¦è¶…æ—¶å¤„ç†å‚æ•°ï¼Œä½†æ˜¯å®é™…ä¸Šè¿›è¡Œæ²¡æœ‰è¶…æ—¶å¤„ç†ï¼Œ
 inline ssize_t zce::sendto (ZCE_SOCKET handle,
                             const void *buf,
                             size_t len,
@@ -1757,7 +1757,7 @@ inline ssize_t zce::sendto (ZCE_SOCKET handle,
 }
 
 //--------------------------------------------------------------------------------------------
-//SELECTº¯Êı£¬ÎªÁËºÍLINUXÆ½Ì¨¶ÔÆë£¬·µ»ØÊ±¼äÎªÊ£ÓàÊ±¼ä
+//SELECTå‡½æ•°ï¼Œä¸ºäº†å’ŒLINUXå¹³å°å¯¹é½ï¼Œè¿”å›æ—¶é—´ä¸ºå‰©ä½™æ—¶é—´
 inline int zce::select(
     int nfds,
     fd_set *readfds,
@@ -1768,7 +1768,7 @@ inline int zce::select(
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //¼ì²éÊÇ·ñÃ»ÓĞ¾ä±úÔÚµÈ´ı
+    //æ£€æŸ¥æ˜¯å¦æ²¡æœ‰å¥æŸ„åœ¨ç­‰å¾…
     bool no_handle_to_wait = false;
 
     if ( (NULL == readfds) ||  (NULL != readfds && 0 == readfds->fd_count ) )
@@ -1782,8 +1782,8 @@ inline int zce::select(
         }
     }
 
-    //Èç¹û²»ĞèÒªµÈ´ı¾ä±ú£¬Ö±½ÓÊ¹ÓÃsleepÌæ´úselect£¬
-    //ÕâÊÇÒòÎªWINDOWSµÄselect ±ØĞëµÈ´ıÒ»¸ö¾ä±ú£¬·ñÔò¾Í»áreturn -1£¬Äã¾õµÃÂé·³²»
+    //å¦‚æœä¸éœ€è¦ç­‰å¾…å¥æŸ„ï¼Œç›´æ¥ä½¿ç”¨sleepæ›¿ä»£selectï¼Œ
+    //è¿™æ˜¯å› ä¸ºWINDOWSçš„select å¿…é¡»ç­‰å¾…ä¸€ä¸ªå¥æŸ„ï¼Œå¦åˆ™å°±ä¼šreturn -1ï¼Œä½ è§‰å¾—éº»çƒ¦ä¸
     if (no_handle_to_wait)
     {
         zce::sleep(*timeout_tv);
@@ -1797,11 +1797,11 @@ inline int zce::select(
     if (timeout_tv)
     {
         start_clock = std::clock();
-        //ÓĞº¯Êı½²ÄÚ²¿µÄtimv_valÈ¡³öÀ´
+        //æœ‰å‡½æ•°è®²å†…éƒ¨çš„timv_valå–å‡ºæ¥
         select_tv = (*timeout_tv);
     }
 
-    //WINDOWSÏÂ£¬timevalÊÇÒ»¸öconst ²ÎÊı
+    //WINDOWSä¸‹ï¼Œtimevalæ˜¯ä¸€ä¸ªconst å‚æ•°
     int ret =::select(
                  nfds,
                  readfds,
@@ -1832,7 +1832,7 @@ inline int zce::select(
 
     if (timeout_tv)
     {
-        //ÓĞº¯Êı½²ÄÚ²¿µÄtimv_valÈ¡³öÀ´
+        //æœ‰å‡½æ•°è®²å†…éƒ¨çš„timv_valå–å‡ºæ¥
         select_tv = (*timeout_tv);
     }
 
@@ -1846,8 +1846,8 @@ inline int zce::select(
 #endif
 }
 
-//Õâ¸öº¯ÊıÊÇÎªÁË·½±ãÆ½Ì¨´úÂë±àĞ´Ğ´µÄÒ»¸öº¯Êı£¬»áÀûÓÃ²»Í¬Æ½Ì¨µÄfd_setÊµÏÖ¼Ó¿ìËÙ¶È£¬
-//µ±È»ÕâÑùÃ´ÓĞÈÎºÎÍ¨ÓÃĞÔ£¬sorry£¬×·ÇóĞÔÄÜÁË¡£
+//è¿™ä¸ªå‡½æ•°æ˜¯ä¸ºäº†æ–¹ä¾¿å¹³å°ä»£ç ç¼–å†™å†™çš„ä¸€ä¸ªå‡½æ•°ï¼Œä¼šåˆ©ç”¨ä¸åŒå¹³å°çš„fd_setå®ç°åŠ å¿«é€Ÿåº¦ï¼Œ
+//å½“ç„¶è¿™æ ·ä¹ˆæœ‰ä»»ä½•é€šç”¨æ€§ï¼Œsorryï¼Œè¿½æ±‚æ€§èƒ½äº†ã€‚
 inline bool zce::is_ready_fds(int no_fds,
                               const fd_set *out_fds,
                               ZCE_SOCKET *ready_fd)
@@ -1873,7 +1873,7 @@ inline bool zce::is_ready_fds(int no_fds,
 #endif
 }
 
-//·µ»Ø¶Ë¿ÚºÅ
+//è¿”å›ç«¯å£å·
 inline uint16_t zce::get_port_number(const sockaddr *addr)
 {
     if (AF_INET == addr->sa_family)
@@ -1890,7 +1890,7 @@ inline uint16_t zce::get_port_number(const sockaddr *addr)
 
 }
 
-//·µ»ØµØÖ·ĞÅÏ¢
+//è¿”å›åœ°å€ä¿¡æ¯
 inline const char *zce::get_host_addr(const sockaddr *addr,
                                       char *addr_buf,
                                       size_t addr_size)
@@ -1924,8 +1924,8 @@ inline const char *zce::get_host_addr_port(const sockaddr *addr,
 }
 
 
-//·Ç±ê×¼º¯Êı£¬µ«ÊÇÖØÈë°²È«
-//½«µØÖ·ĞÅÏ¢´òÓ¡³öÀ´£¬µØÖ·²»Ê¹ÓÃÍøÂçĞò
+//éæ ‡å‡†å‡½æ•°ï¼Œä½†æ˜¯é‡å…¥å®‰å…¨
+//å°†åœ°å€ä¿¡æ¯æ‰“å°å‡ºæ¥ï¼Œåœ°å€ä¸ä½¿ç”¨ç½‘ç»œåº
 inline const char *zce::inet_ntoa(uint32_t in, char *addr_buf, size_t addr_size)
 {
     sockaddr_in sock_addr_ipv4;
@@ -1936,20 +1936,20 @@ inline const char *zce::inet_ntoa(uint32_t in, char *addr_buf, size_t addr_size)
                           addr_size);
 };
 
-//ÕâÁ½¸öº¯ÊıWIN32ºÍLINUX¶¼ÓĞ
-//Í¨¹ıIPV4µÄµØÖ·£¬µÃµ½¶ÔÓ¦µÄ×Ö·û´®±íÊ¾£¬²»¿ÉÖØÈëº¯Êı£¬²»Ì«½¨ÒéÊ¹ÓÃ
+//è¿™ä¸¤ä¸ªå‡½æ•°WIN32å’ŒLINUXéƒ½æœ‰
+//é€šè¿‡IPV4çš„åœ°å€ï¼Œå¾—åˆ°å¯¹åº”çš„å­—ç¬¦ä¸²è¡¨ç¤ºï¼Œä¸å¯é‡å…¥å‡½æ•°ï¼Œä¸å¤ªå»ºè®®ä½¿ç”¨
 inline const char *zce::inet_ntoa(struct in_addr in)
 {
     return ::inet_ntoa(in);
 }
 
-//Í¨¹ıÒ»¸öIPµØÖ·µÄ×Ö·û´®±íÊ¾µÃµ½Ò»¸öIPV4µÄµÄÕûÊı
+//é€šè¿‡ä¸€ä¸ªIPåœ°å€çš„å­—ç¬¦ä¸²è¡¨ç¤ºå¾—åˆ°ä¸€ä¸ªIPV4çš„çš„æ•´æ•°
 inline uint32_t zce::inet_addr(const char *cp)
 {
     return ::inet_addr(cp);
 };
 
-//·µ»ØIPµØÖ·µÄÕûÊı
+//è¿”å›IPåœ°å€çš„æ•´æ•°
 inline uint32_t zce::get_ip_address(const sockaddr_in *sock_addr_ipv4)
 {
     return ntohl(sock_addr_ipv4->sin_addr.s_addr);
@@ -1957,24 +1957,24 @@ inline uint32_t zce::get_ip_address(const sockaddr_in *sock_addr_ipv4)
 
 //--------------------------------------------------------------------------------------------------------------------
 
-//ÉèÖÃÒ»¸öIPV4µÄµØÖ·,
+//è®¾ç½®ä¸€ä¸ªIPV4çš„åœ°å€,
 inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                                 const char *ipv4_addr_str,
                                 uint16_t ipv4_port)
 {
     sock_addr_ipv4->sin_family = AF_INET;
-    //htonsÔÚÄ³Ğ©Çé¿öÏÂÊÇÒ»¸öºê£¬
+    //htonsåœ¨æŸäº›æƒ…å†µä¸‹æ˜¯ä¸€ä¸ªå®ï¼Œ
     //sock_addr_ipv4->sin_port = ::htons(ipv4_port);
     sock_addr_ipv4->sin_port = htons(ipv4_port);
 
-    //ÔÚÄ³Ğ©Æ½Ì¨µÄsockaddr_inÓĞÒ»¸ö³¤¶È±êÊ¶£¬±ÈÈçBSDÌåÏµ£¿
+    //åœ¨æŸäº›å¹³å°çš„sockaddr_inæœ‰ä¸€ä¸ªé•¿åº¦æ ‡è¯†ï¼Œæ¯”å¦‚BSDä½“ç³»ï¼Ÿ
 #if 0
     sock_addr_ipv4->sa_len = sizeof(sockaddr_in);
 #endif
 
     sock_addr_ipv4->sin_addr.s_addr = ::inet_addr(ipv4_addr_str);
 
-    //×¢Òâinet_ptonµÄ·µ»ØÖµ
+    //æ³¨æ„inet_ptonçš„è¿”å›å€¼
     if (sock_addr_ipv4->sin_addr.s_addr == INADDR_NONE)
     {
         return -1;
@@ -1985,7 +1985,7 @@ inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     }
 }
 
-//ÉèÖÃÒ»¸öIPV4µÄµØÖ·,Èç¹û×Ö·û´®ÀïÃæÓĞ#£¬»áÈÏÎªºóÃæÓĞ¶Ë¿ÚºÅ£¬»áÍ¬Ê±ÌáÈ¡¶Ë¿ÚºÅ£¬·ñÔò¶Ë¿ÚºÅÉèÖÃ0
+//è®¾ç½®ä¸€ä¸ªIPV4çš„åœ°å€,å¦‚æœå­—ç¬¦ä¸²é‡Œé¢æœ‰#ï¼Œä¼šè®¤ä¸ºåé¢æœ‰ç«¯å£å·ï¼Œä¼šåŒæ—¶æå–ç«¯å£å·ï¼Œå¦åˆ™ç«¯å£å·è®¾ç½®0
 inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                                 const char *ipv4_addr_str)
 {
@@ -1994,11 +1994,11 @@ inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     {
         return ret;
     }
-    //Èç¹ûÓĞ#£¬¶øÇÒºóÃæ»¹ÓĞ¿Õ¼ä£¬
+    //å¦‚æœæœ‰#ï¼Œè€Œä¸”åé¢è¿˜æœ‰ç©ºé—´ï¼Œ
     const char *port_pos = strchr(ipv4_addr_str, '#');
     if ( port_pos != NULL && *(++port_pos) != '\0' )
     {
-        //×¢Òâµ½Õâ¶ùposÒÑ¾­++ÁË¡£
+        //æ³¨æ„åˆ°è¿™å„¿poså·²ç»++äº†ã€‚
         uint16_t read_port = 0;
         int fields = sscanf(port_pos, "%hu", &read_port);
         if (fields != 1)
@@ -2012,7 +2012,7 @@ inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
 }
 
 
-//ÉèÖÃÒ»¸öIPV4µÄµØÖ·,´íÎó·µ»ØNULL£¬ÕıÈ··µ»ØÉèÖÃµÄµØÖ·µÄ±ä»»
+//è®¾ç½®ä¸€ä¸ªIPV4çš„åœ°å€,é”™è¯¯è¿”å›NULLï¼Œæ­£ç¡®è¿”å›è®¾ç½®çš„åœ°å€çš„å˜æ¢
 inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
                                 uint32_t ipv4_addr_val,
                                 uint16_t ipv4_port
@@ -2023,7 +2023,7 @@ inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     sock_addr_ipv4->sin_port = htons(ipv4_port);
     sock_addr_ipv4->sin_addr.s_addr = htonl(ipv4_addr_val);
 
-    //ÔÚÄ³Ğ©Æ½Ì¨µÄsockaddr_inÓĞÒ»¸ö³¤¶È±êÊ¶£¬±ÈÈçBSDÌåÏµ£¿
+    //åœ¨æŸäº›å¹³å°çš„sockaddr_inæœ‰ä¸€ä¸ªé•¿åº¦æ ‡è¯†ï¼Œæ¯”å¦‚BSDä½“ç³»ï¼Ÿ
 #if 0
     sock_addr_ipv4->sa_len = sizeof(sockaddr_in);
 #endif
@@ -2031,7 +2031,7 @@ inline int zce::set_sockaddr_in(sockaddr_in *sock_addr_ipv4,
     return 0;
 }
 
-//ÉèÖÃÒ»¸öIPV6µÄµØÖ·,
+//è®¾ç½®ä¸€ä¸ªIPV6çš„åœ°å€,
 inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                                  const char *ipv6_addr_str,
                                  uint16_t ipv6_port)
@@ -2043,7 +2043,7 @@ inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                              ipv6_addr_str,
                              static_cast<void *>(&(sock_addr_ipv6->sin6_addr.s6_addr)));
 
-    //×¢Òâinet_ptonµÄ·µ»ØÖµ,ÎÒ×ª»»ÎÒÊìÏ¤µÄ·µ»Ø
+    //æ³¨æ„inet_ptonçš„è¿”å›å€¼,æˆ‘è½¬æ¢æˆ‘ç†Ÿæ‚‰çš„è¿”å›
     if (ret == 1)
     {
         return 0;
@@ -2054,7 +2054,7 @@ inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
     }
 }
 
-//ÉèÖÃÒ»¸öIPV6µÄµØÖ·,Èç¹ûÓĞ¶Ë¿ÚºÅĞÅÏ¢£¬Ò²»á
+//è®¾ç½®ä¸€ä¸ªIPV6çš„åœ°å€,å¦‚æœæœ‰ç«¯å£å·ä¿¡æ¯ï¼Œä¹Ÿä¼š
 inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                                  const char *ipv6_addr_str)
 {
@@ -2063,11 +2063,11 @@ inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
     {
         return ret;
     }
-    //Èç¹ûÓĞ#£¬¶øÇÒºóÃæ»¹ÓĞ¿Õ¼ä£¬
+    //å¦‚æœæœ‰#ï¼Œè€Œä¸”åé¢è¿˜æœ‰ç©ºé—´ï¼Œ
     const char *port_pos = strchr(ipv6_addr_str, '#');
     if (port_pos != NULL && *(++port_pos) != '\0')
     {
-        //×¢Òâµ½Õâ¶ùposÒÑ¾­++ÁË¡£
+        //æ³¨æ„åˆ°è¿™å„¿poså·²ç»++äº†ã€‚
         uint16_t read_port = 0;
         int fields = sscanf(port_pos, "%hu", &read_port);
         if (fields != 1)
@@ -2080,12 +2080,12 @@ inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
 }
 
 
-//ÉèÖÃÒ»¸öIPV6µÄµØÖ·,´íÎó·µ»ØNULL£¬ÕıÈ··µ»ØÉèÖÃµÄµØÖ·µÄ±ä»»
+//è®¾ç½®ä¸€ä¸ªIPV6çš„åœ°å€,é”™è¯¯è¿”å›NULLï¼Œæ­£ç¡®è¿”å›è®¾ç½®çš„åœ°å€çš„å˜æ¢
 inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
                                  uint16_t ipv6_port,
                                  const char ipv6_addr_val[16])
 {
-    //16bytes£¬128bitµÄIPV6µÄµØÖ·ĞÅÏ¢
+    //16bytesï¼Œ128bitçš„IPV6çš„åœ°å€ä¿¡æ¯
     const size_t IPV6_INET6_LEN = 16;
 
     sock_addr_ipv6->sin6_family = AF_INET6;
@@ -2095,7 +2095,7 @@ inline int zce::set_sockaddr_in6(sockaddr_in6 *sock_addr_ipv6,
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-//·µ»Øµ±Ç°»úÆ÷µÄÖ÷»úÃû³Æ,2¸öÆ½Ì¨Ó¦¸Ã¶¼Ö§³ÖÕâ¸öº¯Êı
+//è¿”å›å½“å‰æœºå™¨çš„ä¸»æœºåç§°,2ä¸ªå¹³å°åº”è¯¥éƒ½æ”¯æŒè¿™ä¸ªå‡½æ•°
 inline int zce::gethostname(char *name, size_t name_len)
 {
 #if defined (ZCE_OS_WINDOWS)

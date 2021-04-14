@@ -11,7 +11,7 @@
 //TIME ID
 const int ZCE_Async_Object::ASYNCOBJ_ACTION_ID[] = { 10001, 20001 };
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
                                    unsigned int create_cmd) :
     async_mgr_(async_mgr),
@@ -19,30 +19,30 @@ ZCE_Async_Object::ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
 {
 }
 
-//Îö¹¹º¯Êı
+//ææ„å‡½æ•°
 ZCE_Async_Object::~ZCE_Async_Object()
 {
 }
 
-//³õÊ¼»¯º¯Êı£¬ÔÚ¹¹Ôìº¯Êıºóµ÷ÓÃ£¬
+//åˆå§‹åŒ–å‡½æ•°ï¼Œåœ¨æ„é€ å‡½æ•°åè°ƒç”¨ï¼Œ
 int ZCE_Async_Object::initialize()
 {
     return 0;
 }
 
-//½áÊøÏú»Ùº¯Êı£¬ÔÚÎö¹¹Ç°µÄµ÷ÓÃ
+//ç»“æŸé”€æ¯å‡½æ•°ï¼Œåœ¨ææ„å‰çš„è°ƒç”¨
 void ZCE_Async_Object::finish()
 {
     return;
 }
 
 
-//ÉèÖÃ³¬Ê±¶¨Ê±Æ÷
+//è®¾ç½®è¶…æ—¶å®šæ—¶å™¨
 int ZCE_Async_Object::set_timeout(const ZCE_Time_Value &time_out)
 {
     ZCE_Timer_Queue_Base *timer_queue = async_mgr_->timer_queue();
     ZCE_Time_Value delay_time(time_out);
-    //×¢ÒâÊ¹ÓÃµÄTIME ID
+    //æ³¨æ„ä½¿ç”¨çš„TIME ID
     timeout_id_ = timer_queue->schedule_timer(async_mgr_,
                                               this,
                                               delay_time);
@@ -55,7 +55,7 @@ int ZCE_Async_Object::set_timeout(const ZCE_Time_Value &time_out)
 }
 
 
-//È¡Ïû³¬Ê±µÄ¶¨Ê±Æ÷
+//å–æ¶ˆè¶…æ—¶çš„å®šæ—¶å™¨
 void ZCE_Async_Object::cancel_timeout()
 {
     if (ZCE_Timer_Queue_Base::INVALID_TIMER_ID != timeout_id_)
@@ -68,19 +68,19 @@ void ZCE_Async_Object::cancel_timeout()
 
 
 
-//Òì²½¶ÔÏó¿ªÊ¼
+//å¼‚æ­¥å¯¹è±¡å¼€å§‹
 void ZCE_Async_Object::on_start()
 {
 }
 
-//Ä¿Ç°»ùÀà×öµÄ½áÊø²Ù×÷¾ÍÊÇÇåÀí¶¨Ê±Æ÷
+//ç›®å‰åŸºç±»åšçš„ç»“æŸæ“ä½œå°±æ˜¯æ¸…ç†å®šæ—¶å™¨
 void ZCE_Async_Object::on_end()
 {
     cancel_timeout();
 }
 
 
-//¼ÇÂ¼´¦Àí¹ı³Ì·¢ÉúµÄ´íÎó
+//è®°å½•å¤„ç†è¿‡ç¨‹å‘ç”Ÿçš„é”™è¯¯
 void ZCE_Async_Object::set_errorno(int error_no)
 {
     running_errno_ = error_no;
@@ -88,9 +88,9 @@ void ZCE_Async_Object::set_errorno(int error_no)
 
 
 //=============================================================================================
-//Òì²½¶ÔÏó¹ÜÀíÆ÷
+//å¼‚æ­¥å¯¹è±¡ç®¡ç†å™¨
 
-//ÄÚ²¿½á¹¹
+//å†…éƒ¨ç»“æ„
 ZCE_Async_ObjectMgr::ASYNC_OBJECT_RECORD::ASYNC_OBJECT_RECORD():
     create_num_(0),
     active_num_(0),
@@ -119,13 +119,13 @@ ZCE_Async_ObjectMgr::~ZCE_Async_ObjectMgr()
 }
 
 
-//³õÊ¼»¯£¬
+//åˆå§‹åŒ–ï¼Œ
 int ZCE_Async_ObjectMgr::initialize(ZCE_Timer_Queue_Base *tq,
                                     size_t crtn_type_num,
                                     size_t running_number)
 {
     timer_queue(tq);
-    //¶Ô²ÎÊı×öµ÷Õû
+    //å¯¹å‚æ•°åšè°ƒæ•´
     if (crtn_type_num < DEFUALT_ASYNC_TYPE_NUM)
     {
         crtn_type_num = DEFUALT_ASYNC_TYPE_NUM;
@@ -150,7 +150,7 @@ void ZCE_Async_ObjectMgr::finish()
     {
         ZCE_Async_Object *async_obj = run_iter->second;
 
-        //Í³¼ÆÇ¿ÖÆÍË³öµÄÊıÁ¿
+        //ç»Ÿè®¡å¼ºåˆ¶é€€å‡ºçš„æ•°é‡
         ID_TO_REGASYNC_POOL_MAP::iterator iter_temp = regaysnc_pool_.find(async_obj->create_cmd_);
         if (iter_temp == regaysnc_pool_.end())
         {
@@ -164,7 +164,7 @@ void ZCE_Async_ObjectMgr::finish()
         free_to_pool(async_obj);
     }
 
-    //½«ÄÚ´æ³Ø×ÓÀïÃæµÄÊı¾İÈ«²¿ÇåÀíµô¡£ºÃ¸ßĞË£¬ÒòÎªÎÒÊÍ·ÅÁËÄÚ´æ£¬´ÓInmoreliuÄÇ¶ùµÃµ½ÁËÒ»¶Ù·¹¡£
+    //å°†å†…å­˜æ± å­é‡Œé¢çš„æ•°æ®å…¨éƒ¨æ¸…ç†æ‰ã€‚å¥½é«˜å…´ï¼Œå› ä¸ºæˆ‘é‡Šæ”¾äº†å†…å­˜ï¼Œä»Inmoreliué‚£å„¿å¾—åˆ°äº†ä¸€é¡¿é¥­ã€‚
     ID_TO_REGASYNC_POOL_MAP::iterator pooliter = regaysnc_pool_.begin();
     ID_TO_REGASYNC_POOL_MAP::iterator poolenditer = regaysnc_pool_.end();
 
@@ -172,14 +172,14 @@ void ZCE_Async_ObjectMgr::finish()
     {
         unsigned int regframe_cmd = pooliter->first;
         ASYNC_OBJECT_RECORD &pool_reg = (pooliter->second);
-        //¼ÇÂ¼ĞÅÏ¢Êı¾İ
+        //è®°å½•ä¿¡æ¯æ•°æ®
         ZCE_LOG(RS_INFO, "[ZCELIB] Register command[%u] size of pool[%u] capacity of pool[%u].",
                 regframe_cmd,
                 pool_reg.aysncobj_pool_.size(),
                 pool_reg.aysncobj_pool_.capacity()
                );
 
-        //³öÏÖÁËÎÊÌâ£¬
+        //å‡ºç°äº†é—®é¢˜ï¼Œ
         if (pool_reg.aysncobj_pool_.size() != pool_reg.aysncobj_pool_.capacity())
         {
             ZCE_LOG(RS_ERROR, "[ZCELIB] Plase notice!! size[%u] != capacity[%u] may be exist memory leak.",
@@ -187,7 +187,7 @@ void ZCE_Async_ObjectMgr::finish()
                     pool_reg.aysncobj_pool_.capacity());
         }
 
-        //ÊÇ·ñ³Ø×Ó
+        //æ˜¯å¦æ± å­
         size_t pool_reg_trans_len = pool_reg.aysncobj_pool_.size();
         for (size_t i = 0; i < pool_reg_trans_len; ++i)
         {
@@ -202,12 +202,12 @@ void ZCE_Async_ObjectMgr::finish()
     return;
 }
 
-//×¢²áÒ»ÀàĞ­³Ì£¬ÆäÓÃreg_cmd¶ÔÓ¦£¬
+//æ³¨å†Œä¸€ç±»åç¨‹ï¼Œå…¶ç”¨reg_cmdå¯¹åº”ï¼Œ
 int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
                                            ZCE_Async_Object *coroutine_base)
 {
 
-    //ÕâÁ½¸öÖµ±ØĞëÊÇÖØĞÂÉèÖÃ¹ıµÄ
+    //è¿™ä¸¤ä¸ªå€¼å¿…é¡»æ˜¯é‡æ–°è®¾ç½®è¿‡çš„
     ZCE_ASSERT(pool_init_size_ > 0 && pool_extend_size_ > 0);
 
     //
@@ -218,7 +218,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
         return -1;
     }
 
-    //Ò»¸öÃüÁî×ÖCMDÖ»ÄÜ×¢²áÒ»´Î
+    //ä¸€ä¸ªå‘½ä»¤å­—CMDåªèƒ½æ³¨å†Œä¸€æ¬¡
     ID_TO_REGASYNC_POOL_MAP::iterator iter_temp = regaysnc_pool_.find(create_cmd);
     if (iter_temp != regaysnc_pool_.end())
     {
@@ -242,7 +242,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
     return 0;
 }
 
-//ÅĞ¶ÏÄ³¸öÃüÁîÊÇ·ñÊÇ×¢²á£¨´´½¨£©Òì²½¶ÔÏóÃüÁî
+//åˆ¤æ–­æŸä¸ªå‘½ä»¤æ˜¯å¦æ˜¯æ³¨å†Œï¼ˆåˆ›å»ºï¼‰å¼‚æ­¥å¯¹è±¡å‘½ä»¤
 bool ZCE_Async_ObjectMgr::is_register_cmd(unsigned int cmd)
 {
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = regaysnc_pool_.find(cmd);
@@ -253,7 +253,7 @@ bool ZCE_Async_ObjectMgr::is_register_cmd(unsigned int cmd)
     return true;
 }
 
-//´Ó³Ø×ÓÀïÃæ·ÖÅäÒ»¸ö
+//ä»æ± å­é‡Œé¢åˆ†é…ä¸€ä¸ª
 int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
                                             ASYNC_OBJECT_RECORD *&async_rec,
                                             ZCE_Async_Object *&crt_async)
@@ -268,11 +268,11 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
 
     ASYNC_OBJECT_RECORD &reg_async = mapiter->second;
 
-    //»¹ÓĞ×îºóÒ»¸ö,À©Õ¹£¬
+    //è¿˜æœ‰æœ€åä¸€ä¸ª,æ‰©å±•ï¼Œ
     if (reg_async.aysncobj_pool_.size() == 1)
     {
         ZCE_LOG(RS_INFO, "[ZCELIB] Before extend pool.");
-        //È¡Ò»¸öÄ£ĞÍ
+        //å–ä¸€ä¸ªæ¨¡å‹
         ZCE_Async_Object *model_trans = NULL;
         reg_async.aysncobj_pool_.pop_front(model_trans);
 
@@ -285,19 +285,19 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
                 capacity_of_pool,
                 capacity_of_pool + pool_extend_size_);
 
-        //ÓÃÄ£ĞÍ¿ËÂ¡N-1¸öTrans
+        //ç”¨æ¨¡å‹å…‹éš†N-1ä¸ªTrans
         for (size_t i = 0; i < pool_extend_size_; ++i)
         {
             ZCE_Async_Object *cloned_base = model_trans->clone(this, create_cmd);
             reg_async.aysncobj_pool_.push_back(cloned_base);
         }
 
-        //½«Ä£ĞÍ·Åµ½µÚN¸ö
+        //å°†æ¨¡å‹æ”¾åˆ°ç¬¬Nä¸ª
         reg_async.aysncobj_pool_.push_back(model_trans);
         ZCE_LOG(RS_INFO, "[ZCELIB] After Extend Async object .");
     }
 
-    //È¡µÃÒ»¸öÊÂÎñ
+    //å–å¾—ä¸€ä¸ªäº‹åŠ¡
     reg_async.aysncobj_pool_.pop_front(crt_async);
     async_rec = &reg_async;
 
@@ -308,7 +308,7 @@ int ZCE_Async_ObjectMgr::allocate_from_pool(unsigned int create_cmd,
     return 0;
 }
 
-///¹é»¹¸ø³Ø×ÓÀïÃæ£¬ÊÍ·ÅÒ»¸öÒì²½¶ÔÏóµ½³Ø×ÓÀïÃæ
+///å½’è¿˜ç»™æ± å­é‡Œé¢ï¼Œé‡Šæ”¾ä¸€ä¸ªå¼‚æ­¥å¯¹è±¡åˆ°æ± å­é‡Œé¢
 int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 {
 
@@ -330,14 +330,14 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
     return 0;
 }
 
-//´´½¨Òì²½¶ÔÏó
+//åˆ›å»ºå¼‚æ­¥å¯¹è±¡
 int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, unsigned int *id)
 {
     int ret = 0;
     ZCE_Async_Object *crt_async = NULL;
     ASYNC_OBJECT_RECORD *async_rec = NULL;
 
-    //´Ó³Ø×ÓÀïÃæÕÒÒ»¸öÒì²½¶ÔÏó
+    //ä»æ± å­é‡Œé¢æ‰¾ä¸€ä¸ªå¼‚æ­¥å¯¹è±¡
     ret = allocate_from_pool(cmd, async_rec, crt_async);
     if (ret != 0)
     {
@@ -355,11 +355,11 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, uns
     ++async_rec->create_num_;
     crt_async->on_start();
 
-    //Æô¶¯Ñ¾µÄ
+    //å¯åŠ¨ä¸«çš„
     bool continue_run = false;
     crt_async->on_run(outer_data, continue_run);
 
-    //Èç¹ûÔËĞĞÒ»ÏÂ¾ÍÍË³öÁË,Ö±½Ó½áÊø»ØÊÕ
+    //å¦‚æœè¿è¡Œä¸€ä¸‹å°±é€€å‡ºäº†,ç›´æ¥ç»“æŸå›æ”¶
     if (continue_run == false)
     {
         ++async_rec->end_num_;
@@ -368,9 +368,9 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, uns
     }
     else
     {
-        //µÚÒ»´ÎÓÃauto£¬¸Ğ¾õºÀË¬£¡£¡£¡
+        //ç¬¬ä¸€æ¬¡ç”¨autoï¼Œæ„Ÿè§‰è±ªçˆ½ï¼ï¼ï¼
         auto iter = running_aysncobj_.insert(std::make_pair(id_builder_, crt_async));
-        //Èç¹ûÃ»ÓĞ²åÈë³É¹¦,ÀíÂÛÉÏÃ»ÓĞ¿ÉÄÜ³öÏÖÕâÖÖÇé¿ö£¬²»¿ÉÄÜ³öÏÖÕâÃ´¶àÒì²½¶ÔÏó
+        //å¦‚æœæ²¡æœ‰æ’å…¥æˆåŠŸ,ç†è®ºä¸Šæ²¡æœ‰å¯èƒ½å‡ºç°è¿™ç§æƒ…å†µï¼Œä¸å¯èƒ½å‡ºç°è¿™ä¹ˆå¤šå¼‚æ­¥å¯¹è±¡
         if (iter.second == false)
         {
             ZCE_ASSERT_ALL(false);
@@ -387,7 +387,7 @@ int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, uns
 }
 
 
-//Í¨¹ıID£¬Ñ°ÕÒÒ»¸öÕıÔÚÔËĞĞµÄÒì²½¶ÔÏó
+//é€šè¿‡IDï¼Œå¯»æ‰¾ä¸€ä¸ªæ­£åœ¨è¿è¡Œçš„å¼‚æ­¥å¯¹è±¡
 int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
                                                ZCE_Async_Object *&running_aysnc)
 {
@@ -403,7 +403,7 @@ int ZCE_Async_ObjectMgr::find_running_asyncobj(unsigned int id,
     return 0;
 }
 
-//¼¤»îÄ³¸öÒÑ¾­ÔËĞĞµÄÒì²½¶ÔÏó
+//æ¿€æ´»æŸä¸ªå·²ç»è¿è¡Œçš„å¼‚æ­¥å¯¹è±¡
 int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id, void *outer_data)
 {
     int ret = 0;
@@ -414,11 +414,11 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id, void *outer_data)
         return ret;
     }
 
-    //Ôö¼Ó¼ÇÂ¼Í³¼ÆÊı¾İ
+    //å¢åŠ è®°å½•ç»Ÿè®¡æ•°æ®
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = regaysnc_pool_.find(async_obj->create_cmd_);
     if (mapiter == regaysnc_pool_.end())
     {
-        //µ½Õâ¶ùÓ¦¸ÃÊÇ¿ò¼Ü´úÂë´íÎóÁË£¬Ò»¸öÒì²½¶ÔÏóµÄ´´½¨ÃüÁî×ÖÃ»ÓĞ×¢²á£¿
+        //åˆ°è¿™å„¿åº”è¯¥æ˜¯æ¡†æ¶ä»£ç é”™è¯¯äº†ï¼Œä¸€ä¸ªå¼‚æ­¥å¯¹è±¡çš„åˆ›å»ºå‘½ä»¤å­—æ²¡æœ‰æ³¨å†Œï¼Ÿ
         ZCE_LOG(RS_ERROR, "[ZCELIB] Can't find async object id [%u] create cmd [%u].",
                 id,
                 async_obj->create_cmd_);
@@ -426,14 +426,14 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id, void *outer_data)
     }
     ASYNC_OBJECT_RECORD &async_rec = mapiter->second;
 
-    //¼¤»îÍ¬Ê±È¡Ïû¶¨Ê±Æ÷
+    //æ¿€æ´»åŒæ—¶å–æ¶ˆå®šæ—¶å™¨
     async_obj->cancel_timeout();
 
     bool continue_run = false;
     async_obj->on_run(outer_data, continue_run);
     ++async_rec.active_num_;
 
-    //Èç¹û²»¼ÌĞøÔËĞĞÁË£¬
+    //å¦‚æœä¸ç»§ç»­è¿è¡Œäº†ï¼Œ
     if (continue_run == false)
     {
         ++async_rec.end_num_;
@@ -448,12 +448,12 @@ int ZCE_Async_ObjectMgr::active_asyncobj(unsigned int id, void *outer_data)
     return 0;
 }
 
-//³¬Ê±´¦Àí
+//è¶…æ—¶å¤„ç†
 int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
                                        const void *act)
 {
     ZCE_Async_Object *async_obj = (ZCE_Async_Object *)(act);
-    //Ôö¼Ó¼ÇÂ¼Í³¼ÆÊı¾İ
+    //å¢åŠ è®°å½•ç»Ÿè®¡æ•°æ®
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = regaysnc_pool_.find(async_obj->create_cmd_);
     if (mapiter == regaysnc_pool_.end())
     {
@@ -461,14 +461,14 @@ int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
     }
     ASYNC_OBJECT_RECORD &async_rec = mapiter->second;
 
-    //´¦ÀíÇ°È¡Ïû¶¨Ê±Æ÷
+    //å¤„ç†å‰å–æ¶ˆå®šæ—¶å™¨
     async_obj->cancel_timeout();
 
     bool continue_run = false;
     async_obj->on_timeout(now_time, continue_run);
     ++async_rec.timeout_num_;
 
-    //Èç¹û²»¼ÌĞøÔËĞĞÁË£¬
+    //å¦‚æœä¸ç»§ç»­è¿è¡Œäº†ï¼Œ
     if (continue_run == false)
     {
         ++async_rec.end_num_;
@@ -485,14 +485,14 @@ int ZCE_Async_ObjectMgr::timer_timeout(const ZCE_Time_Value &now_time,
 }
 
 
-//´òÓ¡¹ÜÀíÆ÷µÄ»ù±¾ĞÅÏ¢£¬ÔËĞĞ×´Ì¬
+//æ‰“å°ç®¡ç†å™¨çš„åŸºæœ¬ä¿¡æ¯ï¼Œè¿è¡ŒçŠ¶æ€
 void ZCE_Async_ObjectMgr::dump_info(zce::LOG_PRIORITY log_priority) const
 {
     //
     ZCE_LOG(log_priority, "Register create cmd size[%lu].active running async object size[%lu].",
             regaysnc_pool_.size(),
             running_aysncobj_.size());
-    //´òÓ¡Ã¿¸ö´´½¨ÃüÁî¶ÔÓÚÒì²½¶ÔÏó³Ø×ÓµÄÊı¾İ
+    //æ‰“å°æ¯ä¸ªåˆ›å»ºå‘½ä»¤å¯¹äºå¼‚æ­¥å¯¹è±¡æ± å­çš„æ•°æ®
     auto iter =  regaysnc_pool_.begin();
     for (; iter != regaysnc_pool_.end(); ++iter)
     {

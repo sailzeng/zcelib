@@ -6,7 +6,7 @@
 
 
 
-//DOUBLE¸ñÊ½»¯Êä³ö¸¨Öú
+//DOUBLEæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©
 zce::Double_Out_Helper::Double_Out_Helper(double out_data,
                                           size_t width,
                                           size_t precision,
@@ -22,7 +22,7 @@ zce::Double_Out_Helper::~Double_Out_Helper()
 {
 }
 
-//String¸ñÊ½»¯Êä³ö¸¨ÖúÀà
+//Stringæ ¼å¼åŒ–è¾“å‡ºè¾…åŠ©ç±»
 zce::String_Out_Helper::String_Out_Helper(const char *out_str_ptr,
                                           size_t out_str_len,
                                           size_t width,

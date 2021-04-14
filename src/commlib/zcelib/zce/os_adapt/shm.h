@@ -9,9 +9,9 @@
 namespace zce
 {
 //-------------------------------------------------------------------------------------------------
-//POSIXµÄ¹²ÏíÄÚ´æ
+//POSIXçš„å…±äº«å†…å­˜
 
-//½«¹²ÏíÄÚ´æºÍÎÄ¼ş½øĞĞÓ³Éä
+//å°†å…±äº«å†…å­˜å’Œæ–‡ä»¶è¿›è¡Œæ˜ å°„
 void *mmap (void *addr,
             size_t len,
             int prot,
@@ -24,13 +24,13 @@ int mprotect (const void *addr,
               size_t len,
               int prot);
 
-//½«ÄÚ´æ±ä»¯Í¬²½µ½ÎÄ¼şÖĞÈ¥£¬²»½¨ÒéÄãÆµ·±µ÷ÓÃÕâ¸öº¯Êı£¬OS»á×Ô¶¯×öÕâ¸öÊÂÇé£¬
-//Ò»°ãÇé¿ö£¬ÄãÔÚÍË³öÊ±µ÷ÓÃÒ»´Î¾ÍOKÁË¡£
+//å°†å†…å­˜å˜åŒ–åŒæ­¥åˆ°æ–‡ä»¶ä¸­å»ï¼Œä¸å»ºè®®ä½ é¢‘ç¹è°ƒç”¨è¿™ä¸ªå‡½æ•°ï¼ŒOSä¼šè‡ªåŠ¨åšè¿™ä¸ªäº‹æƒ…ï¼Œ
+//ä¸€èˆ¬æƒ…å†µï¼Œä½ åœ¨é€€å‡ºæ—¶è°ƒç”¨ä¸€æ¬¡å°±OKäº†ã€‚
 int msync (void *addr,
            size_t len,
            int sync = MS_SYNC);
 
-//½â³ıÎÄ¼şÓ³Éä
+//è§£é™¤æ–‡ä»¶æ˜ å°„
 int munmap (void *addr,
             size_t len);
 
@@ -38,27 +38,27 @@ int munmap (void *addr,
 //    size_t len,
 //    int map_advice);
 
-//PosixÄÚ´æµÄopenº¯Êıshm_open£¬ÓĞÎÄ¼şÃû³Æ£¬µ«Ã»ÓĞÊµ¼ÊÎÄ¼şµÄÓ³Éä
+//Posixå†…å­˜çš„openå‡½æ•°shm_openï¼Œæœ‰æ–‡ä»¶åç§°ï¼Œä½†æ²¡æœ‰å®é™…æ–‡ä»¶çš„æ˜ å°„
 //Create/open POSIX shared memory objects
 ZCE_HANDLE shm_open (const char *filename,
                      int mode,
                      mode_t perms = 0);
 
-//PosixÄÚ´æµÄÉ¾³ıÎÄ¼ş
+//Posixå†…å­˜çš„åˆ é™¤æ–‡ä»¶
 ////Create/open POSIX shared memory objects
 int shm_unlink (const char *path);
 
 
 //-------------------------------------------------------------------------------------------------
-//SystemVµÄ¹²ÏíÄÚ´æ
+//SystemVçš„å…±äº«å†…å­˜
 
-//Ìá¹©Õâ×éÄ£Äâ¶ÔÎÒÀ´Ëµ½ö½öÊÇÎªÁËºÃÍæ£¬£¨µ±È»Ò²ÓÉÓÚSystem VÓĞ¹ã´óµÄÉîºñÈºÖÚ»ù´¡£¬ÖÁÉÙÈÃÄãÒÆÖ²ÆğÀ´ÈİÒ×Ò»µã£©
-//ÎÒ¸öÈË¶ÔSystem VµÄIPCÃ»ÓĞ°®£¬Ò»·½Ãæ±Ï¾¹²»ÈçPOSIX IPCÔÚ±ê×¼ÉÏÕ¾×¡ÁË½Å£¬System VµÄIPCÕâ·½ÃæÒªÈõÒ»µã£¬
-//ÁíÒ»·½ÃæSystem V IPC µÄ½Ó¿ÚÉè¼ÆÒ²²»ÈçPOSIXÄÇÃ´ÓÅÑÅ£¬
+//æä¾›è¿™ç»„æ¨¡æ‹Ÿå¯¹æˆ‘æ¥è¯´ä»…ä»…æ˜¯ä¸ºäº†å¥½ç©ï¼Œï¼ˆå½“ç„¶ä¹Ÿç”±äºSystem Væœ‰å¹¿å¤§çš„æ·±åšç¾¤ä¼—åŸºç¡€ï¼Œè‡³å°‘è®©ä½ ç§»æ¤èµ·æ¥å®¹æ˜“ä¸€ç‚¹ï¼‰
+//æˆ‘ä¸ªäººå¯¹System Vçš„IPCæ²¡æœ‰çˆ±ï¼Œä¸€æ–¹é¢æ¯•ç«Ÿä¸å¦‚POSIX IPCåœ¨æ ‡å‡†ä¸Šç«™ä½äº†è„šï¼ŒSystem Vçš„IPCè¿™æ–¹é¢è¦å¼±ä¸€ç‚¹ï¼Œ
+//å¦ä¸€æ–¹é¢System V IPC çš„æ¥å£è®¾è®¡ä¹Ÿä¸å¦‚POSIXé‚£ä¹ˆä¼˜é›…ï¼Œ
 
 
 /*!
-* @brief      ´´½¨»òÕß·ÃÎÊÒ»¸ö¹²ÏíÄÚ´æÇø
+* @brief      åˆ›å»ºæˆ–è€…è®¿é—®ä¸€ä¸ªå…±äº«å†…å­˜åŒº
 * @return     ZCE_HANDLE
 * @param      sysv_key
 * @param      size
@@ -69,7 +69,7 @@ ZCE_HANDLE shmget(key_t sysv_key, size_t size, int shmflg);
 
 
 /*!
-* @brief      ´ò¿ªÒÑ¾­shmgetµÄ¹²ÏíÄÚ´æÇø
+* @brief      æ‰“å¼€å·²ç»shmgetçš„å…±äº«å†…å­˜åŒº
 * @return     void*
 * @param      shmid
 * @param      shmaddr
@@ -80,7 +80,7 @@ void *shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg);
 
 
 /*!
-* @brief      ¶Ì½ÓÕâ¸öÄÚ´æÇø
+* @brief      çŸ­æ¥è¿™ä¸ªå†…å­˜åŒº
 * @return     int
 * @param      shmaddr
 * @note
@@ -89,7 +89,7 @@ int shmdt(const void *shmaddr);
 
 
 /*!
-* @brief      ¶Ô¹²ÏíÄÚ´æÇøÌá¹©¶àÖÖ²Ù×÷
+* @brief      å¯¹å…±äº«å†…å­˜åŒºæä¾›å¤šç§æ“ä½œ
 * @return     int
 * @param      shmid
 * @param      cmd

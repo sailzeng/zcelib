@@ -3,9 +3,9 @@
 * @filename   soar_svrd_application.cpp
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2008Äê1ÔÂ22ÈÕ
-* @brief      ÖÕÓÚ½²sonicmaoµÄÕâ¸öÀà·¢Ñï¹ã´óÁË£¬µ±È»µ½½ñÌì£¬ÀïÃæµÄ´úÂëÒÑ¾­»ù±¾100%ÖØĞ´ÁË¡£
-*             ×÷ÎªÒ»¸ö½ø³Ì´¦ÀíµÄ¹ı³Ì£¬
+* @date       2008å¹´1æœˆ22æ—¥
+* @brief      ç»ˆäºè®²sonicmaoçš„è¿™ä¸ªç±»å‘æ‰¬å¹¿å¤§äº†ï¼Œå½“ç„¶åˆ°ä»Šå¤©ï¼Œé‡Œé¢çš„ä»£ç å·²ç»åŸºæœ¬100%é‡å†™äº†ã€‚
+*             ä½œä¸ºä¸€ä¸ªè¿›ç¨‹å¤„ç†çš„è¿‡ç¨‹ï¼Œ
 *
 * @details
 *
@@ -36,7 +36,7 @@ Soar_Svrd_Appliction::Soar_Svrd_Appliction() :
     timer_base_(NULL),
     config_base_(NULL)
 {
-    //×÷ÕßÃû³Æ
+    //ä½œè€…åç§°
     app_author_ = "FXL Platform Server Dev Team.";
 }
 
@@ -55,7 +55,7 @@ Soar_Svrd_Appliction::~Soar_Svrd_Appliction()
     }
 }
 
-//³õÊ¼»¯£¬·ÅÈëÒ»Ğ©»ùÀàµÄÖ¸Õë£¬
+//åˆå§‹åŒ–ï¼Œæ”¾å…¥ä¸€äº›åŸºç±»çš„æŒ‡é’ˆï¼Œ
 int Soar_Svrd_Appliction::initialize(Server_Config_Base *config_base,
                                      Server_Timer_Base *timer_base)
 {
@@ -64,39 +64,39 @@ int Soar_Svrd_Appliction::initialize(Server_Config_Base *config_base,
     return 0;
 }
 
-//»ñÈ¡ÅäÖÃµÄÖ¸Õë
+//è·å–é…ç½®çš„æŒ‡é’ˆ
 Server_Config_Base *Soar_Svrd_Appliction::config_instance()
 {
     return config_base_;
 }
 
 
-//Æô¶¯¹ı³ÌµÄ´¦Àí
+//å¯åŠ¨è¿‡ç¨‹çš„å¤„ç†
 int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 {
 
-    //Soar_Svrd_Appliction Ö»¿ÉÄÜÆô¶¯Ò»¸öÊµÀı£¬ËùÒÔÔÚÕâ¸öµØ·½³õÊ¼»¯ÁËstaticÖ¸Õë
+    //Soar_Svrd_Appliction åªå¯èƒ½å¯åŠ¨ä¸€ä¸ªå®ä¾‹ï¼Œæ‰€ä»¥åœ¨è¿™ä¸ªåœ°æ–¹åˆå§‹åŒ–äº†staticæŒ‡é’ˆ
     base_instance_ = this;
     int ret = 0;
 
-    //µÃµ½APPµÄÃû×Ö£¬È¥µôÂ·¾¶£¬ºó×ºµÄÃû×Ö
+    //å¾—åˆ°APPçš„åå­—ï¼Œå»æ‰è·¯å¾„ï¼Œåç¼€çš„åå­—
     ret = create_app_name(argv[0]);
     if (0 != ret)
     {
         printf("svr create_app_base_name init fail. ret=%d", ret);
         return ret;
     }
-    //³õÊ¼»¯SOCKETµÈ
+    //åˆå§‹åŒ–SOCKETç­‰
     ret = ZCE_Server_Base::socket_init();
     if (ret != 0)
     {
         return ret;
     }
 
-    //ºöÊÓĞÅºÅ
+    //å¿½è§†ä¿¡å·
     process_signal();
 
-    // ´¦ÀíÆô¶¯²ÎÊı
+    // å¤„ç†å¯åŠ¨å‚æ•°
     ret = config_base_->read_start_arg(argc, argv);
     if (ret != 0)
     {
@@ -104,7 +104,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    // ÇĞ»»ÔËĞĞÄ¿Â¼
+    // åˆ‡æ¢è¿è¡Œç›®å½•
     ret = zce::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
@@ -114,8 +114,8 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     }
 
 
-    //ÏÈ´ò¿ªÈÕÖ¾£¬¼ÇÂ¼Ò»¶ÎÊı¾İ£¬Ö±µ½ÈÕÖ¾µÄÆô¶¯²ÎÊı»ñµÃ
-    // ³õÊ¼»¯ÈÕÖ¾ÓÃ¹ö¶¯µÄ·½Ê½¿ÉÒÔ±£ÁôµÄÌìÊı¶àµã
+    //å…ˆæ‰“å¼€æ—¥å¿—ï¼Œè®°å½•ä¸€æ®µæ•°æ®ï¼Œç›´åˆ°æ—¥å¿—çš„å¯åŠ¨å‚æ•°è·å¾—
+    // åˆå§‹åŒ–æ—¥å¿—ç”¨æ»šåŠ¨çš„æ–¹å¼å¯ä»¥ä¿ç•™çš„å¤©æ•°å¤šç‚¹
     std::string init_log_name(config_base_->log_file_prefix_.c_str());
     init_log_name += "_init";
     ZCE_Trace_LogMsg::instance()->init_size_log(
@@ -132,27 +132,27 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 
     if (config_base_->win_install_service_)
     {
-        // °²×°·şÎñ
+        // å®‰è£…æœåŠ¡
         ret = win_services_install();
-        // Ö±½ÓÍË³ö£¿
+        // ç›´æ¥é€€å‡ºï¼Ÿ
         ::exit(ret);
     }
     if (config_base_->win_uninstall_service_)
     {
-        // Ğ¶ÔØ·şÎñ
+        // å¸è½½æœåŠ¡
         ret = win_services_uninstall();
-        // Ö±½ÓÍË³ö£¿
+        // ç›´æ¥é€€å‡ºï¼Ÿ
         ::exit(ret);
     }
 
 #endif
 
-    //ÎÒÊÇ»ªÀöµÄ·Ö¸îÏß
+    //æˆ‘æ˜¯åä¸½çš„åˆ†å‰²çº¿
     ZCE_LOG(RS_INFO, "======================================================================================================");
     ZCE_LOG(RS_INFO, "======================================================================================================");
     ZCE_LOG(RS_INFO, "[framework] %s start init", app_base_name_.c_str());
 
-    // ÇĞ»»ÔËĞĞÄ¿Â¼
+    // åˆ‡æ¢è¿è¡Œç›®å½•
     ret = zce::chdir(config_base_->app_run_dir_.c_str());
     if (ret != 0)
     {
@@ -163,7 +163,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 
     ZCE_LOG(RS_INFO, "[framework] change work dir to %s", config_base_->app_run_dir_.c_str());
 
-    // ÔËĞĞÄ¿Â¼Ğ´PID File.
+    // è¿è¡Œç›®å½•å†™PID File.
     std::string app_path = config_base_->app_run_dir_
                            + "/"
                            + get_app_basename();
@@ -171,7 +171,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
 
     if (ret != 0)
     {
-        //Èç¹ûÓĞ´íÎóÏÔÊ¾´íÎó£¬Èç¹û´íÎó==16£¬±íÊ¾¿ÉÄÜÊÇPIDÎÄ¼ş±»Ëø¶¨,
+        //å¦‚æœæœ‰é”™è¯¯æ˜¾ç¤ºé”™è¯¯ï¼Œå¦‚æœé”™è¯¯==16ï¼Œè¡¨ç¤ºå¯èƒ½æ˜¯PIDæ–‡ä»¶è¢«é”å®š,
         ZCE_LOG(RS_ERROR, "[framework] Create Pid file :%s.pid fail .last error =[%u|%s].",
                 app_path.c_str(), zce::last_error(),
                 strerror(zce::last_error()));
@@ -181,7 +181,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
         return SOAR_RET::ERROR_WRITE_ERROR_PIDFILE;
     }
 
-    // ¼ÓÔØ¿ò¼ÜÅäÖÃ,ÓÉÓÚÊÇĞéº¯Êı£¬Ò²»áµ÷ÓÃµ½·Ç¿ò¼ÜµÄÅäÖÃ¶ÁÈ¡
+    // åŠ è½½æ¡†æ¶é…ç½®,ç”±äºæ˜¯è™šå‡½æ•°ï¼Œä¹Ÿä¼šè°ƒç”¨åˆ°éæ¡†æ¶çš„é…ç½®è¯»å–
     ret = config_base_->read_cfgfile();
     if (ret != 0)
     {
@@ -190,7 +190,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     }
 
 
-    // ³õÊ¼»¯ÈÕÖ¾
+    // åˆå§‹åŒ–æ—¥å¿—
     ret = init_log();
     if (ret != 0)
     {
@@ -203,13 +203,13 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     ZCE_LOG(RS_INFO, "[framework] %s read_cfgfile success and init_log success.", app_base_name_.c_str());
 
     self_svc_id_ = config_base_->self_svc_id_;
-    //È¡µÃÅäÖÃĞÅÏ¢ºó, ĞèÒª½«Æô¶¯²ÎÊıÈ«²¿ÅäÖÃOK. ÒÔÏÂµÄassert×öÇ¿ÖÆ¼ì²é
+    //å–å¾—é…ç½®ä¿¡æ¯å, éœ€è¦å°†å¯åŠ¨å‚æ•°å…¨éƒ¨é…ç½®OK. ä»¥ä¸‹çš„assertåšå¼ºåˆ¶æ£€æŸ¥
     ZCE_ASSERT((self_svc_id_.services_type_ != SERVICES_ID::INVALID_SERVICES_TYPE) &&
                (self_svc_id_.services_id_ != SERVICES_ID::INVALID_SERVICES_ID));
 
 
-    //³õÊ¼»¯Í³¼ÆÄ£¿é
-    //ÒòÎªÅäÖÃ³õÊ¼»¯Ê±»á´ÓÅäÖÃ·şÎñÆ÷À­È¡ip£¬´¥·¢Í³¼Æ£¬Òò´ËĞèÒªÌáÇ°³õÊ¼»¯
+    //åˆå§‹åŒ–ç»Ÿè®¡æ¨¡å—
+    //å› ä¸ºé…ç½®åˆå§‹åŒ–æ—¶ä¼šä»é…ç½®æœåŠ¡å™¨æ‹‰å–ipï¼Œè§¦å‘ç»Ÿè®¡ï¼Œå› æ­¤éœ€è¦æå‰åˆå§‹åŒ–
     ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
                                                     business_id_,
                                                     self_svc_id_,
@@ -222,25 +222,25 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    //¼à¿Ø¶ÔÏóÌí¼Ó¿ò¼ÜµÄ¼à¿Ø¶ÔÏó
+    //ç›‘æ§å¯¹è±¡æ·»åŠ æ¡†æ¶çš„ç›‘æ§å¯¹è±¡
     Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
                                                    COMM_STAT_ITEM_WITH_NAME);
 
 
-    //Ê¹ÓÃWHEELĞÍµÄ¶¨Ê±Æ÷¶ÓÁĞ
+    //ä½¿ç”¨WHEELå‹çš„å®šæ—¶å™¨é˜Ÿåˆ—
     ZCE_Timer_Queue_Base::instance(new ZCE_Timer_Wheel(
                                        config_base_->max_timer_nuamber_));
 
-    //×¢²á¶¨Ê±Æ÷
+    //æ³¨å†Œå®šæ—¶å™¨
     timer_base_->initialize(ZCE_Timer_Queue_Base::instance());
 
 
     Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
                                                    COMM_STAT_ITEM_WITH_NAME);
 
-    //ReactorµÄĞŞ¸ÄÒ»¶¨Òª·ÅÔÚÇ°Ãæ(¶ÁÈ¡ÅäÖÃºóÃæ)£¬ÖÁÉÙ³ÔÁË4´Î¿÷
-    //¾ÓÈ»ÔÚÍ¬Ò»ÌõºÓÀïÑÍËÀÁËºÃ¼¸´Î¡£×îĞÂµÄÒ»´ÎÊÇ20070929£¬
-    //¸ù¾İËùĞèµÄIO¾ä±úÊıÁ¿³õÊ¼»¯
+    //Reactorçš„ä¿®æ”¹ä¸€å®šè¦æ”¾åœ¨å‰é¢(è¯»å–é…ç½®åé¢)ï¼Œè‡³å°‘åƒäº†4æ¬¡äº
+    //å±…ç„¶åœ¨åŒä¸€æ¡æ²³é‡Œæ·¹æ­»äº†å¥½å‡ æ¬¡ã€‚æœ€æ–°çš„ä¸€æ¬¡æ˜¯20070929ï¼Œ
+    //æ ¹æ®æ‰€éœ€çš„IOå¥æŸ„æ•°é‡åˆå§‹åŒ–
     size_t max_reactor_hdl = config_base_->max_reactor_hdl_num_;
 #ifdef ZCE_OS_WINDOWS
     ZCE_Reactor::instance(new ZCE_Select_Reactor(max_reactor_hdl));
@@ -250,7 +250,7 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     ZCE_LOG(RS_DEBUG, "[framework] ZCE_Reactor and ZCE_Epoll_Reactor initialized.");
 #endif
 
-    //³õÊ¼»¯ÄÚ´æ¹ÜµÀ
+    //åˆå§‹åŒ–å†…å­˜ç®¡é“
     ret = Soar_MMAP_BusPipe::instance()->
           initialize(self_svc_id_,
                      config_base_->pipe_cfg_.recv_pipe_len_,
@@ -273,10 +273,10 @@ int Soar_Svrd_Appliction::app_start(int argc, const char *argv[])
     return 0;
 }
 
-//ÍË³öµÄ¹¤×÷
+//é€€å‡ºçš„å·¥ä½œ
 int Soar_Svrd_Appliction::app_exit()
 {
-    //¿ÉÄÜÒªÔö¼Ó¶àÏß³ÌµÄµÈ´ı
+    //å¯èƒ½è¦å¢åŠ å¤šçº¿ç¨‹çš„ç­‰å¾…
     ZCE_Thread_Wait_Manager::instance()->wait_all();
     ZCE_Thread_Wait_Manager::clean_instance();
 
@@ -284,7 +284,7 @@ int Soar_Svrd_Appliction::app_exit()
 
     Soar_MMAP_BusPipe::clean_instance();
 
-    //ÊÍ·ÅËùÓĞ×ÊÔ´,»á¹Ø±ÕËùÓĞµÄhandleÂğ,ZCE_Reactor »á£¬ACEµÄReactor¿´ÊµÏÖ
+    //é‡Šæ”¾æ‰€æœ‰èµ„æº,ä¼šå…³é—­æ‰€æœ‰çš„handleå—,ZCE_Reactor ä¼šï¼ŒACEçš„Reactorçœ‹å®ç°
     if (ZCE_Reactor::instance())
     {
         ZCE_Reactor::instance()->close();
@@ -304,7 +304,7 @@ int Soar_Svrd_Appliction::app_exit()
         ZCE_Timer_Queue_Base::instance()->close();
     }
 
-    //µ¥×ÓÊµÀıÇå¿Õ
+    //å•å­å®ä¾‹æ¸…ç©º
     ZCE_Reactor::clean_instance();
     ZCE_Timer_Queue_Base::clean_instance();
     Soar_Stat_Monitor::clean_instance();
@@ -316,28 +316,28 @@ int Soar_Svrd_Appliction::app_exit()
     return 0;
 }
 
-//ÉèÖÃÈÕÖ¾µÄÓÅÏÈ¼¶
+//è®¾ç½®æ—¥å¿—çš„ä¼˜å…ˆçº§
 void Soar_Svrd_Appliction::set_log_priority(zce::LOG_PRIORITY log_prio)
 {
     ZCE_Trace_LogMsg::instance()->set_log_priority(log_prio);
 }
 
-//»ñµÃÈÕÖ¾µÄÓÅÏÈ¼¶
+//è·å¾—æ—¥å¿—çš„ä¼˜å…ˆçº§
 zce::LOG_PRIORITY Soar_Svrd_Appliction::get_log_priority()
 {
     return ZCE_Trace_LogMsg::instance()->get_log_priority();
 }
 
-//ÈÕÖ¾³õÊ¼»¯
+//æ—¥å¿—åˆå§‹åŒ–
 int Soar_Svrd_Appliction::init_log()
 {
     int ret = 0;
 
     ZCE_LOG(RS_DEBUG, "log instance finalize .");
-    //¹Ø±ÕÔ­À´µÄÈÕÖ¾Êä³ö·½·¨
+    //å…³é—­åŸæ¥çš„æ—¥å¿—è¾“å‡ºæ–¹æ³•
     ZCE_Trace_LogMsg::instance()->finalize();
 
-    // ³õÊ¼»¯ÈÕÖ¾
+    // åˆå§‹åŒ–æ—¥å¿—
     ret = ZCE_Trace_LogMsg::instance()->initialize(config_base_->log_config_.log_output_,
                                                    config_base_->log_config_.log_div_type_,
                                                    config_base_->log_file_prefix_.c_str(),
@@ -358,26 +358,26 @@ int Soar_Svrd_Appliction::init_log()
 }
 
 
-//ÖØĞÂ¼ÓÔØÅäÖÃ
+//é‡æ–°åŠ è½½é…ç½®
 int Soar_Svrd_Appliction::reload_config()
 {
     return 0;
 }
 
 
-//×¢²áÊµÀıÖ¸Õë
+//æ³¨å†Œå®ä¾‹æŒ‡é’ˆ
 void Soar_Svrd_Appliction::set_instance(Soar_Svrd_Appliction *inst)
 {
     instance_ = inst;
 }
 
-//µÃµ½ÊµÀıÖ¸Õë
+//å¾—åˆ°å®ä¾‹æŒ‡é’ˆ
 Soar_Svrd_Appliction *Soar_Svrd_Appliction::instance()
 {
     return instance_;
 }
 
-//ÇåÀíÊµÀıÖ¸Õë
+//æ¸…ç†å®ä¾‹æŒ‡é’ˆ
 void Soar_Svrd_Appliction::clean_instance()
 {
     if (instance_)

@@ -11,24 +11,24 @@
 *
 *
 *
-* @note       AI_IIJIMA ·¹µº°®
-*             ×î½ü±È½Ï·³±ÈÄã·³Ò²±ÈÄã·³£¬ÎÒÃÎ¼ûºÍ·¹µº°®Ò»ÆğÍí²Í£»
-*             ÃÎÖĞµÄ²ÍÌüµÆ¹âÌ«»è°µ£¬ÎÒ±éÑ°²»ÖøÄÇÀ¶É«µÄĞ¡Ò©Íè
-*             ×î½üÓĞµãÊÂÇé¶àµ½ÁË¼«µã£¬µ«ÊÇÒ²ÎŞÁÄµ½ÁË¼«µã£¬
-*             ·¢ÏÖ×î½ü´úÂëµÄÃû×ÖÂÒÆß°ËÔãµÄ¶«Î÷Ô½À´Ô½¶à.
-*             ËµÁËºÜ¶à·¹µº°®µÄ·Ï»°¡£²»ÈçÔÚ´úÂëÀïÃæ¼ÍÄî°É£¬
-*             Ò»¸ö³äÂúÃ¬¶ÜÈËµÄ£¬Ãû×ÖÓĞ°®£¬±»ÎŞÊıÈËÎŞÊı»ÃÏë£¬È´Ò»ÉúÎŞ°®£¬
-*             ±»Àî×ÚÊ¢´«³ª£¬µ«²»±»´óÖÚËùÖª£¬
-*             ½á¹ûÔÚËÀºóÈ´ÉÏÁËsinaÍøµÄÊ×Ò³£¬Òı·¢ÖĞ¹úÈËÃñµÄ¶ÔÈÕ±¾Ò»¸öÅ®º¢»³Äî¡£
-*             °ëÍÆ¼öËıµÄĞ¡Ëµ¡¶°ØÀ­Í¼Ê½ĞÔ°®¡·£¬
-*             Ğ¡ËµÔÚÒ»¸ö²àÃæ·´Ó³ÁËºÚ°µµÄ×Ê±¾Ö÷ÒåÉç»á¶ÔÒ»¸öĞ¡Å®º¢ÉíĞÄµÄ´İ²Ğ£¬ËùÒÔÍÆ¼ö´ó¼Ò¶Á¶Á£¬
-*             ×îºóÒªËµµÄÊÇ£¬ÉúÃü²»Ò×£¬Ï£Íû´ó¼ÒÕäÏ§¡£
-*             ÏëÆğÄÇ¶Î°ÑÒ»¸ö²úÆ·×öÁË3±éµÄÀúÊ·¡£
+* @note       AI_IIJIMA é¥­å²›çˆ±
+*             æœ€è¿‘æ¯”è¾ƒçƒ¦æ¯”ä½ çƒ¦ä¹Ÿæ¯”ä½ çƒ¦ï¼Œæˆ‘æ¢¦è§å’Œé¥­å²›çˆ±ä¸€èµ·æ™šé¤ï¼›
+*             æ¢¦ä¸­çš„é¤å…ç¯å…‰å¤ªæ˜æš—ï¼Œæˆ‘éå¯»ä¸è‘—é‚£è“è‰²çš„å°è¯ä¸¸
+*             æœ€è¿‘æœ‰ç‚¹äº‹æƒ…å¤šåˆ°äº†æç‚¹ï¼Œä½†æ˜¯ä¹Ÿæ— èŠåˆ°äº†æç‚¹ï¼Œ
+*             å‘ç°æœ€è¿‘ä»£ç çš„åå­—ä¹±ä¸ƒå…«ç³Ÿçš„ä¸œè¥¿è¶Šæ¥è¶Šå¤š.
+*             è¯´äº†å¾ˆå¤šé¥­å²›çˆ±çš„åºŸè¯ã€‚ä¸å¦‚åœ¨ä»£ç é‡Œé¢çºªå¿µå§ï¼Œ
+*             ä¸€ä¸ªå……æ»¡çŸ›ç›¾äººçš„ï¼Œåå­—æœ‰çˆ±ï¼Œè¢«æ— æ•°äººæ— æ•°å¹»æƒ³ï¼Œå´ä¸€ç”Ÿæ— çˆ±ï¼Œ
+*             è¢«æå®—ç››ä¼ å”±ï¼Œä½†ä¸è¢«å¤§ä¼—æ‰€çŸ¥ï¼Œ
+*             ç»“æœåœ¨æ­»åå´ä¸Šäº†sinaç½‘çš„é¦–é¡µï¼Œå¼•å‘ä¸­å›½äººæ°‘çš„å¯¹æ—¥æœ¬ä¸€ä¸ªå¥³å­©æ€€å¿µã€‚
+*             åŠæ¨èå¥¹çš„å°è¯´ã€ŠæŸæ‹‰å›¾å¼æ€§çˆ±ã€‹ï¼Œ
+*             å°è¯´åœ¨ä¸€ä¸ªä¾§é¢åæ˜ äº†é»‘æš—çš„èµ„æœ¬ä¸»ä¹‰ç¤¾ä¼šå¯¹ä¸€ä¸ªå°å¥³å­©èº«å¿ƒçš„æ‘§æ®‹ï¼Œæ‰€ä»¥æ¨èå¤§å®¶è¯»è¯»ï¼Œ
+*             æœ€åè¦è¯´çš„æ˜¯ï¼Œç”Ÿå‘½ä¸æ˜“ï¼Œå¸Œæœ›å¤§å®¶çæƒœã€‚
+*             æƒ³èµ·é‚£æ®µæŠŠä¸€ä¸ªäº§å“åšäº†3éçš„å†å²ã€‚
 */
 
 
 /*
-±í¸ñºÍË÷Òı¶¨Òå£¬
+è¡¨æ ¼å’Œç´¢å¼•å®šä¹‰ï¼Œ
 CREATE TABLE IF NOT EXISTS config_table_8(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
 CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,index_2)
 
@@ -37,13 +37,13 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 #ifndef ZCE_LIB_SQLITE_CONF_TABLE_H_
 #define ZCE_LIB_SQLITE_CONF_TABLE_H_
 
-//Ä¿Ç°°æ±¾ÏŞÖÆÖ»¼ÓÕâÒ»¸ö
+//ç›®å‰ç‰ˆæœ¬é™åˆ¶åªåŠ è¿™ä¸€ä¸ª
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 
 
 /*!
-* @brief      ÓÃÓÚ½«Ò»Ğ©½á¹¹×ª»»Îª¶ş½øÖÆÊı¾İ£¬´æ·ÅÓÚÊı¾İ×Ö¶ÎÖĞ
+* @brief      ç”¨äºå°†ä¸€äº›ç»“æ„è½¬æ¢ä¸ºäºŒè¿›åˆ¶æ•°æ®ï¼Œå­˜æ”¾äºæ•°æ®å­—æ®µä¸­
 *
 * @note
 */
@@ -53,24 +53,24 @@ struct AI_IIJIMA_BINARY_DATA
 
 public:
 
-    //!¹¹ÔìºÍÎö¹¹º¯Êı
+    //!æ„é€ å’Œææ„å‡½æ•°
     AI_IIJIMA_BINARY_DATA();
     ~AI_IIJIMA_BINARY_DATA();
 
     //!
     void clear();
 
-    //!±È½Ïº¯Êı
+    //!æ¯”è¾ƒå‡½æ•°
     bool operator < (const AI_IIJIMA_BINARY_DATA &right) const;
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
-    //!½«Ò»¸ö½á¹¹½øĞĞ±àÂë
+    //!å°†ä¸€ä¸ªç»“æ„è¿›è¡Œç¼–ç 
     int protobuf_encode(unsigned int index_1,
                         unsigned int index_2,
                         const google::protobuf::MessageLite *msg);
 
-    //!½«Ò»¸ö½á¹¹½øĞĞ½âÂë
+    //!å°†ä¸€ä¸ªç»“æ„è¿›è¡Œè§£ç 
     int protobuf_decode(unsigned int *index_1,
                         unsigned int *index_2,
                         google::protobuf::MessageLite *msg);
@@ -79,22 +79,22 @@ public:
 
 public:
 
-    //!¶¯Ì¬±à½âÂëµÄÊı¾İÇø³¤¶È
+    //!åŠ¨æ€ç¼–è§£ç çš„æ•°æ®åŒºé•¿åº¦
     static const int MAX_LEN_OF_AI_IIJIMA_DATA = 32 * 1024 - 1;
 
 public:
 
-    //!Ë÷Òı1
+    //!ç´¢å¼•1
     unsigned int index_1_ = 0;
-    //!Ë÷Òı2 Ä¬ÈÏÎª0
+    //!ç´¢å¼•2 é»˜è®¤ä¸º0
     unsigned int index_2_ = 0;
 
-    //!Êı¾İÇø³¤¶È
+    //!æ•°æ®åŒºé•¿åº¦
     int ai_data_length_ = 0;
-    //!¶¯Ì¬Êı¾İÈ¡
+    //!åŠ¨æ€æ•°æ®å–
     char ai_iijima_data_[MAX_LEN_OF_AI_IIJIMA_DATA + 1];
 
-    //!×îºóĞŞ¸ÄÊ±¼ä
+    //!æœ€åä¿®æ”¹æ—¶é—´
     unsigned int last_mod_time_ = 0;
 };
 
@@ -103,11 +103,11 @@ typedef std::vector <AI_IIJIMA_BINARY_DATA>   ARRARY_OF_AI_IIJIMA_BINARY;
 
 
 /******************************************************************************************
-struct BaobaoGeneralDBConf Ò»¸öºÜÍ¨ÓÃµÄ´ÓDBÖĞ¼äµÃµ½Í¨ÓÃÅäÖÃĞÅÏ¢µÄ·½·¨
+struct BaobaoGeneralDBConf ä¸€ä¸ªå¾ˆé€šç”¨çš„ä»DBä¸­é—´å¾—åˆ°é€šç”¨é…ç½®ä¿¡æ¯çš„æ–¹æ³•
 ******************************************************************************************/
 class ZCE_SQLite_DB_Handler;
 
-//Ò»¸öºÜÍ¨ÓÃµÄ´ÓDBÖĞ¼äµÃµ½Í¨ÓÃÅäÖÃĞÅÏ¢µÄ½á¹¹
+//ä¸€ä¸ªå¾ˆé€šç”¨çš„ä»DBä¸­é—´å¾—åˆ°é€šç”¨é…ç½®ä¿¡æ¯çš„ç»“æ„
 class ZCE_General_Config_Table
 {
 
@@ -118,16 +118,16 @@ public:
 
 protected:
 
-    //!´´½¨TABLE SQLÓï¾ä
+    //!åˆ›å»ºTABLE SQLè¯­å¥
     void sql_create_table(unsigned  int table_id);
-    //!´´½¨INDEX SQLÓï¾ä
+    //!åˆ›å»ºINDEX SQLè¯­å¥
     void sql_create_index(unsigned  int table_id);
 
 
-    //!¸ÄĞ´µÄSTMT SQL
+    //!æ”¹å†™çš„STMT SQL
     void sql_replace_bind(unsigned  int table_id);
 
-    //!¸ÄĞ´µÄSQL,ÎÄ±¾¸ñÊ½£¬ÓÃx
+    //!æ”¹å†™çš„SQL,æ–‡æœ¬æ ¼å¼ï¼Œç”¨x
     void sql_replace_one(unsigned  int table_id,
                          unsigned int index_1,
                          unsigned int index_2,
@@ -136,23 +136,23 @@ protected:
                          unsigned int last_mod_time);
 
 
-    //!µÃµ½Ñ¡ÔñÒ»¸öÈ·¶¨Êı¾İµÄSQL
+    //!å¾—åˆ°é€‰æ‹©ä¸€ä¸ªç¡®å®šæ•°æ®çš„SQL
     void sql_select_one(unsigned int table_id,
                         unsigned int index_1,
                         unsigned int index_2);
 
-    //µÃµ½É¾³ıÊı¾İµÄSQL
+    //å¾—åˆ°åˆ é™¤æ•°æ®çš„SQL
     void sql_delete_one(unsigned int table_id,
                         unsigned int index_1,
                         unsigned int index_2);
 
 
-    //!¼ÆËã²éÑ¯µÄ×ÜÊı
+    //!è®¡ç®—æŸ¥è¯¢çš„æ€»æ•°
     void sql_counter(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery);
 
-    //!²éÑ¯Êı¾İ¶ÓÁĞ£¬²¿·ÖÊı¾İ»òÕßÈ«²¿Êı¾İ
+    //!æŸ¥è¯¢æ•°æ®é˜Ÿåˆ—ï¼Œéƒ¨åˆ†æ•°æ®æˆ–è€…å…¨éƒ¨æ•°æ®
     void sql_select_array(unsigned int table_id,
                           unsigned int startno,
                           unsigned int numquery);
@@ -160,13 +160,13 @@ protected:
     //!
 
     /*!
-    * @brief      base16µÄËã·¨£¬
+    * @brief      base16çš„ç®—æ³•ï¼Œ
     * @return     int
     * @param      in
     * @param      in_len
     * @param      out
-    * @param[in/out] out_len ÊÕÈëÊ±±êÊ¶outbufµÄ³¤¶È£¬Êä³öÊ±±êÊ¶×îºóÉú³ÉµÄ×Ö·û´®³¤¶È
-    * @note       Õâ¶ùÊÇÎªÁË±ÜÃâÒıÈëÌ«¶àÎÄ¼ş£¬¶øÇÒbase16ÊµÏÖ½ÏÎª¼òµ¥£¬ËùÒÔÃ»ÓĞÓÃzceµÄencode´úÂë
+    * @param[in/out] out_len æ”¶å…¥æ—¶æ ‡è¯†outbufçš„é•¿åº¦ï¼Œè¾“å‡ºæ—¶æ ‡è¯†æœ€åç”Ÿæˆçš„å­—ç¬¦ä¸²é•¿åº¦
+    * @note       è¿™å„¿æ˜¯ä¸ºäº†é¿å…å¼•å…¥å¤ªå¤šæ–‡ä»¶ï¼Œè€Œä¸”base16å®ç°è¾ƒä¸ºç®€å•ï¼Œæ‰€ä»¥æ²¡æœ‰ç”¨zceçš„encodeä»£ç 
     */
     int base16_encode(const char *in,
                       size_t in_len,
@@ -174,53 +174,53 @@ protected:
                       size_t *out_len);
 public:
 
-    //!´ò¿ªÒ»¸öÍ¨ÓÃµÄÊı¾İ¿â
+    //!æ‰“å¼€ä¸€ä¸ªé€šç”¨çš„æ•°æ®åº“
     int open_dbfile(const char *db_file,
                     bool read_only,
                     bool create_db);
 
-    //!´´½¨Êı¾İ±í
+    //!åˆ›å»ºæ•°æ®è¡¨
     int create_table(unsigned int table_id);
 
-    //!¹Ø±Õ´ò¿ªµÄÊı¾İ¿â
+    //!å…³é—­æ‰“å¼€çš„æ•°æ®åº“
     void close_dbfile();
 
-    //!UPDATE »òÕß INSERT Ò»¸ö¼ÇÂ¼
+    //!UPDATE æˆ–è€… INSERT ä¸€ä¸ªè®°å½•
     int replace_one(unsigned int table_id,
                     const AI_IIJIMA_BINARY_DATA *conf_data);
 
-    //UPDATE »òÕß INSERT Ò»×é¼ÇÂ¼
+    //UPDATE æˆ–è€… INSERT ä¸€ç»„è®°å½•
     int replace_array(unsigned int table_id,
                       const ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma);
 
-    //!²éÑ¯ÁËÒ»Ìõ¼ÇÂ¼
+    //!æŸ¥è¯¢äº†ä¸€æ¡è®°å½•
     int select_one(unsigned int table_id,
                    AI_IIJIMA_BINARY_DATA *conf_data);
 
-    //!É¾³ıÒ»Ìõ¼ÇÂ¼
+    //!åˆ é™¤ä¸€æ¡è®°å½•
     int delete_one(unsigned int table_id,
                    unsigned int index_1,
                    unsigned int index_2);
 
-    //!²éÑ¯¼ÇÂ¼×ÜÊı
+    //!æŸ¥è¯¢è®°å½•æ€»æ•°
     int counter(unsigned int table_id,
                 unsigned int startno,
                 unsigned int numquery,
                 unsigned int *rec_count);
 
-    //!²éÑ¯Êı¾İ¶ÓÁĞ£¬²¿·ÖÊı¾İ£¨ÏŞÖÆ²éÑ¯ÊıÁ¿£©»òÕßÈ«²¿Êı¾İ
+    //!æŸ¥è¯¢æ•°æ®é˜Ÿåˆ—ï¼Œéƒ¨åˆ†æ•°æ®ï¼ˆé™åˆ¶æŸ¥è¯¢æ•°é‡ï¼‰æˆ–è€…å…¨éƒ¨æ•°æ®
     int select_array(unsigned int table_id,
                      unsigned int startno,
                      unsigned int numquery,
                      ARRARY_OF_AI_IIJIMA_BINARY *ary_ai_iijma);
 
     /*!
-    * @brief      ¶Ô±ÈÁ½¸öÊı¾İ±í¸ñ£¬ÕÒ³ö²îÒì£¬È»ºóÕÒ³ö²îÒìµÄSQL£¬ÓÃÓÚÊı¾İÎÄ¼ş¸üĞÂµÈ¹¦ÄÜ
-    * @return     int      ÊÇ·ñ³É¹¦µÄÍê³ÉÁË±È½Ï
-    * @param      old_db   ±È½ÏÊı¾İ¿âoldÎÄ¼şÃû³Æ
-    * @param      new_db   ±È½ÏÊı¾İ¿ânewÎÄ¼şÃû³Æ
-    * @param      table_id ±È½ÏµÄtable id
-    * @param[out] update_sql ·µ»ØµÄ¸üĞÂSQLÓï¾ä
+    * @brief      å¯¹æ¯”ä¸¤ä¸ªæ•°æ®è¡¨æ ¼ï¼Œæ‰¾å‡ºå·®å¼‚ï¼Œç„¶åæ‰¾å‡ºå·®å¼‚çš„SQLï¼Œç”¨äºæ•°æ®æ–‡ä»¶æ›´æ–°ç­‰åŠŸèƒ½
+    * @return     int      æ˜¯å¦æˆåŠŸçš„å®Œæˆäº†æ¯”è¾ƒ
+    * @param      old_db   æ¯”è¾ƒæ•°æ®åº“oldæ–‡ä»¶åç§°
+    * @param      new_db   æ¯”è¾ƒæ•°æ®åº“newæ–‡ä»¶åç§°
+    * @param      table_id æ¯”è¾ƒçš„table id
+    * @param[out] update_sql è¿”å›çš„æ›´æ–°SQLè¯­å¥
     * @note
     */
     int compare_table(const char *old_db,
@@ -233,7 +233,7 @@ protected:
 
 public:
 
-    //! SQLÓï¾ä
+    //! SQLè¯­å¥
     char *sql_string_ = NULL;
     //!
     ZCE_SQLite_DB_Handler *sqlite_handler_;

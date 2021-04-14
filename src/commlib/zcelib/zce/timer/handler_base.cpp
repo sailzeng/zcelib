@@ -2,7 +2,7 @@
 #include "zce/os_adapt/time.h"
 #include "zce/timer/handler_base.h"
 
-//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
 ZCE_Timer_Handler::ZCE_Timer_Handler(ZCE_Timer_Queue_Base *timer_queue):
     timer_queue_(timer_queue)
 {
@@ -16,19 +16,19 @@ ZCE_Timer_Handler::~ZCE_Timer_Handler()
 {
 }
 
-//µÃµ½Timer Queue
+//å¾—åˆ°Timer Queue
 ZCE_Timer_Queue_Base *ZCE_Timer_Handler::timer_queue()
 {
     return timer_queue_;
 }
 
-//µÃµ½Timer Queue
+//å¾—åˆ°Timer Queue
 void ZCE_Timer_Handler::timer_queue(ZCE_Timer_Queue_Base *set_timer_queue)
 {
     timer_queue_ = set_timer_queue;
 }
 
-//¶¨Ê±Æ÷¹Ø±Õ
+//å®šæ—¶å™¨å…³é—­
 int ZCE_Timer_Handler::timer_close()
 {
     return 0;

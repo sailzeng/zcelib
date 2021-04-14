@@ -6,12 +6,12 @@
 namespace zce
 {
 
-//×öÊÊµ±µÄ·Å´ó´¦Àí£¬
+//åšé€‚å½“çš„æ”¾å¤§å¤„ç†ï¼Œ
 static size_t zoomin_nodenum(size_t node_num)
 {
     size_t zoomin_num = 0;
-    //¸ù¾İÊäÈëµÄÊı¾İ£¬×öÊÊµ±µÄ·Å´ó£¬ÔÙ½øĞĞ´¦Àí
-    //Èç¹û´óÓÚ10ÒÚ£¬Ôö¼Ó1ÒÚ£¬ÆäËûÒÔ´ËÀàÍÆ,ÔÙ¿ªÊ¼¼ÆËã×î¿¿½üµÄÖÊÊı
+    //æ ¹æ®è¾“å…¥çš„æ•°æ®ï¼Œåšé€‚å½“çš„æ”¾å¤§ï¼Œå†è¿›è¡Œå¤„ç†
+    //å¦‚æœå¤§äº10äº¿ï¼Œå¢åŠ 1äº¿ï¼Œå…¶ä»–ä»¥æ­¤ç±»æ¨,å†å¼€å§‹è®¡ç®—æœ€é è¿‘çš„è´¨æ•°
     if (node_num > 1000000000ul)
     {
         zoomin_num = node_num + 100000000ul;
@@ -76,7 +76,7 @@ void zce::hash_prime(const size_t node_num, size_t &real_num)
 
 #endif
 
-    //×öÒ»¶¨µÄ·Å´ó´¦Àí
+    //åšä¸€å®šçš„æ”¾å¤§å¤„ç†
     size_t zoomin_num = zce::zoomin_nodenum(node_num);
     real_num = zce::nearest_prime(zoomin_num);
     return;
@@ -85,11 +85,11 @@ void zce::hash_prime(const size_t node_num, size_t &real_num)
 //
 void zce::hash_prime_ary(const size_t num_node, size_t &real_num, size_t row, size_t prime_ary[])
 {
-    //×öÒ»¶¨µÄ·Å´ó´¦Àí
+    //åšä¸€å®šçš„æ”¾å¤§å¤„ç†
     size_t zoomin_num = zce::zoomin_nodenum(num_node);
     size_t per_row_num = zoomin_num / row + 1;
 
-    //ÖÆÔìÒ»¸öÖÊÊı¶ÓÁĞ£¬
+    //åˆ¶é€ ä¸€ä¸ªè´¨æ•°é˜Ÿåˆ—ï¼Œ
     size_t test_num = per_row_num;
     for (size_t i = 0; i < row; ++i)
     {
@@ -97,7 +97,7 @@ void zce::hash_prime_ary(const size_t num_node, size_t &real_num, size_t row, si
         test_num = prime_ary[i];
     }
 
-    //×Ü¼Æ·ÅÈë×îºóÒ»¸öÁĞ
+    //æ€»è®¡æ”¾å…¥æœ€åä¸€ä¸ªåˆ—
     real_num = 0;
     for (size_t i = 0; i < row; ++i)
     {

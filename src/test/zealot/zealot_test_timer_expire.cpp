@@ -56,7 +56,7 @@ int test_timer_expire(int /*argc*/, char * /*argv*/ [])
     return 0;
 }
 
-//ÓÃÓÚ²âÊÔÄ³Ğ©ÌØÊâÇé¿öµÄ´úÂë¡£
+//ç”¨äºæµ‹è¯•æŸäº›ç‰¹æ®Šæƒ…å†µçš„ä»£ç ã€‚
 int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
 {
     ZCE_Timer_Queue_Base::instance(new ZCE_Timer_Wheel(1024));
@@ -74,7 +74,7 @@ int test_timer_expire2(int /*argc*/, char * /*argv*/ [])
                                                                        interval_time);
     }
 
-    //Ò»Ğ©ÌØÊâÇé¿öÏÂ£¬¶¨Ê±Æ÷ºÜ³¤Ê±¼äÎŞ·¨´¥·¢£¬µ¼ÖÂµÄÎÊÌâ
+    //ä¸€äº›ç‰¹æ®Šæƒ…å†µä¸‹ï¼Œå®šæ—¶å™¨å¾ˆé•¿æ—¶é—´æ— æ³•è§¦å‘ï¼Œå¯¼è‡´çš„é—®é¢˜
     for (size_t j = 0; j < 100000; j++)
     {
         zce::sleep(60);

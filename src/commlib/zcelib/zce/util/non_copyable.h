@@ -3,9 +3,9 @@
 * @filename   zce/util/non_copyable.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê7ÔÂ1ÈÕ
-* @brief      ²Î¿¼boostÐ´µÄÒ»¸öÀà£¬ÓÃÓÚ²»¿É¸´ÖÆµÄÀàÐÍ£¬Ö»Òª´ÓÕâ¸öÀà¼Ì³Ð¾ÍOKÁË
-*             Èç¹ûÏ£ÍûÒ»¸öÀà²»ÄÜ¿½±´£¬¼Ì³Ðzce::NON_Copyable¾Í¿ÉÒÔÁË¡£
+* @date       2011å¹´7æœˆ1æ—¥
+* @brief      å‚è€ƒboostå†™çš„ä¸€ä¸ªç±»ï¼Œç”¨äºŽä¸å¯å¤åˆ¶çš„ç±»åž‹ï¼Œåªè¦ä»Žè¿™ä¸ªç±»ç»§æ‰¿å°±OKäº†
+*             å¦‚æžœå¸Œæœ›ä¸€ä¸ªç±»ä¸èƒ½æ‹·è´ï¼Œç»§æ‰¿zce::NON_Copyableå°±å¯ä»¥äº†ã€‚
 *
 * @details
 *
@@ -18,12 +18,12 @@
 namespace zce
 {
 /*!
-* @brief      ²»ÄÜ¸´ÖÆµÄÍ¨¹ýÉùÃ÷µ«²»ÊµÏÖ£¬¿½±´¹¹Ôìº¯ÊýºÍ¸³Öµº¯Êý£¬´ïµ½ÎÞ·¨¸´ÖÆµÄÄ¿µÄ
+* @brief      ä¸èƒ½å¤åˆ¶çš„é€šè¿‡å£°æ˜Žä½†ä¸å®žçŽ°ï¼Œæ‹·è´æž„é€ å‡½æ•°å’Œèµ‹å€¼å‡½æ•°ï¼Œè¾¾åˆ°æ— æ³•å¤åˆ¶çš„ç›®çš„
 */
 class NON_Copyable
 {
 protected:
-    ///¹¹Ôìº¯ÊýºÍÎö¹¹º¯Êý£¬±£»¤£¬±£Ö¤¿ÉÒÔ¼Ì³Ð
+    ///æž„é€ å‡½æ•°å’Œæžæž„å‡½æ•°ï¼Œä¿æŠ¤ï¼Œä¿è¯å¯ä»¥ç»§æ‰¿
     NON_Copyable()
     {
 
@@ -34,9 +34,9 @@ protected:
     // emphasize the following members are private
 private:
 
-    ///¿½±´¹¹Ôìº¯Êý£¬ÉùÃ÷µ«²»ÊµÏÖ
+    ///æ‹·è´æž„é€ å‡½æ•°ï¼Œå£°æ˜Žä½†ä¸å®žçŽ°
     NON_Copyable(const zce::NON_Copyable&) = delete;
-    ///¸³Öµº¯Êý£¬ÉùÃ÷µ«²»ÊµÏÖ
+    ///èµ‹å€¼å‡½æ•°ï¼Œå£°æ˜Žä½†ä¸å®žçŽ°
     const NON_Copyable& operator=(const zce::NON_Copyable&) = delete;
 };
 

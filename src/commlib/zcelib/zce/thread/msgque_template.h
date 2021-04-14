@@ -24,9 +24,9 @@
 /*!
 * @brief
 *
-* @tparam     _zce_synch       ZCE_MT_SYNCH »òÕß ZCE_NULL_SYNCH
-* @tparam     _value_type      ÈİÆ÷ÀïÃæµÄÊı¾İÀàĞÍ
-* @tparam     _container_type  QUEUEµÄÀàĞÍ£¬deque,list,zce::lordrings
+* @tparam     _zce_synch       ZCE_MT_SYNCH æˆ–è€… ZCE_NULL_SYNCH
+* @tparam     _value_type      å®¹å™¨é‡Œé¢çš„æ•°æ®ç±»å‹
+* @tparam     _container_type  QUEUEçš„ç±»å‹ï¼Œdeque,list,zce::lordrings
 * @note
 */
 template < typename _zce_synch,
@@ -43,58 +43,58 @@ public:
     ~ZCE_Message_Queue();
 
     /*!
-    * @brief      QUEUEÊÇ·ñÎªNULL
+    * @brief      QUEUEæ˜¯å¦ä¸ºNULL
     * @return     bool
     */
     inline bool empty();
 
     /*!
-    * @brief      QUEUEÊÇ·ñÎªÂú
+    * @brief      QUEUEæ˜¯å¦ä¸ºæ»¡
     * @return     bool
     */
     inline bool full();
 
 
     /*!
-    * @brief      ·ÅÈëÊı¾İ,Èç¹û²»ÄÜ·ÅÈëÒ»Ö±µÈ´ı
+    * @brief      æ”¾å…¥æ•°æ®,å¦‚æœä¸èƒ½æ”¾å…¥ä¸€ç›´ç­‰å¾…
     * @return     int
     * @param      value_data
     * @note
     */
     int enqueue(const _value_type &value_data);
 
-    //·ÅÈëÒ»¸öÊı¾İ£¬½øĞĞ³¬Ê±µÈ´ı
+    //æ”¾å…¥ä¸€ä¸ªæ•°æ®ï¼Œè¿›è¡Œè¶…æ—¶ç­‰å¾…
     int enqueue(const _value_type &value_data,
                 const ZCE_Time_Value & );
 
-    //³¢ÊÔ·ÅÈëÊı¾İµ½¶ÓÁĞ£¬Á¢¼´·µ»Ø
+    //å°è¯•æ”¾å…¥æ•°æ®åˆ°é˜Ÿåˆ—ï¼Œç«‹å³è¿”å›
     int try_enqueue(_value_type &value_data);
 
-    //È¡³öÊıÂë£¬Èç¹ûÎŞ·¨È¡³öÒ»Ö±µÈ´ı
+    //å–å‡ºæ•°ç ï¼Œå¦‚æœæ— æ³•å–å‡ºä¸€ç›´ç­‰å¾…
     int dequeue(_value_type &value_data);
 
-    //È¡³öÒ»¸öÊı¾İ£¬½øĞĞ³¬Ê±µÈ´ı
+    //å–å‡ºä¸€ä¸ªæ•°æ®ï¼Œè¿›è¡Œè¶…æ—¶ç­‰å¾…
     int dequeue(_value_type &value_data,
                 const ZCE_Time_Value & );
 
-    //³¢ÊÔÈ¡³öÊı¾İµ½¶ÓÁĞ£¬Á¢¼´·µ»Ø
+    //å°è¯•å–å‡ºæ•°æ®åˆ°é˜Ÿåˆ—ï¼Œç«‹å³è¿”å›
     int try_dequeue(_value_type &value_data);
 
-    //ÇåÀíÏûÏ¢¶ÓÁĞ
+    //æ¸…ç†æ¶ˆæ¯é˜Ÿåˆ—
     void clear();
 
-    //·µ»ØÏûÏ¢¶ÔÏóµÄ³ß´ç
+    //è¿”å›æ¶ˆæ¯å¯¹è±¡çš„å°ºå¯¸
     size_t size();
 
 protected:
 
-    //QUEUEµÄ×î´ó³ß´ç
+    //QUEUEçš„æœ€å¤§å°ºå¯¸
     size_t                                queue_max_size_;
 
-    //ÓÉÓÚLISTµÄsize()º¯Êı±È½ÏºÄÊ±£¬ËùÒÔÕâ¶ù»¹ÊÇÓÃÁË¸ö¼ÆÊıÆ÷£¬¶ø²»Ö±½ÓÊ¹ÓÃ_container_type.size()
+    //ç”±äºLISTçš„size()å‡½æ•°æ¯”è¾ƒè€—æ—¶ï¼Œæ‰€ä»¥è¿™å„¿è¿˜æ˜¯ç”¨äº†ä¸ªè®¡æ•°å™¨ï¼Œè€Œä¸ç›´æ¥ä½¿ç”¨_container_type.size()
     size_t                                queue_cur_size_;
 
-    //ÈİÆ÷ÀàĞÍ£¬¿ÉÒÔÊÇlist,dequeue,
+    //å®¹å™¨ç±»å‹ï¼Œå¯ä»¥æ˜¯list,dequeue,
     _container_type                       message_queue_;
 
 };

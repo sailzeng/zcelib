@@ -3,8 +3,8 @@
 * @filename   zce/os_adapt/process.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>  pascalshen <pascalshen@tencent.com>
 * @version
-* @date       2013Äê1ÔÂ3ÈÕ
-* @brief      ½ø³ÌÏà¹ØµÄ
+* @date       2013å¹´1æœˆ3æ—¥
+* @brief      è¿›ç¨‹ç›¸å…³çš„
 *
 * @details
 *
@@ -17,36 +17,36 @@
 
 #include "zce/os_adapt/common.h"
 
-///@brief      ½ø³ÌÏÂµÄĞÔÄÜÊı¾İĞÅÏ¢£¬
+///@brief      è¿›ç¨‹ä¸‹çš„æ€§èƒ½æ•°æ®ä¿¡æ¯ï¼Œ
 struct ZCE_PROCESS_PERFORM
 {
-    //½ø³ÌID
+    //è¿›ç¨‹ID
     pid_t         process_id_;
 
-    //½ø³ÌÔËĞĞµÄÊ±¼ä
+    //è¿›ç¨‹è¿è¡Œçš„æ—¶é—´
     timeval       running_time_;
-    // ½ø³ÌÆô¶¯Ê±¼ä
+    // è¿›ç¨‹å¯åŠ¨æ—¶é—´
     timeval       start_time_;
-    //ÔËĞĞÊ±µÄÏµÍ³Ê±¼äÒªÇó
+    //è¿è¡Œæ—¶çš„ç³»ç»Ÿæ—¶é—´è¦æ±‚
     timeval       run_stime_;
-    //ÔËĞĞÊ±¼äµÄÓÃ»§Ê±¼ä
+    //è¿è¡Œæ—¶é—´çš„ç”¨æˆ·æ—¶é—´
     timeval       run_utime_;
 
-    //ÓÅÏÈ¼¶
+    //ä¼˜å…ˆçº§
     int           priority_;
-    //NICEÊı¾İ
+    //NICEæ•°æ®
     int           nice_;
 
-    //Õ¼ÓÃµÄĞéÄâÄÚ´æ´óĞ¡£¬Ò²¾ÍÊÇ×ÜÄÚ´æ´óĞ¡
+    //å ç”¨çš„è™šæ‹Ÿå†…å­˜å¤§å°ï¼Œä¹Ÿå°±æ˜¯æ€»å†…å­˜å¤§å°
     size_t        vm_size_;
-    //Õ¼ÓÃÎïÀíÄÚ´æµÄ´óĞ¡£¬Resident Set Size: number of pages the process has in real    memory.,WINDOWSÏÂÕâ¸öÖµ²»¿É¿¿£¬ÎÒÕÒÁË°ëÌìÒ²Ã»ÓĞÕÒµ½ºÏÊÊµÄÖµ
+    //å ç”¨ç‰©ç†å†…å­˜çš„å¤§å°ï¼ŒResident Set Size: number of pages the process has in real    memory.,WINDOWSä¸‹è¿™ä¸ªå€¼ä¸å¯é ï¼Œæˆ‘æ‰¾äº†åŠå¤©ä¹Ÿæ²¡æœ‰æ‰¾åˆ°åˆé€‚çš„å€¼
     size_t        resident_set_;
 
-    //¹²ÏíµÄÄÚ´æµÄ´óĞ¡,WINDOWSÏÂÃ»ÓĞÕâ¸öÖµÎŞĞ§
+    //å…±äº«çš„å†…å­˜çš„å¤§å°,WINDOWSä¸‹æ²¡æœ‰è¿™ä¸ªå€¼æ— æ•ˆ
     size_t        shared_size_;
-    //code size ´úÂëµÄ´óĞ¡,WINDOWSÏÂÃ»ÓĞÕâ¸öÖµÎŞĞ§
+    //code size ä»£ç çš„å¤§å°,WINDOWSä¸‹æ²¡æœ‰è¿™ä¸ªå€¼æ— æ•ˆ
     size_t        text_size_;
-    //data + stack£¬data + ¶ÑÕ»µÄ´óĞ¡,WINDOWSÏÂÃ»ÓĞÕâ¸öÖµÎŞĞ§
+    //data + stackï¼Œdata + å †æ ˆçš„å¤§å°,WINDOWSä¸‹æ²¡æœ‰è¿™ä¸ªå€¼æ— æ•ˆ
     size_t        data_size_;
 
 };
@@ -54,32 +54,32 @@ struct ZCE_PROCESS_PERFORM
 namespace zce
 {
 
-///µÃµ½µ±Ç°µÄ½ø³ÌID
+///å¾—åˆ°å½“å‰çš„è¿›ç¨‹ID
 pid_t getpid();
 
-///µÃµ½µ±Ç°µÄ½ø³ÌµÄ¸¸½ø³ÌID
+///å¾—åˆ°å½“å‰çš„è¿›ç¨‹çš„çˆ¶è¿›ç¨‹ID
 pid_t getppid (void);
 
 ///fork
 pid_t fork (void);
 
-///È¡µÃÄ³¸ö»·¾³±äÁ¿
+///å–å¾—æŸä¸ªç¯å¢ƒå˜é‡
 char *getenv(const char *name);
 
 ///
 pid_t setsid (void);
 
-///signalĞÅºÅ´¦Àíº¯Êı£¬·ÅÔÚÕâ¶ùÆäÊµÓĞµãÒìÀà£¬ºÇºÇ
+///signalä¿¡å·å¤„ç†å‡½æ•°ï¼Œæ”¾åœ¨è¿™å„¿å…¶å®æœ‰ç‚¹å¼‚ç±»ï¼Œå‘µå‘µ
 sighandler_t signal (int signum,
                      sighandler_t);
 
 //--------------------------------------------------------
-//·Ç±ê×¼º¯Êı£¬µÃµ½½ø³ÌµÄ¸÷ÖÖĞÔÄÜÊı¾İ
+//éæ ‡å‡†å‡½æ•°ï¼Œå¾—åˆ°è¿›ç¨‹çš„å„ç§æ€§èƒ½æ•°æ®
 
-///µÃµ½½ø³ÌÔÊĞíµÄĞÔÄÜĞÅÏ¢£¬°üÀ¨CPUÊ±¼ä£¬ÄÚ´æÊ¹ÓÃÇé¿öµÈĞÅÏ¢
+///å¾—åˆ°è¿›ç¨‹å…è®¸çš„æ€§èƒ½ä¿¡æ¯ï¼ŒåŒ…æ‹¬CPUæ—¶é—´ï¼Œå†…å­˜ä½¿ç”¨æƒ…å†µç­‰ä¿¡æ¯
 int get_self_perf(ZCE_PROCESS_PERFORM *prc_perf_info);
 
-///È¡µÃÄ±¸ö½ø³ÌµÄĞÔÄÜĞÅÏ¢
+///å–å¾—è°‹ä¸ªè¿›ç¨‹çš„æ€§èƒ½ä¿¡æ¯
 int get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_info);
 
 };

@@ -7,14 +7,14 @@ class Notify_Trans_Base
 ******************************************************************************************/
 
 /******************************************************************************************
-class Notify_Trans_Abnormal_Base ÔÚÄ³Ğ©ÌØÊâÊ±ºò(±ÜÃâ¶à´Î¿½±´),Ê±Ê¹ÓÃ£¬³ı·Ç¶ÔĞÔÄÜÓĞÇ¿ÁÒµÄ°®ºÃ£¬·ñÔò²»ÒªÓÃ
+class Notify_Trans_Abnormal_Base åœ¨æŸäº›ç‰¹æ®Šæ—¶å€™(é¿å…å¤šæ¬¡æ‹·è´),æ—¶ä½¿ç”¨ï¼Œé™¤éå¯¹æ€§èƒ½æœ‰å¼ºçƒˆçš„çˆ±å¥½ï¼Œå¦åˆ™ä¸è¦ç”¨
 ******************************************************************************************/
 Notify_Trans_Abnormal_Base::Notify_Trans_Abnormal_Base(Transaction_Manager *trans_notify_mgr,
                                                        unsigned int create_cmd)
     : Notify_Trans_Base<ZCE_MT_SYNCH>(trans_notify_mgr, create_cmd)
     , abnormal_frame_(NULL)
 {
-    //±ØĞëÒªÇótrans_notify_mgrÖÁÉÙÊÇtrans_notify_mgrµÄ×ÓÀà£¬
+    //å¿…é¡»è¦æ±‚trans_notify_mgrè‡³å°‘æ˜¯trans_notify_mgrçš„å­ç±»ï¼Œ
 }
 
 Notify_Trans_Abnormal_Base::~Notify_Trans_Abnormal_Base()
@@ -22,33 +22,33 @@ Notify_Trans_Abnormal_Base::~Notify_Trans_Abnormal_Base()
 };
 
 /******************************************************************************************
-Author          : Sail(ZENGXING)  Date Of Creation: 2008Äê9ÔÂ22ÈÕ
-Function        : MallocSendQueueFrame ÇëÔÚÊ¹ÓÃÕâ¸öº¯ÊıÖ®Ç°Ã÷È·ÄãÒª¸ÉÊ²Ã´£¬
+Author          : Sail(ZENGXING)  Date Of Creation: 2008å¹´9æœˆ22æ—¥
+Function        : MallocSendQueueFrame è¯·åœ¨ä½¿ç”¨è¿™ä¸ªå‡½æ•°ä¹‹å‰æ˜ç¡®ä½ è¦å¹²ä»€ä¹ˆï¼Œ
 Return          : void
 Parameter List  :
-Param1: size_t frame_len ÄãÒª·ÖÅäµÄFRAMEµÄ³¤¶È
-Description     :  ·ÖÅäÒ»¸öÏë·¢ËÍ¶ÓÁĞ·¢ËÍFRAME
+Param1: size_t frame_len ä½ è¦åˆ†é…çš„FRAMEçš„é•¿åº¦
+Description     :  åˆ†é…ä¸€ä¸ªæƒ³å‘é€é˜Ÿåˆ—å‘é€FRAME
 Calls           :
 Called By       :
-Other           : Õâ¸öº¯Êı½ö½öÌá¹©¸øÏ£Íû±ÜÃâ´óÁ¿FRAME¿½±´µÄµØ·½,²»Òª¸Ä±äFRAMEµÄÍ·²¿Êı¾İ,
-Modify Record   : ºÍGetSendQueueFrame,pushbak_mgr_sendqueueÒ»ÆğÊ¹ÓÃ
+Other           : è¿™ä¸ªå‡½æ•°ä»…ä»…æä¾›ç»™å¸Œæœ›é¿å…å¤§é‡FRAMEæ‹·è´çš„åœ°æ–¹,ä¸è¦æ”¹å˜FRAMEçš„å¤´éƒ¨æ•°æ®,
+Modify Record   : å’ŒGetSendQueueFrame,pushbak_mgr_sendqueueä¸€èµ·ä½¿ç”¨
 ******************************************************************************************/
 void Notify_Trans_Abnormal_Base::malloc_abnormalframe(size_t frame_len)
 {
-    //²»ÄÜÖØ¸´µ÷ÓÃÕâ¸öº¯Êı
+    //ä¸èƒ½é‡å¤è°ƒç”¨è¿™ä¸ªå‡½æ•°
     ZCE_ASSERT (abnormal_frame_ == NULL);
     abnormal_frame_ = trans_notify_mgr_->alloc_appframe(frame_len);
     return ;
 }
 
-//È¡µÃFRAME½øĞĞ²Ù×÷£¬²»Òª¸Ä±ä³¤¶ÈµÈFRAME HEADµÄÊı¾İ£¬ÆäÊµÍÆ¼öÊ¹ÓÃÏÂÃæµÄº¯Êı
+//å–å¾—FRAMEè¿›è¡Œæ“ä½œï¼Œä¸è¦æ”¹å˜é•¿åº¦ç­‰FRAME HEADçš„æ•°æ®ï¼Œå…¶å®æ¨èä½¿ç”¨ä¸‹é¢çš„å‡½æ•°
 Zerg_App_Frame *Notify_Trans_Abnormal_Base::get_abnormal_frame()
 {
     ZCE_ASSERT (abnormal_frame_ != NULL);
     return abnormal_frame_;
 }
 
-//È¡µÃFRAMEµÄÊı¾İÇøÓÃÓÚ²Ù×÷
+//å–å¾—FRAMEçš„æ•°æ®åŒºç”¨äºæ“ä½œ
 char *Notify_Trans_Abnormal_Base::get_abnormal_framedata()
 {
     ZCE_ASSERT (abnormal_frame_ != NULL);
@@ -56,12 +56,12 @@ char *Notify_Trans_Abnormal_Base::get_abnormal_framedata()
 }
 
 /******************************************************************************************
-Author          : Sail(ZENGXING)  Date Of Creation: 2008Äê12ÔÂ16ÈÕ
+Author          : Sail(ZENGXING)  Date Of Creation: 2008å¹´12æœˆ16æ—¥
 Function        : Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue
 Return          : int
 Parameter List  :
-  Param1: unsigned int cmd     ÃüÁî×Ö
-  Param2: unsigned int option  Ñ¡Ïî
+  Param1: unsigned int cmd     å‘½ä»¤å­—
+  Param2: unsigned int option  é€‰é¡¹
 Description     :
 Calls           :
 Called By       :
@@ -77,7 +77,7 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
     abnormal_frame_->init_framehead(frame_len, option, cmd);
 
     abnormal_frame_->frame_userid_ = req_user_id_;
-    //ÌîĞ´×Ô¼ºtransaction_id_,ÆäÊµÊÇ×Ô¼ºµÄÊÂÎñID,·½±ã»ØÀ´¿ÉÒÔÕÒµ½×Ô¼º
+    //å¡«å†™è‡ªå·±transaction_id_,å…¶å®æ˜¯è‡ªå·±çš„äº‹åŠ¡ID,æ–¹ä¾¿å›æ¥å¯ä»¥æ‰¾åˆ°è‡ªå·±
     abnormal_frame_->transaction_id_ = asyncobj_id_;
     abnormal_frame_->backfill_trans_id_ = req_session_id_;
 
@@ -97,16 +97,16 @@ int Notify_Trans_Abnormal_Base::pushbak_mgr_sendqueue(unsigned int cmd,
         return ret;
     }
 
-    //·¢ËÍ³É¹¦ºó£¬Õâ¸öÊı¾İÒÑ¾­½»¸îSend Queue£¬
+    //å‘é€æˆåŠŸåï¼Œè¿™ä¸ªæ•°æ®å·²ç»äº¤å‰²Send Queueï¼Œ
     abnormal_frame_ = NULL;
 
     return 0;
 };
 
-//»ØÊÕºóµÄ´¦Àí£¬ÓÃÓÚ×ÊÔ´µÄÊÍ·Å£¬µÈµÈ£¬¾¡Á¿±£Ö¤»ùÀàµÄÕâ¸öº¯Êı×îºóµ÷ÓÃ£¬ÀàËÆÎö¹¹º¯Êı¡£
+//å›æ”¶åçš„å¤„ç†ï¼Œç”¨äºèµ„æºçš„é‡Šæ”¾ï¼Œç­‰ç­‰ï¼Œå°½é‡ä¿è¯åŸºç±»çš„è¿™ä¸ªå‡½æ•°æœ€åè°ƒç”¨ï¼Œç±»ä¼¼ææ„å‡½æ•°ã€‚
 void Notify_Trans_Abnormal_Base::finish()
 {
-    //±íÊ¾sndqueue_frame_Ã»ÓĞ±»Õı³£Ê¹ÓÃ,»ØÊÕ
+    //è¡¨ç¤ºsndqueue_frame_æ²¡æœ‰è¢«æ­£å¸¸ä½¿ç”¨,å›æ”¶
     if (abnormal_frame_)
     {
         trans_notify_mgr_->free_appframe(abnormal_frame_);

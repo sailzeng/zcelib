@@ -3,25 +3,25 @@
 * @filename   zce/os_adapt/file.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê7ÔÂ10ÈÕ
-* @brief      ÎÄ¼ş²Ù×÷µÄÊÊÅäÆ÷²ã£¬Ö÷Òª»¹ÊÇÏòLINUXÏÂ¿¿Â£
+* @date       2011å¹´7æœˆ10æ—¥
+* @brief      æ–‡ä»¶æ“ä½œçš„é€‚é…å™¨å±‚ï¼Œä¸»è¦è¿˜æ˜¯å‘LINUXä¸‹é æ‹¢
 *
-* @details    ÎªÊ²Ã´ÔÚWINDOWSÆ½Ì¨ÒªÌá¹©Ò»×éÒÔWINDOWSµÄHANDLEº¯ÊıÄØ£¬¶ø²»ÊÇCÎÄ¼şÃèÊö·ûµÄº¯ÊıÄØ
-*             1.ÒòÎªWINDOWSÄÚ²¿µÄAPI´óÁ¿Ê¹ÓÃHANDLE×÷Îª²ÎÊı¶ø²»ÊÇint fd,ËùÒÔÎÒ²»ÄÜÍêÈ«ÒÀÀµCRT
-*             2.ÒòÎªWINDOWSÏÂCRTµÄº¯ÊıÊµÏÖ¶¼ÓĞÒ»Ğ©è¦´Ã£¬±ÈÈçlseek,(ĞÂµÄµ¹ÊÇÓĞÁË_lseek64)
+* @details    ä¸ºä»€ä¹ˆåœ¨WINDOWSå¹³å°è¦æä¾›ä¸€ç»„ä»¥WINDOWSçš„HANDLEå‡½æ•°å‘¢ï¼Œè€Œä¸æ˜¯Cæ–‡ä»¶æè¿°ç¬¦çš„å‡½æ•°å‘¢
+*             1.å› ä¸ºWINDOWSå†…éƒ¨çš„APIå¤§é‡ä½¿ç”¨HANDLEä½œä¸ºå‚æ•°è€Œä¸æ˜¯int fd,æ‰€ä»¥æˆ‘ä¸èƒ½å®Œå…¨ä¾èµ–CRT
+*             2.å› ä¸ºWINDOWSä¸‹CRTçš„å‡½æ•°å®ç°éƒ½æœ‰ä¸€äº›ç‘•ç–µï¼Œæ¯”å¦‚lseek,(æ–°çš„å€’æ˜¯æœ‰äº†_lseek64)
 *
-*             »¹ÓĞÒ»¸öÎÊÌâ±ØĞëËµÃ÷Ò»ÏÂ£¬ÎÄ¼ş³¤¶ÈµÄÎÊÌâ£¬ÎÄ¼ş²Ù×÷µÄºÜ¶à²ÎÊıÎÒÓÃÁËssize_tÕâ¸öÀàĞÍ£¬
-*             LINUXÏÂÍùÍùÊÇoff_t£¬off_t´ó²¿·ÖÇé¿öÏÂºÍssize_t±íÏÖÒ»Ñù£¬£¨³ı·ÇÄã×Ô¼ºÈ¥±àÒëÄÚºË£©
-*             ssize_tÔÚ32Î»ÏµÍ³ÏÂ×î´óÖµ¾ÍÊÇ2G£¬µ±È»¸÷ÖÖOS£¨°üÀ¨32Î»£©µÄÎÄ¼ş¿Ï¶¨ÊÇ¿ÉÒÔÍ»ÆÆ2G,
-*             Õâ¾Í¸øÊ¹ÓÃ´øÀ´ÁËÂé·³£¬ÆäÊµÕâÊÇOS×Ô¼ºµÄÂé·³£¬OS´ó²¿·Ö¶¼Ìá¹©Ò»×éXXXX64µÄº¯Êı£¬±ÈÈç
-*             lseek64ÕâÑùµÄº¯ÊıÀ´½â¾öÕâ¸öÎÊÌâ£¬
-*             µ«Èç¹ûÎÒÒ²ÒªÕâÑù£¬ÎÒÓÖ¾õµÃÓĞµãĞ¡Âé·³£¬ºÇºÇ¡£×÷ÎªÒ»¸ö·şÎñÆ÷¿ª·¢ÈËÔ±£¬ÎÒµÄÔËĞĞ»·¾³ÆäÊµ
-*             »ù±¾ÉÏ¶¼ÊÇ64Î»µÄ£¬¶øsszie_tÔÚ64Î»OSÉÏÒ²ÊÇ64Î»£¨Ò»¸ö·ûºÅÎ»£©£¬ËùÒÔ´ó²¿·ÖÇé¿öÏÂÎÒÃ»
-*             Âé·³¡£µ«Èç¹ûÄÄÌì·ÇÒªÔÚ32Î»µÄÏµÍ³ÉÏÕÛÌÚ£¬¹À¼Æ»¹ÒªÕÛÌÚÒ»ÏÂ¡£
+*             è¿˜æœ‰ä¸€ä¸ªé—®é¢˜å¿…é¡»è¯´æ˜ä¸€ä¸‹ï¼Œæ–‡ä»¶é•¿åº¦çš„é—®é¢˜ï¼Œæ–‡ä»¶æ“ä½œçš„å¾ˆå¤šå‚æ•°æˆ‘ç”¨äº†ssize_tè¿™ä¸ªç±»å‹ï¼Œ
+*             LINUXä¸‹å¾€å¾€æ˜¯off_tï¼Œoff_tå¤§éƒ¨åˆ†æƒ…å†µä¸‹å’Œssize_tè¡¨ç°ä¸€æ ·ï¼Œï¼ˆé™¤éä½ è‡ªå·±å»ç¼–è¯‘å†…æ ¸ï¼‰
+*             ssize_tåœ¨32ä½ç³»ç»Ÿä¸‹æœ€å¤§å€¼å°±æ˜¯2Gï¼Œå½“ç„¶å„ç§OSï¼ˆåŒ…æ‹¬32ä½ï¼‰çš„æ–‡ä»¶è‚¯å®šæ˜¯å¯ä»¥çªç ´2G,
+*             è¿™å°±ç»™ä½¿ç”¨å¸¦æ¥äº†éº»çƒ¦ï¼Œå…¶å®è¿™æ˜¯OSè‡ªå·±çš„éº»çƒ¦ï¼ŒOSå¤§éƒ¨åˆ†éƒ½æä¾›ä¸€ç»„XXXX64çš„å‡½æ•°ï¼Œæ¯”å¦‚
+*             lseek64è¿™æ ·çš„å‡½æ•°æ¥è§£å†³è¿™ä¸ªé—®é¢˜ï¼Œ
+*             ä½†å¦‚æœæˆ‘ä¹Ÿè¦è¿™æ ·ï¼Œæˆ‘åˆè§‰å¾—æœ‰ç‚¹å°éº»çƒ¦ï¼Œå‘µå‘µã€‚ä½œä¸ºä¸€ä¸ªæœåŠ¡å™¨å¼€å‘äººå‘˜ï¼Œæˆ‘çš„è¿è¡Œç¯å¢ƒå…¶å®
+*             åŸºæœ¬ä¸Šéƒ½æ˜¯64ä½çš„ï¼Œè€Œsszie_tåœ¨64ä½OSä¸Šä¹Ÿæ˜¯64ä½ï¼ˆä¸€ä¸ªç¬¦å·ä½ï¼‰ï¼Œæ‰€ä»¥å¤§éƒ¨åˆ†æƒ…å†µä¸‹æˆ‘æ²¡
+*             éº»çƒ¦ã€‚ä½†å¦‚æœå“ªå¤©éè¦åœ¨32ä½çš„ç³»ç»Ÿä¸ŠæŠ˜è…¾ï¼Œä¼°è®¡è¿˜è¦æŠ˜è…¾ä¸€ä¸‹ã€‚
 *
-* @note       ÎÒÔø¾­ÔÚÆäÖĞµÄºÜ¶àº¯Êı²ÉÓÃÁËÏÈÓÃCº¯Êı½øĞĞ²Ù×÷£¬È»ºóµÃµ½WINDOWS¾ä±úµÄ·½Ê½
-*             _get_osfhandle½øĞĞ×ª»»£¬ĞèÒª×ª»»»ØÀ´µÄÊ±ºòÓÃ_open_osfhandle£¬
-*             µ«ÆäÊµÊÇÍêÈ«Îó¶ÁÁË_open_osfhandleº¯ÊıµÄÒâÍ¼£¬Ëû²»ÊÇ×ª»»£¬¶øÊÇ´´½¨£¬
+* @note       æˆ‘æ›¾ç»åœ¨å…¶ä¸­çš„å¾ˆå¤šå‡½æ•°é‡‡ç”¨äº†å…ˆç”¨Cå‡½æ•°è¿›è¡Œæ“ä½œï¼Œç„¶åå¾—åˆ°WINDOWSå¥æŸ„çš„æ–¹å¼
+*             _get_osfhandleè¿›è¡Œè½¬æ¢ï¼Œéœ€è¦è½¬æ¢å›æ¥çš„æ—¶å€™ç”¨_open_osfhandleï¼Œ
+*             ä½†å…¶å®æ˜¯å®Œå…¨è¯¯è¯»äº†_open_osfhandleå‡½æ•°çš„æ„å›¾ï¼Œä»–ä¸æ˜¯è½¬æ¢ï¼Œè€Œæ˜¯åˆ›å»ºï¼Œ
 *             http://www.cnblogs.com/fullsail/archive/2012/10/21/2732873.html
 */
 
@@ -34,46 +34,46 @@ namespace zce
 {
 
 /*!
-* @brief      ´ò¿ªÒ»¸öÎÄ¼ş
-* @return     ZCE_HANDLE ´ò¿ªÎÄ¼şµÄ¾ä±ú
-* @param      filename   ÎÄ¼şÃû³Æ
-* @param      open_mode  ´ò¿ªÎÄ¼şµÄÄ£Ê½£¬Á½¸öÆ½Ì¨Í¨ÓÃµÄ²ÎÊıO_CREAT£¬O_APPEND£¬O_EXCL£¬O_TRUNC£¬O_RDONLY, O_WRONLY, and O_RDWR´óÖÂÕâ¼¸¸ö
-* @param      perms      ÎÄ¼şµÄ¹²ÏíÄ£Ê½£¬WINDOWSÏÂÎÒ»á¸ù¾İÄãµÄÊäÈë½øĞĞ×ª»»£¨ÆäÊµ²î±ğ²»Ğ¡£©£¬Äã¿ÉÒÔÊ¹ÓÃLINUXÏÂµÄ¹²Ïí·½Ê½²ÎÊı
-* @note       ZCE_DEFAULT_FILE_PERMS Ó¦¸ÃÊÇ0660
+* @brief      æ‰“å¼€ä¸€ä¸ªæ–‡ä»¶
+* @return     ZCE_HANDLE æ‰“å¼€æ–‡ä»¶çš„å¥æŸ„
+* @param      filename   æ–‡ä»¶åç§°
+* @param      open_mode  æ‰“å¼€æ–‡ä»¶çš„æ¨¡å¼ï¼Œä¸¤ä¸ªå¹³å°é€šç”¨çš„å‚æ•°O_CREATï¼ŒO_APPENDï¼ŒO_EXCLï¼ŒO_TRUNCï¼ŒO_RDONLY, O_WRONLY, and O_RDWRå¤§è‡´è¿™å‡ ä¸ª
+* @param      perms      æ–‡ä»¶çš„å…±äº«æ¨¡å¼ï¼ŒWINDOWSä¸‹æˆ‘ä¼šæ ¹æ®ä½ çš„è¾“å…¥è¿›è¡Œè½¬æ¢ï¼ˆå…¶å®å·®åˆ«ä¸å°ï¼‰ï¼Œä½ å¯ä»¥ä½¿ç”¨LINUXä¸‹çš„å…±äº«æ–¹å¼å‚æ•°
+* @note       ZCE_DEFAULT_FILE_PERMS åº”è¯¥æ˜¯0660
 */
 ZCE_HANDLE open(const char* filename,
                 int open_mode,
                 mode_t perms=ZCE_DEFAULT_FILE_PERMS);
 
 /*!
-* @brief      ¹Ø±ÕÒ»¸öÎÄ¼ş
-* @return     int ==0±êÊ¶³É¹¦
-* @param      handle ÎÄ¼ş¾ä±ú
+* @brief      å…³é—­ä¸€ä¸ªæ–‡ä»¶
+* @return     int ==0æ ‡è¯†æˆåŠŸ
+* @param      handle æ–‡ä»¶å¥æŸ„
 */
 int close(ZCE_HANDLE handle);
 
 /*!
-* @brief      ¶ÁÈ¡ÎÄ¼ş£¬WINDOWSÏÂ£¬³¤¶ÈÎŞ·¨Í»ÆÆ32Î»µÄ
-* @return     ssize_t ´íÎó·µ»Ø-1£¬£¬ÕıÈ··µ»Ø¶ÁÈ¡µÄ×Ö½Ú³¤¶È£¨Ò²¿ÉÄÜÎª0£©£¬errno ±íÊ¾´íÎóÔ­Òò
-* @param      file_handle ÎÄ¼ş¾ä±ú
-* @param      buf ¶ÁÈ¡µÄbuffer²ÎÊı
-* @param      count bufferµÄ³¤¶È£¬WINDOWSÏÂ£¬³¤¶ÈÎŞ·¨Í»ÆÆ32Î»µÄ£¬µ±È»¡­¡­£¨µ±È»ÆäÊµº¯ÊıµÄÓïÒå¿´32Î»ÏÂÖ»ÄÜÊÇ2G£©£¬Äã¶®µÃ
+* @brief      è¯»å–æ–‡ä»¶ï¼ŒWINDOWSä¸‹ï¼Œé•¿åº¦æ— æ³•çªç ´32ä½çš„
+* @return     ssize_t é”™è¯¯è¿”å›-1ï¼Œï¼Œæ­£ç¡®è¿”å›è¯»å–çš„å­—èŠ‚é•¿åº¦ï¼ˆä¹Ÿå¯èƒ½ä¸º0ï¼‰ï¼Œerrno è¡¨ç¤ºé”™è¯¯åŸå› 
+* @param      file_handle æ–‡ä»¶å¥æŸ„
+* @param      buf è¯»å–çš„bufferå‚æ•°
+* @param      count bufferçš„é•¿åº¦ï¼ŒWINDOWSä¸‹ï¼Œé•¿åº¦æ— æ³•çªç ´32ä½çš„ï¼Œå½“ç„¶â€¦â€¦ï¼ˆå½“ç„¶å…¶å®å‡½æ•°çš„è¯­ä¹‰çœ‹32ä½ä¸‹åªèƒ½æ˜¯2Gï¼‰ï¼Œä½ æ‡‚å¾—
 */
 ssize_t read(ZCE_HANDLE file_handle,void* buf,size_t count);
 
 /*!
-* @brief      Ğ´ÈçÎÄ¼ş£¬
-* @return     ssize_t ´íÎó·µ»Ø-1£¬£¬ÕıÈ··µ»Ø¶ÁÈ¡µÄ×Ö½Ú³¤¶È£¨Ò²¿ÉÄÜÎª0£©£¬errno ±íÊ¾´íÎóÔ­Òò
-* @param      file_handle ÎÄ¼ş¾ä±ú
-* @param      buf ¶ÁÈ¡µÄbuffer²ÎÊı
-* @param      count bufferµÄ³¤¶È£¬WINDOWSÏÂ£¬³¤¶ÈÎŞ·¨Í»ÆÆ32Î»µÄ£¬µ±È»ÓĞÈËĞèÒªĞ´Èë4GÊı¾İÂğ£¿
-* @note       ×¢ÒâWindowsÏÂÄ¬ÈÏµ÷ÓÃµÄWriteFile»¹ÊÇÓĞ»º³åµÄ£¬ÎÒÎªÁËºÍPOSIXÍ³Ò»£¬»¹ÊÇÓÃÁËFlushFileBuffers
+* @brief      å†™å¦‚æ–‡ä»¶ï¼Œ
+* @return     ssize_t é”™è¯¯è¿”å›-1ï¼Œï¼Œæ­£ç¡®è¿”å›è¯»å–çš„å­—èŠ‚é•¿åº¦ï¼ˆä¹Ÿå¯èƒ½ä¸º0ï¼‰ï¼Œerrno è¡¨ç¤ºé”™è¯¯åŸå› 
+* @param      file_handle æ–‡ä»¶å¥æŸ„
+* @param      buf è¯»å–çš„bufferå‚æ•°
+* @param      count bufferçš„é•¿åº¦ï¼ŒWINDOWSä¸‹ï¼Œé•¿åº¦æ— æ³•çªç ´32ä½çš„ï¼Œå½“ç„¶æœ‰äººéœ€è¦å†™å…¥4Gæ•°æ®å—ï¼Ÿ
+* @note       æ³¨æ„Windowsä¸‹é»˜è®¤è°ƒç”¨çš„WriteFileè¿˜æ˜¯æœ‰ç¼“å†²çš„ï¼Œæˆ‘ä¸ºäº†å’ŒPOSIXç»Ÿä¸€ï¼Œè¿˜æ˜¯ç”¨äº†FlushFileBuffers
 */
 ssize_t write(ZCE_HANDLE file_handle,const void* buf,size_t count);
 
 /*!
-* @brief      ÔÚÎÄ¼şÄÚ½øĞĞÆ«ÒÆ
-* @return     ssize_t ·µ»Øµ±Ç°µÄÎ»ÖÃ
+* @brief      åœ¨æ–‡ä»¶å†…è¿›è¡Œåç§»
+* @return     ssize_t è¿”å›å½“å‰çš„ä½ç½®
 * @param      file_handle
 * @param      offset
 * @param      whence
@@ -81,83 +81,83 @@ ssize_t write(ZCE_HANDLE file_handle,const void* buf,size_t count);
 ssize_t lseek(ZCE_HANDLE file_handle,ssize_t offset,int whence);
 
 /*!
-* @brief      ¶ÏÎÄ¼ş£¬µ¹Ã¹µÄÊÇWINDOWSÏÂÓÖTMD Ã»ÓĞ£¬
-* @return     int ==0 ±êÊ¶³É¹¦
-* @param      file_handle ²Ù×÷µÄÎÄ¼ş¾ä±ú
-* @param      offset      ½Ø¶ÏµÄ´óĞ¡
+* @brief      æ–­æ–‡ä»¶ï¼Œå€’éœ‰çš„æ˜¯WINDOWSä¸‹åˆTMD æ²¡æœ‰ï¼Œ
+* @return     int ==0 æ ‡è¯†æˆåŠŸ
+* @param      file_handle æ“ä½œçš„æ–‡ä»¶å¥æŸ„
+* @param      offset      æˆªæ–­çš„å¤§å°
 */
 int ftruncate(ZCE_HANDLE file_handle,size_t  offset);
 
-///½Ø¶ÏÎÄ¼ş,¸ù¾İÎÄ¼şÃû³Æ
+///æˆªæ–­æ–‡ä»¶,æ ¹æ®æ–‡ä»¶åç§°
 int truncate(const char* filename,size_t offset);
 
 /*!
-* @brief      Í¨¹ıÎÄ¼ş¾ä±ú,µÃµ½ÎÄ¼şµÄ³¤¶È£¬¹ØÓÚÎÄ¼ş³¤¶ÈµÄÎÊÌâ£¬ÄãÓ¦¸Ã¿´¿´ÎÄ¼ş¿ªÊ¼µÄ×¢ÊÍ¶ÎÂä
-* @return     int ·µ»Ø-1±êÊ¶Ê§°Ü£¬·µ»Ø0±êÊ¶³É¹¦
-* @param      file_handle ÎÄ¼ş¾ä±ú
-* @param      file_size   ÎÄ¼şµÄ´óĞ¡£¬
-* @note       ÕâÊÇÒ»¸ö·Ç±ê×¼º¯Êı£¬ÉÙÁ¿ÏµÍ³Ìá¹©º¯Êıoff_t filesize(int file_handle);
-*             ¿¼ÂÇÀ´¿¼ÂÇÈ¥£¬²»Ê¹ÓÃoff_t×÷Îª·µ»ØÖµ»òÕß²ÎÊı£¬ÒòÎªÔÚwinÏÂÖ»±»¶¨Òå³Élong,
-*             Ô­À´ÓÃ×÷Îª·µ»ØÖµ£¬µ«ÓÉÓÚÔÚWINDOWS32ÏÂ²»³¬¹ı2G£¬¸Ğ¾õ²»ºÃ£¬ÓÖ¸ÄÁË³ÉÁËsize_t£¬
-*             µ«ÊÇÓÃsize_t×÷Îª·µ»ØÖµÓÖ¶ñĞÄ,0µ½µ×ÊÇ´íÎó»¹ÊÇ³ß´ç0£¿ËùÒÔº¯Êı±»¸Ä³ÉÁËÕâÑù£¬ÖĞ¹æÖĞ¾Ø
+* @brief      é€šè¿‡æ–‡ä»¶å¥æŸ„,å¾—åˆ°æ–‡ä»¶çš„é•¿åº¦ï¼Œå…³äºæ–‡ä»¶é•¿åº¦çš„é—®é¢˜ï¼Œä½ åº”è¯¥çœ‹çœ‹æ–‡ä»¶å¼€å§‹çš„æ³¨é‡Šæ®µè½
+* @return     int è¿”å›-1æ ‡è¯†å¤±è´¥ï¼Œè¿”å›0æ ‡è¯†æˆåŠŸ
+* @param      file_handle æ–‡ä»¶å¥æŸ„
+* @param      file_size   æ–‡ä»¶çš„å¤§å°ï¼Œ
+* @note       è¿™æ˜¯ä¸€ä¸ªéæ ‡å‡†å‡½æ•°ï¼Œå°‘é‡ç³»ç»Ÿæä¾›å‡½æ•°off_t filesize(int file_handle);
+*             è€ƒè™‘æ¥è€ƒè™‘å»ï¼Œä¸ä½¿ç”¨off_tä½œä¸ºè¿”å›å€¼æˆ–è€…å‚æ•°ï¼Œå› ä¸ºåœ¨winä¸‹åªè¢«å®šä¹‰æˆlong,
+*             åŸæ¥ç”¨ä½œä¸ºè¿”å›å€¼ï¼Œä½†ç”±äºåœ¨WINDOWS32ä¸‹ä¸è¶…è¿‡2Gï¼Œæ„Ÿè§‰ä¸å¥½ï¼Œåˆæ”¹äº†æˆäº†size_tï¼Œ
+*             ä½†æ˜¯ç”¨size_tä½œä¸ºè¿”å›å€¼åˆæ¶å¿ƒ,0åˆ°åº•æ˜¯é”™è¯¯è¿˜æ˜¯å°ºå¯¸0ï¼Ÿæ‰€ä»¥å‡½æ•°è¢«æ”¹æˆäº†è¿™æ ·ï¼Œä¸­è§„ä¸­çŸ©
 */
 int filesize(ZCE_HANDLE file_handle,size_t* file_size);
 
 ///
 /*!
-* @brief      Í¨¹ıÎÄ¼şÃû³Æ,È¡µÃÎÄ¼şµÄ³¤¶È£¬
-* @return     int  ·µ»Ø-1±êÊ¶Ê§°Ü£¬·µ»Ø0±êÊ¶³É¹¦
-* @param      filename  ÎÄ¼ş
-* @param      file_size ÎÄ¼şµÄ´óĞ¡
-* @note       ²»ÖØÔØfilesizeµÄÔ­ÒòÊÇfilelen£¬filesizeµÚÒ»¸ö²ÎÊı¶¼¿ÉÄÜÊÇÖ¸Õë
+* @brief      é€šè¿‡æ–‡ä»¶åç§°,å–å¾—æ–‡ä»¶çš„é•¿åº¦ï¼Œ
+* @return     int  è¿”å›-1æ ‡è¯†å¤±è´¥ï¼Œè¿”å›0æ ‡è¯†æˆåŠŸ
+* @param      filename  æ–‡ä»¶
+* @param      file_size æ–‡ä»¶çš„å¤§å°
+* @note       ä¸é‡è½½filesizeçš„åŸå› æ˜¯filelenï¼Œfilesizeç¬¬ä¸€ä¸ªå‚æ•°éƒ½å¯èƒ½æ˜¯æŒ‡é’ˆ
 */
 int filelen(const char* filename,size_t* file_size);
 
 /*!
-* @brief      ÓÃÄ£°æÃû³Æ½¨Á¢²¢ÇÒ´ò¿ªÒ»¸öÁÙÊ±ÎÄ¼ş£¬
-* @return     ZCE_HANDLE ÎÄ¼ş¾ä±ú
-* @param      template_name ÁÙÊ±ÎÄ¼şµÄÄ£°æÃû³Æ
+* @brief      ç”¨æ¨¡ç‰ˆåç§°å»ºç«‹å¹¶ä¸”æ‰“å¼€ä¸€ä¸ªä¸´æ—¶æ–‡ä»¶ï¼Œ
+* @return     ZCE_HANDLE æ–‡ä»¶å¥æŸ„
+* @param      template_name ä¸´æ—¶æ–‡ä»¶çš„æ¨¡ç‰ˆåç§°
 */
 ZCE_HANDLE mkstemp(char* template_name);
 
-//µÃµ½ÎÄ¼şµÄstatĞÅÏ¢£¬Äã¿ÉÒÔÈÏÎªzce_os_stat¾ÍÊÇstat£¬Ö»ÊÇÔÚWINDOWSÏÂstat64,Ö÷ÒªÊÇÎªÁË³¤ÎÄ¼ş¿¼ÂÇµÄ
+//å¾—åˆ°æ–‡ä»¶çš„statä¿¡æ¯ï¼Œä½ å¯ä»¥è®¤ä¸ºzce_os_statå°±æ˜¯statï¼Œåªæ˜¯åœ¨WINDOWSä¸‹stat64,ä¸»è¦æ˜¯ä¸ºäº†é•¿æ–‡ä»¶è€ƒè™‘çš„
 int stat(const char* path,zce_os_stat* buf);
-//Í¨¹ıÎÄ¼ş¾ä±úµÃµ½ÎÄ¼şstat
+//é€šè¿‡æ–‡ä»¶å¥æŸ„å¾—åˆ°æ–‡ä»¶stat
 int fstat(ZCE_HANDLE file_handle,zce_os_stat* buf);
 
 
-///Â·¾¶ÊÇ·ñÊÇÒ»¸öÄ¿Â¼£¬Èç¹ûÊÇ·µ»Øtrue£¬Èç¹û²»ÊÇ·µ»Øfalse
+///è·¯å¾„æ˜¯å¦æ˜¯ä¸€ä¸ªç›®å½•ï¼Œå¦‚æœæ˜¯è¿”å›trueï¼Œå¦‚æœä¸æ˜¯è¿”å›false
 bool is_directory(const char* path_name);
 
 
 /*!
-* @brief      É¾³ıÎÄ¼ş
-* @return     int == 0±êÊ¶³É¹¦£¬
-* @param      filename ÎÄ¼şÃû³Æ
+* @brief      åˆ é™¤æ–‡ä»¶
+* @return     int == 0æ ‡è¯†æˆåŠŸï¼Œ
+* @param      filename æ–‡ä»¶åç§°
 */
 int unlink(const char* filename);
 
-///ÉèÖÃumask
+///è®¾ç½®umask
 mode_t umask(mode_t cmask);
 
 /*!
-* @brief      ¼ì²éÎÄ¼şÊÇ·ñOK£¬ºğºğ
-* @return     int       ==0 ±íÊ¾ÕıÈ·£¬´íÎó·µ»Ø-1
-* @param      pathname  ÎÄ¼şÂ·¾¶Ãû³Æ
-* @param      mode      ÎÄ¼şÄ£Ê½£¬Ö§³ÖF_OK,R_OR,W_OK,»òÕß¼¸¸öµÄ|£¬ Windows ²»Ö§³ÖX_OK£¬LINUXÖ§³Ö
+* @brief      æ£€æŸ¥æ–‡ä»¶æ˜¯å¦OKï¼Œå¼å¼
+* @return     int       ==0 è¡¨ç¤ºæ­£ç¡®ï¼Œé”™è¯¯è¿”å›-1
+* @param      pathname  æ–‡ä»¶è·¯å¾„åç§°
+* @param      mode      æ–‡ä»¶æ¨¡å¼ï¼Œæ”¯æŒF_OK,R_OR,W_OK,æˆ–è€…å‡ ä¸ªçš„|ï¼Œ Windows ä¸æ”¯æŒX_OKï¼ŒLINUXæ”¯æŒ
 */
 int access(const char* pathname,int mode);
 
 //-------------------------------------------------------------------------------------------------
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı
+* @brief      éæ ‡å‡†å‡½æ•°
 * @return     int
-* @param[in]  filename ÓÃÖ»¶Á·½Ê½¶ÁÈ¡Ò»¸öÎÄ¼şµÄÄÚÈİ£¬
-* @param[in]  buff     ¶ÁÈ¡µÄbuffer
-* @param[in]  buf_len  bufferµÄ³¤¶È
-* @param[out] read_len Êä³ö²ÎÊı£¬·µ»Ø¶ÁÈ¡µÄ³¤¶È
-* @param[in]  offset   ¿ªÊ¼¶ÁÈ¡µÄÆ«ÒÆÊÇ¶àÉÙ£¬´ÓÎÄ¼şÍ·Î»ÖÃ¼ÆËã£¬
+* @param[in]  filename ç”¨åªè¯»æ–¹å¼è¯»å–ä¸€ä¸ªæ–‡ä»¶çš„å†…å®¹ï¼Œ
+* @param[in]  buff     è¯»å–çš„buffer
+* @param[in]  buf_len  bufferçš„é•¿åº¦
+* @param[out] read_len è¾“å‡ºå‚æ•°ï¼Œè¿”å›è¯»å–çš„é•¿åº¦
+* @param[in]  offset   å¼€å§‹è¯»å–çš„åç§»æ˜¯å¤šå°‘ï¼Œä»æ–‡ä»¶å¤´ä½ç½®è®¡ç®—ï¼Œ
 */
 int read_file_data(const char* filename,
                    char* buff,
@@ -168,12 +168,12 @@ int read_file_data(const char* filename,
 
 
 /*!
-* @brief      ÓÃC++ 11µÄ·½Ê½°ü×°Ò»¸ö¸øÄã¡£
+* @brief      ç”¨C++ 11çš„æ–¹å¼åŒ…è£…ä¸€ä¸ªç»™ä½ ã€‚
 * @return     std::pair<int,std::unique_ptr<char*>>
 * @param[in]  filename
-* @param[out] read_len Êä³ö²ÎÊı£¬·µ»Ø¶ÁÈ¡µÄ³¤¶È
+* @param[out] read_len è¾“å‡ºå‚æ•°ï¼Œè¿”å›è¯»å–çš„é•¿åº¦
 * @param[in]  offset
-* @note       WindowsÏÂÃæ²»¿ÉÄÜÒ»´Î¶ÁÈ¡³¬¹ı4G´óĞ¡µÄÊı¾İµ«£¬³¬´óÎÄ¼ş±ğÖ¸ÍûÕâ¸öº¯Êı
+* @note       Windowsä¸‹é¢ä¸å¯èƒ½ä¸€æ¬¡è¯»å–è¶…è¿‡4Gå¤§å°çš„æ•°æ®ä½†ï¼Œè¶…å¤§æ–‡ä»¶åˆ«æŒ‡æœ›è¿™ä¸ªå‡½æ•°
 */
 std::pair<int,std::shared_ptr<char>> read_file_all(const char* filename,
                                                    size_t* file_len,
@@ -182,7 +182,7 @@ std::pair<int,std::shared_ptr<char>> read_file_all(const char* filename,
 
 
 /*!
-* @brief     ¸¨Öú unique_ptr ÓÃÓÚÎÄ¼ş´¦Àí¹ı³ÌµÄ×Ô¶¯ÊÍ·Å
+* @brief     è¾…åŠ© unique_ptr ç”¨äºæ–‡ä»¶å¤„ç†è¿‡ç¨‹çš„è‡ªåŠ¨é‡Šæ”¾
 */
 inline void close_FILE_assist(FILE* to_close)
 {

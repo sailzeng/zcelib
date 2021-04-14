@@ -4,7 +4,7 @@ FileName            : zce/os_adapt/layer.h
 Author              : Sail (ZENGXING)/Author name here
 Version             :
 Date Of Creation    : 2011-5-1
-Description         : Ê±¼ä²Ù×÷µÄÊÊÅäÆ÷²ã£¬Ö÷Òª»¹ÊÇÏòLINUXÏÂ¿¿Â£
+Description         : æ—¶é—´æ“ä½œçš„é€‚é…å™¨å±‚ï¼Œä¸»è¦è¿˜æ˜¯å‘LINUXä¸‹é æ‹¢
 
 Others              :
 Function List       :
@@ -23,7 +23,7 @@ Modification  :
 #include "zce/logger/logging.h"
 #include "zce/shared_mem/mmap.h"
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_ShareMem_Mmap::ZCE_ShareMem_Mmap():
     mmap_addr_(NULL),
     mmap_handle_(ZCE_INVALID_HANDLE),
@@ -39,7 +39,7 @@ ZCE_ShareMem_Mmap::~ZCE_ShareMem_Mmap()
     }
 }
 
-//´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä
+//æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„
 int ZCE_ShareMem_Mmap::open(const char *file_name,
                             std::size_t shm_size,
                             int file_open_mode,
@@ -49,7 +49,7 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
                             int mmap_flags,
                             std::size_t offset)
 {
-    //±ÜÃâÖØÈëµ÷ÓÃopenº¯Êı£¬Èç¹û³öÏÖ¶ÏÑÔ±íÊ¾¶à´Îµ÷ÓÃopen,
+    //é¿å…é‡å…¥è°ƒç”¨openå‡½æ•°ï¼Œå¦‚æœå‡ºç°æ–­è¨€è¡¨ç¤ºå¤šæ¬¡è°ƒç”¨open,
     ZCE_ASSERT(NULL == mmap_addr_);
     ZCE_ASSERT(ZCE_INVALID_HANDLE == mmap_handle_);
 
@@ -57,7 +57,7 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
 
     mmap_handle_ = zce::open(file_name, file_open_mode, file_perms_mode);
 
-    //Èç¹ûÃ»ÓĞ³É¹¦´ò¿ªÎÄ¼ş
+    //å¦‚æœæ²¡æœ‰æˆåŠŸæ‰“å¼€æ–‡ä»¶
     if (mmap_handle_ == ZCE_INVALID_HANDLE)
     {
         ZCE_LOG(RS_ERROR, "[zcelib] Mmap(file map) memory open fail ,zce::shm_open fail. last error =%d",
@@ -65,17 +65,17 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
         return -1;
     }
 
-    // ÔÚ·ÃÎÊÄÚ´æÊ±£¬ÎÄ¼ş¾ä±ú²»ÄÜ¹Ø±Õ
+    // åœ¨è®¿é—®å†…å­˜æ—¶ï¼Œæ–‡ä»¶å¥æŸ„ä¸èƒ½å…³é—­
     mmap_file_name_ = file_name;
 
-    //Èç¹û´ò¿ªÄ£Ê½Ê¹ÓÃÁËO_TRUNC£¬±íÊ¾ÖØĞÂ´ò¿ª
+    //å¦‚æœæ‰“å¼€æ¨¡å¼ä½¿ç”¨äº†O_TRUNCï¼Œè¡¨ç¤ºé‡æ–°æ‰“å¼€
     if (file_open_mode & O_TRUNC)
     {
         zce::ftruncate(mmap_handle_, static_cast<long>(shm_size + offset));
     }
     else
     {
-        //¶ÔÎÄ¼şµÄ³ß´ç½øĞĞ¼ì²é£¬Èç¹û²»¶Ô£¬Ò²²»½øĞĞ´¦Àí
+        //å¯¹æ–‡ä»¶çš„å°ºå¯¸è¿›è¡Œæ£€æŸ¥ï¼Œå¦‚æœä¸å¯¹ï¼Œä¹Ÿä¸è¿›è¡Œå¤„ç†
         size_t filelen =  0;
         ret =  zce::filesize(mmap_handle_, &filelen);
 
@@ -88,15 +88,15 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
             mmap_handle_ = ZCE_INVALID_HANDLE;
             return -1;
         }
-        //ÎÄ¼şÊÇÒ»¸öĞÂÎÄ¼ş£¬»òÕß¿ÕÎÄ¼ş£¬
+        //æ–‡ä»¶æ˜¯ä¸€ä¸ªæ–°æ–‡ä»¶ï¼Œæˆ–è€…ç©ºæ–‡ä»¶ï¼Œ
         else if ( 0 == filelen )
         {
             zce::ftruncate(mmap_handle_, static_cast<long>(shm_size + offset));
         }
-        //ÎÄ¼şÒÑ¾­´æÔÚ£¬¶øÇÒ»¹ÓĞÊı¾İ(´óĞ¡)£¬
+        //æ–‡ä»¶å·²ç»å­˜åœ¨ï¼Œè€Œä¸”è¿˜æœ‰æ•°æ®(å¤§å°)ï¼Œ
         else
         {
-            //ÎÄ¼şµÄ¿Õ¼ä¶¼²»¹»µÄÇé¿ö
+            //æ–‡ä»¶çš„ç©ºé—´éƒ½ä¸å¤Ÿçš„æƒ…å†µ
             if (filelen < static_cast<size_t> (shm_size + offset))
             {
                 ZCE_LOG(RS_ERROR, "[zcelib] Posix memory open fail ,old file size(%lu) < request file size(%lu). ",
@@ -109,7 +109,7 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
         }
     }
 
-    //½øĞĞ¹²ÏíÄÚ´æÓ³Éä
+    //è¿›è¡Œå…±äº«å†…å­˜æ˜ å°„
     void *nonconst_addr = const_cast<void *>( want_address);
     mmap_addr_ = zce::mmap (nonconst_addr,
                             shm_size,
@@ -118,22 +118,22 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
                             mmap_handle_,
                             offset);
 
-    //·µ»ØÖµ²»ÕıÈ·
+    //è¿”å›å€¼ä¸æ­£ç¡®
     if (!mmap_addr_ ||  MAP_FAILED == mmap_addr_)
     {
-        // ´ò¿ªµ½Ò»°ë£¬Ê§°ÜÄñ£¬ÎÄ¼ş¾ä±ú»¹ÊÇĞèÒª¹Ø±Õ°¡
+        // æ‰“å¼€åˆ°ä¸€åŠï¼Œå¤±è´¥é¸Ÿï¼Œæ–‡ä»¶å¥æŸ„è¿˜æ˜¯éœ€è¦å…³é—­å•Š
         zce::close(mmap_handle_);
         mmap_handle_ = ZCE_INVALID_HANDLE;
         return -1;
     }
 
-    //¼ÇÂ¼ÉèÖÃµÄ³ß´ç
+    //è®°å½•è®¾ç½®çš„å°ºå¯¸
     shm_size_ = shm_size;
 
     return 0;
 }
 
-//´ò¿ªÎÄ¼ş£¬½øĞĞÓ³Éä, ¼òµ¥
+//æ‰“å¼€æ–‡ä»¶ï¼Œè¿›è¡Œæ˜ å°„, ç®€å•
 int ZCE_ShareMem_Mmap::open(const char *file_name,
                             std::size_t shm_size,
                             bool if_restore,
@@ -148,7 +148,7 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
     int mmap_flags = 0;
     int file_perms_mode = 0;
 
-    //ÎªÊ²Ã´Ä¬ÈÏÈÃÆäËûÓÃ»§Ò²¿ÉÒÔ¶ÁÈ¡£¬ÒòÎªÓĞĞ©Ê±ºòÎÒÃÇÒªÓÃ+sµÄrootÈ¨ÏŞÆô¶¯·şÎñÆ÷£¬
+    //ä¸ºä»€ä¹ˆé»˜è®¤è®©å…¶ä»–ç”¨æˆ·ä¹Ÿå¯ä»¥è¯»å–ï¼Œå› ä¸ºæœ‰äº›æ—¶å€™æˆ‘ä»¬è¦ç”¨+sçš„rootæƒé™å¯åŠ¨æœåŠ¡å™¨ï¼Œ
     if (share_file)
     {
         mmap_flags |= MAP_SHARED;
@@ -160,13 +160,13 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
         file_perms_mode = ZCE_PRIVATE_FILE_PERMS;
     }
 
-    //Èç¹û²»ÊÇ»Ö¸´£¬¶ÔÎÄ¼ş½øĞĞ½Ø¶Ï
+    //å¦‚æœä¸æ˜¯æ¢å¤ï¼Œå¯¹æ–‡ä»¶è¿›è¡Œæˆªæ–­
     if (!if_restore)
     {
         file_open_mode |= (O_TRUNC);
     }
 
-    //Èç¹û²»ÊÇÖ»¶ÁµÄ
+    //å¦‚æœä¸æ˜¯åªè¯»çš„
     if (!read_only)
     {
         file_open_mode |= O_RDWR;
@@ -177,7 +177,7 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
         file_open_mode |= O_RDONLY;
     }
 
-    //Èç¹ûÓĞÏ£ÍûÉèÖÃµÄµØÖ·£¬
+    //å¦‚æœæœ‰å¸Œæœ›è®¾ç½®çš„åœ°å€ï¼Œ
     if (want_address)
     {
         mmap_flags |= MAP_FIXED;
@@ -195,10 +195,10 @@ int ZCE_ShareMem_Mmap::open(const char *file_name,
 
 }
 
-//¹Ø±ÕÎÄ¼ş
+//å…³é—­æ–‡ä»¶
 int ZCE_ShareMem_Mmap::close()
 {
-    //¶ÏÑÔ±£Ö¤²»³öÏÖÃ»ÓĞopen¾Íµ÷ÓÃcloseµÄÇé¿ö
+    //æ–­è¨€ä¿è¯ä¸å‡ºç°æ²¡æœ‰openå°±è°ƒç”¨closeçš„æƒ…å†µ
     ZCE_ASSERT(mmap_addr_ != NULL );
     ZCE_ASSERT(mmap_handle_ != ZCE_INVALID_HANDLE);
 
@@ -206,7 +206,7 @@ int ZCE_ShareMem_Mmap::close()
     ret = zce::munmap (mmap_addr_, shm_size_);
     mmap_addr_ = NULL;
 
-    // ¹Ø±ÕÎÄ¼ş
+    // å…³é—­æ–‡ä»¶
     zce::close(mmap_handle_);
     mmap_handle_ = ZCE_INVALID_HANDLE;
 
@@ -218,13 +218,13 @@ int ZCE_ShareMem_Mmap::close()
     return 0;
 }
 
-//É¾³ıÓ³ÉäµÄÎÄ¼ş£¬µ±È»ÕıÔÚÓ³ÉäµÄÊ±ºò²»ÄÜÉ¾³ı
+//åˆ é™¤æ˜ å°„çš„æ–‡ä»¶ï¼Œå½“ç„¶æ­£åœ¨æ˜ å°„çš„æ—¶å€™ä¸èƒ½åˆ é™¤
 int ZCE_ShareMem_Mmap::remove()
 {
     return zce::unlink(mmap_file_name_.c_str());
 }
 
-//Í¬²½ÎÄ¼ş
+//åŒæ­¥æ–‡ä»¶
 int ZCE_ShareMem_Mmap::flush()
 {
     return zce::msync(mmap_addr_, shm_size_, MS_SYNC);

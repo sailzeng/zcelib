@@ -43,7 +43,7 @@ Interface_WH_Proxy::PROXY_TYPE Interface_WH_Proxy::str_to_proxytype(const char *
     }
 }
 
-//´úÀí½Ó¿ÚÖÆÔìµÄ¹¤³§
+//ä»£ç†æ¥å£åˆ¶é€ çš„å·¥å‚
 Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytype)
 {
     Interface_WH_Proxy *tmpintface = NULL;
@@ -51,35 +51,35 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
 
     switch (proxytype)
     {
-        // »ØÏÔ·şÎñÆ÷
+        // å›æ˜¾æœåŠ¡å™¨
         case PROXY_TYPE_ECHO:
         {
             tmpintface = new Echo_Proxy_Process();
             break;
         }
 
-        // Í¸×ª×ª·¢µÄ·½Ê½
+        // é€è½¬è½¬å‘çš„æ–¹å¼
         case PROXY_TYPE_TRANSMIT:
         {
             tmpintface = new Transmit_Proxy();
             break;
         }
 
-        // ¶ÔÊı¾İ½øĞĞ¿½±´·Ö·¢¹ã²¥
+        // å¯¹æ•°æ®è¿›è¡Œæ‹·è´åˆ†å‘å¹¿æ’­
         case PROXY_TYPE_BROADCAST:
         {
             tmpintface = new Broadcast_ProxyProcess();
             break;
         }
 
-        // DBPROXYµÄÄ£Ê½£¬²ÉÓÃUINÈ¡Ä£µÄ·½Ê½µÄµ½·şÎñÆ÷µÄID
+        // DBPROXYçš„æ¨¡å¼ï¼Œé‡‡ç”¨UINå–æ¨¡çš„æ–¹å¼çš„åˆ°æœåŠ¡å™¨çš„ID
         case PROXY_TYPE_MODULO_UID:
         {
             tmpintface = new Modulo_ProxyProcess(Modulo_ProxyProcess::MODULO_UID);
             break;
         }
 
-        // DBPROXYµÄÄ£Ê½£¬²ÉÓÃAPPIDºÍUINµÄ·½Ê½µÄµ½·şÎñÆ÷µÄID
+        // DBPROXYçš„æ¨¡å¼ï¼Œé‡‡ç”¨APPIDå’ŒUINçš„æ–¹å¼çš„åˆ°æœåŠ¡å™¨çš„ID
         case PROXY_TYPE_MODULO_SENDSVCID:
         {
             tmpintface = new Modulo_ProxyProcess(Modulo_ProxyProcess::MODULO_SENDSVC_ID);
@@ -88,7 +88,7 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
 
         default:
         {
-            // ´íÎó
+            // é”™è¯¯
             ZCE_LOG(RS_ERROR, "Error Proxy Type define. Please check you code. ");
             return NULL;
         }
@@ -105,14 +105,14 @@ Interface_WH_Proxy *Interface_WH_Proxy::create_proxy_factory(PROXY_TYPE proxytyp
 int Interface_WH_Proxy::init_proxy_instance()
 {
     // int ret =0;
-    // ³õÊ¼»¯MMAPÄÚ´æµÄPIPE
+    // åˆå§‹åŒ–MMAPå†…å­˜çš„PIPE
     zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
 
     return 0;
 }
 
 
-//¶ÁÈ¡ÅäÖÃ
+//è¯»å–é…ç½®
 int Interface_WH_Proxy::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree)
 {
     ZCE_UNUSED_ARG(conf_tree);
@@ -161,7 +161,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
                      proc_frame->frame_length_);
 
     int ret = 0;
-    // ÄÚ²¿´¦ÀíµÄÃüÁî
+    // å†…éƒ¨å¤„ç†çš„å‘½ä»¤
     bool bsnderr;
 
     if (proc_frame->is_internal_process(bsnderr) == true)
@@ -171,7 +171,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
         return 0;
     }
 
-    // ·µ»ØÕâ¸öÖ¡
+    // è¿”å›è¿™ä¸ªå¸§
     proc_frame->exchange_rcvsnd_svcid();
 
     ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
@@ -197,7 +197,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
 
 
 //===================================================================================================
-//Ö±½Ó½øĞĞ×ª·¢´¦Àí£¬²»¶ÔÊı¾İÖ¡½øĞĞÈÎºÎ´¦Àí
+//ç›´æ¥è¿›è¡Œè½¬å‘å¤„ç†ï¼Œä¸å¯¹æ•°æ®å¸§è¿›è¡Œä»»ä½•å¤„ç†
 
 Transmit_Proxy::Transmit_Proxy()
 {
@@ -237,7 +237,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
 
     int ret = 0;
 
-    // ÄÚ²¿´¦ÀíµÄÃüÁî,Ìø¹ı
+    // å†…éƒ¨å¤„ç†çš„å‘½ä»¤,è·³è¿‡
     bool bsnderr;
 
     if (proc_frame->is_internal_process(bsnderr) == true)
@@ -269,7 +269,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
 
 //===================================================================================================
 
-//½«Êı¾İ¸´ÖÆ×ª·¢¸øËùÓĞÅäÖÃµÄ·şÎñÆ÷
+//å°†æ•°æ®å¤åˆ¶è½¬å‘ç»™æ‰€æœ‰é…ç½®çš„æœåŠ¡å™¨
 Broadcast_ProxyProcess::Broadcast_ProxyProcess() :
     Interface_WH_Proxy(),
     broadcast_svctype_(0),
@@ -313,7 +313,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
 
 
 
-    //×¢ÒâÊÇ´Ó1¿ªÊ¼
+    //æ³¨æ„æ˜¯ä»1å¼€å§‹
     for (size_t i = 0; i < broadcast_svcnum_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("BROADCAST_CFG", "BROADCAST_SVCID_", i + 1, broadcast_svcid_[i]);
@@ -326,14 +326,14 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
     }
 
 
-    // ¼ì²éÊÇ·ñÓĞÖØ¸´µÄID
+    // æ£€æŸ¥æ˜¯å¦æœ‰é‡å¤çš„ID
     std::list <uint32_t> check_list;
     for (size_t i = 0; i < broadcast_svcnum_; ++i)
     {
         check_list.push_back(broadcast_svcid_[i]);
     }
 
-    // ²»½²ÇóĞ§ÂÊµÄµØ·½
+    // ä¸è®²æ±‚æ•ˆç‡çš„åœ°æ–¹
     check_list.sort();
     check_list.unique();
     if (check_list.size() != broadcast_svcnum_)
@@ -351,10 +351,10 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 {
     int ret = 0;
 
-    // Êä³ö°üÍ·£¬¿´¿´
+    // è¾“å‡ºåŒ…å¤´ï¼Œçœ‹çœ‹
     proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_DEBUG);
 
-    // ÄÚ²¿´¦ÀíµÄÃüÁî,Ìø¹ı
+    // å†…éƒ¨å¤„ç†çš„å‘½ä»¤,è·³è¿‡
     bool bsnderr;
 
     if (proc_frame->is_internal_process(bsnderr) == true)
@@ -364,17 +364,17 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
         return 0;
     }
 
-    // ÕâÑù´¦ÀíÊÇ·ñºÃ£¬ÎÒ²»ÖªµÀ£¬
+    // è¿™æ ·å¤„ç†æ˜¯å¦å¥½ï¼Œæˆ‘ä¸çŸ¥é“ï¼Œ
     if (proc_frame->recv_service_.services_type_ != broadcast_svctype_)
     {
         ZCE_LOG(RS_ERROR, "Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
         return SOAR_RET::ERR_PROXY_RCVSVC_TYPE_ERROR;
     }
 
-    // ¸´ÖÆÉú³ÉN¸öÖ¡£¬×ª·¢µ½²»Í¬µÄ·şÎñÆ÷
+    // å¤åˆ¶ç”ŸæˆNä¸ªå¸§ï¼Œè½¬å‘åˆ°ä¸åŒçš„æœåŠ¡å™¨
     for (size_t i = 0; i < broadcast_svcnum_; ++i)
     {
-        // ĞŞ¸ÄÎªĞÂµÄID
+        // ä¿®æ”¹ä¸ºæ–°çš„ID
         proc_frame->recv_service_.services_id_ = broadcast_svcid_[i];
         ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 
@@ -438,7 +438,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    //×¢ÒâÊÇ´Ó1¿ªÊ¼
+    //æ³¨æ„æ˜¯ä»1å¼€å§‹
     for (size_t i = 0; i < modulo_svcnum_; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("MODULO_CFG", "MODULO_SVCID_", i + 1, modulo_svcid_[i]);
@@ -451,14 +451,14 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
     }
 
 
-    // ¼ì²éÊÇ·ñÓĞÖØ¸´µÄID
+    // æ£€æŸ¥æ˜¯å¦æœ‰é‡å¤çš„ID
     std::list <uint32_t> check_list;
     for (size_t i = 0; i < modulo_svcnum_; ++i)
     {
         check_list.push_back(modulo_svcid_[i]);
     }
 
-    // ²»½²ÇóĞ§ÂÊµÄµØ·½
+    // ä¸è®²æ±‚æ•ˆç‡çš„åœ°æ–¹
     check_list.sort();
     check_list.unique();
     if (check_list.size() != modulo_svcnum_)
@@ -476,10 +476,10 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 {
     int ret = 0;
 
-    // Êä³ö°üÍ·£¬¿´¿´
+    // è¾“å‡ºåŒ…å¤´ï¼Œçœ‹çœ‹
     proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_DEBUG);
 
-    // ÄÚ²¿´¦ÀíµÄÃüÁî,Ìø¹ı
+    // å†…éƒ¨å¤„ç†çš„å‘½ä»¤,è·³è¿‡
     bool bsnderr;
 
     if (proc_frame->is_internal_process(bsnderr) == true)
@@ -489,7 +489,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
         return 0;
     }
 
-    // ÕâÑù´¦ÀíÊÇ·ñºÃ£¬ÎÒ²»ÖªµÀ£¬
+    // è¿™æ ·å¤„ç†æ˜¯å¦å¥½ï¼Œæˆ‘ä¸çŸ¥é“ï¼Œ
     if (proc_frame->recv_service_.services_type_ != modulo_svctype_)
     {
         ZCE_LOG(RS_ERROR, "Can't Porcess services_type_%u. ", proc_frame->recv_service_.services_type_);
@@ -536,19 +536,19 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //{
 //    if (route_cfg_.size() == 0)
 //    {
-//        // Ã»ÓĞÅäÖÃÂ·ÓÉ,ÕâÒ»¶¨ÊÇ¸ö´íÎó
+//        // æ²¡æœ‰é…ç½®è·¯ç”±,è¿™ä¸€å®šæ˜¯ä¸ªé”™è¯¯
 //        ZCE_LOG(RS_ERROR,"[%s] no route configed", __ZCE_FUNC__);
 //        return NULL;
 //    }
 //
 //    DBModalMGRouteItem tmp;
-//    // È¡uidµÄµÍ16Î»×÷ÎªhashÖµ,Ó¦¸Ã¹»Ëæ»úµÄ
+//    // å–uidçš„ä½16ä½ä½œä¸ºhashå€¼,åº”è¯¥å¤Ÿéšæœºçš„
 //    tmp.hash_ = (uid & 0xFFFF);
 //
 //    std::vector<DBModalMGRouteItem>::iterator iter
 //        = std::upper_bound(route_cfg_.begin(), route_cfg_.end(), tmp);
 //
-//    // Èç¹ûÖ¸ÏòÂ·ÓÉ±íµÄÄ©Î²,ÄÇÃ´Êµ¼ÊÉÏÓ¦¸ÃÊÇÊÇÂ·ÓÉ±íµÄµÚÒ»Ïî
+//    // å¦‚æœæŒ‡å‘è·¯ç”±è¡¨çš„æœ«å°¾,é‚£ä¹ˆå®é™…ä¸Šåº”è¯¥æ˜¯æ˜¯è·¯ç”±è¡¨çš„ç¬¬ä¸€é¡¹
 //    if (iter == route_cfg_.end())
 //    {
 //        iter = route_cfg_.begin();
@@ -560,7 +560,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 
 ////===================================================================================================
 //
-////°´ÕÕDBÈ¡Ä£½øĞĞProxy×ª·¢£¬ÓÃÓÚDBServerºÍ½ğÈÚ·şÎñÆ÷
+////æŒ‰ç…§DBå–æ¨¡è¿›è¡ŒProxyè½¬å‘ï¼Œç”¨äºDBServerå’Œé‡‘èæœåŠ¡å™¨
 //DBModalProxyProcess::DBModalProxyProcess():
 //    Interface_WH_Proxy()
 //{
@@ -572,7 +572,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //    for (; iter != dbmodal_proxy_map_.end(); iter++)
 //    {
-//        // ÊÍ·Å·ÖÅäµÄÄÚ´æ
+//        // é‡Šæ”¾åˆ†é…çš„å†…å­˜
 //        delete iter->second;
 //        iter->second = NULL;
 //    }
@@ -584,7 +584,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //    int ret = 0;
 //
-//    //µÃµ½¹ıÂËµÃÃüÁî
+//    //å¾—åˆ°è¿‡æ»¤å¾—å‘½ä»¤
 //    ret = Interface_WH_Proxy::get_proxy_config(conf_tree);
 //    if (ret != 0)
 //    {
@@ -635,7 +635,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //    return 0;
 //}
 //
-////Òª´¦ÀíµÄÖ¡
+////è¦å¤„ç†çš„å¸§
 //int DBModalProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //{
 //    ZCE_LOG(RS_DEBUG,"Receive a dbmode frame to process,"
@@ -653,7 +653,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //               proc_frame->frame_length_);
 //
 //    int ret = 0;
-//    // ÄÚ²¿´¦ÀíµÄÃüÁî,Ìø¹ı
+//    // å†…éƒ¨å¤„ç†çš„å‘½ä»¤,è·³è¿‡
 //    bool bsnderr;
 //
 //    if (proc_frame->is_internal_process(bsnderr) == true)
@@ -668,13 +668,13 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //    if (iter != dbmodal_proxy_map_.end())
 //    {
-//        // Òª×ª·¢µÄÀàĞÍÒÑÅäÖÃ, »ñÈ¡¶ÔÓ¦Â·ÓÉĞÅÏ¢
+//        // è¦è½¬å‘çš„ç±»å‹å·²é…ç½®, è·å–å¯¹åº”è·¯ç”±ä¿¡æ¯
 //        DBModalProxyInfo *dbmodal_proxy_info = iter->second;
 //
 //        //------------------------------------------------------------------
 //        unsigned int uid = proc_frame->frame_uid_;
 //
-//        // ¹ıÂËµôuidÎª0µÄÊı¾İ
+//        // è¿‡æ»¤æ‰uidä¸º0çš„æ•°æ®
 //        if (uid == 0 )
 //        {
 //
@@ -685,7 +685,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //            return SOAR_RET::ERROR_APPFRAME_ERROR;
 //        }
 //
-//        // ¹Ø¼ü´úÂë´¦
+//        // å…³é”®ä»£ç å¤„
 //        unsigned int mod =
 //            (uid >> dbmodal_proxy_info->distribute_offset_) % dbmodal_proxy_info->distribute_module_;
 //
@@ -693,7 +693,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        proc_frame->recv_service_.services_type_ = dbmodal_proxy_info->router_svr_type_;
 //        proc_frame->recv_service_.services_id_ =  dbmodal_proxy_info->normal_router_cfg_[mod];
 //
-//        // ÈÕÖ¾µ÷ÕûÎªDEBUG¼¶±ğµÄ
+//        // æ—¥å¿—è°ƒæ•´ä¸ºDEBUGçº§åˆ«çš„
 //        ZCE_LOG(RS_DEBUG,"Send to main services [%u|%u], frame_uin:%u, "
 //            "frame_command:%u, frame_len:%u, trans_id[%u]. ",
 //                   proc_frame->recv_service_.services_type_,
@@ -703,7 +703,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //                   proc_frame->frame_length_,
 //                   proc_frame->transaction_id_);
 //
-//        // Ö»Éú³ÉÁËÒ»¸öÖ¡
+//        // åªç”Ÿæˆäº†ä¸€ä¸ªå¸§
 //        int ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 //
 //        //
@@ -712,7 +712,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //            return SOAR_RET::ERR_PROXY_SEND_PIPE_IS_FULL;
 //        }
 //
-//        // Èç¹ûÓĞ±¸·İÂ·ÓÉ,Ôò½«Êı¾İ×ª·¢¸øÒ»¸ö±¸·İµÄ´úÀí
+//        // å¦‚æœæœ‰å¤‡ä»½è·¯ç”±,åˆ™å°†æ•°æ®è½¬å‘ç»™ä¸€ä¸ªå¤‡ä»½çš„ä»£ç†
 //        if (dbmodal_proxy_info->clone_router_cfg_[mod] != SERVICES_ID::INVALID_SERVICES_ID )
 //        {
 //
@@ -735,11 +735,11 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        }
 //
 //    }
-//    // ÁíÍâÒ»¸öÂ·ÓÉ·½ÏòµÄÊÂÇé£¬Ö±½ÓÍ¸´«
+//    // å¦å¤–ä¸€ä¸ªè·¯ç”±æ–¹å‘çš„äº‹æƒ…ï¼Œç›´æ¥é€ä¼ 
 //    else
 //    {
 //        //
-//        // ¼ÓÒ»ÌõÈÕÖ¾£¬·½±ã¸ú×Ù
+//        // åŠ ä¸€æ¡æ—¥å¿—ï¼Œæ–¹ä¾¿è·Ÿè¸ª
 //        ZCE_LOG(RS_INFO,"Send back [%u|%u], frame_uin:%u, frame_command:%u, frame_len:%u. ",
 //                  proc_frame->recv_service_.services_type_,
 //                  proc_frame->recv_service_.services_id_,

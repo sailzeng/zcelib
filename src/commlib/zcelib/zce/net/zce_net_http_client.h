@@ -4,9 +4,9 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       Monday, August 25, 2014
-* @brief      ����ĵ�һ�汾����libghttp����û���κθ�д��ֻ�ǳ�����ֲ��
-*             �е�Υ�����İ�Ȩ��GNU�������ҿ϶�Ҫ��д��ֲ�ġ�
-*             Ŀǰ��δ��뻹���ڲ�������״̬�����¡�
+* @brief      代码的第一版本来自libghttp，还没有任何改写，只是尝试移植。
+*             有点违反他的版权（GNU），但我肯定要改写移植的。
+*             目前这段代码还处于不可以用状态，见谅。
 * @details
 *
 *

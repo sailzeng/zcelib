@@ -18,7 +18,7 @@ Soar_MMAP_BusPipe::~Soar_MMAP_BusPipe()
 
 }
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 int Soar_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                   size_t size_recv_pipe,
                                   size_t size_send_pipe,
@@ -40,13 +40,13 @@ int Soar_MMAP_BusPipe::initialize(SERVICES_ID &svrinfo,
                                           if_restore);
 }
 
-//¸ù¾ÝSVR INFOµÃµ½MMAPÎÄ¼þÃû³Æ
+//æ ¹æ®SVR INFOå¾—åˆ°MMAPæ–‡ä»¶åç§°
 void Soar_MMAP_BusPipe::get_mmapfile_name(char *mmapfile, size_t buflen)
 {
     snprintf(mmapfile, buflen, "./ZERGPIPE.%u.%u.MMAP", zerg_svr_info_.services_type_, zerg_svr_info_.services_id_);
 }
 
-//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀý
+//å¾—åˆ°å”¯ä¸€çš„å•å­å®žä¾‹
 Soar_MMAP_BusPipe *Soar_MMAP_BusPipe::instance()
 {
     if (zerg_bus_instance_ == NULL)
@@ -57,7 +57,7 @@ Soar_MMAP_BusPipe *Soar_MMAP_BusPipe::instance()
     return zerg_bus_instance_;
 }
 
-//¸³ÖµÎ¨Ò»µÄµ¥×ÓÊµÀý
+//èµ‹å€¼å”¯ä¸€çš„å•å­å®žä¾‹
 void Soar_MMAP_BusPipe::instance(Soar_MMAP_BusPipe *pinstatnce)
 {
     clean_instance();
@@ -65,7 +65,7 @@ void Soar_MMAP_BusPipe::instance(Soar_MMAP_BusPipe *pinstatnce)
     return;
 }
 
-//Çå³ýµ¥×ÓÊµÀý
+//æ¸…é™¤å•å­å®žä¾‹
 void Soar_MMAP_BusPipe::clean_instance()
 {
     if (zerg_bus_instance_)
@@ -100,7 +100,7 @@ Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
     send_frame->proxy_service_ = proxysvc;
     send_frame->recv_service_ = rcvsvc;
 
-    //ÌîÐ´ÊÂÎñIDºÍ»ØÌîÊÂÎñID
+    //å¡«å†™äº‹åŠ¡IDå’Œå›žå¡«äº‹åŠ¡ID
     send_frame->transaction_id_ = transaction_id;
     send_frame->backfill_trans_id_ = backfill_trans_id;
 

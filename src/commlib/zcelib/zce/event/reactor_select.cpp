@@ -5,7 +5,7 @@
 #include "zce/logger/logging.h"
 #include "zce/event/reactor_select.h"
 
-//WINDOWSµÄ´úÂë×Ô¼º»áÔÚFD_SETÕâ¶ùÓĞÒ»¸ö¸æ¾¯
+//WINDOWSçš„ä»£ç è‡ªå·±ä¼šåœ¨FD_SETè¿™å„¿æœ‰ä¸€ä¸ªå‘Šè­¦
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning(disable : 4127)
 #endif
@@ -31,11 +31,11 @@ ZCE_Select_Reactor::~ZCE_Select_Reactor()
 {
 }
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 int ZCE_Select_Reactor::initialize(size_t max_event_number)
 {
 
-    //Çå0
+    //æ¸…0
     FD_ZERO(&read_fd_set_);
     FD_ZERO(&write_fd_set_);
     FD_ZERO(&exception_fd_set_);
@@ -43,7 +43,7 @@ int ZCE_Select_Reactor::initialize(size_t max_event_number)
     return ZCE_Reactor::initialize(max_event_number);
 }
 
-//´ò¿ªÄ³Ğ©mask±êÖ¾£¬
+//æ‰“å¼€æŸäº›maskæ ‡å¿—ï¼Œ
 int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
 {
     int ret = 0;
@@ -51,7 +51,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     ZCE_SOCKET socket_hd = (ZCE_SOCKET) (event_handler->get_handle());
     ZCE_Event_Handler *tmp_handler = NULL;
 
-    //Èç¹ûÒÑ¾­´æÔÚ£¬²»ÄÜ¼ÌĞø×¢²á
+    //å¦‚æœå·²ç»å­˜åœ¨ï¼Œä¸èƒ½ç»§ç»­æ³¨å†Œ
     ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
     if (ret != 0)
     {
@@ -62,9 +62,9 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     }
 
 
-    //ÒòÎªÕâĞ©±êÖ¾¿ÉÒÔÒ»Æğ×¢²á£¬ËùÒÔÏÂÃæµÄÅĞ¶ÏÊÇ²¢ÁĞµÄ£¬µ«ÊÇÎÒÕâ¶ùÍ³Ò»»¯µÄ´¦ÀíĞòÁĞÊÇ¶Á£¬Ğ´£¬Òì³£
+    //å› ä¸ºè¿™äº›æ ‡å¿—å¯ä»¥ä¸€èµ·æ³¨å†Œï¼Œæ‰€ä»¥ä¸‹é¢çš„åˆ¤æ–­æ˜¯å¹¶åˆ—çš„ï¼Œä½†æ˜¯æˆ‘è¿™å„¿ç»Ÿä¸€åŒ–çš„å¤„ç†åºåˆ—æ˜¯è¯»ï¼Œå†™ï¼Œå¼‚å¸¸
 
-    //×¢ÒâconnectµÄÊ§°Ü£¬»á´¥·¢¶ÁĞ´ÊÂ¼ş£¬ĞèÒª×¢Òâ,ÎÒ¼ÇµÃºÃÏñ×Ô¼º¶¼´í¹ıÁ½´ÎÁË¡£
+    //æ³¨æ„connectçš„å¤±è´¥ï¼Œä¼šè§¦å‘è¯»å†™äº‹ä»¶ï¼Œéœ€è¦æ³¨æ„,æˆ‘è®°å¾—å¥½åƒè‡ªå·±éƒ½é”™è¿‡ä¸¤æ¬¡äº†ã€‚
     if (ZCE_U32_BIT_IS_SET(event_mask, EVENT_MASK::READ_MASK)
         || ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::ACCEPT_MASK)
         || ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::CONNECT_MASK)
@@ -79,7 +79,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
         FD_SET(socket_hd, &write_fd_set_);
     }
 
-    //ÔÚWINDOWSÏÂ£¬Èç¹ûÊÇ·Ç×èÈûÁ¬½Ó£¬Èç¹ûÁ¬½ÓÊ§°Ü·µ»ØµÄÊÇÊÂ¼şÊÇ³¬Ê±
+    //åœ¨WINDOWSä¸‹ï¼Œå¦‚æœæ˜¯éé˜»å¡è¿æ¥ï¼Œå¦‚æœè¿æ¥å¤±è´¥è¿”å›çš„æ˜¯äº‹ä»¶æ˜¯è¶…æ—¶
 #if defined (ZCE_OS_WINDOWS)
 
     if (ZCE_U32_BIT_IS_SET(event_mask,EVENT_MASK::EXCEPT_MASK)
@@ -93,10 +93,10 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
 
 
 
-    //WindowsµÄselect¶ÔÓÚÕâ¸öÖµÃ»ÓĞÒªÇó,¶øÇÒ°¡CE·´À¡Windows 64Î»µÄ°æ±¾selectº¯ÊıµÚÒ»¸ö²ÎÊı±ØĞë´«µİ0
+    //Windowsçš„selectå¯¹äºè¿™ä¸ªå€¼æ²¡æœ‰è¦æ±‚,è€Œä¸”å•ŠCEåé¦ˆWindows 64ä½çš„ç‰ˆæœ¬selectå‡½æ•°ç¬¬ä¸€ä¸ªå‚æ•°å¿…é¡»ä¼ é€’0
 #if defined ZCE_OS_LINUX
 
-    //×¢Òâ£¬ĞèÒª+1£¬
+    //æ³¨æ„ï¼Œéœ€è¦+1ï¼Œ
     if (max_fd_plus_one_ < socket_hd + 1)
     {
         max_fd_plus_one_ = socket_hd + 1;
@@ -107,7 +107,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     return ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
 }
 
-//È¡ÏûÄ³Ğ©mask±êÖ¾£¬£¬
+//å–æ¶ˆæŸäº›maskæ ‡å¿—ï¼Œï¼Œ
 int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
 {
     int ret = 0;
@@ -115,7 +115,7 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
     ZCE_SOCKET socket_hd = (ZCE_SOCKET)event_handler->get_handle();
     ZCE_Event_Handler *tmp_handler = NULL;
 
-    //Èç¹ûÒÑ¾­´æÔÚ£¬²»ÄÜ¼ÌĞø×¢²á
+    //å¦‚æœå·²ç»å­˜åœ¨ï¼Œä¸èƒ½ç»§ç»­æ³¨å†Œ
     ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
     if (ret != 0)
     {
@@ -125,7 +125,7 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
         return ret;
     }
 
-    //ÒòÎªÕâĞ©±êÖ¾¿ÉÒÔÒ»Æğ×¢²á£¬ËùÒÔÏÂÃæµÄÅĞ¶ÏÊÇ²¢ÁĞµÄ
+    //å› ä¸ºè¿™äº›æ ‡å¿—å¯ä»¥ä¸€èµ·æ³¨å†Œï¼Œæ‰€ä»¥ä¸‹é¢çš„åˆ¤æ–­æ˜¯å¹¶åˆ—çš„
     if (ZCE_U32_BIT_IS_SET(cancel_mask,EVENT_MASK::READ_MASK)
         || ZCE_U32_BIT_IS_SET(cancel_mask,EVENT_MASK::ACCEPT_MASK)
         || ZCE_U32_BIT_IS_SET(cancel_mask,EVENT_MASK::CONNECT_MASK)
@@ -160,22 +160,22 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
 
 #if defined ZCE_OS_LINUX
 
-    //¼ì²é×îĞÂµÄmaskÖµ£¬Èç¹ûÎª0£¬¾Í¸üĞÂmax_fd_plus_one_
+    //æ£€æŸ¥æœ€æ–°çš„maskå€¼ï¼Œå¦‚æœä¸º0ï¼Œå°±æ›´æ–°max_fd_plus_one_
     int new_event_mask =  event_handler->get_mask();
 
-    //Õâ¸öµØ·½ÆäÊµÊÇ±È½ÏºÄÊ±£¬ÁíÍâBOOSTºÃÏñÔÚÈ¡ÏûµÄÊ±ºòÉõÖÁÃ»ÓĞ¼õÉÙ£¬
-    //ÎÒ²»ÏëÎ¬»¤Ò»¸öMAP£¬Ò²²»ÏñACEÄÇÑù×Ô¼º°ü×°Ò»¸öfd_setÀà£¬ËùÒÔÖ»ÓĞ³ö´ËÏÂ²ß£¬ÏÂÃæµÄ´úÂëÈç´ËµÄ»ŞÉ¬£¬ÎÒÒ²ºÜÌÖÑá
-    //¿´ÄãÃÃµÄselectµÄ¡£ÓÖÊÇ+1£¬ÓÖÊÇ-1µÄ£¬ÒªÁËÀÏÃüÁË
+    //è¿™ä¸ªåœ°æ–¹å…¶å®æ˜¯æ¯”è¾ƒè€—æ—¶ï¼Œå¦å¤–BOOSTå¥½åƒåœ¨å–æ¶ˆçš„æ—¶å€™ç”šè‡³æ²¡æœ‰å‡å°‘ï¼Œ
+    //æˆ‘ä¸æƒ³ç»´æŠ¤ä¸€ä¸ªMAPï¼Œä¹Ÿä¸åƒACEé‚£æ ·è‡ªå·±åŒ…è£…ä¸€ä¸ªfd_setç±»ï¼Œæ‰€ä»¥åªæœ‰å‡ºæ­¤ä¸‹ç­–ï¼Œä¸‹é¢çš„ä»£ç å¦‚æ­¤çš„æ™¦æ¶©ï¼Œæˆ‘ä¹Ÿå¾ˆè®¨åŒ
+    //çœ‹ä½ å¦¹çš„selectçš„ã€‚åˆæ˜¯+1ï¼Œåˆæ˜¯-1çš„ï¼Œè¦äº†è€å‘½äº†
 
-    //Èç¹ûĞèÒªÉ¾³ıµÄÊÇ×î´óµÄÎÄ¼ş¾ä±úÖµ£¬ÄÇÃ´¾Íµ÷Õû×î´óÖµ
+    //å¦‚æœéœ€è¦åˆ é™¤çš„æ˜¯æœ€å¤§çš„æ–‡ä»¶å¥æŸ„å€¼ï¼Œé‚£ä¹ˆå°±è°ƒæ•´æœ€å¤§å€¼
     if (new_event_mask == 0 &&  max_fd_plus_one_ == socket_hd + 1)
     {
-        //ÒòÎª×î´óÖµÒÑ¾­É¾³ı£¬ÏÈ--
+        //å› ä¸ºæœ€å¤§å€¼å·²ç»åˆ é™¤ï¼Œå…ˆ--
         --max_fd_plus_one_;
 
         while (max_fd_plus_one_ > 0)
         {
-            //Ñ°ÕÒÊÇ·ñÓĞÕâ¸öFD£¬×¢ÒâÕâ¶ùÒªmax_fd_plus_one_-1
+            //å¯»æ‰¾æ˜¯å¦æœ‰è¿™ä¸ªFDï¼Œæ³¨æ„è¿™å„¿è¦max_fd_plus_one_-1
             if (FD_ISSET(max_fd_plus_one_ - 1, &read_fd_set_))
             {
                 break;
@@ -201,14 +201,14 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
     return 0;
 }
 
-//ÊÂ¼ş´¥·¢
+//äº‹ä»¶è§¦å‘
 int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
                                       size_t *size_event)
 {
     //
     *size_event = 0;
 
-    //±£Áô¾ä±ú£¬ÒòÎªselectº¯ÊıÊÇÊäÈëÊä³ö²ÎÊı£¬ËùÒÔ±ØĞë±£ÁôÁË£¬·ÑÊ±µÄÂé·³Ñ½
+    //ä¿ç•™å¥æŸ„ï¼Œå› ä¸ºselectå‡½æ•°æ˜¯è¾“å…¥è¾“å‡ºå‚æ•°ï¼Œæ‰€ä»¥å¿…é¡»ä¿ç•™äº†ï¼Œè´¹æ—¶çš„éº»çƒ¦å‘€
     para_read_fd_set_ = read_fd_set_;
     para_write_fd_set_ = write_fd_set_;
     para_exception_fd_set_ = exception_fd_set_;
@@ -227,19 +227,19 @@ int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
 
     if (nfds == -1)
     {
-        // TODO: ³ö´í´¦Àí
+        // TODO: å‡ºé”™å¤„ç†
         return 0;
     }
 
-    //ÑÏ¸ñ×ñÊØµ÷ÓÃË³Ğò£¬¶ÁÈ¡£¬Ğ´£¬Òì³£´¦Àí3¸ö²½ÖèÍê³É£¬
+    //ä¸¥æ ¼éµå®ˆè°ƒç”¨é¡ºåºï¼Œè¯»å–ï¼Œå†™ï¼Œå¼‚å¸¸å¤„ç†3ä¸ªæ­¥éª¤å®Œæˆï¼Œ
 
-    //´¦Àí¶ÁÊÂ¼ş
+    //å¤„ç†è¯»äº‹ä»¶
     process_ready(&para_read_fd_set_,EVENT_MASK::READ_MASK);
 
-    //´¦ÀíĞ´ÊÂ¼ş
+    //å¤„ç†å†™äº‹ä»¶
     process_ready(&para_write_fd_set_,EVENT_MASK::WRITE_MASK);
 
-    //´¦ÀíÒì³£ÊÂ¼ş
+    //å¤„ç†å¼‚å¸¸äº‹ä»¶
     process_ready(&para_exception_fd_set_,EVENT_MASK::EXCEPT_MASK);
 
     *size_event = nfds;
@@ -247,7 +247,7 @@ int ZCE_Select_Reactor::handle_events(ZCE_Time_Value *max_wait_time,
     return 0;
 }
 
-//´¦ÀíreadyµÄFD£¬µ÷ÓÃÏàÓ¦µÄĞéº¯Êı
+//å¤„ç†readyçš„FDï¼Œè°ƒç”¨ç›¸åº”çš„è™šå‡½æ•°
 void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
                                        EVENT_MASK proc_mask)
 {
@@ -255,11 +255,11 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
     //
     int max_process = max_fd_plus_one_;
 
-    //ÏÂÃæÈı¸ö´úÂë¶Î¶¼·Ç³£ÀàËÆ£¬Ò²Ğí·â×°¼¸¸öº¯Êı¸üºÃ¿´Ò»µã£¬µ«ÊÇ...
-    //´¦Àí¶ÁÊÂ¼ş
+    //ä¸‹é¢ä¸‰ä¸ªä»£ç æ®µéƒ½éå¸¸ç±»ä¼¼ï¼Œä¹Ÿè®¸å°è£…å‡ ä¸ªå‡½æ•°æ›´å¥½çœ‹ä¸€ç‚¹ï¼Œä½†æ˜¯...
+    //å¤„ç†è¯»äº‹ä»¶
 
 #if defined ZCE_OS_WINDOWS
-    //WINDOWSµÄÊµÏÖ»úÀíÂÔÓĞ²»Í¬£¬ÓÃÕâ¸ö¼Ó¿ìËÙ¶È
+    //WINDOWSçš„å®ç°æœºç†ç•¥æœ‰ä¸åŒï¼Œç”¨è¿™ä¸ªåŠ å¿«é€Ÿåº¦
     max_process = out_fds->fd_count;
 #endif
 
@@ -276,29 +276,29 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
         ZCE_Event_Handler *event_hdl = NULL;
         ret =  find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
 
-        //µ½Õâ¸öµØ·½£¬¿ÉÄÜÊÇ´úÂëÓĞÎÊÌâ(±ÈÈçÄãÓÃÁË¶àÏß³Ì£¿)£¬Ò²¿ÉÄÜ²»ÊÇ£¬ÒòÎªÒ»¸öÊÂ¼ş´¦Àíºó£¬¿ÉÄÜ¾Í±»¹Ø±ÕÁË£¿
+        //åˆ°è¿™ä¸ªåœ°æ–¹ï¼Œå¯èƒ½æ˜¯ä»£ç æœ‰é—®é¢˜(æ¯”å¦‚ä½ ç”¨äº†å¤šçº¿ç¨‹ï¼Ÿ)ï¼Œä¹Ÿå¯èƒ½ä¸æ˜¯ï¼Œå› ä¸ºä¸€ä¸ªäº‹ä»¶å¤„ç†åï¼Œå¯èƒ½å°±è¢«å…³é—­äº†ï¼Ÿ
         if (0 != ret)
         {
             return;
         }
 
-        //¸ù¾İ²»Í¬µÄÊÂ¼ş½øĞĞµ÷¶¯£¬´¥·¢
+        //æ ¹æ®ä¸åŒçš„äº‹ä»¶è¿›è¡Œè°ƒåŠ¨ï¼Œè§¦å‘
 
-        //READºÍACCEPTÊÂ¼ş¶¼µ÷ÓÃhandle_input£¬ACCEPT_MASK,INOTIFY_MASK,²»Ğ´µÄÔ­ÒòÊÇ£¬Õâ¸öº¯ÊıÊÇÎÒÄÚ²¿µ÷ÓÃµÄ£¬ÎÒÖ»ÓÃÁË3¸ö²ÎÊı
+        //READå’ŒACCEPTäº‹ä»¶éƒ½è°ƒç”¨handle_inputï¼ŒACCEPT_MASK,INOTIFY_MASK,ä¸å†™çš„åŸå› æ˜¯ï¼Œè¿™ä¸ªå‡½æ•°æ˜¯æˆ‘å†…éƒ¨è°ƒç”¨çš„ï¼Œæˆ‘åªç”¨äº†3ä¸ªå‚æ•°
         if (proc_mask == EVENT_MASK::READ_MASK)
         {
             hdl_ret = event_hdl->handle_input();
         }
-        //WRITEºÍCONNECTÊÂ¼ş¶¼µ÷ÓÃhandle_output,CONNECT_MASK,²»Ğ´µÄÔ­ÒòÊÇ£¬Õâ¸öº¯ÊıÊÇÎÒÄÚ²¿µ÷ÓÃµÄ£¬ÎÒÖ»ÓÃÁË3¸ö²ÎÊı
+        //WRITEå’ŒCONNECTäº‹ä»¶éƒ½è°ƒç”¨handle_output,CONNECT_MASK,ä¸å†™çš„åŸå› æ˜¯ï¼Œè¿™ä¸ªå‡½æ•°æ˜¯æˆ‘å†…éƒ¨è°ƒç”¨çš„ï¼Œæˆ‘åªç”¨äº†3ä¸ªå‚æ•°
         else if (proc_mask == EVENT_MASK::WRITE_MASK)
         {
             hdl_ret = event_hdl->handle_output();
         }
-        //Òì³£ÊÂ¼ş£¬ÆäÊµÎÒÒ²²»ÖªµÀ£¬Ê²Ã´ËãÒì³£
+        //å¼‚å¸¸äº‹ä»¶ï¼Œå…¶å®æˆ‘ä¹Ÿä¸çŸ¥é“ï¼Œä»€ä¹ˆç®—å¼‚å¸¸
         else if (proc_mask == EVENT_MASK::EXCEPT_MASK)
         {
 #if defined ZCE_OS_WINDOWS
-            //Èç¹ûÊÇ·Ç×èÈûÁ¬½Ó£¬Á¬½ÓÊ§°Üºó»á´¥·¢Òì³£ÊÂ¼ş£¬ÎªÁËºÍLINUX»·¾³Í³Ò»£¬ÎÒÃÇ´¥·¢handle_input
+            //å¦‚æœæ˜¯éé˜»å¡è¿æ¥ï¼Œè¿æ¥å¤±è´¥åä¼šè§¦å‘å¼‚å¸¸äº‹ä»¶ï¼Œä¸ºäº†å’ŒLINUXç¯å¢ƒç»Ÿä¸€ï¼Œæˆ‘ä»¬è§¦å‘handle_input
             int register_mask = event_hdl->get_mask();
 
             if (ZCE_U32_BIT_IS_SET(register_mask,EVENT_MASK::CONNECT_MASK) )
@@ -321,7 +321,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
             ZCE_ASSERT(false);
         }
 
-        //·µ»Ø-1±íÊ¾ handle_xxxxxÏ£Íûµ÷ÓÃhandle_closeÍË³ö
+        //è¿”å›-1è¡¨ç¤º handle_xxxxxå¸Œæœ›è°ƒç”¨handle_closeé€€å‡º
         if (hdl_ret == -1)
         {
             event_hdl->handle_close();

@@ -12,40 +12,40 @@ class TCP_Svc_Handler;
 /*!
 * @brief      SVC ID SET
 *
-* @note       ·´Ë¼Ò»ÏÂ,ÊÇ·ñÓ¦¸Ã×öÕâ¸ö·â×°£¬ÎÒÒ²ºÜÃ¬¶Ü£¬Èç¹ûÔÚTCP_Svc_HandlerÖ±½ÓÊ¹ÓÃSTLµÄ·â×°Êı¾İ£¬
-*             ÄÇÃ´ÎÒÃÇµÄ·â×°ºóÔÙ¾ÛºÍµÄ·½Ê½²»ÊÇÄÇÃ´µÄºÃ¡£ÔÚTCP_Svc_Handler»¹ÒªÔÙ´Î·â×°¡£¡£¡£¡£
+* @note       åæ€ä¸€ä¸‹,æ˜¯å¦åº”è¯¥åšè¿™ä¸ªå°è£…ï¼Œæˆ‘ä¹Ÿå¾ˆçŸ›ç›¾ï¼Œå¦‚æœåœ¨TCP_Svc_Handlerç›´æ¥ä½¿ç”¨STLçš„å°è£…æ•°æ®ï¼Œ
+*             é‚£ä¹ˆæˆ‘ä»¬çš„å°è£…åå†èšå’Œçš„æ–¹å¼ä¸æ˜¯é‚£ä¹ˆçš„å¥½ã€‚åœ¨TCP_Svc_Handlerè¿˜è¦å†æ¬¡å°è£…ã€‚ã€‚ã€‚ã€‚
 */
 class Active_SvcHandle_Set
 {
 
 
 public:
-    ///¹¹Ôìº¯Êı,
+    ///æ„é€ å‡½æ•°,
     Active_SvcHandle_Set();
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~Active_SvcHandle_Set();
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void initialize(size_t sz_peer);
 
 
     /*!
-    * @brief      ¸ù¾İSVCID£¬ÔÚActiveµÄHandleÀïÃæ²éÑ¯ÊÇ·ñ×ğÖØ
-    * @return     int ==0 ±íÊ¾²éÑ¯³É¹¦£¬
-    * @param[in]  svrinfo    ²éÑ¯µÄSERVICES_ID,
-    * @param[out] svc_handle ·µ»ØµÄ¶ÔÓ¦µÄhandle
+    * @brief      æ ¹æ®SVCIDï¼Œåœ¨Activeçš„Handleé‡Œé¢æŸ¥è¯¢æ˜¯å¦å°Šé‡
+    * @return     int ==0 è¡¨ç¤ºæŸ¥è¯¢æˆåŠŸï¼Œ
+    * @param[in]  svrinfo    æŸ¥è¯¢çš„SERVICES_ID,
+    * @param[out] svc_handle è¿”å›çš„å¯¹åº”çš„handle
     */
     int find_handle_by_svcid(const SERVICES_ID &svc_id,
                              TCP_Svc_Handler *&svc_handle);
 
     /*!
-    * @brief      ÒÔ¸ºÔØ¾ùºâµÄ·½Ê½£¬¸ù¾İservices type²éÑ¯Ò»¸öµÄSVC£¬°´ÕÕĞòÁĞÊı×éË³ĞòÂÖÑ¯µÄ·µ»Ø£¬
+    * @brief      ä»¥è´Ÿè½½å‡è¡¡çš„æ–¹å¼ï¼Œæ ¹æ®services typeæŸ¥è¯¢ä¸€ä¸ªçš„SVCï¼ŒæŒ‰ç…§åºåˆ—æ•°ç»„é¡ºåºè½®è¯¢çš„è¿”å›ï¼Œ
     *             lbseq(Load Balance sequence)
-    * @return     int  ==0±íÊ¾²éÑ¯³É¹¦
-    * @param[in]  services_type ·şÎñÆ÷ÀàĞÍ
-    * @param[out] services_id   ²éÑ¯µ½µÄSVC ID
-    * @param      svc_handle    ·µ»Ø¶ÔÓ¦µÄHandle
-    * @note       ÕâÑù²éÑ¯±£Ö¤·¢ËÍµÄÊı¾İ¾¡Á¿¸ºÔØ¾ùºâ£¬
+    * @return     int  ==0è¡¨ç¤ºæŸ¥è¯¢æˆåŠŸ
+    * @param[in]  services_type æœåŠ¡å™¨ç±»å‹
+    * @param[out] services_id   æŸ¥è¯¢åˆ°çš„SVC ID
+    * @param      svc_handle    è¿”å›å¯¹åº”çš„Handle
+    * @note       è¿™æ ·æŸ¥è¯¢ä¿è¯å‘é€çš„æ•°æ®å°½é‡è´Ÿè½½å‡è¡¡ï¼Œ
     */
     int find_lbseqhdl_by_type(uint16_t services_type,
                               uint32_t &services_id,
@@ -67,15 +67,15 @@ public:
 
 
     /*!
-    * @brief      ÒÔÖ÷±¸µÄ·½Ê½£¬¸ù¾İservices type¾¡Á¿²éÑ¯µÃµ½Ò»¸öµÄSVC IDÒÔ¼°¶ÔÓ¦µÄHandle£¬
-    *             Ö»ÄÜÓÃÓÚÔÚAUTO CONNECTÅäÖÃµÄÁ´½Ó³öÈ¥µÄ·şÎñÆ÷£¬Ö÷±¸Ë³Ğò¸ù¾İAUTO CONNECTÅäÖÃ
-    *             Ë³Ğò¾ö¶¨£¬ÅäÖÃÔÚÇ°ÃæµÄ·şÎñÆ÷ÓÅÏÈ¿¼ÂÇ MS(Main Standby)
-    * @return     int ==0±íÊ¾²éÑ¯³É¹¦
-    * @param[in]  services_type ·şÎñÆ÷ÀàĞÍ
-    * @param[out] find_services_id  ²éÑ¯µ½µÄSVC ID
-    * @param[out] svc_handle    ·µ»Ø¶ÔÓ¦µÄHandle
-    * @note       ÓÅÏÈÖ÷£¬Ö÷ÓĞÎÊÌâ£¬Ñ¡Ôñ±¸·İ¡£ÕâÑù¿ÉÒÔ±£Ö¤·¢ËÍµÄÊı¾İ¶¼£¨¾¡Á¿£©¸øÒ»¸ö·şÎñÆ÷
-    *             ×¢ÒâÕâÑùÄ£Ê½£¬ÅäÖÃµÄÖ÷±¸·şÎñÆ÷²»ÒªÊıÁ¿¹ı¶à(<=4)£¬
+    * @brief      ä»¥ä¸»å¤‡çš„æ–¹å¼ï¼Œæ ¹æ®services typeå°½é‡æŸ¥è¯¢å¾—åˆ°ä¸€ä¸ªçš„SVC IDä»¥åŠå¯¹åº”çš„Handleï¼Œ
+    *             åªèƒ½ç”¨äºåœ¨AUTO CONNECTé…ç½®çš„é“¾æ¥å‡ºå»çš„æœåŠ¡å™¨ï¼Œä¸»å¤‡é¡ºåºæ ¹æ®AUTO CONNECTé…ç½®
+    *             é¡ºåºå†³å®šï¼Œé…ç½®åœ¨å‰é¢çš„æœåŠ¡å™¨ä¼˜å…ˆè€ƒè™‘ MS(Main Standby)
+    * @return     int ==0è¡¨ç¤ºæŸ¥è¯¢æˆåŠŸ
+    * @param[in]  services_type æœåŠ¡å™¨ç±»å‹
+    * @param[out] find_services_id  æŸ¥è¯¢åˆ°çš„SVC ID
+    * @param[out] svc_handle    è¿”å›å¯¹åº”çš„Handle
+    * @note       ä¼˜å…ˆä¸»ï¼Œä¸»æœ‰é—®é¢˜ï¼Œé€‰æ‹©å¤‡ä»½ã€‚è¿™æ ·å¯ä»¥ä¿è¯å‘é€çš„æ•°æ®éƒ½ï¼ˆå°½é‡ï¼‰ç»™ä¸€ä¸ªæœåŠ¡å™¨
+    *             æ³¨æ„è¿™æ ·æ¨¡å¼ï¼Œé…ç½®çš„ä¸»å¤‡æœåŠ¡å™¨ä¸è¦æ•°é‡è¿‡å¤š(<=4)ï¼Œ
     */
     int find_mshdl_by_type(uint16_t services_type,
                            uint32_t &find_services_id,
@@ -83,19 +83,19 @@ public:
 
 
     /*!
-    * @brief      ²éÑ¯ÀàĞÍ¶ÔÓ¦µÄËùÓĞactiveµÄSVC IDÊı×é£¬ÓÃÓÚ¹ã²¥µÈ
-    * @return     int       ==0±íÊ¾²éÑ¯³É¹¦
-    * @param      services_type  ²éÑ¯µÄ·şÎñÆ÷ÀàĞÍ
-    * @param      id_ary    Õâ¸öÀàĞÍ¶ÔÓ¦µÄËùÓĞactiveµÄSVC IDµÄservices_idÊıÖµ
-    * @note       ¿ÉÒÔ¶ÔÄ³¸öÀàĞÍ½øĞĞ¹ã²¥
+    * @brief      æŸ¥è¯¢ç±»å‹å¯¹åº”çš„æ‰€æœ‰activeçš„SVC IDæ•°ç»„ï¼Œç”¨äºå¹¿æ’­ç­‰
+    * @return     int       ==0è¡¨ç¤ºæŸ¥è¯¢æˆåŠŸ
+    * @param      services_type  æŸ¥è¯¢çš„æœåŠ¡å™¨ç±»å‹
+    * @param      id_ary    è¿™ä¸ªç±»å‹å¯¹åº”çš„æ‰€æœ‰activeçš„SVC IDçš„services_idæ•°å€¼
+    * @note       å¯ä»¥å¯¹æŸä¸ªç±»å‹è¿›è¡Œå¹¿æ’­
     */
     int find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *&id_ary);
 
     /*!
-    * @brief      Ôö¼ÓÉèÖÃÅäÖÃĞÅÏ¢
+    * @brief      å¢åŠ è®¾ç½®é…ç½®ä¿¡æ¯
     * @return     int
-    * @param      svc_id      ĞÂÔö¼ÓµÄ·şÎñÆ÷µÄSVC ID
-    * @param      new_svchdl  ĞÂÔö¼ÓµÄ·şÎñÆ÷µÄ¾ä±ú
+    * @param      svc_id      æ–°å¢åŠ çš„æœåŠ¡å™¨çš„SVC ID
+    * @param      new_svchdl  æ–°å¢åŠ çš„æœåŠ¡å™¨çš„å¥æŸ„
     */
     int add_services_peerinfo(const SERVICES_ID &svc_id,
                               TCP_Svc_Handler *new_svchdl);
@@ -103,11 +103,11 @@ public:
 
     /*!
     * @brief
-    * @return     int        ¸üĞÂÉèÖÃÅäÖÃĞÅÏ¢
-    * @param      svc_id     ĞÂÔö¼ÓµÄ·şÎñÆ÷µÄSVC ID
-    * @param      new_svchdl ĞÂÔö¼ÓµÄ·şÎñÆ÷¾ä±ú
-    * @param      old_svchdl Èç¹ûÔ­À´ÓĞÒ»¸ösvrinfo¶ÔÓ¦µÄHdler,·µ»ØÍ¨ÖªÄã,
-    * @note       ·µ»ØµÄold_svchdl,¿ÉÒÔÓÃÓÚÇåÀí
+    * @return     int        æ›´æ–°è®¾ç½®é…ç½®ä¿¡æ¯
+    * @param      svc_id     æ–°å¢åŠ çš„æœåŠ¡å™¨çš„SVC ID
+    * @param      new_svchdl æ–°å¢åŠ çš„æœåŠ¡å™¨å¥æŸ„
+    * @param      old_svchdl å¦‚æœåŸæ¥æœ‰ä¸€ä¸ªsvrinfoå¯¹åº”çš„Hdler,è¿”å›é€šçŸ¥ä½ ,
+    * @note       è¿”å›çš„old_svchdl,å¯ä»¥ç”¨äºæ¸…ç†
     */
     int replace_services_peerInfo(const SERVICES_ID &svc_id,
                                   TCP_Svc_Handler *new_svchdl,
@@ -115,20 +115,20 @@ public:
 
 
     /*!
-    * @brief      ¸ù¾İSERVICES_ID,É¾³ıPEERĞÅÏ¢,
-    * @return     int    ==0±íÊ¾É¾³ı³É¹¦
-    * @param      svc_id   ÒªÉ¾³ı·şÎñÆ÷µÄSVC ID
+    * @brief      æ ¹æ®SERVICES_ID,åˆ é™¤PEERä¿¡æ¯,
+    * @return     int    ==0è¡¨ç¤ºåˆ é™¤æˆåŠŸ
+    * @param      svc_id   è¦åˆ é™¤æœåŠ¡å™¨çš„SVC ID
     * @note
     */
     int del_services_peerInfo(const SERVICES_ID &svc_id);
 
-    ///µ±Ç°µÄÊıÁ¿
+    ///å½“å‰çš„æ•°é‡
     size_t get_services_peersize();
 
     ///
     void dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl);
 
-    ///¹Ø±ÕËùÓĞµÄPEER
+    ///å…³é—­æ‰€æœ‰çš„PEER
     void clear_and_closeall();
 
 
@@ -147,7 +147,7 @@ protected:
     ///
     typedef std::unordered_map<SERVICES_ID, TCP_Svc_Handler *, HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
 
-    ///ÓÃÓÚ¸ù¾İTYPEÑ¡ÔñÒ»¸öÈÎÒâ·şÎñÆ÷£¬»òÕß¸ù¾İTYPE¹ã²¥¸øËùÓĞÕâ¸öÀàĞÍµÄ·şÎñÆ÷
+    ///ç”¨äºæ ¹æ®TYPEé€‰æ‹©ä¸€ä¸ªä»»æ„æœåŠ¡å™¨ï¼Œæˆ–è€…æ ¹æ®TYPEå¹¿æ’­ç»™æ‰€æœ‰è¿™ä¸ªç±»å‹çš„æœåŠ¡å™¨
     typedef std::unordered_map<uint16_t, SERVICES_ID_TABLE > MAP_OF_TYPE_TO_IDTABLE;
 
 

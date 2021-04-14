@@ -3,12 +3,12 @@
 * @filename   zce_shm_vector.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2005Äê10ÔÂ21ÈÕ
-* @brief      ÔÚ¹²ÏíÄÚ´æÖĞÊ¹ÓÃµÄvector£¬ÆäÊµ¾ÍÊÇÊı×é£¨ÏòÁ¿£©ÁË£¬
-*             µ«ÊÇÃ»ÓĞ¶¯Ì¬À©Õ¹ÌØĞÔ£¬Õâ¸ö¼ûÁÂ£¬ÒòÎªÎÒ±Ï¾¹ÔÚÒ»¿éÄÚ´æÀïÃæ
-*             ¸É»î£¬À©Õ¹µÄÊÂÇé£¬Ç×ÄÇÊÇÄãµÄ£¡
-*             2014Äê£¬¸ù¾İĞÂµÄC++11µÄ¹æ·¶£¬°ÉÕâÖÖ¶«Î÷¸üÃûÎªarrayÁË£¬
-*             arrayÊÇ²»ÄÜÀ©Õ¹µÄ£¬
+* @date       2005å¹´10æœˆ21æ—¥
+* @brief      åœ¨å…±äº«å†…å­˜ä¸­ä½¿ç”¨çš„vectorï¼Œå…¶å®å°±æ˜¯æ•°ç»„ï¼ˆå‘é‡ï¼‰äº†ï¼Œ
+*             ä½†æ˜¯æ²¡æœ‰åŠ¨æ€æ‰©å±•ç‰¹æ€§ï¼Œè¿™ä¸ªè§è°…ï¼Œå› ä¸ºæˆ‘æ¯•ç«Ÿåœ¨ä¸€å—å†…å­˜é‡Œé¢
+*             å¹²æ´»ï¼Œæ‰©å±•çš„äº‹æƒ…ï¼Œäº²é‚£æ˜¯ä½ çš„ï¼
+*             2014å¹´ï¼Œæ ¹æ®æ–°çš„C++11çš„è§„èŒƒï¼Œå§è¿™ç§ä¸œè¥¿æ›´åä¸ºarrayäº†ï¼Œ
+*             arrayæ˜¯ä¸èƒ½æ‰©å±•çš„ï¼Œ
 * @details
 *
 */
@@ -21,53 +21,53 @@
 namespace zce
 {
 
-///¹²ÏíÄÚ´ævectorÍ·²¿Êı¾İÇø
+///å…±äº«å†…å­˜vectorå¤´éƒ¨æ•°æ®åŒº
 class _shm_array_head
 {
 protected:
 
-    //Í·²¿¹¹Ôìº¯Êı
+    //å¤´éƒ¨æ„é€ å‡½æ•°
     _shm_array_head():
         size_of_mmap_(0),
         num_of_node_(0),
         num_of_use_(0)
     {
     }
-    //Îö¹¹º¯Êı
+    //ææ„å‡½æ•°
     ~_shm_array_head()
     {
     }
 
 public:
 
-    ///ÄÚ´æÇøµÄ³¤¶È
+    ///å†…å­˜åŒºçš„é•¿åº¦
     size_t               size_of_mmap_;
-    ///½áµã×ÜÊı£¬
+    ///ç»“ç‚¹æ€»æ•°ï¼Œ
     size_t               num_of_node_;
 
-    ///±íÊ¾Ä¿Ç°Ê¹ÓÃµÄ½áµã¸öÊı
+    ///è¡¨ç¤ºç›®å‰ä½¿ç”¨çš„ç»“ç‚¹ä¸ªæ•°
     size_t               num_of_use_;
 
 };
 
 /*!
-* @brief      ¹²ÏíÄÚ´æÖĞÊ¹ÓÃµÄvector£¬³¹µ×¼ò»¯°æ±¾
-* @tparam     _value_type  Êı×éÀàĞÍ
+* @brief      å…±äº«å†…å­˜ä¸­ä½¿ç”¨çš„vectorï¼Œå½»åº•ç®€åŒ–ç‰ˆæœ¬
+* @tparam     _value_type  æ•°ç»„ç±»å‹
 */
 template <class _value_type> class shm_array:
     public _shm_memory_base
 {
 public:
 
-    ///¶¨Òåµü´úÆ÷,Õâ¸ö¼òµ¥
+    ///å®šä¹‰è¿­ä»£å™¨,è¿™ä¸ªç®€å•
     typedef _value_type *iterator;
 
 protected:
 
-    //Ö»¶¨Òå,²»ÊµÏÖ,
+    //åªå®šä¹‰,ä¸å®ç°,
     const shm_array<_value_type> &operator=(const shm_array<_value_type> &others);
 
-    ///Ä¬ÈÏ¹¹Ôìº¯Êı,¾ÍÊÇ²»¸øÄãÓÃ
+    ///é»˜è®¤æ„é€ å‡½æ•°,å°±æ˜¯ä¸ç»™ä½ ç”¨
     shm_array():
         _shm_memory_base(NULL),
         data_base_(NULL)
@@ -77,7 +77,7 @@ protected:
 public:
 
     /*!
-    * @brief      ¹¹Ôìº¯Êı£¬¸ù¾İ²ÎÊı½øĞĞ³õÊ¼»¯£¬
+    * @brief      æ„é€ å‡½æ•°ï¼Œæ ¹æ®å‚æ•°è¿›è¡Œåˆå§‹åŒ–ï¼Œ
     * @return     void
     * @param      numnode
     * @param      pmmap
@@ -89,28 +89,28 @@ public:
     {
         initialize(numnode, pmmap, if_restore);
     }
-    ///Îö¹¹º¯Êı
+    ///ææ„å‡½æ•°
     ~shm_array()
     {
     }
 public:
 
-    ///ÄÚ´æÇøµÄ¹¹³ÉÎª ¶¨ÒåÇø,dataÇø,·µ»ØËùĞèÒªµÄ³¤¶È,
+    ///å†…å­˜åŒºçš„æ„æˆä¸º å®šä¹‰åŒº,dataåŒº,è¿”å›æ‰€éœ€è¦çš„é•¿åº¦,
     static size_t getallocsize(const size_t numnode)
     {
         return  sizeof(_shm_array_head)  + sizeof(_value_type) * (numnode ) ;
     }
 
-    ///³õÊ¼»¯
+    ///åˆå§‹åŒ–
     static shm_array<_value_type> *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
     {
 
         _shm_array_head *aryhead  = reinterpret_cast<_shm_array_head *>(pmmap);
 
-        //Èç¹ûÊÇ»Ö¸´,Êı¾İ¶¼ÔÚÄÚ´æÖĞ,
+        //å¦‚æœæ˜¯æ¢å¤,æ•°æ®éƒ½åœ¨å†…å­˜ä¸­,
         if (if_restore == true)
         {
-            //¼ì²éÒ»ÏÂ»Ö¸´µÄÄÚ´æÊÇ·ñÕıÈ·,
+            //æ£€æŸ¥ä¸€ä¸‹æ¢å¤çš„å†…å­˜æ˜¯å¦æ­£ç¡®,
             if (getallocsize(numnode) != aryhead->size_of_mmap_ ||
                 numnode != aryhead->num_of_node_ )
             {
@@ -118,13 +118,13 @@ public:
             }
         }
 
-        //³õÊ¼»¯³ß´ç
+        //åˆå§‹åŒ–å°ºå¯¸
         aryhead->size_of_mmap_ = getallocsize(numnode);
         aryhead->num_of_node_ = numnode;
 
         shm_array<_value_type> *instance = new shm_array<_value_type>();
 
-        //ËùÓĞµÄÖ¸Õë¶¼ÊÇ¸ü¼Ó»ùµØÖ·¼ÆËãµÃµ½µÄ,ÓÃÓÚ·½±ã¼ÆËã,Ã¿´Î³õÊ¼»¯»áÖØĞÂ¼ÆËã
+        //æ‰€æœ‰çš„æŒ‡é’ˆéƒ½æ˜¯æ›´åŠ åŸºåœ°å€è®¡ç®—å¾—åˆ°çš„,ç”¨äºæ–¹ä¾¿è®¡ç®—,æ¯æ¬¡åˆå§‹åŒ–ä¼šé‡æ–°è®¡ç®—
         instance->smem_base_ = pmmap;
         instance->array_head_ = aryhead;
         instance->data_base_  = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_array_head) );
@@ -134,7 +134,7 @@ public:
             instance->clear();
         }
 
-        //´òÍêÊÕ¹¤
+        //æ‰“å®Œæ”¶å·¥
         return instance;
     }
 
@@ -144,24 +144,24 @@ public:
         array_head_->num_of_use_ = 0;
     }
 
-    ///ÓÃ[]·ÃÎÊÊı¾İ£¬Ô½½çÁË×Ô¼º¸ºÔğ
+    ///ç”¨[]è®¿é—®æ•°æ®ï¼Œè¶Šç•Œäº†è‡ªå·±è´Ÿè´£
     _value_type &operator[](size_t n)
     {
         return *(data_base_ + n);
     }
 
-    ///¿ªÊ¼Î»ÖÃµÄµü´úÆ÷
+    ///å¼€å§‹ä½ç½®çš„è¿­ä»£å™¨
     iterator begin()
     {
         return data_base_;
     }
-    ///½áÊøÎ»ÖÃµÄµü´úÆ÷
+    ///ç»“æŸä½ç½®çš„è¿­ä»£å™¨
     iterator end()
     {
         return data_base_ + array_head_->num_of_use_;
     }
 
-    ///ÊÇ·ñÎªÂúºÍ¿Õ
+    ///æ˜¯å¦ä¸ºæ»¡å’Œç©º
     bool empty() const
     {
         return (array_head_->num_of_use_ == 0);
@@ -172,32 +172,32 @@ public:
         return (array_head_->num_of_use_ == array_head_->num_of_node_);
     }
 
-    ///ÖØĞÂÉèÖÃ¿Õ¼ä£¬¿ÉÒÔÔö´óºÍËõĞ¡
+    ///é‡æ–°è®¾ç½®ç©ºé—´ï¼Œå¯ä»¥å¢å¤§å’Œç¼©å°
     void resize(size_t num)
     {
 #if defined _DEBUG || defined DEBUG
         assert(num <= array_head_->num_of_node_);
 #endif
 
-        //Èç¹ûÊÇÀ©´ó¿Õ¼ä£¬Éú²úÊı¾İ
+        //å¦‚æœæ˜¯æ‰©å¤§ç©ºé—´ï¼Œç”Ÿäº§æ•°æ®
         if (num > array_head_->num_of_use_)
         {
-            //Éú²úÄ¬ÈÏµÄÊı¾İ
+            //ç”Ÿäº§é»˜è®¤çš„æ•°æ®
             for (size_t i = array_head_->num_of_use_; i < num; ++i)
             {
                 new (data_base_ + i) _value_type();
             }
         }
-        //Èç¹ûÊÇËõĞ¡¿Õ¼ä,Ïú»ÙÊı¾İ£¬µ÷ÓÃÎö¹¹
+        //å¦‚æœæ˜¯ç¼©å°ç©ºé—´,é”€æ¯æ•°æ®ï¼Œè°ƒç”¨ææ„
         else if (num < array_head_->num_of_use_)
         {
-            //Éú²úÄ¬ÈÏµÄÊı¾İ,Îö¹¹
+            //ç”Ÿäº§é»˜è®¤çš„æ•°æ®,ææ„
             for (size_t i = num; i < array_head_->num_of_use_; ++i)
             {
                 (data_base_ + i)->~_value_type();
             }
         }
-        //µÈÓÚ£¬Ê²Ã´¶¼²»×ö
+        //ç­‰äºï¼Œä»€ä¹ˆéƒ½ä¸åš
         else
         {
 
@@ -206,23 +206,23 @@ public:
         array_head_->num_of_use_ = num;
     }
 
-    //Ê¹ÓÃÁËµÄ¿Õ¼äµÄÊıÁ¿
+    //ä½¿ç”¨äº†çš„ç©ºé—´çš„æ•°é‡
     size_t size() const
     {
         return array_head_->num_of_use_;
     }
-    //·µ»ØÁ´±í³Ø×ÓµÄÈİÁ¿
+    //è¿”å›é“¾è¡¨æ± å­çš„å®¹é‡
     size_t capacity() const
     {
         return array_head_->num_of_node_;
     }
-    //Ê£Óà¿Õ¼äµÄÈİÁ¿
+    //å‰©ä½™ç©ºé—´çš„å®¹é‡
     size_t sizefreenode() const
     {
         return array_head_->num_of_node_ - array_head_->num_of_use_;
     }
 
-    ///¹Ø¼üÎ»ÖÃ
+    ///å…³é”®ä½ç½®
     _value_type &front()
     {
         return data_base_;
@@ -233,7 +233,7 @@ public:
         return *(data_base_ + ( array_head_->num_of_use_ - 1));
     }
 
-    ///ÏòºóÌí¼ÓÊı¾İ
+    ///å‘åæ·»åŠ æ•°æ®
     bool push_back(const _value_type &val)
     {
         if (array_head_->num_of_use_ == array_head_->num_of_node_)
@@ -241,7 +241,7 @@ public:
             return false;
         }
 
-        //Ê¹ÓÃplacement new ¸´ÖÆ¶ÔÏó
+        //ä½¿ç”¨placement new å¤åˆ¶å¯¹è±¡
         new (data_base_ + array_head_->num_of_use_) _value_type(val);
 
         ++(array_head_->num_of_use_);
@@ -249,7 +249,7 @@ public:
         return true;
     }
 
-    ///´ÓºóÃæÉ¾³ıÊı¾İ
+    ///ä»åé¢åˆ é™¤æ•°æ®
     bool pop_back()
     {
         if ( array_head_->num_of_use_ == 0 )
@@ -257,7 +257,7 @@ public:
             return false;
         }
 
-        //ÏÔÊ½µ÷ÓÃÎö¹¹º¯Êı
+        //æ˜¾å¼è°ƒç”¨ææ„å‡½æ•°
         (data_base_ + array_head_->num_of_use_)->~_value_type();
 
         --(array_head_->num_of_use_);
@@ -267,7 +267,7 @@ public:
 protected:
     ///
     _shm_array_head   *array_head_ = nullptr;
-    ///Êı¾İÇøÆğÊ¼Ö¸Õë,
+    ///æ•°æ®åŒºèµ·å§‹æŒ‡é’ˆ,
     _value_type       *data_base_ = nullptr;
 
 };
