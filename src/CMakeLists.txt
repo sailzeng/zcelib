@@ -1,16 +1,34 @@
 cmake_minimum_required(VERSION 3.16)
 
+set(CMAKE_CONFIGURATION_TYPES "Debug;Release" CACHE STRING "" FORCE)
+
 # set the project name
 project(zceproject CXX)
 
 #config 是大小写敏感的
-set(CMAKE_CONFIGURATION_TYPES "debug;release")
+ 
 
+IF (CMAKE_BUILD_TYPE MATCHES "Debug" OR CMAKE_BUILD_TYPE MATCHES "None")
+    MESSAGE(STATUS "CMAKE_BUILD_TYPE is Debug")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "Release")
+    MESSAGE(STATUS "CMAKE_BUILD_TYPE is Release")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "RelWitchDebInfo")
+    MESSAGE(STATUS "CMAKE_BUILD_TYPE is RelWitchDebInfo")
+ELSEIF (CMAKE_BUILD_TYPE MATCHES "MinSizeRel")
+    MESSAGE(STATUS "CMAKE_BUILD_TYPE is MinSizeRel")
+ELSE ()
+    MESSAGE(STATUS "unknown CMAKE_BUILD_TYPE = " ${CMAKE_BUILD_TYPE})
+ENDIF ()
+
+
+set(CMAKE_DEBUG_POSTFIX "_d") 
+set(CMAKE_RELEASE_POSTFIX "_r") 
 
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/ )
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../bin/ )
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/../lib/ )
-set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_ ${CMAKE_SOURCE_DIR}/../lib/ )
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_DEBUG ${CMAKE_SOURCE_DIR}/../lib/debug/ )
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_REALSE ${CMAKE_SOURCE_DIR}/../lib/realse/ )
 
 # C++标准
 set(CMAKE_CXX_STANDARD 17)
@@ -53,8 +71,8 @@ add_executable(zealot)
 file(GLOB_RECURSE SRC_LIST "./test/zealot/*.cpp")
 target_sources(zealot PRIVATE ${SRC_LIST})
 target_include_directories(zealot PUBLIC "./test/zealot/")
-add_dependencies(zealot soarlib zcelib)
-target_precompile_headers(zealot PRIVATE ./test/zealot/zce/predefine.h)
+add_dependencies(zealot zcelib)
+target_precompile_headers(zealot PRIVATE ./test/zealot/zealot_predefine.h)
 
 
 add_library(soarlib)
