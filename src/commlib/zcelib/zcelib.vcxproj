@@ -126,6 +126,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -150,6 +151,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -172,6 +174,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -197,6 +200,7 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <AssemblerListingLocation>$(IntDir)%(RelativeDir)</AssemblerListingLocation>
       <ObjectFileName>$(IntDir)%(RelativeDir)</ObjectFileName>
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -281,6 +285,9 @@
     <ClCompile Include="zce\os_adapt\time.cpp" />
     <ClCompile Include="zce\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="zce\script\lua_tie.cpp" />
     <ClCompile Include="zce\server\get_option.cpp" />
@@ -321,8 +328,8 @@
     <ClInclude Include="zce\async\coroutine.h" />
     <ClInclude Include="zce\async\fsm.h" />
     <ClInclude Include="zce\lock\ptr_guard.h" />
-    <ClInclude Include="zce\logger\log_basic.h" />
     <ClInclude Include="zce\logger\logging.h" />
+    <ClInclude Include="zce\logger\log_basic.h" />
     <ClInclude Include="zce\logger\msg.h" />
     <ClInclude Include="zce\logger\plus.h" />
     <ClInclude Include="zce\logger\priority.h" />

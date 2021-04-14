@@ -7,26 +7,26 @@
 
 #if defined ZCE_OS_WINDOWS
 
-///WindowsµÄFiberÊµÏÖ(CreateFiber)º¯ÊıÖ¸Õë¶ÔÓ¦µÄ²ÎÊıÖ»ÓĞÒ»¸ö£¬¶øÇÒĞèÒªµÄµÄº¯ÊıÖ½ÖÊÊÇWINAPIµÄ£¬
-///¾ÍÊÇ__stdcallµÄ£¬¶øÇÒFiberÃ»ÓĞ·µ»ØµÄcontextÖ¸¶¨,ËùÒÔ×öÒ»¸ö×ª»»£¬
+///Windowsçš„Fiberå®ç°(CreateFiber)å‡½æ•°æŒ‡é’ˆå¯¹åº”çš„å‚æ•°åªæœ‰ä¸€ä¸ªï¼Œè€Œä¸”éœ€è¦çš„çš„å‡½æ•°çº¸è´¨æ˜¯WINAPIçš„ï¼Œ
+///å°±æ˜¯__stdcallçš„ï¼Œè€Œä¸”Fiberæ²¡æœ‰è¿”å›çš„contextæŒ‡å®š,æ‰€ä»¥åšä¸€ä¸ªè½¬æ¢ï¼Œ
 struct _FIBERS_3PARAFUN_ADAPT
 {
     ///
     coroutine_t          *handle_;
-    ///ÊÇ·ñÔÚÍË³öµÄÊ±ºò·µ»ØÖ÷Ğ­³Ì£¬
+    ///æ˜¯å¦åœ¨é€€å‡ºçš„æ—¶å€™è¿”å›ä¸»åç¨‹ï¼Œ
     bool                  exit_back_main_;
-    ///º¯ÊıÖ¸Õë
+    ///å‡½æ•°æŒ‡é’ˆ
     ZCE_COROUTINE_3PARA   fun_ptr_;
 
-    //º¯ÊıµÄµÚ1¸ö²ÎÊı£¬
+    //å‡½æ•°çš„ç¬¬1ä¸ªå‚æ•°ï¼Œ
     void                 *para1_;
-    //º¯ÊıµÄµÚ2¸ö²ÎÊı
+    //å‡½æ•°çš„ç¬¬2ä¸ªå‚æ•°
     void                 *para2_;
-    //º¯ÊıµÄµÚ3¸ö²ÎÊı
+    //å‡½æ•°çš„ç¬¬3ä¸ªå‚æ•°
     void                 *para3_;
 };
 
-//°ïÖúÍê³Éº¯ÊıÊÊÅäÊÊÅä
+//å¸®åŠ©å®Œæˆå‡½æ•°é€‚é…é€‚é…
 VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 {
 
@@ -42,7 +42,7 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
     void *para2 = fun_adapt->para2_;
     void *para3 = fun_adapt->para3_;
 
-    //Õâ¸öº¯ÊıÊÇ¶Ñ·ÖÅäµÄ£¬ÒªÇåÀíµôÊÍ·Å
+    //è¿™ä¸ªå‡½æ•°æ˜¯å †åˆ†é…çš„ï¼Œè¦æ¸…ç†æ‰é‡Šæ”¾
     delete fun_adapt;
 
     treepara_fun(para1, para2, para3);
@@ -57,7 +57,7 @@ VOID  WINAPI _fibers_adapt_fun (VOID *fun_para)
 
 
 
-//¼æÈİ·â×°µÄmakecontext£¬·Ç±ê×¼º¯Êı£¬¿ÉÒÔÊ¹ÓÃ2¸ö²ÎÊıµÄº¯ÊıÖ¸Õë
+//å…¼å®¹å°è£…çš„makecontextï¼Œéæ ‡å‡†å‡½æ•°ï¼Œå¯ä»¥ä½¿ç”¨2ä¸ªå‚æ•°çš„å‡½æ•°æŒ‡é’ˆ
 int zce::make_coroutine(coroutine_t *coroutine_hdl,
                         size_t stack_size,
                         bool exit_back_main,
@@ -71,10 +71,10 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
     coroutine_hdl->main_ = NULL;
     coroutine_hdl->coroutine_ = NULL;
 
-    //Èç¹ûµ±Ç°»¹²»ÊÇÏË³Ì£¬½øĞĞ×ª»»£¬Í¬Ê±Ò²µ½µ±Ç°µÄÏË³Ì±êÊ¶
+    //å¦‚æœå½“å‰è¿˜ä¸æ˜¯çº¤ç¨‹ï¼Œè¿›è¡Œè½¬æ¢ï¼ŒåŒæ—¶ä¹Ÿåˆ°å½“å‰çš„çº¤ç¨‹æ ‡è¯†
     if (FALSE == ::IsThreadAFiber())
     {
-        //FIBER_FLAG_FLOAT_SWITCH XP²»Ö§³Ö£¬¸¡µã»·¾³ÇĞ»»Ó¦¸Ã»áºÄÊ±£¬ÓĞÒ»Ğ©¼ò»¯È¥µôÁË
+        //FIBER_FLAG_FLOAT_SWITCH XPä¸æ”¯æŒï¼Œæµ®ç‚¹ç¯å¢ƒåˆ‡æ¢åº”è¯¥ä¼šè€—æ—¶ï¼Œæœ‰ä¸€äº›ç®€åŒ–å»æ‰äº†
         coroutine_hdl->main_ = ::ConvertThreadToFiberEx(NULL,
                                                         FIBER_FLAG_FLOAT_SWITCH);
         if (NULL == coroutine_hdl->main_)
@@ -82,7 +82,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
             return -1;
         }
     }
-    //Èç¹ûÒÑ¾­ÊÇÏË³ÌÁË£¬µÃµ½µ±Ç°ÏË³ÌµÄ±êÊ¶
+    //å¦‚æœå·²ç»æ˜¯çº¤ç¨‹äº†ï¼Œå¾—åˆ°å½“å‰çº¤ç¨‹çš„æ ‡è¯†
     else
     {
         coroutine_hdl->main_ = ::GetCurrentFiber();
@@ -93,7 +93,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
     }
 
 
-    //Ê¹ÓÃÕâ¸ö½á¹¹Íê³Éº¯ÊıÊÊÅä
+    //ä½¿ç”¨è¿™ä¸ªç»“æ„å®Œæˆå‡½æ•°é€‚é…
     struct _FIBERS_3PARAFUN_ADAPT *fibers_adapt = new _FIBERS_3PARAFUN_ADAPT();
     fibers_adapt->exit_back_main_ = exit_back_main;
     fibers_adapt->fun_ptr_ = fun_ptr;
@@ -102,7 +102,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
     fibers_adapt->para3_ = para3;
 
 
-    //×¢ÒâFIBER_FLAG_FLOAT_SWITCH ÔÚXPÊÇ²»±»Ö§³ÖµÄ£¬
+    //æ³¨æ„FIBER_FLAG_FLOAT_SWITCH åœ¨XPæ˜¯ä¸è¢«æ”¯æŒçš„ï¼Œ
     coroutine_hdl->coroutine_ = ::CreateFiberEx(stack_size,
                                                 stack_size,
                                                 FIBER_FLAG_FLOAT_SWITCH,
@@ -119,7 +119,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
     return 0;
 #elif defined ZCE_OS_LINUX
 
-    //±ØĞëÏÈgetcontext²ÅÄÜmakecontext
+    //å¿…é¡»å…ˆgetcontextæ‰èƒ½makecontext
     int ret = ::getcontext(&(coroutine_hdl->main_));
     if (0 != ret)
     {
@@ -131,7 +131,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
         return ret;
     }
 
-    //Ö»Ê¹ÓÃÒ»¸ö²ÎÊı£¬²»ÔÊĞíÊ¹ÓÃ±ä²Î£¬Windwos²»Ö§³Ö
+    //åªä½¿ç”¨ä¸€ä¸ªå‚æ•°ï¼Œä¸å…è®¸ä½¿ç”¨å˜å‚ï¼ŒWindwosä¸æ”¯æŒ
     const int ONLY_3_ARG_COUNT = 3;
     if (exit_back_main)
     {
@@ -155,7 +155,7 @@ int zce::make_coroutine(coroutine_t *coroutine_hdl,
 #endif
 }
 
-//·Ç±ê×¼º¯Êı£¬
+//éæ ‡å‡†å‡½æ•°ï¼Œ
 void zce::delete_coroutine(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
@@ -167,7 +167,7 @@ void zce::delete_coroutine(coroutine_t *coroutine_hdl)
     return ;
 #elif defined ZCE_OS_LINUX
 
-    //ÊÍ·Åzce::makecontextÉêÇëµÄ¿Õ¼ä
+    //é‡Šæ”¾zce::makecontextç”³è¯·çš„ç©ºé—´
     delete[](char *) coroutine_hdl->coroutine_.uc_stack.ss_sp;
     coroutine_hdl->coroutine_.uc_stack.ss_sp = NULL;
     coroutine_hdl->coroutine_.uc_stack.ss_size = 0;
@@ -175,7 +175,7 @@ void zce::delete_coroutine(coroutine_t *coroutine_hdl)
 }
 
 
-//ÇĞ»»µ½Ğ­³Ì
+//åˆ‡æ¢åˆ°åç¨‹
 int zce::yeild_coroutine(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS
@@ -191,15 +191,15 @@ int zce::yeild_coroutine(coroutine_t *coroutine_hdl)
     return ret;
 
 #elif defined ZCE_OS_LINUX
-    //×¢ÒâÑ½£¬swapcontext¸øÄãÒ»¸ö´í¾õ£¬»áÈÃÄã»³ÒÉ£¬Ã»ÓĞgetcontextÔõÃ´Ìø»ØÀ´£¿
-    //ÆäÊµswapcontextÊÇ±£´æÁË²ÎÊı1µÄcontext£¬È»ºó²ÅÌøÈë²ÎÊı2µÄcontextµÄ£¬
+    //æ³¨æ„å‘€ï¼Œswapcontextç»™ä½ ä¸€ä¸ªé”™è§‰ï¼Œä¼šè®©ä½ æ€€ç–‘ï¼Œæ²¡æœ‰getcontextæ€ä¹ˆè·³å›æ¥ï¼Ÿ
+    //å…¶å®swapcontextæ˜¯ä¿å­˜äº†å‚æ•°1çš„contextï¼Œç„¶åæ‰è·³å…¥å‚æ•°2çš„contextçš„ï¼Œ
     return ::swapcontext(&coroutine_hdl->main_,
                          &coroutine_hdl->coroutine_);
 #endif
 }
 
 
-//ÇĞ»»µ½Main
+//åˆ‡æ¢åˆ°Main
 int zce::yeild_main(coroutine_t *coroutine_hdl)
 {
 #if defined ZCE_OS_WINDOWS

@@ -3,15 +3,15 @@
 * @filename   zce/os_adapt/thread.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê9ÔÂ16ÈÕ
+* @date       2011å¹´9æœˆ16æ—¥
 * @brief
 *
-* @details    Ä¿µÄÊÇÕ¾ÔÚACE¾ŞÈËµÄ¼ç°òÉÏ£¬µÃµ½Ò»¸ö¸ü¼Ó¼òµ¥µÄ·â×°
-*             ACEµÄÏß³ÌÊÇÒÀ¾İÓëSUNÆ½Ì¨µÄ»ù´¡ÉÏÊµÏÖµÄ£¬ºÍpthread»¹ÕæÓĞÇø±ğ¡£
-*             ÁíÍâ²¿·Öº¯ÊıÎÒÃ»ÓĞ±£Áô£¬ÒòÎªÎªÁË¼æÈİ£¬¶øÇÒºÜ¶à´úÂëÔÚÁ½¸öÆ½Ì¨²»Í¬£¬
-*             ÓĞĞ©ÊÇÎªÁËREAL TIMEÏµÍ³×¼±¸µÄ
+* @details    ç›®çš„æ˜¯ç«™åœ¨ACEå·¨äººçš„è‚©è†€ä¸Šï¼Œå¾—åˆ°ä¸€ä¸ªæ›´åŠ ç®€å•çš„å°è£…
+*             ACEçš„çº¿ç¨‹æ˜¯ä¾æ®ä¸SUNå¹³å°çš„åŸºç¡€ä¸Šå®ç°çš„ï¼Œå’Œpthreadè¿˜çœŸæœ‰åŒºåˆ«ã€‚
+*             å¦å¤–éƒ¨åˆ†å‡½æ•°æˆ‘æ²¡æœ‰ä¿ç•™ï¼Œå› ä¸ºä¸ºäº†å…¼å®¹ï¼Œè€Œä¸”å¾ˆå¤šä»£ç åœ¨ä¸¤ä¸ªå¹³å°ä¸åŒï¼Œ
+*             æœ‰äº›æ˜¯ä¸ºäº†REAL TIMEç³»ç»Ÿå‡†å¤‡çš„
 *
-* @note       ×¢ÒâWINDOWSÏÂµÄÄÚºËÆäÊµÊ¹ÓÃHANDLE±êÊ¶Ò»¸öÏß³Ì£¬¶ø²»ÊÇÏß³ÌID£¬
+* @note       æ³¨æ„WINDOWSä¸‹çš„å†…æ ¸å…¶å®ä½¿ç”¨HANDLEæ ‡è¯†ä¸€ä¸ªçº¿ç¨‹ï¼Œè€Œä¸æ˜¯çº¿ç¨‹IDï¼Œ
 *
 */
 
@@ -20,34 +20,34 @@
 
 #include "zce/os_adapt/common.h"
 
-//ÓÉÓÚ
+//ç”±äº
 namespace zce
 {
 
 //------------------------------------------------------------------------------------------------------
 
 /*!
-* @brief      ³õÊ¼»¯Ïß³ÌÊôĞÔ
-* @return     int       0³É¹¦£¬-1Ê§°Ü
+* @brief      åˆå§‹åŒ–çº¿ç¨‹å±æ€§
+* @return     int       0æˆåŠŸï¼Œ-1å¤±è´¥
 * @param[in]  attr
 */
 int pthread_attr_init(pthread_attr_t *attr);
 
 /*!
-* @brief      Ïú»ÙÏß³ÌÊôĞÔ
-* @return     int       0³É¹¦£¬-1Ê§°Ü
+* @brief      é”€æ¯çº¿ç¨‹å±æ€§
+* @return     int       0æˆåŠŸï¼Œ-1å¤±è´¥
 * @param[in]  attr
 */
 int pthread_attr_destroy(pthread_attr_t *attr);
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬ÉèÖÃÏß³ÌÊôĞÔ±äÁ¿ÊôĞÔ£¬Äã¿ÉÒÔÉèÖÃ£¬Ïß³ÌµÄµÄ·ÖÀë£¬JOINÊôĞÔ£¬¶ÑÕ»´óĞ¡£¬Ïß³ÌµÄµ÷¶ÈÓÅÏÈ¼¶
-* @return     int                0³É¹¦£¬-1Ê§°Ü
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œè®¾ç½®çº¿ç¨‹å±æ€§å˜é‡å±æ€§ï¼Œä½ å¯ä»¥è®¾ç½®ï¼Œçº¿ç¨‹çš„çš„åˆ†ç¦»ï¼ŒJOINå±æ€§ï¼Œå †æ ˆå¤§å°ï¼Œçº¿ç¨‹çš„è°ƒåº¦ä¼˜å…ˆçº§
+* @return     int                0æˆåŠŸï¼Œ-1å¤±è´¥
 * @param[out] attr
-* @param[in]  detachstate    ·ÖÀëµÄÊôĞÔ PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
-* @param[in]  stacksize      ¶ÑÕ»µÄ´óĞ¡
-* @param[in]  threadpriority Ïß³ÌÓÅÏÈ¼¶£¬£¨0ÊÇÄ¬ÈÏÖµ£©£¬²»Ì«½¨ÒéÄãÓÃÕâ¸ö¶«¶«£¬
-* @note       WINDOWS ºÍLINUX¹²ÓĞµÄÊôĞÔ²¢²»¶à
+* @param[in]  detachstate    åˆ†ç¦»çš„å±æ€§ PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
+* @param[in]  stacksize      å †æ ˆçš„å¤§å°
+* @param[in]  threadpriority çº¿ç¨‹ä¼˜å…ˆçº§ï¼Œï¼ˆ0æ˜¯é»˜è®¤å€¼ï¼‰ï¼Œä¸å¤ªå»ºè®®ä½ ç”¨è¿™ä¸ªä¸œä¸œï¼Œ
+* @note       WINDOWS å’ŒLINUXå…±æœ‰çš„å±æ€§å¹¶ä¸å¤š
 */
 int pthread_attr_setex(pthread_attr_t *attr,
                        int detachstate = PTHREAD_CREATE_DETACHED,
@@ -56,8 +56,8 @@ int pthread_attr_setex(pthread_attr_t *attr,
                       );
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬»ñµÃÏß³Ì¼¸¸öÊôĞÔ
-* @return     int           0³É¹¦£¬-1Ê§°Ü
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œè·å¾—çº¿ç¨‹å‡ ä¸ªå±æ€§
+* @return     int           0æˆåŠŸï¼Œ-1å¤±è´¥
 * @param      attr
 * @param      detachstate
 * @param      stacksize
@@ -70,17 +70,17 @@ int pthread_attr_getex(const pthread_attr_t *attr,
                       );
 
 /*!
-* @brief      ´´½¨Ò»¸öÏß³Ì,
-*             ÎªÁË·½±ã£¬ÎÒÕâ¶ùÒ²²»Ìá¹©ÒÔ´´½¨¾Í¹ÒÆğµÄ¹¦ÄÜ£¬´´½¨ºó£¬¾Í¿ªÊ¼ÔËĞĞÁË
-*             ·µ»ØÖµÎÊÌâËµÃ÷£¬WINDOWSÏÂ£¬º¯ÊıÖ¸ÕëµÄ·µ»ØÖµÀàĞÍÊÇÒ»¸öDWORD£¬LINUXÏÂ£¬º¯ÊıÖ¸Õë·µ»ØÖµÀàĞÍÊÇvoid *
-*             ¿çÆ½Ì¨±ØĞëÒªÑ¡ÔñÄ³ÖÖ²ÎÊıÀàĞÍ£¬»òÕß·ÅÆúÑ¡Ôñ£¬ÆäÊµÎÒÔÚĞ´Õâ¸öº¯ÊıµÄÊ±ºò£¬Ò¡°ÚÁË¼¸´Î£¬×îºó»¹ÊÇ·ÅÆúÁË,ÒòÎªÎÒÔõÑù°ü×°£¬¶¼¿ÉÄÜµ¼ÖÂÎóÓÃ£¬
-*             Èç¹ûÄãÓĞÄÇÃ´Ç¿µÄ°®ºÃ£¬ÇëÓÃÏÂÃæÄÇ×é£¬µ«ÔÚ²»Í¬Æ½Ì¨ÏÂ²»Ò»Ñù,
-*             »ØÍ··¢ÏÖpthread WIN32ÊµÏÖµÄÏë·¨ºÍÎÒÒ»Ñù£¬¶¼Ñ¡ÔñÁËvoid ×÷Îª·µ»ØÖµ
-* @return     int               0³É¹¦£¬-1Ê§°Ü
-* @param[out] threadid      Ïß³ÌID£¬£¨ÔÚWINDOWSÒ²ÊÇÏß³ÌID£¬²»ÊÇÏß³Ì¾ä±ú£©
-* @param[in]  attr          Ïß³ÌÊôĞÔ²ÎÊı
-* @param[in]  start_routine ÔËĞĞµÄÏß³ÌµÄ»Øµ÷º¯ÊıÖ¸Õë£¬Õâ¸öº¯ÊıµÄ·µ»ØÖµÊÇvoid£¬ÎÒÃ»ÓĞÇ¨¾ÍÈÎºÎÆ½Ì¨£¬
-* @param[in]  arg           º¯ÊıÖ¸ÕëµÄ²ÎÊı
+* @brief      åˆ›å»ºä¸€ä¸ªçº¿ç¨‹,
+*             ä¸ºäº†æ–¹ä¾¿ï¼Œæˆ‘è¿™å„¿ä¹Ÿä¸æä¾›ä»¥åˆ›å»ºå°±æŒ‚èµ·çš„åŠŸèƒ½ï¼Œåˆ›å»ºåï¼Œå°±å¼€å§‹è¿è¡Œäº†
+*             è¿”å›å€¼é—®é¢˜è¯´æ˜ï¼ŒWINDOWSä¸‹ï¼Œå‡½æ•°æŒ‡é’ˆçš„è¿”å›å€¼ç±»å‹æ˜¯ä¸€ä¸ªDWORDï¼ŒLINUXä¸‹ï¼Œå‡½æ•°æŒ‡é’ˆè¿”å›å€¼ç±»å‹æ˜¯void *
+*             è·¨å¹³å°å¿…é¡»è¦é€‰æ‹©æŸç§å‚æ•°ç±»å‹ï¼Œæˆ–è€…æ”¾å¼ƒé€‰æ‹©ï¼Œå…¶å®æˆ‘åœ¨å†™è¿™ä¸ªå‡½æ•°çš„æ—¶å€™ï¼Œæ‘‡æ‘†äº†å‡ æ¬¡ï¼Œæœ€åè¿˜æ˜¯æ”¾å¼ƒäº†,å› ä¸ºæˆ‘æ€æ ·åŒ…è£…ï¼Œéƒ½å¯èƒ½å¯¼è‡´è¯¯ç”¨ï¼Œ
+*             å¦‚æœä½ æœ‰é‚£ä¹ˆå¼ºçš„çˆ±å¥½ï¼Œè¯·ç”¨ä¸‹é¢é‚£ç»„ï¼Œä½†åœ¨ä¸åŒå¹³å°ä¸‹ä¸ä¸€æ ·,
+*             å›å¤´å‘ç°pthread WIN32å®ç°çš„æƒ³æ³•å’Œæˆ‘ä¸€æ ·ï¼Œéƒ½é€‰æ‹©äº†void ä½œä¸ºè¿”å›å€¼
+* @return     int               0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[out] threadid      çº¿ç¨‹IDï¼Œï¼ˆåœ¨WINDOWSä¹Ÿæ˜¯çº¿ç¨‹IDï¼Œä¸æ˜¯çº¿ç¨‹å¥æŸ„ï¼‰
+* @param[in]  attr          çº¿ç¨‹å±æ€§å‚æ•°
+* @param[in]  start_routine è¿è¡Œçš„çº¿ç¨‹çš„å›è°ƒå‡½æ•°æŒ‡é’ˆï¼Œè¿™ä¸ªå‡½æ•°çš„è¿”å›å€¼æ˜¯voidï¼Œæˆ‘æ²¡æœ‰è¿å°±ä»»ä½•å¹³å°ï¼Œ
+* @param[in]  arg           å‡½æ•°æŒ‡é’ˆçš„å‚æ•°
 */
 int pthread_create(ZCE_THREAD_ID *threadid,
                    const pthread_attr_t *attr,
@@ -88,15 +88,15 @@ int pthread_create(ZCE_THREAD_ID *threadid,
                    void *arg);
 
 /*!
-* @brief      ´´½¨Ïß³Ì£¬¼òµ¥Ò»µãµÄ·â×°£¬Õâ¸ö²»ÓÃ´¦Àípthread_attr_t
-*             Õâ¸ö²»ÊÇPOSIXµÄ·â×°£¬µ«ÍÆ¼öÊ¹ÓÃ
-* @return     int                0³É¹¦£¬-1Ê§°Ü
-* @param[in]  start_routine  º¯ÊıÖ¸Õë
-* @param[in]  arg            start_routineº¯Êı µÄ²ÎÊı
-* @param[out] threadid      ·µ»ØµÄÏß³ÌID
-* @param[in]  detachstate    ·ÖÀëµÄÊôĞÔ PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
-* @param[in]  stacksize      ¶ÑÕ»´óĞ¡
-* @param[in]  threadpriority Ïß³ÌÓÅÏÈ¼¶ = 0 ±íÊ¾Ä¬ÈÏ
+* @brief      åˆ›å»ºçº¿ç¨‹ï¼Œç®€å•ä¸€ç‚¹çš„å°è£…ï¼Œè¿™ä¸ªä¸ç”¨å¤„ç†pthread_attr_t
+*             è¿™ä¸ªä¸æ˜¯POSIXçš„å°è£…ï¼Œä½†æ¨èä½¿ç”¨
+* @return     int                0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param[in]  start_routine  å‡½æ•°æŒ‡é’ˆ
+* @param[in]  arg            start_routineå‡½æ•° çš„å‚æ•°
+* @param[out] threadid      è¿”å›çš„çº¿ç¨‹ID
+* @param[in]  detachstate    åˆ†ç¦»çš„å±æ€§ PTHREAD_CREATE_DETACHED PTHREAD_CREATE_JOINABLE
+* @param[in]  stacksize      å †æ ˆå¤§å°
+* @param[in]  threadpriority çº¿ç¨‹ä¼˜å…ˆçº§ = 0 è¡¨ç¤ºé»˜è®¤
 */
 int pthread_createex(void (*start_routine)(void *),
                      void *arg,
@@ -107,30 +107,30 @@ int pthread_createex(void (*start_routine)(void *),
                     );
 
 /*!
-* @brief      ÍË³öÏß³Ì£¬×¢ÒâÕâ¶ùÃ»ÓĞÈÎºÎ²ÎÊıÈÃÄã×÷Îª·µ»ØÖµ£¬
-*             ×¢Òâ£¬WINDOWSºÍLINUXÏÂ·µ»ØÖµ²»Í¬£¬ËùÒÔÎÒ·ÅÆú²»Ê¹ÓÃ·µ»ØÖµ²ÎÊı£¬
+* @brief      é€€å‡ºçº¿ç¨‹ï¼Œæ³¨æ„è¿™å„¿æ²¡æœ‰ä»»ä½•å‚æ•°è®©ä½ ä½œä¸ºè¿”å›å€¼ï¼Œ
+*             æ³¨æ„ï¼ŒWINDOWSå’ŒLINUXä¸‹è¿”å›å€¼ä¸åŒï¼Œæ‰€ä»¥æˆ‘æ”¾å¼ƒä¸ä½¿ç”¨è¿”å›å€¼å‚æ•°ï¼Œ
 */
 void pthread_exit(void );
 
 /*!
-* @brief      µÈ´ıÄ³¸öJOINµÄÏß³Ì½áÊø£¬²»Àí»á·µ»ØÖµ
-* @return     int      0³É¹¦£¬-1Ê§°Ü
-* @param      threadid µÈ´ıÍË³öµÄÏß³ÌID£¬
-* @note       ·Ç±ê×¼º¯Êı£¬Ã»ÓĞÈ¡»Ø·µ»ØÖµ
+* @brief      ç­‰å¾…æŸä¸ªJOINçš„çº¿ç¨‹ç»“æŸï¼Œä¸ç†ä¼šè¿”å›å€¼
+* @return     int      0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      threadid ç­‰å¾…é€€å‡ºçš„çº¿ç¨‹IDï¼Œ
+* @note       éæ ‡å‡†å‡½æ•°ï¼Œæ²¡æœ‰å–å›è¿”å›å€¼
 */
 int pthread_join(ZCE_THREAD_ID threadid);
 
 //---------------------------------------------------------------------------------------------------------------
-//ÏÂÃæÕâÈı¸öº¯ÊıºÍÉÏÃæ3¸öº¯Êı¹¦ÄÜÀàËÆ£¬µ«ÊÇÆäÊÇÎªÁË¾¡×î´óÅ¬Á¦Âú×ãÄã²Ù×÷ÏµÍ³ÌØĞÔÉè¼ÆµÄ£¬²»½¨ÒéÊ¹ÓÃ
+//ä¸‹é¢è¿™ä¸‰ä¸ªå‡½æ•°å’Œä¸Šé¢3ä¸ªå‡½æ•°åŠŸèƒ½ç±»ä¼¼ï¼Œä½†æ˜¯å…¶æ˜¯ä¸ºäº†å°½æœ€å¤§åŠªåŠ›æ»¡è¶³ä½ æ“ä½œç³»ç»Ÿç‰¹æ€§è®¾è®¡çš„ï¼Œä¸å»ºè®®ä½¿ç”¨
 
 /*!
-* @brief      ´´½¨Ò»¸öÏß³Ì,µ÷ÓÃÏß³Ìº¯ÊıÏò¸÷¸öÆ½Ì¨¼æÈİÄ£Ê½¿¿Æë£¬ÓĞ·µ»ØÖµ£¬µ«ÄãÔÚ¸÷¸öÆ½Ì¨¶¨Òå²»Í¬µÄ»Øµ÷º¯Êı
-* @return     int           0³É¹¦£¬-1Ê§°Ü
-* @param      threadid      Ïß³ÌID£¬£¨ÔÚWINDOWSÒ²ÊÇÏß³ÌID£¬²»ÊÇÏß³Ì¾ä±ú£©
-* @param      attr          Ïß³ÌÊôĞÔ
-* @param      start_routine ÔËĞĞµÄÏß³ÌµÄ»Øµ÷º¯ÊıÖ¸Õë
-* @param      arg           start_routine »Øµ÷º¯ÊıµÄ²ÎÊı
-* @note       ÍÆ¼öÓÃÉÏÃæµÄº¯Êı£¬ÏÂÃæÕâ×éÌá¹©³öÀ´Ö÷ÒªÊÇÎªÁËÂú×ãÒ»Ğ©ÌØÊâ°®ºÃ£¬µ«ÊÇÕâÑùĞ´»¹ÊÇÒªÔÚ²»Í¬µÄÆ½Ì¨Ğ´Ææ¹ÖµÄ´úÂë£¬ºÎ±ØÄØ£¬
+* @brief      åˆ›å»ºä¸€ä¸ªçº¿ç¨‹,è°ƒç”¨çº¿ç¨‹å‡½æ•°å‘å„ä¸ªå¹³å°å…¼å®¹æ¨¡å¼é é½ï¼Œæœ‰è¿”å›å€¼ï¼Œä½†ä½ åœ¨å„ä¸ªå¹³å°å®šä¹‰ä¸åŒçš„å›è°ƒå‡½æ•°
+* @return     int           0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      threadid      çº¿ç¨‹IDï¼Œï¼ˆåœ¨WINDOWSä¹Ÿæ˜¯çº¿ç¨‹IDï¼Œä¸æ˜¯çº¿ç¨‹å¥æŸ„ï¼‰
+* @param      attr          çº¿ç¨‹å±æ€§
+* @param      start_routine è¿è¡Œçš„çº¿ç¨‹çš„å›è°ƒå‡½æ•°æŒ‡é’ˆ
+* @param      arg           start_routine å›è°ƒå‡½æ•°çš„å‚æ•°
+* @note       æ¨èç”¨ä¸Šé¢çš„å‡½æ•°ï¼Œä¸‹é¢è¿™ç»„æä¾›å‡ºæ¥ä¸»è¦æ˜¯ä¸ºäº†æ»¡è¶³ä¸€äº›ç‰¹æ®Šçˆ±å¥½ï¼Œä½†æ˜¯è¿™æ ·å†™è¿˜æ˜¯è¦åœ¨ä¸åŒçš„å¹³å°å†™å¥‡æ€ªçš„ä»£ç ï¼Œä½•å¿…å‘¢ï¼Œ
 */
 int pthread_create(ZCE_THREAD_ID *threadid,
                    const pthread_attr_t *attr,
@@ -138,57 +138,57 @@ int pthread_create(ZCE_THREAD_ID *threadid,
                    void *arg);
 
 /*!
-* @brief      µÈ´ıÄ³¸öJOINµÄÏß³Ì½áÊø,²¢ÇÒµÃµ½Ïß³Ì»Øµ÷º¯ÊıµÄ·µ»ØÖµ
+* @brief      ç­‰å¾…æŸä¸ªJOINçš„çº¿ç¨‹ç»“æŸ,å¹¶ä¸”å¾—åˆ°çº¿ç¨‹å›è°ƒå‡½æ•°çš„è¿”å›å€¼
 * @return     int
-* @param      threadid µÈ´ıÍË³öµÄÏß³ÌID£¬
-* @param      ret_val  Ïß³ÌµÄ·µ»ØÖµ£¬ÔÚLINUXºÍWINDOWSÔËĞĞÊ±£¬²¢²»ÏàÍ¬
+* @param      threadid ç­‰å¾…é€€å‡ºçš„çº¿ç¨‹IDï¼Œ
+* @param      ret_val  çº¿ç¨‹çš„è¿”å›å€¼ï¼Œåœ¨LINUXå’ŒWINDOWSè¿è¡Œæ—¶ï¼Œå¹¶ä¸ç›¸åŒ
 */
 int pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val);
 
 /*!
-* @brief      ÍË³öÄ³¸öÏß³Ì£¬Í¬Ê±Í¨ÖªÏß³ÌÍË³öµÄ·µ»ØÖµ
-* @param      thr_ret ·µ»ØÖµ
+* @brief      é€€å‡ºæŸä¸ªçº¿ç¨‹ï¼ŒåŒæ—¶é€šçŸ¥çº¿ç¨‹é€€å‡ºçš„è¿”å›å€¼
+* @param      thr_ret è¿”å›å€¼
 */
 void pthread_exit(ZCE_THR_FUNC_RETURN thr_ret );
 
 //---------------------------------------------------------------------------------------------------------------
 
 /*!
-* @brief      µÈ´ıÄ³¸öJOINµÄÏß³Ì½áÊø
+* @brief      ç­‰å¾…æŸä¸ªJOINçš„çº¿ç¨‹ç»“æŸ
 * @return     int
-* @param      threadid µÈ´ıÍË³öµÄÏß³ÌID£¬
-* @note       ·Ç±ê×¼º¯Êı£¬Ã»ÓĞÈ¡»Ø·µ»ØÖµ
+* @param      threadid ç­‰å¾…é€€å‡ºçš„çº¿ç¨‹IDï¼Œ
+* @note       éæ ‡å‡†å‡½æ•°ï¼Œæ²¡æœ‰å–å›è¿”å›å€¼
 */
 int pthread_join(ZCE_THREAD_ID threadid);
 
 /*!
-* @brief      µÃµ½µ±Ç°Ïß³ÌID
+* @brief      å¾—åˆ°å½“å‰çº¿ç¨‹ID
 * @return     ZCE_THREAD_ID
 */
 ZCE_THREAD_ID pthread_self(void);
 
 /*!
-* @brief      È¡ÏûÒ»¸öÏß³Ì
-* @return     int       0³É¹¦£¬-1Ê§°Ü
-* @param      threadid  ²Ù×÷µÄÏß³ÌID
-* @note       Õâ¸öº¯Êı·ÅÔÚÕâ¶ù£¬ÍêÈ«ÊÇÎªÁËÂú×ãÎÒµÄÒ»µãµã·â×°ÒâÔ¸£¬ÒòÎªÔÚLINUXÆ½Ì¨£¬ÄãÎ´±ØÄÜÈ¡ÏûÒ»¸öÏß³Ì
-*             ÔÚÍâWINDOWS£¬µ÷ÓÃTerminateThread£¬Õâ¸öº¯ÊıÒ²ÊÇ²»±»ÍÆ¼öµÄ
+* @brief      å–æ¶ˆä¸€ä¸ªçº¿ç¨‹
+* @return     int       0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      threadid  æ“ä½œçš„çº¿ç¨‹ID
+* @note       è¿™ä¸ªå‡½æ•°æ”¾åœ¨è¿™å„¿ï¼Œå®Œå…¨æ˜¯ä¸ºäº†æ»¡è¶³æˆ‘çš„ä¸€ç‚¹ç‚¹å°è£…æ„æ„¿ï¼Œå› ä¸ºåœ¨LINUXå¹³å°ï¼Œä½ æœªå¿…èƒ½å–æ¶ˆä¸€ä¸ªçº¿ç¨‹
+*             åœ¨å¤–WINDOWSï¼Œè°ƒç”¨TerminateThreadï¼Œè¿™ä¸ªå‡½æ•°ä¹Ÿæ˜¯ä¸è¢«æ¨èçš„
 */
 int pthread_cancel(ZCE_THREAD_ID threadid);
 
 /*!
-* @brief      ¶ÔÒ»¸öÏß³Ì½øĞĞËÉ°ó£¬²»ÔÙĞèÒªjoinÈ¥µÈ´ıÍË³ö
-* @return     int        0³É¹¦£¬-1Ê§°Ü
-* @param      threadid   ²Ù×÷µÄÏß³ÌID
+* @brief      å¯¹ä¸€ä¸ªçº¿ç¨‹è¿›è¡Œæ¾ç»‘ï¼Œä¸å†éœ€è¦joinå»ç­‰å¾…é€€å‡º
+* @return     int        0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      threadid   æ“ä½œçš„çº¿ç¨‹ID
 */
 int pthread_detach(ZCE_THREAD_ID threadid);
 
 #if defined ZCE_OS_WINDOWS
 /*!
-* @brief      ½«Ïß³ÌID×ª»»ÎªHANDLE£¬Ö»ÔÚWIN2000ÒÔºóÓĞÓÃ
+* @brief      å°†çº¿ç¨‹IDè½¬æ¢ä¸ºHANDLEï¼Œåªåœ¨WIN2000ä»¥åæœ‰ç”¨
 * @return     ZCE_THREAD_HANDLE
 * @param      threadid
-* @note       ÄÚ²¿µ÷ÓÃµÄÊÇOpenThreadÊÇÒ»¸öWIN SERVER 2000ºó²ÅÓĞµÄº¯Êı VC6Ó¦¸ÃÃ»ÓĞ
+* @note       å†…éƒ¨è°ƒç”¨çš„æ˜¯OpenThreadæ˜¯ä¸€ä¸ªWIN SERVER 2000åæ‰æœ‰çš„å‡½æ•° VC6åº”è¯¥æ²¡æœ‰
 */
 ZCE_THREAD_HANDLE pthread_id2handle(ZCE_THREAD_ID threadid);
 #endif //
@@ -196,14 +196,14 @@ ZCE_THREAD_HANDLE pthread_id2handle(ZCE_THREAD_ID threadid);
 int pthread_yield(void);
 
 //------------------------------------------------------------------------------------------------------
-//Thread Specific Data ¡£Ïß³ÌË½ÓĞ£¨×¨ÓĞ£©´æ´¢ TSS
-//Ò²½Ğ TLS Thread Local Storage
+//Thread Specific Data ã€‚çº¿ç¨‹ç§æœ‰ï¼ˆä¸“æœ‰ï¼‰å­˜å‚¨ TSS
+//ä¹Ÿå« TLS Thread Local Storage
 
 /*!
 * @brief
 * @return     int
 * @param      key
-* @param      (*destructor) Îö¹¹º¯Êı£¬´Ë²ÎÊıÔÚWindows ÏÂÃ»ÓĞÓÃ´¦£¬£¨Èç¹û¿çÆ½Ì¨£©²»½¨ÒéÊ¹ÓÃ
+* @param      (*destructor) ææ„å‡½æ•°ï¼Œæ­¤å‚æ•°åœ¨Windows ä¸‹æ²¡æœ‰ç”¨å¤„ï¼Œï¼ˆå¦‚æœè·¨å¹³å°ï¼‰ä¸å»ºè®®ä½¿ç”¨
 */
 int pthread_key_create(pthread_key_t *key, void (*destructor)(void *));
 

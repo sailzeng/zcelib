@@ -6,7 +6,7 @@
 Class           : ZCE_Lock_Base
 ************************************************************************************************************/
 
-//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
 ZCE_Lock_Base::ZCE_Lock_Base(const char * )
 {
 }
@@ -15,91 +15,91 @@ ZCE_Lock_Base::~ZCE_Lock_Base (void)
 {
 }
 
-//Ëø¶¨
+//é”å®š
 void ZCE_Lock_Base::lock()
 {
     return;
 }
 
-//³¢ÊÔËø¶¨
+//å°è¯•é”å®š
 bool ZCE_Lock_Base::try_lock()
 {
     return true;
 }
 
-//½âËø,
+//è§£é”,
 void ZCE_Lock_Base::unlock()
 {
     return;
 }
 
-///½âËø¶Á
+///è§£é”è¯»
 void ZCE_Lock_Base::unlock_read()
 {
     return;
 }
 
-///½âËøĞ´
+///è§£é”å†™
 void ZCE_Lock_Base::unlock_write()
 {
     return;
 }
 
-//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø£¬·µ»ØÊÇ·ñ³¬Ê±
+//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”ï¼Œè¿”å›æ˜¯å¦è¶…æ—¶
 bool ZCE_Lock_Base::systime_lock(const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-//Ïà¶ÔÊ±¼ä£¬·µ»ØÊÇ·ñ³¬Ê±
+//ç›¸å¯¹æ—¶é—´ï¼Œè¿”å›æ˜¯å¦è¶…æ—¶
 bool ZCE_Lock_Base::duration_lock(const ZCE_Time_Value & /*relative_time*/ )
 {
     return true;
 }
 
-//¶ÁÈ¡Ëø
+//è¯»å–é”
 void ZCE_Lock_Base::lock_read()
 {
     return;
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Lock_Base::try_lock_read()
 {
     return true;
 }
 
-//¾ø¶ÔÊ±¼ä
+//ç»å¯¹æ—¶é—´
 bool ZCE_Lock_Base::timed_lock_read(const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-//Ïà¶ÔÊ±¼ä
+//ç›¸å¯¹æ—¶é—´
 bool ZCE_Lock_Base::duration_lock_read(const ZCE_Time_Value & /*relative_time*/)
 {
     return true;
 }
 
-//Ğ´Ëø¶¨
+//å†™é”å®š
 void ZCE_Lock_Base::lock_write()
 {
     return;
 }
 
-//³¢ÊÔ¶ÁÈ¡Ëø
+//å°è¯•è¯»å–é”
 bool ZCE_Lock_Base::try_lock_write()
 {
     return true;
 }
 
-//Ğ´Ëø¶¨³¬Ê±
+//å†™é”å®šè¶…æ—¶
 bool ZCE_Lock_Base::timed_lock_write(const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-//Ïà¶ÔÊ±¼ä
+//ç›¸å¯¹æ—¶é—´
 bool ZCE_Lock_Base::duration_lock_write(const ZCE_Time_Value & /*relative_time*/)
 {
     return true;
@@ -116,31 +116,31 @@ ZCE_Condition_Base::~ZCE_Condition_Base()
 {
 }
 
-///µÈ´ı
+///ç­‰å¾…
 void ZCE_Condition_Base::wait(ZCE_Lock_Base * /*external_mutex*/ )
 {
     return ;
 }
 
-///¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄµÈ´ı£¬³¬Ê±ºó½âËø
+///ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„ç­‰å¾…ï¼Œè¶…æ—¶åè§£é”
 bool ZCE_Condition_Base::systime_wait(ZCE_Lock_Base * /*external_mutex*/, const ZCE_Time_Value & /*abs_time*/)
 {
     return true;
 }
 
-///Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨µÈ´ı£¬³¬Ê±ºó£¬½âËø
+///ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šç­‰å¾…ï¼Œè¶…æ—¶åï¼Œè§£é”
 bool ZCE_Condition_Base::duration_wait(ZCE_Lock_Base * /*external_mutex*/, const ZCE_Time_Value &/*relative_time*/)
 {
     return false;
 }
 
-/// ¸øÒ»¸öµÈ´ıÏß³Ì·¢ËÍĞÅºÅ Signal one waiting thread.
+/// ç»™ä¸€ä¸ªç­‰å¾…çº¿ç¨‹å‘é€ä¿¡å· Signal one waiting thread.
 void ZCE_Condition_Base::signal (void)
 {
     return;
 }
 
-///¸øËùÓĞµÄµÈ´ıÏß³Ì¹ã²¥ĞÅºÅ Signal *all* waiting threads.
+///ç»™æ‰€æœ‰çš„ç­‰å¾…çº¿ç¨‹å¹¿æ’­ä¿¡å· Signal *all* waiting threads.
 void ZCE_Condition_Base::broadcast (void)
 {
     return;

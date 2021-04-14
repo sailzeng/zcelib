@@ -2,54 +2,54 @@
 #include "zce/logger/logging.h"
 #include "zce/mysql/field.h"
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #if defined ZCE_USE_MYSQL
 
-//High Speed µÃµ½String
+//High Speed å¾—åˆ°String
 void ZCE_Mysql_Field::get_string(std::string &tmpstr) const
 {
     tmpstr.reserve(field_length_);
     tmpstr.assign(field_data_, field_length_);
 }
 
-//µÃµ½×Ö·ûĞÍ
+//å¾—åˆ°å­—ç¬¦å‹
 ZCE_Mysql_Field::operator char() const
 {
     char  tmp_tinyint = 0;
 
     short tmpshort = 0;
-    //µÃµ½¶ÌÕûĞÍ
+    //å¾—åˆ°çŸ­æ•´å‹
     int fields = sscanf(field_data_, "%hd", &tmpshort);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    //Í¨¹ı²¢µÃµ½TINY INT ¾ÍÊÇchar
+    //é€šè¿‡å¹¶å¾—åˆ°TINY INT å°±æ˜¯char
     tmp_tinyint = static_cast<char>(tmpshort & 0xFF);
     return tmp_tinyint;
 }
 
-//µÃµ½¶ÌÕûĞÍ
+//å¾—åˆ°çŸ­æ•´å‹
 ZCE_Mysql_Field::operator short() const
 {
     short tmp_short = 0;
 
-    //µÃµ½¶ÌÕûĞÍ,·µ»ØÖµ=0 ,EOF±íÊ¾Ê§°Ü
+    //å¾—åˆ°çŸ­æ•´å‹,è¿”å›å€¼=0 ,EOFè¡¨ç¤ºå¤±è´¥
     int fields = sscanf(field_data_, "%hd", &tmp_short);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    //×ª»»²»³É¹¦»òÕß
+    //è½¬æ¢ä¸æˆåŠŸæˆ–è€…
     return tmp_short;
 }
 
-//µÃµ½³¤ÕûĞÍ
+//å¾—åˆ°é•¿æ•´å‹
 ZCE_Mysql_Field::operator long() const
 {
     long tmp_long = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     int fields = sscanf(field_data_, "%ld", &tmp_long);
     if (fields != 1)
     {
@@ -58,12 +58,12 @@ ZCE_Mysql_Field::operator long() const
     return tmp_long;
 }
 
-//µÃµ½intÕûĞÍ
+//å¾—åˆ°intæ•´å‹
 ZCE_Mysql_Field::operator int() const
 {
     int tmp_int = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     int fields = sscanf(field_data_, "%d", &tmp_int);
     if (fields != 1)
     {
@@ -72,12 +72,12 @@ ZCE_Mysql_Field::operator int() const
     return tmp_int;
 }
 
-//µÃµ½intÕûĞÍ
+//å¾—åˆ°intæ•´å‹
 ZCE_Mysql_Field::operator unsigned int() const
 {
     unsigned int tmp_uint = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     int fields = sscanf(field_data_, "%u", &tmp_uint);
     if (fields != 1)
     {
@@ -86,12 +86,12 @@ ZCE_Mysql_Field::operator unsigned int() const
     return tmp_uint;
 }
 
-//×ª»»ÎªINT64ÀàĞÍ
+//è½¬æ¢ä¸ºINT64ç±»å‹
 inline ZCE_Mysql_Field::operator long long() const
 {
     long long tmp_longlong = 0;
 
-    //µÃµ½64Î»µÄÕûÊı
+    //å¾—åˆ°64ä½çš„æ•´æ•°
     int fields = sscanf(field_data_, "%lld", &tmp_longlong);
     if (fields != 1)
     {
@@ -100,42 +100,42 @@ inline ZCE_Mysql_Field::operator long long() const
     return tmp_longlong;
 }
 
-//×ª»»Îª8Î»ÎŞ·ûºÅÕûĞÍ
+//è½¬æ¢ä¸º8ä½æ— ç¬¦å·æ•´å‹
 ZCE_Mysql_Field::operator unsigned char() const
 {
     unsigned char  tmp_utinyint = 0;
     unsigned short tmpshort = 0;
-    //µÃµ½¶ÌÕûĞÍ
+    //å¾—åˆ°çŸ­æ•´å‹
     int fields = sscanf(field_data_, "%hu", &tmpshort);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    //Í¨¹ı²¢µÃµ½TINY INT ¾ÍÊÇchar
+    //é€šè¿‡å¹¶å¾—åˆ°TINY INT å°±æ˜¯char
     tmp_utinyint = static_cast<unsigned char>(tmpshort & 0xFF);
     return tmp_utinyint;
 }
 
-//×ª»»Îª16Î»µÄÎŞ·ûºÅÕûĞÍ
+//è½¬æ¢ä¸º16ä½çš„æ— ç¬¦å·æ•´å‹
 ZCE_Mysql_Field::operator unsigned short() const
 {
     unsigned short tmp_ushort = 0;
 
-    //µÃµ½¶ÌÕûĞÍ,·µ»ØÖµ=0 ,EOF±íÊ¾Ê§°Ü
+    //å¾—åˆ°çŸ­æ•´å‹,è¿”å›å€¼=0 ,EOFè¡¨ç¤ºå¤±è´¥
     int fields = sscanf(field_data_, "%hu", &tmp_ushort);
     if (fields != 1)
     {
         ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
     }
-    //×ª»»²»³É¹¦»òÕß
+    //è½¬æ¢ä¸æˆåŠŸæˆ–è€…
     return tmp_ushort;
 }
-//×ª»»Îª32Î»32ÎŞ·ûºÅ³¤ÕûĞÍ
+//è½¬æ¢ä¸º32ä½32æ— ç¬¦å·é•¿æ•´å‹
 ZCE_Mysql_Field::operator unsigned long() const
 {
     long tmp_ulong = 0;
 
-    //µÃµ½³¤ÕûĞÍ,
+    //å¾—åˆ°é•¿æ•´å‹,
     int fields = sscanf(field_data_, "%lu", &tmp_ulong);
     if (fields != 1)
     {
@@ -144,12 +144,12 @@ ZCE_Mysql_Field::operator unsigned long() const
     return tmp_ulong;
 }
 
-//×ª»»Îª64Î»ÎŞ·ûºÅ³¤ÕûĞÍ
+//è½¬æ¢ä¸º64ä½æ— ç¬¦å·é•¿æ•´å‹
 ZCE_Mysql_Field::operator unsigned long long() const
 {
     unsigned long long tmp_ulonglong = 0;
 
-    //µÃµ½64Î»µÄÕûÊı
+    //å¾—åˆ°64ä½çš„æ•´æ•°
     int fields = sscanf(field_data_, "%llu", &tmp_ulonglong);
     if (fields != 1)
     {
@@ -158,11 +158,11 @@ ZCE_Mysql_Field::operator unsigned long long() const
     return tmp_ulonglong;
 }
 
-//×ª»»ÎªFLOATÀàĞÍ
+//è½¬æ¢ä¸ºFLOATç±»å‹
 ZCE_Mysql_Field::operator float() const
 {
     float tmpfloat = 0.0;
-    //×ª»»µÃµ½FLOAT¸¡µãĞÍ
+    //è½¬æ¢å¾—åˆ°FLOATæµ®ç‚¹å‹
     int fields = sscanf(field_data_, "%f", &tmpfloat);
     if (fields != 1)
     {
@@ -171,11 +171,11 @@ ZCE_Mysql_Field::operator float() const
     return tmpfloat;
 }
 
-//×ª»»ÎªDOUBLEÀàĞÍ
+//è½¬æ¢ä¸ºDOUBLEç±»å‹
 ZCE_Mysql_Field::operator double() const
 {
     double tmpdouble = 0.0;
-    //×ª»»µÃµ½DOBULE¸¡µãĞÍ
+    //è½¬æ¢å¾—åˆ°DOBULEæµ®ç‚¹å‹
     int fields = sscanf(field_data_, "%lf", &tmpdouble);
     if (fields != 1)
     {
@@ -185,6 +185,6 @@ ZCE_Mysql_Field::operator double() const
 }
 
 
-//Èç¹ûÄãÒªÓÃMYSQLµÄ¿â
+//å¦‚æœä½ è¦ç”¨MYSQLçš„åº“
 #endif //#if defined ZCE_USE_MYSQL
 

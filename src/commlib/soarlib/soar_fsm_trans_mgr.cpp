@@ -6,7 +6,7 @@
 #include "soar_fsm_trans_mgr.h"
 
 /******************************************************************************************
-struct TRANS_LOCK_RECORD ¼ÓËøµÄ¼ÇÂ¼µ¥Ôª
+struct TRANS_LOCK_RECORD åŠ é”çš„è®°å½•å•å…ƒ
 ******************************************************************************************/
 TRANS_LOCK_RECORD::TRANS_LOCK_RECORD(unsigned int lock_qq_uin, unsigned int lock_trans_cmd):
     lock_user_id_(lock_qq_uin),
@@ -44,7 +44,7 @@ Transaction_Manager::Transaction_Manager()
 {
 }
 
-//ÊÂÎñ¹ÜÀíÆ÷µÄÎö¹¹º¯Êı
+//äº‹åŠ¡ç®¡ç†å™¨çš„ææ„å‡½æ•°
 Transaction_Manager::~Transaction_Manager()
 {
 }
@@ -81,7 +81,7 @@ int Transaction_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
     fake_recv_buffer_ = Zerg_App_Frame::new_frame(max_frame_len + 32);
     fake_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
 
-    //Èç¹ûÃ÷È·ÒªÇó³õÊ¼»¯ÄÚ²¿µÄQUEUE,
+    //å¦‚æœæ˜ç¡®è¦æ±‚åˆå§‹åŒ–å†…éƒ¨çš„QUEUE,
     if (init_inner_queue)
     {
         inner_frame_malloc_ = new INNER_APPFRAME_MALLOCOR();
@@ -91,10 +91,10 @@ int Transaction_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
         //inner_message_queue_->open(,INNER_QUEUE_WATER_MARK);
     }
 
-    //³õÊ¼»¯³Ø×Ó
+    //åˆå§‹åŒ–æ± å­
     if (init_lock_pool)
     {
-        //°´ÕÕÊÂÎñ³ß´çµÄÒ»°ë³õÊ¼»¯ËøµÄÊıÁ¿
+        //æŒ‰ç…§äº‹åŠ¡å°ºå¯¸çš„ä¸€åŠåˆå§‹åŒ–é”çš„æ•°é‡
         trans_lock_pool_.rehash(sztransmap / 2);
     }
     return 0;
@@ -103,13 +103,13 @@ int Transaction_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
 //
 void Transaction_Manager::finish()
 {
-    //Ïú»ÙÄÚ´æ·ÖÅäÆ÷
+    //é”€æ¯å†…å­˜åˆ†é…å™¨
     if (inner_frame_malloc_)
     {
         delete inner_frame_malloc_;
         inner_frame_malloc_ = NULL;
     }
-    //Ïú»ÙÏûÏ¢¶ÓÁĞ
+    //é”€æ¯æ¶ˆæ¯é˜Ÿåˆ—
     if (inner_message_queue_)
     {
         delete inner_message_queue_;
@@ -137,7 +137,7 @@ void Transaction_Manager::finish()
 
 
 /******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008Äê1ÔÂ9ÈÕ
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008å¹´1æœˆ9æ—¥
 Function        : Transaction_Manager::process_pipe_frame
 Return          : int
 Parameter List  :
@@ -168,9 +168,9 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
 
         DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV PIPE FRAME", tmp_frame );
 
-        //ÊÇ·ñ´´½¨Ò»¸öÊÂÎñ£¬
+        //æ˜¯å¦åˆ›å»ºä¸€ä¸ªäº‹åŠ¡ï¼Œ
         bool bcrtcx = false;
-        //tmp_frame²»ÓÃ»ØÊÕ
+        //tmp_frameä¸ç”¨å›æ”¶
         ret = process_appframe(tmp_frame, bcrtcx);
 
         //
@@ -179,7 +179,7 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
             continue;
         }
 
-        //´´½¨ÁËÒ»¸öÊÂÎñ
+        //åˆ›å»ºäº†ä¸€ä¸ªäº‹åŠ¡
         if ( true == bcrtcx )
         {
             ++create_trans;
@@ -190,10 +190,10 @@ int Transaction_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_t
     return 0;
 }
 
-//½«Êı¾İ·ÅÈë·¢ËÍ¹ÜµÀ
+//å°†æ•°æ®æ”¾å…¥å‘é€ç®¡é“
 int Transaction_Manager::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 {
-    //Soar_MMAP_BusPipe±ØĞëÏÈ³õÊ¼»¯....
+    //Soar_MMAP_BusPipeå¿…é¡»å…ˆåˆå§‹åŒ–....
     return zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
 }
 
@@ -202,16 +202,16 @@ int Transaction_Manager::push_back_sendpipe(Zerg_App_Frame *proc_frame)
 
 
 /******************************************************************************************
-Author          : Sail(ZENGXING)  Date Of Creation: 2009Äê3ÔÂ16ÈÕ
+Author          : Sail(ZENGXING)  Date Of Creation: 2009å¹´3æœˆ16æ—¥
 Function        : Transaction_Manager::lock_qquin_trnas_cmd
 Return          : int
 Parameter List  :
   Param1: unsigned int user_id        USER ID
-  Param2: unsigned int trnas_lock_id ¼ÓËøµÄID,¿ÉÒÔºÍÃüÁî×ÖÏàÍ¬£¬»òÕß²»Í¬
-  Param3: unsigned int frame_cmd     ÊÂÎñµÄÃüÁî£¬½ö½öÓÃÓÚÈÕÖ¾Êä³ö
-Description     : ¶ÔÄ³Ò»¸öÓÃ»§µÄÒ»¸öÃüÁîµÄÊÂÎñ½øĞĞ¼ÓËø
+  Param2: unsigned int trnas_lock_id åŠ é”çš„ID,å¯ä»¥å’Œå‘½ä»¤å­—ç›¸åŒï¼Œæˆ–è€…ä¸åŒ
+  Param3: unsigned int frame_cmd     äº‹åŠ¡çš„å‘½ä»¤ï¼Œä»…ä»…ç”¨äºæ—¥å¿—è¾“å‡º
+Description     : å¯¹æŸä¸€ä¸ªç”¨æˆ·çš„ä¸€ä¸ªå‘½ä»¤çš„äº‹åŠ¡è¿›è¡ŒåŠ é”
 Calls           :
-Called By       : ÊÂÎñËøµÄÒâË¼ÊÇ±£Ö¤Ò»¸öÊ±¿Ì£¬Ö»ÄÜÒ»¸öÕâÑùµÄÊÂÎñ,ÊÂÎñËø²»×èÈû
+Called By       : äº‹åŠ¡é”çš„æ„æ€æ˜¯ä¿è¯ä¸€ä¸ªæ—¶åˆ»ï¼Œåªèƒ½ä¸€ä¸ªè¿™æ ·çš„äº‹åŠ¡,äº‹åŠ¡é”ä¸é˜»å¡
 Other           :
 Modify Record   :
 ******************************************************************************************/
@@ -222,7 +222,7 @@ int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int user_id,
     TRANS_LOCK_RECORD lock_rec(user_id, trnas_lock_id);
     std::pair <INNER_TRANS_LOCK_POOL::iterator, bool> iter_tmp = trans_lock_pool_.insert(lock_rec);
 
-    //Èç¹ûÒÑ¾­ÓĞÒ»¸öËøÁË£¬ÄÇÃ´¼ÓËøÊ§°Ü
+    //å¦‚æœå·²ç»æœ‰ä¸€ä¸ªé”äº†ï¼Œé‚£ä¹ˆåŠ é”å¤±è´¥
     if (false == iter_tmp.second )
     {
         ZCE_LOG(RS_ERROR, "[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
@@ -235,7 +235,7 @@ int Transaction_Manager::lock_qquin_trnas_cmd(unsigned int user_id,
     return 0;
 }
 
-//¶ÔÄ³Ò»¸öÓÃ»§µÄÒ»¸öÃüÁîµÄÊÂÎñ½øĞĞ¼ÓËø
+//å¯¹æŸä¸€ä¸ªç”¨æˆ·çš„ä¸€ä¸ªå‘½ä»¤çš„äº‹åŠ¡è¿›è¡ŒåŠ é”
 void Transaction_Manager::unlock_qquin_trans_cmd(unsigned int user_id, unsigned int lock_trnas_id)
 {
     TRANS_LOCK_RECORD lock_rec(user_id, lock_trnas_id);
@@ -244,12 +244,12 @@ void Transaction_Manager::unlock_qquin_trans_cmd(unsigned int user_id, unsigned 
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2006Äê4ÔÂ22ÈÕ
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2006å¹´4æœˆ22æ—¥
 Function        : Transaction_Manager::process_appframe
 Return          : int
 Parameter List  :
-  Param1: const Zerg_App_Frame* ppetappframe ´¦ÀíµÄÊÂÎñµÄÖ¡Êı¾İ£¬ppetappframeÖ¡µÄÉúÃüÖÜÆÚÓÉprocess_appframeº¯Êı¹ÜÀí
-  Param3: bool& bcrttx                ÊÇ·ñ´´½¨ÊÂÎñ
+  Param1: const Zerg_App_Frame* ppetappframe å¤„ç†çš„äº‹åŠ¡çš„å¸§æ•°æ®ï¼Œppetappframeå¸§çš„ç”Ÿå‘½å‘¨æœŸç”±process_appframeå‡½æ•°ç®¡ç†
+  Param3: bool& bcrttx                æ˜¯å¦åˆ›å»ºäº‹åŠ¡
 Description     :
 Calls           :
 Called By       :
@@ -261,7 +261,7 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
     bcrttx = false;
     int ret = 0;
 
-    //Èç¹ûÊÇ¸ú×ÙÃüÁî£¬´òÓ¡³öÀ´
+    //å¦‚æœæ˜¯è·Ÿè¸ªå‘½ä»¤ï¼Œæ‰“å°å‡ºæ¥
     if (app_frame->frame_option_ & Zerg_App_Frame::DESC_MONITOR_TRACK)
     {
         Zerg_App_Frame::dumpoutput_framehead(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]", app_frame);
@@ -270,7 +270,7 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
 
     bool is_reg_cmd = is_register_cmd(app_frame->frame_command_);
 
-    //ÊÇÒ»¸ö¼¤»îÊÂÎñµÄÃüÁî
+    //æ˜¯ä¸€ä¸ªæ¿€æ´»äº‹åŠ¡çš„å‘½ä»¤
     if (is_reg_cmd)
     {
 
@@ -279,7 +279,7 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
 
         bcrttx = true;
 
-        //Í³¼Æ¼¼ÊõÆ÷
+        //ç»Ÿè®¡æŠ€æœ¯å™¨
         ++gen_trans_counter_;
         ++cycle_gentrans_counter_;
 
@@ -303,14 +303,14 @@ int Transaction_Manager::process_appframe(Zerg_App_Frame *app_frame, bool &bcrtt
 }
 
 /******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2006Äê4ÔÂ3ÈÕ
+Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2006å¹´4æœˆ3æ—¥
 Function        : Transaction_Manager::get_handler_by_transid
 Return          : int
 Parameter List  :
-  Param1: unsigned int transid     ÊÂÎñID
-  Param1: unsigned int trans_cmd   °´ÕÕinmoreµÄÒªÇó£¬Ôö¼ÓÁËÒ»¸öCMD£¬ÓÃÓÚÎŞ·¨·¢ÏÖÊ±´ğÓ¦
-  Param2: Transaction_Base*& ptxbase ·µ»ØµÄHandlerÖ¸Õë
-Description     : ¸ù¾İÊÂÎñIDÑ°ÕÒÊÂÎñ
+  Param1: unsigned int transid     äº‹åŠ¡ID
+  Param1: unsigned int trans_cmd   æŒ‰ç…§inmoreçš„è¦æ±‚ï¼Œå¢åŠ äº†ä¸€ä¸ªCMDï¼Œç”¨äºæ— æ³•å‘ç°æ—¶ç­”åº”
+  Param2: Transaction_Base*& ptxbase è¿”å›çš„HandleræŒ‡é’ˆ
+Description     : æ ¹æ®äº‹åŠ¡IDå¯»æ‰¾äº‹åŠ¡
 Calls           :
 Called By       :
 Other           :
@@ -318,7 +318,7 @@ Modify Record   :
 ******************************************************************************************/
 //int Transaction_Manager::get_handler_by_transid(unsigned int transid, unsigned int trans_cmd, Transaction_Base *&ptxbase)
 //{
-//    //¸ù¾İÊÂÎñIDÑ°ÕÒÊÂÎñ
+//    //æ ¹æ®äº‹åŠ¡IDå¯»æ‰¾äº‹åŠ¡
 //    HASHMAP_OF_TRANSACTION::iterator mapiter = transc_map_.find(transid);
 //
 //    if (mapiter == transc_map_.end())
@@ -335,11 +335,11 @@ Modify Record   :
 //}
 //
 ///******************************************************************************************
-//Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007Äê11ÔÂ14ÈÕ
+//Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007å¹´11æœˆ14æ—¥
 //Function        : Transaction_Manager::dump_all_trans_info
 //Return          : void
 //Parameter List  : NULL
-//Description     : DumpµÃµ½ÊµÀı
+//Description     : Dumpå¾—åˆ°å®ä¾‹
 //Calls           :
 //Called By       :
 //Other           :
@@ -350,7 +350,7 @@ Modify Record   :
 //    //
 //    HASHMAP_OF_TRANSACTION::const_iterator iter_tmp = transc_map_.begin();
 //    HASHMAP_OF_TRANSACTION::const_iterator iter_end = transc_map_.end();
-//    //ÒòÎª±È½Ï¹Ø¼ü£¬ÓÃÁËRS_INFO
+//    //å› ä¸ºæ¯”è¾ƒå…³é”®ï¼Œç”¨äº†RS_INFO
 //    ZCE_LOG(RS_INFO,"[framework] Transaction Manager are processing [%d] transactions. ", transc_map_.size());
 //
 //    for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
@@ -374,7 +374,7 @@ Modify Record   :
 //    //
 //    HASHMAP_OF_POLLREGTRANS::const_iterator iter_tmp = regtrans_pool_map_.begin();
 //    HASHMAP_OF_POLLREGTRANS::const_iterator iter_end = regtrans_pool_map_.end();
-//    //ÒòÎª±È½Ï¹Ø¼ü£¬ÓÃÁËRS_INFO
+//    //å› ä¸ºæ¯”è¾ƒå…³é”®ï¼Œç”¨äº†RS_INFO
 //    ZCE_LOG(RS_INFO,"[framework] Transaction Manager are processing pool number [%d] . ", regtrans_pool_map_.size());
 //
 //    for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
@@ -393,7 +393,7 @@ Modify Record   :
 //    return ;
 //}
 //
-////DUMPËùÓĞµÄÍ³¼ÆĞÅÏ¢
+////DUMPæ‰€æœ‰çš„ç»Ÿè®¡ä¿¡æ¯
 //void Transaction_Manager::dump_statistics_info() const
 //{
 //    //
@@ -404,7 +404,7 @@ Modify Record   :
 //              gen_trans_counter_,
 //              cycle_gentrans_counter_);
 //
-//    //ÒòÎª±È½Ï¹Ø¼ü£¬ÓÃÁËRS_INFO
+//    //å› ä¸ºæ¯”è¾ƒå…³é”®ï¼Œç”¨äº†RS_INFO
 //    ZCE_LOG(RS_INFO,"[framework] Transaction Manager are processing [%d] transactions. ", transc_map_.size());
 //
 //    for (unsigned int i = 1; iter_tmp != iter_end ; ++iter_tmp, ++i)
@@ -428,7 +428,7 @@ Modify Record   :
 //    dump_all_trans_info();
 //}
 
-//¹ÜÀíÆ÷·¢ËÍÒ»ÏûÏ¢Í·¸øÒ»¸ö·şÎñÆ÷,_±íÊ¾ËûÊÇÒ»¸öÄÚ²¿º¯Êı£¬²»Ìá¹©¸ø·ÇÏà¹ØÈËÊ¿Ê¹ÓÃ
+//ç®¡ç†å™¨å‘é€ä¸€æ¶ˆæ¯å¤´ç»™ä¸€ä¸ªæœåŠ¡å™¨,_è¡¨ç¤ºä»–æ˜¯ä¸€ä¸ªå†…éƒ¨å‡½æ•°ï¼Œä¸æä¾›ç»™éç›¸å…³äººå£«ä½¿ç”¨
 int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
                                                     unsigned int qquin,
                                                     const SERVICES_ID &rcvsvc,
@@ -451,14 +451,14 @@ int Transaction_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
     rsp_msg->send_service_ =  this->self_svc_id_;
     rsp_msg->frame_option_ = option;
 
-    //»ØÌîÊÂÎñID
+    //å›å¡«äº‹åŠ¡ID
     rsp_msg->backfill_trans_id_ = backfill_trans_id;
     rsp_msg->app_id_ = app_id;
 
     return push_back_sendpipe(rsp_msg);
 }
 
-//´ò¿ªĞÔÄÜÍ³¼Æ
+//æ‰“å¼€æ€§èƒ½ç»Ÿè®¡
 void Transaction_Manager::enable_trans_statistics (const ZCE_Time_Value *stat_clock)
 {
     statistics_clock_ = stat_clock;
@@ -469,13 +469,13 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
     int ret = 0;
     Zerg_App_Frame *tmp_frame = NULL;
 
-    //Èç¹ûÊÇ´Ó³Ø×ÓÖĞ¼äÈ¡³öµÄFRAME£¬¾ÍÊ²Ã´¶¼²»×ö
+    //å¦‚æœæ˜¯ä»æ± å­ä¸­é—´å–å‡ºçš„FRAMEï¼Œå°±ä»€ä¹ˆéƒ½ä¸åš
     inner_frame_malloc_->clone_appframe(post_frame, tmp_frame);
 
-    //ÀíÂÛÉÏ²»ÓÃµÈ´ıÈÎºÎÊ±¼ä
+    //ç†è®ºä¸Šä¸ç”¨ç­‰å¾…ä»»ä½•æ—¶é—´
     ret = inner_message_queue_->enqueue(tmp_frame);
 
-    //·µ»ØÖµĞ¡ÓÚ0±íÊ¾Ê§°Ü
+    //è¿”å›å€¼å°äº0è¡¨ç¤ºå¤±è´¥
     if (ret < 0)
     {
         ZCE_LOG(RS_DEBUG, "Post message to send queue fail.ret =%d"
@@ -483,7 +483,7 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
                 ret,
                 inner_message_queue_->size(),
                 inner_message_queue_->size() * sizeof(Zerg_App_Frame *));
-        //³ö´íÁËÒÔºó»¹»ØÈ¥
+        //å‡ºé”™äº†ä»¥åè¿˜å›å»
         inner_frame_malloc_->free_appframe(tmp_frame);
 
         return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
@@ -492,13 +492,13 @@ int Transaction_Manager::mgr_postframe_to_msgqueue(Zerg_App_Frame *post_frame)
     return 0;
 }
 
-//´¦Àí´Ó½ÓÊÕ¶ÓÁĞÈ¡³öµÄFRAME
+//å¤„ç†ä»æ¥æ”¶é˜Ÿåˆ—å–å‡ºçš„FRAME
 int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_trans)
 {
     int ret = 0;
     create_trans = 0;
 
-    //´¦Àí¶ÓÁĞ
+    //å¤„ç†é˜Ÿåˆ—
     for (proc_frame = 0; inner_message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
     {
 
@@ -506,7 +506,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
         //
         ret = inner_message_queue_->dequeue(tmp_frame);
 
-        //Èç¹ûĞ¡ÓÚ0±íÊ¾´íÎó£¬µ½Õâ¸öµØ·½Ó¦¸ÃÊÇÒ»¸ö´íÎó£¬ÒòÎªÉÏÃæ»¹ÓĞÒ»¸öÅĞ¶Ï
+        //å¦‚æœå°äº0è¡¨ç¤ºé”™è¯¯ï¼Œåˆ°è¿™ä¸ªåœ°æ–¹åº”è¯¥æ˜¯ä¸€ä¸ªé”™è¯¯ï¼Œå› ä¸ºä¸Šé¢è¿˜æœ‰ä¸€ä¸ªåˆ¤æ–­
         if (ret < 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Recv queue dequeue fail ,ret=%u,", ret);
@@ -515,12 +515,12 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
 
         DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame );
 
-        //ÊÇ·ñ´´½¨Ò»¸öÊÂÎñ£¬
+        //æ˜¯å¦åˆ›å»ºä¸€ä¸ªäº‹åŠ¡ï¼Œ
         bool bcrtcx = false;
 
-        //tmp_frame  ÂíÉÏ»ØÊÕ
+        //tmp_frame  é©¬ä¸Šå›æ”¶
         ret = process_appframe(tmp_frame, bcrtcx);
-        //ÊÍ·ÅÄÚ´æ
+        //é‡Šæ”¾å†…å­˜
         inner_frame_malloc_->free_appframe(tmp_frame);
 
         //
@@ -529,7 +529,7 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
             continue;
         }
 
-        //´´½¨ÁËÒ»¸öÊÂÎñ
+        //åˆ›å»ºäº†ä¸€ä¸ªäº‹åŠ¡
         if ( true == bcrtcx )
         {
             ++create_trans;
@@ -540,26 +540,26 @@ int Transaction_Manager::process_queue_frame(size_t &proc_frame, size_t &create_
     return 0;
 }
 
-//µÃµ½¹ÜÀíÆ÷µÄ¸ºÔØ²ÎÊı
+//å¾—åˆ°ç®¡ç†å™¨çš„è´Ÿè½½å‚æ•°
 //void Transaction_Manager::get_manager_load_foctor(unsigned int &load_max, unsigned int &load_cur)
 //{
 //    load_max = static_cast<unsigned int>(max_trans_);
 //    load_cur = static_cast<unsigned int>( transc_map_.size());
 //
-//    //¸ºÔØÈËÊı±ØĞë´óÓÚ1
+//    //è´Ÿè½½äººæ•°å¿…é¡»å¤§äº1
 //    if (load_cur == 0)
 //    {
 //        load_cur = 1;
 //    }
 //}
 
-//µÃµ½¹ÜÀíÆ÷µÄ¸ºÔØ²ÎÊı
-//ÓĞÒ»Ğ©·şÎñÆ÷£¬Ã»ÓĞ½×¶ÎĞÔµÄÊÂÎñ£¬ÓÃÉÏÃæµÄº¯Êı²»ÊÇÌØ±ğÀíÏë£¬
+//å¾—åˆ°ç®¡ç†å™¨çš„è´Ÿè½½å‚æ•°
+//æœ‰ä¸€äº›æœåŠ¡å™¨ï¼Œæ²¡æœ‰é˜¶æ®µæ€§çš„äº‹åŠ¡ï¼Œç”¨ä¸Šé¢çš„å‡½æ•°ä¸æ˜¯ç‰¹åˆ«ç†æƒ³ï¼Œ
 void Transaction_Manager::get_manager_load_foctor2(unsigned int &load_max, unsigned int &load_cur)
 {
     const unsigned int ONE_CYCLE_GENERATE_TRANS = 30000;
 
-    //µÃµ½¸ºÔØµÄÊıÁ¿
+    //å¾—åˆ°è´Ÿè½½çš„æ•°é‡
     load_max = ONE_CYCLE_GENERATE_TRANS;
 
     if (cycle_gentrans_counter_ > ONE_CYCLE_GENERATE_TRANS)
@@ -571,17 +571,17 @@ void Transaction_Manager::get_manager_load_foctor2(unsigned int &load_max, unsig
         load_cur = cycle_gentrans_counter_;
     }
 
-    //ÖÜÆÚ¼ÆÊıÆ÷ÇåÁã
+    //å‘¨æœŸè®¡æ•°å™¨æ¸…é›¶
     cycle_gentrans_counter_ = 0;
 
-    //¸ºÔØÈËÊı±ØĞë´óÓÚ1
+    //è´Ÿè½½äººæ•°å¿…é¡»å¤§äº1
     if (load_cur == 0)
     {
         load_cur = 1;
     }
 }
 
-//µÃµ½ÊµÀı
+//å¾—åˆ°å®ä¾‹
 Transaction_Manager *Transaction_Manager::instance()
 {
     if (instance_ == NULL)
@@ -592,7 +592,7 @@ Transaction_Manager *Transaction_Manager::instance()
     return instance_;
 }
 
-//ÊµÀı¸³Öµ
+//å®ä¾‹èµ‹å€¼
 void Transaction_Manager::instance(Transaction_Manager *pinstatnce)
 {
     clean_instance();
@@ -600,7 +600,7 @@ void Transaction_Manager::instance(Transaction_Manager *pinstatnce)
     return;
 }
 
-//Çå³ıÊµÀı
+//æ¸…é™¤å®ä¾‹
 void Transaction_Manager::clean_instance()
 {
     if (instance_)
@@ -612,7 +612,7 @@ void Transaction_Manager::clean_instance()
     return;
 }
 
-//Ö±½Ó·¢ËÍÒ»¸öbuffer to services¡£
+//ç›´æ¥å‘é€ä¸€ä¸ªbuffer to servicesã€‚
 int Transaction_Manager::mgr_sendbuf_to_service(unsigned int cmd,
                                                 unsigned int qquin,
                                                 unsigned int trans_id,

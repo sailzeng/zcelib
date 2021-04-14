@@ -3,8 +3,8 @@
 * @filename   zce/socket/connector.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê6ÔÂ19ÈÕ
-* @brief      connectµÄ¹¤³§
+* @date       2011å¹´6æœˆ19æ—¥
+* @brief      connectçš„å·¥å‚
 *
 *
 * @details
@@ -25,26 +25,26 @@ class ZCE_Sockaddr;
 
 
 /*!
-* @brief      connectµÄ¹¤³§£¬³É¹¦Á¬½Óºó²úÉú,ÓÃÓÚ²úÉúZCE_Socket_Stream
+* @brief      connectçš„å·¥å‚ï¼ŒæˆåŠŸè¿æ¥åäº§ç”Ÿ,ç”¨äºäº§ç”ŸZCE_Socket_Stream
 *
 * @note
 */
 class ZCE_Socket_Connector
 {
 public:
-    //¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+    //æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
     ZCE_Socket_Connector (void);
     ~ZCE_Socket_Connector (void);
 
     /*!
-    * @brief      ´ø³¬Ê±µÄÁ¬½Ó
+    * @brief      å¸¦è¶…æ—¶çš„è¿æ¥
     * @return     int
-    * @param[out] new_stream  ·µ»ØµÄÁ¬½ÓµÄSOCKET ¾ä±úÀà
-    * @param      remote_addr Ô¶¶ËµÄµØÖ·£¬Êµ¼Ê½á¹¹ÊÇsockadd_in£¬sockadd_in6µÈ
-    * @param      timeout     ³¬Ê±µÄÊ±¼ä³¤¶È
-    * @param      reuse_addr  ÊÇ·ñÖÃÎªreuse_addrÑ¡Ïî
-    * @param      protocol    Ğ­Òé£¬ÓÃÓÚRAW Socket£¬»ù±¾Ã»ÓÃ
-    * @param      local_addr  ±¾µØµÄBINDµØÖ·ĞÅÏ¢£¬CONNECT»ù±¾Ã»ÓÃ
+    * @param[out] new_stream  è¿”å›çš„è¿æ¥çš„SOCKET å¥æŸ„ç±»
+    * @param      remote_addr è¿œç«¯çš„åœ°å€ï¼Œå®é™…ç»“æ„æ˜¯sockadd_inï¼Œsockadd_in6ç­‰
+    * @param      timeout     è¶…æ—¶çš„æ—¶é—´é•¿åº¦
+    * @param      reuse_addr  æ˜¯å¦ç½®ä¸ºreuse_addré€‰é¡¹
+    * @param      protocol    åè®®ï¼Œç”¨äºRAW Socketï¼ŒåŸºæœ¬æ²¡ç”¨
+    * @param      local_addr  æœ¬åœ°çš„BINDåœ°å€ä¿¡æ¯ï¼ŒCONNECTåŸºæœ¬æ²¡ç”¨
     */
     int connect (ZCE_Socket_Stream &new_stream,
                  const ZCE_Sockaddr *remote_addr,
@@ -55,14 +55,14 @@ public:
 
 
     /*!
-    * @brief      ×èÈû»òÕß·Ç×èÈûµÄÁ¬½Ó
+    * @brief      é˜»å¡æˆ–è€…éé˜»å¡çš„è¿æ¥
     * @return     int
-    * @param      new_stream  ·µ»ØµÄÁ¬½ÓµÄSOCKET ¾ä±úÀà
-    * @param      remote_addr Ô¶¶ËµÄµØÖ·£¬Êµ¼Ê½á¹¹ÊÇsockadd_in£¬sockadd_in6µÈ
-    * @param      non_blocing ÊÇ·ñ×èÈû½øĞĞÁ¬½Ó¡£
-    * @param      reuse_addr  ÊÇ·ñÖÃÎªreuse_addrÑ¡Ïî
-    * @param      protocol    Ğ­Òé£¬ÓÃÓÚRAW Socket£¬»ù±¾Ã»ÓÃ
-    * @param      local_addr  ±¾µØµÄBINDµØÖ·ĞÅÏ¢£¬CONNECT»ù±¾Ã»ÓÃ
+    * @param      new_stream  è¿”å›çš„è¿æ¥çš„SOCKET å¥æŸ„ç±»
+    * @param      remote_addr è¿œç«¯çš„åœ°å€ï¼Œå®é™…ç»“æ„æ˜¯sockadd_inï¼Œsockadd_in6ç­‰
+    * @param      non_blocing æ˜¯å¦é˜»å¡è¿›è¡Œè¿æ¥ã€‚
+    * @param      reuse_addr  æ˜¯å¦ç½®ä¸ºreuse_addré€‰é¡¹
+    * @param      protocol    åè®®ï¼Œç”¨äºRAW Socketï¼ŒåŸºæœ¬æ²¡ç”¨
+    * @param      local_addr  æœ¬åœ°çš„BINDåœ°å€ä¿¡æ¯ï¼ŒCONNECTåŸºæœ¬æ²¡ç”¨
     */
     int connect (ZCE_Socket_Stream &new_stream,
                  const ZCE_Sockaddr *remote_addr,

@@ -3,24 +3,24 @@
 namespace zce
 {
 
-//!ÈÕÖ¾Êä³ö¼¶±ð,ÈÕÖ¾¼ÇÂ¼Ê±Ê¹ÓÃµÄÊÇ¼¶±ð,
+//!æ—¥å¿—è¾“å‡ºçº§åˆ«,æ—¥å¿—è®°å½•æ—¶ä½¿ç”¨çš„æ˜¯çº§åˆ«,
 enum class LOG_PRIORITY
 {
-    //!¸ú×ÙÐÅÏ¢,Ä¬ÈÏMaskÊä³ö¼¶±ð,Ä¬ÈÏÈ«²¿Êä³ö
+    //!è·Ÿè¸ªä¿¡æ¯,é»˜è®¤Maskè¾“å‡ºçº§åˆ«,é»˜è®¤å…¨éƒ¨è¾“å‡º
     LP_TRACE = 1,
-    //!µ÷ÊÔÐÅÏ¢
+    //!è°ƒè¯•ä¿¡æ¯
     LP_DEBUG = 2,
-    //!ÆÕÍ¨ÐÅÏ¢
+    //!æ™®é€šä¿¡æ¯
     LP_INFO = 3,
-    //!´íÎóÐÅÏ¢
+    //!é”™è¯¯ä¿¡æ¯
     LP_ERROR = 4,
-    //!¸æ¾¯ÀàÐÍµÄ´íÎó
+    //!å‘Šè­¦ç±»åž‹çš„é”™è¯¯
     LP_ALERT = 5,
-    //!ÖÂÃü´íÎó
+    //!è‡´å‘½é”™è¯¯
     LP_FATAL = 6,
 };
 
-//!RSµÄËõÐ´ÊÇÓÃÓÚ¼ÍÄîRichard steven
+//!RSçš„ç¼©å†™æ˜¯ç”¨äºŽçºªå¿µRichard steven
 #ifndef RS_TRACE
 #define RS_TRACE zce::LOG_PRIORITY::LP_TRACE
 #endif

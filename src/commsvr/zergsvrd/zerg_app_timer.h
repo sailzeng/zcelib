@@ -5,7 +5,7 @@
 
 
 /*!
-* @brief      ZERG·şÎñµÄ¶¨Ê±Æ÷£¬¶¨Ê±Æ÷ÓÃÓÚ¸÷ÖÖ´¦Àí
+* @brief      ZERGæœåŠ¡çš„å®šæ—¶å™¨ï¼Œå®šæ—¶å™¨ç”¨äºå„ç§å¤„ç†
 *
 * @note
 */
@@ -16,23 +16,23 @@ public:
     //
     Zerg_App_Timer_Handler();
 protected:
-    //×Ô¼º¹ÜÀí×Ô¼ºµÄÇåÀí
+    //è‡ªå·±ç®¡ç†è‡ªå·±çš„æ¸…ç†
     ~Zerg_App_Timer_Handler();
 
-    ///¶¨Ê±Æ÷´¥·¢
+    ///å®šæ—¶å™¨è§¦å‘
     virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
 
 
 public:
 
-    ///ZERG·şÎñÆ÷¶¨Ê±Æ÷ID,
+    ///ZERGæœåŠ¡å™¨å®šæ—¶å™¨ID,
     static const  int  ZERG_TIMER_ID[];
 
 protected:
 
 
 
-    //¶¨Ê±Æ÷´¥·¢µÄËæ»úÆ«ÒÆ, ±ÜÃâËùÓĞ·şÎñÆ÷Í¬Ê±´¥·¢
+    //å®šæ—¶å™¨è§¦å‘çš„éšæœºåç§», é¿å…æ‰€æœ‰æœåŠ¡å™¨åŒæ—¶è§¦å‘
     unsigned int random_reload_point_;
 
 

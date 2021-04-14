@@ -53,23 +53,23 @@ ZBuffer_Storage::~ZBuffer_Storage()
     close();
 }
 
-//¸ú½øÍâ²¿µÄHandlerµÄÊıÁ¿£¬³õÊ¼»¯µÃµ½Buffer ListµÄ³ß´ç
+//è·Ÿè¿›å¤–éƒ¨çš„Handlerçš„æ•°é‡ï¼Œåˆå§‹åŒ–å¾—åˆ°Buffer Listçš„å°ºå¯¸
 void ZBuffer_Storage::init_buflist_by_hdlnum(size_t num_of_hdl)
 {
     size_t szlist = (num_of_hdl / 100);
 
 
-    //×îĞ¡×î´ó±ß½ç
+    //æœ€å°æœ€å¤§è¾¹ç•Œ
     const size_t MIN_HDL_LIST_NUMBER = 128;
     const size_t MAX_HDL_LIST_NUMBER = 12800;
 
-    //Èç¹ûĞ¡ÓÚ×îĞ¡Öµ£¬µ÷ÕûÎª×îĞ¡Öµ
+    //å¦‚æœå°äºæœ€å°å€¼ï¼Œè°ƒæ•´ä¸ºæœ€å°å€¼
     if (szlist < MIN_HDL_LIST_NUMBER)
     {
         szlist = MIN_HDL_LIST_NUMBER;
     }
 
-    //Èç¹û´óÓÚ×îĞ¡Öµ£¬µ÷ÕûÎª×î´óÖµ
+    //å¦‚æœå¤§äºæœ€å°å€¼ï¼Œè°ƒæ•´ä¸ºæœ€å¤§å€¼
     if (szlist > MAX_HDL_LIST_NUMBER)
     {
         szlist = MAX_HDL_LIST_NUMBER;
@@ -88,7 +88,7 @@ void ZBuffer_Storage::init_buffer_list(size_t szlist)
 void ZBuffer_Storage::close()
 {
     //
-    //ÉÙÊ¹ÓÃº¯Êı£¬ÀÁµÃ×¢ÒâĞ§ÂÊ
+    //å°‘ä½¿ç”¨å‡½æ•°ï¼Œæ‡’å¾—æ³¨æ„æ•ˆç‡
     size_t sz_of_buffer = buffer_deque_.size();
 
     for (size_t i = 0; i < sz_of_buffer; ++i)
@@ -101,10 +101,10 @@ void ZBuffer_Storage::close()
     size_of_bufferalloc_ = 0;
 }
 
-//·ÖÅäÒ»¸öBuffer³öÀ´
+//åˆ†é…ä¸€ä¸ªBufferå‡ºæ¥
 Zerg_Buffer *ZBuffer_Storage::allocate_buffer()
 {
-    //»º³åÇøÊ¹ÓÃÍêÁË,À©Õ¹
+    //ç¼“å†²åŒºä½¿ç”¨å®Œäº†,æ‰©å±•
     if ( true == buffer_deque_.empty() )
     {
         extend_bufferlist();
@@ -124,10 +124,10 @@ void ZBuffer_Storage::free_byte_buffer(Zerg_Buffer *ptrbuf)
     buffer_deque_.push_back(ptrbuf);
 }
 
-//À©Õ¹Buffer¶ÓÁĞ
+//æ‰©å±•Bufferé˜Ÿåˆ—
 void ZBuffer_Storage::extend_bufferlist(size_t szlist)
 {
-    //´òÓ¡Õ¼ÓÃµÄÄÚ´æÊıÁ¿
+    //æ‰“å°å ç”¨çš„å†…å­˜æ•°é‡
     ZCE_LOG(RS_INFO, "[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
             szlist,
             size_of_bufferalloc_,
@@ -151,7 +151,7 @@ void ZBuffer_Storage::extend_bufferlist(size_t szlist)
                                                  size_of_bufferalloc_);
 }
 
-//µÃµ½Î¨Ò»µÄµ¥×ÓÊµÀı
+//å¾—åˆ°å”¯ä¸€çš„å•å­å®ä¾‹
 ZBuffer_Storage *ZBuffer_Storage::instance()
 {
     if (instance_ == NULL)
@@ -162,7 +162,7 @@ ZBuffer_Storage *ZBuffer_Storage::instance()
     return instance_;
 }
 
-//Çå³ıµ¥×ÓÊµÀı
+//æ¸…é™¤å•å­å®ä¾‹
 void ZBuffer_Storage::clean_instance()
 {
     if (instance_)

@@ -1,7 +1,7 @@
 
 #include "zce/predefine.h"
 
-//¶ÔÓÚSQLITEµÄ×îµÍ°æ±¾ÏŞÖÆ
+//å¯¹äºSQLITEçš„æœ€ä½ç‰ˆæœ¬é™åˆ¶
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 #include "zce/logger/logging.h"
@@ -13,7 +13,7 @@
 /******************************************************************************************
 SQLite3_STMT_Handler
 ******************************************************************************************/
-//¹¹Ôìº¯Êı,´ÓºÜÏ¸Ğ¡µÄµØ·½¾Í¿ÉÒÔ¿´³öSQLITEµÄÉè¼ÆÓĞ²»×ã£¬Ò»¸öINDEX´Ó1¿ªÊ¼£¬1¸ö´Ó0
+//æ„é€ å‡½æ•°,ä»å¾ˆç»†å°çš„åœ°æ–¹å°±å¯ä»¥çœ‹å‡ºSQLITEçš„è®¾è®¡æœ‰ä¸è¶³ï¼Œä¸€ä¸ªINDEXä»1å¼€å§‹ï¼Œ1ä¸ªä»0
 ZCE_SQLite_STMTHdl::ZCE_SQLite_STMTHdl(ZCE_SQLite_DB_Handler *sqlite3_handler):
     sqlite_handler_(sqlite3_handler),
     sqlite3_stmt_handler_(NULL),
@@ -29,10 +29,10 @@ ZCE_SQLite_STMTHdl::~ZCE_SQLite_STMTHdl()
 }
 
 
-//Ïú»ÙSQLITE3µÄSTMT HANDLER£¬»Ö¸´³õÊ¼»¯ÖµµÈ¡£
+//é”€æ¯SQLITE3çš„STMT HANDLERï¼Œæ¢å¤åˆå§‹åŒ–å€¼ç­‰ã€‚
 int ZCE_SQLite_STMTHdl::finalize()
 {
-    //Ïú»ÙSQLITE3µÄSTMT HANDLER
+    //é”€æ¯SQLITE3çš„STMT HANDLER
     int ret =  ::sqlite3_finalize(sqlite3_stmt_handler_);
 
     if ( SQLITE_OK  != ret)
@@ -63,7 +63,7 @@ int ZCE_SQLite_STMTHdl::reset()
 }
 
 
-//·ÖÎöSQLÓï¾ä£¬¼ì²éÊÇ·ñÄÜ¹»ÕıÈ·Ö´ĞĞ
+//åˆ†æSQLè¯­å¥ï¼Œæ£€æŸ¥æ˜¯å¦èƒ½å¤Ÿæ­£ç¡®æ‰§è¡Œ
 int ZCE_SQLite_STMTHdl::prepare(const char *sql_string)
 {
     if (sqlite3_stmt_handler_)
@@ -73,14 +73,14 @@ int ZCE_SQLite_STMTHdl::prepare(const char *sql_string)
 
     int ret =  ::sqlite3_prepare_v2(sqlite_handler_->get_sqlite_handler(),
                                     sql_string,
-                                    -1,                                      //×¢ÒâÕâ¸ö²ÎÊı£¬±ØĞëĞ¡ÓÚ0
+                                    -1,                                      //æ³¨æ„è¿™ä¸ªå‚æ•°ï¼Œå¿…é¡»å°äº0
                                     &sqlite3_stmt_handler_,
                                     NULL);
 
-    //Èç¹û·ÖÎö½á¹û´íÎó£¬»òÕß²»ÊÇÒ»¸öSQL
+    //å¦‚æœåˆ†æç»“æœé”™è¯¯ï¼Œæˆ–è€…ä¸æ˜¯ä¸€ä¸ªSQL
     if ( SQLITE_OK  != ret || sqlite3_stmt_handler_ == NULL)
     {
-        //ÆäËû·µ»Ø´íÎó
+        //å…¶ä»–è¿”å›é”™è¯¯
         ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]",
                 error_code(),
                 error_message());
@@ -113,12 +113,12 @@ int ZCE_SQLite_STMTHdl::execute_stmt_sql(bool &has_reuslt)
         return 0;
     }
 
-    //ÆäËû·µ»Ø´íÎó
+    //å…¶ä»–è¿”å›é”™è¯¯
     ZCE_LOG(RS_ERROR, "[zcelib] Error:[%d][%s]", error_code(), error_message());
     return -1;
 }
 
-//Bind º¯ÊıÈº
+//Bind å‡½æ•°ç¾¤
 template<>
 int ZCE_SQLite_STMTHdl::bind(int bind_index, char val)
 {
@@ -232,7 +232,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned int val)
     return 0;
 }
 
-//×¢ÒâlongÕâ¶ùbindµÄÊÇ32Î»µÄà¸
+//æ³¨æ„longè¿™å„¿bindçš„æ˜¯32ä½çš„å–”
 template<>
 int ZCE_SQLite_STMTHdl::bind(int bind_index, unsigned long val)
 {
@@ -290,7 +290,7 @@ int ZCE_SQLite_STMTHdl::bind(int bind_index, double val)
 template<>
 int ZCE_SQLite_STMTHdl::bind(int bind_index, const char *val)
 {
-    //´Ó²ÎÊıÉÏ¿´£¬SQLiteµÄSTMT²»ÊÇbind±äÁ¿£¬¶øÊÇÈ¡ÁËÊı¾İ
+    //ä»å‚æ•°ä¸Šçœ‹ï¼ŒSQLiteçš„STMTä¸æ˜¯bindå˜é‡ï¼Œè€Œæ˜¯å–äº†æ•°æ®
     int ret = ::sqlite3_bind_text(sqlite3_stmt_handler_,
                                   bind_index,
                                   val,
@@ -465,7 +465,7 @@ void ZCE_SQLite_STMTHdl::column(int result_col, double &val)
 template<>
 void ZCE_SQLite_STMTHdl::column(int result_col, char *val)
 {
-    //FiskÕâ¸ö±äÌ¬ÈÃÎÒ¸ÄÁËµØ·½£¬ÎªÁË°²È«¼ì²é¡£
+    //Fiskè¿™ä¸ªå˜æ€è®©æˆ‘æ”¹äº†åœ°æ–¹ï¼Œä¸ºäº†å®‰å…¨æ£€æŸ¥ã€‚
     strncpy(val,
             reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_,
                                                                result_col)),
@@ -474,12 +474,12 @@ void ZCE_SQLite_STMTHdl::column(int result_col, char *val)
     return;
 }
 
-//¶ş½øÖÆµÄÊı¾İÒªÌØ±ğ¿¼ÂÇÒ»ÏÂ,×Ö·û´®¶¼ÌØ±ğ+1ÁË,¶ø¶ş½øÖÆÊı¾İ²»ÒªÕâÑù¿¼ÂÇ
+//äºŒè¿›åˆ¶çš„æ•°æ®è¦ç‰¹åˆ«è€ƒè™‘ä¸€ä¸‹,å­—ç¬¦ä¸²éƒ½ç‰¹åˆ«+1äº†,è€ŒäºŒè¿›åˆ¶æ•°æ®ä¸è¦è¿™æ ·è€ƒè™‘
 template<>
 void ZCE_SQLite_STMTHdl::column(int result_col, ZCE_SQLite_STMTHdl::BIN_Result &val)
 {
     *val.binary_len_ = ::sqlite3_column_bytes(sqlite3_stmt_handler_, result_col);
-    //ÎªÁË»ñÈ¡¶ş½øÖÆÊı¾İ£¬ÓëZCE_Mysql_ResultÏà¶ÔÓ¦,³¤¶È²»+1
+    //ä¸ºäº†è·å–äºŒè¿›åˆ¶æ•°æ®ï¼Œä¸ZCE_Mysql_Resultç›¸å¯¹åº”,é•¿åº¦ä¸+1
     memcpy(val.binary_data_, ::sqlite3_column_blob(sqlite3_stmt_handler_, result_col),
            *val.binary_len_);
     return;
@@ -493,13 +493,13 @@ void ZCE_SQLite_STMTHdl::column(int result_col, std::string &val)
     return;
 }
 
-//¿ªÊ¼Ò»¸öÊÂÎñ
+//å¼€å§‹ä¸€ä¸ªäº‹åŠ¡
 int ZCE_SQLite_STMTHdl::begin_transaction()
 {
     return sqlite_handler_->begin_transaction();
 }
 
-//Ìá½»Ò»¸öÊÂÎñ
+//æäº¤ä¸€ä¸ªäº‹åŠ¡
 int ZCE_SQLite_STMTHdl::commit_transction()
 {
     return sqlite_handler_->commit_transction();

@@ -16,7 +16,7 @@ class UDP_Svc_Handler : public ZCE_Event_Handler
 {
 protected:
 
-    //±ÜÃâÔÚ¶ÑÖĞ¼ä·ÖÅä,ËùÒÔÎö¹¹º¯Êı²»Òª
+    //é¿å…åœ¨å †ä¸­é—´åˆ†é…,æ‰€ä»¥ææ„å‡½æ•°ä¸è¦
 public:
     //
     UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
@@ -27,7 +27,7 @@ protected:
 
 
 public:
-    //È¡µÃ¾ä±ú
+    //å–å¾—å¥æŸ„
     virtual ZCE_HANDLE get_handle(void) const;
     //
     virtual int handle_input();
@@ -36,30 +36,30 @@ public:
 
 public:
 
-    //³õÊ¼»¯UPD¶Ë¿Ú
+    //åˆå§‹åŒ–UPDç«¯å£
     int init_udp_services();
 
 protected:
 
-    //´ÓPEER¶ÁÈ¡Êı¾İ
+    //ä»PEERè¯»å–æ•°æ®
     int read_data_from_udp(size_t &szrevc);
 
-    //·¢ËÍUDPµÄÊı¾İ
+    //å‘é€UDPçš„æ•°æ®
     int write_data_to_udp(Zerg_App_Frame *send_frame);
 
 public:
-    //³õÊ¼»¯¾²Ì¬²ÎÊı
+    //åˆå§‹åŒ–é™æ€å‚æ•°
     static int init_all_static_data();
 
     //
     static int send_all_to_udp(Zerg_App_Frame *send_frame);
 
-    ///¶ÁÈ¡ÅäÖÃ
+    ///è¯»å–é…ç½®
     static int get_config(const Zerg_Server_Config *config);
 
 protected:
 
-    //Ò»´Î´ÓUDPµÄ¶Ë¿Ú¶ÁÈ¡µÄÊı¾İÊıÁ¿£¬
+    //ä¸€æ¬¡ä»UDPçš„ç«¯å£è¯»å–çš„æ•°æ®æ•°é‡ï¼Œ
     static const size_t ONCE_MAX_READ_UDP_NUMBER = 256;
 
 protected:
@@ -67,34 +67,34 @@ protected:
     ///
     typedef std::vector< UDP_Svc_Handler *>  ARY_OF_UDPSVC_HANDLER;
 
-    ///UPDµÄÊı×é£¬¿ÉÒÔÓĞ¶à¸öUDP
+    ///UPDçš„æ•°ç»„ï¼Œå¯ä»¥æœ‰å¤šä¸ªUDP
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
-    ///Í³¼Æ£¬Ê¹ÓÃµ¥×ÓÀàµÄÖ¸Õë
+    ///ç»Ÿè®¡ï¼Œä½¿ç”¨å•å­ç±»çš„æŒ‡é’ˆ
     static Soar_Stat_Monitor       *server_status_;
 
-    ///Í¨Ñ¶¹ÜÀíÆ÷,±£´æÊÇÎªÁË¼Ó¿ìËÙ¶È
+    ///é€šè®¯ç®¡ç†å™¨,ä¿å­˜æ˜¯ä¸ºäº†åŠ å¿«é€Ÿåº¦
     static Zerg_Comm_Manager       *zerg_comm_mgr_;
 
-    ///ÊÇ·ñÊÇ´úÀí·şÎñÆ÷
+    ///æ˜¯å¦æ˜¯ä»£ç†æœåŠ¡å™¨
     static bool                     if_proxy_;
 
 
 protected:
 
-    ///Êı¾İ°üUDP·¢ËÍµÄSocket
+    ///æ•°æ®åŒ…UDPå‘é€çš„Socket
     ZCE_Socket_DataGram      dgram_peer_;
 
-    ///°î¶¨µÄµØÖ·
+    ///é‚¦å®šçš„åœ°å€
     ZCE_Sockaddr_In          udp_bind_addr_;
 
     ///
     SERVICES_ID              my_svc_info_;
-    ///ÊÇ·ñ½øĞĞSESSIONĞ£Ñé
+    ///æ˜¯å¦è¿›è¡ŒSESSIONæ ¡éªŒ
     bool                     sessionkey_verify_;
-    ///Êı¾İ»º³åÇø£¬UDPÖ»ÓĞÒ»¸ö
+    ///æ•°æ®ç¼“å†²åŒºï¼ŒUDPåªæœ‰ä¸€ä¸ª
     Zerg_Buffer             *dgram_databuf_;
-    ///IPÏŞÖÆ¹ÜÀíÆ÷
+    ///IPé™åˆ¶ç®¡ç†å™¨
     Zerg_IPRestrict_Mgr      *ip_restrict_;
 
 

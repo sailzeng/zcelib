@@ -15,7 +15,7 @@ Lolo_SendRecv_Package::~Lolo_SendRecv_Package()
 }
 
 
-//设置相应的SVC INFO,
+//璁剧疆鐩稿簲鐨凷VC INFO,
 int Lolo_SendRecv_Package::set_lolo_svcinfo(const char *svc_ip,
                                             unsigned short svc_port,
                                             const SERVICES_ID &recv_service,

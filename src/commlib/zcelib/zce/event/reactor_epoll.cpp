@@ -6,7 +6,7 @@
 #include "zce/time/time_value.h"
 #include "zce/event/reactor_epoll.h"
 
-//¹¹Ôìº¯ÊıºÍÎö¹¹º¯Êı
+//æ„é€ å‡½æ•°å’Œææ„å‡½æ•°
 ZCE_Epoll_Reactor::ZCE_Epoll_Reactor():
     ZCE_Reactor(FD_SETSIZE),
     epoll_fd_(-1),
@@ -16,7 +16,7 @@ ZCE_Epoll_Reactor::ZCE_Epoll_Reactor():
 {
 }
 
-//¹¹Ôìº¯Êı
+//æ„é€ å‡½æ•°
 ZCE_Epoll_Reactor::ZCE_Epoll_Reactor(size_t max_event_number,
                                      bool edge_triggered,
                                      int once_max_events):
@@ -33,19 +33,19 @@ ZCE_Epoll_Reactor::~ZCE_Epoll_Reactor()
 {
     ::close(epoll_fd_);
 
-    //ÊÍ·ÅÄÚ´æ
+    //é‡Šæ”¾å†…å­˜
     if (once_events_ary_)
     {
         delete [] once_events_ary_;
     }
 }
 
-//³õÊ¼»¯
+//åˆå§‹åŒ–
 int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
                                   bool edge_triggered,
                                   int once_max_events )
 {
-    //Èç¹ûÊÇ·ÇLinux²Ù×÷ÏµÍ³£¬Ö±½ÓÍêµ°ËãÁË¡£
+    //å¦‚æœæ˜¯éLinuxæ“ä½œç³»ç»Ÿï¼Œç›´æ¥å®Œè›‹ç®—äº†ã€‚
 #if !defined (ZCE_OS_LINUX)
     ZCE_ASSERT(false);
 #endif
@@ -61,7 +61,7 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
 
     edge_triggered_ = edge_triggered;
 
-    //Õâ¸öÖ»ÓĞLINUXÏÂ²ÅÓĞ
+    //è¿™ä¸ªåªæœ‰LINUXä¸‹æ‰æœ‰
 #if defined (ZCE_OS_LINUX)
     epoll_fd_ = ::epoll_create(max_event_number_ + 64);
 #endif
@@ -81,11 +81,11 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
     return 0;
 }
 
-//×¢²áÒ»¸öZCE_Event_Handlerµ½·´Ó¦Æ÷
+//æ³¨å†Œä¸€ä¸ªZCE_Event_Handleråˆ°ååº”å™¨
 int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int event_mask)
 {
     int ret = 0;
-    //×¢ÒâµÚ¶ş¸ö²ÎÊıÊÇ0£¬ÒòÎªµÚÒ»ÒªÏÈADD£¬µÚ¶ş±ÜÃâÁ½´Îµ÷ÓÃÕâ¸ö,Õâ¸ö´úÂë·ÅÇ°ÃæÊÇÒòÎª»Ø¹öÂé·³
+    //æ³¨æ„ç¬¬äºŒä¸ªå‚æ•°æ˜¯0ï¼Œå› ä¸ºç¬¬ä¸€è¦å…ˆADDï¼Œç¬¬äºŒé¿å…ä¸¤æ¬¡è°ƒç”¨è¿™ä¸ª,è¿™ä¸ªä»£ç æ”¾å‰é¢æ˜¯å› ä¸ºå›æ»šéº»çƒ¦
     ret = ZCE_Reactor::register_handler(event_handler, 0);
 
     if (0 != ret)
@@ -99,14 +99,14 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
     struct epoll_event ep_event;
     make_epoll_event(&ep_event, event_handler);
 
-    //EPOLL ÔÚLINUX²ÅÓĞ£¬WINDOWSÒ²²»¿ÉÄÜÄ£Äâ³öÀ´£¬ÄÑµÀÈÃÎÒÓÃ¸öSELECTÄ£Äâ£¿
+    //EPOLL åœ¨LINUXæ‰æœ‰ï¼ŒWINDOWSä¹Ÿä¸å¯èƒ½æ¨¡æ‹Ÿå‡ºæ¥ï¼Œéš¾é“è®©æˆ‘ç”¨ä¸ªSELECTæ¨¡æ‹Ÿï¼Ÿ
 #if defined (ZCE_OS_LINUX)
     ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, event_handler->get_handle(), &ep_event);
 #endif
 
     if (0 != ret)
     {
-        //»Ø¹ö
+        //å›æ»š
         ret = ZCE_Reactor::remove_handler(event_handler, false);
 
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
@@ -120,7 +120,7 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
     return 0;
 }
 
-//´Ó·´Ó¦Æ÷×¢ÏúÒ»¸öZCE_Event_Handler£¬Í¬ÊÂÈ¡ÏûËûËùÓĞµÄmask
+//ä»ååº”å™¨æ³¨é”€ä¸€ä¸ªZCE_Event_Handlerï¼ŒåŒäº‹å–æ¶ˆä»–æ‰€æœ‰çš„mask
 int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close)
 {
 
@@ -129,7 +129,7 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
     struct epoll_event event;
     event.events = 0;
 #if defined (ZCE_OS_LINUX)
-    //µ÷ÓÃepoll_ctl EPOLL_CTL_DEL É¾³ı×¢²á¶ÔÏó
+    //è°ƒç”¨epoll_ctl EPOLL_CTL_DEL åˆ é™¤æ³¨å†Œå¯¹è±¡
     ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, event_handler->get_handle(), &event);
 #endif
 
@@ -140,11 +140,11 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
                 ret,
                 zce::last_error(),
                 strerror(zce::last_error()));
-        //Õâ¸ö²»·µ»ØºÃ»¹ÊÇ·µ»ØºÃÄØ£¿ÕâÕæÊÇÒ»¸öÎÊÌâ
+        //è¿™ä¸ªä¸è¿”å›å¥½è¿˜æ˜¯è¿”å›å¥½å‘¢ï¼Ÿè¿™çœŸæ˜¯ä¸€ä¸ªé—®é¢˜
         //return -1;
     }
 
-    //È¡ÏûµôËùÓĞµÄÊÂ¼ş£¬Ç°ÃæÒÑ¾­É¾³ıÁË£¬±ÜÃâÀïÃæÖØ¸´µ÷ÓÃ
+    //å–æ¶ˆæ‰æ‰€æœ‰çš„äº‹ä»¶ï¼Œå‰é¢å·²ç»åˆ é™¤äº†ï¼Œé¿å…é‡Œé¢é‡å¤è°ƒç”¨
     event_handler->set_mask(0);
 
     ret = ZCE_Reactor::remove_handler(event_handler, call_handle_close);
@@ -158,14 +158,14 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
     return 0;
 }
 
-//È¡ÏûÄ³Ğ©mask±êÖ¾£¬£¬
+//å–æ¶ˆæŸäº›maskæ ‡å¿—ï¼Œï¼Œ
 int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
 {
     int ret = 0;
 
     ret = ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
 
-    //ÆäÊµZCE_Reactor::cancel_wakeup²»¿ÉÄÜÊ§°Ü,
+    //å…¶å®ZCE_Reactor::cancel_wakeupä¸å¯èƒ½å¤±è´¥,
     if (0 != ret)
     {
         return -1;
@@ -176,14 +176,14 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
     make_epoll_event(&ep_event, event_handler);
 
 #if defined (ZCE_OS_LINUX)
-    //EPOLL_CTL_MODÓÃÓÚĞŞ¸Ä
+    //EPOLL_CTL_MODç”¨äºä¿®æ”¹
     ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event_handler->get_handle(), &ep_event);
 
 #endif
 
     if (0 != ret)
     {
-        //»Ø¹ö²»¸Ä¶¯±êÖ¾Î»
+        //å›æ»šä¸æ”¹åŠ¨æ ‡å¿—ä½
         ZCE_Reactor::schedule_wakeup(event_handler, cancel_mask);
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
@@ -196,13 +196,13 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
     return 0;
 }
 
-//´ò¿ªÄ³Ğ©mask±êÖ¾£¬
+//æ‰“å¼€æŸäº›maskæ ‡å¿—ï¼Œ
 int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
 {
     int ret = 0;
     ret = ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
 
-    //ÆäÊµZCE_Reactor::cancel_wakeup²»¿ÉÄÜÊ§°Ü
+    //å…¶å®ZCE_Reactor::cancel_wakeupä¸å¯èƒ½å¤±è´¥
     if (0 != ret)
     {
         return -1;
@@ -213,14 +213,14 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
     make_epoll_event(&ep_event, event_handler);
 
 #if defined (ZCE_OS_LINUX)
-    //EPOLL_CTL_MODÓÃÓÚĞŞ¸Ä
+    //EPOLL_CTL_MODç”¨äºä¿®æ”¹
     ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event_handler->get_handle(), &ep_event);
 
 #endif
 
     if (0 != ret)
     {
-        //»Ø¹ö£¬ĞŞ¸´±êÖ¾Î»
+        //å›æ»šï¼Œä¿®å¤æ ‡å¿—ä½
         ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
         ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
                 __ZCE_FUNC__,
@@ -233,19 +233,19 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
     return 0;
 }
 
-//Ê±¼ä´¥·¢
+//æ—¶é—´è§¦å‘
 int ZCE_Epoll_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event)
 {
 
-    //Ä¬ÈÏÒ»Ö±×èÈû
+    //é»˜è®¤ä¸€ç›´é˜»å¡
     int msec_timeout = -1;
 
     if (time_out)
     {
-        //¸ù¾İbluehu ÌáĞÑĞŞ¸ÄÁËÏÂÃæÕâ¶Î£¬£¨²»¹ıĞ¡»ï×ÓÃÇ£¬ÄãÃÇ¸Ä´úÂëÒªÈÏÕæÒ»µãà¸£©
-        //ÓÉÓÚselectµÄ³¬Ê±²ÎÊı¿ÉÒÔ¾«È·µ½Î¢Ãë£¬¶øepoll_waitµÄ²ÎÊıÖ»¾«È·µ½ºÁÃë
-        //µ±³¬Ê±Ê±¼äĞ¡ÓÚ1000Î¢ÃëÊ±£¬±ÈÈç20Î¢Ãë£¬½«Ê±¼ä×ª»»³ÉºÁÃë»á±ä³É0ºÁÃë
-        //ËùÒÔÈç¹ûÓÃepoll_waitµÄ»°£¬³¬Ê±Ê±¼ä´óÓÚ0²¢ÇÒĞ¡ÓÚ1ºÁÃëµÄÇé¿öÏÂÍ³Ò»¸ÄÎª1ºÁÃë
+        //æ ¹æ®bluehu æé†’ä¿®æ”¹äº†ä¸‹é¢è¿™æ®µï¼Œï¼ˆä¸è¿‡å°ä¼™å­ä»¬ï¼Œä½ ä»¬æ”¹ä»£ç è¦è®¤çœŸä¸€ç‚¹å–”ï¼‰
+        //ç”±äºselectçš„è¶…æ—¶å‚æ•°å¯ä»¥ç²¾ç¡®åˆ°å¾®ç§’ï¼Œè€Œepoll_waitçš„å‚æ•°åªç²¾ç¡®åˆ°æ¯«ç§’
+        //å½“è¶…æ—¶æ—¶é—´å°äº1000å¾®ç§’æ—¶ï¼Œæ¯”å¦‚20å¾®ç§’ï¼Œå°†æ—¶é—´è½¬æ¢æˆæ¯«ç§’ä¼šå˜æˆ0æ¯«ç§’
+        //æ‰€ä»¥å¦‚æœç”¨epoll_waitçš„è¯ï¼Œè¶…æ—¶æ—¶é—´å¤§äº0å¹¶ä¸”å°äº1æ¯«ç§’çš„æƒ…å†µä¸‹ç»Ÿä¸€æ”¹ä¸º1æ¯«ç§’
 
         msec_timeout = static_cast<int>( time_out->total_msec_round());
     }
@@ -253,7 +253,7 @@ int ZCE_Epoll_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_even
     int event_happen = 0;
 
 #if defined (ZCE_OS_LINUX)
-    //EPOLLµÈ´ıÊÂ¼ş´¥·¢£¬
+    //EPOLLç­‰å¾…äº‹ä»¶è§¦å‘ï¼Œ
     event_happen = ::epoll_wait(epoll_fd_, once_events_ary_, once_max_events_, msec_timeout);
 #endif
 
@@ -281,49 +281,49 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
 
     ret =  find_event_handler(ep_event->data.fd, event_hdl);
 
-    //µ½Õâ¸öµØ·½£¬¿ÉÄÜÊÇ´úÂëÓĞÎÊÌâ£¬Ò²¿ÉÄÜ²»ÊÇ£¬ÒòÎªÒ»¸öÊÂ¼ş´¦Àíºó£¬¿ÉÄÜ¾Í±»¹Ø±ÕÁË£¿
+    //åˆ°è¿™ä¸ªåœ°æ–¹ï¼Œå¯èƒ½æ˜¯ä»£ç æœ‰é—®é¢˜ï¼Œä¹Ÿå¯èƒ½ä¸æ˜¯ï¼Œå› ä¸ºä¸€ä¸ªäº‹ä»¶å¤„ç†åï¼Œå¯èƒ½å°±è¢«å…³é—­äº†ï¼Ÿ
     if (0 != ret)
     {
         return;
     }
 
-    //¸ù¾İ²»Í¬µÄÊÂ¼ş½øĞĞµ÷¶¯£¬´¥·¢
+    //æ ¹æ®ä¸åŒçš„äº‹ä»¶è¿›è¡Œè°ƒåŠ¨ï¼Œè§¦å‘
     int hdl_ret = 0;
 
-    //¡¾×¢Òâ¡¿ËùÓĞµÄreactor ¶¼Òª±£Ö¤¸÷ÖÖ´¥·¢µÄË³Ğò£¬±ØĞë±£Ö¤£¬·ñÔò¾ÍÓĞ²»¼æÈİµÄÎÊÌâ£¬ÕıÈ·µÄË³ĞòÓ¦¸ÃÊÇ¶Á,Ğ´,Òì³£´¦Àí
+    //ã€æ³¨æ„ã€‘æ‰€æœ‰çš„reactor éƒ½è¦ä¿è¯å„ç§è§¦å‘çš„é¡ºåºï¼Œå¿…é¡»ä¿è¯ï¼Œå¦åˆ™å°±æœ‰ä¸å…¼å®¹çš„é—®é¢˜ï¼Œæ­£ç¡®çš„é¡ºåºåº”è¯¥æ˜¯è¯»,å†™,å¼‚å¸¸å¤„ç†
 
-    //ĞŞÕıconnect·¢ÉúÁ¬½Ó´íÎó£¬ÄÚ²¿Ï£ÍûÍ£Ö¹´¦Àí£¬µ«epoll»á·µ»Ø3¸öÊÂ¼şµÄĞŞÕı,
-    //ÏÈËµÃ÷Ò»ÏÂÕâ¸öÎÊÌâ£¬µ±ÄÚ²¿´¦ÀíµÄÊÂ¼ş·¢Éú´íÎóºó£¬ÉÏ²ã¿ÉÄÜ¾Í»áÉ¾³ıµô¶ÔÓ¦µÄZCE_Event_Handler£¬µ«µ×²ã¿ÉÄÜ»¹ÓĞÊÂ¼şÒª´¥·¢¡£
-    //ÓÉÓÚ¸Ã´úÂëµÄÊ±ºòÃæÁÙ¾ñÔñ£¬ÎÒ±ØĞëĞ´Ò»¶ÎËµÃ÷£¬ÎÒÔÚ¸ÄÕâ¶Î´úÂëµÄÊ±ºòÓĞ¼¸ÖÖÖÖ·½Ê½,
-    //1.ÕûÌåĞ´³Édo { break} while()µÄ·½Ê½£¬Ã¿¸öIOÊÂ¼ş¶¼×÷Îª´¥·¢·½Ê½£¬Õâ¸öºÃ´¦ÊÇ¼òµ¥£¬µ«¶ÔÓÚepoll,Èç¹ûÊÇË®Æ½´¥·¢£¬ÄÇÃ´Äã¿ÉÄÜ¶ªÊ§ÊÂ¼ş
-    //2.¼ÌĞøÊ¹ÓÃreturn -1×÷ÎªÒ»¸öÅĞ¶Ï£¬ACE¾ÍÊÇÕâÑùµÄ£¬Ô­À´Ôø¾­¾õµÃACEÕâ¸öÉè¼ÆÓĞµãÈßÓà£¬µ«×Ô¼ºÉè¼Æ¿´À´£¬»¹ÊÇÓĞºÃ´¦µÄ£¬
-    //3.Ã¿´Îµ÷ÓÃºó£¬¶¼¼ì²éÒ»ÏÂevent_hdlÊÇ·ñ»¹´æÔÚ£¬
-    //×îºóÎÒ²ÉÓÃÁË¼æÈİ2£¬3µÄ·½·¨£¬2ÊÇÎªÁËºÍACE¼æÈİ£¬3ÊÇÎªÁË±£Ö¤¾ÍÊÇÄãTMDÌì·­µØ¸²£¬ÎÒÒ²ÄÜÓ¦¸¶,
+    //ä¿®æ­£connectå‘ç”Ÿè¿æ¥é”™è¯¯ï¼Œå†…éƒ¨å¸Œæœ›åœæ­¢å¤„ç†ï¼Œä½†epollä¼šè¿”å›3ä¸ªäº‹ä»¶çš„ä¿®æ­£,
+    //å…ˆè¯´æ˜ä¸€ä¸‹è¿™ä¸ªé—®é¢˜ï¼Œå½“å†…éƒ¨å¤„ç†çš„äº‹ä»¶å‘ç”Ÿé”™è¯¯åï¼Œä¸Šå±‚å¯èƒ½å°±ä¼šåˆ é™¤æ‰å¯¹åº”çš„ZCE_Event_Handlerï¼Œä½†åº•å±‚å¯èƒ½è¿˜æœ‰äº‹ä»¶è¦è§¦å‘ã€‚
+    //ç”±äºè¯¥ä»£ç çš„æ—¶å€™é¢ä¸´æŠ‰æ‹©ï¼Œæˆ‘å¿…é¡»å†™ä¸€æ®µè¯´æ˜ï¼Œæˆ‘åœ¨æ”¹è¿™æ®µä»£ç çš„æ—¶å€™æœ‰å‡ ç§ç§æ–¹å¼,
+    //1.æ•´ä½“å†™æˆdo { break} while()çš„æ–¹å¼ï¼Œæ¯ä¸ªIOäº‹ä»¶éƒ½ä½œä¸ºè§¦å‘æ–¹å¼ï¼Œè¿™ä¸ªå¥½å¤„æ˜¯ç®€å•ï¼Œä½†å¯¹äºepoll,å¦‚æœæ˜¯æ°´å¹³è§¦å‘ï¼Œé‚£ä¹ˆä½ å¯èƒ½ä¸¢å¤±äº‹ä»¶
+    //2.ç»§ç»­ä½¿ç”¨return -1ä½œä¸ºä¸€ä¸ªåˆ¤æ–­ï¼ŒACEå°±æ˜¯è¿™æ ·çš„ï¼ŒåŸæ¥æ›¾ç»è§‰å¾—ACEè¿™ä¸ªè®¾è®¡æœ‰ç‚¹å†—ä½™ï¼Œä½†è‡ªå·±è®¾è®¡çœ‹æ¥ï¼Œè¿˜æ˜¯æœ‰å¥½å¤„çš„ï¼Œ
+    //3.æ¯æ¬¡è°ƒç”¨åï¼Œéƒ½æ£€æŸ¥ä¸€ä¸‹event_hdlæ˜¯å¦è¿˜å­˜åœ¨ï¼Œ
+    //æœ€åæˆ‘é‡‡ç”¨äº†å…¼å®¹2ï¼Œ3çš„æ–¹æ³•ï¼Œ2æ˜¯ä¸ºäº†å’ŒACEå…¼å®¹ï¼Œ3æ˜¯ä¸ºäº†ä¿è¯å°±æ˜¯ä½ TMDå¤©ç¿»åœ°è¦†ï¼Œæˆ‘ä¹Ÿèƒ½åº”ä»˜,
 
-    //´úÂëÓĞµã¹Ö£¬²¿·ÖÄ¿µÄÊÇ¼Ó¿ìËÙ¶È,±ÜÃâÃ¿¸öµ÷ÓÃ¶¼Òª¼ì²é£¬
+    //ä»£ç æœ‰ç‚¹æ€ªï¼Œéƒ¨åˆ†ç›®çš„æ˜¯åŠ å¿«é€Ÿåº¦,é¿å…æ¯ä¸ªè°ƒç”¨éƒ½è¦æ£€æŸ¥ï¼Œ
 
-    //READºÍCONNECTÊÂ¼ş¶¼µ÷ÓÃhandle_input
+    //READå’ŒCONNECTäº‹ä»¶éƒ½è°ƒç”¨handle_input
     if (ep_event->events &  EPOLLIN )
     {
         event_in_happen = true;
         hdl_ret = event_hdl->handle_input();
 
-        //·µ»Ø-1±íÊ¾ handle_xxxxxÏ£Íûµ÷ÓÃhandle_closeÍË³ö
+        //è¿”å›-1è¡¨ç¤º handle_xxxxxå¸Œæœ›è°ƒç”¨handle_closeé€€å‡º
         if (hdl_ret == -1)
         {
             event_hdl->handle_close();
         }
     }
 
-    //READºÍACCEPTÊÂ¼ş¶¼µ÷ÓÃhandle_input
+    //READå’ŒACCEPTäº‹ä»¶éƒ½è°ƒç”¨handle_input
     if (ep_event->events & EPOLLOUT )
     {
-        //Èç¹ûĞ´ÊÂ¼ş´¥·¢ÁË£¬ÄÇÃ´ÀïÃæ¿ÉÄÜµ÷ÓÃhandle_close,ÔÙ²éÑ¯Ò»´Î£¬double check.
+        //å¦‚æœå†™äº‹ä»¶è§¦å‘äº†ï¼Œé‚£ä¹ˆé‡Œé¢å¯èƒ½è°ƒç”¨handle_close,å†æŸ¥è¯¢ä¸€æ¬¡ï¼Œdouble check.
         if (event_in_happen)
         {
             ret =  find_event_handler(ep_event->data.fd, event_hdl);
 
-            //µ½Õâ¸öµØ·½£¬¿ÉÄÜÊÇ´úÂëÓĞÎÊÌâ£¬Ò²¿ÉÄÜ²»ÊÇ£¬ÒòÎªÒ»¸öÊÂ¼ş´¦Àíºó£¬¿ÉÄÜ¾Í±»¹Ø±ÕÁË£¿
+            //åˆ°è¿™ä¸ªåœ°æ–¹ï¼Œå¯èƒ½æ˜¯ä»£ç æœ‰é—®é¢˜ï¼Œä¹Ÿå¯èƒ½ä¸æ˜¯ï¼Œå› ä¸ºä¸€ä¸ªäº‹ä»¶å¤„ç†åï¼Œå¯èƒ½å°±è¢«å…³é—­äº†ï¼Ÿ
             if (0 != ret)
             {
                 return;
@@ -333,7 +333,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
         event_out_happen = true;
         hdl_ret = event_hdl->handle_output();
 
-        //·µ»Ø-1±íÊ¾ handle_xxxxxÏ£Íûµ÷ÓÃhandle_closeÍË³ö
+        //è¿”å›-1è¡¨ç¤º handle_xxxxxå¸Œæœ›è°ƒç”¨handle_closeé€€å‡º
         if (hdl_ret == -1)
         {
             event_hdl->handle_close();
@@ -341,15 +341,15 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
 
     }
 
-    //Òì³£ÊÂ¼ş£¬ÆäÊµÎÒÒ²²»ÖªµÀ£¬Ê²Ã´ËãÒì³£
+    //å¼‚å¸¸äº‹ä»¶ï¼Œå…¶å®æˆ‘ä¹Ÿä¸çŸ¥é“ï¼Œä»€ä¹ˆç®—å¼‚å¸¸
     if (ep_event->events & EPOLLERR )
     {
-        //Èç¹û¶ÁÈ¡»òÕßĞ´ÊÂ¼ş´¥·¢ÁË£¬ÄÇÃ´ÀïÃæ¿ÉÄÜµ÷ÓÃhandle_close,ÔÙ²éÑ¯Ò»´Î£¬double check.
+        //å¦‚æœè¯»å–æˆ–è€…å†™äº‹ä»¶è§¦å‘äº†ï¼Œé‚£ä¹ˆé‡Œé¢å¯èƒ½è°ƒç”¨handle_close,å†æŸ¥è¯¢ä¸€æ¬¡ï¼Œdouble check.
         if (event_out_happen || event_in_happen)
         {
             ret =  find_event_handler(ep_event->data.fd, event_hdl);
 
-            //µ½Õâ¸öµØ·½£¬¿ÉÄÜÊÇ´úÂëÓĞÎÊÌâ£¬Ò²¿ÉÄÜ²»ÊÇ£¬ÒòÎªÒ»¸öÊÂ¼ş´¦Àíºó£¬¿ÉÄÜ¾Í±»¹Ø±ÕÁË£¿
+            //åˆ°è¿™ä¸ªåœ°æ–¹ï¼Œå¯èƒ½æ˜¯ä»£ç æœ‰é—®é¢˜ï¼Œä¹Ÿå¯èƒ½ä¸æ˜¯ï¼Œå› ä¸ºä¸€ä¸ªäº‹ä»¶å¤„ç†åï¼Œå¯èƒ½å°±è¢«å…³é—­äº†ï¼Ÿ
             if (0 != ret)
             {
                 return;
@@ -358,7 +358,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
 
         hdl_ret = event_hdl->handle_exception();
 
-        //·µ»Ø-1±íÊ¾ handle_xxxxxÏ£Íûµ÷ÓÃhandle_closeÍË³ö
+        //è¿”å›-1è¡¨ç¤º handle_xxxxxå¸Œæœ›è°ƒç”¨handle_closeé€€å‡º
         if (hdl_ret == -1)
         {
             event_hdl->handle_close();

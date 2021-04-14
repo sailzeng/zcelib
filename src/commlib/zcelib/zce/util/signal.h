@@ -1,6 +1,6 @@
 /*
-Notepad++µÄ×÷ÕßÔÚNotepad++ 6.7.4°æ±¾ÓÖ×öÁËÒ»¼şºÜµğµÄÊÂÇé£º
-Notepad++×Ô¼º´ò³öÕâÑùÒ»¶Î»°¡£
+Notepad++çš„ä½œè€…åœ¨Notepad++ 6.7.4ç‰ˆæœ¬åˆåšäº†ä¸€ä»¶å¾ˆå¼çš„äº‹æƒ…ï¼š
+Notepad++è‡ªå·±æ‰“å‡ºè¿™æ ·ä¸€æ®µè¯ã€‚
 
 Freedom of expression is like the air we breathe, we don't feel it, until people take it away from us.
 

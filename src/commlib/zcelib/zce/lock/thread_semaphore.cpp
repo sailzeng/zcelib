@@ -6,7 +6,7 @@
 #include "zce/logger/logging.h"
 #include "zce/lock/thread_semaphore.h"
 
-//¹¹Ôìº¯Êı,Ä¬ÈÏ´´½¨ÄäÃûĞÅºÅµÆ£¬Ïß³ÌÏÂÒ»°ãÓÃÄäÃûĞÅºÅµÆ¾Í×ã¹»ÁË,
+//æ„é€ å‡½æ•°,é»˜è®¤åˆ›å»ºåŒ¿åä¿¡å·ç¯ï¼Œçº¿ç¨‹ä¸‹ä¸€èˆ¬ç”¨åŒ¿åä¿¡å·ç¯å°±è¶³å¤Ÿäº†,
 ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value):
     lock_(NULL)
 {
@@ -23,7 +23,7 @@ ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value):
 
 ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
 {
-    //Ã»ÓĞ³õÊ¼»¯¹ı
+    //æ²¡æœ‰åˆå§‹åŒ–è¿‡
     if (!lock_)
     {
         return;
@@ -31,15 +31,15 @@ ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
 
     zce::sem_destroy(lock_);
 
-    //sem_destroy²»»áÊÍ·Å£¬
+    //sem_destroyä¸ä¼šé‡Šæ”¾ï¼Œ
     delete lock_;
     lock_ = NULL;
 }
 
-//Ëø¶¨
+//é”å®š
 void ZCE_Thread_Semaphore::lock()
 {
-    //ĞÅºÅµÆËø¶¨
+    //ä¿¡å·ç¯é”å®š
     int ret =  zce::sem_wait (lock_);
 
     if (0 != ret)
@@ -49,10 +49,10 @@ void ZCE_Thread_Semaphore::lock()
     }
 }
 
-//³¢ÊÔËø¶¨
+//å°è¯•é”å®š
 bool ZCE_Thread_Semaphore::try_lock()
 {
-    //ĞÅºÅµÆËø¶¨
+    //ä¿¡å·ç¯é”å®š
     int ret =  zce::sem_trywait (lock_);
 
     if (0 != ret)
@@ -63,7 +63,7 @@ bool ZCE_Thread_Semaphore::try_lock()
     return true;
 }
 
-//½âËø,
+//è§£é”,
 void ZCE_Thread_Semaphore::unlock()
 {
     int ret = zce::sem_post (lock_);
@@ -75,7 +75,7 @@ void ZCE_Thread_Semaphore::unlock()
     }
 }
 
-//¾ø¶ÔÊ±¼ä³¬Ê±µÄµÄËø¶¨£¬³¬Ê±ºó½âËø
+//ç»å¯¹æ—¶é—´è¶…æ—¶çš„çš„é”å®šï¼Œè¶…æ—¶åè§£é”
 bool ZCE_Thread_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
 {
     int ret = 0;
@@ -94,7 +94,7 @@ bool ZCE_Thread_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
     return true;
 }
 
-//Ïà¶ÔÊ±¼äµÄ³¬Ê±Ëø¶¨£¬³¬Ê±ºó£¬½âËø
+//ç›¸å¯¹æ—¶é—´çš„è¶…æ—¶é”å®šï¼Œè¶…æ—¶åï¼Œè§£é”
 bool ZCE_Thread_Semaphore::duration_lock(const ZCE_Time_Value &relative_time)
 {
     timeval abs_time = zce::gettimeofday();

@@ -3,13 +3,13 @@
 * @filename   zce/os_adapt/time.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
-* @date       2011Äê5ÔÂ1ÈÕ
-* @brief      Ê±¼ä²Ù×÷µÄÊÊÅäÆ÷²ã£¬Ö÷Òª»¹ÊÇÏòLINUXÏÂ¿¿Â£
+* @date       2011å¹´5æœˆ1æ—¥
+* @brief      æ—¶é—´æ“ä½œçš„é€‚é…å™¨å±‚ï¼Œä¸»è¦è¿˜æ˜¯å‘LINUXä¸‹é æ‹¢
 *
 * @details
 *
-* @note       timevalÔÚÕûÌ×¿âÄÚ²¿Ê¹ÓÃ½Ï¶à£¬±¾À´´òËã³¹µ×ÓÃËû±êÊ¶ÄÚ²¿µÄÊ±¼ä£¬µ«ºóÀ´»¹ÊÇÕûÀíÁË×Ô¼ºµÄTime_ValueÀà£¬
-*             ¿ÉÄÜÊÇÒòÎª×îºóĞ´´úÂëÊ±£¬timevalµÄºÜ¶à²Ù×÷²»·â×°Ğ´ÆğÀ´»¹ÊÇ·±Ëö¡£
+* @note       timevalåœ¨æ•´å¥—åº“å†…éƒ¨ä½¿ç”¨è¾ƒå¤šï¼Œæœ¬æ¥æ‰“ç®—å½»åº•ç”¨ä»–æ ‡è¯†å†…éƒ¨çš„æ—¶é—´ï¼Œä½†åæ¥è¿˜æ˜¯æ•´ç†äº†è‡ªå·±çš„Time_Valueç±»ï¼Œ
+*             å¯èƒ½æ˜¯å› ä¸ºæœ€åå†™ä»£ç æ—¶ï¼Œtimevalçš„å¾ˆå¤šæ“ä½œä¸å°è£…å†™èµ·æ¥è¿˜æ˜¯ç¹çã€‚
 */
 
 #ifndef ZCE_LIB_OS_ADAPT_TIME_H_
@@ -24,9 +24,9 @@
 
 struct timezone
 {
-    //minutes west of Greenwich,×¢ÒâÕâ¶ùÊÇ·ÖÖÓ
+    //minutes west of Greenwich,æ³¨æ„è¿™å„¿æ˜¯åˆ†é’Ÿ
     int tz_minuteswest;
-    // type of DST correction £¬ÏÄÁîÊ±£¬Õâ¸öÖµÔÚLINUXÏÂ¶¼²»ÔÙÊ¹ÓÃÁË£¬¾ÍÈÄÁËÎÒ°É
+    // type of DST correction ï¼Œå¤ä»¤æ—¶ï¼Œè¿™ä¸ªå€¼åœ¨LINUXä¸‹éƒ½ä¸å†ä½¿ç”¨äº†ï¼Œå°±é¥¶äº†æˆ‘å§
     //int tz_dsttime;
 };
 
@@ -34,19 +34,19 @@ struct timezone
 
 namespace zce
 {
-//Ò»¸öĞ¡Ê±µÄÊ±¼ä
+//ä¸€ä¸ªå°æ—¶çš„æ—¶é—´
 static const time_t ONE_HOUR_SECONDS = 3600;
-//Ò»·ÖÖÓµÄÃëÊı
+//ä¸€åˆ†é’Ÿçš„ç§’æ•°
 static const time_t ONE_MINUTE_SECONDS = 60;
 //
 static const time_t ONE_QUARTER_SECONDS = 15 * 60;
 
 static const time_t FIVE_MINUTE_SECONDS = 5 * 60;
-//Ò»ÌìµÄÃëÊı86400
+//ä¸€å¤©çš„ç§’æ•°86400
 static const time_t ONE_DAY_SECONDS = 86400;
-//¸÷ÖÖ¹ØÓÚÊ±¼äµÄ¶¨Òå
+//å„ç§å…³äºæ—¶é—´çš„å®šä¹‰
 static const time_t ONE_WEEK_DAYS = 7;
-//Ò»ÖÜµÄÃëÊı
+//ä¸€å‘¨çš„ç§’æ•°
 static const time_t ONE_WEEK_SECONDS = 604800;
 
 
@@ -64,72 +64,72 @@ static const time_t TIMEZONE_SECONDS = _timezone;
 static const time_t TIMEZONE_SECONDS = timezone;
 #endif
 
-//ÔÚÊ±ÇøµÄ½Ç¶È£¬´Ó1970.1.1µ½ÏÖÔÚ¶àÉÙÃë
+//åœ¨æ—¶åŒºçš„è§’åº¦ï¼Œä»1970.1.1åˆ°ç°åœ¨å¤šå°‘ç§’
 #ifndef HOW_MANY_SECONDS_TZ
 #define HOW_MANY_SECONDS_TZ(x)  (x + zce::TIMEZONE_SECONDS)
 #endif
-//ÔÚÊ±ÇøµÄ½Ç¶È£¬È¡´Ó1970.1.1µ½ÏÖÔÚµÄÌìÊıÁ¿,ÓÃÓÚÅĞ¶ÏÊÇ²»ÊÇÍ¬Ò»ÌìÖ®ÀàµÄÎÊÌâ
+//åœ¨æ—¶åŒºçš„è§’åº¦ï¼Œå–ä»1970.1.1åˆ°ç°åœ¨çš„å¤©æ•°é‡,ç”¨äºåˆ¤æ–­æ˜¯ä¸æ˜¯åŒä¸€å¤©ä¹‹ç±»çš„é—®é¢˜
 #ifndef HOW_MANY_DAYS_TZ
 #define HOW_MANY_DAYS_TZ(x)  (HOW_MANY_SECONDS_TZ(x)/zce::ONE_DAY_SECONDS)
 #endif
-//ÔÚÊ±ÇøµÄ½Ç¶È£¬È¡´Ó1970.1.1µ½ÏÖÔÚµÄĞ¡Ê±ÊıÁ¿
+//åœ¨æ—¶åŒºçš„è§’åº¦ï¼Œå–ä»1970.1.1åˆ°ç°åœ¨çš„å°æ—¶æ•°é‡
 #ifndef HOW_MANY_HOURS_TZ
 #define HOW_MANY_HOURS_TZ(x) (HOW_MANY_SECONDS_TZ(x) / zce::ONE_HOUR_SECONDS)
 #endif
-//ÔÚÊ±ÇøµÄ½Ç¶È£¬È¡´Ó1970.1.1µ½ÏÖÔÚµÄĞ¡Ê±ÊıÁ¿ ÕâÀïÎªÉ¶Òª+3£¬ÒòÎª19700101ÊÇÀñ°İËÄ¡£»¹ÊÇ×¢ÊÍÇå³ş°É£¬´ÓÖÜÒ»µ½ÏÖÔÚ
+//åœ¨æ—¶åŒºçš„è§’åº¦ï¼Œå–ä»1970.1.1åˆ°ç°åœ¨çš„å°æ—¶æ•°é‡ è¿™é‡Œä¸ºå•¥è¦+3ï¼Œå› ä¸º19700101æ˜¯ç¤¼æ‹œå››ã€‚è¿˜æ˜¯æ³¨é‡Šæ¸…æ¥šå§ï¼Œä»å‘¨ä¸€åˆ°ç°åœ¨
 #ifndef HOW_MANY_WEEKS_TZ
 #define HOW_MANY_WEEKS_TZ(x)  (( HOW_MANY_SECONDS_TZ(x) + zce::ONE_DAY_SECONDS * 3)/zce::ONE_WEEK_SECONDS)
 #endif
 
 /*!
-* @brief      ·Ç±ê×¼º¯Êı£¬µÃµ½·şÎñÆ÷Æô¶¯µ½ÏÖÔÚµÄÊ±¼ä£¬Õâ¸öÊ±¼äÊÇ¸ö¾ø¶ÔµİÔöµÄÖµ£¬²»»áµ÷Õû
-* @detail     Ô­À´Ä£ÄâµÄº¯ÊıÊÇgethrtimeµÄĞĞÎª£¬µ«Æä·µ»Øµ¥Î»±È½Ï¹Ö£¬ÀàËÆµÃµ½CPU´ÓÆô¶¯ºóµ½ÏÖÔÚµÄTICKµÄÊ±¼ä£¬
-*             ºóÀ´pascal¸ÄÁË¸ÄÁËº¯ÊıÃû³Æ£¬Ò²ºÃĞĞÎª²»Ò»Ñù£¬²»ÈçÕâÑù
+* @brief      éæ ‡å‡†å‡½æ•°ï¼Œå¾—åˆ°æœåŠ¡å™¨å¯åŠ¨åˆ°ç°åœ¨çš„æ—¶é—´ï¼Œè¿™ä¸ªæ—¶é—´æ˜¯ä¸ªç»å¯¹é€’å¢çš„å€¼ï¼Œä¸ä¼šè°ƒæ•´
+* @detail     åŸæ¥æ¨¡æ‹Ÿçš„å‡½æ•°æ˜¯gethrtimeçš„è¡Œä¸ºï¼Œä½†å…¶è¿”å›å•ä½æ¯”è¾ƒæ€ªï¼Œç±»ä¼¼å¾—åˆ°CPUä»å¯åŠ¨ååˆ°ç°åœ¨çš„TICKçš„æ—¶é—´ï¼Œ
+*             åæ¥pascalæ”¹äº†æ”¹äº†å‡½æ•°åç§°ï¼Œä¹Ÿå¥½è¡Œä¸ºä¸ä¸€æ ·ï¼Œä¸å¦‚è¿™æ ·
 * @return     const timeval
-* @note       WINDOWS (²»Ö§³ÖWIN2008µÄ»·¾³ÉÏ£¬°üÀ¨±àÒë) Ê¹ÓÃµÄÊÇGetTickCount º¯Êı£¬Õâ¸öº¯Êı·µ»ØºÁÃëÕûÊı£¬
-*             49Ìì¾Í»áÒç³ö£¬ÄÚ²¿ÎªÁËÉÏÒ»´Îµ÷ÓÃµÄÊ±¼ä£¬ÓÃÁËstatic ±äÁ¿£¬ÓÖÎªÁË±£»¤static£¬¸øÁËËø£¬£¬ËùÒÔÄãÒª
-*             ±£Ö¤µ÷ÓÃÆµ¶ÈÎÊÌâ¡£Èç¹ûÁ½´Îµ÷ÓÃÖ®¼äµÄÊ±¼äÈç¹û¹ı³¤£¬³¬¹ı49Ìì£¬ÎÒÎŞ·¨±£Ö¤ÄãµÃµ½×¼È·µÄÖµ
-*             ÄãÀÏ²»Òª49Ìì¾ÍÖ»µ÷ÓÃÒ»´ÎÕâ¸öº¯ÊıÑ½£¬ÄÇÑùÎÒ±£Ö¤²»ÁËÄãµÄTICKµÄĞ§¹û£¬ÄãÀÏÖÁÉÙÃ¿Ììµ÷ÓÃÒ»´Î°É¡£
-*             LINUX ÏÂ£¬²âÊÔºó·¢ÏÖºÜ¶àÏµÍ³Ã»ÓĞgethrtimeº¯Êı£¬ÓÃPOSIXµÄĞÂº¯Êıclock_gettime´úÌæ¡£
+* @note       WINDOWS (ä¸æ”¯æŒWIN2008çš„ç¯å¢ƒä¸Šï¼ŒåŒ…æ‹¬ç¼–è¯‘) ä½¿ç”¨çš„æ˜¯GetTickCount å‡½æ•°ï¼Œè¿™ä¸ªå‡½æ•°è¿”å›æ¯«ç§’æ•´æ•°ï¼Œ
+*             49å¤©å°±ä¼šæº¢å‡ºï¼Œå†…éƒ¨ä¸ºäº†ä¸Šä¸€æ¬¡è°ƒç”¨çš„æ—¶é—´ï¼Œç”¨äº†static å˜é‡ï¼Œåˆä¸ºäº†ä¿æŠ¤staticï¼Œç»™äº†é”ï¼Œï¼Œæ‰€ä»¥ä½ è¦
+*             ä¿è¯è°ƒç”¨é¢‘åº¦é—®é¢˜ã€‚å¦‚æœä¸¤æ¬¡è°ƒç”¨ä¹‹é—´çš„æ—¶é—´å¦‚æœè¿‡é•¿ï¼Œè¶…è¿‡49å¤©ï¼Œæˆ‘æ— æ³•ä¿è¯ä½ å¾—åˆ°å‡†ç¡®çš„å€¼
+*             ä½ è€ä¸è¦49å¤©å°±åªè°ƒç”¨ä¸€æ¬¡è¿™ä¸ªå‡½æ•°å‘€ï¼Œé‚£æ ·æˆ‘ä¿è¯ä¸äº†ä½ çš„TICKçš„æ•ˆæœï¼Œä½ è€è‡³å°‘æ¯å¤©è°ƒç”¨ä¸€æ¬¡å§ã€‚
+*             LINUX ä¸‹ï¼Œæµ‹è¯•åå‘ç°å¾ˆå¤šç³»ç»Ÿæ²¡æœ‰gethrtimeå‡½æ•°ï¼Œç”¨POSIXçš„æ–°å‡½æ•°clock_gettimeä»£æ›¿ã€‚
 */
 const timeval  get_uptime(void);
 
 /*!
-* @brief      È¡µÃµ±Ç°µÄÊ±¼ä£¬£¨Ç½ÉÏÊ±ÖÓ£©
-* @return     inline int  ==0±íÊ¾³É¹¦
-* @param      [out]tv     µ±Ç°µÄÊ±¼ä
-* @param      [out]tz     Ê±Çø£¬ÄÚ²¿Ã»ÓĞ´¦ÀíÏÄÁîÊ±ÎÊÌâ£¬LINUXµÄÏµÍ³Ä¿Ç°Ò²²»Ö§³ÖÁË
-* @note       gettimeofday Õâ¸öº¯ÊıÔÚPOSIXÖĞÒÑ¾­±»Å×Æú£¬µ«ÊÇ´óÁ¿µÄLINUX»¹»á¼ÌĞøÊ¹ÓÃ£¬ËùÒÔÔİÊ±ÁôÏÂÀ´£¬
-*             POSIXÍÆ¼öµÄclock_gettimeºÃÏñ»¹Ã»ÓĞ¿´¼û¶àÉÙÈËÄØÓÃ
+* @brief      å–å¾—å½“å‰çš„æ—¶é—´ï¼Œï¼ˆå¢™ä¸Šæ—¶é’Ÿï¼‰
+* @return     inline int  ==0è¡¨ç¤ºæˆåŠŸ
+* @param      [out]tv     å½“å‰çš„æ—¶é—´
+* @param      [out]tz     æ—¶åŒºï¼Œå†…éƒ¨æ²¡æœ‰å¤„ç†å¤ä»¤æ—¶é—®é¢˜ï¼ŒLINUXçš„ç³»ç»Ÿç›®å‰ä¹Ÿä¸æ”¯æŒäº†
+* @note       gettimeofday è¿™ä¸ªå‡½æ•°åœ¨POSIXä¸­å·²ç»è¢«æŠ›å¼ƒï¼Œä½†æ˜¯å¤§é‡çš„LINUXè¿˜ä¼šç»§ç»­ä½¿ç”¨ï¼Œæ‰€ä»¥æš‚æ—¶ç•™ä¸‹æ¥ï¼Œ
+*             POSIXæ¨èçš„clock_gettimeå¥½åƒè¿˜æ²¡æœ‰çœ‹è§å¤šå°‘äººå‘¢ç”¨
 */
 inline int gettimeofday(struct timeval *tv, struct timezone *tz = NULL);
 
 
 /*!
-* @brief      È¡µÃµ±Ç°µÄÊ±ÖÓ
-* @return     inline const timeval ½«µ±Ç°Ê±¼ätimeval×÷Îª½á¹û·µ»Ø
+* @brief      å–å¾—å½“å‰çš„æ—¶é’Ÿ
+* @return     inline const timeval å°†å½“å‰æ—¶é—´timevalä½œä¸ºç»“æœè¿”å›
 */
 inline const timeval gettimeofday();
 
 
 /*!
-* @brief      È¡µÃµ±Ç°µÄÊ±Çø,·Ç±ê×¼º¯Êı£¬Îªµ±Ç°Ê±ÇøºÍGMTÏà²îµÄÃëÊı£¬
-* @return     int Îªµ±Ç°Ê±ÇøºÍGMTÏà²îµÄÃëÊı£¬
-* @note       ÎªÊ²Ã´ÊÇÃë£¬¶ø²»ÊÇµÚÒ»Ê±Çø£¬µÚ¶şÊ±Çø£¬Èç¹ûÄãÕæÁË½âÊ±Çø£¬
-*             Äã¾ÍÃ÷°×ÁË£¬Ê±Çø»¹ÓĞ+0630ÕâÑùµÄÊ±Çø
-*             ÀíÂÛÉÏtimezoneÒªÏÈµ÷ÓÃtzset²ÅÄÜ³õÊ¼»¯¡£
+* @brief      å–å¾—å½“å‰çš„æ—¶åŒº,éæ ‡å‡†å‡½æ•°ï¼Œä¸ºå½“å‰æ—¶åŒºå’ŒGMTç›¸å·®çš„ç§’æ•°ï¼Œ
+* @return     int ä¸ºå½“å‰æ—¶åŒºå’ŒGMTç›¸å·®çš„ç§’æ•°ï¼Œ
+* @note       ä¸ºä»€ä¹ˆæ˜¯ç§’ï¼Œè€Œä¸æ˜¯ç¬¬ä¸€æ—¶åŒºï¼Œç¬¬äºŒæ—¶åŒºï¼Œå¦‚æœä½ çœŸäº†è§£æ—¶åŒºï¼Œ
+*             ä½ å°±æ˜ç™½äº†ï¼Œæ—¶åŒºè¿˜æœ‰+0630è¿™æ ·çš„æ—¶åŒº
+*             ç†è®ºä¸Štimezoneè¦å…ˆè°ƒç”¨tzsetæ‰èƒ½åˆå§‹åŒ–ã€‚
 */
 int gettimezone();
 
 
 /*!
-* @brief      ½«²ÎÊıtimevalµÄÖµ×÷ÎªµÄÊ±¼ä¸ñ¸ñÊ½»¯ºóÊä³ö´òÓ¡³öÀ´
-*             Ê±¼ä´Á´òÓ¡º¯Êı,×Ö·û´®µÄÊä³ö¸ñÊ½ÊÇISO-8601 format. Àı×Ó 2010-09-10 10:03:18.100190
-*             Êä³öµÄÊ±¼ä´Á¸ñÊ½Îª2010-09-10 10:03:18.100190       ×¢ÒâÄ©Î²»¹ÓĞÒ»¸ö\0
+* @brief      å°†å‚æ•°timevalçš„å€¼ä½œä¸ºçš„æ—¶é—´æ ¼æ ¼å¼åŒ–åè¾“å‡ºæ‰“å°å‡ºæ¥
+*             æ—¶é—´æˆ³æ‰“å°å‡½æ•°,å­—ç¬¦ä¸²çš„è¾“å‡ºæ ¼å¼æ˜¯ISO-8601 format. ä¾‹å­ 2010-09-10 10:03:18.100190
+*             è¾“å‡ºçš„æ—¶é—´æˆ³æ ¼å¼ä¸º2010-09-10 10:03:18.100190       æ³¨æ„æœ«å°¾è¿˜æœ‰ä¸€ä¸ª\0
 *                           123456789012345678901234567890
-* @return     const char*         µÃµ½µÄÊ±¼ä×Ö·û´®
-* @param[out] str_date_time   ×Ö·û´®
-* @param[in]  datetime_strlen ×Ö·û´®³¤¶È
+* @return     const char*         å¾—åˆ°çš„æ—¶é—´å­—ç¬¦ä¸²
+* @param[out] str_date_time   å­—ç¬¦ä¸²
+* @param[in]  datetime_strlen å­—ç¬¦ä¸²é•¿åº¦
 * @note
 */
 const char *timestamp(const timeval *timeval,
@@ -137,7 +137,7 @@ const char *timestamp(const timeval *timeval,
                       size_t datetime_strlen);
 
 /*!
-* @brief      µÃµ½µ±Ç°µÄÏµÍ³Ê±¼ä×Ö·û´®Êä³ö
+* @brief      å¾—åˆ°å½“å‰çš„ç³»ç»Ÿæ—¶é—´å­—ç¬¦ä¸²è¾“å‡º
 * @return     const char*
 * @param      str_date_time
 * @param      datetime_strlen
@@ -147,86 +147,86 @@ const char *timestamp(char *str_date_time,
                       size_t datetime_strlen);
 
 
-///Ê±¼ä¸ñÊ½»¯Êä³öµÄ¸ñÊ½ÀàĞÍ
+///æ—¶é—´æ ¼å¼åŒ–è¾“å‡ºçš„æ ¼å¼ç±»å‹
 enum class TIME_STR_FORMAT
 {
 
-    ///ÓÃ½ô´ÕµÄ¸ñÊ½½øĞĞÊä³ö 20100910
+    ///ç”¨ç´§å‡‘çš„æ ¼å¼è¿›è¡Œè¾“å‡º 20100910
     COMPACT_DAY  = 1,
-    ///ÓÃ½ô´ÕµÄ¸ñÊ½½øĞĞÊä³ö 20100910100318
+    ///ç”¨ç´§å‡‘çš„æ ¼å¼è¿›è¡Œè¾“å‡º 20100910100318
     COMPACT_SEC  = 2,
 
-    ///ÓÃISOµÄ¸ñÊ½½øĞĞÊ±¼äÊä³ö£¬¾«¶Èµ½Ìì 2010-09-10
+    ///ç”¨ISOçš„æ ¼å¼è¿›è¡Œæ—¶é—´è¾“å‡ºï¼Œç²¾åº¦åˆ°å¤© 2010-09-10
     ISO_DAY      = 5,
-    ///ÓÃISOµÄ¸ñÊ½½øĞĞÊ±¼äÊä³ö£¬¾«¶Èµ½Ãë£¬2010-09-10 10:03:18
+    ///ç”¨ISOçš„æ ¼å¼è¿›è¡Œæ—¶é—´è¾“å‡ºï¼Œç²¾åº¦åˆ°ç§’ï¼Œ2010-09-10 10:03:18
     ISO_SEC      = 6,
-    ///ÓÃISOµÄ¸ñÊ½½øĞĞÊ±¼äÊä³ö£¬¾«¶Èµ½Î¢Ãë£¬2010-09-10 10:03:18.100190
+    ///ç”¨ISOçš„æ ¼å¼è¿›è¡Œæ—¶é—´è¾“å‡ºï¼Œç²¾åº¦åˆ°å¾®ç§’ï¼Œ2010-09-10 10:03:18.100190
     ISO_USEC     = 7,
 
-    ///ÓÃÃÀ¹úµÄÊ±¼ä¸ñÊ½½øĞĞÊä³ö Fri Aug 24 2002 07:43:05
+    ///ç”¨ç¾å›½çš„æ—¶é—´æ ¼å¼è¿›è¡Œè¾“å‡º Fri Aug 24 2002 07:43:05
     US_SEC       = 10,
-    ///ÓÃÃÀ¹úµÄÊ±¼ä¸ñÊ½½øĞĞÊä³ö Fri Aug 24 2002 07:43:05.100190
+    ///ç”¨ç¾å›½çš„æ—¶é—´æ ¼å¼è¿›è¡Œè¾“å‡º Fri Aug 24 2002 07:43:05.100190
     US_USEC      = 11,
 
 
-    ///ÓÃHTTPÍ·²¿GMTµÄÊ±¼ä¸ñÊ½½øĞĞÊä³ö, Thu, 26 Nov 2009 13:50:19 GMT
+    ///ç”¨HTTPå¤´éƒ¨GMTçš„æ—¶é—´æ ¼å¼è¿›è¡Œè¾“å‡º, Thu, 26 Nov 2009 13:50:19 GMT
     HTTP_GMT     = 1001,
-    ///ÓÃEMAILÍ·²¿DATEµÄÊ±¼ä¸ñÊ½½øĞĞÊä³ö, Fri, 08 Nov 2002 09:42:22 +0800
+    ///ç”¨EMAILå¤´éƒ¨DATEçš„æ—¶é—´æ ¼å¼è¿›è¡Œè¾“å‡º, Fri, 08 Nov 2002 09:42:22 +0800
     EMAIL_DATE   = 1002,
 };
 
 /*
-20100910100318                            ½ô´Õ
+20100910100318                            ç´§å‡‘
 2010-09-10 10:03:18.100190                ISO
 Fri Aug 24 2002 07:43:05.100190           US
-Thu, 26 Nov 2009 13:50:19 GMT             GMT(GMTÒ»°ã²»Êä³öºÁÃë£¬ÔÚHTTPÍ·ÖĞÓ¦ÓÃ)
+Thu, 26 Nov 2009 13:50:19 GMT             GMT(GMTä¸€èˆ¬ä¸è¾“å‡ºæ¯«ç§’ï¼Œåœ¨HTTPå¤´ä¸­åº”ç”¨)
 Fri, 08 Nov 2002 09:42:22 +0800
 1234567890123456789012345678901234567890
 */
 
-///×¢ÒâÏÂÃæµÄ³¤¶È²»°üÀ¨°üÀ¨'\0'£¬ÉêÇëµÄ¿Õ¼äÒª + 1£¬×î¼òµ¥µÄ¼Ç·¨¾ÍÊÇ±£Ö¤ÓĞ32×Ö½ÚµÄ¿Õ¼ä
-///£¨³ıÁËGMT¾«È·µ½us£©£¬²»²ÉÓÃ+1µÄ³¤¶È¼ÇÂ¼£¬ÕâÑùĞ´µÄÄ¿µÄÊÇ·½±ãÄ³Ğ©¼ÆËã£¬
+///æ³¨æ„ä¸‹é¢çš„é•¿åº¦ä¸åŒ…æ‹¬åŒ…æ‹¬'\0'ï¼Œç”³è¯·çš„ç©ºé—´è¦ + 1ï¼Œæœ€ç®€å•çš„è®°æ³•å°±æ˜¯ä¿è¯æœ‰32å­—èŠ‚çš„ç©ºé—´
+///ï¼ˆé™¤äº†GMTç²¾ç¡®åˆ°usï¼‰ï¼Œä¸é‡‡ç”¨+1çš„é•¿åº¦è®°å½•ï¼Œè¿™æ ·å†™çš„ç›®çš„æ˜¯æ–¹ä¾¿æŸäº›è®¡ç®—ï¼Œ
 
-///COMPACT ½ô´ÕÊ±¼ä¸ñÊ½×Ö·û´®µÄ³¤¶È£¬
-///Êä³ö×Ö·û´®¾«¶Èµ½ÈÕÆÚµÄ×Ö·û´®³¤¶È
+///COMPACT ç´§å‡‘æ—¶é—´æ ¼å¼å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œ
+///è¾“å‡ºå­—ç¬¦ä¸²ç²¾åº¦åˆ°æ—¥æœŸçš„å­—ç¬¦ä¸²é•¿åº¦
 static const size_t TIMESTR_COMPACT_DAY_LEN = 8;
-///Êä³ö×Ö·û´®¾«¶Èµ½ÃëµÄ×Ö·û´®³¤¶È
+///è¾“å‡ºå­—ç¬¦ä¸²ç²¾åº¦åˆ°ç§’çš„å­—ç¬¦ä¸²é•¿åº¦
 static const size_t TIMESTR_COMPACT_SEC_LEN = 14;
 
-///ISO Ê±¼ä¸ñÊ½»¯×Ö·û´®µÄ³¤¶È£¬
-///Êä³ö×Ö·û´®¾«¶Èµ½ÈÕÆÚµÄ×Ö·û´®³¤¶È
+///ISO æ—¶é—´æ ¼å¼åŒ–å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œ
+///è¾“å‡ºå­—ç¬¦ä¸²ç²¾åº¦åˆ°æ—¥æœŸçš„å­—ç¬¦ä¸²é•¿åº¦
 static const size_t TIMESTR_ISO_DAY_LEN = 10;
-///Êä³ö×Ö·û´®¾«¶Èµ½ÃëµÄ×Ö·û´®³¤¶È
+///è¾“å‡ºå­—ç¬¦ä¸²ç²¾åº¦åˆ°ç§’çš„å­—ç¬¦ä¸²é•¿åº¦
 static const size_t TIMESTR_ISO_SEC_LEN = 19;
-///[³£ÓÃ]¾«¶Èµ½Î¢ÃëµÄ
+///[å¸¸ç”¨]ç²¾åº¦åˆ°å¾®ç§’çš„
 static const size_t TIMESTR_ISO_USEC_LEN = 26;
 
-///US Ã×¹úÊ±¼ä¸ñÊ½×Ö·û´®µÄ³¤¶È£¬¾«¶Èµ½Ãë
+///US ç±³å›½æ—¶é—´æ ¼å¼å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œç²¾åº¦åˆ°ç§’
 static const size_t TIMESTR_US_SEC_LEN = 24;
-///US Ã×¹úÊ±¼ä¸ñÊ½×Ö·û´®µÄ³¤¶È£¬¾«¶Èµ½Î¢Ãë
+///US ç±³å›½æ—¶é—´æ ¼å¼å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œç²¾åº¦åˆ°å¾®ç§’
 static const size_t TIMESTR_US_USEC_LEN = 31;
 
-///GMT Ê±¼ä¸ñÊ½×Ö·û´®µÄ³¤¶È£¬¾«¶Èµ½Ãë
+///GMT æ—¶é—´æ ¼å¼å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œç²¾åº¦åˆ°ç§’
 static const size_t TIMESTR_HTTP_GMT_LEN = 29;
 
-///GMT Ê±¼ä¸ñÊ½×Ö·û´®µÄ³¤¶È£¬¾«¶Èµ½Ãë
+///GMT æ—¶é—´æ ¼å¼å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œç²¾åº¦åˆ°ç§’
 static const size_t TIMESTR_EMAIL_DATE_LEN = 31;
 
-///×î´ó¸ñÊ½»¯³¤¶È
+///æœ€å¤§æ ¼å¼åŒ–é•¿åº¦
 static const size_t MAX_TIMEVAL_STRING_LEN = TIMESTR_EMAIL_DATE_LEN;
 
 
 
 /*!
-* @brief      ½«²ÎÊıtimevalµÄÖµ×÷ÎªµÄÊ±¼ä¸ñ¸ñÊ½»¯ºóÊä³ö´òÓ¡³öÀ´£¬¿ÉÒÔ¿ØÖÆ¸÷ÖÖ¸ñÊ½Êä³ö
-* @return     const char*   ·µ»ØµÄ×Ö·û´®£¬ÆäÊµ¾ÍÊÇstr_date_time
-* @param[in]  timeval       ´òÓ¡µÄÊ±¼ätimeval
-* @param[out] str_date_time µÃµ½µÄÊ±¼ä×Ö·û´®
-* @param[in]  str_len       ×Ö·û´®µÄ³¤¶È£¬×î¼òµ¥µÄ¼Ç·¨¾ÍÊÇ±£Ö¤ÓĞ32×Ö½ÚµÄ¿Õ¼ä
-* @param[in]  uct_time      ½«timevalÊÓÎªUCT/GMTÊ±¼ä»¹ÊÇ±¾µØÊ±¼äLocal Time£¬true
-*                           ±íÊ¾ÊÓÎªUCT/GMTÊ±¼ä£¬false±íÊ¾ÊÓÎª±¾µØÊ±¼ä
-* @param      fmt           ²ÎÊıÇå²Î¿¼@ref TIME_STR_FORMAT £¬
-* @note       Ê±¼ä´Á´òÓ¡¸ñÊ½ËµÃ÷,TIME_STR_FORMAT
+* @brief      å°†å‚æ•°timevalçš„å€¼ä½œä¸ºçš„æ—¶é—´æ ¼æ ¼å¼åŒ–åè¾“å‡ºæ‰“å°å‡ºæ¥ï¼Œå¯ä»¥æ§åˆ¶å„ç§æ ¼å¼è¾“å‡º
+* @return     const char*   è¿”å›çš„å­—ç¬¦ä¸²ï¼Œå…¶å®å°±æ˜¯str_date_time
+* @param[in]  timeval       æ‰“å°çš„æ—¶é—´timeval
+* @param[out] str_date_time å¾—åˆ°çš„æ—¶é—´å­—ç¬¦ä¸²
+* @param[in]  str_len       å­—ç¬¦ä¸²çš„é•¿åº¦ï¼Œæœ€ç®€å•çš„è®°æ³•å°±æ˜¯ä¿è¯æœ‰32å­—èŠ‚çš„ç©ºé—´
+* @param[in]  uct_time      å°†timevalè§†ä¸ºUCT/GMTæ—¶é—´è¿˜æ˜¯æœ¬åœ°æ—¶é—´Local Timeï¼Œtrue
+*                           è¡¨ç¤ºè§†ä¸ºUCT/GMTæ—¶é—´ï¼Œfalseè¡¨ç¤ºè§†ä¸ºæœ¬åœ°æ—¶é—´
+* @param      fmt           å‚æ•°æ¸…å‚è€ƒ@ref TIME_STR_FORMAT ï¼Œ
+* @note       æ—¶é—´æˆ³æ‰“å°æ ¼å¼è¯´æ˜,TIME_STR_FORMAT
 */
 const char *timeval_to_str(const timeval *timeval,
                            char *str_date_time,
@@ -237,12 +237,12 @@ const char *timeval_to_str(const timeval *timeval,
                           );
 
 /*!
-* @brief      ´Ó×Ö·û´®ÖĞ¸ßËÙµÄµÃµ½tmµÄ½á¹¹µÄ½á¹û
-* @param[in]  strtm   ×Ö·û´®£¬×Ö·û´®µÄÕıÈ·ĞÔÄã×Ô¼ºÒª±£Ö¤
-* @param[in]  fmt     ×Ö·û´®µÄ¸ñÊ½£¬²Î¿¼Ã¶¾ÙÖµ @ref TIME_STR_FORMAT
-* @param[out] ptr_tm  ·µ»ØµÄtm½á¹¹µÄÖ¸Õë£¬×¢Òâ£¬Èç¹û×Ö·û´®´íÎó£¬¿ÉÄÜ»áµ¼ÖÂtm´íÎóà¸
-* @param[out] usec    ·µ»ØµÄµÄÎ¢ÃëµÄÊ±¼ä£¬Ä¬ÈÏÎªNULL£¬±íÊ¾²»ĞèÒª·µ»Ø£¬
-* @param[out] tz      ·µ»ØµÄµÄÊ±Çø,Ä¬ÈÏÎªNULL£¬±íÊ¾²»ĞèÒª·µ»Ø£¬ºÜ¶àÖÖ¸ñÊ½ÀïÃæÃ»ÓĞÊ±ÇøĞÅÏ¢
+* @brief      ä»å­—ç¬¦ä¸²ä¸­é«˜é€Ÿçš„å¾—åˆ°tmçš„ç»“æ„çš„ç»“æœ
+* @param[in]  strtm   å­—ç¬¦ä¸²ï¼Œå­—ç¬¦ä¸²çš„æ­£ç¡®æ€§ä½ è‡ªå·±è¦ä¿è¯
+* @param[in]  fmt     å­—ç¬¦ä¸²çš„æ ¼å¼ï¼Œå‚è€ƒæšä¸¾å€¼ @ref TIME_STR_FORMAT
+* @param[out] ptr_tm  è¿”å›çš„tmç»“æ„çš„æŒ‡é’ˆï¼Œæ³¨æ„ï¼Œå¦‚æœå­—ç¬¦ä¸²é”™è¯¯ï¼Œå¯èƒ½ä¼šå¯¼è‡´tmé”™è¯¯å–”
+* @param[out] usec    è¿”å›çš„çš„å¾®ç§’çš„æ—¶é—´ï¼Œé»˜è®¤ä¸ºNULLï¼Œè¡¨ç¤ºä¸éœ€è¦è¿”å›ï¼Œ
+* @param[out] tz      è¿”å›çš„çš„æ—¶åŒº,é»˜è®¤ä¸ºNULLï¼Œè¡¨ç¤ºä¸éœ€è¦è¿”å›ï¼Œå¾ˆå¤šç§æ ¼å¼é‡Œé¢æ²¡æœ‰æ—¶åŒºä¿¡æ¯
 */
 void str_to_tm(const char *strtm,
                TIME_STR_FORMAT fmt,
@@ -252,14 +252,14 @@ void str_to_tm(const char *strtm,
 
 
 /*!
-* @brief      ´Ó×Ö·û´®×ª»»µÃµ½±¾µØÊ±¼ätimevalº¯Êı
-* @return     int == 0 ±íÊ¾³É¹¦
-* @param[in]  strtm    ×Ö·û´®²ÎÊı
-* @param[in]  uct_time ½«strtm×Ö·û´®ÊÓÎªUCT/GMTÊ±¼ä»¹ÊÇ±¾µØÊ±¼äLocal Time
-*                      true±íÊ¾ÊÓÎªUCT/GMTÊ±¼ä£¬false±íÊ¾ÊÓÎª±¾µØÊ±¼ä
-* @param[in]  fmt      ×Ö·û´®µÄ¸ñÊ½£¬²Î¿¼Ã¶¾ÙÖµ @ref TIME_STR_FORMAT,
+* @brief      ä»å­—ç¬¦ä¸²è½¬æ¢å¾—åˆ°æœ¬åœ°æ—¶é—´timevalå‡½æ•°
+* @return     int == 0 è¡¨ç¤ºæˆåŠŸ
+* @param[in]  strtm    å­—ç¬¦ä¸²å‚æ•°
+* @param[in]  uct_time å°†strtmå­—ç¬¦ä¸²è§†ä¸ºUCT/GMTæ—¶é—´è¿˜æ˜¯æœ¬åœ°æ—¶é—´Local Time
+*                      trueè¡¨ç¤ºè§†ä¸ºUCT/GMTæ—¶é—´ï¼Œfalseè¡¨ç¤ºè§†ä¸ºæœ¬åœ°æ—¶é—´
+* @param[in]  fmt      å­—ç¬¦ä¸²çš„æ ¼å¼ï¼Œå‚è€ƒæšä¸¾å€¼ @ref TIME_STR_FORMAT,
 
-* @param[out] tval     ·µ»ØµÄÊ±¼ä,
+* @param[out] tval     è¿”å›çš„æ—¶é—´,
 */
 int str_to_timeval(const char *strtm,
                    TIME_STR_FORMAT fmt,
@@ -267,107 +267,107 @@ int str_to_timeval(const char *strtm,
                    timeval *tval);
 
 
-///±¾µØÊ±¼ä×Ö·û´®×ª»»Îªtime_t
+///æœ¬åœ°æ—¶é—´å­—ç¬¦ä¸²è½¬æ¢ä¸ºtime_t
 int localtimestr_to_time_t(const char *localtime_str,
                            TIME_STR_FORMAT fmt,
                            time_t *time_t_val);
 
 /*!
-* @brief      ¼ÆËãtimevalÄÚ²¿×Ü¼ÆÊÇ¶àÉÙºÁÃë
+* @brief      è®¡ç®—timevalå†…éƒ¨æ€»è®¡æ˜¯å¤šå°‘æ¯«ç§’
 * @return     uint64_t
-* @param      tv  Òª¼ÆËãµÄtimeval
+* @param      tv  è¦è®¡ç®—çš„timeval
 */
 uint64_t total_milliseconds(const timeval &tv);
 
 /*!
-* @brief      ¼ÆËãtimevalÄÚ²¿×Ü¼ÆÊÇ¶àÉÙÎ¢Ãë
+* @brief      è®¡ç®—timevalå†…éƒ¨æ€»è®¡æ˜¯å¤šå°‘å¾®ç§’
 * @return     uint64_t
-* @param      tv  Òª¼ÆËãµÄtimeval
+* @param      tv  è¦è®¡ç®—çš„timeval
 */
 uint64_t total_microseconds(const timeval &tv);
 
-//À©Õ¹timevalµÄÒ»Ğ©º¯Êı£¬Ã»ÓĞÖ®¼äÖØÔØ²Ù×÷·ûºÅµÄÔ­ÒòÊÇ±ÜÃâÎÛÈ¾Õû¸ö¿Õ¼ä
+//æ‰©å±•timevalçš„ä¸€äº›å‡½æ•°ï¼Œæ²¡æœ‰ä¹‹é—´é‡è½½æ“ä½œç¬¦å·çš„åŸå› æ˜¯é¿å…æ±¡æŸ“æ•´ä¸ªç©ºé—´
 
 /*!
-* @brief      ·µ»ØÒ»¸ö0,0µÄµÄtimevalµÄ½á¹¹£¬
-* @return     const timeval Òª¼ÆËãµÄtimeval
+* @brief      è¿”å›ä¸€ä¸ª0,0çš„çš„timevalçš„ç»“æ„ï¼Œ
+* @return     const timeval è¦è®¡ç®—çš„timeval
 */
 const timeval timeval_zero();
 
 /*!
-* @brief      ½«tvĞŞÕıÎª0
-* @param      tv  Çå0µÄtimeval
+* @brief      å°†tvä¿®æ­£ä¸º0
+* @param      tv  æ¸…0çš„timeval
 */
 void timeval_clear(timeval &tv);
 
 /*!
-* @brief      ±È½ÏÊ±¼äÊÇ·ñÒ»ÖÂ,
-* @return     int     Èç¹ûÒ»ÖÂ·µ»Ø0£¬left´ó£¬·µ»ØÕıÊı£¬right´ó·µ»Ø¸ºÊı,
-* @param      left    ×óÖµ
-* @param      right   ÓÒÖµ
-* @note       ×¢ÒâËûºÍtimercmpÊÇ²»Ò»ÑùµÄ¹¦ÄÜ£¬timercmpÖ÷ÒªÊÇÀûÓÃ×îºóÒ»¸öº¯Êı²ÎÊıÍê³É±È½ÏÄÚÈİ
+* @brief      æ¯”è¾ƒæ—¶é—´æ˜¯å¦ä¸€è‡´,
+* @return     int     å¦‚æœä¸€è‡´è¿”å›0ï¼Œleftå¤§ï¼Œè¿”å›æ­£æ•°ï¼Œrightå¤§è¿”å›è´Ÿæ•°,
+* @param      left    å·¦å€¼
+* @param      right   å³å€¼
+* @note       æ³¨æ„ä»–å’Œtimercmpæ˜¯ä¸ä¸€æ ·çš„åŠŸèƒ½ï¼Œtimercmpä¸»è¦æ˜¯åˆ©ç”¨æœ€åä¸€ä¸ªå‡½æ•°å‚æ•°å®Œæˆæ¯”è¾ƒå†…å®¹
 */
 int timeval_compare(const timeval &left, const timeval &right);
 
 /*!
-* @brief      ¶ÔÁ½¸öÊ±¼ä½øĞĞÏà¼Ó£¬½«½á¹û·µ»Ø£¬·Ç±ê×¼º¯Êı
+* @brief      å¯¹ä¸¤ä¸ªæ—¶é—´è¿›è¡Œç›¸åŠ ï¼Œå°†ç»“æœè¿”å›ï¼Œéæ ‡å‡†å‡½æ•°
 * @return     const timeval
-* @param      left          ×óÖµ
-* @param      right         ÓÒÖµ
+* @param      left          å·¦å€¼
+* @param      right         å³å€¼
 * @note
 */
 const timeval timeval_add(const timeval &left, const timeval &right);
 
 /*!
-* @brief      ¶ÔÁ½¸öÊ±¼ä½øĞĞÏë¼õ£¬½«½á¹û·µ»Ø£¬·Ç±ê×¼º¯Êı,safe==trueÈç¹ûĞ¡ÓÚ0£¬·µ»Ø0
-* @return     const timeval Ïà¼õµÄ½á¹û
-* @param      left          ×ó
-* @param      right         ÓÒ
-* @param      safe          ÊÇ·ñ½øĞĞ°²È«±£»¤£¬Èç¹û½øĞĞ±£»¤£¬½á¹ûĞ¡ÓÚ0Ê±£¬·µ»Ø0
+* @brief      å¯¹ä¸¤ä¸ªæ—¶é—´è¿›è¡Œæƒ³å‡ï¼Œå°†ç»“æœè¿”å›ï¼Œéæ ‡å‡†å‡½æ•°,safe==trueå¦‚æœå°äº0ï¼Œè¿”å›0
+* @return     const timeval ç›¸å‡çš„ç»“æœ
+* @param      left          å·¦
+* @param      right         å³
+* @param      safe          æ˜¯å¦è¿›è¡Œå®‰å…¨ä¿æŠ¤ï¼Œå¦‚æœè¿›è¡Œä¿æŠ¤ï¼Œç»“æœå°äº0æ—¶ï¼Œè¿”å›0
 * @note
 */
 const timeval timeval_sub(const timeval &left, const timeval &right, bool safe = true);
 
 /*!
-* @brief      Èç¹ûÄãÉèÖÃµÄusec ×Ü³¤¶È>1s£¬ÎÒ°ïÄãµ÷Õû£¬£¬·Ç±ê×¼º¯Êı
+* @brief      å¦‚æœä½ è®¾ç½®çš„usec æ€»é•¿åº¦>1sï¼Œæˆ‘å¸®ä½ è°ƒæ•´ï¼Œï¼Œéæ ‡å‡†å‡½æ•°
 * @return     void
-* @param      tv      µ÷ÕûµÄtimeval
+* @param      tv      è°ƒæ•´çš„timeval
 */
 void timeval_adjust(timeval &tv);
 
 /*!
-* @brief      ¼ì²éÕâ¸öTIMEVALUEÊÇ·ñ»¹ÓĞÊ£ÓàµÄÊ±¼ä£¬·Ç±ê×¼º¯Êı
+* @brief      æ£€æŸ¥è¿™ä¸ªTIMEVALUEæ˜¯å¦è¿˜æœ‰å‰©ä½™çš„æ—¶é—´ï¼Œéæ ‡å‡†å‡½æ•°
 * @return     bool
 * @param      tv
 */
 bool timeval_havetime(const timeval &tv);
 
 /*!
-* @brief      Éú³ÉtimevalÕâ¸ö½á¹¹
+* @brief      ç”Ÿæˆtimevalè¿™ä¸ªç»“æ„
 * @return     const timeval
-* @param      sec           Ãë
-* @param      usec          Î¢Ãë
+* @param      sec           ç§’
+* @param      usec          å¾®ç§’
 */
 const timeval make_timeval(time_t sec, time_t usec);
 
 /*!
-* @brief      ½«ÀàĞÍÎªstd::clock_tÖµ ×ª»»µÃµ½timevalÕâ¸ö½á¹¹
-* @return     const timeval ×ª»»ºóµÄtimeval½á¹û
-* @param      clock_value   ½øĞĞ×ª»»µÄ²ÎÊı
+* @brief      å°†ç±»å‹ä¸ºstd::clock_tå€¼ è½¬æ¢å¾—åˆ°timevalè¿™ä¸ªç»“æ„
+* @return     const timeval è½¬æ¢åçš„timevalç»“æœ
+* @param      clock_value   è¿›è¡Œè½¬æ¢çš„å‚æ•°
 */
 const timeval make_timeval(std::clock_t clock_value);
 
 /*!
-* @brief      ½«timespec½á¹¹×ª»»µÃµ½timeval½á¹¹
-* @return     const timeval ×ª»»ºóµÄtimeval½á¹û
-* @param      timespec_val  ½øĞĞ×ª»»µÄ²ÎÊı
+* @brief      å°†timespecç»“æ„è½¬æ¢å¾—åˆ°timevalç»“æ„
+* @return     const timeval è½¬æ¢åçš„timevalç»“æœ
+* @param      timespec_val  è¿›è¡Œè½¬æ¢çš„å‚æ•°
 */
 const timeval make_timeval(const ::timespec *timespec_val);
 
 /*!
-* @brief      ½«CPP11µÄdurationµÄÊı¾İ½á¹¹×ª»»µÃµ½timeval½á¹¹
-* @return     const timeval ×ª»»ºóµÄtimeval½á¹û
-* @param      val  ½øĞĞ×ª»»µÄ²ÎÊı
+* @brief      å°†CPP11çš„durationçš„æ•°æ®ç»“æ„è½¬æ¢å¾—åˆ°timevalç»“æ„
+* @return     const timeval è½¬æ¢åçš„timevalç»“æœ
+* @param      val  è¿›è¡Œè½¬æ¢çš„å‚æ•°
 */
 const timeval make_timeval(const std::chrono::hours &val);
 const timeval make_timeval(const std::chrono::minutes &val);
@@ -377,25 +377,25 @@ const timeval make_timeval(const std::chrono::microseconds &val);
 const timeval make_timeval(const std::chrono::nanoseconds &val);
 
 /*!
-* @brief      ½«CPP11µÄtime_pointµÄÊı¾İ½á¹¹×ª»»µÃµ½timeval½á¹¹
-* @return     const timeval ×ª»»ºóµÄtimeval½á¹û
-* @param      val  ½øĞĞ×ª»»µÄ²ÎÊı
+* @brief      å°†CPP11çš„time_pointçš„æ•°æ®ç»“æ„è½¬æ¢å¾—åˆ°timevalç»“æ„
+* @return     const timeval è½¬æ¢åçš„timevalç»“æœ
+* @param      val  è¿›è¡Œè½¬æ¢çš„å‚æ•°
 */
 const timeval make_timeval(const std::chrono::system_clock::time_point &val);
 const timeval make_timeval(const std::chrono::steady_clock::time_point &val);
 
 
-//WINDOWS API³£ÓÃµÄ¼¸¸ö²ÎÊı
+//WINDOWS APIå¸¸ç”¨çš„å‡ ä¸ªå‚æ•°
 #if defined (ZCE_OS_WINDOWS)
 /*!
-* @brief      ½«FILETIMEµÄ²ÎÊıÊÓÎªÒ»¸öÊ±¼ä£¨¾ø¶ÔÊ±¼ä Èç2013-01-01 01:53:29£©£¬×ª»»µÃµ½timeval
+* @brief      å°†FILETIMEçš„å‚æ•°è§†ä¸ºä¸€ä¸ªæ—¶é—´ï¼ˆç»å¯¹æ—¶é—´ å¦‚2013-01-01 01:53:29ï¼‰ï¼Œè½¬æ¢å¾—åˆ°timeval
 * @return     const timeval
 * @param      file_time
 */
 const timeval make_timeval(const FILETIME *file_time);
 
 /*!
-* @brief      ×ª»»SYSTEMTIMEµ½timeval
+* @brief      è½¬æ¢SYSTEMTIMEåˆ°timeval
 * @return     const timeval
 * @param      system_time
 * @note
@@ -403,7 +403,7 @@ const timeval make_timeval(const FILETIME *file_time);
 const timeval make_timeval(const SYSTEMTIME *system_time);
 
 /*!
-* @brief      ½«FILETIMEµÄ²ÎÊıÊÓÎªÒ»¸öÊ±³¤£¨Ïà¶ÔÊ±¼ä Èç25s£©£¬×ª»»FILETIMEµ½timeval £¬
+* @brief      å°†FILETIMEçš„å‚æ•°è§†ä¸ºä¸€ä¸ªæ—¶é•¿ï¼ˆç›¸å¯¹æ—¶é—´ å¦‚25sï¼‰ï¼Œè½¬æ¢FILETIMEåˆ°timeval ï¼Œ
 * @return     const timeval
 * @param      file_time
 */
@@ -411,72 +411,72 @@ const timeval make_timeval2(const FILETIME *file_time);
 
 #endif
 
-//ÎÒÕûÌå¶Ôtimespec²»Ïë×öÌ«¶àÖ§³Ö£¬
+//æˆ‘æ•´ä½“å¯¹timespecä¸æƒ³åšå¤ªå¤šæ”¯æŒï¼Œ
 
 /*!
-* @brief      POSIX ĞÂµÄÍÆ¼öÊ¹ÓÃµÄÊ±¼äº¯Êı£¬
+* @brief      POSIX æ–°çš„æ¨èä½¿ç”¨çš„æ—¶é—´å‡½æ•°ï¼Œ
 * @return     int
-* @param      clk_id  Linux ÏÂÖ§³ÖºÜ¶à²ÎÊı°üÀ¨Ê±¼ä£¬´òµã£¬Æô¶¯Ê±¼ä£¬½ø³Ì£¬Ïß³ÌÊ±¼äµÈ
-*                     WIN ÏÂÓĞÓĞĞ§µÄÊÇ£¬ CLOCK_REALTIME ¸ß¾«¶ÈÊµ¼ÊÊ±¼ä£¬CLOCK_MONOTONIC£¬
-*                     µ¥µ÷£¨´òµã£©¼ÆÊıÆ÷£¬ÆäËûµÄµÄ²»¿¼ÂÇ
-* @param      ts      ·µ»ØµÄÊ±¼ä
+* @param      clk_id  Linux ä¸‹æ”¯æŒå¾ˆå¤šå‚æ•°åŒ…æ‹¬æ—¶é—´ï¼Œæ‰“ç‚¹ï¼Œå¯åŠ¨æ—¶é—´ï¼Œè¿›ç¨‹ï¼Œçº¿ç¨‹æ—¶é—´ç­‰
+*                     WIN ä¸‹æœ‰æœ‰æ•ˆçš„æ˜¯ï¼Œ CLOCK_REALTIME é«˜ç²¾åº¦å®é™…æ—¶é—´ï¼ŒCLOCK_MONOTONICï¼Œ
+*                     å•è°ƒï¼ˆæ‰“ç‚¹ï¼‰è®¡æ•°å™¨ï¼Œå…¶ä»–çš„çš„ä¸è€ƒè™‘
+* @param      ts      è¿”å›çš„æ—¶é—´
 */
 inline int clock_gettime(clockid_t clk_id, timespec *ts);
 
 /*!
-* @brief      ¼ÆËãtimespecÄÚ²¿×Ü¼ÆÊÇ¶àÉÙºÁÃë
+* @brief      è®¡ç®—timespecå†…éƒ¨æ€»è®¡æ˜¯å¤šå°‘æ¯«ç§’
 * @return     uint64_t
 * @param      ts
 */
 uint64_t total_milliseconds(const timespec &ts);
 
 /*!
-* @brief      ½«timespec ½á¹¹£¬×ª»»µÃµ½timevalÕâ¸ö½á¹¹
+* @brief      å°†timespec ç»“æ„ï¼Œè½¬æ¢å¾—åˆ°timevalè¿™ä¸ªç»“æ„
 * @return     const ::timespec
 * @param      timeval_val
 */
 const ::timespec make_timespec(const timeval *timeval_val);
 
 //-------------------------------------------------------------------------------
-//ĞİÏ¢Ò»ÏÂ£¬ĞİÏ¢Ò»ÏÂ
+//ä¼‘æ¯ä¸€ä¸‹ï¼Œä¼‘æ¯ä¸€ä¸‹
 
 /*!
-* @brief      SLEEP Ãë
-* @return     int     0³É¹¦£¬-1Ê§°Ü
-* @param      seconds ĞİÏ¢µÄÃëÊı
+* @brief      SLEEP ç§’
+* @return     int     0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      seconds ä¼‘æ¯çš„ç§’æ•°
 * @note
 */
 int sleep (uint32_t seconds);
 
 /*!
-* @brief      SLEEP timevalµÄÊ±¼ä
-* @return     int  0³É¹¦£¬-1Ê§°Ü
-* @param      tv   ĞİÏ¢µÄtimevalÊ±¼ä³¤¶ÈµÄÊ±¼ä
+* @brief      SLEEP timevalçš„æ—¶é—´
+* @return     int  0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      tv   ä¼‘æ¯çš„timevalæ—¶é—´é•¿åº¦çš„æ—¶é—´
 * @note
 */
 int sleep (const timeval &tv);
 
 /*!
-* @brief      ĞİÏ¢Î¢Ãë£¬µ«Êµ¼ÊĞİÏ¢Ê±¼ä£¬¿Ï¶¨³¤ÓÚÕâ¸ö£¬ºÇºÇ
-* @return     int   0³É¹¦£¬-1Ê§°Ü
-* @param      usec  Î¢ÃëÊ±¼ä³¤¶È
+* @brief      ä¼‘æ¯å¾®ç§’ï¼Œä½†å®é™…ä¼‘æ¯æ—¶é—´ï¼Œè‚¯å®šé•¿äºè¿™ä¸ªï¼Œå‘µå‘µ
+* @return     int   0æˆåŠŸï¼Œ-1å¤±è´¥
+* @param      usec  å¾®ç§’æ—¶é—´é•¿åº¦
 */
 int usleep (unsigned long usec);
 
 //-------------------------------------------------------------------------------
-//ÖØÈë°²È«µÄÊ±¼ä×ª»»º¯ÊıµÄº¯Êı
+//é‡å…¥å®‰å…¨çš„æ—¶é—´è½¬æ¢å‡½æ•°çš„å‡½æ•°
 
 /*!
-* @brief      µÃµ½±¾µØÊ±¼äµÄtm½á¹¹
+* @brief      å¾—åˆ°æœ¬åœ°æ—¶é—´çš„tmç»“æ„
 * @return     inline struct tm*
 * @param      timep
 * @param      result
-* @note       ÖØÈë°²È«
+* @note       é‡å…¥å®‰å…¨
 */
 inline struct tm *localtime_r(const time_t *timep, struct tm *result);
 
 /*!
-* @brief      ¸ù¾İGMÊ±¼ä£¬µÃµ½tm½á¹¹
+* @brief      æ ¹æ®GMæ—¶é—´ï¼Œå¾—åˆ°tmç»“æ„
 * @return     inline struct tm*
 * @param      timep
 * @param      result
@@ -485,45 +485,45 @@ inline struct tm *localtime_r(const time_t *timep, struct tm *result);
 inline struct tm *gmtime_r(const time_t *timep, struct tm *result);
 
 /*!
-* @brief      ´òÓ¡TMÄÚ²¿µÄÊ±¼äĞÅÏ¢
+* @brief      æ‰“å°TMå†…éƒ¨çš„æ—¶é—´ä¿¡æ¯
 * @return     inline char*
 * @param      tm
-* @param      buf            Êä³öµÄ×Ö·û´®³¤¶È£¬³¤¶ÈÄã×Ô¼º±£Ö¤ÖÁÉÙ26¸ö
-* @note       Êä³ö×Ö·û´®µÄ¸ñÊ½ÊÇWed Jan 02 02:03:55 1980\n\0.Ç¿ÁÒ²»½¨ÒéÊ¹ÓÃ,
-*             °¦£¬ÎÒÊµÔÚ²»ÖªµÀÕâÑùµÄÊ±¼äÊä³öÓĞÉ¶ÓÃ´¦£¬ÍêÈ«ÊÇÎªÁË¼æÈİ²ÅĞ´ÕâÁ½¸öº¯Êı£¬
+* @param      buf            è¾“å‡ºçš„å­—ç¬¦ä¸²é•¿åº¦ï¼Œé•¿åº¦ä½ è‡ªå·±ä¿è¯è‡³å°‘26ä¸ª
+* @note       è¾“å‡ºå­—ç¬¦ä¸²çš„æ ¼å¼æ˜¯Wed Jan 02 02:03:55 1980\n\0.å¼ºçƒˆä¸å»ºè®®ä½¿ç”¨,
+*             å”‰ï¼Œæˆ‘å®åœ¨ä¸çŸ¥é“è¿™æ ·çš„æ—¶é—´è¾“å‡ºæœ‰å•¥ç”¨å¤„ï¼Œå®Œå…¨æ˜¯ä¸ºäº†å…¼å®¹æ‰å†™è¿™ä¸¤ä¸ªå‡½æ•°ï¼Œ
 */
 inline char *asctime_r(const struct tm *tm, char *buf);
 
 /*!
-* @brief      ´òÓ¡time_tËù±íÊ¾µÄÊ±¼äĞÅÏ¢
-* @return     inline char*  ·µ»ØµÄÊ±¼ä×Ö·û´®
-* @param      timep        Ê±¼ä
-* @param      buf          Êä³öµÄ×Ö·û´®³¤¶È£¬³¤¶ÈÄã×Ô¼º±£Ö¤ÖÁÉÙ26¸ö
-* @note       Êä³ö×Ö·û´®µÄ¸ñÊ½ÊÇWed Jan 02 02:03:55 1980\n\0.Ç¿ÁÒ²»½¨ÒéÊ¹ÓÃ,
-*             °¦£¬ÎÒÊµÔÚ²»ÖªµÀÕâÑùµÄÊ±¼äÊä³öÓĞÉ¶ÓÃ´¦£¬ÍêÈ«ÊÇÎªÁË¼æÈİ²ÅĞ´ÕâÁ½¸öº¯Êı£¬
+* @brief      æ‰“å°time_tæ‰€è¡¨ç¤ºçš„æ—¶é—´ä¿¡æ¯
+* @return     inline char*  è¿”å›çš„æ—¶é—´å­—ç¬¦ä¸²
+* @param      timep        æ—¶é—´
+* @param      buf          è¾“å‡ºçš„å­—ç¬¦ä¸²é•¿åº¦ï¼Œé•¿åº¦ä½ è‡ªå·±ä¿è¯è‡³å°‘26ä¸ª
+* @note       è¾“å‡ºå­—ç¬¦ä¸²çš„æ ¼å¼æ˜¯Wed Jan 02 02:03:55 1980\n\0.å¼ºçƒˆä¸å»ºè®®ä½¿ç”¨,
+*             å”‰ï¼Œæˆ‘å®åœ¨ä¸çŸ¥é“è¿™æ ·çš„æ—¶é—´è¾“å‡ºæœ‰å•¥ç”¨å¤„ï¼Œå®Œå…¨æ˜¯ä¸ºäº†å…¼å®¹æ‰å†™è¿™ä¸¤ä¸ªå‡½æ•°ï¼Œ
 */
 inline char *ctime_r(const time_t *timep, char *buf);
 
 
 /*!
-* @brief      µÈÍ¬ÓÚmktime,½«tmÊÓÎª±¾µØÊ±¼ä£¬×ª»»Îªtime_t
-* @return     time_t ×ª»»µÃµ½µÄUTCÊÀ½çÊ±¼ä
-* @param      tm ÊÓÎª±¾µØÊ±¼äµÄtm
+* @brief      ç­‰åŒäºmktime,å°†tmè§†ä¸ºæœ¬åœ°æ—¶é—´ï¼Œè½¬æ¢ä¸ºtime_t
+* @return     time_t è½¬æ¢å¾—åˆ°çš„UTCä¸–ç•Œæ—¶é—´
+* @param      tm è§†ä¸ºæœ¬åœ°æ—¶é—´çš„tm
 */
 inline time_t timelocal(struct tm *tm);
 
 /*!
-* @brief      ÀàËÆmktime£¬µ«ÊÇÊÇ°ÑtmÊÓÎªGMTÊ±¼ä£¬×ª»»Îªtime_t
-*             WINDOWSÏÂÓĞ¸ömkgmtime£¬
-* @return     time_t ×ª»»µÃµ½µÄUTCÊÀ½çÊ±¼ä
-* @param      tm ÊÓÎªGMTÊ±¼äµÄtm
+* @brief      ç±»ä¼¼mktimeï¼Œä½†æ˜¯æ˜¯æŠŠtmè§†ä¸ºGMTæ—¶é—´ï¼Œè½¬æ¢ä¸ºtime_t
+*             WINDOWSä¸‹æœ‰ä¸ªmkgmtimeï¼Œ
+* @return     time_t è½¬æ¢å¾—åˆ°çš„UTCä¸–ç•Œæ—¶é—´
+* @param      tm è§†ä¸ºGMTæ—¶é—´çš„tm
 */
 inline time_t timegm(struct tm *tm);
 
 /*!
-* @brief      ¶ÁÈ¡TSC£¬Read TSC(Time-Stamp Counter),CPUµÄÊ±ÖÓÖÜÆÚ
-* @return     uint64_t TSCÖµ
-* @note       Õâ¸öÔÚ¶àºËÊ±´úÒÑ¾­×÷ÓÃ´ó´óÏÂ½µ£¬ÒòÎªÁ½¸öºËĞÄ¼ä²»Ò»ÖÂ£¬CPUµÄ¶¯Ì¬ÆµÂÊµÈÎÊÌâ
+* @brief      è¯»å–TSCï¼ŒRead TSC(Time-Stamp Counter),CPUçš„æ—¶é’Ÿå‘¨æœŸ
+* @return     uint64_t TSCå€¼
+* @note       è¿™ä¸ªåœ¨å¤šæ ¸æ—¶ä»£å·²ç»ä½œç”¨å¤§å¤§ä¸‹é™ï¼Œå› ä¸ºä¸¤ä¸ªæ ¸å¿ƒé—´ä¸ä¸€è‡´ï¼ŒCPUçš„åŠ¨æ€é¢‘ç‡ç­‰é—®é¢˜
 */
 uint64_t rdtsc();
 
@@ -532,7 +532,7 @@ uint64_t rdtsc();
 
 //-------------------------------------------------------------------------------
 
-//¼æÈİLINUXÏÂµÄgettimeofday
+//å…¼å®¹LINUXä¸‹çš„gettimeofday
 inline int zce::gettimeofday(struct timeval *tv, struct timezone *tz)
 {
     //
@@ -543,11 +543,11 @@ inline int zce::gettimeofday(struct timeval *tv, struct timezone *tz)
         return 0;
     }
 
-    //Èç¹ûÊäÈëÁËÊ±¼ä
+    //å¦‚æœè¾“å…¥äº†æ—¶é—´
     if (tv)
     {
-        //µÃµ½ÏµÍ³Ê±¼ä,
-        //²âÊÔ±È½Ï::GetSystemTime ±ÈÕâ¸öº¯ÊıºÄÊ±£¬´Ó×ÖÃæÀí½âÓĞµã¹ÖÒì
+        //å¾—åˆ°ç³»ç»Ÿæ—¶é—´,
+        //æµ‹è¯•æ¯”è¾ƒ::GetSystemTime æ¯”è¿™ä¸ªå‡½æ•°è€—æ—¶ï¼Œä»å­—é¢ç†è§£æœ‰ç‚¹æ€ªå¼‚
         FILETIME   tfile;
         ::GetSystemTimeAsFileTime (&tfile);
 
@@ -558,16 +558,16 @@ inline int zce::gettimeofday(struct timeval *tv, struct timezone *tz)
         //The FILETIME structure is a 64-bit value representing the number of
         //100-nanosecond intervals since January 1, 1601.
 
-        //µÃµ½time_t²¿·Ö
+        //å¾—åˆ°time_téƒ¨åˆ†
         tv->tv_sec = static_cast<long>((ui.QuadPart - 116444736000000000) / 10000000);
-        //µÃµ½Î¢Ãë²¿·Ö£¬FILETIME´æ·ÅµÄÊÇ100-nanosecond
+        //å¾—åˆ°å¾®ç§’éƒ¨åˆ†ï¼ŒFILETIMEå­˜æ”¾çš„æ˜¯100-nanosecond
         tv->tv_usec = static_cast<long>(((ui.QuadPart - 116444736000000000) % 10000000) / 10);
     }
 
-    //µÃµ½Ê±ÇøÏà¹ØÊı¾İ
+    //å¾—åˆ°æ—¶åŒºç›¸å…³æ•°æ®
     if (tz)
     {
-        //µÃµ½Ê±ÇøĞÅÏ¢
+        //å¾—åˆ°æ—¶åŒºä¿¡æ¯
         TIME_ZONE_INFORMATION tzone;
         DWORD  ret = ::GetTimeZoneInformation(&tzone);
 
@@ -578,23 +578,23 @@ inline int zce::gettimeofday(struct timeval *tv, struct timezone *tz)
 
         //
         tz->tz_minuteswest = tzone.Bias;
-        //ÏÄÁîÊ±ÎÊÌâ»Ø±Ü£¬LINUXÏÂÒÑ¾­²»´¦ÀíÕâ¸öÎÊÌâÁË
+        //å¤ä»¤æ—¶é—®é¢˜å›é¿ï¼ŒLINUXä¸‹å·²ç»ä¸å¤„ç†è¿™ä¸ªé—®é¢˜äº†
 
     }
 
     return 0;
 #endif //
 
-    //LINUXÏÂµÃµ½Ê±¼ä
+    //LINUXä¸‹å¾—åˆ°æ—¶é—´
 #if defined ZCE_OS_LINUX
-    //Ö±½ÓµôÓÃÏµÍ³µÄ
+    //ç›´æ¥æ‰ç”¨ç³»ç»Ÿçš„
     return ::gettimeofday(tv, tz);
 #endif //
 
 }
 
 
-//µÃµ½Ê±¼ä¸÷ÖÖÊ±¼ä
+//å¾—åˆ°æ—¶é—´å„ç§æ—¶é—´
 inline int zce::clock_gettime(clockid_t clk_id, timespec *ts)
 {
 #if defined ZCE_OS_WINDOWS
@@ -627,11 +627,11 @@ inline const timeval zce::gettimeofday()
     return now_time;
 }
 
-//µÃµ½±¾µØÊ±¼ä
+//å¾—åˆ°æœ¬åœ°æ—¶é—´
 inline struct tm *zce::localtime_r(const time_t *timep, struct tm *result)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //WINDOWSÏÂÊ¹ÓÃÄ¬ÈÏµÄ_s ÏµÁĞµÄAPI
+    //WINDOWSä¸‹ä½¿ç”¨é»˜è®¤çš„_s ç³»åˆ—çš„API
     errno_t convert_err =  ::localtime_s(result, timep);
 
     if (convert_err)
@@ -650,11 +650,11 @@ inline struct tm *zce::localtime_r(const time_t *timep, struct tm *result)
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//GMÊ±¼ä
+//GMæ—¶é—´
 inline struct tm *zce::gmtime_r(const time_t *timep, struct tm *result)
 {
 #if defined (ZCE_OS_WINDOWS)
-    //WINDOWSÏÂÊ¹ÓÃÄ¬ÈÏµÄ_s ÏµÁĞµÄAPI
+    //WINDOWSä¸‹ä½¿ç”¨é»˜è®¤çš„_s ç³»åˆ—çš„API
     errno_t convert_err =  ::gmtime_s(result, timep);
 
     if (convert_err)
@@ -673,16 +673,16 @@ inline struct tm *zce::gmtime_r(const time_t *timep, struct tm *result)
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//´òÓ¡TMÄÚ²¿µÄÊ±¼äĞÅÏ¢
+//æ‰“å°TMå†…éƒ¨çš„æ—¶é—´ä¿¡æ¯
 inline char *zce::asctime_r(const struct tm *tm_data, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //ÄãÖÁÉÙÒª±£Ö¤bufÀïÃæÓĞ26¸ö×Ö·û,ÕâÖÖĞ´·¨ÊµÊôÎŞÄÎ£¬ÒòÎªLINUXµÄAPI²¢Ã»ÓĞ±£Ö¤ÕæÕıµÄ°²È«£¬Ö»ÊÇ½â¾öÁËÖØÈëÎÊÌâ
-    //ºÜÉÙÓĞµÄ·¢ÏÖWINDOWSµÄAPIºÃÓÚLINUX
+    //ä½ è‡³å°‘è¦ä¿è¯bufé‡Œé¢æœ‰26ä¸ªå­—ç¬¦,è¿™ç§å†™æ³•å®å±æ— å¥ˆï¼Œå› ä¸ºLINUXçš„APIå¹¶æ²¡æœ‰ä¿è¯çœŸæ­£çš„å®‰å…¨ï¼Œåªæ˜¯è§£å†³äº†é‡å…¥é—®é¢˜
+    //å¾ˆå°‘æœ‰çš„å‘ç°WINDOWSçš„APIå¥½äºLINUX
     const size_t I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES = 26;
 
-    //WINDOWSÏÂÊ¹ÓÃÄ¬ÈÏµÄ_s ÏµÁĞµÄAPI
+    //WINDOWSä¸‹ä½¿ç”¨é»˜è®¤çš„_s ç³»åˆ—çš„API
     errno_t convert_err =  ::asctime_s(buf, I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES, tm_data);
 
     if (convert_err)
@@ -701,15 +701,15 @@ inline char *zce::asctime_r(const struct tm *tm_data, char *buf)
 #endif //#if defined (ZCE_OS_LINUX)
 }
 
-//´òÓ¡time_tËø±êÊ¶µÄÊ±¼äĞÅÏ¢
+//æ‰“å°time_té”æ ‡è¯†çš„æ—¶é—´ä¿¡æ¯
 inline char *zce::ctime_r(const time_t *timep, char *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    //ÄãÖÁÉÙÒª±£Ö¤bufÀïÃæÓĞ26¸ö×Ö·û,£¬ÒòÎªLINUXµÄAPI²¢Ã»ÓĞ±£Ö¤ÕæÕıµÄ°²È«£¬Ö»ÊÇ½â¾öÁËÖØÈëÎÊÌâ
+    //ä½ è‡³å°‘è¦ä¿è¯bufé‡Œé¢æœ‰26ä¸ªå­—ç¬¦,ï¼Œå› ä¸ºLINUXçš„APIå¹¶æ²¡æœ‰ä¿è¯çœŸæ­£çš„å®‰å…¨ï¼Œåªæ˜¯è§£å†³äº†é‡å…¥é—®é¢˜
     const size_t I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES = 26;
 
-    //WINDOWSÏÂÊ¹ÓÃÄ¬ÈÏµÄ_s ÏµÁĞµÄAPI
+    //WINDOWSä¸‹ä½¿ç”¨é»˜è®¤çš„_s ç³»åˆ—çš„API
     errno_t convert_err =  ::ctime_s(buf, I_GUESS_BUF_HAVE_ROOM_FOR_AT_LEAST_26_BYTES, timep);
 
     if (convert_err)
@@ -730,7 +730,7 @@ inline char *zce::ctime_r(const time_t *timep, char *buf)
 
 
 
-//µÈÍ¬ÓÚmktime,½«tmÊÓÎª±¾µØÊ±¼ä£¬×ª»»ÎªÊÀ½çÊ±¼ätime_t
+//ç­‰åŒäºmktime,å°†tmè§†ä¸ºæœ¬åœ°æ—¶é—´ï¼Œè½¬æ¢ä¸ºä¸–ç•Œæ—¶é—´time_t
 inline time_t zce::timelocal(struct tm *tm)
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -743,7 +743,7 @@ inline time_t zce::timelocal(struct tm *tm)
 }
 
 
-//ÀàËÆmktime£¬µ«ÊÇÊÇ°ÑtmÊÓÎªGMTÊ±¼ä£¬×ª»»ÎªÊÀ½çÊ±¼ätime_t
+//ç±»ä¼¼mktimeï¼Œä½†æ˜¯æ˜¯æŠŠtmè§†ä¸ºGMTæ—¶é—´ï¼Œè½¬æ¢ä¸ºä¸–ç•Œæ—¶é—´time_t
 inline time_t zce::timegm(struct tm *tm)
 {
 #if defined (ZCE_OS_WINDOWS)

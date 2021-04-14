@@ -3,7 +3,7 @@ Copyright           : 2000-2004, Fullsail Technology (Shenzhen) Company Limited.
 FileName            : soar_fsm_notify_trans_mgr.h
 Author              : Sail(ZENGXING)//Author name here
 Version             :
-Date Of Creation    : 2008Äê9ÔÂ22ÈÕ
+Date Of Creation    : 2008å¹´9æœˆ22æ—¥
 Description         :
 
 Others              :
@@ -30,12 +30,12 @@ class NotifyTrans_Manger : public Transaction_Manager
 {
 protected:
 
-    //ZCE_Message_Queue_Dequeµ×²ãÊµÏÖÓÃµÄDeque
+    //ZCE_Message_Queue_Dequeåº•å±‚å®ç°ç”¨çš„Deque
     typedef ZCE_Message_Queue_Deque<_ZCE_SYNCH, Zerg_App_Frame *>  APPFRAME_MESSAGE_QUEUE;
-    //APPFRAMEµÄ·ÖÅäÆ÷
+    //APPFRAMEçš„åˆ†é…å™¨
     typedef AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
-    //FRAME¶ÓÁĞµÄË®Î»±ê£¬¿¼ÂÇµ¹ÓÉÓÚMessageQueueÖĞ½±´æ·ÅµÄÊÇÖ¸Õë£¬Õâ¸öÊıÁ¿¼¶±ğÒÑ¾­²»ÉÙÁË
+    //FRAMEé˜Ÿåˆ—çš„æ°´ä½æ ‡ï¼Œè€ƒè™‘å€’ç”±äºMessageQueueä¸­å¥–å­˜æ”¾çš„æ˜¯æŒ‡é’ˆï¼Œè¿™ä¸ªæ•°é‡çº§åˆ«å·²ç»ä¸å°‘äº†
     static const size_t FRAME_QUEUE_WATER_MARK = 102400;
 
 public:
@@ -46,41 +46,41 @@ public:
         MANAGER_QUEUE_RECV,
     };
 
-    //ÓĞµãÃÎÏëÉè¼Æ¶à¸öQUEUE¶ÓÁĞµÄ£¬µ«ÊÇÊµÔÚ¿´²»µ½ĞèÇó£¬Èç¹ûÓĞÒÔºó¼Ó°Ñ£¬Ó¦¸ÃºÜÈİÒ×´òÔì£¬
+    //æœ‰ç‚¹æ¢¦æƒ³è®¾è®¡å¤šä¸ªQUEUEé˜Ÿåˆ—çš„ï¼Œä½†æ˜¯å®åœ¨çœ‹ä¸åˆ°éœ€æ±‚ï¼Œå¦‚æœæœ‰ä»¥ååŠ æŠŠï¼Œåº”è¯¥å¾ˆå®¹æ˜“æ‰“é€ ï¼Œ
 protected:
-    //·¢ËÍµÄMSG QUEUE
+    //å‘é€çš„MSG QUEUE
     APPFRAME_MESSAGE_QUEUE          *send_msg_queue_;
 
-    //½ÓÊÜµÄMSG QUEUE
+    //æ¥å—çš„MSG QUEUE
     APPFRAME_MESSAGE_QUEUE          *recv_msg_queue_;
 
-    //APPFRAMEµÄÄÚ´æ·ÖÅä³Ø×Ó
+    //APPFRAMEçš„å†…å­˜åˆ†é…æ± å­
     APPFRAME_MALLOCOR               *frame_mallocor_;
 
-    //TASKµÄÊıÁ¿
+    //TASKçš„æ•°é‡
     size_t                           task_number_;
-    //½øĞĞ¿ËÂ¡µÄTASK Ô­¼ş
+    //è¿›è¡Œå…‹éš†çš„TASK åŸä»¶
     NotifyTrans_TaskBase            *clone_task_;
     //
     NotifyTrans_TaskBase           **task_list_;
 
-    // pushÊı¾İ½ø¶ÓÁĞÊ±£¬Èç¹û¶ÓÁĞÂúÁËµÄ×î¶àµÈ´ıÊ±¼ä
+    // pushæ•°æ®è¿›é˜Ÿåˆ—æ—¶ï¼Œå¦‚æœé˜Ÿåˆ—æ»¡äº†çš„æœ€å¤šç­‰å¾…æ—¶é—´
     ZCE_Time_Value enqueue_timeout_;
 
 public:
 
     /******************************************************************************************
-    Author          : Sail(ZENGXING)  Date Of Creation: 2008Äê9ÔÂ22ÈÕ
+    Author          : Sail(ZENGXING)  Date Of Creation: 2008å¹´9æœˆ22æ—¥
     Function        : NotifyTrans_Manger
     Return          : NULL
     Parameter List  :
-    Param1: size_t szregtrans     ×¢²áTRANSµÄ¸öÊı
-    Param2: size_t sztransmap     ´¦ÀíµÄTRANSµÄ¸öÊı
-    Param3: SERVICES_ID selfsvr  ×Ô¼ºµÄ·şÎñÆ÷ID
-    Param4: ZCE_Timer_Queue* timer_queue ·­ÒëÆ÷
-    Param5: Soar_MMAP_BusPipe* zerg_mmap_pipe ¹ÜµÀÊı¾İ
-    Param6: AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX>* frame_mallocor FRAME·ÖÅäÆ÷
-    Description     : ¹¹Ôìº¯Êı
+    Param1: size_t szregtrans     æ³¨å†ŒTRANSçš„ä¸ªæ•°
+    Param2: size_t sztransmap     å¤„ç†çš„TRANSçš„ä¸ªæ•°
+    Param3: SERVICES_ID selfsvr  è‡ªå·±çš„æœåŠ¡å™¨ID
+    Param4: ZCE_Timer_Queue* timer_queue ç¿»è¯‘å™¨
+    Param5: Soar_MMAP_BusPipe* zerg_mmap_pipe ç®¡é“æ•°æ®
+    Param6: AppFrame_Mallocor_Mgr<typename _ZCE_SYNCH::MUTEX>* frame_mallocor FRAMEåˆ†é…å™¨
+    Description     : æ„é€ å‡½æ•°
     Calls           :
     Called By       :
     Other           :
@@ -114,12 +114,12 @@ public:
     {
     }
 
-    //Îö¹¹º¯Êı
+    //ææ„å‡½æ•°
     virtual ~NotifyTrans_Manger();
 
 public:
 
-    //³õÊ¼»¯
+    //åˆå§‹åŒ–
     void initialize(size_t  szregtrans,
                     size_t sztransmap,
                     const SERVICES_ID &selfsvr,
@@ -128,7 +128,7 @@ public:
                     Soar_MMAP_BusPipe *zerg_mmap_pipe,
                     APPFRAME_MALLOCOR *frame_mallocor)
     {
-        //¸ù¾İ×î´óµÄFRAME³¤¶Èµ÷ÕûManagerÄÚ²¿µÄÊı¾İ
+        //æ ¹æ®æœ€å¤§çš„FRAMEé•¿åº¦è°ƒæ•´Managerå†…éƒ¨çš„æ•°æ®
         size_t max_frame_len = frame_mallocor->get_max_framelen();
         Transaction_Manager::initialize(timer_queue,
                                         szregtrans,
@@ -148,7 +148,7 @@ public:
 
     }
 
-    //´¦Àí´Ó½ÓÊÕ¶ÓÁĞÈ¡³öµÄFRAME
+    //å¤„ç†ä»æ¥æ”¶é˜Ÿåˆ—å–å‡ºçš„FRAME
     int process_recvqueue_frame(size_t &proc_frame, size_t &create_trans)
     {
         int ret = 0;
@@ -162,10 +162,10 @@ public:
             //
             ret = recv_msg_queue_->try_dequeue(tmp_frame);
 
-            //Èç¹û²»ÄÜÈ¡³öÊı¾İ
+            //å¦‚æœä¸èƒ½å–å‡ºæ•°æ®
             if (ret != 0 )
             {
-                //ÏÂÃæÕâ¶Î´úÂëÓÃÓÚµ÷ÊÔ£¬ÔİÊ±²»´ò¿ª,×¢ÒâTRYµÄ´íÎó·µ»ØEAGAIN£¬³¬Ê±·µ»ØETIME
+                //ä¸‹é¢è¿™æ®µä»£ç ç”¨äºè°ƒè¯•ï¼Œæš‚æ—¶ä¸æ‰“å¼€,æ³¨æ„TRYçš„é”™è¯¯è¿”å›EAGAINï¼Œè¶…æ—¶è¿”å›ETIME
                 //if ( zce::last_error() != EAGAIN )
                 //{
                 //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
@@ -176,15 +176,15 @@ public:
 
             DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame);
 
-            //ÊÇ·ñ´´½¨Ò»¸öÊÂÎñ£¬
+            //æ˜¯å¦åˆ›å»ºä¸€ä¸ªäº‹åŠ¡ï¼Œ
             bool bcrtcx = false;
 
-            //Ôö¼ÓÒ»²½
+            //å¢åŠ ä¸€æ­¥
             tmp_frame->recv_service_ = self_svc_id_;
 
-            //tmp_frame  ÂíÉÏ»ØÊÕ
+            //tmp_frame  é©¬ä¸Šå›æ”¶
             ret = process_appframe(tmp_frame, bcrtcx);
-            //ÊÍ·ÅÄÚ´æ
+            //é‡Šæ”¾å†…å­˜
             frame_mallocor_->free_appframe(tmp_frame);
 
             //
@@ -193,7 +193,7 @@ public:
                 continue;
             }
 
-            //´´½¨ÁËÒ»¸öÊÂÎñ
+            //åˆ›å»ºäº†ä¸€ä¸ªäº‹åŠ¡
             if (true == bcrtcx)
             {
                 ++create_trans;
@@ -204,20 +204,20 @@ public:
         return 0;
     }
 
-    //¼¤»îÏß³Ì
+    //æ¿€æ´»çº¿ç¨‹
     int active_notify_task(NotifyTrans_TaskBase *clone_task, size_t task_num, size_t task_stack_size = 1024 * 1024);
-    //Í£ÏÂNOTIFY TASK
+    //åœä¸‹NOTIFY TASK
     int stop_notify_task();
 
-    //´ÓrecvµÄÏûÏ¢¶ÓÁĞÖĞÈ¥Ò»¸öÊı¾İ³öÀ´£¬½øĞĞ³¬Ê±µÈ´ı
+    //ä»recvçš„æ¶ˆæ¯é˜Ÿåˆ—ä¸­å»ä¸€ä¸ªæ•°æ®å‡ºæ¥ï¼Œè¿›è¡Œè¶…æ—¶ç­‰å¾…
     int dequeue_recvqueue(Zerg_App_Frame *&get_frame, ZCE_Time_Value *tv)
     {
         int ret = recv_msg_queue_->dequeue(get_frame, tv);
 
-        //·µ»ØÖµĞ¡ÓÚ0±íÊ¾Ê§°Ü
+        //è¿”å›å€¼å°äº0è¡¨ç¤ºå¤±è´¥
         if (ret < 0)
         {
-            //ÏÂÃæÕâ¶Î´úÂëÓÃÓÚµ÷ÊÔ£¬ÔİÊ±²»´ò¿ª,×¢ÒâTRYµÄ´íÎó·µ»ØEAGAIN£¬³¬Ê±·µ»ØETIME
+            //ä¸‹é¢è¿™æ®µä»£ç ç”¨äºè°ƒè¯•ï¼Œæš‚æ—¶ä¸æ‰“å¼€,æ³¨æ„TRYçš„é”™è¯¯è¿”å›EAGAINï¼Œè¶…æ—¶è¿”å›ETIME
             //if ( zce::last_error() != ETIME )
             //{
             //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
@@ -228,15 +228,15 @@ public:
         return 0;
     }
 
-    //´ÓrecvµÄÏûÏ¢¶ÓÁĞÖĞÈ¥Ò»¸öÊı¾İ³öÀ´£¬²»½øĞĞ³¬Ê±µÈ´ı
+    //ä»recvçš„æ¶ˆæ¯é˜Ÿåˆ—ä¸­å»ä¸€ä¸ªæ•°æ®å‡ºæ¥ï¼Œä¸è¿›è¡Œè¶…æ—¶ç­‰å¾…
     int trydequeue_recvqueue(Zerg_App_Frame *&get_frame)
     {
         int ret = recv_msg_queue_->try_dequeue(get_frame);
 
-        //·µ»ØÖµĞ¡ÓÚ0±íÊ¾Ê§°Ü
+        //è¿”å›å€¼å°äº0è¡¨ç¤ºå¤±è´¥
         if (ret < 0)
         {
-            //ÏÂÃæÕâ¶Î´úÂëÓÃÓÚµ÷ÊÔ£¬ÔİÊ±²»´ò¿ª,×¢ÒâTRYµÄ´íÎó·µ»ØEAGAIN£¬³¬Ê±·µ»ØETIME
+            //ä¸‹é¢è¿™æ®µä»£ç ç”¨äºè°ƒè¯•ï¼Œæš‚æ—¶ä¸æ‰“å¼€,æ³¨æ„TRYçš„é”™è¯¯è¿”å›EAGAINï¼Œè¶…æ—¶è¿”å›ETIME
             //if ( zce::last_error() != EAGAIN )
             //{
             //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
@@ -247,7 +247,7 @@ public:
         return 0;
     }
 
-    //´ÓsendµÄÏûÏ¢¶ÓÁĞÖĞÈ¥Ò»¸öÊı¾İ³öÀ´£¬½øĞĞ³¬Ê±µÈ´ı
+    //ä»sendçš„æ¶ˆæ¯é˜Ÿåˆ—ä¸­å»ä¸€ä¸ªæ•°æ®å‡ºæ¥ï¼Œè¿›è¡Œè¶…æ—¶ç­‰å¾…
     int dequeue_sendqueue(Zerg_App_Frame *&get_frame, ZCE_Time_Value &tv)
     {
         int ret = 0;
@@ -255,7 +255,7 @@ public:
 
         if (ret < 0)
         {
-            //ÏÂÃæÕâ¶Î´úÂëÓÃÓÚµ÷ÊÔ£¬ÔİÊ±²»´ò¿ª,×¢ÒâTRYµÄ´íÎó·µ»ØEAGAIN£¬³¬Ê±·µ»ØETIME
+            //ä¸‹é¢è¿™æ®µä»£ç ç”¨äºè°ƒè¯•ï¼Œæš‚æ—¶ä¸æ‰“å¼€,æ³¨æ„TRYçš„é”™è¯¯è¿”å›EAGAINï¼Œè¶…æ—¶è¿”å›ETIME
             //if ( zce::last_error() != ETIME )
             //{
             //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
@@ -266,7 +266,7 @@ public:
         return 0;
     }
 
-    //´ÓsendµÄÏûÏ¢¶ÓÁĞÖĞÈ¥Ò»¸öÊı¾İ³öÀ´£¬²»½øĞĞ³¬Ê±µÈ´ı
+    //ä»sendçš„æ¶ˆæ¯é˜Ÿåˆ—ä¸­å»ä¸€ä¸ªæ•°æ®å‡ºæ¥ï¼Œä¸è¿›è¡Œè¶…æ—¶ç­‰å¾…
     int trydequeue_sendqueue(Zerg_App_Frame *&get_frame)
     {
         int ret = 0;
@@ -274,7 +274,7 @@ public:
 
         if (ret < 0)
         {
-            //ÏÂÃæÕâ¶Î´úÂëÓÃÓÚµ÷ÊÔ£¬ÔİÊ±²»´ò¿ª,×¢ÒâTRYµÄ´íÎó·µ»ØEAGAIN£¬³¬Ê±·µ»ØETIME
+            //ä¸‹é¢è¿™æ®µä»£ç ç”¨äºè°ƒè¯•ï¼Œæš‚æ—¶ä¸æ‰“å¼€,æ³¨æ„TRYçš„é”™è¯¯è¿”å›EAGAINï¼Œè¶…æ—¶è¿”å›ETIME
             //if ( zce::last_error() != EAGAIN )
             //{
             //  ZCE_LOG(RS_DEBUG,"[framework] Recv queue dequeue fail ,ret=%u,errno =%u",ret,zce::last_error());
@@ -290,13 +290,13 @@ public:
         return send_msg_queue_->empty();
     }
 
-    //¾ÛºÏframe_mallocor_µÄ¹¦ÄÜ
-    //´Ó³Ø×Ó·ÖÅäÒ»¸öAPPFRAME
+    //èšåˆframe_mallocor_çš„åŠŸèƒ½
+    //ä»æ± å­åˆ†é…ä¸€ä¸ªAPPFRAME
     Zerg_App_Frame *alloc_appframe(size_t frame_len)
     {
         return frame_mallocor_->alloc_appframe(frame_len);
     }
-    //ÊÍ·ÅÒ»¸öAPPFRAMEµ½³Ø×Ó
+    //é‡Šæ”¾ä¸€ä¸ªAPPFRAMEåˆ°æ± å­
     void free_appframe(Zerg_App_Frame *proc_frame)
     {
         frame_mallocor_->free_appframe(proc_frame);
@@ -304,7 +304,7 @@ public:
 
 public:
 
-    //ÏòSEND¶ÓÁĞ·¢ËÍÊı¾İ,ÈÃTASK½ÓÊÕ
+    //å‘SENDé˜Ÿåˆ—å‘é€æ•°æ®,è®©TASKæ¥æ”¶
     template< class T>
     int enqueue_sendqueue(
         unsigned int cmd,
@@ -328,7 +328,7 @@ public:
                                  option);
     }
 
-    //ÏòSEND¶ÓÁĞ·¢ËÍÊı¾İ,ÈÃTASK½ÓÊÕ
+    //å‘SENDé˜Ÿåˆ—å‘é€æ•°æ®,è®©TASKæ¥æ”¶
     template< class T>
     int enqueue_sendqueue(
         unsigned int cmd,
@@ -351,11 +351,11 @@ public:
         rsp_msg->proxy_service_ = proxysvc;
         rsp_msg->send_service_ = sndsvc;
 
-        //ÌîĞ´×Ô¼ºtransaction_id_,ÆäÊµÊÇ×Ô¼ºµÄÊÂÎñID,·½±ã»ØÀ´¿ÉÒÔÕÒµ½×Ô¼º
+        //å¡«å†™è‡ªå·±transaction_id_,å…¶å®æ˜¯è‡ªå·±çš„äº‹åŠ¡ID,æ–¹ä¾¿å›æ¥å¯ä»¥æ‰¾åˆ°è‡ªå·±
         rsp_msg->backfill_trans_id_ = backfill_trans_id;
         rsp_msg->app_id_ = app_id;
 
-        //¿½±´·¢ËÍµÄMSG Block
+        //æ‹·è´å‘é€çš„MSG Block
         int ret = rsp_msg->appdata_encode(Zerg_App_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
@@ -363,7 +363,7 @@ public:
             return SOAR_RET::ERROR_APPFRAME_BUFFER_SHORT;
         }
 
-        //ÏàĞÅÕâ¸öËø²»»áÕ¼¾İÖ÷Ñ­»·
+        //ç›¸ä¿¡è¿™ä¸ªé”ä¸ä¼šå æ®ä¸»å¾ªç¯
         ret = enqueue_sendqueue(rsp_msg, false);
         DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO SEND QUEUE FRAME", rsp_msg);
 
@@ -379,12 +379,12 @@ public:
     }
 
     /******************************************************************************************
-    Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008Äê3ÔÂ17ÈÕ
+    Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008å¹´3æœˆ17æ—¥
     Function        : enqueue_sendqueue
     Return          : int
     Parameter List  :
-    Param: const Zerg_App_Frame* post_frame ·¢ËÍµÄFRAME
-    Param: bool alloc_frame                 ÉÏÒ»¸ö²ÎÊıµÄFRAMEÊÇ·ñÊÇ´ÓPOOLÖĞ¼äÈ¡³öµÄ
+    Param: const Zerg_App_Frame* post_frame å‘é€çš„FRAME
+    Param: bool alloc_frame                 ä¸Šä¸€ä¸ªå‚æ•°çš„FRAMEæ˜¯å¦æ˜¯ä»POOLä¸­é—´å–å‡ºçš„
     Description     :
     Calls           :
     Called By       :
@@ -396,12 +396,12 @@ public:
         int ret = 0;
         Zerg_App_Frame *tmp_frame = NULL;
 
-        //Èç¹ûÊÇ´Ó³Ø×ÓÖĞ¼äÈ¡³öµÄFRAME£¬¾ÍÊ²Ã´¶¼²»×ö
+        //å¦‚æœæ˜¯ä»æ± å­ä¸­é—´å–å‡ºçš„FRAMEï¼Œå°±ä»€ä¹ˆéƒ½ä¸åš
         if ( alloc_frame )
         {
             tmp_frame = post_frame;
         }
-        //Èç¹û²»ÊÇ£¬¾Í´Ó³Ø×ÓÖĞ¼ä¸´ÖÆÒ»¸öFRAME
+        //å¦‚æœä¸æ˜¯ï¼Œå°±ä»æ± å­ä¸­é—´å¤åˆ¶ä¸€ä¸ªFRAME
         else
         {
             frame_mallocor_->clone_appframe(post_frame, tmp_frame);
@@ -410,20 +410,20 @@ public:
         ZCE_Time_Value tv = enqueue_timeout_;
         ret = send_msg_queue_->enqueue(tmp_frame, tv);
 
-        //·µ»ØÖµĞ¡ÓÚ0±íÊ¾Ê§°Ü
+        //è¿”å›å€¼å°äº0è¡¨ç¤ºå¤±è´¥
         if (ret < 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
                     ret, tmp_frame->frame_userid_, tmp_frame->frame_command_);
 
-            // ¼Ó¸ö¼à¿Ø
+            // åŠ ä¸ªç›‘æ§
             Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
                                                          tmp_frame->app_id_,
                                                          0);
             return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
         }
 
-        //²âÊÔÊ±´ò¿ª£¬
+        //æµ‹è¯•æ—¶æ‰“å¼€ï¼Œ
         //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
         //    send_msg_queue_->size(),
         //    send_msg_queue_->size() * sizeof(Zerg_App_Frame *));
@@ -431,13 +431,13 @@ public:
     }
 
     /******************************************************************************************
-    Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008Äê3ÔÂ17ÈÕ
+    Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008å¹´3æœˆ17æ—¥
     Function        : enqueue_recvqueue
     Return          : int
     Parameter List  :
-    Param1: const Zerg_App_Frame* post_frame POST·¢ËÍµÄµÄFRAMEÊı¾İ
-    Param2: ZCE_Time_Value* tv               Ïà¶ÔÊ±¼ä
-    Description     : Ïò½ÓÊÕÊı¾İ¶ÓÁĞÖĞ¼ä£¬·¢ËÍÒ»¸öAPPFRAME
+    Param1: const Zerg_App_Frame* post_frame POSTå‘é€çš„çš„FRAMEæ•°æ®
+    Param2: ZCE_Time_Value* tv               ç›¸å¯¹æ—¶é—´
+    Description     : å‘æ¥æ”¶æ•°æ®é˜Ÿåˆ—ä¸­é—´ï¼Œå‘é€ä¸€ä¸ªAPPFRAME
     Calls           :
     Called By       :
     Other           :
@@ -450,14 +450,14 @@ public:
         frame_mallocor_->clone_appframe(post_frame, tmp_frame);
         ret = recv_msg_queue_->enqueue(tmp_frame, *tv);
 
-        //·µ»ØÖµĞ¡ÓÚ0±íÊ¾Ê§°Ü
+        //è¿”å›å€¼å°äº0è¡¨ç¤ºå¤±è´¥
         if (ret < 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Post message to recv queue fail.ret =%d.", ret);
             return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_ENQUEUE_FAIL;
         }
 
-        //²âÊÔÊ±´ò¿ª£¬
+        //æµ‹è¯•æ—¶æ‰“å¼€ï¼Œ
         //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Recv queue message_count:%u message_bytes:%u. ",
         //  recv_msg_queue_->size(),
         //  recv_msg_queue_->size() * sizeof(Zerg_App_Frame *));
