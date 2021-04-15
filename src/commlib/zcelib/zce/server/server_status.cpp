@@ -542,9 +542,9 @@ void ZCE_Server_Status::dump_all(ARRAY_OF_STATUS_WITHNAME &array_status, bool du
 
         if (iter != conf_stat_map_.end())
         {
-            strncpy(array_status[i].item_name_,
-                    iter->second.item_name_,
-                    ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
+            iter->second.item_name_[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN] = '\0';
+            strcpy(array_status[i].item_name_,
+                    iter->second.item_name_);
         }
         else
         {
@@ -606,6 +606,7 @@ void ZCE_Server_Status::dump_status_info(std::ostringstream &strstream, bool dum
             strncpy(statics_item_name,
                     iter->second.item_name_,
                     ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
+            statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN] = '\0';
         }
         else
         {
@@ -659,6 +660,7 @@ void ZCE_Server_Status::dump_status_info(zce::LOG_PRIORITY log_priority, bool du
             strncpy(statics_item_name,
                     iter->second.item_name_,
                     ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN);
+            statics_item_name[ZCE_STATUS_ITEM_WITHNAME::MAX_COUNTER_NAME_LEN] = '\0';
         }
         else
         {

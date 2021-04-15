@@ -165,7 +165,7 @@ public:
     ZCE_STATUS_ITEM           statics_item_;
 
     //计数器名称
-    char                      item_name_[MAX_COUNTER_NAME_LEN + 1];
+    char                      item_name_[MAX_COUNTER_NAME_LEN + 3];
 
 };
 
