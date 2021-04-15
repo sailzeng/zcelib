@@ -61,7 +61,9 @@ Win32-Debug
 Win32-Release
 x64-Debug
 x64-Release
+#CMake目录
 build
-
+#第三方的库代码目录
+third_party
 
 
