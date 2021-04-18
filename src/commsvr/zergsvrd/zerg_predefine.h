@@ -44,16 +44,16 @@
 #include <zce/socket/stream.h>
 #include <zce_mml_command.h>
 
-#include <soar_predefine.h>
-#include <soar_error_code.h>
-#include <soar_svrd_cfg_base.h>
-#include <soar_svrd_app_main.h>
-#include <soar_zerg_frame.h>
-#include <soar_mmap_buspipe.h>
-#include <soar_svrd_app_base.h>
-#include <soar_svrd_app_main.h>
-#include <soar_stat_monitor.h>
-#include <soar_svrd_timer_base.h>
+#include <soar/predefine.h>
+#include <soar/enum/error_code.h>
+#include <soar/svrd/cfg_base.h>
+#include <soar/svrd/app_main.h>
+#include <soar/zerg/frame_zerg.h>
+#include <soar/svrd/mmap_buspipe.h>
+#include <soar/svrd/app_base.h>
+#include <soar/svrd/app_main.h>
+#include <soar/stat/monitor.h>
+#include <soar/svrd/timer_base.h>
 
 
 

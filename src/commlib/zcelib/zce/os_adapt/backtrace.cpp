@@ -31,7 +31,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
     //打印所有的堆栈信息,有些时候信息无法显示符号表，建议使用
     for (int j = 0; j < sz_of_stack; j++)
     {
-        zce::foo_string_format(line_data, "%?. address %?:\t%?\t source file info[ %?: %?] ",
+        zce::foo_string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
                                zce::Int_Out_Helper(j + 1, 3),
                                backtrace_stack_ptr[j],
                                symbols_strings ? symbols_strings[j] : "<no symbol>");
@@ -162,7 +162,7 @@ int zce::backtrace_stack(std::vector<std::string> &str_ary)
         //{
         //    break;
         //}
-        zce::foo_string_format(line_data, "%?. address %?:\t%?\t source file info[ %?: %?] ",
+        zce::foo_string_format(line_data, "{}. address {}:\t{}\t source file info[ {}: {}] ",
                                zce::Int_Out_Helper(k + 1, 3),
                                zce::Int_HexOut_Helper(stackframe.AddrPC.Offset, 16),
                                load_symbol ? symbol->Name : "<no symbol>",

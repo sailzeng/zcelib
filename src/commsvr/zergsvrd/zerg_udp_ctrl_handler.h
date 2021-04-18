@@ -6,7 +6,7 @@
 
 
 //forward declaration
-class Zerg_App_Frame;
+class soar::Zerg_Frame_Head;
 class Zerg_Buffer;
 class Zerg_IPRestrict_Mgr;
 class Zerg_Comm_Manager;
@@ -19,7 +19,7 @@ protected:
     //避免在堆中间分配,所以析构函数不要
 public:
     //
-    UDP_Svc_Handler(const SERVICES_ID &my_svcinfo,
+    UDP_Svc_Handler(const soar::SERVICES_ID &my_svcinfo,
                     const ZCE_Sockaddr_In &addr,
                     bool sessionkey_verify = true);
 protected:
@@ -45,14 +45,14 @@ protected:
     int read_data_from_udp(size_t &szrevc);
 
     //发送UDP的数据
-    int write_data_to_udp(Zerg_App_Frame *send_frame);
+    int write_data_to_udp(soar::Zerg_Frame_Head *send_frame);
 
 public:
     //初始化静态参数
     static int init_all_static_data();
 
     //
-    static int send_all_to_udp(Zerg_App_Frame *send_frame);
+    static int send_all_to_udp(soar::Zerg_Frame_Head *send_frame);
 
     ///读取配置
     static int get_config(const Zerg_Server_Config *config);
@@ -89,7 +89,7 @@ protected:
     ZCE_Sockaddr_In          udp_bind_addr_;
 
     ///
-    SERVICES_ID              my_svc_info_;
+    soar::SERVICES_ID              my_svc_info_;
     ///是否进行SESSION校验
     bool                     sessionkey_verify_;
     ///数据缓冲区，UDP只有一个

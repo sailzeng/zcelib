@@ -295,7 +295,7 @@ int Broadcast_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_t
 
     ret = conf_tree->path_get_leaf("BROADCAST_CFG", "BROADCAST_SVCTYPE",
                                    broadcast_svctype_);
-    if (0 != ret || broadcast_svctype_ == SERVICES_ID::INVALID_SERVICES_TYPE)
+    if (0 != ret || broadcast_svctype_ == soar::SERVICES_ID::INVALID_SERVICES_TYPE)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
@@ -423,7 +423,7 @@ int Modulo_ProxyProcess::get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree
 
     ret = conf_tree->path_get_leaf("MODULO_CFG", "MODULO_SVCTYPE",
                                    modulo_svctype_);
-    if (0 != ret || modulo_svctype_ == SERVICES_ID::INVALID_SERVICES_TYPE)
+    if (0 != ret || modulo_svctype_ == soar::SERVICES_ID::INVALID_SERVICES_TYPE)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
@@ -620,7 +620,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //            }
 //            else
 //            {
-//                dbmodal_proxy_info->clone_router_cfg_[k] = SERVICES_ID::INVALID_SERVICES_ID;
+//                dbmodal_proxy_info->clone_router_cfg_[k] = soar::SERVICES_ID::INVALID_SERVICES_ID;
 //            }
 //
 //            ZCE_LOG(RS_INFO,"[DBModalProxy] normal service:%u|%u, clone service:%u|%u, passby service:%u|%u",
@@ -713,7 +713,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //        }
 //
 //        // 如果有备份路由,则将数据转发给一个备份的代理
-//        if (dbmodal_proxy_info->clone_router_cfg_[mod] != SERVICES_ID::INVALID_SERVICES_ID )
+//        if (dbmodal_proxy_info->clone_router_cfg_[mod] != soar::SERVICES_ID::INVALID_SERVICES_ID )
 //        {
 //
 //            proc_frame->recv_service_.services_id_ = dbmodal_proxy_info->clone_router_cfg_[mod];

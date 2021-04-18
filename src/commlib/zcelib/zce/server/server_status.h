@@ -211,14 +211,15 @@ struct ZCE_STATUS_HEAD
 */
 class ZCE_Server_Status : public zce::NON_Copyable
 {
+
 protected:
 
     ///存放统计数据的共享内存数组，
     typedef zce::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
     ///统计ID到数组的下标的hash map
-    typedef unordered_map<ZCE_STATUS_ITEM_ID, size_t, HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
+    typedef unordered_map<ZCE_STATUS_ITEM_ID,size_t,HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<uint32_t, ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+    typedef unordered_map<uint32_t,ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
@@ -404,6 +405,9 @@ public:
     static void instance(ZCE_Server_Status *);
     //清理单子实例
     static void clean_instance();
+
+
+
 
 protected:
 

@@ -88,7 +88,7 @@ public:
 
         sz_buf_len -= sz_use_len;
 
-        //得到打印信息,foo_snprintf 为自己内部的函数，str_format使用%?作为输出控制符
+        //得到打印信息,foo_snprintf 为自己内部的函数，str_format使用{}作为输出控制符
         size_t sprt_use_len = 0;
         zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data...);
         sz_use_len += sprt_use_len;

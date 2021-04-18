@@ -18,12 +18,12 @@ SERVICES_INFO_TABLE::~SERVICES_INFO_TABLE()
 }
 
 
-int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
+int SERVICES_INFO_TABLE::find_svcinfo(const soar::SERVICES_ID &svc_id,
                                       ZCE_Sockaddr_In &ip_address,
                                       unsigned int &idc_no,
                                       unsigned int &business_id) const
 {
-    SERVICES_INFO svc_ip_info;
+    soar::SERVICES_INFO svc_ip_info;
     svc_ip_info.svc_id_ = svc_id;
     SET_OF_SVCINFO::const_iterator iter = services_table_.find(svc_ip_info);
 
@@ -44,8 +44,8 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
 
 
 //根据SvrInfo信息查询IP配置信息
-int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
-                                      SERVICES_INFO &svc_info) const
+int SERVICES_INFO_TABLE::find_svcinfo(const soar::SERVICES_ID &svc_id,
+                                      soar::SERVICES_INFO &svc_info) const
 {
     svc_info.svc_id_ = svc_id;
     SET_OF_SVCINFO::const_iterator iter = services_table_.find(svc_info);
@@ -63,9 +63,9 @@ int SERVICES_INFO_TABLE::find_svcinfo(const SERVICES_ID &svc_id,
 }
 
 //检查是否拥有相应的Services Info
-bool SERVICES_INFO_TABLE::hash_svcinfo(const SERVICES_ID &svrinfo) const
+bool SERVICES_INFO_TABLE::hash_svcinfo(const soar::SERVICES_ID &svrinfo) const
 {
-    SERVICES_INFO svc_ip_info;
+    soar::SERVICES_INFO svc_ip_info;
     svc_ip_info.svc_id_ = svrinfo;
     SET_OF_SVCINFO::const_iterator iter = services_table_.find(svc_ip_info);
 
@@ -78,7 +78,7 @@ bool SERVICES_INFO_TABLE::hash_svcinfo(const SERVICES_ID &svrinfo) const
 }
 
 //设置配置信息
-int SERVICES_INFO_TABLE::add_svcinfo(const SERVICES_INFO &svc_info)
+int SERVICES_INFO_TABLE::add_svcinfo(const soar::SERVICES_INFO &svc_info)
 {
 
     std::pair<SET_OF_SVCINFO::iterator, bool> insert_result = services_table_.insert(svc_info);
@@ -112,8 +112,8 @@ Zerg_Server_Config::~Zerg_Server_Config()
 }
 
 //根据SVCINFO得到IP地址信息
-int Zerg_Server_Config::get_svcinfo_by_svcid(const SERVICES_ID &svc_id,
-                                             SERVICES_INFO &svc_info) const
+int Zerg_Server_Config::get_svcinfo_by_svcid(const soar::SERVICES_ID &svc_id,
+                                             soar::SERVICES_INFO &svc_info) const
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -325,7 +325,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //第0个位置是给self_svc_id_ 主ID的
-    zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_id_;
+    zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_info_;
     zerg_cfg_data_.bind_svcid_num_ += 1;
 
     //注意是从1开始,注意bind_svcid_num_上面已经+1了，
@@ -390,7 +390,7 @@ int Zerg_Server_Config::get_svcidtable_cfg(const ZCE_Conf_PropertyTree *conf_tre
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    SERVICES_INFO svc_info;
+    soar::SERVICES_INFO svc_info;
     for (size_t i = 0; i < svc_table_num; ++i)
     {
         ret = conf_tree->pathseq_get_leaf("SERVICES_TABLE", "SERVICES_INFO_", i + 1, temp_value);

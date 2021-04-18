@@ -216,7 +216,7 @@
 //{
 //    int ret = 0;
 //    size_t tmp_size = 0;
-//    SERVICES_ID svr_info;
+//    soar::SERVICES_ID svr_info;
 //    //读取STARTNO参数
 //    std::string tmpstr;
 //    ret = console_command_.GetCmdParameter("SVCTYPE", tmpstr);

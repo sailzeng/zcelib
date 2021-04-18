@@ -29,7 +29,7 @@ int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
     autocnt_svcinfo_set_.rehash(size_of_autoconnect_ + 16);
 
     //循环处理所有的数据
-    SERVICES_INFO svc_route;
+    soar::SERVICES_INFO svc_route;
     for (size_t i = 0; i < size_of_autoconnect_; ++i)
     {
 
@@ -137,11 +137,11 @@ void Zerg_Auto_Connector::reconnect_allserver(size_t &szvalid, size_t &szsucc, s
 
 
 //根据SVC ID,检查是否是主动连接的服务.,
-int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &reconnect_svcid)
+int Zerg_Auto_Connector::connect_server_bysvcid(const soar::SERVICES_ID &reconnect_svcid)
 {
 
     //如果在SET里面找不到
-    SERVICES_INFO svc_info;
+    soar::SERVICES_INFO svc_info;
     svc_info.svc_id_ = reconnect_svcid;
     auto iter = autocnt_svcinfo_set_.find(svc_info);
 
@@ -157,7 +157,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const SERVICES_ID &reconnect_svc
 
 
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
-int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
+int Zerg_Auto_Connector::connect_one_server(const soar::SERVICES_ID &svc_id,
                                             const ZCE_Sockaddr_In &inetaddr,
                                             TCP_Svc_Handler *&svc_handle)
 {
@@ -207,7 +207,7 @@ int Zerg_Auto_Connector::connect_one_server(const SERVICES_ID &svc_id,
                                          TCP_Svc_Handler::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
-        p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_id_,
+        p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_info_,
                                        svc_id,
                                        sockstream,
                                        inetaddr);
@@ -239,10 +239,10 @@ int Zerg_Auto_Connector::find_conf_ms_svcid_ary(uint16_t services_type,
 }
 
 //检查这个SVC ID是否是主动链接的服务器
-bool Zerg_Auto_Connector::is_auto_connect_svcid(const SERVICES_ID &svc_id)
+bool Zerg_Auto_Connector::is_auto_connect_svcid(const soar::SERVICES_ID &svc_id)
 {
     //如果在SET里面找不到
-    SERVICES_INFO svc_info;
+    soar::SERVICES_INFO svc_info;
     svc_info.svc_id_ = svc_id;
     if (autocnt_svcinfo_set_.find(svc_info) == autocnt_svcinfo_set_.end())
     {

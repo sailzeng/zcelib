@@ -70,7 +70,7 @@ public:
     * @param      socketaddr  对端的地址，其实可以从sockstream中得到，但为了效率和方便.
     * @note       对端刚刚被accept，所以其实此时无法确定对端的SVC ID
     */
-    void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
+    void init_tcpsvr_handler(const soar::SERVICES_ID &my_svcinfo,
                              const ZCE_Socket_Stream &sockstream,
                              const ZCE_Sockaddr_In     &socketaddr);
 
@@ -84,8 +84,8 @@ public:
     * @param      socketaddr  对应连接的对端地址信息
     * @note
     */
-    void init_tcpsvr_handler(const SERVICES_ID &my_svcinfo,
-                             const SERVICES_ID &svrinfo,
+    void init_tcpsvr_handler(const soar::SERVICES_ID &my_svcinfo,
+                             const soar::SERVICES_ID &svrinfo,
                              const ZCE_Socket_Stream &sockstream,
                              const ZCE_Sockaddr_In     &socketaddr);
 
@@ -128,7 +128,7 @@ public:
 
     //发送简单的ZERG命令给对方
     int send_simple_zerg_cmd(unsigned int cmd,
-                             const SERVICES_ID &recv_services_info,
+                             const soar::SERVICES_ID &recv_services_info,
                              unsigned int option = 0);
 
     ///发送心跳
@@ -178,7 +178,7 @@ protected:
 
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(Zerg_App_Frame *proc_frame);
+    int  preprocess_recvframe(soar::Zerg_Frame_Head *proc_frame);
 
     //处理发送的REGISTER数据,连接后发送第一个数据
     int  process_connect_register();
@@ -187,7 +187,7 @@ protected:
     /*!
     * @brief      将数据帧交给通信管理器，放入管道
     * @return     int
-    * @note       到这个函数是 Zerg_App_Frame已经经过解码了.请注意.
+    * @note       到这个函数是 soar::Zerg_Frame_Head已经经过解码了.请注意.
     */
     int push_frame_to_comm_mgr();
 
@@ -219,10 +219,10 @@ public:
     static void get_max_peer_num(size_t &maxaccept, size_t &maxconnect);
 
     //关闭svr_info相应的PEER
-    static int close_services_peer(const SERVICES_ID &svr_info);
+    static int close_services_peer(const soar::SERVICES_ID &svr_info);
 
     //根据有的SVR ID，查询相应的HDL
-    static int find_services_peer(const SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle);
+    static int find_services_peer(const soar::SERVICES_ID &svc_id, TCP_Svc_Handler *&svchanle);
 
     ///链接所有的要自动链接的服务器,这个事避免服务器的链接断口后
     static void reconnect_allserver();
@@ -342,10 +342,10 @@ protected:
     HANDLER_MODE               handler_mode_;
 
     ///自己的服务的标示
-    SERVICES_ID                my_svc_id_;
+    soar::SERVICES_ID                my_svc_id_;
 
     ///PEER的ServiceInfo
-    SERVICES_ID                peer_svr_id_;
+    soar::SERVICES_ID                peer_svr_id_;
 
 
     ///接收数据的缓冲

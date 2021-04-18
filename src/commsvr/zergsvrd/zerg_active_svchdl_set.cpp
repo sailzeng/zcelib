@@ -27,7 +27,7 @@ void Active_SvcHandle_Set::initialize(size_t sz_peer)
 }
 
 //根据SERVICEINFO查询PEER信息
-int Active_SvcHandle_Set::find_handle_by_svcid(const SERVICES_ID &svc_id,
+int Active_SvcHandle_Set::find_handle_by_svcid(const soar::SERVICES_ID &svc_id,
                                                TCP_Svc_Handler *&svc_handle)
 {
     MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.find(svc_id);
@@ -72,7 +72,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
         id_table->orderid_use_id_ += 1;
 
         find_services_id = id_table->services_id_ary_[ary_id];
-        SERVICES_ID lb_svcid(services_type, find_services_id);
+        soar::SERVICES_ID lb_svcid(services_type, find_services_id);
         auto iter = svr_info_set_.find(lb_svcid);
 
         //到这儿就是你代码写错了，
@@ -121,7 +121,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         size_t ary_id = (lb_factor) % ary_size;
 
         find_services_id = id_table->services_id_ary_[ary_id];
-        SERVICES_ID lb_svcid(services_type, find_services_id);
+        soar::SERVICES_ID lb_svcid(services_type, find_services_id);
         auto iter = svr_info_set_.find(lb_svcid);
 
         //到这儿就是你代码写错了，
@@ -165,7 +165,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
     for (size_t j = 0; j < ary_size; ++j)
     {
         find_services_id = (*ms_svcid_ary)[j];
-        SERVICES_ID ms_svcid(services_type, find_services_id);
+        soar::SERVICES_ID ms_svcid(services_type, find_services_id);
 
         auto iter = svr_info_set_.find(ms_svcid);
         //如果没有找到
@@ -204,7 +204,7 @@ int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vecto
 }
 
 //增加设置配置信息
-int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svc_id,
+int Active_SvcHandle_Set::add_services_peerinfo(const soar::SERVICES_ID &svc_id,
                                                 TCP_Svc_Handler *new_svchdl)
 {
     MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.find(svc_id);
@@ -253,7 +253,7 @@ int Active_SvcHandle_Set::add_services_peerinfo(const SERVICES_ID &svc_id,
 }
 
 //更新设置配置信息
-int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svc_id,
+int Active_SvcHandle_Set::replace_services_peerInfo(const soar::SERVICES_ID &svc_id,
                                                     TCP_Svc_Handler *new_svchdl,
                                                     TCP_Svc_Handler *&old_svchdl)
 {
@@ -286,8 +286,8 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const SERVICES_ID &svc_id,
 }
 
 
-//根据SERVICES_ID,删除PEER信息,
-int Active_SvcHandle_Set::del_services_peerInfo(const SERVICES_ID &svc_id)
+//根据soar::SERVICES_ID,删除PEER信息,
+int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID &svc_id)
 {
     MAP_OF_SVCPEERINFO::iterator iter = svr_info_set_.find(svc_id);
 
@@ -331,7 +331,7 @@ int Active_SvcHandle_Set::del_services_peerInfo(const SERVICES_ID &svc_id)
     }
 
     //找到移动位置ID对应的Handle，调整其保存的ID
-    SERVICES_ID move_svc_id(svc_id.services_type_,
+    soar::SERVICES_ID move_svc_id(svc_id.services_type_,
                             id_table->services_id_ary_[del_id]);
     iter = svr_info_set_.find(move_svc_id);
     if (iter == svr_info_set_.end())
@@ -364,7 +364,7 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
     //如果连接上来的服务器多，这是一个非常非常耗时的操作.
     for (size_t i = 0; iter_tmp != iter_end; ++iter_tmp, ++i)
     {
-        SERVICES_ID svr_info = (*(iter_tmp)).first;
+        soar::SERVICES_ID svr_info = (*(iter_tmp)).first;
         TCP_Svc_Handler *svrhandle = (*(iter_tmp)).second;
         svrhandle->dump_status_info(out_lvl);
     }

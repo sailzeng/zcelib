@@ -55,7 +55,7 @@ public:
     * @return     int
     * @param      init_svcid 初始化所依据的SVC INFO
     */
-    int init_socketpeer(const SERVICES_ID &init_svcid);
+    int init_socketpeer(const soar::SERVICES_ID &init_svcid);
 
     /*!
     * @brief      检查端口是否安全,安全端口必须不使用保险(FALSE)
@@ -75,7 +75,7 @@ public:
     int popall_sendpipe_write(size_t want_send_frame, size_t &proc_frame_num);
 
     //
-    void pushback_recvpipe(Zerg_App_Frame *recv_frame);
+    void pushback_recvpipe(soar::Zerg_Frame_Head *recv_frame);
 
     //检查发包频率
     void check_freamcount(unsigned int now);

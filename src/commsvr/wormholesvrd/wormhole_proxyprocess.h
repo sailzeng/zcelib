@@ -162,7 +162,7 @@ protected:
 protected:
 
     // 要复制的服务器类型
-    uint16_t broadcast_svctype_ = SERVICES_ID::INVALID_SERVICES_ID;
+    uint16_t broadcast_svctype_ = soar::SERVICES_ID::INVALID_SERVICES_ID;
     // 要复制的数量
     size_t broadcast_svcnum_ = 0;
     // 要复制的FRAME的尺寸
@@ -204,7 +204,7 @@ protected:
     MODULO_TYPE modulo_type_ = MODULO_UID;
 
     // 要复制的服务器类型
-    uint16_t modulo_svctype_ = SERVICES_ID::INVALID_SERVICES_ID;
+    uint16_t modulo_svctype_ = soar::SERVICES_ID::INVALID_SERVICES_ID;
     // 要复制的数量
     size_t modulo_svcnum_ = 0;
     // 要复制的FRAME的尺寸

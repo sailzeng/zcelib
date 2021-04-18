@@ -322,6 +322,7 @@
 #include <algorithm>
 #include <memory>
 #include <limits>
+#include <bit>
 #include <type_traits>
 
 //hash_map,hash_set的头文件包含处理要麻烦一点
@@ -513,6 +514,7 @@ extern "C"
 #if defined (__GLIBC__)
 #  include <endian.h>
 #endif
+
 
 #ifndef ZCE_BYTES_ORDER
 #if ( (defined(__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)) || defined(__BIG_ENDIAN__) || defined(__BIG_ENDIAN) || defined(_BIG_ENDIAN) ) && !(defined(__LITTLE_ENDIAN__) || defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN))

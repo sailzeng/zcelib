@@ -6,7 +6,7 @@
 /****************************************************************************************************
 class  Ogre_Service_App
 ****************************************************************************************************/
-class Ogre_Service_App : public Soar_Svrd_Appliction
+class Ogre_Service_App : public soar::Svrd_Appliction
 {
 
 public:

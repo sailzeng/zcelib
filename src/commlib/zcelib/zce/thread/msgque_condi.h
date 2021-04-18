@@ -41,8 +41,11 @@ protected:
 
     enum MQW_WAIT_MODEL
     {
+        //不用等待，尝试一下
         MQW_NO_WAIT,
+        //一直等待
         MQW_WAIT_FOREVER,
+        //在超时时间内等待
         MQW_WAIT_TIMEOUT,
     };
 
@@ -101,7 +104,7 @@ public:
                 const ZCE_Time_Value  &wait_time)
     {
         return enqueue_interior(value_data,
-                                MQW_WAIT_FOREVER,
+                                MQW_WAIT_TIMEOUT,
                                 wait_time);
     }
 
@@ -110,7 +113,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
-                                MQW_WAIT_FOREVER,
+                                MQW_NO_WAIT,
                                 nouse_timeout);
     }
 
@@ -119,7 +122,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
-                                MQW_WAIT_TIMEOUT,
+                                MQW_WAIT_FOREVER,
                                 nouse_timeout);
     }
 
@@ -137,7 +140,7 @@ public:
     {
         ZCE_Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
-                                MQW_WAIT_TIMEOUT,
+                                MQW_NO_WAIT,
                                 nouse_timeout);
     }
 
@@ -256,7 +259,6 @@ protected:
 
         return 0;
     }
-
 
 
 protected:

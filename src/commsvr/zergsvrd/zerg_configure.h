@@ -9,7 +9,7 @@
 struct SERVICES_INFO_TABLE
 {
 
-    typedef std::unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
+    typedef std::unordered_set<soar::SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
 
 public:
     //构造函数,
@@ -26,20 +26,20 @@ public:
     * @param      business_id 输出参数,服务器编号
     * @note
     */
-    int find_svcinfo(const SERVICES_ID &svc_id,
+    int find_svcinfo(const soar::SERVICES_ID &svc_id,
                      ZCE_Sockaddr_In &ip_address,
                      unsigned int &idc_no,
                      unsigned int &business_id) const;
 
     //根据SvrInfo信息查询IP配置信息
-    int find_svcinfo(const SERVICES_ID &svc_id,
-                     SERVICES_INFO &svc_info) const;
+    int find_svcinfo(const soar::SERVICES_ID &svc_id,
+                     soar::SERVICES_INFO &svc_info) const;
 
     //检查是否拥有相应的Services Info
-    bool hash_svcinfo(const SERVICES_ID &svc_id) const;
+    bool hash_svcinfo(const soar::SERVICES_ID &svc_id) const;
 
     //设置配置信息
-    int add_svcinfo(const SERVICES_INFO &svc_info);
+    int add_svcinfo(const soar::SERVICES_INFO &svc_info);
 
 
     //清理SVR配置信息.
@@ -108,12 +108,12 @@ public:
     ///服务器支持的SVC ID的数量，至少>=1
     size_t bind_svcid_num_ = 0;
     ///服务器支持的SVC ID，注意，self_svc_id_永远配置在第一个
-    SERVICES_ID  bind_svcid_ary_[MAX_BIND_SERVICES_ID];
+    soar::SERVICES_ID  bind_svcid_ary_[MAX_BIND_SERVICES_ID];
 
     ///主动链接的服务器梳理
     size_t auto_connect_num_ = 0;
     ///主动链接的服务器数组
-    SERVICES_ID  auto_connect_svrs_[MAX_AUTO_CONNECT_SVRS];
+    soar::SERVICES_ID  auto_connect_svrs_[MAX_AUTO_CONNECT_SVRS];
 
 
     /// #从CONNECT到收到数据,最小时长,0-50，接入层必须配置>0,建议15-60秒以内
@@ -172,7 +172,7 @@ public:
 
 
     //根据SVCID得到SVC INFO地址信息
-    int get_svcinfo_by_svcid(const SERVICES_ID &svc_id, SERVICES_INFO  &svc_info) const;
+    int get_svcinfo_by_svcid(const soar::SERVICES_ID &svc_id, soar::SERVICES_INFO  &svc_info) const;
 
 
     ///从配置中读取ZERG的配置

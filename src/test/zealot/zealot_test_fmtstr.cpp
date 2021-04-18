@@ -15,26 +15,26 @@ int test_foo_snprintf()
 
     int int_data = 123456;
     bool bool_data = false;
-    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} Haha!\n", int_data, bool_data);
     printf("%s", out_buffer);
 
-    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data= Haha!\n", int_data, bool_data);
     printf("%s", out_buffer);
 
-    zce::foo_snprintf(out_buffer, 10, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 10, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    zce::foo_snprintf(out_buffer, 15, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 15, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    zce::foo_snprintf(out_buffer, 20, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 20, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
-    zce::foo_snprintf(out_buffer, 30, cur_len, "int_data=%? bool_data= %? Haha!\n", int_data, bool_data);
+    zce::foo_snprintf(out_buffer, 30, cur_len, "int_data={} bool_data= {} Haha!\n", int_data, bool_data);
     std::cout << (out_buffer) << std::endl;
 
     double double_data = 123456789012.1234f;
-    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data= %? double_data = %?Haha!\n",
+    zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data= {} double_data = {}Haha!\n",
                       int_data,
                       bool_data,
                       double_data);
@@ -246,11 +246,11 @@ int printf_double()
 int test_cpp_log_out(int /*argc*/, char * /*argv*/[])
 {
 
-    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love=%? ", "ABCDEFG");
+    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love={} ", "ABCDEFG");
 
-    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love=%? you love=%?", "ABCDEFG", 1234567890);
+    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "my love={} you love={}", "ABCDEFG", 1234567890);
 
-    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "one love=%? two love= %? three love=%?",
+    ZCE_LogTrace_Plus::instance()->foo_write_logmsg(RS_DEBUG, "one love={} two love= {} three love={}",
                                                     "ABCDEFG",
                                                     1.1,
                                                     12345);
@@ -289,7 +289,7 @@ int test_out_buffer(int /*argc*/, char * /*argv*/[])
     ZCE_TRACE_FILELINE(RS_DEBUG);
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           int_data,
                           bool_data,
                           double_data,
@@ -305,7 +305,7 @@ int test_out_buffer(int /*argc*/, char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           int_data,
                           bool_data,
                           double_data,
@@ -358,7 +358,7 @@ int test_out_buffer(int /*argc*/, char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                           bool_data,
                           zce::Double_Out_Helper(double_data, 16, 3),
@@ -375,7 +375,7 @@ int test_out_buffer(int /*argc*/, char * /*argv*/[])
     progress_timer.restart();
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           zce::Int_Out_Helper(int_data, 32, zce::FMT_ZERO, zce::BASE_NUMBER::HEXADECIMAL),
                           bool_data,
                           zce::Double_Out_Helper(double_data, 16, 3),
@@ -438,7 +438,7 @@ int test_out_file()
     std::ofstream of_stream_1("FILE_A1.txt", std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           int_data,
                           bool_data,
                           double_data,
@@ -501,7 +501,7 @@ int test_out_file_stream()
     std::ofstream of_stream_1("FILE_B1.txt", std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           int_data,
                           bool_data,
                           double_data,
@@ -520,7 +520,7 @@ int test_out_file_stream()
     ZCE_HANDLE file_handle = zce::open("FILE_B2.txt", O_CREAT | O_TRUNC | O_RDWR | O_APPEND, S_IWRITE | S_IREAD);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
     {
-        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data=%? bool_data=%? double_data=%? cstr_data=%? stdstr_data=%? Haha!\n",
+        zce::foo_snprintf(out_buffer, buf_max_len, cur_len, "int_data={} bool_data={} double_data={} cstr_data={} stdstr_data={} Haha!\n",
                           int_data,
                           bool_data,
                           double_data,

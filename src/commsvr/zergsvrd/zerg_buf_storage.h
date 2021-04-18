@@ -13,7 +13,7 @@ class Zerg_Buffer
 {
 public:
     //
-    static const unsigned int CAPACITY_OF_BUFFER = Zerg_App_Frame::MAX_LEN_OF_APPFRAME + 16;
+    static const unsigned int CAPACITY_OF_BUFFER = soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME + 16;
 
 public:
 

@@ -31,7 +31,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
 {
     int ret = 0;
 
-    ret = Soar_Svrd_Appliction::app_start(argc, argv);
+    ret = soar::Svrd_Appliction::app_start(argc, argv);
     if (ret != 0)
     {
         return ret;
@@ -65,7 +65,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
                                                     business_id_,
-                                                    self_svc_id_,
+                                                    self_svc_info_,
                                                     0,
                                                     NULL,
                                                     false);
@@ -133,7 +133,7 @@ int Zerg_Service_App::app_exit()
     Zerg_IPRestrict_Mgr::clean_instance();
 
     //最后调用基类的退出函数
-    Soar_Svrd_Appliction::app_exit();
+    soar::Svrd_Appliction::app_exit();
 
     return 0;
 }

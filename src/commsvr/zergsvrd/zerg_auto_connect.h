@@ -44,7 +44,7 @@ public:
     * @param      reconnect_svcid 要进行重连的主路由信息
     * @note       为什么不把一个TCP_Svc_Handler作为参数返回,因为在发起Connect过程中,也可能handle_close.
     */
-    int connect_server_bysvcid(const SERVICES_ID &reconnect_svcid);
+    int connect_server_bysvcid(const soar::SERVICES_ID &reconnect_svcid);
 
 
     /*!
@@ -62,7 +62,7 @@ public:
     * @return     bool
     * @param      svc_id SVC ID
     */
-    bool is_auto_connect_svcid(const SERVICES_ID &svc_id);
+    bool is_auto_connect_svcid(const soar::SERVICES_ID &svc_id);
 
 protected:
 
@@ -74,14 +74,14 @@ protected:
     * @param      inet_addr    地址
     * @param      svc_handle , 如果已经有相应的连接，在这个地方返回对用的Handle
     */
-    int connect_one_server(const SERVICES_ID &svc_id,
+    int connect_one_server(const soar::SERVICES_ID &svc_id,
                            const ZCE_Sockaddr_In &inet_addr,
                            TCP_Svc_Handler *&svc_handle);
 
 protected:
 
     //
-    typedef std::unordered_set<SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
+    typedef std::unordered_set<soar::SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
     typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;

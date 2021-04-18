@@ -287,7 +287,7 @@ public:
 
     //先异或，使用整数，加快速度，原来对uint64_t做过优化，希望在OS64位上，能更加高效，
     //但结果又被编译器优化折腾了2天，对于O1正常，O2以上就会发生问题问题，导致执行错误，（错误现象是取出的一个值的部分错误）
-    //我有点怀疑问题是buffer长度问题
+    //简单的疑惑而已，没有考虑字节序
 #ifndef CRYPT_XOR_BLOCK
 #define CRYPT_XOR_BLOCK(result_ptr,x_ptr,y_ptr)  \
     for (size_t i = 0; i < ENCRYPT_STRATEGY::BLOCK_SIZE / sizeof(uint32_t); ++i) \
@@ -307,13 +307,15 @@ public:
     @param[in]     src_len     原文长度
     @param[out]    cipher_buf  密文的BUFFER
     @param[in,out] cipher_len  密文长度，入参标识密文BUFFER的长度，返回时，返回密文的实际长度
+    @param[in]     iv          initialization vector,初始化的向量，为NULL表示你不关心，我会用随机数帮你填充，
     */
     static int cbc_encrypt(const unsigned char *key,
                            size_t key_len,
                            const unsigned char *src_buf,
                            size_t src_len,
                            unsigned char *cipher_buf,
-                           size_t *cipher_len)
+                           size_t *cipher_len,
+                           const uint32_t *iv = NULL)
     {
 
         //检查参数，如果不合适断言或者返回错误
@@ -328,7 +330,7 @@ public:
             || key_len <= 0
             || src_len <= 0)
         {
-            ZCE_LOG(RS_ERROR, "Fun[%s] key[%p][%lu] soucre[%p][%lu] cipher[%p][%lu] ",
+            ZCE_LOG(RS_ERROR, "Fun[%s] key[%p][%lu] soucre[%p][%lu] cipher[%p][%lu]",
                     __ZCE_FUNC__,
                     key,
                     key_len,
@@ -348,7 +350,8 @@ public:
                                 src_buf,
                                 src_len,
                                 cipher_buf,
-                                cipher_len);
+                                cipher_len,
+                                iv);
     }
 
     /*!
@@ -362,7 +365,8 @@ public:
                                 const unsigned char *src_buf,
                                 size_t src_len,
                                 unsigned char *cipher_buf,
-                                size_t *cipher_len)
+                                size_t *cipher_len,
+                                const uint32_t *iv = NULL)
     {
         //加密BUF所需要的长度，
         size_t cphbuf_need_len  = ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE  + 2 )
@@ -399,11 +403,20 @@ public:
         unsigned char xor_result[ENCRYPT_STRATEGY::BLOCK_SIZE] = {0};
         unsigned char last_prc_block[ENCRYPT_STRATEGY::BLOCK_SIZE + sizeof(uint32_t)] = {0};
 
-        //用随机数算法生成IV.填补进入密文数据区
+        //用你给出的iv以及随机数算法生成IV.填补进入密文数据区，目前设计的可以填充的iv 4个字节
         unsigned char *write_ptr = cipher_buf;
+
         for (size_t i = 0; i < ENCRYPT_STRATEGY::BLOCK_SIZE / sizeof(uint32_t); ++i)
         {
-            ZUINT32_TO_INDEX(write_ptr, i, zce::mt19937_instance::instance()->rand());
+            if (i == 0 && iv)
+            {
+                ZLEUINT32_TO_BYTE(write_ptr,*iv)
+            }
+            else
+            {
+                ZLEUINT32_TO_INDEX(write_ptr,i,zce::mt19937_instance::instance()->rand());
+            }
+            write_ptr += sizeof(uint32_t);
         }
         const unsigned char *xor_ptr = write_ptr;
         write_ptr += ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -488,7 +501,8 @@ public:
                            const unsigned char *cipher_buf,
                            size_t cipher_len,
                            unsigned char *src_buf,
-                           size_t *src_len)
+                           size_t *src_len,
+                           uint32_t *iv = NULL)
     {
         //
         size_t srcbuf_need_len  = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -530,7 +544,8 @@ public:
                                 cipher_buf,
                                 cipher_len,
                                 src_buf,
-                                src_len);
+                                src_len,
+                                iv);
 
     }
 
@@ -544,7 +559,8 @@ public:
                                 const unsigned char *cipher_buf,
                                 size_t cipher_len,
                                 unsigned char *src_buf,
-                                size_t *src_len)
+                                size_t *src_len,
+                                uint32_t *iv = NULL)
     {
         //
         size_t srcbuf_need_len  = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
@@ -580,7 +596,10 @@ public:
         const unsigned char *read_ptr = (cipher_buf +  ENCRYPT_STRATEGY::BLOCK_SIZE);
         size_t remain_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE ;
         unsigned char decrypt_result[ENCRYPT_STRATEGY::BLOCK_SIZE];
-
+        if (iv)
+        {
+            *iv = ZBYTE_TO_LEUINT32(cipher_buf);
+        }
         while (remain_len > 0 )
         {
             //使用加密算法的ECB模式对数据块进行加密

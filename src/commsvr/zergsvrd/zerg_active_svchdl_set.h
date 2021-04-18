@@ -32,10 +32,10 @@ public:
     /*!
     * @brief      根据SVCID，在Active的Handle里面查询是否尊重
     * @return     int ==0 表示查询成功，
-    * @param[in]  svrinfo    查询的SERVICES_ID,
+    * @param[in]  svrinfo    查询的soar::SERVICES_ID,
     * @param[out] svc_handle 返回的对应的handle
     */
-    int find_handle_by_svcid(const SERVICES_ID &svc_id,
+    int find_handle_by_svcid(const soar::SERVICES_ID &svc_id,
                              TCP_Svc_Handler *&svc_handle);
 
     /*!
@@ -97,7 +97,7 @@ public:
     * @param      svc_id      新增加的服务器的SVC ID
     * @param      new_svchdl  新增加的服务器的句柄
     */
-    int add_services_peerinfo(const SERVICES_ID &svc_id,
+    int add_services_peerinfo(const soar::SERVICES_ID &svc_id,
                               TCP_Svc_Handler *new_svchdl);
 
 
@@ -109,18 +109,18 @@ public:
     * @param      old_svchdl 如果原来有一个svrinfo对应的Hdler,返回通知你,
     * @note       返回的old_svchdl,可以用于清理
     */
-    int replace_services_peerInfo(const SERVICES_ID &svc_id,
+    int replace_services_peerInfo(const soar::SERVICES_ID &svc_id,
                                   TCP_Svc_Handler *new_svchdl,
                                   TCP_Svc_Handler *&old_svchdl);
 
 
     /*!
-    * @brief      根据SERVICES_ID,删除PEER信息,
+    * @brief      根据soar::SERVICES_ID,删除PEER信息,
     * @return     int    ==0表示删除成功
     * @param      svc_id   要删除服务器的SVC ID
     * @note
     */
-    int del_services_peerInfo(const SERVICES_ID &svc_id);
+    int del_services_peerInfo(const soar::SERVICES_ID &svc_id);
 
     ///当前的数量
     size_t get_services_peersize();
@@ -145,7 +145,7 @@ protected:
     };
 
     ///
-    typedef std::unordered_map<SERVICES_ID, TCP_Svc_Handler *, HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
+    typedef std::unordered_map<soar::SERVICES_ID, TCP_Svc_Handler *, HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
 
     ///用于根据TYPE选择一个任意服务器，或者根据TYPE广播给所有这个类型的服务器
     typedef std::unordered_map<uint16_t, SERVICES_ID_TABLE > MAP_OF_TYPE_TO_IDTABLE;

@@ -6,7 +6,7 @@
 
 
 //TCP Accept 处理的EventHandler,
-TCP_Accept_Handler::TCP_Accept_Handler(const SERVICES_ID &svcid,
+TCP_Accept_Handler::TCP_Accept_Handler(const soar::SERVICES_ID &svcid,
                                        const ZCE_Sockaddr_In &addr):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     my_svc_info_(svcid),

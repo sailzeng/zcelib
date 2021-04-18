@@ -20,7 +20,7 @@ public:
     * @param      svcid  相应的svc id
     * @param      addr   相应的IP地址
     */
-    TCP_Accept_Handler(const SERVICES_ID &svcid,
+    TCP_Accept_Handler(const soar::SERVICES_ID &svcid,
                        const ZCE_Sockaddr_In &addr);
 
 protected:
@@ -52,7 +52,7 @@ protected:
     ZCE_Socket_Acceptor      peer_acceptor_;
 
     ///自己的 SVC INFO
-    SERVICES_ID              my_svc_info_;
+    soar::SERVICES_ID              my_svc_info_;
 
     ///邦定的地址
     ZCE_Sockaddr_In          accept_bind_addr_;
