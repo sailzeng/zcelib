@@ -675,9 +675,9 @@ int TCP_Svc_Handler::handle_close()
             //通知后面的服务器
 
             Zerg_Buffer *close_buf = zbuffer_storage_->allocate_buffer();
-            soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(close_buf->buffer_data_);
+            soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(close_buf->buffer_data_);
 
-            proc_frame->init_framehead(soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
+            proc_frame->init_head(soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD, 0, INNER_REG_SOCKET_CLOSED);
             proc_frame->send_service_ = peer_svr_id_;
             zerg_comm_mgr_->pushback_recvpipe(proc_frame);
             zbuffer_storage_->free_byte_buffer(close_buf);
@@ -736,16 +736,16 @@ int TCP_Svc_Handler::handle_close()
 
 //收到一个完整的帧后的预处理工作
 //合并发送队列
-int TCP_Svc_Handler::preprocess_recvframe(soar::Zerg_Frame_Head *proc_frame)
+int TCP_Svc_Handler::preprocess_recvframe(soar::Zerg_Frame *proc_frame)
 {
 
-    //soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>( rcv_buffer_->buffer_data_);
+    //soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame *>( rcv_buffer_->buffer_data_);
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //必须解码,否则后面的管道无法识别
-    proc_frame->framehead_decode();
-    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "preprocess_recvframe After framehead_decode:", proc_frame);
+    proc_frame->ntoh();
+    DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "preprocess_recvframe After framehead_decode:", proc_frame);
 
     //清理内部选项,避免被错误数据或者其他人整蛊
     proc_frame->clear_inner_option();
@@ -817,7 +817,7 @@ int TCP_Svc_Handler::preprocess_recvframe(soar::Zerg_Frame_Head *proc_frame)
             old_hdl->peer_status_ = PEER_STATUS_JUST_ACCEPT;
             old_hdl->send_simple_zerg_cmd(ZERG_REPEAT_LOGIN_KICK_OLD_RSP,
                                           peer_svr_id_,
-                                          soar::Zerg_Frame_Head::DESC_SNDPRC_CLOSE_PEER);
+                                          soar::Zerg_Frame::DESC_SNDPRC_CLOSE_PEER);
 
             //不直接关闭了，而是先把命令发送完成了，再关闭
             //old_hdl->handle_close(ACE_INVALID_HANDLE, 0);
@@ -859,7 +859,7 @@ int TCP_Svc_Handler::preprocess_recvframe(soar::Zerg_Frame_Head *proc_frame)
 
     //如果是链接注册的请求，回答一个应答
     //如果想做复杂的交互控制，应该在这个地方加代码。
-    if (ZERG_CONNECT_REGISTER_REQ == proc_frame->frame_command_)
+    if (ZERG_CONNECT_REGISTER_REQ == proc_frame->command_)
     {
         send_simple_zerg_cmd(ZERG_CONNECT_REGISTER_RSP, peer_svr_id_);
     }
@@ -1023,20 +1023,20 @@ int TCP_Svc_Handler::check_recv_full_frame(bool &bfull,
         whole_frame_len = ntohl(whole_frame_len);
 
         //如果包的长度大于定义的最大长度,小于最小长度,见鬼去,出现做个错误不是代码错误，就是被人整蛊
-        if (whole_frame_len > soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME || whole_frame_len < soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD)
+        if (whole_frame_len > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME || whole_frame_len < soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD)
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] Recieve error frame,services[%u|%u],IP[%s], famelen %u , MAX_LEN_OF_APPFRAME:%u ,recv and use len:%u|%u.",
                     peer_svr_id_.services_type_,
                     peer_svr_id_.services_id_,
                     peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                     whole_frame_len,
-                    soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME,
+                    soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                     rcv_buffer_->size_of_buffer_,
                     rcv_buffer_->size_of_use_);
             //
-            DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG,
+            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,
                                      "Error frame before framehead_decode,",
-                                     reinterpret_cast<soar::Zerg_Frame_Head *>(rcv_buffer_->buffer_data_));
+                                     reinterpret_cast<soar::Zerg_Frame *>(rcv_buffer_->buffer_data_));
             return SOAR_RET::ERR_ZERG_GREATER_MAX_LEN_FRAME;
         }
     }
@@ -1246,29 +1246,29 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
     //一个队列中间可能有多个FRAME，要对头部进行解码，所以必须一个个弄出来
     while (tmpbuf->size_of_buffer_ != tmpbuf->size_of_use_)
     {
-        soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(tmpbuf->buffer_data_ +
+        soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_ +
                                                                         tmpbuf->size_of_buffer_);
 
         //如果FRAME已经编码
         if (frame_encode)
         {
-            proc_frame->framehead_decode();
+            proc_frame->ntoh();
         }
 
         //检查已经使用的地址表示这个帧是否发送了,如果已经发送了，这个帧就不要处理
 
         //如果没有发送完成，记录下来，进行处理
-        if (use_start < tmpbuf->size_of_buffer_ + proc_frame->frame_length_)
+        if (use_start < tmpbuf->size_of_buffer_ + proc_frame->length_)
         {
 
             //如果是要记录的命令，记录下来，可以帮忙回溯一些问题
-            if (proc_frame->frame_option_ & soar::Zerg_Frame_Head::DESC_SEND_FAIL_RECORD)
+            if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD)
             {
                 ZCE_LOG(RS_ERROR, "[zergsvr] Connect peer ,send frame fail.frame len[%u] frame command[%u] frame "
                         "uid[%u] snd svcid[%u|%u] proxy svc [%u|%u] recv[%u|%u] address[%s],peer status[%u]. ",
-                        proc_frame->frame_length_,
-                        proc_frame->frame_command_,
-                        proc_frame->frame_userid_,
+                        proc_frame->length_,
+                        proc_frame->command_,
+                        proc_frame->user_id_,
                         proc_frame->send_service_.services_type_,
                         proc_frame->send_service_.services_id_,
                         proc_frame->proxy_service_.services_type_,
@@ -1285,7 +1285,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf, bool frame_encode)
         server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER, 0, 0, 1);
 
         //
-        tmpbuf->size_of_buffer_ += proc_frame->frame_length_;
+        tmpbuf->size_of_buffer_ += proc_frame->length_;
     }
 
     //归还到POOL中间。
@@ -1359,8 +1359,8 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
     int ret = 0;
     server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER, 0, 0, 1);
     //
-    soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(tmpbuf->buffer_data_);
-    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "process_send_data Before framehead_encode:", proc_frame);
+    soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
+    DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "process_send_data Before framehead_encode:", proc_frame);
 
     soar::SERVICES_ID *p_sendto_svrinfo = NULL;
 
@@ -1477,11 +1477,11 @@ int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
                     "have been existed. frame command[%u]. uid[%u] frame length[%u].",
                     p_sendto_svrinfo->services_type_,
                     p_sendto_svrinfo->services_id_,
-                    proc_frame->frame_command_,
-                    proc_frame->frame_userid_,
-                    proc_frame->frame_length_
+                    proc_frame->command_,
+                    proc_frame->user_id_,
+                    proc_frame->length_
                    );
-            DEBUGDUMP_FRAME_HEAD_DBG(RS_ERROR, "[SEND TO NO EXIST HANDLE]", proc_frame );
+            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_ERROR, "[SEND TO NO EXIST HANDLE]", proc_frame );
             return SOAR_RET::ERR_ZERG_SEND_FRAME_FAIL;
         }
 
@@ -1521,9 +1521,9 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     //    cmd);
     //向对方发送一个心跳包
     Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-    soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(tmpbuf->buffer_data_);
+    soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
 
-    proc_frame->init_framehead(soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD, option, cmd);
+    proc_frame->init_head(soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD, option, cmd);
     //注册命令
     proc_frame->send_service_ = my_svc_id_;
 
@@ -1537,7 +1537,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
     proc_frame->recv_service_ = recv_services_info;
 
     //
-    tmpbuf->size_of_use_ = soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD;
+    tmpbuf->size_of_use_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
 
     //
     return put_frame_to_sendlist(tmpbuf);
@@ -1560,10 +1560,10 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(tmpbuf->buffer_data_);
+    soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
 
     //如果是通知关闭端口
-    if (proc_frame->frame_command_ == INNER_RSP_CLOSE_SOCKET)
+    if (proc_frame->command_ == INNER_RSP_CLOSE_SOCKET)
     {
         ZCE_LOG(RS_INFO, "[zergsvr] Recvice CMD_RSP_CLOSE_SOCKET,services[%u|%u] IP[%s] Svchanle will close.",
                 peer_svr_id_.services_type_,
@@ -1580,10 +1580,10 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
     }
 
     //如果发送完成,并且后台业务要求关闭端口,注意必须转换网络序
-    if (proc_frame->frame_option_ & soar::Zerg_Frame_Head::DESC_SNDPRC_CLOSE_PEER)
+    if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_SNDPRC_CLOSE_PEER)
     {
         ZCE_LOG(RS_INFO, "[zergsvr] This Peer Services[%u|%u] IP|Port :[%s] will close when all frame"
-                " send complete ,because send frame has option soar::Zerg_Frame_Head::DESC_SNDPRC_CLOSE_PEER.",
+                " send complete ,because send frame has option soar::Zerg_Frame::DESC_SNDPRC_CLOSE_PEER.",
                 peer_svr_id_.services_type_,
                 peer_svr_id_.services_id_,
                 peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
@@ -1658,7 +1658,7 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     }
 
     //如果倒数第2个桶有能力放下倒数第1个桶的FRAME数据，则进行合并操作。
-    if (soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
+    if (soar::Zerg_Frame::MAX_LEN_OF_APPFRAME - snd_buffer_deque_[sz_deque - 2]->size_of_use_ > snd_buffer_deque_[sz_deque - 1]->size_of_use_)
     {
         //将倒数第1个节点的数据放入倒数第2个节点中间。所以实际的Cache能力是非常强的，
         //空间利用率也很高。越发佩服我自己了。
@@ -1676,11 +1676,11 @@ void TCP_Svc_Handler::unite_frame_sendlist()
     ////下面的代码用于合并的测试，平常会注释掉
     //else
     //{
-    //    ZCE_LOGMSG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME=%u,"
+    //    ZCE_LOGMSG_DEBUG(RS_DEBUG,"Goto unite_frame_sendlist sz_deque=%u,soar::Zerg_Frame::MAX_LEN_OF_APPFRAME=%u,"
     //        "snd_buffer_deque_[sz_deque-2]->size_of_use_=%u,"
     //        "snd_buffer_deque_[sz_deque-1]->size_of_use_=%u.",
     //        sz_deque,
-    //        soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME,
+    //        soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
     //        snd_buffer_deque_[sz_deque-2]->size_of_use_,
     //        snd_buffer_deque_[sz_deque-1]->size_of_use_);
     //}
@@ -1730,7 +1730,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             break;
         }
 
-        soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_);
+        soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_use_);
 
         //如果已经收集了一个数据
         ret = preprocess_recvframe(proc_frame);
@@ -1752,9 +1752,9 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
                         peer_svr_id_.services_type_,
                         peer_svr_id_.services_id_,
                         peer_address_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
-                        proc_frame->frame_length_,
-                        proc_frame->frame_command_,
-                        proc_frame->frame_userid_,
+                        proc_frame->length_,
+                        proc_frame->command_,
+                        proc_frame->user_id_,
                         peer_svr_id_.services_type_, peer_svr_id_.services_id_,
                         my_svc_id_.services_type_, my_svc_id_.services_id_,
                         proc_frame->send_service_.services_type_,

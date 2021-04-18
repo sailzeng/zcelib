@@ -9,8 +9,8 @@ FSMTask_TaskBase::FSMTask_TaskBase():
     task_run_(false),
     task_frame_buf_(NULL)
 {
-    task_frame_buf_ = soar::Zerg_Frame_Head::new_frame(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME + 16);
-    task_frame_buf_->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME);
+    task_frame_buf_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME + 16);
+    task_frame_buf_->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
 }
 
 //
@@ -18,7 +18,7 @@ FSMTask_TaskBase::~FSMTask_TaskBase()
 {
     if (task_frame_buf_ )
     {
-        soar::Zerg_Frame_Head::delete_frame(task_frame_buf_);
+        soar::Zerg_Frame::delete_frame(task_frame_buf_);
         task_frame_buf_ = NULL;
     }
 }
@@ -71,7 +71,7 @@ int FSMTask_TaskBase::svc (void)
 
         for (; recv_frame_num <= once_max_get_sendqueue_; ++recv_frame_num)
         {
-            soar::Zerg_Frame_Head *tmp_frame = NULL;
+            soar::Zerg_Frame *tmp_frame = NULL;
 
             //忙的时候只测试，不阻塞等待
             if (idle <= DEFAULT_IDLE_PROCESS_THRESHOLD)
@@ -92,7 +92,7 @@ int FSMTask_TaskBase::svc (void)
 
             // 一旦不忙时收到数据，idle状态改为忙
             idle = 0;
-            DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM SEND QUEUE FRAME:", tmp_frame);
+            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM SEND QUEUE FRAME:", tmp_frame);
 
             ret = taskprocess_appframe(tmp_frame);
             //回收FRAME

@@ -73,12 +73,12 @@ int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
     self_svc_info_ = selfsvr;
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
-    trans_send_buffer_ = soar::Zerg_Frame_Head::new_frame(max_frame_len + 32);
-    trans_send_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
-    trans_recv_buffer_ = soar::Zerg_Frame_Head::new_frame(max_frame_len + 32);
-    trans_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
-    fake_recv_buffer_ = soar::Zerg_Frame_Head::new_frame(max_frame_len + 32);
-    fake_recv_buffer_->init_framehead(max_frame_len, CMD_INVALID_CMD);
+    trans_send_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
+    trans_send_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    trans_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
+    trans_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    fake_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
+    fake_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
     if (init_inner_queue)
@@ -116,17 +116,17 @@ void FSM_Manager::finish()
     }
     if (trans_send_buffer_)
     {
-        soar::Zerg_Frame_Head::delete_frame(trans_send_buffer_);
+        soar::Zerg_Frame::delete_frame(trans_send_buffer_);
         trans_send_buffer_ = NULL;
     }
     if (trans_recv_buffer_)
     {
-        soar::Zerg_Frame_Head::delete_frame(trans_recv_buffer_);
+        soar::Zerg_Frame::delete_frame(trans_recv_buffer_);
         trans_recv_buffer_ = NULL;
     }
     if (fake_recv_buffer_)
     {
-        soar::Zerg_Frame_Head::delete_frame(fake_recv_buffer_);
+        soar::Zerg_Frame::delete_frame(fake_recv_buffer_);
         fake_recv_buffer_ = NULL;
     }
     ZCE_Async_FSMMgr::finish();
@@ -153,7 +153,7 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_trans)
     int ret = 0;
     create_trans = 0;
 
-    soar::Zerg_Frame_Head *tmp_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(trans_recv_buffer_);
+    soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(trans_recv_buffer_);
 
     for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
     {
@@ -165,7 +165,7 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_trans)
             return 0;
         }
 
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV PIPE FRAME", tmp_frame );
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV PIPE FRAME", tmp_frame );
 
         //是否创建一个事务，
         bool bcrtcx = false;
@@ -190,7 +190,7 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_trans)
 }
 
 //将数据放入发送管道
-int FSM_Manager::push_back_sendpipe(soar::Zerg_Frame_Head *proc_frame)
+int FSM_Manager::push_back_sendpipe(soar::Zerg_Frame *proc_frame)
 {
     //Soar_MMAP_BusPipe必须先初始化....
     return zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
@@ -243,26 +243,26 @@ void FSM_Manager::unlock_qquin_trans_cmd(unsigned int user_id, unsigned int lock
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_appframe(soar::Zerg_Frame_Head *zerg_frame, bool &bcrttx)
+int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame, bool &bcrttx)
 {
     bcrttx = false;
     int ret = 0;
 
     //如果是跟踪命令，打印出来
-    if (zerg_frame->frame_option_.option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+    if (zerg_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
     {
-        soar::Zerg_Frame_Head::dumpoutput_framehead(RS_INFO, "[TRACK MONITOR][TRANS PROCESS]",zerg_frame);
+        DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][TRANS PROCESS]",zerg_frame);
     }
 
 
-    bool is_reg_cmd = is_register_cmd(zerg_frame->frame_command_);
+    bool is_reg_cmd = is_register_cmd(zerg_frame->command_);
 
     //是一个激活事务的命令
     if (is_reg_cmd)
     {
 
         unsigned int id = 0;
-        ret = create_asyncobj(zerg_frame->frame_command_,zerg_frame, &id);
+        ret = create_asyncobj(zerg_frame->command_,zerg_frame, &id);
 
         bcrttx = true;
 
@@ -271,19 +271,19 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame_Head *zerg_frame, bool &bcrtt
         ++cycle_gentrans_counter_;
 
         ZCE_LOG(RS_DEBUG, "Create Trascation ,Command:%u Transaction ID:%u .",
-                zerg_frame->frame_command_, id);
+                zerg_frame->command_, id);
     }
     else
     {
 
-        ret = active_asyncobj(zerg_frame->backfill_trans_id_,zerg_frame);
+        ret = active_asyncobj(zerg_frame->backfill_fsm_id_,zerg_frame);
         if (ret != 0 )
         {
-            DEBUGDUMP_FRAME_HEAD(RS_ERROR, "No use frame:",zerg_frame);
+            DUMP_ZERG_FRAME_HEAD(RS_ERROR, "No use frame:",zerg_frame);
             return ret;
         }
 
-        ZCE_LOG(RS_DEBUG, "Find raw Transaction ID: %u. ",zerg_frame->backfill_trans_id_);
+        ZCE_LOG(RS_DEBUG, "Find raw Transaction ID: %u. ",zerg_frame->backfill_fsm_id_);
     }
 
     return 0;
@@ -299,21 +299,21 @@ int FSM_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
                                                     unsigned int option)
 {
     //
-    soar::Zerg_Frame_Head *rsp_msg = reinterpret_cast<soar::Zerg_Frame_Head *>(trans_send_buffer_);
-    rsp_msg->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME);
+    soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
+    rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
 
-    rsp_msg->frame_length_ = soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD;
-    rsp_msg->frame_command_ = cmd;
-    rsp_msg->frame_userid_ = qquin;
+    rsp_msg->length_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
+    rsp_msg->command_ = cmd;
+    rsp_msg->user_id_ = qquin;
 
-    rsp_msg->transaction_id_ = 0;
+    rsp_msg->fsm_id_ = 0;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
     rsp_msg->send_service_ =  this->self_svc_info_.svc_id_;
     rsp_msg->u32_option_ = option;
 
     //回填事务ID
-    rsp_msg->backfill_trans_id_ = backfill_trans_id;
+    rsp_msg->backfill_fsm_id_ = backfill_trans_id;
 
     return push_back_sendpipe(rsp_msg);
 }
@@ -324,10 +324,10 @@ void FSM_Manager::enable_trans_statistics (const ZCE_Time_Value *stat_clock)
     statistics_clock_ = stat_clock;
 }
 
-int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame_Head *post_frame)
+int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame *post_frame)
 {
     int ret = 0;
-    soar::Zerg_Frame_Head *tmp_frame = NULL;
+    soar::Zerg_Frame *tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     inner_frame_mallocor_->clone_appframe(post_frame, tmp_frame);
@@ -342,7 +342,7 @@ int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame_Head *post_frame)
                 "Send queue message_count:%u message_bytes:%u. ",
                 ret,
                 message_queue_->size(),
-                message_queue_->size() * sizeof(soar::Zerg_Frame_Head *));
+                message_queue_->size() * sizeof(soar::Zerg_Frame *));
         //出错了以后还回去
         inner_frame_mallocor_->free_appframe(tmp_frame);
 
@@ -362,7 +362,7 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame, size_t &create_trans)
     for (proc_frame = 0; message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
     {
 
-        soar::Zerg_Frame_Head *tmp_frame = NULL;
+        soar::Zerg_Frame *tmp_frame = NULL;
         //
         ret = message_queue_->dequeue(tmp_frame);
 
@@ -373,7 +373,7 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame, size_t &create_trans)
             return 0;
         }
 
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame );
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame );
 
         //是否创建一个事务，
         bool bcrtcx = false;

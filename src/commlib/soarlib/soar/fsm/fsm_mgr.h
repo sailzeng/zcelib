@@ -47,7 +47,7 @@ SEND PIPE<=================================
 ************************************************************************************/
 class Soar_MMAP_BusPipe;
 class FSM_Base;
-class soar::Zerg_Frame_Head;
+class soar::Zerg_Frame;
 
 /******************************************************************************************
 struct TRANS_LOCK_RECORD 加锁的记录单元
@@ -100,7 +100,7 @@ protected:
 
 
     ///内部的APPFRAME的消息队列，
-    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH,soar::Zerg_Frame_Head *> Inner_Frame_Queue;
+    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH,soar::Zerg_Frame *> Inner_Frame_Queue;
     ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
     typedef ZergFrame_Mallocor<ZCE_Null_Mutex> Inner_Frame_Mallocor;
 
@@ -122,7 +122,7 @@ protected:
     * @param      crttx 是否创建事务
     * @note       
     */
-    int process_appframe( soar::Zerg_Frame_Head *zerg_frame, bool &crttx );
+    int process_appframe( soar::Zerg_Frame *zerg_frame, bool &crttx );
 
 public:
 
@@ -168,7 +168,7 @@ public:
                    size_t sztransmap,
                    const soar::SERVICES_INFO &selfsvr,
                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                   unsigned int max_frame_len = soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME,
+                   unsigned int max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
 
@@ -279,7 +279,7 @@ public:
                                unsigned int option);
 
     //发送一个数据到PIPE
-    int push_back_sendpipe(soar::Zerg_Frame_Head *proc_frame);
+    int push_back_sendpipe(soar::Zerg_Frame *proc_frame);
 
 protected:
     //发送一消息头给一个服务器,内部函数
@@ -294,7 +294,7 @@ protected:
 protected:
 
     //发送一个数据到QUEUE
-    int postframe_to_msgqueue(soar::Zerg_Frame_Head *post_frame);
+    int postframe_to_msgqueue(soar::Zerg_Frame *post_frame);
 
     //注册TransID.
     int regiester_trans_id(unsigned int transid, unsigned int trans_cmd, FSM_Base *ptxbase);
@@ -344,12 +344,12 @@ protected:
     const ZCE_Time_Value       *statistics_clock_;
 
     //发送的缓冲区
-    soar::Zerg_Frame_Head      *trans_send_buffer_;
+    soar::Zerg_Frame      *trans_send_buffer_;
     //接受数据缓冲区
-    soar::Zerg_Frame_Head      *trans_recv_buffer_;
+    soar::Zerg_Frame      *trans_recv_buffer_;
 
     // fake数据缓冲区
-    soar::Zerg_Frame_Head      *fake_recv_buffer_;
+    soar::Zerg_Frame      *fake_recv_buffer_;
 
     //内部FRAME分配器
     Inner_Frame_Mallocor       *inner_frame_mallocor_;
@@ -413,19 +413,19 @@ int FSM_Manager::fake_receive_appframe(unsigned int cmd,
 {
     int ret = 0;
 
-    soar::Zerg_Frame_Head *tmp_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(fake_recv_buffer_);
-    tmp_frame->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
+    soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(fake_recv_buffer_);
+    tmp_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_userid_ = user_id;
+    tmp_frame->user_id_ = user_id;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_svc_info_;
     tmp_frame->proxy_service_ = proxy_svc;
 
-    tmp_frame->transaction_id_ = trans_id;
-    tmp_frame->backfill_trans_id_ = backfill_trans_id;
+    tmp_frame->fsm_id_ = trans_id;
+    tmp_frame->backfill_fsm_id_ = backfill_trans_id;
     tmp_frame->app_id_ = app_id;
 
-    ret = tmp_frame->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = tmp_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0)
     {
@@ -457,19 +457,19 @@ int FSM_Manager::fake_receive_appframe_buffer(unsigned int cmd,
 {
     int ret = 0;
 
-    soar::Zerg_Frame_Head *tmp_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(fake_recv_buffer_);
-    tmp_frame->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
+    soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(fake_recv_buffer_);
+    tmp_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    tmp_frame->frame_userid_ = user_id;
+    tmp_frame->user_id_ = user_id;
     tmp_frame->send_service_ = snd_svc;
     tmp_frame->recv_service_ = self_svc_info_.svc_id_;
     tmp_frame->proxy_service_ = proxy_svc;
 
-    tmp_frame->transaction_id_ = trans_id;
-    tmp_frame->backfill_trans_id_ = backfill_trans_id;
+    tmp_frame->fsm_id_ = trans_id;
+    tmp_frame->backfill_fsm_id_ = backfill_trans_id;
 
-    tmp_frame->frame_length_ = (unsigned int)(buff_size + soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD);
-    if (tmp_frame->frame_length_ > soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA)
+    tmp_frame->length_ = (unsigned int)(buff_size + soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD);
+    if (tmp_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA)
     {
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
@@ -526,21 +526,21 @@ int FSM_Manager::postframe_to_msgqueue(
     const T &info,
     unsigned int option)
 {
-    soar::Zerg_Frame_Head *rsp_msg = reinterpret_cast<soar::Zerg_Frame_Head *>(trans_send_buffer_);
-    rsp_msg->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
+    soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
+    rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-    rsp_msg->frame_userid_ = user_id;
-    rsp_msg->transaction_id_ = trans_id;
+    rsp_msg->user_id_ = user_id;
+    rsp_msg->fsm_id_ = trans_id;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
     rsp_msg->send_service_ = sndsvc;
 
     //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
-    rsp_msg->backfill_trans_id_ = backfill_trans_id;
+    rsp_msg->backfill_fsm_id_ = backfill_trans_id;
     rsp_msg->app_id_ = app_id;
 
     //拷贝发送的MSG Block
-    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+    int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {
@@ -549,7 +549,7 @@ int FSM_Manager::postframe_to_msgqueue(
 
     //相信这个锁不会占据主循环
     ret = postframe_to_msgqueue(rsp_msg);
-    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
+    DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO MESSAGE QUEUE FRAME", rsp_msg);
 
     if (ret != 0)
     {

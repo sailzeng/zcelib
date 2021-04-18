@@ -76,7 +76,7 @@ public:
                          const soar::SERVICES_ID &recv_service,
                          const soar::SERVICES_ID &send_service,
                          const soar::SERVICES_ID &proxy_service,
-                         size_t frame_len = soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME,
+                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                          bool is_check_conn_info = false);
 
     //发送数据
@@ -123,12 +123,12 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
                                          &lolo_recvdata_ip_,
                                          time_wait);
 
-    tibetan_recv_appframe_->framehead_decode();
+    tibetan_recv_appframe_->ntoh();
 
-    tibetan_recv_appframe_->dumpoutput_framehead("UDP recv", RS_DEBUG);
+    tibetan_recv_appframe_->dump_frame_head("UDP recv", RS_DEBUG);
 
 #if defined _DEBUG || defined DEBUG
-    ZCE_ASSERT(test_frame_len_ >= tibetan_recv_appframe_->frame_length_);
+    ZCE_ASSERT(test_frame_len_ >= tibetan_recv_appframe_->length_);
 #endif //#if defined _DEBUG || defined DEBUG
 
     //ret == 0
@@ -155,14 +155,14 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
     }
 
     //保存接收到的事务ID
-    recv_trans_id_ = tibetan_recv_appframe_->transaction_id_;
+    recv_trans_id_ = tibetan_recv_appframe_->fsm_id_;
     //数据包的长度
-    data_len = tibetan_recv_appframe_->frame_length_ - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
+    data_len = tibetan_recv_appframe_->length_ - Zerg_App_Frame::LEN_OF_APPFRAME_HEAD;
 
     if (data_len < 0)
     {
         ZCE_LOG(RS_ERROR, "[framework] UDP Receive Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
-                tibetan_recv_appframe_->frame_length_,
+                tibetan_recv_appframe_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()) );
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
@@ -199,7 +199,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
                                             unsigned int backfill_trans_id)
 {
     int ret = 0;
-    tibetan_send_appframe_->frame_command_ = cmd;
+    tibetan_send_appframe_->command_ = cmd;
 
     tibetan_send_appframe_->send_service_ = tibetan_send_service_;
     tibetan_send_appframe_->recv_service_ = tibetan_recv_service_;
@@ -213,11 +213,11 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
         ++trans_id_builder_;
     }
 
-    tibetan_send_appframe_->transaction_id_ = trans_id_builder_;
+    tibetan_send_appframe_->fsm_id_ = trans_id_builder_;
 
     //如果有回填数据
-    tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
-    tibetan_send_appframe_->frame_userid_ = user_id;
+    tibetan_send_appframe_->backfill_fsm_id_ = backfill_trans_id;
+    tibetan_send_appframe_->user_id_ = user_id;
 
     //填写GAME ID
     tibetan_send_appframe_->app_id_ = app_id;
@@ -229,7 +229,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
         return ret;
     }
 
-    int len = tibetan_send_appframe_->frame_length_;
+    int len = tibetan_send_appframe_->length_;
 
     //阻塞发送所有的数据
     tibetan_send_appframe_->framehead_encode();
@@ -245,7 +245,7 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
     if (socket_ret <= 0 )
     {
         ZCE_LOG(RS_ERROR, "[framework]UDP Send Zerg_App_Frame head len error ,frame len:%d,error[%u|%s].",
-                tibetan_recv_appframe_->frame_length_,
+                tibetan_recv_appframe_->length_,
                 zce::last_error(),
                 strerror(zce::last_error()) );
         return SOAR_RET::ERROR_ZULU_SEND_PACKAGE_FAIL;

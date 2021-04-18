@@ -14,13 +14,13 @@ static const unsigned char BASE64_ENC_MAP[64] =
 };
 
 //对一个内存块进行BASE64编码，
-int zce::base64_encode(const unsigned char *in,
+int zce::base64_encode(const char *in,
                        size_t in_len,
-                       unsigned char *out,
+                       char *out,
                        size_t *out_len)
 {
     size_t i, leven;
-    unsigned char *p;
+    char *p;
 
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL);
 
@@ -88,9 +88,9 @@ static const unsigned char BASE64_DECODE_MAP[256] =
 };
 
 //对一个内存块进行base64的解码
-int zce::base64_decode(const unsigned char *in,
+int zce::base64_decode(const char *in,
                        size_t in_len,
-                       unsigned char *out,
+                       char *out,
                        size_t *out_len)
 {
     size_t t, x, y, z;
@@ -161,9 +161,9 @@ static const char BASE16_ENC_LOWER_MAP[] = "0123456789abcdef";
 static const char BASE16_ENC_UPPER_MAP[] = "0123456789ABCDEF";
 
 //BASE16的编码
-int zce::base16_encode(const unsigned char *in,
+int zce::base16_encode(const char *in,
                        size_t in_len,
-                       unsigned char *out,
+                       char *out,
                        size_t *out_len)
 {
     ZCE_ASSERT(in != NULL && out != NULL && out_len != NULL );
@@ -176,8 +176,8 @@ int zce::base16_encode(const unsigned char *in,
         return -1;
     }
 
-    const unsigned char *p = in;
-    unsigned char *q = out;
+    const char *p = in;
+    char *q = out;
 
     for (size_t i = 0; i < in_len; i++)
     {
@@ -191,9 +191,9 @@ int zce::base16_encode(const unsigned char *in,
 }
 
 //BASE64的解码
-int zce::base16_decode(const unsigned char *in,
+int zce::base16_decode(const char *in,
                        size_t in_len,
-                       unsigned char *out,
+                       char *out,
                        size_t *out_len)
 {
     ZCE_ASSERT(in  != NULL  && out != NULL && out_len != NULL && in_len % 2 == 0 );
@@ -205,8 +205,8 @@ int zce::base16_decode(const unsigned char *in,
         return -1;
     }
 
-    unsigned char ch = 0;
-    unsigned char data1 = 0, data2 = 0;
+    char ch = 0;
+    char data1 = 0, data2 = 0;
     for (size_t i  = 0; i < in_len;)
     {
         ch = in[i];

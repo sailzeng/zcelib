@@ -61,26 +61,26 @@ void FSM_Base::on_start()
 
 
 //根据Frame初始化得到对方发送的信息
-void FSM_Base::create_init(soar::Zerg_Frame_Head *proc_frame)
+void FSM_Base::create_init(soar::Zerg_Frame *proc_frame)
 {
 
-    req_command_ = proc_frame->frame_command_;
+    req_command_ = proc_frame->command_;
 
     //得到发送服务器的信息,这段代码只在请求的时候有用.
     req_snd_service_ = proc_frame->send_service_;
     req_rcv_service_ = proc_frame->recv_service_;
     req_proxy_service_ = proc_frame->proxy_service_;
 
-    req_trans_id_ = proc_frame->transaction_id_;
-    req_backfill_trans_id_ = proc_frame->backfill_trans_id_;
+    req_trans_id_ = proc_frame->fsm_id_;
+    req_backfill_trans_id_ = proc_frame->backfill_fsm_id_;
 
-    req_user_id_ = proc_frame->frame_userid_;
+    req_user_id_ = proc_frame->user_id_;
 
     req_ip_address_ = proc_frame->send_ip_address_;
     req_frame_option_ = proc_frame->u32_option_;
 
     //如果有监控选项，提高日志级别，保证部分日志得到输出
-    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
     {
         trace_log_pri_ = RS_INFO;
     }
@@ -90,7 +90,7 @@ void FSM_Base::create_init(soar::Zerg_Frame_Head *proc_frame)
 
 void FSM_Base::on_run(void *outer_data, bool &continue_run)
 {
-    soar::Zerg_Frame_Head *recv_frame = (soar::Zerg_Frame_Head *)outer_data;
+    soar::Zerg_Frame *recv_frame = (soar::Zerg_Frame *)outer_data;
 
     //如果是第一次创建事物的时候，
     if (trans_create_)
@@ -114,8 +114,8 @@ void FSM_Base::on_run(void *outer_data, bool &continue_run)
             typeid(*this).name(),
             asyncobj_id_,
             fsm_stage_,
-            recv_frame->frame_command_,
-            recv_frame->transaction_id_
+            recv_frame->command_,
+            recv_frame->fsm_id_
            );
 
     trans_run(recv_frame, continue_run);
@@ -125,8 +125,8 @@ void FSM_Base::on_run(void *outer_data, bool &continue_run)
             typeid(*this).name(),
             asyncobj_id_,
             fsm_stage_,
-            recv_frame->frame_command_,
-            recv_frame->transaction_id_,
+            recv_frame->command_,
+            recv_frame->fsm_id_,
             continue_run ? "TRUE" : "FALSE",
             running_errno_
            );
@@ -198,19 +198,19 @@ void FSM_Base::on_timeout(const ZCE_Time_Value &now_time,
 
 
 //检查接受到的FRAME的数据和命令
-int FSM_Base::check_receive_frame(const soar::Zerg_Frame_Head *recv_frame,
+int FSM_Base::check_receive_frame(const soar::Zerg_Frame *recv_frame,
                                           unsigned int wait_cmd)
 {
     //
-    if (wait_cmd != CMD_INVALID_CMD && recv_frame->frame_command_ != wait_cmd)
+    if (wait_cmd != CMD_INVALID_CMD && recv_frame->command_ != wait_cmd)
     {
         ZCE_LOG(RS_ERROR, "[framework] %s:check_receive_frame error,Transaction id [%u] Wait command[%u],"
                 "Recieve command[%u] transaction ID:[%u].",
                 typeid(*this).name(),
                 asyncobj_id_,
                 wait_cmd,
-                recv_frame->frame_command_,
-                recv_frame->transaction_id_
+                recv_frame->command_,
+                recv_frame->fsm_id_
                );
         return SOAR_RET::ERROR_TRANSACTION_NEED_CMD_ERROR;
     }
@@ -348,9 +348,9 @@ int FSM_Base::sendbuf_to_service(unsigned int cmd,
                                          unsigned int option )
 {
     // 如果请求的命令要求要监控，后面的处理进行监控
-    if (req_frame_option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+    if (req_frame_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
     {
-        option |= soar::Zerg_Frame_Head::DESC_MONITOR_TRACK;
+        option |= soar::Zerg_Frame::DESC_MONITOR_TRACK;
     }
 
     //条用管理器的发送函数
@@ -375,9 +375,9 @@ int FSM_Base::response_buf_sendback(unsigned int cmd,
     // 回包不需要加监控标记吧？
 
     //加入UDP返回的代码部分
-    if (req_frame_option_ & soar::Zerg_Frame_Head::DESC_UDP_FRAME)
+    if (req_frame_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
     {
-        option |= soar::Zerg_Frame_Head::DESC_UDP_FRAME;
+        option |= soar::Zerg_Frame::DESC_UDP_FRAME;
     }
 
     //

@@ -6,7 +6,7 @@
 
 Soar_MMAP_BusPipe *Soar_MMAP_BusPipe::zerg_bus_instance_ = NULL;
 
-char Soar_MMAP_BusPipe::send_buffer_[soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME];
+char Soar_MMAP_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
 
 Soar_MMAP_BusPipe::Soar_MMAP_BusPipe():
     ZCE_BusPipe_TwoWay()
@@ -91,18 +91,18 @@ Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
                                            size_t buf_len,
                                            unsigned int option /*= 0*/)
 {
-    soar::Zerg_Frame_Head *send_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(send_buffer_);
+    soar::Zerg_Frame *send_frame = reinterpret_cast<soar::Zerg_Frame *>(send_buffer_);
 
-    send_frame->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
-    send_frame->frame_userid_ = user_id;
+    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    send_frame->user_id_ = user_id;
 
     send_frame->send_service_ = sendsvc;
     send_frame->proxy_service_ = proxysvc;
     send_frame->recv_service_ = rcvsvc;
 
     //填写事务ID和回填事务ID
-    send_frame->transaction_id_ = transaction_id;
-    send_frame->backfill_trans_id_ = backfill_trans_id;
+    send_frame->fsm_id_ = transaction_id;
+    send_frame->backfill_fsm_id_ = backfill_trans_id;
 
     int ret = send_frame->fill_appdata(buf_len, (const char *)buf);
 
@@ -120,7 +120,7 @@ Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
 
 
 //从RECV管道读取帧，
-int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame_Head *&proc_frame)
+int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame *&proc_frame)
 {
     int ret = pop_front_bus(RECV_PIPE_ID,reinterpret_cast<zce::lockfree::dequechunk_node *&>(proc_frame));
 
@@ -129,17 +129,17 @@ int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame_Head *&proc_frame)
     {
         monitor_->increase_once(COMM_STAT_RECV_PKG_COUNT,
                                 zerg_svr_info_.business_id_,
-                                proc_frame->frame_command_);
+                                proc_frame->command_);
         monitor_->increase_by_statid(COMM_STAT_RECV_PKG_BYTES,
                                      zerg_svr_info_.business_id_,
-                                     proc_frame->frame_command_,
-                                     proc_frame->frame_length_);
+                                     proc_frame->command_,
+                                     proc_frame->length_);
 
 
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-        if (proc_frame->frame_option_.option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+        if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
         {
-            soar::Zerg_Frame_Head::dumpoutput_frameinfo(RS_ERROR,"[TRACK MONITOR][Recv]",proc_frame);
+            DUMP_ZERG_FRAME_HEAD(RS_ERROR,"[TRACK MONITOR][Recv]",proc_frame);
         }
     }
 
@@ -147,21 +147,21 @@ int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame_Head *&proc_frame)
 }
 
 //向SEND管道写入帧，
-int Soar_MMAP_BusPipe::push_back_sendpipe(soar::Zerg_Frame_Head *proc_frame)
+int Soar_MMAP_BusPipe::push_back_sendpipe(soar::Zerg_Frame *proc_frame)
 {
-    DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG,"TO SEND PIPE FRAME:",proc_frame);
+    DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"TO SEND PIPE FRAME:",proc_frame);
 
-    if (proc_frame->frame_length_ > soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME || proc_frame->frame_length_ < soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD)
+    if (proc_frame->length_ > soar::Zerg_Frame::MAX_LEN_OF_APPFRAME || proc_frame->length_ < soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD)
     {
         ZCE_LOG(RS_ERROR,"[framework] Frame Len is error ,frame length :%u ,Please check your code.",
-                proc_frame->frame_length_);
+                proc_frame->length_);
         return SOAR_RET::ERROR_FRAME_DATA_IS_ERROR;
     }
 
     //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
-    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
     {
-        soar::Zerg_Frame_Head::dumpoutput_frameinfo(RS_ERROR,"[TRACK MONITOR][Send]",proc_frame);
+        DUMP_ZERG_FRAME_HEAD(RS_ERROR,"[TRACK MONITOR][Send]",proc_frame);
     }
 
     int ret = push_back_bus(SEND_PIPE_ID,
@@ -172,18 +172,18 @@ int Soar_MMAP_BusPipe::push_back_sendpipe(soar::Zerg_Frame_Head *proc_frame)
         // 发送失败, 管道满了
         monitor_->increase_once(COMM_STAT_SEND_PKG_FAIL,
                                 zerg_svr_info_.business_id_,
-                                proc_frame->frame_command_);
+                                proc_frame->command_);
         return SOAR_RET::ERROR_PIPE_IS_FULL;
     }
     else
     {
         monitor_->increase_once(COMM_STAT_SEND_PKG_SUCC,
                                 zerg_svr_info_.business_id_,
-                                proc_frame->frame_command_);
+                                proc_frame->command_);
         monitor_->increase_by_statid(COMM_STAT_SEND_PKG_BYTES,
                                      zerg_svr_info_.business_id_,
-                                     proc_frame->frame_command_,
-                                     proc_frame->frame_length_);
+                                     proc_frame->command_,
+                                     proc_frame->length_);
     }
 
     // 返回成功

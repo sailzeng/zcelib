@@ -8,7 +8,7 @@
 #include "soar/stat/define.h"
 #include "soar/svrd/cfg_fsm.h"
 
-class soar::Zerg_Frame_Head;
+class soar::Zerg_Frame;
 
 class  Soar_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
 {
@@ -35,9 +35,9 @@ public:
 
     //-----------------------------------------------------------------
     //从RECV管道读取帧
-    inline int pop_front_recvpipe(soar::Zerg_Frame_Head *&proc_frame);
+    inline int pop_front_recvpipe(soar::Zerg_Frame *&proc_frame);
     //向SEND管道写入帧
-    inline int push_back_sendpipe(soar::Zerg_Frame_Head *proc_frame);
+    inline int push_back_sendpipe(soar::Zerg_Frame *proc_frame);
 
     //原来的名字都是send_msg_to，一开始认为这样挺好的，但是逐步逐步的感觉发现修改替换的时候痛苦不少。
     //不确认改为pipe_sendmsg_to_service是不是一个好主意，但是试验一下?
@@ -117,7 +117,7 @@ protected:
     ///这个服务器的配置信息.
     soar::SERVICES_INFO  zerg_svr_info_;
     ///发送的缓冲区
-    static char          send_buffer_[soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME];
+    static char          send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
 
     ///监控对象
     Soar_Stat_Monitor   *monitor_ = nullptr;
@@ -248,10 +248,10 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
 {
     int ret = 0;
 
-    soar::Zerg_Frame_Head *send_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(send_buffer_);
+    soar::Zerg_Frame *send_frame = reinterpret_cast<soar::Zerg_Frame *>(send_buffer_);
 
-    send_frame->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
-    send_frame->frame_userid_ = user_id;
+    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    send_frame->user_id_ = user_id;
     send_frame->app_id_ = app_id;
 
     send_frame->send_service_ = sendsvc;
@@ -259,10 +259,10 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
     send_frame->recv_service_ = rcvsvc;
 
     //填写事务ID和回填事务ID
-    send_frame->transaction_id_ = transaction_id;
-    send_frame->backfill_trans_id_ = backfill_trans_id;
+    send_frame->fsm_id_ = transaction_id;
+    send_frame->backfill_fsm_id_ = backfill_trans_id;
 
-    ret = send_frame->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = send_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {

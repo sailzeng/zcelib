@@ -30,7 +30,7 @@ class FSMTask_Manger : public FSM_Manager
 protected:
 
     //ZCE_Message_Queue_Deque底层实现用的Deque
-    typedef ZCE_Message_Queue_Deque<ZCE_MT_SYNCH, soar::Zerg_Frame_Head *>  APPFRAME_MESSAGE_QUEUE;
+    typedef ZCE_Message_Queue_Deque<ZCE_MT_SYNCH, soar::Zerg_Frame *>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
     typedef ZergFrame_Mallocor<typename ZCE_MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
@@ -103,16 +103,16 @@ public:
     int stop_notify_task();
 
     //从recv的消息队列中去一个数据出来，进行超时等待
-    int dequeue_recvqueue(soar::Zerg_Frame_Head *&get_frame,ZCE_Time_Value &tv);
+    int dequeue_recvqueue(soar::Zerg_Frame *&get_frame,ZCE_Time_Value &tv);
 
     //从recv的消息队列中去一个数据出来，不进行超时等待
-    int trydequeue_recvqueue(soar::Zerg_Frame_Head *&get_frame);
+    int trydequeue_recvqueue(soar::Zerg_Frame *&get_frame);
 
     //从send的消息队列中去一个数据出来，进行超时等待
-    int dequeue_sendqueue(soar::Zerg_Frame_Head *&get_frame,ZCE_Time_Value &tv);
+    int dequeue_sendqueue(soar::Zerg_Frame *&get_frame,ZCE_Time_Value &tv);
 
     //从send的消息队列中去一个数据出来，不进行超时等待
-    int trydequeue_sendqueue(soar::Zerg_Frame_Head *&get_frame);
+    int trydequeue_sendqueue(soar::Zerg_Frame *&get_frame);
 
     bool is_sendqueue_empty() const
     {
@@ -121,12 +121,12 @@ public:
 
     //聚合frame_mallocor_的功能
     //从池子分配一个APPFRAME
-    soar::Zerg_Frame_Head *alloc_appframe(size_t frame_len)
+    soar::Zerg_Frame *alloc_appframe(size_t frame_len)
     {
         return frame_mallocor_->alloc_appframe(frame_len);
     }
     //释放一个APPFRAME到池子
-    void free_appframe(soar::Zerg_Frame_Head *proc_frame)
+    void free_appframe(soar::Zerg_Frame *proc_frame)
     {
         frame_mallocor_->free_appframe(proc_frame);
     }
@@ -141,7 +141,6 @@ public:
         unsigned int trans_id,
         unsigned int backfill_trans_id,
         const T &info,
-        unsigned int app_id = 0,
         unsigned int option = 0)
     {
         soar::SERVICES_ID proxysvc(0, 0);
@@ -153,7 +152,6 @@ public:
                                  proxysvc,
                                  self_svc_info_,
                                  info,
-                                 app_id,
                                  option);
     }
 
@@ -168,24 +166,22 @@ public:
         const soar::SERVICES_ID &proxysvc,
         const soar::SERVICES_ID &sndsvc,
         const T &info,
-        unsigned int app_id,
         unsigned int option)
     {
-        soar::Zerg_Frame_Head *rsp_msg = reinterpret_cast<soar::Zerg_Frame_Head *>(trans_send_buffer_);
-        rsp_msg->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
+        soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
+        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_userid_ = user_id;
-        rsp_msg->transaction_id_ = trans_id;
+        rsp_msg->user_id_ = user_id;
+        rsp_msg->fsm_id_ = trans_id;
         rsp_msg->recv_service_ = rcvsvc;
         rsp_msg->proxy_service_ = proxysvc;
         rsp_msg->send_service_ = sndsvc;
 
         //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
-        rsp_msg->backfill_trans_id_ = backfill_trans_id;
-        rsp_msg->app_id_ = app_id;
+        rsp_msg->backfill_fsm_id_ = backfill_trans_id;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
         {
@@ -194,7 +190,7 @@ public:
 
         //相信这个锁不会占据主循环
         ret = enqueue_sendqueue(rsp_msg, false);
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO SEND QUEUE FRAME", rsp_msg);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO SEND QUEUE FRAME", rsp_msg);
 
         if (ret != 0)
         {
@@ -214,7 +210,7 @@ public:
     * @param      alloc_frame  上一个参数的FRAME是否是从POOL中间取出的
     * @note       
     */
-    int enqueue_sendqueue(soar::Zerg_Frame_Head *post_frame,bool alloc_frame);
+    int enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_frame);
     
 
 
@@ -225,10 +221,10 @@ public:
     * @param      tv  相对时间
     * @note       
     */
-    int enqueue_recvqueue(const soar::Zerg_Frame_Head *post_frame, const ZCE_Time_Value *tv)
+    int enqueue_recvqueue(const soar::Zerg_Frame *post_frame, const ZCE_Time_Value *tv)
     {
         int ret = 0;
-        soar::Zerg_Frame_Head *tmp_frame = NULL;
+        soar::Zerg_Frame *tmp_frame = NULL;
         frame_mallocor_->clone_appframe(post_frame, tmp_frame);
         ret = recv_msg_queue_->enqueue(tmp_frame, *tv);
 
@@ -242,7 +238,7 @@ public:
         //测试时打开，
         //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Recv queue message_count:%u message_bytes:%u. ",
         //  recv_msg_queue_->size(),
-        //  recv_msg_queue_->size() * sizeof(soar::Zerg_Frame_Head *));
+        //  recv_msg_queue_->size() * sizeof(soar::Zerg_Frame *));
 
         return 0;
     }

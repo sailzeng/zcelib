@@ -4,7 +4,7 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
-class soar::Zerg_Frame_Head;
+class soar::Zerg_Frame;
 
 class FSMTask_TaskBase : public ZCE_Thread_Task
 {
@@ -41,33 +41,33 @@ protected:
     virtual int task_moonlighting (size_t &send_frame_num);
 
     //任务根据FRAME的处理
-    virtual int taskprocess_appframe(const soar::Zerg_Frame_Head *app_frame) = 0;
+    virtual int taskprocess_appframe(const soar::Zerg_Frame *app_frame) = 0;
 
 protected:
 
     //将数据放入管理器，
     template <class T>
-    int pushbak_mgr_recvqueue(const soar::Zerg_Frame_Head *recv_frame,
+    int pushbak_mgr_recvqueue(const soar::Zerg_Frame *recv_frame,
                               unsigned int cmd,
                               const T &info,
                               unsigned int option
                              )
     {
-        soar::Zerg_Frame_Head *rsp_msg = reinterpret_cast<soar::Zerg_Frame_Head *>(task_frame_buf_);
-        rsp_msg->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
+        soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(task_frame_buf_);
+        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_userid_ = recv_frame->frame_userid_;
+        rsp_msg->user_id_ = recv_frame->user_id_;
 
         rsp_msg->recv_service_ = recv_frame->send_service_;
         rsp_msg->proxy_service_ = recv_frame->proxy_service_;
         rsp_msg->send_service_ = recv_frame->recv_service_;
 
         //填写自己transaction_id_,
-        rsp_msg->transaction_id_ = 0;
-        rsp_msg->backfill_trans_id_ = recv_frame->transaction_id_;
+        rsp_msg->fsm_id_ = 0;
+        rsp_msg->backfill_fsm_id_ = recv_frame->fsm_id_;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
         {
@@ -89,7 +89,7 @@ protected:
             return ret;
         }
 
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO RECV QUEUE FRAME", rsp_msg);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO RECV QUEUE FRAME", rsp_msg);
         return 0;
     }
 
@@ -102,10 +102,10 @@ protected:
                               unsigned int option = 0
                              )
     {
-        soar::Zerg_Frame_Head *rsp_msg = reinterpret_cast<soar::Zerg_Frame_Head *>(task_frame_buf_);
-        rsp_msg->init_framehead(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME, option, cmd);
+        soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(task_frame_buf_);
+        rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
-        rsp_msg->frame_userid_ = user_id;
+        rsp_msg->user_id_ = user_id;
 
         soar::SERVICES_ID proxy_svcid(0, 0);
         rsp_msg->recv_service_ = mgr_svc_id_;
@@ -113,12 +113,12 @@ protected:
         rsp_msg->send_service_ = thread_svc_id_;
 
         //填写自己transaction_id_,
-        rsp_msg->transaction_id_ = 0;
-        rsp_msg->backfill_trans_id_ = backfill_trans_id;
+        rsp_msg->fsm_id_ = 0;
+        rsp_msg->backfill_fsm_id_ = backfill_trans_id;
         rsp_msg->app_id_ = 0;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
         if (ret != 0 )
         {
@@ -142,7 +142,7 @@ protected:
             return ret;
         }
 
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "TO RECV QUEUE FRAME", rsp_msg );
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "TO RECV QUEUE FRAME", rsp_msg );
         return 0;
     }
 
@@ -176,7 +176,7 @@ protected:
     bool                        task_run_;
 
     //QQPET APPFRAME
-    soar::Zerg_Frame_Head      *task_frame_buf_;
+    soar::Zerg_Frame      *task_frame_buf_;
 
 };
 

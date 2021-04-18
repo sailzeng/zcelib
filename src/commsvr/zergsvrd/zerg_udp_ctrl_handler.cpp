@@ -114,7 +114,7 @@ int UDP_Svc_Handler::handle_input()
         //如果出来成功
         if (szrevc > 0)
         {
-            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<soar::Zerg_Frame_Head *>(dgram_databuf_->buffer_data_));
+            zerg_comm_mgr_->pushback_recvpipe(reinterpret_cast<soar::Zerg_Frame *>(dgram_databuf_->buffer_data_));
         }
     }
 
@@ -152,10 +152,10 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     ZCE_Sockaddr_In     remote_addr;
 
-    soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *> (dgram_databuf_->buffer_data_);
+    soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *> (dgram_databuf_->buffer_data_);
 
     recvret = dgram_peer_.recvfrom(dgram_databuf_->buffer_data_,
-                                   soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA,
+                                   soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,
                                    0,
                                    &remote_addr);
 
@@ -204,10 +204,10 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER, 0, 0, recvret);
 
 
-    proc_frame->framehead_decode();
+    proc_frame->ntoh();
 
     //如果收到的是APPFRAME的数据，检查对方帧是否填写正确
-    if (proc_frame->frame_length_ != static_cast<unsigned int>(recvret))
+    if (proc_frame->length_ != static_cast<unsigned int>(recvret))
     {
         return SOAR_RET::ERR_ZERG_APPFRAME_ERROR;
     }
@@ -228,7 +228,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 
     //避免发生其他人填写的情况
     proc_frame->clear_inner_option();
-    proc_frame->frame_option_ |= soar::Zerg_Frame_Head::DESC_UDP_FRAME;
+    proc_frame->frame_option_ |= soar::Zerg_Frame::DESC_UDP_FRAME;
 
     size_revc = recvret;
 
@@ -241,7 +241,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
 }
 
 //
-int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame_Head *send_frame)
+int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame *send_frame)
 {
     ssize_t szsend = 0;
     const size_t IP_ADDR_LEN = 32;
@@ -250,7 +250,7 @@ int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame_Head *send_frame)
     //这里service_id_和services_type_保存的是对方的ip和port，而不是真正的type和id
     ZCE_Sockaddr_In remote_addr(send_frame->recv_service_.services_id_,
                                 send_frame->recv_service_.services_type_);
-    size_t send_len = send_frame->frame_length_;
+    size_t send_len = send_frame->length_;
 
     //
     send_frame->framehead_encode();
@@ -286,7 +286,7 @@ int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame_Head *send_frame)
 
 
 
-int UDP_Svc_Handler::send_all_to_udp(soar::Zerg_Frame_Head *send_frame)
+int UDP_Svc_Handler::send_all_to_udp(soar::Zerg_Frame *send_frame)
 {
     //找到原来的那个UDP端口，使用原来的端口发送，
     //这样可以保证防火墙的穿透问题

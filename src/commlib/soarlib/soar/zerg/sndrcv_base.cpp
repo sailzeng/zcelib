@@ -20,13 +20,13 @@ SendRecv_Package_Base::~SendRecv_Package_Base()
     //清理已经分配的缓冲区
     if (tibetan_send_appframe_)
     {
-        soar::Zerg_Frame_Head::delete_frame(tibetan_send_appframe_);
+        soar::Zerg_Frame::delete_frame(tibetan_send_appframe_);
         tibetan_send_appframe_ = NULL;
     }
 
     if (tibetan_recv_appframe_)
     {
-        soar::Zerg_Frame_Head::delete_frame(tibetan_recv_appframe_);
+        soar::Zerg_Frame::delete_frame(tibetan_recv_appframe_);
         tibetan_recv_appframe_ = NULL;
     }
 }
@@ -58,11 +58,11 @@ void SendRecv_Package_Base::set_services_id(const soar::SERVICES_ID &recv_servic
     test_frame_len_ = frame_len;
 
     //new一个APPFRAME,
-    tibetan_send_appframe_ = soar::Zerg_Frame_Head::new_frame(test_frame_len_);
-    tibetan_send_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
+    tibetan_send_appframe_ = soar::Zerg_Frame::new_frame(test_frame_len_);
+    tibetan_send_appframe_->init_head(static_cast<unsigned int>(test_frame_len_));
 
-    tibetan_recv_appframe_ = soar::Zerg_Frame_Head::new_frame(test_frame_len_);
-    tibetan_recv_appframe_->init_framehead(static_cast<unsigned int>(test_frame_len_));
+    tibetan_recv_appframe_ = soar::Zerg_Frame::new_frame(test_frame_len_);
+    tibetan_recv_appframe_->init_head(static_cast<unsigned int>(test_frame_len_));
 
 }
 
@@ -84,13 +84,13 @@ unsigned int SendRecv_Package_Base::get_backfill_transid()
 }
 
 //取得测试的APPFRAME
-soar::Zerg_Frame_Head *SendRecv_Package_Base::get_send_appframe()
+soar::Zerg_Frame *SendRecv_Package_Base::get_send_appframe()
 {
     return tibetan_send_appframe_;
 }
 
 //取得接收的APPFRAME
-soar::Zerg_Frame_Head *SendRecv_Package_Base::get_recv_appframe()
+soar::Zerg_Frame *SendRecv_Package_Base::get_recv_appframe()
 {
     return tibetan_recv_appframe_;
 }

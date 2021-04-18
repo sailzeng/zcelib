@@ -178,7 +178,7 @@ protected:
 
 
     //预处理,检查数据,接收的REGISTER数据,根据第一个报决定对应关系
-    int  preprocess_recvframe(soar::Zerg_Frame_Head *proc_frame);
+    int  preprocess_recvframe(soar::Zerg_Frame *proc_frame);
 
     //处理发送的REGISTER数据,连接后发送第一个数据
     int  process_connect_register();
@@ -187,7 +187,7 @@ protected:
     /*!
     * @brief      将数据帧交给通信管理器，放入管道
     * @return     int
-    * @note       到这个函数是 soar::Zerg_Frame_Head已经经过解码了.请注意.
+    * @note       到这个函数是 soar::Zerg_Frame已经经过解码了.请注意.
     */
     int push_frame_to_comm_mgr();
 

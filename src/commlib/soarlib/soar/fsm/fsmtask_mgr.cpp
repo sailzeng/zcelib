@@ -140,7 +140,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
     for (proc_frame = 0; proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
 
-        soar::Zerg_Frame_Head *tmp_frame = NULL;
+        soar::Zerg_Frame *tmp_frame = NULL;
         //
         ret = recv_msg_queue_->try_dequeue(tmp_frame);
 
@@ -156,7 +156,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
             return 0;
         }
 
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG,"FROM RECV QUEUE FRAME:",tmp_frame);
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV QUEUE FRAME:",tmp_frame);
 
         //是否创建一个事务，
         bool bcrtcx = false;
@@ -187,10 +187,10 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
 
 
 //向发送队列放入frame
-int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame_Head *post_frame,bool alloc_frame)
+int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_frame)
 {
     int ret = 0;
-    soar::Zerg_Frame_Head *tmp_frame = NULL;
+    soar::Zerg_Frame *tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
     if (alloc_frame)
@@ -211,7 +211,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame_Head *post_frame,bool all
     if (ret < 0)
     {
         ZCE_LOG(RS_ERROR,"[framework] Post message to send queue fail.ret =%d, uid=%u cmd=%u",
-                ret,tmp_frame->frame_userid_,tmp_frame->frame_command_);
+                ret,tmp_frame->user_id_,tmp_frame->command_);
 
         // 加个监控
         Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
@@ -223,12 +223,12 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame_Head *post_frame,bool all
     //测试时打开，
     //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
     //    send_msg_queue_->size(),
-    //    send_msg_queue_->size() * sizeof(soar::Zerg_Frame_Head *));
+    //    send_msg_queue_->size() * sizeof(soar::Zerg_Frame *));
     return 0;
 }
 
 //从recv的消息队列中去一个数据出来，进行超时等待
-int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame_Head *&get_frame,ZCE_Time_Value &tv)
+int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame *&get_frame,ZCE_Time_Value &tv)
 {
     int ret = recv_msg_queue_->dequeue(get_frame,tv);
     //返回值小于0表示失败
@@ -246,7 +246,7 @@ int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame_Head *&get_frame,ZCE_Time
 }
 
 //从recv的消息队列中去一个数据出来，不进行超时等待
-int FSMTask_Manger::trydequeue_recvqueue(soar::Zerg_Frame_Head *&get_frame)
+int FSMTask_Manger::trydequeue_recvqueue(soar::Zerg_Frame *&get_frame)
 {
     int ret = recv_msg_queue_->try_dequeue(get_frame);
     //返回值小于0表示失败
@@ -264,7 +264,7 @@ int FSMTask_Manger::trydequeue_recvqueue(soar::Zerg_Frame_Head *&get_frame)
 }
 
 //从send的消息队列中去一个数据出来，进行超时等待
-int FSMTask_Manger::dequeue_sendqueue(soar::Zerg_Frame_Head *&get_frame,ZCE_Time_Value &tv)
+int FSMTask_Manger::dequeue_sendqueue(soar::Zerg_Frame *&get_frame,ZCE_Time_Value &tv)
 {
     int ret = 0;
     ret = send_msg_queue_->dequeue(get_frame,tv);
@@ -282,7 +282,7 @@ int FSMTask_Manger::dequeue_sendqueue(soar::Zerg_Frame_Head *&get_frame,ZCE_Time
 }
 
 //从send的消息队列中去一个数据出来，不进行超时等待
-int FSMTask_Manger::trydequeue_sendqueue(soar::Zerg_Frame_Head *&get_frame)
+int FSMTask_Manger::trydequeue_sendqueue(soar::Zerg_Frame *&get_frame)
 {
     int ret = 0;
     ret = send_msg_queue_->try_dequeue(get_frame);

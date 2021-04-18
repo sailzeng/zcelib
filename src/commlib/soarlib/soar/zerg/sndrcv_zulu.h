@@ -59,7 +59,7 @@ public:
                          const soar::SERVICES_ID &recv_service,
                          const soar::SERVICES_ID &send_service,
                          const soar::SERVICES_ID &proxy_service,
-                         size_t frame_len = soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME);
+                         size_t frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
 
     //链接服务器,time_wait不能用const是有原因的，因为部分select的ZCE_Time_Value是返回剩余时间的
     int connect_zulu_server(ZCE_Time_Value *time_wait);
@@ -146,7 +146,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
         }
 
         //如果收到的数据帧不是俺期待的
-        if (cmd != tibetan_recv_appframe_->frame_command_ )
+        if (cmd != tibetan_recv_appframe_->command_ )
         {
             //如果发生错误,继续处理,则继续接受
             if (error_continue )
@@ -157,7 +157,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
             {
                 ZCE_LOG(RS_ERROR, "[framework] recv a error or unexpect frame,expect cmd =%u,recv cmd =%u.",
                         cmd,
-                        tibetan_recv_appframe_->frame_command_);
+                        tibetan_recv_appframe_->command_);
                 ret =  SOAR_RET::ERROR_ZULU_RECEIVE_OTHERS_COMMAND;
                 break;
             }
@@ -165,7 +165,7 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
         else
         {
             //如果还有data的数据，进行解码
-            if (tibetan_recv_appframe_->frame_length_ > soar::Zerg_Frame_Head::LEN_OF_APPFRAME_HEAD )
+            if (tibetan_recv_appframe_->length_ > soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD )
             {
                 ret = tibetan_recv_appframe_->appdata_decode(info);
 
@@ -213,13 +213,13 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
         }
     }
 
-    tibetan_send_appframe_->frame_command_ = cmd;
-    tibetan_send_appframe_->backfill_trans_id_ = backfill_trans_id;
+    tibetan_send_appframe_->command_ = cmd;
+    tibetan_send_appframe_->backfill_fsm_id_ = backfill_trans_id;
     tibetan_send_appframe_->app_id_ = app_id;
-    tibetan_send_appframe_->frame_userid_ = user_id;
+    tibetan_send_appframe_->user_id_ = user_id;
 
     //编码
-    ret = tibetan_send_appframe_->appdata_encode(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = tibetan_send_appframe_->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
 
     if (ret != 0 )
     {

@@ -70,9 +70,6 @@
     <ClCompile Include="soar\zerg\services_id.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="soar\ogre\ogre_frame.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="soar\zerg\frame_zerg.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -89,6 +86,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="soar\fsm\fsmtask_taskbase.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="soar\ogre\frame_ogre.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -165,9 +165,6 @@
     <ClInclude Include="soar\zerg\services_id.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="soar\ogre\ogre_frame.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="soar\zerg\frame_zerg.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -184,6 +181,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="soar\fsm\fsmtask_taskbase.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="soar\ogre\frame_ogre.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

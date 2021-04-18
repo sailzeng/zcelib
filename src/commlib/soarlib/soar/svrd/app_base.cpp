@@ -258,7 +258,7 @@ int Svrd_Appliction::app_start(int argc, const char *argv[])
           initialize(self_svc_info_,
                      config_base_->pipe_cfg_.recv_pipe_len_,
                      config_base_->pipe_cfg_.send_pipe_len_,
-                     soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME,
+                     soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                      config_base_->pipe_cfg_.if_restore_pipe_);
 
     if (0 != ret)

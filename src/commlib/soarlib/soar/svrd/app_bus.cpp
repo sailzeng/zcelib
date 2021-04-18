@@ -8,7 +8,7 @@ Soar_SvrdApp_ZergBus::Soar_SvrdApp_ZergBus() :
     Svrd_Appliction(),
     nonctrl_recv_buffer_(NULL)
 {
-    nonctrl_recv_buffer_ = soar::Zerg_Frame_Head::new_frame(soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME);
+    nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
 }
 
 Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
@@ -16,7 +16,7 @@ Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
     //释放资源
     if (nonctrl_recv_buffer_)
     {
-        soar::Zerg_Frame_Head::delete_frame(nonctrl_recv_buffer_);
+        soar::Zerg_Frame::delete_frame(nonctrl_recv_buffer_);
         nonctrl_recv_buffer_ = NULL;
     }
 }
@@ -122,7 +122,7 @@ int Soar_SvrdApp_ZergBus::popfront_recvpipe(size_t max_prc, size_t &proc_frame)
             return 0;
         }
 
-        DEBUGDUMP_FRAME_HEAD_DBG(RS_DEBUG, "FROM RECV PIPE FRAME", nonctrl_recv_buffer_ );
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV PIPE FRAME", nonctrl_recv_buffer_ );
 
         //处理一个收到的数据
         ret = process_recv_frame(nonctrl_recv_buffer_);

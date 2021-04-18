@@ -59,9 +59,9 @@ namespace zce
             每76个字符，还需要加上一个回车换行。
             这儿么没有（注意是没有）按照电子邮件（RFC 822）的要求进行增加回车操作。
 */
-int base64_encode(const unsigned char *in,
+int base64_encode(const char *in,
                   size_t in_len,
-                  unsigned char *out,
+                  char *out,
                   size_t *out_len);
 
 #ifndef ZCE_BASE64_DECODE_BUFFER
@@ -76,9 +76,9 @@ int base64_encode(const unsigned char *in,
 @param[out]    out     解码码后的输出的内存，（保证长度为大于(inlen)/4*3），
 @param[in,out] out_len 返回编码后的长度，为 in_len/4*3 - N (N为1或者2)
 */
-int base64_decode(const unsigned char *in,
+int base64_decode(const char *in,
                   size_t in_len,
-                  unsigned char *out,
+                  char *out,
                   size_t *out_len);
 
 /*!
@@ -89,9 +89,9 @@ int base64_decode(const unsigned char *in,
 @param[out]    out     编码后的输出的内存，保证长度大于in_len *2 +1
 @param[in,out] out_len 返回编码后的长度，为 in_len *2
 */
-int base16_encode(const unsigned char *in,
+int base16_encode(const char *in,
                   size_t in_len,
-                  unsigned char *out,
+                  char *out,
                   size_t *out_len);
 
 /*!
@@ -102,9 +102,9 @@ int base16_encode(const unsigned char *in,
 @param[out]    out     解码码后的输出的内存，（保证长度大于(inlen) / 2）
 @param[in,out] out_len 返回编码后的长度，为in_len/2
 */
-int base16_decode(const unsigned char *in,
+int base16_decode(const char *in,
                   size_t in_len,
-                  unsigned char *out,
+                  char *out,
                   size_t *out_len);
 
 };

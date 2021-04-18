@@ -188,7 +188,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="soar\enum\error_code.cpp" />
-    <ClCompile Include="soar\ogre\ogre_frame.cpp" />
+    <ClCompile Include="soar\ogre\frame_ogre.cpp" />
     <ClCompile Include="soar\svrd\cfg_base.cpp" />
     <ClCompile Include="soar\zerg\frame_zerg.cpp" />
     <ClCompile Include="soar\fsm\fsmtask_fsmbase.cpp" />
@@ -223,7 +223,7 @@
     <ClInclude Include="soar\enum\error_code.h" />
     <ClInclude Include="soar\predefine.h" />
     <ClInclude Include="soar\zerg\frame_command.h" />
-    <ClInclude Include="soar\ogre\ogre_frame.h" />
+    <ClInclude Include="soar\ogre\frame_ogre.h" />
     <ClInclude Include="soar\svrd\cfg_base.h" />
     <ClInclude Include="soar\zerg\frame_zerg.h" />
     <ClInclude Include="soar\fsm\fsmtask_fsmbase.h" />

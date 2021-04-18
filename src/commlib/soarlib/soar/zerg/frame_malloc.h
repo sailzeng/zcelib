@@ -41,21 +41,21 @@ public:
     * @note
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
-                    size_t max_frame_len = soar::Zerg_Frame_Head::MAX_LEN_OF_APPFRAME);
+                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
 
 
     /*!
     * @brief      根据要求的的FRAME尺寸大小，分配一个FRAME
-    * @return     soar::Zerg_Frame_Head*
+    * @return     soar::Zerg_Frame*
     * @param      frame_len
     */
-    soar::Zerg_Frame_Head *alloc_appframe(size_t frame_len);
+    soar::Zerg_Frame *alloc_appframe(size_t frame_len);
 
     /*!
     * @brief      释放一个APPFRAME到池子
     * @param      proc_frame 处理的frame
     */
-    void free_appframe(soar::Zerg_Frame_Head *proc_frame);
+    void free_appframe(soar::Zerg_Frame *proc_frame);
 
     /*!
     * @brief      复制一个APPFRAME
@@ -63,7 +63,7 @@ public:
     * @param      cloned_frame  被克隆的FRAME
     * @note
     */
-    void clone_appframe(const soar::Zerg_Frame_Head *model_freame, soar::Zerg_Frame_Head *&cloned_frame);
+    void clone_appframe(const soar::Zerg_Frame *model_freame, soar::Zerg_Frame *&cloned_frame);
 
     /*!
     * @brief      返回最大可以分配的FRAME的长度
@@ -111,7 +111,7 @@ protected:
     static const size_t NUM_OF_ALLOW_LIST_IDLE_FRAME = 1024;
 
     //
-    typedef zce::lordrings <soar::Zerg_Frame_Head *>     LIST_OF_APPFRAME;
+    typedef zce::lordrings <soar::Zerg_Frame *>     LIST_OF_APPFRAME;
     //
     typedef std::vector< LIST_OF_APPFRAME > APPFRAME_MEMORY_POOL;
 
@@ -234,9 +234,9 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
 
         for (size_t j = 0; j < frame_pool_len; ++j)
         {
-            soar::Zerg_Frame_Head *proc_frame = NULL;
+            soar::Zerg_Frame *proc_frame = NULL;
             frame_pool_[i].pop_front(proc_frame);
-            soar::Zerg_Frame_Head::delete_frame(proc_frame);
+            soar::Zerg_Frame::delete_frame(proc_frame);
         }
     }
 }
@@ -244,7 +244,7 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
 
 //根据需要长度，从池子分配一个APPFRAME
 template <typename zce_lock >
-soar::Zerg_Frame_Head *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
+soar::Zerg_Frame *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
 {
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
     size_t hk = get_roundup(frame_len);
@@ -256,10 +256,9 @@ soar::Zerg_Frame_Head *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame
     }
 
     //
-    soar::Zerg_Frame_Head *new_frame = NULL;
+    soar::Zerg_Frame *new_frame = NULL;
     frame_pool_[hk].pop_front(new_frame);
-
-    new_frame->init_framehead(static_cast<unsigned int>(frame_len));
+    new_frame->init_head(static_cast<unsigned int>(frame_len));
 
     return new_frame;
 }
@@ -268,11 +267,11 @@ soar::Zerg_Frame_Head *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::Zerg_Frame_Head *model_freame,
-                                                     soar::Zerg_Frame_Head *&cloned_frame)
+void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::Zerg_Frame *model_freame,
+                                                  soar::Zerg_Frame *&cloned_frame)
 {
     //
-    size_t frame_len = model_freame->frame_length_;
+    size_t frame_len = model_freame->length_;
     cloned_frame = alloc_appframe(frame_len);
     model_freame->clone(cloned_frame);
 }
@@ -280,11 +279,11 @@ void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::Zerg_Frame_Head *m
 
 //释放一个APPFRAME到池子
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::free_appframe(soar::Zerg_Frame_Head *proc_frame)
+void ZergFrame_Mallocor<zce_lock>::free_appframe(soar::Zerg_Frame *proc_frame)
 {
     ZCE_ASSERT(proc_frame);
     typename zce_lock::LOCK_GUARD tmp_guard(zce_lock_);
-    size_t hk = get_roundup(proc_frame->frame_length_);
+    size_t hk = get_roundup(proc_frame->length_);
     frame_pool_[hk].push_back(proc_frame);
 }
 
@@ -303,7 +302,7 @@ void ZergFrame_Mallocor<zce_lock>::adjust_pool_capacity()
 
             for (size_t j = 0; j < free_sz; ++j)
             {
-                soar::Zerg_Frame_Head *new_frame = NULL;
+                soar::Zerg_Frame *new_frame = NULL;
                 frame_pool_[i].pop_front(new_frame);
                 delete new_frame;
             }
@@ -320,7 +319,7 @@ void ZergFrame_Mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t e
 
     for (size_t j = 0; j < extend_num; ++j)
     {
-        soar::Zerg_Frame_Head *proc_frame =  soar::Zerg_Frame_Head::new_frame(size_appframe_[list_no] + 1);
+        soar::Zerg_Frame *proc_frame =  soar::Zerg_Frame::new_frame(size_appframe_[list_no] + 1);
         frame_pool_[list_no].push_back(proc_frame);
     }
 }

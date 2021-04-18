@@ -199,34 +199,33 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
     {
 
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
-        soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>( tmpbuf->buffer_data_);
+        soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>( tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
         zerg_mmap_pipe_->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
                                        reinterpret_cast< zce::lockfree::dequechunk_node *&>(
                                            proc_frame));
 
-        tmpbuf->size_of_use_ = proc_frame->frame_length_;
+        tmpbuf->size_of_use_ = proc_frame->length_;
 
         //如果是要跟踪的命令
-        if (proc_frame->frame_option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+        if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
         {
-            proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]opt", RS_INFO);
+            DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][SEND]opt",proc_frame);
         }
         else
         {
             for (size_t i = 0; i < monitor_size_; ++i)
             {
-                if (monitor_cmd_[i] == proc_frame->frame_command_)
+                if (monitor_cmd_[i] == proc_frame->command_)
                 {
-                    proc_frame->frame_option_ |= soar::Zerg_Frame_Head::DESC_MONITOR_TRACK;
-                    proc_frame->dumpoutput_framehead("[TRACK MONITOR][SEND]cmd", RS_INFO);
+                    DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][SEND]cmd",proc_frame);
                 }
             }
         }
 
         //发送UDP的数据
-        if (proc_frame->frame_option_ & soar::Zerg_Frame_Head::DESC_UDP_FRAME)
+        if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
         {
             //发送错误日志在send_all_to_udp函数内部处理，这儿不增加重复记录
             UDP_Svc_Handler::send_all_to_udp(proc_frame);
@@ -255,7 +254,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             //    {
             //        if (i == size -1)
             //        {
-            //            reinterpret_cast<soar::Zerg_Frame_Head *>(tmpbuf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
+            //            reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
             //            // last Buf就用本身的tmpbuf来发，稍微加快速度
             //            ret = send_single_buf(tmpbuf);
             //        }
@@ -263,7 +262,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
             //        {
             //            Zerg_Buffer *send_buf = zbuffer_storage_->allocate_buffer();
             //            memcpy(send_buf->buffer_data_, tmpbuf->buffer_data_, tmpbuf->size_of_use_);
-            //            reinterpret_cast<soar::Zerg_Frame_Head *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
+            //            reinterpret_cast<soar::Zerg_Frame *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
             //            send_buf->size_of_use_ = tmpbuf->size_of_use_;
             //            ret = send_single_buf(send_buf);
             //        }
@@ -359,18 +358,18 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
 
-    soar::Zerg_Frame_Head *proc_frame = reinterpret_cast<soar::Zerg_Frame_Head *>(tmpbuf->buffer_data_);
+    soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
 
     //如果失败归还缓存，如果成功的情况下，会放入发送队列，放入发送队列的归还和这个不一样
     if (ret != 0)
     {
         //记录下来处理
-        if (proc_frame->frame_option_ & soar::Zerg_Frame_Head::DESC_SEND_FAIL_RECORD )
+        if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD )
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
-                    proc_frame->frame_length_,
-                    proc_frame->frame_command_,
-                    proc_frame->frame_command_,
+                    proc_frame->length_,
+                    proc_frame->command_,
+                    proc_frame->command_,
                     proc_frame->recv_service_.services_type_,
                     proc_frame->recv_service_.services_id_,
                     proc_frame->proxy_service_.services_type_,
@@ -403,7 +402,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 
 
 //
-void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame_Head *recv_frame)
+void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -412,9 +411,9 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame_Head *recv_frame)
     }
 
     //为了提高效率，先检查标志位，
-    if (recv_frame->frame_option_ & soar::Zerg_Frame_Head::DESC_MONITOR_TRACK)
+    if (recv_frame->frame_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
     {
-        recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]opt", RS_INFO);
+        DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]opt",proc_frame);
     }
     else
     {
@@ -422,10 +421,9 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame_Head *recv_frame)
         //如果是要跟踪的命令
         for (size_t i = 0; i < monitor_size_; ++i)
         {
-            if (monitor_cmd_[i] == recv_frame->frame_command_)
+            if (monitor_cmd_[i] == recv_frame->command_)
             {
-                recv_frame->frame_option_ |= soar::Zerg_Frame_Head::DESC_MONITOR_TRACK;
-                recv_frame->dumpoutput_framehead("[TRACK MONITOR][RECV]cmd", RS_INFO);
+                DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]cmd",proc_frame);
             }
         }
     }
@@ -446,7 +444,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame_Head *recv_frame)
                                       0);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
                                       recv_frame->app_id_,
-                                      recv_frame->frame_command_);
+                                      recv_frame->command_);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
                                       recv_frame->app_id_,
                                       recv_frame->send_service_.services_type_);
