@@ -25,9 +25,9 @@ FSMTask_TaskBase::~FSMTask_TaskBase()
 
 //
 int FSMTask_TaskBase::initialize(FSMTask_Manger *trans_notify_mgr,
-                                     size_t once_max_get_sendqueue,
-                                     soar::SERVICES_ID mgr_svc_id,
-                                     soar::SERVICES_ID thread_svc_id)
+                                 size_t once_max_get_sendqueue,
+                                 soar::SERVICES_ID mgr_svc_id,
+                                 soar::SERVICES_ID thread_svc_id)
 {
     int ret = 0;
     trans_notify_mgr_ = trans_notify_mgr;

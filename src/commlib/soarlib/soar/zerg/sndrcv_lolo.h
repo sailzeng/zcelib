@@ -81,35 +81,35 @@ public:
 
     //发送数据
     template< class T1>
-    int send_svc_package(unsigned int user_id,
-                         unsigned int cmd,
+    int send_svc_package(uint32_t user_id,
+                         uint32_t cmd,
                          const T1 &snd_info,
                          unsigned int app_id = 0,
-                         unsigned int backfill_trans_id = 0);
+                         uint32_t backfill_fsm_id = 0);
 
     //接受数据
     template< class T2>
-    int receive_svc_package(unsigned int cmd,
+    int receive_svc_package(uint32_t cmd,
                             T2 &rcv_info,
                             ZCE_Time_Value *time_out = NULL);
 
     //发送和接收数据，一起一锅搞掂的方式
     template< class T1, class T2>
     int send_recv_package(unsigned int snd_cmd,
-                          unsigned int user_id,
+                          uint32_t user_id,
                           const T1 &send_info,
                           ZCE_Time_Value *time_wait,
                           bool if_recv,
                           unsigned int rcv_cmd,
                           T2 &recv_info,
                           unsigned int app_id = 0,
-                          unsigned int backfill_trans_id = 0);
+                          uint32_t backfill_fsm_id = 0);
 
 };
 
 //收数据
 template<class T>
-int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
+int Lolo_SendRecv_Package::receive_svc_package(uint32_t cmd,
                                                T &info,
                                                ZCE_Time_Value *time_wait)
 {
@@ -192,11 +192,11 @@ int Lolo_SendRecv_Package::receive_svc_package(unsigned int cmd,
 
 //发送数据
 template< class T>
-int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
-                                            unsigned int cmd,
+int Lolo_SendRecv_Package::send_svc_package(uint32_t user_id,
+                                            uint32_t cmd,
                                             const T &info,
                                             unsigned int app_id,
-                                            unsigned int backfill_trans_id)
+                                            uint32_t backfill_fsm_id)
 {
     int ret = 0;
     tibetan_send_appframe_->command_ = cmd;
@@ -257,14 +257,14 @@ int Lolo_SendRecv_Package::send_svc_package(unsigned int user_id,
 //发送和接收数据，一起一锅搞掂的方式
 template< class T1, class T2>
 int Lolo_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
-                                             unsigned int user_id,
+                                             uint32_t user_id,
                                              const T1 &send_info,
                                              ZCE_Time_Value *time_wait,
                                              bool if_recv,
                                              unsigned int rcv_cmd,
                                              T2 &recv_info,
                                              unsigned int app_id,
-                                             unsigned int backfill_trans_id)
+                                             uint32_t backfill_fsm_id)
 {
     int ret = 0;
 

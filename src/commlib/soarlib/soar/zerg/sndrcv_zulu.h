@@ -82,12 +82,12 @@ public:
     * @param      backfill_trans_id 回填的事物ID，默认为0，表示不会填
     */
     template< class T1>
-    int send_svc_package(unsigned int user_id,
-                         unsigned int cmd,
+    int send_svc_package(uint32_t user_id,
+                         uint32_t cmd,
                          const T1 &snd_info,
                          ZCE_Time_Value *time_out = NULL,
                          unsigned int app_id = 0,
-                         unsigned int backfill_trans_id = 0);
+                         uint32_t backfill_fsm_id = 0);
 
     /*!
     * @brief      接受数据，阻塞的接收一个APPFRAME数据
@@ -99,7 +99,7 @@ public:
     * @param      time_out  超时时长，如果要一直阻塞，就用NULL
     */
     template< class T2>
-    int receive_svc_package(unsigned int cmd,
+    int receive_svc_package(uint32_t cmd,
                             T2 &rcv_info,
                             bool error_continue = true,
                             ZCE_Time_Value *time_out = NULL);
@@ -115,20 +115,20 @@ public:
     */
     template< class T1, class T2>
     int send_recv_package(unsigned int snd_cmd,
-                          unsigned int user_id,
+                          uint32_t user_id,
                           const T1 &send_info,
                           ZCE_Time_Value *time_wait,
                           unsigned int rcv_cmd,
                           T2 &recv_info,
                           bool error_continue = true,
                           unsigned int app_id = 0,
-                          unsigned int backfill_trans_id = 0);
+                          uint32_t backfill_fsm_id = 0);
 
 };
 
 //阻塞的接收一个APPFRAME数据
 template<class T2>
-int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
+int Zulu_SendRecv_Package::receive_svc_package(uint32_t cmd,
                                                T2 &info,
                                                bool error_continue,
                                                ZCE_Time_Value *time_wait)
@@ -193,12 +193,12 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int cmd,
 
 //发送一个数据包
 template< class T1>
-int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
-                                            unsigned int cmd,
+int Zulu_SendRecv_Package::send_svc_package(uint32_t user_id,
+                                            uint32_t cmd,
                                             const T1 &info,
                                             ZCE_Time_Value *time_wait,
                                             unsigned int app_id,
-                                            unsigned int backfill_trans_id)
+                                            uint32_t backfill_fsm_id)
 {
     int ret = 0;
 
@@ -241,14 +241,14 @@ int Zulu_SendRecv_Package::send_svc_package(unsigned int user_id,
 //发送一个数据包，并且接收一个数据包
 template< class T1, class T2>
 int Zulu_SendRecv_Package::send_recv_package(unsigned int snd_cmd,
-                                             unsigned int user_id,
+                                             uint32_t user_id,
                                              const T1 &send_info,
                                              ZCE_Time_Value *time_wait,
                                              unsigned int rcv_cmd,
                                              T2 &recv_info,
                                              bool error_continue,
                                              unsigned int app_id,
-                                             unsigned int backfill_trans_id)
+                                             uint32_t backfill_fsm_id)
 {
     int ret = 0;
 

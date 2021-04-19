@@ -44,53 +44,53 @@ public:
 
     //发送一个信息给服务，无需指定代理服务器那种方式
     template< class T>
-    int pipe_sendmsg_to_service(unsigned int cmd,
-                                unsigned int user_id,
+    int pipe_sendmsg_to_service(uint32_t cmd,
+                                uint32_t user_id,
                                 unsigned int transaction_id,
-                                unsigned int backfill_trans_id,
+                                uint32_t backfill_fsm_id,
                                 const soar::SERVICES_ID &rcvsvc,
                                 const soar::SERVICES_ID &sendsvc,
                                 const T &info,
                                 unsigned int app_id = 0,
-                                unsigned int option = 0);
+                                uint32_t option = 0);
 
     //发送数据到代理服务器,指定代理服务器，以及接受的服务器类型
     template< class T>
-    int pipe_sendmsg_to_proxy(unsigned int cmd,
-                              unsigned int user_id,
+    int pipe_sendmsg_to_proxy(uint32_t cmd,
+                              uint32_t user_id,
                               unsigned int transaction_id,
-                              unsigned int backfill_trans_id,
-                              unsigned short rcvtype,
+                              uint32_t backfill_fsm_id,
+                              uint16_t rcv_type,
                               const soar::SERVICES_ID &proxysvc,
                               const soar::SERVICES_ID &sendsvc,
                               const T &info,
                               unsigned int app_id = 0,
-                              unsigned int option = 0);
+                              uint32_t option = 0);
 
     //发送数据到服务器,可以指定具体的代理服务器，以及接受的服务器ID
     template< class T>
-    int pipe_sendmsg_to_service(unsigned int cmd,
-                                unsigned int user_id,
+    int pipe_sendmsg_to_service(uint32_t cmd,
+                                uint32_t user_id,
                                 unsigned int transaction_id,
-                                unsigned int backfill_trans_id,
+                                uint32_t backfill_fsm_id,
                                 const soar::SERVICES_ID &rcvsvc,
                                 const soar::SERVICES_ID &proxysvc,
                                 const soar::SERVICES_ID &sendsvc,
                                 const T &info,
                                 unsigned int app_id = 0,
-                                unsigned int option = 0);
+                                uint32_t option = 0);
 
     // 发送一段buf给指定的服务器
-    int pipe_sendbuf_to_service(unsigned int cmd,
-                                unsigned int user_id,
+    int pipe_sendbuf_to_service(uint32_t cmd,
+                                uint32_t user_id,
                                 unsigned int transaction_id,
-                                unsigned int backfill_trans_id,
+                                uint32_t backfill_fsm_id,
                                 const soar::SERVICES_ID &rcvsvc,
                                 const soar::SERVICES_ID &proxysvc,
                                 const soar::SERVICES_ID &sendsvc,
                                 const unsigned char *buf,
                                 size_t buf_len,
-                                unsigned int option = 0);
+                                uint32_t option = 0);
 
     //-----------------------------------------------------------------
 public:
@@ -131,14 +131,14 @@ Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3�
 Function        : PipeRequstMsgToService
 Return          : int
 Parameter List  :
-  Param1: unsigned int cmd  发送的命令
-  Param2: unsigned int user_id 发送的UIN
+  Param1: uint32_t cmd  发送的命令
+  Param2: uint32_t user_id 发送的UIN
   Param3: unsigned int transaction_id,事务ID
-  Param4: unsigned int backfill_trans_id,回填的事务ID
+  Param4: uint32_t backfill_fsm_id,回填的事务ID
   Param5: const soar::SERVICES_ID& rcvsvc  接受者是谁
   Param6: const soar::SERVICES_ID& sendsvc 发送者是谁
   Param7: const T& info 发送的数据
-  Param8: unsigned int option=0 发送的选项
+  Param8: uint32_t option=0 发送的选项
 Description     : 制定一个接受服务器发送数据,不经过PROXY服务器
 Calls           :
 Called By       :
@@ -146,15 +146,15 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 template< class T>
-int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
-                                               unsigned int user_id,
+int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
+                                               uint32_t user_id,
                                                unsigned int transaction_id,
-                                               unsigned int backfill_trans_id,
+                                               uint32_t backfill_fsm_id,
                                                const soar::SERVICES_ID &rcvsvc,
                                                const soar::SERVICES_ID &sendsvc,
                                                const T &info,
                                                unsigned int app_id,
-                                               unsigned int option)
+                                               uint32_t option)
 {
     const soar::SERVICES_ID proxysvc(0, 0);
     return pipe_sendmsg_to_service(cmd,
@@ -174,15 +174,15 @@ Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3�
 Function        : pipe_sendmsg_to_proxy
 Return          : template< class T> int
 Parameter List  :
-  Param1: unsigned int cmd   发送的命令
-  Param2: unsigned int user_id 发送的UIN
+  Param1: uint32_t cmd   发送的命令
+  Param2: uint32_t user_id 发送的UIN
   Param3: unsigned int transaction_id,事务ID
-  Param4: unsigned int backfill_trans_id,回填的事务ID
-  Param5: unsigned short rcvtype 最终的接受者的类型是什么
+  Param4: uint32_t backfill_fsm_id,回填的事务ID
+  Param5: uint16_t rcv_type 最终的接受者的类型是什么
   Param7: const soar::SERVICES_ID& proxysvc PROXY服务器是谁
   Param6: const soar::SERVICES_ID& sendsvc  发送者是谁
   Param8: const T& info 发送的数据
-  Param9: unsigned int option=0 发送的选项
+  Param9: uint32_t option=0 发送的选项
 Description     : 制定一个PROXY服务器进行接收数据
 Calls           :
 Called By       :
@@ -190,16 +190,16 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 template< class T>
-int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(unsigned int cmd,
-                                             unsigned int user_id,
+int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(uint32_t cmd,
+                                             uint32_t user_id,
                                              unsigned int transaction_id,
-                                             unsigned int backfill_trans_id,
-                                             unsigned short rcvtype,
+                                             uint32_t backfill_fsm_id,
+                                             uint16_t rcv_type,
                                              const soar::SERVICES_ID &proxysvc,
                                              const soar::SERVICES_ID &sendsvc,
                                              const T &info,
                                              unsigned int app_id,
-                                             unsigned int option)
+                                             uint32_t option)
 {
     const soar::SERVICES_ID rcvsvc(rcvtype, 0);
     return pipe_sendmsg_to_service(cmd,
@@ -219,15 +219,15 @@ Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3�
 Function        : pipe_sendmsg_to_service
 Return          : template< class T>
 Parameter List  :
-  Param1: unsigned int cmd   发送的命令
-  Param2: unsigned int user_id 发送的UIN
+  Param1: uint32_t cmd   发送的命令
+  Param2: uint32_t user_id 发送的UIN
   Param3: unsigned int transaction_id,事务ID,没有要求对方返回就不用填写，填写0
-  Param4: unsigned int backfill_trans_id,回填的事务ID,没有要求对方返回就不用填写，填写0
+  Param4: uint32_t backfill_fsm_id,回填的事务ID,没有要求对方返回就不用填写，填写0
   Param5: const soar::SERVICES_ID& rcvsvc 最终的接受者的类型是谁
   Param6: const soar::SERVICES_ID& proxysvc PROXY服务器是谁
   Param7: const soar::SERVICES_ID& sendsvc 发送者是谁
   Param8: const T& info 发送的数据
-  Param9: unsigned int option=0 发送的选项
+  Param9: uint32_t option=0 发送的选项
 Description     : 最复杂参数的发送函数，
 Calls           :
 Called By       :
@@ -235,16 +235,16 @@ Other           :
 Modify Record   :
 ******************************************************************************************/
 template< class T>
-int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(unsigned int cmd,
-                                               unsigned int user_id,
+int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
+                                               uint32_t user_id,
                                                unsigned int transaction_id,
-                                               unsigned int backfill_trans_id,
+                                               uint32_t backfill_fsm_id,
                                                const soar::SERVICES_ID &rcvsvc,
                                                const soar::SERVICES_ID &proxysvc,
                                                const soar::SERVICES_ID &sendsvc,
                                                const T &info,
                                                unsigned int app_id,
-                                               unsigned int option)
+                                               uint32_t option)
 {
     int ret = 0;
 

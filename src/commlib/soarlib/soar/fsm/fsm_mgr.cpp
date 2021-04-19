@@ -8,7 +8,7 @@
 /******************************************************************************************
 struct TRANS_LOCK_RECORD 加锁的记录单元
 ******************************************************************************************/
-TRANS_LOCK_RECORD::TRANS_LOCK_RECORD(unsigned int lock_qq_uin, unsigned int lock_trans_cmd):
+TRANS_LOCK_RECORD::TRANS_LOCK_RECORD(unsigned int lock_qq_uin,unsigned int lock_trans_cmd):
     lock_user_id_(lock_qq_uin),
     lock_trans_cmd_(lock_trans_cmd)
 {
@@ -31,15 +31,15 @@ FSM_Manager *FSM_Manager::instance_ = NULL;
 
 FSM_Manager::FSM_Manager()
     : max_trans_(0)
-    , zerg_mmap_pipe_(NULL)
-    , statistics_clock_(NULL)
-    , trans_send_buffer_ (NULL)
-    , trans_recv_buffer_(NULL)
-    , fake_recv_buffer_(NULL)
-    , inner_frame_mallocor_(NULL)
-    , message_queue_(NULL)
-    , gen_trans_counter_(0)
-    , cycle_gentrans_counter_(0)
+    ,zerg_mmap_pipe_(NULL)
+    ,statistics_clock_(NULL)
+    ,trans_send_buffer_(NULL)
+    ,trans_recv_buffer_(NULL)
+    ,fake_recv_buffer_(NULL)
+    ,inner_frame_mallocor_(NULL)
+    ,message_queue_(NULL)
+    ,gen_trans_counter_(0)
+    ,cycle_gentrans_counter_(0)
 {
 }
 
@@ -49,13 +49,13 @@ FSM_Manager::~FSM_Manager()
 }
 
 int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
-                                    size_t  szregtrans,
-                                    size_t sztransmap,
-                                    const soar::SERVICES_INFO &selfsvr,
-                                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                                    unsigned int max_frame_len,
-                                    bool init_inner_queue,
-                                    bool init_lock_pool)
+                            size_t  szregtrans,
+                            size_t sztransmap,
+                            const soar::SERVICES_INFO &selfsvr,
+                            Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                            unsigned int max_frame_len,
+                            bool init_inner_queue,
+                            bool init_lock_pool)
 {
     ZCE_TRACE_FILELINE(RS_INFO);
 
@@ -63,7 +63,7 @@ int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
     ZCE_ASSERT(zerg_mmap_pipe != NULL);
 
     int ret = 0;
-    ret = ZCE_Async_FSMMgr::initialize(timer_queue, szregtrans, sztransmap);
+    ret = ZCE_Async_FSMMgr::initialize(timer_queue,szregtrans,sztransmap);
     if (ret != 0)
     {
         return ret;
@@ -74,11 +74,11 @@ int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
     trans_send_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    trans_send_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    trans_send_buffer_->init_head(max_frame_len,CMD_INVALID_CMD);
     trans_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    trans_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    trans_recv_buffer_->init_head(max_frame_len,CMD_INVALID_CMD);
     fake_recv_buffer_ = soar::Zerg_Frame::new_frame(max_frame_len + 32);
-    fake_recv_buffer_->init_head(max_frame_len, CMD_INVALID_CMD);
+    fake_recv_buffer_->init_head(max_frame_len,CMD_INVALID_CMD);
 
     //如果明确要求初始化内部的QUEUE,
     if (init_inner_queue)
@@ -96,6 +96,7 @@ int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
         //按照事务尺寸的一半初始化锁的数量
         trans_lock_pool_.rehash(sztransmap / 2);
     }
+    send_buffer_ = new char[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
     return 0;
 }
 
@@ -129,6 +130,7 @@ void FSM_Manager::finish()
         soar::Zerg_Frame::delete_frame(fake_recv_buffer_);
         fake_recv_buffer_ = NULL;
     }
+
     ZCE_Async_FSMMgr::finish();
 
     ZCE_TRACE_FILELINE(RS_INFO);
@@ -148,38 +150,38 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int FSM_Manager::process_pipe_frame(size_t &proc_frame, size_t &create_trans)
+int FSM_Manager::process_pipe_frame(size_t &proc_frame,size_t &create_trans)
 {
     int ret = 0;
     create_trans = 0;
 
     soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(trans_recv_buffer_);
 
-    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
+    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
         //
         ret = zerg_mmap_pipe_->pop_front_recvpipe(tmp_frame);
 
-        if (ret !=  0)
+        if (ret != 0)
         {
             return 0;
         }
 
-        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV PIPE FRAME", tmp_frame );
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV PIPE FRAME",tmp_frame);
 
         //是否创建一个事务，
         bool bcrtcx = false;
         //tmp_frame不用回收
-        ret = process_appframe(tmp_frame, bcrtcx);
+        ret = process_appframe(tmp_frame,bcrtcx);
 
         //
-        if (ret !=  0)
+        if (ret != 0)
         {
             continue;
         }
 
         //创建了一个事务
-        if ( true == bcrtcx )
+        if (true == bcrtcx)
         {
             ++create_trans;
         }
@@ -205,7 +207,7 @@ Author          : Sail(ZENGXING)  Date Of Creation: 2009年3月16日
 Function        : Transaction_Manager::lock_qquin_trnas_cmd
 Return          : int
 Parameter List  :
-  Param1: unsigned int user_id        USER ID
+  Param1: uint32_t user_id        USER ID
   Param2: unsigned int trnas_lock_id 加锁的ID,可以和命令字相同，或者不同
   Param3: unsigned int frame_cmd     事务的命令，仅仅用于日志输出
 Description     : 对某一个用户的一个命令的事务进行加锁
@@ -214,17 +216,17 @@ Called By       : 事务锁的意思是保证一个时刻，只能一个这样�
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int FSM_Manager::lock_qquin_trnas_cmd(unsigned int user_id,
-                                              unsigned int trnas_lock_id,
-                                              unsigned int frame_cmd)
+int FSM_Manager::lock_userid_fsm_cmd(uint32_t user_id,
+                                     unsigned int trnas_lock_id,
+                                     unsigned int frame_cmd)
 {
-    TRANS_LOCK_RECORD lock_rec(user_id, trnas_lock_id);
-    std::pair <INNER_TRANS_LOCK_POOL::iterator, bool> iter_tmp = trans_lock_pool_.insert(lock_rec);
+    TRANS_LOCK_RECORD lock_rec(user_id,trnas_lock_id);
+    std::pair <INNER_TRANS_LOCK_POOL::iterator,bool> iter_tmp = trans_lock_pool_.insert(lock_rec);
 
     //如果已经有一个锁了，那么加锁失败
-    if (false == iter_tmp.second )
+    if (false == iter_tmp.second)
     {
-        ZCE_LOG(RS_ERROR, "[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
+        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
                 user_id,
                 trnas_lock_id,
                 frame_cmd);
@@ -235,15 +237,15 @@ int FSM_Manager::lock_qquin_trnas_cmd(unsigned int user_id,
 }
 
 //对某一个用户的一个命令的事务进行加锁
-void FSM_Manager::unlock_qquin_trans_cmd(unsigned int user_id, unsigned int lock_trnas_id)
+void FSM_Manager::unlock_userid_fsm_cmd(uint32_t user_id,unsigned int lock_trnas_id)
 {
-    TRANS_LOCK_RECORD lock_rec(user_id, lock_trnas_id);
+    TRANS_LOCK_RECORD lock_rec(user_id,lock_trnas_id);
     trans_lock_pool_.erase(lock_rec);
     return;
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame, bool &bcrttx)
+int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
 {
     bcrttx = false;
     int ret = 0;
@@ -262,7 +264,7 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame, bool &bcrttx)
     {
 
         unsigned int id = 0;
-        ret = create_asyncobj(zerg_frame->command_,zerg_frame, &id);
+        ret = create_asyncobj(zerg_frame->command_,zerg_frame,&id);
 
         bcrttx = true;
 
@@ -270,20 +272,20 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame, bool &bcrttx)
         ++gen_trans_counter_;
         ++cycle_gentrans_counter_;
 
-        ZCE_LOG(RS_DEBUG, "Create Trascation ,Command:%u Transaction ID:%u .",
-                zerg_frame->command_, id);
+        ZCE_LOG(RS_DEBUG,"Create Trascation ,Command:%u Transaction ID:%u .",
+                zerg_frame->command_,id);
     }
     else
     {
 
         ret = active_asyncobj(zerg_frame->backfill_fsm_id_,zerg_frame);
-        if (ret != 0 )
+        if (ret != 0)
         {
-            DUMP_ZERG_FRAME_HEAD(RS_ERROR, "No use frame:",zerg_frame);
+            DUMP_ZERG_FRAME_HEAD(RS_ERROR,"No use frame:",zerg_frame);
             return ret;
         }
 
-        ZCE_LOG(RS_DEBUG, "Find raw Transaction ID: %u. ",zerg_frame->backfill_fsm_id_);
+        ZCE_LOG(RS_DEBUG,"Find raw Transaction ID: %u. ",zerg_frame->backfill_fsm_id_);
     }
 
     return 0;
@@ -291,12 +293,12 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame, bool &bcrttx)
 
 
 //管理器发送一消息头给一个服务器,_表示他是一个内部函数，不提供给非相关人士使用
-int FSM_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
-                                                    unsigned int qquin,
-                                                    const soar::SERVICES_ID &rcvsvc,
-                                                    const soar::SERVICES_ID &proxysvc,
-                                                    unsigned int backfill_trans_id,
-                                                    unsigned int option)
+int FSM_Manager::mgr_sendmsghead_to_service(uint32_t cmd,
+                                            uint32_t user_id,
+                                            const soar::SERVICES_ID &rcvsvc,
+                                            const soar::SERVICES_ID &proxysvc,
+                                            uint32_t backfill_fsm_id,
+                                            uint32_t option)
 {
     //
     soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
@@ -304,22 +306,22 @@ int FSM_Manager::mgr_sendmsghead_to_service(unsigned int cmd,
 
     rsp_msg->length_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
     rsp_msg->command_ = cmd;
-    rsp_msg->user_id_ = qquin;
+    rsp_msg->user_id_ = user_id;
 
     rsp_msg->fsm_id_ = 0;
     rsp_msg->recv_service_ = rcvsvc;
     rsp_msg->proxy_service_ = proxysvc;
-    rsp_msg->send_service_ =  this->self_svc_info_.svc_id_;
+    rsp_msg->send_service_ = this->self_svc_info_.svc_id_;
     rsp_msg->u32_option_ = option;
 
     //回填事务ID
-    rsp_msg->backfill_fsm_id_ = backfill_trans_id;
+    rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
     return push_back_sendpipe(rsp_msg);
 }
 
 //打开性能统计
-void FSM_Manager::enable_trans_statistics (const ZCE_Time_Value *stat_clock)
+void FSM_Manager::enable_trans_statistics(const ZCE_Time_Value *stat_clock)
 {
     statistics_clock_ = stat_clock;
 }
@@ -330,7 +332,7 @@ int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame *post_frame)
     soar::Zerg_Frame *tmp_frame = NULL;
 
     //如果是从池子中间取出的FRAME，就什么都不做
-    inner_frame_mallocor_->clone_appframe(post_frame, tmp_frame);
+    inner_frame_mallocor_->clone_appframe(post_frame,tmp_frame);
 
     //理论上不用等待任何时间
     ret = message_queue_->enqueue(tmp_frame);
@@ -338,7 +340,7 @@ int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame *post_frame)
     //返回值小于0表示失败
     if (ret < 0)
     {
-        ZCE_LOG(RS_DEBUG, "Post message to send queue fail.ret =%d"
+        ZCE_LOG(RS_DEBUG,"Post message to send queue fail.ret =%d"
                 "Send queue message_count:%u message_bytes:%u. ",
                 ret,
                 message_queue_->size(),
@@ -353,13 +355,13 @@ int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame *post_frame)
 }
 
 //处理从接收队列取出的FRAME
-int FSM_Manager::process_queue_frame(size_t &proc_frame, size_t &create_trans)
+int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
 {
     int ret = 0;
     create_trans = 0;
 
     //处理队列
-    for (proc_frame = 0; message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME ;  ++proc_frame)
+    for (proc_frame = 0; message_queue_->empty() == false && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
 
         soar::Zerg_Frame *tmp_frame = NULL;
@@ -369,28 +371,28 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame, size_t &create_trans)
         //如果小于0表示错误，到这个地方应该是一个错误，因为上面还有一个判断
         if (ret < 0)
         {
-            ZCE_LOG(RS_ERROR, "[framework] Recv queue dequeue fail ,ret=%u,", ret);
+            ZCE_LOG(RS_ERROR,"[framework] Recv queue dequeue fail ,ret=%u,",ret);
             return 0;
         }
 
-        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM RECV QUEUE FRAME:", tmp_frame );
+        DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV QUEUE FRAME:",tmp_frame);
 
         //是否创建一个事务，
         bool bcrtcx = false;
 
         //tmp_frame  马上回收
-        ret = process_appframe(tmp_frame, bcrtcx);
+        ret = process_appframe(tmp_frame,bcrtcx);
         //释放内存
         inner_frame_mallocor_->free_appframe(tmp_frame);
 
         //
-        if (ret !=  0)
+        if (ret != 0)
         {
             continue;
         }
 
         //创建了一个事务
-        if ( true == bcrtcx )
+        if (true == bcrtcx)
         {
             ++create_trans;
         }
@@ -415,7 +417,7 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame, size_t &create_trans)
 
 //得到管理器的负载参数
 //有一些服务器，没有阶段性的事务，用上面的函数不是特别理想，
-void FSM_Manager::get_manager_load_foctor2(unsigned int &load_max, unsigned int &load_cur)
+void FSM_Manager::get_manager_load_foctor2(unsigned int &load_max,unsigned int &load_cur)
 {
     const unsigned int ONE_CYCLE_GENERATE_TRANS = 30000;
 
@@ -473,21 +475,21 @@ void FSM_Manager::clean_instance()
 }
 
 //直接发送一个buffer to services。
-int FSM_Manager::mgr_sendbuf_to_service(unsigned int cmd,
-                                                unsigned int qquin,
-                                                unsigned int trans_id,
-                                                unsigned int backfill_trans_id,
-                                                const soar::SERVICES_ID &rcvsvc,
-                                                const soar::SERVICES_ID &proxysvc,
-                                                const soar::SERVICES_ID &sndsvc,
-                                                const unsigned char *buf,
-                                                size_t buf_len,
-                                                unsigned int option )
+int FSM_Manager::mgr_sendbuf_to_service(uint32_t cmd,
+                                        uint32_t user_id,
+                                        uint32_t fsm_id,
+                                        uint32_t backfill_fsm_id,
+                                        const soar::SERVICES_ID &rcvsvc,
+                                        const soar::SERVICES_ID &proxysvc,
+                                        const soar::SERVICES_ID &sndsvc,
+                                        const unsigned char *buf,
+                                        size_t buf_len,
+                                        uint32_t option)
 {
     return zerg_mmap_pipe_->pipe_sendbuf_to_service(cmd,
-                                                    qquin,
-                                                    trans_id,
-                                                    backfill_trans_id,
+                                                    user_id,
+                                                    fsm_id,
+                                                    backfill_fsm_id,
                                                     rcvsvc,
                                                     proxysvc,
                                                     sndsvc,

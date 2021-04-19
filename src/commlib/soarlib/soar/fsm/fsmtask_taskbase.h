@@ -48,9 +48,9 @@ protected:
     //将数据放入管理器，
     template <class T>
     int pushbak_mgr_recvqueue(const soar::Zerg_Frame *recv_frame,
-                              unsigned int cmd,
+                              uint32_t cmd,
                               const T &info,
-                              unsigned int option
+                              uint32_t option
                              )
     {
         soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(task_frame_buf_);
@@ -95,11 +95,11 @@ protected:
 
     //将数据放入管理器，
     template <class T>
-    int pushbak_mgr_recvqueue(unsigned int cmd,
+    int pushbak_mgr_recvqueue(uint32_t cmd,
                               const T &info,
-                              unsigned int backfill_trans_id,
-                              unsigned int user_id = 0,
-                              unsigned int option = 0
+                              uint32_t backfill_fsm_id,
+                              uint32_t user_id = 0,
+                              uint32_t option = 0
                              )
     {
         soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(task_frame_buf_);

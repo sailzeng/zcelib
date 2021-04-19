@@ -246,7 +246,7 @@ public:
     * @return     bool
     * @param      cmd
     */
-    bool is_register_cmd(unsigned int cmd);
+    bool is_register_cmd(uint32_t cmd);
 
     /*!
     * @brief      创建一个异步对象
@@ -255,7 +255,7 @@ public:
     * @param      outer_data  外部数据，带给异步对象，给他处理
     * @param      id          返回参数，内部创建异步对象的ID，
     */
-    int create_asyncobj(unsigned int cmd, void *outer_data, unsigned int *id);
+    int create_asyncobj(uint32_t cmd, void *outer_data, unsigned int *id);
 
 
     /*!
@@ -281,7 +281,7 @@ protected:
     * @param      async_rec
     * @param      alloc_aysnc
     */
-    int allocate_from_pool(unsigned int cmd,
+    int allocate_from_pool(uint32_t cmd,
                            ASYNC_OBJECT_RECORD *&async_rec,
                            ZCE_Async_Object *&alloc_aysnc);
 

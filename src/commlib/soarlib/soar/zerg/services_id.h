@@ -25,13 +25,19 @@
 namespace soar
 {
 
-/****************************************************************************************************
-class  SERVICES_ID 　服务编号信息,
-****************************************************************************************************/
+#pragma pack (1)
+
+
+/*!
+* @brief      服务编号信息
+*             
+* note        
+*/
 class  SERVICES_ID
 {
 
 public:
+
     SERVICES_ID(uint16_t svc_type,uint16_t svc_id):
         services_type_(svc_type),
         services_id_(svc_id)
@@ -39,6 +45,8 @@ public:
     }
     SERVICES_ID() = default;
     ~SERVICES_ID() = default;
+    SERVICES_ID(const SERVICES_ID &) = default;
+    SERVICES_ID &operator=(const SERVICES_ID &) = default;
 
     void  clear()
     {
@@ -100,7 +108,7 @@ public:
 };
 
 
-
+#pragma pack ()
 
 
 

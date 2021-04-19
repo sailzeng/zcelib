@@ -136,17 +136,17 @@ public:
     //向SEND队列发送数据,让TASK接收
     template< class T>
     int enqueue_sendqueue(
-        unsigned int cmd,
-        unsigned int user_id,
-        unsigned int trans_id,
-        unsigned int backfill_trans_id,
+        uint32_t cmd,
+        uint32_t user_id,
+        uint32_t fsm_id,
+        uint32_t backfill_fsm_id,
         const T &info,
-        unsigned int option = 0)
+        uint32_t option = 0)
     {
         soar::SERVICES_ID proxysvc(0, 0);
         return enqueue_sendqueue(cmd,
                                  user_id,
-                                 trans_id,
+                                 fsm_id,
                                  backfill_trans_id,
                                  self_svc_info_,
                                  proxysvc,
@@ -158,21 +158,20 @@ public:
     //向SEND队列发送数据,让TASK接收
     template< class T>
     int enqueue_sendqueue(
-        unsigned int cmd,
-        unsigned int user_id,
-        unsigned int trans_id,
-        unsigned int backfill_trans_id,
+        uint32_t cmd,
+        uint32_t fsm_id,
+        uint32_t backfill_fsm_id,
         const soar::SERVICES_ID &rcvsvc,
         const soar::SERVICES_ID &proxysvc,
         const soar::SERVICES_ID &sndsvc,
         const T &info,
-        unsigned int option)
+        uint32_t option)
     {
         soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
         rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
 
         rsp_msg->user_id_ = user_id;
-        rsp_msg->fsm_id_ = trans_id;
+        rsp_msg->fsm_id_ = fsm_id;
         rsp_msg->recv_service_ = rcvsvc;
         rsp_msg->proxy_service_ = proxysvc;
         rsp_msg->send_service_ = sndsvc;

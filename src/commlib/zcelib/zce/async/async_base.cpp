@@ -243,7 +243,7 @@ int ZCE_Async_ObjectMgr::register_asyncobj(unsigned int create_cmd,
 }
 
 //判断某个命令是否是注册（创建）异步对象命令
-bool ZCE_Async_ObjectMgr::is_register_cmd(unsigned int cmd)
+bool ZCE_Async_ObjectMgr::is_register_cmd(uint32_t cmd)
 {
     ID_TO_REGASYNC_POOL_MAP::iterator mapiter = regaysnc_pool_.find(cmd);
     if (mapiter == regaysnc_pool_.end())
@@ -331,7 +331,7 @@ int ZCE_Async_ObjectMgr::free_to_pool(ZCE_Async_Object *free_crtn)
 }
 
 //创建异步对象
-int ZCE_Async_ObjectMgr::create_asyncobj(unsigned int cmd, void *outer_data, unsigned int *id)
+int ZCE_Async_ObjectMgr::create_asyncobj(uint32_t cmd, void *outer_data, unsigned int *id)
 {
     int ret = 0;
     ZCE_Async_Object *crt_async = NULL;

@@ -275,7 +275,7 @@ int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
     tibetan_send_appframe_->fsm_id_ = trans_id_builder_;
 
     int len = tibetan_send_appframe_->length_;
-    unsigned int cmd = tibetan_send_appframe_->command_;
+    uint32_t cmd = tibetan_send_appframe_->command_;
 
     //阻塞发送所有的数据
     tibetan_send_appframe_->hton();

@@ -127,9 +127,9 @@ public:
     void dump_status_info(zce::LOG_PRIORITY out_lvl);
 
     //发送简单的ZERG命令给对方
-    int send_simple_zerg_cmd(unsigned int cmd,
+    int send_simple_zerg_cmd(uint32_t cmd,
                              const soar::SERVICES_ID &recv_services_info,
-                             unsigned int option = 0);
+                             uint32_t option = 0);
 
     ///发送心跳
     int send_zergheatbeat_reg();

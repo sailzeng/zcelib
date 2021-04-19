@@ -80,16 +80,16 @@ void Soar_MMAP_BusPipe::clean_instance()
 }
 
 int
-Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
-                                           unsigned int user_id,
+Soar_MMAP_BusPipe::pipe_sendbuf_to_service(uint32_t cmd,
+                                           uint32_t user_id,
                                            unsigned int transaction_id,
-                                           unsigned int backfill_trans_id,
+                                           uint32_t backfill_fsm_id,
                                            const soar::SERVICES_ID &rcvsvc,
                                            const soar::SERVICES_ID &proxysvc,
                                            const soar::SERVICES_ID &sendsvc,
                                            const unsigned char *buf,
                                            size_t buf_len,
-                                           unsigned int option /*= 0*/)
+                                           uint32_t option /*= 0*/)
 {
     soar::Zerg_Frame *send_frame = reinterpret_cast<soar::Zerg_Frame *>(send_buffer_);
 
@@ -102,7 +102,7 @@ Soar_MMAP_BusPipe::pipe_sendbuf_to_service(unsigned int cmd,
 
     //填写事务ID和回填事务ID
     send_frame->fsm_id_ = transaction_id;
-    send_frame->backfill_fsm_id_ = backfill_trans_id;
+    send_frame->backfill_fsm_id_ = backfill_fsm_id;
 
     int ret = send_frame->fill_appdata(buf_len, (const char *)buf);
 

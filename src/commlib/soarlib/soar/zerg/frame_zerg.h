@@ -58,22 +58,112 @@ public:
 #endif
 };
 
-struct _ZERG_CLIENT_USE
-{
-    uint16_t game_id_ = 0;
-
-    uint16_t reserve_use_ = 0;
-};
-
 
 class Zerg_Head
 {
+
 public:
+    //帧的描述,在frame_option_字段使用
+    enum FRAME_OPTION
+    {
+        //-----------------------------------------------------------------
+        //低16位用于内部的描述
+        //
+        DESC_DEFUALT = 0x0,
+
+        //高优先级别，没有使用，
+        DESC_HIGH_PRIORITY = 0x1,
+
+        //某个命令帧发送失败,通知后面的服务
+        DESC_SEND_ERROR = 0x2,
+
+        //如果发送失败,重复尝试发送
+        DESC_SEND_FAIL_RECORD = 0x4,
+        //如果发送失败,通知后面的应用进程
+        DESC_SNDPRC_NOTIFY_APP = 0x8,
+
+        //如果发送成功后,直接断开连接，用于部分TCP的短连接
+        DESC_SNDPRC_CLOSE_PEER = 0x10,
+
+        //
+        DESC_MONITOR_TRACK = 0x100,
+
+        //FRAME数据区的有用户签名
+        DESC_HEAD_WITH_SIGNATURE = 0x200,
+
+        //帧的数据采用加密
+        DESC_SESSION_ENCRYPT = 0x400,
+
+        //特殊的某些命令不用加密进行处理，用于加密情况某些命令无须加密的特殊情况
+        DESC_SPECIAL_NO_ENCRYPT = 0x800,
+
+
+        //如果是TCP的帧,其实默认是TCP的帧,所以其实没有使用
+        DESC_TCP_FRAME = 0x0,
+        //默认的通讯帧都是TCP的，这个描述字表示这个帧是UDP的
+        DESC_UDP_FRAME = 0x1,
+        //
+        DESC_RUDP_FRAME = 0x2,
+
+
+        //APPFram的版本V1
+        DESC_V1_VERSION = 0x1,
+        //APPFram的版本V2，终于还是升级了一次
+        DESC_V2_VERSION = 0x2,
+    };
+
+public:
+
+
+
 
     //将帧头的所有的uint16_t,uint32_t转换为网络序
     void hton();
     //将帧头的所有的uint16_t,uint32_t转换为本地序
     void ntoh();
+
+    //清理
+    inline void clear()
+    {
+        length_ = sizeof(Zerg_Head);
+        u32_option_ = OPTION_V1_TCP;
+        command_ = CMD_INVALID_CMD;
+        user_id_ = 0;
+        fsm_id_ = 0;
+        backfill_fsm_id_ = 0;
+        serial_number_ = 0;
+        business_id_ = 0;
+        send_service_.services_type_ = 0;
+        send_service_.services_id_ = 0;
+        recv_service_.services_type_ = 0;
+        recv_service_.services_id_ = 0;
+        proxy_service_.services_type_ = 0;
+        proxy_service_.services_id_ = 0;
+    }
+
+    //初始化，ZERG服务器间传递消息的通用帧头
+    inline void init_head(uint32_t len,
+                          uint32_t option = OPTION_V1_TCP,
+                          uint32_t cmd = CMD_INVALID_CMD)
+    {
+        length_ = len;
+        u32_option_ = option;
+        command_ = cmd;
+        user_id_ = 0;
+        fsm_id_ = 0;
+        backfill_fsm_id_ = 0;
+        serial_number_ = 0;
+        business_id_ = 0;
+        send_service_.set_svcid(0,0);
+        recv_service_.set_svcid(0,0);
+        proxy_service_.set_svcid(0,0);
+    }
+
+public:
+    //---------------------------------------------------------------------------
+    //选项，
+    static const uint32_t OPTION_V1_TCP = ((DESC_V1_VERSION > 28) | (DESC_TCP_FRAME > 24));
+    static const uint32_t OPTION_V1_UDP = ((DESC_V1_VERSION > 28) | (DESC_UDP_FRAME > 24));
 
 public:
 
@@ -94,18 +184,19 @@ public:
     ///用户ID，可以是一个ID也可以是一个名字HASH映射的ID
     uint32_t               user_id_ = 0;
 
-    union
-    {
-        ///发送序列号，计划只在通讯层用,暂时没用用
-        uint32_t           serial_number_ = 0;
-        ///发送者的IP地址，内部使用,
-        uint32_t           send_ip_address_;
-    };
+
 
     ///事务FSM ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
     uint32_t               fsm_id_ = 0;
     ///回填的请求者的事务ID,
     uint32_t               backfill_fsm_id_ = 0;
+
+
+
+    ///发送序列号，计划只在通讯层用,暂时没用用
+    uint16_t               serial_number_ = 0;
+    ///业务ID，游戏ID
+    uint16_t               business_id_;
 
     ///发送和接收的服务器应用也要填写
     ///接受服务器
@@ -114,13 +205,15 @@ public:
     ///发送服务,包括发送服务器类型，发送服务器编号,没有编号，或者不是服务填写0
     soar::SERVICES_ID      send_service_;
 
-    union
-    {
-        ///代理服务器
-        soar::SERVICES_ID  proxy_service_;
-        /// 
-        _ZERG_CLIENT_USE   client_use_;
-    };
+    ///代理服务器
+    
+    soar::SERVICES_ID       proxy_service_;
+    //union
+    //{
+    //    
+    //    // 
+    //    uint32_t           reserve_use_ = 0;
+    //};
 };
 
 /*!
@@ -129,57 +222,6 @@ public:
 */
 class  Zerg_Frame : public Zerg_Head
 {
-public:
-
-    //帧的描述,在frame_option_字段使用
-    enum FRAME_OPTION
-    {
-        //-----------------------------------------------------------------
-        //低16位用于内部的描述
-
-        //
-        DESC_DEFUALT             = 0x0,
-
-        //高优先级别，没有使用，
-        DESC_HIGH_PRIORITY       = 0x1,
-
-        //某个命令帧发送失败,通知后面的服务
-        DESC_SEND_ERROR          = 0x2,
-
-        //如果发送失败,重复尝试发送
-        DESC_SEND_FAIL_RECORD    = 0x4,
-        //如果发送失败,通知后面的应用进程
-        DESC_SNDPRC_NOTIFY_APP   = 0x8,
-
-        //如果发送成功后,直接断开连接，用于部分TCP的短连接
-        DESC_SNDPRC_CLOSE_PEER   = 0x10,
-
-        //
-        DESC_MONITOR_TRACK       = 0x100,
-
-        //FRAME数据区的有用户签名
-        DESC_HEAD_WITH_SIGNATURE = 0x200,
-
-        //帧的数据采用加密
-        DESC_SESSION_ENCRYPT     = 0x400,
-
-        //特殊的某些命令不用加密进行处理，用于加密情况某些命令无须加密的特殊情况
-        DESC_SPECIAL_NO_ENCRYPT  = 0x800,
-
-
-        //如果是TCP的帧,其实默认是TCP的帧,所以其实没有使用
-        DESC_TCP_FRAME           = 0x0,
-        //默认的通讯帧都是TCP的，这个描述字表示这个帧是UDP的
-        DESC_UDP_FRAME           = 0x2,
-        //
-        DESC_RUDP_FRAME          = 0x3,
-
-
-        //APPFram的版本V1
-        DESC_V1_VERSION = 0x1,
-        //APPFram的版本V2，终于还是升级了一次
-        DESC_V2_VERSION = 0x2,
-    };
 
 
 protected:
@@ -191,13 +233,6 @@ protected:
     Zerg_Frame &operator = (const Zerg_Frame &other)=delete;
 
 public:
-    ///初始化V1版本的包头,所有数据清0
-    inline void init_head(uint32_t len,
-                          uint32_t option = OPTION_V1_TCP,
-                          uint32_t cmd = 0);
-
-    //
-    inline void clear();
 
     //是否事通信服务器处理的命理
     inline bool is_zerg_processcmd();
@@ -218,6 +253,9 @@ public:
     void clone(Zerg_Frame * dst_frame) const;
     //给dst_frame复制一个头部数据
     void clone_head(Zerg_Frame * dst_frame) const;
+
+    //取得一个头部信息
+    void get_head(Zerg_Head &frame_head) const;
 
     //取得帧的长度
     inline size_t get_frame_len() const;
@@ -279,10 +317,7 @@ public:
 
 public:
 
-    //---------------------------------------------------------------------------
-    //选项，
-    static const uint32_t OPTION_V1_TCP = ((DESC_V1_VERSION > 28) | (DESC_TCP_FRAME > 24));
-    static const uint32_t OPTION_V1_UDP = ((DESC_V1_VERSION > 28) | (DESC_UDP_FRAME > 24));
+
     //---------------------------------------------------------------------------
     //包头都尺寸,40
     static const size_t LEN_OF_APPFRAME_HEAD = sizeof(Zerg_Head);
@@ -308,40 +343,9 @@ public:
 #pragma pack ()
 
 
-//初始化，ZERG服务器间传递消息的通用帧头
-inline void Zerg_Frame::init_head(uint32_t len,
-                                  uint32_t option,
-                                  uint32_t cmd)
-{
-    length_ = len;
-    u32_option_ = option;
-    command_ = cmd;
-    user_id_ = 0;
-    send_service_.set_svcid(0, 0);
-    recv_service_.set_svcid(0, 0);
-    proxy_service_.set_svcid(0, 0);
-    serial_number_ = 0;
-    fsm_id_ = 0;
-    backfill_fsm_id_ = 0;
-}
 
-//清理
-inline void Zerg_Frame::clear()
-{
-    length_ = CMD_INVALID_CMD;
-    frame_option_.version_ = DESC_V1_VERSION;
-    command_ = LEN_OF_APPFRAME_HEAD;
-    user_id_ = 0;
-    send_service_.services_type_ = 0;
-    send_service_.services_id_ = 0;
-    recv_service_.services_type_ = 0;
-    recv_service_.services_id_ = 0;
-    proxy_service_.services_type_ = 0;
-    proxy_service_.services_id_ = 0;
-    fsm_id_ = 0;
-    backfill_fsm_id_ = 0;
-    send_ip_address_ = 0;
-}
+
+
 
 
 

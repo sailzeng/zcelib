@@ -1509,9 +1509,9 @@ int TCP_Svc_Handler::find_conf_ms_svcid_ary(uint16_t services_type,
 
 
 //发送简单的的ZERG命令,用于某些特殊命令的处理
-int TCP_Svc_Handler::send_simple_zerg_cmd(unsigned int cmd,
+int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
                                           const soar::SERVICES_ID &recv_services_info,
-                                          unsigned int option)
+                                          uint32_t option)
 {
     //ZCE_LOGMSG_DEBUG(RS_DEBUG,"Send simple command to services[%u|%u] IP[%s|%u],Cmd %u.",
     //    peer_svr_info_.services_type_,

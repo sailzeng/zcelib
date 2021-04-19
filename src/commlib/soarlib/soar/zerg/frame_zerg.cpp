@@ -18,9 +18,13 @@ void Zerg_Head::hton()
     length_ = htonl(length_);
     u32_option_ = htonl(u32_option_);
     command_ = htonl(command_);
-
     user_id_ = htonl(user_id_);
 
+    fsm_id_ = htonl(fsm_id_);
+    backfill_fsm_id_ = htonl(backfill_fsm_id_);
+
+    serial_number_ = htons(serial_number_);
+    business_id_ = htons(business_id_);
     //
     recv_service_.services_type_ = htons(recv_service_.services_type_);
     recv_service_.services_id_ = htons(recv_service_.services_id_);
@@ -31,10 +35,9 @@ void Zerg_Head::hton()
     proxy_service_.services_type_ = htons(proxy_service_.services_type_);
     proxy_service_.services_id_ = htons(proxy_service_.services_id_);
 
-    fsm_id_ = htonl(fsm_id_);
-    backfill_fsm_id_ = htonl(backfill_fsm_id_);
+    
 
-    serial_number_ = htonl(serial_number_);
+    
 
 }
 
@@ -46,6 +49,11 @@ void Zerg_Head::ntoh()
     command_ = ntohl(command_);
     user_id_ = ntohl(user_id_);
 
+    fsm_id_ = ntohl(fsm_id_);
+    backfill_fsm_id_ = ntohl(backfill_fsm_id_);
+
+    serial_number_ = ntohs(serial_number_);
+    business_id_ = ntohs(business_id_);
     //
     recv_service_.services_type_ = ntohs(recv_service_.services_type_);
     recv_service_.services_id_ = ntohs(recv_service_.services_id_);
@@ -56,10 +64,9 @@ void Zerg_Head::ntoh()
     proxy_service_.services_type_ = ntohs(proxy_service_.services_type_);
     proxy_service_.services_id_ = ntohs(proxy_service_.services_id_);
 
-    fsm_id_ = ntohl(fsm_id_);
-    backfill_fsm_id_ = ntohl(backfill_fsm_id_);
+    
 
-    serial_number_ = ntohl(serial_number_);
+    
 }
 
 //---------------------------------------------------------------------------------------------------------
@@ -202,6 +209,14 @@ void Zerg_Frame::clone_head(Zerg_Frame *clone_frame) const
     return;
 }
 
+//取得一个头部信息
+void Zerg_Frame::get_head(Zerg_Head &frame_head) const
+{
+    memcpy(&frame_head,this,LEN_OF_APPFRAME_HEAD);
+    frame_head.length_ = LEN_OF_APPFRAME_HEAD;
+    return;
+}
+
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
 ///将一个结构进行编码
@@ -225,7 +240,7 @@ int Zerg_Frame::protobuf_encode(size_t szframe_appdata,
                                              static_cast<int>(szframe_appdata - data_start));
     if (bret == false)
     {
-        ZCE_LOG(RS_ERROR,"");
+        ZCE_LOG(RS_ERROR,"Portobuf encode SerializePartialToArray fail.");
         return SOAR_RET::ERROR_DR_ENCODE_FAIL;
     }
     if (sz_code)
@@ -245,7 +260,7 @@ int Zerg_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
                                     static_cast<int>(szframe_appdata - data_start));
     if (bret == false)
     {
-        ZCE_LOG(RS_ERROR,"");
+        ZCE_LOG(RS_ERROR,"Portobuf decode ParseFromArray fail.");
         return SOAR_RET::ERROR_DR_DECODE_FAIL;
     }
     if (sz_code)
