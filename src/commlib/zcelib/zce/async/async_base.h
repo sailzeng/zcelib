@@ -172,38 +172,6 @@ protected:
 
     ///异步对象池子，
     typedef zce::lordrings<Async_Object*>  ASYNC_OBJECT_POOL;
-
-
-    struct  ONLYONE_LOCK
-    {
-        //要加锁的USER ID,
-        uint32_t     lock_user_id_;
-        //事务的加锁ID，如果就是一个命令对应一个锁，建议直接使用命令字
-        //如果是多个命令对一个东东加锁，建议占位一个命令，然后对那个命令加锁，
-        uint32_t     lock_trans_cmd_;
-
-    };
-
-    //得到KEY的HASH函数
-    struct HASH_OF_LOCK
-    {
-    public:
-        size_t operator()(const ONLYONE_LOCK& lock_rec) const
-        {
-            return (size_t(lock_rec.lock_user_id_) + lock_rec.lock_trans_cmd_);
-        }
-    };
-
-    //判断相等的函数
-    struct EQUAL_OF_LOCK
-    {
-        bool operator()(const ONLYONE_LOCK& right,
-                        const ONLYONE_LOCK& left) const
-        {
-            return (right.lock_user_id_ == left.lock_user_id_ && right.lock_trans_cmd_ == left.lock_trans_cmd_);
-        }
-    };
-
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {
@@ -231,8 +199,7 @@ protected:
         uint64_t run_consume_ms_ = 0;
     };
 
-    //内部的锁的数量
-    typedef std::unordered_set<ONLYONE_LOCK,HASH_OF_LOCK,EQUAL_OF_LOCK>  ONLY_ONE_LOCK_POOL;
+    
     //异步对象记录池子（包括异步对象和记录信息）
     typedef std::unordered_map<uint32_t,ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
     //
@@ -253,8 +220,7 @@ public:
     */
     int initialize(zce::Timer_Queue_Base* tq,
                    size_t crtn_type_num,
-                   size_t running_number,
-                   bool init_lock_pool = false);
+                   size_t running_number);
 
 
     /*!
@@ -345,18 +311,7 @@ protected:
     int timer_timeout(const ZCE_Time_Value& now_time,
                       const void* act);
 
-    /*!
-    * @brief      对某个命令的某些ID（一般是用户）的的事务进行加锁，保证一次只能有一个
-    * @return     int 等于0表示成功
-    * @param      cmd 命令字
-    * @param      lock_id 一般是用户ID
-    */
-    int lock_only_one(uint32_t cmd,
-                      uint32_t lock_id);
 
-    //对某一个用户的一个命令的事务进行
-    void unlock_only_one(uint32_t cmd,
-                         uint32_t lock_id);
 
 protected:
     ///默认的异步对象类型数量
@@ -386,8 +341,7 @@ protected:
     ///异步对象池子的每次扩大的数量
     size_t  pool_extend_size_ = DEFUALT_RUNNIG_ASYNC_SIZE;
 
-    //ONLY ONE锁的池子
-    ONLY_ONE_LOCK_POOL   only_one_lock_pool_;
+
 };
 
 }

@@ -108,18 +108,13 @@ Async_ObjectMgr::~Async_ObjectMgr()
 //初始化，
 int Async_ObjectMgr::initialize(Timer_Queue_Base* tq,
                                 size_t crtn_type_num,
-                                size_t running_number,
-                                bool init_lock_pool)
+                                size_t running_number)
 {
     timer_queue(tq);
 
     regaysnc_pool_.rehash(crtn_type_num);
     running_aysncobj_.rehash(running_number);
-    if (init_lock_pool)
-    {
-        //按照事务尺寸的一半初始化锁的数量
-        only_one_lock_pool_.rehash(running_number / 5 + 32);
-    }
+
     return 0;
 }
 
@@ -494,33 +489,5 @@ void Async_ObjectMgr::dump_info(zce::LOG_PRIORITY log_priority) const
     }
 }
 
-//对某一个用户的一个命令的事务进行加锁
-int Async_ObjectMgr::lock_only_one(uint32_t cmd,
-                                   uint32_t lock_id)
-{
-    ONLYONE_LOCK lock_rec = {cmd,lock_id};
-    auto iter_tmp =
-        only_one_lock_pool_.insert(lock_rec);
-
-    //如果已经有一个锁了，那么加锁失败
-    if (false == iter_tmp.second)
-    {
-        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
-                cmd,
-                lock_id);
-        return -1;
-    }
-
-    return 0;
-}
-
-//对某一个用户的一个命令的事务进行加锁
-void Async_ObjectMgr::unlock_only_one(uint32_t cmd,
-                                      uint32_t lock_id)
-{
-    ONLYONE_LOCK lock_rec = {cmd,lock_id};
-    only_one_lock_pool_.erase(lock_rec);
-    return;
-}
 
 }

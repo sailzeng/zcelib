@@ -1232,7 +1232,7 @@ int zce::inet_pton (int family,
 #if defined (ZCE_OS_WINDOWS)
 
     //为什么不让我用inet_pton ,(Vista才支持),不打开下面注释的原因是，编译会通过了，但你也没法用,XP和WINSERVER2003都无法使用，
-    //VISTA,WINSERVER2008的_WIN32_WINNT都是0x0600
+    //VISTA,WINSERVER2008的_WIN32_WINNT都是0x0600. 诅咒在2011年还在用Win2003Server的公司
 #if defined ZCE_SUPPORT_WINSVR2008
     return ::inet_pton(family, strptr, addrptr);
 #else
@@ -1621,36 +1621,47 @@ IANA保证这些网络号不会分配给连到Internet上的任何网络，
 因此任何人都可以自由地选择这些网络地址作为自己的私有网络地址。
 在申请的合法IP不足的情况下，企业网内网可以采用私有IP地址的网络地址分配方案；
 企业网外网接入、DMZ区使用合法IP地址。
-如果是全0，也是自己内部ip <==== 这个是那个同学加的，这个在某种程度上是对的，因为0只会出现在本机的判定上
+原来代码有人把0也认为是内外地址，这个不严谨。
 */
 
 #if !defined ZCE_IS_INTERNAL
 #define ZCE_IS_INTERNAL(ip_addr)   ((ip_addr >= 0x0A000000 && ip_addr <= 0x0AFFFFFF ) ||  \
                                     (ip_addr >= 0xAC100000 && ip_addr <= 0xAC1FFFFF) ||  \
-                                    (ip_addr >= 0xC0A80000 && ip_addr <= 0xC0A8FFFF) ||  \
-                                    (ip_addr == INADDR_ANY))
+                                    (ip_addr >= 0xC0A80000 && ip_addr <= 0xC0A8FFFF) )
 #endif
 
 //检测一个地址是否是内网地址
-bool zce::is_internal(const sockaddr_in *sock_addr_ipv4)
+bool zce::is_internal(const sockaddr *sock_addr)
 {
-    uint32_t ip_addr = zce::get_ip_address(sock_addr_ipv4);
-
-    //检查3类地址
-    if (ZCE_IS_INTERNAL(ip_addr))
+    if (sock_addr->sa_family == AF_INET)
     {
-        return true;
+        const sockaddr_in *sock_addr_ipv4 = reinterpret_cast<const sockaddr_in *>(sock_addr);
+        uint32_t ip_addr = zce::get_ip_address(sock_addr_ipv4);
+        //检查3类地址
+        if (ZCE_IS_INTERNAL(ip_addr))
+        {
+            return true;
+        }
     }
-    return false;
-}
-
-bool zce::is_internal(uint32_t ipv4_addr_val)
-{
-    //检查3类地址
-    if (ZCE_IS_INTERNAL(ipv4_addr_val))
+    else if (sock_addr->sa_family == AF_INET6)
     {
-        return true;
+        const sockaddr_in6 *sockadd_ipv6 = reinterpret_cast<const sockaddr_in6 *>(sock_addr);
+        char *addr = (char *)(&(sockadd_ipv6->sin6_addr));
+        uint16_t u1 = (addr[0]);
+        uint16_t u2 = (addr[1]);
+        u1 = (u1>8) | u2;
+        u1 = ntohs(u1);
+        if (u1 == 0xFD00)
+        {
+            return true;
+        }
     }
+    else
+    {
+        errno = EAFNOSUPPORT;
+        return false;
+    }
+
     return false;
 }
 

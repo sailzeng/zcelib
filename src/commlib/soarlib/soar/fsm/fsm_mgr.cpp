@@ -12,16 +12,6 @@ class Transaction_Manager
 FSM_Manager *FSM_Manager::instance_ = NULL;
 
 FSM_Manager::FSM_Manager()
-    : max_trans_(0)
-    ,zerg_mmap_pipe_(NULL)
-    ,statistics_clock_(NULL)
-    ,trans_send_buffer_(NULL)
-    ,trans_recv_buffer_(NULL)
-    ,fake_recv_buffer_(NULL)
-    ,inner_frame_mallocor_(NULL)
-    ,message_queue_(NULL)
-    ,gen_trans_counter_(0)
-    ,cycle_gentrans_counter_(0)
 {
 }
 
@@ -31,8 +21,8 @@ FSM_Manager::~FSM_Manager()
 }
 
 int FSM_Manager::initialize(zce::Timer_Queue_Base *timer_queue,
-                            size_t  szregtrans,
-                            size_t sztransmap,
+                            size_t  reg_fsm_num,
+                            size_t running_fsm_num,
                             const soar::SERVICES_INFO &selfsvr,
                             Soar_MMAP_BusPipe *zerg_mmap_pipe,
                             size_t max_frame_len,
@@ -45,13 +35,14 @@ int FSM_Manager::initialize(zce::Timer_Queue_Base *timer_queue,
     ZCE_ASSERT(zerg_mmap_pipe != NULL);
 
     int ret = 0;
-    ret = ZCE_Async_FSMMgr::initialize(timer_queue,szregtrans,sztransmap);
+    ret = ZCE_Async_FSMMgr::initialize(timer_queue,
+                                       reg_fsm_num,
+                                       running_fsm_num);
     if (ret != 0)
     {
         return ret;
     }
 
-    max_trans_ = sztransmap;
     self_svc_info_ = selfsvr;
     zerg_mmap_pipe_ = zerg_mmap_pipe;
 
@@ -71,12 +62,11 @@ int FSM_Manager::initialize(zce::Timer_Queue_Base *timer_queue,
         message_queue_ = new Inner_Frame_Queue(MAX_QUEUE_NODE_NUMBER);
         //inner_message_queue_->open(,INNER_QUEUE_WATER_MARK);
     }
-
-    //初始化池子
     if (init_lock_pool)
     {
-        //按照事务尺寸的一半初始化锁的数量
-        trans_lock_pool_.rehash(sztransmap / 2);
+        //按照事务尺寸进行初始化，
+        only_one_lock_pool_ = new ONLY_ONE_LOCK_POOL();
+        only_one_lock_pool_->rehash(running_fsm_num / 5 + 32);
     }
     return 0;
 }
@@ -399,6 +389,38 @@ FSM_Manager *FSM_Manager::instance()
     return instance_;
 }
 
+
+
+//对某一个用户的一个命令的事务进行加锁
+int FSM_Manager::lock_only_one(uint32_t cmd,
+                               uint32_t lock_id)
+{
+    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    auto iter_tmp =
+        only_one_lock_pool_->insert(lock_rec);
+
+    //如果已经有一个锁了，那么加锁失败
+    if (false == iter_tmp.second)
+    {
+        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
+                cmd,
+                lock_id);
+        return -1;
+    }
+
+    return 0;
+}
+
+//对某一个用户的一个命令的事务进行加锁
+void FSM_Manager::unlock_only_one(uint32_t cmd,
+                                  uint32_t lock_id)
+{
+    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    only_one_lock_pool_->erase(lock_rec);
+    return;
+}
+
+
 //实例赋值
 void FSM_Manager::instance(FSM_Manager *pinstatnce)
 {
@@ -418,6 +440,3 @@ void FSM_Manager::clean_instance()
 
     return;
 }
-
-
-

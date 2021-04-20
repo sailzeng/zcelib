@@ -59,13 +59,13 @@ ZCE_Sockaddr_In::~ZCE_Sockaddr_In()
 //检查地址是否是一个内网地址
 bool ZCE_Sockaddr_In::is_internal()
 {
-    return zce::is_internal(&in4_addr_);
+    return zce::is_internal((sockaddr *)&in4_addr_);
 }
 
 //检查地址是否是一个外网地址，其实我就简单认为不是外网地址就是内网地址
 bool ZCE_Sockaddr_In::is_internet()
 {
-    return !(zce::is_internal(&in4_addr_));
+    return !(zce::is_internal((sockaddr *)&in4_addr_));
 }
 
 //设置地址信息

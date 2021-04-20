@@ -183,13 +183,6 @@ int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
     return 0;
 }
 
-
-//用于检查请求的IP地址是否是内部IP地址,是返回0，不是返回非0
-int FSM_Base::check_request_internal() const
-{
-    return (zce::is_internal(req_ip_address_))?0:-1;
-}
-
 //检测包头和包体的user_id以及发送的service_id是否一致,
 int FSM_Base::check_req_userid(uint32_t user_id) const
 {
@@ -215,11 +208,12 @@ int FSM_Base::close_request_service() const
             req_zerg_head_.command_,
             get_stage(),
             req_zerg_head_.user_id_);
-
-    return trans_manager_->mgr_sendmsghead_to_service(INNER_RSP_CLOSE_SOCKET,
-                                                      req_zerg_head_.user_id_,
-                                                      req_zerg_head_.recv_service_,
-                                                      req_zerg_head_.proxy_service_);
+    soar::Zerg_Head cmd_head;
+    cmd_head.command_ = INNER_RSP_CLOSE_SOCKET;
+    cmd_head.recv_service_ = req_zerg_head_.send_service_;
+    cmd_head.proxy_service_ = req_zerg_head_.proxy_service_;
+    cmd_head.send_service_ = req_zerg_head_.recv_service_;
+    return trans_manager_->sendbuf_to_pipe(cmd_head,NULL,0);
 }
 
 

@@ -1035,7 +1035,7 @@ inline uint32_t get_ip_address(const sockaddr_in *sock_addr_ipv4);
 * @return     bool true是内网地址，false不是，
 * @param      sock_addr_ipv4 判断的sockaddr_in
 */
-bool is_internal(const sockaddr_in *sock_addr_ipv4);
+bool is_internal(const sockaddr *sock_addr_ipv4);
 
 
 

@@ -46,17 +46,16 @@ protected:
         TOO_TOO_LONG_TIME_OUT = 480,
     };
 
-protected:
-
-    //私有的构造函数,你必须使用NEW得到
-    virtual ~FSM_Base();
-
 public:
     //构造函数
     FSM_Base(FSM_Manager *pmngr,
              uint32_t create_cmd,
              bool trans_locker = false);
+protected:
+    //私有的构造函数,你必须使用NEW得到
+    virtual ~FSM_Base();
 
+public:
     //得到管理器
     inline  FSM_Manager *get_trans_mgr() const;
 
