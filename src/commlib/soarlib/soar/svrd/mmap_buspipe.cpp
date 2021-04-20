@@ -79,17 +79,16 @@ void Soar_MMAP_BusPipe::clean_instance()
     return;
 }
 
-int
-Soar_MMAP_BusPipe::pipe_sendbuf_to_service(uint32_t cmd,
-                                           uint32_t user_id,
-                                           unsigned int transaction_id,
-                                           uint32_t backfill_fsm_id,
-                                           const soar::SERVICES_ID &rcvsvc,
-                                           const soar::SERVICES_ID &proxysvc,
-                                           const soar::SERVICES_ID &sendsvc,
-                                           const unsigned char *buf,
-                                           size_t buf_len,
-                                           uint32_t option /*= 0*/)
+int Soar_MMAP_BusPipe::pipe_sendbuf_to_service(uint32_t cmd,
+                                               uint32_t user_id,
+                                               unsigned int transaction_id,
+                                               uint32_t backfill_fsm_id,
+                                               const soar::SERVICES_ID& rcvsvc,
+                                               const soar::SERVICES_ID& proxysvc,
+                                               const soar::SERVICES_ID& sendsvc,
+                                               const unsigned char* buf,
+                                               size_t buf_len,
+                                               uint32_t option)
 {
     soar::Zerg_Frame *send_frame = reinterpret_cast<soar::Zerg_Frame *>(send_buffer_);
 
@@ -147,7 +146,7 @@ int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame *&proc_frame)
 }
 
 //向SEND管道写入帧，
-int Soar_MMAP_BusPipe::push_back_sendpipe(soar::Zerg_Frame *proc_frame)
+int Soar_MMAP_BusPipe::push_back_sendpipe(const soar::Zerg_Frame *proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"TO SEND PIPE FRAME:",proc_frame);
 

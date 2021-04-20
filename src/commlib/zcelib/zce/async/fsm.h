@@ -11,7 +11,7 @@
 /*!
 * @brief      状态机对象
 */
-class ZCE_Async_FSM : public ZCE_Async_Object
+class ZCE_Async_FSM : public zce::Async_Object
 {
     friend class ZCE_Async_FSMMgr;
 
@@ -21,7 +21,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd);
+    ZCE_Async_FSM(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -30,7 +30,7 @@ protected:
 
 
     /*!
-    * @brief      状态机运行处理，继承ZCE_Async_Object的函数，此函数仅仅用于作为例子进行参考，
+    * @brief      状态机运行处理，继承zce::Async_Object的函数，此函数仅仅用于作为例子进行参考，
     * @param[in]  outer_data 传入参数，外部调用数据
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
@@ -70,7 +70,7 @@ protected:
 * @brief      状态机主控管理类
 *
 */
-class ZCE_Async_FSMMgr : public ZCE_Async_ObjectMgr
+class ZCE_Async_FSMMgr : public zce::Async_ObjectMgr
 {
 public:
 

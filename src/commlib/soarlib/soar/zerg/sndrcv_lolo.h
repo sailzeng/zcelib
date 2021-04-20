@@ -194,7 +194,7 @@ int Lolo_SendRecv_Package::receive_svc_package(uint32_t cmd,
 template< class T>
 int Lolo_SendRecv_Package::send_svc_package(uint32_t user_id,
                                             uint32_t cmd,
-                                            const T &info,
+                                            const T &msg,
                                             unsigned int app_id,
                                             uint32_t backfill_fsm_id)
 {

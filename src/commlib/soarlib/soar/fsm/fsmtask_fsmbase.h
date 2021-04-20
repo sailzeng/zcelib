@@ -37,7 +37,7 @@ protected:
     //
     template <class T>
     int pushbak_mgr_sendqueue(uint32_t cmd,
-                              const T &info,
+                              const T &msg,
                               uint32_t option = 0)
     {
         soar::SERVICES_ID proxy_svc(0, 0);

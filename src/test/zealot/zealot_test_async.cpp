@@ -16,7 +16,7 @@ private:
     };
 public:
 
-    FSM_1(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    FSM_1(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
         ZCE_Async_FSM(async_mgr, create_cmd)
     {
         set_stage(FMS1_STAGE_1);
@@ -29,9 +29,9 @@ protected:
     }
 
 public:
-    ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<ZCE_Async_Object * >(new FSM_1(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object * >(new FSM_1(async_mgr, create_cmd));
     }
 
     virtual void on_run(const void *outer_data, bool &continue_run)
@@ -83,7 +83,7 @@ private:
     };
 
 public:
-    FSM_2(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    FSM_2(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
         ZCE_Async_FSM(async_mgr, create_cmd)
     {
         set_stage(FMS2_STAGE_1);
@@ -93,9 +93,9 @@ protected:
     {
     }
 public:
-    ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<ZCE_Async_Object *>(new FSM_2(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new FSM_2(async_mgr, create_cmd));
     }
 
     virtual void on_run(const void *outer_data, bool &continue_run)
@@ -176,14 +176,14 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
 class Coroutine_1 : public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_1(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    Coroutine_1(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
         ZCE_Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
-    ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<ZCE_Async_Object *>(new Coroutine_1(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new Coroutine_1(async_mgr, create_cmd));
     }
 
     ///协程运行,你要重载的函数
@@ -203,14 +203,14 @@ public:
 class Coroutine_2 : public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_2(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    Coroutine_2(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
         ZCE_Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
-    ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
     {
-        return dynamic_cast<ZCE_Async_Object *>(new Coroutine_2(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new Coroutine_2(async_mgr, create_cmd));
     }
 
     virtual void coroutine_run()

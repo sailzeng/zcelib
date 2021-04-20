@@ -60,7 +60,7 @@ const char *SOAR_RET::error_string(int error_id)
             return  "Commlib: Event Process fail.";
         case ERROR_FRAME_DATA_IS_ERROR:
             return  "Commlib: Frame Data is error.";
-        case ERROR_QQUIN_INCERTITUDE:
+        case ERROR_USERID_INCERTITUDE:
             return  "Commlib: QQUin incertitude.";
         case ERROR_FRAME_NOT_TAIL_IPINFO:
             return  "Commlib: Appframe don't have ip info.";

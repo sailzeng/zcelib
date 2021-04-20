@@ -26,21 +26,24 @@
 #include "zce/logger/logging.h"
 #include "zce/timer/queue_base.h"
 
-class ZCE_Async_ObjectMgr;
+namespace zce
+{
+
+class Async_ObjectMgr;
 
 /*!
 * @brief      异步对象的基类
 *
 */
-class ZCE_Async_Object
+class Async_Object
 {
-    friend class ZCE_Async_ObjectMgr;
+    friend class zce::Async_ObjectMgr;
 
 public:
-    ZCE_Async_Object(ZCE_Async_ObjectMgr *async_mgr,
-                     unsigned int create_cmd);
+    Async_Object(Async_ObjectMgr *async_mgr,
+                 uint32_t create_cmd);
 protected:
-    virtual ~ZCE_Async_Object();
+    virtual ~Async_Object();
 
 public:
 
@@ -61,11 +64,11 @@ public:
 
     /*!
     * @brief      克隆自己
-    * @return     ZCE_Async_Object*
+    * @return     zce::Async_Object*
     * @param      async_mgr
     */
-    virtual ZCE_Async_Object *clone(ZCE_Async_ObjectMgr *async_mgr,
-                                    unsigned int reg_cmd) = 0;
+    virtual Async_Object *clone(Async_ObjectMgr *async_mgr,
+                                uint32_t reg_cmd) = 0;
 
     /*!
     * @brief      异步对象开始,可以用来做每次重新进行初始化时候的事情
@@ -135,7 +138,7 @@ protected:
     unsigned int asyncobj_id_ = 0;
 
     ///管理者
-    ZCE_Async_ObjectMgr *async_mgr_ = NULL;
+    zce::Async_ObjectMgr *async_mgr_ = NULL;
 
     ///对应激活的处理的命令
     unsigned int  create_cmd_ = 0;
@@ -162,66 +165,95 @@ class ZCE_Timer_Queue_Base;
 * @brief      异步对象的管理器基类
 *
 */
-class ZCE_Async_ObjectMgr : public ZCE_Timer_Handler
+class Async_ObjectMgr : public ZCE_Timer_Handler
 {
 
 protected:
 
     ///异步对象池子，
-    typedef zce::lordrings<ZCE_Async_Object *>  ASYNC_OBJECT_POOL;
+    typedef zce::lordrings<zce::Async_Object *>  ASYNC_OBJECT_POOL;
+
+
+    struct  ASYNCOBJ_LOCK
+    {
+        //要加锁的USER ID,
+        uint32_t     lock_user_id_;
+        //事务的加锁ID，如果就是一个命令对应一个锁，建议直接使用命令字
+        //如果是多个命令对一个东东加锁，建议占位一个命令，然后对那个命令加锁，
+        uint32_t     lock_trans_cmd_;
+
+    };
+
+    //得到KEY的HASH函数
+    struct HASH_OF_LOCK
+    {
+    public:
+        size_t operator()(const ASYNCOBJ_LOCK& lock_rec) const
+        {
+            return (size_t(lock_rec.lock_user_id_) + lock_rec.lock_trans_cmd_);
+        }
+    };
+
+    //判断相等的函数
+    struct EQUAL_OF_LOCK
+    {
+        bool operator()(const ASYNCOBJ_LOCK& right,const ASYNCOBJ_LOCK& left) const
+        {
+            return (right.lock_user_id_ == left.lock_user_id_ && right.lock_trans_cmd_ == left.lock_trans_cmd_);
+        }
+    };
 
     ///异步对象记录
     struct ASYNC_OBJECT_RECORD
     {
-        ASYNC_OBJECT_RECORD();
-        ~ASYNC_OBJECT_RECORD();
-
         //异步对象池子，
         ASYNC_OBJECT_POOL aysncobj_pool_;
-
 
         //下面是统计信息
 
         //创建的事务的数量
-        uint64_t create_num_;
+        uint64_t create_num_ = 0;
 
         //销毁时状态异常的事务数量
-        uint64_t active_num_;
+        uint64_t active_num_ = 0;
 
         //正常结束的数量
-        uint64_t end_num_;
+        uint64_t end_num_ = 0;
 
         ///强行结束的数量
-        uint64_t force_end_num_;
+        uint64_t force_end_num_ =0;
 
         //运行过程发生超时的数量
-        uint64_t timeout_num_;
-
+        uint64_t timeout_num_ = 0;
 
         //运行总消耗时间
-        uint64_t run_consume_ms_;
+        uint64_t run_consume_ms_ = 0;
     };
 
+    //内部的锁的数量
+    typedef std::unordered_set<ASYNCOBJ_LOCK,HASH_OF_LOCK,EQUAL_OF_LOCK>  ASYNC_OBJ_LOCK_POOL;
+    //异步对象记录池子（包括异步对象和记录信息）
+    typedef std::unordered_map<uint32_t, ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
     //
-    typedef std::unordered_map<unsigned int, ASYNC_OBJECT_RECORD> ID_TO_REGASYNC_POOL_MAP;
-    //
-    typedef std::unordered_map<unsigned int, ZCE_Async_Object * > RUNNING_ASYNOBJ_MAP;
+    typedef std::unordered_map<uint32_t, zce::Async_Object * > RUNNING_ASYNOBJ_MAP;
 
 public:
 
     ///异步对象管理器的构造函数
-    ZCE_Async_ObjectMgr();
-    virtual ~ZCE_Async_ObjectMgr();
+    Async_ObjectMgr();
+    virtual ~Async_ObjectMgr();
 
     /*!
     * @brief      初始化，控制各种池子，容器的大小
     * @return     int
     * @param      crtn_type_num
     * @param      running_number
+    * @param      init_lock_pool 初始化
     */
     int initialize(ZCE_Timer_Queue_Base *tq,
-                   size_t crtn_type_num = DEFUALT_ASYNC_TYPE_NUM,
-                   size_t running_number = DEFUALT_RUNNIG_ASYNC_SIZE);
+                   size_t crtn_type_num,
+                   size_t running_number,
+                   bool init_lock_pool = false);
 
 
     /*!
@@ -238,8 +270,8 @@ public:
     * @param      async_base
     * @param      init_clone_num
     */
-    int register_asyncobj(unsigned int create_cmd,
-                          ZCE_Async_Object *async_base);
+    int register_asyncobj(uint32_t create_cmd,
+                          zce::Async_Object *async_base);
 
     /*!
     * @brief      判断某个命令是否是注册（创建）异步对象命令
@@ -283,14 +315,14 @@ protected:
     */
     int allocate_from_pool(uint32_t cmd,
                            ASYNC_OBJECT_RECORD *&async_rec,
-                           ZCE_Async_Object *&alloc_aysnc);
+                           zce::Async_Object *&alloc_aysnc);
 
     /*!
     * @brief      释放一个异步对象到池子里面
     * @return     int
     * @param      free_async
     */
-    int free_to_pool(ZCE_Async_Object *free_async);
+    int free_to_pool(zce::Async_Object *free_async);
 
 
     /*!
@@ -299,7 +331,7 @@ protected:
     * @param[in]  id   运行的异步对象的标识ID
     * @param[out] running_aysnc 查询到的异步对象
     */
-    int find_running_asyncobj(unsigned int id, ZCE_Async_Object *&running_aysnc);
+    int find_running_asyncobj(unsigned int id, zce::Async_Object *&running_aysnc);
 
 
 
@@ -313,14 +345,10 @@ protected:
                       const void *act);
 
 protected:
-
     ///默认的异步对象类型数量
     static const size_t DEFUALT_ASYNC_TYPE_NUM = 2048;
     ///默认同时运行的一部分对象的数量
-    static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 2048;
-
-
-
+    static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 256*1024;
 public:
     ///无效的事务ID
     static const unsigned int INVALID_IDENTITY = 0;
@@ -330,20 +358,25 @@ public:
 protected:
 
     //事务ID发生器
-    unsigned int id_builder_;
+    unsigned int id_builder_ = 1;
 
-    //协程的池子，都是注册进来的
-    ID_TO_REGASYNC_POOL_MAP regaysnc_pool_;
+    //异步对象的池子，都是注册进来的
+    ASYNC_RECORD_POOL regaysnc_pool_;
 
     ///正在运行的协程
     RUNNING_ASYNOBJ_MAP running_aysncobj_;
 
     ///异步对象池子的初始化大小，
-    size_t  pool_init_size_;
+    size_t  pool_init_size_ = DEFUALT_ASYNC_TYPE_NUM;
 
     ///异步对象池子的每次扩大的数量
-    size_t  pool_extend_size_;
+    size_t  pool_extend_size_= DEFUALT_RUNNIG_ASYNC_SIZE;
+
+    //锁的池子
+    ASYNC_OBJ_LOCK_POOL   async_lock_pool_;
 };
+
+}
 
 #endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_BASE_
 

@@ -47,6 +47,32 @@ FSMTask_Manger::~FSMTask_Manger()
 }
 
 
+//初始化
+void FSMTask_Manger::initialize(size_t  szregtrans,
+                                size_t sztransmap,
+                                const soar::SERVICES_INFO& selfsvr,
+                                const ZCE_Time_Value& enqueue_timeout,
+                                ZCE_Timer_Queue_Base* timer_queue,
+                                Soar_MMAP_BusPipe* zerg_mmap_pipe,
+                                APPFRAME_MALLOCOR* frame_mallocor)
+{
+    //根据最大的FRAME长度调整Manager内部的数据
+    size_t max_frame_len = frame_mallocor->get_max_framelen();
+    FSM_Manager::initialize(timer_queue,
+                            szregtrans,
+                            sztransmap,
+                            selfsvr,
+                            zerg_mmap_pipe,
+                            static_cast<unsigned int>(max_frame_len));
+    //
+    frame_mallocor_ = frame_mallocor;
+
+    enqueue_timeout_ = enqueue_timeout;
+    send_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
+    recv_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
+
+}
+
 
 
 //激活N个线程，

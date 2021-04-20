@@ -28,8 +28,6 @@ public:
                    size_t max_frame_len,
                    bool if_restore);
 
-
-
     //生成MMAP的配置文件名称
     void get_mmapfile_name(char *mmapfile, size_t buflen);
 
@@ -37,7 +35,7 @@ public:
     //从RECV管道读取帧
     inline int pop_front_recvpipe(soar::Zerg_Frame *&proc_frame);
     //向SEND管道写入帧
-    inline int push_back_sendpipe(soar::Zerg_Frame *proc_frame);
+    inline int push_back_sendpipe(const soar::Zerg_Frame *proc_frame);
 
     //原来的名字都是send_msg_to，一开始认为这样挺好的，但是逐步逐步的感觉发现修改替换的时候痛苦不少。
     //不确认改为pipe_sendmsg_to_service是不是一个好主意，但是试验一下?
@@ -50,7 +48,7 @@ public:
                                 uint32_t backfill_fsm_id,
                                 const soar::SERVICES_ID &rcvsvc,
                                 const soar::SERVICES_ID &sendsvc,
-                                const T &info,
+                                const T &msg,
                                 unsigned int app_id = 0,
                                 uint32_t option = 0);
 
@@ -63,7 +61,7 @@ public:
                               uint16_t rcv_type,
                               const soar::SERVICES_ID &proxysvc,
                               const soar::SERVICES_ID &sendsvc,
-                              const T &info,
+                              const T &msg,
                               unsigned int app_id = 0,
                               uint32_t option = 0);
 
@@ -76,7 +74,7 @@ public:
                                 const soar::SERVICES_ID &rcvsvc,
                                 const soar::SERVICES_ID &proxysvc,
                                 const soar::SERVICES_ID &sendsvc,
-                                const T &info,
+                                const T &msg,
                                 unsigned int app_id = 0,
                                 uint32_t option = 0);
 
@@ -152,7 +150,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
                                                uint32_t backfill_fsm_id,
                                                const soar::SERVICES_ID &rcvsvc,
                                                const soar::SERVICES_ID &sendsvc,
-                                               const T &info,
+                                               const T &msg,
                                                unsigned int app_id,
                                                uint32_t option)
 {
@@ -197,7 +195,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(uint32_t cmd,
                                              uint16_t rcv_type,
                                              const soar::SERVICES_ID &proxysvc,
                                              const soar::SERVICES_ID &sendsvc,
-                                             const T &info,
+                                             const T &msg,
                                              unsigned int app_id,
                                              uint32_t option)
 {
@@ -242,7 +240,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
                                                const soar::SERVICES_ID &rcvsvc,
                                                const soar::SERVICES_ID &proxysvc,
                                                const soar::SERVICES_ID &sendsvc,
-                                               const T &info,
+                                               const T &msg,
                                                unsigned int app_id,
                                                uint32_t option)
 {

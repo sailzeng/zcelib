@@ -47,7 +47,7 @@ public:
 
 public:
 
-    //
+    
     /*!
     * @brief      初始化
     * @param      szregtrans      注册TRANS的个数
@@ -61,28 +61,11 @@ public:
     */
     void initialize(size_t  szregtrans,
                     size_t sztransmap,
-                    const soar::SERVICES_INFO &selfsvr,
-                    const ZCE_Time_Value &enqueue_timeout,
-                    ZCE_Timer_Queue_Base *timer_queue,
-                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                    APPFRAME_MALLOCOR *frame_mallocor)
-    {
-        //根据最大的FRAME长度调整Manager内部的数据
-        size_t max_frame_len = frame_mallocor->get_max_framelen();
-        FSM_Manager::initialize(timer_queue,
-                                        szregtrans,
-                                        sztransmap,
-                                        selfsvr,
-                                        zerg_mmap_pipe,
-                                        static_cast<unsigned int>(max_frame_len));
-        //
-        frame_mallocor_ = frame_mallocor;
-
-        enqueue_timeout_ = enqueue_timeout;
-        send_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
-        recv_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
-
-    }
+                    const soar::SERVICES_INFO& selfsvr,
+                    const ZCE_Time_Value& enqueue_timeout,
+                    ZCE_Timer_Queue_Base* timer_queue,
+                    Soar_MMAP_BusPipe* zerg_mmap_pipe,
+                    APPFRAME_MALLOCOR* frame_mallocor);
 
     //处理从接收队列取出的FRAME
     int process_recvqueue_frame(size_t &proc_frame,size_t &create_trans);
@@ -140,7 +123,7 @@ public:
         uint32_t user_id,
         uint32_t fsm_id,
         uint32_t backfill_fsm_id,
-        const T &info,
+        const T &msg,
         uint32_t option = 0)
     {
         soar::SERVICES_ID proxysvc(0, 0);
@@ -151,21 +134,20 @@ public:
                                  self_svc_info_,
                                  proxysvc,
                                  self_svc_info_,
-                                 info,
+                                 msg,
                                  option);
     }
 
     //向SEND队列发送数据,让TASK接收
     template< class T>
-    int enqueue_sendqueue(
-        uint32_t cmd,
-        uint32_t fsm_id,
-        uint32_t backfill_fsm_id,
-        const soar::SERVICES_ID &rcvsvc,
-        const soar::SERVICES_ID &proxysvc,
-        const soar::SERVICES_ID &sndsvc,
-        const T &info,
-        uint32_t option)
+    int enqueue_sendqueue(uint32_t cmd,
+                          uint32_t fsm_id,
+                          uint32_t backfill_fsm_id,
+                          const soar::SERVICES_ID& rcvsvc,
+                          const soar::SERVICES_ID& proxysvc,
+                          const soar::SERVICES_ID& sndsvc,
+                          const T& msg,
+                          uint32_t option)
     {
         soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
         rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
@@ -180,7 +162,7 @@ public:
         rsp_msg->backfill_fsm_id_ = backfill_trans_id;
 
         //拷贝发送的MSG Block
-        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+        int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,msg);
 
         if (ret != 0 )
         {
@@ -209,7 +191,8 @@ public:
     * @param      alloc_frame  上一个参数的FRAME是否是从POOL中间取出的
     * @note       
     */
-    int enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_frame);
+    int enqueue_sendqueue(soar::Zerg_Frame *post_frame,
+                          bool alloc_frame);
     
 
 
@@ -220,7 +203,8 @@ public:
     * @param      tv  相对时间
     * @note       
     */
-    int enqueue_recvqueue(const soar::Zerg_Frame *post_frame, const ZCE_Time_Value *tv)
+    int enqueue_recvqueue(const soar::Zerg_Frame *post_frame, 
+                          const ZCE_Time_Value *tv)
     {
         int ret = 0;
         soar::Zerg_Frame *tmp_frame = NULL;

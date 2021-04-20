@@ -6,8 +6,8 @@
 
 //=====================================================================================
 //状态机的异步对象
-ZCE_Async_FSM::ZCE_Async_FSM(ZCE_Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
-    ZCE_Async_Object(async_mgr, create_cmd),
+ZCE_Async_FSM::ZCE_Async_FSM(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    zce::Async_Object(async_mgr, create_cmd),
     fsm_stage_(0)
 {
 }
@@ -87,7 +87,7 @@ int ZCE_Async_FSM::get_stage() const
 
 //状态机主控管理类
 ZCE_Async_FSMMgr::ZCE_Async_FSMMgr() :
-    ZCE_Async_ObjectMgr()
+    zce::Async_ObjectMgr()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;

@@ -5,24 +5,6 @@
 #include "soar/zerg/frame_malloc.h"
 #include "soar/fsm/fsm_mgr.h"
 
-/******************************************************************************************
-struct TRANS_LOCK_RECORD 加锁的记录单元
-******************************************************************************************/
-TRANS_LOCK_RECORD::TRANS_LOCK_RECORD(unsigned int lock_qq_uin,unsigned int lock_trans_cmd):
-    lock_user_id_(lock_qq_uin),
-    lock_trans_cmd_(lock_trans_cmd)
-{
-}
-
-TRANS_LOCK_RECORD::TRANS_LOCK_RECORD():
-    lock_user_id_(0),
-    lock_trans_cmd_(0)
-{
-}
-
-TRANS_LOCK_RECORD::~TRANS_LOCK_RECORD()
-{
-}
 
 /******************************************************************************************
 class Transaction_Manager
@@ -53,7 +35,7 @@ int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
                             size_t sztransmap,
                             const soar::SERVICES_INFO &selfsvr,
                             Soar_MMAP_BusPipe *zerg_mmap_pipe,
-                            unsigned int max_frame_len,
+                            size_t max_frame_len,
                             bool init_inner_queue,
                             bool init_lock_pool)
 {
@@ -96,7 +78,6 @@ int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
         //按照事务尺寸的一半初始化锁的数量
         trans_lock_pool_.rehash(sztransmap / 2);
     }
-    send_buffer_ = new char[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
     return 0;
 }
 
@@ -191,58 +172,7 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,size_t &create_trans)
     return 0;
 }
 
-//将数据放入发送管道
-int FSM_Manager::push_back_sendpipe(soar::Zerg_Frame *proc_frame)
-{
-    //Soar_MMAP_BusPipe必须先初始化....
-    return zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
-}
 
-
-
-
-
-/******************************************************************************************
-Author          : Sail(ZENGXING)  Date Of Creation: 2009年3月16日
-Function        : Transaction_Manager::lock_qquin_trnas_cmd
-Return          : int
-Parameter List  :
-  Param1: uint32_t user_id        USER ID
-  Param2: unsigned int trnas_lock_id 加锁的ID,可以和命令字相同，或者不同
-  Param3: unsigned int frame_cmd     事务的命令，仅仅用于日志输出
-Description     : 对某一个用户的一个命令的事务进行加锁
-Calls           :
-Called By       : 事务锁的意思是保证一个时刻，只能一个这样的事务,事务锁不阻塞
-Other           :
-Modify Record   :
-******************************************************************************************/
-int FSM_Manager::lock_userid_fsm_cmd(uint32_t user_id,
-                                     unsigned int trnas_lock_id,
-                                     unsigned int frame_cmd)
-{
-    TRANS_LOCK_RECORD lock_rec(user_id,trnas_lock_id);
-    std::pair <INNER_TRANS_LOCK_POOL::iterator,bool> iter_tmp = trans_lock_pool_.insert(lock_rec);
-
-    //如果已经有一个锁了，那么加锁失败
-    if (false == iter_tmp.second)
-    {
-        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
-                user_id,
-                trnas_lock_id,
-                frame_cmd);
-        return -1;
-    }
-
-    return 0;
-}
-
-//对某一个用户的一个命令的事务进行加锁
-void FSM_Manager::unlock_userid_fsm_cmd(uint32_t user_id,unsigned int lock_trnas_id)
-{
-    TRANS_LOCK_RECORD lock_rec(user_id,lock_trnas_id);
-    trans_lock_pool_.erase(lock_rec);
-    return;
-}
 
 //处理一个收到的命令
 int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
@@ -287,37 +217,14 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
 
         ZCE_LOG(RS_DEBUG,"Find raw Transaction ID: %u. ",zerg_frame->backfill_fsm_id_);
     }
-
     return 0;
 }
 
 
-//管理器发送一消息头给一个服务器,_表示他是一个内部函数，不提供给非相关人士使用
-int FSM_Manager::mgr_sendmsghead_to_service(uint32_t cmd,
-                                            uint32_t user_id,
-                                            const soar::SERVICES_ID &rcvsvc,
-                                            const soar::SERVICES_ID &proxysvc,
-                                            uint32_t backfill_fsm_id,
-                                            uint32_t option)
+//直接发送一个buffer to services。
+int FSM_Manager::sendfame_to_pipe(const soar::Zerg_Frame* send_frame)
 {
-    //
-    soar::Zerg_Frame *rsp_msg = reinterpret_cast<soar::Zerg_Frame *>(trans_send_buffer_);
-    rsp_msg->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
-
-    rsp_msg->length_ = soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
-    rsp_msg->command_ = cmd;
-    rsp_msg->user_id_ = user_id;
-
-    rsp_msg->fsm_id_ = 0;
-    rsp_msg->recv_service_ = rcvsvc;
-    rsp_msg->proxy_service_ = proxysvc;
-    rsp_msg->send_service_ = this->self_svc_info_.svc_id_;
-    rsp_msg->u32_option_ = option;
-
-    //回填事务ID
-    rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
-
-    return push_back_sendpipe(rsp_msg);
+    return zerg_mmap_pipe_->push_back_sendpipe(send_frame);
 }
 
 //打开性能统计
@@ -326,7 +233,27 @@ void FSM_Manager::enable_trans_statistics(const ZCE_Time_Value *stat_clock)
     statistics_clock_ = stat_clock;
 }
 
-int FSM_Manager::postframe_to_msgqueue(soar::Zerg_Frame *post_frame)
+
+int FSM_Manager::sendbuf_to_pipe(const soar::Zerg_Head& zerg_head,
+                                 const char* buf,
+                                 size_t buf_len)
+{
+    soar::Zerg_Frame* send_frame = trans_send_buffer_;
+    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
+    ::memcpy(send_frame,&zerg_head,soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD);
+    if (buf_len)
+    {
+        ::memcpy(send_frame->frame_appdata_,
+                 buf,
+                 buf_len);
+    }
+    send_frame->length_ += buf_len;
+    sendfame_to_pipe(send_frame);
+    return 0;
+}
+
+
+int FSM_Manager::postmsg_to_queue(soar::Zerg_Frame *post_frame)
 {
     int ret = 0;
     soar::Zerg_Frame *tmp_frame = NULL;
@@ -379,7 +306,6 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
 
         //是否创建一个事务，
         bool bcrtcx = false;
-
         //tmp_frame  马上回收
         ret = process_appframe(tmp_frame,bcrtcx);
         //释放内存
@@ -435,12 +361,31 @@ void FSM_Manager::get_manager_load_foctor2(unsigned int &load_max,unsigned int &
 
     //周期计数器清零
     cycle_gentrans_counter_ = 0;
-
     //负载人数必须大于1
     if (load_cur == 0)
     {
         load_cur = 1;
     }
+}
+
+
+// recv_svr填的是自己，就假装收到一个包，如其名fake
+int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame* fake_recv)
+{
+    int ret = 0;
+
+    soar::Zerg_Frame* tmp_frame = reinterpret_cast<soar::Zerg_Frame*>(fake_recv_buffer_);
+    size_t buff_size = fake_recv->length_;
+    memcpy(tmp_frame->frame_appdata_,fake_recv,buff_size);
+
+    bool crttx = false;
+    ret = process_appframe(tmp_frame,crttx);
+
+    if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
+    {
+        return ret;
+    }
+    return 0;
 }
 
 //得到实例
@@ -474,27 +419,5 @@ void FSM_Manager::clean_instance()
     return;
 }
 
-//直接发送一个buffer to services。
-int FSM_Manager::mgr_sendbuf_to_service(uint32_t cmd,
-                                        uint32_t user_id,
-                                        uint32_t fsm_id,
-                                        uint32_t backfill_fsm_id,
-                                        const soar::SERVICES_ID &rcvsvc,
-                                        const soar::SERVICES_ID &proxysvc,
-                                        const soar::SERVICES_ID &sndsvc,
-                                        const unsigned char *buf,
-                                        size_t buf_len,
-                                        uint32_t option)
-{
-    return zerg_mmap_pipe_->pipe_sendbuf_to_service(cmd,
-                                                    user_id,
-                                                    fsm_id,
-                                                    backfill_fsm_id,
-                                                    rcvsvc,
-                                                    proxysvc,
-                                                    sndsvc,
-                                                    buf,
-                                                    buf_len,
-                                                    option);
-}
+
 

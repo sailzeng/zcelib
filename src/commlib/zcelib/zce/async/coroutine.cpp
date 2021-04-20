@@ -8,8 +8,8 @@
 
 //========================================================================================
 
-ZCE_Async_Coroutine::ZCE_Async_Coroutine(ZCE_Async_ObjectMgr *async_mgr, unsigned int reg_cmd) :
-    ZCE_Async_Object(async_mgr, reg_cmd)
+ZCE_Async_Coroutine::ZCE_Async_Coroutine(zce::Async_ObjectMgr *async_mgr, unsigned int reg_cmd) :
+    zce::Async_Object(async_mgr, reg_cmd)
 {
     //堆栈大小默认选择最小的，
 }
@@ -22,7 +22,7 @@ ZCE_Async_Coroutine::~ZCE_Async_Coroutine()
 //初始化协程的对象
 int ZCE_Async_Coroutine::initialize()
 {
-    ZCE_Async_Object::initialize();
+    zce::Async_Object::initialize();
     int ret = 0;
     ret = zce::make_coroutine(&handle_,
                               stack_size_,
@@ -43,7 +43,7 @@ int ZCE_Async_Coroutine::initialize()
 //清理协程对象
 void ZCE_Async_Coroutine::finish()
 {
-    ZCE_Async_Object::finish();
+    zce::Async_Object::finish();
     zce::delete_coroutine(&handle_);
     return;
 }
@@ -163,7 +163,7 @@ int ZCE_Async_Coroutine::waitfor_timeout(const ZCE_Time_Value &time_out)
 
 //携程主控管理类
 ZCE_Async_CoroutineMgr::ZCE_Async_CoroutineMgr() :
-    ZCE_Async_ObjectMgr()
+    zce::Async_ObjectMgr()
 {
     pool_init_size_ = COROUTINE_POOL_INIT_SIZE;
     pool_extend_size_ = COROUTINE_POOL_EXTEND_SIZE;
