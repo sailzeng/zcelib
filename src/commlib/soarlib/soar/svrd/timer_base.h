@@ -65,7 +65,7 @@ class Server_Config_Base;
 *             可以从其得到当前的时钟
 * @note
 */
-class Server_Timer_Base : public ZCE_Timer_Handler
+class Server_Timer_Base : public zce::Timer_Handler
 {
 
     friend class soar::Svrd_Appliction;
@@ -96,7 +96,7 @@ protected:
     * @return     virtual int
     * @param      queue
     */
-    virtual int initialize(ZCE_Timer_Queue_Base *queue);
+    virtual int initialize(zce::Timer_Queue_Base *queue);
 
 
     /// 定时处理监控数据

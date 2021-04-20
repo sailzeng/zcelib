@@ -231,11 +231,11 @@ int Svrd_Appliction::app_start(int argc, const char *argv[])
 
 
     //使用WHEEL型的定时器队列
-    ZCE_Timer_Queue_Base::instance(new ZCE_Timer_Wheel(
+    zce::Timer_Queue_Base::instance(new ZCE_Timer_Wheel(
                                        config_base_->max_timer_nuamber_));
 
     //注册定时器
-    timer_base_->initialize(ZCE_Timer_Queue_Base::instance());
+    timer_base_->initialize(zce::Timer_Queue_Base::instance());
 
 
     Soar_Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
@@ -295,21 +295,21 @@ int Svrd_Appliction::app_exit()
     ZCE_Reactor::clean_instance();
 
     //
-    if (ZCE_Timer_Queue_Base::instance())
+    if (zce::Timer_Queue_Base::instance())
     {
-        ZCE_Timer_Queue_Base::instance()->close();
+        zce::Timer_Queue_Base::instance()->close();
     }
-    ZCE_Timer_Queue_Base::clean_instance();
+    zce::Timer_Queue_Base::clean_instance();
 
     //
-    if (ZCE_Timer_Queue_Base::instance())
+    if (zce::Timer_Queue_Base::instance())
     {
-        ZCE_Timer_Queue_Base::instance()->close();
+        zce::Timer_Queue_Base::instance()->close();
     }
 
     //单子实例清空
     ZCE_Reactor::clean_instance();
-    ZCE_Timer_Queue_Base::clean_instance();
+    zce::Timer_Queue_Base::clean_instance();
     Soar_Stat_Monitor::clean_instance();
 
     ZCE_LOG(RS_INFO, "[framework] %s exit_instance Succ.Have Fun.!!!",

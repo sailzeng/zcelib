@@ -43,14 +43,14 @@ void Async_Object::finish()
 //设置超时定时器
 int Async_Object::set_timeout(const ZCE_Time_Value& time_out)
 {
-    ZCE_Timer_Queue_Base* timer_queue = async_mgr_->timer_queue();
+    Timer_Queue_Base* timer_queue = async_mgr_->timer_queue();
     ZCE_Time_Value delay_time(time_out);
     //注意使用的TIME ID
     timeout_id_ = timer_queue->schedule_timer(async_mgr_,
                                               this,
                                               delay_time);
 
-    if (ZCE_Timer_Queue_Base::INVALID_TIMER_ID == timeout_id_)
+    if (Timer_Queue_Base::INVALID_TIMER_ID == timeout_id_)
     {
         return -1;
     }
@@ -61,11 +61,11 @@ int Async_Object::set_timeout(const ZCE_Time_Value& time_out)
 //取消超时的定时器
 void Async_Object::cancel_timeout()
 {
-    if (ZCE_Timer_Queue_Base::INVALID_TIMER_ID != timeout_id_)
+    if (Timer_Queue_Base::INVALID_TIMER_ID != timeout_id_)
     {
-        ZCE_Timer_Queue_Base* timer_queue = async_mgr_->timer_queue();
+        zce::Timer_Queue_Base* timer_queue = async_mgr_->timer_queue();
         timer_queue->cancel_timer(timeout_id_);
-        timeout_id_ = ZCE_Timer_Queue_Base::INVALID_TIMER_ID;
+        timeout_id_ = zce::Timer_Queue_Base::INVALID_TIMER_ID;
     }
 }
 
@@ -96,7 +96,7 @@ void Async_Object::set_errorno(int error_no)
 //内部结构
 
 Async_ObjectMgr::Async_ObjectMgr():
-    ZCE_Timer_Handler()
+    Timer_Handler()
 {
 }
 
@@ -106,10 +106,10 @@ Async_ObjectMgr::~Async_ObjectMgr()
 
 
 //初始化，
-int Async_ObjectMgr::initialize(ZCE_Timer_Queue_Base* tq,
-                                     size_t crtn_type_num,
-                                     size_t running_number,
-                                     bool init_lock_pool)
+int Async_ObjectMgr::initialize(Timer_Queue_Base* tq,
+                                size_t crtn_type_num,
+                                size_t running_number,
+                                bool init_lock_pool)
 {
     timer_queue(tq);
 
@@ -118,7 +118,7 @@ int Async_ObjectMgr::initialize(ZCE_Timer_Queue_Base* tq,
     if (init_lock_pool)
     {
         //按照事务尺寸的一半初始化锁的数量
-        async_lock_pool_.rehash(running_number / 5 + 32);
+        only_one_lock_pool_.rehash(running_number / 5 + 32);
     }
     return 0;
 }
@@ -495,20 +495,19 @@ void Async_ObjectMgr::dump_info(zce::LOG_PRIORITY log_priority) const
 }
 
 //对某一个用户的一个命令的事务进行加锁
-int Async_ObjectMgr::lock_userid_fsm_cmd(uint32_t user_id,
-                                              uint32_t trnas_lock_id,
-                                              uint32_t l)
+int Async_ObjectMgr::lock_only_one(uint32_t cmd,
+                                   uint32_t lock_id)
 {
-    ASYNCOBJ_LOCK_RECORD lock_rec(user_id,trnas_lock_id);
-    std::pair <INNER_TRANS_LOCK_POOL::iterator,bool> iter_tmp = trans_lock_pool_.insert(lock_rec);
+    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    auto iter_tmp =
+        only_one_lock_pool_.insert(lock_rec);
 
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second)
     {
-        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.QQUin[%u] trans lock id[%u] trans cmd[%u].",
-                user_id,
-                trnas_lock_id,
-                frame_cmd);
+        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
+                cmd,
+                lock_id);
         return -1;
     }
 
@@ -516,11 +515,11 @@ int Async_ObjectMgr::lock_userid_fsm_cmd(uint32_t user_id,
 }
 
 //对某一个用户的一个命令的事务进行加锁
-void Async_ObjectMgr::unlock_userid_fsm_cmd(uint32_t user_id,
-                                                 uint32_t lock_trnas_id)
+void Async_ObjectMgr::unlock_only_one(uint32_t cmd,
+                                      uint32_t lock_id)
 {
-    ASYNCOBJ_LOCK_RECORD lock_rec(user_id,lock_trnas_id);
-    trans_lock_pool_.erase(lock_rec);
+    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    only_one_lock_pool_.erase(lock_rec);
     return;
 }
 

@@ -47,7 +47,7 @@ int ZCE_Timer_Heap::initialize(size_t num_timer_node,
 {
     //在基类进行初始化
     int ret = 0;
-    ret = ZCE_Timer_Queue_Base::initialize(num_timer_node,
+    ret = zce::Timer_Queue_Base::initialize(num_timer_node,
                                            timer_precision_mesc,
                                            trigger_mode,
                                            dynamic_expand_node);
@@ -68,7 +68,7 @@ int ZCE_Timer_Heap::extend_node(size_t num_timer_node,
                                 size_t &old_num_node)
 {
     int ret = 0;
-    ret = ZCE_Timer_Queue_Base::extend_node(num_timer_node, old_num_node);
+    ret = zce::Timer_Queue_Base::extend_node(num_timer_node, old_num_node);
 
     if (ret != 0)
     {
@@ -146,7 +146,7 @@ size_t ZCE_Timer_Heap::dispatch_timer(const ZCE_Time_Value &now_time,
 }
 
 //设置定时器
-int ZCE_Timer_Heap::schedule_timer(ZCE_Timer_Handler *timer_hdl,
+int ZCE_Timer_Heap::schedule_timer(zce::Timer_Handler *timer_hdl,
                                    const void *action,
                                    const ZCE_Time_Value &delay_time,
                                    const ZCE_Time_Value &interval_time)
@@ -195,7 +195,7 @@ int ZCE_Timer_Heap::cancel_timer(int timer_id)
     }
 
     //回收TIME NODE
-    ret = ZCE_Timer_Queue_Base::cancel_timer(timer_id);
+    ret = zce::Timer_Queue_Base::cancel_timer(timer_id);
 
     if (ret != 0)
     {

@@ -30,7 +30,7 @@ FSM_Manager::~FSM_Manager()
 {
 }
 
-int FSM_Manager::initialize(ZCE_Timer_Queue_Base *timer_queue,
+int FSM_Manager::initialize(zce::Timer_Queue_Base *timer_queue,
                             size_t  szregtrans,
                             size_t sztransmap,
                             const soar::SERVICES_INFO &selfsvr,

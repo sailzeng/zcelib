@@ -35,7 +35,7 @@
 *           其各种操作的时间复杂度都基本是O(log(2N)) 这个级别。
 *
 */
-class ZCE_Timer_Heap : public ZCE_Timer_Queue_Base
+class ZCE_Timer_Heap : public zce::Timer_Queue_Base
 {
 
 public:
@@ -73,7 +73,7 @@ public:
     * @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
     *                           如果参数等于ZCE_Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(ZCE_Timer_Handler *timer_hdl,
+    virtual int schedule_timer(zce::Timer_Handler *timer_hdl,
                                const void *action,
                                const ZCE_Time_Value &delay_time,
                                const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) override;

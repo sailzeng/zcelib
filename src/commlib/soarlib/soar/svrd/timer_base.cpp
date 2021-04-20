@@ -18,7 +18,7 @@ const int Server_Timer_Base::SERVER_TIMER_ID[] =
 
 //
 Server_Timer_Base::Server_Timer_Base() :
-    ZCE_Timer_Handler()
+    zce::Timer_Handler()
 {
 }
 
@@ -29,7 +29,7 @@ Server_Timer_Base::~Server_Timer_Base()
 
 
 //初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
-int Server_Timer_Base::initialize(ZCE_Timer_Queue_Base *queue)
+int Server_Timer_Base::initialize(zce::Timer_Queue_Base *queue)
 {
     stat_monitor_ = Soar_Stat_Monitor::instance();
 

@@ -14,7 +14,7 @@ class Soar_MMAP_BusPipe;
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
 class Ogre_TCP_Svc_Handler : public  ZCE_Event_Handler,
-    public ZCE_Timer_Handler
+    public zce::Timer_Handler
 {
 public:
 

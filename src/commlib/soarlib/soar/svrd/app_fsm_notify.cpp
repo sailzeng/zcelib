@@ -42,7 +42,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
         svd_config->framework_config_.trans_info_.trans_num_,
         self_svc_info_,
         enqueue_timeout,
-        ZCE_Timer_Queue_Base::instance(),
+        zce::Timer_Queue_Base::instance(),
         Soar_MMAP_BusPipe::instance(),
         THREADMUTEX_APPFRAME_MALLOCOR::instance());
 
@@ -107,7 +107,7 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     FSMTask_Manger *notify_trans_mgr = static_cast<FSMTask_Manger *>(FSM_Manager::instance());
     ZCE_Time_Value select_interval(0, 0);
 
-    ZCE_Timer_Queue_Base *time_queue = ZCE_Timer_Queue_Base::instance();
+    zce::Timer_Queue_Base *time_queue = zce::Timer_Queue_Base::instance();
     ZCE_Reactor *reactor = ZCE_Reactor::instance();
 
     for (; app_run_;)

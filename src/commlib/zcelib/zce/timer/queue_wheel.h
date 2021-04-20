@@ -40,7 +40,7 @@
 *             内部也指向有WHEEL
 *             设置定时器，取消定时器，分发定时器的消耗级别都是O(1)
 */
-class ZCE_Timer_Wheel : public ZCE_Timer_Queue_Base
+class ZCE_Timer_Wheel : public zce::Timer_Queue_Base
 {
 
 protected:
@@ -52,9 +52,9 @@ protected:
 
         ///构造函数
         ZCE_WHEEL_TIMER_NODE():
-            list_prev_(ZCE_Timer_Queue_Base::INVALID_TIMER_ID),
-            list_next_(ZCE_Timer_Queue_Base::INVALID_TIMER_ID),
-            wheel_point_id_(ZCE_Timer_Queue_Base::INVALID_TIMER_ID)
+            list_prev_(zce::Timer_Queue_Base::INVALID_TIMER_ID),
+            list_next_(zce::Timer_Queue_Base::INVALID_TIMER_ID),
+            wheel_point_id_(zce::Timer_Queue_Base::INVALID_TIMER_ID)
         {
         }
         ///析构函数
@@ -131,7 +131,7 @@ public:
     * @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
     *                           如果参数等于ZCE_Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(ZCE_Timer_Handler *timer_hdl,
+    virtual int schedule_timer(zce::Timer_Handler *timer_hdl,
                                const void *action,
                                const ZCE_Time_Value &delay_time,
                                const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) override;

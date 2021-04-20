@@ -18,11 +18,14 @@
 #include "zce/util/non_copyable.h"
 #include "zce/time/time_value.h"
 
-class ZCE_Timer_Handler;
+namespace zce
+{
+
+class Timer_Handler;
 /******************************************************************************************
 ZCE_Timer_Queue
 ******************************************************************************************/
-class ZCE_Timer_Queue_Base : public zce::NON_Copyable
+class Timer_Queue_Base : public zce::NON_Copyable
 {
 
 public:
@@ -80,7 +83,7 @@ protected:
         const void         *action_ = NULL;
 
         ///对应的时间句柄的的指针
-        ZCE_Timer_Handler  *timer_handle_ = NULL;
+        zce::Timer_Handler  *timer_handle_ = NULL;
 
         ///下一次触发点，可能是一个绝度时间，也可能是一个CPU TICK的计数,但都是一个绝对值
         uint64_t            next_trigger_point_ = 0;
@@ -98,13 +101,13 @@ protected:
 
 protected:
     //构造函数
-    ZCE_Timer_Queue_Base(size_t num_timer_node,
+    Timer_Queue_Base(size_t num_timer_node,
                          unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                          TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
                          bool dynamic_expand_node = true);
-    ZCE_Timer_Queue_Base();
+    Timer_Queue_Base();
 public:
-    virtual ~ZCE_Timer_Queue_Base();
+    virtual ~Timer_Queue_Base();
 
 public:
 
@@ -117,7 +120,7 @@ public:
     @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
                               如果参数等于ZCE_Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
-    virtual int schedule_timer(ZCE_Timer_Handler *timer_hdl,
+    virtual int schedule_timer(zce::Timer_Handler *timer_hdl,
                                const void *action,
                                const ZCE_Time_Value &delay_time,
                                const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) = 0;
@@ -170,13 +173,13 @@ public:
     virtual size_t expire();
 
     /*!
-    @brief      使用 ZCE_Timer_Handler的指针 @a timer_hdl 取消定时器方式，超级
+    @brief      使用 zce::Timer_Handler的指针 @a timer_hdl 取消定时器方式，超级
                 超级，超级慢的函数，(当然使用起来可能比较方便)，你可以继承,
                 一般情况下，推荐用time id 取消定时器
     @return     int       返回0表示成功，否则失败
     @param      timer_hdl 定时器句柄的指针
     */
-    virtual int cancel_timer(const ZCE_Timer_Handler *timer_hdl);
+    virtual int cancel_timer(const zce::Timer_Handler *timer_hdl);
 
     /*!
     @brief      扩张相关定时器的NODE的数量，
@@ -221,7 +224,7 @@ protected:
     @param[out] time_node_id    返回的分配的ID
     @param[out] alloc_time_node 返回的分配的TIMER NODE的指针
     */
-    int alloc_timernode(ZCE_Timer_Handler *timer_hdl,
+    int alloc_timernode(Timer_Handler *timer_hdl,
                         const void *action,
                         const ZCE_Time_Value &delay_time_,
                         const ZCE_Time_Value  &interval_time_,
@@ -256,9 +259,9 @@ public:
     //这个地方的单子使用，和其他地方略有不同，要先调用赋值的函数，将子类指针付给这个函数
 
     //
-    static ZCE_Timer_Queue_Base *instance();
+    static Timer_Queue_Base *instance();
     //
-    static void instance(ZCE_Timer_Queue_Base *pinstatnce);
+    static void instance(Timer_Queue_Base *pinstatnce);
     //
     static void clean_instance();
 
@@ -303,8 +306,10 @@ protected:
 protected:
 
     ///单子实例指针
-    static ZCE_Timer_Queue_Base     *instance_;
+    static Timer_Queue_Base     *instance_;
 };
+
+}
 
 #endif //# ZCE_LIB_TIMER_QUEUE_BASE_H_
 

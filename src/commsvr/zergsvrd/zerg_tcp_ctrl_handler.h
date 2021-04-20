@@ -14,7 +14,7 @@ class Zerg_Comm_Manager;
 class  TCP_Svc_Handler
 ****************************************************************************************************/
 class TCP_Svc_Handler : public ZCE_Event_Handler,
-    public ZCE_Timer_Handler
+    public zce::Timer_Handler
 {
 public:
 

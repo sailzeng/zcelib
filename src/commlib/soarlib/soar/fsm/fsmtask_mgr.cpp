@@ -52,7 +52,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
                                 size_t sztransmap,
                                 const soar::SERVICES_INFO& selfsvr,
                                 const ZCE_Time_Value& enqueue_timeout,
-                                ZCE_Timer_Queue_Base* timer_queue,
+                                zce::Timer_Queue_Base* timer_queue,
                                 Soar_MMAP_BusPipe* zerg_mmap_pipe,
                                 APPFRAME_MALLOCOR* frame_mallocor)
 {

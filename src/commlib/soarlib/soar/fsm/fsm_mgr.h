@@ -112,7 +112,7 @@ public:
 
 
     //初始化,住一个几个默认参数
-    int initialize(ZCE_Timer_Queue_Base *timer_queue,
+    int initialize(zce::Timer_Queue_Base *timer_queue,
                    size_t szregtrans,
                    size_t sztransmap,
                    const soar::SERVICES_INFO &selfsvr,
