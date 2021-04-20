@@ -35,7 +35,7 @@ int FSM_Manager::initialize(zce::Timer_Queue_Base *timer_queue,
     ZCE_ASSERT(zerg_mmap_pipe != NULL);
 
     int ret = 0;
-    ret = ZCE_Async_FSMMgr::initialize(timer_queue,
+    ret = Async_FSMMgr::initialize(timer_queue,
                                        reg_fsm_num,
                                        running_fsm_num);
     if (ret != 0)
@@ -102,26 +102,31 @@ void FSM_Manager::finish()
         fake_recv_buffer_ = NULL;
     }
 
-    ZCE_Async_FSMMgr::finish();
+    Async_FSMMgr::finish();
 
     ZCE_TRACE_FILELINE(RS_INFO);
 }
 
+int FSM_Manager::register_fsmobj(uint32_t create_cmd,
+                                 FSM_Base *fsm_base,
+                                 bool usr_only_one)
+{
+    int ret = 0;
+    ret = register_asyncobj(create_cmd,fsm_base);
+    if (ret != 0)
+    {
+        return ret;
+    }
+    if (usr_only_one)
+    {
+        onlyone_fms_cmd_set_.insert(create_cmd);
+    }
+    return ret;
+}
 
-/******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年1月9日
-Function        : Transaction_Manager::process_pipe_frame
-Return          : int
-Parameter List  :
-  Param1: size_t& proc_frame
-  Param2: size_t& create_trans
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-int FSM_Manager::process_pipe_frame(size_t &proc_frame,size_t &create_trans)
+//
+int FSM_Manager::process_pipe_frame(size_t &proc_frame,
+                                    size_t &create_trans)
 {
     int ret = 0;
     create_trans = 0;
@@ -162,8 +167,6 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,size_t &create_trans)
     return 0;
 }
 
-
-
 //处理一个收到的命令
 int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
 {
@@ -182,6 +185,10 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
     //是一个激活事务的命令
     if (is_reg_cmd)
     {
+        if (only_one_lock_pool_)
+        {
+
+        }
 
         unsigned int id = 0;
         ret = create_asyncobj(zerg_frame->command_,zerg_frame,&id);
@@ -333,7 +340,7 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
 
 //得到管理器的负载参数
 //有一些服务器，没有阶段性的事务，用上面的函数不是特别理想，
-void FSM_Manager::get_manager_load_foctor2(unsigned int &load_max,unsigned int &load_cur)
+void FSM_Manager::get_manager_load_foctor(uint32_t &load_max,uint32_t &load_cur)
 {
     const unsigned int ONE_CYCLE_GENERATE_TRANS = 30000;
 

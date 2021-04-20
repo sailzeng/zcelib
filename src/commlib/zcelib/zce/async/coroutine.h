@@ -36,7 +36,7 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(zce::Async_ObjectMgr *async_mgr, unsigned int reg_cmd);
+    ZCE_Async_Coroutine(zce::Async_Obj_Mgr *async_mgr, unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -134,7 +134,7 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class ZCE_Async_CoroutineMgr : public zce::Async_ObjectMgr
+class ZCE_Async_CoroutineMgr : public zce::Async_Obj_Mgr
 {
 public:
 

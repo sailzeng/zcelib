@@ -2,7 +2,7 @@
 #include "zealot_test_function.h"
 
 
-class FSM_1 : public ZCE_Async_FSM
+class FSM_1 : public Async_FSM
 {
 private:
     enum
@@ -16,8 +16,8 @@ private:
     };
 public:
 
-    FSM_1(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
-        ZCE_Async_FSM(async_mgr, create_cmd)
+    FSM_1(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
+        Async_FSM(async_mgr, create_cmd)
     {
         set_stage(FMS1_STAGE_1);
     }
@@ -29,7 +29,7 @@ protected:
     }
 
 public:
-    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
     {
         return dynamic_cast<zce::Async_Object * >(new FSM_1(async_mgr, create_cmd));
     }
@@ -69,7 +69,7 @@ public:
 };
 
 
-class FSM_2 : public ZCE_Async_FSM
+class FSM_2 : public Async_FSM
 {
 private:
     enum
@@ -83,8 +83,8 @@ private:
     };
 
 public:
-    FSM_2(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
-        ZCE_Async_FSM(async_mgr, create_cmd)
+    FSM_2(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
+        Async_FSM(async_mgr, create_cmd)
     {
         set_stage(FMS2_STAGE_1);
     }
@@ -93,7 +93,7 @@ protected:
     {
     }
 public:
-    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
     {
         return dynamic_cast<zce::Async_Object *>(new FSM_2(async_mgr, create_cmd));
     }
@@ -142,7 +142,7 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
     const unsigned int CMD_3 = 10003;
 
     zce::Timer_Queue_Base *time_queue = new ZCE_Timer_Wheel();
-    ZCE_Async_FSMMgr *mgr = new ZCE_Async_FSMMgr();
+    Async_FSMMgr *mgr = new Async_FSMMgr();
     mgr->initialize(time_queue, 100, 200);
     mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
     mgr->register_asyncobj(CMD_2, new FSM_2(mgr, CMD_2));
@@ -176,12 +176,12 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
 class Coroutine_1 : public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_1(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    Coroutine_1(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
         ZCE_Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
-    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
     {
         return dynamic_cast<zce::Async_Object *>(new Coroutine_1(async_mgr, create_cmd));
     }
@@ -203,12 +203,12 @@ public:
 class Coroutine_2 : public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_2(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
+    Coroutine_2(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
         ZCE_Async_Coroutine(async_mgr, create_cmd)
     {
     }
 
-    zce::Async_Object *clone(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
     {
         return dynamic_cast<zce::Async_Object *>(new Coroutine_2(async_mgr, create_cmd));
     }

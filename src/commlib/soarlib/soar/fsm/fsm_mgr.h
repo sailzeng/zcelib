@@ -54,7 +54,7 @@ class soar::Zerg_Frame;
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
-class  FSM_Manager: public ZCE_Async_FSMMgr
+class  FSM_Manager: public zce::Async_FSMMgr
 {
     //声明友元
     friend class FSM_Base;
@@ -103,6 +103,7 @@ public:
     FSM_Manager();
     virtual ~FSM_Manager();
 
+    //----------------------------------------------------------------------------------------------------------
 protected:
 
     /*!
@@ -114,13 +115,28 @@ protected:
     */
     int process_appframe(soar::Zerg_Frame *zerg_frame,bool &crttx);
 
+
+
+
 public:
-
-
     //处理管道的数据
-    int process_pipe_frame(size_t &proc_frame,size_t &create_trans);
+    int process_pipe_frame(size_t &proc_frame,
+                           size_t &create_trans);
     //处理消息队列的数据
-    int process_queue_frame(size_t &proc_frame,size_t &create_trans);
+    int process_queue_frame(size_t &proc_frame,
+                            size_t &create_trans);
+
+    /*!
+    * @brief      
+    * @return     int
+    * @param      create_cmd
+    * @param      fsm_base
+    * @param      oneusr_only_one
+    * @note       
+    */
+    int register_fsmobj(uint32_t create_cmd,
+                        FSM_Base *fsm_base,
+                        bool usr_only_one);
 
     /*!
     * @brief      对某个命令的某些ID（一般是用户）的的事务进行加锁，保证一次只能有一个
@@ -244,10 +260,6 @@ public:
                         size_t buf_len);
 
 
-    //----------------------------------------------------------------------------------------------------------
-protected:
-
-
 
 
 private:
@@ -303,6 +315,9 @@ protected:
 
     //ONLY ONE锁的池子
     ONLY_ONE_LOCK_POOL *only_one_lock_pool_ = nullptr;
+
+    //如果一个类型的状态机，一个用户对于只能创建一个，记录（命令字）到这个set
+    std::unordered_set<uint32_t> onlyone_fms_cmd_set_;
 
     //统计分析的一些变量
     //产生事务的总量记录

@@ -1,4 +1,21 @@
 
+/*!
+* @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
+* @filename   fsm.h
+* @author     Sailzeng <sailzeng.cn@gmail.com>
+* @version    
+* @date       2021年4月21日
+* @brief      这儿更多的是一个示例。
+*             
+*             
+* @details    
+*             
+*             
+*             
+* @note       
+*             
+*/
+
 
 #ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
 #define ZCE_LIB_ASYNC_FRAMEWORK_FSM_
@@ -8,12 +25,15 @@
 
 //====================================================================================
 
+namespace zce
+{
+
 /*!
 * @brief      状态机对象
 */
-class ZCE_Async_FSM : public zce::Async_Object
+class Async_FSM : public Async_Object
 {
-    friend class ZCE_Async_FSMMgr;
+    friend class Async_FSMMgr;
 
 
 public:
@@ -21,12 +41,12 @@ public:
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_FSM(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd);
+    Async_FSM(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
-    ~ZCE_Async_FSM();
+    ~Async_FSM();
 
 
     /*!
@@ -70,13 +90,13 @@ protected:
 * @brief      状态机主控管理类
 *
 */
-class ZCE_Async_FSMMgr : public zce::Async_ObjectMgr
+class Async_FSMMgr : public zce::Async_Obj_Mgr
 {
 public:
 
     //
-    ZCE_Async_FSMMgr();
-    virtual ~ZCE_Async_FSMMgr();
+    Async_FSMMgr();
+    virtual ~Async_FSMMgr();
 
 protected:
 
@@ -88,7 +108,7 @@ protected:
 
 };
 
-
+}
 
 #endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
 

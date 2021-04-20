@@ -29,7 +29,7 @@
 namespace zce
 {
 
-class Async_ObjectMgr;
+class Async_Obj_Mgr;
 
 /*!
 * @brief      异步对象的基类
@@ -37,10 +37,10 @@ class Async_ObjectMgr;
 */
 class Async_Object
 {
-    friend class Async_ObjectMgr;
+    friend class Async_Obj_Mgr;
 
 public:
-    Async_Object(Async_ObjectMgr* async_mgr,
+    Async_Object(Async_Obj_Mgr* async_mgr,
                  uint32_t create_cmd);
 protected:
     virtual ~Async_Object();
@@ -67,7 +67,7 @@ public:
     * @return     zce::Async_Object*
     * @param      async_mgr
     */
-    virtual Async_Object* clone(Async_ObjectMgr* async_mgr,
+    virtual Async_Object* clone(Async_Obj_Mgr* async_mgr,
                                 uint32_t reg_cmd) = 0;
 
     /*!
@@ -138,10 +138,10 @@ protected:
     unsigned int asyncobj_id_ = 0;
 
     ///管理者
-    Async_ObjectMgr* async_mgr_ = NULL;
+    Async_Obj_Mgr* async_mgr_ = NULL;
 
     ///对应激活的处理的命令
-    unsigned int  create_cmd_ = 0;
+    uint32_t  create_cmd_ = 0;
 
     ///超时的定时器ID
     int timeout_id_ = Timer_Queue_Base::INVALID_TIMER_ID;
@@ -165,7 +165,7 @@ class Timer_Queue_Base;
 * @brief      异步对象的管理器基类
 *
 */
-class Async_ObjectMgr: public zce::Timer_Handler
+class Async_Obj_Mgr: public zce::Timer_Handler
 {
 
 protected:
@@ -208,8 +208,8 @@ protected:
 public:
 
     ///异步对象管理器的构造函数
-    Async_ObjectMgr();
-    virtual ~Async_ObjectMgr();
+    Async_Obj_Mgr();
+    virtual ~Async_Obj_Mgr();
 
     /*!
     * @brief      初始化，控制各种池子，容器的大小

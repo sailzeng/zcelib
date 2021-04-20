@@ -28,7 +28,7 @@ class Soar_MMAP_BusPipe;
 
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
 
-class  FSM_Base: public ZCE_Async_FSM
+class  FSM_Base: public zce::Async_FSM
 {
     friend class FSM_Manager;
 
@@ -119,8 +119,6 @@ protected:
     ///检查接受到的FRAME的数据和命令
     int check_receive_frame(const soar::Zerg_Frame *recv_frame,
                             uint32_t wait_cmd);
-
-
 
     //DUMP所有的事物的信息
     void dump_transa_info(std::ostringstream &strstream) const;

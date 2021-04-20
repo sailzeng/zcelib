@@ -4,20 +4,22 @@
 #include "zce/os_adapt/error.h"
 #include "zce/logger/logging.h"
 
+namespace zce
+{
 //=====================================================================================
 //状态机的异步对象
-ZCE_Async_FSM::ZCE_Async_FSM(zce::Async_ObjectMgr *async_mgr, unsigned int create_cmd) :
-    zce::Async_Object(async_mgr, create_cmd),
+Async_FSM::Async_FSM(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
+    Async_Object(async_mgr, create_cmd),
     fsm_stage_(0)
 {
 }
 
-ZCE_Async_FSM::~ZCE_Async_FSM()
+Async_FSM::~Async_FSM()
 {
 }
 
 //状态机运行的代码，这只是一个参考示例
-void ZCE_Async_FSM::on_run(const void *outer_data, bool &continue_run)
+void Async_FSM::on_run(const void *outer_data, bool &continue_run)
 {
     ZCE_UNUSED_ARG(outer_data);
     enum
@@ -59,7 +61,7 @@ void ZCE_Async_FSM::on_run(const void *outer_data, bool &continue_run)
 }
 
 //超时处理
-void ZCE_Async_FSM::on_timeout(const ZCE_Time_Value &now_time,
+void Async_FSM::on_timeout(const ZCE_Time_Value &now_time,
                                bool &continue_run)
 {
     char time_string[64 + 1];
@@ -71,14 +73,14 @@ void ZCE_Async_FSM::on_timeout(const ZCE_Time_Value &now_time,
 }
 
 //设置的状态机阶段
-void ZCE_Async_FSM::set_stage(int stage)
+void Async_FSM::set_stage(int stage)
 {
     fsm_stage_ = stage;
 }
 
 
 //取得的状态机阶段
-int ZCE_Async_FSM::get_stage() const
+int Async_FSM::get_stage() const
 {
     return fsm_stage_;
 }
@@ -86,18 +88,18 @@ int ZCE_Async_FSM::get_stage() const
 //=====================================================================================
 
 //状态机主控管理类
-ZCE_Async_FSMMgr::ZCE_Async_FSMMgr() :
-    zce::Async_ObjectMgr()
+Async_FSMMgr::Async_FSMMgr() :
+    zce::Async_Obj_Mgr()
 {
     pool_init_size_ = FSM_POOL_INIT_SIZE;
     pool_extend_size_ = FSM_POOL_INIT_SIZE;
 }
 
-ZCE_Async_FSMMgr::~ZCE_Async_FSMMgr()
+Async_FSMMgr::~Async_FSMMgr()
 {
 }
 
-
+} //namespace zce
 
 
 

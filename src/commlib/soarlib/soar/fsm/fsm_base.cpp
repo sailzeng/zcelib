@@ -12,7 +12,7 @@
 FSM_Base::FSM_Base(FSM_Manager* mgr,
                    unsigned int create_cmd,
                    bool trans_locker):
-    ZCE_Async_FSM(mgr,create_cmd),
+    zce::Async_FSM(mgr,create_cmd),
     trans_manager_(mgr),
     trans_locker_(trans_locker),
     trans_create_(true)
@@ -36,9 +36,6 @@ void FSM_Base::on_start()
     trace_log_pri_ = RS_DEBUG;
     running_errno_ = 0;
 }
-
-
-
 
 //根据Frame初始化得到对方发送的信息
 void FSM_Base::create_init(soar::Zerg_Frame* proc_frame)
@@ -163,7 +160,7 @@ void FSM_Base::on_timeout(const ZCE_Time_Value& now_time,
 
 //检查接受到的FRAME的数据和命令
 int FSM_Base::check_receive_frame(const soar::Zerg_Frame* recv_frame,
-                                  unsigned int wait_cmd)
+                                  uint32_t wait_cmd)
 {
     //
     if (wait_cmd != CMD_INVALID_CMD && recv_frame->command_ != wait_cmd)
