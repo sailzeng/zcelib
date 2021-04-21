@@ -113,10 +113,7 @@ protected:
     * @param      crttx 是否创建事务
     * @note
     */
-    int process_appframe(soar::Zerg_Frame *zerg_frame,bool &crttx);
-
-
-
+    int process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm);
 
 public:
     //处理管道的数据
@@ -192,15 +189,6 @@ public:
     //打开Trans统计信息，得到一个当前时钟
     void enable_trans_statistics(const ZCE_Time_Value *stat_clock);
 
-    //DUMP所有的统计信息
-    void dump_statistics_info() const;
-    //DUMP所有的事务信息
-    void dump_all_trans_info() const;
-    //DUMP所有的的Tans POOL 信息
-    void dump_trans_pool_info() const;
-
-    //Dump 所有DEBUG信息
-    void dump_all_debug_info() const;
 
     //----------------------------------------------------------------------------------------------------------
 
@@ -321,9 +309,7 @@ protected:
 
     //统计分析的一些变量
     //产生事务的总量记录
-    uint64_t           gen_trans_counter_ = 0;
-    //一个周期内产生的事务总数
-    uint32_t           cycle_gentrans_counter_ = 0;
+    uint64_t           gen_ksm_counter_ = 0;
 
     
 
@@ -378,9 +364,8 @@ int FSM_Manager::fake_receive_frame(uint32_t cmd,
     }
 
     //处理一个收到的命令，
-    bool crttx;
-    ret = process_appframe(tmp_frame,crttx);
-
+    bool create_fsm = false;
+    ret = process_appframe(tmp_frame,create_fsm);
     if (ret != 0 && ret != SOAR_RET::ERROR_TRANS_HAS_FINISHED)
     {
         return ret;

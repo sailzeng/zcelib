@@ -214,31 +214,18 @@ int FSM_Base::close_request_service() const
 }
 
 
-//对当前用户的一个锁ID进行加锁
-int FSM_Base::lock_userid_key(uint32_t one_key)
-{
-    return trans_manager_->lock_userid_fsm_cmd(req_zerg_head_.user_id_,
-                                               one_key,
-                                               req_zerg_head_.command_);
-}
-//对当前用户的一个锁ID进行解锁
-void FSM_Base::unlock_userid_key(uint32_t one_key)
-{
-    return trans_manager_->unlock_userid_fsm_cmd(req_zerg_head_.user_id_,
-                                                 one_key);
-}
+
 //对当前用户的，当前事务命令字进行加锁
 int FSM_Base::lock_userid_cmd()
 {
-    return trans_manager_->lock_userid_fsm_cmd(req_zerg_head_.user_id_,
-                                               req_zerg_head_.command_,
-                                               req_zerg_head_.command_);
+    return trans_manager_->lock_only_one(req_zerg_head_.user_id_,
+                                         req_zerg_head_.command_);
 }
 //对当前用户的，当前事务命令字进行解锁
 void FSM_Base::unlock_userid_cmd()
 {
-    return trans_manager_->unlock_userid_fsm_cmd(req_zerg_head_.user_id_,
-                                                 req_zerg_head_.command_);
+    return trans_manager_->unlock_only_one(req_zerg_head_.user_id_,
+                                           req_zerg_head_.command_);
 }
 
 //DUMP所有的事物的信息

@@ -89,7 +89,7 @@ protected:
     * @brief      继承zce::Async_Object的函数，
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(const void *outer_data, bool &continue_run) override;
+    virtual void on_run(const void *outer_data, size_t data_len, bool &running) override;
 
     /*!
     * @brief      异步对象超时处理

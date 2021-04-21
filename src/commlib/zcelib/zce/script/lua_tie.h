@@ -1997,6 +1997,7 @@ protected:
 *             其Lua的功能都从ZCE_Lua_Base 得到
 * @note       Lua的代码里面自称是Thread，但其实是协程，而为了统一我也没有使用coroutine命名，
 *             我的代码里面也有真正的thread相关的东东，避免误解，统一使用Lua Thread这样的命名
+*             另外，我比较吃不准的是是直接使用lua_State 还是用现场更好。对外其实差别不大
 */
 class ZCE_Lua_Thread : public ZCE_Lua_Base
 {

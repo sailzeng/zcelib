@@ -70,6 +70,12 @@ public:
     virtual Async_Object* clone(Async_Obj_Mgr* async_mgr,
                                 uint32_t reg_cmd) = 0;
 
+#ifndef ZCE_CLONE_ASYNC_OBJ
+#define ZCE_CLONE_ASYNC_OBJ(async_sub_class)  zce::Async_Object* \
+    clone(zce::Async_Obj_Mgr* async_mgr,uint32_t reg_cmd) \
+    {return new async_sub_class(async_mgr,reg_cmd);}
+#endif
+
     /*!
     * @brief      异步对象开始,可以用来做每次重新进行初始化时候的事情
     */
@@ -77,9 +83,11 @@ public:
 
     /*!
     * @brief      异步对象运行
-    * @param[out] continue_run 异步对象是否继续运行，如果不继续(返回false)，
+    * @param[out] running 异步对象是否继续运行，如果不继续(返回false)，
     */
-    virtual void on_run(const void* outer_data,bool& continue_run) = 0;
+    virtual void on_run(const void* outer_data,
+                        size_t data_len,
+                        bool& running) = 0;
 
 
     /*!
@@ -135,7 +143,7 @@ protected:
 protected:
 
     ///异步对象ID
-    unsigned int asyncobj_id_ = 0;
+    uint32_t asyncobj_id_ = 0;
 
     ///管理者
     Async_Obj_Mgr* async_mgr_ = NULL;
@@ -202,7 +210,7 @@ protected:
     
     //异步对象记录池子（包括异步对象和记录信息）
     typedef std::unordered_map<uint32_t,ASYNC_OBJECT_RECORD> ASYNC_RECORD_POOL;
-    //
+    //运行中的异步对象数量
     typedef std::unordered_map<uint32_t,zce::Async_Object* > RUNNING_ASYNOBJ_MAP;
 
 public:
@@ -252,18 +260,27 @@ public:
     * @return     int
     * @param      cmd         创建的命令，如果是注册命令，会创建一个异步对象进行处理
     * @param      outer_data  外部数据，带给异步对象，给他处理
+    * @param      data_len    外部数据的长度
     * @param      id          返回参数，内部创建异步对象的ID，
+    * @param      running     返回后，异步对象是否在继续运行
     */
-    int create_asyncobj(uint32_t cmd,void* outer_data,unsigned int* id);
-
+    int create_asyncobj(uint32_t cmd,
+                        void *outer_data,
+                        size_t data_len,
+                        uint32_t &id,
+                        bool &running);
 
     /*!
     * @brief      激活某个已经运行的异步对象,
     * @return     int
     * @param      outer_data
-    * @param      id
+    * @param      data_len
+    * @param      running     返回后，异步对象是否在继续运行
     */
-    int active_asyncobj(unsigned int id,void* outer_data);
+    int active_asyncobj(uint32_t id,
+                        void *outer_data,
+                        size_t data_len,
+                        bool &continue_running);
 
     /*!
     * @brief      打印管理器的基本信息，运行状态
@@ -298,7 +315,7 @@ protected:
     * @param[in]  id   运行的异步对象的标识ID
     * @param[out] running_aysnc 查询到的异步对象
     */
-    int find_running_asyncobj(unsigned int id,zce::Async_Object*& running_aysnc);
+    int find_running_asyncobj(uint32_t id,zce::Async_Object*& running_aysnc);
 
 
 
@@ -311,7 +328,8 @@ protected:
     int timer_timeout(const ZCE_Time_Value& now_time,
                       const void* act);
 
-
+    // 得到负载因子
+    void load_foctor(uint32_t &load_cur,uint32_t &load_max);
 
 protected:
     ///默认的异步对象类型数量
@@ -320,14 +338,14 @@ protected:
     static const size_t DEFUALT_RUNNIG_ASYNC_SIZE = 256 * 1024;
 public:
     ///无效的事务ID
-    static const unsigned int INVALID_IDENTITY = 0;
+    static const uint32_t INVALID_IDENTITY = 0;
     ///无效的的命令
-    static const unsigned int INVALID_COMMAND = 0;
+    static const uint32_t INVALID_COMMAND = 0;
 
 protected:
 
     //事务ID发生器
-    unsigned int id_builder_ = 1;
+    uint32_t id_builder_ = 1;
 
     //异步对象的池子，都是注册进来的
     ASYNC_RECORD_POOL regaysnc_pool_;
@@ -341,6 +359,8 @@ protected:
     ///异步对象池子的每次扩大的数量
     size_t  pool_extend_size_ = DEFUALT_RUNNIG_ASYNC_SIZE;
 
+    ///最大的负载异步对象的数量，记录最大负载情况
+    size_t max_load_async_ = 0;
 
 };
 

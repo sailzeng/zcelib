@@ -49,7 +49,7 @@ void ZCE_Async_Coroutine::finish()
 }
 
 //调用协程
-void ZCE_Async_Coroutine::on_run(const void *outer_data, bool &continue_run)
+void ZCE_Async_Coroutine::on_run(const void *outer_data,size_t /*data_len*/, bool &continue_run)
 {
     receive_data(outer_data);
     continue_run = false;

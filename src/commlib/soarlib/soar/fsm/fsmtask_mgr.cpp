@@ -185,13 +185,13 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
         DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV QUEUE FRAME:",tmp_frame);
 
         //是否创建一个事务，
-        bool bcrtcx = false;
+        bool create_fsm = false;
 
         //增加一步
         tmp_frame->recv_service_ = self_svc_info_.svc_id_;
 
         //tmp_frame  马上回收
-        ret = process_appframe(tmp_frame,bcrtcx);
+        ret = process_appframe(tmp_frame,create_fsm);
         //释放内存
         frame_mallocor_->free_appframe(tmp_frame);
 
@@ -202,7 +202,7 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
         }
 
         //创建了一个事务
-        if (true == bcrtcx)
+        if (true == create_fsm)
         {
             ++create_trans;
         }

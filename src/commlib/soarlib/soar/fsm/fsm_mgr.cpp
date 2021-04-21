@@ -126,10 +126,10 @@ int FSM_Manager::register_fsmobj(uint32_t create_cmd,
 
 //
 int FSM_Manager::process_pipe_frame(size_t &proc_frame,
-                                    size_t &create_trans)
+                                    size_t &create_num)
 {
     int ret = 0;
-    create_trans = 0;
+    create_num = 0;
 
     soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(trans_recv_buffer_);
 
@@ -146,9 +146,9 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
         DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM RECV PIPE FRAME",tmp_frame);
 
         //是否创建一个事务，
-        bool bcrtcx = false;
+        bool create_fsm = false;
         //tmp_frame不用回收
-        ret = process_appframe(tmp_frame,bcrtcx);
+        ret = process_appframe(tmp_frame,create_fsm);
 
         //
         if (ret != 0)
@@ -157,9 +157,9 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
         }
 
         //创建了一个事务
-        if (true == bcrtcx)
+        if (true == create_fsm)
         {
-            ++create_trans;
+            ++create_num;
         }
     }
 
@@ -168,9 +168,9 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
 }
 
 //处理一个收到的命令
-int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
+int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
 {
-    bcrttx = false;
+    create_fsm = false;
     int ret = 0;
 
     //如果是跟踪命令，打印出来
@@ -181,7 +181,8 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
 
 
     bool is_reg_cmd = is_register_cmd(zerg_frame->command_);
-
+    bool continue_running = false;
+    size_t frame_len = zerg_frame->length_;
     //是一个激活事务的命令
     if (is_reg_cmd)
     {
@@ -189,23 +190,25 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &bcrttx)
         {
 
         }
-
+        
         unsigned int id = 0;
-        ret = create_asyncobj(zerg_frame->command_,zerg_frame,&id);
-
-        bcrttx = true;
-
+        
+        ret = create_asyncobj(zerg_frame->command_,zerg_frame,frame_len,id,continue_running);
+        create_fsm = true;
         //统计技术器
-        ++gen_trans_counter_;
-        ++cycle_gentrans_counter_;
-
+        ++gen_ksm_counter_;
         ZCE_LOG(RS_DEBUG,"Create Trascation ,Command:%u Transaction ID:%u .",
                 zerg_frame->command_,id);
+
+        if (only_one_lock_pool_ && continue_running)
+        {
+
+        }
     }
     else
     {
 
-        ret = active_asyncobj(zerg_frame->backfill_fsm_id_,zerg_frame);
+        ret = active_asyncobj(zerg_frame->backfill_fsm_id_,zerg_frame,frame_len,continue_running);
         if (ret != 0)
         {
             DUMP_ZERG_FRAME_HEAD(RS_ERROR,"No use frame:",zerg_frame);
@@ -325,46 +328,6 @@ int FSM_Manager::process_queue_frame(size_t &proc_frame,size_t &create_trans)
     return 0;
 }
 
-//得到管理器的负载参数
-//void Transaction_Manager::get_manager_load_foctor(unsigned int &load_max, unsigned int &load_cur)
-//{
-//    load_max = static_cast<unsigned int>(max_trans_);
-//    load_cur = static_cast<unsigned int>( transc_map_.size());
-//
-//    //负载人数必须大于1
-//    if (load_cur == 0)
-//    {
-//        load_cur = 1;
-//    }
-//}
-
-//得到管理器的负载参数
-//有一些服务器，没有阶段性的事务，用上面的函数不是特别理想，
-void FSM_Manager::get_manager_load_foctor(uint32_t &load_max,uint32_t &load_cur)
-{
-    const unsigned int ONE_CYCLE_GENERATE_TRANS = 30000;
-
-    //得到负载的数量
-    load_max = ONE_CYCLE_GENERATE_TRANS;
-
-    if (cycle_gentrans_counter_ > ONE_CYCLE_GENERATE_TRANS)
-    {
-        load_cur = ONE_CYCLE_GENERATE_TRANS;
-    }
-    else
-    {
-        load_cur = cycle_gentrans_counter_;
-    }
-
-    //周期计数器清零
-    cycle_gentrans_counter_ = 0;
-    //负载人数必须大于1
-    if (load_cur == 0)
-    {
-        load_cur = 1;
-    }
-}
-
 
 // recv_svr填的是自己，就假装收到一个包，如其名fake
 int FSM_Manager::fake_receive_frame(const soar::Zerg_Frame* fake_recv)
@@ -399,18 +362,18 @@ FSM_Manager *FSM_Manager::instance()
 
 
 //对某一个用户的一个命令的事务进行加锁
-int FSM_Manager::lock_only_one(uint32_t cmd,
+int FSM_Manager::lock_only_one(uint32_t user_id,
                                uint32_t lock_id)
 {
-    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    ONLYONE_LOCK lock_rec = {user_id,lock_id};
     auto iter_tmp =
         only_one_lock_pool_->insert(lock_rec);
 
     //如果已经有一个锁了，那么加锁失败
     if (false == iter_tmp.second)
     {
-        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.cmd[%u] trans lock id[%u].",
-                cmd,
+        ZCE_LOG(RS_ERROR,"[framework] [LOCK]Oh!Transaction lock fail.user_id[%u] trans lock id[%u].",
+                user_id,
                 lock_id);
         return -1;
     }
@@ -419,10 +382,10 @@ int FSM_Manager::lock_only_one(uint32_t cmd,
 }
 
 //对某一个用户的一个命令的事务进行加锁
-void FSM_Manager::unlock_only_one(uint32_t cmd,
+void FSM_Manager::unlock_only_one(uint32_t user_id,
                                   uint32_t lock_id)
 {
-    ONLYONE_LOCK lock_rec = {cmd,lock_id};
+    ONLYONE_LOCK lock_rec = {user_id,lock_id};
     only_one_lock_pool_->erase(lock_rec);
     return;
 }

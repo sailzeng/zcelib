@@ -1172,7 +1172,7 @@ void ZCE_Lua_Tie::close()
 {
     if (lua_state_)
     {
-        lua_close(lua_state_);
+        ::lua_close(lua_state_);
         lua_state_ = nullptr;
     }
 }
@@ -1197,7 +1197,7 @@ void ZCE_Lua_Tie::del_thread(ZCE_Lua_Thread *lua_thread)
     int idx = lua_thread->get_thread_stackidx();
     if (idx != 0)
     {
-        lua_remove(lua_state_, idx);
+        ::lua_remove(lua_state_, idx);
     }
 }
 
