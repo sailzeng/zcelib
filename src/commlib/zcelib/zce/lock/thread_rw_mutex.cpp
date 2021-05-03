@@ -71,7 +71,7 @@ bool ZCE_Thread_RW_Mutex::try_lock_read()
 }
 
 //绝对时间
-bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
+bool ZCE_Thread_RW_Mutex::systime_lock_read(const zce::Time_Value &abs_time)
 {
     int ret = 0;
 
@@ -87,9 +87,9 @@ bool ZCE_Thread_RW_Mutex::systime_lock_read(const ZCE_Time_Value &abs_time)
     return true;
 }
 //相对时间
-bool ZCE_Thread_RW_Mutex::duration_lock_read(const ZCE_Time_Value &relative_time)
+bool ZCE_Thread_RW_Mutex::duration_lock_read(const zce::Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time(zce::gettimeofday());
+    zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return systime_lock_read(abs_time);
 }
@@ -122,7 +122,7 @@ bool ZCE_Thread_RW_Mutex::try_lock_write()
 }
 
 //写锁定超时，绝对时间
-bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
+bool ZCE_Thread_RW_Mutex::systime_lock_write(const zce::Time_Value &abs_time)
 {
     int ret = 0;
 
@@ -138,9 +138,9 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const ZCE_Time_Value &abs_time)
 }
 
 //写锁定超时，相对时间
-bool ZCE_Thread_RW_Mutex::duration_lock_write(const ZCE_Time_Value &relative_time)
+bool ZCE_Thread_RW_Mutex::duration_lock_write(const zce::Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time(zce::gettimeofday());
+    zce::Time_Value abs_time(zce::gettimeofday());
     abs_time += relative_time;
     return systime_lock_write(abs_time);
 }

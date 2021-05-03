@@ -136,7 +136,7 @@ int test_scandir(int /*argc*/, char /*argv*/ *[])
 }
 
 
-struct Zealot_SVC : public ZCE_Server_Base
+struct Zealot_SVC : public zce::Server_Base
 {
 
 };
@@ -267,7 +267,7 @@ int test_container_performance(int  /*argc*/, char * /*argv*/[])
 int test_progress_timer(int  /*argc*/, char * /*argv*/[])
 {
     ZCE_Chrono_HR_Timer hr_timer;
-    ZCE_Time_Value sleep_len(2, 5000);
+    zce::Time_Value sleep_len(2, 5000);
 
     hr_timer.restart();
     zce::sleep(sleep_len);

@@ -82,7 +82,7 @@ protected:
     * @return     int
     * @param      time_out
     */
-    int waitfor_timeout(const ZCE_Time_Value &time_out);
+    int waitfor_timeout(const zce::Time_Value &time_out);
 
 
     /*!
@@ -96,7 +96,7 @@ protected:
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const ZCE_Time_Value &now_time,
+    virtual void on_timeout(const zce::Time_Value &now_time,
                             bool &continue_run) override;
 
 

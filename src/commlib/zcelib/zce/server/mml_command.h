@@ -14,26 +14,28 @@
 *
 */
 
-#ifndef ZCE_LIB_MML_COMMAND_H_
-#define ZCE_LIB_MML_COMMAND_H_
+#pragma once
 
-//忽视大小写
-class LessofCaseString
+namespace zce
 {
-public:
-    bool operator()(const std::string &src, const std::string &dst) const
-    {
-        return ( strcasecmp(src.c_str(), dst.c_str()) < 0);
-    }
-};
 
 
 /*!
 * @brief      MML 控制台命令
 *             用于一些文本交互场景，比如GM命令等
 */
-class MML_Console_Command
+class MML_Command
 {
+
+    //忽视大小写
+    struct LessofCaseString
+    {
+    public:
+        bool operator()(const std::string &src,const std::string &dst) const
+        {
+            return (strcasecmp(src.c_str(),dst.c_str()) < 0);
+        }
+    };
 
     ///命令的选项
     typedef std::set <std::string, LessofCaseString>               MMLCMD_OPTION;
@@ -63,12 +65,12 @@ public:
     * @param      mml_string MML命令的字符串
     * @param      pattern    MML命令格式
     */
-    MML_Console_Command(const char *mml_string,
-                        MML_Console_Command::MML_STRING_PATTERN pattern);
+    MML_Command(const char *mml_string,
+                        MML_Command::MML_STRING_PATTERN pattern);
     ///默认构造函数
-    MML_Console_Command();
+    MML_Command();
     ///析构函数
-    ~MML_Console_Command();
+    ~MML_Command();
 
 
 protected:
@@ -81,8 +83,6 @@ protected:
 
 public:
 
-
-
     /*!
     * @brief      分析命令行参数,支持的分析的命令格式包括 CMD SVR :A=1,B=2,C=" i love c++!",D;
     * @return     int            分析是否成功
@@ -90,7 +90,7 @@ public:
     * @param[in]  pattern    命令格式
     */
     int parse_mml_cnd_string(const char *mml_string,
-                             MML_Console_Command::MML_STRING_PATTERN pattern);
+                             MML_Command::MML_STRING_PATTERN pattern);
 
     /*!
     * @brief      取得（分析）MML的语句
@@ -156,5 +156,5 @@ protected:
     MMLCMD_PARAMETER        mml_cmd_parameter_;
 };
 
-#endif //_COMM_LIB_MML_COMMAND_H_
+ }
 

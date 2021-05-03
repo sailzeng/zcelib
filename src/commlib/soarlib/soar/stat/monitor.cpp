@@ -39,7 +39,7 @@ int Soar_Stat_Monitor::initialize(const char *app_base_name,
                                   unsigned int business_id,
                                   const soar::SERVICES_ID &service_info,
                                   size_t num_stat_item,
-                                  const ZCE_STATUS_ITEM_WITHNAME item_ary[],
+                                  const zce::STATUS_ITEM_WITHNAME item_ary[],
                                   bool mutli_thread)
 {
     create_stat_fname(app_base_name, business_id, service_info);
@@ -47,7 +47,7 @@ int Soar_Stat_Monitor::initialize(const char *app_base_name,
     // 将stat_mmap_filename_转换为大写
     zce::strupr(stat_mmap_filename_);
 
-    int ret = ZCE_Server_Status::initialize(stat_mmap_filename_,
+    int ret = zce::Server_Status::initialize(stat_mmap_filename_,
                                             num_stat_item,
                                             item_ary,
                                             mutli_thread);
@@ -115,7 +115,7 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     {
         return SOAR_RET::ERROR_BAD_STAT_FILE_NAME;
     }
-    ret = sscanf(find_pos + 1, "%hu.%hu",
+    ret = sscanf(find_pos + 1, "%hu.%u",
                  &tmp_svc_id.services_type_,
                  &tmp_svc_id.services_id_);
     //!=2 表示没有得到两个数字

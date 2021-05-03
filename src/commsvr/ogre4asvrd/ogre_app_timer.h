@@ -16,7 +16,7 @@ protected:
     ~Ogre_App_Timer_Handler();
 
     //
-    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
+    virtual int timer_timeout(const zce::Time_Value &time, const void *arg);
 
 public:
     //定时器ID,避免New传递,回收

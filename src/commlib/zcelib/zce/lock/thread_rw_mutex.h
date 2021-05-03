@@ -53,18 +53,18 @@ public:
     virtual bool try_lock_read();
 
     //绝对时间
-    virtual bool systime_lock_read(const ZCE_Time_Value &abs_time);
+    virtual bool systime_lock_read(const zce::Time_Value &abs_time);
     //相对时间
-    virtual bool duration_lock_read(const ZCE_Time_Value &relative_time);
+    virtual bool duration_lock_read(const zce::Time_Value &relative_time);
 
     //写锁定
     virtual void lock_write();
     //尝试读取锁
     virtual bool try_lock_write();
     //写锁定超时，绝对时间
-    virtual bool systime_lock_write(const ZCE_Time_Value &abs_time);
+    virtual bool systime_lock_write(const zce::Time_Value &abs_time);
     //写锁定超时，相对时间
-    virtual bool duration_lock_write(const ZCE_Time_Value &relative_time);
+    virtual bool duration_lock_write(const zce::Time_Value &relative_time);
 
     ///解写锁
     virtual void unlock_write();

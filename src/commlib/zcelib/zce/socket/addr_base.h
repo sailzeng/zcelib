@@ -1,5 +1,4 @@
-#ifndef ZCE_LIB_SOCKET_ADDR_BASE_
-#define ZCE_LIB_SOCKET_ADDR_BASE_
+#pragma once
 
 #include "zce/os_adapt/socket.h"
 
@@ -7,17 +6,20 @@
 //因为在有一天改写原来代码时，突然觉得为什么为什么彻底OO一点点？
 //整体参考ACE_INET_Addr ACE INET Addr实现的，当然也有一些变化，ACE没有直接使用sockaddr，不知道为啥
 
+namespace zce
+{
+
 //Socket地址的基类。
-class ZCE_Sockaddr
+class Sockaddr_Base
 {
 public:
 
     //构造函数，
-    ZCE_Sockaddr (sockaddr *sockaddr_ptr = NULL, int sa_size = -1);
+    Sockaddr_Base (sockaddr *sockaddr_ptr = NULL, int sa_size = -1);
     //析构函数,内部有virtual函数
-    virtual ~ZCE_Sockaddr (void);
+    virtual ~Sockaddr_Base (void);
 
-    //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用ZCE_Sockaddr
+    //设置sockaddr地址信息,设置成纯虚函数的原因不想让你使用Sockaddr_Base
     virtual  void set_sockaddr (sockaddr *sockaddr_ptr, socklen_t sockaddr_size) = 0;
 
     //Get/set the size of the address.
@@ -31,9 +33,9 @@ public:
     inline sockaddr *get_addr (void) const;
 
     // 检查地址是否相等
-    bool operator == (const ZCE_Sockaddr &others_sockaddr) const;
+    bool operator == (const Sockaddr_Base &others_sockaddr) const;
     // 检查地址是否不相等
-    bool operator != (const ZCE_Sockaddr &others_sockaddr) const;
+    bool operator != (const Sockaddr_Base &others_sockaddr) const;
 
 
     //转换成字符串,同时输出字符串的长度
@@ -56,25 +58,27 @@ public:
 };
 
 //Get/set the size of the address.
-inline socklen_t ZCE_Sockaddr::get_size (void) const
+inline socklen_t Sockaddr_Base::get_size (void) const
 {
     return sockaddr_size_;
 }
 //
-inline void ZCE_Sockaddr::set_size (int sa_size)
+inline void Sockaddr_Base::set_size (int sa_size)
 {
     sockaddr_size_ = sa_size;
 }
 
 //设置地址信息
-inline void ZCE_Sockaddr::set_addr (sockaddr *sockaddr_ptr)
+inline void Sockaddr_Base::set_addr (sockaddr *sockaddr_ptr)
 {
     sockaddr_ptr_ = sockaddr_ptr;
 }
 //取得地址信息
-inline sockaddr *ZCE_Sockaddr::get_addr (void) const
+inline sockaddr *Sockaddr_Base::get_addr (void) const
 {
     return sockaddr_ptr_;
 }
 
-#endif  //ZCE_LIB_SOCKET_ADDR_BASE_
+}
+
+

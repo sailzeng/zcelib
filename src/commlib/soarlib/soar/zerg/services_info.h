@@ -41,7 +41,7 @@ public:
 
 
     ///服务IP,服务端口
-    ZCE_Sockaddr_In  ip_address_;
+    zce::Sockaddr_In  ip_address_;
 
     ///业务ID,游戏ID
     unsigned int     business_id_ = 0;

@@ -31,8 +31,6 @@ namespace zce
 {
 //==========================================================================================================
 
-//
-
 
 /*!
 * @brief      字符的功能的萃取类，用在兼容char，wchar_t字符串处理的时候还是挺有用的
@@ -137,13 +135,11 @@ char_type *strtrimleft(char_type *str)
             break;
         }
     }
-
     if (lstr != str)
     {
         yun_char_traits<char_type>::move(str, lstr,
                                          yun_char_traits<char_type>::length(lstr) + 1);
     }
-
     return str;
 }
 
@@ -171,12 +167,10 @@ char *strtrimright(char_type *str)
             break;
         }
     }
-
     if (lstr != str + yun_char_traits<char_type>::length(str) - 1)
     {
         *++lstr = 0;
     }
-
     return str;
 }
 
@@ -195,42 +189,58 @@ inline char *strtrim(char_type *str)
 }
 
 template < typename char_type, typename char_traits_type, typename allocator_typ >
-void trimleft_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+void stdstr_trimleft(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
 {
-    typename std::basic_string<char_type, char_traits_type, allocator_typ>::iterator it = str.begin();
+    auto it = str.begin();
 
     while (it != str.end() && yun_char_traits<char_type>::isspace(*it))
     {
         ++it;
     }
-
     str.erase(str.begin(), it);
     return;
 }
 
 template < typename char_type, typename char_traits_type, typename allocator_typ >
-void trimright_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+void stdstr_trimright(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
 {
-    typename std::basic_string<char_type, char_traits_type, allocator_typ>::iterator it = str.end();
-
+    auto  it = str.end();
     if (it == str.begin())
     {
         return;
     }
 
     while (it != str.begin() && yun_char_traits<char_type>::isspace(*--it));
-
     str.erase(it + 1, str.end());
-
     return;
 }
 
 template < typename char_type, typename char_traits_type, typename allocator_typ >
-inline void trim_stdstr(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
+inline void stdstr_trim(std::basic_string<char_type, char_traits_type, allocator_typ> &str)
 {
-    trimright_stdstr(str);
-    trimleft_stdstr(str);
+    stdstr_trimright(str);
+    stdstr_trimleft(str);
     return;
+}
+
+template < typename char_type,typename char_traits_type,typename allocator_typ >
+int stdstr_casecmp(std::basic_string<char_type,char_traits_type,allocator_typ> &a,
+                   std::basic_string<char_type,char_traits_type,allocator_typ> &b)
+{
+    if (a.length() == b.length())
+    {
+        return false;
+    }
+    else
+    {
+        return std::equal(a.begin(),a.end(),b.begin(),
+                          [](char a,char b)
+                          {
+                              return tolower(a) == tolower(b);
+                          });
+        
+    }
+    
 }
 
 //==========================================================================================================

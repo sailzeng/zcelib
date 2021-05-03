@@ -94,7 +94,7 @@ public:
     * @param[in,out] time_out      超时时间，完毕后返回剩余时间
     * @param[out]    size_event    触发的句柄数量
     */
-    virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) override;
+    virtual int handle_events(zce::Time_Value *time_out, size_t *size_event) override;
 
 
 

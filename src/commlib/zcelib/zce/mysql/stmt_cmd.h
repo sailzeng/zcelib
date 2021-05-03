@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2013  Apache License, Version 2.0 FULLSAIL
-* @filename   zce/mysql/stmtcmd.h
+* @filename   zce/mysql/stmt_cmd.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2005年10月17日

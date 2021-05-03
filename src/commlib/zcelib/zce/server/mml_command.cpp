@@ -2,27 +2,30 @@
 #include "zce/logger/logging.h"
 #include "zce/server/mml_command.h"
 
+namespace zce
+{
+
 /****************************************************************************************************
-class MML_Console_Command 控制台命令
+class MML_Console_Command 控制台命令,多用于GM命令
 ****************************************************************************************************/
 //构造函数
-MML_Console_Command::MML_Console_Command(const char *mml_string,
-                                         MML_Console_Command::MML_STRING_PATTERN pattern)
+MML_Command::MML_Command(const char *mml_string,
+                                         MML_Command::MML_STRING_PATTERN pattern)
 {
     mml_string_ = mml_string;
     mml_command_.reserve(32);
     parse_mml_cnd_string(mml_string, pattern);
 }
 //
-MML_Console_Command::MML_Console_Command()
+MML_Command::MML_Command()
 {
 }
-MML_Console_Command::~MML_Console_Command()
+MML_Command::~MML_Command()
 {
 }
 
 //取得MML的语句
-int MML_Console_Command::get_mml_string(std::string &mml_string) const
+int MML_Command::get_mml_string(std::string &mml_string) const
 {
     if (mml_string_.length() > 0)
     {
@@ -33,13 +36,13 @@ int MML_Console_Command::get_mml_string(std::string &mml_string) const
 }
 
 //
-const char *MML_Console_Command::get_mml_string() const
+const char *MML_Command::get_mml_string() const
 {
     return mml_string_.c_str();
 }
 
 //
-int MML_Console_Command::get_mml_command(std::string &mml_cmd) const
+int MML_Command::get_mml_command(std::string &mml_cmd) const
 {
     if (mml_command_.length() == 0)
     {
@@ -51,13 +54,13 @@ int MML_Console_Command::get_mml_command(std::string &mml_cmd) const
 }
 
 //
-const char *MML_Console_Command::get_mml_command() const
+const char *MML_Command::get_mml_command() const
 {
     return mml_command_.c_str();
 }
 
 //拥有某个命令选项
-int MML_Console_Command::have_cmd_option(const std::string &mml_option) const
+int MML_Command::have_cmd_option(const std::string &mml_option) const
 {
     MMLCMD_OPTION::const_iterator option_iter =  mml_cmd_option_.find(mml_option);
 
@@ -70,7 +73,7 @@ int MML_Console_Command::have_cmd_option(const std::string &mml_option) const
 }
 
 //得到某个命令参数
-int MML_Console_Command::get_cmd_parameter(const std::string &para_key, std::string &para_value) const
+int MML_Command::get_cmd_parameter(const std::string &para_key, std::string &para_value) const
 {
     MMLCMD_PARAMETER::const_iterator para_iter = mml_cmd_parameter_.find(para_key);
     if (mml_cmd_parameter_.end() == para_iter )
@@ -83,7 +86,7 @@ int MML_Console_Command::get_cmd_parameter(const std::string &para_key, std::str
 }
 
 //得到某个命令参数
-const char *MML_Console_Command::get_cmd_parameter(const std::string &para_key)  const
+const char *MML_Command::get_cmd_parameter(const std::string &para_key)  const
 {
     static const char NOT_FIND_RETURN[] = "";
     MMLCMD_PARAMETER::const_iterator para_iter = mml_cmd_parameter_.find(para_key);
@@ -97,16 +100,16 @@ const char *MML_Console_Command::get_cmd_parameter(const std::string &para_key) 
 
 
 //MML语句分析
-int MML_Console_Command::parse_mml_cnd_string(const char *mml_string,
-                                              MML_Console_Command::MML_STRING_PATTERN pattern)
+int MML_Command::parse_mml_cnd_string(const char *mml_string,
+                                              MML_Command::MML_STRING_PATTERN pattern)
 {
 
     switch (pattern)
     {
-    case MML_Console_Command::MML_STRING_PATTERN::PATTERN_1:
+    case MML_Command::MML_STRING_PATTERN::PATTERN_1:
             parse_mml_cnd_string1(mml_string);
             break;
-    case MML_Console_Command::MML_STRING_PATTERN::PATTERN_2:
+    case MML_Command::MML_STRING_PATTERN::PATTERN_2:
         parse_mml_cnd_string2(mml_string);
         break;
     default:
@@ -120,7 +123,7 @@ int MML_Console_Command::parse_mml_cnd_string(const char *mml_string,
 
 //分析命令行参数
 //支持的分析的命令格式包括 CMD_1 A=1 B=2 C=" i love c++!" D
-int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
+int MML_Command::parse_mml_cnd_string2(const char *mml_string)
 {
     mml_string_ = mml_string;
 
@@ -242,7 +245,7 @@ int MML_Console_Command::parse_mml_cnd_string2(const char *mml_string)
 //分析命令行参数
 //支持的分析的命令格式包括 CMD SVR :A=1,B=2,C=" i love c++!";
 //分析的思路有点奇怪,基本是一个个找到id
-int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
+int MML_Command::parse_mml_cnd_string1(const char *mml_string )
 {
     mml_string_ = mml_string;
     //清理遗留的现场
@@ -381,5 +384,7 @@ int MML_Console_Command::parse_mml_cnd_string1(const char *mml_string )
     }
 
     return 0;
+}
+
 }
 

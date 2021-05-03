@@ -90,7 +90,7 @@ int Svrd_Appliction::app_start(int argc, const char *argv[])
         return ret;
     }
     //初始化SOCKET等
-    ret = ZCE_Server_Base::socket_init();
+    ret = zce::Server_Base::socket_init();
     if (ret != 0)
     {
         return ret;

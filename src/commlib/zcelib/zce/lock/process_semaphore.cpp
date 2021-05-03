@@ -101,7 +101,7 @@ void ZCE_Process_Semaphore::unlock()
 }
 
 //绝对时间超时的的锁定，超时后解锁
-bool ZCE_Process_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
+bool ZCE_Process_Semaphore::systime_lock(const zce::Time_Value &abs_time)
 {
     int ret = 0;
     ret = zce::sem_timedwait(lock_, abs_time);
@@ -120,7 +120,7 @@ bool ZCE_Process_Semaphore::systime_lock(const ZCE_Time_Value &abs_time)
 }
 
 //相对时间的超时锁定，超时后，解锁
-bool ZCE_Process_Semaphore::duration_lock(const ZCE_Time_Value &relative_time)
+bool ZCE_Process_Semaphore::duration_lock(const zce::Time_Value &relative_time)
 {
     timeval abs_time = zce::gettimeofday();
     abs_time = zce::timeval_add(abs_time, relative_time);

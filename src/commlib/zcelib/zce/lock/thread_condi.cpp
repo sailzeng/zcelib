@@ -27,7 +27,7 @@ void ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::wait (ZCE_Thread_Light_Mutex 
 //绝对时间超时的的等待，超时后解锁
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light_Mutex *external_mutex,
-                                                                const ZCE_Time_Value &abs_time)
+                                                                const zce::Time_Value &abs_time)
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -44,9 +44,9 @@ bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::systime_wait(ZCE_Thread_Light
 
 //相对时间的超时锁定等待，超时后，解锁
 template <>
-bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex *external_mutex, const ZCE_Time_Value &relative_time)
+bool ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>::duration_wait(ZCE_Thread_Light_Mutex *external_mutex, const zce::Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time (zce::gettimeofday());
+    zce::Time_Value abs_time (zce::gettimeofday());
     abs_time += relative_time;
     return systime_wait(external_mutex, abs_time);
 }
@@ -72,7 +72,7 @@ void ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::wait (ZCE_Thread_Recursiv
 //绝对时间超时的的等待，超时后解锁
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
-                                                                    const ZCE_Time_Value &abs_time)
+                                                                    const zce::Time_Value &abs_time)
 {
     int ret = zce::pthread_cond_timedwait(&lock_,
                                           external_mutex->get_lock(),
@@ -90,9 +90,9 @@ bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::systime_wait(ZCE_Thread_R
 //相对时间的超时锁定等待，超时后，解锁
 template <>
 bool ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>::duration_wait(ZCE_Thread_Recursive_Mutex *external_mutex,
-                                                                     const ZCE_Time_Value &relative_time)
+                                                                     const zce::Time_Value &relative_time)
 {
-    ZCE_Time_Value abs_time (zce::gettimeofday());
+    zce::Time_Value abs_time (zce::gettimeofday());
     abs_time += relative_time;
     return systime_wait(external_mutex, abs_time);
 }

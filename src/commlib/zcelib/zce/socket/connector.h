@@ -17,24 +17,23 @@
 #ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
 #define ZCE_LIB_SOCKET_CONNECTOR_H_
 
-#include "zce/util/non_copyable.h"
+#include "zce/time/time_value.h"
+#include "zce/socket/addr_base.h"
 
-class ZCE_Time_Value;
-class ZCE_Sockaddr;
-
-
+namespace zce
+{
 
 /*!
-* @brief      connect的工厂，成功连接后产生,用于产生ZCE_Socket_Stream
+* @brief      connect的工厂，成功连接后产生,用于产生zce::Socket_Stream
 *
 * @note
 */
-class ZCE_Socket_Connector
+class Socket_Connector
 {
 public:
     //构造函数和析构函数
-    ZCE_Socket_Connector (void);
-    ~ZCE_Socket_Connector (void);
+    Socket_Connector (void);
+    ~Socket_Connector (void);
 
     /*!
     * @brief      带超时的连接
@@ -46,12 +45,12 @@ public:
     * @param      protocol    协议，用于RAW Socket，基本没用
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
-    int connect (ZCE_Socket_Stream &new_stream,
-                 const ZCE_Sockaddr *remote_addr,
-                 ZCE_Time_Value  &timeout,
+    int connect (zce::Socket_Stream &new_stream,
+                 const zce::Sockaddr_Base *remote_addr,
+                 zce::Time_Value  &timeout,
                  bool reuse_addr = false,
                  int protocol = 0,
-                 const ZCE_Sockaddr *local_addr = NULL);
+                 const Sockaddr_Base *local_addr = NULL);
 
 
     /*!
@@ -64,14 +63,16 @@ public:
     * @param      protocol    协议，用于RAW Socket，基本没用
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
-    int connect (ZCE_Socket_Stream &new_stream,
-                 const ZCE_Sockaddr *remote_addr,
+    int connect (zce::Socket_Stream &new_stream,
+                 const zce::Sockaddr_Base *remote_addr,
                  bool non_blocing,
                  bool reuse_addr = false,
                  int protocol = 0,
-                 const ZCE_Sockaddr *local_addr = NULL);
+                 const Sockaddr_Base *local_addr = NULL);
 
 };
+
+}
 
 #endif //#ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
 

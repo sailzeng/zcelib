@@ -74,28 +74,26 @@ public:
         //高优先级别，没有使用，
         DESC_HIGH_PRIORITY = 0x1,
 
-        //某个命令帧发送失败,通知后面的服务
-        DESC_SEND_ERROR = 0x2,
+        //业务进程告诉zerg，如果发送失败,通知业务进程
+        DESC_SNDPRC_NOTIFY_APP = 0x2,
+        //某个命令帧已经发送失败,通知后面的服务
+        DESC_ALREADY_SEND_FAIL = 0x4,
 
-        //如果发送失败,重复尝试发送
-        DESC_SEND_FAIL_RECORD = 0x4,
-        //如果发送失败,通知后面的应用进程
-        DESC_SNDPRC_NOTIFY_APP = 0x8,
-
+        //如果发送失败,记录发送失败，重要指令可以使用
+        DESC_SEND_FAIL_RECORD = 0x8,
+        
         //如果发送成功后,直接断开连接，用于部分TCP的短连接
         DESC_SNDPRC_CLOSE_PEER = 0x10,
 
-        //
-        DESC_MONITOR_TRACK = 0x100,
+        //各种这个帧，用日志记录下
+        DESC_MONITOR_TRACK = 0x20,
 
         //FRAME数据区的有用户签名
-        DESC_HEAD_WITH_SIGNATURE = 0x200,
-
+        DESC_HEAD_WITH_SIGNATURE = 0x40,
         //帧的数据采用加密
-        DESC_SESSION_ENCRYPT = 0x400,
-
+        DESC_SESSION_ENCRYPT = 0x80,
         //特殊的某些命令不用加密进行处理，用于加密情况某些命令无须加密的特殊情况
-        DESC_SPECIAL_NO_ENCRYPT = 0x800,
+        DESC_SPECIAL_NO_ENCRYPT = 0x100,
 
 
         //如果是TCP的帧,其实默认是TCP的帧,所以其实没有使用
@@ -194,7 +192,7 @@ public:
 
 
     ///发送序列号，计划只在通讯层用,暂时没用用
-    uint16_t               serial_number_ = 0;
+    uint32_t               serial_number_ = 0;
     ///业务ID，游戏ID
     uint16_t               business_id_;
 
@@ -313,13 +311,13 @@ public:
     ///输出APPFRAME的所有信息
     static void dump_frame_all(zce::LOG_PRIORITY log_priority,
                                const char *outer_str,
-                               const Zerg_Frame *frame);
+                               const Zerg_Frame *proc_frame);
 
 public:
 
 
     //---------------------------------------------------------------------------
-    //包头都尺寸,40
+    //包头都尺寸,48
     static const size_t LEN_OF_APPFRAME_HEAD = sizeof(Zerg_Head);
     
     //FRAME的一些长度参数,默认的最大长度是64K
@@ -341,11 +339,6 @@ public:
 };
 
 #pragma pack ()
-
-
-
-
-
 
 
 

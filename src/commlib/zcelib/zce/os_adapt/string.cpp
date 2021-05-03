@@ -76,7 +76,6 @@ char *zce::strupr(char *str)
 //将字符串全部转换为小写字符
 char *zce::strlwr(char *str)
 {
-
     assert(str);
     char *lstr = str;
 
@@ -92,12 +91,11 @@ char *zce::strlwr(char *str)
 //高效版本
 int zce::strcasecmp(const char *string1, const char *string2)
 {
-#if defined (ZCE_OS_WINDOWS)
+#if defined (ZCE_OS_WINDOWS)  //原来Windows是stricmp
     return ::strcasecmp(string1, string2);
 #elif defined (ZCE_OS_LINUX)
     return ::strcasecmp(string1, string2);
 #endif
-
 }
 
 //字符串定长比较，忽视大小写
@@ -110,8 +108,6 @@ int zce::strncasecmp(const char *string1, const char *string2, size_t maxlen)
     return ::strncasecmp(string1, string2, maxlen);
 #endif
 }
-
-
 
 //替换src字符串中的sub字符串为replace，保存到dst字符串中
 const char *zce::str_replace(const char *src, char *dst, const char *sub, const char *replace)
@@ -516,25 +512,25 @@ bool str_to_value(const char *str)
 
 //
 template<>
-ZCE_Sockaddr_In str_to_value(const char *str)
+zce::Sockaddr_In str_to_value(const char *str)
 {
-    ZCE_Sockaddr_In val;
+    zce::Sockaddr_In val;
     val.set(str);
     return val;
 }
 
 template<>
-ZCE_Sockaddr_In6 str_to_value(const char *str)
+Sockaddr_In6 str_to_value(const char *str)
 {
-    ZCE_Sockaddr_In6 val;
+    Sockaddr_In6 val;
     val.set(str);
     return val;
 }
 
 template<>
-ZCE_Time_Value str_to_value(const char *str)
+zce::Time_Value str_to_value(const char *str)
 {
-    ZCE_Time_Value val;
+    zce::Time_Value val;
     val.from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
     return val;
 }
@@ -632,19 +628,19 @@ void str_to_ptr(const char *str, bool *ptr)
 
 
 template<>
-void str_to_ptr(const char *str, ZCE_Sockaddr_In *ptr)
+void str_to_ptr(const char *str, zce::Sockaddr_In *ptr)
 {
     ptr->set(str);
 }
 
 template<>
-void str_to_ptr(const char *str, ZCE_Sockaddr_In6 *ptr)
+void str_to_ptr(const char *str, Sockaddr_In6 *ptr)
 {
     ptr->set(str);
 }
 
 template<>
-void str_to_ptr(const char *str, ZCE_Time_Value *ptr)
+void str_to_ptr(const char *str, zce::Time_Value *ptr)
 {
     ptr->from_string(str, false, zce::TIME_STR_FORMAT::US_SEC);
 }

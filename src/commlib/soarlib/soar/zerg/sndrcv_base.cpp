@@ -6,91 +6,77 @@
 /******************************************************************************************
 class Tibetan_SendRecv_Package
 ******************************************************************************************/
-SendRecv_Package_Base::SendRecv_Package_Base():
+SendRecv_Msg_Base::SendRecv_Msg_Base():
     test_frame_len_(0),
     trans_id_builder_(0),
-    tibetan_send_appframe_(NULL),
-    tibetan_recv_appframe_(NULL),
+    msg_send_frame_(NULL),
+    msg_recv_frame_(NULL),
     recv_trans_id_(0)
 {
 }
 
-SendRecv_Package_Base::~SendRecv_Package_Base()
+SendRecv_Msg_Base::~SendRecv_Msg_Base()
 {
     //清理已经分配的缓冲区
-    if (tibetan_send_appframe_)
+    if (msg_send_frame_)
     {
-        soar::Zerg_Frame::delete_frame(tibetan_send_appframe_);
-        tibetan_send_appframe_ = NULL;
+        soar::Zerg_Frame::delete_frame(msg_send_frame_);
+        msg_send_frame_ = NULL;
     }
 
-    if (tibetan_recv_appframe_)
+    if (msg_recv_frame_)
     {
-        soar::Zerg_Frame::delete_frame(tibetan_recv_appframe_);
-        tibetan_recv_appframe_ = NULL;
+        soar::Zerg_Frame::delete_frame(msg_recv_frame_);
+        msg_recv_frame_ = NULL;
     }
 }
 
-/******************************************************************************************
-Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2008年4月25日
-Function        : Tibetan_SendRecv_Package::set_services_id
-Return          : void
-Parameter List  :
-  Param1: const soar::SERVICES_ID& recv_service  接收的服务器ID
-  Param2: const soar::SERVICES_ID& send_service  发送的服务器ID
-  Param3: const soar::SERVICES_ID& proxy_service PROXY的服务器ID
-  Param4: size_t frame_len 准备的FRAME长度
-Description     :
-Calls           :
-Called By       :
-Other           :
-Modify Record   :
-******************************************************************************************/
-void SendRecv_Package_Base::set_services_id(const soar::SERVICES_ID &recv_service,
+
+void SendRecv_Msg_Base::set_services_id(const soar::SERVICES_ID &recv_service,
                                             const soar::SERVICES_ID &send_service,
                                             const soar::SERVICES_ID &proxy_service,
                                             size_t frame_len)
 
 {
-    tibetan_recv_service_  = recv_service;
-    tibetan_send_service_ = send_service;
-    tibetan_proxy_service_ = proxy_service;
+    msg_recv_service_  = recv_service;
+    msg_send_service_ = send_service;
+    msg_proxy_service_ = proxy_service;
     test_frame_len_ = frame_len;
 
     //new一个APPFRAME,
-    tibetan_send_appframe_ = soar::Zerg_Frame::new_frame(test_frame_len_);
-    tibetan_send_appframe_->init_head(static_cast<unsigned int>(test_frame_len_));
+    msg_send_frame_ = soar::Zerg_Frame::new_frame(test_frame_len_);
+    msg_send_frame_->init_head(static_cast<unsigned int>(test_frame_len_));
 
-    tibetan_recv_appframe_ = soar::Zerg_Frame::new_frame(test_frame_len_);
-    tibetan_recv_appframe_->init_head(static_cast<unsigned int>(test_frame_len_));
+    msg_recv_frame_ = soar::Zerg_Frame::new_frame(test_frame_len_);
+    msg_recv_frame_->init_head(static_cast<unsigned int>(test_frame_len_));
 
 }
 
 //取得收到的事务ID
-void SendRecv_Package_Base::get_recv_transid(unsigned int &trans_id)
+void SendRecv_Msg_Base::get_recv_transid(unsigned int &trans_id)
 {
     trans_id = recv_trans_id_;
 }
 
-unsigned int SendRecv_Package_Base::get_send_transid()
+unsigned int SendRecv_Msg_Base::get_send_transid()
 {
     return trans_id_builder_;
 
 }
 
-unsigned int SendRecv_Package_Base::get_backfill_transid()
+unsigned int SendRecv_Msg_Base::get_backfill_transid()
 {
     return backfill_trans_id_;
 }
 
 //取得测试的APPFRAME
-soar::Zerg_Frame *SendRecv_Package_Base::get_send_appframe()
+soar::Zerg_Frame *SendRecv_Msg_Base::get_send_appframe()
 {
-    return tibetan_send_appframe_;
+    return msg_send_frame_;
 }
 
 //取得接收的APPFRAME
-soar::Zerg_Frame *SendRecv_Package_Base::get_recv_appframe()
+soar::Zerg_Frame *SendRecv_Msg_Base::get_recv_appframe()
 {
-    return tibetan_recv_appframe_;
+    return msg_recv_frame_;
 }

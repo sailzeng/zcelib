@@ -8,7 +8,7 @@
 std::vector<Ogre_UDPSvc_Hdl *> Ogre_UDPSvc_Hdl::ary_upd_peer_;
 
 //构造函数
-Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const ZCE_Sockaddr_In &upd_addr, ZCE_Reactor *reactor):
+Ogre_UDPSvc_Hdl::Ogre_UDPSvc_Hdl(const zce::Sockaddr_In &upd_addr, ZCE_Reactor *reactor):
     ZCE_Event_Handler(reactor),
     udp_bind_addr_(upd_addr),
     peer_svc_info_(upd_addr.get_ip_address(), upd_addr.get_port_number()),
@@ -78,7 +78,7 @@ int Ogre_UDPSvc_Hdl::handle_input(ZCE_HANDLE)
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    ZCE_Sockaddr_In remote_addr;
+    zce::Sockaddr_In remote_addr;
     //读取数据
     ret = read_data_fromudp(szrevc, remote_addr);
 
@@ -119,7 +119,7 @@ int Ogre_UDPSvc_Hdl::handle_close ()
 }
 
 //读取UDP数据
-int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr)
+int Ogre_UDPSvc_Hdl::read_data_fromudp(size_t &szrevc, zce::Sockaddr_In &remote_addr)
 {
     int ret = 0;
     szrevc = 0;
@@ -212,7 +212,7 @@ int Ogre_UDPSvc_Hdl::send_alldata_to_udp(Ogre4a_App_Frame *send_frame)
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    ZCE_Sockaddr_In remote_addr(send_frame->rcv_peer_info_.peer_ip_address_,
+    zce::Sockaddr_In remote_addr(send_frame->rcv_peer_info_.peer_ip_address_,
                                 send_frame->rcv_peer_info_.peer_port_);
 
     //

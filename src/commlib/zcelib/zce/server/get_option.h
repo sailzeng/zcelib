@@ -4,7 +4,7 @@
 * @author
 * @version
 * @date       Monday, August 25, 2014
-* @brief      这个代码是ACE的ACE_Get_Option的代码，我没有版权，
+* @brief      这个代码是ACE的ACE_Get_Option的代码，我没有版权，稍微为了移植做了一点改写
 *
 *
 * @details
@@ -148,8 +148,7 @@ public:
      * specified as @c "abc:" not @c "abc::".
      */
 
-private:
-    void ZCE_Get_Option_Init (const char *optstring);
+
 public:
     ZCE_Get_Option (int argc,
                     char **argv,

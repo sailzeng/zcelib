@@ -410,7 +410,7 @@ public:
         {
             if (i == 0 && iv)
             {
-                ZLEUINT32_TO_BYTE(write_ptr,*iv)
+                ZLEUINT32_TO_BYTE(write_ptr,*iv);
             }
             else
             {

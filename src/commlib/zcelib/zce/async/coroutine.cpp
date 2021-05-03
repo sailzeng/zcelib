@@ -75,7 +75,7 @@ void ZCE_Async_Coroutine::on_run(const void *outer_data,size_t /*data_len*/, boo
 
 
 //调用协程
-void ZCE_Async_Coroutine::on_timeout(const ZCE_Time_Value & /*now_time*/,
+void ZCE_Async_Coroutine::on_timeout(const zce::Time_Value & /*now_time*/,
                                      bool &continue_run)
 {
     continue_run = false;
@@ -145,7 +145,7 @@ void ZCE_Async_Coroutine::static_do(void *coroutine,
 
 
 //等待time_out 时间后超时，设置定时器后，切换协程到main
-int ZCE_Async_Coroutine::waitfor_timeout(const ZCE_Time_Value &time_out)
+int ZCE_Async_Coroutine::waitfor_timeout(const zce::Time_Value &time_out)
 {
     int ret = 0;
     ret = set_timeout(time_out);

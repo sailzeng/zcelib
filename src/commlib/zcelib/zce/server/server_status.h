@@ -27,14 +27,15 @@
 *
 */
 
-#ifndef ZCE_LIB_SERVER_STATUS_H_
-#define ZCE_LIB_SERVER_STATUS_H_
+#pragma once
 
 #include "zce/shared_mem/posix.h"
 #include "zce/shm_container/array.h"
 #include "zce/lock/null_lock.h"
 #include "zce/os_adapt/time.h"
 
+namespace zce
+{
 
 //===========================================================================================
 /*!
@@ -42,21 +43,21 @@
 *
 * @note
 */
-enum class ZCE_STATUS_STATICS
+enum class STATUS_STATICS
 {
     //标识范围
-    INVALID_TYPE       = 0,
+    INVALID_TYPE = 0,
 
     //每5分钟进行一次统计，尽量用5分钟的统计方式
-    PER_FIVE_MINTUES   = 1,
+    PER_FIVE_MINTUES = 1,
 
     //每小时进行一次统计,:0会清空，这种统计方式主要用于1个小时变化数据，用于对比等，
-    PER_HOUR           = 2,
+    PER_HOUR = 2,
     //每天进行一次统计，0:0会清空，，这种统计方式主要用于1天变化数据
-    PER_DAYS           = 3,
+    PER_DAYS = 3,
 
     //绝对值
-    ABSOLUTE_VALUE     = 11,
+    ABSOLUTE_VALUE = 11,
 
     //原来还有一种每次启动时，数值是否清空的选项，算了，没必要保留了
 
@@ -71,26 +72,26 @@ enum class ZCE_STATUS_STATICS
 *
 * @note
 */
-struct ZCE_STATUS_ITEM_ID
+struct STATUS_ITEM_ID
 {
 public:
 
-    ZCE_STATUS_ITEM_ID(uint32_t statics_id,
-                       uint32_t classify_id,
-                       uint32_t subclassing_id);
-    ZCE_STATUS_ITEM_ID();
-    ~ZCE_STATUS_ITEM_ID();
+    STATUS_ITEM_ID(uint32_t statics_id,
+                   uint32_t classify_id,
+                   uint32_t subclassing_id);
+    STATUS_ITEM_ID() = default;
+    ~STATUS_ITEM_ID() = default;
 
-    bool operator == (const ZCE_STATUS_ITEM_ID& others) const;
+    bool operator == (const STATUS_ITEM_ID &others) const;
 
 public:
 
     ///统计ID
-    uint32_t              statics_id_=0;
+    uint32_t              statics_id_ = 0;
     ///分类ID，目前好像主要是业务ID,这个是可以变化的
-    uint32_t              classify_id_=0;
+    uint32_t              classify_id_ = 0;
     ///子分类ID，这个也是可以变化的，
-    uint32_t              subclassing_id_=0;
+    uint32_t              subclassing_id_ = 0;
 
 
 };
@@ -104,11 +105,11 @@ struct HASH_ZCE_STATUS_ITEM_ID
 {
 public:
     //就把3个数值相+，这样冲突感觉还小一点，（左移反而感觉不好）
-    size_t operator()(const ZCE_STATUS_ITEM_ID &stat_item) const
+    size_t operator()(const STATUS_ITEM_ID &stat_item) const
     {
         return static_cast<size_t>(stat_item.statics_id_)
-               + static_cast<size_t>(stat_item.classify_id_)
-               + static_cast<size_t>(stat_item.subclassing_id_);
+            + static_cast<size_t>(stat_item.classify_id_)
+            + static_cast<size_t>(stat_item.subclassing_id_);
     }
 };
 
@@ -123,21 +124,21 @@ class ZCE_STATUS_ITEM
 public:
 
     //构造函数和析构函数
-    ZCE_STATUS_ITEM();
+    ZCE_STATUS_ITEM() = default;
     ZCE_STATUS_ITEM(unsigned int statics_id,
-                    ZCE_STATUS_STATICS statics_type);
-    ~ZCE_STATUS_ITEM();
+                    STATUS_STATICS statics_type);
+    ~ZCE_STATUS_ITEM() = default;
 
 public:
 
     ///ID标识
-    ZCE_STATUS_ITEM_ID        item_id_;
+    STATUS_ITEM_ID   item_id_;
 
     ///可以重新计数
-    ZCE_STATUS_STATICS   statics_type_ =ZCE_STATUS_STATICS::INVALID_TYPE;
+    STATUS_STATICS   statics_type_ = STATUS_STATICS::PER_FIVE_MINTUES;
 
     ///计数器
-    uint64_t                  counter_=0;
+    uint64_t             counter_ = 0;
 };
 
 //===========================================================================================
@@ -145,27 +146,27 @@ public:
 * @brief      状态计数器+名字，用于配置，DUMP输出等
 *
 */
-class ZCE_STATUS_ITEM_WITHNAME
+class STATUS_ITEM_WITHNAME
 {
 public:
 
     //
-    ZCE_STATUS_ITEM_WITHNAME(unsigned int,
-                             ZCE_STATUS_STATICS,
-                             const char *);
-    ZCE_STATUS_ITEM_WITHNAME();
-    ~ZCE_STATUS_ITEM_WITHNAME();
+    STATUS_ITEM_WITHNAME(unsigned int,
+                         STATUS_STATICS,
+                         const char *);
+    STATUS_ITEM_WITHNAME();
+    ~STATUS_ITEM_WITHNAME();
 
 public:
     //统计项目名称的长度
-    static const size_t       MAX_COUNTER_NAME_LEN = 64;
+    static const size_t       MAX_COUNTER_NAME_LEN = 127;
 
 public:
 
     ZCE_STATUS_ITEM           statics_item_;
 
     //计数器名称
-    char                      item_name_[MAX_COUNTER_NAME_LEN + 3];
+    char                      item_name_[MAX_COUNTER_NAME_LEN + 1];
 
 };
 
@@ -173,7 +174,7 @@ public:
 
 //用于帮助你定义 ZCE_STATUS_ITEM_WITHNAME数组
 #ifndef DEF_ZCE_STATUS_ITEM
-#define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) ZCE_STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
+#define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) zce::STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
 #endif
 
 
@@ -209,7 +210,7 @@ struct ZCE_STATUS_HEAD
 *
 * @note       本来使用的是锁模式，但发现使用这个东西会导致满世界的问题扩大化,
 */
-class ZCE_Server_Status : public zce::NON_Copyable
+class Server_Status: public zce::NON_Copyable
 {
 
 protected:
@@ -217,21 +218,21 @@ protected:
     ///存放统计数据的共享内存数组，
     typedef zce::shm_array<ZCE_STATUS_ITEM>     ARRYA_OF_SHM_STATUS;
     ///统计ID到数组的下标的hash map
-    typedef unordered_map<ZCE_STATUS_ITEM_ID,size_t,HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
+    typedef unordered_map<STATUS_ITEM_ID,size_t,HASH_ZCE_STATUS_ITEM_ID>     STATID_TO_INDEX_MAP;
     ///statics_id_做key的ZCE_STATUS_ITEM_WITHNAME的结构
-    typedef unordered_map<uint32_t,ZCE_STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
+    typedef unordered_map<uint32_t,STATUS_ITEM_WITHNAME>    STATUS_WITHNAME_MAP;
 
 public:
 
     ///统计数据的数组，用于dump输出的数据结构
-    typedef std::vector<ZCE_STATUS_ITEM_WITHNAME>  ARRAY_OF_STATUS_WITHNAME;
+    typedef std::vector<STATUS_ITEM_WITHNAME>  ARRAY_OF_STATUS_WITHNAME;
 
 public:
 
     ///构造函数,也给你单独使用的机会，所以不用protected
-    ZCE_Server_Status();
+    Server_Status();
     ///析构函数
-    virtual ~ZCE_Server_Status();
+    virtual ~Server_Status();
 
 protected:
 
@@ -286,7 +287,7 @@ public:
     */
     int initialize(const char *stat_filename,
                    size_t num_stat_item,
-                   const ZCE_STATUS_ITEM_WITHNAME item_ary[],
+                   const STATUS_ITEM_WITHNAME item_ary[],
                    bool multi_thread);
 
     /*!
@@ -296,12 +297,12 @@ public:
     * @param      item_ary      增加的统计项目
     */
     void add_status_item(size_t num_stat_item,
-                         const ZCE_STATUS_ITEM_WITHNAME item_ary[]);
+                         const STATUS_ITEM_WITHNAME item_ary[]);
 
 
     ///监控项是否已经存在
     bool is_exist_stat_id(unsigned int stat_id,
-                          ZCE_STATUS_ITEM_WITHNAME *status_item_withname) const;
+                          STATUS_ITEM_WITHNAME *status_item_withname) const;
 
     ///初始化以后，修改是否需要多线程保护
     void multi_thread_guard(bool multi_thread);
@@ -318,7 +319,7 @@ public:
                              uint32_t classify_id,
                              uint32_t subclassing_id)
     {
-        return increase_by_statid(statics_id, classify_id, subclassing_id, 1);
+        return increase_by_statid(statics_id,classify_id,subclassing_id,1);
     }
 
 
@@ -389,7 +390,7 @@ public:
                           bool dump_copy = false);
 
     ///得到文件的头部信息
-    void get_stat_head(ZCE_STATUS_HEAD *stat_head );
+    void get_stat_head(ZCE_STATUS_HEAD *stat_head);
 
     ///记录监控的上报时间
     void report_monitor_time(uint64_t report_time = static_cast<uint64_t>(time(NULL)));
@@ -400,29 +401,26 @@ public:
 public:
 
     //得到单子实例
-    static ZCE_Server_Status *instance();
+    static Server_Status *instance();
     //单子实例赋值
-    static void instance(ZCE_Server_Status *);
+    static void instance(Server_Status *);
     //清理单子实例
     static void clean_instance();
-
-
-
 
 protected:
 
     //最多的监控项目ID,
-    static const size_t MAX_MONITOR_STAT_ITEM = 64 * 1024;
+    static constexpr size_t MAX_MONITOR_STAT_ITEM = 64 * 1024;
 
     //五分钟的描述
-    static const time_t FIVE_MINTUE_SECONDS   = 300;
+    static constexpr time_t FIVE_MINTUE_SECONDS = 300;
     //一小时的秒数
-    static const time_t ONE_HOURS_SECONDS     = 3600;
+    static constexpr time_t ONE_HOURS_SECONDS = 3600;
     //一天的时间
-    static const time_t ONE_DAY_SECONDS       = 86400;
+    static constexpr time_t ONE_DAY_SECONDS = 86400;
 
     //统计项目数值增加1
-    static const uint64_t INCREASE_VALUE_ONCE = 1;
+    static constexpr uint64_t INCREASE_VALUE_ONCE = 1;
 
 protected:
 
@@ -460,10 +458,8 @@ protected:
 protected:
 
     //单子实例
-    static ZCE_Server_Status *instance_;
+    static Server_Status *instance_;
 };
 
-
-
-#endif //_ZCE_LIB_SERVER_STATUS_H_
+}
 

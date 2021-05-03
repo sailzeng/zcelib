@@ -2,7 +2,7 @@
 #include "zealot_test_function.h"
 
 
-class FSM_1 : public Async_FSM
+class FSM_1 : public zce::Async_FSM
 {
 private:
     enum
@@ -34,7 +34,7 @@ public:
         return dynamic_cast<zce::Async_Object * >(new FSM_1(async_mgr, create_cmd));
     }
 
-    virtual void on_run(const void *outer_data, bool &continue_run)
+    virtual void on_run(const void *outer_data,size_t /*data_len*/,bool &continue_run)
     {
         ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
@@ -69,7 +69,7 @@ public:
 };
 
 
-class FSM_2 : public Async_FSM
+class FSM_2 : public zce::Async_FSM
 {
 private:
     enum
@@ -98,7 +98,9 @@ public:
         return dynamic_cast<zce::Async_Object *>(new FSM_2(async_mgr, create_cmd));
     }
 
-    virtual void on_run(const void *outer_data, bool &continue_run)
+    virtual void on_run(const void *outer_data,
+                        size_t /*data_len*/,
+                        bool &continue_run)
     {
         ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
@@ -142,32 +144,33 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
     const unsigned int CMD_3 = 10003;
 
     zce::Timer_Queue_Base *time_queue = new ZCE_Timer_Wheel();
-    Async_FSMMgr *mgr = new Async_FSMMgr();
+    zce::Async_FSMMgr *mgr = new zce::Async_FSMMgr();
     mgr->initialize(time_queue, 100, 200);
     mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
     mgr->register_asyncobj(CMD_2, new FSM_2(mgr, CMD_2));
+    
+    bool running;
+    uint32_t fsm1_async_id1;
+    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id1,running);
+    uint32_t fsm1_async_id2;
+    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id2,running);
 
-    unsigned int fsm1_async_id1;
-    ret = mgr->create_asyncobj(CMD_1, NULL, &fsm1_async_id1);
-    unsigned int fsm1_async_id2;
-    ret = mgr->create_asyncobj(CMD_1, NULL, &fsm1_async_id2);
-
-    unsigned int fsm2_async_id1;
-    ret = mgr->create_asyncobj(CMD_2, NULL, &fsm2_async_id1);
+    uint32_t fsm2_async_id1;
+    ret = mgr->create_asyncobj(CMD_2, NULL,0,fsm2_async_id1,running);
 
 
-    unsigned int nouse_fsm3_id;
-    ret = mgr->create_asyncobj(CMD_3, NULL, &nouse_fsm3_id);
+    uint32_t nouse_fsm3_id;
+    ret = mgr->create_asyncobj(CMD_3, NULL,0,nouse_fsm3_id,running);
     ZCE_ASSERT(ret != 0);
 
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
 
 
     return 0;
@@ -239,16 +242,16 @@ int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
     mgr->initialize(time_queue, 100, 2000);
     mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));
     mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));
+    bool running;
+    uint32_t fsm1_async_id1;
+    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id1,running);
+    uint32_t fsm1_async_id2;
+    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id2,running);
 
-    unsigned int fsm1_async_id1;
-    ret = mgr->create_asyncobj(CMD_1, NULL, &fsm1_async_id1);
-    unsigned int fsm1_async_id2;
-    ret = mgr->create_asyncobj(CMD_1, NULL, &fsm1_async_id2);
-
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm1_async_id2, NULL);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL);
-    ret = mgr->active_asyncobj(fsm1_async_id2, NULL);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id2, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id2, NULL,0,running);
 
     ZCE_ASSERT(ret == 0);
 

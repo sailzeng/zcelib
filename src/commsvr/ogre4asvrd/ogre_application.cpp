@@ -97,12 +97,12 @@ int Ogre_Service_App::app_run()
     //microsecond
     const int INTERVAL_MACRO_SECOND = 10000;
 
-    ZCE_Time_Value sleeptime(0, INTERVAL_MACRO_SECOND);
-    ZCE_Time_Value interval(0, INTERVAL_MACRO_SECOND);
+    zce::Time_Value sleeptime(0, INTERVAL_MACRO_SECOND);
+    zce::Time_Value interval(0, INTERVAL_MACRO_SECOND);
 
     for (; app_run_;)
     {
-        //每次都在这儿初始化ZCE_Time_Value不好,其要调整.
+        //每次都在这儿初始化zce::Time_Value不好,其要调整.
         interval.usec(INTERVAL_MACRO_SECOND);
         ZCE_Reactor::instance()->handle_events(&interval, &numevent);
 

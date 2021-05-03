@@ -467,7 +467,7 @@ int zce::sock_disable(ZCE_SOCKET handle, int flags)
 
 //检查在（一定时间内），某个SOCKET句柄关注的单个事件是否触发，如果触发，返回触发事件个数，如果成功，一般触发返回值都是1
 int zce::handle_ready(ZCE_SOCKET handle,
-                      ZCE_Time_Value *timeout_tv,
+                      zce::Time_Value *timeout_tv,
                       HANDLE_READY ready_todo)
 {
 #if defined ZCE_OS_WINDOWS || (defined ZCE_OS_LINUX && !defined HANDLEREADY_USE_EPOLL)
@@ -667,7 +667,7 @@ int zce::handle_ready(ZCE_SOCKET handle,
 int zce::connect_timeout(ZCE_SOCKET handle,
                          const sockaddr *addr,
                          socklen_t addr_len,
-                         ZCE_Time_Value &timeout_tv)
+                         zce::Time_Value &timeout_tv)
 {
 
     int ret = 0;
@@ -722,7 +722,7 @@ int zce::connect_timeout(ZCE_SOCKET handle,
                          uint16_t port,
                          sockaddr *host_addr,
                          socklen_t addr_len,
-                         ZCE_Time_Value &timeout_tv)
+                         zce::Time_Value &timeout_tv)
 {
     //只能是IPV4，IPV6或者两个兼而有之
     int ret = 0;
@@ -765,7 +765,7 @@ int zce::connect_timeout(ZCE_SOCKET handle,
 ssize_t zce::recvn_timeout (ZCE_SOCKET handle,
                             void *buf,
                             size_t len,
-                            ZCE_Time_Value &timeout_tv,
+                            zce::Time_Value &timeout_tv,
                             int flags,
                             bool only_once)
 {
@@ -866,7 +866,7 @@ ssize_t zce::recvn_timeout (ZCE_SOCKET handle,
 ssize_t zce::sendn_timeout(ZCE_SOCKET handle,
                            const void *buf,
                            size_t len,
-                           ZCE_Time_Value &timeout_tv,
+                           zce::Time_Value &timeout_tv,
                            int flags )
 {
 
@@ -964,7 +964,7 @@ ssize_t zce::recvfrom_timeout (ZCE_SOCKET handle,
                                size_t len,
                                sockaddr *from,
                                socklen_t *from_len,
-                               ZCE_Time_Value &timeout_tv,
+                               zce::Time_Value &timeout_tv,
                                int flags)
 {
     //如果只等待有限时间
@@ -1023,7 +1023,7 @@ ssize_t zce::sendto_timeout (ZCE_SOCKET handle,
                              size_t len,
                              const sockaddr *addr,
                              socklen_t addrlen,
-                             ZCE_Time_Value & /*timeout_tv*/,
+                             zce::Time_Value & /*timeout_tv*/,
                              int flags)
 {
     return zce::sendto(handle,
@@ -1043,7 +1043,7 @@ ssize_t zce::sendto_timeout (ZCE_SOCKET handle,
 ssize_t zce::recvn_timeout2 (ZCE_SOCKET handle,
                              void *buf,
                              size_t len,
-                             ZCE_Time_Value &timeout_tv,
+                             zce::Time_Value &timeout_tv,
                              int flags)
 {
     int ret = 0;
@@ -1105,7 +1105,7 @@ ssize_t zce::recvn_timeout2 (ZCE_SOCKET handle,
 ssize_t zce::sendn_timeout2 (ZCE_SOCKET handle,
                              void *buf,
                              size_t len,
-                             ZCE_Time_Value &timeout_tv,
+                             zce::Time_Value &timeout_tv,
                              int flags)
 {
 
@@ -1170,7 +1170,7 @@ ssize_t zce::recvfrom_timeout2 (ZCE_SOCKET handle,
                                 size_t len,
                                 sockaddr *addr,
                                 socklen_t *addrlen,
-                                ZCE_Time_Value &timeout_tv,
+                                zce::Time_Value &timeout_tv,
                                 int flags)
 {
     int ret = 0;
@@ -1209,7 +1209,7 @@ ssize_t zce::sendto_timeout2 (ZCE_SOCKET handle,
                               size_t len,
                               const sockaddr *addr,
                               socklen_t addrlen,
-                              ZCE_Time_Value & /*timeout_tv*/,
+                              zce::Time_Value & /*timeout_tv*/,
                               int flags)
 {
     return zce::sendto(handle,
@@ -2159,7 +2159,7 @@ const unsigned char SOCKS5_ATYP_IPV6 = 0x4;
 int zce::socks5_initialize(ZCE_SOCKET handle,
                            const char *username,
                            const char *password,
-                           ZCE_Time_Value &timeout_tv)
+                           zce::Time_Value &timeout_tv)
 {
 
     const size_t BUFFER_LEN = 1024;
@@ -2253,7 +2253,7 @@ int zce::socks5_connect_host(ZCE_SOCKET handle,
                              const sockaddr *host_addr,
                              int addr_len,
                              uint16_t host_port,
-                             ZCE_Time_Value &timeout_tv)
+                             zce::Time_Value &timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };
@@ -2340,7 +2340,7 @@ int zce::socks5_udp_associate(ZCE_SOCKET handle,
                               const sockaddr *bind_addr,
                               int addr_len,
                               sockaddr *udp_addr,
-                              ZCE_Time_Value &timeout_tv)
+                              zce::Time_Value &timeout_tv)
 {
     const size_t BUFFER_LEN = 1024;
     unsigned char buffer[BUFFER_LEN] = { "" };

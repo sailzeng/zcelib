@@ -9,7 +9,7 @@
 struct SERVICES_INFO_TABLE
 {
 
-    typedef std::unordered_set<soar::SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
+    typedef std::unordered_set<soar::SERVICES_INFO,soar::HASH_OF_SVCINFO,soar::EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
 
 public:
     //构造函数,
@@ -27,7 +27,7 @@ public:
     * @note
     */
     int find_svcinfo(const soar::SERVICES_ID &svc_id,
-                     ZCE_Sockaddr_In &ip_address,
+                     zce::Sockaddr_In &ip_address,
                      unsigned int &idc_no,
                      unsigned int &business_id) const;
 

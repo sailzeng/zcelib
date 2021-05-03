@@ -149,14 +149,14 @@ int test_bytes_hash(int /*argc*/, char * /*argv*/[])
 
 int test_bytes_encode(int /*argc*/, char * /*argv*/[])
 {
-    const unsigned char test_string[] = "Man is distinguished, not only by his reason,"
+    const char test_string[] = "Man is distinguished, not only by his reason,"
                                         " but by this singular passion from other animals, which is a lust of the mind,"
                                         " that by a perseverance of delight in the continued and indefatigable generation of knowledge,"
                                         " exceeds the short vehemence of any carnal pleasure.";
-    unsigned char out_buf[1024 + 1];
+    char out_buf[1024 + 1];
     size_t buffer_len = 1024;
     zce::base64_encode(test_string, strlen((const char *)test_string), out_buf, &buffer_len);
-    const unsigned char result_string[] = "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz"
+    const char result_string[] = "TWFuIGlzIGRpc3Rpbmd1aXNoZWQsIG5vdCBvbmx5IGJ5IGhpcyByZWFzb24sIGJ1dCBieSB0aGlz"
                                           "IHNpbmd1bGFyIHBhc3Npb24gZnJvbSBvdGhlciBhbmltYWxzLCB3aGljaCBpcyBhIGx1c3Qgb2Yg"
                                           "dGhlIG1pbmQsIHRoYXQgYnkgYSBwZXJzZXZlcmFuY2Ugb2YgZGVsaWdodCBpbiB0aGUgY29udGlu"
                                           "dWVkIGFuZCBpbmRlZmF0aWdhYmxlIGdlbmVyYXRpb24gb2Yga25vd2xlZGdlLCBleGNlZWRzIHRo"

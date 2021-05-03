@@ -78,7 +78,7 @@ Ogre_TCP_Svc_Handler::~Ogre_TCP_Svc_Handler()
 
 
 //初始化函数,用于Accept的端口的处理Event Handle构造.
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
+void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream &sockstream,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_ACCEPTED;
@@ -141,8 +141,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
     //如果配置了超时出来,N秒必须收到一个包
     if ( accept_timeout_ > 0 || receive_timeout_ > 0)
     {
-        ZCE_Time_Value delay(0, 0);
-        ZCE_Time_Value interval(0, 0);
+        zce::Time_Value delay(0, 0);
+        zce::Time_Value interval(0, 0);
 
         delay.sec(accept_timeout_);
         interval.sec(receive_timeout_);
@@ -172,8 +172,8 @@ void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstr
 
 
 //初始化函数,用于Connect出去的PEER 对应Event Handle构造.
-void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
-                                                const ZCE_Sockaddr_In &socketaddr,
+void Ogre_TCP_Svc_Handler::init_tcp_svc_handler(const zce::Socket_Stream &sockstream,
+                                                const zce::Sockaddr_In &socketaddr,
                                                 FP_JudgeRecv_WholeFrame fp_judge_whole)
 {
     handler_mode_ = HANDLER_MODE_CONNECT;
@@ -345,7 +345,7 @@ int Ogre_TCP_Svc_Handler::handle_output(ZCE_HANDLE)
 
 
 //定时触发
-int Ogre_TCP_Svc_Handler::timer_timeout(const ZCE_Time_Value &/*time*/, const void *arg)
+int Ogre_TCP_Svc_Handler::timer_timeout(const zce::Time_Value &/*time*/, const void *arg)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -723,9 +723,9 @@ int Ogre_TCP_Svc_Handler::write_all_aata_to_peer()
     else
     {
         //没有WRITE MASK，准备增加写标志
-        if (!(handle_mask & ZCE_Event_Handler::WRITE_MASK))
+        if (!(handle_mask & EVENT_MASK::WRITE_MASK))
         {
-            ret = reactor()->schedule_wakeup(this, ZCE_Event_Handler::WRITE_MASK);
+            ret = reactor()->schedule_wakeup(this,EVENT_MASK::WRITE_MASK);
 
             //schedule_wakeup 返回return -1表示错误，再次BS ACE一次，正确返回的是old mask值
             if ( -1 == ret)
@@ -1174,7 +1174,7 @@ void Ogre_TCP_Svc_Handler::get_maxpeer_num(size_t &maxaccept, size_t &maxconnect
 }
 
 //得到Handle对应PEER的端口
-const ZCE_Sockaddr_In &Ogre_TCP_Svc_Handler::get_peer()
+const zce::Sockaddr_In &Ogre_TCP_Svc_Handler::get_peer()
 {
     return remote_address_;
 }

@@ -21,7 +21,7 @@ Ogre_Comm_Manger::~Ogre_Comm_Manger()
 }
 
 //检查一个端口是否安全.然后根据配置进行处理
-int Ogre_Comm_Manger::check_safe_port(ZCE_Sockaddr_In &inetadd)
+int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In &inetadd)
 {
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];

@@ -473,7 +473,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
-                                         ZCE_Sockaddr_In &val) const
+                                         zce::Sockaddr_In &val) const
 {
     std::string value_str;
     int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
@@ -490,7 +490,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
-                                         ZCE_Sockaddr_In6 &val) const
+                                         zce::Sockaddr_In6 &val) const
 {
     std::string value_str;
     int ret = path_get_leaf<std::string>(path_str, key_str, value_str);
@@ -507,7 +507,7 @@ int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
 template<>
 int ZCE_Conf_PropertyTree::path_get_leaf(const std::string &path_str,
                                          const std::string &key_str,
-                                         ZCE_Time_Value &val) const
+                                         zce::Time_Value &val) const
 {
     std::string value_str;
     int ret = path_get_leaf<std::string>(path_str, key_str, value_str);

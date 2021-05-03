@@ -11,7 +11,7 @@ class Ogre_UDPSvc_Hdl: public ZCE_Event_Handler
 protected:
     //
 public:
-    Ogre_UDPSvc_Hdl(const ZCE_Sockaddr_In &upd_addr,
+    Ogre_UDPSvc_Hdl(const zce::Sockaddr_In &upd_addr,
                     ZCE_Reactor *reactor = ZCE_Reactor::instance());
 protected:
     ~Ogre_UDPSvc_Hdl();
@@ -36,17 +36,17 @@ public:
 protected:
 
     //从PEER读取数据
-    int read_data_fromudp(size_t &szrevc, ZCE_Sockaddr_In &remote_addr);
+    int read_data_fromudp(size_t &szrevc, zce::Sockaddr_In &remote_addr);
     //将收到的数据放入管道
     int pushdata_to_recvpipe();
 
 protected:
 
     //
-    ZCE_Socket_DataGram        dgram_peer_;
+    zce::Socket_DataGram        dgram_peer_;
 
     //邦定的地址
-    ZCE_Sockaddr_In            udp_bind_addr_;
+    zce::Sockaddr_In            udp_bind_addr_;
     //Socket_Peer_Info
     OGRE_PEER_ID           peer_svc_info_;
 

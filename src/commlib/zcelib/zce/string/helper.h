@@ -675,11 +675,11 @@ inline void string_helper(std::string &stdstr,
 //-----------------------------------------------------------------------------------------------
 //一些ZCELIB常用的结构的字符串输出
 
-///输出ZCE_Time_Value的时间
+///输出zce::Time_Value的时间
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
-                          const ZCE_Time_Value &out_data)
+                          const zce::Time_Value &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -696,7 +696,7 @@ inline void output_helper(char *buffer,
 }
 
 inline void string_helper(std::string &stdstr,
-                          const ZCE_Time_Value &out_data)
+                          const zce::Time_Value &out_data)
 {
     char time_str[MAX_TIMEVAL_STRING_LEN + 1];
     time_str[MAX_TIMEVAL_STRING_LEN] = '\0';
@@ -708,11 +708,11 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///输出ZCE_Sockaddr_In的字符串
+///输出zce::Sockaddr_In的字符串
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
-                          const ZCE_Sockaddr_In &out_data)
+                          const zce::Sockaddr_In &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -726,7 +726,7 @@ inline void output_helper(char *buffer,
 }
 
 inline void string_helper(std::string &stdstr,
-                          const ZCE_Sockaddr_In &out_data)
+                          const zce::Sockaddr_In &out_data)
 {
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';
@@ -738,11 +738,11 @@ inline void string_helper(std::string &stdstr,
     stdstr.append(ret_str ? ret_str : "<ERROR>");
 }
 
-///辅助输出ZCE_Sockaddr_In6的字符串
+///辅助输出Sockaddr_In6的字符串
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
-                          const ZCE_Sockaddr_In6 &out_data)
+                          const Sockaddr_In6 &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -756,7 +756,7 @@ inline void output_helper(char *buffer,
 }
 
 inline void string_helper(std::string &stdstr,
-                          const ZCE_Sockaddr_In6 &out_data)
+                          const Sockaddr_In6 &out_data)
 {
     char addr_str[MAX_SOCKETADDR_STRING_LEN + 1];
     addr_str[MAX_SOCKETADDR_STRING_LEN] = '\0';

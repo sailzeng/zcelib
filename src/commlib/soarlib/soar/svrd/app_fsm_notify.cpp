@@ -33,7 +33,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
     Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
     FSMTask_Manger *trans_mgr = new FSMTask_Manger();
     FSM_Manager::instance(trans_mgr);
-    ZCE_Time_Value enqueue_timeout;
+    zce::Time_Value enqueue_timeout;
     enqueue_timeout.sec(svd_config->framework_config_.task_info_.enqueue_timeout_sec_);
     enqueue_timeout.usec(svd_config->framework_config_.task_info_.enqueue_timeout_usec_);
     //事务管理器的初始化
@@ -105,7 +105,7 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     size_t idle = 0;
 
     FSMTask_Manger *notify_trans_mgr = static_cast<FSMTask_Manger *>(FSM_Manager::instance());
-    ZCE_Time_Value select_interval(0, 0);
+    zce::Time_Value select_interval(0, 0);
 
     zce::Timer_Queue_Base *time_queue = zce::Timer_Queue_Base::instance();
     ZCE_Reactor *reactor = ZCE_Reactor::instance();

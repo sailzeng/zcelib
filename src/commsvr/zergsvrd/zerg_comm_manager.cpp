@@ -153,7 +153,7 @@ int Zerg_Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
 }
 
 //检查一个端口是否安全
-int Zerg_Comm_Manager::check_safeport(const ZCE_Sockaddr_In  &inetadd)
+int Zerg_Comm_Manager::check_safeport(const zce::Sockaddr_In  &inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -209,7 +209,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         tmpbuf->size_of_use_ = proc_frame->length_;
 
         //如果是要跟踪的命令
-        if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
+        if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
         {
             DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][SEND]opt",proc_frame);
         }
@@ -225,7 +225,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame, size_
         }
 
         //发送UDP的数据
-        if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
+        if (proc_frame->frame_option_.protocol_ == soar::Zerg_Frame::DESC_UDP_FRAME)
         {
             //发送错误日志在send_all_to_udp函数内部处理，这儿不增加重复记录
             UDP_Svc_Handler::send_all_to_udp(proc_frame);
@@ -364,7 +364,7 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
     if (ret != 0)
     {
         //记录下来处理
-        if (proc_frame->frame_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD )
+        if (proc_frame->u32_option_ & soar::Zerg_Frame::DESC_SEND_FAIL_RECORD )
         {
             ZCE_LOG(RS_ERROR, "[zergsvr] A Frame frame len[%u] cmd[%u] uid[%u] recv_service[%u|%u] proxy_service[%u|%u] send_service[%u|%u] option [%u],ret =%d Discard!",
                     proc_frame->length_,
@@ -383,13 +383,13 @@ int Zerg_Comm_Manager::send_single_buf( Zerg_Buffer *tmpbuf )
 
         //
         server_status_->increase_once(ZERG_SEND_FAIL_COUNTER,
-                                      proc_frame->app_id_,
+                                      proc_frame->business_id_,
                                       0);
         if (proc_frame->recv_service_.services_type_ == 0)
         {
             // 不应该出现0的services_type
             server_status_->increase_once(ZERG_SEND_FAIL_COUNTER_BY_SVR_TYPE,
-                                          proc_frame->app_id_, proc_frame->recv_service_.services_type_);
+                                          proc_frame->business_id_, proc_frame->recv_service_.services_type_);
         }
         //
         zbuffer_storage_->free_byte_buffer(tmpbuf);
@@ -411,9 +411,9 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
     }
 
     //为了提高效率，先检查标志位，
-    if (recv_frame->frame_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
+    if (recv_frame->u32_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
     {
-        DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]opt",proc_frame);
+        DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]opt",recv_frame);
     }
     else
     {
@@ -423,7 +423,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
         {
             if (monitor_cmd_[i] == recv_frame->command_)
             {
-                DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]cmd",proc_frame);
+                DUMP_ZERG_FRAME_HEAD(RS_INFO,"[TRACK MONITOR][RECV]cmd",recv_frame);
             }
         }
     }
@@ -434,19 +434,19 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
     if (ret != 0)
     {
         server_status_->increase_once(ZERG_RECV_PIPE_FULL_COUNTER,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       0);
     }
     else
     {
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       0);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_CMD,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       recv_frame->command_);
         server_status_->increase_once(ZERG_RECV_FRAME_COUNTER_BY_SVR_TYPE,
-                                      recv_frame->app_id_,
+                                      recv_frame->business_id_,
                                       recv_frame->send_service_.services_type_);
     }
 

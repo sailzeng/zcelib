@@ -65,7 +65,7 @@ public:
 
     //放入一个数据，进行超时等待
     int enqueue(const _value_type &value_data,
-                const ZCE_Time_Value & );
+                const zce::Time_Value & );
 
     //尝试放入数据到队列，立即返回
     int try_enqueue(_value_type &value_data);
@@ -75,7 +75,7 @@ public:
 
     //取出一个数据，进行超时等待
     int dequeue(_value_type &value_data,
-                const ZCE_Time_Value & );
+                const zce::Time_Value & );
 
     //尝试取出数据到队列，立即返回
     int try_dequeue(_value_type &value_data);

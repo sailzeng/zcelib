@@ -8,14 +8,14 @@
 /******************************************************************************************
 class Zulu_SendRecv_Package
 ******************************************************************************************/
-Zulu_SendRecv_Package::Zulu_SendRecv_Package():
+Zulu_SendRecv_Msg::Zulu_SendRecv_Msg():
     zulu_connected_(false),
     zulu_stream_()
 {
     zulu_svc_ip_.set("127.0.0.1", 8080);
 }
 
-Zulu_SendRecv_Package::~Zulu_SendRecv_Package()
+Zulu_SendRecv_Msg::~Zulu_SendRecv_Msg()
 {
     if ( true == zulu_connected_ )
     {
@@ -40,7 +40,7 @@ Called By       :
 Other           :
 Modify Record   :
 ******************************************************************************************/
-int Zulu_SendRecv_Package::set_zulu_svcinfo(const char *svc_ip,
+int Zulu_SendRecv_Msg::set_zulu_svcinfo(const char *svc_ip,
                                             unsigned short svc_port,
                                             const soar::SERVICES_ID &recv_service,
                                             const soar::SERVICES_ID &send_service,
@@ -62,18 +62,18 @@ int Zulu_SendRecv_Package::set_zulu_svcinfo(const char *svc_ip,
 }
 
 //链接服务器
-int Zulu_SendRecv_Package::connect_zulu_server(ZCE_Time_Value *time_wait)
+int Zulu_SendRecv_Msg::connect_zulu_server(zce::Time_Value *time_wait)
 {
     int ret = 0;
 
     //GCS服务器的链接问题。
     if ( false == zulu_connected_ )
     {
-        ZCE_Socket_Connector tmp_connector;
+        zce::Socket_Connector tmp_connector;
         //自己定义超时时间10s,如果不能链接认为失败，毕竟都是内网,
         // 默认超时是10s, 如果指定了time_wait则使用time_wait
         // 否则用默认的值
-        ZCE_Time_Value real_time_wait(10, 0);
+        zce::Time_Value real_time_wait(10, 0);
 
         if (time_wait != NULL)
         {
@@ -96,7 +96,7 @@ int Zulu_SendRecv_Package::connect_zulu_server(ZCE_Time_Value *time_wait)
     return 0;
 }
 
-void Zulu_SendRecv_Package::close()
+void Zulu_SendRecv_Msg::close()
 {
     if (zulu_connected_)
     {
@@ -106,7 +106,7 @@ void Zulu_SendRecv_Package::close()
 }
 
 //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
-int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
+int Zulu_SendRecv_Msg::receive_svc_msg(zce::Time_Value *time_wait)
 {
 
     ssize_t socket_ret  = 0;
@@ -116,7 +116,7 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
     for (;;)
     {
         //接收一个帧头,长度必然是LEN_OF_APPFRAME_HEAD,
-        socket_ret  = zulu_stream_.recv_n((void *)(tibetan_recv_appframe_),
+        socket_ret  = zulu_stream_.recv_n((void *)(msg_recv_frame_),
                                           soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD,
                                           time_wait);
 
@@ -149,23 +149,23 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
             return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
         }
 
-        tibetan_recv_appframe_->ntoh();
+        msg_recv_frame_->ntoh();
 
 #if defined _DEBUG || defined DEBUG
-        ZCE_ASSERT(test_frame_len_ > tibetan_recv_appframe_->length_);
+        ZCE_ASSERT(test_frame_len_ > msg_recv_frame_->length_);
 #endif //#if defined _DEBUG || defined DEBUG
 
         //保存接收到的事务ID
-        recv_trans_id_ = tibetan_recv_appframe_->fsm_id_;
-        backfill_trans_id_ = tibetan_recv_appframe_->backfill_fsm_id_;
+        recv_trans_id_ = msg_recv_frame_->fsm_id_;
+        backfill_trans_id_ = msg_recv_frame_->backfill_fsm_id_;
 
         //数据包的长度
-        data_len = tibetan_recv_appframe_->length_ - soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
+        data_len = msg_recv_frame_->length_ - soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD;
 
         if (data_len < 0)
         {
             ZCE_LOG(RS_ERROR, "[framework] Receive soar::Zerg_Frame head len error ,frame len:%d,error[%u|%s].",
-                    tibetan_recv_appframe_->length_,
+                    msg_recv_frame_->length_,
                     zce::last_error(),
                     strerror(zce::last_error()) );
             return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
@@ -181,7 +181,7 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
         for (;;)
         {
             //
-            socket_ret  = zulu_stream_.recv_n((void *)(&(tibetan_recv_appframe_->frame_appdata_)),
+            socket_ret  = zulu_stream_.recv_n((void *)(&(msg_recv_frame_->frame_appdata_)),
                                               data_len,
                                               time_wait);
 
@@ -232,24 +232,24 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
     }
 
     ZCE_LOG(RS_DEBUG, "[framework] Recv cmd [%u] bytes [%u] Frame From Svr Succ. ",
-            tibetan_recv_appframe_->command_,
-            tibetan_recv_appframe_->length_);
+            msg_recv_frame_->command_,
+            msg_recv_frame_->length_);
 
     //如果是动态分配的tibetan_send_service_，收到后重新填写一下，小虫会分配一个
-    if ( soar::SERVICES_ID::DYNAMIC_ALLOC_SERVICES_ID == tibetan_send_service_.services_id_ )
+    if ( soar::SERVICES_ID::DYNAMIC_ALLOC_SERVICES_ID == msg_send_service_.services_id_ )
     {
-        tibetan_send_service_.services_id_ = tibetan_recv_appframe_->recv_service_.services_id_;
+        msg_send_service_.services_id_ = msg_recv_frame_->recv_service_.services_id_;
     }
 
     //原来出现过不是自己的数据返回回来的事情，加个日志输出
-    if (tibetan_send_service_ != tibetan_recv_appframe_->recv_service_)
+    if (msg_send_service_ != msg_recv_frame_->recv_service_)
     {
         ZCE_LOG(RS_ERROR, "[framework] zulu recv a error or unexpect frame,cmd %u. snd svc id [%u|%u] recv svc id[%u|%u].",
-                tibetan_recv_appframe_->command_,
-                tibetan_send_service_.services_type_,
-                tibetan_send_service_.services_id_,
-                tibetan_recv_appframe_->recv_service_.services_type_,
-                tibetan_recv_appframe_->recv_service_.services_id_
+                msg_recv_frame_->command_,
+                msg_send_service_.services_type_,
+                msg_send_service_.services_id_,
+                msg_recv_frame_->recv_service_.services_type_,
+                msg_recv_frame_->recv_service_.services_id_
                );
         return SOAR_RET::ERROR_ZULU_RECEIVE_PACKAGE_FAIL;
     }
@@ -258,11 +258,11 @@ int Zulu_SendRecv_Package::receive_svc_package(ZCE_Time_Value *time_wait)
 }
 
 //发送tibetan_send_appframe_出去，
-int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
+int Zulu_SendRecv_Msg::send_svc_msg(zce::Time_Value *time_wait)
 {
-    tibetan_send_appframe_->send_service_ = tibetan_send_service_;
-    tibetan_send_appframe_->recv_service_ = tibetan_recv_service_;
-    tibetan_send_appframe_->proxy_service_ = tibetan_proxy_service_;
+    msg_send_frame_->send_service_ = msg_send_service_;
+    msg_send_frame_->recv_service_ = msg_recv_service_;
+    msg_send_frame_->proxy_service_ = msg_proxy_service_;
 
     //保证事务ID不是0
     ++trans_id_builder_;
@@ -272,16 +272,16 @@ int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
         ++trans_id_builder_;
     }
 
-    tibetan_send_appframe_->fsm_id_ = trans_id_builder_;
+    msg_send_frame_->fsm_id_ = trans_id_builder_;
 
-    int len = tibetan_send_appframe_->length_;
-    uint32_t cmd = tibetan_send_appframe_->command_;
+    int len = msg_send_frame_->length_;
+    uint32_t cmd = msg_send_frame_->command_;
 
     //阻塞发送所有的数据
-    tibetan_send_appframe_->hton();
+    msg_send_frame_->hton();
 
     //
-    ssize_t socket_ret = zulu_stream_.send_n((void *)(tibetan_send_appframe_),
+    ssize_t socket_ret = zulu_stream_.send_n((void *)(msg_send_frame_),
                                              len,
                                              time_wait);
 
@@ -298,12 +298,12 @@ int Zulu_SendRecv_Package::send_svc_package(ZCE_Time_Value *time_wait)
 }
 
 //接收一个数据包，得到命令字，你可以调用get_recv_appframe进行后续的处理，
-int Zulu_SendRecv_Package::receive_svc_package(unsigned int &recv_cmd,
-                                               ZCE_Time_Value *time_out)
+int Zulu_SendRecv_Msg::receive_svc_msg(unsigned int &recv_cmd,
+                                               zce::Time_Value *time_out)
 {
     int ret =  0;
 
-    ret = receive_svc_package(time_out);
+    ret = receive_svc_msg(time_out);
 
     if (ret != 0)
     {
@@ -313,13 +313,13 @@ int Zulu_SendRecv_Package::receive_svc_package(unsigned int &recv_cmd,
     }
 
     //接收的命令
-    recv_cmd = tibetan_recv_appframe_->command_;
+    recv_cmd = msg_recv_frame_->command_;
 
     return 0;
 }
 
 //取得本地的地址信息
-int Zulu_SendRecv_Package::getsockname (ZCE_Sockaddr *addr)  const
+int Zulu_SendRecv_Msg::getsockname (zce::Sockaddr_Base *addr)  const
 {
     return zulu_stream_.getsockname(addr);
 }

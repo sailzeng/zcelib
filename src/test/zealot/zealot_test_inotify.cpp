@@ -182,7 +182,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     for (;;)
     {
-        ZCE_Time_Value time_out(60, 0);
+        zce::Time_Value time_out(60, 0);
         size_t num_event;
         ret = ZCE_Reactor::instance()->handle_events(&time_out, &num_event);
         //ZCE_LOG(RS_INFO,"handle_events? ret =[%d] number of event[%u]",ret,num_event);

@@ -75,7 +75,7 @@ int Comm_SvrdApp_FSM::app_run()
     size_t proc_frame = 0, gen_trans = 0, proc_data_num = 0;
     unsigned int idle = 0;
 
-    ZCE_Time_Value select_interval(0, 0);
+    zce::Time_Value select_interval(0, 0);
 
     zce::Timer_Queue_Base *time_queue = zce::Timer_Queue_Base::instance();
     ZCE_Reactor *reactor = ZCE_Reactor::instance();

@@ -27,9 +27,10 @@
 *             用于概要性的，多次进行的，每次操作时间不长的计时（累计）。
 *
 */
-#ifndef ZCE_LIB_TIME_PROGRESS_COUNTER_H_
-#define ZCE_LIB_TIME_PROGRESS_COUNTER_H_
+#pragma once
 
+namespace zce
+{
 
 /*!
 * @brief      计时器 注意这是一个计时器，不是一个定时器，就是用于记录某个事件的
@@ -277,5 +278,6 @@ protected:
     PROGRESS_TIMER progress_timer_;
 };
 
-#endif //# ZCE_LIB_TIME_PROGRESS_COUNTER_H_
+}
+
 

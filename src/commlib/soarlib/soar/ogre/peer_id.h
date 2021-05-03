@@ -13,14 +13,14 @@ public:
     //构造,析构函数,默认为0
     explicit OGRE_PEER_ID(unsigned int peer_ip_address = INVALID_PERR_IP_ADDRESS,
                           unsigned short peer_port = INVALID_PERR_PORT);
-    explicit OGRE_PEER_ID(const ZCE_Sockaddr_In &);
+    explicit OGRE_PEER_ID(const zce::Sockaddr_In &);
     //
     ~OGRE_PEER_ID();
 
     //设置
     void set(unsigned int peer_ip_address, unsigned short peer_port );
-    //根据ZCE_Sockaddr_In的IP地址设置
-    void set(const ZCE_Sockaddr_In &);
+    //根据zce::Sockaddr_In的IP地址设置
+    void set(const zce::Sockaddr_In &);
 
     //比较函数,services_type_,services_id_
     bool operator ==(const OGRE_PEER_ID &others) const;

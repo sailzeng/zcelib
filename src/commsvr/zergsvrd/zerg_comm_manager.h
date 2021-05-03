@@ -62,7 +62,7 @@ public:
     * @return     int
     * @param      inetadd 检查的的地址信息
     */
-    int check_safeport(const ZCE_Sockaddr_In &inetadd);
+    int check_safeport(const zce::Sockaddr_In &inetadd);
 
 
     /*!

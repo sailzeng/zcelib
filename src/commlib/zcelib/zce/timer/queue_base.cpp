@@ -16,9 +16,9 @@ ZCE_Timer_Queue ，定时器的基类
 ******************************************************************************************/
 //构造函数
 Timer_Queue_Base::Timer_Queue_Base(size_t num_timer_node,
-                                           unsigned int timer_precision_mesc,
-                                           TRIGGER_MODE trigger_mode,
-                                           bool dynamic_expand_node):
+                                   unsigned int timer_precision_mesc,
+                                   TRIGGER_MODE trigger_mode,
+                                   bool dynamic_expand_node):
     dynamic_expand_node_(dynamic_expand_node),
     free_node_id_head_(INVALID_TIMER_ID)
 {
@@ -42,9 +42,9 @@ Timer_Queue_Base::~Timer_Queue_Base()
 
 //初始化
 int Timer_Queue_Base::initialize(size_t num_timer_node,
-                                     unsigned int timer_precision_mesc,
-                                     TRIGGER_MODE trigger_mode,
-                                     bool dynamic_expand_node)
+                                 unsigned int timer_precision_mesc,
+                                 TRIGGER_MODE trigger_mode,
+                                 bool dynamic_expand_node)
 {
 
     //时间精度问题
@@ -59,13 +59,13 @@ int Timer_Queue_Base::initialize(size_t num_timer_node,
 
     //
     size_t old_num_node = 0;
-    extend_node(num_timer_node, old_num_node);
+    extend_node(num_timer_node,old_num_node);
 
     //触发模式
     if (trigger_mode_ == TRIGGER_MODE::SYSTEM_CLOCK)
     {
         //得到一个时间长度，用于比较衡量
-        ZCE_Time_Value  now_time(zce::gettimeofday());
+        zce::Time_Value  now_time(zce::gettimeofday());
 
         //取得毫秒
         prev_trigger_msec_ = now_time.total_msec();
@@ -74,7 +74,7 @@ int Timer_Queue_Base::initialize(size_t num_timer_node,
     else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(zce::get_uptime());
+        zce::Time_Value cpu_tick(zce::get_uptime());
         prev_trigger_msec_ = cpu_tick.total_msec();
     }
     else
@@ -108,7 +108,7 @@ int Timer_Queue_Base::close()
 
 //扩张的NODE的数量，
 int Timer_Queue_Base::extend_node(size_t num_timer_node,
-                                      size_t &old_num_node)
+                                  size_t &old_num_node)
 {
     //总不能比原来还小吧
     assert(num_timer_node > num_timer_node_);
@@ -120,7 +120,7 @@ int Timer_Queue_Base::extend_node(size_t num_timer_node,
     ZCE_ASSERT(num_timer_node_ > 0 && num_timer_node_ < 0x7FFFFFFF);
 
     //
-    if (num_timer_node_  > 0x7FFFFFFF)
+    if (num_timer_node_ > 0x7FFFFFFF)
     {
         return -1;
     }
@@ -169,9 +169,9 @@ int Timer_Queue_Base::cancel_timer(const zce::Timer_Handler *timer_hdl)
 
     for (size_t i = 0; i < num_timer_node_; ++i)
     {
-        if (time_node_ary_[i].timer_handle_ == timer_hdl )
+        if (time_node_ary_[i].timer_handle_ == timer_hdl)
         {
-            uint32_t time_id = static_cast<uint32_t > (i);
+            uint32_t time_id = static_cast<uint32_t> (i);
             cancel_timer(time_id);
             cancel_time = true;
 
@@ -191,11 +191,11 @@ int Timer_Queue_Base::cancel_timer(const zce::Timer_Handler *timer_hdl)
 
 //分配Timer Node
 int Timer_Queue_Base::alloc_timernode(zce::Timer_Handler *timer_hdl,
-                                          const void *action,
-                                          const ZCE_Time_Value &delay_time,
-                                          const ZCE_Time_Value &interval_time,
-                                          int &time_node_id,
-                                          ZCE_TIMER_NODE *&alloc_time_node)
+                                      const void *action,
+                                      const zce::Time_Value &delay_time,
+                                      const zce::Time_Value &interval_time,
+                                      int &time_node_id,
+                                      ZCE_TIMER_NODE *&alloc_time_node)
 {
     //TIME HANDLE不能为NULL
     assert(timer_hdl != NULL);
@@ -217,7 +217,7 @@ int Timer_Queue_Base::alloc_timernode(zce::Timer_Handler *timer_hdl,
         {
             //如果希望动态扩张，我帮你扩张
             size_t old_num_node = 0;
-            ret = extend_node(num_timer_node_ + ONCE_EXTEND_NODE_NUMBER, old_num_node);
+            ret = extend_node(num_timer_node_ + ONCE_EXTEND_NODE_NUMBER,old_num_node);
 
             if (ret != 0)
             {
@@ -232,9 +232,9 @@ int Timer_Queue_Base::alloc_timernode(zce::Timer_Handler *timer_hdl,
     alloc_time_node = &(time_node_ary_[time_node_id]);
 
     //对时间NODE进行赋值
-    alloc_time_node->timer_handle_ =  timer_hdl;
-    alloc_time_node->interval_time_ =  interval_time;
-    alloc_time_node->action_ =  action;
+    alloc_time_node->timer_handle_ = timer_hdl;
+    alloc_time_node->interval_time_ = interval_time;
+    alloc_time_node->action_ = action;
 
     //如果你追求高进度，定义这个宏，默认我关闭了
 #if defined(MORE_HIGH_TIMER_PRECISION)
@@ -244,14 +244,14 @@ int Timer_Queue_Base::alloc_timernode(zce::Timer_Handler *timer_hdl,
     //默认你的调用次数不频繁，提供更加安全的时间给你
     if (trigger_mode_ == TRIGGER_MODE::SYSTEM_CLOCK)
     {
-        ZCE_Time_Value now_trigger_time;
+        zce::Time_Value now_trigger_time;
         now_trigger_time.gettimeofday();
         now_point = now_trigger_time.total_msec();
     }
     else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(zce::get_uptime());
+        zce::Time_Value cpu_tick(zce::get_uptime());
         now_point = cpu_tick.total_msec();
     }
 
@@ -283,15 +283,15 @@ int Timer_Queue_Base::alloc_timernode(zce::Timer_Handler *timer_hdl,
 
 //计算下一个触发点，
 void Timer_Queue_Base::calc_next_trigger(int time_node_id,
-                                             uint64_t now_trigger_msec,
-                                             bool &continue_trigger)
+                                         uint64_t now_trigger_msec,
+                                         bool &continue_trigger)
 {
     continue_trigger = false;
 
     ZCE_TIMER_NODE *prc_time_node = &(time_node_ary_[time_node_id]);
 
     //如果间隔时间为0，且这个定时器还没有触发过，already_trigger_ 判定其实是检查定时器是否被重新设置过
-    if (prc_time_node->interval_time_  == ZCE_Time_Value::ZERO_TIME_VALUE )
+    if (prc_time_node->interval_time_ == zce::Time_Value::ZERO_TIME_VALUE)
     {
         //
         continue_trigger = false;
@@ -313,7 +313,7 @@ int Timer_Queue_Base::free_timernode(int time_node_id)
 {
     //考虑了一下还是用断言了，避免你写错代码祸国殃民
     ZCE_ASSERT(time_node_ary_[time_node_id].timer_handle_ != NULL &&
-               static_cast<size_t>( time_node_id) < num_timer_node_);
+               static_cast<size_t>(time_node_id) < num_timer_node_);
 
     //如果NODE内部的指针为NULL,表示这个NODE没有使用
     if (!time_node_ary_[time_node_id].timer_handle_)
@@ -328,7 +328,7 @@ int Timer_Queue_Base::free_timernode(int time_node_id)
     }
 
     //归还到FREE队列中
-    free_node_id_list_[ time_node_id ] = free_node_id_head_;
+    free_node_id_list_[time_node_id] = free_node_id_head_;
     free_node_id_head_ = time_node_id;
     //清理数据去
     time_node_ary_[time_node_id].clear();
@@ -338,18 +338,18 @@ int Timer_Queue_Base::free_timernode(int time_node_id)
 }
 
 //得到最快将在多少时间后触发
-int Timer_Queue_Base::get_first_timeout(ZCE_Time_Value *first_timeout)
+int Timer_Queue_Base::get_first_timeout(zce::Time_Value *first_timeout)
 {
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
     ret = get_frist_nodeid(time_node_id);
 
-    if (INVALID_TIMER_ID == time_node_id || -1 == ret )
+    if (INVALID_TIMER_ID == time_node_id || -1 == ret)
     {
         return -1;
     }
 
-    ZCE_Time_Value now_time(zce::gettimeofday());
+    zce::Time_Value now_time(zce::gettimeofday());
     uint64_t now_trigger_msec = 0;
 
     //触发模式
@@ -362,7 +362,7 @@ int Timer_Queue_Base::get_first_timeout(ZCE_Time_Value *first_timeout)
     else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(zce::get_uptime());
+        zce::Time_Value cpu_tick(zce::get_uptime());
         now_trigger_msec = cpu_tick.total_msec();
     }
     else
@@ -373,7 +373,7 @@ int Timer_Queue_Base::get_first_timeout(ZCE_Time_Value *first_timeout)
     uint64_t first_timeout_msec = 0;
 
     //
-    if ( time_node_ary_[time_node_id].next_trigger_point_ > now_trigger_msec )
+    if (time_node_ary_[time_node_id].next_trigger_point_ > now_trigger_msec)
     {
         first_timeout_msec = time_node_ary_[time_node_id].next_trigger_point_ - now_trigger_msec;
     }
@@ -385,7 +385,7 @@ int Timer_Queue_Base::get_first_timeout(ZCE_Time_Value *first_timeout)
 
 size_t Timer_Queue_Base::expire()
 {
-    ZCE_Time_Value now_time(zce::gettimeofday());
+    zce::Time_Value now_time(zce::gettimeofday());
 
     uint64_t now_trigger_msec = 0;
 
@@ -399,7 +399,7 @@ size_t Timer_Queue_Base::expire()
     else if (trigger_mode_ == TRIGGER_MODE::CPU_TICK)
     {
         //其实这不是真正的CPU Tick
-        ZCE_Time_Value cpu_tick(zce::get_uptime());
+        zce::Time_Value cpu_tick(zce::get_uptime());
         now_trigger_msec = cpu_tick.total_msec();
     }
     else
@@ -407,7 +407,7 @@ size_t Timer_Queue_Base::expire()
         ZCE_ASSERT(false);
     }
 
-    return dispatch_timer(now_time, now_trigger_msec);
+    return dispatch_timer(now_time,now_trigger_msec);
 }
 
 //得到唯一的单子实例

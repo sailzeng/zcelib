@@ -18,27 +18,7 @@
 class ZCE_Reactor;
 
 
-///IO触发事件
-enum class EVENT_MASK
-{
-    NULL_MASK = 0,
 
-
-    ///SOCKET读取事件，但句柄变为可读是，调用handle_input
-    READ_MASK = (1 << 1),
-    ///SOCKET写事件，当句柄变为可写是，handle_output
-    WRITE_MASK = (1 << 2),
-    ///SOCKET异常事件，触发后调用handle_exception
-    EXCEPT_MASK = (1 << 3),
-    ///SOCKET异步CONNECT成功后，调用handle_output，异步CONNECT失败后，
-    ///会调用handle_input，(多系统差异会统一)
-    CONNECT_MASK = (1 << 4),
-    ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用handle_input，
-    ACCEPT_MASK = (1 << 5),
-
-    ///iNotify通知事件，文件系统的改变通知,调用handle_input，
-    INOTIFY_MASK = (1 << 9),
-};
 
 
 /*!
@@ -49,6 +29,27 @@ enum class EVENT_MASK
 class ZCE_Event_Handler
 {
 public:
+
+    ///IO触发事件, 这儿不要改造成enum class
+    enum EVENT_MASK
+    {
+        NULL_MASK = 0,
+
+        ///SOCKET读取事件，但句柄变为可读是，调用handle_input
+        READ_MASK = (1 << 1),
+        ///SOCKET写事件，当句柄变为可写是，handle_output
+        WRITE_MASK = (1 << 2),
+        ///SOCKET异常事件，触发后调用handle_exception
+        EXCEPT_MASK = (1 << 3),
+        ///SOCKET异步CONNECT成功后，调用handle_output，异步CONNECT失败后，
+        ///会调用handle_input，(多系统差异会统一)
+        CONNECT_MASK = (1 << 4),
+        ///SOCKET ACCEPT事件，当一个ACCEPT端口可以链接后，调用handle_input，
+        ACCEPT_MASK = (1 << 5),
+
+        ///iNotify通知事件，文件系统的改变通知,调用handle_input，
+        INOTIFY_MASK = (1 << 9),
+    };
 
     /*!
     * @brief      构造函数
@@ -136,7 +137,7 @@ public:
     virtual ZCE_Reactor *reactor (void) const;
 
     //超时处理，最后考虑再三，没有在反应器里面集成定时器的处理
-    //virtual int timer_timeout (const ZCE_Time_Value &tv, const void *arg = 0);
+    //virtual int timer_timeout (const zce::Time_Value &tv, const void *arg = 0);
 
 protected:
 

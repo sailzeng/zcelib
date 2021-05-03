@@ -20,7 +20,7 @@ protected:
 public:
     //
     UDP_Svc_Handler(const soar::SERVICES_ID &my_svcinfo,
-                    const ZCE_Sockaddr_In &addr,
+                    const zce::Sockaddr_In &addr,
                     bool sessionkey_verify = true);
 protected:
     ~UDP_Svc_Handler();
@@ -83,10 +83,10 @@ protected:
 protected:
 
     ///数据包UDP发送的Socket
-    ZCE_Socket_DataGram      dgram_peer_;
+    zce::Socket_DataGram      dgram_peer_;
 
     ///邦定的地址
-    ZCE_Sockaddr_In          udp_bind_addr_;
+    zce::Sockaddr_In          udp_bind_addr_;
 
     ///
     soar::SERVICES_ID              my_svc_info_;

@@ -78,7 +78,7 @@ protected:
         //所有人dequeue,enqueue都是一个很短的过程，使用完了QUEUE锁就会释放，所以传入NULL理论上也可以。
         //还是设个超时比较好，1s的时间对于服务器而言，很漫长了
         //这个地方不用try的原因是如果这儿要进行错误处理，很麻烦，
-        ZCE_Time_Value wait_sec(1, 0);
+        zce::Time_Value wait_sec(1, 0);
         ret = trans_notify_mgr_->enqueue_recvqueue(rsp_msg,
                                                    &wait_sec);
 
@@ -129,7 +129,7 @@ protected:
         //所有人dequeue,enqueue都是一个很短的过程，使用完了QUEUE锁就会释放，所以传入NULL理论上也可以。
         //还是设个超时比较好，1s的时间对于服务器而言，很漫长了
         //这个地方不用try的原因是如果这儿要进行错误处理，很麻烦，
-        ZCE_Time_Value wait_sec(1, 0);
+        zce::Time_Value wait_sec(1, 0);
 
         ret = trans_notify_mgr_->enqueue_recvqueue(rsp_msg,
                                                    &wait_sec);

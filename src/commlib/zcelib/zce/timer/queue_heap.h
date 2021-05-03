@@ -71,12 +71,12 @@ public:
     * @param[in]  action        一个指针，在定时器触发会用参数打给你，
     * @param[in]  delay_time    第一次触发的时间，为什么要这样设计参数？你自己考虑一下，想想如何在10:00播放第6套广播体操
     * @param[in]  interval_time 第一次触发后，后续间隔 @a interval_time 的时间进行一次触发
-    *                           如果参数等于ZCE_Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
+    *                           如果参数等于zce::Time_Value::ZERO_TIME_VALUE，标识不需要后续触发，
     */
     virtual int schedule_timer(zce::Timer_Handler *timer_hdl,
                                const void *action,
-                               const ZCE_Time_Value &delay_time,
-                               const ZCE_Time_Value &interval_time = ZCE_Time_Value::ZERO_TIME_VALUE) override;
+                               const zce::Time_Value &delay_time,
+                               const zce::Time_Value &interval_time = zce::Time_Value::ZERO_TIME_VALUE) override;
 
     /*!
     * @brief      取消定时器，你继承后必须实现这个接口
@@ -108,7 +108,7 @@ protected:
     * @param      now_time          当前的时间，墙上时钟
     * @param      now_trigger_msec  当前触发的点的毫秒数，根据触发模式，表达意义不一样
     */
-    virtual size_t dispatch_timer(const ZCE_Time_Value &now_time,
+    virtual size_t dispatch_timer(const zce::Time_Value &now_time,
                                   uint64_t now_trigger_msec) override;
 
     /*!

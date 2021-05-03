@@ -21,8 +21,8 @@
 
 #include "zce/lock/lock_guard.h"
 #include "zce/util/non_copyable.h"
+#include "zce/time/time_value.h"
 
-class ZCE_Time_Value;
 
 /*!
 * @brief      所有锁类(记录锁除外)的基础类，让你也有多态使用（改变）加锁行为的方式
@@ -67,14 +67,14 @@ private:
     * @param      abs_time
     * @note
     */
-    virtual bool systime_lock(const ZCE_Time_Value &abs_time);
+    virtual bool systime_lock(const zce::Time_Value &abs_time);
 
     /*!
     * @brief      获得锁，等待一个相对时间
     * @return     bool          返回true成功获取锁，false失败，（超时等）
     * @param      relative_time 等待的相对时间，
     */
-    virtual bool duration_lock(const ZCE_Time_Value &relative_time );
+    virtual bool duration_lock(const zce::Time_Value &relative_time );
 
     ///读取锁
     virtual void lock_read();
@@ -83,10 +83,10 @@ private:
 
     ///绝对时间,获取读取（共享）锁的，等待至绝对时间超时
     ///@param  abs_time 绝对时间
-    virtual bool timed_lock_read(const ZCE_Time_Value & /*abs_time*/);
+    virtual bool timed_lock_read(const zce::Time_Value & /*abs_time*/);
     ///相对时间,获取读取（共享）锁的，等待至相对时间超时
     ///@param  relative_time 相对时间
-    virtual bool duration_lock_read(const ZCE_Time_Value & /*relative_time*/);
+    virtual bool duration_lock_read(const zce::Time_Value & /*relative_time*/);
 
     ///写锁定
     virtual void lock_write();
@@ -102,14 +102,14 @@ private:
     * @param      abs_time 绝对时间
     * @note
     */
-    virtual bool timed_lock_write(const ZCE_Time_Value &abs_time);
+    virtual bool timed_lock_write(const zce::Time_Value &abs_time);
 
     /*!
     * @brief      相对时间,获取写入（独占）锁的，等待至相对时间超时
     * @return     bool          返回true成功获取锁，false失败，
     * @param      relative_time 相对时间
     */
-    virtual bool duration_lock_write(const ZCE_Time_Value &relative_time);
+    virtual bool duration_lock_write(const zce::Time_Value &relative_time);
 
 };
 
@@ -135,10 +135,10 @@ private:
     virtual void wait (ZCE_Lock_Base *external_mutex );
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(ZCE_Lock_Base *external_mutex, const ZCE_Time_Value &abs_time);
+    virtual bool systime_wait(ZCE_Lock_Base *external_mutex, const zce::Time_Value &abs_time);
 
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(ZCE_Lock_Base *external_mutex, const ZCE_Time_Value &relative_time);
+    virtual bool duration_wait(ZCE_Lock_Base *external_mutex, const zce::Time_Value &relative_time);
 
     /// 给一个等待线程发送信号 Signal one waiting thread.
     virtual void signal (void);

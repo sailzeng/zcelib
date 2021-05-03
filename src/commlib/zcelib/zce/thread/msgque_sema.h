@@ -99,7 +99,7 @@ public:
 
     //放入一个数据，进行超时等待
     int enqueue(const _value_type &value_data,
-                const ZCE_Time_Value  &wait_time )
+                const zce::Time_Value  &wait_time )
     {
         bool bret = false;
         bret = sem_full_.duration_lock(wait_time);
@@ -149,7 +149,7 @@ public:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(_value_type &value_data,
-                const ZCE_Time_Value  &wait_time )
+                const zce::Time_Value  &wait_time )
     {
         bool bret = false;
         bret = sem_empty_.duration_lock(wait_time);
@@ -237,7 +237,7 @@ protected:
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(_value_type &value_data,
                 bool if_wait_timeout,
-                const ZCE_Time_Value  &wait_time )
+                const zce::Time_Value  &wait_time )
     {
 
         //进行超时等待

@@ -13,7 +13,59 @@
 *
 *
 * @note
+* 笑看风云
+* 作词：黄 霑
+* 作曲：徐嘉良
 *
+* 谁没有一些刻骨铭心事
+* 谁能预计后果
+* 谁没有一些旧恨心魔
+* 一点点无心错
+*
+* 谁没有一些得不到的梦
+* 谁人负你负我多
+* 谁愿意解释为了什么
+* 一笑已经风云过
+*
+* 活得开心心不记恨
+* 为今天欢笑唱首歌
+* 任胸襟吸收新的快乐
+* 在晚风中敞开心锁
+*
+* 谁愿记沧桑匆匆往事
+* 谁人是对是错
+* 从没有解释为了什么
+* 一笑看风云过
+*
+* 谁没有一些刻骨铭心事
+* 谁能预计后果
+* 谁没有一些旧恨心魔
+* 一点点无心错
+*
+* 谁没有一些得不到的梦
+* 谁人负你负我多
+* 谁愿意解释为了什么
+* 一笑已经风云过
+*
+* 活得开心心不记恨
+* 为今天欢笑唱首歌
+* 任胸襟吸收新的快乐
+* 在晚风中敞开心锁
+*
+* 谁愿记沧桑匆匆往事
+* 谁人是对是错
+* 从没有解释为了什么
+* 一笑看风云过
+*
+* 活得开心心不记恨
+* 为今天欢笑唱首歌
+* 任胸襟吸收新的快乐
+* 在晚风中敞开心锁
+*
+* 谁愿记沧桑匆匆往事
+* 谁人是对是错
+* 从没有解释为了什么
+* 一笑看风云过
 */
 
 #ifndef ZCE_LIB_SERVER_TOOLKIT_H_
@@ -24,16 +76,18 @@
 #include "zce/os_adapt/flock.h"
 #include "zce/util/non_copyable.h"
 
+namespace zce
+{
 
 /*********************************************************************************
 class ZCE_Server_Toolkit
 *********************************************************************************/
-class ZCE_Server_Base : public zce::NON_Copyable
+class Server_Base : public zce::NON_Copyable
 {
 protected:
     //构造函数,私有,使用单子类的实例,
-    ZCE_Server_Base();
-    ~ZCE_Server_Base();
+    Server_Base();
+    ~Server_Base();
 
 public:
 
@@ -81,7 +135,8 @@ public:
     * @param      svc_name 服务名称
     * @param      svc_desc 服务描述
     */
-    void set_service_info(const char *svc_name, const char *svc_desc);
+    void set_service_info(const char *svc_name, 
+                          const char *svc_desc);
 
     //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
@@ -110,10 +165,14 @@ public:
     ///检查服务是否安装
     bool win_services_isinstalled();
 
+    int log_event(const char *format_str,...);
+
     ///服务运行函数
     static void WINAPI win_service_main();
     ///服务控制台所需要的控制函数
     static void WINAPI win_services_ctrl(DWORD op_code);
+
+    
 
 #endif
 
@@ -137,26 +196,26 @@ protected:
 protected:
 
     //单子实例
-    static ZCE_Server_Base *base_instance_;
+    static zce::Server_Base *base_instance_;
 
 protected:
 
     ///PID 文件句柄
-    ZCE_HANDLE            pid_handle_;
+    ZCE_HANDLE            pid_handle_ = ZCE_INVALID_HANDLE;
     ///
-    zce::file_lock_t           pidfile_lock_;
+    zce::file_lock_t      pidfile_lock_;
 
     ///self的PID
-    pid_t                 self_pid_;
+    pid_t                 self_pid_= 0;
 
 
     ///运行状态,是否继续运行
-    bool                  app_run_;
+    bool                  app_run_ = true;
 
     ///是否加重新加载配置
-    bool                  app_reload_;
+    bool                  app_reload_ = false;
 
-    ///进程名字，抛开运行目录，文件后缀的名字，
+    ///进程名字，抛开运行目录，文件后缀的名字，在Windows 的服务模式，也用于services name
     std::string           app_base_name_;
     ///程序运行名称,如果包含路径运行，会有路径信息
     std::string           app_run_name_;
@@ -164,32 +223,35 @@ protected:
     ///作者名称
     std::string           app_author_;
 
-    ///服务名称
-    std::string           service_name_;
+#ifdef ZCE_OS_WINDOWS
 
-    ///服务描述
+    ///服务显示名称，仅仅在Windows 服务模式下使用
+    std::string           display_name_;
+    ///服务描述，仅仅在Windows 服务模式下使用
     std::string           service_desc_;
+
+#endif
 
 public:
 
     ///已经检查到的内存泄漏的次数，只记录5次
-    int                    check_leak_times_;
+    int                    check_leak_times_ = 0;
 
 
     ///开始的时候（或者检查点的时候）内存的尺寸
-    size_t                 mem_checkpoint_size_;
+    size_t                 mem_checkpoint_size_ = 0;
     ///当前内存使用
-    size_t                 cur_mem_usesize_;
+    size_t                 cur_mem_usesize_ = 0;
 
     ///进程的CPU利用率,千分率
-    uint32_t               process_cpu_ratio_;
+    uint32_t               process_cpu_ratio_ = 0;
     ///系统的CPU利用率,千分率
-    uint32_t               system_cpu_ratio_;
+    uint32_t               system_cpu_ratio_ = 0;
 
     ///真正可以利用的内存的内存大小
-    uint64_t               can_use_size_;
+    uint64_t               can_use_size_ = 0;
     ///系统的内存使用率,千分率
-    uint32_t               mem_use_ratio_;
+    uint32_t               mem_use_ratio_ = 0;
 
     ///上一次的进程性能数据
     ZCE_PROCESS_PERFORM    last_process_perf_;
@@ -201,8 +263,9 @@ public:
     ///当前这一次的系统性能数据
     ZCE_SYSTEM_PERFORMANCE now_system_perf_;
 
-
 };
+
+}
 
 #endif //_ZCE_LIB_SERVER_TOOLKIT_H_
 

@@ -55,6 +55,7 @@ protected:
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
     virtual void on_run(const void *outer_data,
+                        size_t data_len,
                         bool &continue_run) = 0;
 
     /*!
@@ -62,7 +63,7 @@ protected:
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const ZCE_Time_Value &now_time,
+    virtual void on_timeout(const zce::Time_Value &now_time,
                             bool &continue_run) override;
 
     /*!

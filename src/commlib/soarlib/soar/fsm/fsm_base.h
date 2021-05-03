@@ -68,7 +68,7 @@ public:
     virtual void on_run(void *outer_data,bool &continue_run);
 
     ///状态机对象超时处理，重载的FSM的（异步对象的），把调用转向到trans_timeout
-    virtual void on_timeout(const ZCE_Time_Value &now_time,
+    virtual void on_timeout(const zce::Time_Value &now_time,
                             bool &continue_run);
 
     /*!
@@ -85,7 +85,7 @@ public:
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void trans_timeout(const ZCE_Time_Value &now_time,
+    virtual void trans_timeout(const zce::Time_Value &now_time,
                                bool &continue_run);
 
 protected:

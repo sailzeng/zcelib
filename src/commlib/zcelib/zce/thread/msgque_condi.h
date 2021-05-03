@@ -93,7 +93,7 @@ public:
     //放入，一直等待
     int enqueue(const _value_type &value_data)
     {
-        ZCE_Time_Value  nouse_timeout;
+        zce::Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
                                 MQW_WAIT_FOREVER,
                                 nouse_timeout);
@@ -101,7 +101,7 @@ public:
 
     //有超时放入
     int enqueue(const _value_type &value_data,
-                const ZCE_Time_Value  &wait_time)
+                const zce::Time_Value  &wait_time)
     {
         return enqueue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -111,7 +111,7 @@ public:
     //尝试放入，立即返回
     int try_enqueue(const _value_type &value_data)
     {
-        ZCE_Time_Value  nouse_timeout;
+        zce::Time_Value  nouse_timeout;
         return enqueue_interior(value_data,
                                 MQW_NO_WAIT,
                                 nouse_timeout);
@@ -120,7 +120,7 @@ public:
     //取出
     int dequeue(_value_type &value_data)
     {
-        ZCE_Time_Value  nouse_timeout;
+        zce::Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
                                 MQW_WAIT_FOREVER,
                                 nouse_timeout);
@@ -128,7 +128,7 @@ public:
 
     //有超时处理的取出
     int dequeue(_value_type &value_data,
-                const ZCE_Time_Value  &wait_time)
+                const zce::Time_Value  &wait_time)
     {
         return dequeue_interior(value_data,
                                 MQW_WAIT_TIMEOUT,
@@ -138,7 +138,7 @@ public:
     //尝试取出，立即返回
     int try_dequeue(_value_type &value_data)
     {
-        ZCE_Time_Value  nouse_timeout;
+        zce::Time_Value  nouse_timeout;
         return dequeue_interior(value_data,
                                 MQW_NO_WAIT,
                                 nouse_timeout);
@@ -212,7 +212,7 @@ protected:
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue_interior(_value_type &value_data,
                          MQW_WAIT_MODEL wait_model,
-                         const ZCE_Time_Value  &wait_time)
+                         const zce::Time_Value  &wait_time)
     {
         //注意这段代码必须用{}保护，因为你必须先保证数据取出
         {

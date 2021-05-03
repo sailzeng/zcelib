@@ -51,7 +51,7 @@ FSMTask_Manger::~FSMTask_Manger()
 void FSMTask_Manger::initialize(size_t  szregtrans,
                                 size_t sztransmap,
                                 const soar::SERVICES_INFO& selfsvr,
-                                const ZCE_Time_Value& enqueue_timeout,
+                                const zce::Time_Value& enqueue_timeout,
                                 zce::Timer_Queue_Base* timer_queue,
                                 Soar_MMAP_BusPipe* zerg_mmap_pipe,
                                 APPFRAME_MALLOCOR* frame_mallocor)
@@ -230,7 +230,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
     }
 
     //不能直接放入enqueue_timeout_，这个值会改变
-    ZCE_Time_Value tv = enqueue_timeout_;
+    zce::Time_Value tv = enqueue_timeout_;
     ret = send_msg_queue_->enqueue(tmp_frame,tv);
 
     //返回值小于0表示失败
@@ -254,7 +254,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
 }
 
 //从recv的消息队列中去一个数据出来，进行超时等待
-int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame *&get_frame,ZCE_Time_Value &tv)
+int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame *&get_frame,zce::Time_Value &tv)
 {
     int ret = recv_msg_queue_->dequeue(get_frame,tv);
     //返回值小于0表示失败
@@ -290,7 +290,7 @@ int FSMTask_Manger::trydequeue_recvqueue(soar::Zerg_Frame *&get_frame)
 }
 
 //从send的消息队列中去一个数据出来，进行超时等待
-int FSMTask_Manger::dequeue_sendqueue(soar::Zerg_Frame *&get_frame,ZCE_Time_Value &tv)
+int FSMTask_Manger::dequeue_sendqueue(soar::Zerg_Frame *&get_frame,zce::Time_Value &tv)
 {
     int ret = 0;
     ret = send_msg_queue_->dequeue(get_frame,tv);

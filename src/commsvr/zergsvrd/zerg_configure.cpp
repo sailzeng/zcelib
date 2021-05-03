@@ -19,7 +19,7 @@ SERVICES_INFO_TABLE::~SERVICES_INFO_TABLE()
 
 
 int SERVICES_INFO_TABLE::find_svcinfo(const soar::SERVICES_ID &svc_id,
-                                      ZCE_Sockaddr_In &ip_address,
+                                      zce::Sockaddr_In &ip_address,
                                       unsigned int &idc_no,
                                       unsigned int &business_id) const
 {
@@ -284,7 +284,6 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-
     //监控命令
     ret = conf_tree->path_get_leaf("ZERG_CFG", "MONITOR_CMD_LIST",
                                    temp_value);
@@ -305,7 +304,6 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         zerg_cfg_data_.monitor_cmd_list_[i] = static_cast<uint32_t>( std::stoul(str_ary[i]));
     }
 
-
     //错误重试次数
     ret = conf_tree->path_get_leaf("ZERG_CFG", "RETRY_ERROR",
                                    zerg_cfg_data_.retry_error_);
@@ -325,7 +323,7 @@ int Zerg_Server_Config::get_zerg_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //第0个位置是给self_svc_id_ 主ID的
-    zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_info_;
+    zerg_cfg_data_.bind_svcid_ary_[0] = self_svc_info_.svc_id_;
     zerg_cfg_data_.bind_svcid_num_ += 1;
 
     //注意是从1开始,注意bind_svcid_num_上面已经+1了，

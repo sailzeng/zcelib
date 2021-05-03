@@ -158,7 +158,7 @@ int Zerg_Auto_Connector::connect_server_bysvcid(const soar::SERVICES_ID &reconne
 
 //根据SVRINFO+IP,检查是否是主动连接的服务.并进行连接
 int Zerg_Auto_Connector::connect_one_server(const soar::SERVICES_ID &svc_id,
-                                            const ZCE_Sockaddr_In &inetaddr,
+                                            const zce::Sockaddr_In &inetaddr,
                                             TCP_Svc_Handler *&svc_handle)
 {
     int ret = 0;
@@ -177,7 +177,7 @@ int Zerg_Auto_Connector::connect_one_server(const soar::SERVICES_ID &svc_id,
             inetaddr.to_string(ip_addr_str,IP_ADDR_LEN,use_len)
            );
 
-    ZCE_Socket_Stream sockstream;
+    zce::Socket_Stream sockstream;
     sockstream.open();
 
     const socklen_t opval = ZERG_SND_RCV_BUF_OPVAL;
@@ -207,7 +207,7 @@ int Zerg_Auto_Connector::connect_one_server(const soar::SERVICES_ID &svc_id,
                                          TCP_Svc_Handler::HANDLER_MODE_CONNECT);
         ZCE_ASSERT(p_handler);
         //以self_svc_info出去链接其他服务器.
-        p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_info_,
+        p_handler->init_tcpsvr_handler(zerg_svr_cfg_->self_svc_info_.svc_id_,
                                        svc_id,
                                        sockstream,
                                        inetaddr);

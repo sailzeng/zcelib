@@ -333,7 +333,7 @@
     <ClInclude Include="zce\logger\msg.h" />
     <ClInclude Include="zce\logger\plus.h" />
     <ClInclude Include="zce\logger\priority.h" />
-    <ClInclude Include="zce\util\any.h" />
+    <ClInclude Include="zce\util\algorithm.h" />
     <ClInclude Include="zce\util\lord_rings.h" />
     <ClInclude Include="zce\util\mpl.h" />
     <ClInclude Include="zce\util\non_copyable.h" />

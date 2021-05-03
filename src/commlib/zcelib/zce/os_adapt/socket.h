@@ -10,7 +10,7 @@
 *             WINDOWS下是SOCKET，你可以认为他就是一个HANDLE，
 *
 * @note       2011 年 10月31日，做了体检回来改代码
-*             将内部所有的很多timeval 换成ZCE_Time_Value;因为如果不换，其实上层写起来反而难看
+*             将内部所有的很多timeval 换成zce::Time_Value;因为如果不换，其实上层写起来反而难看
 *             2013 年 1月13日 深圳冬天的太阳暖意十足。
 *             将所有的注释doxygen化，
 */
@@ -25,7 +25,7 @@
 #include "zce/time/time_value.h"
 
 
-class ZCE_Time_Value;
+class zce::Time_Value;
 
 namespace zce
 {
@@ -331,7 +331,7 @@ inline int select(
     fd_set *readfds,
     fd_set *writefds,
     fd_set *exceptfds,
-    ZCE_Time_Value *timeout_tv
+    zce::Time_Value *timeout_tv
 );
 
 ///用于handle_ready函数,handle_multi_ready函数
@@ -363,7 +363,7 @@ enum class HANDLE_READY
 * @note          特别提醒，只能处理单个事件喔，不能同时处理读写,
 */
 int handle_ready (ZCE_SOCKET handle,
-                  ZCE_Time_Value *timeout_tv,
+                  zce::Time_Value *timeout_tv,
                   HANDLE_READY ready_todo);
 
 
@@ -386,7 +386,7 @@ int handle_ready (ZCE_SOCKET handle,
 inline ssize_t recv_n (ZCE_SOCKET handle,
                        void *buf,
                        size_t len,
-                       ZCE_Time_Value *timeout_tv,
+                       zce::Time_Value *timeout_tv,
                        int flags = 0);
 
 /*!
@@ -402,7 +402,7 @@ inline ssize_t recv_n (ZCE_SOCKET handle,
 inline ssize_t send_n (ZCE_SOCKET handle,
                        const void *buf,
                        size_t len,
-                       ZCE_Time_Value *timeout_tv,
+                       zce::Time_Value *timeout_tv,
                        int flags = 0);
 
 /*!
@@ -423,7 +423,7 @@ inline ssize_t recvfrom (ZCE_SOCKET handle,
                          size_t len,
                          sockaddr *from,
                          socklen_t *from_len,
-                         ZCE_Time_Value *timeout_tv,
+                         zce::Time_Value *timeout_tv,
                          int flags = 0);
 
 /*!
@@ -444,7 +444,7 @@ inline ssize_t sendto (ZCE_SOCKET handle,
                        size_t len,
                        const sockaddr *addr,
                        int addrlen,
-                       ZCE_Time_Value *timeout_tv = NULL,
+                       zce::Time_Value *timeout_tv = NULL,
                        int flags = 0);
 
 //==================================================================================================
@@ -467,7 +467,7 @@ inline ssize_t sendto (ZCE_SOCKET handle,
 int connect_timeout(ZCE_SOCKET handle,
                     const sockaddr *addr,
                     socklen_t addrlen,
-                    ZCE_Time_Value &timeout_tv);
+                    zce::Time_Value &timeout_tv);
 
 
 
@@ -487,7 +487,7 @@ int connect_timeout(ZCE_SOCKET handle,
                     uint16_t port,
                     sockaddr *host_addr,
                     socklen_t addr_len,
-                    ZCE_Time_Value &timeout_tv);
+                    zce::Time_Value &timeout_tv);
 
 
 
@@ -501,7 +501,7 @@ int connect_timeout(ZCE_SOCKET handle,
 ssize_t recvn_timeout (ZCE_SOCKET handle,
                        void *buf,
                        size_t len,
-                       ZCE_Time_Value &timeout_tv,
+                       zce::Time_Value &timeout_tv,
                        int flags = 0,
                        bool only_once = false);
 
@@ -515,7 +515,7 @@ ssize_t recvn_timeout (ZCE_SOCKET handle,
 ssize_t sendn_timeout(ZCE_SOCKET handle,
                       const void *buf,
                       size_t len,
-                      ZCE_Time_Value &timeout_tv,
+                      zce::Time_Value &timeout_tv,
                       int flags = 0);
 
 
@@ -528,7 +528,7 @@ ssize_t recvfrom_timeout (ZCE_SOCKET handle,
                           size_t len,
                           sockaddr *from,
                           socklen_t *from_rlen,
-                          ZCE_Time_Value &timeout_tv,
+                          zce::Time_Value &timeout_tv,
                           int flags = 0);
 
 /*!
@@ -540,7 +540,7 @@ ssize_t sendto_timeout (ZCE_SOCKET handle,
                         size_t len,
                         const sockaddr *addr,
                         socklen_t addrlen,
-                        ZCE_Time_Value & /*timeout_tv*/,
+                        zce::Time_Value & /*timeout_tv*/,
                         int flags = 0);
 
 
@@ -559,7 +559,7 @@ ssize_t sendto_timeout (ZCE_SOCKET handle,
 ssize_t recvn_timeout2 (ZCE_SOCKET handle,
                         void *buf,
                         size_t len,
-                        ZCE_Time_Value &timeout_tv,
+                        zce::Time_Value &timeout_tv,
                         int flags = 0);
 
 /*!
@@ -571,7 +571,7 @@ ssize_t recvn_timeout2 (ZCE_SOCKET handle,
 ssize_t sendn_timeout2 (ZCE_SOCKET handle,
                         void *buf,
                         size_t len,
-                        ZCE_Time_Value &timeout_tv,
+                        zce::Time_Value &timeout_tv,
                         int flags = 0);
 
 /*!
@@ -583,7 +583,7 @@ ssize_t recvfrom_timeout2 (ZCE_SOCKET handle,
                            size_t len,
                            sockaddr *from,
                            socklen_t *from_rlen,
-                           ZCE_Time_Value &timeout_tv,
+                           zce::Time_Value &timeout_tv,
                            int flags = 0);
 
 /*!
@@ -596,7 +596,7 @@ ssize_t sendto_timeout2 (ZCE_SOCKET handle,
                          size_t len,
                          const sockaddr *addr,
                          socklen_t addrlen,
-                         ZCE_Time_Value & /*timeout_tv*/,
+                         zce::Time_Value & /*timeout_tv*/,
                          int flags = 0);
 
 //--------------------------------------------------------------------------------------------
@@ -1114,7 +1114,7 @@ bool check_safeport(uint16_t check_port);
 int socks5_initialize(ZCE_SOCKET handle,
                       const char *username,
                       const char *password,
-                      ZCE_Time_Value &timeout_tv);
+                      zce::Time_Value &timeout_tv);
 
 
 /*!
@@ -1132,14 +1132,14 @@ int socks5_connect_host(ZCE_SOCKET handle,
                         const sockaddr *host_addr,
                         int addrlen,
                         uint16_t host_port,
-                        ZCE_Time_Value &timeout_tv);
+                        zce::Time_Value &timeout_tv);
 
 //socks5代理，UDP穿透
 int socks5_udp_associate(ZCE_SOCKET handle,
                          const sockaddr *bind_addr,
                          int addr_len,
                          sockaddr *udp_addr,
-                         ZCE_Time_Value &timeout_tv);
+                         zce::Time_Value &timeout_tv);
 
 };
 
@@ -1646,7 +1646,7 @@ inline ssize_t zce::sendto (ZCE_SOCKET handle,
 inline ssize_t zce::recv_n (ZCE_SOCKET handle,
                             void *buf,
                             size_t len,
-                            ZCE_Time_Value *timeout_tv,
+                            zce::Time_Value *timeout_tv,
                             int flags)
 {
     if (timeout_tv)
@@ -1672,7 +1672,7 @@ inline ssize_t zce::recv_n (ZCE_SOCKET handle,
 inline ssize_t zce::send_n (ZCE_SOCKET handle,
                             const void *buf,
                             size_t len,
-                            ZCE_Time_Value *timeout_tv,
+                            zce::Time_Value *timeout_tv,
                             int flags)
 {
     if (timeout_tv)
@@ -1701,7 +1701,7 @@ inline ssize_t zce::recvfrom (ZCE_SOCKET handle,
                               size_t len,
                               sockaddr *from,
                               socklen_t *from_len,
-                              ZCE_Time_Value *timeout_tv,
+                              zce::Time_Value *timeout_tv,
                               int flags)
 {
     if (timeout_tv)
@@ -1732,7 +1732,7 @@ inline ssize_t zce::sendto (ZCE_SOCKET handle,
                             size_t len,
                             const sockaddr *addr,
                             int addrlen,
-                            ZCE_Time_Value *timeout_tv,
+                            zce::Time_Value *timeout_tv,
                             int flags)
 {
     if (timeout_tv)
@@ -1763,7 +1763,7 @@ inline int zce::select(
     fd_set *readfds,
     fd_set *writefds,
     fd_set *exceptfds,
-    ZCE_Time_Value *timeout_tv
+    zce::Time_Value *timeout_tv
 )
 {
 #if defined (ZCE_OS_WINDOWS)
@@ -1819,7 +1819,7 @@ inline int zce::select(
     if (timeout_tv)
     {
         clock_t end_clock = std::clock();
-        ZCE_Time_Value consume_timeval;
+        zce::Time_Value consume_timeval;
         consume_timeval.set_by_clock_t( end_clock - start_clock );
         *timeout_tv -= consume_timeval;
     }

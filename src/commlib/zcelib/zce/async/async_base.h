@@ -95,7 +95,7 @@ public:
     * @param[in]  now_time  发生超时的时间，
     * @param[out] continue_run 异步对象是否继续运行,
     */
-    virtual void on_timeout(const ZCE_Time_Value& now_time,
+    virtual void on_timeout(const zce::Time_Value& now_time,
                             bool& continue_run) = 0;
 
     /*!
@@ -125,7 +125,7 @@ protected:
     * @brief                   设置超时定时器,如果触发，回调函数
     * @param  time_out         超时的时间，相对时间，
     */
-    int set_timeout(const ZCE_Time_Value& time_out);
+    int set_timeout(const zce::Time_Value& time_out);
 
 
     /*!
@@ -325,7 +325,7 @@ protected:
     * @param      now_time
     * @param      act
     */
-    int timer_timeout(const ZCE_Time_Value& now_time,
+    int timer_timeout(const zce::Time_Value& now_time,
                       const void* act);
 
     // 得到负载因子

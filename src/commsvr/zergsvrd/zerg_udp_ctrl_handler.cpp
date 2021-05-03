@@ -19,7 +19,7 @@ bool           UDP_Svc_Handler::if_proxy_ = false;
 
 //
 UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID &my_svcinfo,
-                                 const ZCE_Sockaddr_In     &addr,
+                                 const zce::Sockaddr_In     &addr,
                                  bool sessionkey_verify) :
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     udp_bind_addr_(addr),
@@ -150,7 +150,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
 
-    ZCE_Sockaddr_In     remote_addr;
+    zce::Sockaddr_In     remote_addr;
 
     soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *> (dgram_databuf_->buffer_data_);
 
@@ -212,7 +212,7 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
         return SOAR_RET::ERR_ZERG_APPFRAME_ERROR;
     }
 
-    proc_frame->send_ip_address_ = remote_addr.get_ip_address();
+    //proc_frame->send_ip_address_ = remote_addr.get_ip_address();
     proc_frame->send_service_.services_type_ = remote_addr.get_port_number();
     proc_frame->send_service_.services_id_ = remote_addr.get_ip_address();
 
@@ -227,8 +227,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     }
 
     //避免发生其他人填写的情况
-    proc_frame->clear_inner_option();
-    proc_frame->frame_option_ |= soar::Zerg_Frame::DESC_UDP_FRAME;
+    //proc_frame->clear_inner_option();
+    proc_frame->frame_option_.protocol_ = soar::Zerg_Frame::DESC_UDP_FRAME;
 
     size_revc = recvret;
 
@@ -248,12 +248,12 @@ int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame *send_frame)
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
     //这里service_id_和services_type_保存的是对方的ip和port，而不是真正的type和id
-    ZCE_Sockaddr_In remote_addr(send_frame->recv_service_.services_id_,
+    zce::Sockaddr_In remote_addr(send_frame->recv_service_.services_id_,
                                 send_frame->recv_service_.services_type_);
     size_t send_len = send_frame->length_;
 
     //
-    send_frame->framehead_encode();
+    send_frame->hton();
 
 
     //发送数据应该不阻塞

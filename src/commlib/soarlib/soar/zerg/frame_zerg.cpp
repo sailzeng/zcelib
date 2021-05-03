@@ -23,17 +23,17 @@ void Zerg_Head::hton()
     fsm_id_ = htonl(fsm_id_);
     backfill_fsm_id_ = htonl(backfill_fsm_id_);
 
-    serial_number_ = htons(serial_number_);
+    serial_number_ = htonl(serial_number_);
     business_id_ = htons(business_id_);
     //
     recv_service_.services_type_ = htons(recv_service_.services_type_);
-    recv_service_.services_id_ = htons(recv_service_.services_id_);
+    recv_service_.services_id_ = htonl(recv_service_.services_id_);
 
     send_service_.services_type_ = htons(send_service_.services_type_);
-    send_service_.services_id_ = htons(send_service_.services_id_);
+    send_service_.services_id_ = htonl(send_service_.services_id_);
     //
     proxy_service_.services_type_ = htons(proxy_service_.services_type_);
-    proxy_service_.services_id_ = htons(proxy_service_.services_id_);
+    proxy_service_.services_id_ = htonl(proxy_service_.services_id_);
 
     
 
@@ -52,21 +52,18 @@ void Zerg_Head::ntoh()
     fsm_id_ = ntohl(fsm_id_);
     backfill_fsm_id_ = ntohl(backfill_fsm_id_);
 
-    serial_number_ = ntohs(serial_number_);
+    serial_number_ = ntohl(serial_number_);
     business_id_ = ntohs(business_id_);
     //
     recv_service_.services_type_ = ntohs(recv_service_.services_type_);
-    recv_service_.services_id_ = ntohs(recv_service_.services_id_);
+    recv_service_.services_id_ = ntohl(recv_service_.services_id_);
 
     send_service_.services_type_ = ntohs(send_service_.services_type_);
-    send_service_.services_id_ = ntohs(send_service_.services_id_);
+    send_service_.services_id_ = ntohl(send_service_.services_id_);
     //
     proxy_service_.services_type_ = ntohs(proxy_service_.services_type_);
-    proxy_service_.services_id_ = ntohs(proxy_service_.services_id_);
-
-    
-
-    
+    proxy_service_.services_id_ = ntohl(proxy_service_.services_id_);
+  
 }
 
 //---------------------------------------------------------------------------------------------------------

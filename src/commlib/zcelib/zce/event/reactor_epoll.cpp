@@ -234,7 +234,7 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
 }
 
 //时间触发
-int ZCE_Epoll_Reactor::handle_events(ZCE_Time_Value *time_out, size_t *size_event)
+int ZCE_Epoll_Reactor::handle_events(zce::Time_Value *time_out, size_t *size_event)
 {
 
     //默认一直阻塞

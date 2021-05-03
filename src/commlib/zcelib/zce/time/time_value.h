@@ -9,82 +9,84 @@
 *             代码会非常多，于是就有了这个东东，
 *             在ZCELIB里面，他和timeval的作用一样，有时候标识时间点，
 *             有时候表示一段时间。
-*
+*             在C++ 11后，仍然保存这个东西的意义在于我们大量的代码
+*             需要和C的代码混用，chrono其实并不方便
 * @details    内部封装的还是timeval,这点和ACE一样，我曾经记得ACE曾经
 *             封装过double作为时间值，但无法确认了。
 *
 */
-#ifndef ZCE_LIB_TIME_VALUE_H_
-#define ZCE_LIB_TIME_VALUE_H_
+#pragma once
 
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/time.h"
 
+namespace zce
+{
 /*!
 * @brief      ZCELIB 里面的时间值，时间对象，
 *
 */
-class ZCE_Time_Value
+class Time_Value
 {
 public:
 
     /*!
     * @brief      默认构造函数
     */
-    ZCE_Time_Value();
+    Time_Value();
 
-    ZCE_Time_Value(const ZCE_Time_Value &) = default;
-    ZCE_Time_Value(ZCE_Time_Value &&) = default;
-    ZCE_Time_Value &operator=(const ZCE_Time_Value &) = default;
-    ZCE_Time_Value &operator=(ZCE_Time_Value &&) = default;
+    Time_Value(const Time_Value &) = default;
+    Time_Value(Time_Value &&) = default;
+    Time_Value &operator=(const Time_Value &) = default;
+    Time_Value &operator=(Time_Value &&) = default;
 
     /*!
     * @brief      析构函数
     */
-    ~ZCE_Time_Value();
+    ~Time_Value();
 
     /*!
     * @brief      构造函数，用timeval
     * @param      time_data
     */
-    ZCE_Time_Value(const timeval &time_data);
+    Time_Value(const timeval &time_data);
 
     /*!
     * @brief      构造函数，用::timespec
     * @param      timespec_val timespec表示时间
     */
-    ZCE_Time_Value(const ::timespec &timespec_val);
+    Time_Value(const ::timespec &timespec_val);
 
     /*!
     * @brief      构造函数，几个时间数据数据
     * @param      sec   timeval 中秒数据
     * @param      usec  timeval中的微秒数据
     */
-    ZCE_Time_Value(time_t sec, time_t usec);
+    Time_Value(time_t sec, time_t usec);
 
     /*!
     * @brief      构造函数，用time_t, usec被置为0
     * @param      sec
     */
-    ZCE_Time_Value(time_t sec);
+    Time_Value(time_t sec);
 
     /*!
     * @brief      构造函数，用CPP 11的一些duration的值
     * @param      val CPP11的duration时间
     */
-    ZCE_Time_Value(const std::chrono::hours &val);
-    ZCE_Time_Value(const std::chrono::minutes &val);
-    ZCE_Time_Value(const std::chrono::seconds &val);
-    ZCE_Time_Value(const std::chrono::milliseconds &val);
-    ZCE_Time_Value(const std::chrono::microseconds &val);
-    ZCE_Time_Value(const std::chrono::nanoseconds &val);
+    Time_Value(const std::chrono::hours &val);
+    Time_Value(const std::chrono::minutes &val);
+    Time_Value(const std::chrono::seconds &val);
+    Time_Value(const std::chrono::milliseconds &val);
+    Time_Value(const std::chrono::microseconds &val);
+    Time_Value(const std::chrono::nanoseconds &val);
 
     /*!
     * @brief      构造函数，用CPP 11的一些time_point的值
     * @param      val CPP11的duration时间
     */
-    ZCE_Time_Value(const std::chrono::system_clock::time_point &val);
-    ZCE_Time_Value(const std::chrono::steady_clock::time_point &val);
+    Time_Value(const std::chrono::system_clock::time_point &val);
+    Time_Value(const std::chrono::steady_clock::time_point &val);
 
 #ifdef ZCE_OS_WINDOWS
 
@@ -92,38 +94,38 @@ public:
     * @brief      构造函数，用LPFILETIME,FILETIME
     * @param      file_time
     */
-    ZCE_Time_Value(LPFILETIME file_time);
+    Time_Value(LPFILETIME file_time);
 
     /*!
     * @brief      构造函数，用LPSYSTEMTIME,SYSTEMTIME
     * @param      system_time
     */
-    ZCE_Time_Value(LPSYSTEMTIME system_time);
+    Time_Value(LPSYSTEMTIME system_time);
 
 #endif
 
 public:
     /*!
-    * @brief      设置ZCE_Time_Value,用timeval
+    * @brief      设置Time_Value,用timeval
     * @param      time_data
     */
     void set(const timeval &time_data);
 
     /*!
-    * @brief      设置ZCE_Time_Value,用::timespec
+    * @brief      设置Time_Value,用::timespec
     * @param      timespec_val
     */
     void set(const ::timespec &timespec_val);
 
     /*!
-    * @brief      设置ZCE_Time_Value,几个时间数据数据
+    * @brief      设置Time_Value,几个时间数据数据
     * @param      sec
     * @param      usec
     */
     void set(time_t sec, time_t usec);
 
     /*!
-    * @brief      设置ZCE_Time_Value,用time_t, usec被置为0
+    * @brief      设置Time_Value,用time_t, usec被置为0
     * @param      sec
     */
     void set(time_t sec);
@@ -149,13 +151,13 @@ public:
 #ifdef ZCE_OS_WINDOWS
 
     /*!
-    * @brief      设置ZCE_Time_Value, 用FILETIME
+    * @brief      设置Time_Value, 用FILETIME
     * @param      file_time
     */
     void set(LPFILETIME file_time);
 
     /*!
-    * @brief      设置ZCE_Time_Value, 用LPSYSTEMTIME
+    * @brief      设置Time_Value, 用LPSYSTEMTIME
     * @param      system_time  WINDOWS的SYSTEMTIME时间
     */
     void set(LPSYSTEMTIME system_time);
@@ -175,7 +177,7 @@ public:
 
     /*!
     * @brief      得到Timevalue的微秒部分，注意是得到微秒部分，不是总计值呀。（已经看见一个人调用错了）
-    * @return     time_t ZCE_Time_Value微秒部分的数据
+    * @return     time_t Time_Value微秒部分的数据
     */
     time_t usec (void) const;
     /*!
@@ -268,35 +270,35 @@ public:
     void gettimeofday();
 
     /// 加上 @a tv 的时间
-    ZCE_Time_Value &operator += (const ZCE_Time_Value &tv);
+    Time_Value &operator += (const Time_Value &tv);
 
     /// 减去 @a tv的时间
-    ZCE_Time_Value &operator -= (const ZCE_Time_Value &tv);
+    Time_Value &operator -= (const Time_Value &tv);
 
     /// 返回true，如果 < @a tv 的时间
-    bool operator < (const ZCE_Time_Value &tv);
+    bool operator < (const Time_Value &tv);
     /// 返回true，如果 > @a tv 的时间
-    bool operator > (const ZCE_Time_Value &tv);
+    bool operator > (const Time_Value &tv);
 
     /// 返回true，如果 <= @a tv 的时间
-    bool operator <= (const ZCE_Time_Value &tv);
+    bool operator <= (const Time_Value &tv);
 
     /// 返回true，如果 >= @a tv 的时间
-    bool operator >= (const ZCE_Time_Value &tv);
+    bool operator >= (const Time_Value &tv);
 
     /// 返回true，如果 == @a tv 的时间
-    bool operator == (const ZCE_Time_Value &tv);
+    bool operator == (const Time_Value &tv);
 
     /// 返回true，如果 != @a tv 的时间
-    bool operator != (const ZCE_Time_Value &tv);
+    bool operator != (const Time_Value &tv);
 
-    /// 将两个 ZCE_Time_Value 对象 @a tv1 和 @a tv2 加起来，返回结果，
-    friend ZCE_Time_Value operator + (const ZCE_Time_Value &tv1,
-                                      const ZCE_Time_Value &tv2);
+    /// 将两个 Time_Value 对象 @a tv1 和 @a tv2 加起来，返回结果，
+    friend Time_Value operator + (const Time_Value &tv1,
+                                      const Time_Value &tv2);
 
-    /// 将两个 ZCE_Time_Value 对象 @a tv1 和 @a tv2 相减，返回结果，
-    friend ZCE_Time_Value operator - (const ZCE_Time_Value &tv1,
-                                      const ZCE_Time_Value &tv2);
+    /// 将两个 Time_Value 对象 @a tv1 和 @a tv2 相减，返回结果，
+    friend Time_Value operator - (const Time_Value &tv1,
+                                      const Time_Value &tv2);
 
 protected:
 
@@ -305,10 +307,12 @@ protected:
 
 public:
     ///为0的时间
-    static const ZCE_Time_Value    ZERO_TIME_VALUE;
+    static const Time_Value    ZERO_TIME_VALUE;
     ///最大能表示的时间
-    static const ZCE_Time_Value    MAX_TIME_VALUE;
+    static const Time_Value    MAX_TIME_VALUE;
 };
 
-#endif //# ZCE_LIB_TIME_VALUE_H_
+}
+
+
 

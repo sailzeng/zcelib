@@ -187,7 +187,7 @@ public:
 
 
     //打开Trans统计信息，得到一个当前时钟
-    void enable_trans_statistics(const ZCE_Time_Value *stat_clock);
+    void enable_trans_statistics(const zce::Time_Value *stat_clock);
 
 
     //----------------------------------------------------------------------------------------------------------
@@ -286,7 +286,7 @@ protected:
     Soar_MMAP_BusPipe *zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
-    const ZCE_Time_Value *statistics_clock_ = nullptr;
+    const zce::Time_Value *statistics_clock_ = nullptr;
 
     //发送的缓冲区
     soar::Zerg_Frame *trans_send_buffer_ = nullptr;

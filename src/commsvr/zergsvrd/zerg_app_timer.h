@@ -20,7 +20,7 @@ protected:
     ~Zerg_App_Timer_Handler();
 
     ///定时器触发
-    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
+    virtual int timer_timeout(const zce::Time_Value &time, const void *arg);
 
 
 public:

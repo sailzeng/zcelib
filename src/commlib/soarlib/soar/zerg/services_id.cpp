@@ -32,7 +32,6 @@ bool SERVICES_ID::operator !=(const SERVICES_ID &others) const
     {
         return true;
     }
-
     return false;
 }
 
@@ -63,7 +62,7 @@ int SERVICES_ID::from_str(const char *str_buffer,bool check_valid)
 {
     //注意.前面的%号
     int ret_num = sscanf(str_buffer,
-                         "%hu.%hu",
+                         "%hu.%u",
                          &services_type_,
                          &services_id_);
     if (check_valid
@@ -80,7 +79,5 @@ int SERVICES_ID::from_str(const char *str_buffer,bool check_valid)
         return 0;
     }
 }
-
-
 
 }

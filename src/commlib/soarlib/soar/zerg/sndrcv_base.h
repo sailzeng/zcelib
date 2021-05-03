@@ -20,19 +20,27 @@
 #define SOARING_LIB_SND_RCV_BASE_H_
 
 /******************************************************************************************
-class SendRecv_Package_Base base 类
+class SendRecv_Msg_Base base 类
 ******************************************************************************************/
-class SendRecv_Package_Base
+class SendRecv_Msg_Base
 {
 
 public:
     //
-    SendRecv_Package_Base();
-    virtual ~SendRecv_Package_Base();
+    SendRecv_Msg_Base();
+    virtual ~SendRecv_Msg_Base();
 
 public:
 
-    //设置相应的SVC INFO,
+    //
+    /*!
+    * @brief      设置相应的SVC INFO,FRAME 长度
+    * @param      recv_service  接收的服务器ID
+    * @param      send_service  发送的服务器ID
+    * @param      proxy_service PROXY的服务器ID
+    * @param      frame_len     准备的FRAME长度
+    * @note       
+    */
     void set_services_id(const soar::SERVICES_ID &recv_service,
                          const soar::SERVICES_ID &send_service,
                          const soar::SERVICES_ID &proxy_service,
@@ -52,11 +60,11 @@ public:
 protected:
 
     //接受者的soar::SERVICES_ID
-    soar::SERVICES_ID              tibetan_recv_service_;
+    soar::SERVICES_ID         msg_recv_service_;
     //发送者的tibetan_send_service_，
-    soar::SERVICES_ID              tibetan_send_service_;
+    soar::SERVICES_ID         msg_send_service_;
     //代理服务器的信息
-    soar::SERVICES_ID              tibetan_proxy_service_;
+    soar::SERVICES_ID         msg_proxy_service_;
 
     //缓冲区的帧的长度,你可以设置接受数据的大小，如果都是64K,太多可能影响你最后的总容量,但目前感觉问题不大
     size_t                    test_frame_len_;
@@ -68,9 +76,9 @@ protected:
     //就不会出现共用一个BUFFER的事情
 
     //发送缓冲区的帧
-    soar::Zerg_Frame    *tibetan_send_appframe_;
+    soar::Zerg_Frame         *msg_send_frame_;
     //接收缓冲区
-    soar::Zerg_Frame    *tibetan_recv_appframe_;
+    soar::Zerg_Frame         *msg_recv_frame_;
 
     //收到的事务ID
     unsigned int              recv_trans_id_;

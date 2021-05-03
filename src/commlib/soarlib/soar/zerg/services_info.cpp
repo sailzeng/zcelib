@@ -28,7 +28,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
     uint16_t port = 0;
     //测试发现其实不需要手动去掉多余空格的干扰，把特殊字符前面也增加%控制就可以了。
     int ret_num = sscanf(svc_info_str,
-                         "%hu.%hu | %u.%u.%u.%u # %hu | %u | %u",
+                         "%hu.%u | %u.%u.%u.%u # %hu | %u | %u",
                          &svc_id_.services_type_,
                          &svc_id_.services_id_,
                          &u[0], &u[1], &u[2], &u[3],

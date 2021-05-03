@@ -57,7 +57,7 @@ public:
     * @param      sockstream
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
+    void init_tcp_svc_handler(const zce::Socket_Stream &sockstream,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     /*!
@@ -66,8 +66,8 @@ public:
     * @param      socketaddr
     * @param      fp_judge_whole
     */
-    void init_tcp_svc_handler(const ZCE_Socket_Stream &sockstream,
-                              const ZCE_Sockaddr_In &socketaddr,
+    void init_tcp_svc_handler(const zce::Socket_Stream &sockstream,
+                              const zce::Sockaddr_In &socketaddr,
                               FP_JudgeRecv_WholeFrame fp_judge_whole);
 
     //ZEN的一组要求自己继承的函数.
@@ -77,12 +77,12 @@ public:
     //
     virtual int handle_output(ZCE_HANDLE);
     //
-    virtual int timer_timeout(const ZCE_Time_Value &time, const void *arg);
+    virtual int timer_timeout(const zce::Time_Value &time, const void *arg);
     //
     virtual int handle_close ();
 
     //得到Handle对应PEER的IP地址
-    const ZCE_Sockaddr_In &get_peer();
+    const zce::Sockaddr_In &get_peer();
 
 protected:
 
@@ -216,13 +216,13 @@ protected:
     size_t                        send_bytes_;
 
     ///ACE Socket Stream,
-    ZCE_Socket_Stream             socket_peer_;
+    zce::Socket_Stream             socket_peer_;
 
     ///PEER连接的远端IP地址信息,有他不过是为了加快速度.
-    ZCE_Sockaddr_In               remote_address_;
+    zce::Sockaddr_In               remote_address_;
 
     ///PEER连接的本地IP地址信息,有他不过是为了加快速度.
-    ZCE_Sockaddr_In               local_address_;
+    zce::Sockaddr_In               local_address_;
 
     //是否处于活动状态
     PEER_STATUS                   peer_status_;

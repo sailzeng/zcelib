@@ -135,10 +135,10 @@ int Ogre_Connect_Server::connect_one_server(const TCP_PEER_MODULE_INFO &peer_mod
         return SOAR_RET::ERR_OGRE_ALREADY_CONNECTED;
     }
 
-    ZCE_Sockaddr_In inetaddr(peer_module.peer_id_.peer_ip_address_,
+    zce::Sockaddr_In inetaddr(peer_module.peer_id_.peer_ip_address_,
                              peer_module.peer_id_.peer_port_);
 
-    ZCE_Socket_Stream tcpscoket;
+    zce::Socket_Stream tcpscoket;
     tcpscoket.sock_enable(O_NONBLOCK);
 
     ZCE_LOG(RS_INFO, "Try NONBLOCK connect server IP|Port :[%s] .\n",

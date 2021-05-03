@@ -89,7 +89,7 @@ public:
 
     //放入一个数据，进行超时等待
     int enqueue(const _value_type &value_data,
-                ZCE_Time_Value & )
+                zce::Time_Value & )
     {
         return enqueue(value_data);
     }
@@ -110,7 +110,7 @@ public:
     }
 
     int dequeue(_value_type &value_data,
-                ZCE_Time_Value & )
+                zce::Time_Value & )
     {
         return dequeue(value_data);
     }

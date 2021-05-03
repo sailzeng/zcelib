@@ -19,7 +19,7 @@
 #include "zce/logger/logging.h"
 
 class ZCE_Event_Handler;
-class ZCE_Time_Value;
+class zce::Time_Value;
 
 /*!
 * @brief      反应器的基类
@@ -118,7 +118,7 @@ public:
     * @param[in,out]  time_out  超时时间
     * @param[out] size_event    返回触发的事件句柄数量
     */
-    virtual int handle_events(ZCE_Time_Value *time_out, size_t *size_event) = 0;
+    virtual int handle_events(zce::Time_Value *time_out, size_t *size_event) = 0;
 
 protected:
 

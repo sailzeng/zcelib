@@ -44,10 +44,10 @@ public:
     virtual void unlock();
 
     ///绝对时间超时的的锁定，超时后解锁
-    virtual bool systime_lock(const ZCE_Time_Value &abs_time);
+    virtual bool systime_lock(const zce::Time_Value &abs_time);
 
     ///相对时间的超时锁定，超时后，解锁
-    virtual bool duration_lock(const ZCE_Time_Value &relative_time);
+    virtual bool duration_lock(const zce::Time_Value &relative_time);
 
     ///取出内部的锁的指针
     pthread_mutex_t *get_lock();

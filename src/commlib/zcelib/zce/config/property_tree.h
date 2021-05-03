@@ -24,10 +24,11 @@
 
 //
 //
-class ZCE_Sockaddr_In;
-class ZCE_Sockaddr_In6;
-class ZCE_Time_Value;
-
+namespace zce {
+class Sockaddr_In;
+class Sockaddr_In6;
+class Time_Value;
+}
 
 
 
@@ -114,7 +115,7 @@ public:
 
     /*!
     * @brief      还是用了特化的模板高点这一组函数,模板函数,依靠特化实现,
-    * @tparam     val_type 被特化成 ZCE_Sockaddr_In，ZCE_Sockaddr_In6，ZCE_Time_Value
+    * @tparam     val_type 被特化成 zce::Sockaddr_In，Sockaddr_In6，zce::Time_Value
     *             int32_t ,int64_t,std::string, 等。
     * @return     int      是否正常的读取倒了配置
     * @param      path_str 读取的路径

@@ -454,9 +454,6 @@
     <ClInclude Include="zce\mysql\execute.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\util\any.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\util\lord_rings.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -719,6 +716,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\logger\log_basic.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\util\algorithm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

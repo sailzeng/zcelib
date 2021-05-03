@@ -38,7 +38,7 @@ class  SERVICES_ID
 
 public:
 
-    SERVICES_ID(uint16_t svc_type,uint16_t svc_id):
+    SERVICES_ID(uint16_t svc_type,uint32_t svc_id):
         services_type_(svc_type),
         services_id_(svc_id)
     {
@@ -83,19 +83,19 @@ public:
     static const uint16_t INVALID_SERVICES_TYPE = 0;
 
     ///无效的SERVICE ID
-    static const uint16_t INVALID_SERVICES_ID = 0;
+    static const uint32_t INVALID_SERVICES_ID = 0;
 
     ///让ZERG帮忙动态分配一个SERVICES_ID ，用于某些客户端请求
-    static const uint16_t DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint16_t>(-1);
+    static const uint32_t DYNAMIC_ALLOC_SERVICES_ID = static_cast<uint16_t>(-1);
 
     ///对某个type进行广播。
-    static const uint16_t BROADCAST_SERVICES_ID = static_cast<uint16_t>(-2);
+    static const uint32_t BROADCAST_SERVICES_ID = static_cast<uint16_t>(-2);
 
     ///使用均衡负载的方式动态分片的SERVICE ID
-    static const uint16_t LOAD_BALANCE_DYNAMIC_ID = static_cast<uint16_t>(-3);
+    static const uint32_t LOAD_BALANCE_DYNAMIC_ID = static_cast<uint16_t>(-3);
 
     ///使用主从的方式（根据AUTO CONNECT的顺序）动态分配的SERVICE ID
-    static const uint16_t MAIN_STANDBY_DYNAMIC_ID = static_cast<uint16_t>(-4);
+    static const uint32_t MAIN_STANDBY_DYNAMIC_ID = static_cast<uint16_t>(-4);
 
 
 public:
@@ -104,7 +104,7 @@ public:
     uint16_t           services_type_ = INVALID_SERVICES_TYPE;
 
     ///服务的编号,采用两种表现方式,服务编号可以是一个服务器定义值,也可以是一个UIN.
-    uint16_t           services_id_ = INVALID_SERVICES_ID;
+    uint32_t           services_id_ = INVALID_SERVICES_ID;
 };
 
 

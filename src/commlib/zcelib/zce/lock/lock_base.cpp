@@ -46,13 +46,13 @@ void ZCE_Lock_Base::unlock_write()
 }
 
 //绝对时间超时的的锁定，超时后解锁，返回是否超时
-bool ZCE_Lock_Base::systime_lock(const ZCE_Time_Value & /*abs_time*/)
+bool ZCE_Lock_Base::systime_lock(const zce::Time_Value & /*abs_time*/)
 {
     return true;
 }
 
 //相对时间，返回是否超时
-bool ZCE_Lock_Base::duration_lock(const ZCE_Time_Value & /*relative_time*/ )
+bool ZCE_Lock_Base::duration_lock(const zce::Time_Value & /*relative_time*/ )
 {
     return true;
 }
@@ -70,13 +70,13 @@ bool ZCE_Lock_Base::try_lock_read()
 }
 
 //绝对时间
-bool ZCE_Lock_Base::timed_lock_read(const ZCE_Time_Value & /*abs_time*/)
+bool ZCE_Lock_Base::timed_lock_read(const zce::Time_Value & /*abs_time*/)
 {
     return true;
 }
 
 //相对时间
-bool ZCE_Lock_Base::duration_lock_read(const ZCE_Time_Value & /*relative_time*/)
+bool ZCE_Lock_Base::duration_lock_read(const zce::Time_Value & /*relative_time*/)
 {
     return true;
 }
@@ -94,13 +94,13 @@ bool ZCE_Lock_Base::try_lock_write()
 }
 
 //写锁定超时
-bool ZCE_Lock_Base::timed_lock_write(const ZCE_Time_Value & /*abs_time*/)
+bool ZCE_Lock_Base::timed_lock_write(const zce::Time_Value & /*abs_time*/)
 {
     return true;
 }
 
 //相对时间
-bool ZCE_Lock_Base::duration_lock_write(const ZCE_Time_Value & /*relative_time*/)
+bool ZCE_Lock_Base::duration_lock_write(const zce::Time_Value & /*relative_time*/)
 {
     return true;
 }
@@ -123,13 +123,13 @@ void ZCE_Condition_Base::wait(ZCE_Lock_Base * /*external_mutex*/ )
 }
 
 ///绝对时间超时的的等待，超时后解锁
-bool ZCE_Condition_Base::systime_wait(ZCE_Lock_Base * /*external_mutex*/, const ZCE_Time_Value & /*abs_time*/)
+bool ZCE_Condition_Base::systime_wait(ZCE_Lock_Base * /*external_mutex*/, const zce::Time_Value & /*abs_time*/)
 {
     return true;
 }
 
 ///相对时间的超时锁定等待，超时后，解锁
-bool ZCE_Condition_Base::duration_wait(ZCE_Lock_Base * /*external_mutex*/, const ZCE_Time_Value &/*relative_time*/)
+bool ZCE_Condition_Base::duration_wait(ZCE_Lock_Base * /*external_mutex*/, const zce::Time_Value &/*relative_time*/)
 {
     return false;
 }

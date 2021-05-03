@@ -7,7 +7,7 @@
 
 //TCP Accept 处理的EventHandler,
 TCP_Accept_Handler::TCP_Accept_Handler(const soar::SERVICES_ID &svcid,
-                                       const ZCE_Sockaddr_In &addr):
+                                       const zce::Sockaddr_In &addr):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
@@ -90,8 +90,8 @@ int TCP_Accept_Handler::create_listen()
 //事件触发处理，表示有一个accept 的数据
 int TCP_Accept_Handler::handle_input(/*handle*/)
 {
-    ZCE_Socket_Stream  sockstream;
-    ZCE_Sockaddr_In       remote_address;
+    zce::Socket_Stream  sockstream;
+    zce::Sockaddr_In       remote_address;
     int ret = peer_acceptor_.accept(sockstream, &remote_address);
 
     //如果出现错误,如何处理? return -1?

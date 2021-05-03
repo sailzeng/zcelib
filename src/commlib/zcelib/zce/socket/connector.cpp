@@ -8,25 +8,27 @@
 #include "zce/socket/stream.h"
 #include "zce/socket/connector.h"
 
+namespace zce
+{
 /************************************************************************************************************
-Class           : ZCE_Socket_Acceptor
+Class           : zce::Socket_Acceptor
 ************************************************************************************************************/
 
-ZCE_Socket_Connector::ZCE_Socket_Connector()
+Socket_Connector::Socket_Connector()
 {
 }
 
-ZCE_Socket_Connector::~ZCE_Socket_Connector()
+Socket_Connector::~Socket_Connector()
 {
 }
 
 
-int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
-                                   const ZCE_Sockaddr *remote_addr,
-                                   ZCE_Time_Value &timeout,
+int Socket_Connector::connect (zce::Socket_Stream &new_stream,
+                                   const zce::Sockaddr_Base *remote_addr,
+                                   zce::Time_Value &timeout,
                                    bool reuse_addr,
                                    int protocol,
-                                   const ZCE_Sockaddr *local_addr)
+                                   const Sockaddr_Base *local_addr)
 {
 
     int ret = 0;
@@ -109,12 +111,12 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
 }
 
 //进行连接处理，可以进行非阻塞连接处理，
-int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
-                                   const ZCE_Sockaddr *remote_addr,
+int Socket_Connector::connect (zce::Socket_Stream &new_stream,
+                                   const Sockaddr_Base *remote_addr,
                                    bool non_blocing,
                                    bool reuse_addr,
                                    int protocol,
-                                   const ZCE_Sockaddr *local_addr)
+                                   const Sockaddr_Base *local_addr)
 {
     int ret = 0;
 
@@ -176,3 +178,4 @@ int ZCE_Socket_Connector::connect (ZCE_Socket_Stream &new_stream,
     return 0;
 }
 
+}

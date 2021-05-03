@@ -41,10 +41,10 @@ void Async_Object::finish()
 
 
 //设置超时定时器
-int Async_Object::set_timeout(const ZCE_Time_Value& time_out)
+int Async_Object::set_timeout(const zce::Time_Value& time_out)
 {
     Timer_Queue_Base* timer_queue = async_mgr_->timer_queue();
-    ZCE_Time_Value delay_time(time_out);
+    zce::Time_Value delay_time(time_out);
     //注意使用的TIME ID
     timeout_id_ = timer_queue->schedule_timer(async_mgr_,
                                               this,
@@ -433,7 +433,7 @@ int Async_Obj_Mgr::active_asyncobj(uint32_t id,
 }
 
 //超时处理
-int Async_Obj_Mgr::timer_timeout(const ZCE_Time_Value& now_time,
+int Async_Obj_Mgr::timer_timeout(const zce::Time_Value& now_time,
                                  const void* act)
 {
     Async_Object* async_obj = (Async_Object*)(act);

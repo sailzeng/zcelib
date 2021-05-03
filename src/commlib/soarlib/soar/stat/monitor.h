@@ -5,10 +5,8 @@
 
 //原来是使用模版策略锁，后来发现模版容易将问题扩大化，
 //改成多态策略
-class Soar_Stat_Monitor : public ZCE_Server_Status
+class Soar_Stat_Monitor : public zce::Server_Status
 {
-
-
 
 public:
     //gunner里面有接收多个cgi统计上报的需求
@@ -31,7 +29,7 @@ public:
                    unsigned int business_id,
                    const soar::SERVICES_ID &service_id,
                    size_t num_stat_item,
-                   const ZCE_STATUS_ITEM_WITHNAME item_ary[],
+                   const zce::STATUS_ITEM_WITHNAME item_ary[],
                    bool mutli_thread);
 
     /*!

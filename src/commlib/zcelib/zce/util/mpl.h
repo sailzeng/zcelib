@@ -80,7 +80,8 @@ struct if_ < false, type_a, type_b >
 template<typename input_iter>
 struct is_random_access_iterator
 {
-    static const bool value = typeid(std::iterator_traits<input_iter>::iterator_category) == typeid(std::random_access_iterator_tag);
+    static const bool value = typeid(std::iterator_traits<input_iter>::iterator_category) == \
+        typeid(std::random_access_iterator_tag);
 };
 //----------------------------------------------------------------------------
 

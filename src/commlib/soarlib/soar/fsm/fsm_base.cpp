@@ -116,7 +116,7 @@ void FSM_Base::on_run(void* outer_data,bool& continue_run)
 }
 
 
-void FSM_Base::on_timeout(const ZCE_Time_Value& now_time,
+void FSM_Base::on_timeout(const zce::Time_Value& now_time,
                           bool& continue_run)
 {
     ZCE_LOG(trace_log_pri_,"%s::trans_timeout start,transaction id:[%u],trans stage:[%u],",

@@ -183,8 +183,8 @@ void ZCE_Timer_Wheel::unbind_wheel_listnode(int time_node_id)
 //设置定时器
 int ZCE_Timer_Wheel::schedule_timer(zce::Timer_Handler *timer_hdl,
                                     const void *action,
-                                    const ZCE_Time_Value &delay_time,
-                                    const ZCE_Time_Value &interval_time)
+                                    const zce::Time_Value &delay_time,
+                                    const zce::Time_Value &interval_time)
 {
     int ret = 0;
     int time_node_id = INVALID_TIMER_ID;
@@ -297,7 +297,7 @@ int ZCE_Timer_Wheel::get_frist_nodeid(int &first_node_id)
 }
 
 //分发定时器，返回分发的数量
-size_t ZCE_Timer_Wheel::dispatch_timer(const ZCE_Time_Value &now_time,
+size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
                                        uint64_t now_trigger_msec)
 {
     //分派了多少个定时器计数

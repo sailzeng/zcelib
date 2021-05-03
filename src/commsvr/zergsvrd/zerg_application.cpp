@@ -65,7 +65,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
                                                     business_id_,
-                                                    self_svc_info_,
+                                                    self_svc_info_.svc_id_,
                                                     0,
                                                     NULL,
                                                     false);
@@ -173,7 +173,7 @@ int Zerg_Service_App::app_run()
     ZCE_Reactor *preactor = ZCE_Reactor::instance();
     zce::Timer_Queue_Base *p_timer_queue = zce::Timer_Queue_Base::instance();
 
-    ZCE_Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
+    zce::Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
 
     for (size_t i = 0; app_run_; ++i)
     {
@@ -217,7 +217,7 @@ int Zerg_Service_App::app_run()
         //
         preactor->handle_events(&run_interval, &num_io_event);
 
-        //每次都在这儿初始化ZCE_Time_Value不好,其要调整.
+        //每次都在这儿初始化zce::Time_Value不好,其要调整.
         zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
 
         //如果发送队列很忙，再进行一次发送

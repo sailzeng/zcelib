@@ -75,13 +75,13 @@ protected:
     * @param      svc_handle , 如果已经有相应的连接，在这个地方返回对用的Handle
     */
     int connect_one_server(const soar::SERVICES_ID &svc_id,
-                           const ZCE_Sockaddr_In &inet_addr,
+                           const zce::Sockaddr_In &inet_addr,
                            TCP_Svc_Handler *&svc_handle);
 
 protected:
 
     //
-    typedef std::unordered_set<soar::SERVICES_INFO, HASH_OF_SVCINFO, EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
+    typedef std::unordered_set<soar::SERVICES_INFO, soar::HASH_OF_SVCINFO,soar::EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
     typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
@@ -89,7 +89,7 @@ protected:
 protected:
 
     //连接器
-    ZCE_Socket_Connector zerg_connector_;
+    zce::Socket_Connector zerg_connector_;
 
     //配置实例指针
     const Zerg_Server_Config *zerg_svr_cfg_ = NULL;

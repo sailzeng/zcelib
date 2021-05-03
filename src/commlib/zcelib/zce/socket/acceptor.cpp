@@ -7,16 +7,17 @@
 #include "zce/socket/acceptor.h"
 
 /************************************************************************************************************
-Class           : ZCE_Socket_Acceptor
+Class           : Socket_Acceptor
 ************************************************************************************************************/
-
+namespace zce
+{
 //构造函数
-ZCE_Socket_Acceptor::ZCE_Socket_Acceptor():
-    ZCE_Socket_Base()
+Socket_Acceptor::Socket_Acceptor():
+    zce::Socket_Base()
 {
 }
 
-ZCE_Socket_Acceptor::~ZCE_Socket_Acceptor()
+Socket_Acceptor::~Socket_Acceptor()
 {
     //为什么在这人不关闭socket_handle_,是考虑到万一要进行复制呢
     close();
@@ -24,11 +25,11 @@ ZCE_Socket_Acceptor::~ZCE_Socket_Acceptor()
 
 //跟进地址参数等，打开一个Accepet的端口 (Bind,并且监听),
 //打开一个监听地址，目前只支持AF_INET,和AFINET6
-int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
-                              bool reuse_addr,
-                              int protocol_family,
-                              int backlog,
-                              int protocol)
+int Socket_Acceptor::open(const Sockaddr_Base *local_addr,
+                          bool reuse_addr,
+                          int protocol_family,
+                          int backlog,
+                          int protocol)
 {
 
     int ret = 0;
@@ -40,7 +41,7 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
     }
 
     //
-    ret = ZCE_Socket_Base::open(SOCK_STREAM,
+    ret = zce::Socket_Base::open(SOCK_STREAM,
                                 protocol_family,
                                 protocol,
                                 reuse_addr);
@@ -50,7 +51,7 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
         return ret;
     }
 
-    ret = ZCE_Socket_Base::bind(local_addr);
+    ret = zce::Socket_Base::bind(local_addr);
 
     if (ret != 0)
     {
@@ -59,8 +60,8 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
     }
 
     //建立监听
-    ret = zce::listen (socket_handle_,
-                       backlog);
+    ret = zce::listen(socket_handle_,
+                      backlog);
 
     if (ret != 0)
     {
@@ -72,8 +73,8 @@ int ZCE_Socket_Acceptor::open(const ZCE_Sockaddr *local_addr,
 }
 
 //非超时处理的accept,NONBLOCK模式下会迅速退出，阻塞模式下会一致等待
-int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
-                                 ZCE_Sockaddr *remote_addr) const
+int Socket_Acceptor::accept(Socket_Stream &new_stream,
+                            Sockaddr_Base *remote_addr) const
 {
     ZCE_SOCKET sock_handle = zce::accept(socket_handle_,
                                          remote_addr->sockaddr_ptr_,
@@ -89,9 +90,9 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
 }
 
 //
-int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
-                                 ZCE_Time_Value &timeout,
-                                 ZCE_Sockaddr *remote_addr) const
+int Socket_Acceptor::accept(Socket_Stream &new_stream,
+                            Time_Value &timeout,
+                            Sockaddr_Base *remote_addr) const
 {
     int ret = 0;
     ret = zce::handle_ready(socket_handle_,
@@ -117,5 +118,7 @@ int ZCE_Socket_Acceptor::accept (ZCE_Socket_Stream &new_stream,
 
     new_stream.set_handle(sock_handle);
     return 0;
+}
+
 }
 
