@@ -182,7 +182,7 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
 
     size_t abc = 0;
     {
-        ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
+        zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
 
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -196,7 +196,7 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
     memcpy(buffer,test_string,str_len + 1);
 
     {
-        ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
+        zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
         //uint32_t uincrc =0;
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -208,7 +208,7 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
     memcpy(buffer,test_string,str_len + 1);
     uincrc = 0;
     {
-        ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
+        zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
         //uint32_t uincrc =0;
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -220,7 +220,7 @@ int test_bytes_crc32(int /*argc*/,char * /*argv*/[])
     printf("uincrc = %u\n",uincrc);
     memcpy(buffer,test_string,str_len + 1);
     {
-        ZCE_Auto_Progress_Timer<ZCE_HR_Progress_Timer> auto_timer;
+        zce::Auto_Progress_Timer<zce::HR_Progress_Timer> auto_timer;
         unsigned char result[32] = {0};
         for (size_t i = 0; i < TEST_SIZE; ++i)
         {
@@ -306,7 +306,7 @@ int perf_encrypt()
     size_t de_len = 2048;
     int ret = 0;
 
-    ZCE_HR_Progress_Timer hr_timer;
+    zce::HR_Progress_Timer hr_timer;
 
     const size_t TEST_NUMBER = 20480;
 
@@ -527,7 +527,7 @@ int perf_fast_memcpy(size_t test_len)
     const unsigned char *cpy_src = NULL;
     const unsigned char *stop_pos = NULL;
 
-    ZCE_HR_Progress_Timer hr_timer;
+    zce::HR_Progress_Timer hr_timer;
 
     const size_t TEST_NUMBER = 10240;
 
@@ -619,7 +619,7 @@ int perf_nonalign_memcpy(size_t test_len)
     const unsigned char *cpy_dst = NULL;
     const unsigned char *stop_pos = NULL;
 
-    ZCE_HR_Progress_Timer hr_timer;
+    zce::HR_Progress_Timer hr_timer;
 
     const size_t TEST_NUMBER = 10240;
 

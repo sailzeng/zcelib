@@ -271,7 +271,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
     const std::string def("You love me.");
     zce::String_Out_Helper abc(def);
 
-    ZCE_Progress_Timer progress_timer;
+    zce::Progress_Timer progress_timer;
     progress_timer.restart();
     ZCE_TRACE_FILELINE(RS_DEBUG);
     for (size_t i = 0; i < A_TEST_TIMES; ++i)
@@ -411,7 +411,7 @@ int test_out_buffer(int /*argc*/,char * /*argv*/[])
 
 int test_out_file()
 {
-    ZCE_Progress_Timer progress_timer;
+    zce::Progress_Timer progress_timer;
     progress_timer.restart();
     std::ofstream of_stream_1("FILE_A1.txt",std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)
@@ -472,7 +472,7 @@ int test_out_file()
 
 int test_out_file_stream()
 {
-    ZCE_Progress_Timer progress_timer;
+    zce::Progress_Timer progress_timer;
     progress_timer.restart();
     std::ofstream of_stream_1("FILE_B1.txt",std::ios::trunc | std::ios::ate);
     for (size_t i = 0; i < B_TEST_TIMES; ++i)

@@ -239,12 +239,6 @@
     <ClCompile Include="zce\sqlite\conf_table.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\sqlite\db_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="zce\sqlite\stmt_handler.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\lockfree\kfifo.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -318,6 +312,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\logger\log_basic.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\sqlite\sqlite_handler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="zce\sqlite\sqlite_stmt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -607,12 +607,6 @@
     <ClInclude Include="zce\sqlite\conf_table.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\sqlite\db_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\sqlite\stmt_handler.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\lockfree\kfifo.h">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -719,6 +713,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\util\algorithm.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\sqlite\sqlite_handler.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="zce\sqlite\sqlite_stmt.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

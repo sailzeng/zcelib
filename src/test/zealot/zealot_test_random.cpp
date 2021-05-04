@@ -368,7 +368,7 @@ int test_random_elapsed_t()
     uint32_t u32_data = 0;
 
     rand_gen_t rand_gen(TEST_SEED);
-    ZCE_Progress_Timer rand_timer;
+    zce::Progress_Timer rand_timer;
     const size_t TEST_SIZE = 10000 * 10000;
 
     rand_timer.restart();
@@ -562,7 +562,7 @@ int test_random_elapsed_time(int /*argc*/,char * /*argv*/[])
     test_random_elapsed_t<zce::random_ranlux389>();
 
     ::srand(1010123);
-    ZCE_Progress_Timer rand_timer;
+    zce::Progress_Timer rand_timer;
     const size_t TEST_SIZE = 10000 * 10000;
 
     rand_timer.restart();
@@ -706,7 +706,7 @@ int test_random_repeat_number(int /*argc*/,char * /*argv*/[])
 //计算几个随机数函数的重复情况
 int test_random_var_obj_speed(int /*argc*/,char * /*argv*/[])
 {
-    ZCE_Progress_Timer rand_timer;
+    zce::Progress_Timer rand_timer;
     const size_t TEST_SIZE = 10000 * 10000;
     uint32_t u32_data = 0;
 

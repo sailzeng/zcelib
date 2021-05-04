@@ -43,7 +43,7 @@ public:
 
 public:
     ///构造函数
-    ZCE_Null_Mutex(const char ptr*= NULL);
+    ZCE_Null_Mutex(const char *ptr = NULL);
     ///析构函数
     virtual ~ZCE_Null_Mutex(void);
 

@@ -35,8 +35,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 
 #pragma once
 
-#include "zce/sqlite/db_handler.h"
-#include "zce/sqlite/stmt_handler.h"
+#include "zce/sqlite/sqlite_handler.h"
+#include "zce/sqlite/sqlite_stmt.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000

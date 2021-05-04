@@ -86,6 +86,10 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 
+
+#include <zce/sqlite/sqlite_handler.h>
+#include <zce/sqlite/sqlite_stmt.h>
+
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)

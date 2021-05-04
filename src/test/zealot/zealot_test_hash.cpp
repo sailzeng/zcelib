@@ -511,7 +511,7 @@ int test_hash_match(int /*argc*/,char * /*argv*/[])
     std::cout << "Hash safe table expect use ratio : " << double(hash_safe_p->size()) / req_node_number << std::endl;
 
     //
-    ZCE_Progress_Timer progress_timer;
+    zce::Progress_Timer progress_timer;
     progress_timer.restart();
 
     //
@@ -590,7 +590,7 @@ typedef zce::shm_hash_rehash<int,int> SMEM_HASH_SAFE_INT;
 int test_hash_safe(int /*argc*/,char * /*argv*/[])
 {
     //计时器，不是定时器呀
-    ZCE_HR_Progress_Timer auto_timer;
+    zce::HR_Progress_Timer auto_timer;
 
     SMEM_HASH_SAFE_INT *abc = NULL;
 

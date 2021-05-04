@@ -514,6 +514,12 @@ zce::Time_Value str_to_value(const char *str)
     return val;
 }
 
+template<>
+std::string str_to_value(const char *str)
+{
+    return std::string(str);
+}
+
 //将c str 转换为很多数值类型，作为指针参数返回
 template<>
 void str_to_ptr(const char *str,int8_t *ptr)

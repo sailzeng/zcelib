@@ -157,7 +157,7 @@ void test_findwith_container(size_t container_len)
         int_hash[(int)i] = (int)i;
     }
 
-    ZCE_HR_Progress_Timer test_timer;
+    zce::HR_Progress_Timer test_timer;
 
     test_timer.restart();
     for (size_t i = 0; i < TEST_NUMBER; ++i)
@@ -241,7 +241,7 @@ int test_container_performance(int  /*argc*/,char * /*argv*/[])
 
 int test_progress_timer(int  /*argc*/,char * /*argv*/[])
 {
-    ZCE_Chrono_HR_Timer hr_timer;
+    zce::Chrono_HR_Timer hr_timer;
     zce::Time_Value sleep_len(2,5000);
 
     hr_timer.restart();

@@ -104,7 +104,7 @@ int test_async_coroutine(int  /*argc*/,char * /*argv*/[]);
 int test_conf_xml(int  /*argc*/,char * /*argv*/[]);
 int test_conf_ini(int  /*argc*/,char * /*argv*/[]);
 
-int test_file(int /*argc*/,char * /*argv*/[]);
+
 int test_pid_file(int /*argc*/,char * /*argv*/[]);
 
 int test_container_performance(int  /*argc*/,char * /*argv*/[]);
@@ -115,5 +115,9 @@ int test_net_getaddrinfo(int argc,char *argv[]);
 
 int test_memory_debug(int /*argc*/,char * /*argv */[]);
 int test_back_stack(int /*argc*/,char * /*argv */[]);
+
+int test_sqlite_handle(int /*argc*/,char * /*argv */[]);
+int test_sqlite_stmt(int /*argc*/,char * /*argv */[]);
+int test_sqlite_configtable(int /*argc*/,char * /*argv */[]);
 
 #endif //

@@ -55,7 +55,7 @@ public:
                          由于整体代码的关系，这儿假设在WINDOWS你传入的是ANSI的
                          字符串，在LINUX，你传入的是UTF8
     @param      read_only 只读
-    @param      create_db 是否需要创建数据库，
+    @param      create_db 是否需要创建数据库，(db不存在时)
     */
     int open_database(const char *db_file,
                       bool read_only,
@@ -187,8 +187,6 @@ protected:
     //! Number of result columns written here ,column_ 从1开始
     int column_ = 0;
 
-    //! Error msg written here
-    char *err_msg_ = NULL;
 };
 }
 

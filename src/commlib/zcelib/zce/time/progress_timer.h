@@ -7,7 +7,7 @@
 * @brief      计时器的封装，用于记录一些耗时等。也可以用于测量
 *             性能等。
 *
-* @details    ZCE_Progress_Timer  普通计时器
+* @details    Progress_Timer  普通计时器
 *             使用std::clock 计时，性能一般，可以记录较长的时间，
 *             sleep，阻塞等导致CPU切换后，不会对计时产生影响，
 *             但计时精度有缺陷，精度只有10ms级别。
@@ -46,14 +46,14 @@ namespace zce
 * @note       精度问题，由于std::clock的实现，其实真正的进度可能在10多ms（15-16）。所以如
 *             果直接拿这个测量某个函数的（一次）耗时，不会准确，误差非常大。
 */
-class ZCE_Progress_Timer
+class Progress_Timer
 {
 public:
 
     ///构造函数
-    ZCE_Progress_Timer();
+    Progress_Timer();
     ///析构函数
-    ~ZCE_Progress_Timer();
+    ~Progress_Timer();
 
     ///从新开始计时
     void restart();
@@ -99,14 +99,14 @@ protected:
 *             频机制，所以还是慎重为好） 第三，QueryPerformanceCounter比较耗时，远远不如
 *             RDTSC。甚至和GetTickCount都有几十倍的差距。
 */
-class ZCE_HR_Progress_Timer
+class HR_Progress_Timer
 {
 public:
 
     ///构造函数
-    ZCE_HR_Progress_Timer();
+    HR_Progress_Timer();
     ///析构函数
-    ~ZCE_HR_Progress_Timer();
+    ~HR_Progress_Timer();
 
     ///从新开始计时
     void restart();
@@ -167,14 +167,14 @@ protected:
 *             但如果说到对性能不要有影响，而且尽量只是作为测量参考，这个计时器也是不错的选
 *             择。
 */
-class ZCE_TSC_Progress_Timer
+class TSC_Progress_Timer
 {
 public:
 
     ///构造函数
-    ZCE_TSC_Progress_Timer();
+    TSC_Progress_Timer();
     ///析构函数
-    ~ZCE_TSC_Progress_Timer();
+    ~TSC_Progress_Timer();
 
     ///从新开始计时
     void restart();
@@ -209,14 +209,14 @@ protected:
 * @brief      利用CPP 11的std::chrono::high_resolution_clock高精度计时器做的计时器，
 *
 */
-class ZCE_Chrono_HR_Timer
+class Chrono_HR_Timer
 {
 public:
 
     ///构造函数
-    ZCE_Chrono_HR_Timer();
+    Chrono_HR_Timer();
     ///析构函数
-    ~ZCE_Chrono_HR_Timer() = default;
+    ~Chrono_HR_Timer() = default;
 
     ///从新开始计时
     void restart();
@@ -248,17 +248,17 @@ protected:
 *             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
 */
 template<typename PROGRESS_TIMER>
-class ZCE_Auto_Progress_Timer: public zce::NON_Copyable
+class Auto_Progress_Timer: public zce::NON_Copyable
 {
 public:
     ///构造函数，同时开始计时
-    ZCE_Auto_Progress_Timer()
+    Auto_Progress_Timer()
     {
         progress_timer_.restart();
     };
 
     ///析构函数把耗时打印出来
-    ~ZCE_Auto_Progress_Timer()
+    ~Auto_Progress_Timer()
     {
         progress_timer_.end();
         ZCE_LOG(RS_INFO,"This operation in function[%s] use time :%.6f microseconds(usec).",

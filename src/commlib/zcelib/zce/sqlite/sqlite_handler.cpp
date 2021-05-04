@@ -1,6 +1,6 @@
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
-#include "zce/sqlite/db_handler.h"
+#include "zce/sqlite/sqlite_handler.h"
 
 //对于SQLITE的最低版本限制
 #if SQLITE_VERSION_NUMBER >= 3005000
@@ -127,16 +127,19 @@ int SQLite_Handler::get_table(const char *sql_string,
                               SQLite_Result *result)
 {
     int ret = SQLITE_OK;
+    char *err_msg = NULL;
     ret = ::sqlite3_get_table(sqlite3_handler_,sql_string,
                               &(result->result_),
                               &(result->row_),
                               &(result->column_),
-                              &(result->err_msg_));
+                              &(err_msg));
     if (ret != SQLITE_OK)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_get_table execute fail:[%d][%s]",
                 ret,
-                result->err_msg_);
+                err_msg);
+        ::sqlite3_free(err_msg);
+        return -1;
     }
     return 0;
 }
@@ -155,13 +158,10 @@ SQLite_Result::~SQLite_Result()
 //释放结果集合
 void SQLite_Result::free_result()
 {
-    if (err_msg_)
-    {
-        ::sqlite3_free(err_msg_);
-    }
     if (result_)
     {
         ::sqlite3_free_table(result_);
+        result_ = nullptr;
     }
 
     column_ = 0;

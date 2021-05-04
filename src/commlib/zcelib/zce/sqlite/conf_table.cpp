@@ -377,10 +377,10 @@ int AII_Config_Table::replace_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    SQLite_STMT stmt_handler(sqlite_handler_);
     int ret = 0;
 
-    ret = stmt_handler.begin_transaction();
+    ret = sqlite_handler_->begin_transaction();
     if (ret != 0)
     {
         return ret;
@@ -392,8 +392,8 @@ int AII_Config_Table::replace_one(unsigned int table_id,
         return ret;
     }
 
-    SQLite_STMTHdl::BIN_Param binary_data((void *)conf_data->ai_iijima_data_,
-                                          conf_data->ai_data_length_);
+    SQLite_STMT::BLOB_bind binary_data((void *)conf_data->ai_iijima_data_,
+                                     conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
     stmt_handler << binary_data;
@@ -405,7 +405,7 @@ int AII_Config_Table::replace_one(unsigned int table_id,
     {
         return ret;
     }
-    ret = stmt_handler.commit_transction();
+    ret = sqlite_handler_->commit_transction();
     if (ret != 0)
     {
         return ret;
@@ -418,10 +418,10 @@ int AII_Config_Table::replace_array(unsigned int table_id,
 {
     //构造后面的SQL
     sql_replace_bind(table_id);
-    SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    SQLite_STMT stmt_handler(sqlite_handler_);
     int ret = 0;
 
-    ret = stmt_handler.begin_transaction();
+    ret = sqlite_handler_->begin_transaction();
     if (ret != 0)
     {
         return ret;
@@ -437,7 +437,7 @@ int AII_Config_Table::replace_array(unsigned int table_id,
             return ret;
         }
 
-        SQLite_STMTHdl::BIN_Param binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
+        SQLite_STMT::BLOB_bind binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
                                               (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
@@ -452,7 +452,7 @@ int AII_Config_Table::replace_array(unsigned int table_id,
         }
     }
 
-    ret = stmt_handler.commit_transction();
+    ret = sqlite_handler_->commit_transction();
     if (ret != 0)
     {
         return ret;
@@ -467,7 +467,7 @@ int AII_Config_Table::select_one(unsigned int table_id,
     sql_select_one(table_id,
                    conf_data->index_1_,
                    conf_data->index_2_);
-    SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    SQLite_STMT stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -487,7 +487,7 @@ int AII_Config_Table::select_one(unsigned int table_id,
         return -1;
     }
 
-    SQLite_STMTHdl::BIN_Result binary_data((void *)conf_data->ai_iijima_data_,
+    SQLite_STMT::BLOB_column binary_data((void *)conf_data->ai_iijima_data_,
                                            &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
@@ -502,7 +502,7 @@ int AII_Config_Table::delete_one(unsigned int table_id,
 {
     //构造后面的SQL
     sql_delete_one(table_id,index_1,index_2);
-    SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    SQLite_STMT stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -525,7 +525,7 @@ int AII_Config_Table::counter(unsigned int table_id,
                               unsigned int *rec_count)
 {
     sql_counter(table_id,startno,numquery);
-    SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    SQLite_STMT stmt_handler(sqlite_handler_);
     int ret = 0;
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -573,7 +573,7 @@ int AII_Config_Table::select_array(unsigned int table_id,
     ary_ai_iijma->resize(num_counter);
 
     sql_select_array(table_id,startno,numquery);
-    SQLite_STMTHdl stmt_handler(sqlite_handler_);
+    SQLite_STMT stmt_handler(sqlite_handler_);
 
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
@@ -598,7 +598,7 @@ int AII_Config_Table::select_array(unsigned int table_id,
             return -1;
         }
 
-        SQLite_STMTHdl::BIN_Result binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
+        SQLite_STMT::BLOB_column binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
                                                &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;

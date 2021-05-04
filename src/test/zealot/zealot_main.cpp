@@ -18,7 +18,8 @@ int main(int argc,char *argv[])
                                                 static_cast<int>(LOG_HEAD::NONE));
     ZCE_TRACE_FILELINE(RS_DEBUG);
 
-    test_lua_script3(argc,argv);
+    test_sqlite_handle(argc,argv);
+    test_sqlite_stmt(argc,argv);
 
     return 0;
 

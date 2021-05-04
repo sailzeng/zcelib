@@ -4,52 +4,50 @@
 #if SQLITE_VERSION_NUMBER >= 3005000
 
 #include "zce/logger/logging.h"
-#include "zce/sqlite/db_handler.h"
-#include "zce/sqlite/stmt_handler.h"
+#include "zce/sqlite/sqlite_handler.h"
+#include "zce/sqlite/sqlite_stmt.h"
 
 /*
-* SQLite_STMTHdl
+* SQLite_STMT
 */
 
 namespace zce
 {
 //构造函数,从很细小的地方就可以看出SQLITE的设计有不足，一个INDEX从1开始，1个从0
-SQLite_STMTHdl::SQLite_STMTHdl(SQLite_Handler *sqlite3_handler):
+SQLite_STMT::SQLite_STMT(SQLite_Handler *sqlite3_handler):
     sqlite_handler_(sqlite3_handler),
-    sqlite3_stmt_handler_(NULL),
+    prepared_statement_(NULL),
     current_col_(0),
     current_bind_(1)
 {
     assert(sqlite3_handler != NULL && sqlite3_handler->get_sqlite_handler() != NULL);
 }
 
-SQLite_STMTHdl::~SQLite_STMTHdl()
+SQLite_STMT::~SQLite_STMT()
 {
     finalize();
 }
 
 //销毁SQLITE3的STMT HANDLER，恢复初始化值等。
-int SQLite_STMTHdl::finalize()
+int SQLite_STMT::finalize()
 {
     //销毁SQLITE3的STMT HANDLER
-    int ret = ::sqlite3_finalize(sqlite3_stmt_handler_);
-
+    int ret = ::sqlite3_finalize(prepared_statement_);
     if (SQLITE_OK != ret)
     {
         return -1;
     }
 
-    sqlite3_stmt_handler_ = NULL;
+    prepared_statement_ = nullptr;
     current_bind_ = 1;
     current_col_ = 0;
     return 0;
 }
 
 //
-int SQLite_STMTHdl::reset()
+int SQLite_STMT::reset()
 {
-    int ret = ::sqlite3_reset(sqlite3_stmt_handler_);
-
+    int ret = ::sqlite3_reset(prepared_statement_);
     if (SQLITE_OK != ret)
     {
         return -1;
@@ -57,14 +55,13 @@ int SQLite_STMTHdl::reset()
 
     current_bind_ = 1;
     current_col_ = 0;
-
     return 0;
 }
 
 //分析SQL语句，检查是否能够正确执行
-int SQLite_STMTHdl::prepare(const char *sql_string)
+int SQLite_STMT::prepare(const char *sql_string)
 {
-    if (sqlite3_stmt_handler_)
+    if (prepared_statement_)
     {
         finalize();
     }
@@ -72,11 +69,10 @@ int SQLite_STMTHdl::prepare(const char *sql_string)
     int ret = ::sqlite3_prepare_v2(sqlite_handler_->get_sqlite_handler(),
                                    sql_string,
                                    -1,                                      //注意这个参数，必须小于0
-                                   &sqlite3_stmt_handler_,
+                                   &prepared_statement_,
                                    NULL);
-
     //如果分析结果错误，或者不是一个SQL
-    if (SQLITE_OK != ret || sqlite3_stmt_handler_ == NULL)
+    if (SQLITE_OK != ret || prepared_statement_ == NULL)
     {
         //其他返回错误
         ZCE_LOG(RS_ERROR,"[zcelib] Error:[%d][%s]",
@@ -91,11 +87,11 @@ int SQLite_STMTHdl::prepare(const char *sql_string)
 }
 
 //
-int SQLite_STMTHdl::execute_stmt_sql(bool &has_reuslt)
+int SQLite_STMT::execute_stmt_sql(bool &has_reuslt)
 {
     has_reuslt = false;
     //
-    int ret = ::sqlite3_step(sqlite3_stmt_handler_);
+    int ret = ::sqlite3_step(prepared_statement_);
 
     //
     if (SQLITE_ROW == ret)
@@ -118,9 +114,9 @@ int SQLite_STMTHdl::execute_stmt_sql(bool &has_reuslt)
 
 //Bind 函数群
 template<>
-int SQLite_STMTHdl::bind(int bind_index,char val)
+int SQLite_STMT::bind(int bind_index,char val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,
+    int ret = ::sqlite3_bind_int(prepared_statement_,
                                  bind_index,
                                  static_cast<int>(val));
     if (SQLITE_OK != ret)
@@ -132,9 +128,9 @@ int SQLite_STMTHdl::bind(int bind_index,char val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,short val)
+int SQLite_STMT::bind(int bind_index,short val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,static_cast<int>(val));
+    int ret = ::sqlite3_bind_int(prepared_statement_,bind_index,static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",error_code(),error_message());
@@ -145,9 +141,9 @@ int SQLite_STMTHdl::bind(int bind_index,short val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,int val)
+int SQLite_STMT::bind(int bind_index,int val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,val);
+    int ret = ::sqlite3_bind_int(prepared_statement_,bind_index,val);
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",
@@ -160,9 +156,9 @@ int SQLite_STMTHdl::bind(int bind_index,int val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,long val)
+int SQLite_STMT::bind(int bind_index,long val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,static_cast<int>(val));
+    int ret = ::sqlite3_bind_int(prepared_statement_,bind_index,static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",
@@ -175,9 +171,9 @@ int SQLite_STMTHdl::bind(int bind_index,long val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,long long val)
+int SQLite_STMT::bind(int bind_index,long long val)
 {
-    int ret = ::sqlite3_bind_int64(sqlite3_stmt_handler_,bind_index,val);
+    int ret = ::sqlite3_bind_int64(prepared_statement_,bind_index,val);
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int64 error :[%d][%s]",
@@ -190,9 +186,9 @@ int SQLite_STMTHdl::bind(int bind_index,long long val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,unsigned char val)
+int SQLite_STMT::bind(int bind_index,unsigned char val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,static_cast<int>(val));
+    int ret = ::sqlite3_bind_int(prepared_statement_,bind_index,static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",
@@ -205,9 +201,9 @@ int SQLite_STMTHdl::bind(int bind_index,unsigned char val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,unsigned short val)
+int SQLite_STMT::bind(int bind_index,unsigned short val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,static_cast<int>(val));
+    int ret = ::sqlite3_bind_int(prepared_statement_,bind_index,static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",error_code(),error_message());
@@ -218,9 +214,9 @@ int SQLite_STMTHdl::bind(int bind_index,unsigned short val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,unsigned int val)
+int SQLite_STMT::bind(int bind_index,unsigned int val)
 {
-    int ret = sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,val);
+    int ret = sqlite3_bind_int(prepared_statement_,bind_index,val);
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",error_code(),error_message());
@@ -232,9 +228,9 @@ int SQLite_STMTHdl::bind(int bind_index,unsigned int val)
 
 //注意long这儿bind的是32位的喔
 template<>
-int SQLite_STMTHdl::bind(int bind_index,unsigned long val)
+int SQLite_STMT::bind(int bind_index,unsigned long val)
 {
-    int ret = ::sqlite3_bind_int(sqlite3_stmt_handler_,bind_index,static_cast<int>(val));
+    int ret = ::sqlite3_bind_int(prepared_statement_,bind_index,static_cast<int>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int error :[%d][%s]",error_code(),error_message());
@@ -245,9 +241,9 @@ int SQLite_STMTHdl::bind(int bind_index,unsigned long val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,unsigned long long val)
+int SQLite_STMT::bind(int bind_index,unsigned long long val)
 {
-    int ret = ::sqlite3_bind_int64(sqlite3_stmt_handler_,bind_index,val);
+    int ret = ::sqlite3_bind_int64(prepared_statement_,bind_index,val);
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_int64 error :[%d][%s]",error_code(),error_message());
@@ -258,9 +254,9 @@ int SQLite_STMTHdl::bind(int bind_index,unsigned long long val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,float val)
+int SQLite_STMT::bind(int bind_index,float val)
 {
-    int ret = ::sqlite3_bind_double(sqlite3_stmt_handler_,bind_index,static_cast<double>(val));
+    int ret = ::sqlite3_bind_double(prepared_statement_,bind_index,static_cast<double>(val));
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_double error :[%d][%s]",error_code(),error_message());
@@ -271,9 +267,9 @@ int SQLite_STMTHdl::bind(int bind_index,float val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,double val)
+int SQLite_STMT::bind(int bind_index,double val)
 {
-    int ret = ::sqlite3_bind_double(sqlite3_stmt_handler_,
+    int ret = ::sqlite3_bind_double(prepared_statement_,
                                     bind_index,
                                     val);
     if (SQLITE_OK != ret)
@@ -285,10 +281,10 @@ int SQLite_STMTHdl::bind(int bind_index,double val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,const char *val)
+int SQLite_STMT::bind(int bind_index,const char *val)
 {
     //从参数上看，SQLite的STMT不是bind变量，而是取了数据
-    int ret = ::sqlite3_bind_text(sqlite3_stmt_handler_,
+    int ret = ::sqlite3_bind_text(prepared_statement_,
                                   bind_index,
                                   val,
                                   static_cast<int>(strlen(val)),
@@ -303,10 +299,10 @@ int SQLite_STMTHdl::bind(int bind_index,const char *val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,const  std::string &val)
+int SQLite_STMT::bind(int bind_index,const  std::string &val)
 {
     //
-    int ret = ::sqlite3_bind_text(sqlite3_stmt_handler_,
+    int ret = ::sqlite3_bind_text(prepared_statement_,
                                   bind_index,
                                   val.c_str(),
                                   static_cast<int>(val.length()),
@@ -322,30 +318,30 @@ int SQLite_STMTHdl::bind(int bind_index,const  std::string &val)
 }
 
 template<>
-int SQLite_STMTHdl::bind(int bind_index,const SQLite_STMTHdl::BIN_Param &val)
+int SQLite_STMT::bind(int bind_index,const SQLite_STMT::BLOB_bind &val)
 {
-    int ret = ::sqlite3_bind_blob(sqlite3_stmt_handler_,
+    //SQLITE_TRANSIENT 是要求SQLite对数据进行复制处理
+    //SQLITE_STATIC 是告诉SQLite，数据我管理
+    int ret = ::sqlite3_bind_blob(prepared_statement_,
                                   bind_index,
-                                  val.binary_data_,
-                                  val.binary_len_,
+                                  val.bind_data_,
+                                  val.bind_size_,
                                   SQLITE_TRANSIENT);
-
     if (SQLITE_OK != ret)
     {
         ZCE_LOG(RS_ERROR,"[zcelib] sqlite3_bind_blob error :[%d][%s]",error_code(),error_message());
         return ret;
     }
-
     return 0;
 }
 
-SQLite_STMTHdl &SQLite_STMTHdl::operator << (const SQLite_STMTHdl::BIN_Param &val)
+SQLite_STMT &SQLite_STMT::operator << (const SQLite_STMT::BLOB_bind &val)
 {
-    bind<const SQLite_STMTHdl::BIN_Param &>(current_bind_,val);
+    bind<const SQLite_STMT::BLOB_bind &>(current_bind_,val);
     ++current_bind_;
     return *this;
 }
-SQLite_STMTHdl &SQLite_STMTHdl::operator << (const std::string &val)
+SQLite_STMT &SQLite_STMT::operator << (const std::string &val)
 {
     bind<const std::string &>(current_bind_,val);
     ++current_bind_;
@@ -353,153 +349,133 @@ SQLite_STMTHdl &SQLite_STMTHdl::operator << (const std::string &val)
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,char &val)
+void SQLite_STMT::column(int result_col,char &val)
 {
-    val = static_cast<char>(::sqlite3_column_int(sqlite3_stmt_handler_,result_col));
+    val = static_cast<char>(::sqlite3_column_int(prepared_statement_,result_col));
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,short &val)
+void SQLite_STMT::column(int result_col,short &val)
 {
-    val = static_cast<short>(::sqlite3_column_int(sqlite3_stmt_handler_,
+    val = static_cast<short>(::sqlite3_column_int(prepared_statement_,
                              result_col));
-
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,int &val)
+void SQLite_STMT::column(int result_col,int &val)
 {
-    val = ::sqlite3_column_int(sqlite3_stmt_handler_,
+    val = ::sqlite3_column_int(prepared_statement_,
                                result_col);
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,long &val)
+void SQLite_STMT::column(int result_col,long &val)
 {
-    val = ::sqlite3_column_int(sqlite3_stmt_handler_,
+    val = ::sqlite3_column_int(prepared_statement_,
                                result_col);
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,long long &val)
+void SQLite_STMT::column(int result_col,long long &val)
 {
-    val = ::sqlite3_column_int64(sqlite3_stmt_handler_,
+    val = ::sqlite3_column_int64(prepared_statement_,
                                  result_col);
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,unsigned char &val)
+void SQLite_STMT::column(int result_col,unsigned char &val)
 {
-    val = static_cast<unsigned char>(::sqlite3_column_int(sqlite3_stmt_handler_,
+    val = static_cast<unsigned char>(::sqlite3_column_int(prepared_statement_,
                                      result_col));
-
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,unsigned short &val)
+void SQLite_STMT::column(int result_col,unsigned short &val)
 {
-    val = static_cast<unsigned short>(::sqlite3_column_int(sqlite3_stmt_handler_,
+    val = static_cast<unsigned short>(::sqlite3_column_int(prepared_statement_,
                                       result_col));
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,unsigned int &val)
+void SQLite_STMT::column(int result_col,unsigned int &val)
 {
-    val = static_cast<unsigned int>(sqlite3_column_int(sqlite3_stmt_handler_,
+    val = static_cast<unsigned int>(sqlite3_column_int(prepared_statement_,
                                     result_col));
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,unsigned long &val)
+void SQLite_STMT::column(int result_col,unsigned long &val)
 {
-    val = static_cast<unsigned long>(sqlite3_column_int(sqlite3_stmt_handler_,
+    val = static_cast<unsigned long>(sqlite3_column_int(prepared_statement_,
                                      result_col));
 
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,unsigned long long &val)
+void SQLite_STMT::column(int result_col,unsigned long long &val)
 {
-    val = static_cast<unsigned long long> (sqlite3_column_int64(sqlite3_stmt_handler_,
+    val = static_cast<unsigned long long> (sqlite3_column_int64(prepared_statement_,
                                            result_col));
-
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,float &val)
+void SQLite_STMT::column(int result_col,float &val)
 {
-    val = static_cast<float> (sqlite3_column_double(sqlite3_stmt_handler_,
+    val = static_cast<float> (sqlite3_column_double(prepared_statement_,
                               result_col));
 
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,double &val)
+void SQLite_STMT::column(int result_col,double &val)
 {
-    val = sqlite3_column_double(sqlite3_stmt_handler_,
+    val = sqlite3_column_double(prepared_statement_,
                                 result_col);
-
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,char *val)
+void SQLite_STMT::column(int result_col,char *val)
 {
     //Fisk这个变态让我改了地方，为了安全检查。
     strncpy(val,
-            reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_,
+            reinterpret_cast<const char *>(sqlite3_column_text(prepared_statement_,
             result_col)),
-            static_cast<size_t>(sqlite3_column_bytes(sqlite3_stmt_handler_,result_col)) + 1);
-
+            static_cast<size_t>(sqlite3_column_bytes(prepared_statement_,result_col)));
     return;
 }
 
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 template<>
-void SQLite_STMTHdl::column(int result_col,SQLite_STMTHdl::BIN_Result &val)
+void SQLite_STMT::column(int result_col,SQLite_STMT::BLOB_column &val)
 {
-    *val.binary_len_ = ::sqlite3_column_bytes(sqlite3_stmt_handler_,result_col);
+    *val.binary_len_ = ::sqlite3_column_bytes(prepared_statement_,result_col);
     //为了获取二进制数据，与ZCE_Mysql_Result相对应,长度不+1
-    memcpy(val.binary_data_,::sqlite3_column_blob(sqlite3_stmt_handler_,result_col),
+    memcpy(val.binary_data_,::sqlite3_column_blob(prepared_statement_,result_col),
            *val.binary_len_);
     return;
 }
 
 template<>
-void SQLite_STMTHdl::column(int result_col,std::string &val)
+void SQLite_STMT::column(int result_col,std::string &val)
 {
-    val = reinterpret_cast<const char *>(sqlite3_column_text(sqlite3_stmt_handler_,
-                                         result_col));
+    val.assign(reinterpret_cast<const char *>(sqlite3_column_text(prepared_statement_,
+                                         result_col)),
+               ::sqlite3_column_bytes(prepared_statement_,result_col));
     return;
 }
 
-//开始一个事务
-int SQLite_STMTHdl::begin_transaction()
-{
-    return sqlite_handler_->begin_transaction();
-}
-
-//提交一个事务
-int SQLite_STMTHdl::commit_transction()
-{
-    return sqlite_handler_->commit_transction();
-}
-
-int SQLite_STMTHdl::turn_off_synch()
-{
-    return sqlite_handler_->turn_off_synch();
-}
 }
 
 #endif //#if SQLITE_VERSION_NUMBER >= 3005000
