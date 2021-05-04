@@ -31,14 +31,13 @@ SendRecv_Msg_Base::~SendRecv_Msg_Base()
     }
 }
 
-
 void SendRecv_Msg_Base::set_services_id(const soar::SERVICES_ID &recv_service,
-                                            const soar::SERVICES_ID &send_service,
-                                            const soar::SERVICES_ID &proxy_service,
-                                            size_t frame_len)
+                                        const soar::SERVICES_ID &send_service,
+                                        const soar::SERVICES_ID &proxy_service,
+                                        size_t frame_len)
 
 {
-    msg_recv_service_  = recv_service;
+    msg_recv_service_ = recv_service;
     msg_send_service_ = send_service;
     msg_proxy_service_ = proxy_service;
     test_frame_len_ = frame_len;
@@ -49,7 +48,6 @@ void SendRecv_Msg_Base::set_services_id(const soar::SERVICES_ID &recv_service,
 
     msg_recv_frame_ = soar::Zerg_Frame::new_frame(test_frame_len_);
     msg_recv_frame_->init_head(static_cast<unsigned int>(test_frame_len_));
-
 }
 
 //取得收到的事务ID
@@ -61,7 +59,6 @@ void SendRecv_Msg_Base::get_recv_transid(unsigned int &trans_id)
 unsigned int SendRecv_Msg_Base::get_send_transid()
 {
     return trans_id_builder_;
-
 }
 
 unsigned int SendRecv_Msg_Base::get_backfill_transid()

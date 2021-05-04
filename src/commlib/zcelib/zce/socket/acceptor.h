@@ -8,9 +8,8 @@
 namespace zce
 {
 /// Acceptor的工厂，用于产生Socket_Stream
-class Socket_Acceptor  : public zce::Socket_Base
+class Socket_Acceptor: public zce::Socket_Base
 {
-
 public:
     Socket_Acceptor();
     ~Socket_Acceptor();
@@ -25,17 +24,12 @@ public:
              int protocol = 0);
 
     //接受一个SOCKET
-    int accept (Socket_Stream &new_stream,
-                Sockaddr_Base *remote_addr) const;
+    int accept(Socket_Stream &new_stream,
+               Sockaddr_Base *remote_addr) const;
 
     //带有超时的处理的accept
-    int accept (Socket_Stream &new_stream,
-                Time_Value &timeout,
-                Sockaddr_Base *remote_addr) const;
-
+    int accept(Socket_Stream &new_stream,
+               Time_Value &timeout,
+               Sockaddr_Base *remote_addr) const;
 };
-
 }
-
-
-

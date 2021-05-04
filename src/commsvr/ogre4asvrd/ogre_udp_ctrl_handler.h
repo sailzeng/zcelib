@@ -1,5 +1,3 @@
-
-
 #ifndef OGRE_UDP_CONTROL_SERVICE_H_
 #define OGRE_UDP_CONTROL_SERVICE_H_
 
@@ -36,7 +34,7 @@ public:
 protected:
 
     //从PEER读取数据
-    int read_data_fromudp(size_t &szrevc, zce::Sockaddr_In &remote_addr);
+    int read_data_fromudp(size_t &szrevc,zce::Sockaddr_In &remote_addr);
     //将收到的数据放入管道
     int pushdata_to_recvpipe();
 
@@ -51,16 +49,14 @@ protected:
     OGRE_PEER_ID           peer_svc_info_;
 
     //
-    Ogre4a_App_Frame           *dgram_databuf_;
+    Ogre4a_App_Frame *dgram_databuf_;
 
     //IP限制管理器
-    Ogre_IPRestrict_Mgr       *ip_restrict_;
+    Ogre_IPRestrict_Mgr *ip_restrict_;
 
 protected:
     //
     static  std::vector<Ogre_UDPSvc_Hdl *> ary_upd_peer_;
-
 };
 
 #endif //#ifndef OGRE_UDP_CONTROL_SERVICE_H_
-

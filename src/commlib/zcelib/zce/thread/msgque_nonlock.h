@@ -22,8 +22,8 @@
 
 //使用偏特化得到一个ZCE_Message_Queue
 template < typename _value_type,
-           typename _container_type >
-class ZCE_Message_Queue<ZCE_NULL_SYNCH, _value_type, _container_type> : public zce::NON_Copyable
+    typename _container_type >
+    class ZCE_Message_Queue<ZCE_NULL_SYNCH,_value_type,_container_type>: public zce::NON_Copyable
 {
 protected:
 
@@ -89,7 +89,7 @@ public:
 
     //放入一个数据，进行超时等待
     int enqueue(const _value_type &value_data,
-                zce::Time_Value & )
+                zce::Time_Value &)
     {
         return enqueue(value_data);
     }
@@ -110,7 +110,7 @@ public:
     }
 
     int dequeue(_value_type &value_data,
-                zce::Time_Value & )
+                zce::Time_Value &)
     {
         return dequeue(value_data);
     }
@@ -128,5 +128,3 @@ public:
         return queue_cur_size_;
     }
 };
-
-

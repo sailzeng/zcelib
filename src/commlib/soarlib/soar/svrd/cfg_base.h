@@ -1,12 +1,7 @@
-
 #ifndef SOARING_LIB_SERVER_CONFIG_BASE_H_
 #define SOARING_LIB_SERVER_CONFIG_BASE_H_
 
 #include "soar/zerg/services_info.h"
-
-
-
-
 
 //============================================================================================
 
@@ -17,7 +12,6 @@
 */
 struct SOAR_PIPE_CFG_DATA
 {
-
 public:
     ///是否恢复管道
     bool if_restore_pipe_ = true;
@@ -59,7 +53,6 @@ public:
     uint32_t max_log_file_size_ = 32 * 1024 * 1024;
 };
 
-
 ///用于读取配置失败记录发送失败的地点的地方，
 #ifndef SOAR_CFG_READ_FAIL
 #define SOAR_CFG_READ_FAIL(x)        ZCE_LOG(x,"[CFG]Config file read fail. code line [%s|%d],function:%s.",\
@@ -74,7 +67,6 @@ public:
 */
 class Server_Config_Base
 {
-
 public:
     //构造函数
     Server_Config_Base();
@@ -88,7 +80,7 @@ public:
     * @param      argc
     * @param      argv
     */
-    virtual int read_start_arg(int argc, const char *argv[]);
+    virtual int read_start_arg(int argc,const char *argv[]);
 
     /*!
     * @brief      加载配置文件的配置
@@ -114,7 +106,6 @@ protected:
 
     ///从配置中读取日志的配置
     int get_log_cfg(const ZCE_Conf_PropertyTree *conf_tree);
-
 
 public:
     //
@@ -142,7 +133,6 @@ public:
     /// Windows下是否卸载服务
     bool win_uninstall_service_ = false;
 
-
     ///是否使用配置服务器，如果false，则使用本地配置
     bool is_use_cfgsvr_ = false;
     ///配置服务器信息
@@ -167,12 +157,6 @@ public:
 
     ///svcid的配置文件
     std::string svc_table_file_;
-
-
-
 };
 
-
-
 #endif //SOARING_LIB_SERVER_CONFIG_BASE_H_
-

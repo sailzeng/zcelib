@@ -2,13 +2,10 @@
 #include "zce/bytes/serialize.h"
 #include "zce/logger/logging.h"
 
-
-
-
 //========================================================================================
 
 ///构造函数
-ZCE_Serialize_Write::ZCE_Serialize_Write(char *write_buf, size_t buf_len) :
+ZCE_Serialize_Write::ZCE_Serialize_Write(char *write_buf,size_t buf_len):
     is_good_(true),
     write_buf_(write_buf),
     buf_len_(buf_len),
@@ -56,7 +53,7 @@ void ZCE_Serialize_Write::write_arithmetic(const short &val)
         is_good_ = false;
         return;
     }
-    ZBEUINT16_TO_BYTE(write_pos_, val);
+    ZBEUINT16_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -69,7 +66,7 @@ void ZCE_Serialize_Write::write_arithmetic(const unsigned short &val)
         is_good_ = false;
         return;
     }
-    ZBEUINT16_TO_BYTE(write_pos_, val);
+    ZBEUINT16_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -82,7 +79,7 @@ void ZCE_Serialize_Write::write_arithmetic(const int &val)
         is_good_ = false;
         return;
     }
-    ZBEUINT32_TO_BYTE(write_pos_, val);
+    ZBEUINT32_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -94,7 +91,7 @@ void ZCE_Serialize_Write::write_arithmetic(const unsigned int &val)
         is_good_ = false;
         return;
     }
-    ZBEUINT32_TO_BYTE(write_pos_, val);
+    ZBEUINT32_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -106,7 +103,7 @@ void ZCE_Serialize_Write::write_arithmetic(const float &val)
         is_good_ = false;
         return;
     }
-    ZFLOAT_TO_BYTE(write_pos_, val);
+    ZFLOAT_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
 
     return;
@@ -119,11 +116,10 @@ void ZCE_Serialize_Write::write_arithmetic(const double &val)
         is_good_ = false;
         return;
     }
-    ZDOUBLE_TO_BYTE(write_pos_, val);
+    ZDOUBLE_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
-    return ;
+    return;
 }
-
 
 void ZCE_Serialize_Write::write_arithmetic(const int64_t &val)
 {
@@ -133,7 +129,7 @@ void ZCE_Serialize_Write::write_arithmetic(const int64_t &val)
         is_good_ = false;
         return;
     }
-    ZBEUINT64_TO_BYTE(write_pos_, val);
+    ZBEUINT64_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
@@ -146,27 +142,27 @@ void ZCE_Serialize_Write::write_arithmetic(const uint64_t &val)
         is_good_ = false;
         return;
     }
-    ZBEUINT64_TO_BYTE(write_pos_, val);
+    ZBEUINT64_TO_BYTE(write_pos_,val);
     write_pos_ += SIZE_OF_VALUE;
     return;
 }
 
 void ZCE_Serialize_Write::write_arithmetic(const bool &val)
 {
-    return this->write_arithmetic(val ? (char)1 : (char)0);
+    return this->write_arithmetic(val?(char)1:(char)0);
 }
 
 //
 void ZCE_ClassSerialize_WriteHelp<std::string>::write_help(ZCE_Serialize_Write *ssave,
                                                            const std::string &val)
 {
-    ssave->write_array(val.c_str(), val.length());
+    ssave->write_array(val.c_str(),val.length());
 }
 
 //========================================================================================
 
 //构造函数
-ZCE_Serialize_Read::ZCE_Serialize_Read(const char *read_buf, size_t buf_len) :
+ZCE_Serialize_Read::ZCE_Serialize_Read(const char *read_buf,size_t buf_len):
     is_good_(true),
     read_buf_(read_buf),
     buf_len_(buf_len),
@@ -183,7 +179,7 @@ void ZCE_Serialize_Read::read_arithmetic(bool &val)
 {
     char bool_data = 0;
     read_arithmetic(bool_data);
-    val = bool_data == 0 ? false : true;
+    val = bool_data == 0?false:true;
     return;
 }
 
@@ -322,6 +318,6 @@ void ZCE_ClassSerialize_ReadHelp<std::string>::read_help(ZCE_Serialize_Read *slo
     unsigned int v_size = 0;
     sload->read_arithmetic(v_size);
 
-    val.assign(sload->read_pos_, v_size);
+    val.assign(sload->read_pos_,v_size);
     sload->read_pos_ += v_size;
 }

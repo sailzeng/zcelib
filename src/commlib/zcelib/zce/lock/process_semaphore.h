@@ -18,9 +18,8 @@
 *             LINUX下用有名信号灯，
 *             WINDOWS下用带名称的信号灯，
 */
-class ZCE_Process_Semaphore  : public ZCE_Lock_Base
+class ZCE_Process_Semaphore: public ZCE_Lock_Base
 {
-
 public:
 
     ///线程锁的GUARD
@@ -33,10 +32,10 @@ public:
     * @param      init_value  信号灯初始化的值
     * @param      sem_name    信号灯的名称
     */
-    ZCE_Process_Semaphore (unsigned int init_value,
-                           const char *sem_name
-                          );
-    virtual ~ZCE_Process_Semaphore (void);
+    ZCE_Process_Semaphore(unsigned int init_value,
+                          const char *sem_name
+    );
+    virtual ~ZCE_Process_Semaphore(void);
 
     ///锁定
     virtual void lock();
@@ -64,12 +63,10 @@ public:
 protected:
 
     ///信号灯对象
-    sem_t            *lock_;
+    sem_t *lock_;
 
     ///信号灯的名称，不得不记录下来，或者是共享内存的文件名称
     char              sema_name_[PATH_MAX + 1];
-
 };
 
 #endif //ZCE_LIB_LOCK_PROCESS_SEMAPHORE_H_
-

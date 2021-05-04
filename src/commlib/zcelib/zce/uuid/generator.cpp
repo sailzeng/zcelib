@@ -37,17 +37,16 @@ bool ZCE_UUID64::operator == (const ZCE_UUID64 &others) const
 }
 
 //转换为字符串
-const char *ZCE_UUID64::to_string(char *buffer, size_t buf_len, size_t &use_buf) const
+const char *ZCE_UUID64::to_string(char *buffer,size_t buf_len,size_t &use_buf) const
 {
-
     //如果传递的BUFFER空间不够，直接返回NULL
     if (buf_len < LEN_OF_ZCE_UUID64_STR + 1)
     {
         return NULL;
     }
 
-    int ret = snprintf(buffer, buf_len, "%08x-%08x", this->u_2uint32_[1], this->u_2uint32_[0]);
-    if (ret < 0 || ret > static_cast<int>( buf_len) )
+    int ret = snprintf(buffer,buf_len,"%08x-%08x",this->u_2uint32_[1],this->u_2uint32_[0]);
+    if (ret < 0 || ret > static_cast<int>(buf_len))
     {
         return NULL;
     }
@@ -101,7 +100,7 @@ ZCE_UUID64 ZCE_UUID64_Generator::random_gen()
 }
 
 //以时间为基数的初始化，
-void ZCE_UUID64_Generator::time_radix(uint16_t identity, uint32_t radix )
+void ZCE_UUID64_Generator::time_radix(uint16_t identity,uint32_t radix)
 {
     generator_type_ = UUID_GENERATOR::TIME;
 
@@ -194,9 +193,8 @@ bool ZCE_UUID128::operator == (const ZCE_UUID128 &others) const
 }
 
 //转换为字符串,这儿采用的格式是标准的8-4-4-4-12，而不是GUID的8-4-4-16的格式
-const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len, size_t &use_buf) const
+const char *ZCE_UUID128::to_string(char *buffer,size_t buf_len,size_t &use_buf) const
 {
-
     //如果传递的BUFFER空间不够，干脆什么都不做,直接返回NULL,长度要考虑'\0'
     if (buf_len < LEN_OF_ZCE_UUID128_STR + 1)
     {
@@ -204,7 +202,7 @@ const char *ZCE_UUID128::to_string(char *buffer, size_t buf_len, size_t &use_buf
     }
 
     //输出8-4-4-4-12的格式
-    int ret = snprintf(buffer, buf_len, "%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
+    int ret = snprintf(buffer,buf_len,"%02x%02x%02x%02x-%02x%02x-%02x%02x-%02x%02x-%02x%02x%02x%02x%02x%02x",
                        this->u_16uint8_[15],
                        this->u_16uint8_[14],
                        this->u_16uint8_[13],
@@ -238,7 +236,7 @@ Class           : ZCE_UUID128_Generator
 ZCE_UUID128_Generator *ZCE_UUID128_Generator::instance_ = NULL;
 
 //构造函数
-ZCE_UUID128_Generator::ZCE_UUID128_Generator() :
+ZCE_UUID128_Generator::ZCE_UUID128_Generator():
     generator_type_(UUID_GENERATOR::INVALID)
 {
 }
@@ -272,7 +270,7 @@ ZCE_UUID128 ZCE_UUID128_Generator::random_gen()
 }
 
 //以时间为基数的初始化，
-void ZCE_UUID128_Generator::time_radix(uint32_t identity, uint32_t radix)
+void ZCE_UUID128_Generator::time_radix(uint32_t identity,uint32_t radix)
 {
     generator_type_ = UUID_GENERATOR::TIME;
 

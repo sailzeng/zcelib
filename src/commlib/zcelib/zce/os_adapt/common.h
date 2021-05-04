@@ -65,7 +65,6 @@
 #define PTHREAD_MUTEX_TIMEOUT           0x100000
 #endif
 
-
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( disable : 26495)
 #endif
@@ -77,8 +76,7 @@ typedef struct sem_t
 
     //信号量是否是一个无名的信号灯
     bool    sem_unnamed_ = false;
-
-} ;
+};
 
 #if !defined (SEM_FAILED)
 #  define SEM_FAILED ((sem_t *) -1)
@@ -93,7 +91,6 @@ typedef struct
 
     //互斥量的名字，如果是多进程的互斥量，就必须有名字
     char mutex_name_[PATH_MAX + 1];
-
 } pthread_mutexattr_t;
 
 ///
@@ -114,9 +111,9 @@ struct pthread_mutex_t
         //临界区性能好，如果不要超时，而且不要多进程，不要非递归时选择
         CRITICAL_SECTION thr_nontimeout_mutex_;
         //非递归锁，用信号灯模拟，
-        sem_t           *non_recursive_mutex_;
+        sem_t *non_recursive_mutex_;
     };
-} ;
+};
 
 //在WINDOWS下用临界区（进程内）+SPIN 或者Mutex（进程间）模拟SPIN lock
 //注意这个临界区的行为我加入了SPIN功能，
@@ -129,12 +126,10 @@ struct pthread_condattr_t
 
     //互斥量的名字，如果是多进程的互斥量，就必须有名字
     char cv_name_[PATH_MAX + 1];
-
-} ;
+};
 
 struct win_simulate_cv_t
 {
-
     /// 等待者的数量
     int                  waiters_ = 0;
 
@@ -145,17 +140,15 @@ struct win_simulate_cv_t
     pthread_mutex_t      waiters_lock_;
 
     /// 信号灯，阻塞排队等待的线程直到 signaled.
-    sem_t               *block_sema_ = NULL;
+    sem_t *block_sema_ = NULL;
 
     ///完成广播后的通知，这个地方用sema其实并不利于公平性，用EVENT更好一点。
     ///但由于要求广播的时候外部锁必现加上，所以问题也不太大，
-    sem_t               *finish_broadcast_ = NULL;
-
-} ;
+    sem_t *finish_broadcast_ = NULL;
+};
 
 struct pthread_cond_t
 {
-
     ///外部锁定类型，是否需要TIMEOUT，等，PTHREAD_MUTEX_TIMEOUT
     int                      outer_lock_type_ = 0;
 
@@ -170,8 +163,7 @@ struct pthread_cond_t
     ///也支持外部互斥量是多进程共享，也支持外部互斥量是MUTEX（信号灯），临界区模拟
     ///的，pthread_mutex_t
     win_simulate_cv_t     simulate_cv_;
-
-} ;
+};
 
 //读写锁的代码来自UNP V2
 
@@ -180,7 +172,6 @@ typedef struct
 {
     //
     bool            priority_to_write_;
-
 } pthread_rwlockattr_t;
 
 ///读写锁的对象结构，利用互斥量，条件变量实现的读写锁
@@ -205,9 +196,7 @@ struct pthread_rwlock_t
 
     ///锁的持有状态，如果有一个写者持有锁-1 如果>0表示多少个读者持有这个锁
     int             rw_refcount_ = 0;
-
-} ;
-
+};
 
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( default : 26495)
@@ -216,7 +205,6 @@ struct pthread_rwlock_t
 typedef unsigned int          mode_t;
 
 typedef struct __stat64       zce_os_stat;
-
 
 //注意S_IFDIR 和 S_ISDIR 的区别，S_ISDIR是一个宏用于判定是否是一个目录
 
@@ -328,11 +316,6 @@ typedef struct __stat64       zce_os_stat;
 #define DT_SOCK         12
 #endif
 
-
-
-
-
-
 // If we are using winsock2 then the SO_REUSEADDR feature is broken
 // SO_REUSEADDR=1 behaves like SO_REUSEPORT=1. (SO_REUSEPORT is an
 // extension to sockets on some platforms)
@@ -384,11 +367,11 @@ struct iovec
 
 struct msghdr
 {
-    void         *msg_name;       /* optional address */
+    void *msg_name;       /* optional address */
     socklen_t     msg_namelen;    /* size of address */
     struct iovec *msg_iov;        /* scatter/gather array */
     size_t        msg_iovlen;     /* # elements in msg_iov */
-    void         *msg_control;    /* ancillary data, see below */
+    void *msg_control;    /* ancillary data, see below */
     socklen_t     msg_controllen; /* ancillary data buffer len */
     int           msg_flags;      /* flags on received message */
 };
@@ -555,7 +538,6 @@ typedef int clockid_t;
 #define CLOCK_MONOTONIC  1
 #endif
 
-
 #if _MSC_VER <= 1800
 
 //POSIX的时间，
@@ -668,7 +650,7 @@ typedef void (*sighandler_t)(int);
 //epoll的这些变量提供出来不是为了模拟epoll，是方便我编译测试的
 typedef union epoll_data
 {
-    void    *ptr;
+    void *ptr;
     ZCE_HANDLE fd;
     uint32_t u32;
     uint64_t u64;
@@ -792,7 +774,6 @@ struct shmid_ds
 #define ZCE_DEFAULT_DIR_PERMS (S_IRUSR|S_IWUSR|S_IXUSR|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH)
 #endif
 
-
 #define LINUX_DIRECTORY_SEPARATOR_CHAR '/'
 
 //WINDOWS平台现在这两个字符都支持
@@ -821,13 +802,13 @@ typedef pthread_t   ZCE_THREAD_ID;
 //
 typedef pthread_t   ZCE_THREAD_HANDLE;
 //
-typedef void       *ZCE_THR_FUNC_RETURN;
+typedef void *ZCE_THR_FUNC_RETURN;
 
 typedef int   ZCE_HANDLE;
 
 typedef struct stat   zce_os_stat;
 
-typedef void     *ZCE_SHLIB_HANDLE;
+typedef void *ZCE_SHLIB_HANDLE;
 
 #if !defined (ZCE_INVALID_HANDLE)
 # define ZCE_INVALID_HANDLE -1
@@ -844,6 +825,3 @@ typedef void     *ZCE_SHLIB_HANDLE;
 #endif //#elif defined (ZCE_OS_LINUX)
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-

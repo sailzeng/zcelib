@@ -47,7 +47,6 @@
 
 #include "zce/util/random.h"
 
-
 //UUID产生方法，
 enum class UUID_GENERATOR
 {
@@ -72,8 +71,8 @@ Class           : ZCE_UUID64
 */
 struct ZCE_UUID64_16_48
 {
-    uint64_t       data1_: 16;
-    uint64_t       data2_: 48;
+    uint64_t       data1_:16;
+    uint64_t       data2_:48;
 };
 
 /*!
@@ -100,8 +99,7 @@ public:
     operator uint64_t();
 
     /// 转换为字符串
-    const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const;
-
+    const char *to_string(char *buffer,size_t buf_len,size_t &use_buf) const;
 
 public:
 
@@ -120,7 +118,6 @@ public:
 
     ///UUID输出字符串的最大长度，不包括'\0',格式XXXXXXXX-XXXXXXXX
     static const size_t   LEN_OF_ZCE_UUID64_STR = 17;
-
 };
 
 #pragma pack(pop)
@@ -141,7 +138,6 @@ Class           : ZCE_UUID64_Generator
 */
 class ZCE_UUID64_Generator
 {
-
 public:
 
     /*!
@@ -174,7 +170,7 @@ public:
     * @param      identity 当前的唯一表示，比如服务器ID等信息
     * @param      radix    时间基数
     */
-    void time_radix(uint16_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint16_t identity,uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -211,15 +207,7 @@ protected:
 
     ///随机数的种子
     ZCE_UUID64                time_radix_seed_;
-
-
 };
-
-
-
-
-
-
 
 /************************************************************************************************************
 Class           : ZCE_UUID128
@@ -227,7 +215,6 @@ Class           : ZCE_UUID128
 ///32bit整数+32整数+64位整数的表示方法
 struct ZCE_UUID128_32_32_64
 {
-
     //
     uint32_t       data1_;
     uint32_t       data2_;
@@ -237,21 +224,20 @@ struct ZCE_UUID128_32_32_64
 ///标准的UUID的格式
 struct ZCE_UUID128_32_16_16_16_48
 {
-    uint64_t       data1_ : 32;
-    uint64_t       data2_ : 16;
-    uint64_t       data3_ : 16;
-    uint64_t       data4_ : 16;
-    uint64_t       data5_ : 48;
+    uint64_t       data1_:32;
+    uint64_t       data2_:16;
+    uint64_t       data3_:16;
+    uint64_t       data4_:16;
+    uint64_t       data5_:48;
 };
 
 ///微软的GUID的格式
 struct ZCE_UUID128_32_16_16_64
 {
-    uint64_t       data1_ : 32;
-    uint64_t       data2_ : 16;
-    uint64_t       data3_ : 16;
+    uint64_t       data1_:32;
+    uint64_t       data2_:16;
+    uint64_t       data3_:16;
     uint64_t       data4_;
-
 };
 
 /*!
@@ -278,7 +264,7 @@ public:
     bool operator == (const ZCE_UUID128 &others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
-    const char *to_string(char *buffer, size_t buf_len, size_t &use_buf) const;
+    const char *to_string(char *buffer,size_t buf_len,size_t &use_buf) const;
 
 public:
     ///UUID的字符串表示的长度
@@ -299,13 +285,8 @@ public:
         ZCE_UUID128_32_16_16_16_48   u_32_16_16_16_48_;
         ///微软的GUID的标识方法
         ZCE_UUID128_32_16_16_64      u_32_16_16_64_;
-
     };
-
-
 };
-
-
 
 /************************************************************************************************************
 Class           : ZCE_UUID128_Generator UUID的发生器
@@ -317,7 +298,6 @@ Class           : ZCE_UUID128_Generator UUID的发生器
 */
 class ZCE_UUID128_Generator
 {
-
 public:
 
     ///构造函数
@@ -343,7 +323,7 @@ public:
     * @param      identity
     * @param      radix
     */
-    void time_radix(uint32_t identity, uint32_t radix = static_cast<uint32_t> (time(NULL)));
+    void time_radix(uint32_t identity,uint32_t radix = static_cast<uint32_t> (time(NULL)));
 
     /*!
     * @brief      以时间为基数产生UUID64
@@ -368,8 +348,6 @@ protected:
 
     //发生器实例指针
     static ZCE_UUID128_Generator *instance_;
-
 };
 
 #endif //# ZCE_LIB_UUID_64_GENERATOR_H_
-

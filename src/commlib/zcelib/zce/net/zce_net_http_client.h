@@ -17,9 +17,6 @@
 #ifndef _ZCE_LIB_NET_HTTP_CLIENT_H_
 #define _ZCE_LIB_NET_HTTP_CLIENT_H_
 
-
-
-
 /* the list of known headers */
 extern const char *http_hdr_known_list[];
 
@@ -75,14 +72,13 @@ int
 http_hdr_clear_value(http_hdr_list *a_list,
                      const char *a_name);
 
-
 typedef struct http_uri_tag
 {
-    char             *full;                          /* full URL */
-    char             *proto;                         /* protocol */
-    char             *host;                          /* copy semantics */
+    char *full;                          /* full URL */
+    char *proto;                         /* protocol */
+    char *host;                          /* copy semantics */
     unsigned short    port;
-    char             *resource;                      /* copy semantics */
+    char *resource;                      /* copy semantics */
 } http_uri;
 
 http_uri *
@@ -95,9 +91,7 @@ int
 http_uri_parse(char *a_uri,
                http_uri *a_request);
 
-
 //========================================================================================
-
 
 typedef enum http_trans_err_type_tag
 {
@@ -107,17 +101,17 @@ typedef enum http_trans_err_type_tag
 
 typedef struct http_trans_conn_tag
 {
-    struct hostent      *hostinfo;
+    struct hostent *hostinfo;
     struct sockaddr_in   saddr;
-    char                *host;
-    char                *proxy_host;
+    char *host;
+    char *proxy_host;
     int                  sock;
     short                port;
     short                proxy_port;
     http_trans_err_type  error_type;
     int                  error;
     int                  sync;              /* sync or async? */
-    char                *io_buf;            /* buffer */
+    char *io_buf;            /* buffer */
     int                  io_buf_len;        /* how big is it? */
     int                  io_buf_alloc;      /* how much is used */
     int                  io_buf_io_done;    /* how much have we already moved? */
@@ -126,7 +120,7 @@ typedef struct http_trans_conn_tag
                                             read in and out be? */
     int                  last_read;         /* the size of the last read */
     int                  chunk_len;         /* length of a chunk. */
-    char                *errstr;            /* a hint as to an error */
+    char *errstr;            /* a hint as to an error */
 } http_trans_conn;
 
 http_trans_conn *
@@ -139,7 +133,7 @@ void
 http_trans_buf_reset(http_trans_conn *a_conn);
 
 void
-http_trans_buf_clip(http_trans_conn *a_conn, char *a_clip_to);
+http_trans_buf_clip(http_trans_conn *a_conn,char *a_clip_to);
 
 int
 http_trans_connect(http_trans_conn *a_conn);
@@ -159,12 +153,10 @@ int
 http_trans_write_buf(http_trans_conn *a_conn);
 
 char *
-http_trans_buf_has_patt(char *a_buf, int a_len,
-                        char *a_pat, int a_patlen);
-
+http_trans_buf_has_patt(char *a_buf,int a_len,
+                        char *a_pat,int a_patlen);
 
 //========================================================================================
-
 
 typedef enum http_req_type
 {
@@ -193,13 +185,6 @@ typedef enum http_req_state_tag
     http_req_state_sending_body
 } http_req_state;
 
-
-
-
-
-
-
-
 /* same character representations as above. */
 
 extern const char *http_req_type_char[];
@@ -208,10 +193,10 @@ typedef struct http_req_tag
 {
     http_req_type type;
     float          http_ver;
-    char          *host;
-    char          *full_uri;
-    char          *resource;
-    char          *body;
+    char *host;
+    char *full_uri;
+    char *resource;
+    char *body;
     int            body_len;
     http_hdr_list *headers;
     http_req_state state;
@@ -227,10 +212,7 @@ int
 http_req_prepare(http_req *a_req);
 
 int
-http_req_send(http_req *a_req, http_trans_conn *a_conn);
-
-
-
+http_req_send(http_req *a_req,http_trans_conn *a_conn);
 
 //========================================================================================
 
@@ -248,14 +230,13 @@ typedef enum http_resp_body_state_tag
     http_resp_body_read_standard
 } http_resp_body_state;
 
-
 typedef struct http_resp_tag
 {
     float                                http_ver;
     int                                  status_code;
-    char                                *reason_phrase;
-    http_hdr_list                       *headers;
-    char                                *body;
+    char *reason_phrase;
+    http_hdr_list *headers;
+    char *body;
     int                                  body_len;
     int                                  content_length;
     int                                  flushed_length;
@@ -275,12 +256,11 @@ http_resp_read_body(http_resp *a_resp,
                     http_trans_conn *a_conn);
 
 int
-http_resp_read_headers(http_resp *a_resp, http_trans_conn *a_conn);
+http_resp_read_headers(http_resp *a_resp,http_trans_conn *a_conn);
 
 void
 http_resp_flush(http_resp *a_resp,
                 http_trans_conn *a_conn);
-
 
 //========================================================================================
 
@@ -294,20 +274,20 @@ typedef enum ghttp_proc_tag
 
 typedef struct _ghttp_request
 {
-    http_uri           *uri;
-    http_uri           *proxy;
-    http_req           *req;
-    http_resp          *resp;
-    http_trans_conn    *conn;
-    const char         *errstr;
+    http_uri *uri;
+    http_uri *proxy;
+    http_req *req;
+    http_resp *resp;
+    http_trans_conn *conn;
+    const char *errstr;
     int                 connected;
     ghttp_proc          proc;
-    char               *username;
-    char               *password;
-    char               *authtoken;
-    char               *proxy_username;
-    char               *proxy_password;
-    char               *proxy_authtoken;
+    char *username;
+    char *password;
+    char *authtoken;
+    char *proxy_username;
+    char *proxy_password;
+    char *proxy_authtoken;
 } ghttp_request;
 
 /* create a new request object */
@@ -316,7 +296,4 @@ ghttp_request *ghttp_request_new(void);
 /* delete a current request object */
 void ghttp_request_destroy(ghttp_request *a_request);
 
-
-
 #endif //_ZCE_LIB_NET_HTTP_CLIENT_H_
-

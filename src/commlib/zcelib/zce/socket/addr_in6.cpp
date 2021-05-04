@@ -6,12 +6,10 @@
 
 namespace zce
 {
-
 //默认构造函数
 Sockaddr_In6::Sockaddr_In6(void):
     Sockaddr_Base(reinterpret_cast<sockaddr *>(&in6_addr_),sizeof(sockaddr_in6))
 {
-
 }
 
 //根据sockaddr_in构造，
@@ -30,7 +28,6 @@ Sockaddr_In6::Sockaddr_In6(const char ip_addr_str[],
 
     if (ret != 0)
     {
-
     }
 }
 
@@ -43,7 +40,6 @@ Sockaddr_In6::Sockaddr_In6(uint16_t port_number,
 
     if (ret != 0)
     {
-
     }
 }
 
@@ -56,7 +52,6 @@ Sockaddr_In6::Sockaddr_In6(const Sockaddr_In6 &others):
 
 Sockaddr_In6::~Sockaddr_In6()
 {
-
 }
 
 //设置地址信息
@@ -80,7 +75,6 @@ int Sockaddr_In6::set(const char ip_addr_str[],
     return 0;
 }
 
-
 //根据字符串取得IP地址信息，以及端口号信息,如果字符串里面有#,会被认为有端口号，如果没有，端口号为0
 int Sockaddr_In6::set(const char *ip_addr_str)
 {
@@ -94,13 +88,11 @@ int Sockaddr_In6::set(const char *ip_addr_str)
     return 0;
 }
 
-
 ///检查端口号是否是一个安全端口
 bool Sockaddr_In6::check_safeport()
 {
     return zce::check_safeport(this->get_port_number());
 }
-
 
 //比较两个地址是否相等
 bool Sockaddr_In6::operator == (const Sockaddr_In6 &others) const
@@ -192,5 +184,4 @@ Sockaddr_In6::operator sockaddr_in6 *()
 {
     return &in6_addr_;
 }
-
 }

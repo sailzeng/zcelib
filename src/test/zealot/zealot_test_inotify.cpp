@@ -1,15 +1,5 @@
-
-
-
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
-
-
-
-
-
-
-
 
 #if defined ZCE_OS_WINDOWS
 #define  TEST_PATH_1  "D:\\testdir\\1"
@@ -19,26 +9,19 @@
 #define  TEST_PATH_2  "/data/testdir/2"
 #endif
 
-
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( push )
 #pragma warning ( disable : 4702)
 #endif
 
-
-
-
-
-class My_INotify_Event : public ZCE_Event_INotify
+class My_INotify_Event: public ZCE_Event_INotify
 {
 public:
     My_INotify_Event()
     {
-
     }
     ~My_INotify_Event()
     {
-
     }
 protected:
 
@@ -49,7 +32,7 @@ protected:
     {
         ZCE_UNUSED_ARG(watch_handle);
         std::cout << "Event add .watch path[" << watch_path << "]ative path[" <<
-                  active_path << "]" << "watch mask" << watch_mask << std::endl;
+            active_path << "]" << "watch mask" << watch_mask << std::endl;
 
         return 0;
     }
@@ -62,7 +45,7 @@ protected:
     {
         ZCE_UNUSED_ARG(watch_handle);
         std::cout << "Event delete .watch path[" << watch_path << "]ative path[" <<
-                  active_path << "]" << "watch mask" << watch_mask << std::endl;
+            active_path << "]" << "watch mask" << watch_mask << std::endl;
         return 0;
     }
 
@@ -74,7 +57,7 @@ protected:
     {
         ZCE_UNUSED_ARG(watch_handle);
         std::cout << "Event modify .watch path[" << watch_path << "]ative path[" <<
-                  active_path << "]" << "watch mask" << watch_mask << std::endl;
+            active_path << "]" << "watch mask" << watch_mask << std::endl;
         return 0;
     }
 
@@ -86,7 +69,7 @@ protected:
     {
         ZCE_UNUSED_ARG(watch_handle);
         std::cout << "Event moved from .watch path[" << watch_path << "]ative path[" <<
-                  active_path << "]" << "watch mask" << watch_mask << std::endl;
+            active_path << "]" << "watch mask" << watch_mask << std::endl;
         return 0;
     }
 
@@ -99,16 +82,13 @@ protected:
     {
         ZCE_UNUSED_ARG(watch_handle);
         std::cout << "Event moved to .watch path[" << watch_path << "]ative path[" <<
-                  active_path << "]" << "watch mask" << watch_mask << std::endl;
+            active_path << "]" << "watch mask" << watch_mask << std::endl;
         return 0;
     }
 };
 
-
-
-
 //独立的Event reactor，
-int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
+int test_inotify_reactor(int /*argc*/,char * /*argv*/[])
 {
     int ret = 0;
     My_INotify_Event *inotify_event = new My_INotify_Event();
@@ -124,7 +104,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "reactor initialize fial? ret =%d", ret);
+        ZCE_LOG(RS_ERROR,"reactor initialize fial? ret =%d",ret);
         delete reactor_ptr;
         return ret;
     }
@@ -133,12 +113,11 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
     ret = inotify_event->open(ZCE_Reactor::instance());
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "Open fial? ret =%d", ret);
+        ZCE_LOG(RS_ERROR,"Open fial? ret =%d",ret);
         return ret;
     }
 
     ZCE_HANDLE watch_handle = ZCE_INVALID_HANDLE;
-
 
     ret = inotify_event->add_watch(TEST_PATH_1,
                                    IN_CREATE | IN_DELETE | IN_MODIFY | IN_MOVED_FROM | IN_MOVED_TO,
@@ -146,7 +125,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "inotify_event add_watch fail.dir[%s]? ret =%d", TEST_PATH_1, ret);
+        ZCE_LOG(RS_ERROR,"inotify_event add_watch fail.dir[%s]? ret =%d",TEST_PATH_1,ret);
         return ret;
     }
 
@@ -157,7 +136,7 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "inotify_event add_watch fail.dir[%s]? ret =%d,This is ok in windows.", TEST_PATH_2, ret );
+        ZCE_LOG(RS_ERROR,"inotify_event add_watch fail.dir[%s]? ret =%d,This is ok in windows.",TEST_PATH_2,ret);
         //Windows下，是比如俺出错的。Windows下一个event handle，只能监控一个目录
 #if !defined ZCE_OS_WINDOWS
         return ret;
@@ -175,32 +154,23 @@ int test_inotify_reactor(int /*argc*/, char * /*argv*/[])
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "inotify_event2 add_watch fail.dir[%s]? ret =%d", ret, TEST_PATH_2);
+        ZCE_LOG(RS_ERROR,"inotify_event2 add_watch fail.dir[%s]? ret =%d",ret,TEST_PATH_2);
         return ret;
     }
 #endif
 
     for (;;)
     {
-        zce::Time_Value time_out(60, 0);
+        zce::Time_Value time_out(60,0);
         size_t num_event;
-        ret = ZCE_Reactor::instance()->handle_events(&time_out, &num_event);
+        ret = ZCE_Reactor::instance()->handle_events(&time_out,&num_event);
         //ZCE_LOG(RS_INFO,"handle_events? ret =[%d] number of event[%u]",ret,num_event);
         std::cout << "handle_events ret =" << ret << " number of event=" << num_event << std::endl;
     }
 
     return 0;
-
 }
-
-
 
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( pop )
 #endif
-
-
-
-
-
-

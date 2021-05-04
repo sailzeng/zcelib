@@ -26,7 +26,7 @@ ZCE_Epoll_Reactor::ZCE_Epoll_Reactor(size_t max_event_number,
     once_max_events_(once_max_events),
     once_events_ary_(NULL)
 {
-    initialize(max_event_number, edge_triggered, once_max_events);
+    initialize(max_event_number,edge_triggered,once_max_events);
 }
 
 ZCE_Epoll_Reactor::~ZCE_Epoll_Reactor()
@@ -36,14 +36,14 @@ ZCE_Epoll_Reactor::~ZCE_Epoll_Reactor()
     //释放内存
     if (once_events_ary_)
     {
-        delete [] once_events_ary_;
+        delete[] once_events_ary_;
     }
 }
 
 //初始化
 int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
                                   bool edge_triggered,
-                                  int once_max_events )
+                                  int once_max_events)
 {
     //如果是非Linux操作系统，直接完蛋算了。
 #if !defined (ZCE_OS_LINUX)
@@ -53,9 +53,9 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
     int ret = 0;
     ret = ZCE_Reactor::initialize(max_event_number);
 
-    if (0  != ret)
+    if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] Epoll reactor ZCE_Reactor::initialize fail.please check code. ret = %u.", ret);
+        ZCE_LOG(RS_ERROR,"[zcelib] Epoll reactor ZCE_Reactor::initialize fail.please check code. ret = %u.",ret);
         return ret;
     }
 
@@ -68,7 +68,7 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
 
     if (epoll_fd_ < 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] Epoll reactor ::epoll_create fail.please check code. error = [%u|%u]",
+        ZCE_LOG(RS_ERROR,"[zcelib] Epoll reactor ::epoll_create fail.please check code. error = [%u|%u]",
                 zce::last_error(),
                 strerror(zce::last_error()));
         return -1;
@@ -76,40 +76,40 @@ int ZCE_Epoll_Reactor::initialize(size_t max_event_number,
 
     once_max_events_ = once_max_events;
 
-    once_events_ary_ = new epoll_event [once_max_events_];
+    once_events_ary_ = new epoll_event[once_max_events_];
 
     return 0;
 }
 
 //注册一个ZCE_Event_Handler到反应器
-int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler,int event_mask)
 {
     int ret = 0;
     //注意第二个参数是0，因为第一要先ADD，第二避免两次调用这个,这个代码放前面是因为回滚麻烦
-    ret = ZCE_Reactor::register_handler(event_handler, 0);
+    ret = ZCE_Reactor::register_handler(event_handler,0);
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Reactor::register_handler fail. please check you code .ret =%d", ret);
+        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Reactor::register_handler fail. please check you code .ret =%d",ret);
         return -1;
     }
 
     event_handler->set_mask(event_mask);
 
     struct epoll_event ep_event;
-    make_epoll_event(&ep_event, event_handler);
+    make_epoll_event(&ep_event,event_handler);
 
     //EPOLL 在LINUX才有，WINDOWS也不可能模拟出来，难道让我用个SELECT模拟？
 #if defined (ZCE_OS_LINUX)
-    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_ADD, event_handler->get_handle(), &ep_event);
+    ret = ::epoll_ctl(epoll_fd_,EPOLL_CTL_ADD,event_handler->get_handle(),&ep_event);
 #endif
 
     if (0 != ret)
     {
         //回滚
-        ret = ZCE_Reactor::remove_handler(event_handler, false);
+        ret = ZCE_Reactor::remove_handler(event_handler,false);
 
-        ZCE_LOG(RS_ERROR, "[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
+        ZCE_LOG(RS_ERROR,"[zcelib] [%s] Epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
                 ret,
                 zce::last_error(),
@@ -121,21 +121,20 @@ int ZCE_Epoll_Reactor::register_handler(ZCE_Event_Handler *event_handler, int ev
 }
 
 //从反应器注销一个ZCE_Event_Handler，同事取消他所有的mask
-int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close)
+int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler,bool call_handle_close)
 {
-
     int ret = 0;
 
     struct epoll_event event;
     event.events = 0;
 #if defined (ZCE_OS_LINUX)
     //调用epoll_ctl EPOLL_CTL_DEL 删除注册对象
-    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_DEL, event_handler->get_handle(), &event);
+    ret = ::epoll_ctl(epoll_fd_,EPOLL_CTL_DEL,event_handler->get_handle(),&event);
 #endif
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
+        ZCE_LOG(RS_ERROR,"[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
                 ret,
                 zce::last_error(),
@@ -147,11 +146,11 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
     //取消掉所有的事件，前面已经删除了，避免里面重复调用
     event_handler->set_mask(0);
 
-    ret = ZCE_Reactor::remove_handler(event_handler, call_handle_close);
+    ret = ZCE_Reactor::remove_handler(event_handler,call_handle_close);
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Reactor::remove_handler fail. please check you code .ret =%u", ret);
+        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Reactor::remove_handler fail. please check you code .ret =%u",ret);
         return -1;
     }
 
@@ -159,11 +158,11 @@ int ZCE_Epoll_Reactor::remove_handler(ZCE_Event_Handler *event_handler, bool cal
 }
 
 //取消某些mask标志，，
-int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
+int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,int cancel_mask)
 {
     int ret = 0;
 
-    ret = ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
+    ret = ZCE_Reactor::cancel_wakeup(event_handler,cancel_mask);
 
     //其实ZCE_Reactor::cancel_wakeup不可能失败,
     if (0 != ret)
@@ -173,19 +172,19 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
 
     struct epoll_event ep_event;
 
-    make_epoll_event(&ep_event, event_handler);
+    make_epoll_event(&ep_event,event_handler);
 
 #if defined (ZCE_OS_LINUX)
     //EPOLL_CTL_MOD用于修改
-    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event_handler->get_handle(), &ep_event);
+    ret = ::epoll_ctl(epoll_fd_,EPOLL_CTL_MOD,event_handler->get_handle(),&ep_event);
 
 #endif
 
     if (0 != ret)
     {
         //回滚不改动标志位
-        ZCE_Reactor::schedule_wakeup(event_handler, cancel_mask);
-        ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
+        ZCE_Reactor::schedule_wakeup(event_handler,cancel_mask);
+        ZCE_LOG(RS_ERROR,"[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s]",
                 __ZCE_FUNC__,
                 ret,
                 zce::last_error(),
@@ -197,10 +196,10 @@ int ZCE_Epoll_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cance
 }
 
 //打开某些mask标志，
-int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler,int event_mask)
 {
     int ret = 0;
-    ret = ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
+    ret = ZCE_Reactor::schedule_wakeup(event_handler,event_mask);
 
     //其实ZCE_Reactor::cancel_wakeup不可能失败
     if (0 != ret)
@@ -210,19 +209,19 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
 
     struct epoll_event ep_event;
 
-    make_epoll_event(&ep_event, event_handler);
+    make_epoll_event(&ep_event,event_handler);
 
 #if defined (ZCE_OS_LINUX)
     //EPOLL_CTL_MOD用于修改
-    ret = ::epoll_ctl(epoll_fd_, EPOLL_CTL_MOD, event_handler->get_handle(), &ep_event);
+    ret = ::epoll_ctl(epoll_fd_,EPOLL_CTL_MOD,event_handler->get_handle(),&ep_event);
 
 #endif
 
     if (0 != ret)
     {
         //回滚，修复标志位
-        ZCE_Reactor::cancel_wakeup(event_handler, event_mask);
-        ZCE_LOG(RS_ERROR, "[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
+        ZCE_Reactor::cancel_wakeup(event_handler,event_mask);
+        ZCE_LOG(RS_ERROR,"[zcelib] [%s] epoll reactor ::epoll_ctl fail.please check code. ret =%d error = [%u|%s].",
                 __ZCE_FUNC__,
                 ret,
                 zce::last_error(),
@@ -234,9 +233,8 @@ int ZCE_Epoll_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int eve
 }
 
 //时间触发
-int ZCE_Epoll_Reactor::handle_events(zce::Time_Value *time_out, size_t *size_event)
+int ZCE_Epoll_Reactor::handle_events(zce::Time_Value *time_out,size_t *size_event)
 {
-
     //默认一直阻塞
     int msec_timeout = -1;
 
@@ -247,14 +245,14 @@ int ZCE_Epoll_Reactor::handle_events(zce::Time_Value *time_out, size_t *size_eve
         //当超时时间小于1000微秒时，比如20微秒，将时间转换成毫秒会变成0毫秒
         //所以如果用epoll_wait的话，超时时间大于0并且小于1毫秒的情况下统一改为1毫秒
 
-        msec_timeout = static_cast<int>( time_out->total_msec_round());
+        msec_timeout = static_cast<int>(time_out->total_msec_round());
     }
 
     int event_happen = 0;
 
 #if defined (ZCE_OS_LINUX)
     //EPOLL等待事件触发，
-    event_happen = ::epoll_wait(epoll_fd_, once_events_ary_, once_max_events_, msec_timeout);
+    event_happen = ::epoll_wait(epoll_fd_,once_events_ary_,once_max_events_,msec_timeout);
 #endif
 
     if (event_happen <= 0)
@@ -270,16 +268,15 @@ int ZCE_Epoll_Reactor::handle_events(zce::Time_Value *time_out, size_t *size_eve
     }
 
     return 0;
-
 }
 
 void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
 {
     int ret = 0;
     ZCE_Event_Handler *event_hdl = NULL;
-    bool event_in_happen = false, event_out_happen = false;
+    bool event_in_happen = false,event_out_happen = false;
 
-    ret =  find_event_handler(ep_event->data.fd, event_hdl);
+    ret = find_event_handler(ep_event->data.fd,event_hdl);
 
     //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
     if (0 != ret)
@@ -303,7 +300,7 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
     //代码有点怪，部分目的是加快速度,避免每个调用都要检查，
 
     //READ和CONNECT事件都调用handle_input
-    if (ep_event->events &  EPOLLIN )
+    if (ep_event->events & EPOLLIN)
     {
         event_in_happen = true;
         hdl_ret = event_hdl->handle_input();
@@ -316,12 +313,12 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
     }
 
     //READ和ACCEPT事件都调用handle_input
-    if (ep_event->events & EPOLLOUT )
+    if (ep_event->events & EPOLLOUT)
     {
         //如果写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
         if (event_in_happen)
         {
-            ret =  find_event_handler(ep_event->data.fd, event_hdl);
+            ret = find_event_handler(ep_event->data.fd,event_hdl);
 
             //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
             if (0 != ret)
@@ -338,16 +335,15 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
         {
             event_hdl->handle_close();
         }
-
     }
 
     //异常事件，其实我也不知道，什么算异常
-    if (ep_event->events & EPOLLERR )
+    if (ep_event->events & EPOLLERR)
     {
         //如果读取或者写事件触发了，那么里面可能调用handle_close,再查询一次，double check.
         if (event_out_happen || event_in_happen)
         {
-            ret =  find_event_handler(ep_event->data.fd, event_hdl);
+            ret = find_event_handler(ep_event->data.fd,event_hdl);
 
             //到这个地方，可能是代码有问题，也可能不是，因为一个事件处理后，可能就被关闭了？
             if (0 != ret)
@@ -365,4 +361,3 @@ void ZCE_Epoll_Reactor::process_ready_event(struct epoll_event *ep_event)
         }
     }
 }
-

@@ -1,6 +1,3 @@
-
-
-
 #include "zealot_predefine.h"
 
 enum ENUM_SVR_STATUS_1
@@ -19,7 +16,7 @@ enum ENUM_SVR_STATUS_2
 
 zce::STATUS_ITEM_WITHNAME  SERVER_STATUS_1[] =
 {
-    DEF_ZCE_STATUS_ITEM(SVR_STATUS_1_1, zce::STATUS_STATICS::PER_FIVE_MINTUES),
+    DEF_ZCE_STATUS_ITEM(SVR_STATUS_1_1,zce::STATUS_STATICS::PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(SVR_STATUS_1_2,zce::STATUS_STATICS::PER_FIVE_MINTUES),
     DEF_ZCE_STATUS_ITEM(SVR_STATUS_1_3,zce::STATUS_STATICS::PER_FIVE_MINTUES),
 };
@@ -33,13 +30,10 @@ zce::STATUS_ITEM_WITHNAME  SERVER_STATUS_2[] =
 
 #define ZEALOT_FILE_NAME "ZEALOT.STATUS"
 
-int test_server_status(int, char *[])
+int test_server_status(int,char *[])
 {
-    zce::Server_Status::instance()->initialize(ZEALOT_FILE_NAME, 3, SERVER_STATUS_1, true);
-    zce::Server_Status::instance()->add_status_item(3, SERVER_STATUS_1);
-    zce::Server_Status::instance()->add_status_item(3, SERVER_STATUS_2);
+    zce::Server_Status::instance()->initialize(ZEALOT_FILE_NAME,3,SERVER_STATUS_1,true);
+    zce::Server_Status::instance()->add_status_item(3,SERVER_STATUS_1);
+    zce::Server_Status::instance()->add_status_item(3,SERVER_STATUS_2);
     return 0;
 }
-
-
-

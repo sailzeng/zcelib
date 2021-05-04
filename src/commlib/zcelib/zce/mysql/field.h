@@ -27,7 +27,6 @@
 */
 class ZCE_Mysql_Field
 {
-
 public:
     //构造函数
     ZCE_Mysql_Field():
@@ -38,7 +37,7 @@ public:
     };
 
     //构造函数
-    ZCE_Mysql_Field(const char *fdata, unsigned int flength, enum_field_types ftype):
+    ZCE_Mysql_Field(const char *fdata,unsigned int flength,enum_field_types ftype):
         field_data_(fdata),
         field_length_(flength),
         field_type_(ftype)
@@ -80,7 +79,7 @@ public:
     //用于转换的操作符号
 
     ///得到字符串，
-    inline operator std::string () const;
+    inline operator std::string() const;
 
     //转换为8位整型
     inline operator char() const;
@@ -109,20 +108,18 @@ public:
     ///转换为float型
     inline operator float() const;
 
-
 protected:
 
     ///字段数据,指针，指向结果集的数据，所以结果集必须存在
-    const char      *field_data_;
+    const char *field_data_;
     ///字段长度
     unsigned int     field_length_;
     ///字段类型
     enum_field_types field_type_;
-
 };
 
 //设置值
-inline void ZCE_Mysql_Field::set_field(const char *fdata, unsigned int flength, enum_field_types ftype)
+inline void ZCE_Mysql_Field::set_field(const char *fdata,unsigned int flength,enum_field_types ftype)
 {
     field_data_ = fdata;
     field_length_ = flength;
@@ -163,7 +160,7 @@ inline ZCE_Mysql_Field::operator std::string() const
 {
     std::string tmp_str;
     tmp_str.reserve(field_length_);
-    tmp_str.assign(field_data_, field_length_);
+    tmp_str.assign(field_data_,field_length_);
     return tmp_str;
 }
 
@@ -174,4 +171,3 @@ inline ZCE_Mysql_Field::operator std::string() const
 #endif //#if defined MYSQL_VERSION_ID
 
 #endif //ZCE_LIB_MYSQL_DB_FIELD_H_
-

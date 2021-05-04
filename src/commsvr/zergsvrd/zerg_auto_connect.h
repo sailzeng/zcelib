@@ -1,19 +1,14 @@
-
 #ifndef ZERG_SERVER_AUTO_CONNECT_H_
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
-
-
 class Zerg_Server_Config;
 class TCP_Svc_Handler;
-
 
 /****************************************************************************************************
 class Zerg_Auto_Connector
 ****************************************************************************************************/
 class Zerg_Auto_Connector
 {
-
 public:
 
     //构造函数
@@ -26,7 +21,6 @@ public:
     // 重新加载主动连接配置
     int reload_cfg(const Zerg_Server_Config *config);
 
-
     /*!
     * @brief      链接所有的服务器,如果已经有链接，就跳过,
     * @return     void
@@ -35,8 +29,7 @@ public:
     * @param      szfail   链接失败的服务器数量，但是由于是异步链接，这个地方并不一定真是进行了链接
     * @note
     */
-    void reconnect_allserver(size_t &szvalid, size_t &sz_succ, size_t &szfail);
-
+    void reconnect_allserver(size_t &szvalid,size_t &sz_succ,size_t &szfail);
 
     /*!
     * @brief      根据SVC ID,检查是否是主动连接的服务.,
@@ -46,7 +39,6 @@ public:
     */
     int connect_server_bysvcid(const soar::SERVICES_ID &reconnect_svcid);
 
-
     /*!
     * @brief      根据services_type查询对应的配置主备服务器列表数组 MS（主备）
     * @return     int == 0 表示成功
@@ -55,7 +47,6 @@ public:
     */
     int find_conf_ms_svcid_ary(uint16_t services_type,
                                std::vector<uint32_t> *&ms_svcid_ary);
-
 
     /*!
     * @brief      检查这个SVC ID是否是主动链接的服务器
@@ -81,10 +72,10 @@ protected:
 protected:
 
     //
-    typedef std::unordered_set<soar::SERVICES_INFO, soar::HASH_OF_SVCINFO,soar::EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
+    typedef std::unordered_set<soar::SERVICES_INFO,soar::HASH_OF_SVCINFO,soar::EQUAL_OF_SVCINFO> SET_OF_SVC_INFO;
 
     ///类型对应的SERVICES ID 数组的MAP的类型,
-    typedef std::unordered_map<uint16_t, std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
+    typedef std::unordered_map<uint16_t,std::vector<uint32_t> > MAP_OF_TYPE_TO_IDARY;
 
 protected:
 
@@ -102,10 +93,6 @@ protected:
 
     //类型对应的SERVICES ID 数组 的MAP，数组里面的id的顺序其实是主备顺序
     MAP_OF_TYPE_TO_IDARY type_to_idary_map_;
-
 };
 
-
 #endif //_ZERG_SERVER_AUTO_CONNECT_H_
-
-

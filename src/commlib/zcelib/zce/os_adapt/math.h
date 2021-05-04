@@ -19,16 +19,15 @@
 
 namespace zce
 {
-
 /*!
 * @brief      计算两个数字的最大公约数
 */
-uint32_t gcd (uint32_t x, uint32_t y);
+uint32_t gcd(uint32_t x,uint32_t y);
 
 /*!
 * @brief      检查一个数值是否是质数
 */
-inline bool is_prime (const size_t n)
+inline bool is_prime(const size_t n)
 {
     //判断是否是质数，
     if (2 == n || 3 == n)
@@ -47,15 +46,12 @@ inline bool is_prime (const size_t n)
     return true;
 }
 
-
-
 /*!
 * @brief      找到输入参数n最近(大于)的一个质数，
 * @return     size_t 返回最近的那个质数
 * @param      n      输入的数值
 */
 size_t nearest_prime(const size_t n);
-
 
 /*!
 * @brief      检查从LSB（最小位），to MSB（最大位），到一个被设置为1的位置，前面有多少个0
@@ -66,7 +62,7 @@ inline int scanbit_lsb2msb32(uint32_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanForward(&index, mask);
+    ::_BitScanForward(&index,mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_ctz(mask);
@@ -82,7 +78,7 @@ inline int scanbit_msb2lsb32(uint32_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanReverse(&index, mask);
+    ::_BitScanReverse(&index,mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_clz(mask);
@@ -102,7 +98,7 @@ inline int scanbit_lsb2msb64(uint64_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanForward64(&index, mask);
+    ::_BitScanForward64(&index,mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_ctzll(mask);
@@ -118,7 +114,7 @@ inline int scanbit_msb2lsb64(uint64_t mask)
 {
 #if defined ZCE_OS_WINDOWS
     unsigned long index = 0;
-    ::_BitScanReverse64(&index, mask);
+    ::_BitScanReverse64(&index,mask);
     return index;
 #elif defined ZCE_OS_LINUX
     return ::__builtin_clzll(mask);
@@ -126,8 +122,6 @@ inline int scanbit_msb2lsb64(uint64_t mask)
 }
 
 #endif
-
 };
 
 #endif //ZCE_LIB_OS_ADAPT_MATH_H_
-

@@ -31,7 +31,6 @@
 
 namespace zce
 {
-
 /*!
 * @brief      计时器 注意这是一个计时器，不是一个定时器，就是用于记录某个事件的
 *             开始和结束时间，所用的时长的类
@@ -49,7 +48,6 @@ namespace zce
 */
 class ZCE_Progress_Timer
 {
-
 public:
 
     ///构造函数
@@ -81,9 +79,7 @@ protected:
     std::clock_t            end_time_;
     ///累计时间
     std::clock_t            addup_time_;
-
 };
-
 
 //====================================================================================================
 
@@ -105,7 +101,6 @@ protected:
 */
 class ZCE_HR_Progress_Timer
 {
-
 public:
 
     ///构造函数
@@ -208,7 +203,6 @@ protected:
     static  uint64_t    cpu_hz_;
 };
 
-
 //====================================================================================================
 
 /*!
@@ -217,7 +211,6 @@ protected:
 */
 class ZCE_Chrono_HR_Timer
 {
-
 public:
 
     ///构造函数
@@ -255,7 +248,7 @@ protected:
 *             我不觉得这玩意作用多大。不过用来测试上面几个类凑合
 */
 template<typename PROGRESS_TIMER>
-class ZCE_Auto_Progress_Timer : public zce::NON_Copyable
+class ZCE_Auto_Progress_Timer: public zce::NON_Copyable
 {
 public:
     ///构造函数，同时开始计时
@@ -268,7 +261,7 @@ public:
     ~ZCE_Auto_Progress_Timer()
     {
         progress_timer_.end();
-        ZCE_LOG(RS_INFO, "This operation in function[%s] use time :%.6f microseconds(usec).",
+        ZCE_LOG(RS_INFO,"This operation in function[%s] use time :%.6f microseconds(usec).",
                 __ZCE_FUNC__,
                 progress_timer_.elapsed_usec());
     };
@@ -277,7 +270,4 @@ protected:
 
     PROGRESS_TIMER progress_timer_;
 };
-
 }
-
-

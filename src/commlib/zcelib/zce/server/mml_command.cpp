@@ -4,17 +4,16 @@
 
 namespace zce
 {
-
 /****************************************************************************************************
 class MML_Console_Command 控制台命令,多用于GM命令
 ****************************************************************************************************/
 //构造函数
 MML_Command::MML_Command(const char *mml_string,
-                                         MML_Command::MML_STRING_PATTERN pattern)
+                         MML_Command::MML_STRING_PATTERN pattern)
 {
     mml_string_ = mml_string;
     mml_command_.reserve(32);
-    parse_mml_cnd_string(mml_string, pattern);
+    parse_mml_cnd_string(mml_string,pattern);
 }
 //
 MML_Command::MML_Command()
@@ -62,9 +61,9 @@ const char *MML_Command::get_mml_command() const
 //拥有某个命令选项
 int MML_Command::have_cmd_option(const std::string &mml_option) const
 {
-    MMLCMD_OPTION::const_iterator option_iter =  mml_cmd_option_.find(mml_option);
+    MMLCMD_OPTION::const_iterator option_iter = mml_cmd_option_.find(mml_option);
 
-    if ( mml_cmd_option_.end() == option_iter)
+    if (mml_cmd_option_.end() == option_iter)
     {
         return -1;
     }
@@ -73,10 +72,10 @@ int MML_Command::have_cmd_option(const std::string &mml_option) const
 }
 
 //得到某个命令参数
-int MML_Command::get_cmd_parameter(const std::string &para_key, std::string &para_value) const
+int MML_Command::get_cmd_parameter(const std::string &para_key,std::string &para_value) const
 {
     MMLCMD_PARAMETER::const_iterator para_iter = mml_cmd_parameter_.find(para_key);
-    if (mml_cmd_parameter_.end() == para_iter )
+    if (mml_cmd_parameter_.end() == para_iter)
     {
         return -1;
     }
@@ -98,17 +97,15 @@ const char *MML_Command::get_cmd_parameter(const std::string &para_key)  const
     return para_iter->second.c_str();
 }
 
-
 //MML语句分析
 int MML_Command::parse_mml_cnd_string(const char *mml_string,
-                                              MML_Command::MML_STRING_PATTERN pattern)
+                                      MML_Command::MML_STRING_PATTERN pattern)
 {
-
     switch (pattern)
     {
     case MML_Command::MML_STRING_PATTERN::PATTERN_1:
-            parse_mml_cnd_string1(mml_string);
-            break;
+        parse_mml_cnd_string1(mml_string);
+        break;
     case MML_Command::MML_STRING_PATTERN::PATTERN_2:
         parse_mml_cnd_string2(mml_string);
         break;
@@ -118,8 +115,6 @@ int MML_Command::parse_mml_cnd_string(const char *mml_string,
     }
     return 0;
 }
-
-
 
 //分析命令行参数
 //支持的分析的命令格式包括 CMD_1 A=1 B=2 C=" i love c++!" D
@@ -134,17 +129,17 @@ int MML_Command::parse_mml_cnd_string2(const char *mml_string)
 
     //
     //读取字段的位置标示符号
-    const char *part_tmp =  mml_string;
+    const char *part_tmp = mml_string;
     const char *part_end = NULL;
     const char *part_start = NULL;
 
     //跳过空格
-    for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp ; ++part_tmp);
+    for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp; ++part_tmp);
 
     part_start = part_tmp;
 
     //选择空格前的数据
-    for (; (isspace(static_cast<unsigned char>(*part_tmp))  == false) && *part_tmp != '\0'; ++part_tmp);
+    for (; (isspace(static_cast<unsigned char>(*part_tmp)) == false) && *part_tmp != '\0'; ++part_tmp);
 
     part_end = part_tmp;
 
@@ -155,17 +150,17 @@ int MML_Command::parse_mml_cnd_string2(const char *mml_string)
     }
 
     //得到命令
-    mml_command_.assign(part_start, part_end);
+    mml_command_.assign(part_start,part_end);
 
     //剔除所有的空格
-    for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp ; ++part_tmp);
+    for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp; ++part_tmp);
 
     if ('\0' == *part_tmp)
     {
         return 0;
     }
 
-    std::string key, value;
+    std::string key,value;
 
     //解析参数
     while ('\0' != *part_tmp)
@@ -176,22 +171,22 @@ int MML_Command::parse_mml_cnd_string2(const char *mml_string)
         part_start = part_tmp;
 
         //选择空格和'='符号前的数据
-        for (; (isspace(static_cast<unsigned char>(*part_tmp))  == false) && *part_tmp != '=' && *part_tmp != '\0'; ++part_tmp);
+        for (; (isspace(static_cast<unsigned char>(*part_tmp)) == false) && *part_tmp != '=' && *part_tmp != '\0'; ++part_tmp);
 
         part_end = part_tmp;
 
         //分析错误
-        if ( part_start >= part_end)
+        if (part_start >= part_end)
         {
             return -1;
         }
 
-        key.assign(part_start, part_end);
+        key.assign(part_start,part_end);
 
         //去除空格的影响
         for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'; ++part_tmp);
 
-        if (*part_tmp !=  '=' )
+        if (*part_tmp != '=')
         {
             mml_cmd_option_.insert(key);
             continue;
@@ -218,7 +213,7 @@ int MML_Command::parse_mml_cnd_string2(const char *mml_string)
                 part_start = part_tmp;
 
                 //选择空格前的数据
-                for (; (isspace(static_cast<unsigned char>(*part_tmp))  == false) && *part_tmp != '\0'; ++part_tmp);
+                for (; (isspace(static_cast<unsigned char>(*part_tmp)) == false) && *part_tmp != '\0'; ++part_tmp);
 
                 part_end = part_tmp;
             }
@@ -229,7 +224,7 @@ int MML_Command::parse_mml_cnd_string2(const char *mml_string)
                 return -1;
             }
 
-            value.assign(part_start, part_end);
+            value.assign(part_start,part_end);
         }
 
         mml_cmd_parameter_[key] = value;
@@ -245,7 +240,7 @@ int MML_Command::parse_mml_cnd_string2(const char *mml_string)
 //分析命令行参数
 //支持的分析的命令格式包括 CMD SVR :A=1,B=2,C=" i love c++!";
 //分析的思路有点奇怪,基本是一个个找到id
-int MML_Command::parse_mml_cnd_string1(const char *mml_string )
+int MML_Command::parse_mml_cnd_string1(const char *mml_string)
 {
     mml_string_ = mml_string;
     //清理遗留的现场
@@ -261,17 +256,17 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
     const char STRING_SEPARATOR = '\"';
 
     //读取字段的位置标示符号
-    const char *part_tmp =  mml_string;
+    const char *part_tmp = mml_string;
     const char *part_end = NULL;
     const char *part_start = NULL;
 
     //过滤前面的空格，没有用trim函数，
-    for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp  && END_SEPARATOR != *part_tmp ; ++part_tmp);
+    for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp && END_SEPARATOR != *part_tmp; ++part_tmp);
 
     part_start = part_tmp;
 
     //取命令字
-    for (; CMD_SEPARATOR != *part_tmp &&  '\0' != *part_tmp && END_SEPARATOR != *part_tmp ; ++part_tmp);
+    for (; CMD_SEPARATOR != *part_tmp && '\0' != *part_tmp && END_SEPARATOR != *part_tmp; ++part_tmp);
 
     part_end = part_tmp;
 
@@ -284,7 +279,7 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
         return -1;
     }
 
-    mml_command_.assign(part_start, part_end);
+    mml_command_.assign(part_start,part_end);
 
     //如果已经结束，只有命令字
     if ('\0' == *part_tmp || END_SEPARATOR == *part_tmp)
@@ -296,20 +291,20 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
     ++part_tmp;
 
     //跳过空格
-    std::string key, value;
+    std::string key,value;
 
-    for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0'     && *part_tmp != END_SEPARATOR; ++part_tmp);
+    for (; isspace(static_cast<unsigned char>(*part_tmp)) && *part_tmp != '\0' && *part_tmp != END_SEPARATOR; ++part_tmp);
 
     //结束条件
-    for (; *part_tmp !=  '\0' &&  *part_tmp != END_SEPARATOR; ++part_tmp)
+    for (; *part_tmp != '\0' && *part_tmp != END_SEPARATOR; ++part_tmp)
     {
         //跳过空格
-        for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp  && END_SEPARATOR != *part_tmp; ++part_tmp);
+        for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp && END_SEPARATOR != *part_tmp; ++part_tmp);
 
         part_start = part_tmp;
 
         //得到option字段
-        for (; *part_tmp != OPTION_SEPARATOR && *part_tmp != KEY_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR ; ++part_tmp);
+        for (; *part_tmp != OPTION_SEPARATOR && *part_tmp != KEY_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR; ++part_tmp);
 
         part_end = part_tmp;
 
@@ -317,16 +312,16 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
         for (; isspace(static_cast<unsigned char>(*part_end)) && part_end != part_start; --part_end);
 
         //分析错误
-        if (part_end <= part_start )
+        if (part_end <= part_start)
         {
             return -1;
         }
 
         //得到Key
-        key.assign(part_start, part_end);
+        key.assign(part_start,part_end);
 
         //如果是选项
-        if (*part_tmp == OPTION_SEPARATOR || *part_tmp == END_SEPARATOR || *part_tmp == '\0' )
+        if (*part_tmp == OPTION_SEPARATOR || *part_tmp == END_SEPARATOR || *part_tmp == '\0')
         {
             mml_cmd_option_.insert(key);
             continue;
@@ -338,7 +333,7 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
             //跳过KEY_SEPARATOR
             ++part_tmp;
 
-            for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' !=  *part_tmp  && END_SEPARATOR != *part_tmp ; ++part_tmp);
+            for (; isspace(static_cast<unsigned char>(*part_tmp)) && '\0' != *part_tmp && END_SEPARATOR != *part_tmp; ++part_tmp);
 
             part_start = part_tmp;
 
@@ -348,36 +343,36 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
                 ++part_tmp;
                 part_start = part_tmp;
 
-                for (; *part_tmp != STRING_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR ;  ++part_tmp);
+                for (; *part_tmp != STRING_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR; ++part_tmp);
 
                 part_end = part_tmp;
 
                 //如果结束分割符号是...
-                if ( *part_end != STRING_SEPARATOR )
+                if (*part_end != STRING_SEPARATOR)
                 {
                     return -1;
                 }
 
-                value.assign(part_start, part_end);
+                value.assign(part_start,part_end);
                 mml_cmd_parameter_[key] = value;
                 continue;
             }
 
             //得到value
-            for (; *part_tmp != OPTION_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR ; ++part_tmp);
+            for (; *part_tmp != OPTION_SEPARATOR && *part_tmp != '\0' && *part_tmp != END_SEPARATOR; ++part_tmp);
 
             part_end = part_tmp;
 
             //去掉空格
             for (; isspace(static_cast<unsigned char>(*part_end)) && part_end != part_start; --part_end);
 
-            if (part_end <= part_start )
+            if (part_end <= part_start)
             {
                 return -1;
             }
 
             //命令参数
-            value.assign(part_start, part_end);
+            value.assign(part_start,part_end);
             mml_cmd_parameter_[key] = value;
             continue;
         }
@@ -385,6 +380,4 @@ int MML_Command::parse_mml_cnd_string1(const char *mml_string )
 
     return 0;
 }
-
 }
-

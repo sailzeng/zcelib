@@ -1,12 +1,7 @@
-
-
-
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-
-
-int test_list(int /*argc*/, char * /*argv*/ [])
+int test_list(int /*argc*/,char * /*argv*/[])
 {
     const size_t numnode = 100;
 
@@ -15,10 +10,10 @@ int test_list(int /*argc*/, char * /*argv*/ [])
     size_t szalloc = zce::smem_list<int>::getallocsize(numnode);
     std::cout << "need mem: " << (int)szalloc << std::endl;
     std::cout << "sizeof(smem_list<int >)" << sizeof(zce::smem_list<int >) << std::endl;
-    char *tmproom = new char [szalloc + 4];
-    memset(tmproom, 0, szalloc + 4);
+    char *tmproom = new char[szalloc + 4];
+    memset(tmproom,0,szalloc + 4);
 
-    zce::smem_list<int> *pmmap = zce::smem_list<int>::initialize(numnode, tmproom, false);
+    zce::smem_list<int> *pmmap = zce::smem_list<int>::initialize(numnode,tmproom,false);
 
     std::cout << "capacity:" << (int)pmmap->capacity() << std::endl;
 
@@ -29,7 +24,7 @@ int test_list(int /*argc*/, char * /*argv*/ [])
         pmmap->push_front(tmpx);
     }
 
-    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end()  ; ++it)
+    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
     {
         std::cout << " " << *it;
     }
@@ -48,7 +43,7 @@ int test_list(int /*argc*/, char * /*argv*/ [])
         pmmap->push_back(tmpx);
     }
 
-    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end()  ; ++it)
+    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
     {
         std::cout << " " << *it;
     }
@@ -62,7 +57,6 @@ int test_list(int /*argc*/, char * /*argv*/ [])
         pmmap->pop_back();
     }
 
-
     for (tmpx = 0; tmpx < 10; tmpx++)
     {
         pmmap->push_back(tmpx);
@@ -73,7 +67,7 @@ int test_list(int /*argc*/, char * /*argv*/ [])
         pmmap->push_front(tmpx);
     }
 
-    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end()  ; ++it)
+    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
     {
         std::cout << " " << *it;
     }
@@ -81,7 +75,6 @@ int test_list(int /*argc*/, char * /*argv*/ [])
     std::cout << std::endl;
     std::cout << "size:" << (int)pmmap->size() << std::endl;
     std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
-
 
     //少打一个Begin
     for (zce::smem_list<int>::iterator it = --pmmap->end(); it != pmmap->begin(); --it)
@@ -101,7 +94,7 @@ int test_list(int /*argc*/, char * /*argv*/ [])
         pmmap->pop_front();
     }
 
-    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end()  ; ++it)
+    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
     {
         std::cout << " " << *it;
     }
@@ -111,12 +104,12 @@ int test_list(int /*argc*/, char * /*argv*/ [])
     std::cout << "sizefreenode:" << (int)pmmap->sizefreenode() << std::endl;
 
     zce::smem_list<int>::iterator ittmp = pmmap->end();
-    ittmp --;
-    ittmp --;
-    ittmp --;
-    pmmap->move_begin(ittmp, pmmap->end());
+    ittmp--;
+    ittmp--;
+    ittmp--;
+    pmmap->move_begin(ittmp,pmmap->end());
 
-    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end()  ; ++it)
+    for (zce::smem_list<int>::iterator it = pmmap->begin(); it != pmmap->end(); ++it)
     {
         std::cout << " " << *it;
     }

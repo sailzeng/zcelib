@@ -4,7 +4,6 @@
 
 namespace soar
 {
-
 #if defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wclass-memaccess"
@@ -34,11 +33,6 @@ void Zerg_Head::hton()
     //
     proxy_service_.services_type_ = htons(proxy_service_.services_type_);
     proxy_service_.services_id_ = htonl(proxy_service_.services_id_);
-
-    
-
-    
-
 }
 
 //将所有的uint16_t,uint32_t转换为本地序
@@ -63,12 +57,9 @@ void Zerg_Head::ntoh()
     //
     proxy_service_.services_type_ = ntohs(proxy_service_.services_type_);
     proxy_service_.services_id_ = ntohl(proxy_service_.services_id_);
-  
 }
 
 //---------------------------------------------------------------------------------------------------------
-
-
 
 //创建一个Frame
 Zerg_Frame *Zerg_Frame::new_frame(std::size_t frame_len)
@@ -118,7 +109,6 @@ int Zerg_Frame::fill_appdata(const size_t szdata,const char *vardata)
 //交换接受者和发送者,由于要回送数据时
 void Zerg_Frame::exchange_rcvsnd_svcid(void)
 {
-
     soar::SERVICES_ID tmpsvrinfo = recv_service_;
     recv_service_ = send_service_;
     send_service_ = tmpsvrinfo;
@@ -144,8 +134,6 @@ void Zerg_Frame::fillback_appframe_head(Zerg_Frame &exframe)
     backfill_fsm_id_ = exframe.fsm_id_;
     user_id_ = exframe.user_id_;
 }
-
-
 
 //输出APPFRAME的头部信息
 void Zerg_Frame::dump_frame_head(zce::LOG_PRIORITY log_priority,
@@ -191,7 +179,6 @@ void Zerg_Frame::dump_frame_all(zce::LOG_PRIORITY log_priority,
     ZCE_LOG(log_priority,"[framework] [%s] zerg fame data:%s",outer_str,data_str);
 }
 
-
 //Clone一个APP FRAME
 void Zerg_Frame::clone(Zerg_Frame *dst_frame) const
 {
@@ -218,9 +205,9 @@ void Zerg_Frame::get_head(Zerg_Head &frame_head) const
 
 ///将一个结构进行编码
 int Zerg_Frame::protobuf_encode(size_t szframe_appdata,
-                                    const google::protobuf::MessageLite *msg,
-                                    size_t data_start,
-                                    size_t *sz_code)
+                                const google::protobuf::MessageLite *msg,
+                                size_t data_start,
+                                size_t *sz_code)
 {
     if (!msg->IsInitialized())
     {
@@ -249,8 +236,8 @@ int Zerg_Frame::protobuf_encode(size_t szframe_appdata,
 
 ///将一个结构进行解码
 int Zerg_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
-                                    size_t data_start,
-                                    size_t *sz_code)
+                                size_t data_start,
+                                size_t *sz_code)
 {
     size_t szframe_appdata = length_;
     bool bret = msg->ParseFromArray(frame_appdata_ + data_start,
@@ -269,9 +256,7 @@ int Zerg_Frame::protobuf_decode(google::protobuf::MessageLite *msg,
 
 #endif
 
-
 #if defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic pop
 #endif
-
 };

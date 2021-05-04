@@ -13,7 +13,7 @@ Class           : ZCE_Thread_Spin_Mutex
 ************************************************************************************************************/
 
 //构造函数
-ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
+ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex()
 {
     int ret = 0;
 
@@ -23,21 +23,20 @@ ZCE_Thread_Spin_Mutex::ZCE_Thread_Spin_Mutex ()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_initex", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_initex",ret);
         return;
     }
-
 }
 
 //销毁互斥量
-ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex (void)
+ZCE_Thread_Spin_Mutex::~ZCE_Thread_Spin_Mutex(void)
 {
     int ret = 0;
-    ret = zce::pthread_spin_destroy (&lock_);
+    ret = zce::pthread_spin_destroy(&lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_destroy", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_destroy",ret);
         return;
     }
 }
@@ -50,7 +49,7 @@ void ZCE_Thread_Spin_Mutex::lock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_lock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_lock",ret);
         return;
     }
 }
@@ -77,7 +76,7 @@ void ZCE_Thread_Spin_Mutex::unlock()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_unlock",ret);
         return;
     }
 }
@@ -87,4 +86,3 @@ pthread_spinlock_t *ZCE_Thread_Spin_Mutex::get_lock()
 {
     return &lock_;
 }
-

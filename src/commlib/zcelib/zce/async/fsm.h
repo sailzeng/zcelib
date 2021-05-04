@@ -1,25 +1,22 @@
-
 /*!
 * @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
 * @filename   fsm.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
-* @version    
+* @version
 * @date       2021年4月21日
 * @brief      这儿更多的是一个示例。
-*             
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+*
+* @details
+*
+*
+*
+* @note
+*
 */
-
 
 #ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
 #define ZCE_LIB_ASYNC_FRAMEWORK_FSM_
-
 
 #include "zce/async/async_base.h"
 
@@ -27,27 +24,24 @@
 
 namespace zce
 {
-
 /*!
 * @brief      状态机对象
 */
-class Async_FSM : public Async_Object
+class Async_FSM: public Async_Object
 {
     friend class Async_FSMMgr;
-
 
 public:
     /*!
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    Async_FSM(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd);
+    Async_FSM(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd);
 protected:
     /*!
     * @brief      析构函数
     */
     ~Async_FSM();
-
 
     /*!
     * @brief      状态机运行处理，继承zce::Async_Object的函数，此函数仅仅用于作为例子进行参考，
@@ -84,14 +78,13 @@ protected:
     int               fsm_stage_;
 };
 
-
 //====================================================================================
 
 /*!
 * @brief      状态机主控管理类
 *
 */
-class Async_FSMMgr : public zce::Async_Obj_Mgr
+class Async_FSMMgr: public zce::Async_Obj_Mgr
 {
 public:
 
@@ -101,15 +94,11 @@ public:
 
 protected:
 
-
     ///默认状态机对象池子的初始化的数量,状态机不太消耗内存，可以追求更好的性能
     static const size_t FSM_POOL_INIT_SIZE = 4;
     ///默认状态机扩展的时候，扩展的异步对象的数量
     static const size_t FSM_POOL_EXTEND_SIZE = 256;
-
 };
-
 }
 
 #endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_FSM_
-

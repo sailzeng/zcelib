@@ -20,14 +20,12 @@
 
 namespace zce
 {
-
 class Timer_Handler;
 /******************************************************************************************
 ZCE_Timer_Queue
 ******************************************************************************************/
-class Timer_Queue_Base : public zce::NON_Copyable
+class Timer_Queue_Base: public zce::NON_Copyable
 {
-
 public:
     //无效的时间ID
     static const int  INVALID_TIMER_ID = -1;
@@ -35,12 +33,11 @@ public:
     ///触发模式，
     enum class TRIGGER_MODE
     {
-
         ///根据系统时钟进行触发，缺点是，在系统时间被调整的情况下，会丢失定时器
         SYSTEM_CLOCK = 1,
 
         ///CPU，TICK，好处绝不丢失，坏处保存超时时间不是墙上时钟，
-        CPU_TICK     = 2,
+        CPU_TICK = 2,
     };
 
     //默认的时间精度
@@ -60,10 +57,9 @@ protected:
     {
     public:
 
-
         void clear()
         {
-            interval_time_.set(0, 0);
+            interval_time_.set(0,0);
 
             action_ = NULL;
             timer_handle_ = NULL;
@@ -80,10 +76,10 @@ protected:
         zce::Time_Value      interval_time_ = {0,0};
 
         ///回调的时候返回的指针，我只是保存他，给你用的。你自己把握好
-        const void         *action_ = NULL;
+        const void *action_ = NULL;
 
         ///对应的时间句柄的的指针
-        zce::Timer_Handler  *timer_handle_ = NULL;
+        zce::Timer_Handler *timer_handle_ = NULL;
 
         ///下一次触发点，可能是一个绝度时间，也可能是一个CPU TICK的计数,但都是一个绝对值
         uint64_t            next_trigger_point_ = 0;
@@ -102,9 +98,9 @@ protected:
 protected:
     //构造函数
     Timer_Queue_Base(size_t num_timer_node,
-                         unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                         TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                         bool dynamic_expand_node = true);
+                     unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
+                     TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
+                     bool dynamic_expand_node = true);
     Timer_Queue_Base();
 public:
     virtual ~Timer_Queue_Base();
@@ -159,7 +155,7 @@ protected:
     @param      now_trigger_msec 当前的触发点的毫秒数，不同模式下表达不太一样
     @note
     */
-    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) = 0;
+    virtual int reschedule_timer(int timer_id,uint64_t now_trigger_msec) = 0;
 
     //---------------------------------------------------------------------------------------
 public:
@@ -227,7 +223,7 @@ protected:
     int alloc_timernode(Timer_Handler *timer_hdl,
                         const void *action,
                         const zce::Time_Value &delay_time_,
-                        const zce::Time_Value  &interval_time_,
+                        const zce::Time_Value &interval_time_,
                         int &time_node_id,
                         ZCE_TIMER_NODE *&alloc_time_node);
 
@@ -306,10 +302,8 @@ protected:
 protected:
 
     ///单子实例指针
-    static Timer_Queue_Base     *instance_;
+    static Timer_Queue_Base *instance_;
 };
-
 }
 
 #endif //# ZCE_LIB_TIMER_QUEUE_BASE_H_
-

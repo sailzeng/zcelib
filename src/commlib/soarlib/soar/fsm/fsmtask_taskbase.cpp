@@ -16,7 +16,7 @@ FSMTask_TaskBase::FSMTask_TaskBase():
 //
 FSMTask_TaskBase::~FSMTask_TaskBase()
 {
-    if (task_frame_buf_ )
+    if (task_frame_buf_)
     {
         soar::Zerg_Frame::delete_frame(task_frame_buf_);
         task_frame_buf_ = NULL;
@@ -54,9 +54,9 @@ void FSMTask_TaskBase::stop_task_run()
     task_run_ = false;
 }
 
-int FSMTask_TaskBase::svc (void)
+int FSMTask_TaskBase::svc(void)
 {
-    ZCE_LOG(RS_INFO, "[framework] Task stop start run. thread id = %u", zce::pthread_self());
+    ZCE_LOG(RS_INFO,"[framework] Task stop start run. thread id = %u",zce::pthread_self());
 
     int ret = 0;
     task_run_ = true;
@@ -65,7 +65,6 @@ int FSMTask_TaskBase::svc (void)
     //
     for (; task_run_;)
     {
-
         //如果已经取出成功
         size_t recv_frame_num = 0;
 
@@ -81,8 +80,8 @@ int FSMTask_TaskBase::svc (void)
             //不忙的时候，可以让他等待在队列上
             else
             {
-                zce::Time_Value tv(0, 1000000);
-                ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame, tv);
+                zce::Time_Value tv(0,1000000);
+                ret = trans_notify_mgr_->dequeue_sendqueue(tmp_frame,tv);
             }
 
             if (ret != 0)
@@ -92,7 +91,7 @@ int FSMTask_TaskBase::svc (void)
 
             // 一旦不忙时收到数据，idle状态改为忙
             idle = 0;
-            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG, "FROM SEND QUEUE FRAME:", tmp_frame);
+            DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"FROM SEND QUEUE FRAME:",tmp_frame);
 
             ret = taskprocess_appframe(tmp_frame);
             //回收FRAME
@@ -100,18 +99,18 @@ int FSMTask_TaskBase::svc (void)
 
             if (ret != 0)
             {
-                ZCE_LOG(RS_ERROR, "[framework] taskprocess_appframe ret =%u", ret);
+                ZCE_LOG(RS_ERROR,"[framework] taskprocess_appframe ret =%u",ret);
             }
         }
 
         size_t send_frame_num = 0;
         //Task 干私活
-        ret = task_moonlighting (send_frame_num);
+        ret = task_moonlighting(send_frame_num);
 
         //控制程序的忙闲状态
-        if (0 == send_frame_num  && 0 == recv_frame_num )
+        if (0 == send_frame_num && 0 == recv_frame_num)
         {
-            idle ++;
+            idle++;
         }
         else
         {
@@ -119,7 +118,7 @@ int FSMTask_TaskBase::svc (void)
         }
     }
 
-    ZCE_LOG(RS_INFO, "[framework] Task stop run. thread id = %u", zce::pthread_self());
+    ZCE_LOG(RS_INFO,"[framework] Task stop run. thread id = %u",zce::pthread_self());
 
     return 0;
 }
@@ -136,9 +135,8 @@ int FSMTask_TaskBase::task_finish()
     return 0;
 }
 
-int FSMTask_TaskBase::task_moonlighting (size_t &send_frame_num)
+int FSMTask_TaskBase::task_moonlighting(size_t &send_frame_num)
 {
     send_frame_num = 0;
     return 0;
 }
-

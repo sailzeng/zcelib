@@ -24,7 +24,7 @@ public:
              int mmap_prot = PROT_READ | PROT_WRITE,
              int mmap_flags = MAP_SHARED,
              std::size_t offset = 0
-            );
+    );
 
     //打开文件，进行映射, 简单，推荐使用这个函数
     int open(const char *file_name,
@@ -34,7 +34,7 @@ public:
              bool share_file = true,
              const void *want_address = NULL,
              std::size_t  offset = 0
-            );
+    );
 
     //关闭文件
     int close();
@@ -62,7 +62,7 @@ protected:
     std::string         mmap_file_name_;
 
     //映射的内存地址
-    void               *mmap_addr_;
+    void *mmap_addr_;
 
     // 映射的文件句柄
     ZCE_HANDLE          mmap_handle_;
@@ -72,4 +72,3 @@ protected:
 };
 
 #endif //ZCE_LIB_SHARE_MEMORY_MMAP_H_
-

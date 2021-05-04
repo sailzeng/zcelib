@@ -15,10 +15,8 @@
 *
 */
 
-
 #ifndef SOARING_LIB_PER_DEFINE_BASE_H_
 #define SOARING_LIB_PER_DEFINE_BASE_H_
-
 
 //业务ID
 enum SOAR_BUSINESS_ID
@@ -29,61 +27,52 @@ enum SOAR_BUSINESS_ID
     //公用业务ID从1-1000
     SOAR_PUBLIC_BUSINESS_ID = 100,
 
-
     //游戏业务从1000开始
-    GAME_BUSINESS_ID_BEGIN =  1000,
-
-
+    GAME_BUSINESS_ID_BEGIN = 1000,
 };
-
-
-
-
 
 // 通用服务类型定义， 通用服务类型<30 30以上的业务服务类型
 enum SOAR_SERVICES_TYPE
 {
     //无效的服务器编号-----------------------------------------------------
-    SVC_INVALID_SERVER      = 0,
+    SVC_INVALID_SERVER = 0,
 
     //服务器端编号----------------------------------------------------------
 
     // 配置服务器
-    SVC_CFG_SVR             = 1,
+    SVC_CFG_SVR = 1,
 
     // 日志服务器
-    SVC_LOG_SVR             = 2,
+    SVC_LOG_SVR = 2,
 
     // 监控服务器
-    SVC_MONITOR_SVR         = 3,
+    SVC_MONITOR_SVR = 3,
 
     // proxy
-    SVC_PROXY_SERVER        = 4,
+    SVC_PROXY_SERVER = 4,
 
     // ZERG SVR
-    SVC_ZERGLING_SVR        = 5,
+    SVC_ZERGLING_SVR = 5,
 
     // 临时service type, 和zerg分配的动态service id搭配使用
-    SVC_TMP_TYPE            = 6,
+    SVC_TMP_TYPE = 6,
 
     // GunnerSvr
-    SVR_GUNNER_TYPE         = 7,
+    SVR_GUNNER_TYPE = 7,
 
     // store adapt,存储代理
-    SVC_STORE_ADAPT         = 8,
+    SVC_STORE_ADAPT = 8,
 
     // UDP服务器的Type开始值
     SVC_UDP_SERVER_BEGIN = 30000,
 
     //几个通讯服务器的特殊标示
-    SVC_SPECIAL_BEGIN    = 49000,
+    SVC_SPECIAL_BEGIN = 49000,
     //TCPSVRD,ZERGING通讯服务器
-    SVR_ZERGING_TCPSVRD  = 49001,
+    SVR_ZERGING_TCPSVRD = 49001,
     //OG4A,通用的通讯服务器模型
     SVR_OGRE4A_COMM_SVRD = 49002,
-
 };
-
 
 //客户端所需的服务器列表
 struct CLIENT_NEED_SVC_TYPE
@@ -120,7 +109,6 @@ static const size_t   LEN_OF_SIGNATURE_KEY_56 = 56;
 static const size_t   LEN_OF_SIGNATURE_KEY_64 = 64;
 
 static const size_t   LEN_OF_UIN_SESSION = 16;
-
 
 //
 static const size_t   MAX_SHORTNAME_STRING = 16;
@@ -178,7 +166,6 @@ static const unsigned int   ONE_DAY_SECOND = ONE_HOUR_SECOND * 24;
 //
 //一周的秒数
 static const unsigned int   ONE_WEEK_SECONDS = ONE_DAY_SECOND * ONE_WEEK_DAYS;
-
 
 //定义2个宏
 //取从1970到现在当前的日期

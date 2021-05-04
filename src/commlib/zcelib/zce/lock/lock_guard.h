@@ -7,7 +7,7 @@
 * @brief      GURAD。利用构造函数和析构函数自动加锁，解锁的类，
 *             在各个类里面都有typdef帮助使用
 *             比如ZCE_Thread_Light_Mutex
-*             
+*
 *             如果你还能被人噎着，就表示你还不够强大，
 *
 */
@@ -24,20 +24,19 @@
 *             ZCE_Process_Semaphore,ZCE_Thread_NONR_Mutex,等
 */
 template <typename zce_lock>
-class ZCE_Lock_Guard : public zce::NON_Copyable
+class ZCE_Lock_Guard: public zce::NON_Copyable
 {
 public:
 
     ///构造，得到锁，进行锁定
-    ZCE_Lock_Guard (zce_lock &lock):
+    ZCE_Lock_Guard(zce_lock &lock):
         lock_(&lock)
     {
         lock_->lock();
     }
 
-
     //构造，得到锁，根据要求决定是否进行锁定操作
-    ZCE_Lock_Guard (zce_lock &lock, bool block):
+    ZCE_Lock_Guard(zce_lock &lock,bool block):
         lock_(&lock)
     {
         if (block)
@@ -47,25 +46,25 @@ public:
     }
 
     ///析构，同时对锁进行释放操作
-    ~ZCE_Lock_Guard (void)
+    ~ZCE_Lock_Guard(void)
     {
         lock_->unlock();
     };
 
     ///锁定操作
-    void lock (void)
+    void lock(void)
     {
         return lock_->lock();
     }
 
     ///尝试锁定操作
-    bool try_lock (void)
+    bool try_lock(void)
     {
         return lock_->try_lock();
     }
 
     ///解锁操作
-    void unlock (void)
+    void unlock(void)
     {
         return lock_->unlock();
     }
@@ -74,7 +73,6 @@ protected:
 
     ///用来GUARD保护的锁
     zce_lock *lock_;
-
 };
 
 /*!
@@ -82,18 +80,18 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是，ZCE_Null_Mutex, ZCE_File_Lock ZCE_Thread_RW_Mutex
 */
 template <class zce_lock>
-class ZCE_Read_Guard : public zce::NON_Copyable
+class ZCE_Read_Guard: public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    ZCE_Read_Guard (zce_lock &lock):
+    ZCE_Read_Guard(zce_lock &lock):
         lock_(&lock)
     {
         lock_->lock_read();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    ZCE_Read_Guard (zce_lock &lock, bool block):
+    ZCE_Read_Guard(zce_lock &lock,bool block):
         lock_(&lock)
     {
         if (block)
@@ -129,7 +127,6 @@ protected:
 
     ///用来GUARD保护的锁
     zce_lock *lock_;
-
 };
 
 /*!
@@ -137,18 +134,18 @@ protected:
 * @tparam     ZCE_LOCK 锁的类型,可以是 ZCE_Null_Mutex ZCE_File_Lock ZCE_Thread_RW_Mutex
 */
 template <class zce_lock>
-class ZCE_Write_Guard : public zce::NON_Copyable
+class ZCE_Write_Guard: public zce::NON_Copyable
 {
 public:
     ///构造，得到读写锁，进行读锁定
-    ZCE_Write_Guard (zce_lock &lock):
+    ZCE_Write_Guard(zce_lock &lock):
         lock_(&lock)
     {
         lock_->lock_write();
     }
 
     ///构造，得到读写锁，根据参数确定是否进行读锁定
-    ZCE_Write_Guard (zce_lock &lock, bool block):
+    ZCE_Write_Guard(zce_lock &lock,bool block):
         lock_(&lock)
     {
         if (block)
@@ -184,8 +181,6 @@ protected:
 
     ///用来GUARD保护的锁
     zce_lock *lock_;
-
 };
 
 #endif //ZCE_LIB_LOCK_GUARD_H_
-

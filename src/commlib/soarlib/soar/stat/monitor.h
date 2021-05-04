@@ -5,9 +5,8 @@
 
 //原来是使用模版策略锁，后来发现模版容易将问题扩大化，
 //改成多态策略
-class Soar_Stat_Monitor : public zce::Server_Status
+class Soar_Stat_Monitor: public zce::Server_Status
 {
-
 public:
     //gunner里面有接收多个cgi统计上报的需求
     //单件无法支持
@@ -41,7 +40,7 @@ public:
     * @note
     */
     static int get_info_from_fname(const char *stat_file_name,
-                                   unsigned int  *business_id,
+                                   unsigned int *business_id,
                                    soar::SERVICES_ID *service_info,
                                    char *app_base_name);
 
@@ -51,7 +50,6 @@ protected:
     void create_stat_fname(const char *app_base_name,
                            unsigned int business_id,
                            const soar::SERVICES_ID &service_info);
-
 
     //单子的函数群，不是我不知道可以用BOOST的模板使用单子，是这样更加直接清爽，容易扩张修改一些
     //我不会为了单子考虑所谓的保护问题，你自己保证你的初始化函数不会重入
@@ -75,4 +73,3 @@ protected:
 };
 
 #endif //SOARING_LIB_MONITOR_STAT_H_
-

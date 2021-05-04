@@ -6,12 +6,12 @@
 Class           : ZCE_Null_Mutex
 ************************************************************************************************************/
 //构造函数和析构函数
-ZCE_Null_Mutex::ZCE_Null_Mutex(const char * ):
+ZCE_Null_Mutex::ZCE_Null_Mutex(const char *):
     lock_(0)
 {
 }
 
-ZCE_Null_Mutex::~ZCE_Null_Mutex (void)
+ZCE_Null_Mutex::~ZCE_Null_Mutex(void)
 {
 }
 
@@ -40,7 +40,7 @@ bool ZCE_Null_Mutex::systime_lock(const zce::Time_Value & /*abs_time*/)
 }
 
 //相对时间，返回是否超时
-bool ZCE_Null_Mutex::duration_lock(const zce::Time_Value & /*relative_time*/ )
+bool ZCE_Null_Mutex::duration_lock(const zce::Time_Value & /*relative_time*/)
 {
     return true;
 }
@@ -106,32 +106,31 @@ ZCE_Null_Condition::~ZCE_Null_Condition()
 }
 
 ///等待
-void ZCE_Null_Condition::wait(ZCE_Null_Mutex * /*external_mutex*/ )
+void ZCE_Null_Condition::wait(ZCE_Null_Mutex * /*external_mutex*/)
 {
-    return ;
+    return;
 }
 
 ///绝对时间超时的的等待，超时后解锁
-bool ZCE_Null_Condition::systime_wait(ZCE_Null_Mutex * /*external_mutex*/, const zce::Time_Value & /*abs_time*/)
+bool ZCE_Null_Condition::systime_wait(ZCE_Null_Mutex * /*external_mutex*/,const zce::Time_Value & /*abs_time*/)
 {
     return true;
 }
 
 ///相对时间的超时锁定等待，超时后，解锁
-bool ZCE_Null_Condition::duration_wait(ZCE_Null_Mutex * /*external_mutex*/, const zce::Time_Value &/*relative_time*/)
+bool ZCE_Null_Condition::duration_wait(ZCE_Null_Mutex * /*external_mutex*/,const zce::Time_Value &/*relative_time*/)
 {
     return false;
 }
 
 /// 给一个等待线程发送信号 Signal one waiting thread.
-void ZCE_Null_Condition::signal (void)
+void ZCE_Null_Condition::signal(void)
 {
     return;
 }
 
 ///给所有的等待线程广播信号 Signal *all* waiting threads.
-void ZCE_Null_Condition::broadcast (void)
+void ZCE_Null_Condition::broadcast(void)
 {
     return;
 }
-

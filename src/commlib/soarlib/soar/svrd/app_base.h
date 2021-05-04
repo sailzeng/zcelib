@@ -1,4 +1,3 @@
-
 #ifndef SOARING_LIB_SERVER_APPLICATION_H_
 #define SOARING_LIB_SERVER_APPLICATION_H_
 
@@ -11,13 +10,12 @@ class Server_Timer_Base;
 
 namespace soar
 {
-
 /*!
 * @brief      单线程自动机模型的程序框架基类
 *
 * @note
 */
-class Svrd_Appliction : public zce::Server_Base
+class Svrd_Appliction: public zce::Server_Base
 {
 protected:
 
@@ -37,7 +35,6 @@ public:
     ///得到APP的版本信息
     const char *get_app_version();
 
-
     /*!
     * @brief      初始化，放入一些基类的指针，
     * @return     int
@@ -47,17 +44,16 @@ public:
     int initialize(Server_Config_Base *config_base,
                    Server_Timer_Base *timer_base);
 
-
     /*!
     * @brief      返回APP的配置类指针
     * @return     Server_Config_Base*配置类的指针
     */
-    Server_Config_Base  *config_instance();
+    Server_Config_Base *config_instance();
 
 public:
 
     /// app的开始运行
-    virtual int app_start(int argc, const char *argv[]);
+    virtual int app_start(int argc,const char *argv[]);
 
     /// app 运行
     virtual int app_run() = 0;
@@ -96,22 +92,18 @@ protected:
     //自己的服务器ID
     soar::SERVICES_INFO  self_svc_info_;
 
-
     //最大消息个数
     size_t               max_msg_num_;
 
     ///与zerg的管道
-    Soar_MMAP_BusPipe   *zerg_mmap_pipe_;
-
+    Soar_MMAP_BusPipe *zerg_mmap_pipe_;
 
     ///框架定时器处理类
-    Server_Timer_Base   *timer_base_;
+    Server_Timer_Base *timer_base_;
 
     ///配置的处理的基类
-    Server_Config_Base  *config_base_;
-
+    Server_Config_Base *config_base_;
 };
-
 };
 
 #endif //SOARING_LIB_SERVER_APPLICATION_H_

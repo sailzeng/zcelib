@@ -1,4 +1,3 @@
-
 #ifndef ZERG_SERVER_PRE_DEFINE_H_
 #define ZERG_SERVER_PRE_DEFINE_H_
 
@@ -55,9 +54,6 @@
 #include <soar/stat/monitor.h>
 #include <soar/svrd/timer_base.h>
 
-
-
-
 //那天无法调试，google找到的解决方案。
 //there is no source code available for the current location 解决方案
 //
@@ -69,4 +65,3 @@
 static const socklen_t ZERG_SND_RCV_BUF_OPVAL = 320 * 1024;
 
 #endif //_ZERG_SERVER_PRE_DEFINE_H_
-

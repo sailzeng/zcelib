@@ -26,7 +26,6 @@
 
 #include "zce/logger/logging.h"
 
-
 /*!
 * @brief MYSQL_BIND 的包装封装累，
 *
@@ -53,7 +52,7 @@ public:
         * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
         * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
         */
-        BinData_Param(enum_field_types data_type, void *pdata, unsigned long data_len) :
+        BinData_Param(enum_field_types data_type,void *pdata,unsigned long data_len):
             stmt_data_type_(data_type),
             stmt_pdata_(pdata),
             stmt_data_length_(data_len)
@@ -69,11 +68,10 @@ public:
         //
         enum_field_types  stmt_data_type_;
         //
-        void             *stmt_pdata_;
+        void *stmt_pdata_;
         //
         unsigned long     stmt_data_length_;
     };
-
 
     /*!
     * @brief      仅仅是为了适配 ZCE_Mysql_STMT_Bind << 的操作符号
@@ -91,7 +89,7 @@ public:
         * @param[in] pdata 数据指针，就是是写入的存放的地方数据，
         * @param[in] data_len 数据长度的指针，传入参数表示数据长度，使用后保存是表示写入的数据长度
         */
-        BinData_Result(enum_field_types data_type, void *pdata, unsigned long *data_len) :
+        BinData_Result(enum_field_types data_type,void *pdata,unsigned long *data_len):
             stmt_data_type_(data_type),
             stmt_pdata_(pdata),
             stmt_data_length_(data_len)
@@ -107,9 +105,9 @@ public:
         //
         enum_field_types  stmt_data_type_;
         //
-        void             *stmt_pdata_;
+        void *stmt_pdata_;
         //
-        unsigned long    *stmt_data_length_;
+        unsigned long *stmt_data_length_;
     };
 
     /*!
@@ -121,7 +119,7 @@ public:
         friend class ZCE_Mysql_STMT_Bind;
     public:
         //
-        TimeData(enum_field_types timetype, MYSQL_TIME *pstmttime) :
+        TimeData(enum_field_types timetype,MYSQL_TIME *pstmttime):
             stmt_timetype_(timetype),
             stmt_ptime_(pstmttime)
         {
@@ -129,7 +127,7 @@ public:
                        stmt_timetype_ == MYSQL_TYPE_DATE ||
                        stmt_timetype_ == MYSQL_TYPE_DATETIME ||
                        stmt_timetype_ == MYSQL_TYPE_TIMESTAMP
-                      );
+            );
         };
         //
         ~TimeData()
@@ -140,7 +138,7 @@ public:
         //
         enum_field_types  stmt_timetype_;
         //
-        MYSQL_TIME       *stmt_ptime_;
+        MYSQL_TIME *stmt_ptime_;
     };
 
     /*!
@@ -194,7 +192,6 @@ public:
                        void *paramdata,
                        unsigned long szparam = 0);
 
-
     /*!
     * @brief
     * @return     int
@@ -223,37 +220,35 @@ public:
     void reset();
 
     ///将变量绑定
-    void bind(size_t bind_col, char &val);
-    void bind(size_t bind_col, short &val);
-    void bind(size_t bind_col, int &val);
-    void bind(size_t bind_col, long &val);
-    void bind(size_t bind_col, long long &val);
+    void bind(size_t bind_col,char &val);
+    void bind(size_t bind_col,short &val);
+    void bind(size_t bind_col,int &val);
+    void bind(size_t bind_col,long &val);
+    void bind(size_t bind_col,long long &val);
 
+    void bind(size_t bind_col,unsigned char &val);
+    void bind(size_t bind_col,unsigned short &val);
+    void bind(size_t bind_col,unsigned int &val);
+    void bind(size_t bind_col,unsigned long &val);
+    void bind(size_t bind_col,unsigned long long &val);
 
-    void bind(size_t bind_col, unsigned char &val);
-    void bind(size_t bind_col, unsigned short &val);
-    void bind(size_t bind_col, unsigned int &val);
-    void bind(size_t bind_col, unsigned long &val);
-    void bind(size_t bind_col, unsigned long long &val);
-
-    void bind(size_t bind_col, float &val);
-    void bind(size_t bind_col, double &val);
+    void bind(size_t bind_col,float &val);
+    void bind(size_t bind_col,double &val);
 
     ///为了使用几个类型的适配器
     ///绑定二进制数据，的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Param &val);
+    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::BinData_Param &val);
     ///绑定二进制结果的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::BinData_Result &val);
+    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::BinData_Result &val);
     ///绑定时间的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::TimeData &val);
+    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::TimeData &val);
     ///绑定空的适配器
-    void bind(size_t bind_col, ZCE_Mysql_STMT_Bind::NULL_Param &val);
-
+    void bind(size_t bind_col,ZCE_Mysql_STMT_Bind::NULL_Param &val);
 
     template <typename bind_type>
     ZCE_Mysql_STMT_Bind &operator << (bind_type &val)
     {
-        bind(current_bind_, val);
+        bind(current_bind_,val);
         ++current_bind_;
         return *this;
     }
@@ -267,10 +262,8 @@ protected:
     size_t            current_bind_;
 
     ///BIND MySQL的封装方式让我不能用vector,
-    MYSQL_BIND       *stmt_bind_;
-
+    MYSQL_BIND *stmt_bind_;
 };
-
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning ( pop )
@@ -279,4 +272,3 @@ protected:
 #endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
-

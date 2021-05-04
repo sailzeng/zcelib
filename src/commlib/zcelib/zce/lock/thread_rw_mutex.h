@@ -32,9 +32,8 @@
 @brief      线程的读写锁
 
 */
-class ZCE_Thread_RW_Mutex : public ZCE_Lock_Base
+class ZCE_Thread_RW_Mutex: public ZCE_Lock_Base
 {
-
 public:
     ///读锁的GUARD
     typedef ZCE_Read_Guard<ZCE_Thread_RW_Mutex>  LOCK_READ_GUARD;
@@ -78,9 +77,7 @@ protected:
 
     //线程锁
     pthread_rwlock_t  rw_lock_;
-
 };
-
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 
@@ -89,9 +86,8 @@ protected:
             主要是为了适配Windows SVR 2008以后的读写锁实现，
             如果环境允许，推荐使用这个，速度比模拟的估计快很多，
 */
-class ZCE_Thread_Win_RW_Mutex : public ZCE_Lock_Base
+class ZCE_Thread_Win_RW_Mutex: public ZCE_Lock_Base
 {
-
 public:
     ///读锁的GUARD
     typedef ZCE_Read_Guard<ZCE_Thread_Win_RW_Mutex>  LOCK_READ_GUARD;
@@ -127,10 +123,8 @@ protected:
 
     ///WINSVR 2008以后，WINDOWS自己实现的读写锁
     SRWLOCK                rwlock_slim_;
-
 };
 
 #endif
 
 #endif //ZCE_LIB_LOCK_THREAD_MUTEX_H_
-

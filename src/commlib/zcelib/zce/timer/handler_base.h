@@ -23,7 +23,6 @@
 
 namespace zce
 {
-
 class Timer_Queue_Base;
 
 /******************************************************************************************
@@ -31,7 +30,6 @@ class zce::Timer_Handler
 ******************************************************************************************/
 class Timer_Handler
 {
-
 protected:
 
     //构造函数和析构函数
@@ -41,14 +39,14 @@ protected:
 
 protected:
     //
-    Timer_Queue_Base    *timer_queue_ = nullptr;
+    Timer_Queue_Base *timer_queue_ = nullptr;
     //
 
 public:
 
     //超时触发
     virtual int timer_timeout(const zce::Time_Value &now_timenow_time,
-                              const void *act = 0)  = 0;
+                              const void *act = 0) = 0;
     //定时器关闭
     virtual int timer_close();
 
@@ -61,7 +59,6 @@ public:
     //考虑的半天，我觉得对于Timer的处理还是不用考虑实现一个handle_close了。
     //handle_close
 };
-
 }
 
 #endif //# ZCE_LIB_TIMER_HANDLER_BASE_H_

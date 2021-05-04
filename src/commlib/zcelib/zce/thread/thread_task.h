@@ -26,9 +26,8 @@
 *
 * @note       对象不可拷贝复制，
 */
-class ZCE_Thread_Task : public zce::NON_Copyable
+class ZCE_Thread_Task: public zce::NON_Copyable
 {
-
 public:
 
     ///构造函数
@@ -75,12 +74,12 @@ public:
 protected:
 
     ///需要继承的处理的函数,理论上重载这一个函数就OK
-    virtual int svc (void);
+    virtual int svc(void);
 
 protected:
 
     ///静态函数，也就是要执行的函数，里面调用svc
-    static void svc_run (void *args);
+    static void svc_run(void *args);
 
 public:
 
@@ -97,8 +96,6 @@ protected:
 
     ///线程的返回值
     int                     thread_return_;
-
 };
 
 #endif //#ifndef ZCE_LIB_THREAD_TASK_H_
-

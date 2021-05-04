@@ -1,10 +1,6 @@
 #ifndef ZERG_UDP_CONTROL_SERVICE_H_
 #define ZERG_UDP_CONTROL_SERVICE_H_
 
-
-
-
-
 //forward declaration
 class soar::Zerg_Frame;
 class Zerg_Buffer;
@@ -12,7 +8,7 @@ class Zerg_IPRestrict_Mgr;
 class Zerg_Comm_Manager;
 class Zerg_Server_Config;
 
-class UDP_Svc_Handler : public ZCE_Event_Handler
+class UDP_Svc_Handler: public ZCE_Event_Handler
 {
 protected:
 
@@ -24,7 +20,6 @@ public:
                     bool sessionkey_verify = true);
 protected:
     ~UDP_Svc_Handler();
-
 
 public:
     //取得句柄
@@ -71,14 +66,13 @@ protected:
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
     ///统计，使用单子类的指针
-    static Soar_Stat_Monitor       *server_status_;
+    static Soar_Stat_Monitor *server_status_;
 
     ///通讯管理器,保存是为了加快速度
-    static Zerg_Comm_Manager       *zerg_comm_mgr_;
+    static Zerg_Comm_Manager *zerg_comm_mgr_;
 
     ///是否是代理服务器
     static bool                     if_proxy_;
-
 
 protected:
 
@@ -93,15 +87,9 @@ protected:
     ///是否进行SESSION校验
     bool                     sessionkey_verify_;
     ///数据缓冲区，UDP只有一个
-    Zerg_Buffer             *dgram_databuf_;
+    Zerg_Buffer *dgram_databuf_;
     ///IP限制管理器
-    Zerg_IPRestrict_Mgr      *ip_restrict_;
-
-
-
+    Zerg_IPRestrict_Mgr *ip_restrict_;
 };
 
-
-
 #endif //#ifndef _ZERG_UDP_CONTROL_SERVICE_H_
-

@@ -1,4 +1,3 @@
-
 #include "zce/predefine.h"
 #include "zce/mysql/result.h"
 
@@ -53,20 +52,20 @@ void ZCE_Mysql_Result::set_mysql_result(MYSQL_RES *sqlresult)
     if (NULL != mysql_result_)
     {
         mysql_free_result(mysql_result_);
-        mysql_result_  = NULL;
+        mysql_result_ = NULL;
     }
 
     //清0当前行,列以及当前行长度数组指针
     fields_length_ = NULL;
-    current_row_   = NULL;
+    current_row_ = NULL;
     current_field_ = 0;
 
     //行数目，列数目清0
-    num_result_row_   = 0;
+    num_result_row_ = 0;
     num_result_field_ = 0;
 
     //列属性指针清0
-    mysql_fields_        = 0;
+    mysql_fields_ = 0;
 
     mysql_result_ = sqlresult;
 
@@ -74,11 +73,11 @@ void ZCE_Mysql_Result::set_mysql_result(MYSQL_RES *sqlresult)
     if (mysql_result_)
     {
         //得到行数,列数
-        num_result_row_   = (unsigned int)  mysql_num_rows(mysql_result_);
+        num_result_row_ = (unsigned int)mysql_num_rows(mysql_result_);
         num_result_field_ = mysql_num_fields(mysql_result_);
 
         //列属性指针,其实就是返回一个数组的指针,效率应该是有保障的
-        mysql_fields_      = mysql_fetch_fields(mysql_result_);
+        mysql_fields_ = mysql_fetch_fields(mysql_result_);
     }
 
     return;
@@ -91,7 +90,7 @@ void ZCE_Mysql_Result::free_result()
     if (NULL != mysql_result_)
     {
         mysql_free_result(mysql_result_);
-        mysql_result_  = NULL;
+        mysql_result_ = NULL;
     }
 }
 
@@ -107,7 +106,7 @@ bool ZCE_Mysql_Result::fetch_row_next()
     current_row_ = ::mysql_fetch_row(mysql_result_);
 
     //如果NEXT行为空,结束访问
-    if (current_row_ == NULL )
+    if (current_row_ == NULL)
     {
         return false;
     }
@@ -129,8 +128,8 @@ int ZCE_Mysql_Result::seek_row(unsigned int row_id)
         return -1;
     }
 
-    mysql_data_seek(mysql_result_, row_id);
-    current_row_   = ::mysql_fetch_row(mysql_result_);
+    mysql_data_seek(mysql_result_,row_id);
+    current_row_ = ::mysql_fetch_row(mysql_result_);
     fields_length_ = ::mysql_fetch_lengths(mysql_result_);
     current_field_ = 0;
     return 0;
@@ -141,7 +140,7 @@ const char *ZCE_Mysql_Result::field_data(const char *fname) const
 {
     //根据列的名字得到Field ID
     unsigned int fid = 0;
-    int ret = field_index(fname, fid);
+    int ret = field_index(fname,fid);
 
     if (ret == -1 || current_row_ == NULL)
     {
@@ -153,11 +152,11 @@ const char *ZCE_Mysql_Result::field_data(const char *fname) const
 }
 
 //根据字段列ID,得到字段值
-int ZCE_Mysql_Result::field_data(const char *fname, char *pfdata) const
+int ZCE_Mysql_Result::field_data(const char *fname,char *pfdata) const
 {
     //根据列的名字得到Field ID
     unsigned int fid = 0;
-    int ret = field_index(fname, fid);
+    int ret = field_index(fname,fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL || pfdata == NULL)
@@ -167,17 +166,16 @@ int ZCE_Mysql_Result::field_data(const char *fname, char *pfdata) const
     }
 
     //
-    memcpy(pfdata, current_row_[fid], fields_length_[fid]);
+    memcpy(pfdata,current_row_[fid],fields_length_[fid]);
     return 0;
-
 }
 
 //
-int ZCE_Mysql_Result::get_field(const char *fname, ZCE_Mysql_Field &ffield) const
+int ZCE_Mysql_Result::get_field(const char *fname,ZCE_Mysql_Field &ffield) const
 {
     //循环比较所有的列名,效率比较低下
     unsigned int fid = 0;
-    int ret = field_index(fname, fid);
+    int ret = field_index(fname,fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL)
@@ -186,18 +184,17 @@ int ZCE_Mysql_Result::get_field(const char *fname, ZCE_Mysql_Field &ffield) cons
         return -1;
     }
 
-    ffield.set_field(current_row_[fid], fields_length_[fid], mysql_fields_[fid].type);
+    ffield.set_field(current_row_[fid],fields_length_[fid],mysql_fields_[fid].type);
     return 0;
 }
 
 //根据字段名称得到字段表结构定义的类型,效率较低,
 //返回-1 表示错误
-int ZCE_Mysql_Result::field_type(const char *fname, enum_field_types &ftype) const
+int ZCE_Mysql_Result::field_type(const char *fname,enum_field_types &ftype) const
 {
-
     //循环比较所有的列名,效率比较低下
     unsigned int fid = 0;
-    int ret = field_index(fname, fid);
+    int ret = field_index(fname,fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL)
@@ -211,11 +208,11 @@ int ZCE_Mysql_Result::field_type(const char *fname, enum_field_types &ftype) con
 }
 
 //根据Field Name 得到此列值的实际长度
-int ZCE_Mysql_Result::field_length(const char *fname, unsigned int &flength ) const
+int ZCE_Mysql_Result::field_length(const char *fname,unsigned int &flength) const
 {
     //根据列的名字得到Field ID
     unsigned int fid = 0;
-    int ret = field_index(fname, fid);
+    int ret = field_index(fname,fid);
 
     //如果结果集为空,或者没有找到相关的列ID
     if (ret == -1 || current_row_ == NULL)
@@ -229,11 +226,10 @@ int ZCE_Mysql_Result::field_length(const char *fname, unsigned int &flength ) co
 }
 
 //根据字段顺序ID,得到表结构定义的字段长度
-int ZCE_Mysql_Result::field_define_size(unsigned int fieldid, unsigned int &flength) const
+int ZCE_Mysql_Result::field_define_size(unsigned int fieldid,unsigned int &flength) const
 {
-
     //检查结果集合为空,或者参数fieldid错误
-    if ( mysql_result_ == NULL && fieldid >= num_result_field_)
+    if (mysql_result_ == NULL && fieldid >= num_result_field_)
     {
         ZCE_ASSERT(false);
         return -1;
@@ -244,12 +240,11 @@ int ZCE_Mysql_Result::field_define_size(unsigned int fieldid, unsigned int &flen
 }
 
 //根据字段名称得到表结构定义的字段长度,效率较低
-int ZCE_Mysql_Result::field_define_size(const char *fname, unsigned int &fdefsz) const
+int ZCE_Mysql_Result::field_define_size(const char *fname,unsigned int &fdefsz) const
 {
-
     //循环比较所有的列名,效率比较低下
     unsigned int fid = 0;
-    int ret = field_index(fname, fid);
+    int ret = field_index(fname,fid);
 
     //如果结果集为空
     if (ret == -1 || mysql_result_ != NULL)
@@ -268,10 +263,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (char &val)
 {
     val = 0;
 
-    int fields = sscanf(current_row_[current_field_], "%c", &val);
+    int fields = sscanf(current_row_[current_field_],"%c",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -281,10 +276,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (short &val)
 {
     val = 0;
 
-    int fields = sscanf(current_row_[current_field_], "%hd", &val);
+    int fields = sscanf(current_row_[current_field_],"%hd",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -294,10 +289,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (int &val)
 {
     val = 0;
 
-    int fields = sscanf(current_row_[current_field_], "%d", &val);
+    int fields = sscanf(current_row_[current_field_],"%d",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -307,10 +302,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (long &val)
 {
     val = 0;
     //如果结果集为空
-    int fields = sscanf(current_row_[current_field_], "%ld", &val);
+    int fields = sscanf(current_row_[current_field_],"%ld",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -320,10 +315,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (long long &val)
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%lld", &val);
+    int fields = sscanf(current_row_[current_field_],"%lld",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -333,10 +328,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char &val)
 {
     val = 0;
     //如果结果集为空
-    int fields = sscanf(current_row_[current_field_], "%c", &val);
+    int fields = sscanf(current_row_[current_field_],"%c",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -346,10 +341,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned short &val)
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%hu", &val);
+    int fields = sscanf(current_row_[current_field_],"%hu",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -359,10 +354,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned long &val)
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%lu", &val);
+    int fields = sscanf(current_row_[current_field_],"%lu",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -372,10 +367,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned int &val)
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%u", &val);
+    int fields = sscanf(current_row_[current_field_],"%u",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -385,10 +380,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned long long &val)
 {
     val = 0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%llu", &val);
+    int fields = sscanf(current_row_[current_field_],"%llu",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -398,10 +393,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (float &val)
 {
     val = 0.0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%f", &val);
+    int fields = sscanf(current_row_[current_field_],"%f",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -411,10 +406,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (double &val)
 {
     val = 0.0;
     //转换以及检查
-    int fields = sscanf(current_row_[current_field_], "%lf", &val);
+    int fields = sscanf(current_row_[current_field_],"%lf",&val);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     ++current_field_;
     return *this;
@@ -423,10 +418,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (double &val)
 //对于char *,默认当作是一个字符串,所以末尾增加一个'\0'
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (char *val)
 {
-    ZCE_ASSERT((NULL != val) &&  (NULL != current_row_[current_field_] ));
+    ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
 
     //长度不包括结束符号
-    memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
+    memcpy(val,current_row_[current_field_],fields_length_[current_field_]);
     val[fields_length_[current_field_]] = '\0';
 
     ++current_field_;
@@ -437,10 +432,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (char *val)
 //考虑过对于unsigned char *做一些特别处理，后来还是算了,用BINARY去考虑了
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char *val)
 {
-    ZCE_ASSERT((NULL != val) &&  (NULL != current_row_[current_field_] ));
+    ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
 
     //长度不包括结束符号
-    memcpy(val, current_row_[current_field_], fields_length_[current_field_] );
+    memcpy(val,current_row_[current_field_],fields_length_[current_field_]);
     val[fields_length_[current_field_]] = '\0';
 
     ++current_field_;
@@ -450,10 +445,10 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (unsigned char *val)
 //二进制的数据要特别考虑一下,字符串都特别+1了,而二进制数据不要这样考虑
 ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (ZCE_Mysql_Result::BINARY *val)
 {
-    ZCE_ASSERT((NULL != val) &&  (NULL != current_row_[current_field_] ));
+    ZCE_ASSERT((NULL != val) && (NULL != current_row_[current_field_]));
 
     //长度不包括结束符号
-    memcpy(val, current_row_[current_field_], fields_length_[current_field_]);
+    memcpy(val,current_row_[current_field_],fields_length_[current_field_]);
 
     ++current_field_;
     return *this;
@@ -463,7 +458,7 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (std::string &val)
 {
     if (current_row_[current_field_])
     {
-        val.assign(current_row_[current_field_], fields_length_[current_field_]) ;
+        val.assign(current_row_[current_field_],fields_length_[current_field_]);
     }
     else
     {
@@ -476,4 +471,3 @@ ZCE_Mysql_Result &ZCE_Mysql_Result::operator >> (std::string &val)
 
 //如果你要用MYSQL的库
 #endif //#if defined MYSQL_VERSION_ID
-

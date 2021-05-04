@@ -1,4 +1,3 @@
-
 #include "zce/predefine.h"
 #include "zce/logger/logging.h"
 #include "zce/mysql/execute.h"
@@ -14,7 +13,6 @@ ZCE_Mysql_Process *ZCE_Mysql_Process::instance_ = NULL;
 ZCE_Mysql_Process::ZCE_Mysql_Process():
     db_port_(MYSQL_PORT)
 {
-
 }
 ZCE_Mysql_Process::~ZCE_Mysql_Process()
 {
@@ -28,7 +26,6 @@ int ZCE_Mysql_Process::init_mysql_server(const char *host_name,
                                          unsigned int port,
                                          bool connect_atonce)
 {
-
     db_hostname_ = host_name;
     db_user_name_ = user;
     db_password_ = pwd;
@@ -61,14 +58,13 @@ int ZCE_Mysql_Process::init_mysql_socketfile(const char *socket_file,
 }
 
 //
-int ZCE_Mysql_Process::connect_mysql_server( )
+int ZCE_Mysql_Process::connect_mysql_server()
 {
     int ret = 0;
 
     //连接数据库
     if (db_connect_.is_connected() == false)
     {
-
         //如果设置过HOST，用HOST NAME进行连接
         if (db_hostname_.length() > 0)
         {
@@ -92,10 +88,10 @@ int ZCE_Mysql_Process::connect_mysql_server( )
         //如果错误
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "[zcelib] DB Error : [%u]:%s.",
+            ZCE_LOG(RS_ERROR,"[zcelib] DB Error : [%u]:%s.",
                     db_connect_.get_error_no(),
                     db_connect_.get_error_message()
-                   );
+            );
             return -1;
         }
 
@@ -109,12 +105,10 @@ int ZCE_Mysql_Process::connect_mysql_server( )
 //断开链接
 void ZCE_Mysql_Process::disconnect_mysql_server()
 {
-
     if (db_connect_.is_connected() == true)
     {
         db_connect_.disconnect();
     }
-
 }
 
 //用于非SELECT语句(INSERT,UPDATE)，
@@ -137,16 +131,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
     }
 
     //
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s].", sqllen, sql);
-    db_command_.set_sql_command(sql, sqllen);
+    ZCE_LOGMSG_DEBUG(RS_DEBUG,"[db_process_query]SQL:[%.*s].",sqllen,sql);
+    db_command_.set_sql_command(sql,sqllen);
 
-
-    ret = db_command_.execute(numaffect, insertid);
+    ret = db_command_.execute(numaffect,insertid);
 
     //如果错误
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+        ZCE_LOG(RS_ERROR,"[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                 db_connect_.get_error_no(),
                 db_connect_.get_error_message(),
                 sql);
@@ -157,9 +150,8 @@ int ZCE_Mysql_Process::db_process_query(const char *sql,
     return  0;
 }
 
-
 //执行家族的SQL语句,用于SELECT语句,直接转储结果集合的方法
-int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen,
+int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,
                                         uint64_t &numaffect,
                                         ZCE_Mysql_Result &dbresult)
 {
@@ -176,17 +168,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen,
         db_connect_.ping();
     }
 
+    ZCE_LOGMSG_DEBUG(RS_DEBUG,"[db_process_query]SQL:[%.*s]",sqllen,sql);
+    db_command_.set_sql_command(sql,sqllen);
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
-    db_command_.set_sql_command(sql, sqllen);
-
-
-    ret = db_command_.execute(numaffect, dbresult);
+    ret = db_command_.execute(numaffect,dbresult);
 
     //如果错误
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
+        ZCE_LOG(RS_ERROR,"[zcelib] DB Error:[%u]:[%s]. SQL:%s.",
                 db_connect_.get_error_no(),
                 db_connect_.get_error_message(),
                 sql);
@@ -197,9 +187,8 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen,
     return  0;
 }
 
-
 //
-int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, ZCE_Mysql_Result &dbresult)
+int ZCE_Mysql_Process::db_process_query(const char *sql,size_t sqllen,ZCE_Mysql_Result &dbresult)
 {
     int ret = 0;
 
@@ -214,16 +203,15 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, ZCE_Mysq
         db_connect_.ping();
     }
 
-    ZCE_LOGMSG_DEBUG(RS_DEBUG, "[db_process_query]SQL:[%.*s]", sqllen, sql);
-    db_command_.set_sql_command(sql, sqllen);
-
+    ZCE_LOGMSG_DEBUG(RS_DEBUG,"[db_process_query]SQL:[%.*s]",sqllen,sql);
+    db_command_.set_sql_command(sql,sqllen);
 
     ret = db_command_.execute(dbresult);
 
     //如果错误
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] DB Error:[%u]:[%s]. SQL:%s",
+        ZCE_LOG(RS_ERROR,"[zcelib] DB Error:[%u]:[%s]. SQL:%s",
                 db_connect_.get_error_no(),
                 db_connect_.get_error_message(),
                 sql);
@@ -235,12 +223,11 @@ int ZCE_Mysql_Process::db_process_query(const char *sql, size_t sqllen, ZCE_Mysq
 }
 
 //返回的的DB访问的错误信息
-unsigned int ZCE_Mysql_Process::get_return_error(char *szerr, size_t buflen)
+unsigned int ZCE_Mysql_Process::get_return_error(char *szerr,size_t buflen)
 {
-    snprintf(szerr, buflen, "[%d]:%s ", db_connect_.get_error_no(), db_connect_.get_error_message());
+    snprintf(szerr,buflen,"[%d]:%s ",db_connect_.get_error_no(),db_connect_.get_error_message());
     return db_connect_.get_error_no();
 }
-
 
 //得到DB访问的语句
 const char *ZCE_Mysql_Process::get_query_sql(void)
@@ -266,7 +253,7 @@ unsigned int ZCE_Mysql_Process::make_real_escape_string(char *tostr,
                                                         const char *fromstr,
                                                         unsigned int fromlen)
 {
-    return mysql_real_escape_string(db_connect_.get_mysql_handle(), tostr, fromstr, fromlen);
+    return mysql_real_escape_string(db_connect_.get_mysql_handle(),tostr,fromstr,fromlen);
 }
 
 //-----------------------------------------------------------------
@@ -283,13 +270,12 @@ ZCE_Mysql_Process *ZCE_Mysql_Process::instance()
 {
     if (instance_)
     {
-        delete instance_ ;
+        delete instance_;
         instance_ = NULL;
     }
 
     instance_ = new ZCE_Mysql_Process();
     return  instance_;
-
 }
 
 //清除实例
@@ -297,11 +283,10 @@ void ZCE_Mysql_Process::clean_instance()
 {
     if (instance_)
     {
-        delete instance_ ;
+        delete instance_;
         instance_ = NULL;
     }
 }
 
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
-

@@ -30,7 +30,6 @@
 */
 class ZCE_Mysql_Command: public zce::NON_Copyable
 {
-
 public:
     ///命令对象的构造函数
     ZCE_Mysql_Command();
@@ -57,7 +56,7 @@ public:
     * @param      sqlcmd SQL语句
     * @param      szsql  SQL语句长度
     */
-    inline int set_sql_command(const char *sqlcmd, size_t szsql);
+    inline int set_sql_command(const char *sqlcmd,size_t szsql);
 
     /*!
     * @brief      设置SQL Command语句,TXT,BIN语句都可以
@@ -71,7 +70,7 @@ public:
     * @param      sql_format    格式化的SQL语句，
     * @param      ...           动态参数
     */
-    int set_sql_command( const char *sql_format, ...);
+    int set_sql_command(const char *sql_format,...);
 
     /*!
     * @brief      得到SQL Command语句,TXT型
@@ -86,7 +85,7 @@ public:
     * @param[in,out] szbuf 字符串buffer的长度
     * @note
     */
-    int get_sql_command(char *cmdbuf, size_t &szbuf) const;
+    int get_sql_command(char *cmdbuf,size_t &szbuf) const;
 
     /*!
     * @brief      得到SQL Command语句
@@ -100,7 +99,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      lastid      插入ID等，对于有自增字段的时，(UINT32也许，还不够用，呵呵)
     */
-    int execute(uint64_t &num_affect, uint64_t &last_id);
+    int execute(uint64_t &num_affect,uint64_t &last_id);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,转储结果集合的那种,注意这个函数条用的是mysql_store_result.
@@ -108,7 +107,7 @@ public:
     * @param      num_affect  查询得到的条数
     * @param      sqlresult   返回的结果集合
     */
-    int execute(uint64_t &num_affect, ZCE_Mysql_Result &sql_result);
+    int execute(uint64_t &num_affect,ZCE_Mysql_Result &sql_result);
 
     /*!
     * @brief      执行SQL语句,SELECT语句,USE结果集合的那种,注意其调用的是mysql_use_result,num_affect对它无效
@@ -126,7 +125,7 @@ public:
     * @param[out] sqlresult 返回的MySQL结果集合
     * @param[out] bstore    使用mysql_store_result取回结果集合，还是mysql_use_result
     */
-    int fetch_next_multi_result(ZCE_Mysql_Result &sqlresult, bool bstore = true);
+    int fetch_next_multi_result(ZCE_Mysql_Result &sqlresult,bool bstore = true);
 
 #endif //MYSQL_VERSION_ID > 40100
 
@@ -199,13 +198,12 @@ protected:
 protected:
 
     ///联接
-    ZCE_Mysql_Connect  *mysql_connect_ = NULL;
+    ZCE_Mysql_Connect *mysql_connect_ = NULL;
     ///SQL
     std::string mysql_command_;
 
     //
     char *sql_buffer_ = NULL;
-
 };
 
 //这些函数都是4.1后的版本功能
@@ -250,7 +248,7 @@ inline unsigned int ZCE_Mysql_Command::get_error_no()
 }
 
 //SQL预计的赋值，
-inline int ZCE_Mysql_Command::set_sql_command(const char *sqlcmd, size_t szsql)
+inline int ZCE_Mysql_Command::set_sql_command(const char *sqlcmd,size_t szsql)
 {
     //如果错误,返回
     if (sqlcmd == NULL)
@@ -260,7 +258,7 @@ inline int ZCE_Mysql_Command::set_sql_command(const char *sqlcmd, size_t szsql)
     }
 
     //
-    mysql_command_.assign(sqlcmd, szsql);
+    mysql_command_.assign(sqlcmd,szsql);
     return 0;
 }
 
@@ -300,4 +298,3 @@ inline ZCE_Mysql_Command &ZCE_Mysql_Command::operator +=(const std::string &sqlc
 #endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_DB_COMMAND_H_
-

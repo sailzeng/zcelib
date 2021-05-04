@@ -3,7 +3,6 @@
 #include "soar/fsm/fsmtask_taskbase.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
-
 // 构造函数
 FSMTask_Manger::FSMTask_Manger()
 {
@@ -41,20 +40,19 @@ FSMTask_Manger::~FSMTask_Manger()
             task_list_[i] = NULL;
         }
 
-        delete []task_list_;
+        delete[]task_list_;
         task_list_ = NULL;
     }
 }
 
-
 //初始化
 void FSMTask_Manger::initialize(size_t  szregtrans,
                                 size_t sztransmap,
-                                const soar::SERVICES_INFO& selfsvr,
-                                const zce::Time_Value& enqueue_timeout,
-                                zce::Timer_Queue_Base* timer_queue,
-                                Soar_MMAP_BusPipe* zerg_mmap_pipe,
-                                APPFRAME_MALLOCOR* frame_mallocor)
+                                const soar::SERVICES_INFO &selfsvr,
+                                const zce::Time_Value &enqueue_timeout,
+                                zce::Timer_Queue_Base *timer_queue,
+                                Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                                APPFRAME_MALLOCOR *frame_mallocor)
 {
     //根据最大的FRAME长度调整Manager内部的数据
     size_t max_frame_len = frame_mallocor->get_max_framelen();
@@ -70,15 +68,12 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
     enqueue_timeout_ = enqueue_timeout;
     send_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
     recv_msg_queue_ = new APPFRAME_MESSAGE_QUEUE(FRAME_QUEUE_WATER_MARK);
-
 }
-
-
 
 //激活N个线程，
 int FSMTask_Manger::active_notify_task(FSMTask_TaskBase *clone_task,
-                                                         size_t task_num,
-                                                         size_t task_stack_size)
+                                       size_t task_num,
+                                       size_t task_stack_size)
 {
     int ret = 0;
     //这个函数只用进来一次
@@ -87,7 +82,7 @@ int FSMTask_Manger::active_notify_task(FSMTask_TaskBase *clone_task,
     task_number_ = task_num;
     clone_task_ = clone_task;
 
-    task_list_ = new FSMTask_TaskBase*[task_number_];
+    task_list_ = new FSMTask_TaskBase * [task_number_];
 
     //初始化
     for (size_t i = 0; i < task_number_; ++i)
@@ -117,7 +112,7 @@ int FSMTask_Manger::active_notify_task(FSMTask_TaskBase *clone_task,
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ALERT, "[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
+            ZCE_LOG(RS_ALERT,"[framework] Activate Thread fail.Please check system config.id [%u] Stack size [%u].",
                     static_cast<unsigned int>(i),
                     static_cast<unsigned int>(task_stack_size));
             return -1;
@@ -127,12 +122,9 @@ int FSMTask_Manger::active_notify_task(FSMTask_TaskBase *clone_task,
     return 0;
 }
 
-
-
 //通知所有的线程停止运行
 int FSMTask_Manger::stop_notify_task()
 {
-
     //通知所有的线程停止运行
     for (size_t i = 0; i < task_number_; ++i)
     {
@@ -155,7 +147,6 @@ int FSMTask_Manger::stop_notify_task()
     return 0;
 }
 
-
 //处理从接收队列取出的FRAME
 int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_trans)
 {
@@ -165,7 +156,6 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
     //
     for (proc_frame = 0; proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-
         soar::Zerg_Frame *tmp_frame = NULL;
         //
         ret = recv_msg_queue_->try_dequeue(tmp_frame);
@@ -210,7 +200,6 @@ int FSMTask_Manger::process_recvqueue_frame(size_t &proc_frame,size_t &create_tr
     //
     return 0;
 }
-
 
 //向发送队列放入frame
 int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_frame)
@@ -324,5 +313,3 @@ int FSMTask_Manger::trydequeue_sendqueue(soar::Zerg_Frame *&get_frame)
     }
     return 0;
 }
-
-

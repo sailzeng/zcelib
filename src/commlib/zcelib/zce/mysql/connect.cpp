@@ -23,9 +23,8 @@ ZCE_Mysql_Connect::~ZCE_Mysql_Connect()
     disconnect();
 }
 
-
 //如果使用选项文件进行连接
-int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *group)
+int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile,const char *group)
 {
     //如果已经连接,关闭原来的连接
     if (if_connected_ == true)
@@ -38,12 +37,12 @@ int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *gr
 
     if (optfile != NULL)
     {
-        int opret = mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_FILE, optfile);
+        int opret = mysql_options(&mysql_handle_,MYSQL_READ_DEFAULT_FILE,optfile);
 
         //如果使group==NULL,将读写optfile的[client]配置,否则读写group下的配置
         if (group != NULL)
         {
-            opret = mysql_options(&mysql_handle_, MYSQL_READ_DEFAULT_GROUP, group);
+            opret = mysql_options(&mysql_handle_,MYSQL_READ_DEFAULT_GROUP,group);
         }
 
         if (opret != 0)
@@ -53,7 +52,7 @@ int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *gr
     }
 
     //连接数据库
-    MYSQL *ret = mysql_real_connect(&mysql_handle_, NULL, NULL, NULL, NULL, 0, NULL, 0);
+    MYSQL *ret = mysql_real_connect(&mysql_handle_,NULL,NULL,NULL,NULL,0,NULL,0);
     if (ret == NULL)
     {
         return -1;
@@ -63,7 +62,6 @@ int ZCE_Mysql_Connect::connect_by_optionfile(const char *optfile, const char *gr
     //返回成功 0=0
     return 0;
 }
-
 
 //连接数据服务器
 int ZCE_Mysql_Connect::connect_i(const char *host_name,
@@ -75,7 +73,6 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
                                  const unsigned int timeout,
                                  bool if_multi_sql)
 {
-
     //如果已经连接,关闭原来的连接
     if (if_connected_ == true)
     {
@@ -88,12 +85,12 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
     //设置连接的timeout
     if (timeout != 0)
     {
-        mysql_options(&mysql_handle_, MYSQL_OPT_CONNECT_TIMEOUT, (char *)(&timeout));
+        mysql_options(&mysql_handle_,MYSQL_OPT_CONNECT_TIMEOUT,(char *)(&timeout));
     }
 
     //50013,版本后，提供了这个选项，而原来的版本，这个选项是默认打开的。
 #if MYSQL_VERSION_ID >= 50013
-    mysql_options(&mysql_handle_, MYSQL_OPT_RECONNECT, "1");
+    mysql_options(&mysql_handle_,MYSQL_OPT_RECONNECT,"1");
 #endif
 
     unsigned long client_flag = 0;
@@ -127,14 +124,14 @@ int ZCE_Mysql_Connect::connect_i(const char *host_name,
     {
         //这个地方必须注意一下，WINDOWS下，对于mysql_real_connect函数如果host_name参数为NULL，是先进行命名管道连接，如果不行用TCP/IP连接本地
         //如果要不保证绝对使用命名管道，则参数host_name=".",
-        ret =  ::mysql_real_connect(&mysql_handle_,
-                                    NULL,
-                                    user,
-                                    pwd,
-                                    db,
-                                    port,
-                                    socket_file,
-                                    client_flag);
+        ret = ::mysql_real_connect(&mysql_handle_,
+                                   NULL,
+                                   user,
+                                   pwd,
+                                   db,
+                                   port,
+                                   socket_file,
+                                   client_flag);
     }
     //参数使用错误，不能host和unixsocket都为NULL
     else
@@ -162,7 +159,7 @@ int ZCE_Mysql_Connect::connect_by_host(const char *host_name,
                                        unsigned int timeout,
                                        bool if_multi_sql)
 {
-    return connect_i(host_name, NULL, user, pwd, db, port, timeout, if_multi_sql);
+    return connect_i(host_name,NULL,user,pwd,db,port,timeout,if_multi_sql);
 }
 
 //连接数据库服务器，通过UNIXSOCKET文件（UNIX下）或者命名管道（WINDOWS下）进行通信，只能用于本机
@@ -173,7 +170,7 @@ int ZCE_Mysql_Connect::connect_by_socketfile(const char *socket_file,
                                              unsigned int timeout,
                                              bool if_multi_sql)
 {
-    return connect_i(NULL, socket_file, user, pwd, db, 0, timeout, if_multi_sql);
+    return connect_i(NULL,socket_file,user,pwd,db,0,timeout,if_multi_sql);
 }
 
 //断开数据库服务器连接
@@ -192,7 +189,7 @@ void ZCE_Mysql_Connect::disconnect()
 //选择一个默认数据库,参数是数据库的名称
 int ZCE_Mysql_Connect::select_database(const char *db)
 {
-    int ret = mysql_select_db(&mysql_handle_, db);
+    int ret = mysql_select_db(&mysql_handle_,db);
 
     //检查结果,
     if (0 != ret)
@@ -224,11 +221,10 @@ const char *ZCE_Mysql_Connect::get_mysql_status()
 }
 
 //得到转意后的Escaple String ,没有根据当前的字符集合进行操作,
-unsigned int ZCE_Mysql_Connect::make_escape_string(char *tostr, const char *fromstr, unsigned int fromlen)
+unsigned int ZCE_Mysql_Connect::make_escape_string(char *tostr,const char *fromstr,unsigned int fromlen)
 {
-    return mysql_escape_string(tostr, fromstr, fromlen);
+    return mysql_escape_string(tostr,fromstr,fromlen);
 }
-
 
 unsigned int ZCE_Mysql_Connect::make_real_escape_string(char *tostr,
                                                         const char *fromstr,
@@ -247,9 +243,9 @@ unsigned int ZCE_Mysql_Connect::make_real_escape_string(char *tostr,
 int ZCE_Mysql_Connect::set_auto_commit(bool bauto)
 {
     //my_bool其实是char
-    my_bool mode =  (bauto == true ) ? 1 : 0;
+    my_bool mode = (bauto == true)?1:0;
 
-    int ret = mysql_autocommit(&mysql_handle_, mode);
+    int ret = mysql_autocommit(&mysql_handle_,mode);
 
     //检查结果,
     if (0 != ret)
@@ -263,7 +259,6 @@ int ZCE_Mysql_Connect::set_auto_commit(bool bauto)
 //提交事务Commit Transaction
 int ZCE_Mysql_Connect::trans_commit()
 {
-
     int ret = mysql_commit(&mysql_handle_);
 
     //检查结果,
@@ -293,4 +288,3 @@ int ZCE_Mysql_Connect::trans_rollback()
 
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
-

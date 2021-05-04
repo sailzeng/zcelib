@@ -11,7 +11,7 @@
 *
 *
 *
-* @note       AI_IIJIMA 饭岛爱
+* @note       AII = AI_IIJIMA 饭岛爱
 *             最近比较烦比你烦也比你烦，我梦见和饭岛爱一起晚餐；
 *             梦中的餐厅灯光太昏暗，我遍寻不著那蓝色的小药丸
 *             最近有点事情多到了极点，但是也无聊到了极点，
@@ -26,7 +26,6 @@
 *             想起那段把一个产品做了3遍的历史。
 */
 
-
 /*
 表格和索引定义，
 CREATE TABLE IF NOT EXISTS config_table_8(index_1 INTEGER,index_2 INTEGER,conf_data BLOB ,last_mod_time INTEGER);
@@ -34,34 +33,34 @@ CREATE UNIQUE INDEX IF NOT EXISTS cfg_table_idx_8 ON config_table_8 (index_1,ind
 
 */
 
-#ifndef ZCE_LIB_SQLITE_CONF_TABLE_H_
-#define ZCE_LIB_SQLITE_CONF_TABLE_H_
+#pragma once
+
+#include "zce/sqlite/db_handler.h"
+#include "zce/sqlite/stmt_handler.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 
-
-
+namespace zce
+{
 /*!
 * @brief      用于将一些结构转换为二进制数据，存放于数据字段中
 *
 * @note
 */
-struct AI_IIJIMA_BINARY_DATA
+struct AII_BINARY_DATA
 {
-
-
 public:
 
     //!构造和析构函数
-    AI_IIJIMA_BINARY_DATA();
-    ~AI_IIJIMA_BINARY_DATA();
+    AII_BINARY_DATA();
+    ~AII_BINARY_DATA();
 
     //!
     void clear();
 
     //!比较函数
-    bool operator < (const AI_IIJIMA_BINARY_DATA &right) const;
+    bool operator < (const AII_BINARY_DATA &right) const;
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
@@ -98,43 +97,35 @@ public:
     unsigned int last_mod_time_ = 0;
 };
 
-typedef std::vector <AI_IIJIMA_BINARY_DATA>   ARRARY_OF_AI_IIJIMA_BINARY;
-
-
+typedef std::vector <AII_BINARY_DATA>   ARRARY_OF_AI_IIJIMA_BINARY;
 
 /******************************************************************************************
-struct BaobaoGeneralDBConf 一个很通用的从DB中间得到通用配置信息的方法
+AII_Config_Table 一个很通用的从DB中间得到通用配置信息的方法
 ******************************************************************************************/
-class ZCE_SQLite_DB_Handler;
 
 //一个很通用的从DB中间得到通用配置信息的结构
-class ZCE_General_Config_Table
+class AII_Config_Table
 {
-
 public:
 
-    ZCE_General_Config_Table();
-    ~ZCE_General_Config_Table();
+    AII_Config_Table();
+    ~AII_Config_Table();
 
 protected:
 
     //!创建TABLE SQL语句
     void sql_create_table(unsigned  int table_id);
-    //!创建INDEX SQL语句
-    void sql_create_index(unsigned  int table_id);
-
 
     //!改写的STMT SQL
     void sql_replace_bind(unsigned  int table_id);
 
     //!改写的SQL,文本格式，用x
-    void sql_replace_one(unsigned  int table_id,
+    void sql_replace_one(unsigned int table_id,
                          unsigned int index_1,
                          unsigned int index_2,
                          size_t blob_len,
                          const char *blob_data,
                          unsigned int last_mod_time);
-
 
     //!得到选择一个确定数据的SQL
     void sql_select_one(unsigned int table_id,
@@ -145,7 +136,6 @@ protected:
     void sql_delete_one(unsigned int table_id,
                         unsigned int index_1,
                         unsigned int index_2);
-
 
     //!计算查询的总数
     void sql_counter(unsigned int table_id,
@@ -187,7 +177,7 @@ public:
 
     //!UPDATE 或者 INSERT 一个记录
     int replace_one(unsigned int table_id,
-                    const AI_IIJIMA_BINARY_DATA *conf_data);
+                    const AII_BINARY_DATA *conf_data);
 
     //UPDATE 或者 INSERT 一组记录
     int replace_array(unsigned int table_id,
@@ -195,7 +185,7 @@ public:
 
     //!查询了一条记录
     int select_one(unsigned int table_id,
-                   AI_IIJIMA_BINARY_DATA *conf_data);
+                   AII_BINARY_DATA *conf_data);
 
     //!删除一条记录
     int delete_one(unsigned int table_id,
@@ -229,19 +219,15 @@ public:
                       std::string *update_sql);
 protected:
     //
-    const static size_t MAX_SQLSTRING_LEN = AI_IIJIMA_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA * 2 + 1024;
+    const static size_t MAX_SQLSTRING_LEN = AII_BINARY_DATA::MAX_LEN_OF_AI_IIJIMA_DATA * 2 + 1024;
 
 public:
 
     //! SQL语句
     char *sql_string_ = NULL;
     //!
-    ZCE_SQLite_DB_Handler *sqlite_handler_;
-
-
+    zce::SQLite_Handler *sqlite_handler_;
 };
-
+} //namespace zce
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
-
-#endif //ZCE_LIB_SQLITE_CONF_TABLE_H_

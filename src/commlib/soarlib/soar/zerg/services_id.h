@@ -1,19 +1,18 @@
-
 /*!
 * @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
 * @filename   soar/zerg/frame_zerg.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
-* @version    
+* @version
 * @date       2021年4月17日
 * @brief      很无奈，我还是讲所有的类，整理成了struct，因为如果要兼容多个版本，
 *             类实在不是一个好的写法。
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 #pragma once
@@ -24,18 +23,15 @@
 
 namespace soar
 {
-
 #pragma pack (1)
-
 
 /*!
 * @brief      服务编号信息
-*             
-* note        
+*
+* note
 */
 class  SERVICES_ID
 {
-
 public:
 
     SERVICES_ID(uint16_t svc_type,uint32_t svc_id):
@@ -53,7 +49,6 @@ public:
         services_type_ = 0;
         services_id_ = 0;
     }
-
 
     /*!
     * @brief      从string中得到SVC ID
@@ -97,7 +92,6 @@ public:
     ///使用主从的方式（根据AUTO CONNECT的顺序）动态分配的SERVICE ID
     static const uint32_t MAIN_STANDBY_DYNAMIC_ID = static_cast<uint16_t>(-4);
 
-
 public:
 
     ///服务的类型,参考枚举值SERVICES_TYPE，无效时用INVALID_SERVICES_TYPE
@@ -107,10 +101,5 @@ public:
     uint32_t           services_id_ = INVALID_SERVICES_ID;
 };
 
-
 #pragma pack ()
-
-
-
 }
-

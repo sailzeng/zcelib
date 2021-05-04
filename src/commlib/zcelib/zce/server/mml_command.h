@@ -18,15 +18,12 @@
 
 namespace zce
 {
-
-
 /*!
 * @brief      MML 控制台命令
 *             用于一些文本交互场景，比如GM命令等
 */
 class MML_Command
 {
-
     //忽视大小写
     struct LessofCaseString
     {
@@ -38,9 +35,9 @@ class MML_Command
     };
 
     ///命令的选项
-    typedef std::set <std::string, LessofCaseString>               MMLCMD_OPTION;
+    typedef std::set <std::string,LessofCaseString>               MMLCMD_OPTION;
     ///命令的参数
-    typedef std::map <std::string, std::string, LessofCaseString > MMLCMD_PARAMETER;
+    typedef std::map <std::string,std::string,LessofCaseString > MMLCMD_PARAMETER;
 
 public:
 
@@ -66,12 +63,11 @@ public:
     * @param      pattern    MML命令格式
     */
     MML_Command(const char *mml_string,
-                        MML_Command::MML_STRING_PATTERN pattern);
+                MML_Command::MML_STRING_PATTERN pattern);
     ///默认构造函数
     MML_Command();
     ///析构函数
     ~MML_Command();
-
 
 protected:
 
@@ -118,7 +114,6 @@ public:
     */
     const char *get_mml_command() const;
 
-
     /*!
     * @brief      是否有这个命令选项
     * @return     int 如果有这个选项返回0，如果没有这个选项返回-1
@@ -126,15 +121,13 @@ public:
     */
     int have_cmd_option(const std::string &mml_option) const;
 
-
     /*!
     * @brief      根据参数名称，得到命令的参数的值
     * @return     int  如果有这个参数返回0，如果没有这个选项返回-1
     * @param      para_key   参数名称
     * @param      para_value 参数的值
     */
-    int get_cmd_parameter(const std::string &para_key, std::string &para_value)  const;
-
+    int get_cmd_parameter(const std::string &para_key,std::string &para_value)  const;
 
     /*!
     * @brief      根据参数名称，得到命令的参数的值
@@ -155,6 +148,4 @@ protected:
     ///MML命令参数
     MMLCMD_PARAMETER        mml_cmd_parameter_;
 };
-
- }
-
+}

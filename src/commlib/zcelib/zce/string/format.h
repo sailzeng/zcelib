@@ -32,42 +32,40 @@
 
 namespace zce
 {
-
 ///格式化字符串输出的控制宏，可以&一起试用
 enum FORMAT_STRING_FLAG
 {
     ///左对齐，相当于Format specifications 中 flag 的"-",
-    FMT_MINUS           = (1 << 0),
-    FMT_LEFT_ALIGN      = (1 << 0),
+    FMT_MINUS = (1 << 0),
+    FMT_LEFT_ALIGN = (1 << 0),
 
     ///增加符号位，相当于Format specifications 中 flag 的"+"
-    FMT_PLUS            = (1 << 1),
+    FMT_PLUS = (1 << 1),
     ///符号位如果不是-,用空格替代,相当于Format specifications 中 flag 的" "
-    FMT_SPACE           = (1 << 2),
+    FMT_SPACE = (1 << 2),
     ///增加前缀0,0x,0X，相当于Format specifications 中 flag 的"#"
-    FMT_PREFIX             = (1 << 3),
+    FMT_PREFIX = (1 << 3),
     ///右对齐，左边多出的部分用0填充，相当于Format specifications 中 flag 的"0"
-    FMT_ZERO            = (1 << 4),
+    FMT_ZERO = (1 << 4),
     ///大写，x==>X,e==>E
-    FMT_UP              = (1 << 5),
+    FMT_UP = (1 << 5),
     ///当作无符号数据输出
-    FMT_UNSIGNED        = (1 << 6),
+    FMT_UNSIGNED = (1 << 6),
     ///输出指数，相当于"e",如果同时用FMT_UP，相当于"E"
-    FMT_EXPONENT        = (1 << 7),
-
+    FMT_EXPONENT = (1 << 7),
 };
 
 ///输出的进制系统，默认是10进制
 enum class BASE_NUMBER
 {
     ///二进制
-    BINARY        = 2,
+    BINARY = 2,
     ///八进制
-    OCTAL         = 8,
+    OCTAL = 8,
     ///十进制
-    DECIMAL       = 10,
+    DECIMAL = 10,
     ///十六进制
-    HEXADECIMAL   = 16,
+    HEXADECIMAL = 16,
 };
 
 ///默认的浮点精度长度
@@ -100,7 +98,6 @@ void fmt_str(std::string &stdstr,
              size_t width = 0,
              size_t precision = -1,
              int flags = 0);
-
 
 /*!
 * @brief      用于int64的格式化输出，注意这个函数在BUFFER末尾不添加\0,从BSD的openssh snprintf代码移植
@@ -158,7 +155,6 @@ void fmt_double(std::string &stdstr,
                 size_t width = 0,
                 size_t precision = DEFAULT_DOUBLE_PRECISION,
                 int flags = zce::FMT_EXPONENT | zce::FMT_UP);
-
 }
 
 #endif

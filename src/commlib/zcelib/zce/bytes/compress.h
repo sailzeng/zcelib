@@ -69,7 +69,6 @@
 
 namespace zce
 {
-
 template < typename COMPRESS_STRATEGY >
 class ZCE_Compress
 {
@@ -139,7 +138,7 @@ public:
         //如果准备的压缩空间不够，
         int ret = 0;
         size_t need_compbuf_size = 0;
-        ret = need_compressed_bufsize(original_size, &need_compbuf_size);
+        ret = need_compressed_bufsize(original_size,&need_compbuf_size);
         if (ret != 0
             || *compressed_size < need_compbuf_size
             || original_size <= 0)
@@ -165,14 +164,14 @@ public:
         {
             head_size = 3;
             *head_pos |= 0x2;
-            ZLEUINT16_TO_BYTE((head_pos + 1), ((uint16_t)(original_size)));
+            ZLEUINT16_TO_BYTE((head_pos + 1),((uint16_t)(original_size)));
         }
         //头部，1字节选项，1个4字节标识原长度字段，
         else  if (original_size <= COMPRESS_STRATEGY::LZ_MAX_ORIGINAL_SIZE)
         {
             head_size = 5;
             *head_pos |= 0x4;
-            ZLEUINT32_TO_BYTE((head_pos + 1), ((uint32_t)(original_size)));
+            ZLEUINT32_TO_BYTE((head_pos + 1),((uint32_t)(original_size)));
         }
         else
         {
@@ -207,7 +206,7 @@ public:
         {
             *compressed_size = original_size + head_size;
             //字节是对齐的地方，还是使用memcpy把
-            ::memcpy(compressed_buf + head_size, original_buf, original_size);
+            ::memcpy(compressed_buf + head_size,original_buf,original_size);
         }
 
         return 0;
@@ -257,13 +256,13 @@ public:
         }
 
         //传入的空间不够
-        if (need_srclen > *original_size)
+        if (need_srclen > * original_size)
         {
             return -1;
         }
 
         *original_size = need_srclen;
-        bool if_compressed = (*head_pos & 0x80) ? true : false;
+        bool if_compressed = (*head_pos & 0x80)?true:false;
         if (if_compressed)
         {
             return compress_fmt_.decompress_core(compressed_buf + head_size,
@@ -279,7 +278,7 @@ public:
                 return -1;
             }
             //字节对齐的地方还是直接用memcpy吧
-            ::memcpy(original_buf, compressed_buf + head_size, need_srclen);
+            ::memcpy(original_buf,compressed_buf + head_size,need_srclen);
             return 0;
         }
 
@@ -296,9 +295,6 @@ protected:
     COMPRESS_STRATEGY  compress_fmt_;
 };
 
-
-
-
 //=====================================================================================================
 ///ZLZ算法是部分模拟LZ4的代码，但有一些格式变化，
 ///本来我认为我的算法应该更快一些的
@@ -310,9 +306,9 @@ public:
     ~ZLZ_Compress_Format();
 
     //压缩核心代码
-    void compress_core(const unsigned char original_buf[] ,
+    void compress_core(const unsigned char original_buf[],
                        size_t original_size,
-                       unsigned char  *compressed_buf,
+                       unsigned char *compressed_buf,
                        size_t *compressed_size);
 
     //解压核心代码
@@ -329,7 +325,7 @@ public:
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFFF7 + 1) * 3 + 64);
+        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFFF7 + 1) * 3 + 64);
         return 0;
     }
 
@@ -337,8 +333,6 @@ public:
     //这个压缩长度所能支持的最大长度，
     //因为用3个字节表示（大约）64K非压缩数据，加上头部，尾部的处理
     const static size_t LZ_MAX_ORIGINAL_SIZE = 0xFFFCFF00;
-
-
 
 protected:
 
@@ -348,9 +342,6 @@ protected:
 
 //直接的ZLZ的typedef，使用zce::ZLZ_Compress::compress ,decompress函数就可以完成功能
 typedef ZCE_Compress<zce::ZLZ_Compress_Format> ZLZ_Compress;
-
-
-
 
 //=====================================================================================================
 
@@ -381,7 +372,7 @@ public:
         {
             return -1;
         }
-        *need_cmpbuf_size = ((original_size) + ((original_size) / 0xFF + 1) + 64);
+        *need_cmpbuf_size = ((original_size)+((original_size) / 0xFF + 1) + 64);
         return 0;
     }
 
@@ -399,8 +390,6 @@ protected:
 typedef ZCE_Compress<LZ4_Compress_Format> LZ4_Compress;
 
 //=====================================================================================================
-
 };//end of zce
 
 #endif
-

@@ -20,17 +20,15 @@ PRIMARY KEY (F1)
 );
 */
 
-
 #include "zealot_predefine.h"
 
-
-const static int  RETURN_SUCC     = 0;
+const static int  RETURN_SUCC = 0;
 const static int  RETURN_DB_ERROR = -1;
 
 //社团数据库
-const char *DB_BENCHMARK_IP       = "172.16.55.40";
+const char *DB_BENCHMARK_IP = "172.16.55.40";
 //社团数据库用户
-const char *DB_BENCHMARK_USER     = "root";
+const char *DB_BENCHMARK_USER = "root";
 ////社团数据库用户密码
 const char *DB_BENCHMARK_PASSWORD = "";
 
@@ -40,20 +38,18 @@ static ZCE_Mysql_Connect g_db_connect;
 //MYSQL命令执行对象
 static ZCE_Mysql_Command g_db_command;
 
-
-
-int benchmark_db_query(const char *sql, uint64_t &numaffect, uint64_t &insertid, char *szErr)
+int benchmark_db_query(const char *sql,uint64_t &numaffect,uint64_t &insertid,char *szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
-        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
+        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,DB_BENCHMARK_USER,DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
         {
-            sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
+            sprintf(szErr,"[%d]:%s",g_db_connect.get_error_no(),g_db_connect.get_error_message());
             return RETURN_DB_ERROR;
         }
         //
@@ -65,12 +61,12 @@ int benchmark_db_query(const char *sql, uint64_t &numaffect, uint64_t &insertid,
         g_db_connect.ping();
     }
 
-    g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.execute(numaffect, insertid);
+    g_db_command.set_sql_command(sql,strlen(sql));
+    ret = g_db_command.execute(numaffect,insertid);
     //如果错误
     if (ret != 0)
     {
-        sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
+        sprintf(szErr,"[%d]:%s",g_db_connect.get_error_no(),g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
     }
 
@@ -78,19 +74,18 @@ int benchmark_db_query(const char *sql, uint64_t &numaffect, uint64_t &insertid,
     return  RETURN_SUCC;
 }
 
-
-int benchmark_db_query(const char *sql, uint64_t &numaffect, ZCE_Mysql_Result &dbresult, char *szErr)
+int benchmark_db_query(const char *sql,uint64_t &numaffect,ZCE_Mysql_Result &dbresult,char *szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
-        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
+        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,DB_BENCHMARK_USER,DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
         {
-            sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
+            sprintf(szErr,"[%d]:%s",g_db_connect.get_error_no(),g_db_connect.get_error_message());
             return RETURN_DB_ERROR;
         }
         //
@@ -101,12 +96,12 @@ int benchmark_db_query(const char *sql, uint64_t &numaffect, ZCE_Mysql_Result &d
     {
         g_db_connect.ping();
     }
-    g_db_command.set_sql_command(sql, strlen(sql));
-    ret = g_db_command.execute(numaffect, dbresult);
+    g_db_command.set_sql_command(sql,strlen(sql));
+    ret = g_db_command.execute(numaffect,dbresult);
     //如果错误
     if (ret != 0)
     {
-        sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
+        sprintf(szErr,"[%d]:%s",g_db_connect.get_error_no(),g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
     }
 
@@ -114,18 +109,18 @@ int benchmark_db_query(const char *sql, uint64_t &numaffect, ZCE_Mysql_Result &d
     return  RETURN_SUCC;
 }
 
-int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
+int benchmark_db_query(const char *sql,ZCE_Mysql_Result &dbresult,char *szErr)
 {
     int ret = 0;
     //连接数据库
     if (g_db_connect.is_connected() == false)
     {
-        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP, DB_BENCHMARK_USER, DB_BENCHMARK_PASSWORD);
+        ret = g_db_connect.connect_by_host(DB_BENCHMARK_IP,DB_BENCHMARK_USER,DB_BENCHMARK_PASSWORD);
 
         //如果错误
         if (ret != 0)
         {
-            sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
+            sprintf(szErr,"[%d]:%s",g_db_connect.get_error_no(),g_db_connect.get_error_message());
             return RETURN_DB_ERROR;
         }
         //
@@ -137,12 +132,12 @@ int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
         g_db_connect.ping();
     }
 
-    g_db_command.set_sql_command(sql, strlen(sql));
+    g_db_command.set_sql_command(sql,strlen(sql));
     ret = g_db_command.execute(dbresult);
     //如果错误
     if (ret != 0)
     {
-        sprintf(szErr, "[%d]:%s", g_db_connect.get_error_no(), g_db_connect.get_error_message());
+        sprintf(szErr,"[%d]:%s",g_db_connect.get_error_no(),g_db_connect.get_error_message());
         return RETURN_DB_ERROR;
     }
 
@@ -150,13 +145,11 @@ int benchmark_db_query(const char *sql, ZCE_Mysql_Result &dbresult, char *szErr)
     return  RETURN_SUCC;
 }
 
-
-
-int benchmark_insert_record(int table_id, int id, bool bexcutesql, char *szErr)
+int benchmark_insert_record(int table_id,int id,bool bexcutesql,char *szErr)
 {
     char tmpsql[1024];
 
-    sprintf(tmpsql, "INSERT INTO benchmark.test%d SET "
+    sprintf(tmpsql,"INSERT INTO benchmark.test%d SET "
             "F1=%d,"
             "F2=%d,"
             "F3=%d,"
@@ -178,59 +171,57 @@ int benchmark_insert_record(int table_id, int id, bool bexcutesql, char *szErr)
             id,
             id,
             id
-           );
+    );
     //是否执行SQL,拼
     if (bexcutesql)
     {
-        uint64_t numaffect, insertid;
-        int ret = benchmark_db_query(tmpsql, numaffect, insertid, szErr);
+        uint64_t numaffect,insertid;
+        int ret = benchmark_db_query(tmpsql,numaffect,insertid,szErr);
         if (ret != RETURN_SUCC)
         {
             return ret;
         }
-
     }
     return RETURN_SUCC;
 }
 
-int benchmark_delete_record(int table_id, int id, bool bexcutesql, char *szErr)
+int benchmark_delete_record(int table_id,int id,bool bexcutesql,char *szErr)
 {
     char tmpsql[1024];
 
-    sprintf(tmpsql, "DELETE FROM benchmark.test%d WHERE F1=%d ",
+    sprintf(tmpsql,"DELETE FROM benchmark.test%d WHERE F1=%d ",
             table_id,
             id
-           );
+    );
     //是否执行SQL,拼
     if (bexcutesql)
     {
-        uint64_t numaffect, insertid;
-        int ret = benchmark_db_query(tmpsql, numaffect, insertid, szErr);
+        uint64_t numaffect,insertid;
+        int ret = benchmark_db_query(tmpsql,numaffect,insertid,szErr);
         if (ret != RETURN_SUCC)
         {
             return ret;
         }
-
     }
     return RETURN_SUCC;
 }
 
-int benchmark_select_record(int table_id, int id, bool bexcutesql, char *szErr)
+int benchmark_select_record(int table_id,int id,bool bexcutesql,char *szErr)
 {
     char tmpsql[1024];
 
-    sprintf(tmpsql, "SELECT F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 FROM benchmark.test%d "
+    sprintf(tmpsql,"SELECT F1,F2,F3,F4,F5,F6,F7,F8,F9,F10,F11,F12,F13,F14 FROM benchmark.test%d "
             "WHERE F1=%d ",
             table_id,
             id
-           );
+    );
     if (bexcutesql)
     {
         ZCE_Mysql_Result dbresult;
         uint64_t numaffect;
         //进行查询,
-        int ret = benchmark_db_query(tmpsql, numaffect, dbresult, szErr);
-        if (ret != RETURN_SUCC )
+        int ret = benchmark_db_query(tmpsql,numaffect,dbresult,szErr);
+        if (ret != RETURN_SUCC)
         {
             return ret;
         }
@@ -243,11 +234,11 @@ int benchmark_select_record(int table_id, int id, bool bexcutesql, char *szErr)
     return RETURN_SUCC;
 }
 
-int benchmark_cache_record(int table_id, int id, int numruncache, bool bexcutesql, char *szErr )
+int benchmark_cache_record(int table_id,int id,int numruncache,bool bexcutesql,char *szErr)
 {
-    for (int i = 0; i < numruncache; i++ )
+    for (int i = 0; i < numruncache; i++)
     {
-        int ret = benchmark_select_record(table_id, id, bexcutesql, szErr);
+        int ret = benchmark_select_record(table_id,id,bexcutesql,szErr);
         if (ret != RETURN_SUCC)
         {
             return ret;
@@ -264,57 +255,55 @@ enum BENCHMARK_TYPE
     BENCHMARK_DELETE,
 };
 
-int test_sql_main (int argc, char *argv[])
+int test_sql_main(int argc,char *argv[])
 {
-
     char szErr[256];
     BENCHMARK_TYPE benchmarktype = BENCHMARK_SELECT;
 
     int numprocess = 0;
     int numruncache = 0;
-    int num_sleep  = 0;
+    int num_sleep = 0;
     int table_id = 0;
     bool bexecute = false;
 
-
-    ZCE_Get_Option get_opt (argc, argv, "dicsn:r:p:t:");
+    ZCE_Get_Option get_opt(argc,argv,"dicsn:r:p:t:");
     int c;
     //Process the scanned options with the help of the overloaded ()
     //operator.
 
-    while ((c = get_opt ()) != EOF)
+    while ((c = get_opt()) != EOF)
     {
         switch (c)
         {
-            case 'e':
-                bexecute = false;
-                break;
-            case 'd':
-                benchmarktype = BENCHMARK_DELETE;
-                break;
-            case 'i':
-                benchmarktype = BENCHMARK_INSERT;
-                break;
-            case 'c':
-                benchmarktype = BENCHMARK_CACHE;
-                break;
-            case 's':
-                benchmarktype = BENCHMARK_SELECT;
-                break;
-            case 'n':
-                numprocess = atoi(get_opt.optarg) ;
-                break;
-            case 'r':
-                numruncache = atoi(get_opt.optarg) ;
-                break;
-            case 'p':
-                num_sleep  = atoi(get_opt.optarg) ;
-                break;
-            case 't':
-                table_id =  atoi(get_opt.optarg) ;
-                break;
-            default:
-                break;
+        case 'e':
+            bexecute = false;
+            break;
+        case 'd':
+            benchmarktype = BENCHMARK_DELETE;
+            break;
+        case 'i':
+            benchmarktype = BENCHMARK_INSERT;
+            break;
+        case 'c':
+            benchmarktype = BENCHMARK_CACHE;
+            break;
+        case 's':
+            benchmarktype = BENCHMARK_SELECT;
+            break;
+        case 'n':
+            numprocess = atoi(get_opt.optarg);
+            break;
+        case 'r':
+            numruncache = atoi(get_opt.optarg);
+            break;
+        case 'p':
+            num_sleep = atoi(get_opt.optarg);
+            break;
+        case 't':
+            table_id = atoi(get_opt.optarg);
+            break;
+        default:
+            break;
         }
     }
 
@@ -325,48 +314,48 @@ int test_sql_main (int argc, char *argv[])
 
     switch (benchmarktype)
     {
-        case BENCHMARK_DELETE:
-            for (int i = 0; i < numprocess; i++)
+    case BENCHMARK_DELETE:
+        for (int i = 0; i < numprocess; i++)
+        {
+            int ret = benchmark_delete_record(table_id,i,bexecute,szErr);
+            if (ret > 0)
             {
-                int ret = benchmark_delete_record(table_id, i, bexecute, szErr);
-                if (ret > 0)
-                {
-                    return ret;
-                }
+                return ret;
             }
-            break;
-        case BENCHMARK_INSERT:
-            for (int i = 0; i < numprocess; i++)
+        }
+        break;
+    case BENCHMARK_INSERT:
+        for (int i = 0; i < numprocess; i++)
+        {
+            int ret = benchmark_insert_record(table_id,i,bexecute,szErr);
+            if (ret > 0)
             {
-                int ret = benchmark_insert_record(table_id, i, bexecute, szErr);
-                if (ret > 0)
-                {
-                    return ret;
-                }
+                return ret;
             }
-            break;
-        case BENCHMARK_SELECT:
-            for (int i = 0; i < numprocess; i++)
+        }
+        break;
+    case BENCHMARK_SELECT:
+        for (int i = 0; i < numprocess; i++)
+        {
+            int ret = benchmark_select_record(table_id,i,bexecute,szErr);
+            if (ret > 0)
             {
-                int ret = benchmark_select_record(table_id, i, bexecute, szErr);
-                if (ret > 0)
-                {
-                    return ret;
-                }
+                return ret;
             }
-            break;
-        case BENCHMARK_CACHE:
-            for (int i = 0; i < numprocess; i++)
+        }
+        break;
+    case BENCHMARK_CACHE:
+        for (int i = 0; i < numprocess; i++)
+        {
+            int ret = benchmark_cache_record(table_id,i,numruncache,bexecute,szErr);
+            if (ret > 0)
             {
-                int ret = benchmark_cache_record(table_id, i, numruncache, bexecute, szErr);
-                if (ret > 0)
-                {
-                    return ret;
-                }
+                return ret;
             }
-            break;
-        default :
-            break;
+        }
+        break;
+    default:
+        break;
     }
 
     zce::sleep(num_sleep);

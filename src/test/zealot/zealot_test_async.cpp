@@ -1,8 +1,7 @@
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-
-class FSM_1 : public zce::Async_FSM
+class FSM_1: public zce::Async_FSM
 {
 private:
     enum
@@ -16,12 +15,11 @@ private:
     };
 public:
 
-    FSM_1(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
-        Async_FSM(async_mgr, create_cmd)
+    FSM_1(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
+        Async_FSM(async_mgr,create_cmd)
     {
         set_stage(FMS1_STAGE_1);
     }
-
 
 protected:
     virtual ~FSM_1()
@@ -29,9 +27,9 @@ protected:
     }
 
 public:
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object * >(new FSM_1(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new FSM_1(async_mgr,create_cmd));
     }
 
     virtual void on_run(const void *outer_data,size_t /*data_len*/,bool &continue_run)
@@ -39,37 +37,35 @@ public:
         ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
         {
-            case FMS1_STAGE_1:
-                std::cout << "FSM1 stage " << get_stage() << " start." << std::endl;
-                continue_run = true;
-                set_stage(FMS1_STAGE_2);
-                break;
-            case FMS1_STAGE_2:
-                std::cout << "FSM1 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM1_STAGE_3);
-                break;
-            case FSM1_STAGE_3:
-                std::cout << "FSM1 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM1_STAGE_4);
-                break;
-            case FSM1_STAGE_4:
-                std::cout << "FSM1 stage " << get_stage() << " end." << std::endl;
-                continue_run = false;
-                break;
-            default:
-                //一个无法识别的状态
-                ZCE_ASSERT(false);
-                break;
+        case FMS1_STAGE_1:
+            std::cout << "FSM1 stage " << get_stage() << " start." << std::endl;
+            continue_run = true;
+            set_stage(FMS1_STAGE_2);
+            break;
+        case FMS1_STAGE_2:
+            std::cout << "FSM1 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM1_STAGE_3);
+            break;
+        case FSM1_STAGE_3:
+            std::cout << "FSM1 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM1_STAGE_4);
+            break;
+        case FSM1_STAGE_4:
+            std::cout << "FSM1 stage " << get_stage() << " end." << std::endl;
+            continue_run = false;
+            break;
+        default:
+            //一个无法识别的状态
+            ZCE_ASSERT(false);
+            break;
         }
         return;
     }
-
 };
 
-
-class FSM_2 : public zce::Async_FSM
+class FSM_2: public zce::Async_FSM
 {
 private:
     enum
@@ -83,8 +79,8 @@ private:
     };
 
 public:
-    FSM_2(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
-        Async_FSM(async_mgr, create_cmd)
+    FSM_2(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
+        Async_FSM(async_mgr,create_cmd)
     {
         set_stage(FMS2_STAGE_1);
     }
@@ -93,9 +89,9 @@ protected:
     {
     }
 public:
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new FSM_2(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new FSM_2(async_mgr,create_cmd));
     }
 
     virtual void on_run(const void *outer_data,
@@ -105,38 +101,36 @@ public:
         ZCE_UNUSED_ARG(outer_data);
         switch (get_stage())
         {
-            case FMS2_STAGE_1:
-                std::cout << "FSM2 stage " << get_stage() << " start." << std::endl;
-                continue_run = true;
-                set_stage(FMS2_STAGE_2);
-                break;
-            case FMS2_STAGE_2:
-                std::cout << "FSM2 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM2_STAGE_3);
-                break;
-            case FSM2_STAGE_3:
-                std::cout << "FSM2 stage " << get_stage() << std::endl;
-                continue_run = true;
-                set_stage(FSM2_STAGE_4);
-                break;
-            case FSM2_STAGE_4:
-                std::cout << "FSM2 stage" << get_stage() << " end." << std::endl;
-                continue_run = false;
-                break;
-            default:
-                //一个无法识别的状态
-                ZCE_ASSERT(false);
-                break;
+        case FMS2_STAGE_1:
+            std::cout << "FSM2 stage " << get_stage() << " start." << std::endl;
+            continue_run = true;
+            set_stage(FMS2_STAGE_2);
+            break;
+        case FMS2_STAGE_2:
+            std::cout << "FSM2 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM2_STAGE_3);
+            break;
+        case FSM2_STAGE_3:
+            std::cout << "FSM2 stage " << get_stage() << std::endl;
+            continue_run = true;
+            set_stage(FSM2_STAGE_4);
+            break;
+        case FSM2_STAGE_4:
+            std::cout << "FSM2 stage" << get_stage() << " end." << std::endl;
+            continue_run = false;
+            break;
+        default:
+            //一个无法识别的状态
+            ZCE_ASSERT(false);
+            break;
         }
         return;
     }
 };
 
-
-
 //
-int test_async_fsm(int  /*argc*/, char * /*argv*/[])
+int test_async_fsm(int  /*argc*/,char * /*argv*/[])
 {
     int ret = 0;
     const unsigned int CMD_1 = 10001;
@@ -145,48 +139,46 @@ int test_async_fsm(int  /*argc*/, char * /*argv*/[])
 
     zce::Timer_Queue_Base *time_queue = new ZCE_Timer_Wheel();
     zce::Async_FSMMgr *mgr = new zce::Async_FSMMgr();
-    mgr->initialize(time_queue, 100, 200);
-    mgr->register_asyncobj(CMD_1, new FSM_1(mgr, CMD_1));
-    mgr->register_asyncobj(CMD_2, new FSM_2(mgr, CMD_2));
-    
+    mgr->initialize(time_queue,100,200);
+    mgr->register_asyncobj(CMD_1,new FSM_1(mgr,CMD_1));
+    mgr->register_asyncobj(CMD_2,new FSM_2(mgr,CMD_2));
+
     bool running;
     uint32_t fsm1_async_id1;
-    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id1,running);
+    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id1,running);
     uint32_t fsm1_async_id2;
-    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id2,running);
+    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id2,running);
 
     uint32_t fsm2_async_id1;
-    ret = mgr->create_asyncobj(CMD_2, NULL,0,fsm2_async_id1,running);
-
+    ret = mgr->create_asyncobj(CMD_2,NULL,0,fsm2_async_id1,running);
 
     uint32_t nouse_fsm3_id;
-    ret = mgr->create_asyncobj(CMD_3, NULL,0,nouse_fsm3_id,running);
+    ret = mgr->create_asyncobj(CMD_3,NULL,0,nouse_fsm3_id,running);
     ZCE_ASSERT(ret != 0);
 
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm2_async_id1, NULL,0,running);
-
+    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm2_async_id1,NULL,0,running);
 
     return 0;
 }
 
-class Coroutine_1 : public ZCE_Async_Coroutine
+class Coroutine_1: public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_1(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
-        ZCE_Async_Coroutine(async_mgr, create_cmd)
+    Coroutine_1(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
+        ZCE_Async_Coroutine(async_mgr,create_cmd)
     {
     }
 
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new Coroutine_1(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new Coroutine_1(async_mgr,create_cmd));
     }
 
     ///协程运行,你要重载的函数
@@ -200,20 +192,19 @@ public:
 
         std::cout << "Coroutine_1 end." << std::endl;
     }
-
 };
 
-class Coroutine_2 : public ZCE_Async_Coroutine
+class Coroutine_2: public ZCE_Async_Coroutine
 {
 public:
-    Coroutine_2(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd) :
-        ZCE_Async_Coroutine(async_mgr, create_cmd)
+    Coroutine_2(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd):
+        ZCE_Async_Coroutine(async_mgr,create_cmd)
     {
     }
 
-    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr, unsigned int create_cmd)
+    zce::Async_Object *clone(zce::Async_Obj_Mgr *async_mgr,unsigned int create_cmd)
     {
-        return dynamic_cast<zce::Async_Object *>(new Coroutine_2(async_mgr, create_cmd));
+        return dynamic_cast<zce::Async_Object *>(new Coroutine_2(async_mgr,create_cmd));
     }
 
     virtual void coroutine_run()
@@ -226,11 +217,10 @@ public:
 
         std::cout << "Coroutine_2 end." << std::endl;
     }
-
 };
 
 //
-int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
+int test_async_coroutine(int  /*argc*/,char * /*argv*/[])
 {
     int ret = 0;
     const unsigned int CMD_1 = 10001;
@@ -239,26 +229,24 @@ int test_async_coroutine(int  /*argc*/, char * /*argv*/[])
 
     zce::Timer_Queue_Base *time_queue = new ZCE_Timer_Wheel();
     ZCE_Async_CoroutineMgr *mgr = new ZCE_Async_CoroutineMgr();
-    mgr->initialize(time_queue, 100, 2000);
-    mgr->register_asyncobj(CMD_1, new Coroutine_1(mgr, CMD_1));
-    mgr->register_asyncobj(CMD_2, new Coroutine_2(mgr, CMD_2));
+    mgr->initialize(time_queue,100,2000);
+    mgr->register_asyncobj(CMD_1,new Coroutine_1(mgr,CMD_1));
+    mgr->register_asyncobj(CMD_2,new Coroutine_2(mgr,CMD_2));
     bool running;
     uint32_t fsm1_async_id1;
-    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id1,running);
+    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id1,running);
     uint32_t fsm1_async_id2;
-    ret = mgr->create_asyncobj(CMD_1, NULL,0,fsm1_async_id2,running);
+    ret = mgr->create_asyncobj(CMD_1,NULL,0,fsm1_async_id2,running);
 
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id2, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id1, NULL,0,running);
-    ret = mgr->active_asyncobj(fsm1_async_id2, NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id2,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id1,NULL,0,running);
+    ret = mgr->active_asyncobj(fsm1_async_id2,NULL,0,running);
 
     ZCE_ASSERT(ret == 0);
 
     return 0;
 }
-
-
 
 /*
 注意，Fiber是无法达到这个效果的
@@ -273,7 +261,6 @@ zce::setcontext(&context);
 return 0;
 }
 */
-
 
 const int COROUTINE_LOOP_NUMBER = 3;
 
@@ -304,10 +291,8 @@ void loop(
     * ''setcontext(&loop_context->uc_link);'' */
 }
 
-
-int test_coroutine2(int /*argc*/, char * /*argv*/[])
+int test_coroutine2(int /*argc*/,char * /*argv*/[])
 {
-
     /* The three contexts:
     *    (1) main_context1 : The point in main to which loop will return.
     *    (2) main_context2 : The point in main to which control from loop will
@@ -315,8 +300,6 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
     *    (3) loop_context  : The point in loop to which control from main will
     *                        flow by switching contexts. */
     coroutine_t loop_context;
-
-
 
     /* Flag indicating that the iterator has completed. */
     volatile int iterator_finished;
@@ -355,10 +338,9 @@ int test_coroutine2(int /*argc*/, char * /*argv*/[])
             * The first call will begin loop.  Subsequent calls will switch to
             * the swapcontext in loop. */
             zce::yeild_coroutine(&loop_context);
-            printf("%d\n", i_from_iterator);
+            printf("%d\n",i_from_iterator);
         }
     }
 
     return 0;
-
 }

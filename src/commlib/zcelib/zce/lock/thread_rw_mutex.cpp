@@ -1,4 +1,3 @@
-
 //线程的互斥量，有轻量的锁，递归锁，非递归锁，读写锁
 
 #include "zce/predefine.h"
@@ -21,24 +20,23 @@ ZCE_Thread_RW_Mutex::ZCE_Thread_RW_Mutex()
     //pthread_rwlockattr_t属性的初始化
     int ret = 0;
 
-    ret = zce::pthread_rwlock_initex(&rw_lock_, false);
+    ret = zce::pthread_rwlock_initex(&rw_lock_,false);
 
-    if (0 != ret )
+    if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_init", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_init",ret);
         return;
     }
-
 }
 
 ZCE_Thread_RW_Mutex::~ZCE_Thread_RW_Mutex()
 {
     int ret = 0;
-    ret = zce::pthread_rwlock_destroy (&rw_lock_);
+    ret = zce::pthread_rwlock_destroy(&rw_lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_destroy", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_destroy",ret);
         return;
     }
 }
@@ -51,7 +49,7 @@ void ZCE_Thread_RW_Mutex::lock_read()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_rdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_rdlock",ret);
         return;
     }
 }
@@ -80,7 +78,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_read(const zce::Time_Value &abs_time)
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_timedrdlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_timedrdlock",ret);
         return false;
     }
 
@@ -102,7 +100,7 @@ void ZCE_Thread_RW_Mutex::lock_write()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_wrlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_wrlock",ret);
         return;
     }
 }
@@ -130,7 +128,7 @@ bool ZCE_Thread_RW_Mutex::systime_lock_write(const zce::Time_Value &abs_time)
                                           abs_time);
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_mutex_timedlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_mutex_timedlock",ret);
         return false;
     }
 
@@ -145,8 +143,6 @@ bool ZCE_Thread_RW_Mutex::duration_lock_write(const zce::Time_Value &relative_ti
     return systime_lock_write(abs_time);
 }
 
-
-
 //解写锁
 void ZCE_Thread_RW_Mutex::unlock_write()
 {
@@ -156,7 +152,7 @@ void ZCE_Thread_RW_Mutex::unlock_write()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_unlock",ret);
         return;
     }
 }
@@ -170,7 +166,7 @@ void ZCE_Thread_RW_Mutex::unlock_read()
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_rwlock_unlock", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_rwlock_unlock",ret);
         return;
     }
 }
@@ -181,11 +177,9 @@ pthread_rwlock_t *ZCE_Thread_RW_Mutex::get_lock()
     return &rw_lock_;
 }
 
-
 /************************************************************************************************************
 Class           : ZCE_Thread_Win_RW_Mutex 轻量级的读写锁，不提供超时等函数
 ************************************************************************************************************/
-
 
 #if defined ZCE_SUPPORT_WINSVR2008 && ZCE_SUPPORT_WINSVR2008 == 1
 

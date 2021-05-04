@@ -38,9 +38,9 @@ ZCE_SOCKET Socket_Base::get_handle() const
 
 //Open SOCK句柄，不BIND本地地址的方式
 int Socket_Base::open(int type,
-                          int family,
-                          int protocol,
-                          bool reuse_addr)
+                      int family,
+                      int protocol,
+                      bool reuse_addr)
 {
     int ret = 0;
 
@@ -79,10 +79,10 @@ int Socket_Base::open(int type,
 
 //Open SOCK句柄，BIND地址的方式
 int Socket_Base::open(int type,
-                          const Sockaddr_Base *local_addr,
-                          int family,
-                          int protocol,
-                          bool reuse_addr)
+                      const Sockaddr_Base *local_addr,
+                      int family,
+                      int protocol,
+                      bool reuse_addr)
 {
     int ret = 0;
 
@@ -117,7 +117,6 @@ int Socket_Base::open(int type,
     }
 
     return 0;
-
 }
 
 //关闭之
@@ -160,18 +159,18 @@ int Socket_Base::sock_disable(int value) const
 
 //获取Socket的选项
 int Socket_Base::getsockopt(int level,
-                                int optname,
-                                void *optval,
-                                socklen_t *optlen)  const
+                            int optname,
+                            void *optval,
+                            socklen_t *optlen)  const
 {
     return zce::getsockopt(socket_handle_,level,optname,optval,optlen);
 }
 
 //设置Socket的选项
 int Socket_Base::setsockopt(int level,
-                                int optname,
-                                const void *optval,
-                                int optlen) const
+                            int optname,
+                            const void *optval,
+                            int optlen) const
 {
     return zce::setsockopt(socket_handle_,
                            level,
@@ -186,7 +185,6 @@ int Socket_Base::getpeername(Sockaddr_Base *addr)  const
     return zce::getpeername(socket_handle_,
                             addr->sockaddr_ptr_,
                             &addr->sockaddr_size_);
-
 }
 
 //取得本地的地址信息
@@ -207,8 +205,8 @@ int Socket_Base::connect(const Sockaddr_Base *addr) const
 
 //接收数据，根据阻塞状态决定行为
 ssize_t Socket_Base::recv(void *buf,
-                              size_t len,
-                              int flags) const
+                          size_t len,
+                          int flags) const
 {
     return zce::recv(socket_handle_,
                      buf,
@@ -218,13 +216,12 @@ ssize_t Socket_Base::recv(void *buf,
 
 //发送数据，根据阻塞状态决定行为
 ssize_t Socket_Base::send(const void *buf,
-                              size_t len,
-                              int flags) const
+                          size_t len,
+                          int flags) const
 {
     return zce::send(socket_handle_,
                      buf,
                      len,
                      flags);
 }
-
 }

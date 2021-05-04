@@ -9,7 +9,7 @@ int g_daomei_foo = 0;
 
 size_t TEST_NUMBER = 10000000;
 
-class Task_Read : public ZCE_Thread_Task
+class Task_Read: public ZCE_Thread_Task
 {
 public:
 
@@ -33,8 +33,7 @@ protected:
     size_t number_prc_ = 0;
 };
 
-
-class Task_Write : public ZCE_Thread_Task
+class Task_Write: public ZCE_Thread_Task
 {
 public:
     Task_Write()
@@ -48,15 +47,13 @@ public:
             light_rw.lock_write();
             g_daomei_foo++;
             light_rw.unlock_write();
-
         }
 
         return 0;
     }
-
 };
 
-int test_rw_lock1 (int /*argc*/, char * /*argv*/ [])
+int test_rw_lock1(int /*argc*/,char * /*argv*/[])
 {
     //InitializeSRWLock(&srw_lock);
 
@@ -69,28 +66,27 @@ int test_rw_lock1 (int /*argc*/, char * /*argv*/ [])
     Task_Write b1;
     Task_Write b2;
 
-    ZCE_THREAD_ID threadid_a1, threadid_a2, threadid_b1, threadid_b2;
+    ZCE_THREAD_ID threadid_a1,threadid_a2,threadid_b1,threadid_b2;
 
-    a1.activate(1, &threadid_a1);
-    a2.activate(1, &threadid_a2);
+    a1.activate(1,&threadid_a1);
+    a2.activate(1,&threadid_a2);
 
-    b1.activate(2, &threadid_b1);
-    b2.activate(2, &threadid_b2);
+    b1.activate(2,&threadid_b1);
+    b2.activate(2,&threadid_b2);
 
     a1.wait_join();
     a2.wait_join();
     b1.wait_join();
     b2.wait_join();
 
-    printf("At last g_daomei_foo = %d\n", g_daomei_foo);
+    printf("At last g_daomei_foo = %d\n",g_daomei_foo);
 
     return 0;
 }
 
-
 ZCE_Thread_RW_Mutex rw_lock;
 
-class Task_Read_1 : public ZCE_Thread_Task
+class Task_Read_1: public ZCE_Thread_Task
 {
 public:
 
@@ -114,8 +110,7 @@ protected:
     size_t number_prc_ = 0;
 };
 
-
-class Task_Write_1 : public ZCE_Thread_Task
+class Task_Write_1: public ZCE_Thread_Task
 {
 public:
     Task_Write_1()
@@ -129,15 +124,13 @@ public:
             rw_lock.lock_write();
             g_daomei_foo++;
             rw_lock.unlock_write();
-
         }
 
         return 0;
     }
-
 };
 
-int test_rw_lock2 (int /*argc*/, char * /*argv*/ [])
+int test_rw_lock2(int /*argc*/,char * /*argv*/[])
 {
     //InitializeSRWLock(&srw_lock);
 
@@ -150,20 +143,20 @@ int test_rw_lock2 (int /*argc*/, char * /*argv*/ [])
     Task_Write_1 b1;
     Task_Write_1 b2;
 
-    ZCE_THREAD_ID threadid_a1, threadid_a2, threadid_b1, threadid_b2;
+    ZCE_THREAD_ID threadid_a1,threadid_a2,threadid_b1,threadid_b2;
 
-    a1.activate(1, &threadid_a1);
-    a2.activate(1, &threadid_a2);
+    a1.activate(1,&threadid_a1);
+    a2.activate(1,&threadid_a2);
 
-    b1.activate(2, &threadid_b1);
-    b2.activate(2, &threadid_b2);
+    b1.activate(2,&threadid_b1);
+    b2.activate(2,&threadid_b2);
 
     a1.wait_join();
     a2.wait_join();
     b1.wait_join();
     b2.wait_join();
 
-    printf("At last g_daomei_foo = %d\n", g_daomei_foo);
+    printf("At last g_daomei_foo = %d\n",g_daomei_foo);
 
     return 0;
 }

@@ -13,7 +13,6 @@ ZCE_Record_Lock::ZCE_Record_Lock(ZCE_HANDLE file_handle)
 
 ZCE_Record_Lock::ZCE_Record_Lock()
 {
-
 }
 ZCE_Record_Lock::~ZCE_Record_Lock()
 {
@@ -29,8 +28,8 @@ int ZCE_Record_Lock::open(const char *file_name,
     ZCE_ASSERT(record_lock_.handle_ == ZCE_INVALID_HANDLE);
     //打开这个文件
     ZCE_HANDLE file_handle = zce::open(file_name,
-                                      open_mode,
-                                      perms);
+                                       open_mode,
+                                       perms);
 
     if (file_handle == ZCE_INVALID_HANDLE)
     {
@@ -40,13 +39,13 @@ int ZCE_Record_Lock::open(const char *file_name,
     open_by_self_ = true;
 
     return zce::file_lock_init(&record_lock_,
-                                file_handle);
+                               file_handle);
 }
 
 //用一个文件Handle初始化,外部传入的ZCE_HANDLE，我不会关闭，文件
 int ZCE_Record_Lock::open(ZCE_HANDLE file_handle)
 {
-    return zce::file_lock_init(&record_lock_, file_handle);
+    return zce::file_lock_init(&record_lock_,file_handle);
 }
 
 //得到锁文件的句柄
@@ -66,9 +65,9 @@ void ZCE_Record_Lock::close()
 }
 
 //文件记录读写锁
-int ZCE_Record_Lock::flock_rdlock (int  whence,
-                                   ssize_t start,
-                                   ssize_t len)
+int ZCE_Record_Lock::flock_rdlock(int  whence,
+                                  ssize_t start,
+                                  ssize_t len)
 {
     return zce::fcntl_rdlock(&record_lock_,
                              whence,
@@ -77,9 +76,9 @@ int ZCE_Record_Lock::flock_rdlock (int  whence,
 }
 
 //尝试对文件记录进行加读取锁
-int ZCE_Record_Lock::flock_tryrdlock (int  whence,
-                                      ssize_t start,
-                                      ssize_t len)
+int ZCE_Record_Lock::flock_tryrdlock(int  whence,
+                                     ssize_t start,
+                                     ssize_t len)
 {
     return zce::fcntl_tryrdlock(&record_lock_,
                                 whence,
@@ -88,9 +87,9 @@ int ZCE_Record_Lock::flock_tryrdlock (int  whence,
 }
 
 //对文件记录直接上锁
-int ZCE_Record_Lock::flock_wrlock (int  whence,
-                                   ssize_t start,
-                                   ssize_t len)
+int ZCE_Record_Lock::flock_wrlock(int  whence,
+                                  ssize_t start,
+                                  ssize_t len)
 {
     return zce::fcntl_wrlock(&record_lock_,
                              whence,
@@ -99,9 +98,9 @@ int ZCE_Record_Lock::flock_wrlock (int  whence,
 }
 
 //尝试对文件记录进行加写取锁
-int ZCE_Record_Lock::flock_trywrlock (int  whence,
-                                      ssize_t start,
-                                      ssize_t len)
+int ZCE_Record_Lock::flock_trywrlock(int  whence,
+                                     ssize_t start,
+                                     ssize_t len)
 {
     return zce::fcntl_trywrlock(&record_lock_,
                                 whence,
@@ -110,13 +109,12 @@ int ZCE_Record_Lock::flock_trywrlock (int  whence,
 }
 
 //解锁
-int ZCE_Record_Lock::flock_unlock (int  whence,
-                                   ssize_t start,
-                                   ssize_t len)
+int ZCE_Record_Lock::flock_unlock(int  whence,
+                                  ssize_t start,
+                                  ssize_t len)
 {
     return zce::fcntl_unlock(&record_lock_,
                              whence,
                              start,
                              len);
 }
-

@@ -1,4 +1,3 @@
-
 #ifndef OGRE4A_IP_RESTRICT_H_
 #define OGRE4A_IP_RESTRICT_H_
 
@@ -7,7 +6,6 @@ class  Ogre4aIPRestrictMgr
 ****************************************************************************************************/
 class Ogre_IPRestrict_Mgr
 {
-
     typedef std::unordered_set<unsigned int> SET_OF_IPADDRESS;
 
 protected:
@@ -38,8 +36,7 @@ protected:
 
 protected:
     //单子实例
-    static Ogre_IPRestrict_Mgr     *instance_;
+    static Ogre_IPRestrict_Mgr *instance_;
 };
 
 #endif //OGRE4A_IP_RESTRICT_H_
-

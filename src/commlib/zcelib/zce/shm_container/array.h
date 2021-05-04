@@ -20,7 +20,6 @@
 
 namespace zce
 {
-
 ///共享内存vector头部数据区
 class _shm_array_head
 {
@@ -47,7 +46,6 @@ public:
 
     ///表示目前使用的结点个数
     size_t               num_of_use_;
-
 };
 
 /*!
@@ -83,11 +81,11 @@ public:
     * @param      pmmap
     * @param      if_restore
     */
-    shm_array(const size_t numnode, char *pmmap, bool if_restore = false):
+    shm_array(const size_t numnode,char *pmmap,bool if_restore = false):
         _shm_memory_base(pmmap),
         data_base_(NULL)
     {
-        initialize(numnode, pmmap, if_restore);
+        initialize(numnode,pmmap,if_restore);
     }
     ///析构函数
     ~shm_array()
@@ -98,21 +96,20 @@ public:
     ///内存区的构成为 定义区,data区,返回所需要的长度,
     static size_t getallocsize(const size_t numnode)
     {
-        return  sizeof(_shm_array_head)  + sizeof(_value_type) * (numnode ) ;
+        return  sizeof(_shm_array_head) + sizeof(_value_type) * (numnode);
     }
 
     ///初始化
-    static shm_array<_value_type> *initialize(const size_t numnode, char *pmmap, bool if_restore = false)
+    static shm_array<_value_type> *initialize(const size_t numnode,char *pmmap,bool if_restore = false)
     {
-
-        _shm_array_head *aryhead  = reinterpret_cast<_shm_array_head *>(pmmap);
+        _shm_array_head *aryhead = reinterpret_cast<_shm_array_head *>(pmmap);
 
         //如果是恢复,数据都在内存中,
         if (if_restore == true)
         {
             //检查一下恢复的内存是否正确,
             if (getallocsize(numnode) != aryhead->size_of_mmap_ ||
-                numnode != aryhead->num_of_node_ )
+                numnode != aryhead->num_of_node_)
             {
                 return NULL;
             }
@@ -127,7 +124,7 @@ public:
         //所有的指针都是更加基地址计算得到的,用于方便计算,每次初始化会重新计算
         instance->smem_base_ = pmmap;
         instance->array_head_ = aryhead;
-        instance->data_base_  = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_array_head) );
+        instance->data_base_ = reinterpret_cast<_value_type *>(pmmap + sizeof(_shm_array_head));
 
         if (if_restore == false)
         {
@@ -200,7 +197,6 @@ public:
         //等于，什么都不做
         else
         {
-
         }
 
         array_head_->num_of_use_ = num;
@@ -230,7 +226,7 @@ public:
     ///
     _value_type &back()
     {
-        return *(data_base_ + ( array_head_->num_of_use_ - 1));
+        return *(data_base_ + (array_head_->num_of_use_ - 1));
     }
 
     ///向后添加数据
@@ -252,7 +248,7 @@ public:
     ///从后面删除数据
     bool pop_back()
     {
-        if ( array_head_->num_of_use_ == 0 )
+        if (array_head_->num_of_use_ == 0)
         {
             return false;
         }
@@ -266,13 +262,10 @@ public:
 
 protected:
     ///
-    _shm_array_head   *array_head_ = nullptr;
+    _shm_array_head *array_head_ = nullptr;
     ///数据区起始指针,
-    _value_type       *data_base_ = nullptr;
-
+    _value_type *data_base_ = nullptr;
 };
-
 };
 
 #endif //ZCE_LIB_SHM_ARRAY_H_
-

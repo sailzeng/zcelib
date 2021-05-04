@@ -35,20 +35,16 @@
 #include "zce/string/extend.h"
 #include "zce/logger/log_basic.h"
 
-
-
 /******************************************************************************************
 class ZCE_LogTrace_Plus 只是为C++爱好者准备的封装,
 ******************************************************************************************/
-class ZCE_LogTrace_Plus : public ZCE_LogTrace_Basic
+class ZCE_LogTrace_Plus: public ZCE_LogTrace_Basic
 {
-
 public:
 
     ZCE_LogTrace_Plus();
     //析构函数
     ~ZCE_LogTrace_Plus();
-
 
 #if ZCE_SUPPORT_CPP11 == 1
 
@@ -90,7 +86,7 @@ public:
 
         //得到打印信息,foo_snprintf 为自己内部的函数，str_format使用{}作为输出控制符
         size_t sprt_use_len = 0;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data...);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data...);
         sz_use_len += sprt_use_len;
         sz_buf_len -= sprt_use_len;
 
@@ -139,7 +135,7 @@ public:
     output_log_info(now_time_val,log_tmp_buffer,sz_use_len)
 
     //
-    template <class T1, class T2>
+    template <class T1,class T2>
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -148,20 +144,20 @@ public:
         //如果日志输出开关关闭
         if (if_output_log_ == false)
         {
-            return ;
+            return;
         }
 
         //如果输出的日志级别低于Mask值
-        if (permit_outlevel_ > outlevel )
+        if (permit_outlevel_ > outlevel)
         {
             return;
         }
 
         //得到当前时间
-        timeval now_time_val (zce::gettimeofday());
+        timeval now_time_val(zce::gettimeofday());
 
         //我要保留一个位置放'\0'
-        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE ];
+        char log_tmp_buffer[LOG_TMP_BUFFER_SIZE];
         log_tmp_buffer[LOG_TMP_BUFFER_SIZE - 1] = '\0';
 
         //还是为\n考虑留一个空间
@@ -178,7 +174,7 @@ public:
 
         //得到打印信息,_vsnprintf为特殊函数
         size_t sprt_use_len = 0;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2);
         sz_use_len += sprt_use_len;
         sz_buf_len -= sprt_use_len;
 
@@ -195,59 +191,58 @@ public:
         output_log_info(now_time_val,
                         log_tmp_buffer,
                         sz_use_len);
-
     }
 
     template < class T1 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
-                      const T1 &out_data1 )
+                      const T1 &out_data1)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3 >
+    template < class T1,class T2,class T3 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
-                      const T3 &out_data3 )
+                      const T3 &out_data3)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4 >
+    template < class T1,class T2,class T3,class T4 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
                       const T3 &out_data3,
-                      const T4 &out_data4 )
+                      const T4 &out_data4)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5 >
+    template < class T1,class T2,class T3,class T4,class T5 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
                       const T2 &out_data2,
                       const T3 &out_data3,
                       const T4 &out_data4,
-                      const T5 &out_data5 )
+                      const T5 &out_data5)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -255,14 +250,14 @@ public:
                       const T3 &out_data3,
                       const T4 &out_data4,
                       const T5 &out_data5,
-                      const T6 &out_data6 )
+                      const T6 &out_data6)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -271,14 +266,14 @@ public:
                       const T4 &out_data4,
                       const T5 &out_data5,
                       const T6 &out_data6,
-                      const T7 &out_data7 )
+                      const T7 &out_data7)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -288,14 +283,14 @@ public:
                       const T5 &out_data5,
                       const T6 &out_data6,
                       const T7 &out_data7,
-                      const T8 &out_data8 )
+                      const T8 &out_data8)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -306,14 +301,14 @@ public:
                       const T6 &out_data6,
                       const T7 &out_data7,
                       const T8 &out_data8,
-                      const T9 &out_data9 )
+                      const T9 &out_data9)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -325,14 +320,14 @@ public:
                       const T7 &out_data7,
                       const T8 &out_data8,
                       const T9 &out_data9,
-                      const T10 &out_data10 )
+                      const T10 &out_data10)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -345,14 +340,14 @@ public:
                       const T8 &out_data8,
                       const T9 &out_data9,
                       const T10 &out_data10,
-                      const T11 &out_data11 )
+                      const T11 &out_data11)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -366,14 +361,14 @@ public:
                       const T9 &out_data9,
                       const T10 &out_data10,
                       const T11 &out_data11,
-                      const T12 &out_data12 )
+                      const T12 &out_data12)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -388,14 +383,14 @@ public:
                       const T10 &out_data10,
                       const T11 &out_data11,
                       const T12 &out_data12,
-                      const T13 &out_data13 )
+                      const T13 &out_data13)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -411,14 +406,14 @@ public:
                       const T11 &out_data11,
                       const T12 &out_data12,
                       const T13 &out_data13,
-                      const T14 &out_data14 )
+                      const T14 &out_data14)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -435,14 +430,14 @@ public:
                       const T12 &out_data12,
                       const T13 &out_data13,
                       const T14 &out_data14,
-                      const T15 &out_data15 )
+                      const T15 &out_data15)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -460,14 +455,14 @@ public:
                       const T13 &out_data13,
                       const T14 &out_data14,
                       const T15 &out_data15,
-                      const T16 &out_data16 )
+                      const T16 &out_data16)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -486,14 +481,14 @@ public:
                       const T14 &out_data14,
                       const T15 &out_data15,
                       const T16 &out_data16,
-                      const T17 &out_data17 )
+                      const T17 &out_data17)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -513,14 +508,14 @@ public:
                       const T15 &out_data15,
                       const T16 &out_data16,
                       const T17 &out_data17,
-                      const T18 &out_data18 )
+                      const T18 &out_data18)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -541,14 +536,14 @@ public:
                       const T16 &out_data16,
                       const T17 &out_data17,
                       const T18 &out_data18,
-                      const T19 &out_data19 )
+                      const T19 &out_data19)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -570,14 +565,14 @@ public:
                       const T17 &out_data17,
                       const T18 &out_data18,
                       const T19 &out_data19,
-                      const T20 &out_data20 )
+                      const T20 &out_data20)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -600,14 +595,14 @@ public:
                       const T18 &out_data18,
                       const T19 &out_data19,
                       const T20 &out_data20,
-                      const T21 &out_data21 )
+                      const T21 &out_data21)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -631,14 +626,14 @@ public:
                       const T19 &out_data19,
                       const T20 &out_data20,
                       const T21 &out_data21,
-                      const T22 &out_data22 )
+                      const T22 &out_data22)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -663,14 +658,14 @@ public:
                       const T20 &out_data20,
                       const T21 &out_data21,
                       const T22 &out_data22,
-                      const T23 &out_data23 )
+                      const T23 &out_data23)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -696,14 +691,14 @@ public:
                       const T21 &out_data21,
                       const T22 &out_data22,
                       const T23 &out_data23,
-                      const T24 &out_data24 )
+                      const T24 &out_data24)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -730,14 +725,14 @@ public:
                       const T22 &out_data22,
                       const T23 &out_data23,
                       const T24 &out_data24,
-                      const T25 &out_data25 )
+                      const T25 &out_data25)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -765,14 +760,14 @@ public:
                       const T23 &out_data23,
                       const T24 &out_data24,
                       const T25 &out_data25,
-                      const T26 &out_data26 )
+                      const T26 &out_data26)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26,class T27 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -801,14 +796,14 @@ public:
                       const T24 &out_data24,
                       const T25 &out_data25,
                       const T26 &out_data26,
-                      const T27 &out_data27 )
+                      const T27 &out_data27)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26,out_data27);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26,class T27,class T28 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -838,14 +833,14 @@ public:
                       const T25 &out_data25,
                       const T26 &out_data26,
                       const T27 &out_data27,
-                      const T28 &out_data28 )
+                      const T28 &out_data28)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26,out_data27,out_data28);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26,class T27,class T28,class T29 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -876,14 +871,14 @@ public:
                       const T26 &out_data26,
                       const T27 &out_data27,
                       const T28 &out_data28,
-                      const T29 &out_data29 )
+                      const T29 &out_data29)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26,out_data27,out_data28,out_data29);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26,class T27,class T28,class T29,class T30 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -915,14 +910,14 @@ public:
                       const T27 &out_data27,
                       const T28 &out_data28,
                       const T29 &out_data29,
-                      const T30 &out_data30 )
+                      const T30 &out_data30)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26,out_data27,out_data28,out_data29,out_data30);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26,class T27,class T28,class T29,class T30,class T31 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -955,14 +950,14 @@ public:
                       const T28 &out_data28,
                       const T29 &out_data29,
                       const T30 &out_data30,
-                      const T31 &out_data31 )
+                      const T31 &out_data31)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30, out_data31);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26,out_data27,out_data28,out_data29,out_data30,out_data31);
         __ZCE_LOGPP_WRITE_END;
     }
 
-    template < class T1, class T2, class T3, class T4, class T5, class T6, class T7, class T8, class T9, class T10, class T11, class T12, class T13, class T14, class T15, class T16, class T17, class T18, class T19, class T20, class T21, class T22, class T23, class T24, class T25, class T26, class T27, class T28, class T29, class T30, class T31, class T32 >
+    template < class T1,class T2,class T3,class T4,class T5,class T6,class T7,class T8,class T9,class T10,class T11,class T12,class T13,class T14,class T15,class T16,class T17,class T18,class T19,class T20,class T21,class T22,class T23,class T24,class T25,class T26,class T27,class T28,class T29,class T30,class T31,class T32 >
     void write_logmsg(zce::LOG_PRIORITY outlevel,
                       const char *str_format,
                       const T1 &out_data1,
@@ -996,10 +991,10 @@ public:
                       const T29 &out_data29,
                       const T30 &out_data30,
                       const T31 &out_data31,
-                      const T32 &out_data32 )
+                      const T32 &out_data32)
     {
         __ZCE_LOGPP_WRITE_BEGIN;
-        zce::foo_snprintf(log_tmp_buffer + sz_use_len, sz_buf_len, sprt_use_len, str_format, out_data1, out_data2, out_data3, out_data4, out_data5, out_data6, out_data7, out_data8, out_data9, out_data10, out_data11, out_data12, out_data13, out_data14, out_data15, out_data16, out_data17, out_data18, out_data19, out_data20, out_data21, out_data22, out_data23, out_data24, out_data25, out_data26, out_data27, out_data28, out_data29, out_data30, out_data31, out_data32);
+        zce::foo_snprintf(log_tmp_buffer + sz_use_len,sz_buf_len,sprt_use_len,str_format,out_data1,out_data2,out_data3,out_data4,out_data5,out_data6,out_data7,out_data8,out_data9,out_data10,out_data11,out_data12,out_data13,out_data14,out_data15,out_data16,out_data17,out_data18,out_data19,out_data20,out_data21,out_data22,out_data23,out_data24,out_data25,out_data26,out_data27,out_data28,out_data29,out_data30,out_data31,out_data32);
         __ZCE_LOGPP_WRITE_END;
     }
 
@@ -1017,8 +1012,6 @@ public:
 protected:
     //
     static ZCE_LogTrace_Plus *lpp_instance_;
-
 };
 
 #endif //ZCE_LIB_TRACE_LOG_PLUS_H_
-

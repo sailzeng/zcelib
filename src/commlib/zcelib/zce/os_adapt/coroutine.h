@@ -57,8 +57,8 @@ struct  coroutine_t
         coroutine_ = NULL;
     }
 
-    void          *main_;
-    void          *coroutine_;
+    void *main_;
+    void *coroutine_;
 };
 
 #elif defined ZCE_OS_LINUX
@@ -76,11 +76,8 @@ typedef   void(*ZCE_COROUTINE_3PARA) (void *para1,
                                       void *para2,
                                       void *para3);
 
-
 namespace zce
 {
-
-
 /*!
 * @brief      非标准函数，生成协程句柄，
 *             借用LINUX下的makecontext，Windows下的CreateFiberEx实
@@ -119,7 +116,6 @@ int make_coroutine(coroutine_t *coroutine_hdl,
                    void *para2,
                    void *para3);
 
-
 /*!
 * @brief      非标准函数，LINUX下的会分配对的空间
 * @return     void
@@ -127,7 +123,6 @@ int make_coroutine(coroutine_t *coroutine_hdl,
 * @note       LINUX下释放了自动分配的ucct的空间，Windows下调用的是DeleteFiber
 */
 void delete_coroutine(coroutine_t *coroutine_hdl);
-
 
 /*!
 * @brief      从Main切换到协程，
@@ -154,4 +149,3 @@ int exchage_coroutine(coroutine_t *save_hdl,
 };
 
 #endif //ZCE_LIB_OS_ADAPT_CORROUTINE_H_
-

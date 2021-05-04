@@ -1,4 +1,3 @@
-
 #ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 #define SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
 
@@ -11,14 +10,11 @@ struct  Ogre4a_App_Frame OGRE 服务器的内部命令帧头
 
 class Ogre4a_App_Frame
 {
-
-
 public:
 
     //帧的描述,在m_Option字段使用
     enum OGRE_APPFRAME_OPTION
     {
-
         //描述PEER为UDP
         OGREDESC_PEER_UDP = 0x1,
         //描述PEER为TCP
@@ -51,17 +47,17 @@ public:
     //重置FRAME DATA的数据
     inline void reset_framehead();
     //填充数据
-    inline void fill_write_data(const uint32_t size_data, const char *src_data);
+    inline void fill_write_data(const uint32_t size_data,const char *src_data);
     //读取数据
-    inline void get_data(uint32_t &size_data, char *dest_data) const;
+    inline void get_data(uint32_t &size_data,char *dest_data) const;
 
     //增加DATA数据
-    int add_data(uint32_t add_size, char *add_data);
+    int add_data(uint32_t add_size,char *add_data);
 
     //交换自己Rcv ,Snd Peer Info
     void exchange_rcvsnd_peerInfo();
     //和其他人交换Rcv ,Snd Peer Info,
-    void exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe );
+    void exchange_rcvsnd_peerInfo(const Ogre4a_App_Frame *exframe);
 
     //DUMP OGRE FRAME的头部信息
     void dump_ogre_framehead(const char *outstr,
@@ -86,7 +82,6 @@ public:
                                     const char *outstr,
                                     zce::LOG_PRIORITY log_priority);
 
-
 public:
 
     //FRAME包头都尺寸,
@@ -96,8 +91,6 @@ public:
     static size_t        MAX_OF_OGRE_DATA_LEN;
     //最大的FRAME的长度,为MAX_OF_OGRE_DATA_LEN ＋ LEN_OF_OGRE_FRAME_HEAD
     static size_t        MAX_OF_OGRE_FRAME_LEN;
-
-
 
 public:
     //帧的长度，包括帧头的结构
@@ -109,9 +102,9 @@ public:
     OGRE_PEER_ID rcv_peer_info_;
 
     //帧的选项，见
-    unsigned int ogre_frame_option_ : 28;
+    unsigned int ogre_frame_option_:28;
     //再后4BIT作为发送错误计数
-    unsigned int ogre_send_errnum_ : 4;
+    unsigned int ogre_send_errnum_:4;
 
     //Appdata 是一个变长度的字符串序列标示,
 #ifdef ZCE_OS_WINDOWS
@@ -121,7 +114,6 @@ public:
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( default : 4200)
 #endif
-
 };
 
 #pragma pack ()
@@ -146,21 +138,18 @@ inline void Ogre4a_App_Frame::reset_framehead()
 }
 
 //填充数据
-inline void Ogre4a_App_Frame::fill_write_data(const unsigned int size_data, const char *src_data)
+inline void Ogre4a_App_Frame::fill_write_data(const unsigned int size_data,const char *src_data)
 {
-    memcpy(frame_data_ + ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD, src_data, size_data);
+    memcpy(frame_data_ + ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD,src_data,size_data);
     ogre_frame_len_ += size_data;
 }
 
 //读取数据
-inline void Ogre4a_App_Frame::get_data(unsigned int &size_data, char *dest_data) const
+inline void Ogre4a_App_Frame::get_data(unsigned int &size_data,char *dest_data) const
 {
     size_data = ogre_frame_len_ - LEN_OF_OGRE_FRAME_HEAD;
-    memcpy(dest_data, frame_data_ + LEN_OF_OGRE_FRAME_HEAD, size_data);
+    memcpy(dest_data,frame_data_ + LEN_OF_OGRE_FRAME_HEAD,size_data);
 }
-
-
-
 
 /******************************************************************************************
 接口定义
@@ -169,11 +158,10 @@ inline void Ogre4a_App_Frame::get_data(unsigned int &size_data, char *dest_data)
 //从.so加载函数名称
 static const char STR_JUDGE_RECV_WHOLEFRAME[] = "JudgeRecvWholeFrame";
 //
-typedef int ( *FP_JudgeRecv_WholeFrame)(const char *recv_buf,
-                                        unsigned int buf_len,
-                                        unsigned int max_buf_len,
-                                        bool &if_whole,
-                                        unsigned int &frame_len);
+typedef int (*FP_JudgeRecv_WholeFrame)(const char *recv_buf,
+                                       unsigned int buf_len,
+                                       unsigned int max_buf_len,
+                                       bool &if_whole,
+                                       unsigned int &frame_len);
 
 #endif //#ifndef SOARING_LIB_OGRE_SERVER_INTERFACE_HEAD_H_
-

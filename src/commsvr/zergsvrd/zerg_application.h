@@ -1,23 +1,17 @@
-
 #ifndef ZERG_SERVER_APPLICATION_H_
 #define ZERG_SERVER_APPLICATION_H_
 
 #include "zerg_tcp_ctrl_handler.h"
 
-
 class Zerg_Comm_Manager;
-
-
 
 /*!
 * @brief
 *
 * @note
 */
-class Zerg_Service_App : public soar::Svrd_Appliction
+class Zerg_Service_App: public soar::Svrd_Appliction
 {
-
-
 public:
     //我又要偷偷藏着
     Zerg_Service_App();
@@ -26,7 +20,7 @@ public:
 public:
 
     ///初始化,根据启动参数启动
-    virtual int app_start(int argc, const char *argv[]);
+    virtual int app_start(int argc,const char *argv[]);
 
     ///处理退出的清理工作
     virtual int app_exit();
@@ -37,14 +31,12 @@ public:
 public:
 
     ///通信管理器
-    Zerg_Comm_Manager       *zerg_comm_mgr_;
+    Zerg_Comm_Manager *zerg_comm_mgr_;
 
     ///OP KEY文件的时间戳
     time_t                   conf_timestamp_;
-
 };
 
 //
 
 #endif //_ZERG_SERVER_APPLICATION_H_
-

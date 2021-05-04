@@ -9,7 +9,7 @@ ZCE_Timer_Wheel::ZCE_Timer_Wheel(size_t num_timer_node,
                                  unsigned int timer_precision_mesc,
                                  TRIGGER_MODE trigger_mode,
                                  bool dynamic_expand_node
-                                ):
+):
     timer_length_mesc_(0),
     num_wheel_point_(0),
     proc_wheel_start_(0)
@@ -23,7 +23,7 @@ ZCE_Timer_Wheel::ZCE_Timer_Wheel(size_t num_timer_node,
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel::initialize fail.");
+        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Timer_Wheel::initialize fail.");
     }
 }
 
@@ -46,9 +46,8 @@ int ZCE_Timer_Wheel::initialize(size_t num_timer_node,
                                 TRIGGER_MODE trigger_mode,
                                 bool dynamic_expand_node)
 {
-
     int ret = 0;
-    assert(timer_length_mesc > 0 );
+    assert(timer_length_mesc > 0);
 
     if (timer_length_mesc < MIN_TIMER_LENGTH_MESC)
     {
@@ -59,9 +58,9 @@ int ZCE_Timer_Wheel::initialize(size_t num_timer_node,
     timer_length_mesc_ = timer_length_mesc;
 
     ret = zce::Timer_Queue_Base::initialize(num_timer_node,
-                                           timer_precision_mesc,
-                                           trigger_mode,
-                                           dynamic_expand_node);
+                                            timer_precision_mesc,
+                                            trigger_mode,
+                                            dynamic_expand_node);
 
     if (ret != 0)
     {
@@ -88,7 +87,7 @@ int ZCE_Timer_Wheel::extend_node(size_t num_timer_node,
                                  size_t &old_num_node)
 {
     int ret = 0;
-    ret = zce::Timer_Queue_Base::extend_node(num_timer_node, old_num_node);
+    ret = zce::Timer_Queue_Base::extend_node(num_timer_node,old_num_node);
 
     if (ret != 0)
     {
@@ -113,11 +112,10 @@ int ZCE_Timer_Wheel::extend_node(size_t num_timer_node,
 //将Queue和TimerNode绑定
 void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id)
 {
-
     //前进了多少时间点
     size_t front_num = static_cast<size_t>
-                       ((time_node_ary_[time_node_id].next_trigger_point_
-                         - prev_trigger_msec_) / timer_precision_mesc_ );
+        ((time_node_ary_[time_node_id].next_trigger_point_
+         - prev_trigger_msec_) / timer_precision_mesc_);
 
     //调试代码，暂时屏蔽
     //ZCE_LOG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel::bind_wheel_listnode next_trigger_point_[%llu] prev_trigger_msec_ [%llu] front_num [%lu]",
@@ -143,22 +141,20 @@ void ZCE_Timer_Wheel::bind_wheel_listnode(int time_node_id)
     }
 }
 
-
-
 //将Queue和TimerNode解除绑定
 void ZCE_Timer_Wheel::unbind_wheel_listnode(int time_node_id)
 {
-    int wheel_point_id =  wheel_node_list_[time_node_id].wheel_point_id_;
+    int wheel_point_id = wheel_node_list_[time_node_id].wheel_point_id_;
 
     //如果WHEEL上第一个元素记录的也是这个NODE
-    if ( timer_wheel_point_[wheel_point_id] == time_node_id )
+    if (timer_wheel_point_[wheel_point_id] == time_node_id)
     {
         timer_wheel_point_[wheel_point_id] = wheel_node_list_[time_node_id].list_next_;
     }
     else
     {
-        int prev = wheel_node_list_[time_node_id].list_prev_ ;
-        int next =  wheel_node_list_[time_node_id].list_next_;
+        int prev = wheel_node_list_[time_node_id].list_prev_;
+        int next = wheel_node_list_[time_node_id].list_next_;
 
         //如果有前,前面和后面接起来
         if (prev != INVALID_TIMER_ID)
@@ -263,7 +259,6 @@ int ZCE_Timer_Wheel::reschedule_timer(int timer_id,
 //取得第一个元素，也就是，最小的时间,Timer_Wheel如果里面的的NODE很少，可能有点慢,
 int ZCE_Timer_Wheel::get_frist_nodeid(int &first_node_id)
 {
-
     first_node_id = INVALID_TIMER_ID;
 
     int timer_node_id = INVALID_TIMER_ID;
@@ -277,16 +272,16 @@ int ZCE_Timer_Wheel::get_frist_nodeid(int &first_node_id)
     for (size_t i = 0; i < num_wheel_point_; ++i)
     {
         //检查这个WHEEL NODE后面是否还有TIMER NODE的链表
-        size_t wheel_node_id = (proc_wheel_start_ + i)  % num_wheel_point_;
+        size_t wheel_node_id = (proc_wheel_start_ + i) % num_wheel_point_;
         timer_node_id = timer_wheel_point_[wheel_node_id];
 
-        if ( INVALID_TIMER_ID != timer_node_id)
+        if (INVALID_TIMER_ID != timer_node_id)
         {
             break;
         }
     }
 
-    if ( INVALID_TIMER_ID != timer_node_id)
+    if (INVALID_TIMER_ID != timer_node_id)
     {
         first_node_id = timer_node_id;
         return 0;
@@ -312,7 +307,7 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
     if (now_trigger_msec < prev_trigger_msec_)
     {
         //这儿用错误是因为有必要提醒一下你，定时器被调整了，
-        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Timer_Wheel error. now_trigger_msec[%llu] < prev_trigger_msec_[%llu],may be you adjust systime time to past time.",
+        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Timer_Wheel error. now_trigger_msec[%llu] < prev_trigger_msec_[%llu],may be you adjust systime time to past time.",
                 now_trigger_msec,
                 prev_trigger_msec_);
         prev_trigger_msec_ = now_trigger_msec;
@@ -327,7 +322,7 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
         //注释掉断言，yunfei说明了一种情况，如果时间向前跳变超过了循环周期.虽然我认为这个情况暂时不会发生，就是将定时器调整成未来的某个时间，
         //assert (elapsed_msec < timer_length_mesc_);
 
-        ZCE_LOG(RS_ALERT, "[zcelib] ZCE_Timer_Wheel alert. now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%llu],"
+        ZCE_LOG(RS_ALERT,"[zcelib] ZCE_Timer_Wheel alert. now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%llu],"
                 "may be you adjust systime time to future time or you ,or wheel is too little ,or dispatch_timer or expire invoke too little.",
                 now_trigger_msec,
                 prev_trigger_msec_,
@@ -343,7 +338,7 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
         //elapsed_msec = timer_length_mesc_;
     }
 
-    size_t passing_wheel_node = static_cast<size_t>( elapsed_msec / timer_precision_mesc_);
+    size_t passing_wheel_node = static_cast<size_t>(elapsed_msec / timer_precision_mesc_);
 
     //调试代码，暂时关闭
     //ZCE_LOG(RS_DEBUG,"[zcelib] ZCE_Timer_Wheel . now_trigger_msec[%llu], prev_trigger_msec_[%llu],elapsed_msec[%llu],timer_length_mesc_[%u],passing_wheel_node[%lu]",
@@ -357,10 +352,10 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
     for (size_t i = 0; i <= passing_wheel_node; ++i)
     {
         //检查这个WHEEL NODE后面是否还有TIMER NODE的链表
-        size_t wheel_node_id = (proc_wheel_start_ + i  )  % num_wheel_point_;
+        size_t wheel_node_id = (proc_wheel_start_ + i) % num_wheel_point_;
         int timer_node_id = timer_wheel_point_[wheel_node_id];
 
-        if ( INVALID_TIMER_ID == timer_node_id)
+        if (INVALID_TIMER_ID == timer_node_id)
         {
             continue;
         }
@@ -369,11 +364,11 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
         const unsigned int JUDGE_PRECISION_MESC = 10 * timer_precision_mesc_;
 
         //
-        while ( INVALID_TIMER_ID != timer_node_id  )
+        while (INVALID_TIMER_ID != timer_node_id)
         {
             //这个地方改了一下，因为按照原来的写法，如果放入的定时器的触发时间超过轮子长度，那么会被提前触发。
             //因为进度问题，所以必须 + JUDGE_PRECISION_MESC,
-            if (time_node_ary_[timer_node_id].next_trigger_point_ <= now_trigger_msec + JUDGE_PRECISION_MESC )
+            if (time_node_ary_[timer_node_id].next_trigger_point_ <= now_trigger_msec + JUDGE_PRECISION_MESC)
             {
                 //标记这个定时器已经触发过，详细见already_trigger_的解释
                 time_node_ary_[timer_node_id].already_trigger_ = true;
@@ -384,10 +379,10 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
                 ++num_dispatch;
 
                 //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
-                if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true )
+                if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true)
                 {
                     //重新规划这个定时器是否要安排，如果不用内部会取消他，理论不可能失败，暂时不加跟踪
-                    reschedule_timer(timer_node_id, now_trigger_msec);
+                    reschedule_timer(timer_node_id,now_trigger_msec);
                 }
             }
             //到else 有2个可能，
@@ -408,7 +403,7 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
         //如果本槽位有未来触发的Timer ID，
         if (future_trigger_tid_.size() > 0)
         {
-            for (size_t x = 0; x < future_trigger_tid_.size(); ++x )
+            for (size_t x = 0; x < future_trigger_tid_.size(); ++x)
             {
                 //重新计算相关的未来的触发点，然后加入轮子
                 bind_wheel_listnode(future_trigger_tid_[x]);
@@ -416,7 +411,6 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
             //clear应该不会回收空间
             future_trigger_tid_.clear();
         }
-
     }
 
     //如果处理了NODE借点，当前时间，向前进，否则不动，
@@ -435,4 +429,3 @@ size_t ZCE_Timer_Wheel::dispatch_timer(const zce::Time_Value &now_time,
     //返回数量
     return num_dispatch;
 }
-

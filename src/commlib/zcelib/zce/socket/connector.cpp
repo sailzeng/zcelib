@@ -22,35 +22,33 @@ Socket_Connector::~Socket_Connector()
 {
 }
 
-
-int Socket_Connector::connect (zce::Socket_Stream &new_stream,
-                                   const zce::Sockaddr_Base *remote_addr,
-                                   zce::Time_Value &timeout,
-                                   bool reuse_addr,
-                                   int protocol,
-                                   const Sockaddr_Base *local_addr)
+int Socket_Connector::connect(zce::Socket_Stream &new_stream,
+                              const zce::Sockaddr_Base *remote_addr,
+                              zce::Time_Value &timeout,
+                              bool reuse_addr,
+                              int protocol,
+                              const Sockaddr_Base *local_addr)
 {
-
     int ret = 0;
 
     //清理最后的错误值
     zce::clear_last_error();
 
     //如果没有初始化
-    if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
+    if (ZCE_INVALID_SOCKET == new_stream.get_handle())
     {
         if (local_addr)
         {
-            ret = new_stream.open (local_addr,
-                                   local_addr->sockaddr_ptr_->sa_family,
-                                   protocol,
-                                   reuse_addr );
+            ret = new_stream.open(local_addr,
+                                  local_addr->sockaddr_ptr_->sa_family,
+                                  protocol,
+                                  reuse_addr);
         }
         else
         {
-            ret = new_stream.open (remote_addr->sockaddr_ptr_->sa_family,
-                                   protocol,
-                                   reuse_addr );
+            ret = new_stream.open(remote_addr->sockaddr_ptr_->sa_family,
+                                  protocol,
+                                  reuse_addr);
         }
 
         if (ret != 0)
@@ -74,12 +72,12 @@ int Socket_Connector::connect (zce::Socket_Stream &new_stream,
                        remote_addr->sockaddr_size_);
 
     //
-    if (ret != 0  )
+    if (ret != 0)
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
-        int last_err =  zce::last_error();
+        int last_err = zce::last_error();
 
-        if ( EINPROGRESS != last_err &&  EWOULDBLOCK != last_err )
+        if (EINPROGRESS != last_err && EWOULDBLOCK != last_err)
         {
             new_stream.close();
             return ret;
@@ -111,12 +109,12 @@ int Socket_Connector::connect (zce::Socket_Stream &new_stream,
 }
 
 //进行连接处理，可以进行非阻塞连接处理，
-int Socket_Connector::connect (zce::Socket_Stream &new_stream,
-                                   const Sockaddr_Base *remote_addr,
-                                   bool non_blocing,
-                                   bool reuse_addr,
-                                   int protocol,
-                                   const Sockaddr_Base *local_addr)
+int Socket_Connector::connect(zce::Socket_Stream &new_stream,
+                              const Sockaddr_Base *remote_addr,
+                              bool non_blocing,
+                              bool reuse_addr,
+                              int protocol,
+                              const Sockaddr_Base *local_addr)
 {
     int ret = 0;
 
@@ -125,12 +123,12 @@ int Socket_Connector::connect (zce::Socket_Stream &new_stream,
 
     //初始化Socket，如果需要绑定，会绑定IP和端口
     //如果没有初始化
-    if (ZCE_INVALID_SOCKET == new_stream.get_handle () )
+    if (ZCE_INVALID_SOCKET == new_stream.get_handle())
     {
-        ret = new_stream.open (local_addr,
-                               remote_addr->sockaddr_ptr_->sa_family,
-                               protocol,
-                               reuse_addr);
+        ret = new_stream.open(local_addr,
+                              remote_addr->sockaddr_ptr_->sa_family,
+                              protocol,
+                              reuse_addr);
 
         if (ret != 0)
         {
@@ -158,7 +156,7 @@ int Socket_Connector::connect (zce::Socket_Stream &new_stream,
                        remote_addr->sockaddr_size_);
 
     //进行非阻塞的连接，一般都是返回错误。但是UNIX 网络卷一也提到了过本地连接立即返回0，我自己测试过好像都是返回-1
-    if (ret != 0 )
+    if (ret != 0)
     {
         //WINDOWS下返回EWOULDBLOCK，LINUX下返回EINPROGRESS
         int last_error = zce::last_error();
@@ -177,5 +175,4 @@ int Socket_Connector::connect (zce::Socket_Stream &new_stream,
 
     return 0;
 }
-
 }

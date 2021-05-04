@@ -48,30 +48,28 @@ struct ZCE_PROCESS_PERFORM
     size_t        text_size_;
     //data + stack，data + 堆栈的大小,WINDOWS下没有这个值无效
     size_t        data_size_;
-
 };
 
 namespace zce
 {
-
 ///得到当前的进程ID
 pid_t getpid();
 
 ///得到当前的进程的父进程ID
-pid_t getppid (void);
+pid_t getppid(void);
 
 ///fork
-pid_t fork (void);
+pid_t fork(void);
 
 ///取得某个环境变量
 char *getenv(const char *name);
 
 ///
-pid_t setsid (void);
+pid_t setsid(void);
 
 ///signal信号处理函数，放在这儿其实有点异类，呵呵
-sighandler_t signal (int signum,
-                     sighandler_t);
+sighandler_t signal(int signum,
+                    sighandler_t);
 
 //--------------------------------------------------------
 //非标准函数，得到进程的各种性能数据
@@ -80,9 +78,7 @@ sighandler_t signal (int signum,
 int get_self_perf(ZCE_PROCESS_PERFORM *prc_perf_info);
 
 ///取得谋个进程的性能信息
-int get_process_perf(pid_t process_id, ZCE_PROCESS_PERFORM *prc_perf_info);
-
+int get_process_perf(pid_t process_id,ZCE_PROCESS_PERFORM *prc_perf_info);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_TIME_H_
-

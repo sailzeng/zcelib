@@ -1,4 +1,3 @@
-
 #include "zce/predefine.h"
 #include "zce/os_adapt/string.h"
 #include "zce/config/ini_pasttime.h"
@@ -98,7 +97,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
     //文件打不开，返回默认值
     if (!cfgfile)
     {
-        strncpy(return_str, default_str, size_ret_str - 1);
+        strncpy(return_str,default_str,size_ret_str - 1);
         return_str[size_ret_str - 1] = '\0';
         return strlen(return_str);
     }
@@ -124,7 +123,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 
         while (cfgfile)
         {
-            cfgfile.getline(one_line_, LINE_BUFFER_LEN);
+            cfgfile.getline(one_line_,LINE_BUFFER_LEN);
             //fgets(choneline,LINE_BUFFER_LEN,pfile);
             //整理，
             zce::strtrim(one_line_);
@@ -138,10 +137,10 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
             if (one_line_[0] == '[' && one_line_[strlen(one_line_) - 1] == ']')
             {
                 //去掉'[',']'
-                memmove(one_line_, one_line_ + 1, strlen(one_line_) - 1);
+                memmove(one_line_,one_line_ + 1,strlen(one_line_) - 1);
                 one_line_[strlen(one_line_) - 2] = '\0';
 
-                strncpy(pstrtmp, one_line_, ntmp - 1);
+                strncpy(pstrtmp,one_line_,ntmp - 1);
                 *(pstrtmp + ntmp - 1) = '\0';
 
                 ntmp = ntmp - strlen(pstrtmp) - 1;
@@ -179,14 +178,13 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
             }
             else
             {
-                strncpy(return_str, default_str, size_ret_str - 2);
+                strncpy(return_str,default_str,size_ret_str - 2);
                 return_str[size_ret_str - 2] = '\0';
                 *(return_str + strlen(return_str)) = '\0';
                 *(return_str + strlen(return_str) + 1) = '\0';
                 return strlen(return_str);
             }
         }
-
     }
 
     //如果Key为空，App不空，则返回所有的Section下的Key值，用'\0'分隔，最后一个用两个'\0'标识
@@ -206,8 +204,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 
         while (cfgfile)
         {
-
-            cfgfile.getline(one_line_, LINE_BUFFER_LEN);
+            cfgfile.getline(one_line_,LINE_BUFFER_LEN);
             //整理，
             zce::strtrim(one_line_);
 
@@ -228,12 +225,12 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
                 }
 
                 //去掉'[',']'
-                memmove(one_line_, one_line_ + 1, strlen(one_line_) - 1);
+                memmove(one_line_,one_line_ + 1,strlen(one_line_) - 1);
                 one_line_[strlen(one_line_) - 2] = '\0';
                 //整理，
                 zce::strtrim(one_line_);
 
-                if (zce::strcasecmp(one_line_, sec_name) == 0)
+                if (zce::strcasecmp(one_line_,sec_name) == 0)
                 {
                     if_app = true;
                     pstrtmp = return_str;
@@ -245,12 +242,11 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
             //找key
             if (if_app == true)
             {
-                char *str = strstr(one_line_, "=");
+                char *str = strstr(one_line_,"=");
 
                 if (str != NULL)
                 {
-
-                    strncpy(pstrtmp, one_line_, ntmp - 1);
+                    strncpy(pstrtmp,one_line_,ntmp - 1);
                     //添加结束符
                     *(pstrtmp + strlen(pstrtmp)) = '\0';
                     //长度包括一个'\0'，
@@ -290,14 +286,13 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
             }
             else
             {
-                strncpy(return_str, default_str, size_ret_str - 2);
+                strncpy(return_str,default_str,size_ret_str - 2);
                 return_str[size_ret_str - 2] = '\0';
                 *(return_str + strlen(return_str)) = '\0';
                 *(return_str + strlen(return_str) + 1) = '\0';
                 return strlen(return_str);
             }
         }
-
     }
 
     //App为空，Key不为空,则检查所有的Key，将第一个匹配的键值返回
@@ -305,7 +300,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
     {
         while (cfgfile)
         {
-            cfgfile.getline(one_line_, LINE_BUFFER_LEN);
+            cfgfile.getline(one_line_,LINE_BUFFER_LEN);
             //整理
             zce::strtrim(one_line_);
 
@@ -315,21 +310,21 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
                 continue;
             }
 
-            char *str = strstr(one_line_, "=");
+            char *str = strstr(one_line_,"=");
 
             if (str != NULL)
             {
                 char *snext = str + 1;
                 *str = '\0';
-                strncpy(str_key_, one_line_, LINE_BUFFER_LEN);
-                strncpy(str_value_, snext, LINE_BUFFER_LEN);
+                strncpy(str_key_,one_line_,LINE_BUFFER_LEN);
+                strncpy(str_value_,snext,LINE_BUFFER_LEN);
                 str_value_[LINE_BUFFER_LEN] = '\0';
 
                 ////
                 //找到返回。
-                if (zce::strcasecmp(str_key_, key_name) == 0)
+                if (zce::strcasecmp(str_key_,key_name) == 0)
                 {
-                    strncpy(return_str, str_value_, size_ret_str - 1);
+                    strncpy(return_str,str_value_,size_ret_str - 1);
                     return_str[size_ret_str - 1] = '\0';
                     return strlen(return_str);
                 }
@@ -344,8 +339,8 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
         }
         else
         {
-            strncpy(return_str, default_str, size_ret_str - 1);
-            return_str [size_ret_str - 1] = '\0';
+            strncpy(return_str,default_str,size_ret_str - 1);
+            return_str[size_ret_str - 1] = '\0';
             return strlen(return_str);
         }
     }
@@ -357,8 +352,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 
         while (cfgfile)
         {
-
-            cfgfile.getline(one_line_, LINE_BUFFER_LEN);
+            cfgfile.getline(one_line_,LINE_BUFFER_LEN);
             //整理
             zce::strtrim(one_line_);
 
@@ -381,20 +375,20 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
                     }
                     else
                     {
-                        strncpy(return_str, default_str, size_ret_str - 1);
+                        strncpy(return_str,default_str,size_ret_str - 1);
                         *(return_str + size_ret_str - 1) = '\0';
                         return strlen(return_str);
                     }
                 }
 
                 //去掉'[',']'
-                memmove(one_line_, one_line_ + 1, strlen(one_line_) - 1);
+                memmove(one_line_,one_line_ + 1,strlen(one_line_) - 1);
                 one_line_[strlen(one_line_) - 2] = '\0';
                 //
                 zce::strtrim(one_line_);
 
                 //
-                if (zce::strcasecmp(one_line_, sec_name) == 0)
+                if (zce::strcasecmp(one_line_,sec_name) == 0)
                 {
                     if_app = true;
                     continue;
@@ -403,22 +397,22 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
 
             if (if_app == true)
             {
-                char *str = strstr(one_line_, "=");
+                char *str = strstr(one_line_,"=");
 
                 if (str != NULL)
                 {
                     char *snext = str + 1;
                     *str = '\0';
-                    strncpy(str_key_, one_line_, LINE_BUFFER_LEN);
-                    strncpy(str_value_, snext, LINE_BUFFER_LEN);
+                    strncpy(str_key_,one_line_,LINE_BUFFER_LEN);
+                    strncpy(str_value_,snext,LINE_BUFFER_LEN);
                     ////
                     zce::strtrim(str_key_);
                     zce::strtrim(str_value_);
 
                     //找到返回。
-                    if (zce::strcasecmp(str_key_, key_name) == 0)
+                    if (zce::strcasecmp(str_key_,key_name) == 0)
                     {
-                        strncpy(return_str, str_value_, size_ret_str - 1);
+                        strncpy(return_str,str_value_,size_ret_str - 1);
                         *(return_str + size_ret_str - 1) = '\0';
                         return strlen(return_str);
                     }
@@ -434,7 +428,7 @@ size_t ZCE_INI_Pt::get_private_str(const char *sec_name,
         }
         else
         {
-            strncpy(return_str, default_str, size_ret_str - 1);
+            strncpy(return_str,default_str,size_ret_str - 1);
             return_str[size_ret_str - 1] = '\0';
             return strlen(return_str);
         }
@@ -458,7 +452,7 @@ size_t ZCE_INI_Pt::get_private_allsection(char *return_str,
 
 //得到某个Section下所有的Key = string值 用'\0'分隔，以'\0\0'结束
 size_t ZCE_INI_Pt::getprivate_allkey(const char *sec_name,
-                                     char *return_str, const size_t size_ret_str)
+                                     char *return_str,const size_t size_ret_str)
 {
     //调用static get_privateprofile_string函数完成,注意参数
     return get_private_str(sec_name,
@@ -475,8 +469,8 @@ int ZCE_INI_Pt::get_private_int(const char *sec_name,
 {
     //调用static get_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
-    char default_str[TMP_BUFFER_LEN], return_str[TMP_BUFFER_LEN];
-    snprintf(default_str, TMP_BUFFER_LEN - 1, "%d", default_int);
+    char default_str[TMP_BUFFER_LEN],return_str[TMP_BUFFER_LEN];
+    snprintf(default_str,TMP_BUFFER_LEN - 1,"%d",default_int);
     get_private_str(sec_name,
                     key_name,
                     default_str,
@@ -492,15 +486,15 @@ bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
 {
     //调用static get_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
-    char default_str[TMP_BUFFER_LEN], return_str[TMP_BUFFER_LEN];
+    char default_str[TMP_BUFFER_LEN],return_str[TMP_BUFFER_LEN];
 
     if (bDefault)
     {
-        snprintf(default_str, TMP_BUFFER_LEN - 1, "%s", "TRUE");
+        snprintf(default_str,TMP_BUFFER_LEN - 1,"%s","TRUE");
     }
     else
     {
-        snprintf(default_str, TMP_BUFFER_LEN - 1, "%s", "FALSE");
+        snprintf(default_str,TMP_BUFFER_LEN - 1,"%s","FALSE");
     }
 
     get_private_str(sec_name,
@@ -509,7 +503,7 @@ bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
                     return_str,
                     TMP_BUFFER_LEN - 1);
 
-    if (zce::strcasecmp(return_str, "TRUE"))
+    if (zce::strcasecmp(return_str,"TRUE"))
     {
         return false;
     }
@@ -519,17 +513,16 @@ bool ZCE_INI_Pt::get_private_bool(const char *sec_name,
     }
 }
 
-
 //修改Section
 bool ZCE_INI_Pt::write_private_section(const char *sec_name,
                                        const char *write_string)
 {
-    if (sec_name == NULL || write_string == NULL )
+    if (sec_name == NULL || write_string == NULL)
     {
         return false;
     }
 
-    FILE *pfile = fopen(file_name_.c_str(), "r+t");
+    FILE *pfile = fopen(file_name_.c_str(),"r+t");
 
     //文件打不开，
     if (pfile == NULL)
@@ -539,7 +532,6 @@ bool ZCE_INI_Pt::write_private_section(const char *sec_name,
 
     //8*1024,1行的最大值
     char *read_ret = NULL;
-
 
     //新文件保存数据区
     std::vector<std::string> strarytmp;
@@ -557,12 +549,12 @@ bool ZCE_INI_Pt::write_private_section(const char *sec_name,
             strarytmp.push_back(write_line_);
         }
 
-        read_ret = fgets(one_line_, LINE_BUFFER_LEN, pfile);
+        read_ret = fgets(one_line_,LINE_BUFFER_LEN,pfile);
         if (NULL == read_ret)
         {
             return false;
         }
-        memmove(write_line_, one_line_, strlen(one_line_) + 1);
+        memmove(write_line_,one_line_,strlen(one_line_) + 1);
         //整理
         zce::strtrim(one_line_);
 
@@ -576,17 +568,17 @@ bool ZCE_INI_Pt::write_private_section(const char *sec_name,
         if (one_line_[0] == '[' && one_line_[strlen(one_line_) - 1] == ']')
         {
             //去掉'[',']'
-            memmove(one_line_, one_line_ + 1, strlen(one_line_) - 1);
+            memmove(one_line_,one_line_ + 1,strlen(one_line_) - 1);
             one_line_[strlen(one_line_) - 2] = '\0';
             //规整
             zce::strtrim(one_line_);
 
             //比较Section部分
-            if (zce::strcasecmp(one_line_, sec_name) == 0)
+            if (zce::strcasecmp(one_line_,sec_name) == 0)
             {
                 bApp = true;
                 //要修改这个App
-                snprintf(write_line_, LINE_BUFFER_LEN, "[%s]\n", write_string);
+                snprintf(write_line_,LINE_BUFFER_LEN,"[%s]\n",write_string);
                 break;
             }
         }
@@ -602,10 +594,9 @@ bool ZCE_INI_Pt::write_private_section(const char *sec_name,
     //如果找到App ,并且找到Key或者key == NUL ,表示工作已经完成,
     if (bApp == true)
     {
-
         while (!feof(pfile))
         {
-            read_ret = fgets(write_line_, LINE_BUFFER_LEN, pfile);
+            read_ret = fgets(write_line_,LINE_BUFFER_LEN,pfile);
             if (NULL == read_ret)
             {
                 return false;
@@ -616,11 +607,11 @@ bool ZCE_INI_Pt::write_private_section(const char *sec_name,
 
         fclose(pfile);
         //将信息写会文件
-        pfile = fopen(file_name_.c_str(), "w+t");
+        pfile = fopen(file_name_.c_str(),"w+t");
 
         for (size_t j = 0; j < strarytmp.size(); ++j)
         {
-            fputs(strarytmp[j].c_str(), pfile);
+            fputs(strarytmp[j].c_str(),pfile);
         }
 
         //关闭文件
@@ -639,7 +630,7 @@ bool ZCE_INI_Pt::write_private_int(const char *sec_name,
     //调用static write_privateprofile_string函数完成,注意参数
     const size_t TMP_BUFFER_LEN = 64;
     char write_string[TMP_BUFFER_LEN + 1];
-    snprintf(write_string, TMP_BUFFER_LEN, "%d", nvalue);
+    snprintf(write_string,TMP_BUFFER_LEN,"%d",nvalue);
     return write_private_string(sec_name,
                                 key_name,
                                 write_string);
@@ -656,39 +647,35 @@ bool ZCE_INI_Pt::write_private_bool(const char *sec_name,
 
     if (bvalue)
     {
-        strncpy(write_string, "TRUE", TMP_BUFFER_LEN);
+        strncpy(write_string,"TRUE",TMP_BUFFER_LEN);
     }
     else
     {
-        strncpy(write_string, "FASLE", TMP_BUFFER_LEN);
+        strncpy(write_string,"FASLE",TMP_BUFFER_LEN);
     }
 
-    return write_private_string(sec_name, key_name, write_string);
+    return write_private_string(sec_name,key_name,write_string);
 }
 
 //删除Key
-bool ZCE_INI_Pt::del_private_key(const char *sec_name, const char *key_name)
+bool ZCE_INI_Pt::del_private_key(const char *sec_name,const char *key_name)
 {
-
-    return write_private_string(sec_name, key_name, NULL);
+    return write_private_string(sec_name,key_name,NULL);
 }
 
 //删除Section
 bool ZCE_INI_Pt::del_private_section(const char *sec_name)
 {
-
     return write_private_string(sec_name,
                                 NULL,
                                 NULL);
 }
-
 
 //写INI文件的谋个字段，
 bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                                       const char *key_name,
                                       const char *write_string)
 {
-
     int operate(0);
 
     if (sec_name == NULL && key_name == NULL && write_string == NULL)
@@ -706,12 +693,12 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
     }
 
     FILE *pfile;
-    pfile = fopen(file_name_.c_str(), "r+t");
+    pfile = fopen(file_name_.c_str(),"r+t");
 
     //文件打不开，
     if (pfile == NULL)
     {
-        pfile = fopen(file_name_.c_str(), "w+t");
+        pfile = fopen(file_name_.c_str(),"w+t");
 
         if (pfile == NULL)
         {
@@ -720,10 +707,10 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
 
         if (sec_name != NULL)
         {
-            fprintf(pfile, "[%s]\n", sec_name);
+            fprintf(pfile,"[%s]\n",sec_name);
         }
 
-        fprintf(pfile, "%s=%s", key_name, write_string);
+        fprintf(pfile,"%s=%s",key_name,write_string);
         fclose(pfile);
         return true;
     }
@@ -731,9 +718,9 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
     if (operate == 1)
     {
         //如果没有相关的App，将section=string 写在末尾
-        fseek(pfile, 0, SEEK_END);
-        fprintf(pfile, "%s", "\n");
-        fprintf(pfile, "%s=%s", key_name, write_string);
+        fseek(pfile,0,SEEK_END);
+        fprintf(pfile,"%s","\n");
+        fprintf(pfile,"%s=%s",key_name,write_string);
         return true;
     }
 
@@ -743,7 +730,7 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
         std::vector<std::string> strarytmp;
         write_line_[0] = '\0';
         //表示是否找到App,key
-        bool bApp = false, bkey = false;
+        bool bApp = false,bkey = false;
 
         while (!feof(pfile))
         {
@@ -754,12 +741,12 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                 strarytmp.push_back(write_line_);
             }
 
-            if (fgets(one_line_, LINE_BUFFER_LEN, pfile) == NULL)
+            if (fgets(one_line_,LINE_BUFFER_LEN,pfile) == NULL)
             {
                 break;
             }
 
-            ::memcpy(write_line_, one_line_, strlen(one_line_) + 1);
+            ::memcpy(write_line_,one_line_,strlen(one_line_) + 1);
             //整理
             zce::strtrim(one_line_);
 
@@ -777,7 +764,7 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                 {
                     if (key_name != NULL && write_string != NULL)
                     {
-                        snprintf(one_line_, LINE_BUFFER_LEN, "%s=%s\n", key_name, write_string);
+                        snprintf(one_line_,LINE_BUFFER_LEN,"%s=%s\n",key_name,write_string);
                         one_line_[LINE_BUFFER_LEN] = '\0';
                         std::string strtmp(one_line_);
                         strarytmp.push_back(one_line_);
@@ -790,11 +777,11 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                 //规整
                 zce::strtrimleft(one_line_);
                 //去掉'[',']'
-                memmove(one_line_, one_line_ + 1, strlen(one_line_));
+                memmove(one_line_,one_line_ + 1,strlen(one_line_));
                 zce::strtrimright(one_line_);
 
                 //比较Section部分
-                if (zce::strcasecmp(one_line_, sec_name) == 0)
+                if (zce::strcasecmp(one_line_,sec_name) == 0)
                 {
                     bApp = true;
 
@@ -819,21 +806,21 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                 }
 
                 //找到第一个'='
-                char *str = strstr(one_line_, "=");
+                char *str = strstr(one_line_,"=");
 
                 //如果找到
                 if (str != NULL)
                 {
                     char *snext = str + 1;
                     *str = '\0';
-                    strncpy(str_key_, one_line_, LINE_BUFFER_LEN);
-                    strncpy(str_value_, snext, LINE_BUFFER_LEN);
+                    strncpy(str_key_,one_line_,LINE_BUFFER_LEN);
+                    strncpy(str_value_,snext,LINE_BUFFER_LEN);
                     //规整
                     zce::strtrim(str_key_);
                     zce::strtrim(str_value_);
 
                     //找到对应的Key
-                    if (zce::strcasecmp(str_key_, key_name) == 0)
+                    if (zce::strcasecmp(str_key_,key_name) == 0)
                     {
                         //表示找到键值
                         bkey = true;
@@ -841,7 +828,7 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
                         //如果Keystring==NULL则删除Key，如果Keystring!=NULL,则写入。
                         if (write_string != NULL)
                         {
-                            snprintf(write_line_, LINE_BUFFER_LEN, "%s=%s\n", key_name, write_string);
+                            snprintf(write_line_,LINE_BUFFER_LEN,"%s=%s\n",key_name,write_string);
                             break;
                         }
                         else
@@ -864,34 +851,31 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
         //如果找到App ,并且找到Key或者key == NUL ,表示工作已经完成,
         if (bApp == true)
         {
-
             if (key_name != NULL && write_string != NULL && feof(pfile) && bkey != true)
             {
-                snprintf(write_line_, LINE_BUFFER_LEN, "\n%s=%s", key_name, write_string);
+                snprintf(write_line_,LINE_BUFFER_LEN,"\n%s=%s",key_name,write_string);
                 std::string strtmp(write_line_);
                 strarytmp.push_back(write_line_);
             }
 
             while (!feof(pfile))
             {
-
-                if (fgets(write_line_, LINE_BUFFER_LEN, pfile) == NULL)
+                if (fgets(write_line_,LINE_BUFFER_LEN,pfile) == NULL)
                 {
                     break;
                 }
 
                 std::string strtmp(write_line_);
                 strarytmp.push_back(write_line_);
-
             }
 
             fclose(pfile);
             //将信息写会文件
-            pfile = fopen(file_name_.c_str(), "w+t");
+            pfile = fopen(file_name_.c_str(),"w+t");
 
             for (size_t j = 0; j < strarytmp.size(); ++j)
             {
-                fputs(strarytmp[j].c_str(), pfile);
+                fputs(strarytmp[j].c_str(),pfile);
             }
 
             //关闭文件
@@ -903,9 +887,9 @@ bool ZCE_INI_Pt::write_private_string(const char *sec_name,
             //将App，Key String全部写入
             if (bkey == false && key_name != NULL && write_string != NULL)
             {
-                fseek(pfile, 0, SEEK_END);
-                fprintf(pfile, "\n[%s]", sec_name);
-                fprintf(pfile, "\n%s=%s", key_name, write_string);
+                fseek(pfile,0,SEEK_END);
+                fprintf(pfile,"\n[%s]",sec_name);
+                fprintf(pfile,"\n%s=%s",key_name,write_string);
                 fclose(pfile);
                 return true;
             }

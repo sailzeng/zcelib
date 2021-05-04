@@ -25,13 +25,12 @@ class zce::Time_Value;
 * @brief      反应器的基类
 *
 */
-class ZCE_Reactor : public zce::NON_Copyable
+class ZCE_Reactor: public zce::NON_Copyable
 {
-
 protected:
 
     ///使用hansh map保存句柄到ZCE_Event_Handler的MAP ，力求最高的性能
-    typedef unordered_map<ZCE_HANDLE, ZCE_Event_Handler *>  MAP_OF_HANDLER_TO_EVENT;
+    typedef unordered_map<ZCE_HANDLE,ZCE_Event_Handler *>  MAP_OF_HANDLER_TO_EVENT;
 
 protected:
 
@@ -85,7 +84,7 @@ public:
     * @param[in]  event_handler 注册的句柄
     * @param[in]  event_mask    句柄要处理的MASK
     */
-    virtual int register_handler(ZCE_Event_Handler *event_handler, int event_mask);
+    virtual int register_handler(ZCE_Event_Handler *event_handler,int event_mask);
 
     /*!
     * @brief      从反应器注销一个ZCE_Event_Handler，同时取消他所有的mask
@@ -94,7 +93,7 @@ public:
     * @param[in]  event_handler     注销的句柄
     * @param[in]  call_handle_close 注销后，是否自动调用句柄的handle_close函数
     */
-    virtual int remove_handler(ZCE_Event_Handler *event_handler, bool call_handle_close);
+    virtual int remove_handler(ZCE_Event_Handler *event_handler,bool call_handle_close);
 
     /*!
     * @brief      取消某些mask标志，
@@ -102,7 +101,7 @@ public:
     * @param[in]  event_handler 处理的句柄
     * @param[in]  cancel_mask   取消的事件mask标志
     */
-    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask) = 0;
+    virtual int cancel_wakeup(ZCE_Event_Handler *event_handler,int cancel_mask) = 0;
 
     /*!
     * @brief      打开某些mask标志，
@@ -110,7 +109,7 @@ public:
     * @param[in]  event_handler 处理的句柄
     * @param[in]  event_mask    设置的事件mask标志
     */
-    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask) = 0;
+    virtual int schedule_wakeup(ZCE_Event_Handler *event_handler,int event_mask) = 0;
 
     /*!
     * @brief      触发事件,纯虚函数
@@ -118,7 +117,7 @@ public:
     * @param[in,out]  time_out  超时时间
     * @param[out] size_event    返回触发的事件句柄数量
     */
-    virtual int handle_events(zce::Time_Value *time_out, size_t *size_event) = 0;
+    virtual int handle_events(zce::Time_Value *time_out,size_t *size_event) = 0;
 
 protected:
 
@@ -135,10 +134,9 @@ protected:
     * @param[in]  socket_handle 查询的ZCE_HANDLE句柄
     * @param[out] event_handler 查询得到的句柄对应的ZCE_Event_Handler指针
     */
-    inline int find_event_handler(ZCE_HANDLE handle, ZCE_Event_Handler *&event_handler);
+    inline int find_event_handler(ZCE_HANDLE handle,ZCE_Event_Handler *&event_handler);
 
 public:
-
 
     /*!
     * @brief      获取单子函数
@@ -161,7 +159,7 @@ protected:
 protected:
 
     ///单子实例指针
-    static ZCE_Reactor         *instance_;
+    static ZCE_Reactor *instance_;
 };
 
 //查询一个event handler是否注册了，如果存在返回0
@@ -169,7 +167,7 @@ inline int ZCE_Reactor::exist_event_handler(ZCE_Event_Handler *event_handler)
 {
     ZCE_HANDLE socket_hd = event_handler->get_handle();
 
-    MAP_OF_HANDLER_TO_EVENT::iterator iter_temp =  handler_map_.find(socket_hd);
+    MAP_OF_HANDLER_TO_EVENT::iterator iter_temp = handler_map_.find(socket_hd);
 
     //已经有一个HANDLE了
     if (iter_temp == handler_map_.end())
@@ -199,4 +197,3 @@ inline int ZCE_Reactor::find_event_handler(ZCE_HANDLE handle,
 }
 
 #endif //ZCE_LIB_EVENT_REACTOR_BASE_H_
-

@@ -24,7 +24,6 @@
 
 namespace zce
 {
-
 /*!
 @brief      NODE的信息，NODE就是一个数据，NODE内部会存放最开始的CHUNK，
             （后面的CHUNK会形成一条链）
@@ -87,7 +86,6 @@ private:
     size_t               free_node_head_;
     ///FREE CHUNK的起始节点
     size_t               free_chunk_head_;
-
 };
 
 /*!
@@ -95,9 +93,8 @@ private:
 *             用最小的内存，存放最大的数据，空间浪费小。
 *
 */
-class shm_cachechunk : public _shm_memory_base
+class shm_cachechunk: public _shm_memory_base
 {
-
 protected:
     //构造函数,
     shm_cachechunk();
@@ -112,7 +109,7 @@ protected:
     * @param[in]  size_t    希望申请放入的NODE的长度
     * @param[out] nodeindex 返回参数，申请到的NODE的索引
     */
-    bool create_node(size_t, size_t &nodeindex);
+    bool create_node(size_t,size_t &nodeindex);
 
     /*!
     * @brief      释放一个NODE,将其归还给FREELIST
@@ -282,19 +279,17 @@ public:
 protected:
 
     ///CACHE的头部，
-    _shm_cachechunk_head     *cachechunk_head_ = nullptr;
+    _shm_cachechunk_head *cachechunk_head_ = nullptr;
 
     ///Cache NODE 的BASE指针,NODE表示使用的
-    cachechunk_node_index    *cachenode_base_ = nullptr;
+    cachechunk_node_index *cachenode_base_ = nullptr;
 
     ///CHUNK INDEX的BASE指针,
-    size_t                   *chunkindex_base_ = nullptr;
+    size_t *chunkindex_base_ = nullptr;
 
     ///CHUNK DATA数据区的BASE指针
-    char                     *chunkdata_base_ = nullptr;
+    char *chunkdata_base_ = nullptr;
 };
-
 };
 
 #endif //ZCE_LIB_SHM_CACHE_CHUNK_H_
-

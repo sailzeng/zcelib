@@ -34,7 +34,6 @@ ZCE_Select_Reactor::~ZCE_Select_Reactor()
 //初始化
 int ZCE_Select_Reactor::initialize(size_t max_event_number)
 {
-
     //清0
     FD_ZERO(&read_fd_set_);
     FD_ZERO(&write_fd_set_);
@@ -44,23 +43,22 @@ int ZCE_Select_Reactor::initialize(size_t max_event_number)
 }
 
 //打开某些mask标志，
-int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler,int event_mask)
 {
     int ret = 0;
 
-    ZCE_SOCKET socket_hd = (ZCE_SOCKET) (event_handler->get_handle());
+    ZCE_SOCKET socket_hd = (ZCE_SOCKET)(event_handler->get_handle());
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
-    ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
+    ret = find_event_handler((ZCE_HANDLE)socket_hd,tmp_handler);
     if (ret != 0)
     {
-        ZCE_LOG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
+        ZCE_LOG(RS_INFO,"[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
                 __ZCE_FUNC__,
                 socket_hd);
         return ret;
     }
-
 
     //因为这些标志可以一起注册，所以下面的判断是并列的，但是我这儿统一化的处理序列是读，写，异常
 
@@ -68,15 +66,15 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     if ((event_mask & ZCE_Event_Handler::READ_MASK)
         || (event_mask & ZCE_Event_Handler::ACCEPT_MASK)
         || (event_mask & ZCE_Event_Handler::CONNECT_MASK)
-        || (event_mask & ZCE_Event_Handler::INOTIFY_MASK) )
+        || (event_mask & ZCE_Event_Handler::INOTIFY_MASK))
     {
-        FD_SET(socket_hd, &read_fd_set_);
+        FD_SET(socket_hd,&read_fd_set_);
     }
 
     if ((event_mask & ZCE_Event_Handler::WRITE_MASK)
         || (event_mask & ZCE_Event_Handler::CONNECT_MASK))
     {
-        FD_SET(socket_hd, &write_fd_set_);
+        FD_SET(socket_hd,&write_fd_set_);
     }
 
     //在WINDOWS下，如果是非阻塞连接，如果连接失败返回的是事件是超时
@@ -88,7 +86,7 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
     if ((event_mask & ZCE_Event_Handler::EXCEPT_MASK))
 #endif
     {
-        FD_SET(socket_hd, &exception_fd_set_);
+        FD_SET(socket_hd,&exception_fd_set_);
     }
 
     //Windows的select对于这个值没有要求,而且啊CE反馈Windows 64位的版本select函数第一个参数必须传递0
@@ -102,11 +100,11 @@ int ZCE_Select_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int ev
 
 #endif
 
-    return ZCE_Reactor::schedule_wakeup(event_handler, event_mask);
+    return ZCE_Reactor::schedule_wakeup(event_handler,event_mask);
 }
 
 //取消某些mask标志，，
-int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
+int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,int cancel_mask)
 {
     int ret = 0;
 
@@ -114,10 +112,10 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
-    ret = find_event_handler((ZCE_HANDLE)socket_hd, tmp_handler);
+    ret = find_event_handler((ZCE_HANDLE)socket_hd,tmp_handler);
     if (ret != 0)
     {
-        ZCE_LOG(RS_INFO, "[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
+        ZCE_LOG(RS_INFO,"[zcelib] [%s] fail find handle [%lu],maybe one handle is close previous.",
                 __ZCE_FUNC__,
                 socket_hd);
         return ret;
@@ -129,13 +127,13 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
         || (cancel_mask & ZCE_Event_Handler::CONNECT_MASK)
         || (cancel_mask & ZCE_Event_Handler::INOTIFY_MASK))
     {
-        FD_CLR(socket_hd, &read_fd_set_);
+        FD_CLR(socket_hd,&read_fd_set_);
     }
 
     if ((cancel_mask & ZCE_Event_Handler::WRITE_MASK)
         || (cancel_mask & ZCE_Event_Handler::CONNECT_MASK))
     {
-        FD_CLR(socket_hd, &write_fd_set_);
+        FD_CLR(socket_hd,&write_fd_set_);
     }
 
 #if defined (ZCE_OS_WINDOWS)
@@ -146,12 +144,12 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
     if (cancel_mask & ZCE_Event_Handler::EXCEPT_MASK)
 #endif
     {
-        FD_CLR(socket_hd, &exception_fd_set_);
+        FD_CLR(socket_hd,&exception_fd_set_);
     }
 
-    ret = ZCE_Reactor::cancel_wakeup(event_handler, cancel_mask);
+    ret = ZCE_Reactor::cancel_wakeup(event_handler,cancel_mask);
 
-    if (0 != ret )
+    if (0 != ret)
     {
         return ret;
     }
@@ -159,14 +157,14 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
 #if defined ZCE_OS_LINUX
 
     //检查最新的mask值，如果为0，就更新max_fd_plus_one_
-    int new_event_mask =  event_handler->get_mask();
+    int new_event_mask = event_handler->get_mask();
 
     //这个地方其实是比较耗时，另外BOOST好像在取消的时候甚至没有减少，
     //我不想维护一个MAP，也不像ACE那样自己包装一个fd_set类，所以只有出此下策，下面的代码如此的晦涩，我也很讨厌
     //看你妹的select的。又是+1，又是-1的，要了老命了
 
     //如果需要删除的是最大的文件句柄值，那么就调整最大值
-    if (new_event_mask == 0 &&  max_fd_plus_one_ == socket_hd + 1)
+    if (new_event_mask == 0 && max_fd_plus_one_ == socket_hd + 1)
     {
         //因为最大值已经删除，先--
         --max_fd_plus_one_;
@@ -174,17 +172,17 @@ int ZCE_Select_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int canc
         while (max_fd_plus_one_ > 0)
         {
             //寻找是否有这个FD，注意这儿要max_fd_plus_one_-1
-            if (FD_ISSET(max_fd_plus_one_ - 1, &read_fd_set_))
+            if (FD_ISSET(max_fd_plus_one_ - 1,&read_fd_set_))
             {
                 break;
             }
 
-            if (FD_ISSET(max_fd_plus_one_ - 1, &write_fd_set_))
+            if (FD_ISSET(max_fd_plus_one_ - 1,&write_fd_set_))
             {
                 break;
             }
 
-            if (FD_ISSET(max_fd_plus_one_ - 1, &exception_fd_set_))
+            if (FD_ISSET(max_fd_plus_one_ - 1,&exception_fd_set_))
             {
                 break;
             }
@@ -212,11 +210,11 @@ int ZCE_Select_Reactor::handle_events(zce::Time_Value *max_wait_time,
     para_exception_fd_set_ = exception_fd_set_;
 
     //
-    int const nfds = zce::select (max_fd_plus_one_,
-                                  &para_read_fd_set_,
-                                  &para_write_fd_set_,
-                                  &para_exception_fd_set_,
-                                  max_wait_time);
+    int const nfds = zce::select(max_fd_plus_one_,
+                                 &para_read_fd_set_,
+                                 &para_write_fd_set_,
+                                 &para_exception_fd_set_,
+                                 max_wait_time);
 
     if (nfds == 0)
     {
@@ -249,7 +247,7 @@ int ZCE_Select_Reactor::handle_events(zce::Time_Value *max_wait_time,
 void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
                                        ZCE_Event_Handler::EVENT_MASK proc_mask)
 {
-    int ret = 0, hdl_ret = 0;
+    int ret = 0,hdl_ret = 0;
     //
     int max_process = max_fd_plus_one_;
 
@@ -264,7 +262,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
     for (int i = 0; i < max_process; i++)
     {
         ZCE_SOCKET socket_handle;
-        bool hd_ready = zce::is_ready_fds(i, out_fds, &socket_handle);
+        bool hd_ready = zce::is_ready_fds(i,out_fds,&socket_handle);
 
         if (!hd_ready)
         {
@@ -272,7 +270,7 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
         }
 
         ZCE_Event_Handler *event_hdl = NULL;
-        ret =  find_event_handler((ZCE_HANDLE)socket_handle, event_hdl);
+        ret = find_event_handler((ZCE_HANDLE)socket_handle,event_hdl);
 
         //到这个地方，可能是代码有问题(比如你用了多线程？)，也可能不是，因为一个事件处理后，可能就被关闭了？
         if (0 != ret)
@@ -325,7 +323,6 @@ void ZCE_Select_Reactor::process_ready(const fd_set *out_fds,
         }
     }
 }
-
 
 #if defined (ZCE_OS_WINDOWS)
 #pragma warning(default : 4127)

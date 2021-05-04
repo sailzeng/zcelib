@@ -26,7 +26,6 @@
 #include "zce/time/time_value.h"
 #include "zce/timer/queue_base.h"
 
-
 //
 
 /*!
@@ -35,15 +34,14 @@
 *           其各种操作的时间复杂度都基本是O(log(2N)) 这个级别。
 *
 */
-class ZCE_Timer_Heap : public zce::Timer_Queue_Base
+class ZCE_Timer_Heap: public zce::Timer_Queue_Base
 {
-
 public:
     ///构造函数
     ZCE_Timer_Heap(size_t num_timer_node,
                    unsigned int timer_length_mesc = 1000,
                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                   bool dynamic_expand_node = true );
+                   bool dynamic_expand_node = true);
     ///默认构造函数
     ZCE_Timer_Heap();
 
@@ -62,7 +60,7 @@ public:
     int initialize(size_t num_timer_node,
                    unsigned int timer_precision_mesc = 1000,
                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                   bool dynamic_expand_node = true );
+                   bool dynamic_expand_node = true);
 
     /*!
     * @brief      设置第一个定时器，接口参考了ACE的设计，这个设计其实算很完整了，你扩展的类，必须实现这个接口
@@ -100,7 +98,7 @@ protected:
     * @param      timer_id         定时器ID
     * @param      now_trigger_msec 当前的触发点的毫秒数，不同模式下表达不太一样
     */
-    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) override;
+    virtual int reschedule_timer(int timer_id,uint64_t now_trigger_msec) override;
 
     /*!
     * @brief      分发定时器
@@ -160,8 +158,6 @@ protected:
     ///TIMER NODE到HEAPID的对应表，他设计成和TIMER NODE一样多，
     ///TIMER NODE的ID（也就是TIMER ID），就能下标定位找到堆的位置
     std::vector <int>    note_to_heapid_;
-
 };
 
 #endif //#ifndef ZCE_LIB_TIMER_QUEUE_HEAP_H_
-

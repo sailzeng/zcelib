@@ -23,7 +23,7 @@
 /*!
 * @brief      文件锁，对于整个文件进行操作
 */
-class ZCE_File_Lock : public zce::NON_Copyable
+class ZCE_File_Lock: public zce::NON_Copyable
 {
 public:
 
@@ -79,8 +79,6 @@ protected:
 
     ///文件锁句柄
     zce::file_lock_t   file_lock_;
-
 };
 
 #endif //ZCE_LIB_LOCK_FILE_LOCK_H_
-

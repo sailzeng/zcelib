@@ -23,8 +23,6 @@
 template <typename zce_lock >
 class ZergFrame_Mallocor
 {
-
-
 public:
 
     //构造函数
@@ -42,7 +40,6 @@ public:
     */
     void initialize(size_t init_num = NUM_OF_ONCE_INIT_FRAME,
                     size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
-
 
     /*!
     * @brief      根据要求的的FRAME尺寸大小，分配一个FRAME
@@ -63,7 +60,7 @@ public:
     * @param      cloned_frame  被克隆的FRAME
     * @note
     */
-    void clone_appframe(const soar::Zerg_Frame *model_freame, soar::Zerg_Frame *&cloned_frame);
+    void clone_appframe(const soar::Zerg_Frame *model_freame,soar::Zerg_Frame *&cloned_frame);
 
     /*!
     * @brief      返回最大可以分配的FRAME的长度
@@ -76,14 +73,12 @@ public:
 
 protected:
 
-
     /*!
     * @brief      扩展POOL中某个LIST的容量
     * @param      list_no  LiST的下标
     * @param      extend_num 扩展的数量
     */
-    void extend_list_capacity(size_t list_no, size_t extend_num);
-
+    void extend_list_capacity(size_t list_no,size_t extend_num);
 
     /*!
     * @brief
@@ -98,7 +93,6 @@ public:
     static ZergFrame_Mallocor *instance();
     //清理SINGLETON的实例
     static void clean_instance();
-
 
 protected:
     //桶队列的个数
@@ -130,18 +124,17 @@ protected:
 protected:
 
     //单子实例
-    static ZergFrame_Mallocor    *instance_;
-
+    static ZergFrame_Mallocor *instance_;
 };
 
 //初始化
 template <typename zce_lock >
 void ZergFrame_Mallocor<zce_lock>::initialize(size_t init_num,
-                                                 size_t max_frame_len)
+                                              size_t max_frame_len)
 {
     ZCE_ASSERT(max_frame_len > 2048 && init_num > 8);
 
-    ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::AppFrame_Mallocor_Mgr init num=%u,max_frame_len=%u.",
+    ZCE_LOG(RS_INFO,"[framework] AppFrame_Mallocor_Mgr::AppFrame_Mallocor_Mgr init num=%u,max_frame_len=%u.",
             init_num,
             max_frame_len);
 
@@ -158,9 +151,8 @@ void ZergFrame_Mallocor<zce_lock>::initialize(size_t init_num,
 
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
     {
-        extend_list_capacity(i, init_num);
+        extend_list_capacity(i,init_num);
     }
-
 }
 
 //最大可以分配的FRAME的长度
@@ -169,7 +161,6 @@ size_t ZergFrame_Mallocor<zce_lock>::get_max_framelen()
 {
     return size_appframe_[NUM_OF_FRAMELIST - 1];
 }
-
 
 //根据要求的的FRAME尺寸大小，分配一个FRAME
 template <typename zce_lock >
@@ -193,7 +184,7 @@ inline size_t ZergFrame_Mallocor<zce_lock>::get_roundup(size_t sz_frame)
 template <typename zce_lock >
 ZergFrame_Mallocor<zce_lock>::ZergFrame_Mallocor()
 {
-    memset(size_appframe_, 0, sizeof(size_appframe_));
+    memset(size_appframe_,0,sizeof(size_appframe_));
 }
 
 //析构函数
@@ -201,7 +192,7 @@ template <typename zce_lock >
 ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
 {
     //
-    ZCE_LOG(RS_INFO, "[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
+    ZCE_LOG(RS_INFO,"[framework] AppFrame_Mallocor_Mgr::~AppFrame_Mallocor_Mgr.");
 
     //最后应该size == capacity , freesize==0
     for (size_t i = 0; i < NUM_OF_FRAMELIST; ++i)
@@ -210,7 +201,7 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
         if (frame_pool_[i].freesize() == 0)
         {
             //
-            ZCE_LOG(RS_INFO, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Ok.",
+            ZCE_LOG(RS_INFO,"[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Ok.",
                     i,
                     size_appframe_[i],
                     frame_pool_[i].freesize(),
@@ -221,7 +212,7 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
         else
         {
             //
-            ZCE_LOG(RS_ERROR, "[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
+            ZCE_LOG(RS_ERROR,"[framework] List %u(frame size:%u):,free node:%u,capacity node:%u,list node:%u.Have memory leak.Please check your code.",
                     i,
                     size_appframe_[i],
                     frame_pool_[i].freesize(),
@@ -241,7 +232,6 @@ ZergFrame_Mallocor<zce_lock>::~ZergFrame_Mallocor()
     }
 }
 
-
 //根据需要长度，从池子分配一个APPFRAME
 template <typename zce_lock >
 soar::Zerg_Frame *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
@@ -250,9 +240,9 @@ soar::Zerg_Frame *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
     size_t hk = get_roundup(frame_len);
 
     //
-    if (frame_pool_[hk].size() <= 0 )
+    if (frame_pool_[hk].size() <= 0)
     {
-        extend_list_capacity(hk, NUM_OF_ONCE_INIT_FRAME);
+        extend_list_capacity(hk,NUM_OF_ONCE_INIT_FRAME);
     }
 
     //
@@ -262,7 +252,6 @@ soar::Zerg_Frame *ZergFrame_Mallocor<zce_lock>::alloc_appframe(size_t frame_len)
 
     return new_frame;
 }
-
 
 //克隆一个APPFAME
 //这个函数没有加锁，因为感觉不必要，alloc_appframe里面有锁，否则会造成重复加锁
@@ -275,7 +264,6 @@ void ZergFrame_Mallocor<zce_lock>::clone_appframe(const soar::Zerg_Frame *model_
     cloned_frame = alloc_appframe(frame_len);
     model_freame->clone(cloned_frame);
 }
-
 
 //释放一个APPFRAME到池子
 template <typename zce_lock >
@@ -312,14 +300,14 @@ void ZergFrame_Mallocor<zce_lock>::adjust_pool_capacity()
 
 //扩展LIST的容量
 template <typename zce_lock >
-void ZergFrame_Mallocor<zce_lock>::extend_list_capacity(size_t list_no, size_t extend_num)
+void ZergFrame_Mallocor<zce_lock>::extend_list_capacity(size_t list_no,size_t extend_num)
 {
-    size_t old_capacity =  frame_pool_[list_no].capacity();
+    size_t old_capacity = frame_pool_[list_no].capacity();
     frame_pool_[list_no].resize(old_capacity + extend_num);
 
     for (size_t j = 0; j < extend_num; ++j)
     {
-        soar::Zerg_Frame *proc_frame =  soar::Zerg_Frame::new_frame(size_appframe_[list_no] + 1);
+        soar::Zerg_Frame *proc_frame = soar::Zerg_Frame::new_frame(size_appframe_[list_no] + 1);
         frame_pool_[list_no].push_back(proc_frame);
     }
 }
@@ -348,8 +336,7 @@ void ZergFrame_Mallocor<zce_lock>::clean_instance()
 }
 
 //
-typedef ZergFrame_Mallocor<ZCE_Null_Mutex> NULLMUTEX_APPFRAME_MALLOCOR ;
-typedef ZergFrame_Mallocor<ZCE_Thread_Light_Mutex> THREADMUTEX_APPFRAME_MALLOCOR ;
+typedef ZergFrame_Mallocor<ZCE_Null_Mutex> NULLMUTEX_APPFRAME_MALLOCOR;
+typedef ZergFrame_Mallocor<ZCE_Thread_Light_Mutex> THREADMUTEX_APPFRAME_MALLOCOR;
 
 #endif //#ifndef SOARING_LIB_APPFRAME_MALLOCOR_H_
-

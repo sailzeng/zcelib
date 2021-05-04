@@ -28,13 +28,8 @@
 
 #include "zce/os_adapt/common.h"
 
-
-
 namespace zce
 {
-
-
-
 /*!
 * @brief      记录锁对象的封装，
 */
@@ -65,8 +60,6 @@ public:
 int file_lock_init(file_lock_t *lock,
                    ZCE_HANDLE file_hadle);
 
-
-
 //----------------------------------------------------------------------------------------
 // 记录锁的功能，模仿的是fcntl的功能
 
@@ -88,10 +81,6 @@ void fcntl_lock_adjust_params(file_lock_t *lock,
                               int whence,
                               ssize_t &start,
                               ssize_t &len);
-
-
-
-
 
 /*!
 * @brief   加文件读取锁，共享锁，如果不能加上锁，会阻塞等待，共享锁不会阻止其他人读取
@@ -158,7 +147,6 @@ int fcntl_unlock(file_lock_t *lock,
                  ssize_t start = 0,
                  ssize_t len = 0);
 
-
 //----------------------------------------------------------------------------------------
 // 文件锁的功能，模仿的是flock的功能
 
@@ -172,11 +160,7 @@ int fcntl_unlock(file_lock_t *lock,
 *             LOCK_NB 不阻塞，可以和LOCK_SH，LOCK_EX组合使用。用|，如果有锁，立即返回，错误EWOULDBLOCK
 *             LOCK_UN 解锁
 */
-int flock(file_lock_t& lock_hadle,int operation);
-
-
-
+int flock(file_lock_t &lock_hadle,int operation);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_FLOCK_H_
-

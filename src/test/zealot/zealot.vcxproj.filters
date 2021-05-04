@@ -83,6 +83,9 @@
     <ClCompile Include="zealot_test_config.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="zealot_test_sqlite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="zealot_predefine.h">

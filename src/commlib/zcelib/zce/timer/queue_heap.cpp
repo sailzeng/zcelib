@@ -22,11 +22,10 @@ ZCE_Timer_Heap::ZCE_Timer_Heap(size_t num_timer_node,
                                          dynamic_expand_node);
 
     //
-    if ( 0 != ret )
+    if (0 != ret)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] ZCE_Timer_Heap::initialize fail.");
+        ZCE_LOG(RS_ERROR,"[zcelib] ZCE_Timer_Heap::initialize fail.");
     }
-
 }
 
 //构造函数
@@ -37,7 +36,6 @@ ZCE_Timer_Heap::ZCE_Timer_Heap():
 
 ZCE_Timer_Heap::~ZCE_Timer_Heap()
 {
-
 }
 
 int ZCE_Timer_Heap::initialize(size_t num_timer_node,
@@ -48,9 +46,9 @@ int ZCE_Timer_Heap::initialize(size_t num_timer_node,
     //在基类进行初始化
     int ret = 0;
     ret = zce::Timer_Queue_Base::initialize(num_timer_node,
-                                           timer_precision_mesc,
-                                           trigger_mode,
-                                           dynamic_expand_node);
+                                            timer_precision_mesc,
+                                            trigger_mode,
+                                            dynamic_expand_node);
 
     if (ret != 0)
     {
@@ -68,7 +66,7 @@ int ZCE_Timer_Heap::extend_node(size_t num_timer_node,
                                 size_t &old_num_node)
 {
     int ret = 0;
-    ret = zce::Timer_Queue_Base::extend_node(num_timer_node, old_num_node);
+    ret = zce::Timer_Queue_Base::extend_node(num_timer_node,old_num_node);
 
     if (ret != 0)
     {
@@ -105,10 +103,10 @@ size_t ZCE_Timer_Heap::dispatch_timer(const zce::Time_Value &now_time,
     int timer_node_id = INVALID_TIMER_ID;
     ret = get_frist_nodeid(timer_node_id);
 
-    while (timer_node_id != INVALID_TIMER_ID )
+    while (timer_node_id != INVALID_TIMER_ID)
     {
         //如果已经超时，进行触发
-        if ( time_node_ary_[timer_node_id].next_trigger_point_ <= now_trigger_msec )
+        if (time_node_ary_[timer_node_id].next_trigger_point_ <= now_trigger_msec)
         {
             ++num_dispatch;
             //标记这个定时器已经触发过，详细见already_trigger_的解释
@@ -116,7 +114,6 @@ size_t ZCE_Timer_Heap::dispatch_timer(const zce::Time_Value &now_time,
             //时钟触发
             time_node_ary_[timer_node_id].timer_handle_->timer_timeout(now_time,
                                                                        time_node_ary_[timer_node_id].action_);
-
         }
         else
         {
@@ -124,16 +121,16 @@ size_t ZCE_Timer_Heap::dispatch_timer(const zce::Time_Value &now_time,
         }
 
         //因为timer_timeout其实可能取消了这个定时器，所以在调用之后，要进行一下检查
-        if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true )
+        if (time_node_ary_[timer_node_id].timer_handle_ && time_node_ary_[timer_node_id].already_trigger_ == true)
         {
             //重新规划这个TIME NODE的位置等,如果不需要触发了则取消定时器
-            reschedule_timer(timer_node_id, now_trigger_msec);
+            reschedule_timer(timer_node_id,now_trigger_msec);
         }
 
         //
         ret = get_frist_nodeid(timer_node_id);
 
-        if ( 0 != ret )
+        if (0 != ret)
         {
             break;
         }
@@ -162,7 +159,7 @@ int ZCE_Timer_Heap::schedule_timer(zce::Timer_Handler *timer_hdl,
                           interval_time,
                           time_node_id,
                           alloc_time_node
-                         );
+    );
 
     //注意，这个地方返回INVALID_TIMER_ID表示无效，其实也许参数不应该这样设计，但为了兼容ACE的代码
     if (ret != 0)
@@ -205,7 +202,7 @@ int ZCE_Timer_Heap::cancel_timer(int timer_id)
     return 0;
 }
 
-int ZCE_Timer_Heap::reschedule_timer(int timer_id, uint64_t now_trigger_msec)
+int ZCE_Timer_Heap::reschedule_timer(int timer_id,uint64_t now_trigger_msec)
 {
     bool contiue_trigger = false;
 
@@ -260,14 +257,14 @@ bool ZCE_Timer_Heap::reheap_up(size_t  heap_id)
     {
         //最小堆，发现父节点大于子节点，就调整
         if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ >
-            time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ )
+            time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_)
         {
             //
             already_up = true;
 
             //交换
             int old_heap_parent = timer_node_heap_[parent_id];
-            int old_heap_child =  timer_node_heap_[child_id];
+            int old_heap_child = timer_node_heap_[child_id];
 
             timer_node_heap_[parent_id] = old_heap_child;
             timer_node_heap_[child_id] = old_heap_parent;
@@ -278,15 +275,12 @@ bool ZCE_Timer_Heap::reheap_up(size_t  heap_id)
 
             child_id = parent_id;
             parent_id = ZCE_TIMER_HEAP_PARENT(child_id);
-
         }
         else
         {
             break;
         }
-
-    }
-    while (child_id > 0);
+    } while (child_id > 0);
 
     return already_up;
 }
@@ -309,8 +303,8 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
     do
     {
         //如果左子节点大于右子节点，那么，向右边进发
-        if ( ((child_id + 1) <  size_heap_) &&
-             (time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id + 1]].next_trigger_point_) )
+        if (((child_id + 1) < size_heap_) &&
+            (time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id + 1]].next_trigger_point_))
         {
             ++child_id;
         }
@@ -318,13 +312,13 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
         //dump();
 
         //父节点大于子节点，
-        if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_ )
+        if (time_node_ary_[timer_node_heap_[parent_id]].next_trigger_point_ > time_node_ary_[timer_node_heap_[child_id]].next_trigger_point_)
         {
             already_down = true;
 
             //交换
             int old_heap_parent = timer_node_heap_[parent_id];
-            int old_heap_child =  timer_node_heap_[child_id];
+            int old_heap_child = timer_node_heap_[child_id];
 
             timer_node_heap_[parent_id] = old_heap_child;
             timer_node_heap_[child_id] = old_heap_parent;
@@ -341,8 +335,7 @@ bool ZCE_Timer_Heap::reheap_down(size_t heap_id)
         {
             return already_down;
         }
-    }
-    while (child_id < size_heap_);
+    } while (child_id < size_heap_);
 
     //返回
     return already_down;
@@ -358,7 +351,7 @@ int ZCE_Timer_Heap::get_frist_nodeid(int &timer_node_id)
         return -1;
     }
 
-    timer_node_id =  timer_node_heap_[0];
+    timer_node_id = timer_node_heap_[0];
     return 0;
 };
 
@@ -367,7 +360,7 @@ int ZCE_Timer_Heap::add_nodeid(int add_node_id)
 {
     //放在堆的最后一个，
     timer_node_heap_[size_heap_] = add_node_id;
-    note_to_heapid_[add_node_id] = static_cast<int>( size_heap_);
+    note_to_heapid_[add_node_id] = static_cast<int>(size_heap_);
 
     ++size_heap_;
 
@@ -378,7 +371,6 @@ int ZCE_Timer_Heap::add_nodeid(int add_node_id)
 
 int ZCE_Timer_Heap::remove_nodeid(int timer_node_id)
 {
-
     assert(size_heap_ > 0);
 
     if (size_heap_ == 0)
@@ -403,14 +395,14 @@ int ZCE_Timer_Heap::remove_nodeid(int timer_node_id)
 
     //将最后一个堆放到删除的位置，进行调整
     timer_node_heap_[delete_heap_id] = timer_node_heap_[size_heap_];
-    note_to_heapid_[timer_node_heap_[delete_heap_id]] = static_cast<int>( delete_heap_id);
+    note_to_heapid_[timer_node_heap_[delete_heap_id]] = static_cast<int>(delete_heap_id);
     timer_node_heap_[size_heap_] = INVALID_TIMER_ID;
 
     //看是否需要向上调整
     bool alread_up = reheap_up(delete_heap_id);
 
     //如果不需要向上调整，看是否需要向下调整
-    if ( !alread_up )
+    if (!alread_up)
     {
         reheap_down(delete_heap_id);
     }
@@ -439,4 +431,3 @@ void ZCE_Timer_Heap::dump()
 
     std::cout << std::endl;
 }
-

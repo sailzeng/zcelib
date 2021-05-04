@@ -13,7 +13,6 @@ Wormhole_Proxy_App::Wormhole_Proxy_App():
 
 Wormhole_Proxy_App::~Wormhole_Proxy_App()
 {
-
     if (interface_proxy_)
     {
         delete interface_proxy_;
@@ -21,23 +20,22 @@ Wormhole_Proxy_App::~Wormhole_Proxy_App()
     }
 }
 
-int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
+int Wormhole_Proxy_App::app_start(int argc,const char *argv[])
 {
     int ret = 0;
-    ret = soar::Svrd_Appliction::app_start(argc, argv);
+    ret = soar::Svrd_Appliction::app_start(argc,argv);
     if (ret != 0)
     {
         return ret;
     }
 
-    ZCE_LOG(RS_INFO, "ArbiterAppliction::initon_start begin. ");
-
+    ZCE_LOG(RS_INFO,"ArbiterAppliction::initon_start begin. ");
 
     Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
 
     // 初始化数据转发模式
     interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
-                           static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
+        static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
@@ -54,7 +52,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO, "ArbiterAppliction::app_start end. ");
+    ZCE_LOG(RS_INFO,"ArbiterAppliction::app_start end. ");
 
     return 0;
 }
@@ -62,7 +60,7 @@ int Wormhole_Proxy_App::app_start(int argc, const char *argv[])
 //
 int Wormhole_Proxy_App::app_exit()
 {
-    ZCE_LOG(RS_INFO, "Wormhole_Proxy_App::exit. ");
+    ZCE_LOG(RS_INFO,"Wormhole_Proxy_App::exit. ");
     int ret = 0;
 
     //最后调用通用的退出模块
@@ -75,14 +73,11 @@ int Wormhole_Proxy_App::app_exit()
     return 0;
 }
 
-
-
-
 int Wormhole_Proxy_App::reload_config()
 {
     int ret = 0;
 
-    ZCE_TRACE_FUNC_RETURN(RS_INFO, &ret);
+    ZCE_TRACE_FUNC_RETURN(RS_INFO,&ret);
 
     // 重新初始化数据转发模式
     delete interface_proxy_;
@@ -90,7 +85,7 @@ int Wormhole_Proxy_App::reload_config()
     Wormhole_Server_Config *wh_cfg = dynamic_cast <Wormhole_Server_Config *>(config_base_);
     // 初始化数据转发模式
     interface_proxy_ = Interface_WH_Proxy::create_proxy_factory(
-                           static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
+        static_cast<Interface_WH_Proxy::PROXY_TYPE>(wh_cfg->proxy_type_));
     ZCE_ASSERT(interface_proxy_);
 
     ret = interface_proxy_->get_proxy_config(&(wh_cfg->proxy_conf_tree_));
@@ -112,5 +107,3 @@ int Wormhole_Proxy_App::process_recv_frame(Zerg_App_Frame *recv_frame)
 {
     return interface_proxy_->process_proxy(recv_frame);
 }
-
-

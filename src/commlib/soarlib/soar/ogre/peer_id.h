@@ -7,8 +7,6 @@ class  OGRE_PEER_ID 　SOCKET PEER信息,适应IPV4的代码。
 ****************************************************************************************************/
 class OGRE_PEER_ID
 {
-
-
 public:
     //构造,析构函数,默认为0
     explicit OGRE_PEER_ID(unsigned int peer_ip_address = INVALID_PERR_IP_ADDRESS,
@@ -18,7 +16,7 @@ public:
     ~OGRE_PEER_ID();
 
     //设置
-    void set(unsigned int peer_ip_address, unsigned short peer_port );
+    void set(unsigned int peer_ip_address,unsigned short peer_port);
     //根据zce::Sockaddr_In的IP地址设置
     void set(const zce::Sockaddr_In &);
 
@@ -50,9 +48,8 @@ class HASH_OF_OGREPEERID
 public:
     size_t operator()(const OGRE_PEER_ID &peer_info) const
     {
-        return (size_t (peer_info.peer_port_) << 16) + peer_info.peer_ip_address_ ;
+        return (size_t(peer_info.peer_port_) << 16) + peer_info.peer_ip_address_;
     }
 };
 
 #endif //#ifndef SOARING_LIB_SERVICES_PEER_H_
-

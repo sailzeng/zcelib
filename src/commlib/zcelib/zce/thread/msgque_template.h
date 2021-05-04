@@ -19,8 +19,6 @@
 
 #include "zce/util/lord_rings.h"
 
-
-
 /*!
 * @brief
 *
@@ -30,12 +28,10 @@
 * @note
 */
 template < typename _zce_synch,
-           typename _value_type,
-           typename _container_type = std::deque<_value_type> >
-class ZCE_Message_Queue : public zce::NON_Copyable
+    typename _value_type,
+    typename _container_type = std::deque<_value_type> >
+    class ZCE_Message_Queue: public zce::NON_Copyable
 {
-
-
 public:
 
     //
@@ -54,7 +50,6 @@ public:
     */
     inline bool full();
 
-
     /*!
     * @brief      放入数据,如果不能放入一直等待
     * @return     int
@@ -65,7 +60,7 @@ public:
 
     //放入一个数据，进行超时等待
     int enqueue(const _value_type &value_data,
-                const zce::Time_Value & );
+                const zce::Time_Value &);
 
     //尝试放入数据到队列，立即返回
     int try_enqueue(_value_type &value_data);
@@ -75,7 +70,7 @@ public:
 
     //取出一个数据，进行超时等待
     int dequeue(_value_type &value_data,
-                const zce::Time_Value & );
+                const zce::Time_Value &);
 
     //尝试取出数据到队列，立即返回
     int try_dequeue(_value_type &value_data);
@@ -96,18 +91,16 @@ protected:
 
     //容器类型，可以是list,dequeue,
     _container_type                       message_queue_;
-
 };
 
-
 template < typename _zce_synch,
-           typename _value_type >
-class ZCE_Message_Queue_List : public ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >
+    typename _value_type >
+    class ZCE_Message_Queue_List: public ZCE_Message_Queue<_zce_synch,_value_type,std::list<_value_type> >
 {
 public:
     //
-    ZCE_Message_Queue_List(size_t queue_max_size) :
-        ZCE_Message_Queue<_zce_synch, _value_type, std::list<_value_type> >(queue_max_size)
+    ZCE_Message_Queue_List(size_t queue_max_size):
+        ZCE_Message_Queue<_zce_synch,_value_type,std::list<_value_type> >(queue_max_size)
     {
     }
 
@@ -117,18 +110,18 @@ public:
 };
 
 template < typename _zce_synch,
-           typename _value_type >
-class ZCE_Message_Queue_Deque : public ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >
+    typename _value_type >
+    class ZCE_Message_Queue_Deque: public ZCE_Message_Queue<_zce_synch,_value_type,std::deque<_value_type> >
 {
 public:
     //
-    ZCE_Message_Queue_Deque(size_t queue_max_size) :
-        ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >(queue_max_size)
+    ZCE_Message_Queue_Deque(size_t queue_max_size):
+        ZCE_Message_Queue<_zce_synch,_value_type,std::deque<_value_type> >(queue_max_size)
     {
     }
 
-    ZCE_Message_Queue_Deque() :
-        ZCE_Message_Queue<_zce_synch, _value_type, std::deque<_value_type> >(1024)
+    ZCE_Message_Queue_Deque():
+        ZCE_Message_Queue<_zce_synch,_value_type,std::deque<_value_type> >(1024)
     {
     }
 
@@ -138,13 +131,13 @@ public:
 };
 
 template < typename _zce_synch,
-           typename _value_type >
-class ZCE_Message_Queue_Rings : public ZCE_Message_Queue<_zce_synch, _value_type, zce::lordrings<_value_type> >
+    typename _value_type >
+    class ZCE_Message_Queue_Rings: public ZCE_Message_Queue<_zce_synch,_value_type,zce::lordrings<_value_type> >
 {
 public:
     //
-    ZCE_Message_Queue_Rings(size_t queue_max_size) :
-        ZCE_Message_Queue<_zce_synch, _value_type, zce::lordrings<_value_type> >(queue_max_size)
+    ZCE_Message_Queue_Rings(size_t queue_max_size):
+        ZCE_Message_Queue<_zce_synch,_value_type,zce::lordrings<_value_type> >(queue_max_size)
     {
     }
     ~ZCE_Message_Queue_Rings()
@@ -152,6 +145,4 @@ public:
     }
 };
 
-
 #endif //ZCE_LIB_THREAD_MESSAGE_QUEUE_TEMPLATE_H_
-

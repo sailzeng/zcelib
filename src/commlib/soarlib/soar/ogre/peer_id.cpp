@@ -5,7 +5,7 @@
 class  Socket_Peer_Info 　服务信息,为了同时表示IP+端口的模式采用了UNION方式
 ****************************************************************************************************/
 
-OGRE_PEER_ID::OGRE_PEER_ID(unsigned int peer_ip_address, unsigned short peer_port):
+OGRE_PEER_ID::OGRE_PEER_ID(unsigned int peer_ip_address,unsigned short peer_port):
     peer_ip_address_(peer_ip_address),
     peer_port_(peer_port)
 {
@@ -22,7 +22,7 @@ OGRE_PEER_ID::~OGRE_PEER_ID()
 }
 
 //
-void OGRE_PEER_ID::set(unsigned int peer_ip_address, unsigned short peer_port )
+void OGRE_PEER_ID::set(unsigned int peer_ip_address,unsigned short peer_port)
 {
     peer_ip_address_ = peer_ip_address;
     peer_port_ = peer_port;
@@ -53,11 +53,10 @@ bool OGRE_PEER_ID::operator !=(const OGRE_PEER_ID &others) const
 //有个排序需求,
 bool OGRE_PEER_ID::operator <(const OGRE_PEER_ID &others) const
 {
-    if (peer_ip_address_ + peer_port_ < others.peer_ip_address_ + others.peer_port_ )
+    if (peer_ip_address_ + peer_port_ < others.peer_ip_address_ + others.peer_port_)
     {
         return true;
     }
 
     return false;
 }
-

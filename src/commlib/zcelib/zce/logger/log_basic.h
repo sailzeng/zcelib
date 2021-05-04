@@ -33,7 +33,6 @@
 #include "zce/lock/thread_mutex.h"
 #include "zce/logger/priority.h"
 
-
 ///日志文件的分割方法,以及对应的名称关系
 ///默认的分割方法是按照时间.分割就是按照每天一个文件,文件名称中记录时间
 ///如果按照文件SIZE,或者日志的行数分割文件,用一个ID标识文件日志文件
@@ -42,7 +41,7 @@
 enum class LOGFILE_DEVIDE
 {
     ///记录单个个日志文件,不分割
-    NONE          = 1,
+    NONE = 1,
 
     ///按照尺寸记录分割日志文件,用ID标识,这个ID的意思是滚动处理的ID，
     ///当前的日志文件是.log这个文件，其他的就有日志文件名称是1-N，当前处理的文件
@@ -50,64 +49,56 @@ enum class LOGFILE_DEVIDE
     ///文件作为当前写入的日志文件。这种方式好处是大小绝对固定，好处是文件名称总在变
     ///化，并不利于维护和管理
     ///在32位的机器，分割日志的大小不要超过4G，64位理论无限制,代码内部限制是16G
-    BY_SIZE_NAME_ID       = 101,
-
+    BY_SIZE_NAME_ID = 101,
 
     ///按照小时分割日志,
-    BY_TIME_HOUR       = 201,
+    BY_TIME_HOUR = 201,
     ///按照6个小时分割日志,1天分割为4个
-    BY_TIME_SIX_HOUR    = 202,
+    BY_TIME_SIX_HOUR = 202,
     ///按照日期分割日志,文件按天记录
-    BY_TIME_DAY  = 203,
+    BY_TIME_DAY = 203,
     ///按照月份分割日志,
     BY_TIME_MONTH = 204,
     ///按照时间分割日志,文件按年记录
-    BY_TIME_YEAR  = 205,
+    BY_TIME_YEAR = 205,
 
     //文件名称按毫秒记录,日志按大小分割，
     BY_TIME_NAME_MILLISECOND = 301,
-
-
 };
 //本来有意图实现这个类别，但是感觉总不完善，放弃，设计就是一种取舍
 //LOGDEVIDE_BY_RECORD                按照记录的个数(不是行数)目分割日志文件,用ID标识,不推荐使用
-
-
 
 ///默认记录的数据,在每条日志的头部
 enum class LOG_HEAD
 {
     ///什么都不纪录
-    NONE          = 0,
+    NONE = 0,
     ///纪录当前的时间
-    CURRENTTIME   = 1,
+    CURRENTTIME = 1,
     ///纪录日志的级别信息
-    LOGLEVEL      = 2,
+    LOGLEVEL = 2,
     ///纪录进程ID
-    PROCESS_ID     = 4,
+    PROCESS_ID = 4,
     ///纪录线程ID
-    THREAD_ID      = 8,
-
+    THREAD_ID = 8,
 };
 
 ///选择输出的方式
 enum class LOG_OUTPUT
 {
     ///不向任何地方输出
-    NONE     = 0,
+    NONE = 0,
     ///同步不向其他地方输出,默认
-    LOGFILE   = 1,
+    LOGFILE = 1,
     ///同步向标准输出输出.如果你的程序是CGI程序,慎用
-    STDOUT   = 2,
+    STDOUT = 2,
     ///同步向标准错误输出.
-    ERROUT   = 4,
+    ERROUT = 4,
     ///向共享内存文件里面输出
     MMAP_FILE = 8,
     ///同步向WINDOWS的调试窗口输出,仅仅在WIN32环境起作用
-    WINDBG   = 32
+    WINDBG = 32
 };
-
-
 
 /*!
 @brief      日志输出的基本功能都在这个类里面，包括线程同步，文件名称，文件大小控制，
@@ -120,7 +111,7 @@ enum class LOG_OUTPUT
             zce::foo_snprintf，
 
 */
-class ZCE_LogTrace_Basic : public zce::NON_Copyable
+class ZCE_LogTrace_Basic: public zce::NON_Copyable
 {
 protected:
 
@@ -153,7 +144,7 @@ public:
                       size_t reserve_file_num = DEFAULT_RESERVE_FILENUM,
                       unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE,LOG_OUTPUT::ERROUT),
                       unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME,LOG_HEAD::LOGLEVEL)
-                     );
+    );
 
     /*!
     @brief      初始化函数,用于尺寸分割日志的构造 内部的 ZCE_LOGFILE_DEVIDE_NAME = LOGDEVIDE_BY_SIZE
@@ -173,7 +164,6 @@ public:
                       unsigned int reserve_file_num = DEFAULT_RESERVE_FILENUM,
                       unsigned int output_way = ZCE_U32_OR_2(LOG_OUTPUT::LOGFILE,LOG_OUTPUT::ERROUT),
                       unsigned int head_record = ZCE_U32_OR_2(LOG_HEAD::CURRENTTIME,LOG_HEAD::LOGLEVEL));
-
 
     /*!
     @brief      初始化函数，用于标准输出
@@ -209,7 +199,6 @@ public:
                    size_t reserve_file_num,
                    unsigned int head_record);
 
-
     /*!
     @brief      关闭日志，注意关闭后，必须重新初始化
     */
@@ -220,18 +209,17 @@ public:
     */
     void enable_output(bool enable_out);
 
-
     /*!
     @brief      设置日志输出级别的Level
     @return     zce::LOG_PRIORITY  旧的日志输出级别
     @param[in]  outmask           设置的日志输出级别
     */
-    zce::LOG_PRIORITY set_log_priority(zce::LOG_PRIORITY out_level );
+    zce::LOG_PRIORITY set_log_priority(zce::LOG_PRIORITY out_level);
     /*!
     @brief      取得输出Level
     @return     zce::LOG_PRIORITY
     */
-    zce::LOG_PRIORITY get_log_priority(void );
+    zce::LOG_PRIORITY get_log_priority(void);
 
     /*!
     @brief      设置默认输出的信息类型
@@ -257,7 +245,6 @@ public:
     */
     unsigned int get_output_way(void);
 
-
     /*!
     @brief      设置是否线程同步
     @return     bool              旧（原）有的是否多线程同步值，
@@ -269,7 +256,6 @@ public:
     @return     bool   当前的是否多线程同步值
     */
     bool get_thread_synchro(void);
-
 
     /*!
     @brief      输出文件日志信息
@@ -299,13 +285,10 @@ protected:
     void create_time_logname(const timeval &cur_time,
                              std::string &logfilename);
 
-
-
     /*!
     @brief      处理超期的日志文件，
     */
     void del_old_logfile();
-
 
     /*!
     @brief      将日志的头部信息输出到一个Stringbuf中
@@ -321,8 +304,6 @@ protected:
                            size_t sz_buf_len,
                            size_t &sz_use_len);
 
-
-
     /*!
     @brief      生成配置信息,修改错误配置,
     */
@@ -333,7 +314,7 @@ protected:
     @param      init     是否是初始化阶段
     @param      current_time  当前时间
     */
-    void open_new_logfile(bool initiate, const timeval &current_time);
+    void open_new_logfile(bool initiate,const timeval &current_time);
 
 public:
 
@@ -348,7 +329,7 @@ protected:
     ///日志的缓冲区的尺寸,这儿用了8K，很长了，
     ///由于我内部还是使用的C++的stream 作为输出对象，所以我在多线程下还是使用了锁。
     ///但如果直接用write 函数写，4096(-1)是一个更合适的值，
-    static const size_t  LOG_TMP_BUFFER_SIZE    = 8191;
+    static const size_t  LOG_TMP_BUFFER_SIZE = 8191;
 
     ///默认的保留的文件的数量
     static const size_t DEFAULT_RESERVE_FILENUM = 100;
@@ -358,14 +339,14 @@ protected:
     static const size_t MIN_RESERVE_FILENUM = 3;
 
     ///日志文件的最小允许尺寸是8M
-    static const size_t MIN_LOG_SIZE            = 4096000UL;
+    static const size_t MIN_LOG_SIZE = 4096000UL;
     ///日志文件的最大允许尺寸是4G
-    static const size_t MAX_LOG_SIZE            = 4096000000UL;
+    static const size_t MAX_LOG_SIZE = 4096000000UL;
     ///日志文件的默认允许尺寸是40M
-    static const size_t DEFAULT_LOG_SIZE        = 40960000UL;
+    static const size_t DEFAULT_LOG_SIZE = 40960000UL;
 
     ///日志的统一后缀长度
-    static const size_t LEN_LOG_POSTFIX         = 4;
+    static const size_t LEN_LOG_POSTFIX = 4;
     ///日志后缀的4个字母.log，什么，你想用.tlog？BS
     static const char STR_LOG_POSTFIX[LEN_LOG_POSTFIX + 1];
 
@@ -392,7 +373,6 @@ protected:
     //而同步的点应该有两个，1.文件的更换，这个要避免几个人同时重入，2.向缓冲区写入的时候，
     //对于2，其实由于我写入的数据区长度最大只有4K，所以其实理论上可以逃避这个问题，当然这样不能使用带有缓冲的输出,只能用write
 
-
     ///是否进行多线程的同步
     bool if_thread_synchro_;
 
@@ -408,11 +388,8 @@ protected:
     ///保留文件的个数,如果有太多文件要删除,为0表示不删除
     size_t                 reserve_file_num_;
 
-
-
     ///默认记录的数据,按照和LOG_HEAD_RECORD_INFO 异或
     unsigned int           record_info_;
-
 
     ///当前的大概时间,按小时记录,避免进行过多的时间判断
     time_t                current_click_;
@@ -420,10 +397,8 @@ protected:
     ///输出日志信息的Mask值,小于这个信息的信息不予以输出
     zce::LOG_PRIORITY      permit_outlevel_;
 
-
     ///日志文件的尺寸
     size_t                size_log_file_;
-
 
     ///是否输出日志信息,可以用于暂时屏蔽
     bool                  if_output_log_;
@@ -433,12 +408,6 @@ protected:
 
     //r
     std::list<std::string> time_logfile_list_;
-
 };
 
-
-
-
-
 #endif //ZCE_LIB_TRACE_LOG_BASE_H_
-

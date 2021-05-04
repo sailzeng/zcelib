@@ -31,7 +31,7 @@ class zce::Time_Value;
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *
 */
-class ZCE_Null_Mutex : public ZCE_Lock_Base
+class ZCE_Null_Mutex: public ZCE_Lock_Base
 {
 public:
     //NULL锁的GUARD
@@ -43,9 +43,9 @@ public:
 
 public:
     ///构造函数
-    ZCE_Null_Mutex (const char * = NULL);
+    ZCE_Null_Mutex(const char ptr*= NULL);
     ///析构函数
-    virtual ~ZCE_Null_Mutex (void);
+    virtual ~ZCE_Null_Mutex(void);
 
 public:
     ///锁定
@@ -60,7 +60,7 @@ public:
     ///绝对时间超时的的锁定，超时后解锁，返回是否超时
     virtual bool systime_lock(const zce::Time_Value & /*abs_time*/);
     ///相对时间
-    virtual bool duration_lock(const zce::Time_Value & /*relative_time*/ );
+    virtual bool duration_lock(const zce::Time_Value & /*relative_time*/);
 
     //相对与BOOST的shared的共享-独占锁的叫法，我还是倾向读写锁
 
@@ -92,9 +92,8 @@ protected:
 * @brief      空锁，也是一种模式，用于某些情况灵活的使用是否加锁的方式,
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE
 */
-class ZCE_Null_Condition : public ZCE_Condition_Base
+class ZCE_Null_Condition: public ZCE_Condition_Base
 {
-
 public:
     //
     ZCE_Null_Condition();
@@ -103,25 +102,23 @@ public:
 private:
 
     ///等待
-    virtual void wait (ZCE_Null_Mutex * /*external_mutex*/ );
+    virtual void wait(ZCE_Null_Mutex * /*external_mutex*/);
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(ZCE_Null_Mutex * /*external_mutex*/, const zce::Time_Value & /*abs_time*/);
+    virtual bool systime_wait(ZCE_Null_Mutex * /*external_mutex*/,const zce::Time_Value & /*abs_time*/);
 
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(ZCE_Null_Mutex * /*external_mutex*/, const zce::Time_Value & /*relative_time*/);
+    virtual bool duration_wait(ZCE_Null_Mutex * /*external_mutex*/,const zce::Time_Value & /*relative_time*/);
 
     /// 给一个等待线程发送信号 Signal one waiting thread.
-    virtual void signal (void);
+    virtual void signal(void);
 
     ///给所有的等待线程广播信号 Signal *all* waiting threads.
-    virtual void broadcast (void);
+    virtual void broadcast(void);
 
 protected:
     // A dummy lock.
     int    lock_;
-
 };
 
 #endif //ZCE_LIB_LOCK_NULL_LOCK_H_
-

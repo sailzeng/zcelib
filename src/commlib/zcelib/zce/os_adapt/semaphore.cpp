@@ -1,4 +1,3 @@
-
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/error.h"
@@ -13,13 +12,12 @@ int zce::sem_init(sem_t *sem,
                   unsigned int init_value,
                   unsigned int max_val)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     //字符串长度为0表示是匿名信号灯
     sem->sem_unnamed_ = true;
 
-    ZCE_UNUSED_ARG (pshared);
+    ZCE_UNUSED_ARG(pshared);
 
     HANDLE sem_handle = ::CreateSemaphoreA(NULL,
                                            init_value,
@@ -33,7 +31,7 @@ int zce::sem_init(sem_t *sem,
     else
     {
         // Make sure to set errno to ERROR_ALREADY_EXISTS if necessary.
-        errno = ::GetLastError ();
+        errno = ::GetLastError();
         sem->sem_hanlde_ = sem_handle;
         return 0;
     }
@@ -42,9 +40,9 @@ int zce::sem_init(sem_t *sem,
     //
     //非标准参数
     ZCE_UNUSED_ARG(max_val);
-    return ::sem_init (sem,
-                       pshared,
-                       init_value);
+    return ::sem_init(sem,
+                      pshared,
+                      init_value);
 #endif
 }
 
@@ -71,11 +69,11 @@ sem_t *zce::sem_open(const char *name,
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    ZCE_UNUSED_ARG (oflag);
-    ZCE_UNUSED_ARG (mode);
+    ZCE_UNUSED_ARG(oflag);
+    ZCE_UNUSED_ARG(mode);
 
     //为了保存变量还是先new出来
-    sem_t *ret_sem = new sem_t ();
+    sem_t *ret_sem = new sem_t();
     ret_sem->sem_unnamed_ = false;
 
     HANDLE sem_handle = ::CreateSemaphoreA(NULL,
@@ -92,7 +90,7 @@ sem_t *zce::sem_open(const char *name,
     else
     {
         // Make sure to set errno to ERROR_ALREADY_EXISTS if necessary.
-        errno = ::GetLastError ();
+        errno = ::GetLastError();
 
         ret_sem->sem_hanlde_ = sem_handle;
         return ret_sem;
@@ -102,10 +100,10 @@ sem_t *zce::sem_open(const char *name,
     //非标准参数
     ZCE_UNUSED_ARG(max_val);
 
-    return ::sem_open (name,
-                       oflag,
-                       mode,
-                       init_value);
+    return ::sem_open(name,
+                      oflag,
+                      mode,
+                      init_value);
 #endif
 }
 
@@ -126,22 +124,21 @@ int zce::sem_close(sem_t *sem)
 int zce::sem_unlink(const char *name)
 {
 #if defined (ZCE_OS_WINDOWS)
-    ZCE_UNUSED_ARG (name);
+    ZCE_UNUSED_ARG(name);
     return 0;
 #elif defined (ZCE_OS_LINUX)
     return ::sem_unlink(name);
 #endif
 }
 
-int zce::sem_post (sem_t *sem)
+int zce::sem_post(sem_t *sem)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     const LONG ONCE_POST_NUMBER = 1;
-    BOOL  ret_bool = ::ReleaseSemaphore (sem->sem_hanlde_,
-                                         ONCE_POST_NUMBER,
-                                         NULL);
+    BOOL  ret_bool = ::ReleaseSemaphore(sem->sem_hanlde_,
+                                        ONCE_POST_NUMBER,
+                                        NULL);
 
     if (!ret_bool)
     {
@@ -153,16 +150,15 @@ int zce::sem_post (sem_t *sem)
 #elif defined (ZCE_OS_LINUX)
     return ::sem_post(sem);
 #endif
-
 }
 
-int zce::sem_post (sem_t *sem, u_int release_count)
+int zce::sem_post(sem_t *sem,u_int release_count)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    BOOL  ret_bool = ::ReleaseSemaphore (sem->sem_hanlde_,
-                                         release_count,
-                                         NULL);
+    BOOL  ret_bool = ::ReleaseSemaphore(sem->sem_hanlde_,
+                                        release_count,
+                                        NULL);
 
     if (!ret_bool)
     {
@@ -186,13 +182,12 @@ int zce::sem_post (sem_t *sem, u_int release_count)
 #endif
 }
 
-int zce::sem_trywait (sem_t *sem)
+int zce::sem_trywait(sem_t *sem)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     //等待0s，相当于无阻塞，
-    DWORD result = ::WaitForSingleObject (sem->sem_hanlde_, 0);
+    DWORD result = ::WaitForSingleObject(sem->sem_hanlde_,0);
 
     if (result == WAIT_OBJECT_0)
     {
@@ -216,18 +211,17 @@ int zce::sem_trywait (sem_t *sem)
 
 #elif defined (ZCE_OS_LINUX)
     // POSIX semaphores set errno to EAGAIN if trywait fails
-    return ::sem_trywait (sem);
+    return ::sem_trywait(sem);
 #endif
-
 }
 
 //信号灯锁定
-int zce::sem_wait (sem_t *sem)
+int zce::sem_wait(sem_t *sem)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     //INFINITE标识一致等待
-    DWORD result = ::WaitForSingleObject (sem->sem_hanlde_, INFINITE);
+    DWORD result = ::WaitForSingleObject(sem->sem_hanlde_,INFINITE);
 
     if (result == WAIT_OBJECT_0)
     {
@@ -241,14 +235,13 @@ int zce::sem_wait (sem_t *sem)
 
 #elif defined (ZCE_OS_LINUX)
     // POSIX semaphores set errno to EAGAIN if trywait fails
-    return ::sem_wait (sem);
+    return ::sem_wait(sem);
 #endif
 }
 
 //信号灯超时锁定
-int zce::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
+int zce::sem_timedwait(sem_t *sem,const ::timespec *abs_timeout_spec)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     assert(abs_timeout_spec);
@@ -257,11 +250,11 @@ int zce::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
     timeval now_time = zce::gettimeofday();
     timeval abs_time = zce::make_timeval(abs_timeout_spec);
 
-    timeval timeout_time = zce::timeval_sub(abs_time, now_time, true);
+    timeval timeout_time = zce::timeval_sub(abs_time,now_time,true);
 
     //等待时间触发
-    DWORD retsult = ::WaitForSingleObject (sem->sem_hanlde_,
-                                           static_cast<DWORD>( zce::total_milliseconds(timeout_time)));
+    DWORD retsult = ::WaitForSingleObject(sem->sem_hanlde_,
+                                          static_cast<DWORD>(zce::total_milliseconds(timeout_time)));
 
     if (WAIT_OBJECT_0 == retsult || WAIT_ABANDONED == retsult)
     {
@@ -275,7 +268,7 @@ int zce::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
     else
     {
         // This is a hack, we need to find an appropriate mapping...
-        errno = ::GetLastError ();
+        errno = ::GetLastError();
         return -1;
     }
 
@@ -283,7 +276,7 @@ int zce::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 
 #elif defined (ZCE_OS_LINUX)
 
-    int ret = ::sem_timedwait (sem, abs_timeout_spec);
+    int ret = ::sem_timedwait(sem,abs_timeout_spec);
 
     //一般的系统ETIME 和 ETIMEDOUT 的错误值都不太一样，按LINUX手册，返回的应该是ETIMEDOUT
     if (ret == -1 && errno == ETIME)
@@ -296,18 +289,18 @@ int zce::sem_timedwait(sem_t *sem, const ::timespec *abs_timeout_spec)
 }
 
 //信号灯超时锁定,非标准实现,使用timeval结构，
-int zce::sem_timedwait(sem_t *sem, const timeval *abs_timeout_val)
+int zce::sem_timedwait(sem_t *sem,const timeval *abs_timeout_val)
 {
     assert(abs_timeout_val);
     //这个时间是绝对值时间，要调整为相对时间
     ::timespec abs_timeout_spec = zce::make_timespec(abs_timeout_val);
-    return zce::sem_timedwait(sem, &abs_timeout_spec);
+    return zce::sem_timedwait(sem,&abs_timeout_spec);
 }
 
 //返回当前信号灯的当前值, 很遗憾，WINDOWS下不支持，ReleaseSemaphore有类似功能，但是lReleaseCount参数不能为0
 //如果用ReleaseSemaphore和WaitForSingleObject拼凑一个那么可能更超级糟糕，
 //微软的API实现的真烂。Visual studio也承诺增加这个特性，但是在2010版本是不要做指望了。
-int zce::sem_getvalue(sem_t *sem, int *sval)
+int zce::sem_getvalue(sem_t *sem,int *sval)
 {
 #if defined (ZCE_OS_WINDOWS)
     ZCE_UNUSED_ARG(sem);
@@ -315,7 +308,6 @@ int zce::sem_getvalue(sem_t *sem, int *sval)
     errno = EINVAL;
     return -1;
 #elif defined (ZCE_OS_LINUX)
-    return ::sem_getvalue(sem, sval);
+    return ::sem_getvalue(sem,sval);
 #endif
 }
-

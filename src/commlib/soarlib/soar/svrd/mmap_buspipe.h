@@ -1,4 +1,3 @@
-
 #ifndef SOARING_LIB_ZERG_MMAP_PIPE_H_
 #define SOARING_LIB_ZERG_MMAP_PIPE_H_
 
@@ -10,9 +9,8 @@
 
 class soar::Zerg_Frame;
 
-class  Soar_MMAP_BusPipe : public ZCE_BusPipe_TwoWay
+class  Soar_MMAP_BusPipe: public ZCE_BusPipe_TwoWay
 {
-
 public:
     //构造函数,
     Soar_MMAP_BusPipe();
@@ -29,7 +27,7 @@ public:
                    bool if_restore);
 
     //生成MMAP的配置文件名称
-    void get_mmapfile_name(char *mmapfile, size_t buflen);
+    void get_mmapfile_name(char *mmapfile,size_t buflen);
 
     //-----------------------------------------------------------------
     //从RECV管道读取帧
@@ -118,11 +116,8 @@ protected:
     static char          send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
 
     ///监控对象
-    Soar_Stat_Monitor   *monitor_ = nullptr;
-
+    Soar_Stat_Monitor *monitor_ = nullptr;
 };
-
-
 
 /******************************************************************************************
 Author          : Sailzeng <sailzeng.cn@gmail.com>  Date Of Creation: 2007年3月24日
@@ -154,7 +149,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
                                                unsigned int app_id,
                                                uint32_t option)
 {
-    const soar::SERVICES_ID proxysvc(0, 0);
+    const soar::SERVICES_ID proxysvc(0,0);
     return pipe_sendmsg_to_service(cmd,
                                    user_id,
                                    transaction_id,
@@ -199,7 +194,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_proxy(uint32_t cmd,
                                              unsigned int app_id,
                                              uint32_t option)
 {
-    const soar::SERVICES_ID rcvsvc(rcvtype, 0);
+    const soar::SERVICES_ID rcvsvc(rcvtype,0);
     return pipe_sendmsg_to_service(cmd,
                                    user_id,
                                    transaction_id,
@@ -248,7 +243,7 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
 
     soar::Zerg_Frame *send_frame = reinterpret_cast<soar::Zerg_Frame *>(send_buffer_);
 
-    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,option,cmd);
     send_frame->user_id_ = user_id;
     send_frame->app_id_ = app_id;
 
@@ -260,11 +255,11 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
     send_frame->fsm_id_ = transaction_id;
     send_frame->backfill_fsm_id_ = backfill_trans_id;
 
-    ret = send_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA, info);
+    ret = send_frame->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,info);
 
-    if (ret != 0 )
+    if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
+        ZCE_LOG(RS_ERROR,"[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
                 __ZCE_FUNC__,
                 ret);
         return ret;
@@ -272,8 +267,6 @@ int Soar_MMAP_BusPipe::pipe_sendmsg_to_service(uint32_t cmd,
 
     //
     return push_back_sendpipe(send_frame);
-
 }
 
 #endif //SOARING_LIB_ZERG_MMAP_PIPE_H_
-

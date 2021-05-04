@@ -30,7 +30,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     const size_t IP_ADDR_LEN = 31;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    
+
     ret = peer_module_info_.open_module();
     if (ret != 0)
     {
@@ -42,18 +42,18 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     socklen_t opval = 32 * 1024;
     socklen_t opvallen = sizeof(socklen_t);
 
-    socklen_t sndbuflen, rcvbuflen;
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZCE_LOG(RS_INFO, "Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    socklen_t sndbuflen,rcvbuflen;
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_RCVBUF,reinterpret_cast<void *>(&rcvbuflen),&opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_SNDBUF,reinterpret_cast<void *>(&sndbuflen),&opvallen);
+    ZCE_LOG(RS_INFO,"Get Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n",rcvbuflen,sndbuflen);
 
     //设置一个SND,RCV BUFFER,
-    peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
-    peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
+    peer_acceptor_.setsockopt(SOL_SOCKET,SO_RCVBUF,reinterpret_cast<void *>(&opval),opvallen);
+    peer_acceptor_.setsockopt(SOL_SOCKET,SO_SNDBUF,reinterpret_cast<void *>(&opval),opvallen);
 
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZCE_LOG(RS_INFO, "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_RCVBUF,reinterpret_cast<void *>(&rcvbuflen),&opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_SNDBUF,reinterpret_cast<void *>(&sndbuflen),&opvallen);
+    ZCE_LOG(RS_INFO,"Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n",rcvbuflen,sndbuflen);
 
     ret = peer_acceptor_.open(&peer_module_info_.peer_info_.peer_socketin_);
 
@@ -61,7 +61,7 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     if (ret != 0)
     {
         int last_err = zce::last_error();
-        ZCE_LOG(RS_ERROR, "Bind Listen IP|Port :[%s] Fail.Error: %u|%s.\n",
+        ZCE_LOG(RS_ERROR,"Bind Listen IP|Port :[%s] Fail.Error: %u|%s.\n",
                 peer_module_info_.peer_info_.peer_socketin_.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 last_err,
                 strerror(last_err));
@@ -71,27 +71,27 @@ int Ogre_TCPAccept_Hdl::create_listenpeer()
     ZCE_LOG(RS_INFO,"Bind listen IP|Port : [%s|%u] Success.\n",
             peer_module_info_.peer_info_.peer_socketin_.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
 
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZCE_LOG(RS_INFO, "Get listen peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_RCVBUF,reinterpret_cast<void *>(&rcvbuflen),&opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_SNDBUF,reinterpret_cast<void *>(&sndbuflen),&opvallen);
+    ZCE_LOG(RS_INFO,"Get listen peer SO_RCVBUF:%u SO_SNDBUF %u.\n",rcvbuflen,sndbuflen);
 
     //设置一个SND,RCV BUFFER,
-    peer_acceptor_.setsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&opval), opvallen);
-    peer_acceptor_.setsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&opval), opvallen);
+    peer_acceptor_.setsockopt(SOL_SOCKET,SO_RCVBUF,reinterpret_cast<void *>(&opval),opvallen);
+    peer_acceptor_.setsockopt(SOL_SOCKET,SO_SNDBUF,reinterpret_cast<void *>(&opval),opvallen);
 
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_RCVBUF, reinterpret_cast<void *>(&rcvbuflen), &opvallen);
-    peer_acceptor_.getsockopt(SOL_SOCKET, SO_SNDBUF, reinterpret_cast<void *>(&sndbuflen), &opvallen);
-    ZCE_LOG(RS_INFO, "Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n", rcvbuflen, sndbuflen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_RCVBUF,reinterpret_cast<void *>(&rcvbuflen),&opvallen);
+    peer_acceptor_.getsockopt(SOL_SOCKET,SO_SNDBUF,reinterpret_cast<void *>(&sndbuflen),&opvallen);
+    ZCE_LOG(RS_INFO,"Set Listen Peer SO_RCVBUF:%u SO_SNDBUF %u.\n",rcvbuflen,sndbuflen);
 
 #ifndef WIN32
     //避免DELAY发送这种情况
     int NODELAY = 1;
     opvallen = sizeof(int);
-    peer_acceptor_.setsockopt(SOL_TCP, TCP_NODELAY, reinterpret_cast<void *>(&NODELAY), opvallen);
+    peer_acceptor_.setsockopt(SOL_TCP,TCP_NODELAY,reinterpret_cast<void *>(&NODELAY),opvallen);
 #endif
 
     //
-    reactor()->register_handler(this, ZCE_Event_Handler::ACCEPT_MASK);
+    reactor()->register_handler(this,ZCE_Event_Handler::ACCEPT_MASK);
 
     return 0;
 }
@@ -106,25 +106,24 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
     zce::Socket_Stream  sockstream;
     zce::Sockaddr_In   remoteaddress;
     int ret = 0;
-    ret = peer_acceptor_.accept(sockstream, &remoteaddress);
+    ret = peer_acceptor_.accept(sockstream,&remoteaddress);
 
     //如果出现错误,如何处理? return -1?
     if (ret != 0)
     {
-
         sockstream.close();
 
         //记录错误
-        int accept_error =  zce::last_error();
-        ZCE_LOG(RS_ERROR, "Accept [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
+        int accept_error = zce::last_error();
+        ZCE_LOG(RS_ERROR,"Accept [%s] handler fail! peer_acceptor_.accept ret =%d  errno=%u|%s \n",
                 remoteaddress.to_string(ip_addr_str,IP_ADDR_LEN,use_len),
                 ret,
                 accept_error,
                 strerror(accept_error));
 
         //如果是这些错误继续。
-        if ( accept_error == EWOULDBLOCK || accept_error == EINVAL
-             || accept_error == ECONNABORTED || accept_error == EPROTOTYPE )
+        if (accept_error == EWOULDBLOCK || accept_error == EINVAL
+            || accept_error == ECONNABORTED || accept_error == EPROTOTYPE)
         {
             return 0;
         }
@@ -132,11 +131,10 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
         //这儿应该退出进程
         //return -1;
         return 0;
-
     }
 
     //如果允许的连接的服务器地址中间没有.或者在拒绝的服务列表中... kill
-    ret =  ip_restrict_->check_ip_restrict(remoteaddress) ;
+    ret = ip_restrict_->check_ip_restrict(remoteaddress);
 
     if (ret != 0)
     {
@@ -147,7 +145,7 @@ int Ogre_TCPAccept_Hdl::handle_input(ZCE_HANDLE /*handle*/)
 
     if (phandler != NULL)
     {
-        phandler->init_tcp_svc_handler(sockstream, peer_module_info_.fp_judge_whole_frame_);
+        phandler->init_tcp_svc_handler(sockstream,peer_module_info_.fp_judge_whole_frame_);
     }
     else
     {
@@ -162,16 +160,14 @@ ZCE_HANDLE Ogre_TCPAccept_Hdl::get_handle(void) const
     return (ZCE_HANDLE)peer_acceptor_.get_handle();
 }
 
-
-
 //
-int Ogre_TCPAccept_Hdl::handle_close ()
+int Ogre_TCPAccept_Hdl::handle_close()
 {
     //
-    if (peer_acceptor_.get_handle () != ZCE_INVALID_SOCKET)
+    if (peer_acceptor_.get_handle() != ZCE_INVALID_SOCKET)
     {
-        reactor()->remove_handler (this, true);
-        peer_acceptor_.close ();
+        reactor()->remove_handler(this,true);
+        peer_acceptor_.close();
     }
 
     //删除自己
@@ -179,4 +175,3 @@ int Ogre_TCPAccept_Hdl::handle_close ()
 
     return 0;
 }
-

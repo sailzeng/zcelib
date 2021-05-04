@@ -22,7 +22,6 @@
 
 namespace zce
 {
-
 /*!
 * @brief      connect的工厂，成功连接后产生,用于产生zce::Socket_Stream
 *
@@ -32,8 +31,8 @@ class Socket_Connector
 {
 public:
     //构造函数和析构函数
-    Socket_Connector (void);
-    ~Socket_Connector (void);
+    Socket_Connector(void);
+    ~Socket_Connector(void);
 
     /*!
     * @brief      带超时的连接
@@ -45,13 +44,12 @@ public:
     * @param      protocol    协议，用于RAW Socket，基本没用
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
-    int connect (zce::Socket_Stream &new_stream,
-                 const zce::Sockaddr_Base *remote_addr,
-                 zce::Time_Value  &timeout,
-                 bool reuse_addr = false,
-                 int protocol = 0,
-                 const Sockaddr_Base *local_addr = NULL);
-
+    int connect(zce::Socket_Stream &new_stream,
+                const zce::Sockaddr_Base *remote_addr,
+                zce::Time_Value &timeout,
+                bool reuse_addr = false,
+                int protocol = 0,
+                const Sockaddr_Base *local_addr = NULL);
 
     /*!
     * @brief      阻塞或者非阻塞的连接
@@ -63,16 +61,13 @@ public:
     * @param      protocol    协议，用于RAW Socket，基本没用
     * @param      local_addr  本地的BIND地址信息，CONNECT基本没用
     */
-    int connect (zce::Socket_Stream &new_stream,
-                 const zce::Sockaddr_Base *remote_addr,
-                 bool non_blocing,
-                 bool reuse_addr = false,
-                 int protocol = 0,
-                 const Sockaddr_Base *local_addr = NULL);
-
+    int connect(zce::Socket_Stream &new_stream,
+                const zce::Sockaddr_Base *remote_addr,
+                bool non_blocing,
+                bool reuse_addr = false,
+                int protocol = 0,
+                const Sockaddr_Base *local_addr = NULL);
 };
-
 }
 
 #endif //#ifndef ZCE_LIB_SOCKET_CONNECTOR_H_
-

@@ -1,13 +1,7 @@
-
 #ifndef ZERG_TCP_SERVICES_INFO_SET_H_
 #define ZERG_TCP_SERVICES_INFO_SET_H_
 
-
-
 class TCP_Svc_Handler;
-
-
-
 
 /*!
 * @brief      SVC ID SET
@@ -17,8 +11,6 @@ class TCP_Svc_Handler;
 */
 class Active_SvcHandle_Set
 {
-
-
 public:
     ///构造函数,
     Active_SvcHandle_Set();
@@ -27,7 +19,6 @@ public:
 
     //初始化
     void initialize(size_t sz_peer);
-
 
     /*!
     * @brief      根据SVCID，在Active的Handle里面查询是否尊重
@@ -51,7 +42,6 @@ public:
                               uint32_t &services_id,
                               TCP_Svc_Handler *&svc_handle);
 
-
     /*!
     * @brief
     * @return     int
@@ -64,7 +54,6 @@ public:
                                  uint32_t lb_factor,
                                  uint32_t &services_id,
                                  TCP_Svc_Handler *&svc_handle);
-
 
     /*!
     * @brief      以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
@@ -81,7 +70,6 @@ public:
                            uint32_t &find_services_id,
                            TCP_Svc_Handler *&svc_handle);
 
-
     /*!
     * @brief      查询类型对应的所有active的SVC ID数组，用于广播等
     * @return     int       ==0表示查询成功
@@ -89,7 +77,7 @@ public:
     * @param      id_ary    这个类型对应的所有active的SVC ID的services_id数值
     * @note       可以对某个类型进行广播
     */
-    int find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *&id_ary);
+    int find_hdlary_by_type(uint16_t services_type,std::vector<uint32_t> *&id_ary);
 
     /*!
     * @brief      增加设置配置信息
@@ -99,7 +87,6 @@ public:
     */
     int add_services_peerinfo(const soar::SERVICES_ID &svc_id,
                               TCP_Svc_Handler *new_svchdl);
-
 
     /*!
     * @brief
@@ -112,7 +99,6 @@ public:
     int replace_services_peerInfo(const soar::SERVICES_ID &svc_id,
                                   TCP_Svc_Handler *new_svchdl,
                                   TCP_Svc_Handler *&old_svchdl);
-
 
     /*!
     * @brief      根据soar::SERVICES_ID,删除PEER信息,
@@ -131,10 +117,7 @@ public:
     ///关闭所有的PEER
     void clear_and_closeall();
 
-
 protected:
-
-
 
     struct SERVICES_ID_TABLE
     {
@@ -145,11 +128,10 @@ protected:
     };
 
     ///
-    typedef std::unordered_map<soar::SERVICES_ID, TCP_Svc_Handler *,soar::HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
+    typedef std::unordered_map<soar::SERVICES_ID,TCP_Svc_Handler *,soar::HASH_OF_SVCID> MAP_OF_SVCPEERINFO;
 
     ///用于根据TYPE选择一个任意服务器，或者根据TYPE广播给所有这个类型的服务器
-    typedef std::unordered_map<uint16_t, SERVICES_ID_TABLE > MAP_OF_TYPE_TO_IDTABLE;
-
+    typedef std::unordered_map<uint16_t,SERVICES_ID_TABLE > MAP_OF_TYPE_TO_IDTABLE;
 
     ///
     size_t max_peer_size_ = 0;
@@ -160,8 +142,4 @@ protected:
     MAP_OF_TYPE_TO_IDTABLE type_to_idtable_;
 };
 
-
-
 #endif //_ZERG_TCP_SERVICES_INFO_SET_H_
-
-

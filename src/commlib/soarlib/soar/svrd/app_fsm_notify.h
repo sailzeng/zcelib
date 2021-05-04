@@ -1,4 +1,3 @@
-
 #ifndef SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
 #define SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
 
@@ -17,9 +16,8 @@
 
 class FSMTask_TaskBase;
 
-class Comm_SvrdApp_FSM_Notify : public soar::Svrd_Appliction
+class Comm_SvrdApp_FSM_Notify: public soar::Svrd_Appliction
 {
-
 protected:
 
     //使用事务处理的Application
@@ -29,7 +27,7 @@ protected:
 public:
 
     //增加调用register_func_cmd
-    virtual int app_start(int argc, const char *argv[]);
+    virtual int app_start(int argc,const char *argv[]);
 
     //运行处理,
     virtual int app_run();
@@ -50,8 +48,6 @@ protected:
     virtual int register_notify_task(FSMTask_TaskBase *&clone_task,
                                      size_t &task_num,
                                      size_t &task_stack_size) = 0;
-
 };
 
 #endif //#ifndef SOARING_LIB_SVRD_APP_NOTIFY_TRNAS_H_
-

@@ -21,10 +21,7 @@
 *
 */
 
-
 #ifndef ZCE_LIB_EVENT_PROACTOR_H_
 #define ZCE_LIB_EVENT_PROACTOR_H_
 
-
 #endif //ZCE_LIB_EVENT_PROACTOR_H_
-

@@ -2,7 +2,6 @@
 
 namespace zce
 {
-
 //!日志输出级别,日志记录时使用的是级别,
 enum class LOG_PRIORITY
 {
@@ -44,6 +43,4 @@ enum class LOG_PRIORITY
 #ifndef RS_FATAL
 #define RS_FATAL zce::LOG_PRIORITY::LP_FATAL
 #endif
-
 };
-

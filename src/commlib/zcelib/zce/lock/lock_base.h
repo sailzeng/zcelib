@@ -23,7 +23,6 @@
 #include "zce/util/non_copyable.h"
 #include "zce/time/time_value.h"
 
-
 /*!
 * @brief      所有锁类(记录锁除外)的基础类，让你也有多态使用（改变）加锁行为的方式
 *             整体的接口类似于BOOST的接口，比如不控制返回值，也参考过一些ACE的代码
@@ -31,15 +30,14 @@
 *             但ZCE_Lock_Base内部的成员，都应该是private的，而ZCE_Null_Mutex的内部成员都应该是
 *             public，这个矛盾是不可调和的
 */
-class ZCE_Lock_Base : public zce::NON_Copyable
+class ZCE_Lock_Base: public zce::NON_Copyable
 {
-
 protected:
     ///构造函数和析构函数，允许析构，不允许构造的写法
-    ZCE_Lock_Base (const char * = NULL);
+    ZCE_Lock_Base(const char *ptr= NULL);
 public:
     ///析构函数
-    virtual ~ZCE_Lock_Base (void);
+    virtual ~ZCE_Lock_Base(void);
 
     ///允许ZCE_Lock_Ptr_Guard使用一些函数
     friend class ZCE_Lock_Ptr_Guard;
@@ -74,7 +72,7 @@ private:
     * @return     bool          返回true成功获取锁，false失败，（超时等）
     * @param      relative_time 等待的相对时间，
     */
-    virtual bool duration_lock(const zce::Time_Value &relative_time );
+    virtual bool duration_lock(const zce::Time_Value &relative_time);
 
     ///读取锁
     virtual void lock_read();
@@ -110,7 +108,6 @@ private:
     * @param      relative_time 相对时间
     */
     virtual bool duration_lock_write(const zce::Time_Value &relative_time);
-
 };
 
 /*!
@@ -118,9 +115,8 @@ private:
 *             扩展应该都是从这个基类扩展
 *
 */
-class ZCE_Condition_Base : public zce::NON_Copyable
+class ZCE_Condition_Base: public zce::NON_Copyable
 {
-
 protected:
     ///构造函数,protected，允许析构，不允许构造的写法
     ZCE_Condition_Base();
@@ -132,21 +128,19 @@ public:
 private:
 
     ///等待,
-    virtual void wait (ZCE_Lock_Base *external_mutex );
+    virtual void wait(ZCE_Lock_Base *external_mutex);
 
     ///绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(ZCE_Lock_Base *external_mutex, const zce::Time_Value &abs_time);
+    virtual bool systime_wait(ZCE_Lock_Base *external_mutex,const zce::Time_Value &abs_time);
 
     ///相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(ZCE_Lock_Base *external_mutex, const zce::Time_Value &relative_time);
+    virtual bool duration_wait(ZCE_Lock_Base *external_mutex,const zce::Time_Value &relative_time);
 
     /// 给一个等待线程发送信号 Signal one waiting thread.
-    virtual void signal (void);
+    virtual void signal(void);
 
     ///给所有的等待线程广播信号 Signal *all* waiting threads.
-    virtual void broadcast (void);
-
+    virtual void broadcast(void);
 };
 
 #endif //ZCE_LIB_LOCK_BASE_H_
-

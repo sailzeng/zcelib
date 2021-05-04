@@ -1,22 +1,17 @@
-
-
-
 #include "zealot_predefine.h"
 #include "zealot_test_function.h"
 
-int test_dequechunk(int /*argc*/, char * /*argv*/ [])
+int test_dequechunk(int /*argc*/,char * /*argv*/[])
 {
     size_t dequesize = 1026;
     size_t szalloc = zce::lockfree::shm_dequechunk::getallocsize(dequesize);
     std::cout << "need mem: " << (int)szalloc << std::endl;
 
+    char *tmproom = new char[szalloc + 4];
+    memset(tmproom,0,szalloc + 4);
 
-
-    char *tmproom = new char [szalloc + 4];
-    memset(tmproom, 0, szalloc + 4);
-
-    zce::lockfree::shm_dequechunk *pmmap = 
-        zce::lockfree::shm_dequechunk::initialize(dequesize, 2048, tmproom, false);
+    zce::lockfree::shm_dequechunk *pmmap =
+        zce::lockfree::shm_dequechunk::initialize(dequesize,2048,tmproom,false);
 
     if (pmmap->empty())
     {
@@ -30,7 +25,7 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     } test_abc;
 
     test_abc.sz = 256;
-    memset(test_abc.data, '1', 251);
+    memset(test_abc.data,'1',251);
     test_abc.data[250] = 'A';
     test_abc.data[251] = 0;
 
@@ -50,15 +45,13 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
     delete pnode1;
 
-
-
     struct def
     {
         unsigned int sz;
         char   data[4];
     } test_def;
     test_def.sz = 8;
-    memset(test_def.data, '2', 2);
+    memset(test_def.data,'2',2);
     test_def.data[2] = 'B';
     test_def.data[3] = 0;
     std::cout << "freesize:" << (int)pmmap->free_size() << std::endl;
@@ -96,7 +89,7 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     pnode1 = NULL;
     bool bsucc = pmmap->pop_front(pnode1);
 
-    if (bsucc == false  )
+    if (bsucc == false)
     {
         std::cout << "pop_frond return false!" << std::endl;
     }
@@ -107,13 +100,5 @@ int test_dequechunk(int /*argc*/, char * /*argv*/ [])
     //std::cout<<"freesize:"<<(int)pmmap->freesize()<<std::endl;
     //delete pnode1;
 
-
     return 0;
 }
-
-
-
-
-
-
-

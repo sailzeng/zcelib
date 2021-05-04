@@ -1,4 +1,3 @@
-
 #ifndef ZCE_LIB_OS_ADAPT_GET_OPT_H_
 #define ZCE_LIB_OS_ADAPT_GET_OPT_H_
 
@@ -12,11 +11,11 @@
 struct option
 {
     //
-    const char  *name;
+    const char *name;
     //
     int          has_arg;
     //
-    int         *flag;
+    int *flag;
     //
     int          val;
 };
@@ -28,7 +27,7 @@ extern int     optind;
 /* character checked for validity */
 extern int     optopt;
 /* argument associated with option */
-extern const char   *optarg;
+extern const char *optarg;
 /* reset getopt */
 extern int     optreset;
 
@@ -40,7 +39,6 @@ extern int     optreset;
 
 namespace zce
 {
-
 //optstring string说明
 //1.单个字符，表示选项，
 //2.单个字符后接一个冒号:,表示该选项后必须跟一个参数。参数紧跟在选项后或者以空格隔开。该参数的指针赋给optarg。

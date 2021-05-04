@@ -59,6 +59,4 @@ int zce::fcvt_r(double number,
                     buf,
                     len);
 #endif
-
 }
-

@@ -9,15 +9,12 @@
 #include "zce/logger/logging.h"
 #include "zce/server/server_base.h"
 
-
 /*********************************************************************************
 class Server_Base
 *********************************************************************************/
 namespace zce
 {
-
 Server_Base *Server_Base::base_instance_ = NULL;
-
 
 // 构造函数,私有,使用单子类的实例,
 Server_Base::Server_Base()
@@ -90,7 +87,6 @@ int Server_Base::out_pid_file(const char *pragramname)
         ftruncate(pid_handle_,PID_FILE_LEN);
     }
 
-
     file_lock_init(&pidfile_lock_,pid_handle_);
 
     char tmpbuff[PID_FILE_LEN + 1];
@@ -113,8 +109,6 @@ int Server_Base::out_pid_file(const char *pragramname)
 
     return 0;
 }
-
-
 
 // 监测这个进程的系统状况,每N分钟运行一次就OK了
 // 看门狗得到进程的状态
@@ -151,7 +145,6 @@ int Server_Base::watch_dog_status(bool first_record)
         mem_checkpoint_size_ = now_process_perf_.vm_size_;
         return 0;
     }
-
 
     // 处理内存变化的情况
     size_t vary_mem_size = 0;
@@ -306,7 +299,6 @@ int Server_Base::watch_dog_status(bool first_record)
     return 0;
 }
 
-
 int Server_Base::process_signal(void)
 {
     //忽视部分信号,这样简单
@@ -363,7 +355,6 @@ int Server_Base::daemon_init()
 
     return 0;
 }
-
 
 //通过启动参数0，得到app_base_name_，app_run_name_
 int Server_Base::create_app_name(const char *argv_0)
@@ -432,8 +423,6 @@ void Server_Base::set_service_info(const char *svc_name,
     }
 }
 
-
-
 //得到运行信息，可能包括路径信息
 const char *Server_Base::get_app_runname()
 {
@@ -446,8 +435,6 @@ const char *Server_Base::get_app_basename()
     return app_base_name_.c_str();
 }
 
-
-
 //设置进程是否运行的标志
 void Server_Base::set_run_sign(bool app_run)
 {
@@ -459,7 +446,6 @@ void Server_Base::set_reload_sign(bool app_reload)
 {
     app_reload_ = app_reload;
 }
-
 
 //信号处理代码，
 #ifdef ZCE_OS_WINDOWS
@@ -488,8 +474,6 @@ void Server_Base::reload_cfg_signal(int)
 
 #endif
 
-
-
 //在Windows 体系体系一下，可以搞成一个服务，安全性更高
 #if defined ZCE_OS_WINDOWS
 
@@ -511,7 +495,6 @@ int Server_Base::win_services_run()
     if (b_ret)
     {
         //LogEvent(_T("Register Service Main Function Success!"));
-        
     }
     else
     {
@@ -526,7 +509,6 @@ int Server_Base::win_services_run()
 //安装服务
 int Server_Base::win_services_install()
 {
-
     if (win_services_isinstalled())
     {
         printf("install service fail. service %s already exist",app_base_name_.c_str());
@@ -638,7 +620,6 @@ int Server_Base::win_services_uninstall()
     printf("uninstall service %s fail.\n",app_base_name_.c_str());
     //LogEvent(_T("Service could not be deleted"));
     return -1;
-
 }
 
 //检查服务是否安装
@@ -739,7 +720,6 @@ void WINAPI Server_Base::win_services_ctrl(DWORD op_code)
     }
 }
 
-
 int Server_Base::log_event(const char *format_str,...)
 {
     const size_t BUFFER_LEN = 512;
@@ -750,7 +730,7 @@ int Server_Base::log_event(const char *format_str,...)
     va_list arg_list;
 
     va_start(arg_list,format_str);
-    vsnprintf(out_msg,BUFFER_LEN -1,format_str,arg_list);
+    vsnprintf(out_msg,BUFFER_LEN - 1,format_str,arg_list);
     va_end(arg_list);
 
     event_source = ::RegisterEventSource(NULL,app_base_name_.c_str());
@@ -761,7 +741,6 @@ int Server_Base::log_event(const char *format_str,...)
     }
     return 0;
 }
-
 }
 
 #endif //#if defined ZCE_OS_WINDOWS

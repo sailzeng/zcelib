@@ -1,23 +1,20 @@
-
 #include "zce/predefine.h"
 #include "zce/os_adapt/error.h"
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/dirent.h"
 #include "zce/os_adapt/shm.h"
 
-
 //
-void *zce::mmap (void *addr,
-                 size_t len,
-                 int prot,
-                 int flags,
-                 ZCE_HANDLE file_handle,
-                 size_t off)
+void *zce::mmap(void *addr,
+                size_t len,
+                int prot,
+                int flags,
+                ZCE_HANDLE file_handle,
+                size_t off)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
-    if (ZCE_BIT_ISNOT_SET (flags, MAP_FIXED))
+    if (ZCE_BIT_ISNOT_SET(flags,MAP_FIXED))
     {
         addr = 0;
     }
@@ -26,22 +23,21 @@ void *zce::mmap (void *addr,
     DWORD  nt_flags = 0;
 
     // can not map to address 0
-    if (ZCE_BIT_IS_SET (flags, MAP_FIXED) && 0 == addr )
+    if (ZCE_BIT_IS_SET(flags,MAP_FIXED) && 0 == addr)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
     }
 
     //匿名使用，必须文件句柄是无效值
-    if (ZCE_BIT_IS_SET(flags, MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
+    if (ZCE_BIT_IS_SET(flags,MAP_ANONYMOUS) && ZCE_INVALID_HANDLE != file_handle || file_handle == NULL)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
     }
 
-
     //这段在干嘛，就是将mmap的prot参数转换成微软的的参数，TNND，
-    if ( PROT_NONE == prot )
+    if (PROT_NONE == prot)
     {
         nt_flag_protect = PAGE_NOACCESS;
     }
@@ -50,7 +46,7 @@ void *zce::mmap (void *addr,
         nt_flag_protect = PAGE_READWRITE;
         nt_flags = FILE_MAP_READ;
     }
-    else if ( ZCE_BIT_IS_SET(prot, PROT_READ ) && ZCE_BIT_IS_SET(prot, PROT_WRITE) )
+    else if (ZCE_BIT_IS_SET(prot,PROT_READ) && ZCE_BIT_IS_SET(prot,PROT_WRITE))
     {
         nt_flag_protect = PAGE_READWRITE;
         nt_flags = FILE_MAP_WRITE;
@@ -60,12 +56,12 @@ void *zce::mmap (void *addr,
         nt_flag_protect = PAGE_EXECUTE;
         nt_flags = FILE_MAP_EXECUTE;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ) )
+    else if (ZCE_BIT_IS_SET(prot,PROT_EXEC) && ZCE_BIT_IS_SET(prot,PROT_READ))
     {
         nt_flag_protect = PAGE_EXECUTE_READ;
         nt_flags = FILE_MAP_EXECUTE | FILE_MAP_READ;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE ) )
+    else if (ZCE_BIT_IS_SET(prot,PROT_EXEC) && ZCE_BIT_IS_SET(prot,PROT_READ) && ZCE_BIT_IS_SET(prot,PROT_WRITE))
     {
         nt_flag_protect = PAGE_EXECUTE_READWRITE;
         nt_flags = FILE_MAP_EXECUTE | FILE_MAP_WRITE;
@@ -77,24 +73,23 @@ void *zce::mmap (void *addr,
     }
 
     //如果是私有的，相当于所有人都是副本
-    if (ZCE_BIT_IS_SET (flags, MAP_PRIVATE))
+    if (ZCE_BIT_IS_SET(flags,MAP_PRIVATE))
     {
         //PAGE_WRITECOPY 等价 PAGE_READONLY
         nt_flag_protect |= PAGE_WRITECOPY;
         nt_flags = FILE_MAP_COPY;
     }
 
-
     LARGE_INTEGER longlong_value;
     longlong_value.QuadPart = len;
 
     //file_handle == ZCE_INVALID_HANDLE后，创建的共享内存不在文件里面，而在系统映射文件中 system paging file
-    ZCE_HANDLE file_mapping = ::CreateFileMappingA (file_handle,
-                                                    NULL,
-                                                    nt_flag_protect,
-                                                    (file_handle == ZCE_INVALID_HANDLE) ? longlong_value.HighPart : 0,
-                                                    (file_handle == ZCE_INVALID_HANDLE) ? longlong_value.LowPart : 0,
-                                                    NULL);
+    ZCE_HANDLE file_mapping = ::CreateFileMappingA(file_handle,
+                                                   NULL,
+                                                   nt_flag_protect,
+                                                   (file_handle == ZCE_INVALID_HANDLE)?longlong_value.HighPart:0,
+                                                   (file_handle == ZCE_INVALID_HANDLE)?longlong_value.LowPart:0,
+                                                   NULL);
 
     if (file_mapping == 0)
     {
@@ -103,16 +98,15 @@ void *zce::mmap (void *addr,
 
     //
     longlong_value.QuadPart = off;
-    void *addr_mapping = ::MapViewOfFileEx (file_mapping,
-                                            nt_flags,
-                                            longlong_value.HighPart,
-                                            longlong_value.LowPart,
-                                            len,
-                                            addr);
+    void *addr_mapping = ::MapViewOfFileEx(file_mapping,
+                                           nt_flags,
+                                           longlong_value.HighPart,
+                                           longlong_value.LowPart,
+                                           len,
+                                           addr);
 
     // Only close this down if we used the temporary.
-    ::CloseHandle (file_mapping);
-
+    ::CloseHandle(file_mapping);
 
     if (addr_mapping == 0)
     {
@@ -125,25 +119,24 @@ void *zce::mmap (void *addr,
 
 #elif defined (ZCE_OS_LINUX)
     //
-    return ::mmap ( addr,
-                    len,
-                    prot,
-                    flags,
-                    file_handle,
-                    off);
+    return ::mmap(addr,
+                  len,
+                  prot,
+                  flags,
+                  file_handle,
+                  off);
 
 #endif
 }
 
-
-int zce::mprotect (const void *addr, size_t len, int prot)
+int zce::mprotect(const void *addr,size_t len,int prot)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     DWORD nt_flag_protect = 0;
 
     //这段在干嘛，就是将mmap的prot参数转换成微软的的参数，TNND，
-    if ( PROT_NONE == prot )
+    if (PROT_NONE == prot)
     {
         nt_flag_protect = PAGE_NOACCESS;
     }
@@ -151,7 +144,7 @@ int zce::mprotect (const void *addr, size_t len, int prot)
     {
         nt_flag_protect = PAGE_READONLY;
     }
-    else if ( ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE) )
+    else if (ZCE_BIT_IS_SET(prot,PROT_READ) && ZCE_BIT_IS_SET(prot,PROT_WRITE))
     {
         nt_flag_protect = PAGE_READWRITE;
     }
@@ -159,11 +152,11 @@ int zce::mprotect (const void *addr, size_t len, int prot)
     {
         nt_flag_protect = PAGE_EXECUTE;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ) )
+    else if (ZCE_BIT_IS_SET(prot,PROT_EXEC) && ZCE_BIT_IS_SET(prot,PROT_READ))
     {
         nt_flag_protect = PAGE_EXECUTE_READ;
     }
-    else if (ZCE_BIT_IS_SET(prot, PROT_EXEC) && ZCE_BIT_IS_SET(prot, PROT_READ) && ZCE_BIT_IS_SET(prot, PROT_WRITE) )
+    else if (ZCE_BIT_IS_SET(prot,PROT_EXEC) && ZCE_BIT_IS_SET(prot,PROT_READ) && ZCE_BIT_IS_SET(prot,PROT_WRITE))
     {
         nt_flag_protect = PAGE_EXECUTE_READWRITE;
     }
@@ -174,7 +167,7 @@ int zce::mprotect (const void *addr, size_t len, int prot)
     }
 
     DWORD dummy = 0;
-    BOOL ret_bool = ::VirtualProtect((LPVOID)addr, len, prot, &dummy);
+    BOOL ret_bool = ::VirtualProtect((LPVOID)addr,len,prot,&dummy);
 
     if (ret_bool == FALSE)
     {
@@ -184,18 +177,17 @@ int zce::mprotect (const void *addr, size_t len, int prot)
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::mprotect ((void *) addr, len, prot);
+    return ::mprotect((void *)addr,len,prot);
 
 #endif
 }
 
-
-int zce::msync (void *addr, size_t len, int sync)
+int zce::msync(void *addr,size_t len,int sync)
 {
 #if defined (ZCE_OS_WINDOWS)
-    ZCE_UNUSED_ARG (sync);
+    ZCE_UNUSED_ARG(sync);
 
-    BOOL ret_bool = ::FlushViewOfFile (addr, len);
+    BOOL ret_bool = ::FlushViewOfFile(addr,len);
 
     if (ret_bool == FALSE)
     {
@@ -205,18 +197,16 @@ int zce::msync (void *addr, size_t len, int sync)
     return 0;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::msync (addr, len, sync);
+    return ::msync(addr,len,sync);
 #endif
 }
 
-
-
-int zce::munmap (void *addr, size_t len)
+int zce::munmap(void *addr,size_t len)
 {
 #if defined (ZCE_OS_WINDOWS)
-    ZCE_UNUSED_ARG (len);
+    ZCE_UNUSED_ARG(len);
 
-    BOOL ret_bool = ::UnmapViewOfFile (addr);
+    BOOL ret_bool = ::UnmapViewOfFile(addr);
 
     if (ret_bool == FALSE)
     {
@@ -225,14 +215,13 @@ int zce::munmap (void *addr, size_t len)
 
     return 0;
 #elif defined (ZCE_OS_LINUX)
-    return ::munmap (addr, len);
+    return ::munmap(addr,len);
 #endif
 }
 
-
-ZCE_HANDLE zce::shm_open (const char *file_path,
-                          int mode,
-                          mode_t perms)
+ZCE_HANDLE zce::shm_open(const char *file_path,
+                         int mode,
+                         mode_t perms)
 {
     //
 #if defined (ZCE_OS_WINDOWS)
@@ -242,27 +231,27 @@ ZCE_HANDLE zce::shm_open (const char *file_path,
 
     char shm_file_name[PATH_MAX + 1];
     shm_file_name[PATH_MAX] = '\0';
-    snprintf(shm_file_name, PATH_MAX, "%s%s", ZCE_POSIX_MMAP_DIRECTORY, file_path);
+    snprintf(shm_file_name,PATH_MAX,"%s%s",ZCE_POSIX_MMAP_DIRECTORY,file_path);
 
-    return zce::open (shm_file_name, mode, perms);
+    return zce::open(shm_file_name,mode,perms);
 
 #elif defined (ZCE_OS_LINUX)
-    return ::shm_open (file_path, mode, perms);
+    return ::shm_open(file_path,mode,perms);
 #endif
 }
 
-int zce::shm_unlink (const char *file_path)
+int zce::shm_unlink(const char *file_path)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     char shm_file_name[PATH_MAX + 1];
     shm_file_name[PATH_MAX] = '\0';
-    snprintf(shm_file_name, PATH_MAX, "%s%s", ZCE_POSIX_MMAP_DIRECTORY, file_path);
+    snprintf(shm_file_name,PATH_MAX,"%s%s",ZCE_POSIX_MMAP_DIRECTORY,file_path);
 
-    return ::unlink (shm_file_name);
+    return ::unlink(shm_file_name);
 
 #elif defined (ZCE_OS_LINUX)
-    return ::shm_unlink (file_path);
+    return ::shm_unlink(file_path);
 #endif
 }
 
@@ -273,36 +262,36 @@ int zce::shm_unlink (const char *file_path)
 //我个人对System V的IPC没有爱，一方面毕竟不如POSIX IPC在标准上站住了脚，System V的IPC这方面要弱一点，另一方面System V IPC 的接口设计也不如POSIX那么优雅，
 
 //创建或者访问一个共享内存区
-ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
+ZCE_HANDLE zce::shmget(key_t sysv_key,size_t size,int oflag)
 {
 #if defined (ZCE_OS_WINDOWS)
 
     DWORD nt_flag_protect = 0;
 
-    if (ZCE_BIT_IS_SET(oflag, SHM_R))
+    if (ZCE_BIT_IS_SET(oflag,SHM_R))
     {
         nt_flag_protect = PAGE_READONLY;
     }
 
-    if ( ZCE_BIT_IS_SET(oflag, SHM_W) )
+    if (ZCE_BIT_IS_SET(oflag,SHM_W))
     {
         nt_flag_protect = PAGE_READWRITE;
     }
 
     char map_file_name[PATH_MAX + 1];
     map_file_name[PATH_MAX] = 0;
-    snprintf(map_file_name, PATH_MAX, "ZCELIB.SYSV_IPC_SHM_%d.$$$", sysv_key);
+    snprintf(map_file_name,PATH_MAX,"ZCELIB.SYSV_IPC_SHM_%d.$$$",sysv_key);
 
     LARGE_INTEGER longlong_value;
     longlong_value.QuadPart = size;
 
     //file_handle == ZCE_INVALID_HANDLE后，创建的共享内存不再文件里面，而在系统映射文件中 system paging file
-    ZCE_HANDLE shm_handle = ::CreateFileMappingA (ZCE_INVALID_HANDLE,
-                                                  NULL,
-                                                  nt_flag_protect,
-                                                  longlong_value.HighPart,
-                                                  longlong_value.LowPart,
-                                                  (IPC_PRIVATE == sysv_key) ? NULL : map_file_name);
+    ZCE_HANDLE shm_handle = ::CreateFileMappingA(ZCE_INVALID_HANDLE,
+                                                 NULL,
+                                                 nt_flag_protect,
+                                                 longlong_value.HighPart,
+                                                 longlong_value.LowPart,
+                                                 (IPC_PRIVATE == sysv_key)?NULL:map_file_name);
 
     //解释一下上面最后一行的参数，当使用key为IPC_PRIVATE，每次都创建一个无名的贡献内存，
     //如果Key不为IPC_PRIVATE，我统一给他起一个名字
@@ -314,9 +303,9 @@ ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
     }
 
     //如果明确要求必须是创建，而且不能是已经存在的访问
-    if ( ZCE_BIT_IS_SET(oflag, IPC_CREAT)  &&  ZCE_BIT_IS_SET(oflag, IPC_EXCL) )
+    if (ZCE_BIT_IS_SET(oflag,IPC_CREAT) && ZCE_BIT_IS_SET(oflag,IPC_EXCL))
     {
-        if (ERROR_ALREADY_EXISTS == ::GetLastError() )
+        if (ERROR_ALREADY_EXISTS == ::GetLastError())
         {
             errno = EEXIST;
             return ZCE_INVALID_HANDLE;
@@ -326,22 +315,22 @@ ZCE_HANDLE zce::shmget(key_t sysv_key, size_t size, int oflag)
     return shm_handle;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::shmget(sysv_key, size, oflag);
+    return ::shmget(sysv_key,size,oflag);
 #endif
 }
 
 //打开已经shmget的共享内存区
-void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
+void *zce::shmat(ZCE_HANDLE shmid,const void *shmaddr,int shmflg)
 {
 #if defined (ZCE_OS_WINDOWS)
 
-    if (ZCE_BIT_ISNOT_SET (shmflg, SHM_RND))
+    if (ZCE_BIT_ISNOT_SET(shmflg,SHM_RND))
     {
         shmaddr = 0;
     }
 
     // can not map to address 0
-    if (ZCE_BIT_IS_SET (shmflg, SHM_RND) && 0 == shmaddr )
+    if (ZCE_BIT_IS_SET(shmflg,SHM_RND) && 0 == shmaddr)
     {
         errno = ENOTSUP;
         return MAP_FAILED;
@@ -349,12 +338,12 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 
     DWORD nt_flags = FILE_MAP_WRITE;
 
-    if (ZCE_BIT_IS_SET (shmflg, SHM_RDONLY))
+    if (ZCE_BIT_IS_SET(shmflg,SHM_RDONLY))
     {
         nt_flags = FILE_MAP_READ;
     }
 
-    if (ZCE_BIT_IS_SET (shmflg, SHM_EXEC))
+    if (ZCE_BIT_IS_SET(shmflg,SHM_EXEC))
     {
         nt_flags = FILE_MAP_READ | FILE_MAP_EXECUTE;
     }
@@ -364,12 +353,12 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
     longlong_value.QuadPart = 0;
 
     //size参数为0标识全部内存映射
-    void *addr_mapping = ::MapViewOfFileEx (shmid,
-                                            nt_flags,
-                                            longlong_value.HighPart,
-                                            longlong_value.LowPart,
-                                            0,
-                                            (LPVOID)shmaddr);
+    void *addr_mapping = ::MapViewOfFileEx(shmid,
+                                           nt_flags,
+                                           longlong_value.HighPart,
+                                           longlong_value.LowPart,
+                                           0,
+                                           (LPVOID)shmaddr);
 
     //如果映射失败
     if (NULL == addr_mapping)
@@ -379,9 +368,8 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 
     return addr_mapping;
 
-
 #elif defined (ZCE_OS_LINUX)
-    return ::shmat(shmid, shmaddr, shmflg);
+    return ::shmat(shmid,shmaddr,shmflg);
 #endif
 }
 
@@ -389,7 +377,7 @@ void *zce::shmat(ZCE_HANDLE shmid, const void *shmaddr, int shmflg)
 int zce::shmdt(const void *shmaddr)
 {
 #if defined (ZCE_OS_WINDOWS)
-    BOOL ret_bool = ::UnmapViewOfFile (shmaddr);
+    BOOL ret_bool = ::UnmapViewOfFile(shmaddr);
 
     if (ret_bool == FALSE)
     {
@@ -404,7 +392,7 @@ int zce::shmdt(const void *shmaddr)
 }
 
 //对共享内存区提供多种操作
-int zce::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf)
+int zce::shmctl(ZCE_HANDLE shmid,int cmd,struct shmid_ds *buf)
 {
 #if defined (ZCE_OS_WINDOWS)
 
@@ -421,9 +409,6 @@ int zce::shmctl(ZCE_HANDLE shmid, int cmd, struct shmid_ds *buf)
     return -1;
 
 #elif defined (ZCE_OS_LINUX)
-    return ::shmctl(shmid, cmd, buf);
+    return ::shmctl(shmid,cmd,buf);
 #endif
 }
-
-
-

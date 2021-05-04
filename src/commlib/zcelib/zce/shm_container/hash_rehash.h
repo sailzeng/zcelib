@@ -59,48 +59,47 @@
 
 namespace zce
 {
-
 //为了方便编译，预先定义一下
 template < class _value_type,
-           class _key_type,
-           class _hash_fun,
-           class _extract_key,
-           class _equal_key,
-           class _washout_fun > class shm_hash_rehash;
+    class _key_type,
+    class _hash_fun,
+    class _extract_key,
+    class _equal_key,
+    class _washout_fun > class shm_hash_rehash;
 
 //SAFE HASH 迭代器，注意这儿是SAFE HASH，不是SAFE iterator，我吧HASH放前面纯粹是方便几个文件
 //放在一起
 template < class _value_type,
-           class _key_type,
-           class _hashfun,
-           class _extract_key,
-           class _equal_key,
-           class _washout_fun >
-class _hash_rehash_iterator
+    class _key_type,
+    class _hashfun,
+    class _extract_key,
+    class _equal_key,
+    class _washout_fun >
+    class _hash_rehash_iterator
 {
 protected:
 
     //HASH TABLE的定义
     typedef shm_hash_rehash < _value_type,
-            _key_type,
-            _hashfun,
-            _extract_key,
-            _equal_key,
-            _washout_fun > _hashtable_rehash;
+        _key_type,
+        _hashfun,
+        _extract_key,
+        _equal_key,
+        _washout_fun > _hashtable_rehash;
 
     //定义迭代器
     typedef _hash_rehash_iterator < _value_type,
-            _key_type,
-            _hashfun,
-            _extract_key,
-            _equal_key,
-            _washout_fun > iterator;
+        _key_type,
+        _hashfun,
+        _extract_key,
+        _equal_key,
+        _washout_fun > iterator;
 
 protected:
     //序列号
     size_t                 serial_;
     //
-    _hashtable_rehash     *ht_rehash_instance_;
+    _hashtable_rehash *ht_rehash_instance_;
 
 public:
     _hash_rehash_iterator():
@@ -109,7 +108,7 @@ public:
     {
     }
 
-    _hash_rehash_iterator(size_t serial, _hashtable_rehash *ht_safe_inst):
+    _hash_rehash_iterator(size_t serial,_hashtable_rehash *ht_safe_inst):
         serial_(serial),
         ht_rehash_instance_(ht_safe_inst)
     {
@@ -121,7 +120,7 @@ public:
 
     _value_type &operator*() const
     {
-        return ht_rehash_instance_->value_base_ [serial_];
+        return ht_rehash_instance_->value_base_[serial_];
     }
 
     _value_type *operator->() const
@@ -138,12 +137,12 @@ public:
         _equal_key   equal_key;
         size_t old_serial = serial_ + 1;
 
-        for (; old_serial < ht_rehash_instance_->hash_safe_head_->num_of_node_ ; ++old_serial)
+        for (; old_serial < ht_rehash_instance_->hash_safe_head_->num_of_node_; ++old_serial)
         {
             //这个用无效值对象，对所有元素进行赋值，为什么使用placement new，因为更加上流一点
             //如果不是一个无效值
-            if (false == equal_key( get_key (*(ht_rehash_instance_->value_base_ + old_serial)),
-                                    get_key(ht_rehash_instance_->invalid_data_)) )
+            if (false == equal_key(get_key(*(ht_rehash_instance_->value_base_ + old_serial)),
+                get_key(ht_rehash_instance_->invalid_data_)))
             {
                 serial_ = old_serial;
                 break;
@@ -163,14 +162,14 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++*this;
+        ++ *this;
         return tmp;
     }
     //
     bool operator==(const iterator &it) const
     {
         if (ht_rehash_instance_ == it.ht_rehash_instance_ &&
-            serial_ == it.serial_ )
+            serial_ == it.serial_)
         {
             return true;
         }
@@ -199,7 +198,6 @@ static const size_t MIN_PRIMES_LIST_NUM = 4;
 
 static const size_t MAX_PRIMES_LIST_NUM = 64;
 
-
 //头部，LRU_HASH的头部结构，放在LRUHASH内存的前面
 class _hashtable_rehash_head
 {
@@ -214,7 +212,7 @@ protected:
         expire_start_(0)
     {
         //清0
-        memset(primes_ary_, 0, sizeof(primes_ary_));
+        memset(primes_ary_,0,sizeof(primes_ary_));
     }
     ~_hashtable_rehash_head()
     {
@@ -240,47 +238,43 @@ public:
 
     //淘汰其实的位置，为了避免每次淘汰都从一个地方开始
     size_t           expire_start_;
-
 };
-
-
 
 //=============================================================================================
 
-
 template < class _value_type,
-           class _key_type,
-           class _hash_fun = smem_hash<_key_type>,
-           class _extract_key = smem_identity<_value_type>,
-           class _equal_key = std::equal_to<_key_type>,
-           class _washout_fun = _default_washout_fun<_value_type> >
-class shm_hash_rehash : public  _shm_memory_base
+    class _key_type,
+    class _hash_fun = smem_hash<_key_type>,
+    class _extract_key = smem_identity<_value_type>,
+    class _equal_key = std::equal_to<_key_type>,
+    class _washout_fun = _default_washout_fun<_value_type> >
+    class shm_hash_rehash: public  _shm_memory_base
 {
 public:
 
     //定义迭代器
     typedef _hash_rehash_iterator < _value_type,
-            _key_type,
-            _hash_fun,
-            _extract_key,
-            _equal_key,
-            _washout_fun > iterator;
+        _key_type,
+        _hash_fun,
+        _extract_key,
+        _equal_key,
+        _washout_fun > iterator;
 
     //定义自己
     typedef shm_hash_rehash < _value_type,
-            _key_type,
-            _hash_fun,
-            _extract_key,
-            _equal_key,
-            _washout_fun > self;
+        _key_type,
+        _hash_fun,
+        _extract_key,
+        _equal_key,
+        _washout_fun > self;
 
     //声明迭代器是友元
     friend class _hash_rehash_iterator < _value_type,
-               _key_type,
-               _hash_fun,
-               _extract_key,
-               _equal_key,
-               _washout_fun >;
+        _key_type,
+        _hash_fun,
+        _extract_key,
+        _equal_key,
+        _washout_fun >;
 
 protected:
 
@@ -289,13 +283,13 @@ protected:
     _value_type              invalid_data_;
 
     //放在共享内存头部的指针
-    _hashtable_rehash_head  *hash_safe_head_;
+    _hashtable_rehash_head *hash_safe_head_;
 
     //数据区指针
-    _value_type             *value_base_;
+    _value_type *value_base_;
 
     //优先级的数据指针,用32位的数据保存优先级
-    unsigned int            *priority_base_;
+    unsigned int *priority_base_;
 
 protected:
 
@@ -315,15 +309,15 @@ public:
 protected:
 
     //从value中取值
-    size_t bkt_num_value(const _value_type &obj, size_t one_primes) const
+    size_t bkt_num_value(const _value_type &obj,size_t one_primes) const
     {
         _extract_key get_key;
-        return static_cast<size_t>(bkt_num_key(get_key(obj), one_primes));
+        return static_cast<size_t>(bkt_num_key(get_key(obj),one_primes));
     }
 
     //为什么不能重载上面的函数,自己考虑一下,
     //重载的话，如果_value_type和_key_type一样，就等着哭吧 ---inmore
-    size_t bkt_num_key(const _key_type &key, size_t one_primes) const
+    size_t bkt_num_key(const _key_type &key,size_t one_primes) const
     {
         _hash_fun hash_fun;
         return static_cast<size_t>(hash_fun(key) % one_primes);
@@ -336,21 +330,20 @@ protected:
     }
 
     //用于自己的内部的初始化处理
-    static self  *initialize_i(size_t row_number,
-                               const size_t primes_list[],
-                               size_t num_node,
-                               size_t sz_alloc,
-                               char *pmmap,
-                               const _value_type &invalid_data,
-                               bool if_expire,
-                               bool if_restore)
+    static self *initialize_i(size_t row_number,
+                              const size_t primes_list[],
+                              size_t num_node,
+                              size_t sz_alloc,
+                              char *pmmap,
+                              const _value_type &invalid_data,
+                              bool if_expire,
+                              bool if_restore)
     {
-
         self *instance = new shm_hash_rehash < _value_type,
-        _key_type,
-        _hash_fun,
-        _extract_key,
-        _equal_key > ();
+            _key_type,
+            _hash_fun,
+            _extract_key,
+            _equal_key >();
 
         instance->smem_base_ = pmmap;
         char *tmp_base = instance->smem_base_;
@@ -405,7 +398,6 @@ protected:
 
 public:
 
-
     /*!
     * @brief      根据你要分配NODE数量，返回需要分配的空间大小，以及相应的质数数组信息
     * @return     size_t 返回值为需要分配的空间大小
@@ -424,9 +416,9 @@ public:
     {
         ZCE_ASSERT(row_prime_ary >= MIN_PRIMES_LIST_NUM && row_prime_ary <= MAX_PRIMES_LIST_NUM);
 
-        zce::hash_prime_ary(req_num, real_num, row_prime_ary, prime_ary);
+        zce::hash_prime_ary(req_num,real_num,row_prime_ary,prime_ary);
 
-        size_t sz_alloc =  0;
+        size_t sz_alloc = 0;
         //
         sz_alloc += sizeof(_hashtable_rehash_head);
 
@@ -440,7 +432,6 @@ public:
 
         return sz_alloc;
     }
-
 
     /*!
     * @brief      返回值为需要分配的空间大小，如果是输入质数队列，用这个函数得到空间,
@@ -470,7 +461,7 @@ public:
         ZCE_ASSERT(node_count > 0);
 
         //
-        size_t sz_alloc =  0;
+        size_t sz_alloc = 0;
 
         //计算空间，根据头，质数队列,结构数量，优先级空间
         sz_alloc += sizeof(_hashtable_rehash_head);
@@ -484,7 +475,6 @@ public:
 
         return sz_alloc;
     }
-
 
     /*!
     * @brief      初始化，返回函数对象的指针，以后就通过这个指针操作，为什么不直接用构造函数呢，我很难回答，可能是通过getallocsize一脉相承？
@@ -511,9 +501,9 @@ public:
 
         //调整,根据你的尺寸，向上找一个合适的空间
         size_t prime_ary[MAX_PRIMES_LIST_NUM];
-        size_t sz_alloc = getallocsize(req_num, real_num, prime_ary, if_expire, row_prime_ary);
+        size_t sz_alloc = getallocsize(req_num,real_num,prime_ary,if_expire,row_prime_ary);
 
-        _hashtable_rehash_head *hashhead =  reinterpret_cast< _hashtable_rehash_head * >(pmmap);
+        _hashtable_rehash_head *hashhead = reinterpret_cast<_hashtable_rehash_head *>(pmmap);
 
         //如果是恢复,数据都在内存中,对数据进行检查
         if (if_restore == true)
@@ -522,8 +512,8 @@ public:
             //但如果不进行这样，即使如果质数的矩阵改变了，还是可以用共享内存中间的数据继续跑，我选择了严谨，而不是
 
             //检查一下恢复的内存是否正确,
-            if ( sz_alloc != hashhead->size_of_mmap_ ||
-                 req_num != hashhead->num_of_node_ )
+            if (sz_alloc != hashhead->size_of_mmap_ ||
+                req_num != hashhead->num_of_node_)
             {
                 return NULL;
             }
@@ -555,7 +545,6 @@ public:
                     return NULL;
                 }
             }
-
         }
 
         //打完收工
@@ -567,7 +556,6 @@ public:
                             invalid_data,
                             if_expire,
                             if_restore);
-
     }
 
     //清理初始化所有的内存,所有的节点为FREE
@@ -578,7 +566,7 @@ public:
         hash_safe_head_->sz_usenode_ = 0;
 
         //初始化free数据区，将所有的数据初始化成无效值，用于表示一个记录是否修正了
-        for (size_t i = 0; i < hash_safe_head_->num_of_node_ ; ++i )
+        for (size_t i = 0; i < hash_safe_head_->num_of_node_; ++i)
         {
             //这个用无效值对象，对所有元素进行赋值，为什么使用placement new，因为更加上流一点
             new (value_base_ + i)_value_type(invalid_data_);
@@ -587,7 +575,7 @@ public:
         //如果要记录淘汰信息
         if (if_expire)
         {
-            memset(priority_base_, 0, (sizeof(unsigned int) * (hash_safe_head_->num_of_node_)));
+            memset(priority_base_,0,(sizeof(unsigned int) * (hash_safe_head_->num_of_node_)));
         }
     }
 
@@ -599,12 +587,12 @@ public:
                             bool if_expire,
                             bool if_restore = false)
     {
-        assert(pmmap != NULL );
+        assert(pmmap != NULL);
 
-        _hashtable_rehash_head *hashhead =  reinterpret_cast< _hashtable_rehash_head * >(pmmap);
+        _hashtable_rehash_head *hashhead = reinterpret_cast<_hashtable_rehash_head *>(pmmap);
 
         size_t node_count = 0;
-        size_t sz_alloc = getallocsize(primes_number, primes_list, if_expire, node_count);
+        size_t sz_alloc = getallocsize(primes_number,primes_list,if_expire,node_count);
 
         //如果是恢复,数据都在内存中,对数据进行检查
         if (if_restore == true)
@@ -614,13 +602,13 @@ public:
 
             //检查一下恢复的内存是否正确,
             if (sz_alloc = hashhead->size_of_mmap_ ||
-                           node_count != hashhead->num_of_node_ )
+                node_count != hashhead->num_of_node_)
             {
                 return NULL;
             }
 
             //质数列表的个数应该一致
-            if ( hashhead->row_primes_ary_ != primes_number )
+            if (hashhead->row_primes_ary_ != primes_number)
             {
                 return NULL;
             }
@@ -658,9 +646,9 @@ public:
         for (size_t i = 0; i < hash_safe_head_->num_of_node_; ++i)
         {
             //如果不是一个无效值
-            if (false == equal_key(get_key(*(value_base_ + i)), get_key(invalid_data_)) )
+            if (false == equal_key(get_key(*(value_base_ + i)),get_key(invalid_data_)))
             {
-                return iterator( i, this);
+                return iterator(i,this);
             }
         }
 
@@ -670,7 +658,7 @@ public:
     //得到结束位置
     iterator end()
     {
-        return iterator(_INVALID_POINT, this);
+        return iterator(_INVALID_POINT,this);
     }
     //当前使用的节点数量
     size_t size() const
@@ -694,7 +682,7 @@ public:
     }
 
     //插入节点
-    std::pair<iterator, bool> insert(const _value_type &val )
+    std::pair<iterator,bool> insert(const _value_type &val)
     {
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
@@ -704,19 +692,19 @@ public:
         size_t idx_no_use = _INVALID_POINT;
 
         //循环进行N此取模操作，
-        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i )
+        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
-            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_value(val,hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])), (get_key(val))) )
+            if (equal_key((get_key(value_base_[idx_count])),(get_key(val))))
             {
-                return std::pair<iterator, bool>(iterator(idx_count, this), false);
+                return std::pair<iterator,bool>(iterator(idx_count,this),false);
             }
 
             //如果是一个无效数据，表示一个空位置
-            if (equal_key((get_key(value_base_[idx_count])), (get_key(invalid_data_))) == true)
+            if (equal_key((get_key(value_base_[idx_count])),(get_key(invalid_data_))) == true)
             {
                 if (idx_no_use == _INVALID_POINT)
                 {
@@ -730,9 +718,9 @@ public:
         }
 
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
-        if (_INVALID_POINT == idx_no_use )
+        if (_INVALID_POINT == idx_no_use)
         {
-            return std::pair<iterator, bool>(end(), false);
+            return std::pair<iterator,bool>(end(),false);
         }
 
         //使用placement new进行赋值
@@ -741,18 +729,17 @@ public:
         ++(hash_safe_head_->sz_usenode_);
         --(hash_safe_head_->sz_freenode_);
 
-        return std::pair<iterator, bool>(iterator(idx_no_use, this), true);
+        return std::pair<iterator,bool>(iterator(idx_no_use,this),true);
     }
 
     //带优先级的插入，开始初始化的时候必须if_expire == true
     //@const _value_type &val 插入的数据
     //@unsigned int priority  插入数据优先级，
     //@unsigned int expire_priority = static_cast<unsigned int>(-1)，淘汰的优先级，默认为最大值，不进行不淘汰，这个修正来自djiang的好建议
-    std::pair<iterator, bool> insert(const _value_type &val,
-                                     unsigned int priority,
-                                     unsigned int expire_priority = 0)
+    std::pair<iterator,bool> insert(const _value_type &val,
+                                    unsigned int priority,
+                                    unsigned int expire_priority = 0)
     {
-
         //使用函数对象,一个类单独定义一个是否更好?
         _extract_key get_key;
         _equal_key   equal_key;
@@ -761,19 +748,19 @@ public:
         size_t idx_no_use = _INVALID_POINT;
 
         //循环进行N此取模操作，
-        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i )
+        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
-            size_t idx = bkt_num_value(val, hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_value(val,hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])), (get_key(val))) )
+            if (equal_key((get_key(value_base_[idx_count])),(get_key(val))))
             {
-                return std::pair<iterator, bool>(iterator(idx_count, this), false);
+                return std::pair<iterator,bool>(iterator(idx_count,this),false);
             }
 
             //如果是一个无效数据，表示一个空位置
-            if (equal_key((get_key(value_base_[idx_count])), (get_key(invalid_data_))) == true)
+            if (equal_key((get_key(value_base_[idx_count])),(get_key(invalid_data_))) == true)
             {
                 if (idx_no_use == _INVALID_POINT)
                 {
@@ -798,9 +785,9 @@ public:
         }
 
         //如果每一列对应的位置都被流氓占用了,返回一个特殊的迭代器end,告诉前段，空间危险了
-        if (_INVALID_POINT == idx_no_use )
+        if (_INVALID_POINT == idx_no_use)
         {
-            return std::pair<iterator, bool>(end(), false);
+            return std::pair<iterator,bool>(end(),false);
         }
 
         //使用placement new进行赋值
@@ -812,7 +799,7 @@ public:
         //如果插入成功了记录优先级
         priority_base_[idx_no_use] = priority;
 
-        return std::pair<iterator, bool>(iterator(idx_no_use, this), true);
+        return std::pair<iterator,bool>(iterator(idx_no_use,this),true);
     }
 
     //查询相应的Key是否有,返回迭代器
@@ -826,16 +813,16 @@ public:
         size_t idx_count = 0;
 
         //循环进行N此取模操作，
-        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i )
+        for (size_t i = 0; i < hash_safe_head_->row_primes_ary_; ++i)
         {
             //将val取出key，取模
-            size_t idx = bkt_num_key(key, hash_safe_head_->primes_ary_[i]);
+            size_t idx = bkt_num_key(key,hash_safe_head_->primes_ary_[i]);
             idx_count += idx;
 
             //如果找到相同的Key函数,这个函数的语义不能这样
-            if (equal_key((get_key(value_base_[idx_count])), key) )
+            if (equal_key((get_key(value_base_[idx_count])),key))
             {
-                return iterator(idx_count, this);
+                return iterator(idx_count,this);
             }
 
             //准备在下一个质数列里面找
@@ -873,7 +860,7 @@ public:
             //调用析构函数,注意这个调用只能通过指针进行，对于int，之类的类型
             (value_base_ + it_del.getserial())->~_value_type();
             //恢复成无效数据
-            new (value_base_ + it_del.getserial() )_value_type(invalid_data_);
+            new (value_base_ + it_del.getserial())_value_type(invalid_data_);
             --(hash_safe_head_->sz_usenode_);
             ++(hash_safe_head_->sz_freenode_);
 
@@ -884,21 +871,21 @@ public:
     }
 
     //删除某个值
-    bool erase_value(const _value_type &val )
+    bool erase_value(const _value_type &val)
     {
         _extract_key get_key;
-        return erase( get_key(val));
+        return erase(get_key(val));
     }
 
     //激活,将激活的数据挂到LIST的最开始,淘汰使用expire,disuse
     //优先级参数可以使用当前的时间
     bool active(const _key_type &key,
-                unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
+                unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         iterator  iter_tmp = find(key);
 
         //如果找到了对应的KEY
-        if ( end()  != iter_tmp )
+        if (end() != iter_tmp)
         {
             priority_base_[iter_tmp.getserial()] = priority;
             return true;
@@ -909,47 +896,43 @@ public:
 
     //
     bool active_value(const _value_type &val,
-                      unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/ )
+                      unsigned int priority /*=static_cast<unsigned int>(time(NULL))*/)
     {
         _extract_key get_key;
-        return active(get_key(val), priority);
+        return active(get_key(val),priority);
     }
 
     //淘汰过期的数据,假设LIST中间的数据是按照过期实际排序的，这要求你传入的优先级最好是时间
     //小于等于这个优先级的数据将被淘汰
     //hope_expire_num表示你希望删除多少个值，默认为最大值,全部淘汰
-    size_t expire(unsigned int expire_time, size_t hope_expire_num = static_cast<size_t>(-1))
+    size_t expire(unsigned int expire_time,size_t hope_expire_num = static_cast<size_t>(-1))
     {
         //从尾部开始检查，
         size_t expire_num = 0;
         size_t i = 0;
 
-        for (; i < hash_safe_head_->num_of_node_ && expire_num < hope_expire_num ; ++i)
+        for (; i < hash_safe_head_->num_of_node_ && expire_num < hope_expire_num; ++i)
         {
-            size_t del_iter = ( hash_safe_head_->expire_start_ + i) % hash_safe_head_->num_of_node_;
+            size_t del_iter = (hash_safe_head_->expire_start_ + i) % hash_safe_head_->num_of_node_;
 
             //小于等于
             if (priority_base_[del_iter] <= expire_time)
             {
-
                 _washout_fun wash_fun;
                 wash_fun(value_base_[del_iter]);
                 ++expire_num;
                 //
-                iterator iter_tmp(del_iter, this);
+                iterator iter_tmp(del_iter,this);
                 erase(iter_tmp);
             }
         }
 
         //从一个特殊的地方上开始
-        hash_safe_head_->expire_start_ = ( hash_safe_head_->expire_start_ + i) % hash_safe_head_->num_of_node_;
+        hash_safe_head_->expire_start_ = (hash_safe_head_->expire_start_ + i) % hash_safe_head_->num_of_node_;
 
         return expire_num;
     }
-
 };
-
 };
 
 #endif //#ifndef ZCE_SHM_HASH_TABLE_REHASH_H_
-

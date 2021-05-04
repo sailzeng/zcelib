@@ -14,15 +14,14 @@ Comm_SvrdApp_FSM_Notify::Comm_SvrdApp_FSM_Notify():
 
 Comm_SvrdApp_FSM_Notify::~Comm_SvrdApp_FSM_Notify()
 {
-
 };
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
+int Comm_SvrdApp_FSM_Notify::app_start(int argc,const char *argv[])
 {
     int ret = 0;
 
-    ret = soar::Svrd_Appliction::app_start(argc, argv);
+    ret = soar::Svrd_Appliction::app_start(argc,argv);
     if (0 != ret)
     {
         return ret;
@@ -67,13 +66,13 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
     // 这里将Task的配置移到了framework.xml配置中
     // 初始化DB线程，
     ret = trans_mgr->active_notify_task(
-              clone_task,
-              svd_config->framework_config_.task_info_.task_thread_num_,
-              svd_config->framework_config_.task_info_.task_thread_stack_size_);
+        clone_task,
+        svd_config->framework_config_.task_info_.task_thread_num_,
+        svd_config->framework_config_.task_info_.task_thread_stack_size_);
 
     if (ret != 0)
     {
-        ZCE_LOG(RS_INFO, "[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u", ret);
+        ZCE_LOG(RS_INFO,"[framework] InitInstance DBSvrdTransactionManger fail.Ret = %u",ret);
         return ret;
     }
 
@@ -84,8 +83,8 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc, const char *argv[])
 int Comm_SvrdApp_FSM_Notify::app_run()
 {
     // fix me add log
-    ZCE_LOG(RS_INFO, "======================================================================================================");
-    ZCE_LOG(RS_INFO, "[framework] app %s class [%s] run_instance start.",
+    ZCE_LOG(RS_INFO,"======================================================================================================");
+    ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
             get_app_basename(),
             typeid(*this).name());
 
@@ -99,13 +98,12 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
-
-    size_t all_proc_frame = 0, all_gen_trans = 0;
-    size_t prcframe_queue = 0, gentrans_queue = 0, num_timer_expire = 0, num_io_event = 0;
+    size_t all_proc_frame = 0,all_gen_trans = 0;
+    size_t prcframe_queue = 0,gentrans_queue = 0,num_timer_expire = 0,num_io_event = 0;
     size_t idle = 0;
 
     FSMTask_Manger *notify_trans_mgr = static_cast<FSMTask_Manger *>(FSM_Manager::instance());
-    zce::Time_Value select_interval(0, 0);
+    zce::Time_Value select_interval(0,0);
 
     zce::Timer_Queue_Base *time_queue = zce::Timer_Queue_Base::instance();
     ZCE_Reactor *reactor = ZCE_Reactor::instance();
@@ -114,11 +112,10 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     {
         // 检查是否需要重新加载配置
 
-
         //从PIPE处理收到的命令
-        notify_trans_mgr->process_pipe_frame(all_proc_frame, all_gen_trans);
+        notify_trans_mgr->process_pipe_frame(all_proc_frame,all_gen_trans);
         //从RECV QUEUE处理命令
-        notify_trans_mgr->process_recvqueue_frame(prcframe_queue, gentrans_queue);
+        notify_trans_mgr->process_recvqueue_frame(prcframe_queue,gentrans_queue);
         all_proc_frame += prcframe_queue;
         all_gen_trans += gentrans_queue;
 
@@ -126,7 +123,7 @@ int Comm_SvrdApp_FSM_Notify::app_run()
         num_timer_expire = time_queue->expire();
 
         // 处理网络包
-        reactor->handle_events(&select_interval, &num_io_event);
+        reactor->handle_events(&select_interval,&num_io_event);
 
         if ((all_proc_frame + num_timer_expire + num_io_event) <= 0)
         {
@@ -146,16 +143,16 @@ int Comm_SvrdApp_FSM_Notify::app_run()
         //如果空闲很多,休息一下,如果你比较空闲，在这儿SELECT相当于Sleep，
         else if (idle >= HEAVY_IDLE_SLEEP_INTERVAL)
         {
-            select_interval.usec(HEAVY_IDLE_INTERVAL_MICROSECOND );
+            select_interval.usec(HEAVY_IDLE_INTERVAL_MICROSECOND);
         }
         //else 相当于 else if (idle >= LIGHT_IDLE_SELECT_INTERVAL)
         else
         {
-            select_interval.usec(LIGHT_IDLE_INTERVAL_MICROSECOND );
+            select_interval.usec(LIGHT_IDLE_INTERVAL_MICROSECOND);
         }
     }
 
-    ZCE_LOG(RS_INFO, "======================================================================================================");
+    ZCE_LOG(RS_INFO,"======================================================================================================");
     return 0;
 }
 
@@ -174,11 +171,10 @@ int Comm_SvrdApp_FSM_Notify::app_exit()
 
     ret = soar::Svrd_Appliction::app_exit();
 
-    if ( 0 != ret )
+    if (0 != ret)
     {
         return ret;
     }
 
     return 0;
 }
-

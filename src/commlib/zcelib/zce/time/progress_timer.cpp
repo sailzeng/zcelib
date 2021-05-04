@@ -7,7 +7,6 @@
 
 namespace zce
 {
-
 /************************************************************************************************************
 Class           : ZCE_Progress_Timer 用于记录一个事件用时的计时器
 ************************************************************************************************************/
@@ -64,7 +63,6 @@ double ZCE_Progress_Timer::elapsed_sec() const
     {
         return  (addup_time_) / CLOCKS_PER_SEC;
     }
-
 }
 
 //返回最小的计时精度单位（s），各个平台不太一致，
@@ -73,13 +71,11 @@ double ZCE_Progress_Timer::precision()
     return double(1) / double(CLOCKS_PER_SEC);
 }
 
-
 /************************************************************************************************************
 Class           : ZCE_HR_Progress_Timer 高性能计时器
 ************************************************************************************************************/
 ZCE_HR_Progress_Timer::ZCE_HR_Progress_Timer()
 {
-
 #if defined ZCE_OS_WINDOWS
 
     start_time_.QuadPart = 0;
@@ -193,7 +189,6 @@ void ZCE_HR_Progress_Timer::end()
 //计算消耗的时间(us)
 double ZCE_HR_Progress_Timer::elapsed_usec() const
 {
-
 #if defined ZCE_OS_WINDOWS
 
     ZCE_ASSERT(end_time_.QuadPart >= start_time_.QuadPart);
@@ -299,7 +294,6 @@ double ZCE_TSC_Progress_Timer::elapsed_usec() const
     return double(end_time_ - start_time_ + addup_time_) / double(cpu_hz_ * USEC_PER_SEC);
 }
 
-
 /************************************************************************************************************
 Class           : ZCE_Chrono_HR_Timer C++ 11 chrono的定时器，
 ************************************************************************************************************/
@@ -329,7 +323,6 @@ void ZCE_Chrono_HR_Timer::addup_start()
     start_time_ = std::chrono::high_resolution_clock::now();
 }
 
-
 //计算消耗的时间(us,微妙 -6)
 double ZCE_Chrono_HR_Timer::elapsed_usec() const
 {
@@ -352,5 +345,4 @@ double ZCE_Chrono_HR_Timer::precision_usec()
     return double(std::chrono::high_resolution_clock::time_point::duration::period::num * USEC_PER_SEC) /
         double(std::chrono::high_resolution_clock::time_point::duration::period::den);
 }
-
 }

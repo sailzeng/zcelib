@@ -23,9 +23,8 @@
 * @brief      记录锁，用于锁定文件中的一部分字节，字段
 *
 */
-class ZCE_Record_Lock : public zce::NON_Copyable
+class ZCE_Record_Lock: public zce::NON_Copyable
 {
-
 public:
 
     /*!
@@ -74,29 +73,29 @@ public:
     //而且基于劝告性或者强制性的锁，对于读写
 
     ///文件记录读写锁,参数参考@ref flock_rdlock
-    int flock_rdlock (int  whence,
-                      ssize_t start,
-                      ssize_t len);
+    int flock_rdlock(int  whence,
+                     ssize_t start,
+                     ssize_t len);
 
     ///尝试对文件记录进行加读取锁
-    int flock_tryrdlock (int  whence,
-                         ssize_t start,
-                         ssize_t len);
+    int flock_tryrdlock(int  whence,
+                        ssize_t start,
+                        ssize_t len);
 
     ///对文件记录直接上锁
-    int flock_wrlock (int  whence,
-                      ssize_t start,
-                      ssize_t len);
+    int flock_wrlock(int  whence,
+                     ssize_t start,
+                     ssize_t len);
 
     ///尝试对文件记录进行加写取锁
-    int flock_trywrlock (int  whence,
-                         ssize_t start,
-                         ssize_t len);
+    int flock_trywrlock(int  whence,
+                        ssize_t start,
+                        ssize_t len);
 
     ///解锁
-    int flock_unlock (int  whence,
-                      ssize_t start,
-                      ssize_t len);
+    int flock_unlock(int  whence,
+                     ssize_t start,
+                     ssize_t len);
 
 protected:
 
@@ -105,7 +104,6 @@ protected:
 
     ///自己打开的这个文件，也就是调用过open函数
     bool                  open_by_self_ = false;
-
 };
 
 #endif //ZCE_LIB_LOCK_RECORD_LOCK_H_

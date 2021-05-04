@@ -1,3 +1,1 @@
-
 #include "soar/predefine.h"
-

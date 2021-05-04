@@ -9,7 +9,7 @@
 void ZCE_Mysql_Field::get_string(std::string &tmpstr) const
 {
     tmpstr.reserve(field_length_);
-    tmpstr.assign(field_data_, field_length_);
+    tmpstr.assign(field_data_,field_length_);
 }
 
 //得到字符型
@@ -19,10 +19,10 @@ ZCE_Mysql_Field::operator char() const
 
     short tmpshort = 0;
     //得到短整型
-    int fields = sscanf(field_data_, "%hd", &tmpshort);
+    int fields = sscanf(field_data_,"%hd",&tmpshort);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     //通过并得到TINY INT 就是char
     tmp_tinyint = static_cast<char>(tmpshort & 0xFF);
@@ -35,10 +35,10 @@ ZCE_Mysql_Field::operator short() const
     short tmp_short = 0;
 
     //得到短整型,返回值=0 ,EOF表示失败
-    int fields = sscanf(field_data_, "%hd", &tmp_short);
+    int fields = sscanf(field_data_,"%hd",&tmp_short);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     //转换不成功或者
     return tmp_short;
@@ -50,10 +50,10 @@ ZCE_Mysql_Field::operator long() const
     long tmp_long = 0;
 
     //得到长整型,
-    int fields = sscanf(field_data_, "%ld", &tmp_long);
+    int fields = sscanf(field_data_,"%ld",&tmp_long);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmp_long;
 }
@@ -64,10 +64,10 @@ ZCE_Mysql_Field::operator int() const
     int tmp_int = 0;
 
     //得到长整型,
-    int fields = sscanf(field_data_, "%d", &tmp_int);
+    int fields = sscanf(field_data_,"%d",&tmp_int);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmp_int;
 }
@@ -78,10 +78,10 @@ ZCE_Mysql_Field::operator unsigned int() const
     unsigned int tmp_uint = 0;
 
     //得到长整型,
-    int fields = sscanf(field_data_, "%u", &tmp_uint);
+    int fields = sscanf(field_data_,"%u",&tmp_uint);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmp_uint;
 }
@@ -92,10 +92,10 @@ inline ZCE_Mysql_Field::operator long long() const
     long long tmp_longlong = 0;
 
     //得到64位的整数
-    int fields = sscanf(field_data_, "%lld", &tmp_longlong);
+    int fields = sscanf(field_data_,"%lld",&tmp_longlong);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmp_longlong;
 }
@@ -106,10 +106,10 @@ ZCE_Mysql_Field::operator unsigned char() const
     unsigned char  tmp_utinyint = 0;
     unsigned short tmpshort = 0;
     //得到短整型
-    int fields = sscanf(field_data_, "%hu", &tmpshort);
+    int fields = sscanf(field_data_,"%hu",&tmpshort);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     //通过并得到TINY INT 就是char
     tmp_utinyint = static_cast<unsigned char>(tmpshort & 0xFF);
@@ -122,10 +122,10 @@ ZCE_Mysql_Field::operator unsigned short() const
     unsigned short tmp_ushort = 0;
 
     //得到短整型,返回值=0 ,EOF表示失败
-    int fields = sscanf(field_data_, "%hu", &tmp_ushort);
+    int fields = sscanf(field_data_,"%hu",&tmp_ushort);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     //转换不成功或者
     return tmp_ushort;
@@ -136,10 +136,10 @@ ZCE_Mysql_Field::operator unsigned long() const
     long tmp_ulong = 0;
 
     //得到长整型,
-    int fields = sscanf(field_data_, "%lu", &tmp_ulong);
+    int fields = sscanf(field_data_,"%lu",&tmp_ulong);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmp_ulong;
 }
@@ -150,10 +150,10 @@ ZCE_Mysql_Field::operator unsigned long long() const
     unsigned long long tmp_ulonglong = 0;
 
     //得到64位的整数
-    int fields = sscanf(field_data_, "%llu", &tmp_ulonglong);
+    int fields = sscanf(field_data_,"%llu",&tmp_ulonglong);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmp_ulonglong;
 }
@@ -163,10 +163,10 @@ ZCE_Mysql_Field::operator float() const
 {
     float tmpfloat = 0.0;
     //转换得到FLOAT浮点型
-    int fields = sscanf(field_data_, "%f", &tmpfloat);
+    int fields = sscanf(field_data_,"%f",&tmpfloat);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmpfloat;
 }
@@ -176,15 +176,13 @@ ZCE_Mysql_Field::operator double() const
 {
     double tmpdouble = 0.0;
     //转换得到DOBULE浮点型
-    int fields = sscanf(field_data_, "%lf", &tmpdouble);
+    int fields = sscanf(field_data_,"%lf",&tmpdouble);
     if (fields != 1)
     {
-        ZCE_TRACE_FAIL_INFO(RS_ERROR, "sscanf");
+        ZCE_TRACE_FAIL_INFO(RS_ERROR,"sscanf");
     }
     return tmpdouble;
 }
 
-
 //如果你要用MYSQL的库
 #endif //#if defined ZCE_USE_MYSQL
-

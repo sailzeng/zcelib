@@ -1,4 +1,3 @@
-
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/util/non_copyable.h"
@@ -40,19 +39,19 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
     ZCE_ASSERT(NULL == shm_addr_);
     ZCE_ASSERT(ZCE_INVALID_HANDLE == sysv_shmid_);
 
-    sysv_shmid_ = zce::shmget(sysv_key, shm_size, shmget_flg);
+    sysv_shmid_ = zce::shmget(sysv_key,shm_size,shmget_flg);
 
-    if (ZCE_INVALID_HANDLE == sysv_shmid_ )
+    if (ZCE_INVALID_HANDLE == sysv_shmid_)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmget fail ,sysv key = %d,last error =%d. ", sysv_key, zce::last_error());
+        ZCE_LOG(RS_ERROR,"[zcelib] System memory shmget fail ,sysv key = %d,last error =%d. ",sysv_key,zce::last_error());
         return -1;
     }
 
-    shm_addr_ = zce::shmat(sysv_shmid_, want_address, shmat_flg);
+    shm_addr_ = zce::shmat(sysv_shmid_,want_address,shmat_flg);
 
     if (shm_addr_ == MAP_FAILED)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] System memory shmat fail ,last error =%d. ", zce::last_error());
+        ZCE_LOG(RS_ERROR,"[zcelib] System memory shmat fail ,last error =%d. ",zce::last_error());
         return -1;
     }
 
@@ -69,7 +68,6 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
                                bool read_only,
                                const void *want_address)
 {
-
     int shmget_flg = 0;
     int shmat_flg = 0;
 
@@ -104,14 +102,13 @@ int ZCE_ShareMem_SystemV::open(key_t sysv_key,
                       shmget_flg,
                       shmat_flg,
                       want_address);
-
 }
 
 //关闭文件
 int ZCE_ShareMem_SystemV::close()
 {
     //断言保证不出现没有open就调用close的情况
-    ZCE_ASSERT(shm_addr_ != NULL );
+    ZCE_ASSERT(shm_addr_ != NULL);
     ZCE_ASSERT(sysv_shmid_ != ZCE_INVALID_HANDLE);
 
     int ret = 0;
@@ -131,7 +128,7 @@ int ZCE_ShareMem_SystemV::close()
 //删除映射的文件，当然正在映射的时候不能删除
 int ZCE_ShareMem_SystemV::remove()
 {
-    return zce::shmctl(sysv_shmid_, IPC_RMID, NULL);
+    return zce::shmctl(sysv_shmid_,IPC_RMID,NULL);
 }
 
 //返回映射的内存地址
@@ -139,4 +136,3 @@ void *ZCE_ShareMem_SystemV::addr()
 {
     return shm_addr_;
 }
-

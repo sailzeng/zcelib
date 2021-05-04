@@ -4,28 +4,23 @@
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2019年8月7日
-* @brief      
+* @brief
 *
 *
-* @details    
+* @details
 *
 *
 * @note
 *
 */
 
-
-
-
 #ifndef ZCE_LIB_LOCKFREE_RINGS_H_
 #define ZCE_LIB_LOCKFREE_RINGS_H_
 
 #include "zce/shm_container/common.h"
 
-
 namespace zce::lockfree
 {
-
 /*!
 * @tparam    _value_type 数据类型
 * @brief     魔戒.循环链表，可以自动扩展，可以最后的覆盖第一个，
@@ -33,7 +28,6 @@ namespace zce::lockfree
 template<class _value_type >
 class rings
 {
-
 public:
     ///构造函数，后面必须调用,initialize
     rings():
@@ -51,9 +45,8 @@ public:
         rings_capacity_(max_len),
         value_ptr_(NULL)
     {
-        assert(max_len>0);
+        assert(max_len > 0);
         initialize(max_len);
-
     }
 
     ///析构函数，释放空间
@@ -66,48 +59,48 @@ public:
     ///initialize 不加锁，
     void initialize(size_t max_len)
     {
-        assert(max_len>0);
+        assert(max_len > 0);
 
-        rings_start_=0;
-        rings_size_=0;
-        rings_capacity_=max_len;
+        rings_start_ = 0;
+        rings_size_ = 0;
+        rings_capacity_ = max_len;
 
         //清理现场
-        if(value_ptr_)
+        if (value_ptr_)
         {
             free(value_ptr_);
-            value_ptr_=NULL;
+            value_ptr_ = NULL;
         }
         //不用new避免过多的构造函数
-        value_ptr_=(_value_type*)malloc(sizeof(_value_type)*capacity_);
+        value_ptr_ = (_value_type *)malloc(sizeof(_value_type) * capacity_);
     }
 
     ///结束，完成，销毁
     void finalize()
     {
-        rings_start_=0;
-        rings_size_=0;
-        rings_capacity_=0;
+        rings_start_ = 0;
+        rings_size_ = 0;
+        rings_capacity_ = 0;
 
         //清理现场
-        if(value_ptr_)
+        if (value_ptr_)
         {
-            size_t sz= rings_size_.load();
-            for(; read<sz; ++read)
+            size_t sz = rings_size_.load();
+            for (; read < sz; ++read)
             {
                 value_ptr_[read].~_value_type();
             }
 
             free(value_ptr_);
-            value_ptr_=NULL;
+            value_ptr_ = NULL;
         }
     }
 
     ///清理管道，
     void clear()
     {
-        rings_start_=0;
-        rings_size_=0;
+        rings_start_ = 0;
+        rings_size_ = 0;
     }
 
     ///尺寸空间
@@ -118,7 +111,7 @@ public:
     ///返回空闲空间的大小
     inline size_t freesize() const
     {
-        return rings_capacity_-rings_size_;
+        return rings_capacity_ - rings_size_;
     }
 
     ///返回队列的容量
@@ -131,7 +124,7 @@ public:
     inline bool full() const
     {
         //已经用的空间等于容量
-        if(rings_size_==rings_capacity_)
+        if (rings_size_ == rings_capacity_)
         {
             return true;
         }
@@ -143,7 +136,7 @@ public:
     inline bool empty() const
     {
         //空间等于0
-        if(rings_size_==0)
+        if (rings_size_ == 0)
         {
             return true;
         }
@@ -154,48 +147,48 @@ public:
     ///重新分配一个空间,
     bool resize(size_t new_max_size)
     {
-        assert(new_max_size>0);
+        assert(new_max_size > 0);
 
-        size_t deque_size=size();
+        size_t deque_size = size();
 
         //如果原来的尺寸大于新的尺寸，无法扩展
-        if(deque_size>new_max_size)
+        if (deque_size > new_max_size)
         {
             return false;
         }
 
-        _value_type* new_value_ptr=new _value_type[new_max_size];
+        _value_type *new_value_ptr = new _value_type[new_max_size];
 
         //如果原来有数据,拷贝到新的数据区
-        if(value_ptr_!=NULL)
+        if (value_ptr_ != NULL)
         {
-            for(size_t i=0; i<deque_size&&i<new_max_size; ++i)
+            for (size_t i = 0; i < deque_size && i < new_max_size; ++i)
             {
-                new_value_ptr[i]=value_ptr_[(rings_start_+i)%rings_capacity_];
+                new_value_ptr[i] = value_ptr_[(rings_start_ + i) % rings_capacity_];
             }
 
             delete[] value_ptr_;
-            value_ptr_=NULL;
+            value_ptr_ = NULL;
         }
 
         //调整几个内部参数
-        rings_start_=0;
-        rings_capacity_=new_max_size;
+        rings_start_ = 0;
+        rings_capacity_ = new_max_size;
         //cycdeque_size_ 不变
 
-        value_ptr_=new_value_ptr;
+        value_ptr_ = new_value_ptr;
 
         return true;
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_back(const _value_type& value_data,bool lay_over=false)
+    bool push_back(const _value_type &value_data,bool lay_over = false)
     {
         //如果已经满了
-        if(full())
+        if (full())
         {
             //如果不要覆盖，返回错误
-            if(lay_over==false)
+            if (lay_over == false)
             {
                 return false;
             }
@@ -203,8 +196,8 @@ public:
             else
             {
                 //将最后一个位置覆盖，并且调整起始和结束位置
-                value_ptr_[(rings_start_+rings_size_)%rings_capacity_]=value_data;
-                rings_start_=(rings_start_+1)%rings_capacity_;
+                value_ptr_[(rings_start_ + rings_size_) % rings_capacity_] = value_data;
+                rings_start_ = (rings_start_ + 1) % rings_capacity_;
 
                 return true;
             }
@@ -212,20 +205,20 @@ public:
 
         //直接放在队尾
 
-        value_ptr_[(rings_start_+rings_size_)%rings_capacity_]=value_data;
+        value_ptr_[(rings_start_ + rings_size_) % rings_capacity_] = value_data;
         ++rings_size_;
 
         return true;
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_front(const _value_type& value_data,bool lay_over=false)
+    bool push_front(const _value_type &value_data,bool lay_over = false)
     {
         //如果已经满了
-        if(full())
+        if (full())
         {
             //如果不要覆盖，返回错误
-            if(lay_over==false)
+            if (lay_over == false)
             {
                 return false;
             }
@@ -233,8 +226,8 @@ public:
             else
             {
                 //将第一个位置调整覆盖，并且调整起始和结束位置
-                rings_start_=(rings_start_>0)?rings_start_-1:rings_capacity_-1;
-                value_ptr_[rings_start_]=value_data;
+                rings_start_ = (rings_start_ > 0)?rings_start_ - 1:rings_capacity_ - 1;
+                value_ptr_[rings_start_] = value_data;
 
                 //覆盖，尺寸也不用调整
 
@@ -243,8 +236,8 @@ public:
         }
 
         //直接放在队尾
-        rings_start_=(rings_start_>0)?rings_start_-1:rings_capacity_-1;
-        value_ptr_[rings_start_]=value_data;
+        rings_start_ = (rings_start_ > 0)?rings_start_ - 1:rings_capacity_ - 1;
+        value_ptr_[rings_start_] = value_data;
 
         ++rings_size_;
 
@@ -252,16 +245,16 @@ public:
     }
 
     ///从队列的前面pop并且得到一个数据
-    bool pop_front(_value_type& value_data)
+    bool pop_front(_value_type &value_data)
     {
         //如果是空的返回错误
-        if(empty())
+        if (empty())
         {
             return false;
         }
 
-        value_data=value_ptr_[rings_start_];
-        rings_start_=(rings_start_+1)%rings_capacity_;
+        value_data = value_ptr_[rings_start_];
+        rings_start_ = (rings_start_ + 1) % rings_capacity_;
 
         --rings_size_;
 
@@ -272,27 +265,27 @@ public:
     bool pop_front()
     {
         //如果是空的返回错误
-        if(empty())
+        if (empty())
         {
             return false;
         }
 
-        rings_start_=(rings_start_+1)%rings_capacity_;
+        rings_start_ = (rings_start_ + 1) % rings_capacity_;
         --rings_size_;
 
         return true;
     }
 
     ///从队列的尾部pop并且得到一个数据
-    bool pop_back(_value_type& value_data)
+    bool pop_back(_value_type &value_data)
     {
         //如果是空的返回错误
-        if(empty())
+        if (empty())
         {
             return false;
         }
 
-        value_data=value_ptr_[(rings_start_+rings_size_)%rings_capacity_];
+        value_data = value_ptr_[(rings_start_ + rings_size_) % rings_capacity_];
         --rings_size_;
         return true;
     }
@@ -301,16 +294,13 @@ public:
     bool pop_back()
     {
         //
-        if(size()==0)
+        if (size() == 0)
         {
             return false;
         }
         --rings_size_;
         return true;
     }
-
-
-
 
 protected:
 
@@ -324,15 +314,8 @@ protected:
     ///队列的长度，
     size_t rings_capacity_;
     ///存放数据的指针
-    _value_type* value_ptr_;
-
+    _value_type *value_ptr_;
 };
-
-
 };
 
 #endif //ZCE_LIB_LOCKFREE_RINGS_H_
-
-
-
-

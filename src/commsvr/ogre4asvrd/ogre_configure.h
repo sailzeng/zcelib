@@ -1,11 +1,7 @@
-
-
 #ifndef OGRE_SERVER_CONFIG_H_
 #define OGRE_SERVER_CONFIG_H_
 
 //======================================================================================
-
-
 
 /*!
 * @brief
@@ -25,7 +21,6 @@ public:
     ///
     std::string          module_file_;
 };
-
 
 /*!
 * @brief
@@ -59,9 +54,7 @@ public:
     ZCE_SHLIB_HANDLE     recv_mod_handler_ = ZCE_SHLIB_INVALID_HANDLE;
     ///
     FP_JudgeRecv_WholeFrame   fp_judge_whole_frame_ = NULL;
-
 };
-
 
 //得到KEY的HASH函数
 struct HASH_OF_PEER_MODULE
@@ -77,7 +70,7 @@ struct EQUAL_OF_PEER_MODULE
 {
 public:
     //注意判断条件不是所有的变量
-    bool operator()(const TCP_PEER_MODULE_INFO &left, const TCP_PEER_MODULE_INFO &right) const
+    bool operator()(const TCP_PEER_MODULE_INFO &left,const TCP_PEER_MODULE_INFO &right) const
     {
         //检查SVC INFO的相等,就认为相等
         if (right.peer_id_ == left.peer_id_)
@@ -91,7 +84,6 @@ public:
 
 //======================================================================================
 
-
 /*!
 * @brief
 *
@@ -99,7 +91,6 @@ public:
 */
 struct OGRE_CONFIG_DATA
 {
-
 public:
 
     ///最大的的绑定的SVC ID数量，也就是监听数量
@@ -130,7 +121,6 @@ public:
     ///
     int accept_backlog_ = DEFUALT_ZERG_BACKLOG;
 
-
     /// 被动连接的发送BUFFER可容纳最大FRAME的个数 连接数少而流量较大的后端服务器可填的大一些,
     uint32_t acpt_send_deque_size_ = 32;
     /// 每个connect 出去的，tcp连接的发送队列长度
@@ -141,7 +131,6 @@ public:
     /// RECEIVE一个数据的超时时间,为0表示不限制,建议根据业务层的逻辑判断一下
     uint32_t receive_timeout_ = 0;
 
-
     /// #对一个错误数据重复尝试发送的次数,目前这个值没用用处了，
     uint32_t retry_error_ = 3;
 
@@ -149,8 +138,6 @@ public:
     std::string reject_ip_;
     ///允许链接的IP地址列表，用空格分开
     std::string allow_ip_;
-
-
 
     ///服务器支持的Accept TCP PEER的数量，
     size_t accept_peer_num_ = 0;
@@ -162,21 +149,16 @@ public:
     ///主动链接的服务器数组
     TCP_PEER_CONFIG_INFO  auto_cnt_peer_ary_[MAX_AUTO_CONNECT_PEER_NUM];
 
-
     ///服务器支持的UDP PEER的数量，
     size_t udp_peer_num_ = 0;
     ///服务器支持UDP PEER
     zce::Sockaddr_In udp_peer_ary_[MAX_UDP_PEERID_NUM];
-
 };
-
 
 //===================================================================================
 
-
-class Ogre_Server_Config : public Server_Config_Base
+class Ogre_Server_Config: public Server_Config_Base
 {
-
 public:
 
     Ogre_Server_Config();
@@ -187,12 +169,10 @@ public:
     ///读取配置文件，得到文件配置参数
     virtual int read_cfgfile();
 
-
     ///从配置中读取OGRE的配置
     int get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree);
 
 public:
-
 
     //OGRE配置文件的路径
     std::string             ogre_cfg_file_;
@@ -202,9 +182,6 @@ public:
 
     ///ZERG的配置数据
     OGRE_CONFIG_DATA        ogre_cfg_data_;
-
-
 };
 
 #endif //OGRE_SERVER_CONFIG_H_
-

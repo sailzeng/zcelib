@@ -37,13 +37,10 @@
 *
 */
 
-
-
 #include "zce/bytes/bytes_common.h"
 
 namespace zce
 {
-
 #ifndef ZCE_BASE64_ENCODE_BUFFER
 #define ZCE_BASE64_ENCODE_BUFFER(in_len)  ( 4 * (((inlen) + 2) / 3) + 1 )
 #endif
@@ -106,8 +103,4 @@ int base16_decode(const char *in,
                   size_t in_len,
                   char *out,
                   size_t *out_len);
-
 };
-
-
-

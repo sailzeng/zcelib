@@ -40,7 +40,7 @@ inline bool ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::push_back_sendpipe(const zce::l
 template <>
 inline int ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::get_frontsize_recvpipe(size_t &note_size)
 {
-    if (bus_pipe_[THR_RECV_PIPE_ID] ->empty())
+    if (bus_pipe_[THR_RECV_PIPE_ID]->empty())
     {
         return -1;
     }
@@ -53,12 +53,11 @@ inline int ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::get_frontsize_recvpipe(size_t &n
 template <>
 inline int ZCE_Thread_Bus_Pipe<ZCE_Null_Mutex>::get_frontsize_sendpipe(size_t &note_size)
 {
-    if (bus_pipe_[THR_SEND_PIPE_ID] ->empty())
+    if (bus_pipe_[THR_SEND_PIPE_ID]->empty())
     {
         return -1;
     }
 
-    note_size =  bus_pipe_[THR_SEND_PIPE_ID]->get_front_len();
+    note_size = bus_pipe_[THR_SEND_PIPE_ID]->get_front_len();
     return 0;
 }
-

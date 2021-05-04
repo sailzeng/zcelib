@@ -1,4 +1,3 @@
-
 #include "soar/predefine.h"
 #include "soar/enum/error_code.h"
 #include "soar/stat/define.h"
@@ -15,9 +14,8 @@ const int Server_Timer_Base::SERVER_TIMER_ID[] =
     0x201208,                      //心跳ID
 };
 
-
 //
-Server_Timer_Base::Server_Timer_Base() :
+Server_Timer_Base::Server_Timer_Base():
     zce::Timer_Handler()
 {
 }
@@ -26,7 +24,6 @@ Server_Timer_Base::~Server_Timer_Base()
 {
     stat_monitor_ = NULL;
 }
-
 
 //初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
 int Server_Timer_Base::initialize(zce::Timer_Queue_Base *queue)
@@ -56,13 +53,12 @@ int Server_Timer_Base::initialize(zce::Timer_Queue_Base *queue)
 
 //超时处理
 int Server_Timer_Base::timer_timeout(const zce::Time_Value &now_time,
-                                     const void *act )
+                                     const void *act)
 {
     ZCE_UNUSED_ARG(act);
 
     //记录当前时间，
     now_time_ = now_time;
-
 
     const int timeid = *(static_cast<const int *>(act));
     if (SERVER_TIMER_ID[0] == timeid)
@@ -77,7 +73,6 @@ int Server_Timer_Base::timer_timeout(const zce::Time_Value &now_time,
     return 0;
 }
 
-
 //定时器关闭
 int Server_Timer_Base::timer_close()
 {
@@ -86,7 +81,6 @@ int Server_Timer_Base::timer_close()
 
     return 0;
 }
-
 
 // 检查监控是否超时
 void Server_Timer_Base::check_monitor(const zce::Time_Value &now_time)
@@ -102,8 +96,8 @@ void Server_Timer_Base::check_monitor(const zce::Time_Value &now_time)
 
         if (now_sec - last_check_ > zce::FIVE_MINUTE_SECONDS)
         {
-            ZCE_LOG(RS_ERROR, "check monitor more than five minutes:real_second=%d %d",
-                    now_sec - last_check_, now_sec % zce::FIVE_MINUTE_SECONDS);
+            ZCE_LOG(RS_ERROR,"check monitor more than five minutes:real_second=%d %d",
+                    now_sec - last_check_,now_sec % zce::FIVE_MINUTE_SECONDS);
         }
 
         // 这里是为了保证每次检查在5分钟整
@@ -111,12 +105,11 @@ void Server_Timer_Base::check_monitor(const zce::Time_Value &now_time)
     }
 }
 
-
 // 系统及进程状态采样
 void Server_Timer_Base::report_status()
 {
     // 上报进程存活状态
-    stat_monitor_->increase_once(COMM_STAT_APP_ALIVE, 0, 0);
+    stat_monitor_->increase_once(COMM_STAT_APP_ALIVE,0,0);
     soar::Svrd_Appliction *svrd_app = soar::Svrd_Appliction::instance();
 
     {
@@ -125,7 +118,7 @@ void Server_Timer_Base::report_status()
 
         if (ret != 0)
         {
-            ZCE_LOG(RS_ERROR, "watch dog get sys/app status failed, ret = %d", ret);
+            ZCE_LOG(RS_ERROR,"watch dog get sys/app status failed, ret = %d",ret);
         }
         else
         {
@@ -149,11 +142,9 @@ void Server_Timer_Base::report_status()
                                          0,
                                          0,
                                          svrd_app->can_use_size_);
-
         }
     }
 }
-
 
 //设置心跳定时器的进度，默认是0.5s一次，如果觉得不够，在initialize前重新设置
 void Server_Timer_Base::set_heart_precision(const zce::Time_Value &precision)
@@ -161,17 +152,12 @@ void Server_Timer_Base::set_heart_precision(const zce::Time_Value &precision)
     heart_precision_ = precision;
 }
 
-
-
 //增加一个APP的定时器
-void Server_Timer_Base::add_app_timer(const zce::Time_Value &interval, const void *act)
+void Server_Timer_Base::add_app_timer(const zce::Time_Value &interval,const void *act)
 {
     ZCE_ASSERT(zan_timer_num_ + 1 >= MAX_APP_TIMER_NUMBER);
 
     zan_timer_internal_[zan_timer_num_] = interval;
     zan_timer_act_[zan_timer_num_] = act;
     ++zan_timer_num_;
-
-
 }
-

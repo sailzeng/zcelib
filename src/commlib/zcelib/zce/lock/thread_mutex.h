@@ -20,18 +20,15 @@
 #include "zce/lock/lock_guard.h"
 #include "zce/time/time_value.h"
 
-
 class zce::Time_Value;
-
 
 /*!
 * @brief      轻量级的线程互斥锁，一般情况下推荐使用，轻主要体现在Windows平台下用临界区
 *             Windows下是用临界区实现的，所以嘛，同时注意临界区是可递归的
 *             因为临界区没有超时处理能录，这个封装也就不提供了。（临界区本来也不应该有超时）
 */
-class ZCE_Thread_Light_Mutex : public ZCE_Lock_Base
+class ZCE_Thread_Light_Mutex: public ZCE_Lock_Base
 {
-
 public:
     ///线程锁的GUARD
     typedef ZCE_Lock_Guard<ZCE_Thread_Light_Mutex> LOCK_GUARD;
@@ -39,9 +36,9 @@ public:
 public:
 
     //构造函数
-    ZCE_Thread_Light_Mutex ();
+    ZCE_Thread_Light_Mutex();
     ///析构函数
-    virtual ~ZCE_Thread_Light_Mutex (void);
+    virtual ~ZCE_Thread_Light_Mutex(void);
 
     ///锁定
     virtual void lock();
@@ -58,17 +55,13 @@ public:
 protected:
     //线程锁
     pthread_mutex_t  lock_;
-
-
 };
-
-
 
 /*!
 * @brief      线程递归锁，Windows下用Mutex，Linux用pthread_mutex
 *             相对而言，推荐使用递归锁,
 */
-class ZCE_Thread_Recursive_Mutex : public ZCE_Lock_Base
+class ZCE_Thread_Recursive_Mutex: public ZCE_Lock_Base
 {
 public:
 
@@ -78,8 +71,8 @@ public:
 public:
 
     ///构造函数
-    ZCE_Thread_Recursive_Mutex ();
-    virtual ~ZCE_Thread_Recursive_Mutex (void);
+    ZCE_Thread_Recursive_Mutex();
+    virtual ~ZCE_Thread_Recursive_Mutex(void);
 
     ///锁定
     virtual void lock();
@@ -89,7 +82,6 @@ public:
 
     ///解锁,
     virtual void unlock();
-
 
     ///绝对时间超时的的锁定，超时后解锁
     virtual bool systime_lock(const zce::Time_Value &abs_time);
@@ -103,21 +95,15 @@ public:
 protected:
     ///线程锁
     pthread_mutex_t  lock_;
-
-
 };
-
 
 /*!
 * @brief      线程的非递归锁，提供这个完全是为了满足一些爱好，因为递归锁本质上满足非递归的需求。
 *             Windows下的互斥量和临界区其实是可以递归的，所以只用信号灯了模拟非递归锁
 *             201209 pthread_mutex内部我已经合入了非递归锁功能，用信号灯模拟
 */
-class ZCE_Thread_NONR_Mutex : public ZCE_Lock_Base
+class ZCE_Thread_NONR_Mutex: public ZCE_Lock_Base
 {
-
-
-
 public:
     ///锁的GUARD
     typedef ZCE_Lock_Guard<ZCE_Thread_NONR_Mutex> LOCK_GUARD;
@@ -125,9 +111,9 @@ public:
 public:
 
     ///构造函数
-    ZCE_Thread_NONR_Mutex ();
+    ZCE_Thread_NONR_Mutex();
     ///析构函数
-    virtual ~ZCE_Thread_NONR_Mutex (void);
+    virtual ~ZCE_Thread_NONR_Mutex(void);
 public:
     ///锁定
     virtual void lock();
@@ -138,7 +124,6 @@ public:
     ///解锁
     virtual void unlock();
 
-
     ///绝对时间超时的的锁定，超时后解锁
     virtual bool systime_lock(const zce::Time_Value &abs_time);
 
@@ -147,15 +132,8 @@ public:
 
 protected:
 
-
     ///线程锁,在Windows下我也已经模拟的非递归的锁
     pthread_mutex_t  lock_;
-
-
-
 };
 
-
-
 #endif //ZCE_LIB_LOCK_THREAD_MUTEX_H_
-

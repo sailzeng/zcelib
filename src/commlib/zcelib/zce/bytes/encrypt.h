@@ -140,7 +140,6 @@
 
 namespace zce
 {
-
 //=================================================================================================================
 
 /*!
@@ -163,7 +162,6 @@ namespace zce
 template < typename ENCRYPT_STRATEGY >
 class ZCE_Crypt
 {
-
 public:
     //从策略类萃取SUBKEY结构
     typedef typename ENCRYPT_STRATEGY::SUBKEY_STRUCT   CRYPT_SUBKEY_STRUCT;
@@ -183,29 +181,29 @@ public:
         unsigned char real_key[ENCRYPT_STRATEGY::KEY_SIZE];
         const unsigned char *proc_key = key;
         //如果key的长度不够，对key进行一下处理，
-        if (key_len <  ENCRYPT_STRATEGY::KEY_SIZE )
+        if (key_len < ENCRYPT_STRATEGY::KEY_SIZE)
         {
-            generate_real_key(key, key_len, real_key);
+            generate_real_key(key,key_len,real_key);
             proc_key = real_key;
         }
 
-        ENCRYPT_STRATEGY::key_setup(proc_key, sub_key, if_encrypt);
+        ENCRYPT_STRATEGY::key_setup(proc_key,sub_key,if_encrypt);
     }
 
-//打开主要是为了对比测试
-//protected:
+    //打开主要是为了对比测试
+    //protected:
 
-    /*!
-    @brief      ECB的加密，加密一个块，块的长度就是算法BLOCK_SIZE
-    @param      key         加密的密钥
-    @param      key_len     加密的密钥长度
-    @param      src_buf     原文
-    @param      cipher_buf  生成的密文
-    @note       注意，这个只对一个块进行加密，如果你希望连续对多个块进行加密，
-                优先选择cbc的方式，如果非要如此，请再封装一个函数，直接用这个
-                函数不合适，因为大部分加密算法都会对密钥进行转换为一个SKEY，如
-                果直接使用这个函数会无端增加耗时
-    */
+        /*!
+        @brief      ECB的加密，加密一个块，块的长度就是算法BLOCK_SIZE
+        @param      key         加密的密钥
+        @param      key_len     加密的密钥长度
+        @param      src_buf     原文
+        @param      cipher_buf  生成的密文
+        @note       注意，这个只对一个块进行加密，如果你希望连续对多个块进行加密，
+                    优先选择cbc的方式，如果非要如此，请再封装一个函数，直接用这个
+                    函数不合适，因为大部分加密算法都会对密钥进行转换为一个SKEY，如
+                    果直接使用这个函数会无端增加耗时
+        */
     inline static void ecb_encrypt(const unsigned char *key,
                                    size_t key_len,
                                    const unsigned char *src_buf,
@@ -213,9 +211,9 @@ public:
     {
         //计算得到sub key
         typename ENCRYPT_STRATEGY::SUBKEY_STRUCT sub_key;
-        key_setup(key, key_len, &sub_key, true);
+        key_setup(key,key_len,&sub_key,true);
 
-        ENCRYPT_STRATEGY::ecb_encrypt(&sub_key, src_buf, cipher_buf);
+        ENCRYPT_STRATEGY::ecb_encrypt(&sub_key,src_buf,cipher_buf);
     }
 
     /*!
@@ -233,9 +231,9 @@ public:
     {
         //计算得到sub key
         typename ENCRYPT_STRATEGY::SUBKEY_STRUCT sub_key;
-        key_setup(key, key_len, &sub_key, false);
+        key_setup(key,key_len,&sub_key,false);
 
-        ENCRYPT_STRATEGY::ecb_decrypt(&sub_key, cipher_buf, src_buf);
+        ENCRYPT_STRATEGY::ecb_decrypt(&sub_key,cipher_buf,src_buf);
     }
 
 public:
@@ -249,7 +247,7 @@ public:
     */
     inline static size_t cbc_cipher_buflen(size_t src_len)
     {
-        return ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE  + 2 ) * ENCRYPT_STRATEGY::BLOCK_SIZE;
+        return ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2) * ENCRYPT_STRATEGY::BLOCK_SIZE;
     }
 
     /*!
@@ -260,7 +258,7 @@ public:
     */
     inline static size_t cbc_source_buflen(size_t cipher_len)
     {
-        return cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE ;
+        return cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
     }
 
     /*!
@@ -277,12 +275,10 @@ public:
         size_t once_copy = 0;
         do
         {
-            once_copy = (ENCRYPT_STRATEGY::KEY_SIZE - copykey_count > key_len) ? key_len : ENCRYPT_STRATEGY::KEY_SIZE - copykey_count;
-            memcpy(real_key + copykey_count, key, once_copy);
+            once_copy = (ENCRYPT_STRATEGY::KEY_SIZE - copykey_count > key_len)?key_len:ENCRYPT_STRATEGY::KEY_SIZE - copykey_count;
+            memcpy(real_key + copykey_count,key,once_copy);
             copykey_count += once_copy;
-
-        }
-        while (copykey_count < ENCRYPT_STRATEGY::KEY_SIZE);
+        } while (copykey_count < ENCRYPT_STRATEGY::KEY_SIZE);
     }
 
     //先异或，使用整数，加快速度，原来对uint64_t做过优化，希望在OS64位上，能更加高效，
@@ -317,20 +313,19 @@ public:
                            size_t *cipher_len,
                            const uint32_t *iv = NULL)
     {
-
         //检查参数，如果不合适断言或者返回错误
-        ZCE_ASSERT( key
-                    && src_buf
-                    && cipher_buf
-                    && key_len > 0
-                    && src_len > 0 );
+        ZCE_ASSERT(key
+                   && src_buf
+                   && cipher_buf
+                   && key_len > 0
+                   && src_len > 0);
         if (key == NULL
             || src_buf == NULL
             || cipher_buf == NULL
             || key_len <= 0
             || src_len <= 0)
         {
-            ZCE_LOG(RS_ERROR, "Fun[%s] key[%p][%lu] soucre[%p][%lu] cipher[%p][%lu]",
+            ZCE_LOG(RS_ERROR,"Fun[%s] key[%p][%lu] soucre[%p][%lu] cipher[%p][%lu]",
                     __ZCE_FUNC__,
                     key,
                     key_len,
@@ -338,13 +333,13 @@ public:
                     src_len,
                     cipher_buf,
                     *cipher_len
-                   );
+            );
             return -1;
         }
 
         //计算得到sub key
         typename ENCRYPT_STRATEGY::SUBKEY_STRUCT sub_key;
-        key_setup(key, key_len, &sub_key, true);
+        key_setup(key,key_len,&sub_key,true);
 
         return cbc_encrypt_skey(&sub_key,
                                 src_buf,
@@ -369,22 +364,22 @@ public:
                                 const uint32_t *iv = NULL)
     {
         //加密BUF所需要的长度，
-        size_t cphbuf_need_len  = ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE  + 2 )
-                                  * ENCRYPT_STRATEGY::BLOCK_SIZE;
+        size_t cphbuf_need_len = ((src_len + sizeof(uint32_t)) / ENCRYPT_STRATEGY::BLOCK_SIZE + 2)
+            * ENCRYPT_STRATEGY::BLOCK_SIZE;
 
         //检查参数，如果不合适断言或者返回错误
         ZCE_ASSERT(sub_key
                    && src_buf
                    && cipher_buf
                    && src_len > 0
-                   && *cipher_len >= cphbuf_need_len );
-        if ( sub_key == NULL
-             || src_buf == NULL
-             || cipher_buf == NULL
-             || src_len <= 0
-             || *cipher_len < cphbuf_need_len )
+                   && *cipher_len >= cphbuf_need_len);
+        if (sub_key == NULL
+            || src_buf == NULL
+            || cipher_buf == NULL
+            || src_len <= 0
+            || *cipher_len < cphbuf_need_len)
         {
-            ZCE_LOG(RS_ERROR, "Fun[%s] sub_key [%p] soucre[%p][%lu] cipher[%p][%lu], cipher buffer need len[%lu]. ",
+            ZCE_LOG(RS_ERROR,"Fun[%s] sub_key [%p] soucre[%p][%lu] cipher[%p][%lu], cipher buffer need len[%lu]. ",
                     __ZCE_FUNC__,
                     sub_key,
                     src_buf,
@@ -392,7 +387,7 @@ public:
                     cipher_buf,
                     *cipher_len,
                     cphbuf_need_len
-                   );
+            );
             return -1;
         }
 
@@ -424,13 +419,13 @@ public:
 
         //
         size_t remain_len = src_len;
-        while (remain_len > ENCRYPT_STRATEGY::BLOCK_SIZE )
+        while (remain_len > ENCRYPT_STRATEGY::BLOCK_SIZE)
         {
             //先异或，如果是64bit的的代码，做出优化处理
-            CRYPT_XOR_BLOCK(xor_result, read_ptr, xor_ptr);
+            CRYPT_XOR_BLOCK(xor_result,read_ptr,xor_ptr);
 
             //使用加密算法的ECB模式对数据块进行加密
-            ENCRYPT_STRATEGY::ecb_encrypt(sub_key, xor_result, write_ptr);
+            ENCRYPT_STRATEGY::ecb_encrypt(sub_key,xor_result,write_ptr);
 
             remain_len -= ENCRYPT_STRATEGY::BLOCK_SIZE;
             xor_ptr = write_ptr;
@@ -441,25 +436,24 @@ public:
         //最后一些数据，可能要在处理成2个BLOCK
         if (remain_len > 0)
         {
-            memcpy(last_prc_block, src_buf + src_len - remain_len, remain_len );
+            memcpy(last_prc_block,src_buf + src_len - remain_len,remain_len);
         }
 
         //尾部放4个字节的0，用于校验验证，这种方法的有效性应该接近CRC32
         //空间上考虑了补0溢出的可能
         *((uint32_t *)(last_prc_block + remain_len)) = 0;
-        remain_len += sizeof (uint32_t);
+        remain_len += sizeof(uint32_t);
 
         //如果已经大于一个BLOCK
-        if (remain_len + sizeof (uint32_t) >= ENCRYPT_STRATEGY::BLOCK_SIZE)
+        if (remain_len + sizeof(uint32_t) >= ENCRYPT_STRATEGY::BLOCK_SIZE)
         {
-
             //异或BLOCK的数据
-            CRYPT_XOR_BLOCK(xor_result, last_prc_block, xor_ptr);
+            CRYPT_XOR_BLOCK(xor_result,last_prc_block,xor_ptr);
 
             //使用加密算法的ECB模式对数据块进行加密
-            ENCRYPT_STRATEGY::ecb_encrypt(sub_key, xor_result, write_ptr);
+            ENCRYPT_STRATEGY::ecb_encrypt(sub_key,xor_result,write_ptr);
 
-            remain_len -=  ENCRYPT_STRATEGY::BLOCK_SIZE;
+            remain_len -= ENCRYPT_STRATEGY::BLOCK_SIZE;
             xor_ptr = write_ptr;
             write_ptr += ENCRYPT_STRATEGY::BLOCK_SIZE;
 
@@ -478,10 +472,10 @@ public:
         }
 
         //异或
-        CRYPT_XOR_BLOCK(xor_result, last_prc_block, xor_ptr);
+        CRYPT_XOR_BLOCK(xor_result,last_prc_block,xor_ptr);
 
         //使用加密算法的ECB模式对数据块进行加密
-        ENCRYPT_STRATEGY::ecb_encrypt(sub_key, xor_result, write_ptr);
+        ENCRYPT_STRATEGY::ecb_encrypt(sub_key,xor_result,write_ptr);
 
         return 0;
     }
@@ -505,25 +499,25 @@ public:
                            uint32_t *iv = NULL)
     {
         //
-        size_t srcbuf_need_len  = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
+        size_t srcbuf_need_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
 
         //检查参数，如果不合适断言或者返回错误
-        ZCE_ASSERT( key
-                    && src_buf
-                    && cipher_buf
-                    && key_len > 0
-                    && cipher_len >=  ENCRYPT_STRATEGY::BLOCK_SIZE * 2
-                    && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-                    && *src_len >= srcbuf_need_len);
+        ZCE_ASSERT(key
+                   && src_buf
+                   && cipher_buf
+                   && key_len > 0
+                   && cipher_len >= ENCRYPT_STRATEGY::BLOCK_SIZE * 2
+                   && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
+                   && *src_len >= srcbuf_need_len);
         if (key == NULL
             || src_buf == NULL
             || cipher_buf == NULL
             || key_len <= 0
             || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
             || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-            || *src_len < srcbuf_need_len )
+            || *src_len < srcbuf_need_len)
         {
-            ZCE_LOG(RS_ERROR, "Fun[%s] key[%p][%lu] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
+            ZCE_LOG(RS_ERROR,"Fun[%s] key[%p][%lu] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
                     __ZCE_FUNC__,
                     key,
                     key_len,
@@ -532,13 +526,13 @@ public:
                     src_buf,
                     *src_len,
                     srcbuf_need_len
-                   );
+            );
             return -1;
         }
 
         //计算得到sub key
         typename ENCRYPT_STRATEGY::SUBKEY_STRUCT sub_key;
-        key_setup(key, key_len, &sub_key, false);
+        key_setup(key,key_len,&sub_key,false);
 
         return cbc_decrypt_skey(&sub_key,
                                 cipher_buf,
@@ -546,7 +540,6 @@ public:
                                 src_buf,
                                 src_len,
                                 iv);
-
     }
 
     /*!
@@ -563,23 +556,23 @@ public:
                                 uint32_t *iv = NULL)
     {
         //
-        size_t srcbuf_need_len  = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
+        size_t srcbuf_need_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
 
         //检查参数，如果不合适断言或者返回错误
-        ZCE_ASSERT( sub_key
-                    && src_buf
-                    && cipher_buf
-                    && cipher_len >=  ENCRYPT_STRATEGY::BLOCK_SIZE * 2
-                    && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-                    && *src_len >= srcbuf_need_len);
-        if ( sub_key == NULL
-             ||  src_buf == NULL
-             || cipher_buf == NULL
-             || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
-             || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
-             || *src_len < srcbuf_need_len )
+        ZCE_ASSERT(sub_key
+                   && src_buf
+                   && cipher_buf
+                   && cipher_len >= ENCRYPT_STRATEGY::BLOCK_SIZE * 2
+                   && 0 == cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
+                   && *src_len >= srcbuf_need_len);
+        if (sub_key == NULL
+            || src_buf == NULL
+            || cipher_buf == NULL
+            || cipher_len < ENCRYPT_STRATEGY::BLOCK_SIZE * 2
+            || 0 != cipher_len % ENCRYPT_STRATEGY::BLOCK_SIZE
+            || *src_len < srcbuf_need_len)
         {
-            ZCE_LOG(RS_ERROR, "Fun[%s] sub_key[%p] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
+            ZCE_LOG(RS_ERROR,"Fun[%s] sub_key[%p] cipher[%p][%lu] soucre[%p][%lu] cipher buffer need len[%lu].",
                     __ZCE_FUNC__,
                     sub_key,
                     cipher_buf,
@@ -587,26 +580,26 @@ public:
                     src_buf,
                     *src_len,
                     srcbuf_need_len
-                   );
+            );
             return -1;
         }
 
         unsigned char *write_ptr = src_buf;
         const unsigned char *xor_ptr = cipher_buf;
-        const unsigned char *read_ptr = (cipher_buf +  ENCRYPT_STRATEGY::BLOCK_SIZE);
-        size_t remain_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE ;
+        const unsigned char *read_ptr = (cipher_buf + ENCRYPT_STRATEGY::BLOCK_SIZE);
+        size_t remain_len = cipher_len - ENCRYPT_STRATEGY::BLOCK_SIZE;
         unsigned char decrypt_result[ENCRYPT_STRATEGY::BLOCK_SIZE];
         if (iv)
         {
             *iv = ZBYTE_TO_LEUINT32(cipher_buf);
         }
-        while (remain_len > 0 )
+        while (remain_len > 0)
         {
             //使用加密算法的ECB模式对数据块进行加密
-            ENCRYPT_STRATEGY::ecb_decrypt(sub_key, read_ptr, decrypt_result);
+            ENCRYPT_STRATEGY::ecb_decrypt(sub_key,read_ptr,decrypt_result);
 
             //再异或
-            CRYPT_XOR_BLOCK(write_ptr, decrypt_result, xor_ptr);
+            CRYPT_XOR_BLOCK(write_ptr,decrypt_result,xor_ptr);
 
             remain_len -= ENCRYPT_STRATEGY::BLOCK_SIZE;
             xor_ptr = read_ptr;
@@ -622,9 +615,9 @@ public:
         }
         for (size_t i = 1; i <= pid_len; ++i)
         {
-            if ( pid_len != src_buf[srcbuf_need_len - i] )
+            if (pid_len != src_buf[srcbuf_need_len - i])
             {
-                ZCE_LOG(RS_ERROR, "Fun[%s] pid data fill error.", __ZCE_FUNC__);
+                ZCE_LOG(RS_ERROR,"Fun[%s] pid data fill error.",__ZCE_FUNC__);
                 return -1;
             }
         }
@@ -632,9 +625,9 @@ public:
         //检查0校验
         for (size_t j = 1; j <= sizeof(uint32_t); ++j)
         {
-            if ( '\0' != src_buf[srcbuf_need_len - pid_len - j] )
+            if ('\0' != src_buf[srcbuf_need_len - pid_len - j])
             {
-                ZCE_LOG(RS_ERROR, "Fun[%s] zero data verify error.", __ZCE_FUNC__);
+                ZCE_LOG(RS_ERROR,"Fun[%s] zero data verify error.",__ZCE_FUNC__);
                 return -1;
             }
         }
@@ -649,7 +642,6 @@ public:
 public:
     //
     const static size_t CRYPT_BLOCK_SIZE = ENCRYPT_STRATEGY::BLOCK_SIZE;
-
 };
 
 //=================================================================================================================
@@ -659,7 +651,6 @@ public:
 */
 class SubKey_Is_Key_ECB
 {
-
 public:
 
     struct SUBKEY_IS_KEY
@@ -670,7 +661,7 @@ public:
     //为了通配ZCE_Crypt 实现的转换函数
     static void key_setup(const unsigned char *key,
                           SUBKEY_IS_KEY *sub_key,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
         sub_key->skey_ = key;
     }
@@ -684,7 +675,6 @@ public:
 template <size_t key_size>
 class SubKey_Is_Uint32Ary_ECB
 {
-
 public:
 
     struct SUBKEY_IS_Uint32Ary
@@ -695,12 +685,12 @@ public:
     //为了通配ZCE_Crypt 实现的转换函数
     static void key_setup(const unsigned char *key,
                           SUBKEY_IS_Uint32Ary *sub_key,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
         //为什么要用ZINDEX_TO_LEUINT32 这个宏，保证各个平台使用的字节序都一致
-        for (size_t i = 0; i < key_size / sizeof(uint32_t); ++i )
+        for (size_t i = 0; i < key_size / sizeof(uint32_t); ++i)
         {
-            sub_key->skey_[i] = ZINDEX_TO_LEUINT32(key, i);
+            sub_key->skey_[i] = ZINDEX_TO_LEUINT32(key,i);
         }
     }
 };
@@ -711,7 +701,6 @@ public:
 template<>
 class SubKey_Is_Uint32Ary_ECB<16>
 {
-
 public:
 
     struct SUBKEY_IS_Uint32Ary
@@ -722,12 +711,12 @@ public:
     //为了通配ZCE_Crypt 实现的转换函数
     static void key_setup(const unsigned char *key,
                           SUBKEY_IS_Uint32Ary *sub_key,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
-        sub_key->skey_[0] = ZINDEX_TO_LEUINT32(key, 0);
-        sub_key->skey_[1] = ZINDEX_TO_LEUINT32(key, 1);
-        sub_key->skey_[2] = ZINDEX_TO_LEUINT32(key, 2);
-        sub_key->skey_[3] = ZINDEX_TO_LEUINT32(key, 3);
+        sub_key->skey_[0] = ZINDEX_TO_LEUINT32(key,0);
+        sub_key->skey_[1] = ZINDEX_TO_LEUINT32(key,1);
+        sub_key->skey_[2] = ZINDEX_TO_LEUINT32(key,2);
+        sub_key->skey_[3] = ZINDEX_TO_LEUINT32(key,3);
     };
 };
 
@@ -737,7 +726,6 @@ public:
 template<>
 class SubKey_Is_Uint32Ary_ECB<32>
 {
-
 public:
 
     struct SUBKEY_IS_Uint32Ary
@@ -748,16 +736,16 @@ public:
     //为了通配ZCE_Crypt 实现的转换函数
     static void key_setup(const unsigned char *key,
                           SUBKEY_IS_Uint32Ary *sub_key,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
-        sub_key->skey_[0] = ZINDEX_TO_LEUINT32(key, 0);
-        sub_key->skey_[1] = ZINDEX_TO_LEUINT32(key, 1);
-        sub_key->skey_[2] = ZINDEX_TO_LEUINT32(key, 2);
-        sub_key->skey_[3] = ZINDEX_TO_LEUINT32(key, 3);
-        sub_key->skey_[4] = ZINDEX_TO_LEUINT32(key, 4);
-        sub_key->skey_[5] = ZINDEX_TO_LEUINT32(key, 5);
-        sub_key->skey_[6] = ZINDEX_TO_LEUINT32(key, 6);
-        sub_key->skey_[7] = ZINDEX_TO_LEUINT32(key, 7);
+        sub_key->skey_[0] = ZINDEX_TO_LEUINT32(key,0);
+        sub_key->skey_[1] = ZINDEX_TO_LEUINT32(key,1);
+        sub_key->skey_[2] = ZINDEX_TO_LEUINT32(key,2);
+        sub_key->skey_[3] = ZINDEX_TO_LEUINT32(key,3);
+        sub_key->skey_[4] = ZINDEX_TO_LEUINT32(key,4);
+        sub_key->skey_[5] = ZINDEX_TO_LEUINT32(key,5);
+        sub_key->skey_[6] = ZINDEX_TO_LEUINT32(key,6);
+        sub_key->skey_[7] = ZINDEX_TO_LEUINT32(key,7);
     };
 };
 
@@ -768,7 +756,7 @@ public:
             更多情况下，这是一个例子，教你如何写某个加密算法的ECB加密策略，
             好在CBC中使用
 */
-class XOR_ECB  : public SubKey_Is_Key_ECB
+class XOR_ECB: public SubKey_Is_Key_ECB
 {
 public:
 
@@ -815,9 +803,6 @@ public:
     static const uint32_t DES_RHS[16];
 };
 
-
-
-
 /*!
 * @brief      DES（Data Encryption Standard）加密算法，是一种使用密钥加密的块密码，
 *             1976年被美国联邦政府的国家标准局确定为联邦资料处理标准（FIPS），随后在国
@@ -829,7 +814,7 @@ public:
 *             http://zh.wikipedia.org/wiki/DES                   -- 来自维基
 * @note
 */
-class DES_ECB : public DES_Base
+class DES_ECB: public DES_Base
 {
 public:
     //秘钥长度
@@ -852,20 +837,19 @@ public:
                           SUBKEY_STRUCT *subkey,
                           bool  if_encrypt);
 
-
     ///DES块加密函数
     inline static void ecb_encrypt(const SUBKEY_STRUCT *skey,
                                    const unsigned char *src_block,
                                    unsigned char *cipher_block)
     {
-        return des_crypt_ecb(skey, src_block, cipher_block);
+        return des_crypt_ecb(skey,src_block,cipher_block);
     }
     ///DES块解密函数
     inline static void ecb_decrypt(const SUBKEY_STRUCT *skey,
                                    const unsigned char *cipher_block,
                                    unsigned char *src_block)
     {
-        return des_crypt_ecb(skey, cipher_block, src_block);
+        return des_crypt_ecb(skey,cipher_block,src_block);
     }
 
 protected:
@@ -878,9 +862,6 @@ protected:
 //DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
 typedef ZCE_Crypt<DES_ECB > DES_Crypt_64_64_16;
 
-
-
-
 /*!
 * @brief      DES3（或称为Triple DES 或者 3DES）是三重数据加密算法（TDEA，Triple
 *             Data Encryption Algorithm）块密码的通称。它相当于是对每个数据块应用
@@ -890,7 +871,7 @@ typedef ZCE_Crypt<DES_ECB > DES_Crypt_64_64_16;
 * @note       密文 = EK3(DK2(EK1(平文)))
 *             平文 = DK1(EK2(DK3(密文)))
 */
-class DES3_ECB : public DES_Base
+class DES3_ECB: public DES_Base
 {
 public:
     //秘钥长度
@@ -918,14 +899,14 @@ public:
                                    const unsigned char *src_block,
                                    unsigned char *cipher_block)
     {
-        return des3_crypt_ecb(skey, src_block, cipher_block);
+        return des3_crypt_ecb(skey,src_block,cipher_block);
     }
     ///DES3块解密函数
     inline static void ecb_decrypt(const SUBKEY_STRUCT *skey,
                                    const unsigned char *cipher_block,
                                    unsigned char *src_block)
     {
-        return des3_crypt_ecb(skey, cipher_block, src_block);
+        return des3_crypt_ecb(skey,cipher_block,src_block);
     }
 
 protected:
@@ -940,7 +921,6 @@ protected:
                                 const unsigned char input[BLOCK_SIZE],
                                 unsigned char output[BLOCK_SIZE]);
 };
-
 
 //DES 秘钥8个字节，加密的block 8个字节，每次处理16轮，
 typedef ZCE_Crypt<DES3_ECB > DES3_Crypt_64_192_16;
@@ -958,12 +938,12 @@ typedef ZCE_Crypt<DES3_ECB > DES3_Crypt_64_192_16;
 * @note       算法中使用了ZINDEX_TO_LEUINT32，这些宏，其实是相当于我认为算法的编码是小头党
 */
 template <size_t round_size>
-class TEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
+class TEA_ECB: public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
 
     //使用数组作为SUB KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
+    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT *sub_key,
@@ -971,8 +951,8 @@ public:
                             unsigned char *cipher_block)
     {
         //为什么要用ZINDEX_TO_LEUINT32,因为要保证多平台下计算一致
-        uint32_t v0 = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(src_block, 1);
+        uint32_t v0 = ZINDEX_TO_LEUINT32(src_block,0);
+        uint32_t v1 = ZINDEX_TO_LEUINT32(src_block,1);
         uint32_t sum = 0;
 
         const uint32_t *k = sub_key->skey_;
@@ -984,17 +964,17 @@ public:
             v0 += ((v1 << 4) + k[0]) ^ (v1 + sum) ^ ((v1 >> 5) + k[1]);
             v1 += ((v0 << 4) + k[2]) ^ (v0 + sum) ^ ((v0 >> 5) + k[3]);
         }
-        ZLEUINT32_TO_INDEX(cipher_block, 0, v0);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, v1);
+        ZLEUINT32_TO_INDEX(cipher_block,0,v0);
+        ZLEUINT32_TO_INDEX(cipher_block,1,v1);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT *sub_key,
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
-        uint32_t v0 = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t sum = DELTA ;
+        uint32_t v0 = ZINDEX_TO_LEUINT32(cipher_block,0);
+        uint32_t v1 = ZINDEX_TO_LEUINT32(cipher_block,1);
+        uint32_t sum = DELTA;
         sum *= round_size;
 
         const uint32_t *k = sub_key->skey_;
@@ -1007,8 +987,8 @@ public:
             v0 -= ((v1 << 4) + k[0]) ^ (v1 + sum) ^ ((v1 >> 5) + k[1]);
             sum -= DELTA;
         }                                              /* end cycle */
-        ZLEUINT32_TO_INDEX(src_block, 0, v0);
-        ZLEUINT32_TO_INDEX(src_block, 1, v1);
+        ZLEUINT32_TO_INDEX(src_block,0,v0);
+        ZLEUINT32_TO_INDEX(src_block,1,v1);
     }
 
 protected:
@@ -1019,7 +999,7 @@ public:
     //TEA算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = 8;
     //TEA算法KEY的长度
-    const static size_t KEY_SIZE   = 16;
+    const static size_t KEY_SIZE = 16;
 };
 
 //TEA算法，TX用的是16轮，算法作者推荐是32轮，甚至64轮，
@@ -1039,13 +1019,12 @@ typedef ZCE_Crypt<TEA_ECB<64 > > TEA_Crypt_64_128_64;
 @tparam     round_size 加密的轮数
 */
 template <size_t round_size>
-class XTEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
+class XTEA_ECB: public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
 
-
     //使用数组作为SUB KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
+    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT *sub_key,
@@ -1053,8 +1032,8 @@ public:
                             unsigned char *cipher_block)
     {
         //为什么要用ZINDEX_TO_LEUINT32,因为要保证多平台下计算一致
-        uint32_t v0 = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(src_block, 1);
+        uint32_t v0 = ZINDEX_TO_LEUINT32(src_block,0);
+        uint32_t v1 = ZINDEX_TO_LEUINT32(src_block,1);
         uint32_t sum = 0;
 
         const uint32_t *k = sub_key->skey_;
@@ -1066,16 +1045,16 @@ public:
             sum += DELTA;
             v1 += (((v0 << 4) ^ (v0 >> 5)) + v0) ^ (sum + k[(sum >> 11) & 3]);
         }
-        ZLEUINT32_TO_INDEX(cipher_block, 0, v0);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, v1);
+        ZLEUINT32_TO_INDEX(cipher_block,0,v0);
+        ZLEUINT32_TO_INDEX(cipher_block,1,v1);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT *sub_key,
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
-        uint32_t v0 = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t v1 = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t v0 = ZINDEX_TO_LEUINT32(cipher_block,0);
+        uint32_t v1 = ZINDEX_TO_LEUINT32(cipher_block,1);
         uint32_t sum = DELTA;
         sum *= round_size;
 
@@ -1087,8 +1066,8 @@ public:
             sum -= DELTA;
             v0 -= (((v1 << 4) ^ (v1 >> 5)) + v1) ^ (sum + k[sum & 3]);
         }
-        ZLEUINT32_TO_INDEX(src_block, 0, v0);
-        ZLEUINT32_TO_INDEX(src_block, 1, v1);
+        ZLEUINT32_TO_INDEX(src_block,0,v0);
+        ZLEUINT32_TO_INDEX(src_block,1,v1);
     }
 
 protected:
@@ -1099,7 +1078,7 @@ public:
     //XTEA算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = 8;
     //XTEA算法KEY的长度
-    const static size_t KEY_SIZE   = 16;
+    const static size_t KEY_SIZE = 16;
 };
 
 //XTEA算法，
@@ -1119,14 +1098,13 @@ typedef ZCE_Crypt<XTEA_ECB<64 > > XTEA_Crypt_64_128_64;
 @tparam     round_size  round_size = 6 + 52/(block_size/4)
 
 */
-template <size_t block_size, size_t round_size>
-class XXTEA_ECB  : public SubKey_Is_Uint32Ary_ECB<16>
+template <size_t block_size,size_t round_size>
+class XXTEA_ECB: public SubKey_Is_Uint32Ary_ECB<16>
 {
 public:
 
-
     //使用数组作为SUB KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
+    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
 
 #define XXTEA_MX (((z>>5^y<<2) + (y>>3^z<<4)) ^ ((sum^y) + (k[(p&3)^e] ^ z)))
 
@@ -1135,10 +1113,9 @@ public:
                             const unsigned char *src_block,
                             unsigned char *cipher_block)
     {
-
         const uint32_t *k = sub_key->skey_;
 
-        uint32_t  sum = 0, y, z, e, p;
+        uint32_t  sum = 0,y,z,e,p;
 
         size_t rounds = round_size;
         size_t num_uint32 = block_size / sizeof(uint32_t);
@@ -1146,7 +1123,7 @@ public:
         uint32_t v[block_size / sizeof(uint32_t)];
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            v[i] = ZINDEX_TO_LEUINT32(src_block, i);
+            v[i] = ZINDEX_TO_LEUINT32(src_block,i);
         }
 
         z = v[num_uint32 - 1];
@@ -1154,19 +1131,18 @@ public:
         {
             sum += DELTA;
             e = (sum >> 2) & 3;
-            for ( p = 0; p < num_uint32 - 1; ++p)
+            for (p = 0; p < num_uint32 - 1; ++p)
             {
                 y = v[p + 1];
                 z = v[p] += XXTEA_MX;
             }
             y = v[0];
             z = v[num_uint32 - 1] += XXTEA_MX;
-        }
-        while (--rounds);
+        } while (--rounds);
 
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            ZLEUINT32_TO_INDEX(cipher_block, i, v[i]);
+            ZLEUINT32_TO_INDEX(cipher_block,i,v[i]);
         }
     }
 
@@ -1175,7 +1151,6 @@ public:
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
-
         uint32_t sum = DELTA;
         sum *= round_size;
 
@@ -1187,9 +1162,9 @@ public:
 
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            v[i] = ZINDEX_TO_LEUINT32(cipher_block, i);
+            v[i] = ZINDEX_TO_LEUINT32(cipher_block,i);
         }
-        uint32_t y, z, e, p;
+        uint32_t y,z,e,p;
         y = v[0];
         do
         {
@@ -1202,8 +1177,7 @@ public:
             z = v[num_uint32 - 1];
             y = v[0] -= XXTEA_MX;
             sum -= DELTA;
-        }
-        while (--rounds);
+        } while (--rounds);
 
         //这儿发生了一个中彩票概率事情，优化出现问题，
         //本来这段代码来自维基，上面的while循环原来的代码是如下形式
@@ -1213,7 +1187,7 @@ public:
 
         for (size_t i = 0; i < num_uint32; ++i)
         {
-            ZLEUINT32_TO_INDEX(src_block, i, v[i]);
+            ZLEUINT32_TO_INDEX(src_block,i,v[i]);
         }
     }
 
@@ -1227,11 +1201,11 @@ public:
     //XXTEA算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = block_size;
     //XXTEA算法KEY的长度
-    const static size_t KEY_SIZE   = 16;
+    const static size_t KEY_SIZE = 16;
 };
 
-typedef ZCE_Crypt<XXTEA_ECB<8, 32 > >  XXTEA_Crypt_64_128_32;
-typedef ZCE_Crypt<XXTEA_ECB<16, 16 > > XXTEA_Crypt_128_128_16;
+typedef ZCE_Crypt<XXTEA_ECB<8,32 > >  XXTEA_Crypt_64_128_32;
+typedef ZCE_Crypt<XXTEA_ECB<16,16 > > XXTEA_Crypt_128_128_16;
 
 //=================================================================================================================
 
@@ -1240,12 +1214,12 @@ typedef ZCE_Crypt<XXTEA_ECB<16, 16 > > XXTEA_Crypt_128_128_16;
             这个东东更加脆弱，但由于GOST的密钥要求256位，加密轮数也多
             所以安全性好于DES,这个实现的轮数只能是32轮，（轮数无法改变）
 */
-class GOST_ECB : public SubKey_Is_Uint32Ary_ECB<32>
+class GOST_ECB: public SubKey_Is_Uint32Ary_ECB<32>
 {
 public:
 
     //算法直接使用用户的KEY，
-    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT ;
+    typedef   SUBKEY_IS_Uint32Ary SUBKEY_STRUCT;
 
     ///GOST加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT *sub_key,
@@ -1257,7 +1231,7 @@ public:
                             unsigned char *src_block);
 
     //GOST的密钥长度是32字节256bits，GOST算法本质比DES简单，但之所以安全性要好一些，主要就是因为key长
-    const static size_t KEY_SIZE   = 32;
+    const static size_t KEY_SIZE = 32;
     //GOST每次处理的BLOCK大小
     const static size_t BLOCK_SIZE = 8;
 
@@ -1296,17 +1270,17 @@ protected:
 @tparam     skey_size   SBOX的大小，RC5，RC6算法有点不一样，RC5算法为轮数+2
                         RC6算法为轮数+4
 */
-template <size_t key_size, size_t round_size, size_t sbox_size >
-class RC_ECB_Base : public RC_SBOX_Define
+template <size_t key_size,size_t round_size,size_t sbox_size >
+class RC_ECB_Base: public RC_SBOX_Define
 {
 public:
 
     //RC6的key长度可以是8-128字节(64-1024bit)，我这儿选择16字节(128bit)
-    static const size_t KEY_SIZE   = key_size;
+    static const size_t KEY_SIZE = key_size;
 
     struct RC_SUBKEY
     {
-        uint32_t skey_[ sbox_size];
+        uint32_t skey_[sbox_size];
     };
 
     //加密的轮数
@@ -1317,27 +1291,26 @@ public:
     //
     static void key_setup(const unsigned char *key,
                           RC_SUBKEY *subkey,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
-
-        uint32_t a = 0, b = 0;
+        uint32_t a = 0,b = 0;
 
         // copy the key into the L array
         uint32_t lkey[KEY_SIZE / sizeof(uint32_t)];
         for (size_t i = 0; i < key_size / sizeof(uint32_t); i++)
         {
-            lkey[i] = ZINDEX_TO_LEUINT32(key, i);
+            lkey[i] = ZINDEX_TO_LEUINT32(key,i);
         }
 
         /* key_setup the S array */
-        memcpy(subkey->skey_, RC_SBOX, SBOX_SIZE * sizeof(uint32_t));
+        memcpy(subkey->skey_,RC_SBOX,SBOX_SIZE * sizeof(uint32_t));
 
-        for (size_t i = 0, j = 0; i < sbox_size; ++i)
+        for (size_t i = 0,j = 0; i < sbox_size; ++i)
         {
-            a = subkey->skey_[i] = ZCE_ROTL32(subkey->skey_[i] + a + b, 3);
-            b = lkey[j] = ZCE_ROTL32(lkey[j] + a + b, (a + b) & 31);
+            a = subkey->skey_[i] = ZCE_ROTL32(subkey->skey_[i] + a + b,3);
+            b = lkey[j] = ZCE_ROTL32(lkey[j] + a + b,(a + b) & 31);
 
-            if (++j == KEY_SIZE / sizeof(uint32_t) )
+            if (++j == KEY_SIZE / sizeof(uint32_t))
             {
                 j = 0;
             }
@@ -1351,46 +1324,44 @@ public:
 @tparam     round_size 加密的轮数，
 @tparam     sbox_size  SBOX的大小
 */
-template <size_t key_size, size_t round_size, size_t sbox_size >
-class RC5_ECB : public RC_ECB_Base< key_size, round_size, sbox_size >
+template <size_t key_size,size_t round_size,size_t sbox_size >
+class RC5_ECB: public RC_ECB_Base< key_size,round_size,sbox_size >
 {
 public:
 
     //为了方便ZCE_Crypt,定义的子KEY类型，
-    typedef typename RC_ECB_Base<key_size, round_size, sbox_size>::RC_SUBKEY  SUBKEY_STRUCT;
+    typedef typename RC_ECB_Base<key_size,round_size,sbox_size>::RC_SUBKEY  SUBKEY_STRUCT;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT *sub_key,
                             const unsigned char *src_block,
                             unsigned char *cipher_block)
     {
-
-        uint32_t  a = ZINDEX_TO_LEUINT32(src_block, 0) + sub_key->skey_[0];
-        uint32_t  b = ZINDEX_TO_LEUINT32(src_block, 1) + sub_key->skey_[1];
+        uint32_t  a = ZINDEX_TO_LEUINT32(src_block,0) + sub_key->skey_[0];
+        uint32_t  b = ZINDEX_TO_LEUINT32(src_block,1) + sub_key->skey_[1];
         for (size_t i = 1; i <= round_size; i++)
         {
-            a = ZCE_ROTL32(a ^ b, b & 31) + sub_key->skey_[2 * i];
-            b = ZCE_ROTL32(b ^ a, a & 31) + sub_key->skey_[2 * i + 1];
+            a = ZCE_ROTL32(a ^ b,b & 31) + sub_key->skey_[2 * i];
+            b = ZCE_ROTL32(b ^ a,a & 31) + sub_key->skey_[2 * i + 1];
         }
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b);
+        ZLEUINT32_TO_INDEX(cipher_block,0,a);
+        ZLEUINT32_TO_INDEX(cipher_block,1,b);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT *subkey,
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
-
-        uint32_t  a = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t  b = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t  a = ZINDEX_TO_LEUINT32(cipher_block,0);
+        uint32_t  b = ZINDEX_TO_LEUINT32(cipher_block,1);
 
         for (size_t i = round_size; i > 0; i--)
         {
-            b = ZCE_ROTR32(b - subkey->skey_[2 * i + 1], a) ^ a;
-            a = ZCE_ROTR32(a - subkey->skey_[2 * i], b) ^ b;
+            b = ZCE_ROTR32(b - subkey->skey_[2 * i + 1],a) ^ a;
+            a = ZCE_ROTR32(a - subkey->skey_[2 * i],b) ^ b;
         }
-        ZLEUINT32_TO_INDEX(src_block, 0, a - subkey->skey_[0]);
-        ZLEUINT32_TO_INDEX(src_block, 1, b - subkey->skey_[1]);
+        ZLEUINT32_TO_INDEX(src_block,0,a - subkey->skey_[0]);
+        ZLEUINT32_TO_INDEX(src_block,1,b - subkey->skey_[1]);
     }
 
 public:
@@ -1401,16 +1372,16 @@ public:
 //RC5推荐的加密算法的轮数是12轮，RC5_Crypt_16_12_8，但维基后面也写了一句
 //12-round RC5 (with 64-bit blocks) is susceptible to a differential attack using 2^44 chosen plaintexts
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < RC5_ECB < 16, 12, 12 * 2 + 2 > > RC5_Crypt_64_128_12;
-typedef ZCE_Crypt < RC5_ECB < 16, 20, 20 * 2 + 2 > > RC5_Crypt_64_128_20;
+typedef ZCE_Crypt < RC5_ECB < 16,12,12 * 2 + 2 > > RC5_Crypt_64_128_12;
+typedef ZCE_Crypt < RC5_ECB < 16,20,20 * 2 + 2 > > RC5_Crypt_64_128_20;
 
 /*!
 @brief      RC6曾经是AES的候选方案之一。
             http://en.wikipedia.org/wiki/RC6
             RC6 一般情况下，推荐128bit密钥，128bitBLOCK，轮数20.
 */
-template <size_t key_size, size_t round_size, size_t sbox_size >
-class RC6_ECB : public RC_ECB_Base<key_size, round_size, sbox_size >
+template <size_t key_size,size_t round_size,size_t sbox_size >
+class RC6_ECB: public RC_ECB_Base<key_size,round_size,sbox_size >
 {
 public:
 
@@ -1427,56 +1398,56 @@ public:
     a = ZCE_ROTR32(a - skey_ptr[i], u ) ^ t
 
     //为了方便ZCE_Crypt的typedef定义
-    typedef typename RC_ECB_Base<key_size, round_size, sbox_size>::RC_SUBKEY  SUBKEY_STRUCT;
+    typedef typename RC_ECB_Base<key_size,round_size,sbox_size>::RC_SUBKEY  SUBKEY_STRUCT;
 
     //加密函数
     static void ecb_encrypt(const SUBKEY_STRUCT *sub_key,
                             const unsigned char *src_block,
                             unsigned char *cipher_block)
     {
-        uint32_t  t = 0, u = 0;
+        uint32_t  t = 0,u = 0;
         const uint32_t *skey_ptr = sub_key->skey_;
-        uint32_t a = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t b = ZINDEX_TO_LEUINT32(src_block, 1) + skey_ptr[0];
-        uint32_t c = ZINDEX_TO_LEUINT32(src_block, 2);
-        uint32_t d = ZINDEX_TO_LEUINT32(src_block, 3) + skey_ptr[1];
+        uint32_t a = ZINDEX_TO_LEUINT32(src_block,0);
+        uint32_t b = ZINDEX_TO_LEUINT32(src_block,1) + skey_ptr[0];
+        uint32_t c = ZINDEX_TO_LEUINT32(src_block,2);
+        uint32_t d = ZINDEX_TO_LEUINT32(src_block,3) + skey_ptr[1];
 
         for (size_t i = 0; i < round_size / sizeof(uint32_t); ++i)
         {
-            EN_RC6_RND( i * 8 + 2, a, b, c, d);
-            EN_RC6_RND( i * 8 + 4, b, c, d, a);
-            EN_RC6_RND( i * 8 + 6, c, d, a, b);
-            EN_RC6_RND( i * 8 + 8, d, a, b, c);
+            EN_RC6_RND(i * 8 + 2,a,b,c,d);
+            EN_RC6_RND(i * 8 + 4,b,c,d,a);
+            EN_RC6_RND(i * 8 + 6,c,d,a,b);
+            EN_RC6_RND(i * 8 + 8,d,a,b,c);
         }
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a + skey_ptr[sbox_size - 2]);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, c + skey_ptr[sbox_size - 1]);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, d);
+        ZLEUINT32_TO_INDEX(cipher_block,0,a + skey_ptr[sbox_size - 2]);
+        ZLEUINT32_TO_INDEX(cipher_block,1,b);
+        ZLEUINT32_TO_INDEX(cipher_block,2,c + skey_ptr[sbox_size - 1]);
+        ZLEUINT32_TO_INDEX(cipher_block,3,d);
     }
     //解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT *sub_key,
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
-        uint32_t t = 0, u = 0;
+        uint32_t t = 0,u = 0;
         const uint32_t *skey_ptr = sub_key->skey_;
-        uint32_t a = ZINDEX_TO_LEUINT32(cipher_block, 0) - skey_ptr[sbox_size - 2];
-        uint32_t b = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t c = ZINDEX_TO_LEUINT32(cipher_block, 2) - skey_ptr[sbox_size - 1];
-        uint32_t d = ZINDEX_TO_LEUINT32(cipher_block, 3);
+        uint32_t a = ZINDEX_TO_LEUINT32(cipher_block,0) - skey_ptr[sbox_size - 2];
+        uint32_t b = ZINDEX_TO_LEUINT32(cipher_block,1);
+        uint32_t c = ZINDEX_TO_LEUINT32(cipher_block,2) - skey_ptr[sbox_size - 1];
+        uint32_t d = ZINDEX_TO_LEUINT32(cipher_block,3);
 
         for (size_t i = 0; i < round_size / sizeof(uint32_t); ++i)
         {
-            DE_RC6_RND(sbox_size - 8 * i - 4, d, a, b, c);
-            DE_RC6_RND(sbox_size - 8 * i - 6, c, d, a, b);
-            DE_RC6_RND(sbox_size - 8 * i - 8, b, c, d, a);
-            DE_RC6_RND(sbox_size - 8 * i - 10, a, b, c, d);
+            DE_RC6_RND(sbox_size - 8 * i - 4,d,a,b,c);
+            DE_RC6_RND(sbox_size - 8 * i - 6,c,d,a,b);
+            DE_RC6_RND(sbox_size - 8 * i - 8,b,c,d,a);
+            DE_RC6_RND(sbox_size - 8 * i - 10,a,b,c,d);
         }
-        ZLEUINT32_TO_INDEX(src_block, 0, a);
-        ZLEUINT32_TO_INDEX(src_block, 1, b - skey_ptr[0]);
-        ZLEUINT32_TO_INDEX(src_block, 2, c);
-        ZLEUINT32_TO_INDEX(src_block, 3, d - skey_ptr[1]);
+        ZLEUINT32_TO_INDEX(src_block,0,a);
+        ZLEUINT32_TO_INDEX(src_block,1,b - skey_ptr[0]);
+        ZLEUINT32_TO_INDEX(src_block,2,c);
+        ZLEUINT32_TO_INDEX(src_block,3,d - skey_ptr[1]);
     }
 #undef EN_RC6_RND
 #undef DE_RC6_RND
@@ -1488,8 +1459,8 @@ public:
 
 //模版参数是加密轮数，RC6推荐的加密算法的轮数是20，如果考虑加密强度，推荐使用RC6_Crypt_16_20_16
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt < RC6_ECB < 16, 12, 12 * 2 + 4 > > RC6_Crypt_128_128_12;
-typedef ZCE_Crypt < RC6_ECB < 16, 20, 20 * 2 + 4 > > RC6_Crypt_128_128_20;
+typedef ZCE_Crypt < RC6_ECB < 16,12,12 * 2 + 4 > > RC6_Crypt_128_128_12;
+typedef ZCE_Crypt < RC6_ECB < 16,20,20 * 2 + 4 > > RC6_Crypt_128_128_20;
 
 //=================================================================================================================
 
@@ -1508,7 +1479,7 @@ protected:
 
 //保存CAST6_KEY_ROTAST算法的SBOX，供CAST5，CAST6算法使用
 template < size_t round_size>
-class CAST_ECB_Base  : public CAST_SBOX_Define
+class CAST_ECB_Base: public CAST_SBOX_Define
 {
 protected:
 
@@ -1541,8 +1512,8 @@ protected:
 @tparam     round_size 加密的轮数，如果key_size > 80bits，最好就要16轮，我这儿值接受4,8,12,16
 
 */
-template <size_t key_size, size_t round_size>
-class CAST5_ECB : public CAST_ECB_Base < round_size >
+template <size_t key_size,size_t round_size>
+class CAST5_ECB: public CAST_ECB_Base < round_size >
 {
 public:
 
@@ -1552,22 +1523,22 @@ public:
     //根据原始密钥，生成算法所需要的密钥
     static void key_setup(const unsigned char *key,
                           SUBKEY_STRUCT *sub_key,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
-        uint32_t x[4], z[4];
+        uint32_t x[4],z[4];
         uint32_t *mkey_ptr = sub_key->mkey_;
         uint8_t *rkey_ptr = sub_key->rkey_;
-        x[0] = ZINDEX_TO_LEUINT32(key, 0);
-        x[1] = ZINDEX_TO_LEUINT32(key, 1);
+        x[0] = ZINDEX_TO_LEUINT32(key,0);
+        x[1] = ZINDEX_TO_LEUINT32(key,1);
         x[2] = 0;
         x[3] = 0;
         //根据不同的KEY SIZE 进行处理
-        if (12 == key_size || 16 == key_size  )
+        if (12 == key_size || 16 == key_size)
         {
-            x[2] = ZINDEX_TO_LEUINT32(key, 2);
-            if (16 == key_size )
+            x[2] = ZINDEX_TO_LEUINT32(key,2);
+            if (16 == key_size)
             {
-                x[3] = ZINDEX_TO_LEUINT32(key, 3);
+                x[3] = ZINDEX_TO_LEUINT32(key,3);
             }
         }
         size_t i = 0;
@@ -1575,92 +1546,92 @@ public:
 #define CAST5_GB(x, i) (((x[(15-i)>>2])>>(uint32_t)(8*((15-i)&3)))&255)
 
         //第一路计算skey，
-        z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)];
-        z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xA)];
-        z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x9)];
-        z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xB)];
-        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x2)];
-        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xB)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)];
-        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xC)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x9)];
-        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xE)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xc)];
+        z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)];
+        z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xA)];
+        z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x9)];
+        z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xB)];
+        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x2)];
+        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xB)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)];
+        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xC)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x9)];
+        mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xE)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xc)];
 
         if (round_size > 4)
         {
-            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x0)];
-            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x2)];
-            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x1)];
-            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x3)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x8)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xd)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x3)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x7)];
+            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x0)];
+            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x2)];
+            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x1)];
+            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x3)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x8)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xd)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x3)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x7)];
         }
         if (round_size > 8)
         {
-            z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)];
-            z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xA)];
-            z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x9)];
-            z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xB)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x9)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xc)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x2)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)];
+            z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)];
+            z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xA)];
+            z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x9)];
+            z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xB)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x9)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xc)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x2)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)];
         }
         if (round_size > 12)
         {
-            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x0)];
-            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x2)];
-            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x1)];
-            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x3)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x3)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xa)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x7)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xc)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)];
-            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xe)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xf)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xd)];
+            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x0)];
+            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x2)];
+            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x1)];
+            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x3)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x3)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xa)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x7)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xc)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)];
+            mkey_ptr[i++] = CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xe)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xf)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xd)];
         }
 
         //第二轮计算rkey，旋转的长度
         i = 0;
-        z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)];
-        z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xA)];
-        z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x9)];
-        z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xB)];
-        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x2)]) & 0xFF;
-        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xB)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)]) & 0xFF;
-        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xC)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x9)]) & 0xFF;
-        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xE)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xc)]) & 0xFF;
+        z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)];
+        z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xA)];
+        z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x9)];
+        z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xB)];
+        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x2)]) & 0xFF;
+        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xB)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)]) & 0xFF;
+        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xC)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x9)]) & 0xFF;
+        rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xE)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xc)]) & 0xFF;
 
         if (round_size > 4)
         {
-            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x0)];
-            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x2)];
-            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x1)];
-            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x3)];
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x8)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xd)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x3)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x7)]) & 0xFF;
+            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x0)];
+            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x2)];
+            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x1)];
+            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x3)];
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x8)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xd)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x3)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x7)]) & 0xFF;
         }
         if (round_size > 8)
         {
-            z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)];
-            z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xA)];
-            z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x9)];
-            z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xB)];
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x9)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0xc)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x2)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)]) & 0xFF;
+            z[3] = x[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xD)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xF)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xC)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xE)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)];
+            z[2] = x[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xA)];
+            z[1] = x[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x9)];
+            z[0] = x[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xB)];
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xc)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x9)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xe)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xf)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0xc)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x2)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0xa)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)]) & 0xFF;
         }
         if (round_size > 12)
         {
-            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z, 0x0)];
-            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z, 0x2)];
-            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z, 0x1)];
-            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z, 0x3)];
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0x3)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xa)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xb)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0x7)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xc)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x8)]) & 0xFF;
-            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x, 0xe)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x, 0xf)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x, 0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x, 0xd)]) & 0xFF;
+            x[3] = z[1] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(z,0x0)];
+            x[2] = z[3] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(z,0x2)];
+            x[1] = z[2] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(z,0x1)];
+            x[0] = z[0] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xA)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(z,0x3)];
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x8)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x9)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x7)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x6)] ^ CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0x3)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xa)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xb)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x5)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x4)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0x7)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xc)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xd)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x3)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x2)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x8)]) & 0xFF;
+            rkey_ptr[i++] = (CAST_SBOX_Define::CAST_SBOX[4][CAST5_GB(x,0xe)] ^ CAST_SBOX_Define::CAST_SBOX[5][CAST5_GB(x,0xf)] ^ CAST_SBOX_Define::CAST_SBOX[6][CAST5_GB(x,0x1)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0x0)] ^ CAST_SBOX_Define::CAST_SBOX[7][CAST5_GB(x,0xd)]) & 0xFF;
         }
 #undef CAST5_GB
     }
@@ -1673,40 +1644,40 @@ public:
         const uint32_t *mkey_ptr = sub_key->mkey_;
         const uint8_t *rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
-        uint32_t l = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t r = ZINDEX_TO_LEUINT32(src_block, 1);
+        uint32_t l = ZINDEX_TO_LEUINT32(src_block,0);
+        uint32_t r = ZINDEX_TO_LEUINT32(src_block,1);
 
-        CAST_F1(l, r,  mkey_ptr[0], rkey_ptr[0]);
-        CAST_F2(r, l,  mkey_ptr[1], rkey_ptr[1]);
-        CAST_F3(l, r,  mkey_ptr[2], rkey_ptr[2]);
-        CAST_F1(r, l,  mkey_ptr[3], rkey_ptr[3]);
+        CAST_F1(l,r,mkey_ptr[0],rkey_ptr[0]);
+        CAST_F2(r,l,mkey_ptr[1],rkey_ptr[1]);
+        CAST_F3(l,r,mkey_ptr[2],rkey_ptr[2]);
+        CAST_F1(r,l,mkey_ptr[3],rkey_ptr[3]);
 
-        if (round_size > 4 )
+        if (round_size > 4)
         {
-            CAST_F2(l, r,  mkey_ptr[4], rkey_ptr[4]);
-            CAST_F3(r, l,  mkey_ptr[5], rkey_ptr[5]);
-            CAST_F1(l, r,  mkey_ptr[6], rkey_ptr[6]);
-            CAST_F2(r, l,  mkey_ptr[7], rkey_ptr[7]);
+            CAST_F2(l,r,mkey_ptr[4],rkey_ptr[4]);
+            CAST_F3(r,l,mkey_ptr[5],rkey_ptr[5]);
+            CAST_F1(l,r,mkey_ptr[6],rkey_ptr[6]);
+            CAST_F2(r,l,mkey_ptr[7],rkey_ptr[7]);
         }
-        if (round_size > 8 )
+        if (round_size > 8)
         {
-            CAST_F3(l, r,  mkey_ptr[8], rkey_ptr[8]);
-            CAST_F1(r, l,  mkey_ptr[9], rkey_ptr[9]);
-            CAST_F2(l, r,  mkey_ptr[10], rkey_ptr[10]);
-            CAST_F3(r, l,  mkey_ptr[11], rkey_ptr[11]);
+            CAST_F3(l,r,mkey_ptr[8],rkey_ptr[8]);
+            CAST_F1(r,l,mkey_ptr[9],rkey_ptr[9]);
+            CAST_F2(l,r,mkey_ptr[10],rkey_ptr[10]);
+            CAST_F3(r,l,mkey_ptr[11],rkey_ptr[11]);
         }
         //如果要进行16轮处理
         if (round_size > 12)
         {
-            CAST_F1(l, r, mkey_ptr[12], rkey_ptr[12]);
-            CAST_F2(r, l, mkey_ptr[13], rkey_ptr[13]);
-            CAST_F3(l, r, mkey_ptr[14], rkey_ptr[14]);
-            CAST_F1(r, l, mkey_ptr[15], rkey_ptr[15]);
+            CAST_F1(l,r,mkey_ptr[12],rkey_ptr[12]);
+            CAST_F2(r,l,mkey_ptr[13],rkey_ptr[13]);
+            CAST_F3(l,r,mkey_ptr[14],rkey_ptr[14]);
+            CAST_F1(r,l,mkey_ptr[15],rkey_ptr[15]);
         }
 
         //注意这个顺序和上面读取顺序相反
-        ZLEUINT32_TO_INDEX(cipher_block, 0, r);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, l);
+        ZLEUINT32_TO_INDEX(cipher_block,0,r);
+        ZLEUINT32_TO_INDEX(cipher_block,1,l);
     }
 
     //解密函数，密钥>80bits,所以处理16轮
@@ -1717,57 +1688,56 @@ public:
         const uint32_t *mkey_ptr = sub_key->mkey_;
         const uint8_t *rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
-        uint32_t r = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t l = ZINDEX_TO_LEUINT32(cipher_block, 1);
+        uint32_t r = ZINDEX_TO_LEUINT32(cipher_block,0);
+        uint32_t l = ZINDEX_TO_LEUINT32(cipher_block,1);
 
         //如果要进行16轮处理
         if (round_size > 12)
         {
-            CAST_F1(r, l, mkey_ptr[15], rkey_ptr[15]);
-            CAST_F3(l, r, mkey_ptr[14], rkey_ptr[14]);
-            CAST_F2(r, l, mkey_ptr[13], rkey_ptr[13]);
-            CAST_F1(l, r, mkey_ptr[12], rkey_ptr[12]);
+            CAST_F1(r,l,mkey_ptr[15],rkey_ptr[15]);
+            CAST_F3(l,r,mkey_ptr[14],rkey_ptr[14]);
+            CAST_F2(r,l,mkey_ptr[13],rkey_ptr[13]);
+            CAST_F1(l,r,mkey_ptr[12],rkey_ptr[12]);
         }
-        if (round_size > 8 )
+        if (round_size > 8)
         {
-            CAST_F3(r, l, mkey_ptr[11], rkey_ptr[11]);
-            CAST_F2(l, r, mkey_ptr[10], rkey_ptr[10]);
-            CAST_F1(r, l, mkey_ptr[9], rkey_ptr[9]);
-            CAST_F3(l, r, mkey_ptr[8], rkey_ptr[8]);
+            CAST_F3(r,l,mkey_ptr[11],rkey_ptr[11]);
+            CAST_F2(l,r,mkey_ptr[10],rkey_ptr[10]);
+            CAST_F1(r,l,mkey_ptr[9],rkey_ptr[9]);
+            CAST_F3(l,r,mkey_ptr[8],rkey_ptr[8]);
         }
         if (round_size > 4)
         {
-            CAST_F2(r, l,  mkey_ptr[7], rkey_ptr[7]);
-            CAST_F1(l, r,  mkey_ptr[6], rkey_ptr[6]);
-            CAST_F3(r, l,  mkey_ptr[5], rkey_ptr[5]);
-            CAST_F2(l, r,  mkey_ptr[4], rkey_ptr[4]);
+            CAST_F2(r,l,mkey_ptr[7],rkey_ptr[7]);
+            CAST_F1(l,r,mkey_ptr[6],rkey_ptr[6]);
+            CAST_F3(r,l,mkey_ptr[5],rkey_ptr[5]);
+            CAST_F2(l,r,mkey_ptr[4],rkey_ptr[4]);
         }
-        CAST_F1(r, l,  mkey_ptr[3], rkey_ptr[3]);
-        CAST_F3(l, r,  mkey_ptr[2], rkey_ptr[2]);
-        CAST_F2(r, l,  mkey_ptr[1], rkey_ptr[1]);
-        CAST_F1(l, r,  mkey_ptr[0], rkey_ptr[0]);
+        CAST_F1(r,l,mkey_ptr[3],rkey_ptr[3]);
+        CAST_F3(l,r,mkey_ptr[2],rkey_ptr[2]);
+        CAST_F2(r,l,mkey_ptr[1],rkey_ptr[1]);
+        CAST_F1(l,r,mkey_ptr[0],rkey_ptr[0]);
 
         //注意这个顺序和上面读取顺序相反
-        ZLEUINT32_TO_INDEX(src_block, 0, l);
-        ZLEUINT32_TO_INDEX(src_block, 1, r);
-
+        ZLEUINT32_TO_INDEX(src_block,0,l);
+        ZLEUINT32_TO_INDEX(src_block,1,r);
     }
 
 public:
     //
     const static size_t BLOCK_SIZE = 8;
     //密钥长度，我这儿值接受8（64bits），12（96bits），16（128bits）
-    const static size_t KEY_SIZE   = key_size;
+    const static size_t KEY_SIZE = key_size;
 };
 
 //第一个参数是密钥长度，第二个参数是加密轮数，如果考虑加密效果，推荐CAST5_Crypt_16_16_8
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
 //注意密钥长度如果是8，
-typedef ZCE_Crypt<CAST5_ECB<8, 12>  >  CAST5_Crypt_64_64_12;
-typedef ZCE_Crypt<CAST5_ECB<12, 16> >  CAST5_Crypt_64_96_16;
-typedef ZCE_Crypt<CAST5_ECB<16, 8>  >  CAST5_Crypt_64_128_8;
-typedef ZCE_Crypt<CAST5_ECB<16, 12> >  CAST5_Crypt_64_128_12;
-typedef ZCE_Crypt<CAST5_ECB<16, 16> >  CAST5_Crypt_64_128_16;
+typedef ZCE_Crypt<CAST5_ECB<8,12>  >  CAST5_Crypt_64_64_12;
+typedef ZCE_Crypt<CAST5_ECB<12,16> >  CAST5_Crypt_64_96_16;
+typedef ZCE_Crypt<CAST5_ECB<16,8>  >  CAST5_Crypt_64_128_8;
+typedef ZCE_Crypt<CAST5_ECB<16,12> >  CAST5_Crypt_64_128_12;
+typedef ZCE_Crypt<CAST5_ECB<16,16> >  CAST5_Crypt_64_128_16;
 
 /*!
 @brief      CAST6 又被称为CAST256，也是AES的备选方案，
@@ -1778,10 +1748,9 @@ typedef ZCE_Crypt<CAST5_ECB<16, 16> >  CAST5_Crypt_64_128_16;
 @tparam     key_size   密钥长度，我这儿值接受16（128bits）,20,24,28,32
 @tparam     round_size 加密的轮数，我这儿支持12，24.36，48轮
 */
-template <size_t key_size, size_t round_size>
-class CAST6_ECB :  public CAST_ECB_Base < round_size >
+template <size_t key_size,size_t round_size>
+class CAST6_ECB: public CAST_ECB_Base < round_size >
 {
-
 public:
 
     //为了方便ZCE_Crypt,定义的子KEY类型，
@@ -1790,49 +1759,48 @@ public:
     //根据原始密钥，生成算法所需要的密钥
     static void key_setup(const unsigned char *key,
                           SUBKEY_STRUCT *sub_key,
-                          bool  /*if_encrypt*/ )
+                          bool  /*if_encrypt*/)
     {
-
-        uint32_t x[8], t = 0;
+        uint32_t x[8],t = 0;
         uint32_t *mkey_ptr = sub_key->mkey_;
         uint8_t *rkey_ptr = sub_key->rkey_;
 
-        x[0] = ZINDEX_TO_LEUINT32(key, 0);
-        x[1] = ZINDEX_TO_LEUINT32(key, 1);
-        x[2] = ZINDEX_TO_LEUINT32(key, 2);
-        x[3] = ZINDEX_TO_LEUINT32(key, 3);
+        x[0] = ZINDEX_TO_LEUINT32(key,0);
+        x[1] = ZINDEX_TO_LEUINT32(key,1);
+        x[2] = ZINDEX_TO_LEUINT32(key,2);
+        x[3] = ZINDEX_TO_LEUINT32(key,3);
         x[4] = x[5] = x[6] = x[7] = 0;
 
-        for (size_t j = 4; j < key_size / sizeof( uint32_t); ++j)
+        for (size_t j = 4; j < key_size / sizeof(uint32_t); ++j)
         {
-            x[j] = ZINDEX_TO_LEUINT32(key, j);
+            x[j] = ZINDEX_TO_LEUINT32(key,j);
         }
 
         for (size_t j = 0; j < round_size; j += 4)
         {
-            CAST_F1(x[6], x[7], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 0], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 0) & 31]);
-            CAST_F2(x[5], x[6], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 1], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 1) & 31]);
-            CAST_F3(x[4], x[5], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 2], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 2) & 31]);
-            CAST_F1(x[3], x[4], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 3], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 3) & 31]);
-            CAST_F2(x[2], x[3], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 4], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 4) & 31]);
-            CAST_F3(x[1], x[2], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 5], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 5) & 31]);
-            CAST_F1(x[0], x[1], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 6], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 6) & 31]);
-            CAST_F2(x[7], x[0], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 7], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 7) & 31]);
-            CAST_F1(x[6], x[7], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 8], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 8) & 31]);
-            CAST_F2(x[5], x[6], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 9], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 9) & 31]);
-            CAST_F3(x[4], x[5], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 10], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 10) & 31]);
-            CAST_F1(x[3], x[4], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 11], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 11) & 31]);
-            CAST_F2(x[2], x[3], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 12], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 12) & 31]);
-            CAST_F3(x[1], x[2], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 13], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 13) & 31]);
-            CAST_F1(x[0], x[1], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 14], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 14) & 31]);
-            CAST_F2(x[7], x[0], CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 15], CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 15) & 31]);
+            CAST_F1(x[6],x[7],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 0],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 0) & 31]);
+            CAST_F2(x[5],x[6],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 1],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 1) & 31]);
+            CAST_F3(x[4],x[5],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 2],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 2) & 31]);
+            CAST_F1(x[3],x[4],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 3],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 3) & 31]);
+            CAST_F2(x[2],x[3],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 4],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 4) & 31]);
+            CAST_F3(x[1],x[2],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 5],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 5) & 31]);
+            CAST_F1(x[0],x[1],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 6],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 6) & 31]);
+            CAST_F2(x[7],x[0],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 7],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 7) & 31]);
+            CAST_F1(x[6],x[7],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 8],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 8) & 31]);
+            CAST_F2(x[5],x[6],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 9],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 9) & 31]);
+            CAST_F3(x[4],x[5],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 10],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 10) & 31]);
+            CAST_F1(x[3],x[4],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 11],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 11) & 31]);
+            CAST_F2(x[2],x[3],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 12],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 12) & 31]);
+            CAST_F3(x[1],x[2],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 13],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 13) & 31]);
+            CAST_F1(x[0],x[1],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 14],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 14) & 31]);
+            CAST_F2(x[7],x[0],CAST_SBOX_Define::CAST6_KEY_MASK[4 * j + 15],CAST_SBOX_Define::CAST6_KEY_ROT[(4 * j + 15) & 31]);
 
-            rkey_ptr[j  ] = (x[0]) & 0xFF;
+            rkey_ptr[j] = (x[0]) & 0xFF;
             rkey_ptr[j + 1] = (x[2]) & 0xFF;
             rkey_ptr[j + 2] = (x[4]) & 0xFF;
             rkey_ptr[j + 3] = (x[6]) & 0xFF;
 
-            mkey_ptr[j  ] = x[7];
+            mkey_ptr[j] = x[7];
             mkey_ptr[j + 1] = x[5];
             mkey_ptr[j + 2] = x[3];
             mkey_ptr[j + 3] = x[1];
@@ -1844,82 +1812,80 @@ public:
                             const unsigned char *src_block,
                             unsigned char *cipher_block)
     {
-
         const uint32_t *mkey_ptr = sub_key->mkey_;
         const uint8_t *rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
 
-        uint32_t a = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t b = ZINDEX_TO_LEUINT32(src_block, 1);
-        uint32_t c = ZINDEX_TO_LEUINT32(src_block, 2);
-        uint32_t d = ZINDEX_TO_LEUINT32(src_block, 3);
+        uint32_t a = ZINDEX_TO_LEUINT32(src_block,0);
+        uint32_t b = ZINDEX_TO_LEUINT32(src_block,1);
+        uint32_t c = ZINDEX_TO_LEUINT32(src_block,2);
+        uint32_t d = ZINDEX_TO_LEUINT32(src_block,3);
 
         //48轮处理
         //正向，Qi
-        CAST_F1(c, d, mkey_ptr[ 0], rkey_ptr[ 0]);
-        CAST_F2(b, c, mkey_ptr[ 1], rkey_ptr[ 1]);
-        CAST_F3(a, b, mkey_ptr[ 2], rkey_ptr[ 2]);
-        CAST_F1(d, a, mkey_ptr[ 3], rkey_ptr[ 3]);
-        CAST_F1(c, d, mkey_ptr[ 4], rkey_ptr[ 4]);
-        CAST_F2(b, c, mkey_ptr[ 5], rkey_ptr[ 5]);
-        CAST_F3(a, b, mkey_ptr[ 6], rkey_ptr[ 6]);
-        CAST_F1(d, a, mkey_ptr[ 7], rkey_ptr[ 7]);
-        CAST_F1(c, d, mkey_ptr[ 8], rkey_ptr[ 8]);
-        CAST_F2(b, c, mkey_ptr[ 9], rkey_ptr[ 9]);
-        CAST_F3(a, b, mkey_ptr[10], rkey_ptr[10]);
-        CAST_F1(d, a, mkey_ptr[11], rkey_ptr[11]);
-        if (round_size > 12 )
+        CAST_F1(c,d,mkey_ptr[0],rkey_ptr[0]);
+        CAST_F2(b,c,mkey_ptr[1],rkey_ptr[1]);
+        CAST_F3(a,b,mkey_ptr[2],rkey_ptr[2]);
+        CAST_F1(d,a,mkey_ptr[3],rkey_ptr[3]);
+        CAST_F1(c,d,mkey_ptr[4],rkey_ptr[4]);
+        CAST_F2(b,c,mkey_ptr[5],rkey_ptr[5]);
+        CAST_F3(a,b,mkey_ptr[6],rkey_ptr[6]);
+        CAST_F1(d,a,mkey_ptr[7],rkey_ptr[7]);
+        CAST_F1(c,d,mkey_ptr[8],rkey_ptr[8]);
+        CAST_F2(b,c,mkey_ptr[9],rkey_ptr[9]);
+        CAST_F3(a,b,mkey_ptr[10],rkey_ptr[10]);
+        CAST_F1(d,a,mkey_ptr[11],rkey_ptr[11]);
+        if (round_size > 12)
         {
-            CAST_F1(c, d, mkey_ptr[12], rkey_ptr[12]);
-            CAST_F2(b, c, mkey_ptr[13], rkey_ptr[13]);
-            CAST_F3(a, b, mkey_ptr[14], rkey_ptr[14]);
-            CAST_F1(d, a, mkey_ptr[15], rkey_ptr[15]);
-            CAST_F1(c, d, mkey_ptr[16], rkey_ptr[16]);
-            CAST_F2(b, c, mkey_ptr[17], rkey_ptr[17]);
-            CAST_F3(a, b, mkey_ptr[18], rkey_ptr[18]);
-            CAST_F1(d, a, mkey_ptr[19], rkey_ptr[19]);
-            CAST_F1(c, d, mkey_ptr[20], rkey_ptr[20]);
-            CAST_F2(b, c, mkey_ptr[21], rkey_ptr[21]);
-            CAST_F3(a, b, mkey_ptr[22], rkey_ptr[22]);
-            CAST_F1(d, a, mkey_ptr[23], rkey_ptr[23]);
+            CAST_F1(c,d,mkey_ptr[12],rkey_ptr[12]);
+            CAST_F2(b,c,mkey_ptr[13],rkey_ptr[13]);
+            CAST_F3(a,b,mkey_ptr[14],rkey_ptr[14]);
+            CAST_F1(d,a,mkey_ptr[15],rkey_ptr[15]);
+            CAST_F1(c,d,mkey_ptr[16],rkey_ptr[16]);
+            CAST_F2(b,c,mkey_ptr[17],rkey_ptr[17]);
+            CAST_F3(a,b,mkey_ptr[18],rkey_ptr[18]);
+            CAST_F1(d,a,mkey_ptr[19],rkey_ptr[19]);
+            CAST_F1(c,d,mkey_ptr[20],rkey_ptr[20]);
+            CAST_F2(b,c,mkey_ptr[21],rkey_ptr[21]);
+            CAST_F3(a,b,mkey_ptr[22],rkey_ptr[22]);
+            CAST_F1(d,a,mkey_ptr[23],rkey_ptr[23]);
         }
         //反向，QBARi
         if (round_size > 24)
         {
-            CAST_F1(d, a, mkey_ptr[27], rkey_ptr[27]);
-            CAST_F3(a, b, mkey_ptr[26], rkey_ptr[26]);
-            CAST_F2(b, c, mkey_ptr[25], rkey_ptr[25]);
-            CAST_F1(c, d, mkey_ptr[24], rkey_ptr[24]);
-            CAST_F1(d, a, mkey_ptr[31], rkey_ptr[31]);
-            CAST_F3(a, b, mkey_ptr[30], rkey_ptr[30]);
-            CAST_F2(b, c, mkey_ptr[29], rkey_ptr[29]);
-            CAST_F1(c, d, mkey_ptr[28], rkey_ptr[28]);
-            CAST_F1(d, a, mkey_ptr[35], rkey_ptr[35]);
-            CAST_F3(a, b, mkey_ptr[34], rkey_ptr[34]);
-            CAST_F2(b, c, mkey_ptr[33], rkey_ptr[33]);
-            CAST_F1(c, d, mkey_ptr[32], rkey_ptr[32]);
+            CAST_F1(d,a,mkey_ptr[27],rkey_ptr[27]);
+            CAST_F3(a,b,mkey_ptr[26],rkey_ptr[26]);
+            CAST_F2(b,c,mkey_ptr[25],rkey_ptr[25]);
+            CAST_F1(c,d,mkey_ptr[24],rkey_ptr[24]);
+            CAST_F1(d,a,mkey_ptr[31],rkey_ptr[31]);
+            CAST_F3(a,b,mkey_ptr[30],rkey_ptr[30]);
+            CAST_F2(b,c,mkey_ptr[29],rkey_ptr[29]);
+            CAST_F1(c,d,mkey_ptr[28],rkey_ptr[28]);
+            CAST_F1(d,a,mkey_ptr[35],rkey_ptr[35]);
+            CAST_F3(a,b,mkey_ptr[34],rkey_ptr[34]);
+            CAST_F2(b,c,mkey_ptr[33],rkey_ptr[33]);
+            CAST_F1(c,d,mkey_ptr[32],rkey_ptr[32]);
         }
         if (round_size > 36)
         {
-            CAST_F1(d, a, mkey_ptr[39], rkey_ptr[39]);
-            CAST_F3(a, b, mkey_ptr[38], rkey_ptr[38]);
-            CAST_F2(b, c, mkey_ptr[37], rkey_ptr[37]);
-            CAST_F1(c, d, mkey_ptr[36], rkey_ptr[36]);
-            CAST_F1(d, a, mkey_ptr[43], rkey_ptr[43]);
-            CAST_F3(a, b, mkey_ptr[42], rkey_ptr[42]);
-            CAST_F2(b, c, mkey_ptr[41], rkey_ptr[41]);
-            CAST_F1(c, d, mkey_ptr[40], rkey_ptr[40]);
-            CAST_F1(d, a, mkey_ptr[47], rkey_ptr[47]);
-            CAST_F3(a, b, mkey_ptr[46], rkey_ptr[46]);
-            CAST_F2(b, c, mkey_ptr[45], rkey_ptr[45]);
-            CAST_F1(c, d, mkey_ptr[44], rkey_ptr[44]);
+            CAST_F1(d,a,mkey_ptr[39],rkey_ptr[39]);
+            CAST_F3(a,b,mkey_ptr[38],rkey_ptr[38]);
+            CAST_F2(b,c,mkey_ptr[37],rkey_ptr[37]);
+            CAST_F1(c,d,mkey_ptr[36],rkey_ptr[36]);
+            CAST_F1(d,a,mkey_ptr[43],rkey_ptr[43]);
+            CAST_F3(a,b,mkey_ptr[42],rkey_ptr[42]);
+            CAST_F2(b,c,mkey_ptr[41],rkey_ptr[41]);
+            CAST_F1(c,d,mkey_ptr[40],rkey_ptr[40]);
+            CAST_F1(d,a,mkey_ptr[47],rkey_ptr[47]);
+            CAST_F3(a,b,mkey_ptr[46],rkey_ptr[46]);
+            CAST_F2(b,c,mkey_ptr[45],rkey_ptr[45]);
+            CAST_F1(c,d,mkey_ptr[44],rkey_ptr[44]);
         }
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, c);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, d);
-
+        ZLEUINT32_TO_INDEX(cipher_block,0,a);
+        ZLEUINT32_TO_INDEX(cipher_block,1,b);
+        ZLEUINT32_TO_INDEX(cipher_block,2,c);
+        ZLEUINT32_TO_INDEX(cipher_block,3,d);
     }
     //CAST6解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT *sub_key,
@@ -1930,83 +1896,83 @@ public:
         const uint8_t *rkey_ptr = sub_key->rkey_;
         uint32_t t = 0;
 
-        uint32_t a = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t b = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t c = ZINDEX_TO_LEUINT32(cipher_block, 2);
-        uint32_t d = ZINDEX_TO_LEUINT32(cipher_block, 3);
+        uint32_t a = ZINDEX_TO_LEUINT32(cipher_block,0);
+        uint32_t b = ZINDEX_TO_LEUINT32(cipher_block,1);
+        uint32_t c = ZINDEX_TO_LEUINT32(cipher_block,2);
+        uint32_t d = ZINDEX_TO_LEUINT32(cipher_block,3);
 
         //48轮处理
         //反向，QBARi
-        if (round_size > 36 )
+        if (round_size > 36)
         {
-            CAST_F1(c, d, mkey_ptr[44], rkey_ptr[44]);
-            CAST_F2(b, c, mkey_ptr[45], rkey_ptr[45]);
-            CAST_F3(a, b, mkey_ptr[46], rkey_ptr[46]);
-            CAST_F1(d, a, mkey_ptr[47], rkey_ptr[47]);
-            CAST_F1(c, d, mkey_ptr[40], rkey_ptr[40]);
-            CAST_F2(b, c, mkey_ptr[41], rkey_ptr[41]);
-            CAST_F3(a, b, mkey_ptr[42], rkey_ptr[42]);
-            CAST_F1(d, a, mkey_ptr[43], rkey_ptr[43]);
-            CAST_F1(c, d, mkey_ptr[36], rkey_ptr[36]);
-            CAST_F2(b, c, mkey_ptr[37], rkey_ptr[37]);
-            CAST_F3(a, b, mkey_ptr[38], rkey_ptr[38]);
-            CAST_F1(d, a, mkey_ptr[39], rkey_ptr[39]);
+            CAST_F1(c,d,mkey_ptr[44],rkey_ptr[44]);
+            CAST_F2(b,c,mkey_ptr[45],rkey_ptr[45]);
+            CAST_F3(a,b,mkey_ptr[46],rkey_ptr[46]);
+            CAST_F1(d,a,mkey_ptr[47],rkey_ptr[47]);
+            CAST_F1(c,d,mkey_ptr[40],rkey_ptr[40]);
+            CAST_F2(b,c,mkey_ptr[41],rkey_ptr[41]);
+            CAST_F3(a,b,mkey_ptr[42],rkey_ptr[42]);
+            CAST_F1(d,a,mkey_ptr[43],rkey_ptr[43]);
+            CAST_F1(c,d,mkey_ptr[36],rkey_ptr[36]);
+            CAST_F2(b,c,mkey_ptr[37],rkey_ptr[37]);
+            CAST_F3(a,b,mkey_ptr[38],rkey_ptr[38]);
+            CAST_F1(d,a,mkey_ptr[39],rkey_ptr[39]);
         }
-        if (round_size > 24 )
+        if (round_size > 24)
         {
-            CAST_F1(c, d, mkey_ptr[32], rkey_ptr[32]);
-            CAST_F2(b, c, mkey_ptr[33], rkey_ptr[33]);
-            CAST_F3(a, b, mkey_ptr[34], rkey_ptr[34]);
-            CAST_F1(d, a, mkey_ptr[35], rkey_ptr[35]);
-            CAST_F1(c, d, mkey_ptr[28], rkey_ptr[28]);
-            CAST_F2(b, c, mkey_ptr[29], rkey_ptr[29]);
-            CAST_F3(a, b, mkey_ptr[30], rkey_ptr[30]);
-            CAST_F1(d, a, mkey_ptr[31], rkey_ptr[31]);
-            CAST_F1(c, d, mkey_ptr[24], rkey_ptr[24]);
-            CAST_F2(b, c, mkey_ptr[25], rkey_ptr[25]);
-            CAST_F3(a, b, mkey_ptr[26], rkey_ptr[26]);
-            CAST_F1(d, a, mkey_ptr[27], rkey_ptr[27]);
+            CAST_F1(c,d,mkey_ptr[32],rkey_ptr[32]);
+            CAST_F2(b,c,mkey_ptr[33],rkey_ptr[33]);
+            CAST_F3(a,b,mkey_ptr[34],rkey_ptr[34]);
+            CAST_F1(d,a,mkey_ptr[35],rkey_ptr[35]);
+            CAST_F1(c,d,mkey_ptr[28],rkey_ptr[28]);
+            CAST_F2(b,c,mkey_ptr[29],rkey_ptr[29]);
+            CAST_F3(a,b,mkey_ptr[30],rkey_ptr[30]);
+            CAST_F1(d,a,mkey_ptr[31],rkey_ptr[31]);
+            CAST_F1(c,d,mkey_ptr[24],rkey_ptr[24]);
+            CAST_F2(b,c,mkey_ptr[25],rkey_ptr[25]);
+            CAST_F3(a,b,mkey_ptr[26],rkey_ptr[26]);
+            CAST_F1(d,a,mkey_ptr[27],rkey_ptr[27]);
         }
         //正向，Qi
-        if (round_size > 12 )
+        if (round_size > 12)
         {
-            CAST_F1(d, a, mkey_ptr[23], rkey_ptr[23]);
-            CAST_F3(a, b, mkey_ptr[22], rkey_ptr[22]);
-            CAST_F2(b, c, mkey_ptr[21], rkey_ptr[21]);
-            CAST_F1(c, d, mkey_ptr[20], rkey_ptr[20]);
-            CAST_F1(d, a, mkey_ptr[19], rkey_ptr[19]);
-            CAST_F3(a, b, mkey_ptr[18], rkey_ptr[18]);
-            CAST_F2(b, c, mkey_ptr[17], rkey_ptr[17]);
-            CAST_F1(c, d, mkey_ptr[16], rkey_ptr[16]);
-            CAST_F1(d, a, mkey_ptr[15], rkey_ptr[15]);
-            CAST_F3(a, b, mkey_ptr[14], rkey_ptr[14]);
-            CAST_F2(b, c, mkey_ptr[13], rkey_ptr[13]);
-            CAST_F1(c, d, mkey_ptr[12], rkey_ptr[12]);
+            CAST_F1(d,a,mkey_ptr[23],rkey_ptr[23]);
+            CAST_F3(a,b,mkey_ptr[22],rkey_ptr[22]);
+            CAST_F2(b,c,mkey_ptr[21],rkey_ptr[21]);
+            CAST_F1(c,d,mkey_ptr[20],rkey_ptr[20]);
+            CAST_F1(d,a,mkey_ptr[19],rkey_ptr[19]);
+            CAST_F3(a,b,mkey_ptr[18],rkey_ptr[18]);
+            CAST_F2(b,c,mkey_ptr[17],rkey_ptr[17]);
+            CAST_F1(c,d,mkey_ptr[16],rkey_ptr[16]);
+            CAST_F1(d,a,mkey_ptr[15],rkey_ptr[15]);
+            CAST_F3(a,b,mkey_ptr[14],rkey_ptr[14]);
+            CAST_F2(b,c,mkey_ptr[13],rkey_ptr[13]);
+            CAST_F1(c,d,mkey_ptr[12],rkey_ptr[12]);
         }
-        CAST_F1(d, a, mkey_ptr[11], rkey_ptr[11]);
-        CAST_F3(a, b, mkey_ptr[10], rkey_ptr[10]);
-        CAST_F2(b, c, mkey_ptr[ 9], rkey_ptr[ 9]);
-        CAST_F1(c, d, mkey_ptr[ 8], rkey_ptr[ 8]);
-        CAST_F1(d, a, mkey_ptr[ 7], rkey_ptr[ 7]);
-        CAST_F3(a, b, mkey_ptr[ 6], rkey_ptr[ 6]);
-        CAST_F2(b, c, mkey_ptr[ 5], rkey_ptr[ 5]);
-        CAST_F1(c, d, mkey_ptr[ 4], rkey_ptr[ 4]);
-        CAST_F1(d, a, mkey_ptr[ 3], rkey_ptr[ 3]);
-        CAST_F3(a, b, mkey_ptr[ 2], rkey_ptr[ 2]);
-        CAST_F2(b, c, mkey_ptr[ 1], rkey_ptr[ 1]);
-        CAST_F1(c, d, mkey_ptr[ 0], rkey_ptr[ 0]);
+        CAST_F1(d,a,mkey_ptr[11],rkey_ptr[11]);
+        CAST_F3(a,b,mkey_ptr[10],rkey_ptr[10]);
+        CAST_F2(b,c,mkey_ptr[9],rkey_ptr[9]);
+        CAST_F1(c,d,mkey_ptr[8],rkey_ptr[8]);
+        CAST_F1(d,a,mkey_ptr[7],rkey_ptr[7]);
+        CAST_F3(a,b,mkey_ptr[6],rkey_ptr[6]);
+        CAST_F2(b,c,mkey_ptr[5],rkey_ptr[5]);
+        CAST_F1(c,d,mkey_ptr[4],rkey_ptr[4]);
+        CAST_F1(d,a,mkey_ptr[3],rkey_ptr[3]);
+        CAST_F3(a,b,mkey_ptr[2],rkey_ptr[2]);
+        CAST_F2(b,c,mkey_ptr[1],rkey_ptr[1]);
+        CAST_F1(c,d,mkey_ptr[0],rkey_ptr[0]);
 
-        ZLEUINT32_TO_INDEX(src_block, 0, a);
-        ZLEUINT32_TO_INDEX(src_block, 1, b);
-        ZLEUINT32_TO_INDEX(src_block, 2, c);
-        ZLEUINT32_TO_INDEX(src_block, 3, d);
+        ZLEUINT32_TO_INDEX(src_block,0,a);
+        ZLEUINT32_TO_INDEX(src_block,1,b);
+        ZLEUINT32_TO_INDEX(src_block,2,c);
+        ZLEUINT32_TO_INDEX(src_block,3,d);
     }
 
 public:
     //
     const static size_t BLOCK_SIZE = 16;
     //
-    const static size_t KEY_SIZE   = key_size;
+    const static size_t KEY_SIZE = key_size;
 };
 
 #undef CAST_F1
@@ -2015,14 +1981,14 @@ public:
 
 //第一个参数是密钥长度，第二个参数是加密轮数，如果考虑加密效果，48轮的都值得推荐
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<CAST6_ECB<16, 12> >  CAST6_Crypt_128_128_12;
-typedef ZCE_Crypt<CAST6_ECB<16, 24> >  CAST6_Crypt_128_128_24;
-typedef ZCE_Crypt<CAST6_ECB<16, 36> >  CAST6_Crypt_128_128_36;
-typedef ZCE_Crypt<CAST6_ECB<16, 48> >  CAST6_Crypt_128_128_48;
-typedef ZCE_Crypt<CAST6_ECB<20, 48> >  CAST6_Crypt_128_160_48;
-typedef ZCE_Crypt<CAST6_ECB<24, 48> >  CAST6_Crypt_128_192_48;
-typedef ZCE_Crypt<CAST6_ECB<28, 48> >  CAST6_Crypt_128_224_48;
-typedef ZCE_Crypt<CAST6_ECB<32, 48> >  CAST6_Crypt_128_256_48;
+typedef ZCE_Crypt<CAST6_ECB<16,12> >  CAST6_Crypt_128_128_12;
+typedef ZCE_Crypt<CAST6_ECB<16,24> >  CAST6_Crypt_128_128_24;
+typedef ZCE_Crypt<CAST6_ECB<16,36> >  CAST6_Crypt_128_128_36;
+typedef ZCE_Crypt<CAST6_ECB<16,48> >  CAST6_Crypt_128_128_48;
+typedef ZCE_Crypt<CAST6_ECB<20,48> >  CAST6_Crypt_128_160_48;
+typedef ZCE_Crypt<CAST6_ECB<24,48> >  CAST6_Crypt_128_192_48;
+typedef ZCE_Crypt<CAST6_ECB<28,48> >  CAST6_Crypt_128_224_48;
+typedef ZCE_Crypt<CAST6_ECB<32,48> >  CAST6_Crypt_128_256_48;
 
 //=================================================================================================================
 //MARS算法年的定义
@@ -2041,7 +2007,6 @@ protected:
     static const uint32_t  MARS_I4M[15];
     //
     static const uint32_t  MARS_B_TAB[4];
-
 };
 
 /*!
@@ -2053,13 +2018,12 @@ protected:
             core are "jacketed" by unkeyed mixing rounds, together with key whitening.
 */
 template <size_t key_size>
-class MARS_ECB : public MARS_ECB_Define
+class MARS_ECB: public MARS_ECB_Define
 {
 public:
 
     struct MARS_SUBKEY
     {
-
         uint32_t  ll_key_[40];
     };
 
@@ -2069,14 +2033,13 @@ public:
                           SUBKEY_STRUCT *sub_key,
                           bool  /*if_encrypt*/)
     {
-
         uint32_t t_key[16];
         uint32_t *ll_key = sub_key->ll_key_;
 
         uint32_t key_word_num = key_size / sizeof(uint32_t);
         for (uint32_t i = 0; i < key_word_num; ++i)
         {
-            t_key[i] = ZINDEX_TO_LEUINT32(key, i);
+            t_key[i] = ZINDEX_TO_LEUINT32(key,i);
         }
         //填写KEY长度
         t_key[key_word_num] = key_word_num;
@@ -2090,13 +2053,13 @@ public:
         {
             for (size_t j = 0; j < 15; ++j)
             {
-                t_key[j] ^= ZCE_ROTL32(t_key[MARS_IM7[j]] ^ t_key[MARS_IM2[j]], 3) ^ (4 * j + i);
+                t_key[j] ^= ZCE_ROTL32(t_key[MARS_IM7[j]] ^ t_key[MARS_IM2[j]],3) ^ (4 * j + i);
             }
             for (size_t m = 0; m < 4; ++m)
             {
                 for (size_t j = 0; j < 15; ++j)
                 {
-                    t_key[j] = ZCE_ROTL32(t_key[j] + MARS_S_BOX[t_key[MARS_IM1[j]] & 511], 9);
+                    t_key[j] = ZCE_ROTL32(t_key[j] + MARS_S_BOX[t_key[MARS_IM1[j]] & 511],9);
                 }
             }
             for (size_t j = 0; j < 10; ++j)
@@ -2121,7 +2084,7 @@ public:
                 y |= (y << 2);
                 y |= (y << 4);
                 y &= 0xfffffffc;
-                x ^= (ZCE_ROTL32(MARS_B_TAB[ll_key[i] & 3], ll_key[i - 1]) & y);
+                x ^= (ZCE_ROTL32(MARS_B_TAB[ll_key[i] & 3],ll_key[i - 1]) & y);
             }
 
             ll_key[i] = x;
@@ -2176,62 +2139,61 @@ public:
                             const unsigned char *src_block,
                             unsigned char *cipher_block)
     {
-
-        unsigned int   a, b, c, d, l, m, r;
+        unsigned int   a,b,c,d,l,m,r;
         const uint32_t *ll_key = sub_key->ll_key_;
 
-        a = ZINDEX_TO_LEUINT32(src_block, 0) + ll_key[0];
-        b = ZINDEX_TO_LEUINT32(src_block, 1) + ll_key[1];
-        c = ZINDEX_TO_LEUINT32(src_block, 2) + ll_key[2];
-        d = ZINDEX_TO_LEUINT32(src_block, 3) + ll_key[3];
+        a = ZINDEX_TO_LEUINT32(src_block,0) + ll_key[0];
+        b = ZINDEX_TO_LEUINT32(src_block,1) + ll_key[1];
+        c = ZINDEX_TO_LEUINT32(src_block,2) + ll_key[2];
+        d = ZINDEX_TO_LEUINT32(src_block,3) + ll_key[3];
 
-        MARS_F_MIX(a, b, c, d);
+        MARS_F_MIX(a,b,c,d);
         a += d;
-        MARS_F_MIX(b, c, d, a);
+        MARS_F_MIX(b,c,d,a);
         b += c;
-        MARS_F_MIX(c, d, a, b);
-        MARS_F_MIX(d, a, b, c);
-        MARS_F_MIX(a, b, c, d);
+        MARS_F_MIX(c,d,a,b);
+        MARS_F_MIX(d,a,b,c);
+        MARS_F_MIX(a,b,c,d);
         a += d;
-        MARS_F_MIX(b, c, d, a);
+        MARS_F_MIX(b,c,d,a);
         b += c;
-        MARS_F_MIX(c, d, a, b);
-        MARS_F_MIX(d, a, b, c);
+        MARS_F_MIX(c,d,a,b);
+        MARS_F_MIX(d,a,b,c);
 
-        MARS_F_KTR(a, b, c, d, 4);
-        MARS_F_KTR(b, c, d, a, 6);
-        MARS_F_KTR(c, d, a, b, 8);
-        MARS_F_KTR(d, a, b, c, 10);
-        MARS_F_KTR(a, b, c, d, 12);
-        MARS_F_KTR(b, c, d, a, 14);
-        MARS_F_KTR(c, d, a, b, 16);
-        MARS_F_KTR(d, a, b, c, 18);
-        MARS_F_KTR(a, d, c, b, 20);
-        MARS_F_KTR(b, a, d, c, 22);
-        MARS_F_KTR(c, b, a, d, 24);
-        MARS_F_KTR(d, c, b, a, 26);
-        MARS_F_KTR(a, d, c, b, 28);
-        MARS_F_KTR(b, a, d, c, 30);
-        MARS_F_KTR(c, b, a, d, 32);
-        MARS_F_KTR(d, c, b, a, 34);
+        MARS_F_KTR(a,b,c,d,4);
+        MARS_F_KTR(b,c,d,a,6);
+        MARS_F_KTR(c,d,a,b,8);
+        MARS_F_KTR(d,a,b,c,10);
+        MARS_F_KTR(a,b,c,d,12);
+        MARS_F_KTR(b,c,d,a,14);
+        MARS_F_KTR(c,d,a,b,16);
+        MARS_F_KTR(d,a,b,c,18);
+        MARS_F_KTR(a,d,c,b,20);
+        MARS_F_KTR(b,a,d,c,22);
+        MARS_F_KTR(c,b,a,d,24);
+        MARS_F_KTR(d,c,b,a,26);
+        MARS_F_KTR(a,d,c,b,28);
+        MARS_F_KTR(b,a,d,c,30);
+        MARS_F_KTR(c,b,a,d,32);
+        MARS_F_KTR(d,c,b,a,34);
 
-        MARS_B_MIX(a, b, c, d);
-        MARS_B_MIX(b, c, d, a);
+        MARS_B_MIX(a,b,c,d);
+        MARS_B_MIX(b,c,d,a);
         c -= b;
-        MARS_B_MIX(c, d, a, b);
+        MARS_B_MIX(c,d,a,b);
         d -= a;
-        MARS_B_MIX(d, a, b, c);
-        MARS_B_MIX(a, b, c, d);
-        MARS_B_MIX(b, c, d, a);
+        MARS_B_MIX(d,a,b,c);
+        MARS_B_MIX(a,b,c,d);
+        MARS_B_MIX(b,c,d,a);
         c -= b;
-        MARS_B_MIX(c, d, a, b);
+        MARS_B_MIX(c,d,a,b);
         d -= a;
-        MARS_B_MIX(d, a, b, c);
+        MARS_B_MIX(d,a,b,c);
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, a - ll_key[36]);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, b - ll_key[37]);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, c - ll_key[38]);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, d - ll_key[39]);
+        ZLEUINT32_TO_INDEX(cipher_block,0,a - ll_key[36]);
+        ZLEUINT32_TO_INDEX(cipher_block,1,b - ll_key[37]);
+        ZLEUINT32_TO_INDEX(cipher_block,2,c - ll_key[38]);
+        ZLEUINT32_TO_INDEX(cipher_block,3,d - ll_key[39]);
     }
 
     //
@@ -2239,62 +2201,61 @@ public:
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
-
-        unsigned int   a, b, c, d, l, m, r;
+        unsigned int   a,b,c,d,l,m,r;
         const uint32_t *ll_key = sub_key->ll_key_;
 
-        d = ZINDEX_TO_LEUINT32(cipher_block, 0) + ll_key[36];
-        c = ZINDEX_TO_LEUINT32(cipher_block, 1) + ll_key[37];
-        b = ZINDEX_TO_LEUINT32(cipher_block, 2) + ll_key[38];
-        a = ZINDEX_TO_LEUINT32(cipher_block, 3) + ll_key[39];
+        d = ZINDEX_TO_LEUINT32(cipher_block,0) + ll_key[36];
+        c = ZINDEX_TO_LEUINT32(cipher_block,1) + ll_key[37];
+        b = ZINDEX_TO_LEUINT32(cipher_block,2) + ll_key[38];
+        a = ZINDEX_TO_LEUINT32(cipher_block,3) + ll_key[39];
 
-        MARS_F_MIX(a, b, c, d);
+        MARS_F_MIX(a,b,c,d);
         a += d;
-        MARS_F_MIX(b, c, d, a);
+        MARS_F_MIX(b,c,d,a);
         b += c;
-        MARS_F_MIX(c, d, a, b);
-        MARS_F_MIX(d, a, b, c);
-        MARS_F_MIX(a, b, c, d);
+        MARS_F_MIX(c,d,a,b);
+        MARS_F_MIX(d,a,b,c);
+        MARS_F_MIX(a,b,c,d);
         a += d;
-        MARS_F_MIX(b, c, d, a);
+        MARS_F_MIX(b,c,d,a);
         b += c;
-        MARS_F_MIX(c, d, a, b);
-        MARS_F_MIX(d, a, b, c);
+        MARS_F_MIX(c,d,a,b);
+        MARS_F_MIX(d,a,b,c);
 
-        MARS_R_KTR(a, b, c, d, 34);
-        MARS_R_KTR(b, c, d, a, 32);
-        MARS_R_KTR(c, d, a, b, 30);
-        MARS_R_KTR(d, a, b, c, 28);
-        MARS_R_KTR(a, b, c, d, 26);
-        MARS_R_KTR(b, c, d, a, 24);
-        MARS_R_KTR(c, d, a, b, 22);
-        MARS_R_KTR(d, a, b, c, 20);
-        MARS_R_KTR(a, d, c, b, 18);
-        MARS_R_KTR(b, a, d, c, 16);
-        MARS_R_KTR(c, b, a, d, 14);
-        MARS_R_KTR(d, c, b, a, 12);
-        MARS_R_KTR(a, d, c, b, 10);
-        MARS_R_KTR(b, a, d, c, 8);
-        MARS_R_KTR(c, b, a, d, 6);
-        MARS_R_KTR(d, c, b, a, 4);
+        MARS_R_KTR(a,b,c,d,34);
+        MARS_R_KTR(b,c,d,a,32);
+        MARS_R_KTR(c,d,a,b,30);
+        MARS_R_KTR(d,a,b,c,28);
+        MARS_R_KTR(a,b,c,d,26);
+        MARS_R_KTR(b,c,d,a,24);
+        MARS_R_KTR(c,d,a,b,22);
+        MARS_R_KTR(d,a,b,c,20);
+        MARS_R_KTR(a,d,c,b,18);
+        MARS_R_KTR(b,a,d,c,16);
+        MARS_R_KTR(c,b,a,d,14);
+        MARS_R_KTR(d,c,b,a,12);
+        MARS_R_KTR(a,d,c,b,10);
+        MARS_R_KTR(b,a,d,c,8);
+        MARS_R_KTR(c,b,a,d,6);
+        MARS_R_KTR(d,c,b,a,4);
 
-        MARS_B_MIX(a, b, c, d);
-        MARS_B_MIX(b, c, d, a);
+        MARS_B_MIX(a,b,c,d);
+        MARS_B_MIX(b,c,d,a);
         c -= b;
-        MARS_B_MIX(c, d, a, b);
+        MARS_B_MIX(c,d,a,b);
         d -= a;
-        MARS_B_MIX(d, a, b, c);
-        MARS_B_MIX(a, b, c, d);
-        MARS_B_MIX(b, c, d, a);
+        MARS_B_MIX(d,a,b,c);
+        MARS_B_MIX(a,b,c,d);
+        MARS_B_MIX(b,c,d,a);
         c -= b;
-        MARS_B_MIX(c, d, a, b);
+        MARS_B_MIX(c,d,a,b);
         d -= a;
-        MARS_B_MIX(d, a, b, c);
+        MARS_B_MIX(d,a,b,c);
 
-        ZLEUINT32_TO_INDEX(src_block, 0, d - ll_key[0]);
-        ZLEUINT32_TO_INDEX(src_block, 1, c - ll_key[1]);
-        ZLEUINT32_TO_INDEX(src_block, 2, b - ll_key[2]);
-        ZLEUINT32_TO_INDEX(src_block, 3, a - ll_key[3]);
+        ZLEUINT32_TO_INDEX(src_block,0,d - ll_key[0]);
+        ZLEUINT32_TO_INDEX(src_block,1,c - ll_key[1]);
+        ZLEUINT32_TO_INDEX(src_block,2,b - ll_key[2]);
+        ZLEUINT32_TO_INDEX(src_block,3,a - ll_key[3]);
     }
 
 #undef MARS_F_MIX
@@ -2305,8 +2266,7 @@ public:
     //
     const static size_t BLOCK_SIZE = 16;
     //
-    const static size_t KEY_SIZE   = key_size;
-
+    const static size_t KEY_SIZE = key_size;
 };
 
 //理论可以选择16，20，24，28，32，36，40，44，48，52，56作为key长度
@@ -2340,8 +2300,8 @@ protected:
 @tparam     round_size   10,12,14 rounds_ = keylen / 4 + 6;
 @note
 */
-template <size_t key_size, size_t round_size>
-class AES_ECB : public AES_ECB_Define
+template <size_t key_size,size_t round_size>
+class AES_ECB: public AES_ECB_Define
 {
 public:
 
@@ -2354,90 +2314,90 @@ public:
     typedef AES_SUBKEY  SUBKEY_STRUCT;
 
     //生成加密所需的SKEY，注意，AES的加密和解密的sub key，是不一样的，（大家终于明白为啥要有这个参数了吧）
-    static void key_setup(const unsigned char *key, SUBKEY_STRUCT *sub_key, bool if_encrypt)
+    static void key_setup(const unsigned char *key,SUBKEY_STRUCT *sub_key,bool if_encrypt)
     {
-        uint32_t temp = 0, *rk = sub_key->skey_;
+        uint32_t temp = 0,*rk = sub_key->skey_;
         for (size_t k = 0; k < key_size / sizeof(uint32_t); ++k)
         {
-            rk[k] =  ZINDEX_TO_LEUINT32(key, k);
+            rk[k] = ZINDEX_TO_LEUINT32(key,k);
         }
         size_t p = 0;
         switch (key_size)
         {
-            case 16:
-                while (true)
+        case 16:
+            while (true)
+            {
+                temp = rk[3];
+                rk[4] = rk[0] ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
+                    AES_RCON[p];
+                rk[5] = rk[1] ^ rk[4];
+                rk[6] = rk[2] ^ rk[5];
+                rk[7] = rk[3] ^ rk[6];
+                if (++p == 10)
                 {
-                    temp  = rk[3];
-                    rk[4] = rk[0] ^
-                            (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
-                            (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
-                            (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
-                            (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                            AES_RCON[p];
-                    rk[5] = rk[1] ^ rk[4];
-                    rk[6] = rk[2] ^ rk[5];
-                    rk[7] = rk[3] ^ rk[6];
-                    if (++p == 10)
-                    {
-                        break;
-                    }
-                    rk += 4;
+                    break;
                 }
-                break;
+                rk += 4;
+            }
+            break;
 
-            case 24:
-                while (true)    // for (;;) here triggers a bug in VC60 SP4 w/ Pro Pack
+        case 24:
+            while (true)    // for (;;) here triggers a bug in VC60 SP4 w/ Pro Pack
+            {
+                temp = rk[5];
+                rk[6] = rk[0] ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
+                    AES_RCON[p];
+                rk[7] = rk[1] ^ rk[6];
+                rk[8] = rk[2] ^ rk[7];
+                rk[9] = rk[3] ^ rk[8];
+                if (++p == 8)
                 {
-                    temp = rk[ 5];
-                    rk[ 6] = rk[ 0] ^
-                             (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
-                             (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
-                             (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
-                             (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                             AES_RCON[p];
-                    rk[ 7] = rk[ 1] ^ rk[ 6];
-                    rk[ 8] = rk[ 2] ^ rk[ 7];
-                    rk[ 9] = rk[ 3] ^ rk[ 8];
-                    if (++p == 8)
-                    {
-                        break;
-                    }
-                    rk[10] = rk[ 4] ^ rk[ 9];
-                    rk[11] = rk[ 5] ^ rk[10];
-                    rk += 6;
+                    break;
                 }
-                break;
+                rk[10] = rk[4] ^ rk[9];
+                rk[11] = rk[5] ^ rk[10];
+                rk += 6;
+            }
+            break;
 
-            case 32:
-                while (true)
+        case 32:
+            while (true)
+            {
+                temp = rk[7];
+                rk[8] = rk[0] ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
+                    AES_RCON[p];
+                rk[9] = rk[1] ^ rk[8];
+                rk[10] = rk[2] ^ rk[9];
+                rk[11] = rk[3] ^ rk[10];
+                if (++p == 7)
                 {
-                    temp = rk[ 7];
-                    rk[ 8] = rk[ 0] ^
-                             (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0xff000000) ^
-                             (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x00ff0000) ^
-                             (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x0000ff00) ^
-                             (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0x000000ff) ^
-                             AES_RCON[p];
-                    rk[ 9] = rk[ 1] ^ rk[ 8];
-                    rk[10] = rk[ 2] ^ rk[ 9];
-                    rk[11] = rk[ 3] ^ rk[10];
-                    if (++p == 7)
-                    {
-                        break;
-                    }
-                    temp = rk[11];
-                    rk[12] = rk[ 4] ^
-                             (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0xff000000) ^
-                             (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0x00ff0000) ^
-                             (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x0000ff00) ^
-                             (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x000000ff);
-                    rk[13] = rk[ 5] ^ rk[12];
-                    rk[14] = rk[ 6] ^ rk[13];
-                    rk[15] = rk[ 7] ^ rk[14];
-
-                    rk += 8;
+                    break;
                 }
-                break;
+                temp = rk[11];
+                rk[12] = rk[4] ^
+                    (TE_SBOX[4][ZUINT32_3BYTE(temp)] & 0xff000000) ^
+                    (TE_SBOX[4][ZUINT32_2BYTE(temp)] & 0x00ff0000) ^
+                    (TE_SBOX[4][ZUINT32_1BYTE(temp)] & 0x0000ff00) ^
+                    (TE_SBOX[4][ZUINT32_0BYTE(temp)] & 0x000000ff);
+                rk[13] = rk[5] ^ rk[12];
+                rk[14] = rk[6] ^ rk[13];
+                rk[15] = rk[7] ^ rk[14];
+
+                rk += 8;
+            }
+            break;
         }
 
         //如果是解密
@@ -2446,7 +2406,7 @@ public:
             rk = sub_key->skey_;
 
             /* invert the order of the round keys: */
-            for (size_t i = 0, j = 4 * round_size; i < j; i += 4, j -= 4)
+            for (size_t i = 0,j = 4 * round_size; i < j; i += 4,j -= 4)
             {
                 temp = rk[i];
                 rk[i] = rk[j];
@@ -2497,13 +2457,12 @@ public:
                             const unsigned char *src_block,
                             unsigned char *cipher_block)
     {
+        uint32_t s0 = ZINDEX_TO_LEUINT32(src_block,0);
+        uint32_t s1 = ZINDEX_TO_LEUINT32(src_block,1);
+        uint32_t s2 = ZINDEX_TO_LEUINT32(src_block,2);
+        uint32_t s3 = ZINDEX_TO_LEUINT32(src_block,3);
 
-        uint32_t s0 = ZINDEX_TO_LEUINT32(src_block, 0);
-        uint32_t s1 = ZINDEX_TO_LEUINT32(src_block, 1);
-        uint32_t s2 = ZINDEX_TO_LEUINT32(src_block, 2);
-        uint32_t s3 = ZINDEX_TO_LEUINT32(src_block, 3);
-
-        uint32_t t0, t1, t2, t3;
+        uint32_t t0,t1,t2,t3;
         const uint32_t *rk = sub_key->skey_;
 
         s0 ^= rk[0];
@@ -2516,28 +2475,28 @@ public:
         for (;;)
         {
             t0 =
-                TE_SBOX[0][ZUINT32_3BYTE(s0)]  ^
-                TE_SBOX[1][ZUINT32_2BYTE(s1)]  ^
-                TE_SBOX[2][ZUINT32_1BYTE(s2)]  ^
-                TE_SBOX[3][ZUINT32_0BYTE(s3)]  ^
+                TE_SBOX[0][ZUINT32_3BYTE(s0)] ^
+                TE_SBOX[1][ZUINT32_2BYTE(s1)] ^
+                TE_SBOX[2][ZUINT32_1BYTE(s2)] ^
+                TE_SBOX[3][ZUINT32_0BYTE(s3)] ^
                 rk[4];
             t1 =
-                TE_SBOX[0][ZUINT32_3BYTE(s1)]  ^
-                TE_SBOX[1][ZUINT32_2BYTE(s2)]  ^
-                TE_SBOX[2][ZUINT32_1BYTE(s3)]  ^
-                TE_SBOX[3][ZUINT32_0BYTE(s0)]  ^
+                TE_SBOX[0][ZUINT32_3BYTE(s1)] ^
+                TE_SBOX[1][ZUINT32_2BYTE(s2)] ^
+                TE_SBOX[2][ZUINT32_1BYTE(s3)] ^
+                TE_SBOX[3][ZUINT32_0BYTE(s0)] ^
                 rk[5];
             t2 =
                 TE_SBOX[0][ZUINT32_3BYTE(s2)] ^
-                TE_SBOX[1][ZUINT32_2BYTE(s3)]  ^
-                TE_SBOX[2][ZUINT32_1BYTE(s0)]  ^
-                TE_SBOX[3][ZUINT32_0BYTE(s1)]  ^
+                TE_SBOX[1][ZUINT32_2BYTE(s3)] ^
+                TE_SBOX[2][ZUINT32_1BYTE(s0)] ^
+                TE_SBOX[3][ZUINT32_0BYTE(s1)] ^
                 rk[6];
             t3 =
                 TE_SBOX[0][ZUINT32_3BYTE(s3)] ^
-                TE_SBOX[1][ZUINT32_2BYTE(s0)]  ^
-                TE_SBOX[2][ZUINT32_1BYTE(s1)]  ^
-                TE_SBOX[3][ZUINT32_0BYTE(s2)]  ^
+                TE_SBOX[1][ZUINT32_2BYTE(s0)] ^
+                TE_SBOX[2][ZUINT32_1BYTE(s1)] ^
+                TE_SBOX[3][ZUINT32_0BYTE(s2)] ^
                 rk[7];
 
             rk += 8;
@@ -2599,23 +2558,22 @@ public:
             (TE_SBOX[4][ZUINT32_0BYTE(t2)] & 0x000000ff) ^
             rk[3];
 
-        ZLEUINT32_TO_INDEX(cipher_block, 0, s0);
-        ZLEUINT32_TO_INDEX(cipher_block, 1, s1);
-        ZLEUINT32_TO_INDEX(cipher_block, 2, s2);
-        ZLEUINT32_TO_INDEX(cipher_block, 3, s3);
+        ZLEUINT32_TO_INDEX(cipher_block,0,s0);
+        ZLEUINT32_TO_INDEX(cipher_block,1,s1);
+        ZLEUINT32_TO_INDEX(cipher_block,2,s2);
+        ZLEUINT32_TO_INDEX(cipher_block,3,s3);
     }
     //异或解密函数
     static void ecb_decrypt(const SUBKEY_STRUCT *sub_key,
                             const unsigned char *cipher_block,
                             unsigned char *src_block)
     {
+        uint32_t s0 = ZINDEX_TO_LEUINT32(cipher_block,0);
+        uint32_t s1 = ZINDEX_TO_LEUINT32(cipher_block,1);
+        uint32_t s2 = ZINDEX_TO_LEUINT32(cipher_block,2);
+        uint32_t s3 = ZINDEX_TO_LEUINT32(cipher_block,3);
 
-        uint32_t s0 = ZINDEX_TO_LEUINT32(cipher_block, 0);
-        uint32_t s1 = ZINDEX_TO_LEUINT32(cipher_block, 1);
-        uint32_t s2 = ZINDEX_TO_LEUINT32(cipher_block, 2);
-        uint32_t s3 = ZINDEX_TO_LEUINT32(cipher_block, 3);
-
-        uint32_t t0, t1, t2, t3;
+        uint32_t t0,t1,t2,t3;
         const uint32_t *rk = sub_key->skey_;
 
         s0 ^= rk[0];
@@ -2710,25 +2668,24 @@ public:
             (TD_SBOX[4][ZUINT32_0BYTE(t0)] & 0x000000ff) ^
             rk[3];
 
-        ZLEUINT32_TO_INDEX(src_block, 0, s0);
-        ZLEUINT32_TO_INDEX(src_block, 1, s1);
-        ZLEUINT32_TO_INDEX(src_block, 2, s2);
-        ZLEUINT32_TO_INDEX(src_block, 3, s3);
+        ZLEUINT32_TO_INDEX(src_block,0,s0);
+        ZLEUINT32_TO_INDEX(src_block,1,s1);
+        ZLEUINT32_TO_INDEX(src_block,2,s2);
+        ZLEUINT32_TO_INDEX(src_block,3,s3);
     }
 
 public:
     //异或算法一次处理一个BLOCK的长度
     const static size_t BLOCK_SIZE = 16;
     //异或算法KEY的长度
-    const static size_t KEY_SIZE   = key_size;
+    const static size_t KEY_SIZE = key_size;
 };
 
 //24字节的key（196bits),32字节的的key(256bits)的key也被称为AES2
 //typedef命名原则是，加密算法名称，算法处理的BLOCK长度，key长度，轮数(推荐的轮数往往和key长度有一定关系)
-typedef ZCE_Crypt<AES_ECB<16, 10> > AES_Crypt_128_128_10;
-typedef ZCE_Crypt<AES_ECB<24, 12> > AES_Crypt_128_192_12;
-typedef ZCE_Crypt<AES_ECB<32, 14> > AES_Crypt_128_256_14;
-
+typedef ZCE_Crypt<AES_ECB<16,10> > AES_Crypt_128_128_10;
+typedef ZCE_Crypt<AES_ECB<24,12> > AES_Crypt_128_192_12;
+typedef ZCE_Crypt<AES_ECB<32,14> > AES_Crypt_128_256_14;
 };
 
 #if defined (ZCE_OS_WINDOWS)
@@ -2736,4 +2693,3 @@ typedef ZCE_Crypt<AES_ECB<32, 14> > AES_Crypt_128_256_14;
 #endif
 
 #endif //#ifndef ZCE_LIB_BYTES_ENCRYPT_H_
-

@@ -18,20 +18,17 @@
 *
 */
 
-
 #ifndef ZCE_LIB_CONFIG_PROPERTY_TREE_H_
 #define ZCE_LIB_CONFIG_PROPERTY_TREE_H_
 
 //
 //
-namespace zce {
+namespace zce
+{
 class Sockaddr_In;
 class Sockaddr_In6;
 class Time_Value;
 }
-
-
-
 
 /*!
 * @brief      配置文件读取后存放的树
@@ -49,14 +46,14 @@ class ZCE_Conf_PropertyTree
 protected:
 
     ///叶子节点,以及相应的迭代器
-    typedef std::multimap<std::string, std::string> LEAF_NOTE_TYPE;
+    typedef std::multimap<std::string,std::string> LEAF_NOTE_TYPE;
     typedef LEAF_NOTE_TYPE::iterator leaf_iterator;
     typedef LEAF_NOTE_TYPE::const_iterator const_leaf_iterator;
 
     ///子树的节点的类型,这儿不是map，所以不是高效实现，但为啥不用map呢，我估计是
     ///因为其实map本事并不了顺序，所以在还原的时候，会完全混乱原来的数据，（虽然
     ///并不错），所以
-    typedef std::multimap<std::string, ZCE_Conf_PropertyTree > CHILDREN_NOTE_TYPE;
+    typedef std::multimap<std::string,ZCE_Conf_PropertyTree > CHILDREN_NOTE_TYPE;
     typedef CHILDREN_NOTE_TYPE::iterator child_iterator;
     typedef CHILDREN_NOTE_TYPE::const_iterator const_child_iterator;
     //
@@ -65,7 +62,6 @@ public:
     ///构造函数
     ZCE_Conf_PropertyTree();
     ~ZCE_Conf_PropertyTree();
-
 
     /*!
     * @brief      根据路径得到一个CHILD 子树节点的迭代器
@@ -102,7 +98,6 @@ public:
     int path_get_childptr(const std::string &path_str,
                           const ZCE_Conf_PropertyTree *&child_ptr) const;
 
-
     ///得到（当前node）叶子节点的begin 位置的迭代器
     leaf_iterator leaf_begin();
     ///得到（当前node）叶子节点的end 位置的迭代器
@@ -126,8 +121,6 @@ public:
                       const std::string &key_str,
                       val_type &val) const;
 
-
-
     /*!
     * @brief      上面的函数的扩展函数，
     * @tparam     val_type 参考上面函数
@@ -144,7 +137,7 @@ public:
                          val_type &val) const
     {
         std::string seqkey_str = key_str + std::to_string(key_sequence);
-        return path_get_leaf(path_str, seqkey_str, val);
+        return path_get_leaf(path_str,seqkey_str,val);
     }
 
     /*!
@@ -158,15 +151,12 @@ public:
     void set_leaf(const std::string &key_str,
                   val_type val);
 
-
     ///增加一个新的CHILD,当然里面全部数据为NULL,并且返回新增的节点
     void add_child(const std::string &key_str,
                    ZCE_Conf_PropertyTree *&new_child_note);
 
-
     ///清理
     void clear();
-
 
 public:
     ///设置分割符号,允许你更换这个
@@ -185,8 +175,6 @@ protected:
 
     ///子树节点的MAP
     CHILDREN_NOTE_TYPE     child_node_;
-
 };
 
 #endif //ZCE_LIB_CONFIG_PROPERTY_H_
-

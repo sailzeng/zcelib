@@ -117,12 +117,8 @@
 #include "zce/util/non_copyable.h"
 #include "zce/os_adapt/math.h"
 
-
 namespace zce
 {
-
-
-
 //允许不一致的恢复，用于一些特殊调整后的恢复数据，
 //除非你知道你自己在干嘛，否则不要调整这个宏
 #define ALLOW_RESTORE_INCONFORMITY 0
@@ -130,15 +126,12 @@ namespace zce
 //返回大于N的一个质数,,为什么不用STL的方式呢，因为STL的方式过于粗狂，
 //STL采用的方式一个查表的方式
 //我原来的算法就是采用STL的算法改进的，
-void hash_prime(const size_t node_num, size_t &real_num);
-
+void hash_prime(const size_t node_num,size_t &real_num);
 
 //返回大于N的一个质数,,
-void hash_prime_ary(const size_t node_num, size_t &real_num, size_t row, size_t prime_ary[]);
-
+void hash_prime_ary(const size_t node_num,size_t &real_num,size_t row,size_t prime_ary[]);
 
 #define SHM_INDEX_T_LENGTH 32
-
 
 //=============================================================================================
 //定义Hash函数的函数对象(仿函数),不是我非要当"特立独行的猪",非要抄而不用STL,
@@ -154,7 +147,7 @@ inline size_t _shm_hash_string(const char *str)
 
     // 31 131 1313 13131 131313 etc..
     static const size_t BKDR_HASH_SEED = 131;
-    for ( ; *str; ++str)
+    for (; *str; ++str)
     {
         hashval = BKDR_HASH_SEED * hashval + *str;
     }
@@ -290,13 +283,13 @@ template <class T> struct smem_identity
 template <class _Pair> struct mmap_select1st
 {
     typename _Pair::first_type &
-    operator()(_Pair &__x) const
+        operator()(_Pair &__x) const
     {
         return __x.first;
     }
 
     const typename _Pair::first_type &
-    operator()(const _Pair &__x) const
+        operator()(const _Pair &__x) const
     {
         return __x.first;
     }
@@ -306,13 +299,13 @@ template <class _Pair> struct mmap_select1st
 template <class _Pair> struct mmap_select2st
 {
     typename _Pair::second_type &
-    operator()(_Pair &__x) const
+        operator()(_Pair &__x) const
     {
         return __x.second;
     }
 
     const typename _Pair::second_type &
-    operator()(const _Pair &__x) const
+        operator()(const _Pair &__x) const
     {
         return __x.second;
     }
@@ -320,17 +313,17 @@ template <class _Pair> struct mmap_select2st
 
 //=============================================================================================
 //
-class _shm_memory_base : public zce::NON_Copyable
+class _shm_memory_base: public zce::NON_Copyable
 {
 public:
 
     //空序号指针标示,32位为0xFFFFFFFF,64位为0xFFFFFFFFFFFFFFFF
-    static const size_t  _INVALID_POINT = static_cast<size_t>( -1);
+    static const size_t  _INVALID_POINT = static_cast<size_t>(-1);
 
 protected:
 
     //内存基础地址
-    char                  *smem_base_;
+    char *smem_base_;
 
     //构造函数
     _shm_memory_base():
@@ -347,7 +340,6 @@ protected:
     virtual ~_shm_memory_base()
     {
     }
-
 };
 
 //-----------------------------------------------------------------------------
@@ -365,7 +357,7 @@ public:
         idx_prev_(_shm_memory_base::_INVALID_POINT)
     {
     }
-    _shm_list_index(const size_t &nxt, const size_t &prv):
+    _shm_list_index(const size_t &nxt,const size_t &prv):
         idx_next_(nxt),
         idx_prev_(prv)
     {
@@ -374,10 +366,6 @@ public:
     {
     }
 };
-
 };
 
-
-
 #endif //ZCE_LIB_SHARE_MEM_PRE_DEFINE_H_
-

@@ -3,15 +3,13 @@
 
 #include "zce/util/non_copyable.h"
 
-
-
 /*!
 * @brief      线程的等待管理器
 *
 * @note       本来是在线程ZCE_Thread_Base 内部处理的，但是嵌入过多，而且用大量的static 变量，
 *             也影响ZCE_Thread_Base的性能
 */
-class ZCE_Thread_Wait_Manager : public zce::NON_Copyable
+class ZCE_Thread_Wait_Manager: public zce::NON_Copyable
 {
 protected:
 
@@ -20,7 +18,7 @@ protected:
     {
     public:
 
-        MANAGE_WAIT_INFO(ZCE_THREAD_ID wait_thr_id, int wait_group_id):
+        MANAGE_WAIT_INFO(ZCE_THREAD_ID wait_thr_id,int wait_group_id):
             wait_thr_id_(wait_thr_id),
             wait_group_id_(wait_group_id)
         {
@@ -53,7 +51,7 @@ public:
     ~ZCE_Thread_Wait_Manager();
 
     //如果需要管理处理，要自己登记，
-    void record_wait_thread(ZCE_THREAD_ID wait_thr_id, int wait_group_id = 0 );
+    void record_wait_thread(ZCE_THREAD_ID wait_thr_id,int wait_group_id = 0);
     //登记一个要进行等待处理等待线程
     void record_wait_thread(const ZCE_Thread_Task *wait_thr_task);
 
@@ -72,4 +70,3 @@ public:
 };
 
 #endif //#ifndef ZCE_LIB_THREAD_WAIT_MANAGER_H_
-

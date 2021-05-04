@@ -4,7 +4,6 @@
 
 namespace zce
 {
-
 //IPV6是一个
 
 //IPv6的物理结构
@@ -20,11 +19,11 @@ public:
 
     //根据端口号，和IP地址字符串构造,ipv6_addr_str应该有<40个字节的长度
     Sockaddr_In6(const char *ipv6_addr_str,
-                     uint16_t port_number);
+                 uint16_t port_number);
 
     //根据端口号，和IP地址信息构造
     Sockaddr_In6(uint16_t port_number,
-                     const char ipv6_addr_val[16]);
+                 const char ipv6_addr_val[16]);
 
     //拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
     Sockaddr_In6(const Sockaddr_In6 &others);
@@ -119,6 +118,4 @@ inline uint16_t Sockaddr_In6::get_port_number(void) const
 {
     return ntohs(in6_addr_.sin6_port);
 }
-
 }
-

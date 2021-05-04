@@ -20,7 +20,6 @@
 
 namespace zce
 {
-
 /*!
 * @brief      ecvt的线程安全版本，用于将一个double转换成一个10进制指数方式的字符串，
 * @return     int     0 成功
@@ -59,4 +58,3 @@ int fcvt_r(double number,
 };
 
 #endif //ZCE_OS_ADOPT_STDLIB_H_
-

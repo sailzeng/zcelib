@@ -43,7 +43,6 @@
 *             噢~你的村庄也没有悲伤
 */
 
-
 #ifndef COMM_SNDRCV_UDP_NET_LOLO_H_
 #define COMM_SNDRCV_UDP_NET_LOLO_H_
 
@@ -104,7 +103,6 @@ public:
                       T2 &recv_info,
                       uint32_t backfill_fsm_id = 0,
                       uint16_t business_id = 0);
-
 };
 
 //收数据
@@ -294,4 +292,3 @@ int Lolo_SendRecv_Package::send_recv_msg(unsigned int snd_cmd,
 }
 
 #endif //COMM_SNDRCV_UDP_NET_LO_LO_H_
-

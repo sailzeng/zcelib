@@ -228,6 +228,7 @@
     <ClCompile Include="zealot_test_rbtree.cpp" />
     <ClCompile Include="zealot_test_server.cpp" />
     <ClCompile Include="zealot_test_socket.cpp" />
+    <ClCompile Include="zealot_test_sqlite.cpp" />
     <ClCompile Include="zealot_test_thread.cpp" />
     <ClCompile Include="zealot_test_timer_expire.cpp" />
   </ItemGroup>

@@ -1,5 +1,3 @@
-
-
 #ifndef OGRE_COMMUNICATE_MANGER_H_
 #define OGRE_COMMUNICATE_MANGER_H_
 
@@ -12,8 +10,6 @@ class Ogre_Server_Config;
 //通讯集中管理器
 class Ogre_Comm_Manger
 {
-
-
 public:
 
     Ogre_Comm_Manger();
@@ -55,4 +51,3 @@ protected:
 };
 
 #endif //#ifndef OGRE_COMMUNICATE_MANGER_H_
-

@@ -3,18 +3,15 @@
 
 namespace zce
 {
-
 Sockaddr_Base::Sockaddr_Base(sockaddr *sockaddr_ptr,int sa_size):
     sockaddr_ptr_(sockaddr_ptr),
     sockaddr_size_(sa_size)
 {
-
 }
 
 //，和析构函数
 Sockaddr_Base::~Sockaddr_Base()
 {
-
 }
 
 // 检查地址是否相等
@@ -33,5 +30,4 @@ bool Sockaddr_Base::operator != (const Sockaddr_Base &others_sockaddr) const
 {
     return !(*this == others_sockaddr);
 }
-
 }

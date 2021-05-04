@@ -43,7 +43,6 @@
 #ifndef ZCE_PREDEFINE_H_
 #define ZCE_PREDEFINE_H_
 
-
 //==================================================================================================
 //根据操作系统，编译器，给出不同的定义，因为这些定义会影响全局，所以在最开始的部分
 //我的库只打算适应两个环境，Windows(MSVC)和Linux(GCC)，
@@ -94,7 +93,6 @@
 #error "[Error]ZCE_OS_WINDOWS and ZCE_OS_LINUX all defined or all undefined.  error."
 #endif
 
-
 //==================================================================================================
 //关于C++11的特性使用问题，C++11的很多特效如此的诱人，但想真心爱他还是有一些门槛的。
 //我曾经安装C++98的推广速度认为，我们到2015年可以开始使用C++11特性，2018年才能推广，
@@ -131,13 +129,13 @@
 #endif
 
 //in VC++ 2019的编译器，请同时调节Property Pages /General/C++ Language Standard
-#if __cplusplus >= 201402L 
+#if __cplusplus >= 201402L
 #define  ZCE_SUPPORT_CPP14 == 1
 #else
 #define  ZCE_SUPPORT_CPP14 == 0
 #endif
 
-#if __cplusplus >= 201703L 
+#if __cplusplus >= 201703L
 #define  ZCE_SUPPORT_CPP17 == 1
 #else
 #define  ZCE_SUPPORT_CPP17 == 0
@@ -150,7 +148,6 @@
 //#pragma GCC diagnostic pop
 
 //==================================================================================================
-
 
 //WINDOWS的特有头文件部分，
 
@@ -174,7 +171,6 @@
 #ifndef _CRT_SECURE_NO_DEPRECATE
 #define _CRT_SECURE_NO_DEPRECATE  1
 #endif
-
 
 //==================================================================================================
 
@@ -426,13 +422,11 @@ typedef __int64             int64_t;
 
 #endif //#if defined(ZCE_OS_WINDOWS)
 
-
 //==================================================================================================
 //我们引入的外部库，目前包括,rapidxml,MYSQL,SQLite,
 //外部文件头文件包含，控制开关一般放在zce_config.h文件
 
 #include "config.h"
-
 
 //外部库的告警，在这个地方屏蔽了。
 #if defined (ZCE_OS_WINDOWS)
@@ -474,8 +468,6 @@ extern "C"
 };
 #endif
 
-
-
 //IPV6的宏，暂时不打开
 //#if !defined ZCE_HAS_IPV6    1
 //#define ZCE_HAS_IPV6
@@ -515,7 +507,6 @@ extern "C"
 #  include <endian.h>
 #endif
 
-
 #ifndef ZCE_BYTES_ORDER
 #if ( (defined(__BYTE_ORDER) && (__BYTE_ORDER == __BIG_ENDIAN)) || defined(__BIG_ENDIAN__) || defined(__BIG_ENDIAN) || defined(_BIG_ENDIAN) ) && !(defined(__LITTLE_ENDIAN__) || defined(__LITTLE_ENDIAN) || defined(_LITTLE_ENDIAN))
 #  define ZCE_BYTES_ORDER ZCE_BIG_ENDIAN
@@ -531,7 +522,6 @@ extern "C"
 #endif
 #endif  //#ifndef ZCE_BYTES_ORDER
 
-
 //==================================================================================================
 //各种宏定义，编译定义，一些比较常用的宏，帮助你节省一些代码
 
@@ -541,8 +531,6 @@ extern "C"
 #if defined ZCE_OS_WINDOWS
 #pragma hdrstop
 #endif //#if defined ZCE_OS_WINDOWS
-
-
 
 //我是抄ACE_UNUSED_ARG的呀。我承认呀。windows下也许也可以考虑定义成__noop呀，
 #if !defined (ZCE_UNUSED_ARG)
@@ -632,12 +620,10 @@ extern "C"
 #define ZCE_U64_OR_3(v_a,v_b,v_c) (static_cast<uint64_t>(v_a) | static_cast<uint64_t>(v_b) | static_cast<uint64_t>(v_c))
 #endif
 
-
 //!计算数组个数,注意传递的型别喔
 #ifndef ZCE_ARRAY_SIZE
 #define ZCE_ARRAY_SIZE(ary) (sizeof(ary)/sizeof((ary)[0]))
 #endif
-
 
 // 取大小值, min max在linux下没有定义
 #define ZCE_MAX(a,b) (((a) > (b)) ? (a) : (b))
@@ -662,7 +648,6 @@ extern "C"
 #define strncasecmp  _strnicmp
 
 #endif
-
 
 //==================================================================================================
 // 名称的最大长度
@@ -698,8 +683,6 @@ extern "C"
 #  endif /* _MAX_PATH */
 #endif /* !PATH_MAX */
 
-
-
 //==================================================================================================
 //工程内部统一用这个宏保作为目录
 //$(PlatformName)-$(PlatformToolset)-$(Configuration)
@@ -721,8 +704,6 @@ extern "C"
 #  pragma comment(lib, "dbghelp.lib")
 #endif
 
-
-
 //如果使用了LUA，自动链接LUA的库，
 #if defined ZCE_USE_LUA && ZCE_USE_LUA == 1
 #pragma comment(lib, "lualib.lib" )
@@ -740,11 +721,8 @@ extern "C"
 #pragma comment(lib, "libmysql.lib" )
 #endif
 
-
-
 //自动包含的包含连接，简化你的操作
 #pragma comment(lib, "zcelib.lib"  )
-
 
 //编译动态库用的东西
 #if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
@@ -758,7 +736,5 @@ extern "C"
 #endif //#if defined ZCE_OS_WINDOWS && defined ZCELIB_HASDLL
 
 #endif
-
-
 
 #endif //once

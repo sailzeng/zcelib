@@ -6,7 +6,6 @@
 
 namespace zce
 {
-
 //SOCKET的基类
 class Socket_Base
 {
@@ -28,7 +27,6 @@ protected:
     * @param      socket_hanle
     */
     explicit Socket_Base(const ZCE_SOCKET &socket_hanle);
-
 
     /*!
     * @brief      析构函数，会调用close，
@@ -61,7 +59,6 @@ public:
 
     ///关闭之,一般情况下，我会假设释放资源是必然成功的一件事
     int close();
-
 
     /*!
     * @brief      释放对句柄的管理，将句柄置为无效而已，在其和其的子类作为参数传递时
@@ -116,10 +113,5 @@ public:
     ssize_t send(const void *buf,
                  size_t len,
                  int flags = 0) const;
-
 };
-
 }
-
-
-

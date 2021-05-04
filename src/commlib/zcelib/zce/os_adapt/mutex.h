@@ -32,7 +32,6 @@
 
 namespace zce
 {
-
 //Pthread Mutex的属性部分操作……，有点裹脚布的感觉
 
 /*!
@@ -40,7 +39,7 @@ namespace zce
 * @return     int  等于0标识成功，其实我实在看不出这种函数怎么可能失败，
 * @param      attr 初始化的属性
 */
-int pthread_mutexattr_init (pthread_mutexattr_t *attr);
+int pthread_mutexattr_init(pthread_mutexattr_t *attr);
 
 /*!
 * @brief      互斥量属性销毁
@@ -55,8 +54,8 @@ int pthread_mutexattr_destroy(pthread_mutexattr_t *attr);
 * @param      attr     操作的属性
 * @param      pshared  共享特效，PTHREAD_PROCESS_SHARED or PTHREAD_PROCESS_PRIVATE，如果想多进程间共享，要设置PTHREAD_PROCESS_SHARED
 */
-int pthread_mutexattr_setpshared (pthread_mutexattr_t *attr,
-                                  int pshared);
+int pthread_mutexattr_setpshared(pthread_mutexattr_t *attr,
+                                 int pshared);
 //
 /*!
 * @brief      取得线程的共享属性
@@ -73,7 +72,7 @@ int pthread_mutexattr_getpshared(const pthread_mutexattr_t *attr,
 * @param      attr   设置的属性
 * @param      type   PTHREAD_MUTEX_XXXX的几个值，可以用|一次设置多个属性
 */
-int pthread_mutexattr_settype(pthread_mutexattr_t *attr, int type);
+int pthread_mutexattr_settype(pthread_mutexattr_t *attr,int type);
 
 /*!
 * @brief      取得线程的属性
@@ -91,8 +90,8 @@ int pthread_mutexattr_gettype(const pthread_mutexattr_t *attr,
 * @param      mutex  MUTEX对象
 * @param      attr   MUTEX的属性
 */
-int pthread_mutex_init (pthread_mutex_t *mutex,
-                        const pthread_mutexattr_t *attr);
+int pthread_mutex_init(pthread_mutex_t *mutex,
+                       const pthread_mutexattr_t *attr);
 
 #if defined (ZCE_OS_WINDOWS)
 /*!
@@ -123,14 +122,14 @@ int pthread_mutex_initex(pthread_mutex_t *mutex,
 * @return     int   等于0表示成功
 * @param      mutex MUTEX对象
 */
-int pthread_mutex_destroy (pthread_mutex_t *mutex);
+int pthread_mutex_destroy(pthread_mutex_t *mutex);
 
 /*!
 * @brief      pthread mutex 锁定
 * @return     int     等于0表示成功
 * @param      mutex   MUTEX对象
 */
-int pthread_mutex_lock (pthread_mutex_t *mutex);
+int pthread_mutex_lock(pthread_mutex_t *mutex);
 
 /*!
 * @brief      pthread mutex 超时锁定，
@@ -138,8 +137,8 @@ int pthread_mutex_lock (pthread_mutex_t *mutex);
 * @param      mutex            MUTEX对象
 * @param      abs_timeout_spec 超时的时间，为timespec类型，而且是绝对时间，
 */
-int pthread_mutex_timedlock (pthread_mutex_t *mutex,
-                             const ::timespec *abs_timeout_spec);
+int pthread_mutex_timedlock(pthread_mutex_t *mutex,
+                            const ::timespec *abs_timeout_spec);
 
 /*!
 * @brief      pthread mutex 超时锁定，非标准实现,是用内部比较通用的时间变量timeval
@@ -149,24 +148,22 @@ int pthread_mutex_timedlock (pthread_mutex_t *mutex,
 *                             如果希望这个值填写NULL，这个函数可能和上面的函数冲突，
 *                             请这样操作 timeval*time_out =NULL,将这个time_out作为参数，
 */
-int pthread_mutex_timedlock (pthread_mutex_t *mutex,
-                             const timeval *abs_timeout_val);
+int pthread_mutex_timedlock(pthread_mutex_t *mutex,
+                            const timeval *abs_timeout_val);
 
 /*!
 * @brief      pthread mutex 尝试加锁
 * @return     int
 * @param      mutex
 */
-int pthread_mutex_trylock (pthread_mutex_t *mutex);
+int pthread_mutex_trylock(pthread_mutex_t *mutex);
 
 /*!
 * @brief      pthread mutex 解锁
 * @return     int    等于0表示成功
 * @param      mutex  MUTEX对象
 */
-int pthread_mutex_unlock (pthread_mutex_t *mutex);
-
+int pthread_mutex_unlock(pthread_mutex_t *mutex);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_TIME_H_
-

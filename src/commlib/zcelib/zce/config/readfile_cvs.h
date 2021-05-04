@@ -1,13 +1,9 @@
-
-
 #ifndef ZCE_LIB_READFILE_CVS_H_
 #define ZCE_LIB_READFILE_CVS_H_
-
 
 class ReadFile_CVS
 {
 public:
-
 
 public:
 
@@ -21,7 +17,6 @@ public:
     //处理批量文件,得到列表
     int readfile_cvs();
 
-
 protected:
 
     ///批处理文件名称
@@ -33,10 +28,6 @@ protected:
     unsigned char line_delim_;
     ///
     unsigned char word_delim_;
-
-
-
 };
 
 #endif //#ifndef ZCE_LIB_READFILE_CVS_H_
-

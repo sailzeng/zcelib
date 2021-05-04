@@ -11,7 +11,7 @@
 //监控的FEATURE_ID
 enum ZERG_MONITOR_FEATURE_ID
 {
-    ZERG_SERVICE_STAT_BEGIN =  9000,
+    ZERG_SERVICE_STAT_BEGIN = 9000,
     ZERG_ACCEPT_PEER_COUNTER,               //五分钟内已经Accept的PEER计数
     ZERG_ACCEPT_PEER_NUMBER,                //正在Accept的PEER数量,绝对值
     ZERG_CONNECT_PEER_COUNTER,              //五分钟内已经Connect的PEER计数

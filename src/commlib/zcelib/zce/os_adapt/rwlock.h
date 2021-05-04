@@ -38,13 +38,8 @@
 #include "zce/os_adapt/mutex.h"
 #include "zce/os_adapt/condi.h"
 
-
-
 namespace zce
 {
-
-
-
 /*!
 * @brief      读写锁的对象的初始化
 * @return     int
@@ -54,7 +49,6 @@ namespace zce
 */
 int pthread_rwlock_init(pthread_rwlock_t *rwlock,
                         const pthread_rwlockattr_t *attr);
-
 
 /*!
 * @brief      销毁读写锁的对象
@@ -147,10 +141,6 @@ int pthread_rwlock_timedwrlock(pthread_rwlock_t *rwlock,
 * @param      rwlock  读写锁对象
 */
 int pthread_rwlock_unlock(pthread_rwlock_t *rwlock);
-
-
 };
 
 #endif //ZCE_LIB_OS_ADAPT_RWLOCK_H_
-
-

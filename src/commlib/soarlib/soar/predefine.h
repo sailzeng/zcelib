@@ -50,15 +50,12 @@
 *  哦哦 最后一枪
 */
 
-
 #ifndef SOARING_LIB_PER_DEFINE_H_
 #define SOARING_LIB_PER_DEFINE_H_
 
 //在WINDOWS下和POSIX标准兼容的宏，2003以下如何，我没有测试
 #define _CRT_NONSTDC_NO_DEPRECATE 1
 #define _CRT_SECURE_NO_WARNINGS   1
-
-
 
 //---------------------------------------------------------------------------------------------
 
@@ -133,7 +130,6 @@
 
 #endif
 
-
 //------------------------------------------------------------------------------------
 //客户端服务器公用的头文件,服务器的头文件定义在下面
 
@@ -147,6 +143,4 @@
 #define SOARING_EXPORT
 #endif
 
-
 #endif //SOARING_LIB_PER_DEFINE_H_
-

@@ -1,19 +1,18 @@
-
 /*!
 * @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
 * @filename   soar/zerg/frame_zerg.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
-* @version    
+* @version
 * @date       2021年4月17日
 * @brief      很无奈，我还是讲所有的类，整理成了struct，因为如果要兼容多个版本，
 *             类实在不是一个好的写法。
-*             
-* @details    
-*             
-*             
-*             
-* @note       
-*             
+*
+* @details
+*
+*
+*
+* @note
+*
 */
 
 #ifndef SOARING_LIB_SERVER_APP_FRAME_H_
@@ -26,7 +25,6 @@
 
 namespace soar
 {
-
 #pragma pack (1)
 
 /*!
@@ -58,10 +56,8 @@ public:
 #endif
 };
 
-
 class Zerg_Head
 {
-
 public:
     //帧的描述,在frame_option_字段使用
     enum FRAME_OPTION
@@ -81,7 +77,7 @@ public:
 
         //如果发送失败,记录发送失败，重要指令可以使用
         DESC_SEND_FAIL_RECORD = 0x8,
-        
+
         //如果发送成功后,直接断开连接，用于部分TCP的短连接
         DESC_SNDPRC_CLOSE_PEER = 0x10,
 
@@ -95,14 +91,12 @@ public:
         //特殊的某些命令不用加密进行处理，用于加密情况某些命令无须加密的特殊情况
         DESC_SPECIAL_NO_ENCRYPT = 0x100,
 
-
         //如果是TCP的帧,其实默认是TCP的帧,所以其实没有使用
         DESC_TCP_FRAME = 0x0,
         //默认的通讯帧都是TCP的，这个描述字表示这个帧是UDP的
         DESC_UDP_FRAME = 0x1,
         //
         DESC_RUDP_FRAME = 0x2,
-
 
         //APPFram的版本V1
         DESC_V1_VERSION = 0x1,
@@ -111,9 +105,6 @@ public:
     };
 
 public:
-
-
-
 
     //将帧头的所有的uint16_t,uint32_t转换为网络序
     void hton();
@@ -182,14 +173,10 @@ public:
     ///用户ID，可以是一个ID也可以是一个名字HASH映射的ID
     uint32_t               user_id_ = 0;
 
-
-
     ///事务FSM ID,可以用作服务发起端作为一个标示，后面的服务器回填backfill_trans_id_字段返回,
     uint32_t               fsm_id_ = 0;
     ///回填的请求者的事务ID,
     uint32_t               backfill_fsm_id_ = 0;
-
-
 
     ///发送序列号，计划只在通讯层用,暂时没用用
     uint32_t               serial_number_ = 0;
@@ -204,12 +191,12 @@ public:
     soar::SERVICES_ID      send_service_;
 
     ///代理服务器
-    
+
     soar::SERVICES_ID       proxy_service_;
     //union
     //{
-    //    
-    //    // 
+    //
+    //    //
     //    uint32_t           reserve_use_ = 0;
     //};
 };
@@ -218,39 +205,35 @@ public:
 * @brief      Zerg服务器间传递消息的通用帧头
 *
 */
-class  Zerg_Frame : public Zerg_Head
+class  Zerg_Frame: public Zerg_Head
 {
-
-
 protected:
     //构造函数，禁止大家都可以用的.
     Zerg_Frame() = delete;
     //析构函数
     ~Zerg_Frame() = delete;
     //Assign =运算符号
-    Zerg_Frame &operator = (const Zerg_Frame &other)=delete;
+    Zerg_Frame &operator = (const Zerg_Frame &other) = delete;
 
 public:
 
     //是否事通信服务器处理的命理
     inline bool is_zerg_processcmd();
 
-
     //填充AppData数据到APPFrame
-    int fill_appdata(const size_t szdata, const char *vardata);
+    int fill_appdata(const size_t szdata,const char *vardata);
 
     //交换Rcv ,Snd SvrInfo
     void exchange_rcvsnd_svcid();
     //交换Rcv ,Snd SvrInfo,prochandle
-    void exchange_rcvsnd_svcid(Zerg_Frame &exframe );
+    void exchange_rcvsnd_svcid(Zerg_Frame &exframe);
     //回填返回包头
-    void fillback_appframe_head(Zerg_Frame &exframe );
-
+    void fillback_appframe_head(Zerg_Frame &exframe);
 
     //给dst_frame克隆一个自己
-    void clone(Zerg_Frame * dst_frame) const;
+    void clone(Zerg_Frame *dst_frame) const;
     //给dst_frame复制一个头部数据
-    void clone_head(Zerg_Frame * dst_frame) const;
+    void clone_head(Zerg_Frame *dst_frame) const;
 
     //取得一个头部信息
     void get_head(Zerg_Head &frame_head) const;
@@ -261,10 +244,10 @@ public:
     inline size_t get_frame_datalen() const;
 
     template<typename info_type>
-    int appdata_encode(size_t szframe_appdata, const info_type &info);
+    int appdata_encode(size_t szframe_appdata,const info_type &info);
 
     template<typename info_type>
-    int appdata_decode(size_t szframe_appdata, info_type &info);
+    int appdata_decode(size_t szframe_appdata,info_type &info);
 
 #if defined ZCE_USE_PROTOBUF && ZCE_USE_PROTOBUF == 1
 
@@ -273,14 +256,12 @@ public:
                         const google::protobuf::MessageLite *msg,
                         size_t data_start = 0,
                         size_t *sz_code = NULL
-                       );
+    );
 
     ///将一个结构进行解码
     int protobuf_decode(google::protobuf::MessageLite *msg,
                         size_t data_start = 0,
                         size_t *sz_code = NULL);
-
-    
 
 #endif
 
@@ -297,13 +278,12 @@ public:
     ///销毁一个frame
     static void delete_frame(Zerg_Frame *frame);
 
-
     /*!
     * @brief      输出ZERG FRAME的头部信息
     * @return     void
     * @param      log_priority 输出的日志优先级
     * @param      outer_str    你自己要添加的文本信息（用于区别是什么地方输出的）
-    * @param      frame        要输出的frame     
+    * @param      frame        要输出的frame
     */
     static void dump_frame_head(zce::LOG_PRIORITY log_priority,
                                 const char *outer_str,
@@ -315,11 +295,10 @@ public:
 
 public:
 
-
     //---------------------------------------------------------------------------
     //包头都尺寸,48
     static const size_t LEN_OF_APPFRAME_HEAD = sizeof(Zerg_Head);
-    
+
     //FRAME的一些长度参数,默认的最大长度是64K
     //为什么采用64K的原因是我们的UPD的最大长度是这个，而且这个缓冲区的长度比较适中.
     static const size_t MAX_LEN_OF_APPFRAME = 64 * 1024;
@@ -335,12 +314,9 @@ public:
 #ifdef ZCE_OS_WINDOWS
 #pragma warning ( default : 4200)
 #endif
-
 };
 
 #pragma pack ()
-
-
 
 //得到帧的总长度
 inline size_t Zerg_Frame::get_frame_len() const
@@ -353,7 +329,6 @@ inline  size_t Zerg_Frame::get_frame_datalen() const
     return length_ - LEN_OF_APPFRAME_HEAD;
 }
 
-
 //是否事通信服务器处理的命理
 inline bool Zerg_Frame::is_zerg_processcmd()
 {
@@ -364,14 +339,11 @@ inline bool Zerg_Frame::is_zerg_processcmd()
 
     return false;
 }
-
-
 }
 
 //很耗时的操作，注意使用频度
 #define DUMP_ZERG_FRAME_HEAD(x,y,z)    soar::Zerg_Frame::dump_frame_head(x,y,z)
 #define DUMP_ZERG_FRAME_ALL(x,y,z)     soar::Zerg_Frame::dump_frame_all(x,y,z)
-
 
 //非DEBUG版本会优化掉的宏
 #if defined _DEBUG || defined DEBUG
@@ -382,8 +354,4 @@ inline bool Zerg_Frame::is_zerg_processcmd()
 #define DEBUG_DUMP_ZERG_FRAME_ALL(x,y,z)
 #endif
 
-
-
-
 #endif //SOARING_LIB_SERVER_APP_FRAME_H_
-

@@ -24,31 +24,29 @@
 *             幸福就是，坚持了应该坚持的，放弃了应该放弃的，珍惜现在拥有的，不后悔已经决定的
 *
 */
-#ifndef ZCE_LIB_SQLITE_DBHANDLE_H_
-#define ZCE_LIB_SQLITE_DBHANDLE_H_
+#pragma once
 
 #include "zce/os_adapt/string.h"
 
 //目前版本限制只加这一个
 #if SQLITE_VERSION_NUMBER >= 3005000
 
-
+namespace zce
+{
 //==============================================================================================
-class ZCE_SQLite_Result;
-
+class SQLite_Result;
 /*!
 @brief      连接处理一个SQLite3数据库的，打开一个SQLite3数据库就得到Handler
             用Handler完成后面各种数据库操作。
 */
-class ZCE_SQLite_DB_Handler
+class SQLite_Handler
 {
-
 public:
 
     //!构造函数，
-    ZCE_SQLite_DB_Handler();
+    SQLite_Handler();
     //!析构函数
-    ~ZCE_SQLite_DB_Handler();
+    ~SQLite_Handler();
 
     /*!
     @brief      打开数据库，注意文件名称的路径要用UTF8编码，所以最好不要用中文?
@@ -62,20 +60,6 @@ public:
     int open_database(const char *db_file,
                       bool read_only,
                       bool create_db);
-
-
-#if defined ZCE_OS_WINDOWS
-    /*!
-    @brief      用MBCS(Windows下说的 multibyte character set )的路径名称打开一个目录,
-    *           因为我内部用的全部是UTF8的函数，所以这会有问题，必须用须转换编码，
-    */
-    int open_mbcs_path_db(const char *utf16_db_path,
-                          bool read_only,
-                          bool create_db = false);
-
-
-#endif
-
 
     //!关闭数据库
     void close_database();
@@ -113,16 +97,13 @@ public:
     *             另外，这个函数应该不能处理二进制数据，因为你无法得知结果长度
     */
     int get_table(const char *sql_string,
-                  ZCE_SQLite_Result *result);
+                  SQLite_Result *result);
 
 protected:
 
     //!sqlite3的处理Handler
-    sqlite3         *sqlite3_handler_;
-
+    sqlite3 *sqlite3_handler_;
 };
-
-
 
 //==============================================================================================
 
@@ -131,21 +112,20 @@ protected:
 *             其实就是sqlite3_get_table 的结果参数的封装
 * @note       请注意，sqlite3_get_table 只是应该向后兼容的函数
 */
-class ZCE_SQLite_Result
+class SQLite_Result
 {
-    friend class ZCE_SQLite_DB_Handler;
+    friend class SQLite_Handler;
 
 public:
 
-    ZCE_SQLite_Result();
-    ~ZCE_SQLite_Result();
+    SQLite_Result();
+    ~SQLite_Result();
 
     //!结果集合释放为NULL
     inline bool is_null()
     {
         return (result_ == NULL);
     }
-
 
     //!释放结果集合
     void free_result();
@@ -166,7 +146,7 @@ public:
     * @param      row    字段的列号,从1开始
     * @param      column 字段的行号,从1开始
     */
-    const char *field_cstr(int row, int column)
+    const char *field_cstr(int row,int column)
     {
         return result_[row * column_ + column - 1];
     }
@@ -180,9 +160,9 @@ public:
     * @note
     */
     template <typename value_type>
-    value_type field_data(int row, int column)
+    value_type field_data(int row,int column)
     {
-        return zce::str_to_value<value_type>( result_[row * column_ + column - 1] );
+        return zce::str_to_value<value_type>(result_[row * column_ + column - 1]);
     }
 
     //!行的数量
@@ -197,7 +177,6 @@ public:
         return column_;
     }
 
-
 protected:
 
     //! Results of the query
@@ -211,8 +190,6 @@ protected:
     //! Error msg written here
     char *err_msg_ = NULL;
 };
+}
 
 #endif //SQLITE_VERSION_NUMBER >= 3005000
-
-#endif //ZCE_LIB_SQLITE_DBHANDLE_H_
-

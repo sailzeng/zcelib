@@ -1,10 +1,6 @@
-
-
-
 #include "zealot_predefine.h"
 
-
-int test_nonr_thread_mutex(int, char *[])
+int test_nonr_thread_mutex(int,char *[])
 {
     ZCE_Thread_NONR_Mutex  abc;
     abc.lock();
@@ -16,15 +12,13 @@ int test_nonr_thread_mutex(int, char *[])
     return 0;
 }
 
-
-
 //ZCE_Message_Queue_Deque<ZCE_MT_SYNCH,int>   message_queue_(100);
 ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 //ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 
 ZCE_Thread_Light_Mutex  io_mutex;
 
-class Task_Producer : public ZCE_Thread_Task
+class Task_Producer: public ZCE_Thread_Task
 {
 public:
     Task_Producer()
@@ -35,7 +29,7 @@ public:
     {
         for (size_t i = 0; i < number_prc_; ++i)
         {
-            int data=static_cast<int>(i);
+            int data = static_cast<int>(i);
             message_queue_.enqueue(data);
 
             {
@@ -51,8 +45,7 @@ protected:
     size_t number_prc_;
 };
 
-
-class Task_Consumer : public ZCE_Thread_Task
+class Task_Consumer: public ZCE_Thread_Task
 {
 public:
     Task_Consumer()
@@ -82,19 +75,19 @@ protected:
     size_t number_prc_;
 };
 
-int test_msgqueue_condi (int /*argc*/, char * /*argv*/ [])
+int test_msgqueue_condi(int /*argc*/,char * /*argv*/[])
 {
     Task_Producer a1;
 
     Task_Consumer b1;
     Task_Consumer b2;
 
-    ZCE_THREAD_ID threadid_a1, threadid_b1, threadid_b2;
+    ZCE_THREAD_ID threadid_a1,threadid_b1,threadid_b2;
 
-    a1.activate(1, &threadid_a1);
+    a1.activate(1,&threadid_a1);
 
-    b1.activate(2, &threadid_b1);
-    b2.activate(2, &threadid_b2);
+    b1.activate(2,&threadid_b1);
+    b2.activate(2,&threadid_b2);
 
     a1.wait_join();
     b1.wait_join();
@@ -102,29 +95,6 @@ int test_msgqueue_condi (int /*argc*/, char * /*argv*/ [])
 
     return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //void producer(size_t number_prc)
 //{

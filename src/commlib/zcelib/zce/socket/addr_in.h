@@ -1,31 +1,29 @@
-
 #include "zce/socket/addr_base.h"
 
 namespace zce
 {
-
 /*!
 * @brief      IPv4的物理结构
 *
 * @note
 */
-class Sockaddr_In : public Sockaddr_Base
+class Sockaddr_In: public Sockaddr_Base
 {
 public:
 
     ///默认构造函数
-    Sockaddr_In (void);
+    Sockaddr_In(void);
 
     ///根据sockaddr_in构造，
-    Sockaddr_In (const sockaddr_in *addr);
+    Sockaddr_In(const sockaddr_in *addr);
 
     ///根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号初始化构造
-    Sockaddr_In (const char *ip_addr_str,
-                     uint16_t port_number);
+    Sockaddr_In(const char *ip_addr_str,
+                uint16_t port_number);
 
     ///根据地址(整数)，端口号初始化构造
-    Sockaddr_In (uint32_t ip_addr,
-                     uint16_t port_number);
+    Sockaddr_In(uint32_t ip_addr,
+                uint16_t port_number);
 
     ///拷贝构造，一定要写，这个类的基类指针是指向自己的一个地址的，
     explicit Sockaddr_In(const Sockaddr_In &others);
@@ -36,7 +34,7 @@ public:
 public:
 
     ///设置地址信息
-    virtual  void set_sockaddr (sockaddr *addr, socklen_t len);
+    virtual  void set_sockaddr(sockaddr *addr,socklen_t len);
 
     /*!
     * @brief      根据IP地址(XXX.XXX.XXX.XXX)字符串，端口号根据参数设置
@@ -57,7 +55,6 @@ public:
     int set(uint32_t ip_addr,
             uint16_t port_number);
 
-
     /*!
     * @brief      根据字符串取得IP地址信息，以及端口号信息,
     * @return     int  返回0表示转换成功
@@ -67,18 +64,17 @@ public:
     int set(const char *ip_addr_str);
 
     ///设置端口好，
-    inline void set_port_number (uint16_t);
+    inline void set_port_number(uint16_t);
     ///取得端口号
-    inline uint16_t get_port_number (void) const;
+    inline uint16_t get_port_number(void) const;
 
     ///检查端口号是否是一个安全端口
     bool check_safeport();
 
     //端口的打印输出使用to_string函数
 
-
     //取得IP地址，本地序列
-    inline uint32_t get_ip_address (void) const;
+    inline uint32_t get_ip_address(void) const;
 
     ///检查地址是否是一个内网地址
     bool is_internal();
@@ -92,11 +88,11 @@ public:
     bool operator != (const Sockaddr_In &others) const;
 
     //检查IP地址是否相等,忽视端口
-    bool is_ip_equal (const Sockaddr_In &others) const;
+    bool is_ip_equal(const Sockaddr_In &others) const;
 
     ///DNS相关函数，
     ///取得IP地址相关的域名信息,调用函数是getnameinfo
-    int get_name_info(char *host_name, size_t name_len) const;
+    int get_name_info(char *host_name,size_t name_len) const;
 
     ///取得域名相关的IP地址信息，调用函数是getaddrinfo，notename可以是数值地址，或者域名
     int getaddrinfo_to_addr(const char *nodename);
@@ -116,23 +112,19 @@ protected:
 };
 
 //取得IP地址，本地序列
-inline uint32_t Sockaddr_In::get_ip_address (void) const
+inline uint32_t Sockaddr_In::get_ip_address(void) const
 {
     return ntohl(in4_addr_.sin_addr.s_addr);
 }
 
 //设置端口好，
-inline void Sockaddr_In::set_port_number (uint16_t port_number)
+inline void Sockaddr_In::set_port_number(uint16_t port_number)
 {
     in4_addr_.sin_port = ntohs(port_number);
 }
 //取得端口号
-inline uint16_t Sockaddr_In::get_port_number (void) const
+inline uint16_t Sockaddr_In::get_port_number(void) const
 {
     return ntohs(in4_addr_.sin_port);
 }
-
 }
-
-
-

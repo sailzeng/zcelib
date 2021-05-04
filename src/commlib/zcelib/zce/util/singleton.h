@@ -43,7 +43,6 @@
 template <typename T>
 class ZCE_Singleton
 {
-
 public:
     ///实例函数
     inline static T *instance()
@@ -57,7 +56,6 @@ private:
     ZCE_Singleton();
     /// copy ctor is hidden
     ZCE_Singleton(ZCE_Singleton const &);
-
 };
 
 //========================================================================================================
@@ -110,4 +108,3 @@ template <typename T>  typename ZCE_Boost_Singleton<T>::object_creator ZCE_Boost
 //========================================================================================================
 
 #endif
-

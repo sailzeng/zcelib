@@ -23,7 +23,6 @@
 //由于
 namespace zce
 {
-
 //------------------------------------------------------------------------------------------------------
 
 /*!
@@ -53,7 +52,7 @@ int pthread_attr_setex(pthread_attr_t *attr,
                        int detachstate = PTHREAD_CREATE_DETACHED,
                        size_t stacksize = 0,
                        int threadpriority = 0
-                      );
+);
 
 /*!
 * @brief      非标准函数，获得线程几个属性
@@ -67,7 +66,7 @@ int pthread_attr_getex(const pthread_attr_t *attr,
                        int *detachstate,
                        size_t *stacksize,
                        int *threadpriority
-                      );
+);
 
 /*!
 * @brief      创建一个线程,
@@ -104,13 +103,13 @@ int pthread_createex(void (*start_routine)(void *),
                      int detachstate = PTHREAD_CREATE_DETACHED,
                      size_t stacksize = 0,
                      int threadpriority = 0
-                    );
+);
 
 /*!
 * @brief      退出线程，注意这儿没有任何参数让你作为返回值，
 *             注意，WINDOWS和LINUX下返回值不同，所以我放弃不使用返回值参数，
 */
-void pthread_exit(void );
+void pthread_exit(void);
 
 /*!
 * @brief      等待某个JOIN的线程结束，不理会返回值
@@ -134,7 +133,7 @@ int pthread_join(ZCE_THREAD_ID threadid);
 */
 int pthread_create(ZCE_THREAD_ID *threadid,
                    const pthread_attr_t *attr,
-                   ZCE_THR_FUNC_RETURN (* start_routine)(void *),
+                   ZCE_THR_FUNC_RETURN(*start_routine)(void *),
                    void *arg);
 
 /*!
@@ -143,13 +142,13 @@ int pthread_create(ZCE_THREAD_ID *threadid,
 * @param      threadid 等待退出的线程ID，
 * @param      ret_val  线程的返回值，在LINUX和WINDOWS运行时，并不相同
 */
-int pthread_join(ZCE_THREAD_ID threadid, ZCE_THR_FUNC_RETURN *ret_val);
+int pthread_join(ZCE_THREAD_ID threadid,ZCE_THR_FUNC_RETURN *ret_val);
 
 /*!
 * @brief      退出某个线程，同时通知线程退出的返回值
 * @param      thr_ret 返回值
 */
-void pthread_exit(ZCE_THR_FUNC_RETURN thr_ret );
+void pthread_exit(ZCE_THR_FUNC_RETURN thr_ret);
 
 //---------------------------------------------------------------------------------------------------------------
 
@@ -205,7 +204,7 @@ int pthread_yield(void);
 * @param      key
 * @param      (*destructor) 析构函数，此参数在Windows 下没有用处，（如果跨平台）不建议使用
 */
-int pthread_key_create(pthread_key_t *key, void (*destructor)(void *));
+int pthread_key_create(pthread_key_t *key,void (*destructor)(void *));
 
 /*!
 * @brief
@@ -230,9 +229,7 @@ void *pthread_getspecific(pthread_key_t key);
 * @param      value
 * @note
 */
-int pthread_setspecific(pthread_key_t key, const void *value);
-
+int pthread_setspecific(pthread_key_t key,const void *value);
 };
 
 #endif //ZCE_LIB_OS_ADAPT_THREAD_H_
-

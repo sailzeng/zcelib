@@ -1,7 +1,6 @@
 #ifndef WORMHOLE_PROXY_PROCESS_H_
 #define WORMHOLE_PROXY_PROCESS_H_
 
-
 /*!
 * @brief
 *
@@ -15,24 +14,22 @@ public:
     enum PROXY_TYPE
     {
         /// 无效的TYPE
-        INVALID_PROXY_TYPE           = 0,
+        INVALID_PROXY_TYPE = 0,
 
         /// 将所有的数据数据回显
-        PROXY_TYPE_ECHO              = 1,
+        PROXY_TYPE_ECHO = 1,
         /// 直接进行转发处理，不对数据帧进行任何处理
-        PROXY_TYPE_TRANSMIT          = 2,
+        PROXY_TYPE_TRANSMIT = 2,
         /// 将数据复制转发给所有配置的服务器
-        PROXY_TYPE_BROADCAST         = 3,
+        PROXY_TYPE_BROADCAST = 3,
 
         /// 按照UID取模进行Proxy转发，
-        PROXY_TYPE_MODULO_UID        = 101,
+        PROXY_TYPE_MODULO_UID = 101,
         /// 按照SENDSVC_ID取模进行Proxy转发，
         PROXY_TYPE_MODULO_SENDSVCID = 102,
 
         /// CH,Consistent Hash,根据UID进行一致性Hash处理，
-        PROXY_TYPE_CH_UID            = 201,
-
-
+        PROXY_TYPE_CH_UID = 201,
     };
 
 public:
@@ -49,7 +46,6 @@ public:
 
     ///代理的处理,返回生产的帧的个数
     virtual int process_proxy(Zerg_App_Frame *proc_frame) = 0;
-
 
 protected:
 
@@ -70,8 +66,6 @@ public:
     */
     static Interface_WH_Proxy *create_proxy_factory(PROXY_TYPE proxytype);
 
-
-
     /*!
     * @brief
     * @return     PROXY_TYPE
@@ -84,24 +78,19 @@ protected:
     // 默认初始化的长度
     static const size_t INIT_PROCESS_FRAME = 64;
 
-
     //
     Soar_MMAP_BusPipe *zerg_mmap_pipe_ = NULL;
 };
 
-
-
 //====================================================================================
-
 
 /*!
 * @brief      回送处理数据
 *
 * @note
 */
-class Echo_Proxy_Process : public Interface_WH_Proxy
+class Echo_Proxy_Process: public Interface_WH_Proxy
 {
-
 public:
     // Echo处理
     Echo_Proxy_Process();
@@ -112,7 +101,6 @@ public:
     virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
 
-
 //====================================================================================
 
 /*!
@@ -120,7 +108,7 @@ public:
 *
 * @note
 */
-class Transmit_Proxy : public Interface_WH_Proxy
+class Transmit_Proxy: public Interface_WH_Proxy
 {
 public:
 
@@ -133,8 +121,6 @@ public:
     virtual int process_proxy(Zerg_App_Frame *proc_frame);
 };
 
-
-
 //====================================================================================
 
 /*!
@@ -142,10 +128,8 @@ public:
 *
 * @note
 */
-class Broadcast_ProxyProcess : public Interface_WH_Proxy
+class Broadcast_ProxyProcess: public Interface_WH_Proxy
 {
-
-
 public:
     Broadcast_ProxyProcess();
     virtual ~Broadcast_ProxyProcess();
@@ -154,7 +138,6 @@ public:
     virtual int get_proxy_config(const ZCE_Conf_PropertyTree *conf_tree);
     ///
     virtual int process_proxy(Zerg_App_Frame *proc_frame);
-
 
 protected:
     //
@@ -171,8 +154,7 @@ protected:
 
 //====================================================================================
 
-
-class Modulo_ProxyProcess : public Interface_WH_Proxy
+class Modulo_ProxyProcess: public Interface_WH_Proxy
 {
 public:
 
@@ -194,7 +176,6 @@ public:
     ///
     virtual int process_proxy(Zerg_App_Frame *proc_frame);
 
-
 protected:
     //
     static const size_t MAX_NUM_MODULO_SVC = 1024;
@@ -210,7 +191,6 @@ protected:
     // 要复制的FRAME的尺寸
     uint32_t modulo_svcid_[MAX_NUM_MODULO_SVC];
 };
-
 
 ////====================================================================================
 ////取模进行数据转发的处理方式
@@ -337,8 +317,4 @@ protected:
 //    void clear_all_entrys();
 //};
 
-
-
-
 #endif  //WORMHOLE_PROXY_PROCESS_H_
-

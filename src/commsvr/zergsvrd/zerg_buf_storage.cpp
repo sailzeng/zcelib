@@ -1,4 +1,3 @@
-
 #include "zerg_predefine.h"
 #include "zerg_buf_storage.h"
 #include "zerg_stat_define.h"
@@ -21,22 +20,22 @@ Zerg_Buffer::~Zerg_Buffer()
 }
 
 //
-void Zerg_Buffer::fill_write_data(const size_t szdata, const char *data)
+void Zerg_Buffer::fill_write_data(const size_t szdata,const char *data)
 {
-    memcpy(buffer_data_, data, szdata);
+    memcpy(buffer_data_,data,szdata);
     size_of_buffer_ += szdata;
     //
 }
 //
-void Zerg_Buffer::get_read_data(size_t &szdata, char *data)
+void Zerg_Buffer::get_read_data(size_t &szdata,char *data)
 {
-    memcpy(data, buffer_data_, szdata);
+    memcpy(data,buffer_data_,szdata);
 }
 
 void Zerg_Buffer::clear_buffer()
 {
     size_of_buffer_ = 0;
-    size_of_use_  = 0;
+    size_of_use_ = 0;
 }
 
 /****************************************************************************************************
@@ -57,7 +56,6 @@ ZBuffer_Storage::~ZBuffer_Storage()
 void ZBuffer_Storage::init_buflist_by_hdlnum(size_t num_of_hdl)
 {
     size_t szlist = (num_of_hdl / 100);
-
 
     //最小最大边界
     const size_t MIN_HDL_LIST_NUMBER = 128;
@@ -105,7 +103,7 @@ void ZBuffer_Storage::close()
 Zerg_Buffer *ZBuffer_Storage::allocate_buffer()
 {
     //缓冲区使用完了,扩展
-    if ( true == buffer_deque_.empty() )
+    if (true == buffer_deque_.empty())
     {
         extend_bufferlist();
     }
@@ -128,12 +126,12 @@ void ZBuffer_Storage::free_byte_buffer(Zerg_Buffer *ptrbuf)
 void ZBuffer_Storage::extend_bufferlist(size_t szlist)
 {
     //打印占用的内存数量
-    ZCE_LOG(RS_INFO, "[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
+    ZCE_LOG(RS_INFO,"[zergsvr] extend_bufferlist size:[%u] total:[%d] need memory [%u] ,total use memory [%u].",
             szlist,
             size_of_bufferalloc_,
             szlist * Zerg_Buffer::CAPACITY_OF_BUFFER,
             size_of_bufferalloc_ * Zerg_Buffer::CAPACITY_OF_BUFFER
-           );
+    );
     buffer_deque_.resize(size_of_bufferalloc_ + szlist);
 
     for (size_t i = 0; i < szlist; ++i)
@@ -173,4 +171,3 @@ void ZBuffer_Storage::clean_instance()
     instance_ = NULL;
     return;
 }
-

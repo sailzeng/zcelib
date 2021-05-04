@@ -1,4 +1,3 @@
-
 #include "zerg_predefine.h"
 #include "zerg_application.h"
 #include "zerg_console_handler.h"
@@ -27,11 +26,11 @@ Zerg_Service_App::~Zerg_Service_App()
 }
 
 //根据启动参数启动
-int Zerg_Service_App::app_start(int argc, const char *argv[])
+int Zerg_Service_App::app_start(int argc,const char *argv[])
 {
     int ret = 0;
 
-    ret = soar::Svrd_Appliction::app_start(argc, argv);
+    ret = soar::Svrd_Appliction::app_start(argc,argv);
     if (ret != 0)
     {
         return ret;
@@ -71,37 +70,33 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
                                                     false);
     if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "zce_Server_Status init fail. ret=%d", ret);
+        ZCE_LOG(RS_ERROR,"zce_Server_Status init fail. ret=%d",ret);
         return ret;
     }
 
-
-    size_t max_accept = 0, max_connect = 0, max_peer = 0;
-    TCP_Svc_Handler::get_max_peer_num(max_accept, max_connect);
+    size_t max_accept = 0,max_connect = 0,max_peer = 0;
+    TCP_Svc_Handler::get_max_peer_num(max_accept,max_connect);
     max_peer = max_accept + max_connect + 16;
-
 
     //设置发送接收缓冲的数量
     ZBuffer_Storage::instance()->init_buflist_by_hdlnum(max_peer);
 
-
     //通信管理器初始化
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
-
     //
-    ZCE_LOG(RS_INFO, "[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
+    ZCE_LOG(RS_INFO,"[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
 
     //-----------------------------------------------------------------------------------------------
     //初始化静态数据
     ret = TCP_Svc_Handler::init_all_static_data();
 
-    if ( ret != 0 )
+    if (ret != 0)
     {
         return ret;
     }
     ret = UDP_Svc_Handler::init_all_static_data();
-    if ( ret != 0 )
+    if (ret != 0)
     {
         return ret;
     }
@@ -113,7 +108,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
         return ret;
     }
 
-    ZCE_LOG(RS_INFO, "[zergsvr] init_instance Succ.Have Fun.!!!");
+    ZCE_LOG(RS_INFO,"[zergsvr] init_instance Succ.Have Fun.!!!");
     //进程监控，这个最好，或者说必须放在程序初始化的最后，这样可以保证与分配的内存的初始化基本完成了,
 
     return 0;
@@ -121,7 +116,7 @@ int Zerg_Service_App::app_start(int argc, const char *argv[])
 
 int Zerg_Service_App::app_exit()
 {
-    ZCE_LOG(RS_INFO, "[zergsvr] exit_instance Succ.Have Fun.!!!");
+    ZCE_LOG(RS_INFO,"[zergsvr] exit_instance Succ.Have Fun.!!!");
 
     //释放所有的静态资源，关闭所有的句柄
     TCP_Svc_Handler::uninit_all_staticdata();
@@ -138,11 +133,9 @@ int Zerg_Service_App::app_exit()
     return 0;
 }
 
-
 //运行函数,不到万不得已,不会退出,为了加快发送的速度，对多种请求做了不同的微调。最重要的函数,但是也最简单,
 int Zerg_Service_App::app_run()
 {
-
     //
     const size_t NORMAL_MAX_ONCE_SEND_FRAME = 4096;
     //
@@ -165,21 +158,20 @@ int Zerg_Service_App::app_run()
     //
     const size_t DEFAULT_IO_FIRST_RATIO = 32;
 
-    size_t num_io_event = 0, num_send_frame = 0, want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
+    size_t num_io_event = 0,num_send_frame = 0,want_send_frame = NORMAL_MAX_ONCE_SEND_FRAME;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_Service_App::run_instance start.");
+    ZCE_LOG(RS_INFO,"[zergsvr] Zerg_Service_App::run_instance start.");
 
     //microsecond
     ZCE_Reactor *preactor = ZCE_Reactor::instance();
     zce::Timer_Queue_Base *p_timer_queue = zce::Timer_Queue_Base::instance();
 
-    zce::Time_Value run_interval(0, IDLE_REACTOR_WAIT_USEC);
+    zce::Time_Value run_interval(0,IDLE_REACTOR_WAIT_USEC);
 
     for (size_t i = 0; app_run_; ++i)
     {
-
         //如果比较忙，
-        if ( num_send_frame >= SEND_BUSY_JUDGE_STANDARD )
+        if (num_send_frame >= SEND_BUSY_JUDGE_STANDARD)
         {
             //如果单单是发送比较忙，
             if (num_io_event == 0)
@@ -195,7 +187,7 @@ int Zerg_Service_App::app_run()
             }
         }
         //如果比较优先
-        else if ( num_send_frame < SEND_IDLE_JUDGE_STANDARD )
+        else if (num_send_frame < SEND_IDLE_JUDGE_STANDARD)
         {
             if (num_io_event == 0)
             {
@@ -215,15 +207,15 @@ int Zerg_Service_App::app_run()
         }
 
         //
-        preactor->handle_events(&run_interval, &num_io_event);
+        preactor->handle_events(&run_interval,&num_io_event);
 
         //每次都在这儿初始化zce::Time_Value不好,其要调整.
-        zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
+        zerg_comm_mgr_->popall_sendpipe_write(want_send_frame,num_send_frame);
 
         //如果发送队列很忙，再进行一次发送
-        if ((num_send_frame > SEND_BUSY_JUDGE_STANDARD && num_io_event == 0) || num_send_frame >= NORMAL_MAX_ONCE_SEND_FRAME )
+        if ((num_send_frame > SEND_BUSY_JUDGE_STANDARD && num_io_event == 0) || num_send_frame >= NORMAL_MAX_ONCE_SEND_FRAME)
         {
-            zerg_comm_mgr_->popall_sendpipe_write(want_send_frame, num_send_frame);
+            zerg_comm_mgr_->popall_sendpipe_write(want_send_frame,num_send_frame);
         }
 
         //偶尔处理一下定时器
@@ -233,14 +225,7 @@ int Zerg_Service_App::app_run()
         }
     }
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Zerg_Service_App::run_instance end.");
+    ZCE_LOG(RS_INFO,"[zergsvr] Zerg_Service_App::run_instance end.");
 
     return 0;
 }
-
-
-
-
-
-
-

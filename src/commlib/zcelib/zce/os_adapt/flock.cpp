@@ -5,13 +5,10 @@
 #include "zce/os_adapt/file.h"
 #include "zce/os_adapt/flock.h"
 
-
-
 //文件锁初始化zce::file_lock_t,直接用fd
 int zce::file_lock_init(zce::file_lock_t *lock,
                         ZCE_HANDLE file_hadle)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     // Once initialized, these values are never changed.
@@ -29,13 +26,11 @@ int zce::file_lock_init(zce::file_lock_t *lock,
     return 0;
 }
 
-
 void zce::fcntl_lock_adjust_params(zce::file_lock_t *lock,
                                    int whence,
                                    ssize_t &start,
                                    ssize_t &len)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     int ret = 0;
@@ -108,11 +103,6 @@ void zce::fcntl_lock_adjust_params(zce::file_lock_t *lock,
 #endif
 }
 
-
-
-
-
-
 //whence == SEEK_SET,SEEK_CUR
 int zce::fcntl_unlock(zce::file_lock_t *lock,
                       int  whence,
@@ -149,7 +139,6 @@ int zce::fcntl_unlock(zce::file_lock_t *lock,
                    F_SETLK,
                    reinterpret_cast<long> (&lock->lock_));
 #endif
-
 }
 
 int zce::fcntl_rdlock(zce::file_lock_t *lock,
@@ -157,7 +146,6 @@ int zce::fcntl_rdlock(zce::file_lock_t *lock,
                       ssize_t start,
                       ssize_t len)
 {
-
 #if defined (ZCE_OS_WINDOWS)
     zce::fcntl_lock_adjust_params(lock,whence,start,len);
 
@@ -198,7 +186,6 @@ int zce::fcntl_tryrdlock(::zce::file_lock_t *lock,
                          ssize_t start,
                          ssize_t len)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     //调整参数，因为WINDOWS参数的一些麻烦
@@ -248,7 +235,6 @@ int zce::fcntl_trywrlock(zce::file_lock_t *lock,
                          ssize_t start,
                          ssize_t len)
 {
-
 #if defined (ZCE_OS_WINDOWS)
 
     zce::fcntl_lock_adjust_params(lock,whence,start,len);
@@ -331,7 +317,6 @@ int zce::fcntl_wrlock(zce::file_lock_t *lock,
 #endif
 }
 
-
 //文件锁函数，只对一个文件进行加锁
 int zce::flock(zce::file_lock_t &lock_hadle,int operation)
 {
@@ -361,7 +346,6 @@ int zce::flock(zce::file_lock_t &lock_hadle,int operation)
                                     0,
                                     0);
         }
-
     }
     //写锁
     else if (LOCK_EX & operation)
@@ -408,7 +392,3 @@ int zce::flock(zce::file_lock_t &lock_hadle,int operation)
     return ::flock(lock_hadle.handle_,operation);
 #endif
 }
-
-
-
-

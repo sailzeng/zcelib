@@ -78,7 +78,6 @@
 
 namespace zce
 {
-
 //==============================================================================================================
 
 /*!
@@ -164,14 +163,14 @@ public:
         double x = 0.0;
         uint64_t x_64 = get_uint64();
         //这TMD绝对是个C语言的写法。但假如每一位都是足够随机的，那么……这个吼吼
-        memcpy(&x, &x_64, sizeof(double));
+        memcpy(&x,&x_64,sizeof(double));
         return x;
     }
 
     ///得到[0-1)之间浮点数，用于某些概率控制
     inline virtual double get_double01()
     {
-        return double (get_uint32()) / (double( (std::numeric_limits<uint32_t>::max)() ) + 1);
+        return double(get_uint32()) / (double((std::numeric_limits<uint32_t>::max)()) + 1);
     }
 
     /*!
@@ -180,7 +179,7 @@ public:
     * @param[out] rand_str  返回的生成随机数字符串
     * @param[in]  str_len   要求生成的字符串的长度
     */
-    virtual void get_string(RAND_STRING str_type, char *rand_str, size_t str_len);
+    virtual void get_string(RAND_STRING str_type,char *rand_str,size_t str_len);
 
 protected:
 
@@ -199,8 +198,8 @@ protected:
 * @tparam     max_result rand函数产生的随机数的最大值
 * @note
 */
-template <uint32_t min_result, uint32_t max_result >
-class t_random_base : public random_base
+template <uint32_t min_result,uint32_t max_result >
+class t_random_base: public random_base
 {
 public:
 
@@ -226,9 +225,8 @@ public:
 /*!
 * @brief      BSD的RAND代码,他100%是线性同余
 */
-class random_bsdrand : public t_random_base<0, 0x7FFFFFFF>
+class random_bsdrand: public t_random_base<0,0x7FFFFFFF>
 {
-
 public:
     ///构造函数
     explicit random_bsdrand(uint32_t seed = DEFAULT_SEED):
@@ -257,7 +255,7 @@ public:
     virtual uint32_t get_uint32()
     {
         uint32_t x = rand();
-        uint32_t highest_bit = ((x & 0x2 ) ? 1 : 0) ^ ((x & 0x4 )) ? 1 : 0;
+        uint32_t highest_bit = ((x & 0x2)?1:0) ^ ((x & 0x4))?1:0;
 
         if (highest_bit)
         {
@@ -277,7 +275,7 @@ protected:
 /*!
 * @brief      rand48 算法随机数发生器，其的循环长度是2^48,故此有此名字，
 */
-class random_rand48 : public t_random_base<0, 0xFFFFFFFF>
+class random_rand48: public t_random_base<0,0xFFFFFFFF>
 {
 public:
     ///构造函数
@@ -296,7 +294,7 @@ public:
     ///产生随机数
     virtual uint32_t rand()
     {
-        rand48_advance () ;
+        rand48_advance();
 
         uint32_t x2 = rand48_x2_;
         uint32_t x1 = rand48_x1_;
@@ -304,19 +302,19 @@ public:
     }
 
     ///计算得到种子
-    virtual void srand (uint32_t s)
+    virtual void srand(uint32_t s)
     {
         if (s == 0)
         {
-            rand48_x0_ = 0x330E ;
-            rand48_x1_ = 0xABCD ;
-            rand48_x2_ = 0x1234 ;
+            rand48_x0_ = 0x330E;
+            rand48_x1_ = 0xABCD;
+            rand48_x2_ = 0x1234;
         }
         else
         {
-            rand48_x0_ = 0x330E ;
-            rand48_x1_ = static_cast<uint16_t>(s & 0xFFFF );
-            rand48_x2_ = static_cast<uint16_t>((s >> 16) & 0xFFFF );
+            rand48_x0_ = 0x330E;
+            rand48_x1_ = static_cast<uint16_t>(s & 0xFFFF);
+            rand48_x2_ = static_cast<uint16_t>((s >> 16) & 0xFFFF);
         }
 
         return;
@@ -324,40 +322,38 @@ public:
 
 protected:
     //
-    inline void rand48_advance ()
+    inline void rand48_advance()
     {
-
         /* work with unsigned long ints throughout to get correct integer promotions of any unsigned short ints */
         const uint32_t x0 = rand48_x0_;
         const uint32_t x1 = rand48_x1_;
         const uint32_t x2 = rand48_x2_;
 
-        uint32_t a = RAND48_A0 * x0 + RAND48_C0 ;
-        rand48_x0_ = static_cast<uint16_t>(a & 0xFFFF) ;
+        uint32_t a = RAND48_A0 * x0 + RAND48_C0;
+        rand48_x0_ = static_cast<uint16_t>(a & 0xFFFF);
 
-        a >>= 16 ;
+        a >>= 16;
 
         /* although the next line may overflow we only need the top 16 bits in the following stage, so it does not matter */
 
-        a += RAND48_A0 * x1 + RAND48_A1 * x0 ;
-        rand48_x1_ = static_cast<uint16_t>(a & 0xFFFF) ;
+        a += RAND48_A0 * x1 + RAND48_A1 * x0;
+        rand48_x1_ = static_cast<uint16_t>(a & 0xFFFF);
 
-        a >>= 16 ;
-        a += RAND48_A0 * x2 + RAND48_A1 * x1 + RAND48_A2 * x0 ;
-        rand48_x2_ = static_cast<uint16_t>(a & 0xFFFF) ;
+        a >>= 16;
+        a += RAND48_A0 * x2 + RAND48_A1 * x1 + RAND48_A2 * x0;
+        rand48_x2_ = static_cast<uint16_t>(a & 0xFFFF);
     }
 
 protected:
     //魔术数字大集合
-    static const uint16_t RAND48_A0 = 0xE66D ;
-    static const uint16_t RAND48_A1 = 0xDEEC ;
-    static const uint16_t RAND48_A2 = 0x0005 ;
-    static const uint16_t RAND48_C0 = 0x000B ;
+    static const uint16_t RAND48_A0 = 0xE66D;
+    static const uint16_t RAND48_A1 = 0xDEEC;
+    static const uint16_t RAND48_A2 = 0x0005;
+    static const uint16_t RAND48_C0 = 0x000B;
 
 protected:
     ///计算rand48的几个数据
-    uint16_t rand48_x0_, rand48_x1_, rand48_x2_;
-
+    uint16_t rand48_x0_,rand48_x1_,rand48_x2_;
 };
 
 //==============================================================================================================
@@ -372,9 +368,8 @@ protected:
             其参考文档是
             "Maximally Equidistributed Combined Tausworthe Generators", Pierre L'Ecuyer, Mathematics of Computation, Volume 65, Number 213, January 1996, Pages 203-213
 */
-class random_taus88 : public t_random_base<0, 0xFFFFFFFF>
+class random_taus88: public t_random_base<0,0xFFFFFFFF>
 {
-
 public:
     //构造函数还是把默认种子搞出来把
     explicit random_taus88(uint32_t seed):
@@ -393,7 +388,7 @@ public:
     {
         if (seed == 0)
         {
-            seed = static_cast< uint32_t >( time(NULL) );
+            seed = static_cast<uint32_t>(time(NULL));
         }
 
         seed_arg_[0] = 69069 * seed;
@@ -420,16 +415,16 @@ public:
     ///得到随机数函数
     virtual inline uint32_t rand()
     {
-        seed_arg_[0] = __ZCE_TAUSWORTHE(seed_arg_[0], 12, 13, 19, 4294967294UL);
-        seed_arg_[1] = __ZCE_TAUSWORTHE(seed_arg_[1], 4, 2, 25, 4294967288UL);
-        seed_arg_[2] = __ZCE_TAUSWORTHE(seed_arg_[2], 17, 3, 11, 4294967280UL);
+        seed_arg_[0] = __ZCE_TAUSWORTHE(seed_arg_[0],12,13,19,4294967294UL);
+        seed_arg_[1] = __ZCE_TAUSWORTHE(seed_arg_[1],4,2,25,4294967288UL);
+        seed_arg_[2] = __ZCE_TAUSWORTHE(seed_arg_[2],17,3,11,4294967280UL);
         return (seed_arg_[0] ^ seed_arg_[1] ^ seed_arg_[2]);
     }
 
 protected:
 
     //__RANDOM_TAUSWORTHE宏相当于
-    uint32_t tausworthe(uint32_t arg, uint32_t stage1, uint32_t stage2, uint32_t stage3, uint32_t limit)
+    uint32_t tausworthe(uint32_t arg,uint32_t stage1,uint32_t stage2,uint32_t stage3,uint32_t limit)
     {
         return ((arg & limit) << stage1) ^ (((arg << stage2) ^ arg) >> stage3);
     }
@@ -469,11 +464,10 @@ protected:
 * @note       值得一提的是这些日本人又搞了一个提速的版本，SFMT SIMD-oriented Fast Mersenne Twister SFMT
 *             利用SSE2的功能提供了速度，我对SSE2的代码的可移植性没有把握，暂时放弃
 */
-template < size_t mt_n, size_t mt_m, uint32_t mt_a, uint32_t mt_b, uint32_t mt_c,
-           uint32_t mt_o, uint32_t mt_p, uint32_t mt_q, uint32_t mt_r, uint32_t mt_s, uint32_t mt_t, uint32_t mt_u >
-class random_mt : public t_random_base<0, 0xFFFFFFFF>
+template < size_t mt_n,size_t mt_m,uint32_t mt_a,uint32_t mt_b,uint32_t mt_c,
+    uint32_t mt_o,uint32_t mt_p,uint32_t mt_q,uint32_t mt_r,uint32_t mt_s,uint32_t mt_t,uint32_t mt_u >
+    class random_mt: public t_random_base<0,0xFFFFFFFF>
 {
-
 public:
 
     explicit random_mt(uint32_t seed = DEFAULT_SEED):
@@ -489,8 +483,7 @@ public:
     ///得到随机数
     virtual void srand(uint32_t seed)
     {
-
-        state_[0] = seed ;
+        state_[0] = seed;
 
         for (size_t j = 1; j < mt_n; j++)
         {
@@ -516,7 +509,7 @@ public:
         // in every 624 calls and otherwise irand() would become too big to get inlined
         uint32_t x = state_[postion_++];
 
-        x ^= (x >> mt_o)&mt_p;
+        x ^= (x >> mt_o) & mt_p;
         x ^= (x << mt_q) & mt_r;
         x ^= (x << mt_s) & mt_t;
         return x ^ (x >> mt_u);
@@ -551,19 +544,18 @@ protected:
     uint32_t     state_[mt_n];
     //记录每次取得的随机数的位置
     size_t       postion_;
-
 };
 
 //看不懂吧，其实我也看不懂，mt[数字]，里面的数字其实是说循环长度是2^数字
 ///后缀为A这个里面的魔术数字是我从网上爬到的 http://www.quadibloc.com/crypto/co4814.htm
-typedef random_mt<351, 175, 0xFFF80000, 0x0007FFFF, 0xE4BD75F5, 11, 0xFFFFFFFF, 7, 0x655E5280, 15, 0xFFD58000, 17>  random_mt11213a;
+typedef random_mt<351,175,0xFFF80000,0x0007FFFF,0xE4BD75F5,11,0xFFFFFFFF,7,0x655E5280,15,0xFFD58000,17>  random_mt11213a;
 ///为啥名字中要一个B的后缀呢，因为对应有一个A，BOOST只选择了mt11213b.
-typedef random_mt<351, 175, 0xFFF80000, 0x0007FFFF, 0xCCAB8EE7, 11, 0xFFFFFFFF, 7, 0x31B6AB00, 15, 0xFFE50000, 17>  random_mt11213b;
+typedef random_mt<351,175,0xFFF80000,0x0007FFFF,0xCCAB8EE7,11,0xFFFFFFFF,7,0x31B6AB00,15,0xFFE50000,17>  random_mt11213b;
 ///@brief mt19937大概是现在大家最推荐的算法
 ///这儿要介绍一下的是我们一般默认使用的算法mt19937的算法，
 ///这种算法速度快，而且循环周期长2^19937，在不那么大（2^623,你有需要创建比这个大的数值？）的数值中平均分布能力好，
 ///所以是群众们的最爱，所以大家默认选择这算法，
-typedef random_mt<624, 397, 0x80000000, 0x7FFFFFFF, 0x9908B0DF, 11, 0xFFFFFFFF, 7, 0x9D2C5680, 15, 0xEFC60000, 18>  random_mt19937;
+typedef random_mt<624,397,0x80000000,0x7FFFFFFF,0x9908B0DF,11,0xFFFFFFFF,7,0x9D2C5680,15,0xEFC60000,18>  random_mt19937;
 
 //==============================================================================================================
 //
@@ -574,7 +566,7 @@ typedef random_mt<624, 397, 0x80000000, 0x7FFFFFFF, 0x9908B0DF, 11, 0xFFFFFFFF, 
 * @tparam     一个循环的常量
 */
 template <size_t luxury>
-class random_ranlux : public t_random_base<0, 0x00FFFFFF>
+class random_ranlux: public t_random_base<0,0x00FFFFFF>
 {
 public:
 
@@ -634,7 +626,7 @@ public:
     virtual inline uint32_t rand()
     {
         const size_t  skip = luxury - 24;
-        uint32_t r = increment_state ();
+        uint32_t r = increment_state();
 
         ranlux_n_++;
 
@@ -644,7 +636,7 @@ public:
 
             for (size_t i = 0; i < skip; i++)
             {
-                increment_state ();
+                increment_state();
             }
         }
 
@@ -664,7 +656,6 @@ protected:
     //
     uint32_t increment_state()
     {
-
         int32_t delta = u_[ranlux_j_] - u_[ranlux_i_] - carry_;
 
         //这儿我不懂，
@@ -747,7 +738,6 @@ typedef   ZCE_Singleton<random_ranlux389>    ranlux389_instance;
 template <typename uin32_random>
 class random_var_gen
 {
-
 public:
 
     ///构造函数，并不完全让你使用单子，还是给你机会能创建实例
@@ -767,35 +757,35 @@ public:
     }
 
     ///在int32数值范围给产生一个随机数变量
-    inline int32_t uniform_int32(int32_t min, int32_t max)
+    inline int32_t uniform_int32(int32_t min,int32_t max)
     {
-        ZCE_ASSERT( max > min);
+        ZCE_ASSERT(max > min);
         uint32_t u32_max = max - min;
-        uint32_t u32_rand = uniform_uint32(0, u32_max);
+        uint32_t u32_rand = uniform_uint32(0,u32_max);
         return min + u32_rand;
     }
     ///在 uint32数值范围给产生一个随机数变量
-    inline uint32_t uniform_uint32(int64_t min, int64_t max)
+    inline uint32_t uniform_uint32(int64_t min,int64_t max)
     {
-        ZCE_ASSERT( max > min);
+        ZCE_ASSERT(max > min);
         uint32_t u32_rand = uin32_rand_gen_.get_uint32();
-        return (u32_rand + min ) % max;
+        return (u32_rand + min) % max;
     }
 
     ///在 int64数值范围给产生一个随机数变量
-    inline int64_t uniform_int64(int64_t min, int64_t max)
+    inline int64_t uniform_int64(int64_t min,int64_t max)
     {
-        ZCE_ASSERT( max > min);
+        ZCE_ASSERT(max > min);
         uint64_t u64_max = max - min;
-        uint64_t u64_rand = uniform_uint64(0, u64_max);
+        uint64_t u64_rand = uniform_uint64(0,u64_max);
         return min + u64_rand;
     }
     ///在 uint64数值范围给产生一个随机数变量
-    inline uint64_t uniform_uint64(uint64_t min, uint64_t max)
+    inline uint64_t uniform_uint64(uint64_t min,uint64_t max)
     {
-        ZCE_ASSERT( max > min);
+        ZCE_ASSERT(max > min);
         uint64_t u64_rand = uin32_rand_gen_.get_uint64();
-        return (u64_rand + min ) % max;
+        return (u64_rand + min) % max;
     }
 
     //
@@ -808,7 +798,6 @@ protected:
 
     ///随机发生器
     uin32_random                         uin32_rand_gen_;
-
 };
 
 ///定义了不同随机数发生器的变量产生器，如果没有多线程要求，可以直接使用他们
@@ -830,8 +819,6 @@ typedef   ZCE_Singleton<mt11213b_var_gen>     mt11213b_vargen_inst;
 typedef   ZCE_Singleton<mt19937_var_gen>      mt19937_vargen_inst;
 typedef   ZCE_Singleton<ranlux223_var_gen>    ranlux223_vargen_inst;
 typedef   ZCE_Singleton<ranlux389_var_gen>    ranlux389_vargen_inst;
-
 };// end of namespace    zce
 
 #endif
-

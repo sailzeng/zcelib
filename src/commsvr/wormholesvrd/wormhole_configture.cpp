@@ -2,18 +2,13 @@
 #include "wormhole_application.h"
 #include "wormhole_configture.h"
 
-
 Wormhole_Server_Config::Wormhole_Server_Config()
 {
-
 }
 
 Wormhole_Server_Config::~Wormhole_Server_Config()
 {
-
 }
-
-
 
 int Wormhole_Server_Config::read_cfgfile()
 {
@@ -27,10 +22,10 @@ int Wormhole_Server_Config::read_cfgfile()
     }
 
     proxy_conf_tree_.clear();
-    ret = ZCE_INI_Implement::read(app_cfg_file_.c_str(), &proxy_conf_tree_);
-    ZCE_LOG(RS_INFO, "[%s] read config file [%s] ret [%d].",
+    ret = ZCE_INI_Implement::read(app_cfg_file_.c_str(),&proxy_conf_tree_);
+    ZCE_LOG(RS_INFO,"[%s] read config file [%s] ret [%d].",
             Wormhole_Proxy_App::instance()->get_app_basename(),
-            app_cfg_file_.c_str(), ret);
+            app_cfg_file_.c_str(),ret);
     if (ret != 0)
     {
         return ret;
@@ -51,16 +46,15 @@ int Wormhole_Server_Config::read_cfgfile()
     return 0;
 }
 
-
 int Wormhole_Server_Config::get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
     int ret = 0;
     std::string temp_value;
 
     //最大Accept 数量
-    ret = conf_tree->path_get_leaf("PROXY_CFG", "PROXY_TYPE",
+    ret = conf_tree->path_get_leaf("PROXY_CFG","PROXY_TYPE",
                                    temp_value);
-    if ( 0 != ret )
+    if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
@@ -75,5 +69,3 @@ int Wormhole_Server_Config::get_wormhole_cfg(const ZCE_Conf_PropertyTree *conf_t
 
     return 0;
 }
-
-

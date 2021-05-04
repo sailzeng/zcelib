@@ -8,12 +8,10 @@ ZCE_LogTrace_Plus *ZCE_LogTrace_Plus::lpp_instance_ = NULL;
 //构造函数
 ZCE_LogTrace_Plus::ZCE_LogTrace_Plus()
 {
-
 }
 //析构函数
 ZCE_LogTrace_Plus::~ZCE_LogTrace_Plus()
 {
-
 }
 
 //得到唯一的单子实例
@@ -46,4 +44,3 @@ void ZCE_LogTrace_Plus::clean_instance()
     lpp_instance_ = NULL;
     return;
 }
-

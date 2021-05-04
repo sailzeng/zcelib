@@ -19,13 +19,11 @@
 #ifndef ZCE_LIB_CONFIG_INI_PASTTIME_H_
 #define ZCE_LIB_CONFIG_INI_PASTTIME_H_
 
-
 /*!
 * @brief      INI文件读写的处理，接口都模仿WIndows的API
 */
 class ZCE_INI_Pt
 {
-
 public:
 
     ///构造函数,
@@ -147,9 +145,6 @@ public:
     ///删除Section
     bool   del_private_section(const char *sec_name);
 
-
-
-
 protected:
     //每行的最大长度
     static const size_t LINE_BUFFER_LEN = 8191;
@@ -167,9 +162,6 @@ protected:
     char *str_value_ = NULL;
     //
     char *write_line_ = NULL;
-
 };
 
 #endif //ZCE_LIB_CONFIG_INI_PASTTIME_H_
-
-

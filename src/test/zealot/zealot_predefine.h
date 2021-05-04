@@ -1,8 +1,6 @@
 #ifndef ZEALOT_PRE_DEFINE_H_
 #define ZEALOT_PRE_DEFINE_H_
 
-
-
 //ZCELIB的代码
 
 #include <zce/predefine.h>
@@ -41,7 +39,6 @@
 
 #include <zce/time/progress_timer.h>
 
-
 #include <zce/util/random.h>
 #include <zce/lock/thread_mutex.h>
 #include <zce/lock/thread_rw_mutex.h>
@@ -50,16 +47,13 @@
 #include <zce/thread/msgque_sema.h>
 #include <zce/thread/thread_task.h>
 
-
 #include <zce/timer/handler_base.h>
 #include <zce/timer/queue_heap.h>
 #include <zce/timer/queue_wheel.h>
 
-
 #include <zce/string/helper.h>
 #include <zce/string/format.h>
 #include <zce/string/extend.h>
-
 
 #include <zce/mysql/connect.h>
 #include <zce/mysql/command.h>
@@ -67,14 +61,12 @@
 
 #include <zce/server/get_option.h>
 
-
 #include <zce/bytes/hash_value.h>
 #include <zce/bytes/encrypt.h>
 #include <zce/bytes/base_encode.h>
 #include <zce/bytes/encrypt.h>
 #include <zce/bytes/compress.h>
 #include <zce/bytes/serialize.h>
-
 
 #include <zce/event/handle_base.h>
 #include <zce/event/handle_inotify.h>
@@ -94,13 +86,10 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 
-
-
 //BOOST的代码，用于一些对比测试
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( disable : 4819)
 #endif
-
 
 //#include <boost/cstdint.hpp>
 //#include <boost/random.hpp>
@@ -110,7 +99,5 @@
 #if defined ZCE_OS_WINDOWS
 #pragma warning ( default : 4819)
 #endif
-
-
 
 #endif //

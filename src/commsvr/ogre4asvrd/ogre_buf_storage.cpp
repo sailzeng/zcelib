@@ -1,4 +1,3 @@
-
 #include "ogre_predefine.h"
 #include "ogre_buf_storage.h"
 #include "ogre_configure.h"
@@ -17,20 +16,17 @@ Ogre_Buffer_Storage::Ogre_Buffer_Storage():
 //
 Ogre_Buffer_Storage::~Ogre_Buffer_Storage()
 {
-
 }
 
 //
 void Ogre_Buffer_Storage::init_buffer_list(size_t szlist)
 {
-
     extend_buffer_list(szlist);
 }
 
 //
 void Ogre_Buffer_Storage::uninit_buffer_list()
 {
-
     //少使用函数，懒得注意效率
     size_t sz_of_buffer = frame_buffer_ary_.size();
 
@@ -44,12 +40,10 @@ void Ogre_Buffer_Storage::uninit_buffer_list()
     size_buffer_alloc_ = 0;
 }
 
-
 Ogre4a_App_Frame *Ogre_Buffer_Storage::allocate_byte_buffer()
 {
-
     //缓冲区使用完了,扩展
-    if (true == frame_buffer_ary_.empty() )
+    if (true == frame_buffer_ary_.empty())
     {
         extend_buffer_list();
     }
@@ -67,17 +61,16 @@ void Ogre_Buffer_Storage::free_byte_buffer(Ogre4a_App_Frame *ptrbuf)
     frame_buffer_ary_.push_back(ptrbuf);
 }
 
-
 //扩展了缓冲区数量
 void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 {
     //
-    ZCE_LOG(RS_INFO, "extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
+    ZCE_LOG(RS_INFO,"extend_buffer_list size:%d total:%d need memory [%u] ,total use memory [%u].\n",
             szlist,
             size_buffer_alloc_,
             szlist * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t)),
             size_buffer_alloc_ * (Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN + sizeof(size_t))
-           );
+    );
 
     //重新扩展一下空间
     frame_buffer_ary_.resize(size_buffer_alloc_ + szlist);
@@ -92,7 +85,6 @@ void Ogre_Buffer_Storage::extend_buffer_list(size_t szlist)
 
     //
     size_buffer_alloc_ += szlist;
-
 }
 
 //为了SingleTon类准备
@@ -121,5 +113,4 @@ void Ogre_Buffer_Storage::clean_instance()
         delete instance_;
         instance_ = NULL;
     }
-
 }

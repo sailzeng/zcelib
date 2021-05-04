@@ -58,13 +58,11 @@ struct ZCE_SYSTEM_INFO
     int64_t   totalswap_size_;
     ///有效的交换分区大小 swap space still available
     int64_t   freeswap_size_;
-
 };
 
 ///@brief 系统的性能信息数据，包括CPU个数，内存大小等
 struct ZCE_SYSTEM_PERFORMANCE
 {
-
     ///总共的内存大小，单位字节
     int64_t   totalram_size_;
     ///空闲内存的大小，单位字节,其实在LINUX系统中，可以使用的内存是bufferram_size_ + cachedram_size_ + freeram_size_
@@ -110,12 +108,10 @@ struct ZCE_SYSTEM_PERFORMANCE
     int       processes_num_;
     ///正在运行的进程任务数量，WINDOWS下这个数值没有用，恒定为0
     int       running_num_;
-
 };
 
 namespace zce
 {
-
 //----------------------------------------------------------------------------------------------
 
 /*!
@@ -142,8 +138,6 @@ int read_proc_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info);
 int read_fun_get_systemperf(struct ZCE_SYSTEM_PERFORMANCE *info);
 
 #endif //end of #if define ZCE_OS_LINUX
-
 };
 
 #endif //ZCE_LIB_OS_ADAPT_SYSCONF_H_
-

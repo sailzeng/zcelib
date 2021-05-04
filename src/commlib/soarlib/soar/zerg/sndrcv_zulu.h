@@ -25,7 +25,6 @@ class Zulu_SendRecv_Msg
 ******************************************************************************************/
 class Zulu_SendRecv_Msg: public SendRecv_Msg_Base
 {
-
 protected:
 
     //ZULU 是否链接
@@ -108,7 +107,6 @@ public:
     int receive_svc_msg(unsigned int &recv_cmd,
                         zce::Time_Value *time_out = NULL);
 
-
     /*!
     * @brief      发送和接收数据，会提前进行连接的。
     * @note       参数请参考send_svc_package,receive_svc_package
@@ -123,7 +121,6 @@ public:
                       bool error_continue = true,
                       uint32_t backfill_fsm_id = 0,
                       uint16_t app_id = 0);
-
 };
 
 //阻塞的接收一个APPFRAME数据
@@ -276,4 +273,3 @@ int Zulu_SendRecv_Msg::send_recv_msg(unsigned int snd_cmd,
 }
 
 #endif //SOARING_LIB_SNDRCV_TCP_ZULU_H_
-

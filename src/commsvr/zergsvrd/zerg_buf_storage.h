@@ -1,4 +1,3 @@
-
 #ifndef ZERG_BUFFER_STORAGE_H_
 #define ZERG_BUFFER_STORAGE_H_
 
@@ -33,9 +32,9 @@ public:
     ~Zerg_Buffer();
 
     //填充数据
-    void fill_write_data(const size_t szdata, const char *data);
+    void fill_write_data(const size_t szdata,const char *data);
     //读取数据
-    void get_read_data(size_t &szdata, char *data);
+    void get_read_data(size_t &szdata,char *data);
 
     //
     inline char *get_use_point()
@@ -72,9 +71,7 @@ public:
 
     //
     void clear_buffer();
-
 };
-
 
 //===================================================================================================
 
@@ -83,7 +80,7 @@ public:
 *
 * @note
 */
-class ZBuffer_Storage : public zce::NON_Copyable
+class ZBuffer_Storage: public zce::NON_Copyable
 {
 public:
     //构造函数和析构函数
@@ -103,7 +100,7 @@ public:
     Zerg_Buffer *allocate_buffer();
 
     //释放一个Buffer到队列中
-    void free_byte_buffer(Zerg_Buffer *ptrbuf );
+    void free_byte_buffer(Zerg_Buffer *ptrbuf);
 
     //扩展Buffer队列
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);
@@ -134,10 +131,6 @@ protected:
 
     ///BUFF队列
     ZBUFFER_RINGS         buffer_deque_;
-
-
-
 };
 
 #endif //_ZERG_BUFFER_STORAGE_H_
-

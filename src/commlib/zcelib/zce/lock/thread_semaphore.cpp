@@ -1,4 +1,3 @@
-
 #include "zce/predefine.h"
 #include "zce/os_adapt/semaphore.h"
 #include "zce/os_adapt/time.h"
@@ -12,12 +11,12 @@ ZCE_Thread_Semaphore::ZCE_Thread_Semaphore(unsigned int init_value):
 {
     int ret = 0;
 
-    lock_ = new sem_t ();
-    ret = zce::sem_init(lock_, 0, init_value);
+    lock_ = new sem_t();
+    ret = zce::sem_init(lock_,0,init_value);
 
-    if (0 != ret )
+    if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_init fail.", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_init fail.",ret);
     }
 }
 
@@ -40,11 +39,11 @@ ZCE_Thread_Semaphore::~ZCE_Thread_Semaphore()
 void ZCE_Thread_Semaphore::lock()
 {
     //信号灯锁定
-    int ret =  zce::sem_wait (lock_);
+    int ret = zce::sem_wait(lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_wait", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_wait",ret);
         return;
     }
 }
@@ -53,7 +52,7 @@ void ZCE_Thread_Semaphore::lock()
 bool ZCE_Thread_Semaphore::try_lock()
 {
     //信号灯锁定
-    int ret =  zce::sem_trywait (lock_);
+    int ret = zce::sem_trywait(lock_);
 
     if (0 != ret)
     {
@@ -66,11 +65,11 @@ bool ZCE_Thread_Semaphore::try_lock()
 //解锁,
 void ZCE_Thread_Semaphore::unlock()
 {
-    int ret = zce::sem_post (lock_);
+    int ret = zce::sem_post(lock_);
 
     if (0 != ret)
     {
-        ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_post", ret);
+        ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_post",ret);
         return;
     }
 }
@@ -79,13 +78,13 @@ void ZCE_Thread_Semaphore::unlock()
 bool ZCE_Thread_Semaphore::systime_lock(const zce::Time_Value &abs_time)
 {
     int ret = 0;
-    ret = zce::sem_timedwait(lock_, abs_time);
+    ret = zce::sem_timedwait(lock_,abs_time);
 
     if (0 != ret)
     {
         if (errno != ETIMEDOUT)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::sem_timedwait", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::sem_timedwait",ret);
         }
 
         return false;
@@ -98,7 +97,6 @@ bool ZCE_Thread_Semaphore::systime_lock(const zce::Time_Value &abs_time)
 bool ZCE_Thread_Semaphore::duration_lock(const zce::Time_Value &relative_time)
 {
     timeval abs_time = zce::gettimeofday();
-    abs_time = zce::timeval_add(abs_time, relative_time);
+    abs_time = zce::timeval_add(abs_time,relative_time);
     return systime_lock(abs_time);
 }
-

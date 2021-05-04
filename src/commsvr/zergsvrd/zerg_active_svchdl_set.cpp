@@ -2,11 +2,9 @@
 #include "zerg_tcp_ctrl_handler.h"
 #include "zerg_active_svchdl_set.h"
 
-
 /****************************************************************************************************
 class  Service_Info_Set ,
 ，
-
 
 ****************************************************************************************************/
 Active_SvcHandle_Set::Active_SvcHandle_Set()
@@ -34,7 +32,7 @@ int Active_SvcHandle_Set::find_handle_by_svcid(const soar::SERVICES_ID &svc_id,
 
     if (iter == svr_info_set_.end())
     {
-        ZCE_LOG(RS_ERROR, "[zergsvr] Can't find svchanle info. Svrinfo Type|ID:[%u|%u] .",
+        ZCE_LOG(RS_ERROR,"[zergsvr] Can't find svchanle info. Svrinfo Type|ID:[%u|%u] .",
                 svc_id.services_type_,
                 svc_id.services_id_);
         return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
@@ -43,8 +41,6 @@ int Active_SvcHandle_Set::find_handle_by_svcid(const soar::SERVICES_ID &svc_id,
     svc_handle = (*(iter)).second;
     return 0;
 }
-
-
 
 //以负载均衡的方式，根据services type查询一个的SVC，按照数组顺序轮询的返回，
 //这样查询保证发送的数据尽量负载均衡
@@ -57,7 +53,7 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
+        ZCE_LOG(RS_ALERT,"[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
                 __ZCE_FUNC__,
                 services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
@@ -72,14 +68,14 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
         id_table->orderid_use_id_ += 1;
 
         find_services_id = id_table->services_id_ary_[ary_id];
-        soar::SERVICES_ID lb_svcid(services_type, find_services_id);
+        soar::SERVICES_ID lb_svcid(services_type,find_services_id);
         auto iter = svr_info_set_.find(lb_svcid);
 
         //到这儿就是你代码写错了，
         ZCE_ASSERT(iter != svr_info_set_.end());
         if (iter == svr_info_set_.end())
         {
-            ZCE_LOG(RS_ALERT, "[zergsvr]Code error, can't find svc hanle info. SVC ID:[%u.%u] .",
+            ZCE_LOG(RS_ALERT,"[zergsvr]Code error, can't find svc hanle info. SVC ID:[%u.%u] .",
                     lb_svcid.services_type_,
                     lb_svcid.services_id_);
             return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
@@ -96,7 +92,6 @@ int Active_SvcHandle_Set::find_lbseqhdl_by_type(uint16_t services_type,
     return 0;
 }
 
-
 int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
                                                    uint32_t lb_factor,
                                                    uint32_t &find_services_id,
@@ -107,7 +102,7 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
+        ZCE_LOG(RS_ALERT,"[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
                 __ZCE_FUNC__,
                 services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
@@ -121,14 +116,14 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
         size_t ary_id = (lb_factor) % ary_size;
 
         find_services_id = id_table->services_id_ary_[ary_id];
-        soar::SERVICES_ID lb_svcid(services_type, find_services_id);
+        soar::SERVICES_ID lb_svcid(services_type,find_services_id);
         auto iter = svr_info_set_.find(lb_svcid);
 
         //到这儿就是你代码写错了，
         ZCE_ASSERT(iter != svr_info_set_.end());
         if (iter == svr_info_set_.end())
         {
-            ZCE_LOG(RS_ALERT, "[zergsvr]Code error, can't find svc hanle info. SVC ID:[%u.%u] .",
+            ZCE_LOG(RS_ALERT,"[zergsvr]Code error, can't find svc hanle info. SVC ID:[%u.%u] .",
                     lb_svcid.services_type_,
                     lb_svcid.services_id_);
             return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
@@ -144,7 +139,6 @@ int Active_SvcHandle_Set::find_lbfactorhdl_by_type(uint16_t services_type,
     }
     return 0;
 }
-
 
 //以主备的方式，根据services type尽量查询得到一个的SVC ID以及对应的Handle，
 //主备的顺序按照Auto 那儿的配置顺序来处理。可以不是2个
@@ -165,7 +159,7 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
     for (size_t j = 0; j < ary_size; ++j)
     {
         find_services_id = (*ms_svcid_ary)[j];
-        soar::SERVICES_ID ms_svcid(services_type, find_services_id);
+        soar::SERVICES_ID ms_svcid(services_type,find_services_id);
 
         auto iter = svr_info_set_.find(ms_svcid);
         //如果没有找到
@@ -185,15 +179,14 @@ int Active_SvcHandle_Set::find_mshdl_by_type(uint16_t services_type,
     return 0;
 }
 
-
 //查询类型对应的所有active的SVC ID数组，用于广播等
-int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type, std::vector<uint32_t> *&id_ary)
+int Active_SvcHandle_Set::find_hdlary_by_type(uint16_t services_type,std::vector<uint32_t> *&id_ary)
 {
     MAP_OF_TYPE_TO_IDTABLE::iterator table_iter =
         type_to_idtable_.find(services_type);
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
+        ZCE_LOG(RS_ALERT,"[zergsvr][%s]Can't find typetoid table info.services type :[%hu] .",
                 __ZCE_FUNC__,
                 services_type);
         return SOAR_RET::ERR_ZERG_NO_FIND_SVCTYPE_RECORD;
@@ -216,15 +209,15 @@ int Active_SvcHandle_Set::add_services_peerinfo(const soar::SERVICES_ID &svc_id,
 
         //一个很有意思的问题导致了代码必须这样写。如果你能直接知道为什么，可以直接找Scottxu要求请客
         const size_t TMP_ADDR_LEN = 31;
-        char new_addr[TMP_ADDR_LEN+1], old_addr[TMP_ADDR_LEN + 1];
+        char new_addr[TMP_ADDR_LEN + 1],old_addr[TMP_ADDR_LEN + 1];
         size_t use_len = 0;
 
-        ZCE_LOG(RS_ERROR, "[zergsvr] add_services_peerinfo:%u|%u fail.Find old IP:[%s],new IP[%s],no replace old.",
+        ZCE_LOG(RS_ERROR,"[zergsvr] add_services_peerinfo:%u|%u fail.Find old IP:[%s],new IP[%s],no replace old.",
                 svc_id.services_type_,
                 svc_id.services_id_,
-                old_svchdl->get_peer().to_string(old_addr, TMP_ADDR_LEN,use_len),
-                new_svchdl->get_peer().to_string(new_addr, TMP_ADDR_LEN,use_len)
-               );
+                old_svchdl->get_peer().to_string(old_addr,TMP_ADDR_LEN,use_len),
+                new_svchdl->get_peer().to_string(new_addr,TMP_ADDR_LEN,use_len)
+        );
         return SOAR_RET::ERR_ZERG_SERVER_ALREADY_LONGIN;
     }
 
@@ -236,8 +229,8 @@ int Active_SvcHandle_Set::add_services_peerinfo(const soar::SERVICES_ID &svc_id,
     if (table_iter == type_to_idtable_.end())
     {
         auto iter_insert =
-            type_to_idtable_.insert(std::make_pair(svc_id.services_type_, SERVICES_ID_TABLE()));
-        if (iter_insert.second  == false)
+            type_to_idtable_.insert(std::make_pair(svc_id.services_type_,SERVICES_ID_TABLE()));
+        if (iter_insert.second == false)
         {
             return SOAR_RET::ERR_ZERG_INSERT_TYPETOIDTABLE_FAIL;
         }
@@ -266,14 +259,14 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const soar::SERVICES_ID &svc
         old_svchdl = (*iter).second;
 
         const size_t TMP_ADDR_LEN = 31;
-        char new_addr[TMP_ADDR_LEN+1], old_addr[TMP_ADDR_LEN + 1];
+        char new_addr[TMP_ADDR_LEN + 1],old_addr[TMP_ADDR_LEN + 1];
         size_t use_len = 0;
-        ZCE_LOG(RS_INFO, "[zergsvr] replace_services_peerInfo:%u|%u ,Find old IP[%s],new IP [%s],replace old.",
+        ZCE_LOG(RS_INFO,"[zergsvr] replace_services_peerInfo:%u|%u ,Find old IP[%s],new IP [%s],replace old.",
                 svc_id.services_type_,
                 svc_id.services_id_,
-                old_svchdl->get_peer().to_string(old_addr, TMP_ADDR_LEN ,use_len),
-                new_svchdl->get_peer().to_string(new_addr, TMP_ADDR_LEN ,use_len)
-               );
+                old_svchdl->get_peer().to_string(old_addr,TMP_ADDR_LEN,use_len),
+                new_svchdl->get_peer().to_string(new_addr,TMP_ADDR_LEN,use_len)
+        );
     }
 
     svr_info_set_[svc_id] = new_svchdl;
@@ -285,7 +278,6 @@ int Active_SvcHandle_Set::replace_services_peerInfo(const soar::SERVICES_ID &svc
     return 0;
 }
 
-
 //根据soar::SERVICES_ID,删除PEER信息,
 int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID &svc_id)
 {
@@ -294,7 +286,7 @@ int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID &svc_id)
     //如果没有找到,99.99%理论上应该是代码写的有问题,除非插入没有成功的情况.调用了handle_close.
     if (iter == svr_info_set_.end())
     {
-        ZCE_LOG(RS_INFO, "[zergsvr][%s] Can't  svr_info_set_ size:%u: svc_id:%u.%u .",
+        ZCE_LOG(RS_INFO,"[zergsvr][%s] Can't  svr_info_set_ size:%u: svc_id:%u.%u .",
                 __ZCE_FUNC__,
                 svr_info_set_.size(),
                 svc_id.services_type_,
@@ -310,7 +302,7 @@ int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID &svc_id)
     ZCE_ASSERT(table_iter != type_to_idtable_.end());
     if (table_iter == type_to_idtable_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr][%s]Code error, can't find typetoid table info. Svrinfo :[%hu.%u] .",
+        ZCE_LOG(RS_ALERT,"[zergsvr][%s]Code error, can't find typetoid table info. Svrinfo :[%hu.%u] .",
                 __ZCE_FUNC__,
                 svc_id.services_type_,
                 svc_id.services_id_);
@@ -332,11 +324,11 @@ int Active_SvcHandle_Set::del_services_peerInfo(const soar::SERVICES_ID &svc_id)
 
     //找到移动位置ID对应的Handle，调整其保存的ID
     soar::SERVICES_ID move_svc_id(svc_id.services_type_,
-                            id_table->services_id_ary_[del_id]);
+                                  id_table->services_id_ary_[del_id]);
     iter = svr_info_set_.find(move_svc_id);
     if (iter == svr_info_set_.end())
     {
-        ZCE_LOG(RS_ALERT, "[zergsvr]Code error, can't find svchanle info. Svrinfo Type|ID:[%u|%u] .",
+        ZCE_LOG(RS_ALERT,"[zergsvr]Code error, can't find svchanle info. Svrinfo Type|ID:[%u|%u] .",
                 move_svc_id.services_type_,
                 move_svc_id.services_id_);
         return SOAR_RET::ERR_ZERG_NO_FIND_EVENT_HANDLE;
@@ -353,7 +345,6 @@ size_t Active_SvcHandle_Set::get_services_peersize()
     return svr_info_set_.size();
 }
 
-
 //
 void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
 {
@@ -362,7 +353,7 @@ void Active_SvcHandle_Set::dump_svr_peerinfo(zce::LOG_PRIORITY out_lvl)
     MAP_OF_SVCPEERINFO::iterator iter_end = svr_info_set_.end();
 
     //如果连接上来的服务器多，这是一个非常非常耗时的操作.
-    for (size_t i = 0; iter_tmp != iter_end; ++iter_tmp, ++i)
+    for (size_t i = 0; iter_tmp != iter_end; ++iter_tmp,++i)
     {
         soar::SERVICES_ID svr_info = (*(iter_tmp)).first;
         TCP_Svc_Handler *svrhandle = (*(iter_tmp)).second;
@@ -377,7 +368,7 @@ void Active_SvcHandle_Set::clear_and_closeall()
 {
     const size_t SHOWINFO_NUMBER = 500;
 
-    ZCE_LOG(RS_INFO, "[zergsvr] Has %u peer want to close. Please wait. ACE that is accursed.",
+    ZCE_LOG(RS_INFO,"[zergsvr] Has %u peer want to close. Please wait. ACE that is accursed.",
             svr_info_set_.size());
 
     //这个函数可能是绝对的慢
@@ -385,7 +376,7 @@ void Active_SvcHandle_Set::clear_and_closeall()
     {
         if (svr_info_set_.size() % SHOWINFO_NUMBER == 0)
         {
-            ZCE_LOG(RS_INFO, "[zergsvr] Now remain %u peer want to close. Please wait. ACE that is accursed.",
+            ZCE_LOG(RS_INFO,"[zergsvr] Now remain %u peer want to close. Please wait. ACE that is accursed.",
                     svr_info_set_.size());
         }
 
@@ -396,5 +387,3 @@ void Active_SvcHandle_Set::clear_and_closeall()
         svrhandle->handle_close();
     }
 }
-
-

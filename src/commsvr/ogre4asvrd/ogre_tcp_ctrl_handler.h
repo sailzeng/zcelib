@@ -1,5 +1,3 @@
-
-
 #ifndef OGRE_TCP_CONTROL_SERVICE_H_
 #define OGRE_TCP_CONTROL_SERVICE_H_
 
@@ -13,7 +11,7 @@ class Soar_MMAP_BusPipe;
 /****************************************************************************************************
 class  Ogre_TCP_Svc_Handler
 ****************************************************************************************************/
-class Ogre_TCP_Svc_Handler : public  ZCE_Event_Handler,
+class Ogre_TCP_Svc_Handler: public  ZCE_Event_Handler,
     public zce::Timer_Handler
 {
 public:
@@ -50,7 +48,6 @@ protected:
 
 public:
 
-
     /*!
     * @brief      初始化对象
     * @return     void
@@ -77,9 +74,9 @@ public:
     //
     virtual int handle_output(ZCE_HANDLE);
     //
-    virtual int timer_timeout(const zce::Time_Value &time, const void *arg);
+    virtual int timer_timeout(const zce::Time_Value &time,const void *arg);
     //
-    virtual int handle_close ();
+    virtual int handle_close();
 
     //得到Handle对应PEER的IP地址
     const zce::Sockaddr_In &get_peer();
@@ -89,7 +86,7 @@ protected:
     //从PEER读取数据
     int read_data_from_peer(size_t &szrevc);
     //将数据写入PEER
-    int write_data_to_peer(size_t &szsend, bool &bfull);
+    int write_data_to_peer(size_t &szsend,bool &bfull);
     //将所有可以发送的数据都发送出去
     int write_all_aata_to_peer();
 
@@ -129,11 +126,10 @@ public:
     static Ogre_TCP_Svc_Handler *alloc_svchandler_from_pool(OGRE_HANDLER_MODE handler_mode);
 
     //取得配置的最大PEER数量
-    static void get_maxpeer_num(size_t &maxaccept, size_t &maxconnect);
+    static void get_maxpeer_num(size_t &maxaccept,size_t &maxconnect);
 
     //将数据从端口发送数据
-    static int process_send_data(Ogre4a_App_Frame *tmpbuf );
-
+    static int process_send_data(Ogre4a_App_Frame *tmpbuf);
 
     /*!
     * @brief
@@ -202,12 +198,11 @@ protected:
     OGRE_HANDLER_MODE             handler_mode_;
 
     ///接收数据的缓冲
-    Ogre4a_App_Frame              *rcv_buffer_;
-
+    Ogre4a_App_Frame *rcv_buffer_;
 
     ///发送的数据可能要排队
     zce::lordrings<Ogre4a_App_Frame *>  \
-    snd_buffer_deque_;
+        snd_buffer_deque_;
 
     ///这个PEER接受数据
     size_t                        recieve_bytes_;
@@ -238,8 +233,6 @@ protected:
 
     ///判断接收到的数据是否是完整的处理函数指针
     FP_JudgeRecv_WholeFrame       fp_judge_whole_frame_;
-
 };
 
 #endif //OGRE_TCP_CONTROL_SERVICE_H_
-

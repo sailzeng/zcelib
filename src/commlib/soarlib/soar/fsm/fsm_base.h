@@ -59,7 +59,6 @@ public:
     //得到管理器
     inline  FSM_Manager *get_trans_mgr() const;
 
-
     ///每次重新进行初始化时候的事情，等等，尽量保证基类的这个函数优先调用，类似构造函数
     ///这个地方用于恢复很多初始值
     virtual void on_start();
@@ -90,13 +89,11 @@ public:
 
 protected:
 
-
     /*!
     * @brief      根据Frame初始化得到对方发送的信息
     * @param      recv_frame 初始化接收的FRAME数据,
     */
     void create_init(soar::Zerg_Frame *recv_frame);
-
 
     //lock其实不是真正的锁，目的是保证在同一时刻，只处理一个用户的一个请求。
     //对当前用户的，当前事务命令字进行加锁
@@ -207,7 +204,6 @@ protected:
                            const T &msg,
                            uint32_t option = 0);
 
-
     //--------------------------------------------------------------------------------------
     //奉劝大家不要用这个，最大集合,
     template< class T>
@@ -238,7 +234,6 @@ protected:
     //请求的状态机的头部
     soar::Zerg_Head         req_zerg_head_;
 
-
     //事务超时的定时器ID
     int                     trans_timeout_id_;
     //发生active后，是否自动停止time out定时器
@@ -251,7 +246,6 @@ protected:
 
     ///日志跟踪的优先级
     zce::LOG_PRIORITY       trace_log_pri_;
-
 };
 
 //请求发送消息的Service,
@@ -312,7 +306,6 @@ int FSM_Base::request_peer(uint32_t cmd,
                               *(trans_manager_->self_svc_info()),
                               info,
                               option);
-
 }
 
 //--------------------------------------------------------------------------------------------------------------------------
@@ -407,7 +400,6 @@ int FSM_Base::response_sendback(uint32_t cmd,
                                 const T &msg,
                                 uint32_t option)
 {
-
     //加入UDP返回的代码部分
     if (req_frame_option_ & soar::Zerg_Frame::DESC_UDP_FRAME)
     {
@@ -460,10 +452,10 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                  uint32_t user_id,
                                  uint32_t fsm_id,
                                  uint32_t backfill_fsm_id,
-                                 const soar::SERVICES_ID& rcv_svc,
-                                 const soar::SERVICES_ID& proxy_svc,
-                                 const soar::SERVICES_ID& snd_svc,
-                                 const T& msg,
+                                 const soar::SERVICES_ID &rcv_svc,
+                                 const soar::SERVICES_ID &proxy_svc,
+                                 const soar::SERVICES_ID &snd_svc,
+                                 const T &msg,
                                  uint32_t option)
 {
     //如果请求的命令要求要监控，后面的处理进行监控
@@ -482,6 +474,3 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                               msg,
                                               option);
 }
-
-
-

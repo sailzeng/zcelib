@@ -1,19 +1,15 @@
-
-
 #ifndef ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
 #define ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
-
 
 #include "zce/async/async_base.h"
 
 //====================================================================================
 
-
 /*!
 * @brief      协程对象
 *             注意，为了避免一些无意义的暴漏，我这儿选择的继承方式是private
 */
-class ZCE_Async_Coroutine : public zce::Async_Object
+class ZCE_Async_Coroutine: public zce::Async_Object
 {
     friend class ZCE_Async_CoroutineMgr;
 
@@ -30,13 +26,12 @@ class ZCE_Async_Coroutine : public zce::Async_Object
         TIMEOUT = 0x20002,
     };
 
-
 public:
     /*!
     * @brief      构造函数，
     * @param      async_mgr ,协程异步管理器的指针
     */
-    ZCE_Async_Coroutine(zce::Async_Obj_Mgr *async_mgr, unsigned int reg_cmd);
+    ZCE_Async_Coroutine(zce::Async_Obj_Mgr *async_mgr,unsigned int reg_cmd);
 protected:
     /*!
     * @brief      析构函数
@@ -59,13 +54,11 @@ public:
 
 protected:
 
-
     ///协程运行,你要重载的函数
     virtual void coroutine_run() = 0;
 
     ///切换回Main，协程还会继续运行
     void yeild_main_continue();
-
 
     ///协程对象的运行函数
     void coroutine_do();
@@ -76,7 +69,6 @@ protected:
     ///切换回协程，也就是切换到他自己运行
     void yeild_coroutine();
 
-
     /*!
     * @brief      等待time_out 时间后超时，设置定时器后，切换协程到main
     * @return     int
@@ -84,12 +76,11 @@ protected:
     */
     int waitfor_timeout(const zce::Time_Value &time_out);
 
-
     /*!
     * @brief      继承zce::Async_Object的函数，
     * @param[out] continue_run 返回参数，返回当前的协程是否要继续运行下去
     */
-    virtual void on_run(const void *outer_data, size_t data_len, bool &running) override;
+    virtual void on_run(const void *outer_data,size_t data_len,bool &running) override;
 
     /*!
     * @brief      异步对象超时处理
@@ -98,7 +89,6 @@ protected:
     */
     virtual void on_timeout(const zce::Time_Value &now_time,
                             bool &continue_run) override;
-
 
 protected:
 
@@ -124,8 +114,6 @@ protected:
 
     ///协程的状态
     COROUTINE_STATE  coroutine_state_ = COROUTINE_STATE::INVALID;
-
-
 };
 
 //====================================================================================
@@ -134,7 +122,7 @@ protected:
 * @brief      协程对象主控管理类
 *
 */
-class ZCE_Async_CoroutineMgr : public zce::Async_Obj_Mgr
+class ZCE_Async_CoroutineMgr: public zce::Async_Obj_Mgr
 {
 public:
 
@@ -148,9 +136,6 @@ protected:
     static const size_t COROUTINE_POOL_INIT_SIZE = 1;
     ///默认池子扩展的时候，扩展的异步对象的数量
     static const size_t COROUTINE_POOL_EXTEND_SIZE = 16;
-
 };
 
-
 #endif //#ifndef ZCE_LIB_ASYNC_FRAMEWORK_COROUTINE_
-

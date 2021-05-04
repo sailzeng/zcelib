@@ -31,7 +31,6 @@
 #include "zce/time/time_value.h"
 #include "zce/timer/queue_base.h"
 
-
 /*!
 * @brief      时间轮定时器，有人也成为十字链表（循环队列），
 *             Timer触发器,高效率，高性能的带名称，
@@ -40,16 +39,14 @@
 *             内部也指向有WHEEL
 *             设置定时器，取消定时器，分发定时器的消耗级别都是O(1)
 */
-class ZCE_Timer_Wheel : public zce::Timer_Queue_Base
+class ZCE_Timer_Wheel: public zce::Timer_Queue_Base
 {
-
 protected:
 
     ///这个只封装链表数据结构，用于在横轴上找一个相同时间上有几个定时器
     ///本质上是一个双向链表，同时也记录头也就是WHEEL的点，这样设计的主要是为了方便删除
     struct ZCE_WHEEL_TIMER_NODE
     {
-
         ///构造函数
         ZCE_WHEEL_TIMER_NODE():
             list_prev_(zce::Timer_Queue_Base::INVALID_TIMER_ID),
@@ -77,10 +74,10 @@ protected:
 protected:
 
     ///默认定时器支持的时间长度MESC,(并不是需要这么多个槽位，内部精度可以自己定义)
-    static const unsigned int DEFAULT_TIMER_LENGTH_MESC   = 72 * 3600 * 1000;
+    static const unsigned int DEFAULT_TIMER_LENGTH_MESC = 72 * 3600 * 1000;
 
     ///最小的周期轮子长度
-    static const unsigned int MIN_TIMER_LENGTH_MESC       = 1 * 3600 * 1000;
+    static const unsigned int MIN_TIMER_LENGTH_MESC = 1 * 3600 * 1000;
 
     ///未来触发的时间ID的数组的初始化大小，
     static const size_t ARRAY_FUTURE_TRIGGER_TIMERID_SIZE = 512;
@@ -99,7 +96,7 @@ public:
                     unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
                     unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                     TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                    bool dynamic_expand_node = true );
+                    bool dynamic_expand_node = true);
     ///构造函数
     ZCE_Timer_Wheel();
 
@@ -120,7 +117,7 @@ public:
                    unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                   bool dynamic_expand_node = true );
+                   bool dynamic_expand_node = true);
 
     /*!
     * @brief      设置第一个定时器，接口参考了ACE的设计，这个设计其实算很完整了
@@ -155,7 +152,7 @@ public:
 protected:
 
     ///在触发一次后，要对定时器进行重新计算
-    virtual int reschedule_timer(int timer_id, uint64_t now_trigger_msec) override;
+    virtual int reschedule_timer(int timer_id,uint64_t now_trigger_msec) override;
 
     ///取得第一个元素，也就是，最小的时间
     virtual int get_frist_nodeid(int &first_node_id);
@@ -192,4 +189,3 @@ protected:
 };
 
 #endif //#ifndef ZCE_LIB_TIMER_QUEUE_WHEEL_H_
-

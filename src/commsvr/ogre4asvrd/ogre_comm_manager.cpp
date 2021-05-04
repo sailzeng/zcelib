@@ -17,7 +17,6 @@ Ogre_Comm_Manger::Ogre_Comm_Manger():
 
 Ogre_Comm_Manger::~Ogre_Comm_Manger()
 {
-
 }
 
 //检查一个端口是否安全.然后根据配置进行处理
@@ -28,12 +27,12 @@ int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In &inetadd)
     size_t use_len = 0;
 
     //如果打开了保险检查,检查配置的端口
-    if ( false == inetadd.check_safeport() )
+    if (false == inetadd.check_safeport())
     {
         //如果使用保险打开(TRUE)
         if (ogre_config_->ogre_cfg_data_.ogre_insurance_)
         {
-            ZCE_LOG(RS_ERROR, "Unsafe port [%s],if you need to open this port,please close insurance. \n",
+            ZCE_LOG(RS_ERROR,"Unsafe port [%s],if you need to open this port,please close insurance. \n",
                     inetadd.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
             return SOAR_RET::ERR_OGRE_UNSAFE_PORT_WARN;
         }
@@ -41,7 +40,7 @@ int Ogre_Comm_Manger::check_safe_port(zce::Sockaddr_In &inetadd)
         else
         {
             //给出警告
-            ZCE_LOG(RS_INFO, "Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
+            ZCE_LOG(RS_INFO,"Warn!Warn! Unsafe port [%s] listen.Please notice! \n",
                     inetadd.to_string(ip_addr_str,IP_ADDR_LEN,use_len));
         }
     }
@@ -55,12 +54,12 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
     int ret = 0;
 
     //设置处理的帧的最大长度
-    Ogre4a_App_Frame::set_max_framedata_len(config ->ogre_cfg_data_.max_data_len_);
+    Ogre4a_App_Frame::set_max_framedata_len(config->ogre_cfg_data_.max_data_len_);
 
     //IP限制,
     ret = Ogre_IPRestrict_Mgr::instance()->get_config(config);
 
-    if (0 != ret )
+    if (0 != ret)
     {
         return ret;
     }
@@ -74,7 +73,6 @@ int Ogre_Comm_Manger::get_config(const Ogre_Server_Config *config)
     ogre_config_ = config;
     return 0;
 }
-
 
 //将所有的队列中的数据发送，从SEND管道找到所有的数据去发送,
 //想了想，还是加了一个最多发送的帧的限额
@@ -91,7 +89,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
 
         //
         ret = Soar_MMAP_BusPipe::instance()->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                                           reinterpret_cast< zce::lockfree::dequechunk_node *&>(send_frame));
+                                                           reinterpret_cast<zce::lockfree::dequechunk_node *&>(send_frame));
 
         if (ret != 0)
         {
@@ -103,15 +101,15 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //如果FRAME的长度
         if (send_frame->ogre_frame_len_ > Ogre4a_App_Frame::MAX_OF_OGRE_FRAME_LEN)
         {
-            ZCE_LOG(RS_ALERT, "Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
+            ZCE_LOG(RS_ALERT,"Ogre_Comm_Manger::get_all_senddata_to_write len %u\n",
                     send_frame->ogre_frame_len_);
-            DEBUGDUMP_OGRE_HEAD(send_frame, "Ogre_Comm_Manger::get_all_senddata_to_write", RS_ALERT);
+            DEBUGDUMP_OGRE_HEAD(send_frame,"Ogre_Comm_Manger::get_all_senddata_to_write",RS_ALERT);
             ZCE_ASSERT(false);
             return SOAR_RET::ERR_OGRE_SEND_FRAME_TOO_LEN;
         }
 
         //如果是TCP
-        if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_TCP )
+        if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_TCP)
         {
             ret = Ogre_TCP_Svc_Handler::process_send_data(send_frame);
 
@@ -124,7 +122,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         }
 
         //如果是UDP
-        else if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_UDP )
+        else if (send_frame->ogre_frame_option_ & Ogre4a_App_Frame::OGREDESC_PEER_UDP)
         {
             //不检查错误
             Ogre_UDPSvc_Hdl::send_alldata_to_udp(send_frame);
@@ -133,7 +131,7 @@ int Ogre_Comm_Manger::get_all_senddata_to_write(size_t &procframe)
         //你都不填写，我如何发送？
         else
         {
-            ZCE_LOG(RS_ERROR, "Ogre frame have not send option,Please Check you code.\n");
+            ZCE_LOG(RS_ERROR,"Ogre frame have not send option,Please Check you code.\n");
             Ogre_Buffer_Storage::instance()->free_byte_buffer(send_frame);
         }
     }
@@ -159,7 +157,6 @@ int Ogre_Comm_Manger::init_comm_manger()
             return ret;
         }
     }
-
 
     for (unsigned int i = 0; i <= ogre_config_->ogre_cfg_data_.udp_peer_num_; ++i)
     {
@@ -215,4 +212,3 @@ void Ogre_Comm_Manger::clean_instance()
         instance_ = NULL;
     }
 }
-

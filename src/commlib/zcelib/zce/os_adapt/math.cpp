@@ -1,10 +1,9 @@
-
 #include "zce/predefine.h"
 #include "zce/os_adapt/common.h"
 #include "zce/os_adapt/math.h"
 
 // Euclid's greatest common divisor algorithm.
-uint32_t zce::gcd (uint32_t x, uint32_t y)
+uint32_t zce::gcd(uint32_t x,uint32_t y)
 {
     while (y != 0)
     {
@@ -29,4 +28,3 @@ size_t zce::nearest_prime(const size_t n)
     }
     return test_num;
 }
-

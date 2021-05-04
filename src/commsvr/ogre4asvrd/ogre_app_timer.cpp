@@ -13,15 +13,14 @@ const int Ogre_App_Timer_Handler::OGRE_APP_TIME_ID[] =
     0x102                     //
 };
 
-
 //
 Ogre_App_Timer_Handler::Ogre_App_Timer_Handler()
 {
     //主动重现链接的间隔时间
     const time_t AUTOCONNECT_RETRY_SEC = 5;
-    zce::Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC, 0);
+    zce::Time_Value connect_all_internal(AUTOCONNECT_RETRY_SEC,0);
 
-    add_app_timer(connect_all_internal, &OGRE_APP_TIME_ID[0]);
+    add_app_timer(connect_all_internal,&OGRE_APP_TIME_ID[0]);
 }
 
 Ogre_App_Timer_Handler::~Ogre_App_Timer_Handler()
@@ -29,10 +28,10 @@ Ogre_App_Timer_Handler::~Ogre_App_Timer_Handler()
 }
 
 //
-int Ogre_App_Timer_Handler::timer_timeout(const zce::Time_Value &time_now, const void *arg)
+int Ogre_App_Timer_Handler::timer_timeout(const zce::Time_Value &time_now,const void *arg)
 {
     //等到当前的时间
-    Server_Timer_Base::timer_timeout(time_now, arg);
+    Server_Timer_Base::timer_timeout(time_now,arg);
 
     const int timeid = *(static_cast<const int *>(arg));
 
@@ -47,4 +46,3 @@ int Ogre_App_Timer_Handler::timer_timeout(const zce::Time_Value &time_now, const
 
     return 0;
 }
-

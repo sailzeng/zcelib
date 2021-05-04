@@ -42,15 +42,13 @@ README:
 //为什么数字不直接写 *SERVER_ERROR_CODE_INTERVAL +ID这样的方式，因为那样查询麻烦
 //我们实验过了。
 
-
 class SOAR_RET
 {
 public:
 
     enum
     {
-
-        FAIL_INTERNAL_ERORR  = -1,
+        FAIL_INTERNAL_ERORR = -1,
 
         ERROR_COMMLIB_BEGIN = 5000,
         ERROR_INTERNAL_ERORR = 5001,
@@ -59,7 +57,7 @@ public:
         ERROR_INIT_RECEIVE_PIPE = 5011,
         ERROR_INIT_SEND_PIPE = 5012,
         ERROR_INIT_ERROR_PIPE = 5013,
-        ERROR_PIPE_IS_FULL =  5014,
+        ERROR_PIPE_IS_FULL = 5014,
         ERROR_PIPE_IS_EMPTY = 5015,
         ERROR_GET_CFGFILE_CONFIG_FAIL = 5016,
         ERROR_GET_AUTO_CONN_CONFIG_FAIL = 5017,
@@ -174,7 +172,6 @@ public:
         ERROR_LOLO_SEND_RECV_CONN_NOT_SAME = 5173,                  // lolo收到的数据包服务器连接信息和发送的服务器不一致
         ERROR_COMMLIB_END = 9999,                  // framework错误码结束
 
-
         //ZERG
         ERR_ZERG_BEGIN = 20000,
         ERR_ZERG_FAIL_SOCKET_OP_ERROR = 20001,
@@ -280,16 +277,12 @@ public:
         ERR_PROXY_RECEIVE_ERROR_FRAME = 51003,
         ERR_PROXY_RCVSVC_TYPE_ERROR = 51004,
         ERR_PROXY_END = 51999,
-
-
     };
 
     ///
     static const char *error_string(int error_id);
 };
 
-
 //---------------------------------------------------------------------------------------------
 
 #endif //#ifndef SOARING_LIB_ERROR_CODE_H_
-

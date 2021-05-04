@@ -1,5 +1,3 @@
-
-
 #include "soar/predefine.h"
 #include "soar/zerg/frame_zerg.h"
 #include "soar/svrd/mmap_buspipe.h"
@@ -15,7 +13,6 @@ Soar_MMAP_BusPipe::Soar_MMAP_BusPipe():
 
 Soar_MMAP_BusPipe::~Soar_MMAP_BusPipe()
 {
-
 }
 
 //初始化
@@ -25,13 +22,12 @@ int Soar_MMAP_BusPipe::initialize(soar::SERVICES_INFO &svr_info,
                                   size_t max_frame_len,
                                   bool if_restore)
 {
-
     monitor_ = Soar_Stat_Monitor::instance();
 
     zerg_svr_info_ = svr_info;
 
     char bus_mmap_name[MAX_PATH + 1];
-    get_mmapfile_name(bus_mmap_name, MAX_PATH);
+    get_mmapfile_name(bus_mmap_name,MAX_PATH);
 
     return ZCE_BusPipe_TwoWay::initialize(bus_mmap_name,
                                           size_recv_pipe,
@@ -41,10 +37,10 @@ int Soar_MMAP_BusPipe::initialize(soar::SERVICES_INFO &svr_info,
 }
 
 //根据SVR INFO得到MMAP文件名称
-void Soar_MMAP_BusPipe::get_mmapfile_name(char *mmapfile, size_t buflen)
+void Soar_MMAP_BusPipe::get_mmapfile_name(char *mmapfile,size_t buflen)
 {
-    snprintf(mmapfile, buflen, "./ZERGPIPE.%u.%u.MMAP", 
-             zerg_svr_info_.svc_id_.services_type_, 
+    snprintf(mmapfile,buflen,"./ZERGPIPE.%u.%u.MMAP",
+             zerg_svr_info_.svc_id_.services_type_,
              zerg_svr_info_.svc_id_.services_id_);
 }
 
@@ -83,16 +79,16 @@ int Soar_MMAP_BusPipe::pipe_sendbuf_to_service(uint32_t cmd,
                                                uint32_t user_id,
                                                unsigned int transaction_id,
                                                uint32_t backfill_fsm_id,
-                                               const soar::SERVICES_ID& rcvsvc,
-                                               const soar::SERVICES_ID& proxysvc,
-                                               const soar::SERVICES_ID& sendsvc,
-                                               const unsigned char* buf,
+                                               const soar::SERVICES_ID &rcvsvc,
+                                               const soar::SERVICES_ID &proxysvc,
+                                               const soar::SERVICES_ID &sendsvc,
+                                               const unsigned char *buf,
                                                size_t buf_len,
                                                uint32_t option)
 {
     soar::Zerg_Frame *send_frame = reinterpret_cast<soar::Zerg_Frame *>(send_buffer_);
 
-    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME, option, cmd);
+    send_frame->init_head(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,option,cmd);
     send_frame->user_id_ = user_id;
 
     send_frame->send_service_ = sendsvc;
@@ -103,11 +99,11 @@ int Soar_MMAP_BusPipe::pipe_sendbuf_to_service(uint32_t cmd,
     send_frame->fsm_id_ = transaction_id;
     send_frame->backfill_fsm_id_ = backfill_fsm_id;
 
-    int ret = send_frame->fill_appdata(buf_len, (const char *)buf);
+    int ret = send_frame->fill_appdata(buf_len,(const char *)buf);
 
-    if (ret != 0 )
+    if (ret != 0)
     {
-        ZCE_LOG(RS_ERROR, "[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
+        ZCE_LOG(RS_ERROR,"[framework] [%s]TDR encode fail.ret =%d,Please check your code and buffer len.",
                 __ZCE_FUNC__,
                 ret);
         return ret;
@@ -116,7 +112,6 @@ int Soar_MMAP_BusPipe::pipe_sendbuf_to_service(uint32_t cmd,
     //
     return push_back_sendpipe(send_frame);
 }
-
 
 //从RECV管道读取帧，
 int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame *&proc_frame)
@@ -133,7 +128,6 @@ int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame *&proc_frame)
                                      zerg_svr_info_.business_id_,
                                      proc_frame->command_,
                                      proc_frame->length_);
-
 
         //如果是跟踪命令，把数据包打印出来，会非常耗时，少用
         if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)

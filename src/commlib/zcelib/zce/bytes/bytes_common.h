@@ -42,7 +42,6 @@
 # define ZCE_NTOHLL(x) (x)
 #endif /* end if (ZCE_BYTES_ORDER == ZCE_LITTLE_ENDIAN) */
 
-
 //这样写是为了避免BUS ERROR问题，但我自己也不能100%肯定这个方法能解决BUS ERROR，
 //因为我没有环境进行相关的测试。
 //注意#pragma pack(push, 1) 和__attribute__ ((packed)) 是有区别的，
@@ -108,7 +107,6 @@ struct ZDOUBLE_STRUCT
 } __attribute__((packed));
 #endif
 
-
 ///从一个(char *)指针内读取(也可以用于写入)一个uint16_t,or uint32_t or uint64_t
 
 # define ZBYTE_TO_UINT16(ptr)  ((ZU16_STRUCT *)(ptr))->value_
@@ -129,7 +127,6 @@ struct ZDOUBLE_STRUCT
 # define ZUINT16_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU16_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 # define ZUINT32_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU32_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
 # define ZUINT64_TO_INDEX(ptr,ary_index,wr_data)  (((((ZU64_STRUCT *)(ptr))+(ary_index))->value_) = (wr_data))
-
 
 //FLOAT 和 DOUBLE的处理
 # define ZBYTE_TO_FLOAT(ptr)  ((ZFLOAT_STRUCT *)(ptr))->value_
@@ -288,8 +285,6 @@ struct ZDOUBLE_STRUCT
 #define ZCE_IS_ALIGNED_64(p) (0 == (0x7 & ((const char*)(p) - (const char*)0)))
 #endif
 
-
-
 //在GCC 4.8的处理中，写
 //unsigned int a = *(unsigned int *)(char_ptr);
 //会出现告警 dereferencing type-punned pointer will break strict-aliasing。
@@ -427,4 +422,3 @@ union ZDOUBLE_UNION
     }
 
 #endif
-

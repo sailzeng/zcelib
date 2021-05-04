@@ -3,7 +3,6 @@
 
 namespace zce
 {
-
 /*!
 * @brief
 * @return     int  ==0 表示执行成功
@@ -16,7 +15,6 @@ int backtrace_stack(FILE *stream);
 
 int backtrace_stack(zce::LOG_PRIORITY dbg_lvl,
                     const char *dbg_info);
-
 };
 
 #endif //

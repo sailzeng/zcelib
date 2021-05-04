@@ -21,34 +21,33 @@
 
 //线程的条件变量类,为了方便用了模版类，但请你直接用两个typedef
 template <class MUTEX>
-class ZCE_Thread_Condition  : public ZCE_Condition_Base
+class ZCE_Thread_Condition: public ZCE_Condition_Base
 {
 public:
 
     //构造函数
-    ZCE_Thread_Condition ()
+    ZCE_Thread_Condition()
     {
         int ret = 0;
 
-        ret = zce::pthread_cond_initex(&lock_, false);
+        ret = zce::pthread_cond_initex(&lock_,false);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_initex", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_initex",ret);
             return;
         }
-
     }
 
     //析构函数
-    virtual ~ZCE_Thread_Condition (void)
+    virtual ~ZCE_Thread_Condition(void)
     {
         //销毁条件变量
-        int ret =  zce::pthread_cond_destroy(&lock_);
+        int ret = zce::pthread_cond_destroy(&lock_);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_destroy", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_destroy",ret);
             return;
         }
     }
@@ -56,36 +55,36 @@ public:
     //我根据ZCE_Thread_Light_Mutex，ZCE_Thread_Recursive_Mutex给了特化实现
 
     //等待
-    virtual void wait (MUTEX *external_mutex);
+    virtual void wait(MUTEX *external_mutex);
 
     //绝对时间超时的的等待，超时后解锁
-    virtual bool systime_wait(MUTEX *external_mutex, const zce::Time_Value &abs_time);
+    virtual bool systime_wait(MUTEX *external_mutex,const zce::Time_Value &abs_time);
 
     //相对时间的超时锁定等待，超时后，解锁
-    virtual bool duration_wait(MUTEX *external_mutex, const zce::Time_Value &relative_time);
+    virtual bool duration_wait(MUTEX *external_mutex,const zce::Time_Value &relative_time);
 
     // 给一个等待线程发送信号 Signal one waiting thread.
-    virtual void signal (void)
+    virtual void signal(void)
     {
         //
         int ret = zce::pthread_cond_signal(&lock_);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_signal", ret);
-            return ;
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_signal",ret);
+            return;
         }
     }
 
     ///给所有的等待线程广播信号 Signal *all* waiting threads.
-    virtual void broadcast (void)
+    virtual void broadcast(void)
     {
         //
         int ret = zce::pthread_cond_broadcast(&lock_);
 
         if (0 != ret)
         {
-            ZCE_TRACE_FAIL_RETURN(RS_ERROR, "zce::pthread_cond_broadcast", ret);
+            ZCE_TRACE_FAIL_RETURN(RS_ERROR,"zce::pthread_cond_broadcast",ret);
             return;
         }
     }
@@ -94,7 +93,6 @@ protected:
 
     ///条件变量对象
     pthread_cond_t    lock_;
-
 };
 
 //你可以直接用这两个特化的类
@@ -105,4 +103,3 @@ typedef ZCE_Thread_Condition<ZCE_Thread_Light_Mutex>        ZCE_Thread_Condition
 typedef ZCE_Thread_Condition<ZCE_Thread_Recursive_Mutex>    ZCE_Thread_Condition_Recursive_Mutex;
 
 #endif //ZCE_LIB_LOCK_THREAD_CONDI_H_
-

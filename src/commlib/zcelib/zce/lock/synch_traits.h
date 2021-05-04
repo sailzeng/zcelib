@@ -58,4 +58,3 @@ public:
 };
 
 #endif //ZCE_LIB_LOCK_SYNCH_TRAITS_H_
-

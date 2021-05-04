@@ -36,7 +36,6 @@
 
 namespace zce
 {
-
 //===========================================================================================
 /*!
 * @brief      状态统计的方式，比如5分钟记录一次的方式，一个小时记录的方式等
@@ -60,7 +59,6 @@ enum class STATUS_STATICS
     ABSOLUTE_VALUE = 11,
 
     //原来还有一种每次启动时，数值是否清空的选项，算了，没必要保留了
-
 };
 
 //保证数据文件的一致性
@@ -92,8 +90,6 @@ public:
     uint32_t              classify_id_ = 0;
     ///子分类ID，这个也是可以变化的，
     uint32_t              subclassing_id_ = 0;
-
-
 };
 
 //===========================================================================================
@@ -112,7 +108,6 @@ public:
             + static_cast<size_t>(stat_item.subclassing_id_);
     }
 };
-
 
 //===========================================================================================
 /*!
@@ -167,16 +162,12 @@ public:
 
     //计数器名称
     char                      item_name_[MAX_COUNTER_NAME_LEN + 1];
-
 };
-
-
 
 //用于帮助你定义 ZCE_STATUS_ITEM_WITHNAME数组
 #ifndef DEF_ZCE_STATUS_ITEM
 #define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) zce::STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
 #endif
-
 
 //===========================================================================================
 
@@ -197,13 +188,11 @@ struct ZCE_STATUS_HEAD
 
     //激活时间长度，目前没有记录
     uint64_t active_time_;
-
 };
 
 #pragma pack()
 
 //===========================================================================================
-
 
 /*!
 * @brief      使用Posix MMAP,记录保存服务器的一些计数器,状态,
@@ -212,7 +201,6 @@ struct ZCE_STATUS_HEAD
 */
 class Server_Status: public zce::NON_Copyable
 {
-
 protected:
 
     ///存放统计数据的共享内存数组，
@@ -235,7 +223,6 @@ public:
     virtual ~Server_Status();
 
 protected:
-
 
     /*!
     * @brief      初始化的方法,通用的底层，
@@ -263,7 +250,6 @@ protected:
 
 public:
 
-
     /*!
     * @brief      根据一个已经存在的文件进行初始化,用于恢复数据区,文件必须已经存在，
     *             一般查询状态工具使用这个函数。
@@ -273,7 +259,6 @@ public:
     */
     int initialize(const char *stat_filename,
                    bool multi_thread);
-
 
     /*!
     * @brief      创建一个已经存在的文件进行初始化,用于恢复数据区,如果文件必须已经存在，会重新创建
@@ -299,14 +284,12 @@ public:
     void add_status_item(size_t num_stat_item,
                          const STATUS_ITEM_WITHNAME item_ary[]);
 
-
     ///监控项是否已经存在
     bool is_exist_stat_id(unsigned int stat_id,
                           STATUS_ITEM_WITHNAME *status_item_withname) const;
 
     ///初始化以后，修改是否需要多线程保护
     void multi_thread_guard(bool multi_thread);
-
 
     /*!
     * @brief      使用统计ID和分类ID作为key,对统计值增加1
@@ -321,7 +304,6 @@ public:
     {
         return increase_by_statid(statics_id,classify_id,subclassing_id,1);
     }
-
 
     /*!
     * @brief      使用统计ID和分类ID作为key,绝对值修改监控统计项目
@@ -348,10 +330,6 @@ public:
                            uint32_t classify_id,
                            uint32_t subclassing_id,
                            int64_t incre_value);
-
-
-
-
 
     /*!
     * @brief      根据统计ID和分类ID作为key，得到统计数值
@@ -425,23 +403,23 @@ protected:
 protected:
 
     //多态的锁,
-    ZCE_Lock_Base            *stat_lock_;
+    ZCE_Lock_Base *stat_lock_;
 
     //MMAP内存影射的数据文件
     ZCE_ShareMem_Posix        stat_file_;
 
     //内存文件头
-    ZCE_STATUS_HEAD          *stat_file_head_;
+    ZCE_STATUS_HEAD *stat_file_head_;
 
     //mandy和sandy是原来代码中间为了区分用数组定位，hash定位两个数据区的东东，
     //后来代码全部改为了用hansh定位，不好意思，两个小MM，怪蜀黍就是步放过你们，
     //http://t.qq.com/angelbaby22
 
     // 存放状态计数器的数组
-    ARRYA_OF_SHM_STATUS      *status_stat_sandy_;
+    ARRYA_OF_SHM_STATUS *status_stat_sandy_;
 
     //状态计数器的一份拷贝(备份)，数据放在共享内存中，我们可以用考虑用mandy读取数据，所以可以讲每个
-    ARRYA_OF_SHM_STATUS      *status_copy_mandy_;
+    ARRYA_OF_SHM_STATUS *status_copy_mandy_;
 
     //记录配置的的统计数据SET，用于记录配置的统计项目，也用于防止重复插入和dump 输出时有名称信息
     STATUS_WITHNAME_MAP       conf_stat_map_;
@@ -460,6 +438,4 @@ protected:
     //单子实例
     static Server_Status *instance_;
 };
-
 }
-

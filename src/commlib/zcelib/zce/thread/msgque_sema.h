@@ -15,7 +15,6 @@
 *
 */
 
-
 #ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
 #define ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
 
@@ -27,7 +26,6 @@
 #include "zce/lock/synch_traits.h"
 #include "zce/lock/thread_semaphore.h"
 
-
 /*!
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
 *
@@ -35,10 +33,9 @@
 * @tparam     _container_type  消息队列内部容器类型
 */
 template < typename _value_type,
-           typename _container_type >
-class ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, _container_type> : public zce::NON_Copyable
+    typename _container_type >
+    class ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,_container_type>: public zce::NON_Copyable
 {
-
 public:
 
     //
@@ -99,7 +96,7 @@ public:
 
     //放入一个数据，进行超时等待
     int enqueue(const _value_type &value_data,
-                const zce::Time_Value  &wait_time )
+                const zce::Time_Value &wait_time)
     {
         bool bret = false;
         bret = sem_full_.duration_lock(wait_time);
@@ -149,7 +146,7 @@ public:
 
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(_value_type &value_data,
-                const zce::Time_Value  &wait_time )
+                const zce::Time_Value &wait_time)
     {
         bool bret = false;
         bret = sem_empty_.duration_lock(wait_time);
@@ -237,9 +234,8 @@ protected:
     //取出一个数据，根据参数确定是否等待一个相对时间
     int dequeue(_value_type &value_data,
                 bool if_wait_timeout,
-                const zce::Time_Value  &wait_time )
+                const zce::Time_Value &wait_time)
     {
-
         //进行超时等待
         if (if_wait_timeout)
         {
@@ -289,9 +285,7 @@ protected:
 
     //容器类型，可以是list,dequeue,
     _container_type                                message_queue_;
-
 };
-
 
 /*!
 * @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
@@ -300,12 +294,12 @@ protected:
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class ZCE_Message_Queue_List <ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::list<_value_type> >
+class ZCE_Message_Queue_List <ZCE_MT_SYNCH,_value_type>: public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::list<_value_type> >
 {
 public:
     //
     explicit ZCE_Message_Queue_List(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::list<_value_type> >(queue_max_size)
+        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::list<_value_type> >(queue_max_size)
     {
     }
 
@@ -321,12 +315,12 @@ public:
 * note       封装的主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class ZCE_Message_Queue_Deque <ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::deque<_value_type> >
+class ZCE_Message_Queue_Deque <ZCE_MT_SYNCH,_value_type>: public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::deque<_value_type> >
 {
 public:
     //
     explicit ZCE_Message_Queue_Deque(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, std::deque<_value_type> >(queue_max_size)
+        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::deque<_value_type> >(queue_max_size)
     {
     }
 
@@ -335,9 +329,6 @@ public:
     }
 };
 
-
-
-
 /*!
 * @brief      内部用circular_buffer实现的消息队列，性能非常好,边界保护用信号灯，的消息队列，
 *             但空间比较费
@@ -345,21 +336,19 @@ public:
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <typename _value_type >
-class ZCE_Message_Queue_Rings<ZCE_MT_SYNCH, _value_type>  : public ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, zce::lordrings<_value_type> >
+class ZCE_Message_Queue_Rings<ZCE_MT_SYNCH,_value_type>: public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,zce::lordrings<_value_type> >
 {
 public:
     //
     explicit ZCE_Message_Queue_Rings(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, zce::lordrings<_value_type> >(queue_max_size)
+        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,zce::lordrings<_value_type> >(queue_max_size)
     {
-        ZCE_Message_Queue<ZCE_MT_SYNCH, _value_type, zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
     ~ZCE_Message_Queue_Rings()
     {
     }
-
 };
 
 #endif //#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
-

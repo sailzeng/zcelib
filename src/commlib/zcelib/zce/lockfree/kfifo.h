@@ -15,22 +15,15 @@
 *
 */
 
-
-
-
 #ifndef ZCE_LIB_LOCKFREE_DEQUE_H_
 #define ZCE_LIB_LOCKFREE_DEQUE_H_
 
 #include "zce/shm_container/common.h"
 
-
 namespace zce
 {
-
 namespace lockfree
 {
-
-
 /*!
 @brief      可以放如deque的node结构，变长，前面4个字节表示长度，
             其实只需你的数据前面4个字节表示长度，强转了也可以使用
@@ -39,7 +32,6 @@ namespace lockfree
 */
 class dequechunk_node
 {
-
 public:
 
     /*!
@@ -48,7 +40,7 @@ public:
     @param      size_t    new的默认参数
     @param      nodelen   node节点的长度
     */
-    void *operator new (size_t, size_t nodelen);
+    void *operator new (size_t,size_t nodelen);
 
     //养成好习惯,写new,就写delete.
     //void operator delete(void *ptrframe, size_t);
@@ -56,21 +48,20 @@ public:
 
 public:
     ///
-    static void fillin(dequechunk_node *, size_t, char *);
+    static void fillin(dequechunk_node *,size_t,char *);
 
 public:
 
     ///最小的CHUNK NODE长度，4+1
     static const size_t MIN_SIZE_DEQUE_CHUNK_NODE = 5;
     ///头部的长度，
-    static const size_t DEQUECHUNK_NODE_HEAD_LEN  = 4;
+    static const size_t DEQUECHUNK_NODE_HEAD_LEN = 4;
     // 早年长度是unsigned ，一次重构我改成了size_t,但忘记了很多地方
     // 结构用的是固定长度，会强转为dequechunk_node，2了。
 
     /// 整个Node的长度,包括size_of_node_ + chunkdata,
     /// 这里使用size_t,long在64位下会有问题
     uint32_t    size_of_node_;
-
 
 #if defined(ZCE_OS_WINDOWS)
 #pragma warning ( disable : 4200)
@@ -81,10 +72,6 @@ public:
 #pragma warning ( default : 4200)
 #endif
 };
-
-
-
-
 
 /*!
 @brief      队列的头部数据，初始化的放在共享内存的最开始部分，用于记录队列
@@ -124,14 +111,12 @@ protected:
     ///node的最大长度
     size_t               max_len_node_;
 
-
     ///两个关键内部指针,避免编译器优化
     ///环形队列开始的地方，这个地方必现是机器字长
     volatile size_t      deque_begin_;
     ///环行队列结束的地方，这个地方必现是机器字长
     volatile size_t      deque_end_;
 };
-
 
 /*!
 @brief      如果1个读,1个写不用加锁,因为用了些技巧,中间有一个空闲区,读只使用pend指针,写只使用pstart指针,
@@ -140,14 +125,12 @@ protected:
             不是容器模版,是一个先进，先出的存放任意大小的数据快的队列
             如果非要容器队列,用smem_list自己解决,很容易
 */
-class shm_dequechunk : public _shm_memory_base
+class shm_dequechunk: public _shm_memory_base
 {
-
-
 protected:
 
     ///只定义不实现
-    const shm_dequechunk &operator=(const shm_dequechunk & );
+    const shm_dequechunk &operator=(const shm_dequechunk &);
 
     /*!
     @brief      得到两个关键指针的快照，用于判定队列里面的数据还有多少，是否为满或者空
@@ -158,7 +141,7 @@ protected:
     @param      pstart  返回的循环队列起始位置
     @param      pend    返回的循环队列结束位置
     */
-    void snap_getpoint(size_t &pstart, size_t &pend);
+    void snap_getpoint(size_t &pstart,size_t &pend);
 
     ///构造函数，用protected保护，避免你用了
 protected:
@@ -169,14 +152,12 @@ public:
 
 public:
 
-
     /*!
     @brief      得到要分配的空间的大小，
     @return     size_t         实际所需的空间长度，会大于你的长度，
     @param      size_of_deque  你所必须的deque长度,你按这个大小申请内存
     */
     static size_t getallocsize(const size_t size_of_deque);
-
 
     /*!
     @brief      根据参数初始化
@@ -191,10 +172,7 @@ public:
                                       size_t max_len_node,
                                       char *pmmap,
                                       bool if_restore = false
-                                     );
-
-
-
+    );
 
     /*!
     @brief      销毁初始化 initialize 得到的指针
@@ -211,8 +189,6 @@ public:
     @param      node
     */
     bool push_end(const dequechunk_node *node);
-
-
 
     /*!
     @brief      将队列一个NODE从队首部取出,要求node!=NULL,已经分配好了数据区
@@ -282,17 +258,14 @@ protected:
 protected:
 
     ///内存的头部
-    _shm_dequechunk_head     *dequechunk_head_;
+    _shm_dequechunk_head *dequechunk_head_;
 
     ///数据区的头指针,方便计算
-    char                     *dequechunk_database_;
+    char *dequechunk_database_;
 
     ///如果需要读取node的地址（不取出数据），那么有种特殊情况，折行要考虑
-    dequechunk_node          *line_wrap_nodeptr_;
+    dequechunk_node *line_wrap_nodeptr_;
 };
-
-
-
 
 //取队列头的buffer长度,你必须在确认pipe里面有数据才能调用这个函数，否则后果自负。
 //因为这个函数的使用语境大部分是empty之后，
@@ -304,19 +277,19 @@ inline size_t shm_dequechunk::get_front_len()
     char *tmp2 = reinterpret_cast<char *>(&tmplen);
 
     //如果管道的长度也绕圈，采用野蛮的法子得到长度
-    if ( tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_ )
+    if (tmp1 + dequechunk_node::DEQUECHUNK_NODE_HEAD_LEN > dequechunk_database_ + dequechunk_head_->size_of_deque_)
     {
         //一个个字节读取长度
-        for (size_t i = 0; i < sizeof (uint32_t); ++i)
+        for (size_t i = 0; i < sizeof(uint32_t); ++i)
         {
-            if ( tmp1 >= dequechunk_database_ + dequechunk_head_->size_of_deque_ )
+            if (tmp1 >= dequechunk_database_ + dequechunk_head_->size_of_deque_)
             {
                 tmp1 = dequechunk_database_;
             }
 
             *tmp2 = *tmp1;
-            ++tmp1 ;
-            ++tmp2 ;
+            ++tmp1;
+            ++tmp2;
         }
     }
     //
@@ -327,13 +300,7 @@ inline size_t shm_dequechunk::get_front_len()
 
     return tmplen;
 }
-
 };
-
 };
 
 #endif //ZCE_LIB_LOCKFREE_DEQUE_H_
-
-
-
-

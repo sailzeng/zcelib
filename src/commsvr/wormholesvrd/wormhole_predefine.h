@@ -57,9 +57,4 @@
 #include <soar/stat/monitor.h>
 #include <soar/svrd/timer_base.h>
 
-
-
-
-
 #endif //_WORMHOLE_SERVER_PRE_DEFINE_H_
-

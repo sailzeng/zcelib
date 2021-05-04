@@ -1,4 +1,3 @@
-
 #ifndef ZERG_COMMUNICATION_MANAGER_H_
 #define ZERG_COMMUNICATION_MANAGER_H_
 
@@ -22,7 +21,6 @@ class  Zerg_Comm_Manager
 ****************************************************************************************************/
 class Zerg_Comm_Manager
 {
-
     //
     typedef std::vector<TCP_Accept_Handler *> TCPACCEPT_HANDLER_LIST;
     //
@@ -35,7 +33,6 @@ protected:
     ~Zerg_Comm_Manager();
 
 public:
-
 
     /*!
     * @brief      初始化,从配置文件读取配置
@@ -64,7 +61,6 @@ public:
     */
     int check_safeport(const zce::Sockaddr_In &inetadd);
 
-
     /*!
     * @brief      取得发送数据进行发送
     * @return     int
@@ -72,7 +68,7 @@ public:
     * @param      proc_frame_num   实际处理的数量
     * @note
     */
-    int popall_sendpipe_write(size_t want_send_frame, size_t &proc_frame_num);
+    int popall_sendpipe_write(size_t want_send_frame,size_t &proc_frame_num);
 
     //
     void pushback_recvpipe(soar::Zerg_Frame *recv_frame);
@@ -100,8 +96,7 @@ protected:
 
 protected:
     //单子实例
-    static Zerg_Comm_Manager  *instance_;
-
+    static Zerg_Comm_Manager *instance_;
 
 protected:
 
@@ -109,7 +104,6 @@ protected:
     TCPACCEPT_HANDLER_LIST zerg_acceptor_;
     ///UPD的HANDLER数组
     UDPSVC_HANDLER_LIST zerg_updsvc_;
-
 
     ///对于错误的数据,尝试发送的次数,只是了保证一定的网络瞬断
     unsigned int error_try_num_;
@@ -126,8 +120,6 @@ protected:
     ///统计，使用单子类的指针，保留它仅仅为了加速
     Soar_Stat_Monitor *server_status_;
 
-
-
     ///计数起始时间
     unsigned int count_start_time_;
     ///协议包发送计数器
@@ -137,7 +129,4 @@ protected:
     const Zerg_Server_Config *zerg_config_;
 };
 
-
-
 #endif //_ZERG_COMMUNICATION_MANAGER_H_
-

@@ -17,10 +17,6 @@
 
 class ZCE_Reactor;
 
-
-
-
-
 /*!
 * @brief      IO反应器所使用的事件句柄，当IO事件触发后，相应的函数
 *             被调用
@@ -71,7 +67,7 @@ public:
     * @brief      取回对应的ZCE_HANDLE 句柄
     * @return     ZCE_HANDLE ZCE_Event_Handler 对应的ZCE_HANDLE 句柄
     */
-    virtual ZCE_HANDLE get_handle (void) const = 0;
+    virtual ZCE_HANDLE get_handle(void) const = 0;
 
     /*!
     * @brief      读取事件触发调用函数，用于读取数据，accept成功，（connect失败）处理，
@@ -80,13 +76,13 @@ public:
     *             可以直接调用handle_close，而这两种方式并不兼容，而且直接调用可能更加清晰一下，我个
     *             不建议使用这个特性，保留其主要是为了和ACE兼容
     */
-    virtual int handle_input ();
+    virtual int handle_input();
 
     /*!
     * @brief      写入事件触发调用函数，用于写数据，connect成功，
     * @return     int int 返回0表示句柄处理正常，return -1后，反应器会主动handle_close，帮助结束句柄
     */
-    virtual int handle_output ();
+    virtual int handle_output();
 
     /*!
     * @brief      调用异常，return -1表示调用handle_close
@@ -98,7 +94,7 @@ public:
     * @brief      句柄关闭处理函数，基类函数调用了remove
     * @return     int
     */
-    virtual int handle_close ();
+    virtual int handle_close();
 
     /*!
     * @brief      取得当前的标志位
@@ -128,13 +124,13 @@ public:
     * @brief      设置反应器
     * @param      reactor
     */
-    virtual void reactor (ZCE_Reactor *reactor);
+    virtual void reactor(ZCE_Reactor *reactor);
 
     /*!
     * @brief      取得自己所属的反应器
     * @return     ZCE_Reactor*
     */
-    virtual ZCE_Reactor *reactor (void) const;
+    virtual ZCE_Reactor *reactor(void) const;
 
     //超时处理，最后考虑再三，没有在反应器里面集成定时器的处理
     //virtual int timer_timeout (const zce::Time_Value &tv, const void *arg = 0);
@@ -142,7 +138,7 @@ public:
 protected:
 
     ///反应器
-    ZCE_Reactor       *zce_reactor_;
+    ZCE_Reactor *zce_reactor_;
 
     ///这个句柄对应要处理的事件MASK
     int                event_mask_;
@@ -172,4 +168,3 @@ inline void ZCE_Event_Handler::disable_mask(int dis_mask)
 }
 
 #endif //ZCE_LIB_EVENT_HANDLE_BASE_H_
-

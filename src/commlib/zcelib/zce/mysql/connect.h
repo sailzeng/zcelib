@@ -23,9 +23,8 @@
 /*!
 * @brief      MYSQL的连接器
 */
-class ZCE_Mysql_Connect : public zce::NON_Copyable
+class ZCE_Mysql_Connect: public zce::NON_Copyable
 {
-
 public:
     /*!
     * @brief      构造函数
@@ -79,7 +78,7 @@ public:
     * @param      optfile
     * @param      group
     */
-    int connect_by_optionfile(const char *optfile, const char *group);
+    int connect_by_optionfile(const char *optfile,const char *group);
 
     /*!
     * @brief      断开数据服务器
@@ -241,4 +240,3 @@ inline unsigned int ZCE_Mysql_Connect::get_error_no()
 #endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_DB_CONNECT_H_
-

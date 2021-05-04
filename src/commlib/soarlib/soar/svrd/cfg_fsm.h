@@ -1,16 +1,11 @@
-
 #ifndef SOARING_LIB_SERVER_CONFIG_TRANS_H_
 #define SOARING_LIB_SERVER_CONFIG_TRANS_H_
 
 #include "soar/zerg/services_info.h"
 #include "soar/svrd/cfg_base.h"
 
-
-
 struct FRAMEWORK_CONFIG
 {
-
-
     struct TaskInfo
     {
     public: /* members */
@@ -43,18 +38,15 @@ struct FRAMEWORK_CONFIG
 
 struct SVCID_CONFIG
 {
-
 };
-
 
 /*!
 * @brief 框架业务服务器的配置
 *
 * @note
 */
-class Server_Config_FSM : public Server_Config_Base
+class Server_Config_FSM: public Server_Config_Base
 {
-
 protected:
     //构造函数
     Server_Config_FSM();
@@ -67,7 +59,6 @@ public:
 
 protected:
 
-
     /// 使用帮助
     virtual int usage(const char *program_name);
 
@@ -78,8 +69,6 @@ public:
 
     ///
     ZCE_Conf_PropertyTree framework_ptree_;
-
 };
 
 #endif //SOARING_LIB_SERVER_CONFIG_TRANS_H_
-

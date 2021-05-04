@@ -1,5 +1,3 @@
-
-
 #include "zce/predefine.h"
 #include "zce/lockfree/kfifo.h"
 #include "zce/os_adapt/file.h"
@@ -7,7 +5,6 @@
 #include "zce/logger/logging.h"
 #include "zce/bus/mmap_pipe.h"
 #include "zce/bus/twoway_pipe.h"
-
 
 ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::two_way_instance_ = NULL;
 
@@ -25,10 +22,6 @@ ZCE_BusPipe_TwoWay::ZCE_BusPipe_TwoWay()
 ZCE_BusPipe_TwoWay::~ZCE_BusPipe_TwoWay()
 {
 }
-
-
-
-
 
 int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
                                    size_t size_recv_pipe,
@@ -54,8 +47,6 @@ int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
 
     return 0;
 }
-
-
 
 //得到唯一的单子实例
 ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::instance()
@@ -87,6 +78,3 @@ void ZCE_BusPipe_TwoWay::clean_instance()
     two_way_instance_ = NULL;
     return;
 }
-
-
-

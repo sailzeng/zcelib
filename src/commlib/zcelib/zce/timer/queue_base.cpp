@@ -9,7 +9,6 @@
 
 namespace zce
 {
-
 Timer_Queue_Base *Timer_Queue_Base::instance_ = NULL;
 /******************************************************************************************
 ZCE_Timer_Queue ，定时器的基类
@@ -46,7 +45,6 @@ int Timer_Queue_Base::initialize(size_t num_timer_node,
                                  TRIGGER_MODE trigger_mode,
                                  bool dynamic_expand_node)
 {
-
     //时间精度问题
     timer_precision_mesc_ = timer_precision_mesc;
     //目前的NODE数量还是0
@@ -86,7 +84,6 @@ int Timer_Queue_Base::initialize(size_t num_timer_node,
 
     return 0;
 }
-
 
 //关闭
 int Timer_Queue_Base::close()
@@ -435,5 +432,4 @@ void Timer_Queue_Base::clean_instance()
     instance_ = NULL;
     return;
 }
-
 }

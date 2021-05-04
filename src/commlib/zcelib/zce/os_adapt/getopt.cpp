@@ -14,7 +14,7 @@ int     optopt = '?';
 /* argument associated with option */
 const char *optarg = NULL;
 /* reset getopt */
-int     optreset = 0 ;
+int     optreset = 0;
 
 #define PRINT_ERROR     ((opterr) && (*options != ':'))
 
@@ -32,12 +32,12 @@ int     optreset = 0 ;
 
 #define EMSG            ""
 
-static int getopt_internal(int, char *const *, const char *,
-                           const struct option *, int *, int);
-static int parse_long_options(char *const *, const char *,
-                              const struct option *, int *, int);
+static int getopt_internal(int,char *const *,const char *,
+                           const struct option *,int *,int);
+static int parse_long_options(char *const *,const char *,
+                              const struct option *,int *,int);
 
-static void permute_args(int, int, int, char *const *);
+static void permute_args(int,int,int,char *const *);
 
 static const char *place = EMSG; /* option letter processing */
 
@@ -62,13 +62,13 @@ static void permute_args(int panonopt_start,
                          int opt_end,
                          char *const *nargv)
 {
-    int cstart, cyclelen, i, j, ncycle, nnonopts, nopts, pos;
+    int cstart,cyclelen,i,j,ncycle,nnonopts,nopts,pos;
     char *swap;
 
     // compute lengths of blocks and number and size of cycles
     nnonopts = panonopt_end - panonopt_start;
     nopts = opt_end - panonopt_end;
-    ncycle = zce::gcd(nnonopts, nopts);
+    ncycle = zce::gcd(nnonopts,nopts);
     cyclelen = (opt_end - panonopt_start) / ncycle;
 
     for (i = 0; i < ncycle; i++)
@@ -89,7 +89,7 @@ static void permute_args(int panonopt_start,
 
             swap = nargv[pos];
             // LINTED const cast
-            ((char **) nargv)[pos] = nargv[cstart];
+            ((char **)nargv)[pos] = nargv[cstart];
             // LINTED const cast
             ((char **)nargv)[cstart] = swap;
         }
@@ -106,16 +106,16 @@ static int parse_long_options(char *const *nargv,
                               int *idx,
                               int short_too)
 {
-    const char *current_argv, *has_equal;
+    const char *current_argv,*has_equal;
     size_t current_argv_len;
-    int i, match;
+    int i,match;
 
     current_argv = place;
     match = -1;
 
     optind++;
 
-    if ((has_equal = strchr(current_argv, '=')) != NULL)
+    if ((has_equal = strchr(current_argv,'=')) != NULL)
     {
         /* argument found (--option=arg) */
         current_argv_len = has_equal - current_argv;
@@ -129,8 +129,8 @@ static int parse_long_options(char *const *nargv,
     for (i = 0; long_options[i].name; i++)
     {
         /* find matching long option */
-        if (strncmp(current_argv, long_options[i].name,
-                    current_argv_len))
+        if (strncmp(current_argv,long_options[i].name,
+            current_argv_len))
         {
             continue;
         }
@@ -160,7 +160,7 @@ static int parse_long_options(char *const *nargv,
             //* ambiguous abbreviation */
             if (PRINT_ERROR)
             {
-                fprintf(stderr, ambig, (int)current_argv_len,  current_argv);
+                fprintf(stderr,ambig,(int)current_argv_len,current_argv);
             }
 
             optopt = 0;
@@ -176,7 +176,7 @@ static int parse_long_options(char *const *nargv,
         {
             if (PRINT_ERROR)
             {
-                fprintf(stderr, noarg, (int)current_argv_len,  current_argv);
+                fprintf(stderr,noarg,(int)current_argv_len,current_argv);
             }
 
             //XXX: GNU sets optopt to val regardless of flag
@@ -214,7 +214,7 @@ static int parse_long_options(char *const *nargv,
             //should be generated.
             if (PRINT_ERROR)
             {
-                fprintf(stderr, recargstring, current_argv);
+                fprintf(stderr,recargstring,current_argv);
             }
 
             //XXX: GNU sets optopt to val regardless of flag
@@ -242,7 +242,7 @@ static int parse_long_options(char *const *nargv,
 
         if (PRINT_ERROR)
         {
-            fprintf(stderr, illoptstring, current_argv);
+            fprintf(stderr,illoptstring,current_argv);
         }
 
         optopt = 0;
@@ -269,7 +269,7 @@ static int parse_long_options(char *const *nargv,
  * getopt_internal --
  *      Parse argc/argv argument vector.  Called by user level routines.
  */
-static int getopt_internal(int nargc, char *
+static int getopt_internal(int nargc,char *
                            const *nargv,
                            const char *options,
                            const struct option *long_options,
@@ -278,7 +278,7 @@ static int getopt_internal(int nargc, char *
 {
     // option letter list index
     const char *oli;
-    int optchar, short_too;
+    int optchar,short_too;
     static int posixly_correct = -1;
 
     if (options == NULL)
@@ -339,8 +339,8 @@ start:
             if (nonopt_end != -1)
             {
                 // do permutation, if we have to
-                permute_args(nonopt_start, nonopt_end,
-                             optind, nargv);
+                permute_args(nonopt_start,nonopt_end,
+                             optind,nargv);
                 optind -= nonopt_end - nonopt_start;
             }
             else if (nonopt_start != -1)
@@ -357,7 +357,7 @@ start:
         }
 
         if (*(place = nargv[optind]) != '-' ||
-            (place[1] == '\0' && strchr(options, '-') == NULL))
+            (place[1] == '\0' && strchr(options,'-') == NULL))
         {
             place = EMSG;           /* found non-option */
 
@@ -387,10 +387,10 @@ start:
             }
             else if (nonopt_end != -1)
             {
-                permute_args(nonopt_start, nonopt_end,
-                             optind, nargv);
+                permute_args(nonopt_start,nonopt_end,
+                             optind,nargv);
                 nonopt_start = optind -
-                               (nonopt_end - nonopt_start);
+                    (nonopt_end - nonopt_start);
                 nonopt_end = -1;
             }
 
@@ -418,8 +418,8 @@ start:
              */
             if (nonopt_end != -1)
             {
-                permute_args(nonopt_start, nonopt_end,
-                             optind, nargv);
+                permute_args(nonopt_start,nonopt_end,
+                             optind,nargv);
                 optind -= nonopt_end - nonopt_start;
             }
 
@@ -443,13 +443,13 @@ start:
         {
             place++;    /* --foo long option */
         }
-        else if (*place != ':' && strchr(options, *place) != NULL)
+        else if (*place != ':' && strchr(options,*place) != NULL)
         {
             short_too = 1;    /* could be short option too */
         }
 
-        optchar = parse_long_options(nargv, options, long_options,
-                                     idx, short_too);
+        optchar = parse_long_options(nargv,options,long_options,
+                                     idx,short_too);
 
         if (optchar != -1)
         {
@@ -458,9 +458,9 @@ start:
         }
     }
 
-    if (((optchar = (int) * place++) == (int)':') ||
+    if (((optchar = (int)*place++) == (int)':') ||
         (optchar == (int)'-' && *place != '\0') ||
-        (oli = strchr(options, optchar)) == NULL)
+        (oli = strchr(options,optchar)) == NULL)
     {
         /*
          * If the user specified "-" and  '-' isn't listed in
@@ -479,7 +479,7 @@ start:
 
         if (PRINT_ERROR)
         {
-            fprintf(stderr, illoptchar, optchar);
+            fprintf(stderr,illoptchar,optchar);
         }
 
         optopt = optchar;
@@ -500,7 +500,7 @@ start:
 
             if (PRINT_ERROR)
             {
-                fprintf(stderr, recargchar, optchar);
+                fprintf(stderr,recargchar,optchar);
             }
 
             optopt = optchar;
@@ -512,8 +512,8 @@ start:
             place = nargv[optind];
         }
 
-        optchar = parse_long_options(nargv, options, long_options,
-                                     idx, 0);
+        optchar = parse_long_options(nargv,options,long_options,
+                                     idx,0);
         place = EMSG;
         return (optchar);
     }
@@ -544,7 +544,7 @@ start:
 
                 if (PRINT_ERROR)
                 {
-                    fprintf(stderr, recargchar, optchar);
+                    fprintf(stderr,recargchar,optchar);
                 }
 
                 optopt = optchar;
@@ -584,7 +584,7 @@ start:
  *
  * [eventually this will replace the BSD getopt]
  */
-int zce::getopt(int nargc, char *const *nargv, const char *options)
+int zce::getopt(int nargc,char *const *nargv,const char *options)
 {
 #if defined (ZCE_OS_WINDOWS)
     /*
@@ -595,11 +595,11 @@ int zce::getopt(int nargc, char *const *nargv, const char *options)
      * before dropping privileges it makes sense to keep things
      * as simple (and bug-free) as possible.
      */
-    return (getopt_internal(nargc, nargv, options, NULL, NULL, 0));
+    return (getopt_internal(nargc,nargv,options,NULL,NULL,0));
 #endif
 
 #if defined (ZCE_OS_LINUX)
-    return ::getopt(nargc, nargv, options);
+    return ::getopt(nargc,nargv,options);
 #endif
 }
 
@@ -616,11 +616,11 @@ zce::getopt_long(int nargc,
 {
 #if defined (ZCE_OS_WINDOWS)
     return (getopt_internal(nargc,
-                            nargv,
-                            options,
-                            long_options,
-                            idx,
-                            FLAG_PERMUTE));
+            nargv,
+            options,
+            long_options,
+            idx,
+            FLAG_PERMUTE));
 #endif
 #if defined (ZCE_OS_LINUX)
     return ::getopt_long(nargc,
@@ -642,14 +642,13 @@ zce::getopt_long_only(int nargc,
                       const struct option *long_options,
                       int *idx)
 {
-
 #if defined (ZCE_OS_WINDOWS)
     return (getopt_internal(nargc,
-                            nargv,
-                            options,
-                            long_options,
-                            idx,
-                            FLAG_PERMUTE | FLAG_LONGONLY));
+            nargv,
+            options,
+            long_options,
+            idx,
+            FLAG_PERMUTE | FLAG_LONGONLY));
 #endif
 #if defined (ZCE_OS_LINUX)
     return ::getopt_long_only(nargc,
@@ -659,4 +658,3 @@ zce::getopt_long_only(int nargc,
                               idx);
 #endif
 }
-

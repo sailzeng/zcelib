@@ -27,12 +27,11 @@
 @brief      读取MYSQL数据库的类,用于操作MySQL DB的访问
             这个类里面包装了connect,command,你可以通过ZCE_Mysql_Result获得结果
 */
-class ZCE_Mysql_Process : zce::NON_Copyable
+class ZCE_Mysql_Process: zce::NON_Copyable
 {
-
 protected:
     //实例子
-    static ZCE_Mysql_Process   *instance_;
+    static ZCE_Mysql_Process *instance_;
 
 public:
 
@@ -115,7 +114,7 @@ public:
                          ZCE_Mysql_Result &dbresult);
 
     ///得到MYSQL定义的错误返回
-    unsigned int get_return_error(char *szerr, size_t buflen);
+    unsigned int get_return_error(char *szerr,size_t buflen);
 
     ///错误语句Str
     const char *get_return_error_str();
@@ -165,4 +164,3 @@ protected:
 #endif //#if defined ZCE_USE_MYSQL
 
 #endif //ZCE_LIB_MYSQL_STMT_RESULT_H_
-

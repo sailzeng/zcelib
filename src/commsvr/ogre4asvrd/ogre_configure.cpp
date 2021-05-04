@@ -1,10 +1,7 @@
-
-
 #include "ogre_predefine.h"
 #include "ogre_configure.h"
 #include "ogre_tcp_ctrl_handler.h"
 #include "ogre_comm_manager.h"
-
 
 //======================================================================================
 
@@ -20,12 +17,12 @@ int TCP_PEER_CONFIG_INFO::from_str(const char *peer_info_str)
     //char pure_str[SVC_INFO_STR_LEN];
     //zce::str_replace(svc_info_str, pure_str," ","");
     char mod_file_name[MAX_PATH];
-    uint32_t u[4] = { 0 };
+    uint32_t u[4] = {0};
     uint16_t port = 0;
     //测试发现其实不需要手动去掉多余空格的干扰，把特殊字符前面也增加%控制就可以了。
     int ret_num = sscanf(peer_info_str,
                          " %u.%u.%u.%u # %hu | %128s",
-                         &u[0], &u[1], &u[2], &u[3],
+                         &u[0],&u[1],&u[2],&u[3],
                          &port,
                          mod_file_name);
     //返回9表示所有数据都读取了
@@ -35,21 +32,17 @@ int TCP_PEER_CONFIG_INFO::from_str(const char *peer_info_str)
     }
 
     uint32_t u32_addr = u[0] << 24 | u[1] << 16 | u[2] << 8 | u[3];
-    peer_socketin_.set(u32_addr, port);
-
+    peer_socketin_.set(u32_addr,port);
 
     module_file_ = mod_file_name;
 
     return 0;
-
 }
-
 
 //======================================================================================
 
 TCP_PEER_MODULE_INFO::TCP_PEER_MODULE_INFO()
 {
-
 }
 
 TCP_PEER_MODULE_INFO::~TCP_PEER_MODULE_INFO()
@@ -63,7 +56,7 @@ int TCP_PEER_MODULE_INFO::open_module()
 
     if (ZCE_SHLIB_INVALID_HANDLE == recv_mod_handler_)
     {
-        ZCE_LOG(RS_ERROR, "Open Module [%s] fail. recv_mod_handler =%u .\n",
+        ZCE_LOG(RS_ERROR,"Open Module [%s] fail. recv_mod_handler =%u .\n",
                 peer_info_.module_file_.c_str(),
                 recv_mod_handler_);
         return SOAR_RET::ERROR_LOAD_DLL_OR_SO_FAIL;
@@ -74,7 +67,7 @@ int TCP_PEER_MODULE_INFO::open_module()
 
     if (NULL == fp_judge_whole_frame_)
     {
-        ZCE_LOG(RS_ERROR, "Open Module [%s|%s] fail. recv_mod_handler =%u .\n",
+        ZCE_LOG(RS_ERROR,"Open Module [%s|%s] fail. recv_mod_handler =%u .\n",
                 peer_info_.module_file_.c_str(),
                 STR_JUDGE_RECV_WHOLEFRAME,
                 recv_mod_handler_);
@@ -103,12 +96,9 @@ Ogre_Server_Config::Ogre_Server_Config()
 {
 }
 
-
 Ogre_Server_Config::~Ogre_Server_Config()
 {
-
 }
-
 
 int Ogre_Server_Config::read_cfgfile()
 {
@@ -124,9 +114,9 @@ int Ogre_Server_Config::read_cfgfile()
     ogre_cfg_file_ = app_run_dir_ + "/cfg/ogre4asvrd.cfg";
 
     ZCE_Conf_PropertyTree pt_tree;
-    ret = ZCE_INI_Implement::read(ogre_cfg_file_.c_str(), &pt_tree);
-    ZCE_LOG(RS_INFO, "zergsvr read config file [%s] ret [%d].",
-            ogre_cfg_file_.c_str(), ret);
+    ret = ZCE_INI_Implement::read(ogre_cfg_file_.c_str(),&pt_tree);
+    ZCE_LOG(RS_INFO,"zergsvr read config file [%s] ret [%d].",
+            ogre_cfg_file_.c_str(),ret);
     if (ret != 0)
     {
         return ret;
@@ -146,7 +136,7 @@ int Ogre_Server_Config::read_cfgfile()
 
     //设置reactor的句柄数量
     max_reactor_hdl_num_ = ogre_cfg_data_.max_accept_svr_ + ogre_cfg_data_.auto_connect_num_ + 64;
-    max_reactor_hdl_num_ = max_reactor_hdl_num_ > 64 ? max_reactor_hdl_num_ : 1024;
+    max_reactor_hdl_num_ = max_reactor_hdl_num_ > 64?max_reactor_hdl_num_:1024;
 
     return 0;
 }
@@ -154,13 +144,12 @@ int Ogre_Server_Config::read_cfgfile()
 ///从配置中读取OGRE的配置
 int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 {
-
     int ret = 0;
     std::string temp_value;
     std::vector <std::string> str_ary;
 
     //最大Accept 数量
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "MAX_FRAMEDATA_LEN",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","MAX_FRAMEDATA_LEN",
                                    ogre_cfg_data_.max_data_len_);
     if (0 != ret || ogre_cfg_data_.max_data_len_ > 8 * 1024 * 1024)
     {
@@ -169,7 +158,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //最大Accept 数量
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "MAX_ACCEPT_SVR",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","MAX_ACCEPT_SVR",
                                    ogre_cfg_data_.max_accept_svr_);
     if (0 != ret || ogre_cfg_data_.max_accept_svr_ < 32)
     {
@@ -177,14 +166,13 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-
     //最小的端口的发送队列长度
     const uint32_t MIN_SEND_DEQUE_SIZE = 4;
     //默认Accept 端口的发送队列长度
     const uint32_t MAX_SEND_DEQUE_SIZE = 512;
 
     //Accept和conect端口的发送队列长度
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "ACPT_SEND_DEQUE_SIZE",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","ACPT_SEND_DEQUE_SIZE",
                                    ogre_cfg_data_.acpt_send_deque_size_);
     if (0 != ret
         || ogre_cfg_data_.acpt_send_deque_size_ < MIN_SEND_DEQUE_SIZE
@@ -193,7 +181,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "CNNT_SEND_DEQUE_SIZE",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","CNNT_SEND_DEQUE_SIZE",
                                    ogre_cfg_data_.cnnt_send_deque_size_);
     if (0 != ret
         || ogre_cfg_data_.cnnt_send_deque_size_ < MIN_SEND_DEQUE_SIZE
@@ -204,7 +192,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //保险
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "ZERG_INSURANCE",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","ZERG_INSURANCE",
                                    ogre_cfg_data_.ogre_insurance_);
     if (0 != ret)
     {
@@ -213,7 +201,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //BACKLOG
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "LISTEN_BACKLOG",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","LISTEN_BACKLOG",
                                    ogre_cfg_data_.accept_backlog_);
     if (0 != ret)
     {
@@ -227,14 +215,14 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
 
     //各种超时处理的时间
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "ACCEPTED_TIMEOUT",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","ACCEPTED_TIMEOUT",
                                    ogre_cfg_data_.accepted_timeout_);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "RECV_TIMEOUT",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","RECV_TIMEOUT",
                                    ogre_cfg_data_.receive_timeout_);
     if (0 != ret)
     {
@@ -242,16 +230,15 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-
     //允许和拒绝IP
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "REJECT_IP",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","REJECT_IP",
                                    ogre_cfg_data_.reject_ip_);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
-    ret = conf_tree->path_get_leaf("OGRE_CFG", "ALLOW_IP",
+    ret = conf_tree->path_get_leaf("OGRE_CFG","ALLOW_IP",
                                    ogre_cfg_data_.allow_ip_);
     if (0 != ret)
     {
@@ -259,9 +246,8 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-
     //读取自动连接的配置
-    ret = conf_tree->path_get_leaf("TCP_ACCEPT", "ACCEPT_PEER_NUM",
+    ret = conf_tree->path_get_leaf("TCP_ACCEPT","ACCEPT_PEER_NUM",
                                    ogre_cfg_data_.auto_connect_num_);
     if (0 != ret || ogre_cfg_data_.auto_connect_num_ > OGRE_CONFIG_DATA::MAX_TCPACCEPT_PEERID_NUM)
     {
@@ -269,7 +255,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
     for (size_t i = 0; i < ogre_cfg_data_.auto_connect_num_; ++i)
     {
-        ret = conf_tree->pathseq_get_leaf("TCP_ACCEPT", "ACCEPT_PEER_INFO_", i + 1, temp_value);
+        ret = conf_tree->pathseq_get_leaf("TCP_ACCEPT","ACCEPT_PEER_INFO_",i + 1,temp_value);
         if (0 != ret)
         {
             SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -282,9 +268,8 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
         }
     }
 
-
     //读取自动连接的配置
-    ret = conf_tree->path_get_leaf("AUTO_CONNECT", "AUTO_CONNECT_NUM",
+    ret = conf_tree->path_get_leaf("AUTO_CONNECT","AUTO_CONNECT_NUM",
                                    ogre_cfg_data_.auto_connect_num_);
     if (0 != ret || ogre_cfg_data_.auto_connect_num_ > OGRE_CONFIG_DATA::MAX_AUTO_CONNECT_PEER_NUM)
     {
@@ -292,7 +277,7 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     }
     for (size_t i = 0; i < ogre_cfg_data_.auto_connect_num_; ++i)
     {
-        ret = conf_tree->pathseq_get_leaf("AUTO_CONNECT", "CNT_PEER_INFO_", i + 1, temp_value);
+        ret = conf_tree->pathseq_get_leaf("AUTO_CONNECT","CNT_PEER_INFO_",i + 1,temp_value);
         if (0 != ret)
         {
             SOAR_CFG_READ_FAIL(RS_ERROR);
@@ -307,4 +292,3 @@ int Ogre_Server_Config::get_ogre_cfg(const ZCE_Conf_PropertyTree *conf_tree)
 
     return 0;
 }
-

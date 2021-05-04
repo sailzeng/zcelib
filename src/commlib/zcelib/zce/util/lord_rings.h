@@ -30,7 +30,6 @@
 
 namespace zce
 {
-
 /*!
 * @tparam    _value_type 数据类型
 * @brief     魔戒的的迭代器，在魔戒类里面有typedef成为iterator，
@@ -45,7 +44,6 @@ protected:
 
     //定义迭代器
     typedef _lordrings_iterator<_value_type > iterator;
-
 
     //迭代器萃取器所有的东东
     typedef ptrdiff_t difference_type;
@@ -68,7 +66,7 @@ public:
                         size_t rings_capacity,
                         _value_type *rings_value_base,
                         size_t serial
-                       ):
+    ):
         rings_start_(rings_start),
         rings_capacity_(rings_capacity),
         rings_value_base_(rings_value_base),
@@ -83,13 +81,13 @@ public:
     ///*提领操作，
     _value_type &operator*() const
     {
-        return *(rings_value_base_ + (rings_start_ +  serial_) % rings_capacity_);
+        return *(rings_value_base_ + (rings_start_ + serial_) % rings_capacity_);
     }
 
     ///->操作
     _value_type *operator->() const
     {
-        return rings_value_base_ + (rings_start_ +  serial_) % rings_capacity_;
+        return rings_value_base_ + (rings_start_ + serial_) % rings_capacity_;
     }
 
     ///前向迭代器
@@ -103,10 +101,9 @@ public:
     iterator operator++(int)
     {
         iterator tmp = *this;
-        ++*this;
+        ++ *this;
         return tmp;
     }
-
 
     ///前向迭代器
     iterator &operator--()
@@ -119,7 +116,7 @@ public:
     iterator operator--(int)
     {
         iterator tmp = *this;
-        --*this;
+        -- *this;
         return tmp;
     }
 
@@ -129,7 +126,7 @@ public:
         if (rings_value_base_ == it.rings_value_base_
             && rings_start_ == it.rings_start_
             && rings_capacity_ == it.rings_capacity_
-            && serial_ == it.serial_ )
+            && serial_ == it.serial_)
         {
             return true;
         }
@@ -155,7 +152,7 @@ protected:
     ///魔戒的容量
     size_t                 rings_capacity_;
     ///数据的指针，
-    _value_type           *rings_value_base_;
+    _value_type *rings_value_base_;
 
     //序列号,迭代器前进，增加的就是这个值
     size_t                 serial_;
@@ -252,7 +249,7 @@ public:
     ///返回空闲空间的大小
     inline size_t freesize() const
     {
-        return cycdeque_capacity_ - cycdeque_size_ ;
+        return cycdeque_capacity_ - cycdeque_size_;
     }
 
     ///返回队列的容量
@@ -265,7 +262,7 @@ public:
     inline bool full() const
     {
         //已经用的空间等于容量
-        if (cycdeque_size_  == cycdeque_capacity_ )
+        if (cycdeque_size_ == cycdeque_capacity_)
         {
             return true;
         }
@@ -293,7 +290,7 @@ public:
         size_t deque_size = size();
 
         //如果原来的尺寸大于新的尺寸，无法扩展
-        if ( deque_size > new_max_size )
+        if (deque_size > new_max_size)
         {
             return false;
         }
@@ -314,7 +311,7 @@ public:
 
         //调整几个内部参数
         cycdeque_start_ = 0;
-        cycdeque_capacity_ = new_max_size ;
+        cycdeque_capacity_ = new_max_size;
         //cycdeque_size_ 不变
 
         value_ptr_ = new_value_ptr;
@@ -323,10 +320,10 @@ public:
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_back(const _value_type &value_data, bool lay_over = false)
+    bool push_back(const _value_type &value_data,bool lay_over = false)
     {
         //如果已经满了
-        if ( full() )
+        if (full())
         {
             //如果不要覆盖，返回错误
             if (lay_over == false)
@@ -337,8 +334,8 @@ public:
             else
             {
                 //将最后一个位置覆盖，并且调整起始和结束位置
-                value_ptr_[ (cycdeque_start_ + cycdeque_size_ ) % cycdeque_capacity_] = value_data;
-                cycdeque_start_ = (cycdeque_start_ + 1 ) % cycdeque_capacity_;
+                value_ptr_[(cycdeque_start_ + cycdeque_size_) % cycdeque_capacity_] = value_data;
+                cycdeque_start_ = (cycdeque_start_ + 1) % cycdeque_capacity_;
 
                 return true;
             }
@@ -346,17 +343,17 @@ public:
 
         //直接放在队尾
 
-        value_ptr_[(cycdeque_start_ + cycdeque_size_ ) % cycdeque_capacity_] = value_data;
+        value_ptr_[(cycdeque_start_ + cycdeque_size_) % cycdeque_capacity_] = value_data;
         ++cycdeque_size_;
 
         return true;
     }
 
     ///将一个数据放入队列的尾部,如果队列已经满了,你可以将lay_over参数置位true,覆盖原有的数据
-    bool push_front(const _value_type &value_data, bool lay_over = false)
+    bool push_front(const _value_type &value_data,bool lay_over = false)
     {
         //如果已经满了
-        if ( full() )
+        if (full())
         {
             //如果不要覆盖，返回错误
             if (lay_over == false)
@@ -367,7 +364,7 @@ public:
             else
             {
                 //将第一个位置调整覆盖，并且调整起始和结束位置
-                cycdeque_start_ = (cycdeque_start_ > 0) ? cycdeque_start_ - 1 : cycdeque_capacity_ - 1;
+                cycdeque_start_ = (cycdeque_start_ > 0)?cycdeque_start_ - 1:cycdeque_capacity_ - 1;
                 value_ptr_[cycdeque_start_] = value_data;
 
                 //覆盖，尺寸也不用调整
@@ -377,7 +374,7 @@ public:
         }
 
         //直接放在队尾
-        cycdeque_start_ = (cycdeque_start_ > 0) ? cycdeque_start_ - 1 : cycdeque_capacity_ - 1;
+        cycdeque_start_ = (cycdeque_start_ > 0)?cycdeque_start_ - 1:cycdeque_capacity_ - 1;
         value_ptr_[cycdeque_start_] = value_data;
 
         ++cycdeque_size_;
@@ -389,13 +386,13 @@ public:
     bool pop_front(_value_type &value_data)
     {
         //如果是空的返回错误
-        if ( empty() )
+        if (empty())
         {
             return false;
         }
 
         value_data = value_ptr_[cycdeque_start_];
-        cycdeque_start_ = (cycdeque_start_ + 1 ) % cycdeque_capacity_;
+        cycdeque_start_ = (cycdeque_start_ + 1) % cycdeque_capacity_;
 
         --cycdeque_size_;
 
@@ -411,7 +408,7 @@ public:
             return false;
         }
 
-        cycdeque_start_ = (cycdeque_start_ + 1 ) % cycdeque_capacity_;
+        cycdeque_start_ = (cycdeque_start_ + 1) % cycdeque_capacity_;
         --cycdeque_size_;
 
         return true;
@@ -421,12 +418,12 @@ public:
     bool pop_back(_value_type &value_data)
     {
         //如果是空的返回错误
-        if ( empty())
+        if (empty())
         {
             return false;
         }
 
-        value_data = value_ptr_[(cycdeque_start_ + cycdeque_size_ ) % cycdeque_capacity_];
+        value_data = value_ptr_[(cycdeque_start_ + cycdeque_size_) % cycdeque_capacity_];
         --cycdeque_size_;
         return true;
     }
@@ -460,13 +457,13 @@ public:
     ///返回start的迭代器，开始就是序列号为0的位置
     iterator begin()
     {
-        return iterator(cycdeque_start_, cycdeque_capacity_, value_ptr_, 0);
+        return iterator(cycdeque_start_,cycdeque_capacity_,value_ptr_,0);
     }
 
     ///返回end的迭代器，开始就是序列号为cycdeque_size_的位置
     iterator end()
     {
-        return iterator(cycdeque_start_, cycdeque_capacity_, value_ptr_, cycdeque_size_);
+        return iterator(cycdeque_start_,cycdeque_capacity_,value_ptr_,cycdeque_size_);
     }
 
 protected:
@@ -479,11 +476,8 @@ protected:
     ///队列的长度，
     size_t                 cycdeque_capacity_;
     ///存放数据的指针
-    _value_type           *value_ptr_;
-
+    _value_type *value_ptr_;
 };
-
 };
 
 #endif //#ifndef ZCE_LIB_BOOST_LORD_RINGS_H_
-

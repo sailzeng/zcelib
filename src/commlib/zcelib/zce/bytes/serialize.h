@@ -14,37 +14,36 @@ template<typename val_type >
 class ZCE_ClassSerialize_WriteHelp
 {
 public:
-    void write_help(ZCE_Serialize_Write *ssave, const val_type &val);
+    void write_help(ZCE_Serialize_Write *ssave,const val_type &val);
 };
 
 template<>
 class ZCE_ClassSerialize_WriteHelp<std::string>
 {
 public:
-    void write_help(ZCE_Serialize_Write *ssave, const std::string &val);
+    void write_help(ZCE_Serialize_Write *ssave,const std::string &val);
 };
 
 template<typename vector_type >
 class ZCE_ClassSerialize_WriteHelp<std::vector<vector_type> >
 {
 public:
-    void write_help(ZCE_Serialize_Write *ssave, const std::vector<vector_type> &val);
+    void write_help(ZCE_Serialize_Write *ssave,const std::vector<vector_type> &val);
 };
 
 template<typename list_type >
 class ZCE_ClassSerialize_WriteHelp<std::list<list_type> >
 {
 public:
-    void write_help(ZCE_Serialize_Write *ssave, const std::list<list_type> &val);
+    void write_help(ZCE_Serialize_Write *ssave,const std::list<list_type> &val);
 };
 
-template<typename key_type, typename data_type >
-class ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >
+template<typename key_type,typename data_type >
+class ZCE_ClassSerialize_WriteHelp<std::map<key_type,data_type> >
 {
 public:
-    void write_help(ZCE_Serialize_Write *ssave, const std::map<key_type, data_type> &val);
+    void write_help(ZCE_Serialize_Write *ssave,const std::map<key_type,data_type> &val);
 };
-
 
 /*!
 * @brief      对数据进行编码处理的类，将数据变成流，
@@ -57,7 +56,7 @@ class ZCE_Serialize_Write
 public:
 
     ///构造函数
-    ZCE_Serialize_Write(char *write_buf, size_t buf_len);
+    ZCE_Serialize_Write(char *write_buf,size_t buf_len);
 
     ~ZCE_Serialize_Write();
 
@@ -90,7 +89,7 @@ public:
 
     ///保存枚举值,利用SFINA的原则，进行重载
     template<typename val_type  >
-    void write(const typename std::enable_if<std::is_enum<val_type>::value, val_type>::type &val)
+    void write(const typename std::enable_if<std::is_enum<val_type>::value,val_type>::type &val)
     {
         return save_enum(val);
     }
@@ -124,13 +123,13 @@ public:
     {
         // consider alignment
         std::size_t count = sizeof(val) / (
-                                static_cast<const char *>(static_cast<const void *>(&val[1]))
-                                - static_cast<const char *>(static_cast<const void *>(&val[0]))
-                            );
-        return write_array(val, count);
+            static_cast<const char *>(static_cast<const void *>(&val[1]))
+            - static_cast<const char *>(static_cast<const void *>(&val[0]))
+            );
+        return write_array(val,count);
     }
     template<typename array_type >
-    void write_array(const array_type *ary, size_t count)
+    void write_array(const array_type *ary,size_t count)
     {
         //其实用下面注释的这个代码会更酷一点，但不知道为啥有告警，放弃，
         //ZCE_ASSERT(count < std::numeric_limits<unsigned int>::max());
@@ -144,7 +143,7 @@ public:
     }
 
     ///特化，对字符串进行加速
-    void write_array(const char *ary, size_t count)
+    void write_array(const char *ary,size_t count)
     {
         ZCE_ASSERT(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
@@ -155,13 +154,13 @@ public:
                 is_good_ = false;
                 return;
             }
-            memcpy(write_pos_, ary, count);
+            memcpy(write_pos_,ary,count);
             write_pos_ += count;
         }
     }
 
     ///字符串特化
-    void write_array(const unsigned char *ary, size_t count)
+    void write_array(const unsigned char *ary,size_t count)
     {
         ZCE_ASSERT(count < 0xFFFFFFFFll);
         this->write_arithmetic(static_cast<unsigned int>(count));
@@ -172,7 +171,7 @@ public:
                 is_good_ = false;
                 return;
             }
-            memcpy(write_pos_, ary, count);
+            memcpy(write_pos_,ary,count);
             write_pos_ += count;
         }
     }
@@ -182,7 +181,7 @@ public:
     typename std::enable_if<std::is_class<val_type>::value >::type write(const val_type &val)
     {
         ZCE_ClassSerialize_WriteHelp<val_type> ssave;
-        ssave.write_help(this, val);
+        ssave.write_help(this,val);
         return;
     }
 
@@ -243,22 +242,22 @@ void ZCE_ClassSerialize_WriteHelp<std::list<list_type> >::write_help(ZCE_Seriali
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
     typename std::list<list_type>::const_iterator iter = val.begin();
-    for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
+    for (size_t i = 0; i < v_size && ssave->is_good(); ++i,++iter)
     {
         ssave->write(*iter);
     }
     return;
 }
 
-template<typename key_type, typename data_type >
-void ZCE_ClassSerialize_WriteHelp<std::map<key_type, data_type> >::write_help(ZCE_Serialize_Write *ssave,
-                                                                              const std::map<key_type, data_type> &val)
+template<typename key_type,typename data_type >
+void ZCE_ClassSerialize_WriteHelp<std::map<key_type,data_type> >::write_help(ZCE_Serialize_Write *ssave,
+                                                                             const std::map<key_type,data_type> &val)
 {
     size_t v_size = val.size();
     ZCE_ASSERT(v_size < 0xFFFFFFFFll);
     ssave->write_arithmetic(static_cast<unsigned int>(v_size));
-    typename std::map<key_type, data_type>::const_iterator iter = val.begin();
-    for (size_t i = 0; i < v_size && ssave->is_good(); ++i, ++iter)
+    typename std::map<key_type,data_type>::const_iterator iter = val.begin();
+    for (size_t i = 0; i < v_size && ssave->is_good(); ++i,++iter)
     {
         ssave->write(iter->first);
         ssave->write(iter->second);
@@ -274,35 +273,35 @@ template<typename val_type >
 class ZCE_ClassSerialize_ReadHelp
 {
 public:
-    void read_help(ZCE_Serialize_Read *sload, val_type &val);
+    void read_help(ZCE_Serialize_Read *sload,val_type &val);
 };
 
 template<>
 class ZCE_ClassSerialize_ReadHelp<std::string>
 {
 public:
-    void read_help(ZCE_Serialize_Read *sload, std::string &val);
+    void read_help(ZCE_Serialize_Read *sload,std::string &val);
 };
 
 template<typename vector_type >
 class ZCE_ClassSerialize_ReadHelp<std::vector<vector_type> >
 {
 public:
-    void read_help(ZCE_Serialize_Read *sload, std::vector<vector_type> &val);
+    void read_help(ZCE_Serialize_Read *sload,std::vector<vector_type> &val);
 };
 
 template<typename list_type >
 class ZCE_ClassSerialize_ReadHelp<std::list<list_type> >
 {
 public:
-    void read_help(ZCE_Serialize_Read *sload, std::list<list_type> &val);
+    void read_help(ZCE_Serialize_Read *sload,std::list<list_type> &val);
 };
 
-template<typename key_type, typename data_type >
-class ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >
+template<typename key_type,typename data_type >
+class ZCE_ClassSerialize_ReadHelp<std::map<key_type,data_type> >
 {
 public:
-    void read_help(ZCE_Serialize_Read *sload, std::map<key_type, data_type> &val);
+    void read_help(ZCE_Serialize_Read *sload,std::map<key_type,data_type> &val);
 };
 
 /*!
@@ -320,7 +319,7 @@ public:
     * @param      read_buf 输入的数据，不会对数据进行改动
     * @param      buf_len  数据的长度
     */
-    ZCE_Serialize_Read(const char *read_buf, size_t buf_len);
+    ZCE_Serialize_Read(const char *read_buf,size_t buf_len);
 
     ///析构函数
     ~ZCE_Serialize_Read();
@@ -392,14 +391,14 @@ public:
     {
         // consider alignment
         std::size_t ary_count = sizeof(val) / (
-                                    static_cast<const char *>(static_cast<const void *>(&val[1]))
-                                    - static_cast<const char *>(static_cast<const void *>(&val[0]))
-                                );
+            static_cast<const char *>(static_cast<const void *>(&val[1]))
+            - static_cast<const char *>(static_cast<const void *>(&val[0]))
+            );
         size_t load_count;
-        return read_array(val, ary_count, load_count);
+        return read_array(val,ary_count,load_count);
     }
     template<typename array_type >
-    void read_array(array_type ary, size_t ary_count, size_t &load_count)
+    void read_array(array_type ary,size_t ary_count,size_t &load_count)
     {
         //读取数组长度
         unsigned int ui_load_count;
@@ -418,7 +417,7 @@ public:
         return;
     }
     ///特化，对字符串进行加速
-    void read_array(char *ary, size_t ary_count, size_t &load_count)
+    void read_array(char *ary,size_t ary_count,size_t &load_count)
     {
         unsigned int ui_load_count;
         this->read_arithmetic(ui_load_count);
@@ -430,12 +429,12 @@ public:
             return;
         }
 
-        memcpy(ary, read_pos_, load_count);
+        memcpy(ary,read_pos_,load_count);
         read_pos_ += load_count;
     }
 
     ///特化
-    void read_array(unsigned char *ary, size_t ary_count, size_t &load_count)
+    void read_array(unsigned char *ary,size_t ary_count,size_t &load_count)
     {
         unsigned int ui_load_count;
         this->read_arithmetic(ui_load_count);
@@ -447,7 +446,7 @@ public:
             return;
         }
 
-        memcpy(ary, read_pos_, load_count);
+        memcpy(ary,read_pos_,load_count);
         read_pos_ += load_count;
     }
 
@@ -456,7 +455,7 @@ public:
     typename std::enable_if<std::is_class<val_type>::value>::type read(val_type &val)
     {
         ZCE_ClassSerialize_ReadHelp<val_type> sload;
-        sload.read_help(this, val);
+        sload.read_help(this,val);
         return;
     }
 
@@ -482,7 +481,6 @@ protected:
     const char *end_pos_;
     ///当前读取的位置
     const char *read_pos_;
-
 };
 
 //辅助类，save_help 函数
@@ -533,10 +531,9 @@ void ZCE_ClassSerialize_ReadHelp<std::list<list_type> >::read_help(ZCE_Serialize
     return;
 }
 
-
-template<typename key_type, typename data_type >
-void ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >::read_help(ZCE_Serialize_Read *sload,
-                                                                            std::map<key_type, data_type> &val)
+template<typename key_type,typename data_type >
+void ZCE_ClassSerialize_ReadHelp<std::map<key_type,data_type> >::read_help(ZCE_Serialize_Read *sload,
+                                                                           std::map<key_type,data_type> &val)
 {
     size_t v_size = val.size();
     sload->read_arithmetic(v_size);
@@ -557,4 +554,3 @@ void ZCE_ClassSerialize_ReadHelp<std::map<key_type, data_type> >::read_help(ZCE_
 }
 
 #endif //ZCE_LIB_BYTES_SERIALIZATION_H_
-

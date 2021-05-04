@@ -20,9 +20,8 @@
 *             在LINUX下，还是用pthread_mutex实现的，但是用共享内存存放，名字用于共享
 *             内存名字
 */
-class ZCE_Process_Mutex : public ZCE_Lock_Base
+class ZCE_Process_Mutex: public ZCE_Lock_Base
 {
-
 public:
 
     //进程锁的GUARD
@@ -30,9 +29,9 @@ public:
 
 public:
     ///构造函数
-    ZCE_Process_Mutex (const char *mutex_name, bool recursive = true);
+    ZCE_Process_Mutex(const char *mutex_name,bool recursive = true);
     ///析构函数
-    virtual ~ZCE_Process_Mutex (void);
+    virtual ~ZCE_Process_Mutex(void);
 
     ///锁定
     virtual void lock();
@@ -55,14 +54,12 @@ public:
 protected:
 
     ///进程锁，注意，注意，注意，这个地方用的是一个指针，
-    pthread_mutex_t    *lock_;
+    pthread_mutex_t *lock_;
 
 #if defined ZCE_OS_LINUX
     //共享内存，LINUX需要共享内存
     ZCE_ShareMem_Posix posix_sharemem_;
 #endif
-
 };
 
 #endif //ZCE_LIB_LOCK_PROCESS_MUTEX_H_
-

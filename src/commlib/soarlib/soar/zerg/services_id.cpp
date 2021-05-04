@@ -4,8 +4,6 @@
 
 namespace soar
 {
-
-
 //构造函数和析构函数
 
 //
@@ -46,7 +44,6 @@ bool SERVICES_ID::operator <(const SERVICES_ID &others) const
     return false;
 }
 
-
 ///转换string
 const char *SERVICES_ID::to_str(char *str_buffer,size_t buf_len)
 {
@@ -79,5 +76,4 @@ int SERVICES_ID::from_str(const char *str_buffer,bool check_valid)
         return 0;
     }
 }
-
 }

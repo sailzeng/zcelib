@@ -31,7 +31,6 @@ int Socket_Acceptor::open(const Sockaddr_Base *local_addr,
                           int backlog,
                           int protocol)
 {
-
     int ret = 0;
 
     //如果没有标注协议类型，用地址
@@ -42,9 +41,9 @@ int Socket_Acceptor::open(const Sockaddr_Base *local_addr,
 
     //
     ret = zce::Socket_Base::open(SOCK_STREAM,
-                                protocol_family,
-                                protocol,
-                                reuse_addr);
+                                 protocol_family,
+                                 protocol,
+                                 reuse_addr);
 
     if (ret != 0)
     {
@@ -119,6 +118,4 @@ int Socket_Acceptor::accept(Socket_Stream &new_stream,
     new_stream.set_handle(sock_handle);
     return 0;
 }
-
 }
-

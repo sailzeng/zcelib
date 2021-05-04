@@ -426,20 +426,18 @@
 
 namespace zce
 {
-
 //取得最后的errno，在Windows下有点
-inline int last_error (void)
+inline int last_error(void)
 {
-
 #if defined (ZCE_OS_WINDOWS)
     // zce::last_error() prefers errnor since started out as a way to
     // avoid directly accessing errno in ACE code - particularly the ACE
     // C++ socket wrapper facades.  On Windows, some things that would
     // use errno on UNIX require ::GetLastError(), so this method tries
     // to shield the rest of ACE from having to know about this.
-    int lerror = ::GetLastError ();
+    int lerror = ::GetLastError();
     int lerrno = errno;
-    return (lerrno == 0) ? lerror : lerrno;
+    return (lerrno == 0)?lerror:lerrno;
 #elif defined (ZCE_OS_LINUX)
     return errno;
 #endif /* ACE_WIN32 */
@@ -461,19 +459,19 @@ inline int last_error_with_default(int default_error)
 }
 
 //设置最后的错误
-inline void last_error (int error)
+inline void last_error(int error)
 {
 #if defined (ZCE_OS_WINDOWS)
-    ::SetLastError (error);
+    ::SetLastError(error);
 #elif defined (ZCE_OS_LINUX)
     errno = error;
 #endif
 }
 
-inline void set_errno_to_last_error (void)
+inline void set_errno_to_last_error(void)
 {
 # if defined (ZCE_OS_WINDOWS)
-    errno = ::GetLastError ();
+    errno = ::GetLastError();
 # endif
 }
 
@@ -481,7 +479,7 @@ inline void set_errno_to_last_error (void)
 inline void clear_last_error()
 {
 # if defined (ZCE_OS_WINDOWS)
-    ::SetLastError (0);
+    ::SetLastError(0);
     errno = 0;
 #else
     errno = 0;
@@ -490,4 +488,3 @@ inline void clear_last_error()
 };
 
 #endif //ZCE_LIB_OS_ADAPT_ERROR_H_
-

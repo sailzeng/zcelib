@@ -1,4 +1,3 @@
-
 #ifndef OGRE_SERVER_PRE_DEFINE_H_
 #define OGRE_SERVER_PRE_DEFINE_H_
 
@@ -76,4 +75,3 @@ typedef std::unordered_set<unsigned int> SetOfIPAddress;
 //};
 
 #endif //OGRE_SERVER_PRE_DEFINE_H_
-

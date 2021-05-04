@@ -1,4 +1,3 @@
-
 #ifndef ZERG_SERVER_CONSOLE_HADNDLER_H_
 #define ZERG_SERVER_CONSOLE_HADNDLER_H_
 
@@ -33,4 +32,3 @@
 //};
 
 #endif //#ifndef _ZERG_SERVER_CONSOLE_HADNDLER_H_
-

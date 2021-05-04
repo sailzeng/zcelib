@@ -5,7 +5,7 @@
 #include "zce/event/reactor_base.h"
 
 //
-ZCE_Reactor   *ZCE_Reactor::instance_ = NULL;
+ZCE_Reactor *ZCE_Reactor::instance_ = NULL;
 
 ZCE_Reactor::ZCE_Reactor():
     max_event_number_(FD_SETSIZE)
@@ -48,7 +48,7 @@ int ZCE_Reactor::initialize(size_t max_event_number)
 int ZCE_Reactor::close()
 {
     //由于是HASH MAP速度有点慢
-    MAP_OF_HANDLER_TO_EVENT::iterator iter_temp =  handler_map_.begin();
+    MAP_OF_HANDLER_TO_EVENT::iterator iter_temp = handler_map_.begin();
 
     //
     for (; iter_temp != handler_map_.end();)
@@ -70,9 +70,8 @@ int ZCE_Reactor::close()
 
 //注册一个ZCE_Event_Handler到反应器
 int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
-                                  int event_mask )
+                                  int event_mask)
 {
-
     int ret = 0;
 
     //如果已经大于最大数量，返回错误
@@ -85,21 +84,21 @@ int ZCE_Reactor::register_handler(ZCE_Event_Handler *event_handler,
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //如果已经存在，不能继续注册
-    ret = find_event_handler(socket_hd, tmp_handler);
+    ret = find_event_handler(socket_hd,tmp_handler);
     if (ret == 0)
     {
-        ZCE_LOG(RS_ERROR, "[zcelib] [%s] find_event_handler eaqul handle [%lu]. please check you code .",
+        ZCE_LOG(RS_ERROR,"[zcelib] [%s] find_event_handler eaqul handle [%lu]. please check you code .",
                 __ZCE_FUNC__,
                 tmp_handler);
         return -1;
     }
 
     //不检测了，失败了就是命不好
-    handler_map_.insert(std::make_pair(socket_hd, event_handler));
+    handler_map_.insert(std::make_pair(socket_hd,event_handler));
 
     if (event_mask != 0)
     {
-        schedule_wakeup(event_handler, event_mask);
+        schedule_wakeup(event_handler,event_mask);
     }
 
     return 0;
@@ -116,11 +115,11 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
     ZCE_Event_Handler *tmp_handler = NULL;
 
     //remove_handler可能会出现两次调用的情况，我推荐你直接调用handle_close
-    ret = find_event_handler(ev_hd, tmp_handler);
+    ret = find_event_handler(ev_hd,tmp_handler);
     if (ret != 0)
     {
         // 未找到
-        ZCE_LOG(RS_INFO, "[zcelib][%s] find handle [%lu] fail. my be reclose ?",
+        ZCE_LOG(RS_INFO,"[zcelib][%s] find handle [%lu] fail. my be reclose ?",
                 __ZCE_FUNC__,
                 ev_hd);
         return -1;
@@ -134,7 +133,7 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
     //如果有mask，取消掉
     if (event_mask != 0)
     {
-        cancel_wakeup(event_handler, event_mask);
+        cancel_wakeup(event_handler,event_mask);
     }
 
     //不检测了，失败了就是命不好
@@ -151,14 +150,14 @@ int ZCE_Reactor::remove_handler(ZCE_Event_Handler *event_handler,
 }
 
 //
-int ZCE_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler, int cancel_mask)
+int ZCE_Reactor::cancel_wakeup(ZCE_Event_Handler *event_handler,int cancel_mask)
 {
     event_handler->disable_mask(cancel_mask);
     return 0;
 }
 
 //
-int ZCE_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler, int event_mask)
+int ZCE_Reactor::schedule_wakeup(ZCE_Event_Handler *event_handler,int event_mask)
 {
     event_handler->enable_mask(event_mask);
     return 0;
@@ -190,4 +189,3 @@ void ZCE_Reactor::clean_instance()
     instance_ = NULL;
     return;
 }
-

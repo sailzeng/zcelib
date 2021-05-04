@@ -140,13 +140,13 @@
 * @tparam     little_endian  这个算法是否采用小头编码，如果是用true，如果不是，用false，
 * @tparam     HASH_STRATEGY  算法的策略类
 */
-template <size_t result_size, bool little_endian, typename HASH_STRATEGY>
+template <size_t result_size,bool little_endian,typename HASH_STRATEGY>
 class ZCE_HashFun_Block64
 {
 public:
 
     ///结果数据长度
-    static const size_t HASH_RESULT_SIZE   = result_size;
+    static const size_t HASH_RESULT_SIZE = result_size;
     ///每次处理的BLOCK的大小
     static const size_t PROCESS_BLOCK_SIZE = 64;
 
@@ -169,7 +169,7 @@ public:
     * @param[in]  buf  处理的数据，
     * @param[in]  buf_size 处理的数据长度
     */
-    static void process(context *ctx, const unsigned char *buf, size_t buf_size)
+    static void process(context *ctx,const unsigned char *buf,size_t buf_size)
     {
         //为什么不是=，因为在某些环境下，可以多次调用zce_md5_update，但这种情况，必须保证前面的调用，每次都没有unprocessed_
         ctx->length_ += buf_size;
@@ -177,8 +177,8 @@ public:
         //每个处理的块都是PROCESS_BLOCK_SIZE字节
         while (buf_size >= PROCESS_BLOCK_SIZE)
         {
-            HASH_STRATEGY::process_block(ctx->hash_, reinterpret_cast<const uint32_t *>(buf));
-            buf  += PROCESS_BLOCK_SIZE;
+            HASH_STRATEGY::process_block(ctx->hash_,reinterpret_cast<const uint32_t *>(buf));
+            buf += PROCESS_BLOCK_SIZE;
             buf_size -= PROCESS_BLOCK_SIZE;
         }
 
@@ -192,7 +192,7 @@ public:
     * @param      src      拷贝的源头指针
     * @param      length   长度，注意是字节长度
     */
-    inline static void endian_copy(void *dst, const void *src, size_t length)
+    inline static void endian_copy(void *dst,const void *src,size_t length)
     {
         //根据算法的大小头要求，以及当前CPU的大小头，进行运算
         bool if_le = little_endian;
@@ -200,12 +200,12 @@ public:
         //如果环境是是小头，而且算法编码要求小头的，直接使用指针
         if (if_le)
         {
-            ::memcpy(dst, src, length);
+            ::memcpy(dst,src,length);
         }
         //如果环境是是小头，而算法编码要求大头的，将所有的uint32_t数据swap
         else
         {
-            ::memcpy(dst, src, length);
+            ::memcpy(dst,src,length);
             //所有的数据反转
             for (size_t i = 0; i < length / 4; ++i)
             {
@@ -216,7 +216,7 @@ public:
         //如果环境是大头，但算法内部要求的数据是小头，，将所有的uint32_t数据swap
         if (if_le)
         {
-            ::memcpy(dst, src, length);
+            ::memcpy(dst,src,length);
             //所有的数据反转
             for (size_t i = 0; i < length / 4; ++i)
             {
@@ -226,7 +226,7 @@ public:
         //如果环境是大头，但算法内部要求的数据是大头，，直接使用指针
         else
         {
-            ::memcpy(dst, src, length);
+            ::memcpy(dst,src,length);
         }
 #endif
     }
@@ -246,10 +246,10 @@ public:
         uint32_t message[PROCESS_BLOCK_SIZE / 4] = {0};
 
         //保存剩余的数据，我们要拼出最后1个（或者两个）要处理的块，前面的算法保证了，最后一个块肯定小于64个字节
-        memset(message, 0, PROCESS_BLOCK_SIZE);
+        memset(message,0,PROCESS_BLOCK_SIZE);
         if (ctx->unprocessed_)
         {
-            memcpy(message, buf + buf_size - ctx->unprocessed_, static_cast<size_t>( ctx->unprocessed_));
+            memcpy(message,buf + buf_size - ctx->unprocessed_,static_cast<size_t>(ctx->unprocessed_));
         }
 
         //每个处理的块都是64字节
@@ -259,7 +259,7 @@ public:
         uint32_t shift = (uint32_t)((ctx->length_ & 3) * 8);
 
         //添加0x80进去，并且把余下的空间补充0
-        message[index]   &= ~(0xFFFFFFFF << shift);
+        message[index] &= ~(0xFFFFFFFF << shift);
         message[index++] ^= 0x80 << shift;
 
         //如果这个block还无法处理，其后面的长度无法容纳长度64bit，那么先处理这个block
@@ -270,7 +270,7 @@ public:
                 message[index++] = 0;
             }
 
-            HASH_STRATEGY::process_block(ctx->hash_, message);
+            HASH_STRATEGY::process_block(ctx->hash_,message);
 
             index = 0;
         }
@@ -298,13 +298,13 @@ public:
         }
 #endif
 
-        message[14] = (uint32_t) (data_len & 0x00000000FFFFFFFFULL);
-        message[15] = (uint32_t) ((data_len & 0xFFFFFFFF00000000ULL) >> 32);
+        message[14] = (uint32_t)(data_len & 0x00000000FFFFFFFFULL);
+        message[15] = (uint32_t)((data_len & 0xFFFFFFFF00000000ULL) >> 32);
 
-        HASH_STRATEGY::process_block(ctx->hash_, message);
+        HASH_STRATEGY::process_block(ctx->hash_,message);
 
         //注意结果是小头党的，在大头的世界要进行转换
-        endian_copy(result, ctx->hash_, HASH_RESULT_SIZE);
+        endian_copy(result,ctx->hash_,HASH_RESULT_SIZE);
     }
 
     //你要实现算法需要实现的两个函数，
@@ -323,31 +323,28 @@ public:
     */
     //static void process_block(uint32_t state[HASH_RESULT_SIZE / 4],
     //    const uint32_t block[PROCESS_BLOCK_SIZE / 4]);
-
 };
 
 //=====================================================================================================
 //MD5的处理策略类，主要是实现算法，不用直接使用，
 //本来是希望用protected和friends 友元避免外部能感知这些函数的，但友元对对模版的支持还不够，我只能public了
-class ZCE_Hash_MD5 : public ZCE_HashFun_Block64<16, true, ZCE_Hash_MD5>
+class ZCE_Hash_MD5: public ZCE_HashFun_Block64<16,true,ZCE_Hash_MD5>
 {
-
 public:
 
-    static void initialize(context  *ctx);
+    static void initialize(context *ctx);
 
     static void process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                               const uint32_t block[PROCESS_BLOCK_SIZE / 4]);
-
 };
 
 //=====================================================================================================
 //SHA1的处理策略类
-class ZCE_Hash_SHA1 : public ZCE_HashFun_Block64<20, false, ZCE_Hash_SHA1>
+class ZCE_Hash_SHA1: public ZCE_HashFun_Block64<20,false,ZCE_Hash_SHA1>
 {
 public:
 
-    static void initialize(context  *ctx);
+    static void initialize(context *ctx);
 
     static void process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                               const uint32_t block[PROCESS_BLOCK_SIZE / 4]);
@@ -356,15 +353,14 @@ public:
 //=====================================================================================================
 
 //SHA256，SHA2的算法策略
-class ZCE_Hash_SHA256 : public ZCE_HashFun_Block64<32, false, ZCE_Hash_SHA256>
+class ZCE_Hash_SHA256: public ZCE_HashFun_Block64<32,false,ZCE_Hash_SHA256>
 {
 public:
 
-    static void initialize(context  *ctx);
+    static void initialize(context *ctx);
 
     static void process_block(uint32_t state[HASH_RESULT_SIZE / 4],
                               const uint32_t block[PROCESS_BLOCK_SIZE / 4]);
-
 };
 
 //=====================================================================================================
@@ -374,28 +370,26 @@ class ZCE_Hash_CRC32
 {
 public:
     //结果数据长度
-    static const size_t HASH_RESULT_SIZE   = 4;
+    static const size_t HASH_RESULT_SIZE = 4;
     //每次处理的BLOCK的大小,其实对于CRC32这个值没有啥用，主要用于文件处理。
     static const size_t PROCESS_BLOCK_SIZE = 256;
 
     typedef uint32_t context;
 
-    static void process(context *ctx, const unsigned char *buf, size_t buf_size);
+    static void process(context *ctx,const unsigned char *buf,size_t buf_size);
 
     static void finalize(context *ctx,
                          const unsigned char *buf,
                          size_t buf_size,
                          unsigned char result[HASH_RESULT_SIZE]);
 
-    static void initialize(context  *ctx);
-
+    static void initialize(context *ctx);
 };
 
 //=====================================================================================================
 
 namespace zce
 {
-
 //=====================================================================================================
 //传统的HASH算法函数，
 
@@ -416,8 +410,8 @@ unsigned char *hash_fun(const unsigned char *buf,
 
     typename HASH_STRATEGY::context ctx;
     HASH_STRATEGY::initialize(&ctx);
-    HASH_STRATEGY::process(&ctx, buf, buf_size);
-    HASH_STRATEGY::finalize(&ctx, buf, buf_size, result);
+    HASH_STRATEGY::process(&ctx,buf,buf_size);
+    HASH_STRATEGY::finalize(&ctx,buf,buf_size,result);
     return result;
 }
 
@@ -431,13 +425,12 @@ unsigned char *hash_fun(const unsigned char *buf,
 * @param      result    返回的结果数据指针
 * @note
 */
-template<typename HASH_STRATEGY, size_t BUFFER_MULTIPLE>
+template<typename HASH_STRATEGY,size_t BUFFER_MULTIPLE>
 int hash_file(const char *file_name,
               unsigned char result[HASH_STRATEGY::HASH_RESULT_SIZE])
 {
-
     //打开文件
-    ZCE_HANDLE  fd = zce::open(file_name, O_RDONLY);
+    ZCE_HANDLE  fd = zce::open(file_name,O_RDONLY);
     if (ZCE_INVALID_HANDLE == fd)
     {
         return -1;
@@ -445,15 +438,15 @@ int hash_file(const char *file_name,
 
     //获取文件尺寸，有长度可以避免有时候如果读取的文件长度和缓冲相等，要读取一次的麻烦，
     size_t file_size = 0;
-    int ret = zce::filesize(fd, &file_size);
-    if ( 0 != ret)
+    int ret = zce::filesize(fd,&file_size);
+    if (0 != ret)
     {
         return -1;
     }
 
     //每次尽力读取640K数据，注意这个buffer必须是PROCESS_BLOCK_SIZE字节的N倍喔
     const size_t READ_LEN = HASH_STRATEGY::PROCESS_BLOCK_SIZE * BUFFER_MULTIPLE;
-    char *read_buf = new char [READ_LEN];
+    char *read_buf = new char[READ_LEN];
 
     typename HASH_STRATEGY::context ctx;
     HASH_STRATEGY::initialize(&ctx);
@@ -463,20 +456,18 @@ int hash_file(const char *file_name,
     do
     {
         //读取内容
-        read_len = zce::read(fd, read_buf, READ_LEN);
+        read_len = zce::read(fd,read_buf,READ_LEN);
         if (read_len < 0)
         {
-            delete [] read_buf;
+            delete[] read_buf;
             zce::close(fd);
             return -1;
         }
-        HASH_STRATEGY::process(&ctx, (unsigned char *) read_buf, read_len);
+        HASH_STRATEGY::process(&ctx,(unsigned char *)read_buf,read_len);
+    } while ((file_size -= read_len) > 0);
 
-    }
-    while ( (file_size -= read_len) > 0 );
-
-    HASH_STRATEGY::finalize(&ctx, (unsigned char *) read_buf, read_len, result);
-    delete [] read_buf;
+    HASH_STRATEGY::finalize(&ctx,(unsigned char *)read_buf,read_len,result);
+    delete[] read_buf;
     zce::close(fd);
 
     return 0;
@@ -493,7 +484,7 @@ inline unsigned char *md5(const unsigned char *buf,
                           size_t buf_size,
                           unsigned char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
 {
-    return zce::hash_fun<ZCE_Hash_MD5>(buf, buf_size, result);
+    return zce::hash_fun<ZCE_Hash_MD5>(buf,buf_size,result);
 }
 
 /*!
@@ -506,7 +497,7 @@ inline unsigned char *md5(const unsigned char *buf,
 inline int md5_file(const char *file_name,
                     unsigned char result[ZCE_Hash_MD5::HASH_RESULT_SIZE])
 {
-    return zce::hash_file<ZCE_Hash_MD5, 10240>(file_name, result);
+    return zce::hash_file<ZCE_Hash_MD5,10240>(file_name,result);
 }
 
 /*!
@@ -520,7 +511,7 @@ inline unsigned char *sha1(const unsigned char *buf,
                            size_t buf_size,
                            unsigned char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
 {
-    return zce::hash_fun<ZCE_Hash_SHA1>(buf, buf_size, result);
+    return zce::hash_fun<ZCE_Hash_SHA1>(buf,buf_size,result);
 }
 
 /*!
@@ -533,7 +524,7 @@ inline unsigned char *sha1(const unsigned char *buf,
 inline int sha1_file(const char *file_name,
                      unsigned char result[ZCE_Hash_SHA1::HASH_RESULT_SIZE])
 {
-    return zce::hash_file<ZCE_Hash_SHA1, 10240>(file_name, result);
+    return zce::hash_file<ZCE_Hash_SHA1,10240>(file_name,result);
 }
 
 /*!
@@ -547,7 +538,7 @@ inline unsigned char *sha256(const unsigned char *buf,
                              size_t buf_size,
                              unsigned char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
 {
-    return zce::hash_fun<ZCE_Hash_SHA256>(buf, buf_size, result);
+    return zce::hash_fun<ZCE_Hash_SHA256>(buf,buf_size,result);
 }
 
 /*!
@@ -560,7 +551,7 @@ inline unsigned char *sha256(const unsigned char *buf,
 inline int sha256_file(const char *file_name,
                        unsigned char result[ZCE_Hash_SHA256::HASH_RESULT_SIZE])
 {
-    return zce::hash_file<ZCE_Hash_SHA256, 10240>(file_name, result);
+    return zce::hash_file<ZCE_Hash_SHA256,10240>(file_name,result);
 }
 
 /*!
@@ -583,7 +574,7 @@ uint32_t crc32(uint32_t crcinit,
 inline uint32_t crc32(const unsigned char *buf,
                       size_t buf_size)
 {
-    return crc32(0, buf, buf_size);
+    return crc32(0,buf,buf_size);
 }
 
 /*!
@@ -595,7 +586,7 @@ inline uint32_t crc32(const unsigned char *buf,
 inline  int crc32_file(const char *file_name,
                        uint32_t *result)
 {
-    return zce::hash_file<ZCE_Hash_CRC32, 10240>(file_name, (unsigned char *)result);
+    return zce::hash_file<ZCE_Hash_CRC32,10240>(file_name,(unsigned char *)result);
 }
 
 uint16_t crc16(uint16_t crcinit,
@@ -605,7 +596,7 @@ uint16_t crc16(uint16_t crcinit,
 inline uint16_t crc16(const unsigned char *buf,
                       size_t buf_size)
 {
-    return crc16(0, buf, buf_size);
+    return crc16(0,buf,buf_size);
 }
 
 //=====================================================================================================
@@ -625,20 +616,18 @@ inline uint16_t crc16(const unsigned char *buf,
 * @param[in]  str     字符串
 * @param[in]  str_len 字符串长度
 */
-size_t bkdr_hash(const unsigned char *str, size_t str_len);
+size_t bkdr_hash(const unsigned char *str,size_t str_len);
 
 /// AP Hash Function
-size_t ap_hash(const unsigned char *str, size_t str_len);
+size_t ap_hash(const unsigned char *str,size_t str_len);
 
 /// JS Hash Function
-size_t js_hash(const unsigned char *str, size_t str_len);
+size_t js_hash(const unsigned char *str,size_t str_len);
 
 /// DJB Hash Function
-size_t djb_hash(const unsigned char *str, size_t str_len);
+size_t djb_hash(const unsigned char *str,size_t str_len);
 
 //=====================================================================================================
-
 };
 
 #endif //ZCE_LIB_BYTES_HASH_H_
-

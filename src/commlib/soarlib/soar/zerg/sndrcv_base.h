@@ -15,7 +15,6 @@
 *
 */
 
-
 #ifndef SOARING_LIB_SND_RCV_BASE_H_
 #define SOARING_LIB_SND_RCV_BASE_H_
 
@@ -24,7 +23,6 @@ class SendRecv_Msg_Base base 类
 ******************************************************************************************/
 class SendRecv_Msg_Base
 {
-
 public:
     //
     SendRecv_Msg_Base();
@@ -39,7 +37,7 @@ public:
     * @param      send_service  发送的服务器ID
     * @param      proxy_service PROXY的服务器ID
     * @param      frame_len     准备的FRAME长度
-    * @note       
+    * @note
     */
     void set_services_id(const soar::SERVICES_ID &recv_service,
                          const soar::SERVICES_ID &send_service,
@@ -76,17 +74,15 @@ protected:
     //就不会出现共用一个BUFFER的事情
 
     //发送缓冲区的帧
-    soar::Zerg_Frame         *msg_send_frame_;
+    soar::Zerg_Frame *msg_send_frame_;
     //接收缓冲区
-    soar::Zerg_Frame         *msg_recv_frame_;
+    soar::Zerg_Frame *msg_recv_frame_;
 
     //收到的事务ID
     unsigned int              recv_trans_id_;
 
     //回填的事务ID
     unsigned int              backfill_trans_id_;
-
 };
 
 #endif //SOARING_LIB_SND_RCV_BASE_H_
-
