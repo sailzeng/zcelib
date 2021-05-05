@@ -86,24 +86,24 @@ int SQLite_STMT::prepare(const char *sql_string)
     return 0;
 }
 
-//
-int SQLite_STMT::execute_stmt_sql(bool &has_reuslt)
+//执行一次stmt SQL，如果执行成功，返回0，如果SQL有结果返回，has_result置为true
+int SQLite_STMT::step(bool &has_result)
 {
-    has_reuslt = false;
+    has_result = false;
     //
     int ret = ::sqlite3_step(prepared_statement_);
 
-    //
+    //执行成功，而且有结果返回
     if (SQLITE_ROW == ret)
     {
-        has_reuslt = true;
+        has_result = true;
         current_col_ = 0;
         return 0;
     }
-    //
+    //执行成功，但没有结果
     else if (SQLITE_DONE == ret)
     {
-        has_reuslt = false;
+        has_result = false;
         return 0;
     }
 
@@ -471,11 +471,10 @@ template<>
 void SQLite_STMT::column(int result_col,std::string &val)
 {
     val.assign(reinterpret_cast<const char *>(sqlite3_column_text(prepared_statement_,
-                                         result_col)),
+               result_col)),
                ::sqlite3_column_bytes(prepared_statement_,result_col));
     return;
 }
-
 }
 
 #endif //#if SQLITE_VERSION_NUMBER >= 3005000

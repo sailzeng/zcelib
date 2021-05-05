@@ -24,50 +24,7 @@ int zce::socket_init(int version_high,int version_low)
         WSACleanup();
         return -1;
     }
-
-    SOCKET no_use = INVALID_SOCKET;
-    GUID guid_acceptex = WSAID_ACCEPTEX;
-    DWORD dw_bytes = 0;
-
-    int result = 0;
-    result = ::WSAIoctl(no_use,
-                        SIO_GET_EXTENSION_FUNCTION_POINTER,
-                        &guid_acceptex,
-                        sizeof(guid_acceptex),
-                        &WSAAcceptEx,
-                        sizeof(WSAAcceptEx),
-                        &dw_bytes,
-                        NULL,
-                        NULL);
-
-    if (result == SOCKET_ERROR)
-    {
-        ::fprintf(stderr,"WSAIoctl get WSAAcceptEx function failed with error: %u\n",
-                  WSAGetLastError());
-        WSACleanup();
-        return -1;
-    }
-
-    GUID guid_connectex = WSAID_CONNECTEX;
-    result = ::WSAIoctl(no_use,
-                        SIO_GET_EXTENSION_FUNCTION_POINTER,
-                        &guid_connectex,
-                        sizeof(guid_connectex),
-                        &WSAConnectEx,
-                        sizeof(WSAConnectEx),
-                        &dw_bytes,
-                        NULL,
-                        NULL);
-
-    if (result == SOCKET_ERROR)
-    {
-        ::fprintf(stderr,"WSAIoctl get WSAConnectEx function failed with error: %u\n",
-                  WSAGetLastError());
-        WSACleanup();
-        return -1;
-    }
     return 0;
-
 #else
     ZCE_UNUSED_ARG(version_high);
     ZCE_UNUSED_ARG(version_low);

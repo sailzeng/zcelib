@@ -9,7 +9,7 @@
 //
 UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
 //
-Soar_Stat_Monitor *UDP_Svc_Handler::server_status_ = NULL;
+soar::Stat_Monitor *UDP_Svc_Handler::server_status_ = NULL;
 //通信管理器
 Zerg_Comm_Manager *UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
 
@@ -304,7 +304,7 @@ int UDP_Svc_Handler::send_all_to_udp(soar::Zerg_Frame *send_frame)
 int UDP_Svc_Handler::init_all_static_data()
 {
     //服务器的统计操作实例
-    server_status_ = Soar_Stat_Monitor::instance();
+    server_status_ = soar::Stat_Monitor::instance();
 
     //通信管理器
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();

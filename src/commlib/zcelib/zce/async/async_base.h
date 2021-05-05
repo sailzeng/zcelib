@@ -142,7 +142,7 @@ protected:
     uint32_t  create_cmd_ = 0;
 
     ///超时的定时器ID
-    int timeout_id_ = Timer_Queue_Base::INVALID_TIMER_ID;
+    int timeout_id_ = Timer_Queue::INVALID_TIMER_ID;
 
     /// 异步对象处理的错误码，统计事物错误的时候使用
     int running_errno_ = 0;
@@ -156,7 +156,7 @@ protected:
 
 //=======================================================================================
 
-class Timer_Queue_Base;
+class Timer_Queue;
 
 /*!
 * @brief      异步对象的管理器基类
@@ -213,7 +213,7 @@ public:
     * @param      running_number
     * @param      init_lock_pool 初始化
     */
-    int initialize(zce::Timer_Queue_Base *tq,
+    int initialize(zce::Timer_Queue *tq,
                    size_t crtn_type_num,
                    size_t running_number);
 

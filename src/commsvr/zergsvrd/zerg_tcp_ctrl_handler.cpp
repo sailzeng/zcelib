@@ -27,7 +27,7 @@ ZBuffer_Storage *TCP_Svc_Handler::zbuffer_storage_ = NULL;
 //通信管理器
 Zerg_Comm_Manager *TCP_Svc_Handler::zerg_comm_mgr_ = NULL;
 //
-Soar_Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
+soar::Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
 
 //自己是否是代理
 bool           TCP_Svc_Handler::if_proxy_ = false;
@@ -66,7 +66,7 @@ unsigned int  TCP_Svc_Handler::handler_id_builder_ = 0;
 //构造函数
 TCP_Svc_Handler::TCP_Svc_Handler(TCP_Svc_Handler::HANDLER_MODE hdl_mode):
     ZCE_Event_Handler(ZCE_Reactor::instance()),
-    zce::Timer_Handler(zce::Timer_Queue_Base::instance()),
+    zce::Timer_Handler(zce::Timer_Queue::instance()),
     handler_mode_(hdl_mode),
     my_svc_id_(0,0),
     peer_svr_id_(0,0),
@@ -383,7 +383,7 @@ int TCP_Svc_Handler::init_all_static_data()
     zbuffer_storage_ = ZBuffer_Storage::instance();
 
     //服务器的统计操作实例
-    server_status_ = Soar_Stat_Monitor::instance();
+    server_status_ = soar::Stat_Monitor::instance();
 
     //最大要链接数量等于自动链接服务的数量,增加16个
 

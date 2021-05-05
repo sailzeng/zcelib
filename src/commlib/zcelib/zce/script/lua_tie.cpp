@@ -22,68 +22,68 @@ void push_stack(lua_State * /*state*/)
 {
 }
 template<>
-void push_stack(lua_State *state,char *const ptr)
+void push_stack_val(lua_State *state,char *const ptr)
 {
     lua_pushstring(state,ptr);
 }
 template<>
-void push_stack(lua_State *state,const char *const ptr)
+void push_stack_val(lua_State *state,const char *const ptr)
 {
-    lua_pushstring(state,ptr);
+    ::lua_pushstring(state,ptr);
 }
 
 //read_stack从堆栈中读取一个数据
 template<>
 void push_stack_val(lua_State *state,char val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,unsigned char val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,short val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,unsigned short val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,int val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,unsigned int val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,float val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,double val)
 {
-    lua_pushnumber(state,val);
+    ::lua_pushnumber(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,bool val)
 {
-    lua_pushboolean(state,val);
+    ::lua_pushboolean(state,val);
 }
 template<>
 void push_stack_val(lua_State *state,int64_t val)
 {
-    *(int64_t *)lua_newuserdata(state,sizeof(int64_t)) = val;
-    lua_pushstring(state,"int64_t");
-    lua_gettable(state,LUA_GLOBALSINDEX);
+    *(int64_t *)::lua_newuserdata(state,sizeof(int64_t)) = val;
+    ::lua_pushstring(state,"int64_t");
+    ::lua_gettable(state,LUA_GLOBALSINDEX);
 
     //在DEBUG版本增强一些检查，如果不是table
 #if defined DEBUG || defined _DEBUG
@@ -96,15 +96,15 @@ void push_stack_val(lua_State *state,int64_t val)
     }
 #endif
 
-    lua_setmetatable(state,-2);
+    ::lua_setmetatable(state,-2);
     return;
 }
 template<>
 void push_stack_val(lua_State *state,uint64_t val)
 {
     *(uint64_t *)lua_newuserdata(state,sizeof(uint64_t)) = val;
-    lua_pushstring(state,"uint64_t");
-    lua_gettable(state,LUA_GLOBALSINDEX);
+    ::lua_pushstring(state,"uint64_t");
+    ::lua_gettable(state,LUA_GLOBALSINDEX);
 
     //在DEBUG版本增强一些检查，如果不是table
 #if defined DEBUG || defined _DEBUG
@@ -117,7 +117,29 @@ void push_stack_val(lua_State *state,uint64_t val)
     }
 #endif
 
-    lua_setmetatable(state,-2);
+    ::lua_setmetatable(state,-2);
+    return;
+}
+
+template<> 
+void push_stack_val(lua_State *state,std::string &val)
+{
+    auto str = new(::lua_newuserdata(state,sizeof(std::string)))std::string;
+    *str= val;
+    ::lua_pushstring(state,"stdstring");
+    ::lua_gettable(state,LUA_GLOBALSINDEX);
+
+    //在DEBUG版本增强一些检查，如果不是table
+#if defined DEBUG || defined _DEBUG
+    if (!lua_istable(state,-1))
+    {
+        ZCE_LOG(RS_ERROR,"[LUATIE][stdstring] is not a table? May be you don't register uint64_t to lua? typeid[%d]",
+                lua_type(state,-1));
+        lua_pop(state,1);
+        return;
+    }
+#endif
+    ::lua_setmetatable(state,-2);
     return;
 }
 
@@ -975,7 +997,7 @@ void ZCE_Lua_Base::reg_stdstring()
     lua_pushcclosure(lua_state_,constructor_stdstring,0);
     lua_rawset(lua_state_,-3);
 
-    //设置这个table作为int64_t 原型的metatable.
+    //设置这个table作为stdstring 原型的metatable.
     lua_setmetatable(lua_state_,-2);
 
     lua_settable(lua_state_,LUA_GLOBALSINDEX);

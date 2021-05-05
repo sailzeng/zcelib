@@ -25,12 +25,13 @@
 *
 */
 
-#ifndef ZCE_TIMER_QUEUE_WHEEL_H_
-#define ZCE_TIMER_QUEUE_WHEEL_H_
+#pragma once
 
 #include "zce/time/time_value.h"
 #include "zce/timer/queue_base.h"
 
+namespace zce
+{
 /*!
 * @brief      时间轮定时器，有人也成为十字链表（循环队列），
 *             Timer触发器,高效率，高性能的带名称，
@@ -39,7 +40,7 @@
 *             内部也指向有WHEEL
 *             设置定时器，取消定时器，分发定时器的消耗级别都是O(1)
 */
-class ZCE_Timer_Wheel: public zce::Timer_Queue_Base
+class Timer_Wheel: public zce::Timer_Queue
 {
 protected:
 
@@ -49,9 +50,9 @@ protected:
     {
         ///构造函数
         ZCE_WHEEL_TIMER_NODE():
-            list_prev_(zce::Timer_Queue_Base::INVALID_TIMER_ID),
-            list_next_(zce::Timer_Queue_Base::INVALID_TIMER_ID),
-            wheel_point_id_(zce::Timer_Queue_Base::INVALID_TIMER_ID)
+            list_prev_(zce::Timer_Queue::INVALID_TIMER_ID),
+            list_next_(zce::Timer_Queue::INVALID_TIMER_ID),
+            wheel_point_id_(zce::Timer_Queue::INVALID_TIMER_ID)
         {
         }
         ///析构函数
@@ -92,16 +93,16 @@ public:
     * @param[in]  trigger_mode          触发模式是用墙上时钟还是CPU TICK，参考 @ref ZCE_Timer_Queue::TRIGGER_MODE
     * @param[in]  dynamic_expand_node   如果初始化的NODE节点数量不够，是否自动扩展
     */
-    ZCE_Timer_Wheel(size_t num_timer_node,
-                    unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
-                    unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
-                    TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                    bool dynamic_expand_node = true);
+    Timer_Wheel(size_t num_timer_node,
+                unsigned int timer_length_mesc = DEFAULT_TIMER_LENGTH_MESC,
+                unsigned int timer_precision_mesc = DEFAULT_TIMER_PRECISION_MSEC,
+                TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
+                bool dynamic_expand_node = true);
     ///构造函数
-    ZCE_Timer_Wheel();
+    Timer_Wheel();
 
     ///析构函数
-    virtual ~ZCE_Timer_Wheel();
+    virtual ~Timer_Wheel();
 public:
 
     /*!
@@ -187,5 +188,4 @@ protected:
     ///你可以理解为绕几圈放上去（模除），但如果发生这种情况，在处理定时器分发时就要特殊一点
     std::vector<int>        future_trigger_tid_;
 };
-
-#endif //#ifndef ZCE_LIB_TIMER_QUEUE_WHEEL_H_
+}

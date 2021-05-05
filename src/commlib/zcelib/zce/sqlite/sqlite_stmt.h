@@ -1,19 +1,18 @@
-
 /*!
 * @copyright  2004-2021  Apache License, Version 2.0 FULLSAIL
 * @filename   sqlite_stmt.h
 * @author     Sailzeng <sailzeng.cn@gmail.com>
-* @version    
+* @version
 * @date       2021年5月4日
-* @brief      
-*             
-*             
+* @brief
+*
+*
 * @details    STMT = prepared statement
 *             参数预先声明，
-*             
-*             
-* @note       
-*             
+*
+*
+* @note
+*
 */
 #pragma once
 
@@ -109,12 +108,12 @@ public:
     int finalize();
 
     /*!
-    * @brief      执行SQL，第一次是执行SQL，后面移动游标
-    * @return     int         0成功，否则失败
-    * @param[out] hash_reuslt 返回值,是否有结果
+    * @brief      执行一次stmt SQL，，如果执行成功，返回0，
+    * @return     int  0成功，否则失败
+    * @param[out] has_result 返回值,如果有结果返回，置为true
     * note        要执行多次，第一次得到结果集合，后面移动游标。
     */
-    int execute_stmt_sql(bool &hash_reuslt);
+    int step(bool &has_result);
 
     //!
     sqlite3_stmt *get_sqlite3_stmt_handler()

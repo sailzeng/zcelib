@@ -4,36 +4,39 @@
 #include "soar/stat/define.h"
 
 /******************************************************************************************
-class Soar_Stat_Monitor 单线程版本的实例
+class Stat_Monitor 单线程版本的实例
 ******************************************************************************************/
-Soar_Stat_Monitor *Soar_Stat_Monitor::instance_ = NULL;
+namespace soar
+{
 
-Soar_Stat_Monitor::Soar_Stat_Monitor()
+Stat_Monitor *Stat_Monitor::instance_ = NULL;
+
+Stat_Monitor::Stat_Monitor()
 {
 }
 
-Soar_Stat_Monitor::~Soar_Stat_Monitor()
+Stat_Monitor::~Stat_Monitor()
 {
 }
 
-Soar_Stat_Monitor *Soar_Stat_Monitor::instance()
+Stat_Monitor *Stat_Monitor::instance()
 {
     if (instance_ == NULL)
     {
-        instance_ = new Soar_Stat_Monitor();
+        instance_ = new Stat_Monitor();
     }
 
     return instance_;
 }
 
-void Soar_Stat_Monitor::clean_instance()
+void Stat_Monitor::clean_instance()
 {
     delete instance_;
     instance_ = NULL;
 }
 
 //初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
-int Soar_Stat_Monitor::initialize(const char *app_base_name,
+int Stat_Monitor::initialize(const char *app_base_name,
                                   unsigned int business_id,
                                   const soar::SERVICES_ID &service_info,
                                   size_t num_stat_item,
@@ -54,7 +57,7 @@ int Soar_Stat_Monitor::initialize(const char *app_base_name,
 }
 
 //生产stat文件名称
-void Soar_Stat_Monitor::create_stat_fname(const char *app_base_name,
+void Stat_Monitor::create_stat_fname(const char *app_base_name,
                                           unsigned int business_id,
                                           const soar::SERVICES_ID &service_info)
 {
@@ -70,7 +73,7 @@ void Soar_Stat_Monitor::create_stat_fname(const char *app_base_name,
 }
 
 //从文件名称中得到相应的信息
-int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
+int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
                                            unsigned int *business_id,
                                            soar::SERVICES_ID *svc_id,
                                            char *app_base_name)
@@ -143,4 +146,6 @@ int Soar_Stat_Monitor::get_info_from_fname(const char *stat_file_name,
     strncpy(app_base_name,file_name + 6,STAT_MMAP_FILENAME_LEN);
 
     return 0;
+}
+
 }

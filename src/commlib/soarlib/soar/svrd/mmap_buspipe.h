@@ -116,7 +116,7 @@ protected:
     static char          send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
 
     ///监控对象
-    Soar_Stat_Monitor *monitor_ = nullptr;
+    soar::Stat_Monitor *monitor_ = nullptr;
 };
 
 /******************************************************************************************

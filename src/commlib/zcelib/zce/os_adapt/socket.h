@@ -28,11 +28,6 @@ class zce::Time_Value;
 
 namespace zce
 {
-#ifdef ZCE_OS_WINDOWS
-//WINSocket没有暴露的两个函数
-static LPFN_CONNECTEX WSAConnectEx = NULL;
-static LPFN_ACCEPTEX  WSAAcceptEx = NULL;
-#endif
 
 /*!
 * @brief      WINDOWS 的SOCKET必须调用一下初始化WSAStartup

@@ -42,10 +42,12 @@
 * 幸运的是，这可是一次，真正没有尽头的旅程啊！”
 *
 */
-#ifndef _ZCE_LIB_UUID_GENERATOR_H_
-#define _ZCE_LIB_UUID_GENERATOR_H_
+#pragma once
 
 #include "zce/util/random.h"
+
+namespace zce
+{
 
 //UUID产生方法，
 enum class UUID_GENERATOR
@@ -59,17 +61,17 @@ enum class UUID_GENERATOR
 };
 
 /************************************************************************************************************
-Class           : ZCE_UUID64
+Class           : UUID64
 ************************************************************************************************************/
 
 #pragma pack(push,1)
 
 /*!
 * @brief      UUID64的一种表示方法
-*             ZCE_UUID64_16_48 用1个16bit的数值+48位的数值
+*             UUID64_16_48 用1个16bit的数值+48位的数值
 *             表示UUID64，可以用于一些特殊场合产生唯一表示，
 */
-struct ZCE_UUID64_16_48
+struct UUID64_16_48
 {
     uint64_t       data1_:16;
     uint64_t       data2_:48;
@@ -82,18 +84,18 @@ struct ZCE_UUID64_16_48
 *             @li 2个32位的整数
 *
 */
-class ZCE_UUID64
+class UUID64
 {
 public:
     ///构造函数
-    ZCE_UUID64();
+    UUID64();
     ///析构函数
-    ~ZCE_UUID64();
+    ~UUID64();
 
     /// < 运算符重载
-    bool operator < (const ZCE_UUID64 &others) const;
+    bool operator < (const UUID64 &others) const;
     /// == 运算符
-    bool operator == (const ZCE_UUID64 &others) const;
+    bool operator == (const UUID64 &others) const;
 
     /// 转移成一个uint64_t的结构
     operator uint64_t();
@@ -111,7 +113,7 @@ public:
         ///2个32字节的表示方法
         uint32_t          u_2uint32_[2];
         ///16bit+48Bit的表示方法
-        ZCE_UUID64_16_48  u_16_48_;
+        UUID64_16_48  u_16_48_;
     };
 
 public:
@@ -123,7 +125,7 @@ public:
 #pragma pack(pop)
 
 /************************************************************************************************************
-Class           : ZCE_UUID64_Generator
+Class           : UUID64_Generator
 ************************************************************************************************************/
 
 /*!
@@ -136,19 +138,19 @@ Class           : ZCE_UUID64_Generator
 *                 是什么服务器产生的数据
 *
 */
-class ZCE_UUID64_Generator
+class UUID64_Generator
 {
 public:
 
     /*!
     * @brief      构造函数
     */
-    ZCE_UUID64_Generator();
+    UUID64_Generator();
 
     /*!
     * @brief      析构函数
     */
-    ~ZCE_UUID64_Generator();
+    ~UUID64_Generator();
 
 public:
 
@@ -160,9 +162,9 @@ public:
     void random_seed(uint32_t seed);
     /*!
     @brief      通过随机数产生一个UUID64
-    @return     ZCE_UUID64 产生的UUID
+    @return     UUID64 产生的UUID
     */
-    ZCE_UUID64 random_gen();
+    UUID64 random_gen();
 
     /*!
     * @brief      以时间为基数的初始化，radix一般可以用当前时间time_t
@@ -174,22 +176,22 @@ public:
 
     /*!
     * @brief      以时间为基数产生UUID64
-    * @return     ZCE_UUID64 产生的UUID64
+    * @return     UUID64 产生的UUID64
     */
-    ZCE_UUID64 timeradix_gen();
+    UUID64 timeradix_gen();
 
 protected:
 
     ///发生器实例指针
-    static ZCE_UUID64_Generator *instance_;
+    static UUID64_Generator *instance_;
 
 protected:
 
     /*!
     * @brief      单子函数
-    * @return     ZCE_UUID64_Generator* 返回的实例指针
+    * @return     UUID64_Generator* 返回的实例指针
     */
-    static ZCE_UUID64_Generator *instance();
+    static UUID64_Generator *instance();
     /*!
     * @brief      清理实例指针
     */
@@ -206,14 +208,14 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///随机数的种子
-    ZCE_UUID64                time_radix_seed_;
+    UUID64                time_radix_seed_;
 };
 
 /************************************************************************************************************
-Class           : ZCE_UUID128
+Class           : UUID128
 ************************************************************************************************************/
 ///32bit整数+32整数+64位整数的表示方法
-struct ZCE_UUID128_32_32_64
+struct UUID128_32_32_64
 {
     //
     uint32_t       data1_;
@@ -222,7 +224,7 @@ struct ZCE_UUID128_32_32_64
 };
 
 ///标准的UUID的格式
-struct ZCE_UUID128_32_16_16_16_48
+struct UUID128_32_16_16_16_48
 {
     uint64_t       data1_:32;
     uint64_t       data2_:16;
@@ -232,7 +234,7 @@ struct ZCE_UUID128_32_16_16_16_48
 };
 
 ///微软的GUID的格式
-struct ZCE_UUID128_32_16_16_64
+struct UUID128_32_16_16_64
 {
     uint64_t       data1_:32;
     uint64_t       data2_:16;
@@ -250,18 +252,18 @@ struct ZCE_UUID128_32_16_16_64
 *             @li 32位整数+16位整数+16位整数+64位整数，微软的UUID表示方法，GUID，
 *
 */
-class ZCE_UUID128
+class UUID128
 {
 public:
     ///构造函数
-    ZCE_UUID128();
+    UUID128();
     ///析构函数
-    ~ZCE_UUID128();
+    ~UUID128();
 
     /// < 运算符重载
-    bool operator < (const ZCE_UUID128 &others) const;
+    bool operator < (const UUID128 &others) const;
     /// == 运算符
-    bool operator == (const ZCE_UUID128 &others) const;
+    bool operator == (const UUID128 &others) const;
 
     /// 以UUID8-4-4-4-12的格式进行转换为字符串
     const char *to_string(char *buffer,size_t buf_len,size_t &use_buf) const;
@@ -280,30 +282,30 @@ public:
         ///4个32为字节的组成
         uint32_t                     u_4uint32_[4];
         ///32位整数+32位整数+64位整数
-        ZCE_UUID128_32_32_64         u_32_32_64_;
+        UUID128_32_32_64         u_32_32_64_;
         ///标准的UUID的标识方法
-        ZCE_UUID128_32_16_16_16_48   u_32_16_16_16_48_;
+        UUID128_32_16_16_16_48   u_32_16_16_16_48_;
         ///微软的GUID的标识方法
-        ZCE_UUID128_32_16_16_64      u_32_16_16_64_;
+        UUID128_32_16_16_64      u_32_16_16_64_;
     };
 };
 
 /************************************************************************************************************
-Class           : ZCE_UUID128_Generator UUID的发生器
+Class           : UUID128_Generator UUID的发生器
 ************************************************************************************************************/
 
 /*!
-* @brief      ZCE_UUID128_Generator UUID的发生器
+* @brief      UUID128_Generator UUID的发生器
 *
 */
-class ZCE_UUID128_Generator
+class UUID128_Generator
 {
 public:
 
     ///构造函数
-    ZCE_UUID128_Generator();
+    UUID128_Generator();
     ///析构函数
-    ~ZCE_UUID128_Generator();
+    ~UUID128_Generator();
 
 public:
 
@@ -314,9 +316,9 @@ public:
     void random_seed(uint32_t seed);
     /*!
     * @brief      产生一个UUID128，
-    * @return     ZCE_UUID128
+    * @return     UUID128
     */
-    ZCE_UUID128 random_gen();
+    UUID128 random_gen();
 
     /*!
     * @brief      以时间为基数的初始化，radix一般可以用当前时间time_t（当然也可以不用，你用另外一个标识）
@@ -327,9 +329,9 @@ public:
 
     /*!
     * @brief      以时间为基数产生UUID64
-    * @return     ZCE_UUID128
+    * @return     UUID128
     */
-    ZCE_UUID128 timeradix_gen();
+    UUID128 timeradix_gen();
 
 protected:
 
@@ -342,12 +344,14 @@ protected:
     zce::random_mt11213b      mt_11213b_random_;
 
     ///
-    ZCE_UUID128               time_radix_seed_;
+    UUID128               time_radix_seed_;
 
 protected:
 
     //发生器实例指针
-    static ZCE_UUID128_Generator *instance_;
+    static UUID128_Generator *instance_;
 };
 
-#endif //# ZCE_LIB_UUID_64_GENERATOR_H_
+}
+
+

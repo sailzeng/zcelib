@@ -38,14 +38,14 @@ void Async_Object::finish()
 //设置超时定时器
 int Async_Object::set_timeout(const zce::Time_Value &time_out)
 {
-    Timer_Queue_Base *timer_queue = async_mgr_->timer_queue();
+    Timer_Queue *timer_queue = async_mgr_->timer_queue();
     zce::Time_Value delay_time(time_out);
     //注意使用的TIME ID
     timeout_id_ = timer_queue->schedule_timer(async_mgr_,
                                               this,
                                               delay_time);
 
-    if (Timer_Queue_Base::INVALID_TIMER_ID == timeout_id_)
+    if (Timer_Queue::INVALID_TIMER_ID == timeout_id_)
     {
         return -1;
     }
@@ -55,11 +55,11 @@ int Async_Object::set_timeout(const zce::Time_Value &time_out)
 //取消超时的定时器
 void Async_Object::cancel_timeout()
 {
-    if (Timer_Queue_Base::INVALID_TIMER_ID != timeout_id_)
+    if (Timer_Queue::INVALID_TIMER_ID != timeout_id_)
     {
-        zce::Timer_Queue_Base *timer_queue = async_mgr_->timer_queue();
+        zce::Timer_Queue *timer_queue = async_mgr_->timer_queue();
         timer_queue->cancel_timer(timeout_id_);
-        timeout_id_ = zce::Timer_Queue_Base::INVALID_TIMER_ID;
+        timeout_id_ = zce::Timer_Queue::INVALID_TIMER_ID;
     }
 }
 
@@ -95,7 +95,7 @@ Async_Obj_Mgr::~Async_Obj_Mgr()
 }
 
 //初始化，
-int Async_Obj_Mgr::initialize(Timer_Queue_Base *tq,
+int Async_Obj_Mgr::initialize(Timer_Queue *tq,
                               size_t crtn_type_num,
                               size_t running_number)
 {

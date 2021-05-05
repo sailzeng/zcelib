@@ -12,7 +12,7 @@ int test_nonr_thread_mutex(int,char *[])
     return 0;
 }
 
-//ZCE_Message_Queue_Deque<ZCE_MT_SYNCH,int>   message_queue_(100);
+//zce::MsgQueue_Deque<ZCE_MT_SYNCH,int>   message_queue_(100);
 ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 //ZCE_Msgqueue_List_Condi <int >  message_queue_(100);
 

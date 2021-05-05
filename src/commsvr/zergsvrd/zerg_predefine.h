@@ -27,7 +27,6 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 #include <zce/thread/msgque_sema.h>
-#include <zce/thread/msgque_nonlock.h>
 #include <zce/timer/handler_base.h>
 #include <zce/timer/queue_wheel.h>
 #include <zce/os_adapt/shm.h>

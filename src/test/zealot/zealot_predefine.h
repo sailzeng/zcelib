@@ -86,7 +86,6 @@
 #include <zce/config/property_tree.h>
 #include <zce/config/file_implement.h>
 
-
 #include <zce/sqlite/sqlite_handler.h>
 #include <zce/sqlite/sqlite_stmt.h>
 

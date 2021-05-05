@@ -23,7 +23,7 @@
 
 namespace zce
 {
-class Timer_Queue_Base;
+class Timer_Queue;
 
 /******************************************************************************************
 class zce::Timer_Handler
@@ -33,13 +33,13 @@ class Timer_Handler
 protected:
 
     //构造函数和析构函数
-    Timer_Handler(zce::Timer_Queue_Base *timer_queue);
+    Timer_Handler(zce::Timer_Queue *timer_queue);
     Timer_Handler();
     virtual ~Timer_Handler();
 
 protected:
     //
-    Timer_Queue_Base *timer_queue_ = nullptr;
+    Timer_Queue *timer_queue_ = nullptr;
     //
 
 public:
@@ -51,10 +51,10 @@ public:
     virtual int timer_close();
 
     //
-    zce::Timer_Queue_Base *timer_queue();
+    zce::Timer_Queue *timer_queue();
 
     //
-    void timer_queue(zce::Timer_Queue_Base *set_timer_queue);
+    void timer_queue(zce::Timer_Queue *set_timer_queue);
 
     //考虑的半天，我觉得对于Timer的处理还是不用考虑实现一个handle_close了。
     //handle_close

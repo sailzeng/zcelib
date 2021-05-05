@@ -66,7 +66,7 @@ protected:
     static ARY_OF_UDPSVC_HANDLER    ary_udpsvc_handler_;
 
     ///统计，使用单子类的指针
-    static Soar_Stat_Monitor *server_status_;
+    static soar::Stat_Monitor *server_status_;
 
     ///通讯管理器,保存是为了加快速度
     static Zerg_Comm_Manager *zerg_comm_mgr_;

@@ -380,12 +380,6 @@ int AII_Config_Table::replace_one(unsigned int table_id,
     SQLite_STMT stmt_handler(sqlite_handler_);
     int ret = 0;
 
-    ret = sqlite_handler_->begin_transaction();
-    if (ret != 0)
-    {
-        return ret;
-    }
-
     ret = stmt_handler.prepare(sql_string_);
     if (ret != 0)
     {
@@ -393,23 +387,19 @@ int AII_Config_Table::replace_one(unsigned int table_id,
     }
 
     SQLite_STMT::BLOB_bind binary_data((void *)conf_data->ai_iijima_data_,
-                                     conf_data->ai_data_length_);
+                                       conf_data->ai_data_length_);
     stmt_handler << conf_data->index_1_;
     stmt_handler << conf_data->index_2_;
     stmt_handler << binary_data;
     stmt_handler << conf_data->last_mod_time_;
 
-    bool hash_result = false;
-    ret = stmt_handler.execute_stmt_sql(hash_result);
+    bool has_result = false;
+    ret = stmt_handler.step(has_result);
     if (ret != 0)
     {
         return ret;
     }
-    ret = sqlite_handler_->commit_transction();
-    if (ret != 0)
-    {
-        return ret;
-    }
+
     return 0;
 }
 
@@ -438,18 +428,19 @@ int AII_Config_Table::replace_array(unsigned int table_id,
         }
 
         SQLite_STMT::BLOB_bind binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                              (*ary_ai_iijma)[i].ai_data_length_);
+                                           (*ary_ai_iijma)[i].ai_data_length_);
         stmt_handler << (*ary_ai_iijma)[i].index_1_;
         stmt_handler << (*ary_ai_iijma)[i].index_2_;
         stmt_handler << binary_data;
         stmt_handler << (*ary_ai_iijma)[i].last_mod_time_;
 
-        bool hash_result = false;
-        ret = stmt_handler.execute_stmt_sql(hash_result);
+        bool has_result = false;
+        ret = stmt_handler.step(has_result);
         if (ret != 0)
         {
             return ret;
         }
+        stmt_handler.reset();
     }
 
     ret = sqlite_handler_->commit_transction();
@@ -475,20 +466,19 @@ int AII_Config_Table::select_one(unsigned int table_id,
         return ret;
     }
 
-    bool hash_result = false;
-    ret = stmt_handler.execute_stmt_sql(hash_result);
+    bool has_result = false;
+    ret = stmt_handler.step(has_result);
     if (ret != 0)
     {
         return ret;
     }
-
-    if (false == hash_result)
+    if (false == has_result)
     {
         return -1;
     }
 
     SQLite_STMT::BLOB_column binary_data((void *)conf_data->ai_iijima_data_,
-                                           &(conf_data->ai_data_length_));
+                                         &(conf_data->ai_data_length_));
     stmt_handler >> binary_data;
     stmt_handler >> conf_data->last_mod_time_;
 
@@ -510,7 +500,7 @@ int AII_Config_Table::delete_one(unsigned int table_id,
         return ret;
     }
     bool hash_result = false;
-    ret = stmt_handler.execute_stmt_sql(hash_result);
+    ret = stmt_handler.step(hash_result);
     if (ret != 0)
     {
         return ret;
@@ -534,7 +524,7 @@ int AII_Config_Table::counter(unsigned int table_id,
     }
 
     bool hash_result = false;
-    ret = stmt_handler.execute_stmt_sql(hash_result);
+    ret = stmt_handler.step(hash_result);
     if (ret != 0)
     {
         return ret;
@@ -582,7 +572,7 @@ int AII_Config_Table::select_array(unsigned int table_id,
     }
 
     bool hash_result;
-    ret = stmt_handler.execute_stmt_sql(hash_result);
+    ret = stmt_handler.step(hash_result);
 
     for (size_t i = 0; ret == 0 && hash_result == true; ++i)
     {
@@ -599,12 +589,12 @@ int AII_Config_Table::select_array(unsigned int table_id,
         }
 
         SQLite_STMT::BLOB_column binary_data((void *)(*ary_ai_iijma)[i].ai_iijima_data_,
-                                               &((*ary_ai_iijma)[i].ai_data_length_));
+                                             &((*ary_ai_iijma)[i].ai_data_length_));
 
         stmt_handler >> binary_data;
         stmt_handler >> (*ary_ai_iijma)[i].last_mod_time_;
 
-        ret = stmt_handler.execute_stmt_sql(hash_result);
+        ret = stmt_handler.step(hash_result);
     }
 
     //出现错误或者没有找到

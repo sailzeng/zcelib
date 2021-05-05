@@ -49,7 +49,7 @@ int Soar_SvrdApp_ZergBus::app_run()
 
     zce::Time_Value select_interval(0,0);
 
-    zce::Timer_Queue_Base *time_queue = zce::Timer_Queue_Base::instance();
+    zce::Timer_Queue *time_queue = zce::Timer_Queue::instance();
     ZCE_Reactor *reactor = ZCE_Reactor::instance();
 
     for (; app_run_;)

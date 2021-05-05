@@ -26,9 +26,9 @@ Server_Timer_Base::~Server_Timer_Base()
 }
 
 //初始化，如果希望增加APP的定时器或者调整心跳进度，请在调用这个函数前完成
-int Server_Timer_Base::initialize(zce::Timer_Queue_Base *queue)
+int Server_Timer_Base::initialize(zce::Timer_Queue *queue)
 {
-    stat_monitor_ = Soar_Stat_Monitor::instance();
+    stat_monitor_ = soar::Stat_Monitor::instance();
 
     timer_queue(queue);
 
@@ -155,7 +155,7 @@ void Server_Timer_Base::set_heart_precision(const zce::Time_Value &precision)
 //增加一个APP的定时器
 void Server_Timer_Base::add_app_timer(const zce::Time_Value &interval,const void *act)
 {
-    ZCE_ASSERT(zan_timer_num_ + 1 >= MAX_APP_TIMER_NUMBER);
+    ZCE_ASSERT(zan_timer_num_ + 1 <= MAX_APP_TIMER_NUMBER);
 
     zan_timer_internal_[zan_timer_num_] = interval;
     zan_timer_act_[zan_timer_num_] = act;

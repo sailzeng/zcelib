@@ -5,26 +5,27 @@
 * @version
 * @date       2011年6月17日
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
-*
+*             
 *
 * @details
 *
 *
 *
-* @note
-*
+* @note      原来代码这儿我用了偏特化进行了炫技，为了兼容一个无锁的模式，后面
+*            整理代码发现我有点太作了。删除了。保留下来其实算是一个挺好的偏特
+*            化的例子的，但还是算了。
 */
 
-#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
-#define ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
+#pragma once
 
 #include "zce/lock/synch_traits.h"
-#include "zce/thread/msgque_template.h"
-
 #include "zce/util/non_copyable.h"
 #include "zce/lock/thread_mutex.h"
 #include "zce/lock/synch_traits.h"
 #include "zce/lock/thread_semaphore.h"
+
+namespace zce
+{
 
 /*!
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
@@ -34,12 +35,12 @@
 */
 template < typename _value_type,
     typename _container_type >
-    class ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,_container_type>: public zce::NON_Copyable
+class Message_Queue: public zce::NON_Copyable
 {
 public:
 
     //
-    explicit ZCE_Message_Queue(size_t queue_max_size):
+    explicit Message_Queue(size_t queue_max_size):
         queue_max_size_(queue_max_size),
         queue_cur_size_(0),
         sem_full_(static_cast<unsigned int>(queue_max_size)),
@@ -47,7 +48,7 @@ public:
     {
     }
 
-    ~ZCE_Message_Queue()
+    ~Message_Queue()
     {
     }
 
@@ -289,21 +290,21 @@ protected:
 
 /*!
 * @brief      内部用LIST实现的消息队列，性能低,边界保护用的条件变量。但一开始占用内存不多
-*             ZCE_Message_Queue_List <ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
+*             zce::MsgQueue_List <ZCE_MT_SYNCH,_value_type> ZCE_MT_SYNCH 参数特化
 * @tparam     _value_type 消息队列保存的数据类型
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class ZCE_Message_Queue_List <ZCE_MT_SYNCH,_value_type>: public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::list<_value_type> >
+class MsgQueue_List : public Message_Queue<_value_type,std::list<_value_type> >
 {
 public:
     //
-    explicit ZCE_Message_Queue_List(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::list<_value_type> >(queue_max_size)
+    explicit MsgQueue_List(size_t queue_max_size):
+        Message_Queue<_value_type,std::list<_value_type> >(queue_max_size)
     {
     }
 
-    ~ZCE_Message_Queue_List()
+    ~MsgQueue_List()
     {
     }
 };
@@ -315,16 +316,16 @@ public:
 * note       封装的主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class ZCE_Message_Queue_Deque <ZCE_MT_SYNCH,_value_type>: public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::deque<_value_type> >
+class MsgQueue_Deque : public Message_Queue<_value_type,std::deque<_value_type> >
 {
 public:
     //
-    explicit ZCE_Message_Queue_Deque(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,std::deque<_value_type> >(queue_max_size)
+    explicit MsgQueue_Deque(size_t queue_max_size):
+        Message_Queue<_value_type,std::deque<_value_type> >(queue_max_size)
     {
     }
 
-    ~ZCE_Message_Queue_Deque()
+    ~MsgQueue_Deque()
     {
     }
 };
@@ -336,19 +337,20 @@ public:
 * note        这个封装的主要不光是了为了给你语法糖，而且是为了极限性能
 */
 template <typename _value_type >
-class ZCE_Message_Queue_Rings<ZCE_MT_SYNCH,_value_type>: public ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,zce::lordrings<_value_type> >
+class MsgQueue_Rings: public Message_Queue<_value_type,zce::lordrings<_value_type> >
 {
 public:
     //
-    explicit ZCE_Message_Queue_Rings(size_t queue_max_size):
-        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,zce::lordrings<_value_type> >(queue_max_size)
+    explicit MsgQueue_Rings(size_t queue_max_size):
+        Message_Queue<_value_type,zce::lordrings<_value_type> >(queue_max_size)
     {
-        ZCE_Message_Queue<ZCE_MT_SYNCH,_value_type,zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
+        Message_Queue<_value_type,zce::lordrings<_value_type> >::message_queue_.resize(queue_max_size);
     }
 
-    ~ZCE_Message_Queue_Rings()
+    ~MsgQueue_Rings()
     {
     }
 };
 
-#endif //#ifndef ZCE_LIB_THREAD_MESSAGE_QUEUE_SEMAPHORE_H_
+}
+

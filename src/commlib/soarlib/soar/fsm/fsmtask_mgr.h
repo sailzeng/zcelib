@@ -27,8 +27,8 @@ class FSMTask_Manger: public FSM_Manager
 {
 protected:
 
-    //ZCE_Message_Queue_Deque底层实现用的Deque
-    typedef ZCE_Message_Queue_Deque<ZCE_MT_SYNCH,soar::Zerg_Frame *>  APPFRAME_MESSAGE_QUEUE;
+    //zce::MsgQueue_Deque底层实现用的Deque
+    typedef zce::MsgQueue_Deque<soar::Zerg_Frame *>  APPFRAME_MESSAGE_QUEUE;
     //APPFRAME的分配器
     typedef ZergFrame_Mallocor<typename ZCE_MT_SYNCH::MUTEX>     APPFRAME_MALLOCOR;
 
@@ -59,7 +59,7 @@ public:
                     size_t sztransmap,
                     const soar::SERVICES_INFO &selfsvr,
                     const zce::Time_Value &enqueue_timeout,
-                    zce::Timer_Queue_Base *timer_queue,
+                    zce::Timer_Queue *timer_queue,
                     Soar_MMAP_BusPipe *zerg_mmap_pipe,
                     APPFRAME_MALLOCOR *frame_mallocor);
 

@@ -118,7 +118,7 @@ protected:
     ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
     ZBuffer_Storage *zbuffer_storage_;
     ///统计，使用单子类的指针，保留它仅仅为了加速
-    Soar_Stat_Monitor *server_status_;
+    soar::Stat_Monitor *server_status_;
 
     ///计数起始时间
     unsigned int count_start_time_;

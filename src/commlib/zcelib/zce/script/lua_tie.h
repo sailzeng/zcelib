@@ -56,6 +56,7 @@
 #pragma warning ( push )
 #pragma warning ( disable : 4127)
 #pragma warning ( disable : 4189)
+#pragma warning ( disable : 4717)
 #elif defined (ZCE_OS_LINUX)
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wsequence-point"
@@ -422,6 +423,7 @@ template<> void push_stack_val(lua_State *state,double val);
 template<> void push_stack_val(lua_State *state,bool val);
 template<> void push_stack_val(lua_State *state,int64_t val);
 template<> void push_stack_val(lua_State *state,uint64_t val);
+template<> void push_stack_val(lua_State *state,std::string &val);
 
 //不允许出现long的变量，因为long无法移植，所以只定义，不实现
 template<> void push_stack_val(lua_State *state,long val);

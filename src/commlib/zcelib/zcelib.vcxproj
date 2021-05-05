@@ -445,9 +445,7 @@
     <ClInclude Include="zce\string\helper.h" />
     <ClInclude Include="zce\bus\thread_pipe.h" />
     <ClInclude Include="zce\thread\msgque_condi.h" />
-    <ClInclude Include="zce\thread\msgque_nonlock.h" />
     <ClInclude Include="zce\thread\msgque_sema.h" />
-    <ClInclude Include="zce\thread\msgque_template.h" />
     <ClInclude Include="zce\thread\thread_task.h" />
     <ClInclude Include="zce\thread\thread_wait_mgr.h" />
     <ClInclude Include="zce\timer\handler_base.h" />

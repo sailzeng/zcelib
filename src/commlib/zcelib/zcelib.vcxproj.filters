@@ -631,13 +631,7 @@
     <ClInclude Include="zce\thread\msgque_condi.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\thread\msgque_nonlock.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="zce\thread\msgque_sema.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\thread\msgque_template.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\thread\thread_task.h">

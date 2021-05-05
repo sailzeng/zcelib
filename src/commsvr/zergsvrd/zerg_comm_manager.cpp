@@ -20,7 +20,7 @@ Zerg_Comm_Manager::Zerg_Comm_Manager():
 {
     zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
     zbuffer_storage_ = ZBuffer_Storage::instance();
-    server_status_ = Soar_Stat_Monitor::instance();
+    server_status_ = soar::Stat_Monitor::instance();
     count_start_time_ = static_cast<unsigned int>(Zerg_App_Timer_Handler::now_time_.sec());
 
     memset(monitor_cmd_,0,sizeof(monitor_cmd_));

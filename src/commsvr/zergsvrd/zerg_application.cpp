@@ -60,20 +60,15 @@ int Zerg_Service_App::app_start(int argc,const char *argv[])
     {
         return ret;
     }
-    //初始化统计模块
-    //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
-    ret = Soar_Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
-                                                    business_id_,
-                                                    self_svc_info_.svc_id_,
-                                                    0,
-                                                    NULL,
-                                                    false);
+    
+    //给统计模块添加自己的统计信息
+    ret = soar::Stat_Monitor::instance()->add_status_item();
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR,"zce_Server_Status init fail. ret=%d",ret);
         return ret;
     }
-
+    
     size_t max_accept = 0,max_connect = 0,max_peer = 0;
     TCP_Svc_Handler::get_max_peer_num(max_accept,max_connect);
     max_peer = max_accept + max_connect + 16;
@@ -164,7 +159,7 @@ int Zerg_Service_App::app_run()
 
     //microsecond
     ZCE_Reactor *preactor = ZCE_Reactor::instance();
-    zce::Timer_Queue_Base *p_timer_queue = zce::Timer_Queue_Base::instance();
+    zce::Timer_Queue *p_timer_queue = zce::Timer_Queue::instance();
 
     zce::Time_Value run_interval(0,IDLE_REACTOR_WAIT_USEC);
 

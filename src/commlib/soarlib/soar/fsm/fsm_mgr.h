@@ -86,7 +86,7 @@ protected:
     };
 
     ///内部的APPFRAME的消息队列，
-    typedef ZCE_Message_Queue_Deque<ZCE_NULL_SYNCH,soar::Zerg_Frame *> Inner_Frame_Queue;
+    typedef zce::MsgQueue_Deque<soar::Zerg_Frame *> Inner_Frame_Queue;
     ///内部的APPFRAME的分配器，只在Mgr内部使用，单线程，用于给内部提供一些异步化的处理
     typedef ZergFrame_Mallocor<ZCE_Null_Mutex> Inner_Frame_Mallocor;
     //内部的锁的数量
@@ -156,7 +156,7 @@ public:
     * @param      init_lock_pool
     * @note
     */
-    int initialize(zce::Timer_Queue_Base *timer_queue,
+    int initialize(zce::Timer_Queue *timer_queue,
                    size_t  reg_fsm_num,
                    size_t running_fsm_num,
                    const soar::SERVICES_INFO &selfsvr,
@@ -173,12 +173,6 @@ public:
     //得到一个SvrID
     const soar::SERVICES_ID *self_svc_id();
 
-    //取得管理器的负载因子
-    void get_manager_load_foctor(uint32_t &load_max,
-                                 uint32_t &load_cur);
-
-    void get_manager_load_foctor2(uint32_t &load_max,
-                                  uint32_t &load_cur);
 
     //打开Trans统计信息，得到一个当前时钟
     void enable_trans_statistics(const zce::Time_Value *stat_clock);

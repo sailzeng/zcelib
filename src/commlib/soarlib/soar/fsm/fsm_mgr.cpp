@@ -19,7 +19,7 @@ FSM_Manager::~FSM_Manager()
 {
 }
 
-int FSM_Manager::initialize(zce::Timer_Queue_Base *timer_queue,
+int FSM_Manager::initialize(zce::Timer_Queue *timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
                             const soar::SERVICES_INFO &selfsvr,
@@ -123,6 +123,11 @@ int FSM_Manager::register_fsmobj(uint32_t create_cmd,
     return ret;
 }
 
+bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
+{
+
+}
+
 //
 int FSM_Manager::process_pipe_frame(size_t &proc_frame,
                                     size_t &create_num)
@@ -186,6 +191,7 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
     {
         if (only_one_lock_pool_)
         {
+            
         }
 
         unsigned int id = 0;

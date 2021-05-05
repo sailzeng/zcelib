@@ -1,5 +1,4 @@
-#include "zealot_predefine.h"
-
+ï»¿#include "zealot_predefine.h"
 
 int test_sqlite_handle(int /*argc*/,char * /*argv */[])
 {
@@ -25,9 +24,9 @@ int test_sqlite_handle(int /*argc*/,char * /*argv */[])
     {
         return -1;
     }
-    std::cout<< result.column_number();
-    std::cout<<result.row_number();
-    for(size_t i=1;i<= (size_t)result.row_number();++i)
+    std::cout << result.column_number();
+    std::cout << result.row_number();
+    for (size_t i = 1; i <= (size_t)result.row_number(); ++i)
     {
         int id = result.field_data<int>(i,1);
         std::string name = result.field_data<std::string>(i,2);
@@ -39,10 +38,10 @@ int test_sqlite_handle(int /*argc*/,char * /*argv */[])
             << " name=" << name
             << " age=" << age
             << " address=" << address
-            << " salary=" << salary <<std::endl;
+            << " salary=" << salary << std::endl;
     }
     hdl.close_database();
-    
+
     return 0;
 }
 
@@ -81,7 +80,7 @@ int test_sqlite_stmt(int /*argc*/,char * /*argv */[])
         age = 22 + i;
         address = "aaaa.aaaa";
         address += std::to_string(i);
-        salary = 1000.11 + i*1000;
+        salary = 1000.11 + i * 1000;
 
         stmt.reset();
         stmt << id;
@@ -89,8 +88,8 @@ int test_sqlite_stmt(int /*argc*/,char * /*argv */[])
         stmt << age;
         stmt << address;
         stmt << salary;
-        
-        ret = stmt.execute_stmt_sql(has_result);
+
+        ret = stmt.step(has_result);
         if (ret != 0)
         {
             return -1;
@@ -104,9 +103,9 @@ int test_sqlite_stmt(int /*argc*/,char * /*argv */[])
         return -1;
     }
 
-    while(true)
+    while (true)
     {
-        ret = stmt.execute_stmt_sql(has_result);
+        ret = stmt.step(has_result);
         if (ret != 0)
         {
             return -1;
@@ -115,7 +114,7 @@ int test_sqlite_stmt(int /*argc*/,char * /*argv */[])
         {
             break;
         }
-        
+
         stmt >> id;
         stmt >> name;
         stmt >> age;
@@ -126,9 +125,8 @@ int test_sqlite_stmt(int /*argc*/,char * /*argv */[])
             << " age=" << age
             << " address=" << address
             << " salary=" << salary << std::endl;
-        //×¢Òâ²éÑ¯²»ÄÜreset
+        //æ³¨æ„æŸ¥è¯¢ä¸èƒ½reset
     }
-    
 
     return 0;
 }

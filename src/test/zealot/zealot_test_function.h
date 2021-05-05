@@ -104,7 +104,6 @@ int test_async_coroutine(int  /*argc*/,char * /*argv*/[]);
 int test_conf_xml(int  /*argc*/,char * /*argv*/[]);
 int test_conf_ini(int  /*argc*/,char * /*argv*/[]);
 
-
 int test_pid_file(int /*argc*/,char * /*argv*/[]);
 
 int test_container_performance(int  /*argc*/,char * /*argv*/[]);

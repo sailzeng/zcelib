@@ -20,33 +20,32 @@
 * @note
 *
 */
-#ifndef ZCE_LIB_TIMER_QUEUE_HEAP_H_
-#define ZCE_LIB_TIMER_QUEUE_HEAP_H_
+#pragma once
 
 #include "zce/time/time_value.h"
 #include "zce/timer/queue_base.h"
 
-//
-
+namespace zce
+{
 /*!
 *@brief     堆的定时器队列，所有的超时时间用堆进行排序，这样判断是否有定时器要触发就很简单，
 *           只用在堆顶判断就OK。
 *           其各种操作的时间复杂度都基本是O(log(2N)) 这个级别。
 *
 */
-class ZCE_Timer_Heap: public zce::Timer_Queue_Base
+class Timer_Heap: public zce::Timer_Queue
 {
 public:
     ///构造函数
-    ZCE_Timer_Heap(size_t num_timer_node,
-                   unsigned int timer_length_mesc = 1000,
-                   TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
-                   bool dynamic_expand_node = true);
+    Timer_Heap(size_t num_timer_node,
+               unsigned int timer_length_mesc = 1000,
+               TRIGGER_MODE trigger_mode = TRIGGER_MODE::SYSTEM_CLOCK,
+               bool dynamic_expand_node = true);
     ///默认构造函数
-    ZCE_Timer_Heap();
+    Timer_Heap();
 
     ///析构函数
-    virtual ~ZCE_Timer_Heap();
+    virtual ~Timer_Heap();
 public:
 
     /*!
@@ -159,5 +158,4 @@ protected:
     ///TIMER NODE的ID（也就是TIMER ID），就能下标定位找到堆的位置
     std::vector <int>    note_to_heapid_;
 };
-
-#endif //#ifndef ZCE_LIB_TIMER_QUEUE_HEAP_H_
+} //namespace zce

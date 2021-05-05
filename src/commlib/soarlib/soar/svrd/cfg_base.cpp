@@ -222,14 +222,14 @@ int Server_Config_Base::get_common_cfg(const ZCE_Conf_PropertyTree *conf_tree)
     int ret = 0;
     std::string temp_value;
 
-    ret = conf_tree->path_get_leaf("SELF_SVCID","soar::SERVICES_ID",temp_value);
+    ret = conf_tree->path_get_leaf("SELF_SVCID","SERVICES_ID",temp_value);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);
         return SOAR_RET::ERROR_GET_CFGFILE_CONFIG_FAIL;
     }
 
-    ret = self_svc_info_.from_str(temp_value.c_str(),true);
+    ret = self_svc_info_.svc_id_.from_str(temp_value.c_str(),true);
     if (0 != ret)
     {
         SOAR_CFG_READ_FAIL(RS_ERROR);

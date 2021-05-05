@@ -50,7 +50,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
                                 size_t sztransmap,
                                 const soar::SERVICES_INFO &selfsvr,
                                 const zce::Time_Value &enqueue_timeout,
-                                zce::Timer_Queue_Base *timer_queue,
+                                zce::Timer_Queue *timer_queue,
                                 Soar_MMAP_BusPipe *zerg_mmap_pipe,
                                 APPFRAME_MALLOCOR *frame_mallocor)
 {
@@ -221,7 +221,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
     //不能直接放入enqueue_timeout_，这个值会改变
     zce::Time_Value tv = enqueue_timeout_;
     ret = send_msg_queue_->enqueue(tmp_frame,tv);
-
+    auto monitor = soar::Stat_Monitor::instance();
     //返回值小于0表示失败
     if (ret < 0)
     {
@@ -229,9 +229,10 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
                 ret,tmp_frame->user_id_,tmp_frame->command_);
 
         // 加个监控
-        Soar_Stat_Monitor::instance()->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
-                                                     self_svc_info_.business_id_,
-                                                     0);
+        
+        monitor->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
+                               self_svc_info_.business_id_,
+                               0);
         return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
     }
 
@@ -239,6 +240,9 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
     //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
     //    send_msg_queue_->size(),
     //    send_msg_queue_->size() * sizeof(soar::Zerg_Frame *));
+    monitor->increase_once(COMM_STAT_TASK_QUEUE_SEND_SUCC,
+                           self_svc_info_.business_id_,
+                           0);
     return 0;
 }
 
@@ -246,6 +250,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
 int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame *&get_frame,zce::Time_Value &tv)
 {
     int ret = recv_msg_queue_->dequeue(get_frame,tv);
+    auto monitor = soar::Stat_Monitor::instance();
     //返回值小于0表示失败
     if (ret < 0)
     {
@@ -256,7 +261,9 @@ int FSMTask_Manger::dequeue_recvqueue(soar::Zerg_Frame *&get_frame,zce::Time_Val
         //}
         return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
     }
-
+    monitor->increase_once(COMM_STAT_TASK_QUEUE_RECV_COUNT,
+                           self_svc_info_.business_id_,
+                           0);
     return 0;
 }
 
@@ -274,7 +281,9 @@ int FSMTask_Manger::trydequeue_recvqueue(soar::Zerg_Frame *&get_frame)
         //}
         return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
     }
-
+    monitor->increase_once(COMM_STAT_TASK_QUEUE_RECV_COUNT,
+                           self_svc_info_.business_id_,
+                           0);
     return 0;
 }
 

@@ -22,7 +22,7 @@ int Soar_MMAP_BusPipe::initialize(soar::SERVICES_INFO &svr_info,
                                   size_t max_frame_len,
                                   bool if_restore)
 {
-    monitor_ = Soar_Stat_Monitor::instance();
+    monitor_ = soar::Stat_Monitor::instance();
 
     zerg_svr_info_ = svr_info;
 
@@ -121,10 +121,10 @@ int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame *&proc_frame)
     // 加监控数据
     if (ret == 0)
     {
-        monitor_->increase_once(COMM_STAT_RECV_PKG_COUNT,
+        monitor_->increase_once(COMM_STAT_PIPE_RECV_COUNT,
                                 zerg_svr_info_.business_id_,
                                 proc_frame->command_);
-        monitor_->increase_by_statid(COMM_STAT_RECV_PKG_BYTES,
+        monitor_->increase_by_statid(COMM_STAT_BUS_RECV_BYTES,
                                      zerg_svr_info_.business_id_,
                                      proc_frame->command_,
                                      proc_frame->length_);
@@ -163,17 +163,17 @@ int Soar_MMAP_BusPipe::push_back_sendpipe(const soar::Zerg_Frame *proc_frame)
     if (ret != 0)
     {
         // 发送失败, 管道满了
-        monitor_->increase_once(COMM_STAT_SEND_PKG_FAIL,
+        monitor_->increase_once(COMM_STAT_BUS_SEND_FAIL,
                                 zerg_svr_info_.business_id_,
                                 proc_frame->command_);
         return SOAR_RET::ERROR_PIPE_IS_FULL;
     }
     else
     {
-        monitor_->increase_once(COMM_STAT_SEND_PKG_SUCC,
+        monitor_->increase_once(COMM_STAT_BUS_SEND_SUCC,
                                 zerg_svr_info_.business_id_,
                                 proc_frame->command_);
-        monitor_->increase_by_statid(COMM_STAT_SEND_PKG_BYTES,
+        monitor_->increase_by_statid(COMM_STAT_BUS_SEND_BYTES,
                                      zerg_svr_info_.business_id_,
                                      proc_frame->command_,
                                      proc_frame->length_);

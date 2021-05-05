@@ -186,7 +186,6 @@ protected:
 
     //! Number of result columns written here ,column_ 从1开始
     int column_ = 0;
-
 };
 }
 

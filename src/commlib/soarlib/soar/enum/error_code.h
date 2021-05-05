@@ -163,7 +163,7 @@ public:
         ERROR_GET_CFGSVR_INVALID_START_ARGS = 5164,
         ERROR_INVALID_SERVICE_TYPE = 5165,
         ERROR_BAD_STAT_FILE_NAME = 5166,                  // 错误的stat文件名
-        ERROR_STAT_MONITOR_NOT_INIT = 5167,                  // Soar_Stat_Monitor未初始化
+        ERROR_STAT_MONITOR_NOT_INIT = 5167,                  // soar::Stat_Monitor未初始化
         ERROR_SOCKET_CHANNEL_SEND_NO_INFO = 5168,                  // 使用socket channel发送数据没有对应业务的info
         ERROR_SOCKET_CHANNEL_SEND_BUS_FULL = 5169,                  // 使用socket channel发送数据发送管道满
         ERROR_SOCKET_CHANNEL_RECV_NO_INFO = 5170,                  // 使用socket channel接收数据没有对应业务的info

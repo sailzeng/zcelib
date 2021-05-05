@@ -650,7 +650,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //
 //            proc_frame->dumpoutput_framehead("[FROM RECV FRAME]", RS_ERROR);
 //
-//            Soar_Stat_Monitor::instance()->increase_once(WORMHOLE_TRANS_PKG_ERROR);
+//            soar::Stat_Monitor::instance()->increase_once(WORMHOLE_TRANS_PKG_ERROR);
 //
 //            return SOAR_RET::ERROR_APPFRAME_ERROR;
 //        }

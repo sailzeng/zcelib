@@ -770,7 +770,7 @@ inline void string_helper(std::string &stdstr,
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
-                          const ZCE_UUID64 &out_data)
+                          const UUID64 &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -779,7 +779,7 @@ inline void output_helper(char *buffer,
     //返回成功
     if (ret_str)
     {
-        use_len = ZCE_UUID64::LEN_OF_ZCE_UUID64_STR;
+        use_len = UUID64::LEN_OF_ZCE_UUID64_STR;
     }
     else
     {
@@ -788,11 +788,11 @@ inline void output_helper(char *buffer,
 }
 
 inline void string_helper(std::string &stdstr,
-                          const ZCE_UUID64 &out_data)
+                          const UUID64 &out_data)
 {
-    char uuid_str[ZCE_UUID64::LEN_OF_ZCE_UUID64_STR + 1];
-    uuid_str[ZCE_UUID64::LEN_OF_ZCE_UUID64_STR] = '\0';
-    size_t max_len = ZCE_UUID64::LEN_OF_ZCE_UUID64_STR + 1;
+    char uuid_str[UUID64::LEN_OF_ZCE_UUID64_STR + 1];
+    uuid_str[UUID64::LEN_OF_ZCE_UUID64_STR] = '\0';
+    size_t max_len = UUID64::LEN_OF_ZCE_UUID64_STR + 1;
     size_t use_len = 0;
     const char *ret_str = out_data.to_string(uuid_str,
                                              max_len,
@@ -804,7 +804,7 @@ inline void string_helper(std::string &stdstr,
 inline void output_helper(char *buffer,
                           size_t max_len,
                           size_t &use_len,
-                          const ZCE_UUID128 &out_data)
+                          const UUID128 &out_data)
 {
     const char *ret_str = out_data.to_string(buffer,
                                              max_len,
@@ -816,11 +816,11 @@ inline void output_helper(char *buffer,
 }
 
 inline void string_helper(std::string &stdstr,
-                          const ZCE_UUID128 &out_data)
+                          const UUID128 &out_data)
 {
-    char uuid_str[ZCE_UUID128::LEN_OF_ZCE_UUID128_STR + 1];
-    uuid_str[ZCE_UUID128::LEN_OF_ZCE_UUID128_STR] = '\0';
-    size_t max_len = ZCE_UUID128::LEN_OF_ZCE_UUID128_STR + 1;
+    char uuid_str[UUID128::LEN_OF_ZCE_UUID128_STR + 1];
+    uuid_str[UUID128::LEN_OF_ZCE_UUID128_STR] = '\0';
+    size_t max_len = UUID128::LEN_OF_ZCE_UUID128_STR + 1;
     size_t use_len = 0;
     const char *ret_str = out_data.to_string(uuid_str,
                                              max_len,

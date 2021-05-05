@@ -55,7 +55,7 @@
 #ifndef SOARING_LIB_TIMER_HANDLER_H_
 #define SOARING_LIB_TIMER_HANDLER_H_
 
-class Soar_Stat_Monitor;
+class soar::Stat_Monitor;
 class Server_Config_Base;
 
 /*!
@@ -91,7 +91,7 @@ protected:
     * @return     virtual int
     * @param      queue
     */
-    virtual int initialize(zce::Timer_Queue_Base *queue);
+    virtual int initialize(zce::Timer_Queue *queue);
 
     /// 定时处理监控数据
     virtual int timer_timeout(const zce::Time_Value &now_time,
@@ -117,7 +117,7 @@ protected:
     static const  int  SERVER_TIMER_ID[];
 
     ///APP Timer的最大数量，
-    static const size_t MAX_APP_TIMER_NUMBER = 6;
+    static const size_t MAX_APP_TIMER_NUMBER = 12;
 
     ///默认心跳的精度
     static const time_t DEF_TIMER_INTERVAL_USEC = 500000;
@@ -137,7 +137,7 @@ protected:
     time_t last_check_ = 0;
 
     // 监控的实例
-    Soar_Stat_Monitor *stat_monitor_ = NULL;
+    soar::Stat_Monitor *stat_monitor_ = NULL;
 
     ///非心跳以外，还可以设置N个APP定时器，你自己配置,我为你点个赞
     size_t zan_timer_num_ = 0;

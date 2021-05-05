@@ -5,7 +5,7 @@
 namespace zce
 {
 //构造函数和析构函数
-Timer_Handler::Timer_Handler(zce::Timer_Queue_Base *timer_queue):
+Timer_Handler::Timer_Handler(zce::Timer_Queue *timer_queue):
     timer_queue_(timer_queue)
 {
 }
@@ -19,13 +19,13 @@ Timer_Handler::~Timer_Handler()
 }
 
 //得到Timer Queue
-Timer_Queue_Base *Timer_Handler::timer_queue()
+Timer_Queue *Timer_Handler::timer_queue()
 {
     return timer_queue_;
 }
 
 //得到Timer Queue
-void Timer_Handler::timer_queue(Timer_Queue_Base *set_timer_queue)
+void Timer_Handler::timer_queue(Timer_Queue *set_timer_queue)
 {
     timer_queue_ = set_timer_queue;
 }
