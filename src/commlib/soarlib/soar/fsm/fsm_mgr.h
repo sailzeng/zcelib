@@ -173,7 +173,6 @@ public:
     //得到一个SvrID
     const soar::SERVICES_ID *self_svc_id();
 
-
     //打开Trans统计信息，得到一个当前时钟
     void enable_trans_statistics(const zce::Time_Value *stat_clock);
 

@@ -5,7 +5,7 @@
 * @version
 * @date       2011年6月17日
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
-*             
+*
 *
 * @details
 *
@@ -26,7 +26,6 @@
 
 namespace zce
 {
-
 /*!
 * @brief      用信号灯+容器实现的消息队列，对于我个人来说，还是信号灯好理解一些
 *
@@ -35,7 +34,7 @@ namespace zce
 */
 template < typename _value_type,
     typename _container_type >
-class Message_Queue: public zce::NON_Copyable
+    class Message_Queue: public zce::NON_Copyable
 {
 public:
 
@@ -295,7 +294,7 @@ protected:
 * note        主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class MsgQueue_List : public Message_Queue<_value_type,std::list<_value_type> >
+class MsgQueue_List: public Message_Queue<_value_type,std::list<_value_type> >
 {
 public:
     //
@@ -316,7 +315,7 @@ public:
 * note       封装的主要就是为了给你一些语法糖
 */
 template <typename _value_type >
-class MsgQueue_Deque : public Message_Queue<_value_type,std::deque<_value_type> >
+class MsgQueue_Deque: public Message_Queue<_value_type,std::deque<_value_type> >
 {
 public:
     //
@@ -351,6 +350,4 @@ public:
     {
     }
 };
-
 }
-

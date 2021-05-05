@@ -97,18 +97,18 @@ void FSM_Base::on_run(void *outer_data,bool &continue_run)
         {
             // 成功退出，修改监控数据
             soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
-                                                         trans_manager_->self_svc_info_.business_id_,
-                                                         req_zerg_head_.command_);
+                                                          trans_manager_->self_svc_info_.business_id_,
+                                                          req_zerg_head_.command_);
         }
         else
         {
             // 失败退出，修改监控数据
             soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
-                                                         trans_manager_->self_svc_info_.business_id_,
-                                                         req_zerg_head_.command_);
+                                                          trans_manager_->self_svc_info_.business_id_,
+                                                          req_zerg_head_.command_);
             soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
-                                                         trans_manager_->self_svc_info_.business_id_,
-                                                         running_errno_);
+                                                          trans_manager_->self_svc_info_.business_id_,
+                                                          running_errno_);
         }
     }
 }
@@ -139,18 +139,18 @@ void FSM_Base::on_timeout(const zce::Time_Value &now_time,
         {
             // 成功退出，修改监控数据
             soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
-                                                         trans_manager_->self_svc_info_.business_id_,
-                                                         req_zerg_head_.command_);
+                                                          trans_manager_->self_svc_info_.business_id_,
+                                                          req_zerg_head_.command_);
         }
         else
         {
             // 失败退出，修改监控数据
             soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
-                                                         trans_manager_->self_svc_info_.business_id_,
-                                                         req_zerg_head_.command_);
+                                                          trans_manager_->self_svc_info_.business_id_,
+                                                          req_zerg_head_.command_);
             soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
-                                                         trans_manager_->self_svc_info_.business_id_,
-                                                         running_errno_);
+                                                          trans_manager_->self_svc_info_.business_id_,
+                                                          running_errno_);
         }
     }
 }

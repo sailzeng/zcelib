@@ -24,7 +24,7 @@ class Timer_Handler;
 
 /*!
 * @brief      定时器发生器的基础类
-*             
+*
 */
 class Timer_Queue: public zce::NON_Copyable
 {

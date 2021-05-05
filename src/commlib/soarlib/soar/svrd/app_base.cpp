@@ -206,11 +206,11 @@ int Svrd_Appliction::app_start(int argc,const char *argv[])
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = soar::Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
-                                                    business_id_,
-                                                    self_svc_info_.svc_id_,
-                                                    0,
-                                                    NULL,
-                                                    false);
+                                                     business_id_,
+                                                     self_svc_info_.svc_id_,
+                                                     0,
+                                                     NULL,
+                                                     false);
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR,"zce_Server_Status init fail. ret=%d",ret);
@@ -227,7 +227,6 @@ int Svrd_Appliction::app_start(int argc,const char *argv[])
 
     //注册定时器
     timer_base_->initialize(zce::Timer_Queue::instance());
-
 
     //Reactor的修改一定要放在前面(读取配置后面)，至少吃了4次亏
     //居然在同一条河里淹死了好几次。最新的一次是20070929，

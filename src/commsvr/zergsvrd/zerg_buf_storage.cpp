@@ -144,9 +144,9 @@ void ZBuffer_Storage::extend_bufferlist(size_t szlist)
     size_of_bufferalloc_ += szlist;
 
     soar::Stat_Monitor::instance()->set_by_statid(ZERG_BUFFER_STORAGE_NUMBER,
-                                                 0,
-                                                 0,
-                                                 size_of_bufferalloc_);
+                                                  0,
+                                                  0,
+                                                  size_of_bufferalloc_);
 }
 
 //得到唯一的单子实例

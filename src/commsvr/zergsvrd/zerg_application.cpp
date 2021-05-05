@@ -60,7 +60,7 @@ int Zerg_Service_App::app_start(int argc,const char *argv[])
     {
         return ret;
     }
-    
+
     //给统计模块添加自己的统计信息
     ret = soar::Stat_Monitor::instance()->add_status_item();
     if (ret != 0)
@@ -68,7 +68,7 @@ int Zerg_Service_App::app_start(int argc,const char *argv[])
         ZCE_LOG(RS_ERROR,"zce_Server_Status init fail. ret=%d",ret);
         return ret;
     }
-    
+
     size_t max_accept = 0,max_connect = 0,max_peer = 0;
     TCP_Svc_Handler::get_max_peer_num(max_accept,max_connect);
     max_peer = max_accept + max_connect + 16;

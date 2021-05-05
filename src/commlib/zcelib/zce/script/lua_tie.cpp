@@ -121,11 +121,11 @@ void push_stack_val(lua_State *state,uint64_t val)
     return;
 }
 
-template<> 
+template<>
 void push_stack_val(lua_State *state,std::string &val)
 {
     auto str = new(::lua_newuserdata(state,sizeof(std::string)))std::string;
-    *str= val;
+    *str = val;
     ::lua_pushstring(state,"stdstring");
     ::lua_gettable(state,LUA_GLOBALSINDEX);
 
@@ -255,7 +255,7 @@ template<> std::string read_stack_val(lua_State *state,int index)
     }
     else if (lua_isuserdata(state,index))
     {
-        return *(std::string *) (((lua_udat_base *)lua_touserdata(state,index))->obj_ptr_);
+        return *(std::string *)(((lua_udat_base *)lua_touserdata(state,index))->obj_ptr_);
     }
     else
     {

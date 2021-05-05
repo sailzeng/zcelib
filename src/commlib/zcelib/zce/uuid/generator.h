@@ -48,7 +48,6 @@
 
 namespace zce
 {
-
 //UUID产生方法，
 enum class UUID_GENERATOR
 {
@@ -351,7 +350,4 @@ protected:
     //发生器实例指针
     static UUID128_Generator *instance_;
 };
-
 }
-
-

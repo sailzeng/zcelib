@@ -8,7 +8,6 @@ class Stat_Monitor 单线程版本的实例
 ******************************************************************************************/
 namespace soar
 {
-
 Stat_Monitor *Stat_Monitor::instance_ = NULL;
 
 Stat_Monitor::Stat_Monitor()
@@ -37,11 +36,11 @@ void Stat_Monitor::clean_instance()
 
 //初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
 int Stat_Monitor::initialize(const char *app_base_name,
-                                  unsigned int business_id,
-                                  const soar::SERVICES_ID &service_info,
-                                  size_t num_stat_item,
-                                  const zce::STATUS_ITEM_WITHNAME item_ary[],
-                                  bool mutli_thread)
+                             unsigned int business_id,
+                             const soar::SERVICES_ID &service_info,
+                             size_t num_stat_item,
+                             const zce::STATUS_ITEM_WITHNAME item_ary[],
+                             bool mutli_thread)
 {
     create_stat_fname(app_base_name,business_id,service_info);
 
@@ -58,8 +57,8 @@ int Stat_Monitor::initialize(const char *app_base_name,
 
 //生产stat文件名称
 void Stat_Monitor::create_stat_fname(const char *app_base_name,
-                                          unsigned int business_id,
-                                          const soar::SERVICES_ID &service_info)
+                                     unsigned int business_id,
+                                     const soar::SERVICES_ID &service_info)
 {
     snprintf(stat_mmap_filename_,
              STAT_MMAP_FILENAME_LEN,
@@ -74,9 +73,9 @@ void Stat_Monitor::create_stat_fname(const char *app_base_name,
 
 //从文件名称中得到相应的信息
 int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
-                                           unsigned int *business_id,
-                                           soar::SERVICES_ID *svc_id,
-                                           char *app_base_name)
+                                      unsigned int *business_id,
+                                      soar::SERVICES_ID *svc_id,
+                                      char *app_base_name)
 {
     ZCE_ASSERT(stat_file_name != NULL);
     ZCE_ASSERT(svc_id != NULL);
@@ -147,5 +146,4 @@ int Stat_Monitor::get_info_from_fname(const char *stat_file_name,
 
     return 0;
 }
-
 }

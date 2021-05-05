@@ -125,7 +125,6 @@ int FSM_Manager::register_fsmobj(uint32_t create_cmd,
 
 bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
 {
-
 }
 
 //
@@ -191,7 +190,6 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
     {
         if (only_one_lock_pool_)
         {
-            
         }
 
         unsigned int id = 0;

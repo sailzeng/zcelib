@@ -416,10 +416,10 @@ protected:
     //http://t.qq.com/angelbaby22
 
     // 存放状态计数器的数组
-    ARRYA_OF_SHM_STATUS      *status_stat_sandy_;
+    ARRYA_OF_SHM_STATUS *status_stat_sandy_;
 
     //状态计数器的一份拷贝(备份)，数据放在共享内存中，我们可以用考虑用mandy读取数据，所以可以讲每个
-    ARRYA_OF_SHM_STATUS      *status_copy_mandy_;
+    ARRYA_OF_SHM_STATUS *status_copy_mandy_;
 
     //记录配置的的统计数据SET，用于记录配置的统计项目，也用于防止重复插入和dump 输出时有名称信息
     STATUS_WITHNAME_MAP       conf_stat_map_;
