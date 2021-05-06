@@ -6,24 +6,27 @@
 #include "zce/bus/mmap_pipe.h"
 #include "zce/bus/twoway_pipe.h"
 
-ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::two_way_instance_ = NULL;
+namespace zce
+{
 
-const char  ZCE_BusPipe_TwoWay::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
+TwoWay_BusPipe *TwoWay_BusPipe::two_way_instance_ = NULL;
+
+const char  TwoWay_BusPipe::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
 {
     "RECV_PIPE",
     "SEND_PIPE",
 };
 
 //构造函数
-ZCE_BusPipe_TwoWay::ZCE_BusPipe_TwoWay()
+TwoWay_BusPipe::TwoWay_BusPipe()
 {
 }
 
-ZCE_BusPipe_TwoWay::~ZCE_BusPipe_TwoWay()
+TwoWay_BusPipe::~TwoWay_BusPipe()
 {
 }
 
-int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
+int TwoWay_BusPipe::initialize(const char *bus_mmap_name,
                                    size_t size_recv_pipe,
                                    size_t size_send_pipe,
                                    size_t max_frame_len,
@@ -34,11 +37,11 @@ int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
     size_of_pipe[RECV_PIPE_ID] = size_recv_pipe;
     size_of_pipe[SEND_PIPE_ID] = size_send_pipe;
 
-    ret = ZCE_Bus_MMAPPipe::initialize(bus_mmap_name,
-                                       NUM_OF_PIPE,
-                                       size_of_pipe,
-                                       max_frame_len,
-                                       if_restore);
+    ret = MMAP_BusPipe::initialize(bus_mmap_name,
+                                   NUM_OF_PIPE,
+                                   size_of_pipe,
+                                   max_frame_len,
+                                   if_restore);
 
     if (ret != 0)
     {
@@ -49,18 +52,18 @@ int ZCE_BusPipe_TwoWay::initialize(const char *bus_mmap_name,
 }
 
 //得到唯一的单子实例
-ZCE_BusPipe_TwoWay *ZCE_BusPipe_TwoWay::instance()
+TwoWay_BusPipe *TwoWay_BusPipe::instance()
 {
     if (two_way_instance_ == NULL)
     {
-        two_way_instance_ = new ZCE_BusPipe_TwoWay();
+        two_way_instance_ = new TwoWay_BusPipe();
     }
 
     return two_way_instance_;
 }
 
 //赋值唯一的单子实例
-void ZCE_BusPipe_TwoWay::instance(ZCE_BusPipe_TwoWay *pinstatnce)
+void TwoWay_BusPipe::instance(TwoWay_BusPipe *pinstatnce)
 {
     clean_instance();
     two_way_instance_ = pinstatnce;
@@ -68,7 +71,7 @@ void ZCE_BusPipe_TwoWay::instance(ZCE_BusPipe_TwoWay *pinstatnce)
 }
 
 //清除单子实例
-void ZCE_BusPipe_TwoWay::clean_instance()
+void TwoWay_BusPipe::clean_instance()
 {
     if (two_way_instance_)
     {
@@ -77,4 +80,6 @@ void ZCE_BusPipe_TwoWay::clean_instance()
 
     two_way_instance_ = NULL;
     return;
+}
+
 }

@@ -248,9 +248,6 @@
     <ClCompile Include="zce\string\format.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\bus\thread_pipe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\thread\thread_task.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -623,9 +620,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\string\format.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="zce\bus\thread_pipe.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\thread\msgque_condi.h">

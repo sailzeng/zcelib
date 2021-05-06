@@ -312,7 +312,6 @@
     <ClCompile Include="zce\sqlite\sqlite_stmt.cpp" />
     <ClCompile Include="zce\string\format.cpp" />
     <ClCompile Include="zce\string\helper.cpp" />
-    <ClCompile Include="zce\bus\thread_pipe.cpp" />
     <ClCompile Include="zce\thread\thread_task.cpp" />
     <ClCompile Include="zce\thread\thread_wait_mgr.cpp" />
     <ClCompile Include="zce\timer\handler_base.cpp" />
@@ -443,7 +442,6 @@
     <ClInclude Include="zce\string\extend.h" />
     <ClInclude Include="zce\string\format.h" />
     <ClInclude Include="zce\string\helper.h" />
-    <ClInclude Include="zce\bus\thread_pipe.h" />
     <ClInclude Include="zce\thread\msgque_condi.h" />
     <ClInclude Include="zce\thread\msgque_sema.h" />
     <ClInclude Include="zce\thread\thread_task.h" />

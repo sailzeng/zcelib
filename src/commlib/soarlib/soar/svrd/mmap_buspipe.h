@@ -9,7 +9,7 @@
 
 class soar::Zerg_Frame;
 
-class  Soar_MMAP_BusPipe: public ZCE_BusPipe_TwoWay
+class  Soar_MMAP_BusPipe: public zce::TwoWay_BusPipe
 {
 public:
     //构造函数,
@@ -37,10 +37,10 @@ public:
     int pop_front_sendbus(soar::Zerg_Frame *&proc_frame);
 
     //向SEND管道写入帧
-    int push_back_sendpipe(const soar::Zerg_Frame *proc_frame);
+    int push_back_sendbus(const soar::Zerg_Frame *proc_frame);
 
     //向RECV管道写入帧
-    int push_back_recvpipe(const soar::Zerg_Frame *proc_frame);
+    int push_back_recvbus(const soar::Zerg_Frame *proc_frame);
 
 
     //-----------------------------------------------------------------

@@ -161,7 +161,7 @@ int Echo_Proxy_Process::process_proxy(Zerg_App_Frame *proc_frame)
     // 返回这个帧
     proc_frame->exchange_rcvsnd_svcid();
 
-    ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+    ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 
     //
     if (ret != 0)
@@ -229,7 +229,7 @@ int Transmit_Proxy::process_proxy(Zerg_App_Frame *proc_frame)
         return 0;
     }
 
-    ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+    ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 
     //
     if (ret != 0)
@@ -352,7 +352,7 @@ int Broadcast_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     {
         // 修改为新的ID
         proc_frame->recv_service_.services_id_ = broadcast_svcid_[i];
-        ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+        ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 
         //
         if (ret != 0)
@@ -484,7 +484,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
     }
 
     proc_frame->recv_service_.services_id_ = modulo_svcid_[mod_number % modulo_svcnum_];
-    ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+    ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 
     //
     if (ret != 0)
@@ -674,7 +674,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //                   proc_frame->transaction_id_);
 //
 //        // 只生成了一个帧
-//        int ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+//        int ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 //
 //        //
 //        if (ret != 0)
@@ -696,7 +696,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //                      proc_frame->frame_length_,
 //                      proc_frame->backfill_trans_id_);
 //
-//            ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+//            ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 //
 //            if (ret != 0)
 //            {
@@ -717,7 +717,7 @@ int Modulo_ProxyProcess::process_proxy(Zerg_App_Frame *proc_frame)
 //                  proc_frame->frame_command_,
 //                  proc_frame->frame_length_);
 //
-//        ret = zerg_mmap_pipe_->push_back_sendpipe(proc_frame);
+//        ret = zerg_mmap_pipe_->push_back_sendbus(proc_frame);
 //
 //        //
 //        if (ret != 0)

@@ -7,7 +7,7 @@ Soar_MMAP_BusPipe *Soar_MMAP_BusPipe::zerg_bus_instance_ = NULL;
 char Soar_MMAP_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
 
 Soar_MMAP_BusPipe::Soar_MMAP_BusPipe():
-    ZCE_BusPipe_TwoWay()
+    TwoWay_BusPipe()
 {
 }
 
@@ -29,7 +29,7 @@ int Soar_MMAP_BusPipe::initialize(soar::SERVICES_INFO &svr_info,
     char bus_mmap_name[MAX_PATH + 1];
     get_mmapfile_name(bus_mmap_name,MAX_PATH);
 
-    return ZCE_BusPipe_TwoWay::initialize(bus_mmap_name,
+    return TwoWay_BusPipe::initialize(bus_mmap_name,
                                           size_recv_pipe,
                                           size_send_pipe,
                                           max_frame_len,
@@ -108,7 +108,7 @@ int Soar_MMAP_BusPipe::pop_front_sendbus(soar::Zerg_Frame *&proc_frame)
 }
 
 //向SEND管道写入帧，
-int Soar_MMAP_BusPipe::push_back_sendpipe(const soar::Zerg_Frame *proc_frame)
+int Soar_MMAP_BusPipe::push_back_sendbus(const soar::Zerg_Frame *proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"TO SEND PIPE FRAME:",proc_frame);
 
@@ -147,13 +147,12 @@ int Soar_MMAP_BusPipe::push_back_sendpipe(const soar::Zerg_Frame *proc_frame)
                              0,
                              proc_frame->length_);
     }
-
     // 返回成功
     return 0;
 }
 
 //向RECV管道写入帧，
-int Soar_MMAP_BusPipe::push_back_recvpipe(const soar::Zerg_Frame *proc_frame)
+int Soar_MMAP_BusPipe::push_back_recvbus(const soar::Zerg_Frame *proc_frame)
 {
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"TO RECV PIPE FRAME:",proc_frame);
 

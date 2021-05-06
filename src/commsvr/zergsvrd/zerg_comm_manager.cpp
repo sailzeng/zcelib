@@ -188,7 +188,8 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t
     num_send_frame = 0;
     int ret = 0;
 
-    while (zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false && num_send_frame < want_send_frame)
+    while (zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false 
+           && num_send_frame < want_send_frame)
     {
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
         soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);

@@ -210,7 +210,7 @@ int FSM_Manager::process_appframe(soar::Zerg_Frame *zerg_frame,bool &create_fsm)
 //直接发送一个buffer to services。
 int FSM_Manager::sendfame_to_pipe(const soar::Zerg_Frame *send_frame)
 {
-    return zerg_mmap_pipe_->push_back_sendpipe(send_frame);
+    return zerg_mmap_pipe_->push_back_sendbus(send_frame);
 }
 
 //打开性能统计
