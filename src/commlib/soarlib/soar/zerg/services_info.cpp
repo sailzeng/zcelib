@@ -26,7 +26,7 @@ int SERVICES_INFO::from_str(const char *svc_info_str,
     uint16_t port = 0;
     //测试发现其实不需要手动去掉多余空格的干扰，把特殊字符前面也增加%控制就可以了。
     int ret_num = sscanf(svc_info_str,
-                         "%hu.%u | %u.%u.%u.%u # %hu | %u | %u",
+                         "%hu.%u | %u.%u.%u.%u # %hu | %hu | %hu",
                          &svc_id_.services_type_,
                          &svc_id_.services_id_,
                          &u[0],&u[1],&u[2],&u[3],
@@ -57,7 +57,7 @@ const char *SERVICES_INFO::to_str(char *str_buffer,size_t buf_len)
     size_t use_buf = 0;
     snprintf(str_buffer,
              buf_len,
-             "%16s|%24s|%6u|%6u",
+             "%16s|%24s|%6hu|%6hu",
              svc_id_.to_str(str_svc_id,sizeof(str_svc_id) - 1),
              ip_address_.to_string(str_inet_add,sizeof(str_inet_add) - 1,use_buf),
              idc_no_,

@@ -58,11 +58,11 @@ class  FSM_Manager: public zce::Async_FSMMgr
 protected:
     struct  ONLYONE_LOCK
     {
-        //要加锁的USER ID,
-        uint32_t     lock_user_id_;
         //事务的加锁ID，如果就是一个命令对应一个锁，建议直接使用命令字
         //如果是多个命令对一个东东加锁，建议占位一个命令，然后对那个命令加锁，
         uint32_t     lock_trans_cmd_;
+        //要加锁的USER ID,
+        uint32_t     lock_user_id_;
     };
 
     //得到KEY的HASH函数
@@ -142,6 +142,9 @@ public:
     //对某一个用户的一个命令的事务进行
     void unlock_only_one(uint32_t cmd,
                          uint32_t lock_id);
+
+    //这个命令是否是锁定的命令
+    bool is_onlyone_cmd(uint32_t cmd);
 
     /*!
     * @brief      初始化

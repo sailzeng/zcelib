@@ -165,8 +165,8 @@ public:
 };
 
 //用于帮助你定义 ZCE_STATUS_ITEM_WITHNAME数组
-#ifndef DEF_ZCE_STATUS_ITEM
-#define DEF_ZCE_STATUS_ITEM(_statics_id,_statics_type) zce::STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
+#ifndef DEF_STATUS_ITEM
+#define DEF_STATUS_ITEM(_statics_id,_statics_type) zce::STATUS_ITEM_WITHNAME(_statics_id,_statics_type,(#_statics_id))
 #endif
 
 //===========================================================================================
@@ -284,12 +284,12 @@ public:
     void add_status_item(size_t num_stat_item,
                          const STATUS_ITEM_WITHNAME item_ary[]);
 
+    ///初始化以后，修改是否需要多线程保护
+    void multi_thread_guard(bool multi_thread);
+
     ///监控项是否已经存在
     bool is_exist_stat_id(unsigned int stat_id,
                           STATUS_ITEM_WITHNAME *status_item_withname) const;
-
-    ///初始化以后，修改是否需要多线程保护
-    void multi_thread_guard(bool multi_thread);
 
     /*!
     * @brief      使用统计ID和分类ID作为key,对统计值增加1
@@ -298,38 +298,38 @@ public:
     * @param[in]  classify_id 分类ID
     * @param[in]  subclassing_id 子分类ID
     */
-    inline int increase_once(uint32_t statics_id,
-                             uint32_t classify_id,
-                             uint32_t subclassing_id)
+    inline int add_one(uint32_t statics_id,
+                       uint32_t classify_id,
+                       uint32_t subclassing_id)
     {
-        return increase_by_statid(statics_id,classify_id,subclassing_id,1);
+        return add_number(statics_id,classify_id,subclassing_id,1);
     }
-
-    /*!
-    * @brief      使用统计ID和分类ID作为key,绝对值修改监控统计项目
-    * @return     int
-    * @param[in]  statics_id  统计ID
-    * @param[in]  classify_id 分类ID
-    * @param[in]  subclassing_id 子分类ID
-    * @param[in]  set_value 修改的统计值
-    */
-    int set_by_statid(uint32_t statics_id,
-                      uint32_t classify_id,
-                      uint32_t subclassing_id,
-                      uint64_t set_value);
 
     /*!
     * @brief      使用统计ID和分类ID作为key,相对值修改监控统计值
     * @return     int
     * @param[in]  statics_id  统计ID
     * @param[in]  classify_id 分类ID
-    * @param[in]  subclassing_id 子分类ID
+    * @param[in]  subclassing_id 子分类ID，查询会使用统计ID，分类ID，子分类ID一起查询
     * @param[in]  incre_value 修改的相对值，符号整数，可加可减
     */
-    int increase_by_statid(uint32_t statics_id,
-                           uint32_t classify_id,
-                           uint32_t subclassing_id,
-                           int64_t incre_value);
+    int add_number(uint32_t statics_id,
+                   uint32_t classify_id,
+                   uint32_t subclassing_id,
+                   int64_t incre_value);
+
+    /*!
+    * @brief      使用统计ID和分类ID作为key,绝对值修改监控统计项目计数器
+    * @return     int
+    * @param[in]  statics_id  统计ID
+    * @param[in]  classify_id 分类ID
+    * @param[in]  subclassing_id 子分类ID
+    * @param[in]  set_value 修改的统计值
+    */
+    int set_counter(uint32_t statics_id,
+                    uint32_t classify_id,
+                    uint32_t subclassing_id,
+                    uint64_t set_value);
 
     /*!
     * @brief      根据统计ID和分类ID作为key，得到统计数值

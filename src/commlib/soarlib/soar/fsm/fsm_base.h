@@ -56,19 +56,9 @@ protected:
     virtual ~FSM_Base();
 
 public:
-    //得到管理器
-    inline  FSM_Manager *get_trans_mgr() const;
 
-    ///每次重新进行初始化时候的事情，等等，尽量保证基类的这个函数优先调用，类似构造函数
-    ///这个地方用于恢复很多初始值
-    virtual void on_start();
-
-    ///事物的on_run函数，重载的FSM的，把调用转向到trans_run
-    virtual void on_run(void *outer_data,bool &continue_run);
-
-    ///状态机对象超时处理，重载的FSM的（异步对象的），把调用转向到trans_timeout
-    virtual void on_timeout(const zce::Time_Value &now_time,
-                            bool &continue_run);
+    ///初始化，类似构造函数
+    virtual void trans_init() = 0;
 
     /*!
     * @brief      事物运行，必须重载的函数
@@ -85,9 +75,20 @@ public:
     * @param[out] continue_run 异步对象是否继续运行,
     */
     virtual void trans_timeout(const zce::Time_Value &now_time,
-                               bool &continue_run);
+                               bool &continue_run) = 0;
 
 protected:
+
+    ///每次重新进行初始化时候的事情，等等，尽量保证基类的这个函数优先调用，
+    ///这个地方用于恢复很多初始值
+    virtual void on_start() final;
+
+    ///事物的on_run函数，重载的FSM的，把调用转向到trans_run
+    virtual void on_run(void *outer_data,bool &continue_run) final;
+
+    ///状态机对象超时处理，重载的FSM的（异步对象的），把调用转向到trans_timeout
+    virtual void on_timeout(const zce::Time_Value &now_time,
+                            bool &continue_run) final;
 
     /*!
     * @brief      根据Frame初始化得到对方发送的信息
@@ -97,14 +98,9 @@ protected:
 
     //lock其实不是真正的锁，目的是保证在同一时刻，只处理一个用户的一个请求。
     //对当前用户的，当前事务命令字进行加锁
-    int lock_userid_cmd();
+    int lock_cmd_userid();
     //对当前用户的，当前事务命令字进行解锁
-    void unlock_userid_cmd();
-
-    //对当前用户的一个锁ID进行加锁
-    int lock_userid_key(uint32_t one_key);
-    //对当前用户的一个锁ID进行解锁
-    void unlock_userid_key(uint32_t one_key);
+    void unlock_cmd_userid();
 
     //关闭请求的的Service
     int close_request_service() const;
@@ -459,9 +455,9 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                  uint32_t option)
 {
     //如果请求的命令要求要监控，后面的处理进行监控
-    if (req_frame_option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
+    if (req_frame_option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
     {
-        option |= soar::Zerg_Frame::DESC_MONITOR_TRACK;
+        option |= soar::Zerg_Frame::DESC_TRACK_MONITOR;
     }
     //条用管理器的发送函数
     return trans_manager_->sendmsg_to_service(cmd,

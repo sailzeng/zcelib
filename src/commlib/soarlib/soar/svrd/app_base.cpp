@@ -29,7 +29,6 @@ namespace soar
 Svrd_Appliction *Svrd_Appliction::instance_ = NULL;
 
 Svrd_Appliction::Svrd_Appliction():
-    business_id_(INVALID_BUSINESS_ID),
     self_svc_info_(),
     max_msg_num_(1024),
     zerg_mmap_pipe_(NULL),
@@ -206,20 +205,15 @@ int Svrd_Appliction::app_start(int argc,const char *argv[])
     //初始化统计模块
     //因为配置初始化时会从配置服务器拉取ip，触发统计，因此需要提前初始化
     ret = soar::Stat_Monitor::instance()->initialize(app_base_name_.c_str(),
-                                                     business_id_,
-                                                     self_svc_info_.svc_id_,
-                                                     0,
-                                                     NULL,
+                                                     self_svc_info_,
+                                                     COMM_STAT_FRATURE_NUM,
+                                                     COMM_STAT_ITEM_WITH_NAME,
                                                      false);
     if (ret != 0)
     {
         ZCE_LOG(RS_ERROR,"zce_Server_Status init fail. ret=%d",ret);
         return ret;
     }
-
-    //监控对象添加框架的监控对象
-    soar::Stat_Monitor::instance()->add_status_item(COMM_STAT_FRATURE_NUM,
-                                                    COMM_STAT_ITEM_WITH_NAME);
 
     //使用WHEEL型的定时器队列
     zce::Timer_Queue::instance(new zce::Timer_Wheel(

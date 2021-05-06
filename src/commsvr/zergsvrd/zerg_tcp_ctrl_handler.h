@@ -349,10 +349,10 @@ protected:
     size_t                    send_bytes_;
 
     //ZCE Socket Stream,
-    zce::Socket_Stream         socket_peer_;
+    zce::Socket_Stream        socket_peer_;
 
     //PEER连接的IP地址信息
-    zce::Sockaddr_In           peer_address_;
+    zce::Sockaddr_In          peer_address_;
 
     //是否处于活动状态
     PEER_STATUS               peer_status_;

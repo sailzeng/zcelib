@@ -8,11 +8,11 @@
 #include "soar/fsm/fsm_mgr.h"
 
 //构造函数
-FSM_Base::FSM_Base(FSM_Manager *mgr,
-                   unsigned int create_cmd,
+FSM_Base::FSM_Base(FSM_Manager *pmngr,
+                   uint32_t create_cmd,
                    bool trans_locker):
-    zce::Async_FSM(mgr,create_cmd),
-    trans_manager_(mgr),
+    zce::Async_FSM(pmngr,create_cmd),
+    trans_manager_(pmngr),
     trans_locker_(trans_locker),
     trans_create_(true)
 {
@@ -34,6 +34,8 @@ void FSM_Base::on_start()
     trans_create_time_ = 0;
     trace_log_pri_ = RS_DEBUG;
     running_errno_ = 0;
+
+    trans_init();
 }
 
 //根据Frame初始化得到对方发送的信息
@@ -42,7 +44,7 @@ void FSM_Base::create_init(soar::Zerg_Frame *proc_frame)
     proc_frame->get_head(req_zerg_head_);
 
     //如果有监控选项，提高日志级别，保证部分日志得到输出
-    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_MONITOR_TRACK)
+    if (proc_frame->frame_option_.option_ & soar::Zerg_Frame::DESC_TRACK_MONITOR)
     {
         trace_log_pri_ = RS_INFO;
     }
@@ -96,19 +98,19 @@ void FSM_Base::on_run(void *outer_data,bool &continue_run)
         if (running_errno_ == 0)
         {
             // 成功退出，修改监控数据
-            soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
-                                                          trans_manager_->self_svc_info_.business_id_,
-                                                          req_zerg_head_.command_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
+                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    req_zerg_head_.command_);
         }
         else
         {
             // 失败退出，修改监控数据
-            soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
-                                                          trans_manager_->self_svc_info_.business_id_,
-                                                          req_zerg_head_.command_);
-            soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
-                                                          trans_manager_->self_svc_info_.business_id_,
-                                                          running_errno_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
+                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    req_zerg_head_.command_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_PROC_ERRNO,
+                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    running_errno_);
         }
     }
 }
@@ -138,19 +140,19 @@ void FSM_Base::on_timeout(const zce::Time_Value &now_time,
         if (running_errno_ == 0)
         {
             // 成功退出，修改监控数据
-            soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_SUCC,
-                                                          trans_manager_->self_svc_info_.business_id_,
-                                                          req_zerg_head_.command_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_SUCC,
+                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    req_zerg_head_.command_);
         }
         else
         {
             // 失败退出，修改监控数据
-            soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_END_FAIL,
-                                                          trans_manager_->self_svc_info_.business_id_,
-                                                          req_zerg_head_.command_);
-            soar::Stat_Monitor::instance()->increase_once(COMM_STAT_TRANS_PROC_ERRNO,
-                                                          trans_manager_->self_svc_info_.business_id_,
-                                                          running_errno_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_END_FAIL,
+                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    req_zerg_head_.command_);
+            soar::Stat_Monitor::instance()->add_one(COMM_STAT_TRANS_PROC_ERRNO,
+                                                    trans_manager_->self_svc_info_.business_id_,
+                                                    running_errno_);
         }
     }
 }
@@ -210,16 +212,16 @@ int FSM_Base::close_request_service() const
 }
 
 //对当前用户的，当前事务命令字进行加锁
-int FSM_Base::lock_userid_cmd()
+int FSM_Base::lock_cmd_userid()
 {
-    return trans_manager_->lock_only_one(req_zerg_head_.user_id_,
-                                         req_zerg_head_.command_);
+    return trans_manager_->lock_only_one(req_zerg_head_.command_,
+                                         req_zerg_head_.user_id_);
 }
 //对当前用户的，当前事务命令字进行解锁
-void FSM_Base::unlock_userid_cmd()
+void FSM_Base::unlock_cmd_userid()
 {
-    return trans_manager_->unlock_only_one(req_zerg_head_.user_id_,
-                                           req_zerg_head_.command_);
+    return trans_manager_->unlock_only_one(req_zerg_head_.command_,
+                                           req_zerg_head_.user_id_);
 }
 
 //DUMP所有的事物的信息

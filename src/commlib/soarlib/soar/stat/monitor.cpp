@@ -36,13 +36,12 @@ void Stat_Monitor::clean_instance()
 
 //初始化,由于小虫和业务服务器以相同ID的共存，所以用了一个前缀
 int Stat_Monitor::initialize(const char *app_base_name,
-                             unsigned int business_id,
-                             const soar::SERVICES_ID &service_info,
+                             const soar::SERVICES_INFO &service_info,
                              size_t num_stat_item,
                              const zce::STATUS_ITEM_WITHNAME item_ary[],
                              bool mutli_thread)
 {
-    create_stat_fname(app_base_name,business_id,service_info);
+    create_stat_fname(app_base_name,service_info);
 
     // 将stat_mmap_filename_转换为大写
     zce::strupr(stat_mmap_filename_);
@@ -57,16 +56,15 @@ int Stat_Monitor::initialize(const char *app_base_name,
 
 //生产stat文件名称
 void Stat_Monitor::create_stat_fname(const char *app_base_name,
-                                     unsigned int business_id,
-                                     const soar::SERVICES_ID &service_info)
+                                     const soar::SERVICES_INFO &service_info)
 {
     snprintf(stat_mmap_filename_,
              STAT_MMAP_FILENAME_LEN,
-             "STATS_%s_%u_%hu.%u.SHM",
+             "STATS_%s_%hu_%hu.%u.SHM",
              app_base_name,
-             business_id,
-             service_info.services_type_,
-             service_info.services_id_);
+             service_info.business_id_,
+             service_info.svc_id_.services_type_,
+             service_info.svc_id_.services_id_);
 
     stat_mmap_filename_[STAT_MMAP_FILENAME_LEN] = '\0';
 }

@@ -229,9 +229,9 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
                 ret,tmp_frame->user_id_,tmp_frame->command_);
 
         // 加个监控
-        monitor->increase_once(COMM_STAT_TASK_QUEUE_SEND_FAIL,
-                               self_svc_info_.business_id_,
-                               post_frame->command_);
+        monitor->add_one(COMM_STAT_TASK_QUEUE_SEND_FAIL,
+                         self_svc_info_.business_id_,
+                         post_frame->command_);
         return SOAR_RET::ERROR_NOTIFY_SEND_QUEUE_ENQUEUE_FAIL;
     }
 
@@ -239,9 +239,9 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
     //ZCE_LOGMSG_DEBUG(RS_DEBUG,"[framework] Send queue message_count:%u message_bytes:%u. ",
     //    send_msg_queue_->size(),
     //    send_msg_queue_->size() * sizeof(soar::Zerg_Frame *));
-    monitor->increase_once(COMM_STAT_TASK_QUEUE_SEND_SUCC,
-                           self_svc_info_.business_id_,
-                           post_frame->command_);
+    monitor->add_one(COMM_STAT_TASK_QUEUE_SEND_SUCC,
+                     self_svc_info_.business_id_,
+                     post_frame->command_);
     return 0;
 }
 
@@ -261,7 +261,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
 //        return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
 //    }
 //    soar::Stat_Monitor::instance()->
-//        increase_once(COMM_STAT_TASK_QUEUE_RECV_COUNT,
+//        add_one(COMM_STAT_TASK_QUEUE_RECV_COUNT,
 //                      self_svc_info_.business_id_,
 //                      get_frame->command_);
 //    return 0;
@@ -282,7 +282,7 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
 //        return SOAR_RET::ERROR_NOTIFY_RECV_QUEUE_DEQUEUE_FAIL;
 //    }
 //    soar::Stat_Monitor::instance()->
-//        increase_once(COMM_STAT_TASK_QUEUE_RECV_COUNT,
+//        add_one(COMM_STAT_TASK_QUEUE_RECV_COUNT,
 //                      self_svc_info_.business_id_,
 //                      get_frame->command_);
 //    return 0;

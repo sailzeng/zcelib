@@ -36,14 +36,14 @@ public:
     ///服务ID信息
     soar::SERVICES_ID svc_id_;
 
-    ///服务IP,服务端口
-    zce::Sockaddr_In  ip_address_;
-
     ///业务ID,游戏ID
-    unsigned int     business_id_ = 0;
+    uint16_t     business_id_ = 0;
 
     ///服务器所属 IDC的编号
-    unsigned int     idc_no_ = 0;
+    uint16_t     idc_no_ = 0;
+
+    ///服务IP,服务端口
+    zce::Sockaddr_In  ip_address_;
 };
 
 //得到KEY的HASH函数

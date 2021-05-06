@@ -109,7 +109,7 @@ void Server_Timer_Base::check_monitor(const zce::Time_Value &now_time)
 void Server_Timer_Base::report_status()
 {
     // 上报进程存活状态
-    stat_monitor_->increase_once(COMM_STAT_APP_ALIVE,0,0);
+    stat_monitor_->add_one(COMM_STAT_APP_ALIVE,0,0);
     soar::Svrd_Appliction *svrd_app = soar::Svrd_Appliction::instance();
 
     {
@@ -123,25 +123,25 @@ void Server_Timer_Base::report_status()
         else
         {
             // 上报监控数据
-            stat_monitor_->set_by_statid(COMM_STAT_SYS_CPU_RATIO,
-                                         0,
-                                         0,
-                                         svrd_app->system_cpu_ratio_);
+            stat_monitor_->set_counter(COMM_STAT_SYS_CPU_RATIO,
+                                       0,
+                                       0,
+                                       svrd_app->system_cpu_ratio_);
 
-            stat_monitor_->set_by_statid(COMM_STAT_PROCESS_CPU_RATIO,
-                                         0,
-                                         0,
-                                         svrd_app->process_cpu_ratio_);
+            stat_monitor_->set_counter(COMM_STAT_PROCESS_CPU_RATIO,
+                                       0,
+                                       0,
+                                       svrd_app->process_cpu_ratio_);
 
-            stat_monitor_->set_by_statid(COMM_STAT_SYS_MEM_USE_RATIO,
-                                         0,
-                                         0,
-                                         svrd_app->mem_use_ratio_);
+            stat_monitor_->set_counter(COMM_STAT_SYS_MEM_USE_RATIO,
+                                       0,
+                                       0,
+                                       svrd_app->mem_use_ratio_);
 
-            stat_monitor_->set_by_statid(COMM_STAT_AVAILABLE_MEM_SIZE,
-                                         0,
-                                         0,
-                                         svrd_app->can_use_size_);
+            stat_monitor_->set_counter(COMM_STAT_AVAILABLE_MEM_SIZE,
+                                       0,
+                                       0,
+                                       svrd_app->can_use_size_);
         }
     }
 }

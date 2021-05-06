@@ -196,8 +196,8 @@ int UDP_Svc_Handler::read_data_from_udp(size_t &size_revc)
     }
 
     //这个函数放在这儿好不好，hoho，有点耗时喔，呵呵
-    server_status_->increase_by_statid(ZERG_UDP_RECV_COUNTER,0,0,1);
-    server_status_->increase_by_statid(ZERG_UDP_RECV_BYTES_COUNTER,0,0,recvret);
+    server_status_->add_number(ZERG_UDP_RECV_COUNTER,0,0,1);
+    server_status_->add_number(ZERG_UDP_RECV_BYTES_COUNTER,0,0,recvret);
 
     proc_frame->ntoh();
 
@@ -272,8 +272,8 @@ int UDP_Svc_Handler::write_data_to_udp(soar::Zerg_Frame *send_frame)
             dgram_peer_.get_handle(),
             send_len);
     //
-    server_status_->increase_by_statid(ZERG_UDP_SEND_COUNTER,0,0,1);
-    server_status_->increase_by_statid(ZERG_UDP_SEND_BYTES_COUNTER,0,0,szsend);
+    server_status_->add_number(ZERG_UDP_SEND_COUNTER,0,0,1);
+    server_status_->add_number(ZERG_UDP_SEND_BYTES_COUNTER,0,0,szsend);
 
     return 0;
 }

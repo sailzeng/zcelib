@@ -115,7 +115,7 @@ int Soar_SvrdApp_ZergBus::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
          ++proc_frame)
     {
         //
-        ret = zerg_mmap_pipe_->pop_front_recvpipe(nonctrl_recv_buffer_);
+        ret = zerg_mmap_pipe_->pop_front_recvbus(nonctrl_recv_buffer_);
 
         if (ret != 0)
         {

@@ -82,7 +82,7 @@ public:
         DESC_SNDPRC_CLOSE_PEER = 0x10,
 
         //各种这个帧，用日志记录下
-        DESC_MONITOR_TRACK = 0x20,
+        DESC_TRACK_MONITOR = 0x20,
 
         //FRAME数据区的有用户签名
         DESC_HEAD_WITH_SIGNATURE = 0x40,

@@ -336,10 +336,10 @@ int Server_Status::initialize(const char *stat_filename,
 }
 
 //相对值修改mandy或者sandy统计计数，使用统计ID和分类ID作为key,接口使用方便一点，你不用记录很多对应关系,但速度慢一点,
-int Server_Status::increase_by_statid(uint32_t statics_id,
-                                      uint32_t classify_id,
-                                      uint32_t subclassing_id,
-                                      int64_t incre_value)
+int Server_Status::add_number(uint32_t statics_id,
+                              uint32_t classify_id,
+                              uint32_t subclassing_id,
+                              int64_t incre_value)
 {
     if (!initialized_)
     {
@@ -366,10 +366,10 @@ int Server_Status::increase_by_statid(uint32_t statics_id,
 }
 
 //绝对值修改监控统计项目，
-int Server_Status::set_by_statid(uint32_t statics_id,
-                                 uint32_t classify_id,
-                                 uint32_t subclassing_id,
-                                 uint64_t set_value)
+int Server_Status::set_counter(uint32_t statics_id,
+                               uint32_t classify_id,
+                               uint32_t subclassing_id,
+                               uint64_t set_value)
 {
     if (!initialized_)
     {
