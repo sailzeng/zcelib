@@ -121,7 +121,7 @@ int Soar_MMAP_BusPipe::pop_front_recvpipe(soar::Zerg_Frame *&proc_frame)
     // 加监控数据
     if (ret == 0)
     {
-        monitor_->increase_once(COMM_STAT_PIPE_RECV_COUNT,
+        monitor_->increase_once(COMM_STAT_BUS_RECV_COUNT,
                                 zerg_svr_info_.business_id_,
                                 proc_frame->command_);
         monitor_->increase_by_statid(COMM_STAT_BUS_RECV_BYTES,

@@ -53,7 +53,7 @@ protected:
     zce::Sockaddr_In          accept_bind_addr_;
 
     ///IP限制管理器
-    Zerg_IPRestrict_Mgr *ip_restrict_;
+    Zerg_IPRestrict_Mgr      *ip_restrict_;
 };
 
 #endif //_ZERG_TCP_ACCEPT_HANDLER_H_

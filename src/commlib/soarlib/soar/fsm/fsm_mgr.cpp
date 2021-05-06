@@ -123,9 +123,6 @@ int FSM_Manager::register_fsmobj(uint32_t create_cmd,
     return ret;
 }
 
-bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
-{
-}
 
 //
 int FSM_Manager::process_pipe_frame(size_t &proc_frame,
@@ -372,6 +369,11 @@ int FSM_Manager::lock_only_one(uint32_t user_id,
 
     return 0;
 }
+
+bool FSM_Manager::is_onlyone_cmd(uint32_t cmd)
+{
+}
+
 
 //对某一个用户的一个命令的事务进行加锁
 void FSM_Manager::unlock_only_one(uint32_t user_id,

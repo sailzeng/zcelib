@@ -161,22 +161,22 @@ protected:
 protected:
 
     //Trans 管理器
-    FSMTask_Manger *trans_notify_mgr_;
+    FSMTask_Manger     *trans_notify_mgr_;
 
     //一次最大从MGR发送队列中取出的frame数量，
-    size_t                      once_max_get_sendqueue_;
+    size_t              once_max_get_sendqueue_;
 
     //这个
-    soar::SERVICES_ID           mgr_svc_id_;
+    soar::SERVICES_ID   mgr_svc_id_;
 
     //
-    soar::SERVICES_ID           thread_svc_id_;
+    soar::SERVICES_ID   thread_svc_id_;
 
     //TASK是否在运行
-    bool                        task_run_;
+    bool                task_run_;
 
     //QQPET APPFRAME
-    soar::Zerg_Frame *task_frame_buf_;
+    soar::Zerg_Frame   *task_frame_buf_;
 };
 
 #endif //#ifndef SOARING_LIB_NOTIFY_TRANSACTION_TASK_BASE_H_
