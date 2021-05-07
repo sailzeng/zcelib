@@ -160,7 +160,7 @@ int Comm_SvrdApp_FSMTask::app_run()
 int Comm_SvrdApp_FSMTask::app_exit()
 {
     //通知所有的线程退出
-    soar::FSMTask_Manger *notify_trans_mgr = 
+    soar::FSMTask_Manger *notify_trans_mgr =
         static_cast<soar::FSMTask_Manger *>(soar::FSM_Manager::instance());
     notify_trans_mgr->stop_notify_task();
 

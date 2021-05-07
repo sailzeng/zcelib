@@ -1,7 +1,7 @@
 #ifndef ZERG_SERVER_AUTO_CONNECT_H_
 #define ZERG_SERVER_AUTO_CONNECT_H_
 
-class Zerg_Server_Config;
+class Zerg_Config;
 class TCP_Svc_Handler;
 
 /****************************************************************************************************
@@ -16,10 +16,10 @@ public:
     ~Zerg_Auto_Connector();
 
     ///读取配置
-    int get_config(const Zerg_Server_Config *config);
+    int get_config(const Zerg_Config *config);
 
     // 重新加载主动连接配置
-    int reload_cfg(const Zerg_Server_Config *config);
+    int reload_cfg(const Zerg_Config *config);
 
     /*!
     * @brief      链接所有的服务器,如果已经有链接，就跳过,
@@ -83,7 +83,7 @@ protected:
     zce::Socket_Connector zerg_connector_;
 
     //配置实例指针
-    const Zerg_Server_Config *zerg_svr_cfg_ = NULL;
+    const Zerg_Config *zerg_svr_cfg_ = NULL;
 
     ///主动链接的
     size_t size_of_autoconnect_ = 0;

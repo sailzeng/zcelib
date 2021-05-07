@@ -1,20 +1,18 @@
 #pragma once
 
-#include "zerg/tcp_ctrl_handler.h"
-
-class Zerg_Comm_Manager;
+#include "zerg/comm_manager.h"
 
 /*!
 * @brief
 *
 * @note
 */
-class Zerg_Service_App: public soar::Svrd_Appliction
+class Zerg_App: public soar::Svrd_Appliction
 {
 public:
     //我又要偷偷藏着
-    Zerg_Service_App();
-    virtual ~Zerg_Service_App();
+    Zerg_App();
+    virtual ~Zerg_App();
 
 public:
 
@@ -30,10 +28,8 @@ public:
 public:
 
     ///通信管理器
-    Zerg_Comm_Manager *zerg_comm_mgr_;
+    zerg::Comm_Manager *zerg_comm_mgr_;
 
     ///OP KEY文件的时间戳
     time_t             conf_timestamp_;
 };
-
-

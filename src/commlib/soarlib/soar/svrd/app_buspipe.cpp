@@ -4,8 +4,6 @@
 
 namespace soar
 {
-
-
 App_BusPipe *App_BusPipe::zerg_bus_instance_ = NULL;
 
 char App_BusPipe::send_buffer_[soar::Zerg_Frame::MAX_LEN_OF_APPFRAME];
@@ -219,5 +217,4 @@ void App_BusPipe::clean_instance()
     zerg_bus_instance_ = NULL;
     return;
 }
-
 }

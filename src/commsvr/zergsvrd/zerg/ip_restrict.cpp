@@ -19,7 +19,7 @@ IPRestrict_Mgr::~IPRestrict_Mgr()
 }
 
 //从配置文件中得到相关的配置
-int IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
+int IPRestrict_Mgr::get_config(const Zerg_Config *config)
 {
     int ret = 0;
     //unsigned int tmp_uint= 0;
@@ -119,5 +119,4 @@ void IPRestrict_Mgr::clean_instance()
         instance_ = NULL;
     }
 }
-
 }

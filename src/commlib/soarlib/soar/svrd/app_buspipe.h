@@ -11,7 +11,6 @@ class soar::Zerg_Frame;
 
 namespace soar
 {
-
 class App_BusPipe: protected zce::TwoWay_BusPipe
 {
 public:
@@ -65,7 +64,7 @@ public:
     {
         return is_full_bus(RECV_PIPE_ID);
     }
-    
+
 public:
 
     //为了SingleTon类准备
@@ -90,7 +89,6 @@ protected:
     ///监控对象
     soar::Stat_Monitor *monitor_ = nullptr;
 };
-
 }
 
 #endif //SOARING_LIB_ZERG_MMAP_PIPE_H_

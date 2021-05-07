@@ -1,5 +1,4 @@
-#ifndef ZERG_COMMUNICATION_MANAGER_H_
-#define ZERG_COMMUNICATION_MANAGER_H_
+#pragma once
 
 #include "zerg/configure.h"
 #include "zerg/stat_define.h"
@@ -12,14 +11,17 @@
 
 class TCP_Accept_Handler;
 class UDP_Svc_Handler;
-class soar::App_BusPipe;
 
 #include "zerg/buf_storage.h"
 
-/****************************************************************************************************
-class  Zerg_Comm_Manager
-****************************************************************************************************/
-class Zerg_Comm_Manager
+namespace zerg
+{
+/*!
+* @brief      通信管理器，
+*
+* note
+*/
+class Comm_Manager
 {
     //
     typedef std::vector<TCP_Accept_Handler *> TCPACCEPT_HANDLER_LIST;
@@ -29,8 +31,8 @@ class Zerg_Comm_Manager
 protected:
 
     //构造函数和析构函数
-    Zerg_Comm_Manager();
-    ~Zerg_Comm_Manager();
+    Comm_Manager();
+    ~Comm_Manager();
 
 public:
 
@@ -39,7 +41,7 @@ public:
     * @return     int
     * @param      config
     */
-    int get_config(const Zerg_Server_Config *config);
+    int get_config(const Zerg_Config *config);
 
     /*!
     * @brief      初始化所有的监听，UDP端口，
@@ -77,12 +79,12 @@ public:
     void check_freamcount(unsigned int now);
 
     //
-    int send_single_buf(Zerg_Buffer *tmpbuf);
+    int send_single_buf(zerg::Buffer *tmpbuf);
 
 public:
 
     //单子实例函数
-    static Zerg_Comm_Manager *instance();
+    static Comm_Manager *instance();
     //清理单子实例
     static void clean_instance();
 
@@ -96,7 +98,7 @@ protected:
 
 protected:
     //单子实例
-    static Zerg_Comm_Manager *instance_;
+    static Comm_Manager *instance_;
 
 protected:
 
@@ -116,7 +118,7 @@ protected:
     ///内存管道类的实例对象，保留它仅仅为了加速
     soar::App_BusPipe *zerg_mmap_pipe_;
     ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
-    ZBuffer_Storage *zbuffer_storage_;
+    zerg::Buffer_Storage *zbuffer_storage_;
     ///统计，使用单子类的指针，保留它仅仅为了加速
     soar::Stat_Monitor *server_status_;
 
@@ -126,7 +128,6 @@ protected:
     unsigned int send_frame_count_;
 
     ///配置实例指针
-    const Zerg_Server_Config *zerg_config_;
+    const Zerg_Config *zerg_config_;
 };
-
-#endif //_ZERG_COMMUNICATION_MANAGER_H_
+}

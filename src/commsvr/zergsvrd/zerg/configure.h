@@ -134,12 +134,12 @@ public:
 *
 * @note
 */
-class Zerg_Server_Config: public Server_Config_Base
+class Zerg_Config: public Server_Config_Base
 {
 public:
     //
-    Zerg_Server_Config();
-    virtual ~Zerg_Server_Config();
+    Zerg_Config();
+    virtual ~Zerg_Config();
 
     //
 public:

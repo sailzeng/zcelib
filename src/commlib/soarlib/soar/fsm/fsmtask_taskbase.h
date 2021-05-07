@@ -7,7 +7,6 @@ class soar::Zerg_Frame;
 
 namespace soar
 {
-
 class FSMTask_TaskBase: public ZCE_Thread_Task
 {
     //给一个友缘
@@ -163,7 +162,7 @@ protected:
 protected:
 
     //Trans 管理器
-    FSMTask_Manger     *trans_notify_mgr_;
+    FSMTask_Manger *trans_notify_mgr_;
 
     //一次最大从MGR发送队列中取出的frame数量，
     size_t              once_max_get_sendqueue_;
@@ -178,8 +177,6 @@ protected:
     bool                task_run_;
 
     //QQPET APPFRAME
-    soar::Zerg_Frame   *task_frame_buf_;
+    soar::Zerg_Frame *task_frame_buf_;
 };
-
 }
-

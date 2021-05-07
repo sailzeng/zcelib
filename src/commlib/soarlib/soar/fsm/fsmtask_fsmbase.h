@@ -1,11 +1,8 @@
-
-
 #include "soar/fsm/fsm_base.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
 namespace soar
 {
-
 class FSMTask_FSMBase: public FSM_Base
 {
 public:
@@ -50,5 +47,4 @@ protected:
     //管理器
     FSMTask_Manger *trans_notify_mgr_ = nullptr;
 };
-
 }

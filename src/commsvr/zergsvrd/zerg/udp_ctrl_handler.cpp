@@ -11,7 +11,7 @@ UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
 //
 soar::Stat_Monitor *UDP_Svc_Handler::server_status_ = NULL;
 //通信管理器
-Zerg_Comm_Manager *UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
+zerg::Comm_Manager *UDP_Svc_Handler::zerg_comm_mgr_ = NULL;
 
 //自己是否是代理
 bool           UDP_Svc_Handler::if_proxy_ = false;
@@ -36,7 +36,7 @@ UDP_Svc_Handler::~UDP_Svc_Handler()
 {
     if (dgram_databuf_ != NULL)
     {
-        ZBuffer_Storage::instance()->free_byte_buffer(dgram_databuf_);
+        zerg::Buffer_Storage::instance()->free_byte_buffer(dgram_databuf_);
     }
 }
 
@@ -45,7 +45,7 @@ int UDP_Svc_Handler::init_udp_services()
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
     size_t use_len = 0;
-    dgram_databuf_ = ZBuffer_Storage::instance()->allocate_buffer();
+    dgram_databuf_ = zerg::Buffer_Storage::instance()->allocate_buffer();
 
     int ret = 0;
     ret = dgram_peer_.open(&udp_bind_addr_);
@@ -307,12 +307,12 @@ int UDP_Svc_Handler::init_all_static_data()
     server_status_ = soar::Stat_Monitor::instance();
 
     //通信管理器
-    zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
+    zerg_comm_mgr_ = zerg::Comm_Manager::instance();
 
     return 0;
 }
 
-int UDP_Svc_Handler::get_config(const Zerg_Server_Config *config)
+int UDP_Svc_Handler::get_config(const Zerg_Config *config)
 {
     if_proxy_ = config->zerg_cfg_data_.is_proxy_;
     return 0;

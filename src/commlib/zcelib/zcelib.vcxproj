@@ -313,7 +313,7 @@
     <ClCompile Include="zce\string\helper.cpp" />
     <ClCompile Include="zce\thread\thread_task.cpp" />
     <ClCompile Include="zce\thread\thread_wait_mgr.cpp" />
-    <ClCompile Include="zce\timer\handler_base.cpp" />
+    <ClCompile Include="zce\timer\timer_handler.cpp" />
     <ClCompile Include="zce\timer\queue_base.cpp" />
     <ClCompile Include="zce\timer\queue_heap.cpp" />
     <ClCompile Include="zce\timer\queue_wheel.cpp" />
@@ -445,7 +445,7 @@
     <ClInclude Include="zce\thread\msgque_sema.h" />
     <ClInclude Include="zce\thread\thread_task.h" />
     <ClInclude Include="zce\thread\thread_wait_mgr.h" />
-    <ClInclude Include="zce\timer\handler_base.h" />
+    <ClInclude Include="zce\timer\timer_handler.h" />
     <ClInclude Include="zce\timer\queue_base.h" />
     <ClInclude Include="zce\timer\queue_heap.h" />
     <ClInclude Include="zce\timer\queue_wheel.h" />

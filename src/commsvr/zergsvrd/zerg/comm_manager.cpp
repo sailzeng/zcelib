@@ -5,10 +5,12 @@
 #include "zerg/app_timer.h"
 #include "zerg/comm_manager.h"
 
+namespace zerg
+{
 //实例
-Zerg_Comm_Manager *Zerg_Comm_Manager::instance_ = NULL;
+Comm_Manager *Comm_Manager::instance_ = NULL;
 
-Zerg_Comm_Manager::Zerg_Comm_Manager():
+Comm_Manager::Comm_Manager():
     error_try_num_(3),
     monitor_size_(0),
     zerg_mmap_pipe_(NULL),
@@ -19,14 +21,14 @@ Zerg_Comm_Manager::Zerg_Comm_Manager():
 
 {
     zerg_mmap_pipe_ = soar::App_BusPipe::instance();
-    zbuffer_storage_ = ZBuffer_Storage::instance();
+    zbuffer_storage_ = zerg::Buffer_Storage::instance();
     server_status_ = soar::Stat_Monitor::instance();
-    count_start_time_ = static_cast<unsigned int>(Zerg_App_Timer::now_time_.sec());
+    count_start_time_ = static_cast<unsigned int>(zerg::App_Timer::now_time_.sec());
 
     memset(monitor_cmd_,0,sizeof(monitor_cmd_));
 }
 
-Zerg_Comm_Manager::~Zerg_Comm_Manager()
+Comm_Manager::~Comm_Manager()
 {
     //先关闭ACCEPET
     for (size_t i = 0; i < zerg_acceptor_.size(); ++i)
@@ -42,7 +44,7 @@ Zerg_Comm_Manager::~Zerg_Comm_Manager()
 }
 
 //初始化
-int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
+int Comm_Manager::get_config(const Zerg_Config *config)
 {
     zerg_config_ = config;
 
@@ -56,7 +58,7 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
     //错误发送数据尝试发送次数
     monitor_size_ = config->zerg_cfg_data_.monitor_cmd_count_;
 
-    ZCE_LOG(RS_INFO,"[zergsvr] Zerg_Comm_Manager::get_config monitor_size_ = %u",monitor_size_);
+    ZCE_LOG(RS_INFO,"[zergsvr] Comm_Manager::get_config monitor_size_ = %u",monitor_size_);
 
     //读取监控的命令，监控的命令数量必须很少，最好等于==0，比较耗时。你可以对单机进行监控。
     //但是最好不要对所有的机器进行监控，
@@ -68,7 +70,7 @@ int Zerg_Comm_Manager::get_config(const Zerg_Server_Config *config)
     return 0;
 }
 
-int Zerg_Comm_Manager::init_allpeer()
+int Comm_Manager::init_allpeer()
 {
     int ret = 0;
     //初始化所有的监听端口
@@ -85,7 +87,7 @@ int Zerg_Comm_Manager::init_allpeer()
 }
 
 //
-int Zerg_Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
+int Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
 {
     int ret = 0;
 
@@ -147,7 +149,7 @@ int Zerg_Comm_Manager::init_socketpeer(const soar::SERVICES_ID &init_svcid)
 }
 
 //检查一个端口是否安全
-int Zerg_Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
+int Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
 {
     //高危端口检查常量
     const unsigned short UNSAFE_PORT1 = 1024;
@@ -183,7 +185,7 @@ int Zerg_Comm_Manager::check_safeport(const zce::Sockaddr_In &inetadd)
 }
 
 //取得发送数据进行发送
-int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t &num_send_frame)
+int Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t &num_send_frame)
 {
     num_send_frame = 0;
     int ret = 0;
@@ -191,7 +193,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t
     while (zerg_mmap_pipe_->is_empty_sendbus() == false
            && num_send_frame < want_send_frame)
     {
-        Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
+        zerg::Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
         soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
@@ -251,7 +253,7 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t
             //        }
             //        else
             //        {
-            //            Zerg_Buffer *send_buf = zbuffer_storage_->allocate_buffer();
+            //            zerg::Buffer *send_buf = zbuffer_storage_->allocate_buffer();
             //            memcpy(send_buf->buffer_data_, tmpbuf->buffer_data_, tmpbuf->size_of_use_);
             //            reinterpret_cast<soar::Zerg_Frame *>(send_buf->buffer_data_)->recv_service_.services_id_ = vec[i].services_id_;
             //            send_buf->size_of_use_ = tmpbuf->size_of_use_;
@@ -286,11 +288,11 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t
 }
 
 //检查发包频率
-void Zerg_Comm_Manager::check_freamcount(unsigned int now)
+void Comm_Manager::check_freamcount(unsigned int now)
 {
     if (now <= count_start_time_)
     {
-        ZCE_LOG(RS_ERROR,"[zergsvr] Zerg_Comm_Manager::check_freamcount time err.now:%u, count_start_time_:%u",
+        ZCE_LOG(RS_ERROR,"[zergsvr] Comm_Manager::check_freamcount time err.now:%u, count_start_time_:%u",
                 now,
                 count_start_time_);
         return;
@@ -301,14 +303,14 @@ void Zerg_Comm_Manager::check_freamcount(unsigned int now)
 
     if (frame_per_sec > SEND_FRAME_ALERT_VALUE)
     {
-        ZCE_LOG(RS_ALERT,"[zergsvr] Zerg_Comm_Manager::check_freamcount ALERT frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
+        ZCE_LOG(RS_ALERT,"[zergsvr] Comm_Manager::check_freamcount ALERT frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
                 frame_per_sec,
                 send_frame_count_,
                 interval);
     }
     else
     {
-        ZCE_LOG(RS_INFO,"[zergsvr] Zerg_Comm_Manager::check_freamcount frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
+        ZCE_LOG(RS_INFO,"[zergsvr] Comm_Manager::check_freamcount frame_per_sec:%u, send_frame_count_:%u, interval:%u.",
                 frame_per_sec,
                 send_frame_count_,
                 interval);
@@ -319,19 +321,19 @@ void Zerg_Comm_Manager::check_freamcount(unsigned int now)
 }
 
 //单子实例函数
-Zerg_Comm_Manager *Zerg_Comm_Manager::instance()
+Comm_Manager *Comm_Manager::instance()
 {
     //如果没有初始化
     if (instance_ == NULL)
     {
-        instance_ = new Zerg_Comm_Manager();
+        instance_ = new Comm_Manager();
     }
 
     return instance_;
 }
 
 //清理实例
-void Zerg_Comm_Manager::clean_instance()
+void Comm_Manager::clean_instance()
 {
     if (instance_)
     {
@@ -340,7 +342,7 @@ void Zerg_Comm_Manager::clean_instance()
     }
 }
 
-int Zerg_Comm_Manager::send_single_buf(Zerg_Buffer *tmpbuf)
+int Comm_Manager::send_single_buf(zerg::Buffer *tmpbuf)
 {
     //发送错误日志在process_send_data函数内部处理，这儿不增加重复记录
     int ret = TCP_Svc_Handler::process_send_data(tmpbuf);
@@ -387,7 +389,7 @@ int Zerg_Comm_Manager::send_single_buf(Zerg_Buffer *tmpbuf)
 }
 
 //
-void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
+void Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
 {
     // 如果是通信服务器的命令,不进行任何处理
     if (true == recv_frame->is_zerg_processcmd())
@@ -432,4 +434,5 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
                                 recv_frame->business_id_,
                                 recv_frame->send_service_.services_type_);
     }
+}
 }

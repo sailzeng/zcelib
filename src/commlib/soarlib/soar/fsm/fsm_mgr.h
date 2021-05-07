@@ -43,10 +43,8 @@ SEND PIPE<=================================
 
 ************************************************************************************/
 
-
 namespace soar
 {
-
 class App_BusPipe;
 class FSM_Base;
 class Zerg_Frame;
@@ -422,7 +420,4 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
     }
     return 0;
 }
-
 }
-
-

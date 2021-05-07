@@ -12,8 +12,7 @@
 *
 */
 
-#ifndef ZCE_LIB_EVENT_HANDLE_BASE_H_
-#define ZCE_LIB_EVENT_HANDLE_BASE_H_
+#pragma once
 
 class ZCE_Reactor;
 
@@ -166,5 +165,3 @@ inline void ZCE_Event_Handler::disable_mask(int dis_mask)
 {
     event_mask_ &= (~dis_mask);
 }
-
-#endif //ZCE_LIB_EVENT_HANDLE_BASE_H_

@@ -7,7 +7,6 @@
 
 namespace soar
 {
-
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
@@ -135,7 +134,7 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
 
     soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(trans_recv_buffer_);
 
-    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_recvbus() == false 
+    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_recvbus() == false
          && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
         //取出一个数据
@@ -397,5 +396,4 @@ void FSM_Manager::clean_instance()
     }
     return;
 }
-
 }

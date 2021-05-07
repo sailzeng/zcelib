@@ -1,11 +1,9 @@
 #pragma once
 
-class Zerg_Server_Config;
-
+class Zerg_Config;
 
 namespace zerg
 {
-
 /*!
 * @brief
 *
@@ -23,7 +21,7 @@ protected:
 public:
 
     ///从配置文件中得到相关的配置
-    int get_config(const Zerg_Server_Config *config);
+    int get_config(const Zerg_Config *config);
     ///检查IP限制
     int check_iprestrict(const zce::Sockaddr_In &remoteaddress);
 
@@ -45,7 +43,4 @@ protected:
     //拒绝进行连接的IP地址
     Set_Of_IPAddress           reject_ip_set_;
 };
-
 }
-
-

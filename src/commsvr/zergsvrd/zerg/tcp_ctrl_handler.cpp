@@ -1,8 +1,7 @@
 #include "zerg/predefine.h"
-#include "zerg/tcp_ctrl_handler.h"
-#include "zerg/comm_manager.h"
 #include "zerg/app_timer.h"
 #include "zerg/stat_define.h"
+#include "zerg/tcp_ctrl_handler.h"
 
 /****************************************************************************************************
 class  TCP_Svc_Handler
@@ -23,9 +22,9 @@ Active_SvcHandle_Set TCP_Svc_Handler::svr_peer_info_set_;
 //2.原来没有用instance
 
 //
-ZBuffer_Storage *TCP_Svc_Handler::zbuffer_storage_ = NULL;
+zerg::Buffer_Storage *TCP_Svc_Handler::zbuffer_storage_ = NULL;
 //通信管理器
-Zerg_Comm_Manager *TCP_Svc_Handler::zerg_comm_mgr_ = NULL;
+zerg::Comm_Manager *TCP_Svc_Handler::zerg_comm_mgr_ = NULL;
 //
 soar::Stat_Monitor *TCP_Svc_Handler::server_status_ = NULL;
 
@@ -326,7 +325,7 @@ TCP_Svc_Handler::~TCP_Svc_Handler()
 }
 
 //从配置文件读取配置信息
-int TCP_Svc_Handler::get_config(const Zerg_Server_Config *config)
+int TCP_Svc_Handler::get_config(const Zerg_Config *config)
 {
     int ret = 0;
 
@@ -377,10 +376,10 @@ int TCP_Svc_Handler::init_all_static_data()
     //
     //int ret = 0;
     //
-    zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
+    zerg_comm_mgr_ = zerg::Comm_Manager::instance();
     //自己的服务的类型,服务编号,APPID
     //
-    zbuffer_storage_ = ZBuffer_Storage::instance();
+    zbuffer_storage_ = zerg::Buffer_Storage::instance();
 
     //服务器的统计操作实例
     server_status_ = soar::Stat_Monitor::instance();
@@ -642,7 +641,7 @@ int TCP_Svc_Handler::handle_close()
         {
             //通知后面的服务器
 
-            Zerg_Buffer *close_buf = zbuffer_storage_->allocate_buffer();
+            zerg::Buffer *close_buf = zbuffer_storage_->allocate_buffer();
             soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(close_buf->buffer_data_);
 
             proc_frame->init_head(soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD,0,INNER_REG_SOCKET_CLOSED);
@@ -678,7 +677,7 @@ int TCP_Svc_Handler::handle_close()
 
         --num_connect_peer_;
         server_status_->set_counter(ZERG_CONNECT_PEER_NUMBER,0,0,
-                                      num_connect_peer_);
+                                    num_connect_peer_);
         //将指针归还到池子中间去
         pool_of_cnthdl_.push_back(this);
     }
@@ -892,7 +891,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
 
     //充分利用缓冲区去接收
     recvret = socket_peer_.recv(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_,
-                                Zerg_Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
+                                zerg::Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
                                 0);
 
     //表示被关闭或者出现错误
@@ -1115,7 +1114,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend,bool &bfull)
     }
 
     //前面有检查,不会越界
-    Zerg_Buffer *sndbuffer = snd_buffer_deque_[0];
+    zerg::Buffer *sndbuffer = snd_buffer_deque_[0];
 
     ssize_t sendret = socket_peer_.send(sndbuffer->buffer_data_ + sndbuffer->size_of_buffer_,
                                         sndbuffer->size_of_use_ - sndbuffer->size_of_buffer_,
@@ -1168,7 +1167,7 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend,bool &bfull)
 }
 
 //处理发送错误.
-int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf,bool frame_encode)
+int TCP_Svc_Handler::process_send_error(zerg::Buffer *tmpbuf,bool frame_encode)
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -1282,7 +1281,7 @@ int TCP_Svc_Handler::uninit_all_staticdata()
 }
 
 //处理发送一个数据
-int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
+int TCP_Svc_Handler::process_send_data(zerg::Buffer *tmpbuf)
 {
     int ret = 0;
     server_status_->add_number(ZERG_SEND_FRAME_COUNTER,0,0,1);
@@ -1443,7 +1442,7 @@ int TCP_Svc_Handler::send_simple_zerg_cmd(uint32_t cmd,
     //    peer_address_.get_port_number(),
     //    cmd);
     //向对方发送一个心跳包
-    Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
+    zerg::Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
     soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
 
     proc_frame->init_head(soar::Zerg_Frame::LEN_OF_APPFRAME_HEAD,option,cmd);
@@ -1474,7 +1473,7 @@ int TCP_Svc_Handler::send_zergheatbeat_reg()
 //将发送数据放入发送队列中
 //如果一个PEER没有连接上,等待发送的数据不能多于PEER_STATUS_NOACTIVE个
 //put_frame_to_sendlist内部进行了错误处理，回收等操作
-int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
+int TCP_Svc_Handler::put_frame_to_sendlist(zerg::Buffer *tmpbuf)
 {
     int ret = 0;
     const size_t IP_ADDR_LEN = 32;

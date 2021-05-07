@@ -143,5 +143,4 @@ int FSMTask_TaskBase::task_moonlighting(size_t &send_frame_num)
     send_frame_num = 0;
     return 0;
 }
-
 }

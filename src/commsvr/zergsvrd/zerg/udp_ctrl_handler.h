@@ -2,13 +2,13 @@
 #define ZERG_UDP_CONTROL_SERVICE_H_
 
 #include "zerg/ip_restrict.h"
+#include "zerg/buf_storage.h"
+#include "zerg/configure.h"
+#include "zerg/comm_manager.h"
 
 //forward declaration
 class soar::Zerg_Frame;
-class Zerg_Buffer;
-
-class Zerg_Comm_Manager;
-class Zerg_Server_Config;
+class Zerg_Config;
 
 class UDP_Svc_Handler: public ZCE_Event_Handler
 {
@@ -52,7 +52,7 @@ public:
     static int send_all_to_udp(soar::Zerg_Frame *send_frame);
 
     ///读取配置
-    static int get_config(const Zerg_Server_Config *config);
+    static int get_config(const Zerg_Config *config);
 
 protected:
 
@@ -71,7 +71,7 @@ protected:
     static soar::Stat_Monitor *server_status_;
 
     ///通讯管理器,保存是为了加快速度
-    static Zerg_Comm_Manager *zerg_comm_mgr_;
+    static zerg::Comm_Manager *zerg_comm_mgr_;
 
     ///是否是代理服务器
     static bool                     if_proxy_;
@@ -89,7 +89,7 @@ protected:
     ///是否进行SESSION校验
     bool                     sessionkey_verify_;
     ///数据缓冲区，UDP只有一个
-    Zerg_Buffer *dgram_databuf_;
+    zerg::Buffer *dgram_databuf_;
     ///IP限制管理器
     zerg::IPRestrict_Mgr *ip_restrict_;
 };

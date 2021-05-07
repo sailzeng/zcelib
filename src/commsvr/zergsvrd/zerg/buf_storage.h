@@ -1,14 +1,14 @@
-#ifndef ZERG_BUFFER_STORAGE_H_
-#define ZERG_BUFFER_STORAGE_H_
+#pragma once
 
+namespace zerg
+{
 //===================================================================================================
-
 /*!
 * @brief
 *
 * @note
 */
-class Zerg_Buffer
+class Buffer
 {
 public:
     //
@@ -27,9 +27,9 @@ public:
 
 public:
     //
-    Zerg_Buffer();
+    Buffer();
     //
-    ~Zerg_Buffer();
+    ~Buffer();
 
     //填充数据
     void fill_write_data(const size_t szdata,const char *data);
@@ -54,7 +54,6 @@ public:
         {
             return true;
         }
-
         return false;
     }
 
@@ -65,7 +64,6 @@ public:
         {
             return true;
         }
-
         return false;
     };
 
@@ -80,12 +78,12 @@ public:
 *
 * @note
 */
-class ZBuffer_Storage: public zce::NON_Copyable
+class Buffer_Storage: public zce::NON_Copyable
 {
 public:
     //构造函数和析构函数
-    ZBuffer_Storage();
-    ~ZBuffer_Storage();
+    Buffer_Storage();
+    ~Buffer_Storage();
 
     //初始化
     void init_buffer_list(size_t szlist);
@@ -97,10 +95,10 @@ public:
     void close();
 
     //从队列分配一个Buffer出来
-    Zerg_Buffer *allocate_buffer();
+    zerg::Buffer *allocate_buffer();
 
     //释放一个Buffer到队列中
-    void free_byte_buffer(Zerg_Buffer *ptrbuf);
+    void free_byte_buffer(zerg::Buffer *ptrbuf);
 
     //扩展Buffer队列
     void extend_bufferlist(size_t szlist = EXTEND_NUM_OF_LIST);
@@ -108,13 +106,13 @@ public:
 public:
 
     //单子实例函数
-    static ZBuffer_Storage *instance();
+    static Buffer_Storage *instance();
     //清理单子实例
     static void clean_instance();
 
 protected:
     //单子实例指针
-    static ZBuffer_Storage *instance_;
+    static Buffer_Storage *instance_;
 
 protected:
 
@@ -124,7 +122,7 @@ protected:
 protected:
 
     ///存放BUFF 的队列类型
-    typedef zce::lordrings <Zerg_Buffer *> ZBUFFER_RINGS;
+    typedef zce::lordrings <zerg::Buffer *> ZBUFFER_RINGS;
 
     ///我担心内存泄露,所以加个总数计数
     size_t                size_of_bufferalloc_;
@@ -132,5 +130,4 @@ protected:
     ///BUFF队列
     ZBUFFER_RINGS         buffer_deque_;
 };
-
-#endif //_ZERG_BUFFER_STORAGE_H_
+}

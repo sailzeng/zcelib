@@ -4,11 +4,7 @@
 #include "zerg/buf_storage.h"
 #include "zerg/auto_connect.h"
 #include "zerg/active_svchdl_set.h"
-
-class Zerg_Buffer;
-class mmap_dequechunk;
-class Zerg_Auto_Connector;
-class Zerg_Comm_Manager;
+#include "zerg/comm_manager.h"
 
 /****************************************************************************************************
 class  TCP_Svc_Handler
@@ -183,7 +179,7 @@ protected:
     int push_frame_to_comm_mgr();
 
     //将一个发送的帧放入等待发送队列
-    int put_frame_to_sendlist(Zerg_Buffer *tmpbuf);
+    int put_frame_to_sendlist(zerg::Buffer *tmpbuf);
 
     /*!
     * @brief      合并发送队列
@@ -192,14 +188,14 @@ protected:
     void unite_frame_sendlist();
 
     //处理发送错误
-    int process_send_error(Zerg_Buffer *tmpbuf,bool frame_encode);
+    int process_send_error(zerg::Buffer *tmpbuf,bool frame_encode);
 
 public:
     //初始化静态参数
     static int init_all_static_data();
 
     ///读取配置文件
-    static int get_config(const Zerg_Server_Config *config);
+    static int get_config(const Zerg_Config *config);
 
     //注销静态参数
     static int uninit_all_staticdata();
@@ -231,7 +227,7 @@ public:
     static void dump_svcpeer_info(zce::LOG_PRIORITY out_lvl);
 
     ///处理发送一个数据
-    static int process_send_data(Zerg_Buffer *tmpbuf);
+    static int process_send_data(zerg::Buffer *tmpbuf);
 
     ///根据services_type查询对应的配置主备服务器列表数组 MS（主备）,
     ///请参考 @ref Zerg_Auto_Connector
@@ -263,10 +259,10 @@ protected:
 protected:
 
     ///通讯管理器,保存是为了加快速度
-    static  Zerg_Comm_Manager *zerg_comm_mgr_;
+    static  zerg::Comm_Manager *zerg_comm_mgr_;
 
     ///存储缓存,全局唯一,保存是为了加快速度
-    static ZBuffer_Storage *zbuffer_storage_;
+    static zerg::Buffer_Storage *zbuffer_storage_;
 
     ///统计，使用单子类的指针
     static soar::Stat_Monitor *server_status_;
@@ -327,7 +323,7 @@ protected:
     soar::SERVICES_ID                peer_svr_id_;
 
     ///接收数据的缓冲
-    Zerg_Buffer *rcv_buffer_;
+    zerg::Buffer *rcv_buffer_;
 
     ///发送队列的大小，如果一个端口接受数据比较缓慢，则可能会先放入发送队列，等端口变为可写才能发送过去，
     ///那么发送队列就要负担缓冲这种危机的任务，发送总缓冲长度实际等于 = 发送队列的长度*每个队列成员BUFFER的大小(64K)，
@@ -335,7 +331,7 @@ protected:
     ///如果是内网，请求数量有限，那么设置成128, 256也是可以接受的，但其实际意义有待观察
 
     ///发送的数据可能要排队
-    zce::lordrings<Zerg_Buffer *>  snd_buffer_deque_;
+    zce::lordrings<zerg::Buffer *>  snd_buffer_deque_;
 
     ///下面这4个字段其实是记录一个时间段内的接受和发送的数据总数
     ///接收的次数计数器

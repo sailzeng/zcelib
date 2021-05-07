@@ -16,7 +16,7 @@ Zerg_Auto_Connector::~Zerg_Auto_Connector()
 }
 
 //取得配置信息
-int Zerg_Auto_Connector::get_config(const Zerg_Server_Config *config)
+int Zerg_Auto_Connector::get_config(const Zerg_Config *config)
 {
     int ret = 0;
 

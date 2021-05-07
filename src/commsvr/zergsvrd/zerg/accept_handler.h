@@ -52,7 +52,5 @@ protected:
     zce::Sockaddr_In          accept_bind_addr_;
 
     ///IP限制管理器
-    zerg::IPRestrict_Mgr      *ip_restrict_;
+    zerg::IPRestrict_Mgr *ip_restrict_;
 };
-
-

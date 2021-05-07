@@ -24,7 +24,6 @@
 
 namespace soar
 {
-
 class FSMTask_TaskBase;
 class FSMTask_Manger: public FSM_Manager
 {
@@ -244,5 +243,4 @@ protected:
     // push数据进队列时，如果队列满了的最多等待时间
     zce::Time_Value     enqueue_timeout_;
 };
-
 }

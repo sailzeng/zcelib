@@ -113,7 +113,7 @@
     <ClCompile Include="zce\mysql\stmt_bind.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\timer\handler_base.cpp">
+    <ClCompile Include="zce\timer\timer_handler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="zce\timer\queue_base.cpp">
@@ -424,7 +424,7 @@
     <ClInclude Include="zce\log\priority.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="zce\timer\handler_base.h">
+    <ClInclude Include="zce\timer\timer_handler.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="zce\timer\queue_base.h">

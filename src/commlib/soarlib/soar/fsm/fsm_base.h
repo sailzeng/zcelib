@@ -23,12 +23,9 @@
 #include "soar/fsm/fsm_mgr.h"
 #include "soar/enum/error_code.h"
 
-
-
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
 namespace soar
 {
-
 class Zerg_Frame;
 class App_BusPipe;
 
@@ -474,5 +471,4 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
                                               msg,
                                               option);
 }
-
 }
