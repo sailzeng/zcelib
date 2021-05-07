@@ -1,6 +1,6 @@
-#include "zerg_predefine.h"
-#include "zerg_buf_storage.h"
-#include "zerg_stat_define.h"
+#include "zerg/predefine.h"
+#include "zerg/buf_storage.h"
+#include "zerg/stat_define.h"
 
 /****************************************************************************************************
 class ZByteBuffer

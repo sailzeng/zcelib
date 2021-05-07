@@ -1,8 +1,8 @@
-#include "zerg_predefine.h"
-#include "zerg_auto_connect.h"
-#include "zerg_application.h"
-#include "zerg_tcp_ctrl_handler.h"
-#include "zerg_configure.h"
+#include "zerg/predefine.h"
+#include "zerg/auto_connect.h"
+#include "zerg/application.h"
+#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/configure.h"
 
 /****************************************************************************************************
 class Zerg_Auto_Connector

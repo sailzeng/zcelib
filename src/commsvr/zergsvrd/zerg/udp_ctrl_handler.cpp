@@ -1,10 +1,10 @@
-#include "zerg_predefine.h"
-#include "zerg_buf_storage.h"
-#include "zerg_application.h"
-#include "zerg_ip_restrict.h"
-#include "zerg_comm_manager.h"
-#include "zerg_stat_define.h"
-#include "zerg_udp_ctrl_handler.h"
+#include "zerg/predefine.h"
+#include "zerg/buf_storage.h"
+#include "zerg/application.h"
+#include "zerg/ip_restrict.h"
+#include "zerg/comm_manager.h"
+#include "zerg/stat_define.h"
+#include "zerg/udp_ctrl_handler.h"
 
 //
 UDP_Svc_Handler::ARY_OF_UDPSVC_HANDLER UDP_Svc_Handler::ary_udpsvc_handler_;
@@ -25,7 +25,7 @@ UDP_Svc_Handler::UDP_Svc_Handler(const soar::SERVICES_ID &my_svcinfo,
     my_svc_info_(my_svcinfo),
     sessionkey_verify_(sessionkey_verify),
     dgram_databuf_(NULL),
-    ip_restrict_(Zerg_IPRestrict_Mgr::instance())
+    ip_restrict_(zerg::IPRestrict_Mgr::instance())
 {
     //
     ary_udpsvc_handler_.push_back(this);

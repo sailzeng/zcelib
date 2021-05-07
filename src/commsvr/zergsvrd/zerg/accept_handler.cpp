@@ -1,7 +1,7 @@
-#include "zerg_predefine.h"
-#include "zerg_accept_handler.h"
-#include "zerg_tcp_ctrl_handler.h"
-#include "zerg_ip_restrict.h"
+#include "zerg/predefine.h"
+#include "zerg/accept_handler.h"
+#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/ip_restrict.h"
 
 //TCP Accept 处理的EventHandler,
 TCP_Accept_Handler::TCP_Accept_Handler(const soar::SERVICES_ID &svcid,
@@ -9,7 +9,7 @@ TCP_Accept_Handler::TCP_Accept_Handler(const soar::SERVICES_ID &svcid,
     ZCE_Event_Handler(ZCE_Reactor::instance()),
     my_svc_info_(svcid),
     accept_bind_addr_(addr),
-    ip_restrict_(Zerg_IPRestrict_Mgr::instance())
+    ip_restrict_(zerg::IPRestrict_Mgr::instance())
 {
 }
 

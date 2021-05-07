@@ -1,23 +1,25 @@
-#include "zerg_predefine.h"
-#include "zerg_configure.h"
-#include "zerg_ip_restrict.h"
+#include "zerg/predefine.h"
+#include "zerg/configure.h"
+#include "zerg/ip_restrict.h"
 
+namespace zerg
+{
 //实例
-Zerg_IPRestrict_Mgr *Zerg_IPRestrict_Mgr::instance_ = NULL;
+IPRestrict_Mgr *IPRestrict_Mgr::instance_ = NULL;
 
 /****************************************************************************************************
-class  Zerg_IPRestrict_Mgr 处理通讯中间的IP限制问题
+class  IPRestrict_Mgr 处理通讯中间的IP限制问题
 ****************************************************************************************************/
-Zerg_IPRestrict_Mgr::Zerg_IPRestrict_Mgr()
+IPRestrict_Mgr::IPRestrict_Mgr()
 {
 }
 //自己清理的类型，统一关闭在handle_close,这个地方不用关闭
-Zerg_IPRestrict_Mgr::~Zerg_IPRestrict_Mgr()
+IPRestrict_Mgr::~IPRestrict_Mgr()
 {
 }
 
 //从配置文件中得到相关的配置
-int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
+int IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
 {
     int ret = 0;
     //unsigned int tmp_uint= 0;
@@ -62,7 +64,7 @@ int Zerg_IPRestrict_Mgr::get_config(const Zerg_Server_Config *config)
     return 0;
 }
 
-int Zerg_IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
+int IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
 {
     const size_t IP_ADDR_LEN = 32;
     char ip_addr_str[IP_ADDR_LEN + 1];
@@ -97,23 +99,25 @@ int Zerg_IPRestrict_Mgr::check_iprestrict(const zce::Sockaddr_In &remoteaddress)
 }
 
 //单子实例函数
-Zerg_IPRestrict_Mgr *Zerg_IPRestrict_Mgr::instance()
+IPRestrict_Mgr *IPRestrict_Mgr::instance()
 {
     //如果没有初始化
     if (instance_ == NULL)
     {
-        instance_ = new Zerg_IPRestrict_Mgr();
+        instance_ = new IPRestrict_Mgr();
     }
 
     return instance_;
 }
 
 //清理实例
-void Zerg_IPRestrict_Mgr::clean_instance()
+void IPRestrict_Mgr::clean_instance()
 {
     if (instance_)
     {
         delete instance_;
         instance_ = NULL;
     }
+}
+
 }

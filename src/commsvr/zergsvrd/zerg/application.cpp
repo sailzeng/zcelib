@@ -1,12 +1,12 @@
-#include "zerg_predefine.h"
-#include "zerg_application.h"
-#include "zerg_console_handler.h"
-#include "zerg_udp_ctrl_handler.h"
-#include "zerg_tcp_ctrl_handler.h"
-#include "zerg_ip_restrict.h"
-#include "zerg_comm_manager.h"
-#include "zerg_configure.h"
-#include "zerg_stat_define.h"
+#include "zerg/predefine.h"
+#include "zerg/application.h"
+#include "zerg/console_handler.h"
+#include "zerg/udp_ctrl_handler.h"
+#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/ip_restrict.h"
+#include "zerg/comm_manager.h"
+#include "zerg/configure.h"
+#include "zerg/stat_define.h"
 
 /****************************************************************************************************
 class  Zerg_Service_App
@@ -36,7 +36,7 @@ int Zerg_Service_App::app_start(int argc,const char *argv[])
         return ret;
     }
     Zerg_Server_Config *config = reinterpret_cast<Zerg_Server_Config *>(config_base_);
-    ret = Zerg_IPRestrict_Mgr::instance()->get_config(config);
+    ret = zerg::IPRestrict_Mgr::instance()->get_config(config);
     if (0 != ret)
     {
         return ret;
@@ -120,7 +120,7 @@ int Zerg_Service_App::app_exit()
     Zerg_Comm_Manager::clean_instance();
 
     //清理单子
-    Zerg_IPRestrict_Mgr::clean_instance();
+    zerg::IPRestrict_Mgr::clean_instance();
 
     //最后调用基类的退出函数
     soar::Svrd_Appliction::app_exit();

@@ -1,4 +1,4 @@
-/// @file       zerg_stat_define.h
+/// @file       zerg/stat_define.h
 /// @date       2012/07/21 14:02
 ///
 /// @author     yunfeiyang

@@ -1,8 +1,8 @@
 #ifndef ZERG_COMMUNICATION_MANAGER_H_
 #define ZERG_COMMUNICATION_MANAGER_H_
 
-#include "zerg_configure.h"
-#include "zerg_stat_define.h"
+#include "zerg/configure.h"
+#include "zerg/stat_define.h"
 
 //左小祖咒：借我那把枪吧，或者借我五毛钱
 //这儿必须记录一下，为什么每个端口要配置一个SVC ID，这个问题，
@@ -14,7 +14,7 @@ class TCP_Accept_Handler;
 class UDP_Svc_Handler;
 class soar::App_BusPipe;
 
-#include "zerg_buf_storage.h"
+#include "zerg/buf_storage.h"
 
 /****************************************************************************************************
 class  Zerg_Comm_Manager

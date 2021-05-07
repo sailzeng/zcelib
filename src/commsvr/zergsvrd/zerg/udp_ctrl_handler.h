@@ -1,10 +1,12 @@
 #ifndef ZERG_UDP_CONTROL_SERVICE_H_
 #define ZERG_UDP_CONTROL_SERVICE_H_
 
+#include "zerg/ip_restrict.h"
+
 //forward declaration
 class soar::Zerg_Frame;
 class Zerg_Buffer;
-class Zerg_IPRestrict_Mgr;
+
 class Zerg_Comm_Manager;
 class Zerg_Server_Config;
 
@@ -89,7 +91,7 @@ protected:
     ///数据缓冲区，UDP只有一个
     Zerg_Buffer *dgram_databuf_;
     ///IP限制管理器
-    Zerg_IPRestrict_Mgr *ip_restrict_;
+    zerg::IPRestrict_Mgr *ip_restrict_;
 };
 
 #endif //#ifndef _ZERG_UDP_CONTROL_SERVICE_H_

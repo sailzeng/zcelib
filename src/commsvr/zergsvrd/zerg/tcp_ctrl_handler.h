@@ -1,9 +1,9 @@
 #ifndef ZERG_TCP_CONTROL_SERVICE_H_
 #define ZERG_TCP_CONTROL_SERVICE_H_
 
-#include "zerg_buf_storage.h"
-#include "zerg_auto_connect.h"
-#include "zerg_active_svchdl_set.h"
+#include "zerg/buf_storage.h"
+#include "zerg/auto_connect.h"
+#include "zerg/active_svchdl_set.h"
 
 class Zerg_Buffer;
 class mmap_dequechunk;

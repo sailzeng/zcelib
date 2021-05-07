@@ -128,7 +128,7 @@ public:
         return enqueue_sendqueue(cmd,
                                  user_id,
                                  fsm_id,
-                                 backfill_trans_id,
+                                 backfill_fsm_id,
                                  self_svc_info_,
                                  proxysvc,
                                  self_svc_info_,
@@ -157,7 +157,7 @@ public:
         rsp_msg->send_service_ = sndsvc;
 
         //填写自己transaction_id_,其实是自己的事务ID,方便回来可以找到自己
-        rsp_msg->backfill_fsm_id_ = backfill_trans_id;
+        rsp_msg->backfill_fsm_id_ = backfill_fsm_id;
 
         //拷贝发送的MSG Block
         int ret = rsp_msg->appdata_encode(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME_DATA,msg);

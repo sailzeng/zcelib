@@ -1,22 +1,22 @@
-#include "zerg_predefine.h"
-#include "zerg_tcp_ctrl_handler.h"
-#include "zerg_comm_manager.h"
-#include "zerg_application.h"
-#include "zerg_app_timer.h"
+#include "zerg/predefine.h"
+#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/comm_manager.h"
+#include "zerg/application.h"
+#include "zerg/app_timer.h"
 
 /****************************************************************************************************
-class  Zerg_App_Timer_Handler
+class  Zerg_App_Timer
 ****************************************************************************************************/
 
 ///ZERG服务器定时器ID,
-const int Zerg_App_Timer_Handler::ZERG_TIMER_ID[] =
+const int Zerg_App_Timer::ZERG_TIMER_ID[] =
 {
     0x101,
     0x102,
 };
 
 //
-Zerg_App_Timer_Handler::Zerg_App_Timer_Handler():
+Zerg_App_Timer::Zerg_App_Timer():
     Server_Timer_Base()
 {
     //reload主动连接的间隔时间, 300s
@@ -32,12 +32,12 @@ Zerg_App_Timer_Handler::Zerg_App_Timer_Handler():
     add_app_timer(connect_all_internal,&ZERG_TIMER_ID[0]);
 }
 
-Zerg_App_Timer_Handler::~Zerg_App_Timer_Handler()
+Zerg_App_Timer::~Zerg_App_Timer()
 {
 }
 
 //
-int Zerg_App_Timer_Handler::timer_timeout(const zce::Time_Value &time_now,const void *act)
+int Zerg_App_Timer::timer_timeout(const zce::Time_Value &time_now,const void *act)
 {
     //等到当前的时间
     Server_Timer_Base::timer_timeout(time_now,act);

@@ -1,7 +1,7 @@
-#include "zerg_predefine.h"
-//#include "zerg_console_handler.h"
-//#include "zerg_application.h"
-//#include "zerg_configure.h"
+#include "zerg/predefine.h"
+//#include "zerg/console_handler.h"
+//#include "zerg/application.h"
+//#include "zerg/configure.h"
 //
 //Zerg_Console_Handler::Zerg_Console_Handler(ZCE_Reactor *reactor_inst):
 //    MML_Console_Handler(reactor_inst)

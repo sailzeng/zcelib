@@ -1,9 +1,9 @@
-#include "zerg_predefine.h"
-#include "zerg_tcp_ctrl_handler.h"
-#include "zerg_udp_ctrl_handler.h"
-#include "zerg_accept_handler.h"
-#include "zerg_app_timer.h"
-#include "zerg_comm_manager.h"
+#include "zerg/predefine.h"
+#include "zerg/tcp_ctrl_handler.h"
+#include "zerg/udp_ctrl_handler.h"
+#include "zerg/accept_handler.h"
+#include "zerg/app_timer.h"
+#include "zerg/comm_manager.h"
 
 //实例
 Zerg_Comm_Manager *Zerg_Comm_Manager::instance_ = NULL;
@@ -21,7 +21,7 @@ Zerg_Comm_Manager::Zerg_Comm_Manager():
     zerg_mmap_pipe_ = soar::App_BusPipe::instance();
     zbuffer_storage_ = ZBuffer_Storage::instance();
     server_status_ = soar::Stat_Monitor::instance();
-    count_start_time_ = static_cast<unsigned int>(Zerg_App_Timer_Handler::now_time_.sec());
+    count_start_time_ = static_cast<unsigned int>(Zerg_App_Timer::now_time_.sec());
 
     memset(monitor_cmd_,0,sizeof(monitor_cmd_));
 }

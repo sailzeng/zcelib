@@ -1,7 +1,6 @@
-#ifndef ZERG_SERVER_APPLICATION_H_
-#define ZERG_SERVER_APPLICATION_H_
+#pragma once
 
-#include "zerg_tcp_ctrl_handler.h"
+#include "zerg/tcp_ctrl_handler.h"
 
 class Zerg_Comm_Manager;
 
@@ -34,9 +33,7 @@ public:
     Zerg_Comm_Manager *zerg_comm_mgr_;
 
     ///OP KEY文件的时间戳
-    time_t                   conf_timestamp_;
+    time_t             conf_timestamp_;
 };
 
-//
 
-#endif //_ZERG_SERVER_APPLICATION_H_

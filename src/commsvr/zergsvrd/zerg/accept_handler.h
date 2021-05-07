@@ -1,7 +1,6 @@
-#ifndef ZERG_TCP_ACCEPT_HANDLER_H_
-#define ZERG_TCP_ACCEPT_HANDLER_H_
+#pragma once
 
-class Zerg_IPRestrict_Mgr;
+#include "zerg/ip_restrict.h"
 
 /*!
 * @brief      TCP Accept 处理的EventHandler,
@@ -53,7 +52,7 @@ protected:
     zce::Sockaddr_In          accept_bind_addr_;
 
     ///IP限制管理器
-    Zerg_IPRestrict_Mgr      *ip_restrict_;
+    zerg::IPRestrict_Mgr      *ip_restrict_;
 };
 
-#endif //_ZERG_TCP_ACCEPT_HANDLER_H_
+

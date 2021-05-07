@@ -6,7 +6,9 @@
 //服务配置
 struct SERVICES_INFO_TABLE
 {
-    typedef std::unordered_set<soar::SERVICES_INFO,soar::HASH_OF_SVCINFO,soar::EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
+    typedef std::unordered_set<soar::SERVICES_INFO,
+        soar::HASH_OF_SVCINFO,
+        soar::EQUAL_OF_SVCINFO> SET_OF_SVCINFO;
 
 public:
     //构造函数,

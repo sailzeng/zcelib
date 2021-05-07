@@ -106,9 +106,9 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>zerg/predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -124,9 +124,9 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>zerg/predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -144,9 +144,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>zerg/predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -166,9 +166,9 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.;$(SolutionDir)commlib/zcelib;$(SolutionDir)commlib/soarlib</AdditionalIncludeDirectories>
       <TreatWarningAsError>true</TreatWarningAsError>
-      <PrecompiledHeaderFile>zerg_predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile>zerg/predefine.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
@@ -181,41 +181,45 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="zerg_accept_handler.cpp" />
-    <ClCompile Include="zerg_application.cpp" />
-    <ClCompile Include="zerg_app_timer.cpp" />
-    <ClCompile Include="zerg_auto_connect.cpp" />
-    <ClCompile Include="zerg_buf_storage.cpp" />
-    <ClCompile Include="zerg_comm_manager.cpp" />
-    <ClCompile Include="zerg_configure.cpp" />
-    <ClCompile Include="zerg_console_handler.cpp" />
-    <ClCompile Include="zerg_ip_restrict.cpp" />
-    <ClCompile Include="zerg_main.cpp" />
-    <ClCompile Include="zerg_predefine.cpp">
+    <ClCompile Include="zerg\accept_handler.cpp" />
+    <ClCompile Include="zerg\application.cpp" />
+    <ClCompile Include="zerg\app_timer.cpp" />
+    <ClCompile Include="zerg\auto_connect.cpp" />
+    <ClCompile Include="zerg\buf_storage.cpp" />
+    <ClCompile Include="zerg\comm_manager.cpp" />
+    <ClCompile Include="zerg\configure.cpp" />
+    <ClCompile Include="zerg\console_handler.cpp" />
+    <ClCompile Include="zerg\ip_restrict.cpp" />
+    <ClCompile Include="zerg\main.cpp" />
+    <ClCompile Include="zerg\predefine.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">zerg/predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">zerg/predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">zerg/predefine.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|x64'">zerg/predefine.h</PrecompiledHeaderFile>
     </ClCompile>
-    <ClCompile Include="zerg_active_svchdl_set.cpp" />
-    <ClCompile Include="zerg_tcp_ctrl_handler.cpp" />
-    <ClCompile Include="zerg_udp_ctrl_handler.cpp" />
+    <ClCompile Include="zerg\active_svchdl_set.cpp" />
+    <ClCompile Include="zerg\tcp_ctrl_handler.cpp" />
+    <ClCompile Include="zerg\udp_ctrl_handler.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="zerg_accept_handler.h" />
-    <ClInclude Include="zerg_application.h" />
-    <ClInclude Include="zerg_app_timer.h" />
-    <ClInclude Include="zerg_auto_connect.h" />
-    <ClInclude Include="zerg_buf_storage.h" />
-    <ClInclude Include="zerg_comm_manager.h" />
-    <ClInclude Include="zerg_configure.h" />
-    <ClInclude Include="zerg_console_handler.h" />
-    <ClInclude Include="zerg_ip_restrict.h" />
-    <ClInclude Include="zerg_predefine.h" />
-    <ClInclude Include="zerg_active_svchdl_set.h" />
-    <ClInclude Include="zerg_stat_define.h" />
-    <ClInclude Include="zerg_tcp_ctrl_handler.h" />
-    <ClInclude Include="zerg_udp_ctrl_handler.h" />
+    <ClInclude Include="zerg\accept_handler.h" />
+    <ClInclude Include="zerg\application.h" />
+    <ClInclude Include="zerg\app_timer.h" />
+    <ClInclude Include="zerg\auto_connect.h" />
+    <ClInclude Include="zerg\buf_storage.h" />
+    <ClInclude Include="zerg\comm_manager.h" />
+    <ClInclude Include="zerg\configure.h" />
+    <ClInclude Include="zerg\console_handler.h" />
+    <ClInclude Include="zerg\ip_restrict.h" />
+    <ClInclude Include="zerg\predefine.h" />
+    <ClInclude Include="zerg\active_svchdl_set.h" />
+    <ClInclude Include="zerg\stat_define.h" />
+    <ClInclude Include="zerg\tcp_ctrl_handler.h" />
+    <ClInclude Include="zerg\udp_ctrl_handler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -6,14 +6,14 @@
 *
 * @note
 */
-class  Zerg_App_Timer_Handler: public  Server_Timer_Base
+class  Zerg_App_Timer: public  Server_Timer_Base
 {
 public:
     //
-    Zerg_App_Timer_Handler();
+    Zerg_App_Timer();
 protected:
     //自己管理自己的清理
-    ~Zerg_App_Timer_Handler();
+    ~Zerg_App_Timer();
 
     ///定时器触发
     virtual int timer_timeout(const zce::Time_Value &time,const void *arg);
