@@ -174,8 +174,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID &my_svcinfo,
         reactor()->cancel_wakeup(this,EVENT_MASK::WRITE_MASK);
 
         //统计
-        server_status_->set_counter(ZERG_ACCEPT_PEER_NUMBER,0,0,static_cast<int>(num_accept_peer_));
-        server_status_->add_number(ZERG_ACCEPT_PEER_COUNTER,0,0,1);
+        server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER,0,0,static_cast<int>(num_accept_peer_));
+        server_status_->increase_by_statid(ZERG_ACCEPT_PEER_COUNTER,0,0,1);
     }
     //要测试检查一下,
     else
@@ -295,8 +295,8 @@ void TCP_Svc_Handler::init_tcpsvr_handler(const soar::SERVICES_ID &my_svcinfo,
     timeout_time_id_ = timer_queue()->schedule_timer(this,&TCPCTRL_TIME_ID[0],delay,interval);
 
     //统计
-    server_status_->set_counter(ZERG_CONNECT_PEER_NUMBER,0,0,num_connect_peer_);
-    server_status_->add_number(ZERG_CONNECT_PEER_COUNTER,0,0,1);
+    server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER,0,0,num_connect_peer_);
+    server_status_->increase_by_statid(ZERG_CONNECT_PEER_COUNTER,0,0,1);
 
     //SO_RCVBUF，SO_SNDBUF，按照UNPv1的讲解，应该在connect之前设置，虽然我的测试证明，放在这儿设置也可以。
 
@@ -571,10 +571,10 @@ int TCP_Svc_Handler::timer_timeout(const zce::Time_Value &now_time,const void *a
                 receive_times_);
 
         //这类统计如果过于频繁影响程序的运行,所以放入定时器作,虽然会感觉不是太准确,但是性能优先
-        server_status_->add_number(ZERG_RECV_SUCC_COUNTER,0,0,recieve_counter_);
-        server_status_->add_number(ZERG_SEND_SUCC_COUNTER,0,0,send_counter_);
-        server_status_->add_number(ZERG_SEND_BYTES_COUNTER,0,0,send_bytes_);
-        server_status_->add_number(ZERG_RECV_BYTES_COUNTER,0,0,recieve_bytes_);
+        server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER,0,0,recieve_counter_);
+        server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER,0,0,send_counter_);
+        server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER,0,0,send_bytes_);
+        server_status_->increase_by_statid(ZERG_RECV_BYTES_COUNTER,0,0,recieve_bytes_);
 
         recieve_counter_ = 0;
         recieve_bytes_ = 0;
@@ -653,10 +653,10 @@ int TCP_Svc_Handler::handle_close()
     }
 
     //这类统计如果过于频繁影响程序的运行,所以放入最后作,虽然会感觉不是太准确,但是性能优先
-    server_status_->add_number(ZERG_RECV_SUCC_COUNTER,0,0,recieve_counter_);
-    server_status_->add_number(ZERG_SEND_SUCC_COUNTER,0,0,send_counter_);
-    server_status_->add_number(ZERG_SEND_BYTES_COUNTER,0,0,send_bytes_);
-    server_status_->add_number(ZERG_RECV_BYTES_COUNTER,0,0,recieve_bytes_);
+    server_status_->increase_by_statid(ZERG_RECV_SUCC_COUNTER,0,0,recieve_counter_);
+    server_status_->increase_by_statid(ZERG_SEND_SUCC_COUNTER,0,0,send_counter_);
+    server_status_->increase_by_statid(ZERG_SEND_BYTES_COUNTER,0,0,send_bytes_);
+    server_status_->increase_by_statid(ZERG_RECV_BYTES_COUNTER,0,0,recieve_bytes_);
 
     recieve_counter_ = 0;
     recieve_bytes_ = 0;
@@ -677,8 +677,8 @@ int TCP_Svc_Handler::handle_close()
         );
 
         --num_connect_peer_;
-        server_status_->set_counter(ZERG_CONNECT_PEER_NUMBER,0,0,
-                                    num_connect_peer_);
+        server_status_->set_by_statid(ZERG_CONNECT_PEER_NUMBER,0,0,
+                                      num_connect_peer_);
         //将指针归还到池子中间去
         pool_of_cnthdl_.push_back(this);
     }
@@ -691,7 +691,7 @@ int TCP_Svc_Handler::handle_close()
         );
 
         --num_accept_peer_;
-        server_status_->set_counter(ZERG_ACCEPT_PEER_NUMBER,0,0,num_accept_peer_);
+        server_status_->set_by_statid(ZERG_ACCEPT_PEER_NUMBER,0,0,num_accept_peer_);
         //将指针归还到池子中间去
         pool_of_acpthdl_.push_back(this);
     }
@@ -894,6 +894,7 @@ int TCP_Svc_Handler::read_data_from_peer(size_t &szrevc)
     recvret = socket_peer_.recv(rcv_buffer_->buffer_data_ + rcv_buffer_->size_of_buffer_,
                                 Zerg_Buffer::CAPACITY_OF_BUFFER - rcv_buffer_->size_of_buffer_,
                                 0);
+
     //表示被关闭或者出现错误
     if (recvret < 0)
     {
@@ -1134,13 +1135,13 @@ int TCP_Svc_Handler::write_data_to_peer(size_t &szsend,bool &bfull)
                     socket_peer_.get_handle(),
                     zce::last_error(),
                     strerror(zce::last_error()));
-            server_status_->add_number(ZERG_SEND_FAIL_COUNTER,0,0,1);
+            server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER,0,0,1);
 
             return SOAR_RET::ERR_ZERG_FAIL_SOCKET_OP_ERROR;
         }
 
         //统计发送阻塞的错误
-        server_status_->add_number(ZERG_SEND_BLOCK_COUNTER,0,0,1);
+        server_status_->increase_by_statid(ZERG_SEND_BLOCK_COUNTER,0,0,1);
 
         //如果错误是阻塞,什么都不作
         return 0;
@@ -1214,7 +1215,7 @@ int TCP_Svc_Handler::process_send_error(Zerg_Buffer *tmpbuf,bool frame_encode)
         }
 
         //增加错误发送的处理
-        server_status_->add_number(ZERG_SEND_FAIL_COUNTER,0,0,1);
+        server_status_->increase_by_statid(ZERG_SEND_FAIL_COUNTER,0,0,1);
 
         //
         tmpbuf->size_of_buffer_ += proc_frame->length_;
@@ -1284,7 +1285,7 @@ int TCP_Svc_Handler::uninit_all_staticdata()
 int TCP_Svc_Handler::process_send_data(Zerg_Buffer *tmpbuf)
 {
     int ret = 0;
-    server_status_->add_number(ZERG_SEND_FRAME_COUNTER,0,0,1);
+    server_status_->increase_by_statid(ZERG_SEND_FRAME_COUNTER,0,0,1);
     //
     soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
     DEBUG_DUMP_ZERG_FRAME_HEAD(RS_DEBUG,"process_send_data Before framehead_encode:",proc_frame);
@@ -1523,7 +1524,7 @@ int TCP_Svc_Handler::put_frame_to_sendlist(Zerg_Buffer *tmpbuf)
 
     if (!bret)
     {
-        server_status_->add_number(ZERG_SEND_LIST_FULL_COUNTER,0,0,1);
+        server_status_->increase_by_statid(ZERG_SEND_LIST_FULL_COUNTER,0,0,1);
         //丢弃或者错误处理那个数据比较好呢?这儿值得商榷, 我这儿进行错误处理(可能丢弃)的是最新的.
         //我的考虑是如果命令有先后性.而且可以避免内存操作.
         ZCE_LOG(RS_ERROR,"[zergsvr] Services [%u|%u] IP|Port[%s] send buffer cycle deque is full,this data must throw away,Send deque capacity =%u,may be extend it.",
@@ -1689,7 +1690,7 @@ int TCP_Svc_Handler::push_frame_to_comm_mgr()
             }
 
             //统计接收错误
-            server_status_->add_number(ZERG_RECV_FAIL_COUNTER,0,0,1);
+            server_status_->increase_by_statid(ZERG_RECV_FAIL_COUNTER,0,0,1);
             return -1;
         }
 

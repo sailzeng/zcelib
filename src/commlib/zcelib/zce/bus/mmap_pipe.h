@@ -31,15 +31,61 @@ class shm_dequechunk;
 namespace zce
 {
 
+
 //MMAP的管道，你要初始化几条就初始化几条
+template<size_t MAX_PIPE>
 class MMAP_BusPipe: public zce::NON_Copyable
 {
-public:
 
+
+protected:
+
+    //
+    template<MAX_PIPE>
+    struct BUS_PIPE_HEAD
+    {
+        BUS_PIPE_HEAD():
+            size_of_sizet_(sizeof(size_t))
+        {
+            memset(size_of_pipe_,0,sizeof(size_of_pipe_));
+            memset(size_of_room_,0,sizeof(size_of_room_));
+        }
+    
+        ~BUS_PIPE_HEAD() = default;
+
+
+        //机器字长
+        uint32_t            size_of_sizet_;
+
+        //管道数量
+        uint32_t            number_of_pipe_ = MAX_PIPE;
+        //管道配置长度,2个管道的配置长度,
+        size_t              size_of_pipe_[MAX_PIPE];
+        //
+        size_t              size_of_room_[MAX_PIPE];
+    };
+
+public:
     //构造函数,
-    MMAP_BusPipe();
+    MMAP_BusPipe()
+    {
+        memset(bus_pipe_pointer_,0,sizeof(bus_pipe_pointer_));
+    }
     //析购函数
-    ~MMAP_BusPipe();
+    ~MMAP_BusPipe()
+    {
+        mmap_file_.flush();
+
+        for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
+        {
+            delete bus_pipe_pointer_[i];
+            bus_pipe_pointer_[i] = NULL;
+
+            bus_head_.size_of_pipe_[i] = 0;
+            bus_head_.size_of_room_[i] = 0;
+        }
+    }
+
 
 public:
 
@@ -65,13 +111,35 @@ public:
 
     //-----------------------------------------------------------------
     //怀疑TMD我有强迫症倾向，提供这么多接口干嘛，下面一组足够用了。
-    bool is_exist_bus(size_t pipe_id);
+    bool is_exist_bus(size_t pipe_id)
+    {
+        return bus_pipe_pointer_[pipe_id] == NULL?false:true;
+    }
 
     //MMAP隐射文件名称
     const char *mmap_file_name();
 
     //向管道写入帧
-    inline int push_back_bus(size_t pipe_id,const zce::lockfree::dequechunk_node *node);
+    inline int push_back_bus(size_t pipe_id,const zce::lockfree::dequechunk_node *node)
+    {
+        //取出一个帧
+        bool bret = bus_pipe_pointer_[pipe_id]->push_end(node);
+
+        //
+        if (!bret)
+        {
+            ZCE_LOG(RS_ALERT,"[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
+                    "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
+                    pipe_id,
+                    node->size_of_node_,
+                    bus_pipe_pointer_[pipe_id]->free_size(),
+                    bus_pipe_pointer_[pipe_id]->capacity()
+            );
+            return -1;
+        }
+
+        return 0;
+    }
 
     /*!
     * @brief      从管道POP读取帧，(就是拷贝后删除)
@@ -80,7 +148,18 @@ public:
     * @param      node     准备复制node指针，指针的空间请分配好
     * @note
     */
-    inline int pop_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node *node);
+    inline int pop_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node *node)
+    {
+        if (bus_pipe_pointer_[pipe_id]->empty())
+        {
+            return -1;
+        }
+
+        //取出一个帧
+        bus_pipe_pointer_[pipe_id]->pop_front(node);
+
+        return 0;
+    }
 
     /*!
     * @brief      从管道拷贝复制一个帧出来
@@ -89,19 +168,63 @@ public:
     * @param      node
     * @note
     */
-    inline int read_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node *&node);
+    inline int read_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node *&node)
+    {
+        if (bus_pipe_pointer_[pipe_id]->empty())
+        {
+            return -1;
+        }
+
+        //取出一个帧
+        bus_pipe_pointer_[pipe_id]->read_front(node);
+
+        return 0;
+    }
+
     //抛弃一个帧
-    inline int pop_front_bus(size_t pipe_id);
+    inline int pop_front_bus(size_t pipe_id)
+    {
+        if (bus_pipe_pointer_[pipe_id]->empty())
+        {
+            return -1;
+        }
+
+        //取出一个帧
+        bus_pipe_pointer_[pipe_id]->discard_frond();
+        return 0;
+    }
+    
     //取管道头的帧长
-    inline int get_front_nodesize(size_t pipe_id,size_t &note_size);
+    inline int get_front_nodesize(size_t pipe_id,size_t &note_size)
+    {
+        if (bus_pipe_pointer_[pipe_id]->empty())
+        {
+            return -1;
+        }
+
+        note_size = bus_pipe_pointer_[pipe_id]->get_front_len();
+        return 0;
+    }
 
     //管道为满
-    inline bool is_full_bus(size_t pipe_id);
-    //管道是否为空
-    inline bool is_empty_bus(size_t pipe_id);
-    //管道的空余空间,
-    inline void get_bus_freesize(size_t pipe_id,size_t &pipe_size,size_t &free_size);
+    inline bool is_full_bus(size_t pipe_id)
+    {
+        return bus_pipe_pointer_[pipe_id]->full();
+    }
 
+    //管道是否为空
+    inline bool is_empty_bus(size_t pipe_id)
+    {
+        return bus_pipe_pointer_[pipe_id]->empty();
+    }
+
+    //管道的空余空间,
+    inline void get_bus_freesize(size_t pipe_id,size_t &pipe_size,size_t &free_size)
+    {
+        pipe_size = bus_head_.size_of_pipe_[pipe_id];
+        free_size = bus_pipe_pointer_[pipe_id]->free_size();
+        return;
+    }
     //-----------------------------------------------------------------
 protected:
 
@@ -109,139 +232,232 @@ protected:
     int init_all_pipe(size_t max_frame_len,
                       bool if_restore);
 
-public:
-
-    //最大的PIPE的数量，暂时写完128条,感觉大部分时候比较浪费，呵呵，不过算了，也就几K空间
-    static const size_t MAX_NUMBER_OF_PIPE = 128;
-
-protected:
-    //
-    struct BUS_PIPE_HEAD
-    {
-        BUS_PIPE_HEAD();
-        ~BUS_PIPE_HEAD();
-
-        //机器字长
-        uint32_t            size_of_sizet_;
-        //
-        //管道数量
-        uint32_t            number_of_pipe_;
-        //管道配置长度,2个管道的配置长度,
-        size_t              size_of_pipe_[MAX_NUMBER_OF_PIPE];
-        //
-        size_t              size_of_room_[MAX_NUMBER_OF_PIPE];
-    };
-
 protected:
 
     ///BUS文件的头部信息
-    BUS_PIPE_HEAD          bus_head_;
+    BUS_PIPE_HEAD<MAX_PIPE>      bus_head_;
 
     ///N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    zce::lockfree::shm_dequechunk *bus_pipe_pointer_[MAX_NUMBER_OF_PIPE];
+    zce::lockfree::shm_dequechunk *bus_pipe_pointer_[number_of_pipe];
 
     ///MMAP内存文件，
-    ZCE_ShareMem_Mmap         mmap_file_;
+    ZCE_ShareMem_Mmap      mmap_file_;
 };
 
-//管道是否存在
-inline bool MMAP_BusPipe::is_exist_bus(size_t pipe_id)
-{
-    return bus_pipe_pointer_[pipe_id] == NULL?false:true;
-}
-//管道为满
-inline bool MMAP_BusPipe::is_full_bus(size_t pipe_id)
-{
-    return bus_pipe_pointer_[pipe_id]->full();
-}
 
-//管道是否为空
-inline bool MMAP_BusPipe::is_empty_bus(size_t pipe_id)
+//初始化
+template<size_t number_of_pipe>
+int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
+                                             uint32_t number_of_pipe,
+                                             size_t size_of_pipe[],
+                                             size_t max_frame_len,
+                                             bool if_restore)
 {
-    return bus_pipe_pointer_[pipe_id]->empty();
-}
+    int ret = 0;
 
-//管道的空余空间,
-inline void MMAP_BusPipe::get_bus_freesize(size_t pipe_id,size_t &pipe_size,size_t &free_size)
-{
-    pipe_size = bus_head_.size_of_pipe_[pipe_id];
-    free_size = bus_pipe_pointer_[pipe_id]->free_size();
-    return;
-}
+    assert(number_of_pipe > 0);
 
-//向管道写入帧
-inline int MMAP_BusPipe::push_back_bus(size_t pipe_id,const zce::lockfree::dequechunk_node *node)
-{
-    //取出一个帧
-    bool bret = bus_pipe_pointer_[pipe_id]->push_end(node);
-
-    //
-    if (!bret)
+    if (number_of_pipe == 0)
     {
-        ZCE_LOG(RS_ALERT,"[zcelib] %u Pipe is full or data small?,Some data can't put to pipe. "
-                "Please increase and check. nodesize=%lu, freesize=%lu,capacity=%lu",
-                pipe_id,
-                node->size_of_node_,
-                bus_pipe_pointer_[pipe_id]->free_size(),
-                bus_pipe_pointer_[pipe_id]->capacity()
+        return -1;
+    }
+
+    bus_head_.number_of_pipe_ = number_of_pipe;
+
+    for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
+    {
+        bus_head_.size_of_pipe_[i] = size_of_pipe[i];
+    }
+
+    //是否对管道进行加锁
+
+    //Malloc分配器,
+
+    //如果不恢复,干脆删除原有的MMAP文件,避免使用的时候出现问题.
+    if (if_restore == false)
+    {
+        zce::unlink(bus_mmap_name);
+    }
+    //如果没有这个文件,那么只能重建
+    else
+    {
+        zce_os_stat mmapfile_stat;
+        ret = zce::stat(bus_mmap_name,&mmapfile_stat);
+        //不存在，恢复个毛线
+        if (ret != 0)
+        {
+            if_restore = false;
+        }
+    }
+
+    size_t sz_malloc = 0;
+    sz_malloc += sizeof(bus_head_);
+
+    for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
+    {
+        size_t sz_room = zce::lockfree::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        bus_head_.size_of_room_[i] = sz_room;
+        sz_malloc += sz_room;
+    }
+
+    //处理共享内存的操作方式
+
+    //MAP一个文件
+    ret = mmap_file_.open(bus_mmap_name,
+                          sz_malloc,
+                          if_restore);
+
+    if (0 != ret)
+    {
+        ZCE_LOG(RS_ERROR,"[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
+                bus_mmap_name,
+                ret,
+                zce::last_error(),
+                strerror(zce::last_error()));
+        return -1;
+    }
+
+    if (if_restore)
+    {
+        auto pipe_head = static_cast<BUS_PIPE_HEAD<number_of_pipe> *>(mmap_file_.addr());
+
+        //对于各种长度进行检查
+        if (pipe_head->size_of_sizet_ != bus_head_.size_of_sizet_
+            || pipe_head->number_of_pipe_ != bus_head_.number_of_pipe_)
+        {
+            ZCE_LOG(RS_ERROR,"[zcelib] MMAP_BusPipe::initialize pipe fail. BUS_PIPE_HEAD old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] ",
+                    pipe_head->size_of_sizet_,
+                    pipe_head->number_of_pipe_,
+                    bus_head_.size_of_sizet_,
+                    bus_head_.number_of_pipe_);
+            return -1;
+        }
+
+        for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
+        {
+            if (pipe_head->size_of_pipe_[i] != bus_head_.size_of_pipe_[i]
+                || pipe_head->size_of_room_[i] != bus_head_.size_of_room_[i])
+            {
+                ZCE_LOG(RS_ERROR,"[zcelib] MMAP_BusPipe::initialize pipe fail. BUS_PIPE_HEAD <%u> old size_t_len[%u] numpipe[%u],new size_t_len[%u],numpipe[%u] .",
+                        i,
+                        pipe_head->size_of_pipe_[i],
+                        pipe_head->size_of_room_[i],
+                        bus_head_.size_of_pipe_[i],
+                        bus_head_.size_of_room_[i]);
+                return -1;
+            }
+        }
+    }
+
+    //把头部放入映射文件的头部
+    memcpy(mmap_file_.addr(),&bus_head_,sizeof(number_of_pipe));
+
+    //初始化所有的管道
+    ret = init_all_pipe(max_frame_len,if_restore);
+
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+//初始化，只根据文件进行初始化，用于某些工具对MMAP文件进行处理的时候
+//size_t max_frame_len参数有点讨厌，但如果不用这个参数，底层很多代码要改，
+//而且对于一个项目，这个值应该应该是一个常量
+template<size_t number_of_pipe>
+int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
+                                             size_t max_frame_len)
+{
+    int ret = 0;
+
+    zce_os_stat mmapfile_stat;
+    ret = zce::stat(bus_mmap_name,&mmapfile_stat);
+
+    if (ret != 0)
+    {
+        return -1;
+    }
+
+    if ((size_t)mmapfile_stat.st_size <= sizeof(MMAP_BusPipe::BUS_PIPE_HEAD))
+    {
+        return -1;
+    }
+
+    //MAP一个文件
+    ret = mmap_file_.open(bus_mmap_name,
+                          static_cast<size_t>(mmapfile_stat.st_size),
+                          true);
+
+    if (ret != 0)
+    {
+        ZCE_LOG(RS_ERROR,"[zcelib] MMAP map a file (%s) to share memory fail,ret =%d, last error=%d|%s.",
+                bus_mmap_name,
+                ret,
+                zce::last_error(),
+                strerror(zce::last_error()));
+        return -1;
+    }
+
+    auto pipe_head = static_cast<MMAP_BusPipe<number_of_pipe>::BUS_PIPE_HEAD*>(mmap_file_.addr());
+    bus_head_ = *pipe_head;
+
+    //初始化所有的管道
+    ret = init_all_pipe(max_frame_len,true);
+    if (ret != 0)
+    {
+        return ret;
+    }
+
+    return 0;
+}
+
+//初始化所有的数据管道
+template<size_t number_of_pipe>
+int MMAP_BusPipe<number_of_pipe>::init_all_pipe(size_t max_frame_len,
+                                                bool if_restore)
+{
+    size_t file_offset = 0;
+    //偏移一个头部
+    file_offset = sizeof(MMAP_BusPipe<number_of_pipe>::BUS_PIPE_HEAD);
+
+    //循环初始化每个PIPE
+    for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
+    {
+        char* pt_pipe = static_cast<char*>(mmap_file_.addr()) + file_offset;
+
+        //初始化内存
+        bus_pipe_pointer_[i] = zce::lockfree::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
+                                                                         max_frame_len,
+                                                                         pt_pipe,
+                                                                         if_restore
         );
-        return -1;
+
+        //管道创建自己也会检查是否能恢复
+        if (bus_pipe_pointer_[i] == NULL)
+        {
+            ZCE_LOG(RS_ERROR,"[zcelib] MMAP_BusPipe::initialize pipe[%u] size[%u] room[%u] fail.",
+                    i,
+                    bus_head_.size_of_pipe_[i],
+                    bus_head_.size_of_room_[i]);
+            return -1;
+        }
+
+        ZCE_ASSERT(bus_pipe_pointer_[i] != NULL);
+
+        size_t sz_room = zce::lockfree::shm_dequechunk::getallocsize(bus_head_.size_of_pipe_[i]);
+        file_offset += sz_room;
     }
 
     return 0;
 }
 
-//取管道头的帧长
-inline int MMAP_BusPipe::get_front_nodesize(size_t pipe_id,size_t &note_size)
+//MMAP隐射文件名称
+template<size_t number_of_pipe>
+const char* MMAP_BusPipe<number_of_pipe>::mmap_file_name()
 {
-    if (bus_pipe_pointer_[pipe_id]->empty())
-    {
-        return -1;
-    }
-
-    note_size = bus_pipe_pointer_[pipe_id]->get_front_len();
-    return 0;
-}
-
-//从管道弹出POP帧,
-inline int MMAP_BusPipe::pop_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node *node)
-{
-    if (bus_pipe_pointer_[pipe_id]->empty())
-    {
-        return -1;
-    }
-
-    //取出一个帧
-    bus_pipe_pointer_[pipe_id]->pop_front(node);
-
-    return 0;
-}
-
-//从管道拷贝复制一个帧出来
-inline int MMAP_BusPipe::read_front_bus(size_t pipe_id,zce::lockfree::dequechunk_node *&node)
-{
-    if (bus_pipe_pointer_[pipe_id]->empty())
-    {
-        return -1;
-    }
-
-    //取出一个帧
-    bus_pipe_pointer_[pipe_id]->read_front(node);
-
-    return 0;
-}
-
-//抛弃一个帧
-inline int MMAP_BusPipe::pop_front_bus(size_t pipe_id)
-{
-    if (bus_pipe_pointer_[pipe_id]->empty())
-    {
-        return -1;
-    }
-
-    //取出一个帧
-    bus_pipe_pointer_[pipe_id]->discard_frond();
-    return 0;
+    return mmap_file_.file_name();
 }
 
 }
