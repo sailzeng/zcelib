@@ -9,13 +9,16 @@
 
 class soar::Zerg_Frame;
 
-class  Soar_MMAP_BusPipe: public zce::TwoWay_BusPipe
+namespace soar
+{
+
+class App_BusPipe: protected zce::TwoWay_BusPipe
 {
 public:
     //构造函数,
-    Soar_MMAP_BusPipe();
+    App_BusPipe();
     //析购函数
-    ~Soar_MMAP_BusPipe();
+    ~App_BusPipe();
 
 public:
 
@@ -42,22 +45,40 @@ public:
     //向RECV管道写入帧
     int push_back_recvbus(const soar::Zerg_Frame *proc_frame);
 
-
-    //-----------------------------------------------------------------
+    //发送bus是否是空的
+    inline bool is_empty_sendbus()
+    {
+        return is_empty_bus(SEND_PIPE_ID);
+    }
+    //接收bus是否是空的
+    inline bool is_empty_recvbus()
+    {
+        return is_empty_bus(RECV_PIPE_ID);
+    }
+    //发送bus是否是满的
+    inline bool is_full_sendbus()
+    {
+        return is_full_bus(SEND_PIPE_ID);
+    }
+    //接收bus是否是满的
+    inline bool is_full_recvbus()
+    {
+        return is_full_bus(RECV_PIPE_ID);
+    }
+    
 public:
 
     //为了SingleTon类准备
     //实例的赋值
-    static void instance(Soar_MMAP_BusPipe *);
+    static void instance(App_BusPipe *);
     //实例的获得
-    static Soar_MMAP_BusPipe *instance();
+    static App_BusPipe *instance();
     //清除实例
     static void clean_instance();
 
-
 protected:
     //instance函数使用的东西
-    static Soar_MMAP_BusPipe *zerg_bus_instance_;
+    static App_BusPipe *zerg_bus_instance_;
 
 protected:
 
@@ -70,6 +91,6 @@ protected:
     soar::Stat_Monitor *monitor_ = nullptr;
 };
 
-
+}
 
 #endif //SOARING_LIB_ZERG_MMAP_PIPE_H_

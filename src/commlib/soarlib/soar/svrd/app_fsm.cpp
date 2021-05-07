@@ -1,7 +1,7 @@
 #include "soar/predefine.h"
 #include "soar/fsm/fsm_mgr.h"
 #include "soar/svrd/app_fsm.h"
-#include "soar/svrd/mmap_buspipe.h"
+#include "soar/svrd/app_buspipe.h"
 #include "soar/svrd/cfg_fsm.h"
 
 //
@@ -29,14 +29,14 @@ int Comm_SvrdApp_FSM::app_start(int argc,const char *argv[])
     Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
 
     //事务管理器的初始化, 自动机不使用notify
-    FSM_Manager *p_trans_mgr_ = new FSM_Manager();
+    soar::FSM_Manager *p_trans_mgr_ = new soar::FSM_Manager();
     p_trans_mgr_->initialize(zce::Timer_Queue::instance(),
                              svd_config->framework_config_.trans_info_.trans_cmd_num_,
                              svd_config->framework_config_.trans_info_.trans_num_,
                              self_svc_info_,
 
-                             Soar_MMAP_BusPipe::instance());
-    FSM_Manager::instance(p_trans_mgr_);
+                             soar::App_BusPipe::instance());
+    soar::FSM_Manager::instance(p_trans_mgr_);
 
     ret = register_trans_cmd();
 
@@ -67,7 +67,7 @@ int Comm_SvrdApp_FSM::app_run()
     const int LIGHT_IDLE_INTERVAL_MICROSECOND = 10000;
     const int HEAVY_IDLE_INTERVAL_MICROSECOND = 100000;
 
-    FSM_Manager *trans_mgr = FSM_Manager::instance();
+    soar::FSM_Manager *trans_mgr = soar::FSM_Manager::instance();
 
     size_t size_io_event = 0,num_timer_expire = 0;
 
@@ -130,7 +130,7 @@ int Comm_SvrdApp_FSM::app_run()
 int Comm_SvrdApp_FSM::app_exit()
 {
     int ret = 0;
-    FSM_Manager::clean_instance();
+    soar::FSM_Manager::clean_instance();
 
     ret = soar::Svrd_Appliction::app_exit();
 

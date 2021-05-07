@@ -1,17 +1,17 @@
 #include "soar/predefine.h"
 #include "soar/zerg/frame_zerg.h"
-#include "soar/svrd/app_bus.h"
-#include "soar/svrd/mmap_buspipe.h"
+#include "soar/svrd/app_plain.h"
+#include "soar/svrd/app_buspipe.h"
 #include "soar/enum/error_code.h"
 
-Soar_SvrdApp_ZergBus::Soar_SvrdApp_ZergBus():
+SvrdApp_Plain::SvrdApp_Plain():
     Svrd_Appliction(),
     nonctrl_recv_buffer_(NULL)
 {
     nonctrl_recv_buffer_ = soar::Zerg_Frame::new_frame(soar::Zerg_Frame::MAX_LEN_OF_APPFRAME);
 }
 
-Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
+SvrdApp_Plain::~SvrdApp_Plain()
 {
     //释放资源
     if (nonctrl_recv_buffer_)
@@ -22,7 +22,7 @@ Soar_SvrdApp_ZergBus::~Soar_SvrdApp_ZergBus()
 }
 
 //运行函数
-int Soar_SvrdApp_ZergBus::app_run()
+int SvrdApp_Plain::app_run()
 {
     ZCE_LOG(RS_INFO,"======================================================================================================");
     ZCE_LOG(RS_INFO,"[framework] app %s class [%s] run_instance start.",
@@ -104,19 +104,18 @@ int Soar_SvrdApp_ZergBus::app_run()
 }
 
 //从管道中收取一组数据进行处理
-int Soar_SvrdApp_ZergBus::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
+int SvrdApp_Plain::popfront_recvpipe(size_t max_prc,size_t &proc_frame)
 {
     int ret = 0;
 
     //一次处理大量的数据
     for (proc_frame = 0;
-         zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false
+         zerg_mmap_pipe_->is_empty_recvbus() == false
          && proc_frame < max_prc;
          ++proc_frame)
     {
         //
         ret = zerg_mmap_pipe_->pop_front_recvbus(nonctrl_recv_buffer_);
-
         if (ret != 0)
         {
             return 0;

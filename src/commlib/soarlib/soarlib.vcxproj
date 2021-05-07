@@ -211,12 +211,12 @@
     <ClCompile Include="soar\zerg\sndrcv_zulu.cpp" />
     <ClCompile Include="soar\stat\monitor.cpp" />
     <ClCompile Include="soar\svrd\app_base.cpp" />
-    <ClCompile Include="soar\svrd\app_bus.cpp" />
-    <ClCompile Include="soar\svrd\app_fsm_notify.cpp" />
+    <ClCompile Include="soar\svrd\app_plain.cpp" />
+    <ClCompile Include="soar\svrd\app_fsmtask.cpp" />
     <ClCompile Include="soar\svrd\app_fsm.cpp" />
     <ClCompile Include="soar\svrd\cfg_fsm.cpp" />
     <ClCompile Include="soar\svrd\timer_base.cpp" />
-    <ClCompile Include="soar\svrd\mmap_buspipe.cpp" />
+    <ClCompile Include="soar\svrd\app_buspipe.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="soar\enum\enum_define.h" />
@@ -244,12 +244,12 @@
     <ClInclude Include="soar\stat\monitor.h" />
     <ClInclude Include="soar\svrd\app_base.h" />
     <ClInclude Include="soar\svrd\app_main.h" />
-    <ClInclude Include="soar\svrd\app_bus.h" />
-    <ClInclude Include="soar\svrd\app_fsm_notify.h" />
+    <ClInclude Include="soar\svrd\app_plain.h" />
+    <ClInclude Include="soar\svrd\app_fsmtask.h" />
     <ClInclude Include="soar\svrd\app_fsm.h" />
     <ClInclude Include="soar\svrd\cfg_fsm.h" />
     <ClInclude Include="soar\svrd\timer_base.h" />
-    <ClInclude Include="soar\svrd\mmap_buspipe.h" />
+    <ClInclude Include="soar\svrd\app_buspipe.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

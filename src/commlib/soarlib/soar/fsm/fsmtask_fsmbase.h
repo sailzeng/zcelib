@@ -1,17 +1,19 @@
-#ifndef SOARING_LIB_NOTIFY_TRANSACTION_TRANSACTION_BASE_
-#define SOARING_LIB_NOTIFY_TRANSACTION_TRANSACTION_BASE_
+
 
 #include "soar/fsm/fsm_base.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
-class Notify_Trans_Base: public FSM_Base
+namespace soar
+{
+
+class FSMTask_FSMBase: public FSM_Base
 {
 public:
 
     //这而要求传递的Transaction_Manager *是子类NotifyTrans_Manger的，
     //必须如此。
     //这儿是一个典型的设计两难，如果使用向下朔型DOWNCAST，无意是丑陋的。
-    Notify_Trans_Base(FSM_Manager *trans_notify_mgr,unsigned int create_cmd)
+    FSMTask_FSMBase(FSM_Manager *trans_notify_mgr,unsigned int create_cmd)
         : FSM_Base(trans_notify_mgr,create_cmd)
         ,trans_notify_mgr_(NULL)
     {
@@ -22,7 +24,7 @@ public:
 
 protected:
     //
-    virtual ~Notify_Trans_Base()
+    virtual ~FSMTask_FSMBase()
     {
     };
 
@@ -49,4 +51,4 @@ protected:
     FSMTask_Manger *trans_notify_mgr_ = nullptr;
 };
 
-#endif //#ifndef SOARING_LIB_NOTIFY_TRANSACTION_TRANSACTION_BASE_
+}

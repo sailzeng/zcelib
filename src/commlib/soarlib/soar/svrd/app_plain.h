@@ -6,12 +6,12 @@
 class soar::Zerg_Frame;
 
 //单个函数处理APP FRAME
-class Soar_SvrdApp_ZergBus: public soar::Svrd_Appliction
+class SvrdApp_Plain: public soar::Svrd_Appliction
 {
 protected:
     //
-    Soar_SvrdApp_ZergBus();
-    virtual ~Soar_SvrdApp_ZergBus();
+    SvrdApp_Plain();
+    virtual ~SvrdApp_Plain();
 
 public:
 

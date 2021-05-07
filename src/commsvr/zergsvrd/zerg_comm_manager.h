@@ -12,7 +12,7 @@
 
 class TCP_Accept_Handler;
 class UDP_Svc_Handler;
-class Soar_MMAP_BusPipe;
+class soar::App_BusPipe;
 
 #include "zerg_buf_storage.h"
 
@@ -114,7 +114,7 @@ protected:
     unsigned int monitor_cmd_[ZERG_CONFIG_DATA::MAX_MONITOR_FRAME_NUMBER];
 
     ///内存管道类的实例对象，保留它仅仅为了加速
-    Soar_MMAP_BusPipe *zerg_mmap_pipe_;
+    soar::App_BusPipe *zerg_mmap_pipe_;
     ///发送和接收缓冲的BUFF的实例对象，保留它仅仅为了加速
     ZBuffer_Storage *zbuffer_storage_;
     ///统计，使用单子类的指针，保留它仅仅为了加速

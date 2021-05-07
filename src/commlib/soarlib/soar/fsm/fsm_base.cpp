@@ -7,6 +7,9 @@
 #include "soar/fsm/fsm_base.h"
 #include "soar/fsm/fsm_mgr.h"
 
+namespace soar
+{
+
 //构造函数
 FSM_Base::FSM_Base(FSM_Manager *pmngr,
                    uint32_t create_cmd,
@@ -233,4 +236,6 @@ void FSM_Base::dump_transa_info(std::ostringstream &strstream) const
         << " Reqproxy:" << req_zerg_head_.proxy_service_.services_type_ << "|" << req_zerg_head_.proxy_service_.services_id_ << " ";
     strstream << "ReqtransID:" << req_zerg_head_.fsm_id_ << " TimeoutID:" << trans_timeout_id_ << " TouchID:" << trans_touchtimer_id_ << " ";
     return;
+}
+
 }

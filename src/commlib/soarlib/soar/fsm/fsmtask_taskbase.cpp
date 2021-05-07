@@ -2,6 +2,9 @@
 #include "soar/enum/error_code.h"
 #include "soar/fsm/fsmtask_taskbase.h"
 #include "soar/fsm/fsmtask_mgr.h"
+
+namespace soar
+{
 //
 FSMTask_TaskBase::FSMTask_TaskBase():
     trans_notify_mgr_(NULL),
@@ -139,4 +142,6 @@ int FSMTask_TaskBase::task_moonlighting(size_t &send_frame_num)
 {
     send_frame_num = 0;
     return 0;
+}
+
 }

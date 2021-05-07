@@ -62,12 +62,11 @@ int Zerg_Service_App::app_start(int argc,const char *argv[])
     }
 
     //给统计模块添加自己的统计信息
-    ret = soar::Stat_Monitor::instance()->add_status_item();
-    if (ret != 0)
-    {
-        ZCE_LOG(RS_ERROR,"zce_Server_Status init fail. ret=%d",ret);
-        return ret;
-    }
+    soar::Stat_Monitor::instance()->add_status_item(ZERG_MONITOR_NUMBER,
+                                                    ZERG_MONITOR_ITEMS);
+    //如果是多线程增加这步
+    //soar::Stat_Monitor::instance()->multi_thread_guard(false);
+
 
     size_t max_accept = 0,max_connect = 0,max_peer = 0;
     TCP_Svc_Handler::get_max_peer_num(max_accept,max_connect);
@@ -80,7 +79,8 @@ int Zerg_Service_App::app_start(int argc,const char *argv[])
     zerg_comm_mgr_ = Zerg_Comm_Manager::instance();
 
     //
-    ZCE_LOG(RS_INFO,"[zergsvr] ReloadDynamicConfig Succ.Ooooo!Some people believe that God created the world,but.");
+    ZCE_LOG(RS_INFO,"[zergsvr] ReloadDynamicConfig Succ.Ooooo!"
+            "Some people believe that God created the world,but.");
 
     //-----------------------------------------------------------------------------------------------
     //初始化静态数据

@@ -18,7 +18,7 @@ Zerg_Comm_Manager::Zerg_Comm_Manager():
     zerg_config_(NULL)
 
 {
-    zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::App_BusPipe::instance();
     zbuffer_storage_ = ZBuffer_Storage::instance();
     server_status_ = soar::Stat_Monitor::instance();
     count_start_time_ = static_cast<unsigned int>(Zerg_App_Timer_Handler::now_time_.sec());
@@ -188,16 +188,14 @@ int Zerg_Comm_Manager::popall_sendpipe_write(const size_t want_send_frame,size_t
     num_send_frame = 0;
     int ret = 0;
 
-    while (zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID) == false 
+    while (zerg_mmap_pipe_->is_empty_sendbus() == false
            && num_send_frame < want_send_frame)
     {
         Zerg_Buffer *tmpbuf = zbuffer_storage_->allocate_buffer();
         soar::Zerg_Frame *proc_frame = reinterpret_cast<soar::Zerg_Frame *>(tmpbuf->buffer_data_);
 
         //注意压入的数据不要大于APPFRAME允许的最大长度,对于这儿我权衡选择效率
-        zerg_mmap_pipe_->pop_front_bus(Soar_MMAP_BusPipe::SEND_PIPE_ID,
-                                       reinterpret_cast<zce::lockfree::dequechunk_node *&>(
-                                       proc_frame));
+        zerg_mmap_pipe_->pop_front_sendbus(proc_frame);
 
         tmpbuf->size_of_use_ = proc_frame->length_;
 
@@ -382,7 +380,6 @@ int Zerg_Comm_Manager::send_single_buf(Zerg_Buffer *tmpbuf)
         }
         //
         zbuffer_storage_->free_byte_buffer(tmpbuf);
-
         return ret;
     }
 
@@ -416,9 +413,7 @@ void Zerg_Comm_Manager::pushback_recvpipe(soar::Zerg_Frame *recv_frame)
         }
     }
 
-    int ret = zerg_mmap_pipe_->push_back_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID,
-                                             reinterpret_cast<const zce::lockfree::dequechunk_node *>(recv_frame));
-
+    int ret = zerg_mmap_pipe_->push_back_recvbus(recv_frame);
     if (ret != 0)
     {
         server_status_->add_one(ZERG_RECV_PIPE_FULL_COUNTER,

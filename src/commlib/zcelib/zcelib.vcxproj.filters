@@ -230,9 +230,6 @@
     <ClCompile Include="zce\async\fsm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="zce\bus\mmap_pipe.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="zce\bus\twoway_pipe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

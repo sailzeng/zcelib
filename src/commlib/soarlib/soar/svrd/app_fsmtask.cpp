@@ -5,19 +5,19 @@
 #include "soar/fsm/fsmtask_mgr.h"
 #include "soar/fsm/fsmtask_taskbase.h"
 #include "soar/fsm/fsmtask_fsmbase.h"
-#include "soar/svrd/app_fsm_notify.h"
+#include "soar/svrd/app_fsmtask.h"
 
-Comm_SvrdApp_FSM_Notify::Comm_SvrdApp_FSM_Notify():
+Comm_SvrdApp_FSMTask::Comm_SvrdApp_FSMTask():
     soar::Svrd_Appliction()
 {
 };
 
-Comm_SvrdApp_FSM_Notify::~Comm_SvrdApp_FSM_Notify()
+Comm_SvrdApp_FSMTask::~Comm_SvrdApp_FSMTask()
 {
 };
 
 //增加调用register_func_cmd
-int Comm_SvrdApp_FSM_Notify::app_start(int argc,const char *argv[])
+int Comm_SvrdApp_FSMTask::app_start(int argc,const char *argv[])
 {
     int ret = 0;
 
@@ -30,8 +30,8 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc,const char *argv[])
     THREADMUTEX_APPFRAME_MALLOCOR::instance()->initialize();
 
     Server_Config_FSM *svd_config = dynamic_cast<Server_Config_FSM *>(config_base_);
-    FSMTask_Manger *trans_mgr = new FSMTask_Manger();
-    FSM_Manager::instance(trans_mgr);
+    soar::FSMTask_Manger *trans_mgr = new soar::FSMTask_Manger();
+    soar::FSM_Manager::instance(trans_mgr);
     zce::Time_Value enqueue_timeout;
     enqueue_timeout.sec(svd_config->framework_config_.task_info_.enqueue_timeout_sec_);
     enqueue_timeout.usec(svd_config->framework_config_.task_info_.enqueue_timeout_usec_);
@@ -42,7 +42,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc,const char *argv[])
         self_svc_info_,
         enqueue_timeout,
         zce::Timer_Queue::instance(),
-        Soar_MMAP_BusPipe::instance(),
+        soar::App_BusPipe::instance(),
         THREADMUTEX_APPFRAME_MALLOCOR::instance());
 
     ret = register_notifytrans_cmd();
@@ -52,7 +52,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc,const char *argv[])
         return ret;
     }
 
-    FSMTask_TaskBase *clone_task = NULL;
+    soar::FSMTask_TaskBase *clone_task = NULL;
     size_t task_num = 0;
     size_t task_stack_size = 0;
 
@@ -80,7 +80,7 @@ int Comm_SvrdApp_FSM_Notify::app_start(int argc,const char *argv[])
 }
 
 //运行处理,
-int Comm_SvrdApp_FSM_Notify::app_run()
+int Comm_SvrdApp_FSMTask::app_run()
 {
     // fix me add log
     ZCE_LOG(RS_INFO,"======================================================================================================");
@@ -102,7 +102,7 @@ int Comm_SvrdApp_FSM_Notify::app_run()
     size_t prcframe_queue = 0,gentrans_queue = 0,num_timer_expire = 0,num_io_event = 0;
     size_t idle = 0;
 
-    FSMTask_Manger *notify_trans_mgr = static_cast<FSMTask_Manger *>(FSM_Manager::instance());
+    soar::FSMTask_Manger *notify_trans_mgr = static_cast<soar::FSMTask_Manger *>(soar::FSM_Manager::instance());
     zce::Time_Value select_interval(0,0);
 
     zce::Timer_Queue *time_queue = zce::Timer_Queue::instance();
@@ -157,17 +157,15 @@ int Comm_SvrdApp_FSM_Notify::app_run()
 }
 
 //退出处理
-int Comm_SvrdApp_FSM_Notify::app_exit()
+int Comm_SvrdApp_FSMTask::app_exit()
 {
     //通知所有的线程退出
-    FSMTask_Manger *notify_trans_mgr = static_cast<FSMTask_Manger *>(FSM_Manager::instance());
+    soar::FSMTask_Manger *notify_trans_mgr = 
+        static_cast<soar::FSMTask_Manger *>(soar::FSM_Manager::instance());
     notify_trans_mgr->stop_notify_task();
 
     int ret = 0;
-    FSM_Manager::clean_instance();
-
-    //等待所有的Join的线程退出
-    //ACE_Thread_Manager::instance()->wait();
+    soar::FSM_Manager::clean_instance();
 
     ret = soar::Svrd_Appliction::app_exit();
 

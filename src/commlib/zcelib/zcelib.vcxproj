@@ -221,7 +221,6 @@
     <ClCompile Include="zce\logger\msg.cpp" />
     <ClCompile Include="zce\logger\plus.cpp" />
     <ClCompile Include="zce\util\random.cpp" />
-    <ClCompile Include="zce\bus\mmap_pipe.cpp" />
     <ClCompile Include="zce\bus\twoway_pipe.cpp" />
     <ClCompile Include="zce\bytes\compress.cpp" />
     <ClCompile Include="zce\bytes\base_encode.cpp" />

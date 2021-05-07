@@ -1,6 +1,6 @@
 /*!
 * @copyright  2004-2019  Apache License, Version 2.0 FULLSAIL
-* @filename   
+* @filename
 * @author     Sailzeng <sailzeng.cn@gmail.com>
 * @version
 * @date       2012年9月18日晚上，中国人民抗日81周年纪念日，81年
@@ -45,7 +45,6 @@ class shm_dequechunk;
 
 namespace zce
 {
-
 //双行道
 class TwoWay_BusPipe: public MMAP_BusPipe<2>
 {
@@ -84,21 +83,6 @@ public:
                    size_t max_frame_len,
                    bool if_restore);
 
-    //-----------------------------------------------------------------
-    //从RECV管道读取数据，
-    inline int pop_front_recvbus(zce::lockfree::dequechunk_node *const node);
-    //从SEND管道读取数据，
-    inline int pop_front_sendbus(zce::lockfree::dequechunk_node *const node);
-    //向SEND管道写入数据
-    inline int push_back_sendbus(const zce::lockfree::dequechunk_node *node);
-    //向RECV管道写入数据
-    inline int push_back_recvbus(const zce::lockfree::dequechunk_node *node);
-
-    //取Recv管道头的帧长
-    inline int get_frontsize_recvpipe(size_t &note_size);
-    //取Send管道头的帧长
-    inline int get_frontsize_sendpipe(size_t &note_size);
-
 public:
 
     //实例的赋值
@@ -108,43 +92,4 @@ public:
     //清除实例
     static void clean_instance();
 };
-
-////取Recv管道头的帧长
-//inline int TwoWay_BusPipe::get_frontsize_recvpipe(size_t &note_size)
-//{
-//    return get_front_nodesize(RECV_PIPE_ID,note_size);
-//}
-//
-////取Send管道头的帧长
-//inline int TwoWay_BusPipe::get_frontsize_sendpipe(size_t &note_size)
-//{
-//    return get_front_nodesize(SEND_PIPE_ID,note_size);
-//}
-//
-////从RECV管道读取帧，
-//inline int TwoWay_BusPipe::pop_front_recvbus(zce::lockfree::dequechunk_node *const node)
-//{
-//    return pop_front_bus(RECV_PIPE_ID,node);
-//}
-//
-////向SEND管道写入帧，
-//inline int TwoWay_BusPipe::push_back_sendbus(const zce::lockfree::dequechunk_node *node)
-//{
-//    return push_back_bus(SEND_PIPE_ID,node);
-//}
-//
-////从SEND管道读取帧，
-//inline int TwoWay_BusPipe::pop_front_sendbus(zce::lockfree::dequechunk_node *const node)
-//{
-//    return pop_front_bus(SEND_PIPE_ID,node);
-//}
-//
-////向RECV管道写入帧，
-//inline int TwoWay_BusPipe::push_back_recvbus(const zce::lockfree::dequechunk_node *node)
-//{
-//    return push_back_bus(RECV_PIPE_ID,node);
-//}
-
 }
-
-

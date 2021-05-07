@@ -8,7 +8,6 @@
 
 namespace zce
 {
-
 TwoWay_BusPipe *TwoWay_BusPipe::two_way_instance_ = NULL;
 
 const char  TwoWay_BusPipe::BUS_PIPE_NAME[NUM_OF_PIPE][16] =
@@ -27,10 +26,10 @@ TwoWay_BusPipe::~TwoWay_BusPipe()
 }
 
 int TwoWay_BusPipe::initialize(const char *bus_mmap_name,
-                                   size_t size_recv_pipe,
-                                   size_t size_send_pipe,
-                                   size_t max_frame_len,
-                                   bool if_restore)
+                               size_t size_recv_pipe,
+                               size_t size_send_pipe,
+                               size_t max_frame_len,
+                               bool if_restore)
 {
     int ret = 0;
     size_t size_of_pipe[NUM_OF_PIPE];
@@ -81,5 +80,4 @@ void TwoWay_BusPipe::clean_instance()
     two_way_instance_ = NULL;
     return;
 }
-
 }

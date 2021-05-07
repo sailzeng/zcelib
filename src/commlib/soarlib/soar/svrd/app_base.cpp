@@ -17,7 +17,7 @@
 
 #include "soar/predefine.h"
 #include "soar/svrd/app_base.h"
-#include "soar/svrd/mmap_buspipe.h"
+#include "soar/svrd/app_buspipe.h"
 #include "soar/zerg/services_info.h"
 #include "soar/svrd/cfg_fsm.h"
 #include "soar/svrd/timer_base.h"
@@ -235,7 +235,7 @@ int Svrd_Appliction::app_start(int argc,const char *argv[])
 #endif
 
     //初始化内存管道
-    ret = Soar_MMAP_BusPipe::instance()->
+    ret = soar::App_BusPipe::instance()->
         initialize(self_svc_info_,
                    config_base_->pipe_cfg_.recv_pipe_len_,
                    config_base_->pipe_cfg_.send_pipe_len_,
@@ -244,11 +244,11 @@ int Svrd_Appliction::app_start(int argc,const char *argv[])
 
     if (0 != ret)
     {
-        ZCE_LOG(RS_INFO,"[framework] Soar_MMAP_BusPipe::instance()->init_by_cfg fail,ret = %d.",ret);
+        ZCE_LOG(RS_INFO,"[framework] soar::App_BusPipe::instance()->init_by_cfg fail,ret = %d.",ret);
         return ret;
     }
 
-    zerg_mmap_pipe_ = Soar_MMAP_BusPipe::instance();
+    zerg_mmap_pipe_ = soar::App_BusPipe::instance();
 
     ZCE_LOG(RS_INFO,"[framework] MMAP Pipe init success,gogogo."
             "The more you have,the more you want. ");
@@ -266,7 +266,7 @@ int Svrd_Appliction::app_exit()
 
     soar::Stat_Monitor::clean_instance();
 
-    Soar_MMAP_BusPipe::clean_instance();
+    soar::App_BusPipe::clean_instance();
 
     //释放所有资源,会关闭所有的handle吗,ZCE_Reactor 会，ACE的Reactor看实现
     if (ZCE_Reactor::instance())

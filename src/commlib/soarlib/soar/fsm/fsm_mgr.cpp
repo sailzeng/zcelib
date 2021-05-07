@@ -5,6 +5,9 @@
 #include "soar/zerg/frame_malloc.h"
 #include "soar/fsm/fsm_mgr.h"
 
+namespace soar
+{
+
 /******************************************************************************************
 class Transaction_Manager
 ******************************************************************************************/
@@ -23,7 +26,7 @@ int FSM_Manager::initialize(zce::Timer_Queue *timer_queue,
                             size_t  reg_fsm_num,
                             size_t running_fsm_num,
                             const soar::SERVICES_INFO &selfsvr,
-                            Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                            soar::App_BusPipe *zerg_mmap_pipe,
                             size_t max_frame_len,
                             bool init_inner_queue,
                             bool init_lock_pool)
@@ -132,11 +135,11 @@ int FSM_Manager::process_pipe_frame(size_t &proc_frame,
 
     soar::Zerg_Frame *tmp_frame = reinterpret_cast<soar::Zerg_Frame *>(trans_recv_buffer_);
 
-    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_bus(Soar_MMAP_BusPipe::RECV_PIPE_ID) == false && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
+    for (proc_frame = 0; zerg_mmap_pipe_->is_empty_recvbus() == false 
+         && proc_frame < MAX_ONCE_PROCESS_FRAME; ++proc_frame)
     {
-        //
+        //取出一个数据
         ret = zerg_mmap_pipe_->pop_front_recvbus(tmp_frame);
-
         if (ret != 0)
         {
             return 0;
@@ -393,4 +396,6 @@ void FSM_Manager::clean_instance()
         instance_ = NULL;
     }
     return;
+}
+
 }

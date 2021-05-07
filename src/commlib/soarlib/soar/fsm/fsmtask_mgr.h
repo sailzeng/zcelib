@@ -20,7 +20,10 @@
 #include "soar/zerg/frame_zerg.h"
 #include "soar/zerg/frame_malloc.h"
 #include "soar/fsm/fsm_mgr.h"
-#include "soar/svrd/mmap_buspipe.h"
+#include "soar/svrd/app_buspipe.h"
+
+namespace soar
+{
 
 class FSMTask_TaskBase;
 class FSMTask_Manger: public FSM_Manager
@@ -60,7 +63,7 @@ public:
                     const soar::SERVICES_INFO &selfsvr,
                     const zce::Time_Value &enqueue_timeout,
                     zce::Timer_Queue *timer_queue,
-                    Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                    soar::App_BusPipe *zerg_mmap_pipe,
                     APPFRAME_MALLOCOR *frame_mallocor);
 
     //处理从接收队列取出的FRAME
@@ -241,3 +244,5 @@ protected:
     // push数据进队列时，如果队列满了的最多等待时间
     zce::Time_Value     enqueue_timeout_;
 };
+
+}

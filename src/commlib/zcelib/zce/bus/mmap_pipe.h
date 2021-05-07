@@ -30,18 +30,14 @@ class shm_dequechunk;
 
 namespace zce
 {
-
-
 //MMAP的管道，你要初始化几条就初始化几条
 template<size_t MAX_PIPE>
 class MMAP_BusPipe: public zce::NON_Copyable
 {
-
-
 protected:
 
     //
-    template<MAX_PIPE>
+    template<size_t PIPE_SIZE>
     struct BUS_PIPE_HEAD
     {
         BUS_PIPE_HEAD():
@@ -50,19 +46,18 @@ protected:
             memset(size_of_pipe_,0,sizeof(size_of_pipe_));
             memset(size_of_room_,0,sizeof(size_of_room_));
         }
-    
-        ~BUS_PIPE_HEAD() = default;
 
+        ~BUS_PIPE_HEAD() = default;
 
         //机器字长
         uint32_t            size_of_sizet_;
 
         //管道数量
-        uint32_t            number_of_pipe_ = MAX_PIPE;
+        uint32_t            number_of_pipe_ = PIPE_SIZE;
         //管道配置长度,2个管道的配置长度,
-        size_t              size_of_pipe_[MAX_PIPE];
+        size_t              size_of_pipe_[PIPE_SIZE];
         //
-        size_t              size_of_room_[MAX_PIPE];
+        size_t              size_of_room_[PIPE_SIZE];
     };
 
 public:
@@ -85,7 +80,6 @@ public:
             bus_head_.size_of_room_[i] = 0;
         }
     }
-
 
 public:
 
@@ -193,7 +187,7 @@ public:
         bus_pipe_pointer_[pipe_id]->discard_frond();
         return 0;
     }
-    
+
     //取管道头的帧长
     inline int get_front_nodesize(size_t pipe_id,size_t &note_size)
     {
@@ -238,20 +232,19 @@ protected:
     BUS_PIPE_HEAD<MAX_PIPE>      bus_head_;
 
     ///N个管道,比如接收管道,发送管道……,最大MAX_NUMBER_OF_PIPE个
-    zce::lockfree::shm_dequechunk *bus_pipe_pointer_[number_of_pipe];
+    zce::lockfree::shm_dequechunk *bus_pipe_pointer_[MAX_PIPE];
 
     ///MMAP内存文件，
     ZCE_ShareMem_Mmap      mmap_file_;
 };
 
-
 //初始化
-template<size_t number_of_pipe>
-int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
-                                             uint32_t number_of_pipe,
-                                             size_t size_of_pipe[],
-                                             size_t max_frame_len,
-                                             bool if_restore)
+template<size_t MAX_PIPE>
+int MMAP_BusPipe<MAX_PIPE>::initialize(const char *bus_mmap_name,
+                                       uint32_t number_of_pipe,
+                                       size_t size_of_pipe[],
+                                       size_t max_frame_len,
+                                       bool if_restore)
 {
     int ret = 0;
 
@@ -319,7 +312,7 @@ int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
 
     if (if_restore)
     {
-        auto pipe_head = static_cast<BUS_PIPE_HEAD<number_of_pipe> *>(mmap_file_.addr());
+        auto pipe_head = static_cast<BUS_PIPE_HEAD<MAX_PIPE> *>(mmap_file_.addr());
 
         //对于各种长度进行检查
         if (pipe_head->size_of_sizet_ != bus_head_.size_of_sizet_
@@ -366,9 +359,9 @@ int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
 //初始化，只根据文件进行初始化，用于某些工具对MMAP文件进行处理的时候
 //size_t max_frame_len参数有点讨厌，但如果不用这个参数，底层很多代码要改，
 //而且对于一个项目，这个值应该应该是一个常量
-template<size_t number_of_pipe>
-int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
-                                             size_t max_frame_len)
+template<size_t MAX_PIPE>
+int MMAP_BusPipe<MAX_PIPE>::initialize(const char *bus_mmap_name,
+                                       size_t max_frame_len)
 {
     int ret = 0;
 
@@ -400,7 +393,7 @@ int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
         return -1;
     }
 
-    auto pipe_head = static_cast<MMAP_BusPipe<number_of_pipe>::BUS_PIPE_HEAD*>(mmap_file_.addr());
+    auto pipe_head = static_cast<MMAP_BusPipe::BUS_PIPE_HEAD *>(mmap_file_.addr());
     bus_head_ = *pipe_head;
 
     //初始化所有的管道
@@ -414,18 +407,18 @@ int MMAP_BusPipe<number_of_pipe>::initialize(const char* bus_mmap_name,
 }
 
 //初始化所有的数据管道
-template<size_t number_of_pipe>
-int MMAP_BusPipe<number_of_pipe>::init_all_pipe(size_t max_frame_len,
-                                                bool if_restore)
+template<size_t MAX_PIPE>
+int MMAP_BusPipe<MAX_PIPE>::init_all_pipe(size_t max_frame_len,
+                                          bool if_restore)
 {
     size_t file_offset = 0;
     //偏移一个头部
-    file_offset = sizeof(MMAP_BusPipe<number_of_pipe>::BUS_PIPE_HEAD);
+    file_offset = sizeof(MMAP_BusPipe::BUS_PIPE_HEAD<MAX_PIPE>);
 
     //循环初始化每个PIPE
     for (size_t i = 0; i < bus_head_.number_of_pipe_; ++i)
     {
-        char* pt_pipe = static_cast<char*>(mmap_file_.addr()) + file_offset;
+        char *pt_pipe = static_cast<char *>(mmap_file_.addr()) + file_offset;
 
         //初始化内存
         bus_pipe_pointer_[i] = zce::lockfree::shm_dequechunk::initialize(bus_head_.size_of_pipe_[i],
@@ -454,11 +447,9 @@ int MMAP_BusPipe<number_of_pipe>::init_all_pipe(size_t max_frame_len,
 }
 
 //MMAP隐射文件名称
-template<size_t number_of_pipe>
-const char* MMAP_BusPipe<number_of_pipe>::mmap_file_name()
+template<size_t MAX_PIPE>
+const char *MMAP_BusPipe<MAX_PIPE>::mmap_file_name()
 {
     return mmap_file_.file_name();
 }
-
 }
-

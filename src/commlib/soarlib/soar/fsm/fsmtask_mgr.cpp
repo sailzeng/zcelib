@@ -3,6 +3,8 @@
 #include "soar/fsm/fsmtask_taskbase.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
+namespace soar
+{
 // 构造函数
 FSMTask_Manger::FSMTask_Manger()
 {
@@ -51,7 +53,7 @@ void FSMTask_Manger::initialize(size_t  szregtrans,
                                 const soar::SERVICES_INFO &selfsvr,
                                 const zce::Time_Value &enqueue_timeout,
                                 zce::Timer_Queue *timer_queue,
-                                Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                                soar::App_BusPipe *zerg_mmap_pipe,
                                 APPFRAME_MALLOCOR *frame_mallocor)
 {
     //根据最大的FRAME长度调整Manager内部的数据
@@ -322,3 +324,5 @@ int FSMTask_Manger::enqueue_sendqueue(soar::Zerg_Frame *post_frame,bool alloc_fr
 //    }
 //    return 0;
 //}
+
+}

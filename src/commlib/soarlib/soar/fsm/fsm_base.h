@@ -23,10 +23,14 @@
 #include "soar/fsm/fsm_mgr.h"
 #include "soar/enum/error_code.h"
 
-class soar::Zerg_Frame;
-class Soar_MMAP_BusPipe;
+
 
 //本来打算封装几个静态变量为STATIC的,但是如果这样其实限制了整体
+namespace soar
+{
+
+class Zerg_Frame;
+class App_BusPipe;
 
 class  FSM_Base: public zce::Async_FSM
 {
@@ -462,11 +466,13 @@ int FSM_Base::sendmsg_to_service(uint32_t cmd,
     //条用管理器的发送函数
     return trans_manager_->sendmsg_to_service(cmd,
                                               user_id,
-                                              transaction_id,
-                                              backfill_trans_id,
+                                              fsm_id,
+                                              backfill_fsm_id,
                                               rcv_svc,
                                               proxy_svc,
                                               snd_svc,
                                               msg,
                                               option);
+}
+
 }

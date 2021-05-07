@@ -3,9 +3,9 @@
 
 #include "soar/zerg/services_info.h"
 #include "soar/enum/error_code.h"
+#include "soar/svrd/app_buspipe.h"
 
 class Server_Config_Base;
-class Soar_MMAP_BusPipe;
 class Server_Timer_Base;
 
 namespace soar
@@ -96,7 +96,7 @@ protected:
     size_t               max_msg_num_;
 
     ///与zerg的管道
-    Soar_MMAP_BusPipe *zerg_mmap_pipe_;
+    soar::App_BusPipe *zerg_mmap_pipe_;
 
     ///框架定时器处理类
     Server_Timer_Base *timer_base_;

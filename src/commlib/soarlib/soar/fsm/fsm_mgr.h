@@ -1,8 +1,7 @@
-#ifndef SOARING_LIB_TRANSACTION_MANAGER_H_
-#define SOARING_LIB_TRANSACTION_MANAGER_H_
+#pragma once
 
 #include "soar/zerg/frame_malloc.h"
-#include "soar/svrd/mmap_buspipe.h"
+#include "soar/svrd/app_buspipe.h"
 
 //是否按照zengyu所说的将所有的IO接口继承处理???
 //我心中充满了无数的问号
@@ -43,9 +42,14 @@ RECV PIPE==================================>
 SEND PIPE<=================================
 
 ************************************************************************************/
-class Soar_MMAP_BusPipe;
+
+
+namespace soar
+{
+
+class App_BusPipe;
 class FSM_Base;
-class soar::Zerg_Frame;
+class Zerg_Frame;
 
 /******************************************************************************************
 class Transaction_Manager
@@ -163,7 +167,7 @@ public:
                    size_t  reg_fsm_num,
                    size_t running_fsm_num,
                    const soar::SERVICES_INFO &selfsvr,
-                   Soar_MMAP_BusPipe *zerg_mmap_pipe,
+                   soar::App_BusPipe *zerg_mmap_pipe,
                    size_t max_frame_len = soar::Zerg_Frame::MAX_LEN_OF_APPFRAME,
                    bool init_inner_queue = false,
                    bool init_lock_pool = false);
@@ -267,7 +271,7 @@ protected:
     soar::SERVICES_INFO self_svc_info_;
 
     //共享内存的管道
-    Soar_MMAP_BusPipe *zerg_mmap_pipe_ = nullptr;
+    soar::App_BusPipe *zerg_mmap_pipe_ = nullptr;
 
     //统计时钟
     const zce::Time_Value *statistics_clock_ = nullptr;
@@ -419,4 +423,6 @@ int FSM_Manager::post_msg_to_queue(uint32_t cmd,
     return 0;
 }
 
-#endif //SOARING_LIB_TRANSACTION_MANAGER_H_
+}
+
+

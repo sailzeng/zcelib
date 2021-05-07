@@ -1,10 +1,12 @@
-#ifndef SOARING_LIB_NOTIFY_TRANSACTION_TASK_BASE_H_
-#define SOARING_LIB_NOTIFY_TRANSACTION_TASK_BASE_H_
+#pragma once
 
 #include "soar/zerg/frame_zerg.h"
 #include "soar/fsm/fsmtask_mgr.h"
 
 class soar::Zerg_Frame;
+
+namespace soar
+{
 
 class FSMTask_TaskBase: public ZCE_Thread_Task
 {
@@ -167,10 +169,10 @@ protected:
     size_t              once_max_get_sendqueue_;
 
     //这个
-    soar::SERVICES_ID   mgr_svc_id_;
+    SERVICES_ID         mgr_svc_id_;
 
     //
-    soar::SERVICES_ID   thread_svc_id_;
+    SERVICES_ID         thread_svc_id_;
 
     //TASK是否在运行
     bool                task_run_;
@@ -179,4 +181,5 @@ protected:
     soar::Zerg_Frame   *task_frame_buf_;
 };
 
-#endif //#ifndef SOARING_LIB_NOTIFY_TRANSACTION_TASK_BASE_H_
+}
+
